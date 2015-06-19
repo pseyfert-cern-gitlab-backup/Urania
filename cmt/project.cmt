@@ -1,9 +1,7 @@
 project URANIA
 
 container UraniaSys
-#use GAUDI GAUDI_v23r9
 use LCGCMT    LCGCMT_65a
 
 build_strategy with_installarea
 setup_strategy root
-#structure_strategy without_version_directory

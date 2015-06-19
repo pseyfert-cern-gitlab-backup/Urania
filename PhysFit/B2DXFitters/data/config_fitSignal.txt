@@ -1,0 +1,159 @@
+#BdDPi
+/afs/cern.ch/work/g/gligorov/public/Bs2DsKFitTuples/
+FitTuple_MergedTree_Bd2DPi_D2KPiPi_MD_BDTG_MINI.root
+FitTuple_MergedTree_Bd2DPi_D2KPiPi_MU_BDTG_MINI.root
+DecayTree
+DecayTree
+###
+
+#Signal BDPi old
+/afs/cern.ch/work/a/adudziak/public/
+Merged_Bd2DPi_D2KPiPi_MD_BdHypo_BDTG.root
+Merged_Bd2DPi_D2KPiPi_MU_BdHypo_BDTG.root
+DecayTree;1
+DecayTree;1
+###
+
+#Signal BDPi KPiPi
+/afs/cern.ch/work/g/gligorov/public/Bs2DsKFitTuples/DV_v33r1/MC11a/AfterOfflineSel/
+Bd2DPi_D2KPiPi_BdHypo_DPi_OffSel_BDTG.root
+Bd2DPi_D2KPiPi_BdHypo_DPi_OffSel_BDTG.root
+DecayTree;1
+DecayTree;1
+###
+
+
+#Signal BsDsPi KKPi old
+/afs/cern.ch/work/a/adudziak/public/
+Merged_Bs2DsPi_Ds2KKPi_MD_BsHypo_BDTG.root
+Merged_Bs2DsPi_Ds2KKPi_MU_BsHypo_BDTG.root
+DecayTree;1
+DecayTree;1
+###
+
+#Signal BsDsPi KstK
+/afs/cern.ch/work/g/gligorov/public/Bs2DsKFitTuples/DV_v33r1/MC11a/AfterOfflineSel/
+Bs2DsPi_Ds2KKPi_BsHypo_DsPi_KKPi_KstK_OffSel_BDTG.root
+Bs2DsPi_Ds2KKPi_BsHypo_DsPi_KKPi_KstK_OffSel_BDTG.root
+DecayTree;1
+DecayTree;1
+###
+
+#Signal BsDsPi PhiPi
+/afs/cern.ch/work/g/gligorov/public/Bs2DsKFitTuples/DV_v33r1/MC11a/AfterOfflineSel/
+Bs2DsPi_Ds2KKPi_BsHypo_DsPi_KKPi_PhiPi_OffSel_BDTG.root
+Bs2DsPi_Ds2KKPi_BsHypo_DsPi_KKPi_PhiPi_OffSel_BDTG.root
+DecayTree;1
+DecayTree;1
+###
+
+#Signal BsDsPi NonRes
+/afs/cern.ch/work/g/gligorov/public/Bs2DsKFitTuples/DV_v33r1/MC11a/AfterOfflineSel/
+Bs2DsPi_Ds2KKPi_BsHypo_DsPi_KKPi_NonRes_OffSel_BDTG.root
+Bs2DsPi_Ds2KKPi_BsHypo_DsPi_KKPi_NonRes_OffSel_BDTG.root
+DecayTree;1
+DecayTree;1
+###
+
+
+#Signal BsDsPi KPiPi
+/afs/cern.ch/work/g/gligorov/public/Bs2DsKFitTuples/DV_v33r1/MC11a/AfterOfflineSel/
+Bs2DsPi_Ds2KPiPi_BsHypo_DsPi_KPiPi_OffSel_BDTG.root
+Bs2DsPi_Ds2KPiPi_BsHypo_DsPi_KPiPi_OffSel_BDTG.root
+DecayTree;1
+DecayTree;1
+###
+
+#Signal BsDsPi PiPiPi
+/afs/cern.ch/work/g/gligorov/public/Bs2DsKFitTuples/DV_v33r1/MC11a/AfterOfflineSel/
+Bs2DsPi_Ds2PiPiPi_BsHypo_DsPi_PiPiPi_OffSel_BDTG.root
+Bs2DsPi_Ds2PiPiPi_BsHypo_DsPi_PiPiPi_OffSel_BDTG.root
+DecayTree;1
+DecayTree;1
+###
+
+
+#Signal BsDsstPi
+/afs/cern.ch/work/a/adudziak/public/
+Merged_Bs2DsstPi_Ds2KKPi_MD_BsHypo_BDTG.root
+Merged_Bs2DsstPi_Ds2KKPi_MU_BsHypo_BDTG.root
+DecayTree;1
+DecayTree;1
+###
+
+#Signal BsDsK KKPi old
+/afs/cern.ch/work/a/adudziak/public/
+Merged_Bs2DsK_Ds2KKPi_MD_BsHypo_BDTG.root
+Merged_Bs2DsK_Ds2KKPi_MU_BsHypo_BDTG.root
+DecayTree;1
+DecayTree;1
+###
+
+#Signal BsDsK KstK
+/afs/cern.ch/work/g/gligorov/public/Bs2DsKFitTuples/DV_v33r1/MC11a/AfterOfflineSel/
+Bs2DsK_Ds2KKPi_BsHypo_DsK_KKPi_KstK_OffSel_BDTG.root
+Bs2DsK_Ds2KKPi_BsHypo_DsK_KKPi_KstK_OffSel_BDTG.root
+DecayTree;1
+DecayTree;1
+###
+
+#Signal BsDsK PhiPi
+/afs/cern.ch/work/g/gligorov/public/Bs2DsKFitTuples/DV_v33r1/MC11a/AfterOfflineSel/
+Bs2DsK_Ds2KKPi_BsHypo_DsK_KKPi_PhiPi_OffSel_BDTG.root
+Bs2DsK_Ds2KKPi_BsHypo_DsK_KKPi_PhiPi_OffSel_BDTG.root
+DecayTree;1
+DecayTree;1
+###
+
+#Signal BsDsK NonRes
+/afs/cern.ch/work/g/gligorov/public/Bs2DsKFitTuples/DV_v33r1/MC11a/AfterOfflineSel/
+Bs2DsK_Ds2KKPi_BsHypo_DsK_KKPi_NonRes_OffSel_BDTG.root
+Bs2DsK_Ds2KKPi_BsHypo_DsK_KKPi_NonRes_OffSel_BDTG.root
+DecayTree;1
+DecayTree;1
+###
+
+
+#Signal BsDsK KPiPi
+/afs/cern.ch/work/g/gligorov/public/Bs2DsKFitTuples/DV_v33r1/MC11a/AfterOfflineSel/
+Bs2DsK_Ds2KPiPi_BsHypo_DsK_KPiPi_OffSel_BDTG.root
+Bs2DsK_Ds2KPiPi_BsHypo_DsK_KPiPi_OffSel_BDTG.root
+DecayTree;1
+DecayTree;1
+###
+
+#Signal BsDsK PiPiPi
+/afs/cern.ch/work/g/gligorov/public/Bs2DsKFitTuples/DV_v33r1/MC11a/AfterOfflineSel/
+Bs2DsK_Ds2PiPiPi_BsHypo_DsK_PiPiPi_OffSel_BDTG.root
+Bs2DsK_Ds2PiPiPi_BsHypo_DsK_PiPiPi_OffSel_BDTG.root
+DecayTree;1
+DecayTree;1
+###
+
+
+
+Signal BdDsK
+/afs/cern.ch/work/a/adudziak/public/
+Merged_Bd2DsK_Ds2KKPi_MD_BsHypo_BDTG.root
+Merged_Bd2DsK_Ds2KKPi_MU_BsHypo_BDTG.root
+DecayTree;1
+DecayTree;1
+###
+
+#PIDp
+/afs/cern.ch/user/l/lcarson/public/ForAgnieszka/
+EffHistos_Reco12_39Mom_Proton_MagDown_TightCuts.root
+EffHistos_Reco12_39Mom_Proton_MagDown_TightCuts.root
+###
+
+#PID
+/afs/cern.ch/user/l/lcarson/public/ForAgnieszka/
+EffHistos_Reco12_39Mom_MagDown_0123.root
+EffHistos_Reco12_39Mom_MagUp_012.root
+###
+
+#RatioDataMC2D
+/afs/cern.ch/work/a/adudziak/public/workspace/
+MomVsnTr_Comp_DPi_Down_hist.root
+MomVsnTr_Comp_DPi_Up_hist.root
+###

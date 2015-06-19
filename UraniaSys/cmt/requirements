@@ -3,7 +3,7 @@
 # Maintainer : Diego Martinez Santos
 #============================================================================
 package           UraniaSys
-version           v2r0
+version           v2r0p1
 #============================================================================
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -27,7 +27,7 @@ use  BsKstKst                  	v4r0    Phys                    # Paula Alvarez,
 use  Bs2JpsiKs                  v5r1    Phys                    # Patrick Koppenburg
 use  Lambdab2Jpsippi            v2r0    Phys                    # Patrick Koppenburg
 
-#use  B2DXFitters		v2r1	PhysFit			# Manuel Schiller, Eduardo Rodrigues
+use  B2DXFitters		v2r2	PhysFit			# Manuel Schiller, Eduardo Rodrigues
 use  P2VV			v3r2	PhysFit			# Jeroen Van Leerdam, Roel Aaij
 use  SomeMassModels		v2r2	PhysFit			# Diego Martinez Santos
 
