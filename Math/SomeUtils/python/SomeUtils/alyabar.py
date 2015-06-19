@@ -719,3 +719,62 @@ def JpsiKst_Angles(kaon,pion, mu1, mu2):
 
     return ThK, Thtr, Phitr
 #==========================================================================================================================
+
+def HelicityAngles(Kplus_P, Kminus_P, muplus_P, muminus_P ):
+    """ Vasilis
+    """
+    from ROOT import TMath
+    # Calculation based on the ANA-2012-067-v3
+
+    # Bs, KK, mm momenta 4 vectors
+    KK_P   = Kplus_P + Kminus_P;
+    mm_P   = muplus_P + muminus_P;
+    KKmm_P = KK_P + mm_P;
+
+    # Unit vector along mumu direction in the KK mass r.f.
+    muplus_P.Boost( - KK_P.BoostVector() );
+    muminus_P.Boost( - KK_P.BoostVector() );
+    e_KK = - (muplus_P + muminus_P).Vect().Unit();
+
+    # Boost the muons back to lab frame
+    muplus_P.Boost( KK_P.BoostVector() );
+    muminus_P.Boost( KK_P.BoostVector() );
+
+    # Unit vector along KK direction in the mm mass r.f.
+    Kplus_P.Boost( - mm_P.BoostVector() );
+    Kminus_P.Boost( - mm_P.BoostVector() );
+    e_mm = - (Kplus_P+Kminus_P).Vect().Unit();
+    # Boost the Kaons back to lab frame
+    Kplus_P.Boost( mm_P.BoostVector() );
+    Kminus_P.Boost( mm_P.BoostVector() );
+
+    # Unit vector along KK direction in the mm mass r.f.
+    Kplus_P.Boost( - KKmm_P.BoostVector() );
+    Kminus_P.Boost( - KKmm_P.BoostVector() );
+    muplus_P.Boost( - KKmm_P.BoostVector() );
+    muminus_P.Boost( - KKmm_P.BoostVector() );
+    e_KKmm = (muplus_P + muminus_P).Vect().Unit();
+
+    # Perpenticular vectors to KK and mm planes in the KKmmm r.f.
+    eta_KK = ( Kplus_P.Vect().Cross( Kminus_P.Vect()) ).Unit();
+    eta_mm = ( muplus_P.Vect().Cross( muminus_P.Vect()) ).Unit();
+
+    Kplus_P.Boost( KKmm_P.BoostVector() );
+    Kminus_P.Boost( KKmm_P.BoostVector() );
+    muplus_P.Boost( KKmm_P.BoostVector() );
+    muminus_P.Boost( KKmm_P.BoostVector() );
+
+    # Helicity angles.
+    Kplus_P.Boost( - KK_P.BoostVector() );
+    muplus_P.Boost( - mm_P.BoostVector() );
+
+    angles = 3*[0.]
+    angles[0] = ( Kplus_P.Vect().Unit()  ).Dot(e_KK);
+    angles[1] = ( muplus_P.Vect().Unit() ).Dot(e_mm);
+
+    if eta_KK.Cross(eta_mm).Dot(e_KKmm) > 0  :        # sinphi = eta_KK.Cross(eta_mm).Dot(e_KKmm);
+        angles[2] = + TMath.ACos( eta_KK.Dot(eta_mm) )   # cosphi = eta_KK.Dot(eta_mm);
+    else :
+        angles[2] = - TMath.ACos( eta_KK.Dot(eta_mm) )
+
+    return angles

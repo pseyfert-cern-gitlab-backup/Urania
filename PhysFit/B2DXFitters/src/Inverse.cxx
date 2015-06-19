@@ -10,9 +10,6 @@
 
 #include "B2DXFitters/Inverse.h" 
 #include "RooAbsReal.h" 
-#include "RooAbsCategory.h" 
-#include <math.h> 
-#include "TMath.h" 
 
 Inverse::Inverse(const char *name, const char *title, 
 	RooAbsReal& _val) :

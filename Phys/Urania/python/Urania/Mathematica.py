@@ -111,6 +111,9 @@ def TranslateMathematica(s):
         (r"\A([\d\.]+)([a-zA-Z].*)\Z",  # Implied multiplicatin - 2a
         lambda m: TranslateMathematica(m.group(1)) + "*" + TranslateMathematica(m.group(2)) ),
 
+        (r"\A([^=]+)(\*\^[\-\+]*)([^\]]+)\Z",  # Powers
+         lambda m: TranslateMathematica(m.group(1)) + translateOperator(m.group(2)) + TranslateMathematica(m.group(3)) ),
+
         (r"\A([^=]+)([\^\-\*/\+=]=?)([^\]]+)\Z",  # Infix operator
         lambda m: TranslateMathematica(m.group(1)) + translateOperator(m.group(2)) + TranslateMathematica(m.group(3)) ),
 
@@ -152,13 +155,13 @@ def translateFunction(s):
 
 
 def translateOperator(s):
-    dictionary = {'^': '**'}
+    dictionary = {'^': '**','*^':'e','*^-':'e-','*^+':'e+'}
     if s in dictionary:
         return dictionary[s]
     return s
 
 
 def mathematica_script(filename):
-    if os.path.exists("/afs/cern.ch/"): path = "/afs/cern.ch/project/parc/math80/bin/math"
+    if os.path.exists("/afs/cern.ch/"): path = "/afs/cern.ch/project/parc/math90/bin/math"
     else: path = "math"
     os.system(path + " < " + filename);

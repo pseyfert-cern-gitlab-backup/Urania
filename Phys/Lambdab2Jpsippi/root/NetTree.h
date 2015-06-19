@@ -38,6 +38,8 @@ public :
   Double_t        psiMMass2[100];   //[PVs]
   Double_t        psipMass2[100];   //[PVs]
   Double_t        KKMass[100];   //[PVs]
+  Double_t        mprime[100];   //[PVs]
+  Double_t        thetaprime[100];   //[PVs]
   Int_t           Category[100];   //[PVs]
   Int_t           ErrorCode[100];   //[PVs]
   Int_t           Baryon;
@@ -47,7 +49,9 @@ public :
   Double_t        DalitzWeight[100];
   Double_t        SPDWeight[100];
   Double_t        PTWeight[100];
-  
+  Double_t        NNEffWeight[100];   //[PVs]
+  Double_t        CosTheta[100];   //[PVs]
+ 
   // List of branches
   TBranch        *b_PVs;   //!
   TBranch        *b_EventNumber;   //!
@@ -72,7 +76,11 @@ public :
   TBranch        *b_DalitzWeight ; //!
   TBranch        *b_SPDWeight ; //!
   TBranch        *b_PTWeight ; //!
- 
+  TBranch        *b_mprime;   //!
+  TBranch        *b_thetaprime;   //!
+  TBranch        *b_NNEffWeight;   //!
+  TBranch        *b_CosTheta;   //!
+   
   NetTree(TString name,TString name2);
   virtual ~NetTree();
   virtual Int_t    Cut(Long64_t entry);
@@ -177,7 +185,11 @@ void NetTree::Init(TTree *tree)
   fChain->SetBranchAddress("ErrorCode", ErrorCode, &b_ErrorCode);
   fChain->SetBranchAddress("Baryon", &Baryon, &b_Baryon);
   fChain->SetBranchAddress("Teaching", &Teaching, &b_Teaching);
-  
+  fChain->SetBranchAddress("mprime", mprime, &b_mprime);
+  fChain->SetBranchAddress("thetaprime", thetaprime, &b_thetaprime);
+  fChain->SetBranchAddress("NNEffWeight", NNEffWeight, &b_NNEffWeight);
+  fChain->SetBranchAddress("CosTheta", CosTheta, &b_CosTheta);
+    
   Notify();
 }
 

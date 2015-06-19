@@ -1,25 +1,201 @@
+/** Example of how to use RooDMassFitter to fit a (toy) nTuple, construct
+sWeights, and plot the results.
+*/
+
 Float_t d0MassPDG=1864.83;
+  
+/// Export a RooDataSet as a TTree
+TTree* exportData(const RooDataSet& data) {
+  cout << "Exporting generated dataset to TTree" << endl;
+  TTree* tt = new TTree(data.GetName(), data.GetTitle());
+  Int_t nentries = data.numEntries();
+  
+  UInt_t nvars=0;
+  UInt_t ncats=0;
+  
+  const RooArgSet* args = data.get();
+  RooAbsArg* arg;
+  
+  // get number of variables and categories
+  RooLinkedListIter iter = args->iterator();
+  while ( (arg=(RooAbsArg*)iter.Next()) ) {
+    if ( strcmp(arg->IsA()->GetName(),"RooRealVar")==0 ) {
+      nvars++;
+    }
+    else if ( strcmp(arg->IsA()->GetName(),"RooCategory")==0 ) {
+      ncats++;
+    }
+    else {
+      cout << "Argument " << arg << " has unknown type" << endl;
+      delete tt;
+      tt=NULL;
+      return NULL;
+    }
+  }
+  
+  // make arrays
+  TString* varNames = new TString[nvars];
+  Double_t* vars = new Double_t[nvars];
+  TString* catNames = new TString[ncats];
+  Int_t* cats = new Int_t[ncats];
+  
+  UInt_t ivar=0;
+  UInt_t icat=0;
+  
+  iter = args->iterator();
+  while ( (arg=(RooAbsArg*)iter.Next()) ) {
+    TString name = arg->GetName();
+    if ( ( strcmp(arg->IsA()->GetName(),"RooCategory")==0 ) ) {
+      cats[icat] = 0;
+      catNames[icat] = name;
+      tt->Branch(name, &(cats[icat]));
+      icat++;
+    }
+    else {
+      vars[ivar] = 0.0;
+      varNames[ivar] = name;
+      tt->Branch(name, &(vars[ivar]));
+      ivar++;
+    }
+  }
+  // fill the TTree
+  for (Int_t ientry=0; ientry<nentries; ++ientry) {
+    const RooArgSet* params = data.get(ientry);
+    for ( ivar=0; ivar<nvars; ++ivar ) {
+      vars[ivar] = params->getRealValue( (varNames[ivar]).Data() );
+    }
+    for ( icat=0; icat<ncats; ++icat ) {
+      cats[icat] = params->getCatIndex( (catNames[icat]).Data() );
+    }
+    tt->Fill();
+  }
 
+  delete[] varNames;
+  delete[] vars;
+  delete[] catNames;
+  /*
+  delete[] cats; */
+  return tt;
+}
 
+/// Make the signal + background models.
+void makeModel() 
+{
+  // create the output file and workspace
+  TFile* f = new TFile("toydata.root", "RECREATE");
+  
+  RooWorkspace* ws = new RooWorkspace("ToyWS", "");
+
+  // signal PDF of D0 mass
+  TString sigStr;
+  sigStr.Form("Gaussian::d0Sig(mass[%f,%f],mu[%f,%f,%f],sigma[8,4,24])",
+              d0MassPDG-70, d0MassPDG+70, d0MassPDG, d0MassPDG-25, d0MassPDG+25);
+  
+  ws->factory(sigStr.Data());
+
+  // background PDF of D0 mass
+  ws->factory("Chebychev::d0Bkg(mass,{poly_c1[0.,-1.,1.]})");
+
+  // signal PDF of arbitary variable "x"
+  ws->factory("Gaussian::xSig(x[250,750],muX[500,450,550],sigmaX[20,10,60])");
+  // background PDF of arbitary variable "x"
+  ws->factory("Exponential::xBkg(x,cX[-0.003,-0.01,-0.00001])");
+
+  // combined sig PDF of d0 mass and "x"
+  ws->factory("PROD::sigModel(d0Sig,xSig)");
+  // combined bkg PDF of d0 mass and "x"
+  ws->factory("PROD::bkgModel(d0Bkg,xBkg)");
+
+  ws->Write();
+  delete ws;
+  delete f;
+}
+
+/** Generates a combined signal + background toy MC dataset
+ */
+void makeData() 
+{
+  TFile* f = new TFile("toydata.root", "UPDATE");
+  RooWorkspace* ws = (RooWorkspace*)f->Get("ToyWS");
+
+  RooRealVar* mass = ws->var("mass");
+  RooRealVar* x = ws->var("x");
+
+  // create a category with explicitly numbered states
+  RooCategory y("y","Signal/background classification") ;
+  y.defineType("Signal",0);
+  y.defineType("Background",1);
+
+  // total number of events to generate
+  Int_t nevts = 10000;
+  
+  // get number of signal events to generate (between 30 and 70% of nevts)
+  Double_t sigfrac = gRandom->Uniform(0.3, 0.7);
+  Int_t nsig =  TMath::FloorNint(sigfrac*nevts);
+  
+  // generate signal dataset
+  RooArgSet* params = new RooArgSet("Params");
+  params->add(*mass);
+  params->add(*x);
+  
+  RooProdPdf* sigModel = dynamic_cast<RooProdPdf*>(ws->pdf("sigModel"));
+  RooDataSet* sigData = sigModel->generate(*params, nsig);
+
+  // generate background toy dataset
+  RooProdPdf* bkgModel = dynamic_cast<RooProdPdf*>(ws->pdf("bkgModel"));
+  RooDataSet* bkgData = bkgModel->generate(*params, nevts-nsig);
+
+  cout << "Generated " << sigData->numEntries() << " signal events" << endl;
+  cout << "Generated " << bkgData->numEntries() << " background events" << endl;
+
+  // merge the signal and background datasets
+  RooDataSet* data = new RooDataSet("toydata", "", *params,
+                                    Index(y),
+                                    Import("Signal", *sigData),
+                                    Import("Background", *bkgData));
+  data->Print();
+  
+  // save the toy dataset as a TTree 
+  TTree* tt = exportData(*data);
+  f->cd();
+  tt->Write();
+  delete sigData;
+  delete bkgData;
+  delete data;
+  delete ws;
+  delete f;
+}
+
+/** Read the toy data and perform the fit.
+    @param sigType The signal PDF to use. Accepted values are:
+    gauss          - Gaussian;
+    cb             - Crystal Ball;
+    dblGauss       - Sum of two Gaussians with a common mean;
+    cruijff        - Cruijff;
+    cruijffSimple  - Cruijff with same sigma for left and right tails.
+ */
 void MakeFit(const char* sigType) 
 {
-  TFile* f = TFile::Open("/data/lhcb/users/hunt/data/offline/MC10/D02K3PiForXS/noPID/offline/untagged/D02K3PiForXSec.root", 
-                         "READ");
-  TTree* tt = (TTree*)gDirectory->Get("UntaggedD02K3Pi");
+  TFile* f = TFile::Open("toydata.root", "READ");
+  f->ls();
+  TTree* tt = gDirectory->Get("toydata");
+  tt->Print();
   
-  RooDMassFitter* fitter = new RooDMassFitter(TString::Format("Fitter_%s",sigType).Data(),
-                                              "An example fitter");
+  RooPhysFit::RooDMassFitter* fitter 
+    = new RooPhysFit::RooDMassFitter(TString::Format("Fitter_%s",
+                                                     sigType).Data(),
+                                     "An example fitter");
 
   cout << "Creating workspace instance" << endl;
-  fitter->CreateWS("RWS","");
+  fitter->CreateWS("FitWS","");
   
   cout << "Attach output file" << endl;
-  fitter->AttachFile(TString::Format("output_%s.root",sigType).Data(), "RECREATE");
+  fitter->AttachFile(TString::Format("output_%s.root",sigType).Data(),
+                     "RECREATE");
 
   // create the fitter object
-  cout << "*******************************************************************************" << endl;
+  cout << "************************************************************" << endl;
   cout << "Performing fits for signal type " << sigType << endl;
-
   
   cout << "Setting parameter names" << endl;
   fitter->SetDMassPartName("D^{0}");
@@ -31,111 +207,75 @@ void MakeFit(const char* sigType)
   fitter->SetPlotParameterSetName("PlotParams");
   fitter->SetSpectatorSetName("Spectators");
   fitter->SetCategorySetName("Categories");
-
+  
   cout << "Create D0 mass variable" << endl;
-  fitter->MakeDMassVar(d0MassPDG-70,d0MassPDG+70,"MeV/c^{2}", 
-                       "m_{K#pi#pi#pi}");
+  // arguments are: xmin, xmax, unit, title
+  fitter->MakeDMassVar(d0MassPDG-70, d0MassPDG+70, "MeV/c^{2}", 
+                       "Toy MC D^{0} mass");
   
   cout << "Add spectators" << endl;
-  fitter->AddSpectator("logIPChi2", -8,10,std::log,"D0_IPCHI2_BPV", ""
-                       "log(D^{0} IP #chi^{2}");
-  fitter->AddSpectator("pt", 0,10000,"D0_PT", "MeV/c^{2}", "D^{0} p_{T}");
+  // arguments are: name, xmin, xmax, branch name
+  fitter->AddSpectator("exampleVar", 250, 750, "x");
 
   cout << "Add categories" << endl;
-  vector<std::string> types;
-  types.push_back("undefined");
-  types.push_back("secondary");
-  types.push_back("prompt");
-  vector<Int_t> indices;
-  indices.push_back(-1);
-  indices.push_back(0);
-  indices.push_back(1);
-  fitter->AddCategory("promptCat", types, indices, "D0_MC_ISPROMPT");
-  types.clear();
-  indices.clear();
-  types.push_back("sig");
-  types.push_back("quasisig");
-  types.push_back("fullreco");
-  types.push_back("reflection");
-  types.push_back("partreco");
-  types.push_back("lowmass");
-  types.push_back("ghost");
-  types.push_back("clone");
-  types.push_back("hierarchy");
-  types.push_back("fromPV");
-  types.push_back("samePV");
-  types.push_back("diffPV");
-  types.push_back("bbar");
-  types.push_back("ccbar");
-  types.push_back("uds");
-  vector<Int_t> indices;
-  indices.push_back(0);
-  indices.push_back(10);
-  indices.push_back(20);
-  indices.push_back(30);
-  indices.push_back(40);
-  indices.push_back(50);
-  indices.push_back(60);
-  indices.push_back(63);
-  indices.push_back(66);
-  indices.push_back(70);
-  indices.push_back(80);
-  indices.push_back(100);
-  indices.push_back(110);
-  indices.push_back(120);
-  indices.push_back(130);
-  fitter->AddCategory("bkgCat", types, indices, "D0_BKGCAT");
+  TString types[2] = {"Signal", "Background"};
+  Int_t indices[2] = {0, 1};
+  
+  // arguments are: name, list of state names, list of indices, branch name
+  fitter->AddCategory("bkgCat", types, indices, 2, "y");
 
   cout << "Making data set" << endl;
-  fitter->MakeDMassDataSet(tt, "D0_M", "data");
+  fitter->MakeDMassDataSet(tt, "mass", "data");
 
-  // quadratic combinatoric D0 background
-  fitter->MakeDMassBkgQuadratic(0,-1,1, 0, -1, 1);
+  // flat combinatoric D0 background
+  fitter->MakeDMassBkgFlat(0., -1., 1.);
 
   cout << "Making model" << endl;
   if (strcmp(sigType,"gauss")==0) {
-    // single Gaussian signal, quadratic background
-    fitter->MakeDMassSigGauss(d0MassPDG,d0MassPDG-25,d0MassPDG+25,8,4,24);
-    fitter->SetPlotParameters("dmass_sig_mu,dmass_sig_sigma,dmass_bkg_poly_c1,dmass_bkg_poly_c2");
+    // single Gaussian signal
+    fitter->MakeDMassSigGauss(d0MassPDG, d0MassPDG-25.,d0MassPDG+25.,
+                              8., 4., 24. /* sigma start, min, max */ );
+    fitter->SetPlotParameters("dmass_sig_mu,dmass_sig_sigma,dmass_bkg_poly_c1");
   }
   else if (strcmp(sigType,"cb")==0) {
-    // single CB, quadratic background
-    fitter->MakeDMassSigCB(d0MassPDG,d0MassPDG-25,d0MassPDG+25,8,4,24,0.2,0,10,3,1,20);
+    // single CB
+    fitter->MakeDMassSigCB(d0MassPDG, d0MassPDG-25., d0MassPDG+25.,
+                           8., 4., 24., /* sigma start, min, max */
+                           0.2, 0., 10., /* alpha start, min, max */
+                           3., 1., 20. /* n start, min, max */);
     TString plotParams="dmass_sig_mu,dmass_sig_sigma,dmass_sig_alpha";
-    plotParams+=",dmass_sig_n,dmass_bkg_poly_c1,dmass_bkg_poly_c2";
+    plotParams+=",dmass_sig_n,dmass_bkg_poly_c1";
     fitter->SetPlotParameters(plotParams.Data());
   }
   else if (strcmp(sigType,"dblGauss")==0) {
-    // double Gaussian signal, quadratic background
-    fitter->MakeDMassSigBiGauss(d0MassPDG,d0MassPDG-25,d0MassPDG+25,
-                                d0MassPDG,d0MassPDG-25,d0MassPDG+25,
-                                8,4,24, 1.5,1,3,0.85);
-    TString plotParams="dmass_sig_mu0,dmass_sig_sigma0,dmass_sig_mu1,dmass_sig_sigma1";
-    plotParams+=",dmass_bkg_poly_c1,dmass_bkg_poly_c2";
-    fitter->SetPlotParameters(plotParams.Data());
-  }
-  else if (strcmp(sigType,"dblGaussSimple")==0) {
-    // double Gaussian signal (common mean), quadratic background
-    fitter->MakeDMassSigBiGauss(d0MassPDG,d0MassPDG-25,d0MassPDG+25,
-                                8,4,24, 1.5,1,3,0.85);
+    // double Gaussian signal (common mean)
+    fitter->MakeDMassSigBiGauss(d0MassPDG, d0MassPDG-25., d0MassPDG+25.,
+                                8, 4., 24., /* sigma0 start, min, max */
+                                1.5, 1., 3., /* sigma1/sigma0 start, min, max */
+                                0.85 /* core fraction start */ );
     TString plotParams="dmass_sig_mu,dmass_sig_sigma0,dmass_sig_sigma1";
-    plotParams+=",dmass_bkg_poly_c1,dmass_bkg_poly_c2";
+    plotParams+=",dmass_bkg_poly_c1";
     fitter->SetPlotParameters(plotParams.Data());
   }
   else if (strcmp(sigType,"cruijff")==0) {
-    // single Cruijff, quadratic background
+    // single Cruijff
     fitter->MakeDMassSigCruijff(d0MassPDG,d0MassPDG-25,d0MassPDG+25,
-                                8,4,24, 8,4,24, 0.2, 0, 10, 0.2, 0, 10);
+                                8., 4., 24., /* left sigma start, min, max */
+                                8., 4., 24., /* right sigma start, min, max */
+                                0.2, 0, 10, /* left alpha start, min, max */
+                                0.2, 0, 10 /* right alpha start, min, max */ );
     TString plotParams="dmass_sig_mu,dmass_sig_sigmaL,dmass_sig_sigmaR,dmass_sig_alphaL,dmass_sig_alphaR";
-    plotParams+=",dmass_bkg_poly_c1,dmass_bkg_poly_c2";
+    plotParams+=",dmass_bkg_poly_c1";
     fitter->SetPlotParameters(plotParams.Data());
   }
   else if (strcmp(sigType,"cruijffSimple")==0) {
-    // single Cruijff (common mean), quadratic background
-    fitter->MakeDMassSigCruijff(d0MassPDG,d0MassPDG-25,d0MassPDG+25,
-                                8,4,24, 0.2, 0, 10, 0.2, 0, 10);
+    // single Cruijff (common sigma)
+    fitter->MakeDMassSigCruijff(d0MassPDG, d0MassPDG-25., d0MassPDG+25.,
+                                8., 4., 24., /* sigma start, min, max */
+                                0.2, 0, 10, /* left alpha start, min, max */
+                                0.2, 0, 10 /* right alpha start, min, max */);
     TString plotParams="dmass_sig_mu,dmass_sig_sigma,dmass_sig_alphaL,dmass_sig_alphaR";
-    plotParams+=",dmass_bkg_poly_c1,dmass_bkg_poly_c2";
+    plotParams+=",dmass_bkg_poly_c1";
     fitter->SetPlotParameters(plotParams.Data());
   } 
   else {
@@ -143,77 +283,154 @@ void MakeFit(const char* sigType)
     exit(1);
   }
 
-  fitter->MakeDMassModel(0.3,0.7);
+  // arguments: signal fraction start, background fraction start
+  fitter->MakeDMassModel(0.6, 0.4);
  
   // set the plot attributes
   cout << "Setting plot attributes" << endl;
   fitter->AddPdfComponent("sigModel", kRed, kDashed, 3);
-  fitter->AddPdfComponent("bkgModel", kMagenta, kDotted, 3);
-
-  // set the chi^2 test statistic
-  cout << "Setting test statistic" << endl;
-  fitter->SetChi2TestStat(RooPhysFitter::LLRatio);
+  fitter->AddPdfComponent("bkgModel", kGreen+3, kDotted, 3);
   
   // set the bins
   cout << "Setting plot parameters" << endl;
   fitter->SetPlotBins(100);
-  fitter->SetChi2Bins(300);
-  fitter->SetParamBoxY1(0.55);
-  fitter->SetParamBoxTextSize(0.026);
-
+  fitter->SetParamBoxX1(0.65);
+  fitter->SetParamBoxY1(0.48);
+  fitter->SetParamBoxY2(0.9);
+  fitter->SetParamBoxTextSize(0.038);
+  
+  // perform the fit 
+  // arguments:
+  // 1) fitName ("fitResults");
+  // 2) nCores (4);
+  // 3) save snapshot? (true),
+  // 4) print results? (false);
+  // 5) use sum-of-weights^2 errors? (false);
+  // 6) perform extended fit (true)
   cout << "Performing fit" << endl;
   fitter->PerformFit("fitRes", 4, kTRUE, kTRUE, kFALSE, kTRUE);
   
   // calculate sWeights
-  // arguments: fitName ("fitResults"), name of data set with weights ("")
+  // arguments: 
+  // 1) fitName ("fitResults");
+  // 2) name of data set with weights ("").
   cout << "Calculting sWeights" << endl;
   fitter->CalculateSWeights("fitRes", "data_withSWeights");
   
   // create weighted data set for signal sWeight
-  // arguments: name of data set with weights,
-  // name of sWeight variable, save to workspace (true)
+  // arguments: 
+  // 1) name of data set with weights;
+  // 2) name of sWeight variable;
+  // 3) fit name ("fitResults");
+  // 4) save to workspace? (true).
   cout << "Creating signal sWeighted data set" << endl;
   fitter->CreateWeightedDataSet("data_sig", "nsig_sw", "fitRes");
   
   // create weighted data set for bkg sWeight
-  // arguments: name of data set with weights,
-  // name of sWeight variable, save to workspace (true)
+  // arguments: 
+  // 1) name of data set with weights;
+  // 2) name of sWeight variable;
+  // 3) fit name ("fitResults");
+  // 4) save to workspace? (true).
   cout << "Creating bkg. sWeighted data set" << endl;
   fitter->CreateWeightedDataSet("data_bkg", "nbkg_sw", "fitRes");
-
-  cout << "Created signal (MC associated) data set" << endl;
-  fitter->CreateReducedDataSet("data_sig_mc", "bkgCat==bkgCat::sig||bkgCat==bkgCat::quasisig");
 
   RooRealVar* mass=fitter->GetVar("mass");
   mass->setRange("sigRange",d0MassPDG-40,d0MassPDG+30);
   
+  // plot the fit results
+  // arguments: 
+  // 1) variable name;
+  // 2) fit name ("fitResults");
+  // 3) range ("");
+  // 4) range title ("");
+  // 5) use sum-of-weights^2 errors? (false)
   cout << "Plotting fit results" << endl;
   TString rangeTitle="sigRegion";
   RooPlot* rp = fitter->PlotFitResults("mass", "fitRes", "sigRange",
                                         rangeTitle.Data());
-  TCanvas* c1 = new TCanvas("c1", "Fit Results",1280, 1024);
+  rp->SetTitleOffset(0.8, "Y");
+
+  // make the pull plot
+  // arguments:
+  // 1) variable name;
+  // 2) fit name ("fitResults");
+  RooPlot* rp_pull = fitter->PlotFitPulls("mass", "fitRes");
+  rp_pull->SetTitle(";;");
+  rp_pull->SetLabelSize(0.12, "X");
+  rp_pull->SetLabelSize(0.12, "Y");
+  
+  TCanvas* c1 = new TCanvas("c1", "Fit Results", 800, 600);
+  TPad* c1_upper = new TPad("cnv_mass_upper", "", 0.005, 0.30, 0.995, 0.995);
+  TPad* c1_lower = new TPad("cnv_mass_lower", "", 0.005, 0.05, 0.995, 0.295);
+  c1_upper->Draw();
+  c1_lower->Draw();
+  c1_upper->cd();
   rp->Draw();
+  c1_lower->cd();
+  rp_pull->Draw();
   c1->SaveAs(TString::Format("fitResults_%s.eps", sigType).Data());
 
- 
-  RooPlot* rp_var = fitter->PlotVariable("pt");
+  // plot the "exampleVar" (a.k.a. "x") variable
+  // arguments: 
+  // 1) variable name;
+  // 2) cut(s) ("");
+  // 3) range ("");
+  // 4) use sum-of-weights^2 errors (false);
+  // 5) plot frame (NULL), used for plotting on existing frame;
+  // 6) plot scale (0 = no scaling);
+  // 7) new name for plot ("");
+  // 8) minimum of plot (0 = use default);
+  // 9) maximum of plot (0 = use default).
+  //
+  // Returns RooPlot, unless an existing plot frame is specified
+  cout << "Plotting variable 'exampleVar'" << endl;
 
+  RooPlot* rp_var = fitter->PlotVariable("exampleVar");
+  rp_var->SetTitleOffset(0.8, "Y");
+
+  // plot the signal sWeighted dataset
   fitter->SetDataSetName("data_sig");
   fitter->SetDataSetLineColor(kRed);
   fitter->SetDataSetMarkerColor(kRed);
-  fitter->PlotVariable("pt", "", "", kTRUE, rp_var);
+  fitter->SetDataSetMarkerStyle(kFullTriangleDown);
+  fitter->PlotVariable("exampleVar", "", "", kTRUE, rp_var);
 
+   // plot the background sWeighted dataset
+  fitter->SetDataSetName("data_bkg");
+  fitter->SetDataSetLineColor(kGreen+3);
+  fitter->SetDataSetMarkerColor(kGreen+3);  
+  fitter->SetDataSetMarkerStyle(kFullTriangleDown);
+  fitter->PlotVariable("exampleVar", "", "", kTRUE, rp_var);
+
+  // plot the associated signal events
   fitter->SetDataSetName("data");
   fitter->SetDataSetLineColor(kMagenta);
   fitter->SetDataSetMarkerColor(kMagenta);
-  fitter->PlotVariable("pt",
-                       "bkgCat==bkgCat::sig||bkgCat==bkgCat::quasisig",
+  fitter->SetDataSetMarkerStyle(kOpenCircle);
+  fitter->PlotVariable("exampleVar",
+                       "bkgCat==bkgCat::Signal",
+                       "", kFALSE, rp_var);
+   
+  
+  // plot the associated background events
+  fitter->SetDataSetName("data");
+  fitter->SetDataSetLineColor(kGreen);
+  fitter->SetDataSetMarkerColor(kGreen);
+  fitter->SetDataSetMarkerStyle(kOpenCircle);
+  fitter->PlotVariable("exampleVar",
+                       "bkgCat==bkgCat::Background",
                        "", kFALSE, rp_var);
 
-  TCanvas* c2 = new TCanvas("c2", "pt Variable",1280, 1024);
+  TCanvas* c2 = new TCanvas("c2", "example variable", 800, 600);
   rp_var->Draw();
-  c2->SaveAs(TString::Format("pt_%s.eps", sigType).Data());
-
+  c2->SaveAs(TString::Format("exampleVar_%s.eps", sigType).Data());
+  
+  
+ /*  TCanvas* c3 = new TCanvas("c3", "example variable", 800, 600);
+  rp_var_bkg->Draw();
+  c3->SaveAs(TString::Format("exampleVar_bkg_%s.eps", sigType).Data());
+ */
   cout << "Saving workspace" << endl;
   fitter->SaveWS();
   cout << "Example completed!" << endl;
@@ -222,24 +439,30 @@ void MakeFit(const char* sigType)
   delete fitter;
   delete c1;
   delete c2;
+  delete rp;
+  delete rp_var;
 }
 
 void RooDMassFitter_Ex1()
 {
   // load the libraries
+  gSystem->Load("libMinuit.so");
+  gSystem->Load("libRooFit.so");
+  gSystem->Load("libRooFitCore.so");
+  gSystem->Load("libRooStats.so");
+  gSystem->Load("libCintex.so");
   ROOT::Cintex::Cintex cintex;
   ROOT::Cintex::Cintex::Enable();
   gSystem->Load("libRooPhysFitterLib.so");
   gSystem->Load("libRooPhysFitterDict.so");
   gROOT->ProcessLine(".x $ROOPHYSFITTERROOT/macros/lhcbstyle.C");
-  using namespace RooFit;
-  using namespace RooPhysFit;
-  using namespace std;
 
- //  MakeFit("gauss");
-//   MakeFit("dblGauss");
-//   MakeFit("dblGaussSimple");
-//   MakeFit("cb");
-//   MakeFit("cruijff");
+  // create the data+model
+  makeModel();
+  makeData();
+  MakeFit("gauss");
   MakeFit("cruijffSimple");
+  MakeFit("cruijff");
+  MakeFit("dblGauss");
+  MakeFit("cb");
 }

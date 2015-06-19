@@ -1,13 +1,15 @@
-root.exe $CASTOR_HOME/Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root $CASTOR_HOME/Lambdab/LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125-NN.root LambdabMC-LbK-Sim08a-1127-1128-1129-1137-NN.root MCLb2Psippi.root MCLb2PsipK.root
+root.exe MCLb2Psippi.root MCLb2PsipK.root $CASTOR_HOME/Lambdab/Tuple-Lbpi.root $CASTOR_HOME/Lambdab/Tuple-LbK.root $CASTOR_HOME/Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root $CASTOR_HOME/Lambdab/LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125-NN.root LambdabMC-LbK-Sim08a-1127-1128-1129-1137-NN.root 
 _file0->ls()
-TTree* MCppi = (TTree*)_file0->Get("MCTuplepp/MCDecayTree")
-TTree* MCpK  = (TTree*)_file1->Get("MCTuplepk/MCDecayTree")
-TTree* Tppi = (TTree*)_file0->Get("BetaSLambdab2JpsippiDetachedLine_TupleMC/DecayTree")
-TTree* TpK  = (TTree*)_file1->Get("BetaSLambdab2JpsippiDetachedLine_TupleMC/DecayTree")
-TTree* Nppi = (TTree*)_file2->Get("NetTree")
-TTree* NpK = (TTree*)_file3->Get("NetTree")
-TTree* THpi = (TTree*)_file4->Get("MCTree")
-TTree* THK = (TTree*)_file5->Get("MCTree")
+TTree* THpi = (TTree*)_file0->Get("MCTree")
+TTree* THK = (TTree*)_file1->Get("MCTree")
+TTree* PHpi = (TTree*)_file2->Get("Lambdab/DecayTuple")
+TTree* PHK = (TTree*)_file3->Get("Lambdab/DecayTuple")
+TTree* MCppi = (TTree*)_file4->Get("MCTuplepp/MCDecayTree")
+TTree* Tppi = (TTree*)_file4->Get("BetaSLambdab2JpsippiDetachedLine_TupleMC/DecayTree")
+TTree* MCpK  = (TTree*)_file5->Get("MCTuplepk/MCDecayTree")
+TTree* TpK  = (TTree*)_file5->Get("BetaSLambdab2JpsippiDetachedLine_TupleMC/DecayTree")
+TTree* Nppi = (TTree*)_file6->Get("NetTree")
+TTree* NpK = (TTree*)_file7->Get("NetTree")
 MCppi->AddFriend(THpi)
 MCppi->Draw("RunNumber:runNumber")
 MCpK->AddFriend(THK)
@@ -31,11 +33,77 @@ TString BMKasPi = "sqrt((sqrt(105.6583715**2+muminus_PP_PX**2+muminus_PP_PY**2+m
 TString PsiM = "sqrt((sqrt(105.6583715**2+muminus_PP_PX**2+muminus_PP_PY**2+muminus_PP_PZ**2)+sqrt(105.6583715**2+muplus_PP_PX**2+muplus_PP_PY**2+muplus_PP_PZ**2))**2-(muminus_PP_PX+muplus_PP_PX)**2-(muminus_PP_PY+muplus_PP_PY)**2-(muminus_PP_PZ+muplus_PP_PZ)**2)"
 TCut PsiMass("abs("+PsiM+"-3096.916)<80")
 
+.L ../analysis/MCStats.C
+//==========================================================================================================
+// Acceptance (PT weight is irrelevant)
+//==========================================================================================================
+double rpi = reweightedAcceptance(PHpi,THpi,10); // Weighted: 8.665e+06 1.91668e+06 0.221197 effect: 1.02128
+double rK  = reweightedAcceptance(PHK,THK,20);   // Weighted: 8.74841e+06 1.93661e+06 0.221367 effect: 1.03339
+
+double r = rK/rpi ;  
+double newK = 16.37*rK ;
+double newpi = 15.64*rpi ;
+cout << newpi << " & " << newK << " & " << newK/newpi << endl ; // 15.9729 & 16.9165 & 1.05908
+
+double rpi = reweightedAcceptance(PHpi,THpi,10,"DalitzWeightWE*PTWeight2WE"); // Weighted: 8.47325e+06 1.88125e+06 0.222022 effect: 1.02509
+double rK  = reweightedAcceptance(PHK,THK,20,"DalitzWeightWE*PTWeight2WE");   // Weighted: 9.70136e+06 2.14374e+06 0.220973 effect: 1.03155
+
+double r = rK/rpi ;  // 
+double newK = 16.37*rK ;
+double newpi = 15.64*rpi ;
+cout << newpi << " & " << newK << " & " << newK/newpi << endl ; // 16.0324 & 16.8864 & 1.05327
+
+double rpi = reweightedAcceptance(PHpi,THpi,10,"DalitzWeightWE*PTWeight2"); // Weighted: 8.65789e+06 1.92224e+06 0.222022 effect: 1.02509
+double rK  = reweightedAcceptance(PHK,THK,20,"DalitzWeightWE*PTWeight2");   // Weighted: 9.91223e+06 2.19033e+06 0.220973 effect: 1.03155
+
+double r = rK/rpi ;  // 
+double newK = 16.37*rK ;
+double newpi = 15.64*rpi ;
+cout << newpi << " & " << newK << " & " << newK/newpi << endl ; // 16.0324 & 16.8864 & 1.05327
+
+double rpi = reweightedAcceptance(PHpi,THpi,10,"DalitzWeight*PTWeight2WE"); // Weighted: 8.4802e+06 1.8758e+06 0.221198 effect: 1.02128
+double rK  = reweightedAcceptance(PHK,THK,20,"DalitzWeight*PTWeight2WE");   // Weighted: 8.5623e+06 1.89541e+06 0.221367 effect: 1.03339
+
+double r = rK/rpi ;  // 
+double newK = 16.37*rK ;
+double newpi = 15.64*rpi ;
+cout << newpi << " & " << newK << " & " << newK/newpi << endl ; // 15.9729 & 16.9166  1.05908
+
+double rpi = reweightedAcceptance(PHpi,MCppi,10,"DalitzWeight*PTWeight2*exp(0.024*(1000*Lambda_b0_TRUETAU))"); //  Weighted: 8.6653e+06 1.91674e+06 0.221197 effect: 1.02128
+double rK  = reweightedAcceptance(PHK,MCpK,20,"DalitzWeight*PTWeight2WE*exp(0.024*(1000*Lambda_b0_TRUETAU))"); //  Weighted: 8.5626e+06 1.89548e+06 0.221367 effect: 1.03339
+
+
+double r = rK/rpi ;  // 
+double newK = 16.37*rK ;
+double newpi = 15.64*rpi ;
+cout << newpi << " & " << newK << " & " << newK/newpi << endl ; // 15.9729 & 16.9166  1.05908
+
+//==========================================================================================================
+// Stats
+//==========================================================================================================
+MCStats(MCppi,MCpK,Tppi,TpK,"1");
+MCStats(MCppi,MCpK,Tppi,TpK,"DalitzWeight*PTWeight2");
+MCStats(MCppi,MCpK,Tppi,TpK,"DalitzWeightWE*PTWeight2");
+MCStats(MCppi,MCpK,Tppi,TpK,"DalitzWeight*PTWeight2WE");
+MCStats(MCppi,MCpK,Tppi,TpK,"DalitzWeightWE*PTWeight2WE");
+MCStats(MCppi,MCpK,Tppi,TpK,"exp(0.024*B_TRUETAU)")
+MCStats(MCppi,MCpK,Tppi,TpK,"DalitzWeight*PTWeight2*exp(0.024*(1000*B_TRUETAU))")
+
+gPad->SetLogy()
+RooPlot* r = SandB(Tppi,TpK,"piminus_ProbNNpi-piminus_ProbNNk","BKGCAT==0","BKGCAT==1","","NM","remove",-1,1)
+r->GetXaxis()->SetTitle("M P(#pi)-P(K)")
+r->GetYaxis()->SetTitle("dP/d(P(#pi)-P(K))")
+r->Draw()
+overlay_line(0,r,2)
+png("Lbpi and LbK M probs")
 
 // http://lhcb-release-area.web.cern.ch/LHCb-release-area/DOC/STATISTICS/MC11STAT/B2Charm-WG/Generation_Beam3500GeV-md100-MC11-nu2.html
 // ppi: Generator level 0.1493\pm0.0004
 // pK:  Generator level 0.1575\pm0.0005
 
+//==========================================================================================================
+// plots
+//==========================================================================================================
 gPad->SetLogy()
 SandB(MCppi,MCpK,"Lambda_b0_TRUETAU","1","1","1","NMe","remove",0,0.015)
 png("MC true PT")
@@ -119,6 +187,8 @@ MCppi->Draw(TString(PiReco.GetTitle())+TString(":sqrt(")+MCTruepsip2+TString(") 
 // Double_t mp = (1./TMath::Pi())*acos(2*m-1) ;
 
 nbins = 50
+TH1D* Kph = new TH1D("Kph","",nbins,0,1)
+TH1D* piph = new TH1D("piph","",nbins,0,1)
 TH1D* Kall = new TH1D("Kall","",nbins,0,1)
 TH1D* piall = new TH1D("piall","",nbins,0,1)
 TH1D* Kreco = new TH1D("Kreco","",nbins,0,1)
@@ -130,8 +200,10 @@ TH1D* piok = new TH1D("piok","",nbins,0,1)
 TH1D* Knn = new TH1D("Knn","",nbins,0,1)
 TH1D* pinn = new TH1D("pinn","",nbins,0,1)
  
-MCpK->Draw("mprime >> Kall")
-MCppi->Draw("mprime >> piall")
+PHK->Draw("mprime >> Kph")
+PHpi->Draw("mprime >> piph")
+THK->Draw("mprime >> Kall")
+THpi->Draw("mprime >> piall")
 MCpK->Draw("mprime >> Kreco",KReco)
 MCppi->Draw("mprime >> pireco",PiReco)
 NpK->Draw("mprime >> Kstrip","BKGCAT==1")
@@ -141,34 +213,47 @@ Nppi->Draw("mprime >> piok","BKGCAT==0 && Category==1 && ErrorCode==0")
 NpK->Draw("mprime >> Knn","BKGCAT==1 && Category==-1 && ErrorCode==0 && netOutput>0.552")
 Nppi->Draw("mprime >> pinn","BKGCAT==0 && Category==1 && ErrorCode==0 && netOutput>0.552")
 
-TH1* rKreco = Divide(Kreco,Kall,"E")
-TH1* rpireco = Divide(pireco,piall,"E")
-TH1* rKstrip = Divide(Kstrip,Kall,"E")
-TH1* rpistrip = Divide(pistrip,piall,"E")
-TH1* rKok = Divide(Kok,Kall,"E")
-TH1* rpiok = Divide(piok,piall,"E")
-TH1* rKnn = Divide(Knn,Kall,"E")
-TH1* rpinn = Divide(pinn,piall,"E")
+TH1* rKacc = Divide(Kall,Kph,"")
+TH1* rpiacc = Divide(piall,piph,"")
+TH1* rKreco = Divide(Kreco,Kph,"")
+TH1* rpireco = Divide(pireco,piph,"")
+TH1* rKstrip = Divide(Kstrip,Kph,"")
+TH1* rpistrip = Divide(pistrip,piph,"")
+TH1* rKok = Divide(Kok,Kph,"")
+TH1* rpiok = Divide(piok,piph,"")
+TH1* rKnn = Divide(Knn,Kph,"")
+TH1* rpinn = Divide(pinn,piph,"")
+
+TH1* rKreco2 = Divide(Kreco,Kacc,"E")
+TH1* rpireco2 = Divide(pireco,piacc,"E")
+TH1* rKstrip2 = Divide(Kstrip,Kreco,"E")
+TH1* rpistrip2 = Divide(pistrip,pireco,"E")
+TH1* rKok2 = Divide(Kok,Kstrip,"E")
+TH1* rpiok2 = Divide(piok,pistrip,"E")
+TH1* rKnn2 = Divide(Knn,Kok,"E")
+TH1* rpinn2 = Divide(pinn,piok,"E")
 
 gPad->SetLogy()
-RooPlot* rk = NiceRooPlot(rKreco,rKstrip,rKok,rKnn)
-rk->SetMinimum(0.001)
+RooPlot* rk = NiceRooPlot(rKacc,rKreco,rKstrip,rKok,rKnn)
+rk->SetMinimum(0.0001)
 rk->SetMaximum(0.5)
 rk->GetXaxis()->SetTitle("m'")
-rk->GetYaxis()->SetTitle("dP/dm'")
+rk->GetYaxis()->SetTitle("Efficiency")
 rk->Draw()
 png("LbK efficiencies versus m'")
 
 gPad->SetLogy()
-RooPlot* rpi = NiceRooPlot(rpireco,rpistrip,rpiok,rpinn)
-rpi->SetMinimum(0.001)
+RooPlot* rpi = NiceRooPlot(rpiacc,rpireco,rpistrip,rpiok,rpinn)
+rpi->SetMinimum(0.0001)
 rpi->SetMaximum(0.5)
 rpi->GetXaxis()->SetTitle("m'")
-rpi->GetYaxis()->SetTitle("dP/dm'")
+rpi->GetYaxis()->SetTitle("Efficiency")
 rpi->Draw()
 png("Lbpi efficiencies versus m'")
 
-// theta'
+// theta' ------------------------------------------------------------
+TH1D* tKph = new TH1D("tKph","",nbins,0,1)
+TH1D* tpiph = new TH1D("tpiph","",nbins,0,1)
 TH1D* tKall = new TH1D("tKall","",nbins,0,1)
 TH1D* tpiall = new TH1D("tpiall","",nbins,0,1)
 TH1D* tKreco = new TH1D("tKreco","",nbins,0,1)
@@ -180,8 +265,10 @@ TH1D* tpiok = new TH1D("tpiok","",nbins,0,1)
 TH1D* tKnn = new TH1D("tKnn","",nbins,0,1)
 TH1D* tpinn = new TH1D("tpinn","",nbins,0,1)
  
-MCpK->Draw("thetaprime >> tKall")
-MCppi->Draw("thetaprime >> tpiall")
+PHK->Draw("thetaprime >> tKph")
+PHpi->Draw("thetaprime >> tpiph")
+THK->Draw("thetaprime >> tKall")
+THpi->Draw("thetaprime >> tpiall")
 MCpK->Draw("thetaprime >> tKreco",KReco)
 MCppi->Draw("thetaprime >> tpireco",PiReco)
 NpK->Draw("thetaprime >> tKstrip","BKGCAT==1")
@@ -191,35 +278,115 @@ Nppi->Draw("thetaprime >> tpiok","BKGCAT==0 && Category==1 && ErrorCode==0")
 NpK->Draw("thetaprime >> tKnn","BKGCAT==1 && Category==-1 && ErrorCode==0 && netOutput>0.552")
 Nppi->Draw("thetaprime >> tpinn","BKGCAT==0 && Category==1 && ErrorCode==0 && netOutput>0.552")
 
-TH1* trKreco = Divide(tKreco,tKall,"E")
-TH1* trpireco = Divide(tpireco,tpiall,"E")
-TH1* trKstrip = Divide(tKstrip,tKall,"E")
-TH1* trpistrip = Divide(tpistrip,tpiall,"E")
-TH1* trKok = Divide(tKok,tKall,"E")
-TH1* trpiok = Divide(tpiok,tpiall,"E")
-TH1* trKnn = Divide(tKnn,tKall,"E")
-TH1* trpinn = Divide(tpinn,tpiall,"E")
+TH1* trKacc = Divide(tKall,tKph,"")
+TH1* trpiacc = Divide(tpiall,tpiph,"")
+TH1* trKreco = Divide(tKreco,tKph,"")
+TH1* trpireco = Divide(tpireco,tpiph,"")
+TH1* trKstrip = Divide(tKstrip,tKph,"")
+TH1* trpistrip = Divide(tpistrip,tpiph,"")
+TH1* trKok = Divide(tKok,tKph,"")
+TH1* trpiok = Divide(tpiok,tpiph,"")
+TH1* trKnn = Divide(tKnn,tKph,"")
+TH1* trpinn = Divide(tpinn,tpiph,"")
+
+TH1* trKreco2 = Divide(tKreco,tKacc,"E")
+TH1* trpireco2 = Divide(tpireco,tpiacc,"E")
+TH1* trKstrip2 = Divide(tKstrip,tKreco,"E")
+TH1* trpistrip2 = Divide(tpistrip,tpireco,"E")
+TH1* trKok2 = Divide(tKok,tKstrip,"E")
+TH1* trpiok2 = Divide(tpiok,tpistrip,"E")
+TH1* trKnn2 = Divide(tKnn,tKok,"E")
+TH1* trpinn2 = Divide(tpinn,tpiok,"E")
 
 gPad->SetLogy()
-RooPlot* trk = NiceRooPlot(trKreco,trKstrip,trKok,trKnn)
-trk->SetMinimum(0.01)
+RooPlot* trk = NiceRooPlot(trKacc,trKreco,trKstrip,trKok,trKnn)
+trk->SetMinimum(0.001)
 trk->SetMaximum(0.5)
 trk->GetXaxis()->SetTitle("#theta'")
-trk->GetYaxis()->SetTitle("dP/d#theta'")
+trk->GetYaxis()->SetTitle("Efficiency")
 trk->Draw()
 png("LbK efficiencies versus theta'")
 
 gPad->SetLogy()
-RooPlot* trpi = NiceRooPlot(trpireco,trpistrip,trpiok,trpinn)
-trpi->SetMinimum(0.01)
+RooPlot* trpi = NiceRooPlot(trpiacc,trpireco,trpistrip,trpiok,trpinn)
+trpi->SetMinimum(0.001)
 trpi->SetMaximum(0.5)
 trpi->GetXaxis()->SetTitle("#theta'")
-trpi->GetYaxis()->SetTitle("dP/d#theta'")
+trpi->GetYaxis()->SetTitle("Efficiency")
 trpi->Draw()
 png("Lbpi efficiencies versus theta'")
 
-// theta':m'
-nbins = 10
+// pi vs K =================================================
+gPad->SetLogy(0)
+RooPlot* rpKa = NiceRooPlot(rpiacc,rKacc)
+SetTitle("m'","Efficiency",rpKa)
+png("Lbpi and K acceptance efficiencies versus m'")
+
+gPad->SetLogy(0)
+RooPlot* trpKa = NiceRooPlot(trpiacc,trKacc)
+SetTitle("#theta'","Efficiency",trpKa)
+png("Lbpi and K acceptance efficiencies versus theta'")
+
+gPad->SetLogy(0)
+RooPlot* rpKr = NiceRooPlot(rpireco2,rKreco2)
+SetTitle("m'","Efficiency",rpKr)
+png("Lbpi and K reconstruction efficiencies versus m'")
+
+gPad->SetLogy(0)
+RooPlot* trpKr = NiceRooPlot(trpireco2,trKreco2)
+SetTitle("#theta'","Efficiency",trpKr)
+png("Lbpi and K reconstruction efficiencies versus theta'")
+
+gPad->SetLogy(0)
+RooPlot* rpKs = NiceRooPlot(rpistrip2,rKstrip2)
+SetTitle("m'","Efficiency",rpKs)
+png("Lbpi and K stripping efficiencies versus m'")
+
+gPad->SetLogy(0)
+RooPlot* trpKs = NiceRooPlot(trpistrip2,trKstrip2)
+SetTitle("#theta'","Efficiency",trpKs)
+png("Lbpi and K stripping efficiencies versus theta'")
+
+gPad->SetLogy(0)
+RooPlot* trpKok2 = NiceRooPlot(trpiok2,trKok2)
+SetTitle("#theta'","Efficiency",trpKok2)
+png("Lbpi and K OK efficiencies versus theta'")
+
+gPad->SetLogy(0)
+RooPlot* rpKok2 = NiceRooPlot(rpiok2,rKok2)
+rpKok2->SetMaximum(1.0)
+SetTitle("m'",rpKok2)
+png("Lbpi and K OK efficiencies versus m'")
+
+gPad->SetLogy(0)
+RooPlot* trpKnn2 = NiceRooPlot(trpinn2,trKnn2)
+SetTitle("#theta'","Efficiency",trpKnn2)
+png("Lbpi and K NN efficiencies versus theta'")
+
+gPad->SetLogy(0)
+RooPlot* rpKnn2 = NiceRooPlot(rpinn2,rKnn2)
+rpKnn2->SetMaximum(1.0)
+SetTitle("m'","Efficiency",rpKnn2)
+png("Lbpi and K NN efficiencies versus m'")
+
+gPad->SetLogy(0)
+RooPlot* trpKnn = NiceRooPlot(trpinn,trKnn)
+SetTitle("#theta'","Efficiency",trpKnn)
+png("Lbpi and K total efficiencies versus theta'")
+
+gPad->SetLogy(0)
+RooPlot* rpKnn = NiceRooPlot(rpinn,rKnn)
+SetTitle("m'","Efficiency",rpKnn)
+png("Lbpi and K total efficiencies versus m'")
+
+
+
+
+
+// theta':m' =============================================================================
+nbins = 20
+TH2D* t2Kph = Make2DPlot("t2Kph","m'",nbins,0,1,"#theta'",nbins,0,1)
+TH2D* t2piph = Make2DPlot("t2piph","m'",nbins,0,1,"#theta'",nbins,0,1)
 TH2D* t2Kall = Make2DPlot("t2Kall","m'",nbins,0,1,"#theta'",nbins,0,1)
 TH2D* t2piall = Make2DPlot("t2piall","m'",nbins,0,1,"#theta'",nbins,0,1)
 TH2D* t2Kreco = Make2DPlot("t2Kreco","m'",nbins,0,1,"#theta'",nbins,0,1)
@@ -232,9 +399,13 @@ TH2D* t2Kok2 = Make2DPlot("t2Kok2","m'",nbins,0,1,"#theta'",nbins,0,1)
 TH2D* t2piok2 = Make2DPlot("t2piok2","m'",nbins,0,1,"#theta'",nbins,0,1)
 TH2D* t2Knn = Make2DPlot("t2Knn","m'",nbins,0,1,"#theta'",nbins,0,1)
 TH2D* t2pinn = Make2DPlot("t2pinn","m'",nbins,0,1,"#theta'",nbins,0,1)
+TH2D* t2Knn2 = Make2DPlot("t2Knn2","m'",nbins,0,1,"#theta'",nbins,0,1)
+TH2D* t2pinn2 = Make2DPlot("t2pinn2","m'",nbins,0,1,"#theta'",nbins,0,1)
  
-MCpK->Draw("thetaprime:mprime >> t2Kall")
-MCppi->Draw("thetaprime:mprime >> t2piall")
+PHK->Draw("thetaprime:mprime >> t2Kph")
+PHpi->Draw("thetaprime:mprime >> t2piph")
+THK->Draw("thetaprime:mprime >> t2Kall")
+THpi->Draw("thetaprime:mprime >> t2piall")
 MCpK->Draw("thetaprime:mprime >> t2Kreco",KReco)
 MCppi->Draw("thetaprime:mprime >> t2pireco",PiReco)
 NpK->Draw("thetaprime:mprime >> t2Kstrip","BKGCAT==1")
@@ -243,28 +414,36 @@ NpK->Draw("thetaprime:mprime >> t2Kok","BKGCAT==1 && Category==-1 && ErrorCode==
 Nppi->Draw("thetaprime:mprime >> t2piok","BKGCAT==0 && Category==1 && ErrorCode==0")
 NpK->Draw("thetaprime:mprime >> t2Knn","BKGCAT==1 && Category==-1 && ErrorCode==0 && netOutput>0.552")
 Nppi->Draw("thetaprime:mprime >> t2pinn","BKGCAT==0 && Category==1 && ErrorCode==0 && netOutput>0.552")
+NpK->Draw("thetaprime:mprime >> t2Knn2","BKGCAT==1 && Category==-1 && ErrorCode==0 && netOutput>0.552")
+Nppi->Draw("thetaprime:mprime >> t2pinn2","BKGCAT==0 && Category==1 && ErrorCode==0 && netOutput>0.552")
 NpK->Draw("thetaprime:mprime >> t2Kok2","BKGCAT==1 && Category==-1 && ErrorCode==0")
 Nppi->Draw("thetaprime:mprime >> t2piok2","BKGCAT==0 && Category==1 && ErrorCode==0")
 
 gPad->SetLogy(0)
 gStyle->SetPalette(0)
-t2Kall->Draw("lego2")
+t2Kph->Draw("lego2")
 png("LbK MC True Dalitz")
-t2piall->Draw("lego2")
+t2piph->Draw("lego2")
 png("Lbpi MC True Dalitz")
 
-// as histos are overwritten, order is important
+// as histos are overwritten, order is important. Always go up
 t2Knn->Divide(t2Kok)
 t2pinn->Divide(t2piok)
+t2Knn2->Divide(t2Kph)
+t2pinn2->Divide(t2piph)
 t2Kok->Divide(t2Kstrip)
 t2piok->Divide(t2pistrip)
 t2Kstrip->Divide(t2Kreco)
 t2pistrip->Divide(t2pireco)
 t2Kreco->Divide(t2Kall)
 t2pireco->Divide(t2piall)
-t2Kok2->Divide(t2Kall)
-t2piok2->Divide(t2piall)
+t2Kall->Divide(t2Kph)
+t2piall->Divide(t2piph)
+t2Kok2->Divide(t2Kph) // overall w/o NN
+t2piok2->Divide(t2piph)
 
+t2Kall->Draw("coltext")
+png("LbK Dalitz efficiency Acceptance:Phase Space")
 t2Kreco->Draw("coltext")
 png("LbK Dalitz efficiency Reco:Acceptance")
 t2Kstrip->Draw("coltext")
@@ -273,9 +452,13 @@ t2Kok->Draw("coltext")
 png("LbK Dalitz efficiency Presel:Strip")
 t2Knn->Draw("coltext")
 png("LbK Dalitz efficiency NN:Presel")
+t2Knn2->Draw("coltext")
+png("LbK Dalitz efficiency NN:Phase Space")
 t2Kok2->Draw("coltext")
-png("LbK Dalitz efficiency Presel:Acceptance") // the whole thing (w/o NN)
+png("LbK Dalitz efficiency Presel:Phase Space") // the whole thing (w/o NN)
 
+t2piall->Draw("coltext")
+png("Lbpi Dalitz efficiency Acceptance:Phase Space")
 t2pireco->Draw("coltext")
 png("Lbpi Dalitz efficiency Reco:Acceptance")
 t2pistrip->Draw("coltext")
@@ -284,22 +467,15 @@ t2piok->Draw("coltext")
 png("Lbpi Dalitz efficiency Presel:Strip")
 t2pinn->Draw("coltext")
 png("Lbpi Dalitz efficiency NN:Presel")
+t2pinn2->Draw("coltext")
+png("Lbpi Dalitz efficiency NN:Phase Space")
 t2piok2->Draw("coltext")
-png("Lbpi Dalitz efficiency Presel:Acceptance") // the whole thing (w/o NN)
+png("Lbpi Dalitz efficiency Presel:Phase Space") // the whole thing (w/o NN)
 
-//==========================================================================================================
-// Stats
-//==========================================================================================================
- .L ../analysis/MCStats.C
-MCStats(MCppi,MCpK,Tppi,TpK);
+for ( int i=0 ; i<(nbins+2)*(nbins+2); i++) { cout << ", " << t2Knn2->GetBinContent(i) ; } cout << endl ;
+for ( int i=0 ; i<(nbins+2)*(nbins+2); i++) { cout << ", " << t2pinn2->GetBinContent(i) ; } cout << endl ;
 
-gPad->SetLogy()
-RooPlot* r = SandB(Tppi,TpK,"piminus_ProbNNpi-piminus_ProbNNk","BKGCAT==0","BKGCAT==1","","NM","remove",-1,1)
-r->GetXaxis()->SetTitle("M P(#pi)-P(K)")
-r->GetYaxis()->SetTitle("dP/d(P(#pi)-P(K))")
-r->Draw()
-overlay_line(0,r,2)
-png("Lbpi and LbK M probs")
+
 
 //==========================================================================================================
 // True Mass
@@ -307,130 +483,58 @@ png("Lbpi and LbK M probs")
 // look at the tail
 gPad->SetLogy()
 TCut OK("ErrorCode[0]==0 && netOutput[0]>0.552")
+TCut Bad("abs(piminus_PZ-piminus_TRUEP_Z)/piminus_TRUEP_Z>0.05")
 
-RooPlot* rm = SandB(Tppi,TpK,"(Category==1)*B_FullFit_M[0]+(Category==-1)*B_SubpK_M[0]","BKGCAT==0 && Category==1","BKGCAT==1 && Category==-1",OK,"NM","remove",5000,6000)
+RooPlot* rm = SandB(Tppi,TpK,"(Category[0]==1)*B_FullFit_M[0]+(Category[0]==-1)*B_SubpK_M[0]","BKGCAT==0 && Category[0]==1","BKGCAT==1 && Category[0]==-1",OK,"NM","remove",5000,6000)
 // same plots as in FitTruth
 
 gPad->SetLogy(1)
-RooPlot* rp = SandB(Tppi,TpK,"(piminus_PZ-piminus_TRUEP_Z)/piminus_TRUEP_Z","BKGCAT==0 && Category==1","BKGCAT==1 && Category==-1",OK,"NM","remove",-0.4,0.2)
+RooPlot* rp = SandB(Tppi,TpK,"(piminus_PZ-piminus_TRUEP_Z)/piminus_TRUEP_Z","BKGCAT==0 && Category[0]==1","BKGCAT==1 && Category[0]==-1",OK,"NM","remove",-0.4,0.2)
 SetTitle("M (p_{z}^{reco}-p_{z}^{true})/p_{z}^{true}",rp)
 png("Delta M Pz on Lbpi and LbK")
 
-gPad->SetLogy(0)
-RooPlot* rpp = TwoProfile(Tppi,TpK,"piminus_TRUEP_Z","abs(piminus_PZ-piminus_TRUEP_Z)/piminus_TRUEP_Z>0.05","BKGCAT==0 && Category==1","BKGCAT==1 && Category==-1",OK,"LM","remove",3e3,2e5,50)  
+RooPlot* rpo = SandB(Tppi,TpK,"(pplus_PZ-pplus_TRUEP_Z)/pplus_TRUEP_Z","BKGCAT==0 && Category[0]==1","BKGCAT==1 && Category[0]==-1",OK,"NM","remove",-0.2,0.2)
+SetTitle("p (p_{z}^{reco}-p_{z}^{true})/p_{z}^{true}",rpo)
+png("Delta p Pz on Lbpi and LbK")
 
-RooPlot* rt = SandB(Tppi,TpK,"piminus_PZ","BKGCAT==0 && Category==1","BKGCAT==1 && Category==-1",OK,"NML","remove")
-RooPlot* rt = SandB(Tppi,TpK,"pplus_PZ","BKGCAT==0 && Category==1","BKGCAT==1 && Category==-1",OK,"NML","remove")
+
+// Vanya's suggestion
+RooPlot* rp2 = SandB(Tppi,0,"(piminus_PZ-piminus_TRUEP_Z)/piminus_TRUEP_Z","piminus_PZ<20000","piminus_PZ>20000",OK && "BKGCAT==0 && Category[0]==1","NM","remove",-0.4,0.2)
+SetTitle("M (p_{z}^{reco}-p_{z}^{true})/p_{z}^{true}",rp2)
+png("Delta M Pz on Lbpi vs momentum")
+
+SandB(Tppi,0,"(piminus_PZ-piminus_TRUEP_Z)/piminus_TRUEP_Z",!Bad,Bad,OK && "BKGCAT==0 && Category[0]==1","M","remove",-0.4,0.2)
+RooPlot* rq = SandB(Tppi,0,"piminus_TRUEP_Z",!Bad,Bad,OK && "BKGCAT==0 && Category[0]==1","LNM","remove")
+RooPlot* rq = SandB(Tppi,0,"piminus_TRUEPT",!Bad,Bad,OK && "BKGCAT==0 && Category[0]==1","LNM","remove")
+RooPlot* rq = SandB(Tppi,0,"piminus_TRUEID",!Bad,Bad,OK && "BKGCAT==0 && Category[0]==1","NM","remove")
+RooPlot* rqp = SandB(Tppi,0,"piminus_TRACK_CHI2NDOF",!Bad,Bad,OK && "BKGCAT==0 && Category[0]==1","NM","remove")
+RooPlot* rqk = SandB(Tppi,TpK,"piminus_TRACK_CHI2NDOF","BKGCAT==0 && Category[0]==1","BKGCAT==1 && Category[0]==-1",OK,"NM","remove",0,3)
+
+SetTitle("M Track #chi^{2}/ndf",rqp)
+png("Meson Track chi2 Lbpi good and bad")
+SetTitle("M Track #chi^{2}/ndf",rqk)
+png("Meson Track chi2 Lbpi and LbK")
+
+gPad->SetLogy()
+RooPlot* rqi = SandB(Tppi,0,"piminus_isMuon",!Bad,Bad,OK && "BKGCAT==0 && Category[0]==1","NI","remove",-0.5,1.5)
+RooPlot* rqi2 = SandB(Tppi,TpK,"piminus_isMuon","BKGCAT==0 && Category[0]==1","BKGCAT==1 && Category[0]==-1",OK,"NI","remove",-0.5,1.5)
+
+RooPlot* rki = SandB(TpK,0,"(piminus_PZ-piminus_TRUEP_Z)/piminus_TRUEP_Z","piminus_isMuon==0","piminus_isMuon==1",OK && "BKGCAT==1 && Category[0]==-1","NM","remove",-0.4,0.2)
+
+SetTitle("M (p_{z}^{reco}-p_{z}^{true})/p_{z}^{true}",rpi)
+png("Delta M Pz on Lbpi ismuon 0 and 1")
+
+SetTitle("M (p_{z}^{reco}-p_{z}^{true})/p_{z}^{true}",rki)
+png("Delta M Pz on LbK ismuon 0 and 1")
+
+
+gPad->SetLogy(0)
+RooPlot* rpp = TwoProfile(Tppi,TpK,"piminus_TRUEP_Z","abs(piminus_PZ-piminus_TRUEP_Z)/piminus_TRUEP_Z>0.05","BKGCAT==0 && Category[0]==1","BKGCAT==1 && Category[0]==-1",OK,"LM","remove",3e3,2e5,50)  
+
+RooPlot* rt = SandB(Tppi,TpK,"piminus_PZ","BKGCAT==0 && Category[0]==1","BKGCAT==1 && Category[0]==-1",OK,"NML","remove")
+RooPlot* rt = SandB(Tppi,TpK,"pplus_PZ","BKGCAT==0 && Category[0]==1","BKGCAT==1 && Category[0]==-1",OK,"NML","remove")
 // should I cut at 3000?
 
-SandB(Tppi,0,"mprime[0]","piminus_PZ>3000","","BKGCAT==0 && Category==1","NM","remove",0,1)
-SandB(Tppi,0,"thetaprime[0]","piminus_PZ>3000","","BKGCAT==0 && Category==1","N","remove",0,1)
+SandB(Tppi,0,"mprime[0]","piminus_PZ>3000","","BKGCAT==0 && Category[0]==1","NM","remove",0,1)
+SandB(Tppi,0,"thetaprime[0]","piminus_PZ>3000","","BKGCAT==0 && Category[0]==1","N","remove",0,1)
 
-
-
-//##########################################################################################################
-// OBSOLETE
-//##########################################################################################################
-
-TCut L0TIS("BL0HadronDecision_TIS==1")
-TCut L0Mu("BL0DiMuonDecision_TOS==1 || BL0MuonDecision_TOS==1")
-TCut L0(L0Mu || "BL0MuonDecision_TIS==1 || BL0DiMuonDecision_TIS==1 || BL0HadronDecision_TIS==1")
-TCut Hlt1TIS(L0 && "BHlt1TrackAllL0Decision_TIS==1")
-TCut Hlt1(L0 && "BHlt1TrackMuonDecision_TOS==1 || PsiHlt1DiMuonHighMassDecision_TOS==1 || PsiHlt1TrackAllL0Decision_TOS==1")
-TCut Hlt2TIS(Hlt1 && "BHlt2Global_TIS==1")
-TCut Hlt2(Hlt1 && "PsiHlt2DiMuonDetachedJPsiDecision_TOS==1 || PsiHlt2DiMuonJPsiDecision_TOS==1 || PsiHlt2DiMuonJPsiHighPTDecision_TOS==1")
-
-TCut pistream("(piminus_ProbNNpi>piminus_ProbNNk)")
-TCut kstream(!pistream)
-char* netCut = "netOutput>0.846"
-
-SandB(Tppi,TpK,"B_M",TruePion && pistream,TrueKaon && kstream,TruePsip) // streamed Means (stats): 5616.93 (99458), 5482.57 (168928)
-SandB(Tppi,TpK,"B_M",TruePion && pistream,TrueKaon && kstream,TruePsip && Hlt2 ) // triggered Means (stats): 5616.99 (77556), 5479.99 (131571)
-SandB(Tppi,TpK,"B_M",TruePion && pistream,TrueKaon && kstream,TruePsip && Hlt2 && "ErrorCode!=-9") // 5617.38 (52336), 5471.36 (86647)
-// quite a lot are lost here
-
-SandB(Tppi,TpK,"B_M",TruePion && pistream,TrueKaon && kstream,TruePsip && Hlt2 && "pplus_ProbNNp>=0.1") // ProbNNp 5616.99 (74619), 5479.57 (126854)
-SandB(Tppi,TpK,"B_M",TruePion && pistream,TrueKaon && kstream,TruePsip && Hlt2 && "pplus_ProbNNp>=0.1 && pplus_ProbNNp>=pplus_ProbNNk") // pp>pK Means (stats): 5617.27 (51151), 5471.44 (84998)
-SandB(Tppi,TpK,"B_M",TruePion && pistream && "B_FullFit_chi2[0]<=72",TrueKaon && kstream && "B_SubpK_chi2[0]<=72",TruePsip && Hlt2 && "pplus_ProbNNp>=0.1 && pplus_ProbNNp>=pplus_ProbNNk") // DTF Chi2 5617.38 (50826), 5471.42 (84443)
-SandB(Tppi,TpK,"B_M",TruePion && pistream && "B_FullFit_chi2[0]<=72 && B_FullFit_MERR[0]<=20",TrueKaon && kstream && "B_SubpK_chi2[0]<=72 && B_SubpK_MERR[0]<=20",TruePsip && Hlt2 && "pplus_ProbNNp>=0.1 && pplus_ProbNNp>=pplus_ProbNNk") // DTF Mass 5617.38 (50821), 5471.41 (84439)
-SandB(Tppi,TpK,"B_M",TruePion && pistream && "B_FullFit_chi2[0]<=72 && B_FullFit_MERR[0]<=20",TrueKaon && kstream && "B_SubpK_chi2[0]<=72 && B_SubpK_MERR[0]<=20",TruePsip && Hlt2 && "pplus_ProbNNp>=0.1 && pplus_ProbNNp>=pplus_ProbNNk" && "abs(Category[0])==1") // 5617.72 (47433), 5470 (72258)
-SandB(Tppi,TpK,"B_M",TruePion && pistream && "B_FullFit_chi2[0]<=72 && B_FullFit_MERR[0]<=20",TrueKaon && kstream && "B_SubpK_chi2[0]<=72 && B_SubpK_MERR[0]<=20",TruePsip && Hlt2 && "pplus_ProbNNp>=0.1 && pplus_ProbNNp>=pplus_ProbNNk" && "abs(Category[0])==1" && netCut) // Means (stats): 5618 (43479), 5469.19 (65843)
-
-TCut WeightedPion(TString("MCWeight*(")+TString(TCut(TruePion && pistream).GetTitle())+TString(")"))
-WeightedPion.GetTitle()
-TCut WeightedKaon(TString("MCWeight*(")+TString(TCut(TrueKaon && kstream).GetTitle())+TString(")"))
-
-SandB(Tppi,TpK,"B_M",WeightedPion.GetTitle(),WeightedKaon.GetTitle(),TruePsip && Hlt2,"NM") // Means (stats): 5617.49 (165323), 5480.32 (284642)
-SandB(Tppi,TpK,"B_M",WeightedPion.GetTitle(),WeightedKaon.GetTitle(),TruePsip && Hlt2 && "pplus_ProbNNp>=0.1","NM") // Means (stats): 5617.52 (158829), 5480.16 (273904)
-SandB(Tppi,TpK,"B_M",WeightedPion.GetTitle(),WeightedKaon.GetTitle(),TruePsip && Hlt2 && "pplus_ProbNNp>=0.1 && pplus_ProbNNp>=pplus_ProbNNk","NM") // Means (stats): 5617.79 (109761), 5479.47 (181942)
-SandB(Tppi,TpK,"B_M",WeightedPion.GetTitle(),WeightedKaon.GetTitle(),TruePsip && Hlt2 && "ErrorCode[0]==0","NM") // Means (stats): 5618.04 (109073), 5479.37 (180697)
-SandB(Tppi,TpK,"B_M",WeightedPion.GetTitle(),WeightedKaon.GetTitle(),TruePsip && Hlt2 && "ErrorCode[0]==0" && netCut,"NM") // Means (stats): 5618.33 (48898.8), 5479.33 (82690.9)
-
-
-
-
-
-//================================================================================================
-// The same with MCweight 
-//================================================================================================
-
-
-
-
-//================================================================================================
-// BKGCAT - not good here
-//================================================================================================
-
-gPad-SetLogy()
-RooPlot* r = SandB(MCppi,0,"Lambda_b0_TRUETAU",PiReco,"1","1","M","remove",0,0.015)
-r->SetMaximum(150000)
-r->Draw()
-// Means (stats): 0.00136906 (349878), 0.00137895 (1.05033e+06)
-png("Psippi true tau")
-
-gPad-SetLogy()
-RooPlot* r = SandB(MCpK,0,"Lambda_b0_TRUETAU",KReco,"1","1","M","remove",0,0.015)
-r->SetMaximum(300000)
-r->Draw()
-// Means (stats): 0.00137236 (672815), 0.00138008 (2.01936e+06)
-png("PsipK true tau")
-
-Tppi->Draw("B_BKGCAT") // 10 30 40 50 60 70 100 110
-Tppi->Draw("B_FullFit_M[0] >> h(100,5200,5700)","B_BKGCAT==0") // all signal
-Tppi->Draw("B_FullFit_M[0] >> h(100,5200,5700)","B_BKGCAT<70") // 131204 -> 1.95007542935279388e-01
-Tppi->Draw("B_FullFit_M[0] >> h(100,5200,5700)","B_BKGCAT==0") // all signal
-Tppi->Draw("B_FullFit_M[0] >> h(100,5200,5700)","B_BKGCAT==30") // background
-Tppi->Draw("B_FullFit_M[0] >> h(100,5200,5700)","B_BKGCAT==40") // background
-Tppi->Draw("B_FullFit_M[0] >> h(100,5200,5700)","B_BKGCAT==50") // signal (low mass)
-Tppi->Draw("B_FullFit_M[0] >> h(100,5200,5700)","B_BKGCAT==60") // admixture of both
-Tppi->Draw("B_FullFit_M[0] >> h(100,5200,5700)","B_BKGCAT==70") // background
-Tppi->Draw("B_FullFit_M[0] >> h(100,5200,5700)","B_BKGCAT==100") // background
-Tppi->Draw("B_FullFit_M[0] >> h(100,5200,5700)","B_BKGCAT==110") // background
-
-SandB(Tppi,0,"B_FullFit_M[0]","B_BKGCAT==0","B_BKGCAT==50","1","M","remove",5200,5700)
-// Means (stats): 5619.03 (99500), 5584.99 (5542)
-SandB(Tppi,0,"B_FullFit_M[0]","B_BKGCAT==60","B_BKGCAT==0","1","MCBGpBa","remove",5200,5700)
-// Fitted Signal Yield: 7925.27 +/- 248
-// 7925.27 + 99500 + 5542 = 1.12967270000000004e+05 
-// 1.12967270000000004e+05 / 672815 = 1.67902424886484408e-01
-
-TpK->Draw("B_BKGCAT") // 30 40 50 60 70 100 110
-TpK->Draw("B_SubpK_M[0] >> h(100,5200,5700)","B_BKGCAT<70") // 375492 -> 1.85946042310434989e-01
-TpK->Draw("B_SubpK_M[0] >> h(100,5200,5700)","B_BKGCAT==30") // some of both 
-TpK->Draw("B_SubpK_M[0] >> h(100,5200,5700)","B_BKGCAT==40") // some of both 
-TpK->Draw("B_SubpK_M[0] >> h(100,5200,5700)","B_BKGCAT==50") // signal (low mass)
-TpK->Draw("B_SubpK_M[0] >> h(100,5200,5700)","B_BKGCAT==60") // some of both 
-TpK->Draw("B_SubpK_M[0] >> h(100,5200,5700)","B_BKGCAT==70") // background
-TpK->Draw("B_SubpK_M[0] >> h(100,5200,5700)","B_BKGCAT==100") // background
-TpK->Draw("B_SubpK_M[0] >> h(100,5200,5700)","B_BKGCAT==110") // background
-SandB(TpK,0,"B_SubpK_M[0]","B_BKGCAT==0","B_BKGCAT==50","1","M","remove",5200,5700)
-//
-SandB(TpK,0,"B_SubpK_M[0]","B_BKGCAT==60","B_BKGCAT==0","1","MCBGpBa","remove",5200,5700)
-//
-//
-//
-// check only truth with correct PID
-// matched pi:: 101720./349878 
-2.90729911569175548e-01
-// matched K: 181348/672815.
-(const double)2.69536202373609368e-01

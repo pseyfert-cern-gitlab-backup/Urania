@@ -3,7 +3,7 @@
 # Maintainer : Andrew Powell (LHCb)04
 #============================================================================
 package           CalibDataScripts
-version           v4r3
+version           v4r4
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -50,18 +50,29 @@ macro_append Boost_linkopts $(Boost_linkopts_program_options)
 #============================================================================
 # Applications
 #============================================================================
+# Test suites
+application     TestCheckFitResults ../src/CheckFitResults.cpp \
+    ../src/TestCheckFitResults.cpp
+
 # For the RICH
-application     DStFit            ../src/DStFit.cpp
-application     K0SFit            ../src/K0SFit.cpp
-application     Lam0Fit           ../src/Lam0Fit.cpp
+application     DStFit            ../src/GetData.cpp \ 
+    ../src/SetSpectatorVars.cpp ../src/CheckFitResults.cpp ../src/DStFit.cpp 
+application     Lam0Fit            ../src/GetData.cpp \ 
+    ../src/SetSpectatorVars.cpp ../src/CheckFitResults.cpp ../src/Lam0Fit.cpp 
+
 application     MergeCharges      ../src/MergeCharges.cpp
 application     MergeProtonLines  ../src/MergeProtonLines.cpp
-application     MC_DStFit         ../src/MC_DStFit.cpp
 
 #For the MUONS
-application     JpsiFit                        ../src/JpsiFit.cpp
-application     DStFit_MuonUnBiased            ../src/DStFit_MuonUnBiased.cpp
-application     Lam0Fit_MuonUnBiased           ../src/Lam0Fit_MuonUnBiased.cpp
-application     MergeProtonLines_MuonUnBiased  ../src/MergeProtonLines_MuonUnBiased.cpp
-application   	ChopUpMuonTrees                ../src/ChopUpMuonTrees.cpp
+application     JpsiFit            ../src/GetData.cpp \ 
+    ../src/SetSpectatorVars.cpp ../src/CheckFitResults.cpp ../src/JpsiFit.cpp 
+
+application     DStFit_MuonUnBiased            ../src/GetData.cpp \ 
+    ../src/SetSpectatorVars.cpp ../src/CheckFitResults.cpp \
+    ../src/DStFit_MuonUnBiased.cpp 
+#application     Lam0Fit_MuonUnBiased            ../src/GetData.cpp \ 
+#    ../src/SetSpectatorVars.cpp ../src/CheckFitResults.cpp \
+#    ../src/Lam0Fit_MuonUnBiased.cpp 
+
+#application     MergeProtonLines_MuonUnBiased  ../src/MergeProtonLines_MuonUnBiased.cpp
 

@@ -57,7 +57,7 @@ def get_K( M,  M0,  Gamma0,  m1,  m2,  J = 1):
     Gamma = Gamma0*Pow(q/q0,2*J+1)*M0/M*Blatt_Weisskopf(q,q0,J)
     return M0*Gamma/(M0*M0-M*M)
 
-
+def get_rho(mu, m0): return Sqrt(1 - 4*m0*m0/(mu*mu))
 
 def  get_K_hat( M,  M0,  Gamma0,  m1,  m2,  J = 1):
     q = get_q(M,m1,m2)
@@ -77,11 +77,24 @@ K0 = get_K(mass,m0,Gamma0,Mdau1,Mdau2,J)
 K0h = get_K_hat(mass,m0,Gamma0,Mdau1,Mdau2,J)
 
 ### Generic Propagators:
+gpipi = Symbol("gpipi",positive = True)
+gKK = Symbol("gKK", positive = True)
+Flatte_0 = 1/(m0*m0 - mass*mass - I*m0*(gpipi*(2./3*get_rho(mass,PDG.piplus.mass)+ 1./3*get_rho(mass,PDG.pi0.mass)) + gKK*(1./2*get_rho(mass,PDG.Kplus.mass) + 1./2*get_rho(mass,PDG.K0.mass))))
+Flatte_Y = 1/(m0*m0 - mass*mass - I*m0*(gpipi*get_rho(mass, 139.57) + gKK*get_rho(mass,493.677)))
 
 FlatSwave = Sqrt(1/(muh-mul))
 NoRelBW = 1/(mass - m0 + I*0.5*Gamma0)
 EvtGen = K0h / (1-I*K0)
 Kmatrix_ResPlusFlat = (K0h + kappa)/( 1 - I*(K0+kappa*2*Pow(get_q(mass,Mdau1,Mdau2)/mass,2*J+1)))
+
+f0_BES = Flatte_0.subs([(m0, 965), (gKK,4.21*gpipi)])
+f0_BES = f0_BES.subs(gpipi,165)
+
+f0_Syr = Flatte_0.subs([(m0, 939.9), (gKK,3.0*gpipi)])
+f0_Syr = f0_Syr.subs(gpipi,199.)
+
+f0_BESY = Flatte_Y.subs([(m0, 965), (gKK,4.21*gpipi)])
+f0_BESY = f0_BESY.subs(gpipi,165)
 
 ### End Generic propagators
 
@@ -109,6 +122,11 @@ Kst02Kpi_EvtGen = EvtGen.subs( [(m0,PDG.Kst0.mass), (Gamma0,PDG.Kst0.width),(Mda
 Kmatrix_KpiSwave = Kmatrix_ResPlusFlat.subs([ (m0,PDG.ParticleData(10321).mass),(Gamma0,PDG.ParticleData(10321).width),(kappa, 2.23802e-03 ), (Mdau1,PDG.Kplus.mass), (Mdau2,PDG.piplus.mass)])
 
 ### Few tools
+def doEvtGen(m,g):
+    out = EvtGen.subs( [(m0,m), (Gamma0,g),(Mdau1,Mdau2)])## Step by step. First we tell her the two daughters are the same
+    out = out.subs(Mdau2,PDG.Kplus.mass)## Now substitute the daughter by a number
+    return out
+
 
 def Csp(sw, pw, lo, hi, PS = Bs2JpsiKK_ps):
     pwconj = pw.conjugate()
@@ -167,3 +185,91 @@ def histogramResonance(res, lo, hi, N= 100, PS=1):
 
 
     
+def Csp_res(sw, pw, sigma, stp,  phys_min, phys_max, lo, hi, PS = Bs2JpsiKK_ps):
+    true_mass = Symbol("m_true",real = True)
+    def smearedIntegral(expr):
+        thingie = expr.subs(mass,true_mass)
+        thingie = thingie.subs([(mul,phys_min),(muh,phys_max)])
+        pdf = Integral(thingie*Exp(-One/2*((mass-true_mass)/sigma)**2),(true_mass,phys_min,phys_max))
+        stepsize = stp
+        nsteps = int(round((hi-lo)/stepsize))
+        stepsize = (hi-lo)*1./nsteps
+        out = 0
+        for i in range(nsteps):
+            print i, nsteps
+            m = lo + i*stepsize
+            out += pdf.subs(mass,m).n()*stepsize
+        return out
+
+    pwconj = pw.conjugate()
+    pwconj= pwconj.subs( mass, mass.conjugate()) ## mass is real, let's make life easier
+    c = smearedIntegral(pw*pwconj*PS)
+    c = c.n()
+    #print 1
+    d = smearedIntegral(sw*sw.conjugate()*PS)
+    d = d.n()
+    #print 2
+    cte = 1/Sqrt(d*c)
+    csp = smearedIntegral(sw.conjugate()*cte*pw*PS)
+    csp = csp.n()
+    #print 3
+    x = re(csp)
+    y = im(csp)
+    print cte
+    print csp
+    print x, y
+    CSP = sqrt(x.n()**2 + y.n()**2)
+    theta = -atan(y/x)
+    if theta < 0 : theta = theta+pi
+    
+
+    return CSP, theta
+
+def Csp_stt(sw, pw, sigma, l, stp, phys_min, phys_max, lo, hi, PS = Bs2JpsiKK_ps):
+    true_mass = Symbol("m_true",real = True)
+    
+    def smearedIntegral(expr):
+        thingie = expr.subs(mass,true_mass)
+        thingie = thingie.subs([(mul,lo),(muh,hi)])
+        pdf = Integral(thingie*(1 + ((mass-true_mass)/sigma)**2)**(l-0.5),(true_mass,phys_min,phys_max))
+        stepsize = stp
+        nsteps = int(round((hi-lo)/stepsize))
+        stepsize = (hi-lo)*1./nsteps
+        out = 0
+        for i in range(nsteps):
+            print i, nsteps
+            m = lo + i*stepsize
+            out += pdf.subs(mass,m).n()*stepsize
+        return out
+
+    pwconj = pw.conjugate()
+    pwconj= pwconj.subs( mass, mass.conjugate()) ## mass is real, let's make life easier
+    c = smearedIntegral(pw*pwconj*PS)
+    c = c.n()
+    #print 1
+    d = smearedIntegral(sw*sw.conjugate()*PS)
+    d = d.n()
+    #print 2
+    cte = 1/Sqrt(d*c)
+    csp = smearedIntegral(sw.conjugate()*cte*pw*PS)
+    csp = csp.n()
+    #print 3
+    x = re(csp)
+    y = im(csp)
+    print x, y
+    CSP = sqrt(x.n()**2 + y.n()**2)
+    theta = -atan(y/x)
+    if theta < 0 : theta = theta+pi
+    
+
+    return CSP, theta
+
+def test_res():
+    print Csp_res(FlatSwave,phi2KK_EvtGen,1.5,.1,2*PDG.Kplus.mass+1, PDG.Bs.mass - PDG.Jpsi.mass - 1, 990.,1008. )
+## 0.481157765369525 0.487612851380907
+## (0.6850394791595695, 2.34953141601191)
+## >>> Csp(FlatSwave,phi2KK_EvtGen,3., 1008,1020 )
+## Tr
+
+def test_stt():
+    print Csp_stt(FlatSwave,.1,phi2KK_EvtGen,1.5,-2,.1,2*PDG.Kplus.mass+1, PDG.Bs.mass - PDG.Jpsi.mass - 1, 990.,1008. )

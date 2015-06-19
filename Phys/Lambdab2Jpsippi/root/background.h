@@ -21,36 +21,38 @@ using namespace RooFit ;
 class background {
 public: 
   /// Standard constructor
-  background( TString name, int cat, double y, double e, TString nncut){
+  background( TString name, int cat, double y, double e, TString nncut, double factor = 1., TString rho=""){
     m_name = name ;
     m_category = cat;
     //std::cout << name << " " << y << " " << e << std::endl ;
-    double l = (y-3*e>0?y-3*e:0.);
-    m_yield = new RooRealVar(TString(c_Yield+" "+name),"background yield",y,l,y+3*e);
+    double l = y-3*factor*e;
+    if (l<0) l=0;
+    m_yield = new RooRealVar(TString(c_Yield+" "+name),"background yield",y,l,y+3*factor*e);
     m_y = y;
     m_e = e;
     //m_yield->Print("v");
-    m_constraint = new RooGaussian("fconstraint "+name,"fconstraint "+name ,*m_yield, RooConst(y),RooConst(e)) ;
+    m_constraint = new RooGaussian("fconstraint "+name,"fconstraint "+name ,*m_yield, 
+				   RooConst(y),RooConst(factor*e)) ;
     int code = 0; TString fName =  "" ;
     TFile* f = 0 ;
     if (name.Contains(c_PsipKMass)) {
       code = c_psipK_BKGCAT ;
-      f = getMCFile( "LambdabMC-LbK-Sim08a-1127-1128-1129-1137-", nncut, "-SW.root"); 
+      f = getMCFile( "LambdabMC-LbK-Sim08a-1127-1128-1129-1137-"+rho, nncut, "-SW.root"); 
     } else if (name.Contains(c_PsiKpMass)){ 
       code = c_Kp_BKGCAT ;
-      f = getMCFile( "LambdabMC-LbK-Sim08a-1127-1128-1129-1137-", nncut, "-SW.root"); 
+      f = getMCFile( "LambdabMC-LbK-Sim08a-1127-1128-1129-1137-"+rho, nncut, "-SW.root"); 
     } else if (name.Contains(c_PsipiKMass)) {
       code = c_piK_BKGCAT ;
-      f = getMCFile( "LambdabMC-B2JpsiKpi-Sim08a-1138-1139-", nncut, "-SW.root");
+      f = getMCFile( "LambdabMC-B2JpsiKpi-Sim08a-1138-1139-"+rho, nncut, "-SW.root");
     } else  if (name.Contains(c_PsiKpiMass)){ 
       code = c_Kpi_BKGCAT ;
-      f = getMCFile( "LambdabMC-B2JpsiKpi-Sim08a-1138-1139-", nncut, "-SW.root");
+      f = getMCFile( "LambdabMC-B2JpsiKpi-Sim08a-1138-1139-"+rho, nncut, "-SW.root");
     } else if (name.Contains(c_PsiKKMass)){
       code = c_KK_BKGCAT ;
-      f = getMCFile( "LambdabMC-B2JpsiKK-Sim08a-1134-1135-", nncut, "-SW.root");
+      f = getMCFile( "LambdabMC-B2JpsiKK-Sim08a-1134-1135-"+rho, nncut, "-SW.root");
     } else if (name.Contains(c_PsippiMass)){ 
       code = c_ppi_BKGCAT ;
-      f = getMCFile( "LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125-", nncut, "-SW.root");
+      f = getMCFile( "LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125-"+rho, nncut, "-SW.root");
     }
     TString codeN = "";
     codeN+=code ;

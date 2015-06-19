@@ -5,6 +5,57 @@
                 fit results using the RooFit package
 !-----------------------------------------------------------------------------
 
+!============================================== v2r2 2014-1-20 ==============================
+! 2014-1-20 Diego Martinez Santos
+	 Make version v2r2
+! 2013-12-03 - Philip Hunt
+ - Added new RooFit PDF "RooTwoBodyPhspApprox", can be used to fit the 
+   combinatoric D* -> D0 pi_s delta-mass background (can also be used for
+   Sigma_c -> Lambda_c pi_s and similar decays).
+ - Added support for RooTwoBodyPhspApprox in RooDstD0MassFitter
+ - Fixed issue with MakeDplusDataSet using the using the 
+   category name to set the TTree branch address rather than the branch name.
+ - Added RooDplusMassFitter example macro
+
+! 2013-11-22 - Philip Hunt
+ - In RooDMassFitter::MakeDMassDataSet, RooDstD0MassFitter::MakeDelmDataSet and
+   RooDplusMassFiter::MakeDplusDataSet:
+    * Fixed support for RooCategories of type Bool_t (several parts of the code
+      assumed RooCategories were of type Int_t) and added support for UInt_t
+      categories.
+ - Removed RooGaussianChi2Var since it was causing random crashes. Also
+   removed the option to print chi^2 values in the PlotFitResults method of 
+   RooPhysFitter (users can still get the chi^2 themselves using RooChi2Var,
+   RooPlot::chiSquare and other methods).
+ - Added new SetCategory method in RooPhysFitter that accepts a C-style
+   arrays of TStrings and integers for the types and indices respectively,
+	 instead of vectors of strings and integers respectively (this method
+   is useful when using the RooPhysFitter library in CINT).
+ - Methods in RooPhysFitter that save a RooFitResult now delete the pointer
+   after importing the fit results into the RooWorkspace.
+ - Added GetVarBranchName and GetCatBranchName protected methods to
+   RooDMassFitter, which retrieve the branch name for a given 
+	 variable/category name from the internal maps, returning the 
+	 variable/category name if not found.
+ - Fixed "non-constness" of RooDMassFitter::GetBranchType protected method.
+ - Fixed issue with MakeDMassDataSet and MakeDelmDataSet using the 
+   category name to set the TTree branch address rather than the branch name.
+ - Make RooPhysFitter "getter" methods return a const-reference instead of
+   a copy (this makes these methods consistent with the getter methods in
+   the other classes)
+ - Fixed "constness" of methods using "find" to check for the existence of
+   a key in map data members in RooDMassFitter.
+
+! 2013-11-16 - Philip Hunt (LHCB)
+ - Added new method to RooPhysFitter for constructing pull plots of
+   fit variables.
+ - Converted comments in RooPhysFitter, RooDMassFitter, RooDstD0MassFitter
+   and RooDplusMassFitter to doxygen-friendly format
+ - Removed the GOF test statistics, and their corresponding uses in RooPhysFitter,
+   since they weren't being utilised (though RooGaussianChi2Var is still kept 
+   to calculate the chi^2).
+   - Renamed protected method GetPValFromChi2Stat to GetPValFromChi2
+
 ! 2013-08-06 - Philip John Hunt
  - Removed extraneous arguments to RooGaussianChi2Var and RooLLRatioVar in
    RooPhysFitter.cpp that were removed in the previous changes, which
@@ -103,72 +154,4 @@
  - Added try,catch blocks around dynamically allocated memory in RooPhysFitter::PlotFitResults
 
 ! 2011-06-05 - Philip Hunt
- - Fixed bug in RooDMassFitter::MakeDMassModel that raised an exception if there was no signal 
-   or background model in the dataset, but this model was not requested 
-
-! 2011-05-27 - Philip Hunt
- - Fixed bug in PlotFitResults that prevented the chi^{2} from being printed
-   if no test statistic was specified
-
-! 2011-05-27 - Philip Hunt
- - Added SetRange method to RooPhysFitter.
- - Fixed bug that meant that a default value for the chi2 binning was not set.
-
-! 2011-05-25 - Philip Hunt
- - Added macros/rootlogon.C, which contains the lines necessary to use load 
-	the library into CINT for use in ROOT interactive sessions
-
-! 2011-05-25 - Philip Hunt
- - Added method GetModelName(), GetSWeightSetName() and GetPlotParamsSetName()
-	to RooPhysFitter class.
- - Fixed bug in the data set creation methods of RooDMassFitter and
-	 RooDstarD0MassFitter that saved the wrong candidates when cuts are applied.
- - Changed dictionary selection file to create a dictionary method based on
-	the pattern std::vector<std::string,*>, rather than explicitly requesting
-	each template class
-
-! 2011-05-21 - Philip Hunt
- - Added new AddSpectator method to take a TFunction as argument. 
- - Fixed code to produce a reduced data set for one or more cut ranges 
-
-! 2011-05-21 - Philip Hunt (LHCB)
- - First import of RooPhysFitter. Contains the following source files:
-	* RooPhysFitter.cpp - Contains the base class RooPhysFitter for fitting and 
-	producing sWeights and plotting the fit results for one or more 
-	discriminating variables. 
-  * RooDMassFitter.cpp - Contains the class RooDMassFitter, derived from 
-	RooPhysFitter for producing signal and combinatoric background models for
-	a single discriminating mass variable, such as the mass of a neutral or 
-	charged D. 
-  * RooDstarD0MassFitter.cpp - Contains the class RooDstarD0MassFitter, 
-	derived from RooDMassFitter for producing signal and background models 
-	for the D0 mass and delta mass discriminating variables from a D* decaying 
-	to a D0 and a slow pion.
-  * Exceptions.cpp - Contains several exception classes derived from 
-	std::exception.
-  * RooGaussianChi2Var.cpp - Contains a class to determine the "Gaussian" 
-	chi^{2} value for a given RooDataHist and RooAbsPdf model. This class is
-	equivalent to RooChi2Var, except that empty bins are ignored.
-	* RooPearsonsChi2Var.cpp - Contains a class to determine the Pearson's
-	chi^{2} test statistic for a given RooDataHist and RooAbsPdf model.
-	Empty bins are ignored in the calculation.	
-	* RooYatesChi2Var.cpp - Contains a class to determine the Pearson's chi^{2}
-	test statistic with Yate's correction for continuity for a given RooDataHist
-	and RooAbsPdf model. Empty bins are ignored in the calculation.	
-	* RooLLRatioVar.cpp - Contains a class to determine the log likelihood ratio
-	chi^{2} test statistic for a given RooDataHist and RooAbsPdf model.
-	 Empty bins are ignored in the calculation.
-	* RooCruijff.cpp - Contains a PDF class for the Cruijff distribution: a
-	a Gaussian-like distribution with tails on both sides
-  * RooCruijffSimple.cpp - Contains a PDF class for a modified Cruijff
-	distribution with the same sigma for the two tails
-  * RooGranet.cpp - Contains a PDF class for the "Granet" distribution: 
-	a variation of the RooDstD0Bg distribution without a linear component
- - The package also contains the following macros:
-  * lhcbstyle.C - Contains a macro to apply the LHCb plot style
-	* RooPhysFitter_Ex1.C - Contains a macro with an example of how to use the
-	base class RooPhysFitter
-  * RooDMassFitter_Ex1.C - Contains a macro with an example of how to use the 
-	derived class RooDMassFitter
-  * RooDstarD0MassFitter_Ex1.C - Contains a macro with an example of how to
-  use the derived class RooDstarD0MassFitter
+ - Fixed bug in RooDMass

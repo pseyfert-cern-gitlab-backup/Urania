@@ -1,10 +1,11 @@
 //---------------------------------------------------------------------------//
 //                                                                           //
-//  General utilities                                                        //
+//  SFit utilities                                                           //
 //                                                                           //
 //  Source file                                                              //
 //                                                                           //
-//  Authors: Agnieszka Dziurda, Eduardo Rodrigues                            //
+//  Author: Agnieszka Dziurda                                                //
+//  Author: Vladimir Vava Gligorov                                           //
 //  Date   : 12 / 04 / 2012                                                  //
 //                                                                           //
 //---------------------------------------------------------------------------//
@@ -39,11 +40,18 @@
 #include "RooHistPdf.h"
 #include "RooDataHist.h"
 #include "RooCategory.h"
+#include "RooArgList.h"
 // B2DXFitters includes
 #include "B2DXFitters/GeneralUtils.h"
 #include "B2DXFitters/SFitUtils.h"
 #include "B2DXFitters/KinHack.h"
 #include "B2DXFitters/DecayTreeTupleSucksFitter.h"
+#include "B2DXFitters/PlotSettings.h"
+#include "B2DXFitters/MDFitterSettings.h"
+#include "B2DXFitters/DLLTagCombiner.h"
+#include "B2DXFitters/TagDLLToTagDec.h"
+#include "B2DXFitters/TagDLLToTagEta.h"
+#include "B2DXFitters/MistagCalibration.h"
 
 #define DEBUG(COUNT, MSG)				   \
   std::cout << "SA-DEBUG: [" << COUNT << "] (" << __func__ << ") " \
@@ -66,18 +74,14 @@ namespace SFitUtils {
   // part means mode (DsPi, DsK and so on)
   //===========================================================================
 
-  RooWorkspace* ReadDataFromSWeights(TString& part, 
-				     TString& pathFile,
+  RooWorkspace* ReadDataFromSWeights(TString& pathFile,
 				     TString& treeName,
-				     double time_down, double time_up,
-				     TString& tVar,
-				     TString& terrVar,
-				     TString& tagName,
-				     TString& tagOmegaVar,
-				     TString& idVar,
+				     MDFitterSettings* mdSet,
+				     TString& part,
 				     bool weighted,
-				     bool debug,
-                     bool applykfactor
+				     bool toys,
+				     bool applykfactor,
+				     bool debug
 				     )
   {
     if ( debug == true) 
@@ -85,14 +89,7 @@ namespace SFitUtils {
 	std::cout<<"[INFO] ==> GeneralUtils::ReadDataFromSWeights(...). Read data set from sWeights NTuple "<<std::endl;
 	std::cout<<"path of file: "<<pathFile<<std::endl;
 	std::cout<<"name of tree: "<<treeName<<std::endl;
-	std::cout<<"B(s) time range: ("<<time_down<<","<<time_up<<")"<<std::endl;
-	std::cout<<"B(s) time  error range: (0.01,0.1)"<<std::endl;
-	std::cout<<"B(s) mistag range: (0.0,0.5)"<<std::endl;
-	std::cout<<"Name of time observable: "<<tVar<<std::endl;
-	std::cout<<"Name of time error observable: "<<terrVar<<std::endl;
-	std::cout<<"Name of tag observable: "<<tagName<<std::endl;
-	std::cout<<"Name of mistag observable: "<<tagOmegaVar<<std::endl;
-	std::cout<<"Name of id observable: "<<idVar<<std::endl;
+	std::cout<<"apply kfactor: "<<applykfactor<<std::endl;
 	std::cout<<"Mode: "<<part<<std::endl;
       }
 
@@ -100,22 +97,64 @@ namespace SFitUtils {
     work =  new RooWorkspace("workspace","workspace");
     TTree* treeSW = ReadTreeMC(pathFile.Data(),treeName.Data(), debug);
      
-    RooRealVar* lab0_TAU = new RooRealVar(tVar.Data(),tVar.Data(),1.,time_down,time_up);
-    RooRealVar* lab0_TAUERR = new RooRealVar(terrVar.Data(),terrVar.Data(), 0.01, 0.0075, 0.2);
-    RooRealVar* lab0_TAGOMEGA = new RooRealVar(tagOmegaVar.Data(),tagOmegaVar.Data(),0.,0.,0.5);
-    
-    RooCategory* qt = new RooCategory("qt", "flavour tagging result");
-    qt->defineType("B"       ,  1);
-    qt->defineType("Bbar"    , -1);
-    qt->defineType("Untagged",  0);
+    RooRealVar* lab0_TAU      = new RooRealVar(mdSet->GetTimeVar(),                mdSet->GetTimeVar(),
+                                               mdSet->GetTimeRangeDown(),          mdSet->GetTimeRangeUp());
+    RooRealVar* lab0_TAUERR   = new RooRealVar(mdSet->GetTerrVar(),                mdSet->GetTerrVar(),
+                                               mdSet->GetTerrRangeDown(),          mdSet->GetTerrRangeUp());
+       
+    std::vector <RooCategory*> lab0_TAG;
+    if (toys == false )
+      {
+	if( mdSet->CheckTagVar() == true )
+	  {
+	    for(int i = 0; i<mdSet->GetNumTagVar(); i++)
+	      {
+		lab0_TAG.push_back(new RooCategory(mdSet->GetTagVar(i), "flavour tagging result"));
+		TString BName = Form("B_%d",i);
+		TString BbarName = Form("Bbar_%d",i);
+		TString UnName = Form("Utagged_%d",i);
+		lab0_TAG[i]->defineType(BName.Data(),     1);
+		lab0_TAG[i]->defineType(BbarName.Data(), -1);
+		lab0_TAG[i]->defineType(UnName.Data(),    0);
 
+	      }
+	  }
+      }
+    else
+      {
+	lab0_TAG.push_back(new RooCategory("tagDecComb", "flavour tagging result"));
+	lab0_TAG[0]->defineType("B_3",     3);
+        lab0_TAG[0]->defineType("Bbar_3", -3);
+	lab0_TAG[0]->defineType("B_2",     2);
+        lab0_TAG[0]->defineType("Bbar_2", -2);
+	lab0_TAG[0]->defineType("B_1",     1);
+	lab0_TAG[0]->defineType("Bbar_1", -1);
+	lab0_TAG[0]->defineType("Untagged",0);
+      }
+    
+    std::vector <RooRealVar*> lab0_TAGOMEGA;
+    if ( toys == false )
+      {
+	if( mdSet->CheckTagOmegaVar() == true )
+	  {
+	    for(int i = 0; i<mdSet->GetNumTagOmegaVar(); i++)
+	      {
+		lab0_TAGOMEGA.push_back(mdSet->GetObs(mdSet->GetTagOmegaVar(i)));
+	      }
+	  }
+      }
+    else
+      {
+	lab0_TAGOMEGA.push_back(new RooRealVar("tagOmegaComb","tagOmegaComb",0.0, 0.5));
+      }
+    
     RooCategory* qf = new RooCategory("qf", "bachelor charge");
     qf->defineType("h+",  1);
     qf->defineType("h-", -1);
 
     
     //RooRealVar* lab1_ID = new RooRealVar(idVar.Data(),idVar.Data(),1.,-1.,1.);           
-    //RooRealVar* nTracks = new RooRealVar("nTracks","nTracks",0,1000);
+    //RooRealVar* nTracks = new RooRealVar("nTracks","nTracks",15,1000);
     //RooRealVar* lab1_P = new RooRealVar("lab1_P","lab1_P",0,650000);
     //RooRealVar* lab1_PIDK = new RooRealVar("lab1_PIDK","lab1_PIDK",log(5), log(150)); //-150,150);
     //RooRealVar* lab1_PIDp = new RooRealVar("lab1_PIDp","lab1_PIDp",-150,150);
@@ -123,37 +162,41 @@ namespace SFitUtils {
 
 
     std::vector <TString> s;
-    if( pathFile.Contains("3modeskkpi") == true )
+    if( pathFile.Contains("3modeskkpi") == true or pathFile.Contains("3MODESKKPI") == true )
       {
 	if(debug == true) { std::cout<<"[INFO] 3 Ds final states: NonRes, PhiPi, Kstk"<<std::endl; }
 	s.push_back("both_nonres");
         s.push_back("both_phipi");
         s.push_back("both_kstk");
       }
-    else if(pathFile.Contains("toys1m") == true || pathFile.Contains("Toys1M") == true || pathFile.Contains("TOYS1M") == true)  
-      {
-	if (debug == true ) { std::cout<<"[INFO]  1D Toys: read only PhiPi"<<std::endl;}
-	s.push_back("both_phipi");
-      }
     else
       {
 	if( debug == true ) { std::cout<<"[INFO] 5 Ds final states: NonRes, PhiPi, KstK, KPiPi, PiPiPi"<<std::endl; }
-	s.push_back("both_nonres");
+	if(part.Contains("BDPi") == true ) 
+	  {
+	    s.push_back("both");
+	  }
+	else
+	  {
+	    s.push_back("both_nonres");
+	    s.push_back("both_phipi");
+	    s.push_back("both_kstk");
+	    s.push_back("both_kpipi");
+	    s.push_back("both_pipipi");
+	  }
+      }
+    
+    if ( toys == true && ( pathFile.Contains("toys1m") == true || pathFile.Contains("Toys1M") == true || pathFile.Contains("TOYS1M") == true ) )
+      {
+	if (debug == true ) { std::cout<<"[INFO]  1D Toys: read only PhiPi"<<std::endl;}
         s.push_back("both_phipi");
-        s.push_back("both_kstk");
-	s.push_back("both_kpipi");
-        s.push_back("both_pipipi");
       }
 	
     Int_t bound = s.size();
     if ( debug == true ) { std::cout<<"[INFO] sWeights bound: "<<bound<<std::endl;}
     TString cat;
-    if (part == "DsPi" ) {
-      cat = "dataSet_time_Bs2DsPi";
-    } else {
-      cat = "dataSet_time_Bs2DsK";
-    }
-
+    cat = "dataSet_time_"+part;
+    
     /*
     std::vector <TString> catcont2;
     catcont2.push_back("Mixed");
@@ -166,15 +209,36 @@ namespace SFitUtils {
 
     RooArgSet* obs = new RooArgSet(*lab0_TAU,
 				   *lab0_TAUERR,
-				   *lab0_TAGOMEGA,
-				   *qf,
-				   *qt);
- 
+				   *qf);
+    if ( toys == false )
+      {
+	if( mdSet->CheckTagVar() == true )
+	  {
+	    for(int i = 0; i<mdSet->GetNumTagVar(); i++)
+	      {
+		obs->add(*lab0_TAG[i]);
+		std::cout<<"Adding "<<lab0_TAG[i]->GetName()<<std::endl;
+	      }
+	  }
+	if( mdSet->CheckTagOmegaVar() == true )
+	  {
+	    for(int i = 0; i<mdSet->GetNumTagOmegaVar(); i++)
+	      {
+		obs->add(*lab0_TAGOMEGA[i]);
+		std::cout<<"Adding "<<lab0_TAGOMEGA[i]->GetName()<<std::endl;
+	      }
+	  }
+      }
+    else
+      {
+	obs->add(*lab0_TAG[0]);
+	obs->add(*lab0_TAGOMEGA[0]); 
+      }
     TString setOfObsName = "SetOfObservables";
     obs->setName(setOfObsName.Data());
     
     TString namew = "sWeights";
-    weights = new RooRealVar(namew.Data(), namew.Data(), -1.0, 2.0 );  // create weights //
+    weights = new RooRealVar(namew.Data(), namew.Data(), -2.0, 2.0 );  // create weights //
     obs->add(*weights);
 
     //obs->add(*lab1_P);
@@ -192,36 +256,54 @@ namespace SFitUtils {
       {
 	dataSet = new RooDataSet(   cat.Data(), cat.Data(), *obs); 
       }
-        
+    
     Double_t tau;
     Double_t tauerr;
-    Double_t tag, ID;
-    Double_t tagweight;
+    Int_t ID;
     Double_t sw[bound];
     Double_t trueid; 
     Double_t mass;
-    //Double_t p, pt;
-    //Double_t nTr;
-    //Double_t PIDK, PIDp;
+            
+    treeSW->SetBranchAddress(mdSet->GetTimeVar().Data(), &tau);
+    treeSW->SetBranchAddress(mdSet->GetTerrVar().Data(), &tauerr);
+    TString nameID = mdSet->GetIDVar()+"_idx"; 
+    treeSW->SetBranchAddress(nameID.Data(), &ID);
+    treeSW->SetBranchAddress(mdSet->GetMassBVar().Data(), &mass);
+    std::cout<<"halo"<<std::endl;
+    Int_t tag[mdSet->GetNumTagVar()];
+    Double_t omega[mdSet->GetNumTagOmegaVar()];
     
-    treeSW->SetBranchAddress(tVar.Data(), &tau);
-    treeSW->SetBranchAddress(terrVar.Data(), &tauerr);
-    treeSW->SetBranchAddress(tagOmegaVar.Data(), &tagweight);
-
-    if(pathFile.Contains("toys") == true || pathFile.Contains("Toys") == true || pathFile.Contains("TOYS") == true)
+    if (toys == false)
       {
-	TString name = tagName+"_idx";
-	treeSW->SetBranchAddress(name.Data(), &tag);
-        treeSW->SetBranchAddress("lab1_ID_idx", &ID);
-        treeSW->SetBranchAddress("lab0_TRUEID", &trueid);
+	if( mdSet->CheckTagVar() == true )
+	  {
+	    for(int k = 0; k<mdSet->GetNumTagVar(); k++)
+	      {
+		TString nameTag = mdSet->GetTagVar(k)+"_idx";
+		treeSW->SetBranchAddress(nameTag, &tag[k]);
+	      }
+	  }
+	if( mdSet->CheckTagOmegaVar() == true )
+	  {
+	    for(int k = 0; k<mdSet->GetNumTagOmegaVar(); k++)
+	      {
+		treeSW->SetBranchAddress(mdSet->GetTagOmegaVar(k).Data(), &omega[k]);
+	  }
+	  }
       }
     else
       {
-	treeSW->SetBranchAddress(tagName.Data(), &tag);
-	treeSW->SetBranchAddress("lab1_ID", &ID);
-      }    
+	treeSW->SetBranchAddress("tagDecComb_idx", &tag[0]);
+	treeSW->SetBranchAddress("tagOmegaComb", &omega[0]);
+      }
+
+    if(toys)
+      {
+	treeSW->SetBranchAddress("lab0_TRUEID", &trueid);
+      }
     
-    treeSW->SetBranchAddress("lab0_MassFitConsD_M", &mass);
+    
+    // Double_t nTr;
     //treeSW->SetBranchAddress("lab1_P", &p);
     //treeSW->SetBranchAddress("nTracks",&nTr);
     //treeSW->SetBranchAddress("lab1_PIDK",&PIDK);
@@ -235,7 +317,7 @@ namespace SFitUtils {
 	if (debug == true ) { std::cout<<"[INFO] sWeights names: "<<swname<<std::endl; }
       }
 
-    Float_t c = 299792458.;
+    
     Double_t sqSumsW = 0;
     double correction=0.0;
  
@@ -244,37 +326,42 @@ namespace SFitUtils {
       double m = 0; 
       double merr = 0;
       //if (jentry>10000) continue;  
-      if(pathFile.Contains("toys") == true || pathFile.Contains("Toys") == true || pathFile.Contains("TOYS") == true)
+      if(toys)
 	{
 	  m =tau;
 	  merr = tauerr;
-      if ((trueid > 1.5) && (trueid < 9.5)) {
-        //Apply k-factor smearing
-        if (fabs(trueid-2) < 0.5 || fabs(trueid-8) < 0.5) {
-            //correctionmean  = 1+2*(mass-5279.)/5279.;
-            correction      = mass/5279.;//gR->Gaus(correctionmean,0.0001);  
-        } else if (fabs(trueid-4) < 0.5 || fabs(trueid-7) < 0.5 || fabs(trueid-8) < 0.5) {
-            correction      = mass/5369.;
-        } else if (fabs(trueid-5) < 0.5 || fabs(trueid-6) < 0.5) {
-            correction      = mass/5620.;
-        }   
-        //cout << "Applying k-factor correction " << trueid << " " << mass << " " << tau << " " << correction << endl;
-      } else correction = 1.; 
-      if (!applykfactor) correction = 1.;
-      std::cout << "The correction factor is " << correction << std::endl;
-      m *=correction;
+	  if (applykfactor == true )
+	    {
+	      if ((trueid > 1.5) && (trueid < 9.5)) {
+		//Apply k-factor smearing
+		if (fabs(trueid-2) < 0.5 || fabs(trueid-8) < 0.5) {
+		  //correctionmean  = 1+2*(mass-5279.)/5279.;
+		  correction      = mass/5279.;//gR->Gaus(correctionmean,0.0001);  
+		} else if (fabs(trueid-4) < 0.5 || fabs(trueid-7) < 0.5 || fabs(trueid-8) < 0.5) {
+		  correction      = mass/5369.;
+		} else if (fabs(trueid-5) < 0.5 || fabs(trueid-6) < 0.5) {
+		  correction      = mass/5620.;
+		}   
+		//cout << "Applying k-factor correction " << trueid << " " << mass << " " << tau << " " << correction << endl;
+	      } else correction = 1.;
+	    }
+	  else
+	    { correction = 1.; }
+	  //std::cout << "The correction factor is " << correction << std::endl;
+	  m *=correction;
 	}
       else
 	{
-	  m =tau*1e9/c;   
-	  merr = tauerr*1e9/c;
+	  m =tau;   
+	  merr = tauerr;
 	}
-      if (m < 0.2) continue;  
+      
+      //if ( m < 0.2 ) continue; 
+
       lab0_TAU->setVal(m);
       lab0_TAUERR->setVal(merr);
-
-      if (tagweight > 0.5) tagweight = 0.5;
-      lab0_TAGOMEGA->setVal(tagweight);
+      //if (tagweight > 0.5) tagweight = 0.5;
+      //lab0_TAGOMEGA->setVal(tagweight);
       
       //lab1_P->setVal(p);
       //lab1_PT->setVal(pt);
@@ -284,10 +371,34 @@ namespace SFitUtils {
       //lab0_MM->setVal(mass);
 
       if (ID > 0) { qf->setIndex(1); } else { qf->setIndex(-1); }
+      if( toys == false)
+	{
+	  if(  mdSet->CheckTagVar() == true )
+	    {
+	      for(int k = 0; k<mdSet->GetNumTagVar(); k++)
+		{
+		  if( tag[k] > 0.1 ) {   tag[k] = 1; }
+		  else if ( tag[k] < -0.1 ) { tag[k] = -1;}
+		  else{ tag[k]=0; }
+		  
+		  lab0_TAG[k]->setIndex(tag[k]);
+		}
+	    }
+	  if(  mdSet->CheckTagOmegaVar() == true )
+	    {
+	      for(int k = 0; k<mdSet->GetNumTagOmegaVar(); k++)
+		{
+		  if (omega[k] > 0.5){ omega[k] = 0.5;}
+	      lab0_TAGOMEGA[k]->setVal(omega[k]);
+		}
+	    }
+	}
+      else
+	{
+	  lab0_TAG[0]->setIndex(tag[0]);
+	  lab0_TAGOMEGA[0]->setVal(omega[0]);
+	}
 
-      if( tag > 0.1 ) {   qt->setIndex(1); }
-      else if ( tag < -0.1 ) { qt->setIndex(-1);}
-      else{ qt->setIndex(0);}
 
       Double_t sum_sw=0;
       for (int i = 0; i<bound; i++) {
@@ -315,263 +426,129 @@ namespace SFitUtils {
 	    std::cout<<"sum of sWeights: "<<dataSet->sumEntries()<<" squared sum of sWeights: "<<sqSumsW<<std::endl; 
 	} else { std::cout<<"Error in create dataset"<<std::endl; }
     }
-            
+
+    if ( toys == false)
+      {
+	RooArgList* tagList= new RooArgList();
+	RooArgList* tagOmegaList = new RooArgList();
+	
+	Int_t tagNum = mdSet->GetNumTagVar();
+	Int_t mistagNum = mdSet->GetNumTagOmegaVar();
+	
+	if (tagNum != mistagNum)
+	  {
+	    std::cout<<"[ERROR] number of tagging decisions  different from number of mistag distributions"<<std::endl;
+	    return NULL;
+	  }
+	else
+	  {
+	    if (debug == true) { std::cout<<"[INFO] Number of taggers "<<tagNum<<std::endl;}
+	  }
+	if(  mdSet->CheckTagVar() == true )
+	  {
+	    for(int k = 0; k<mdSet->GetNumTagVar(); k++)
+	      {
+		tagList->add(*lab0_TAG[k]);
+	      }
+	  }
+	
+	MistagCalibration* calibMistag[tagNum];
+	RooRealVar* p0[tagNum];
+	RooRealVar* p1[tagNum];
+	RooRealVar* av[tagNum];
+	
+	if(  mdSet->CheckTagOmegaVar() == true )
+	  {
+	    for(int k = 0; k<mdSet->GetNumTagOmegaVar(); k++)
+	      {
+		std::cout<<"[INF0] Calibration: p0="<<mdSet->GetCalibp0(k)<<" p1: "<<mdSet->GetCalibp1(k)<<" av: "<<mdSet->GetCalibAv(k)<<std::endl;
+		p0[k] = new RooRealVar(Form("p0_%d",k),Form("p0_%d",k),mdSet->GetCalibp0(k));
+		p1[k] = new RooRealVar(Form("p1_%d",k),Form("p1_%d",k),mdSet->GetCalibp1(k));
+		av[k] = new RooRealVar(Form("av_%d",k),Form("av_%d",k),mdSet->GetCalibAv(k));
+		TString nameCalib = mdSet->GetTagOmegaVar(k)+"_calib";
+		calibMistag[k] = new MistagCalibration(nameCalib.Data(), nameCalib.Data(),
+						       *lab0_TAGOMEGA[k], *p0[k], *p1[k], *av[k]);
+		dataSet->addColumn(*calibMistag[k]);
+		tagOmegaList->add(*calibMistag[k]);
+	      }
+	  }
+	
+	if( debug == true )
+	  {
+	    std::cout<<"[INFO] Taggers list: "<<std::endl;
+	    tagList->Print("v");
+	    std::cout<<"[INFO] Mistags list: "<<std::endl;
+	    tagOmegaList->Print("v");
+	  }
+	
+	DLLTagCombiner* combiner = new DLLTagCombiner("tagCombiner","tagCombiner",*tagList,*tagOmegaList);
+	TagDLLToTagDec* tagDecComb = new TagDLLToTagDec("tagDecComb","tagDecComb",*combiner,*tagList);
+	TagDLLToTagEta* tagOmegaComb = new TagDLLToTagEta("tagOmegaComb","tagOmegaComb",*combiner);
+	
+	dataSet->addColumn(*tagDecComb);
+	dataSet->addColumn(*tagOmegaComb);
+      }
+
     work->import(*dataSet);
     return work;
 
   }
 
   //===========================================================================
-  // Read observables tVar, tagVar, tagOmegaVar, idVar from sWeights file
-  // Name of file is read from filesDir and signature sig
-  // time_{up,down} - range for tVar
-  // part means mode (DsPi, DsK and so on)
+  // Create Mistag templates
   //===========================================================================
-
-  RooWorkspace* ReadDataFromSWeights2(TString& part,
-				      TString& pathFile,
-				      TString& treeName,
-				      double time_down, double time_up,
-				      TString& tVar,
-				      TString& terrVar,
-				      TString& tagName,
-				      TString& tagOmegaVar,
-				      TString& idVar,
-				      bool weighted,
-				      bool debug
-				      )
+  RooArgList* CreateMistagTemplates(RooDataSet* data, MDFitterSettings* mdSet, Int_t bins, bool save, bool debug)
   {
-    if ( debug == true)
+    RooArgList* pdfList = new RooArgList();
+    const RooArgSet* obs = data->get();
+ 
+    RooRealVar* mistag = (RooRealVar*)obs->find("tagOmegaComb");
+    mistag->setRange(0,0.5);
+
+    Int_t tagNum = mdSet->GetNumTagVar();
+    Int_t mistagNum = mdSet->GetNumTagOmegaVar();
+
+    if (tagNum != mistagNum)
       {
-	std::cout<<"[INFO] ==> GeneralUtils::ReadDataFromSWeights(...). Read data set from sWeights NTuple "<<std::endl;
-	std::cout<<"path of file: "<<pathFile<<std::endl;
-	std::cout<<"name of tree: "<<treeName<<std::endl;
-	std::cout<<"B(s) time range: ("<<time_down<<","<<time_up<<")"<<std::endl;
-	std::cout<<"B(s) time  error range: (0.01,0.1)"<<std::endl;
-	std::cout<<"B(s) mistag range: (0.0,0.5)"<<std::endl;
-	std::cout<<"Name of time observable: "<<tVar<<std::endl;
-	std::cout<<"Name of time error observable: "<<terrVar<<std::endl;
-	std::cout<<"Name of tag observable: "<<tagName<<std::endl;
-	std::cout<<"Name of mistag observable: "<<tagOmegaVar<<std::endl;
-	std::cout<<"Name of id observable: "<<idVar<<std::endl;
-	std::cout<<"Mode: "<<part<<std::endl;
-      }
-
-    RooWorkspace* work = NULL;
-    work =  new RooWorkspace("workspace","workspace");
-    TTree* treeSW = ReadTreeMC(pathFile.Data(),treeName.Data(), debug);
-
-    RooRealVar* lab0_TAU = new RooRealVar(tVar.Data(),tVar.Data(),1.,time_down,time_up);
-    RooRealVar* lab0_TAUERR = new RooRealVar(terrVar.Data(),terrVar.Data(), 0.01, 0.01, 0.1);
-    RooRealVar* lab0_TAGOMEGA = new RooRealVar(tagOmegaVar.Data(),tagOmegaVar.Data(),0.,0.,0.5);
-
-
-    RooCategory* qt = new RooCategory("qt", "flavour tagging result");
-    qt->defineType("B"       ,  1);
-    qt->defineType("Bbar"    , -1);
-    qt->defineType("Untagged",  0);
-
-    RooCategory* qf = new RooCategory("qf", "bachelor charge");
-    qf->defineType("h+",  1);
-    qf->defineType("h-", -1);
-    
-    std::vector <TString> s;
-    if( pathFile.Contains("3modeskkpi") == true )
-      {
-        s.push_back("both_nonres");
-        s.push_back("both_phipi");
-        s.push_back("both_kstk");
-      }
-    else if(pathFile.Contains("toys1m") == true || pathFile.Contains("Toys1M") == true || pathFile.Contains("TOYS1M") == true)
-      {
-        s.push_back("both_phipi");
+	std::cout<<"[ERROR] number of tagging decisions  different from number of mistag distributions"<<std::endl;
+	return NULL;
       }
     else
       {
-        s.push_back("both_nonres");
-        s.push_back("both_phipi");
-        s.push_back("both_kstk");
-        s.push_back("both_kpipi");
-        s.push_back("both_pipipi");
+        if (debug == true) { std::cout<<"[INFO] Number of taggers "<<tagNum<<std::endl;}
       }
 
-    Int_t bound = s.size();
-
-    std::vector <TString> catcont;
-    catcont.push_back("B_h+");
-    catcont.push_back("B_h-");
-    catcont.push_back("Bbar_h+");
-    catcont.push_back("Bbar_h-");
-    catcont.push_back("Untagged_h+");
-    catcont.push_back("Untagged_h-");
-  
-    TString cat;
-    if (part == "DsPi" ) {
-      cat = "dataSet_time_Bs2DsPi";
-    } else {
-      cat = "dataSet_time_Bs2DsK";
-    }
+    Int_t numOfTemp = std::pow(2,tagNum)-1;
+    if (debug == true) { std::cout<<"Number of mistag templates: "<<numOfTemp<<std::endl; }
     
-    RooRealVar*  weights;
-    RooArgSet* obs = new RooArgSet(*lab0_TAU,
-                                   *lab0_TAUERR,
-                                   *lab0_TAGOMEGA,
-                                   *qf,
-                                   *qt);
-
-    TString setOfObsName = "SetOfObservables";
-    obs->setName(setOfObsName.Data());
-
-    TString namew = "sWeights";
-    weights = new RooRealVar(namew.Data(), namew.Data(), -1.0, 2.0 );  // create weights //
-    obs->add(*weights);
-   
-    RooDataSet* dataSetContr[6];
-    for ( int i = 0; i < bound; i++)
+    RooDataSet* sliceData[numOfTemp];
+    RooHistPdf* mistagPDF[numOfTemp];
+    for(int i =1; i<numOfTemp+1; i++)
       {
-	TString namecontr = cat+TString("_")+catcont[i];
-	dataSetContr[i] = new RooDataSet(  namecontr.Data(), namecontr.Data(), *obs);  // create data set //
+	std::cout<<"Cut on tagger: "<<i<<" and "<<-i<<std::endl;  
+	sliceData[i-1] = (RooDataSet*)data->reduce(*obs,Form("((tagDecComb == %d) || (tagDecComb == %d))",i,-i));
+	std::cout<<"[INFO] sliceData "<<i<<" with entries: "<<sliceData[i-1]->numEntries()<<std::endl;
+	TString namePDF = Form("sigMistagPdf_%d",i);
+	mistagPDF[i-1] = NULL;
+	mistagPDF[i-1] = CreateHistPDF(sliceData[i-1], mistag, namePDF, bins, debug);
+	if( debug == true && mistagPDF[i-1] != NULL) {std::cout<<"[INFO] Create RooHistPDF done"<<std::endl;}
+	pdfList->add(*mistagPDF[i-1]);
+	TString t ="";
+	PlotSettings* plotSet = new PlotSettings("plotSet","plotSet");
+	plotSet->SetBin(bins);
+	SaveTemplate(sliceData[i-1], mistagPDF[i-1], mistag, namePDF, t, plotSet, debug );
       }
-        
-    Double_t tau;
-    Double_t tauerr;
-    Double_t tag, ID;
-    Double_t tagweight;
-    Double_t sw[bound];
-
-    treeSW->SetBranchAddress(tVar.Data(), &tau);
-    treeSW->SetBranchAddress(terrVar.Data(), &tauerr);
-    treeSW->SetBranchAddress(tagOmegaVar.Data(), &tagweight);
-
-    if(pathFile.Contains("toys") == true || pathFile.Contains("Toys") == true || pathFile.Contains("TOYS") == true)
+    if( save == true)
       {
-        TString name = tagName+"_idx";
-        treeSW->SetBranchAddress(name.Data(), &tag);
-        treeSW->SetBranchAddress("lab1_ID_idx", &ID);
-      }
-    else
-      {
-	treeSW->SetBranchAddress(tagName.Data(), &tag);
-        treeSW->SetBranchAddress("lab1_ID", &ID);
-      }
-    
-    for (int i = 0; i<bound; i++)
-      {
-        TString swname = "nSig_"+s[i]+"_Evts_sw";
-        treeSW->SetBranchAddress(swname.Data(), &sw[i]);
-      }
-
-    Float_t c = 299792458.;
-    Double_t sqSumsW = 0;
-
-    for (Long64_t jentry=0; jentry<treeSW->GetEntries(); jentry++) {
-      treeSW->GetEntry(jentry);
-      double m = 0;
-      double merr = 0;
-      if(pathFile.Contains("toys") == true || pathFile.Contains("Toys") == true || pathFile.Contains("TOYS") == true)
-        {
-          m =tau;
-          merr = tauerr;
-        }
-      else
-        {
-          m =tau*1e9/c;
-          merr = tauerr*1e9/c;
-	    }
-      if (m < 0.2) continue;
-      lab0_TAU->setVal(m);
-      lab0_TAUERR->setVal(merr);
-
-      if (tagweight > 0.5) tagweight = 0.5;
-      lab0_TAGOMEGA->setVal(tagweight);
-      
-      if (ID > 0) { qf->setIndex(1); } 
-      else {  qf->setIndex(-1); }
-
-      if( tag > 0.1 ){ qt->setIndex(1); }
-      else if ( tag < -0.1 )  { qt->setIndex(-1); }
-      else{ qt->setIndex(0); }
-      
-      Double_t sum_sw=0;
-      for (int i = 0; i<bound; i++) {
-	sum_sw += sw[i];
-      }
-      weights->setVal(sum_sw);
-      sqSumsW += sum_sw*sum_sw;
-      
-      if( tag == 0 )
-	{
-	  if( ID > 0 ) { dataSetContr[4]->add(*obs);}  else{  dataSetContr[5]->add(*obs); }
-	}
-      else if ( tag == -1)
-	{
-	  if ( ID > 0 ){ dataSetContr[2]->add(*obs); } else { dataSetContr[3]->add(*obs); }
-	}
-      else if ( tag == 1)
-	{
-	  if( ID > 0) {  dataSetContr[0]->add(*obs); } else { dataSetContr[1]->add(*obs); }
-	}
-      else { std::cout<<"Wrong event!"<<std::endl;}
-      
-    }
-
-    RooDataSet* dataSet;
-    if (weighted == true)
-      {
-        dataSet = new RooDataSet(   cat.Data(), cat.Data(), *obs, namew.Data());  // create data set //
-      }
-    else
-      {
-        dataSet = new RooDataSet(   cat.Data(), cat.Data(), *obs);
-      }
-       
-
-
-    /*    if ( weighted == true )
-      {
-	dataSet = new RooDataSet(cat.Data(),cat.Data(), *obs,
-
-	
-	dataSet = new RooDataSet(cat.Data(),cat.Data(), *obs, 
-				 RooFit::Import(catcont[0].Data(), *dataSetContr[0]),
-				 RooFit::Import(catcont[1].Data(), *dataSetContr[1]),
-				 RooFit::Import(catcont[2].Data(), *dataSetContr[2]),
-				 RooFit::Import(catcont[3].Data(), *dataSetContr[3]),
-				 RooFit::Import(catcont[4].Data(), *dataSetContr[4]),
-				 RooFit::Import(catcont[5].Data(), *dataSetContr[5]),
-				 RooFit::WeightVar("sWeights"));
-	
-      }
-    else
-      {
-	
-	
-	dataSet = new RooDataSet(cat.Data(),cat.Data(), *obs, 
-				 RooFit::Import(catcont[0].Data(), *dataSetContr[0]),
-                                 RooFit::Import(catcont[1].Data(), *dataSetContr[1]),
-                                 RooFit::Import(catcont[2].Data(), *dataSetContr[2]),
-                                 RooFit::Import(catcont[3].Data(), *dataSetContr[3]),
-                                 RooFit::Import(catcont[4].Data(), *dataSetContr[4]),
-	                       RooFit::Import(catcont[5].Data(), *dataSetContr[5]));
-      }
-    */
-
-    if ( debug == true){
-      if ( dataSet != NULL ){
-	std::cout<<"[INFO] ==> Create "<<dataSet->GetName()<<std::endl;
-	std::cout<<"Sample "<<cat<<" number of entries: "<<treeSW->GetEntries()<<" in data set: "<<dataSet->numEntries()<<std::endl;
-	std::cout<<"sum of sWeights: "<<dataSet->sumEntries()<<" squared sum of sWeights: "<<sqSumsW<<std::endl;
-      } else { std::cout<<"Error in create dataset"<<std::endl; }
-    }
-
-    work->import(*dataSet, true);
-    for (int i = 0; i< 6; i++)
-      {
-        work->import(*dataSetContr[i]);
-      }
-    return work;
-
-    
+	RooWorkspace* workOut = new RooWorkspace("workspace","workspace");
+	for(int i =0; i<numOfTemp; i++)
+	  {
+	    workOut->import(*mistagPDF[i]);
+	  }
+	if(debug == true ){ workOut->Print("v"); }
+	workOut->SaveAs("templates_mistag.root");
+      } 
+    return pdfList;
   }
 
   //===========================================================================
@@ -683,6 +660,7 @@ namespace SFitUtils {
 				       TString& nTrVar,
 				       TString& pidVar,
 				       RooWorkspace* workspace, 
+				       PlotSettings* plotSet,
                                        bool debug
                                        )
 
@@ -709,6 +687,8 @@ namespace SFitUtils {
     RooWorkspace* work = NULL;
     if (workspace == NULL){ work =  new RooWorkspace("workspace","workspace");}
     else {work = workspace; }
+    
+    if ( plotSet == NULL ) { plotSet = new PlotSettings("plotSet","plotSet"); }
 
     Double_t Dmass_down = 2200;
     Double_t Dmass_up = 2380;
@@ -777,16 +757,14 @@ namespace SFitUtils {
 	
 	work->import(*data[i]);
 
-	TString dupa = "LbLcPi_TrMom";
-        SaveDataSet(data[i], lab1_PT , s[i], dupa, debug);
-        TString dupa2 = "LbLcPi_Tracks";
-        SaveDataSet(data[i], nTracks , s[i], dupa2, debug);
-	TString dupa3 = "LbLcPi_PIDK";
-        SaveDataSet(data[i], lab1_PIDK , s[i], dupa3, debug);
-        TString dupa4 = "LbLcPi_MassD";
-        SaveDataSet(data[i], lab2_MM , s[i], dupa4, debug);
-	TString dupa5 = "LbLcPi_Mom";
-	//SaveDataSet(data[i], lab1_P , s[i], dupa5, debug);
+	if (plotSet->GetStatus() == true )
+	  {
+	    TString mode = "Lb2LcPi";
+	    SaveDataSet(data[i], lab1_PT ,   s[i], mode, plotSet, debug);
+	    SaveDataSet(data[i], nTracks ,   s[i], mode, plotSet, debug);
+	    SaveDataSet(data[i], lab1_PIDK , s[i], mode, plotSet, debug);
+	    SaveDataSet(data[i], lab2_MM ,   s[i], mode, plotSet, debug);
+	  }
 	
 	
       }

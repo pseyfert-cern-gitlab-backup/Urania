@@ -94,8 +94,8 @@ class channelData(list):
         for ki in keys:
             out[ki] = self.takeKey(ki)
         return out
-    def save(self,name,typ = "R", keytypes = {}):
-        smartpyROOT.saveInTuple(self,name,typ, keytypes)
+    def save(self,name,typ = "R", tname = "T", keytypes = {}):
+        smartpyROOT.saveInTuple(self,name,typ, tname, keytypes)
         return "Done, I think"
 
     def addVariable(self,name,inputList,function):

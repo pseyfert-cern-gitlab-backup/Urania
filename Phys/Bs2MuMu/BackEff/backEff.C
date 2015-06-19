@@ -74,6 +74,7 @@ void help(){
   cout << " -ana2fb        \t Runs with normalisation of the 2fb analysis    " << endl;
   cout << " -NoMCMatch     \t Switches off the MC Matching " << endl;
   cout << " -NoFillHoles   \t Switches off the patch for empty bins in reweighting " << endl;
+  cout << " -NoNorm        \t Switches off the normalisation: beta * fx * BR =1    "<< endl;
   cout << " -b             \t Runs in batch   " << endl;
   cout << " -d             \t Debug mode on   " << endl;
   cout << "............................................................" << endl;
@@ -150,6 +151,7 @@ TLatex *   tex            = new TLatex(0.7,0.83,"LHCb");
 Bool_t useML              = kFALSE;
 Bool_t prodOutputFile     = kTRUE;
 ofstream summaryFile;
+ofstream summaryFilePy;
 TString fName;
 TString prefix;
 
@@ -180,6 +182,7 @@ int main(int argc, char **argv)
   bool ana2fb = false;
   bool lambda_ptw_off = false;
   bool oldBDT =false;
+  bool normalisation_off =false;
   
   
   
@@ -207,8 +210,10 @@ int main(int argc, char **argv)
       weighting_off = true;
     }else if(opt.Contains("-NoMCMatch")){
       Warning("Configuration","Switching off mcmatch!!!" );
-      
       mcmatch_off = true;
+    }else if(opt.Contains("-NoNorm")){
+      Warning("Configuration","Switching off normalisation: now beta*f_x*BR = 1" );
+      normalisation_off = true;
     }else if(opt.Contains("-NoFillHoles")){
       Warning("Configuration","Switching off the fill holes patch for muID reweighting!!!" );
       fillholes_off = true;
@@ -645,6 +650,8 @@ muplus_MC_GD_MOTHER_ID == muminus_MC_GD_MOTHER_ID)";
   Measurement toteff_bdmasswin  = eff_gen*eff_bdmasswin;
   ///> calc yields after each cut
   Measurement total_evt = beta_to_use * branch_fract;
+  if(normalisation_off) total_evt = Measurement(1,0);
+  
   Measurement bsmasswin_evt = total_evt * toteff_bsmasswin;
   Measurement bdmasswin_evt = total_evt * toteff_bdmasswin;
   Measurement strip_evt = total_evt * toteff_strip;
@@ -1186,6 +1193,12 @@ void printBinned(Measurement NtotExp, TH2D* MvsBdt, int evtType, int norm_year){
         Error("printBinned", "Output File cannot be opened!");
         return;
       }
+      summaryFilePy.open(summary_out_dir+fName+".py", ios::out); // at end of the file
+      if(!summaryFilePy.is_open()){
+        Error("printBinned", "Output File cannot be opened!");
+        return;
+      }
+
   }
   ///> Project on BDT -> Y projection
   TH1D* BDTprojection         = MvsBdt->ProjectionY("BDTproj",1,MvsBdt->GetNbinsX());
@@ -1220,6 +1233,8 @@ void printBinned(Measurement NtotExp, TH2D* MvsBdt, int evtType, int norm_year){
   summaryFile << NtotExp.value() << "\t\t+" << 
     NtotExp.errors()[0] << "\t\t-" << NtotExp.errors()[1] 
               << "\t # Total Yield of the component " << evtType << endl;    
+  summaryFilePy << " = EVal("<<NtotExp.value() << " , " << 
+    NtotExp.error() << ") \t # Total Yield of the component " << evtType << endl;    
   
   ///> loop over the BDT bins
   ofstream texFile("texfiles/"+fName+"_BDT_bin_yields.tex");
@@ -1245,6 +1260,8 @@ void printBinned(Measurement NtotExp, TH2D* MvsBdt, int evtType, int norm_year){
     
     summaryFile << totFrac.value() << "\t+" << totFrac.errors()[0] << "\t-" << totFrac.errors()[1]
                 << "\t # fraction of bin " << ii << endl;
+    summaryFilePy << "Frac"<<ii<<" = EVal("<<totFrac.value() << " , " << totFrac.error() << ")"
+                  << "\t # fraction of bin " << ii << endl;
     
     if(ii==nbins){
       ///> combine 7&8 Bin
@@ -1256,6 +1273,9 @@ void printBinned(Measurement NtotExp, TH2D* MvsBdt, int evtType, int norm_year){
       texFile << " 7 \\& 8   \t& " << NexpBin.tex() << " \t& " << totFrac.tex() <<  "\\\\"<<endl;
       summaryFile << totFrac.value() << "\t+" << totFrac.errors()[0] << "\t-" << totFrac.errors()[1]
                   << "\t # fraction of bin 7+8" << endl;
+      summaryFilePy << "Frac78"<< " = EVal("<<totFrac.value() << " , " << totFrac.error() << ")"
+                    << "\t # fraction of bin " << ii << endl;
+
       
     }
     
@@ -1573,8 +1593,9 @@ void fitAndPrintBinnedMass(TH2D* MvsBdt, Bool_t useML, int norm_year){
   Info("fitAndPrintBinnedMass", "Mass fit plots saved as *.pdf and *.root");
   if(prodOutputFile){
     summaryFile.close();
+    summaryFilePy.close();
     cout <<"=====================================================" << endl 
-         <<"=== Summary File created: (eventType)_Summary.txt ===" << endl
+         <<"=== Summary File created: (eventType)_Summary.txt(.py) ===" << endl
          <<"=====================================================" << endl;
   }
 };

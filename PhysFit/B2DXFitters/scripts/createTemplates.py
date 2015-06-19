@@ -101,20 +101,13 @@ __doc__ = """ real docstring """
 # -----------------------------------------------------------------------------
 # Load necessary libraries
 #------------------------------------------------------------------------------
-import B2DXFitters
-import ROOT
-from ROOT import RooFit
+from B2DXFitters import *
 from ROOT import *
-ROOT.gROOT.SetBatch()
-
+from ROOT import RooFit
 from optparse import OptionParser
-from math     import pi
-
-MassFitUtils = ROOT.MassFitUtils
-GeneralUtils = ROOT.GeneralUtils
-SFitUtils = ROOT.SFitUtils
-Bs2Dsh2011TDAnaModels = ROOT.Bs2Dsh2011TDAnaModels
-        
+from math     import pi, log
+import os, sys, gc
+gROOT.SetBatch()        
 # -----------------------------------------------------------------------------
 # Configuration settings
 # -----------------------------------------------------------------------------

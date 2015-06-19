@@ -168,6 +168,14 @@ def GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, index, verbose=False,
         prtcol=fname_protocol, topdir=fname_head, reco=DataDict['RecoVer'],
         pol=MagPolarity, mother=DataSetNameDict['MotherName'],
         part=PartType, strp=StripVer, idx=index, qry=fname_query)
+
+#    fname = ("{prtcol}{topdir}/{pol}/{part}/"
+#             "{mother}_{part}_{pol}_Strip{strp}_{idx}.root{qry}").format(
+#         prtcol=fname_protocol, topdir=fname_head,
+#         pol=MagPolarity, mother=DataSetNameDict['MotherName'],
+#         part=PartType, strp=StripVer, idx=index, qry=fname_query)
+
+
    
     if verbose:
       print "Attempting to open file {0} for reading".format(fname)
@@ -288,7 +296,7 @@ def GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, index, verbose=False,
                   
     return DataSet
 
-def GetPerfPlotList( PerfFunc,
+def GetPerfPlotListOLD( PerfFunc,
                      StripVer,
                      MagPolarity,
                      PartName,
@@ -328,7 +336,7 @@ def GetPerfPlotList( PerfFunc,
     return Plots
 
 
-def GetPerfResultList(PerfFunc,
+def GetPerfResultListOLD(PerfFunc,
                       StripVer,
                       MagPolarity,
                       PartName,
@@ -357,6 +365,150 @@ def GetPerfResultList(PerfFunc,
         PerfFunc(DataSet, DLLCutList, PIDResults, verbose)
         if verbose:
             print PIDResults
+        
+        #======================================================================
+        # Delete DataSet
+        #======================================================================
+        DataSet.Delete()
+
+    #======================================================================
+    # Return list PIDResults
+    #======================================================================
+    return PIDResults
+
+def GetPerfPlotList( PerfFunc,
+                     StripVer,
+                     MagPolarity,
+                     PartName,
+                     DLLCutList,
+                     TrackCuts,
+                     BinningScheme=None,
+                     runMin=None,
+                     runMax=None,
+                     verbose=True,
+                     allowMissingDataSets=False):
+  
+    #**********************************************************************
+    CheckStripVer(StripVer)
+    CheckMagPol(MagPolarity)
+    CheckPartType(PartName)
+      
+    #======================================================================
+    # Create dictionary holding:
+    # - Reconstruction version    ['RecoVer']
+    # - np.array of:
+    #        - MagUp run limits   ['UpRuns']
+    #        - MagDown run limits ['DownRuns']
+    #======================================================================
+    DataDict = GetRunDictionary(StripVer, PartName)
+
+    #======================================================================
+    # Determine min and max file indicies 
+    #======================================================================
+    IndexDict = GetMinMaxFileDictionary(DataDict, MagPolarity,
+                                        runMin, runMax)
+
+    #======================================================================
+    # Append runNumber limits to TrackCuts
+    #======================================================================
+    if None not in (runMin, runMax):
+        if TrackCuts!='':
+            TrackCuts+=' && '
+        TrackCuts+='runNumber>='+runMin+' && runNumber<='+runMax
+    if verbose:
+        print 'Track Cuts: ', TrackCuts
+
+    #======================================================================
+    # Declare default list of PID plots
+    #======================================================================
+    Plots = []
+    minEntries=1000
+
+    #======================================================================
+    # Loop over all calibration subsamples
+    #======================================================================
+
+    for i in xrange(IndexDict['minIndex'], IndexDict['maxIndex']+1):
+        DataSet = GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, i, verbose,
+                             allowMissingDataSets, minEntries)
+        if DataSet is not None:
+            #======================================================================
+            # Run Specific implementation of PerfCalculator
+            #======================================================================
+            Plots = PerfFunc(PartName, DataSet, DLLCutList, BinningScheme, Plots,
+                             verbose)
+        #======================================================================
+        # Delete DataSet
+        #======================================================================
+        DataSet.Delete()
+
+    #======================================================================
+    # Return list of plots
+    #======================================================================
+    return Plots
+
+def GetPerfResultList(PerfFunc,
+                      StripVer,
+                      MagPolarity,
+                      PartName,
+                      DLLCutList,
+                      TrackCuts,
+                      runMin=None,
+                      runMax=None,
+                      verbose=True,
+                      allowMissingDataSets=False):
+ #**********************************************************************
+    CheckStripVer(StripVer)
+    CheckMagPol(MagPolarity)
+    CheckPartType(PartName)
+      
+    #======================================================================
+    # Create dictionary holding:
+    # - Reconstruction version    ['RecoVer']
+    # - np.array of:
+    #        - MagUp run limits   ['UpRuns']
+    #        - MagDown run limits ['DownRuns']
+    #======================================================================
+    DataDict = GetRunDictionary(StripVer, PartName)
+
+    #======================================================================
+    # Determine min and max file indicies 
+    #======================================================================
+    IndexDict = GetMinMaxFileDictionary(DataDict, MagPolarity,
+                                        runMin, runMax)
+
+    #======================================================================
+    # Append runNumber limits to TrackCuts
+    #======================================================================
+    if None not in (runMin, runMax):
+        if TrackCuts!='':
+            TrackCuts+=' && '
+        TrackCuts+='runNumber>='+runMin+' && runNumber<='+runMax
+    if verbose:
+        print 'Track Cuts: ', TrackCuts
+
+
+    #======================================================================
+    # Declare default list of PID results
+    #======================================================================
+    PIDResults = []
+
+    #======================================================================
+    # Loop over all calibration subsamples
+    #======================================================================
+  #  for DataSet in GetDataSets(StripVer, MagPolarity, PartName, TrackCuts,
+  #                             runMin, runMax, verbose, allowMissingDataSets):
+   
+    for i in xrange(IndexDict['minIndex'], IndexDict['maxIndex']+1):
+        DataSet = GetDataSet(StripVer,MagPolarity,PartName,TrackCuts,i,verbose,allowMissingDataSets, minEntries)
+        if DataSet is not None:
+    
+        #======================================================================
+        # Run Specific implementation of PerfCalculator
+        #======================================================================
+            PerfFunc(DataSet, DLLCutList, PIDResults, verbose)
+            if verbose:
+                print PIDResults
         
         #======================================================================
         # Delete DataSet

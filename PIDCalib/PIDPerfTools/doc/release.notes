@@ -4,6 +4,9 @@
 ! Purpose     : Classes for performing PID based studies
 !-----------------------------------------------------------------------------
 
+!============================================== v5r5 2014-1-20 ==============================
+! 2014-1-20 Diego Martinez Santos
+	 Make version v5r5
 !============================================== v5r4 2013-10-9 ==============================
 ! 2013-10-9 Diego Martinez Santos
 	 Make version v5r4
@@ -354,6 +357,4 @@
 ! 2011-03-26 - Andrew Powell
  - Added setup_env.sh for bash shell users
 
-! 2011-03-24 - Andrew Powell
- - Modified PerfCalculator to be a template class
-	 - Now allows both TrackDataSet and EvtDataSet to be passed to constructo
+! 201

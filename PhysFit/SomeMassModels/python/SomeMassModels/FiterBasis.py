@@ -54,6 +54,71 @@ def gaussian_signal(fiter):
     fiter.sig  = RooGaussian("Sigmodel","Sigmodel", fiter.mass, fiter.mean, fiter.sigma)
     return 1
 
+def cruijff_signal(fiter):
+    fiter.mean = RooRealVar("mean","mean",5200, 5400)#5168.)
+    fiter.sigmaL = RooRealVar("sigmaL","sigmaL", 4.,46)#35.)
+    fiter.sigmaR = RooRealVar("sigmaR","sigmaR", 4.,46)#35.)
+    fiter.alphaL = RooRealVar("alphaL","alphaL", 1e-06,0.,.5)#35.)
+    fiter.alphaR = RooRealVar("alphaR","alphaR", 1e-06,0.,.5)#35.)
+    
+    fiter.sig  = RooJohanCruijff("Sigmodel","Sigmodel", fiter.mass, fiter.mean, fiter.sigmaL,fiter.sigmaR,fiter.alphaL,fiter.alphaR)
+    return 1
+
+
+def apollonios_signal(fiter):
+    fiter.mean = RooRealVar("mean","mean",5200,5400.)
+    fiter.sigma = RooRealVar("sigma","sigma", 2.,46)#35.)
+    fiter.b = RooRealVar("b","b",1,0.5,4)
+    fiter.n = RooRealVar("n","n",1,40)
+    fiter.a = RooRealVar("a","a",1,20)
+    fiter.sig  = RooApollonios("Sigmodel","Sigmodel", fiter.mass, fiter.mean, fiter.sigma, fiter.b, fiter.a, fiter.n)
+    return 1
+
+def double_apollonios_signal(fiter):
+    fiter.mean = RooRealVar("mean","mean",5200,5400.)
+    fiter.sigma = RooRealVar("sigma","sigma", 2.,46)#35.)
+    fiter.delta_s = RooRealVar("delta_s", "delta_s", 2., 35.)
+    fiter.sigma2 = RooFormulaVar("sigma2","sigma2", "sigma + delta_s" ,RooArgList(fiter.sigma,fiter.delta_s) )
+   
+    fiter.b = RooRealVar("b","b",1,0.5,4)
+    fiter.n = RooRealVar("n","n",1,40)
+    fiter.a = RooRealVar("a","a",1,20)
+    fiter.fapo1 = RooRealVar("fapo1","fapo1",0,1)
+    fiter.sig1  = RooApollonios("Sigmodel1","Sigmodel1", fiter.mass, fiter.mean, fiter.sigma, fiter.b, fiter.a, fiter.n)
+    fiter.sig2  = RooApollonios("Sigmodel2","Sigmodel2", fiter.mass, fiter.mean, fiter.sigma2, fiter.b, fiter.a, fiter.n)
+    fiter.sig  = RooAddPdf("Sigmodel","Sigmodel", fiter.sig1,fiter.sig2,fiter.fapo1)
+    return 1
+
+def double_gaussian1peak(fiter):
+    fiter.mean1 = RooRealVar("mean1","mean1",5250, 5400)#5168.)
+    fiter.sigma1 = RooRealVar("sigma1","sigma1", 6.,20)#35.)    
+    fiter.delta_s = RooRealVar("delta_s", "delta_s", 2., 35.)
+    fiter.sigma2 = RooFormulaVar("sigma2","sigma2", "sigma1 + delta_s" ,RooArgList(fiter.sigma1,fiter.delta_s) )
+    fiter.sigb11  = RooGaussian("SigmodelB11","SigmodelB11", fiter.mass, fiter.mean1, fiter.sigma1)
+    fiter.sigb12  = RooGaussian("SigmodelB12","SigmodelB12", fiter.mass, fiter.mean1, fiter.sigma2)
+    fiter.f1 = RooRealVar("f small res","f small res",0.5, 0., 1.)
+    fiter.sig  = RooAddPdf("Sigmodel","Sigmodel", fiter.sigb11, fiter.sigb12, fiter.f1)
+    
+    return 1
+
+def triple_gaussian1peak(fiter):
+    fiter.mean1 = RooRealVar("mean1","mean1",5250, 5400)#5168.)
+    fiter.sigma1 = RooRealVar("sigma1","sigma1", 6.,20)#35.)    
+    fiter.delta_s = RooRealVar("delta_s", "delta_s", 2., 35.)
+    fiter.delta_s2 = RooRealVar("delta_s2", "delta_s2", 2., 35.)
+    fiter.sigma2 = RooFormulaVar("sigma2","sigma2", "sigma1 + delta_s" ,RooArgList(fiter.sigma1,fiter.delta_s) )
+    fiter.sigma3 = RooFormulaVar("sigma3","sigma3", "sigma2 + delta_s2" ,RooArgList(fiter.sigma2,fiter.delta_s2) )
+    fiter.sigb11  = RooGaussian("SigmodelB11","SigmodelB11", fiter.mass, fiter.mean1, fiter.sigma1)
+    fiter.sigb12  = RooGaussian("SigmodelB12","SigmodelB12", fiter.mass, fiter.mean1, fiter.sigma2)
+    fiter.sigb13  = RooGaussian("SigmodelB13","SigmodelB13", fiter.mass, fiter.mean1, fiter.sigma3)
+
+    fiter.f1 = RooRealVar("f small res","f small res",0.5, 0., 1.)
+    fiter.f2 = RooRealVar("f small res 2","f small res 2",0.5, 0., 1.)
+    fiter.sig1  = RooAddPdf("Sigmodel1","Sigmodel1", fiter.sigb11, fiter.sigb12, fiter.f1)
+    fiter.sig  = RooAddPdf("Sigmodel","Sigmodel", fiter.sig1, fiter.sigb13, fiter.f2)
+    return 1
+
+
 def BW_signal(fiter):
     fiter.mean = RooRealVar("mean","mean",892,800,1200)#5168.)
     fiter.sigma = RooRealVar("sigma","sigma", 50.,30,100)
@@ -368,6 +433,22 @@ def two_cb(fiter):
 
 ##     return 1
 
+def ipatia_signal(fiter):
+    fiter.mean = RooRealVar("mean","mean",5365,5370.)
+    fiter.sigma = RooRealVar("sigma","sigma", 6.,15)#35.)
+    fiter.l = RooRealVar("l","l",-2.5,-10,-1)
+    fiter.zeta = RooRealVar("zeta","zeta",0,2)
+    fiter.beta = RooRealVar("beta","beta",0)#-0.01,0.01)
+
+    fiter.n = RooRealVar("n","n",0.8,40)
+    fiter.a = RooRealVar("a","a",1,40)
+    fiter.n2 = RooRealVar("n2","n2",0.9,40)
+    fiter.a2 = RooRealVar("a2","a2",1, 4)
+
+    fiter.sig  = RooIpatia2("Sigmodel","Sigmodel", fiter.mass, fiter.l, fiter.zeta, fiter.beta, fiter.sigma, fiter.mean, fiter.a, fiter.n, fiter.a2,fiter.n2)
+    return 1
+
+
 def sig_with_erf(fiter):
     """ the parameterization of Justine
     """
@@ -435,16 +516,16 @@ done in histogram instead of NTuple
         bkgf(self)
         
 
-        self.nsig = RooRealVar("Sigfraction", "Sigfraction", 0.5*t.GetEntries(),0.,t.GetEntries())
-        self.nbkg = RooRealVar("bkgfraction", "bkgfraction", 0.5*t.GetEntries(),0.,t.GetEntries())
+        self.nsig = RooRealVar("nsig", "nsig", 0.5*t.GetEntries(),0.,t.GetEntries())
+        self.nbkg = RooRealVar("nbkg", "nbkg", 0.5*t.GetEntries(),0.,t.GetEntries())
         
         self.model = RooAddPdf("model","model", RooArgList(self.sig, self.bkg), RooArgList(self.nsig, self.nbkg))
         if cuts: f.Close()
         self.short = shorTime
         if fit_in_init: self.result = self.fit()
-       
+        self.tree = t
         
-    def fit(self, fixing = {}, cpus =1):
+    def fit(self, fixing = {}, cpus =1, minos = kTRUE):
         for key in fixing.keys():
             getattr(self, key).setVal(fixing[key])
             getattr(self, key).setConstant(kTRUE)
@@ -452,12 +533,12 @@ done in histogram instead of NTuple
        
         if N < 10000 or (not self.short):
             print "Fitting to NTuple"
-            return self.model.fitTo(self.data,RooFit.Minos(True),RooFit.Verbose(False) ,RooFit.Save(),RooFit.NumCPU(cpus))
+            return self.model.fitTo(self.data,RooFit.Minos(minos),RooFit.Verbose(False) ,RooFit.Save(),RooFit.NumCPU(cpus), RooFit.Offset(kTRUE))
         else:
             print "Fitting HISTOGRAM"
             h = RooDataHist(self.var,self.var,RooArgSet(self.mass), self.data)
             print h
-            return self.model.fitTo(h,RooFit.Minos(True),RooFit.Verbose(False),RooFit.Save(), RooFit.NumCPU(cpus))
+            return self.model.fitTo(h,RooFit.Minos(minos),RooFit.Verbose(False),RooFit.Save(), RooFit.NumCPU(cpus), RooFit.Offset(kTRUE))
         
     
     def toy(self,Number):

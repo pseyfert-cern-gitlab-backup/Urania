@@ -44,6 +44,11 @@ class RooClassEditor:
         usedvars = []
         for var in vars_and_ranges: usedvars.append(var[0])
         self.integrals[code] = [usedvars,iter_integrate(self.symfunction,*vars_and_ranges)]
+    def doIntegralM(self, code, *vars_and_ranges):
+        usedvars = []
+        for var in vars_and_ranges: usedvars.append(var[0])
+        self.integrals[code] = [usedvars,math_integrate(self.symfunction,*vars_and_ranges)]
+    
     def copyname(self): return self.filename.replace(".cxx","_copy.cxx")
     def cleanUnresolvedIntegrals(self):
         initial_codes = self.integrals.keys()

@@ -143,6 +143,7 @@ c1.SetPhi(-40);
 h2smc->Draw("lego2")
 png("Square Dalitz 3D MC (K)")
 
+// ========================== The actual weighting
 int nbm = 20
 int nbt = 20
 TString Tnbm = ""; Tnbm += nbm;
@@ -154,14 +155,16 @@ TH2D* hKM2 = Make2DPlot("hKM2","m'",nbm,0,1,"#theta'",nbt,0,1)
 //gPad->SetLogy(0)
 TNN->Draw("thetaprime:mprime >> hKD",WL)
 TNNpK->Draw("thetaprime:mprime >> hKM", "(BKGCAT==1)*(Category==-1)*(ErrorCode==0)")
-//TH2* hK = Divide(&hKD,&hKM)  // crashes
-hKD->Divide(hKM)
-hKD->Draw("lego2")
-Normalise(hKD,"A")
+.L ~/codes/rootmacros/AllMacroes.C
+TH2D* hK = Divide2D(&hKD,&hKM)  // crashes
+//hKD->Divide(hKM)
+hK->Draw("lego2")
+Normalise(hK,"A")
 gPad->SetLogz(1)
-hKD->Draw("coltext")
+hK->Draw("coltext")
 png("Kaon reweighting "+Tnbm+"x"+Tnbt)
-for ( int i=0 ; i<(nbm+2)*(nbt+2); i++) { cout << ", " << (hKD->GetBinContent(i)>0?hKD->GetBinContent(i):0.) ; } cout << endl ;
+for ( int i=0 ; i<(nbm+2)*(nbt+2); i++) { cout << ", " << (hK->GetBinContent(i)>0?hK->GetBinContent(i):0.) ; } cout << endl ;
+for ( int i=0 ; i<(nbm+2)*(nbt+2); i++) { cout << ", " << (hK->GetBinContent(i)>0?hK->GetBinError(i):0.) ; } cout << endl ;
 
 TNN->Draw("thetaprime:mprime >> hKD",WL)
 TNNpK->Draw("thetaprime:mprime >> hKM2", "(BKGCAT==1)*(Category==-1)*(ErrorCode==0)*PTWeight")
@@ -242,9 +245,9 @@ RooPlot* r3 = SevenPlots(TNN,TNNpK,TNNpK,TNNpK,TNNpK,TNNpK,0,"sweightLb*(sweight
 SetTitle("m_{J/#psip} [MeV/c^{2}]",r3)
 png("LbK MC Lb PsiM with and without PT weights")
 
-
-
-
+//=====================================================================================
+// PT weights are in method
+//=====================================================================================
 
 
 

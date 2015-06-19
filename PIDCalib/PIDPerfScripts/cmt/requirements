@@ -3,7 +3,7 @@
 # Maintainer : Philip Hunt
 #============================================================================
 package           PIDPerfScripts
-version           v6r1
+version           v6r2p1
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -42,27 +42,26 @@ apply_pattern install_more_includes more=PIDPerfScripts
 # 'castorlhcb.cern.ch/'
 #
 #------------------------------------------------------------------------------
-# default for CERN access (S20r1 and later)
+# default for CERN access (S20r1, S20, MCTuneV2)
 set CALIBDATAURLPROTOCOL root
 set CALIBDATAURLQUERY svcClass=lhcbuser
-set CALIBDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/phunt/CalibData
+set CALIBDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/s/smalde/CalibData
 set CALIBREFDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/phunt/CalibData
 set MUONCALIBDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/phunt/CalibData
 set MUONCALIBREFDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/phunt/CalibData
 #------------------------------------------------------------------------------
 #
 ###------------------------------------------------------------------------------
-### required for Oxford access (S20r1 and later)
-##set CALIBDATASTORE /data/lhcb/users/hunt/CalibData
-##set CALIBREFDATASTORE /data/lhcb/users/hunt/CalibData
-##set MUONCALIBDATASTORE /data/lhcb/users/hunt/CalibData
-##set MUONCALIBREFDATASTORE /data/lhcb/users/hunt/CalibData
-##set CALIBDATAURLPROTOCOL 
-##set CALIBDATAURLQUERY
-###------------------------------------------------------------------------------
 ###
 ###------------------------------------------------------------------------------
-### default for CERN access (S20 or earlier)
+### default for CERN access (S20r1 MCTuneV1)
+##set CALIBDATAURLPROTOCOL root
+##set CALIBDATAURLQUERY svcClass=lhcbuser
+##set CALIBDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/phunt/CalibData
+##set CALIBREFDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/phunt/CalibData
+##set MUONCALIBDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/phunt/CalibData
+##set MUONCALIBREFDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/phunt/CalibData
+### default for CERN access (S20MCTuneV1, S17 or earlier)
 ##set CALIBDATAURLPROTOCOL root
 ##set CALIBDATAURLQUERY svcClass=lhcbuser
 ##set CALIBDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/powell/CalibData
@@ -72,14 +71,24 @@ set MUONCALIBREFDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/ph
 ###------------------------------------------------------------------------------
 ###
 ###------------------------------------------------------------------------------
-### required for Oxford access (S20 or earlier)
+### required for Oxford access (S17 or earlier)
 ##set CALIBDATASTORE /data/lhcb/users/powell/CalibData
 ##set CALIBREFDATASTORE /data/lhcb/users/hunt/CalibData
 ##set MUONCALIBDATASTORE /data/lhcb/users/hunt/CalibData
 ##set MUONCALIBREFDATASTORE /data/lhcb/users/hunt/CalibData
 ##set CALIBDATAURLPROTOCOL 
 ##set CALIBDATAURLQUERY
-###------------------------------------------------------------------------------
+###-----------------------------------------------------------------------------
+
+### required for Oxford access (S20r1 and later)
+###set CALIBDATASTORE /data/lhcb/users/malde/CalibData
+##set CALIBREFDATASTORE /data/lhcb/users/hunt/CalibData
+##set MUONCALIBDATASTORE /data/lhcb/users/hunt/CalibData
+##set MUONCALIBREFDATASTORE /data/lhcb/users/hunt/CalibData
+##set CALIBDATAURLPROTOCOL 
+##set CALIBDATAURLQUERY
+
+
 #============================================================================
 
 #============================================================================

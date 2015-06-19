@@ -3,7 +3,7 @@
 # Maintainer : Philip Hunt
 #============================================================================
 package           PIDPerfTools
-version           v5r4
+version           v5r5
 
 #============================================================================
 # Structure, i.e. directories to process. 

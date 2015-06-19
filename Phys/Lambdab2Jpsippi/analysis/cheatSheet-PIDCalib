@@ -1,0 +1,216 @@
+//====================================================================================================
+// in ROOT
+//====================================================================================================
+root.exe ../PID/PIDLb2Psippi.root ../PID/PIDLb2PsipK.root ../PID/Lbpi-PIDCalib-{20r1,20}-{Up,Down}.root ../PID/LbK-PIDCalib-{20r1,20}-{Up,Down}.root  
+
+TTree* piT = (TTree*)_file0->Get("MCTree")
+TTree* KT = (TTree*)_file1->Get("MCTree")
+TTree* piPCU20r1 = (TTree*)_file2->Get("CalibTool_PIDCalibTree")
+TTree* piPCD20r1 = (TTree*)_file3->Get("CalibTool_PIDCalibTree")
+TTree* piPCU20   = (TTree*)_file4->Get("CalibTool_PIDCalibTree")
+TTree* piPCD20   = (TTree*)_file5->Get("CalibTool_PIDCalibTree")
+TTree* KPCU20r1  = (TTree*)_file6->Get("CalibTool_PIDCalibTree")
+TTree* KPCD20r1  = (TTree*)_file7->Get("CalibTool_PIDCalibTree")
+TTree* KPCU20    = (TTree*)_file8->Get("CalibTool_PIDCalibTree")
+TTree* KPCD20    = (TTree*)_file9->Get("CalibTool_PIDCalibTree")
+
+piPCU20r1->AddFriend(piT)
+piPCD20r1->AddFriend(piT)
+piPCU20->AddFriend(piT)
+piPCD20->AddFriend(piT)
+KPCU20r1->AddFriend(KT)
+KPCD20r1->AddFriend(KT)
+KPCU20->AddFriend(KT)
+KPCD20->AddFriend(KT)
+
+piT->GetEntries()
+piPCU20r1->GetEntries()
+
+
+TCut GoodK("!isPion && (Meson_ProbNNK>0.05)")
+TCut GoodPi("isPion && (Meson_ProbNNpi>0.05)")
+TCut GoodPiK(GoodK ||GoodPi)
+TCut Splitter("Meson_ProbNNpi>Meson_ProbNNK")
+TCut PreselPi(GoodPi && Splitter)
+TCut PreselK(GoodK && !Splitter)
+TCut Presel(PreselK || PreselPi)
+Presel.GetTitle()
+
+KPCD20->Draw("K_PIDCalibEff:K_P")
+KPCD20->Draw("K_PIDCalibEff:K_TRACK_Eta")
+KPCD20->Draw("K_PIDCalibEff:nTracks")
+KPCD20->Draw("K_PIDCalibEff","nsig_sw")
+
+// They need to be aligned !
+KPCD20->Draw(GoodPiK.GetTitle(),"nsig_sw")  // 98.95%
+KPCD20->Draw(Presel.GetTitle(),"nsig_sw*("+TString(GoodPiK.GetTitle())+")")  // 92.77%
+KPCD20->Draw(Presel.GetTitle(),"nsig_sw")   // 92%
+KPCD20->Draw("K_PIDCalibEff","nsig_sw")     // 89%
+
+piPCD20->Draw(GoodPiK.GetTitle(),"nsig_sw")  // 99.5%
+piPCD20->Draw(Presel.GetTitle(),"nsig_sw*("+TString(GoodPiK.GetTitle())+")")  // 99.1%
+piPCD20->Draw(Presel.GetTitle(),"nsig_sw")   // 98.6%
+
+piPCD20->Draw("Pi_PIDCalibEff","nsig_sw")    // 98.7%
+
+RooPlot* rP = SandB(piT,KT,"Meson_P","1","1","nsig_sw","N","",0,50000)
+RooPlot* rE = SandB(piT,KT,"Meson_TRACK_Eta","1","1","nsig_sw","N","",1.5,5,105)
+RooPlot* rT = SandB(piT,KT,"nTracks","1","1","nsig_sw","N","nTracks",0,500)
+
+SetTitle("M P [MeV/c^{2}]",rP)
+png("Meson P Lbpi and LbK MC")
+SetTitle("M #eta",rE)
+horizontal_line(0.,rE,2)
+png("Meson Eta Lbpi and LbK MC")
+SetTitle("Tracks",rT)
+png("Tracks Lbpi and LbK MC")
+
+
+RooPlot* rP1 = TwoProfile(piT,KT,"Meson_P",GoodPiK.GetTitle(),"1","1","nsig_sw","NL","remove",3000,50000,50,0.8,1)
+SetTitle("M log_{10}(Pc/MeV)","#eta(P>5%)",rP1)
+png("Prob eff versus P Lbpi and LbK MC")
+
+RooPlot* rE1 = TwoProfile(piT,KT,"Meson_TRACK_Eta",GoodPiK.GetTitle(),"1","1","nsig_sw","N","remove",1.5,5.0,35,0.8,1)
+SetTitle("M #eta","#eta(P>5%)",rE1)
+png("Prob eff versus Eta Lbpi and LbK MC")
+
+RooPlot* rT1 = TwoProfile(piT,KT,"nTracks",GoodPiK.GetTitle(),"1","1","nsig_sw","NL","remove",20,500,25,0.9,1)
+SetTitle("log_{10}Tracks","#eta(P>5%)",rT1)
+png("Prob eff versus Tracks Lbpi and LbK MC")
+
+RooPlot* rP2 = TwoProfile(piT,KT,"Meson_P",Presel.GetTitle(),"1","1","nsig_sw","NL","remove",3000,50000,50,0,1)
+SetTitle("M log_{10}(Pc/MeV)","#eta(P and split)",rP2)
+png("Presel eff versus P Lbpi and LbK MC")
+
+RooPlot* rE2 = TwoProfile(piT,KT,"Meson_TRACK_Eta",Presel.GetTitle(),"1","1","nsig_sw","N","remove",1.5,5.0,35,0,1)
+SetTitle("M #eta","#eta(P and split)",rE2)
+png("Presel eff versus Eta Lbpi and LbK MC")
+
+RooPlot* rT2 = TwoProfile(piT,KT,"nTracks",Presel.GetTitle(),"1","1","nsig_sw","NL","remove",20,500,25,0.9,1)
+SetTitle("log_{10}Tracks","#eta(P and split)",rT1)
+png("Presel eff versus Tracks Lbpi and LbK MC")
+
+
+//================================================================================
+// With PIDCalib -> Does not work
+TProfile TPKPMC("TPKPMC","TPKPMC",50,0,50000,0,1.)
+TProfile TPKPPC("TPKPPC","TPKPPC",50,0,50000,0,1.)
+KT->Draw(TString(Presel.GetTitle())+":K_P >> TPKPMC","nsig_sw*(Polarity==-1)")
+KPCD20->Draw("K_PIDCalibEff:K_P >> TPKPPC","nsig_sw")
+RooPlot* rPC1 = NiceRooPlot(TPKPMC,TPKPPC)
+SetTitle("M P [GeV/c]","#eta(Presel)",rPC1)
+png("Presel eff LbK PIDCalib vs MC - P")
+
+TProfile TPpiPMC("TPpiPMC","TPpiPMC",50,0,50000,0,1.)
+TProfile TPpiPPC("TPpiPPC","TPpiPPC",50,0,50000,0,1.)
+piT->Draw(TString(Presel.GetTitle())+":Pi_P >> TPpiPMC","nsig_sw*(Polarity==-1)")
+piPCD20->Draw("Pi_PIDCalibEff:Pi_P >> TPpiPPC","nsig_sw")
+RooPlot* rPC1pi = NiceRooPlot(TPpiPMC,TPpiPPC)
+rPC1pi->SetMinimum(0.9) ; rPC1pi->SetMaximum(1)
+SetTitle("M P [GeV/c]","#eta(Presel)",rPC1pi)
+png("Presel eff Lbpi PIDCalib vs MC - P")
+
+// stats
+
+.L ../PID/PIDCalib.C
+PIDCalib("S20 Sim08a",   piPCD20,KPCD20, Presel.GetTitle(), Presel.GetTitle()); PIDCalib("S20 Down",   piPCD20,KPCD20) ; PIDCalib("S20 Up",     piPCU20,KPCU20) ;  PIDCalib("S20r1 Down", piPCD20r1,KPCD20r1) ; PIDCalib("S20r1 Up",   piPCU20r1,KPCU20r1) ;
+
+S20 Sim08a & 98.61\pm0.06 & 91.79\pm0.15 & 0.9308\pm0.0016\\ %%%%%%%%%%%%%%
+S20 Down & 98.67\pm0.03 & 88.8\pm0.09 & 0.9\pm0.001\\ %%%%%%%%%%%%%%
+S20 Up & 98.65\pm0.03 & 88.45\pm0.09 & 0.8966\pm0.001\\ %%%%%%%%%%%%%%
+S20r1 Down & 98.47\pm0.05 & 87.09\pm0.15 & 0.8844\pm0.0016\\ %%%%%%%%%%%%%%
+S20r1 Up & 98.44\pm0.06 & 87.03\pm0.17 & 0.8841\pm0.0018\\ %%%%%%%%%%%%%%
+
+
+//############################################################################################################
+// RUNNING PIDCALIB
+//###########################################################################################################
+cd ~/cmtuser/Urania_v2r1/PIDCalib/PIDPerfScripts/scripts/python/MultiTrack/
+
+python MakePerfHistsRunRange.py -x 125000 -y 134455 -M "20" "MagDown" "K" "[ProbNNK>0.05 && ProbNNK-ProbNNpi>0.0]" | tee test-20-Down-K-2
+python MakePerfHistsRunRange.py -x 111183 -y 125000 -M "20" "MagDown" "Pi" "[ProbNNpi>0.05 && ProbNNpi-ProbNNK>0.0]" | tee test-20-Down-Pi-1
+python MakePerfHistsRunRange.py -x 125001 -y 134455 -M "20" "MagDown" "Pi" "[ProbNNpi>0.05 && ProbNNpi-ProbNNK>0.0]" | tee test-20-Down-Pi-2
+python MakePerfHistsRunRange.py -x 111183 -y 125000 -M "20" "MagUp" "Pi" "[ProbNNpi>0.05 && ProbNNpi-ProbNNK>0.0]" | tee test-20-Up-Pi-1
+python MakePerfHistsRunRange.py -x 125001 -y 134455 -M "20" "MagUp" "Pi" "[ProbNNpi>0.05 && ProbNNpi-ProbNNK>0.0]" | tee test-20-Up-Pi-2
+
+
+//-------------------------------------
+
+python PerformMultiTrackCalib.py -N -w -P 100 "20r1" "MagUp" "~/codes/Lambdab2Jpsippi/PID/PIDLb2Psippi.root" "MCTree" "~/codes/Lambdab2Jpsippi/PID/Lbpi-PIDCalib-20r1-Up.root" "[Pi,Pi,ProbNNpi>0.05 && ProbNNpi-ProbNNK>0.0]"
+
+Naive event efficiency and error: (98.391 +/- 0.001)%
+Naive event efficiency and error (weighted): (81.799 +/- 0.001)%
+
+python PerformMultiTrackCalib.py -N -w -P 100 "20r1" "MagDown" "~/codes/Lambdab2Jpsippi/PID/PIDLb2Psippi.root" "MCTree" "~/codes/Lambdab2Jpsippi/PID/Lbpi-PIDCalib-20r1-Down.root" "[Pi,Pi,ProbNNpi>0.05 && ProbNNpi-ProbNNK>0.0]"
+
+Naive event efficiency and error: (98.402 +/- 0.000)%
+Naive event efficiency and error (weighted): (81.818 +/- 0.000)%
+
+python PerformMultiTrackCalib.py -N -w -P 100 "20r1" "MagUp" "~/codes/Lambdab2Jpsippi/PID/PIDLb2PsipK.root" "MCTree" "~/codes/Lambdab2Jpsippi/PID/LbK-PIDCalib-20r1-Up.root" "[K,K,ProbNNK>0.05 && ProbNNK-ProbNNpi>0.0]"
+
+Naive event efficiency and error: (86.793 +/- 0.001)%
+Naive event efficiency and error (weighted): (72.823 +/- 0.001)%
+
+python PerformMultiTrackCalib.py -N -w -P 100 "20r1" "MagDown" "~/codes/Lambdab2Jpsippi/PID/PIDLb2PsipK.root" "MCTree" "~/codes/Lambdab2Jpsippi/PID/LbK-PIDCalib-20r1-Down.root" "[K,K,ProbNNK>0.05 && ProbNNK-ProbNNpi>0.0]"
+
+Naive event efficiency and error: (86.860 +/- 0.001)%
+Naive event efficiency and error (weighted): (72.877 +/- 0.001)%
+
+python PerformMultiTrackCalib.py -N -w -P 100 "20" "MagUp" "~/codes/Lambdab2Jpsippi/PID/PIDLb2Psippi.root" "MCTree" "~/codes/Lambdab2Jpsippi/PID/Lbpi-PIDCalib-20-Up.root" "[Pi,Pi,ProbNNpi>0.05 && ProbNNpi-ProbNNK>0.0]"
+
+Naive event efficiency and error: (98.537 +/- 0.000)%
+Naive event efficiency and error (weighted): (81.967 +/- 0.000)%
+
+python PerformMultiTrackCalib.py -N -w -P 100 "20" "MagDown" "~/codes/Lambdab2Jpsippi/PID/PIDLb2Psippi.root" "MCTree" "~/codes/Lambdab2Jpsippi/PID/Lbpi-PIDCalib-20-Down.root" "[Pi,Pi,ProbNNpi>0.05 && ProbNNpi-ProbNNK>0.0]"
+
+Naive event efficiency and error: (98.564 +/- 0.000)%
+Naive event efficiency and error (weighted): (81.984 +/- 0.000)%
+
+python PerformMultiTrackCalib.py -N -w -P 100 "20" "MagUp" "~/codes/Lambdab2Jpsippi/PID/PIDLb2PsipK.root" "MCTree" "~/codes/Lambdab2Jpsippi/PID/LbK-PIDCalib-20-Up.root" "[K,K,ProbNNK>0.05 && ProbNNK-ProbNNpi>0.0]"
+
+Naive event efficiency and error: (88.129 +/- 0.000)%
+Naive event efficiency and error (weighted): (74.010 +/- 0.000)%
+
+python PerformMultiTrackCalib.py -N -w -P 100 "20" "MagDown" "~/codes/Lambdab2Jpsippi/PID/PIDLb2PsipK.root" "MCTree" "~/codes/Lambdab2Jpsippi/PID/LbK-PIDCalib-20-Down.root" "[K,K,ProbNNK>0.05 && ProbNNK-ProbNNpi>0.0]"
+
+Naive event efficiency and error: (88.523 +/- 0.000)%
+Naive event efficiency and error (weighted): (74.308 +/- 0.000)%
+
+//############################################################################################################
+// AVERAGING
+//###########################################################################################################
+root.exe
+TString part = "K"
+TString polarity = "Up"
+TString  base = "PerfHists_"+part+"_Strip20_Mag"+polarity+"_P_ETA_nTrack"
+TFile* f1 = TFile::Open(base+"-1.root")
+TFile* f2 = TFile::Open(base+"-2.root")
+f1->ls()
+f2->ls()
+//f1->Get("K_ProbNNK>0.05 && ProbNNK-ProbNNpi>0.0_All")->Draw()
+TString hist = ("Pi"==part?"Pi_ProbNNpi>0.05 && ProbNNpi-ProbNNK>0.0_All":"K_ProbNNK>0.05 && ProbNNK-ProbNNpi>0.0_All");
+f1->Get(hist)->Draw()
+f2->Get(hist)->Draw()
+TH3D* h1 = new TH3D(*((TH3D*)f1->Get(hist)))
+TH3D* h2 = new TH3D(*((TH3D*)f2->Get(hist)))
+h1->GetSumw2(); // done already
+h1->Draw();
+h2->Draw();
+double n1 = h1->GetEntries()
+double n2 = h2->GetEntries()
+double n = n1+n2
+cout << n1 << " " << n2 << endl; 
+
+h1->Add(h2,n2/n1)
+h1->Draw();
+h1->SetBit(TH1::kIsAverage);
+
+TFile* f = new TFile(base+".root","RECREATE")
+f->cd()
+h1->Write();
+f->Close();
+.q
+
+
+
+

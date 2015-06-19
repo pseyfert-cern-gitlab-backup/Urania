@@ -19,8 +19,5 @@
 #include "RooPhysFitter/RooDplusMassFitter.h"
 #include "RooPhysFitter/RooDstarD0MassFitter.h"
 #include "RooPhysFitter/RooPhiBg.h"
-#include "RooPhysFitter/RooGaussianChi2Var.h"
-#include "RooPhysFitter/RooPearsonsChi2Var.h"
-#include "RooPhysFitter/RooYatesChi2Var.h"
-#include "RooPhysFitter/RooLLRatioVar.h"
+#include "RooPhysFitter/RooTwoBodyPhspApprox.h"
 #endif // ROOPHYSFITTER_ROOPHYSFITTERDICT_H

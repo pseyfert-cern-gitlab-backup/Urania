@@ -12,21 +12,102 @@
 #   Author: Vladimir Vava Gligorov                                            #
 #                                                                             #
 # --------------------------------------------------------------------------- #
+# -----------------------------------------------------------------------------
+# settings for running without GaudiPython
+# -----------------------------------------------------------------------------
+""":"
+# This part is run by the shell. It does some setup which is convenient to save
+# work in common use cases.
 
+# make sure the environment is set up properly
+if test -n "$CMTCONFIG" \
+         -a -f $B2DXFITTERSROOT/$CMTCONFIG/libB2DXFittersDict.so \
+         -a -f $B2DXFITTERSROOT/$CMTCONFIG/libB2DXFittersLib.so; then
+    # all ok, software environment set up correctly, so don't need to do
+    # anything
+    true
+else
+    if test -n "$CMTCONFIG"; then
+        # clean up incomplete LHCb software environment so we can run
+        # standalone
+        echo Cleaning up incomplete LHCb software environment.
+        PYTHONPATH=`echo $PYTHONPATH | tr ':' '\n' | \
+            egrep -v "^($User_release_area|$MYSITEROOT/lhcb)" | \
+            tr '\n' ':' | sed -e 's/:$//'`
+        export PYTHONPATH
+        LD_LIBRARY_PATH=`echo $LD_LIBRARY_PATH | tr ':' '\n' | \
+            egrep -v "^($User_release_area|$MYSITEROOT/lhcb)" | \
+            tr '\n' ':' | sed -e 's/:$//'`
+	export LD_LIBRARY_PATH
+        exec env -u CMTCONFIG -u B2DXFITTERSROOT "$0" "$@"
+    fi
+    # automatic set up in standalone build mode
+    if test -z "$B2DXFITTERSROOT"; then
+        cwd="$(pwd)"
+        if test -z "$(dirname $0)"; then
+            # have to guess location of setup.sh
+            cd ../standalone
+            . ./setup.sh
+            cd "$cwd"
+        else
+            # know where to look for setup.sh
+            cd "$(dirname $0)"/../standalone
+            . ./setup.sh
+            cd "$cwd"
+        fi
+        unset cwd
+    fi
+fi
+# figure out which custom allocators are available
+# prefer jemalloc over tcmalloc
+for i in libjemalloc libtcmalloc; do
+    for j in `echo "$LD_LIBRARY_PATH" | tr ':' ' '` \
+            /usr/local/lib /usr/lib /lib; do
+        for k in `find "$j" -name "$i"'*.so.?' | sort -r`; do
+            if test \! -e "$k"; then
+                continue
+            fi
+            echo adding $k to LD_PRELOAD
+            if test -z "$LD_PRELOAD"; then
+                export LD_PRELOAD="$k"
+                break 3
+            else
+                export LD_PRELOAD="$LD_PRELOAD":"$k"
+                break 3
+            fi
+        done
+    done
+done
+# set batch scheduling (if schedtool is available)
+schedtool="`which schedtool 2>/dev/zero`"
+if test -n "$schedtool" -a -x "$schedtool"; then
+    echo "enabling batch scheduling for this job (schedtool -B)"
+    schedtool="$schedtool -B -e"
+else
+    schedtool=""
+fi
+
+# set ulimit to protect against bugs which crash the machine: 2G vmem max,
+# no more then 8M stack
+ulimit -v $((2048 * 1024))
+ulimit -s $((   8 * 1024))
+
+# trampoline into python
+exec $schedtool /usr/bin/time -v env python -O -- "$0" "$@"
+"""
+__doc__ = """ real docstring """
 # -----------------------------------------------------------------------------
 # Load necessary libraries
 # -----------------------------------------------------------------------------
-from optparse import OptionParser
-from os.path  import exists
-
-# -----------------------------------------------------------------------------
-# Configuration settings
-# -----------------------------------------------------------------------------
-
-import GaudiPython
-GaudiPython.loaddict( 'B2DXFittersDict' )
+from B2DXFitters import *
 from ROOT import *
-from ROOT import RooCruijff
+
+from ROOT import RooFit
+from optparse import OptionParser
+from math     import pi, log
+from  os.path import exists
+import os, sys, gc
+gROOT.SetBatch()
 
 
 # MODELS
@@ -85,7 +166,7 @@ def plotFitModel(model, frame, wksp, combData) :
     
     model.plotOn(frame,
                  RooFit.Slice(RooArgSet(qf,qt,cat)),
-                 RooFit.ProjWData(RooArgSet(qf,qt,cat,terr), dataset), #obs, dataset),
+                 RooFit.ProjWData(RooArgSet(qf,qt,cat), dataset), #obs, dataset),
                  RooFit.LineColor(kBlue+3))
     
     #fr = model.plotOn(frame,
@@ -240,9 +321,7 @@ if __name__ == '__main__' :
         parser.print_help()
 
     from ROOT import TFile, TCanvas, gROOT, TLegend
-    import GaudiPython
-    GaudiPython.loaddict('B2DXFittersDict')
-
+    
     from ROOT import kYellow, kMagenta, kOrange, kCyan, kGreen, kRed, kBlue, kDashed, kBlack
     from ROOT import RooRealVar, RooStringVar, RooFormulaVar, RooProduct
     from ROOT import RooCategory, RooMappedCategory, RooConstVar
@@ -300,16 +379,27 @@ if __name__ == '__main__' :
     frame_t = time.frame()
     frame_t.SetTitle('')
  
-    frame_t.GetXaxis().SetLabelSize(0.05)
-    frame_t.GetYaxis().SetLabelSize(0.05)
-    frame_t.GetXaxis().SetTitle('#font[12]{#tau (B_{s} #rightarrow D_{s} #pi) [ps]}')
-    frame_t.GetXaxis().SetTitleSize(0.05)
-    frame_t.GetYaxis().SetTitleSize(0.05)
-    frame_t.GetXaxis().SetTitleOffset(0.95)
-    frame_t.GetYaxis().SetTitleOffset(0.85)
+    frame_t.SetTitle('')
+
+    frame_t.GetXaxis().SetLabelSize( 0.05 )
+    frame_t.GetYaxis().SetLabelSize( 0.05 )
     frame_t.GetXaxis().SetLabelFont( 132 )
     frame_t.GetYaxis().SetLabelFont( 132 )
-        
+    frame_t.GetXaxis().SetLabelOffset( 0.006 )
+    frame_t.GetYaxis().SetLabelOffset( 0.006 )
+    frame_t.GetXaxis().SetLabelColor( kWhite)
+    
+    frame_t.GetXaxis().SetTitleSize( 0.05 )
+    frame_t.GetYaxis().SetTitleSize( 0.05 )
+    frame_t.GetYaxis().SetNdivisions(512)
+    
+    frame_t.GetXaxis().SetTitleOffset( 1.00 )
+    frame_t.GetYaxis().SetTitleOffset( 1.00 )
+                                                    
+    frame_t.GetXaxis().SetTitle('#font[12]{#tau (B_{s} #rightarrow D_{s} #pi) [ps]}')
+    frame_t.GetYaxis().SetTitle((TString.Format("#font[12]{Candidates / ( " +
+                                                str(time.getBinWidth(1))+" [ps])}") ).Data())
+    
 
     plotDataSet(dataset, frame_t, BDTGbins)
     
@@ -318,7 +408,8 @@ if __name__ == '__main__' :
     if plotModel :
         plotFitModel(modelPDF, frame_t, w, dataset)
 
-    frame_t.GetYaxis().SetRangeUser(0.001,5000)
+    gStyle.SetOptLogy(1)    
+    frame_t.GetYaxis().SetRangeUser(0.05,5000)
 
     legend = TLegend( 0.12, 0.12, 0.3, 0.3 )
     legend.SetTextSize(0.06)
@@ -345,28 +436,61 @@ if __name__ == '__main__' :
     legend.AddEntry(l1, "Signal B_{s}#rightarrow D_{s}#pi", "L")
     
     
-    padgraphics =  TPad("pad1","pad1",0.01,0.21,0.99,0.99)
-    padpull =  TPad("pad2","pad2",0.01,0.01,0.99,0.21)
-    padgraphics.Draw()
-    padpull.Draw()
-                
-    
-    padgraphics.SetLogy(1)
-    padgraphics.cd()
-    #gStyle.SetOptLogy(1)
-            
+    pad1 = TPad("upperPad", "upperPad", .050, .22, 1.0, 1.0)
+    pad1.SetBorderMode(0)
+    pad1.SetBorderSize(-1)
+    pad1.SetFillStyle(0)
+    pad1.SetTickx(0);
+    pad1.Draw()
+    pad1.cd()
+        
     frame_t.Draw()
     legend.Draw("same")
     
-    padgraphics.Update()
+    pad1.Update()
     
-    padpull.SetLogy(0)
-    padpull.cd()
+
+    canvas.cd()
+    pad2 = TPad("lowerPad", "lowerPad", .050, .005, 1.0, .3275)
+    pad2.SetBorderMode(0)
+    pad2.SetBorderSize(-1)
+    pad2.SetFillStyle(0)
+    pad2.SetBottomMargin(0.35)
+    pad2.SetTickx(0);
+    pad2.Draw()
+    pad2.SetLogy(0)
+    pad2.cd()
+    
     gStyle.SetOptLogy(0)
-      
+
+    frame_p = time.frame(RooFit.Title("pull_frame"))
+    frame_p.Print("v")
+    frame_p.SetTitle("")
+    frame_p.GetYaxis().SetTitle("")
+    frame_p.GetYaxis().SetTitleSize(0.09)
+    frame_p.GetYaxis().SetTitleOffset(0.26)
+    frame_p.GetYaxis().SetTitleFont(62)
+    frame_p.GetYaxis().SetNdivisions(106)
+    frame_p.GetYaxis().SetLabelSize(0.18)
+    frame_p.GetYaxis().SetLabelOffset(0.006)
+    frame_p.GetXaxis().SetTitleSize(0.12)
+    frame_p.GetXaxis().SetTitleFont(132)
+    frame_p.GetXaxis().SetTitleOffset(0.85)
+    frame_p.GetXaxis().SetNdivisions(5)
+    frame_p.GetYaxis().SetNdivisions(5)
+    frame_p.GetXaxis().SetLabelSize(0.09)
+    frame_p.GetXaxis().SetLabelFont( 132 )
+    frame_p.GetYaxis().SetLabelFont( 132 )
+    frame_p.GetXaxis().SetTitle('#font[12]{#tau (B_{s} #rightarrow D_{s} #pi) [ps]}')
+                                            
     pullHist = frame_t.pullHist()
     pullHist.SetMaximum(4.00)
     pullHist.SetMinimum(-4.00)
+
+    frame_p.addPlotable(pullHist,"P")
+    frame_p.Draw()
+        
+    
     axisX = pullHist.GetXaxis()
     axisX.Set(100, timeDown, timeUp )
     axisX.SetTitle('#font[12]{#tau (B_{s} #rightarrow D_{s} #pi) [ps]}')   
@@ -418,7 +542,7 @@ if __name__ == '__main__' :
     graph2.Draw("same")
     graph3.Draw("same")
     
-    padpull.Update()
+    pad2.Update()
     canvas.Update()
     
     chi2 = frame_t.chiSquare() 
@@ -427,9 +551,6 @@ if __name__ == '__main__' :
     print "chi2: %f"%(chi2)
     print "chi22: %f"%(chi22)
     
-    frame_t.GetYaxis().SetRangeUser(0.001,3000)
-    padgraphics.SetLogy()
-
     sufixTS = TString(options.sufix)
     if sufixTS != "":
         sufixTS = TString("_")+sufixTS

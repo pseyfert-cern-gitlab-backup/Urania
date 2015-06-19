@@ -28,7 +28,7 @@ TChain* TNN = new TChain("NetTree")
 TNN->Add("Lambdab-S20r1-1062-NN.root")
 TNN->Add("Lambdab-S20-1063-NN.root")
 TChain* TNNW = new TChain("WeightTree")
-TNNW->Add("Lambdab-S20X-1062-0.552-SW.root")
+TNNW->Add("Lambdab-S20X-1062-tree-0.552-SW.root")
 TNN->AddFriend(TNNW)
 TNN->Show(0)
 TNNW->Show(0)
@@ -287,4 +287,12 @@ png("NN output for LbK data and MC after NN")
 //=============================================================================
 
 TNN->Draw("NNEffWeight:mprime","(sweightLb>-4)*(Category==-1)*(ErrorCode==0)")
+
+//=============================================================================
+// NN cut eff
+//=============================================================================
+
+// NN efficiency on Kaons
+RooPlot* p = TwoProfile(TNN,TNNpK,"mprime","netOutput>0.552",wD,wMC,"1","N","remove",0,1,50)
+
 

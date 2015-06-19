@@ -103,7 +103,7 @@ def fromRootToDictionary(t):
         #list.append(thing)
     return output
 
-def saveInTuple(list,name,type="R", keytypes = {}):
+def saveInTuple(list,name,type="R",tname = "T", keytypes = {}):
     """saveInTuple( list of dictionaries, filename , type = 'R')
     Saves the data in a .xroot ( type = 'X' ) or .root file (type = 'R' )
     """
@@ -129,7 +129,7 @@ def saveInTuple(list,name,type="R", keytypes = {}):
     if type in ["X", "ASCII"]:
         TUP=XTuple(name,labels)
     if type=="R":
-        TUP=RTuple(name,labels)
+        TUP=RTuple(name,labels,tname)
     if type=="M":
         TUP=MTuple(name,labels)
     for thing in list:

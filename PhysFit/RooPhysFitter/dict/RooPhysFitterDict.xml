@@ -20,8 +20,6 @@
   <class name = "RooCruijffSimple" />
   <class name = "RooGranet" />
   <class name = "RooPhiBg" />
-  <class name = "RooPearsonsChi2Var" />
-  <class name = "RooGaussianChi2Var" />
-  <class name = "RooYatesChi2Var" />
-  <class name = "RooLLRatioVar" />
+  <class name = "RooTwoBodyPhspApprox" />
+  <enum name = "RooPhysFit::RooDplusMassFitter::PartType" />
 </lcgdict>

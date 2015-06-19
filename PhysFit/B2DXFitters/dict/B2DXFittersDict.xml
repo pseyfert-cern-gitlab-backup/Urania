@@ -4,8 +4,6 @@
 <!--- Created : 2011-05-23 -->
 <lcgdict>
     <selection>
-	<class pattern = "std::vector<*>" />
-
 	<class name = "BdPTAcceptance"              />
 	<class name = "FitMeTool"                   />
 	<class name = "CombBkgPTPdf"                />
@@ -36,23 +34,9 @@
 	</class>
 	<class name = "RooEffHistProd" />
 
-	<class name = "RooGenSmearIntegrandBinding" />
-	<class pattern = "RooGeneralisedSmearingBase<*>" >
-	    <field name = "_integrator" transient = "true" />
-	    <field name = "_integrand" transient = "true" />
-	    <field name = "_integvarset" transient = "true" />
-	    <field name = "_integralset" transient = "true" />
-	    <field name = "_integrandset" transient = "true" />
-	    <field name = "_integratorset" transient = "true" />
-	    <field name = "_binnedcache" transient = "true" />
-	    <field name = "_binnedcacheLastVal" transient = "true" />
-	    <field name = "_binnedvarClone" transient = "true" />
-	</class>
 	<class name = "RangeAcceptance" />
 	<class name = "PowLawAcceptance" />
 	<class name = "NonOscTaggingPdf" />
-
-	<class name = "std::pair<std::string, RooAbsData*>" /> 
 
 	<function pattern = "GeneralModels::*"          />
 	<function pattern = "PTResModels::*"            />
@@ -61,9 +45,13 @@
 	<function pattern = "Bs2Dsh2011TDAnaModels::*"  />
 
 	<function pattern = "GeneralUtils::*" />
-        <function pattern = "SFitUtils::*" />
-        <function pattern = "MassFitUtils::*" /> 
-        <function pattern = "WeightingUtils::*" />
+	<function pattern = "SFitUtils::*" />
+	<function pattern = "MassFitUtils::*" /> 
+	<function pattern = "WeightingUtils::*" />
+        <class name = "PlotSettings" />
+        <class name = "MDFitterSettings" />
+        <class name = "HistPID1D" />
+        <class name = "HistPID2D" />
 
 	<class pattern = "Bdecaytree" />
 
@@ -79,8 +67,8 @@
 	</class>
 	<class name="FinalStateChargePdf" />
 	<class name="TaggingCat" />
-        <class name="RooCruijff" />
-        
+	<class name="RooCruijff" />
+
 	<class name="RooComplementCoef"/>
 	<class name="RooAbsGaussModelEfficiency"/>
 	<class name="RooCubicSplineKnot::S_jk" />
@@ -94,5 +82,18 @@
 	<class name="RooCubicSplineFun"/>
 	<class name="RooBinnedFun"/>
 	<class name="RooGaussEfficiencyModel"/>
-    </selection>/>
+	<class name="RooKResModel">
+	    <field name = "_interpolation" transient = "true" />
+	    <field name = "_cacheMgr" transient = "true" />
+	</class>
+	<class name="RooKConvGenContext" />
+	<class name="RooSimultaneousResModel">
+	    <field name = "_cacheMgr" transient = "true" />
+	</class>
+	<class name="DLLTagCombiner">
+	    <field name = "combiner" transient = "true" />
+	</class>
+	<class name="TagDLLToTagDec"/>
+	<class name="TagDLLToTagEta"/>
+</selection>
 </lcgdict>

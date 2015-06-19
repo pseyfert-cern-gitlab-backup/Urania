@@ -12,6 +12,20 @@ def createConst(m,s1, name, signed = 0):
         x_cons = RooGaussian(name + "_const",name + "_const",x,RooFit.RooConst(m),RooFit.RooConst(400))
     return x, x_cons
 
+def createStableConst(m,s1, name, signed = 0):
+    mymax = m+10*s1
+    mymin = m-10*s1
+    if abs(mymax) > 2e3*s1 :
+        mymax = mymax*0.999
+
+    if not signed: x = RooRealVar(name,name, m, mymin,mymax)
+    if signed == 1:  x = RooRealVar(name,name, m, max(0, mymin),mymax)
+    if signed == -1 :  x = RooRealVar(name,name, m, mymin,min( mymax,0.))
+    x_cons = RooGaussian(name + "_const",name + "_const",x,RooFit.RooConst(m),RooFit.RooConst(s1))
+    
+    return x, x_cons
+
+
 def createBifurConst(m,s1,s2, name, signed = 0):
     if s1 == 0 :return createConst(m,s2,name)
     s1 = abs(s1)

@@ -166,10 +166,10 @@ RooPlot* FourPlots(TTree* T,
                    TString opts="NML", TString title="", 
                    Double_t limit = 0.,Double_t limit2 = -1.,int nbins=50){
   
-  char* Lb   = "sweightLb*(sweightLb>-4)*(wCategory==1)" ;
-  char* Bkg  = "sweightBkg*(sweightLb>-4)*(wCategory==1)";
-  char* LbK  = "sweightLb*(sweightLb>-4)*(wCategory==-1)";
-  char* BkgK = "sweightBkg*(sweightLb>-4)*(wCategory==-1)";
+  char* Lb   = "sweightLb*(sweightLb>-3)*(wCategory==1)" ;
+  char* Bkg  = "sweightBkg*(sweightLb>-3)*(wCategory==1)";
+  char* LbK  = "sweightLb*(sweightLb>-3)*(wCategory==-1)";
+  char* BkgK = "sweightBkg*(sweightLb>-3)*(wCategory==-1)";
  
   if ( ""==title) title=goodName("sFourPlots of "+variable);
 
@@ -187,8 +187,8 @@ RooPlot* FourKPlots(TTree* T, TTree* TK, TTree* TI,
                     TString opts="NML", TString title="", 
                     Double_t limit = 0.,Double_t limit2 = -1.,int nbins=25){
   
-  char* Ksig   = "sweightLb*(sweightLb>-4)*(wCategory==-1)" ;
-  char* Kbkg   = "sweightBkg*(sweightLb>-4)*(wCategory==-1)";
+  char* Ksig   = "sweightLb*(sweightLb>-3)*(wCategory==-1)" ;
+  char* Kbkg   = "sweightBkg*(sweightLb>-3)*(wCategory==-1)";
   char* Ktrue  = "Category==-1 && netOutput>0 && BKGCAT==1";
   char* Kinc   = "Category==-1 && netOutput>0 && BKGCAT!=1";
  
@@ -209,8 +209,8 @@ RooPlot* FourPlots(TTree* T, TTree* TPi, TTree* TK,
                    TString opts="NML", TString title="", 
                    Double_t limit = 0.,Double_t limit2 = -1.,int nbins=50){
   
-  TCut KSig(TString("sweightLb*(sweightLb>-4)*(tCategory==-1)*(")+TString(cut.GetTitle())+TString(")")) ;
-  TCut Pisig(TString("sweightLb*(sweightLb>-4)*(tCategory==1)*(")+TString(cut.GetTitle())+TString(")")) ;
+  TCut KSig(TString("sweightLb*(sweightLb>-3)*(tCategory==-1)*(")+TString(cut.GetTitle())+TString(")")) ;
+  TCut Pisig(TString("sweightLb*(sweightLb>-3)*(tCategory==1)*(")+TString(cut.GetTitle())+TString(")")) ;
   TCut Ktrue(cut && NNCut && "Category==-1 && BKGCAT==1 && ErrorCode==0") ;
   TCut Pitrue(cut && NNCut && "Category==1 && BKGCAT==0 && ErrorCode==0");
  
@@ -231,8 +231,8 @@ RooPlot* FourTrainPlots(TTree* T, TTree* TPi, TTree* TK,
                    TString opts="NML", TString title="", 
                    Double_t limit = 0.,Double_t limit2 = -1.,int nbins=50){
   
-  TCut KSig("sweightLb*(sweightLb>-4)*(tCategory==-1)") ;
-  TCut KBkg("sweightBkg*(sweightLb>-4)*(tCategory==-1)") ;
+  TCut KSig("sweightLb*(sweightLb>-3)*(tCategory==-1)") ;
+  TCut KBkg("sweightBkg*(sweightLb>-3)*(tCategory==-1)") ;
   TCut Ktrue("Category==-1 && BKGCAT==1 && ErrorCode==0") ;
   TCut Pitrue("Category==1 && BKGCAT==0 && ErrorCode==0");
  
@@ -253,8 +253,8 @@ RooPlot* FiveWeightedTrainPlots(TTree* T, TTree* TPi, TTree* TK,
 				TString opts="ML", TString title="", 
 				Double_t limit = 0.,Double_t limit2 = -1.,int nbins=50){
   
-  TCut KSig("sweightLb*(sweightLb>-4)*(tCategory==-1)") ;
-  TCut KBkg("sweightBkg*(sweightLb>-4)*(tCategory==-1)") ;
+  TCut KSig("sweightLb*(sweightLb>-3)*(tCategory==-1)") ;
+  TCut KBkg("sweightBkg*(sweightLb>-3)*(tCategory==-1)") ;
   TCut Pitrue("(Category==1)*(BKGCAT==0)*(ErrorCode==0)");
   TCut Ktrue("(Category==-1)*(BKGCAT==1)*(ErrorCode==0)");
   TCut KWtrue("(Category==-1)*(BKGCAT==1)*(ErrorCode==0)*DalitzWeight*SPDWeight*PTWeight2") ;
@@ -271,12 +271,35 @@ RooPlot* FiveWeightedTrainPlots(TTree* T, TTree* TPi, TTree* TK,
 // The FourPlots function for sWeighted data and MC signal
 //
 //
+RooPlot* FourUnblindedPlots(TTree* T, TTree* TPi, TTree* TK,
+			    TString variable, TCut NNCut,
+			    TString opts="ML", TString title="", 
+			    Double_t limit = 0.,Double_t limit2 = -1.,int nbins=50){
+  
+  TCut PiSig("sweightLb*(sweightLb>-3)*(Category==1)*("+TString(NNCut.GetTitle())+")") ;
+  TCut KSig("sweightLb*(sweightLb>-3)*(Category==-1)*("+TString(NNCut.GetTitle())+")") ;
+  TCut Pitrue("(Category==1)*(BKGCAT==0)*(ErrorCode==0)*DalitzWeight2*SPDWeight*PTWeight*("+
+              TString(NNCut.GetTitle())+")");
+  TCut Ktrue("(Category==-1)*(BKGCAT==1)*(ErrorCode==0)*DalitzWeight*SPDWeight*PTWeight2*NNEffWeight*("+
+             TString(NNCut.GetTitle())+")");
+ 
+  if ( ""==title) title=goodName("FourUnblindedPlots of "+variable);
+
+  return SevenPlots(T, T, TPi, TK, 0, 0, 0,
+                    PiSig.GetTitle(),KSig.GetTitle(),Pitrue.GetTitle(),Ktrue.GetTitle(),0,0,0,
+                    variable, opts,title, 
+                    limit,limit2,nbins) ;
+}
+//=====================================================================================
+// The FourPlots function for sWeighted data and MC signal
+//
+//
 RooPlot* ThreeDalitzWeightPlots(TTree* T, TTree* TK,
 				TString variable, 
 				TString opts="", TString title="", 
 				Double_t limit = 0.,Double_t limit2 = -1.,int nbins=50){
   
-  char* sweight = "sweightLb*(sweightLb>-4)*(tCategory==-1)";
+  char* sweight = "sweightLb*(sweightLb>-3)*(tCategory==-1)";
   char* trueK = "(BKGCAT==1)*(Category==-1)*(ErrorCode==0)";
   char* trueWK = "DalitzWeight*PTWeight2*SPDWeight*(BKGCAT==1)*(Category==-1)*(ErrorCode==0)";
 
@@ -312,14 +335,14 @@ RooPlot* FourReflections(TTree* TKpi, TTree* TKK,TTree* TpK,
 //
 RooPlot* SevenSpecies(TTree* T, TString variable, TCut cut, TString opts="NM", TString title="", 
 		    Double_t limit = 0,Double_t limit2 = -1.,int nbins=50){
-  TCut TCS("sweightLb*(sweightLb>-4)*("+TString(cut.GetTitle())+")");
+  TCut TCS("sweightLb*(sweightLb>-3)*("+TString(cut.GetTitle())+")");
   cout << TCS.GetTitle() << endl ;
-  TCut TCN("sweightNon*(sweightLb>-4)*("+TString(cut.GetTitle())+")");
-  TCut TCKpi("sweightKpi*(sweightLb>-4)*("+TString(cut.GetTitle())+")");
-  TCut TCpiK("sweightpiK*(sweightLb>-4)*("+TString(cut.GetTitle())+")");
-  TCut TCKK("sweightKK*(sweightLb>-4)*("+TString(cut.GetTitle())+")");
-  TCut TCKp("sweightKp*(sweightLb>-4)*("+TString(cut.GetTitle())+")");
-  TCut TCL("sweightLref*(sweightLb>-4)*("+TString(cut.GetTitle())+")");
+  TCut TCN("sweightNon*(sweightLb>-3)*("+TString(cut.GetTitle())+")");
+  TCut TCKpi("sweightKpi*(sweightLb>-3)*("+TString(cut.GetTitle())+")");
+  TCut TCpiK("sweightpiK*(sweightLb>-3)*("+TString(cut.GetTitle())+")");
+  TCut TCKK("sweightKK*(sweightLb>-3)*("+TString(cut.GetTitle())+")");
+  TCut TCKp("sweightKp*(sweightLb>-3)*("+TString(cut.GetTitle())+")");
+  TCut TCL("sweightLref*(sweightLb>-3)*("+TString(cut.GetTitle())+")");
   return SevenPlots(T,T,T,T,T,T,T,TCS.GetTitle(),TCN.GetTitle(),TCKpi.GetTitle(),TCpiK.GetTitle(),
 		  TCKK.GetTitle(),TCKp.GetTitle(),TCL.GetTitle(),variable,opts,title,limit,limit2,nbins);
 }
@@ -330,10 +353,10 @@ RooPlot* SevenSpecies(TTree* T, TString variable, TCut cut, TString opts="NM", T
 //
 RooPlot* ThreeSpecies(TTree* T, TString variable, TCut cut, TString opts="", TString title="", 
 		      Double_t limit = 0,Double_t limit2 = -1.,int nbins=50){
-  TCut TCS("sweightLb*(sweightLb>-4)*("+TString(cut.GetTitle())+")");
+  TCut TCS("sweightLb*(sweightLb>-3)*("+TString(cut.GetTitle())+")");
   cout << TCS.GetTitle() << endl ;
-  TCut TCN("sweightNon*(sweightLb>-4)*("+TString(cut.GetTitle())+")");
-  TCut TCR("(sweightKpi+sweightpiK+sweightKK+sweightKp+sweightLref)*(sweightLb>-4)*("+TString(cut.GetTitle())+")");
+  TCut TCN("sweightNon*(sweightLb>-3)*("+TString(cut.GetTitle())+")");
+  TCut TCR("(sweightKpi+sweightpiK+sweightKK+sweightKp+sweightLref)*(sweightLb>-3)*("+TString(cut.GetTitle())+")");
   return FourPlots(T,T,T,0,TCS.GetTitle(),TCN.GetTitle(),TCR.GetTitle(),"",
 		   variable,opts,title,limit,limit2,nbins);
 }
@@ -449,4 +472,126 @@ RooPlot* FourProfile(TTree* T, TTree* T2, TTree* T3, TTree* T4,
     return 0;
   }
   return NiceRooPlot(hs,hb2,hb3,hb4,0,0,0,0) ;
+}
+//===================================================================
+TH2D* Miranda(TH2D* B, TH2D* A, TString how = ""){
+  int nx = B->GetNbinsX();
+  int ny = B->GetNbinsY();
+  TH2D* M = new TH2D("Miranda "+TString(B->GetName()),"Miranda",
+		     nx,B->GetXaxis()->GetXmin(),B->GetXaxis()->GetXmax(),
+		     ny,B->GetYaxis()->GetXmin(),B->GetYaxis()->GetXmax());
+  for ( int ix = 1 ; ix<=nx ; ix++){
+    for ( int iy = 1 ; iy<=ny ; iy++){
+      double nb = B->GetBinContent(ix,iy);
+      double na = A->GetBinContent(ix,iy);
+      double eb = B->GetBinError(ix,iy);
+      double ea = A->GetBinError(ix,iy);
+      double as = (nb-na)/sqrt(ea*ea+eb*eb);
+      if (na+nb>0){
+	cout << nb << "+/-" << eb << " " << na << "+/-" << ea << " = " << as << endl ;
+	if (""==how) M->SetBinContent(ix,iy,as);
+	else  M->SetBinContent(ix,iy,nb-na);
+      } else {
+	if (""==how) M->SetBinContent(ix,iy,-999.);
+	else M->SetBinContent(ix,iy,0.);
+      }
+    }   
+  }
+  if (""==how) M->SetMinimum(-5.0);
+  if (""==how) M->SetMaximum(5.0);
+  M->SetStats(0);
+  M->Draw("COLtext");
+  M->GetXaxis()->SetTitle(B->GetXaxis()->GetTitle());
+  M->GetYaxis()->SetTitle(B->GetYaxis()->GetTitle());
+  return M;
+}
+//===================================================================
+TObject* Miranda(TH2D* M, TString opt = "NLL"){
+  int nx = M->GetNbinsX();
+  int ny = M->GetNbinsY();
+  TH1D* m = new TH1D("Miranda","Miranda",20,-5.,5.);
+  for ( int ix = 1 ; ix<=nx ; ix++){
+    for ( int iy = 1 ; iy<=ny ; iy++){
+      double a = M->GetBinContent(ix,iy);
+      if (a>-100) {
+	//	cout << a << endl ;
+	m->Fill(a);
+      }
+    }   
+  }
+  if ("chi2"==opt) {
+    TF1* f1 = new TF1("gaus1","[0]*exp(-0.5*(x/[1])^2)"); 
+    f1->SetParameter(1,1.);
+    m->Fit(f1);
+    TF1* f2 = new TF1("gaus2","[0]*exp(-0.5*(x)^2)"); 
+    m->Fit(f2);
+    m->Fit("gaus");
+    TF1 *g1 = m->GetFunction("gaus");
+    cout << g1->GetParameter(1) << "\\pm" << g1->GetParError(1) << " & " 
+	 << g1->GetParameter(2) << "\\pm" << g1->GetParError(2) << " & " 
+	 << g1->GetChisquare() << "/" << g1->GetNDF() << "\\\\" << endl ;
+    cout  << "0 & " 
+	 << f1->GetParameter(1) << "\\pm" << f1->GetParError(1) << " & " 
+	 << f1->GetChisquare() << "/" << f1->GetNDF() << "\\\\" << endl ;
+    cout << "0 & 1 & " 
+	 << f2->GetChisquare() << "/" << f2->GetNDF() << "\\\\" << endl ;
+    return m;
+  } else {
+    RooRealVar roovar(m->GetName(),"Miranda",-5,5) ;
+    RooDataHist Hist(m->GetName()+TString("H"),m->GetTitle(),roovar,m);
+    RooRealVar mean1("mean1","mean1",0,-1.,1.);
+    RooRealVar mean2("mean2","mean2",0);
+    RooRealVar sigma1("sigma","core sigma",1,0.1,2);
+    RooRealVar sigma2("sigma","core sigma",1,0.1,2);
+    RooRealVar sigma3("sigma2","core sigma",1);
+    RooGaussian G1("G1","Gaussian",roovar,mean1,sigma1);
+    RooGaussian G2("G2","Gaussian",roovar,mean2,sigma2);
+    RooGaussian G3("G3","Gaussian",roovar,mean2,sigma3);
+    RooChi2Var chi21("chi21","chi2",G1,Hist,DataError(RooAbsData::SumW2)) ;
+    RooChi2Var chi22("chi22","chi2",G2,Hist,DataError(RooAbsData::SumW2)) ;
+    RooChi2Var chi23("chi23","chi2",G3,Hist,DataError(RooAbsData::SumW2)) ;
+    RooFitResult* rf1 = 0 ;
+    RooFitResult* rf2 = 0 ;
+    RooFitResult* rf3 = 0 ;
+    if ("chi2-roofit"==opt){  // does not work
+      // Start Minuit session on Chi2
+      RooMinuit m21(chi21) ;
+      m21.migrad() ;
+      m21.hesse() ;
+      rf1 = m21.save() ;
+      RooMinuit m22(chi22) ;
+      m22.migrad() ;
+      m22.hesse() ;
+      rf2 = m22.save() ;
+      RooMinuit m23(chi23) ;
+      m23.migrad() ;
+      m23.hesse() ;
+      rf3 = m23.save() ;
+    } else if ( "NLL"==opt){
+      rf1 = G1.fitTo(Hist,Save());
+      rf2 = G2.fitTo(Hist,Save());
+      rf3 = G3.fitTo(Hist,Save());
+      RooPlot* xframe = roovar.frame();
+      Hist.plotOn(xframe);
+      G1.plotOn(xframe,RooFit::LineColor(kRed));
+      G2.plotOn(xframe,RooFit::LineColor(kBlue),RooFit::LineStyle(kDashed));
+      G3.plotOn(xframe,RooFit::LineColor(kGreen),RooFit::LineStyle(kDotted));
+      xframe->Draw();
+      rf1->Print("v");
+      rf2->Print("v");
+      rf3->Print("v");
+      cout << mean1.getVal() << "\\pm" << mean1.getError() << " & " 
+	   << sigma1.getVal() << "\\pm" << sigma1.getError() << " & " 
+	   << rf1->minNll() << "\\\\" << endl ;
+      cout << 0 << " & " 
+	   << sigma2.getVal() << "\\pm" << sigma2.getError() << " & " 
+	   << rf2->minNll() << "\\\\" << endl ;
+      cout << 0 << " & " << 1 << " & " << rf3->minNll() << "\\\\" << endl ;
+      if ("chi2"==opt)  m->Fit("gaus");
+      return xframe;
+    } else {
+      cout << "Unknown option " << opt << endl ;
+      return 0 ;
+    }
+  }
 }

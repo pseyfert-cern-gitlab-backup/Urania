@@ -39,6 +39,9 @@ def GetRealPartTypes():
 def GetPartTypes():
     return GetRICHPIDPartTypes()+GetMuonPIDPartTypes()
 
+def GetPklTypes():
+    return GetRICHPIDPartTypes()
+
 def CheckRealPartType(PartName):
     ValidPartNames=GetRealPartTypes()
     if PartName not in ValidPartNames:
@@ -53,6 +56,13 @@ def CheckPartType(PartName):
         msg=("Invalid particle type '{0}'. "
              "Allowed types are {1}").format(
             PartName, str(ValidPartNames))
+        raise TypeError(msg)
+
+def CheckPklType(PartName):
+    ValidPartNames=GetPklTypes()
+    if PartName not in ValidPartNames:
+        msg=("Invalid particle type for the samples/code version you are using."
+             "Allowed types are {0}. If you wish to use other please check twiki page for instructions").format(str(ValidPartNames))
         raise TypeError(msg)
 
 def CheckMagPol(MagPol):
@@ -96,11 +106,18 @@ def GetFileSuffix(PartName):
         return "mu_and_p_muonUnBiased"
     else:
         return "h_muonUnBiased"
+
+def GetPklFileSuffix(PartName):
+    CheckPklType(PartName)
+    if PartName in ("K", "Pi",):
+        return "dst_k_and_pi"
+    if PartName in ("P"):
+        return "lam0_p"
             
 def GetRunDictionary(StripVer, PartName="K"):#, IsMuonUnBiased=False):
 
     fileSuffix=GetFileSuffix(PartName)
-
+    pklfileSuffix=GetPklFileSuffix(PartName)
     #MUONPreFix = ''
     ##   if PartName in ("Mu", "K_MuonUnBiased", "Pi_MuonUnBiased", "P_MuonUnBiased"):
     ##         MUONPreFix = '/MUON'
@@ -111,10 +128,10 @@ def GetRunDictionary(StripVer, PartName="K"):#, IsMuonUnBiased=False):
     #======================================================================
     UpRunLims   = pickle.load( open( os.path.expandvars(
         '$CALIBDATASCRIPTSROOT/jobs/Stripping{strp}/ChopTrees/up_runLimits_{suf}.pkl'.format(
-        strp=StripVer, suf=fileSuffix)), 'rb' ) )
+        strp=StripVer, suf=pklfileSuffix)), 'rb' ) )
     DownRunLims = pickle.load( open( os.path.expandvars(
         '$CALIBDATASCRIPTSROOT/jobs/Stripping{strp}/ChopTrees/down_runLimits_{suf}.pkl'.format(
-        strp=StripVer, suf=fileSuffix)), 'rb' ) )    
+        strp=StripVer, suf=pklfileSuffix)), 'rb' ) )    
 
     StripDict = {'StripVer'   : StripVer,
                  'RecoVer'    : GetRecoVer(StripVer),

@@ -6,9 +6,12 @@ from sympy import sin as Sin, cos as Cos, sqrt as Sqrt, exp as Exp, pi as Pi, lo
 from sympy import Symbol, I, re, im, simplify, integrate, Pow, Integral, Abs
 from sympy import latex
 from itertools import permutations
+from sympy.core.singleton import SingletonRegistry
 from Mathematica import *
 # from sympy.parsing.mathematica import mathematica
 import os
+UraniaSR = SingletonRegistry() ### instantiate the singleton registry
+One = UraniaSR(1)
 
 def didIntegralWork(integral): return not ("ntegral" in str(integral.__class__))
 

@@ -7,9 +7,9 @@ ARRAYSIZE = 200
 
 class RTuple:
 
-   def __init__(self,name,labels):
+   def __init__(self,name,labels, tname = "T"):
       self._file = TFile(name+".root","recreate")
-      self._tree = TTree("T","example")
+      self._tree = TTree(tname,"example")
       for label in labels:
          i0 = label.find("/")
          i1 = label.find("[")

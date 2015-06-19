@@ -1,0 +1,121 @@
+root.exe 
+gROOT->ProcessLine(".x lhcbStyle.C");
+RooPlot* r = 0 
+TString optNN = "0.552"
+.L ../analysis/FourPlots.C
+gStyle->SetPalette(0)
+TString NN = "opt"
+TFile* _fileOptFit = TFile::Open("Lambdab-S20X-1062-tree-"+optNN+"-SW.root")
+TString head = "PAPER-"
+char* text = "LHCb"          
+  TCollection* l = new TList();
+  l->Add(new TLatex(0.1,0.03,"(a)"));
+  l->Add(new TLatex(0.1,0.03,"(b)"));
+  l->Add(new TLatex(0.1,0.03,"(c)"));
+  l->Add(new TLatex(0.1,0.03,"(d)"));
+  TIter myiter(l);
+
+RooPlot* rpiAB = _fileOptFit->Get("PsippiFitAB")
+RooPlot* rpiB = _fileOptFit->Get("PsippiFitB")
+RooPlot* rpi = _fileOptFit->Get("PsippiFit")
+rpiAB->SetMaximum(700.)
+rpiB->SetMaximum(700.)
+rpi->SetMaximum(1400.)
+
+rpiAB->Draw()
+lhcbName->Draw();
+pdf(head+"PsippiFitAB-opt")
+rpiB->Draw()
+lhcbName->Draw();
+pdf(head+"PsippiFitB-opt")
+rpi->Draw()
+lhcbName->Draw();
+pdf(head+"PsippiFit-opt")
+
+// Kaons in log
+gPad->SetLogy()
+RooPlot* rKAB = _fileOptFit->Get("PsipKFitAB")
+RooPlot* rKB = _fileOptFit->Get("PsipKFitB")
+RooPlot* rK = _fileOptFit->Get("PsipKFit")
+
+rK->SetMaximum(4000)
+rKB->SetMaximum(2000)
+rKAB->SetMaximum(2000)
+
+rKAB->Draw()
+lhcbName->Draw();
+pdf(head+"PsipKFitAB-opt")
+rKB->Draw()
+lhcbName->Draw();
+pdf(head+"PsipKFitB-opt")
+rK->Draw()
+lhcbName->Draw();
+pdf(head+"PsipKFit-opt")
+
+//=========================================================================
+// substructures
+gPad->SetLogy(0)
+char* WL = "sweightLb*(sweightLb>-3)*(wCategory==1)"
+char* WLW = "sweightLb*(sweightLb>-3)*(wCategory==1)*(wOneOverEff/120.)"
+W = (TTree*)_fileOptFit->Get("WeightTree")
+const double m_psi = 3096.916 ;
+const double m_p   =  938.272 ;
+const double m_pi  =  139.570 ;
+const double m_Lb  =  5620.0 ;
+const double m_K  =  493.677 ;
+const Double_t mBd = 5279.5 ;
+const Double_t mBs = 5370 ;
+const Double_t win = 20 ;
+TChain* TNN = new TChain("NetTree")
+TNN->Add("Lambdab-S20r1-1062-NN.root")
+TNN->Add("Lambdab-S20-1063-NN.root")
+TNN->AddFriend(W)
+TNN->Draw("wMass:PsippiMass",WLW)
+
+gStyle->SetPalette(0)
+gStyle->SetPaintTextFormat("5.1f");
+TH2D* h2 = Make2DPlot("h2","m_{p#pi}^{2} [GeV^{2}/c^{4}]",12,1.0,7,"m_{J/#psi#pi}^{2} [GeV^{2}/c^{4}]",12,10,22)
+
+TNN->Draw("psiMMass2/1e6:pMMass2/1e6 >> h2",WLW)
+h2->SetMinimum(0)
+h2->SetLineColor(1);
+
+lhcbName2 = new TPaveText(0.75,0.2,0.9,0.28,"BRNDC");
+lhcbName2->AddText("LHCb");
+lhcbName2->SetFillColor(0);
+lhcbName2->SetTextAlign(12);
+lhcbName2->SetBorderSize(0);
+h2->Draw("BOX")
+lhcbName2->Draw();
+pdf(head+"Boxed Dalitz (pi) effcor")
+
+TH1D* dppi = new TH1D("dppi","dppi",50,1,2.6)
+dppi->Sumw2()
+TNN->Draw("sqrt(pMMass2)/1000. >> dppi",WLW)
+dppi->Draw("E")
+RooPlot* rppi = NiceRooPlot(dppi,"NBW")
+rppi->SetMinimum(0.)
+SetTitle("m_{p#pi} [GeV/c^{2}]","dP/dm_{p#pi}",rppi);
+lhcbName->Draw();
+pdf(head+"ppiMass effcor")
+
+TH1D* dpsipi = new TH1D("dpsipi","dpsipi",30,3.2,4.7)
+dpsipi->Sumw2()
+TNN->Draw("sqrt(psiMMass2)/1000. >> dpsipi",WLW)
+dpsipi->Draw("E")
+RooPlot* rpsipi = NiceRooPlot(dpsipi,"NBW")
+rpsipi->SetMinimum(0.)
+SetTitle("m_{J/#psi#pi} [GeV/c^{2}]","dP/dm_{J/#psi#pi}",rpsipi);
+lhcbName->Draw();
+pdf(head+"PsipiMass effcor")
+
+TH1D* dpsip = new TH1D("dpsip","dpsip",30,4.0,5.5)
+dpsip->Sumw2()
+TNN->Draw("sqrt(psipMass2)/1000. >> dpsip",WLW)
+dpsip->Draw("E")
+RooPlot* rpsip = NiceRooPlot(dpsip,"NBW")
+rpsip->SetMinimum(0.)
+SetTitle("m_{J/#psip} [GeV/c^{2}]","dP/dm_{J/#psip}",rpsip);
+lhcbName->Draw();
+pdf(head+"PsipMass effcor")
+

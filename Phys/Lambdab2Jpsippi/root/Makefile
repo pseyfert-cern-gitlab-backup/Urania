@@ -1,6 +1,6 @@
 ROOTCFLAGS   := $(shell root-config --cflags)
 #ROOTLIBS     := -L$(ROOTSYS)/lib -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lRooFit -lRooFitCore -lRooStats -lFoam -lMinuit -lThread -pthread -lm -ldl -rdynamic
-ROOTLIBS := -L$(ROOTSYS)/lib  `root-config --libs`  -lRooFit -lRooFitCore -lRooStats -lFoam -lMinuit -lMathMore
+ROOTLIBS := -L$(ROOTSYS)/lib  `root-config --libs`  -lGenVector -lRooFit -lRooFitCore -lRooStats -lFoam -lMinuit -lMathMore
 
 ########################################################################################
 # explicitly written these variables are:
@@ -10,9 +10,10 @@ ROOTLIBS := -L$(ROOTSYS)/lib  `root-config --libs`  -lRooFit -lRooFitCore -lRooS
 #	-lPhysics -pthread -lm -ldl -rdynamic
 ########################################################################################
 
-CPPFILES = $(filter-out teacher.cpp makemctuple.cpp expert.cpp weighting.cpp optimise.cpp, $(wildcard *.cpp))
+CPPFILES = $(filter-out teacher.cpp makemctuple.cpp makePIDtuple.cpp expert.cpp weighting.cpp optimise.cpp, $(wildcard *.cpp))
 CFILES = $(wildcard *.C)
-OBJS = $(patsubst %.cpp,%.o, $(CPPFILES)) $(patsubst %.C,%.o, $(CFILES))
+CCFILES = $(wildcard *.cc)
+OBJS = $(patsubst %.cpp,%.o, $(CPPFILES)) $(patsubst %.C,%.o, $(CFILES)) $(patsubst %.cc,%.o, $(CCFILES))
 
 # set the compiler options
 # http://stackoverflow.com/questions/5083047/linker-problem-with-libstdc-so-6-in-connection-with-cuda/5088954#5088954
@@ -38,7 +39,7 @@ CXXFLAGS      += $(ROOTCFLAGS) -I. -I$(NEUROBAYES)/include -Iinc
 LIBSNB        = $(ROOTLIBS) $(NBLIBS) -lNeuroBayesTeacherCPP 
 LIBS          = $(ROOTLIBS) 
 
-default : weighting.exe optimise.exe makemctuple.exe expert.exe teacher.exe 
+default : weighting.exe optimise.exe makemctuple.exe makePIDtuple.exe expert.exe teacher.exe 
 
 clean:
 	@rm -rf *.o *.exe
@@ -55,6 +56,10 @@ update : clean all
 
 makemctuple.exe: makemctuple.o $(OBJS)
 	@echo now link makemctuple
+	$(LD) $(LDFLAGS) $^ $(ROOTLIBS)  -o $@
+
+makePIDtuple.exe: makePIDtuple.o $(OBJS)
+	@echo now link makePIDtuple
 	$(LD) $(LDFLAGS) $^ $(ROOTLIBS)  -o $@
 
 optimise.exe: optimise.o $(OBJS)

@@ -16,8 +16,7 @@ typedef std::map< RunEvent, Candidates > EventMap ;       ///< The big map of ev
 #include "TRandom2.h"
 #include "NetTree.h"
 #include "Lambdab.h"
-
-static const int m_theSeed = 123456789 ;
+#include "Tuples.h"
 
 class TTree ;
 class IB2JpsiX;

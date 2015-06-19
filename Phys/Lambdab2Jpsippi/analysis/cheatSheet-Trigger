@@ -1,5 +1,4 @@
 root.exe
-//===================================================================
 //TFile *_file11 = TFile::Open("Lambdab-S20r1-1062-All-SW.root")
 //TFile *_file12 = TFile::Open("Lambdab-S20-1063-All-SW.root")
 //TTree* SW11 = (TTree*)_file11->Get("TrainTree")
@@ -15,13 +14,25 @@ TChain* T = new TChain("BetaSLambdab2JpsippiDetachedLine_Tuple/DecayTree")
 T->Add("/castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20r1-1062.root")
 T->Add("/castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20-1063.root")
 TChain* SW = new TChain("TrainTree")
-SW->Add("Lambdab-S20r1-1062-All-SW.root")
-SW->Add("Lambdab-S20-1063-All-SW.root")
+SW->Add("Lambdab-S20r1-1062-All-SW-notrigger.root")
+SW->Add("Lambdab-S20-1063-All-SW-notrigger.root")
 T->AddFriend(SW)
 TChain* TNN = new TChain("NetTree")
 TNN->Add("Lambdab-S20r1-1062-NN.root")
 TNN->Add("Lambdab-S20-1063-NN.root")
 T->AddFriend(TNN)
+
+TChain* T2 = new TChain("BetaSLambdab2JpsippiDetachedLine_Tuple/DecayTree")
+T2->Add("/castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20r1-1062.root")
+T2->Add("/castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20-1063.root")
+TChain* SW2 = new TChain("TrainTree")
+SW2->Add("Lambdab-S20r1-1062-All-SW.root")
+SW2->Add("Lambdab-S20-1063-All-SW.root")
+T2->AddFriend(SW2)
+T2->AddFriend(TNN)
+
+
+T->Draw("B_SubpK_M[0]:tMass[0]","sweightLb[0]>-4")
 
 //T11->Draw("B_SubpK_M:tMass","runNumber==102182 && tCategory==-1 && sweightLb>-4")
 //T12->Draw("B_SubpK_M:tMass","runNumber==115332 && tCategory==-1 && sweightLb>-4")  // 
@@ -32,7 +43,7 @@ TCut kstream("tCategory==-1")
 
 .L ../analysis/FourPlots.C 
 .L ../analysis/Trigger.C
-char* netCut = "netOutput>0.552"
+char* netCut = "netOutput[0]>0.552"
 
 TFile* fTpi = TFile::Open("/castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root")
 TTree* Tpi = (TTree*)fTpi->Get("BetaSLambdab2JpsippiDetachedLine_TupleMC/DecayTree")
@@ -60,7 +71,48 @@ TCut Hlt2TIS(Hlt1 && "B_Hlt2Global_TIS==1")
 TCut Hlt2TOS("(Psi_Hlt2DiMuonDetachedJPsiDecision_TOS==1 || Psi_Hlt2DiMuonJPsiDecision_TOS==1 || Psi_Hlt2DiMuonJPsiHighPTDecision_TOS==1)")
 TCut Hlt2(Hlt1 && Hlt2TOS)
 TCut Trigger("((B_L0DiMuonDecision_TOS==1 || B_L0MuonDecision_TOS==1)&&(Psi_Hlt2DiMuonDetachedJPsiDecision_TOS==1 || Psi_Hlt2DiMuonJPsiDecision_TOS==1 || Psi_Hlt2DiMuonJPsiHighPTDecision_TOS==1)&&(Psi_Hlt1TrackMuonDecision_TOS==1 || Psi_Hlt1DiMuonHighMassDecision_TOS==1 || B_Hlt1TrackAllL0Decision_TOS==1))")
-TCut Good("ErrorCode[0]>-10 && netOutput>0.552")
+TCut Good("ErrorCode[0]>-10 && netOutput[0]>0.552")
+
+//===================================================================
+// Trigger
+//===================================================================
+
+// not quite convincing
+
+TCut NNCut(netCut)
+TH1D trigger("trigger","trigger",2,-0.5,1.5);
+Trigger(T,Tpi,TK,"B_L0MuonDecision_TOS","(B_L0ElectronDecision_TIS==1)",NNCut,"1",&trigger);
+
+
+AllTrigger(T,Tpi,TK,L0,Hlt1,Hlt2)
+
+// 
+RooPlot* t1 = TwoProfile(T,TK,"max(muplus_PT,muminus_PT)","Psi_L0MuonDecision_TOS","sweightLb[0]*(sweightLb[0]>-3)*(Category[0]==-1)","(Category[0]==-1)*(BKGCAT==1)","netOutput[0]>0.552 && (ErrorCode[0]==-9 || ErrorCode[0]==0) && (B_L0ElectronDecision_TIS==1)","L","",1000,10000,50)
+RooPlot* t2 = TwoProfile(T,TK,"max(muplus_PT,muminus_PT)","Psi_L0MuonDecision_TOS","sweightLb[0]*(sweightLb[0]>-3)*(Category[0]==-1)","(Category[0]==-1)*(BKGCAT==1)","netOutput[0]>0.552 && (ErrorCode[0]==-9 || ErrorCode[0]==0) && (B_L0Global_TIS==1)","L","",1000,10000,50)
+RooPlot* t3 = TwoProfile(T,TK,"max(muplus_PT,muminus_PT)","Psi_L0MuonDecision_TOS","sweightLb[0]*(sweightLb[0]>-3)*(Category[0]==-1)","(Category[0]==-1)*(BKGCAT==1)","netOutput[0]>0.552 && (ErrorCode[0]==-9 || ErrorCode[0]==0) && (B_L0Global_Dec==1)","L","",1000,10000,50)
+RooPlot* t2a = TwoProfile(T,T,"max(muplus_PT,muminus_PT)","Psi_L0MuonDecision_TOS","(runNumber<110000)","(runNumber>110000)","(netOutput[0]>0.552 && (ErrorCode[0]==-9 || ErrorCode[0]==0) && (B_L0Global_TIS==1))*sweightLb[0]*(sweightLb[0]>-3)*(Category[0]==-1)","L","",1000,10000,50)
+RooPlot* t2b = TwoProfile(T,TK,"max(muplus_PT,muminus_PT)","Psi_L0MuonDecision_TOS","sweightLb[0]*(sweightLb[0]>-3)*(Category[0]==-1)*(runNumber>110000)","(Category[0]==-1)*(BKGCAT==1)","netOutput[0]>0.552 && (ErrorCode[0]==-9 || ErrorCode[0]==0) && (B_L0Global_TIS==1)","L","",1000,10000,50)
+
+t1->SetMaximum(1.1) ; t1->SetMinimum(0)
+SetTitle("log_{10}(max(muons P_{T}/MeV))","L0 muon TOS | L0E TIS",t1)
+png("L0mu TOS vs max mu pt for E TIS")
+t2->SetMaximum(1.1) ; t2->SetMinimum(0)
+SetTitle("log_{10}(max(muons P_{T}/MeV))","L0 muon TOS | L0 TIS",t2)
+png("L0mu TOS vs max mu pt for L0 TIS")
+t3->SetMaximum(1.1) ; t3->SetMinimum(0)
+SetTitle("log_{10}(max(muons P_{T}/MeV))","L0 muon TOS",t3)
+png("L0mu TOS vs max mu pt for all L0")
+t2a->SetMaximum(1.1) ; t2a->SetMinimum(0)
+SetTitle("log_{10}(max(muons P_{T}/MeV))","L0 muon TOS | L0 TIS",t2a)
+png("L0mu TOS vs max mu pt for 2011 and 2012")
+t2b->SetMaximum(1.1) ; t2b->SetMinimum(0)
+SetTitle("log_{10}(max(muons P_{T}/MeV))","L0 muon TOS | L0 TIS",t2b)
+png("L0mu TOS vs max mu pt 2012")
+
+RooPlot* t1 = TwoProfile(T,TK,"muplus_PT*muminus_PT","Psi_L0DiMuonDecision_TOS","sweightLb[0]*(sweightLb[0]>-3)*(Category[0]==-1)","(Category[0]==-1)*(BKGCAT==1)","netOutput[0]>0.552 && (ErrorCode[0]==-9 || ErrorCode[0]==0) && (B_L0ElectronDecision_TIS==1)","L","",1e8,1e12,50)
+t1->SetMaximum(1.1) ; t1->SetMinimum(0)
+SetTitle("log_{10}(muons PT product)","L0 dimuon TOS | L0 TIS",t1)
+png("L0dimu TOS vs mus pt for L0 TIS")
 
 //===================================================================
 // Plots
@@ -202,30 +254,6 @@ hm03b = TwoProfile(TK,TK,"mprime[0]",L0.GetTitle(),"(Category==-1)*(B_L0Electron
 hm03b->SetMaximum(1) ; hm03b->SetMinimum(0.8) ;
 SetTitle("m'","L0",hm03b)
 
-
-//===================================================================
-// Trigger
-//===================================================================
-TChain* NN = new TChain("NetTree")
-NN->Add("Lambdab-S20r1-1062-NN.root")
-NN->Add("Lambdab-S20-1063-NN.root")
-T->AddFriend(NN)
-T->Draw("B_FullFit_M:PsippiMass",TCut(netCut) && "runNumber==102182")
-// blue is sweighted Lbpi
-// red is sweighted LbK
-// green is Lbpi MC
-// brown is LbK MC
-// FourPlots(T,Tpi,TK,"PsippiMass",netCut,"1","N","remove",5500,5800)
-// FourPlots(T,Tpi,TK,"PsipKMass",netCut,"1","N","remove",5500,5800)
-// FourPlots(T,Tpi,TK,"Polarity",netCut,"1","N","remove")
-
-// not quite convincing
-
-TH1D trigger("trigger","trigger",2,-0.5,1.5);
-Trigger(T,Tpi,TK,"B_L0DiMuonDecision_TOS","(B_L0ElectronDecision_TIS==1)",netCut,"B_L0MuonDecision_TOS==0",&trigger);
-
-
-AllTrigger(T,Tpi,TK,netCut,L0,Hlt1,Hlt2)
 
 
 
@@ -405,13 +433,30 @@ h = TwoProfile(T,Tpi,"sqrt(pMMass2)","B_L0DiMuonDecision_TOS",sw,"BKGCAT==0","(n
 h = TwoProfile(T,Tpi,"sqrt(pMMass2)",L0Mu.GetTitle(),sw,"BKGCAT==0","(netOutput>0.552)*(B_L0HadronDecision_TIS==1)","N","remove",1000,2600,13,0.9,1.05) // not very convincing
 
 
+//##################################################################################################
+//
+//##################################################################################################
 
 
+SandB(T,TK,"B_PT",KSig,Ktrue,"1","LN")
+SandB(T,TK,"B_PT",KSig,Ktrue,"1","LNM")
+SandB(T,TK,"B_PT",KSig,Ktrue,"1","LNM","",1000,30000,30)
+SandB(T,TK,"B_PT",KSigW,Ktrue,"1","LNM","",1000,30000,30)
+SandB(T,TK,"B_PT",KSig,KtrueW,"1","LNM","",1000,30000,30)
+SandB(T,TK,"B_PT","sweightLb[0]*(sweightLb[0]>-3)*(tCategory[0]==-1)","(Category[0]==-1)*(BKGCAT==1)","1","LNM","",1000,30000,30)
+SandB(T,TK,"B_PT","sweightLb[0]*(sweightLb[0]>-3)*(tCategory[0]==-1)","(Category[0]==-1)*(BKGCAT==1)","1","LNM","",100,50000,100)
+SandB(T,TK,"B_PT","sweightLb[0]*(sweightLb[0]>-3)*(tCategory[0]==-1)","(Category[0]==-1)*(BKGCAT==1)","netOutput[0]>0.552","LNM","",100,50000,100)
+SandB(T,TK,"B_PT","sweightLb[0]*(sweightLb[0]>-3)","(BKGCAT==1)*PTWeight","(Category[0]==-1)*(netOutput[0]>0.552)","LNM","",100,50000,100)
+SandB(T,TK,"B_PT","sweightLb[0]*(sweightLb[0]>-3)","(BKGCAT==1)*PTWeight2*DalitzWeight","(Category[0]==-1)*(netOutput[0]>0.552)","LNM","",1000,50000,50)
+SandB(SW,SW2,"sweightLb[0]","1","1","1")
+SandB(SW,SW2,"sweightLb[0]","1","1","1","N","",-0.1,1)
+SandB(T,T2,"B_PT","1","1","sweightLb[0]*(sweightLb[0]>-3)*(netOutput[0]>0.552)","LMN","",500,50000) // not the problem
+
+// There is a problem with PTWeight
 
 
-
-
-
-
-
-
+// BAD
+RooPlot* r3 = SandB(T,TK,"max(muplus_PT,muminus_PT)","sweightLb*(sweightLb[0]>-3)","(BKGCAT==1)*DalitzWeight[0]*SPDWeight[0]*PTWeight2[0]","(Category[0]==-1)*(ErrorCode[0]==0)","NLM","remove",1000,20000.)// BAD
+RooPlot* r4 = SandB(T,TK,"max(muplus_PT,muminus_PT)","sweightLb*(sweightLb[0]>-3)","(BKGCAT==1)*DalitzWeight[0]*SPDWeight[0]*PTWeight2[0]","(Category[0]==-1)*(ErrorCode[0]==0)*(B_L0Global_TIS)","NLM","remove",1000,20000.,50)// BAD
+RooPlot* r5 = SandB(T,TK,"max(muplus_PT,muminus_PT)","sweightLb*(sweightLb[0]>-3)","(BKGCAT==1)*DalitzWeight[0]*SPDWeight[0]*PTWeight2[0]","(Category[0]==-1)*(ErrorCode[0]==0 || ErrorCode[0]==-9)*(B_L0Global_TIS)","NLM","remove",1000,20000.,50)// better
+RooPlot* r6 = SandB(T,TK,"Psi_PT","sweightLb*(sweightLb[0]>-3)","(BKGCAT==1)*DalitzWeight[0]*SPDWeight[0]*PTWeight2[0]","(Category[0]==-1)*(ErrorCode[0]==0 || ErrorCode[0]==-9)*(B_L0Global_TIS)","NLM","remove",1000,20000.,50)// So-so

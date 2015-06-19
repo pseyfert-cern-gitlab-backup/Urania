@@ -1,18 +1,4 @@
-//#include "RooWorkspace.h"
-//#include "RooRealVar.h"
-//#include "RooGaussian.h"
-//#include "RooChebychev.h"
-//#include "RooAddPdf.h"
-//#include "RooDataSet.h"
-//#include "RooPlot.h"
-
-//#include "TFile.h"
-//#include "TCanvas.h"
-//#include "TROOT.h"
-
-//#include "RooPhysFitter/RooPhysFitter.h"
-
-/* example of how to use RooPhysFitter to fit a (toy) dataset, construct
+/** Example of how to use RooPhysFitter to fit a (toy) dataset, construct
 sWeights, and plot the results
 */
 void makeModel() 
@@ -41,7 +27,7 @@ void makeModel()
   ws->factory("PROD::sigModel(d0Sig,xSig)");
   // combined bkg PDF of d0 mass and "x"
   ws->factory("PROD::bkgModel(d0Bkg,xBkg)");
-  // combined full PDF of d0 mass and "x"
+  // combined full PDF of d0 mass and "x" (30% signal fraction)
   ws->factory("SUM::fullModel(nsigFull[3000,0,10000]*sigModel,nbkgFull[7000,0,10000]*bkgModel)");
   ws->Write();
   delete ws;
@@ -59,6 +45,7 @@ void makeData()
   if (ws->import(*data, RooFit::Rename("data"))) exit(1);
   f->cd();
   ws->Write();
+  delete data;
   delete ws;
   delete f;
 }
@@ -101,100 +88,130 @@ void RooPhysFitter_Ex1()
   // set the plot attributes
   cout << "Setting plot attributes" << endl;
   fitter->AddPdfComponent("d0Sig", kRed, kDashed, 2);
-  fitter->AddPdfComponent("d0Bkg", kMagenta, kDotted, 2);
+  fitter->AddPdfComponent("d0Bkg", kGreen+3, kDotted, 2);
   fitter->SetPlotParameters("mu,sigma,poly_c1");
-  
-  // set the chi^2 test statistic
-  cout << "Setting test statistic" << endl;
-  fitter->SetChi2TestStat(RooPhysFitter::LLRatio);
+  fitter->SetParamBoxX1(0.7);
+  fitter->SetParamBoxTextSize(0.04);
   
   // set the bins
   cout << "Setting plot bins" << endl;
   fitter->SetPlotBins(100);
-  fitter->SetChi2Bins(200);
 
-  // peform the fit 
-  // arguments: fitName ("fitResults"), nCores (4), save snapshot (true),
-  // print results (false), use sum-of-weights^2 errors (false),
-  // perform extended fit (true)
+  // perform the fit 
+  // arguments:
+  // 1) fitName ("fitResults");
+  // 2) nCores (4);
+  // 3) save snapshot? (true),
+  // 4) print results? (false);
+  // 5) use sum-of-weights^2 errors? (false);
+  // 6) perform extended fit (true)
   cout << "Performing fit" << endl;
   fitter->PerformFit("fitRes", 4, kTRUE, kTRUE, kFALSE, kTRUE);
   
   // calculate sWeights
-  // arguments: fitName ("fitResults"), name of data set with weights ("")
+  // arguments: 
+  // 1) fitName ("fitResults");
+  // 2) name of data set with weights ("").
   cout << "Calculting sWeights" << endl;
   fitter->CalculateSWeights("fitRes", "data_withSWeights");
   
   // create weighted data set for signal sWeight
-  // arguments: name of data set with weights,
-  // name of sWeight variable, save to workspace (true)
+  // arguments: 
+  // 1) name of data set with weights;
+  // 2) name of sWeight variable;
+  // 3) fit name ("fitResults");
+  // 4) save to workspace? (true).
   cout << "Creating signal sWeighted data set" << endl;
-//   fitter->SetDataSetName("data_withSWeights");
   fitter->CreateWeightedDataSet("data_sig", "nsig_sw", "fitRes");
   
   // create weighted data set for bkg sWeight
-  // arguments: name of data set with weights,
-  // name of sWeight variable, save to workspace (true)
+  // arguments: 
+  // 1) name of data set with weights;
+  // 2) name of sWeight variable;
+  // 3) fit name ("fitResults");
+  // 4) save to workspace? (true).
   cout << "Creating bkg. sWeighted data set" << endl;
-//   fitter->SetDataSetName("data_withSWeights");
   fitter->CreateWeightedDataSet("data_bkg", "nbkg_sw", "fitRes");
   
   // plot the fit results
-  // arguments: variable name, fit name ("fitResults"),
-  // range (""), range title (""), use sum-of-weights^2 errors (false),
-  // print chi^2 (true), perform extended chi^2 fit (true)
-  // number of cores for chi^2 fit (4)
+  // arguments: 
+  // 1) variable name;
+  // 2) fit name ("fitResults");
+  // 3) range ("");
+  // 4) range title ("");
+  // 5) use sum-of-weights^2 errors? (false)
   cout << "Plotting fit results" << endl;
   RooPlot* rp = fitter->PlotFitResults("mass", "fitRes");
+  rp->SetTitleOffset(0.8, "Y");
+  
+  // make the pull plot
+  // arguments:
+  // 1) variable name;
+  // 2) fit name ("fitResults");
+  RooPlot* rp_pull = fitter->PlotFitPulls("mass", "fitRes");
+  rp_pull->SetTitle(";;");
+  rp_pull->SetLabelSize(0.12, "X");
+  rp_pull->SetLabelSize(0.12, "Y");
+
   TCanvas* c1 = new TCanvas("c1", "Fit Results", 800, 600);
+  TPad* c1_upper = new TPad("cnv_mass_upper", "", 0.005, 0.30, 0.995, 0.995);
+  TPad* c1_lower = new TPad("cnv_mass_lower", "", 0.005, 0.05, 0.995, 0.295);
+  c1_upper->Draw();
+  c1_lower->Draw();
+  c1_upper->cd();
   rp->Draw();
+  c1_lower->cd();
+  rp_pull->Draw();
   c1->SaveAs("fitResults.eps");
   
   // plot the "x" variable
-  // arguments: variable name, range (""),  
-  // use sum-of-weights^2 errors (false),
-  // plot frame (NULL), plot scale (0), new name for plot (""),
-  // minimum of plot (0), maximum of plot (0)
+  // arguments: 
+  // arguments: 
+  // 1) variable name;
+  // 2) cut(s) ("");
+  // 3) range ("");
+  // 4) use sum-of-weights^2 errors (false);
+  // 5) plot frame (NULL), used for plotting on existing frame;
+  // 6) plot scale (0 = no scaling);
+  // 7) new name for plot ("");
+  // 8) minimum of plot (0 = use default);
+  // 9) maximum of plot (0 = use default).
+  //
+  // Returns RooPlot, unless an existing plot frame is specified
   cout << "Plotting variable 'x'" << endl;
   RooPlot* rp_var = fitter->PlotVariable("x");
+  rp_var->SetTitleOffset(0.8, "Y");
 
   fitter->SetDataSetName("data_sig");
   fitter->SetDataSetLineColor(kRed);
   fitter->SetDataSetMarkerColor(kRed);
-  fitter->PlotVariable("x", "", kTRUE, rp_var);
+  fitter->SetDataSetMarkerStyle(kFullTriangleDown);
+  fitter->PlotVariable("x", "", "", kTRUE, rp_var);
 
   fitter->SetDataSetName("data_bkg");
-  fitter->SetDataSetLineColor(kBlue);
-  fitter->SetDataSetMarkerColor(kBlue);
-  fitter->PlotVariable("x", "", kTRUE, rp_var);
+  fitter->SetDataSetLineColor(kGreen+3);
+  fitter->SetDataSetMarkerColor(kGreen+3);
+  fitter->SetDataSetMarkerStyle(kFullTriangleDown);
+  fitter->PlotVariable("x", "", "", kTRUE, rp_var);
 
   TCanvas* c2 = new TCanvas("c2", "x Variable", 800, 600);
   rp_var->Draw();
   c2->SaveAs("xVar.eps");
 
- //  // create likelihood scan plots for the model parameters
-  //  fitter->SetDataSetName("data");
-//   cout << "Plot likelihood scan for mu" << endl;
-//   RooPlot* rp_mu = fitter->PlotLikelihoodScan("mu", "fitRes");
-//   TCanvas* c4 = new TCanvas("c4", "LL for mu", 1024, 768);
-//   rp_mu->Draw();
-//   c4->SaveAs("LL_mu.eps");
-
-//   cout << "Plot likelihood scan for sigma" << endl;
-//   RooPlot* rp_sigma = fitter->PlotLikelihoodScan("sigma", "fitRes");
-//   TCanvas* c5 = new TCanvas("c5", "LL for sigma", 1024, 768);
-//   rp_sigma->Draw();
-//   c5->SaveAs("LL_sigma.eps");
-
-//   cout << "Plot likelihood scan for poly_c1" << endl;
-//   RooPlot* rp_poly_c1 = fitter->PlotLikelihoodScan("poly_c1", "fitRes");
-//   TCanvas* c6 = new TCanvas("c6", "LL for poly_c1", 1024, 768);
-//   rp_poly_c1->Draw();
-//   c6->SaveAs("LL_poly_c1.eps");
-  
   cout << "Saving workspace" << endl;
   fitter->SaveWS();
   cout << "Example completed!" << endl;
-  //delete fitter;
-  //fitter=0;
+
+  delete rp;
+  rp=NULL;
+  delete rp_pull;
+  rp_pull=NULL;
+  delete rp_var;
+  rp_var=NULL;
+  delete c1;
+  c1=NULL;
+  delete c2;
+  c2=NULL;
+  delete fitter;
+  fitter=NULL;
 }

@@ -52,10 +52,12 @@
 #include "B2DXFitters/SFitUtils.h"
 #include "B2DXFitters/MassFitUtils.h"
 #include "B2DXFitters/WeightingUtils.h"
+#include "B2DXFitters/PlotSettings.h"
+#include "B2DXFitters/MDFitterSettings.h"
+#include "B2DXFitters/HistPID1D.h"
+#include "B2DXFitters/HistPID2D.h"
 #include "B2DXFitters/KinHack.h"
 
-#include "B2DXFitters/RooGeneralisedSmearingBase.h"
-#include "B2DXFitters/RooGenSmearIntegrandBinding.h"
 #include "B2DXFitters/RangeAcceptance.h"
 
 template class std::vector<std::pair<std::string,std::string> >;
@@ -79,5 +81,11 @@ template class std::pair<std::string,RooAbsData*>;
 #include "B2DXFitters/RooBinnedFun.h"
 #include "B2DXFitters/RooGaussEfficiencyModel.h"
 #include "B2DXFitters/RooComplementCoef.h"
+#include "B2DXFitters/RooKResModel.h"
+#include "B2DXFitters/RooKConvGenContext.h"
+#include "B2DXFitters/RooSimultaneousResModel.h"
+#include "B2DXFitters/DLLTagCombiner.h"
+#include "B2DXFitters/TagDLLToTagDec.h"
+#include "B2DXFitters/TagDLLToTagEta.h"
 
 #endif // DICT_B2DXFITTERSDICT_H

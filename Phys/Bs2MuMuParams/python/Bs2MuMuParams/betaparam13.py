@@ -109,7 +109,12 @@ def beta(mod):
 def betaComb():
     print " ======= Beta Combined ======== " 
     Bu11 =  a11.BuNcan / ( a11.BuE_recsel * a11.BuE_trg )
+    print "Bu11 (eff corrected yield) = ", Bu11
     Bu12 =  a12.BuNcan / ( a12.BuE_recsel * a12.BuE_trg )
+    print "Bu12 (eff corrected yield) = ", Bu12
+    BuComb = Bu11 + Bu12
+    print "BuComb = Bu11 + Bu12 = ", BuComb
+    
     BuBR =  a12.BuBR
     fsfd = a12.fsfd
     fu = fu_fromdata()
@@ -151,6 +156,12 @@ def betaComb():
     print "cross (fb) = ", beta / (factor2* luminosity *f_bu)  
     return beta, beta_s, beta_lambda, beta_bb
 
+def bkgNormNoBR():
+    Bu11 =  a11.BuNcan / ( a11.BuE_recsel * a11.BuE_trg )
+    Bu12 =  a12.BuNcan / ( a12.BuE_recsel * a12.BuE_trg )
+    BuComb = Bu11 + Bu12
+    return BuComb
+
 
 
 def beta2012():
@@ -185,3 +196,4 @@ def printBeta():
     outfile.write("betabb      "+beta_bb.__str__()+"\n")
     outfile.close()
     
+

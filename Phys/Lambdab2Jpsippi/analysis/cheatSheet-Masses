@@ -79,31 +79,31 @@ png("LbK mass under Lbpi, B and AB")
 //================================================================================
 //------------------- pion stream
 TH2D* hk = Make2DPlot("hk","J/#psip#pi mass",110,4900,6000,"J/#psi#piK mass",110,4800,5900)
-TNN->Draw("PsipiKMass:PsippiMass >> hk",LooseNN && pistream)
+TNN->Draw("PsipiKMass:PsippiMass >> hk",LooseNN && pistreamUB)
 hk->SetTitleOffset(1.5,"y");
 hk->Draw("COL")
 png("pion stream piK vs ppi")
 
 TH2D* hk2 = Make2DPlot("hk2","J/#psip#pi mass",110,4900,6000,"J/#psiK#pi mass",110,4800,5900)
-TNN->Draw("PsiKpiMass:PsippiMass >> hk2",LooseNN && pistream)
+TNN->Draw("PsiKpiMass:PsippiMass >> hk2",LooseNN && pistreamUB)
 hk2->SetTitleOffset(1.5,"y");
 hk2->Draw("COL")
 png("pion stream Kpi vs ppi")
 
 TH2D* hLk = Make2DPlot("hLk","J/#psip#pi mass",110,4900,6000,"J/#psiKp mass",90,5200,6100)
-TNN->Draw("PsiKpMass:PsippiMass >> hLk",LooseNN && pistream)
+TNN->Draw("PsiKpMass:PsippiMass >> hLk",LooseNN && pistreamUB)
 hLk->SetTitleOffset(1.5,"y");
 hLk->Draw("COL")
 png("pion stream Kp vs ppi")
 
 TH2D* hLk2 = Make2DPlot("hLk2","J/#psip#pi mass",110,4900,6000,"J/#psipK mass",90,5200,6100)
-TNN->Draw("PsipKMass:PsippiMass >> hLk2",LooseNN && pistream)
+TNN->Draw("PsipKMass:PsippiMass >> hLk2",LooseNN && pistreamUB)
 hLk2->SetTitleOffset(1.5,"y");
 hLk2->Draw("COL")
 png("pion stream pK vs ppi")
 
 TH2D* hkK = Make2DPlot("hkK","J/#psip#pi mass",110,4900,6000,"J/#psiKK mass",110,4800,5900)
-TNN->Draw("PsiKKMass:PsippiMass >> hkK",LooseNN && pistream)
+TNN->Draw("PsiKKMass:PsippiMass >> hkK",LooseNN && pistreamUB)
 hkK->SetTitleOffset(1.5,"y");
 hkK->Draw("COL")
 png("pion stream KK vs ppi")

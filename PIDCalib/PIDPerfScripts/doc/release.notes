@@ -3,6 +3,22 @@
 ! Responsible : Philip Hunt
 ! Purpose     : Scripts using PIDPerfTools to perform PID studies
 !-----------------------------------------------------------------------------
+!============================= v6r2p1 20-12-2013 =============================
+
+! 2013-12-20 Sneha Malde
+ - Make version v6r2p1
+
+! 2013-12-20 Sneha Malde
+ - Adapt data reading to avoid everything in memory first
+
+
+!============================= v6r2 13-12-2013 =============================
+
+! 2013-12-13 Sneha Malde
+ - Make version v6r2
+
+! 2013-12-13 Sneha Malde
+ - Adapt scripts to use the new pkl file names
 
 !============================= v6r1 25-09-2013 =============================
 

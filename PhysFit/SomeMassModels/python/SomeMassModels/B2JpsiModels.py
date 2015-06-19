@@ -18,6 +18,12 @@ class SigCBFiter(FiterBasis):
         FiterBasis. __init__(self,tree, var,cuts, shorTime, weight_var, sigf = CB_signal, bkgf = bkg_with_Pshoulder)
         elf.mean.setMin(5260)
         self.mean.setMax(5400)
+
+class SigApoFiter(FiterBasis):
+
+    def __init__(self,tree, var,cuts="", shorTime = True, weight_var=0):
+        FiterBasis. __init__(self,tree, var,cuts, shorTime, weight_var, sigf = apollonios_signal, bkgf = exp_bkg)
+        
 class KstarFiter(FiterBasis):
 
     def __init__(self,tree, var,cuts="", shorTime = True, weight_var=0, fixed = 1):

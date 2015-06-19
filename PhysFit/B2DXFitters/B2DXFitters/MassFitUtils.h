@@ -1,3 +1,4 @@
+
 //---------------------------------------------------------------------------//
 //                                                                           //
 //  General utilities                                                        //
@@ -20,6 +21,7 @@
 // ROOT and RooFit includes
 #include "TFile.h"
 #include "TString.h"
+#include "TString.h"
 #include "TH1F.h"
 #include "TTree.h"
 #include "TCut.h"
@@ -31,6 +33,9 @@
 #include "RooDataSet.h"
 #include "RooHistPdf.h"
 #include "RooDataHist.h"
+
+#include "PlotSettings.h"
+#include "MDFitterSettings.h"
 
 namespace MassFitUtils {
 
@@ -53,29 +58,13 @@ namespace MassFitUtils {
   // workspace - workspace where data set should be saved
   //==========================================================================
   RooWorkspace* ObtainData(TString& fileDir, TString& sig,
-			   int PIDcut,
-			   double Pcut_down, double Pcut_up,
-			   double BDTG_down, double BDTG_up,
-			   double Dmass_down, double Dmass_up,
-			   double Bmass_down, double Bmass_up,
-			   double time_down, double time_up,
-			   TString& mVar, 
-			   TString& mDVar,
-			   TString& tVar,
-			   TString& terrVar,
-			   TString& tagVar,
-			   TString& tagOmegaVar,
-			   TString& idVar,
-			   TString& mProbVar,
+			   MDFitterSettings* mdSet,
 			   TString& mode,
-			   Bool_t tagtool,
-			   RooWorkspace* workspace,
+			   PlotSettings* plotSet = NULL,
+			   RooWorkspace* workspace = NULL,
 			   bool        debug = false);
 
-  
-
-
-  //===========================================================================
+    //===========================================================================
   // Obtain Bs->DsPi under Bs->DsK
   // filesDir - name of config .txt file from where data are loaded
   // sig - signature which data should be loaded
@@ -90,18 +79,10 @@ namespace MassFitUtils {
   // mistag - bool variable, if set "yes" then create RooKeysPdf for TagOmega
   //==========================================================================
   RooWorkspace* ObtainMissForBsDsK(TString& filesDir, TString& sig,
-				   int PIDmisscut,
-				   double Pcut_down, double Pcut_up,
-				   double BDTG_down, double BDTG_up,
-				   double Dmass_down, double Dmass_up,
-				   double Bmass_down, double Bmass_up,
-				   double PT_down, double PT_up,
-				   double nTr_down, double nTr_up,
-				   TString& mVar, 
-				   TString& mDVar,
-				   TString& mProbVar,
+				   MDFitterSettings* mdSet,
 				   TString& mode,
-				   RooWorkspace* workspace, Bool_t mistag,
+				   RooWorkspace* workspace = NULL, 
+				   PlotSettings* plotSet = NULL,
 				   bool        debug = false);
 
   //===========================================================================
@@ -119,19 +100,39 @@ namespace MassFitUtils {
   // mistag - bool variable, ifset "yes" then create RooKeysPdf for TagOmega
   //==========================================================================
   RooWorkspace* ObtainMissForBsDsPi(TString& filesDir, TString& sig,
-				    TString& namehypo, // int PIDmisscut,
-				    double Pcut_down, double Pcut_up,
-				    double BDTG_down, double BDTG_up,
-				    double Dmass_down, double Dmass_up,
-				    double Bmass_down, double Bmass_up,
-				    double PT_down, double PT_up,
-                                    double nTr_down, double nTr_up,
-				    TString& mVar, 
-				    TString& mDVar,
-				    TString& mProbVar,
+				    TString& namehypo, 
+				    MDFitterSettings* mdSet,
 				    TString& mode,
-				    RooWorkspace* workspace, Bool_t mistag,
+				    RooWorkspace* workspace = NULL, 
+				    PlotSettings* plotSet = NULL,
 				    bool        debug = false);
+
+  //===========================================================================
+  // Get cut for background MC 
+  //===========================================================================
+
+  TCut GetCutMCBkg( MDFitterSettings* mdSet, TString mode, TString hypo, bool debug = false );
+
+  //===========================================================================
+  // Get name of PID hist for bachelor  - background MC
+  //===========================================================================
+  TString GetHistNameBachPIDBkgMC(MDFitterSettings* mdSet, TString hypo, bool debug = false );
+
+  //===========================================================================
+  // Get name of PID hist for Ds child -  background MC
+  //===========================================================================
+  TString GetHistNameChildPIDBkgMC(MDFitterSettings* mdSet, TString hypo, bool debug = false );
+
+  //===========================================================================
+  // Get name of PID hist for proton veto - background MC
+  //===========================================================================
+  TString GetHistNameProtonPIDBkgMC(MDFitterSettings* mdSet, TString hypo, bool debug = false);
+
+  //===========================================================================
+  // Get name of PID hist for bachelor eff -  background MC
+  //===========================================================================
+  TString GetHistNameBachPIDEffBkgMC(MDFitterSettings* mdSet, TString hypo, bool debug = false);
+
 
   //===========================================================================
   // Obtain dataSets for all partially reconstructed backgrounds
@@ -148,23 +149,16 @@ namespace MassFitUtils {
   // workspace - workspace where data set should be saved
   //==========================================================================
   RooWorkspace* ObtainSpecBack(TString& filesDir, TString& sig, TString& sigtree,
-			       int PIDcut,
-			       int PIDmisscut,
-			       int pPIDcut,
-			       double Pcut_down, double Pcut_up,
-			       double BDTG_down, double BDTG_up,
-			       double Dmass_down, double Dmass_up,
-			       double Bmass_down, double Bmass_up,
-			       TString& mVar, 
-			       TString& mDVar,
-			       TString& mProbVar,
+			       MDFitterSettings* mdSet,
 			       TString& hypo,
-			       RooWorkspace* workspace, 
-			       Bool_t save, Bool_t mistag,
+			       RooWorkspace* workspace = NULL,
+			       Bool_t mistag = false, 
+			       double globalWeight = 1.0,
+			       PlotSettings* plotSet = NULL,
 			       bool        debug = false);
 
 
-  /**
+  /** 
    * Get a workspace with correction factors from MC.
    *
    * Calculates and returns correction factors for the B lifetime of
@@ -175,31 +169,27 @@ namespace MassFitUtils {
    * @param filesDir Directory with text file with list of samples
    * @param sig Token to read file names
    * @param sigtree Token to read tree names
-   * @param PIDcut
-   * @param PIDmisscut
-   * @param pPIDcut
-   * @param Pcut_down
-   * @param Pcut_up
-   * @param BDTGCut
-   * @param Dmass_down
-   * @param Dmass_up
-   * @param mVar
-   * @param hypo
-   * @param workspace
-   * @param ffile
+   * @param mdSet MD fitter settings
+   * @param hypo Mass hypothesis
+   * @param workspace Workspace to save templates
+   * @param ffile Dump file
+   * @param mass_win Apply mass window (default: true)
+   * @param debug Debug mode (default: falsex)
    *
-   * @return workspace
+   * @return Return filled workspace
    */
-  RooWorkspace* getSpecBkg4kfactor(TString& filesDir, TString& sig,
-				   TString& sigtree, int PIDcut,
-				   int PIDmisscut, int pPIDcut,
-				   double Pcut_down, double Pcut_up,
-				   double BDTGCut, double Dmass_down,
-				   double Dmass_up, TString& mVar,
-				   TString& hypo, RooWorkspace* workspace,
-				   TFile &ffile, bool mass_win=true,
-				   bool debug = false);
+  RooWorkspace* getSpecBkg4kfactor(TString& filesDir, TString& sig, TString& sigtree,
+				   MDFitterSettings* mdSet,
+				   TString& hypo,
+				   RooWorkspace* workspace,
+				   TFile &ffile, bool debug=true);
 
+
+  //===========================================================================
+  // Get cut for signal MC
+  //===========================================================================
+
+  TCut GetCutMCSig( MDFitterSettings* mdSet, TString modeB, TString modeD, bool debug = false );
 
   //===========================================================================
   // Obtain Signal sample
@@ -216,26 +206,15 @@ namespace MassFitUtils {
   // workspace - workspace where data set should be saved
   //==========================================================================
   RooWorkspace* ObtainSignal(   TString& filesDir, TString& sig, 
-				int PIDcut2, 
-				double Pcut_down2, double Pcut_up2,
-				double BDTG_down, double BDTG_up,
-				double Dmass_down, double Dmass_up,
-				double Bmass_down, double Bmass_up,
-				double time_down,double time_up,
-				double PT_down, double PT_up,
-				double nTr_down, double nTr_up,
-				TString& mVar,
-				TString& mDVar,
- 				TString& tVar,
-				TString& terrVar,
-				TString& tagVar,
-				TString& tagOmegaVar,
-				TString& idVar,
-				TString &mProbVar,
+				MDFitterSettings *mdSet,
 				TString& mode,
 				Bool_t reweight,
 				Bool_t veto,
-				RooWorkspace* work,
+				RooWorkspace* work = NULL,
+				Bool_t mistag = false,
+				double globalWeightMD = 1.0,
+				double globalWeightMU = 1.0,
+				PlotSettings* plotSet = NULL,
 				bool debug = false);
 
   //===========================================================================
@@ -250,14 +229,23 @@ namespace MassFitUtils {
   //==========================================================================
   RooWorkspace* CreatePdfSpecBackground(TString& filesDirMU, TString& sigMU,
 					TString& filesDirMD, TString& sigMD,
-					TString &mVar,
-					TString &mDVar,
-					double Bmass_down, double Bmass_up,
-					double Dmass_down, double Dmass_up,
-					RooWorkspace* workspace, 
-					Bool_t mistag,
-					bool debug); 
+					TString mVar,
+					TString mDVar,
+					TString tagVar,
+					TString tagOmegaVar,
+					RooWorkspace* workspace = NULL, 
+					Bool_t mistag = false,
+					PlotSettings* plotSet = NULL,
+					bool debug = false); 
 					
+  RooWorkspace* CreatePdfSpecBackground(TString& filesDirMU, TString& sigMU,
+                                        TString& filesDirMD, TString& sigMD,
+					MDFitterSettings* mdSet,
+                                        RooWorkspace* work=NULL,
+					Bool_t mistag=false,
+					PlotSettings* plotSet=NULL,
+                                        bool debug=false);
+
 
   //===========================================================================
   // Calculate expected number of yields and misID

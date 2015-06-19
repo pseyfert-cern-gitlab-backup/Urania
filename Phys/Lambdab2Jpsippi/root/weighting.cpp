@@ -13,8 +13,9 @@
 #include "TGraphErrors.h"
 #include "RooKeysPdf.h"
 #include "background.h"
+#include "weights.h"
 
-static const TString c_unblind = "unblind";
+static const TString c_blind = "blind";
 static const TString c_Fittable = "Fittable";
 
 using namespace std;
@@ -44,11 +45,11 @@ private :
   MassPdf* doAllFits(TString name,RooRealVar* mass, RooDataSet* Data, const int catCode, 
 		  double nnCut, bool blinded);
   MassPdf* doFits(TString name,RooRealVar* mass, RooDataSet* Data, const int catCode, 
-		  double nnCut, bool blinded, TString baryon);
+		  double nnCut, bool blinded, TString baryon, MassPdf* previouspdf, double offset=0.);
   int extractSWeight(TString name,RooDataSet* Data, RooStats::SPlot* sData, 
                      Long64_t& jentry, double& sweightLb, double& sweightNon,
                      double& sweightKpi, double& sweightpiK, double& sweightKK,
-                     double& sweightKp, double& sweightLref);
+                     double& sweightKp, double& sweightLref, double& sweightPartReco);
   void dataPlot(TString name, RooRealVar* mass, RooDataSet* data){  
     m_outfile->cd();
     RooPlot* massFrame = mass->frame();
@@ -91,8 +92,9 @@ private :
   double m_LbKAB_e ;
   TCut m_sigCut ;
   TCut m_bkgCut ;
-  bool m_free ;
+  bool m_freeTails ;
   bool m_notree ;
+  bool m_noTrigger ;
   bool m_stop ;
   bool m_mc ;
   bool m_signalmc ;
@@ -107,6 +109,16 @@ private :
   std::vector<TString> m_bkgCats ; ///< background categories to consider
   TString m_NNCut ;
   bool m_withXib  ;
+  bool m_withPartReco  ;
+  bool m_freezeSlope ;
+  unsigned int m_maxev ;
+  TString m_signalShape ;
+  TString m_bkgShape ;
+  double m_backgroundFactor ;
+  double m_rho ;
+  TString m_RhoString ;
+  TString m_UpDown ;
+  bool m_noPeak ;
   
 };
 
@@ -118,6 +130,7 @@ weighting::weighting( const TString fullname1, const TString fullname2,
 
   m_debug = true ; /// keep this line
   m_debug = ("debug"==opt) ;
+  m_maxev = 100000 ; // only for debug
   m_mc = fullname1.Contains("Sim08") ;
   m_signalmc = fullname1.Contains("Lb") ;
   m_signalmc_pi = fullname1.Contains("Lbpi") ;
@@ -125,16 +138,26 @@ weighting::weighting( const TString fullname1, const TString fullname2,
   m_allmc = "allmc"==opt ;
   m_what = what ;
   m_all = (c_All==m_what) ;
-  m_free = ("free"==opt || m_signalmc || m_allmc);
+  m_freeTails = ("free"==opt || m_signalmc || m_allmc);
   m_withXib = ("withXib"==opt);
-  m_notree = ("notree"==opt || m_mc || m_withXib );
-  m_unblind = ((c_unblind==opt) || m_mc) ;
+  m_withPartReco = ("PartReco"==opt);
+  m_freezeSlope = ("nofreeze"!=opt);
+  m_notree = ("tree"!=opt && "debug"!=opt ) ; // if debug, do tree 
+  m_noTrigger = ("notrigger"==opt);
+  m_unblind = (c_blind!=opt) ;
   //  m_ExpTuple2 = 0 ;
   m_minMass = (m_mc?c_minMCFit:c_minFit) ;
   m_maxMass = (m_mc?c_maxMCFit:c_maxFit) ;
   if (m_withXib) m_maxMass = c_maxFitXib ;
- 
-
+  m_backgroundFactor = ("FreeBkg"==opt?100.:1.);
+  m_rho = 1.5 ;// 1.5 is the default
+  m_RhoString = "";
+  if ( opt.Contains("Rho") ) m_RhoString = opt+"-" ;
+  if ("Rho05"==opt)      m_rho = 0.5 ; 
+  else if ("Rho10"==opt) m_rho = 1.0 ; 
+  else if ("Rho20"==opt) m_rho = 2.0 ; 
+  else if ("Rho25"==opt) m_rho = 2.5 ; 
+  else if ("Rho30"==opt) m_rho = 3.0 ; 
   m_NNCut = "0." ;
   m_bkgCut = TCut("Category==1 && ErrorCode==0");
   m_sigCut = TCut("Category==-1 && ErrorCode==0");
@@ -157,6 +180,9 @@ weighting::weighting( const TString fullname1, const TString fullname2,
     m_defaultNNCut = m_NNCut.Atof() ;
     cout << "######## Using cut " << m_defaultNNCut << endl ;
   }
+  if ("Up"==opt || "Down"==opt) m_UpDown = opt;
+  else m_UpDown="";
+  m_noPeak = ( "NoPeak" == opt );
   
   // now get files
 
@@ -190,8 +216,9 @@ weighting::weighting( const TString fullname1, const TString fullname2,
     }
   } else {
     plotfilename = plotfilename.ReplaceAll(".root","-"+m_NNCut+"-SW.root") ;
+    if (""!=opt) plotfilename = plotfilename.ReplaceAll(".root","-"+opt+".root") ;    
   }
-  std::cout << "Ouptut file is ``" << plotfilename << "''" << std::endl ;
+  std::cout << "Output file is ``" << plotfilename << "''" << std::endl ;
   m_outfile = new TFile( plotfilename, "RECREATE" );
   m_outfile->cd();
 
@@ -213,19 +240,35 @@ weighting::weighting( const TString fullname1, const TString fullname2,
   m_PsipKMass->setRange(c_Fittable, 5560,5720);  // narrowed
   m_PsiKKMass->setRange(c_Fittable, 5330,5470); // narrowed
 
+  m_signalShape = "DoubleCB" ;
+  if ("GaussCB"==opt) m_signalShape = "GaussCB";
+  if ("CB"==opt) m_signalShape = "CB";
+  if ("DoubleGauss"==opt) m_signalShape = "DoubleGauss";
+  if ("Gauss"==opt) m_signalShape = "Gauss";
+
+  m_bkgShape = "Exp";
+  if (("Poly2"==opt) || (!m_ExpTuple)) m_bkgShape="Poly2";
+  if ("Poly1"==opt) m_bkgShape="Poly1";
+  if ("Uni"==opt) m_bkgShape="Uni";
+
   m_sData = 0;
   m_sData_PsipK = 0;
   m_eventMap = 0;
-  if ("free" != opt && "notree" != opt && "" != opt && "debug" != opt && "allmc" != opt && "withXib"!=opt)  m_stop = true ;
+  if ("free" != opt && "tree" != opt && "" != opt && "debug" != opt &&
+      "allmc" != opt && "withXib"!=opt && "nofreeze" != opt && "notrigger"!=opt && 
+      c_blind != opt && "PartReco"!=opt)  m_stop = true ;
   
   std::cout << "####### Weighting settings : " 
 	    << (m_signalmc?"Signal ":"") 
 	    << (m_mc?"MC ":"Data")
 	    << (m_allmc?"AllMC ":"") 
-	    << (m_free?"Free ":"Constrained ")
+	    << (m_freeTails?"Free Tails ":"Constrained Tails ")
 	    << (m_unblind?"Unblind ":"Blind ")
 	    << (m_notree?"No Tree ":"Write Tree ")
 	    << (m_withXib?"With Xib ":"Without Xib ")
+	    << (m_withPartReco?"With Part Reco ":"Without Part Reco ")
+	    << (m_freezeSlope?"Freeze slope ":"Do not Freeze slope ")
+	    << (m_noTrigger?"Do not require trigger ":"Require Trigger ")
 	    << " what : ``" << what << "''"
 	    << " opt : ``" << opt << "''" 
 	    << " Mass range : " << m_minMass << ":" << m_maxMass << std::endl ;
@@ -273,7 +316,7 @@ RooDataSet* weighting::getDataSet(RooRealVar* mass, int catCut,
   // weight by Dalitz weight (usually 1)
   else rd = new RooDataSet(name,name,variables,TString(c_DalitzWeight+"*"+c_PTWeight+"2"));  
   rd->Print();
-  const Long64_t nentries = (m_debug?100000:(m_ExpTuple?m_ExpTuple->fChain->GetEntries():m_LambdabTuple->GetEntries(m_debug)));
+  const Long64_t nentries = (m_debug?m_maxev:(m_ExpTuple?m_ExpTuple->fChain->GetEntries():m_LambdabTuple->GetEntries(m_debug)));
   /// @todo MultipleCandidates here
   double frac = printFrac(nentries/10.);
   unsigned int nPairs = 0 ;
@@ -308,12 +351,16 @@ RooDataSet* weighting::getDataSet(RooRealVar* mass, int catCut,
       }
     } 
     if (m_ExpTuple && m_debug) std::cout << "Pass MC" << std::endl ;
+    if (""!=m_UpDown && m_ExpTuple){
+      if ("Up"==m_UpDown && !up(m_ExpTuple->RunNumber)) continue;
+      if ("Down"==m_UpDown && !down(m_ExpTuple->RunNumber)) continue;
+    }
     
     if (m_LambdabTuple && !m_LambdabTuple->pid(m_debug)){
       if (m_debug) std::cout << "fails PID" << std::endl ;
       continue ;
     }
-    if (m_LambdabTuple && !m_LambdabTuple->trigger()){
+    if (m_LambdabTuple && !m_noTrigger && !m_LambdabTuple->trigger()){
       if (m_debug) std::cout << "fails trigger" << std::endl ;
       continue ;
     }
@@ -460,8 +507,13 @@ int weighting::writeTree(double nnCut){
   if (m_debug) std::cout << "INFO :: writeTree" << std::endl ;
   Double_t wPsippiMass[100], wPsipKMass[100], sweightLb[100], sweightBkg[100];
   Double_t wNetOutput[100], wMass[100], wQ[100] ;
-  Double_t sweightKpi[100], sweightpiK[100], sweightKK[100],sweightKp[100], sweightLref[100], sweightNon[100];
+  Double_t sweightKpi[100], sweightpiK[100], sweightKK[100],sweightKp[100], sweightLref[100];
+  Double_t sweightNon[100], sweightPartReco[100], wOneOverEff[100];
   Int_t wCategory[100], wErrorCode[100], wBaryon, wMultiplicity ;
+
+  RooRealVar r_sweightLb("sweightLb","sweightLb",-10,2);
+  RooRealVar pMMass("pMMass","pMMass",0,6000.);
+  RooDataSet ppiSet("ppiSet","ppiSet",RooArgSet(pMMass, r_sweightLb),"sweightLb");
   
   TTree* outtree = new TTree("WeightTree","Weight Tree");
   unsigned int wPV_s  = 0 ;  // do not use the same name as in [wPV] 
@@ -479,16 +531,18 @@ int weighting::writeTree(double nnCut){
   outtree->Branch("sweightKp",     &sweightKp,   "sweightKp[wPV]/D");
   outtree->Branch("sweightLref",   &sweightLref, "sweightLref[wPV]/D");
   outtree->Branch("sweightNon",    &sweightNon,  "sweightNon[wPV]/D");
+  outtree->Branch("sweightPartReco", &sweightPartReco,  "sweightPartReco[wPV]/D");
   outtree->Branch("w"+c_Category,  &wCategory,   "w"+c_Category+"[wPV]/I");
   outtree->Branch("w"+c_NetOutput, &wNetOutput,  "w"+c_NetOutput+"[wPV]/D");
   outtree->Branch("w"+c_Baryon,    &wBaryon,     "w"+c_Baryon+"/I");
   outtree->Branch("w"+c_ErrorCode, &wErrorCode,  "w"+c_ErrorCode+"[wPV]/I");
   outtree->Branch("wMultiplicity", &wMultiplicity,"wMultiplicity/I");
+  outtree->Branch("wOneOverEff",   &wOneOverEff,  "wOneOverEff[wPV]/D");
   outtree->SetDirectory(m_outfile);
   
   RooDataSet* PsippiData = (m_unblind?m_sData->GetSDataSet():0) ;
   RooDataSet* PsipKData = m_sData_PsipK->GetSDataSet() ;
-  const Long64_t nentries = m_ExpTuple->fChain->GetEntries();
+  const Long64_t nentries = (m_debug?m_maxev:m_ExpTuple->fChain->GetEntries());
   //  RooArgSet *allVar = (m_unblind?(RooArgSet *) PsippiData->get():0);
   //  RooArgSet*  sWeightPsippiVar = (m_unblind?(RooArgSet *) PsippiData->get():0);
   RooArgSet * sWeightPsipKVar = (RooArgSet *) PsipKData->get();
@@ -504,20 +558,22 @@ int weighting::writeTree(double nnCut){
   
   for(Long64_t i=0; i<nentries; i++){
     m_ExpTuple->fChain->GetEntry(i);
-    m_debug = (257550108==m_ExpTuple->EventNumber);
     if( m_debug || 0==i%((int)(frac*nentries))) std::cout << " |-> " << i << " / " << nentries << " (" 
-                                                          << 100*i/nentries << "%)" << std::endl;
+                                                          << 100*i/nentries << "%)" << " " 
+                                                          << m_ExpTuple->EventNumber <<"/" 
+                                                          << m_ExpTuple->RunNumber << std::endl;
     wPV_s = m_ExpTuple->PVs ;
     wBaryon = m_ExpTuple->Baryon ;
     wMultiplicity = m_eventMap->candidatesInEvent(m_ExpTuple->RunNumber, m_ExpTuple->EventNumber);
     for ( unsigned int pv = 0 ; pv<m_ExpTuple->PVs ; pv++){   
       sweightKpi[pv] = -20; sweightpiK[pv] = -20; sweightKK[pv] = -20;
-      sweightKp[pv] = -20; sweightLref[pv] = -20, sweightNon[pv] = -20;
+      sweightKp[pv] = -20; sweightLref[pv] = -20, sweightNon[pv] = -20, sweightPartReco[pv] = -20;
       wPsippiMass[pv] = m_ExpTuple->PsippiMass[pv];
       wPsipKMass[pv]  = m_ExpTuple->PsipKMass[pv];
       wCategory[pv] = m_ExpTuple->Category[pv];
       wNetOutput[pv] = m_ExpTuple->netOutput[pv];
       wErrorCode[pv] = m_ExpTuple->ErrorCode[pv];
+      wOneOverEff[pv] = 0. ;
       if ( CatCodes::SignalCand == wCategory[pv] ) {
         wMass[pv] = wPsippiMass[pv] ;
         wQ[pv]    = wPsippiMass[pv]-m_psi-m_p-m_pi ;
@@ -551,17 +607,23 @@ int weighting::writeTree(double nnCut){
             ok = extractSWeight(c_PsippiName,PsippiData,m_sData,Psippi_entry,
                                 sweightLb[pv],sweightNon[pv],
                                 sweightKpi[pv], sweightpiK[pv], sweightKK[pv],
-                                sweightKp[pv], sweightLref[pv]);
-            sweightBkg[pv] = sweightNon[pv]+sweightKpi[pv]+sweightpiK[pv]+sweightKK[pv]+sweightKp[pv]+sweightLref[pv];
+                                sweightKp[pv], sweightLref[pv], sweightPartReco[pv]);
+            sweightBkg[pv] = sweightNon[pv]+sweightKpi[pv]+sweightpiK[pv]+sweightKK[pv]+sweightKp[pv]+
+              sweightLref[pv]+sweightPartReco[pv];
+	    wOneOverEff[pv] =  totalEffWeight(m_ExpTuple->mprime[pv], m_ExpTuple->thetaprime[pv], true) ;
             RooRealVar* mass = (RooRealVar *)PsippiData->get()->find(c_PsippiMass);
             if (fabs(mass->getVal()-wPsippiMass[pv])>0.01){
-              std::cout << "ERROR:: ppi candidate " << i << " and " << Psippi_entry  << " / " << nPK
+              std::cout << "ERROR:: ppi candidate " << i << " and " << Psippi_entry  << " / " << nPPi
                         << " M:" << mass->getVal() << " but should have " << wPsippiMass[pv] << std::endl ;
               return -11 ;
             }
             if (m_debug) std::cout << "DEBUG:: ppi candidate " << i << " and " 
                                    << Psippi_entry << " / " << nPPi
                                    << " M:" << wPsippiMass[pv] << " W = " << sweightLb[pv] << std::endl ;
+            // dataset
+            r_sweightLb.setVal(sweightLb[pv]);
+            pMMass.setVal(sqrt(m_ExpTuple->pMMass2[pv]));
+            ppiSet.add(RooArgSet(pMMass,r_sweightLb),sweightLb[pv]*(wOneOverEff[pv]/c_wOneOverEff));            
           } else {
            sweightLb[pv] = ErrorCodes::Blind ;
            sweightBkg[pv] =  ErrorCodes::Blind ;
@@ -571,8 +633,10 @@ int weighting::writeTree(double nnCut){
           ok = extractSWeight(c_PsipKName,PsipKData,m_sData_PsipK,PsipK_entry,
                               sweightLb[pv],sweightNon[pv],
                               sweightKpi[pv], sweightpiK[pv], sweightKK[pv],
-                              sweightKp[pv], sweightLref[pv]);      
-          sweightBkg[pv] = sweightNon[pv]+sweightKpi[pv]+sweightpiK[pv]+sweightKK[pv]+sweightKp[pv]+sweightLref[pv];
+                              sweightKp[pv], sweightLref[pv], sweightPartReco[pv]);      
+          sweightBkg[pv] = sweightNon[pv]+sweightKpi[pv]+sweightpiK[pv]+sweightKK[pv]+
+            sweightKp[pv]+sweightLref[pv]+sweightPartReco[pv];
+	  wOneOverEff[pv] =  totalEffWeight(m_ExpTuple->mprime[pv], m_ExpTuple->thetaprime[pv], false) ;
           RooRealVar* mass = (RooRealVar *)PsipKData->get()->find(c_PsipKMass);
           if (m_debug) std::cout << "DEBUG: " << sWeightPsipK_mass->getVal() << " and " 
                                  << m_ExpTuple->PsipKMass[pv] << std::endl ;
@@ -583,7 +647,7 @@ int weighting::writeTree(double nnCut){
           }
           if (m_debug) std::cout << "DEBUG:: pK  candidate " << i << " and " << PsipK_entry  << " / " << nPK
                                  << " M:" << wPsipKMass[pv] << " W = " << sweightLb[pv] << std::endl ;
-
+          
         } else {
           sweightLb[pv] = ErrorCodes::FailsCuts ;
           sweightBkg[pv] =  ErrorCodes::FailsCuts ;
@@ -602,6 +666,9 @@ int weighting::writeTree(double nnCut){
   }
   std::cout << "Reached sWeight entries " << PsipK_entry << " of " << nPK << std::endl ;
   outtree->Write();
+  pMMass.Write();
+  r_sweightLb.Write();
+  ppiSet.Write();
   std::cout << "Done" << std::endl ;
   
   return ok ;
@@ -656,7 +723,7 @@ int weighting::writeTrainTree(){
         sweightBkg[pv] = ErrorCodes::FailsCuts ;
         continue ;
       }
-      if (!trigger){	
+      if (!trigger && !m_noTrigger){	
         sweightLb[pv] = ErrorCodes::FailsTrigger ;
         sweightBkg[pv] = ErrorCodes::FailsTrigger ;
         continue ;
@@ -686,7 +753,7 @@ int weighting::writeTrainTree(){
         return -1 ;
       }
       double d; // dummy
-      ok = extractSWeight(c_PsipKName,PsipKData,m_sData_PsipK,PsipK_entry,sweightLb[pv],sweightBkg[pv],d,d,d,d,d);      
+      ok = extractSWeight(c_PsipKName,PsipKData,m_sData_PsipK,PsipK_entry,sweightLb[pv],sweightBkg[pv],d,d,d,d,d,d);      
       if (0!=ok) return ok;
       RooRealVar* mass = (RooRealVar *)PsipKData->get()->find(c_PsipKMass);
       if (fabs(mass->getVal()-wMass[pv])>0.01){
@@ -710,7 +777,7 @@ int weighting::writeTrainTree(){
 int weighting::extractSWeight(TString name,RooDataSet* Data, RooStats::SPlot* sData, 
                               Long64_t& jentry, double& sweightLb, double& sweightNon,
                               double& sweightKpi, double& sweightpiK, double& sweightKK,
-                              double& sweightKp, double& sweightLref){
+                              double& sweightKp, double& sweightLref, double& sweightPartReco){
   
   if (jentry>=Data->sumEntries()){
     std::cout << "ERROR : " << jentry << " larger than " << Data->sumEntries() << std::endl ;
@@ -736,6 +803,8 @@ int weighting::extractSWeight(TString name,RooDataSet* Data, RooStats::SPlot* sD
     sweightKK  = sData->GetSWeight(jentry,c_Yield+" "+c_PsiKKMass);
     //cout << "Looking for ``" << c_Yield+" "+c_PsiKpMass << "''" << endl ;
     sweightKp  = sData->GetSWeight(jentry,c_Yield+" "+c_PsiKpMass);
+    //cout << "Looking for ``" << c_Yield+" "+c_PsippiMass << "''" << endl ;
+    if (m_withPartReco) sweightPartReco  = sData->GetSWeight(jentry,c_Yield+" "+c_PartReco);
     //cout << "Looking for ``" << c_Yield+" "+c_PsippiMass << "''" << endl ;
     if (name.Contains("Psippi")) sweightLref  =  sData->GetSWeight(jentry,c_Yield+" "+c_PsipKMass);
     if (name.Contains("PsipK")) sweightLref  =  sData->GetSWeight(jentry,c_Yield+" "+c_PsippiMass);
@@ -786,7 +855,7 @@ background* weighting::reflectionFit(TString name, RooRealVar* mass, RooDataSet*
   data2 = (RooDataSet *)data; // ->reduce(TString(ll)
   double n = data2->sumEntries() ;
   double factor = 1;
-  if ( c_PsippiName==name ){ // ppi fit has a lot of Kpi
+  if ( name.Contains(c_PsippiName) ){ // ppi fit has a lot of Kpi
     if (c_PsipiKMass==mass->GetName()) {
       data2 = (RooDataSet *)data->reduce("(abs("+c_PsiKpiMass+"-5279.5)>15)"); // veto Kpi
       factor = 1/c_vetoFactor;
@@ -798,7 +867,7 @@ background* weighting::reflectionFit(TString name, RooRealVar* mass, RooDataSet*
     }
   }
   std::cout << "Doing reflection fit of " << name << " for " << mass->GetName() << " with " 
-	    << n << " entries of " << data->sumEntries() << " " << std::endl ;
+            << n << " entries of " << data->sumEntries() << ". Factor = " << factor << std::endl ;
   RooRealVar fG("Peak events","Peak events",0.5*n,0.,n);
   RooRealVar fbkg("Bkg events","Bkg events",0.5*n,0.,n);
   double m = m_Lb;
@@ -826,16 +895,17 @@ background* weighting::reflectionFit(TString name, RooRealVar* mass, RooDataSet*
   std::cout << (name.Contains(c_PsippiName)?"\\pion":"\\kaon")  << " & " 
             << (m_Lb==m?"\\Lb":(m_Bs==m?"\\Bs":"\\Bd")) << "\\to " 
             << TString(mass->GetTitle()).ReplaceAll("#pi","{\\pi}").ReplaceAll("#psi","{\\psi}").ReplaceAll("Mass","") << " & " 
-            << int(fG.getVal()+0.5) << " ! " << int(fG.getError()+0.5) 
+            << int(factor*fG.getVal()+0.5) << " ! " << int(factor*fG.getError()+0.5) 
             << " & " << 0.1*int(10*fG.getVal()/fG.getError()+0.5) 
             << "\\sigma \\\\"
             << ((name.EndsWith("B_blind")||(name.EndsWith("B")))?"% grepme4 ":"% grepme3 ")  
-            << std::endl ;
+            << factor << std::endl ;
   r->Print();
   pdf.Print();
   return new background(mass->GetName(),
                         (name.Contains(c_PsippiName)?CatCodes::SignalCand:CatCodes::pKCand),
-                        factor*fG.getVal(), factor*fG.getError(), m_NNCut);                               
+                        factor*fG.getVal(), factor*fG.getError(), m_NNCut, 
+			m_backgroundFactor, m_RhoString );                               
 }
 //=============================================================================
 // Get background vector
@@ -897,7 +967,8 @@ int weighting::RKFit(TString name, RooRealVar* mass, RooDataSet* data){
   //  if (m_signalmc && !m_signalmc_pi && c_PsipKName==name) return 0 ; // no need to fit peak itself
   if (!mass || !data) return -77;
   if (data->sumEntries()<=0) return 0 ;
-  std::cout << "Trying RooKeysPdf for " << name << " with " << data->sumEntries() << " entries " << std::endl ;
+  std::cout << "Trying RooKeysPdf for " << name << " with " << data->sumEntries() 
+	    << " entries. Rho = " << m_rho << std::endl ;
 
   for ( std::vector<TString>::const_iterator b = m_bkgCats.begin() ; b!=m_bkgCats.end() ; ++b){
     if ("1"==*b && c_PsipKName==name) continue ; // no need to fit peak itself
@@ -907,7 +978,7 @@ int weighting::RKFit(TString name, RooRealVar* mass, RooDataSet* data){
     std::cout << "Doing RooKeysPdf for background " << *b+"==BKGCAT"
 	      << " with " << data2->sumEntries() << " entries in range " 
 	      << mass->getMin() << ":" << mass->getMax() << std::endl ;
-    RooKeysPdf rk("RK"+name+*b,"RK"+name+*b,*mass,*data2,RooKeysPdf::NoMirror,1.5); 
+    RooKeysPdf rk("RK"+name+*b,"RK"+name+*b,*mass,*data2,RooKeysPdf::NoMirror,m_rho); 
     RooPlot* plotM = mass->frame(Bins(50));
     if (name.Contains("c_PsipKName")) plotM->SetXTitle("m_{J/#psipK} [MeV/c^{2}]");
     else if (name.Contains("c_PsippiName")) plotM->SetXTitle("m_{J/#psip#pi} [MeV/c^{2}]");
@@ -939,6 +1010,7 @@ int weighting::fit(TString name, RooDataSet* data, MassPdf* pdf){
       } else {
         data2 = (RooDataSet *)data->reduce("BKGCAT==1") ;
         //	std::cout << "BKGCAT==1" << std::endl ;
+
       }
     }
   }
@@ -952,6 +1024,7 @@ int weighting::fit(TString name, RooDataSet* data, MassPdf* pdf){
   std::cout << "#################### FIT " << name << " #######################" << std::endl ;
   RooFitResult* r = pdf->fit(data2,false);
   r->Print();
+  cout << "% Minimised likelihood " << r->minNll() << endl;
   TCanvas* getBestPlot1 = new TCanvas(name,"Canvas for MassPlot",600,600);
   RooPlot* r1 = pdf->plotOn(getBestPlot1,data2,kFALSE,logy,false,false); // Plot without Pull
   r1->Write(name);
@@ -973,23 +1046,29 @@ int weighting::fit(TString name, RooDataSet* data, MassPdf* pdf){
 //=============================================================================
 MassPdf* weighting::doAllFits(TString name,RooRealVar* mass, RooDataSet* Data, 
                            const int catCode,double nnCut,bool blinded){
-  MassPdf* mFit = doFits(name,mass,Data,catCode, nnCut,blinded,"");
-  MassPdf* mFitB = doFits(name,mass,Data,catCode, nnCut,blinded,"B"); // baryons only
-  MassPdf* mFitAB = doFits(name,mass,Data,catCode, nnCut,blinded,"AB"); // anti-baryons only
+  MassPdf* mFit =  doFits(name, mass, Data, catCode, nnCut, blinded, "", 0);
+  MassPdf* mFitB = doFits(name, mass, Data, catCode, nnCut, blinded, "B", mFit ); // baryons only
+  MassPdf* mFitAB = doFits(name, mass, Data, catCode, nnCut, blinded, "AB", mFit); // anti-baryons only
+  if ( m_freezeSlope){
+    MassPdf* mFitBm1 = doFits(name, mass, Data, catCode, nnCut, blinded, "Bm1", mFit, -1. ); // baryons only
+    MassPdf* mFitBp1 = doFits(name, mass, Data, catCode, nnCut, blinded, "Bp1", mFit, 1. ); // baryons only
+    MassPdf* mFitABm1 = doFits(name, mass, Data, catCode, nnCut, blinded, "ABm1", mFit, -1.); // AB only
+    MassPdf* mFitABp1 = doFits(name, mass, Data, catCode, nnCut, blinded, "ABp1", mFit, 1.); // AB only
+  }
   return mFit ;
 }
 //=============================================================================
 // Fit
 //=============================================================================
-MassPdf* weighting::doFits(TString name1,RooRealVar* mass, RooDataSet* Data, 
-                           const int catCode,double nnCut,bool blinded,TString baryon){
-  if (""!=baryon && m_free) return 0 ; /// no need to do baryons
+MassPdf* weighting::doFits(TString name1,RooRealVar* mass, RooDataSet* Data, const int catCode,
+                           double nnCut,bool blinded,TString baryon, MassPdf* prevFit, double offset){
+  if (""!=baryon && m_freeTails) return 0 ; /// no need to do baryons
   int ok = 0;
   name1 = name1+baryon ;
   TString name = (blinded?name1+"_blind":name1);
   RooDataSet* DataF = Data ;
-  if ("B"==baryon) DataF = (RooDataSet *)Data->reduce(c_Baryon+">0"); // baryon
-  else if ("AB"==baryon) DataF = (RooDataSet *)Data->reduce(c_Baryon+"<0"); // Antibaryon
+  if (baryon.BeginsWith("B")) DataF = (RooDataSet *)Data->reduce(c_Baryon+">0"); // baryon
+  else if (baryon.BeginsWith("AB")) DataF = (RooDataSet *)Data->reduce(c_Baryon+"<0"); // Antibaryon
 
   if (m_debug) std::cout << "DEBUG :: sWeight " << name << std::endl ;
   if (m_debug || DataF->sumEntries()==0) std::cout << "DEBUG :: " << name << " " << mass->GetName() << " " 
@@ -997,14 +1076,20 @@ MassPdf* weighting::doFits(TString name1,RooRealVar* mass, RooDataSet* Data,
   if (DataF->sumEntries()==0) return 0 ;
   backgrounds bkgVec = getBackgrounds(name,mass,DataF) ;
   dataPlot("SelData"+baryon,mass,DataF);
-  MassPdf* mFit = new MassPdf(name,mass,DataF->sumEntries(),bkgVec,(m_free?"free":""),(blinded?"Low,High":""),
-                              "DoubleCB",(m_ExpTuple?"Exp":"Poly2"),m_withXib);
-  if (blinded) {
+  MassPdf* mFit = new MassPdf(name,mass,DataF->sumEntries(),bkgVec,(m_freeTails?"free":""),(blinded?"Low,High":""),
+			      m_signalShape,m_bkgShape,m_withXib,m_withPartReco);
+  if (prevFit) {
+    if (m_freezeSlope) mFit->freezeComb(prevFit,offset);
+    mFit->freezePeak(prevFit);
+  }
+  if (blinded || m_noPeak ) {
+    std::cout << "Constraining Signal to 0" << std::endl ;
     mFit->nLambdab()->setVal(0.);
     mFit->nLambdab()->setConstant();
     mFit->setConstant("Signal");
   }
   if (m_mc && !m_allmc) {
+    std::cout << "Constraining NonPeaking to 0" << std::endl ;
     mFit->nNonPeaking()->setVal(0.);
     mFit->nNonPeaking()->setConstant(true);
   }
@@ -1021,7 +1106,7 @@ MassPdf* weighting::doFits(TString name1,RooRealVar* mass, RooDataSet* Data,
     return 0 ;
   }
 
-  return mFit ;
+  return mFit;
 }
 
 //=============================================================================
@@ -1082,15 +1167,15 @@ void weighting::printBFs(double nnCut){
     cout << "\\begin{eqnarray*}" << endl ;
     double aK  = (m_LbKB_s-m_LbKAB_s)/m_LbK_s ;
     double aKe = sqrt((1-aK)*(1+aK)/m_LbK_s); 
-    cout << "A_{CP}(\\LbK) & = & (" << round(100*aK,0.1) << " \\pm " << round(100*aKe,0.1) 
+    cout << "A^\\text{raw}(\\LbK) & = & (" << round(100*aK,0.1) << " \\pm " << round(100*aKe,0.1) 
 	 << ")\\%\\quad (" << round(aK/aKe,0.1) << "\\sigma) \\\\" << endl ;  
     double api  = (m_LbpiB_s-m_LbpiAB_s)/m_Lbpi_s ;
     double apie = sqrt((1-api)*(1+api)/m_Lbpi_s); 
-    cout << "A_{CP}(\\Lbpi) & = & (" << round(100*api,0.1) << " \\pm " << round(100*apie,0.1) 
+    cout << "A^\\text{raw}(\\Lbpi) & = & (" << round(100*api,0.1) << " \\pm " << round(100*apie,0.1) 
 	 << ")\\%\\quad (" << round(api/apie,0.1) << "\\sigma) \\\\" << endl ; 
     double e = sqrt(aKe*aKe+apie*apie);
-    cout << "\\Delta A_{CP} & = & (" << round(100*(aK-api),0.1) << " \\pm " << round(100*e,0.1) 
-	 << ")\\%\\quad (" << round((aK-api)/e,0.1) << "\\sigma)" << endl ;
+    cout << "\\Delta A^\\text{raw} & = & (" << round(100*(api-aK),0.1) << " \\pm " << round(100*e,0.1) 
+	 << ")\\%\\quad (" << round((api-aK)/e,0.1) << "\\sigma)" << endl ;
     cout << "\\end{eqnarray*}" << endl ;
   }
 }
@@ -1100,8 +1185,8 @@ void weighting::printBFs(double nnCut){
 int weighting::weight(){
 
   if (m_stop) {
-    std::cout << "Stopping now" << endl ;
-    return -5 ;
+    std::cout << "WARNING! " << endl ;
+    //    return -5 ;
   }
   int ok = 0 ;
   //  m_allData = getDataSet(m_allMass);
@@ -1112,16 +1197,16 @@ int weighting::weight(){
    * Write sWeighting of Kpi. Check TisTos for signal and background.
    * There may be some more preselection cuts to apply.
    */
-  if (!m_first) m_eventMap = createEventMap(m_ExpTuple, nnCut,m_debug) ;
-  else m_eventMap = createEventMap(m_LambdabTuple,true,m_debug) ;
+  if (!m_first) m_eventMap = createEventMap(m_ExpTuple, nnCut,false) ; // m_debug
+  else m_eventMap = createEventMap(m_LambdabTuple,true,false) ; // m_debug
   /*
    * Kpi hypothesis
    */
   // *** sWeight Magic ***
   MassPdf* pdf_pK = 0 ;
-  RooDataSet* Data = getDataSet(m_PsipKMass,CatCodes::pKCand,nnCut,true);
+  RooDataSet* Data_pK = getDataSet(m_PsipKMass,CatCodes::pKCand,nnCut,true);
   if (!m_mc || (m_signalmc && !m_signalmc_pi)){
-    pdf_pK = doAllFits(c_PsipKName,m_PsipKMass,Data,CatCodes::pKCand,nnCut,false);
+    pdf_pK = doAllFits(c_PsipKName,m_PsipKMass,Data_pK,CatCodes::pKCand,nnCut,false);
     if (!pdf_pK ){
       if (!m_mc) {
         m_outfile->Close();
@@ -1129,32 +1214,33 @@ int weighting::weight(){
       }
     } 
   }
-  ok = RKFit(c_PsipKName,m_PsipKMass,Data);
+  ok = RKFit(c_PsipKName,m_PsipKMass,Data_pK);
   if (0!=ok) return ok ;
   /*
    * Psippi hypothesis
    */
   // *** sWeight Magic ***
   MassPdf* pdf_ppi = 0 ;
+  RooDataSet* Data_ppi = 0 ;
   if ( m_ExpTuple ){
-    RooDataSet* Data2 = getDataSet(m_PsippiMass,CatCodes::SignalCand,nnCut,true);
+    Data_ppi = getDataSet(m_PsippiMass,CatCodes::SignalCand,nnCut,true);
     if (!m_mc || m_signalmc_pi){
-      pdf_ppi = doAllFits(c_PsippiName,m_PsippiMass,Data2,CatCodes::SignalCand,nnCut,!m_unblind);
+      pdf_ppi = doAllFits(c_PsippiName,m_PsippiMass,Data_ppi,CatCodes::SignalCand,nnCut,!m_unblind);
       if (!pdf_ppi && !m_mc ) return -5 ;
     }
-    ok = RKFit(c_PsippiName,m_PsippiMass,Data2);
+    ok = RKFit(c_PsippiName,m_PsippiMass,Data_ppi);
     if (0!=ok) return ok ;  
   }
 
   if ( !m_notree && m_ExpTuple && !m_mc){
-    if (pdf_pK) m_sData_PsipK = new RooStats::SPlot(c_PsipKName+"sData",c_PsipKName+"sData", *Data, 
+    if (pdf_pK) m_sData_PsipK = new RooStats::SPlot(c_PsipKName+"sData",c_PsipKName+"sData", *Data_pK, 
 						    pdf_pK->pdf(), pdf_pK->fracPdfList());
-    if (pdf_ppi && m_unblind) m_sData = new RooStats::SPlot(c_PsippiName+"sData",c_PsippiName+"sData", *Data, 
+    if (pdf_ppi && m_unblind) m_sData = new RooStats::SPlot(c_PsippiName+"sData",c_PsippiName+"sData", *Data_ppi, 
 							    pdf_ppi->pdf(), pdf_ppi->fracPdfList());
     ok = writeTree(nnCut);
     if (0!=ok) return ok;
   } else if (m_LambdabTuple){
-    if (pdf_pK) m_sData_PsipK = new RooStats::SPlot(c_PsipKName+"sData",c_PsipKName+"sData", *Data, 
+    if (pdf_pK) m_sData_PsipK = new RooStats::SPlot(c_PsipKName+"sData",c_PsipKName+"sData", *Data_pK, 
 						    pdf_pK->pdf(), pdf_pK->fracPdfList());
     ok = writeTrainTree();
   }
@@ -1173,11 +1259,11 @@ int main(int argc, char** argv) {
   if(argc<3){
     std::cout << "ERROR: Insufficient arguments given" << std::endl;  
     std::cout << "./weighting.exe /castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20r1-980.root " 
-              << " [ " << c_All << " ] [ | notree | debug ]" 
+              << " [ " << c_All << " ] [ | notree | debug | notrigger ]" 
               << " | tee test-weighting-all" << std::endl;  
     std::cout << "or" << std::endl;  
     std::cout << "./weighting.exe Lambdab-S20r1-980-NN.root Lambdab-S20-982-NN.root  " 
-              << " [ 0.8 | " << c_Opt << " ] [ | notree | debug | allmc | free | withXib | " << c_unblind << " ]" 
+              << " [ 0.8 | " << c_Opt << " ] [ | notree | debug | allmc | free | withXib | freeze | " << c_blind << " ]" 
               << " | tee test-weighting" << std::endl;  
     return -9;
   }

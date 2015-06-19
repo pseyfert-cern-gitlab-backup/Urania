@@ -1,13 +1,19 @@
+#!/bin/env python
 from diracFuncs import *
 import numpy as np        
 import pickle
+import sys
 
 def usage():
     print 'Following:'
-    print '> SetupLHCbDirac'
+    print '> . ../setenv_dirac.(c)sh'
     print '> lhcb-proxy-init'
-    print 'Usage: %s <Config Version> <Processing Pass> <lumi range - MAG DOWN (pb^-1)> <lumi range - MAG UP (pb^-1)> <fileSuffix>' %(Script.scriptName)
-    print '> python -u getRunLumi.py Collision12 /Reco14/Stripping20 30 30 h'
+    print ('Usage: {0}.py <Config Version> <Processing Pass> '
+           '<lumi range - MAG DOWN (pb^-1)> '
+           '<lumi range - MAG UP (pb^-1)> <fileSuffix> '
+           '(<outputDirectory=\'.\'>)').format(Script.scriptName)
+    print ('Example: python -u {0}.py Collision12 '
+           '/Reco14/Stripping20 30 30 h').format(Script.scriptName)
 
 gLogger.setLevel("INFO")
 
@@ -17,7 +23,7 @@ gLogger.setLevel("INFO")
 #======================================================================
 Script.parseCommandLine()
 args = Script.getPositionalArgs()
-if len(args) < 3: 
+if len(args) < 5: 
     usage()
     DIRAC.exit(2)
 
@@ -26,6 +32,12 @@ processingPass = args[1]
 lumiBlock_down = float(args[2])
 lumiBlock_up   = float(args[3])
 fileSuffix     = args[4]
+outputDir      = '.'
+if len(args) >=6:
+  outputDir = args[5]
+if len(outputDir)==0:
+    outputDir='.'
+
 dqFlag         = 'OK'
 
 msg="Config version: %s" %configVersion
@@ -43,7 +55,11 @@ gLogger.info(msg)
 msg="File suffix: %s" %fileSuffix
 print msg
 gLogger.info(msg)
- 
+if outputDir is not None:
+    msg = "Output directory: %s" %outputDir
+    print msg
+    gLogger.info(msg)
+
 bkDict = {'ConfigName'    : 'LHCb',
           'ConfigVersion' : configVersion,
           'ProcPass'      : processingPass}
@@ -68,7 +84,9 @@ for fileType in allTypes:
     if not m:
         m = re.search('(\w+)\.MDST', fileType)
         if not m:
-            gLogger.error('Cannot extract file type')
+            msg = 'Cannot extract file type'
+            sys.stderr(msg)
+            gLogger.error(msg)
             DIRAC.exit(2)
 
     #======================================================================
@@ -78,7 +96,9 @@ for fileType in allTypes:
     if fileTypeName != 'PID':
         continue
 
-    gLogger.info('Now loading stream %s' %(fileTypeName))
+    msg = 'Now loading stream %s' %(fileTypeName)
+    print msg
+    gLogger.info(msg)
 
     #======================================================================
     # Obtain a list of LFNs in a given stream
@@ -173,10 +193,12 @@ for fileType in allTypes:
     #======================================================================
     # Pickle the numpy arrays
     #======================================================================
-    upFile = open('up_runLimits_%s.pkl' %fileSuffix, 'wb')
+    fname_up = '{d}/up_runLimits_{f}.pkl'.format(d=outputDir, f=fileSuffix)
+    upFile = open(fname_up, 'wb')
     pickle.dump(upRunLimits, upFile)
     upFile.close()
 
-    downFile = open('down_runLimits_%s.pkl' %fileSuffix, 'wb')
+    fname_down = '{d}/down_runLimits_{f}.pkl'.format(d=outputDir, f=fileSuffix)
+    downFile = open(fname_down, 'wb')
     pickle.dump(downRunLimits, downFile)
     downFile.close()

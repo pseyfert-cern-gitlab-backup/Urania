@@ -9,6 +9,7 @@
 
 // namespaces
 using std::cout;
+using std::cerr;
 using std::endl;
 
 // local
@@ -72,7 +73,7 @@ int main(int argc, char *argv[])
                                       Myws_LoP);
   if(Mydata_LoP==NULL)
   {
-    cout<<"No DataSet (Negative) Found"<<endl;
+    cerr<<"No DataSet (Negative) Found"<<endl;
     return EXIT_FAILURE;
   }
 
@@ -91,7 +92,7 @@ int main(int argc, char *argv[])
                                       Myws_HiP);
   if(Mydata_HiP==NULL)
   {
-    cout<<"No DataSet (Positive) Found"<<endl;
+    cerr<<"No DataSet (Positive) Found"<<endl;
     return EXIT_FAILURE;
   }
 
@@ -108,22 +109,22 @@ int main(int argc, char *argv[])
   
   if(Cats==NULL)
   {
-    cout<<"No Set 'Categories'"<<endl;
+    cerr<<"No Set 'Categories'"<<endl;
     //exit(1);
   }
   if(EventVars==NULL)
   {
-    cout<<"No Set 'Event variables'"<<endl;
+    cerr<<"No Set 'Event variables'"<<endl;
     exit(1);
   }
   if(TrackVars==NULL)
   {
-    cout<<"No Set 'Track variables'"<<endl;
+    cerr<<"No Set 'Track variables'"<<endl;
     exit(1);
   }
   if(WeightVars==NULL)
   {
-    cout<<"No Set 'Weight variables'"<<endl;
+    cerr<<"No Set 'Weight variables'"<<endl;
     exit(1);
   }
 
@@ -201,7 +202,7 @@ RooDataSet* getDataSet(const char* Path,
                                 Index).Data());
   if(f==NULL)
   {
-    cout<<"No File "<<TString::Format(path+"Lam0_MuonUnBiased_%s%s_%sP_Mag%s_Strip%s_%s.root",
+    cerr<<"No File "<<TString::Format(path+"Lam0_MuonUnBiased_%s%s_%sP_Mag%s_Strip%s_%s.root",
                                       PartName,
                                       Charge,
                                       MomType,
@@ -218,7 +219,7 @@ RooDataSet* getDataSet(const char* Path,
     ws=(RooWorkspace*)f->Get(WorkspaceName);
   else
   {
-    cout<<"No Workspace '"<<WorkspaceName<<"'"<<endl;
+    cerr<<"No Workspace '"<<WorkspaceName<<"'"<<endl;
     exit(1);
   }
   if(ws->data("data_wSWeights")!=NULL)

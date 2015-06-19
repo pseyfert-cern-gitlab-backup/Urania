@@ -2,7 +2,6 @@
 // all plots of method.tex
 //------------------------------------------------------------------------------
 root.exe
-.L ../analysis/FourPlots.C 
 // SWeighting
 TFile* fW11 = TFile::Open("Lambdab-S20r1-1062-All-SW.root")
 TFile* fW12 = TFile::Open("Lambdab-S20-1063-All-SW.root")
@@ -433,7 +432,7 @@ r->Draw()
 png("B_FiveWeightedTrainPlots_of_min(muplus_IPCHI2_OWNPV,muplus_IPCHI2_OWNPV)")
 
 r = FiveWeightedTrainPlots(T,Tpi,TK,"pplus_PT","NML","",500,20000); 
-r = FiveWeightedTrainPlots(T,Tpi,TK,"pplus_PZ","NML","",1000,300000); 
+r = FiveWeightedTrainPlots(T,Tpi,TK,"pplus_PZ","NML","",5000,125000); 
 r = FourTrainPlots(T,Tpi,TK,"pplus_PZ","NM","",1000,20000); 
 
 r = FiveWeightedTrainPlots(T,Tpi,TK,"pplus_IPCHI2_OWNPV","NML","",9,10000); 
@@ -453,7 +452,12 @@ r = FiveWeightedTrainPlots(T,Tpi,TK,"pplus_ProbNNpi","NM","",0,1);
 
 gPad->SetLogy(0)
 r = FiveWeightedTrainPlots(T,Tpi,TK,"piminus_PT","NML","",500,20000); 
-r = FiveWeightedTrainPlots(T,Tpi,TK,"piminus_PZ","NML","",1000,300000); 
+r = FiveWeightedTrainPlots(T,Tpi,TK,"piminus_PZ","NML","",3000,100000); 
+
+r = FiveWeightedTrainPlots(T,Tpi,TK,"piminus_P","NM","",0,100000); 
+SetTitle("Meson P [GeV/c^{2}]",r)
+png("B_FiveWeightedTrainPlots_of_piminus_P")
+
 
 r = FiveWeightedTrainPlots(T,Tpi,TK,"piminus_IPCHI2_OWNPV","NML","",5,100000); 
 r = FiveWeightedTrainPlots(T,Tpi,TK,"piminus_TRACK_GhostProb","NML","",0.003,1); 
@@ -497,6 +501,7 @@ png("B_FiveWeightedTrainPlots_of_netOutput_0_") // done in cheatSheet-NN
 r = FiveWeightedTrainPlots(T,Tpi,TK,"piminus_ProbNNpi","NM","",0,1); 
 r = FiveWeightedTrainPlots(T,Tpi,TK,"piminus_ProbNNk","NM","",0,1); 
 
+
 //------------------------------------------------------------------------------
 // PT weights
 //------------------------------------------------------------------------------
@@ -519,8 +524,10 @@ const Int_t nbins=28;
 Double_t pbins2[nbins+1] = {0,1500,2200,3000,3500,4000,4500,5000,5500,6000,6500,7000,7500,8000,8500,9000,9500,10000,10750,11500,12500,14000,16000,18000,20000,22000,25000,30000,50000};
 TH1D* PTbinsMC = new TH1D("PTbinsMC","#Lambda_{b} p_{T} [MeV/c^2]",nbins,pbins2);
 TH1D* PTbinsMCW = new TH1D("PTbinsMCW","#Lambda_{b} p_{T} [MeV/c^2]",nbins,pbins2);
-TH1D* PTbinsK = new TH1D("PTbinsK","#Lambda_{b} p_{T} [MeV/c^2]",nbins,pbins2);
+TH1D* PTbinsK  = new TH1D("PTbinsK","#Lambda_{b} p_{T} [MeV/c^2]",nbins,pbins2);
+TH1D* PTbinsK2 = new TH1D("PTbinsK2","#Lambda_{b} p_{T} [MeV/c^2]",nbins,pbins2);
 T->Draw("B_PT >> PTbinsK",KSig.GetTitle())
+T->Draw("B_PT >> PTbinsK2",KSig.GetTitle())
 TK->Draw("B_PT >> PTbinsMCW",KWtrue.GetTitle())
 TK->Draw("B_PT >> PTbinsMC",Ktrue.GetTitle())
 
@@ -532,25 +539,91 @@ PTbinsMCW->Scale(aK/aMCW);
 RooPlot* r = NiceRooPlot(PTbinsK,PTbinsMC,PTbinsMCW,"") // do not scale in NiceRooPlot
 png("Data and MC Lb pt")
 
-TH1D* PTbinsK2 = PTbinsK.Clone()
-PTbinsK->Divide(PTbinsMC)
-PTbinsK2->Divide(PTbinsMCW)
-PTbinsK->SetMinimum(0.)
-PTbinsK->SetMaximum(1.6)
-NicePlot(PTbinsK,PTbinsK2)
-png("Data and MC Lb pt weight")
+TH1D* dPTbinsK = (TH1D*)Divide(PTbinsK,PTbinsMC)
+TH1D* dPTbinsK2 = (TH1D*)Divide(PTbinsK2,PTbinsMCW)
+dPTbinsK->SetMinimum(0.)
+dPTbinsK->SetMaximum(1.8)
+NicePlot(dPTbinsK,dPTbinsK2)
+png("Lb pt weights 1 and 2")
 
-for ( int i = 1; i<=nbins ; i++) { cout << PTbinsK->GetBinContent(i) << ", " ;}
+for ( int i = 1; i<=nbins ; i++) { cout << dPTbinsK->GetBinContent(i) << ", " ;}
+for ( int i = 1; i<=nbins ; i++) { cout << dPTbinsK->GetBinError(i) << ", " ;}
 0.666744, 1.07248, 1.23936, 1.40508, 1.41215, 1.43208, 1.33071, 1.32537, 1.1913, 1.09394, 1.0492, 1.07596, 0.993251, 0.985716, 0.885626, 0.863668, 0.848093, 0.817466, 0.871625, 0.688731, 0.747994, 0.703201, 0.625576, 0.599652, 0.569779, 0.605114, 0.600123, 0.451159
 
-for ( int i = 1; i<=nbins ; i++) { cout << PTbinsK2->GetBinContent(i) << ", " ;}
+for ( int i = 1; i<=nbins ; i++) { cout << dPTbinsK2->GetBinContent(i) << ", " ;} // 
+for ( int i = 1; i<=nbins ; i++) { cout << dPTbinsK2->GetBinError(i) << ", " ;}
 1.03047, 1.39416, 1.38797, 1.40991, 1.45191, 1.57368, 1.27071, 1.43531, 1.2349, 1.09752, 1.01071, 1.1189, 0.968022, 0.968896, 0.787784, 0.876768, 0.8008, 0.7804, 0.843666, 0.687542, 0.68765, 0.666551, 0.502547, 0.559499, 0.465446, 0.544776, 0.62319, 0.369554
 
 
 // check it
 RooPlot* r1 = SandB(T,TK,"B_PT","sweightLb*(sweightLb>-4)*(tCategory==-1)","(Category==-1)*(BKGCAT==1)*(ErrorCode==0)*DalitzWeight*SPDWeight","1","NL","remove",500,100000)
 RooPlot* r2 = SandB(T,TK,"B_PT","sweightLb*(sweightLb>-4)*(tCategory==-1)","(Category==-1)*(BKGCAT==1)*(ErrorCode==0)*DalitzWeight*SPDWeight*PTWeight2","1","NL","remove",500,100000)
+gPad->SetLogy()
+RooPlot* r3 = SandB(T,TK,"B_PT","sweightLb*(sweightLb>-4)*(tCategory==-1)","(Category==-1)*(BKGCAT==1)*(ErrorCode==0)*DalitzWeight*SPDWeight*PTWeight2","1","N","remove",500,30000,50)
 
+//------------------------------------------------------------------------------
+// Psi PT (11/11)
+
+r1 = FiveWeightedTrainPlots(T,Tpi,TK,"Psi_PT","NML","",300,30000,25); 
+r2 = FiveWeightedTrainPlots(T,Tpi,TK,"Psi_P","NML","",10000,300000,25); 
+r3 = FiveWeightedTrainPlots(T,Tpi,TK,"max(muplus_P,muminus_P)","NML","",7000,200000,25); 
+r4 = FiveWeightedTrainPlots(T,Tpi,TK,"min(muplus_P,muminus_P)","NML","",3000,100000,25); 
+r5 = FiveWeightedTrainPlots(T,Tpi,TK,"max(muplus_PT,muminus_PT)","NML","",1000,20000,25); 
+r6 = FiveWeightedTrainPlots(T,Tpi,TK,"min(muplus_PT,muminus_PT)","NML","",500,10000,25); 
+r7 = FiveWeightedTrainPlots(T,Tpi,TK,"CosTheta","NM","",-1,1,25); 
+r8 = FiveWeightedTrainPlots(T,Tpi,TK,"CosTheta*Baryon","NM","",-1,1,25); 
+r9 = FiveWeightedTrainPlots(T,Tpi,TK,"muplus_PT*muminus_PT","NML","",6e5,3e8,25); 
+
+SetTitle("J/#psi log_{10}(P_{T}/MeV)",r1)
+png("FiveWeightedTrainPlots of Psi PT")
+SetTitle("J/#psi log_{10}(P/MeV)",r2)
+png("FiveWeightedTrainPlots of Psi P")
+SetTitle("muon max log_{10}(P/MeV)",r3)
+png("FiveWeightedTrainPlots of max mu P")
+SetTitle("muon min log_{10}(P/MeV)",r4)
+png("FiveWeightedTrainPlots of min mu P")
+SetTitle("muon max log_{10}(P_{T}/MeV)",r5)
+png("FiveWeightedTrainPlots of max mu PT")
+SetTitle("muon min log_{10}(P_{T}/MeV)",r6)
+png("FiveWeightedTrainPlots of min mu PT")
+SetTitle("#mu^{+} cos #theta",r7)
+png("FiveWeightedTrainPlots of muplus cos theta")
+SetTitle("#mu^{+} cos #theta",r8)
+png("FiveWeightedTrainPlots of muplus flipped cos theta")
+SetTitle("muons PT product",r9)
+png("FiveWeightedTrainPlots of muons PT*PT")
+
+// just two plots
+char* T1 = "sweightLb*(sweightLb>-4)*(tCategory==-1)"
+char* T2 = "(Category==-1)*(BKGCAT==1)*(ErrorCode==0)*DalitzWeight*SPDWeight*PTWeight2"
+rt1 = SandB(T,TK,"Psi_PT",T1,T2,"1","NML","",300,30000,25); 
+rt2 = SandB(T,TK,"Psi_P",T1,T2,"1","NML","",10000,300000,25); 
+rt3 = SandB(T,TK,"max(muplus_P,muminus_P)",T1,T2,"1","NML","",7000,200000,25); 
+rt4 = SandB(T,TK,"min(muplus_P,muminus_P)",T1,T2,"1","NML","",3000,100000,25); 
+rt5 = SandB(T,TK,"max(muplus_PT,muminus_PT)",T1,T2,"1","NML","",1000,20000,25); 
+rt6 = SandB(T,TK,"min(muplus_PT,muminus_PT)",T1,T2,"1","NML","",500,10000,25); 
+rt7 = SandB(T,TK,"CosTheta",T1,T2,"1","NM","",-1,1,25); 
+rt8 = SandB(T,TK,"CosTheta*Baryon",T1,T2,"1","NM","",-1,1,25); 
+rt9 = SandB(T,TK,"muplus_PT*muminus_PT",T1,T2,"1","NML","",1e6,1e8,25); 
+
+SetTitle("J/#psi log_{10}(P_{T}/MeV)",rt1)
+png("TwoWeightedTrainPlots of Psi PT")
+SetTitle("J/#psi log_{10}(P/MeV)",rt2)
+png("TwoWeightedTrainPlots of Psi P")
+SetTitle("muon max log_{10}(P/MeV)",rt3)
+png("TwoWeightedTrainPlots of max mu P")
+SetTitle("muon min log_{10}(P/MeV)",rt4)
+png("TwoWeightedTrainPlots of min mu P")
+SetTitle("muon max log_{10}(P_{T}/MeV)",rt5)
+png("TwoWeightedTrainPlots of max mu PT")
+SetTitle("muon min log_{10}(P_{T}/MeV)",rt6)
+png("TwoWeightedTrainPlots of min mu PT")
+SetTitle("#mu^{+} cos #theta",rt7)
+png("TwoWeightedTrainPlots of muplus cos theta")
+SetTitle("#mu^{+} cos #theta",rt8)
+png("TwoWeightedTrainPlots of muplus flipped cos theta")
+SetTitle("muons PT product",rt9)
+png("TwoWeightedTrainPlots of muons PT*PT")
 
 
 //------------------------------------------------------------------------------

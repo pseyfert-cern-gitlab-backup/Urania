@@ -37,6 +37,7 @@
 #include "TGraphErrors.h"
 #include "TH1F.h"
 #include "TLegend.h"
+#include "RooExpAndGauss.h"
 
 const TString c_range = "All";
 
@@ -47,16 +48,16 @@ class MassPdf{
   MassPdf(TString name, RooRealVar* mass, int nevents,  backgrounds bkgs, 
           TString opt="", TString range = "",
           TString sigType="DoubleCB", TString bkgType="Poly2",
-	  bool withXib=false){
-    make(name,mass,nevents,bkgs,opt,range,sigType,bkgType,withXib);
+	  bool withXib=false, bool withPartReco=false){
+  make(name,mass,nevents,bkgs,opt,range,sigType,bkgType,withXib,withPartReco);
   } ;
   
   MassPdf(TString name, RooRealVar* mass, int nevents,
           TString opt="", TString range = "",
           TString sigType="DoubleCB", TString bkgType="Poly2",
-	  bool withXib=false){
+	  bool withXib=false, bool withPartReco=false){
     backgrounds bkgs;
-    make(name,mass,nevents,bkgs,opt,range,sigType,bkgType,withXib);
+    make(name,mass,nevents,bkgs,opt,range,sigType,bkgType,withXib,withPartReco);
   };
   
   ~MassPdf();
@@ -73,8 +74,9 @@ class MassPdf{
         pdfList.add(*((*b)->pdf()));
       }
     }
+    if (m_PartReco) pdfList.add(*m_PartReco);
     pdfList.add(*m_comBKG);
-    return pdfList;
+   return pdfList;
   };
   RooArgList fracPdfList(){
     RooArgList fracList;
@@ -85,6 +87,7 @@ class MassPdf{
         fracList.add(*((*b)->yield()));
       }
     }
+    fracList.add(*m_nPartReco);
     if (m_extended) fracList.add(*m_nonPeaking);
     return fracList;
   }
@@ -111,11 +114,20 @@ class MassPdf{
   void Print(TString name, double signal, double error);
   void Print(RooRealVar* var);
   void Print();
+  RooRealVar* nPartReco()const{return m_nPartReco;};
+  void freezeComb(MassPdf* prevFit, double offset=0.);
+  void freezePeak(MassPdf* prevFit);
+  RooRealVar* bkg1()const{return m_bkg1;};   
+  RooRealVar* bkg2()const{return m_bkg2;};   
+  RooRealVar* mean()const{return m_mean;};   
+  RooRealVar* width()const{return m_width;};   
+  RooRealVar* width2()const{return m_width2;};   
+  RooRealVar* frac()const{return m_frac;};   
   
  private:
   void make(TString name, RooRealVar* mass, int nevents,backgrounds bkgs,
             TString opt, TString range ,
-            TString sigType, TString bkgType, bool withXib);
+            TString sigType, TString bkgType, bool withXib, bool withPartReco);
   
   void AddPull(TCanvas* pullCanvas, RooPlot* frame, Int_t logy);
 
@@ -146,6 +158,12 @@ class MassPdf{
   RooRealVar* m_bkg2;   
   RooAbsPdf* m_comBKG;
   RooAddPdf* m_massPdf;
+  RooRealVar* m_nPartReco;
+  RooRealVar* m_PartReco_mean;
+  RooRealVar* m_PartReco_sigma; 
+  RooRealVar* m_PartReco_shift;
+  RooFormulaVar* m_PartReco_trans;
+  RooAbsPdf* m_PartReco;
 
   bool m_debug ;
   TString m_range ;

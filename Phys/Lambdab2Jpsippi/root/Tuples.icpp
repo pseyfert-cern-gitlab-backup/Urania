@@ -307,10 +307,10 @@ bool pid(bool debug = false){ // more cuts here !!!
 }
 // ####################################################################################################
 // selections
-bool preselection(unsigned int pv, bool debug = false){ // more cuts here !!!
+bool preselection(unsigned int pv, bool debug = false, bool ignorePID=false){ // more cuts here !!!
   if (pplus_PZ<c_pplus_momcut) return false ;
   if (piminus_PZ<c_piminus_momcut) return false ;
-  if (!pid()) return false ; /// redo
+  if (!pid() && !ignorePID ) return false ; /// redo
   if (isKaon()){ // stream splitter
     if ( debug) std::cout <<  "   DEBUG Kaon status " << B_SubpK_status[pv] << std::endl ;
     if (0!=B_SubpK_status[pv]) return false ;
@@ -492,4 +492,35 @@ Int_t backgroundCategory(){
      else if (abs(pplus_TRUEID)==c_KID && abs(piminus_TRUEID)==c_KID) bkgCat = c_KK_BKGCAT ; // Bs->psiKK
   }
   return bkgCat ;
+}
+// ####################################################################################################
+double cosTheta(unsigned int pv){
+  ROOT::Math::PxPyPzEVector mother ;
+  ROOT::Math::PxPyPzEVector muminus ;
+  if (isKaon()){
+    mother = ROOT::Math::PxPyPzEVector( B_ConstBSubFit_J_psi_1S_muminus_0_PX[pv]+B_ConstBSubFit_J_psi_1S_muminus_PX[pv],
+                                        B_ConstBSubFit_J_psi_1S_muminus_0_PY[pv]+B_ConstBSubFit_J_psi_1S_muminus_PY[pv],
+                                        B_ConstBSubFit_J_psi_1S_muminus_0_PZ[pv]+B_ConstBSubFit_J_psi_1S_muminus_PZ[pv],
+                                        B_ConstBSubFit_J_psi_1S_muminus_0_PE[pv]+B_ConstBSubFit_J_psi_1S_muminus_PE[pv]);
+    muminus = ROOT::Math::PxPyPzEVector( B_ConstBSubFit_J_psi_1S_muminus_PX[pv],
+                                         B_ConstBSubFit_J_psi_1S_muminus_PY[pv],
+                                         B_ConstBSubFit_J_psi_1S_muminus_PZ[pv],
+                                         B_ConstBSubFit_J_psi_1S_muminus_PE[pv]);
+  } else {    
+    mother = ROOT::Math::PxPyPzEVector( B_ConstBFit_J_psi_1S_muminus_0_PX[pv]+B_ConstBFit_J_psi_1S_muminus_PX[pv],
+                                        B_ConstBFit_J_psi_1S_muminus_0_PY[pv]+B_ConstBFit_J_psi_1S_muminus_PY[pv],
+                                        B_ConstBFit_J_psi_1S_muminus_0_PZ[pv]+B_ConstBFit_J_psi_1S_muminus_PZ[pv],
+                                        B_ConstBFit_J_psi_1S_muminus_0_PE[pv]+B_ConstBFit_J_psi_1S_muminus_PE[pv]);
+    muminus = ROOT::Math::PxPyPzEVector( B_ConstBFit_J_psi_1S_muminus_PX[pv],
+                                         B_ConstBFit_J_psi_1S_muminus_PY[pv],
+                                         B_ConstBFit_J_psi_1S_muminus_PZ[pv],
+                                         B_ConstBFit_J_psi_1S_muminus_PE[pv]);  
+  }
+  
+  ROOT::Math::Boost boost( mother.BoostToCM() );
+  const ROOT::Math::XYZVector boostedParticle = (boost( muminus )).Vect().unit();
+  const ROOT::Math::XYZVector boostedMother = mother.Vect().unit();
+  double cosT = boostedParticle.Dot(boostedMother) ;
+  return cosT ;
+  
 }

@@ -36,6 +36,7 @@
 #include "RooRealVar.h"
 
 #include "RooPlot.h"
+#include "RooHist.h"
 
 #include "RooAbsPdf.h"
 #include "RooAddPdf.h"
@@ -46,9 +47,6 @@
 
 #include "RooFormulaVar.h"
 
-#include "RooChi2Var.h"
-#include "RooChiSquarePdf.h"
-
 #include "RooStats/SPlot.h"
 #include "RooMinuit.h"
 
@@ -57,10 +55,6 @@
 // local
 #include "RooPhysFitter/RooPhysFitter.h"
 #include "RooPhysFitter/Exceptions.h"
-#include "RooPhysFitter/RooGaussianChi2Var.h"
-#include "RooPhysFitter/RooPearsonsChi2Var.h"
-#include "RooPhysFitter/RooYatesChi2Var.h"
-#include "RooPhysFitter/RooLLRatioVar.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : RooPhysFitter
@@ -72,94 +66,37 @@ using namespace RooPhysFit;
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-RooPhysFitter::RooPhysFitter(  ) : TNamed(), m_rws(0), m_file(0)
+RooPhysFitter::RooPhysFitter(  ) 
+  : TNamed(), m_rws(0), m_dataSetName("data"), m_modelName("model"),
+    m_sWeightVarSetName("Weights"), m_plotParamsSetName("PlotParams"),
+    m_globalPlotBins(100), m_plotBinMap(), m_paramBoxX1(0.60), m_paramBoxX2(0.95),
+    m_paramBoxY1(0.70), m_paramBoxY2(0.93), m_paramBoxTextSize(0.028),
+    m_paramBoxTextAlign(12) /* left adjusted, vertically centered */,
+    m_paramBoxName("paramBox"), m_modelLineColor(kBlue),
+    m_modelLineStyle(1), m_modelLineWidth(3), m_dataSetLineColor(kBlack),
+    m_dataSetLineStyle(1), m_dataSetLineWidth(3), m_dataSetMarkerColor(kBlack),
+    m_dataSetMarkerStyle(kFullSquare), m_dataSetMarkerSize(1),
+    m_dataSetFillColor(kBlack), m_dataSetFillStyle(3001), 
+    m_dataSetDrawOption("P"), m_pdfComponents(), m_pdfLineColorMap(),
+    m_pdfLineStyleMap(), m_pdfLineWidthMap(), m_file(0), m_hasOwnership(kFALSE)
 {
-    m_hasOwnership=kFALSE;
-
-    m_dataSetName="data";
-    m_modelName="model";
-    m_sWeightVarSetName="Weights";
-    m_plotParamsSetName="PlotParams";
-
-    m_plotTestStat=RooPhysFitter::NoTestStat;
-
-    m_chi2MCStudyFlag=kFALSE;
-    m_nChi2Toys=10000;
-
-    m_globalPlotBins=100;
-    m_globalChi2Bins=100;
-
-    m_paramBoxX1=0.60;
-    m_paramBoxY1=0.70;
-    m_paramBoxX2=0.95;
-    m_paramBoxY2=0.93;
-
-    m_paramBoxTextSize=0.028;
-    m_paramBoxTextAlign=12; // left adjusted, vertically centered
-    m_paramBoxName="paramBox";
-
-    m_modelLineColor=kBlue;
-    m_modelLineStyle=1;
-    m_modelLineWidth=3;
-
-    m_dataSetLineColor=kBlack;
-    m_dataSetLineStyle=1;
-    m_dataSetLineWidth=3;
-
-    m_dataSetMarkerColor=kBlack;
-    m_dataSetMarkerStyle=kFullSquare;
-    m_dataSetMarkerSize=1;
-
-    m_dataSetFillColor=kBlack;
-    m_dataSetFillStyle=3001;
-
-    m_dataSetDrawOption="P";
 }
 
 // overloaded constructor
 RooPhysFitter::RooPhysFitter( const char* name, const char* title)
-        : TNamed(name, title), m_rws(0), m_file(0)
+  : TNamed(name, title), m_rws(0), m_dataSetName("data"), m_modelName("model"),
+    m_sWeightVarSetName("Weights"), m_plotParamsSetName("PlotParams"),
+    m_globalPlotBins(100), m_plotBinMap(), m_paramBoxX1(0.60), m_paramBoxX2(0.95),
+    m_paramBoxY1(0.70), m_paramBoxY2(0.93), m_paramBoxTextSize(0.028),
+    m_paramBoxTextAlign(12) /* left adjusted, vertically centered */,
+    m_paramBoxName("paramBox"), m_modelLineColor(kBlue),
+    m_modelLineStyle(1), m_modelLineWidth(3), m_dataSetLineColor(kBlack),
+    m_dataSetLineStyle(1), m_dataSetLineWidth(3), m_dataSetMarkerColor(kBlack),
+    m_dataSetMarkerStyle(kFullSquare), m_dataSetMarkerSize(1),
+    m_dataSetFillColor(kBlack), m_dataSetFillStyle(3001), 
+    m_dataSetDrawOption("P"), m_pdfComponents(), m_pdfLineColorMap(),
+    m_pdfLineStyleMap(), m_pdfLineWidthMap(), m_file(0), m_hasOwnership(kFALSE)
 {
-    m_hasOwnership=kFALSE;
-
-    m_dataSetName="data";
-    m_modelName="model";
-    m_sWeightVarSetName="Weights";
-    m_plotParamsSetName="PlotParams";
-
-    m_plotTestStat=RooPhysFitter::NoTestStat;
-
-    m_chi2MCStudyFlag=kFALSE;
-    m_nChi2Toys=10000;
-
-    m_globalPlotBins=100;
-    m_globalChi2Bins=100;
-
-    m_paramBoxX1=0.60;
-    m_paramBoxY1=0.70;
-    m_paramBoxX2=0.95;
-    m_paramBoxY2=0.93;
-
-    m_paramBoxTextSize=0.028;
-    m_paramBoxTextAlign=12; // left adjusted, vertically centered
-    m_paramBoxName="paramBox";
-
-    m_modelLineColor=kBlue;
-    m_modelLineStyle=1;
-    m_modelLineWidth=3;
-
-    m_dataSetLineColor=kBlack;
-    m_dataSetLineStyle=1;
-    m_dataSetLineWidth=3;
-
-    m_dataSetMarkerColor=kBlack;
-    m_dataSetMarkerStyle=kFullSquare;
-    m_dataSetMarkerSize=1;
-
-    m_dataSetFillColor=kBlack;
-    m_dataSetFillStyle=3001;
-
-    m_dataSetDrawOption="P";
 }
 
 
@@ -573,6 +510,8 @@ void RooPhysFitter::PerformFit(const char* fitName, Int_t nCores,
       throw WSImportFailure("RooPhysFitter::PerformFit",
                             *m_rws, *res);
     }
+    delete res;
+    res=NULL;
 }
 
 // Perform a binned fit to the model PDF
@@ -679,7 +618,10 @@ void RooPhysFitter::PerformBinnedFit(const char* fitName, Int_t nCores,
     throw WSImportFailure("RooPhysFitter::PerformBinnedFit",
                           *m_rws, *res);
   }
+  delete res;
+  res=NULL;
   delete hist;
+  hist=NULL;
 }
 
 void RooPhysFitter::PerformIterativeBinnedFit(std::vector<Int_t>& minuitStrategies,
@@ -799,7 +741,10 @@ void RooPhysFitter::PerformIterativeBinnedFit(std::vector<Int_t>& minuitStrategi
     throw WSImportFailure("RooPhysFitter::PerformIterativeBinnedFit",
                           *m_rws, *res);
   }
+  delete res;
+  res=NULL;
   delete hist;
+  hist=NULL;
 }
 
 
@@ -1071,12 +1016,9 @@ RooDataSet* RooPhysFitter::CreateWeightedDataSet(const char* newName,
 // datasets will be of the form {origName}_{sVariable}, where {origName}
 // is the name of the original RooDataSet, and sVariable is the name of the
 //  sWeight for a particular species. If prefix is specified, then {origName}
-// is replace by prefix. If saveToWS is false, then the dataset is returned
-// (note it should be manually deleted), otherwise, a NULL pointer is returned,
-//  and the dataset is imported into the workspace
+// is replace by prefix.
 void RooPhysFitter::SaveWeightedDataSets(const char* fitName, 
-//const char* dataSetWithWeightsName,
-        const char* prefix)
+                                         const char* prefix)
 {
     if (!m_rws)
     {
@@ -1128,6 +1070,38 @@ void RooPhysFitter::SaveWeightedDataSets(const char* fitName,
 }
 
 
+// Plots the pulls between the observable with name 'name' and the 
+// combined signal+background model PDF
+// NB. The variable must be an observable in the model PDF
+//
+// The function returns a RooHist pointer. Note that the user is responsible
+//for deleting this object.
+RooPlot* RooPhysFitter::PlotFitPulls(const char* name,
+                                     const char* fitName)
+{
+  // get the fit results plot
+  RooPlot* rp = this->PlotFitResults(name, fitName, "", "", kFALSE);
+  
+  std::string histName = this->GetDataHistName();
+  std::string curveName = this->GetModelCurveName(name);
+
+  RooHist* hist = rp->pullHist(histName.c_str(),
+                               curveName.c_str()
+                               );
+  // use the same fill color as is used for the line color of the model PDF
+  hist->SetFillColor(m_modelLineColor);
+  hist->SetLineColor(kBlack);
+
+  RooRealVar* var = m_rws->var(name);
+  
+  RooPlot* rp_pull = var->frame(rp->GetNbinsX());
+  // N.B. addPlotable transfers owenership of the RooHist
+  rp_pull->addPlotable(hist, "BX");
+  delete rp;
+  rp=NULL;
+  return rp_pull;
+}
+
 // Plot the observable with name 'name', showing the fit results
 // NB. The variable must be an observable in the model PDF
 //
@@ -1142,26 +1116,13 @@ void RooPhysFitter::SaveWeightedDataSets(const char* fitName,
 // Poissonian errors). RooFit will force sum-of-weights-squared errors if the
 // dataset is weighted.
 //
-// If printChi2 is true, then the chi^2, and number of degrees of freedom
-// of the fit are shown.
-//
-// If a chi^2 test statistic has been set, then this will be calculated,
-// and the p-value and significance will be determined and plotted
-//
-// If the fit was produced in extended mode, and the chi^2 or a
-// chi^2 test statistic have been requested, then extendedMode should
-// be set to true.
-//
 // The function returns a RooPlot pointer. Note that the user is responsible
 //for deleting this object.
 RooPlot* RooPhysFitter::PlotFitResults(const char* name,
                                        const char* fitName,
                                        const char* range,
                                        const char* rangeTitle,
-                                       Bool_t sumW2Errors,
-                                       Bool_t printChi2,
-                                       Bool_t extendedMode,
-                                       Int_t nChi2FitCores)
+                                       Bool_t sumW2Errors)
 {
     if (!m_rws)
     {
@@ -1193,7 +1154,14 @@ RooPlot* RooPhysFitter::PlotFitResults(const char* name,
 
     // get the list of observables
     const RooArgSet* observables = model->getObservables(*rds);
-    assert(observables);
+    if (!observables) 
+    {
+      std::stringstream msg;
+      msg << "Failed to get the list of observables "
+          << "for model PDF " << model->GetName()
+          << " from dataset " << rds->GetName();
+      throw GeneralException("RooPhysFitter::PlotFitResults", msg.str());
+    }
 
     // get the plot variable
     RooRealVar* var = m_rws->var(name);
@@ -1250,7 +1218,7 @@ RooPlot* RooPhysFitter::PlotFitResults(const char* name,
     params->add(yields, kTRUE);
 
     // make the RooPlot
-    Int_t nPlotBins=m_plotBinMap.find(name)==m_plotBinMap.end()?m_globalPlotBins:m_plotBinMap[name];
+    Int_t nPlotBins = GetPlotBinsInt(name);
 
     RooPlot* rp = var->frame(RooFit::Bins(nPlotBins));
     if (!rp)
@@ -1373,16 +1341,12 @@ RooPlot* RooPhysFitter::PlotFitResults(const char* name,
         for (std::vector<std::string>::iterator compName=m_pdfComponents.begin();
                 compName!=m_pdfComponents.end(); ++compName)
         {
+            const char* c_compName=compName->c_str();
+            const Color_t& col = GetPdfComponentLineColor(c_compName);
+            const Style_t& style = GetPdfComponentLineStyle(c_compName);
+            const Width_t& width = GetPdfComponentLineWidth(c_compName);
 
-            assert(m_pdfLineColorMap.find(*compName)!=m_pdfLineColorMap.end());
-            assert(m_pdfLineStyleMap.find(*compName)!=m_pdfLineStyleMap.end());
-            assert(m_pdfLineWidthMap.find(*compName)!=m_pdfLineWidthMap.end());
-
-            Color_t col = m_pdfLineColorMap[*compName];
-            Style_t style = m_pdfLineStyleMap[*compName];
-            Width_t width = m_pdfLineWidthMap[*compName];
-
-            model->plotOn(rp, RooFit::Components(compName->c_str()),
+            model->plotOn(rp, RooFit::Components(c_compName),
                           RooFit::LineColor(col), RooFit::LineStyle(style),
                           RooFit::LineWidth(width));
         }
@@ -1488,163 +1452,7 @@ RooPlot* RooPhysFitter::PlotFitResults(const char* name,
           fracInRange=0;
         }
     }
-
-    if (printChi2||m_plotTestStat!=RooPhysFitter::NoTestStat)
-    {
-
-        TString binnedName=TString::Format("%s_binned", rds->GetName());
-        TString binnedTitle=TString::Format("%s_binned", rds->GetTitle());
-
-        RooArgSet* obsCpy = (RooArgSet*)observables->Clone();
-        TIterator* it = obsCpy->createIterator();
-        RooRealVar* var;
-        while ( (var=(RooRealVar*)it->Next()) )
-        {
-          if (m_chi2BinMap.find(var->GetName())==m_chi2BinMap.end())
-          {
-            var->setBins(m_globalChi2Bins);
-          }
-          else
-          {
-            var->setBins(m_chi2BinMap[var->GetName()]);
-          }
-        }
-        
-        RooDataHist* data_binned = 0;
-        try {
-        data_binned = new RooDataHist(binnedName.Data(),
-                                      binnedTitle.Data(),
-                                      *obsCpy, *rds);
-        }
-        catch (std::bad_alloc& e) {
-          std::stringstream msg;
-          msg << "Got std::bad_alloc when creating new RooDataHist "
-              << binnedName;
-          throw GeneralException("RooPhysFitter::PlotFitResults",
-                                 msg.str());
-        }
-        if (printChi2)
-        {
-            RooGaussianChi2Var chi2Var("chi2Var", "",
-                                       *((RooAbsPdf*)model->cloneTree()),
-                                       *data_binned,
-                                       RooFit::Extended(extendedMode),
-                                       RooFit::SumW2Error(sumW2Errors),
-                                       RooFit::NumCPU(nChi2FitCores));
-            Double_t chi2 = chi2Var.getVal();
-
-            Int_t nDOF = GetNDOF(data_binned, model, kTRUE);
-
-            TString text = TString::Format("#chi^{2} / d.o.f. = %.3f/%d = %.3f",
-                                           chi2, nDOF, chi2/nDOF);
-            std::cout << text << std::endl;
-            TString text_pval = TString::Format("p-value = %.3f", GetPValFromChi2Stat(chi2, nDOF));
-            std::cout << text_pval << std::endl;
-            pv->AddText(text.Data());
-        }
-
-        if (m_plotTestStat!=RooPhysFitter::NoTestStat)
-        {
-            // calculate the test statistic
-            RooAbsTestStatistic* testStat = 0;
-            const char* statName="";
-            if (m_plotTestStat==RooPhysFitter::PearsonsChi2)
-            {
-                statName="PearsonsChi2";
-                try {
-                  testStat = new RooPearsonsChi2Var(statName, "",
-                                                    *((RooAbsPdf*)model->cloneTree()),
-                                                    *data_binned,
-                                                    RooFit::Extended(extendedMode),
-                                                    RooFit::SumW2Error(sumW2Errors),
-                                                    RooFit::NumCPU(nChi2FitCores));
-                }
-                catch (std::bad_alloc& e) {
-                  std::stringstream msg;
-                  msg << "Got std::bad_alloc when creating new RooPearsonsChi2Var "
-                      << statName;
-                  throw GeneralException("RooPhysFitter::PlotFitResults",
-                                         msg.str());
-                }
-            }
-            else if (m_plotTestStat==RooPhysFitter::YatesChi2)
-            {
-                statName="YatesChi2";
-                try {
-                  testStat = new RooYatesChi2Var(statName, "",
-                                                 *((RooAbsPdf*)model->cloneTree()),
-                                                 *data_binned,
-                                                 RooFit::Extended(extendedMode),
-                                                 RooFit::SumW2Error(sumW2Errors),
-                                                 RooFit::NumCPU(nChi2FitCores));
-                }
-                catch (std::bad_alloc& e) {
-                  std::stringstream msg;
-                  msg << "Got std::bad_alloc when creating new RooYatesChi2Var "
-                      << statName;
-                  throw GeneralException("RooPhysFitter::PlotFitResults",
-                                         msg.str());
-                }
-            }
-            else if (m_plotTestStat==RooPhysFitter::LLRatio)
-            {
-                statName="LLRatio";
-                try {
-                  testStat = new RooLLRatioVar(statName, "",
-                                               *((RooAbsPdf*)model->cloneTree()),
-                                               *data_binned,
-                                               RooFit::Extended(extendedMode),
-                                               RooFit::SumW2Error(sumW2Errors),
-                                               RooFit::NumCPU(nChi2FitCores));
-                }
-                catch (std::bad_alloc& e) {
-                  std::stringstream msg;
-                  msg << "Got std::bad_alloc when creating new RooLLRatioVar "
-                      << statName;
-                  throw GeneralException("RooPhysFitter::PlotFitResults",
-                                         msg.str());
-                }
-            }
-
-            Double_t chi2 = testStat->getVal();
-            Int_t nDOF = GetNDOF(data_binned, model, kTRUE);
-            Double_t pVal=0;
-            if (m_chi2MCStudyFlag==kFALSE)
-            {
-                pVal = GetPValFromChi2Stat(chi2, nDOF);
-            }
-            else
-            {
-                pVal = GetPValFromChi2MCToyStudy(*((RooAbsPdf*)model->cloneTree()),
-                                                 *data_binned,
-                                                 m_nChi2Toys, m_plotTestStat,
-                                                 RooFit::Extended(extendedMode),
-                                                 RooFit::SumW2Error(sumW2Errors),
-                                                 RooFit::NumCPU(nChi2FitCores));
-            }
-
-            Double_t signif = GetSignifFromPVal(pVal);
-
-            TString text1 = TString::Format("#Chi^{2} (%s)/d.o.f. = %.3f/%d",
-                                            statName, chi2, nDOF);
-
-
-            TString text2 = "";
-            if (m_chi2MCStudyFlag==kFALSE)
-            {
-                text2 = TString::Format("p-value = %.4f, signif. = %.3f #sigma", pVal, signif);
-            }
-            else
-            {
-                text2 = TString::Format("p-value (nToys=%d)= %.4f, signif. = %.3f #sigma",
-                                        m_nChi2Toys, pVal, signif);
-            }
-            pv->AddText(text1.Data());
-            pv->AddText(text2.Data());
-            delete testStat;
-        }
-        delete data_binned;
-    }
+    
     rp->addObject(pv);
 
     return rp;
@@ -1701,8 +1509,7 @@ RooPlot* RooPhysFitter::PlotVariable(const char* name, const char* cut,
         throw WSRetrievalFailure("RooPhysFitter::PlotVariable"
                                  ,*m_rws, m_dataSetName, "RooDataSet");
     }
-
-    Int_t nPlotBins=m_plotBinMap.find(name)==m_plotBinMap.end()?m_globalPlotBins:m_plotBinMap[name];
+    Int_t nPlotBins = GetPlotBinsInt(name);
 
     // get the RooPlot object
     RooPlot* rp=0;
@@ -1882,7 +1689,7 @@ RooPlot* RooPhysFitter::PlotLikelihoodScan(const char* name,
     RooMinuit(*nll).migrad();
     TString title=TString::Format("(Profile) Log likelihood for %s ", name);
 
-    Int_t nPlotBins=m_plotBinMap.find(name)==m_plotBinMap.end()?m_globalPlotBins:m_plotBinMap[name];
+    Int_t nPlotBins=GetPlotBinsInt(name);
 
     // get the RooPlot object
     RooPlot* rp = var->frame(RooFit::Bins(nPlotBins), RooFit::Range(range),
@@ -2125,70 +1932,6 @@ void RooPhysFitter::SetDataSetName(const char* name)
     m_dataSetName=name;
 }
 
-// Set the binnined test statistic to plot (fit results plot only)
-//
-// NoTestStat indicates that no test statistic should be used.
-// PearsonsChi2 indictates that a Pearson's chi^2 test should be used.
-// YatesChi2 indicates that a Pearson's chi^2 test with Yates'
-// correction should be used.
-// LLRatio indidates that a log likelihood ratio test statistic should
-// be used
-// RandomSampling indicates that a toy random sampling
-//
-// The null hypothesis for such a goodness-of-fit is that the PDF
-// describes the data.
-// As such, a small p-value means that the PDF is not well-described
-// by the data.
-// Conversely, a very large p-value probably means there was a problem
-// with the chi^2 fit (e.g. very large uncertainties, or low statistics)
-// 
-// Note that the Pearson's chi^2 test tends to overestimate the
-// statistical significance for low statistics, since the test
-// statistic is no longer well described by the chi^2 distribution.
-// The general rule of thumb is that the test should not be used if more
-// than 20% of the bins have expected frequencies below 5.
-// In this case, a more realistic result can be found by applying
-// Yate's continuity correction. However, this correction has a tendency
-// to overcompensate, resulting in an increased probability of
-// committing a type II error.
-// An alternative in these cases is to use a likelihood ratio test,
-// which tends to approximate the chi^2 distribution better than
-// Pearson's chi^2 test in the case where |Oi - Ei| > Ei, where
-// Oi and Ei are the observed and expected freequencies in bin i
-// respectively.
-//
-// In the case where the sample is very small (say a few hundred events
-// or less), it is preferable to use an exact test, such as a multinomial
-// exact test, or a toy MC study in which data is generated from the PDF
-// using random sampling, and a p-value is determined from the number
-// of datasets from N samples with the same or larger value for the
-// Pearson's chi^2 (or similar test statistic)
-//
-// A random sampling method can be employed by setting m_chi2MCStudyFlag
-// to true (using the SetChi2MCStudyFlag method)
-// The number of toys can be adjusting using the SetNumChi2Toys method
-//
-// The test statistic to use with the sampling method is determined
-// from what plot test statistic is set by this method (if no test
-// statistic is set, then the MC sampling will not be performed)
-void RooPhysFitter::SetChi2TestStat(RooPhysFitter::PlotChi2TestStat stat)
-{
-    m_plotTestStat=stat;
-}
-
-// should we perform an MC random sampling study to determine the
-// goodness-of-fit?
-void RooPhysFitter::SetChi2MCStudyFlag(Bool_t flag)
-{
-    m_chi2MCStudyFlag=flag;
-}
-
-// set the number of toys to use for the MC sampling study
-void RooPhysFitter::SetNumChi2Toys(UInt_t nToys)
-{
-    m_nChi2Toys=nToys;
-}
-
 // set the name of the named set containing the sWeight variables
 void RooPhysFitter::SetSWeightSetName(const char* name)
 {
@@ -2417,22 +2160,6 @@ void RooPhysFitter::SetPlotBins(Int_t nBins)
 void RooPhysFitter::SetPlotBins(const char* name, Int_t nBins)
 {
     m_plotBinMap[name]=nBins;
-}
-
-// Set the number of global bins to use when calculating the chi2 or
-// binned test statistic.
-void RooPhysFitter::SetChi2Bins(Int_t nBins)
-{
-    m_globalChi2Bins=nBins;
-}
-
-
-// Set the number of global bins to use when calculating the chi2 or
-// binned test statistic for the given variable.
-// This will override the number of global bins
-void RooPhysFitter::SetChi2Bins(const char* name, Int_t nBins)
-{
-    m_chi2BinMap[name]=nBins;
 }
 
 // Set the default number of bins for a given RooRealVar
@@ -2755,113 +2482,97 @@ const char* RooPhysFitter::GetModelName() const {return m_modelName;}
 const char* RooPhysFitter::GetSWeightSetName() const {return m_sWeightVarSetName;}
 const char* RooPhysFitter::GetPlotParamsSetName() const {return m_plotParamsSetName;}
 
-// get the test statistic to plot (fit result plots only)
-RooPhysFitter::PlotChi2TestStat RooPhysFitter::GetChi2TestStat() const
-{
-    return m_plotTestStat;
-}
-
-// should we perform an MC random sampling study to determine the
-// goodness-of-fit?
-Bool_t RooPhysFitter::GetChi2MCStudyFlag() const
-{
-    return m_chi2MCStudyFlag;
-}
-
-// get the number of toys to use for the MC sampling study
-UInt_t RooPhysFitter::GetNumChi2Toys() const
-{
-    return m_nChi2Toys;
-}
-
 // get the line color of the model PDF
-Color_t RooPhysFitter::GetModelLineColor() const
+const Color_t& RooPhysFitter::GetModelLineColor() const
 {
     return m_modelLineColor;
 }
 // get the line style of the model PDF
-Style_t RooPhysFitter::GetModelLineStyle() const
+const Style_t& RooPhysFitter::GetModelLineStyle() const
 {
     return m_modelLineStyle;
 }
 // get the line width of the model PDF
-Width_t RooPhysFitter::GetModelLineWidth() const
+const Width_t& RooPhysFitter::GetModelLineWidth() const
 {
     return m_modelLineWidth;
 }
 
 // get the line color, style and width of the specified PDF component
 // Will raise an exception if it is not in the list of components
-Color_t RooPhysFitter::GetPdfComponentLineColor(const char* name)
+const Color_t& RooPhysFitter::GetPdfComponentLineColor(const char* name) const
 {
-    if (m_pdfLineColorMap.find(name)==m_pdfLineColorMap.end())
+    std::map<std::string,Color_t>::const_iterator it = m_pdfLineColorMap.find(name);
+    if (it==m_pdfLineColorMap.end())
     {
         std::stringstream msg;
         msg << "PDF component " << name << " is not in  the list of components to plot";
         throw GeneralException("RooPhysFitter::GetPdfComponentLineColor", msg.str());
     }
-    return m_pdfLineColorMap[name];
+    return it->second;
 }
-Style_t RooPhysFitter::GetPdfComponentLineStyle(const char* name)
+const Style_t& RooPhysFitter::GetPdfComponentLineStyle(const char* name) const
 {
-    if (m_pdfLineStyleMap.find(name)==m_pdfLineStyleMap.end())
+    std::map<std::string,Style_t>::const_iterator it = m_pdfLineStyleMap.find(name);
+    if (it==m_pdfLineStyleMap.end())
     {
         std::stringstream msg;
         msg << "PDF component " << name << " is not in the list of components to plot";
         throw GeneralException("RooPhysFitter::GetPdfComponentLineStyle", msg.str());
     }
-    return m_pdfLineStyleMap[name];
+    return it->second;
 }
-Width_t RooPhysFitter::GetPdfComponentLineWidth(const char* name)
+const Width_t& RooPhysFitter::GetPdfComponentLineWidth(const char* name) const
 {
-    if (m_pdfLineWidthMap.find(name)==m_pdfLineWidthMap.end())
+    std::map<std::string,Width_t>::const_iterator it = m_pdfLineWidthMap.find(name);
+    if (it==m_pdfLineWidthMap.end())
     {
         std::stringstream msg;
         msg << "PDF component " << name << " is not in the list of components to plot";
         throw GeneralException("RooPhysFitter::GetPdfComponentLineWidth", msg.str());
     }
-    return m_pdfLineWidthMap[name];
+    return it->second;
 }
 
 // get the dataset line color
-Color_t RooPhysFitter::GetDataSetLineColor() const
+const Color_t& RooPhysFitter::GetDataSetLineColor() const
 {
     return m_dataSetLineColor;
 }
 // get the dataset line style
-Style_t RooPhysFitter::GetDataSetLineStyle() const
+const Style_t& RooPhysFitter::GetDataSetLineStyle() const
 {
     return m_dataSetLineStyle;
 }
 // get the dataset line width
-Width_t RooPhysFitter::GetDataSetLineWidth() const
+const Width_t& RooPhysFitter::GetDataSetLineWidth() const
 {
     return m_dataSetLineWidth;
 }
 
 // get the dataset marker color
-Color_t RooPhysFitter::GetDataSetMarkerColor() const
+const Color_t& RooPhysFitter::GetDataSetMarkerColor() const
 {
     return m_dataSetMarkerColor;
 }
 // get the dataset marker style
-Style_t RooPhysFitter::GetDataSetMarkerStyle() const
+const Style_t& RooPhysFitter::GetDataSetMarkerStyle() const
 {
     return m_dataSetMarkerStyle;
 }
 // get the dataset marker width
-Size_t RooPhysFitter::GetDataSetMarkerSize() const
+const Size_t& RooPhysFitter::GetDataSetMarkerSize() const
 {
     return m_dataSetMarkerSize;
 }
 
 // get the dataset fill color
-Color_t RooPhysFitter::GetDataSetFillColor() const
+const Color_t& RooPhysFitter::GetDataSetFillColor() const
 {
     return m_dataSetFillColor;
 }
 // get the dataset fill style
-Style_t RooPhysFitter::GetDataSetFillStyle() const
+const Style_t& RooPhysFitter::GetDataSetFillStyle() const
 {
     return m_dataSetFillStyle;
 }
@@ -2873,28 +2584,28 @@ const char* RooPhysFitter::GetDataSetDrawOption() const
 }
 
 // get the parameter box attributes
-Float_t RooPhysFitter::GetParamBoxX1() const
+const Float_t& RooPhysFitter::GetParamBoxX1() const
 {
     return m_paramBoxX1;
 }
-Float_t RooPhysFitter::GetParamBoxX2() const
+const Float_t& RooPhysFitter::GetParamBoxX2() const
 {
     return m_paramBoxX2;
 }
-Float_t RooPhysFitter::GetParamBoxY1() const
+const Float_t& RooPhysFitter::GetParamBoxY1() const
 {
     return m_paramBoxY1;
 }
-Float_t RooPhysFitter::GetParamBoxY2() const
+const Float_t& RooPhysFitter::GetParamBoxY2() const
 {
     return m_paramBoxY2;
 }
 
-Float_t RooPhysFitter::GetParamBoxTextSize() const
+const Float_t& RooPhysFitter::GetParamBoxTextSize() const
 {
     return m_paramBoxTextSize;
 }
-Int_t RooPhysFitter::GetParamBoxTextAlign() const
+const Int_t& RooPhysFitter::GetParamBoxTextAlign() const
 {
     return m_paramBoxTextAlign;
 }
@@ -2907,328 +2618,55 @@ const char* RooPhysFitter::GetParamBoxName() const
 // If a name is specified, returns the number of bins for a given
 // variable (raises an exception if the number of bins have not
 // been defined for this variable)
-Int_t RooPhysFitter::GetPlotBins(const char* name)
+const Int_t& RooPhysFitter::GetPlotBins(const char* name) const
 {
     if (!name||strcmp(name,"")==0)
     {
         return m_globalPlotBins;
     }
-    if (m_plotBinMap.find(name)==m_plotBinMap.end())
+    std::map<std::string, Int_t>::const_iterator it;
+    it = m_plotBinMap.find(name);
+    if (it==m_plotBinMap.end())
     {
         std::stringstream msg;
         msg << "Variable " << name << " is not in the map of variable name to plot bins";
         throw GeneralException("RooPhysFitter::GetPlotBins", msg.str());
     }
-    return m_plotBinMap[name];
-}
-
-// Get the number of chi2 bins
-// If a name is specified, returns the number of bins for a given
-// variable (raises an exception if the number of bins have not
-// been defined for this variable)
-Int_t RooPhysFitter::GetChi2Bins(const char* name)
-{
-    if (!name||strcmp(name,"")==0)
-    {
-        return m_globalChi2Bins;
-    }
-    if (m_chi2BinMap.find(name)==m_chi2BinMap.end())
-    {
-        std::stringstream msg;
-        msg << "Variable " << name << " is not in the map of variable name to plot bins";
-        throw GeneralException("RooPhysFitter::GetChi2Bins", msg.str());
-    }
-    return m_chi2BinMap[name];
+    return it->second;
 }
 
 
-// Get the number of degrees of freedom for binned GOF tests
-// If ignoreEmptyBins is true, then any empty bins are ignored
-// in the calculation, otherwise an exception is raised if there
-// are empty bins
-Int_t RooPhysFitter::GetNDOF(RooDataHist* data, RooAbsPdf* pdf, Bool_t ignoreEmptyBins)
-{
-    assert(data);
-    assert(pdf);
-    Double_t weight;
-    Int_t nBins=0;
-    Int_t nParams = ((pdf->getParameters(data))->selectByAttrib("Constant",kFALSE))->getSize();
-    for (Int_t i=0; i<data->numEntries(); ++i)
-    {
-        data->get(i);
-        weight=data->weight();
-        if (weight<0)
-        {
-            std::stringstream msg;
-            msg << "Got negative weight " << weight << " for bin " << i;
-            throw GeneralException("RooPhysFitter::GetNDOF", msg.str());
-        }
-        if (weight==0)
-        {
-            if (!ignoreEmptyBins)
-            {
-                std::stringstream msg;
-                msg << "Bin " << i << " has zero entries, but no request to ignore empty bins";
-                throw GeneralException("RooPhysFitter::GetNDOF", msg.str());
-            }
-            continue;
-        }
-        nBins++;
-    }
-    return nBins-nParams-1;
+// Get the number of plot bins.
+// Returns the number of bins for this variable, if defined, else
+// returns the global number of bins
+const Int_t& RooPhysFitter::GetPlotBinsInt(const char* name) const {
+  std::map<std::string, Int_t>::const_iterator it = m_plotBinMap.find(name);
+  if (it==m_plotBinMap.end()) return m_globalPlotBins;
+  else return it->second;
 }
-
-
-// Get the p-value of the value of the test statistic chi2
-// w.r.t. the chi^2 distribution with nDOF degrees of freedom
-Double_t RooPhysFitter::GetPValFromChi2Stat(Double_t chi2, Int_t nDOF)
-{
-    RooRealVar chi2Var("chi2", "", 0.0, chi2);
-    RooRealVar nDOFVar("nDOF", "", (Double_t)nDOF);
-    RooChiSquarePdf chi2Pdf("chi2Pdf", "", chi2Var, nDOFVar);
-    Double_t pVal = 1.0 - chi2Pdf.analyticalIntegral(1);
-    return pVal;
+  
+// Get the name of the data histogram in a RooPlot of the specified
+// fit variable.
+// This function is used to get the pull plot.
+// NB. You may need to be override this method in a derived class.
+std::string RooPhysFitter::GetDataHistName() const {
+  // construct the histogram name from the dataset name
+  std::stringstream ss_histName;
+  ss_histName << "h_" << this->GetDataSetName();
+  return ss_histName.str();
 }
-
-// Get the significance (in units of sigma) of the value of the
-// test statistic chi2 w.r.t. the chi^2 distribution with nDOF
-// degrees of freedom
-Double_t RooPhysFitter::GetSignifFromChi2Stat(Double_t chi2, Int_t nDOF)
-{
-    Double_t pVal = this->GetPValFromChi2Stat(chi2, nDOF);
-    return this->GetSignifFromPVal(pVal);
+  
+// Get the name of the model PDF curve in a RooPlot of the specified
+// fit variable.
+// This function is used to get the pull plot.
+// NB. You may need to be override this method in a derived class.
+std::string RooPhysFitter::GetModelCurveName(const char* name) const {
+  // construct the curve name for the model PDF
+  std::stringstream ss_curveName;
+  ss_curveName << this->GetModelName() << "_Norm[" << name << "]";
+  return ss_curveName.str();
 }
-
-// Get the significance (in units of sigma) for the given p-value/
-// significance level
-Double_t RooPhysFitter::GetSignifFromPVal(Double_t pVal)
-{
-    return std::sqrt(2)*TMath::ErfcInverse(pVal);
-}
-
-// Get the p-value based on the number of toy datasets with the same
-// or more extreme value of the chi^2 test statistic as compared to
-// the "true" distribution (given by the specified value for the chi^2
-// test statistic and the number of degrees of freedom
-Double_t RooPhysFitter::GetPValFromChi2MCToyStudy(
-    RooAbsPdf& model, RooDataHist& data, Int_t nToys,
-    PlotChi2TestStat statType, Bool_t extended, const char* rangeName,
-    const char* addCoefRangeName, Int_t nCPU, RooFit::MPSplit interleave,
-    Bool_t verbose, Bool_t splitCutRange, RooAbsData::ErrorType etype)
-{
-    if (nToys<=0)
-    {
-        std::stringstream msg;
-        msg << "Got invalid number of toys" << nToys;
-        throw GeneralException("RooPhysFitter::GetPValFromChi2MCToyStudy",
-                               msg.str());
-    }
-    if (statType==RooPhysFitter::NoTestStat)
-    {
-        std::stringstream msg;
-        msg << "Request to perform MC random sampling study when no test statistic "
-        << " has been specified";
-        throw GeneralException("RooPhysFitter::GetPValFromChi2MCToyStudy",
-                               msg.str());
-    }
-
-    RooAbsOptTestStatistic* testStat=0;
-    const char* statName="";
-    if (statType==RooPhysFitter::PearsonsChi2)
-    {
-        statName="PearsonsChi2";
-        testStat = new RooPearsonsChi2Var(statName, "", model, data,
-                                          extended, rangeName,
-                                          addCoefRangeName, nCPU, interleave,
-                                          verbose, splitCutRange, etype
-                                         );
-    }
-    else if (statType==RooPhysFitter::YatesChi2)
-    {
-        statName="YatesChi2";
-        testStat = new RooYatesChi2Var(statName, "", model, data,
-                                       extended, rangeName,
-                                       addCoefRangeName, nCPU, interleave,
-                                       verbose, splitCutRange, etype
-                                      );
-    }
-    else if (statType==RooPhysFitter::LLRatio)
-    {
-        statName="LLRatio";
-        testStat = new RooLLRatioVar(statName, "", model, data,
-                                     extended, rangeName,
-                                     addCoefRangeName, nCPU, interleave,
-                                     verbose, splitCutRange, etype
-                                    );
-    }
-
-    Double_t chi2 = testStat->getVal();
-
-    if (chi2<0)
-    {
-        std::stringstream msg;
-        msg << "Got invalid chi2 " << chi2;
-        throw GeneralException("RooPhysFitter::GetPValFromChi2MCToyStudy",
-                               msg.str());
-    }
-
-    Int_t nToysGteChi2=0; // number of toys with chi^2 >= "true" chi^2
-    const RooArgSet* obs = model.getObservables(data);
-    assert(obs);
-
-    RooAbsOptTestStatistic* testStat_toy=0;
-    RooDataHist* data_toy=0;
-    const char* statName_toy="";
-    Double_t chi2_toy=0;
-    for (Int_t iToy=0; iToy<nToys; ++iToy)
-    {
-        // generate model dataset
-        data_toy = model.generateBinned(*obs);//, data.numEntries());
-
-        // create the test statistis
-        if (statType==RooPhysFitter::PearsonsChi2)
-        {
-            statName_toy="PearsonsChi2";
-            testStat_toy = new RooPearsonsChi2Var(statName_toy, "", model,
-                                                  *data_toy, extended, rangeName,
-                                                  addCoefRangeName, nCPU, interleave,
-                                                  verbose, splitCutRange, etype
-                                                 );
-        }
-        else if (statType==RooPhysFitter::YatesChi2)
-        {
-            statName_toy="YatesChi2";
-            testStat_toy = new RooYatesChi2Var(statName_toy, "", model,
-                                               *data_toy, extended, rangeName,
-                                               addCoefRangeName, nCPU, interleave,
-                                               verbose, splitCutRange, etype
-                                              );
-        }
-        else if (statType==RooPhysFitter::LLRatio)
-        {
-            statName_toy="LLRatio";
-            testStat_toy = new RooLLRatioVar(statName_toy, "", model,
-                                             *data_toy, extended, rangeName,
-                                             addCoefRangeName, nCPU, interleave,
-                                             verbose, splitCutRange, etype
-                                            );
-        }
-        chi2_toy = testStat_toy->getVal();
-        if (chi2_toy>=chi2)
-        {
-            nToysGteChi2++;
-        }
-    }
-    return ((Double_t)nToysGteChi2)/nToys;
-}
-
-Double_t RooPhysFitter::GetPValFromChi2MCToyStudy(
-    RooAbsPdf& model, RooDataHist& data, Int_t nToys,
-    PlotChi2TestStat statType, const RooCmdArg& arg1, const RooCmdArg& arg2,
-    const RooCmdArg& arg3, const RooCmdArg& arg4, const RooCmdArg& arg5,
-    const RooCmdArg& arg6, const RooCmdArg& arg7, const RooCmdArg& arg8,
-    const RooCmdArg& arg9)
-{
-    if (nToys<=0)
-    {
-        std::stringstream msg;
-        msg << "Got invalid number of toys" << nToys;
-        throw GeneralException("RooPhysFitter::GetPValFromChi2MCToyStudy",
-                               msg.str());
-    }
-    if (statType==RooPhysFitter::NoTestStat)
-    {
-        std::stringstream msg;
-        msg << "Request to perform MC random sampling study when no test statistic "
-        << " has been specified";
-        throw GeneralException("RooPhysFitter::GetPValFromChi2MCToyStudy",
-                               msg.str());
-    }
-
-    RooAbsOptTestStatistic* testStat=0;
-    const char* statName="";
-    if (statType==RooPhysFitter::PearsonsChi2)
-    {
-        statName="PearsonsChi2";
-        testStat = new RooPearsonsChi2Var(statName, "", model, data,
-                                          arg1, arg2, arg3, arg4, arg5, arg6,
-                                          arg7, arg8, arg9
-                                         );
-    }
-    else if (statType==RooPhysFitter::YatesChi2)
-    {
-        statName="YatesChi2";
-        testStat = new RooYatesChi2Var(statName, "", model, data,
-                                       arg1, arg2, arg3, arg4, arg5, arg6,
-                                       arg7, arg8, arg9
-                                      );
-    }
-    else if (statType==RooPhysFitter::LLRatio)
-    {
-        statName="LLRatio";
-        testStat = new RooLLRatioVar(statName, "", model, data,
-                                     arg1, arg2, arg3, arg4, arg5, arg6,
-                                     arg7, arg8, arg9
-                                    );
-    }
-
-    Double_t chi2 = testStat->getVal();
-
-    if (chi2<0)
-    {
-        std::stringstream msg;
-        msg << "Got invalid chi2 " << chi2;
-        throw GeneralException("RooPhysFitter::GetPValFromChi2MCToyStudy",
-                               msg.str());
-    }
-
-    Int_t nToysGteChi2=0; // number of toys with chi^2 >= "true" chi^2
-    const RooArgSet* obs = model.getObservables(data);
-    assert(obs);
-
-    RooAbsOptTestStatistic* testStat_toy=0;
-    RooDataHist* data_toy=0;
-    const char* statName_toy="";
-    Double_t chi2_toy=0;
-    for (Int_t iToy=0; iToy<nToys; ++iToy)
-    {
-        // generate model dataset
-        data_toy = model.generateBinned(*obs);//, data.numEntries());
-
-        // create the test statistis
-        if (statType==RooPhysFitter::PearsonsChi2)
-        {
-            statName_toy="PearsonsChi2";
-            testStat_toy = new RooPearsonsChi2Var(statName_toy, "", model,
-                                                  *data_toy, arg1, arg2, arg3, arg4,
-                                                  arg5, arg6, arg7, arg8, arg9
-                                                 );
-        }
-        else if (statType==RooPhysFitter::YatesChi2)
-        {
-            statName_toy="YatesChi2";
-            testStat_toy = new RooYatesChi2Var(statName_toy, "", model,
-                                               *data_toy, arg1, arg2, arg3, arg4,
-                                               arg5, arg6, arg7, arg8, arg9
-                                              );
-        }
-        else if (statType==RooPhysFitter::LLRatio)
-        {
-            statName_toy="LLRatio";
-            testStat_toy = new RooLLRatioVar(statName_toy, "", model,
-                                             *data_toy, arg1, arg2, arg3, arg4,
-                                             arg5, arg6, arg7, arg8, arg9
-                                            );
-        }
-        chi2_toy = testStat_toy->getVal();
-        if (chi2_toy>=chi2)
-        {
-            nToysGteChi2++;
-        }
-    }
-    return ((Double_t)nToysGteChi2)/nToys;
-}
-
+  
 // create a formatting TString for an abitrary RooAbsArg object
 TString* RooPhysFitter::format(RooAbsReal* var, const RooFitResult* rfit,
                                Int_t sigDigits, const char *options) const

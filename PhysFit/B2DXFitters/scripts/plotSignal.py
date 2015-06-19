@@ -12,17 +12,102 @@
 #   Date  : 21 / 02 / 2012                                                    #
 #                                                                             #
 # --------------------------------------------------------------------------- #
+# -----------------------------------------------------------------------------
+# settings for running without GaudiPython
+# -----------------------------------------------------------------------------
+""":"
+# This part is run by the shell. It does some setup which is convenient to save
+# work in common use cases.
 
+# make sure the environment is set up properly
+if test -n "$CMTCONFIG" \
+         -a -f $B2DXFITTERSROOT/$CMTCONFIG/libB2DXFittersDict.so \
+         -a -f $B2DXFITTERSROOT/$CMTCONFIG/libB2DXFittersLib.so; then
+    # all ok, software environment set up correctly, so don't need to do
+    # anything
+    true
+else
+    if test -n "$CMTCONFIG"; then
+        # clean up incomplete LHCb software environment so we can run
+        # standalone
+        echo Cleaning up incomplete LHCb software environment.
+        PYTHONPATH=`echo $PYTHONPATH | tr ':' '\n' | \
+            egrep -v "^($User_release_area|$MYSITEROOT/lhcb)" | \
+            tr '\n' ':' | sed -e 's/:$//'`
+        export PYTHONPATH
+        LD_LIBRARY_PATH=`echo $LD_LIBRARY_PATH | tr ':' '\n' | \
+            egrep -v "^($User_release_area|$MYSITEROOT/lhcb)" | \
+            tr '\n' ':' | sed -e 's/:$//'`
+	export LD_LIBRARY_PATH
+        exec env -u CMTCONFIG -u B2DXFITTERSROOT "$0" "$@"
+    fi
+    # automatic set up in standalone build mode
+    if test -z "$B2DXFITTERSROOT"; then
+        cwd="$(pwd)"
+        if test -z "$(dirname $0)"; then
+            # have to guess location of setup.sh
+            cd ../standalone
+            . ./setup.sh
+            cd "$cwd"
+        else
+            # know where to look for setup.sh
+            cd "$(dirname $0)"/../standalone
+            . ./setup.sh
+            cd "$cwd"
+        fi
+        unset cwd
+    fi
+fi
+# figure out which custom allocators are available
+# prefer jemalloc over tcmalloc
+for i in libjemalloc libtcmalloc; do
+    for j in `echo "$LD_LIBRARY_PATH" | tr ':' ' '` \
+            /usr/local/lib /usr/lib /lib; do
+        for k in `find "$j" -name "$i"'*.so.?' | sort -r`; do
+            if test \! -e "$k"; then
+                continue
+            fi
+            echo adding $k to LD_PRELOAD
+            if test -z "$LD_PRELOAD"; then
+                export LD_PRELOAD="$k"
+                break 3
+            else
+                export LD_PRELOAD="$LD_PRELOAD":"$k"
+                break 3
+            fi
+        done
+    done
+done
+# set batch scheduling (if schedtool is available)
+schedtool="`which schedtool 2>/dev/zero`"
+if test -n "$schedtool" -a -x "$schedtool"; then
+    echo "enabling batch scheduling for this job (schedtool -B)"
+    schedtool="$schedtool -B -e"
+else
+    schedtool=""
+fi
+
+# set ulimit to protect against bugs which crash the machine: 2G vmem max,
+# no more then 8M stack
+ulimit -v $((2048 * 1024))
+ulimit -s $((   8 * 1024))
+
+# trampoline into python
+exec $schedtool /usr/bin/time -v env python -O -- "$0" "$@"
+"""
+__doc__ = """ real docstring """
 # -----------------------------------------------------------------------------
 # Load necessary libraries
 # -----------------------------------------------------------------------------
-from optparse import OptionParser
-from os.path  import exists
-
-import GaudiPython
-GaudiPython.loaddict( 'B2DXFittersDict' )
+from B2DXFitters import *
 from ROOT import *
-from ROOT import RooCruijff
+
+from ROOT import RooFit
+from optparse import OptionParser
+from math     import pi, log
+from  os.path import exists
+import os, sys, gc
+gROOT.SetBatch()
 
 # -----------------------------------------------------------------------------
 # Configuration settings
@@ -268,11 +353,33 @@ if __name__ == '__main__' :
     else:
         mass.setRange(Bmass_down,Bmass_up)
     frame_m = mass.frame()
+
+    if mVarTS != "lab1_PIDK":
+        unit = "[MeV/c^{2}]"
+    else:
+        unit = ""
+         
     
     frame_m.SetTitle('') 
     
-    frame_m.GetXaxis().SetLabelSize( 0.03 )
-    frame_m.GetYaxis().SetLabelSize( 0.03 )
+    frame_m.GetXaxis().SetLabelSize( 0.05 )
+    frame_m.GetYaxis().SetLabelSize( 0.05 )
+    frame_m.GetXaxis().SetLabelFont( 132 )
+    frame_m.GetYaxis().SetLabelFont( 132 )
+    frame_m.GetXaxis().SetLabelOffset( 0.005 )
+    frame_m.GetYaxis().SetLabelOffset( 0.005 )
+    frame_m.GetXaxis().SetLabelColor( kWhite)
+
+    frame_m.GetXaxis().SetTitleSize( 0.05 )
+    frame_m.GetYaxis().SetTitleSize( 0.05 )
+    frame_m.GetYaxis().SetNdivisions(512)
+    
+    frame_m.GetXaxis().SetTitleOffset( 1.00 )
+    frame_m.GetYaxis().SetTitleOffset( 1.09 )
+    frame_m.GetYaxis().SetTitle((TString.Format("#font[12]{Candidates / ( " +
+                                                str((mass.getBinWidth(1)))+" "+
+                                                unit+")}") ).Data())
+                                                    
     if ( mVarTS == "lab2_MM" ):
         if ( mode == "BDPi" ):
             frame_m.GetXaxis().SetTitle("m(D) [MeV/c^{2}]")
@@ -284,19 +391,28 @@ if __name__ == '__main__' :
        else:
            frame_m.GetXaxis().SetTitle("m(B_{s}) [MeV/c^{2}]")
            
-    frame_m.GetYaxis().SetTitleFont( 132 )
-    frame_m.GetYaxis().SetLabelFont( 132 ) 
-    frame_m.SetLabelFont(132)
-    frame_m.SetTitleFont(132)
-           
+               
     if plotModel : plotFitModel( modelPDF, frame_m, sam, mVarTS, merge )
     if plotData : plotDataSet( dataset, frame_m, sam, merge )
 
-    legend = TLegend( 0.15, 0.70, 0.40, 0.85 ) 
-    legend.SetTextSize(0.03)
+    if ( mVarTS == "lab2_MM" ):
+        frame_m.GetYaxis().SetRangeUser(0.01,frame_m.GetMaximum()*1.1)
+    
+    lhcbtext = TLatex()
+    lhcbtext.SetTextFont(132)
+    lhcbtext.SetTextColor(1)
+    lhcbtext.SetTextSize(0.07)
+    lhcbtext.SetTextAlign(12)
+    
+    legend = TLegend( 0.12, 0.70, 0.40, 0.80 ) 
+    legend.SetTextSize(0.05)
     legend.SetTextFont(12)
     legend.SetFillColor(4000)
-    legend.SetHeader("LHCb L_{int}=1fb^{-1}")
+    legend.SetShadowColor(0)
+    legend.SetBorderSize(0)
+    legend.SetTextFont(132)
+    
+    #legend.SetHeader("LHCb L_{int}=1fb^{-1}")
    
     l1 = TLine()
     l1.SetLineColor(kBlue+2)
@@ -307,19 +423,74 @@ if __name__ == '__main__' :
     if ( mVarTS == "lab0_MassFitConsD_M" ):
         gStyle.SetOptLogy(1)
     canvas = TCanvas("canvas", "canvas", 600, 700)
-    pad1 =  TPad("pad1","pad1",0.01,0.21,0.99,0.99)
-    pad2 =  TPad("pad2","pad2",0.01,0.01,0.99,0.20)
+    canvas.cd()
+    pad1 = TPad("upperPad", "upperPad", .050, .22, 1.0, 1.0)
+    pad1.SetBorderMode(0)
+    pad1.SetBorderSize(-1)
+    pad1.SetFillStyle(0)
+    pad1.SetTickx(0);
     pad1.Draw()
-    pad2.Draw()
     pad1.cd()
+                            
+    
     frame_m.Draw()
     legend.Draw("same")
+    lhcbtext.DrawTextNDC(0.12,0.82,"LHCb")
+    
+        
     pad1.Update()
 
     frame_m.Print("v")
+
+    canvas.cd()
+    pad2 = TPad("lowerPad", "lowerPad", .050, .005, 1.0, .3275)
+    pad2.SetBorderMode(0)
+    pad2.SetBorderSize(-1)
+    pad2.SetFillStyle(0)
+    pad2.SetBottomMargin(0.35)
+    pad2.SetTickx(0);
+    pad2.Draw()
+    pad2.SetLogy(0)
+    pad2.cd()
+
+    frame_p = mass.frame(RooFit.Title("pull_frame"))
+    frame_p.Print("v")
+    frame_p.SetTitle("")
+    frame_p.GetYaxis().SetTitle("")
+    frame_p.GetYaxis().SetTitleSize(0.09)
+    frame_p.GetYaxis().SetTitleOffset(0.26)
+    frame_p.GetYaxis().SetTitleFont(62)
+    frame_p.GetYaxis().SetLabelSize(0.12)
+    frame_p.GetYaxis().SetLabelOffset(0.006)
+    frame_p.GetXaxis().SetTitleSize(0.15)
+    frame_p.GetXaxis().SetTitleFont(132)
+    frame_p.GetXaxis().SetTitleOffset(0.85)
+    frame_p.GetXaxis().SetNdivisions(5)
+    frame_p.GetYaxis().SetNdivisions(5)
+    frame_p.GetXaxis().SetLabelSize(0.12)
+    frame_p.GetXaxis().SetLabelFont( 132 )
+    frame_p.GetYaxis().SetLabelFont( 132 )
+
+    if ( mVarTS == "lab2_MM" ):
+        if ( mode == "BDPi" ):
+            frame_p.GetXaxis().SetTitle("m(D) [MeV/c^{2}]")
+        else:
+            frame_p.GetXaxis().SetTitle("m(D_{s}) [MeV/c^{2}]")
+    else:
+        if ( mode == "BDPi" ):
+            frame_p.GetXaxis().SetTitle("m(B_{d}) [MeV/c^{2}]")
+        else:
+            frame_p.GetXaxis().SetTitle("m(B_{s}) [MeV/c^{2}]")
+            
+    
+    
     pullnameTS = TString("FullPdf_Norm[")+mVarTS+TString("]_Comp[")+pullname3TS+TString("]")
     pullHist  = frame_m.pullHist(pullname2TS.Data(),pullnameTS.Data())
     pullHist.SetTitle("")
+
+    frame_p.addPlotable(pullHist,"P")
+    frame_p.Draw()
+       
     
     pad2.SetLogy(0)
     pad2.cd()
@@ -371,7 +542,8 @@ if __name__ == '__main__' :
     graph3.SetLineColor(kRed)
                                                                  
 
-    pullHist.Draw("ap")
+    frame_p.Draw()
+    
     graph.Draw("same")
     graph2.Draw("same")
     graph3.Draw("same")

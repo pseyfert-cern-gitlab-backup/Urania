@@ -1,7 +1,7 @@
 #BdPi
-/afs/cern.ch/work/g/gligorov/public/Bs2DsKFitTuples/DV_v33r1/SmallTuples/
-DPi_KPiPi_MD_BDTG_MINI.root
-DPi_KPiPi_MU_BDTG_MINI.root
+/afs/cern.ch/work/a/adudziak/public/Bs2DsKFitTuple/
+MergedTree_Bd2DPi_KPiPi_MD_OFFLINE.root
+MergedTree_Bd2DPi_KPiPi_MU_OFFLINE.root
 DecayTree
 DecayTree
 ###
@@ -135,27 +135,27 @@ PtVsnTrVsP_Comp_DPi_Up_hist.root
 ###
 
 #MC FileName MD
-/afs/cern.ch/work/a/adudziak/public/Merged_Bd2DPi_D2KPiPi_MD_BsHypo_BDTG.root
-/afs/cern.ch/work/a/adudziak/public/Merged_Bd2DstPi_Dst2D-Pi0_MD_BsHypo_BDTG.root
-/afs/cern.ch/work/a/adudziak/public/Merged_Bd2DRho_D2KPiPi_MD_BsHypo_BDTG.root
-/afs/cern.ch/work/a/adudziak/public/Merged_Bs2DsRho_Ds2KKPi_MD_BsHypo_BDTG.root
-/afs/cern.ch/work/a/adudziak/public/Merged_Bs2DsstRho_Ds2KKPi_MD_BsHypo_BDTG.root
-/afs/cern.ch/work/a/adudziak/public/Merged_Bs2DsstPi_Ds2KKPi_MD_BsHypo_BDTG.root
-/afs/cern.ch/work/a/adudziak/public/Merged_Bs2DsstPi_Ds2KKPi_MD_BsHypo_BDTG.root
-/afs/cern.ch/work/a/adudziak/public/Merged_Lb2LcPi_Lc2pKPi_MD_BsHypo_BDTG.root
-/afs/cern.ch/work/a/adudziak/public/Merged_Bs2DsK_Ds2KKPi_MD_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bd2DPi_D2KPiPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bd2DstPi_Dst2D-Pi0_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bd2DRho_D2KPiPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bs2DsRho_Ds2KKPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bs2DsstRho_Ds2KKPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bs2DsstPi_Ds2KKPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bd2DsstPi_Ds2KKPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Lb2LcPi_Lc2pKPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bs2DsK_Ds2KKPi_BsHypo_BDTG.root
 ###
 
 #MC FileName MU
-/afs/cern.ch/work/a/adudziak/public/Merged_Bd2DPi_D2KPiPi_MU_BsHypo_BDTG.root
-/afs/cern.ch/work/a/adudziak/public/Merged_Bd2DstPi_Dst2D-Pi0_MU_BsHypo_BDTG.root
-/afs/cern.ch/work/a/adudziak/public/Merged_Bd2DRho_D2KPiPi_MU_BsHypo_BDTG.root
-/afs/cern.ch/work/a/adudziak/public/Merged_Bs2DsRho_Ds2KKPi_MU_BsHypo_BDTG.root
-/afs/cern.ch/work/a/adudziak/public/Merged_Bs2DsstRho_Ds2KKPi_MU_BsHypo_BDTG.root
-/afs/cern.ch/work/a/adudziak/public/Merged_Bs2DsstPi_Ds2KKPi_MU_BsHypo_BDTG.root
-/afs/cern.ch/work/a/adudziak/public/Merged_Bs2DsstPi_Ds2KKPi_MU_BsHypo_BDTG.root
-/afs/cern.ch/work/a/adudziak/public/Merged_Lb2LcPi_Lc2pKPi_MU_BsHypo_BDTG.root
-/afs/cern.ch/work/a/adudziak/public/Merged_Bs2DsK_Ds2KKPi_MU_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bd2DPi_D2KPiPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bd2DstPi_Dst2D-Pi0_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bd2DRho_D2KPiPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bs2DsRho_Ds2KKPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bs2DsstRho_Ds2KKPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bs2DsstPi_Ds2KKPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bd2DsstPi_Ds2KKPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Lb2LcPi_Lc2pKPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bs2DsK_Ds2KKPi_BsHypo_BDTG.root
 ###
 
 #MC TreeName
@@ -164,6 +164,27 @@ DecayTree;1
 DecayTree;1
 DecayTree;1
 DecayTree;1
+DecayTree;1
+DecayTree;1
+DecayTree;1
+DecayTree;1
+###
+
+#Kfactor MC FileName MD
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bs2DsstPi_Ds2KKPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bs2DsK_Ds2KKPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Lb2LcPi_Lc2pKPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bd2DPi_D2KPiPi_BsHypo_BDTG.root
+###
+
+#Kfactor MC FileName MU
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bs2DsstPi_Ds2KKPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bs2DsK_Ds2KKPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Lb2LcPi_Lc2pKPi_BsHypo_BDTG.root
+/afs/cern.ch/work/a/adudziak/public/MCMarch2013/MergedTree_Bd2DPi_D2KPiPi_BsHypo_BDTG.root
+###
+
+#Kfactor MC TreeName
 DecayTree;1
 DecayTree;1
 DecayTree;1

@@ -1,173 +1,235 @@
+#/bin/env python
+
+########################################################
+### 
+### chopTrees.py
+###
+### Author: Andrew Powell (a.powell1@physics.ox.ac.uk)
+### Created: November 22, 2012
+########################################################
+
 import numpy as np
 import pickle
 import sys
-import getopt
-from ROOT import TFile, TTree, TCut, gDirectory, TObject
+import os.path
+import warnings
+import argparse
+import ROOT
 
-def usage():
-    print ' ------------------------------------------------------------------------------------------------------'
-    print ' Andrew Powell (a.powell1@physics.ox.ac.uk) November 22, 2012                                          '
-    print '                                                                                                       '
-    print ' chopTrees.py - Run over a given ganga job output produced using PIDCalib/CalibDataSel and split it    '
-    print '                into subsamples defined by the run limits within a pickle file produced using          '
-    print '                $CALIBDATASCRIPTSROOT/scripts/getRunLumi.py                                            '
-    print ' Typical usage:                                                                                        '
-    print " python chopTrees.py --jobID=107                                                                       "
-    print "                     --runPickleFile=up_runLimits_h.pkl                                                  "
-    print "                     --minSubJob=0                                                                     "
-    print "                     --maxSubJob=26                                                                    "
-    print "                     --treeList='[DSt2D0Pi_D02RSKPiTuple/CalibPID,Lam02PPi_LoPTuple/CalibPID,          "
-    print "                                       Lam02PPi_HiPTuple/CalibPID,JpsiFromBNoPIDNoMipTuple/CalibPID]'  " 
-    print "                     --gangadir=/afs/cern.ch/user/a/apowell/gangadir/workspace/apowell/LocalXML        "
-    print "                     --fileSuffix=h                                                                    "
-    print ' ------------------------------------------------------------------------------------------------------'
-    sys.exit(' ')
+# ROOT should not parse the command-line options
+ROOT.PyConfig.IgnoreCommandLineOptions=True
 
-def chopTrees(in_file, tree_list, run_pickle_file, fileSuffix, out_path=''):
+# ROOT should not start the Gui
+ROOT.PyConfig.StartGuiThread = 0
+  
+class ShowArgumentsParser(argparse.ArgumentParser):
+    def error(self, message):
+        sys.stderr.write('error: {0}\n\n'.format(message))
+        parser.print_usage(sys.stderr)
+        sys.stderr.write('\n'+self.description)
+        sys.exit(2)
+
+def chopTrees(fname_in, ntpname_list, fname_pkl, fileSuffix, out_path=''):
     #==================================================
-    # Un-pickle the numpy arrays
+    # Un-pickle the numpy array
     #==================================================
-    runLims   = pickle.load( open( run_pickle_file, "rb" ) )
+    runLims   = pickle.load( open( fname_pkl, "rb" ) )
+    print "Got {0:d} run ranges".format(len(runLims))
+
+    print ''
+    print 'Run ranges:'
     print runLims
     
     #==================================================
     # Open TFile
     #==================================================
-    f_in   = TFile(in_file,'read')
-
+    f_in   = ROOT.TFile.Open(fname_in,'read')
+    if not f_in:
+        sys.stderr.write(("Failed to open file '{0}' "
+                          "for reading").format(
+            fname_in))
+        sys.exit(1)
+        
     #==================================================
     # Create list of TTrees to access
     #==================================================
     _trees = []
-    for tree in tree_list:
-        if gDirectory.Get(tree)!=None:
-            _trees.append(gDirectory.Get(tree))
-        else:
-            print 'TTree \'{ttree}\' can not be found' .format(ttree=tree)
-            sys.exit()
+    for ntpname in ntpname_list:
+        tree = ROOT.gDirectory.Get(ntpname)
+        if not tree:
+            sys.stderr.write(("Failed to retrieve TTree '{0}' "
+                              "from file {1}").format(
+                ntpname, fname_in))
+            sys.exit(1)
+        _trees.append(tree)
+
+    #==================================================
+    # Loop over array of run ranges
+    #==================================================
+    nentries=0
+    nentries_tree={ ntpname:0 for ntpname in ntpname_list }
     
-    #==================================================
-    # Loop over array of run sets
-    #==================================================
-    for i, run_set in enumerate(runLims):
+    for i, runRange in enumerate(runLims):
         
         #==================================================
         # Create TFile for candidates in run range
         #==================================================
-        if out_path!='':
-            out_path +='/'
-        f_out = TFile( '%sPID_%d_%s.root' %(out_path,i,fileSuffix), 'recreate' )
+        if out_path=='':
+            out_path='.'
+
+        fname_out = '{dir}/PID_{idx}_{suf}.root'.format(
+            dir=out_path, idx=i, suf=fileSuffix)
+        print 'Creating output file {0}'.format(fname_out)
+        f_out = ROOT.TFile.Open( fname_out, 'recreate' )
+        if not f_out:
+            sys.stderr.write(("Failed to open file '{0}' "
+                              "for writing").format(
+            fname_out))
+            sys.exit(1)
+            
+        #==================================================
+        # Create cut for this run range
+        #==================================================
+        cut = '(runNumber >= {runMin:d}) && (runNumber <= {runMax:d})'.format(
+            runMin=runRange[0], runMax=runRange[1])
+        print 'Run range cut: {0}'.format(cut)
 
         #==================================================
-        # Create TCut for this run range
+        # Make directories and copy trees
         #==================================================
-        cut = str(run_set[0]) +' <= runNumber'
-        cut += ' && '
-        cut += 'runNumber <= ' + str(run_set[1])
-        print cut 
-
+        for itree, ntpname in enumerate(ntpname_list):
+            d = f_out.mkdir(ntpname.split('/')[0])
+            d.cd()
+            tree_cpy = _trees[itree].CopyTree(cut)
+            n_tree = tree_cpy.GetEntries()
+            nentries += n_tree
+            nentries_tree[ntpname] += n_tree
+            
         #==================================================
-        # Make directories
+        # Write and close TFile
         #==================================================
-        for tree in tree_list:
-            f_out.mkdir(tree.split('/')[0])
-
-        #==================================================
-        # Copy Tree
-        #==================================================
-        for i, tree in enumerate(tree_list):
-            f_out.cd(tree.split('/')[0])
-            tree_cpy = _trees[i].CopyTree(cut)
-            tree_cpy.Write(tree_cpy.GetName(), TObject.kWriteDelete)
-        
-        #==================================================
-        # Close TFile
-        #==================================================
+        f_out.Write()
         f_out.Close()
 
-def chopTreesLoop(in_file_list, tree_list, run_pickle_file, fileSuffix='h'):
+    for ntpname, n_tree in nentries_tree.items():
+        print 'Processed {0:d} entries in tree {1}'.format(
+            n_tree, ntpname)
+    print 'Processed {0:d} total entries'.format(nentries)
+        
+def chopTreesLoop(in_fname_list, ntpname_list, fname_pkl, fileSuffix):
 
     #==================================================
     # Loop over list of input files
     #==================================================
-    for i, file in enumerate(in_file_list):
+    for i, fname in enumerate(in_fname_list):
 
         #==================================================
         # Determine path of file
         #==================================================
-        file_name = file.split('/')[len(file.split('/'))-1]
-        replace_str = '/'+file_name if len(file.split('/'))>1 else file_name
-        path = file.replace(replace_str,'')
+        import os
+        path = os.path.dirname(fname)
         #==================================================
         # If no file continue
         #==================================================
-        f_in   = TFile(file,'read')
-        if f_in.IsZombie() :
-          print 'File ' + file + ' Not Found'
+        f_in  = ROOT.TFile.Open(fname,'read')
+        if not f_in :
+          warnings.warn("Input file '{0}' not found".format(fname))
           continue
         f_in.Close()
         #==================================================
         # Run chopTrees function
         #==================================================
-        chopTrees(file, tree_list, run_pickle_file, fileSuffix, path)
-        print 'Processed {ii} of {nn} files requested to be chopped.'.format(ii=i+1,nn=len(in_file_list))
+        chopTrees(fname, ntpname_list, fname_pkl, fileSuffix, path)
+        print 'Processed {ii} of {nn} files requested to be chopped.'.format(
+            ii = i+1, nn = len(in_fname_list))
         
-def chopTreesGanga(tree_list,
-                   run_pickle_file,
+def chopTreesGanga(ntpname_list,
+                   fname_pkl,
                    job_id,
                    min_subjob,
                    max_subjob,
-                   ganga_dir='$DATADISK/gangadir_calib/workspace/powell/LocalXML',
-                   fileSuffix='h',
-                   nTuple_name='PID_Modes.root'):
+                   ganga_dir,
+                   fileSuffix,
+                   nTuple_name):
 
-    file_list = []
-    for subjob in xrange(min_subjob, max_subjob+1):
-        file_list.append(ganga_dir+'/'+str(job_id)+'/'+str(subjob)+'/output/'+nTuple_name)
-    print file_list
+    fname_list = []
+    for subjob_id in range(min_subjob, max_subjob+1):
+        fname_list.append('{dir}/{jid:d}/{sid:d}/output/{fname}'.format(
+            dir=ganga_dir, jid=job_id, sid=subjob_id, fname=nTuple_name))
+
+    print 'Input files:'
+    print fname_list
     
-    chopTreesLoop(file_list,
-                  tree_list,
-                  run_pickle_file,
+    chopTreesLoop(fname_list,
+                  ntpname_list,
+                  fname_pkl,
                   fileSuffix)
-    
 
 if __name__ == '__main__':
+    parser = ShowArgumentsParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        prog=os.path.basename(sys.argv[0]),
+        description=("""Run over the output nTuples of a given ganga job """
+                     """produced using PIDCalib/CalibDataSel and split it """
+                     """into subsamples defined by the run limits contained """
+                     """within a pickle file produced using """
+                     """$CALIBDATASCRIPTSROOT/scripts/python/getRunRanges.py.       
+
+For a full list of arguments, do: 'python {0} -h'""".format(
+        os.path.basename(sys.argv[0]))),
+        )
+
+    # add the positional arguments
+    parser.add_argument('jobID', metavar='<jobID>', type=int,
+                        help=("The ganga job ID to process."))
+    parser.add_argument('pklName', metavar='<pklName>',
+                        help=("Name of the pickle file (including the path) "
+                              "that contains the list of run ranges."))
+    parser.add_argument('minSubJobID', metavar='<minSubJobID>', type=int,
+                        help=("The minimum subjob ID to process."))
+    parser.add_argument('maxSubJobID', metavar='<maxSubJobID>', type=int,
+                        help=("The maximum subjob ID to process."))
+    parser.add_argument('tupleDir', metavar='<tupleDir>', 
+                        help=("Name of the directory in the input "
+                              "file(s) containing the nTuple(s) to process. "
+                              "Multiple directories can be specified as a "
+                              "comma-separated list."))
+    parser.add_argument('inputDir', metavar='<inputDir>',
+                        help=("The top-level directory of the input files, "
+                              "usually the ganga directory."))
+    parser.add_argument('fileSuffix', metavar='<fileSuffix>',
+                        help=("The suffix to append to the chopped "
+                              "file names. N.B. The output files will be "
+                              "named '{dir}/PID_{idx}_{suf}.root', where "
+                              "{dir} is the same directory as the input file, "
+                              "{idx} is the index (0 = 1st run range, "
+                              "1 = 2nd run range etc.) and {suf} is the "
+                              "file suffix."))
     
-    #======================================================================
-    # Run the makeCurves function if run by the python interpretator
-    #======================================================================
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], 'r:j:x:y:t:g:f', 
-                                      ['runPickleFile=', 'jobID=', 'minSubJob=','maxSubJob=','treeList=','gangadir=', 'fileSuffix='])
-    except getopt.GetoptError as err:
-        print "**** ERROR: %s ****" %str(err)
-        usage()
-    if len(opts) != 7:
-        print "**** ERROR: expected seven arguments, got %d ****" %len(opts)
-        usage()
-    for o,p in opts:
-        if o in   ['-x', '--minSubJob']:
-            subjob_min = int(p)
-        elif o in ['-y', '--maxSubJob']:
-            subjob_max = int(p)
-        elif o in ['-j', '--jobID']:
-            job_id = int(p)
-        elif o in ['-r', '--runPickleFile']:
-            run_file = p
-        elif o in ['-t', '--treeList']:
-            tree_list = p[1:-1].split(',')
-        elif o in ['-g', '--gangadir']:
-            gangadir = p
-        elif o in ['-f', '--fileSuffix']:
-            fileSuffix = p
-    print '    job_id   :', job_id,     type(job_id)
-    print '  run_file   :', run_file,   type(run_file)
-    print 'subjob_min   :', subjob_min, type(subjob_min)
-    print 'subjob_max   :', subjob_max, type(subjob_max)
-    print ' tree_list   :', tree_list,  type(tree_list)
-    print '  gangadir   :', gangadir,   type(gangadir)
-    print 'file suffix  :', fileSuffix, type(fileSuffix)  
-    chopTreesGanga(tree_list, run_file, job_id, subjob_min, subjob_max, gangadir, fileSuffix)
+    # add the optional arguments
+    parser.add_argument('-t', '--tupleName', dest='tupleName',
+                        metavar='NAME', default='CalibPID',
+                        help=("The name of the nTuple, exlc. the "
+                              "directory (default: '%(default)s')."))
+    parser.add_argument('-f', '--fileName', dest='inputFilename',
+                        metavar='NAME', default='PID_Modes.root',
+                        help=("The name of the input file, excl. the "
+                              "path (default: '%(default)s')."))
+    opts = parser.parse_args()
+
+    treeList = [ '{0}/{1}'.format(tupleDir, opts.tupleName) \
+                 for tupleDir in opts.tupleDir.split(',') ]
     
-    print 'Done'
+    print 'Job ID               : {0:d}'.format(opts.jobID)
+    print 'Pickle filename      : {0}'.format(opts.pklName)
+    print 'Min subjob           : {0:d}'.format(opts.minSubJobID)
+    print 'Max subjob           : {0:d}'.format(opts.maxSubJobID)
+    print 'nTuple list          : {0}'.format(str(treeList))
+    print 'Input directory      : {0}'.format(opts.inputDir)
+    print 'Input filename       : {0}'.format(opts.inputFilename)
+    print 'File suffix          : {0}'.format(opts.fileSuffix)
+    chopTreesGanga(treeList, opts.pklName, opts.jobID,
+                   opts.minSubJobID, opts.maxSubJobID,
+                   opts.inputDir, opts.fileSuffix,
+                   opts.inputFilename)
+    

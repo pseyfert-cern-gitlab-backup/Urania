@@ -55,7 +55,7 @@ using namespace RooFit;
 using namespace DrawUtils;
 
 TLatex *   tex            = new TLatex(0.7,0.83,"LHCb");
-Bool_t B2pimumu           = kFALSE;
+
 Bool_t makePaperPlots     = kFALSE;
 
 void setPaperPlotsStyle(RooPlot* f);
@@ -63,17 +63,61 @@ void setPaperPlotsStyle(RooPlot* f);
 TString mass_name = "B_s0_M";
 RooRealVar *mass = new RooRealVar(mass_name, "Mass ", 4000, 6000);
 
-RooFitResult fitRooPhysBkg(RooAbsData *ds, TString name, int bin)
+RooFitResult fitRooPhysBkg(RooAbsData *ds, TString name, int bin, int suggestion)
 {
 
 
-  RooRealVar *sh_mean =  new RooRealVar("mean","mean", 5200, 4300, 5800);
-  //  RooRealVar *sh_mean =  new RooRealVar("mean","mean", 5100, 4300, 5800); //bdpimunu
-  RooRealVar *sh_sigma = new RooRealVar("sigma","sigma", 50, 30, 100); //bskmunu
-  //  RooRealVar *sh_sigma = new RooRealVar("sigma","sigma", 70, 35, 90); //bdpimunu
-  //  RooRealVar *sh_sigma = new RooRealVar("sigma","sigma", 60, 30, 100); //bdpimunu bin 4
+  RooRealVar *sh_mean =  new RooRealVar("mean","mean", 5200, 4600, 5600);
+
+  RooRealVar *sh_sigma = new RooRealVar("sigma","sigma", 70, 35, 90); //bdpimunu
+
   RooRealVar *sh_c = new RooRealVar("sh_c", "sh_c", 0.01, 1e-7, 0.1);
+  if(suggestion ==1){//bdpimunu
+    //    sh_mean->setVal(5150);
+    sh_mean->setRange(4300, 5800); //bdpimunu
+    sh_sigma->setVal(55);
+    sh_sigma->setRange(30, 100); //bdpimunu bin 4
+    sh_c->setVal(1e-6);
+  }
+  if(suggestion ==2){
+    sh_sigma->setVal(80); //bskmunu    
+    sh_sigma->setRange(40,105); //bskmunu    
+    //    sh_mean->setVal(5300);
+    sh_c->setVal(1e-6);
+    
+    
+  }
+  if(suggestion ==3){//lbpmunu
+    sh_sigma->setVal(70); 
+    sh_sigma->setRange(40,80); 
+    sh_mean->setVal(5300);
+    
+  }
+  if(suggestion ==3){//lbpmunu
+    sh_sigma->setVal(70); 
+    sh_sigma->setRange(40,80); 
+    sh_mean->setVal(5300);
+    
+  }
+
+  Bool_t B2pimumu           = kFALSE;
+  if(suggestion ==4){
+    B2pimumu = kTRUE;
+
+    sh_mean->setRange(4200,5500);
+    sh_mean->setVal(5360);
+    
+    sh_sigma->setRange(0,100); 
+    sh_sigma->setVal(50);
+    
+    sh_c->setRange( 0.000001, 0.5);
+    sh_c->setVal( 0.001);
+    
+
+  }
   
+  
+    
   RooPhysBkg *phys = 
     new RooPhysBkg("shoulder", "shoulder pdf", *mass, *sh_mean, *sh_c, *sh_sigma);
   //RooGaussian *gau = new RooGaussian("gau","gau", *mass, *sh_mean, *sh_sigma);
@@ -140,13 +184,16 @@ RooFitResult fitRooPhysBkg(RooAbsData *ds, TString name, int bin)
   return *rf;
   
 }
+
 void makeSummary(TString prefix)
 {
+  Info("makeSummary", "Starting to write the outputs, prefix =  %s", prefix.Data());
   RooFitResult *r[9];
   const int nbins =8;
   
   cout << " going to write on file " << endl;
   ofstream out("summary/"+prefix+"_RPB_params.txt");
+  ofstream outPy("summary/"+prefix+"_RPB_params.py");
   for(int ii =1; ii<=nbins; ii++){
     TString name = prefix+"_RPB_bin";
     name += ii;
@@ -156,10 +203,13 @@ void makeSummary(TString prefix)
     const RooArgList pr = r[ii-1]->floatParsFinal();
     RooRealVar *mean = (RooRealVar*)pr.at(0);
     out << mean->getValV() << " \t " << mean->getError() << " \t # Mean for bin " << ii << endl;
+    outPy << "Mean" <<ii<< " = EVal("<< mean->getValV() << " , " << mean->getError() << ") \t # Mean for bin " << ii << endl;
     RooRealVar *shc = (RooRealVar*)pr.at(1);
     out << shc->getValV() << " \t " << shc->getError() <<  " \t # Shc for bin " << ii << endl;
+    outPy << "Shc" <<ii<< " = EVal("<< shc->getValV() << " , " << shc->getError() << ") \t # Shc for bin " << ii << endl;
     RooRealVar *sigma = (RooRealVar*)pr.at(2);
     out << sigma->getValV() << " \t " << sigma->getError() <<  " \t # Sigma for bin " << ii << endl;
+    outPy << "Sigma" <<ii<< " = EVal("<< sigma->getValV() << " , " << sigma->getError() << ") \t # Sigma for bin " << ii << endl;
   }
   int ii =78;
   TString name = prefix+"_RPB_bin";
@@ -169,12 +219,36 @@ void makeSummary(TString prefix)
   const RooArgList pr = r[8]->floatParsFinal();
   RooRealVar *mean = (RooRealVar*)pr.at(0);
   out << mean->getValV() << " \t " << mean->getError() << " \t # Mean for bin " << ii << endl;
+  outPy << "Mean" <<ii<< " = EVal("<< mean->getValV() << " , " << mean->getError() << ") \t # Mean for bin " << ii << endl;
   RooRealVar *shc = (RooRealVar*)pr.at(1);
   out << shc->getValV() << " \t " << shc->getError() <<  " \t # Shc for bin " << ii << endl;
+  outPy << "Shc" <<ii<< " = EVal("<< shc->getValV() << " , " << shc->getError() << ") \t # Shc for bin " << ii << endl;
   RooRealVar *sigma = (RooRealVar*)pr.at(2);
   out << sigma->getValV() << " \t " << sigma->getError() <<  " \t # Sigma for bin " << ii << endl;
+  outPy << "Sigma" <<ii<< " = EVal("<< sigma->getValV() << " , " << sigma->getError() << ") \t # Sigma for bin " << ii << endl;
   
 }
+
+
+void help(){
+  cout << endl << " ------ fitshape ------- " << endl;
+  cout << "   Fitter for mass shapes of partially reconstructed backgrounds for BsMuMu analysis  " << endl;
+  cout << endl;
+  cout << " -h             \t Shows this help " << endl;
+  cout << " -f [fileName]  \t Analyse given input file " << endl;
+  cout << " -s [number]    \t Get suggestion for fitting parameters (see below) " << endl;
+  cout << " -b             \t Runs in batch   " << endl;
+  cout << " -d             \t Debug mode on   " << endl;
+  cout << endl;
+  cout << " Suggestions    " << endl;
+  cout << " 1             \t Bd-> pi mu nu   " << endl;
+  cout << " 2             \t Bs-> K mu nu   " << endl;
+  cout << " 3             \t Lb-> p mu nu   " << endl;
+  cout << " 4             \t B-> pi mu mu   " << endl;
+  cout << "............................................................" << endl;
+  
+}
+
 
 
 
@@ -188,12 +262,13 @@ int main(int argc, char **argv){
   cout << " Start " << endl;
   TString filename;
   int mybin=-1;
+  int suggestion =0;
   
   for(Int_t i=1; i<argc; i++){
     TString opt(argv[i]);
     cout << " Parsing option: " << opt << endl;
     if(opt.Contains("-h")){
-      //help();
+      help();
       return 0;
     }else if(opt == "-b"){
       Info("...","Running in batch" );
@@ -206,19 +281,28 @@ int main(int argc, char **argv){
       i++;
       TString val(argv[i]);
       filename = val; 
-    }else if(opt == "-bin")
-    {
+    }else if(opt == "-bin"){
       i++;
       TString val(argv[i]);
       mybin = val.Atoi();
       cout << " going to run only on bin " << mybin << endl;
       
+    }else if(opt == "-s") // Suggestion for fit parameters
+    {
+      i++;
+      TString val(argv[i]);
+      suggestion = val.Atoi();
+      cout << " going to use suggestion " << suggestion << endl;
+      
+      
     }
+
     
   }
   
   if(filename==""){
     Error("Configuration","No file name given");
+    return -1;
   }
   TApplication theApp("App", &argc, argv);
 
@@ -261,9 +345,18 @@ int main(int argc, char **argv){
       TString name = prefix+"_RPB_bin";
       name += ii;
       RooDataHist *ds = new RooDataHist("ds","ds", *mass, Import(*h));
-      r[ii-1] = new RooFitResult(fitRooPhysBkg(ds, name,ii));
-            
+      r[ii-1] = new RooFitResult(fitRooPhysBkg(ds, name,ii, suggestion));
+      r[ii-1]->SaveAs("root/"+name+".root");
     }
+    int ii =78;
+    TH1D *h           = MvsBdt->ProjectionX(Form("proj_bin_%i",ii),7,8);
+    TString name = prefix+"_RPB_bin";
+    name += ii;
+    RooDataHist *ds = new RooDataHist("ds","ds", *mass, Import(*h));
+    r[ii-1] = new RooFitResult(fitRooPhysBkg(ds, name,ii, suggestion));
+    r[ii-1]->SaveAs("root/"+name+".root");
+
+      
   }else
   {
 
@@ -281,7 +374,7 @@ int main(int argc, char **argv){
       RooDataSet *data = (RooDataSet*)ds->reduce(Cut(cut.Data()));
       TString name = prefix+"_RPB_bin";
       name += ii;
-      r[ii-1] = new RooFitResult(fitRooPhysBkg(data, name,ii));
+      r[ii-1] = new RooFitResult(fitRooPhysBkg(data, name,ii, suggestion));
       r[ii-1]->SaveAs("root/"+name+".root");
       
     }
@@ -292,11 +385,9 @@ int main(int argc, char **argv){
       RooDataSet *data = (RooDataSet*)ds->reduce(Cut(cut.Data()));
       TString name = prefix+"_RPB_bin";
       name += "78";
-      r[8] = new RooFitResult(fitRooPhysBkg(data, name,78));
+      r[8] = new RooFitResult(fitRooPhysBkg(data, name,78, suggestion));
       r[8]->SaveAs("root/"+name+".root");
     }
-    
-    
   }
   
   makeSummary(prefix);

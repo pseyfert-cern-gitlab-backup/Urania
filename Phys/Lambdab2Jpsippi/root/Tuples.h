@@ -1,4 +1,3 @@
-
 // $Id: $
 #ifndef ROOT_TUPLES_H 
 #define ROOT_TUPLES_H 1
@@ -23,6 +22,9 @@
 #include <string>
 #include "TString.h"
 #include "TMath.h"
+#include "Math/Vector3D.h"
+#include "Math/Vector4D.h"
+#include "Math/Boost.h"
 
 static const TString c_PsippiName = "PsippiFit" ;
 static const TString c_PsipKName = "PsipKFit" ;
@@ -34,6 +36,7 @@ static const TString c_PsipiKMass = "PsipiKMass" ;  // reflection
 static const TString c_PsiKKMass  = "PsiKKMass" ;    // reflection
 static const TString c_PsiKpMass  = "PsiKpMass" ;    // reflection
 static const TString c_NonPeaking = "NonPeaking" ;  // background
+static const TString c_PartReco   = "PartReco" ;  // background
 static const TString c_Lambdab    = "Lambdab" ;  // signal
 static const TString c_Yield      = "Yield" ;  // signal
 
@@ -97,6 +100,8 @@ static const int c_ppi_BKGCAT = 0 ;
 static const unsigned int c_trainFrac = 2 ;
 static const unsigned int c_MCtrainFrac = 2 ;
 static const double c_vetoFactor = 0.84 ;
+
+static const int m_theSeed = 123456789 ;
 
 // Namespace
 namespace ErrorCodes{

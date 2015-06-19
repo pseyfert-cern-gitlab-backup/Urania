@@ -8,6 +8,8 @@ import glob
 local_path = '/data/lhcb/users/hunt'
 lfn_path   = '/lhcb/user/p/phunt'
 prefixes = ('DSt_K', 'DSt_Pi', 'Lam0_P')
+## script will only work if in the above line the prefix with the most files goes first.
+
 ##mag_pols = ('Up' 'Down')
 
 #dir        = 'CalibData/Reco14_DATA/Mag%s' %mag_pol

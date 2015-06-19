@@ -39,8 +39,25 @@ training_sel = cuts_mass_big + " && B_s0_LOKI_DTF_CTAU/0.299792458 > 0.3 && B_s0
 trig_biased = "(hlt1_excl_biased_dec==1 && hlt2_biased==1)"
 trig_unbiased = "(hlt1_unbiased_dec==1 && hlt2_biased==1)"
 
-KKbins = []
-KKbins.append("(mdau2 > 990 && mdau2 < 1008)")
-KKbins.append("(mdau2 > 1008 && mdau2 < 1020)")
-KKbins.append("(mdau2 > 1020 && mdau2 < 1032)")
-KKbins.append("(mdau2 > 1032 && mdau2 < 1050)")
+
+def makeKKbins4(var):
+    KKbins4 = []
+    KKbins4.append("("+var+" > 990 && "+var+" < 1008)")
+    KKbins4.append("("+var+" >= 1008 && "+var+" < 1020)")
+    KKbins4.append("("+var+" >= 1020 && "+var+" < 1032)")
+    KKbins4.append("("+var+" >= 1032 && "+var+" < 1050)")
+
+    return KKbins4
+
+def makeKKbins6(var):
+    KKbins = []
+    KKbins.append("("+var+" >= 990 && "+var+" < 1008)")
+    KKbins.append("("+var+" >= 1008 && "+var+" < 1016)")
+    KKbins.append("("+var+" >= 1016 && "+var+" < 1020)")
+    KKbins.append("("+var+" >= 1020 && "+var+" < 1024)")
+    KKbins.append("("+var+" >= 1024 && "+var+" < 1032)")
+    KKbins.append("("+var+" >= 1032 && "+var+" < 1050)")
+    return KKbins
+
+KKbins = makeKKbins6("mdau2")
+

@@ -2,6 +2,8 @@ source NBVars.csh
 make
 ./makemctuple.exe $CASTOR_HOME/Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root >! test-mctuple-pi &
 ./makemctuple.exe $CASTOR_HOME/Lambdab/LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root >! test-mctuple-K &
+./makePIDtuple.exe $CASTOR_HOME/Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root >! test-pidtuple-pi &
+./makePIDtuple.exe $CASTOR_HOME/Lambdab/LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root >! test-pidtuple-K &
 
 ./weighting.exe /castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20r1-1062.root All >! test-weighting-S20r1 &
 ./weighting.exe /castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20-1063.root All | tee test-weighting-S20 
@@ -18,12 +20,24 @@ set NNcut = `grep "Neural net cut to be applied will be " test-optimise | awk '{
 foreach a ( `ls -1 *Sim08a*NN.root` )
   set root = `echo $a | awk -F. '{print $1}'`
   echo $root
-  ./weighting.exe ${a} $NNcut >! test-weighting-${root}  
+  ./weighting.exe ${a} $NNcut >! test-weighting-${root}  &
+  ./weighting.exe ${a} $NNcut Rho05 >! test-weighting-${root}-Rho05  &
+  ./weighting.exe ${a} $NNcut Rho10 >! test-weighting-${root}-Rho10  &
+  ./weighting.exe ${a} $NNcut Rho20 >! test-weighting-${root}-Rho20  &
+  ./weighting.exe ${a} $NNcut Rho25 >! test-weighting-${root}-Rho25  &
+  ./weighting.exe ${a} $NNcut Rho30 >! test-weighting-${root}-Rho30  &
 end
 ./weighting.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root $NNcut withXib >! test-weighting-withXib-$NNcut &
 foreach a ( -1.0 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0.0 0.1 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 0.6 0.65 0.7 0.75 0.8 0.9 )
   ./weighting.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root $a notree >! test-weighting-${a} &
 end
-./weighting.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root $NNcut notree >! test-weighting-${NNcut}-notree &
-./weighting.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root $NNcut | tee test-weighting-$NNcut
+foreach x ( nofreeze PartReco GaussCB CB DoubleGauss Gauss Poly2 Poly1 Uni free notree FreeBkg Rho05 Rho10 Rho20 Rho25 Rho30 Up Down )
+  ./weighting.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root $NNcut $x > ! test-weighting-${NNcut}-${x} &
+end
+./weighting.exe Lambdab-S20r1-1062-NN.root $NNcut notree >! test-weighting-${NNcut}-2011 &
+./weighting.exe Lambdab-S20-1063-NN.root $NNcut notree >! test-weighting-${NNcut}-2012 &
+./weighting.exe Lambdab-S20-1063-NN.root $NNcut Up >! test-weighting-${NNcut}-2012-Up & 
+./weighting.exe Lambdab-S20-1063-NN.root $NNcut Down >! test-weighting-${NNcut}-2012-Down &
+./weighting.exe Lambdab-S20-1063-NN.root $NNcut NoPeak >! test-weighting-${NNcut}-2012-NoPeak &
+./weighting.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root $NNcut tree | tee test-weighting-${NNcut}-tree
 

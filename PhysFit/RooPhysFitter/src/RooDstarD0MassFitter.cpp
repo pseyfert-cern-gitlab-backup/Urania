@@ -18,6 +18,7 @@
 #include "RooGaussian.h"
 #include "RooCBShape.h"
 #include "RooPhysFitter/RooGranet.h"
+#include "RooPhysFitter/RooTwoBodyPhspApprox.h"
 #include "RooDstD0BG.h"
 #include "RooPhysFitter/RooCruijff.h"
 #include "RooPhysFitter/RooCruijffSimple.h"
@@ -47,54 +48,48 @@ using namespace RooPhysFit;
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-RooDstarD0MassFitter::RooDstarD0MassFitter(  ) : RooDMassFitter() {
+RooDstarD0MassFitter::RooDstarD0MassFitter(  ) 
+  : RooDMassFitter(), 
+    m_delmPartName("#Delta_{m}"), m_delmName("delm"),
+    m_delmSigModelName("delmSigModel"), m_delmBkgModelName("delmBkgModel"),
+    m_2dMassSigModelName("sig2DModel"), 
+    m_2dMassCombBkgModelName("combBkg2DModel"),
+    m_2dMassPiBkgModelName("piBkg2DModel"),
+    m_2dMassD0BkgModelName("d0Bkg2DModel"),
+    m_2dMassSigYieldName("nsig"),
+    m_2dMassCombBkgYieldName("nbkg_comb"),
+    m_2dMassPiBkgYieldName("nbkg_randPi"),
+    m_2dMassD0BkgYieldName("nbkg_fakeD0"),
+    m_2dMassCombinedBkgModelName("bkg2DModel"),
+    m_2dMassCombinedBkgYieldName("nbkg")
+{
+  // Set the data members that need to be changed from the initialized
+  // values
   m_dMassPartName="D^{0}";
-  m_delmPartName="#Delta_{m}";
-  m_delmName="delm";
-
   m_dMassSigModelName="d0MassSigModel";
   m_dMassBkgModelName="d0MassBkgModel";
-
-  m_delmSigModelName="delmSigModel";
-  m_delmBkgModelName="delmBkgModel";
-
-  m_2dMassSigModelName="sig2DModel";
-  m_2dMassCombBkgModelName="combBkg2DModel";
-  m_2dMassPiBkgModelName="piBkg2DModel";
-  m_2dMassD0BkgModelName="d0Bkg2DModel";
-  m_2dMassCombinedBkgModelName="bkg2DModel";
-  
-  m_2dMassSigYieldName="nsig";
-  m_2dMassCombBkgYieldName="nbkg_comb";
-  m_2dMassPiBkgYieldName="nbkg_randPi";
-  m_2dMassD0BkgYieldName="nbkg_fakeD0";
-  m_2dMassCombinedBkgYieldName="nbkg";
 }
 
 RooDstarD0MassFitter::RooDstarD0MassFitter(const char* name, const char* title)
-  : RooDMassFitter(name, title) 
+  : RooDMassFitter(name, title), 
+    m_delmPartName("#Delta_{m}"), m_delmName("delm"),
+    m_delmSigModelName("delmSigModel"), m_delmBkgModelName("delmBkgModel"),
+    m_2dMassSigModelName("sig2DModel"), 
+    m_2dMassCombBkgModelName("combBkg2DModel"),
+    m_2dMassPiBkgModelName("piBkg2DModel"),
+    m_2dMassD0BkgModelName("d0Bkg2DModel"),
+    m_2dMassSigYieldName("nsig"),
+    m_2dMassCombBkgYieldName("nbkg_comb"),
+    m_2dMassPiBkgYieldName("nbkg_randPi"),
+    m_2dMassD0BkgYieldName("nbkg_fakeD0"),
+    m_2dMassCombinedBkgModelName("bkg2DModel"),
+    m_2dMassCombinedBkgYieldName("nbkg")
 {
+  // Set the data members that need to be changed from the initialized
+  // values
   m_dMassPartName="D^{0}";
-  m_delmPartName="#Delta_{m}";
-  m_delmName="delm";
-
   m_dMassSigModelName="d0MassSigModel";
   m_dMassBkgModelName="d0MassBkgModel";
-
-  m_delmSigModelName="delmSigModel";
-  m_delmBkgModelName="delmBkgModel";
-
-  m_2dMassSigModelName="sig2DModel";
-  m_2dMassCombBkgModelName="combBkg2DModel";
-  m_2dMassPiBkgModelName="piBkg2DModel";
-  m_2dMassD0BkgModelName="d0Bkg2DModel";
-  m_2dMassCombinedBkgModelName="bkg2DModel";
-  
-  m_2dMassSigYieldName="nsig";
-  m_2dMassCombBkgYieldName="nbkg_comb";
-  m_2dMassPiBkgYieldName="nbkg_randPi";
-  m_2dMassD0BkgYieldName="nbkg_fakeD0";
-  m_2dMassCombinedBkgYieldName="nbkg";
 }
 
 void RooDstarD0MassFitter::MakeDelmVar(Float_t xmin, Float_t xmax,
@@ -685,9 +680,10 @@ void RooDstarD0MassFitter::MakeDelmBkgDstD0BG(Float_t dm0_start,
 
 void RooDstarD0MassFitter::MakeDelmBkgDstD0BG(Float_t dm0_start,
                                               Float_t dm0_min, 
-                                              Float_t dm0_max, Float_t c_start,
-                                              Float_t a_start, Float_t a_min,Float_t a_max,
-                                              Float_t b_start,
+                                              Float_t dm0_max, Float_t c,
+                                              Float_t a_start, Float_t a_min,
+                                              Float_t a_max,
+                                              Float_t b,
                                               const char* unit)
 {
    if (!m_rws) {
@@ -717,11 +713,11 @@ void RooDstarD0MassFitter::MakeDelmBkgDstD0BG(Float_t dm0_start,
   }
   RooRealVar dm0("delm_bkg_dm0", dm0Title.Data(), dm0_start, dm0_min, dm0_max,
                  unit);
-  RooRealVar c("delm_bkg_c", cTitle.Data(), c_start);
-  RooRealVar a("delm_bkg_a", aTitle.Data(), a_start, a_min, a_max);
-  RooRealVar b("delm_bkg_b", bTitle.Data(), b_start);
+  RooRealVar cVar("delm_bkg_c", cTitle.Data(), c);
+  RooRealVar aVar("delm_bkg_a", aTitle.Data(), a_start, a_min, a_max);
+  RooRealVar bVar("delm_bkg_b", bTitle.Data(), b);
   
-  RooDstD0BG delmBkgModel(m_delmBkgModelName, "", *delm, dm0, c, a, b);
+  RooDstD0BG delmBkgModel(m_delmBkgModelName, "", *delm, dm0, cVar, aVar, bVar);
   if (m_rws->import(delmBkgModel)) {
     throw WSImportFailure("RooDstarD0MassFitter::MakeDelmBkgDstD0BG",
                           *m_rws, delmBkgModel);
@@ -878,7 +874,63 @@ void RooDstarD0MassFitter::MakeDelmBkgGranet(Float_t dm0, Float_t a_start,
   }
 }
 
+void RooDstarD0MassFitter::MakeDelmBkgTwoBodyPhsp(RooRealVar& c1, // 1st coefficient
+                                                  RooRealVar& c2 // 2nd coefficient
+                                                  )
+{
+  if (!m_rws) {
+    throw GeneralException("RooDstarD0MassFitter::MakeDelmBkgTwoBodyPhsp",
+                           "No RooWorkspace object is defined.");
+  }
+  RooRealVar* delm = m_rws->var(m_delmName);
+  if (!delm) {
+    throw WSRetrievalFailure("RooDstarD0MassFitter::MakeDelmBkgTwoBodyPhsp",
+                           *m_rws, m_delmName, "RooRealVar");
+  }
+  RooTwoBodyPhspApprox delmBkgModel(m_delmBkgModelName, "", *delm, c1, c2);
+  if (m_rws->import(delmBkgModel)) {
+    throw WSImportFailure("RooDstarD0MassFitter::MakeDelmBkgTwoBodyPhsp",
+                          *m_rws, delmBkgModel);
+  }
+  //m_rws->importClassCode(delmBkgModel.IsA());
+}
 
+void RooDstarD0MassFitter::MakeDelmBkgTwoBodyPhsp(Float_t c1_start, Float_t c1_min, 
+                                                  Float_t c1_max, Float_t c2_start, 
+                                                  Float_t c2_min, Float_t c2_max,
+                                                  const char* /*unit*/)
+{
+  if (!m_rws) {
+    throw GeneralException("RooDstarD0MassFitter::MakeDelmBkgTwoBodyPhsp",
+                           "No RooWorkspace object is defined.");
+  }
+  RooRealVar* delm = m_rws->var(m_delmName);
+  if (!delm) {
+    throw WSRetrievalFailure("RooDstarD0MassFitter::MakeDelmBkgTwoBodyPhsp",
+                           *m_rws, m_delmName, "RooRealVar");
+  }
+  TString dm0Title="";
+  TString c1Title="";
+  TString c2Title="";
+  if (!m_delmPartName||strcmp(m_delmPartName,"")==0) {
+    c1Title="c_{1}";
+    c2Title="c_{2}";
+  }
+  else {
+    c1Title.Form("%s c_{1}", m_delmPartName);
+    c2Title.Form("%s c_{2}", m_delmPartName);
+  }
+  RooRealVar c1("delm_bkg_c1", c1Title.Data(), c1_start, c1_min, c1_max);
+  RooRealVar c2("delm_bkg_c2", c2Title.Data(), c2_start, c2_min, c2_max);
+
+  RooTwoBodyPhspApprox delmBkgModel(m_delmBkgModelName, "", *delm, c1, c2);
+  if (m_rws->import(delmBkgModel)) {
+    throw WSImportFailure("RooDstarD0MassFitter::MakeDelmBkgTwoBodyPhsp",
+                          *m_rws, delmBkgModel);
+  }
+  //m_rws->importClassCode(delmBkgModel.IsA());
+}
+                                
 // make 2D D0/delta mass model - specify expected fraction of each 
 // background type. NB. No check that sum(frac)==1
 // If a starting value for a model fraction is less than zero, then this
@@ -991,11 +1043,11 @@ void RooDstarD0MassFitter::MakeDelmModel(Float_t frac_sig,
   Int_t nd0Bkg_est = static_cast<Int_t>(frac_d0Bkg*nentries);
 
   RooRealVar nsig(m_2dMassSigYieldName, "N_{sig.}", nsig_est, 0, nentries);
-  RooRealVar ncomb(m_2dMassCombBkgYieldName, "N_{bkg. (comb.)}",
+  RooRealVar ncomb(m_2dMassCombBkgYieldName, "N_{comb.}",
                    ncombBkg_est, 0, nentries);
-  RooRealVar npi(m_2dMassPiBkgYieldName, "N_{bkg. (random #pi_{s})}",
+  RooRealVar npi(m_2dMassPiBkgYieldName, "N_{rand. #pi_{s}}",
                  npiBkg_est, 0, nentries);
-  RooRealVar nD0(m_2dMassD0BkgYieldName, "N_{bkg. (fake D^{0})}",
+  RooRealVar nD0(m_2dMassD0BkgYieldName, "N_{fake D^{0}}",
                  nd0Bkg_est, 0, nentries);
   
   RooArgList yieldList;//(nsig, ncomb);
@@ -1320,7 +1372,7 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
   RooArgSet args(*mass, *delm);
   
   std::map<std::string, void*> varMap;
-  std::map<std::string, Int_t*> catMap;
+  std::map<std::string, void*> catMap;
   
   const RooArgSet* extraArgs = m_rws->set(m_spectSetName);
   const RooArgSet* categories = m_rws->set(m_catSetName);
@@ -1338,10 +1390,7 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
             << " to dataset, which has already been included";
         throw GeneralException("RooDstarD0MassFitter::MakeDelmDataSet", msg.str());
       }
-      std::string branchName=varName;
-      if (m_varNameToBranchName.find(varName)!=m_varNameToBranchName.end()) {
-        branchName=m_varNameToBranchName[varName];
-      }
+      std::string branchName=this->GetVarBranchName(varName);
       std::string type=GetBranchType(tt, branchName);
       if (type.compare("Float_t")==0) {
         varMap[varName] = new Float_t();
@@ -1385,18 +1434,23 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
             << " to dataset, which has already been included";
         throw GeneralException("RooDstarD0MassFitter::MakeDelmDataSet", msg.str());
       }
-      std::string branchName=catName;
-      if (m_catNameToBranchName.find(catName)!=m_catNameToBranchName.end()) {
-        branchName=m_catNameToBranchName[catName];
-      }
+      std::string branchName=this->GetCatBranchName(catName);
       std::string type=GetBranchType(tt, branchName);
-      if ( !(type.compare("Int_t")==0 || type.compare("Bool_t")==0) ) {
+      if ( !(type.compare("Int_t")==0 || type.compare("Bool_t")==0 || type.compare("UInt_t")==0) ) {
         std::stringstream msg;
         msg << "Requested branch name " << branchName << " is of type "
-            << type << ", but categories can only be of type Int_t or Bool_t";
-        throw GeneralException("RooDstarD0MassFitter::MakeDelmDataSet", msg.str());
+            << type << ", but categories can only be of type Int_t, UInt_t or Bool_t";
+        throw GeneralException("RooDstarD0MassFitter::MakeDelmDataSet", msg.str());      
       }
-      catMap[catName] = new Int_t();
+      if (type.compare("Int_t")==0) {
+        catMap[catName] = new Int_t();
+      }
+      else if (type.compare("UInt_t")==0) {
+        catMap[catName] = new UInt_t();
+      }
+      else {
+        catMap[catName] = new Bool_t();
+      }
       if (!ch) {
         tt->SetBranchAddress(branchName.c_str(), catMap[catName]);
       }
@@ -1474,10 +1528,7 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
           std::string vname=(it->first);
           void *val=(it->second);
           assert (val!=NULL);
-          std::string branchName=vname;
-          if (m_varNameToBranchName.find(vname)!=m_varNameToBranchName.end()) {
-            branchName=m_varNameToBranchName[vname];
-          }
+          std::string branchName=this->GetVarBranchName(vname);
           Double_t v;
           std::string type=GetBranchType(tt, branchName);
           if (type.compare("Float_t")==0) {
@@ -1530,8 +1581,12 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
             throw GeneralException("RooDstarD0MassFitter::MakeDelmDataSet",
                                    msg.str());
           }
-          if (m_varNameToFunction.find(vname)!=m_varNameToFunction.end()) { 
-            DoubleFun fun = m_varNameToFunction[vname];
+          std::map< std::string, DoubleFun >::const_iterator it_func;
+          it_func=m_varNameToFunction.find(vname);
+          std::map< std::string, TFormula >::const_iterator it_form;
+          it_form=m_varNameToFormula.find(vname);
+          if (it_func!=m_varNameToFunction.end()) { 
+            const DoubleFun& fun = it_func->second;
             assert(fun);
             v = fun(v);
             if (!var->inRange(v,0)) {
@@ -1547,8 +1602,8 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
             }
             var->setVal(v);
           }
-          else if (m_varNameToFormula.find(vname)!=m_varNameToFormula.end()) {
-            TFormula& fun = m_varNameToFormula[vname];
+          else if (it_form!=m_varNameToFormula.end()) {
+            const TFormula& fun = it_form->second;
             v = fun.Eval(v);
             if (!var->inRange(v,0)) {
               passed=kFALSE;
@@ -1581,23 +1636,40 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
         }
       }
       if (catMap.size()>0) {
-        for (std::map<std::string, Int_t*>::iterator it=catMap.begin();
+        for (std::map<std::string, void*>::iterator it=catMap.begin();
              it!=catMap.end(); ++it)
         {
           std::string vname=(it->first);
-          Int_t *val=(it->second);
+          void *val=(it->second);
           assert(val!=NULL);
-          std::string branchName=vname;
-          if (m_catNameToBranchName.find(vname)!=m_catNameToBranchName.end()) {
-            branchName=m_catNameToBranchName[vname];
-          }
+          std::string branchName=this->GetCatBranchName(vname);
           std::string type=GetBranchType(tt, branchName);
-          if ( !(type.compare("Int_t")==0 || type.compare("Bool_t")==0) ) {
+          Int_t v;
+          if (type.compare("Int_t")==0) {
+            Int_t* ptr=static_cast<Int_t*>(val);
+            assert(ptr);
+            v=(Int_t)(*ptr);
+          }
+          else if (type.compare("Bool_t")==0) {
+            Bool_t* ptr=static_cast<Bool_t*>(val);
+            assert(ptr);
+            v=(Int_t)(*ptr);
+          }
+          else if (type.compare("UInt_t")==0) {
+            UInt_t* ptr=static_cast<UInt_t*>(val);
+            assert(ptr);
+            v=(Int_t)(*ptr);
+          }
+          else {
             std::stringstream msg;
             msg << "Requested branch name " << branchName << " is of type "
-                << type << ", but categories can only be of type Int_t or Bool_t";
-            throw GeneralException("RooDstarD0MassFitter::MakeDelmDataSet",
-                                   msg.str());
+                << type << ", but categories can only be of type Int_t, UInt_t or Bool_t";
+            throw GeneralException("RooDstarD0MassFitter::MakeDMassDataSet",
+                                    msg.str());
+          }
+          if (printEntry) {
+            std::cout << "RooDstarD0MassFitter::MakeDelmDataSet: Category "
+                      << vname << ", value = " << v << std::endl;
           }
           RooCategory *cat=dynamic_cast<RooCategory*>(&args[vname.c_str()]);
           if (!cat) {
@@ -1606,15 +1678,15 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
             throw GeneralException("RooDstarD0MassFitter::MakeDelmDataSet",
                                    msg.str());
           }
-          if (!cat->isValidIndex(*val)) {
+          if (!cat->isValidIndex(v)) {
             passed=kFALSE;
             if (printEntry) {
               std::cout << "RooDstarD0MassFitter::MakeDelmDataSet: Category " << vname
-                        << ", value = " << *val << " is not a valid index" << std::endl;
+                        << ", value = " << v << " is not a valid index" << std::endl;
             }
             break;
           }
-          cat->setIndex(*val);
+          cat->setIndex(v);
         }
       }
       if (!passed) continue;
@@ -1640,10 +1712,7 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
     std::string vname = i->first;
     void* val = i->second;
     if (val==NULL) continue;
-    std::string branchName=vname;
-    if (m_varNameToBranchName.find(vname)!=m_varNameToBranchName.end()) {
-      branchName=m_varNameToBranchName[vname];
-    }
+    std::string branchName=this->GetVarBranchName(vname);
     std::string type=GetBranchType(tt, branchName);
     if (type.compare("Float_t")==0) {
       delete static_cast<Float_t*>(val);
@@ -1667,12 +1736,27 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
     }
   }
   varMap.clear();
-  for (std::map<std::string, Int_t*>::iterator i=catMap.begin();
+  for (std::map<std::string, void*>::iterator i=catMap.begin();
        i!=catMap.end(); ++i) {
     std::string vname = i->first;
-    Int_t* val = i->second;
+    void* val = i->second;
     if (val==NULL) continue;
-    delete val;
+    std::string branchName=this->GetCatBranchName(vname);
+    std::string type=GetBranchType(tt, branchName);
+    if (type.compare("Int_t")==0) {
+      delete static_cast<Int_t*>(val);
+    }
+    else if (type.compare("UInt_t")==0) {
+      delete static_cast<UInt_t*>(val);
+    }
+    else if (type.compare("Bool_t")==0) {
+      delete static_cast<Bool_t*>(val);
+    }
+    else {
+      std::stringstream msg;
+      msg << "Got invalid data type " << type; 
+      throw GeneralException("RooDMassFitter::MakeDMassDataSet", msg.str());
+    }
   }
   catMap.clear();
   m_dataSetName = name;
@@ -1761,8 +1845,44 @@ void RooDstarD0MassFitter::PerformDelmIterativeBinnedFit(Int_t nD0MassBins,
   mass->setBins(oldD0MassBins);
   delm->setBins(oldDelmBins);
 }
-  
 
+// Get the name of the data histogram in a RooPlot of the specified
+// fit variable.
+// This function is used to get the pull plot.
+// NB. You may need to be override this method in a derived class.
+std::string RooDstarD0MassFitter::GetDataHistName() const {
+  // construct the histogram name from the dataset name
+  std::stringstream ss_histName;
+  ss_histName << "h_" << this->GetDataSetName();
+  return ss_histName.str();
+}
+  
+// Get the name of the model PDF curve in a RooPlot of the specified
+// fit variable.
+// This function is used to get the pull plot.
+// NB. You may need to be override this method in a derived class.
+std::string RooDstarD0MassFitter::GetModelCurveName(const char* name) const {
+  // construct the curve name for the model PDF
+  std::stringstream ss_curveName;
+  std::string intName=""; // variable being integrated over
+  if (strcmp(name, this->GetDMassName())==0) {
+    intName = this->GetDelmName();
+  }
+  else if (strcmp(name, this->GetDelmName())==0) {
+    intName = this->GetDMassName();
+  }
+  else {
+    std::stringstream msg;
+    msg << "Invalid fit-variable name " << name;
+    throw GeneralException("RooDstarD0MassFitter::GetModelCurveName",
+      msg.str());
+  }
+  ss_curveName << this->GetModelName() << "_Int[" << intName << "]"
+               << "_Norm[" << this->GetDelmName() << ","
+               << this->GetDMassName() << "]";
+  return ss_curveName.str();
+}
+                          
 void RooDstarD0MassFitter::SetDelmPartName(const char* name) {m_delmPartName=name;}
 void RooDstarD0MassFitter::SetDelmName(const char* name) {m_delmName=name;}
 
@@ -1783,23 +1903,23 @@ void RooDstarD0MassFitter::Set2DMassFakeD0BkgYieldName(const char* name) {m_2dMa
 
 void RooDstarD0MassFitter::Set2DMassCombinedBkgYieldName(const char *name) {m_2dMassCombinedBkgYieldName=name;}
 
-const char* RooDstarD0MassFitter::GetDelmPartName() {return m_delmPartName;}
-const char* RooDstarD0MassFitter::GetDelmName() {return m_delmName;}
+const char* RooDstarD0MassFitter::GetDelmPartName() const {return m_delmPartName;}
+const char* RooDstarD0MassFitter::GetDelmName() const {return m_delmName;}
 
-const char* RooDstarD0MassFitter::GetDelmSigModelName() {return m_delmSigModelName;}
-const char* RooDstarD0MassFitter::GetDelmBkgModelName() {return m_delmBkgModelName;}
+const char* RooDstarD0MassFitter::GetDelmSigModelName() const {return m_delmSigModelName;}
+const char* RooDstarD0MassFitter::GetDelmBkgModelName() const {return m_delmBkgModelName;}
 
-const char* RooDstarD0MassFitter::Get2DMassSigModelName() {return m_2dMassSigModelName;}
-const char* RooDstarD0MassFitter::Get2DMassCombBkgModelName() {return m_2dMassCombBkgModelName;}
-const char* RooDstarD0MassFitter::Get2DMassRandPiBkgModelName() {return m_2dMassPiBkgModelName;}
-const char* RooDstarD0MassFitter::Get2DMassFakeD0BkgModelName() {return m_2dMassD0BkgModelName;}
-const char* RooDstarD0MassFitter::Get2DMassCombinedBkgModelName() {return m_2dMassCombinedBkgModelName;}
+const char* RooDstarD0MassFitter::Get2DMassSigModelName() const {return m_2dMassSigModelName;}
+const char* RooDstarD0MassFitter::Get2DMassCombBkgModelName() const {return m_2dMassCombBkgModelName;}
+const char* RooDstarD0MassFitter::Get2DMassRandPiBkgModelName() const {return m_2dMassPiBkgModelName;}
+const char* RooDstarD0MassFitter::Get2DMassFakeD0BkgModelName() const {return m_2dMassD0BkgModelName;}
+const char* RooDstarD0MassFitter::Get2DMassCombinedBkgModelName() const {return m_2dMassCombinedBkgModelName;}
  
-const char* RooDstarD0MassFitter::Get2DMassSigYieldName() {return m_2dMassSigYieldName;}
-const char* RooDstarD0MassFitter::Get2DMassCombBkgYieldName() {return m_2dMassCombBkgYieldName;}
-const char* RooDstarD0MassFitter::Get2DMassRandPiBkgYieldName() {return m_2dMassPiBkgYieldName;}
-const char* RooDstarD0MassFitter::Get2DMassFakeD0BkgYieldName() {return m_2dMassD0BkgYieldName;}
-const char* RooDstarD0MassFitter::Get2DMassCombinedBkgYieldName() {return m_2dMassCombinedBkgYieldName;}
+const char* RooDstarD0MassFitter::Get2DMassSigYieldName() const {return m_2dMassSigYieldName;}
+const char* RooDstarD0MassFitter::Get2DMassCombBkgYieldName() const {return m_2dMassCombBkgYieldName;}
+const char* RooDstarD0MassFitter::Get2DMassRandPiBkgYieldName() const {return m_2dMassPiBkgYieldName;}
+const char* RooDstarD0MassFitter::Get2DMassFakeD0BkgYieldName() const {return m_2dMassD0BkgYieldName;}
+const char* RooDstarD0MassFitter::Get2DMassCombinedBkgYieldName() const {return m_2dMassCombinedBkgYieldName;}
 
 //=============================================================================
 // Destructor

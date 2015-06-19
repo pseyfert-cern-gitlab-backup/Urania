@@ -1,7 +1,7 @@
 project URANIA
 
 container UraniaSys
-use LCGCMT    LCGCMT_66
+use LCGCMT    LCGCMT_67
 
 build_strategy with_installarea
 setup_strategy root

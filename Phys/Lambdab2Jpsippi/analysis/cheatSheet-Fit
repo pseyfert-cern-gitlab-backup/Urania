@@ -3,16 +3,18 @@ TString optNN = "0.552"
 .L ../analysis/FourPlots.C
 gStyle->SetPalette(0)
 TString NN = "opt"
-TFile* _fileOpt = TFile::Open("Lambdab-S20X-1062-"+optNN+"-SW.root")
-W = (TTree*)_fileOpt->Get("WeightTree")
-char* WL = "sweightLb*(sweightLb>-4)*(wCategory==1)"
-char* WB = "sweightBkg*(sweightLb>-4)*(wCategory==1)"
-char* WLB = "sweightLb*(sweightLb>-4)*(wBaryon==1)*(wCategory==1)"
-char* WLA = "sweightLb*(sweightLb>-4)*(wBaryon==-1)*(wCategory==1)"
-char* WLK = "sweightLb*(sweightLb>-4)*(wCategory==-1)"
-char* WBK = "sweightBkg*(sweightLb>-4)*(wCategory==-1)"
-char* WLBK = "sweightLb*(sweightLb>-4)*(wBaryon==1)*(wCategory==-1)"
-char* WLAK = "sweightLb*(sweightLb>-4)*(wBaryon==-1)*(wCategory==-1)"
+
+TFile* _fileOptFit = TFile::Open("Lambdab-S20X-1062-blind-"+optNN+"-SW.root")
+_fileOptFit->ls()
+TFile *_fileMCK = TFile::Open("LambdabMC-LbK-Sim08a-1127-1128-1129-1137-NN.root")
+
+TFile* fK = TFile::Open("LambdabMC-LbK-Sim08a-1127-1128-1129-1137-"+optNN+"-SW.root")
+fK->ls()
+TFile* fpi = TFile::Open("LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125-"+optNN+"-SW.root")
+fpi->ls()
+TFile* fKpi = TFile::Open("LambdabMC-B2JpsiKpi-Sim08a-1138-1139-"+optNN+"-SW.root")
+TFile* fKK = TFile::Open("LambdabMC-B2JpsiKK-Sim08a-1134-1135-"+optNN+"-SW.root")
+
 const double m_psi = 3096.916 ;
 const double m_p   =  938.272 ;
 const double m_pi  =  139.570 ;
@@ -22,40 +24,6 @@ const Double_t mLb = 5620 ;
 const Double_t mBd = 5279.5 ;
 const Double_t mBs = 5370 ;
 const Double_t win = 20 ;
-TCut net("wnetOutput>-1 && wErrorCode==0")
-TCut LbK("wCategory==-1 && wErrorCode==0")
-TCut Lbpi("wCategory==1 && (sweightLb==-10 || sweightLb==-11) && wErrorCode==0 && (wMass<5580 || wMass>5650)")
-
-TFile* fnpi = TFile::Open("LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125-NN.root")
-TFile* fnk = TFile::Open("LambdabMC-LbK-Sim08a-1127-1128-1129-1137-NN.root")
-TNNpi = (TTree*)fnpi->Get("NetTree")
-TNNk = (TTree*)fnk->Get("NetTree")
-TChain* TNN = new TChain("NetTree")
-TNN->Add("Lambdab-S20r1-1062-NN.root")
-TNN->Add("Lambdab-S20-1063-NN.root")
-//TChain* TSW = new TChain("TrainTree")
-//TSW->Add("Lambdab-S20r1-1062-All-SW.root")
-//TSW->Add("Lambdab-S20-1063-All-SW.root")
-//TNN->AddFriend(TSW)
-TNN->AddFriend(W)
-//TNN->Draw("PsipKMass[0]:wMass[0]","Category[0]==-1 && RunNumber<90000")
-TCut NoNN("netOutput>-1")
-
-TFile *_fileMCK = TFile::Open("LambdabMC-LbK-Sim08a-1127-1128-1129-1137-NN.root")
-TTree* MCK = (TTree*)_fileMCK->Get("NetTree")
-TCut KSignal("Category==-1 && BKGCAT==1 && ErrorCode==0")
-
-TFile* fK = TFile::Open("LambdabMC-LbK-Sim08a-1127-1128-1129-1137-"+optNN+"-SW.root")
-fK->ls()
-TFile* fpi = TFile::Open("LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125-"+optNN+"-SW.root")
-fpi->ls()
-TFile* fKpi = TFile::Open("LambdabMC-B2JpsiKpi-Sim08a-1138-1139-"+optNN+"-SW.root")
-TFile* fKK = TFile::Open("LambdabMC-B2JpsiKK-Sim08a-1134-1135-"+optNN+"-SW.root")
-
-
-TFile* _fileOptFit = TFile::Open("Lambdab-S20X-1062-"+optNN+"-SW.root")
-_fileOptFit->ls()
-
 
 //======================================================================
 // The fit on data
@@ -71,13 +39,31 @@ png("TC_PsippiFit-blind-opt")
 
 _fileOptFit->Get("TC_PsipKFitBC")->Draw()
 png("TC_PsipKFitAB-opt")
+_fileOptFit->Get("TC_PsipKFitBp1C")->Draw()
+png("TC_PsipKFitABp1-opt")
+_fileOptFit->Get("TC_PsipKFitBm1C")->Draw()
+png("TC_PsipKFitABm1-opt")
+
 _fileOptFit->Get("TC_PsipKFitABC")->Draw()
 png("TC_PsipKFitB-opt")
+_fileOptFit->Get("TC_PsipKFitABp1C")->Draw()
+png("TC_PsipKFitBp1-opt")
+_fileOptFit->Get("TC_PsipKFitABm1C")->Draw()
+png("TC_PsipKFitBm1-opt")
+
 
 _fileOptFit->Get("TC_PsippiFitAB_blindC")->Draw()
 png("TC_PsippiFit-blindAB-opt")
+_fileOptFit->Get("TC_PsippiFitABp1_blindC")->Draw()
+png("TC_PsippiFit-blindABp1-opt")
+_fileOptFit->Get("TC_PsippiFitABm1_blindC")->Draw()
+png("TC_PsippiFit-blindABm1-opt")
 _fileOptFit->Get("TC_PsippiFitB_blindC")->Draw()
 png("TC_PsippiFit-blindB-opt")
+_fileOptFit->Get("TC_PsippiFitBp1_blindC")->Draw()
+png("TC_PsippiFit-blindBp1-opt")
+_fileOptFit->Get("TC_PsippiFitBm1_blindC")->Draw()
+png("TC_PsippiFit-blindBm1-opt")
 
 RooPlot* rpiAB = _fileOptFit->Get("PsippiFitAB_blind")
 RooPlot* rpiB = _fileOptFit->Get("PsippiFitB_blind")
@@ -87,11 +73,44 @@ rpiB->SetMaximum(300.)
 rpi->SetMaximum(600.)
 
 rpiAB->Draw()
-png("PsippiFit-blindAB-opt")
 rpiB->Draw()
 png("PsippiFit-blindB-opt")
 rpi->Draw()
 png("PsippiFit-blind-opt")
+
+//======================================================================
+// The fit on data with free expo
+//======================================================================
+TFile* _filenofreeze = TFile::Open("Lambdab-S20X-1062-nofreeze-"+optNN+"-SW.root")
+_filenofreeze->Get("TC_PsipKFitC")->Draw()
+png("nofreeze-TC_PsipKFit-opt")
+
+_filenofreeze->Get("TC_PsippiFit_blindC")->Draw()
+png("nofreeze-TC_PsippiFit-blind-opt")
+
+_filenofreeze->Get("TC_PsipKFitBC")->Draw()
+png("nofreeze-TC_PsipKFitAB-opt")
+_filenofreeze->Get("TC_PsipKFitABC")->Draw()
+png("nofreeze-TC_PsipKFitB-opt")
+
+_filenofreeze->Get("TC_PsippiFitAB_blindC")->Draw()
+png("nofreeze-TC_PsippiFit-blindAB-opt")
+_filenofreeze->Get("TC_PsippiFitB_blindC")->Draw()
+png("nofreeze-TC_PsippiFit-blindB-opt")
+
+RooPlot* rpiAB = _filenofreeze->Get("PsippiFitAB_blind")
+RooPlot* rpiB = _filenofreeze->Get("PsippiFitB_blind")
+RooPlot* rpi = _filenofreeze->Get("PsippiFit_blind")
+rpiAB->SetMaximum(300.)
+rpiB->SetMaximum(300.)
+rpi->SetMaximum(600.)
+
+rpiAB->Draw()
+png("nofreeze-PsippiFit-blindAB-opt")
+rpiB->Draw()
+png("nofreeze-PsippiFit-blindB-opt")
+rpi->Draw()
+png("nofreeze-PsippiFit-blind-opt")
 
 
 //----------------------------------------------------------------------
@@ -230,23 +249,6 @@ SetTitle("m_{J/#psip#pi} [MeV/c^{2}]",r)
 RooPlot* r = SandB(W,0,"wMass",WLBK,WLAK,"","","wBaryonK",5500,5770,54) 
 SetTitle("m_{J/#psipK} [MeV/c^{2}]",r)
 png("B wBaryon - K")
-
-//###################################################################################
-//----------------------------------------------------------------------------
-// sweight
-//----------------------------------------------------------------------------
-// tmp
-TNN->Scan("EventNumber:RunNumber","sweightLb>-4 && sweightLb<1 && abs(wMass-5615)<2 && wCategory==-1")
-W->Draw("sweightLb:wMass","sweightLb>-4 && wCategory==-1") // one odd point
-W->Draw("sweightNon:wMass","sweightLb>-4 && wCategory==-1") // one odd point
-W->Draw("sweightKpi:wMass","sweightLb>-4 && wCategory==-1") // one odd point
-W->Draw("sweightKK:wMass","sweightLb>-4 && wCategory==-1") // one odd point
-W->Draw("sweightpiK:wMass","sweightLb>-4 && wCategory==-1") // one odd point
-W->Draw("sweightKp:wMass","sweightLb>-4 && wCategory==-1") // one odd point
-W->Draw("sweightLref:wMass","sweightLb>-4 && wCategory==-1") //  one odd point
-
-W->Scan("sweightLb:sweightNon:sweightKpi:sweightKK:sweightpiK:sweightKp:sweightLref","sweightLb>-4 && sweightLb<0.8 && abs(wMass-5615)<2 && wCategory==-1")
-W->Show(250)
 
 //----------------------------------------------------------------------------
 // Non optimal cuts - needs unblinding

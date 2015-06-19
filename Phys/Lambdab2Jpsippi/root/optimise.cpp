@@ -68,7 +68,7 @@ optimise::optimise( const TString fullname1, const TString fullname2,
   } else if (plotfilename2.Contains("S20r1-") && plotfilename.Contains("S20-")){
     plotfilename.ReplaceAll("S20-","S20X-");
   }
-  std::cout << "Ouptut file is ``" << plotfilename << "''" << std::endl ;
+  std::cout << "Output file is ``" << plotfilename << "''" << std::endl ;
   m_outfile = new TFile( plotfilename, "RECREATE" );
   m_outfile->cd();
 

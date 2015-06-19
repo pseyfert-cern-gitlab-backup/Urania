@@ -13,13 +13,13 @@
 #include "TFile.h"
 #include "TBranch.h"
 #include "TTree.h"
-#include "TH2D.h"
 #include "TString.h"
 
 // local Package
 #include "Lambdab.h"
 #include "Tuples.h"
 #include "MultipleCandidates.h"
+#include "TRandom2.h"
 
 // NeuroBayes
 #include "NeuroBayesExpert.hh"
@@ -35,6 +35,10 @@ int CreateExpertTree(const TString fullname, const TString type){
   Lambdab* ntuple = new Lambdab(fullname,"","",type);
   if(!ntuple) return -1;
   
+  TRandom2* m_rndm = new TRandom2(m_theSeed); // 0 : use time
+  m_rndm->SetSeed(m_theSeed);
+  fillFluctuateBins(m_rndm);
+
   unsigned int lastslash = fullname.Last('/');
   TString plotfilename = fullname(lastslash+1,fullname.Length()-lastslash-1);
   plotfilename = plotfilename.ReplaceAll(".root","-NN.root") ;
@@ -71,12 +75,16 @@ int CreateExpertTree(const TString fullname, const TString type){
   Double_t KKMass[PVS];
   Double_t DalitzWeight[PVS];
   Double_t DalitzWeight2[PVS];
+  Double_t DalitzWeightWE[PVS];
   Double_t NNEffWeight[PVS];
   Double_t SPDWeight;
   Double_t PTWeight ;
   Double_t PTWeight2 ;
+  Double_t PTWeight2WE ;
+  Double_t CPWeight ;
   Double_t mprime[PVS];
   Double_t thetaprime[PVS];
+  Double_t CosTheta[PVS];
   Int_t category[PVS] ;
   Int_t ErrorCode[PVS] ;
   Int_t baryon = true ;
@@ -115,12 +123,16 @@ int CreateExpertTree(const TString fullname, const TString type){
     outtree.Branch(c_pTrueID,&pptid, c_pTrueID+"/I");
     outtree.Branch(c_DalitzWeight,&DalitzWeight, "DalitzWeight"+pvs+"/D");
     outtree.Branch(c_DalitzWeight+"2",&DalitzWeight2, "DalitzWeight2"+pvs+"/D");
+    outtree.Branch(c_DalitzWeight+"WE",&DalitzWeightWE, "DalitzWeightWE"+pvs+"/D");
     outtree.Branch("SPDWeight",&SPDWeight, "SPDWeight/D");
     outtree.Branch("PTWeight",&PTWeight, "PTWeight/D");
     outtree.Branch("PTWeight2",&PTWeight2, "PTWeight2/D");
-  }
+    outtree.Branch("PTWeight2WE",&PTWeight2WE, "PTWeight2WE/D");
+  } 
   outtree.Branch(c_NNEffWeight,&NNEffWeight, "NNEffWeight"+pvs+"/D");
+  outtree.Branch("CPWeight",&CPWeight, "CPWeight/D");
   outtree.Branch("Teaching", &teaching , "Teaching/B");  
+  outtree.Branch("CosTheta", &CosTheta , "CosTheta"+pvs+"/D");  
 
   //  outtree.Branch("PsippiMassErr",&PsippiMassErr, "PsippiMassErr/F");
   // pi p mass calculate here and add to ntuple
@@ -189,14 +201,18 @@ int CreateExpertTree(const TString fullname, const TString type){
       KKMass[pv] = ntuple->KKMass();
       mprime[pv] = ntuple->mprime(pv);
       thetaprime[pv] = ntuple->thetaprime(pv);
+      CosTheta[pv] = ntuple->cosTheta(pv);
       if (ntuple->MC()) {
         DalitzWeight[pv] = (fullname.Contains("-Lb")?mcWeight(mprime[pv],thetaprime[pv],ntuple->isPion()):1.);
         DalitzWeight2[pv] = (fullname.Contains("-Lb")?mcWeight(mprime[pv],thetaprime[pv],ntuple->isPion(),2):1.);
+        DalitzWeightWE[pv] = (fullname.Contains("-Lb")?mcWeight(mprime[pv],thetaprime[pv],ntuple->isPion(),1,m_rndm):1.);
         SPDWeight = ntuple->spdWeight();
         PTWeight = (fullname.Contains("-Lb")?ptWeight(ntuple->B_PT):1.);
         PTWeight2 = (fullname.Contains("-Lb")?ptWeight(ntuple->B_PT,2):1.);
+        PTWeight2WE = (fullname.Contains("-Lb")?ptWeight(ntuple->B_PT,2,m_rndm):1.);
       }
       NNEffWeight[pv] = (ntuple->MC()?nnEffWeight(mprime[pv]):dataNnEffWeight(mprime[pv]));
+      CPWeight = cpWeight(ntuple->isPion(),ntuple->piminus_P);
       psipMass2[pv] = ntuple->psipMass2(pv);
       ntuple->prepareArray(nvar, InputArray,pv,debug);
     // std::cout << InputArray[0] << " " << InputArray[1] << " " << InputArray[2] << std::endl ;

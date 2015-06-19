@@ -3,7 +3,104 @@
 ! Responsible : Andrew Powell
 ! Purpose     : Scripts to generate PID Calibration samples
 !----------------------------------------------------------------------------- 
+!============================== v4r4 13-12-2013 ==============================
 
+! 2013-12-13 - Sneha Malde (LHCB)
+ - Make version v4r4 (erroneously tagged as v3r1)
+
+! 2013-12-13 Sneha Malde
+  - Add comments to uploadata.py to remember how it works.
+
+! 2013-12-12 Sneha Malde
+ - Changed the ganga scripts for running fit jobs so that they can read data selection jobs from someone elses area.
+
+! 2013-12-03 - Philip Hunt (LHCB)
+ - Changed SetSpectatorVars, DStFit, LamFit and so on to use RooRealVars 
+   instead of RooCategories for the new variables (which should result
+   in smaller dataset sizes)
+ - Fixed a bug in the chopTrees script that resulting in some subsamples
+   having zero entries
+ - Added a new set of scripts (scripts/root/GetRunRanges.C and associated
+   python, shell and ganga scripts) to split the data by run-range by directly
+   accessing the input TTrees (rather than querying the LHCb bookkeeping)
+ - Added a new set of scripts (scripts/root/ValidateChoppedTrees.C and
+   associated python, shell and ganga scripts) to validate that the correct
+   number of entries and the correct run ranges have been applied by the
+   chopTrees script (according to the pickle files)
+ - Changed the maxium number of entries / subsample to <1M, from <2M, 
+   to avoid memory-related errors in RooFit (due to RooDataSets being 
+	 memory-resident)
+ - Added an extra flag in DStFit, Lam0Fit and so on, and the associated
+   scripts, that indicates whether the program should exit if the fit
+   quality is poor
+
+! 2013-11-20 - Philip Hunt (LHCB)
+ - Modified CheckFitResults to take RooPhysFitter as argument instead of 
+   RooDMassFitter
+ - Added src/TestCheckFitResults.cpp to check that the various helper
+   functions in CheckFitResults are working correctly
+   * Made several fixes to CheckFitResults as a results of tests performed
+     using TestCheckFitResults
+ - Added status code checks to scripts in scripts/sh
+ - Updated DStFit.cpp, LamFit.cpp and so on to include muon and RICH
+   categories, and to print a usage message when the wrong number of 
+   arguments are supplied
+ - Moved {DStJob,Lam0Job,JpsiJob}_runRange.sh from the jobs directory
+   to scripts/sh and modified the scripts to process a single index
+   (so the different subsamples can be processed in separate subjobs)
+ - Modified mass-fit ganga scripts to process subsamples in separate subjobs
+ 
+! 2013-11-18 - Philip Hunt (LHCB)
+ - Added scripts/sh directory for scripts that are used to configure the
+   enviroment and run the python scripts and executables
+   * GetRunLumi.sh: runs the scripts/python/getRunLumi.py script
+   * ChopTrees.sh: runs the scripts/python/chopTrees.py script
+ - Removed 'MCTuneV2' job directories (MCTuneV2 is now the default for
+   Stripping20 and Stripping20r1 reprocessing)
+ - Added ganga jobs in jobs/Stripping20{,r1}/GetRunLumi to configure the
+ 	 LHCbDirac environment and generate the run-range pickle files
+ - Modified the "ChopTrees" ganga scripts to run the ChopTrees.sh as an
+   executable (previously ran the scripts/python/chopTrees.py directly using
+   GaudiPython, but this no longer works with recent versions of Urania).
+ - Moved the implementation of the functions in GetData.h and 
+   SetSpectatorVars.h to cpp files in the src directory.
+ - Moved the implemetation of the mass fit functions (DStFit, Lam0Fit etc.)
+   to the cpp files in the src directory.
+ - Removed redundant files: src/MC_DStFit.cpp, src/ChopUpMuonTrees.cpp,
+   scripts/root/TrackCategories.cpp, scripts/root/ReducePIDCalibNtuple.C,
+	 scripts/root/MuonProbTagTrigger.C, 
+	 scripts/python/MuonProbTagTriggerProcess.py,
+	 scripts/python/chopTrees_MUON.py, CalibDataScripts/MC_DStFit.h,
+	 CalibDataScripts/K0SFit.h, src/MC_DStFit.cpp and src/K0SFit.cpp.
+ - Added scripts/python/getUraniaVersion.py to get the Urania version from
+   the path
+ - Added CalibDataScripts/CheckFitResults.h and src/CheckFitResults.cpp to
+   do some basic checks of the status of the invariant mass fits.
+ - In SetSpectatorVars.h:
+    * Modified functions to take a reference to a RooDMassFitter as an 
+		  argument instead of a RooDMassFitter pointer
+    * Changed erroneously named SetSpecVars_NeuroBayesVars to 
+		  SetSpecVars_ANNVars
+ - In GetData.h:
+    * Removed redundant functions
+    * Modified GetData function to return a pointer to a TChain rather than
+      taking a Tree pointer reference and unneccesarily downcasting the 
+      TChain pointer to a TTree pointer
+ - In mass fit functions (DStFit, Lam0Fit etc.)
+    * Made modifications due to changes to SetSpectatorVars and GetData
+    * Added checks that the fits converge successfully (exit with failure
+      return code if the fit does not converge).
+    * Added pulls to the mass-fit plots (using new PlotFitPulls method 
+		  implemented in RooPhysFitter).
+		* Added ProbNN variable plots
+  - Old Stripping20 and Stripping20r1 ChopTrees ganga scripts and pickle files
+    have been removed and replaced with new ones
+    * pickle file prefixes now include the mother type (D*, Lam0 etc.) to allow
+      different pickle files for difference sources of calibration tracks (e.g.
+			protons from Lambdac or from Lambda0)
+		* Muons and MuonUnBiased protons now have separate pickle files
+    * Protons now have a separate pickle file to kaons and pions from D*
+ 	
 !============================== v4r3 02-09-2013 ==============================
 
 ! 2013-09-02 - Philip Hunt (LHCB)

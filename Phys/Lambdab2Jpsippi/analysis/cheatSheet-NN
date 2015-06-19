@@ -46,12 +46,12 @@ TNN->Draw("PsipKMass[0]:tMass[0]","Category[0]==-1 && RunNumber<90000")
 
 //================================================================================
 gPad->SetLogy()
-RooPlot* r = SandB(TNN,0,"PsippiMass",OptimalNN,"1","Category==1 && ErrorCode==0 && (PsippiMass<5580 || PsippiMass>5650)","","remove",5000,6100,110)
-SetTitle("m_{J/#psip#pi} [MeV/c^{2}]",r)
-r->SetMinimum(1.)
+//RooPlot* r = SandB(TNN,0,"PsippiMass",OptimalNN,"1","Category==1 && ErrorCode==0 && (PsippiMass<5580 || PsippiMass>5650)","","remove",5000,6100,110)
+RooPlot* r = SandB(TNN,0,"PsippiMass",OptimalNN,"1","Category==1 && ErrorCode==0","","remove",5000,6100,110)
+r->SetMinimum(10.)
 r->SetMaximum(1e4)
-r->Draw()
-overlay_line(5580.,r,2) ; overlay_line(5650.,r,2) ; 
+SetTitle("m_{J/#psip#pi} [MeV/c^{2}]",r)
+//overlay_line(5580.,r,2) ; overlay_line(5650.,r,2) ; 
 png("B Psippi after NN")
 
 RooPlot* r = SandB(TNN,0,"PsipKMass",OptimalNN,"1","Category==-1 && ErrorCode==0","","remove",5000,6100,110)

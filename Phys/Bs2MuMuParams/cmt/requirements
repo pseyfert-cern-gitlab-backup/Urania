@@ -3,7 +3,7 @@
 # Maintainer : Marc-Olivier Bettler, Diego Martinez Santos, Mathieu Perrin Terrin
 #============================================================================
 package           Bs2MuMuParams
-version           v2r4
+version           v2r5
 
 #============================================================================
 # Structure, i.e. directories to process. 

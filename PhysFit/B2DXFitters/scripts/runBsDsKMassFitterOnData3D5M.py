@@ -14,22 +14,103 @@
 #   Date  : 21 / 02 / 2012                                                    #
 #                                                                             #
 # --------------------------------------------------------------------------- #
+# -----------------------------------------------------------------------------
+# settings for running without GaudiPython
+# -----------------------------------------------------------------------------
+""":"
+# This part is run by the shell. It does some setup which is convenient to save
+# work in common use cases.
 
+# make sure the environment is set up properly
+if test -n "$CMTCONFIG" \
+         -a -f $B2DXFITTERSROOT/$CMTCONFIG/libB2DXFittersDict.so \
+         -a -f $B2DXFITTERSROOT/$CMTCONFIG/libB2DXFittersLib.so; then
+    # all ok, software environment set up correctly, so don't need to do
+    # anything
+    true
+else
+    if test -n "$CMTCONFIG"; then
+        # clean up incomplete LHCb software environment so we can run
+        # standalone
+        echo Cleaning up incomplete LHCb software environment.
+        PYTHONPATH=`echo $PYTHONPATH | tr ':' '\n' | \
+            egrep -v "^($User_release_area|$MYSITEROOT/lhcb)" | \
+            tr '\n' ':' | sed -e 's/:$//'`
+        export PYTHONPATH
+        LD_LIBRARY_PATH=`echo $LD_LIBRARY_PATH | tr ':' '\n' | \
+            egrep -v "^($User_release_area|$MYSITEROOT/lhcb)" | \
+            tr '\n' ':' | sed -e 's/:$//'`
+	export LD_LIBRARY_PATH
+        exec env -u CMTCONFIG -u B2DXFITTERSROOT "$0" "$@"
+    fi
+    # automatic set up in standalone build mode
+    if test -z "$B2DXFITTERSROOT"; then
+        cwd="$(pwd)"
+        if test -z "$(dirname $0)"; then
+            # have to guess location of setup.sh
+            cd ../standalone
+            . ./setup.sh
+            cd "$cwd"
+        else
+            # know where to look for setup.sh
+            cd "$(dirname $0)"/../standalone
+            . ./setup.sh
+            cd "$cwd"
+        fi
+        unset cwd
+    fi
+fi
+# figure out which custom allocators are available
+# prefer jemalloc over tcmalloc
+for i in libjemalloc libtcmalloc; do
+    for j in `echo "$LD_LIBRARY_PATH" | tr ':' ' '` \
+            /usr/local/lib /usr/lib /lib; do
+        for k in `find "$j" -name "$i"'*.so.?' | sort -r`; do
+            if test \! -e "$k"; then
+                continue
+            fi
+            echo adding $k to LD_PRELOAD
+            if test -z "$LD_PRELOAD"; then
+                export LD_PRELOAD="$k"
+                break 3
+            else
+                export LD_PRELOAD="$LD_PRELOAD":"$k"
+                break 3
+            fi
+        done
+    done
+done
+# set batch scheduling (if schedtool is available)
+schedtool="`which schedtool 2>/dev/zero`"
+if test -n "$schedtool" -a -x "$schedtool"; then
+    echo "enabling batch scheduling for this job (schedtool -B)"
+    schedtool="$schedtool -B -e"
+else
+    schedtool=""
+fi
+
+# set ulimit to protect against bugs which crash the machine: 2G vmem max,
+# no more then 8M stack
+ulimit -v $((2048 * 1024))
+ulimit -s $((   8 * 1024))
+
+# trampoline into python
+exec $schedtool /usr/bin/time -v env python -O -- "$0" "$@"
+"""
+__doc__ = """ real docstring """
 # -----------------------------------------------------------------------------
 # Load necessary libraries
 # -----------------------------------------------------------------------------
-from optparse import OptionParser
-from os.path  import join
-
-import GaudiPython
-
-GaudiPython.loaddict( 'B2DXFittersDict' )
-
+import B2DXFitters
+import ROOT
+from B2DXFitters import *
 from ROOT import *
-
-GeneralUtils = GaudiPython.gbl.GeneralUtils
-MassFitUtils = GaudiPython.gbl.MassFitUtils
-Bs2Dsh2011TDAnaModels = GaudiPython.gbl.Bs2Dsh2011TDAnaModels
+from ROOT import RooFit
+from optparse import OptionParser
+from math     import pi, log
+from  os.path import exists
+import os, sys, gc
+gROOT.SetBatch()
 
 # MISCELLANEOUS
 bName = 'Bs'
@@ -65,12 +146,22 @@ def runBsDsKMassFitterOnData( debug, sample, mVar, mdVar, tVar, terrVar, tagVar,
         
     RooAbsData.setDefaultStorageType(RooAbsData.Tree)
 
+    config = TString("../data/")+TString(configName)+TString(".py")
+    MDSettings = MDFitterSettings("MDSettings","MDFSettings",config)
+    
+    MDSettings.SetMassBVar(TString(mVar))
+    MDSettings.SetMassDVar(TString(mdVar))
+    MDSettings.SetTimeVar(TString(tVar))
+    MDSettings.SetTerrVar(TString(terrVar))
+    MDSettings.SetIDVar(TString(idVar))
+        
     if merge:
         if sample == "up" or sample == "down":
             print "You cannot use option --merge with sample: up or down"
             exit(0)
 
     workspace = []
+    workData = GeneralUtils.LoadWorkspace(TString("work_dsk_pid_53005800_PIDK5_5M_BDTGA_4.root"),workNameTS,debug)
     workspace.append(GeneralUtils.LoadWorkspace(TString(fileNameAll),workNameTS, debug))
          
     obsTS = TString(mVar)
@@ -81,25 +172,61 @@ def runBsDsKMassFitterOnData( debug, sample, mVar, mdVar, tVar, terrVar, tagVar,
         PIDK        = GeneralUtils.GetObservable(workspace[0],TString("lab1_PIDK"), debug)
         tvar        = GeneralUtils.GetObservable(workspace[0],TString(tVar), debug)
         terrvar     = GeneralUtils.GetObservable(workspace[0],TString(terrVar), debug)
-        tagomegavar = GeneralUtils.GetObservable(workspace[0],TString(tagOmegaVar), debug)
-        tagvar      = GeneralUtils.GetObservable(workspace[0],TString(tagVar), debug)
-        idvar       = GeneralUtils.GetObservable(workspace[0],TString(idVar), debug) 
+        idvar       = GeneralUtils.GetCategory(workspace[0],TString(idVar), debug)
+        nTrvar      = GeneralUtils.GetObservable(workspace[0],TString("nTracks"), debug)
+        ptvar       = GeneralUtils.GetObservable(workspace[0],TString("lab1_PT"), debug)
+                
     else:
         mass        = GeneralUtils.GetObservable(workspaceToys,obsTS, debug)
         massDs      = GeneralUtils.GetObservable(workspaceToys,TString(mdVar), debug)
         PIDK        = GeneralUtils.GetObservable(workspaceToys,TString("lab1_PIDK"), debug)
         tvar        = GeneralUtils.GetObservable(workspaceToys,TString(tVar), debug)
         terrvar     = GeneralUtils.GetObservable(workspaceToys,TString(terrVar), debug)
-        tagomegavar = GeneralUtils.GetObservable(workspaceToys,TString(tagOmegaVar), debug)
-        tagvar      = GeneralUtils.GetObservable(workspaceToys,TString(tagVar)+TString("_idx"), debug)
-        idvar       = GeneralUtils.GetObservable(workspaceToys,TString(idVar)+TString("_idx"), debug)
+        tagomegavar = GeneralUtils.GetObservable(workspaceToys,TString("tagOmegaComb"), debug)
+        tagvar      = GeneralUtils.GetCategory(workspaceToys,TString("tagDecComb"), debug)
+        idvar       = GeneralUtils.GetCategory(workspaceToys,TString(idVar), debug)
         trueidvar   = GeneralUtils.GetObservable(workspaceToys,TString("lab0_TRUEID"), debug)
+        
                 
-    observables = RooArgSet( mass,massDs, PIDK, tvar, terrvar, tagvar,tagomegavar,idvar )
+    observables = RooArgSet( mass,massDs, PIDK, tvar, terrvar, idvar )
     if toys :
-        observables.add(trueidvar) 
-                                                  
-    
+        observables.add(trueidvar)
+        observables.add(tagvar)
+        observables.add(tagomegavar)
+    else:
+        observables.add(nTrvar)
+        observables.add(ptvar)
+
+    if not toys:
+        if MDSettings.CheckAddVar() == true:
+            for i in range(0,MDSettings.GetNumAddVar()):
+                addVar = GeneralUtils.GetObservable(workspace[0], MDSettings.GetAddVarName(i), debug)
+                observables.add(addVar)
+            
+        tagVar = []
+        if MDSettings.CheckTagVar() == true:
+            for i in range(0,MDSettings.GetNumTagVar()):
+                tagVar.append(GeneralUtils.GetCategory(workspace[0], MDSettings.GetTagVar(i), debug))
+                observables.add(tagVar[i])
+            
+        tagOmegaVar = []
+        tagOmegaVarCalib = []
+        if MDSettings.CheckTagOmegaVar() == true:
+            for i in range(0,MDSettings.GetNumTagOmegaVar()):
+                tagOmegaVar.append(GeneralUtils.GetObservable(workspace[0], MDSettings.GetTagOmegaVar(i), debug))
+                observables.add(tagOmegaVar[i])
+                nameCalib = MDSettings.GetTagOmegaVar(i) + TString("_calib")
+                tagOmegaVarCalib.append(GeneralUtils.GetObservable(workData, nameCalib, debug))
+                observables.add(tagOmegaVarCalib[i])
+                
+        tagDecCombName = TString("tagDecComb")
+        tagDecComb = GeneralUtils.GetCategory(workspace[0], tagDecCombName, debug)
+        tagOmegaCombName= TString("tagOmegaComb")
+        tagOmegaComb = GeneralUtils.GetObservable(workspace[0], tagOmegaCombName, debug)
+        
+        observables.add(tagDecComb)
+        observables.add(tagOmegaComb)
+                                                                                                 
  ###------------------------------------------------------------------------------------------------------------------------------------###
     ###-------------------------------------------------   Read data sets   --------------------------------------------------------###
  ###------------------------------------------------------------------------------------------------------------------------------------###   
@@ -196,7 +323,7 @@ def runBsDsKMassFitterOnData( debug, sample, mVar, mdVar, tVar, terrVar, tagVar,
                 for i in range(0,5):
                     for j in range(0,2):
                         sm.append(s[j]+t+m[i])
-                        data.append(GeneralUtils.GetDataSet(workspace[0],datasetTS+sm[2*i+j], debug))
+                        data.append(GeneralUtils.GetDataSet(workData,datasetTS+sm[2*i+j], debug))
                         nEntries.append(data[i*2+j].numEntries())
                     
                 if debug:
@@ -459,7 +586,7 @@ def runBsDsKMassFitterOnData( debug, sample, mVar, mdVar, tVar, terrVar, tagVar,
     else:
         bound = ran
                             
-
+    
     ###------------------------------------------------------------------------------------------------------------------------------------###
           ###-------------------------   Create the signal PDF in Bs mass, Ds mass, PIDK   ------------------------------------------###
     ###------------------------------------------------------------------------------------------------------------------------------------###
@@ -998,12 +1125,12 @@ parser.add_option( '--terrvar',
                    )
 parser.add_option( '--tagvar',
                    dest = 'tagvar',       
-                   default = 'lab0_BsTaggingTool_TAGDECISION_OS',
+                   default = 'lab0_TAGDECISION_OS',
                    help = 'set observable '
                    )
 parser.add_option( '--tagomegavar',
                    dest = 'tagomegavar',
-                   default = 'lab0_BsTaggingTool_TAGOMEGA_OS',
+                   default = 'lab0_TAGOMEGA_OS',
                    help = 'set observable '
                    )
 parser.add_option( '--idvar',

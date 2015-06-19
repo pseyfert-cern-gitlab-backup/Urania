@@ -31,6 +31,7 @@ neutron = ParticleData(2112)
 muon = ParticleData(13)
 Muon = muon
 Kplus = ParticleData(321)
+pi0 = ParticleData(111)
 piplus = ParticleData(211)
 K0  = ParticleData(311)
 Jpsi = ParticleData(443)

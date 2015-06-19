@@ -11,6 +11,8 @@
 #include <TVector3.h>
 #include <iostream>
 #include "MultipleCandidates.h"
+#include "weights.h"
+#include "TRandom2.h"
 
 // Lambdab2JPsippi Package
 #include "MCTuple.h"
@@ -30,9 +32,12 @@ int loop(MCTuple* ntuple){
   const Long64_t nentries = ntuple->fChain->GetEntries();
   double frac = printFrac(nentries);  
   TFile* outfile = new TFile( (ntuple->m_isPi?"MCLb2Psippi.root":"MCLb2PsipK.root"), "RECREATE" );
+  TRandom2* m_rndm = new TRandom2(m_theSeed); // 0 : use time
+  m_rndm->SetSeed(m_theSeed);
+  fillFluctuateBins(m_rndm);
  
   unsigned long int runNumber, eventNumber ;
-  Double_t mprime, thetaprime, pMMass2, psipMass2, psiMMass2 ;
+  Double_t mprime, thetaprime, pMMass2, psipMass2, psiMMass2, DalitzWeight,  DalitzWeightWE, PTWeight2,  PTWeight2WE ;
   TTree outtree("MCTree","MC Truth Helper Tree");
   outtree.Branch("EventNumber",&eventNumber, "EventNumber/l");
   outtree.Branch("RunNumber",&runNumber, "RunNumber/i");
@@ -41,6 +46,10 @@ int loop(MCTuple* ntuple){
   outtree.Branch("pMMass2",&pMMass2,"pMMass2/D");
   outtree.Branch("psipMass2",&psipMass2,"psipMass2/D");
   outtree.Branch("psiMMass2",&psiMMass2,"psiMMass2/D");
+  outtree.Branch("DalitzWeight",&DalitzWeight,"DalitzWeight/D");
+  outtree.Branch("DalitzWeightWE",&DalitzWeightWE,"DalitzWeightWE/D");
+  outtree.Branch("PTWeight2",&PTWeight2,"PTWeight2/D");
+  outtree.Branch("PTWeight2WE",&PTWeight2WE,"PTWeight2WE/D");
   outtree.SetDirectory(outfile); 
   for (Long64_t i=0; i<nentries;i++) {
     ntuple->fChain->GetEntry(i);
@@ -51,6 +60,10 @@ int loop(MCTuple* ntuple){
     pMMass2 = ntuple->pMMass2() ;
     psipMass2 = ntuple->psipMass2() ;
     psiMMass2 = ntuple->psiMMass2() ;
+    DalitzWeight = mcWeight(mprime,thetaprime,ntuple->m_isPi);
+    DalitzWeightWE = mcWeight(mprime,thetaprime,ntuple->m_isPi,1,m_rndm);
+    PTWeight2 = ptWeight(ntuple->Lambda_b0_TRUEPT,2);
+    PTWeight2WE = ptWeight(ntuple->Lambda_b0_TRUEPT,2,m_rndm);
     outtree.Fill() ;
     if(0==i%((int)(frac*nentries))) std::cout << " |-> " << i << " / " 
                                               << nentries << " (" << 100*i/nentries << "%)" 

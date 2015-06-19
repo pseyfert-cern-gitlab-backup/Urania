@@ -23,9 +23,10 @@ if not __initialised:
     # ownership if required, but PyROOT does not do what it thinks best without
     # our knowing what it does
     ROOT.SetMemoryPolicy(ROOT.kMemoryStrict)
-    # enable ROOT to understand Reflex dictionaries
-    ROOT.gSystem.Load('libCintex')
-    ROOT.Cintex.Enable()
+    if ROOT.gROOT.GetVersionCode() < 5 * 65536 + 99 * 256:
+        # enable ROOT to understand Reflex dictionaries
+        ROOT.gSystem.Load('libCintex')
+        ROOT.Cintex.Enable()
     # load RooFit
     ROOT.gSystem.Load('libRooFit')
     # load our own B2DXFitters library
@@ -50,7 +51,8 @@ if not __initialised:
             )
         pid = os.getpid()
         while pid in proclist:
-            if 'gdb' in proclist[pid][1]: return True
+            for dbgname in ('gdb', 'lldb'):
+                if dbgname in proclist[pid][1]: return True
             pid = proclist[pid][0]
         return False
     

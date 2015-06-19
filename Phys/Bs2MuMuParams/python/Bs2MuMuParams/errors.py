@@ -169,6 +169,9 @@ class EValAsym():
     def get_error_down(self):
         return self.evals[1].get_error()
 
+    def get_eval(self):
+        return EVal(self.evals[0].get_value(), (self.evals[0].error[0] +self.evals[1].error[0])/2.)
+
     def __str__(self):
         s = str(self.evals[0].value)+' + '
         if (len(self.evals[0].error) ==1): s = s + str(self.evals[0].error[0])

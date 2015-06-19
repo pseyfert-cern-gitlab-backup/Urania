@@ -29,9 +29,12 @@ using namespace RooFit ;
 // Mass only
 void MassPdf::make(TString name, RooRealVar* mass, int nevents,backgrounds bkgs, 
                    TString opt, TString range, TString sigType, TString bkgType,
-		   bool withXib){
+		   bool withXib, bool withPartReco){
   m_debug = false ;
   if (nevents<=0) std::cout << "Error : No events for " << name << std::endl ;
+  
+  std::cout << "Mass PDF : " << name << " opt: " << opt << " name: " << name << " sig: " << sigType << " bkg: " 
+	    << bkgType << std::endl ;
   
   // grep "* m_" MassPdf.h | awk -F"\*" '{print $2}' | awk -F";" '{print " "$1"=0;"}'
   m_mass = mass;
@@ -59,12 +62,19 @@ void MassPdf::make(TString name, RooRealVar* mass, int nevents,backgrounds bkgs,
   m_massPdf=0;
   m_name = name ;
   m_backgrounds = bkgs ;
+  m_nPartReco=0;
+  m_PartReco_mean=0;
+  m_PartReco_sigma=0;
+  m_PartReco_shift=0;
+  m_PartReco_trans=0;
+  m_PartReco=0;
 
-  m_nLambdab = new RooRealVar(c_Yield+" "+c_Lambdab, "number of Lambdab",0.0, 1.0*nevents);
-  m_nonPeaking = new RooRealVar(c_Yield+" "+c_NonPeaking, "number of BKG",0.0, ("None"==bkgType)?0.:1.0*nevents);
+  m_nLambdab = new RooRealVar(c_Yield+" "+c_Lambdab, "number of Lambdab", 0.2*nevents, 0.0, 1.0*nevents);
+  m_nonPeaking = new RooRealVar(c_Yield+" "+c_NonPeaking, "number of BKG",0.2*nevents, 0.0, ("None"==bkgType)?0.:1.0*nevents);
+  m_nPartReco = (withPartReco?new RooRealVar(c_Yield+" "+c_PartReco,"number of PartReco", 0.01*nevents, 0.0*nevents, 0.3*nevents):0);
 
   m_mean = new RooRealVar("mean","mean mass", 5620,5600,5650);
-  m_width = new RooRealVar("width","width", 5., 2., 10.);
+  m_width = new RooRealVar("width","width", 7.9, 2., 10.);
   m_extended = true ; // (m_nevents>0);
   m_lastFit = 0 ;
 
@@ -105,13 +115,21 @@ void MassPdf::make(TString name, RooRealVar* mass, int nevents,backgrounds bkgs,
   }
   if(sigType=="GaussCB" || sigType=="DoubleGauss"){
     std::cout << " SETUP: Signal Model m_Lambdab_II" << std::endl;
-    m_width2 = new RooRealVar("width2","width2",10 , 5, 3);
+    m_width2 = new RooRealVar("width2","width2",10 , 5, 50);
     m_Lambdab_II = new RooGaussian("LambdabGauss_wide", 
                                    "Lambdab wide gaussian" , *m_mass, *m_mean, *m_width2);
     m_Xib_II = (withXib?new RooGaussian("XibGauss_wide", 
 					"Xib wide gaussian" , *m_mass, *m_meanXib, *m_width2):0);
   }
 
+  if (withPartReco){
+    std::cout << " SETUP: PartReco Model = Exp and Gauss" << std::endl;
+    m_PartReco_mean = new RooRealVar(m_name+"PartReco mean","mean",5340,5300,5500);
+    m_PartReco_sigma = new RooRealVar(m_name+"PartReco sigma","sigma",22.07,10.,30.); 
+    m_PartReco_shift = new RooRealVar(m_name+"PartReco shift","transition to Exp",4.50,0.,25.);
+    m_PartReco_trans = new RooFormulaVar(m_name+"PartReco trans","transition to Exp","@0-@1",RooArgSet(*m_PartReco_mean,*m_PartReco_shift));
+    m_PartReco = new RooExpAndGauss(m_name+"EaGPartReco","PartReco BKG",*m_mass,*m_PartReco_mean,*m_PartReco_sigma,*m_PartReco_trans);
+  }
   // Final Model
   if(sigType=="CB"){
     std::cout << " SETUP: Signal Model = Single Crystal Ball" << std::endl;
@@ -127,25 +145,25 @@ void MassPdf::make(TString name, RooRealVar* mass, int nevents,backgrounds bkgs,
   if(sigType=="GaussCB") std::cout << " SETUP: Signal Model = Gauss + Crystal Ball" << std::endl;
   if(sigType=="DoubleGauss") std::cout << " SETUP: Signal Model = Double Gauss" << std::endl;
   if(sigType=="DoubleCB" || sigType=="GaussCB" || sigType=="DoubleGauss"){
-    m_frac = new RooRealVar("frac", "Fraction of narrow component", 0.491, 0.0, 1.0);
+    m_frac = new RooRealVar("frac", "Fraction of narrow component", 0.19, 0.0, 1.0);
     m_Lambdab = new RooAddPdf("Lambdab PDF","Lambdab PDF",RooArgList(*m_Lambdab_I,*m_Lambdab_II),RooArgList(*m_frac));
     m_Xib = (withXib?new RooAddPdf("Xib PDF","Xib PDF",RooArgList(*m_Xib_I,*m_Xib_II),RooArgList(*m_frac)):0);
   }
 
   if(bkgType=="Exp"){
     std::cout << " SETUP: Background Model = Exponential" << std::endl;
-    m_bkg1 = new RooRealVar("expo","expo", -0.004,-0.1,0.);
+    m_bkg1 = new RooRealVar("expo","expo", -0.008,-0.1,0.);
     m_comBKG = new RooExponential("comBKG" , "combinatorial BKG", *m_mass, *m_bkg1);
   }
   else if(bkgType=="Poly2"){
     std::cout << " SETUP: Background Model = Second Order Chebychev Polynomial" << std::endl;
-    m_bkg1 = new RooRealVar("pol1","Chebychev Par 1", 0 , -1., 1.); // DO NOT ALLLOW FOR TOO LARGE SLOPES
-    m_bkg2 = new RooRealVar("pol2","Chebychev Par 2", 0 , -1., 1.); // DO NOT ALLLOW FOR TOO LARGE SLOPES
+    m_bkg1 = new RooRealVar("pol1","Chebychev Par 1", 0 , -10., 10.); // DO NOT ALLLOW FOR TOO LARGE SLOPES
+    m_bkg2 = new RooRealVar("pol2","Chebychev Par 2", 0 , -10., 10.); // DO NOT ALLLOW FOR TOO LARGE SLOPES
     m_comBKG = new RooChebychev("comBKG","combinatorial BKG", *m_mass, RooArgList(*m_bkg1, *m_bkg2));
   }
   else if(bkgType=="Poly1"){
     std::cout << " SETUP: Background Model = Second Order Chebychev Polynomial" << std::endl;
-    m_bkg1 = new RooRealVar("pol1","Chebychev Par 1", 0 , -1., 1.); // DO NOT ALLLOW FOR TOO LARGE SLOPES
+    m_bkg1 = new RooRealVar("pol1","Chebychev Par 1", 0 , -10., 10.); // DO NOT ALLLOW FOR TOO LARGE SLOPES
     m_comBKG = new RooChebychev("comBKG","combinatorial BKG", *m_mass, RooArgList(*m_bkg1));
   }
   else if(bkgType=="Uni" || bkgType=="None"){
@@ -203,19 +221,31 @@ RooPlot* MassPdf::plotOn(TCanvas* canvas, RooDataSet* data, bool doSumW2, Int_t 
                     Normalization(n,RooAbsReal::NumEvent),
                     LineStyle(kDashed), LineColor(kBlack)); // ,VisualizeError(*m_lastFit) ); 
   int c = 2 ;
+  RooArgList BList;
+  bool plotAll = false ; // switch on to get all pdfs
+  
   if (!m_backgrounds.empty()){
     for (backgrounds::iterator b = m_backgrounds.begin(); b!=m_backgrounds.end() ; ++b){
-      (*b)->pdf()->Print() ;
-      m_massPdf->plotOn(massFrame, Components(*((*b)->pdf())), Range(m_range),
-                        Normalization(n,RooAbsReal::NumEvent),
-                        LineStyle(kDotted), LineColor(c)); 
-      std::cout << m_name << " : plotted " << (*b)->name() << " with colour " << c << std::endl ;
+      //      (*b)->pdf()->Print() ;
+      if ("PsipKMass"==(*b)->name() || plotAll){
+	m_massPdf->plotOn(massFrame, Components(*((*b)->pdf())), Range(m_range),
+			  Normalization(n,RooAbsReal::NumEvent),
+			  LineStyle(kDotted), LineColor(c)); 
+	std::cout << m_name << " : plotted " << (*b)->name() << " with colour " << c << std::endl ;
       // 2 red, 3 green, 4 blue, 6 magenta, 7 cyan, 8 dark green
-      c++ ;
-      if (5==c) c++; // not yellow
+	c++ ;
+	if (5==c) c++; // not yellow
+      } else {
+	BList.add(*((*b)->pdf()));
+      }
     }
   }
-  
+  if (!plotAll){
+    RooAddPdf allB("AllB","AllB",BList);
+    m_massPdf->plotOn(massFrame, Components(allB), Range(m_range),
+		      Normalization(n,RooAbsReal::NumEvent),
+		      LineStyle(kDotted), LineColor(c)); 
+  }
   // Data
   if(doSumW2) data->plotOn(massFrame, DataError(RooAbsData::SumW2),MarkerStyle(8),MarkerSize(0.8));
   else if (c_range==m_range) data->plotOn(massFrame) ; // ,MarkerStyle(8),MarkerSize(0.8));
@@ -432,6 +462,7 @@ void MassPdf::Print(){
   Print(m_n2);
   Print(m_alpha2);
   Print(m_bkg1);
+  Print(m_bkg2);
   for (backgrounds::iterator b = m_backgrounds.begin(); b!=m_backgrounds.end() ; ++b){
     double e = (*b)->yield()->getError();
     double v = (*b)->yield()->getVal();
@@ -440,6 +471,11 @@ void MassPdf::Print(){
     printEbRule((*b)->y(),(*b)->e());
     std::cout << "\\\\" << std::endl ; 
   }
+  Print(m_nPartReco);
+  Print(m_PartReco_mean);
+  Print(m_PartReco_sigma);
+  Print(m_PartReco_shift);
+  //  Print(m_PartReco_trans);
 }
 
 //#####################################################################################################
@@ -464,6 +500,42 @@ RooFitResult* MassPdf::fit(RooDataSet* data, bool doSumW2){
   }
   return m_lastFit ;
 }
+ //#####################################################################################################
+void MassPdf::freezeComb(MassPdf* prevFit, double offset){
+  if (!prevFit) return ;
+  std::cout << "Constraining slope from previous fit " << std::endl ;
+  if ( m_bkg1){
+    m_bkg1->setVal(prevFit->bkg1()->getVal()+offset*prevFit->bkg1()->getError()); // offset=0 by default
+    m_bkg1->setError(prevFit->bkg1()->getError());
+    m_bkg1->setConstant();
+  }
+  if ( m_bkg2 ){ // only for poly2 
+    m_bkg2->setVal(prevFit->bkg2()->getVal()+offset*prevFit->bkg2()->getError()); // offset=0 by default
+    m_bkg2->setError(prevFit->bkg2()->getError());
+    m_bkg2->setConstant();
+  }
+}
+ //#####################################################################################################
+void MassPdf::freezePeak(MassPdf* prevFit){
+  if (!prevFit) return ;
+  std::cout << "Constraining Peak" << std::endl ;
+  m_mean->setVal(prevFit->mean()->getVal());
+  m_mean->setError(prevFit->mean()->getError());
+  m_mean->setConstant();
+  m_width->setVal(prevFit->width()->getVal());
+  m_width->setError(prevFit->width()->getError());
+  m_width->setConstant();
+  if (m_width2){
+    m_width2->setVal(prevFit->width2()->getVal());
+    m_width2->setError(prevFit->width2()->getError());
+    m_width2->setConstant();
+  }
+  if (m_frac){
+    m_frac->setVal(prevFit->frac()->getVal());
+    m_frac->setError(prevFit->frac()->getError());
+    m_frac->setConstant();
+  }
+}
 //#####################################################################################################
 // out of class
 double ebRule(double v, double e){   // v is the value, e the error
@@ -474,7 +546,7 @@ double ebRule(double v, double e){   // v is the value, e the error
   // std::cout << "\n EbRule " << e << " " << e/0.35449999 << " " << j << " " << f << " " << v2 << "\n" << std::endl;
   return v2 ;
 }
-//#####################################################################################################
+ //#####################################################################################################
 double ebRule(double e){ return ebRule(e,e); }  ///< display only the error
 //#####################################################################################################
 void printEbRule(double v, double e, TString sep){  ///< prints v\pm e with correct number of signif digits

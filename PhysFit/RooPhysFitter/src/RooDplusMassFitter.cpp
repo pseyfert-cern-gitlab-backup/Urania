@@ -45,48 +45,32 @@ using namespace RooPhysFit;
 // Standard constructor, initializes variables
 //=============================================================================
 
-RooDplusMassFitter::RooDplusMassFitter() : RooPhysFitter() 
+RooDplusMassFitter::RooDplusMassFitter() 
+  : RooPhysFitter(), m_dplusMassName("mass"),
+    m_dplusMassDplusPartName("D^{+}") /* D+ label */,
+    m_dplusMassDsPartName("D_{s}^{+}") /* D_s+ label */,
+    m_dplusMassBkgPartName("") /* bkg label */,
+    m_dplusMassDplusModelName("dplusModel"), m_dplusMassDsModelName("dsModel"),
+    m_dplusMassBkgModelName("bkgModel"), m_dplusMassDplusYieldName("ndplus"),
+    m_dplusMassDsYieldName("nds"), m_dplusMassBkgYieldName("nbkg"),
+    m_spectSetName("Spectators"), m_catSetName("Categories"),
+    m_printEntries(kFALSE), m_printFreq(100), m_varNameToBranchName(),
+    m_catNameToBranchName(), m_varNameToFunction(), m_varNameToFormula()
 {
-  m_dplusMassDplusPartName="D^{+}"; // D+ label
-  m_dplusMassDsPartName="D_{s}^{+}"; // Ds label
-  m_dplusMassBkgPartName=""; // bkg label
- 
-  m_dplusMassName="mass";
-
-  m_dplusMassDplusModelName="dplusModel";
-  m_dplusMassDsModelName="dsModel";
-  m_dplusMassBkgModelName="bkgModel";
-  
-  m_dplusMassDplusYieldName="ndplus";
-  m_dplusMassDsYieldName="nds";
-  m_dplusMassBkgYieldName="nbkg";
-  
-  m_spectSetName="Spectators";
-  m_catSetName="Categories";
-  m_printEntries=kFALSE;
-  m_printFreq=100;
 }
 
 RooDplusMassFitter::RooDplusMassFitter( const char* name, const char* title ) 
-  : RooPhysFitter(name, title) {
-  m_dplusMassDplusPartName="D^{+}";
-  m_dplusMassDsPartName="D_{s}";
-  m_dplusMassBkgPartName="";
-
-  m_dplusMassName="mass";
-
-  m_dplusMassDplusModelName="dplusModel";
-  m_dplusMassDsModelName="dsModel";
-  m_dplusMassBkgModelName="bkgModel";
-  
-  m_dplusMassDplusYieldName="ndplus";
-  m_dplusMassDsYieldName="nds";
-  m_dplusMassBkgYieldName="nbkg";
-  
-  m_spectSetName="Spectators";
-  m_catSetName="Categories";
-  m_printEntries=kFALSE;
-  m_printFreq=100;
+  : RooPhysFitter(name, title), m_dplusMassName("mass"),
+    m_dplusMassDplusPartName("D^{+}") /* D+ label */,
+    m_dplusMassDsPartName("D_{s}^{+}") /* D_s+ label */,
+    m_dplusMassBkgPartName("") /* bkg label */,
+    m_dplusMassDplusModelName("dplusModel"), m_dplusMassDsModelName("dsModel"),
+    m_dplusMassBkgModelName("bkgModel"), m_dplusMassDplusYieldName("ndplus"),
+    m_dplusMassDsYieldName("nds"), m_dplusMassBkgYieldName("nbkg"),
+    m_spectSetName("Spectators"), m_catSetName("Categories"),
+    m_printEntries(kFALSE), m_printFreq(100), m_varNameToBranchName(),
+    m_catNameToBranchName(), m_varNameToFunction(), m_varNameToFormula()
+{
 }
 
 const char* RooDplusMassFitter::GetPartName(RooDplusMassFitter::PartType pType) const
@@ -289,6 +273,21 @@ void RooDplusMassFitter::AddCategory(const char* name,
   if (brName&&strcmp(brName,"")!=0) {
     m_catNameToBranchName[name]=brName;
   }
+}
+
+void RooDplusMassFitter::AddCategory(const char* name,
+                                     TString* types,
+                                     Int_t* indices, UInt_t ntypes,
+                                     const char* brName,
+                                     const char* title)
+{
+    std::vector<std::string> v_types;
+    std::vector<Int_t> v_indices;
+    for (UInt_t i=0; i<ntypes; ++i) {
+      v_types.push_back((types[i]).Data());
+      v_indices.push_back(indices[i]);
+    }
+    this->AddCategory(name, v_types, v_indices, brName, title);
 }
 
 void RooDplusMassFitter::MakeDplusMassSigGauss(RooDplusMassFitter::PartType pType,
@@ -1374,7 +1373,7 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
   RooArgSet args(*mass);
   
   std::map<std::string, void*> varMap;
-  std::map<std::string, Int_t*> catMap;
+  std::map<std::string, void*> catMap;
   
   const RooArgSet* extraArgs = m_rws->set(m_spectSetName);
   const RooArgSet* categories = m_rws->set(m_catSetName);
@@ -1393,10 +1392,7 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
         throw GeneralException("RooDplusMassFitter::MakeDplusMassDataSet", 
                                msg.str());
       }
-      std::string branchName=varName;
-      if (m_varNameToBranchName.find(varName)!=m_varNameToBranchName.end()) {
-        branchName=m_varNameToBranchName[varName];
-      }
+      std::string branchName=this->GetVarBranchName(varName);
       std::string type=GetBranchType(tt, branchName);
       if (type.compare("Float_t")==0) {
         varMap[varName] = new Float_t();
@@ -1409,6 +1405,9 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
       }
       else if (type.compare("UInt_t")==0) {
         varMap[varName] = new UInt_t();
+      }
+      else if (type.compare("Bool_t")==0) {
+        varMap[varName] = new Bool_t();
       }
       else {
         std::stringstream msg;
@@ -1437,18 +1436,23 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
             << " to dataset, which has already been included";
         throw GeneralException("RooDplusMassFitter::MakeDplusMassDataSet", msg.str());
       }
-      std::string branchName=catName;
-      if (m_catNameToBranchName.find(catName)!=m_catNameToBranchName.end()) {
-        branchName=m_catNameToBranchName[catName];
-      }
+      std::string branchName=this->GetCatBranchName(catName);
       std::string type=GetBranchType(tt, branchName);
-      if ( !(type.compare("Int_t")==0 || type.compare("Bool_t")==0) ) {
+      if ( !(type.compare("Int_t")==0 || type.compare("Bool_t")==0 || type.compare("UInt_t")==0) ) {
         std::stringstream msg;
         msg << "Requested branch name " << branchName << " is of type "
-            << type << ", but categories can only be of type Int_t";
+            << type << ", but categories can only be of type Int_t, UInt_t or Bool_t";
         throw GeneralException("RooDplusMassFitter::MakeDplusMassDataSet", msg.str());
       }
-      catMap[catName] = new Int_t();
+      if (type.compare("Int_t")==0) {
+        catMap[catName] = new Int_t();
+      }
+      else if (type.compare("UInt_t")==0) {
+        catMap[catName] = new UInt_t();
+      }
+      else {
+        catMap[catName] = new Bool_t();
+      }
       if (!ch) {
         tt->SetBranchAddress(branchName.c_str(), catMap[catName]);
       }
@@ -1520,10 +1524,7 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
           std::string vname=(it->first);
           void *val=(it->second);
           assert (val!=NULL);
-          std::string branchName=vname;
-          if (m_varNameToBranchName.find(vname)!=m_varNameToBranchName.end()) {
-            branchName=m_varNameToBranchName[vname];
-          }
+          std::string branchName=this->GetVarBranchName(vname);
           Double_t v;
           std::string type=GetBranchType(tt, branchName);
           if (type.compare("Float_t")==0) {
@@ -1575,8 +1576,12 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
             throw GeneralException("RooDplusMassFitter::MakeDplusMassDataSet",
                                    msg.str());
           }
-          if (m_varNameToFunction.find(vname)!=m_varNameToFunction.end()) { 
-            DoubleFun fun = m_varNameToFunction[vname];
+          std::map< std::string, DoubleFun >::const_iterator it_func;
+          it_func=m_varNameToFunction.find(vname);
+          std::map< std::string, TFormula >::const_iterator it_form;
+          it_form=m_varNameToFormula.find(vname);
+          if (it_func!=m_varNameToFunction.end()) { 
+            const DoubleFun& fun = it_func->second;
             assert(fun);
             v = fun(v);
             if (!var->inRange(v,0)) {
@@ -1592,8 +1597,8 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
             }
             var->setVal(v);
           }
-          else if (m_varNameToFormula.find(vname)!=m_varNameToFormula.end()) {
-            TFormula& fun = m_varNameToFormula[vname];
+          else if (it_form!=m_varNameToFormula.end()) {
+            const TFormula& fun = it_form->second;
             v = fun.Eval(v);
             if (!var->inRange(v,0)) {
               passed=kFALSE;
@@ -1626,24 +1631,38 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
         }
       }
       if (catMap.size()>0) {
-        for (std::map<std::string, Int_t*>::iterator it=catMap.begin();
+        for (std::map<std::string, void*>::iterator it=catMap.begin();
              it!=catMap.end(); ++it)
         {
           std::string vname=(it->first);
-          Int_t *val=(it->second);
+          void *val=(it->second);
           assert(val!=NULL);
-          std::string branchName=vname;
-          if (m_catNameToBranchName.find(vname)!=m_catNameToBranchName.end()) {
-            branchName=m_catNameToBranchName[vname];
-          }
+          std::string branchName=this->GetCatBranchName(vname);
           std::string type=GetBranchType(tt, branchName);
-          if ( !(type.compare("Int_t")==0 || type.compare("Bool_t")==0) ) {
+          Int_t v;
+          if (type.compare("Int_t")==0) {
+            Int_t* ptr=static_cast<Int_t*>(val);
+            assert(ptr);
+            v=(Int_t)(*ptr);
+          }
+          else if (type.compare("Bool_t")==0) {
+            Bool_t* ptr=static_cast<Bool_t*>(val);
+            assert(ptr);
+            v=(Int_t)(*ptr);
+          }
+          else if (type.compare("UInt_t")==0) {
+            UInt_t* ptr=static_cast<UInt_t*>(val);
+            assert(ptr);
+            v=(Int_t)(*ptr);
+          }
+          else {
             std::stringstream msg;
             msg << "Requested branch name " << branchName << " is of type "
-                << type << ", but categories can only be of type Int_t";
+                << type << ", but categories can only be of type Int_t, UInt_t or Bool_t";
             throw GeneralException("RooDplusMassFitter::MakeDplusMassDataSet",
                                    msg.str());
           }
+          
           RooCategory *cat=dynamic_cast<RooCategory*>(&args[vname.c_str()]);
           if (!cat) {
             std::stringstream msg;
@@ -1651,15 +1670,15 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
             throw GeneralException("RooDplusMassFitter::MakeDplusMassDataSet",
                                    msg.str());
           }
-          if (!cat->isValidIndex(*val)) {
+          if (!cat->isValidIndex(v)) {
             passed=kFALSE;
             if (printEntry) {
               std::cout << "RooDplusMassFitter::MakeDplusMassDataSet: Category " << vname
-                        << ", value = " << *val << " is not a valid index" << std::endl;
+                        << ", value = " << v << " is not a valid index" << std::endl;
             }
             break;
           }
-          cat->setIndex(*val);
+          cat->setIndex(v);
         }
       }
       if (!passed) continue;
@@ -1682,10 +1701,7 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
     std::string vname = i->first;
     void* val = i->second;
     if (val==NULL) continue;
-    std::string branchName=vname;
-    if (m_varNameToBranchName.find(vname)!=m_varNameToBranchName.end()) {
-      branchName=m_varNameToBranchName[vname];
-    }
+    std::string branchName=this->GetVarBranchName(vname);
     std::string type=GetBranchType(tt, branchName);
     if (type.compare("Float_t")==0) {
       delete static_cast<Float_t*>(val);
@@ -1699,6 +1715,9 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
     else if (type.compare("UInt_t")==0) {
       delete static_cast<UInt_t*>(val);
     }
+    else if (type.compare("Bool_t")==0) {
+      delete static_cast<Bool_t*>(val);
+    }
     else {
       std::stringstream msg;
       msg << "Got invalid data type " << type; 
@@ -1707,12 +1726,27 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
     }
   }
   varMap.clear();
-  for (std::map<std::string, Int_t*>::iterator i=catMap.begin();
+  for (std::map<std::string, void*>::iterator i=catMap.begin();
        i!=catMap.end(); ++i) {
     std::string vname = i->first;
-    Int_t* val = i->second;
+    void* val = i->second;
     if (val==NULL) continue;
-    delete val;
+    std::string branchName=this->GetCatBranchName(vname);
+    std::string type=GetBranchType(tt, branchName);
+    if (type.compare("Int_t")==0) {
+      delete static_cast<Int_t*>(val);
+    }
+    else if (type.compare("UInt_t")==0) {
+      delete static_cast<UInt_t*>(val);
+    }
+    else if (type.compare("Bool_t")==0) {
+      delete static_cast<Bool_t*>(val);
+    }
+    else {
+      std::stringstream msg;
+      msg << "Got invalid data type " << type; 
+      throw GeneralException("RooDplusMassFitter::MakeDplusMassDataSet", msg.str());
+    }
   }
   catMap.clear();
   m_dataSetName = name;
@@ -1906,18 +1940,50 @@ const Bool_t& RooDplusMassFitter::GetPrintEntriesFlag() const {return m_printEnt
 
 const Int_t& RooDplusMassFitter::GetPrintFreq() const {return m_printFreq;}
 
-std::string RooDplusMassFitter::GetBranchType(TTree* tt, std::string brName)
+
+std::string RooDplusMassFitter::GetVarBranchName(const std::string& name) const
+{
+  std::string brName="";
+  std::map<std::string,std::string>::const_iterator it;
+  it=m_varNameToBranchName.find(name);
+  if (it==m_varNameToBranchName.end()) {
+    brName = name;
+  }
+  else {
+    brName = it->second;
+  }
+  return brName;
+}
+
+std::string RooDplusMassFitter::GetCatBranchName(const std::string& name) const
+{
+  std::string brName="";
+  std::map<std::string,std::string>::const_iterator it;
+  it=m_catNameToBranchName.find(name);
+  if (it==m_catNameToBranchName.end()) {
+    brName = name;
+  }
+  else {
+    brName = it->second;
+  }
+  return brName;
+}
+
+
+std::string RooDplusMassFitter::GetBranchType(TTree* tt, 
+    const std::string& brName) const
 {
   assert(tt);
   TChain* ch=dynamic_cast<TChain*>(tt);
-  TBranch* br = ch==NULL?tt->GetBranch(brName.c_str()):ch->GetBranch(brName.c_str());
+  TBranch* br = ch==NULL?tt->GetBranch(brName.c_str()):ch->GetBranch(
+    brName.c_str());
   if (!br) {
     std::stringstream msg;
     msg << "Unable to retrieve branch with name " << brName << " from TTree "
         << tt->GetName();
-    throw GeneralException("RooDplusMassFitter::GetBranchType", msg.str());
+    throw GeneralException("RooDMassFitter::GetBranchType", msg.str());
   }
-  return ((TLeaf*)br->GetListOfLeaves()->At(0))->GetTypeName();
+  return std::string( ((TLeaf*)br->GetListOfLeaves()->At(0))->GetTypeName());
 }
 
 //=============================================================================

@@ -10,6 +10,7 @@
 // namespaces
 using std::endl;
 using std::cout;
+using std::cerr;
 
 // local
 RooDataSet* getDataSet(const char* Path,
@@ -67,13 +68,11 @@ int main(int argc, char *argv[])
     ws_name = "RSDStCalib";
   else if((strcmp(argv[1],"Lam0")==0)||(strcmp(argv[1],"Lam0_MuonUnBiased")==0))
     ws_name = "Lam0Calib";
-  else if(strcmp(argv[1],"K0S")==0)
-    ws_name = "K0SCalib";
   else if(strcmp(argv[1],"Jpsi")==0)
     ws_name = "JpsiCalib";
   else 
   {
-    cout<<"Unknow Mother particle: "<<argv[1]<<endl;
+    cerr<<"Unknow Mother particle: "<<argv[1]<<endl;
     return EXIT_FAILURE;
   }
 
@@ -92,7 +91,7 @@ int main(int argc, char *argv[])
                                       Myws_Neg);
   if(Mydata_Neg==NULL)
   {
-    cout<<"No DataSet (Negative) Found"<<endl;
+    cerr<<"No DataSet (Negative) Found"<<endl;
     return EXIT_FAILURE;
   }
 
@@ -111,7 +110,7 @@ int main(int argc, char *argv[])
                                       Myws_Pos);
   if(Mydata_Pos==NULL)
   {
-    cout<<"No DataSet (Positive) Found"<<endl;
+    cerr<<"No DataSet (Positive) Found"<<endl;
     return EXIT_FAILURE;
   }
 
@@ -127,17 +126,17 @@ int main(int argc, char *argv[])
   
   if(Cats==NULL)
   {
-    cout<<"No Set 'Categories'"<<endl;
+    cerr<<"No Set 'Categories'"<<endl;
     //exit(1);
   }
   if(EventVars==NULL)
   {
-    cout<<"No Set 'Event variables'"<<endl;
+    cerr<<"No Set 'Event variables'"<<endl;
     exit(1);
   }
   if(TrackVars==NULL)
   {
-    cout<<"No Set 'Track variables'"<<endl;
+    cerr<<"No Set 'Track variables'"<<endl;
     exit(1);
   }
   
@@ -147,47 +146,6 @@ int main(int argc, char *argv[])
     Params->add(*Cats);
   Params->add(*EventVars);
   Params->add(*TrackVars);
-
-  //=============================================================================
-  // Configure tight mass cut 
-  //=============================================================================
-  TString MassCut;
-  float mass_D0    = 1864.83;          // MeV
-  float mass_Delm  = 2010.25 - mass_D0;// MeV
-  float mass_Lam0  = 1115.68;          // MeV
-  float mass_KS0   = 497.61;           // MeV
-  float mass_Jpsi  = 3096;             // MeV
-  float width_D0   = 45;               // MeV
-  float width_Delm = 4.5;              // MeV
-  float width_Lam0 = 6.5;              // MeV
-  float width_KS0  = 23.0;             // MeV
-  float width_Jpsi  = 50.0;             // MeV
-    
-  if((strcmp(argv[1],"DSt")==0)||(strcmp(argv[1],"DSt_MuonUnBiased")==0))
-    MassCut.Form("mass>%.2f && "
-                 "mass<%.2f && "
-                 "delm>%.2f && "
-                 "delm<%.2f",
-                 mass_D0 - width_D0,
-                 mass_D0 + width_D0,
-                 mass_Delm - width_Delm,
-                 mass_Delm + width_Delm);
-  else if((strcmp(argv[1],"Lam0")==0)||(strcmp(argv[1],"Lam0_MuonUnBiased")==0))
-    MassCut.Form("mass>%.2f && "
-                 "mass<%.2f",
-                 mass_Lam0 - width_Lam0,
-                 mass_Lam0 + width_Lam0);                 
-  else if(strcmp(argv[1],"K0S")==0)
-    MassCut.Form("mass>%.2f && "
-                 "mass<%.2f",
-                 mass_KS0 - width_KS0,
-                 mass_KS0 + width_KS0);  
-  else if(strcmp(argv[1],"Jpsi")==0)
-    MassCut.Form("mass>%.2f && "
-                 "mass<%.2f",
-                 mass_Jpsi - width_Jpsi,
-                 mass_Jpsi + width_Jpsi);  
-  //cout<<"MassCut: "<<argv[1]<<'\t'<<MassCut.Data()<<endl;
   
   //=============================================================================
   // Merge +ve and -ve datasets and associate with states in RooCategory Charges
@@ -198,7 +156,6 @@ int main(int argc, char *argv[])
                                             ,Index(Charges)
                                             ,Import("Negative", *Mydata_Neg)
                                             ,Import("Positive", *Mydata_Pos)
-                                            //,Cut(MassCut.Data())
                                             ); 
   DataSet_comb->Print("v");
   
@@ -269,7 +226,7 @@ RooDataSet* getDataSet(const char* Path,
                                 Index).Data());
   if(f==NULL)
   {
-    cout<<"No File "<<TString::Format(path+"%s_%s%s_Mag%s_Strip%s_%s.root",
+    cerr<<"No File "<<TString::Format(path+"%s_%s%s_Mag%s_Strip%s_%s.root",
                                       MumName,
                                       PartName,
                                       Charge,
@@ -286,7 +243,7 @@ RooDataSet* getDataSet(const char* Path,
     ws=(RooWorkspace*)f->Get(WorkspaceName);
   else
   {
-    cout<<"No Workspace '"<<WorkspaceName<<"'"<<endl;
+    cerr<<"No Workspace '"<<WorkspaceName<<"'"<<endl;
     exit(1);
   }
   if(ws->data("data_wSWeights")!=NULL)
