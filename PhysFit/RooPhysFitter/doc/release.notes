@@ -1,0 +1,157 @@
+!-----------------------------------------------------------------------------
+! Package     : RooPhysFitter/PhysFit
+! Responsible : Andrew Powell (Package originally written by Philip Hunt)
+! Purpose     : For fitting and producing sWeighted distributions and plotting
+                fit results using the RooFit package
+!-----------------------------------------------------------------------------
+
+! 2012-11-02 - Andrew Powell
+  - Modified RooDMassFitter, RooDstarMassFitter and RooDplusMassFitter to accept boolean
+    variables as an acceptable type for a RooCategory
+    - Previously, only Int_t types were permitted, but since boolean to int conversion
+      is implicit, this should also be allowed  
+
+! 2012-09-28 - Juan Martin Otalora Goicochea
+  - Enabled to add Bool_t variables to DataSet:
+    - RooDMassFitter::MakeDMassDataSet
+    - RooDstarD0MassFitter::MakeDelmDataSet
+  - Added compatibility with 2012 data types
+    - RooDstarD0MassFitter::MakeDelmDataSet: Double_t: D0M, DstarM; Float: D0M_f, DstarM_f 
+
+! 2012-05-05 - Philip Hunt
+  - Fixed multiple errors caused by bug fix to Savannah bug #94227. 
+
+! 2011-12-08 - Andrew Powell
+  - Added method MakeDMassSigTriGauss to class RooDMassFitter
+    - Construsts a triple-Gaussian PDF with single common mean
+
+!============================== v1r2 06-11-2011 ==============================
+
+! 2011-11-06 - Diego Martinez Santos
+ - Make version v1r2.
+
+! 2011-11-01 - Andrew Powell
+ - Removed redundant 'bool doDouble=false' lines from RooDMassFitter and RooDstarD0MassFitter.
+
+! 2011-11-01 - Andrew Powell
+ - Modified and renamed class methods added by Sneha on 2011-10-10:
+   - RooPhysFitter::PerformDoubleBinnedFit -> PerformIterativeBinnedFit
+   - RooDMassFitter::PerformDMassDoubleBinnedFit -> PerformDMassIterativeBinnedFit
+   - RooDstarD0MassFitter::PerformDstarD0MassDoubleBinnedFit -> PerformDstarD0MassIterativeBinnedFit
+ - Each method now accepts a vector<Int_t>& which declares what Minuit fit 
+   strategy to use in each iteration. 
+
+! 2011-10-27 - Philip Hunt
+ - Fixed SaveWS method in RooPhysFitter to open the file in UPDATE mode rather 
+   than CREATE mode if recreateFile is set to true.
+ - Added an additional SaveWS method to RooPhysFitter which takes an already 
+   opened TFile as argument.
+ - Modified the MakeDMassDataSet method of RooDMassFitter so that the mass variable
+   can be either a float or double.
+ 
+! 2011-10-10 Sneha Malde
+ - Added new function in RooDstarDmassFitter which allows 2 bkg components in the D* bkg to be fixed
+ - Added a perform fit function which allows a fit with strategy 0 followed by strategy 1 which 
+   improves behaviour for large datasets.
+
+! 2011-09-28 - Philip Hunt
+ - Added new PDF RooPhiBg, which implements the background distribution
+   used in the phi cross-section paper (http://arxiv.org/abs/1107.3935)
+ - Added new class RooPhysFitter::RooDplusMassFitter, which is used to fit
+   two signal mass peaks (e.g. Ds and D+) with a single discriminating variable.
+
+! 2011-07-28 - Philip Hunt
+ - Added methods to produce binned maximum likelihood fits to RooPhysFitter, RooDMassFitter 
+   and RooDstarD0MassFitter. Also added method to change the number of bins for a given variable to RooPhysFitter.
+ - Modified RooGranet.cpp to prevent "unused variables" warnings
+
+! 2011-07-20 - Philip Hunt
+ - Added methods to produce Voigtian signal shape and cubic polynomial background
+   shape to RooDMassFitter.
+
+! 2011-07-18 - Philip Hunt
+ - RooFitResult is now saved to the workspace in RooPhysFitter::PerformFit.
+   This is to allow the calculation of the error for a generic RooAbsReal object
+   such as a RooFormulaVar when plotting parameters in RooPhysFitter::PlotFitResults.
+   The string formatting of such objects is performed by the private RooPhysFitter::format
+   object. 
+   The RooFitResult can be retrieve by the GetFitResult methods.
+ - Added units to double Gaussian methods in RooDMassFitter and RooDstarD0MassFitter
+ - Fixed coefficient units in RooDMassFitter::MakeDMassBkgQuadratic
+  
+! 2011-06-21 - Andrew Powell
+ - Reset min. starting value of bi-Gaussian coreFrac to 0.0 from 0.5
+
+! 2011-06-05 - Philip Hunt
+ - Added try,catch blocks around dynamically allocated memory in RooPhysFitter::PlotFitResults
+
+! 2011-06-05 - Philip Hunt
+ - Fixed bug in RooDMassFitter::MakeDMassModel that raised an exception if there was no signal 
+   or background model in the dataset, but this model was not requested 
+
+! 2011-05-27 - Philip Hunt
+ - Fixed bug in PlotFitResults that prevented the chi^{2} from being printed
+   if no test statistic was specified
+
+! 2011-05-27 - Philip Hunt
+ - Added SetRange method to RooPhysFitter.
+ - Fixed bug that meant that a default value for the chi2 binning was not set.
+
+! 2011-05-25 - Philip Hunt
+ - Added macros/rootlogon.C, which contains the lines necessary to use load 
+	the library into CINT for use in ROOT interactive sessions
+
+! 2011-05-25 - Philip Hunt
+ - Added method GetModelName(), GetSWeightSetName() and GetPlotParamsSetName()
+	to RooPhysFitter class.
+ - Fixed bug in the data set creation methods of RooDMassFitter and
+	 RooDstarD0MassFitter that saved the wrong candidates when cuts are applied.
+ - Changed dictionary selection file to create a dictionary method based on
+	the pattern std::vector<std::string,*>, rather than explicitly requesting
+	each template class
+
+! 2011-05-21 - Philip Hunt
+ - Added new AddSpectator method to take a TFunction as argument. 
+ - Fixed code to produce a reduced data set for one or more cut ranges 
+
+! 2011-05-21 - Philip Hunt (LHCB)
+ - First import of RooPhysFitter. Contains the following source files:
+	* RooPhysFitter.cpp - Contains the base class RooPhysFitter for fitting and 
+	producing sWeights and plotting the fit results for one or more 
+	discriminating variables. 
+  * RooDMassFitter.cpp - Contains the class RooDMassFitter, derived from 
+	RooPhysFitter for producing signal and combinatoric background models for
+	a single discriminating mass variable, such as the mass of a neutral or 
+	charged D. 
+  * RooDstarD0MassFitter.cpp - Contains the class RooDstarD0MassFitter, 
+	derived from RooDMassFitter for producing signal and background models 
+	for the D0 mass and delta mass discriminating variables from a D* decaying 
+	to a D0 and a slow pion.
+  * Exceptions.cpp - Contains several exception classes derived from 
+	std::exception.
+  * RooGaussianChi2Var.cpp - Contains a class to determine the "Gaussian" 
+	chi^{2} value for a given RooDataHist and RooAbsPdf model. This class is
+	equivalent to RooChi2Var, except that empty bins are ignored.
+	* RooPearsonsChi2Var.cpp - Contains a class to determine the Pearson's
+	chi^{2} test statistic for a given RooDataHist and RooAbsPdf model.
+	Empty bins are ignored in the calculation.	
+	* RooYatesChi2Var.cpp - Contains a class to determine the Pearson's chi^{2}
+	test statistic with Yate's correction for continuity for a given RooDataHist
+	and RooAbsPdf model. Empty bins are ignored in the calculation.	
+	* RooLLRatioVar.cpp - Contains a class to determine the log likelihood ratio
+	chi^{2} test statistic for a given RooDataHist and RooAbsPdf model.
+	 Empty bins are ignored in the calculation.
+	* RooCruijff.cpp - Contains a PDF class for the Cruijff distribution: a
+	a Gaussian-like distribution with tails on both sides
+  * RooCruijffSimple.cpp - Contains a PDF class for a modified Cruijff
+	distribution with the same sigma for the two tails
+  * RooGranet.cpp - Contains a PDF class for the "Granet" distribution: 
+	a variation of the RooDstD0Bg distribution without a linear component
+ - The package also contains the following macros:
+  * lhcbstyle.C - Contains a macro to apply the LHCb plot style
+	* RooPhysFitter_Ex1.C - Contains a macro with an example of how to use the
+	base class RooPhysFitter
+  * RooDMassFitter_Ex1.C - Contains a macro with an example of how to use the 
+	derived class RooDMassFitter
+  * RooDstarD0MassFitter_Ex1.C - Contains a macro with an example of how to
+  use the derived class RooDstarD0MassFitter

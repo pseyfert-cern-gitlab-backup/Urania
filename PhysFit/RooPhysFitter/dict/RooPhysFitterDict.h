@@ -1,0 +1,26 @@
+// $Id: $
+#ifndef ROOPHYSFITTER_ROOPHYSFITTERDICT_H 
+#define ROOPHYSFITTER_ROOPHYSFITTERDICT_H 1
+
+// Include files
+
+/** @file RooPhysFitterDict dict/RooPhysFitterDict.h
+ *  
+ *
+ *  @author Philip Hunt
+ *  @date   2011-05-10
+ */
+#include "RooPhysFitter/Exceptions.h"
+#include "RooPhysFitter/RooLLRatioVar.h"
+#include "RooPhysFitter/RooPearsonsChi2Var.h"
+#include "RooPhysFitter/RooYatesChi2Var.h"
+#include "RooPhysFitter/RooGaussianChi2Var.h"
+#include "RooPhysFitter/RooCruijff.h"
+#include "RooPhysFitter/RooCruijffSimple.h"
+#include "RooPhysFitter/RooGranet.h"
+#include "RooPhysFitter/RooPhysFitter.h"
+#include "RooPhysFitter/RooDMassFitter.h"
+#include "RooPhysFitter/RooDplusMassFitter.h"
+#include "RooPhysFitter/RooDstarD0MassFitter.h"
+#include "RooPhysFitter/RooPhiBg.h"
+#endif // ROOPHYSFITTER_ROOPHYSFITTERDICT_H

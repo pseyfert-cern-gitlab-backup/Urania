@@ -83,19 +83,25 @@ def mergeSamples(filenames, finalname, folder = "/scratch/diegoms/NTuples/",path
     files, trees= {}, {}
     for path in paths:
         if path.find("/") != -1:
-            path0 = path[:path.find("/")]
+            path0 = path[path.find("/")+1:]
         else : path0 = path
         ch = TChain(path )#+"/"+path)
         for filename in filenames:
             print filename
             os.system("ls -l " + folder + filename + ".root")
-            ch.Add(folder +"/"+filename +".root")
+            ch.Add(folder +filename +".root")
         ch.Merge(ofolder +"/"+ finalname+"_"+path0+"eraseme.root")
        
         files[path] = TFile(ofolder +"/"+finalname+ "_"+path0 + "eraseme.root")
         trees[path] = files[path].Get(path0)
+        print path0
     out = TFile(ofolder + "/"+finalname +"_merged.root","recreate")
+    
+    #return files
     for path in paths:
+        if not "CopyTree" in dir(trees[path]):
+            print "Weird",path, trees[path]
+            continue
         t = trees[path].CopyTree("1")
         t.Write()
     out.Close()

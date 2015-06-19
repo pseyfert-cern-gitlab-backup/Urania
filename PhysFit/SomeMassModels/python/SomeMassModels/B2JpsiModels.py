@@ -32,11 +32,30 @@ class KstarFiter(FiterBasis):
         self.fit()
         #elf.mean.setMin(5260)
         #self.mean.setMax(5400)
-        
-   
-class DoubleGaussian(FiterBasis):
+
+class Simplest(FiterBasis):
 
     def __init__(self,tree, var,cuts="", shorTime = True, weight_var=0, fit1peak = True, fixBs = False, single = 0, fit_in_init = False):
+        FiterBasis. __init__(self,tree, var,cuts, shorTime , weight_var, sigf = double_gaussian, bkgf = exp_bkg, fit_in_init=fit_in_init)
+    
+        if fit1peak:
+            self.fB2.setVal(0)
+            self.fB2.setConstant(kTRUE)
+        if fixBs:
+            self.mean1.setRange(5260,5300)
+            self.delta_m.setVal(fixBs)
+            self.delta_m.setConstant(kTRUE)
+        if single:
+            self.sigma1.setRange(7,40)
+            self.f1.setVal(1)
+            self.f1.setConstant(kTRUE)
+            self.delta_s.setConstant(kTRUE)
+        
+        self.fit()
+
+class DoubleGaussian(FiterBasis):
+
+    def __init__(self,tree, var,cuts="", shorTime = True, weight_var=0, fit1peak = True, fixBs = False, single = 0, fit_in_init = False, shoulder = 1):
         FiterBasis. __init__(self,tree, var,cuts, shorTime , weight_var, sigf = double_gaussian, bkgf = bkg_with_Pshoulder, fit_in_init=fit_in_init)
         self.sh_mean.setRange(5000.,5250.)
         #self.sh_trans.setRange( 5050.,5250.)
@@ -53,7 +72,12 @@ class DoubleGaussian(FiterBasis):
             self.f1.setVal(1)
             self.f1.setConstant(kTRUE)
             self.delta_s.setConstant(kTRUE)
-            
+        if not shoulder:
+            self.sh_mean.setConstant(kTRUE)
+            self.sh_sigma.setConstant(kTRUE)
+            self.sh_dtrans.setConstant(kTRUE)
+            self.fsh.setVal(0)
+            self.fsh.setConstant(kTRUE)
         #self.mean.setMin(5270)
         #self.mean.setMax(5400)
         self.fit()

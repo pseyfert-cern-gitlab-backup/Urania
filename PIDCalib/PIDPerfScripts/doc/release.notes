@@ -1,0 +1,280 @@
+!-----------------------------------------------------------------------------
+! Package     : PIDCalib/PIDPerfScripts
+! Responsible : Andrew Powell
+! Purpose     : Scripts using PIDPerfTools to perform PID studies
+!-----------------------------------------------------------------------------
+
+! 2013-03-24 - Juan Martin Otalora Goicochea
+  - Updated scripts/python/MultiTrack/MakePerfHistsSystStudy.py to consider adequate binning for muons
+  - Added scripts/python/MUON/MakeMUONPublicationPlots.py to produce muon plots
+  - Updated scripts/python/MUON/MUONPerfCurvesStudy.py
+
+! 2013-03-12 - Juan Martin Otalora Goicochea
+  - Updated python/PIDPerfScripts/{DataFuncs.py,PerfCalcFuncs.py,PerfCalcFuncs.py}
+  - Updated scripts/python/MultiTrack/MakePerfHistsRunRange.py
+
+! 2013-03-12 - Philip Hunt
+  - Updated python/PIDPerfScripts/{DataFuncs.py,PerfCalcFuncs.py,PerfCalcFuncs.py} to support the muon calibration
+  - Mandatory arguments in scripts/python/MultiTrack/MakePerfHists{RunRange,SystStudy}.py now need to be specified as positional arguments, and additional arguments have been included, including those necessary for the muon calibration. A full list of options can be seen by running the scripts with the "-h" option
+  - scripts/python/MultiTrack/erformMultiTrackCalib{,SystStudy} now take a series of optional and mandatory arguments, minimising the need for the end-user to modify the scripts themselves
+
+! 2013-02-27 - Andrew Powell (LHCb)04
+  - Add lines to python/MultiTrack/MakePerfHistsRunRange.py to print to screen
+    the performance table for the average performane histogram for each PID 
+    cut. Please note that the quoted error is purely statistical.	
+
+!============================== v4r0 27-02-2013 ==============================
+
+! 2013-02-27 - Andrew Powell (LHCb)04
+  - Make version v4r0 	
+
+! 2013-02-26 - Andrew Powell (LHCb)04
+  - Updated python/PIDPerfScripts/{DataFuncs.py,PerfCalcFuncs.py} to use new 
+    PIDPerfTools class PIDTrackDataSet following issues found with 
+    LHCbPIDTrackDataSet. 
+
+! 2013-02-25 - Andrew Powell (LHCb)04
+  - Updated python/PIDPerfScripts/{DataFuncs.py,PerfCalcFuncs.py} to use new 
+    PIDPerfTools class LHCbPIDTrackDataSet. Allows studies to utilise any of 
+    the possible PID variables. See twiki page for complete list:
+    https://twiki.cern.ch/twiki/bin/view/LHCb/PIDCalibPackage 
+
+!============================== v3r0 19-02-2013 ==============================
+
+! 2013-02-19 - Andrew Powell (LHCb)04
+  - Make version v3r0 
+
+! 2013-02-19 - Andrew Powell (LHCb)04
+  - python/MultiTrack/MakePerfHistsRunRange.py
+    - Modified track cut string to that of any empty string
+  - python/PIDPerfScripts/DataFuncs.py
+    - Modified to allow an empty string to be passed
+
+! 2013-02-15 - Andrew Powell
+  - Bug fix: added missing 'apply_pattern  install_python_modules' in requirements file
+
+! 2013-02-10 - Andrew Powell
+  - Major restructure of package
+    - All functionality now achievable through python scripts located in scripts/python
+    - Several generic python modules now included in python/PIDPerfScripts
+    - Knowledge of the size and the run ranges spanned by the calibration datasets 
+      now determined through the pickled numpy-arrays in the CalibDataScripts package
+
+! 2012-12-06 - Andrew Powell
+  - Added new python scripts and jobs for charge asymmetry study, performed along
+    with Hamish Gordon:
+    - Master script: python/ChrgAsym/PerfCurvesChrgAsym.py
+    - Ganga job scripts: jobs/ChrgAsym
+      - Ganga scripts use GaudiPython as an application, along with Erasmus as the
+        project
+
+! 2012-10-31 - Andrew Powell
+  - Added python/RICH/PerfStats.py
+    - Determines the D* signal yield for a specified run range
+  - Added python/RICH/testPerfStats.py
+    - Runs the function calcSigYield() to determine the D* yield for specific run
+      ranges associated with a given TCK in 2011 data
+
+! 2012-10-23 - Andrew Powell
+  - Supstantial modifications to python/RICH scripts:
+    - PerfCurvesRunRange.py and PerfPlotsRunRange now accept command line arguments
+      and what were the 'main()' functions are now called makeCurves() and 
+      makePlots().
+  - Added python/RICH/{testPerfCurves.py,testPerfPlots.py}
+    - Scripts that loop over all run ranges defined by field flips and execute the
+      functions makeCurves() and makePlots(), respectively.
+
+! 2012-10-19 - Andrew Powell
+  - Added new python scripts: 
+    - python/RICH/PerfCurvesRunRange.py
+      - Determines ID vs misID curves for data with a specified run range
+    - python/RICH/PerfPlotsRunRange.py
+      - Produces 1D histograms of ID and misID as a function of a given 
+        kinematic variable 
+    - Both only work for S17 and S20 calibration samples since these have been 
+      produced in defined run blocks
+
+! 2012-10-05 - Edmund Smith (LHCb 2010) 
+  - Additions to src/MultiTrack/README in response to questions.
+
+! 2012-09-25 - Juan Otalora
+  - Added python scripts for MUON analysis:
+    - python/MUON/MUONPlots.py
+
+! 2012-07-18 - Andrew Powell
+  - Implemented suggestions from Thomas Ruf to correctly release the memory of RooFit
+    objects in the python script python/RICH/PerfPlots.py:
+    - Excplitly, use X.Delete() and not del X
+
+! 2012-05-05 - Philip Hunt
+  - Fixed multiple errors caused by bug fix to Savannah bug #94227. 
+
+! 2012-02-13 - Andrew Powell
+  - Updated MC10 calibration dataset paths in Test_(Evt)Data.cpp. MC10 and MC11a
+    samples available in the following directories:
+    - $CALIBDATASTORE/Reco08_MC10
+    - $CALIBDATASTORE/Reco12_MC11a
+
+! 2012-02-02 - Andrew Powell
+  - Added directories and scripts for B2DstarX analysis:
+    - python/B2DstarX
+    - jobs/B2DstarX 
+
+! 2012-01-28 - Donal Hill
+  - Updated src/B2DstarX/B2DstarX_EvtData.cpp
+	- Added src/B2DstarX/B2DstarX_PerfCalc.cpp
+
+! 2012-01-27 - Donal Hill
+ - Added directory src/B2DstarX for B2DstarX analysis
+   - Added src/B2DstarX/B2DstarX_EvtData.cpp
+
+! 2012-01-17 - Andrew Powell
+  - Added python script RICH/PerfCurves.py
+    - Produces Kaon ID vs Pion mis-ID curves for a given series of PID cuts.
+  - Updated python script RICH/PerfPlots.py
+    - Produces ID and mis-ID rates vs momentum for *all* calibration events in 
+      a given reconstruction version. 
+
+! 2012-01-02 - Andrew Powell
+  - Updated src/B2DX/B2DX_EvtData.cpp for Stripping17.
+  - Added python/RICH/PerfPlots.py for making standard RICH performance plots.
+
+! 2011-12-13 - Andrew Powell
+  - Updated example scripts in src/ to consider Reco12 calibration samples
+  - Updated src/Test_PerfCalc_Tables.cpp to save TH2F versions of the tables, 
+    in addition to having them printed to screen.
+
+! 2011-11-18 - Andrew Powell
+  - Bug fixes to src/B2DX/B2DX_EvtData.cpp
+
+! 2011-11-16 - Andrew Powell
+  - Improved shell and ganga scripts in jobs/ and jobs/B2DX, respectively: 
+    - jobs/Job.sh now loops over all sub-datasets in one job.
+    - jobs/JobPerf.sh now also runs python/B2DX/WeightedAveragePIDEffs.py to 
+      determine the weighted averaged results in the same job.
+
+!============================== v1r5 06-11-2011 ==============================
+
+! 2011-11-06 - Diego Martinez Santos
+ - Make version v1r5.
+
+! 2011-10-13 - Andrew Powell
+ - Updated B2DX scripts for stripping15 PID performance evaluation.
+
+! 2011-09-26 - Andrew Powell
+ - Modified dataset paths in Test_PerfCalcNN and Test_PerfCalcNN to use 
+   $CALIBDATASTORE variable.
+
+! 2011-09-25 - Andrew Powell
+ - Major modifications to package:
+   - All scripts performing weighting (Test_Evt{Data,MC}.cpp, Test_{Data,MC}.cpp) 
+     modified to use new WeightDataSetTool.
+   - All scripts configured to take input arguments to declare what input data
+     should be used. 
+   - Directories src/RICH, src/MUON added. These contain specific scripts for
+     studying RICH and MUON detector performance, respectively.
+   - Directory scripts/RICH added. Contains plotting scripts for RICH detector
+     performance studies.
+   - Directory src/B2DX added. Contains scripts specific to the B2DX ADS analsysis.
+   - Directory python/B2DX added. Contains script WeightedAveragePIDEffs.py which
+     calculates the weighted average of the PID efficiencies across all the 
+     stripping13b calibration subsamples. 
+   - Directory jobs/B2DX added. Contains ganga job scripts for processing the 
+     multiple calibration subsamples.
+
+!============================== v1r4 28-07-2011 ==============================
+
+! 2011-07-28 - Diego Martinez Santos
+ - Make version v1r4.
+
+! 2011-07-06 - Andrew Powell
+ - Updated MC scripts to use MC10 calibration/signal samples
+
+! 2011-07-01 - Andrew Powell
+	- Updated Test_PerfCalc_Tables.cpp to use Philip Hunt's PIDTable class
+	  - Includes functionality to print tables in flat or LaTeX formats
+
+! 2011-06-23 - Andrew Powell
+  - Updated package for analysis of Reco10, Stripping13b calibration data
+
+!============================== v1r3 27-05-2011 ==============================
+
+! 2011-05-27 - Diego Martinez Santos
+ - Make version v1r3.
+
+! 2011-05-23 - Andrew Powell (for Ed Smith)
+	- Added python/Test_Data.py 
+	  - Python version of src/Test_Data.cpp
+
+! 2011-04-27 - Andrew Powell
+ 	- Changed input data path in Test_Perf_Tables.cpp to the new afs location
+
+! 2011-04-26 - Andrew Powell
+	- Fix remaining NULL -> "" bug in Test_PerfCalc_Tables.cpp after API changes
+	  in PIDPerfTools
+
+!============================== v1r1 18-04-2011 ==============================
+
+! 2011-04-18 - Diego Martinez Santos
+ - Make version v1r1.
+
+! 2011-04-12 - Chris Jones
+ - Adapt to API changes in PIDPerfTools (char * to std::string change)
+ - Update test applications to read input data from AFS instead of castor
+   (For better compatibility with systems outside CERN).
+
+! 2011-04-05 - Gareth Rogers
+  - Updated the requirements file to create the python directory.
+  - Added the script Test_MC.py into the python directory.
+    At present the Python scripts cannot be used with the full flexibility of
+    the C++ scripts. This is documented in the python/Test_MC.py modules' doc
+    string.
+
+! 2011-03-24 - Andrew Powell
+	- Updates to Test_PerfCalc.cpp and Test_PerfCalc_Tables.cpp 
+		- Now compatibale with changes to PerfCalculator.cpp in PIDPerfTools
+	- Updated make/Makefile
+	- Additions to doc/REAME
+
+! 2011-03-15 - Andrew Powell
+	- Added Test_PerfCalc_Tables.cpp
+		- Example script for producing PID efficiency tables
+
+! 2011-02-28 - Andrew Powell
+	- Compilation warnings in Test_PerfCalc.cpp resolved
+
+! 2011-02-08 - Andrew Powell
+	- Updates to Test_PerfCalc.cpp
+	- Updates to PlotPerfCurves.cpp	
+
+! 2011-01-31 - Andrew Powell
+  - Updates to Test_(Evt)MC.cpp and Tes_(Evt)Data.cpp
+  - Updates to PlotWeightedDLLs.cpp
+    - Now 4 functions: 
+      - PlotWeightedDLLs_Pion{MC,Data}(), 
+      - PlotWeightedDLLs_Kaon{MC,Data}().
+      Configured to run on the default output of Test_Evt{MC,Data}.cpp
+
+! 2011-01-26 - Andrew Powell
+  - Bug fix to Test_Data.cpp 
+
+! 2011-01-18 - Andrew Powell
+ 	- Added Test_PerCalc.cpp 
+ 	- Added two plotting scripts:
+   	- PlotWeightedDLLs.cpp
+   	- PlotPerfCurves.cpp
+ 
+! 2011-01-17 - Andrew Powell
+ 	- Bug fix to Test_EvtMC.cpp
+
+! 2011-01-17 - Andrew Powell
+ 	- Bug fixes to Test_Data.cpp and Test_EvtData.cpp
+
+! 2011-01-17 - Andrew Powell
+	- Updates to scripts following changes to PIDPerfTools package
+ 	- Added Test_Data.cpp and Test_EvtData.cpp
+ 	- Updates to README
+
+! 2011-01-11 - Andrew Powell
+ 	- First import of package.
+ 

@@ -5,21 +5,25 @@ from sympy.physics.quantum.spin import *
 
 ## Define the Helicity Angles
 
-ThetaL = Symbol("\Theta_L",positive = True) ## Defined between 0 and pi
-ThetaK = Symbol("\Theta_K",positive = True) ## Defined between 0 and pi
-Phi = Symbol("\phi",real = True) ## Defined between -pi and pi
+ThetaL = Symbol("\\theta_L",positive = True) ## Defined between 0 and pi
+ThetaK = Symbol("\\theta_K",positive = True) ## Defined between 0 and pi
+Phi = Symbol("\\phi",real = True) ## Defined between -pi and pi
 helicity = Symbol("lambda", integer = True)
 
-ThetaJ = Symbol("\theta_J",positve = True) ## Defined between 0 and pi
+ThetaJ = Symbol("\\theta_J",positve = True) ## Defined between 0 and pi
 
 H = {} ### Dictionary to store undetermined number of helicity amplitudes
 
-A0 = Symbol("A_0")
-Apa = Symbol("A_{pa}")
-Ape = Symbol("A_{pe}")
-As = Symbol("A_{S}")
+TransAmplitudes = {}
+TransAmplitudes["1_0"] = Symbol("A_0")
+TransAmplitudes["1_pe"],TransAmplitudes["1_pa"] = Symbol("A_{pe}"), Symbol("A_{pa}")
 
-TransversityAmplitudes = [A0,Apa,Ape, As]
+Psi_tr = Symbol("\\psi_{tr}", positive = True)
+Phi_tr = Symbol("\\phi_{tr}", real = True)
+Theta_tr = Symbol("\\theta_{tr}",positive = True)
+
+
+
 ## Make the test for B -->J/psi hh
 
 def doTerm(J,l,alpha):
@@ -43,7 +47,24 @@ def LambdaSum(J,alpha):
         out += doTerm(J,l,alpha)
     return simplify(out)
 
-def UseTransAmp(expr): return expr.subs([(H["1_0"],A0), (H["1_1"],1/Sqrt(2)*( Apa+Ape)),(H["1_-1"],1/Sqrt(2)*( Apa-Ape)),(H["0_0"],As)])
+def UseTransAmp(expr, Jlist):
+    out = expr
+    for i in Jlist:
+        j = str(i)
+        if int(j)==0:
+            TransAmplitudes["0_0"]  = Symbol("A_S")
+            out = out.subs(H[j+"_0"],TransAmplitudes[j+"_0"])
+            continue
+        a0 = j +"_0"
+        apa,ape = j+"_pa",j + "_pe"
+        if not a0 in TransAmplitudes.keys(): TransAmplitudes[a0] = Symbol("A_{"+j+",0}")
+        if not apa in TransAmplitudes.keys(): TransAmplitudes[apa] = Symbol("A_{"+j+",pa}")
+        if not ape in TransAmplitudes.keys(): TransAmplitudes[ape] = Symbol("A_{"+j+",pe}")
+        out = out.subs( [(H[j+"_0"],TransAmplitudes[j+"_0"]), (H[j+"_1"],1/Sqrt(2)*( TransAmplitudes[j+"_pa"] +TransAmplitudes[j+"_pe"])),(H[j+"_-1"],1/Sqrt(2)*( TransAmplitudes[j+"_pa"]-TransAmplitudes[j+"_pe"]))])
+        
+    return out
+                         
+                        
 
 def PhiMassage(expr):
     """
@@ -81,38 +102,40 @@ def TermsAsReImag(A,Amp,Amp2):
     _im = im(q-q2)/2
     return _re, _im
 
-def squareAmpl(A, transAmp = 1):
+def squareAmpl(A):
     """
     Takes an amplitude combining several angular functions and squares it. Afterwards
     rewrites the exponentials in terms of cosines and sines, and returns the amplitude
     squared expanded.
-    If transAmp = 1, the helicity amplitudes will be translated to transversity amplitudes.
     """
     Ab = A*A.conjugate()
-    if transAmp : Ab = UseTransAmp(Ab)
     Ab = Ab.expand()
     Ab = Ab.rewrite(Exp, Cos) ## Do this shit at the very end!
     return Ab.expand()
     
     
 
-def doB2JpsiX(Jlist, lepton = 1):
+def doB2VX(Jlist,  helicities = [1,-1], transAmp = 1,transAng = 0):
     """Generates an angular pdf for B-->Jpsi hh' for intermediate
     states with angular momentum included in Jlist
     lepton = 1 sums for muon helicity of \pm 1
     lepton = 0 treats the muons as scalars.
     """
-    if lepton:
-        A = 0
-        B = 0
-        for i in Jlist:
-            A += LambdaSum(i,1)
-            B += LambdaSum(i,-1)
-        return  (squareAmpl(A) + squareAmpl(B)).expand()
-    else:
-        A = 0
-        for i in Jlist: A += LambdaSum(i,0)
-        return squareAmpl(A)
+    AllTerms = {}
+    out = 0
+    for h in helicities:
+        AllTerms[h] = 0
+        for i in Jlist: AllTerms[h] += LambdaSum(i,h)
+        if transAmp: AllTerms[h] = UseTransAmp(AllTerms[h] , Jlist)
+        out += squareAmpl(AllTerms[h])
+    if transAng: out = TransversityAngles(out)
+    return out.expand()
+    
+## def TransversityAngles(expr):
+##     out = expr.subs([(ThetaK,Psi_tr), (Cos(Phi), -Sin(Theta_tr)*Sin(Phi_tr)/(Sin(ThetaL))),(Sin(Phi),Cos(Theta_tr)/Sin(ThetaL))])
+##     out = out.subs(Sin(ThetaL),Sqrt(1-Cos(ThetaL)**2))
+##     return out.subs(Cos(ThetaL),-Sin(Theta_tr)*Cos(Phi_tr))
+    
 
 def DecomposeAmplitudes(A,list):
     """
@@ -136,96 +159,4 @@ def DecomposeAmplitudes(A,list):
                 out[abs(Amp)**2] = simplify(PhiMassage(simplify(q)))
     return out
                 
-
-
-    
-## def simple_test2():
-##     A = doB2JpsiX(Jlist = [0,1])
-##     f = file("out.tex","w")
-##     f.write("\\begin{multline}\n")
-##     for i in range(len(TransversityAmplitudes)):
-##         Amp = TransversityAmplitudes[i]
-##         for j in range(i,len(TransversityAmplitudes)):
-##             Amp2 = TransversityAmplitudes[j]
-##             w = Amp*Amp2.conjugate()
-##             print w
-##             if Amp != Amp2:
-##                 _re, _im = TermsAsReImag(A,Amp,Amp2)
-##                 _re = PhiMassage(simplify(_re))
-##                 _im = PhiMassage(simplify(_im))
-##                 exp1 = latex(simplify(_re))
-##                 exp2 = latex(simplify(_im))  
-##                 f.write(latex(re(w)) + "\t" + exp1 + "\\\\" + "\n")
-##                 f.write(latex(im(w)) + "\t" + exp2 + "\\\\" + "\n")
-           
-##             else:
-##                 q, dummy = collectTerms(A,Amp,Amp2)
-##                 expression = latex(simplify(PhiMassage(simplify(q))))
-##                 f.write(latex(w) + "\t" + expression + "\\\\" + "\n")
-                                 
-##     f.write("\\end{multline}")
-##     f.close()
-
-    
-## #simple_test()
-
-
-## def simple_test3():
-##     #A = LambdaSum(1,0) + LambdaSum(0,0)
-##     A = LambdaSum(1,1) + LambdaSum(0,1)
-##     A = A*A.conjugate()
-##     A = UseTransAmp(A)
-##     A = A.expand()
-##     A = A.rewrite(Exp, Cos) ## Do this shit at the very end!
-##     A = A.expand()
-
-##     B = LambdaSum(1,-1) + LambdaSum(0,-1)
-##     B = B*B.conjugate()
-##     B = UseTransAmp(B)
-##     B = B.expand()
-##     B = B.rewrite(Exp, Cos) ## Do this shit at the very end!
-##     B = B.expand()
-##     A += B
-     
-##     f = file("out.tex","w")
-##     f.write("\\begin{multline}\n")
-##     for i in range(len(TransversityAmplitudes)):
-##         Amp = TransversityAmplitudes[i]
-##         for j in range(i,len(TransversityAmplitudes)):
-##             Amp2 = TransversityAmplitudes[j]
-##             w = Amp*Amp2.conjugate()
-##             d= A.collect(w,evaluate = False)
-##             print w
-##             if  w not in d.keys():
-##                 print "Warning"
-##                 expression = "0"
-##                 f.write(latex(w) + "\t" + expression + "\\\\" + "\n")
-##             elif Amp == Amp2:
-##                 expression = latex(simplify(PhiMassage(simplify(d[w]))))
-##                 f.write(latex(w) + "\t" + expression + "\\\\" + "\n")
-        
-##             else:
-##                 w2 = Amp2*Amp.conjugate()
-##                 d2= A.collect(w2,evaluate = False)
-##                 q = d[w]
-##                 q2 = d2[w2]
-##                 _re = (q+q2)/2
-##                 _im = im(q-q2)/2
-            
-##             ### Do Some Massaging
-##                 _re = PhiMassage(simplify(_re))
-##                 _im = PhiMassage(simplify(_im))
-
-##                 exp1 = latex(simplify(_re))
-##                 exp2 = latex(simplify(_im))
-            
-##                 f.write(latex(re(w)) + "\t" + exp1 + "\\\\" + "\n")
-##                 f.write(latex(im(w)) + "\t" + exp2 + "\\\\" + "\n")
-                                 
-##     f.write("\\end{multline}")
-##     f.close()
-
-    
-## ## #simple_test()
-
 

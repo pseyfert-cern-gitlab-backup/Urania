@@ -17,6 +17,10 @@
 ! See LHCb-ANA-2011-093
 !-----------------------------------------------------------------------------
 
+!========================= Bs2JpsiKs v5r0 2013-03-05 =========================
+
+The version that was used for LHCB-PAPER-2013-015
+This gets branched off to svn+ssh://svn.cern.ch/reps/lhcb/Urania/branches/Phys/Bs2JpsiKs/1ifb
 
 !========================= Bs2JpsiKs v4r0 2013-01-25 =========================
 

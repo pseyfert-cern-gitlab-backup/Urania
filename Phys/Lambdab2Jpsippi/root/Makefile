@@ -10,7 +10,7 @@ ROOTLIBS := -L$(ROOTSYS)/lib  `root-config --libs`  -lRooFit -lRooFitCore -lRooS
 #	-lPhysics -pthread -lm -ldl -rdynamic
 ########################################################################################
 
-CPPFILES = $(filter-out teacher.cpp expert.cpp, $(wildcard *.cpp))
+CPPFILES = $(filter-out teacher.cpp expert.cpp weighting.cpp, $(wildcard *.cpp))
 CFILES = $(wildcard *.C)
 OBJS = $(patsubst %.cpp,%.o, $(CPPFILES)) $(patsubst %.C,%.o, $(CFILES))
 
@@ -38,7 +38,7 @@ CXXFLAGS      += $(ROOTCFLAGS) -I. -I$(NEUROBAYES)/include -Iinc
 LIBSNB        = $(ROOTLIBS) $(NBLIBS) -lNeuroBayesTeacherCPP 
 LIBS          = $(ROOTLIBS) 
 
-default : teacher.exe expert.exe
+default : weighting.exe expert.exe teacher.exe 
 
 clean:
 	@rm -rf *.o *.exe
@@ -58,6 +58,10 @@ teacher.exe: teacher.o $(OBJS)
 expert.exe: expert.o $(OBJS)
 	@echo now link expert
 	@$(LD) $(LDFLAGS) $^ $(LIBSNB)  -o $@
+
+weighting.exe: weighting.o $(OBJS)
+	@echo now link weighting
+	@$(LD) $(LDFLAGS) $^ $(LIBS)  -o $@
 
 print :
 	@echo $(DOTH) $(OBJS)

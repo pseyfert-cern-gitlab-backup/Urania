@@ -1,0 +1,45 @@
+int nev = 100000 ;
+double isb = 0.9 ;
+double region = 5.5 ;
+RooRealVar x("x","x",-region,region)
+RooRealVar peak("peak","peak",0.);
+RooRealVar sigma("sigma","sigma",1.);
+RooGaussian Gauss("Gauss","Gauss",x,peak,sigma);
+RooUniform r("r","r",x)
+RooRealVar nGauss("nGauss","Gaussian events",nev*isb,0,nev);
+RooRealVar nBack("nBack","Background events",nev*(1-isb),0,nev);
+RooAddPdf pdf("pdf","pdf",RooArgList(Gauss,r),RooArgList(nGauss,nBack))
+RooDataSet* data = pdf.generate(x,nev)
+RooFitResult* rf = pdf.fitTo(*data,Save())
+rf->Print()
+
+RooPlot* xframe = x.frame();
+data->plotOn(xframe);
+pdf.plotOn(xframe);
+xframe->Draw();
+
+double g = nGauss.getVal() ;
+double ge = nGauss.getError() ;
+double est = ge**2 ;
+
+cout << "// There are " << g << " +/- " << ge << " events in Gaussian" << endl ;
+cout << "// In a range of " << region << " I estimate " << est << " events. I.e. S/B= " << g/est << endl ;
+
+// mathing 0.5
+// In a range of 10 I estimate 65118.4 events. I.e. S/B= 0.771027
+// In a range of 5 I estimate 87752.1 events. I.e. S/B= 0.57306
+// In a range of 4.3 I estimate 98060.5 events. I.e. S/B= 0.506865
+// In a range of 4.2 I estimate 100266 events. I.e. S/B= 0.495149
+// In a range of 4 I estimate 104859 events. I.e. S/B= 0.476017
+// In a range of 3 I estimate 154153 events. I.e. S/B= 0.325176
+
+// matching 0.9
+// In a range of 6 I estimate 98659.8 events. I.e. S/B= 0.913344
+// In a range of 5.5 I estimate 100174 events. I.e. S/B= 0.898825 : <- take this
+// In a range of 5 I estimate 102067 events. I.e. S/B= 0.880116
+// In a range of 4.2 I estimate 1.07436e+06 events. I.e. S/B= 0.836398
+// In a range of 3 I estimate 140209 events. I.e. S/B= 0.64335
+
+// 5.5 times 6 MeV is 33 MeV
+
+

@@ -4,6 +4,60 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
+! 2013-03-22 - Manuel Tobias Schiller
+ - DecRateCoeff: implement mistag asymmetries correctly: it's now possible to
+   supply different average mistags (or different calibrations) for true
+   initial B and true initial Bbar
+ - runBs2DsKCPAsymmObsFitter-cFit.py:
+   * add support for proper mistag asymmetries, see above
+   * add support for <C>, DeltaC parametrisation, see last commit for details
+
+! 2013-03-22 - Manuel Tobias Schiller
+ - DecRateCoeff: Instead of fitting for Cf/Cfbar, the class can optionally
+   interpret the given coefficients as <C>=(Cf+Cfbar)/2 and
+   DeltaC=(Cf-Cfbar)/2; this typically gives less correlated fit results in
+   the parameters of interest. 
+
+! 2013-03-20 - Manuel Tobias Schiller
+ - runBs2DsKCPAsymmObsFitter-cFit.py: fix to run on older ROOT versions: make
+   the RooFit.Offset modifier optional (i.e. it's possible to switch it off)
+ - runBs2DsKCPAsymmObsFitter-cFit.py: add code to write fit results to ROOT
+   files (was lost somewhere along the way)
+
+! 2013-03-20 - Manuel Tobias Schiller
+ - runBs2DsKCPAsymmObsFitter-cFit.py: fix the shell part of the script to work
+   correctly on Scientific Linux machines
+
+! 2013-03-19 - Manuel Tobias Schiller
+ - RooEffResModel: promote the "experimental" code activated by the _NEWCACHE
+   preprocessor macro to the default now that it is clear that it does not
+   cause problems in the per-event decay time error; we save a lot of RAM this
+   way...
+
+! 2013-03-19 - Manuel Tobias Schiller
+ - runBs2DsKCPAsymmObsFitter-cFit.py:
+   - fix the issues we have been having when using per-event mistag and
+     per-event decay time error at the same time
+   - refactor the code a little to better use the commonalities between the
+     oscillating and non-oscillating time PDFs
+ - standalone/Doxyfile: produce nicer doxygen documentation (i.e. tweak
+   settings a little)
+
+! 2013-03-06 - Manuel Tobias Schiller
+ - scripts/make_histos.py: fix a bug when making pull plots of angles:
+   differences in angles (weak and strong phases come to mind) live on the
+   unit circle, thus they have to be clamped to the usual -pi to pi range
+
+! 2013-03-06 - Manuel Tobias Schiller
+ - commit on behalf of Chiara Farinelli (who is busy writing her thesis):
+   new fitter script runBs2DsPiTaggingCalibFitter.py; this is taken straight
+   from her work area and may or may not run out of the box in our package; it
+   is, however, a good starting point for further tagging studies
+
+! 2013-03-06 - Manuel Tobias Schiller
+ - commit on behalf of Chiara Farinelli (who is busy writing her thesis):
+   new class TaggingCat, which will "multiplex" between the different
+   per-category mistags
 
 ! 2013-02-15 - Manuel Tobias Schiller
  - B2DXFitters/icc_fpclass_workaround.h: fix a couple of warnings; when

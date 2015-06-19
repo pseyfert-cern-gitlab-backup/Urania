@@ -416,8 +416,10 @@ done in histogram instead of NTuple
         """
         self.var = var
         print cuts
-        f = TFile("borrame_ho.root","recreate")
-        t = tree.CopyTree(cuts)
+        if cuts:
+            f = TFile("/tmp/borrame_ho.root","recreate")
+            t = tree.CopyTree(cuts)
+        else: t = tree
         self.mass = RooRealVar(var,var,  t.GetMinimum(var), t.GetMaximum(var))
                 
         ### fit
@@ -437,7 +439,7 @@ done in histogram instead of NTuple
         self.nbkg = RooRealVar("bkgfraction", "bkgfraction", 0.5*t.GetEntries(),0.,t.GetEntries())
         
         self.model = RooAddPdf("model","model", RooArgList(self.sig, self.bkg), RooArgList(self.nsig, self.nbkg))
-        f.Close()
+        if cuts: f.Close()
         self.short = shorTime
         if fit_in_init: self.result = self.fit()
        

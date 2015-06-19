@@ -27,8 +27,9 @@
  * cosh/sinh/cos/sin terms in the decay rate equations (RooBDecay). By forming
  * a suitable sum over the true initial state flavour inside the class
  * implementation, it is possible to treat production, detection and tagging
- * efficiency asymmetries from first principles. A constant mistag asymmetry
- * has also been implemented.
+ * efficiency asymmetries from first principles. Mistag asymmetries are
+ * implemented using either different average mistags for true initial B and
+ * Bbar, or different mistag calibrations for true initial B and Bbar.
  *
  * The coefficient can be either CP even or CP odd (the latter has the
  * property that, with perfect tagging, it changes sign under CP), and it can
@@ -56,25 +57,29 @@
  * \textrm{if $qt=0$} \\
  *
  * (1+a_{prod}) \cdot \epsilon \cdot (1+a_{tageff}) \cdot P(\eta)
- * \cdot \left(1-\eta_c(\eta)\cdot(1+a_{mistag})\right) \cdot
+ * \cdot \left(1-\eta_c(\eta)\right) \cdot
  * \alpha(+1, q_f) +
  * (1-a_{prod}) \cdot \epsilon \cdot (1-a_{tageff}) \cdot P(\eta)
- * \cdot \eta_c(\eta)\cdot(1-a_{mistag}) \cdot
+ * \cdot {\overline{\eta_c}}(\eta) \cdot
  * \alpha(-1, q_f) &
  * \textrm{if $qt=+1$} \\
  *
  * (1+a_{prod}) \cdot \epsilon \cdot (1+a_{tageff}) \cdot P(\eta)
- * \cdot \eta_c(\eta)\cdot(1+a_{mistag}) \cdot
+ * \cdot \eta_c(\eta) \cdot
  * \alpha(+1, q_f) +
  * (1-a_{prod}) \cdot \epsilon \cdot (1-a_{tageff}) \cdot P(\eta)
- * \cdot \left(1 - \eta_c(\eta)\cdot(1-a_{mistag})\right) \cdot
+ * \cdot \left(1 - {\overline{\eta_c}}(\eta)\cdot\right) \cdot
  * \alpha(-1, q_f) &
  * \textrm{if $qt=-1$} \\
  * \end{array}\right.@f]
  *
  * The asymmetries given above (@f$a_{prod}@f$, @f$a_{det}@f$,
- * @f$a_{mistag}@f$, @f$a_{mistag}@f$) are assumed to be independent of any
- * observables (at least for the time being).
+ * @f$a_{tageff}@f$) are assumed to be independent of any observables (at
+ * least for the time being).
+ *
+ * Convenience constructors are provided if there is no mistag asymmetry (i.e.
+ * @f$\eta_c(\eta)=\overline{\eta_c}(\eta)@f$ or the equivalent for the average
+ * mistag case).
  *
  * The coefficients @f$\alpha(q_i, q_f)@f$ are put to 1 to calculate the
  * normalisation of the coefficients, their unnormalised values are calculated
@@ -95,6 +100,16 @@
  * Moreover, an overall minus sign can be prepended in the definition of the
  * @f$\alpha(q_i,q_f)@f$.
  *
+ * Instead of using @f$C_f@f$ and @f$C_{\bar{f}}@f$ directly, it is also
+ * possible to use the average @f$\langle C\rangle=(C_f+C_{\bar{f}})/2@f$
+ * difference @f$\Delta C=(C_f-C_{\bar{f}})/2@f$ of @f$C_f@f$ and
+ * @f$C_{\bar{f}}@f$. The advantage to fitting for @f$\langle C\rangle@f$ and
+ * @f$\Delta C@f$ are smaller correlations in the typical case, see e.g.
+ *
+ * http://de.arxiv.org/abs/1208.6463
+ *
+ * for details.
+ *
  * @author Manuel Schiller <manuel.schiller@nikhef.nl>
  * @date 2012-10-24
  */
@@ -109,13 +124,14 @@ class DecRateCoeff : public RooAbsReal
     public:
 	/// flags
 	typedef enum {
-	    CPEven = 0,	/// nothing set for CP even coefficients
-	    CPOdd = 1,	/// bit 0 set for CP odd coefficient
-	    Minus = 2	/// bit 1 set to apply an overall minus sign
+	    CPEven = 0,	  ///< nothing set for CP even coefficients
+	    CPOdd = 1,	  ///< bit 0 set for CP odd coefficient
+	    Minus = 2,	  ///< bit 1 set to apply an overall minus sign
+	    AvgDelta = 4, ///< bit 2 set if Cf/Cfbar refer to average and Delta C
 	} Flags;
 
 	/// default constructor for ROOT I/O
-	DecRateCoeff() : m_nsethash(0) { }
+	DecRateCoeff() : m_nset(0), m_nsethash(0) { }
 
 	/** @brief constructor
 	 *
@@ -136,15 +152,64 @@ class DecRateCoeff : public RooAbsReal
 	 * @param aprod		production asymmetry
 	 * @param adet		detection asymmetry
 	 * @param atageff	tagging efficiency asymmetry (as function of qi)
-	 * @param amistag	per-event mistag asymmetry
+	 *
+	 * If flags has AvgDelta set, we interpret the parameter Cf to be the
+	 * average C, @f$\langle C\rangle=(C_f+C_{\bar{f}})/2@f$, and Cfbar to
+	 * be the difference in C, @f$\Delta C=(C_f-C_{\bar{f}})/2@f$. The
+	 * advantage to fitting for @f$\langle C\rangle@f$ and @f$\Delta C@f$
+	 * are smaller correlations in the typical case, see e.g.
+	 *
+	 * http://de.arxiv.org/abs/1208.6463
+	 *
+	 * for details.
 	 */
+
 	DecRateCoeff(const char* name, const char* title, Flags flags,
 		RooAbsCategory& qf, RooAbsCategory& qt,
 		RooAbsReal& Cf, RooAbsReal& Cfbar,
 		RooAbsRealLValue& etaobs, RooAbsPdf& etapdf,
 		RooAbsReal& tageff, RooAbsReal& eta,
 		RooAbsReal& aprod, RooAbsReal& adet,
-		RooAbsReal& atageff, RooAbsReal& amistag);
+		RooAbsReal& atageff);
+
+	/** @brief constructor
+	 *
+	 * initialise pdf to average over initial flavour when using per-event
+	 * mistag (with different mistags for true initial flavours)
+	 *
+	 * @param name		name of the pdf
+	 * @param title		title of the pdf
+	 * @param flags		flags
+	 * @param qf		final state charge (-1, +1)
+	 * @param qt		tagging decision (-1, 0, 1)
+	 * @param Cf		coefficient for qf = +1
+	 * @param Cfbar		coefficient for qf = -1
+	 * @param etaobs	mistag observable
+	 * @param etapdf	per-event-mistag distribution for tagged events
+	 * @param tageff	tagging efficiency
+	 * @param eta		(calibrated) per-event mistag for true B
+	 * @param etabar	(calibrated) per-event mistag for true Bbar
+	 * @param aprod		production asymmetry
+	 * @param adet		detection asymmetry
+	 * @param atageff	tagging efficiency asymmetry (as function of qi)
+	 *
+	 * If flags has AvgDelta set, we interpret the parameter Cf to be the
+	 * average C, @f$\langle C\rangle=(C_f+C_{\bar{f}})/2@f$, and Cfbar to
+	 * be the difference in C, @f$\Delta C=(C_f-C_{\bar{f}})/2@f$. The
+	 * advantage to fitting for @f$\langle C\rangle@f$ and @f$\Delta C@f$
+	 * are smaller correlations in the typical case, see e.g.
+	 *
+	 * http://de.arxiv.org/abs/1208.6463
+	 *
+	 * for details.
+	 */
+	DecRateCoeff(const char* name, const char* title, Flags flags,
+		RooAbsCategory& qf, RooAbsCategory& qt,
+		RooAbsReal& Cf, RooAbsReal& Cfbar,
+		RooAbsRealLValue& etaobs, RooAbsPdf& etapdf,
+		RooAbsReal& tageff, RooAbsReal& eta, RooAbsReal& etabar,
+		RooAbsReal& aprod, RooAbsReal& adet,
+		RooAbsReal& atageff);
 
 	/** @brief constructor
 	 *
@@ -163,14 +228,60 @@ class DecRateCoeff : public RooAbsReal
 	 * @param aprod		production asymmetry
 	 * @param adet		detection asymmetry
 	 * @param atageff	tagging efficiency asymmetry (as function of qi)
-	 * @param amistag	per-event mistag asymmetry
+	 *
+	 * If flags has AvgDelta set, we interpret the parameter Cf to be the
+	 * average C, @f$\langle C\rangle=(C_f+C_{\bar{f}})/2@f$, and Cfbar to
+	 * be the difference in C, @f$\Delta C=(C_f-C_{\bar{f}})/2@f$. The
+	 * advantage to fitting for @f$\langle C\rangle@f$ and @f$\Delta C@f$
+	 * are smaller correlations in the typical case, see e.g.
+	 *
+	 * http://de.arxiv.org/abs/1208.6463
+	 *
+	 * for details.
 	 */
+
 	DecRateCoeff(const char* name, const char* title, Flags flags,
 		RooAbsCategory& qf, RooAbsCategory& qt,
 		RooAbsReal& Cf, RooAbsReal& Cfbar,
 		RooAbsReal& tageff, RooAbsReal& eta,
 		RooAbsReal& aprod, RooAbsReal& adet,
-		RooAbsReal& atageff, RooAbsReal& amistag);
+		RooAbsReal& atageff);
+
+	/** @brief constructor
+	 *
+	 * initialise pdf to average over initial flavour when using an
+	 * average mistag (with different mistags for true initial flavours)
+	 *
+	 * @param name		name of the pdf
+	 * @param title		title of the pdf
+	 * @param flags		flags
+	 * @param qf		final state charge (-1, +1)
+	 * @param qt		tagging decision (-1, 0, 1)
+	 * @param Cf		coefficient for qf = +1
+	 * @param Cfbar		coefficient for qf = -1
+	 * @param tageff	tagging efficiency
+	 * @param eta		average mistag for true B
+	 * @param etabar	average mistag for true Bbar
+	 * @param aprod		production asymmetry
+	 * @param adet		detection asymmetry
+	 * @param atageff	tagging efficiency asymmetry (as function of qi)
+	 *
+	 * If flags has AvgDelta set, we interpret the parameter Cf to be the
+	 * average C, @f$\langle C\rangle=(C_f+C_{\bar{f}})/2@f$, and Cfbar to
+	 * be the difference in C, @f$\Delta C=(C_f-C_{\bar{f}})/2@f$. The
+	 * advantage to fitting for @f$\langle C\rangle@f$ and @f$\Delta C@f$
+	 * are smaller correlations in the typical case, see e.g.
+	 *
+	 * http://de.arxiv.org/abs/1208.6463
+	 *
+	 * for details.
+	 */
+	DecRateCoeff(const char* name, const char* title, Flags flags,
+		RooAbsCategory& qf, RooAbsCategory& qt,
+		RooAbsReal& Cf, RooAbsReal& Cfbar,
+		RooAbsReal& tageff, RooAbsReal& eta, RooAbsReal& etabar,
+		RooAbsReal& aprod, RooAbsReal& adet,
+		RooAbsReal& atageff);
 
 	/** @brief copy constructor
 	 *
@@ -278,11 +389,11 @@ class DecRateCoeff : public RooAbsReal
 	/// per-event mistag pdf for untagged events (flat)
 	RooRealProxy m_etapdfut;
 	RooRealProxy m_tageff;		///< tagging efficiency
-	RooRealProxy m_eta;		///< per-event/average mistag
+	RooRealProxy m_eta;		///< per-event/average mistag (B)
+	RooRealProxy m_etabar;		///< per-event/average mistag (Bbar)
 	RooRealProxy m_aprod;		///< production asymmetry
 	RooRealProxy m_adet;		///< detection asymmetry
 	RooRealProxy m_atageff;		///< tagging efficiency asymmetry
-	RooRealProxy m_amistag;		///< asymmetry in predicted mistag
 	/// integral cache
 	mutable RooObjCacheManager m_cacheMgr; //! transient member
 	/// place to keep normalisation sets
@@ -321,7 +432,8 @@ class DecRateCoeff : public RooAbsReal
 	
 	    protected:
 		/// set up binned evaluation of integral of eta product
-		void setupBinnedProdctIntegral();
+		void setupBinnedProductIntegral(
+			RooAbsReal* &prod, const RooAbsReal& eta, int idx);
 
 		/// return integral over mistag pdf (tagged events)
 		inline double etaintpdftagged() const
@@ -332,7 +444,7 @@ class DecRateCoeff : public RooAbsReal
 		}
 
 		/// return integral over mistag pdf times mistag (tagged events)
-		double etaintprodpdfmistagtagged() const;
+		double etaintprodpdfmistagtagged(int qt) const;
 		
 		/// retun integral over mistag pdf (untagged events)
 		inline double etaintpdfuntagged() const
@@ -353,8 +465,10 @@ class DecRateCoeff : public RooAbsReal
 	    private:
 		/// integral over mistag pdf (tagged events)
 		RooAbsReal *m_etaintpdftagged;
-		/// integral over mistag pdf times mistag (tagged events)
-		RooAbsReal *m_etaintprodpdfmistagtagged;
+		/// integral over mistag pdf times mistag (tagged as B)
+		RooAbsReal *m_etaintprodpdfmistagtaggedplus;
+		/// integral over mistag pdf times mistag (tagged as Bbar)
+		RooAbsReal *m_etaintprodpdfmistagtaggedminus;
 		/// integral over mistag pdf (untagged events)
 		RooAbsReal *m_etaintpdfuntagged;
 		/// normalisation set to use for mistag pdfs
@@ -369,13 +483,13 @@ class DecRateCoeff : public RooAbsReal
 		// members for that
 		
 		/// name of the working range
-		std::string m_workRangeName;
+		std::string m_workRangeName[2];
 		/// two RooRealProxyVars so we can move the range over eta
-		std::pair<RooRealVar*, RooRealVar*> m_workRange;
+		std::pair<RooRealVar*, RooRealVar*> m_workRange[2];
 		/// a vector of eta bin boundaries
 		std::vector<double> m_etabins;
 		/// cached value of product integral
-		mutable double m_prodcachedval; //! transient data member
+		mutable double m_prodcachedval[2]; //! transient data member
 		
 		/// flags
 		enum Flags {
@@ -388,7 +502,7 @@ class DecRateCoeff : public RooAbsReal
 		} m_flags;
 	};
 
-	ClassDef(DecRateCoeff, 1);
+	ClassDef(DecRateCoeff, 2);
 };
 
 #endif // DECRATECOEFF

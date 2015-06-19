@@ -817,7 +817,7 @@ void branching::doFullFit(char* netcut, double *Results, TString tag){
   if(tag=="LL+DD" || tag=="All"){
     TCanvas *massPlot = new TCanvas("massPlot","Canvas for MassPlot",900,800);
     jpsiKsExt->plotOn(massPlot,fitdata,false,1,0); // Plot with legend
-    jpsiKsExt->plotLegend(0.64,0.54,0.93,0.93);
+    jpsiKsExt->plotLegend(0.64,0.50,0.93,0.89);
     massPlot->Write("Full Mass Fit "+tag+" "+netcut);
     
     if (absent==string::npos){
@@ -829,7 +829,17 @@ void branching::doFullFit(char* netcut, double *Results, TString tag){
   if(absent==string::npos){
     TCanvas *pullPlot = new TCanvas("pullPlot","Canvas for MassPlot",900,800);
     jpsiKsExt->plotOn(pullPlot,fitdata,false,1,2,chi2Val); // Plot with pull
-    jpsiKsExt->plotLegend(0.64,0.54,0.93,0.93); // and legend
+    jpsiKsExt->plotLegend(0.64,0.50,0.93,0.89); // and legend
+    
+    TPaveText *lhcbTag = new TPaveText(0.64,0.89,0.93,0.93,"NDC");
+    lhcbTag->SetFillColor(0);
+    lhcbTag->SetTextAlign(12);
+    lhcbTag->SetBorderSize(0);
+    lhcbTag->SetTextSize(0.05);
+    lhcbTag->SetTextFont(62); // lhcbFont
+		lhcbTag->AddText("LHCb");
+    lhcbTag->Draw("same");
+    
     pullPlot->Write("Pull Mass Fit "+tag+" "+netcut);
   }
   
@@ -870,7 +880,7 @@ void branching::doBestFit(double cut_LL, double cut_DD, TString tag){
   if(cut_LL==cut_DD){
     double pub_all[] = {-999,-999,-999,-999,-999,-999};
     doFullFit(All_netcut, pub_all, tag);
-  
+    
     char All_netcutOdd[30];
     strcpy(All_netcutOdd,"odd && ");
     strcat(All_netcutOdd,All_netcut);
@@ -887,7 +897,7 @@ void branching::doBestFit(double cut_LL, double cut_DD, TString tag){
   makeCut(cut_LL,LL_netcut,m_LL);
   double LL_all[] = {-999,-999,-999,-999,-999,-999};
   doFullFit(LL_netcut, LL_all, tag);
- 
+
   char LL_netcutOdd[30];
   strcpy(LL_netcutOdd,"odd && ");
   strcat(LL_netcutOdd,LL_netcut);
@@ -1003,10 +1013,19 @@ void branching::doLifetimeFit(double netVal, char* netcut, double *Results, TStr
     pullPlot->Write("Pull Mass Fit "+tag+" "+netcut);
   }
   
+  TPaveText *lhcbTag = new TPaveText(0.64,0.89,0.93,0.93,"NDC");
+  lhcbTag->SetFillColor(0);
+  lhcbTag->SetTextAlign(12);
+  lhcbTag->SetBorderSize(0);
+  lhcbTag->SetTextSize(0.05);
+  lhcbTag->SetTextFont(62); // lhcbFont
+  lhcbTag->AddText("LHCb");
+  
   TCanvas *TauPlot = new TCanvas("TauPlot","Canvas for LifetimePlot",900,800);
   double chi2Val[] = {-999,-999};
   jpsiKsExt->plotOnTime(TauPlot,fitdata,false,1,2,0,chi2Val); // Pull with legend
-  jpsiKsExt->plotLegend(0.64,0.54,0.93,0.93);
+  jpsiKsExt->plotLegend(0.64,0.50,0.93,0.89);
+  lhcbTag->Draw("same");
   TauPlot->Write("Full Time Fit "+tag+" "+netcut);
   
   TCanvas *TaupullPlot = new TCanvas("TaupullPlot","Canvas for LifetimePlot",900,800);
@@ -1015,12 +1034,14 @@ void branching::doLifetimeFit(double netVal, char* netcut, double *Results, TStr
   
   TCanvas *TauZoomPlot = new TCanvas("TauZoomPlot","Canvas for LifetimePlot",900,800);
   jpsiKsExt->plotOnTime(TauZoomPlot,fitdata,false,1,2,1); // Pull with legend in Bs Box
-  jpsiKsExt->plotLegend(0.64,0.54,0.93,0.93);
+  jpsiKsExt->plotLegend(0.64,0.50,0.93,0.89);
+  lhcbTag->Draw("same");
   TauZoomPlot->Write("BsBox Time Fit "+tag+" "+netcut);
   
   TCanvas *TauBkgPlot = new TCanvas("TauBkgPlot","Canvas for LifetimePlot",900,800);
   jpsiKsExt->plotOnTime(TauBkgPlot,fitdata,false,1,2,2); // Pull with legend in high mass sideband
-  jpsiKsExt->plotLegend(0.64,0.54,0.93,0.93);
+  jpsiKsExt->plotLegend(0.64,0.50,0.93,0.89);
+  lhcbTag->Draw("same");
   TauBkgPlot->Write("MassSidebands Time Fit "+tag+" "+netcut);
   
   // *** Results ***

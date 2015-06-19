@@ -1,0 +1,66 @@
+- Simple generic examples (*Example.cpp) of how to use the MultiTrack PID Calibration methods.
+- *Example.cpp are all annotated and should work *almost* out the box. It has been made clear where modifications must be made.
+- This folder also contains all the code used in the B --> D0 V0 analyses to do PID calibration which may be useful to look at...
+
+
+== General Recipe for using the MultiTrack PID Calibration:
+
+1) Make sure you have up to date versions of PIDCalib/PIDPerfTools and PIDCalib/PIDPerfScripts packages.
+
+2) Compile the package by doing `cmt br make` inside PIDCalib/PIDPerfScripts/cmt/ .
+
+3) Run PerfHist_Example.cpp or a variant of it, see B2DV_PerfHist.cpp for another example of performance histogram creation.
+   Performance histograms are the efficiency of the PID cut that you specify on the calibration sample (calibration sample = the standard
+   D* -> D0 (KPi) Pi used in the rest of PIDCalib). In the bins of kinematic variables that are also defined, and can be changed, 
+   in PerfHist_Example.cpp or B2DV_PerfHist.cpp.
+
+3a) If you want to calculate efficiencies valid for the whole data taking period. Step (3) will need to be repeated for each range of run
+    numbers (or each "dataset index"),there are different calibration samples for different run ranges, because of the variation of RICH performance with time, see
+    https://twiki.cern.ch/twiki/bin/view/LHCb/PIDCalibPackage for details.
+    Then a weighted average of all these performance histograms should be used in step (4), an example script to produce this weighted average is
+    PIDPerfScripts/python/Merge_PerfHists.py.
+
+4) Run MultiTrack_Example.cpp or a variant thereof using the performance histogram(s) you just created and your reference
+   sample as input. The reference sample is the sample you wish to find the PID efficiency for (usually signal).
+   This will add branches to the reference TTree.
+
+   For each track in your mode there will be branches called <trackname>_PIDCalibEff and <trackname>_PIDCalibEffError. These 
+   are the efficiency and error on that efficiency from the performance histogram in the particular kinematic bin that the 
+   signal track resides. Since this is done on an event by event basis, the kinematics of one track affect the kinematics of
+   another and hence, what PID efficiency (<trackname>_PIDCalibEff) is assigned to that other track. Thereby taking into 
+   account the kinematic correlations between all final state tracks when calculating the PID efficiency for that event 
+   and the average over all phase space.
+
+   There will also be branches called "Event_PIDCalibEff" and "Event_PIDCalibEffError". These hold the product of all the
+   <trackname>_PIDCalibEff branches, for each entry in the TTree.
+   These can be useful as an event weight for PID efficiency as a function the kinematic variables that were used in the 
+   performance histogram. For example, if your reference sample was signal Monte Carlo and you use said Monte Carlo to
+   model the signal pdf in your fit. To get the proper effect of the PID cuts (albeit in finite bins of the kinematic
+   variables studied) on that shape, the dataset simply needs to be weighted with the "Event_PIDCalibEff" variable
+   prior to the fit.
+
+   MultiTrack_Example.cpp also prints the average PID efficiency over all phase space, this is just the mean of Event_PIDCalibEff
+   for all entries in the TTree.
+
+   Notes: 
+	Messages such as "WARNING: Track in overflow bin. Please check the calibration histograms have been created properly." means that
+	there are tracks in the reference sample that lie outside of the limits of the calibration histogram. A cut should be place on
+	the signal sample such that it occupies the same region of parameter space as the calibration sample, since the kinematics of
+	tracks outside this region will not be taken into account. When tracks outside this region are found, the "Event_PIDCalibEff"
+	branch for that event is set to zero. These events are not included when calculating the phase-space averaged PID
+	efficiency that is printed by this script. Therefore the PID efficiency calculated is only valid for events with all tracks
+	inside the kinematics limits of the calibration sample.
+
+	Messages such as "Error in <TTree::SetBranchAddress>: unknown branch -> ${trackname}_ID" mean that the code has not found the
+	branch in the reference sample corresponding to the pdg ID of the track. This is used to calculate correlation terms for
+	the "Event_PIDCalibEffError", which are admittedly extremely small. To remove this errors a valid branch name for the pdg
+	ID must be provided as argument to the addEventWeightsToTree(...) function.
+
+5) Run MultiTrack_Systematic_Example.cpp or a variant thereof to assess the systematic error in the phase space averaged PID
+   efficiency calculated with this method.
+   This works by performing the calibration method described above purely in Monte Carlo, i.e. performance histograms must be produced
+   from the Monte Carlo versions of the calibration samples, and the calibration process is performed using these. The phase space
+   averaged PID efficiency from calibrating purely in MC is compared to the signal 
+
+For more information, please subscribe to: lhcb-phys-pid-calibration@cern.ch - the mailing list used to discuss everything concerning
+the PIDCalib package.

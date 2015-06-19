@@ -65,13 +65,22 @@ for i in libjemalloc libtcmalloc; do
     done
 done
 
+# set batch scheduling (if schedtool is available)
+schedtool="`which schedtool 2>/dev/zero`"
+if test -n "$schedtool" -a -x "$schedtool"; then
+    echo "enabling batch scheduling for this job (schedtool -B)"
+    schedtool="$schedtool -B -e"
+else
+    schedtool=""
+fi
+
 # set ulimit to protect against bugs which crash the machine: 2G vmem max,
 # no more then 8M stack
 ulimit -v $((2048 * 1024))
 ulimit -s $((   8 * 1024))
 
 # trampoline into python
-exec /usr/bin/time -v env python -O -- "$0" "$@"
+exec $schedtool /usr/bin/time -v env python -O -- "$0" "$@"
 """
 __doc__ = """ real docstring """
 # -----------------------------------------------------------------------------
@@ -79,7 +88,7 @@ __doc__ = """ real docstring """
 # -----------------------------------------------------------------------------
 from optparse import OptionParser
 from math     import pi
-import os, sys
+import os, sys, gc
 
 if 'CMTCONFIG' in os.environ:
     import GaudiPython
@@ -102,6 +111,28 @@ else:
     # running in standalone mode, we have to load things ourselves
     ROOT.gSystem.Load(os.environ['B2DXFITTERSROOT'] +
 	    '/standalone/libB2DXFitters')
+
+# figure out if we're running from inside gdb
+def in_gdb():
+    import os
+    proclist = dict(
+	    (l[0], l[1:]) for l in (
+		lraw.replace('\n', '').replace('\r','').split()
+		for lraw in os.popen('ps -o pid= -o ppid= -o comm=').readlines()
+		)
+	    )
+    pid = os.getpid()
+    while pid in proclist:
+	if 'gdb' in proclist[pid][1]: return True
+	pid = proclist[pid][0]
+    return False
+
+if in_gdb():
+    # when running in a debugger, we want to make sure that we do not handle
+    # any signals, so the debugger can catch SIGSEGV and friends, and we can
+    # poke around
+    ROOT.SetSignalPolicy(ROOT.kSignalFast)
+    ROOT.gEnv.SetValue('Root.Stacktrace', '0')
 
 # -----------------------------------------------------------------------------
 # Configuration settings
@@ -134,6 +165,8 @@ defaultConfig = {
 	# 'CDS' 		- C, D, Dbar, S, Sbar
 	# 'CDSConstrained'	- same as CDS, but constrain C^2+D^2+S^2 = 1
 	#			  (same for bar)
+	# 'CADDADS'		- C, <D>, Delta D, <S>, Delta S
+	#			  (<D>=(D+Dbar)/2, Delta D=(D-Dbar)/2 etc.)
 	# 'LambdaPhases'	- |lambda|, strong and weak phase
 	'Bs2DsKCPObs': 			'CDS',
 	'SqSumCDSConstraintWidth':	0.01,
@@ -197,13 +230,17 @@ defaultConfig = {
 	'TagEffSig':			0.403,
 	'TagOmegaSig':			0.396,
 	'TagEffBkg':			0.403,
-	'MistagCalibrationParams':	[ 0.392, 1.035, 0.391 ], 
+	# first entry is for true B (and true Bbar, if no second entry exists)
+	'MistagCalibrationParams':	[
+		[ 0.392, 1.035, 0.391 ], # true B
+		#[ 0.392, 1.035, 0.391 ]  # true Bbar
+		], 
 
 	# truth/Gaussian/DoubleGaussian/GaussianWithPEDTE/GaussianWithLandauPEDTE/GaussianWithScaleAndPEDTE
 	'DecayTimeResolutionModel':	'TripleGaussian',
 	'DecayTimeResolutionBias':	0.,
 	'DecayTimeResolutionScaleFactor': 1.15,
-	'DecayTimeErrInterpolation':	False,
+	'DecayTimeErrInterpolation':	True,
 	# None/BdPTAcceptance/DTAcceptanceLHCbNote2007041,PowLawAcceptance
 	'AcceptanceFunction':		'PowLawAcceptance',
 	'AcceptanceCorrectionFile':	os.environ['B2DXFITTERSROOT']+'/data/acceptance-ratio-hists.root',
@@ -228,6 +265,9 @@ defaultConfig = {
 	# fitter settings
 	'Optimize':			2,
 	'Strategy':			2,
+	'Offset':			True,
+	'Minimizer':			[ 'Minuit', 'migrad' ],
+	'NumCPU':			1,
 	'Debug':			False,
 
 	# list of constant parameters
@@ -236,13 +276,14 @@ defaultConfig = {
 	    'Gammad', 'deltaGammad', 'deltaMd',
 	    'tagOmegaSig',
             'deltaMs',
-	    'MistagCalib_p0', 'MistagCalib_p1', 'MistagCalib_avgmistag',
+	    'MistagCalibB_p0', 'MistagCalibB_p1', 'MistagCalibB_avgmistag',
+	    'MistagCalibBbar_p0', 'MistagCalibBbar_p1', 'MistagCalibBbar_avgmistag',
 	    ],
 
 	# mass templates
 	'MassTemplateFile':		os.environ['B2DXFITTERSROOT']+'/data/workspace/WS_Mass_DsK.root',
 	'MassTemplateWorkspace':	'FitMeToolWS',
-	'MassInterpolation':		False,
+	'MassInterpolation':		True,
 	# either one element or 6 (kkpi,kpipi,pipipi)x(up,down) in "sample" order
 	'NEvents':			[ 1731. ],
 	# mistag template
@@ -269,7 +310,7 @@ defaultConfig = {
 	'NBinsAcceptance':		150,  # if >0, bin acceptance
 	'NBinsTimeKFactor':		200,  # if >0, use binned cache for k-factor integ.
 	'NBinsMistag':			50,   # if >0, parametrize Mistag integral
-	'NBinsProperTime':		50,   # if >0, parametrize proper time int.
+	'NBinsProperTimeErr':		50,   # if >0, parametrize proper time int.
 	'NBinsMass':			0,    # if >0, bin mass templates
 
 	# Data file settings
@@ -1013,6 +1054,99 @@ def getMassTemplates(
 		y.setConstant(True)
     return retVal
 
+# apply the acceptance to the time pdf (binned, i.e. apply to resolution model)
+def applyBinnedAcceptance(config, ws, time, timeresmodel, acceptance):
+    if None == acceptance or 0 >= config['NBinsAcceptance']:
+	return timeresmodel
+    from ROOT import RooArgSet, RooBinnedPdf, RooEffResModel
+    # bin the acceptance if not already binned
+    if not acceptance.isBinnedDistribution(RooArgSet(time)):
+	acceptance = WS(ws, RooBinnedPdf(
+	    "%sBinnedAcceptance" % acceptance.GetName(),
+	    "%sBinnedAcceptance" % acceptance.GetName(),
+	    time, 'acceptanceBinning', acceptance))
+	acceptance.setForceUnitIntegral(True)
+    # create the acceptance-corrected resolution model
+    return WS(ws, RooEffResModel(
+	'%s_timeacc_%s' % (timeresmodel.GetName(), acceptance.GetName()),
+	'%s plus time acceptance %s' % (timeresmodel.GetTitle(),
+	    acceptance.GetTitle()), timeresmodel, acceptance))
+
+# apply the acceptance to the time pdf (unbinned)
+def applyUnbinnedAcceptance(config, name, ws, pdf, acceptance):
+    from ROOT import RooEffProd
+    if None != acceptance and 0 >= config['NBinsAcceptance']:
+	# do not bin acceptance
+	return WS(ws, RooEffProd('%s_TimePdf' % name,
+	    '%s full time pdf' % name, pdf, acceptance))
+    else:
+	return pdf
+
+# speed up the fit by parameterising integrals of the resolution model over
+# time in the (per-event) time error (builds a table if integral values and
+# interpolates)
+def parameteriseResModelIntegrals(config, timeerrpdf, timeerr, timeresmodel):
+    if None == timeerrpdf:
+	return
+    from ROOT import RooArgSet
+    if not timeerr.hasBinning('cache'):
+	timeerr.setBins(config['NBinsProperTimeErr'], 'cache')
+    timeresmodel.setParameterizeIntegral(RooArgSet(timeerr))
+
+# apply the per-event time error pdf
+def applyDecayTimeErrPdf(config, name, ws, time, timeerr, qt, qf, mistagobs,
+	timepdf, timeerrpdf, mistagpdf):
+    # no per-event time error is easy...
+    if None == timeerrpdf: return timepdf
+    from ROOT import RooArgSet, RooProdPdf
+    noncondset = RooArgSet(time, qf, qt)
+    if None != mistagpdf:
+	noncondset.add(mistagobs)
+    return WS(ws, RooProdPdf('%s_TimeTimeerrPdf' % name,
+	'%s (time,timeerr) pdf' % name, RooArgSet(timeerrpdf),
+	RooFit.Conditional(RooArgSet(timepdf), noncondset)))
+
+# apply k-factor smearing
+def applyKFactorSmearing(config, name, ws, time, timepdf, kvar, kfactorpdf, paramobs):
+    if None == kfactorpdf or None == kvar:
+	return timepdf
+    # perform the actual k-factor smearing integral (if needed)
+    from ROOT import ( RooGeneralisedSmearingBase, RooAbsPdf, RooConstVar,
+	    RooUniformBinning, RooArgSet )
+    RooNumGenSmearPdf = RooGeneralisedSmearingBase(RooAbsPdf)
+    retVal = WS(ws, RooNumGenSmearPdf('kSmeared_%s' % timepdf.GetName(),
+	'%s smeared with k factor' % timepdf.GetTitle(),
+	kvar, timepdf, kfactorpdf['pdf']))
+    # since we fine-tune the range of the k-factor distributions, and we
+    # know that the distributions are well-behaved, we can afford to be a
+    # little sloppy
+    retVal.convIntConfig().setEpsAbs(1e-4)
+    retVal.convIntConfig().setEpsRel(1e-4)
+    retVal.convIntConfig().getConfigSection('RooAdaptiveGaussKronrodIntegrator1D').setCatLabel('extrapolation','Wynn-Epsilon')
+    retVal.convIntConfig().getConfigSection('RooAdaptiveGaussKronrodIntegrator1D').setCatLabel('sumRule','Trapezoid')
+    retVal.convIntConfig().getConfigSection('RooAdaptiveGaussKronrodIntegrator1D').setRealValue('minSteps', 3)
+    retVal.convIntConfig().getConfigSection('RooAdaptiveGaussKronrodIntegrator1D').setRealValue('maxSteps', 16)
+    retVal.convIntConfig().getConfigSection('RooAdaptiveGaussKronrodIntegrator1D').setCatLabel('method','15Points')
+    retVal.convIntConfig().getConfigSection('RooAdaptiveGaussKronrodIntegrator1D').setRealValue('maxSeg', 1000)
+    #retVal.convIntConfig().method1D().setLabel('RooAdaptiveGaussKronrodIntegrator1D')
+    retVal.convIntConfig().method1D().setLabel('RooIntegrator1D')
+    retVal.convIntConfig().method1DOpen().setLabel('RooAdaptiveGaussKronrodIntegrator1D')	
+    # set integration range
+    center = WS(ws, RooConstVar(
+	'%s_kFactorCenter' % name, '%s_kFactorCenter' % name,
+	0.5 * (kfactorpdf['range'][0] + kfactorpdf['range'][1])))
+    width = WS(ws, RooConstVar(
+	'%s_kFactorWidth' % name, '%s_kFactorWidth' % name,
+	0.5 * (kfactorpdf['range'][1] - kfactorpdf['range'][0])))
+    retVal.setConvolutionWindow(center, width, 1.0)
+    if 0 < config['NBinsTimeKFactor']:
+	kfactortimebinning = WS(ws, RooUniformBinning(     
+	    time.getMin(), time.getMax(), config['NBinsTimeKFactor'],
+	    '%s_timeBinnedCache' % name))
+	time.setBinning(kfactortimebinning, kfactortimebinning.GetName())
+	retVal.setBinnedCache(time, kfactortimebinning.GetName(), paramobs)
+    return retVal
+
 # build non-oscillating decay time pdf
 def buildNonOscDecayTimePdf(
 	config,					# configuration dictionary
@@ -1031,17 +1165,12 @@ def buildNonOscDecayTimePdf(
 	atageff_t = None			# qt dependent tagging eff. asymm.
 	):
     # Look in LHCb-INT-2011-051 for the conventions used
-    from ROOT import ( RooConstVar, TagEfficiencyWeight, IfThreeWayCat,
-	    Dilution, RooProduct, RooTruthModel, RooGaussModel, Inverse,
-	    RooDecay, RooProdPdf, RooBinnedPdf, RooEffResModel, RooEffProd,
-	    RooUniformBinning, RooArgSet, RooFit, RooWorkspace,
-	    RooGeneralisedSmearingBase, RooAbsPdf, RooArgList,
-	    NonOscTaggingPdf, FinalStateChargePdf )
-    RooNumGenSmearPdf = RooGeneralisedSmearingBase(RooAbsPdf)
+    from ROOT import ( RooConstVar, RooProduct, RooTruthModel, RooGaussModel,
+	    Inverse, RooDecay, RooProdPdf, RooArgSet, NonOscTaggingPdf,
+	    RooArgList )
 
     # constants used
     zero = WS(ws, RooConstVar('zero', 'zero', 0.))
-    one = WS(ws, RooConstVar('one', 'one', 1.))
 
     if None == adet: adet = zero
     if None == atageff_f: atageff_f = zero
@@ -1056,17 +1185,9 @@ def buildNonOscDecayTimePdf(
 	    '%s time resolution model' % name, time, zero, timeerr))
 
     # apply acceptance (if needed)
-    if None != acceptance and 0 < config['NBinsAcceptance']:
-	if not acceptance.isBinnedDistribution(RooArgSet(time)):
-	    acceptance = WS(ws, RooBinnedPdf(
-		"%sBinnedAcceptance" % acceptance.GetName(),
-		"%sBinnedAcceptance" % acceptance.GetName(),
-		time, 'acceptanceBinning', acceptance))
-	    acceptance.setForceUnitIntegral(True)
-	timeresmodel = WS(ws, RooEffResModel(
-	    '%s_timeacc_%s' % (timeresmodel.GetName(), acceptance.GetName()),
-	    '%s plus time acceptance %s' % (timeresmodel.GetTitle(), acceptance.GetTitle()),
-	    timeresmodel, acceptance))
+    timeresmodel = applyBinnedAcceptance(
+	    config, ws, time, timeresmodel, acceptance)
+    parameteriseResModelIntegrals(config, timeerrpdf, timeerr, timeresmodel)
 
     # perform the actual k-factor smearing integral (if needed)
     # if we have to perform k-factor smearing, we need "smeared" variants of
@@ -1087,42 +1208,18 @@ def buildNonOscDecayTimePdf(
 	'%s raw time pdf' % name, time, tau,
 	timeresmodel, RooDecay.SingleSided))
 
-    # perform the actual k-factor smearing integral (if needed)
-    if None != kfactorpdf and None != kvar:
-	krawtimepdf = WS(ws, RooNumGenSmearPdf('%s_kSmearedRawTimePdf' % name,
-	    '%s raw time pdf smeared with k factor' % name,
-	    kvar, rawtimepdf, kfactorpdf['pdf']))
-	# since we fine-tune the range of the k-factor distributions, and we
-	# know that the distributions are well-behaved, we can afford to be a
-	# little sloppy
-        krawtimepdf.convIntConfig().setEpsAbs(1e-4)
-        krawtimepdf.convIntConfig().setEpsRel(1e-4)
-        krawtimepdf.convIntConfig().getConfigSection('RooAdaptiveGaussKronrodIntegrator1D').setCatLabel('extrapolation','Wynn-Epsilon')
-        krawtimepdf.convIntConfig().getConfigSection('RooAdaptiveGaussKronrodIntegrator1D').setCatLabel('sumRule','Trapezoid')
-        krawtimepdf.convIntConfig().getConfigSection('RooAdaptiveGaussKronrodIntegrator1D').setRealValue('minSteps', 3)
-        krawtimepdf.convIntConfig().getConfigSection('RooAdaptiveGaussKronrodIntegrator1D').setRealValue('maxSteps', 16)
-        krawtimepdf.convIntConfig().getConfigSection('RooAdaptiveGaussKronrodIntegrator1D').setCatLabel('method','15Points')
-        krawtimepdf.convIntConfig().getConfigSection('RooAdaptiveGaussKronrodIntegrator1D').setRealValue('maxSeg', 1000)
-        #krawtimepdf.convIntConfig().method1D().setLabel('RooAdaptiveGaussKronrodIntegrator1D')
-        krawtimepdf.convIntConfig().method1D().setLabel('RooIntegrator1D')
-        krawtimepdf.convIntConfig().method1DOpen().setLabel('RooAdaptiveGaussKronrodIntegrator1D')	
-	# set integration range
-	center = WS(ws, RooConstVar(
-	    '%s_kFactorCenter' % name, '%s_kFactorCenter' % name,
-	    0.5 * (kfactorpdf['range'][0] + kfactorpdf['range'][1])))
-	width = WS(ws, RooConstVar(
-	    '%s_kFactorWidth' % name, '%s_kFactorWidth' % name,
-	    0.5 * (kfactorpdf['range'][1] - kfactorpdf['range'][0])))
-	krawtimepdf.setConvolutionWindow(center, width, 1.0)
-	if 0 < config['NBinsTimeKFactor']:
-	    kfactortimebinning = WS(ws, RooUniformBinning(     
-		time.getMin(), time.getMax(), config['NBinsTimeKFactor'],
-		'%s_timeBinnedCache' % name))
-	    time.setBinning(kfactortimebinning, kfactortimebinning.GetName())
-	    krawtimepdf.setBinnedCache(time, kfactortimebinning.GetName(),
-		    RooArgSet(qt, qf))
-    else:
-	krawtimepdf = rawtimepdf
+    # work out in which observables to parameterise k-factor smearing, then
+    # apply it
+    paramObs = RooArgSet(qt, qf)
+    if None != mistagpdf:
+	paramObs.add(mistag)
+    if None != timeerrpdf:
+	paramObs.add(timeerr)
+    retVal = applyKFactorSmearing(config, name, ws, time, rawtimepdf, kvar,
+	    kfactorpdf, paramObs)
+    
+    retVal = applyDecayTimeErrPdf(config, name, ws, time, timeerr, qt, qf,
+	    mistag, retVal, timeerrpdf, mistagpdf)
     
     if None != mistagpdf:
 	otherargs = [ mistag, mistagpdf, tageff, adet, atageff_f, atageff_t ]
@@ -1131,38 +1228,13 @@ def buildNonOscDecayTimePdf(
     ourmistagpdf = WS(ws, NonOscTaggingPdf('%s_mistagPdf' % name,
 	'%s_mistagPdf' % name, qf, qt, *otherargs))
     del otherargs
-    krawtimepdf = WS(ws, RooProdPdf( '%s_qfqtetapdf' % krawtimepdf.GetName(),
-	'%s_qfqtetapdf' % krawtimepdf.GetName(), krawtimepdf, ourmistagpdf))
 
-    # figure out if we need a conditional pdf product for per event
-    # decay time error or per event mistag
-    condpdfs = [ ]
-    parameterizeSet =[ ]
-    if None != timeerrpdf:
-	condpdfs.append(timeerrpdf)
-	if 0 < config['NBinsProperTime'] and timeerrpdf.dependsOn(timeerr):
-	    parameterizeSet.append(timeerr)
-	    if not timeerr.hasBinning('cache'):
-		timeerr.setBins(config['NBinsProperTime'], 'cache')
+    retVal = WS(ws, RooProdPdf( '%s_qfqtetapdf' % retVal.GetName(),
+	'%s_qfqtetapdf' % retVal.GetName(), retVal, ourmistagpdf))
 
-    if 0 < len(parameterizeSet):
-	krawtimepdf.setParameterizeIntegral(RooArgSet(*parameterizeSet))
+    # if we do not bin the acceptance, we apply it here
+    retVal = applyUnbinnedAcceptance(config, name, ws, retVal, acceptance)
 
-    # perform conditional pdf product if needed
-    if 0 < len(condpdfs):
-	noncondset = RooArgSet(time, qf, qt)
-	if None != mistagpdf:
-	    noncondset.add(mistag)
-	retVal = WS(ws, RooProdPdf('%s_NoAccTimePdf' % name,
-	    '%s no-acceptance time pdf' % name, RooArgSet(*condpdfs),
-	    RooFit.Conditional(RooArgSet(krawtimepdf), noncondset)))
-    else:
-	retVal = krawtimepdf
-    
-    if None != acceptance and 0 >= config['NBinsAcceptance']:
-	# do not bin acceptance
-	retVal = WS(ws, RooEffProd('%s_TimePdf' % name,
-	    '%s full time pdf' % name, retVal, acceptance))
     retVal.SetNameTitle('%s_TimePdf' % name, '%s full time pdf' % name)
 
     # return the copy of retVal which is inside the workspace
@@ -1185,17 +1257,12 @@ def buildBDecayTimePdf(
 	kvar = None,				# variable k which to integrate out
 	aprod = None,				# production asymmetry
 	adet = None,				# detection asymmetry
-	atageff = None,				# asymmetry in tagging efficiency
-	amistag = None				# asymmetry in mistag
+	atageff = None				# asymmetry in tagging efficiency
 	):
     # Look in LHCb-INT-2011-051 for the conventions used
-    from ROOT import ( RooConstVar, TagEfficiencyWeight, IfThreeWayCat,
-	    Dilution, RooProduct, RooTruthModel, RooGaussModel, Inverse,
-	    RooBDecay, RooProdPdf, RooBinnedPdf, RooEffResModel, RooEffProd,
-	    RooUniformBinning, RooArgSet, RooFit, RooWorkspace,
-	    RooGeneralisedSmearingBase, RooAbsPdf, RooArgList,
-	    RooRealVar, FinalStateChargePdf, RooCategory, DecRateCoeff )
-    RooNumGenSmearPdf = RooGeneralisedSmearingBase(RooAbsPdf)
+    from ROOT import ( RooConstVar, RooProduct, RooTruthModel, RooGaussModel,
+	    Inverse, RooBDecay, RooProdPdf, RooArgSet, DecRateCoeff,
+	    RooArgList )
 
     # constants used
     zero = WS(ws, RooConstVar('zero', 'zero', 0.))
@@ -1204,12 +1271,11 @@ def buildBDecayTimePdf(
     if None == aprod: aprod = zero
     if None == adet: adet = zero
     if None == atageff: atageff = zero
-    if None == amistag: amistag = zero
     if None == mistagpdf:
-	mistagobs = mistag
-    else:
-	if None == mistagobs and mistag.InheritsFrom('RooAbsReal'):
-	    mistagobs = mistag
+	mistagobs = None
+    else: # None != mistagpdf
+	if None == mistagobs:
+	    raise NameError('mistag pdf set, but no mistag observable given')
 
     # if no time resolution model is set, fake one
     if timeresmodel == None:
@@ -1220,38 +1286,36 @@ def buildBDecayTimePdf(
 	    '%s time resolution model' % name, time, zero, timeerr))
 
     # apply acceptance (if needed)
-    if None != acceptance and 0 < config['NBinsAcceptance']:
-	if not acceptance.isBinnedDistribution(RooArgSet(time)):
-	    acceptance = WS(ws, RooBinnedPdf(
-		"%sBinnedAcceptance" % acceptance.GetName(),
-		"%sBinnedAcceptance" % acceptance.GetName(),
-		time, 'acceptanceBinning', acceptance))
-	    acceptance.setForceUnitIntegral(True)
-	timeresmodel = WS(ws, RooEffResModel(
-	    '%s_timeacc_%s' % (timeresmodel.GetName(), acceptance.GetName()),
-	    '%s plus time acceptance %s' % (timeresmodel.GetTitle(), acceptance.GetTitle()),
-	    timeresmodel, acceptance))
+    timeresmodel = applyBinnedAcceptance(
+	    config, ws, time, timeresmodel, acceptance)
+    parameteriseResModelIntegrals(config, timeerrpdf, timeerr, timeresmodel)
 
     # if there is a per-event mistag distributions and we need to do things
     # correctly
     if None != mistagpdf:
-	otherargs = [ mistagobs, mistagpdf, tageff, mistag, aprod, adet,
-		atageff, amistag ]
+	otherargs = [ mistagobs, mistagpdf, tageff ]
     else:
-	otherargs = [ tageff, mistag, aprod, adet, atageff, amistag ]
+	otherargs = [ tageff ]
+    otherargs += mistag
+    otherargs += [ aprod, adet, atageff ]
+    flag = 0
+    if 'Bs2DsK' == name and 'CADDADS' == config['Bs2DsKCPObs']:
+	flag = DecRateCoeff.AvgDelta
     # build coefficients to go into RooBDecay
     cosh = WS(ws, DecRateCoeff('%s_cosh' % name, '%s_cosh' % name,
 	DecRateCoeff.CPEven, qf, qt, one, one, *otherargs))
     sinh = WS(ws, DecRateCoeff('%s_sinh' % name, '%s_sinh' % name,
-	DecRateCoeff.CPEven, qf, qt, D, Dbar, *otherargs))
+	flag | DecRateCoeff.CPEven, qf, qt, D, Dbar, *otherargs))
     cos = WS(ws, DecRateCoeff('%s_cos' % name, '%s_cos' % name,
 	DecRateCoeff.CPOdd, qf, qt, C, C, *otherargs))
     if 'PdfSSbarSwapMinusOne' in config['BugFlags']:
 	sin = WS(ws, DecRateCoeff('%s_sin' % name, '%s_sin' % name,
-	    DecRateCoeff.CPOdd, qf, qt, Sbar, S, *otherargs))
+	    flag | DecRateCoeff.CPOdd, qf, qt, Sbar, S, *otherargs))
     else:
 	sin = WS(ws, DecRateCoeff('%s_sin' % name, '%s_sin' % name,
-	    DecRateCoeff.CPOdd | DecRateCoeff.Minus, qf, qt, S, Sbar, *otherargs))
+	    flag | DecRateCoeff.CPOdd | DecRateCoeff.Minus,
+	    qf, qt, S, Sbar, *otherargs))
+    del flag
     del otherargs
 
     # perform the actual k-factor smearing integral (if needed)
@@ -1279,72 +1343,22 @@ def buildBDecayTimePdf(
 	time, tau, kDeltaGamma,	cosh, sinh, cos, sin,
 	kDeltaM, timeresmodel, RooBDecay.SingleSided))
 
-    # perform the actual k-factor smearing integral (if needed)
-    if None != kfactorpdf and None != kvar:
-	krawtimepdf = WS(ws, RooNumGenSmearPdf('%s_kSmearedRawTimePdf' % name,
-	    '%s raw time pdf smeared with k factor' % name,
-	    kvar, rawtimepdf, kfactorpdf['pdf']))
-	# since we fine-tune the range of the k-factor distributions, and we
-	# know that the distributions are well-behaved, we can afford to be a
-	# little sloppy
-        krawtimepdf.convIntConfig().setEpsAbs(1e-4)
-        krawtimepdf.convIntConfig().setEpsRel(1e-4)
-        krawtimepdf.convIntConfig().getConfigSection('RooAdaptiveGaussKronrodIntegrator1D').setCatLabel('extrapolation','Wynn-Epsilon')
-        krawtimepdf.convIntConfig().getConfigSection('RooAdaptiveGaussKronrodIntegrator1D').setCatLabel('sumRule','Trapezoid')
-        krawtimepdf.convIntConfig().getConfigSection('RooAdaptiveGaussKronrodIntegrator1D').setRealValue('minSteps', 3)
-        krawtimepdf.convIntConfig().getConfigSection('RooAdaptiveGaussKronrodIntegrator1D').setRealValue('maxSteps', 16)
-        krawtimepdf.convIntConfig().getConfigSection('RooAdaptiveGaussKronrodIntegrator1D').setCatLabel('method','15Points')
-        krawtimepdf.convIntConfig().getConfigSection('RooAdaptiveGaussKronrodIntegrator1D').setRealValue('maxSeg', 1000)
-        #krawtimepdf.convIntConfig().method1D().setLabel('RooAdaptiveGaussKronrodIntegrator1D')
-        krawtimepdf.convIntConfig().method1D().setLabel('RooIntegrator1D')
-        krawtimepdf.convIntConfig().method1DOpen().setLabel('RooAdaptiveGaussKronrodIntegrator1D')	
-	# set integration range
-	center = WS(ws, RooConstVar(
-	    '%s_kFactorCenter' % name, '%s_kFactorCenter' % name,
-	    0.5 * (kfactorpdf['range'][0] + kfactorpdf['range'][1])))
-	width = WS(ws, RooConstVar(
-	    '%s_kFactorWidth' % name, '%s_kFactorWidth' % name,
-	    0.5 * (kfactorpdf['range'][1] - kfactorpdf['range'][0])))
-	krawtimepdf.setConvolutionWindow(center, width, 1.0)
-	if 0 < config['NBinsTimeKFactor']:
-	    kfactortimebinning = WS(ws, RooUniformBinning(     
-		time.getMin(), time.getMax(), config['NBinsTimeKFactor'],
-		'%s_timeBinnedCache' % name))
-	    time.setBinning(kfactortimebinning, kfactortimebinning.GetName())
-	    krawtimepdf.setBinnedCache(time, kfactortimebinning.GetName(),
-		    RooArgSet(qt, qf))
-    else:
-	krawtimepdf = rawtimepdf
-
-    # figure out if we need a conditional pdf product for per event
-    # decay time error or per event mistag
-    condpdfs = [ ]
-    parameterizeSet =[ ]
+    # work out in which observables to parameterise k-factor smearing, then
+    # apply it
+    paramObs = RooArgSet(qt, qf)
+    if None != mistagpdf:
+	paramObs.add(mistagobs)
     if None != timeerrpdf:
-	condpdfs.append(timeerrpdf)
-	if 0 < config['NBinsProperTime'] and timeerrpdf.dependsOn(timeerr):
-	    parameterizeSet.append(timeerr)
-	    if not timeerr.hasBinning('cache'):
-		timeerr.setBins(config['NBinsProperTime'], 'cache')
+	paramObs.add(timeerr)
+    retVal = applyKFactorSmearing(config, name, ws, time, rawtimepdf, kvar,
+	    kfactorpdf, paramObs)
 
-    if 0 < len(parameterizeSet):
-	krawtimepdf.setParameterizeIntegral(RooArgSet(*parameterizeSet))
-
-    # perform conditional pdf product if needed
-    if 0 < len(condpdfs):
-	noncondset = RooArgSet(time, qf, qt)
-	if None == mistagpdf:
-	    noncondset.add(mistagobs)
-	retVal = WS(ws, RooProdPdf('%s_NoAccTimePdf' % name,
-	    '%s no-acceptance time pdf' % name, RooArgSet(*condpdfs),
-	    RooFit.Conditional(RooArgSet(krawtimepdf), noncondset)))
-    else:
-	retVal = krawtimepdf
+    retVal = applyDecayTimeErrPdf(config, name, ws, time, timeerr, qt, qf,
+	    mistagobs, retVal, timeerrpdf, mistagpdf)
     
-    if None != acceptance and 0 >= config['NBinsAcceptance']:
-	# do not bin acceptance
-	retVal = WS(ws, RooEffProd('%s_TimePdf' % name,
-	    '%s full time pdf' % name, retVal, acceptance))
+    # if we do not bin the acceptance, we apply it here
+    retVal = applyUnbinnedAcceptance(config, name, ws, retVal, acceptance)
+
     retVal.SetNameTitle('%s_TimePdf' % name, '%s full time pdf' % name)
 
     # return the copy of retVal which is inside the workspace
@@ -1406,7 +1420,6 @@ def getMasterPDF(config, name, debug = False):
 	    RooGaussModel, RooTruthModel, RooWorkspace, RooAbsArg,
 	    RooAddPdf, RooProdPdf, RooExtendPdf, RooGenericPdf, RooExponential,
 	    RooPolynomial, RooUniform, RooFit, RooUniformBinning,
-	    IfThreeWayCat, Dilution, IfThreeWayCatPdf, CombBkgPTPdf,
 	    BdPTAcceptance, RooSimultaneous, RangeAcceptance, RooEffProd,
 	    SquaredSum, CPObservable, PowLawAcceptance, MistagCalibration)
     # fix context
@@ -1424,6 +1437,7 @@ def getMasterPDF(config, name, debug = False):
 	config['NBinsMass'] = 0
 	config['MistagInterpolation'] = False
 	config['MassInterpolation'] = False
+	config['DecayTimeErrInterpolation'] = False
 	config['AcceptanceCorrectionInterpolation'] = False
 	config['CombineModesForEffCPObs'] = [ ]
     print '########################################################################'
@@ -1451,7 +1465,7 @@ def getMasterPDF(config, name, debug = False):
 	    'acceptanceBinning'))
 	time.setBinning(acceptanceBinning, 'acceptanceBinning')
     timeerr = WS(ws, RooRealVar('timeerr', 'decay time error',
-	0.05, 0.01, 0.1, 'ps'))
+	0.05, 1e-3, 0.25, 'ps'))
 
     mass = WS(ws, RooRealVar('mass', 'mass', 5320., 5420.))
     if config['NBinsMass'] > 0:
@@ -1505,27 +1519,42 @@ def getMasterPDF(config, name, debug = False):
     condobservables = [ ]
 
     if config['PerEventMistag']:
-	mistagcalib = RooArgList()
-	avgmistag = zero
-        if len(config['MistagCalibrationParams']) == 2 or \
-		len(config['MistagCalibrationParams']) == 3:
-            i = 0
-    	    for p in config['MistagCalibrationParams'][0:2]:
-		mistagcalib.add(WS(ws, RooRealVar(
-		    'MistagCalib_p%u' % i, 'MistagCalib_p%u' % i, p)))
-    	        i = i + 1
-	    del i
-    	    if len(config['MistagCalibrationParams']) == 3:
+	tagOmegaSigCal = []
+	namsfx = [ 'B', 'Bbar' ]
+	if len(config['MistagCalibrationParams']) > 2:
+	    raise NameError('MistagCalibrationParams configurable slot must'
+		    ' not have more than two entries (B, Bbar)!')
+	for j in xrange(0, len(config['MistagCalibrationParams'])):
+	    if len(config['MistagCalibrationParams'][j]) != 2 and \
+		    len(config['MistagCalibrationParams'][j]) != 3:
+		raise NameError('MistagCalibrationParams configurable slot '
+			'calibration %u must be an array of length 2 or 3!' %
+			j)
+	    mistagcalib = RooArgList()
+	    avgmistag = zero
+	    if len(config['MistagCalibrationParams'][j]) == 2 or \
+		    len(config['MistagCalibrationParams'][j]) == 3:
+		i = 0
+                for p in config['MistagCalibrationParams'][j][0:2]:
+		    mistagcalib.add(WS(ws, RooRealVar(
+			'MistagCalib%s_p%u' % (namsfx[j], i),
+			'MistagCalib%s_p%u' % (namsfx[j], i), p)))
+		    i = i + 1
+		del i
+	    if len(config['MistagCalibrationParams'][j]) == 3:
 		avgmistag = WS(ws, RooRealVar(
-		    'MistagCalib_avgmistag', 'MistagCalib_avgmistag', 
-		    config['MistagCalibrationParams'][2]))
-	tagOmegaSigCal = WS(ws, MistagCalibration(
-	    '%s_c' % tagOmegaSig.GetName(), '%s_c' % tagOmegaSig.GetName(),
-	    tagOmegaSig, mistagcalib, avgmistag))
-	del mistagcalib
-	del avgmistag
+		    'MistagCalib%s_avgmistag' % namsfx[j],
+		    'MistagCalib%s_avgmistag' % namsfx[j],
+		    config['MistagCalibrationParams'][j][2]))
+	    tagOmegaSigCal.append(WS(ws, MistagCalibration(
+		'%s%s_c' % (tagOmegaSig.GetName(), namsfx[j]),
+		'%s%s_c' % (tagOmegaSig.GetName(), namsfx[j]),
+		tagOmegaSig, mistagcalib, avgmistag)))
+	    del mistagcalib
+	    del avgmistag
+	del namsfx
     else:
-	tagOmegaSigCal = tagOmegaSig
+	tagOmegaSigCal = [ tagOmegaSig ]
     # read in templates
     if config['PerEventMistag']:
 	mistagtemplate = getMistagTemplate(config, ws, tagOmegaSig)
@@ -1592,7 +1621,7 @@ def getMasterPDF(config, name, debug = False):
         # time, mean, scale, timeerr
         trm = WS(ws, RooGaussModel('GaussianWithPEDTE',
 	    'GaussianWithPEDTE',
-	    time, RooFit.RooConst(0.), RooFit.RooConst(1.), timeerr ))
+	    time, RooFit.RooConst(0.), timeerr, RooFit.RooConst(1.)))
 
     # Decay time acceptance function
     # ------------------------------
@@ -1646,8 +1675,8 @@ def getMasterPDF(config, name, debug = False):
     # Decay time error distribution
     # -----------------------------
     if 'PEDTE' in config['DecayTimeResolutionModel']:
-	# resolution in ps: 3/terrpdf_shape
-        terrpdf_shape = WS(ws, RooConstVar('terrpdf_shape', 'terrpdf_shape', -60.))
+	# resolution in ps: 3*terrpdf_shape
+        terrpdf_shape = WS(ws, RooConstVar('terrpdf_shape', 'terrpdf_shape', 1./60.))
         terrpdf_truth = WS(ws, RooTruthModel('terrpdf_truth', 'terrpdf_truth', timeerr))
         terrpdf_i0 = WS(ws, RooDecay('terrpdf_i0', 'terrpdf_i0', timeerr, terrpdf_shape,
                 terrpdf_truth, RooDecay.SingleSided))
@@ -1658,7 +1687,7 @@ def getMasterPDF(config, name, debug = False):
             from ROOT import RooBinned1DQuinticBase, RooAbsPdf
             RooBinned1DQuinticPdf = RooBinned1DQuinticBase(RooAbsPdf)
 	    obins = timeerr.getBins()
-	    nbins = config['NBinsProperTime']
+	    nbins = config['NBinsProperTimeErr']
 	    if 0 == nbins:
 	        print 'ERROR: requested binned interpolation of timeerr %s %d %s' % (
 	    	    'histograms with ', nbins, ' bins - increasing to 100 bins')
@@ -1686,7 +1715,7 @@ def getMasterPDF(config, name, debug = False):
 	    omegaa = WS(ws, RooConstVar('omegaa', 'omegaa', config['TagOmegaSig']))
 	    sigMistagPDF = WS(ws, MistagDistribution(
 	        'sigMistagPDF_trivial', 'sigMistagPDF_trivial',
-	        tagOmegaSigCal, omega0, omegaa, omegaf))
+	        tagOmegaSig, omega0, omegaa, omegaf))
 	else:
 	    sigMistagPDF = mistagtemplate
     else:
@@ -1786,6 +1815,30 @@ def getMasterPDF(config, name, debug = False):
 			WS(ws, RooGaussian(
 			    '%s_bar_constraint' % mode, '%s_bar_constraint' % mode,
 			    sqsumbar, one, strength)))
+	elif 'Bs2DsK' == mode and 'CADDADS' == config['Bs2DsKCPObs']:
+	    # calculate CP observables from the respective |lambda|, arg(lambda),
+	    # arg(lambdabar)
+	    ACPobs = cpobservables.AsymmetryObservables(
+		    config['StrongPhase'][mode] - config['WeakPhase'][mode],
+		    config['StrongPhase'][mode] + config['WeakPhase'][mode],
+		    config['ModLf'][mode])
+            ACPobs.printtable(mode)
+	    # standard C, D, Dbar, S, Sbar parametrisation
+	    myconfig = config
+	    modenick = mode
+	    C    = WS(ws, RooRealVar(
+	        '%s_C' % mode   , '%s_C' % mode   , ACPobs.Cf()   , -limit, limit))
+	    D    = WS(ws, RooRealVar('%s_<D>' % mode   , '%s_<D>' % mode   ,
+		0.5 * (ACPobs.Df() + ACPobs.Dfbar()), -limit, limit))
+	    Dbar = WS(ws, RooRealVar('%s_DeltaD' % mode, '%s_DeltaD' % mode,
+		0.5 * (ACPobs.Df() - ACPobs.Dfbar()), -limit, limit))
+	    S    = WS(ws, RooRealVar('%s_<S>' % mode   , '%s_<S>' % mode   ,
+		0.5 * (ACPobs.Sf() + ACPobs.Sfbar()), -limit, limit))
+	    Sbar = WS(ws, RooRealVar('%s_DeltaS' % mode, '%s_DeltaS' % mode,
+		0.5 * (ACPobs.Sf() - ACPobs.Sfbar()), -limit, limit))
+	    C.setError(0.4)
+	    for v in (D, Dbar, S, Sbar):
+		v.setError(0.6)
 	else: # either not Bs->DsK, or we fit directly for gamma, delta, lambda
 	    if mode in config['CombineModesForEffCPObs']:
 		for m in config['CombineModesForEffCPObs']:
@@ -1822,7 +1875,7 @@ def getMasterPDF(config, name, debug = False):
 	    Sbar = WS(ws, CPObservable('%s_Sbar' % modenick, '%s_Sbar' % modenick,
 		Lambda, delta, phi_w, CPObservable.Sbar))
 	# figure out asymmetries to use
-	asyms = { 'Prod': None, 'Det': None, 'TagEff': None, 'Mistag': None }
+	asyms = { 'Prod': None, 'Det': None, 'TagEff': None }
 	for k in asyms.keys():
 	    for n in (mode, modenick, mode.split('2')[0]):
 		if n in config['Asymmetries'][k]:
@@ -1842,7 +1895,7 @@ def getMasterPDF(config, name, debug = False):
 		time, timeerr, qt, qf, tagOmegaSigCal, tageff,
 		gammas, deltaGammas, deltaMs, C, D, Dbar, S, Sbar,
 		trm, tacc, terrpdf, sigMistagPDF, tagOmegaSig, kfactorpdf, kfactor,
-		asyms['Prod'], asyms['Det'], asyms['TagEff'], asyms['Mistag'])
+		asyms['Prod'], asyms['Det'], asyms['TagEff'])
 
     ########################################################################
     # Bs -> Ds Pi like modes
@@ -1861,7 +1914,7 @@ def getMasterPDF(config, name, debug = False):
 	    gamma, deltagamma, deltam = None, None, None
 	    modenick = mode
 	# figure out asymmetries to use
-	asyms = { 'Prod': None, 'Det': None, 'TagEff': None, 'Mistag': None }
+	asyms = { 'Prod': None, 'Det': None, 'TagEff': None }
 	for k in asyms.keys():
 	    for n in (mode, modenick, mode.split('2')[0]):
 		if n in config['Asymmetries'][k]:
@@ -1883,8 +1936,7 @@ def getMasterPDF(config, name, debug = False):
 		time, timeerr, qt, qf, tagOmegaSigCal, tageff,
 		gamma, deltagamma, deltam, one, zero, zero, zero, zero,
 		trm, tacc, terrpdf, sigMistagPDF, tagOmegaSig, kfactorpdf, kfactor,
-		asyms['Prod'], asyms['Det'], asyms['TagEff'],
-		asyms['Mistag'])
+		asyms['Prod'], asyms['Det'], asyms['TagEff'])
 
     ########################################################################
     # non-osciallating modes
@@ -2009,7 +2061,6 @@ def runBsGammaFittercFit(generatorConfig, fitConfig, toy_num, debug, wsname, ini
 	    RooGaussModel, RooTruthModel, RooWorkspace, RooAbsArg, RooAddPdf,
 	    RooProdPdf, RooExtendPdf, RooGenericPdf, RooExponential,
 	    RooUniform, RooFit, RooUniformBinning, TRandom3,
-	    IfThreeWayCat, Dilution, IfThreeWayCatPdf, CombBkgPTPdf,
 	    RooDataSet, BdPTAcceptance, RooLinkedList, RooRandom )
 
     # tune integrator configuration
@@ -2035,10 +2086,9 @@ def runBsGammaFittercFit(generatorConfig, fitConfig, toy_num, debug, wsname, ini
 	cats.append(pdf['ws'].obj(cat))
 
     if None == generatorConfig['DataFileName']:
-	# generate events ourselves
+	pdf['observables'].Print()
 	dataset = pdf['epdf'].generate(pdf['observables'], RooFit.Verbose())
-        # we want our own copy of the data set to do with as we please
-        ROOT.SetOwnership(dataset, True)
+	ROOT.SetOwnership(dataset, True)
     else:
 	# read event from external file
 	dataset = readDataSet(
@@ -2059,6 +2109,7 @@ def runBsGammaFittercFit(generatorConfig, fitConfig, toy_num, debug, wsname, ini
 		ROOT.SetOwnership(tmpds, True)
 		fitConfig['NEvents'].append(tmpds.numEntries())
 		del tmpds
+		gc.collect()
 
     dataset.Print('v')
     for cat in cats:
@@ -2088,6 +2139,7 @@ def runBsGammaFittercFit(generatorConfig, fitConfig, toy_num, debug, wsname, ini
 	# split step for current category done
 	oldds = newds
 	del newds
+	gc.collect()
     # now merge all datasets
     while len(oldds) > 1:
 	oldds[0].append(oldds[1])
@@ -2097,29 +2149,36 @@ def runBsGammaFittercFit(generatorConfig, fitConfig, toy_num, debug, wsname, ini
 
     del cats
     del pdf
+    gc.collect()
 
     pdf = getMasterPDF(fitConfig, 'FIT', debug)
 
     dataset = dataset.reduce(RooFit.SelectVars(pdf['observables']))
     ROOT.SetOwnership(dataset, True)
     dataset = WS(pdf['ws'], dataset, [])
+    gc.collect()
 
     plot_init   = (wsname != None) and initvars
     plot_fitted = (wsname != None) and (not initvars)
 
     if plot_init :
         pdf['ws'].writeToFile(wsname)
-	pass
 
-    # more recent RooFit versions need Optimize(0) to work correctly
-    # with our complicated (E)PDFs
+    # check Optimize(1), Optimize(2) regularly against Optimize(0) to see if
+    # the optimised versions work correctly for you - if the log file is not
+    # identical to the one generated by Optimize(0), don't use it
     fitOpts = [
 	    RooFit.Optimize(fitConfig['Optimize']),
 	    RooFit.Strategy(fitConfig['Strategy']),
+	    RooFit.Minimizer(*fitConfig['Minimizer']),
 	    RooFit.Timer(), RooFit.Save(),
 	    # shut up Minuit in blinding mode
 	    RooFit.Verbose(fitConfig['IsToy'] or not fitConfig['Blinding'])
 	    ]
+    if fitConfig['Offset']:
+	fitOpts.append(RooFit.Offset(fitConfig['Offset']))
+    if fitConfig['NumCPU'] > 1:
+	fitOpts.append(RooFit.NumCPU(fitConfig['NupCPU']))
     if not fitConfig['IsToy'] and fitConfig['Blinding']:
 	# make RooFit quiet as well
 	from ROOT import RooMsgService
@@ -2138,6 +2197,12 @@ def runBsGammaFittercFit(generatorConfig, fitConfig, toy_num, debug, wsname, ini
 
     printResult(fitConfig, fitResult,
 	    fitConfig['Blinding'] and not fitConfig['IsToy'])
+    # dump fit result to a ROOT file
+    from ROOT import TFile
+    fitresfile = TFile('fitresult_%04d.root' % toy_num, 'RECREATE')
+    fitresfile.WriteTObject(fitResult, 'fitresult_%04d' % toy_num)
+    fitresfile.Close()
+    del fitresfile
 
     if plot_fitted:
         pdf['ws'].writeToFile(wsname)

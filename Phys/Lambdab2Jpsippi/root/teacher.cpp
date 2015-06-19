@@ -15,6 +15,7 @@
 // Lambdab2JPsippi Package
 #include "Lambdab.h"
 #include "Tuples.h"
+#include "MultipleCandidates.h"
 
 using namespace std ;
 
@@ -49,14 +50,14 @@ void loop(Lambdab* ntuple, bool signal, NeuroBayesTeacher* nb){
     if(0==i%((int)(frac*nentries))) std::cout << " |-> " << i << " / " << nentries 
                                               << " (" << 100*i/nentries << "%)" << std::endl;  
 
-    if (!preselection(ntuple)){
+    if (!ntuple->preselection(0)){ // only pv 0 considered
       nFailed++;
-    } else if (!teaching(ntuple,signal)){
+    } else if (!ntuple->teaching(signal)){
       nNonTeach++;
     } else {
       nGood++ ;
       // Feed Teacher
-      prepareArray(nvar, InputArray, ntuple); // Tuple.cpp
+      ntuple->prepareArray(nvar, InputArray,0); // Tuple.icpp pv =0
       nb->SetTarget( target  ) ; 
       nb->SetNextInput(nvar,InputArray);     
       
@@ -113,7 +114,7 @@ int TrainTeacher(TString fullname1, TString fullname2){
   nb->NB_DEF_ITER(1000);           // number of training iteration   TRY 0
   nb->NB_DEF_METHOD("BFGS");       // will stop automatically if there's nothing more to learn
   nb->NB_DEF_LEARNDIAG( 1 );       // BFGS
-  nb->NB_DEF_PRE(212);             // flatten and de-correlate input variables, 
+  nb->NB_DEF_PRE(612);             // flatten and de-correlate input variables, 
                                    // keep only variables with >1 sigma significance
   
   // Individual preprocessing flags
@@ -125,7 +126,7 @@ int TrainTeacher(TString fullname1, TString fullname2){
   // 3X : Deal with delta functions at -999
   
   for ( unsigned int i = 0 ; i!=nvar ; i++){
-    nb->SetIndividualPreproFlag(i,individualPreproFlag(i));
+    nb->SetIndividualPreproFlag(i,ntuple1->individualPreproFlag(i));
   }
   
   // Output
@@ -157,8 +158,8 @@ int main(int argc, char** argv) {
 
   if(argc<3){
     std::cout << "ERROR: Insufficient arguments given" << std::endl;  
-    std::cout << "./teacher.exe /castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab2Jpsippi-MC11a-Psippi-521.root" 
-	      << "  /castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab2Jpsippi-MC11a-IncPsi-501.root" 
+    std::cout << "./teacher.exe /castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-MC11-Lb2Jpsippi-716.root" 
+	      << "  /castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-MC11-IncPsi-717.root" 
               << "  | tee test-teach" << std::endl;  
     return -9;
   }

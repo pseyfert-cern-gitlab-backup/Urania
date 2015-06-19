@@ -21,6 +21,8 @@ def AccesPackage(name):
     else:
         print path1," does not exist"
 
+AccessPackage = AccesPackage
+
 def collect_packages(req):
     lines = req.readlines()
     packs = []

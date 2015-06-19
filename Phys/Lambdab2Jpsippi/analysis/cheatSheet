@@ -1,0 +1,31 @@
+root.exe
+TFile* _ss = TFile::Open("Lambdab2Jpsippi-MC11a-Psippi-521-NN.root")
+//TFile* _sn = TFile::Open("Lambdab-R12S17b-685-NN.root")
+TFile* _sn = TFile::Open("Lambdab-R12S17b-685-NN.root")
+TTree* NS = _sn->Get("NetTree")
+TTree* SS = _ss->Get("NetTree")
+TCut K("Category==-1")
+TCut Pi("Category>=0") // pion DLLK<0
+TCut Ppi("Category==1")
+TCut Bd("Category==-2")
+TCut Bad("Category==-9")
+TCut NN("netOutput>0.95")
+TCut Baryon("Baryon")
+SandB(NS,0,"PsiKpiMass",Bd,"1",!Bad,"","Bd window data",5200,5350) //the Bd window may be too tight
+SandB(NS,SS,"PsiKpiMass","1","1",NN,"N","Bd window data and ppi",5200,5350) //the Bd window may be too tight
+
+SandB(NS,SS,"PsiKpMass","1","1",Pi && NN,"N","Data and MC PsiKpMass at DLLK<0",5500,5800)
+SandB(NS,SS,"PsiKpMass","1","1",K && NN,"N","Data and MC PsiKpMass at DLLK>=0",5500,5800)
+
+SandB(NS,SS,"ppiMass","1","1",Pi && NN,"N","Data and MC ppi mass",1070,1270,50)
+SandB(NS,SS,"ppiMass","1","1",Ppi && NN,"N","Data and MC ppi mass after Lambda veto",1050,2550,75)
+gPad->SetLogy()
+SandB(NS,SS,"FullFitMass","1","1",!Bad,"N","Psippi mass - all",4900,6100)
+SandB(NS,SS,"FullFitMass","1","1","Category>-2","N","Psippi mass - Not Bd",4900,6100)
+SandB(NS,SS,"FullFitMass","1","1",Pi,"N","Psippi mass - DLLK<0",4900,6100)
+SandB(NS,SS,"FullFitMass","1","1",Ppi,"N","Psippi mass - Not Reflection",4900,6100)
+
+SandB(NS,SS,"FullFitMass","1","1",!Bad && NN,"NM","Psippi mass - all and NN",4900,6100)
+SandB(NS,SS,"FullFitMass","1","1",NN && "Category>-2","NM","Psippi mass - Not Bd and NN",4900,6100)
+SandB(NS,SS,"FullFitMass","1","1",Pi && NN,"NM","Psippi mass - DLLK<0 and NN",4900,6100)
+SandB(NS,SS,"FullFitMass","1","1",Ppi && NN,"NM","Psippi mass - Not Reflection and NN",4900,6100)

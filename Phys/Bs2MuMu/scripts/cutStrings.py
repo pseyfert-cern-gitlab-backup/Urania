@@ -11,9 +11,9 @@ Bu_Hlt2_TIS = '&&BplusHlt2Phys_TIS==1'
 Bu_Hlt2_TOS = '&&BplusHlt2Phys_TOS==1'
 
 
-L0_Dec = '&&(BplusL0MuonDecision_Dec==1||BplusL0DiMuonDecision_Dec==1||BplusL0HadronDecision_Dec==1||BplusL0ElectronDecision_Dec==1||BplusL0ElectronHiDecision_Dec==1||BplusL0PhotonDecision_Dec==1||BplusL0PhotonHiDecision_Dec==1)'	
-L0_TIS = '&&(BplusL0MuonDecision_TIS==1||BplusL0DiMuonDecision_TIS==1||BplusL0HadronDecision_TIS==1||BplusL0ElectronDecision_TIS==1||BplusL0ElectronHiDecision_TIS==1||BplusL0PhotonDecision_TIS==1||BplusL0PhotonHiDecision_TIS==1)'	
-L0_TOS = '&&(BplusL0MuonDecision_TOS==1||BplusL0DiMuonDecision_TOS==1||BplusL0HadronDecision_TOS==1||BplusL0ElectronDecision_TOS==1||BplusL0ElectronHiDecision_TOS==1||BplusL0PhotonDecision_TOS==1||BplusL0PhotonHiDecision_TOS==1)'	
+L0_Dec = '&&(BplusL0MuonDecision_Dec==1||BplusL0DiMuonDecision_Dec==1||BplusL0HadronDecision_Dec==1||BplusL0ElectronDecision_Dec==1||BplusL0ElectronHiDecision_Dec==1||BplusL0PhotonDecision_Dec==1||BplusL0PhotonHiDecision_Dec==1)'
+L0_TIS = '&&(BplusL0MuonDecision_TIS==1||BplusL0DiMuonDecision_TIS==1||BplusL0HadronDecision_TIS==1||BplusL0ElectronDecision_TIS==1||BplusL0ElectronHiDecision_TIS==1||BplusL0PhotonDecision_TIS==1||BplusL0PhotonHiDecision_TIS==1)'
+L0_TOS = '&&(BplusL0MuonDecision_TOS==1||BplusL0DiMuonDecision_TOS==1||BplusL0HadronDecision_TOS==1||BplusL0ElectronDecision_TOS==1||BplusL0ElectronHiDecision_TOS==1||BplusL0PhotonDecision_TOS==1||BplusL0PhotonHiDecision_TOS==1)'
 
 Hlt1_Dec = '&&(BplusHlt1SingleMuonHighPTDecision_Dec==1||BplusHlt1SingleElectronNoIPDecision_Dec==1||BplusHlt1TrackAllL0Decision_Dec==1||BplusHlt1TrackMuonDecision_Dec==1||BplusHlt1TrackPhotonDecision_Dec==1||BplusHlt1DiMuonLowMassDecision_Dec==1||BplusHlt1DiMuonHighMassDecision_Dec==1)'
 Hlt1_TIS = '&&(BplusHlt1SingleMuonHighPTDecision_TIS==1||BplusHlt1SingleElectronNoIPDecision_TIS==1||BplusHlt1TrackAllL0Decision_TIS==1||BplusHlt1TrackMuonDecision_TIS==1||BplusHlt1TrackPhotonDecision_TIS==1||BplusHlt1DiMuonLowMassDecision_TIS==1||BplusHlt1DiMuonHighMassDecision_TIS==1)'
@@ -50,14 +50,14 @@ Bu_cut_TOS = Bu_L0_TOS + Bu_Hlt1_TOS + Bu_Hlt2_TOS
 
 #Test the LoHlt1 TIS efficiency bias on data when all the trigger levels are required by default
 
-#Bu_cut_Dec = cut_TRIG 
+#Bu_cut_Dec = cut_TRIG
 #Bu_cut_TIS = cut_TRIG + cut_TIS_noHlt2
 #Bu_cut_TOS = cut_TRIG + cut_TOS_noHlt2
 #Bu_cut_TIS = cut_TRIG + cut_TIS
 #Bu_cut_TOS = cut_TRIG + cut_TOS
 
-#Bu_cut_TIS = Bu_L0_TIS + Bu_Hlt1_TIS 
-#Bu_cut_TOS = Bu_L0_TOS + Bu_Hlt1_TOS 
+#Bu_cut_TIS = Bu_L0_TIS + Bu_Hlt1_TIS
+#Bu_cut_TOS = Bu_L0_TOS + Bu_Hlt1_TOS
 
 #Trigger lines for Bs
 Bs_L0_TIS = '&&B_s0L0Global_TIS==1'
@@ -74,7 +74,7 @@ Bs_cut_TOS = Bs_L0_TOS + Bs_Hlt1_TOS + Bs_Hlt2_TOS
 #The Jpsi trigger decision
 Bu_Jpsi_L0 = '&&BplusL0MuonDecision_TOS==1'
 Bs_Jpsi_L0 = '&&B_s0L0MuonDecision_TOS==1'
-  
+
 Bu_Jpsi_Hlt1 = '&&(BplusHlt1DiMuonHighMassDecision_TOS==1||BplusHlt1TrackMuonDecision_TOS==1)'
 Bs_Jpsi_Hlt1 = '&&(B_s0Hlt1DiMuonHighMassDecision_TOS==1||B_s0Hlt1TrackMuonDecision_TOS==1)'
 
@@ -119,8 +119,8 @@ trackingStudyCuts= "&&PIDk>15&&dDsig_r>25"
 # fiducial cuts
 #
 
-fiducialBu2011="&&Bpt>500&&Blife_ps<7.36&&mu1pt<1000000&&mu2pt<1000000"#FIXME P, K 
-fiducialBu="&&Bpt>500&&Blife_ps<13.248&&mu1pt<500000&&mu2pt<500000"#FIXME P, K 
+fiducialBu2011="&&Bpt>500&&Blife_ps<7.36&&mu1pt<1000000&&mu2pt<1000000"#FIXME P, K
+fiducialBu="&&Bpt>500&&Blife_ps<13.248&&mu1pt<500000&&mu2pt<500000"#FIXME P, K
 fiducialBs2011="&&Bpt>500&&Blife_ps<7.36&&sqrt(mu1p1*mu1p1+mu1p2*mu1p2)<1000000&&sqrt(mu2p1*mu2p1+mu2p2*mu2p2)<1000000&&sqrt(k1p1*k1p1+k1p2*k1p2)<1000000&&sqrt(k2p1*k2p1+k2p2*k2p2)<1000000"
 fiducialBs="&&Bpt>500&&Blife_ps<13.24&&sqrt(mu1p1*mu1p1+mu1p2*mu1p2)<500000&&sqrt(mu2p1*mu2p1+mu2p2*mu2p2)<500000"#&&sqrt(k1p1*k1p1+k1p2*k1p2)<1000000&&sqrt(k2p1*k2p1+k2p2*k2p2)<1000000"
 fiducialBu2012="&&Bpt>500&&Blife_ps<13.248 &&sqrt(mu1p1*mu1p1+mu1p2*mu1p2)<40000&&sqrt(mu2p1*mu2p1+mu2p2*mu2p2)<40000 &&sqrt(k1p1*k1p1+k1p2*k1p2)<40000  &&sqrt(mu1p1*mu1p1+mu1p2*mu1p2+mu1p3*mu1p3)<500000&&sqrt(mu2p1*mu2p1+mu2p2*mu2p2+mu2p3*mu2p3)<500000 &&sqrt(k1p1*k1p1+k1p2*k1p2+k1p3*k1p3)<500000"
@@ -186,7 +186,7 @@ normBs_lnf="fabs(B_s0_JCMass-5366.3)<100&&fabs(J_psi_1S_M-3096.916)<60&&fabs(phi
 trigger="&&L0Decision&&Hlt1Decision&&Hlt2Decision"
 JPsiRecoCuts = "&&dDsig_r>25&&sqrt(mu1p1*mu1p1+mu1p2*mu1p2)>250&&sqrt(mu2p1*mu2p1+mu2p2*mu2p2)>250&&sqrt(k1p1*k1p1+k1p2*k1p2)>250"#&&JPsi_Dsig>13"
 BuCuts = "&&k1ips>5&&kaon_track_Chi2DoF<4&&Bips<5&&fabs(Bmass_JC-5279.17)<400&&Vchi2<45"
-   
+
 
 recoBu=commonCuts+JPsiCuts+BuCuts+clonesBu+tightMBd+fiducialBu2012+JPsiRecoCuts+trigger+"&Bmass_JC>5200"+"&&PIDk>0"
 

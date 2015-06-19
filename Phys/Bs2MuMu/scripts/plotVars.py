@@ -2,7 +2,7 @@ from __future__ import division
 from ROOT import *
 import cutStrings as cs
 from readData import *
-
+import os
 #Author: Siim Tolk (NIKHEF)
 #Plot a selected variable for signal and background.
 # Cut away the events under in the sidebands
@@ -13,13 +13,18 @@ class plotVars:
 		Define p = plotVars(opts={}):	\n\
 		With options:\n\
 		#Datasets: \n\
+		'includeMC12_S17':False, 'includeMC12_S20':False, \n\
 		'includeMC10':False, 'includeMC12':False, \n\
 		'include2011_Strip17':False, 'include2011_Strip20r1_71pb':False,\n\
 		'include2012_Strip19abc':False, 'include2012_Strip20':False,\n\
+		'include2012_Strip19abc_GoodBadITRuns':False,\n\
+		'include2012_Strip20_GoodBadITRuns':False, \n\
 		#Channel:\n\
 		'channel':'Bu' ,\n\
 		#Selection:\n\
 		'JpsiTrig':False,  \n\
+		'BhhMassCut',False, \n\
+		'mu_GhostProb<',False, \n\
 		#Require Jpsi trigger\n\
 		'selectRuns_2011_Strip20r1':False,  #Restrict the study to runs that have been already reprocessed\n\
 		'selectRuns_2012_Strip19': False,  # Restrict the study to the runs available in Strip19, and remove 'bad runs'\n\
@@ -31,11 +36,14 @@ class plotVars:
 		'plotMultVars_Trks':False,  #For names with 'Trks' \n\
 		'plotMultVars_Tracks':False,  # For names with 'Tracks'\n\
 		'plotMultData':False ,  # Multiplicity variables only in data. SPD mult, etc\n\
-		'plotIsolationVars':False  #Isolation variables, only in data. """
+		'plotIsolationVars':False  #Isolation variables, only in data.\n\
+		'rootFileDir':VarPlots/rootFiles/ , 'plotDir':'VarPlots/'\n\
+		'doSBsubtraction':True //Note that this is applied only to some variables"""
 
 
 	def __init__(self , opts = {	}):
-		
+	
+
 		print "Preparing plotBasis:"
 		#Define local variables to be used
 		self.var = RooRealVar()
@@ -43,14 +51,19 @@ class plotVars:
 		self.inc_list = []
 		self.var_list = []
 		self.opts = opts
-		
-		#Save also the root files of the plots
-		self.rootFileDir = 'VarPlots/rootFiles/'
-		self.plotDir = 'VarPlots/Strip20r1/'
+		self.doSB = opts.get('doSBsubtraction','True')		
+
+
+		#Save also the root files of the plots	
+		self.rootFileDir = opts.get('rootFileDir','VarPlots/rootFiles/')	
+		self.plotDir = opts.get('plotDir','VarPlots/')	
 		self.name_suf = ''
-		
-		#self.plotDir = '../../../VarPlots/Strip19b_BadRuns/'
 		#self.name_suf = '_Strip19b_BadRunsVS_Strip19b_Strip19a'
+
+		#Look if the directories exist, if not create them
+		if not os.path.exists(self.plotDir) : os.makedirs(self.plotDir)
+		if not os.path.exists(self.rootFileDir) : os.makedirs(self.rootFileDir)
+
 
 		#Specify the channel
 		prefix = 'Bplus'
@@ -58,28 +71,28 @@ class plotVars:
 
 		#The var=['name in MC','name in 2011','name in 2012',etc.], if MC excluded, leave out the first	
 		if opts.get('plotBDT',0):
-			#self.tmpVar = { 'var' : ['aBDT05','bBDT05'] , 'min' : -0.5 , 'max' : 1., 'n_bins': 50, 'doSBsubtraction':False}
-			self.tmpVar = { 'var' : ['aBDT05','bBDT05'] , 'min' : -0.5 , 'max' : 1., 'n_bins': 50, 'doSBsubtraction':True}
+			self.tmpVar = { 'var' : ['bBDT05','bBDT05'] , 'min' : -0.5 , 'max' : 1., 'n_bins': 50, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			#self.tmpVar = { 'var' : ['aBDT05flat','bBDT05flat'] , 'min' : 0. , 'max' : 1., 'n_bins': 50, 'setLog':True, 'doSBsubtraction':False}
-			self.tmpVar = { 'var' : ['aBDT05flat','bBDT05flat'] , 'min' : 0. , 'max' : 1., 'n_bins': 50, 'setLog':True, 'doSBsubtraction':True}
+			self.tmpVar = { 'var' : ['bBDT05flat','bBDT05flat'] , 'min' : 0. , 'max' : 1., 'n_bins': 50, 'setLog':True, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
 	
 
 		if opts.get('plotBVars',0):
-			self.tmpVar = { 'var' : [prefix+'_JCMass'] , 'min' : 5179.17 , 'max' : 5379.17, 'n_bins': 100, 'doSBsubtraction':False}
+			self.tmpVar = { 'var' : [prefix+'_JCMass'] , 'min' : 5179.17 , 'max' : 5379.17, 'n_bins': 100, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : [prefix+'_M'] , 'min' : 5100 , 'max' : 5450, 'n_bins': 100, 'doSBsubtraction':False}
+			#self.tmpVar = { 'var' : [prefix+'_M'] , 'min' : 5100 , 'max' : 5450, 'n_bins': 100, 'doSBsubtraction':self.doSB} #Bu
+			self.tmpVar = { 'var' : [prefix+'_M'] , 'min' : 4750 , 'max' : 6050, 'n_bins': 70, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : [prefix+'_PT'] , 'min' : 0. , 'max' : 50000., 'n_bins' : 50, 'setLog': True}
+			self.tmpVar = { 'var' : [prefix+'_PT'] , 'min' : 0. , 'max' : 50000., 'n_bins' : 50, 'setLog': True, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : [prefix+'_P'] , 'min' : 0 , 'max' : 1000000., 'n_bins' : 50, 'setLog': True}
+			self.tmpVar = { 'var' : [prefix+'_P'] , 'min' : 0 , 'max' : 1000000., 'n_bins' : 50, 'setLog': True, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : [prefix+'_eta'] , 'min' : 1 , 'max' : 8, 'n_bins' : 50, 'setLog': True}
+			#self.tmpVar = { 'var' : [prefix+'_eta'] , 'min' : 1 , 'max' : 8, 'n_bins' : 50, 'setLog': True, 'doSBsubtraction':self.doSB} #Bu
+			self.tmpVar = { 'var' : [prefix+'_eta'] , 'min' : 1 , 'max' : 10, 'n_bins' : 50, 'setLog': True, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : [prefix+'_phi'] , 'min' : -3.5 , 'max' : 5.5, 'n_bins' : 90}
+			self.tmpVar = { 'var' : [prefix+'_phi'] , 'min' : -3.5 , 'max' : 5.5, 'n_bins' : 90, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : [prefix+'_TAU'] , 'min' : 0 , 'max' : 0.015, 'n_bins' : 50,'setLog':'True'}
+			self.tmpVar = { 'var' : [prefix+'_TAU'] , 'min' : 0 , 'max' : 0.015, 'n_bins' : 50,'setLog':'True', 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
 			
 		if opts.get('plotJpsiVars',0):
@@ -101,31 +114,31 @@ class plotVars:
                         self.var_list.append(self.tmpVar)
 
                 if opts.get('plotBDTSVars',0):
-                        self.tmpVar = { 'var' : [prefix+'_BDTS_BIPS'] , 'min' : 0 , 'max' : 7, 'n_bins' : 35}
+                        self.tmpVar = { 'var' : [prefix+'_BDTS_BIPS'] , 'min' : 0 , 'max' : 7, 'n_bins' : 35, 'doSBsubtraction':self.doSB}
                         self.var_list.append(self.tmpVar)
-                        self.tmpVar = { 'var' : [prefix+'_BDTS_DOCA'] , 'min' : 0 , 'max' : 0.2 , 'n_bins' : 50}
+                        self.tmpVar = { 'var' : [prefix+'_BDTS_DOCA'] , 'min' : 0 , 'max' : 0.2 , 'n_bins' : 50, 'doSBsubtraction':self.doSB}
                         self.var_list.append(self.tmpVar)
-                        self.tmpVar = { 'var' : [prefix+'_BDTS_VTXCHI2'] , 'min' : 0 , 'max' : 10, 'n_bins' : 50, 'setLog': True}
+                        self.tmpVar = { 'var' : [prefix+'_BDTS_VTXCHI2'] , 'min' : 0 , 'max' : 10, 'n_bins' : 50, 'setLog': True, 'doSBsubtraction':self.doSB}
                         self.var_list.append(self.tmpVar)
-                        self.tmpVar = { 'var' : [prefix+'_BDTS_DIRA'] , 'min' : 0.99990 , 'max' : 1., 'n_bins' : 50, 'setLog': True}
+                        self.tmpVar = { 'var' : [prefix+'_BDTS_DIRA'] , 'min' : 0.99990 , 'max' : 1., 'n_bins' : 50, 'setLog': True, 'doSBsubtraction':self.doSB}
                         self.var_list.append(self.tmpVar)
-                        self.tmpVar = { 'var' : [prefix+'_BDTS_BIP'] , 'min' : 0 , 'max' : 0.15, 'n_bins' : 30}
+                        self.tmpVar = { 'var' : [prefix+'_BDTS_BIP'] , 'min' : 0 , 'max' : 0.15, 'n_bins' : 30, 'doSBsubtraction':self.doSB}
                         self.var_list.append(self.tmpVar)
-                        self.tmpVar = { 'var' : [prefix+'_BDTS_MuonMINIP'] , 'min' : 0 , 'max' : 3, 'n_bins' : 50}
+                        self.tmpVar = { 'var' : [prefix+'_BDTS_MuonMINIP'] , 'min' : 0 , 'max' : 3, 'n_bins' : 50, 'doSBsubtraction':self.doSB}
                         self.var_list.append(self.tmpVar)
-                        self.tmpVar = { 'var' : [prefix+'_BDTS'] , 'min' : 0 , 'max' : 1, 'n_bins' : 50}
+                        self.tmpVar = { 'var' : [prefix+'_BDTS'] , 'min' : 0 , 'max' : 1, 'n_bins' : 50, 'doSBsubtraction':self.doSB}
                         self.var_list.append(self.tmpVar)
                
 	       	if opts.get('plotBDTVars',0):
 			#NB! For Bmumu channel	
 			#The DOCA and IP(B) are already included in BDTS	
-			self.tmpVar = { 'var' : [prefix+'_PT'] , 'min' : 0. , 'max' : 15000., 'n_bins' : 50, 'setLog': True}
+			self.tmpVar = { 'var' : [prefix+'_PT'] , 'min' : 0. , 'max' : 15000., 'n_bins' : 50, 'setLog': True, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : [prefix+'_TAU'] , 'min' : 0 , 'max' : 0.015, 'n_bins' : 50,'setLog':'True'}
+			self.tmpVar = { 'var' : [prefix+'_TAU'] , 'min' : 0 , 'max' : 0.015, 'n_bins' : 50,'setLog':'True', 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : ['muplus_MINIPCHI2'] , 'min' : 0 , 'max' : 40000, 'n_bins' : 50, 'setLog':True}
+			self.tmpVar = { 'var' : ['muplus_MINIPCHI2'] , 'min' : 0 , 'max' : 40000, 'n_bins' : 50, 'setLog':True, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : ['muplus_PT'] , 'min' : 0 , 'max' : 30000, 'n_bins' : 50, 'setLog': True}
+			self.tmpVar = { 'var' : ['muplus_PT'] , 'min' : 0 , 'max' : 30000, 'n_bins' : 50, 'setLog': True, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
 
 		if opts.get('channel','Bu')!='Bhh' and opts.get('plotIsolationVars',0):
@@ -138,21 +151,22 @@ class plotVars:
 			self.tmpVar = { 'var' : ['J_psi_1S_cosnk'] , 'min' : -1.1 , 'max' : 1.1, 'n_bins' : 25, 'setLog': False}
 			self.var_list.append(self.tmpVar)
 
-		if opts.get('channel','Bu')=='Bhh' and opts.get('plotIsolationVars',0):
-			self.tmpVar = { 'var' : ['B_s0_D1_isolation_Giampi'] , 'min' : 0 , 'max' : 15, 'n_bins' : 50, 'setLog': False}
+		if opts.get('channel','Bu')=='Bhh' or opts.get('channel','Bu')=='Bmumu' and opts.get('plotIsolationVars',0):
+			self.tmpVar = { 'var' : ['B_s0_D1_isolation_Giampi'] , 'min' : 0 , 'max' : 15, 'n_bins' : 50, 'setLog': False, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : ['B_s0_D2_isolation_Giampi'] , 'min' : 0 , 'max' : 15, 'n_bins' : 50, 'setLog': False}
+			self.tmpVar = { 'var' : ['B_s0_D2_isolation_Giampi'] , 'min' : 0 , 'max' : 15, 'n_bins' : 50, 'setLog': False, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : ['B_s0_yetanother_CDF_iso'] , 'min' : 1.4 , 'max' : 15, 'n_bins' : 50, 'setLog': False}
+			#self.tmpVar = { 'var' : ['B_s0_yetanother_CDF_iso'] , 'min' : 1.4 , 'max' : 15, 'n_bins' : 50, 'setLog': False, 'doSBsubtraction':self.doSB}
+			self.tmpVar = { 'var' : ['B_s0_yetanother_CDF_iso'] , 'min' : 0. , 'max' : 1.5, 'n_bins' : 60, 'setLog': False, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : ['B_s0_CDFiso'] , 'min' : 0 , 'max' : 1.5, 'n_bins' : 50, 'setLog': False}
+			self.tmpVar = { 'var' : ['B_s0_CDFiso'] , 'min' : 0 , 'max' : 1.5, 'n_bins' : 50, 'setLog': False, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : ['B_s0_cosnk'] , 'min' : -1.1 , 'max' : 1.1, 'n_bins' : 50, 'setLog': False}
+			self.tmpVar = { 'var' : ['B_s0_cosnk'] , 'min' : -1.1 , 'max' : 1.1, 'n_bins' : 50, 'setLog': False, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : ['bBDT'] , 'min' : -0.5 , 'max' : 1., 'n_bins' : 50, 'setLog': False}
-			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : ['bBDTflat'] , 'min' : 0. , 'max' : 1.2, 'n_bins' : 50, 'setLog': False}
-			self.var_list.append(self.tmpVar)
+			#self.tmpVar = { 'var' : ['bBDT'] , 'min' : -0.5 , 'max' : 1., 'n_bins' : 50, 'setLog': False}
+			#self.var_list.append(self.tmpVar)
+			#self.tmpVar = { 'var' : ['bBDTflat'] , 'min' : 0. , 'max' : 1.2, 'n_bins' : 50, 'setLog': False}
+			#self.var_list.append(self.tmpVar)
 
 
 		if opts.get('plotMuonVars',0):
@@ -160,21 +174,22 @@ class plotVars:
 			suffixes = ['plus']
 			for suf in suffixes:	
 				#self.tmpVar = { 'var' : 'mu'+suf+'_IPCHI2_OWNPV' , 'min' : 0 , 'max' : 20000, 'n_bins' : 100, 'setLog':'True'}
-				self.tmpVar = { 'var' : ['mu'+suf+'_MINIPCHI2'] , 'min' : 0 , 'max' : 40000, 'n_bins' : 50, 'setLog':True}
+				self.tmpVar = { 'var' : ['mu'+suf+'_MINIPCHI2'] , 'min' : 0 , 'max' : 40000, 'n_bins' : 50, 'setLog':True, 'doSBsubtraction':self.doSB}
 				self.var_list.append(self.tmpVar)
-				self.tmpVar = { 'var' : ['mu'+suf+'_PT'] , 'min' : 0 , 'max' : 50000, 'n_bins' : 50, 'setLog': True}
+				self.tmpVar = { 'var' : ['mu'+suf+'_PT'] , 'min' : 0 , 'max' : 50000, 'n_bins' : 50, 'setLog': True, 'doSBsubtraction':self.doSB}
 				self.var_list.append(self.tmpVar)
-				self.tmpVar = { 'var' : ['mu'+suf+'_phi'] , 'min' : -3.5 , 'max' : 5.5, 'n_bins' : 70}
+				self.tmpVar = { 'var' : ['mu'+suf+'_phi'] , 'min' : -3.5 , 'max' : 5.5, 'n_bins' : 70, 'doSBsubtraction':self.doSB}
 				self.var_list.append(self.tmpVar)
-				self.tmpVar = { 'var' : ['mu'+suf+'_eta'] , 'min' : 1., 'max' : 6, 'n_bins' : 50, 'setLog': True}
+				self.tmpVar = { 'var' : ['mu'+suf+'_eta'] , 'min' : 1., 'max' : 6, 'n_bins' : 50, 'setLog': True, 'doSBsubtraction':self.doSB}
 				self.var_list.append(self.tmpVar)
-				self.tmpVar = { 'var' : ['mu'+suf+'_TRACK_CHI2NDOF'] , 'min' : 0 , 'max' : 5.0, 'n_bins' : 50}
+				self.tmpVar = { 'var' : ['mu'+suf+'_TRACK_CHI2NDOF'] , 'min' : 0 , 'max' : 5.0, 'n_bins' : 50, 'doSBsubtraction':self.doSB}
 				self.var_list.append(self.tmpVar)
 		
 		if opts.get('plotMuonGhostProb',0):
 			suffixes = ['plus']
 			for suf in suffixes:	
-				self.tmpVar = { 'var' : ['mu'+suf+'_TRACK_GhostProb'] , 'min' : 0 , 'max' : 1., 'n_bins' : 50,'setLog':'False'}
+				#self.tmpVar = { 'var' : ['mu'+suf+'_TRACK_GhostProb'] , 'min' : 0 , 'max' : 1., 'n_bins' : 50,'setLog':'False', 'doSBsubtraction':self.doSB}
+				self.tmpVar = { 'var' : ['mu'+suf+'_TRACK_GhostProb'] , 'min' : 0 , 'max' : 0.4, 'n_bins' : 50,'setLog':'False', 'doSBsubtraction':self.doSB}
 				self.var_list.append(self.tmpVar)
 		
 		if opts.get('plotKaonVars',0):
@@ -225,19 +240,19 @@ class plotVars:
 
 		if opts.get('plotMultVars_Tracks',0):
 			#Variables with the same names in MC, 2011, and Stripping19/19a	
-			self.tmpVar = { 'var' : ['nUpstreamTracks'] , 'min' : 0 , 'max' : 150, 'n_bins' : 125, 'setLog':True}
+			self.tmpVar = { 'var' : ['nUpstreamTracks'] , 'min' : 0 , 'max' : 60, 'n_bins' : 60, 'setLog':True, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : ['nDownstreamTracks'] , 'min' : 0 , 'max' : 250, 'n_bins' : 125, 'setLog':True}
+			self.tmpVar = { 'var' : ['nDownstreamTracks'] , 'min' : 0 , 'max' : 250, 'n_bins' : 125, 'setLog':True, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : ['nLongTracks'] , 'min' : 0 , 'max' : 250, 'n_bins' : 125, 'setLog':True}
+			self.tmpVar = { 'var' : ['nLongTracks'] , 'min' : 0 , 'max' : 250, 'n_bins' : 125, 'setLog':True, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : ['nTTClusters'] , 'min' : 0 , 'max' : 3000, 'n_bins' : 100, 'setLog':True}
+			self.tmpVar = { 'var' : ['nTTClusters'] , 'min' : 0 , 'max' : 3000, 'n_bins' : 100, 'setLog':True, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : ['nTTracks'] , 'min' : 0 , 'max' : 500, 'n_bins' : 50, 'setLog':True}
+			self.tmpVar = { 'var' : ['nTTracks'] , 'min' : 0 , 'max' : 500, 'n_bins' : 50, 'setLog':True, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : ['nVeloTracks'] , 'min' : 0 , 'max' : 400, 'n_bins' : 100, 'setLog':True}
+			self.tmpVar = { 'var' : ['nVeloTracks'] , 'min' : 0 , 'max' : 400, 'n_bins' : 100, 'setLog':True, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : ['nPVs'] , 'min' : 1 , 'max' : 10, 'n_bins' : 10, 'setLog':True} 
+			self.tmpVar = { 'var' : ['nPVs'] , 'min' : 1 , 'max' : 10, 'n_bins' : 10, 'setLog':True, 'doSBsubtraction':self.doSB} 
 			self.var_list.append(self.tmpVar)
 		
 		if opts.get('plotMultVars_forAll',0):
@@ -268,15 +283,16 @@ class plotVars:
 		#	self.var_list.append(self.tmpVar)
 
 		if opts.get('plotMultData',0) : #the variables not in MC10
-			self.tmpVar = { 'var' : ['nSPDHits'] , 'min' : 0 , 'max' : 950, 'n_bins' : 100, 'setLog':True}
+			self.tmpVar = { 'var' : ['nSPDHits'] , 'min' : 0 , 'max' : 950, 'n_bins' : 100, 'setLog':True, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : ['nMuonTracks'] , 'min' : 0 , 'max' : 200, 'n_bins' : 50, 'setLog':True}
+			#self.tmpVar = { 'var' : ['nMuonTracks'] , 'min' : 0 , 'max' : 200, 'n_bins' : 50, 'setLog':True, 'doSBsubtraction':self.doSB} # Bu
+			self.tmpVar = { 'var' : ['nMuonTracks'] , 'min' : 0 , 'max' : 120, 'n_bins' : 50, 'setLog':True, 'doSBsubtraction':self.doSB} # Bhh
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : ['nBackTracks'] , 'min' : 0 , 'max' : 200, 'n_bins' : 50, 'setLog':True}
+			self.tmpVar = { 'var' : ['nBackTracks'] , 'min' : 0 , 'max' : 200, 'n_bins' : 50, 'setLog':True, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : ['nOTClusters'] , 'min' : 0 , 'max' : 15000, 'n_bins' : 50, 'setLog':True}
+			self.tmpVar = { 'var' : ['nOTClusters'] , 'min' : 0 , 'max' : 15000, 'n_bins' : 50, 'setLog':True, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
-			self.tmpVar = { 'var' : ['nITClusters'] , 'min' : 0 , 'max' : 2500, 'n_bins' : 50, 'setLog':True}
+			self.tmpVar = { 'var' : ['nITClusters'] , 'min' : 0 , 'max' : 2500, 'n_bins' : 50, 'setLog':True, 'doSBsubtraction':self.doSB}
 			self.var_list.append(self.tmpVar)
 
 		#---------------------------------------------------------------------------------------------------------------------------#
@@ -302,9 +318,18 @@ class plotVars:
 			self.cutstring = cs.normBs_lnf	
 			if self.opts.get('JpsiTrig',0): self.cutstring += cs.Bs_Jpsi_L0 + cs.Bs_Jpsi_Hlt1 + cs.Bs_Jpsi_Hlt2
 		
-		if opts.get('channel','Bu')=='Bhh':
+		if opts.get('channel','Bu')=='Bhh' or opts.get('channel','Bu')=='Bmumu' :
 			self.cutstring = ''	
-			#self.cutstring = 'B_s0_BDTS>0.05'	
+		
+		if opts.get('BhhMassCut',False):
+			if len(self.cutstring): self.cutstring += '&&'
+			self.cutstring += 'B_s0_M>4866&&B_s0_M<5866'	
+
+		if opts.get('mu_GhostProb<',False):
+			val = opts.get('mu_GhostProb<')
+			if len(self.cutstring): self.cutstring += '&&'
+			self.cutstring += 'muplus_TRACK_GhostProb<'+str(val)+'&&muminus_TRACK_GhostProb<'+str(val)
+
 
 		#Cuts on run numbers
 		self.cutstring_11 = self.cutstring	
@@ -320,6 +345,12 @@ class plotVars:
 			#self.datafiles.append(readData('MC12_Sm0',{'channel':opts.get('channel','Bu') , 'cut':self.cutstring}))
 			self.datafiles.append(readData('MC12_Sm1',{'channel':opts.get('channel','Bu') , 'cut':self.cutstring}))
 		
+		if opts.get('includeMC12_S17',False):
+			self.datafiles.append(readData('MC12_S17',{'channel':opts.get('channel','Bu') , 'cut':self.cutstring}))
+		
+		if opts.get('includeMC12_S20',False):
+			self.datafiles.append(readData('MC12_S20',{'channel':opts.get('channel','Bu') , 'cut':self.cutstring}))
+		
 		#Include the datafiles
 		if opts.get('include2011_Strip17',True):
 			self.datafiles.append(readData('2011_Strip17',{'channel':opts.get('channel','Bu'),'cut':self.cutstring_11}))
@@ -332,6 +363,16 @@ class plotVars:
 			self.datafiles.append(readData('2012_Strip19abc',{'channel':opts.get('channel','Bu') , 'cut':self.cutstring_12}))
 		if opts.get('include2012_Strip20',False):
 			self.datafiles.append(readData('2012_Strip20',{'channel':opts.get('channel','Bu') , 'cut':self.cutstring_12}))
+
+		#Good Bad IT runs
+		if opts.get('include2012_Strip20_GoodBadITRuns',False):
+			self.datafiles.append(readData('2012_Strip20_GoodITRuns',{'channel':opts.get('channel','Bu') , 'cut':self.cutstring_12}))
+			self.datafiles.append(readData('2012_Strip20_BadITRuns',{'channel':opts.get('channel','Bu') , 'cut':self.cutstring_12}))
+	
+		if opts.get('include2012_Strip19abc_GoodBadITRuns',False):
+			self.datafiles.append(readData('2012_Strip19abc_GoodITRuns',{'channel':opts.get('channel','Bu') , 'cut':self.cutstring_12}))
+			self.datafiles.append(readData('2012_Strip19abc_BadITRuns',{'channel':opts.get('channel','Bu') , 'cut':self.cutstring_12}))
+	
 	
 		#-----------------------------------------------------------------------------------------------------------------------------#
 		#-----------------------------------------------------------------------------------------------------------------------------#
@@ -457,7 +498,7 @@ class plotVars:
 
 		return(1)
 
-	def getSBSubtractedHist(self, var, tree,  min, max, n_bins = 100, sw_range = 35, sb_start = 70, setLog = False, plotName = '', doSBsubtraction = 1):
+	def getSBSubtractedHist(self, var, tree,  min, max, n_bins = 100, sw_range = 35, sb_start = 70, setLog = False, plotName = ''):
 		""" Subtracts the events from the mass sidebands, return a histogram of a given variable"""
 
 		#Make two histograms, one for signal and the other for background

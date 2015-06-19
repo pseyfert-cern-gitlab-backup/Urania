@@ -16,6 +16,9 @@
 
 ClassImp(AngJpsiKst_Swave_Asym) 
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
  AngJpsiKst_Swave_Asym::AngJpsiKst_Swave_Asym(const char *name, const char *title, 
                         RooAbsReal& _Kcharge,
                         RooAbsReal& _CPsi,
@@ -69,6 +72,8 @@ ClassImp(AngJpsiKst_Swave_Asym)
  { 
  } 
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
  AngJpsiKst_Swave_Asym::AngJpsiKst_Swave_Asym(const AngJpsiKst_Swave_Asym& other, const char* name) :  
    RooAbsPdf(other,name), 
@@ -99,22 +104,24 @@ ClassImp(AngJpsiKst_Swave_Asym)
  { 
  } 
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
  Double_t AngJpsiKst_Swave_Asym::evaluate() const 
  { 
    // ENTER EXPRESSION IN TERMS OF VARIABLE ARGUMENTS HERE 
 
-
-   Double_t K1  =  A0  * A0                 ;
-   Double_t K2  =  Apa * Apa                ;
-   Double_t K3  =  Ape * Ape                ;
-   Double_t K4  =  Apa * Ape * sin(dpe-dpa) ;
-   Double_t K5  =  A0  * Apa * cos(dpa)     ;
-   Double_t K6  =  A0  * Ape * sin(dpe)     ;
-   Double_t K7  =  As  * As                 ;
-   Double_t K8  =  Apa * As  * cos(dpa-ds)  ;
-   Double_t K9  =  Ape * As  * sin(ds-dpe)  ;
-   Double_t K10 =  A0  * As  * cos(ds)      ;
-   
+   Double_t K1  =            A0  * A0                 ;
+   Double_t K2  =            Apa * Apa                ;
+   Double_t K3  =            Ape * Ape                ;
+   Double_t K4  = -Kcharge * Apa * Ape * sin(dpe-dpa) ;
+   Double_t K5  =            A0  * Apa * cos(dpa)     ;
+   Double_t K6  =  Kcharge * A0  * Ape * sin(dpe)     ;
+   Double_t K7  =            As  * As                 ;
+   Double_t K8  =            Apa * As  * cos(dpa-ds)  ;
+   Double_t K9  =  Kcharge * Ape * As  * sin(ds-dpe)  ;
+   Double_t K10 =            A0  * As  * cos(ds)      ;
+ 
    Double_t CPsi2 = CPsi*CPsi ;
    Double_t SPsi2 = 1 - CPsi2 ;
    Double_t SPsi = sqrt(SPsi2) ;
@@ -137,22 +144,17 @@ ClassImp(AngJpsiKst_Swave_Asym)
    Double_t f9   =   (sqrt(6.)/3.) * SPsi * 2.*STheta*CTheta * CPhi ;
    Double_t f10  =   (4.*sqrt(3.)/3.) * CPsi*(1-STheta2*CPhi2) ;
    
-   //Double_t phys  = K1*f1 + K2*f2 + K3*f3 + K4*f4 + K5*f5 + K6*f6 + K7*f7 + K8*f8 + K9*f9 + K10*f10 ;
-   Double_t   physa = K1*f1 + K2*f2 + K3*f3         + K5*f5         + K7*f7 + K8*f8         + K10*f10 ;
-   Double_t   physb = -Kcharge * ( K4*f4 - K6*f6 - K9*f9 ) ;
-   Double_t   phys  = physa + physb ;
-
+   Double_t phys  = K1*f1 + K2*f2 + K3*f3 + K4*f4 + K5*f5 + K6*f6 + K7*f7 + K8*f8 + K9*f9 + K10*f10 ;
 
    //Angular acceptance
-
-   //Psi
-   Double_t acc_psi = 1. + c1_psi*CPsi + c2_psi*CPsi2 + c3_psi*CPsi2*CPsi + c4_psi*CPsi2*CPsi2 + c5_psi*CPsi2*CPsi2*CPsi;
+   Double_t acc_psi   = 1. + c1_psi*CPsi + c2_psi*CPsi2 + c3_psi*CPsi2*CPsi + c4_psi*CPsi2*CPsi2 + c5_psi*CPsi2*CPsi2*CPsi;
    Double_t acc_theta = 1. + c1_theta*CTheta + c2_theta*CTheta2;
-   Double_t acc_phi = 1. + c1_phi*cos( c2_phi*Phi + c3_phi)+c4_phi*cos(c5_phi*Phi + c6_phi);
-
+   Double_t acc_phi   = 1. + c1_phi*cos( c2_phi*Phi + c3_phi ) + c4_phi*cos( c5_phi*Phi + c6_phi );
    Double_t Acc = acc_psi*acc_theta*acc_phi;
 
+   //Total PDF
    Double_t PDF = Acc*phys;
+
    if(PDF<0.){
      PDF = 0.;
    }
@@ -160,4 +162,628 @@ ClassImp(AngJpsiKst_Swave_Asym)
    return PDF; 
 
  } 
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+ Int_t AngJpsiKst_Swave_Asym::getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* /*rangeName*/) const
+ {
+   // LIST HERE OVER WHICH VARIABLES ANALYTICAL INTEGRATION IS SUPPORTED, 
+   // ASSIGN A NUMERIC CODE FOR EACH SUPPORTED (SET OF) PARAMETERS 
+   // THE EXAMPLE BELOW ASSIGNS CODE 1 TO INTEGRATION OVER VARIABLE X
+   // YOU CAN ALSO IMPLEMENT MORE THAN ONE ANALYTICAL INTEGRAL BY REPEATING THE matchArgs 
+   // EXPRESSION MULTIPLE TIMES
+
+   if ( matchArgs(allVars, analVars,          CPsi ) )  return 1;
+   if ( matchArgs(allVars, analVars,           Phi ) )  return 2;
+   if ( matchArgs(allVars, analVars,        CTheta ) )  return 3;
+   if ( matchArgs(allVars, analVars,  CTheta, CPsi ) )  return 4;
+
+   return 0;
+ }
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+ Double_t AngJpsiKst_Swave_Asym::analyticalIntegral(Int_t code, const char* rangeName) const
+ {
+   // RETURN ANALYTICAL INTEGRAL DEFINED BY RETURN CODE ASSIGNED BY getAnalyticalIntegral
+   // THE MEMBER FUNCTION x.min(rangeName) AND x.max(rangeName) WILL RETURN THE INTEGRATION
+   // BOUNDARIES FOR EACH OBSERVABLE x
+
+   Double_t K1  =            A0  * A0                 ;
+   Double_t K2  =            Apa * Apa                ;
+   Double_t K3  =            Ape * Ape                ;
+   Double_t K4  = -Kcharge * Apa * Ape * sin(dpe-dpa) ;
+   Double_t K5  =            A0  * Apa * cos(dpa)     ;
+   Double_t K6  =  Kcharge * A0  * Ape * sin(dpe)     ;
+   Double_t K7  =            As  * As                 ;
+   Double_t K8  =            Apa * As  * cos(dpa-ds)  ;
+   Double_t K9  =  Kcharge * Ape * As  * sin(ds-dpe)  ;
+   Double_t K10 =            A0  * As  * cos(ds)      ;
+
+   // x = CPsi,  z = CTheta
+   
+   Double_t CPsi2 = CPsi*CPsi ;            // x^2
+   Double_t SPsi2 = 1 - CPsi2 ;            // (1-x^2)
+   Double_t SPsi = sqrt(SPsi2) ;           // sqrt(1-x^2)
+   Double_t CTheta2 = CTheta*CTheta ;      // z^2
+   Double_t STheta2 = 1-CTheta2 ;          // 1-z^2
+   Double_t STheta  = sqrt(1-CTheta2) ;    // sqrt(1-z^2)
+   Double_t CPhi = cos(Phi) ;
+   Double_t SPhi = sin(Phi) ;
+   Double_t CPhi2 = CPhi*CPhi ;
+   Double_t SPhi2 = SPhi*SPhi ;
+
+   Double_t acc_psi   = 1. + c1_psi*CPsi + c2_psi*CPsi2 + c3_psi*CPsi2*CPsi + c4_psi*CPsi2*CPsi2 + c5_psi*CPsi2*CPsi2*CPsi;
+   Double_t acc_theta = 1. + c1_theta*CTheta + c2_theta*CTheta2;
+   Double_t acc_phi   = 1. + c1_phi*cos( c2_phi*Phi + c3_phi ) + c4_phi*cos( c5_phi*Phi + c6_phi );
+
+   if ( code == 1 )   // Integrate over variable CPsi
+   {
+
+     Double_t xm = CPsi.max(rangeName) ;
+     Double_t xn = CPsi.min(rangeName) ;
+
+     Double_t fa1  = 2.*(SPhi2 + CTheta2*CPhi2) ;
+     Double_t fa2  =    (CPhi2 + CTheta2*SPhi2) ;
+     Double_t fa3  = STheta2 ;
+     Double_t fa4  = -2.*CTheta*STheta*SPhi ;
+     Double_t fa5  =  2.*sqrt(2.)*STheta2*SPhi*CPhi ;
+     Double_t fa6  =  2.*sqrt(2.)*CTheta*STheta*CPhi ;
+     Double_t fa7  = (2./3.) * (SPhi2 + CTheta2*CPhi2) ;
+     Double_t fa8  = (2.*sqrt(6.)/3.) * STheta2*SPhi*CPhi ;
+     Double_t fa9  = (2.*sqrt(6.)/3.) * CTheta*STheta*CPhi ;
+     Double_t fa10 = (4.*sqrt(3.)/3.) * (SPhi2 + CTheta2*CPhi2) ;
+
+     Double_t Ix0f1  = fa1  * ( pow(xm,3)/3. - pow(xn,3)/3. ) ;
+     Double_t Ix0f2  = fa2  * ( px0pol2(xm)  - px0pol2(xn)  ) ;
+     Double_t Ix0f3  = fa3  * ( px0pol2(xm)  - px0pol2(xn)  ) ;
+     Double_t Ix0f4  = fa4  * ( px0pol2(xm)  - px0pol2(xn)  ) ;
+     Double_t Ix0f5  = fa5  * (  px1sqr(xm)  -  px1sqr(xn)  ) ;
+     Double_t Ix0f6  = fa6  * (  px1sqr(xm)  -  px1sqr(xn)  ) ;
+     Double_t Ix0f7  = fa7  * (         xm   -         xn   ) ;
+     Double_t Ix0f8  = fa8  * (  px0sqr(xm)  -  px0sqr(xn)  ) ;
+     Double_t Ix0f9  = fa9  * (  px0sqr(xm)  -  px0sqr(xn)  ) ;
+     Double_t Ix0f10 = fa10 * ( pow(xm,2)/2. - pow(xn,2)/2. ) ;
+
+     Double_t Ix1f1  = fa1  * ( pow(xm,4)/4. - pow(xn,4)/4. ) ;
+     Double_t Ix1f2  = fa2  * ( px1pol2(xm)  - px1pol2(xn)  ) ;
+     Double_t Ix1f3  = fa3  * ( px1pol2(xm)  - px1pol2(xn)  ) ;
+     Double_t Ix1f4  = fa4  * ( px1pol2(xm)  - px1pol2(xn)  ) ;
+     Double_t Ix1f5  = fa5  * (  px2sqr(xm)  -  px2sqr(xn)  ) ;
+     Double_t Ix1f6  = fa6  * (  px2sqr(xm)  -  px2sqr(xn)  ) ;
+     Double_t Ix1f7  = fa7  * ( pow(xm,2)/2. - pow(xn,2)/2. ) ;
+     Double_t Ix1f8  = fa8  * (  px1sqr(xm)  -  px1sqr(xn)  ) ;
+     Double_t Ix1f9  = fa9  * (  px1sqr(xm)  -  px1sqr(xn)  ) ;
+     Double_t Ix1f10 = fa10 * ( pow(xm,3)/3. - pow(xn,3)/3. ) ;
+
+     Double_t Ix2f1  = fa1  * ( pow(xm,5)/5. - pow(xn,5)/5. ) ;
+     Double_t Ix2f2  = fa2  * ( px2pol2(xm)  - px2pol2(xn)  ) ;
+     Double_t Ix2f3  = fa3  * ( px2pol2(xm)  - px2pol2(xn)  ) ;
+     Double_t Ix2f4  = fa4  * ( px2pol2(xm)  - px2pol2(xn)  ) ;
+     Double_t Ix2f5  = fa5  * (  px3sqr(xm)  -  px3sqr(xn)  ) ;
+     Double_t Ix2f6  = fa6  * (  px3sqr(xm)  -  px3sqr(xn)  ) ;
+     Double_t Ix2f7  = fa7  * ( pow(xm,3)/3. - pow(xn,3)/3. ) ;
+     Double_t Ix2f8  = fa8  * (  px2sqr(xm)  -  px2sqr(xn)  ) ;
+     Double_t Ix2f9  = fa9  * (  px2sqr(xm)  -  px2sqr(xn)  ) ;
+     Double_t Ix2f10 = fa10 * ( pow(xm,4)/4. - pow(xn,4)/4. ) ;
+
+     Double_t Ix3f1  = fa1  * ( pow(xm,6)/6. - pow(xn,6)/6. ) ;
+     Double_t Ix3f2  = fa2  * ( px3pol2(xm)  - px3pol2(xn)  ) ;
+     Double_t Ix3f3  = fa3  * ( px3pol2(xm)  - px3pol2(xn)  ) ;
+     Double_t Ix3f4  = fa4  * ( px3pol2(xm)  - px3pol2(xn)  ) ;
+     Double_t Ix3f5  = fa5  * (  px4sqr(xm)  -  px4sqr(xn)  ) ;
+     Double_t Ix3f6  = fa6  * (  px4sqr(xm)  -  px4sqr(xn)  ) ;
+     Double_t Ix3f7  = fa7  * ( pow(xm,4)/4. - pow(xn,4)/4. ) ;
+     Double_t Ix3f8  = fa8  * (  px3sqr(xm)  -  px3sqr(xn)  ) ;
+     Double_t Ix3f9  = fa9  * (  px3sqr(xm)  -  px3sqr(xn)  ) ;
+     Double_t Ix3f10 = fa10 * ( pow(xm,5)/5. - pow(xn,5)/5. ) ;
+
+     Double_t Ix4f1  = fa1  * ( pow(xm,7)/7. - pow(xn,7)/7. ) ;
+     Double_t Ix4f2  = fa2  * ( px4pol2(xm)  - px4pol2(xn)  ) ;
+     Double_t Ix4f3  = fa3  * ( px4pol2(xm)  - px4pol2(xn)  ) ;
+     Double_t Ix4f4  = fa4  * ( px4pol2(xm)  - px4pol2(xn)  ) ;
+     Double_t Ix4f5  = fa5  * (  px5sqr(xm)  -  px5sqr(xn)  ) ;
+     Double_t Ix4f6  = fa6  * (  px5sqr(xm)  -  px5sqr(xn)  ) ;
+     Double_t Ix4f7  = fa7  * ( pow(xm,5)/5. - pow(xn,5)/5. ) ;
+     Double_t Ix4f8  = fa8  * (  px4sqr(xm)  -  px4sqr(xn)  ) ;
+     Double_t Ix4f9  = fa9  * (  px4sqr(xm)  -  px4sqr(xn)  ) ;
+     Double_t Ix4f10 = fa10 * ( pow(xm,6)/6. - pow(xn,6)/6. ) ;
+
+     Double_t Ix5f1  = fa1  * ( pow(xm,8)/8. - pow(xn,8)/8. ) ;
+     Double_t Ix5f2  = fa2  * ( px5pol2(xm)  - px5pol2(xn)  ) ;
+     Double_t Ix5f3  = fa3  * ( px5pol2(xm)  - px5pol2(xn)  ) ;
+     Double_t Ix5f4  = fa4  * ( px5pol2(xm)  - px5pol2(xn)  ) ;
+     Double_t Ix5f5  = fa5  * (  px6sqr(xm)  -  px6sqr(xn)  ) ;
+     Double_t Ix5f6  = fa6  * (  px6sqr(xm)  -  px6sqr(xn)  ) ;
+     Double_t Ix5f7  = fa7  * ( pow(xm,6)/6. - pow(xn,6)/6. ) ;
+     Double_t Ix5f8  = fa8  * (  px5sqr(xm)  -  px5sqr(xn)  ) ;
+     Double_t Ix5f9  = fa9  * (  px5sqr(xm)  -  px5sqr(xn)  ) ;
+     Double_t Ix5f10 = fa10 * ( pow(xm,7)/7. - pow(xn,7)/7. ) ;
+
+     Double_t Sa0 = K1*Ix0f1 + K2*Ix0f2 + K3*Ix0f3 + K4*Ix0f4 + K5*Ix0f5 + K6*Ix0f6 + K7*Ix0f7 + K8*Ix0f8 + K9*Ix0f9 + K10*Ix0f10 ;
+     Double_t Sa1 = K1*Ix1f1 + K2*Ix1f2 + K3*Ix1f3 + K4*Ix1f4 + K5*Ix1f5 + K6*Ix1f6 + K7*Ix1f7 + K8*Ix1f8 + K9*Ix1f9 + K10*Ix1f10 ;
+     Double_t Sa2 = K1*Ix2f1 + K2*Ix2f2 + K3*Ix2f3 + K4*Ix2f4 + K5*Ix2f5 + K6*Ix2f6 + K7*Ix2f7 + K8*Ix2f8 + K9*Ix2f9 + K10*Ix2f10 ;
+     Double_t Sa3 = K1*Ix3f1 + K2*Ix3f2 + K3*Ix3f3 + K4*Ix3f4 + K5*Ix3f5 + K6*Ix3f6 + K7*Ix3f7 + K8*Ix3f8 + K9*Ix3f9 + K10*Ix3f10 ;
+     Double_t Sa4 = K1*Ix4f1 + K2*Ix4f2 + K3*Ix4f3 + K4*Ix4f4 + K5*Ix4f5 + K6*Ix4f6 + K7*Ix4f7 + K8*Ix4f8 + K9*Ix4f9 + K10*Ix4f10 ;
+     Double_t Sa5 = K1*Ix5f1 + K2*Ix5f2 + K3*Ix5f3 + K4*Ix5f4 + K5*Ix5f5 + K6*Ix5f6 + K7*Ix5f7 + K8*Ix5f8 + K9*Ix5f9 + K10*Ix5f10 ;
+
+     Double_t Integral =   acc_theta * acc_phi          * Sa0
+                         + acc_theta * acc_phi * c1_psi * Sa1
+                         + acc_theta * acc_phi * c2_psi * Sa2
+                         + acc_theta * acc_phi * c3_psi * Sa3
+                         + acc_theta * acc_phi * c4_psi * Sa4
+                         + acc_theta * acc_phi * c5_psi * Sa5 ;
+
+     return  Integral ;
+     // return  0. ;
+   }
+
+   else if ( code == 2 )   // Integrate over variable CPhi
+   {
+
+     Double_t fm = Phi.max(rangeName) ;
+     Double_t fn = Phi.min(rangeName) ;
+
+     Double_t fb1  = 2.*CPsi2 ;
+     Double_t fb2  = SPsi2 ;
+     Double_t fb3  = SPsi2 * STheta2 ;
+     Double_t fb4  = -2.*SPsi2*CTheta*STheta ;
+     Double_t fb5  = 2.*sqrt(2.)*CPsi*SPsi*STheta2 ;
+     Double_t fb6  = 2.*sqrt(2.)*CPsi*SPsi*CTheta*STheta ;
+     Double_t fb7  = (2./3.) ;
+     Double_t fb8  = (2.*sqrt(6.)/3.) * SPsi*STheta2 ;
+     Double_t fb9  = (2.*sqrt(6.)/3.) * SPsi*CTheta*STheta ;
+     Double_t fb10 = (4.*sqrt(3.)/3.) * CPsi ;
+
+     Double_t If0f1  = fb1  * ( (0.5*(1.+CTheta2)*fm - 0.25*STheta2*sin(2.*fm)) - (0.5*(1.+CTheta2)*fn - 0.25*STheta2*sin(2.*fn)) ) ;
+     Double_t If0f2  = fb2  * ( (0.5*(1.+CTheta2)*fm + 0.25*STheta2*sin(2.*fm)) - (0.5*(1.+CTheta2)*fn + 0.25*STheta2*sin(2.*fn)) ) ;
+     Double_t If0f3  = fb3  * ( fm - fn ) ;
+     Double_t If0f4  = fb4  * ( -cos(fm) + cos(fn) ) ;
+     Double_t If0f5  = fb5  * ( 0.5*sin(fm)*sin(fm) - 0.5*sin(fn)*sin(fn) ) ;
+     Double_t If0f6  = fb6  * ( sin(fm) - sin(fn) ) ;
+     Double_t If0f7  = fb7  * ( (0.5*(1.+CTheta2)*fm - 0.25*STheta2*sin(2.*fm)) - (0.5*(1.+CTheta2)*fn - 0.25*STheta2*sin(2.*fn)) ) ;
+     Double_t If0f8  = fb8  * ( 0.5*sin(fm)*sin(fm) - 0.5*sin(fn)*sin(fn) ) ;
+     Double_t If0f9  = fb9  * ( sin(fm) - sin(fn) ) ;
+     Double_t If0f10 = fb10 * ( (0.5*(1.+CTheta2)*fm - 0.25*STheta2*sin(2.*fm)) - (0.5*(1.+CTheta2)*fn - 0.25*STheta2*sin(2.*fn)) ) ;
+
+     Double_t If1f1  = fb1  * ( ps2z2c2(fm) -  ps2z2c2(fn) ) ;
+     Double_t If1f2  = fb2  * ( pc2z2s2(fm) -  pc2z2s2(fn) ) ;
+     Double_t If1f3  = fb3  * ( sin(c2_phi*fm+c3_phi) - sin(c2_phi*fn+c3_phi) ) / c2_phi ;
+     Double_t If1f4  = fb4  * ( psin(fm)    -  psin(fn)    ) ;
+     Double_t If1f5  = fb5  * ( psico(fm)   -  psico(fn)   ) ;
+     Double_t If1f6  = fb6  * ( pcos(fm)    -  pcos(fn)    ) ;
+     Double_t If1f7  = fb7  * ( ps2z2c2(fm) -  ps2z2c2(fn) ) ;
+     Double_t If1f8  = fb8  * ( psico(fm)   -  psico(fn)   ) ;
+     Double_t If1f9  = fb9  * ( pcos(fm)    -  pcos(fn)    ) ;
+     Double_t If1f10 = fb10 * ( ps2z2c2(fm) -  ps2z2c2(fn) ) ;
+
+     Double_t Sb0 = K1*If0f1 + K2*If0f2 + K3*If0f3 + K4*If0f4 + K5*If0f5 + K6*If0f6 + K7*If0f7 + K8*If0f8 + K9*If0f9 + K10*If0f10 ;
+     Double_t Sb1 = K1*If1f1 + K2*If1f2 + K3*If1f3 + K4*If1f4 + K5*If1f5 + K6*If1f6 + K7*If1f7 + K8*If1f8 + K9*If1f9 + K10*If1f10 ;
+
+     Double_t Integral =   acc_psi * acc_theta *          Sb0
+                         + acc_psi * acc_theta * c1_phi * Sb1 ;
+
+     return  Integral ;
+     // return 0 ;
+   }
+   else if ( code == 3 )   // Integrate over variable CTheta
+   {
+     Double_t zm = CTheta.max(rangeName) ;
+     Double_t zn = CTheta.min(rangeName) ;
+
+     Double_t Iz0f1  = 2.*CPsi2 * ( (zm-zn)* SPhi2 + (pow(zm,3)-pow(zn,3))*CPhi2/3. ) ;
+     Double_t Iz0f2  =    SPsi2 * ( (zm-zn)* CPhi2 + (pow(zm,3)-pow(zn,3))*SPhi2/3. ) ;
+     Double_t Iz0f3  =    SPsi2 * ( (zm-zn) - (pow(zm,3)-pow(zn,3))/3. ) ;
+     Double_t Iz0f4  = (2./3.)*SPsi2*SPhi * ( pow(1.-zm*zm,3./2.) - pow(1.-zn*zn,3./2.) ) ;
+     Double_t Iz0f5  = 2.*sqrt(2.)*CPsi*SPsi*SPhi*CPhi * ( (zm-zn) - (pow(zm,3)-pow(zn,3))/3. ) ;
+     Double_t Iz0f6  = -(2./3.)*sqrt(2.)*CPsi*SPsi*CPhi * ( pow(1.-zm*zm,3./2.) - pow(1.-zn*zn,3./2.) ) ;
+     Double_t Iz0f7  = (2./3.)* ( (zm-zn)* SPhi2 + (pow(zm,3)-pow(zn,3))*CPhi2/3. ) ;
+     Double_t Iz0f8  = (2./3.)*sqrt(6.)*SPsi*SPhi*CPhi * ( (zm-zn) - (pow(zm,3)-pow(zn,3))/3. ) ;
+     Double_t Iz0f9  = -(2./9.)*sqrt(6.)*SPsi*CPhi * ( pow(1.-zm*zm,3./2.) - pow(1.-zn*zn,3./2.) ) ;
+     Double_t Iz0f10 = (4./3.)*sqrt(3.)*CPsi * ( (zm-zn)* SPhi2 + (pow(zm,3)-pow(zn,3))*CPhi2/3. ) ;
+
+     Double_t Iz2f1  = 2.*CPsi2 * ( (1./3.)*(pow(zm,3)-pow(zn,3))*SPhi2 + (1./5.)*(pow(zm,5)-pow(zn,5))*CPhi2 ) ;
+     Double_t Iz2f2  =    SPsi2 * ( (1./3.)*(pow(zm,3)-pow(zn,3))*CPhi2 + (1./5.)*(pow(zm,5)-pow(zn,5))*SPhi2 ) ;
+     Double_t Iz2f3  =    SPsi2 * ( (1./3.)*(pow(zm,3)-pow(zn,3))       - (1./5.)*(pow(zm,5)-pow(zn,5))       ) ;
+     Double_t Iz2f4  = (2./15.)*SPsi2*SPhi * ( (pow(1.-zm*zm,3./2.)*(3.*zm*zm+2.)) - (pow(1.-zn*zn,3./2.)*(3.*zn*zn+2.)) ) ;
+     Double_t Iz2f5  = 2.*sqrt(2.)*CPsi*SPsi*SPhi*CPhi * ( (1./3.)*(pow(zm,3)-pow(zn,3)) - (1./5.)*(pow(zm,5)-pow(zn,5)) ) ;
+     Double_t Iz2f6  = -(2./15.)*sqrt(2.)*CPsi*SPsi*CPhi * ( (pow(1.-zm*zm,3./2.)*(3.*zm*zm+2.)) - (pow(1.-zn*zn,3./2.)*(3.*zn*zn+2.)) ) ;
+     Double_t Iz2f7  = (2./3.)  * ( (1./3.)*(pow(zm,3)-pow(zn,3))*SPhi2 + (1./5.)*(pow(zm,5)-pow(zn,5))*CPhi2 ) ;
+     Double_t Iz2f8  = (2./3.)*sqrt(6.)*SPsi*SPhi*CPhi * ( (1./3.)*(pow(zm,3)-pow(zn,3)) - (1./5.)*(pow(zm,5)-pow(zn,5)) ) ;
+     Double_t Iz2f9  = -(2./45.)*sqrt(2.)*SPsi*CPhi * ( (pow(1.-zm*zm,3./2.)*(3.*zm*zm+2.)) - (pow(1.-zn*zn,3./2.)*(3.*zn*zn+2.)) ) ;
+     Double_t Iz2f10 = (4./3.)*sqrt(3.)*CPsi * ( (1./3.)*(pow(zm,3)-pow(zn,3))*SPhi2 + (1./5.)*(pow(zm,5)-pow(zn,5))*CPhi2 ) ;
+
+     Double_t Sc0 = K1*Iz0f1 + K2*Iz0f2 + K3*Iz0f3 + K4*Iz0f4 + K5*Iz0f5 + K6*Iz0f6 + K7*Iz0f7 + K8*Iz0f8 + K9*Iz0f9 + K10*Iz0f10 ;
+     Double_t Sc2 = K1*Iz2f1 + K2*Iz2f2 + K3*Iz2f3 + K4*Iz2f4 + K5*Iz2f5 + K6*Iz2f6 + K7*Iz2f7 + K8*Iz2f8 + K9*Iz2f9 + K10*Iz2f10 ;
+
+     Double_t Integral =   acc_psi * acc_phi *            Sc0
+                         + acc_psi * acc_phi * c2_theta * Sc2 ;
+
+     return Integral ;
+     // return 0 ;
+   }
+   else if ( code == 4 )   // Integrate over variables CTheta and CPsi
+   {
+
+     Double_t xm = CPsi.max(rangeName) ;
+     Double_t xn = CPsi.min(rangeName) ;
+
+     Double_t zz  = CTheta.max(rangeName) ;
+     Double_t zz2 = zz*zz ;
+     Double_t fc1m  = 2.*zz*(SPhi2 + zz2*CPhi2/3.) ;
+     Double_t fc2m  = zz*(CPhi2 + zz2*SPhi2/3.) ;
+     Double_t fc3m  = zz*(1. - zz2/3.) ;
+     Double_t fc4m  = (2./3.)*pow(1.-zz2,3./2.)*SPhi ;
+     Double_t fc5m  =  2.*sqrt(2.)*zz*(1. - zz2/3.)*SPhi*CPhi ;
+     Double_t fc6m  = -(2./3.)*sqrt(2.)*pow(1.-zz2,3./2.)*CPhi ;
+     Double_t fc7m  = (2./3.)*zz*(SPhi2 + zz2*CPhi2/3.) ;
+     Double_t fc8m  = (2.*sqrt(6.)/3.)*zz*(1.-zz2/3.)*SPhi*CPhi ;
+     Double_t fc9m  = -(2.*sqrt(6.)/9.)*pow(1.-zz2,3./2.)*CPhi ;
+     Double_t fc10m = (4.*sqrt(3.)/3.) * zz*(SPhi2 + zz2*CPhi2/3.) ;
+
+     zz  = CTheta.min(rangeName) ;
+     zz2 = zz*zz ;
+     Double_t fc1n  = 2.*zz*(SPhi2 + zz2*CPhi2/3.) ;
+     Double_t fc2n  = zz*(CPhi2 + zz2*SPhi2/3.) ;
+     Double_t fc3n  = zz*(1. - zz2/3.) ;
+     Double_t fc4n  = (2./3.)*pow(1.-zz2,3./2.)*SPhi ;
+     Double_t fc5n  =  2.*sqrt(2.)*zz*(1. - zz2/3.)*SPhi*CPhi ;
+     Double_t fc6n  = -(2./3.)*sqrt(2.)*pow(1.-zz2,3./2.)*CPhi ;
+     Double_t fc7n  = (2./3.)*zz*(SPhi2 + zz2*CPhi2/3.) ;
+     Double_t fc8n  = (2.*sqrt(6.)/3.)*zz*(1.-zz2/3.)*SPhi*CPhi ;
+     Double_t fc9n  = -(2.*sqrt(6.)/9.)*pow(1.-zz2,3./2.)*CPhi ;
+     Double_t fc10n = (4.*sqrt(3.)/3.) * zz*(SPhi2 + zz2*CPhi2/3.) ;
+
+     zz  = CTheta.max(rangeName) ;
+     zz2 = zz*zz ;
+     Double_t fd1m  = 2.*zz2*zz*(SPhi2/3. + zz2*CPhi2/5.) ;
+     Double_t fd2m  = zz2*zz*(CPhi2/3. + zz2*SPhi2/5.) ;
+     Double_t fd3m  = zz2*zz*(1./3. - zz2/5.) ;
+     Double_t fd4m  = (2./15.)*pow(1.-zz2,3./2.)*(3.*zz2+2.)*SPhi ;
+     Double_t fd5m  =  2.*sqrt(2.)*zz2*zz*(1./3. - zz2/5.)*SPhi*CPhi ;
+     Double_t fd6m  = -(2./15.)*sqrt(2.)*pow(1.-zz2,3./2.)*(3.*zz2+2.)*CPhi ;
+     Double_t fd7m  = (2./3.)*zz2*zz*(SPhi2/3. + zz2*CPhi2/5.) ;
+     Double_t fd8m  = (2.*sqrt(6.)/3.)*zz2*zz*(1./3.-zz2/5.)*SPhi*CPhi ;
+     Double_t fd9m  = -(2.*sqrt(6.)/45.)*pow(1.-zz2,3./2.)*(3.*zz2+2.)*CPhi ;
+     Double_t fd10m = (4.*sqrt(3.)/3.) *zz2*zz*(SPhi2/3. + zz2*CPhi2/5.) ;
+
+     zz  = CTheta.min(rangeName) ;
+     zz2 = zz*zz ;
+     Double_t fd1n  = 2.*zz2*zz*(SPhi2/3. + zz2*CPhi2/5.) ;
+     Double_t fd2n  = zz2*zz*(CPhi2/3. + zz2*SPhi2/5.) ;
+     Double_t fd3n  = zz2*zz*(1./3. - zz2/5.) ;
+     Double_t fd4n  = (2./15.)*pow(1.-zz2,3./2.)*(3.*zz2+2.)*SPhi ;
+     Double_t fd5n  =  2.*sqrt(2.)*zz2*zz*(1./3. - zz2/5.)*SPhi*CPhi ;
+     Double_t fd6n  = -(2./15.)*sqrt(2.)*pow(1.-zz2,3./2.)*(3.*zz2+2.)*CPhi ;
+     Double_t fd7n  = (2./3.)*zz2*zz*(SPhi2/3. + zz2*CPhi2/5.) ;
+     Double_t fd8n  = (2.*sqrt(6.)/3.)*zz2*zz*(1./3.-zz2/5.)*SPhi*CPhi ;
+     Double_t fd9n  = -(2.*sqrt(6.)/45.)*pow(1.-zz2,3./2.)*(3.*zz2+2.)*CPhi ;
+     Double_t fd10n = (4.*sqrt(3.)/3.) *zz2*zz*(SPhi2/3. + zz2*CPhi2/5.) ;
+
+     Double_t Jx0f1  = fc1m * pow(xm,3)/3. - fc1n * pow(xn,3)/3.  ;
+     Double_t Jx0f2  = fc2m * px0pol2(xm)  - fc2n * px0pol2(xn)   ;
+     Double_t Jx0f3  = fc3m * px0pol2(xm)  - fc3n * px0pol2(xn)   ;
+     Double_t Jx0f4  = fc4m * px0pol2(xm)  - fc4n * px0pol2(xn)   ;
+     Double_t Jx0f5  = fc5m *  px1sqr(xm)  - fc5n *  px1sqr(xn)   ;
+     Double_t Jx0f6  = fc6m *  px1sqr(xm)  - fc6n *  px1sqr(xn)   ;
+     Double_t Jx0f7  = fc7m *         xm   - fc7n *         xn    ;
+     Double_t Jx0f8  = fc8m *  px0sqr(xm)  - fc8n *  px0sqr(xn)   ;
+     Double_t Jx0f9  = fc9m *  px0sqr(xm)  - fc9n *  px0sqr(xn)   ;
+     Double_t Jx0f10 = fc10m* pow(xm,2)/2. - fc10n* pow(xn,2)/2.  ;
+
+     Double_t Jx1f1  = fc1m * pow(xm,4)/4. - fc1n * pow(xn,4)/4.  ;
+     Double_t Jx1f2  = fc2m * px1pol2(xm)  - fc2n * px1pol2(xn)   ;
+     Double_t Jx1f3  = fc3m * px1pol2(xm)  - fc3n * px1pol2(xn)   ;
+     Double_t Jx1f4  = fc4m * px1pol2(xm)  - fc4n * px1pol2(xn)   ;
+     Double_t Jx1f5  = fc5m *  px2sqr(xm)  - fc5n *  px2sqr(xn)   ;
+     Double_t Jx1f6  = fc6m *  px2sqr(xm)  - fc6n *  px2sqr(xn)   ;
+     Double_t Jx1f7  = fc7m * pow(xm,2)/2. - fc7n * pow(xn,2)/2.  ;
+     Double_t Jx1f8  = fc8m *  px1sqr(xm)  - fc8n *  px1sqr(xn)   ;
+     Double_t Jx1f9  = fc9m *  px1sqr(xm)  - fc9n *  px1sqr(xn)   ;
+     Double_t Jx1f10 = fc10m* pow(xm,3)/3. - fc10n* pow(xn,3)/3.  ;
+
+     Double_t Jx2f1  = fc1m * pow(xm,5)/5. - fc1n * pow(xn,5)/5.  ;
+     Double_t Jx2f2  = fc2m * px2pol2(xm)  - fc2n * px2pol2(xn)   ;
+     Double_t Jx2f3  = fc3m * px2pol2(xm)  - fc3n * px2pol2(xn)   ;
+     Double_t Jx2f4  = fc4m * px2pol2(xm)  - fc4n * px2pol2(xn)   ;
+     Double_t Jx2f5  = fc5m *  px3sqr(xm)  - fc5n *  px3sqr(xn)   ;
+     Double_t Jx2f6  = fc6m *  px3sqr(xm)  - fc6n *  px3sqr(xn)   ;
+     Double_t Jx2f7  = fc7m * pow(xm,3)/3. - fc7n * pow(xn,3)/3.  ;
+     Double_t Jx2f8  = fc8m *  px2sqr(xm)  - fc8n *  px2sqr(xn)   ;
+     Double_t Jx2f9  = fc9m *  px2sqr(xm)  - fc9n *  px2sqr(xn)   ;
+     Double_t Jx2f10 = fc10m* pow(xm,4)/4. - fc10n* pow(xn,4)/4.  ;
+
+     Double_t Jx3f1  = fc1m * pow(xm,6)/6. - fc1n * pow(xn,6)/6.  ;
+     Double_t Jx3f2  = fc2m * px3pol2(xm)  - fc2n * px3pol2(xn)   ;
+     Double_t Jx3f3  = fc3m * px3pol2(xm)  - fc3n * px3pol2(xn)   ;
+     Double_t Jx3f4  = fc4m * px3pol2(xm)  - fc4n * px3pol2(xn)   ;
+     Double_t Jx3f5  = fc5m *  px4sqr(xm)  - fc5n *  px4sqr(xn)   ;
+     Double_t Jx3f6  = fc6m *  px4sqr(xm)  - fc6n *  px4sqr(xn)   ;
+     Double_t Jx3f7  = fc7m * pow(xm,4)/4. - fc7n * pow(xn,4)/4.  ;
+     Double_t Jx3f8  = fc8m *  px3sqr(xm)  - fc8n *  px3sqr(xn)   ;
+     Double_t Jx3f9  = fc9m *  px3sqr(xm)  - fc9n *  px3sqr(xn)   ;
+     Double_t Jx3f10 = fc10m* pow(xm,5)/5. - fc10n* pow(xn,5)/5.  ;
+
+     Double_t Jx4f1  = fc1m * pow(xm,7)/7. - fc1n * pow(xn,7)/7.  ;
+     Double_t Jx4f2  = fc2m * px4pol2(xm)  - fc2n * px4pol2(xn)   ;
+     Double_t Jx4f3  = fc3m * px4pol2(xm)  - fc3n * px4pol2(xn)   ;
+     Double_t Jx4f4  = fc4m * px4pol2(xm)  - fc4n * px4pol2(xn)   ;
+     Double_t Jx4f5  = fc5m *  px5sqr(xm)  - fc5n *  px5sqr(xn)   ;
+     Double_t Jx4f6  = fc6m *  px5sqr(xm)  - fc6n *  px5sqr(xn)   ;
+     Double_t Jx4f7  = fc7m * pow(xm,5)/5. - fc7n * pow(xn,5)/5.  ;
+     Double_t Jx4f8  = fc8m *  px4sqr(xm)  - fc8n *  px4sqr(xn)   ;
+     Double_t Jx4f9  = fc9m *  px4sqr(xm)  - fc9n *  px4sqr(xn)   ;
+     Double_t Jx4f10 = fc10m* pow(xm,6)/6. - fc10n* pow(xn,6)/6.  ;
+
+     Double_t Jx5f1  = fc1m * pow(xm,8)/8. - fc1n * pow(xn,8)/8.  ;
+     Double_t Jx5f2  = fc2m * px5pol2(xm)  - fc2n * px5pol2(xn)   ;
+     Double_t Jx5f3  = fc3m * px5pol2(xm)  - fc3n * px5pol2(xn)   ;
+     Double_t Jx5f4  = fc4m * px5pol2(xm)  - fc4n * px5pol2(xn)   ;
+     Double_t Jx5f5  = fc5m *  px6sqr(xm)  - fc5n *  px6sqr(xn)   ;
+     Double_t Jx5f6  = fc6m *  px6sqr(xm)  - fc6n *  px6sqr(xn)   ;
+     Double_t Jx5f7  = fc7m * pow(xm,6)/6. - fc7n * pow(xn,6)/6.  ;
+     Double_t Jx5f8  = fc8m *  px5sqr(xm)  - fc8n *  px5sqr(xn)   ;
+     Double_t Jx5f9  = fc9m *  px5sqr(xm)  - fc9n *  px5sqr(xn)   ;
+     Double_t Jx5f10 = fc10m* pow(xm,7)/7. - fc10n* pow(xn,7)/7.  ;
+
+     Double_t Kx0f1  = fd1m * pow(xm,3)/3. - fd1n * pow(xn,3)/3.  ;
+     Double_t Kx0f2  = fd2m * px0pol2(xm)  - fd2n * px0pol2(xn)   ;
+     Double_t Kx0f3  = fd3m * px0pol2(xm)  - fd3n * px0pol2(xn)   ;
+     Double_t Kx0f4  = fd4m * px0pol2(xm)  - fd4n * px0pol2(xn)   ;
+     Double_t Kx0f5  = fd5m *  px1sqr(xm)  - fd5n *  px1sqr(xn)   ;
+     Double_t Kx0f6  = fd6m *  px1sqr(xm)  - fd6n *  px1sqr(xn)   ;
+     Double_t Kx0f7  = fd7m *         xm   - fd7n *         xn    ;
+     Double_t Kx0f8  = fd8m *  px0sqr(xm)  - fd8n *  px0sqr(xn)   ;
+     Double_t Kx0f9  = fd9m *  px0sqr(xm)  - fd9n *  px0sqr(xn)   ;
+     Double_t Kx0f10 = fd10m* pow(xm,2)/2. - fd10n* pow(xn,2)/2.  ;
+
+     Double_t Kx1f1  = fd1m * pow(xm,4)/4. - fd1n * pow(xn,4)/4.  ;
+     Double_t Kx1f2  = fd2m * px1pol2(xm)  - fd2n * px1pol2(xn)   ;
+     Double_t Kx1f3  = fd3m * px1pol2(xm)  - fd3n * px1pol2(xn)   ;
+     Double_t Kx1f4  = fd4m * px1pol2(xm)  - fd4n * px1pol2(xn)   ;
+     Double_t Kx1f5  = fd5m *  px2sqr(xm)  - fd5n *  px2sqr(xn)   ;
+     Double_t Kx1f6  = fd6m *  px2sqr(xm)  - fd6n *  px2sqr(xn)   ;
+     Double_t Kx1f7  = fd7m * pow(xm,2)/2. - fd7n * pow(xn,2)/2.  ;
+     Double_t Kx1f8  = fd8m *  px1sqr(xm)  - fd8n *  px1sqr(xn)   ;
+     Double_t Kx1f9  = fd9m *  px1sqr(xm)  - fd9n *  px1sqr(xn)   ;
+     Double_t Kx1f10 = fd10m* pow(xm,3)/3. - fd10n* pow(xn,3)/3.  ;
+
+     Double_t Kx2f1  = fd1m * pow(xm,5)/5. - fd1n * pow(xn,5)/5.  ;
+     Double_t Kx2f2  = fd2m * px2pol2(xm)  - fd2n * px2pol2(xn)   ;
+     Double_t Kx2f3  = fd3m * px2pol2(xm)  - fd3n * px2pol2(xn)   ;
+     Double_t Kx2f4  = fd4m * px2pol2(xm)  - fd4n * px2pol2(xn)   ;
+     Double_t Kx2f5  = fd5m *  px3sqr(xm)  - fd5n *  px3sqr(xn)   ;
+     Double_t Kx2f6  = fd6m *  px3sqr(xm)  - fd6n *  px3sqr(xn)   ;
+     Double_t Kx2f7  = fd7m * pow(xm,3)/3. - fd7n * pow(xn,3)/3.  ;
+     Double_t Kx2f8  = fd8m *  px2sqr(xm)  - fd8n *  px2sqr(xn)   ;
+     Double_t Kx2f9  = fd9m *  px2sqr(xm)  - fd9n *  px2sqr(xn)   ;
+     Double_t Kx2f10 = fd10m* pow(xm,4)/4. - fd10n* pow(xn,4)/4.  ;
+
+     Double_t Kx3f1  = fd1m * pow(xm,6)/6. - fd1n * pow(xn,6)/6.  ;
+     Double_t Kx3f2  = fd2m * px3pol2(xm)  - fd2n * px3pol2(xn)   ;
+     Double_t Kx3f3  = fd3m * px3pol2(xm)  - fd3n * px3pol2(xn)   ;
+     Double_t Kx3f4  = fd4m * px3pol2(xm)  - fd4n * px3pol2(xn)   ;
+     Double_t Kx3f5  = fd5m *  px4sqr(xm)  - fd5n *  px4sqr(xn)   ;
+     Double_t Kx3f6  = fd6m *  px4sqr(xm)  - fd6n *  px4sqr(xn)   ;
+     Double_t Kx3f7  = fd7m * pow(xm,4)/4. - fd7n * pow(xn,4)/4.  ;
+     Double_t Kx3f8  = fd8m *  px3sqr(xm)  - fd8n *  px3sqr(xn)   ;
+     Double_t Kx3f9  = fd9m *  px3sqr(xm)  - fd9n *  px3sqr(xn)   ;
+     Double_t Kx3f10 = fd10m* pow(xm,5)/5. - fd10n* pow(xn,5)/5.  ;
+
+     Double_t Kx4f1  = fd1m * pow(xm,7)/7. - fd1n * pow(xn,7)/7.  ;
+     Double_t Kx4f2  = fd2m * px4pol2(xm)  - fd2n * px4pol2(xn)   ;
+     Double_t Kx4f3  = fd3m * px4pol2(xm)  - fd3n * px4pol2(xn)   ;
+     Double_t Kx4f4  = fd4m * px4pol2(xm)  - fd4n * px4pol2(xn)   ;
+     Double_t Kx4f5  = fd5m *  px5sqr(xm)  - fd5n *  px5sqr(xn)   ;
+     Double_t Kx4f6  = fd6m *  px5sqr(xm)  - fd6n *  px5sqr(xn)   ;
+     Double_t Kx4f7  = fd7m * pow(xm,5)/5. - fd7n * pow(xn,5)/5.  ;
+     Double_t Kx4f8  = fd8m *  px4sqr(xm)  - fd8n *  px4sqr(xn)   ;
+     Double_t Kx4f9  = fd9m *  px4sqr(xm)  - fd9n *  px4sqr(xn)   ;
+     Double_t Kx4f10 = fd10m* pow(xm,6)/6. - fd10n* pow(xn,6)/6.  ;
+
+     Double_t Kx5f1  = fd1m * pow(xm,8)/8. - fd1n * pow(xn,8)/8.  ;
+     Double_t Kx5f2  = fd2m * px5pol2(xm)  - fd2n * px5pol2(xn)   ;
+     Double_t Kx5f3  = fd3m * px5pol2(xm)  - fd3n * px5pol2(xn)   ;
+     Double_t Kx5f4  = fd4m * px5pol2(xm)  - fd4n * px5pol2(xn)   ;
+     Double_t Kx5f5  = fd5m *  px6sqr(xm)  - fd5n *  px6sqr(xn)   ;
+     Double_t Kx5f6  = fd6m *  px6sqr(xm)  - fd6n *  px6sqr(xn)   ;
+     Double_t Kx5f7  = fd7m * pow(xm,6)/6. - fd7n * pow(xn,6)/6.  ;
+     Double_t Kx5f8  = fd8m *  px5sqr(xm)  - fd8n *  px5sqr(xn)   ;
+     Double_t Kx5f9  = fd9m *  px5sqr(xm)  - fd9n *  px5sqr(xn)   ;
+     Double_t Kx5f10 = fd10m* pow(xm,7)/7. - fd10n* pow(xn,7)/7.  ;
+
+     Double_t Sd0 = K1*Jx0f1 + K2*Jx0f2 + K3*Jx0f3 + K4*Jx0f4 + K5*Jx0f5 + K6*Jx0f6 + K7*Jx0f7 + K8*Jx0f8 + K9*Jx0f9 + K10*Jx0f10 ;
+     Double_t Sd1 = K1*Jx1f1 + K2*Jx1f2 + K3*Jx1f3 + K4*Jx1f4 + K5*Jx1f5 + K6*Jx1f6 + K7*Jx1f7 + K8*Jx1f8 + K9*Jx1f9 + K10*Jx1f10 ;
+     Double_t Sd2 = K1*Jx2f1 + K2*Jx2f2 + K3*Jx2f3 + K4*Jx2f4 + K5*Jx2f5 + K6*Jx2f6 + K7*Jx2f7 + K8*Jx2f8 + K9*Jx2f9 + K10*Jx2f10 ;
+     Double_t Sd3 = K1*Jx3f1 + K2*Jx3f2 + K3*Jx3f3 + K4*Jx3f4 + K5*Jx3f5 + K6*Jx3f6 + K7*Jx3f7 + K8*Jx3f8 + K9*Jx3f9 + K10*Jx3f10 ;
+     Double_t Sd4 = K1*Jx4f1 + K2*Jx4f2 + K3*Jx4f3 + K4*Jx4f4 + K5*Jx4f5 + K6*Jx4f6 + K7*Jx4f7 + K8*Jx4f8 + K9*Jx4f9 + K10*Jx4f10 ;
+     Double_t Sd5 = K1*Jx5f1 + K2*Jx5f2 + K3*Jx5f3 + K4*Jx5f4 + K5*Jx5f5 + K6*Jx5f6 + K7*Jx5f7 + K8*Jx5f8 + K9*Jx5f9 + K10*Jx5f10 ;
+
+     Double_t Se0 = K1*Kx0f1 + K2*Kx0f2 + K3*Kx0f3 + K4*Kx0f4 + K5*Kx0f5 + K6*Kx0f6 + K7*Kx0f7 + K8*Kx0f8 + K9*Kx0f9 + K10*Kx0f10 ;
+     Double_t Se1 = K1*Kx1f1 + K2*Kx1f2 + K3*Kx1f3 + K4*Kx1f4 + K5*Kx1f5 + K6*Kx1f6 + K7*Kx1f7 + K8*Kx1f8 + K9*Kx1f9 + K10*Kx1f10 ;
+     Double_t Se2 = K1*Kx2f1 + K2*Kx2f2 + K3*Kx2f3 + K4*Kx2f4 + K5*Kx2f5 + K6*Kx2f6 + K7*Kx2f7 + K8*Kx2f8 + K9*Kx2f9 + K10*Kx2f10 ;
+     Double_t Se3 = K1*Kx3f1 + K2*Kx3f2 + K3*Kx3f3 + K4*Kx3f4 + K5*Kx3f5 + K6*Kx3f6 + K7*Kx3f7 + K8*Kx3f8 + K9*Kx3f9 + K10*Kx3f10 ;
+     Double_t Se4 = K1*Kx4f1 + K2*Kx4f2 + K3*Kx4f3 + K4*Kx4f4 + K5*Kx4f5 + K6*Kx4f6 + K7*Kx4f7 + K8*Kx4f8 + K9*Kx4f9 + K10*Kx4f10 ;
+     Double_t Se5 = K1*Kx5f1 + K2*Kx5f2 + K3*Kx5f3 + K4*Kx5f4 + K5*Kx5f5 + K6*Kx5f6 + K7*Kx5f7 + K8*Kx5f8 + K9*Kx5f9 + K10*Kx5f10 ;
+
+     Double_t Integral =  acc_phi * (                       Sd0
+                                      + c1_psi            * Sd1
+                                      + c2_psi            * Sd2
+                                      + c3_psi            * Sd3
+                                      + c4_psi            * Sd4
+                                      + c5_psi            * Sd5
+                                      +          c2_theta * Se0
+                                      + c1_psi * c2_theta * Se1
+                                      + c2_psi * c2_theta * Se2
+                                      + c3_psi * c2_theta * Se3
+                                      + c4_psi * c2_theta * Se4
+                                      + c5_psi * c2_theta * Se5 ) ;
+
+     return Integral ;
+   }
+ 
+   else
+   {
+     return 0 ;
+   }
+
+ }
+
+////////////////////////////////////////////////////////////////////////////////////
+// Primitives for the analytical integration over CTheta
+////////////////////////////////////////////////////////////////////////////////////
+
+ Double_t AngJpsiKst_Swave_Asym::px0sqr(Double_t x) const
+ {
+   return 0.5       * ( x*sqrt(1.-x*x) + asin(x) ) ;
+ }
+
+ Double_t AngJpsiKst_Swave_Asym::px2sqr(Double_t x) const
+ {
+   return (1./8.)   * ( x*sqrt(1.-x*x)*(2.*x*x-1.) + asin(x) ) ;
+ }
+
+ Double_t AngJpsiKst_Swave_Asym::px4sqr(Double_t x) const
+ {
+   return (1./48.)  * ( x*sqrt(1.-x*x)*(8.*pow(x,4)-2.*x*x-3.) + 3.*asin(x) ) ;
+ }
+
+ Double_t AngJpsiKst_Swave_Asym::px6sqr(Double_t x) const
+ {
+   return (1./384.) * ( x*sqrt(1.-x*x)*(48.*pow(x,6)-8.*pow(x,4)-10.*x*x-15.) + 15.*asin(x) ) ;
+ }
+
+ Double_t AngJpsiKst_Swave_Asym::px1sqr(Double_t x) const
+ {
+   return -(1./3.) * sqrt( (1.-x*x)*(1.-x*x)*(1.-x*x) ) ;
+ }
+
+ Double_t AngJpsiKst_Swave_Asym::px3sqr(Double_t x) const
+ {
+   return -(1./15.) * sqrt( (1.-x*x)*(1.-x*x)*(1.-x*x) ) * (3.*x*x + 2.) ;
+ }
+
+ Double_t AngJpsiKst_Swave_Asym::px5sqr(Double_t x) const
+ {
+   return -(1./105.) * sqrt( (1.-x*x)*(1.-x*x)*(1.-x*x) ) * (15.*pow(x,4) + 12.*x*x + 8.) ;
+ }
+
+ Double_t AngJpsiKst_Swave_Asym::px0pol2(Double_t x) const
+ {
+   return x        * ( 1.    - x*x/3. ) ;
+ }
+
+ Double_t AngJpsiKst_Swave_Asym::px1pol2(Double_t x) const
+ {
+   return x*x      * ( 1./2. - x*x/4. ) ;
+ }
+
+ Double_t AngJpsiKst_Swave_Asym::px2pol2(Double_t x) const
+ {
+   return x*x*x    * ( 1./3. - x*x/5. ) ;
+ }
+
+ Double_t AngJpsiKst_Swave_Asym::px3pol2(Double_t x) const
+ {
+   return pow(x,4) * ( 1./4. - x*x/6. ) ;
+ }
+
+ Double_t AngJpsiKst_Swave_Asym::px4pol2(Double_t x) const
+ {
+   return pow(x,5) * ( 1./5. - x*x/7. ) ;
+ }
+
+ Double_t AngJpsiKst_Swave_Asym::px5pol2(Double_t x) const
+ {
+   return pow(x,6) * ( 1./6. - x*x/8. ) ;
+ }
+
+////////////////////////////////////////////////////////////////////////////////////
+// Primitives for the analytical integration over Phi
+////////////////////////////////////////////////////////////////////////////////////
+
+ Double_t AngJpsiKst_Swave_Asym::ps2z2c2(Double_t x) const
+ {
+   // from mathematica
+
+   Double_t z2 = CTheta*CTheta ;
+
+   if ( abs(c2_phi-2.) > 0.00000001 )
+   {
+     Double_t aa = c2_phi*(z2-1.)*sin((c2_phi-2.)*x+c3_phi) / (4.*c2_phi*(c2_phi-2.)) ;
+
+     Double_t bb = ( 2.*(c2_phi+2.)*(z2-1.)*sin(c2_phi*x+c3_phi) + c2_phi*(z2-1.)*sin((c2_phi+2.)*x+c3_phi) )
+                   / (4.*c2_phi*(c2_phi+2.)) ;
+     return aa + bb ;
+   }
+   else
+   {
+     return (z2+1.)*sin(2.*x+c3_phi)/4. + (z2-1.)*sin(4.*x+c3_phi)/16. + (z2-1.)*x*cos(c3_phi)/4. ;
+   }
+ }
+
+ Double_t AngJpsiKst_Swave_Asym::pc2z2s2(Double_t x) const
+ {
+   // from mathematica
+
+   Double_t z2 = CTheta*CTheta ;
+
+   if ( abs(c2_phi-2.) > 0.00000001 )
+   {
+     Double_t aa = -c2_phi*(z2-1.)*sin((c2_phi-2.)*x+c3_phi) / (4.*c2_phi*(c2_phi-2.)) ;
+  
+     Double_t bb = ( 2.*(c2_phi+2.)*(z2+1.)*sin(c2_phi*x+c3_phi) - c2_phi*(z2-1.)*sin((c2_phi+2.)*x+c3_phi) )
+                   / (4.*c2_phi*(c2_phi+2.)) ;
+     return aa + bb ;
+   }
+   else
+   {
+     return (z2+1.)*sin(2.*x+c3_phi)/4. - (z2-1.)*sin(4.*x+c3_phi)/16. - (z2-1.)*x*cos(c3_phi)/4. ;
+   }
+ }
+
+ Double_t AngJpsiKst_Swave_Asym::psin(Double_t x) const
+ {
+   if ( abs(c2_phi-1.) > 0.00000001 )
+   {
+     Double_t nume = c2_phi*sin(x)*sin(c2_phi*x + c3_phi) + cos(x)*cos(c2_phi*x + c3_phi) ;
+     Double_t deno = (c2_phi*c2_phi - 1.) ;
+     return nume/deno ;
+   }
+   else
+   {
+     return x*sin(x)*cos(x+c3_phi)/2. - x*cos(x)*sin(x+c3_phi)/2. + sin(x)*sin(x+c3_phi)/2. ;
+   }
+ }
+
+ Double_t AngJpsiKst_Swave_Asym::pcos(Double_t x) const
+ {
+   if ( abs(c2_phi-1.) > 0.00000001 )
+   {
+     Double_t nume = c2_phi*sin(c2_phi*x + c3_phi)*cos(x) - sin(x)*cos(c2_phi*x + c3_phi) ;
+     Double_t deno = c2_phi*c2_phi - 1. ;
+     return nume/deno ;
+   }
+   else
+   {
+     return x*sin(x)*sin(x+c3_phi)/2. + x*cos(x)*cos(x+c3_phi)/2. + sin(x)*cos(x+c3_phi)/2. ;
+   }
+ }
+
+ Double_t AngJpsiKst_Swave_Asym::psico(Double_t x) const
+ {
+   if ( abs(c2_phi-2.) > 0.00000001 )
+   {
+     Double_t nume = c2_phi*sin(2.*x)*sin(c2_phi*x + c3_phi) + 2.*cos(2.*x)*cos(c2_phi*x + c3_phi) ;
+     Double_t deno = 2.*(c2_phi*c2_phi - 4.) ;
+     return nume/deno ;
+   }
+   else
+   {
+     return x*sin(2.*x)*cos(2.*x+c3_phi)/4. - x*sin(2.*x+c3_phi)*cos(2.*x)/4. + sin(2.*x)*sin(2.*x+c3_phi)/8. ;
+   }
+ }
+
 

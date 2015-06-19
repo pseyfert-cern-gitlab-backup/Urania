@@ -1,0 +1,199 @@
+root.exe
+TString NN = "0"
+double NNcut = NN.Atof()
+//===================================================================
+TFile *_file0 = TFile::Open("Lambdab-R12S17b-721-"+NN+"-SW.root")
+TTree* SW = (TTree*)_file0->Get("WeightTree")
+TFile* f1 = TFile::Open("/home/pkoppenb/work/Baryons/Lambdab/Lambdab-R12S17b-721.root")
+
+TTree* T = f1->Get("BetaSLambdab2JpsippiDetachedLine_Tuple/DecayTree")
+T->AddFriend(SW)
+T->Draw("B_FullFit_M:wPsippiMass","runNumber==102182 && wCategory==1")
+//===================================================================
+// 
+//===================================================================
+//===================================================================
+// The cuts
+//===================================================================
+
+TCut L0TIS("BL0HadronDecision_TIS==1")
+TCut L0Mu("BL0DiMuonDecision_TOS==1 || BL0MuonDecision_TOS==1")
+TCut L0(L0Mu || "BL0MuonDecision_TIS==1 || BL0DiMuonDecision_TIS==1 || BL0HadronDecision_TIS==1")
+TCut Hlt1TIS(L0 && "BHlt1TrackAllL0Decision_TIS==1")
+TCut Hlt1(L0 && "BHlt1TrackMuonDecision_TOS==1 || PsiHlt1DiMuonHighMassDecision_TOS==1 || PsiHlt1TrackAllL0Decision_TOS==1")
+TCut Hlt2TIS(Hlt1 && "BHlt2Global_TIS==1")
+TCut Hlt2(Hlt1 && "PsiHlt2DiMuonDetachedJPsiDecision_TOS==1 || PsiHlt2DiMuonJPsiDecision_TOS==1 || PsiHlt2DiMuonJPsiHighPTDecision_TOS==1")
+
+TCut pistream("(piminus_ProbNNpi>piminus_ProbNNk)")
+TCut kstream(!pistream)
+
+SandB(T,0,"Psi_MM",pistream,kstream,Hlt2,"N","stripping psi mass",3017,3177,150)
+SandB(T,0,"(piminus_ProbNNpi>piminus_ProbNNk)*B_FullFit_M[0]+(piminus_ProbNNpi<=piminus_ProbNNk)*B_SubpK_M[0]",pistream,kstream,Hlt2,"","stripping pi and k stream mass",4900,6100,120)
+SandB(T,0,"B_FullFit_M[0]",pistream,kstream,Hlt2,"N","stripping pi mass",5000,6000)
+SandB(T,0,"B_SubpK_M[0]",pistream,kstream,Hlt2,"N","stripping k mass",5000,6100,110)
+SandB(T,0,"B_SubKpi_M[0]",pistream,kstream,Hlt2,"N","stripping Bd mass",4700,6000,130)
+
+//===================================================================
+// Look where the efficiency is
+//===================================================================
+TwoProfile(T,0,"wQ",L0.GetTitle(),"wCategory==1","wCategory==-1","1" ,"","L0 Muon TOS efficiency",700,1900,60,0.8,1)  // 92
+TwoProfile(T,0,"wQ","BL0Global_TIS","wCategory==1","wCategory==-1","1" ,"","L0 TIS Efficiency",700,1900,60,0.0,1)  // 30%
+TwoProfile(T,0,"wQ","BL0HadronDecision_TIS","wCategory==1","wCategory==-1","1" ,"","L0 Hadron TIS Efficiency",700,1900,60,0.0,1)  // 30%
+TwoProfile(T,0,"wQ","BL0DiMuonDecision_TOS==1 || BL0MuonDecision_TOS==1 || BL0DiMuonDecision_TIS==1 || BL0MuonDecision_TIS==1 || BL0HadronDecision_TIS==1","wCategory==1","wCategory==-1","1" ,"","L0 Tot Efficiency",700,1900,60,0.9,1)  // 30%
+TwoProfile(T,0,"wQ","BL0DiMuonDecision_TOS==1 || BL0MuonDecision_TOS==1","wCategory==1","wCategory==-1","1" ,"","L0 Tot Efficiency",700,1900,60,0.9,1)  // 30%
+
+TwoProfile(T,0,"wQ",Hlt1,"wCategory==1","wCategory==-1",L0 ,"","Hlt1 Eff",700,1900,60,0.8,1)  // 95%
+TwoProfile(T,0,"wQ","PsiHlt1TrackMuonDecision_TOS","wCategory==1","wCategory==-1",L0 ,"","Hlt1MuTrack Eff",700,1900,60)  // 95%
+TwoProfile(T,0,"wQ","PsiHlt1DiMuonHighMassDecision_TOS","wCategory==1","wCategory==-1",L0 ,"","Hlt1DiMu Eff",700,1900,60)  // 95%
+TwoProfile(T,0,"wQ","BHlt1TrackAllL0Decision_TOS","wCategory==1","wCategory==-1",L0 ,"","Hlt1Track Eff",700,1900,60)  // 95%
+
+TwoProfile(T,0,"wQ",Hlt2,"wCategory==1","wCategory==-1",Hlt1 ,"","Hlt2 Eff",700,1900,60,0.9,1.0)  // 95%
+TwoProfile(T,0,"wQ","PsiHlt2DiMuonDetachedJPsiDecision_TOS","wCategory==1","wCategory==-1",Hlt1 ,"","Hlt2DiMuonDetachedJPsi Eff",700,1900,60) // 80%
+TwoProfile(T,0,"wQ","PsiHlt2DiMuonJPsiDecision_TOS","wCategory==1","wCategory==-1",Hlt1 ,"","Hlt2DiMuonJPsi Eff",700,1900,60)         // 60 or remainig%
+TwoProfile(T,0,"wQ","PsiHlt2DiMuonJPsiHighPTDecision_TOS","wCategory==1","wCategory==-1",Hlt1 ,"","Hlt2DiMuonJPsiHighPT Eff",700,1900,60)   // 50% of remaining
+
+//===================================================================
+// TisTossing
+//===================================================================
+//
+// start with L0
+const double m_psi = 3096.916 ;
+const double m_p   =  938.272 ;
+const double m_pi  =  139.570 ;
+const double m_Lb  =  5620.0 ;
+const double m_K   =  493.677 ;
+double Qpi = m_Lb-m_p-m_psi-m_pi;
+double QK = m_Lb-m_p-m_psi-m_K;
+TProfile* h = 0
+h = TwoProfile(T,0,"wQ","BL0DiMuonDecision_TOS","wCategory==1","wCategory==-1",L0TIS ,"p1","L0DiMuon TOS | L0h TIS",500,1900,28,0,1) 
+overlay_line(Qpi,h) ; overlay_line(QK,h) ; 
+png("L0DiMuon TOS | L0h TIS")
+h = TwoProfile(T,0,"wQ","BL0MuonDecision_TOS","wCategory==1","wCategory==-1",L0TIS ,"p1","L0Muon TOS | L0h TIS",500,1900,28,0.8,1) 
+overlay_line(Qpi,h) ; overlay_line(QK,h) ; 
+png("L0Muon TOS | L0h TIS")
+h = TwoProfile(T,0,"wQ","BL0DiMuonDecision_TIS","wCategory==1","wCategory==-1",L0TIS ,"p1","L0DiMuon TIS | L0h TIS",500,1900,28,0,0.2) 
+overlay_line(Qpi,h) ; overlay_line(QK,h) ; 
+png("L0DiMuon TIS | L0h TIS")
+h = TwoProfile(T,0,"wQ","BL0MuonDecision_TIS","wCategory==1","wCategory==-1",L0TIS ,"p1","L0Muon TOS | L0h TIS",500,1900,28,0,0.3) 
+overlay_line(Qpi,h) ; overlay_line(QK,h) ; 
+png("L0Muon TIS | L0h TIS")
+h = TwoProfile(T,0,"wQ",L0Mu.GetTitle(),"wCategory==1","wCategory==-1",L0TIS ,"p1","L0Mu TOS | L0h TIS",500,1900,28,0.8,1) 
+overlay_line(Qpi,h) ; overlay_line(QK,h) ; 
+png("L0Mu TOS | L0h TIS")
+h = TwoProfile(T,0,"wQ","BL0HadronDecision_TIS","wCategory==1","wCategory==-1","BL0MuonDecision_TIS" ,"p1","L0h TIS | L0m TIS",500,1900,28,0,0.3) 
+overlay_line(Qpi,h) ; overlay_line(QK,h) ; 
+png("L0h TIS | L0m TIS")
+h = TwoProfile(T,0,"wQ",L0.GetTitle(),"wCategory==1","wCategory==-1","BL0ElectronDecision_TIS" ,"p1","L0 all | L0e TIS",500,1900,28,0.8,1) 
+overlay_line(Qpi,h) ; overlay_line(QK,h) ; 
+png("L0 all | L0e TIS")
+
+// Hlt1
+h = TwoProfile(T,0,"wQ","PsiHlt1TrackMuonDecision_TOS","wCategory==1","wCategory==-1",Hlt1TIS ,"p1","remove",500,1900,28,0,1)  // 95%
+overlay_line(Qpi,h) ; overlay_line(QK,h) ; 
+png("Hlt1MuTrack TOS | Hlt1 TIS")
+h = TwoProfile(T,0,"wQ","PsiHlt1DiMuonHighMassDecision_TOS","wCategory==1","wCategory==-1",Hlt1TIS ,"p1","remove",500,1900,28,0.,1.0)  // 95%
+overlay_line(Qpi,h) ; overlay_line(QK,h) ; 
+png("Hlt1DiMu TOS | Hlt2 TIS")
+h = TwoProfile(T,0,"wQ","BHlt1TrackAllL0Decision_TOS","wCategory==1","wCategory==-1",Hlt1TIS ,"p1","remove",500,1900,28,0,1)  // 95%
+overlay_line(Qpi,h) ; overlay_line(QK,h) ; 
+png("Hlt1Track TOS | Hlt1 TIS")
+h = TwoProfile(T,0,"wQ",Hlt1,"wCategory==1","wCategory==-1",Hlt1TIS ,"p1","remove",500,1900,28,0.5,1)  // 95%
+overlay_line(Qpi,h) ; overlay_line(QK,h) ; 
+png("Hlt1 TOS | Hlt1 TIS")
+
+h = TwoProfile(T,0,"wQ","PsiHlt2DiMuonDetachedJPsiDecision_TOS","wCategory==1","wCategory==-1",Hlt2TIS ,"p1","remove",500,1900,28,0,1) // 80%
+overlay_line(Qpi,h) ; overlay_line(QK,h) ; 
+png("Hlt2DiMuonDetachedJPsi TOS | Hlt2 TIS")
+h = TwoProfile(T,0,"wQ","PsiHlt2DiMuonJPsiDecision_TOS","wCategory==1","wCategory==-1",Hlt2TIS ,"p1","remove",500,1900,28,0,1)         // 60 or remainig%
+overlay_line(Qpi,h) ; overlay_line(QK,h) ; 
+png("Hlt2DiMuonJPsi TOS | Hlt2 TIS")
+h = TwoProfile(T,0,"wQ","PsiHlt2DiMuonJPsiHighPTDecision_TOS","wCategory==1","wCategory==-1",Hlt2TIS ,"p1","remove",500,1900,28,0,1)   // 50% of remaining
+overlay_line(Qpi,h) ; overlay_line(QK,h) ; 
+png("Hlt2DiMuonJPsiHighPT TOS | Hlt2 TIS")
+h = TwoProfile(T,0,"wQ",Hlt2,"wCategory==1","wCategory==-1",Hlt2TIS ,"p1","remove",500,1900,28,0.7,1.0) 
+overlay_line(Qpi,h) ; overlay_line(QK,h) ; 
+png("Hlt2 TOS | Hlt2 TIS")
+
+// net
+h = TwoProfile(T,0,"wnetOutput",Hlt2,"wCategory==1","wCategory==-1",Hlt2TIS ,"","remove",-1,1,20,0.6,1)  // 95%
+overlay_line(0.846,h) ; 
+png("net Hlt2 TOS | Hlt2 TIS")
+h = TwoProfile(T,0,"wnetOutput",Hlt1,"wCategory==1","wCategory==-1",Hlt1TIS ,"","remove",-1,1,20,0.6,1)  // 95%
+overlay_line(0.846,h) ; 
+png("net Hlt1 | Hlt1 TIS")
+h = TwoProfile(T,0,"wnetOutput",L0,"wCategory==1","wCategory==-1","BL0ElectronDecision_TIS" ,"","remove",-1,1,20,0.8,1)  // 95%
+overlay_line(0.846,h) ; 
+png("net L0 | L0e TIS")
+
+//==============================================================================================
+// effs
+//===================================================================
+TString NN = "opt"
+double NNcut = NN.Atof()
+.L ../analysis/FourPlots.C 
+TFile *_fileZ = TFile::Open("Lambdab-R12S17b-721-"+NN+"-SW.root")
+TTree* SW = (TTree*)_fileZ->Get("WeightTree")
+TFile* fT1 = TFile::Open("~/work/Baryons/Lambdab/Lambdab-R12S17b-721.root")
+if (!fT1) fT1 = TFile::Open("/castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-R12S17b-721.root")
+TTree* T = (TTree*)fT1->Get("BetaSLambdab2JpsippiDetachedLine_Tuple/DecayTree")
+T->AddFriend(SW) // weights
+T->Draw("sweightLb >> h(100,-1,2)")
+TFile* f1 = TFile::Open("Lambdab-R12S17b-721-NN.root")
+TTree* N1 = (TTree*)f1->Get("NetTree")
+T->AddFriend(N1)
+T->AddFriend(SW)
+T->Draw("netOutput >> h(100,-1,1)")
+T->Draw("B_SubpK_M:PsipKMass", "Category==-1")
+T->Draw("netOutput:wnetOutput", "Category==-1")
+
+FourPlots(T,"PsiHlt1TrackMuonDecision_TOS","NI","",0,1) // blue and red pi, green and magenta K
+
+TFile* fTpi = TFile::Open("~/work/Baryons/Lambdab/LambdabMC-MC11-Lb2Jpsippi-716.root")
+if (!fTpi) fTpi = TFile::Open("/castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-MC11-Lb2Jpsippi-716.root")
+TTree* Tpi = fTpi->Get("Lambdab2Jpsippi_TupleMC/DecayTree")
+TFile* f2 = TFile::Open("LambdabMC-MC11-Lb2Jpsippi-716-NN.root")
+TTree* N2 = f2->Get("NetTree")
+Tpi->AddFriend(N2)
+Tpi->Draw("netOutput >> h(100,-1,1)")
+Tpi->Draw("B_SubpK_M:PsipKMass", "Category==-1")
+
+TFile* fTK = TFile::Open("~/work/Baryons/Lambdab/LambdabMC-MC11-Lb2JpsipK-718.root")
+if (!fTK) fTK = TFile::Open("/castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-MC11-Lb2JpsipK-718.root")
+TTree* TK = fTK->Get("Lambdab2Jpsippi_TupleMC/DecayTree")
+TFile* f3 = TFile::Open("LambdabMC-MC11-Lb2JpsipK-718-NN.root")
+TTree* N3 = f3->Get("NetTree")
+TK->AddFriend(N3)
+TK->Draw("netOutput >> h(100,-1,1)")
+TK->Draw("B_SubpK_M:PsipKMass", "Category==-1")
+
+char* netCut = "netOutput>0.846"
+// blue is sweighted Lbpi
+// red is sweighted LbK
+// green is Lbpi MC
+// brown is LbK MC
+FourPlots(T,Tpi,TK,"PsippiMass",netCut,"1","N","remove",5500,5800)
+FourPlots(T,Tpi,TK,"PsipKMass",netCut,"1","N","remove",5500,5800)
+FourPlots(T,Tpi,TK,"Polarity",netCut,"1","N","remove")
+
+// not quite convincing
+.L ../analysis/Trigger.C
+AllTrigger(T,Tpi,TK,netCut,L0,Hlt1,Hlt2)
+
+ 
+//================================================================================================
+// Signal weighting
+char* sw = "sweightLb*(sweightLb>-5)*(wCategory==1)"
+h = TwoProfile(T,Tpi,"sqrt(pMMass2)","BL0DiMuonDecision_TOS",sw,"BKGCAT==0","(netOutput>0.846)*(BL0HadronDecision_TIS==1)","N","remove",1000,2600,13,0,1)
+h = TwoProfile(T,Tpi,"sqrt(pMMass2)",L0Mu.GetTitle(),sw,"BKGCAT==0","(netOutput>0.846)*(BL0HadronDecision_TIS==1)","N","remove",1000,2600,13,0.9,1.05) // not very convincing
+
+
+
+
+
+
+
+
+
+
+
+

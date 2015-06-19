@@ -1,0 +1,330 @@
+!-----------------------------------------------------------------------------
+! Package     : PIDCalib/PIDPerfTools
+! Responsible : Andrew Powell
+! Purpose     : Classes for performing PID based studies
+!-----------------------------------------------------------------------------
+
+! 2013-03-12 - Philip Hunt
+  - The Perf_Hist function in PerfCalculator.h now has the option to disable the printing of per-bin efficiencies, as is done in the other 'Perf' function
+  - Updates to MultiTrackCalibTool
+    - The class now has an additional method to write the output TTree that needs to be called by the user. The TTree is no longer written in the desctructor.
+    - The constructor now takes an optional argument that specifies the access mode of the output TFile
+ 
+!============================== v4r0 27-02-2013 ==============================
+
+! 2013-02-27 - Andrew Powell (LHCb)04
+  - Fixed bug in MUONTrackDataSet
+    - One of the constructors was not passing the nTrack_Var to the baseclass
+      EvtTrackDataSet.
+
+! 2013-02-26 - Andrew Powell (LHCb)04
+  - Added new DataSet container: PIDTrackDataSet 
+    (to replace LHCbPIDTrackDataSet)
+  - LHCbPIDTrackDataSet appears to have problems, presummably associated with
+    multiple inheritance - when called in gaudi-python, occasionally a 
+    segmentation violation is returned with a message indicating a problem 
+    with the C++. Consider removing from package. 
+
+! 2013-02-25 - Andrew Powell (LHCb)04
+  - Added new DataSet container: LHCbPIDTrackDataSet
+    - Permitts studies of all PID variables:
+      - DLLX, X={K,p,pK,e,mu}
+      - ProbNNX, X={K,pi,p} 
+      - IsMuon, IsMuonLoose
+    - Multiple inheritance from RICHTrackDatSet and MUONTrackDataSet
+  - Restructed class heirarchy:
+    - RICHDatSet and MUONDataSet now inherit virtually from the base class 
+      EvtTrackDatSet. This is to overcome the so-called 'diamond problem' when
+      the two base clasess of LHCbPIDTrackDataSet (RICHTrackDataSet and 
+      MUONTrackDataSet) themselves are derived classes of the same base class 
+      (EvtTrackDataSet).
+
+!============================== v3r0 19-02-2013 ==============================
+
+! 2013-02-19 - Andrew Powell (LHCb)04
+  - Make version v3r0
+
+! 2013-02-10 - Andrew Powell
+  - Modifications to MultiTrackCalibTool
+    - Fixed issues with destructor and saving TTree to a TFile
+    - Magic line being the "m_OutputTree->ResetBranchAddresses()" before attempting 
+      to delete tthe TTree and TFile
+
+! 2013-02-06 - Andrew Powell
+  - Updates to MultiTrackCalibTool
+  - Included this class in the genReflex dictionary list
+
+! 2013-02-04 - Andrew Powell
+  - Fixed bug in MultiTrackCalibTool::SetRefDataInPerfHistLimits()
+    - "&&" now included inbetween cuts for each track
+
+! 2013-02-03 - Andrew Powell
+  - Updates to MultiTrackCalibTool.{h,cpp}
+    - Functionality now included to determine the overall event efficiency
+  - Added PIDPerfTools/TrkPIDParams.h
+    - Simple container class used by MultiTrackCalibTool to store the 
+      following track paramers:
+      - PID efficiency
+      - Associated statistical error
+      - Global bin number within a given performance histogram
+
+! 2013-02-03 - Andrew Powell
+  - Added MultiTrackCalibTool.{h,cpp}
+    - First attempt at a generic tool for performing PID calibration for any 
+      number of final state tracks.
+
+! 2012-09-28 - Juan Martin Otalora Goicochea
+  - Modified method PrintTable from PIDTable.cpp to add average efficiency and 
+    to include default argument std::cout.
+
+! 2012-05-05 - Philip Hunt
+  - Fixed multiple errors caused by bug fix to Savannah bug #94227.
+
+! 2012-02-05 - Andrew Powell
+  - Modifications to TrackDataSet:
+    + Declared PerfCalculator a friend class of TrackDataSet.
+      o This enables PerfCalculator to access the private data member 
+        map<std::string, RooRealVar*> m_ParamMap;
+  - Modifications to PerfCalculator:
+    + Modified PerfCalculator::TranslateCut() to permit the passing of functions
+      of PID variables in cut string. The algorithm now considers any of the 
+      following arguments:
+       A: <pid_var> [>/>=/==/<=/<] <cut_value>
+       B: A && A && ..
+       C: function(<pid_var>,<pid_var>,...) [>/>=/==/<=/<] <cut_value>
+       D: C && C && ..
+    + E.g. the following arguments are possible:
+       A: DLLK > 5.0
+       B: DLLK > 5.0 && DLLpK > 2.0
+       C: log(ProbNNK/ProbNNpi) > 2.0
+       D: log(ProbNNK/ProbNNpi) > 2.0 && log(ProbNNK/ProbNNp) > 0.0
+
+! 2012-01-12 - Andrew Powell
+  - Modifications to MUONTrackDataSet class:
+    - Removed IsMuonTight variables.
+
+! 2011-11-17 - Philip Hunt
+  - Changes to PIDTable and PIDCrossTable
+    - These classes now accept an additional bit flag specifying whether the
+      statistical errors on the efficiencies should be printed. Added 
+      additional methods to produce the columns without errors.
+
+! 2011-11-14 - Philip Hunt
+  - Changes to PerfCalculator:
+    - Perf methods now optionally print the number of passed and total events
+      and the efficiency for each efficiency bin.
+!============================== v1r7 06-11-2011 ==============================
+
+! 2011-11-06 - Diego Martinez Santos
+ - Make version v1r7.
+
+
+! 2011-11-02 - Andrew Powell
+  - Ensure fixed point notation is used in PerfCalculator::Perf_Scan_ToFile through
+    use of ios_base 'fixed' flag.
+
+! 2011-10-31 - Andrew Powell
+  - Added overloaded 'new' operators to TrackDataSet:
+    + TrackDataSet::operator new(size_t bytes)
+    + TrackDataSet::operator new(size_t bytes, void *p)
+    The Reflex dictionary maker appears to need both these operators but the updated
+    version of RooDataSet (ROOT v5.30) only provides the first one. This fixes the 
+    compilation errors seen in the nightly builds.
+
+! 2011-09-28 - Philip Hunt
+  - Changes to PerfCalculator:
+    - Perf methods return TH1 derived objects now take optional arguments 
+      rejectNonNormalBins and minEntries. If rejectNonNormalBins is set to true,
+      then bins with n_total*p<=minEntries or n_total*(1-p)<=minEntries will have
+      their efficiencies set to zero, where n_total is the number of entries in the
+      raw histogram for a given bin, and p is the efficiency in that bin. This method
+      ensures allows the rejection of efficiencies which do not satisfy the requirements
+      for the Central Limit Theorem.
+    - Perf methods returning TH2F*, TH3F* or TEfficiency* now assign the axis titles
+      autoatically to that of the corresponding RooRealVar's title.
+
+! 2011-09-19 - Andrew Powell
+  - Major changes to package:
+	  - Weighting functionality of base class, TrackDataSet, has now been exported 
+      to a template class, WeightDataSetTool. This eliminates the repetition of 
+      code that existed in TrackDataSet and the derived class, EvtTrackDataSet.
+	  - Added additional derived classes RICHTrackDataSet and MUONTrackDataSet for
+      performing dedicated RICH and MUON PID studies:
+      + RICHTrackDataSet takes the following additional NeuroBayes PID variables:
+        - ProbNNK, ProbNNpi, ProbNNp
+      + MUONTrackDataSet tackes the following additional muon PID variables:
+        - DLLmu, IsMuon, IsMuonLoose, IsMuonTight, nShared 
+    - WeightDataSetTool takes methods ANDInBin(s) and WeightInBin(s) away from
+      TrackDataSet. As a template class, it accepts TrackDataSet, EvtDataSet, 
+      RICHDataSet and MUONDataSet. The weighting method has now been developed to 
+      accept any number of binning variables. To avoid th use of nested for loops,
+      a simple algorithm to determine the cartesian product amongst the set of 
+      binning definitions is used. Special thanks to Andrea Contu for his help 
+      developing the algorithm used in WeightDataSetTool<T>::GetBinIndicesFromFlatIndex(int)
+  - Minor modifications to PerfCalculator:
+    - Perf methods returning either TH1F* or TGraphAsymmErrors* now assign the 
+      the x-axis title automatically to that of the corresponding RooRealVar's 
+      title.
+    - Perf_Scan() method now assign the x-axis title automatically to the corresponding 
+      variable name scanned over 
+
+! 2011-09-09 - Andrew Powell
+  - Fixed bug in TrackDataSet constructor (thanks to Juan Martin Otálora Goicochea 
+    for identifying it). 
+    - Line 199 was: Double_t _NumTot = Denominator->ANDsumEntries();
+    - Line 199 now: Double_t _NumTot = Numerator->ANDsumEntries();
+    - Since this construcutor is not used in any of the underlying algorithims there
+      should be no implications on the performance of the package.
+
+! 2011-08-17 - Philip Hunt
+  - Added Perf_TEff method in PerfCalculator. 
+    * Makes a TEfficiency object to hold the "pass" and "total" histograms for 
+      a given PID cut. The TEfficiency class is able to produce (asymmetric) 
+      efficiency confidence levels in the range (0,1], but only works for 
+      unweighted data sets, and is therefore only useful for producing 
+      efficiencies based on Monte Carlo truth matched tracks.
+
+! 2011-08-12 - Andrew Powell
+  - Added Perf_Scan_ToFile method in PerfCalculator. 
+	  - Saves ID and mis-ID results to file 
+
+!============================== v1r4 28-07-2011 ==============================
+
+! 2011-07-28 - Diego Martinez Santos
+ - Make version v1r4.
+
+! 2011-07-12 - Philip Hunt
+  - Fixed PrintRow methods in PIDTable to use fixed precision when producing
+  LaTeX tables
+  - Added functionality to PIDTable to produce 1D tables
+
+! 2011-07-06 - Philip Hunt
+  - Added new class PIDCrossTable for producing "standard" and LaTex 
+  formatted cross-tables, optionally with marginal totals/averages
+  shown. Note that the tables are *not* cross-tables in the strict sense,
+  since the binning parameters are quantitative rather than categorical 
+  variables, and the table contents are ratios rather than frequencies. 
+  Thus, you should not attempt to use these tables to perform tests of 
+  correlation or independence. 
+  - PerfCalculator:
+    - Added new "CrossTable" method which returns a PIDCrossTable object
+    instead of a PIDTable object.
+
+! 2011-06-30 Philip Hunt
+  - Fixed minor bug in PIDTable that caused an exception to be incorrectly
+    raised
+! 2011-06-29 - Philip Hunt
+  - Added new class PIDTable for producing "standard" and LaTex formatted
+  tables of the PID performance for two or three bin variables
+  - PerCalculator:
+    - The new "Table" methods now return a PIDTable object, rather than just
+    printing a "standard" table. The old method has been kept for compatibility
+    with existing code, but it should be considered as deprecated,
+    and will be removed at some point
+
+! 2011-06-28 - Andrew Powell
+  - Fixed typo in dict/PIDPerfToolsDict.h
+
+! 2011-06-27 - Andrew Powell
+  - Fixed typo in dict/PIDPerfToolsDict.xml
+
+! 2011-06-23 - Andrew Powell
+  - PerfCalculator: 
+    - Added functionality to permit composite DLL cuts to be passed as 
+      arguments to class methods. I.e. cut on DLLK and DLLKp simulatenously
+	  - Changed return trype of Table method from void to TH3F*
+
+!============================== v1r3 27-05-2011 ==============================
+
+! 2011-05-27 - Diego Martinez Santos
+ - Make version v1r3.
+
+! 2011-05-23 - Andrew Powell
+  - Fixed bug in TrackDataSet::SetTrackVar_DLLpK
+    - Function now permits passing of RooDataSets already contain My_DLLpK
+
+! 2011-05-19 - Andrew Powell
+  - Fixed bug in TrackDataSet::ANDInBins
+	  - Returned DataSet is now *unweighted*
+
+! 2011-04-27 - Andrew Powell
+	- Added DLLpK (i.e DLL(p - K)) as a TrackDataSet variable 
+
+! 2011-04-19 - Gareth Rogers
+ - Fixed a bug introduced by the new std::string APIs in TrackDataSet and
+   EvtDataSet. The WeightInBins function checked the input string against
+   NULL (as for old char*). Now checking std::string.empty.
+
+!============================== v1r1 18-04-2011 ==============================
+
+! 2011-04-18 - Diego Martinez Santos
+ - Make version v1r1.
+
+! 2011-04-12 - Chris Jones
+ - Update APIs to use std::string instead of char *, in order to improve 
+   compatibility with python. In particular a NULL char * cannot be passed in 
+   python, and these changes replace this with an empty ("") string.
+
+! 2011-04-05 - Chris Jones
+ - Add (a first attempt) at support for running in GaudiPython. May need fine tuning.
+
+! 2011-03-26 - Andrew Powell
+ - Added setup_env.sh for bash shell users
+
+! 2011-03-24 - Andrew Powell
+ - Modified PerfCalculator to be a template class
+	 - Now allows both TrackDataSet and EvtDataSet to be passed to constructor 
+	 - Added PerfCalculator_imp.cpp to allow definition and implementation to reside in .h and .cpp files 
+
+! 2011-03-23 - Andrew Powell
+ - Modified setup_env.csh to use ROOT v5.27
+	 - Bug in v5.28 TGraphAsymmErrors::Divide() reported: 
+		- https://savannah.cern.ch/bugs/index.php?78249
+
+! 2011-03-11 - Andrew Powell
+ - Minor bug fix to correct lost cout information to terminal
+
+! 2011-03-09 - Andrew Powell
+ - Minor change to requirements file to resolve compilation under i686-slc5:
+	  -lboost_regex -> $(Boost_linkopts_regex) 
+
+! 2011-02-28 - Andrew Powell
+	- Bug fixes in (Evt)TrackDataSet re. weighted reference samples 
+	- Compilation warnings resolved
+
+! 2011-02-08 - Andrew Powell
+  - Bug fix in PerfCalculator::Perf_Scan(list<const char*>,Bool_t) 
+
+! 2011-02-08 - Andrew Powell
+	- Added PIDResults.h
+	- Changed interface and added functionality to PerfCalculator.{h,cpp}.
+		- Possibility to determine effiencies with either Bayesian or Bayes' Theorem errors.
+		- TGraphAsymmErrors for efficiency vs DLL cut.
+		- Table for efficiencies in bins of P,PT,ETA.
+
+! 2011-01-30 - Andrew Powell
+	- Bug fix in DataBinCuts: Cuts now applied as [a,b) (half-open interval) and *not* (a,b) (open interval).
+ 
+! 2011-01-17 - Andrew Powell
+ - Added functionality to TrackDataSet and EvtTrackDataSet.
+	 - WeightInBins() takes an additional boolean argument to either. 
+			1) Preserve DataSet's overall size (kTRUE),
+		  2) Normalise to reference sample size (kFASLE).
+	 - ANDInBins() now considers a weight variable for the DataSet. 
+	 - SetInBinSchema() added. Returns DataSet within the 'global' acceptance of 
+	   a BinningSchema (vector<RooBinning*>).
+
+! 2011-01-11 - Andrew Powell
+ - First import of package.
+
+	- TrackDataSet.{h,cpp}
+		A RooDataSet with parameters P, PT and ETA declared.
+
+	- EvtTrackDataSet.{h,cpp}
+	  A TrackDataSet with nTracks parameter declared.
+
+	- DataBinCuts.{h,cpp}
+	 	A simple helper class to construct a TCut for a given bin. 
+
+	- PerfCalulator.{h,cpp}
+	  Class to perform performance calculations on a RooDataSet.

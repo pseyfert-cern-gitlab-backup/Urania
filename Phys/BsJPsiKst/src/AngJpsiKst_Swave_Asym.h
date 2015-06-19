@@ -41,9 +41,36 @@ public:
 	      RooAbsReal& _c4_phi,
 	      RooAbsReal& _c5_phi,
 	      RooAbsReal& _c6_phi);
+
   AngJpsiKst_Swave_Asym(const AngJpsiKst_Swave_Asym& other, const char* name=0) ;
+
   virtual TObject* clone(const char* newname) const { return new AngJpsiKst_Swave_Asym(*this,newname); }
   inline virtual ~AngJpsiKst_Swave_Asym() { }
+
+  virtual Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* rangeName=0) const ;
+
+  virtual Double_t analyticalIntegral(Int_t code, const char* rangeName=0) const ;
+
+  virtual Double_t px0sqr(Double_t x)  const ;
+  virtual Double_t px1sqr(Double_t x)  const ;
+  virtual Double_t px2sqr(Double_t x)  const ;
+  virtual Double_t px3sqr(Double_t x)  const ;
+  virtual Double_t px4sqr(Double_t x)  const ;
+  virtual Double_t px5sqr(Double_t x)  const ;
+  virtual Double_t px6sqr(Double_t x)  const ;
+
+  virtual Double_t px0pol2(Double_t x) const ;
+  virtual Double_t px1pol2(Double_t x) const ;
+  virtual Double_t px2pol2(Double_t x) const ;
+  virtual Double_t px3pol2(Double_t x) const ;
+  virtual Double_t px4pol2(Double_t x) const ;
+  virtual Double_t px5pol2(Double_t x) const ;
+
+  virtual Double_t ps2z2c2(Double_t x) const ;
+  virtual Double_t pc2z2s2(Double_t x) const ;
+  virtual Double_t psin(Double_t x)    const ;
+  virtual Double_t psico(Double_t x)   const ;
+  virtual Double_t pcos(Double_t x)    const ;
 
 protected:
 

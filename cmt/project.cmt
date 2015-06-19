@@ -2,7 +2,7 @@ project URANIA
 
 container UraniaSys
 
-use GAUDI     GAUDI_v23r5
+use GAUDI     GAUDI_v23r7
 #use DBASE
 #use PARAM
 

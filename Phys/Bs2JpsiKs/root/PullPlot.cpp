@@ -69,7 +69,7 @@ void AddPull(TCanvas* pullCanvas, RooPlot* frame, Int_t logy, double *chi2Val){
 	// *** Place the first frame ***
 	// To keep the correct scale of the labels, use the Margins instead of Pad coordinates
 	TPad* xPad = new TPad("xPad", "Pad for Observable Plot", 0., 0, 1., 1.);
-	xPad->SetLeftMargin(0.2);
+	xPad->SetLeftMargin(0.15);
 	xPad->SetBottomMargin(ratio);	
 	// Draw Pad	
 	xPad->Draw();
@@ -88,8 +88,8 @@ void AddPull(TCanvas* pullCanvas, RooPlot* frame, Int_t logy, double *chi2Val){
 	pullCanvas->cd();
 	// To keep the correct scale of the labels, use the Margins instead of Pad coordinates
 	TPad* pullPad = new TPad("pullPad", "Pad for Pull Plot", 0., 0., 1., 1);
-	pullPad->SetLeftMargin(0.2);
-	pullPad->SetBottomMargin(0.15);	
+	pullPad->SetLeftMargin(0.15);
+	pullPad->SetBottomMargin(0.17);	
 	pullPad->SetTopMargin(1-ratio+0.01);
 	// Make the pad transparent
 	pullPad->SetFillColor(0);

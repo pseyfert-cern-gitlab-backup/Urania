@@ -842,12 +842,12 @@ void JpsiKsPdf::plotOn(TCanvas* doek, RooDataSet* data, bool doSumW2, Int_t logy
   }
   else if(param==2){
     massFrame->SetMinimum(0.9);
-    massFrame->SetMaximum(5000);
+    massFrame->SetMaximum(10000);
     std::cout << "@@ Adding Pull" << std::endl; 
     AddPull(doek,massFrame,logy); 
   }
   else{
-    doek->SetLeftMargin(0.2);
+    doek->SetLeftMargin(0.15);
     doek->SetBottomMargin(0.15);
     doek->cd(1);
     gPad->SetLogy(logy);
@@ -915,12 +915,12 @@ void JpsiKsPdf::plotOnTime(TCanvas* doek, RooDataSet* data, bool doSumW2, Int_t 
   }
   else if(param==2){
     timeFrame->SetMinimum(0.9);
-    timeFrame->SetMaximum((massBox>0 ? 50 : 5000));
+    timeFrame->SetMaximum((massBox>0 ? 50 : 10000));
     std::cout << "@@ Adding Pull" << std::endl; 
     AddPull(doek,timeFrame,logy,chi2Val); 
   }
   else{
-    doek->SetLeftMargin(0.2);
+    doek->SetLeftMargin(0.15);
     doek->SetBottomMargin(0.15);
     doek->cd(1);
     gPad->SetLogy(logy);

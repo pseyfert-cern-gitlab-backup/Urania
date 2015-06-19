@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Fri Jul 13 15:48:46 2012 by ROOT version 5.34/00
+// Fri Oct 19 15:00:31 2012 by ROOT version 5.32/02
 // from TTree DecayTree/DecayTree
-// found on file: castor:///castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab2Jpsippi-MC11a-IncPsi-501.root
+// found on file: castor:///castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-MC11-Lb2JpsipK-706-711.root
 //////////////////////////////////////////////////////////
 
 #ifndef Lambdab_h
@@ -12,6 +12,7 @@
 #include <TChain.h>
 #include <TFile.h>
 #include <iostream>
+#include "Tuples.h"
 
 // Header file for the classes stored in the TTree if any.
 
@@ -40,12 +41,16 @@ class Lambdab {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
+   TTree          *fFriend;  //!pointer to the friend file (brilliant idea by Rob)
 
    // Declaration of leaf types
    Double_t        B_MINIP;
    Double_t        B_MINIPCHI2;
    Double_t        B_MINIPNEXTBEST;
    Double_t        B_MINIPCHI2NEXTBEST;
+   Int_t           nPV;
+   Float_t         B_AllIP[100];   //[nPV]
+   Float_t         B_AllIPchi2[100];   //[nPV]
    Double_t        B_ENDVERTEX_X;
    Double_t        B_ENDVERTEX_Y;
    Double_t        B_ENDVERTEX_Z;
@@ -116,104 +121,133 @@ public :
    Double_t        B_TRUEENDVERTEX_Z;
    Bool_t          B_TRUEISSTABLE;
    Double_t        B_TRUETAU;
-   Bool_t          B_OSCIL;
    Int_t           B_ID;
    Double_t        B_TAU;
    Double_t        B_TAUERR;
    Double_t        B_TAUCHI2;
+   Double_t        Dalitz_pplus_J_psi_1S_M2;
+   Double_t        Dalitz_piminus_J_psi_1S_M2;
+   Double_t        Dalitz_piminus_pplus_M2;
+   Int_t           B_ConstBFit_nPV;
+   Float_t         B_ConstBFit_J_psi_1S_M[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_J_psi_1S_MERR[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_J_psi_1S_P[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_J_psi_1S_P0_ID[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_J_psi_1S_P0_PE[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_J_psi_1S_P0_PX[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_J_psi_1S_P0_PY[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_J_psi_1S_P0_PZ[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_J_psi_1S_P1_ID[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_J_psi_1S_P1_PE[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_J_psi_1S_P1_PX[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_J_psi_1S_P1_PY[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_J_psi_1S_P1_PZ[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_J_psi_1S_PERR[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_J_psi_1S_ctau[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_J_psi_1S_ctauErr[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_J_psi_1S_decayLength[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_J_psi_1S_decayLengthErr[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_M[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_MERR[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_P[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_P0_ID[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_P0_PE[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_P0_PX[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_P0_PY[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_P0_PZ[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_P1_ID[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_P1_PE[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_P1_PX[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_P1_PY[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_P1_PZ[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_PERR[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_PV_X[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_PV_Y[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_PV_Z[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_PV_key[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_chi2[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_ctau[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_ctauErr[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_decayLength[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_decayLengthErr[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_nDOF[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_nIter[100];   //[B_ConstBFit_nPV]
+   Float_t         B_ConstBFit_status[100];   //[B_ConstBFit_nPV]
    Int_t           B_FullFit_nPV;
-   Float_t         B_FullFit_J_psi_1S_M[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_J_psi_1S_MERR[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_J_psi_1S_P[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_J_psi_1S_PERR[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_J_psi_1S_ctau[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_J_psi_1S_ctauErr[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_J_psi_1S_decayLength[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_J_psi_1S_decayLengthErr[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_M[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_MERR[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_P[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_PERR[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_PV_X[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_PV_Y[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_PV_Z[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_PV_key[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_chi2_B[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_chi2[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_ctau[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_ctauErr[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_decayLength[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_decayLengthErr[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_nDOF[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_nIter[10];   //[B_FullFit_nPV]
-   Float_t         B_FullFit_status[10];   //[B_FullFit_nPV]
-   Int_t           B_MassFit_nPV;
-   Float_t         B_MassFit_J_psi_1S_M[10];   //[B_MassFit_nPV]
-   Float_t         B_MassFit_J_psi_1S_MERR[10];   //[B_MassFit_nPV]
-   Float_t         B_MassFit_J_psi_1S_P[10];   //[B_MassFit_nPV]
-   Float_t         B_MassFit_J_psi_1S_PERR[10];   //[B_MassFit_nPV]
-   Float_t         B_MassFit_J_psi_1S_ctau[10];   //[B_MassFit_nPV]
-   Float_t         B_MassFit_J_psi_1S_ctauErr[10];   //[B_MassFit_nPV]
-   Float_t         B_MassFit_J_psi_1S_decayLength[10];   //[B_MassFit_nPV]
-   Float_t         B_MassFit_J_psi_1S_decayLengthErr[10];   //[B_MassFit_nPV]
-   Float_t         B_MassFit_M[10];   //[B_MassFit_nPV]
-   Float_t         B_MassFit_MERR[10];   //[B_MassFit_nPV]
-   Float_t         B_MassFit_P[10];   //[B_MassFit_nPV]
-   Float_t         B_MassFit_PERR[10];   //[B_MassFit_nPV]
-   Float_t         B_MassFit_chi2_B[10];   //[B_MassFit_nPV]
-   Float_t         B_MassFit_nDOF[10];   //[B_MassFit_nPV]
-   Float_t         B_MassFit_nIter[10];   //[B_MassFit_nPV]
-   Float_t         B_MassFit_status[10];   //[B_MassFit_nPV]
+   Float_t         B_FullFit_J_psi_1S_M[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_J_psi_1S_MERR[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_J_psi_1S_P[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_J_psi_1S_PERR[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_J_psi_1S_ctau[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_J_psi_1S_ctauErr[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_J_psi_1S_decayLength[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_J_psi_1S_decayLengthErr[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_M[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_MERR[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_P[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_PERR[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_PV_X[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_PV_Y[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_PV_Z[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_PV_key[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_chi2[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_ctau[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_ctauErr[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_decayLength[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_decayLengthErr[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_nDOF[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_nIter[100];   //[B_FullFit_nPV]
+   Float_t         B_FullFit_status[100];   //[B_FullFit_nPV]
    Int_t           B_SubKpi_nPV;
-   Float_t         B_SubKpi_J_psi_1S_M[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_J_psi_1S_MERR[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_J_psi_1S_P[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_J_psi_1S_PERR[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_J_psi_1S_ctau[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_J_psi_1S_ctauErr[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_J_psi_1S_decayLength[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_J_psi_1S_decayLengthErr[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_M[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_MERR[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_P[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_PERR[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_PV_X[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_PV_Y[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_PV_Z[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_PV_key[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_chi2_B[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_ctau[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_ctauErr[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_decayLength[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_decayLengthErr[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_nDOF[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_nIter[10];   //[B_SubKpi_nPV]
-   Float_t         B_SubKpi_status[10];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_J_psi_1S_M[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_J_psi_1S_MERR[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_J_psi_1S_P[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_J_psi_1S_PERR[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_J_psi_1S_ctau[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_J_psi_1S_ctauErr[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_J_psi_1S_decayLength[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_J_psi_1S_decayLengthErr[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_M[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_MERR[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_P[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_PERR[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_PV_X[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_PV_Y[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_PV_Z[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_PV_key[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_chi2[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_ctau[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_ctauErr[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_decayLength[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_decayLengthErr[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_nDOF[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_nIter[100];   //[B_SubKpi_nPV]
+   Float_t         B_SubKpi_status[100];   //[B_SubKpi_nPV]
    Int_t           B_SubpK_nPV;
-   Float_t         B_SubpK_J_psi_1S_M[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_J_psi_1S_MERR[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_J_psi_1S_P[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_J_psi_1S_PERR[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_J_psi_1S_ctau[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_J_psi_1S_ctauErr[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_J_psi_1S_decayLength[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_J_psi_1S_decayLengthErr[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_M[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_MERR[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_P[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_PERR[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_PV_X[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_PV_Y[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_PV_Z[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_PV_key[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_chi2_B[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_ctau[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_ctauErr[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_decayLength[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_decayLengthErr[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_nDOF[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_nIter[10];   //[B_SubpK_nPV]
-   Float_t         B_SubpK_status[10];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_J_psi_1S_M[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_J_psi_1S_MERR[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_J_psi_1S_P[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_J_psi_1S_PERR[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_J_psi_1S_ctau[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_J_psi_1S_ctauErr[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_J_psi_1S_decayLength[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_J_psi_1S_decayLengthErr[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_M[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_MERR[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_P[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_PERR[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_PV_X[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_PV_Y[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_PV_Z[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_PV_key[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_chi2[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_ctau[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_ctauErr[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_decayLength[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_decayLengthErr[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_nDOF[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_nIter[100];   //[B_SubpK_nPV]
+   Float_t         B_SubpK_status[100];   //[B_SubpK_nPV]
    Bool_t          BL0Global_Dec;
    Bool_t          BL0Global_TIS;
    Bool_t          BL0Global_TOS;
@@ -250,81 +284,45 @@ public :
    Bool_t          BHlt1TrackAllL0Decision_Dec;
    Bool_t          BHlt1TrackAllL0Decision_TIS;
    Bool_t          BHlt1TrackAllL0Decision_TOS;
+   Bool_t          BHlt1TrackAllL0TightDecision_Dec;
+   Bool_t          BHlt1TrackAllL0TightDecision_TIS;
+   Bool_t          BHlt1TrackAllL0TightDecision_TOS;
    Bool_t          BHlt1DiMuonHighMassDecision_Dec;
    Bool_t          BHlt1DiMuonHighMassDecision_TIS;
    Bool_t          BHlt1DiMuonHighMassDecision_TOS;
    Bool_t          BHlt1DiMuonLowMassDecision_Dec;
    Bool_t          BHlt1DiMuonLowMassDecision_TIS;
    Bool_t          BHlt1DiMuonLowMassDecision_TOS;
-   Bool_t          BHlt1SingleMuonNoIPDecision_Dec;
-   Bool_t          BHlt1SingleMuonNoIPDecision_TIS;
-   Bool_t          BHlt1SingleMuonNoIPDecision_TOS;
    Bool_t          BHlt1SingleMuonHighPTDecision_Dec;
    Bool_t          BHlt1SingleMuonHighPTDecision_TIS;
    Bool_t          BHlt1SingleMuonHighPTDecision_TOS;
+   Bool_t          BHlt1SingleMuonNoIPDecision_Dec;
+   Bool_t          BHlt1SingleMuonNoIPDecision_TIS;
+   Bool_t          BHlt1SingleMuonNoIPDecision_TOS;
    Bool_t          BHlt1TrackMuonDecision_Dec;
    Bool_t          BHlt1TrackMuonDecision_TIS;
    Bool_t          BHlt1TrackMuonDecision_TOS;
-   Bool_t          BHlt2TransparentDecision_Dec;
-   Bool_t          BHlt2TransparentDecision_TIS;
-   Bool_t          BHlt2TransparentDecision_TOS;
-   Bool_t          BHlt2Topo2BodySimpleDecision_Dec;
-   Bool_t          BHlt2Topo2BodySimpleDecision_TIS;
-   Bool_t          BHlt2Topo2BodySimpleDecision_TOS;
-   Bool_t          BHlt2Topo3BodySimpleDecision_Dec;
-   Bool_t          BHlt2Topo3BodySimpleDecision_TIS;
-   Bool_t          BHlt2Topo3BodySimpleDecision_TOS;
-   Bool_t          BHlt2Topo4BodySimpleDecision_Dec;
-   Bool_t          BHlt2Topo4BodySimpleDecision_TIS;
-   Bool_t          BHlt2Topo4BodySimpleDecision_TOS;
    Bool_t          BHlt2Topo2BodyBBDTDecision_Dec;
    Bool_t          BHlt2Topo2BodyBBDTDecision_TIS;
    Bool_t          BHlt2Topo2BodyBBDTDecision_TOS;
+   Bool_t          BHlt2Topo2BodySimpleDecision_Dec;
+   Bool_t          BHlt2Topo2BodySimpleDecision_TIS;
+   Bool_t          BHlt2Topo2BodySimpleDecision_TOS;
    Bool_t          BHlt2Topo3BodyBBDTDecision_Dec;
    Bool_t          BHlt2Topo3BodyBBDTDecision_TIS;
    Bool_t          BHlt2Topo3BodyBBDTDecision_TOS;
+   Bool_t          BHlt2Topo3BodySimpleDecision_Dec;
+   Bool_t          BHlt2Topo3BodySimpleDecision_TIS;
+   Bool_t          BHlt2Topo3BodySimpleDecision_TOS;
    Bool_t          BHlt2Topo4BodyBBDTDecision_Dec;
    Bool_t          BHlt2Topo4BodyBBDTDecision_TIS;
    Bool_t          BHlt2Topo4BodyBBDTDecision_TOS;
-   Bool_t          BHlt2SingleMuonDecision_Dec;
-   Bool_t          BHlt2SingleMuonDecision_TIS;
-   Bool_t          BHlt2SingleMuonDecision_TOS;
-   Bool_t          BHlt2SingleMuonHighPTDecision_Dec;
-   Bool_t          BHlt2SingleMuonHighPTDecision_TIS;
-   Bool_t          BHlt2SingleMuonHighPTDecision_TOS;
-   Bool_t          BHlt2SingleMuonLowPTDecision_Dec;
-   Bool_t          BHlt2SingleMuonLowPTDecision_TIS;
-   Bool_t          BHlt2SingleMuonLowPTDecision_TOS;
-   Bool_t          BHlt2TopoMu2BodyBBDTDecision_Dec;
-   Bool_t          BHlt2TopoMu2BodyBBDTDecision_TIS;
-   Bool_t          BHlt2TopoMu2BodyBBDTDecision_TOS;
-   Bool_t          BHlt2TopoMu3BodyBBDTDecision_Dec;
-   Bool_t          BHlt2TopoMu3BodyBBDTDecision_TIS;
-   Bool_t          BHlt2TopoMu3BodyBBDTDecision_TOS;
-   Bool_t          BHlt2TopoMu4BodyBBDTDecision_Dec;
-   Bool_t          BHlt2TopoMu4BodyBBDTDecision_TIS;
-   Bool_t          BHlt2TopoMu4BodyBBDTDecision_TOS;
-   Bool_t          BHlt2MuonFromHLT1Decision_Dec;
-   Bool_t          BHlt2MuonFromHLT1Decision_TIS;
-   Bool_t          BHlt2MuonFromHLT1Decision_TOS;
+   Bool_t          BHlt2Topo4BodySimpleDecision_Dec;
+   Bool_t          BHlt2Topo4BodySimpleDecision_TIS;
+   Bool_t          BHlt2Topo4BodySimpleDecision_TOS;
    Bool_t          BHlt2DiMuonDecision_Dec;
    Bool_t          BHlt2DiMuonDecision_TIS;
    Bool_t          BHlt2DiMuonDecision_TOS;
-   Bool_t          BHlt2DiMuonLowMassDecision_Dec;
-   Bool_t          BHlt2DiMuonLowMassDecision_TIS;
-   Bool_t          BHlt2DiMuonLowMassDecision_TOS;
-   Bool_t          BHlt2DiMuonJPsiDecision_Dec;
-   Bool_t          BHlt2DiMuonJPsiDecision_TIS;
-   Bool_t          BHlt2DiMuonJPsiDecision_TOS;
-   Bool_t          BHlt2DiMuonJPsiHighPTDecision_Dec;
-   Bool_t          BHlt2DiMuonJPsiHighPTDecision_TIS;
-   Bool_t          BHlt2DiMuonJPsiHighPTDecision_TOS;
-   Bool_t          BHlt2DiMuonPsi2SDecision_Dec;
-   Bool_t          BHlt2DiMuonPsi2SDecision_TIS;
-   Bool_t          BHlt2DiMuonPsi2SDecision_TOS;
-   Bool_t          BHlt2DiMuonPsi2SHighPTDecision_Dec;
-   Bool_t          BHlt2DiMuonPsi2SHighPTDecision_TIS;
-   Bool_t          BHlt2DiMuonPsi2SHighPTDecision_TOS;
    Bool_t          BHlt2DiMuonBDecision_Dec;
    Bool_t          BHlt2DiMuonBDecision_TIS;
    Bool_t          BHlt2DiMuonBDecision_TOS;
@@ -337,13 +335,61 @@ public :
    Bool_t          BHlt2DiMuonDetachedJPsiDecision_Dec;
    Bool_t          BHlt2DiMuonDetachedJPsiDecision_TIS;
    Bool_t          BHlt2DiMuonDetachedJPsiDecision_TOS;
-   Bool_t          BHlt2ExpressJPsiDecision_Dec;
-   Bool_t          BHlt2ExpressJPsiDecision_TIS;
-   Bool_t          BHlt2ExpressJPsiDecision_TOS;
+   Bool_t          BHlt2DiMuonDetachedPsi2SDecision_Dec;
+   Bool_t          BHlt2DiMuonDetachedPsi2SDecision_TIS;
+   Bool_t          BHlt2DiMuonDetachedPsi2SDecision_TOS;
+   Bool_t          BHlt2DiMuonJPsiDecision_Dec;
+   Bool_t          BHlt2DiMuonJPsiDecision_TIS;
+   Bool_t          BHlt2DiMuonJPsiDecision_TOS;
+   Bool_t          BHlt2DiMuonJPsiHighPTDecision_Dec;
+   Bool_t          BHlt2DiMuonJPsiHighPTDecision_TIS;
+   Bool_t          BHlt2DiMuonJPsiHighPTDecision_TOS;
+   Bool_t          BHlt2DiMuonLowMassDecision_Dec;
+   Bool_t          BHlt2DiMuonLowMassDecision_TIS;
+   Bool_t          BHlt2DiMuonLowMassDecision_TOS;
+   Bool_t          BHlt2DiMuonPsi2SDecision_Dec;
+   Bool_t          BHlt2DiMuonPsi2SDecision_TIS;
+   Bool_t          BHlt2DiMuonPsi2SDecision_TOS;
+   Bool_t          BHlt2DiMuonPsi2SHighPTDecision_Dec;
+   Bool_t          BHlt2DiMuonPsi2SHighPTDecision_TIS;
+   Bool_t          BHlt2DiMuonPsi2SHighPTDecision_TOS;
+   Bool_t          BHlt2LowMultMuonDecision_Dec;
+   Bool_t          BHlt2LowMultMuonDecision_TIS;
+   Bool_t          BHlt2LowMultMuonDecision_TOS;
+   Bool_t          BHlt2MuonFromHLT1Decision_Dec;
+   Bool_t          BHlt2MuonFromHLT1Decision_TIS;
+   Bool_t          BHlt2MuonFromHLT1Decision_TOS;
+   Bool_t          BHlt2SingleMuonDecision_Dec;
+   Bool_t          BHlt2SingleMuonDecision_TIS;
+   Bool_t          BHlt2SingleMuonDecision_TOS;
+   Bool_t          BHlt2SingleMuonHighPTDecision_Dec;
+   Bool_t          BHlt2SingleMuonHighPTDecision_TIS;
+   Bool_t          BHlt2SingleMuonHighPTDecision_TOS;
+   Bool_t          BHlt2SingleMuonLowPTDecision_Dec;
+   Bool_t          BHlt2SingleMuonLowPTDecision_TIS;
+   Bool_t          BHlt2SingleMuonLowPTDecision_TOS;
+   Bool_t          BHlt2SingleMuonVHighPTDecision_Dec;
+   Bool_t          BHlt2SingleMuonVHighPTDecision_TIS;
+   Bool_t          BHlt2SingleMuonVHighPTDecision_TOS;
+   Bool_t          BHlt2TopoMu2BodyBBDTDecision_Dec;
+   Bool_t          BHlt2TopoMu2BodyBBDTDecision_TIS;
+   Bool_t          BHlt2TopoMu2BodyBBDTDecision_TOS;
+   Bool_t          BHlt2TopoMu3BodyBBDTDecision_Dec;
+   Bool_t          BHlt2TopoMu3BodyBBDTDecision_TIS;
+   Bool_t          BHlt2TopoMu3BodyBBDTDecision_TOS;
+   Bool_t          BHlt2TopoMu4BodyBBDTDecision_Dec;
+   Bool_t          BHlt2TopoMu4BodyBBDTDecision_TIS;
+   Bool_t          BHlt2TopoMu4BodyBBDTDecision_TOS;
+   Bool_t          BHlt2diPhotonDiMuonDecision_Dec;
+   Bool_t          BHlt2diPhotonDiMuonDecision_TIS;
+   Bool_t          BHlt2diPhotonDiMuonDecision_TOS;
+   Double_t        piminus_CosTheta;
    Double_t        piminus_MINIP;
    Double_t        piminus_MINIPCHI2;
    Double_t        piminus_MINIPNEXTBEST;
    Double_t        piminus_MINIPCHI2NEXTBEST;
+   Float_t         piminus_AllIP[100];   //[nPV]
+   Float_t         piminus_AllIPchi2[100];   //[nPV]
    Double_t        piminus_OWNPV_X;
    Double_t        piminus_OWNPV_Y;
    Double_t        piminus_OWNPV_Z;
@@ -411,7 +457,6 @@ public :
    Double_t        piminus_TRUEENDVERTEX_Z;
    Bool_t          piminus_TRUEISSTABLE;
    Double_t        piminus_TRUETAU;
-   Bool_t          piminus_OSCIL;
    Int_t           piminus_ID;
    Double_t        piminus_PIDe;
    Double_t        piminus_PIDmu;
@@ -427,16 +472,64 @@ public :
    Bool_t          piminus_isMuon;
    Bool_t          piminus_hasRich;
    Bool_t          piminus_hasCalo;
+   Bool_t          piminus_UsedRichAerogel;
+   Bool_t          piminus_UsedRich1Gas;
+   Bool_t          piminus_UsedRich2Gas;
+   Bool_t          piminus_RichAboveElThres;
+   Bool_t          piminus_RichAboveMuThres;
+   Bool_t          piminus_RichAbovePiThres;
+   Bool_t          piminus_RichAboveKaThres;
+   Bool_t          piminus_RichAbovePrThres;
+   Double_t        piminus_RichDLLe;
+   Double_t        piminus_RichDLLmu;
+   Double_t        piminus_RichDLLpi;
+   Double_t        piminus_RichDLLk;
+   Double_t        piminus_RichDLLp;
+   Double_t        piminus_RichDLLbt;
+   Bool_t          piminus_InAccMuon;
+   Bool_t          piminus_isMuonLoose;
+   Double_t        piminus_MuonMuLL;
+   Double_t        piminus_MuonBkgLL;
+   Int_t           piminus_MuonNShared;
+   Bool_t          piminus_InAccEcal;
+   Double_t        piminus_CaloEcalE;
+   Double_t        piminus_EcalPIDe;
+   Double_t        piminus_EcalPIDmu;
+   Bool_t          piminus_InAccHcal;
+   Double_t        piminus_CaloHcalE;
+   Double_t        piminus_HcalPIDe;
+   Double_t        piminus_HcalPIDmu;
+   Bool_t          piminus_InAccPrs;
+   Double_t        piminus_PrsPIDe;
+   Double_t        piminus_CaloPrsE;
+   Bool_t          piminus_InAccSpd;
+   Double_t        piminus_CaloSpdE;
+   Bool_t          piminus_InAccBrem;
+   Double_t        piminus_BremPIDe;
+   Double_t        piminus_VeloCharge;
    Int_t           piminus_TRACK_Type;
    Int_t           piminus_TRACK_Key;
+   Double_t        piminus_TRACK_CHI2;
+   Int_t           piminus_TRACK_NDOF;
    Double_t        piminus_TRACK_CHI2NDOF;
    Double_t        piminus_TRACK_PCHI2;
+   Double_t        piminus_TRACK_VeloCHI2NDOF;
+   Double_t        piminus_TRACK_TCHI2NDOF;
+   Double_t        piminus_VELO_UTID;
+   Double_t        piminus_TRACK_FirstMeasurementX;
+   Double_t        piminus_TRACK_FirstMeasurementY;
+   Double_t        piminus_TRACK_FirstMeasurementZ;
+   Double_t        piminus_TRACK_MatchCHI2;
    Double_t        piminus_TRACK_GhostProb;
    Double_t        piminus_TRACK_CloneDist;
+   Double_t        piminus_TRACK_Likelihood;
+   Double_t        pplus_CosTheta;
    Double_t        pplus_MINIP;
    Double_t        pplus_MINIPCHI2;
    Double_t        pplus_MINIPNEXTBEST;
    Double_t        pplus_MINIPCHI2NEXTBEST;
+   Float_t         pplus_AllIP[100];   //[nPV]
+   Float_t         pplus_AllIPchi2[100];   //[nPV]
    Double_t        pplus_OWNPV_X;
    Double_t        pplus_OWNPV_Y;
    Double_t        pplus_OWNPV_Z;
@@ -504,7 +597,6 @@ public :
    Double_t        pplus_TRUEENDVERTEX_Z;
    Bool_t          pplus_TRUEISSTABLE;
    Double_t        pplus_TRUETAU;
-   Bool_t          pplus_OSCIL;
    Int_t           pplus_ID;
    Double_t        pplus_PIDe;
    Double_t        pplus_PIDmu;
@@ -520,16 +612,64 @@ public :
    Bool_t          pplus_isMuon;
    Bool_t          pplus_hasRich;
    Bool_t          pplus_hasCalo;
+   Bool_t          pplus_UsedRichAerogel;
+   Bool_t          pplus_UsedRich1Gas;
+   Bool_t          pplus_UsedRich2Gas;
+   Bool_t          pplus_RichAboveElThres;
+   Bool_t          pplus_RichAboveMuThres;
+   Bool_t          pplus_RichAbovePiThres;
+   Bool_t          pplus_RichAboveKaThres;
+   Bool_t          pplus_RichAbovePrThres;
+   Double_t        pplus_RichDLLe;
+   Double_t        pplus_RichDLLmu;
+   Double_t        pplus_RichDLLpi;
+   Double_t        pplus_RichDLLk;
+   Double_t        pplus_RichDLLp;
+   Double_t        pplus_RichDLLbt;
+   Bool_t          pplus_InAccMuon;
+   Bool_t          pplus_isMuonLoose;
+   Double_t        pplus_MuonMuLL;
+   Double_t        pplus_MuonBkgLL;
+   Int_t           pplus_MuonNShared;
+   Bool_t          pplus_InAccEcal;
+   Double_t        pplus_CaloEcalE;
+   Double_t        pplus_EcalPIDe;
+   Double_t        pplus_EcalPIDmu;
+   Bool_t          pplus_InAccHcal;
+   Double_t        pplus_CaloHcalE;
+   Double_t        pplus_HcalPIDe;
+   Double_t        pplus_HcalPIDmu;
+   Bool_t          pplus_InAccPrs;
+   Double_t        pplus_PrsPIDe;
+   Double_t        pplus_CaloPrsE;
+   Bool_t          pplus_InAccSpd;
+   Double_t        pplus_CaloSpdE;
+   Bool_t          pplus_InAccBrem;
+   Double_t        pplus_BremPIDe;
+   Double_t        pplus_VeloCharge;
    Int_t           pplus_TRACK_Type;
    Int_t           pplus_TRACK_Key;
+   Double_t        pplus_TRACK_CHI2;
+   Int_t           pplus_TRACK_NDOF;
    Double_t        pplus_TRACK_CHI2NDOF;
    Double_t        pplus_TRACK_PCHI2;
+   Double_t        pplus_TRACK_VeloCHI2NDOF;
+   Double_t        pplus_TRACK_TCHI2NDOF;
+   Double_t        pplus_VELO_UTID;
+   Double_t        pplus_TRACK_FirstMeasurementX;
+   Double_t        pplus_TRACK_FirstMeasurementY;
+   Double_t        pplus_TRACK_FirstMeasurementZ;
+   Double_t        pplus_TRACK_MatchCHI2;
    Double_t        pplus_TRACK_GhostProb;
    Double_t        pplus_TRACK_CloneDist;
+   Double_t        pplus_TRACK_Likelihood;
+   Double_t        Psi_CosTheta;
    Double_t        Psi_MINIP;
    Double_t        Psi_MINIPCHI2;
    Double_t        Psi_MINIPNEXTBEST;
    Double_t        Psi_MINIPCHI2NEXTBEST;
+   Float_t         Psi_AllIP[100];   //[nPV]
+   Float_t         Psi_AllIPchi2[100];   //[nPV]
    Double_t        Psi_ENDVERTEX_X;
    Double_t        Psi_ENDVERTEX_Y;
    Double_t        Psi_ENDVERTEX_Z;
@@ -614,7 +754,6 @@ public :
    Double_t        Psi_TRUEENDVERTEX_Z;
    Bool_t          Psi_TRUEISSTABLE;
    Double_t        Psi_TRUETAU;
-   Bool_t          Psi_OSCIL;
    Int_t           Psi_ID;
    Double_t        Psi_TAU;
    Double_t        Psi_TAUERR;
@@ -655,81 +794,45 @@ public :
    Bool_t          PsiHlt1TrackAllL0Decision_Dec;
    Bool_t          PsiHlt1TrackAllL0Decision_TIS;
    Bool_t          PsiHlt1TrackAllL0Decision_TOS;
+   Bool_t          PsiHlt1TrackAllL0TightDecision_Dec;
+   Bool_t          PsiHlt1TrackAllL0TightDecision_TIS;
+   Bool_t          PsiHlt1TrackAllL0TightDecision_TOS;
    Bool_t          PsiHlt1DiMuonHighMassDecision_Dec;
    Bool_t          PsiHlt1DiMuonHighMassDecision_TIS;
    Bool_t          PsiHlt1DiMuonHighMassDecision_TOS;
    Bool_t          PsiHlt1DiMuonLowMassDecision_Dec;
    Bool_t          PsiHlt1DiMuonLowMassDecision_TIS;
    Bool_t          PsiHlt1DiMuonLowMassDecision_TOS;
-   Bool_t          PsiHlt1SingleMuonNoIPDecision_Dec;
-   Bool_t          PsiHlt1SingleMuonNoIPDecision_TIS;
-   Bool_t          PsiHlt1SingleMuonNoIPDecision_TOS;
    Bool_t          PsiHlt1SingleMuonHighPTDecision_Dec;
    Bool_t          PsiHlt1SingleMuonHighPTDecision_TIS;
    Bool_t          PsiHlt1SingleMuonHighPTDecision_TOS;
+   Bool_t          PsiHlt1SingleMuonNoIPDecision_Dec;
+   Bool_t          PsiHlt1SingleMuonNoIPDecision_TIS;
+   Bool_t          PsiHlt1SingleMuonNoIPDecision_TOS;
    Bool_t          PsiHlt1TrackMuonDecision_Dec;
    Bool_t          PsiHlt1TrackMuonDecision_TIS;
    Bool_t          PsiHlt1TrackMuonDecision_TOS;
-   Bool_t          PsiHlt2TransparentDecision_Dec;
-   Bool_t          PsiHlt2TransparentDecision_TIS;
-   Bool_t          PsiHlt2TransparentDecision_TOS;
-   Bool_t          PsiHlt2Topo2BodySimpleDecision_Dec;
-   Bool_t          PsiHlt2Topo2BodySimpleDecision_TIS;
-   Bool_t          PsiHlt2Topo2BodySimpleDecision_TOS;
-   Bool_t          PsiHlt2Topo3BodySimpleDecision_Dec;
-   Bool_t          PsiHlt2Topo3BodySimpleDecision_TIS;
-   Bool_t          PsiHlt2Topo3BodySimpleDecision_TOS;
-   Bool_t          PsiHlt2Topo4BodySimpleDecision_Dec;
-   Bool_t          PsiHlt2Topo4BodySimpleDecision_TIS;
-   Bool_t          PsiHlt2Topo4BodySimpleDecision_TOS;
    Bool_t          PsiHlt2Topo2BodyBBDTDecision_Dec;
    Bool_t          PsiHlt2Topo2BodyBBDTDecision_TIS;
    Bool_t          PsiHlt2Topo2BodyBBDTDecision_TOS;
+   Bool_t          PsiHlt2Topo2BodySimpleDecision_Dec;
+   Bool_t          PsiHlt2Topo2BodySimpleDecision_TIS;
+   Bool_t          PsiHlt2Topo2BodySimpleDecision_TOS;
    Bool_t          PsiHlt2Topo3BodyBBDTDecision_Dec;
    Bool_t          PsiHlt2Topo3BodyBBDTDecision_TIS;
    Bool_t          PsiHlt2Topo3BodyBBDTDecision_TOS;
+   Bool_t          PsiHlt2Topo3BodySimpleDecision_Dec;
+   Bool_t          PsiHlt2Topo3BodySimpleDecision_TIS;
+   Bool_t          PsiHlt2Topo3BodySimpleDecision_TOS;
    Bool_t          PsiHlt2Topo4BodyBBDTDecision_Dec;
    Bool_t          PsiHlt2Topo4BodyBBDTDecision_TIS;
    Bool_t          PsiHlt2Topo4BodyBBDTDecision_TOS;
-   Bool_t          PsiHlt2SingleMuonDecision_Dec;
-   Bool_t          PsiHlt2SingleMuonDecision_TIS;
-   Bool_t          PsiHlt2SingleMuonDecision_TOS;
-   Bool_t          PsiHlt2SingleMuonHighPTDecision_Dec;
-   Bool_t          PsiHlt2SingleMuonHighPTDecision_TIS;
-   Bool_t          PsiHlt2SingleMuonHighPTDecision_TOS;
-   Bool_t          PsiHlt2SingleMuonLowPTDecision_Dec;
-   Bool_t          PsiHlt2SingleMuonLowPTDecision_TIS;
-   Bool_t          PsiHlt2SingleMuonLowPTDecision_TOS;
-   Bool_t          PsiHlt2TopoMu2BodyBBDTDecision_Dec;
-   Bool_t          PsiHlt2TopoMu2BodyBBDTDecision_TIS;
-   Bool_t          PsiHlt2TopoMu2BodyBBDTDecision_TOS;
-   Bool_t          PsiHlt2TopoMu3BodyBBDTDecision_Dec;
-   Bool_t          PsiHlt2TopoMu3BodyBBDTDecision_TIS;
-   Bool_t          PsiHlt2TopoMu3BodyBBDTDecision_TOS;
-   Bool_t          PsiHlt2TopoMu4BodyBBDTDecision_Dec;
-   Bool_t          PsiHlt2TopoMu4BodyBBDTDecision_TIS;
-   Bool_t          PsiHlt2TopoMu4BodyBBDTDecision_TOS;
-   Bool_t          PsiHlt2MuonFromHLT1Decision_Dec;
-   Bool_t          PsiHlt2MuonFromHLT1Decision_TIS;
-   Bool_t          PsiHlt2MuonFromHLT1Decision_TOS;
+   Bool_t          PsiHlt2Topo4BodySimpleDecision_Dec;
+   Bool_t          PsiHlt2Topo4BodySimpleDecision_TIS;
+   Bool_t          PsiHlt2Topo4BodySimpleDecision_TOS;
    Bool_t          PsiHlt2DiMuonDecision_Dec;
    Bool_t          PsiHlt2DiMuonDecision_TIS;
    Bool_t          PsiHlt2DiMuonDecision_TOS;
-   Bool_t          PsiHlt2DiMuonLowMassDecision_Dec;
-   Bool_t          PsiHlt2DiMuonLowMassDecision_TIS;
-   Bool_t          PsiHlt2DiMuonLowMassDecision_TOS;
-   Bool_t          PsiHlt2DiMuonJPsiDecision_Dec;
-   Bool_t          PsiHlt2DiMuonJPsiDecision_TIS;
-   Bool_t          PsiHlt2DiMuonJPsiDecision_TOS;
-   Bool_t          PsiHlt2DiMuonJPsiHighPTDecision_Dec;
-   Bool_t          PsiHlt2DiMuonJPsiHighPTDecision_TIS;
-   Bool_t          PsiHlt2DiMuonJPsiHighPTDecision_TOS;
-   Bool_t          PsiHlt2DiMuonPsi2SDecision_Dec;
-   Bool_t          PsiHlt2DiMuonPsi2SDecision_TIS;
-   Bool_t          PsiHlt2DiMuonPsi2SDecision_TOS;
-   Bool_t          PsiHlt2DiMuonPsi2SHighPTDecision_Dec;
-   Bool_t          PsiHlt2DiMuonPsi2SHighPTDecision_TIS;
-   Bool_t          PsiHlt2DiMuonPsi2SHighPTDecision_TOS;
    Bool_t          PsiHlt2DiMuonBDecision_Dec;
    Bool_t          PsiHlt2DiMuonBDecision_TIS;
    Bool_t          PsiHlt2DiMuonBDecision_TOS;
@@ -742,17 +845,65 @@ public :
    Bool_t          PsiHlt2DiMuonDetachedJPsiDecision_Dec;
    Bool_t          PsiHlt2DiMuonDetachedJPsiDecision_TIS;
    Bool_t          PsiHlt2DiMuonDetachedJPsiDecision_TOS;
-   Bool_t          PsiHlt2ExpressJPsiDecision_Dec;
-   Bool_t          PsiHlt2ExpressJPsiDecision_TIS;
-   Bool_t          PsiHlt2ExpressJPsiDecision_TOS;
+   Bool_t          PsiHlt2DiMuonDetachedPsi2SDecision_Dec;
+   Bool_t          PsiHlt2DiMuonDetachedPsi2SDecision_TIS;
+   Bool_t          PsiHlt2DiMuonDetachedPsi2SDecision_TOS;
+   Bool_t          PsiHlt2DiMuonJPsiDecision_Dec;
+   Bool_t          PsiHlt2DiMuonJPsiDecision_TIS;
+   Bool_t          PsiHlt2DiMuonJPsiDecision_TOS;
+   Bool_t          PsiHlt2DiMuonJPsiHighPTDecision_Dec;
+   Bool_t          PsiHlt2DiMuonJPsiHighPTDecision_TIS;
+   Bool_t          PsiHlt2DiMuonJPsiHighPTDecision_TOS;
+   Bool_t          PsiHlt2DiMuonLowMassDecision_Dec;
+   Bool_t          PsiHlt2DiMuonLowMassDecision_TIS;
+   Bool_t          PsiHlt2DiMuonLowMassDecision_TOS;
+   Bool_t          PsiHlt2DiMuonPsi2SDecision_Dec;
+   Bool_t          PsiHlt2DiMuonPsi2SDecision_TIS;
+   Bool_t          PsiHlt2DiMuonPsi2SDecision_TOS;
+   Bool_t          PsiHlt2DiMuonPsi2SHighPTDecision_Dec;
+   Bool_t          PsiHlt2DiMuonPsi2SHighPTDecision_TIS;
+   Bool_t          PsiHlt2DiMuonPsi2SHighPTDecision_TOS;
+   Bool_t          PsiHlt2LowMultMuonDecision_Dec;
+   Bool_t          PsiHlt2LowMultMuonDecision_TIS;
+   Bool_t          PsiHlt2LowMultMuonDecision_TOS;
+   Bool_t          PsiHlt2MuonFromHLT1Decision_Dec;
+   Bool_t          PsiHlt2MuonFromHLT1Decision_TIS;
+   Bool_t          PsiHlt2MuonFromHLT1Decision_TOS;
+   Bool_t          PsiHlt2SingleMuonDecision_Dec;
+   Bool_t          PsiHlt2SingleMuonDecision_TIS;
+   Bool_t          PsiHlt2SingleMuonDecision_TOS;
+   Bool_t          PsiHlt2SingleMuonHighPTDecision_Dec;
+   Bool_t          PsiHlt2SingleMuonHighPTDecision_TIS;
+   Bool_t          PsiHlt2SingleMuonHighPTDecision_TOS;
+   Bool_t          PsiHlt2SingleMuonLowPTDecision_Dec;
+   Bool_t          PsiHlt2SingleMuonLowPTDecision_TIS;
+   Bool_t          PsiHlt2SingleMuonLowPTDecision_TOS;
+   Bool_t          PsiHlt2SingleMuonVHighPTDecision_Dec;
+   Bool_t          PsiHlt2SingleMuonVHighPTDecision_TIS;
+   Bool_t          PsiHlt2SingleMuonVHighPTDecision_TOS;
+   Bool_t          PsiHlt2TopoMu2BodyBBDTDecision_Dec;
+   Bool_t          PsiHlt2TopoMu2BodyBBDTDecision_TIS;
+   Bool_t          PsiHlt2TopoMu2BodyBBDTDecision_TOS;
+   Bool_t          PsiHlt2TopoMu3BodyBBDTDecision_Dec;
+   Bool_t          PsiHlt2TopoMu3BodyBBDTDecision_TIS;
+   Bool_t          PsiHlt2TopoMu3BodyBBDTDecision_TOS;
+   Bool_t          PsiHlt2TopoMu4BodyBBDTDecision_Dec;
+   Bool_t          PsiHlt2TopoMu4BodyBBDTDecision_TIS;
+   Bool_t          PsiHlt2TopoMu4BodyBBDTDecision_TOS;
+   Bool_t          PsiHlt2diPhotonDiMuonDecision_Dec;
+   Bool_t          PsiHlt2diPhotonDiMuonDecision_TIS;
+   Bool_t          PsiHlt2diPhotonDiMuonDecision_TOS;
    Int_t           Psi_NOPARTWITHINDCHI2WDW;
    Int_t           Psi_NOPARTWITHINCHI2WDW;
    Double_t        Psi_SMALLESTCHI2;
    Double_t        Psi_SMALLESTDELTACHI2;
+   Double_t        muminus_CosTheta;
    Double_t        muminus_MINIP;
    Double_t        muminus_MINIPCHI2;
    Double_t        muminus_MINIPNEXTBEST;
    Double_t        muminus_MINIPCHI2NEXTBEST;
+   Float_t         muminus_AllIP[100];   //[nPV]
+   Float_t         muminus_AllIPchi2[100];   //[nPV]
    Double_t        muminus_OWNPV_X;
    Double_t        muminus_OWNPV_Y;
    Double_t        muminus_OWNPV_Z;
@@ -820,7 +971,6 @@ public :
    Double_t        muminus_TRUEENDVERTEX_Z;
    Bool_t          muminus_TRUEISSTABLE;
    Double_t        muminus_TRUETAU;
-   Bool_t          muminus_OSCIL;
    Int_t           muminus_ID;
    Double_t        muminus_PIDe;
    Double_t        muminus_PIDmu;
@@ -836,16 +986,64 @@ public :
    Bool_t          muminus_isMuon;
    Bool_t          muminus_hasRich;
    Bool_t          muminus_hasCalo;
+   Bool_t          muminus_UsedRichAerogel;
+   Bool_t          muminus_UsedRich1Gas;
+   Bool_t          muminus_UsedRich2Gas;
+   Bool_t          muminus_RichAboveElThres;
+   Bool_t          muminus_RichAboveMuThres;
+   Bool_t          muminus_RichAbovePiThres;
+   Bool_t          muminus_RichAboveKaThres;
+   Bool_t          muminus_RichAbovePrThres;
+   Double_t        muminus_RichDLLe;
+   Double_t        muminus_RichDLLmu;
+   Double_t        muminus_RichDLLpi;
+   Double_t        muminus_RichDLLk;
+   Double_t        muminus_RichDLLp;
+   Double_t        muminus_RichDLLbt;
+   Bool_t          muminus_InAccMuon;
+   Bool_t          muminus_isMuonLoose;
+   Double_t        muminus_MuonMuLL;
+   Double_t        muminus_MuonBkgLL;
+   Int_t           muminus_MuonNShared;
+   Bool_t          muminus_InAccEcal;
+   Double_t        muminus_CaloEcalE;
+   Double_t        muminus_EcalPIDe;
+   Double_t        muminus_EcalPIDmu;
+   Bool_t          muminus_InAccHcal;
+   Double_t        muminus_CaloHcalE;
+   Double_t        muminus_HcalPIDe;
+   Double_t        muminus_HcalPIDmu;
+   Bool_t          muminus_InAccPrs;
+   Double_t        muminus_PrsPIDe;
+   Double_t        muminus_CaloPrsE;
+   Bool_t          muminus_InAccSpd;
+   Double_t        muminus_CaloSpdE;
+   Bool_t          muminus_InAccBrem;
+   Double_t        muminus_BremPIDe;
+   Double_t        muminus_VeloCharge;
    Int_t           muminus_TRACK_Type;
    Int_t           muminus_TRACK_Key;
+   Double_t        muminus_TRACK_CHI2;
+   Int_t           muminus_TRACK_NDOF;
    Double_t        muminus_TRACK_CHI2NDOF;
    Double_t        muminus_TRACK_PCHI2;
+   Double_t        muminus_TRACK_VeloCHI2NDOF;
+   Double_t        muminus_TRACK_TCHI2NDOF;
+   Double_t        muminus_VELO_UTID;
+   Double_t        muminus_TRACK_FirstMeasurementX;
+   Double_t        muminus_TRACK_FirstMeasurementY;
+   Double_t        muminus_TRACK_FirstMeasurementZ;
+   Double_t        muminus_TRACK_MatchCHI2;
    Double_t        muminus_TRACK_GhostProb;
    Double_t        muminus_TRACK_CloneDist;
+   Double_t        muminus_TRACK_Likelihood;
+   Double_t        muplus_CosTheta;
    Double_t        muplus_MINIP;
    Double_t        muplus_MINIPCHI2;
    Double_t        muplus_MINIPNEXTBEST;
    Double_t        muplus_MINIPCHI2NEXTBEST;
+   Float_t         muplus_AllIP[100];   //[nPV]
+   Float_t         muplus_AllIPchi2[100];   //[nPV]
    Double_t        muplus_OWNPV_X;
    Double_t        muplus_OWNPV_Y;
    Double_t        muplus_OWNPV_Z;
@@ -913,7 +1111,6 @@ public :
    Double_t        muplus_TRUEENDVERTEX_Z;
    Bool_t          muplus_TRUEISSTABLE;
    Double_t        muplus_TRUETAU;
-   Bool_t          muplus_OSCIL;
    Int_t           muplus_ID;
    Double_t        muplus_PIDe;
    Double_t        muplus_PIDmu;
@@ -929,12 +1126,57 @@ public :
    Bool_t          muplus_isMuon;
    Bool_t          muplus_hasRich;
    Bool_t          muplus_hasCalo;
+   Bool_t          muplus_UsedRichAerogel;
+   Bool_t          muplus_UsedRich1Gas;
+   Bool_t          muplus_UsedRich2Gas;
+   Bool_t          muplus_RichAboveElThres;
+   Bool_t          muplus_RichAboveMuThres;
+   Bool_t          muplus_RichAbovePiThres;
+   Bool_t          muplus_RichAboveKaThres;
+   Bool_t          muplus_RichAbovePrThres;
+   Double_t        muplus_RichDLLe;
+   Double_t        muplus_RichDLLmu;
+   Double_t        muplus_RichDLLpi;
+   Double_t        muplus_RichDLLk;
+   Double_t        muplus_RichDLLp;
+   Double_t        muplus_RichDLLbt;
+   Bool_t          muplus_InAccMuon;
+   Bool_t          muplus_isMuonLoose;
+   Double_t        muplus_MuonMuLL;
+   Double_t        muplus_MuonBkgLL;
+   Int_t           muplus_MuonNShared;
+   Bool_t          muplus_InAccEcal;
+   Double_t        muplus_CaloEcalE;
+   Double_t        muplus_EcalPIDe;
+   Double_t        muplus_EcalPIDmu;
+   Bool_t          muplus_InAccHcal;
+   Double_t        muplus_CaloHcalE;
+   Double_t        muplus_HcalPIDe;
+   Double_t        muplus_HcalPIDmu;
+   Bool_t          muplus_InAccPrs;
+   Double_t        muplus_PrsPIDe;
+   Double_t        muplus_CaloPrsE;
+   Bool_t          muplus_InAccSpd;
+   Double_t        muplus_CaloSpdE;
+   Bool_t          muplus_InAccBrem;
+   Double_t        muplus_BremPIDe;
+   Double_t        muplus_VeloCharge;
    Int_t           muplus_TRACK_Type;
    Int_t           muplus_TRACK_Key;
+   Double_t        muplus_TRACK_CHI2;
+   Int_t           muplus_TRACK_NDOF;
    Double_t        muplus_TRACK_CHI2NDOF;
    Double_t        muplus_TRACK_PCHI2;
+   Double_t        muplus_TRACK_VeloCHI2NDOF;
+   Double_t        muplus_TRACK_TCHI2NDOF;
+   Double_t        muplus_VELO_UTID;
+   Double_t        muplus_TRACK_FirstMeasurementX;
+   Double_t        muplus_TRACK_FirstMeasurementY;
+   Double_t        muplus_TRACK_FirstMeasurementZ;
+   Double_t        muplus_TRACK_MatchCHI2;
    Double_t        muplus_TRACK_GhostProb;
    Double_t        muplus_TRACK_CloneDist;
+   Double_t        muplus_TRACK_Likelihood;
    UInt_t          nCandidate;
    ULong64_t       totCandidates;
    ULong64_t       EventInSequence;
@@ -953,9 +1195,7 @@ public :
    Int_t           GpsMinute;
    Double_t        GpsSecond;
    Int_t           TriggerType;
-   UInt_t          Primaries;
    Short_t         Polarity;
-   Int_t           nPV;
    Float_t         PVX[100];   //[nPV]
    Float_t         PVY[100];   //[nPV]
    Float_t         PVZ[100];   //[nPV]
@@ -986,12 +1226,16 @@ public :
    Int_t           nMuonCoordsS3;
    Int_t           nMuonCoordsS4;
    Int_t           nMuonTracks;
+   Double_t        netOutput;   //!
+   Int_t           category;   //!
 
-   // List of branches
    TBranch        *b_B_MINIP;   //!
    TBranch        *b_B_MINIPCHI2;   //!
    TBranch        *b_B_MINIPNEXTBEST;   //!
    TBranch        *b_B_MINIPCHI2NEXTBEST;   //!
+   TBranch        *b_nPV;   //!
+   TBranch        *b_B_AllIP;   //!
+   TBranch        *b_B_AllIPchi2;   //!
    TBranch        *b_B_ENDVERTEX_X;   //!
    TBranch        *b_B_ENDVERTEX_Y;   //!
    TBranch        *b_B_ENDVERTEX_Z;   //!
@@ -1062,11 +1306,58 @@ public :
    TBranch        *b_B_TRUEENDVERTEX_Z;   //!
    TBranch        *b_B_TRUEISSTABLE;   //!
    TBranch        *b_B_TRUETAU;   //!
-   TBranch        *b_B_OSCIL;   //!
    TBranch        *b_B_ID;   //!
    TBranch        *b_B_TAU;   //!
    TBranch        *b_B_TAUERR;   //!
    TBranch        *b_B_TAUCHI2;   //!
+   TBranch        *b_Dalitz_pplus_J_psi_1S_M2;   //!
+   TBranch        *b_Dalitz_piminus_J_psi_1S_M2;   //!
+   TBranch        *b_Dalitz_piminus_pplus_M2;   //!
+   TBranch        *b_B_ConstBFit_nPV;   //!
+   TBranch        *b_B_ConstBFit_J_psi_1S_M;   //!
+   TBranch        *b_B_ConstBFit_J_psi_1S_MERR;   //!
+   TBranch        *b_B_ConstBFit_J_psi_1S_P;   //!
+   TBranch        *b_B_ConstBFit_J_psi_1S_P0_ID;   //!
+   TBranch        *b_B_ConstBFit_J_psi_1S_P0_PE;   //!
+   TBranch        *b_B_ConstBFit_J_psi_1S_P0_PX;   //!
+   TBranch        *b_B_ConstBFit_J_psi_1S_P0_PY;   //!
+   TBranch        *b_B_ConstBFit_J_psi_1S_P0_PZ;   //!
+   TBranch        *b_B_ConstBFit_J_psi_1S_P1_ID;   //!
+   TBranch        *b_B_ConstBFit_J_psi_1S_P1_PE;   //!
+   TBranch        *b_B_ConstBFit_J_psi_1S_P1_PX;   //!
+   TBranch        *b_B_ConstBFit_J_psi_1S_P1_PY;   //!
+   TBranch        *b_B_ConstBFit_J_psi_1S_P1_PZ;   //!
+   TBranch        *b_B_ConstBFit_J_psi_1S_PERR;   //!
+   TBranch        *b_B_ConstBFit_J_psi_1S_ctau;   //!
+   TBranch        *b_B_ConstBFit_J_psi_1S_ctauErr;   //!
+   TBranch        *b_B_ConstBFit_J_psi_1S_decayLength;   //!
+   TBranch        *b_B_ConstBFit_J_psi_1S_decayLengthErr;   //!
+   TBranch        *b_B_ConstBFit_M;   //!
+   TBranch        *b_B_ConstBFit_MERR;   //!
+   TBranch        *b_B_ConstBFit_P;   //!
+   TBranch        *b_B_ConstBFit_P0_ID;   //!
+   TBranch        *b_B_ConstBFit_P0_PE;   //!
+   TBranch        *b_B_ConstBFit_P0_PX;   //!
+   TBranch        *b_B_ConstBFit_P0_PY;   //!
+   TBranch        *b_B_ConstBFit_P0_PZ;   //!
+   TBranch        *b_B_ConstBFit_P1_ID;   //!
+   TBranch        *b_B_ConstBFit_P1_PE;   //!
+   TBranch        *b_B_ConstBFit_P1_PX;   //!
+   TBranch        *b_B_ConstBFit_P1_PY;   //!
+   TBranch        *b_B_ConstBFit_P1_PZ;   //!
+   TBranch        *b_B_ConstBFit_PERR;   //!
+   TBranch        *b_B_ConstBFit_PV_X;   //!
+   TBranch        *b_B_ConstBFit_PV_Y;   //!
+   TBranch        *b_B_ConstBFit_PV_Z;   //!
+   TBranch        *b_B_ConstBFit_PV_key;   //!
+   TBranch        *b_B_ConstBFit_chi2;   //!
+   TBranch        *b_B_ConstBFit_ctau;   //!
+   TBranch        *b_B_ConstBFit_ctauErr;   //!
+   TBranch        *b_B_ConstBFit_decayLength;   //!
+   TBranch        *b_B_ConstBFit_decayLengthErr;   //!
+   TBranch        *b_B_ConstBFit_nDOF;   //!
+   TBranch        *b_B_ConstBFit_nIter;   //!
+   TBranch        *b_B_ConstBFit_status;   //!
    TBranch        *b_B_FullFit_nPV;   //!
    TBranch        *b_B_FullFit_J_psi_1S_M;   //!
    TBranch        *b_B_FullFit_J_psi_1S_MERR;   //!
@@ -1084,7 +1375,6 @@ public :
    TBranch        *b_B_FullFit_PV_Y;   //!
    TBranch        *b_B_FullFit_PV_Z;   //!
    TBranch        *b_B_FullFit_PV_key;   //!
-   TBranch        *b_B_FullFit_chi2_B;   //!
    TBranch        *b_B_FullFit_chi2;   //!
    TBranch        *b_B_FullFit_ctau;   //!
    TBranch        *b_B_FullFit_ctauErr;   //!
@@ -1093,23 +1383,6 @@ public :
    TBranch        *b_B_FullFit_nDOF;   //!
    TBranch        *b_B_FullFit_nIter;   //!
    TBranch        *b_B_FullFit_status;   //!
-   TBranch        *b_B_MassFit_nPV;   //!
-   TBranch        *b_B_MassFit_J_psi_1S_M;   //!
-   TBranch        *b_B_MassFit_J_psi_1S_MERR;   //!
-   TBranch        *b_B_MassFit_J_psi_1S_P;   //!
-   TBranch        *b_B_MassFit_J_psi_1S_PERR;   //!
-   TBranch        *b_B_MassFit_J_psi_1S_ctau;   //!
-   TBranch        *b_B_MassFit_J_psi_1S_ctauErr;   //!
-   TBranch        *b_B_MassFit_J_psi_1S_decayLength;   //!
-   TBranch        *b_B_MassFit_J_psi_1S_decayLengthErr;   //!
-   TBranch        *b_B_MassFit_M;   //!
-   TBranch        *b_B_MassFit_MERR;   //!
-   TBranch        *b_B_MassFit_P;   //!
-   TBranch        *b_B_MassFit_PERR;   //!
-   TBranch        *b_B_MassFit_chi2_B;   //!
-   TBranch        *b_B_MassFit_nDOF;   //!
-   TBranch        *b_B_MassFit_nIter;   //!
-   TBranch        *b_B_MassFit_status;   //!
    TBranch        *b_B_SubKpi_nPV;   //!
    TBranch        *b_B_SubKpi_J_psi_1S_M;   //!
    TBranch        *b_B_SubKpi_J_psi_1S_MERR;   //!
@@ -1127,7 +1400,7 @@ public :
    TBranch        *b_B_SubKpi_PV_Y;   //!
    TBranch        *b_B_SubKpi_PV_Z;   //!
    TBranch        *b_B_SubKpi_PV_key;   //!
-   TBranch        *b_B_SubKpi_chi2_B;   //!
+   TBranch        *b_B_SubKpi_chi2;   //!
    TBranch        *b_B_SubKpi_ctau;   //!
    TBranch        *b_B_SubKpi_ctauErr;   //!
    TBranch        *b_B_SubKpi_decayLength;   //!
@@ -1152,7 +1425,7 @@ public :
    TBranch        *b_B_SubpK_PV_Y;   //!
    TBranch        *b_B_SubpK_PV_Z;   //!
    TBranch        *b_B_SubpK_PV_key;   //!
-   TBranch        *b_B_SubpK_chi2_B;   //!
+   TBranch        *b_B_SubpK_chi2;   //!
    TBranch        *b_B_SubpK_ctau;   //!
    TBranch        *b_B_SubpK_ctauErr;   //!
    TBranch        *b_B_SubpK_decayLength;   //!
@@ -1196,81 +1469,45 @@ public :
    TBranch        *b_BHlt1TrackAllL0Decision_Dec;   //!
    TBranch        *b_BHlt1TrackAllL0Decision_TIS;   //!
    TBranch        *b_BHlt1TrackAllL0Decision_TOS;   //!
+   TBranch        *b_BHlt1TrackAllL0TightDecision_Dec;   //!
+   TBranch        *b_BHlt1TrackAllL0TightDecision_TIS;   //!
+   TBranch        *b_BHlt1TrackAllL0TightDecision_TOS;   //!
    TBranch        *b_BHlt1DiMuonHighMassDecision_Dec;   //!
    TBranch        *b_BHlt1DiMuonHighMassDecision_TIS;   //!
    TBranch        *b_BHlt1DiMuonHighMassDecision_TOS;   //!
    TBranch        *b_BHlt1DiMuonLowMassDecision_Dec;   //!
    TBranch        *b_BHlt1DiMuonLowMassDecision_TIS;   //!
    TBranch        *b_BHlt1DiMuonLowMassDecision_TOS;   //!
-   TBranch        *b_BHlt1SingleMuonNoIPDecision_Dec;   //!
-   TBranch        *b_BHlt1SingleMuonNoIPDecision_TIS;   //!
-   TBranch        *b_BHlt1SingleMuonNoIPDecision_TOS;   //!
    TBranch        *b_BHlt1SingleMuonHighPTDecision_Dec;   //!
    TBranch        *b_BHlt1SingleMuonHighPTDecision_TIS;   //!
    TBranch        *b_BHlt1SingleMuonHighPTDecision_TOS;   //!
+   TBranch        *b_BHlt1SingleMuonNoIPDecision_Dec;   //!
+   TBranch        *b_BHlt1SingleMuonNoIPDecision_TIS;   //!
+   TBranch        *b_BHlt1SingleMuonNoIPDecision_TOS;   //!
    TBranch        *b_BHlt1TrackMuonDecision_Dec;   //!
    TBranch        *b_BHlt1TrackMuonDecision_TIS;   //!
    TBranch        *b_BHlt1TrackMuonDecision_TOS;   //!
-   TBranch        *b_BHlt2TransparentDecision_Dec;   //!
-   TBranch        *b_BHlt2TransparentDecision_TIS;   //!
-   TBranch        *b_BHlt2TransparentDecision_TOS;   //!
-   TBranch        *b_BHlt2Topo2BodySimpleDecision_Dec;   //!
-   TBranch        *b_BHlt2Topo2BodySimpleDecision_TIS;   //!
-   TBranch        *b_BHlt2Topo2BodySimpleDecision_TOS;   //!
-   TBranch        *b_BHlt2Topo3BodySimpleDecision_Dec;   //!
-   TBranch        *b_BHlt2Topo3BodySimpleDecision_TIS;   //!
-   TBranch        *b_BHlt2Topo3BodySimpleDecision_TOS;   //!
-   TBranch        *b_BHlt2Topo4BodySimpleDecision_Dec;   //!
-   TBranch        *b_BHlt2Topo4BodySimpleDecision_TIS;   //!
-   TBranch        *b_BHlt2Topo4BodySimpleDecision_TOS;   //!
    TBranch        *b_BHlt2Topo2BodyBBDTDecision_Dec;   //!
    TBranch        *b_BHlt2Topo2BodyBBDTDecision_TIS;   //!
    TBranch        *b_BHlt2Topo2BodyBBDTDecision_TOS;   //!
+   TBranch        *b_BHlt2Topo2BodySimpleDecision_Dec;   //!
+   TBranch        *b_BHlt2Topo2BodySimpleDecision_TIS;   //!
+   TBranch        *b_BHlt2Topo2BodySimpleDecision_TOS;   //!
    TBranch        *b_BHlt2Topo3BodyBBDTDecision_Dec;   //!
    TBranch        *b_BHlt2Topo3BodyBBDTDecision_TIS;   //!
    TBranch        *b_BHlt2Topo3BodyBBDTDecision_TOS;   //!
+   TBranch        *b_BHlt2Topo3BodySimpleDecision_Dec;   //!
+   TBranch        *b_BHlt2Topo3BodySimpleDecision_TIS;   //!
+   TBranch        *b_BHlt2Topo3BodySimpleDecision_TOS;   //!
    TBranch        *b_BHlt2Topo4BodyBBDTDecision_Dec;   //!
    TBranch        *b_BHlt2Topo4BodyBBDTDecision_TIS;   //!
    TBranch        *b_BHlt2Topo4BodyBBDTDecision_TOS;   //!
-   TBranch        *b_BHlt2SingleMuonDecision_Dec;   //!
-   TBranch        *b_BHlt2SingleMuonDecision_TIS;   //!
-   TBranch        *b_BHlt2SingleMuonDecision_TOS;   //!
-   TBranch        *b_BHlt2SingleMuonHighPTDecision_Dec;   //!
-   TBranch        *b_BHlt2SingleMuonHighPTDecision_TIS;   //!
-   TBranch        *b_BHlt2SingleMuonHighPTDecision_TOS;   //!
-   TBranch        *b_BHlt2SingleMuonLowPTDecision_Dec;   //!
-   TBranch        *b_BHlt2SingleMuonLowPTDecision_TIS;   //!
-   TBranch        *b_BHlt2SingleMuonLowPTDecision_TOS;   //!
-   TBranch        *b_BHlt2TopoMu2BodyBBDTDecision_Dec;   //!
-   TBranch        *b_BHlt2TopoMu2BodyBBDTDecision_TIS;   //!
-   TBranch        *b_BHlt2TopoMu2BodyBBDTDecision_TOS;   //!
-   TBranch        *b_BHlt2TopoMu3BodyBBDTDecision_Dec;   //!
-   TBranch        *b_BHlt2TopoMu3BodyBBDTDecision_TIS;   //!
-   TBranch        *b_BHlt2TopoMu3BodyBBDTDecision_TOS;   //!
-   TBranch        *b_BHlt2TopoMu4BodyBBDTDecision_Dec;   //!
-   TBranch        *b_BHlt2TopoMu4BodyBBDTDecision_TIS;   //!
-   TBranch        *b_BHlt2TopoMu4BodyBBDTDecision_TOS;   //!
-   TBranch        *b_BHlt2MuonFromHLT1Decision_Dec;   //!
-   TBranch        *b_BHlt2MuonFromHLT1Decision_TIS;   //!
-   TBranch        *b_BHlt2MuonFromHLT1Decision_TOS;   //!
+   TBranch        *b_BHlt2Topo4BodySimpleDecision_Dec;   //!
+   TBranch        *b_BHlt2Topo4BodySimpleDecision_TIS;   //!
+   TBranch        *b_BHlt2Topo4BodySimpleDecision_TOS;   //!
    TBranch        *b_BHlt2DiMuonDecision_Dec;   //!
    TBranch        *b_BHlt2DiMuonDecision_TIS;   //!
    TBranch        *b_BHlt2DiMuonDecision_TOS;   //!
-   TBranch        *b_BHlt2DiMuonLowMassDecision_Dec;   //!
-   TBranch        *b_BHlt2DiMuonLowMassDecision_TIS;   //!
-   TBranch        *b_BHlt2DiMuonLowMassDecision_TOS;   //!
-   TBranch        *b_BHlt2DiMuonJPsiDecision_Dec;   //!
-   TBranch        *b_BHlt2DiMuonJPsiDecision_TIS;   //!
-   TBranch        *b_BHlt2DiMuonJPsiDecision_TOS;   //!
-   TBranch        *b_BHlt2DiMuonJPsiHighPTDecision_Dec;   //!
-   TBranch        *b_BHlt2DiMuonJPsiHighPTDecision_TIS;   //!
-   TBranch        *b_BHlt2DiMuonJPsiHighPTDecision_TOS;   //!
-   TBranch        *b_BHlt2DiMuonPsi2SDecision_Dec;   //!
-   TBranch        *b_BHlt2DiMuonPsi2SDecision_TIS;   //!
-   TBranch        *b_BHlt2DiMuonPsi2SDecision_TOS;   //!
-   TBranch        *b_BHlt2DiMuonPsi2SHighPTDecision_Dec;   //!
-   TBranch        *b_BHlt2DiMuonPsi2SHighPTDecision_TIS;   //!
-   TBranch        *b_BHlt2DiMuonPsi2SHighPTDecision_TOS;   //!
    TBranch        *b_BHlt2DiMuonBDecision_Dec;   //!
    TBranch        *b_BHlt2DiMuonBDecision_TIS;   //!
    TBranch        *b_BHlt2DiMuonBDecision_TOS;   //!
@@ -1283,13 +1520,61 @@ public :
    TBranch        *b_BHlt2DiMuonDetachedJPsiDecision_Dec;   //!
    TBranch        *b_BHlt2DiMuonDetachedJPsiDecision_TIS;   //!
    TBranch        *b_BHlt2DiMuonDetachedJPsiDecision_TOS;   //!
-   TBranch        *b_BHlt2ExpressJPsiDecision_Dec;   //!
-   TBranch        *b_BHlt2ExpressJPsiDecision_TIS;   //!
-   TBranch        *b_BHlt2ExpressJPsiDecision_TOS;   //!
+   TBranch        *b_BHlt2DiMuonDetachedPsi2SDecision_Dec;   //!
+   TBranch        *b_BHlt2DiMuonDetachedPsi2SDecision_TIS;   //!
+   TBranch        *b_BHlt2DiMuonDetachedPsi2SDecision_TOS;   //!
+   TBranch        *b_BHlt2DiMuonJPsiDecision_Dec;   //!
+   TBranch        *b_BHlt2DiMuonJPsiDecision_TIS;   //!
+   TBranch        *b_BHlt2DiMuonJPsiDecision_TOS;   //!
+   TBranch        *b_BHlt2DiMuonJPsiHighPTDecision_Dec;   //!
+   TBranch        *b_BHlt2DiMuonJPsiHighPTDecision_TIS;   //!
+   TBranch        *b_BHlt2DiMuonJPsiHighPTDecision_TOS;   //!
+   TBranch        *b_BHlt2DiMuonLowMassDecision_Dec;   //!
+   TBranch        *b_BHlt2DiMuonLowMassDecision_TIS;   //!
+   TBranch        *b_BHlt2DiMuonLowMassDecision_TOS;   //!
+   TBranch        *b_BHlt2DiMuonPsi2SDecision_Dec;   //!
+   TBranch        *b_BHlt2DiMuonPsi2SDecision_TIS;   //!
+   TBranch        *b_BHlt2DiMuonPsi2SDecision_TOS;   //!
+   TBranch        *b_BHlt2DiMuonPsi2SHighPTDecision_Dec;   //!
+   TBranch        *b_BHlt2DiMuonPsi2SHighPTDecision_TIS;   //!
+   TBranch        *b_BHlt2DiMuonPsi2SHighPTDecision_TOS;   //!
+   TBranch        *b_BHlt2LowMultMuonDecision_Dec;   //!
+   TBranch        *b_BHlt2LowMultMuonDecision_TIS;   //!
+   TBranch        *b_BHlt2LowMultMuonDecision_TOS;   //!
+   TBranch        *b_BHlt2MuonFromHLT1Decision_Dec;   //!
+   TBranch        *b_BHlt2MuonFromHLT1Decision_TIS;   //!
+   TBranch        *b_BHlt2MuonFromHLT1Decision_TOS;   //!
+   TBranch        *b_BHlt2SingleMuonDecision_Dec;   //!
+   TBranch        *b_BHlt2SingleMuonDecision_TIS;   //!
+   TBranch        *b_BHlt2SingleMuonDecision_TOS;   //!
+   TBranch        *b_BHlt2SingleMuonHighPTDecision_Dec;   //!
+   TBranch        *b_BHlt2SingleMuonHighPTDecision_TIS;   //!
+   TBranch        *b_BHlt2SingleMuonHighPTDecision_TOS;   //!
+   TBranch        *b_BHlt2SingleMuonLowPTDecision_Dec;   //!
+   TBranch        *b_BHlt2SingleMuonLowPTDecision_TIS;   //!
+   TBranch        *b_BHlt2SingleMuonLowPTDecision_TOS;   //!
+   TBranch        *b_BHlt2SingleMuonVHighPTDecision_Dec;   //!
+   TBranch        *b_BHlt2SingleMuonVHighPTDecision_TIS;   //!
+   TBranch        *b_BHlt2SingleMuonVHighPTDecision_TOS;   //!
+   TBranch        *b_BHlt2TopoMu2BodyBBDTDecision_Dec;   //!
+   TBranch        *b_BHlt2TopoMu2BodyBBDTDecision_TIS;   //!
+   TBranch        *b_BHlt2TopoMu2BodyBBDTDecision_TOS;   //!
+   TBranch        *b_BHlt2TopoMu3BodyBBDTDecision_Dec;   //!
+   TBranch        *b_BHlt2TopoMu3BodyBBDTDecision_TIS;   //!
+   TBranch        *b_BHlt2TopoMu3BodyBBDTDecision_TOS;   //!
+   TBranch        *b_BHlt2TopoMu4BodyBBDTDecision_Dec;   //!
+   TBranch        *b_BHlt2TopoMu4BodyBBDTDecision_TIS;   //!
+   TBranch        *b_BHlt2TopoMu4BodyBBDTDecision_TOS;   //!
+   TBranch        *b_BHlt2diPhotonDiMuonDecision_Dec;   //!
+   TBranch        *b_BHlt2diPhotonDiMuonDecision_TIS;   //!
+   TBranch        *b_BHlt2diPhotonDiMuonDecision_TOS;   //!
+   TBranch        *b_piminus_CosTheta;   //!
    TBranch        *b_piminus_MINIP;   //!
    TBranch        *b_piminus_MINIPCHI2;   //!
    TBranch        *b_piminus_MINIPNEXTBEST;   //!
    TBranch        *b_piminus_MINIPCHI2NEXTBEST;   //!
+   TBranch        *b_piminus_AllIP;   //!
+   TBranch        *b_piminus_AllIPchi2;   //!
    TBranch        *b_piminus_OWNPV_X;   //!
    TBranch        *b_piminus_OWNPV_Y;   //!
    TBranch        *b_piminus_OWNPV_Z;   //!
@@ -1357,7 +1642,6 @@ public :
    TBranch        *b_piminus_TRUEENDVERTEX_Z;   //!
    TBranch        *b_piminus_TRUEISSTABLE;   //!
    TBranch        *b_piminus_TRUETAU;   //!
-   TBranch        *b_piminus_OSCIL;   //!
    TBranch        *b_piminus_ID;   //!
    TBranch        *b_piminus_PIDe;   //!
    TBranch        *b_piminus_PIDmu;   //!
@@ -1373,16 +1657,64 @@ public :
    TBranch        *b_piminus_isMuon;   //!
    TBranch        *b_piminus_hasRich;   //!
    TBranch        *b_piminus_hasCalo;   //!
+   TBranch        *b_piminus_UsedRichAerogel;   //!
+   TBranch        *b_piminus_UsedRich1Gas;   //!
+   TBranch        *b_piminus_UsedRich2Gas;   //!
+   TBranch        *b_piminus_RichAboveElThres;   //!
+   TBranch        *b_piminus_RichAboveMuThres;   //!
+   TBranch        *b_piminus_RichAbovePiThres;   //!
+   TBranch        *b_piminus_RichAboveKaThres;   //!
+   TBranch        *b_piminus_RichAbovePrThres;   //!
+   TBranch        *b_piminus_RichDLLe;   //!
+   TBranch        *b_piminus_RichDLLmu;   //!
+   TBranch        *b_piminus_RichDLLpi;   //!
+   TBranch        *b_piminus_RichDLLk;   //!
+   TBranch        *b_piminus_RichDLLp;   //!
+   TBranch        *b_piminus_RichDLLbt;   //!
+   TBranch        *b_piminus_InAccMuon;   //!
+   TBranch        *b_piminus_isMuonLoose;   //!
+   TBranch        *b_piminus_MuonMuLL;   //!
+   TBranch        *b_piminus_MuonBkgLL;   //!
+   TBranch        *b_piminus_MuonNShared;   //!
+   TBranch        *b_piminus_InAccEcal;   //!
+   TBranch        *b_piminus_CaloEcalE;   //!
+   TBranch        *b_piminus_EcalPIDe;   //!
+   TBranch        *b_piminus_EcalPIDmu;   //!
+   TBranch        *b_piminus_InAccHcal;   //!
+   TBranch        *b_piminus_CaloHcalE;   //!
+   TBranch        *b_piminus_HcalPIDe;   //!
+   TBranch        *b_piminus_HcalPIDmu;   //!
+   TBranch        *b_piminus_InAccPrs;   //!
+   TBranch        *b_piminus_PrsPIDe;   //!
+   TBranch        *b_piminus_CaloPrsE;   //!
+   TBranch        *b_piminus_InAccSpd;   //!
+   TBranch        *b_piminus_CaloSpdE;   //!
+   TBranch        *b_piminus_InAccBrem;   //!
+   TBranch        *b_piminus_BremPIDe;   //!
+   TBranch        *b_piminus_VeloCharge;   //!
    TBranch        *b_piminus_TRACK_Type;   //!
    TBranch        *b_piminus_TRACK_Key;   //!
+   TBranch        *b_piminus_TRACK_CHI2;   //!
+   TBranch        *b_piminus_TRACK_NDOF;   //!
    TBranch        *b_piminus_TRACK_CHI2NDOF;   //!
    TBranch        *b_piminus_TRACK_PCHI2;   //!
+   TBranch        *b_piminus_TRACK_VeloCHI2NDOF;   //!
+   TBranch        *b_piminus_TRACK_TCHI2NDOF;   //!
+   TBranch        *b_piminus_VELO_UTID;   //!
+   TBranch        *b_piminus_TRACK_FirstMeasurementX;   //!
+   TBranch        *b_piminus_TRACK_FirstMeasurementY;   //!
+   TBranch        *b_piminus_TRACK_FirstMeasurementZ;   //!
+   TBranch        *b_piminus_TRACK_MatchCHI2;   //!
    TBranch        *b_piminus_TRACK_GhostProb;   //!
    TBranch        *b_piminus_TRACK_CloneDist;   //!
+   TBranch        *b_piminus_TRACK_Likelihood;   //!
+   TBranch        *b_pplus_CosTheta;   //!
    TBranch        *b_pplus_MINIP;   //!
    TBranch        *b_pplus_MINIPCHI2;   //!
    TBranch        *b_pplus_MINIPNEXTBEST;   //!
    TBranch        *b_pplus_MINIPCHI2NEXTBEST;   //!
+   TBranch        *b_pplus_AllIP;   //!
+   TBranch        *b_pplus_AllIPchi2;   //!
    TBranch        *b_pplus_OWNPV_X;   //!
    TBranch        *b_pplus_OWNPV_Y;   //!
    TBranch        *b_pplus_OWNPV_Z;   //!
@@ -1450,7 +1782,6 @@ public :
    TBranch        *b_pplus_TRUEENDVERTEX_Z;   //!
    TBranch        *b_pplus_TRUEISSTABLE;   //!
    TBranch        *b_pplus_TRUETAU;   //!
-   TBranch        *b_pplus_OSCIL;   //!
    TBranch        *b_pplus_ID;   //!
    TBranch        *b_pplus_PIDe;   //!
    TBranch        *b_pplus_PIDmu;   //!
@@ -1466,16 +1797,64 @@ public :
    TBranch        *b_pplus_isMuon;   //!
    TBranch        *b_pplus_hasRich;   //!
    TBranch        *b_pplus_hasCalo;   //!
+   TBranch        *b_pplus_UsedRichAerogel;   //!
+   TBranch        *b_pplus_UsedRich1Gas;   //!
+   TBranch        *b_pplus_UsedRich2Gas;   //!
+   TBranch        *b_pplus_RichAboveElThres;   //!
+   TBranch        *b_pplus_RichAboveMuThres;   //!
+   TBranch        *b_pplus_RichAbovePiThres;   //!
+   TBranch        *b_pplus_RichAboveKaThres;   //!
+   TBranch        *b_pplus_RichAbovePrThres;   //!
+   TBranch        *b_pplus_RichDLLe;   //!
+   TBranch        *b_pplus_RichDLLmu;   //!
+   TBranch        *b_pplus_RichDLLpi;   //!
+   TBranch        *b_pplus_RichDLLk;   //!
+   TBranch        *b_pplus_RichDLLp;   //!
+   TBranch        *b_pplus_RichDLLbt;   //!
+   TBranch        *b_pplus_InAccMuon;   //!
+   TBranch        *b_pplus_isMuonLoose;   //!
+   TBranch        *b_pplus_MuonMuLL;   //!
+   TBranch        *b_pplus_MuonBkgLL;   //!
+   TBranch        *b_pplus_MuonNShared;   //!
+   TBranch        *b_pplus_InAccEcal;   //!
+   TBranch        *b_pplus_CaloEcalE;   //!
+   TBranch        *b_pplus_EcalPIDe;   //!
+   TBranch        *b_pplus_EcalPIDmu;   //!
+   TBranch        *b_pplus_InAccHcal;   //!
+   TBranch        *b_pplus_CaloHcalE;   //!
+   TBranch        *b_pplus_HcalPIDe;   //!
+   TBranch        *b_pplus_HcalPIDmu;   //!
+   TBranch        *b_pplus_InAccPrs;   //!
+   TBranch        *b_pplus_PrsPIDe;   //!
+   TBranch        *b_pplus_CaloPrsE;   //!
+   TBranch        *b_pplus_InAccSpd;   //!
+   TBranch        *b_pplus_CaloSpdE;   //!
+   TBranch        *b_pplus_InAccBrem;   //!
+   TBranch        *b_pplus_BremPIDe;   //!
+   TBranch        *b_pplus_VeloCharge;   //!
    TBranch        *b_pplus_TRACK_Type;   //!
    TBranch        *b_pplus_TRACK_Key;   //!
+   TBranch        *b_pplus_TRACK_CHI2;   //!
+   TBranch        *b_pplus_TRACK_NDOF;   //!
    TBranch        *b_pplus_TRACK_CHI2NDOF;   //!
    TBranch        *b_pplus_TRACK_PCHI2;   //!
+   TBranch        *b_pplus_TRACK_VeloCHI2NDOF;   //!
+   TBranch        *b_pplus_TRACK_TCHI2NDOF;   //!
+   TBranch        *b_pplus_VELO_UTID;   //!
+   TBranch        *b_pplus_TRACK_FirstMeasurementX;   //!
+   TBranch        *b_pplus_TRACK_FirstMeasurementY;   //!
+   TBranch        *b_pplus_TRACK_FirstMeasurementZ;   //!
+   TBranch        *b_pplus_TRACK_MatchCHI2;   //!
    TBranch        *b_pplus_TRACK_GhostProb;   //!
    TBranch        *b_pplus_TRACK_CloneDist;   //!
+   TBranch        *b_pplus_TRACK_Likelihood;   //!
+   TBranch        *b_Psi_CosTheta;   //!
    TBranch        *b_Psi_MINIP;   //!
    TBranch        *b_Psi_MINIPCHI2;   //!
    TBranch        *b_Psi_MINIPNEXTBEST;   //!
    TBranch        *b_Psi_MINIPCHI2NEXTBEST;   //!
+   TBranch        *b_Psi_AllIP;   //!
+   TBranch        *b_Psi_AllIPchi2;   //!
    TBranch        *b_Psi_ENDVERTEX_X;   //!
    TBranch        *b_Psi_ENDVERTEX_Y;   //!
    TBranch        *b_Psi_ENDVERTEX_Z;   //!
@@ -1560,7 +1939,6 @@ public :
    TBranch        *b_Psi_TRUEENDVERTEX_Z;   //!
    TBranch        *b_Psi_TRUEISSTABLE;   //!
    TBranch        *b_Psi_TRUETAU;   //!
-   TBranch        *b_Psi_OSCIL;   //!
    TBranch        *b_Psi_ID;   //!
    TBranch        *b_Psi_TAU;   //!
    TBranch        *b_Psi_TAUERR;   //!
@@ -1601,81 +1979,45 @@ public :
    TBranch        *b_PsiHlt1TrackAllL0Decision_Dec;   //!
    TBranch        *b_PsiHlt1TrackAllL0Decision_TIS;   //!
    TBranch        *b_PsiHlt1TrackAllL0Decision_TOS;   //!
+   TBranch        *b_PsiHlt1TrackAllL0TightDecision_Dec;   //!
+   TBranch        *b_PsiHlt1TrackAllL0TightDecision_TIS;   //!
+   TBranch        *b_PsiHlt1TrackAllL0TightDecision_TOS;   //!
    TBranch        *b_PsiHlt1DiMuonHighMassDecision_Dec;   //!
    TBranch        *b_PsiHlt1DiMuonHighMassDecision_TIS;   //!
    TBranch        *b_PsiHlt1DiMuonHighMassDecision_TOS;   //!
    TBranch        *b_PsiHlt1DiMuonLowMassDecision_Dec;   //!
    TBranch        *b_PsiHlt1DiMuonLowMassDecision_TIS;   //!
    TBranch        *b_PsiHlt1DiMuonLowMassDecision_TOS;   //!
-   TBranch        *b_PsiHlt1SingleMuonNoIPDecision_Dec;   //!
-   TBranch        *b_PsiHlt1SingleMuonNoIPDecision_TIS;   //!
-   TBranch        *b_PsiHlt1SingleMuonNoIPDecision_TOS;   //!
    TBranch        *b_PsiHlt1SingleMuonHighPTDecision_Dec;   //!
    TBranch        *b_PsiHlt1SingleMuonHighPTDecision_TIS;   //!
    TBranch        *b_PsiHlt1SingleMuonHighPTDecision_TOS;   //!
+   TBranch        *b_PsiHlt1SingleMuonNoIPDecision_Dec;   //!
+   TBranch        *b_PsiHlt1SingleMuonNoIPDecision_TIS;   //!
+   TBranch        *b_PsiHlt1SingleMuonNoIPDecision_TOS;   //!
    TBranch        *b_PsiHlt1TrackMuonDecision_Dec;   //!
    TBranch        *b_PsiHlt1TrackMuonDecision_TIS;   //!
    TBranch        *b_PsiHlt1TrackMuonDecision_TOS;   //!
-   TBranch        *b_PsiHlt2TransparentDecision_Dec;   //!
-   TBranch        *b_PsiHlt2TransparentDecision_TIS;   //!
-   TBranch        *b_PsiHlt2TransparentDecision_TOS;   //!
-   TBranch        *b_PsiHlt2Topo2BodySimpleDecision_Dec;   //!
-   TBranch        *b_PsiHlt2Topo2BodySimpleDecision_TIS;   //!
-   TBranch        *b_PsiHlt2Topo2BodySimpleDecision_TOS;   //!
-   TBranch        *b_PsiHlt2Topo3BodySimpleDecision_Dec;   //!
-   TBranch        *b_PsiHlt2Topo3BodySimpleDecision_TIS;   //!
-   TBranch        *b_PsiHlt2Topo3BodySimpleDecision_TOS;   //!
-   TBranch        *b_PsiHlt2Topo4BodySimpleDecision_Dec;   //!
-   TBranch        *b_PsiHlt2Topo4BodySimpleDecision_TIS;   //!
-   TBranch        *b_PsiHlt2Topo4BodySimpleDecision_TOS;   //!
    TBranch        *b_PsiHlt2Topo2BodyBBDTDecision_Dec;   //!
    TBranch        *b_PsiHlt2Topo2BodyBBDTDecision_TIS;   //!
    TBranch        *b_PsiHlt2Topo2BodyBBDTDecision_TOS;   //!
+   TBranch        *b_PsiHlt2Topo2BodySimpleDecision_Dec;   //!
+   TBranch        *b_PsiHlt2Topo2BodySimpleDecision_TIS;   //!
+   TBranch        *b_PsiHlt2Topo2BodySimpleDecision_TOS;   //!
    TBranch        *b_PsiHlt2Topo3BodyBBDTDecision_Dec;   //!
    TBranch        *b_PsiHlt2Topo3BodyBBDTDecision_TIS;   //!
    TBranch        *b_PsiHlt2Topo3BodyBBDTDecision_TOS;   //!
+   TBranch        *b_PsiHlt2Topo3BodySimpleDecision_Dec;   //!
+   TBranch        *b_PsiHlt2Topo3BodySimpleDecision_TIS;   //!
+   TBranch        *b_PsiHlt2Topo3BodySimpleDecision_TOS;   //!
    TBranch        *b_PsiHlt2Topo4BodyBBDTDecision_Dec;   //!
    TBranch        *b_PsiHlt2Topo4BodyBBDTDecision_TIS;   //!
    TBranch        *b_PsiHlt2Topo4BodyBBDTDecision_TOS;   //!
-   TBranch        *b_PsiHlt2SingleMuonDecision_Dec;   //!
-   TBranch        *b_PsiHlt2SingleMuonDecision_TIS;   //!
-   TBranch        *b_PsiHlt2SingleMuonDecision_TOS;   //!
-   TBranch        *b_PsiHlt2SingleMuonHighPTDecision_Dec;   //!
-   TBranch        *b_PsiHlt2SingleMuonHighPTDecision_TIS;   //!
-   TBranch        *b_PsiHlt2SingleMuonHighPTDecision_TOS;   //!
-   TBranch        *b_PsiHlt2SingleMuonLowPTDecision_Dec;   //!
-   TBranch        *b_PsiHlt2SingleMuonLowPTDecision_TIS;   //!
-   TBranch        *b_PsiHlt2SingleMuonLowPTDecision_TOS;   //!
-   TBranch        *b_PsiHlt2TopoMu2BodyBBDTDecision_Dec;   //!
-   TBranch        *b_PsiHlt2TopoMu2BodyBBDTDecision_TIS;   //!
-   TBranch        *b_PsiHlt2TopoMu2BodyBBDTDecision_TOS;   //!
-   TBranch        *b_PsiHlt2TopoMu3BodyBBDTDecision_Dec;   //!
-   TBranch        *b_PsiHlt2TopoMu3BodyBBDTDecision_TIS;   //!
-   TBranch        *b_PsiHlt2TopoMu3BodyBBDTDecision_TOS;   //!
-   TBranch        *b_PsiHlt2TopoMu4BodyBBDTDecision_Dec;   //!
-   TBranch        *b_PsiHlt2TopoMu4BodyBBDTDecision_TIS;   //!
-   TBranch        *b_PsiHlt2TopoMu4BodyBBDTDecision_TOS;   //!
-   TBranch        *b_PsiHlt2MuonFromHLT1Decision_Dec;   //!
-   TBranch        *b_PsiHlt2MuonFromHLT1Decision_TIS;   //!
-   TBranch        *b_PsiHlt2MuonFromHLT1Decision_TOS;   //!
+   TBranch        *b_PsiHlt2Topo4BodySimpleDecision_Dec;   //!
+   TBranch        *b_PsiHlt2Topo4BodySimpleDecision_TIS;   //!
+   TBranch        *b_PsiHlt2Topo4BodySimpleDecision_TOS;   //!
    TBranch        *b_PsiHlt2DiMuonDecision_Dec;   //!
    TBranch        *b_PsiHlt2DiMuonDecision_TIS;   //!
    TBranch        *b_PsiHlt2DiMuonDecision_TOS;   //!
-   TBranch        *b_PsiHlt2DiMuonLowMassDecision_Dec;   //!
-   TBranch        *b_PsiHlt2DiMuonLowMassDecision_TIS;   //!
-   TBranch        *b_PsiHlt2DiMuonLowMassDecision_TOS;   //!
-   TBranch        *b_PsiHlt2DiMuonJPsiDecision_Dec;   //!
-   TBranch        *b_PsiHlt2DiMuonJPsiDecision_TIS;   //!
-   TBranch        *b_PsiHlt2DiMuonJPsiDecision_TOS;   //!
-   TBranch        *b_PsiHlt2DiMuonJPsiHighPTDecision_Dec;   //!
-   TBranch        *b_PsiHlt2DiMuonJPsiHighPTDecision_TIS;   //!
-   TBranch        *b_PsiHlt2DiMuonJPsiHighPTDecision_TOS;   //!
-   TBranch        *b_PsiHlt2DiMuonPsi2SDecision_Dec;   //!
-   TBranch        *b_PsiHlt2DiMuonPsi2SDecision_TIS;   //!
-   TBranch        *b_PsiHlt2DiMuonPsi2SDecision_TOS;   //!
-   TBranch        *b_PsiHlt2DiMuonPsi2SHighPTDecision_Dec;   //!
-   TBranch        *b_PsiHlt2DiMuonPsi2SHighPTDecision_TIS;   //!
-   TBranch        *b_PsiHlt2DiMuonPsi2SHighPTDecision_TOS;   //!
    TBranch        *b_PsiHlt2DiMuonBDecision_Dec;   //!
    TBranch        *b_PsiHlt2DiMuonBDecision_TIS;   //!
    TBranch        *b_PsiHlt2DiMuonBDecision_TOS;   //!
@@ -1688,17 +2030,65 @@ public :
    TBranch        *b_PsiHlt2DiMuonDetachedJPsiDecision_Dec;   //!
    TBranch        *b_PsiHlt2DiMuonDetachedJPsiDecision_TIS;   //!
    TBranch        *b_PsiHlt2DiMuonDetachedJPsiDecision_TOS;   //!
-   TBranch        *b_PsiHlt2ExpressJPsiDecision_Dec;   //!
-   TBranch        *b_PsiHlt2ExpressJPsiDecision_TIS;   //!
-   TBranch        *b_PsiHlt2ExpressJPsiDecision_TOS;   //!
+   TBranch        *b_PsiHlt2DiMuonDetachedPsi2SDecision_Dec;   //!
+   TBranch        *b_PsiHlt2DiMuonDetachedPsi2SDecision_TIS;   //!
+   TBranch        *b_PsiHlt2DiMuonDetachedPsi2SDecision_TOS;   //!
+   TBranch        *b_PsiHlt2DiMuonJPsiDecision_Dec;   //!
+   TBranch        *b_PsiHlt2DiMuonJPsiDecision_TIS;   //!
+   TBranch        *b_PsiHlt2DiMuonJPsiDecision_TOS;   //!
+   TBranch        *b_PsiHlt2DiMuonJPsiHighPTDecision_Dec;   //!
+   TBranch        *b_PsiHlt2DiMuonJPsiHighPTDecision_TIS;   //!
+   TBranch        *b_PsiHlt2DiMuonJPsiHighPTDecision_TOS;   //!
+   TBranch        *b_PsiHlt2DiMuonLowMassDecision_Dec;   //!
+   TBranch        *b_PsiHlt2DiMuonLowMassDecision_TIS;   //!
+   TBranch        *b_PsiHlt2DiMuonLowMassDecision_TOS;   //!
+   TBranch        *b_PsiHlt2DiMuonPsi2SDecision_Dec;   //!
+   TBranch        *b_PsiHlt2DiMuonPsi2SDecision_TIS;   //!
+   TBranch        *b_PsiHlt2DiMuonPsi2SDecision_TOS;   //!
+   TBranch        *b_PsiHlt2DiMuonPsi2SHighPTDecision_Dec;   //!
+   TBranch        *b_PsiHlt2DiMuonPsi2SHighPTDecision_TIS;   //!
+   TBranch        *b_PsiHlt2DiMuonPsi2SHighPTDecision_TOS;   //!
+   TBranch        *b_PsiHlt2LowMultMuonDecision_Dec;   //!
+   TBranch        *b_PsiHlt2LowMultMuonDecision_TIS;   //!
+   TBranch        *b_PsiHlt2LowMultMuonDecision_TOS;   //!
+   TBranch        *b_PsiHlt2MuonFromHLT1Decision_Dec;   //!
+   TBranch        *b_PsiHlt2MuonFromHLT1Decision_TIS;   //!
+   TBranch        *b_PsiHlt2MuonFromHLT1Decision_TOS;   //!
+   TBranch        *b_PsiHlt2SingleMuonDecision_Dec;   //!
+   TBranch        *b_PsiHlt2SingleMuonDecision_TIS;   //!
+   TBranch        *b_PsiHlt2SingleMuonDecision_TOS;   //!
+   TBranch        *b_PsiHlt2SingleMuonHighPTDecision_Dec;   //!
+   TBranch        *b_PsiHlt2SingleMuonHighPTDecision_TIS;   //!
+   TBranch        *b_PsiHlt2SingleMuonHighPTDecision_TOS;   //!
+   TBranch        *b_PsiHlt2SingleMuonLowPTDecision_Dec;   //!
+   TBranch        *b_PsiHlt2SingleMuonLowPTDecision_TIS;   //!
+   TBranch        *b_PsiHlt2SingleMuonLowPTDecision_TOS;   //!
+   TBranch        *b_PsiHlt2SingleMuonVHighPTDecision_Dec;   //!
+   TBranch        *b_PsiHlt2SingleMuonVHighPTDecision_TIS;   //!
+   TBranch        *b_PsiHlt2SingleMuonVHighPTDecision_TOS;   //!
+   TBranch        *b_PsiHlt2TopoMu2BodyBBDTDecision_Dec;   //!
+   TBranch        *b_PsiHlt2TopoMu2BodyBBDTDecision_TIS;   //!
+   TBranch        *b_PsiHlt2TopoMu2BodyBBDTDecision_TOS;   //!
+   TBranch        *b_PsiHlt2TopoMu3BodyBBDTDecision_Dec;   //!
+   TBranch        *b_PsiHlt2TopoMu3BodyBBDTDecision_TIS;   //!
+   TBranch        *b_PsiHlt2TopoMu3BodyBBDTDecision_TOS;   //!
+   TBranch        *b_PsiHlt2TopoMu4BodyBBDTDecision_Dec;   //!
+   TBranch        *b_PsiHlt2TopoMu4BodyBBDTDecision_TIS;   //!
+   TBranch        *b_PsiHlt2TopoMu4BodyBBDTDecision_TOS;   //!
+   TBranch        *b_PsiHlt2diPhotonDiMuonDecision_Dec;   //!
+   TBranch        *b_PsiHlt2diPhotonDiMuonDecision_TIS;   //!
+   TBranch        *b_PsiHlt2diPhotonDiMuonDecision_TOS;   //!
    TBranch        *b_Psi_NOPARTWITHINDCHI2WDW;   //!
    TBranch        *b_Psi_NOPARTWITHINCHI2WDW;   //!
    TBranch        *b_Psi_SMALLESTCHI2;   //!
    TBranch        *b_Psi_SMALLESTDELTACHI2;   //!
+   TBranch        *b_muminus_CosTheta;   //!
    TBranch        *b_muminus_MINIP;   //!
    TBranch        *b_muminus_MINIPCHI2;   //!
    TBranch        *b_muminus_MINIPNEXTBEST;   //!
    TBranch        *b_muminus_MINIPCHI2NEXTBEST;   //!
+   TBranch        *b_muminus_AllIP;   //!
+   TBranch        *b_muminus_AllIPchi2;   //!
    TBranch        *b_muminus_OWNPV_X;   //!
    TBranch        *b_muminus_OWNPV_Y;   //!
    TBranch        *b_muminus_OWNPV_Z;   //!
@@ -1766,7 +2156,6 @@ public :
    TBranch        *b_muminus_TRUEENDVERTEX_Z;   //!
    TBranch        *b_muminus_TRUEISSTABLE;   //!
    TBranch        *b_muminus_TRUETAU;   //!
-   TBranch        *b_muminus_OSCIL;   //!
    TBranch        *b_muminus_ID;   //!
    TBranch        *b_muminus_PIDe;   //!
    TBranch        *b_muminus_PIDmu;   //!
@@ -1782,16 +2171,64 @@ public :
    TBranch        *b_muminus_isMuon;   //!
    TBranch        *b_muminus_hasRich;   //!
    TBranch        *b_muminus_hasCalo;   //!
+   TBranch        *b_muminus_UsedRichAerogel;   //!
+   TBranch        *b_muminus_UsedRich1Gas;   //!
+   TBranch        *b_muminus_UsedRich2Gas;   //!
+   TBranch        *b_muminus_RichAboveElThres;   //!
+   TBranch        *b_muminus_RichAboveMuThres;   //!
+   TBranch        *b_muminus_RichAbovePiThres;   //!
+   TBranch        *b_muminus_RichAboveKaThres;   //!
+   TBranch        *b_muminus_RichAbovePrThres;   //!
+   TBranch        *b_muminus_RichDLLe;   //!
+   TBranch        *b_muminus_RichDLLmu;   //!
+   TBranch        *b_muminus_RichDLLpi;   //!
+   TBranch        *b_muminus_RichDLLk;   //!
+   TBranch        *b_muminus_RichDLLp;   //!
+   TBranch        *b_muminus_RichDLLbt;   //!
+   TBranch        *b_muminus_InAccMuon;   //!
+   TBranch        *b_muminus_isMuonLoose;   //!
+   TBranch        *b_muminus_MuonMuLL;   //!
+   TBranch        *b_muminus_MuonBkgLL;   //!
+   TBranch        *b_muminus_MuonNShared;   //!
+   TBranch        *b_muminus_InAccEcal;   //!
+   TBranch        *b_muminus_CaloEcalE;   //!
+   TBranch        *b_muminus_EcalPIDe;   //!
+   TBranch        *b_muminus_EcalPIDmu;   //!
+   TBranch        *b_muminus_InAccHcal;   //!
+   TBranch        *b_muminus_CaloHcalE;   //!
+   TBranch        *b_muminus_HcalPIDe;   //!
+   TBranch        *b_muminus_HcalPIDmu;   //!
+   TBranch        *b_muminus_InAccPrs;   //!
+   TBranch        *b_muminus_PrsPIDe;   //!
+   TBranch        *b_muminus_CaloPrsE;   //!
+   TBranch        *b_muminus_InAccSpd;   //!
+   TBranch        *b_muminus_CaloSpdE;   //!
+   TBranch        *b_muminus_InAccBrem;   //!
+   TBranch        *b_muminus_BremPIDe;   //!
+   TBranch        *b_muminus_VeloCharge;   //!
    TBranch        *b_muminus_TRACK_Type;   //!
    TBranch        *b_muminus_TRACK_Key;   //!
+   TBranch        *b_muminus_TRACK_CHI2;   //!
+   TBranch        *b_muminus_TRACK_NDOF;   //!
    TBranch        *b_muminus_TRACK_CHI2NDOF;   //!
    TBranch        *b_muminus_TRACK_PCHI2;   //!
+   TBranch        *b_muminus_TRACK_VeloCHI2NDOF;   //!
+   TBranch        *b_muminus_TRACK_TCHI2NDOF;   //!
+   TBranch        *b_muminus_VELO_UTID;   //!
+   TBranch        *b_muminus_TRACK_FirstMeasurementX;   //!
+   TBranch        *b_muminus_TRACK_FirstMeasurementY;   //!
+   TBranch        *b_muminus_TRACK_FirstMeasurementZ;   //!
+   TBranch        *b_muminus_TRACK_MatchCHI2;   //!
    TBranch        *b_muminus_TRACK_GhostProb;   //!
    TBranch        *b_muminus_TRACK_CloneDist;   //!
+   TBranch        *b_muminus_TRACK_Likelihood;   //!
+   TBranch        *b_muplus_CosTheta;   //!
    TBranch        *b_muplus_MINIP;   //!
    TBranch        *b_muplus_MINIPCHI2;   //!
    TBranch        *b_muplus_MINIPNEXTBEST;   //!
    TBranch        *b_muplus_MINIPCHI2NEXTBEST;   //!
+   TBranch        *b_muplus_AllIP;   //!
+   TBranch        *b_muplus_AllIPchi2;   //!
    TBranch        *b_muplus_OWNPV_X;   //!
    TBranch        *b_muplus_OWNPV_Y;   //!
    TBranch        *b_muplus_OWNPV_Z;   //!
@@ -1859,7 +2296,6 @@ public :
    TBranch        *b_muplus_TRUEENDVERTEX_Z;   //!
    TBranch        *b_muplus_TRUEISSTABLE;   //!
    TBranch        *b_muplus_TRUETAU;   //!
-   TBranch        *b_muplus_OSCIL;   //!
    TBranch        *b_muplus_ID;   //!
    TBranch        *b_muplus_PIDe;   //!
    TBranch        *b_muplus_PIDmu;   //!
@@ -1875,12 +2311,57 @@ public :
    TBranch        *b_muplus_isMuon;   //!
    TBranch        *b_muplus_hasRich;   //!
    TBranch        *b_muplus_hasCalo;   //!
+   TBranch        *b_muplus_UsedRichAerogel;   //!
+   TBranch        *b_muplus_UsedRich1Gas;   //!
+   TBranch        *b_muplus_UsedRich2Gas;   //!
+   TBranch        *b_muplus_RichAboveElThres;   //!
+   TBranch        *b_muplus_RichAboveMuThres;   //!
+   TBranch        *b_muplus_RichAbovePiThres;   //!
+   TBranch        *b_muplus_RichAboveKaThres;   //!
+   TBranch        *b_muplus_RichAbovePrThres;   //!
+   TBranch        *b_muplus_RichDLLe;   //!
+   TBranch        *b_muplus_RichDLLmu;   //!
+   TBranch        *b_muplus_RichDLLpi;   //!
+   TBranch        *b_muplus_RichDLLk;   //!
+   TBranch        *b_muplus_RichDLLp;   //!
+   TBranch        *b_muplus_RichDLLbt;   //!
+   TBranch        *b_muplus_InAccMuon;   //!
+   TBranch        *b_muplus_isMuonLoose;   //!
+   TBranch        *b_muplus_MuonMuLL;   //!
+   TBranch        *b_muplus_MuonBkgLL;   //!
+   TBranch        *b_muplus_MuonNShared;   //!
+   TBranch        *b_muplus_InAccEcal;   //!
+   TBranch        *b_muplus_CaloEcalE;   //!
+   TBranch        *b_muplus_EcalPIDe;   //!
+   TBranch        *b_muplus_EcalPIDmu;   //!
+   TBranch        *b_muplus_InAccHcal;   //!
+   TBranch        *b_muplus_CaloHcalE;   //!
+   TBranch        *b_muplus_HcalPIDe;   //!
+   TBranch        *b_muplus_HcalPIDmu;   //!
+   TBranch        *b_muplus_InAccPrs;   //!
+   TBranch        *b_muplus_PrsPIDe;   //!
+   TBranch        *b_muplus_CaloPrsE;   //!
+   TBranch        *b_muplus_InAccSpd;   //!
+   TBranch        *b_muplus_CaloSpdE;   //!
+   TBranch        *b_muplus_InAccBrem;   //!
+   TBranch        *b_muplus_BremPIDe;   //!
+   TBranch        *b_muplus_VeloCharge;   //!
    TBranch        *b_muplus_TRACK_Type;   //!
    TBranch        *b_muplus_TRACK_Key;   //!
+   TBranch        *b_muplus_TRACK_CHI2;   //!
+   TBranch        *b_muplus_TRACK_NDOF;   //!
    TBranch        *b_muplus_TRACK_CHI2NDOF;   //!
    TBranch        *b_muplus_TRACK_PCHI2;   //!
+   TBranch        *b_muplus_TRACK_VeloCHI2NDOF;   //!
+   TBranch        *b_muplus_TRACK_TCHI2NDOF;   //!
+   TBranch        *b_muplus_VELO_UTID;   //!
+   TBranch        *b_muplus_TRACK_FirstMeasurementX;   //!
+   TBranch        *b_muplus_TRACK_FirstMeasurementY;   //!
+   TBranch        *b_muplus_TRACK_FirstMeasurementZ;   //!
+   TBranch        *b_muplus_TRACK_MatchCHI2;   //!
    TBranch        *b_muplus_TRACK_GhostProb;   //!
    TBranch        *b_muplus_TRACK_CloneDist;   //!
+   TBranch        *b_muplus_TRACK_Likelihood;   //!
    TBranch        *b_nCandidate;   //!
    TBranch        *b_totCandidates;   //!
    TBranch        *b_EventInSequence;   //!
@@ -1899,9 +2380,7 @@ public :
    TBranch        *b_GpsMinute;   //!
    TBranch        *b_GpsSecond;   //!
    TBranch        *b_TriggerType;   //!
-   TBranch        *b_Primaries;   //!
    TBranch        *b_Polarity;   //!
-   TBranch        *b_nPV;   //!
    TBranch        *b_PVX;   //!
    TBranch        *b_PVY;   //!
    TBranch        *b_PVZ;   //!
@@ -1932,8 +2411,10 @@ public :
    TBranch        *b_nMuonCoordsS3;   //!
    TBranch        *b_nMuonCoordsS4;   //!
    TBranch        *b_nMuonTracks;   //!
+   TBranch        *b_netOutput;   //!
+   TBranch        *b_category;   //!
 
-   Lambdab(TString filename);
+   Lambdab(TString filename, TString friendname="", TString type="ppi");
    virtual ~Lambdab();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
@@ -1942,19 +2423,45 @@ public :
    virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
-   virtual Float_t Manage_B_FullFit_chi2_B(Int_t j);
+   bool m_isMC;
+   #include "Tuples.icpp"
 };
 
 #endif
 
 #ifdef Lambdab_cxx
-Lambdab::Lambdab(TString filename) : fChain(0) 
+Lambdab::Lambdab(TString filename, TString friendname, TString type) : fChain(0) 
 {
+  firstFill = true ;
+  fillNames(nvar);
   TFile *f = TFile::Open(filename);
-  bool isMC = filename.Contains("MC");
-  TTree* tree = (TTree*)(isMC?f->Get("Lambdab2Jpsippi_TupleMC/DecayTree"):f->Get("BetaSLambdab2JpsippiDetachedLine_Tuple/DecayTree"));
-  std::cout << tree << std::endl ;	
+  m_isMC = filename.Contains("MC");
+  TTree* tree = 0;
+  if ("ppi"==type){
+    std::cout << "Getting ppi line" << std::endl ;
+    tree = (TTree*)(m_isMC?f->Get("BetaSLambdab2JpsippiDetachedLine_TupleMC/DecayTree"):
+		    f->Get("BetaSLambdab2JpsippiDetachedLine_Tuple/DecayTree"));
+    if (0==tree) tree = (TTree*)f->Get("Lambdab2Jpsippi_TupleMC/DecayTree");
+    fFriend = 0 ;
+  } else if ("Lambda"==type){
+    std::cout << "Getting Lambda line" << std::endl ;
+    tree = (TTree*)(m_isMC?f->Get("BetaSLambdab2JpsiLambdaUnbiasedLine_TupleMC/DecayTree"):
+		    f->Get("RefinedLambdas_Tuple/DecayTree")); 
+  }
+  if ( ""!=friendname){
+    unsigned int lastslash = filename.Last('/');
+    TString plotfilename = filename(lastslash+1,filename.Length()-lastslash-1);
+    plotfilename = plotfilename.ReplaceAll(".root",TString("-"+friendname+".root")) ;
+    std::cout << plotfilename << std::endl ;
+    TFile *f2 = TFile::Open(plotfilename);
+    if (friendname == "NN" ) fFriend = (TTree*)f2->Get("NetTree"); // get some sweights later
+  }
+  if (fFriend) TFriendElement* t = tree->AddFriend(fFriend);
   Init(tree);
+  if (fFriend){
+    tree->SetBranchAddress("netOutput", &netOutput, &b_netOutput);
+    tree->SetBranchAddress("category", &category, &b_category);
+  }
 }
 
 Lambdab::~Lambdab()
@@ -1997,11 +2504,13 @@ void Lambdab::Init(TTree *tree)
    fChain = tree;
    fCurrent = -1;
    fChain->SetMakeClass(1);
-
    fChain->SetBranchAddress("B_MINIP", &B_MINIP, &b_B_MINIP);
    fChain->SetBranchAddress("B_MINIPCHI2", &B_MINIPCHI2, &b_B_MINIPCHI2);
    fChain->SetBranchAddress("B_MINIPNEXTBEST", &B_MINIPNEXTBEST, &b_B_MINIPNEXTBEST);
    fChain->SetBranchAddress("B_MINIPCHI2NEXTBEST", &B_MINIPCHI2NEXTBEST, &b_B_MINIPCHI2NEXTBEST);
+   fChain->SetBranchAddress("nPV", &nPV, &b_nPV);
+   fChain->SetBranchAddress("B_AllIP", B_AllIP, &b_B_AllIP);
+   fChain->SetBranchAddress("B_AllIPchi2", B_AllIPchi2, &b_B_AllIPchi2);
    fChain->SetBranchAddress("B_ENDVERTEX_X", &B_ENDVERTEX_X, &b_B_ENDVERTEX_X);
    fChain->SetBranchAddress("B_ENDVERTEX_Y", &B_ENDVERTEX_Y, &b_B_ENDVERTEX_Y);
    fChain->SetBranchAddress("B_ENDVERTEX_Z", &B_ENDVERTEX_Z, &b_B_ENDVERTEX_Z);
@@ -2072,11 +2581,58 @@ void Lambdab::Init(TTree *tree)
    fChain->SetBranchAddress("B_TRUEENDVERTEX_Z", &B_TRUEENDVERTEX_Z, &b_B_TRUEENDVERTEX_Z);
    fChain->SetBranchAddress("B_TRUEISSTABLE", &B_TRUEISSTABLE, &b_B_TRUEISSTABLE);
    fChain->SetBranchAddress("B_TRUETAU", &B_TRUETAU, &b_B_TRUETAU);
-   fChain->SetBranchAddress("B_OSCIL", &B_OSCIL, &b_B_OSCIL);
    fChain->SetBranchAddress("B_ID", &B_ID, &b_B_ID);
    fChain->SetBranchAddress("B_TAU", &B_TAU, &b_B_TAU);
    fChain->SetBranchAddress("B_TAUERR", &B_TAUERR, &b_B_TAUERR);
    fChain->SetBranchAddress("B_TAUCHI2", &B_TAUCHI2, &b_B_TAUCHI2);
+   fChain->SetBranchAddress("Dalitz_pplus_J_psi_1S_M2", &Dalitz_pplus_J_psi_1S_M2, &b_Dalitz_pplus_J_psi_1S_M2);
+   fChain->SetBranchAddress("Dalitz_piminus_J_psi_1S_M2", &Dalitz_piminus_J_psi_1S_M2, &b_Dalitz_piminus_J_psi_1S_M2);
+   fChain->SetBranchAddress("Dalitz_piminus_pplus_M2", &Dalitz_piminus_pplus_M2, &b_Dalitz_piminus_pplus_M2);
+   fChain->SetBranchAddress("B_ConstBFit_nPV", &B_ConstBFit_nPV, &b_B_ConstBFit_nPV);
+   fChain->SetBranchAddress("B_ConstBFit_J_psi_1S_M", B_ConstBFit_J_psi_1S_M, &b_B_ConstBFit_J_psi_1S_M);
+   fChain->SetBranchAddress("B_ConstBFit_J_psi_1S_MERR", B_ConstBFit_J_psi_1S_MERR, &b_B_ConstBFit_J_psi_1S_MERR);
+   fChain->SetBranchAddress("B_ConstBFit_J_psi_1S_P", B_ConstBFit_J_psi_1S_P, &b_B_ConstBFit_J_psi_1S_P);
+   fChain->SetBranchAddress("B_ConstBFit_J_psi_1S_P0_ID", B_ConstBFit_J_psi_1S_P0_ID, &b_B_ConstBFit_J_psi_1S_P0_ID);
+   fChain->SetBranchAddress("B_ConstBFit_J_psi_1S_P0_PE", B_ConstBFit_J_psi_1S_P0_PE, &b_B_ConstBFit_J_psi_1S_P0_PE);
+   fChain->SetBranchAddress("B_ConstBFit_J_psi_1S_P0_PX", B_ConstBFit_J_psi_1S_P0_PX, &b_B_ConstBFit_J_psi_1S_P0_PX);
+   fChain->SetBranchAddress("B_ConstBFit_J_psi_1S_P0_PY", B_ConstBFit_J_psi_1S_P0_PY, &b_B_ConstBFit_J_psi_1S_P0_PY);
+   fChain->SetBranchAddress("B_ConstBFit_J_psi_1S_P0_PZ", B_ConstBFit_J_psi_1S_P0_PZ, &b_B_ConstBFit_J_psi_1S_P0_PZ);
+   fChain->SetBranchAddress("B_ConstBFit_J_psi_1S_P1_ID", B_ConstBFit_J_psi_1S_P1_ID, &b_B_ConstBFit_J_psi_1S_P1_ID);
+   fChain->SetBranchAddress("B_ConstBFit_J_psi_1S_P1_PE", B_ConstBFit_J_psi_1S_P1_PE, &b_B_ConstBFit_J_psi_1S_P1_PE);
+   fChain->SetBranchAddress("B_ConstBFit_J_psi_1S_P1_PX", B_ConstBFit_J_psi_1S_P1_PX, &b_B_ConstBFit_J_psi_1S_P1_PX);
+   fChain->SetBranchAddress("B_ConstBFit_J_psi_1S_P1_PY", B_ConstBFit_J_psi_1S_P1_PY, &b_B_ConstBFit_J_psi_1S_P1_PY);
+   fChain->SetBranchAddress("B_ConstBFit_J_psi_1S_P1_PZ", B_ConstBFit_J_psi_1S_P1_PZ, &b_B_ConstBFit_J_psi_1S_P1_PZ);
+   fChain->SetBranchAddress("B_ConstBFit_J_psi_1S_PERR", B_ConstBFit_J_psi_1S_PERR, &b_B_ConstBFit_J_psi_1S_PERR);
+   fChain->SetBranchAddress("B_ConstBFit_J_psi_1S_ctau", B_ConstBFit_J_psi_1S_ctau, &b_B_ConstBFit_J_psi_1S_ctau);
+   fChain->SetBranchAddress("B_ConstBFit_J_psi_1S_ctauErr", B_ConstBFit_J_psi_1S_ctauErr, &b_B_ConstBFit_J_psi_1S_ctauErr);
+   fChain->SetBranchAddress("B_ConstBFit_J_psi_1S_decayLength", B_ConstBFit_J_psi_1S_decayLength, &b_B_ConstBFit_J_psi_1S_decayLength);
+   fChain->SetBranchAddress("B_ConstBFit_J_psi_1S_decayLengthErr", B_ConstBFit_J_psi_1S_decayLengthErr, &b_B_ConstBFit_J_psi_1S_decayLengthErr);
+   fChain->SetBranchAddress("B_ConstBFit_M", B_ConstBFit_M, &b_B_ConstBFit_M);
+   fChain->SetBranchAddress("B_ConstBFit_MERR", B_ConstBFit_MERR, &b_B_ConstBFit_MERR);
+   fChain->SetBranchAddress("B_ConstBFit_P", B_ConstBFit_P, &b_B_ConstBFit_P);
+   fChain->SetBranchAddress("B_ConstBFit_P0_ID", B_ConstBFit_P0_ID, &b_B_ConstBFit_P0_ID);
+   fChain->SetBranchAddress("B_ConstBFit_P0_PE", B_ConstBFit_P0_PE, &b_B_ConstBFit_P0_PE);
+   fChain->SetBranchAddress("B_ConstBFit_P0_PX", B_ConstBFit_P0_PX, &b_B_ConstBFit_P0_PX);
+   fChain->SetBranchAddress("B_ConstBFit_P0_PY", B_ConstBFit_P0_PY, &b_B_ConstBFit_P0_PY);
+   fChain->SetBranchAddress("B_ConstBFit_P0_PZ", B_ConstBFit_P0_PZ, &b_B_ConstBFit_P0_PZ);
+   fChain->SetBranchAddress("B_ConstBFit_P1_ID", B_ConstBFit_P1_ID, &b_B_ConstBFit_P1_ID);
+   fChain->SetBranchAddress("B_ConstBFit_P1_PE", B_ConstBFit_P1_PE, &b_B_ConstBFit_P1_PE);
+   fChain->SetBranchAddress("B_ConstBFit_P1_PX", B_ConstBFit_P1_PX, &b_B_ConstBFit_P1_PX);
+   fChain->SetBranchAddress("B_ConstBFit_P1_PY", B_ConstBFit_P1_PY, &b_B_ConstBFit_P1_PY);
+   fChain->SetBranchAddress("B_ConstBFit_P1_PZ", B_ConstBFit_P1_PZ, &b_B_ConstBFit_P1_PZ);
+   fChain->SetBranchAddress("B_ConstBFit_PERR", B_ConstBFit_PERR, &b_B_ConstBFit_PERR);
+   fChain->SetBranchAddress("B_ConstBFit_PV_X", B_ConstBFit_PV_X, &b_B_ConstBFit_PV_X);
+   fChain->SetBranchAddress("B_ConstBFit_PV_Y", B_ConstBFit_PV_Y, &b_B_ConstBFit_PV_Y);
+   fChain->SetBranchAddress("B_ConstBFit_PV_Z", B_ConstBFit_PV_Z, &b_B_ConstBFit_PV_Z);
+   fChain->SetBranchAddress("B_ConstBFit_PV_key", B_ConstBFit_PV_key, &b_B_ConstBFit_PV_key);
+   fChain->SetBranchAddress("B_ConstBFit_chi2", B_ConstBFit_chi2, &b_B_ConstBFit_chi2);
+   fChain->SetBranchAddress("B_ConstBFit_ctau", B_ConstBFit_ctau, &b_B_ConstBFit_ctau);
+   fChain->SetBranchAddress("B_ConstBFit_ctauErr", B_ConstBFit_ctauErr, &b_B_ConstBFit_ctauErr);
+   fChain->SetBranchAddress("B_ConstBFit_decayLength", B_ConstBFit_decayLength, &b_B_ConstBFit_decayLength);
+   fChain->SetBranchAddress("B_ConstBFit_decayLengthErr", B_ConstBFit_decayLengthErr, &b_B_ConstBFit_decayLengthErr);
+   fChain->SetBranchAddress("B_ConstBFit_nDOF", B_ConstBFit_nDOF, &b_B_ConstBFit_nDOF);
+   fChain->SetBranchAddress("B_ConstBFit_nIter", B_ConstBFit_nIter, &b_B_ConstBFit_nIter);
+   fChain->SetBranchAddress("B_ConstBFit_status", B_ConstBFit_status, &b_B_ConstBFit_status);
    fChain->SetBranchAddress("B_FullFit_nPV", &B_FullFit_nPV, &b_B_FullFit_nPV);
    fChain->SetBranchAddress("B_FullFit_J_psi_1S_M", B_FullFit_J_psi_1S_M, &b_B_FullFit_J_psi_1S_M);
    fChain->SetBranchAddress("B_FullFit_J_psi_1S_MERR", B_FullFit_J_psi_1S_MERR, &b_B_FullFit_J_psi_1S_MERR);
@@ -2094,7 +2650,6 @@ void Lambdab::Init(TTree *tree)
    fChain->SetBranchAddress("B_FullFit_PV_Y", B_FullFit_PV_Y, &b_B_FullFit_PV_Y);
    fChain->SetBranchAddress("B_FullFit_PV_Z", B_FullFit_PV_Z, &b_B_FullFit_PV_Z);
    fChain->SetBranchAddress("B_FullFit_PV_key", B_FullFit_PV_key, &b_B_FullFit_PV_key);
-   fChain->SetBranchAddress("B_FullFit_chi2_B", B_FullFit_chi2_B, &b_B_FullFit_chi2_B);
    fChain->SetBranchAddress("B_FullFit_chi2", B_FullFit_chi2, &b_B_FullFit_chi2);
    fChain->SetBranchAddress("B_FullFit_ctau", B_FullFit_ctau, &b_B_FullFit_ctau);
    fChain->SetBranchAddress("B_FullFit_ctauErr", B_FullFit_ctauErr, &b_B_FullFit_ctauErr);
@@ -2103,23 +2658,6 @@ void Lambdab::Init(TTree *tree)
    fChain->SetBranchAddress("B_FullFit_nDOF", B_FullFit_nDOF, &b_B_FullFit_nDOF);
    fChain->SetBranchAddress("B_FullFit_nIter", B_FullFit_nIter, &b_B_FullFit_nIter);
    fChain->SetBranchAddress("B_FullFit_status", B_FullFit_status, &b_B_FullFit_status);
-   fChain->SetBranchAddress("B_MassFit_nPV", &B_MassFit_nPV, &b_B_MassFit_nPV);
-   fChain->SetBranchAddress("B_MassFit_J_psi_1S_M", B_MassFit_J_psi_1S_M, &b_B_MassFit_J_psi_1S_M);
-   fChain->SetBranchAddress("B_MassFit_J_psi_1S_MERR", B_MassFit_J_psi_1S_MERR, &b_B_MassFit_J_psi_1S_MERR);
-   fChain->SetBranchAddress("B_MassFit_J_psi_1S_P", B_MassFit_J_psi_1S_P, &b_B_MassFit_J_psi_1S_P);
-   fChain->SetBranchAddress("B_MassFit_J_psi_1S_PERR", B_MassFit_J_psi_1S_PERR, &b_B_MassFit_J_psi_1S_PERR);
-   fChain->SetBranchAddress("B_MassFit_J_psi_1S_ctau", B_MassFit_J_psi_1S_ctau, &b_B_MassFit_J_psi_1S_ctau);
-   fChain->SetBranchAddress("B_MassFit_J_psi_1S_ctauErr", B_MassFit_J_psi_1S_ctauErr, &b_B_MassFit_J_psi_1S_ctauErr);
-   fChain->SetBranchAddress("B_MassFit_J_psi_1S_decayLength", B_MassFit_J_psi_1S_decayLength, &b_B_MassFit_J_psi_1S_decayLength);
-   fChain->SetBranchAddress("B_MassFit_J_psi_1S_decayLengthErr", B_MassFit_J_psi_1S_decayLengthErr, &b_B_MassFit_J_psi_1S_decayLengthErr);
-   fChain->SetBranchAddress("B_MassFit_M", B_MassFit_M, &b_B_MassFit_M);
-   fChain->SetBranchAddress("B_MassFit_MERR", B_MassFit_MERR, &b_B_MassFit_MERR);
-   fChain->SetBranchAddress("B_MassFit_P", B_MassFit_P, &b_B_MassFit_P);
-   fChain->SetBranchAddress("B_MassFit_PERR", B_MassFit_PERR, &b_B_MassFit_PERR);
-   fChain->SetBranchAddress("B_MassFit_chi2_B", B_MassFit_chi2_B, &b_B_MassFit_chi2_B);
-   fChain->SetBranchAddress("B_MassFit_nDOF", B_MassFit_nDOF, &b_B_MassFit_nDOF);
-   fChain->SetBranchAddress("B_MassFit_nIter", B_MassFit_nIter, &b_B_MassFit_nIter);
-   fChain->SetBranchAddress("B_MassFit_status", B_MassFit_status, &b_B_MassFit_status);
    fChain->SetBranchAddress("B_SubKpi_nPV", &B_SubKpi_nPV, &b_B_SubKpi_nPV);
    fChain->SetBranchAddress("B_SubKpi_J_psi_1S_M", B_SubKpi_J_psi_1S_M, &b_B_SubKpi_J_psi_1S_M);
    fChain->SetBranchAddress("B_SubKpi_J_psi_1S_MERR", B_SubKpi_J_psi_1S_MERR, &b_B_SubKpi_J_psi_1S_MERR);
@@ -2137,7 +2675,7 @@ void Lambdab::Init(TTree *tree)
    fChain->SetBranchAddress("B_SubKpi_PV_Y", B_SubKpi_PV_Y, &b_B_SubKpi_PV_Y);
    fChain->SetBranchAddress("B_SubKpi_PV_Z", B_SubKpi_PV_Z, &b_B_SubKpi_PV_Z);
    fChain->SetBranchAddress("B_SubKpi_PV_key", B_SubKpi_PV_key, &b_B_SubKpi_PV_key);
-   fChain->SetBranchAddress("B_SubKpi_chi2_B", B_SubKpi_chi2_B, &b_B_SubKpi_chi2_B);
+   fChain->SetBranchAddress("B_SubKpi_chi2", B_SubKpi_chi2, &b_B_SubKpi_chi2);
    fChain->SetBranchAddress("B_SubKpi_ctau", B_SubKpi_ctau, &b_B_SubKpi_ctau);
    fChain->SetBranchAddress("B_SubKpi_ctauErr", B_SubKpi_ctauErr, &b_B_SubKpi_ctauErr);
    fChain->SetBranchAddress("B_SubKpi_decayLength", B_SubKpi_decayLength, &b_B_SubKpi_decayLength);
@@ -2162,7 +2700,7 @@ void Lambdab::Init(TTree *tree)
    fChain->SetBranchAddress("B_SubpK_PV_Y", B_SubpK_PV_Y, &b_B_SubpK_PV_Y);
    fChain->SetBranchAddress("B_SubpK_PV_Z", B_SubpK_PV_Z, &b_B_SubpK_PV_Z);
    fChain->SetBranchAddress("B_SubpK_PV_key", B_SubpK_PV_key, &b_B_SubpK_PV_key);
-   fChain->SetBranchAddress("B_SubpK_chi2_B", B_SubpK_chi2_B, &b_B_SubpK_chi2_B);
+   fChain->SetBranchAddress("B_SubpK_chi2", B_SubpK_chi2, &b_B_SubpK_chi2);
    fChain->SetBranchAddress("B_SubpK_ctau", B_SubpK_ctau, &b_B_SubpK_ctau);
    fChain->SetBranchAddress("B_SubpK_ctauErr", B_SubpK_ctauErr, &b_B_SubpK_ctauErr);
    fChain->SetBranchAddress("B_SubpK_decayLength", B_SubpK_decayLength, &b_B_SubpK_decayLength);
@@ -2206,81 +2744,45 @@ void Lambdab::Init(TTree *tree)
    fChain->SetBranchAddress("BHlt1TrackAllL0Decision_Dec", &BHlt1TrackAllL0Decision_Dec, &b_BHlt1TrackAllL0Decision_Dec);
    fChain->SetBranchAddress("BHlt1TrackAllL0Decision_TIS", &BHlt1TrackAllL0Decision_TIS, &b_BHlt1TrackAllL0Decision_TIS);
    fChain->SetBranchAddress("BHlt1TrackAllL0Decision_TOS", &BHlt1TrackAllL0Decision_TOS, &b_BHlt1TrackAllL0Decision_TOS);
+   fChain->SetBranchAddress("BHlt1TrackAllL0TightDecision_Dec", &BHlt1TrackAllL0TightDecision_Dec, &b_BHlt1TrackAllL0TightDecision_Dec);
+   fChain->SetBranchAddress("BHlt1TrackAllL0TightDecision_TIS", &BHlt1TrackAllL0TightDecision_TIS, &b_BHlt1TrackAllL0TightDecision_TIS);
+   fChain->SetBranchAddress("BHlt1TrackAllL0TightDecision_TOS", &BHlt1TrackAllL0TightDecision_TOS, &b_BHlt1TrackAllL0TightDecision_TOS);
    fChain->SetBranchAddress("BHlt1DiMuonHighMassDecision_Dec", &BHlt1DiMuonHighMassDecision_Dec, &b_BHlt1DiMuonHighMassDecision_Dec);
    fChain->SetBranchAddress("BHlt1DiMuonHighMassDecision_TIS", &BHlt1DiMuonHighMassDecision_TIS, &b_BHlt1DiMuonHighMassDecision_TIS);
    fChain->SetBranchAddress("BHlt1DiMuonHighMassDecision_TOS", &BHlt1DiMuonHighMassDecision_TOS, &b_BHlt1DiMuonHighMassDecision_TOS);
    fChain->SetBranchAddress("BHlt1DiMuonLowMassDecision_Dec", &BHlt1DiMuonLowMassDecision_Dec, &b_BHlt1DiMuonLowMassDecision_Dec);
    fChain->SetBranchAddress("BHlt1DiMuonLowMassDecision_TIS", &BHlt1DiMuonLowMassDecision_TIS, &b_BHlt1DiMuonLowMassDecision_TIS);
    fChain->SetBranchAddress("BHlt1DiMuonLowMassDecision_TOS", &BHlt1DiMuonLowMassDecision_TOS, &b_BHlt1DiMuonLowMassDecision_TOS);
-   fChain->SetBranchAddress("BHlt1SingleMuonNoIPDecision_Dec", &BHlt1SingleMuonNoIPDecision_Dec, &b_BHlt1SingleMuonNoIPDecision_Dec);
-   fChain->SetBranchAddress("BHlt1SingleMuonNoIPDecision_TIS", &BHlt1SingleMuonNoIPDecision_TIS, &b_BHlt1SingleMuonNoIPDecision_TIS);
-   fChain->SetBranchAddress("BHlt1SingleMuonNoIPDecision_TOS", &BHlt1SingleMuonNoIPDecision_TOS, &b_BHlt1SingleMuonNoIPDecision_TOS);
    fChain->SetBranchAddress("BHlt1SingleMuonHighPTDecision_Dec", &BHlt1SingleMuonHighPTDecision_Dec, &b_BHlt1SingleMuonHighPTDecision_Dec);
    fChain->SetBranchAddress("BHlt1SingleMuonHighPTDecision_TIS", &BHlt1SingleMuonHighPTDecision_TIS, &b_BHlt1SingleMuonHighPTDecision_TIS);
    fChain->SetBranchAddress("BHlt1SingleMuonHighPTDecision_TOS", &BHlt1SingleMuonHighPTDecision_TOS, &b_BHlt1SingleMuonHighPTDecision_TOS);
+   fChain->SetBranchAddress("BHlt1SingleMuonNoIPDecision_Dec", &BHlt1SingleMuonNoIPDecision_Dec, &b_BHlt1SingleMuonNoIPDecision_Dec);
+   fChain->SetBranchAddress("BHlt1SingleMuonNoIPDecision_TIS", &BHlt1SingleMuonNoIPDecision_TIS, &b_BHlt1SingleMuonNoIPDecision_TIS);
+   fChain->SetBranchAddress("BHlt1SingleMuonNoIPDecision_TOS", &BHlt1SingleMuonNoIPDecision_TOS, &b_BHlt1SingleMuonNoIPDecision_TOS);
    fChain->SetBranchAddress("BHlt1TrackMuonDecision_Dec", &BHlt1TrackMuonDecision_Dec, &b_BHlt1TrackMuonDecision_Dec);
    fChain->SetBranchAddress("BHlt1TrackMuonDecision_TIS", &BHlt1TrackMuonDecision_TIS, &b_BHlt1TrackMuonDecision_TIS);
    fChain->SetBranchAddress("BHlt1TrackMuonDecision_TOS", &BHlt1TrackMuonDecision_TOS, &b_BHlt1TrackMuonDecision_TOS);
-   fChain->SetBranchAddress("BHlt2TransparentDecision_Dec", &BHlt2TransparentDecision_Dec, &b_BHlt2TransparentDecision_Dec);
-   fChain->SetBranchAddress("BHlt2TransparentDecision_TIS", &BHlt2TransparentDecision_TIS, &b_BHlt2TransparentDecision_TIS);
-   fChain->SetBranchAddress("BHlt2TransparentDecision_TOS", &BHlt2TransparentDecision_TOS, &b_BHlt2TransparentDecision_TOS);
-   fChain->SetBranchAddress("BHlt2Topo2BodySimpleDecision_Dec", &BHlt2Topo2BodySimpleDecision_Dec, &b_BHlt2Topo2BodySimpleDecision_Dec);
-   fChain->SetBranchAddress("BHlt2Topo2BodySimpleDecision_TIS", &BHlt2Topo2BodySimpleDecision_TIS, &b_BHlt2Topo2BodySimpleDecision_TIS);
-   fChain->SetBranchAddress("BHlt2Topo2BodySimpleDecision_TOS", &BHlt2Topo2BodySimpleDecision_TOS, &b_BHlt2Topo2BodySimpleDecision_TOS);
-   fChain->SetBranchAddress("BHlt2Topo3BodySimpleDecision_Dec", &BHlt2Topo3BodySimpleDecision_Dec, &b_BHlt2Topo3BodySimpleDecision_Dec);
-   fChain->SetBranchAddress("BHlt2Topo3BodySimpleDecision_TIS", &BHlt2Topo3BodySimpleDecision_TIS, &b_BHlt2Topo3BodySimpleDecision_TIS);
-   fChain->SetBranchAddress("BHlt2Topo3BodySimpleDecision_TOS", &BHlt2Topo3BodySimpleDecision_TOS, &b_BHlt2Topo3BodySimpleDecision_TOS);
-   fChain->SetBranchAddress("BHlt2Topo4BodySimpleDecision_Dec", &BHlt2Topo4BodySimpleDecision_Dec, &b_BHlt2Topo4BodySimpleDecision_Dec);
-   fChain->SetBranchAddress("BHlt2Topo4BodySimpleDecision_TIS", &BHlt2Topo4BodySimpleDecision_TIS, &b_BHlt2Topo4BodySimpleDecision_TIS);
-   fChain->SetBranchAddress("BHlt2Topo4BodySimpleDecision_TOS", &BHlt2Topo4BodySimpleDecision_TOS, &b_BHlt2Topo4BodySimpleDecision_TOS);
    fChain->SetBranchAddress("BHlt2Topo2BodyBBDTDecision_Dec", &BHlt2Topo2BodyBBDTDecision_Dec, &b_BHlt2Topo2BodyBBDTDecision_Dec);
    fChain->SetBranchAddress("BHlt2Topo2BodyBBDTDecision_TIS", &BHlt2Topo2BodyBBDTDecision_TIS, &b_BHlt2Topo2BodyBBDTDecision_TIS);
    fChain->SetBranchAddress("BHlt2Topo2BodyBBDTDecision_TOS", &BHlt2Topo2BodyBBDTDecision_TOS, &b_BHlt2Topo2BodyBBDTDecision_TOS);
+   fChain->SetBranchAddress("BHlt2Topo2BodySimpleDecision_Dec", &BHlt2Topo2BodySimpleDecision_Dec, &b_BHlt2Topo2BodySimpleDecision_Dec);
+   fChain->SetBranchAddress("BHlt2Topo2BodySimpleDecision_TIS", &BHlt2Topo2BodySimpleDecision_TIS, &b_BHlt2Topo2BodySimpleDecision_TIS);
+   fChain->SetBranchAddress("BHlt2Topo2BodySimpleDecision_TOS", &BHlt2Topo2BodySimpleDecision_TOS, &b_BHlt2Topo2BodySimpleDecision_TOS);
    fChain->SetBranchAddress("BHlt2Topo3BodyBBDTDecision_Dec", &BHlt2Topo3BodyBBDTDecision_Dec, &b_BHlt2Topo3BodyBBDTDecision_Dec);
    fChain->SetBranchAddress("BHlt2Topo3BodyBBDTDecision_TIS", &BHlt2Topo3BodyBBDTDecision_TIS, &b_BHlt2Topo3BodyBBDTDecision_TIS);
    fChain->SetBranchAddress("BHlt2Topo3BodyBBDTDecision_TOS", &BHlt2Topo3BodyBBDTDecision_TOS, &b_BHlt2Topo3BodyBBDTDecision_TOS);
+   fChain->SetBranchAddress("BHlt2Topo3BodySimpleDecision_Dec", &BHlt2Topo3BodySimpleDecision_Dec, &b_BHlt2Topo3BodySimpleDecision_Dec);
+   fChain->SetBranchAddress("BHlt2Topo3BodySimpleDecision_TIS", &BHlt2Topo3BodySimpleDecision_TIS, &b_BHlt2Topo3BodySimpleDecision_TIS);
+   fChain->SetBranchAddress("BHlt2Topo3BodySimpleDecision_TOS", &BHlt2Topo3BodySimpleDecision_TOS, &b_BHlt2Topo3BodySimpleDecision_TOS);
    fChain->SetBranchAddress("BHlt2Topo4BodyBBDTDecision_Dec", &BHlt2Topo4BodyBBDTDecision_Dec, &b_BHlt2Topo4BodyBBDTDecision_Dec);
    fChain->SetBranchAddress("BHlt2Topo4BodyBBDTDecision_TIS", &BHlt2Topo4BodyBBDTDecision_TIS, &b_BHlt2Topo4BodyBBDTDecision_TIS);
    fChain->SetBranchAddress("BHlt2Topo4BodyBBDTDecision_TOS", &BHlt2Topo4BodyBBDTDecision_TOS, &b_BHlt2Topo4BodyBBDTDecision_TOS);
-   fChain->SetBranchAddress("BHlt2SingleMuonDecision_Dec", &BHlt2SingleMuonDecision_Dec, &b_BHlt2SingleMuonDecision_Dec);
-   fChain->SetBranchAddress("BHlt2SingleMuonDecision_TIS", &BHlt2SingleMuonDecision_TIS, &b_BHlt2SingleMuonDecision_TIS);
-   fChain->SetBranchAddress("BHlt2SingleMuonDecision_TOS", &BHlt2SingleMuonDecision_TOS, &b_BHlt2SingleMuonDecision_TOS);
-   fChain->SetBranchAddress("BHlt2SingleMuonHighPTDecision_Dec", &BHlt2SingleMuonHighPTDecision_Dec, &b_BHlt2SingleMuonHighPTDecision_Dec);
-   fChain->SetBranchAddress("BHlt2SingleMuonHighPTDecision_TIS", &BHlt2SingleMuonHighPTDecision_TIS, &b_BHlt2SingleMuonHighPTDecision_TIS);
-   fChain->SetBranchAddress("BHlt2SingleMuonHighPTDecision_TOS", &BHlt2SingleMuonHighPTDecision_TOS, &b_BHlt2SingleMuonHighPTDecision_TOS);
-   fChain->SetBranchAddress("BHlt2SingleMuonLowPTDecision_Dec", &BHlt2SingleMuonLowPTDecision_Dec, &b_BHlt2SingleMuonLowPTDecision_Dec);
-   fChain->SetBranchAddress("BHlt2SingleMuonLowPTDecision_TIS", &BHlt2SingleMuonLowPTDecision_TIS, &b_BHlt2SingleMuonLowPTDecision_TIS);
-   fChain->SetBranchAddress("BHlt2SingleMuonLowPTDecision_TOS", &BHlt2SingleMuonLowPTDecision_TOS, &b_BHlt2SingleMuonLowPTDecision_TOS);
-   fChain->SetBranchAddress("BHlt2TopoMu2BodyBBDTDecision_Dec", &BHlt2TopoMu2BodyBBDTDecision_Dec, &b_BHlt2TopoMu2BodyBBDTDecision_Dec);
-   fChain->SetBranchAddress("BHlt2TopoMu2BodyBBDTDecision_TIS", &BHlt2TopoMu2BodyBBDTDecision_TIS, &b_BHlt2TopoMu2BodyBBDTDecision_TIS);
-   fChain->SetBranchAddress("BHlt2TopoMu2BodyBBDTDecision_TOS", &BHlt2TopoMu2BodyBBDTDecision_TOS, &b_BHlt2TopoMu2BodyBBDTDecision_TOS);
-   fChain->SetBranchAddress("BHlt2TopoMu3BodyBBDTDecision_Dec", &BHlt2TopoMu3BodyBBDTDecision_Dec, &b_BHlt2TopoMu3BodyBBDTDecision_Dec);
-   fChain->SetBranchAddress("BHlt2TopoMu3BodyBBDTDecision_TIS", &BHlt2TopoMu3BodyBBDTDecision_TIS, &b_BHlt2TopoMu3BodyBBDTDecision_TIS);
-   fChain->SetBranchAddress("BHlt2TopoMu3BodyBBDTDecision_TOS", &BHlt2TopoMu3BodyBBDTDecision_TOS, &b_BHlt2TopoMu3BodyBBDTDecision_TOS);
-   fChain->SetBranchAddress("BHlt2TopoMu4BodyBBDTDecision_Dec", &BHlt2TopoMu4BodyBBDTDecision_Dec, &b_BHlt2TopoMu4BodyBBDTDecision_Dec);
-   fChain->SetBranchAddress("BHlt2TopoMu4BodyBBDTDecision_TIS", &BHlt2TopoMu4BodyBBDTDecision_TIS, &b_BHlt2TopoMu4BodyBBDTDecision_TIS);
-   fChain->SetBranchAddress("BHlt2TopoMu4BodyBBDTDecision_TOS", &BHlt2TopoMu4BodyBBDTDecision_TOS, &b_BHlt2TopoMu4BodyBBDTDecision_TOS);
-   fChain->SetBranchAddress("BHlt2MuonFromHLT1Decision_Dec", &BHlt2MuonFromHLT1Decision_Dec, &b_BHlt2MuonFromHLT1Decision_Dec);
-   fChain->SetBranchAddress("BHlt2MuonFromHLT1Decision_TIS", &BHlt2MuonFromHLT1Decision_TIS, &b_BHlt2MuonFromHLT1Decision_TIS);
-   fChain->SetBranchAddress("BHlt2MuonFromHLT1Decision_TOS", &BHlt2MuonFromHLT1Decision_TOS, &b_BHlt2MuonFromHLT1Decision_TOS);
+   fChain->SetBranchAddress("BHlt2Topo4BodySimpleDecision_Dec", &BHlt2Topo4BodySimpleDecision_Dec, &b_BHlt2Topo4BodySimpleDecision_Dec);
+   fChain->SetBranchAddress("BHlt2Topo4BodySimpleDecision_TIS", &BHlt2Topo4BodySimpleDecision_TIS, &b_BHlt2Topo4BodySimpleDecision_TIS);
+   fChain->SetBranchAddress("BHlt2Topo4BodySimpleDecision_TOS", &BHlt2Topo4BodySimpleDecision_TOS, &b_BHlt2Topo4BodySimpleDecision_TOS);
    fChain->SetBranchAddress("BHlt2DiMuonDecision_Dec", &BHlt2DiMuonDecision_Dec, &b_BHlt2DiMuonDecision_Dec);
    fChain->SetBranchAddress("BHlt2DiMuonDecision_TIS", &BHlt2DiMuonDecision_TIS, &b_BHlt2DiMuonDecision_TIS);
    fChain->SetBranchAddress("BHlt2DiMuonDecision_TOS", &BHlt2DiMuonDecision_TOS, &b_BHlt2DiMuonDecision_TOS);
-   fChain->SetBranchAddress("BHlt2DiMuonLowMassDecision_Dec", &BHlt2DiMuonLowMassDecision_Dec, &b_BHlt2DiMuonLowMassDecision_Dec);
-   fChain->SetBranchAddress("BHlt2DiMuonLowMassDecision_TIS", &BHlt2DiMuonLowMassDecision_TIS, &b_BHlt2DiMuonLowMassDecision_TIS);
-   fChain->SetBranchAddress("BHlt2DiMuonLowMassDecision_TOS", &BHlt2DiMuonLowMassDecision_TOS, &b_BHlt2DiMuonLowMassDecision_TOS);
-   fChain->SetBranchAddress("BHlt2DiMuonJPsiDecision_Dec", &BHlt2DiMuonJPsiDecision_Dec, &b_BHlt2DiMuonJPsiDecision_Dec);
-   fChain->SetBranchAddress("BHlt2DiMuonJPsiDecision_TIS", &BHlt2DiMuonJPsiDecision_TIS, &b_BHlt2DiMuonJPsiDecision_TIS);
-   fChain->SetBranchAddress("BHlt2DiMuonJPsiDecision_TOS", &BHlt2DiMuonJPsiDecision_TOS, &b_BHlt2DiMuonJPsiDecision_TOS);
-   fChain->SetBranchAddress("BHlt2DiMuonJPsiHighPTDecision_Dec", &BHlt2DiMuonJPsiHighPTDecision_Dec, &b_BHlt2DiMuonJPsiHighPTDecision_Dec);
-   fChain->SetBranchAddress("BHlt2DiMuonJPsiHighPTDecision_TIS", &BHlt2DiMuonJPsiHighPTDecision_TIS, &b_BHlt2DiMuonJPsiHighPTDecision_TIS);
-   fChain->SetBranchAddress("BHlt2DiMuonJPsiHighPTDecision_TOS", &BHlt2DiMuonJPsiHighPTDecision_TOS, &b_BHlt2DiMuonJPsiHighPTDecision_TOS);
-   fChain->SetBranchAddress("BHlt2DiMuonPsi2SDecision_Dec", &BHlt2DiMuonPsi2SDecision_Dec, &b_BHlt2DiMuonPsi2SDecision_Dec);
-   fChain->SetBranchAddress("BHlt2DiMuonPsi2SDecision_TIS", &BHlt2DiMuonPsi2SDecision_TIS, &b_BHlt2DiMuonPsi2SDecision_TIS);
-   fChain->SetBranchAddress("BHlt2DiMuonPsi2SDecision_TOS", &BHlt2DiMuonPsi2SDecision_TOS, &b_BHlt2DiMuonPsi2SDecision_TOS);
-   fChain->SetBranchAddress("BHlt2DiMuonPsi2SHighPTDecision_Dec", &BHlt2DiMuonPsi2SHighPTDecision_Dec, &b_BHlt2DiMuonPsi2SHighPTDecision_Dec);
-   fChain->SetBranchAddress("BHlt2DiMuonPsi2SHighPTDecision_TIS", &BHlt2DiMuonPsi2SHighPTDecision_TIS, &b_BHlt2DiMuonPsi2SHighPTDecision_TIS);
-   fChain->SetBranchAddress("BHlt2DiMuonPsi2SHighPTDecision_TOS", &BHlt2DiMuonPsi2SHighPTDecision_TOS, &b_BHlt2DiMuonPsi2SHighPTDecision_TOS);
    fChain->SetBranchAddress("BHlt2DiMuonBDecision_Dec", &BHlt2DiMuonBDecision_Dec, &b_BHlt2DiMuonBDecision_Dec);
    fChain->SetBranchAddress("BHlt2DiMuonBDecision_TIS", &BHlt2DiMuonBDecision_TIS, &b_BHlt2DiMuonBDecision_TIS);
    fChain->SetBranchAddress("BHlt2DiMuonBDecision_TOS", &BHlt2DiMuonBDecision_TOS, &b_BHlt2DiMuonBDecision_TOS);
@@ -2293,13 +2795,61 @@ void Lambdab::Init(TTree *tree)
    fChain->SetBranchAddress("BHlt2DiMuonDetachedJPsiDecision_Dec", &BHlt2DiMuonDetachedJPsiDecision_Dec, &b_BHlt2DiMuonDetachedJPsiDecision_Dec);
    fChain->SetBranchAddress("BHlt2DiMuonDetachedJPsiDecision_TIS", &BHlt2DiMuonDetachedJPsiDecision_TIS, &b_BHlt2DiMuonDetachedJPsiDecision_TIS);
    fChain->SetBranchAddress("BHlt2DiMuonDetachedJPsiDecision_TOS", &BHlt2DiMuonDetachedJPsiDecision_TOS, &b_BHlt2DiMuonDetachedJPsiDecision_TOS);
-   fChain->SetBranchAddress("BHlt2ExpressJPsiDecision_Dec", &BHlt2ExpressJPsiDecision_Dec, &b_BHlt2ExpressJPsiDecision_Dec);
-   fChain->SetBranchAddress("BHlt2ExpressJPsiDecision_TIS", &BHlt2ExpressJPsiDecision_TIS, &b_BHlt2ExpressJPsiDecision_TIS);
-   fChain->SetBranchAddress("BHlt2ExpressJPsiDecision_TOS", &BHlt2ExpressJPsiDecision_TOS, &b_BHlt2ExpressJPsiDecision_TOS);
+   fChain->SetBranchAddress("BHlt2DiMuonDetachedPsi2SDecision_Dec", &BHlt2DiMuonDetachedPsi2SDecision_Dec, &b_BHlt2DiMuonDetachedPsi2SDecision_Dec);
+   fChain->SetBranchAddress("BHlt2DiMuonDetachedPsi2SDecision_TIS", &BHlt2DiMuonDetachedPsi2SDecision_TIS, &b_BHlt2DiMuonDetachedPsi2SDecision_TIS);
+   fChain->SetBranchAddress("BHlt2DiMuonDetachedPsi2SDecision_TOS", &BHlt2DiMuonDetachedPsi2SDecision_TOS, &b_BHlt2DiMuonDetachedPsi2SDecision_TOS);
+   fChain->SetBranchAddress("BHlt2DiMuonJPsiDecision_Dec", &BHlt2DiMuonJPsiDecision_Dec, &b_BHlt2DiMuonJPsiDecision_Dec);
+   fChain->SetBranchAddress("BHlt2DiMuonJPsiDecision_TIS", &BHlt2DiMuonJPsiDecision_TIS, &b_BHlt2DiMuonJPsiDecision_TIS);
+   fChain->SetBranchAddress("BHlt2DiMuonJPsiDecision_TOS", &BHlt2DiMuonJPsiDecision_TOS, &b_BHlt2DiMuonJPsiDecision_TOS);
+   fChain->SetBranchAddress("BHlt2DiMuonJPsiHighPTDecision_Dec", &BHlt2DiMuonJPsiHighPTDecision_Dec, &b_BHlt2DiMuonJPsiHighPTDecision_Dec);
+   fChain->SetBranchAddress("BHlt2DiMuonJPsiHighPTDecision_TIS", &BHlt2DiMuonJPsiHighPTDecision_TIS, &b_BHlt2DiMuonJPsiHighPTDecision_TIS);
+   fChain->SetBranchAddress("BHlt2DiMuonJPsiHighPTDecision_TOS", &BHlt2DiMuonJPsiHighPTDecision_TOS, &b_BHlt2DiMuonJPsiHighPTDecision_TOS);
+   fChain->SetBranchAddress("BHlt2DiMuonLowMassDecision_Dec", &BHlt2DiMuonLowMassDecision_Dec, &b_BHlt2DiMuonLowMassDecision_Dec);
+   fChain->SetBranchAddress("BHlt2DiMuonLowMassDecision_TIS", &BHlt2DiMuonLowMassDecision_TIS, &b_BHlt2DiMuonLowMassDecision_TIS);
+   fChain->SetBranchAddress("BHlt2DiMuonLowMassDecision_TOS", &BHlt2DiMuonLowMassDecision_TOS, &b_BHlt2DiMuonLowMassDecision_TOS);
+   fChain->SetBranchAddress("BHlt2DiMuonPsi2SDecision_Dec", &BHlt2DiMuonPsi2SDecision_Dec, &b_BHlt2DiMuonPsi2SDecision_Dec);
+   fChain->SetBranchAddress("BHlt2DiMuonPsi2SDecision_TIS", &BHlt2DiMuonPsi2SDecision_TIS, &b_BHlt2DiMuonPsi2SDecision_TIS);
+   fChain->SetBranchAddress("BHlt2DiMuonPsi2SDecision_TOS", &BHlt2DiMuonPsi2SDecision_TOS, &b_BHlt2DiMuonPsi2SDecision_TOS);
+   fChain->SetBranchAddress("BHlt2DiMuonPsi2SHighPTDecision_Dec", &BHlt2DiMuonPsi2SHighPTDecision_Dec, &b_BHlt2DiMuonPsi2SHighPTDecision_Dec);
+   fChain->SetBranchAddress("BHlt2DiMuonPsi2SHighPTDecision_TIS", &BHlt2DiMuonPsi2SHighPTDecision_TIS, &b_BHlt2DiMuonPsi2SHighPTDecision_TIS);
+   fChain->SetBranchAddress("BHlt2DiMuonPsi2SHighPTDecision_TOS", &BHlt2DiMuonPsi2SHighPTDecision_TOS, &b_BHlt2DiMuonPsi2SHighPTDecision_TOS);
+   fChain->SetBranchAddress("BHlt2LowMultMuonDecision_Dec", &BHlt2LowMultMuonDecision_Dec, &b_BHlt2LowMultMuonDecision_Dec);
+   fChain->SetBranchAddress("BHlt2LowMultMuonDecision_TIS", &BHlt2LowMultMuonDecision_TIS, &b_BHlt2LowMultMuonDecision_TIS);
+   fChain->SetBranchAddress("BHlt2LowMultMuonDecision_TOS", &BHlt2LowMultMuonDecision_TOS, &b_BHlt2LowMultMuonDecision_TOS);
+   fChain->SetBranchAddress("BHlt2MuonFromHLT1Decision_Dec", &BHlt2MuonFromHLT1Decision_Dec, &b_BHlt2MuonFromHLT1Decision_Dec);
+   fChain->SetBranchAddress("BHlt2MuonFromHLT1Decision_TIS", &BHlt2MuonFromHLT1Decision_TIS, &b_BHlt2MuonFromHLT1Decision_TIS);
+   fChain->SetBranchAddress("BHlt2MuonFromHLT1Decision_TOS", &BHlt2MuonFromHLT1Decision_TOS, &b_BHlt2MuonFromHLT1Decision_TOS);
+   fChain->SetBranchAddress("BHlt2SingleMuonDecision_Dec", &BHlt2SingleMuonDecision_Dec, &b_BHlt2SingleMuonDecision_Dec);
+   fChain->SetBranchAddress("BHlt2SingleMuonDecision_TIS", &BHlt2SingleMuonDecision_TIS, &b_BHlt2SingleMuonDecision_TIS);
+   fChain->SetBranchAddress("BHlt2SingleMuonDecision_TOS", &BHlt2SingleMuonDecision_TOS, &b_BHlt2SingleMuonDecision_TOS);
+   fChain->SetBranchAddress("BHlt2SingleMuonHighPTDecision_Dec", &BHlt2SingleMuonHighPTDecision_Dec, &b_BHlt2SingleMuonHighPTDecision_Dec);
+   fChain->SetBranchAddress("BHlt2SingleMuonHighPTDecision_TIS", &BHlt2SingleMuonHighPTDecision_TIS, &b_BHlt2SingleMuonHighPTDecision_TIS);
+   fChain->SetBranchAddress("BHlt2SingleMuonHighPTDecision_TOS", &BHlt2SingleMuonHighPTDecision_TOS, &b_BHlt2SingleMuonHighPTDecision_TOS);
+   fChain->SetBranchAddress("BHlt2SingleMuonLowPTDecision_Dec", &BHlt2SingleMuonLowPTDecision_Dec, &b_BHlt2SingleMuonLowPTDecision_Dec);
+   fChain->SetBranchAddress("BHlt2SingleMuonLowPTDecision_TIS", &BHlt2SingleMuonLowPTDecision_TIS, &b_BHlt2SingleMuonLowPTDecision_TIS);
+   fChain->SetBranchAddress("BHlt2SingleMuonLowPTDecision_TOS", &BHlt2SingleMuonLowPTDecision_TOS, &b_BHlt2SingleMuonLowPTDecision_TOS);
+   fChain->SetBranchAddress("BHlt2SingleMuonVHighPTDecision_Dec", &BHlt2SingleMuonVHighPTDecision_Dec, &b_BHlt2SingleMuonVHighPTDecision_Dec);
+   fChain->SetBranchAddress("BHlt2SingleMuonVHighPTDecision_TIS", &BHlt2SingleMuonVHighPTDecision_TIS, &b_BHlt2SingleMuonVHighPTDecision_TIS);
+   fChain->SetBranchAddress("BHlt2SingleMuonVHighPTDecision_TOS", &BHlt2SingleMuonVHighPTDecision_TOS, &b_BHlt2SingleMuonVHighPTDecision_TOS);
+   fChain->SetBranchAddress("BHlt2TopoMu2BodyBBDTDecision_Dec", &BHlt2TopoMu2BodyBBDTDecision_Dec, &b_BHlt2TopoMu2BodyBBDTDecision_Dec);
+   fChain->SetBranchAddress("BHlt2TopoMu2BodyBBDTDecision_TIS", &BHlt2TopoMu2BodyBBDTDecision_TIS, &b_BHlt2TopoMu2BodyBBDTDecision_TIS);
+   fChain->SetBranchAddress("BHlt2TopoMu2BodyBBDTDecision_TOS", &BHlt2TopoMu2BodyBBDTDecision_TOS, &b_BHlt2TopoMu2BodyBBDTDecision_TOS);
+   fChain->SetBranchAddress("BHlt2TopoMu3BodyBBDTDecision_Dec", &BHlt2TopoMu3BodyBBDTDecision_Dec, &b_BHlt2TopoMu3BodyBBDTDecision_Dec);
+   fChain->SetBranchAddress("BHlt2TopoMu3BodyBBDTDecision_TIS", &BHlt2TopoMu3BodyBBDTDecision_TIS, &b_BHlt2TopoMu3BodyBBDTDecision_TIS);
+   fChain->SetBranchAddress("BHlt2TopoMu3BodyBBDTDecision_TOS", &BHlt2TopoMu3BodyBBDTDecision_TOS, &b_BHlt2TopoMu3BodyBBDTDecision_TOS);
+   fChain->SetBranchAddress("BHlt2TopoMu4BodyBBDTDecision_Dec", &BHlt2TopoMu4BodyBBDTDecision_Dec, &b_BHlt2TopoMu4BodyBBDTDecision_Dec);
+   fChain->SetBranchAddress("BHlt2TopoMu4BodyBBDTDecision_TIS", &BHlt2TopoMu4BodyBBDTDecision_TIS, &b_BHlt2TopoMu4BodyBBDTDecision_TIS);
+   fChain->SetBranchAddress("BHlt2TopoMu4BodyBBDTDecision_TOS", &BHlt2TopoMu4BodyBBDTDecision_TOS, &b_BHlt2TopoMu4BodyBBDTDecision_TOS);
+   fChain->SetBranchAddress("BHlt2diPhotonDiMuonDecision_Dec", &BHlt2diPhotonDiMuonDecision_Dec, &b_BHlt2diPhotonDiMuonDecision_Dec);
+   fChain->SetBranchAddress("BHlt2diPhotonDiMuonDecision_TIS", &BHlt2diPhotonDiMuonDecision_TIS, &b_BHlt2diPhotonDiMuonDecision_TIS);
+   fChain->SetBranchAddress("BHlt2diPhotonDiMuonDecision_TOS", &BHlt2diPhotonDiMuonDecision_TOS, &b_BHlt2diPhotonDiMuonDecision_TOS);
+   fChain->SetBranchAddress("piminus_CosTheta", &piminus_CosTheta, &b_piminus_CosTheta);
    fChain->SetBranchAddress("piminus_MINIP", &piminus_MINIP, &b_piminus_MINIP);
    fChain->SetBranchAddress("piminus_MINIPCHI2", &piminus_MINIPCHI2, &b_piminus_MINIPCHI2);
    fChain->SetBranchAddress("piminus_MINIPNEXTBEST", &piminus_MINIPNEXTBEST, &b_piminus_MINIPNEXTBEST);
    fChain->SetBranchAddress("piminus_MINIPCHI2NEXTBEST", &piminus_MINIPCHI2NEXTBEST, &b_piminus_MINIPCHI2NEXTBEST);
+   fChain->SetBranchAddress("piminus_AllIP", piminus_AllIP, &b_piminus_AllIP);
+   fChain->SetBranchAddress("piminus_AllIPchi2", piminus_AllIPchi2, &b_piminus_AllIPchi2);
    fChain->SetBranchAddress("piminus_OWNPV_X", &piminus_OWNPV_X, &b_piminus_OWNPV_X);
    fChain->SetBranchAddress("piminus_OWNPV_Y", &piminus_OWNPV_Y, &b_piminus_OWNPV_Y);
    fChain->SetBranchAddress("piminus_OWNPV_Z", &piminus_OWNPV_Z, &b_piminus_OWNPV_Z);
@@ -2367,7 +2917,6 @@ void Lambdab::Init(TTree *tree)
    fChain->SetBranchAddress("piminus_TRUEENDVERTEX_Z", &piminus_TRUEENDVERTEX_Z, &b_piminus_TRUEENDVERTEX_Z);
    fChain->SetBranchAddress("piminus_TRUEISSTABLE", &piminus_TRUEISSTABLE, &b_piminus_TRUEISSTABLE);
    fChain->SetBranchAddress("piminus_TRUETAU", &piminus_TRUETAU, &b_piminus_TRUETAU);
-   fChain->SetBranchAddress("piminus_OSCIL", &piminus_OSCIL, &b_piminus_OSCIL);
    fChain->SetBranchAddress("piminus_ID", &piminus_ID, &b_piminus_ID);
    fChain->SetBranchAddress("piminus_PIDe", &piminus_PIDe, &b_piminus_PIDe);
    fChain->SetBranchAddress("piminus_PIDmu", &piminus_PIDmu, &b_piminus_PIDmu);
@@ -2383,16 +2932,64 @@ void Lambdab::Init(TTree *tree)
    fChain->SetBranchAddress("piminus_isMuon", &piminus_isMuon, &b_piminus_isMuon);
    fChain->SetBranchAddress("piminus_hasRich", &piminus_hasRich, &b_piminus_hasRich);
    fChain->SetBranchAddress("piminus_hasCalo", &piminus_hasCalo, &b_piminus_hasCalo);
+   fChain->SetBranchAddress("piminus_UsedRichAerogel", &piminus_UsedRichAerogel, &b_piminus_UsedRichAerogel);
+   fChain->SetBranchAddress("piminus_UsedRich1Gas", &piminus_UsedRich1Gas, &b_piminus_UsedRich1Gas);
+   fChain->SetBranchAddress("piminus_UsedRich2Gas", &piminus_UsedRich2Gas, &b_piminus_UsedRich2Gas);
+   fChain->SetBranchAddress("piminus_RichAboveElThres", &piminus_RichAboveElThres, &b_piminus_RichAboveElThres);
+   fChain->SetBranchAddress("piminus_RichAboveMuThres", &piminus_RichAboveMuThres, &b_piminus_RichAboveMuThres);
+   fChain->SetBranchAddress("piminus_RichAbovePiThres", &piminus_RichAbovePiThres, &b_piminus_RichAbovePiThres);
+   fChain->SetBranchAddress("piminus_RichAboveKaThres", &piminus_RichAboveKaThres, &b_piminus_RichAboveKaThres);
+   fChain->SetBranchAddress("piminus_RichAbovePrThres", &piminus_RichAbovePrThres, &b_piminus_RichAbovePrThres);
+   fChain->SetBranchAddress("piminus_RichDLLe", &piminus_RichDLLe, &b_piminus_RichDLLe);
+   fChain->SetBranchAddress("piminus_RichDLLmu", &piminus_RichDLLmu, &b_piminus_RichDLLmu);
+   fChain->SetBranchAddress("piminus_RichDLLpi", &piminus_RichDLLpi, &b_piminus_RichDLLpi);
+   fChain->SetBranchAddress("piminus_RichDLLk", &piminus_RichDLLk, &b_piminus_RichDLLk);
+   fChain->SetBranchAddress("piminus_RichDLLp", &piminus_RichDLLp, &b_piminus_RichDLLp);
+   fChain->SetBranchAddress("piminus_RichDLLbt", &piminus_RichDLLbt, &b_piminus_RichDLLbt);
+   fChain->SetBranchAddress("piminus_InAccMuon", &piminus_InAccMuon, &b_piminus_InAccMuon);
+   fChain->SetBranchAddress("piminus_isMuonLoose", &piminus_isMuonLoose, &b_piminus_isMuonLoose);
+   fChain->SetBranchAddress("piminus_MuonMuLL", &piminus_MuonMuLL, &b_piminus_MuonMuLL);
+   fChain->SetBranchAddress("piminus_MuonBkgLL", &piminus_MuonBkgLL, &b_piminus_MuonBkgLL);
+   fChain->SetBranchAddress("piminus_MuonNShared", &piminus_MuonNShared, &b_piminus_MuonNShared);
+   fChain->SetBranchAddress("piminus_InAccEcal", &piminus_InAccEcal, &b_piminus_InAccEcal);
+   fChain->SetBranchAddress("piminus_CaloEcalE", &piminus_CaloEcalE, &b_piminus_CaloEcalE);
+   fChain->SetBranchAddress("piminus_EcalPIDe", &piminus_EcalPIDe, &b_piminus_EcalPIDe);
+   fChain->SetBranchAddress("piminus_EcalPIDmu", &piminus_EcalPIDmu, &b_piminus_EcalPIDmu);
+   fChain->SetBranchAddress("piminus_InAccHcal", &piminus_InAccHcal, &b_piminus_InAccHcal);
+   fChain->SetBranchAddress("piminus_CaloHcalE", &piminus_CaloHcalE, &b_piminus_CaloHcalE);
+   fChain->SetBranchAddress("piminus_HcalPIDe", &piminus_HcalPIDe, &b_piminus_HcalPIDe);
+   fChain->SetBranchAddress("piminus_HcalPIDmu", &piminus_HcalPIDmu, &b_piminus_HcalPIDmu);
+   fChain->SetBranchAddress("piminus_InAccPrs", &piminus_InAccPrs, &b_piminus_InAccPrs);
+   fChain->SetBranchAddress("piminus_PrsPIDe", &piminus_PrsPIDe, &b_piminus_PrsPIDe);
+   fChain->SetBranchAddress("piminus_CaloPrsE", &piminus_CaloPrsE, &b_piminus_CaloPrsE);
+   fChain->SetBranchAddress("piminus_InAccSpd", &piminus_InAccSpd, &b_piminus_InAccSpd);
+   fChain->SetBranchAddress("piminus_CaloSpdE", &piminus_CaloSpdE, &b_piminus_CaloSpdE);
+   fChain->SetBranchAddress("piminus_InAccBrem", &piminus_InAccBrem, &b_piminus_InAccBrem);
+   fChain->SetBranchAddress("piminus_BremPIDe", &piminus_BremPIDe, &b_piminus_BremPIDe);
+   fChain->SetBranchAddress("piminus_VeloCharge", &piminus_VeloCharge, &b_piminus_VeloCharge);
    fChain->SetBranchAddress("piminus_TRACK_Type", &piminus_TRACK_Type, &b_piminus_TRACK_Type);
    fChain->SetBranchAddress("piminus_TRACK_Key", &piminus_TRACK_Key, &b_piminus_TRACK_Key);
+   fChain->SetBranchAddress("piminus_TRACK_CHI2", &piminus_TRACK_CHI2, &b_piminus_TRACK_CHI2);
+   fChain->SetBranchAddress("piminus_TRACK_NDOF", &piminus_TRACK_NDOF, &b_piminus_TRACK_NDOF);
    fChain->SetBranchAddress("piminus_TRACK_CHI2NDOF", &piminus_TRACK_CHI2NDOF, &b_piminus_TRACK_CHI2NDOF);
    fChain->SetBranchAddress("piminus_TRACK_PCHI2", &piminus_TRACK_PCHI2, &b_piminus_TRACK_PCHI2);
+   fChain->SetBranchAddress("piminus_TRACK_VeloCHI2NDOF", &piminus_TRACK_VeloCHI2NDOF, &b_piminus_TRACK_VeloCHI2NDOF);
+   fChain->SetBranchAddress("piminus_TRACK_TCHI2NDOF", &piminus_TRACK_TCHI2NDOF, &b_piminus_TRACK_TCHI2NDOF);
+   fChain->SetBranchAddress("piminus_VELO_UTID", &piminus_VELO_UTID, &b_piminus_VELO_UTID);
+   fChain->SetBranchAddress("piminus_TRACK_FirstMeasurementX", &piminus_TRACK_FirstMeasurementX, &b_piminus_TRACK_FirstMeasurementX);
+   fChain->SetBranchAddress("piminus_TRACK_FirstMeasurementY", &piminus_TRACK_FirstMeasurementY, &b_piminus_TRACK_FirstMeasurementY);
+   fChain->SetBranchAddress("piminus_TRACK_FirstMeasurementZ", &piminus_TRACK_FirstMeasurementZ, &b_piminus_TRACK_FirstMeasurementZ);
+   fChain->SetBranchAddress("piminus_TRACK_MatchCHI2", &piminus_TRACK_MatchCHI2, &b_piminus_TRACK_MatchCHI2);
    fChain->SetBranchAddress("piminus_TRACK_GhostProb", &piminus_TRACK_GhostProb, &b_piminus_TRACK_GhostProb);
    fChain->SetBranchAddress("piminus_TRACK_CloneDist", &piminus_TRACK_CloneDist, &b_piminus_TRACK_CloneDist);
+   fChain->SetBranchAddress("piminus_TRACK_Likelihood", &piminus_TRACK_Likelihood, &b_piminus_TRACK_Likelihood);
+   fChain->SetBranchAddress("pplus_CosTheta", &pplus_CosTheta, &b_pplus_CosTheta);
    fChain->SetBranchAddress("pplus_MINIP", &pplus_MINIP, &b_pplus_MINIP);
    fChain->SetBranchAddress("pplus_MINIPCHI2", &pplus_MINIPCHI2, &b_pplus_MINIPCHI2);
    fChain->SetBranchAddress("pplus_MINIPNEXTBEST", &pplus_MINIPNEXTBEST, &b_pplus_MINIPNEXTBEST);
    fChain->SetBranchAddress("pplus_MINIPCHI2NEXTBEST", &pplus_MINIPCHI2NEXTBEST, &b_pplus_MINIPCHI2NEXTBEST);
+   fChain->SetBranchAddress("pplus_AllIP", pplus_AllIP, &b_pplus_AllIP);
+   fChain->SetBranchAddress("pplus_AllIPchi2", pplus_AllIPchi2, &b_pplus_AllIPchi2);
    fChain->SetBranchAddress("pplus_OWNPV_X", &pplus_OWNPV_X, &b_pplus_OWNPV_X);
    fChain->SetBranchAddress("pplus_OWNPV_Y", &pplus_OWNPV_Y, &b_pplus_OWNPV_Y);
    fChain->SetBranchAddress("pplus_OWNPV_Z", &pplus_OWNPV_Z, &b_pplus_OWNPV_Z);
@@ -2460,7 +3057,6 @@ void Lambdab::Init(TTree *tree)
    fChain->SetBranchAddress("pplus_TRUEENDVERTEX_Z", &pplus_TRUEENDVERTEX_Z, &b_pplus_TRUEENDVERTEX_Z);
    fChain->SetBranchAddress("pplus_TRUEISSTABLE", &pplus_TRUEISSTABLE, &b_pplus_TRUEISSTABLE);
    fChain->SetBranchAddress("pplus_TRUETAU", &pplus_TRUETAU, &b_pplus_TRUETAU);
-   fChain->SetBranchAddress("pplus_OSCIL", &pplus_OSCIL, &b_pplus_OSCIL);
    fChain->SetBranchAddress("pplus_ID", &pplus_ID, &b_pplus_ID);
    fChain->SetBranchAddress("pplus_PIDe", &pplus_PIDe, &b_pplus_PIDe);
    fChain->SetBranchAddress("pplus_PIDmu", &pplus_PIDmu, &b_pplus_PIDmu);
@@ -2476,16 +3072,64 @@ void Lambdab::Init(TTree *tree)
    fChain->SetBranchAddress("pplus_isMuon", &pplus_isMuon, &b_pplus_isMuon);
    fChain->SetBranchAddress("pplus_hasRich", &pplus_hasRich, &b_pplus_hasRich);
    fChain->SetBranchAddress("pplus_hasCalo", &pplus_hasCalo, &b_pplus_hasCalo);
+   fChain->SetBranchAddress("pplus_UsedRichAerogel", &pplus_UsedRichAerogel, &b_pplus_UsedRichAerogel);
+   fChain->SetBranchAddress("pplus_UsedRich1Gas", &pplus_UsedRich1Gas, &b_pplus_UsedRich1Gas);
+   fChain->SetBranchAddress("pplus_UsedRich2Gas", &pplus_UsedRich2Gas, &b_pplus_UsedRich2Gas);
+   fChain->SetBranchAddress("pplus_RichAboveElThres", &pplus_RichAboveElThres, &b_pplus_RichAboveElThres);
+   fChain->SetBranchAddress("pplus_RichAboveMuThres", &pplus_RichAboveMuThres, &b_pplus_RichAboveMuThres);
+   fChain->SetBranchAddress("pplus_RichAbovePiThres", &pplus_RichAbovePiThres, &b_pplus_RichAbovePiThres);
+   fChain->SetBranchAddress("pplus_RichAboveKaThres", &pplus_RichAboveKaThres, &b_pplus_RichAboveKaThres);
+   fChain->SetBranchAddress("pplus_RichAbovePrThres", &pplus_RichAbovePrThres, &b_pplus_RichAbovePrThres);
+   fChain->SetBranchAddress("pplus_RichDLLe", &pplus_RichDLLe, &b_pplus_RichDLLe);
+   fChain->SetBranchAddress("pplus_RichDLLmu", &pplus_RichDLLmu, &b_pplus_RichDLLmu);
+   fChain->SetBranchAddress("pplus_RichDLLpi", &pplus_RichDLLpi, &b_pplus_RichDLLpi);
+   fChain->SetBranchAddress("pplus_RichDLLk", &pplus_RichDLLk, &b_pplus_RichDLLk);
+   fChain->SetBranchAddress("pplus_RichDLLp", &pplus_RichDLLp, &b_pplus_RichDLLp);
+   fChain->SetBranchAddress("pplus_RichDLLbt", &pplus_RichDLLbt, &b_pplus_RichDLLbt);
+   fChain->SetBranchAddress("pplus_InAccMuon", &pplus_InAccMuon, &b_pplus_InAccMuon);
+   fChain->SetBranchAddress("pplus_isMuonLoose", &pplus_isMuonLoose, &b_pplus_isMuonLoose);
+   fChain->SetBranchAddress("pplus_MuonMuLL", &pplus_MuonMuLL, &b_pplus_MuonMuLL);
+   fChain->SetBranchAddress("pplus_MuonBkgLL", &pplus_MuonBkgLL, &b_pplus_MuonBkgLL);
+   fChain->SetBranchAddress("pplus_MuonNShared", &pplus_MuonNShared, &b_pplus_MuonNShared);
+   fChain->SetBranchAddress("pplus_InAccEcal", &pplus_InAccEcal, &b_pplus_InAccEcal);
+   fChain->SetBranchAddress("pplus_CaloEcalE", &pplus_CaloEcalE, &b_pplus_CaloEcalE);
+   fChain->SetBranchAddress("pplus_EcalPIDe", &pplus_EcalPIDe, &b_pplus_EcalPIDe);
+   fChain->SetBranchAddress("pplus_EcalPIDmu", &pplus_EcalPIDmu, &b_pplus_EcalPIDmu);
+   fChain->SetBranchAddress("pplus_InAccHcal", &pplus_InAccHcal, &b_pplus_InAccHcal);
+   fChain->SetBranchAddress("pplus_CaloHcalE", &pplus_CaloHcalE, &b_pplus_CaloHcalE);
+   fChain->SetBranchAddress("pplus_HcalPIDe", &pplus_HcalPIDe, &b_pplus_HcalPIDe);
+   fChain->SetBranchAddress("pplus_HcalPIDmu", &pplus_HcalPIDmu, &b_pplus_HcalPIDmu);
+   fChain->SetBranchAddress("pplus_InAccPrs", &pplus_InAccPrs, &b_pplus_InAccPrs);
+   fChain->SetBranchAddress("pplus_PrsPIDe", &pplus_PrsPIDe, &b_pplus_PrsPIDe);
+   fChain->SetBranchAddress("pplus_CaloPrsE", &pplus_CaloPrsE, &b_pplus_CaloPrsE);
+   fChain->SetBranchAddress("pplus_InAccSpd", &pplus_InAccSpd, &b_pplus_InAccSpd);
+   fChain->SetBranchAddress("pplus_CaloSpdE", &pplus_CaloSpdE, &b_pplus_CaloSpdE);
+   fChain->SetBranchAddress("pplus_InAccBrem", &pplus_InAccBrem, &b_pplus_InAccBrem);
+   fChain->SetBranchAddress("pplus_BremPIDe", &pplus_BremPIDe, &b_pplus_BremPIDe);
+   fChain->SetBranchAddress("pplus_VeloCharge", &pplus_VeloCharge, &b_pplus_VeloCharge);
    fChain->SetBranchAddress("pplus_TRACK_Type", &pplus_TRACK_Type, &b_pplus_TRACK_Type);
    fChain->SetBranchAddress("pplus_TRACK_Key", &pplus_TRACK_Key, &b_pplus_TRACK_Key);
+   fChain->SetBranchAddress("pplus_TRACK_CHI2", &pplus_TRACK_CHI2, &b_pplus_TRACK_CHI2);
+   fChain->SetBranchAddress("pplus_TRACK_NDOF", &pplus_TRACK_NDOF, &b_pplus_TRACK_NDOF);
    fChain->SetBranchAddress("pplus_TRACK_CHI2NDOF", &pplus_TRACK_CHI2NDOF, &b_pplus_TRACK_CHI2NDOF);
    fChain->SetBranchAddress("pplus_TRACK_PCHI2", &pplus_TRACK_PCHI2, &b_pplus_TRACK_PCHI2);
+   fChain->SetBranchAddress("pplus_TRACK_VeloCHI2NDOF", &pplus_TRACK_VeloCHI2NDOF, &b_pplus_TRACK_VeloCHI2NDOF);
+   fChain->SetBranchAddress("pplus_TRACK_TCHI2NDOF", &pplus_TRACK_TCHI2NDOF, &b_pplus_TRACK_TCHI2NDOF);
+   fChain->SetBranchAddress("pplus_VELO_UTID", &pplus_VELO_UTID, &b_pplus_VELO_UTID);
+   fChain->SetBranchAddress("pplus_TRACK_FirstMeasurementX", &pplus_TRACK_FirstMeasurementX, &b_pplus_TRACK_FirstMeasurementX);
+   fChain->SetBranchAddress("pplus_TRACK_FirstMeasurementY", &pplus_TRACK_FirstMeasurementY, &b_pplus_TRACK_FirstMeasurementY);
+   fChain->SetBranchAddress("pplus_TRACK_FirstMeasurementZ", &pplus_TRACK_FirstMeasurementZ, &b_pplus_TRACK_FirstMeasurementZ);
+   fChain->SetBranchAddress("pplus_TRACK_MatchCHI2", &pplus_TRACK_MatchCHI2, &b_pplus_TRACK_MatchCHI2);
    fChain->SetBranchAddress("pplus_TRACK_GhostProb", &pplus_TRACK_GhostProb, &b_pplus_TRACK_GhostProb);
    fChain->SetBranchAddress("pplus_TRACK_CloneDist", &pplus_TRACK_CloneDist, &b_pplus_TRACK_CloneDist);
+   fChain->SetBranchAddress("pplus_TRACK_Likelihood", &pplus_TRACK_Likelihood, &b_pplus_TRACK_Likelihood);
+   fChain->SetBranchAddress("Psi_CosTheta", &Psi_CosTheta, &b_Psi_CosTheta);
    fChain->SetBranchAddress("Psi_MINIP", &Psi_MINIP, &b_Psi_MINIP);
    fChain->SetBranchAddress("Psi_MINIPCHI2", &Psi_MINIPCHI2, &b_Psi_MINIPCHI2);
    fChain->SetBranchAddress("Psi_MINIPNEXTBEST", &Psi_MINIPNEXTBEST, &b_Psi_MINIPNEXTBEST);
    fChain->SetBranchAddress("Psi_MINIPCHI2NEXTBEST", &Psi_MINIPCHI2NEXTBEST, &b_Psi_MINIPCHI2NEXTBEST);
+   fChain->SetBranchAddress("Psi_AllIP", Psi_AllIP, &b_Psi_AllIP);
+   fChain->SetBranchAddress("Psi_AllIPchi2", Psi_AllIPchi2, &b_Psi_AllIPchi2);
    fChain->SetBranchAddress("Psi_ENDVERTEX_X", &Psi_ENDVERTEX_X, &b_Psi_ENDVERTEX_X);
    fChain->SetBranchAddress("Psi_ENDVERTEX_Y", &Psi_ENDVERTEX_Y, &b_Psi_ENDVERTEX_Y);
    fChain->SetBranchAddress("Psi_ENDVERTEX_Z", &Psi_ENDVERTEX_Z, &b_Psi_ENDVERTEX_Z);
@@ -2570,7 +3214,6 @@ void Lambdab::Init(TTree *tree)
    fChain->SetBranchAddress("Psi_TRUEENDVERTEX_Z", &Psi_TRUEENDVERTEX_Z, &b_Psi_TRUEENDVERTEX_Z);
    fChain->SetBranchAddress("Psi_TRUEISSTABLE", &Psi_TRUEISSTABLE, &b_Psi_TRUEISSTABLE);
    fChain->SetBranchAddress("Psi_TRUETAU", &Psi_TRUETAU, &b_Psi_TRUETAU);
-   fChain->SetBranchAddress("Psi_OSCIL", &Psi_OSCIL, &b_Psi_OSCIL);
    fChain->SetBranchAddress("Psi_ID", &Psi_ID, &b_Psi_ID);
    fChain->SetBranchAddress("Psi_TAU", &Psi_TAU, &b_Psi_TAU);
    fChain->SetBranchAddress("Psi_TAUERR", &Psi_TAUERR, &b_Psi_TAUERR);
@@ -2611,81 +3254,45 @@ void Lambdab::Init(TTree *tree)
    fChain->SetBranchAddress("PsiHlt1TrackAllL0Decision_Dec", &PsiHlt1TrackAllL0Decision_Dec, &b_PsiHlt1TrackAllL0Decision_Dec);
    fChain->SetBranchAddress("PsiHlt1TrackAllL0Decision_TIS", &PsiHlt1TrackAllL0Decision_TIS, &b_PsiHlt1TrackAllL0Decision_TIS);
    fChain->SetBranchAddress("PsiHlt1TrackAllL0Decision_TOS", &PsiHlt1TrackAllL0Decision_TOS, &b_PsiHlt1TrackAllL0Decision_TOS);
+   fChain->SetBranchAddress("PsiHlt1TrackAllL0TightDecision_Dec", &PsiHlt1TrackAllL0TightDecision_Dec, &b_PsiHlt1TrackAllL0TightDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt1TrackAllL0TightDecision_TIS", &PsiHlt1TrackAllL0TightDecision_TIS, &b_PsiHlt1TrackAllL0TightDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt1TrackAllL0TightDecision_TOS", &PsiHlt1TrackAllL0TightDecision_TOS, &b_PsiHlt1TrackAllL0TightDecision_TOS);
    fChain->SetBranchAddress("PsiHlt1DiMuonHighMassDecision_Dec", &PsiHlt1DiMuonHighMassDecision_Dec, &b_PsiHlt1DiMuonHighMassDecision_Dec);
    fChain->SetBranchAddress("PsiHlt1DiMuonHighMassDecision_TIS", &PsiHlt1DiMuonHighMassDecision_TIS, &b_PsiHlt1DiMuonHighMassDecision_TIS);
    fChain->SetBranchAddress("PsiHlt1DiMuonHighMassDecision_TOS", &PsiHlt1DiMuonHighMassDecision_TOS, &b_PsiHlt1DiMuonHighMassDecision_TOS);
    fChain->SetBranchAddress("PsiHlt1DiMuonLowMassDecision_Dec", &PsiHlt1DiMuonLowMassDecision_Dec, &b_PsiHlt1DiMuonLowMassDecision_Dec);
    fChain->SetBranchAddress("PsiHlt1DiMuonLowMassDecision_TIS", &PsiHlt1DiMuonLowMassDecision_TIS, &b_PsiHlt1DiMuonLowMassDecision_TIS);
    fChain->SetBranchAddress("PsiHlt1DiMuonLowMassDecision_TOS", &PsiHlt1DiMuonLowMassDecision_TOS, &b_PsiHlt1DiMuonLowMassDecision_TOS);
-   fChain->SetBranchAddress("PsiHlt1SingleMuonNoIPDecision_Dec", &PsiHlt1SingleMuonNoIPDecision_Dec, &b_PsiHlt1SingleMuonNoIPDecision_Dec);
-   fChain->SetBranchAddress("PsiHlt1SingleMuonNoIPDecision_TIS", &PsiHlt1SingleMuonNoIPDecision_TIS, &b_PsiHlt1SingleMuonNoIPDecision_TIS);
-   fChain->SetBranchAddress("PsiHlt1SingleMuonNoIPDecision_TOS", &PsiHlt1SingleMuonNoIPDecision_TOS, &b_PsiHlt1SingleMuonNoIPDecision_TOS);
    fChain->SetBranchAddress("PsiHlt1SingleMuonHighPTDecision_Dec", &PsiHlt1SingleMuonHighPTDecision_Dec, &b_PsiHlt1SingleMuonHighPTDecision_Dec);
    fChain->SetBranchAddress("PsiHlt1SingleMuonHighPTDecision_TIS", &PsiHlt1SingleMuonHighPTDecision_TIS, &b_PsiHlt1SingleMuonHighPTDecision_TIS);
    fChain->SetBranchAddress("PsiHlt1SingleMuonHighPTDecision_TOS", &PsiHlt1SingleMuonHighPTDecision_TOS, &b_PsiHlt1SingleMuonHighPTDecision_TOS);
+   fChain->SetBranchAddress("PsiHlt1SingleMuonNoIPDecision_Dec", &PsiHlt1SingleMuonNoIPDecision_Dec, &b_PsiHlt1SingleMuonNoIPDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt1SingleMuonNoIPDecision_TIS", &PsiHlt1SingleMuonNoIPDecision_TIS, &b_PsiHlt1SingleMuonNoIPDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt1SingleMuonNoIPDecision_TOS", &PsiHlt1SingleMuonNoIPDecision_TOS, &b_PsiHlt1SingleMuonNoIPDecision_TOS);
    fChain->SetBranchAddress("PsiHlt1TrackMuonDecision_Dec", &PsiHlt1TrackMuonDecision_Dec, &b_PsiHlt1TrackMuonDecision_Dec);
    fChain->SetBranchAddress("PsiHlt1TrackMuonDecision_TIS", &PsiHlt1TrackMuonDecision_TIS, &b_PsiHlt1TrackMuonDecision_TIS);
    fChain->SetBranchAddress("PsiHlt1TrackMuonDecision_TOS", &PsiHlt1TrackMuonDecision_TOS, &b_PsiHlt1TrackMuonDecision_TOS);
-   fChain->SetBranchAddress("PsiHlt2TransparentDecision_Dec", &PsiHlt2TransparentDecision_Dec, &b_PsiHlt2TransparentDecision_Dec);
-   fChain->SetBranchAddress("PsiHlt2TransparentDecision_TIS", &PsiHlt2TransparentDecision_TIS, &b_PsiHlt2TransparentDecision_TIS);
-   fChain->SetBranchAddress("PsiHlt2TransparentDecision_TOS", &PsiHlt2TransparentDecision_TOS, &b_PsiHlt2TransparentDecision_TOS);
-   fChain->SetBranchAddress("PsiHlt2Topo2BodySimpleDecision_Dec", &PsiHlt2Topo2BodySimpleDecision_Dec, &b_PsiHlt2Topo2BodySimpleDecision_Dec);
-   fChain->SetBranchAddress("PsiHlt2Topo2BodySimpleDecision_TIS", &PsiHlt2Topo2BodySimpleDecision_TIS, &b_PsiHlt2Topo2BodySimpleDecision_TIS);
-   fChain->SetBranchAddress("PsiHlt2Topo2BodySimpleDecision_TOS", &PsiHlt2Topo2BodySimpleDecision_TOS, &b_PsiHlt2Topo2BodySimpleDecision_TOS);
-   fChain->SetBranchAddress("PsiHlt2Topo3BodySimpleDecision_Dec", &PsiHlt2Topo3BodySimpleDecision_Dec, &b_PsiHlt2Topo3BodySimpleDecision_Dec);
-   fChain->SetBranchAddress("PsiHlt2Topo3BodySimpleDecision_TIS", &PsiHlt2Topo3BodySimpleDecision_TIS, &b_PsiHlt2Topo3BodySimpleDecision_TIS);
-   fChain->SetBranchAddress("PsiHlt2Topo3BodySimpleDecision_TOS", &PsiHlt2Topo3BodySimpleDecision_TOS, &b_PsiHlt2Topo3BodySimpleDecision_TOS);
-   fChain->SetBranchAddress("PsiHlt2Topo4BodySimpleDecision_Dec", &PsiHlt2Topo4BodySimpleDecision_Dec, &b_PsiHlt2Topo4BodySimpleDecision_Dec);
-   fChain->SetBranchAddress("PsiHlt2Topo4BodySimpleDecision_TIS", &PsiHlt2Topo4BodySimpleDecision_TIS, &b_PsiHlt2Topo4BodySimpleDecision_TIS);
-   fChain->SetBranchAddress("PsiHlt2Topo4BodySimpleDecision_TOS", &PsiHlt2Topo4BodySimpleDecision_TOS, &b_PsiHlt2Topo4BodySimpleDecision_TOS);
    fChain->SetBranchAddress("PsiHlt2Topo2BodyBBDTDecision_Dec", &PsiHlt2Topo2BodyBBDTDecision_Dec, &b_PsiHlt2Topo2BodyBBDTDecision_Dec);
    fChain->SetBranchAddress("PsiHlt2Topo2BodyBBDTDecision_TIS", &PsiHlt2Topo2BodyBBDTDecision_TIS, &b_PsiHlt2Topo2BodyBBDTDecision_TIS);
    fChain->SetBranchAddress("PsiHlt2Topo2BodyBBDTDecision_TOS", &PsiHlt2Topo2BodyBBDTDecision_TOS, &b_PsiHlt2Topo2BodyBBDTDecision_TOS);
+   fChain->SetBranchAddress("PsiHlt2Topo2BodySimpleDecision_Dec", &PsiHlt2Topo2BodySimpleDecision_Dec, &b_PsiHlt2Topo2BodySimpleDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt2Topo2BodySimpleDecision_TIS", &PsiHlt2Topo2BodySimpleDecision_TIS, &b_PsiHlt2Topo2BodySimpleDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt2Topo2BodySimpleDecision_TOS", &PsiHlt2Topo2BodySimpleDecision_TOS, &b_PsiHlt2Topo2BodySimpleDecision_TOS);
    fChain->SetBranchAddress("PsiHlt2Topo3BodyBBDTDecision_Dec", &PsiHlt2Topo3BodyBBDTDecision_Dec, &b_PsiHlt2Topo3BodyBBDTDecision_Dec);
    fChain->SetBranchAddress("PsiHlt2Topo3BodyBBDTDecision_TIS", &PsiHlt2Topo3BodyBBDTDecision_TIS, &b_PsiHlt2Topo3BodyBBDTDecision_TIS);
    fChain->SetBranchAddress("PsiHlt2Topo3BodyBBDTDecision_TOS", &PsiHlt2Topo3BodyBBDTDecision_TOS, &b_PsiHlt2Topo3BodyBBDTDecision_TOS);
+   fChain->SetBranchAddress("PsiHlt2Topo3BodySimpleDecision_Dec", &PsiHlt2Topo3BodySimpleDecision_Dec, &b_PsiHlt2Topo3BodySimpleDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt2Topo3BodySimpleDecision_TIS", &PsiHlt2Topo3BodySimpleDecision_TIS, &b_PsiHlt2Topo3BodySimpleDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt2Topo3BodySimpleDecision_TOS", &PsiHlt2Topo3BodySimpleDecision_TOS, &b_PsiHlt2Topo3BodySimpleDecision_TOS);
    fChain->SetBranchAddress("PsiHlt2Topo4BodyBBDTDecision_Dec", &PsiHlt2Topo4BodyBBDTDecision_Dec, &b_PsiHlt2Topo4BodyBBDTDecision_Dec);
    fChain->SetBranchAddress("PsiHlt2Topo4BodyBBDTDecision_TIS", &PsiHlt2Topo4BodyBBDTDecision_TIS, &b_PsiHlt2Topo4BodyBBDTDecision_TIS);
    fChain->SetBranchAddress("PsiHlt2Topo4BodyBBDTDecision_TOS", &PsiHlt2Topo4BodyBBDTDecision_TOS, &b_PsiHlt2Topo4BodyBBDTDecision_TOS);
-   fChain->SetBranchAddress("PsiHlt2SingleMuonDecision_Dec", &PsiHlt2SingleMuonDecision_Dec, &b_PsiHlt2SingleMuonDecision_Dec);
-   fChain->SetBranchAddress("PsiHlt2SingleMuonDecision_TIS", &PsiHlt2SingleMuonDecision_TIS, &b_PsiHlt2SingleMuonDecision_TIS);
-   fChain->SetBranchAddress("PsiHlt2SingleMuonDecision_TOS", &PsiHlt2SingleMuonDecision_TOS, &b_PsiHlt2SingleMuonDecision_TOS);
-   fChain->SetBranchAddress("PsiHlt2SingleMuonHighPTDecision_Dec", &PsiHlt2SingleMuonHighPTDecision_Dec, &b_PsiHlt2SingleMuonHighPTDecision_Dec);
-   fChain->SetBranchAddress("PsiHlt2SingleMuonHighPTDecision_TIS", &PsiHlt2SingleMuonHighPTDecision_TIS, &b_PsiHlt2SingleMuonHighPTDecision_TIS);
-   fChain->SetBranchAddress("PsiHlt2SingleMuonHighPTDecision_TOS", &PsiHlt2SingleMuonHighPTDecision_TOS, &b_PsiHlt2SingleMuonHighPTDecision_TOS);
-   fChain->SetBranchAddress("PsiHlt2SingleMuonLowPTDecision_Dec", &PsiHlt2SingleMuonLowPTDecision_Dec, &b_PsiHlt2SingleMuonLowPTDecision_Dec);
-   fChain->SetBranchAddress("PsiHlt2SingleMuonLowPTDecision_TIS", &PsiHlt2SingleMuonLowPTDecision_TIS, &b_PsiHlt2SingleMuonLowPTDecision_TIS);
-   fChain->SetBranchAddress("PsiHlt2SingleMuonLowPTDecision_TOS", &PsiHlt2SingleMuonLowPTDecision_TOS, &b_PsiHlt2SingleMuonLowPTDecision_TOS);
-   fChain->SetBranchAddress("PsiHlt2TopoMu2BodyBBDTDecision_Dec", &PsiHlt2TopoMu2BodyBBDTDecision_Dec, &b_PsiHlt2TopoMu2BodyBBDTDecision_Dec);
-   fChain->SetBranchAddress("PsiHlt2TopoMu2BodyBBDTDecision_TIS", &PsiHlt2TopoMu2BodyBBDTDecision_TIS, &b_PsiHlt2TopoMu2BodyBBDTDecision_TIS);
-   fChain->SetBranchAddress("PsiHlt2TopoMu2BodyBBDTDecision_TOS", &PsiHlt2TopoMu2BodyBBDTDecision_TOS, &b_PsiHlt2TopoMu2BodyBBDTDecision_TOS);
-   fChain->SetBranchAddress("PsiHlt2TopoMu3BodyBBDTDecision_Dec", &PsiHlt2TopoMu3BodyBBDTDecision_Dec, &b_PsiHlt2TopoMu3BodyBBDTDecision_Dec);
-   fChain->SetBranchAddress("PsiHlt2TopoMu3BodyBBDTDecision_TIS", &PsiHlt2TopoMu3BodyBBDTDecision_TIS, &b_PsiHlt2TopoMu3BodyBBDTDecision_TIS);
-   fChain->SetBranchAddress("PsiHlt2TopoMu3BodyBBDTDecision_TOS", &PsiHlt2TopoMu3BodyBBDTDecision_TOS, &b_PsiHlt2TopoMu3BodyBBDTDecision_TOS);
-   fChain->SetBranchAddress("PsiHlt2TopoMu4BodyBBDTDecision_Dec", &PsiHlt2TopoMu4BodyBBDTDecision_Dec, &b_PsiHlt2TopoMu4BodyBBDTDecision_Dec);
-   fChain->SetBranchAddress("PsiHlt2TopoMu4BodyBBDTDecision_TIS", &PsiHlt2TopoMu4BodyBBDTDecision_TIS, &b_PsiHlt2TopoMu4BodyBBDTDecision_TIS);
-   fChain->SetBranchAddress("PsiHlt2TopoMu4BodyBBDTDecision_TOS", &PsiHlt2TopoMu4BodyBBDTDecision_TOS, &b_PsiHlt2TopoMu4BodyBBDTDecision_TOS);
-   fChain->SetBranchAddress("PsiHlt2MuonFromHLT1Decision_Dec", &PsiHlt2MuonFromHLT1Decision_Dec, &b_PsiHlt2MuonFromHLT1Decision_Dec);
-   fChain->SetBranchAddress("PsiHlt2MuonFromHLT1Decision_TIS", &PsiHlt2MuonFromHLT1Decision_TIS, &b_PsiHlt2MuonFromHLT1Decision_TIS);
-   fChain->SetBranchAddress("PsiHlt2MuonFromHLT1Decision_TOS", &PsiHlt2MuonFromHLT1Decision_TOS, &b_PsiHlt2MuonFromHLT1Decision_TOS);
+   fChain->SetBranchAddress("PsiHlt2Topo4BodySimpleDecision_Dec", &PsiHlt2Topo4BodySimpleDecision_Dec, &b_PsiHlt2Topo4BodySimpleDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt2Topo4BodySimpleDecision_TIS", &PsiHlt2Topo4BodySimpleDecision_TIS, &b_PsiHlt2Topo4BodySimpleDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt2Topo4BodySimpleDecision_TOS", &PsiHlt2Topo4BodySimpleDecision_TOS, &b_PsiHlt2Topo4BodySimpleDecision_TOS);
    fChain->SetBranchAddress("PsiHlt2DiMuonDecision_Dec", &PsiHlt2DiMuonDecision_Dec, &b_PsiHlt2DiMuonDecision_Dec);
    fChain->SetBranchAddress("PsiHlt2DiMuonDecision_TIS", &PsiHlt2DiMuonDecision_TIS, &b_PsiHlt2DiMuonDecision_TIS);
    fChain->SetBranchAddress("PsiHlt2DiMuonDecision_TOS", &PsiHlt2DiMuonDecision_TOS, &b_PsiHlt2DiMuonDecision_TOS);
-   fChain->SetBranchAddress("PsiHlt2DiMuonLowMassDecision_Dec", &PsiHlt2DiMuonLowMassDecision_Dec, &b_PsiHlt2DiMuonLowMassDecision_Dec);
-   fChain->SetBranchAddress("PsiHlt2DiMuonLowMassDecision_TIS", &PsiHlt2DiMuonLowMassDecision_TIS, &b_PsiHlt2DiMuonLowMassDecision_TIS);
-   fChain->SetBranchAddress("PsiHlt2DiMuonLowMassDecision_TOS", &PsiHlt2DiMuonLowMassDecision_TOS, &b_PsiHlt2DiMuonLowMassDecision_TOS);
-   fChain->SetBranchAddress("PsiHlt2DiMuonJPsiDecision_Dec", &PsiHlt2DiMuonJPsiDecision_Dec, &b_PsiHlt2DiMuonJPsiDecision_Dec);
-   fChain->SetBranchAddress("PsiHlt2DiMuonJPsiDecision_TIS", &PsiHlt2DiMuonJPsiDecision_TIS, &b_PsiHlt2DiMuonJPsiDecision_TIS);
-   fChain->SetBranchAddress("PsiHlt2DiMuonJPsiDecision_TOS", &PsiHlt2DiMuonJPsiDecision_TOS, &b_PsiHlt2DiMuonJPsiDecision_TOS);
-   fChain->SetBranchAddress("PsiHlt2DiMuonJPsiHighPTDecision_Dec", &PsiHlt2DiMuonJPsiHighPTDecision_Dec, &b_PsiHlt2DiMuonJPsiHighPTDecision_Dec);
-   fChain->SetBranchAddress("PsiHlt2DiMuonJPsiHighPTDecision_TIS", &PsiHlt2DiMuonJPsiHighPTDecision_TIS, &b_PsiHlt2DiMuonJPsiHighPTDecision_TIS);
-   fChain->SetBranchAddress("PsiHlt2DiMuonJPsiHighPTDecision_TOS", &PsiHlt2DiMuonJPsiHighPTDecision_TOS, &b_PsiHlt2DiMuonJPsiHighPTDecision_TOS);
-   fChain->SetBranchAddress("PsiHlt2DiMuonPsi2SDecision_Dec", &PsiHlt2DiMuonPsi2SDecision_Dec, &b_PsiHlt2DiMuonPsi2SDecision_Dec);
-   fChain->SetBranchAddress("PsiHlt2DiMuonPsi2SDecision_TIS", &PsiHlt2DiMuonPsi2SDecision_TIS, &b_PsiHlt2DiMuonPsi2SDecision_TIS);
-   fChain->SetBranchAddress("PsiHlt2DiMuonPsi2SDecision_TOS", &PsiHlt2DiMuonPsi2SDecision_TOS, &b_PsiHlt2DiMuonPsi2SDecision_TOS);
-   fChain->SetBranchAddress("PsiHlt2DiMuonPsi2SHighPTDecision_Dec", &PsiHlt2DiMuonPsi2SHighPTDecision_Dec, &b_PsiHlt2DiMuonPsi2SHighPTDecision_Dec);
-   fChain->SetBranchAddress("PsiHlt2DiMuonPsi2SHighPTDecision_TIS", &PsiHlt2DiMuonPsi2SHighPTDecision_TIS, &b_PsiHlt2DiMuonPsi2SHighPTDecision_TIS);
-   fChain->SetBranchAddress("PsiHlt2DiMuonPsi2SHighPTDecision_TOS", &PsiHlt2DiMuonPsi2SHighPTDecision_TOS, &b_PsiHlt2DiMuonPsi2SHighPTDecision_TOS);
    fChain->SetBranchAddress("PsiHlt2DiMuonBDecision_Dec", &PsiHlt2DiMuonBDecision_Dec, &b_PsiHlt2DiMuonBDecision_Dec);
    fChain->SetBranchAddress("PsiHlt2DiMuonBDecision_TIS", &PsiHlt2DiMuonBDecision_TIS, &b_PsiHlt2DiMuonBDecision_TIS);
    fChain->SetBranchAddress("PsiHlt2DiMuonBDecision_TOS", &PsiHlt2DiMuonBDecision_TOS, &b_PsiHlt2DiMuonBDecision_TOS);
@@ -2698,17 +3305,65 @@ void Lambdab::Init(TTree *tree)
    fChain->SetBranchAddress("PsiHlt2DiMuonDetachedJPsiDecision_Dec", &PsiHlt2DiMuonDetachedJPsiDecision_Dec, &b_PsiHlt2DiMuonDetachedJPsiDecision_Dec);
    fChain->SetBranchAddress("PsiHlt2DiMuonDetachedJPsiDecision_TIS", &PsiHlt2DiMuonDetachedJPsiDecision_TIS, &b_PsiHlt2DiMuonDetachedJPsiDecision_TIS);
    fChain->SetBranchAddress("PsiHlt2DiMuonDetachedJPsiDecision_TOS", &PsiHlt2DiMuonDetachedJPsiDecision_TOS, &b_PsiHlt2DiMuonDetachedJPsiDecision_TOS);
-   fChain->SetBranchAddress("PsiHlt2ExpressJPsiDecision_Dec", &PsiHlt2ExpressJPsiDecision_Dec, &b_PsiHlt2ExpressJPsiDecision_Dec);
-   fChain->SetBranchAddress("PsiHlt2ExpressJPsiDecision_TIS", &PsiHlt2ExpressJPsiDecision_TIS, &b_PsiHlt2ExpressJPsiDecision_TIS);
-   fChain->SetBranchAddress("PsiHlt2ExpressJPsiDecision_TOS", &PsiHlt2ExpressJPsiDecision_TOS, &b_PsiHlt2ExpressJPsiDecision_TOS);
+   fChain->SetBranchAddress("PsiHlt2DiMuonDetachedPsi2SDecision_Dec", &PsiHlt2DiMuonDetachedPsi2SDecision_Dec, &b_PsiHlt2DiMuonDetachedPsi2SDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt2DiMuonDetachedPsi2SDecision_TIS", &PsiHlt2DiMuonDetachedPsi2SDecision_TIS, &b_PsiHlt2DiMuonDetachedPsi2SDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt2DiMuonDetachedPsi2SDecision_TOS", &PsiHlt2DiMuonDetachedPsi2SDecision_TOS, &b_PsiHlt2DiMuonDetachedPsi2SDecision_TOS);
+   fChain->SetBranchAddress("PsiHlt2DiMuonJPsiDecision_Dec", &PsiHlt2DiMuonJPsiDecision_Dec, &b_PsiHlt2DiMuonJPsiDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt2DiMuonJPsiDecision_TIS", &PsiHlt2DiMuonJPsiDecision_TIS, &b_PsiHlt2DiMuonJPsiDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt2DiMuonJPsiDecision_TOS", &PsiHlt2DiMuonJPsiDecision_TOS, &b_PsiHlt2DiMuonJPsiDecision_TOS);
+   fChain->SetBranchAddress("PsiHlt2DiMuonJPsiHighPTDecision_Dec", &PsiHlt2DiMuonJPsiHighPTDecision_Dec, &b_PsiHlt2DiMuonJPsiHighPTDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt2DiMuonJPsiHighPTDecision_TIS", &PsiHlt2DiMuonJPsiHighPTDecision_TIS, &b_PsiHlt2DiMuonJPsiHighPTDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt2DiMuonJPsiHighPTDecision_TOS", &PsiHlt2DiMuonJPsiHighPTDecision_TOS, &b_PsiHlt2DiMuonJPsiHighPTDecision_TOS);
+   fChain->SetBranchAddress("PsiHlt2DiMuonLowMassDecision_Dec", &PsiHlt2DiMuonLowMassDecision_Dec, &b_PsiHlt2DiMuonLowMassDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt2DiMuonLowMassDecision_TIS", &PsiHlt2DiMuonLowMassDecision_TIS, &b_PsiHlt2DiMuonLowMassDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt2DiMuonLowMassDecision_TOS", &PsiHlt2DiMuonLowMassDecision_TOS, &b_PsiHlt2DiMuonLowMassDecision_TOS);
+   fChain->SetBranchAddress("PsiHlt2DiMuonPsi2SDecision_Dec", &PsiHlt2DiMuonPsi2SDecision_Dec, &b_PsiHlt2DiMuonPsi2SDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt2DiMuonPsi2SDecision_TIS", &PsiHlt2DiMuonPsi2SDecision_TIS, &b_PsiHlt2DiMuonPsi2SDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt2DiMuonPsi2SDecision_TOS", &PsiHlt2DiMuonPsi2SDecision_TOS, &b_PsiHlt2DiMuonPsi2SDecision_TOS);
+   fChain->SetBranchAddress("PsiHlt2DiMuonPsi2SHighPTDecision_Dec", &PsiHlt2DiMuonPsi2SHighPTDecision_Dec, &b_PsiHlt2DiMuonPsi2SHighPTDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt2DiMuonPsi2SHighPTDecision_TIS", &PsiHlt2DiMuonPsi2SHighPTDecision_TIS, &b_PsiHlt2DiMuonPsi2SHighPTDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt2DiMuonPsi2SHighPTDecision_TOS", &PsiHlt2DiMuonPsi2SHighPTDecision_TOS, &b_PsiHlt2DiMuonPsi2SHighPTDecision_TOS);
+   fChain->SetBranchAddress("PsiHlt2LowMultMuonDecision_Dec", &PsiHlt2LowMultMuonDecision_Dec, &b_PsiHlt2LowMultMuonDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt2LowMultMuonDecision_TIS", &PsiHlt2LowMultMuonDecision_TIS, &b_PsiHlt2LowMultMuonDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt2LowMultMuonDecision_TOS", &PsiHlt2LowMultMuonDecision_TOS, &b_PsiHlt2LowMultMuonDecision_TOS);
+   fChain->SetBranchAddress("PsiHlt2MuonFromHLT1Decision_Dec", &PsiHlt2MuonFromHLT1Decision_Dec, &b_PsiHlt2MuonFromHLT1Decision_Dec);
+   fChain->SetBranchAddress("PsiHlt2MuonFromHLT1Decision_TIS", &PsiHlt2MuonFromHLT1Decision_TIS, &b_PsiHlt2MuonFromHLT1Decision_TIS);
+   fChain->SetBranchAddress("PsiHlt2MuonFromHLT1Decision_TOS", &PsiHlt2MuonFromHLT1Decision_TOS, &b_PsiHlt2MuonFromHLT1Decision_TOS);
+   fChain->SetBranchAddress("PsiHlt2SingleMuonDecision_Dec", &PsiHlt2SingleMuonDecision_Dec, &b_PsiHlt2SingleMuonDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt2SingleMuonDecision_TIS", &PsiHlt2SingleMuonDecision_TIS, &b_PsiHlt2SingleMuonDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt2SingleMuonDecision_TOS", &PsiHlt2SingleMuonDecision_TOS, &b_PsiHlt2SingleMuonDecision_TOS);
+   fChain->SetBranchAddress("PsiHlt2SingleMuonHighPTDecision_Dec", &PsiHlt2SingleMuonHighPTDecision_Dec, &b_PsiHlt2SingleMuonHighPTDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt2SingleMuonHighPTDecision_TIS", &PsiHlt2SingleMuonHighPTDecision_TIS, &b_PsiHlt2SingleMuonHighPTDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt2SingleMuonHighPTDecision_TOS", &PsiHlt2SingleMuonHighPTDecision_TOS, &b_PsiHlt2SingleMuonHighPTDecision_TOS);
+   fChain->SetBranchAddress("PsiHlt2SingleMuonLowPTDecision_Dec", &PsiHlt2SingleMuonLowPTDecision_Dec, &b_PsiHlt2SingleMuonLowPTDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt2SingleMuonLowPTDecision_TIS", &PsiHlt2SingleMuonLowPTDecision_TIS, &b_PsiHlt2SingleMuonLowPTDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt2SingleMuonLowPTDecision_TOS", &PsiHlt2SingleMuonLowPTDecision_TOS, &b_PsiHlt2SingleMuonLowPTDecision_TOS);
+   fChain->SetBranchAddress("PsiHlt2SingleMuonVHighPTDecision_Dec", &PsiHlt2SingleMuonVHighPTDecision_Dec, &b_PsiHlt2SingleMuonVHighPTDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt2SingleMuonVHighPTDecision_TIS", &PsiHlt2SingleMuonVHighPTDecision_TIS, &b_PsiHlt2SingleMuonVHighPTDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt2SingleMuonVHighPTDecision_TOS", &PsiHlt2SingleMuonVHighPTDecision_TOS, &b_PsiHlt2SingleMuonVHighPTDecision_TOS);
+   fChain->SetBranchAddress("PsiHlt2TopoMu2BodyBBDTDecision_Dec", &PsiHlt2TopoMu2BodyBBDTDecision_Dec, &b_PsiHlt2TopoMu2BodyBBDTDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt2TopoMu2BodyBBDTDecision_TIS", &PsiHlt2TopoMu2BodyBBDTDecision_TIS, &b_PsiHlt2TopoMu2BodyBBDTDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt2TopoMu2BodyBBDTDecision_TOS", &PsiHlt2TopoMu2BodyBBDTDecision_TOS, &b_PsiHlt2TopoMu2BodyBBDTDecision_TOS);
+   fChain->SetBranchAddress("PsiHlt2TopoMu3BodyBBDTDecision_Dec", &PsiHlt2TopoMu3BodyBBDTDecision_Dec, &b_PsiHlt2TopoMu3BodyBBDTDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt2TopoMu3BodyBBDTDecision_TIS", &PsiHlt2TopoMu3BodyBBDTDecision_TIS, &b_PsiHlt2TopoMu3BodyBBDTDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt2TopoMu3BodyBBDTDecision_TOS", &PsiHlt2TopoMu3BodyBBDTDecision_TOS, &b_PsiHlt2TopoMu3BodyBBDTDecision_TOS);
+   fChain->SetBranchAddress("PsiHlt2TopoMu4BodyBBDTDecision_Dec", &PsiHlt2TopoMu4BodyBBDTDecision_Dec, &b_PsiHlt2TopoMu4BodyBBDTDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt2TopoMu4BodyBBDTDecision_TIS", &PsiHlt2TopoMu4BodyBBDTDecision_TIS, &b_PsiHlt2TopoMu4BodyBBDTDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt2TopoMu4BodyBBDTDecision_TOS", &PsiHlt2TopoMu4BodyBBDTDecision_TOS, &b_PsiHlt2TopoMu4BodyBBDTDecision_TOS);
+   fChain->SetBranchAddress("PsiHlt2diPhotonDiMuonDecision_Dec", &PsiHlt2diPhotonDiMuonDecision_Dec, &b_PsiHlt2diPhotonDiMuonDecision_Dec);
+   fChain->SetBranchAddress("PsiHlt2diPhotonDiMuonDecision_TIS", &PsiHlt2diPhotonDiMuonDecision_TIS, &b_PsiHlt2diPhotonDiMuonDecision_TIS);
+   fChain->SetBranchAddress("PsiHlt2diPhotonDiMuonDecision_TOS", &PsiHlt2diPhotonDiMuonDecision_TOS, &b_PsiHlt2diPhotonDiMuonDecision_TOS);
    fChain->SetBranchAddress("Psi_NOPARTWITHINDCHI2WDW", &Psi_NOPARTWITHINDCHI2WDW, &b_Psi_NOPARTWITHINDCHI2WDW);
    fChain->SetBranchAddress("Psi_NOPARTWITHINCHI2WDW", &Psi_NOPARTWITHINCHI2WDW, &b_Psi_NOPARTWITHINCHI2WDW);
    fChain->SetBranchAddress("Psi_SMALLESTCHI2", &Psi_SMALLESTCHI2, &b_Psi_SMALLESTCHI2);
    fChain->SetBranchAddress("Psi_SMALLESTDELTACHI2", &Psi_SMALLESTDELTACHI2, &b_Psi_SMALLESTDELTACHI2);
+   fChain->SetBranchAddress("muminus_CosTheta", &muminus_CosTheta, &b_muminus_CosTheta);
    fChain->SetBranchAddress("muminus_MINIP", &muminus_MINIP, &b_muminus_MINIP);
    fChain->SetBranchAddress("muminus_MINIPCHI2", &muminus_MINIPCHI2, &b_muminus_MINIPCHI2);
    fChain->SetBranchAddress("muminus_MINIPNEXTBEST", &muminus_MINIPNEXTBEST, &b_muminus_MINIPNEXTBEST);
    fChain->SetBranchAddress("muminus_MINIPCHI2NEXTBEST", &muminus_MINIPCHI2NEXTBEST, &b_muminus_MINIPCHI2NEXTBEST);
+   fChain->SetBranchAddress("muminus_AllIP", muminus_AllIP, &b_muminus_AllIP);
+   fChain->SetBranchAddress("muminus_AllIPchi2", muminus_AllIPchi2, &b_muminus_AllIPchi2);
    fChain->SetBranchAddress("muminus_OWNPV_X", &muminus_OWNPV_X, &b_muminus_OWNPV_X);
    fChain->SetBranchAddress("muminus_OWNPV_Y", &muminus_OWNPV_Y, &b_muminus_OWNPV_Y);
    fChain->SetBranchAddress("muminus_OWNPV_Z", &muminus_OWNPV_Z, &b_muminus_OWNPV_Z);
@@ -2776,7 +3431,6 @@ void Lambdab::Init(TTree *tree)
    fChain->SetBranchAddress("muminus_TRUEENDVERTEX_Z", &muminus_TRUEENDVERTEX_Z, &b_muminus_TRUEENDVERTEX_Z);
    fChain->SetBranchAddress("muminus_TRUEISSTABLE", &muminus_TRUEISSTABLE, &b_muminus_TRUEISSTABLE);
    fChain->SetBranchAddress("muminus_TRUETAU", &muminus_TRUETAU, &b_muminus_TRUETAU);
-   fChain->SetBranchAddress("muminus_OSCIL", &muminus_OSCIL, &b_muminus_OSCIL);
    fChain->SetBranchAddress("muminus_ID", &muminus_ID, &b_muminus_ID);
    fChain->SetBranchAddress("muminus_PIDe", &muminus_PIDe, &b_muminus_PIDe);
    fChain->SetBranchAddress("muminus_PIDmu", &muminus_PIDmu, &b_muminus_PIDmu);
@@ -2792,16 +3446,64 @@ void Lambdab::Init(TTree *tree)
    fChain->SetBranchAddress("muminus_isMuon", &muminus_isMuon, &b_muminus_isMuon);
    fChain->SetBranchAddress("muminus_hasRich", &muminus_hasRich, &b_muminus_hasRich);
    fChain->SetBranchAddress("muminus_hasCalo", &muminus_hasCalo, &b_muminus_hasCalo);
+   fChain->SetBranchAddress("muminus_UsedRichAerogel", &muminus_UsedRichAerogel, &b_muminus_UsedRichAerogel);
+   fChain->SetBranchAddress("muminus_UsedRich1Gas", &muminus_UsedRich1Gas, &b_muminus_UsedRich1Gas);
+   fChain->SetBranchAddress("muminus_UsedRich2Gas", &muminus_UsedRich2Gas, &b_muminus_UsedRich2Gas);
+   fChain->SetBranchAddress("muminus_RichAboveElThres", &muminus_RichAboveElThres, &b_muminus_RichAboveElThres);
+   fChain->SetBranchAddress("muminus_RichAboveMuThres", &muminus_RichAboveMuThres, &b_muminus_RichAboveMuThres);
+   fChain->SetBranchAddress("muminus_RichAbovePiThres", &muminus_RichAbovePiThres, &b_muminus_RichAbovePiThres);
+   fChain->SetBranchAddress("muminus_RichAboveKaThres", &muminus_RichAboveKaThres, &b_muminus_RichAboveKaThres);
+   fChain->SetBranchAddress("muminus_RichAbovePrThres", &muminus_RichAbovePrThres, &b_muminus_RichAbovePrThres);
+   fChain->SetBranchAddress("muminus_RichDLLe", &muminus_RichDLLe, &b_muminus_RichDLLe);
+   fChain->SetBranchAddress("muminus_RichDLLmu", &muminus_RichDLLmu, &b_muminus_RichDLLmu);
+   fChain->SetBranchAddress("muminus_RichDLLpi", &muminus_RichDLLpi, &b_muminus_RichDLLpi);
+   fChain->SetBranchAddress("muminus_RichDLLk", &muminus_RichDLLk, &b_muminus_RichDLLk);
+   fChain->SetBranchAddress("muminus_RichDLLp", &muminus_RichDLLp, &b_muminus_RichDLLp);
+   fChain->SetBranchAddress("muminus_RichDLLbt", &muminus_RichDLLbt, &b_muminus_RichDLLbt);
+   fChain->SetBranchAddress("muminus_InAccMuon", &muminus_InAccMuon, &b_muminus_InAccMuon);
+   fChain->SetBranchAddress("muminus_isMuonLoose", &muminus_isMuonLoose, &b_muminus_isMuonLoose);
+   fChain->SetBranchAddress("muminus_MuonMuLL", &muminus_MuonMuLL, &b_muminus_MuonMuLL);
+   fChain->SetBranchAddress("muminus_MuonBkgLL", &muminus_MuonBkgLL, &b_muminus_MuonBkgLL);
+   fChain->SetBranchAddress("muminus_MuonNShared", &muminus_MuonNShared, &b_muminus_MuonNShared);
+   fChain->SetBranchAddress("muminus_InAccEcal", &muminus_InAccEcal, &b_muminus_InAccEcal);
+   fChain->SetBranchAddress("muminus_CaloEcalE", &muminus_CaloEcalE, &b_muminus_CaloEcalE);
+   fChain->SetBranchAddress("muminus_EcalPIDe", &muminus_EcalPIDe, &b_muminus_EcalPIDe);
+   fChain->SetBranchAddress("muminus_EcalPIDmu", &muminus_EcalPIDmu, &b_muminus_EcalPIDmu);
+   fChain->SetBranchAddress("muminus_InAccHcal", &muminus_InAccHcal, &b_muminus_InAccHcal);
+   fChain->SetBranchAddress("muminus_CaloHcalE", &muminus_CaloHcalE, &b_muminus_CaloHcalE);
+   fChain->SetBranchAddress("muminus_HcalPIDe", &muminus_HcalPIDe, &b_muminus_HcalPIDe);
+   fChain->SetBranchAddress("muminus_HcalPIDmu", &muminus_HcalPIDmu, &b_muminus_HcalPIDmu);
+   fChain->SetBranchAddress("muminus_InAccPrs", &muminus_InAccPrs, &b_muminus_InAccPrs);
+   fChain->SetBranchAddress("muminus_PrsPIDe", &muminus_PrsPIDe, &b_muminus_PrsPIDe);
+   fChain->SetBranchAddress("muminus_CaloPrsE", &muminus_CaloPrsE, &b_muminus_CaloPrsE);
+   fChain->SetBranchAddress("muminus_InAccSpd", &muminus_InAccSpd, &b_muminus_InAccSpd);
+   fChain->SetBranchAddress("muminus_CaloSpdE", &muminus_CaloSpdE, &b_muminus_CaloSpdE);
+   fChain->SetBranchAddress("muminus_InAccBrem", &muminus_InAccBrem, &b_muminus_InAccBrem);
+   fChain->SetBranchAddress("muminus_BremPIDe", &muminus_BremPIDe, &b_muminus_BremPIDe);
+   fChain->SetBranchAddress("muminus_VeloCharge", &muminus_VeloCharge, &b_muminus_VeloCharge);
    fChain->SetBranchAddress("muminus_TRACK_Type", &muminus_TRACK_Type, &b_muminus_TRACK_Type);
    fChain->SetBranchAddress("muminus_TRACK_Key", &muminus_TRACK_Key, &b_muminus_TRACK_Key);
+   fChain->SetBranchAddress("muminus_TRACK_CHI2", &muminus_TRACK_CHI2, &b_muminus_TRACK_CHI2);
+   fChain->SetBranchAddress("muminus_TRACK_NDOF", &muminus_TRACK_NDOF, &b_muminus_TRACK_NDOF);
    fChain->SetBranchAddress("muminus_TRACK_CHI2NDOF", &muminus_TRACK_CHI2NDOF, &b_muminus_TRACK_CHI2NDOF);
    fChain->SetBranchAddress("muminus_TRACK_PCHI2", &muminus_TRACK_PCHI2, &b_muminus_TRACK_PCHI2);
+   fChain->SetBranchAddress("muminus_TRACK_VeloCHI2NDOF", &muminus_TRACK_VeloCHI2NDOF, &b_muminus_TRACK_VeloCHI2NDOF);
+   fChain->SetBranchAddress("muminus_TRACK_TCHI2NDOF", &muminus_TRACK_TCHI2NDOF, &b_muminus_TRACK_TCHI2NDOF);
+   fChain->SetBranchAddress("muminus_VELO_UTID", &muminus_VELO_UTID, &b_muminus_VELO_UTID);
+   fChain->SetBranchAddress("muminus_TRACK_FirstMeasurementX", &muminus_TRACK_FirstMeasurementX, &b_muminus_TRACK_FirstMeasurementX);
+   fChain->SetBranchAddress("muminus_TRACK_FirstMeasurementY", &muminus_TRACK_FirstMeasurementY, &b_muminus_TRACK_FirstMeasurementY);
+   fChain->SetBranchAddress("muminus_TRACK_FirstMeasurementZ", &muminus_TRACK_FirstMeasurementZ, &b_muminus_TRACK_FirstMeasurementZ);
+   fChain->SetBranchAddress("muminus_TRACK_MatchCHI2", &muminus_TRACK_MatchCHI2, &b_muminus_TRACK_MatchCHI2);
    fChain->SetBranchAddress("muminus_TRACK_GhostProb", &muminus_TRACK_GhostProb, &b_muminus_TRACK_GhostProb);
    fChain->SetBranchAddress("muminus_TRACK_CloneDist", &muminus_TRACK_CloneDist, &b_muminus_TRACK_CloneDist);
+   fChain->SetBranchAddress("muminus_TRACK_Likelihood", &muminus_TRACK_Likelihood, &b_muminus_TRACK_Likelihood);
+   fChain->SetBranchAddress("muplus_CosTheta", &muplus_CosTheta, &b_muplus_CosTheta);
    fChain->SetBranchAddress("muplus_MINIP", &muplus_MINIP, &b_muplus_MINIP);
    fChain->SetBranchAddress("muplus_MINIPCHI2", &muplus_MINIPCHI2, &b_muplus_MINIPCHI2);
    fChain->SetBranchAddress("muplus_MINIPNEXTBEST", &muplus_MINIPNEXTBEST, &b_muplus_MINIPNEXTBEST);
    fChain->SetBranchAddress("muplus_MINIPCHI2NEXTBEST", &muplus_MINIPCHI2NEXTBEST, &b_muplus_MINIPCHI2NEXTBEST);
+   fChain->SetBranchAddress("muplus_AllIP", muplus_AllIP, &b_muplus_AllIP);
+   fChain->SetBranchAddress("muplus_AllIPchi2", muplus_AllIPchi2, &b_muplus_AllIPchi2);
    fChain->SetBranchAddress("muplus_OWNPV_X", &muplus_OWNPV_X, &b_muplus_OWNPV_X);
    fChain->SetBranchAddress("muplus_OWNPV_Y", &muplus_OWNPV_Y, &b_muplus_OWNPV_Y);
    fChain->SetBranchAddress("muplus_OWNPV_Z", &muplus_OWNPV_Z, &b_muplus_OWNPV_Z);
@@ -2869,7 +3571,6 @@ void Lambdab::Init(TTree *tree)
    fChain->SetBranchAddress("muplus_TRUEENDVERTEX_Z", &muplus_TRUEENDVERTEX_Z, &b_muplus_TRUEENDVERTEX_Z);
    fChain->SetBranchAddress("muplus_TRUEISSTABLE", &muplus_TRUEISSTABLE, &b_muplus_TRUEISSTABLE);
    fChain->SetBranchAddress("muplus_TRUETAU", &muplus_TRUETAU, &b_muplus_TRUETAU);
-   fChain->SetBranchAddress("muplus_OSCIL", &muplus_OSCIL, &b_muplus_OSCIL);
    fChain->SetBranchAddress("muplus_ID", &muplus_ID, &b_muplus_ID);
    fChain->SetBranchAddress("muplus_PIDe", &muplus_PIDe, &b_muplus_PIDe);
    fChain->SetBranchAddress("muplus_PIDmu", &muplus_PIDmu, &b_muplus_PIDmu);
@@ -2885,12 +3586,57 @@ void Lambdab::Init(TTree *tree)
    fChain->SetBranchAddress("muplus_isMuon", &muplus_isMuon, &b_muplus_isMuon);
    fChain->SetBranchAddress("muplus_hasRich", &muplus_hasRich, &b_muplus_hasRich);
    fChain->SetBranchAddress("muplus_hasCalo", &muplus_hasCalo, &b_muplus_hasCalo);
+   fChain->SetBranchAddress("muplus_UsedRichAerogel", &muplus_UsedRichAerogel, &b_muplus_UsedRichAerogel);
+   fChain->SetBranchAddress("muplus_UsedRich1Gas", &muplus_UsedRich1Gas, &b_muplus_UsedRich1Gas);
+   fChain->SetBranchAddress("muplus_UsedRich2Gas", &muplus_UsedRich2Gas, &b_muplus_UsedRich2Gas);
+   fChain->SetBranchAddress("muplus_RichAboveElThres", &muplus_RichAboveElThres, &b_muplus_RichAboveElThres);
+   fChain->SetBranchAddress("muplus_RichAboveMuThres", &muplus_RichAboveMuThres, &b_muplus_RichAboveMuThres);
+   fChain->SetBranchAddress("muplus_RichAbovePiThres", &muplus_RichAbovePiThres, &b_muplus_RichAbovePiThres);
+   fChain->SetBranchAddress("muplus_RichAboveKaThres", &muplus_RichAboveKaThres, &b_muplus_RichAboveKaThres);
+   fChain->SetBranchAddress("muplus_RichAbovePrThres", &muplus_RichAbovePrThres, &b_muplus_RichAbovePrThres);
+   fChain->SetBranchAddress("muplus_RichDLLe", &muplus_RichDLLe, &b_muplus_RichDLLe);
+   fChain->SetBranchAddress("muplus_RichDLLmu", &muplus_RichDLLmu, &b_muplus_RichDLLmu);
+   fChain->SetBranchAddress("muplus_RichDLLpi", &muplus_RichDLLpi, &b_muplus_RichDLLpi);
+   fChain->SetBranchAddress("muplus_RichDLLk", &muplus_RichDLLk, &b_muplus_RichDLLk);
+   fChain->SetBranchAddress("muplus_RichDLLp", &muplus_RichDLLp, &b_muplus_RichDLLp);
+   fChain->SetBranchAddress("muplus_RichDLLbt", &muplus_RichDLLbt, &b_muplus_RichDLLbt);
+   fChain->SetBranchAddress("muplus_InAccMuon", &muplus_InAccMuon, &b_muplus_InAccMuon);
+   fChain->SetBranchAddress("muplus_isMuonLoose", &muplus_isMuonLoose, &b_muplus_isMuonLoose);
+   fChain->SetBranchAddress("muplus_MuonMuLL", &muplus_MuonMuLL, &b_muplus_MuonMuLL);
+   fChain->SetBranchAddress("muplus_MuonBkgLL", &muplus_MuonBkgLL, &b_muplus_MuonBkgLL);
+   fChain->SetBranchAddress("muplus_MuonNShared", &muplus_MuonNShared, &b_muplus_MuonNShared);
+   fChain->SetBranchAddress("muplus_InAccEcal", &muplus_InAccEcal, &b_muplus_InAccEcal);
+   fChain->SetBranchAddress("muplus_CaloEcalE", &muplus_CaloEcalE, &b_muplus_CaloEcalE);
+   fChain->SetBranchAddress("muplus_EcalPIDe", &muplus_EcalPIDe, &b_muplus_EcalPIDe);
+   fChain->SetBranchAddress("muplus_EcalPIDmu", &muplus_EcalPIDmu, &b_muplus_EcalPIDmu);
+   fChain->SetBranchAddress("muplus_InAccHcal", &muplus_InAccHcal, &b_muplus_InAccHcal);
+   fChain->SetBranchAddress("muplus_CaloHcalE", &muplus_CaloHcalE, &b_muplus_CaloHcalE);
+   fChain->SetBranchAddress("muplus_HcalPIDe", &muplus_HcalPIDe, &b_muplus_HcalPIDe);
+   fChain->SetBranchAddress("muplus_HcalPIDmu", &muplus_HcalPIDmu, &b_muplus_HcalPIDmu);
+   fChain->SetBranchAddress("muplus_InAccPrs", &muplus_InAccPrs, &b_muplus_InAccPrs);
+   fChain->SetBranchAddress("muplus_PrsPIDe", &muplus_PrsPIDe, &b_muplus_PrsPIDe);
+   fChain->SetBranchAddress("muplus_CaloPrsE", &muplus_CaloPrsE, &b_muplus_CaloPrsE);
+   fChain->SetBranchAddress("muplus_InAccSpd", &muplus_InAccSpd, &b_muplus_InAccSpd);
+   fChain->SetBranchAddress("muplus_CaloSpdE", &muplus_CaloSpdE, &b_muplus_CaloSpdE);
+   fChain->SetBranchAddress("muplus_InAccBrem", &muplus_InAccBrem, &b_muplus_InAccBrem);
+   fChain->SetBranchAddress("muplus_BremPIDe", &muplus_BremPIDe, &b_muplus_BremPIDe);
+   fChain->SetBranchAddress("muplus_VeloCharge", &muplus_VeloCharge, &b_muplus_VeloCharge);
    fChain->SetBranchAddress("muplus_TRACK_Type", &muplus_TRACK_Type, &b_muplus_TRACK_Type);
    fChain->SetBranchAddress("muplus_TRACK_Key", &muplus_TRACK_Key, &b_muplus_TRACK_Key);
+   fChain->SetBranchAddress("muplus_TRACK_CHI2", &muplus_TRACK_CHI2, &b_muplus_TRACK_CHI2);
+   fChain->SetBranchAddress("muplus_TRACK_NDOF", &muplus_TRACK_NDOF, &b_muplus_TRACK_NDOF);
    fChain->SetBranchAddress("muplus_TRACK_CHI2NDOF", &muplus_TRACK_CHI2NDOF, &b_muplus_TRACK_CHI2NDOF);
    fChain->SetBranchAddress("muplus_TRACK_PCHI2", &muplus_TRACK_PCHI2, &b_muplus_TRACK_PCHI2);
+   fChain->SetBranchAddress("muplus_TRACK_VeloCHI2NDOF", &muplus_TRACK_VeloCHI2NDOF, &b_muplus_TRACK_VeloCHI2NDOF);
+   fChain->SetBranchAddress("muplus_TRACK_TCHI2NDOF", &muplus_TRACK_TCHI2NDOF, &b_muplus_TRACK_TCHI2NDOF);
+   fChain->SetBranchAddress("muplus_VELO_UTID", &muplus_VELO_UTID, &b_muplus_VELO_UTID);
+   fChain->SetBranchAddress("muplus_TRACK_FirstMeasurementX", &muplus_TRACK_FirstMeasurementX, &b_muplus_TRACK_FirstMeasurementX);
+   fChain->SetBranchAddress("muplus_TRACK_FirstMeasurementY", &muplus_TRACK_FirstMeasurementY, &b_muplus_TRACK_FirstMeasurementY);
+   fChain->SetBranchAddress("muplus_TRACK_FirstMeasurementZ", &muplus_TRACK_FirstMeasurementZ, &b_muplus_TRACK_FirstMeasurementZ);
+   fChain->SetBranchAddress("muplus_TRACK_MatchCHI2", &muplus_TRACK_MatchCHI2, &b_muplus_TRACK_MatchCHI2);
    fChain->SetBranchAddress("muplus_TRACK_GhostProb", &muplus_TRACK_GhostProb, &b_muplus_TRACK_GhostProb);
    fChain->SetBranchAddress("muplus_TRACK_CloneDist", &muplus_TRACK_CloneDist, &b_muplus_TRACK_CloneDist);
+   fChain->SetBranchAddress("muplus_TRACK_Likelihood", &muplus_TRACK_Likelihood, &b_muplus_TRACK_Likelihood);
    fChain->SetBranchAddress("nCandidate", &nCandidate, &b_nCandidate);
    fChain->SetBranchAddress("totCandidates", &totCandidates, &b_totCandidates);
    fChain->SetBranchAddress("EventInSequence", &EventInSequence, &b_EventInSequence);
@@ -2909,9 +3655,7 @@ void Lambdab::Init(TTree *tree)
    fChain->SetBranchAddress("GpsMinute", &GpsMinute, &b_GpsMinute);
    fChain->SetBranchAddress("GpsSecond", &GpsSecond, &b_GpsSecond);
    fChain->SetBranchAddress("TriggerType", &TriggerType, &b_TriggerType);
-   fChain->SetBranchAddress("Primaries", &Primaries, &b_Primaries);
    fChain->SetBranchAddress("Polarity", &Polarity, &b_Polarity);
-   fChain->SetBranchAddress("nPV", &nPV, &b_nPV);
    fChain->SetBranchAddress("PVX", PVX, &b_PVX);
    fChain->SetBranchAddress("PVY", PVY, &b_PVY);
    fChain->SetBranchAddress("PVZ", PVZ, &b_PVZ);
@@ -2969,10 +3713,5 @@ Int_t Lambdab::Cut(Long64_t entry)
 // returns  1 if entry is accepted.
 // returns -1 otherwise.
    return 1;
-}
-// hacking between versions of MC ;)
-Float_t Lambdab::Manage_B_FullFit_chi2_B(Int_t j)
-{
-	return (b_B_FullFit_chi2_B?B_FullFit_chi2_B[j]:B_FullFit_chi2[j]);
 }
 #endif // #ifdef Lambdab_cxx

@@ -1,0 +1,48 @@
+#============================================================================
+# Created    : 2010-10-07
+# Maintainer : Andrew Powell (LHCb)04
+#============================================================================
+package           PIDPerfScripts
+version           v5r0
+
+#============================================================================
+# Structure, i.e. directories to process. 
+#============================================================================
+branches          cmt doc src scripts make python
+
+#============================================================================
+# Used packages. 
+#============================================================================
+
+use   GaudiPolicy         v*
+use   ROOT                v*    LCG_Interfaces
+use   Boost               v*    LCG_Interfaces
+use   PIDPerfTools        v*    PIDCalib
+
+#macro_append ROOT_linkopts " -lFoam -lMathMore -lRooFitCore"
+
+apply_pattern install_more_includes more=PIDPerfScripts
+
+#set CALIBDATASTORE /data/lhcb/users/powell/CalibData
+#set CALIBDATASTORE /afs/cern.ch/lhcb/group/rich/vol1/RichPidCalib/CalibData/
+#set CALIBREFDATASTORE /data/lhcb/users/hunt/CalibData
+
+#============================================================================
+# default for CERN access
+set CALIBDATASTORE /castor/cern.ch/grid/lhcb/user/p/powell/CalibData/
+set CALIBREFDATASTORE /castor/cern.ch/grid/lhcb/user/p/phunt/CalibData/
+set MUONCALIBDATASTORE /castor/cern.ch/grid/lhcb/user/j/jotalora/CalibData
+set MUONCALIBREFDATASTORE /castor/cern.ch/grid/lhcb/user/j/jotalora/CalibData
+#============================================================================
+
+#============================================================================
+# define component library link options
+#============================================================================
+apply_pattern  install_python_modules
+
+#============================================================================
+# Applications
+#============================================================================
+
+
+#============================================================================

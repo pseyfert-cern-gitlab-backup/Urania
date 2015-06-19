@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--- $Id: -->
+<!--- Author  : Philip Hunt -->
+<!--- Created : 2011-05-10 -->
+
+<lcgdict>
+  <class pattern = "std::map<std::string,*>" />
+  <class pattern = "std::pair<std::string,*>" />
+  <class name = "RooPhysFit::TDirectoryError" />
+  <class name = "RooPhysFit::WSImportCodeFailure" />
+  <class name = "RooPhysFit::WSImportFailure" />
+  <class name = "RooPhysFit::WSRetrievalFailure" />
+  <class name = "RooPhysFit::IOFailure" />
+  <class name = "RooPhysFit::GeneralException" />
+  <class name = "RooPhysFit::RooPhysFitter" />
+  <class name = "RooPhysFit::RooDMassFitter" />
+  <class name = "RooPhysFit::RooDplusMassFitter" />
+  <class name = "RooPhysFit::RooDstarD0MassFitter" />
+  <class name = "RooCruijff" />
+  <class name = "RooCruijffSimple" />
+  <class name = "RooGranet" />
+  <class name = "RooPhiBg" />
+  <class name = "RooPearsonsChi2Var" />
+  <class name = "RooGaussianChi2Var" />
+  <class name = "RooYatesChi2Var" />
+  <class name = "RooLLRatioVar" />
+</lcgdict>

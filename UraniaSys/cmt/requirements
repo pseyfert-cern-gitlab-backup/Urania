@@ -3,7 +3,7 @@
 # Maintainer : Diego Martinez Santos
 #============================================================================
 package           UraniaSys
-version           v1r0
+version           v1r1
 #============================================================================
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -13,25 +13,33 @@ branches          cmt doc
 #    Put as many lines as needed, with all packages, without the '#'
 #============================================================================
 
-use Urania			v1r0	Phys			# Diego Martinez Santos
+
 
 use  MCLimit			v1r3	Math			# Diego Martinez Santos
-use  SomeUtils			v3r1	Math			# Diego Martinez Santos
+use  SomeUtils			v3r2	Math			# Diego Martinez Santos
 
-use  Bs2JpsiPhiParams		v1r0	Phys			# ...
+use  Urania			v1r1	Phys			# Diego Martinez Santos
+use  Bs2JpsiPhiParams		v1r1	Phys			# ...
 use  Bs2MuMuParams		v2r3	Phys			# Diego Martinez Santos, Marc-Olivier Bettler, Matheiu Perrin-Terrin
-use  Bs2MuMu			v2r1	Phys			# Diego Martinez Santos
-use  BsJPsiKst                  v2r3   	Phys                    # Paula Alvarez, Diego Martinez Santos
-use  Bs2JpsiKs                  v4r1    Phys                    # Patrick Koppenburg
-use  Lambdab2Jpsippi            v1r0    Phys                    # P. Koppenburg
+use  Bs2MuMu			v2r2	Phys			# Diego Martinez Santos
+use  BsJPsiKst                  v2r4   	Phys                    # Paula Alvarez, Diego Martinez Santos
+use  Bs2JpsiKs                  v5r0    Phys                    # Patrick Koppenburg
+use  Lambdab2Jpsippi            v2r0    Phys                    # P. Koppenburg
 
-use  B2DXFitters		v2r0	PhysFit			# Manuel Schiller, Eduardo Rodrigues
+use  B2DXFitters		v2r1	PhysFit			# Manuel Schiller, Eduardo Rodrigues
 use  P2VV			v3r0	PhysFit			# Jeroen Van Leerdam, Roel Aaij
-use  SomeMassModels		v2r0	PhysFit			# Diego Martinez Santos
+use  SomeMassModels		v2r1	PhysFit			# Diego Martinez Santos
 
+use  RooPhysFitter              v2r0    PhysFit                 # Philip Hunt
+
+use CalibDataScripts            v3r0    PIDCalib                # Andrew Powell
+use PIDPerfTools                v5r0    PIDCalib                # Andrew Powell
+use PIDPerfScripts              v5r0    PIDCalib                # Andrew Powell
 use  LHCbStyle			v2r3	RootTools		# D. Martinez Santos ?
 use  SimpleTools	  	v1r2	RootTools           	# Conor Fitzpatrick
 use  MoreSimpleTools	  	v1r6	RootTools           	# Rob Lambert
+
+
 
 
 apply_pattern container_package

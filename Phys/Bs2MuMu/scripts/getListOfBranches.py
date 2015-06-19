@@ -14,7 +14,6 @@ def getListOfBranches(nTupleName,channel, lookFor=''):
 	found = 0
 
 
-
 	print '  The lines containing: ', lookFor
 	for br in totBrList:
 		name = br.GetName()
