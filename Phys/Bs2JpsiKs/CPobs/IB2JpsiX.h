@@ -47,6 +47,7 @@ static const TString m_TMVA_teacher = "./TMVA_teacher.exe";
 static const TString m_expert       = "./expert.exe";
 static const TString m_TMVA_expert  = "./TMVA_expert.exe";
 static const TString m_optimisation = "optimisationTag";
+static const TString m_createTuple  = "./createTuple.exe";
 
 // Supported Data Types
 static const TString m_LHCb2011          = "LHCb2011";
@@ -59,6 +60,8 @@ static const TString m_SigBd             = "SigBd";
 static const TString m_SigBdPrescaled    = "SigBdPrescaled";
 static const TString m_SigBs             = "SigBs";
 static const TString m_SigBsPrescaled    = "SigBsPrescaled";
+static const TString m_SigBsCP           = "SigBsCP";
+static const TString m_SigBsCPPrescaled  = "SigBsCPPrescaled";
 static const TString m_SigKstar          = "SigKstar";
 static const TString m_SigKstarWM        = "SigKstarWM";
 static const TString m_IncJpsi           = "IncJpsi";
@@ -66,6 +69,7 @@ static const TString m_IncJpsi           = "IncJpsi";
 static bool isSigMC (TString data) {
   return (data==m_SigBd || data==m_SigBdPrescaled ||
           data==m_SigBs || data==m_SigBsPrescaled ||
+          data==m_SigBsCP || data==m_SigBsCPPrescaled ||
           data==m_SigKstar || data==m_SigKstarWM);
 };
 static bool isLHCb (TString data) {
@@ -76,7 +80,8 @@ static bool isLHCb (TString data) {
 static bool isPrescaled (TString data) {
   return (data==m_LHCb2011Prescaled || data==m_LHCb2012Prescaled ||
           data==m_LHCbAllPrescaled || data==m_IncJpsi ||
-          data==m_SigBdPrescaled || data==m_SigBsPrescaled);
+          data==m_SigBdPrescaled || data==m_SigBsPrescaled ||
+          data==m_SigBsCPPrescaled);
 };
 
 // Supported Steps in Selection
@@ -119,8 +124,8 @@ static const double clight = 299.792458; // Units: mm/ns
 static const double tauErrcut = 0.2; // Units: ps
 static const double taucut = 0.2; // Units: ps
 static const double m_OWNPVZ_range = 250; // Units: cm
-static const int ipcut_LL = 28;
-static const int ipcut_DD = 44;
+static const int ipcut_LL = 66;
+static const int ipcut_DD = 200;
 
 // Mass Ranges
 static const double BdBox_min = 5230;
@@ -155,6 +160,12 @@ public:
   virtual double massErr(const unsigned int pv) = 0;
   virtual double time(const unsigned int pv) = 0;
   virtual double timeErr(const unsigned int pv) = 0;
+  virtual int    tagOS(TString data) = 0;
+  virtual double etaOS(TString data) = 0;
+  virtual int    tagSSK() = 0;
+  virtual double etaSSK() = 0;
+  virtual int    tagCombi() = 0;
+  virtual double etaCombi() = 0;
   virtual double jpsiIPchi2(const unsigned int pv) = 0;
   virtual unsigned int primaries() = 0;
   virtual int TrackType() = 0;
@@ -162,6 +173,7 @@ public:
   virtual ULong64_t getEventNumber() = 0;
   virtual float getGpsSecond() = 0;
   virtual int getInputFile() = 0;
+  virtual int getPolarity() = 0;
   virtual double weightVal(const unsigned int pv) = 0;
   virtual float neuralnet(const unsigned int pv) = 0;
   virtual int isUnbiased() = 0;

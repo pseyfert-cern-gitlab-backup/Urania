@@ -48,19 +48,24 @@ public :
   Float_t  B0_FitDaughtersPVConst_M[maxLeafs];
   Float_t  B0_FitDaughtersPVConst_tau[maxLeafs];
   Float_t  B0_FitDaughtersPVConst_tauErr[maxLeafs];
-  Int_t    B0_TAGDECISION;
-  Double_t B0_TAGOMEGA;
   Int_t    B0_TAGDECISION_OS;
   Double_t B0_TAGOMEGA_OS;
+  Int_t    obsTagOS_StdComb;
+  Double_t obsEtaOS_StdComb;
   Short_t  B0_SS_Kaon_DEC;
   Float_t  B0_SS_Kaon_PROB;
   Short_t  B0_SS_nnetKaon_DEC;
   Float_t  B0_SS_nnetKaon_PROB;
+  Int_t    B0_CombinedTag_Dec;
+  Double_t B0_CombinedTag_Omega;
+  Int_t    B0_CombinedTag_Dec_trueB;
+  Double_t B0_CombinedTag_Omega_trueB;
+  Int_t    B0_CombinedTag_Dec_trueBbar;
+  Double_t B0_CombinedTag_Omega_trueBbar;
 
   // *** Data Manipulation ***
   UInt_t    runNumber;
   ULong64_t eventNumber;
-  Double_t  GpsSecond;
   Short_t   Polarity;
 
   // *** Observables for Common Selection Cuts ***
@@ -188,6 +193,15 @@ public :
   Double_t sweight[maxLeafs];
   Int_t unbiased;
   Float_t netOutput[maxLeafs];
+  
+  // *** Time Information ***
+  ULong64_t GpsTime;
+  Int_t     GpsYear;
+  Int_t     GpsMonth;
+  Int_t     GpsDay;
+  Int_t     GpsHour;
+  Int_t     GpsMinute;
+  Double_t  GpsSecond;
 
 
 // #############################################################################
@@ -239,19 +253,26 @@ void B2JpsiKs::Init(TTree *tree, const TString module, const TString data,
   fChain->SetBranchAddress("B0_FitDaughtersPVConst_M", &B0_FitDaughtersPVConst_M);
   fChain->SetBranchAddress("B0_FitDaughtersPVConst_tau", &B0_FitDaughtersPVConst_tau);
   fChain->SetBranchAddress("B0_FitDaughtersPVConst_tauErr", &B0_FitDaughtersPVConst_tauErr);
-  fChain->SetBranchAddress("B0_TAGDECISION", &B0_TAGDECISION);
-  fChain->SetBranchAddress("B0_TAGOMEGA", &B0_TAGOMEGA);
   fChain->SetBranchAddress("B0_TAGDECISION_OS", &B0_TAGDECISION_OS);
   fChain->SetBranchAddress("B0_TAGOMEGA_OS", &B0_TAGOMEGA_OS);
+  fChain->SetBranchAddress("obsTagOS_StdComb", &obsTagOS_StdComb);
+  fChain->SetBranchAddress("obsEtaOS_StdComb", &obsEtaOS_StdComb);
   fChain->SetBranchAddress("B0_SS_Kaon_DEC", &B0_SS_Kaon_DEC);
   fChain->SetBranchAddress("B0_SS_Kaon_PROB", &B0_SS_Kaon_PROB);
   fChain->SetBranchAddress("B0_SS_nnetKaon_DEC", &B0_SS_nnetKaon_DEC);
   fChain->SetBranchAddress("B0_SS_nnetKaon_PROB", &B0_SS_nnetKaon_PROB);
+  if (module!=m_slimtuple) {
+    fChain->SetBranchAddress("B0_CombinedTag_Dec", &B0_CombinedTag_Dec);
+    fChain->SetBranchAddress("B0_CombinedTag_Omega", &B0_CombinedTag_Omega);
+    fChain->SetBranchAddress("B0_CombinedTag_Dec_trueB", &B0_CombinedTag_Dec_trueB);
+    fChain->SetBranchAddress("B0_CombinedTag_Omega_trueB", &B0_CombinedTag_Omega_trueB);
+    fChain->SetBranchAddress("B0_CombinedTag_Dec_trueBbar", &B0_CombinedTag_Dec_trueBbar);
+    fChain->SetBranchAddress("B0_CombinedTag_Omega_trueBbar", &B0_CombinedTag_Omega_trueBbar);
+  }
 
   // *** Data Manipulation ***
   fChain->SetBranchAddress("runNumber", &runNumber);
   fChain->SetBranchAddress("eventNumber", &eventNumber);
-  fChain->SetBranchAddress("GpsSecond", &GpsSecond);
   fChain->SetBranchAddress("Polarity", &Polarity);
 
   // *** Observables for Common Selection Cuts ***
@@ -286,10 +307,10 @@ void B2JpsiKs::Init(TTree *tree, const TString module, const TString data,
   fChain->SetBranchAddress("PVNTRACKS", &PVNTRACKS);
   fChain->SetBranchAddress("nSPDHits", &nSPDHits);
 
-  fChain->SetBranchAddress("B0_FitDaughtersPVConst_PT", &B0_FitDaughtersPVConst_P);
+  fChain->SetBranchAddress("B0_FitDaughtersPVConst_PT", &B0_FitDaughtersPVConst_PT);
   fChain->SetBranchAddress("B0_ENDVERTEX_CHI2", &B0_ENDVERTEX_CHI2);
   fChain->SetBranchAddress("B0_ENDVERTEX_NDOF", &B0_ENDVERTEX_NDOF);
-  fChain->SetBranchAddress("B0_FitDaughtersPVConst_P", &B0_FitDaughtersPVConst_PT);
+  fChain->SetBranchAddress("B0_FitDaughtersPVConst_P", &B0_FitDaughtersPVConst_P);
   fChain->SetBranchAddress("B0_AllDIRA", &B0_AllDIRA);
 
   fChain->SetBranchAddress("J_psi_1S_ENDVERTEX_CHI2", &J_psi_1S_ENDVERTEX_CHI2);
@@ -380,9 +401,18 @@ void B2JpsiKs::Init(TTree *tree, const TString module, const TString data,
     fChain->SetBranchAddress("sweight", &sweight);
     fChain->SetBranchAddress("unbiased", &unbiased);
   }
-  if ((module==m_weighting && step!=m_NNKstar) || module==m_optimisation) {
+  if ((module==m_weighting && step!=m_NNKstar) || module==m_optimisation || module==m_createTuple) {
     fChain->SetBranchAddress("netOutput", &netOutput);
   }
+
+  // *** Time Information ***
+  fChain->SetBranchAddress("GpsTime", &GpsTime);
+  fChain->SetBranchAddress("GpsYear", &GpsYear);
+  fChain->SetBranchAddress("GpsMonth", &GpsMonth);
+  fChain->SetBranchAddress("GpsDay", &GpsDay);
+  fChain->SetBranchAddress("GpsHour", &GpsHour);
+  fChain->SetBranchAddress("GpsMinute", &GpsMinute);
+  fChain->SetBranchAddress("GpsSecond", &GpsSecond);
 
 // #############################################################################
 

@@ -20,6 +20,8 @@
 #include "RooAbsCategory.h" 
 #include "P2VV/RooCategoryVar.h" 
 
+using namespace std;
+
 //_____________________________________________________________________________
 RooCategoryVar::RooCategoryVar(const char* name, const char* title,
     RooAbsCategory& category, const RooArgList& variables) :

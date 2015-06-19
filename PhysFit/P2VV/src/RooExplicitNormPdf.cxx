@@ -22,7 +22,6 @@
 //
 
 #include <iostream>
-using std::endl;
 
 #include "Riostream.h"
 #include "RooMsgService.h"
@@ -32,6 +31,8 @@ using std::endl;
 #include "RooCustomizer.h"
 #include "RooRealVar.h"
 #include "RooAbsPdf.h"
+
+using namespace std;
 
 //_____________________________________________________________________________
 RooExplicitNormPdf::RooExplicitNormPdf(const char *name, const char* title,

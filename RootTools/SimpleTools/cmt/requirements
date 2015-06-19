@@ -3,7 +3,7 @@
 # Maintainer : Conor Fitzpatrick
 #============================================================================
 package           SimpleTools
-version           v1r3
+version           v2r0
 
 #============================================================================
 # Structure, i.e. directories to process.

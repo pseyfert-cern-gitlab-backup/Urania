@@ -13,7 +13,6 @@
 #include <TFile.h>
 #include <TROOT.h>
 #include <TSystem.h>
-#include <TCint.h>
 #include <TMath.h>
 #include <TTree.h>
 #include <TStopwatch.h>
@@ -42,8 +41,8 @@
 #include<TVirtualHistPainter.h>
 #include <boost/lexical_cast.hpp>
 #include<TObjArray.h>
-using std::cout;
-using std::endl;
+
+using namespace std;
 using namespace boost;
 
 typedef vector<Bool_t> array1b;

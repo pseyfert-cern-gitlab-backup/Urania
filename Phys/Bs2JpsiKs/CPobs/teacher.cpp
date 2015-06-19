@@ -84,23 +84,25 @@ int runTeacher(const TString module, const TString data, const TString step,
   unsigned int nhidden = nvar;
   if (step==m_NNUnbiased) {
     if (TMath::Abs(prepFlag)==1012) {
-      nhidden = (tracktype==m_LL ? 21 : 24);
+      nhidden = (tracktype==m_LL ? 17 : 28);
     } else if (TMath::Abs(prepFlag)==1022) {
       nhidden = (tracktype==m_LL ? 37 : 40);
     } else if (TMath::Abs(prepFlag)==612) {
       if (trainset!="Full") {
-        nhidden = (tracktype==m_LL ? 18 : 33);
+        nhidden = (tracktype==m_LL ? 18 : 32);
       } else {
-        nhidden = (tracktype==m_LL ? 23 : 33);
+        nhidden = (tracktype==m_LL ? 21 : 32);
       }
+    } else if (TMath::Abs(prepFlag)==212) {
+      nhidden = (tracktype==m_LL ? 29 : 34);
     }
   } else if (step==m_NNKstar) {
     if (TMath::Abs(prepFlag)==1012) {
-      nhidden = 5;
-    } else if (TMath::Abs(prepFlag)==1022) {
+      nhidden = 7;
+    } else if (TMath::Abs(prepFlag)==622) {
       nhidden = 14;
     } else if (TMath::Abs(prepFlag)==612) {
-      nhidden = 8;
+      nhidden = 7;
     } else if (TMath::Abs(prepFlag)==212) {
       nhidden = 11;
     }
@@ -224,16 +226,6 @@ int prepareTrainingSample(IB2JpsiX* trainTuple, NeuroBayesTeacher* nb,
           nNonTeach++;
           continue;
         }
-        // Error Handling
-        // NeuroBayes only allows 1.5 million training patterns
-        /*
-        if (nTeach>= NB_MAXPATTERN - 3*(nvar+1)) {
-          std::cout << "ERROR: Used " << nTeach << "/"
-                    << NB_MAXPATTERN - 3*(nvar+1) << " events." 
-                    << " Exiting before NeuroBayes kills the job" << std::endl;
-          break;
-        }
-        */
       } else {
         // Error Handling
         std::cout << "WARNING: read sweight " << sweight

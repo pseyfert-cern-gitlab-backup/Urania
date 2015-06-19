@@ -128,7 +128,34 @@ namespace RooPhysFit {
                             Float_t c_max, Float_t a_start, Float_t a_min,
                             Float_t a_max, Float_t b_start, Float_t b_min,
                             Float_t b_max, const char* unit="MeV/c^{2}");
+    /// RooDstD0BG for the WS
 
+    void MakeDelmBkgDstD0BGForWS(RooRealVar& dm0, // threshold
+                            RooRealVar& c, // exponent
+                            RooRealVar& a, // power
+                            RooRealVar& b // linear
+                            );
+    /// RooDstD0BG background PDF
+    void MakeDelmBkgDstD0BGForWS(Float_t dm0_start, Float_t dm0_min, 
+                            Float_t dm0_max, Float_t c_start, Float_t c_min,
+                            Float_t c_max, Float_t a_start, Float_t a_min,
+                            Float_t a_max, Float_t b_start, Float_t b_min,
+                            Float_t b_max, const char* unit="MeV/c^{2}");
+    
+    /// RooDstD0BG background PDF with a fixed b and c
+    void MakeDelmBkgDstD0BGForWS(Float_t dm0_start, Float_t dm0_min, 
+                            Float_t dm0_max, Float_t c, Float_t a_start, 
+                            Float_t a_min, Float_t a_max,
+                            Float_t b, const char* unit="MeV/c^{2}");
+
+    /// RooDstD0BG PDF with a fixed threshold
+    void MakeDelmBkgDstD0BGForWS(Float_t dm0,  Float_t c_start, Float_t c_min,
+                            Float_t c_max, Float_t a_start, Float_t a_min,
+                            Float_t a_max, Float_t b_start, Float_t b_min,
+                            Float_t b_max, const char* unit="MeV/c^{2}");
+
+    void MakeDelmBkgThreshold( Float_t c_start, Float_t c_min, Float_t c_max);
+ void MakeDelmBkgThresholdForWS( Float_t c_start, Float_t c_min, Float_t c_max);
     /// RooGranet background PDF
     void MakeDelmBkgGranet(RooRealVar& dm0, // threshold
                            RooRealVar& a, // exponent
@@ -143,6 +170,17 @@ namespace RooPhysFit {
     void MakeDelmBkgGranet(Float_t dm0, Float_t a_start, Float_t a_min,
                            Float_t a_max, Float_t b_start, Float_t b_min,
                            Float_t b_max, const char* unit="MeV/c^{2}");
+
+    /// RooCheby bkg PDF for multibody D decays
+  
+   void MakeDMassBkgFlatForMult(RooRealVar& grad);
+    /// D0 flat background model (unit is the "mass" unit)
+    void MakeDMassBkgFlatForMult(Float_t grad_start, Float_t grad_min,
+                          Float_t grad_max,
+                          const char* unit="MeV/c^{2}");
+  void MakeDMassBkgExpForMult(Float_t decay_start, Float_t decay_min,
+                          Float_t decay_max,
+                          const char* unit="MeV/c^{2}");
 
     /// RooTwoBodyPhspApprox background PDF
     void MakeDelmBkgTwoBodyPhsp(RooRealVar& c1, // 1st-order coefficient
@@ -335,6 +373,8 @@ namespace RooPhysFit {
     
   const char* m_delmSigModelName;
   const char* m_delmBkgModelName;
+  const char* m_delmBkgModelForWSName;
+  const char* m_dMassBkgForMultModelName;
     
   const char* m_2dMassSigModelName;
   const char* m_2dMassCombBkgModelName;

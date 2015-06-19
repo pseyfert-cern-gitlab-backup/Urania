@@ -404,7 +404,6 @@ c1.SetPhi(-40);
 h2->Draw("lego2")
 png("Dalitz 3D (pi)")
 
-
 h2a->SetMaximum(70)
 h2b->SetMaximum(70)
 h2a->SetMinimum(0)

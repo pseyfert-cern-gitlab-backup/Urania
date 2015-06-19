@@ -26,6 +26,7 @@ public:
 	      RooAbsReal& _delta_pa,
 	      RooAbsReal& _delta_pe,
 	      RooAbsReal& _delta_S,
+	      RooAbsReal& _Cfact_10,
 	      RooAbsReal& _w_2A_pe,
 	      RooAbsReal& _w_A_S2,
 	      RooAbsReal& _w_A_0A_pe,
@@ -54,6 +55,7 @@ protected:
   RooRealProxy delta_pa ;
   RooRealProxy delta_pe ;
   RooRealProxy delta_S ;
+  RooRealProxy Cfact_10 ;
   RooRealProxy w_2A_pe ;
   RooRealProxy w_A_S2 ;
   RooRealProxy w_A_0A_pe ;

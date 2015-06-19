@@ -64,7 +64,10 @@ public:
   double error(){ return total_error(); };
     
   double total_error() const;
-  double rel_error() const { return total_error()/m_value;};
+  double relative_error() const { return total_error()/m_value;};
+  double rel_error()const   {return relative_error();  };
+  
+  
   
   double value(){ return m_value; }
   void set_value(double value){m_value = value; };

@@ -3,7 +3,7 @@
 # Maintainer : Andrew Powell (Originally written by Philip Hunt)
 #============================================================================
 package           RooPhysFitter
-version           v2r3
+version           v2r7
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -42,8 +42,11 @@ apply_pattern reflex_dictionary_src                                         \
 #============================================================================
 # Component library building rule
 #============================================================================
+private
+macro classdef_ext "_dict_classdef.cpp" ROOT_GE_6_00 "_classdef.cpp"
+end_private
 library   RooPhysFitterLib   ../src/*.cpp                                    \
-          ../$(tag)/dict/RooPhysFitter/RooPhysFitterDict_dict_classdef.cpp
+          ../$(tag)/dict/RooPhysFitter/RooPhysFitterDict$(classdef_ext)
 
 #============================================================================
 # define linker library link options
@@ -59,7 +62,7 @@ macro_append    ROOT_linkopts " -lMatrix -lMathCore -lMathMore"
 macro_append    ROOT_linkopts " -lRooFitCore -lRooFit -lRooStats"
 
 #### Cintex libraries (Reflex -> CINT) ####
-macro_append    ROOT_linkopts " -lCintex"
+macro_append    ROOT_linkopts " -lCintex" ROOT_GE_6_00 ""
 
 #============================================================================
 # Define component library link options

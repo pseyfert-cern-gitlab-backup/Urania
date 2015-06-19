@@ -1,8 +1,10 @@
 from ROOT import *
 from Urania.SympyBasic import *
+from Urania.LatexFunctions import *
 from math import pi
 from os import environ, system as shell
 from sympy.utilities import codegen
+from time import sleep
 
 def RooGenericfy(symfunction, variables, name = "f"):
     """ Creates a RooGenericPdf from s Sympy expression,
@@ -63,6 +65,30 @@ class RooClassEditor:
             else : s = thing[1]
             self.sublist.append((thing[0],s))
     
+    def printToLatex(self, lengthline = 40, linespage = 60):
+        lengthline = int(lengthline)
+        texfilename = self.filename.replace(".cxx",".tex")
+        f = file(texfilename,"w")
+        sym_lines = self.symfunction.as_ordered_terms()
+        ll = []
+        for line in sym_lines:
+            ll.append(len(Ulatex(line)))
+        ll.sort()
+        ll.reverse()
+        
+        begintex(f, width = round(0.02*ll[0])) ## estimate the paper width as 0.1 inches per character of the longest line
+        f.write("Evaluate: \n")
+        do_multline(self.symfunction, f, lengthline,linespage)
+        page_break(f)
+        for code in self.integrals.keys():
+            f.write("Integral " + str(code) + ": \n")
+            do_multline(self.integrals[code][1],f, lengthline,linespage)
+        f.write("\\end{document}\n")
+        #sleep(10)
+        #shell("pdflatex " + texfilename)
+        
+        #return
+        
     def writeSubstitutions(self):
         subs_str = ""
         for thing in self.sublist: subs_str += "Double_t " + str(thing[1]) + " = " + strCPP(thing[0]) +";\n"
@@ -88,6 +114,7 @@ class RooClassEditor:
             if line.split()[0] != "{" : continue
             if search_eval_bracket:
                 fcopy.write(self.writeSubstitutions())
+                #fcopy.write("return " + strCPP(self.func.subs(self.sublist) +";\n")
                 search_eval_bracket = 0
             if search_code_bracket:
                 for code in self.integrals: fcopy.write(" if ( matchArgs(allVars, analVars, "+ makeVarString(self.integrals[code][0])+" ) )  return "+ str(code)+";\n")

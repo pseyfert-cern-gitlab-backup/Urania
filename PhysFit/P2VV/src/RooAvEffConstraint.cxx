@@ -20,8 +20,7 @@
 
 #include "P2VV/RooAvEffConstraint.h" 
 
-using std::vector;
-using std::auto_ptr;
+using namespace std;
 
 //_____________________________________________________________________________
 RooAvEffConstraint::RooAvEffConstraint(const char *name, const char *title, 

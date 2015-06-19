@@ -1,4 +1,7 @@
 from sympy import latex
+from sympy.printing.latex import LatexPrinter 
+from Urania import histoTex
+
 def begintex(f, width = 5.5, height = 8.5):
     """ adds some lines at the startup to make a tex file
     """
@@ -38,10 +41,83 @@ def page_break(f):
     f.write("\\newpage\n")
     
 def Ulatex(expr):
+    if not "atoms" in dir(expr): return latex(expr)
     things = expr.atoms()
     for thing in things:
         if "useLatexName" in dir(thing):thing.useLatexName()
-    out = latex(expr)
+    out = User_latex(expr)
     for thing in things:
         if "useLatexName" in dir(thing):thing.useFirstName()
     return out
+
+def do_multline(expr, f, lengthline = 40, linespage = 60):
+    begin_multline(f)
+    ##thing = Ulatex(expr)
+##    Nlines = len(thing)*1./lengthline
+##    Nlines = int(Nlines)+1
+    sym_lines = expr.as_ordered_terms()  
+    Nlines = len(sym_lines)
+    page = 0
+    for i in range(Nlines):
+        pageline = i - page*linespage
+        if pageline > linespage: 
+            multline_break(f)
+            page += 1
+        f.write(Ulatex(sym_lines[i]) + " \\\\ \n")
+    end_multline(f)
+
+class ULatexPrinter(LatexPrinter):
+        printmethod = "_ulatex"
+
+        _default_settings = {
+            "order": None,
+            "mode": "plain",
+            "itex": False,
+            "fold_frac_powers": False,
+            "fold_func_brackets": False,
+            "mul_symbol": None,
+            "inv_trig_style": "abbreviated",
+            "mat_str": "smallmatrix",
+            "mat_delim": "(",
+            }
+
+        def __init__(self, settings=None):
+            LatexPrinter.__init__(self,settings)
+
+        #def _print_conjugate(self, expr, exp=None):
+         #   tex = r"{%s}^{*}" % self._print(expr.args[0])
+
+          #  if exp is not None:
+           #     return r"%s^{%s}" % (tex, exp)
+           # else:
+            #    return tex
+                                       
+                                                                                                                                                                                                                                 
+def User_latex(expr, **settings):
+    r"""Convert the given expression to LaTeX representation.
+    
+    Same as latex(expr,settings) but changing the representation
+    of complex conjugate from '\overline' to '^*'
+    """
+
+    return ULatexPrinter(settings).doprint(expr)
+    
+def beginTable(f, NColumns):
+    f.write("\\begin{table}\n")
+    f.write("\\begin{center}\n")
+    f.write("\\begin{tabular}{ " + "c" * NColumns + "} \n")
+    f.write("\\hline\n")
+
+def fromListToRow(things):
+    line = "$" + Ulatex(things[0]) + "$"
+    for thing in things[1:]:
+        line += "&$" + Ulatex(thing) + "$"
+    line += "\\\\ \n"
+    return line
+
+def endTable(f):
+    f.write("\\end{tabular}\n")
+    f.write("\\end{center}\n")
+    f.write("\\end{table}\n")
+
+def PDGzed(no): return(round(no, histoTex.nb_digit_PDG(no)))

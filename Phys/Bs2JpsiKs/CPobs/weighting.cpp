@@ -514,13 +514,13 @@ int weighting::fit(const unsigned int tracktype) {
   // Plot with legend
   TCanvas *massPlot_Leg = new TCanvas("massPlot_Leg","Canvas",900,800);
   jpsiKsExt->plotOn(massPlot_Leg, goodfitdata, weightedFit, 1, 0);
-  jpsiKsExt->plotLegend(0.6,0.5,0.89,0.89);
+  jpsiKsExt->plotLegend(0.64,0.54,0.93,0.93);
   massPlot_Leg->Write("MassPlot_Legend"+tag);
 
   // Plot with Legend & Pull
   TCanvas *massPlot_Pull = new TCanvas("massPlot_Pull","Canvas",900,800);
   jpsiKsExt->plotOn(massPlot_Pull, goodfitdata, weightedFit, 1, 2);
-  jpsiKsExt->plotLegend(0.6,0.5,0.89,0.89);
+  jpsiKsExt->plotLegend(0.64,0.54,0.93,0.93);
   massPlot_Pull->Write("MassPlot_Pull"+tag);
 
   // Error Handling
@@ -1069,8 +1069,7 @@ int weighting::run(const double netCut_LL, const double netCut_DD) {
     std::cout << "\n PROGRESS: This is pure signal, no need for Fitting \n"
               << std::endl;
     err += writeTree();
-  }
-  else {
+  } else {
     err += fit(m_LL);
     err += fit(m_DD);
     err += writeTree();

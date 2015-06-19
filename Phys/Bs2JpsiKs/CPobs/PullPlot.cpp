@@ -115,7 +115,7 @@ void AddPull(TCanvas* pullCanvas, RooPlot* frame, Int_t logy, double *chi2Val){
   TGraph *black_contour = new TGraph(2, black_pointx, black_pointy);
   black_contour->SetLineColor(1);
   black_contour->SetLineWidth(1);
-  black_contour->Draw("");
+  black_contour->Draw("same");
 
 }
 

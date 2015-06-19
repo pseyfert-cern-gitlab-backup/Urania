@@ -19,7 +19,8 @@
 
 #include <math.h>
 #include <iostream>
-using std::endl;
+
+using namespace std;
 
 //_____________________________________________________________________________
 RooConvertPolAmp::RooConvertPolAmp() :

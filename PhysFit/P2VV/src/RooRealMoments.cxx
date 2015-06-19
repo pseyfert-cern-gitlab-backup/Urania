@@ -20,6 +20,8 @@
 #include "TMath.h"
 #include "RooArgSet.h"
 
+using namespace std;
+
 //_____________________________________________________________________________
 RooRealMoment::RooRealMoment(const RooAbsReal& basisFunc, Double_t norm,
     const char* name) :

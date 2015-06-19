@@ -15,7 +15,6 @@
 #include <TFile.h>
 #include <TROOT.h>
 #include <TSystem.h>
-#include <TCint.h>
 #include <TMath.h>
 #include <TTree.h>
 #include <TStopwatch.h>
@@ -43,6 +42,8 @@
 #include<TRootEmbeddedCanvas.h>
 #include <RQ_OBJECT.h>
 
+using namespace std;
+using namespace boost;
 
 //http://www.akiti.ca/mulmatvec2.html
 typedef vector<Double_t> array1d;
@@ -55,9 +56,6 @@ typedef vector<Bool_t> array1b;
 typedef vector<UInt_t> array1ui;
 typedef vector<Int_t> array1i;
 
-using std::cout;
-using std::endl;
-using namespace boost;
 const Double_t zero = 1.0e-30;
 const char delimiters[] = " \t\n;";
 const TString Bstr = "B",Sstr = "S",Cstr = "#", And = "&&";

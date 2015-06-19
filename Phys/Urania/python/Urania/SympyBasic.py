@@ -2,7 +2,7 @@
 ## from sympy import * would overwrite functions like  sin, cos or sqrt, which
 # you may want to take from math , numpy, scipy ...
 
-from sympy import sin as Sin, cos as Cos, sqrt as Sqrt, exp as Exp, pi as Pi, log as Log
+from sympy import sin as Sin, cos as Cos, sqrt as Sqrt, exp as Exp, pi as Pi, log as Log, sinh as Sinh, cosh as Cosh
 from sympy import Symbol, I, re, im, simplify, integrate, Pow, Integral, Abs, Matrix, eye as Eye
 from sympy import latex
 from itertools import permutations
@@ -178,6 +178,8 @@ class UMatrix(Matrix):
              
          
          return UMatrix(out.values())         
+
+def getThing(A,thing): return simplify(A.collect(thing,evaluate = False) [thing])
 
 
 ## A = UMatrix([[1,2,3],[1,0,0],[1,1,1])

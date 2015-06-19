@@ -3,7 +3,7 @@
 # Maintainer : Patrick Koppenburg
 #============================================================================
 package           Bs2JpsiKs
-version           v5r3
+version           v5r5
 
 #============================================================================
 # Structure, i.e. directories to process. 

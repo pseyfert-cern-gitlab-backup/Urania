@@ -42,7 +42,7 @@
 const TString c_range = "All";
 const unsigned int c_LbCol = 15 ;
 const unsigned int c_pKCol = kRed ;
-const unsigned int c_RefCol = kGreen ;
+const unsigned int c_RefCol = kBlue ;
 const unsigned int c_BkgCol = kBlack ;
 const unsigned int c_LbStyle = 1001 ;
 const unsigned int c_pKStyle = kDotted ;

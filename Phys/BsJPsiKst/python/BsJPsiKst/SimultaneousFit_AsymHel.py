@@ -8,25 +8,36 @@ AccessPackage("Bs2MuMu")
 from smartpyROOT import *
 from PDF_2013_Asym import *
 from OurSites import NTUPLE_PATH
+NTUPLE_PATH = "~/w7folder/NTuples/Bs_Jpsi_Kst_2013/"
+from parameters import KpiBins4 as KpiBins, myCsp4 as myCsp, translateWeights
+#from parameters import KpiBins4 as KpiBins, myCsp23 as myCsp, myCsd23 as myCsd, myCpd23 as myCpd, translateWeightsSPD
 print "Class for fitting polarization: AngularPDF"
-
 timeZero = time.time()
-
 
 ACC_FREE = 0
 FIX_Bd = ACC_FREE
 SAME_ACC = 1
-#SFIT== 0
-YEAR = 1211 # choose 2011, 2012 or 1211->2011+2012 data  
-WEIGHT_CAT = "Bd" # type of weights: Bs, Bd or none for the cFit
-ACC_TYPE = 2
-# Tuples for classic fit (without any weight)
-# version BDTG, KstarWide stripping Line, from Diego
+YEAR = 2012# choose 2011, 2012 or 1211->2011+2012 data  
+WEIGHT_CAT = "Bs" # type of weights: Bs, Bd or none for the cFit
+ACC_TYPE = 2 # 1 for factorized acceptance, 2 for Normalization Weights
+fix_param= kFALSE
+
 print "\n IMPORTANT MESSAGE "
 print "\n ####################################################################"
 print "\n You choose: SFIT= ",SFIT,", YEAR= ",YEAR,", WEIGHT_CAT= ",WEIGHT_CAT
 print "\n ####################################################################"
 
+
+if WEIGHT_CAT == "Bd":
+     myweight = cor_sWeights_Bd
+     myAs2={0: 0.138,1: 0.027,2: 0.016,3: 0.082} ### Walaa's init values
+     myds={0: 3.6,1: 3.3,2: 2.00,3: 1.39}
+        
+if WEIGHT_CAT == "Bs":
+     myweight = cor_sWeights_Bs
+     myAs2={0: 0.151,1: 0.054,2: 0.051,3: 0.171} ### Walaa's init values
+     myds={0: 2.,1:-0.71 ,2: 1.56,3: 1.63}
+          
 ## Why do we need this ?
 Mass.setRange("ref",Mass.getMin(),Mass.getMax())
 CPsi.setRange("ref",CPsi.getMin(),CPsi.getMax())
@@ -36,43 +47,50 @@ Phi.setRange("ref",Phi.getMin(),Phi.getMax())
 Mass.setRange("Bs_range",5366.77-25,5366.77+25) 
 Mass.setRange("Bd_range",5279.5-25,5279.5+25)
 
-t11p,f11p = getTuple(NTUPLE_PATH + "/2011p", thing = "DecayTree")
-t11n,f11n = getTuple(NTUPLE_PATH + "/2011n", thing = "DecayTree")
-t12p,f12p = getTuple(NTUPLE_PATH + "/2012p", thing = "DecayTree")
-t12n,f12n = getTuple(NTUPLE_PATH + "/2012n", thing = "DecayTree")
-#BREAK
+myfiles = {}
+mytrees = {}
 samplename = "sample"
-cat =  RooCategory(samplename, samplename)
-cat.defineType("2011p"), cat.defineType("2011n"), cat.defineType("2012p"), cat.defineType("2012n")
-
+masterCat =  RooCategory(samplename, samplename)
+binCat = RooCategory("binCat","binCat")
+for i in range(len(KpiBins)-1): binCat.defineType(str(KpiBins[i]) + "_" + str(KpiBins[i+1]))
+#NTUPLE_PATH = "~/NTuplesFast/Carlos_NS_sw/"
+#NTUPLE_PATH = "/home/galaceos/cmtuser/URANIA/URANIA_HEAD/Phys/BsJPsiKst/ntuples/"
+SampleSizes = {}
+for s in ["11p","11n","12p","12n"]:
+     masterCat.defineType(s)
+     SampleSizes[s] = 0
+     for i in range(len(KpiBins)-1):
+          name  = s + "_" + str(KpiBins[i]) + "_" + str(KpiBins[i+1])
+          mytrees[name], myfiles[name] = getTuple(NTUPLE_PATH + "/20" + name, thing = "DecayTree")
+          SampleSizes[s] +=  mytrees[name].GetEntries()
+          
 AngBd_2011p,  AngBd_2011n = InitSignalPdfs("Bd","2011", acc_type = ACC_TYPE)
 AngBd_2011p.OwnPhys(equalAsym = 1)
+AngBd_2011p.modParam("CSP",1.,.1,kTRUE)
+
 AngBd_2011p.OwnAcc()
-fix_param= kTRUE
-if (WEIGHT_CAT=="Bs" or WEIGHT_CAT=="none"):
-    fix_param=kTRUE
-    AngBd_2011p.modParam("dpe",3.07-pi,0.75*pi,fix_param)
-else:
-    fix_param= kFALSE
-    AngBd_2011p.modParam("dpe",2.94,0.75*pi,fix_param)
-        
-AngBd_2011p.modParam("fL",0.5488,0.5*pi,fix_param)
-AngBd_2011p.modParam("fpa",0.2392,0.5*pi,fix_param)
-####AngBd_2011p.modParam("As2",0.047,0.01,kTRUE)
-AngBd_2011p.modParam("dpa",-2.98,0.5*pi,fix_param)
-AngBd_2011p.modParam("ds",2.20,0.1,kTRUE)
+
+### DMS: I do not understand why we need the following two lines: 
+    
+AngBd_2011p.modParam("fL",0.572,0.5,fix_param)
+AngBd_2011p.modParam("fpa",0.227,0.4,fix_param)
+AngBd_2011p.modParam("As2",0.05,0.05,kFALSE)#2012
+AngBd_2011p.modParam("dpa",-2.9,1.,kFALSE)#2012
+AngBd_2011p.modParam("dpe",2.9,1.,kFALSE)#2012
+AngBd_2011p.As2.setMax(0.5)
+
+
 if ACC_TYPE == 1: AngBd_2011p.modParam("c1_psi",-0.592,0.1)
 
 AngBd_2011n.CopyFreeParams(AngBd_2011p)
 AngBd_2011n.CopyAcc(AngBd_2011p) ## Assume same acceptance for "+" and "-"
-#AngBd_2011n.modParam("c1_psi",-0.592,0.1)
     
 # Angular PDF for Bs
 AngBs_2011p,  AngBs_2011n = InitSignalPdfs("Bs","2011", acc_type = ACC_TYPE)
 
 AngBs_2011p.OwnPhys()
-AngBs_2011p.modParam("dpe",0,pi)
-AngBs_2011p.modParam("dpa",-pi,pi*.5)
+AngBs_2011p.modParam("CSP",1.,.1,kTRUE)
+
 AngBs_2011n.CopyFreeParams(AngBs_2011p)
 
 # Now copy 2011 into 2012, dor Bd, Bs, n and p    
@@ -85,18 +103,21 @@ AngBd_2012n.CopyAcc(AngBd_2011p)
 AngBs_2012p,  AngBs_2012n = InitSignalPdfs("Bs","2012", acc_type = ACC_TYPE)
 AngBs_2012p.CopyPhys(AngBs_2011p)
 AngBs_2012n.CopyPhys(AngBs_2011n)
+AngBs_2011p.As2.setMin(0.005)
 
 if SAME_ACC:
     AngBs_2011p.CopyAcc(AngBd_2011p)
     AngBs_2012p.CopyAcc(AngBd_2012p)
     AngBs_2011n.CopyAcc(AngBd_2011n)
     AngBs_2012n.CopyAcc(AngBd_2012n)
+
 if ACC_TYPE == 1:    
     AngBd_2012p.modParam("c1_psi",-0.592,0.1)
     AngBd_2012p.modParam("c2_psi",-0.613,0.1)
     AngBd_2012n.modParam("c1_psi",-0.592,0.1)
     AngBd_2012n.modParam("c2_psi",-0.613,0.1)
-    
+
+
 AngBd_2011p.make(), AngBs_2011p.make(), AngBd_2012p.make(), AngBs_2012p.make()
 AngBd_2011n.make(), AngBs_2011n.make(), AngBd_2012n.make(), AngBs_2012n.make()
 
@@ -104,8 +125,9 @@ AngBd_2011n.make(), AngBs_2011n.make(), AngBd_2012n.make(), AngBs_2012n.make()
 #######################################ext.
 ## Normaliations to Make extended PDF
     
-nd_2011 = RooRealVar("nBd_2011_phys","nBd_2011_phys", 0.2*(t11p.GetEntries() + t11n.GetEntries()),2*(t11p.GetEntries() + t11n.GetEntries()))
-ns_2011 = RooFormulaVar("nBs_2011_phys","nBs_2011_phys", "fBs*nBd_2011_phys",RooArgList(fBs,nd_2011))
+nd_2011 = RooRealVar("nBd_2011_phys","nBd_2011_phys", 0.01*(SampleSizes["11p"] + SampleSizes["11n"]),2*(SampleSizes["11p"] + SampleSizes["11n"]))
+#ns_2011 = RooFormulaVar("nBs_2011_phys","nBs_2011_phys", "fBs*nBd_2011_phys",RooArgList(fBs,nd_2011))
+ns_2011 = RooRealVar("nBs_2011_phys","nBs_2011_phys",10., SampleSizes["11p"] + SampleSizes["11n"])
 
 nd_2011p_phys = RooFormulaVar("nBd_2011p_phys", "nBd_2011p_phys", "nBd_2011_phys*0.5/" + AngBd_2011p.psACP.GetName(), RooArgList(nd_2011,AngBd_2011p.psACP))
 nd_2011n_phys = RooFormulaVar("nBd_2011n_phys", "nBd_2011n_phys", "nBd_2011_phys - nBd_2011p_phys",RooArgList(nd_2011,nd_2011p_phys))
@@ -119,8 +141,12 @@ ns_2011n = RooFormulaVar("nBs_2011n","nBs_2011n", "nBs_2011n_phys*(1 - A_D + A_p
 nd_2011p = RooFormulaVar("nBd_2011p","nBd_2011p", "nBd_2011p_phys*(1 - A_D + A_prod_d)",RooArgList(nd_2011p_phys, A_D, Aprod_d))
 nd_2011n = RooFormulaVar("nBd_2011n","nBd_2011n", "nBd_2011n_phys*(1 + A_D - A_prod_d)",RooArgList(nd_2011n_phys, A_D, Aprod_d))
 
-nd_2012 = RooRealVar("nBd_2012_phys","nBd_2012_phys", 0.2*(t12p.GetEntries() + t12n.GetEntries()),2*(t12p.GetEntries() + t12n.GetEntries()))
-ns_2012 = RooFormulaVar("nBs_2012_phys","nBs_2012_phys", "fBs*nBd_2012_phys",RooArgList(fBs,nd_2012))
+
+
+nd_2012 = RooRealVar("nBd_2012_phys","nBd_2012_phys", 0.01*(SampleSizes["12p"] + SampleSizes["12n"]),2*(SampleSizes["12p"] + SampleSizes["12n"]))
+ns_2012 = RooRealVar("nBs_2012_phys","nBs_2012_phys", 10.,SampleSizes["12p"] + SampleSizes["12n"])
+
+
 
 nd_2012p_phys = RooFormulaVar("nBd_2012p_phys", "nBd_2012p_phys", "nBd_2012_phys*0.5/" + AngBd_2011p.psACP.GetName(), RooArgList(nd_2012,AngBd_2011p.psACP))
 nd_2012n_phys = RooFormulaVar("nBd_2012n_phys", "nBd_2012n_phys", "nBd_2012_phys - nBd_2012p_phys",RooArgList(nd_2012,nd_2012p_phys))
@@ -134,160 +160,57 @@ ns_2012n = RooFormulaVar("nBs_2012n","nBs_2012n", "nBs_2012n_phys*(1 - A_D + A_p
 nd_2012p = RooFormulaVar("nBd_2012p","nBd_2012p", "nBd_2012p_phys*(1 - A_D + A_prod_d)",RooArgList(nd_2012p_phys, A_D, Aprod_d))
 nd_2012n = RooFormulaVar("nBd_2012n","nBd_2012n", "nBd_2012n_phys*(1 + A_D - A_prod_d)",RooArgList(nd_2012n_phys, A_D, Aprod_d))
 
-#################################################################################################
-# cFit
-#################################################################################################
-if SFIT==0:  ### Include mass pdf
-    nbkg_2011p = RooRealVar("n nbkg 11p","n bkg 11p", 0.,t11p.GetEntries())
-    nbkg_2011n = RooRealVar("n nbkg 11n","n bkg 11n", 0.,t11n.GetEntries())
-     
-    nbkg_2012p = RooRealVar("n nbkg 12p","n bkg 12p", 0.,t12p.GetEntries())
-    nbkg_2012n = RooRealVar("n nbkg 12n","n bkg 12n", 0.,t12n.GetEntries())
 
-    mass2011 = SignalMass("2011")
-    mass2012 = SignalMass("2012")
-    
-    SigBs_2011p = RooProdPdf("Bs pdf 2011p", "Bs pdf 2011p",RooArgList(AngBs_2011p.model,mass2011.sigBs))
-    SigBd_2011p = RooProdPdf("Bd pdf 2011p", "Bd pdf 2011p",RooArgList(AngBd_2011p.model,mass2011.sigBd))
-    SigBs_2012p = RooProdPdf("Bs pdf 2012p", "Bs pdf 2012p",RooArgList(AngBs_2012p.model,mass2012.sigBs))
-    SigBd_2012p = RooProdPdf("Bd pdf 2012p", "Bd pdf 2012p",RooArgList(AngBd_2012p.model,mass2012.sigBd))
-    
-    SigBs_2011n = RooProdPdf("Bs pdf 2011n", "Bs pdf 2011n",RooArgList(AngBs_2011n.model,mass2011.sigBs))
-    SigBd_2011n = RooProdPdf("Bd pdf 2011n", "Bd pdf 2011n",RooArgList(AngBd_2011n.model,mass2011.sigBd))
-    SigBs_2012n = RooProdPdf("Bs pdf 2012n", "Bs pdf 2012n",RooArgList(AngBs_2012n.model,mass2012.sigBs))
-    SigBd_2012n = RooProdPdf("Bd pdf 2012n", "Bd pdf 2012n",RooArgList(AngBd_2012n.model,mass2012.sigBd))
-   
- 
-    bkgmodel_2011 = FullBackground("Bkg_2011")
-    bkgmodel_2012 = FullBackground("Bkg_2012")
-    if ACC_TYPE !=2:
-        bkgmodel_2011.thetaFromAcc(AngBd_2011p)
-        bkgmodel_2012.thetaFromAcc(AngBd_2012p)
-    else:
-        bkgmodel_2011.OwnTheta()
-        bkgmodel_2012.OwnTheta()
+mydatasets = {}
+mergeddatasets = {}
+masterCatImports = []
+     
+for s in ["11p","11n","12p","12n"]:
+     myImports = []
+     for i in range(len(KpiBins)-1):
+          binname = str(KpiBins[i]) + "_" + str(KpiBins[i+1])
+          name  = s + "_" + binname
+          mydatasets[name] = RooDataSet("data" + name,"data" + name, mytrees[name],RooArgSet(CPsi,CTheta,Phi,myweight))
+          myImports.append(RooFit.Import(binname, mydatasets[name]))
+     mergeddatasets[s] = RooDataSet(s,s,RooArgSet(CPsi,CTheta,Phi,myweight),RooFit.Index(binCat),*myImports)
+     masterCatImports.append(RooFit.Import(s, mergeddatasets[s]))
+
+allData = RooDataSet("all Data","all Data", RooArgSet(CPsi,CTheta,Phi,myweight,binCat),RooFit.Index(masterCat),RooFit.Cut(""),RooFit.CutRange(""),RooFit.WeightVar(myweight.GetName()), *masterCatImports)
+dataset11 = RooDataSet("dataset11","dataset11", RooArgSet(CPsi,CTheta,Phi,myweight,binCat),RooFit.Index(masterCat),RooFit.Cut(""),RooFit.CutRange(""),RooFit.WeightVar(myweight.GetName()), *masterCatImports[:2])
+dataset12 = RooDataSet("dataset12","dataset12", RooArgSet(CPsi,CTheta,Phi,myweight,binCat),RooFit.Index(masterCat),RooFit.Cut(""),RooFit.CutRange(""),RooFit.WeightVar(myweight.GetName()), *masterCatImports[2:])
+
+
+if WEIGHT_CAT=="Bs":
+
+     model11p = AngBs_2011p
+     model12p = AngBs_2012p
+     
+     model11p_ext = RooExtendPdf("model11p_ext","model11p_ext",AngBs_2011p.model,ns_2011p)
+     model12p_ext = RooExtendPdf("model12p_ext","model12p_ext",AngBs_2012p.model,ns_2012p)
+     
+     model11n = AngBs_2011n
+     model12n = AngBs_2012n
+     
+     model11n_ext = RooExtendPdf("model11n_ext","model11n_ext",AngBs_2011n.model,ns_2011n)
+     model12n_ext = RooExtendPdf("model12n_ext","model12n_ext",AngBs_2012n.model,ns_2012n)
+          
+elif WEIGHT_CAT=="Bd":
+     
+     model11p = AngBd_2011p
+     model12p = AngBd_2012p
+          
+     model11p_ext = RooExtendPdf("model11p_ext","model11p_ext",AngBd_2011p.model,nd_2011p)
+     model12p_ext = RooExtendPdf("model12p_ext","model12p_ext",AngBd_2012p.model,nd_2012p)
+          
+     model11n = AngBd_2011n
+     model12n = AngBd_2012n
+          
+     model11n_ext = RooExtendPdf("model11n_ext","model11n_ext",AngBd_2011n.model,nd_2011n)
+     model12n_ext = RooExtendPdf("model12n_ext","model12n_ext",AngBd_2012n.model,nd_2012n)
         
-    bkgmodel_2011.make(), bkgmodel_2012.make()
-    
-    model11p = RooAddPdf("model11p","model11p",RooArgList(SigBs_2011p,SigBd_2011p,bkgmodel_2011.model),RooArgList(ns_2011p,nd_2011p,nbkg_2011p))
-    model12p = RooAddPdf("model12p","model12p",RooArgList(SigBs_2012p,SigBd_2012p,bkgmodel_2012.model),RooArgList(ns_2012p,nd_2012p,nbkg_2012p))
-     
-    model11n = RooAddPdf("model11n","model11n",RooArgList(SigBs_2011n,SigBd_2011n,bkgmodel_2011.model),RooArgList(ns_2011n,nd_2011n,nbkg_2011n))
-    model12n = RooAddPdf("model12n","model12n",RooArgList(SigBs_2012n,SigBd_2012n,bkgmodel_2012.model),RooArgList(ns_2012n,nd_2012n,nbkg_2012n))
 
-    ## Datasets (do we really need to define them here?
-    
-    dataset11p = RooDataSet("data11p","data11p",t11p,RooArgSet(CPsi,CTheta,Phi, Mass))
-    dataset12p = RooDataSet("data12p","data12p",t12p,RooArgSet(CPsi,CTheta,Phi, Mass))
-    dataset11n = RooDataSet("data11n","data11n",t11n,RooArgSet(CPsi,CTheta,Phi, Mass))
-    dataset12n = RooDataSet("data12n","data12n",t12n,RooArgSet(CPsi,CTheta,Phi, Mass))
-
-    print " ####################################### in SFIT=0 (i.e. cFit)  ", 
-    allData = RooDataSet("all Data","all Data", RooArgSet(CPsi,CTheta,Phi, Mass), RooFit.Index(cat), RooFit.Import("2011p",dataset11p),RooFit.Import("2012p",dataset12p), RooFit.Import("2011n",dataset11n),RooFit.Import("2012n",dataset12n) )    
-        
-    
-# ) end of if CFIT
-#############################################""ext.
-elif SFIT == 2:
-
-    if WEIGHT_CAT=="Bs":
-        model11p = AngBs_2011p.model
-        model12p = AngBs_2012p.model
-     
-        model11p_ext = RooExtendPdf("model11p_ext","model11p_ext",AngBs_2011p.model,ns_2011p)
-        model12p_ext = RooExtendPdf("model12p_ext","model12p_ext",AngBs_2012p.model,ns_2012p)
-     
-        dataset11p = RooDataSet("data11p","data11p",t11p,RooArgSet(CPsi,CTheta,Phi,cor_sWeights_Bs))
-        dataset12p = RooDataSet("data12p","data12p",t12p,RooArgSet(CPsi,CTheta,Phi,cor_sWeights_Bs))
-    
-        model11n = AngBs_2011n.model
-        model12n = AngBs_2012n.model
-     
-        model11n_ext = RooExtendPdf("model11n_ext","model11n_ext",AngBs_2011n.model,ns_2011n)
-        model12n_ext = RooExtendPdf("model12n_ext","model12n_ext",AngBs_2012n.model,ns_2012n)
-     
-        dataset11n = RooDataSet("data11n","data11n",t11n,RooArgSet(CPsi,CTheta,Phi,cor_sWeights_Bs))
-        dataset12n = RooDataSet("data12n","data12n",t12n,RooArgSet(CPsi,CTheta,Phi,cor_sWeights_Bs))
-    
-
-        if(YEAR==2011):
-            allData = RooDataSet("all Data","all Data", RooArgSet(CPsi,CTheta,Phi,cor_sWeights_Bs), RooFit.Index(cat), RooFit.Import("2011p",dataset11p),RooFit.Import("2011n",dataset11n),RooFit.Cut(""),RooFit.CutRange(""),RooFit.WeightVar("cor_sWeights_Bs"))
-        elif(YEAR==2012):
-            allData = RooDataSet("all Data","all Data", RooArgSet(CPsi,CTheta,Phi,cor_sWeights_Bs), RooFit.Index(cat), RooFit.Import("2012p",dataset12p),RooFit.Import("2012n",dataset12n),RooFit.Cut(""),RooFit.CutRange(""),RooFit.WeightVar("cor_sWeights_Bs"))
-        else:
-            allData = RooDataSet("all Data","all Data", RooArgSet(CPsi,CTheta,Phi,cor_sWeights_Bs), RooFit.Index(cat), RooFit.Import("2011p",dataset11p),RooFit.Import("2011n",dataset11n),RooFit.Import("2012p",dataset12p),RooFit.Import("2012n",dataset12n),RooFit.Cut(""),RooFit.CutRange(""),RooFit.WeightVar("cor_sWeights_Bs")) 
-    
-    elif WEIGHT_CAT=="Bd":
-     
-        model11p = AngBd_2011p.model
-        model12p = AngBd_2012p.model
-     
-        model11p_ext = RooExtendPdf("model11p_ext","model11p_ext",AngBd_2011p.model,nd_2011p)
-        model12p_ext = RooExtendPdf("model12p_ext","model12p_ext",AngBd_2012p.model,nd_2012p)
-
-       
-        model11n = AngBd_2011n.model
-        model12n = AngBd_2012n.model
-     
-        model11n_ext = RooExtendPdf("model11n_ext","model11n_ext",AngBd_2011n.model,nd_2011n)
-        model12n_ext = RooExtendPdf("model12n_ext","model12n_ext",AngBd_2012n.model,nd_2012n)
-        
-        dataset11p = RooDataSet("data11p","data11p",t11p,RooArgSet(CPsi,CTheta,Phi,cor_sWeights_Bd))
-        dataset12p = RooDataSet("data12p","data12p",t12p,RooArgSet(CPsi,CTheta,Phi,cor_sWeights_Bd))
-        dataset11n = RooDataSet("data11n","data11n",t11n,RooArgSet(CPsi,CTheta,Phi,cor_sWeights_Bd))
-        dataset12n = RooDataSet("data12n","data12n",t12n,RooArgSet(CPsi,CTheta,Phi,cor_sWeights_Bd))
-     
-
-        if(YEAR==2011):
-            allData = RooDataSet("all Data","all Data", RooArgSet(CPsi,CTheta,Phi,cor_sWeights_Bd), RooFit.Index(cat), RooFit.Import("2011p",dataset11p),RooFit.Import("2011n",dataset11n),RooFit.Cut(""),RooFit.CutRange(""),RooFit.WeightVar("cor_sWeights_Bd"))
-        elif(YEAR==2012):
-            allData = RooDataSet("all Data","all Data", RooArgSet(CPsi,CTheta,Phi,cor_sWeights_Bd), RooFit.Index(cat), RooFit.Import("2012p",dataset12p),RooFit.Import("2012n",dataset12n),RooFit.Cut(""),RooFit.CutRange(""),RooFit.WeightVar("cor_sWeights_Bd"))
-        else:
-            allData = RooDataSet("all Data","all Data", RooArgSet(CPsi,CTheta,Phi,cor_sWeights_Bd), RooFit.Index(cat), RooFit.Import("2011p",dataset11p),RooFit.Import("2011n",dataset11n),RooFit.Import("2012p",dataset12p),RooFit.Import("2012n",dataset12n),RooFit.Cut(""),RooFit.CutRange(""),RooFit.WeightVar("cor_sWeights_Bd")) 
-
-     
-
-    print " ####################################### in SFIT=2   ", 
-    print " "
-        
-        
-dataset11n.Print()
-dataset11p.Print()
-dataset12n.Print()
-dataset12p.Print()
 allData.Print()    
 
-
-##############################################ext
-
-
-if not SFIT:
-    model11p.fixCoefRange("ref")
-    model12p.fixCoefRange("ref")
-    model11n.fixCoefRange("ref")
-    model12n.fixCoefRange("ref")
-    
-fiter = RooSimultaneous("fitter", "fitter", cat)
-
-if (SFIT==2):
-    if (YEAR == 2011 or YEAR==1211): 
-        fiter.addPdf(model11p_ext,"2011p")
-        fiter.addPdf(model11n_ext,"2011n")
-    if (YEAR == 2012 or YEAR==1211):
-            fiter.addPdf(model12p_ext,"2012p")
-            fiter.addPdf(model12n_ext,"2012n")
-    else: 
-        print "check your ntuples3"
-        
-if (SFIT==0):
-    if (YEAR == 2011 or YEAR==1211): 
-        fiter.addPdf(model11p,"2011p")
-        fiter.addPdf(model11n,"2011n")
-    if (YEAR == 2012 or YEAR==1211):
-        fiter.addPdf(model12p,"2012p")
-        fiter.addPdf(model12n,"2012n")
-    else: 
-        print "check your ntuples3"
 
 def fixAcc():
     if (WEIGHT_CAT=="Bd" or WEIGHT_CAT=="none"):
@@ -304,21 +227,90 @@ def fixAcc():
         AngBs_2011p.modParam("c2_theta", 2.76201e-01   ,0.1, kTRUE)
    
     
-def fitAll(minos=0, offset = 0, noCP = 0):
-    if ACC_TYPE == 1: fixAcc()  # you can leave acc param free by not calling the function "fixAcc()".
-    if noCP:fixCP() 
-    # AngBd_2011p.ACPL.setVal(-0.002) #check
-    # AngBd_2011p.ACPL.setConstant(1) #check
-    # AngBs_2011p.ds.setVal(1.1) #check
-    # AngBs_2011p.ds.setConstant(1) #
-    
-    if offset: 
-        fitres = fiter.fitTo(allData,RooFit.Minos(minos),RooFit.Save(), RooFit.NumCPU(8),RooFit.Offset(kTRUE),RooFit.SumW2Error(kTRUE))
-    else: 
-        fitres = fiter.fitTo(allData,RooFit.Minos(minos),RooFit.Save(), RooFit.NumCPU(8),RooFit.SumW2Error(kTRUE))
-    return fitres
-        
+def runFit(minos=0, offset = 0, noCP = 1, numCPU = 1, dataset = "all"):
+     if noCP:
+          #AngBs_2011p.ACPS_.setVal(0.)
+          AngBs_2011p.ACPL_.setVal(0.)
+          AngBs_2011p.ACPpa_.setVal(0)
+          AngBs_2011p.ACPpe_.setVal(0)
+          #AngBs_2011p.ACP2L_.setVal(0.)
+          #AngBs_2011p.ACP2pa_.setVal(0)
+          #AngBs_2011p.ACP2pe_.setVal(0)
 
+     #AngBs_2011p.ACPS_.setConstant(noCP)    
+     AngBs_2011p.ACPL_.setConstant(noCP)
+     AngBs_2011p.ACPpa_.setConstant(noCP)
+     AngBs_2011p.ACPpe_.setConstant(noCP)
+     #AngBs_2011p.ACP2L_.setConstant(noCP)
+     #AngBs_2011p.ACP2pa_.setConstant(noCP)
+     #AngBs_2011p.ACP2pe_.setConstant(noCP)
+
+     w = RooWorkspace("w")
+     wimport = getattr(w,'import')
+     SimPdfTool = RooSimWSTool(w)
+     mbc= RooSimWSTool.MultiBuildConfig(samplename)
+     split_string = "As2"+WEIGHT_CAT+",ds"+WEIGHT_CAT+",CSP"+WEIGHT_CAT
+     
+     if dataset in ["11","all"]:
+          wimport(model11p_ext,RooFit.RecycleConflictNodes())
+          wimport(model11n_ext,RooFit.RecycleConflictNodes())
+
+          mbc.addPdf("11p",model11p_ext.GetName(),RooFit.SplitParam(split_string + ",n"+WEIGHT_CAT+"_2011_phys" + model11p.GetNormWeightString(),"binCat"))
+          mbc.addPdf("11n",model11n_ext.GetName(),RooFit.SplitParam(split_string + ",n"+WEIGHT_CAT+"_2011_phys" + model11n.GetNormWeightString(),"binCat"))
+  
+     if dataset in ["12", "all"]:
+          wimport(model12p_ext,RooFit.RecycleConflictNodes())
+          wimport(model12n_ext,RooFit.RecycleConflictNodes())
+
+          mbc.addPdf("12p",model12p_ext.GetName(),RooFit.SplitParam(split_string + ",n"+WEIGHT_CAT+"_2012_phys" + model12p.GetNormWeightString(),"binCat")) 
+          mbc.addPdf("12n",model12n_ext.GetName(),RooFit.SplitParam(split_string + ",n"+WEIGHT_CAT+"_2012_phys" + model12n.GetNormWeightString(),"binCat")) 
+    
+     wimport(RooArgSet(masterCat, binCat))
+    
+     w.Print()
+
+     Master = SimPdfTool.build("Master",mbc) 
+
+     Master.Print()
+     Master.indexCat().Print()
+     Master.indexCat().Print("v")
+    
+     w.Print()
+         
+     argList = Master.getParameters(allData)
+     argList.Print()
+     for i in range(len(KpiBins)-1): 
+          argList.setRealValue("CSP"+WEIGHT_CAT+"_" + str(KpiBins[i]) +  "_" + str(KpiBins[i+1]),myCsp[i])
+          argList.setRealValue("As2"+WEIGHT_CAT+"_" + str(KpiBins[i]) +  "_" + str(KpiBins[i+1]),myAs2[i])      
+          argList.setRealValue("ds"+WEIGHT_CAT+"_" + str(KpiBins[i]) +  "_" + str(KpiBins[i+1]),myds[i])
+          for thing in model11p.Tristan_weights: argList.setRealValue(thing.GetName(), NormWeights["2011p_" + str(KpiBins[i]) +  "_" + str(KpiBins[i+1])][translateWeights(thing.GetName())])
+          for thing in model11n.Tristan_weights: argList.setRealValue(thing.GetName(), NormWeights["2011n_" + str(KpiBins[i]) +  "_" + str(KpiBins[i+1])][translateWeights(thing.GetName())])
+          for thing in model12p.Tristan_weights: argList.setRealValue(thing.GetName(), NormWeights["2012p_" + str(KpiBins[i]) +  "_" + str(KpiBins[i+1])][translateWeights(thing.GetName())])
+          for thing in model12n.Tristan_weights: argList.setRealValue(thing.GetName(), NormWeights["2012n_" + str(KpiBins[i]) +  "_" + str(KpiBins[i+1])][translateWeights(thing.GetName())])
+          
+          
+     
+     argList2 = Master.getParameters(allData)
+
+     # Csp factors
+     for i in range(len(KpiBins)-1):  print "CSP"+WEIGHT_CAT+"_" + str(KpiBins[i]) +  "_" + str(KpiBins[i+1])+":",argList2.getRealValue("CSP"+WEIGHT_CAT+"_" + str(KpiBins[i]) +  "_" + str(KpiBins[i+1])) 
+     
+     if dataset == "11": fitres_bins = Master.fitTo(dataset11,RooFit.Minos(minos), RooFit.Save(), RooFit.NumCPU(numCPU),RooFit.SumW2Error(kTRUE))
+     elif dataset == "12": fitres_bins = Master.fitTo(dataset12,RooFit.Minos(minos), RooFit.Save(), RooFit.NumCPU(numCPU),RooFit.SumW2Error(kTRUE))
+     elif dataset == "all": fitres_bins = Master.fitTo(allData,RooFit.Minos(minos), RooFit.Save(), RooFit.NumCPU(numCPU),RooFit.SumW2Error(kTRUE))
+     
+
+     return fitres_bins, Master, w, mbc
+
+
+#runFit(numCPU = 1, noCP = 0)
+
+#if YEAR == 1112 or YEAR == 1211: my_res = runFit(noCP = 0, numCPU = 3)
+#if YEAR == 2011: my_res = runFit(noCP = 0, numCPU = 3, dataset = "11")
+#if YEAR == 2012: my_res = runFit(noCP = 0, numCPU = 3, dataset = "12")
+if YEAR == 1112 or YEAR == 1211: my_res = runFit(noCP = 0, numCPU = 8)
+if YEAR == 2011: my_res = runFit(noCP = 0, numCPU = 8, dataset = "11")
+if YEAR == 2012: my_res = runFit(noCP = 0, numCPU = 3, dataset = "12")
 
 def fixCP():
     #AngBd_2011p.ACPL.setVal(0) #check
@@ -340,194 +332,80 @@ def fixCP():
     #A_D.setConstant(0)
     A_D.setVal(-0.01185)
     A_D.setConstant(kTRUE)
-           
-def plotAngle(name,rangename,nbins):
-    
-    name = str(name)
-    if "11p" in name:
-        model = model11p
-        if (SFIT==0):
-            dataset = dataset11p
-        else:
-            dataset = RooDataSet("data11p","data11p",t11p,RooArgSet(CPsi,CTheta,Phi,cor_sWeights_Bs),"","cor_sWeights_"+WEIGHT_CAT)
-    if "11n" in name:
-        model = model11n
-        if (SFIT==0): 
-            dataset = dataset11n
-        else:
-            dataset = RooDataSet("data11n","data11n",t11n,RooArgSet(CPsi,CTheta,Phi,cor_sWeights_Bs),"","cor_sWeights_"+WEIGHT_CAT)
-    if "12p" in name:
-        model = model12p
-        if (SFIT==0):
-            dataset = dataset12p
-        else:
-            dataset = RooDataSet("data12p","data12p",t12p,RooArgSet(CPsi,CTheta,Phi,cor_sWeights_Bs),"","cor_sWeights_"+WEIGHT_CAT)
-    if "12n" in name:
-        model = model12n
-        if (SFIT==0):
-            dataset = dataset12n
-        else:
-            dataset = RooDataSet("data12n","data12n",t12n,RooArgSet(CPsi,CTheta,Phi,cor_sWeights_Bs),"","cor_sWeights_"+WEIGHT_CAT)
-    
-        
-    cv3 = TCanvas()
-    cv3.SetFillColor(0)
-    cv3.Divide(2,2)
-
-    cv3.cd(1)
-    cpsif = CPsi.frame()
-    RooAbsData.plotOn(dataset,cpsif,RooFit.CutRange(rangename),RooFit.Binning(nbins))
-    model.plotOn(cpsif,RooFit.ProjectionRange(rangename))
-    if (WEIGHT_CAT=="none"):
-        model.plotOn(cpsif,RooFit.ProjectionRange(rangename),RooFit.Components("modelBkg_" + name[:-1]),RooFit.LineColor(kBlue),RooFit.LineStyle(kDashed))
-        model.plotOn(cpsif,RooFit.ProjectionRange(rangename),RooFit.Components("Bs pdf " + name),RooFit.LineColor(TColor.GetColor("#ff99cc")),RooFit.LineStyle(9))
-        model.plotOn(cpsif,RooFit.ProjectionRange(rangename),RooFit.Components("Bd pdf " + name),RooFit.LineColor(kRed),RooFit.LineStyle(7))
-    if (WEIGHT_CAT=="Bs"):
-        model.plotOn(cpsif,RooFit.ProjectionRange(rangename),RooFit.LineColor(TColor.GetColor("#ff99cc")),RooFit.LineStyle(9))
-    if (WEIGHT_CAT=="Bd"):
-        model.plotOn(cpsif,RooFit.ProjectionRange(rangename),RooFit.LineColor(kRed),RooFit.LineStyle(7))
-
-    cpsif.SetTitle("")
-    cpsif.SetXTitle("cos(\Psi)")
-    cpsif.Draw()
-
-    cv3.cd(2)
-    cthf = CTheta.frame()
-    RooAbsData.plotOn(dataset,cthf,RooFit.CutRange(rangename),RooFit.Binning(nbins))
-    model.plotOn(cthf,RooFit.ProjectionRange(rangename))
-    if (WEIGHT_CAT=="none"):
-        model.plotOn(cthf,RooFit.ProjectionRange(rangename),RooFit.Components("modelBkg_" + name[:-1]),RooFit.LineColor(kBlue),RooFit.LineStyle(kDashed))
-        model.plotOn(cthf,RooFit.ProjectionRange(rangename),RooFit.Components("Bs pdf " + name),RooFit.LineColor(TColor.GetColor("#ff99cc")),RooFit.LineStyle(9))
-        model.plotOn(cthf,RooFit.ProjectionRange(rangename),RooFit.Components("Bd pdf " + name),RooFit.LineColor(kRed),RooFit.LineStyle(7))
-    elif (WEIGHT_CAT=="Bs"):
-        model.plotOn(cthf,RooFit.ProjectionRange(rangename),RooFit.LineColor(TColor.GetColor("#ff99cc")),RooFit.LineStyle(9))
-    elif (WEIGHT_CAT=="Bd"):
-        model.plotOn(cthf,RooFit.ProjectionRange(rangename),RooFit.LineColor(kRed),RooFit.LineStyle(7))
-    cthf.SetTitle("")
-    cthf.SetXTitle("cos(\Theta)")
-    cthf.Draw()
-
-    cv3.cd(3)
-    cphif = Phi.frame()
-    RooAbsData.plotOn(dataset,cphif,RooFit.CutRange(rangename),RooFit.Binning(nbins))
-    model.plotOn(cphif,RooFit.ProjectionRange(rangename))
-    if (WEIGHT_CAT=="none"):
-        model.plotOn(cphif,RooFit.ProjectionRange(rangename),RooFit.Components("modelBkg_" + name[:-1]),RooFit.LineColor(kBlue),RooFit.LineStyle(kDashed))
-        model.plotOn(cphif,RooFit.ProjectionRange(rangename),RooFit.Components("Bs pdf " + name),RooFit.LineColor(TColor.GetColor("#ff99cc")),RooFit.LineStyle(9))
-        model.plotOn(cphif,RooFit.ProjectionRange(rangename),RooFit.Components("Bd pdf " + name),RooFit.LineColor(kRed),RooFit.LineStyle(7))
-    elif (WEIGHT_CAT=="Bs"):
-        model.plotOn(cphif,RooFit.ProjectionRange(rangename),RooFit.LineColor(TColor.GetColor("#ff99cc")),RooFit.LineStyle(9))
-    elif (WEIGHT_CAT=="Bd"):
-        model.plotOn(cphif,RooFit.ProjectionRange(rangename),RooFit.LineColor(kRed),RooFit.LineStyle(7))
-    cphif.SetTitle("")
-    cphif.SetXTitle("cos(\phi)")
-    cphif.Draw()
-
-    return cv3, cphif,cthf, cpsif
+                  
 
 
-def plot_mass(name, nbins = 100):
-    
-    name = str(name)
-    cv3 = TCanvas()
-    if "11p" in name:
-        model = model11p
-        dataset = dataset11p
-    if "11n" in name:
-        model = model11n
-        dataset = dataset11n
-    if "12p" in name:
-        model = model12p
-        dataset = dataset12p
-    if "12n" in name:
-        model = model12n
-        dataset = dataset12n
-        
-    cphif = Mass.frame()
-    RooAbsData.plotOn(dataset,cphif,RooFit.Binning(nbins))
-    model.plotOn(cphif)
-    model.plotOn(cphif,RooFit.Components("modelBkg_" + name[:-1]),RooFit.LineColor(kBlue),RooFit.LineStyle(kDashed))
-    model.plotOn(cphif,RooFit.Components("Bs pdf " + name),RooFit.LineColor(TColor.GetColor("#ff99cc")),RooFit.LineStyle(9))
-    model.plotOn(cphif,RooFit.Components("Bd pdf " + name),RooFit.LineColor(kRed),RooFit.LineStyle(7))
-
-    cphif.SetTitle("")
-    cphif.SetXTitle("M_{J/\Psi K\pi} (MeV/c^{2})")
-    cphif.Draw()
-
-    return cv3, cphif#,cthf, cpsif
+##### Result July dms:
+##     EXT PARAMETER                                INTERNAL      INTERNAL  
+##  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+##   1  ACPLBd       1.16138e-01   3.16352e-03   1.46731e-04   2.34418e-01
+##   2  As2Bd_826_861   1.34603e-01   4.77079e-03   4.76144e-04  -4.79784e-01
+##   3  As2Bd_861_896   4.13329e-02   1.97069e-03   2.32529e-04  -9.87530e-01
+##   4  As2Bd_896_931   3.79117e-02   2.93479e-03   4.58376e-04  -1.01287e+00
+##   5  As2Bd_931_966   1.07901e-01   6.92620e-03   6.57179e-04  -2.53704e+00
+##   6  dpaBd        2.95679e+00   1.19593e-02   3.68637e-05   4.89956e-01
+##   7  dpeBd        2.22032e-01   9.50307e-03   2.41995e-05   3.53448e-02
+##   8  dsBd_826_861   3.13531e+00   4.55310e-02   1.79807e-02   5.22445e-01
+##   9  dsBd_861_896   3.60329e+00   3.55924e-02   1.09897e-04   6.10750e-01
+##  10  dsBd_896_931   4.47388e+00   1.73581e-02   4.08483e-04   7.92400e-01
+##  11  dsBd_931_966  -1.32317e+00   1.83027e-02   2.94452e-04  -2.12178e-01
+##  12  fLBd         5.55628e-01   1.72114e-03   6.66861e-05  -3.27495e-02
+##  13  fpaBd        2.12157e-01   1.99649e-03   5.09596e-04  -3.71164e-02
+##  14  nBd_2011_phys_826_861   7.54311e+03   8.68040e+01   6.46375e-05  -7.41538e+00
+##  15  nBd_2011_phys_861_896   2.79860e+04   1.67198e+02   6.74993e-05  -2.47083e+00
+##  16  nBd_2011_phys_896_931   2.52792e+04   1.58908e+02   6.68229e-05  -2.42190e+00
+##  17  nBd_2011_phys_931_966   8.04781e+03   8.96608e+01   6.45413e-05  -8.30880e+00
+##  18  nBd_2012_phys_826_861   1.64538e+04   1.28202e+02   4.35837e-05  -7.41755e+00
+##  19  nBd_2012_phys_861_896   6.15679e+04   2.47993e+02   4.55003e-05  -2.47068e+00
+##  20  nBd_2012_phys_896_931   5.55375e+04   2.35535e+02   4.50401e-05  -2.42112e+00
+##  21  nBd_2012_phys_931_966   1.77282e+04   1.33074e+02   4.35085e-05  -8.30906e+00
+##                               ERR DEF= 0.5
 
 
-fitres = fitAll(minos = 1, offset = 1)
-ff = TFile("FitResults.root","recreate")
-fitres.Write("FitResults")
-ff.Close()
+############## SECOND MINIMUM
 
-
-#-------------------------------------------------
-if (YEAR==2011 or YEAR==1211):  
-    if (WEIGHT_CAT=="Bd" or WEIGHT_CAT=="none"):
-        Bd_cv11p, Bd_psif11p, Bd_thf11p, Bd_phif11p = plotAngle("2011p","Bd_range",70)
-        Bd_cv11n, Bd_psif11n, Bd_thf11n, Bd_phif11n = plotAngle("2011n","Bd_range",70)
-        Bd_cv11p.SaveAs("Bd_cv11p_"+WEIGHT_CAT+".root")
-        Bd_cv11n.SaveAs("Bd_cv11n_"+WEIGHT_CAT+".root")
-       
-    if(WEIGHT_CAT=="Bs" or WEIGHT_CAT=="none"):
-        Bs_cv11p, Bs_psif11p, Bs_thf11p, Bs_phif11p = plotAngle("2011p","Bs_range",30)
-        Bs_cv11n, Bs_psif11n, Bs_thf11n, Bs_phif11n = plotAngle("2011n","Bs_range",30)
-        Bs_cv11p.SaveAs("Bs_cv11p_"+WEIGHT_CAT+".root")
-        Bs_cv11n.SaveAs("Bs_cv11n_"+WEIGHT_CAT+".root")
-        
-
-    else:
-        print "no angular fit"
-  
-    if(SFIT==0 ):
-        a_cv11p, a_cphif11p = plot_mass("2011p")
-        a_cv11n, a_cphif11n = plot_mass("2011n")
-        a_cv11p.SaveAs("a_cv11p.root")
-        a_cv11n.SaveAs("a_cv11n.root")
-else:
-    print "2011 data not used "
-   
-#--------------------------------------------------------
-
-
-#-------------------------------------------------
-
-
-#-------------------------------------------------
-if (YEAR==2012 or YEAR==1211):  
-
-    if(WEIGHT_CAT=="Bd" or WEIGHT_CAT=="none"):
-        
-        Bd_cv12p, Bd_psif12p, Bd_thf12p, Bd_phif12p = plotAngle("2012p","Bd_range",70)
-        Bd_cv12n, Bd_psif12n, Bd_thf12n, Bd_phif12n = plotAngle("2012n","Bd_range",70)
-        Bd_cv12p.SaveAs("Bd_cv12p_"+WEIGHT_CAT+".root")
-        Bd_cv12n.SaveAs("Bd_cv12n_"+WEIGHT_CAT+".root")
-   
-  
-    if(WEIGHT_CAT=="Bs" or WEIGHT_CAT=="none"):
-
-        Bs_cv12p, Bs_psif12p, Bs_thf12p, Bs_phif12p = plotAngle("2012p","Bs_range",30)
-        Bs_cv12n, Bs_psif12n, Bs_thf12n, Bs_phif12n = plotAngle("2012n","Bs_range",30)
-        Bs_cv12p.SaveAs("Bs_cv12p_"+WEIGHT_CAT+".root")
-        Bs_cv12n.SaveAs("Bs_cv12n_"+WEIGHT_CAT+".root")
-       
-
-    else:
-        print "no angular fit"
-
-    if(SFIT==0):
-        a_cv12p, a_cphif12p = plot_mass("2012p")
-        a_cv12n, a_cphif12n = plot_mass("2012n")
-        a_cv12p.SaveAs("a_cv12p.root")
-        a_cv12n.SaveAs("a_cv12n.root")
-else:
-    print "2012 data not used "
+##  EXT PARAMETER                                INTERNAL      INTERNAL  
+##  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+##   1  ACPLBd       1.19956e-01   3.81305e-03   1.67873e-04   2.42275e-01
+##   2  As2Bd_826_861   1.38758e-01   5.79483e-03   5.51984e-04  -4.61138e-01
+##   3  As2Bd_861_896   4.07266e-02   2.36937e-03   2.65288e-04  -9.91949e-01
+##   4  As2Bd_896_931   3.75888e-02   3.51051e-03   2.59138e-03  -1.01531e+00
+##   5  As2Bd_931_966   1.19137e-01   8.46046e-03   7.40246e-04  -5.50900e-01
+##   6  dpaBd       -2.95266e+00   1.45009e-02   1.17870e-03  -5.26888e-02
+##   7  dpeBd        2.91731e+00   1.14661e-02   1.74174e-04   1.73092e-02
+##   8  dsBd_826_861   3.13179e+00   5.40420e-02   2.06642e-02   5.21798e-01
+##   9  dsBd_861_896   2.68016e+00   4.36634e-02   1.14581e-04   4.40687e-01
+##  10  dsBd_896_931   1.81710e+00   2.11091e-02   6.86275e-05   2.93392e-01
+##  11  dsBd_931_966   1.32097e+00   2.08220e-02   3.19600e-04   2.11819e-01
+##  12  fLBd         5.58059e-01   2.07291e-03   7.61607e-05  -2.78856e-02
+##  13  fpaBd        2.10602e-01   2.39927e-03   5.80476e-04  -4.10060e-02
+##  14  nBd_2012_phys_826_861   1.64537e+04   1.28202e+02   4.12654e-05  -7.41755e+00
+##  15  nBd_2012_phys_861_896   6.15689e+04   2.47996e+02   4.30787e-05  -2.47069e+00
+##  16  nBd_2012_phys_896_931   5.55378e+04   2.35536e+02   4.26455e-05  -2.42112e+00
+##  17  nBd_2012_phys_931_966   1.77283e+04   1.33075e+02   4.11945e-05  -8.30906e+00
 
 
 
+##### Bs
 
-
-
-
+##     EXT PARAMETER                                INTERNAL      INTERNAL  
+##  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+##   1  ACPLBs       1.60369e-01   5.22479e-02   4.31519e-04   3.26509e-01
+##   2  ACPpaBs     -2.17957e-01   1.74627e-01   1.33111e-03  -1.30174e+01
+##   3  ACPpeBs      3.19897e-02   9.65873e-02   6.48474e-04  -3.20562e+00
+##   4  As2Bs_826_861   1.85271e-01   1.82462e-01   1.04216e-01  -2.56343e+00
+##   5  As2Bs_861_896   4.00495e-02   4.53770e-02   5.79274e-04  -1.14771e+00
+##   6  As2Bs_896_931   4.05765e-02   3.50959e-02   8.96504e-02  -1.14449e+00
+##   7  As2Bs_931_966   2.57119e-01   9.97798e-02   1.04012e-01  -3.74425e-01
+##   8  dpaBs       -2.78457e+00   1.80669e-01   1.07417e-04  -4.59140e-01
+##   9  dpeBs       -7.05749e-02   1.15016e-01   6.04013e-05  -1.12326e-02
+##  10  dsBs_826_861   6.89297e-01   6.59747e-01   1.74852e-02   1.09926e-01
+##  11  dsBs_861_896  -8.17679e-01   5.97024e-01   1.85322e-02  -1.30508e-01
+##  12  dsBs_896_931   4.71610e+00   2.00138e-01   2.00649e-04   8.48955e-01
+##  13  dsBs_931_966   4.58459e+00   1.35646e-01   1.31297e-02   8.17824e-01
+##  14  fLBs         5.45449e-01   2.49678e-02   4.96246e-04   5.64899e-01
+##  15  fpaBs        1.47433e-01   2.67500e-02   8.21573e-04  -4.63304e-01
+##  16  nBs_2012_phys_826_861   6.25003e+01   7.90715e+00   1.11220e-04  -4.66490e+02
+##  17  nBs_2012_phys_861_896   3.43576e+02   1.85388e+01   2.28668e-05  -9.59101e+01
+##  18  nBs_2012_phys_896_931   5.06756e+02   2.25147e+01   1.38834e-05  -5.82312e+01
+##  19  nBs_2012_phys_931_966   2.04342e+02   1.42966e+01   3.48125e-05  -1.46014e+02

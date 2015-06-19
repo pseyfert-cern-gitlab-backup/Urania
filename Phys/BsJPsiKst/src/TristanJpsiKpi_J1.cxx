@@ -26,6 +26,7 @@ ClassImp(TristanJpsiKpi_J1)
                         RooAbsReal& _delta_pa,
                         RooAbsReal& _delta_pe,
                         RooAbsReal& _delta_S,
+                        RooAbsReal& _Cfact_10,
                         RooAbsReal& _w_2A_pe,
                         RooAbsReal& _w_A_S2,
                         RooAbsReal& _w_A_0A_pe,
@@ -46,6 +47,7 @@ ClassImp(TristanJpsiKpi_J1)
    delta_pa("delta_pa","delta_pa",this,_delta_pa),
    delta_pe("delta_pe","delta_pe",this,_delta_pe),
    delta_S("delta_S","delta_S",this,_delta_S),
+   Cfact_10("Cfact_10","Cfact_10",this,_Cfact_10),
    w_2A_pe("w_2A_pe","w_2A_pe",this,_w_2A_pe),
    w_A_S2("w_A_S2","w_A_S2",this,_w_A_S2),
    w_A_0A_pe("w_A_0A_pe","w_A_0A_pe",this,_w_A_0A_pe),
@@ -71,6 +73,7 @@ ClassImp(TristanJpsiKpi_J1)
    delta_pa("delta_pa",this,other.delta_pa),
    delta_pe("delta_pe",this,other.delta_pe),
    delta_S("delta_S",this,other.delta_S),
+   Cfact_10("Cfact_10",this,other.Cfact_10),
    w_2A_pe("w_2A_pe",this,other.w_2A_pe),
    w_A_S2("w_A_S2",this,other.w_A_S2),
    w_A_0A_pe("w_A_0A_pe",this,other.w_A_0A_pe),
@@ -111,7 +114,7 @@ Double_t sq2 = sqrt(2);
 Double_t sq3 = sqrt(3);
 Double_t sq5 = sqrt(5);
    // ENTER EXPRESSION IN TERMS OF VARIABLE ARGUMENTS HERE 
-   return As*cdelta_s*helcosthetaK*sq3*sqfL*sthl2*sqrt(-As2 + 1)/(2*M_PI) - sqrt(6)*As*cosphi*helcosthetaL*sqfpa*sthk*sthl*sqrt(-As2 + 1)*(cdelta_pa*cdelta_s + sdelta_pa*sdelta_s)/(4*M_PI) + sqrt(6)*As*helcosthetaL*sinphi*sthk*sthl*sqrt((-As2 + 1)*(-fL - fpa + 1))*(-cdelta_pe*sdelta_s + cdelta_s*sdelta_pe)/(4*M_PI) + As2*sthl2/(4*M_PI) - 3*cdelta_pa*cosphi*helcosthetaK*helcosthetaL*sq2*sqfL*sqfpa*sthk*sthl*(-As2 + 1)/(4*M_PI) - 3*cosphi*sinphi*sqfpa*sthk2*sthl2*sqrt((-As2 + 1)*(-fL - fpa + 1))*sqrt(-As2 + 1)*(-cdelta_pa*sdelta_pe + cdelta_pe*sdelta_pa)/(4*M_PI) + 3*cthk2*fL*sthl2*(-As2 + 1)/(4*M_PI) + 3*fpa*sthk2*(-As2 + 1)*(2*cosphi2*cthl2 + 2*sinphi2)/(16*M_PI) + 3*helcosthetaK*helcosthetaL*sdelta_pe*sinphi*sq2*sqfL*sthk*sthl*sqrt((-As2 + 1)*(-fL - fpa + 1))*sqrt(-As2 + 1)/(4*M_PI) + 3*sthk2*(-As2 + 1)*(-fL - fpa + 1)*(-2*cosphi2*cthl2 + 2*cosphi2 + 2*cthl2)/(16*M_PI) ; 
+   return As*cdelta_s*sq3*sqfL*sthl2*Cfact_10*helcosthetaK*sqrt(-As2 + 1)/(2*M_PI) + sqrt(6)*As*cosphi*sqfpa*sthk*sthl*Cfact_10*helcosthetaL*sqrt(-As2 + 1)*(cdelta_pa*cdelta_s + sdelta_pa*sdelta_s)/(4*M_PI) - sqrt(6)*As*sinphi*sthk*sthl*Cfact_10*helcosthetaL*sqrt((-As2 + 1)*(-fL - fpa + 1))*(-cdelta_pe*sdelta_s + cdelta_s*sdelta_pe)/(4*M_PI) + 3*cdelta_pa*cosphi*sq2*sqfL*sqfpa*sthk*sthl*helcosthetaK*helcosthetaL*(-As2 + 1)/(4*M_PI) - 3*cosphi*sinphi*sqfpa*sthk2*sthl2*sqrt((-As2 + 1)*(-fL - fpa + 1))*sqrt(-As2 + 1)*(-cdelta_pa*sdelta_pe + cdelta_pe*sdelta_pa)/(4*M_PI) + 3*cthk2*sthl2*fL*(-As2 + 1)/(4*M_PI) - 3*sdelta_pe*sinphi*sq2*sqfL*sthk*sthl*helcosthetaK*helcosthetaL*sqrt((-As2 + 1)*(-fL - fpa + 1))*sqrt(-As2 + 1)/(4*M_PI) + 3*sthk2*fpa*(-As2 + 1)*(2*cosphi2*cthl2 + 2*sinphi2)/(16*M_PI) + 3*sthk2*(-As2 + 1)*(-fL - fpa + 1)*(-2*cosphi2*cthl2 + 2*cosphi2 + 2*cthl2)/(16*M_PI) + sthl2*As2/(4*M_PI) ; 
  } 
 
 
@@ -157,7 +160,7 @@ Double_t sq3 = sqrt(3);
 Double_t sq5 = sqrt(5);
 if ( code == 1)
 {
-Double_t Integral = As*cdelta_s*sqfL*w_A_SA_0*sqrt(-As2 + 1) + As*sqfpa*w_A_SA_pa*sqrt(-As2 + 1)*(cdelta_pa*cdelta_s + sdelta_pa*sdelta_s) + As*w_A_SA_pe*sqrt((-As2 + 1)*(-fL - fpa + 1))*(-cdelta_pe*sdelta_s + cdelta_s*sdelta_pe) + As2*w_A_S2 + cdelta_pa*sqfL*sqfpa*w_A_0A_pa*(-As2 + 1) + fL*w_A_02*(-As2 + 1) + fpa*w_2A_pa*(-As2 + 1) + sdelta_pe*sqfL*w_A_0A_pe*sqrt((-As2 + 1)*(-fL - fpa + 1))*sqrt(-As2 + 1) + sqfpa*w_A_paA_pe*sqrt((-As2 + 1)*(-fL - fpa + 1))*sqrt(-As2 + 1)*(-cdelta_pa*sdelta_pe + cdelta_pe*sdelta_pa) + w_2A_pe*(-As2 + 1)*(-fL - fpa + 1);
+Double_t Integral = As*cdelta_s*sqfL*w_A_SA_0*Cfact_10*sqrt(-As2 + 1) + As*sqfpa*w_A_SA_pa*Cfact_10*sqrt(-As2 + 1)*(cdelta_pa*cdelta_s + sdelta_pa*sdelta_s) + As*w_A_SA_pe*Cfact_10*sqrt((-As2 + 1)*(-fL - fpa + 1))*(-cdelta_pe*sdelta_s + cdelta_s*sdelta_pe) + cdelta_pa*sqfL*sqfpa*w_A_0A_pa*(-As2 + 1) + sdelta_pe*sqfL*w_A_0A_pe*sqrt((-As2 + 1)*(-fL - fpa + 1))*sqrt(-As2 + 1) + sqfpa*w_A_paA_pe*sqrt((-As2 + 1)*(-fL - fpa + 1))*sqrt(-As2 + 1)*(-cdelta_pa*sdelta_pe + cdelta_pe*sdelta_pa) + w_2A_pa*fpa*(-As2 + 1) + w_2A_pe*(-As2 + 1)*(-fL - fpa + 1) + w_A_02*fL*(-As2 + 1) + w_A_S2*As2;
 return Integral;
 }
 }

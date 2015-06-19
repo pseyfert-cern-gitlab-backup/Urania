@@ -10,7 +10,7 @@ ROOTLIBS := -L$(ROOTSYS)/lib  `root-config --libs`  -lRooFit -lRooFitCore -lRooS
 #	-lPhysics -pthread -lm -ldl -rdynamic
 ########################################################################################
 
-CPPFILES = $(filter-out TMVA_expert.cpp TMVA_teacher.cpp expert.cpp teacher.cpp weighting.cpp slimtuple.cpp, $(wildcard *.cpp))
+CPPFILES = $(filter-out TMVA_expert.cpp TMVA_teacher.cpp createTuple.cpp expert.cpp teacher.cpp weighting.cpp slimtuple.cpp, $(wildcard *.cpp))
 CFILES = $(wildcard *.C)
 OBJS = $(patsubst %.cpp,%.o, $(CPPFILES)) $(patsubst %.C,%.o, $(CFILES))
 
@@ -38,7 +38,7 @@ CXXFLAGS      += $(ROOTCFLAGS) -I. -I$(NEUROBAYES)/include -Iinc
 LIBSNB        = $(ROOTLIBS) $(NBLIBS) -lNeuroBayesTeacherCPP --verbose
 LIBS          = $(ROOTLIBS) 
 
-default : slimtuple.exe weighting.exe teacher.exe expert.exe TMVA_teacher.exe TMVA_expert.exe
+default : slimtuple.exe weighting.exe teacher.exe expert.exe createTuple.exe TMVA_teacher.exe TMVA_expert.exe
 
 clean:
 	@rm -rf *.o *.exe
@@ -65,6 +65,10 @@ teacher.exe: teacher.o $(OBJS)
 
 expert.exe: expert.o $(OBJS)
 	@echo now link expert
+	@$(LD) $(LDFLAGS) $^ $(LIBSNB)  -o $@
+
+createTuple.exe: createTuple.o $(OBJS)
+	@echo now link createTuple
 	@$(LD) $(LDFLAGS) $^ $(LIBSNB)  -o $@
 
 TMVA_teacher.exe: TMVA_teacher.o $(OBJS)

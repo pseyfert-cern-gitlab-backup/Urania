@@ -14,7 +14,6 @@
 #include <TFile.h>
 #include <TROOT.h>
 #include <TSystem.h>
-#include <TCint.h>
 #include <TMath.h>
 #include <TTree.h>
 #include <TStopwatch.h>

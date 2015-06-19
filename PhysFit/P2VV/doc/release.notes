@@ -4,6 +4,22 @@
 ! Purpose     : RooFit framework for decay-time and angular dependent analyses.
 !-----------------------------------------------------------------------------
 
+!============================================== v3r6 2014-10-20 ==============================
+! 2014-10-20 Diego Martinez Santos
+	 Make version v3r6
+! 2014-09-04 - Marco Clemencic
+ - Fixed build with ROOT 6.
+
+! 2014-05-28 - Marco Clemencic
+ - Fixed compilation with ROOT 6.
+
+! 2014-05-12 - Marco Clemencic
+ - Fixed CMake configuration.
+
+! 2014-05-11 - Marco Clemencic
+ - Minor change to work with the latest changes in the reflex dictionary pattern,
+   needed for ROOT 6's PCMs.
+
 !============================================== v3r5 2014-4-11 ==============================
 ! 2014-4-11 Diego Martinez Santos
 	 Make version v3r5
@@ -378,15 +394,4 @@
                                   RooRealVar& ctheta, 
                                   RooRealVar& phi);
  - cmt/requirements
-  . Prepare for ROOT 5.18. libRooFit has been split into libRooFitCore and
-    libRooFit. Link to both of these.
-
- - P2VV/TransF*.h, P2VV/HelF*.h (and corresponding .cpp files in src/)
-  . Add five parameter constructor, simply calls AnglesAbsFunc five parameter
-    constructor (see above)
-
- - P2VV/P2VVPdfMakerFunctions.h, src/P2VVPdfMakerFunctions.cpp
-  . New implementation of P2VV::makePVVPdf function by Tristan.
-  . New functions P2VV::createProduct, P2VV::makePhiParameters, P2VV::makeKstarParameters.
-
-! 2008-01-22 -
+  . Prepare for ROOT 5.18. libRooFit has bee

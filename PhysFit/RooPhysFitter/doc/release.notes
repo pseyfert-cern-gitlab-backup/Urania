@@ -5,6 +5,26 @@
                 fit results using the RooFit package
 !-----------------------------------------------------------------------------
 
+!============================================== v2r7 2014-10-17 ==============================
+! 2014-10-17 Diego Martinez Santos
+	 Make version v2r7
+! 2014-09-04 - Marco Clemencic
+ - Fixed build with ROOT 6.
+
+2014-08-06 Sneha Malde
+Added some functionality in the D*D0 fit so that all backgrounds do not need to be identical.
+
+
+!============================================== v2r4 2014-7-18 ==============================
+! 2014-7-18 Diego Martinez Santos
+	 Make version v2r4
+! 2014-05-12 - Marco Clemencic
+ - Fixed CMake configuration.
+
+! 2014-05-11 - Marco Clemencic
+ - Minor change to work with the latest changes in the reflex dictionary pattern,
+   needed for ROOT 6's PCMs.
+
 !============================================== v2r3 2014-4-11 ==============================
 ! 2014-4-11 Diego Martinez Santos
 	 Make version v2r3
@@ -148,18 +168,4 @@
 ! 2011-10-10 Sneha Malde
  - Added new function in RooDstarDmassFitter which allows 2 bkg components in the D* bkg to be fixed
  - Added a perform fit function which allows a fit with strategy 0 followed by strategy 1 which 
-   improves behaviour for large datasets.
-
-! 2011-09-28 - Philip Hunt
- - Added new PDF RooPhiBg, which implements the background distribution
-   used in the phi cross-section paper (http://arxiv.org/abs/1107.3935)
- - Added new class RooPhysFitter::RooDplusMassFitter, which is used to fit
-   two signal mass peaks (e.g. Ds and D+) with a single discriminating variable.
-
-! 2011-07-28 - Philip Hunt
- - Added methods to produce binned maximum likelihood fits to RooPhysFitter, RooDMassFitter 
-   and RooDstarD0MassFitter. Also added method to change the number of bins for a given variable to RooPhysFitter.
- - Modified RooGranet.cpp to prevent "unused variables" warnings
-
-! 2011-07-20 - Philip Hunt
- - Added methods 
+   improves behaviour for large da

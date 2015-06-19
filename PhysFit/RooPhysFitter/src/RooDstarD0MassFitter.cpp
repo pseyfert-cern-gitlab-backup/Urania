@@ -15,6 +15,7 @@
 #include "RooArgList.h"
 #include "RooCategory.h"
 #include "RooFormulaVar.h"
+#include "RooChebychev.h"
 #include "RooGaussian.h"
 #include "RooCBShape.h"
 #include "RooPhysFitter/RooGranet.h"
@@ -22,6 +23,8 @@
 #include "RooDstD0BG.h"
 #include "RooPhysFitter/RooCruijff.h"
 #include "RooPhysFitter/RooCruijffSimple.h"
+#include "RooGenericPdf.h"
+#include "RooExponential.h"
 
 // ROOT 
 #include "TChain.h"
@@ -67,7 +70,9 @@ RooDstarD0MassFitter::RooDstarD0MassFitter(  )
   // values
   m_dMassPartName="D^{0}";
   m_dMassSigModelName="d0MassSigModel";
-  m_dMassBkgModelName="d0MassBkgModel";
+  m_dMassBkgModelName="d0MassBkgModel"; 
+m_dMassBkgForMultModelName="d0MassBkgForMultModel";
+
 }
 
 RooDstarD0MassFitter::RooDstarD0MassFitter(const char* name, const char* title)
@@ -90,6 +95,8 @@ RooDstarD0MassFitter::RooDstarD0MassFitter(const char* name, const char* title)
   m_dMassPartName="D^{0}";
   m_dMassSigModelName="d0MassSigModel";
   m_dMassBkgModelName="d0MassBkgModel";
+  m_dMassBkgForMultModelName="d0MassBkgForMultModel";
+  m_delmBkgModelForWSName = "delmBkgModelForWS";
 }
 
 void RooDstarD0MassFitter::MakeDelmVar(Float_t xmin, Float_t xmax,
@@ -611,6 +618,45 @@ void RooDstarD0MassFitter::MakeDelmSigCB(Float_t mu_start, Float_t mu_min,
 
 /***** create Delta mass background model *****/
 // RooDstD0BG background
+
+
+void RooDstarD0MassFitter::MakeDMassBkgExpForMult(Float_t decay_start, Float_t decay_min, Float_t decay_max,const char* unit)
+{
+  if (!m_rws) {
+    throw GeneralException("RooDMassFitter::MakeDMassBkgExpForMult",
+                           "No RooWorkspace object is defined.");
+  }
+  RooRealVar* mass = m_rws->var(m_dMassName);
+  if (!mass) {
+    throw WSRetrievalFailure("RooDMassFitter:MakeDMassBkgExpForMult",
+                           *m_rws, m_dMassName, "RooRealVar");
+  }
+  TString invMassUnit="";
+  if (unit&&strcmp(unit,"")!=0) {
+    invMassUnit.Form("(%s)^{-1}", unit);
+  }
+  TString decayTitle="";
+  if (!m_dMassPartName||strcmp(m_dMassPartName,"")==0) {
+    decayTitle="#gamma";
+  }
+  else {
+    decayTitle.Form("%s #gamma", m_dMassPartName);
+  }
+
+  RooRealVar decay("dmass_bkg_exp_decay", decayTitle.Data(), decay_start, decay_min,decay_max, invMassUnit);
+  RooExponential dMassBkgModelForMult(m_dMassBkgForMultModelName,"",*mass,decay);
+  if (m_rws->import(dMassBkgModelForMult)) {
+    throw WSImportFailure("RooDMassFitter::MakeDMassBkgExp",
+                          *m_rws, dMassBkgModelForMult);
+  }
+}
+
+
+
+
+
+
+
 void RooDstarD0MassFitter::MakeDelmBkgDstD0BG(RooRealVar& dm0, // threshold
                                               RooRealVar& c, RooRealVar& a,
                                               RooRealVar& b) 
@@ -630,7 +676,25 @@ void RooDstarD0MassFitter::MakeDelmBkgDstD0BG(RooRealVar& dm0, // threshold
                           *m_rws, delmBkgModel);
   }
 }
-
+void RooDstarD0MassFitter::MakeDelmBkgDstD0BGForWS(RooRealVar& dm0, // threshold
+                                              RooRealVar& c, RooRealVar& a,
+                                              RooRealVar& b) 
+{
+   if (!m_rws) {
+    throw GeneralException("RooDstarD0MassFitter::MakeDelmBkgDstD0BGForWS",
+                           "No RooWorkspace object is defined.");
+  }
+  RooRealVar* delm = m_rws->var(m_delmName);
+  if (!delm) {
+    throw WSRetrievalFailure("RooDstarD0MassFitter::MakeDelmBkgDstD0BGForWS",
+                           *m_rws, m_delmName, "RooRealVar");
+  }
+  RooDstD0BG delmBkgModelForWS(m_delmBkgModelForWSName, "", *delm, dm0, c, a, b);
+  if (m_rws->import(delmBkgModelForWS)) {
+    throw WSImportFailure("RooDstarD0MassFitter::MakeDelmBkgDstD0BGForWS",
+                          *m_rws, delmBkgModelForWS);
+  }
+}
 void RooDstarD0MassFitter::MakeDelmBkgDstD0BG(Float_t dm0_start,
                                               Float_t dm0_min, 
                                               Float_t dm0_max, Float_t c_start,
@@ -670,11 +734,84 @@ void RooDstarD0MassFitter::MakeDelmBkgDstD0BG(Float_t dm0_start,
   RooRealVar c("delm_bkg_c", cTitle.Data(), c_start, c_min, c_max);
   RooRealVar a("delm_bkg_a", aTitle.Data(), a_start, a_min, a_max);
   RooRealVar b("delm_bkg_b", bTitle.Data(), b_start, b_min, b_max);
-  
+  std::cout<<"debug org5 "<<std::endl;
+
+  dm0.Print();
+  c.Print();
+  a.Print();
+  b.Print();
+   std::cout<<"debug org5a "<<std::endl;
   RooDstD0BG delmBkgModel(m_delmBkgModelName, "", *delm, dm0, c, a, b);
   if (m_rws->import(delmBkgModel)) {
     throw WSImportFailure("RooDstarD0MassFitter::MakeDelmBkgDstD0BG",
                           *m_rws, delmBkgModel);
+  }
+}
+void RooDstarD0MassFitter::MakeDelmBkgDstD0BGForWS(Float_t dm0_start,
+                                              Float_t dm0_min, 
+                                              Float_t dm0_max, Float_t c_start,
+                                              Float_t c_min, Float_t c_max,
+                                              Float_t a_start, Float_t a_min,
+                                              Float_t a_max, Float_t b_start,
+                                              Float_t b_min, Float_t b_max,
+                                              const char* unit)
+{
+  std::cout<<"debug 1 "<<std::endl;
+
+
+   if (!m_rws) {
+    throw GeneralException("RooDstarD0MassFitter::MakeDelmBkgDstD0BGForWS",
+                           "No RooWorkspace object is defined.");
+  }
+  std::cout<<"debug 2 "<<std::endl;
+
+  RooRealVar* delm = m_rws->var(m_delmName);
+  if (!delm) {
+    throw WSRetrievalFailure("RooDstarD0MassFitter::MakeDelmBkgDstD0BGForWS",
+                           *m_rws, m_delmName, "RooRealVar");
+  }
+  std::cout<<"debug 3 "<<std::endl;
+  TString dm0Title="";
+  TString cTitle="";
+  TString aTitle="";
+  TString bTitle="";
+  if (!m_delmPartName||strcmp(m_delmPartName,"")==0) {
+ std::cout<<"debug 3a "<<std::endl;
+    dm0Title="(#Delta m)_{0}fws";
+    cTitle="cfws";
+    aTitle="afws";
+    bTitle="bfsw";
+  }
+  else {
+ std::cout<<"debug 3b "<<std::endl;
+    dm0Title.Form("%s (#Delta m)_{0}fws", m_delmPartName);
+    cTitle.Form("%s cfws", m_delmPartName);
+    aTitle.Form("%s afws", m_delmPartName);
+    bTitle.Form("%s bfws", m_delmPartName);
+  }
+
+  std::cout<<"debug 4 "<<std::endl;
+
+  RooRealVar dm0fws("delm_bkg_dm0fws", dm0Title.Data(), dm0_start, dm0_min, dm0_max,
+                 unit);
+  RooRealVar cfws("delm_bkg_cfws", cTitle.Data(), c_start, c_min, c_max);
+  RooRealVar afws("delm_bkg_afws", aTitle.Data(), a_start, a_min, a_max);
+  RooRealVar bfws("delm_bkg_bfws", bTitle.Data(), b_start, b_min, b_max);
+  
+  std::cout<<"debug 5 "<<std::endl;
+
+  dm0fws.Print();
+  cfws.Print();
+  afws.Print();
+  bfws.Print();
+   std::cout<<"debug 5a "<<std::endl;
+  RooDstD0BG delmBkgModelForWS(m_delmBkgModelForWSName, "", *delm, dm0fws, cfws, afws, bfws);
+
+  std::cout<<"debug 6 "<<std::endl;
+  if (m_rws->import(delmBkgModelForWS)) {
+    throw WSImportFailure("RooDstarD0MassFitter::MakeDelmBkgDstD0BGForWS",
+                          *m_rws, delmBkgModelForWS);
+    std::cout<<"debug 7 "<<std::endl;
   }
 }
 
@@ -725,6 +862,51 @@ void RooDstarD0MassFitter::MakeDelmBkgDstD0BG(Float_t dm0_start,
 }
 
 
+void RooDstarD0MassFitter::MakeDelmBkgDstD0BGForWS(Float_t dm0_start,
+                                              Float_t dm0_min, 
+                                              Float_t dm0_max, Float_t c,
+                                              Float_t a_start, Float_t a_min,
+                                              Float_t a_max,
+                                              Float_t b,
+                                              const char* unit)
+{
+   if (!m_rws) {
+    throw GeneralException("RooDstarD0MassFitter::MakeDelmBkgDstD0BGForWS",
+                           "No RooWorkspace object is defined.");
+  }
+  RooRealVar* delm = m_rws->var(m_delmName);
+  if (!delm) {
+    throw WSRetrievalFailure("RooDstarD0MassFitter::MakeDelmBkgDstD0BGForWS",
+                           *m_rws, m_delmName, "RooRealVar");
+  }
+  TString dm0Title="";
+  TString cTitle="";
+  TString aTitle="";
+  TString bTitle="";
+  if (!m_delmPartName||strcmp(m_delmPartName,"")==0) {
+    dm0Title="(#Delta m)_{0}";
+    cTitle="c";
+    aTitle="a";
+    bTitle="b";
+  }
+  else {
+    dm0Title.Form("%s (#Delta m)_{0}", m_delmPartName);
+    cTitle.Form("%s cfws", m_delmPartName);
+    aTitle.Form("%s afws", m_delmPartName);
+    bTitle.Form("%s bfws", m_delmPartName);
+  }
+  RooRealVar dm0fws("delm_bkg_dm0", dm0Title.Data(), dm0_start, dm0_min, dm0_max,
+                 unit);
+  RooRealVar cVarfws("delm_bkg_c", cTitle.Data(), c);
+  RooRealVar aVarfws("delm_bkg_a", aTitle.Data(), a_start, a_min, a_max);
+  RooRealVar bVarfws("delm_bkg_b", bTitle.Data(), b);
+  
+  RooDstD0BG delmBkgModelForWS(m_delmBkgModelForWSName, "", *delm, dm0fws, cVarfws, aVarfws, bVarfws);
+  if (m_rws->import(delmBkgModelForWS)) {
+    throw WSImportFailure("RooDstarD0MassFitter::MakeDelmBkgDstD0BGForWS",
+                          *m_rws, delmBkgModelForWS);
+  }
+}
 
 
 
@@ -772,6 +954,49 @@ void RooDstarD0MassFitter::MakeDelmBkgDstD0BG(Float_t dm0, Float_t c_start,
   }
 }
 
+void RooDstarD0MassFitter::MakeDelmBkgDstD0BGForWS(Float_t dm0, Float_t c_start,
+                                              Float_t c_min, Float_t c_max,
+                                              Float_t a_start, Float_t a_min,
+                                              Float_t a_max, Float_t b_start,
+                                              Float_t b_min, Float_t b_max,
+                                              const char* unit)
+{
+   if (!m_rws) {
+    throw GeneralException("RooDstarD0MassFitter::MakeDelmBkgDstD0BGForWS",
+                           "No RooWorkspace object is defined.");
+  }
+  RooRealVar* delm = m_rws->var(m_delmName);
+  if (!delm) {
+    throw WSRetrievalFailure("RooDstarD0MassFitter::MakeDelmBkgDstD0BGForWS",
+                           *m_rws, m_delmName, "RooRealVar");
+  }
+  TString dm0Title="";
+  TString cTitle="";
+  TString aTitle="";
+  TString bTitle="";
+  if (!m_delmPartName||strcmp(m_delmPartName,"")==0) {
+    dm0Title="(#Delta m)_{0}";
+    cTitle="c";
+    aTitle="a";
+    bTitle="b";
+  }
+  else {
+    dm0Title.Form("%s (#Delta m)_{0}", m_delmPartName);
+    cTitle.Form("%s cfws", m_delmPartName);
+    aTitle.Form("%s afws", m_delmPartName);
+    bTitle.Form("%s bfws", m_delmPartName);
+  }
+  RooRealVar dm0Varfws("delm_bkg_dm0", dm0Title.Data(), dm0, unit);
+  RooRealVar cfws("delm_bkg_c", cTitle.Data(), c_start, c_min, c_max);
+  RooRealVar afws("delm_bkg_a", aTitle.Data(), a_start, a_min, a_max);
+  RooRealVar bfws("delm_bkg_b", bTitle.Data(), b_start, b_min, b_max);
+  
+  RooDstD0BG delmBkgModelForWS(m_delmBkgModelForWSName, "", *delm, dm0Varfws, cfws, afws, bfws);
+  if (m_rws->import(delmBkgModelForWS)) {
+    throw WSImportFailure("RooDstarD0MassFitter::MakeDelmBkgDstD0BGForWS",
+                          *m_rws, delmBkgModelForWS);
+  }
+}
 
 // RooGranet background
 void RooDstarD0MassFitter::MakeDelmBkgGranet(RooRealVar& dm0, // threshold 
@@ -835,7 +1060,76 @@ void RooDstarD0MassFitter::MakeDelmBkgGranet(Float_t dm0_start,
                           *m_rws, delmBkgModel);
   }
 }
+void RooDstarD0MassFitter::MakeDelmBkgThreshold(Float_t c_start,
+						Float_t c_min, Float_t c_max)
+                                             
+{
+   if (!m_rws) {
+    throw GeneralException("RooDstarD0MassFitter::MakeDelmBkgThreshold",
+                           "No RooWorkspace object is defined.");
+  }
+  RooRealVar* delm = m_rws->var(m_delmName);
+  if (!delm) {
+    throw WSRetrievalFailure("RooDstarD0MassFitter::MakeDelmBkgThreshold",
+                           *m_rws, m_delmName, "RooRealVar");
+  }
 
+  TString cTitle="";
+
+  if (!m_delmPartName||strcmp(m_delmPartName,"")==0) {
+    
+    cTitle="c_thres";
+  }
+  else {
+
+    cTitle.Form("%s cthresh", m_delmPartName);
+
+  }
+
+  RooRealVar c("delm_bkg_thresh", cTitle.Data(), c_start, c_min, c_max);
+
+  RooGenericPdf delmBkgModel(m_delmBkgModelName, " ", "sqrt((@0)/139.57 -1)*exp(@1*(@0)/139.57)",RooArgList(*delm,c));
+
+  if (m_rws->import(delmBkgModel)) {
+    throw WSImportFailure("RooDstarD0MassFitter::MakeDelmBkgThreshold",
+                          *m_rws, delmBkgModel);
+  }
+}
+void RooDstarD0MassFitter::MakeDelmBkgThresholdForWS(Float_t c_start,
+						Float_t c_min, Float_t c_max)
+                                             
+{
+   if (!m_rws) {
+    throw GeneralException("RooDstarD0MassFitter::MakeDelmBkgThresholdForWS",
+                           "No RooWorkspace object is defined.");
+  }
+  RooRealVar* delm = m_rws->var(m_delmName);
+  if (!delm) {
+    throw WSRetrievalFailure("RooDstarD0MassFitter::MakeDelmBkgThresholdForWS",
+                           *m_rws, m_delmName, "RooRealVar");
+  }
+
+  TString cTitle="";
+
+  if (!m_delmPartName||strcmp(m_delmPartName,"")==0) {
+    
+    cTitle="c_thresws";
+  }
+  else {
+
+    cTitle.Form("%s cthreshws", m_delmPartName);
+
+  }
+
+  RooRealVar c("delm_bkg_threshws", cTitle.Data(), c_start, c_min, c_max);
+
+  RooGenericPdf delmBkgModelForWS(m_delmBkgModelForWSName, " ", "sqrt((@0)/139.57 -1)*exp(@1*(@0)/139.57)",RooArgList(*delm,c));
+
+  if (m_rws->import(delmBkgModelForWS)) {
+    throw WSImportFailure("RooDstarD0MassFitter::MakeDelmBkgThresholdForWS",
+                          *m_rws, delmBkgModelForWS);
+  }
+}
 void RooDstarD0MassFitter::MakeDelmBkgGranet(Float_t dm0, Float_t a_start,
                                              Float_t a_min, Float_t a_max,
                                              Float_t b_start, Float_t b_min,
@@ -930,7 +1224,62 @@ void RooDstarD0MassFitter::MakeDelmBkgTwoBodyPhsp(Float_t c1_start, Float_t c1_m
   }
   //m_rws->importClassCode(delmBkgModel.IsA());
 }
-                                
+         
+void RooDstarD0MassFitter::MakeDMassBkgFlatForMult(RooRealVar& grad)
+{
+  if (!m_rws) {
+    throw GeneralException("RooDstarD0MassFitter::MakeDMassBkgFlatForMult",
+                           "No RooWorkspace object is defined.");
+  }
+  RooRealVar* mass = m_rws->var(m_dMassName);
+  if (!mass) {
+    throw WSRetrievalFailure("RooDstarD0MassFitter:MakeDMassBkgFlatforMult",
+                           *m_rws, m_dMassName, "RooRealVar");
+  }
+  RooChebychev d0MassBkgForMultModel(m_dMassBkgForMultModelName,"",*mass,RooArgList(grad));
+  if (m_rws->import(d0MassBkgForMultModel)) {
+    throw WSImportFailure("RooDstarD0MassFitter::MakeDMassBkgFlatforMult",
+                          *m_rws, d0MassBkgForMultModel);
+  }
+}
+
+void RooDstarD0MassFitter::MakeDMassBkgFlatForMult(Float_t grad_start, Float_t grad_min,
+                                        Float_t grad_max,const char* unit)
+{
+  if (!m_rws) {
+    throw GeneralException("RooDstarD0MassFitter::MakeDMassBkgFlatForMult",
+                           "No RooWorkspace object is defined.");
+  }
+  RooRealVar* mass = m_rws->var(m_dMassName);
+  if (!mass) {
+    throw WSRetrievalFailure("RooDstarD0MassFitter:MakeDMassBkgFlatForMult",
+                           *m_rws, m_dMassName, "RooRealVar");
+  }
+  TString invMassUnit="";
+  if (unit&&strcmp(unit,"")!=0) {
+    invMassUnit.Form("(%s)^{-1}", unit);
+  }
+  TString gradTitle="";
+  if (!m_dMassPartName||strcmp(m_dMassPartName,"")==0) {
+    gradTitle="fm#nabla";
+  }
+  else {
+    gradTitle.Form("%s fm#nabla", m_dMassPartName);
+  }
+
+  RooRealVar grad("dmass_bkgformult_poly_c1", gradTitle.Data(), grad_start, grad_min,
+                  grad_max, invMassUnit);
+  RooChebychev d0MassBkgForMultModel(m_dMassBkgForMultModelName,"",*mass,RooArgList(grad));
+  if (m_rws->import(d0MassBkgForMultModel)) {
+    throw WSImportFailure("RooDstarD0MassFitter::MakeDMassBkgFlatForMult",
+                          *m_rws, d0MassBkgForMultModel);
+  }
+}
+
+
+
+
+                       
 // make 2D D0/delta mass model - specify expected fraction of each 
 // background type. NB. No check that sum(frac)==1
 // If a starting value for a model fraction is less than zero, then this
@@ -1001,6 +1350,11 @@ void RooDstarD0MassFitter::MakeDelmModel(Float_t frac_sig,
     throw WSRetrievalFailure("RooDstarD0MassFitter::MakeDelmModel",
                              *m_rws,m_dMassBkgModelName,"RooAbsPdf");
   }
+  RooAbsPdf* d0MassBkgForMultModel=m_rws->pdf(m_dMassBkgForMultModelName);
+  if (!d0MassBkgForMultModel) {
+    throw WSRetrievalFailure("RooDstarD0MassFitter::MakeDelmModel",
+                             *m_rws,m_dMassBkgForMultModelName,"RooAbsPdf");
+  }
   RooAbsPdf* delmSigModel=m_rws->pdf(m_delmSigModelName);
   if (!delmSigModel) {
     throw WSRetrievalFailure("RooDstarD0MassFitter::MakeDelmModel",
@@ -1012,6 +1366,15 @@ void RooDstarD0MassFitter::MakeDelmModel(Float_t frac_sig,
                              *m_rws,m_delmBkgModelName,"RooAbsPdf");
   }
   
+  RooAbsPdf* delmBkgModelForWS=m_rws->pdf(m_delmBkgModelForWSName);
+  if (!delmBkgModelForWS) {
+    throw WSRetrievalFailure("RooDstarD0MassFitter::MakeDelmModelForWS",
+                             *m_rws,m_delmBkgModelForWSName,"RooAbsPdf");
+  }
+  
+
+
+
   /*** create the 2D PDF ***/
 
   // signal
@@ -1024,11 +1387,11 @@ void RooDstarD0MassFitter::MakeDelmModel(Float_t frac_sig,
   
   // random slow pion bkg (signal in D0 mass, bkg in delta mass)
   RooProdPdf piModel(m_2dMassPiBkgModelName, "",
-                     RooArgSet(*d0MassSigModel, *delmBkgModel));
+                     RooArgSet(*d0MassSigModel, *delmBkgModelForWS));
   
   // fake D0 bkg (bkg in D0 mass, signal in delta mass)
   RooProdPdf d0Model(m_2dMassD0BkgModelName, "",
-                     RooArgSet(*d0MassBkgModel, *delmSigModel));
+                     RooArgSet(*d0MassBkgForMultModel, *delmSigModel));
   
   Int_t nentries = rds->numEntries();
   if (nentries<=0) {
@@ -1507,14 +1870,14 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
     
     Bool_t printEntry=m_printEntries&&(entry%m_printFreq==0);
     if (printEntry) {
-      std::cout << "RooDstarD0MassFitter::MakeDelmDataSet: Entry " << entry
+      /*std::cout << "RooDstarD0MassFitter::MakeDelmDataSet: Entry " << entry
                 << ", entry number " << entryNumber 
                 << ", entry in current tree " << localEntry
                 << std::endl;
       std::cout << "RooDMassFitter::MakeDMassDataSet: Delta mass = " << Delm
                 << ", D0 mass = " << D0M
                 << std::endl;
-    }
+      */   }
 
     if ( (mass->inRange(D0M,0)) && (delm->inRange(Delm,0)) ) {
       mass->setVal(D0M);
@@ -1570,8 +1933,8 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
                                    msg.str());
           }
           if (printEntry) {
-            std::cout << "RooDstarD0MassFitter::MakeDelmDataSet: Variable "
-                      << vname << ", value = " << v << std::endl;
+            //std::cout << "RooDstarD0MassFitter::MakeDelmDataSet: Variable "
+	    //         << vname << ", value = " << v << std::endl;
           }
 
           RooRealVar *var=dynamic_cast<RooRealVar*>(&args[vname.c_str()]);

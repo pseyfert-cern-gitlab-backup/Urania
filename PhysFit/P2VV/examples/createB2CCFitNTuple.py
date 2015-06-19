@@ -2,9 +2,9 @@
 ## script settings ##
 #####################
 
-nTupleFilePath  = 'data/Reco14/2011_2012_dv33r6p1_s20_201309_tupleB_add.root'
+nTupleFilePath  =  "~/vol5/BPT1.root"#'data/Reco14/2011_2012_dv33r6p1_s20_201309_tupleB_add.root'
 nTupleName       = 'DecayTree'
-dataSetsFilePath = 'fitNTuple_2011_2012_Reco14.root'
+dataSetsFilePath = nTupleFilePath.replace(".root","_newSw.root")
 appendToFile     = False
 
 runPeriods       = [ 2011, 2012 ]

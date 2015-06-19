@@ -9,6 +9,7 @@ Msister = Symbol("Msister", positive = True)
 Mdau1 = Symbol("mdau1", positive = True)
 Mdau2 = Symbol("mdau2", positive = True)
 J = Symbol("J", natural = True)
+J2 = Symbol("J2", natural = True)
 kappa = Symbol("kappa", real = True)
 
 muh = Symbol("muh", positive = True)
@@ -76,6 +77,10 @@ J = 1.
 K0 = get_K(mass,m0,Gamma0,Mdau1,Mdau2,J)
 K0h = get_K_hat(mass,m0,Gamma0,Mdau1,Mdau2,J)
 
+J2 = 2
+K02 = get_K(mass,m0,Gamma0,Mdau1,Mdau2,J2)
+K0h2 = get_K_hat(mass,m0,Gamma0,Mdau1,Mdau2,J2)
+
 ### Generic Propagators:
 gpipi = Symbol("gpipi",positive = True)
 gKK = Symbol("gKK", positive = True)
@@ -85,6 +90,7 @@ Flatte_Y = 1/(m0*m0 - mass*mass - I*m0*(gpipi*get_rho(mass, 139.57) + gKK*get_rh
 FlatSwave = Sqrt(1/(muh-mul))
 NoRelBW = 1/(mass - m0 + I*0.5*Gamma0)
 EvtGen = K0h / (1-I*K0)
+EvtGen2 = K0h2 / (1-I*K02)
 Kmatrix_ResPlusFlat = (K0h + kappa)/( 1 - I*(K0+kappa*2*Pow(get_q(mass,Mdau1,Mdau2)/mass,2*J+1)))
 
 f0_BES = Flatte_0.subs([(m0, 965), (gKK,4.21*gpipi)])
@@ -119,6 +125,7 @@ phi2KK_EvtGen = EvtGen.subs( [(m0,PDG.phi.mass), (Gamma0,PDG.phi.width),(Mdau1,M
 phi2KK_EvtGen = phi2KK_EvtGen.subs(Mdau2,PDG.Kplus.mass)## Now substitute the daughter by a number
 
 Kst02Kpi_EvtGen = EvtGen.subs( [(m0,PDG.Kst0.mass), (Gamma0,PDG.Kst0.width),(Mdau1,PDG.Kplus.mass),(Mdau2,PDG.piplus.mass)])#
+Kst0_1430_2_2Kpi_EvtGen = EvtGen2.subs( [(m0,PDG.ParticleData(315).mass), (Gamma0,PDG.ParticleData(315).width),(Mdau1,PDG.Kplus.mass),(Mdau2,PDG.piplus.mass)])#
 Kmatrix_KpiSwave = Kmatrix_ResPlusFlat.subs([ (m0,PDG.ParticleData(10321).mass),(Gamma0,PDG.ParticleData(10321).width),(kappa, 2.23802e-03 ), (Mdau1,PDG.Kplus.mass), (Mdau2,PDG.piplus.mass)])
 
 ### Few tools

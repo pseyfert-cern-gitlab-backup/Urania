@@ -566,30 +566,32 @@ void plotLegend(TString name, bool PR, double x1,double y1,double x2,double y2){
   gr->SetMarkerStyle(20);
   leg->AddEntry(gr," Data","lep");
   TString meson = (name.Contains("Psippi")?"#pi":"K");
+  TString bar = (name.Contains("AB")?"#bar":"");
+  TString charge = (name.Contains("AB")?"^{+}":"^{-}");
 
   TH1F* HLb = new TH1F("Lb","Lb",10,0,1);
   if (m_Lb) {
     HLb->SetLineColor(0);  
     HLb->SetFillColor(c_LbCol);
-    leg->AddEntry(HLb," #Lambda_{b}#rightarrowJ/#psip"+meson,"f");
+    leg->AddEntry(HLb," "+bar+"#Lambda_{b}#rightarrowJ/#psip"+meson+charge,"f");
   }
   
   if ("K"!=meson){
-    TH1F* HKp = new TH1F("Kp","Kp",10,0,1);
+    TF1* HKp = new TF1("Kp","x",0,1);
     HKp->SetLineColor(c_pKCol);  
     HKp->SetLineStyle(c_pKStyle);
-    leg->AddEntry(HKp," #Lambda_{b}#rightarrowJ/#psipK","f");
+    leg->AddEntry(HKp," "+bar+"#Lambda_{b}#rightarrowJ/#psipK"+charge,"l");
   }
   
-  TH1F* HRef = new TH1F("Ref","Ref",10,0,1);
+  TF1* HRef = new TF1("Ref","x",0,1);
   HRef->SetLineColor(c_RefCol);  
   HRef->SetLineStyle(c_RefStyle);
-  leg->AddEntry(HRef," Reflections","f");
+  leg->AddEntry(HRef," B reflections","l");
 
-  TH1F* Hbkg = new TH1F("Ref","Ref",10,0,1);
+  TF1* Hbkg = new TF1("Cmb","x",0,1);
   Hbkg->SetLineColor(c_BkgCol);
   Hbkg->SetLineStyle(c_BkgStyle);  
-  leg->AddEntry(Hbkg," Combinatorial","f"); 
+  leg->AddEntry(Hbkg," Combinatorial","l"); 
 
   TH1F* HPR = new TH1F("PR","PR",10,0,1);
   if (PR) {

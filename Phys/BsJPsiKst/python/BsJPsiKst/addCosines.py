@@ -8,8 +8,10 @@ from Urania import PDG
 tempf = "/tmp/" + user + "/"
 
 #tuple = os.environ["HOME"] + "/vol5/Bs_Jpsi_Kst_2013/MagUpAndDown3500GeVReco14s20r1dv33r4_1019pb_StrippingBetaSBs2JpsiKstarWideLine_2011_DOCA_withcuts_oldGL.root"### Update!!
-tuple = "/afs/cern.ch/user/d/diegoms/vol5/Bs_Jpsi_Kst_2013/MC/2012-4000GeV-MagUpAndDown-Nu2.5-Pythia8_Sim08a_Digi13_Trig0x409f0045_Reco14a_s20_dv33r4_WideLine_BDTG_BdJpsiKst.root"
-out_tuple = "/afs/cern.ch/user/d/diegoms/vol5/Bs_Jpsi_Kst_2013/MC/Bd_2012.root"
+#tuple = "/afs/cern.ch/user/d/diegoms/vol5/Bs_Jpsi_Kst_2013/MC/2012-4000GeV-MagUpAndDown-Nu2.5-Pythia8_Sim08a_Digi13_Trig0x409f0045_Reco14a_s20_dv33r4_WideLine_BDTG_BdJpsiKst.root"
+tuple = "Tuple_InjectedMC.root"#/home/galaceos/cmtuser/URANIA/URANIA_HEAD/Phys/BsJPsiKst/ntuples/BdJpsiKpi_MC_BDTG_2012_selected.root"
+#out_tuple = "/afs/cern.ch/user/d/diegoms/vol5/Bs_Jpsi_Kst_2013/MC/Bd_2012.root"
+out_tuple = "MC_forInjection.root"#/home/galaceos/cmtuser/URANIA/URANIA_HEAD/Phys/BsJPsiKst/ntuples/BdJpsiKpi_MC_BDTG_2012_selected_with_cosines.root"
 shell("mkdir " + tempf)
 
 ### Use only trueid filtered events

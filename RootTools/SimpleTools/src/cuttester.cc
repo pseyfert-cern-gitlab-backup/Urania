@@ -16,15 +16,14 @@
 #include <TFile.h>
 #include <TROOT.h>
 #include <TSystem.h>
-#include <TCint.h>
 #include <TMath.h>
 #include <TTree.h>
 #include <TStopwatch.h>
 #include <vector>
 #include <TH1F.h>
-using std::cout;
-using std::endl;
-using std::vector;
+
+using namespace std;
+
 char pretty[10]; 
 UInt_t ncuts=0;
 vector<TString> cuts;

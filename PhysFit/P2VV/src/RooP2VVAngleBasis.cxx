@@ -30,6 +30,8 @@
 #include "RooProduct.h"
 #include "P2VV/RooP2VVAngleBasis.h"
 
+using namespace std;
+
 //_____________________________________________________________________________
 RooP2VVAngleBasis::RooP2VVAngleBasis(const char *name, const char *title,
     RooRealVar& cpsi, RooRealVar& ctheta, RooRealVar& phi,

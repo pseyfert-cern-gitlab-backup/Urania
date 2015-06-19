@@ -3,7 +3,7 @@
 # Maintainer : Diego Martinez Santos
 #============================================================================
 package           Urania
-version           v2r3
+version           v3r0
 #============================================================================
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -23,6 +23,7 @@ use     Python          v*      LCG_Interfaces
 #use     GaudiPython     v*
 use     pytools         v*      LCG_Interfaces -no_auto_imports
 use     pyanalysis      v*      LCG_Interfaces -no_auto_imports
+use     pygraphics     v*      LCG_Interfaces -no_auto_imports
 
 
 use ROOT             v*      LCG_Interfaces -no_auto_imports

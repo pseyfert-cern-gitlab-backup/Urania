@@ -1193,8 +1193,8 @@ void weighting::printBFs(double nnCut, double nn2Cut){
     cout << "\n%%% DeltaACP " << endl ;
     cout << "Resulting in the following raw asymmetries:" << endl ;
     cout << "\\begin{eqnarray*}" << endl ;
-    double aK  = (m_LbKB_s-m_LbKAB_s)/m_LbK_s ;
-    double aKe = sqrt((1-aK)*(1+aK)/m_LbK_s); 
+    double aK  = (m_LbKB_s-m_LbKAB_s)/(m_LbKB_s+m_LbKAB_s) ;
+    double aKe = sqrt((1-aK)*(1+aK)/(0.5*(m_LbKB_s+m_LbKAB_s))); // due to times 2 
     cout << "A^\\text{raw}(\\LbK) & = & (" << round(100*aK,0.1) << " \\pm " << round(100*aKe,0.1) 
 	 << ")\\%\\quad (" << round(aK/aKe,0.1) << "\\sigma) \\\\" << endl ;  
     double api  = (m_LbpiB_s-m_LbpiAB_s)/m_Lbpi_s ;

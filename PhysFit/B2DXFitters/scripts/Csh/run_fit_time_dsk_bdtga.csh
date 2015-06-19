@@ -1,1 +1,0 @@
-python runBs2DsKCPAsymmObsFitterOnData.py --debug --pereventmistag --pereventterr --configName Bs2DsKConfigForNominalGammaFit --pathName /afs/cern.ch/work/a/adudziak/public/sWeights-PAPER-1fb/sWeights_BsDsK_all_both_BDTGA.root --save WS_Time_DsK_BDTGA.root 

@@ -83,7 +83,13 @@ int decodeArgs(const int argc, char** const argv, TString& module,
 
   // *** Set Directory ***
   if (dir==m_castor) { // data should be read from castor
-    dir = "root://castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/f/fkruse/Tuples201403/";
+    if (isLHCb(data)) {
+      dir = "root://castorlhcb.cern.ch//castor/cern.ch/user/f/fkruse/20140611-FixedOsTaggingTuples/";
+    } else if (data==m_SigBsCP) {
+      dir = "/afs/cern.ch/user/j/jwishahi/public/Bs2JpsiKSTupleTemp/";
+    } else {
+      dir = "root://castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/f/fkruse/Tuples201403/";
+    }
   } else if (dir==m_local) { // data can be read locally
     dir = "";
   }
@@ -129,6 +135,7 @@ void help(const TString module) {
       m_LHCb2012 << ", " << m_LHCb2012Prescaled << ", " <<
       m_SigBd << ", " << m_SigBdPrescaled << ", " <<
       m_SigBs << ", " << m_SigBsPrescaled << ", " <<
+      m_SigBsCP << ", " << m_SigBsCPPrescaled << ", " <<
       m_SigKstar << ", " << m_SigKstarWM << ", " << m_IncJpsi << std::endl;
     std::cout << "``step'' specifies which stage of the selection is run." <<
       "Supported: " << m_NNInitialise << ", " << m_NNKstar << ", " <<
@@ -160,6 +167,8 @@ TString makeFileName(const TString module, const TString data,
     modName = "NetOut";
   } else if (module==m_optimisation) {
     modName = "Opt";
+  } else if (module==m_createTuple) {
+    modName = "Fitter";
   } else {
     std::cout << "ERROR: Module " << module
               << " is not associated with a ROOT file." << std::endl;
@@ -240,27 +249,27 @@ B2JpsiKs* loadB2JpsiKsTuple(const TString module, const TString data,
     file1 = "B2JpsiKs-"+data+"-Slim.root";
   } else { // Select DaVinci tuple for slimming
     if (data==m_LHCb2011) {
-      file1 = dir+"B2JpsiKSDetached_data_Stripping20r1_DVv33r6p1_FTr162594_v2_20131007_fkruse_combined_tupleA.root";
-      //file1 = dir+"B2JpsiKSDetached_data_Stripping20r1_DVv33r9_FTr167275_v3_20140306_fkruse_combined_tupleA.root";
+      file1 = dir+"B2JpsiKSDetached_data_Stripping20r1_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA_tagfix.root";
+      //file1 = dir+"B2JpsiKSDetached_data_Stripping20r1_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA.root";
     } else if (data==m_LHCb2011Prescaled) {
-      file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r1_DVv33r6p1_FTr162594_v2_20131007_fkruse_combined_tupleA.root";
-      //file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r1_DVv33r9_FTr167275_v3_20140306_fkruse_combined_tupleA.root";
+      file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r1_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA_tagfix.root";
+      //file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r1_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA.root";
     } else if (data==m_LHCb2012) {
-      file1 = dir+"B2JpsiKSDetached_data_Stripping20r1_DVv33r6p1_FTr162594_v2_20131007_fkruse_combined_tupleA.root";
-      //file1 = dir+"B2JpsiKSDetached_data_Stripping20r0_DVv33r9_FTr167275_v3_20140306_fkruse_combined_tupleA.root";
+      file1 = dir+"B2JpsiKSDetached_data_Stripping20r0_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA_tagfix.root";
+      //file1 = dir+"B2JpsiKSDetached_data_Stripping20r0_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA.root";
     } else if (data==m_LHCb2012Prescaled) {
-      file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r0_DVv33r6p1_FTr162594_v2_20131007_fkruse_combined_tupleA.root";
-      //file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r0_DVv33r9_FTr167275_v3_20140306_fkruse_combined_tupleA.root";
+      file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r0_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA_tagfix.root";
+      //file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r0_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA.root";
     } else if (data==m_LHCbAll) {
-      file1 = dir+"B2JpsiKSDetached_data_Stripping20r1_DVv33r6p1_FTr162594_v2_20131007_fkruse_combined_tupleA.root";
-      file2 = dir+"B2JpsiKSDetached_data_Stripping20r0_DVv33r6p1_FTr162594_v2_20131007_fkruse_combined_tupleA.root";
-      //file1 = dir+"B2JpsiKSDetached_data_Stripping20r1_DVv33r9_FTr167275_v3_20140306_fkruse_combined_tupleA.root";
-      //file2 = dir+"B2JpsiKSDetached_data_Stripping20r0_DVv33r9_FTr167275_v3_20140306_fkruse_combined_tupleA.root";
+      file1 = dir+"B2JpsiKSDetached_data_Stripping20r1_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA_tagfix.root";
+      file2 = dir+"B2JpsiKSDetached_data_Stripping20r0_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA_tagfix.root";
+      //file1 = dir+"B2JpsiKSDetached_data_Stripping20r1_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA.root";
+      //file2 = dir+"B2JpsiKSDetached_data_Stripping20r0_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA.root";
     } else if (data==m_LHCbAllPrescaled) {
-      file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r1_DVv33r6p1_FTr162594_v2_20131007_fkruse_combined_tupleA.root";
-      file2 = dir+"B2JpsiKSPrescaled_data_Stripping20r0_DVv33r6p1_FTr162594_v2_20131007_fkruse_combined_tupleA.root";
-      //file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r1_DVv33r9_FTr167275_v3_20140306_fkruse_combined_tupleA.root";
-      //file2 = dir+"B2JpsiKSPrescaled_data_Stripping20r0_DVv33r9_FTr167275_v3_20140306_fkruse_combined_tupleA.root";
+      file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r1_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA_tagfix.root";
+      file2 = dir+"B2JpsiKSPrescaled_data_Stripping20r0_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA_tagfix.root";
+      //file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r1_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA.root";
+      //file2 = dir+"B2JpsiKSPrescaled_data_Stripping20r0_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA.root";
     } else if (data==m_SigBd) {
       file1 = dir+
       "B2JpsiKSDetached_Sim08_2012_Pythia6_Bd2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
@@ -281,6 +290,9 @@ B2JpsiKs* loadB2JpsiKsTuple(const TString module, const TString data,
       "B2JpsiKSPrescaled_Sim08_2012_Pythia6_Bs2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
       file2 = dir+
       "B2JpsiKSPrescaled_Sim08_2012_Pythia8_Bs2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
+    } else if (data==m_SigBsCP) {
+      file1 = dir+
+      "B2JpsiKSDetached_Sim08_2011+2012_Pythia68_Bs2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140819_fkruse_combined_tupleA_premerge.root";
     } else if (data==m_SigKstar || data==m_SigKstarWM) {
       file1 = dir+
       "B2JpsiKSDetached_Sim08a_2012_Pythia6_Bd2JpsiKst_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
@@ -354,9 +366,9 @@ TChain* loadChain(const TString file1, const TString file2, const TString file3,
   // analysis tools want the last expert file to cut on its net output
   TString friendFileName = "";
   TString friendTreeName = "";
-  if (module==m_weighting && step!=m_NNKstar) {
+  if ((module==m_weighting || module==m_createTuple) && step!=m_NNKstar) {
     TString previousStep = (step==m_NNUnbiased ? m_NNKstar :
-                           (step==m_NNSecond ? m_NNUnbiased : m_NNSecond));
+                           ((step==m_NNSecond || step==m_NNAnalyse) ? m_NNUnbiased : m_NNSecond));
     friendFileName = makeFileName(m_expert, data, previousStep, dir,
                                   decay, weightMethod);
     friendTreeName = "NetTree";

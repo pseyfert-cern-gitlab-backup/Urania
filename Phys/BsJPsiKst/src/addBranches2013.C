@@ -35,7 +35,7 @@ void addBranches2013() {
    TTree *Toldd = (TTree*)fold->Get("BdTuple/DecayTree");
    TFile *fjunk = TFile::Open("junkDeleteMe.root","recreate"); // Junk file. Delete after running the script.
    const char *firstCuts = "muplus_MINIPCHI2 > 16 && muminus_MINIPCHI2 > 16 && Kplus_MINIPCHI2 > 2 && piminus_MINIPCHI2 > 2";
-   TTree *Told = Toldd->CopyTree(firstCuts); // Very loose cuts to reduce tuple size.
+   TTree *Told = Toldd->CopyTree(firstCuts); // Very loose cuts to reduce tuple size. Overwritten with the preselection.
    Long64_t EntriesToCopy  = Told->GetEntries();
    TFile *fnew = TFile::Open("outputTuple.root","recreate");
    TTree *Tnew = Told->CloneTree(EntriesToCopy);
@@ -48,6 +48,8 @@ void addBranches2013() {
    Double_t CPsi       = 0. ;
    Double_t CTheta     = 0. ;
    Double_t B0_LIFE_PS = 0. ;
+   Double_t helcosthetaK = 0. ;
+   Double_t helcosthetaL = 0. ;
 
    TBranch *b_max_DOCA = Tnew->Branch("max_DOCA", &max_DOCA, "max_DOCA/D");
    TBranch *b_lessIPS  = Tnew->Branch("lessIPS" , &lessIPS , "lessIPS/D" );
@@ -55,6 +57,8 @@ void addBranches2013() {
    TBranch *b_CPsi     = Tnew->Branch("CPsi"    , &CPsi    , "CPsi/D"    );
    TBranch *b_CTheta   = Tnew->Branch("CTheta"  , &CTheta  , "CTheta/D"  );
    TBranch *b_B0_LIFE_PS   = Tnew->Branch("B0_LIFE_PS"  , &B0_LIFE_PS  , "B0_LIFE_PS/D"  );
+   TBranch *b_helcosthetaK = Tnew->Branch("helcosthetaK"    , &helcosthetaK    , "helcosthetaK/D"    );
+   TBranch *b_helcosthetaL = Tnew->Branch("helcosthetaL"  , &helcosthetaL  , "helcosthetaL/D"  );
 
    Double_t muplus_MINIPCHI2;
    Double_t muminus_MINIPCHI2;
@@ -62,6 +66,8 @@ void addBranches2013() {
    Double_t piminus_MINIPCHI2;
    Double_t B0_ThetaVtr;
    Double_t B0_ThetaTr;
+   Double_t B0_ThetaK;
+   Double_t B0_ThetaL;
 
    Double_t J_psi_1S_PX ;
    Double_t J_psi_1S_PY ;
@@ -81,6 +87,8 @@ void addBranches2013() {
    Tnew->SetBranchAddress("piminus_MINIPCHI2" , &piminus_MINIPCHI2);
    Tnew->SetBranchAddress("B0_ThetaVtr"       , &B0_ThetaVtr);
    Tnew->SetBranchAddress("B0_ThetaTr"        , &B0_ThetaTr);
+   Tnew->SetBranchAddress("B0_ThetaK"       , &B0_ThetaK);
+   Tnew->SetBranchAddress("B0_ThetaL"        , &B0_ThetaL);
    Tnew->SetBranchAddress("J_psi_1S_PX"       , &J_psi_1S_PX);
    Tnew->SetBranchAddress("J_psi_1S_PY"       , &J_psi_1S_PY);
    Tnew->SetBranchAddress("J_psi_1S_PZ"       , &J_psi_1S_PZ);
@@ -237,6 +245,8 @@ void addBranches2013() {
 
      CPsi   = TMath::Cos(B0_ThetaVtr) ;
      CTheta = TMath::Cos(B0_ThetaTr) ;
+     helcosthetaK = TMath::Cos(B0_ThetaK) ;
+     helcosthetaL = TMath::Cos(B0_ThetaL) ;
 
      B0_LIFE_PS = 3.3356409519815204*B0_LOKI_DTF_CTAU ;
 
@@ -245,6 +255,8 @@ void addBranches2013() {
      b_Mjpsik   ->Fill() ;
      b_CPsi     ->Fill() ;
      b_CTheta   ->Fill() ;
+     b_helcosthetaK ->Fill() ;
+     b_helcosthetaL ->Fill() ;
      b_B0_LIFE_PS ->Fill() ;
    }
 

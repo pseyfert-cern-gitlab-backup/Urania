@@ -3,6 +3,12 @@
 ! Responsible : Patrick Koppenburg
 ! Purpose     : BsJpsiKs analysis
 !-----------------------------------------------------------------------------
+!============================================== v5r5 2014-10-17 ==============================
+! 2014-10-17 Diego Martinez Santos
+	 Make version v5r5
+!============================================== v5r4 2014-7-18 ==============================
+! 2014-7-18 Diego Martinez Santos
+	 Make version v5r4
 !============================================== v5r3 2014-4-11 ==============================
 ! 2014-4-11 Diego Martinez Santos
 	 Make version v5r3
@@ -104,15 +110,4 @@ This gets branched off to svn+ssh://svn.cern.ch/reps/lhcb/Urania/branches/Phys/B
  - Protect J/psiPi0 against DFT bug
 
 ! 2011-11-10 - Patrick Koppenburg
- - Changes of pdf and monotonous variables for paper
-
-! 2011-10-05 - Patrick Koppenburg
- - Added trigger lines, corrected DecayTreeFits
- - New options for D*
-
-! 2011-08-16 - Patrick Koppenburg
- - Make sure the same events enter expert and weighting
-
-! 2011-08-12 - Patrick Koppenburg
- - Add weighted option to expert.cpp
-   . By default r
+ - Changes of pdf and monotonous variabl

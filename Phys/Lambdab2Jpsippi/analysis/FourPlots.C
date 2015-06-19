@@ -626,15 +626,17 @@ TObject* Miranda(TH2D* M, TString opt = "NLL"){
       m23.migrad() ;
       m23.hesse() ;
       rf3 = m23.save() ;
-    } else if ( "NLL"==opt){
+    } else {
       rf1 = G1.fitTo(Hist,Save());
       rf2 = G2.fitTo(Hist,Save());
       rf3 = G3.fitTo(Hist,Save());
       RooPlot* xframe = roovar.frame();
       Hist.plotOn(xframe);
       G1.plotOn(xframe,RooFit::LineColor(kRed));
-      G2.plotOn(xframe,RooFit::LineColor(kBlue),RooFit::LineStyle(kDashed));
-      G3.plotOn(xframe,RooFit::LineColor(kGreen),RooFit::LineStyle(kDotted));
+      if ("PAPER"!=opt){
+        G2.plotOn(xframe,RooFit::LineColor(kBlue),RooFit::LineStyle(kDashed));
+        G3.plotOn(xframe,RooFit::LineColor(kGreen),RooFit::LineStyle(kDotted));
+      }
       xframe->Draw();
       rf1->Print("v");
       rf2->Print("v");
@@ -647,10 +649,8 @@ TObject* Miranda(TH2D* M, TString opt = "NLL"){
 	   << rf2->minNll() << "\\\\" << endl ;
       cout << 0 << " & " << 1 << " & " << rf3->minNll() << "\\\\" << endl ;
       if ("chi2"==opt)  m->Fit("gaus");
+      SetTitle("A/#sigma_{A}","Bins",xframe);
       return xframe;
-    } else {
-      cout << "Unknown option " << opt << endl ;
-      return 0 ;
     }
   }
 }

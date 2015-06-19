@@ -102,6 +102,7 @@ Measurement Measurement::GetEfficiency(Measurement n_sel, Measurement n_tot){
   return eff;
 }
 
+
 //============================================================
 // Setters and getters not defined in the header 
  
@@ -115,6 +116,13 @@ void Measurement::set_errors(double first_error, double second_error, int scheme
       m_errors[0] = m_errors[1] = first_error;
       m_errors[2] = m_errors[3] = second_error;
   }
+}
+
+void Measurement::set_error(double error){
+  
+  m_errors[0] = abs(error);
+  m_errors[1] = abs(error);
+  m_errors[2] = m_errors[3] = 0;
 }
 
 

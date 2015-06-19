@@ -33,6 +33,7 @@
 #include "RooAbsRealLValue.h"
 #include "RooRealVar.h"
 
+using namespace std;
 
 //_____________________________________________________________________________
 RooThresholdPdf::RooThresholdPdf(const char* name, const char* title, RooAbsRealLValue& x)

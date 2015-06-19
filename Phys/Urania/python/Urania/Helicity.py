@@ -209,17 +209,14 @@ def DefineStrongPhases(free_delta0 = 0):
         #name = str(amp)
         if key not in TransAmpModuli.keys(): TransAmpModuli[key] = Symbol(amp+"_mod",positive = True)
         if key not in TransAmpPhases.keys(): TransAmpPhases[key] = Symbol("delta" + amp.replace("A",""),real = True)
-    if not free_delta0: TransAmpPhases.pop("1_0")
+    if not free_delta0: TransAmpPhases["1_0"] = UraniaSR(0)
 
 def StrongPhases(expr, free_delta0=0):
     """ Modifies a term written as A1*conj(A2) as a function of the strong phases
     """
     modlist = []
-    DefineStrongPhases()
+    DefineStrongPhases(free_delta0)
     for key in TransAmplitudes.keys():
-        if key == "1_0" and not free_delta0:
-            modlist.append( (TransAmplitudes[key], TransAmpModuli[key]))
-            continue
         modlist.append( (TransAmplitudes[key],TransAmpModuli[key]*Exp(I*TransAmpPhases[key])) ) 
     f = expr.func
     if f in [im,re]:

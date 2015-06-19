@@ -210,28 +210,28 @@ void JpsiKsPdf::setConstant(TString which){
   }
   if (which=="Prescaled_LL") {
     if (m_frac) {
-      m_frac->setVal(0.54840);
+      m_frac->setVal(0.59401);
       m_frac->setConstant(true);
     }
     if (m_width) {
-      m_width->setVal(5.9063);
+      m_width->setVal(5.9846);
       m_width->setConstant(true);
     }
     if (m_width2) {
-      m_width2->setVal(10.005);
+      m_width2->setVal(10.138);
       m_width2->setConstant(true);
     }
   } else if (which=="Prescaled_DD") {
     if (m_frac) {
-      m_frac->setVal(0.59933);
+      m_frac->setVal(0.59066);
       m_frac->setConstant(true);
     }
     if (m_width) {
-      m_width->setVal(6.8896);
+      m_width->setVal(6.7936);
       m_width->setConstant(true);
     }
     if (m_width2) {
-      m_width2->setVal(12.837);
+      m_width2->setVal(12.274);
       m_width2->setConstant(true);
     }
   }
@@ -882,14 +882,12 @@ void JpsiKsPdf::plotOn(TCanvas* doek, RooDataSet* data, bool doSumW2, Int_t logy
     massFrame->getAttText()->SetTextSize(0.03);
     std::cout << "@@ Adding Pull" << std::endl; 
     AddPull(doek,massFrame,logy); 
-  }
-  else if(param==2){
-    massFrame->SetMinimum((m_ttype==m_LL ? 500 : 1000));
+  } else if(param==2){
+    massFrame->SetMinimum((m_ttype==m_LL ? 500 : 2500));
     massFrame->SetMaximum((m_ttype==m_LL ? 25000 : 50000));
     std::cout << "@@ Adding Pull" << std::endl; 
     AddPull(doek,massFrame,logy); 
-  }
-  else{
+  } else{
     doek->SetLeftMargin(0.15);
     doek->SetBottomMargin(0.15);
     doek->cd(1);

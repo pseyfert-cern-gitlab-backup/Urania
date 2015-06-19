@@ -4,6 +4,10 @@
 // Authors: Patrick Koppenburg & Kristof De Bruyn
 // #############################################################################
 
+// #############################################################################
+// *** Load Useful Classes ***
+// Bs2JpsiKs Package
+//#include "IB2JpsiX.h"
 
 // #############################################################################
 // *** Declarations ***
@@ -51,6 +55,26 @@ double time(const unsigned int pv) {
 double timeErr(const unsigned int pv) {
   return (double) 1000*B0_FitDaughtersPVConst_tauErr[pv];
 }
+int tagOS(TString data) {
+  if (isSigMC(data)) return (int) B0_TAGDECISION_OS;
+  else return (int) obsTagOS_StdComb;
+}
+double etaOS(TString data) {
+  if (isSigMC(data)) return (double) B0_TAGOMEGA_OS;
+  else return (double) obsEtaOS_StdComb;
+}
+int tagSSK() {
+  return (int) B0_SS_Kaon_DEC;
+}
+double etaSSK() {
+  return (double) B0_SS_Kaon_PROB;
+}
+int tagCombi() {
+  return (int) B0_CombinedTag_Dec;
+}
+double etaCombi() {
+  return (double) B0_CombinedTag_Omega;
+}
 double jpsiIPchi2(const unsigned int pv) {
   return (double) J_psi_1S_MINIPCHI2_OtherPVs[pv];
 }
@@ -60,6 +84,7 @@ UInt_t getRunNumber() { return runNumber; }
 ULong64_t getEventNumber() { return eventNumber; }
 float getGpsSecond() { return GpsSecond; }
 int getInputFile() { return InputFile; }
+int getPolarity() { return (int) Polarity;}
 // Variables for selection
 double weightVal(const unsigned int pv) { return sweight[pv]; }
 float neuralnet(const unsigned int pv) { return netOutput[pv]; }

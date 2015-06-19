@@ -1,1 +1,0 @@
-../src/CPObservable.cxx

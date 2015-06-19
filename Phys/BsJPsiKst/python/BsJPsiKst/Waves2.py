@@ -10,8 +10,24 @@ A = doB2VX(spins, helicities = [1,-1], transAmp = 1)#0)
 ### masage a bit the expression to make it more suitable for fitting
 pdf_split = DecomposeAmplitudes(A,TransAmplitudes.values())#H.values())
 phys = 0
-for key in pdf_split: phys += StrongPhases(key)*pdf_split[key]
+CSP_factors = []
+DefineStrongPhases()
+SpinMap = { v:k for k,v in TransAmplitudes.items()}
 
+for key in pdf_split:
+    Amp1 = list(key.atoms())[0]
+    Amp2 = list(key.atoms())[1]
+    cte = One
+    if Amp2 != 2 and Amp1 !=2:
+        J1 = max( SpinMap[Amp1][0],  SpinMap[Amp2][0])
+        J2 = min( SpinMap[Amp1][0],  SpinMap[Amp2][0])
+        if J1 != J2 :
+            cte = USymbol("Cfact_" + J1 + J2 , "C_{" + J1 + "," + J2 + "}", real = True)
+            if cte not in CSP_factors: CSP_factors.append(cte)
+        
+    phys += StrongPhases(key)*pdf_split[key]*cte
+
+    
 #BREAK
 
 
@@ -27,7 +43,7 @@ def changeFreeVars(function):
     function  = function.subs( Cos(2*ThetaK), 2*Cos(ThetaK)**2 - 1)
     function  = function.subs( Sin(ThetaK), Sqrt(1-Cos(ThetaK)**2))
     function  = function.subs( Sin(ThetaL), Sqrt(1-Cos(ThetaL)**2))
-    function = function.subs([(CThK,x),(CThL,y), (Phi, -Pi -z)])
+    function = function.subs([(CThK,x),(CThL,y), (Phi, -z)])
 
     return function
 
@@ -64,13 +80,13 @@ y_acc = Symbol("y_acc", positive = True)
 c2_theta = Symbol("c2_theta", real = True)
 
 c5_psi = -1-c1_psi - c2_psi - c3_psi - c4_psi + y_acc
-acc = (1. + c1_psi*x + c2_psi*x*x + c3_psi*x*x*x + c4_psi*x*x*x*x + c5_psi*x*x*x*x*x)*(1.  + c2_theta*y*y)
+acc = (1. + c1_psi*x + c2_psi*x*x + c3_psi*x*x*x + c4_psi*x*x*x*x + c5_psi*x*x*x*x*x)#*(1.  + c2_theta*y*y)
 
 func = func*acc
 ### Figure out which variables the fit will depend on
 
 # potential_list = [x,y,z]+TransAmpModuli.values()+TransAmpPhases.values()
-potential_list = [x,y,z]+[ s_As2, s_fD, s_fL, s_fpa, s_f2L, s_f2pa ]+TransAmpPhases.values() + [c1_psi,c2_psi,c3_psi,c4_psi,y_acc, c2_theta]
+potential_list = [x,y,z]+[ s_As2, s_fD, s_fL, s_fpa, s_f2L, s_f2pa ]+TransAmpPhases.values() + CSP_factors + [c1_psi,c2_psi,c3_psi,c4_psi,y_acc, c2_theta]
 
 final_list = []
 for thing in potential_list:
@@ -81,7 +97,7 @@ for thing in potential_list:
 
 
 
-op2 = D.RooClassGenerator(func, final_list,"AccAngJpsiKpi_J" +str( max(spins)))
+op2 = D.RooClassGenerator(func, final_list,"ToyTestAccAngJpsiKpi_J" +str( max(spins)))
 
 op2.addSubstitutions([(Sqrt(-x**2+1),"sthk"),(Sqrt(-y**2+1),"sthl"),((-x**2+1),"sthk2"),((-y**2+1),"sthl2")])
 
@@ -99,10 +115,13 @@ op2.addSubstitutions([(Sqrt(2),"sq2"),(Sqrt(3),"sq3"),(Sqrt(5),"sq5")])
 
 #op2.addSubstitutions([((-x**2+1),"sthk2"),((-y**2+1),"sthl2"),(x**2,"cthk2"),(y**2,"cthl2"),(Cos(z),"cosphi"),(Sin(z),"sinphi"),(Sqrt(2),"sq2"),(Sqrt(5),"sq5")])
 op2.makePdf(integrable = kTRUE)
-op2.doIntegralM(1,(z,-Pi,Pi),(x,-1,1),(y,-1,1))
-op2.doIntegralM(2,(x,-1,1),(y,-1,1))
-op2.doIntegralM(3,(z,-Pi,Pi),(x,-1,1))
-op2.doIntegralM(4,(z,-Pi,Pi),(y,-1,1))
+
+zz = integrate(func,(z,-Pi,Pi))
+
+#op2.doIntegral(1,(z,-Pi,Pi),(x,-1,1),(y,-1,1))
+#op2.doIntegralM(2,(x,-1,1),(y,-1,1))
+#op2.doIntegralM(3,(z,-Pi,Pi),(x,-1,1))
+#op2.doIntegralM(4,(z,-Pi,Pi),(y,-1,1))
 #op2.doIntegralM(5,(x,-1,1))
 #op2.doIntegralM(6,(y,-1,1))
 #op2.doIntegralM(7,(z,-Pi,Pi))
@@ -110,7 +129,7 @@ op2.doIntegralM(4,(z,-Pi,Pi),(y,-1,1))
 op2.overwrite()
 op2.invoke()
 
-gROOT.ProcessLine(".L AngJpsiKpi_J1.cxx++")
+
 BREAK
 
 ##############  MAKING TREE
