@@ -109,8 +109,11 @@ static const double numberofseconds = 60.;
 static const double clight = 299.792458; // Units: mm/ns
 
 // Selection Cuts
+static const double tauErrcut = 0.0002; // Units: ps
 static const double taucut = 0.2; // Units: ps
 static const double m_OWNPVZ_range = 250; // Units: cm
+static const int ipcut_LL = 29;
+static const int ipcut_DD = 43;
 
 // Mass Ranges
 static const double BdBox_min = 5230;
@@ -145,6 +148,7 @@ public:
   virtual double massErr(const unsigned int pv) = 0;
   virtual double time(const unsigned int pv) = 0;
   virtual double timeErr(const unsigned int pv) = 0;
+  virtual double jpsiIPchi2(const unsigned int pv) = 0;
   virtual unsigned int primaries() = 0;
   virtual int TrackType() = 0;
   virtual UInt_t getRunNumber() = 0;

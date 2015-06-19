@@ -24,22 +24,25 @@ class MultiTrackCalibTool {
 public: 
   /// Standard constructor
   MultiTrackCalibTool(std::string Name, TTree* RefTreeName,
-                      const std::string OutputFileName,
-                      const std::string mode="UPDATE",
+                      const std::string& OutputFileName,
+                      const std::string& mode="UPDATE",
                       Bool_t verbose=kFALSE,
                       Int_t printFreq=-1); 
 
   virtual ~MultiTrackCalibTool(); ///< Destructor
   
-  void SetTrackMomVarName(const std::string NameInTree);
+  void SetTrackMomVarName(const std::string& NameInTree);
   
-  void SetTrackEtaVarName(const std::string NameInTree);
+  void SetTrackPtVarName(const std::string& NameInTree);
+
+  void SetTrackEtaVarName(const std::string& NameInTree);
   
-  void SetTrackNTrackVarName(const std::string NameInTree);
+  void SetNTracksVarName(const std::string& NameInTree);
 
-  void SetSWeightVarName(const std::string NameInTree);
+  void SetSWeightVarName(const std::string& NameInTree);
 
-  void DeclareSignalTrackAndPerfHist(const std::string TrackNameInTree, TH1* PerfHist);
+  void DeclareSignalTrackAndPerfHist(const std::string& TrackNameInTree,
+                                     TH1* PerfHist);
 
   void SetRefDataInPerfHistLimits();
 
@@ -47,7 +50,7 @@ public:
   
   void Calculate();
   
-  void Calculate(const std::string IDVar_suffix);
+  void Calculate(const std::string& IDVar_suffix);
   
   std::pair<Float_t, Float_t> CalculateNaiveAverage();
   std::pair<Float_t, Float_t> CalculateNaiveWeightAverage();
@@ -58,11 +61,11 @@ public:
 
 protected:
 
-  void SetOutputFile(const std::string FileName, const std::string Mode);
+  void SetOutputFile(const std::string& FileName, const std::string& Mode);
 
-  Bool_t validBranch(TTree* tt, const TString brName);
+  Bool_t validBranch(TTree* tt, const TString& brName);
   
-  std::string getBranchType(TTree* tt, const TString brName);
+  std::string getBranchType(TTree* tt, const TString& brName);
   
   void ReOrderBinningVector();
 
@@ -72,7 +75,7 @@ protected:
 
   void SetTrackKinVarBranchAddressInInputTree();
     
-  void SetTrackIDVarBranchAddressInInputTree(const std::string IDVar_suffix);
+  void SetTrackIDVarBranchAddressInInputTree(const std::string& IDVar_suffix);
   
   Float_t CalcEventFracError(std::vector<std::pair<Int_t,Float_t> > vTrckIDandFracErrs);
 
@@ -80,8 +83,21 @@ protected:
 
 private:
 
+  //==========================================================================
+  // Reorder a vector according to the indices defined in the vector order
+  //==========================================================================
   template< class T >
-  void ReOrderVector(std::vector<T>&, std::vector<size_t> const& );
+  void ReOrderVector(std::vector<T>& v, const std::vector<size_t>& order) 
+  {
+    for ( unsigned int s = 1, d; s < order.size(); ++ s ) 
+    {
+      for ( d = order[s]; d < s; d = order[d] ) ;
+      if ( d == s ) 
+        while ( d = order[d], d != s ) 
+          swap( v[s], v[d] );
+    }
+  }
+  
 
   double CastVoidPointerToDouble(void *val, TTree* tt, std::string branchName);
 

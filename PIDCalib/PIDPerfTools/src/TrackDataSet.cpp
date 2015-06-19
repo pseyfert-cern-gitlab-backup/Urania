@@ -384,7 +384,9 @@ const std::string TrackDataSet::Get_ParamName(const std::string& Internal_Name) 
 
   if(iter==m_ParamMap.end())
   {
-    cout<<"**ERROR** "<<Internal_Name<<" not known."<<endl;
+    cout << "**ERROR** In TrackDataSet::Get_ParamName:    " 
+         << "internal parameter name '" << Internal_Name 
+         << "' not known." << endl;
     RooErrorHandler::softAbort();
   }
   
@@ -451,7 +453,8 @@ const RooRealVar* TrackDataSet::Get_Param(const std::string& Internal_Name) cons
 
   if(iter==m_ParamMap.end())
   {
-    cout<<"**ERROR** "<<Internal_Name<<" not known."<<endl;
+    cout<<"**ERROR** In TrackDataSet::Get_Param:    internal parameter name '"
+        <<Internal_Name<<"' not known."<<endl;
     RooErrorHandler::softAbort();
   }
   

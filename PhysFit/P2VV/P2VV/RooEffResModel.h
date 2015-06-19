@@ -11,16 +11,17 @@
 #ifndef ROO_EFF_RES_MODEL
 #define ROO_EFF_RES_MODEL
 
-#include "RooRealProxy.h"
-#include "RooObjCacheManager.h"
-#include "RooSetProxy.h"
-#include "RooAbsEffResModel.h"
+#include <RooRealProxy.h>
+#include <RooObjCacheManager.h>
+#include <RooSetProxy.h>
+
+#include <P2VV/RooAbsEffResModel.h>
 
 class RooCustomizer;
 class RooResoluitionModel;
 class RooAbsAnaConvPdf;
 
-class RooEffResModel : public RooAbsEffResModel {
+class RooEffResModel : public RooResolutionModel, public RooAbsEffResModel {
 public:
 
    // Constructors, assignment etc
@@ -43,15 +44,10 @@ public:
                                              const RooDataSet *prototype=0, const RooArgSet* auxProto=0,
                                              Bool_t verbose= kFALSE) const;
    
-   virtual RooAbsReal* efficiency() const { 
-      // Return pointer to pdf in product
-      return static_cast<RooAbsReal*>(_eff.absArg());
+   virtual const RooAbsReal* efficiency() const { 
+      // Return pointer to efficiency
+      return &_eff.arg();
    }
-
-   virtual std::vector<RooAbsReal*> efficiencies() const { 
-      // Return pointer to pdf in product
-      return std::vector<RooAbsReal*>(1, efficiency());
-   }   
 
    virtual RooResolutionModel& model() const {
       return dynamic_cast<RooResolutionModel&>(*_model.absArg());
@@ -59,9 +55,10 @@ public:
 
    const RooArgList& getIntegralRanges(const RooArgSet& iset, const char* rangeName = 0) const;
 
-   const RooArgSet* observables() const { 
+   virtual RooArgSet* observables() const {
       // Return pointer to pdf in product
-      return static_cast<const RooArgSet*>(&_observables);
+      // (pointer because genreflex dictionaries can't handle value)
+      return new RooArgSet(_observables);
    }
 
 protected:

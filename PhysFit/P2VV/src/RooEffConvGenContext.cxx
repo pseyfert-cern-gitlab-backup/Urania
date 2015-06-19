@@ -69,21 +69,12 @@ RooEffConvGenContext::RooEffConvGenContext(const RooFFTConvPdf &model, const Roo
 }
 
 //_____________________________________________________________________________
-void RooEffConvGenContext::attach(const RooArgSet& args) 
+void RooEffConvGenContext::initGenerator(const RooArgSet& theEvent) 
 {
-   RooConvGenContext::attach(args);
-   
+   RooConvGenContext::initGenerator(theEvent);
    // Attach the output value of the convolution variable to the efficiencies,
    // so the final hit-miss is with respect to the correct (smeared) value;
-   const RooAbsEffResModel* model = static_cast<const RooAbsEffResModel*>(_modelCloneSet->first());
-   assert(model);
-   std::vector<RooAbsReal*> efficiencies = model->efficiencies();
-   for (std::vector<RooAbsReal*>::const_iterator it = efficiencies.begin(),
-           end = efficiencies.end(); it != end; ++it) {
-      RooAbsReal* efficiency = *it;
-      RooArgSet cvSet(*_cvOut);
-      efficiency->recursiveRedirectServers(cvSet, kFALSE);
-   }
+   const_cast<RooAbsReal*>(efficiency())->recursiveRedirectServers(RooArgSet(*_cvOut), kFALSE);
 }
 //_____________________________________________________________________________
 void RooEffConvGenContext::generateEvent(RooArgSet &theEvent, Int_t remaining)
@@ -98,9 +89,7 @@ void RooEffConvGenContext::generateEvent(RooArgSet &theEvent, Int_t remaining)
       // Construct smeared convolution variable
       Double_t convValSmeared = _cvPdf->getVal() + _cvModel->getVal() ;
 
-      if (!_cvOut->isValidReal(convValSmeared)) {
-         continue;
-      } 
+      if (!_cvOut->isValidReal(convValSmeared)) continue;
       
       // Hit-miss on the efficiency
       // This has to be set first to get the proper value of the efficiency
@@ -126,27 +115,17 @@ void RooEffConvGenContext::generateEvent(RooArgSet &theEvent, Int_t remaining)
 void RooEffConvGenContext::initEfficiency()
 {
    // Check if efficiency supports maximum finding
-   const RooAbsEffResModel* model = static_cast<const RooAbsEffResModel*>(_modelCloneSet->first());
+   const RooAbsEffResModel* model = dynamic_cast<const RooAbsEffResModel*>(_modelCloneSet->first());
    assert(model);
-   std::vector<RooAbsReal*> efficiencies = model->efficiencies();
-   for (std::vector<RooAbsReal*>::const_iterator it = efficiencies.begin(),
-           end = efficiencies.end(); it != end; ++it) {
-      RooAbsReal* efficiency = *it;
-      Int_t maxCode = efficiency->getMaxVal(*_modelVars);
-      if (!maxCode) {
-         _maxEff = 1.;
-         break;
-      } else {
-         Double_t maxVal = efficiency->maxVal(maxCode);
-         if (maxVal > _maxEff) _maxEff = maxVal;
-      }
-   }
+   const RooAbsReal* efficiency = model->efficiency();
+   Int_t maxCode = efficiency->getMaxVal(*_modelVars);
+   _maxEff = ( maxCode ?  efficiency->maxVal(maxCode) : 1. ) ;
 }
 
 //_____________________________________________________________________________
 const RooAbsReal* RooEffConvGenContext::efficiency()
 {
-   const RooAbsEffResModel* model = static_cast<const RooAbsEffResModel*>(_modelCloneSet->first());
+   const RooAbsEffResModel* model = dynamic_cast<const RooAbsEffResModel*>(_modelCloneSet->first());
    assert(model);
    const RooAbsReal* efficiency = model->efficiency();
    assert(efficiency);

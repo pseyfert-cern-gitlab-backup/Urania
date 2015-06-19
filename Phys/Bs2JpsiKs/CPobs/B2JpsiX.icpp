@@ -47,6 +47,9 @@ double time(const unsigned int pv) {
 double timeErr(const unsigned int pv) {
   return 1000*B0_FitDaughtersPVConst_tauErr[pv];
 }
+double jpsiIPchi2(const unsigned int pv) {
+  return J_psi_1S_MINIPCHI2_OtherPVs[pv];
+}
 unsigned int primaries() { return B0_FitDaughtersPVConst_nPV; }
 // Variables for Data Manipulation
 UInt_t getRunNumber() { return runNumber; }

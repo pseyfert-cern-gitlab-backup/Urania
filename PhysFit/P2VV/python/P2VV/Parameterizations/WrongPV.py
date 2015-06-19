@@ -1,6 +1,6 @@
 from P2VV.RooFitWrappers import *
 
-from P2VV.Parameterizations.MassPDFs import Signal_PsiMass as PsiMassPdf
+from P2VV.Parameterizations.MassPDFs import DoubleCB_Psi_Mass as PsiMassPdf
 from P2VV.Parameterizations.MassPDFs import LP2011_Signal_Mass as BMassPdf
 from P2VV.Parameterizations.MassPDFs import LP2011_Background_Mass as BBkgPdf
 from P2VV.Parameterizations.MassPDFs import Background_PsiMass as PsiBkgPdf
@@ -9,7 +9,7 @@ class ShapeBuilder(object):
     __weights = set(('jpsi', 'B', 'both'))
     __rho = dict(B = 2., jpsi = 2.)
     
-    def __init__(self, time, masses, sigmat = None, t_diff = None,
+    def __init__(self, time, masses, sigmat = None, t_diff = None, MassResult = None,
                  InputFile = "/bfys/raaij/p2vv/data/Bs2JpsiPhiPrescaled_2011.root",
                  Workspace = 'Bs2JpsiPhiPrescaled_2011_workspace', Data = 'data',
                  UseKeysPdf = False, Weights = 'B', Draw = False, Reweigh = {}):
@@ -35,19 +35,15 @@ class ShapeBuilder(object):
             m_sig_sigma = RealVar('wpv_m_sig_sigma',  Unit = 'MeV', Value = 10, MinMax = (1, 20))
             from ROOT import RooGaussian as Gaussian
             self._sig_mass = Pdf(Name = 'wpv_sig_m', Type = Gaussian, Parameters = (masses['B'], m_sig_mean, m_sig_sigma ))
-            ## self._sig_mass = BMassPdf(masses['B'], Name = 'wpv_sig_mass', Prefix = "wpv_")
-            self._bkg_mass = BBkgPdf(masses['B'],  Name = 'wpv_bkg_mass', Prefix = "wpv_",
+            ## self._sig_mass = BMassPdf(masses['B'], Name = 'wpv_sig_mass', ParNamePrefix = "wpv")
+            self._bkg_mass = BBkgPdf(masses['B'],  Name = 'wpv_bkg_mass', ParNamePrefix = "wpv",
                                      wpv_m_bkg_exp = dict(Name = 'wpv_m_bkg_exp', Value = -0.0017, MinMax = (-0.01, -0.00001)))
             self._sig[masses['B']] = self._sig_mass
             self._psi[masses['B']] = self._bkg_mass.pdf()
             self._bkg[masses['B']] = self._bkg_mass.pdf()
         if 'jpsi' in masses:
-            self._sig_mpsi = PsiMassPdf(masses['jpsi'], Name = 'wpv_sig_mpsi', Prefix = "wpv_",
-                                        wpv_mpsi_n = dict(Name = 'wpv_mpsi_n', Value = 1,
-                                                          Constant = True ),
-                                        wpv_mpsi_alpha = dict(Name = 'wpv_mpsi_alpha', Value = 3,
-                                                          MinMax = (1, 5)))
-            self._bkg_mpsi = PsiBkgPdf(masses['jpsi'], Name = 'wpv_bkg_mpsi', Prefix = "wpv_")
+            self._sig_mpsi = PsiMassPdf(masses['jpsi'], Name = 'wpv_sig_mpsi', ParNamePrefix = "wpv")
+            self._bkg_mpsi = PsiBkgPdf(masses['jpsi'], Name = 'wpv_bkg_mpsi', ParNamePrefix = "wpv")
             self._sig[masses['jpsi']] = self._sig_mpsi.pdf()
             self._psi[masses['jpsi']] = self._sig_mpsi.pdf()
             self._bkg[masses['jpsi']] = self._bkg_mpsi.pdf()
@@ -57,6 +53,20 @@ class ShapeBuilder(object):
                              'both' : dict(B = self._sig, jpsi = self._psi, bkg = self._bkg)}
         self.__pdf = buildPdf(self.__components[Weights].values(), Observables = masses.values(),
                              Name = 'wpv_mass_pdf')
+        if MassResult:
+            ## Use the provided mass result to set all the parameter values, only float the yields
+            pdf_params = self.__pdf.getParameters(RooArgSet(*masses.values()))
+            for p in MassResult.floatParsFinal():
+                ## ignore yields
+                if any((p.GetName().startswith(n) for n in ['N_', 'mpsi_c'])):
+                    continue
+                ## Find pdf parameter, add "wpv_" prefix
+                pdf_p = pdf_params.find('wpv_' + p.GetName())
+                if pdf_p:
+                    pdf_p.setVal(p.getVal())
+                    pdf_p.setError(p.getError())
+                    pdf_p.setConstant(True)
+        
         self.__pdf.Print("t")
 
         from ROOT import TFile
@@ -81,7 +91,7 @@ class ShapeBuilder(object):
         fitOpts = dict(NumCPU = 4, Save = True, Minimizer = 'Minuit2', Optimize = 2)
         self.__result = self.__pdf.fitTo(self._data, **fitOpts)
             
-        from P2VV.GeneralUtils import SData
+        from P2VV.Utilities.SWeights import SData
         for p in self.__pdf.Parameters(): p.setConstant(not p.getAttribute('Yield'))
         splot = SData(Pdf = self.__pdf, Data = self._data, Name = 'MixingMassSplot')
         self.__sdatas = {}
@@ -146,13 +156,15 @@ class ShapeBuilder(object):
         from ROOT import kDashed, kRed, kGreen, kBlue, kBlack
         from ROOT import TCanvas
         obs = self.__masses.values()
-        self.__canvas = TCanvas('wpv_canvas', 'wpv_canvas', len(obs) * 500, 650)
+        self.__canvas = TCanvas('wpv_canvas', 'wpv_canvas', len(obs) * 600, 533)
         for (p,o) in zip(self.__canvas.pads(len(obs)), obs):
-            from P2VV.GeneralUtils import plot
+            from P2VV.Utilities.Plotting import plot
             plot(p, o, pdf = self.__pdf, data = self._data
-                 , dataOpts = dict(MarkerSize = 0.8, MarkerColor = kBlack)
+                 , dataOpts = dict(MarkerSize = 0.8, MarkerColor = kBlack, Binning = 50)
                  , pdfOpts  = dict(LineWidth = 2)
-                 , plotResidHist = True
+                 , plotResidHist = 'BX'
+                 , xTitle = '#mu^+#mu^- invariant mass [MeV/c^2]'
+                 , yTitle = 'Candidates / (%f MeV/c^2)' % ((o.getMax() - o.getMin()) / float(50))
                  , components = { 'wpv_bkg_*'   : dict( LineColor = kRed,   LineStyle = kDashed )
                                   , 'wpv_psi_*' : dict( LineColor = kGreen, LineStyle = kDashed )
                                   , 'wpv_sig_*' : dict( LineColor = kBlue,  LineStyle = kDashed )
@@ -167,19 +179,22 @@ class ShapeBuilder(object):
     def __draw_time(self):
         from ROOT import kDashed, kRed, kGreen, kBlue, kBlack
         from ROOT import TCanvas
-        self.__time_canvas = TCanvas('wpv_time_canvas', 'wpv_time_canvas', len(self.__shapes) * 500, 500)
+        self.__time_canvases  = [TCanvas('wpv_time_%s' % c.GetName(), 'wpv_time_%s' % c.GetName(), 600, 400) for c in self.__shapes.keys()]
         t = self.__time
         st = self.__st
         from ROOT import RooArgSet
-        for (p, (c, shape)) in zip(self.__time_canvas.pads(len(self.__shapes)), self.__shapes.items()):
-            from P2VV.GeneralUtils import plot
+        for (p, (c, shape)) in zip(self.__time_canvases, self.__shapes.items()):
+            from P2VV.Utilities.Plotting import plot
             pdfOpts  = dict(ProjWData = (RooArgSet(st), self.__sdatas[c], True))
-            plot(p, t, pdf = shape, data = self.__sdatas[c]
-                 , frameOpts = dict(Title = c.GetName())
-                 , dataOpts = dict(MarkerSize = 0.8, Binning = 80, MarkerColor = kBlack)
-                 , pdfOpts  = dict(LineWidth = 2, **pdfOpts)
-                 , logy = False
-                 , plotResidHist = False)
+            nBins = 80
+            frame = plot(p, t, pdf = shape, data = self.__sdatas[c]
+                         , frameOpts = dict(Title = c.GetName())
+                         , dataOpts = dict(MarkerSize = 0.8, Binning = nBins, MarkerColor = kBlack)
+                         , pdfOpts  = dict(LineWidth = 2, **pdfOpts)
+                         , logy = False
+                         , plotResidHist = False)[0]
+            frame.GetXaxis().SetTitle('decay time [ps]')
+            frame.GetYaxis().SetTitle('Candidates / (%3.2f ps)' % ((t.getMax() - t.getMin()) / float(nBins)))
 
     def __draw_t_diff(self):
         from ROOT import kDashed, kRed, kGreen, kBlue, kBlack
@@ -189,7 +204,7 @@ class ShapeBuilder(object):
         st = self.__st
         from ROOT import RooArgSet
         for (p, (c, shape)) in zip(self.__diff_canvas.pads(len(self.__diff_shapes)), self.__diff_shapes.items()):
-            from P2VV.GeneralUtils import plot
+            from P2VV.Utilities.Plotting import plot
             pdfOpts  = dict(ProjWData = (RooArgSet(st), self.__sdatas[c], True))
             plot(p, t_diff, pdf = shape, data = self.__sdatas[c]
                  , dataOpts = dict(MarkerSize = 0.8, Binning = 80, MarkerColor = kBlack)

@@ -15,10 +15,22 @@ def getconfig() :
     configdict["ArgLf"]         = configdict["StrongPhase"] - configdict["WeakPhase"]
     configdict["ArgLbarfbar"]   = configdict["StrongPhase"] + configdict["WeakPhase"]
     configdict["ModLf"]         = 0.372
-    configdict["tacc_exponent"] = 1.83165e+00 #1.75 
-    configdict["tacc_offset"]   = 1.94941e-02 #0.02
-    configdict["tacc_beta"]     = 3.55134e-02 #3.5e-02 
-    configdict["tacc_turnon"]   = 1.31231e+00 #1.3       
+    #configdict["tacc_exponent"] = 1.83165e+00 #1.75 
+    #configdict["tacc_offset"]   = 1.94941e-02 #0.02
+    #configdict["tacc_beta"]     = 3.55134e-02 #3.5e-02 
+    #configdict["tacc_turnon"]   = 1.31231e+00 #1.3
+
+    configdict["tacc_exponent"] = 1.83214e+00
+    configdict["tacc_offset"]   = 1.98046e-02
+    configdict["tacc_beta"]     = 3.55307e-02
+    configdict["tacc_turnon"]   = 1.31250e+00
+                
+
+    #configdict["tacc_exponent"] = 1.83184e+00
+    #configdict["tacc_offset"]   = 1.94729e-02
+    #configdict["tacc_beta"]     = 3.55230e-02                
+    #configdict["tacc_turnon"]   = 1.31231e+00
+    
 
     #configdict["tacc_exponent"] = 3.99829e+00
     #configdict["tacc_offset"]   = 1.94941e-02
@@ -35,16 +47,22 @@ def getconfig() :
     #configdict["tacc_beta"]     = 5.5636e-02
     #configdict["tacc_turnon"]   = 6.2060e-01
     
-
-    configdict["resolutionScaleFactor"] = 1.15 
+    configdict["resolutionScaleFactor"] = 1.37 
     configdict["resolutionMeanBias"]    = 0.0
     configdict["DecayTimeResolutionModel"] = "TripleGaussian"
     configdict["DecayTimeErrInterpolation"] = True
+
+    configdict["resolutionSigma1"] = 2.14946e-02
+    configdict["resolutionSigma2"] = 3.67643e-02
+    configdict["resolutionSigma3"] = 6.32869e-02
+    configdict["resolutionFrac1"]  = 3.72147e-01
+    configdict["resolutionFrac2"]  = 5.65150e-01
 
     configdict["calibration_p1"] = 1.035 #1.035
     configdict["calibration_p0"] = 0.392 #-0.013
     
     configdict["TemplateFile"]            = "/afs/cern.ch/work/a/adudziak/public/workspace/MDFitter/templates_BsDsPi.root"
+    #"/afs/cern.ch/work/a/adudziak/public/workspace/MDFitter/templates_BsDsPi.root"
     configdict["TemplateWorkspace"]       = "workspace"
     configdict["MistagTemplateName"]      = "MistagPdf_signal_BDTGA"
     configdict["MistagVarName"]           = "lab0_BsTaggingTool_TAGOMEGA_OS"
@@ -56,7 +74,7 @@ def getconfig() :
 
     configdict["nBinsMistag"]   = 50
     configdict["nBinsProperTimeErr"]   = 50
-    configdict["nBinsAcceptance"]   = 740    
+    configdict["nBinsAcceptance"]   = 370    
     
             
 

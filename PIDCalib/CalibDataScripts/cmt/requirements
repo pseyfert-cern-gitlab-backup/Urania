@@ -3,7 +3,7 @@
 # Maintainer : Andrew Powell (LHCb)04
 #============================================================================
 package           CalibDataScripts
-version           v3r1
+version           v4r3
 
 #============================================================================
 # Structure, i.e. directories to process. 

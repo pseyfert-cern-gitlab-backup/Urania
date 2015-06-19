@@ -3,6 +3,10 @@ Package             : Urania
 Package Coordinator : Diego Martinez Santos
 Purpose             : LHCb physics repository
 
+! 2013-10-09 - Diego Martinez Santos
+ - Make version v2r1
+
+
 ! 2013-03-30 - Diego Martinez Santos
  - Make version v1r1
 

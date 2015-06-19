@@ -52,8 +52,3 @@ def microsetup():
 
     
     
-def mathematica_script(filename):
-    if os.path.exists("/afs/cern.ch/"): path = "/afs/cern.ch/project/parc/math80/bin/math"
-    else: path = "math"
-    os.system(path + " < " + filename)
-    

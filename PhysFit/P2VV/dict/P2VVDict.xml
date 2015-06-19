@@ -6,14 +6,13 @@
     <selection>
         <!-- <class pattern = "std::vector<*>" /> -->
 
-        <class name = "RooAbsRealMoment" />
         <class name = "RooRealMoment" />
         <class name = "RooRealEffMoment" />
-        <function name = "computeRooRealMoments" />
-        <class name = "std::vector<RooAbsRealMoment*>" />
+        <class name = "std::vector<RooRealMoment*>" />
         <class name = "RooBTagDecay" />
         <class name = "RooTrivialTagDecay" />
         <class name = "RooMultiCatGenerator" />
+        <class name = "RooBinnedFun" />
         <class name = "RooBinnedPdf" />
         <class name = "RooP2VVAngleBasis" />
         <class name = "RooThresholdPdf" />
@@ -21,7 +20,6 @@
         <class name = "RooTagDecisionWrapper" />
         <class name = "RooRealCategory" />
         <class name = "RooCalibratedDilution" />
-        <function name = "RooDataSetToTree" />
         <class name = "RooTransAngle" />
         <class name = "RooCruijff" />
         <class name = "RooEfficiencyBin" />
@@ -33,12 +31,19 @@
         <class name = "RooMultiEffResModel" />
         <class name = "RooComplementCoef" />
         <class name = "RooEffConvGenContext" />
-        <function name = "sigmaFromFT" />
         <class name = "RooBoxPdf" />
         <class name = "RooExplicitNormPdf" />
         <class name = "RooTPDecay" />
         <class name = "RooAmoroso" />
         <class name = "RooMassDependence" />
+        <class name = "RooCubicSplineKnot::BoundaryConditions" />
+        <class name = "RooCubicSplineKnot" />
+        <class name = "RooCubicSplineFun" />
+        <class name = "RooGaussEfficiencyModel" />
+        <class name = "RooAbsGaussModelEfficiency" />
+        <class name = "RooEffResAddModel" />
+        <class name = "RooCategoryVar" />
+        <class name = "RooConvertPolAmp" />
 
         <class name = "std::map<RooAbsCategory*, std::string>" />
         <class name = "std::map<RooCategoryProxy*, std::string>" />
@@ -55,5 +60,25 @@
         <class name = "std::pair<Int_t, MultiHistEntry*>" />
         <class name = "std::map<int, MultiHistEntry*>::iterator" />
         <class name = "std::vector<MultiHistEntry*>" />
+
+        <class name = "std::list<RooDataSet*>" />
+        <class name = "std::vector<std::pair<double, double> >" />
+        <class name = "std::pair<TMatrixDSym, TMatrixDSym> >" />
+
+        <function name = "computeRooRealMoments" />
+        <function name = "RooDataSetToTree" />
+        <function name = "TreeToRooDataSet" />
+        <function name = "addSWeightToTree" />
+        <function name = "addRunPeriodToTree" />
+        <function name = "addVertexErrors" />
+        <function name = "sigmaFromFT" />
+        <function name = "hessian" />
+        <function name = "hessian_with_errors" />
+        <function name = "second_gradient" />
+        <function name = "second_gradient_with_errors" />
+        <function name = "gradient" />
+        <function name = "gradient_with_errors" />
+        <function name = "cross_with_errors" />
+
     </selection>
 </lcgdict>

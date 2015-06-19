@@ -1,0 +1,28 @@
+source NBVars.csh
+make
+./teacher.exe /castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-MC11-Lb2Jpsippi-716.root /castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-MC11-IncPsi-717.root | tee test-teach
+foreach a ( `nsls $CASTOR_HOME/Lambdab | grep root | grep -v R12S17b`)
+  set root = `echo $a | awk -F. '{print $1}'`
+  echo $root
+  ./expert.exe $CASTOR_HOME/Lambdab/$a | tee test-expert-${root}  &
+end
+# these can go in parallel
+./expert.exe $CASTOR_HOME/Lambdab/Lambdab-R12S17b-721.root Lambda | tee test-expert-Lambdab-R12S17b-721-Lambda &
+foreach a ( `nsls $CASTOR_HOME/Lambdab | grep root | grep -v R12S17b | grep Lb2JpsiL`)
+  set root = `echo $a | awk -F. '{print $1}'`
+  ./expert.exe $CASTOR_HOME/Lambdab/$a Lambda | tee test-expert-${root}-Lambda  &
+end
+# Needed for next step
+./expert.exe $CASTOR_HOME/Lambdab/Lambdab-R12S17b-721.root | tee test-expert-Lambdab-R12S17b-721
+./weighting.exe LambdabMC-MC11-Lb2Jpsippi-716-NN.root 0.846 free >! test-weighting-ppiMC &
+./weighting.exe LambdabMC-MC11-Lb2JpsipK-718-NN.root 0.846 free >! test-weighting-pKMC &
+./weighting.exe LambdabMC-MC11-Lb2Jpsippi-716-NN.root -1 free >! test-weighting-ppiMC-1 &
+./weighting.exe LambdabMC-MC11-Lb2JpsipK-718-NN.root -1 free >! test-weighting-pKMC-1 &
+./weighting.exe Lambdab-R12S17b-721-NN.root  Lambdab-R12S17b-721-NN.root >! test-weighting-opt &
+./weighting.exe Lambdab-R12S17b-721-NN.root  0 >!  test-weighting-0 &
+foreach a ( -1.0 -0.5 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.75 0.8 0.85 0.9 0.95 )
+./weighting.exe Lambdab-R12S17b-721-NN.root  $a notree >!  test-weighting-$a &
+end
+
+
+

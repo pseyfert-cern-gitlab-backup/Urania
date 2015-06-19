@@ -39,7 +39,7 @@ namespace SFitUtils {
   // Read observables tVar, tagVar, tagOmegaVar, idVar from sWeights file
   // Name of file is read from filesDirand signature sig
   // time_{up,down} - range for tVar
-  // part means mode (DsPi, DsKand so on)
+  // part means mode (DsPi, DsK and so on)
   //===========================================================================
 
   RooWorkspace* ReadDataFromSWeights(TString& part, 
@@ -52,26 +52,29 @@ namespace SFitUtils {
 				     TString& tagOmegaVar,
 				     TString& idVar,
 				     bool weighted,
-				     bool        debug = false
+				     bool        debug = false,
+                     bool applykfactor = false
 				     );
   
   //===========================================================================
-  // Read observables tVar, tagVar, tagOmegaVar, idVar from sWeights file for toys
-  // Name of file is read from pathFile, name of tree: treName
+  // Read observables tVar, tagVar, tagOmegaVar, idVar from sWeights file
+  // Name of file is read from filesDirand signature sig
   // time_{up,down} - range for tVar
   // part means mode (DsPi, DsKand so on)
   //===========================================================================
 
-  RooWorkspace* ReadDataFromSWeightsToys(TString& part,
-                                        TString& pathFile,
-                                        TString& treeName,
-                                        double time_down, double time_up,
-										TString& tVar,
-										TString& tagName,
-                                        TString& tagOmegaVar,
-										TString& idVar, bool nokfactcorr,
-										bool        debug = false
-                                        );
+  RooWorkspace* ReadDataFromSWeights2(TString& part,
+				      TString& pathFile,
+				      TString& treeName,
+				      double time_down, double time_up,
+				      TString& tVar,
+				      TString& terrVar,
+				      TString& tagName,
+				      TString& tagOmegaVar,
+				      TString& idVar,
+				      bool weighted,
+				      bool        debug = false
+				      );
 
   //===========================================================================
   // Copy Data for Toys, change RooCategory to RooRealVar

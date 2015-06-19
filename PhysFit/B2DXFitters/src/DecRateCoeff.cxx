@@ -411,8 +411,10 @@ DecRateCoeff::DecRateCoeff(
 	assert(!qt.overlaps(qf) || qf.isConstant());
 	assert(!qt.overlaps(Cf) || Cf.isConstant());
 	assert(!qt.overlaps(Cfbar) || Cfbar.isConstant());
-	assert(!qt.overlaps(tageff) || tageff.isConstant());
-	assert(!qt.overlaps(eta) || eta.isConstant());
+	assert(!qt.overlaps(tageff) || tageff.isConstant() ||
+		tageff.InheritsFrom("TaggingCat"));
+	assert(!qt.overlaps(eta) || eta.isConstant() ||
+		eta.InheritsFrom("TaggingCat"));
 	assert(!qt.overlaps(aprod) || aprod.isConstant());
 	assert(!qt.overlaps(adet) || adet.isConstant());
 	assert(!qt.overlaps(atageff) || atageff.isConstant());
@@ -440,10 +442,13 @@ DecRateCoeff::DecRateCoeff(
 
     if (!tageff.isConstant()) {
 	assert(!tageff.overlaps(qf) || qf.isConstant());
-	assert(!tageff.overlaps(qt) || qt.isConstant());
+	assert(!tageff.overlaps(qt) || qt.isConstant() ||
+		tageff.InheritsFrom("TaggingCat"));
 	assert(!tageff.overlaps(Cf) || Cf.isConstant());
 	assert(!tageff.overlaps(Cfbar) || Cfbar.isConstant());
-	assert(!tageff.overlaps(eta) || eta.isConstant());
+	assert(!tageff.overlaps(eta) || eta.isConstant() ||
+		(eta.InheritsFrom("TaggingCat") &&
+		 tageff.InheritsFrom("TaggingCat")));
 	assert(!tageff.overlaps(aprod) || aprod.isConstant());
 	assert(!tageff.overlaps(adet) || adet.isConstant());
 	assert(!tageff.overlaps(atageff) || atageff.isConstant());
@@ -451,10 +456,13 @@ DecRateCoeff::DecRateCoeff(
 
     if (!eta.isConstant()) {
 	assert(!eta.overlaps(qf) || qf.isConstant());
-	assert(!eta.overlaps(qt) || qt.isConstant());
+	assert(!eta.overlaps(qt) || qt.isConstant() ||
+		eta.InheritsFrom("TaggingCat"));
 	assert(!eta.overlaps(Cf) || Cf.isConstant());
 	assert(!eta.overlaps(Cfbar) || Cfbar.isConstant());
-	assert(!eta.overlaps(tageff) || tageff.isConstant());
+	assert(!eta.overlaps(tageff) || tageff.isConstant() ||
+		(eta.InheritsFrom("TaggingCat") &&
+		 tageff.InheritsFrom("TaggingCat")));
 	assert(!eta.overlaps(aprod) || aprod.isConstant());
 	assert(!eta.overlaps(adet) || adet.isConstant());
 	assert(!eta.overlaps(atageff) || atageff.isConstant());
@@ -529,9 +537,12 @@ DecRateCoeff::DecRateCoeff(
 	assert(!qt.overlaps(qf) || qf.isConstant());
 	assert(!qt.overlaps(Cf) || Cf.isConstant());
 	assert(!qt.overlaps(Cfbar) || Cfbar.isConstant());
-	assert(!qt.overlaps(tageff) || tageff.isConstant());
-	assert(!qt.overlaps(eta) || eta.isConstant());
-	assert(!qt.overlaps(etabar) || etabar.isConstant());
+	assert(!qt.overlaps(tageff) || tageff.isConstant() ||
+		tageff.InheritsFrom("TaggingCat"));
+	assert(!qt.overlaps(eta) || eta.isConstant() ||
+		eta.InheritsFrom("TaggingCat"));
+	assert(!qt.overlaps(etabar) || etabar.isConstant() ||
+		etabar.InheritsFrom("TaggingCat"));
 	assert(!qt.overlaps(aprod) || aprod.isConstant());
 	assert(!qt.overlaps(adet) || adet.isConstant());
 	assert(!qt.overlaps(atageff) || atageff.isConstant());
@@ -561,11 +572,16 @@ DecRateCoeff::DecRateCoeff(
 
     if (!tageff.isConstant()) {
 	assert(!tageff.overlaps(qf) || qf.isConstant());
-	assert(!tageff.overlaps(qt) || qt.isConstant());
+	assert(!tageff.overlaps(qt) || qt.isConstant() ||
+		tageff.InheritsFrom("TaggingCat"));
 	assert(!tageff.overlaps(Cf) || Cf.isConstant());
 	assert(!tageff.overlaps(Cfbar) || Cfbar.isConstant());
-	assert(!tageff.overlaps(eta) || eta.isConstant());
-	assert(!tageff.overlaps(etabar) || etabar.isConstant());
+	assert(!tageff.overlaps(eta) || eta.isConstant() ||
+		(eta.InheritsFrom("TaggingCat") &&
+		 tageff.InheritsFrom("TaggingCat")));
+	assert(!tageff.overlaps(eta) || etabar.isConstant() ||
+		(etabar.InheritsFrom("TaggingCat") &&
+		 tageff.InheritsFrom("TaggingCat")));
 	assert(!tageff.overlaps(aprod) || aprod.isConstant());
 	assert(!tageff.overlaps(adet) || adet.isConstant());
 	assert(!tageff.overlaps(atageff) || atageff.isConstant());
@@ -573,10 +589,13 @@ DecRateCoeff::DecRateCoeff(
 
     if (!eta.isConstant()) {
 	assert(!eta.overlaps(qf) || qf.isConstant());
-	assert(!eta.overlaps(qt) || qt.isConstant());
+	assert(!eta.overlaps(qt) || qt.isConstant() ||
+		eta.InheritsFrom("TaggingCat"));
 	assert(!eta.overlaps(Cf) || Cf.isConstant());
 	assert(!eta.overlaps(Cfbar) || Cfbar.isConstant());
-	assert(!eta.overlaps(tageff) || tageff.isConstant());
+	assert(!eta.overlaps(tageff) || tageff.isConstant() ||
+		(eta.InheritsFrom("TaggingCat") &&
+		 tageff.InheritsFrom("TaggingCat")));
 	assert(!eta.overlaps(aprod) || aprod.isConstant());
 	assert(!eta.overlaps(adet) || adet.isConstant());
 	assert(!eta.overlaps(atageff) || atageff.isConstant());
@@ -584,10 +603,13 @@ DecRateCoeff::DecRateCoeff(
 
     if (!etabar.isConstant()) {
 	assert(!etabar.overlaps(qf) || qf.isConstant());
-	assert(!etabar.overlaps(qt) || qt.isConstant());
+	assert(!etabar.overlaps(qt) || qt.isConstant() ||
+		etabar.InheritsFrom("TaggingCat"));
 	assert(!etabar.overlaps(Cf) || Cf.isConstant());
 	assert(!etabar.overlaps(Cfbar) || Cfbar.isConstant());
-	assert(!etabar.overlaps(tageff) || tageff.isConstant());
+	assert(!etabar.overlaps(tageff) || tageff.isConstant() ||
+		(etabar.InheritsFrom("TaggingCat") &&
+		 tageff.InheritsFrom("TaggingCat")));
 	assert(!etabar.overlaps(aprod) || aprod.isConstant());
 	assert(!etabar.overlaps(adet) || adet.isConstant());
 	assert(!etabar.overlaps(atageff) || atageff.isConstant());
@@ -708,9 +730,13 @@ Double_t DecRateCoeff::evaluate() const
 	    RooNameReg::ptr(nrange)).first->eval(1., 1., 1., 1.);
 }
 
-Bool_t DecRateCoeff::forceAnalyticalInt(
-	const RooAbsArg& /*dep*/) const
-{ return kTRUE; }
+Bool_t DecRateCoeff::forceAnalyticalInt(const RooAbsArg& dep) const
+{
+    if (&dep == m_qf.absArg()) return kTRUE;
+    if (&dep == m_qt.absArg()) return kTRUE;
+    if (&dep == m_etaobs.absArg()) return kTRUE;
+    return kFALSE;
+}
 
 Int_t DecRateCoeff::getAnalyticalIntegral(
 	RooArgSet& allVars, RooArgSet& anaIntVars,
@@ -1067,6 +1093,19 @@ RooArgList DecRateCoeff::CacheElem::containedArgs(Action)
 	retVal.add(*m_workRange[1].first);
     if (m_workRange[1].second)
 	retVal.add(*m_workRange[1].second);
+    if (!(m_flags & IntQf)) retVal.add(m_parent.m_qf.arg());
+    if (!(m_flags & IntQt)) retVal.add(m_parent.m_qt.arg());
+    if (!(m_flags & IntEta)) {
+	if (m_parent.m_etaobs.absArg()) retVal.add(m_parent.m_etaobs.arg());
+	if (m_parent.m_etapdf.absArg()) retVal.add(m_parent.m_etapdf.arg());
+	if (m_parent.m_etapdfut.absArg()) retVal.add(m_parent.m_etapdfut.arg());
+    }
+    retVal.add(m_parent.m_tageff.arg());
+    retVal.add(m_parent.m_eta.arg());
+    if (m_parent.m_etabar.absArg()) retVal.add(m_parent.m_etabar.arg());
+    retVal.add(m_parent.m_aprod.arg());
+    retVal.add(m_parent.m_adet.arg());
+    retVal.add(m_parent.m_atageff.arg());
     return retVal;
 }
 
@@ -1098,8 +1137,8 @@ double DecRateCoeff::CacheElem::qtetapdf(const int qf, const int qt,
 	    }
 	case 0:
 	    return etaintpdfuntagged() * (
-		    (1. + ap) * (1 - eps * (1. + at)) * cp +
-		    (1. - ap) * (1 - eps * (1. - at)) * cm);
+		    (1. + ap) * (1. - eps * (1. + at)) * cp +
+		    (1. - ap) * (1. - eps * (1. - at)) * cm);
 	case +1:
 	    {
 		const double m(etaintpdftagged());

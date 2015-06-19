@@ -22,119 +22,128 @@ void B2JpsiKs::defineConstants(const TString step, const unsigned int track) {
   (*mvaVars)["dtfc"] = (step==m_NNKstar ? -1 :
                        (step==m_NNUnbiased && track==m_LL ?  0 : 
                        (step==m_NNUnbiased && track==m_DD ?       0 :  0)));
+  (*mvaVars)["gpst"] = (step==m_NNKstar ? -1 :
+                       (step==m_NNUnbiased && track==m_LL ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?      -1 :  1)));
   (*mvaVars)["otcl"] = (step==m_NNKstar ? -1 : 
-                       (step==m_NNUnbiased && track==m_LL ?  1 : 
-                       (step==m_NNUnbiased && track==m_DD ?       1 :  1)));
+                       (step==m_NNUnbiased && track==m_LL ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?       1 :  2)));
   (*mvaVars)["prim"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_LL ?  1 : 
+                       (step==m_NNUnbiased && track==m_DD ?       2 :  3)));
+  (*mvaVars)["pvch"] = (step==m_NNKstar ? -1 :
                        (step==m_NNUnbiased && track==m_LL ?  2 : 
-                       (step==m_NNUnbiased && track==m_DD ?       2 :  2)));
-  (*mvaVars)["spdm"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?      -1 :  4)));
+  (*mvaVars)["pvtr"] = (step==m_NNKstar ? -1 : 
                        (step==m_NNUnbiased && track==m_LL ?  3 : 
-                       (step==m_NNUnbiased && track==m_DD ?       3 :  3))); 
-  (*mvaVars)["b0me"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?       3 :  5)));
+  (*mvaVars)["spdm"] = (step==m_NNKstar ? -1 : 
                        (step==m_NNUnbiased && track==m_LL ?  4 : 
-                       (step==m_NNUnbiased && track==m_DD ?       4 :  4)));
-  (*mvaVars)["b0pt"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?       4 :  6))); 
+  (*mvaVars)["b0me"] = (step==m_NNKstar ? -1 : 
                        (step==m_NNUnbiased && track==m_LL ?  5 : 
-                       (step==m_NNUnbiased && track==m_DD ?       5 :  5)));
-  (*mvaVars)["bch2"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?       5 :  7)));
+  (*mvaVars)["b0pt"] = (step==m_NNKstar ? -1 : 
                        (step==m_NNUnbiased && track==m_LL ?  6 : 
-                       (step==m_NNUnbiased && track==m_DD ?       6 :  6)));
-  (*mvaVars)["bmom"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?       6 :  8)));
+  (*mvaVars)["bch2"] = (step==m_NNKstar ? -1 : 
                        (step==m_NNUnbiased && track==m_LL ?  7 : 
-                       (step==m_NNUnbiased && track==m_DD ?       7 :  7)));
+                       (step==m_NNUnbiased && track==m_DD ?       7 :  9)));
+  (*mvaVars)["bmom"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_LL ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?       8 : 10)));
   (*mvaVars)["dira"] = (step==m_NNKstar ? -1 : 
-                       (step==m_NNUnbiased && track==m_LL ? -1 : 
-                       (step==m_NNUnbiased && track==m_DD ?      -1 :  8)));
-  (*mvaVars)["jchi"] = (step==m_NNKstar ? -1 : 
                        (step==m_NNUnbiased && track==m_LL ?  8 : 
-                       (step==m_NNUnbiased && track==m_DD ?       8 :  9)));
-  (*mvaVars)["jipc"] = (step==m_NNKstar ? -1 : 
-                       (step==m_NNUnbiased && track==m_LL ? -1 : 
-                       (step==m_NNUnbiased && track==m_DD ?      -1 : 10)));
-  (*mvaVars)["jmas"] = (step==m_NNKstar ? -1 : 
-                       (step==m_NNUnbiased && track==m_LL ?  9 : 
                        (step==m_NNUnbiased && track==m_DD ?       9 : 11)));
-  (*mvaVars)["jmme"] = (step==m_NNKstar ? -1 : 
-                       (step==m_NNUnbiased && track==m_LL ? 10 : 
+  (*mvaVars)["jchi"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_LL ?  9 : 
                        (step==m_NNUnbiased && track==m_DD ?      10 : 12)));
-  (*mvaVars)["jmom"] = (step==m_NNKstar ? -1 : 
-                       (step==m_NNUnbiased && track==m_LL ? -1 : 
-                       (step==m_NNUnbiased && track==m_DD ?      -1 : 13)));
-  (*mvaVars)["jppt"] = (step==m_NNKstar ? -1 : 
+  (*mvaVars)["jipc"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_LL ? 10 : 
+                       (step==m_NNUnbiased && track==m_DD ?      11 : 13)));
+  (*mvaVars)["jmas"] = (step==m_NNKstar ? -1 : 
                        (step==m_NNUnbiased && track==m_LL ? 11 : 
-                       (step==m_NNUnbiased && track==m_DD ?      11 : 14)));
-  (*mvaVars)["kipc"] = (step==m_NNKstar ? -1 : 
-                       (step==m_NNUnbiased && track==m_LL ? -1 : 
-                       (step==m_NNUnbiased && track==m_DD ?      -1 : 15)));
-  (*mvaVars)["ksch"] = (step==m_NNKstar ? -1 : 
-                       (step==m_NNUnbiased && track==m_LL ? -1 : 
-                       (step==m_NNUnbiased && track==m_DD ?      -1 : 16)));
-  (*mvaVars)["ksez"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?      12 : 14)));
+  (*mvaVars)["jmme"] = (step==m_NNKstar ? -1 : 
                        (step==m_NNUnbiased && track==m_LL ? 12 : 
-                       (step==m_NNUnbiased && track==m_DD ?      12 : 17)));
-  (*mvaVars)["ksfd"] = (step==m_NNKstar ? -1 : 
-                       (step==m_NNUnbiased && track==m_LL ? -1 : 
-                       (step==m_NNUnbiased && track==m_DD ?      -1 : 18)));
-  (*mvaVars)["ksme"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?      13 : 15)));
+  (*mvaVars)["jmom"] = (step==m_NNKstar ? -1 : 
                        (step==m_NNUnbiased && track==m_LL ? 13 : 
-                       (step==m_NNUnbiased && track==m_DD ?      13 : 19)));
-  (*mvaVars)["ksmm"] = (step==m_NNKstar ?  2 : 
+                       (step==m_NNUnbiased && track==m_DD ?      14 : 16)));
+  (*mvaVars)["jppt"] = (step==m_NNKstar ? -1 : 
                        (step==m_NNUnbiased && track==m_LL ? 14 : 
-                       (step==m_NNUnbiased && track==m_DD ?      14 : 20)));
-  (*mvaVars)["ksmo"] = (step==m_NNKstar ?  4 : 
-                       (step==m_NNUnbiased && track==m_LL ? -1 : 
-                       (step==m_NNUnbiased && track==m_DD ?      -1 : 21)));
-  (*mvaVars)["kspt"] = (step==m_NNKstar ?  3 : 
+                       (step==m_NNUnbiased && track==m_DD ?      -1 : 17)));
+  (*mvaVars)["kipc"] = (step==m_NNKstar ?  0 : 
                        (step==m_NNUnbiased && track==m_LL ? 15 : 
-                       (step==m_NNUnbiased && track==m_DD ?      15 : 22)));
-  (*mvaVars)["ksta"] = (step==m_NNKstar ?  0 : 
+                       (step==m_NNUnbiased && track==m_DD ?      15 : 18)));
+  (*mvaVars)["ksch"] = (step==m_NNKstar ? -1 : 
                        (step==m_NNUnbiased && track==m_LL ? 16 : 
-                       (step==m_NNUnbiased && track==m_DD ?      16 : 23)));
-  (*mvaVars)["muic"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?      16 : 19)));
+  (*mvaVars)["ksez"] = (step==m_NNKstar ? -1 : 
                        (step==m_NNUnbiased && track==m_LL ? -1 : 
-                       (step==m_NNUnbiased && track==m_DD ?      -1 : 24)));
-  (*mvaVars)["muid"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?      17 : 20)));
+  (*mvaVars)["ksfd"] = (step==m_NNKstar ? -1 : 
                        (step==m_NNUnbiased && track==m_LL ? 17 : 
-                       (step==m_NNUnbiased && track==m_DD ?      17 : 25)));
-  (*mvaVars)["muip"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?      18 : 21)));
+  (*mvaVars)["ksme"] = (step==m_NNKstar ?  1 : 
                        (step==m_NNUnbiased && track==m_LL ? -1 : 
-                       (step==m_NNUnbiased && track==m_DD ?      -1 : 26)));
-  (*mvaVars)["mumo"] = (step==m_NNKstar ? -1 : 
-                       (step==m_NNUnbiased && track==m_LL ? -1 : 
-                       (step==m_NNUnbiased && track==m_DD ?      -1 : 27)));
-  (*mvaVars)["mupt"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?      19 : 22)));
+  (*mvaVars)["ksmm"] = (step==m_NNKstar ?  2 : 
                        (step==m_NNUnbiased && track==m_LL ? 18 : 
-                       (step==m_NNUnbiased && track==m_DD ?      18 : 28)));
-  (*mvaVars)["mutk"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?      20 : 23)));
+  (*mvaVars)["ksmo"] = (step==m_NNKstar ?  3 : 
+                       (step==m_NNUnbiased && track==m_LL ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?      21 : 24)));
+  (*mvaVars)["kspt"] = (step==m_NNKstar ?  4 : 
                        (step==m_NNUnbiased && track==m_LL ? 19 : 
-                       (step==m_NNUnbiased && track==m_DD ?      19 : 29)));
-  (*mvaVars)["pidk"] = (step==m_NNKstar ?  1 : 
-                       (step==m_NNUnbiased && track==m_LL ? -1 : 
-                       (step==m_NNUnbiased && track==m_DD ?      -1 : 30)));
-  (*mvaVars)["pigp"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?      22 : 25)));
+  (*mvaVars)["ksta"] = (step==m_NNKstar ?  5 : 
                        (step==m_NNUnbiased && track==m_LL ? 20 : 
-                       (step==m_NNUnbiased && track==m_DD ?      20 : 31)));
-  (*mvaVars)["piic"] = (step==m_NNKstar ? -1 : 
-                       (step==m_NNUnbiased && track==m_LL ? -1 : 
-                       (step==m_NNUnbiased && track==m_DD ?      -1 : 32)));
-  (*mvaVars)["piip"] = (step==m_NNKstar ? -1 : 
-                       (step==m_NNUnbiased && track==m_LL ? -1 : 
-                       (step==m_NNUnbiased && track==m_DD ?      -1 : 33)));
-  (*mvaVars)["pimo"] = (step==m_NNKstar ? -1 : 
-                       (step==m_NNUnbiased && track==m_LL ? -1 : 
-                       (step==m_NNUnbiased && track==m_DD ?      -1 : 34)));
-  (*mvaVars)["pipt"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?      23 : 26)));
+  (*mvaVars)["muic"] = (step==m_NNKstar ? -1 : 
                        (step==m_NNUnbiased && track==m_LL ? 21 : 
-                       (step==m_NNUnbiased && track==m_DD ?      21 : 35)));
-  (*mvaVars)["pitk"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?      24 : 27)));
+  (*mvaVars)["muid"] = (step==m_NNKstar ? -1 : 
                        (step==m_NNUnbiased && track==m_LL ? 22 : 
-                       (step==m_NNUnbiased && track==m_DD ?      22 : 36)));
+                       (step==m_NNUnbiased && track==m_DD ?      25 : 28)));
+  (*mvaVars)["muip"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_LL ? 23 : 
+                       (step==m_NNUnbiased && track==m_DD ?      26 : 29)));
+  (*mvaVars)["mumo"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_LL ? 24 : 
+                       (step==m_NNUnbiased && track==m_DD ?      27 : 30)));
+  (*mvaVars)["mupt"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_LL ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?      28 : 31)));
+  (*mvaVars)["mutk"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_LL ? 25 : 
+                       (step==m_NNUnbiased && track==m_DD ?      29 : 32)));
+  (*mvaVars)["pidk"] = (step==m_NNKstar ?  6 : 
+                       (step==m_NNUnbiased && track==m_LL ? 26 : 
+                       (step==m_NNUnbiased && track==m_DD ?      30 : 33)));
+  (*mvaVars)["pigp"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_LL ? 27 : 
+                       (step==m_NNUnbiased && track==m_DD ?      31 : 34)));
+  (*mvaVars)["piic"] = (step==m_NNKstar ?  7 : 
+                       (step==m_NNUnbiased && track==m_LL ? 28 : 
+                       (step==m_NNUnbiased && track==m_DD ?      32 : 35)));
+  (*mvaVars)["piip"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_LL ? 29 : 
+                       (step==m_NNUnbiased && track==m_DD ?      33 : 36)));
+  (*mvaVars)["pimo"] = (step==m_NNKstar ?  8 : 
+                       (step==m_NNUnbiased && track==m_LL ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?      34 : 37)));
+  (*mvaVars)["pipt"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_LL ? -1 : 
+                       (step==m_NNUnbiased && track==m_DD ?      -1 : 38)));
+  (*mvaVars)["pitk"] = (step==m_NNKstar ? -1 : 
+                       (step==m_NNUnbiased && track==m_LL ? 30 : 
+                       (step==m_NNUnbiased && track==m_DD ?      -1 : 39)));
 
   // Number of Variables defined here = highest number + 1 (start from 0)
-  nvar = (step==m_NNKstar ? 5 :
-         (step==m_NNUnbiased && track==m_LL ? 23 :
-         (step==m_NNUnbiased && track==m_DD ?      23 : 37)));
+  nvar = (step==m_NNKstar ?  9 :
+         (step==m_NNUnbiased && track==m_LL ? 31 :
+         (step==m_NNUnbiased && track==m_DD ?      35 : 40)));
 }
 
 
@@ -159,7 +168,8 @@ bool B2JpsiKs::applyDecayCuts(const unsigned int pv) {
                ((piplus_TRACK_Type==m_LL &&
                 B0_FitDaughtersPVConst_KS0_ctau[pv]<30 &&
                 B0_FitDaughtersPVConst_KS0_ctau[pv]>-5)
-                || piplus_TRACK_Type==m_DD)
+                || piplus_TRACK_Type==m_DD) &&
+               B0_FitDaughtersPVConst_tauErr[pv]<tauErrcut
               );
   return pass;
 };
@@ -176,7 +186,8 @@ bool B2JpsiKs::MCTruth(const TString what) {
             KS0_TRUEID==310 && B0_BKGCAT==20);
   } else if(what==m_SigKstar || what==m_SigKstarWM) {
     pass = (TMath::Abs(B0_TRUEID)==511 && J_psi_1S_TRUEID==443 &&
-            TMath::Abs(KS0_TRUEID)==313 && B0_BKGCAT==30);
+            TMath::Abs(KS0_TRUEID)==313);
+            // Ignore: && B0_BKGCAT==30
   }
   return pass ;
 };
@@ -198,8 +209,11 @@ void B2JpsiKs::prepareNBArray(float* InputArray, const unsigned int pv,
 
   // *** Array for NeuroBayes ***
   fillNBArray("dtfc", pv, InputArray);
+  fillNBArray("gpst", pv, InputArray);
   fillNBArray("otcl", pv, InputArray);
   fillNBArray("prim", pv, InputArray);
+  fillNBArray("pvch", pv, InputArray);
+  fillNBArray("pvtr", pv, InputArray);
   fillNBArray("spdm", pv, InputArray);
   fillNBArray("b0me", pv, InputArray);
   fillNBArray("b0pt", pv, InputArray);
@@ -267,12 +281,21 @@ void B2JpsiKs::fillVar(const TString ID, const unsigned int pv,
   if (ID=="dtfc") {
     varName = "dtfc := B0_FitDaughtersPVConst_chi2[0]";
     varVal  = (float) B0_FitDaughtersPVConst_chi2[pv];
+  } else if (ID=="gpst") {
+    varName = "gpst := GpsTime";
+    varVal  = (float) GpsTime;
   } else if (ID=="otcl") {
     varName = "otcl := nOTClusters";
     varVal  = (float) nOTClusters;
   } else if (ID=="prim") {
     varName = "prim := B0_FitDaughtersPVConst_nPV";
     varVal  = (float) B0_FitDaughtersPVConst_nPV;
+  } else if (ID=="pvch") {
+    varName = "pvch := PVCHI2[0]";
+    varVal  = (float) PVCHI2[pv];
+  } else if (ID=="pvtr") {
+    varName = "pvtr := PVNTRACKS[0]";
+    varVal  = (float) PVNTRACKS[pv];
   } else if (ID=="spdm") {
     varName = "spdm := nSPDHits";
     varVal  = (float) nSPDHits;
@@ -402,11 +425,20 @@ unsigned int B2JpsiKs::individualPreproFlag(unsigned int i,
   if (i==(mvaVars->find("prim")->second)) return 18;
   // Not Monotonous observables
   else if (i==(mvaVars->find("bmom")->second) ||
+           i==(mvaVars->find("dira")->second) ||
            i==(mvaVars->find("jmme")->second) ||
+           i==(mvaVars->find("jmom")->second) ||
+           (i==(mvaVars->find("kipc")->second) && (track==5 || step==m_NNKstar)) ||
            (i==(mvaVars->find("ksez")->second) && track==3) ||
+           (i==(mvaVars->find("ksfd")->second) && track==3) ||
            (i==(mvaVars->find("ksme")->second) && track==5) ||
            (i==(mvaVars->find("ksta")->second) && step!=m_NNKstar) ||
-           (i==(mvaVars->find("muid")->second) && track==3)
+           (i==(mvaVars->find("muid")->second) && track==3) ||
+           (i==(mvaVars->find("muip")->second) && track==3) ||
+           (i==(mvaVars->find("pidk")->second) && track==5 && step!=m_NNKstar) ||
+           (i==(mvaVars->find("pigp")->second) && step==m_NNKstar) ||
+           (i==(mvaVars->find("piip")->second) && step==m_NNKstar) ||
+           (i==(mvaVars->find("piip")->second) && track==3)
           ) return 14;
   // Monotonous observables
   else return 15;

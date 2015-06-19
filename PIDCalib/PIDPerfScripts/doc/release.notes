@@ -4,6 +4,97 @@
 ! Purpose     : Scripts using PIDPerfTools to perform PID studies
 !-----------------------------------------------------------------------------
 
+!============================= v6r1 25-09-2013 =============================
+
+! 2013-09-25 - Philip Hunt (LHCB)
+ - Make version v6r1
+
+! 2013-09-25 - Philip Hunt (LHCB)
+ - Added legacy support for Reco12 datasets in DataFunc.py:
+   . Use RICHTrackDataSet for pre-Reco14 datasets (which didn't include 
+     muon calibration)
+ - Minor modification to MakePerfPlotsList method in PerfCalcFuncs.py
+   to create performance plots for any EvtTrackDataSet-derived dataset
+
+!============================= v6r0p2 23-09-2013 =============================
+! 2013-09-23 - Philip Hunt (LHCB)
+ - Make version v6r0p2
+
+! 2013-09-23 - Philip Hunt (LHCB)
+ - Fix to LBPIDCALIB-14 (incorrect MuonUnBiased proton mother name 
+   in GetMotherName method)
+ 
+!============================= v6r0p1 20-09-2013 =============================
+! 2013-09-20 - Philip Hunt (LHCB)
+ - Make version v6r0p1
+
+! 2013-09-19 - Philip Hunt (LHCB)
+ - Fixed additional typos in PerformMultiTrackCalib.py, as described in JIRA bug
+   LBPIDCALIB-13
+
+! 2013-09-19 - Philip Hunt (LHCB)
+ - Fixed typos in PerformMultiTrackCalib.py, as described in JIRA bug
+   LBPIDCALIB-13
+
+! 2013-09-19 - Philip Hunt (LHCB)
+ - Fixed typo in PubPlots/MakePerfPlotHists.py ("add_agument"->"add_argument")
+ - Added support for custom schemes in PubPlots/MakePerfPlotHists.py
+
+! 2013-09-18 - Philip Hunt (LHCB)
+ - Fixed RICH2 kaon threshold in binning.py and ex_customBinning.py
+ - Removed redundant scripts/python/SingleTrack directory and scripts
+
+!============================= v6r0 18-09-2013 =============================
+! 2013-09-18 - Philip Hunt (LHCB)
+ - Make version v6r0
+
+! 2013-09-18 - Philip Hunt (LHCB)
+ - Added support for user-defined binning schemes in the multi-track
+   calibration scripts and python modules:
+   * Added python/PIDPerfScripts/binning.py, which contains the default
+     binning schemes
+     - Users can either edit this module, or pass a custom binning script
+       as an argument to the multi-track scripts
+   * Added an example custom binning script, "ex_customBinning.py", to 
+     scripts/python/MultiTrack
+ - Multi-track calibration scripts have been updated to use the "argparse"
+   python command-line argument parser, which replaces the outdated "optparse"
+   parser in Python 2.7 and above
+ - Updated python/PIDPerfScripts/PerfResults.py to incorperate the various
+   addition options (verbose printing, allowing missing datasets etc.)
+   introduced in previous package releases
+ - Added new directory scripts/python/PubPlots, containing scripts to
+   make "publication-style" performance plots (PID performance vs. momentum,
+   or other performance-related variable, and PID efficiency vs. misID rate)
+ - Removed redundant "jobs" and "src" directories and the files contained
+   within these directories
+ - Removed redundant directories and scripts in scripts/python, namely 
+   "RICH", "MUON", "CrgAsym" and "B2DX"
+ - Removed redundant or outdated ROOT scripts and directories in scripts/root
+ - Removed redundant doc/README file
+
+!============================= v5r2p2 03-09-2013 =============================
+
+! 2013-09-03 (3) - Philip Hunt (LHCB)
+ - Make version v5r2p2
+
+! 2013-09-03 (2) - Philip Hunt (LHCB)
+ - Removed GaudiPython dependency from MakePerfHistsRunRange.py
+
+! 2013-09-03 - Philip Hunt (LHCB)
+ - Removed GaudiPython dependency from DataFuncs.py and PerfCalcFuncs.py
+
+!============================= v5r2p1 02-09-2013 =============================
+
+
+! 2013-09-02 - Philip Hunt (LHCB)
+ - Make version v5r2p1
+
+! 2013-09-02 - Philip Hunt (LHCB)
+ - Fixed MakePerfHistsSystStudy.py so that it no longer depends on GaudiPython
+ - Removed redundant scripts PerformMultiTrackCalibSystStudy.py and
+   MakePerfHistsSystStudy.py
+
 !============================= v5r1p3 02-08-2013 =============================
 
 ! 2013-08-02 - Philip Hunt (LHCB)

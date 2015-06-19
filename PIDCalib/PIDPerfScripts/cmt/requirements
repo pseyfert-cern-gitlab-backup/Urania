@@ -3,12 +3,12 @@
 # Maintainer : Philip Hunt
 #============================================================================
 package           PIDPerfScripts
-version           v5r2
+version           v6r1
 
 #============================================================================
 # Structure, i.e. directories to process. 
 #============================================================================
-branches          cmt doc src scripts make python
+branches          cmt doc src scripts python
 
 #============================================================================
 # Used packages. 
@@ -57,6 +57,8 @@ set MUONCALIBREFDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/ph
 ##set CALIBREFDATASTORE /data/lhcb/users/hunt/CalibData
 ##set MUONCALIBDATASTORE /data/lhcb/users/hunt/CalibData
 ##set MUONCALIBREFDATASTORE /data/lhcb/users/hunt/CalibData
+##set CALIBDATAURLPROTOCOL 
+##set CALIBDATAURLQUERY
 ###------------------------------------------------------------------------------
 ###
 ###------------------------------------------------------------------------------
@@ -67,7 +69,6 @@ set MUONCALIBREFDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/ph
 ##set CALIBREFDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/phunt/CalibData
 ##set MUONCALIBDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/j/jotalora/CalibData
 ##set MUONCALIBREFDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/j/jotalora/CalibData
-###
 ###------------------------------------------------------------------------------
 ###
 ###------------------------------------------------------------------------------
@@ -76,7 +77,8 @@ set MUONCALIBREFDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/ph
 ##set CALIBREFDATASTORE /data/lhcb/users/hunt/CalibData
 ##set MUONCALIBDATASTORE /data/lhcb/users/hunt/CalibData
 ##set MUONCALIBREFDATASTORE /data/lhcb/users/hunt/CalibData
-###
+##set CALIBDATAURLPROTOCOL 
+##set CALIBDATAURLQUERY
 ###------------------------------------------------------------------------------
 #============================================================================
 

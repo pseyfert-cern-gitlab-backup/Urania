@@ -5,6 +5,7 @@
 from math import pi, sin, cos, sqrt
 
 # job parameters
+MCProd      = 'Sim08_2012'
 readMoments = False
 makePlots   = True
 transAngles = False
@@ -14,38 +15,39 @@ trigger     = ''
 timeInt     = False
 addInvPdf   = True
 
-momentsFile = '%s_UB_UT_trueTime_BkgCat050_KK30' % ( 'trans' if transAngles else 'hel' )
-plotsFile   = '%s_UB_UT_trueTime_BkgCat050_KK30' % ( 'trans' if transAngles else 'hel' ) + '.ps'
-dataSetFile = '%s_UB_UT_trueTime_BkgCat050_KK30' % ( 'trans' if transAngles else 'hel' ) + '.root'
+momentsFile = '%s_%s_UB_UT_trueTime_BkgCat050_KK30' % ( MCProd, 'trans' if transAngles else 'hel' )
+plotsFile   = '%s_%s_UB_UT_trueTime_BkgCat050_KK30' % ( MCProd, 'trans' if transAngles else 'hel' ) + '.ps'
+dataSetFile = '%s_%s_UB_UT_trueTime_BkgCat050_KK30' % ( MCProd, 'trans' if transAngles else 'hel' ) + '.root'
 
 nTupleName = 'DecayTree'
-nTupleFile = '/project/bfys/jleerdam/data/Bs2Jpsiphi/Bs2JpsiPhiPrescaled_MC11a_ntupleB_for_fitting_20121010.root'
+nTupleFile = '/project/bfys/jleerdam/data/Bs2Jpsiphi/Bs2JpsiPhi_MC2012_ntupleB_20130904.root'
+#nTupleFile = '/project/bfys/jleerdam/data/Bs2Jpsiphi/Bs2JpsiPhiPrescaled_MC11a_ntupleB_for_fitting_20121010.root'
 #nTupleFile = '/project/bfys/jleerdam/data/Bs2Jpsiphi/Bs2JpsiPhi_DGs0_MC11a_ntupleB_for_fitting_20121119.root'
 #nTupleFile = '/data/bfys/jleerdam/Bs2Jpsiphi/Bs2JpsiPhi_PHSP_MC11a_ntupleB_for_fitting_20121031.root'
 #nTupleFile = '/project/bfys/jleerdam/data/Bs2Jpsiphi/angRes/angRes.root'
 
 # transversity amplitudes
-A0Mag2Val    = 0.60
-AperpMag2Val = 0.16
-AparMag2Val  = 1. - A0Mag2Val - AperpMag2Val
+A0Mag2Val    = 0.722**2 / ( 0.722**2 + 0.480**2 + 0.499**2 ) if MCProd == 'Sim08_2012' else 0.775**2 / ( 0.775**2 + 0.490**2 + 0.400**2 )
+AperpMag2Val = 0.499**2 / ( 0.722**2 + 0.480**2 + 0.499**2 ) if MCProd == 'Sim08_2012' else 0.400**2 / ( 0.775**2 + 0.490**2 + 0.400**2 )
+AparMag2Val  = 0.480**2 / ( 0.722**2 + 0.480**2 + 0.499**2 ) if MCProd == 'Sim08_2012' else 0.490**2 / ( 0.775**2 + 0.490**2 + 0.400**2 )
 
-A0PhVal      =  0.
-AperpPhVal   = -0.17
-AparPhVal    =  2.50
+A0PhVal      = 0.
+AperpPhVal   = 3.07 if MCProd == 'Sim08_2012' else -0.17
+AparPhVal    = 3.30 if MCProd == 'Sim08_2012' else  2.50
 
 # CP violation parameters
-phiCPVal      = -0.04
+phiCPVal      = +0.07 if MCProd == 'Sim08_2012' else -0.04
 
 # B lifetime parameters
-GammaVal  = 0.679
-dGammaVal = 0.060
+GammaVal  = 1. / 1.503 if MCProd == 'Sim08_2012' else 0.679
+dGammaVal = 1. / 1.406 - 1. / 1.614 if MCProd == 'Sim08_2012' else 0.060
 dMVal     = 17.8
 tResSigma = 0.045
 
 # plot options
 if transAngles : angleNames = ( 'cos(#psi_{tr})',  'cos(#theta_{tr})',  '#phi_{tr}' )
 else           : angleNames = ( 'cos(#theta_{K})', 'cos(#theta_{#mu})', '#phi_{h}'  )
-numBins         = ( 60, 60, 60, 60 )
+numBins         = ( 60, 60, 60 )
 lineWidth       = 2
 markStyle       = 8
 markSize        = 0.4
@@ -85,21 +87,22 @@ obsSet = [ time if tResModel in [ 'Gauss', '3Gauss' ] else trueTime ] + angles
 bkgcatCut      = '(bkgcat == 0 || bkgcat == 50)'
 trackChiSqCuts = 'muplus_track_chi2ndof < 4. && muminus_track_chi2ndof < 4. && Kplus_track_chi2ndof < 4. && Kminus_track_chi2ndof < 4.'
 massCuts       = 'mass > 5200. && mass < 5550. && mdau1 > 3030. && mdau1 < 3150. && mdau2 > 990. && mdau2 < 1050.'
-timeCuts       = 'time > 0.3 && time < 14. && sigmat < 0.12'
+timeCuts       = 'truetime > 0. && time > 0.3 && time < 14. && sigmat < 0.12'
 tagCuts        = '(tagdecision == 0 || tagdecision == -1 || tagdecision == +1)'
 
-from P2VV.GeneralUtils import readData
+from P2VV.Utilities.DataHandling import readData
 cuts = bkgcatCut + ' && ' + trackChiSqCuts + ' && ' + massCuts + ' && ' + timeCuts + ' && ' + tagCuts
+#cuts = trackChiSqCuts + ' && ' + massCuts + ' && ' + timeCuts + ' && ' + tagCuts
 if trigger == 'ExclBiased' :
-    cuts  = 'sel == 1 && hlt1_excl_biased_dec == 1 && hlt2_biased == 1 && ' + cuts
+    cuts  = 'sel == 1 && sel_cleantail==1 && hlt1_excl_biased_dec == 1 && hlt2_biased == 1 && ' + cuts
     data = readData(  nTupleFile, dataSetName = nTupleName, NTuple = True, observables = obsSet, ntupleCuts = cuts )
 
 elif trigger == 'Unbiased' :
-    cuts = 'sel == 1 && hlt1_unbiased_dec == 1 && hlt2_biased == 1 && ' + cuts
+    cuts = 'sel == 1 && sel_cleantail==1 && hlt1_unbiased_dec == 1 && hlt2_biased == 1 && ' + cuts
     data = readData(  nTupleFile, dataSetName = nTupleName, NTuple = True, observables = obsSet, ntupleCuts = cuts )
 
 else :
-    cuts = 'sel == 1 && (hlt1_unbiased_dec == 1 || hlt1_biased == 1) && hlt2_biased == 1 && ' + cuts
+    cuts = 'sel == 1 && sel_cleantail==1 && (hlt1_unbiased_dec == 1 || hlt1_biased == 1) && hlt2_biased == 1 && ' + cuts
     data = readData(  nTupleFile, dataSetName = nTupleName, NTuple = True, observables = obsSet, ntupleCuts = cuts )
 
 
@@ -203,21 +206,23 @@ else :
     print
 
 # moments builder with angular functions from physics PDF
-from P2VV.GeneralUtils import RealMomentsBuilder
+from P2VV.Utilities.DataMoments import RealMomentsBuilder
 if normPdf :
     from P2VV.RooFitWrappers import RealEffMoment
-    physMoments = RealMomentsBuilder( Moments = ( RealEffMoment( func, 1, pdf, intSet, normSet )\
+    physMoments = RealMomentsBuilder( Moments = ( RealEffMoment( Name = func.GetName(), BasisFunc = func,Norm = 1., PDF = pdf
+                                                                , IntSet = intSet, NormSet = normSet )\
                                                   for complexFunc in angleFuncs.functions.itervalues() for func in complexFunc if func
                                                 )
                                     )
 
 else :
     from P2VV.RooFitWrappers import RealMoment
-    physMoments = RealMomentsBuilder( Moments = ( RealMoment( func, 1 )\
+    physMoments = RealMomentsBuilder( Moments = ( RealMoment( Name = func.GetName(), BasisFunc = func, Norm = 1. )\
                                                   for complexFunc in angleFuncs.functions.itervalues() for func in complexFunc if func
                                                 )
                                     )
 
+physMoments.initCovariances()
 
 # moments builder with angular basis functions
 indices  = [ ( PIndex, YIndex0, YIndex1 ) for PIndex in range(3) for YIndex0 in range(3) for YIndex1 in range( -YIndex0, YIndex0 + 1 ) ]
@@ -295,22 +300,9 @@ if makePlots and normPdf :
     effFuncCtl = effFunc.createIntegral( ctlSet, RooArgSet() )
     effFuncPhi = effFunc.createIntegral( phiSet, RooArgSet() )
 
-    # multiply PDF with angular efficiency
-    effPdf = basisMoments * pdf
-
-    basisMomentsSignif = RealMomentsBuilder()
-    basisMomentsSignif.appendPYList( angleFuncs.angles, [ ( 0, 0, 0 ), ( 2, 0, 0 ), ( 0, 2, 0 ), ( 0, 4, 0 ) ] if not transAngles \
-                                                   else [ ( 0, 0, 0 ), ( 2, 0, 0 ), ( 0, 2, 0 ), ( 0, 2, 2 )
-                                                         , ( 0, 4, 0 ), ( 0, 4, 2 ), ( 0, 4, 4 )  ]
-                                   )
-    basisMomentsSignif.read(momentsFile + '_Basis')
-    basisMomentsSignif.Print( Scale = 1. / 2. / sqrt(pi) )
-
-    effSignifPdf = basisMomentsSignif.multiplyPDFWithEff( pdf, Name = 'sig_t_angles_tagCat_iTag_x_EffSignif', EffName = 'effSignif' )
-
     # import plotting tools
     from P2VV.Load import LHCbStyle
-    from P2VV.GeneralUtils import plot
+    from P2VV.Utilities.Plotting import plot
     from ROOT import TCanvas, kBlue, kRed, kGreen
 
     # plot efficiency
@@ -330,22 +322,29 @@ if makePlots and normPdf :
 
     # plot lifetime and angles
     timeAnglesCanv = TCanvas( 'timeAnglesCanv', 'Lifetime and Decay Angles' )
-    for ( pad, obs, nBins, plotTitle, xTitle, logY )\
+    for ( pad, obs, nBins, plotTitle, xTitle )\
             in zip(  timeAnglesCanv.pads( 2, 2 )
-                   , obsSet[ : 5 ]
+                   , obsSet[ 1 : 5 ]
                    , numBins
-                   , [ var.GetTitle() for var in obsSet[ : 5 ] ]
-                   , ( '', ) + angleNames
-                   , ( True, False, False, False )
+                   , [ var.GetTitle() for var in obsSet[ 1 : 5 ] ]
+                   , angleNames
                   ) :
-        plot(  pad, obs, data, effSignifPdf, addPDFs = [ pdf, effPdf ], xTitle = xTitle, logy = logY
+        plot(  pad, obs, data, pdf, xTitle = xTitle
              , frameOpts   = dict( Bins = nBins, Title = plotTitle                )
              , dataOpts    = dict( MarkerStyle = markStyle, MarkerSize = markSize )
              , pdfOpts     = dict( LineColor = kBlue, LineWidth = lineWidth       )
-             , addPDFsOpts = [  dict( LineColor = kRed,       LineWidth = lineWidth )
-                              , dict( LineColor = kGreen + 2, LineWidth = lineWidth )
-                             ]
             )
+
+    # multiply PDF with angular efficiency
+    basisMoments * pdf
+
+    # plot efficiency PDF
+    from P2VV.Utilities.Plotting import _P2VVPlotStash
+    global _P2VVPlotStash
+    for it in range(3) :
+        pdf.plotOn( _P2VVPlotStash[ -it - 1 ], Name = 'effPdf', LineColor = kRed, LineWidth = lineWidth )
+        timeAnglesCanv.cd( 3 - it )
+        _P2VVPlotStash[ -it - 1 ].Draw()
 
     # print canvases to file
     effCanv.Print( plotsFile + '(' )

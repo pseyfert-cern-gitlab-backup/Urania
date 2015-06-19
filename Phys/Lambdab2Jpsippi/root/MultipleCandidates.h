@@ -15,6 +15,7 @@ typedef std::pair< RunEvent, Candidates > EventPair ;     ///< Pair of event, ca
 typedef std::map< RunEvent, Candidates > EventMap ;       ///< The big map of everything: event, candidates
 #include "TRandom2.h"
 #include "NetTree.h"
+#include "Lambdab.h"
 
 static const int m_theSeed = 123456789 ;
 
@@ -70,7 +71,8 @@ private:
   TRandom* m_rndm ;
 
 };
-MultipleCandidates* createEventMap(NetTree* ntuple, double NNcut);
+MultipleCandidates* createEventMap(NetTree* ntuple, double NNcut, bool debug = false);
+MultipleCandidates* createEventMap(Lambdab* ntuple, bool doVetoes=true, bool debug = false);
 double printFrac(Long64_t n) ;
 
 #endif // MULTIPLECANDIDATES_H

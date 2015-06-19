@@ -28,20 +28,30 @@ using std::endl;
 //=============================================================================
 MultiTrackCalibTool::MultiTrackCalibTool(std::string Name,
                                          TTree* RefTree,
-                                         const std::string OutputFileName,
-                                         const std::string mode,
+                                         const std::string& OutputFileName,
+                                         const std::string& mode,
                                          Bool_t verbose,
                                          Int_t printFreq) 
   : m_name(Name),
     m_verbose(verbose),
     m_printFreq(printFreq),
+    m_indexNTracks(0),
     m_BinningDimensions(0),
     m_BinningVectorSorted(0),
     m_KinVarBranchesSet(0),
     m_IDVarBranchesSet(0),
-    m_EntryList(0),
-    m_TotPIDEff(1),
-    m_TotPIDErr(0)
+    m_InputRefTree(NULL),
+    m_EntryList(NULL),
+    m_OutputFile(NULL),
+    m_OutputTree(NULL),
+    m_sWeight_var(NULL),
+    m_sWeight_name(""),
+    m_TotPIDEff(1.0),
+    m_TotPIDErr(0.0),
+    m_TotPIDEffWeight(1.0),
+    m_TotPIDErrWeight(0.0),
+    m_TotWeight(1.0),
+    m_IDVar_suffix("")
 {
   // Set PIDPerfTools
   m_PerfParamMap["Track Momentum [MeV/c]"] = "P";
@@ -56,7 +66,7 @@ MultiTrackCalibTool::MultiTrackCalibTool(std::string Name,
   m_OutputTree = new TTree(TString(m_name+"_PIDCalibTree").Data(), "PID Calibration Results");
 
   m_InputRefTree = RefTree;
-  if (!m_InputRefTree)
+  if ( (m_InputRefTree==NULL) )
   {
     cout << "ERROR: Failed to obtain pointer to TTree "
          << endl;
@@ -70,14 +80,12 @@ MultiTrackCalibTool::MultiTrackCalibTool(std::string Name,
   m_TrackPIDVals.clear();
   m_vTrckIDandFracErrs.clear();
   m_vTrckIDandFracErrsWeight.clear();
-
-  m_IDVar_suffix = "";
 }
 
 void MultiTrackCalibTool::Write()
 {
-  if (!m_OutputTree) return;
-  if (m_OutputFile) {
+  if ( (m_OutputTree==NULL) ) return;
+  if ( (m_OutputFile!=NULL) ) {
     m_OutputFile->cd();
     m_OutputTree->Write();
   }
@@ -94,7 +102,7 @@ MultiTrackCalibTool::~MultiTrackCalibTool()
   //m_OutputTree->Write();
   //if (m_verbose) cout << "Wrote output TTree" <<endl;
   
-  if(m_OutputTree)
+  if( (m_OutputTree!=NULL) )
   {
     if (m_verbose) cout << "Deleting output TTree" << endl;
     delete m_OutputTree;
@@ -108,7 +116,7 @@ MultiTrackCalibTool::~MultiTrackCalibTool()
   
   // Delete dynamically allocated output TTree and TFile
   if (m_verbose) cout << "Deleting output TFile" <<endl;
-  if(m_OutputFile) {
+  if( (m_OutputFile!=NULL) ) {
     delete m_OutputFile;
     m_OutputFile=0;
   }
@@ -118,7 +126,7 @@ MultiTrackCalibTool::~MultiTrackCalibTool()
 //=============================================================================
 // Set output TFile 
 //=============================================================================
-void MultiTrackCalibTool::SetOutputFile(const std::string FileName, const std::string Mode)
+void MultiTrackCalibTool::SetOutputFile(const std::string& FileName, const std::string& Mode)
 {
   if ((Mode.compare("NEW")!=0)&&(Mode.compare("CREATE")!=0)&&(Mode.compare("RECREATE")!=0)&&(Mode.compare("UPDATE")!=0)) {
     cout << "ERROR: Expected NEW, CREATE, RECREATE or UPDATE as access mode, got " << Mode << endl;
@@ -126,7 +134,7 @@ void MultiTrackCalibTool::SetOutputFile(const std::string FileName, const std::s
   }
 
   m_OutputFile = TFile::Open(FileName.c_str(), Mode.c_str());
-  if (!m_OutputFile || m_OutputFile->IsZombie()) {
+  if ( (m_OutputFile==NULL) ) {
     cout << "ERROR: Failed to create output file. Check the file permissions."
          << " If opening in NEW/CREATE mode, ensure that the specified file does not exist"
          << endl;
@@ -137,21 +145,21 @@ void MultiTrackCalibTool::SetOutputFile(const std::string FileName, const std::s
 //=============================================================================
 // Confirm branch exists in TTree
 //=============================================================================
-Bool_t MultiTrackCalibTool::validBranch(TTree* tt, const TString brName) 
+Bool_t MultiTrackCalibTool::validBranch(TTree* tt, const TString& brName) 
 {
-  if (!tt) {
+  if ( (tt==NULL) ) {
     cout << "No TTree specified" << endl;
     return kFALSE;
   }
   
-  if (!tt->GetBranch(brName.Data())) return kFALSE;
+  if ( !(tt->GetBranch(brName.Data())) ) return kFALSE;
   return kTRUE;
 }
 
 //=============================================================================
 // Return branch type
 //=============================================================================
-std::string MultiTrackCalibTool::getBranchType(TTree* tt, const TString brName) 
+std::string MultiTrackCalibTool::getBranchType(TTree* tt, const TString& brName) 
 {
   if (!tt) {
     cout << "No TTree specified" << endl;
@@ -170,7 +178,7 @@ std::string MultiTrackCalibTool::getBranchType(TTree* tt, const TString brName)
 //=============================================================================
 // Declare momentum variable name in reference tree
 //=============================================================================
-void MultiTrackCalibTool::SetTrackMomVarName(const std::string NameInTree)
+void MultiTrackCalibTool::SetTrackMomVarName(const std::string& NameInTree)
 {  
   m_BinningParam.push_back( make_pair("P", NameInTree) );
 
@@ -178,9 +186,19 @@ void MultiTrackCalibTool::SetTrackMomVarName(const std::string NameInTree)
 }
 
 //=============================================================================
+// Declare transverse momentum variable name in reference tree
+//=============================================================================
+void MultiTrackCalibTool::SetTrackPtVarName(const std::string& NameInTree)
+{  
+  m_BinningParam.push_back( make_pair("PT", NameInTree) );
+
+  m_BinningVectorSorted = false;
+}
+
+//=============================================================================
 // Declare pseudo-rapdity variable name in reference tree
 //=============================================================================
-void MultiTrackCalibTool::SetTrackEtaVarName(const std::string NameInTree)
+void MultiTrackCalibTool::SetTrackEtaVarName(const std::string& NameInTree)
 {  
   m_BinningParam.push_back( make_pair("ETA",NameInTree) );
 
@@ -190,7 +208,7 @@ void MultiTrackCalibTool::SetTrackEtaVarName(const std::string NameInTree)
 //=============================================================================
 // Declare nTracks variable name in reference tree
 //=============================================================================
-void MultiTrackCalibTool::SetTrackNTrackVarName(const std::string NameInTree)
+void MultiTrackCalibTool::SetNTracksVarName(const std::string& NameInTree)
 {  
   m_BinningParam.push_back( make_pair("nTRACKS",NameInTree) );
 
@@ -200,7 +218,7 @@ void MultiTrackCalibTool::SetTrackNTrackVarName(const std::string NameInTree)
 //=============================================================================
 // Declare sWeights variable name in reference tree
 //=============================================================================
-void MultiTrackCalibTool::SetSWeightVarName(const std::string NameInTree)
+void MultiTrackCalibTool::SetSWeightVarName(const std::string& NameInTree)
 {  
   m_sWeight_name = NameInTree;
 }
@@ -208,7 +226,7 @@ void MultiTrackCalibTool::SetSWeightVarName(const std::string NameInTree)
 //=============================================================================
 // Declare signal track and its associated performance histogram
 //=============================================================================
-void MultiTrackCalibTool::DeclareSignalTrackAndPerfHist(const std::string TrackNameInTree, TH1* PerfHist)
+void MultiTrackCalibTool::DeclareSignalTrackAndPerfHist(const std::string& TrackNameInTree, TH1* PerfHist)
 {  
  	if(m_TrackEffMap.empty())
   {
@@ -357,20 +375,6 @@ void MultiTrackCalibTool::ReOrderBinningVector()
     
 }
 
-//=============================================================================
-// Reorder a vector according to the indices defined in the vector order
-//=============================================================================
-template< class T >
-void MultiTrackCalibTool::ReOrderVector(std::vector<T> &v, std::vector<size_t> const &order )  
-{   
-  for ( unsigned int s = 1, d; s < order.size(); ++ s ) 
-  {
-    for ( d = order[s]; d < s; d = order[d] ) ;
-    if ( d == s ) 
-      while ( d = order[d], d != s ) 
-        swap( v[s], v[d] );
-  }
-}
 
 //=============================================================================
 // Set addresses of kinematic variable branches to void pointers in m_TrackEffMap
@@ -452,7 +456,7 @@ void MultiTrackCalibTool::SetTrackKinVarBranchAddressInInputTree()
 //=============================================================================
 // Append address for track ID variable to vector<void*> for each track
 //=============================================================================
-void MultiTrackCalibTool::SetTrackIDVarBranchAddressInInputTree(const std::string IDVar_suffix)
+void MultiTrackCalibTool::SetTrackIDVarBranchAddressInInputTree(const std::string& IDVar_suffix)
 {
   // Check that SetTrackBranchAddressInInputTree() has been run
   if(!m_KinVarBranchesSet)
@@ -660,7 +664,7 @@ void MultiTrackCalibTool::Calculate()
 // errors. Errors calculated consider cross terms amongst tracks of the same
 // species (100% correlations assummed).
 //=============================================================================
-void MultiTrackCalibTool::Calculate(const std::string IDVar_suffix)
+void MultiTrackCalibTool::Calculate(const std::string& IDVar_suffix)
 {
   // Confirm performance histograms are valid
   this->CheckSanityOfPerfHists();

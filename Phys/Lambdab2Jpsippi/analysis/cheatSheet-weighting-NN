@@ -1,0 +1,290 @@
+root.exe
+//############################################################################################################
+// After NN
+//############################################################################################################
+// compare weighted LbK and MC after NN
+.L ../analysis/FourPlots.C 
+Double_t mLb = 5620 ;
+Double_t mBd = 5279.5 ;
+Double_t mBu = 5279.17 ;
+Double_t mBs = 5366.3 ;
+const double m_psi = 3096.916 ;
+const double m_p   =  938.272 ;
+const double m_pi  =  139.570 ;
+const double m_Lb  =  5620.0 ;
+const double m_K  =  493.677 ;
+int nbm = 10
+int nbt = 25
+gStyle->SetPalette(0)
+TFile* fnpi = TFile::Open("LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125-NN.root")
+TFile* fnk = TFile::Open("LambdabMC-LbK-Sim08a-1127-1128-1129-1137-NN.root")
+TFile* fnkpi = TFile::Open("LambdabMC-B2JpsiKpi-Sim08a-1138-1139-NN.root")
+TNNppi = (TTree*)fnpi->Get("NetTree")
+TNNpK = (TTree*)fnk->Get("NetTree")
+TNNKpi = (TTree*)fnkpi->Get("NetTree")
+TChain* TNNKK = new TChain("NetTree")
+TNNKK->Add("LambdabMC-B2JpsiKK-Sim08a-1134-1135-NN.root")
+TChain* TNN = new TChain("NetTree")
+TNN->Add("Lambdab-S20r1-1062-NN.root")
+TNN->Add("Lambdab-S20-1063-NN.root")
+TChain* TNNW = new TChain("WeightTree")
+TNNW->Add("Lambdab-S20X-1062-0.552-SW.root")
+TNN->AddFriend(TNNW)
+TNN->Show(0)
+TNNW->Show(0)
+TChain* TNN2 = new TChain("NetTree")   // same again
+TNN2->Add("Lambdab-S20r1-1062-NN.root")
+TNN2->Add("Lambdab-S20-1063-NN.root")
+TChain* TNNW2 = new TChain("TrainTree")
+TNNW2->Add("Lambdab-S20r1-1062-All-SW.root")
+TNNW2->Add("Lambdab-S20-1063-All-SW.root")
+TNN2->AddFriend(TNNW2)
+char* wD = "sweightLb*(sweightLb>-4)*(Category==-1)*(ErrorCode==0)"
+char* wD2 = "sweightLb*(sweightLb>-4)*(Category==-1)*(ErrorCode==0)*(netOutput>0.552)"  // only needed on TNN2
+char* wMC = "PTWeight2*DalitzWeight*SPDWeight*(Category==-1)*(ErrorCode==0)*(netOutput>0.552)*(BKGCAT==1)"
+char* wMCa = "PTWeight2*DalitzWeight*SPDWeight*(Category==-1)*(ErrorCode==0)*(BKGCAT==1)"
+char* wMCpi = "PTWeight2*DalitzWeight*SPDWeight*(Category==1)*(ErrorCode==0)*(BKGCAT==0)"
+char* wMCpi2 = "PTWeight2*DalitzWeight*SPDWeight*(Category==1)*(ErrorCode==0)*(netOutput>0.552)*(BKGCAT==0)"
+char* wMC2 = "PTWeight2*DalitzWeight*SPDWeight*NNEffWeight*(Category==-1)*(ErrorCode==0)*(netOutput>0.552)*(BKGCAT==1)"
+
+//=============================================================================
+// checks
+TNN2->Draw("tMass[0]:PsipKMass[0]","(sweightLb[0]>-4)*(Category[0]==-1)")
+TNN->Draw("PsipKMass:wPsipKMass","sweightLb>-4 && wCategory==-1")
+
+// Just for SPD mult
+TChain* T = new TChain("BetaSLambdab2JpsippiDetachedLine_Tuple/DecayTree")
+T->Add("/castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20r1-1062.root")
+T->Add("/castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20-1063.root")
+TFile* fpi = TFile::Open("/castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root")
+TFile* fK = TFile::Open("/castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root")
+Tpi = (TTree*)fpi->Get("BetaSLambdab2JpsippiDetachedLine_TupleMC/DecayTree")  
+TK = (TTree*)fK->Get("BetaSLambdab2JpsippiDetachedLine_TupleMC/DecayTree")  
+TNN2->AddFriend(T)
+TNNppi->AddFriend(Tpi)
+TNNpK->AddFriend(TK)
+
+TNN2->Draw("PsipKMass[0]:B_SubpK_M[0]", "ErrorCode[0]==0 && runNumber==115332")
+TNNpK->Draw("PsipKMass[0]:B_SubpK_M[0]", "ErrorCode[0]==0")
+TNNppi->Draw("PsipKMass[0]:B_SubpK_M[0]", "ErrorCode[0]==0")
+
+//=============================================================================
+// NN cut efficiency on MC on square Dalitz 
+TH2D* mc1 = Make2DPlot("mc1","m'",nbm,0,1,"#theta'",nbt,0,1)
+TH2D* mc2 = Make2DPlot("mc2","m'",nbm,0,1,"#theta'",nbt,0,1)
+TNNpK->Draw("thetaprime:mprime >> mc1",wMCa)
+TNNpK->Draw("thetaprime:mprime >> mc2",wMC)
+mc2->Divide(mc1)
+gPad->SetLogz(0)
+mc2->Draw("coltext")
+png("NN cut efficiency on pK MC")
+
+// NN cut efficiency on MC on square Dalitz 
+TH2D* pimc1 = Make2DPlot("pimc1","m'",nbm,0,1,"#theta'",nbt,0,1)
+TH2D* pimc2 = Make2DPlot("pimc2","m'",nbm,0,1,"#theta'",nbt,0,1)
+TNNppi->Draw("thetaprime:mprime >> pimc1",wMCpi)
+TNNppi->Draw("thetaprime:mprime >> pimc2",wMCpi2)
+pimc2->Divide(pimc1)
+gPad->SetLogz(0)
+pimc2->Draw("coltext")
+png("NN cut efficiency on ppi MC")
+
+// NN cut efficiency on data  on square Dalitz 
+TH2D* d1 = Make2DPlot("d1","m'",nbm,0,1,"#theta'",nbt,0,1)
+TH2D* d2 = Make2DPlot("d2","m'",nbm,0,1,"#theta'",nbt,0,1)
+TNN2->Draw("thetaprime:mprime >> d1",wD)
+TNN2->Draw("thetaprime:mprime >> d2",wD2)
+d2->Divide(d1)
+gPad->SetLogz(1)
+d2->Draw("coltext")
+png("NN cut efficiency on pK data")
+
+// NN cut efficiency on data -> requires initial weighting
+RooPlot* pspd = FourProfile(TNN2,TNNpK,TNNppi,0,wD,wMCa,wMCpi,"","nSPDHits","(netOutput>0.552)","","","remove",0,900,30)
+pspd->SetMinimum(0.5) ; pspd->SetMaximum(1.) ;
+pspd->GetXaxis()->SetTitle("SPD multiplicity") ; pspd->GetYaxis()->SetTitle("Efficiency")
+pspd->Draw()
+png("NN cut efficiency versus spd for data and MC")
+
+// NN cut efficiency on data -> requires initial weighting
+RooPlot* pmp = FourProfile(TNN2,TNNpK,TNNppi,0,wD,wMCa,wMCpi,"","mprime","(netOutput>0.552)","","","remove",0,1,25)
+pmp->SetMinimum(0.) ; pmp->SetMaximum(1.) ;
+pmp->GetXaxis()->SetTitle("m'") ; pmp->GetYaxis()->SetTitle("Efficiency")
+pmp->Draw()
+png("NN cut efficiency versus m' for data and MC")
+
+RooPlot* ptp =  FourProfile(TNN2,TNNpK,TNNppi,0,wD,wMCa,wMCpi,"","thetaprime","(netOutput>0.552)","","","remove",0,1,25)
+ptp->SetMinimum(0.) ; ptp->SetMaximum(1.) ;
+ptp->GetXaxis()->SetTitle("#theta'") ; ptp->GetYaxis()->SetTitle("Efficiency")
+ptp->Draw()
+png("NN cut efficiency versus theta' for data and MC")
+
+RooPlot* ppM =  FourProfile(TNN2,TNNpK,TNNppi,0,wD,wMCa,wMCpi,"","sqrt(pMMass2)","(netOutput>0.552)","","","remove",m_p+m_pi,m_Lb-m_psi,25)
+ppM->SetMinimum(0.) ; ppM->SetMaximum(1.) ;
+ppM->GetXaxis()->SetTitle("m_{pM} [MeV/c^{2}]") ; ppM->GetYaxis()->SetTitle("Efficiency")
+ppM->Draw()
+png("NN cut efficiency versus pM mass for data and MC")
+
+RooPlot* ppsiM =  FourProfile(TNN2,TNNpK,TNNppi,0,wD,wMCa,wMCpi,"","sqrt(psiMMass2)","(netOutput>0.552)","","","remove",m_psi+m_pi,m_Lb-m_p,25)
+ppsiM->SetMinimum(0.) ; ppsiM->SetMaximum(1.) ;
+ppsiM->GetXaxis()->SetTitle("m_{J/#psiM} [MeV/c^{2}]") ; ppsiM->GetYaxis()->SetTitle("Efficiency")
+ppsiM->Draw()
+png("NN cut efficiency versus psiM mass for data and MC")
+
+RooPlot* ppsip =  FourProfile(TNN2,TNNpK,TNNppi,0,wD,wMCa,wMCpi,"","sqrt(psipMass2)","(netOutput>0.552)","","","remove",m_psi+m_p,m_Lb-m_pi,25)
+ppsip->SetMinimum(0.) ; ppsip->SetMaximum(1.) ;
+ppsip->GetXaxis()->SetTitle("m_{J/#psip} [MeV/c^{2}]") ; ppsip->GetYaxis()->SetTitle("Efficiency")
+ppsip->Draw()
+png("NN cut efficiency versus psip mass for data and MC")
+
+// Now extract slopes
+//FourProfile(TNN2,TNNpK,TNNppi,0,wD,wMCa,wMCpi,"","mprime","(netOutput>0.552)","","p1","remove",0,1,25)
+//png("NN cut efficiency versus m' for data and MC with fit")
+
+// fit is no good I need a ratio
+int bins = 25
+TH1D* tpK1 = new TH1D("tpK1","tpK1",bins,0,1)
+TH1D* tpK2 = new TH1D("tpK2","tpK2",bins,0,1)
+TH1D* tpD1 = new TH1D("tpD1","tpD1",bins,0,1)
+TH1D* tpD2 = new TH1D("tpD2","tpD2",bins,0,1)
+TH1D* tppi1 = new TH1D("tppi1","tppi1",bins,0,1)
+TH1D* tppi2 = new TH1D("tppi2","tppi2",bins,0,1)
+
+//TNN2->Draw("(netOutput>0.552):mprime >> tpD",wD)   // gets wrong errors
+
+TNN2->Draw("mprime >> tpD1",TString(wD))   // 
+TNN2->Draw("mprime >> tpD2",TString(wD)+"*(netOutput>0.552)")   // 
+
+TNNppi->Draw("mprime >> tppi1",TString(wMCpi))
+TNNppi->Draw("mprime >> tppi2",TString(wMCpi)+"*(netOutput>0.552)")
+
+TNNpK->Draw("mprime >> tpK1",wMCa)
+TNNpK->Draw("mprime >> tpK2",TString(wMCa)+"*(netOutput>0.552)")
+
+TH1* rtpK = Divide(tpK2,tpK1,"E")
+TH1* rtppi = Divide(tppi2,tppi1,"E")
+TH1* rtpD = Divide(tpD2,tpD1,"E")
+
+TProfile* rtpDr = (TProfile*)Divide(rtpD,rtpK)
+rtpDr->SetMaximum(1.5)
+rtpDr->SetMinimum(0.0)
+rtpDr->GetXaxis()->SetTitle("m'")
+rtpDr->GetYaxis()->SetTitle("efficiency (ratio)")
+rtpDr->Draw()
+rtpD->Fit("pol1","","",0.05,1)
+rtpDr->Fit("pol1","","",0.05,1)
+rtpDr->Draw()
+NicePlot(rtpDr,rtpD,rtpK)
+png("LbK Data/MC efficiency ratio versus m'")
+
+Chi2                      =         25.8
+NDf                       =           22
+p0                        =     0.970823   +/-   0.0175233   
+p1                        =    -0.141184   +/-   0.0354758   
+
+// DATA over DATA. So far not used.
+Chi2                      =      36.1872
+NDf                       =           22
+p0                        =      1.27219   +/-   0.0141117   
+p1                        =     -0.54569   +/-   0.0275166   
+
+
+TProfile* rtppir = (TProfile*)Divide(rtppi,rtpK)
+rtppir->SetMaximum(1.5)
+rtppir->SetMinimum(0)
+rtppir->GetXaxis()->SetTitle("m'")
+rtppir->GetYaxis()->SetTitle("efficiency (ratio)")
+rtppir->Draw()
+rtppir->Fit("pol1","","",0.0,1)
+NicePlot(rtppir,rtppi,rtpK)
+png("Lbpi/LbK MC efficiency ratio versus m'")
+
+Chi2                      =      32.0834
+NDf                       =           22
+p0                        =      0.91063   +/-   0.019566    
+p1                        =     0.170704   +/-   0.0385128   
+
+rtppir->Fit("pol0","","",0.0,1)
+Chi2                      =      51.7295
+NDf                       =           23
+p0                        =     0.993525   +/-   0.00574975  
+
+
+
+//=======================================================================
+// SPD
+bins = 35
+TProfile* spdD = new TProfile("spdD","spdD",bins,0,700,0,1)
+TProfile* spdK = new TProfile("spdK","spdK",bins,0,700,0,1)
+TNN2->Draw("(netOutput>0.552):nSPDHits >> spdD",wD)
+TNNpK->Draw("(netOutput>0.552):nSPDHits >> spdK",wMCa2)
+TProfile* spdDr = (TProfile*)Divide(spdD,spdK)
+spdDr->SetMaximum(1.2)
+spdDr->SetMinimum(0.6)
+spdDr->GetXaxis()->SetTitle("SPD multiplicity")
+spdDr->GetYaxis()->SetTitle("efficiency ratio")
+spdDr->Draw()
+spdDr->Fit("pol1")
+spdDr->Draw()
+png("LbK Data/MC efficiency ratio versus SPD")
+
+// ratio of data and MC
+TH2D* hKD = Make2DPlot("hKD","m'",nbm,0,1,"#theta'",nbt,0,1)
+TH2D* hKM = Make2DPlot("hKM","m'",nbm,0,1,"#theta'",nbt,0,1)
+TNN->Draw("thetaprime:mprime >> hKD",wD)
+TNNpK->Draw("thetaprime:mprime >> hKM",wMC)
+hKD->Divide(hKM)
+hKD->Draw("lego2")
+Normalise(hKD,"A")
+gPad->SetLogz(1)
+hKD->Draw("coltext")
+png("Kaon data over MC after NN")
+
+//=============================================================================
+// Dalitz variables for LbK weighted MC and data
+
+
+RooPlot* pM = SandB(TNN,TNNpK,"sqrt(pMMass2)",wD2,wMC2,"","N","remove",m_p+m_K,m_Lb-m_psi)
+pM->SetMinimum(0.)
+pM->GetXaxis()->SetTitle("m_{pK} [MeV/c^{2}]")
+pM->Draw()
+png("pMMass for LbK data and MC after NN")
+
+RooPlot* psiM = SandB(TNN,TNNpK,"sqrt(psiMMass2)",wD2,wMC2,"","N","remove",m_psi+m_K,m_Lb-m_p,50)
+psiM->SetMinimum(0.)
+psiM->GetXaxis()->SetTitle("m_{J/#psiK} [MeV/c^{2}]")
+psiM->Draw()
+png("psiMMass for LbK data and MC after NN")
+
+RooPlot* psip = SandB(TNN,TNNpK,"sqrt(psipMass2)",wD2,wMC2,"","N","remove",m_psi+m_p,m_Lb-m_K,50)
+psip->SetMinimum(0.)
+psip->GetXaxis()->SetTitle("m_{J/#psip} [MeV/c^{2}]")
+psip->Draw()
+png("psipMass for LbK data and MC after NN")
+
+RooPlot* mp = SandB(TNN,TNNpK,"mprime",wD2,wMC2,"","N","remove",0,1,50)
+mp->SetMinimum(0.)
+mp->GetXaxis()->SetTitle("m'")
+mp->Draw()
+png("mprime for LbK data and MC after NN")
+
+RooPlot* tp = SandB(TNN,TNNpK,"thetaprime",wD2,wMC2,"","N","remove",0,1,50)
+tp->SetMinimum(0.)
+tp->GetXaxis()->SetTitle("#theta'")
+tp->Draw()
+png("thetaprime for LbK data and MC after NN")
+
+// check
+RooPlot* pn = SandB(TNN,TNNpK,"netOutput",wD2,wMC2,"","N","remove",0.5,1.,25)
+pn->SetMinimum(0.)
+pn->GetXaxis()->SetTitle("NN output")
+pn->Draw()
+png("NN output for LbK data and MC after NN")
+
+
+//=============================================================================
+// Paranoia - check all weights
+//=============================================================================
+
+TNN->Draw("NNEffWeight:mprime","(sweightLb>-4)*(Category==-1)*(ErrorCode==0)")
+

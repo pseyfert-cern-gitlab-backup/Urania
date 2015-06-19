@@ -17,13 +17,24 @@
 
 using namespace RooFit;
 
-struct length 
+namespace PIDCalib 
 {
-  bool operator() ( const std::string& a, const std::string& b )
+  struct length 
   {
-    return a.size() < b.size();   
-  } 
-};
+    bool operator() ( const std::string& a, const std::string& b )
+    {
+      return a.size() < b.size();   
+    } 
+  };
+
+  struct strToDouble
+  {
+    double operator() ( const std::string& s )
+    {
+      return boost::lexical_cast<double>(s);
+    }
+  };
+}
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : PerfCalculator
@@ -80,7 +91,8 @@ PIDResult PerfCalculator<T>::Perf( const std::string& PIDCut,
                       Cut_Vals);
   
   std::vector<double> CutValues;
-  std::transform(Cut_Vals.begin(), Cut_Vals.end(), std::back_inserter(CutValues), boost::lexical_cast<double,std::string>);
+  CutValues.resize(Cut_Vals.size());
+  std::transform(Cut_Vals.begin(), Cut_Vals.end(), CutValues.begin(), PIDCalib::strToDouble());
   
   return PIDResult( _Eff,
                     _Eff_Err_Lo,
@@ -1240,7 +1252,7 @@ const std::string PerfCalculator<T>::TranslateCut( const std::string& Cut,
         }
       }
       // Sort strings with shortest -> longest
-      sort( vec_keys.begin(), vec_keys.end(), length() );
+      sort( vec_keys.begin(), vec_keys.end(), PIDCalib::length() );
 
       // Declare string to store updated cut-variable string
       std::string newCut = A;

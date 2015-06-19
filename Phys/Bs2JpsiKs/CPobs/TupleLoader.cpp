@@ -266,7 +266,8 @@ B2JpsiKs* loadB2JpsiKsTuple(const TString module, const TString data,
       "B2JpsiKSPrescaled_MC_Sim08_Pythia6_Bs2JpsiKS_Stripping20r0_DVv33r5_FTfromDV_v6_20130706_rniet_combined_tupleA.root";
     } else if (data==m_SigKstar || data==m_SigKstarWM) {
       file1 = dir+
-      "B2JpsiKSDetached_MC_Sim08_Pythia6_Bd2JpsiKstar_Stripping20r0_DVv33r5_FTfromDV_v6_20130716_rniet_combined_tupleA.root";
+      "B2JpsiKSPrescaled_MC_Sim08_Pythia6_Bd2JpsiKstar_Stripping20r0_DVv33r5_FTfromDV_v6_20130716_rniet_combined_tupleA.root";
+      //"B2JpsiKSDetached_MC_Sim08_Pythia6_Bd2JpsiKstar_Stripping20r0_DVv33r5_FTfromDV_v6_20130716_rniet_combined_tupleA.root";
     } else if (data==m_IncJpsi) {
       file1 = dir+
       "B2JpsiKSPrescaled_MC_Sim08_Pythia6_inclJPsi_Stripping20r0_DVv33r5_FTfromDV_v1_20130707_rniet_combined_tupleA.root";

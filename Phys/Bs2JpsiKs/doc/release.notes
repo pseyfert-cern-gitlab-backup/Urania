@@ -3,6 +3,9 @@
 ! Responsible : Patrick Koppenburg
 ! Purpose     : BsJpsiKs analysis
 !-----------------------------------------------------------------------------
+!============================================== v5r2 2013-10-9 ==============================
+! 2013-10-9 Diego Martinez Santos
+	 Make version v5r2
 !
 !  Workflow:
 ! setenv appendix Default
@@ -113,32 +116,4 @@ This gets branched off to svn+ssh://svn.cern.ch/reps/lhcb/Urania/branches/Phys/B
  - Add Bd2JpsiPhi
 
 !-----------------------------------------------------------------------------
-! 2011-07-27 - Patrick Koppenburg
- - Status of 27/7 - results of draft 1 of analysis note
-
-! 2011-07-21 - Patrick Koppenburg
- - Use new Tuples
- - Fix Tuple format
- - Require selected trigger as pre-cuts
- - Remove R09 
- - Remove J/psi Pt from NeuralNet
-
-! 2011-07-19 - Patrick Koppenburg
- - Add many trigger lines in DiMuonTuple.py
-
-! 2011-07-04 - Patrick Koppenburg
- - Save status before big rehaul.
-
-! 2011-06-27 - Patrick Koppenburg
- - New data samples again. Adapt Tuple class. Replace all uses of PVFit by FullFit.
-
-! 2011-06-23 - Patrick Koppenburg
- - New data samples on castor
-
-
-! 2011-06-21 - Patrick Koppenburg
- - First import of package. Status for REco09. Will be upgraded for Reco10 soon.
-   src: root programs analysing the nTuples. They are not compiled as they need 
-        NeuroBayes. A Makefile is provided.
-   python : Generic Tuple generator 
-   options : Various option files calling it. It does much more than Bs2JpsiKs
+! 2011-07-27 - Patrick 

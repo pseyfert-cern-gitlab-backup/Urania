@@ -3,7 +3,7 @@
 # Maintainer : Diego Martinez
 #============================================================================
 package           Bs2MuMu
-version           v2r3
+version           v2r4
 
 #============================================================================
 # Structure, i.e. directories to process. 

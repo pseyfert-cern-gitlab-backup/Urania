@@ -1,28 +1,29 @@
 source NBVars.csh
 make
-./teacher.exe /castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-MC11-Lb2Jpsippi-716.root /castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-MC11-IncPsi-717.root | tee test-teach
-foreach a ( `nsls $CASTOR_HOME/Lambdab | grep root | grep -v R12S17b`)
+./makemctuple.exe $CASTOR_HOME/Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root >! test-mctuple-pi &
+./makemctuple.exe $CASTOR_HOME/Lambdab/LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root >! test-mctuple-K &
+
+./weighting.exe /castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20r1-1062.root All >! test-weighting-S20r1 &
+./weighting.exe /castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20-1063.root All | tee test-weighting-S20 
+./teacher.exe /castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20-1063.root  /castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20r1-1062.root All-SW | tee test-teach
+./expert.exe /castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20r1-1062.root >! test-expert-S20r1 &
+foreach a ( `nsls $CASTOR_HOME/Lambdab | grep Sim08`)
   set root = `echo $a | awk -F. '{print $1}'`
   echo $root
-  ./expert.exe $CASTOR_HOME/Lambdab/$a | tee test-expert-${root}  &
+  ./expert.exe $CASTOR_HOME/Lambdab/$a >! test-expert-${root}  &
 end
-# these can go in parallel
-./expert.exe $CASTOR_HOME/Lambdab/Lambdab-R12S17b-721.root Lambda | tee test-expert-Lambdab-R12S17b-721-Lambda &
-foreach a ( `nsls $CASTOR_HOME/Lambdab | grep root | grep -v R12S17b | grep Lb2JpsiL`)
+./expert.exe /castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20-1063.root | tee test-expert-S20 
+./optimise.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root | tee test-optimise
+set NNcut = `grep "Neural net cut to be applied will be " test-optimise | awk '{print $9}'`
+foreach a ( `ls -1 *Sim08a*NN.root` )
   set root = `echo $a | awk -F. '{print $1}'`
-  ./expert.exe $CASTOR_HOME/Lambdab/$a Lambda | tee test-expert-${root}-Lambda  &
+  echo $root
+  ./weighting.exe ${a} $NNcut >! test-weighting-${root}  
 end
-# Needed for next step
-./expert.exe $CASTOR_HOME/Lambdab/Lambdab-R12S17b-721.root | tee test-expert-Lambdab-R12S17b-721
-./weighting.exe LambdabMC-MC11-Lb2Jpsippi-716-NN.root 0.846 free >! test-weighting-ppiMC &
-./weighting.exe LambdabMC-MC11-Lb2JpsipK-718-NN.root 0.846 free >! test-weighting-pKMC &
-./weighting.exe LambdabMC-MC11-Lb2Jpsippi-716-NN.root -1 free >! test-weighting-ppiMC-1 &
-./weighting.exe LambdabMC-MC11-Lb2JpsipK-718-NN.root -1 free >! test-weighting-pKMC-1 &
-./weighting.exe Lambdab-R12S17b-721-NN.root  Lambdab-R12S17b-721-NN.root >! test-weighting-opt &
-./weighting.exe Lambdab-R12S17b-721-NN.root  0 >!  test-weighting-0 &
-foreach a ( -1.0 -0.5 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.75 0.8 0.85 0.9 0.95 )
-./weighting.exe Lambdab-R12S17b-721-NN.root  $a notree >!  test-weighting-$a &
+./weighting.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root $NNcut withXib >! test-weighting-withXib-$NNcut &
+foreach a ( -1.0 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0.0 0.1 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 0.6 0.65 0.7 0.75 0.8 0.9 )
+  ./weighting.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root $a notree >! test-weighting-${a} &
 end
-
-
+./weighting.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root $NNcut notree >! test-weighting-${NNcut}-notree &
+./weighting.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root $NNcut | tee test-weighting-$NNcut
 

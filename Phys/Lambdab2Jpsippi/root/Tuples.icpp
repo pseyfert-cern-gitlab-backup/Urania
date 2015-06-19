@@ -1,17 +1,28 @@
 // $Id: $
-// Include files
+// NO Include files
 
-// local
-bool firstFill ;
-
-std::vector<TString> m_names ; ///< names of variables
 //-----------------------------------------------------------------------------
 // Implementation file for class : Tuples
 //
 // 2012-07-13 : Patrick Koppenburg
 //-----------------------------------------------------------------------------
 
+double spdWeight(int spd){
+  return exp(-2.77786+0.00593233*spd) ;
+}
+double spdWeight(){
+  return spdWeight(nSPDHits) ;
+}
+// ####################################################################################################
+Float_t MINIPCHI2(Float_t aic[100]){
+  Float_t minip = aic[0];
+  for ( unsigned int i = 0 ; i<nPVs ; i++) {
+    if ( aic[i]<minip ) minip = aic[i] ;
+  } 
+  return minip;
+}
 
+// ####################################################################################################
 ///< fill array with one name
 void fillName(const int var, TString n){
   //std::cout << m_names.size() << " " << var << " " << n << std::endl ;
@@ -22,33 +33,37 @@ void fillName(const int var, TString n){
   if (var>=0) m_names[var] = n ;
 };
 
+// ####################################################################################################
 ///< fill array with m_names
 void fillNames(const unsigned int nvar){
-  //  std::cout << m_names.size() << " " << nvar << std::endl ;
-  //  m_names.reserve(nvar);
+  // m_names.reserve(nvar);
   //http://www.velocityreviews.com/forums/t696133-reserve-vector-with-100-strings-each-of-fixed-size-20-a.html
-  m_names.resize(nvar, TString(max_name_length));
-  fillName(dtfc, "B_DTF_chi2"); 
-  fillName(bfct, "B_DTF_ctau"); 
+  
+  fillName(dtfc, "\\Lb & DTF $\\chi^2$"); 
+  fillName(bfct, "\\Lb & DTF $c\\tau$"); 
   // fillName(fdch, "B_FDCHI2_OWNPV"); 
-  fillName(bevc, "B_ENDVERTEX_CHI2/B_ENDVERTEX_NDOF"); 
-  fillName(bmic, "B_MINIPCHI2"); 
-  //  fillName(psfd, "Psi_FD_OWNPV"); 
-  fillName(pppt, "pplus_PT"); 
-  fillName(pppz, "pplus_PZ"); 
-  fillName(ppmi, "pplus_MINIPCHI2"); 
-  fillName(pppp, "pplus_Probp"); 
-  fillName(pppK, "pplus_ProbK"); 
-  fillName(pppi, "pplus_Probpi"); 
-  fillName(ppri, "pplus_AbovePrThreshold"); 
-  fillName(pppc, "pplus_TRACK_GhostProb Category"); 
-  fillName(pppg, "pplus_TRACK_GhostProb"); 
-  fillName(pmpt, "piminus_PT");
-  fillName(pmpz, "piminus_PZ");
-  fillName(pmmi, "piminus_MINIPCHI2");
-  fillName(pmpc, "piminus_TRACK_GhostProb Category"); 
-  fillName(pmpg, "piminus_TRACK_GhostProb"); 
-  fillName(prim, "Primaries");
+  fillName(bevc, "\\Lb & vertex $\\chi^2$"); 
+  fillName(bmic, "\\Lb & min IP$\\chi^2$"); 
+//  fillName(psfd, "\\jpsi & _FD"); 
+  fillName(mmmi, "\\Pmu & min(min IP$\\chi^2$)");
+  fillName(pppt, "\\proton & \\pt"); 
+  fillName(pppz, "\\proton & $p_z$"); 
+  fillName(ppmi, "\\proton & min IP$\\chi^2$"); 
+  fillName(pppp, "\\proton & ${\\cal P}(\\proton)$"); 
+  fillName(pppK, "\\proton & ${\\cal P}(\\kaon)$"); 
+  fillName(pppi, "\\proton & ${\\cal P}(\\pion)$"); 
+//  fillName(ppri, "\proton & _AbovePrThreshold"); 
+  fillName(pppc, "\\proton & GhostProb Category"); 
+  fillName(pppg, "\\proton & GhostProb"); 
+  fillName(pmpt, "$M$ & \\pt");
+  fillName(pmpz, "$M$ & $p_z$");
+  fillName(pmmi, "$M$ & min IP$\\chi^2$");
+  fillName(pmpc, "$M$ & GhostProb Category"); 
+  fillName(pmpg, "$M$ & GhostProb"); 
+  fillName(prim, " & Primaries");
+  fillName(spdm, " & SPD multiplicity");
+  fillName(gpst, " & GPS time");
+  std::cout << "Filled Names " << m_names.size() << " = " << nvar << std::endl ;
 
 };
 
@@ -56,47 +71,54 @@ void fillNames(const unsigned int nvar){
 ///< fill array with one value
 void fillArray(const int var, const float value, float* InputArray){
   if (var>=0) {
-    InputArray[var] = value;
+    if (!(value==value)) InputArray[var] = -999. ;
+    else InputArray[var] = value;
     TString name = m_names[var];
     if (firstFill) std::cout << "Filling variable " << var+2 << " (ID " << 
       var << ", page " << var+5 << ") ``" << name << "'' with " << value << std::endl ;
   } else {
-    //    if (firstFill) std::cout << "Ignoring variable ``" << var << "''" << std::endl ;
+    if (firstFill) std::cout << "Ignoring variable ``" << var << "''" << std::endl ;
   }    
 };
 
 // ####################################################################################################
 ///< fill array of values
-void prepareArray(const unsigned int nvar, float* InputArray, unsigned int pv){
+void prepareArray(const unsigned int nvar, float* InputArray, unsigned int pv, bool debug){
 
-  // std::cout << "New candidate " << eventNumber << " " << runNumber << " " << pv << std::endl ;
+  if (debug) std::cout << "New candidate " << eventNumber << "/" << runNumber << " " << pv << " " << InputArray << std::endl ;
   
   if (isPion()){
+    if (debug) std::cout << "New ppi" << std::endl ;
     fillArray(dtfc, B_FullFit_chi2[pv],    InputArray);
     fillArray(bfct, B_FullFit_ctau[pv] ,   InputArray);
   } else if (isKaon()){
+    if (debug) std::cout << "New pK " << B_SubpK_chi2[pv] << std::endl ;
     fillArray(dtfc, B_SubpK_chi2[pv],    InputArray);
     fillArray(bfct, B_SubpK_ctau[pv] ,   InputArray);    
-  }
+  } else std::cout << "Cannot be!" << std::endl ;
   fillArray(bevc, B_ENDVERTEX_CHI2/B_ENDVERTEX_NDOF ,  InputArray);
-  fillArray(bmic, B_MINIPCHI2 ,  InputArray); 
+  fillArray(bmic, MINIPCHI2(B_AllIPchi2) ,  InputArray); 
+  fillArray(mmmi, std::min( MINIPCHI2(muminus_AllIPchi2),  MINIPCHI2(muplus_AllIPchi2)) ,  InputArray);
   fillArray(pppt, pplus_PT ,  InputArray);
   fillArray(pppz, pplus_PZ ,  InputArray);
-  fillArray(ppmi, pplus_MINIPCHI2 ,  InputArray);
+  fillArray(ppmi, MINIPCHI2(pplus_AllIPchi2) ,  InputArray);
   fillArray(pppp, pplus_ProbNNp ,  InputArray);
   fillArray(pppK, pplus_ProbNNk ,  InputArray);
   fillArray(pppi, pplus_ProbNNpi ,  InputArray);
-  fillArray(ppri, pplus_RichAbovePrThres,  InputArray);
+//  fillArray(ppri, pplus_RichAbovePrThres,  InputArray);
   fillGhostProb(pppc,pppg,pplus_TRACK_GhostProb,InputArray);
   fillArray(pmpt, piminus_PT ,  InputArray);
   fillArray(pmpz, piminus_PZ ,  InputArray);
-  fillArray(pmmi, piminus_MINIPCHI2 ,  InputArray);
+  fillArray(pmmi, MINIPCHI2(piminus_AllIPchi2) ,  InputArray);
   fillGhostProb(pmpc,pmpg,piminus_TRACK_GhostProb,InputArray);
   fillArray(prim, nPV ,  InputArray);
+  fillArray(spdm, nSPDHits ,  InputArray);
+  fillArray(gpst, (GpsTime<1293840000e6?2011.3:2011+(GpsTime-1293840000e6)/(3.15576e13)) ,  InputArray);
 
   // fillArray(fdch, B_FDCHI2_OWNPV ,  InputArray);
   // fillArray(psfd, Psi_FD_OWNPV ,  InputArray);
-  firstFill = false ;
+  firstFill = debug ; // stop printing
+  if (debug) std::cout << "Candidate filled " << std::endl ;
    
 };
 // ####################################################################################################
@@ -131,6 +153,7 @@ unsigned int individualPreproFlag(unsigned int i){ ;
             || bskp==i // B sub K pi ctau Err
             || pmpK==i // pi PID K
             || pppm==i // p PID mu
+            || gpst==i // GPS time
             ) return 34 ; // not monotonous
   else return 35 ; // monotonous (default)
 
@@ -138,14 +161,23 @@ unsigned int individualPreproFlag(unsigned int i){ ;
 //  /*else*/ return 34 ; // not monotonous (default)
 
 }
+// ####################################################################################################
+// KK mass
+Double_t KKMass(){ 
+  double e = sqrt(m_K*m_K +   pplus_PX*pplus_PX  +  pplus_PY*pplus_PY  +  pplus_PZ*pplus_PZ)+
+             sqrt(m_K*m_K + piminus_PX*piminus_PX+piminus_PY*piminus_PY+piminus_PZ*piminus_PZ);
+  return sqrt(e*e-(pplus_PX+piminus_PX)*(pplus_PX+piminus_PX)
+                 -(pplus_PY+piminus_PY)*(pplus_PY+piminus_PY)
+                 -(pplus_PZ+piminus_PZ)*(pplus_PZ+piminus_PZ)) ;
+}
 
 // ####################################################################################################
 // ppi mass
 Double_t ppiMass2(unsigned int pv){ 
-  return (B_ConstBFit_P0_PE[pv] + B_ConstBFit_P1_PE[pv])*(B_ConstBFit_P0_PE[pv] + B_ConstBFit_P1_PE[pv]) -
-         (B_ConstBFit_P0_PX[pv] + B_ConstBFit_P1_PX[pv])*(B_ConstBFit_P0_PX[pv] + B_ConstBFit_P1_PX[pv]) -
-         (B_ConstBFit_P0_PY[pv] + B_ConstBFit_P1_PY[pv])*(B_ConstBFit_P0_PY[pv] + B_ConstBFit_P1_PY[pv]) -
-         (B_ConstBFit_P0_PZ[pv] + B_ConstBFit_P1_PZ[pv])*(B_ConstBFit_P0_PZ[pv] + B_ConstBFit_P1_PZ[pv]);
+  return (B_ConstBFit_pplus_PE[pv] + B_ConstBFit_piplus_PE[pv])*(B_ConstBFit_pplus_PE[pv] + B_ConstBFit_piplus_PE[pv]) -
+    (B_ConstBFit_pplus_PX[pv] + B_ConstBFit_piplus_PX[pv])*(B_ConstBFit_pplus_PX[pv] + B_ConstBFit_piplus_PX[pv]) -
+    (B_ConstBFit_pplus_PY[pv] + B_ConstBFit_piplus_PY[pv])*(B_ConstBFit_pplus_PY[pv] + B_ConstBFit_piplus_PY[pv]) -
+    (B_ConstBFit_pplus_PZ[pv] + B_ConstBFit_piplus_PZ[pv])*(B_ConstBFit_pplus_PZ[pv] + B_ConstBFit_piplus_PZ[pv]);
 }
 // ####################################################################################################
 // Not exactly the same
@@ -162,148 +194,266 @@ Double_t ppiMass(){
 }
 // ####################################################################################################
 // pK mass
-Double_t pKMass2(){
-  double e = (pplus_PE+sqrt(piminus_PE*piminus_PE-m_pi*m_pi+m_K*m_K));  // pi->K  
-  double m2 = e*e-(pplus_PX+piminus_PX)*(pplus_PX+piminus_PX)
-	         -(pplus_PY+piminus_PY)*(pplus_PY+piminus_PY)
-                 -(pplus_PZ+piminus_PZ)*(pplus_PZ+piminus_PZ);
-  return m2 ;
+Double_t pKMass2(unsigned int pv){
+  return (B_ConstBSubFit_pplus_PE[pv] + B_ConstBSubFit_Kplus_PE[pv])*(B_ConstBSubFit_pplus_PE[pv] + B_ConstBSubFit_Kplus_PE[pv]) -
+    (B_ConstBSubFit_pplus_PX[pv] + B_ConstBSubFit_Kplus_PX[pv])*(B_ConstBSubFit_pplus_PX[pv] + B_ConstBSubFit_Kplus_PX[pv]) -
+    (B_ConstBSubFit_pplus_PY[pv] + B_ConstBSubFit_Kplus_PY[pv])*(B_ConstBSubFit_pplus_PY[pv] + B_ConstBSubFit_Kplus_PY[pv]) -
+    (B_ConstBSubFit_pplus_PZ[pv] + B_ConstBSubFit_Kplus_PZ[pv])*(B_ConstBSubFit_pplus_PZ[pv] + B_ConstBSubFit_Kplus_PZ[pv]);
 }
 // ####################################################################################################
-Double_t pMMass2(unsigned int pv){ return (isPion()?ppiMass2(pv):pKMass2());}
+Double_t pMMass2(unsigned int pv){ return (isPion()?ppiMass2(pv):pKMass2(pv));}
 // ####################################################################################################
 // psi pi mass
 Double_t psipiMass2(unsigned int pv){
   return 
-    (B_ConstBFit_J_psi_1S_P0_PE[pv] + B_ConstBFit_J_psi_1S_P1_PE[pv] + B_ConstBFit_P1_PE[pv])*
-    (B_ConstBFit_J_psi_1S_P0_PE[pv] + B_ConstBFit_J_psi_1S_P1_PE[pv] + B_ConstBFit_P1_PE[pv]) -
-    (B_ConstBFit_J_psi_1S_P0_PX[pv] + B_ConstBFit_J_psi_1S_P1_PX[pv] + B_ConstBFit_P1_PX[pv])*
-    (B_ConstBFit_J_psi_1S_P0_PX[pv] + B_ConstBFit_J_psi_1S_P1_PX[pv] + B_ConstBFit_P1_PX[pv])-
-    (B_ConstBFit_J_psi_1S_P0_PY[pv] + B_ConstBFit_J_psi_1S_P1_PY[pv] + B_ConstBFit_P1_PY[pv])*
-    (B_ConstBFit_J_psi_1S_P0_PY[pv] + B_ConstBFit_J_psi_1S_P1_PY[pv] + B_ConstBFit_P1_PY[pv]) -
-    (B_ConstBFit_J_psi_1S_P0_PZ[pv] + B_ConstBFit_J_psi_1S_P1_PZ[pv] + B_ConstBFit_P1_PZ[pv])*
-    (B_ConstBFit_J_psi_1S_P0_PZ[pv] + B_ConstBFit_J_psi_1S_P1_PZ[pv] + B_ConstBFit_P1_PZ[pv]) ;
+    (B_ConstBFit_J_psi_1S_muminus_0_PE[pv] + B_ConstBFit_J_psi_1S_muminus_PE[pv] + B_ConstBFit_piplus_PE[pv])*
+    (B_ConstBFit_J_psi_1S_muminus_0_PE[pv] + B_ConstBFit_J_psi_1S_muminus_PE[pv] + B_ConstBFit_piplus_PE[pv]) -
+    (B_ConstBFit_J_psi_1S_muminus_0_PX[pv] + B_ConstBFit_J_psi_1S_muminus_PX[pv] + B_ConstBFit_piplus_PX[pv])*
+    (B_ConstBFit_J_psi_1S_muminus_0_PX[pv] + B_ConstBFit_J_psi_1S_muminus_PX[pv] + B_ConstBFit_piplus_PX[pv])-
+    (B_ConstBFit_J_psi_1S_muminus_0_PY[pv] + B_ConstBFit_J_psi_1S_muminus_PY[pv] + B_ConstBFit_piplus_PY[pv])*
+    (B_ConstBFit_J_psi_1S_muminus_0_PY[pv] + B_ConstBFit_J_psi_1S_muminus_PY[pv] + B_ConstBFit_piplus_PY[pv]) -
+    (B_ConstBFit_J_psi_1S_muminus_0_PZ[pv] + B_ConstBFit_J_psi_1S_muminus_PZ[pv] + B_ConstBFit_piplus_PZ[pv])*
+    (B_ConstBFit_J_psi_1S_muminus_0_PZ[pv] + B_ConstBFit_J_psi_1S_muminus_PZ[pv] + B_ConstBFit_piplus_PZ[pv]) ;
 }
 // ####################################################################################################
 // psiK mass
-Double_t psiKMass2(){
-  double e = (Psi_PE+sqrt(piminus_PE*piminus_PE-m_pi*m_pi+m_K*m_K));  // pi->K  
-  double m2 = e*e-(Psi_PX+piminus_PX)*(Psi_PX+piminus_PX)
-	         -(Psi_PY+piminus_PY)*(Psi_PY+piminus_PY)
-                 -(Psi_PZ+piminus_PZ)*(Psi_PZ+piminus_PZ);
-  return m2 ;
+Double_t psiKMass2(unsigned int pv){
+  return 
+    (B_ConstBSubFit_J_psi_1S_muminus_0_PE[pv] + B_ConstBSubFit_J_psi_1S_muminus_PE[pv] + B_ConstBSubFit_Kplus_PE[pv])*
+    (B_ConstBSubFit_J_psi_1S_muminus_0_PE[pv] + B_ConstBSubFit_J_psi_1S_muminus_PE[pv] + B_ConstBSubFit_Kplus_PE[pv]) -
+    (B_ConstBSubFit_J_psi_1S_muminus_0_PX[pv] + B_ConstBSubFit_J_psi_1S_muminus_PX[pv] + B_ConstBSubFit_Kplus_PX[pv])*
+    (B_ConstBSubFit_J_psi_1S_muminus_0_PX[pv] + B_ConstBSubFit_J_psi_1S_muminus_PX[pv] + B_ConstBSubFit_Kplus_PX[pv])-
+    (B_ConstBSubFit_J_psi_1S_muminus_0_PY[pv] + B_ConstBSubFit_J_psi_1S_muminus_PY[pv] + B_ConstBSubFit_Kplus_PY[pv])*
+    (B_ConstBSubFit_J_psi_1S_muminus_0_PY[pv] + B_ConstBSubFit_J_psi_1S_muminus_PY[pv] + B_ConstBSubFit_Kplus_PY[pv]) -
+    (B_ConstBSubFit_J_psi_1S_muminus_0_PZ[pv] + B_ConstBSubFit_J_psi_1S_muminus_PZ[pv] + B_ConstBSubFit_Kplus_PZ[pv])*
+    (B_ConstBSubFit_J_psi_1S_muminus_0_PZ[pv] + B_ConstBSubFit_J_psi_1S_muminus_PZ[pv] + B_ConstBSubFit_Kplus_PZ[pv]) ;
 }
 // ####################################################################################################
-Double_t psiMMass2(unsigned int pv){ return (isPion()?psipiMass2(pv):psiKMass2());}
+Double_t psiMMass2(unsigned int pv){ return (isPion()?psipiMass2(pv):psiKMass2(pv));}
 // ####################################################################################################
 // psi p mass
 Double_t psipMass2_pi(unsigned int pv){
   return 
-    (B_ConstBFit_J_psi_1S_P0_PE[pv] + B_ConstBFit_J_psi_1S_P1_PE[pv] + B_ConstBFit_P0_PE[pv])*
-    (B_ConstBFit_J_psi_1S_P0_PE[pv] + B_ConstBFit_J_psi_1S_P1_PE[pv] + B_ConstBFit_P0_PE[pv]) -
-    (B_ConstBFit_J_psi_1S_P0_PX[pv] + B_ConstBFit_J_psi_1S_P1_PX[pv] + B_ConstBFit_P0_PX[pv])*
-    (B_ConstBFit_J_psi_1S_P0_PX[pv] + B_ConstBFit_J_psi_1S_P1_PX[pv] + B_ConstBFit_P0_PX[pv]) -
-    (B_ConstBFit_J_psi_1S_P0_PY[pv] + B_ConstBFit_J_psi_1S_P1_PY[pv] + B_ConstBFit_P0_PY[pv])*
-    (B_ConstBFit_J_psi_1S_P0_PY[pv] + B_ConstBFit_J_psi_1S_P1_PY[pv] + B_ConstBFit_P0_PY[pv]) -
-    (B_ConstBFit_J_psi_1S_P0_PZ[pv] + B_ConstBFit_J_psi_1S_P1_PZ[pv] + B_ConstBFit_P0_PZ[pv])*
-    (B_ConstBFit_J_psi_1S_P0_PZ[pv] + B_ConstBFit_J_psi_1S_P1_PZ[pv] + B_ConstBFit_P0_PZ[pv]) ;
+    (B_ConstBFit_J_psi_1S_muminus_0_PE[pv] + B_ConstBFit_J_psi_1S_muminus_PE[pv] + B_ConstBFit_pplus_PE[pv])*
+    (B_ConstBFit_J_psi_1S_muminus_0_PE[pv] + B_ConstBFit_J_psi_1S_muminus_PE[pv] + B_ConstBFit_pplus_PE[pv]) -
+    (B_ConstBFit_J_psi_1S_muminus_0_PX[pv] + B_ConstBFit_J_psi_1S_muminus_PX[pv] + B_ConstBFit_pplus_PX[pv])*
+    (B_ConstBFit_J_psi_1S_muminus_0_PX[pv] + B_ConstBFit_J_psi_1S_muminus_PX[pv] + B_ConstBFit_pplus_PX[pv]) -
+    (B_ConstBFit_J_psi_1S_muminus_0_PY[pv] + B_ConstBFit_J_psi_1S_muminus_PY[pv] + B_ConstBFit_pplus_PY[pv])*
+    (B_ConstBFit_J_psi_1S_muminus_0_PY[pv] + B_ConstBFit_J_psi_1S_muminus_PY[pv] + B_ConstBFit_pplus_PY[pv]) -
+    (B_ConstBFit_J_psi_1S_muminus_0_PZ[pv] + B_ConstBFit_J_psi_1S_muminus_PZ[pv] + B_ConstBFit_pplus_PZ[pv])*
+    (B_ConstBFit_J_psi_1S_muminus_0_PZ[pv] + B_ConstBFit_J_psi_1S_muminus_PZ[pv] + B_ConstBFit_pplus_PZ[pv]) ;
 }
 // ####################################################################################################
 // psip mass for K
-Double_t psipMass2_K(){
-  return (Psi_PE+pplus_PE)*(Psi_PE+pplus_PE)
-        -(Psi_PX+pplus_PX)*(Psi_PX+pplus_PX)
-	-(Psi_PY+pplus_PY)*(Psi_PY+pplus_PY)
-        -(Psi_PZ+pplus_PZ)*(Psi_PZ+pplus_PZ);
+Double_t psipMass2_K(unsigned int pv){
+  return 
+    (B_ConstBSubFit_J_psi_1S_muminus_0_PE[pv] + B_ConstBSubFit_J_psi_1S_muminus_PE[pv] + B_ConstBSubFit_pplus_PE[pv])*
+    (B_ConstBSubFit_J_psi_1S_muminus_0_PE[pv] + B_ConstBSubFit_J_psi_1S_muminus_PE[pv] + B_ConstBSubFit_pplus_PE[pv]) -
+    (B_ConstBSubFit_J_psi_1S_muminus_0_PX[pv] + B_ConstBSubFit_J_psi_1S_muminus_PX[pv] + B_ConstBSubFit_pplus_PX[pv])*
+    (B_ConstBSubFit_J_psi_1S_muminus_0_PX[pv] + B_ConstBSubFit_J_psi_1S_muminus_PX[pv] + B_ConstBSubFit_pplus_PX[pv]) -
+    (B_ConstBSubFit_J_psi_1S_muminus_0_PY[pv] + B_ConstBSubFit_J_psi_1S_muminus_PY[pv] + B_ConstBSubFit_pplus_PY[pv])*
+    (B_ConstBSubFit_J_psi_1S_muminus_0_PY[pv] + B_ConstBSubFit_J_psi_1S_muminus_PY[pv] + B_ConstBSubFit_pplus_PY[pv]) -
+    (B_ConstBSubFit_J_psi_1S_muminus_0_PZ[pv] + B_ConstBSubFit_J_psi_1S_muminus_PZ[pv] + B_ConstBSubFit_pplus_PZ[pv])*
+    (B_ConstBSubFit_J_psi_1S_muminus_0_PZ[pv] + B_ConstBSubFit_J_psi_1S_muminus_PZ[pv] + B_ConstBSubFit_pplus_PZ[pv]) ;
 }
 // ####################################################################################################
-Double_t psipMass2(unsigned int pv){ return (isPion()?psipMass2_pi(pv):psipMass2_K());}
+Double_t psipMass2(unsigned int pv){ return (isPion()?psipMass2_pi(pv):psipMass2_K(pv));}
+// ####################################################################################################
+// m', theta' : see LHCb-ANA-2012-103, appendix
+// ####################################################################################################
+Double_t mprime(unsigned int pv){
+   Double_t m = (sqrt(psipMass2(pv))-m_psi-m_p)/(m_Lb-m_psi-m_p-(isPion()?m_pi:m_K));
+   Double_t mp = (1./TMath::Pi())*acos(2*m-1) ;
+   if (!(mp>=0.)){
+     // std::cout << "Error with mprime : psipM " <<  psipMass2(pv) << " m: " << m << std::endl ;
+     return -1. ;
+   }  
+   return mp ;
+}
+// ####################################################################################################
+Double_t thetaprime(unsigned int pv){
+   Double_t mjp2 = psipMass2(pv);
+   Double_t mph2 = pMMass2(pv);
+   Double_t mjh2 = psiMMass2(pv);
+   Double_t mh2 = (isPion()?m_pi*m_pi:m_K*m_K);
+   Double_t t1 = mjp2*(mph2-mjh2)-(m_p*m_p-m_psi*m_psi)*(m_Lb*m_Lb-mh2);
+   Double_t t2a = mjp2+m_psi*m_psi-m_p*m_p;
+   Double_t t2 = t2a*t2a - 4*mjp2*m_psi*m_psi;
+   Double_t t3a = m_Lb*m_Lb-mh2-mjp2 ;
+   Double_t t3 = t3a*t3a - 4*mjp2*mh2;
+   Double_t th = (1./TMath::Pi())*acos(t1/(sqrt(t2)*sqrt(t3))) ;
+   if (!(th>=0.)){
+     /*
+     std::cout << "Error with thetaprime : mjp2 " << mjp2  << " mph2 " << mph2 << " mjh2 " << mjh2 
+               << " Stream " << (isPion()?"pi":"K") << std::endl ; 
+     std::cout << "     -> t1 " << t1 << " t2a " << t2a << " t2 " << t2 << " t3a " 
+               << t3a << " t3 " << t3 << " fraction " << t1/(sqrt(t2)*sqrt(t3)) << " - th " << th << std::endl ; 
+     */
+     return -1. ;
+   }
+   return th ;
+}
 // ####################################################################################################
 // selections
-bool preselection(unsigned int pv){ // more cuts here !!!
+bool pid(bool debug = false){ // more cuts here !!!
+  if ( debug ) std::cout << "   DEBUG ProbNNp " << pplus_ProbNNp << " < " << c_pplus_Pcut << std::endl ;
   if ( pplus_ProbNNp<c_pplus_Pcut) return false ;
+  if ( debug ) std::cout << "   DEBUG ProbNNp/k " << pplus_ProbNNp << " < " << pplus_ProbNNk << std::endl ;
   if ( pplus_ProbNNp<pplus_ProbNNk) return false ; /// NEW
+  if ( debug ) std::cout << "   DEBUG pim P(pi) and P(k) : " << piminus_ProbNNpi << " or " 
+                         << piminus_ProbNNk << " > " << c_piminus_Pcut << std::endl ;
+  if ( piminus_ProbNNpi<c_piminus_Pcut && piminus_ProbNNk<c_piminus_Pcut ) return false ; /// One must be above 5%
+  return true ;
+}
+// ####################################################################################################
+// selections
+bool preselection(unsigned int pv, bool debug = false){ // more cuts here !!!
+  if (pplus_PZ<c_pplus_momcut) return false ;
+  if (piminus_PZ<c_piminus_momcut) return false ;
+  if (!pid()) return false ; /// redo
   if (isKaon()){ // stream splitter
+    if ( debug) std::cout <<  "   DEBUG Kaon status " << B_SubpK_status[pv] << std::endl ;
     if (0!=B_SubpK_status[pv]) return false ;
+    if ( debug) std::cout << "   DEBUG chi2 " << B_SubpK_chi2[pv]<< " < " << c_DTF_chi2 << std::endl ;
     if (B_SubpK_chi2[pv]>c_DTF_chi2) return false ;
-    if (B_SubpK_M[pv]<c_ppi_minMass || B_SubpK_M[pv]>c_ppi_maxMass)  return false ;
+    if ( debug) std::cout << "   DEBUG M " << B_SubpK_M[pv]<< " < " << c_minMass << " > " << c_maxMass << std::endl ;
+    if (B_SubpK_M[pv]<c_minMass || B_SubpK_M[pv]>c_maxMass)  return false ;
+    if ( debug) std::cout << "  DEBUG M ERR " << B_SubpK_MERR[pv] << " < " << c_MMERR_cut << std::endl ;
     if (B_SubpK_MERR[pv]>c_MMERR_cut) return false ;
   } else {
+    if ( debug) std::cout <<  "  DEBUG Pion status " << B_FullFit_status[pv] << std::endl ;
     if (0!=B_FullFit_status[pv]) return false ;
+    if ( debug) std::cout << "  DEBUG chi2 " << B_FullFit_chi2[pv] << " < " <<  c_DTF_chi2 << std::endl ;
     if (B_FullFit_chi2[pv]>c_DTF_chi2) return false ;
-    if (B_FullFit_M[pv]<c_ppi_minMass || B_FullFit_M[pv]>c_ppi_maxMass)  return false ;
+    if ( debug) std::cout << "  DEBUG M " << B_FullFit_M[pv]<< " < " << c_minMass << " > " << c_maxMass << std::endl ;
+    if (B_FullFit_M[pv]<c_minMass || B_FullFit_M[pv]>c_maxMass)  return false ;
+    if ( debug) std::cout << "  DEBUG M ERR "<< B_FullFit_MERR[pv] << " < " << c_MMERR_cut << std::endl ;
     if (B_FullFit_MERR[pv]>c_MMERR_cut) return false ;
+  }
+  if ( debug) std::cout << "  DEBUG pass!" << std::endl ;
+  return true ;
+}
+// ####################################################################################################
+inline bool MC(){ return m_isMC;};
+// ####################################################################################################
+// trigger
+bool trigger(){
+  if (!(1==B_L0DiMuonDecision_TOS || 
+        1==B_L0MuonDecision_TOS 
+        //        1==B_L0MuonDecision_TIS || 
+        //        1==B_L0DiMuonDecision_TIS ||
+        //        1==B_L0HadronDecision_TIS)
+        )) return false ;
+  if (!(1==Psi_Hlt1TrackMuonDecision_TOS || 
+        1==Psi_Hlt1DiMuonHighMassDecision_TOS || 
+        1==B_Hlt1TrackAllL0Decision_TOS)) return false ;
+  if (!(1==Psi_Hlt2DiMuonDetachedJPsiDecision_TOS || 
+        1==Psi_Hlt2DiMuonJPsiDecision_TOS || 
+        1==Psi_Hlt2DiMuonJPsiHighPTDecision_TOS )) return false ;
+  return true ;
+}
+// ####################################################################################################
+bool optimisationSample(){
+  return (0==eventNumber%c_trainFrac);
+}
+bool trainingSample(){
+  return (!optimisationSample());
+}
+// ####################################################################################################
+// selections
+bool teaching(int traintype, bool debug){ 
+  // take care of teaching region
+  if (debug) std::cout << "DEBUG teaching()" << std::endl ;
+  if (!trigger()) return false ;               // trigger
+  if (debug) std::cout << "DEBUG passed trigger" << std::endl ;  
+  if (!PassesMassVetoesForTeaching(0)) return false ;
+  if (debug) std::cout << "DEBUG passed mass Vetoes" << std::endl ;  
+  if (TrainingType::Weighted==traintype) {
+    if (debug) std::cout << "DEBUG weighted training" << std::endl ;  
+    if (isPion()) return false ;  // data train on pK
+    if (debug) std::cout << "DEBUG is pK" << std::endl ;  
+    if (!trainingSample()) return false ; // use only half of the MC
+    if (debug) std::cout << "DEBUG trainingfraction passed. Returning " << tweightLb[0] << std::endl ;  
+    return (tweightLb[0]>ErrorCodes::Splitter) ;
+  } else { // MC
+    if (debug) std::cout << "DEBUG MC training" << std::endl ;  
+    if (isKaon()) return false ;// MC train on ppi
+    if (debug) std::cout << "DEBUG is ppi" << std::endl ;  
+    bool signal = (TrainingType::Signal==traintype) ;
+    if (signal && 0!=B_BKGCAT) return false ;    // keep only signal
+    if (!signal && 30==B_BKGCAT) return false ;  // remove signal and reflections
+    if (debug) std::cout << "DEBUG Good BKCAT " << std::endl ;  
+    if (signal && !(0==eventNumber%c_MCtrainFrac)) return false ; // use only half of the MC
+    if (debug) std::cout << "DEBUG trainingfraction passed. Returning true " << std::endl ;  
   }
   return true ;
 }
-inline bool MC(){ return m_isMC;};
-// trigger
-bool trigger(){
-  if (!(1==BL0DiMuonDecision_TOS || 
-        1==BL0MuonDecision_TOS || 
-        1==BL0MuonDecision_TIS || 
-        1==BL0DiMuonDecision_TIS ||
-        1==BL0HadronDecision_TIS)) return false ;
-  if (!(1==PsiHlt1TrackMuonDecision_TOS || 
-        1==PsiHlt1DiMuonHighMassDecision_TOS || 
-        1==BHlt1TrackAllL0Decision_TOS)) return false ;
-  if (!(1==PsiHlt2DiMuonDetachedJPsiDecision_TOS || 
-        1==PsiHlt2DiMuonJPsiDecision_TOS || 
-        1==PsiHlt2DiMuonJPsiHighPTDecision_TOS )) return false ;
-  return true ;
-}
-// selections
-bool teaching(bool signal){ // only pv 0 considered for teaching
-  // take care of teaching region
-  if (!trigger()) return false ;               // trigger
-  if (isKaon()) return false ;
-  if (!PassesMassVetoes(0)) return false ;
-  if (signal && 0!=B_BKGCAT) return false ;    // keep only signal
-  if (!signal && 30==B_BKGCAT) return false ;  // remove signal and reflections
-  if (signal && !(eventNumber%2==0)) return false ; // use only half of the MC
-  return true ;
-}
 
-inline bool isPion(){ // return (piminus_PIDK < 0); }; ///< meson is a pion    
+// ####################################################################################################
+inline bool isPion(){ ///< meson is a pion
   return (piminus_ProbNNpi>piminus_ProbNNk);
 }
 
+// ####################################################################################################
 inline bool isKaon(){return !isPion(); }; ///< meson is a kaon
 
-bool PassesMassVetoes(unsigned int pv){
-  if (AtLambdaMass()) return false ;	           // Lambda veto  
-  if (isPion() && AtLb2JpsipKMass(pv)) return false ; // pK veto  
-  //  if (AtLb2JpsiKpMass()) return false ;            // Kp veto
-  if (isPion() && AtBd2JpsiKpiMass(pv)) return false ;         // Kpi veto
+// ####################################################################################################
+bool PassesMassVetoesForTeaching(unsigned int pv){
+  if (AtLambdaMass()) return false ;	                       // Lambda veto  
+  // if (isKaon() && AtPhiMass()) return false ;	               // Phi veto not needed as Bs is vetoed
+  if (isKaon() && AtLb2JpsiKpMass()) return false ;            // Kp veto
   if (isKaon() && AtBd2JpsipiKMass()) return false ;           // piK veto
   if (isKaon() && AtBs2JpsiKKMass()) return false ;            // KK veto
+  if (isPion() && AtLb2JpsipKMass(pv)) return false ;          // pK veto  
+  if (isPion() && AtBd2JpsiKpiMass(pv)) return false ;         // Kpi veto
   return true ;
 }
-
-
+// ####################################################################################################
 inline bool AtLambdaMass(){ ///< passes Lambda mass ?
-  Double_t pipInvMass =  ppiMass();
-  return (pipInvMass >  c_LambdaMin && pipInvMass < c_LambdaMax ); 
+  Double_t m =  ppiMass();
+  return (m >  c_LambdaMin && m < c_LambdaMax ); 
 };
+// ####################################################################################################
+inline bool AtPhiMass(){ ///< passes Phi mass ?
+  Double_t m = KKMass();
+  return (m < c_PhiMax ); 
+};
+// ####################################################################################################
 inline bool AtLb2JpsipKMass(unsigned int pv){ ///< passes Lb-> PsiKpi mass veto ?
   return (B_SubpK_M[pv] > m_Lb-m_W && B_SubpK_M[pv] < m_Lb+m_W ); 
 };
+// ####################################################################################################
 inline bool AtBd2JpsiKpiMass(unsigned int pv){ ///< passes Bd mass ?
   return (B_SubKpi_M[pv] > m_Bd-m_W && B_SubKpi_M[pv] < m_Bd+m_W ) ;
 };
-
+// ####################################################################################################
+inline double JpsipiKMass(){ ///< passes Bd mass ?
+  return swapMass(m_pi,m_K); // p->pi, pi->K
+};
+// ####################################################################################################
 inline bool AtBd2JpsipiKMass(){ ///< passes Bd mass ?
-  double m = swapMass(m_pi,m_K)-m_Bd; // p->pi, pi->K
+  double m = JpsipiKMass()-m_Bd;
   return (m > -m_W && m < m_W ) ;  
 };
-inline double AtBs2JpsiKKMass(){
-  double m = swapMass(m_K,m_K)-m_Bs; // p->K, pi->K
+// ####################################################################################################
+inline double JpsiKKMass(){
+  return swapMass(m_K,m_K); // p->K, pi->K
+}
+// ####################################################################################################
+inline bool AtBs2JpsiKKMass(){
+  double m = JpsiKKMass()-m_Bs;
   return (m > -m_W && m < m_W ) ;  
 }
-inline double AtLb2JpsiKpMass(){
-  double m = swapMass(m_K,m_p)-m_Lb; // p->K, pi->p
+// ####################################################################################################
+inline double JpsiKpMass(){
+  return swapMass(m_K,m_p); // p->K, pi->p
+}
+// ####################################################################################################
+inline bool AtLb2JpsiKpMass(){
+  double m = JpsiKpMass()-m_Lb ;
   return (m > -m_W && m < m_W ) ;  
 }
+// ####################################################################################################
 double swapMass(double pM, double mM){
   double e =(Psi_PE
              +sqrt(pplus_PE*pplus_PE-m_p*m_p+pM*pM)          // p->pM
@@ -314,5 +464,32 @@ double swapMass(double pM, double mM){
                   -(Psi_PZ+pplus_PZ+piminus_PZ)*(Psi_PZ+pplus_PZ+piminus_PZ));
   return m ;
 }
-
-
+// ####################################################################################################
+Int_t getCategory(){
+  if ( this->isKaon() ) { // normalisation channel
+    return  CatCodes::pKCand ;
+  } else { // pion
+    return CatCodes::SignalCand ;
+  } 
+}
+// ####################################################################################################
+Int_t getReflectionCode(unsigned int pv){
+  if ( this->AtLambdaMass()){
+    return  ErrorCodes::Lambda ;
+  } else if ( this->AtPhiMass() ){
+    return  ErrorCodes::Phi ;
+  } else return ErrorCodes::OK ;
+}
+// ####################################################################################################
+Int_t backgroundCategory(){
+  if (!MC()) return -1;
+  Int_t bkgCat = B_BKGCAT ;
+  if (30==bkgCat && abs(muplus_TRUEID)==c_muID && abs(muminus_TRUEID)==c_muID){ // reflections
+     if (abs(pplus_TRUEID)==c_pID && abs(piminus_TRUEID)==c_KID) bkgCat = c_psipK_BKGCAT ; // Lb->psipK
+     else if (abs(pplus_TRUEID)==c_piID && abs(piminus_TRUEID)==c_KID) bkgCat = c_piK_BKGCAT ; // Bdbar->psipiK
+     else if (abs(pplus_TRUEID)==c_KID && abs(piminus_TRUEID)==c_piID) bkgCat = c_Kpi_BKGCAT ; // Bd->psiKpi
+     else if (abs(pplus_TRUEID)==c_KID && abs(piminus_TRUEID)==c_pID) bkgCat = c_Kp_BKGCAT ; // Lbbar->psiKp
+     else if (abs(pplus_TRUEID)==c_KID && abs(piminus_TRUEID)==c_KID) bkgCat = c_KK_BKGCAT ; // Bs->psiKK
+  }
+  return bkgCat ;
+}

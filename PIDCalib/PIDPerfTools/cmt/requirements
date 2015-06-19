@@ -1,9 +1,9 @@
 #============================================================================
 # Created    : 2010-10-06
-# Maintainer : Andrew Powell (LHCb)04
+# Maintainer : Philip Hunt
 #============================================================================
 package           PIDPerfTools
-version           v5r2
+version           v5r4
 
 #============================================================================
 # Structure, i.e. directories to process. 

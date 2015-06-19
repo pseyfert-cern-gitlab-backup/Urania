@@ -19,7 +19,7 @@ P1OSErr     =  0.02
 DelP1OSVal  =  0.000
 DelP1OSErr  =  0.001
 
-P0SSVal     =  0.35
+P0SSVal     =  0.44 #0.35
 P0SSErr     =  0.02
 DelP0SSVal  = -0.02
 DelP0SSErr  =  0.01
@@ -48,11 +48,19 @@ RooInf = RooNumber.infinity()
 ## Tagging tools ##
 ###################
 
-def getTagCatParamsFromData( data, estWTagName, tagCats = [ ], numSigmas = 1., avgEstWTag = avgEtaOSVal
-                            , P0 = P0OSConstrVal, P1 = P1OSConstrVal, P0Err = P0OSConstrErr, P1Err = P1OSConstrErr
-                            , AP0 = DelP0OSConstrVal / 2. / P0OSConstrVal, AP1 = DelP1OSConstrVal / 2. / P1OSConstrVal ) :
+def getTagCatParamsFromData( data, estWTagName, tagCats = [ ], numSigmas = 1., SameSide = False, WeightVarName = ''
+                            , avgEstWTag = None, P0 = None, P1 = None, P0Err = None, P1Err = None, AP0 = None, AP1 = None ) :
     assert data, 'getTagCatParamsFromData(): no data set found'
-    assert estWTagName and data.get(0).find(estWTagName), 'getTagCatParamsFromData(): estimated wrong-tag probability not found in data'
+    assert estWTagName and data.get().find(estWTagName), 'getTagCatParamsFromData(): estimated wrong-tag probability not found in data'
+    if WeightVarName : assert data.get().find(WeightVarName), 'getTagCatParamsFromData(): weight variable not found in data'
+
+    if avgEstWTag == None : avgEstWTag = avgEtaOSVal                         if not SameSide else avgEtaSSVal
+    if P0         == None : P0         = P0OSConstrVal                       if not SameSide else P0SSConstrVal
+    if P1         == None : P1         = P1OSConstrVal                       if not SameSide else P1SSConstrVal
+    if P0Err      == None : P0Err      = P0OSConstrErr                       if not SameSide else P0SSConstrErr
+    if P1Err      == None : P1Err      = P1OSConstrErr                       if not SameSide else P1SSConstrErr
+    if AP0        == None : AP0        = (DelP0OSConstrVal/2./P0OSConstrVal) if not SameSide else (DelP0SSConstrVal/2./P0SSConstrVal)
+    if AP1        == None : AP1        = (DelP1OSConstrVal/2./P1OSConstrVal) if not SameSide else (DelP1SSConstrVal/2./P1SSConstrVal)
 
     from P2VV.RooFitWrappers import RooObject
     if isinstance( avgEstWTag, RooObject ) : avgEstWTag = avgEstWTag.getVal()
@@ -63,15 +71,14 @@ def getTagCatParamsFromData( data, estWTagName, tagCats = [ ], numSigmas = 1., a
 
     tagCatsCalc = tagCats[ : ]
 
-    etaMin = 0.
+    etaMin = 0.5
     if not tagCatsCalc :
         # get minimum estimated wrong-tag probability
-        etaMin = 0.5
         for varSet in data : etaMin = min( etaMin, varSet.getRealValue(estWTagName) )
 
         # determine binning in estimated wrong-tag probability from data
         bin = 0
-        binUpperEdges = [ 0.499999 ]
+        binUpperEdges = [ 0.4999999 ]
         while True :
             bin += 1
 
@@ -91,19 +98,19 @@ def getTagCatParamsFromData( data, estWTagName, tagCats = [ ], numSigmas = 1., a
         # scale bin widths to match range of estimated wrong-tag probability
         if binUpperEdges[-2] - etaMin < etaMin - binUpperEdges[-1] : del binUpperEdges[-1]
         binScale = ( binUpperEdges[0] - etaMin ) / ( binUpperEdges[0] - binUpperEdges[-1] )
-        tagCatsCalc = [ ( 'Untagged', 0, 0.500001 ) ]
+        tagCatsCalc = [ ( 'Untagged', 0, 0.5000001 ) ]
         for bin in range( 1, len(binUpperEdges) ) :
             binUpperEdges[bin] = binUpperEdges[0] - ( binUpperEdges[0] - binUpperEdges[bin] ) * binScale
             tagCatsCalc.append( ( 'TagCat%d' % bin, bin, binUpperEdges[ bin - 1 ] ) )
 
     # determine tagging category parameters
     numTagCats = len(tagCatsCalc)
-    numEvTot   = data.sumEntries()
     numEvCats  = [0]  * numTagCats
     sumEtaCats = [0.] * numTagCats
     for varSet in data :
         # get estimated wrong-tag probability for this event
         eta = varSet.getRealValue(estWTagName)
+        if eta < etaMin : etaMin = eta
 
         # determine tagging category
         cat = -1
@@ -114,18 +121,17 @@ def getTagCatParamsFromData( data, estWTagName, tagCats = [ ], numSigmas = 1., a
         if cat < 0 : raise RuntimeError('getTagCatParamsFromData(): estimated wrong-tag probability out of range')
 
         # update number of events and sum of estimated wrong-tag probabilities
-        numEvCats[cat]  += data.weight()
-        sumEtaCats[cat] += eta * data.weight()
+        weight = varSet.getRealValue(WeightVarName) if WeightVarName else data.weight()
+        numEvCats[cat]  += weight
+        sumEtaCats[cat] += eta * weight
 
-    # check number of events
-    numEvTotCount = 0.
-    for numEv in numEvCats : numEvTotCount += numEv
-    assert abs( numEvTotCount - numEvTot ) < 1.e-10 * abs( numEvTotCount + numEvTot ),\
-           'getTagCatParamsFromData(): counted number of events is not equal to number of events in data set'
+    # get total number of events
+    numEvTot = sum(numEvCats)
+    etaMean  = sum(sumEtaCats) / ( numEvTot if numEvTot else 1. )
 
     # update tagging category parameters
     for cat in range(numTagCats) :
-        avgEtaCat = sumEtaCats[cat] / numEvCats[cat]
+        avgEtaCat = ( sumEtaCats[cat] / numEvCats[cat] ) if numEvCats[cat] != 0. else 0.
         tagCatsCalc[cat] = tagCatsCalc[cat][ : 3 ]\
                            + (  avgEtaCat
                               , P0 + P1 * ( avgEtaCat - avgEstWTag ), 0.
@@ -137,7 +143,7 @@ def getTagCatParamsFromData( data, estWTagName, tagCats = [ ], numSigmas = 1., a
     print 'P2VV - INFO: getTagCatParamsFromData(): tagging category binning:'
     print '    <eta> = %.3f   P0 = %.3f +- %.3f   P1 = %.3f +- %.3f    P0 asym. = %.3f    P1 asym. = %.3f'\
           % ( avgEstWTag, P0, P0Err, P1, P1Err, AP0, AP1 )
-    print '    minimum eta = %.3f    average eta = %.3f' % ( etaMin, data.mean( data.get(0).find(estWTagName) ) )
+    print '    minimum eta = %.3f    average eta = %.3f' % ( etaMin, etaMean )
     for bin, cat in enumerate(tagCatsCalc) :
         deltaEta = ( ( cat[2] - tagCatsCalc[bin + 1][2] ) / 2. ) if bin < len(tagCatsCalc) - 1 else ( ( cat[2] - etaMin ) / 2. )
         if cat[2] >= avgEstWTag : binRangeSig = P1 * deltaEta / ( P0Err + P1Err * ( cat[2] - avgEstWTag - deltaEta ) )
@@ -214,11 +220,10 @@ class TaggingParams ( _util_parse_mixin, _util_extConstraints_mixin, _util_condi
 
 class Trivial_TaggingParams( TaggingParams ) :
     def __init__( self ) :
-        from P2VV.RooFitWrappers import ConstVar
         from P2VV.Parameterizations.BBbarAsymmetries import Trivial_CEvenOdd
         TaggingParams.__init__( self
-                              , Dilutions = [ ConstVar( Name = 'one',  Value = 1 ) ]
-                              , ADilWTags = [ ConstVar( Name = 'zero', Value = 0 ) ]
+                              , Dilutions = [ self._parseArg( 'one',  { }, Value = 1, ObjectType = 'ConstVar' ) ]
+                              , ADilWTags = [ self._parseArg( 'zero', { }, Value = 0, ObjectType = 'ConstVar' ) ]
                               , CEvenOdds = [ Trivial_CEvenOdd() ]
                               )
 
@@ -227,12 +232,11 @@ class WTag_TaggingParams( TaggingParams ) :
         self._parseArg( 'wTag', kwargs, Title = 'B wrong-tag probability', Value = 0.25, MinMax = ( 0., 0.5 ) )
 
         self._check_extraneous_kw( kwargs )
-        from P2VV.RooFitWrappers import FormulaVar, ConstVar
         from P2VV.Parameterizations.BBbarAsymmetries import Trivial_CEvenOdd
         TaggingParams.__init__( self
-                              , Dilutions = [ FormulaVar(  'tagDilution', '1. - 2*@0 '
-                                                         , [ self._wTag ], Title = 'Tagging dilution' ) ]
-                              , ADilWTags = [ ConstVar( Name = 'zero',Value = 0) ]
+                              , Dilutions = [ self._parseArg( 'tagDilution', kwargs, Formula = '1. - 2*@0 ', Arguments = [ self._wTag ]
+                                             , ObjectType = 'FormulaVar', Title = 'Tagging dilution' ) ]
+                              , ADilWTags = [ self._parseArg( 'zero', kwargs, Value = 0, ObjectType = 'ConstVar' ) ]
                               , CEvenOdds = [ Trivial_CEvenOdd() ]
                               )
 
@@ -244,7 +248,7 @@ class LinearEstWTag_TaggingParams( TaggingParams ) :
         self._parseArg( 'p0', kwargs, Title = 'p0  tagging parameter', Value = P0OSVal, Error = P0OSErr, MinMax = ( 0.,  1. ) )
         self._parseArg( 'p1', kwargs, Title = 'p1  tagging parameter', Value = P1OSVal, Error = P1OSErr, MinMax = ( 0.5, 2. ) )
 
-        constraints = [ ]
+        constraints = set()
         p0Constr = kwargs.pop( 'p0Constraint', None )
         if type(p0Constr) == str and p0Constr == 'fixed' :
             self._p0.setConstant(True)
@@ -252,12 +256,12 @@ class LinearEstWTag_TaggingParams( TaggingParams ) :
             self._p0.setError(P0OSConstrErr)
 
         elif p0Constr :
-            from P2VV.RooFitWrappers import Pdf, ConstVar
+            from P2VV.RooFitWrappers import Pdf
             from ROOT import RooGaussian as Gaussian
-            constraints.append( Pdf(  Name = self._p0.GetName() + '_constraint', Type = Gaussian
+            constraints.add( Pdf(  Name = self._p0.GetName() + '_constraint', Type = Gaussian
                                     , Parameters = [  self._p0
-                                                    , ConstVar( Name = 'p0_mean',  Value = P0OSConstrVal )
-                                                    , ConstVar( Name = 'p0_sigma', Value = P0OSConstrErr )
+                                                    , self._parseArg( 'p0_mean',  kwargs, Value = P0OSConstrVal, ObjectType = 'ConstVar' )
+                                                    , self._parseArg( 'p0_sigma', kwargs, Value = P0OSConstrErr, ObjectType = 'ConstVar' )
                                                    ]
                                    )
                               )
@@ -269,28 +273,27 @@ class LinearEstWTag_TaggingParams( TaggingParams ) :
             self._p1.setError(P1OSConstrErr)
 
         elif p1Constr :
-            from P2VV.RooFitWrappers import Pdf, ConstVar
+            from P2VV.RooFitWrappers import Pdf
             from ROOT import RooGaussian as Gaussian
-            constraints.append( Pdf(  Name = self._p1.GetName() + '_constraint', Type = Gaussian
+            constraints.add( Pdf(  Name = self._p1.GetName() + '_constraint', Type = Gaussian
                                     , Parameters = [  self._p1
-                                                    , ConstVar( Name = 'p1_mean',  Value = P1OSConstrVal )
-                                                    , ConstVar( Name = 'p1_sigma', Value = P1OSConstrErr )
+                                                    , self._parseArg( 'p1_mean',  kwargs, Value = P1OSConstrVal, ObjectType = 'ConstVar' )
+                                                    , self._parseArg( 'p1_sigma', kwargs, Value = P1OSConstrErr, ObjectType = 'ConstVar' )
                                                    ]
                                    )
                               )
 
         self._check_extraneous_kw( kwargs )
-        from P2VV.RooFitWrappers import CalibratedDilution, ConstVar
         from P2VV.Parameterizations.BBbarAsymmetries import Trivial_CEvenOdd
         TaggingParams.__init__(  self
-                                , Dilutions    = [ CalibratedDilution(  Name       = 'tagDilution'
-                                                                      , EstWTag    = self._estWTag
-                                                                      , AvgEstWTag = self._avgEstWTag
-                                                                      , P0         = self._p0
-                                                                      , P1         = self._p1
-                                                                     )
+                                , Dilutions    = [ self._parseArg( 'tagDilution', kwargs, 'CalibratedDilution'
+                                                                  , EstWTag    = self._estWTag
+                                                                  , AvgEstWTag = self._avgEstWTag
+                                                                  , P0         = self._p0
+                                                                  , P1         = self._p1
+                                                                 )
                                                  ]
-                                , ADilWTags    = [ ConstVar( Name = 'zero', Value = 0) ]
+                                , ADilWTags    = [ self._parseArg( 'zero', kwargs, Value = 0, ObjectType = 'ConstVar' ) ]
                                 , CEvenOdds    = [ Trivial_CEvenOdd() ]
                                 , Conditionals = [ self._estWTag ]
                                 , Constraints  = constraints
@@ -302,10 +305,9 @@ class Dilution_TaggingParams( TaggingParams ) :
 
         self._check_extraneous_kw( kwargs )
         from P2VV.Parameterizations.BBbarAsymmetries import Trivial_CEvenOdd
-        from P2VV.RooFitWrappers import ConstVar
         TaggingParams.__init__( self
                               , Dilutions = [ self._dilution ]
-                              , ADilWTags = [ ConstVar( Name = 'zero',Value = 0) ]
+                              , ADilWTags = [ self._parseArg( 'zero', kwargs, Value = 0, ObjectType = 'ConstVar' ) ]
                               , CEvenOdds = [ Trivial_CEvenOdd() ]
                               )
 
@@ -358,25 +360,27 @@ class WTagsCoefAsyms_TaggingParams( TaggingParams ) :
             from P2VV.Parameterizations.BBbarAsymmetries import Coefficients_CEvenOdd
             CEvenOdd = Coefficients_CEvenOdd( avgCEven = avgCEven, avgCOdd = avgCOdd )
 
-        # check for remaining arguments and initialize
-        self._check_extraneous_kw( kwargs )
-        from P2VV.RooFitWrappers import FormulaVar
+        # initialize and check for remaining arguments
         if hasattr( self, 'wTag' ) and hasattr( self, 'wTagBar' ) :
             TaggingParams.__init__( self
-                                   , Dilutions = [ FormulaVar(  'tagDilution', '1. - @0 - @1'
-                                                   , [ self._wTag, self._wTagBar ], Title = 'Tagging dilution' ) ]
-                                   , ADilWTags = [ FormulaVar(  'ADilWTag',    '(@0 - @1) / (1. - @0 - @1)'
-                                                   , [ self._wTag, self._wTagBar ], Title = 'Dilution/wrong-tag asymmetry' ) ]
+                                   , Dilutions = [ self._parseArg( 'tagDilution', kwargs, Title = 'Tagging dilution'
+                                                                  , Coefficients = [ self._wTag, self._wTagBar ]
+                                                                  , ObjectType = 'ComplementCoef' ) ]
+                                   , ADilWTags = [ self._parseArg( 'ADilWTag', kwargs, Formula = '(@0 - @1) / (1. - @0 - @1)'
+                                                                  , Arguments = [ self._wTag, self._wTagBar ], ObjectType = 'FormulaVar'
+                                                                  , Title = 'Dilution/wrong-tag asymmetry' ) ]
                                    , CEvenOdds = [ CEvenOdd ]
                                   )
         else :
             TaggingParams.__init__( self
-                                   , Dilutions = [ FormulaVar(  'tagDilution', '1. - 2. * @0'
-                                                   , [ self._WTag ],              Title = 'Tagging dilution' ) ]
-                                   , ADilWTags = [ FormulaVar(  'ADilWTag',    '2. * @0 * @1 / (1. - 2. * @0)'
-                                                   , [ self._WTag, self._AWTag ], Title = 'Dilution/wrong-tag asymmetry' ) ]
+                                   , Dilutions = [ self._parseArg( 'tagDilution', kwargs, Formula = '1. - 2. * @0'
+                                                   , Arguments = [ self._WTag ], ObjectType = 'FormulaVar', Title = 'Tagging dilution' ) ]
+                                   , ADilWTags = [ self._parseArg( 'ADilWTag', kwargs, Formula = '2. * @0 * @1 / (1. - 2. * @0)'
+                                                                  , Arguments = [ self._WTag, self._AWTag ], ObjectType = 'FormulaVar'
+                                                                  , Title = 'Dilution/wrong-tag asymmetry' ) ]
                                    , CEvenOdds = [ CEvenOdd ]
                                   )
+        self._check_extraneous_kw( kwargs )
 
 
 class CatDilutionsCoefAsyms_TaggingParams( TaggingParams ) :
@@ -408,17 +412,15 @@ class CatDilutionsCoefAsyms_TaggingParams( TaggingParams ) :
             if 'tagDilution0_0' in kwargs and 'ADilWTag0_0' in kwargs :
                 startTagCat0 = 0
             else :
-                from P2VV.RooFitWrappers import ConstVar
-                dilutions[0].append( ConstVar( Name = 'tagDilution0_0', Value = 0. ) )
-                ADilWTags[0].append( ConstVar( Name = 'ADilWTag0_0',    Value = 0. ) )
+                dilutions[0].append( self._parseArg( 'tagDilution0_0', kwargs, Value = 0., ObjectType = 'ConstVar' ) )
+                ADilWTags[0].append( self._parseArg( 'ADilWTag0_0',    kwargs, Value = 0., ObjectType = 'ConstVar' ) )
 
         startTagCat1 = 1
         if 'tagDilution%s0' % namePF in kwargs and 'ADilWTag%s0' % namePF in kwargs :
             startTagCat1 = 0
         else :
-            from P2VV.RooFitWrappers import ConstVar
-            dilutions[1].append( ConstVar( Name = 'tagDilution%s0' % namePF, Value = 0. ) )
-            ADilWTags[1].append( ConstVar( Name = 'ADilWTag%s0'    % namePF, Value = 0. ) )
+            dilutions[1].append( self._parseArg( 'tagDilution%s0' % namePF, kwargs, Value = 0., ObjectType = 'ConstVar' ) )
+            ADilWTags[1].append( self._parseArg( 'ADilWTag%s0'    % namePF, kwargs, Value = 0., ObjectType = 'ConstVar' ) )
 
         # get average even and average odd coefficients of category 0
         if 'CEvenOddSum' in kwargs :
@@ -461,7 +463,6 @@ class CatDilutionsCoefAsyms_TaggingParams( TaggingParams ) :
         CEvenOdds[0].append(CEvenOddSum)
 
         # get tagging category coefficients and asymmetries (assume factorization)
-        from P2VV.RooFitWrappers import ConstVar, FormulaVar, Product
         if numTagCats[0] > 1 :
             for index0 in range( 1, numTagCats[0] ) :
                 self._parseArg(  'tagCatCoef0_%d' % index0, kwargs, ContainerList = self._singleTagCatCoefs[0]
@@ -475,11 +476,9 @@ class CatDilutionsCoefAsyms_TaggingParams( TaggingParams ) :
                     if isinstance( ATagEffVal, RooObject ) : ATagEffVal = ATagEffVal.getVal()
                     self._ATagEffVals[0].append( ATagEffVal )
 
-            self._singleTagCatCoefs[0].insert( 0, FormulaVar(  'tagCatCoef0_0'
-                                                             , '1-@' + '-@'.join( str(i) for i in range( numTagCats[0] - 1 ) )
-                                                             , self._singleTagCatCoefs[0]
-                                                            )
-                                             )
+            self._singleTagCatCoefs[0].insert( 0, self._parseArg( 'tagCatCoef0_0', kwargs, Title = 'Tagging category coefficient 0 0'
+                                                                 , Coefficients = self._singleTagCatCoefs[0]
+                                                                 , ObjectType = 'ComplementCoef' ) )
 
             if hasattr( self, '_AProdVal' ) and hasattr( self, '_ANormVal' ) :
                 tagCatProd0 = 0.
@@ -504,10 +503,10 @@ class CatDilutionsCoefAsyms_TaggingParams( TaggingParams ) :
                     self._ATagEffVals[1].append( ATagEffVal )
 
             if numTagCats[0] > 0 :
-                self._singleTagCatCoefs[1].insert( 0, FormulaVar(  'tagCatCoef%s0' % namePF
-                                                                 , '1-@' + '-@'.join( str(i) for i in range( numTagCats[1] - 1 ) )
-                                                                 , self._singleTagCatCoefs[1]
-                                                                )
+                self._singleTagCatCoefs[1].insert( 0, self._parseArg( 'tagCatCoef%s0' % namePF, kwargs, ObjectType = 'ComplementCoef'
+                                                                     , Title = 'Tagging category coefficient 1 0'
+                                                                     , Coefficients = self._singleTagCatCoefs[1]
+                                                                    )
                                                  )
 
                 if hasattr( self, '_AProdVal' ) and hasattr( self, '_ANormVal' ) :
@@ -522,7 +521,7 @@ class CatDilutionsCoefAsyms_TaggingParams( TaggingParams ) :
 
         else :
             self._ATagEffVals[1].append(0)
-            self._singleTagCatCoefs[1][0] = ConstVar( Name = 'tagCatCoef%s0' % namePF, Value = 1. )
+            self._singleTagCatCoefs[1][0] = self._parseArg( 'tagCatCoef%s0' % namePF, kwargs, Value = 1., ObjectType = 'ConstVar' )
 
         # loop over tagging categories
         for index0 in range( numTagCats[0] if numTagCats[0] > 0 else 1 ) :
@@ -558,9 +557,10 @@ class CatDilutionsCoefAsyms_TaggingParams( TaggingParams ) :
                         # build tagging category coefficient
                         if self._singleTagCatCoefs[0] :
                             if self._singleTagCatCoefs[1] :
-                                tagCatCoef = Product(  'tagCatCoef%d-%d' % ( index0, index1 )
-                                                     , [ self._singleTagCatCoefs[0][index0], self._singleTagCatCoefs[1][index1] ]
-                                                    )
+                                tagCatCoef = self._parseArg( 'tagCatCoef%d-%d' % ( index0, index1 ), kwargs, ObjectType = 'Product'
+                                                            , Arguments = [ self._singleTagCatCoefs[0][index0]
+                                                                           , self._singleTagCatCoefs[1][index1] ]
+                                                           )
                             else :
                                 tagCatCoef = self._singleTagCatCoefs[0][index0]
                         else :
@@ -614,7 +614,7 @@ class CatDilutionsCoefAsyms_TaggingParams( TaggingParams ) :
         conditionals = kwargs.pop( 'Conditionals', [] )
 
         # get external constraints
-        constraints = kwargs.pop( 'Constraints', [] )
+        constraints = kwargs.pop( 'Constraints', set() )
 
         # check for remaining keyword arguments and initialize
         self._check_extraneous_kw( kwargs )
@@ -641,16 +641,26 @@ class TaggingCategories( _util_parse_mixin, _util_extConstraints_mixin, _util_co
                            , Title = 'Tagging Category 0', Observable = True
                            , States = [ 'Untagged' ] + [ 'TagCat%d' % cat for cat in range( 1, self._numTagCats[0] ) ]
                           )
+            assert self._tagCat0.numTypes() == self._numTagCats[0]\
+                   , 'TaggingCategories: tagging category "%s" has %d states, while %d were expected'\
+                     % ( self._tagCat0.GetName(), self._tagCat0.numTypes(), self._numTagCats[0] )
+
             self._parseArg(  'tagCat1', kwargs, ObjectType = 'Category', SingleArgKey = 'Name'
                            , Title = 'Tagging Category 1', Observable = True
                            , States = [ 'Untagged' ] + [ 'TagCat%d' % cat for cat in range( 1, self._numTagCats[1] ) ]
                           )
+            assert self._tagCat1.numTypes() == self._numTagCats[1]\
+                   , 'TaggingCategories: tagging category "%s" has %d states, while %d were expected'\
+                     % ( self._tagCat1.GetName(), self._tagCat1.numTypes(), self._numTagCats[1] )
 
         else :
             self._parseArg(  'tagCat', kwargs, ObjectType = 'Category', SingleArgKey = 'Name'
                            , Title = 'Tagging Category', Observable = True
                            , States = [ 'Untagged' ] + [ 'TagCat%d' % cat for cat in range( 1, self._numTagCats ) ]
                           )
+            assert self._tagCat.numTypes() == self._numTagCats\
+                   , 'TaggingCategories: tagging category "%s" has %d states, while %d were expected'\
+                     % ( self._tagCat.GetName(), self._tagCat.numTypes(), self._numTagCats )
 
         self._tagCatCoefs  = kwargs.pop( 'TagCatCoefs'  )
         self._ATagEffs     = kwargs.pop( 'ATagEffs'     )
@@ -691,8 +701,8 @@ class TaggingCategories( _util_parse_mixin, _util_extConstraints_mixin, _util_co
 
         return dict(  [ ( 'NumTagCats', self._numTagCats ) ]
                     + dictList
-                    + [ ( 'Conditionals', self.conditionalObservables() ) ]
-                    + [ ( 'Constraints',  self.externalConstraints()    ) ]
+                    + [ ( 'Conditionals', self.ConditionalObservables() ) ]
+                    + [ ( 'Constraints',  self.ExternalConstraints()    ) ]
                    )
 
 
@@ -754,9 +764,14 @@ class Linear_TaggingCategories( TaggingCategories ) :
         tagCat = kwargs.pop( 'tagCat', 'tagCat' + tagType )
 
         # estimated wrong-tag variable
-        if 'estWTag' in kwargs :
+        if 'estWTag' in kwargs and kwargs['estWTag'] :
             self._parseArg( 'estWTag', kwargs, Name = 'estWTag' + tagType, Title = 'Estimated wrong-tag probability'
                            , Value = 0.25, MinMax = ( 0., 0.5 ) )
+        else :
+            self._estWTag = kwargs.pop( 'estWTag', None )
+
+        # get name of estimated wrong-tag probability variable
+        self._etaName = kwargs.pop( 'estWTagName', self._estWTag.GetName() if self._estWTag else '' )
 
         # set values for calibration parameters
         self._calVals = {    'avgEta'   : avgEtaOSVal      if tagType == 'OS' else avgEtaSSVal
@@ -799,12 +814,13 @@ class Linear_TaggingCategories( TaggingCategories ) :
                        , MinMax = ( -0.5, 0.5 )
                       )
 
-        from P2VV.RooFitWrappers import FormulaVar
-        self._wTagAP0 = FormulaVar( 'wTagAP0' + tagType, '@0/2./@1', [ self._wTagDelP0, self._wTagP0 ] )
-        self._wTagAP1 = FormulaVar( 'wTagAP1' + tagType, '@0/2./@1', [ self._wTagDelP1, self._wTagP1 ] )
+        self._wTagAP0 = self._parseArg( 'wTagAP0' + tagType, kwargs, Formula = '@0/2./@1', Arguments = [ self._wTagDelP0, self._wTagP0 ]
+                                       , ObjectType = 'FormulaVar' )
+        self._wTagAP1 = self._parseArg( 'wTagAP1' + tagType, kwargs, Formula = '@0/2./@1', Arguments = [ self._wTagDelP1, self._wTagP1 ]
+                                       , ObjectType = 'FormulaVar' )
 
         # constrain calibration parameters
-        constraints = [ ]
+        constraints = set()
         wTagP0Constraint = kwargs.pop( 'wTagP0Constraint', None )
         if type(wTagP0Constraint) == str and wTagP0Constraint == 'fixed' :
             self._wTagP0.setConstant(True)
@@ -815,19 +831,23 @@ class Linear_TaggingCategories( TaggingCategories ) :
             self._wTagDelP0.setError(self._calVals['DelP0Err'])
 
         elif wTagP0Constraint :
-            from P2VV.RooFitWrappers import Pdf, ConstVar
+            from P2VV.RooFitWrappers import Pdf
             from ROOT import RooGaussian as Gaussian
-            constraints.append( Pdf(  Name = self._wTagP0.GetName() + '_constraint', Type = Gaussian
+            constraints.add( Pdf(  Name = self._wTagP0.GetName() + '_constraint', Type = Gaussian
                                     , Parameters = [  self._wTagP0
-                                                    , ConstVar( Name = 'wTagP0' + tagType + '_mean',  Value = self._calVals['P0']    )
-                                                    , ConstVar( Name = 'wTagP0' + tagType + '_sigma', Value = self._calVals['P0Err'] )
+                                                    , self._parseArg( 'wTagP0' + tagType + '_mean', kwargs
+                                                                      , Value = self._calVals['P0'], ObjectType = 'ConstVar' )
+                                                    , self._parseArg( 'wTagP0' + tagType + '_sigma', kwargs
+                                                                      , Value = self._calVals['P0Err'], ObjectType = 'ConstVar' )
                                                    ]
                                    )
                               )
-            constraints.append( Pdf(  Name = self._wTagDelP0.GetName() + '_constraint', Type = Gaussian
+            constraints.add( Pdf(  Name = self._wTagDelP0.GetName() + '_constraint', Type = Gaussian
                                     , Parameters = [  self._wTagDelP0
-                                                   , ConstVar( Name = 'wTagDelP0' + tagType + '_mean',  Value = self._calVals['DelP0']    )
-                                                   , ConstVar( Name = 'wTagDelP0' + tagType + '_sigma', Value = self._calVals['DelP0Err'] )
+                                                    , self._parseArg( 'wTagDelP0' + tagType + '_mean', kwargs
+                                                                      , Value = self._calVals['DelP0'], ObjectType = 'ConstVar' )
+                                                    , self._parseArg( 'wTagDelP0' + tagType + '_sigma', kwargs
+                                                                      , Value = self._calVals['DelP0Err'], ObjectType = 'ConstVar' )
                                                    ]
                                    )
                               )
@@ -839,90 +859,75 @@ class Linear_TaggingCategories( TaggingCategories ) :
             self._wTagP1.setError(self._calVals['P1Err'])
 
         elif wTagP1Constraint :
-            from P2VV.RooFitWrappers import Pdf, ConstVar
+            from P2VV.RooFitWrappers import Pdf
             from ROOT import RooGaussian as Gaussian
-            constraints.append( Pdf(  Name = self._wTagP1.GetName() + '_constraint', Type = Gaussian
+            constraints.add( Pdf(  Name = self._wTagP1.GetName() + '_constraint', Type = Gaussian
                                     , Parameters = [  self._wTagP1
-                                                    , ConstVar( Name = 'wTagP1' + tagType + '_mean',  Value = self._calVals['P1']    )
-                                                    , ConstVar( Name = 'wTagP1' + tagType + '_sigma', Value = self._calVals['P1Err'] )
+                                                    , self._parseArg( 'wTagP1' + tagType + '_mean', kwargs
+                                                                     , Value = self._calVals['P1'], ObjectType = 'ConstVar' )
+                                                    , self._parseArg( 'wTagP1' + tagType + '_sigma', kwargs
+                                                                     , Value = self._calVals['P1Err'], ObjectType = 'ConstVar' )
+                                                   ]
+                                   )
+                              )
+            constraints.add( Pdf(  Name = self._wTagDelP1.GetName() + '_constraint', Type = Gaussian
+                                    , Parameters = [  self._wTagDelP1
+                                                   , self._parseArg( 'wTagDelP1' + tagType + '_mean', kwargs
+                                                                    , Value = self._calVals['DelP1'], ObjectType = 'ConstVar' )
+                                                   , self._parseArg( 'wTagDelP1' + tagType + '_sigma', kwargs
+                                                                    , Value = self._calVals['DelP1Err'], ObjectType = 'ConstVar' )
                                                    ]
                                    )
                               )
 
-        # get data set
-        self._data = kwargs.pop( 'DataSet', None )
-        self._etaName = kwargs.pop( 'estWTagName', self._estWTag.GetName() if hasattr( self, '_estWTag' ) else '' )
-        if not self._etaName : self._data = None
-
         # get tagging category binning in estimated wrong-tag probability (eta)
-        tagCats = kwargs.pop( 'TagCats', None )
-        if tagCats == None :
-            tagCats = [  ( 'Untagged', 0, 0.500001, 0.50, 0.50, 0., 0.65,  0. )
-                       , ( 'Tagged',   1, 0.499999, 0.40, 0.40, 0., 0.35,  0. )
-                      ] if hasattr( self, '_estWTag' ) else \
-                      [  ( 'Untagged', 0, 0.500001, 0.50, 0.50, 0., 0.65,  0. )
-                       , ( 'TagCat1',  1, 0.499999, 0.44, 0.44, 0., 0.24,  0. )
-                       , ( 'TagCat2',  2, 0.38,     0.35, 0.35, 0., 0.062, 0. )
-                       , ( 'TagCat3',  3, 0.31,     0.28, 0.28, 0., 0.032, 0. )
-                       , ( 'TagCat4',  4, 0.24,     0.21, 0.21, 0., 0.012, 0. )
-                       , ( 'TagCat5',  5, 0.17,     0.15, 0.14, 0., 0.004, 0. )
-                      ]
+        self._tagCats = kwargs.pop( 'TagCats', None )
+        if not self._tagCats :
+            self._tagCats = [  ( 'Untagged', 0, 0.5000001, 0.50, 0.50, 0., 0.65,  0. )
+                             , ( 'Tagged',   1, 0.4999999, 0.40, 0.40, 0., 0.35,  0. )
+                            ] if self._estWTag else \
+                            [  ( 'Untagged', 0, 0.5000001, 0.50, 0.50, 0., 0.65,  0. )
+                             , ( 'TagCat1',  1, 0.4999999, 0.44, 0.44, 0., 0.24,  0. )
+                             , ( 'TagCat2',  2, 0.38,      0.35, 0.35, 0., 0.062, 0. )
+                             , ( 'TagCat3',  3, 0.31,      0.28, 0.28, 0., 0.032, 0. )
+                             , ( 'TagCat4',  4, 0.24,      0.21, 0.21, 0., 0.012, 0. )
+                             , ( 'TagCat5',  5, 0.17,      0.15, 0.14, 0., 0.004, 0. )
+                            ]
 
         # get number of calibration parameter standard deviations for tagging category bins
         nSigmaTagBins = kwargs.pop( 'NumSigmaTagBins', 1. )
 
-        # determine tagging category parameters from data
-        if self._data and self._etaName :
-            self._tagCats = getTagCatParamsFromData(  self._data, estWTagName = self._etaName, tagCats = tagCats, numSigmas = nSigmaTagBins
-                                                    , avgEstWTag = self._avgEstWTag
-                                                    , P0    = self._calVals['P0'], P0Err = self._calVals['P0Err']
-                                                    , P1    = self._calVals['P1'], P1Err = self._calVals['P1Err']
-                                                    , AP0   = self._calVals['AP0']
-                                                    , AP1   = self._calVals['AP1']
-                                                   )
-
-            from math import sqrt
-            tagCatCoefs = [ dict(  Value = catPars[6]
-                                 , Error = sqrt( catPars[6] / self._data.sumEntries() )
-                                 , Constant = True
-                                ) for catPars in self._tagCats
-                          ]
-
-        else :
-            self._tagCats = tagCats
-            tagCatCoefs = [ catPars[6] for catPars in self._tagCats ]
-
-        ATagEffs    = [ catPars[7] for catPars in self._tagCats ]
-        dilutions = [ ]
-        ADilWTags = [ ]
+        # initialize category parameters
+        tagCatCoefs    = [ catPars[6] for catPars in self._tagCats ]
+        ATagEffs       = [ catPars[7] for catPars in self._tagCats ]
+        dilutions      = [ ]
+        ADilWTags      = [ ]
         self._estWTags = [ ]
-        from P2VV.RooFitWrappers import CalibratedDilution
         for cat, catPars in enumerate( self._tagCats[ 1 : ] ) :
-            if hasattr( self, '_estWTag' ) :
+            if self._estWTag :
                 estWTag = self._estWTag
             else :
-                from P2VV.RooFitWrappers import ConstVar
-                estWTag = ConstVar( Name = 'estWTag%s%d' % ( tagType, cat + 1 ), Title = 'Estimated wrong-tag probability ' + tagType
-                                   , Value = catPars[3] )
+                estWTag = self._parseArg( 'estWTag%s%d' % ( tagType, cat + 1 ), kwargs, ObjectType = 'ConstVar'
+                                         , Title = 'Estimated wrong-tag probability ' + tagType, Value = catPars[3] )
                 self._estWTags.append(estWTag)
 
-            dilutions.append( CalibratedDilution(  Name       = 'tagDilution%s%d' % ( tagType, cat + 1 )
-                                                 , Title      = 'Tagging dilution %s %d' % ( tagType, cat + 1 )
-                                                 , EstWTag    = estWTag
-                                                 , AvgEstWTag = self._avgEstWTag
-                                                 , P0         = self._wTagP0
-                                                 , P1         = self._wTagP1
-                                                )
+            dilutions.append( self._parseArg( 'tagDilution%s%d' % ( tagType, cat + 1 ), kwargs, ObjectType = 'CalibratedDilution'
+                                             , Title      = 'Tagging dilution %s %d' % ( tagType, cat + 1 )
+                                             , EstWTag    = estWTag
+                                             , AvgEstWTag = self._avgEstWTag
+                                             , P0         = self._wTagP0
+                                             , P1         = self._wTagP1
+                                            )
                             )
-            ADilWTags.append( CalibratedDilution(  Name       = 'ADilWTag%s%d' % ( tagType, cat + 1 )
-                                                 , Title      = 'Dilution/wrong-tag asymmetry %s %d' % ( tagType, cat + 1 )
-                                                 , EstWTag    = estWTag
-                                                 , AvgEstWTag = self._avgEstWTag
-                                                 , P0         = self._wTagP0
-                                                 , P1         = self._wTagP1
-                                                 , AP0        = self._wTagAP0
-                                                 , AP1        = self._wTagAP1
-                                                )
+            ADilWTags.append( self._parseArg( 'ADilWTag%s%d' % ( tagType, cat + 1 ), kwargs, ObjectType = 'CalibratedDilution'
+                                             , Title      = 'Dilution/wrong-tag asymmetry %s %d' % ( tagType, cat + 1 )
+                                             , EstWTag    = estWTag
+                                             , AvgEstWTag = self._avgEstWTag
+                                             , P0         = self._wTagP0
+                                             , P1         = self._wTagP1
+                                             , AP0        = self._wTagAP0
+                                             , AP1        = self._wTagAP1
+                                            )
                             )
 
         # adjust errors on calibration parameters
@@ -933,7 +938,7 @@ class Linear_TaggingCategories( TaggingCategories ) :
         self._check_extraneous_kw( kwargs )
         TaggingCategories.__init__( self, NumTagCats = len(self._tagCats), tagCat = tagCat
                                    , TagCatCoefs = tagCatCoefs, ATagEffs = ATagEffs, TagDilutions = dilutions, ADilWTags = ADilWTags
-                                   , Conditionals = [ self._estWTag ] if hasattr( self, '_estWTag' ) else [ ]
+                                   , Conditionals = [ self._estWTag ] if self._estWTag else [ ]
                                    , Constraints = constraints
                                   )
 
@@ -1084,8 +1089,8 @@ class Combined_TaggingCategories( TaggingCategories ) :
                                    , TagCatCoefs = tagCatCoefs, ATagEffs = ATagEffs
                                    , TagDilutions = ( Categories0['tagDilutions'], Categories1['tagDilutions'] )
                                    , ADilWTags = ( Categories0['ADilWTags'], Categories1['ADilWTags'] )
-                                   , Conditionals = Categories0.conditionalObservables() + Categories1.conditionalObservables()
-                                   , Constraints  = Categories0.externalConstraints() + Categories1.externalConstraints()
+                                   , Conditionals = Categories0.ConditionalObservables() | Categories1.ConditionalObservables()
+                                   , Constraints  = Categories0.ExternalConstraints() | Categories1.ExternalConstraints()
                                   )
 
 
@@ -1101,23 +1106,22 @@ class Trivial_TagPdf( _util_parse_mixin ) :
         triple =  set([ -1, 0, +1 ])==set([ i for i in tagdecision.states().itervalues() ] )
         assert triple or double
 
-        namePF = kwargs.pop( 'NamePrefix', '' )
-        if namePF : namePF += '_'
+        namePF = self.getNamePrefix(kwargs)
         if triple :
-           self._parseArg( namePF + 'TagEff', kwargs, Title = namePF + 'Tagging efficiency', Value = 0.25, MinMax = ( 0., 1. ) )
-        self._parseArg( namePF + 'ATagEff', kwargs, Title = namePF + 'Tagging asymmetry ', Value = 0., MinMax = ( -1., 1. ) )
+           self._parseArg( 'TagEff', kwargs, Title = 'Tagging efficiency', Value = 0.25, MinMax = ( 0., 1. ) )
+        self._parseArg( 'ATagEff', kwargs, Title = 'Tagging asymmetry ', Value = 0., MinMax = ( -1., 1. ) )
 
         from P2VV.RooFitWrappers import GenericPdf
         name = kwargs.pop( 'Name', namePF + 'Trivial_TagPdf' )
         if triple :
             self._pdf = GenericPdf( name, Formula = '(@0==0)*(1-@1)+(@0!=0)*@1*0.5*(1+@0*@2)'
                                    , Arguments = [  tagdecision
-                                                  , getattr( self, '_%sTagEff'%namePF  )
-                                                  , getattr( self, '_%sATagEff'%namePF )
+                                                  , getattr( self, '_TagEff'  )
+                                                  , getattr( self, '_ATagEff' )
                                                  ]
                                   )
         else :
-            self._pdf = GenericPdf( name, Formula = '0.5*(1+@0*@1)', Arguments = [ tagdecision, getattr(self, '_' + namePF + 'ATagEff') ] )
+            self._pdf = GenericPdf( name, Formula = '0.5*(1+@0*@1)', Arguments = [ tagdecision, getattr( self, '_' + 'ATagEff' ) ] )
 
         self._pdf.setAttribute("CacheAndTrack") ;
         for ( k, v ) in kwargs.iteritems() : setattr( self, '_' + k, v )
@@ -1142,11 +1146,10 @@ class BinnedTaggingPdf( _util_parse_mixin ) :
         self._iTags   = [ iTag0, iTag1 ]
 
         # get name prefix from arguments
-        self._namePF = kwargs.pop( 'NamePrefix', '' )
-        if self._namePF : self._namePF += '_'
+        namePF = self.getNamePrefix(kwargs)
 
         # get name
-        self._name = self._namePF + Name
+        self._name = namePF + Name
 
         # get number of tagging categories
         self._numTagCats = [ self._tagCats[0].numTypes() if self._tagCats[0] else 0, self._tagCats[1].numTypes() ]
@@ -1234,7 +1237,6 @@ class BinnedTaggingPdf( _util_parse_mixin ) :
             self._tagCatCoefs1 = [ ]
             self._tagCatCoefs = [ [] for cat in range( max( 1, self._numTagCats[0] ) ) ]
 
-            from P2VV.RooFitWrappers import FormulaVar
             if self._tagCats[0] :
                 # coefficients for flavour tag 0
                 for coef0Iter in range( 1, self._numTagCats[0] ) :
@@ -1253,7 +1255,6 @@ class BinnedTaggingPdf( _util_parse_mixin ) :
                         coefErr = 0.01
 
                     self._parseArg(  'tagCatCoef0_%d' % coef0Iter, kwargs, ContainerList = self._tagCatCoefs0
-                                   , Name     = self._namePF + 'tagCatCoef0_%d' % coef0Iter
                                    , Title    = 'Tagging categories 0 coefficient %d' % coef0Iter
                                    , Value    = coefVal
                                    , Error    = coefErr
@@ -1262,11 +1263,8 @@ class BinnedTaggingPdf( _util_parse_mixin ) :
                                   )
 
                 # coefficient for category 0: "one minus the sum of other categories"
-                self._tagCatCoefs0 = [ FormulaVar(  self._namePF + 'tagCatCoef0_0'
-                                                  , '1.-%s' % '-'.join( '@%d' % cat for cat in range( len(self._tagCatCoefs0) ) )
-                                                  , self._tagCatCoefs0[ : ]
-                                                  , Title = 'Tagging categories 0 coefficient 0'
-                                                 )
+                self._tagCatCoefs0 = [ self._parseArg( 'tagCatCoef0_0', kwargs, Title = 'Tagging categories 0 coefficient 0'
+                                                      , Coefficients = self._tagCatCoefs0, ObjectType = 'ComplementCoef' )
                                      ] + self._tagCatCoefs0
 
             # coefficients for flavour tag 1
@@ -1286,7 +1284,6 @@ class BinnedTaggingPdf( _util_parse_mixin ) :
                     coefErr = 0.01
 
                 self._parseArg(  'tagCatCoef1_%d' % coef1Iter, kwargs, ContainerList = self._tagCatCoefs1
-                               , Name     = self._namePF + 'tagCatCoef1_%d' % coef1Iter
                                , Title    = 'Tagging categories 0 coefficient %d' % coef1Iter
                                , Value    = coefVal
                                , Error    = coefErr
@@ -1295,15 +1292,11 @@ class BinnedTaggingPdf( _util_parse_mixin ) :
                               )
 
             # coefficient for category 0: "one minus the sum of other categories"
-            self._tagCatCoefs1 = [ FormulaVar(  self._namePF + 'tagCatCoef1_0'
-                                              , '1.-%s' % '-'.join( '@%d' % cat for cat in range( len(self._tagCatCoefs1) ) )
-                                              , self._tagCatCoefs1[ : ]
-                                              , Title = 'Tagging categories 1 coefficient 0'
-                                             )
+            self._tagCatCoefs1 = [ self._parseArg( 'tagCatCoef1_0', kwargs, Title = 'Tagging categories 1 coefficient 0'
+                                                  , Coefficients = self._tagCatCoefs1, ObjectType = 'ComplementCoef' )
                                  ] + self._tagCatCoefs1
 
             # tagging category coefficients
-            from P2VV.RooFitWrappers import Product
             for coef0Iter in range( max( 1, self._numTagCats[0] ) ) :
                 for coef1Iter in range( self._numTagCats[1] ) :
                     if not self._tagCats[0] :
@@ -1311,12 +1304,11 @@ class BinnedTaggingPdf( _util_parse_mixin ) :
                         self._tagCatCoefs[coef0Iter].append( self._tagCatCoefs1[coef1Iter] )
                     else :
                         # two flavour tags
-                        self._tagCatCoefs[coef0Iter].append(\
-                                Product(  self._namePF + 'tagCatCoef%d-%d' % ( coef0Iter, coef1Iter )
-                                        , [ self._tagCatCoefs0[coef0Iter], self._tagCatCoefs1[coef1Iter] ]
-                                        , Title = 'Tagging category coefficient %d-%d' % ( coef0Iter, coef1Iter )
-                                       )
-                        )
+                        self._tagCatCoefs[coef0Iter].append( self._parseArg( 'tagCatCoef%d-%d' % ( coef0Iter, coef1Iter ), kwargs
+                                                            , Arguments = [ self._tagCatCoefs0[coef0Iter], self._tagCatCoefs1[coef1Iter] ]
+                                                            , Title = 'Tagging category coefficient %d-%d' % ( coef0Iter, coef1Iter )
+                                                            , ObjectType = 'Product' )
+                                                           )
 
         # get tagging category coefficient names
         self._tagCatCoefNames = [ [ coef if type(coef) == str else coef.GetName() for coef in coefs ] for coefs in self._tagCatCoefs ]
@@ -1331,7 +1323,8 @@ class TagUntag_BinnedTaggingPdf( BinnedTaggingPdf ) :
         else : raise RuntimeError('TagUntag_BinnedTaggingPdf(): no tagging categories/tags specified')
 
         if self._data : from math import sqrt
-        from P2VV.RooFitWrappers import FormulaVar
+
+        namePF = self.getNamePrefix(kwargs)
 
         if self._relativeCatCoefs :
             ###############################################################################################################################
@@ -1347,25 +1340,26 @@ class TagUntag_BinnedTaggingPdf( BinnedTaggingPdf ) :
                 AUntErr = 0.01
 
             self._parseArg(  'AUntag', kwargs
-                           , Name  = self._namePF + 'AUntag'
                            , Title = 'Untagged asymmetry in tagging category coefficients'
                            , Value = AUntVal, Error = AUntErr, MinMax = ( -1., 1. )
                           )
 
             if self._tagCats[0] :
                 # two flavour tags
-                if self._namePF + 'tagCatCoefSSTag' not in self._ws :
-                    self._tagCatCoefSSTag = FormulaVar(  self._namePF + 'tagCatCoefSSTag'
-                                                       , '+'.join( '@%d' % cat for cat in range( self._numTagCats[1] - 1 ) )
-                                                       , [ self._ws[ self._tagCatCoefNames[0][cat] ]\
-                                                           for cat in range( 1, self._numTagCats[1] ) ]
-                                                      )
-                if self._namePF + 'tagCatCoefOSTag' not in self._ws :
-                    self._tagCatCoefOSTag = FormulaVar(  self._namePF + 'tagCatCoefOSTag'
-                                                       , '+'.join( '@%d' % cat for cat in range( self._numTagCats[0] - 1 ) )
-                                                       , [ self._ws[ self._tagCatCoefNames[cat][0] ]\
-                                                           for cat in range( 1, self._numTagCats[0] ) ]
-                                                      )
+                if namePF + 'tagCatCoefSSTag' not in self._ws :
+                    self._tagCatCoefSSTag = self._parseArg(  namePF + 'tagCatCoefSSTag', kwargs
+                                                           , Formula = '+'.join( '@%d' % cat for cat in range( self._numTagCats[1] - 1 ) )
+                                                           , Arguments = [ self._ws[ self._tagCatCoefNames[0][cat] ]\
+                                                                          for cat in range( 1, self._numTagCats[1] ) ]
+                                                           , ObjectType = 'FormulaVar'
+                                                          )
+                if namePF + 'tagCatCoefOSTag' not in self._ws :
+                    self._tagCatCoefOSTag = self._parseArg(  namePF + 'tagCatCoefOSTag', kwargs
+                                                           , Formula = '+'.join( '@%d' % cat for cat in range( self._numTagCats[0] - 1 ) )
+                                                           , Arguments = [ self._ws[ self._tagCatCoefNames[cat][0] ]\
+                                                                          for cat in range( 1, self._numTagCats[0] ) ]
+                                                           , ObjectType = 'FormulaVar'
+                                                          )
 
                 if self._data :
                     ASSTagVal = max( 0., self._nBBTag[1] + self._nBbarBbarTag[1] + self._nBBbarTag[1] + self._nBbarBTag[1] )
@@ -1386,12 +1380,10 @@ class TagUntag_BinnedTaggingPdf( BinnedTaggingPdf ) :
                     AOSTagErr = 0.01
 
                 self._parseArg(  'ASSTag', kwargs
-                               , Name  = self._namePF + 'ASSTag'
                                , Title = 'Same-side tagged asymmetry in tagging category coefficients'
                                , Value = ASSTagVal, Error = ASSTagErr, MinMax = ( -1., 1. )
                               )
                 self._parseArg(  'AOSTag', kwargs
-                               , Name  = self._namePF + 'AOSTag'
                                , Title = 'Opposite-side tagged asymmetry in tagging category coefficients'
                                , Value = AOSTagVal, Error = AOSTagErr, MinMax = ( -1., 1. )
                               )
@@ -1411,7 +1403,6 @@ class TagUntag_BinnedTaggingPdf( BinnedTaggingPdf ) :
             ABBbarErr = 1. / sqrt( numB + numBbar )             if numB + numBbar > 100. else 0.1
 
             self._parseArg(  'ABBbarTag', kwargs
-                           , Name     = self._namePF + 'ABBbarTag'
                            , Title    = 'B-Bbar asymmetry tagged category'
                            , Value    = ABBbarVal
                            , Error    = ABBbarErr
@@ -1472,7 +1463,6 @@ class TagUntag_BinnedTaggingPdf( BinnedTaggingPdf ) :
 
             # create asymmetry variables
             self._parseArg(  'ABBbarSSTag', kwargs
-                           , Name     = self._namePF + 'ABBbarSSTag'
                            , Title    = 'B-Bbar asymmetry same-side tagged'
                            , Value    = ABBbarSSVal
                            , Error    = ABBbarSSErr
@@ -1480,7 +1470,6 @@ class TagUntag_BinnedTaggingPdf( BinnedTaggingPdf ) :
                            , Constant = False
                           )
             self._parseArg(  'ABBbarOSTag', kwargs
-                           , Name     = self._namePF + 'ABBbarOSTag'
                            , Title    = 'B-Bbar asymmetry opposite-side tagged'
                            , Value    = ABBbarOSVal
                            , Error    = ABBbarOSErr
@@ -1495,7 +1484,6 @@ class TagUntag_BinnedTaggingPdf( BinnedTaggingPdf ) :
                             self._ATags[OSIter].append(None)
                         else :
                             self._parseArg(  'ATags%d-%d' % ( OSIter, SSIter ), kwargs, ContainerList = self._ATags[OSIter]
-                                           , Name     = self._namePF + 'ATags%d-%d' % ( OSIter, SSIter )
                                            , Title    = 'Tags asymmetry category %d-%d' % ( OSIter, SSIter )
                                            , Value    = ATagsVal
                                            , Error    = ATagsErr
@@ -1504,7 +1492,6 @@ class TagUntag_BinnedTaggingPdf( BinnedTaggingPdf ) :
                                           )
             else :
                 self._parseArg(  'ATags', kwargs
-                               , Name     = self._namePF + 'ATags'
                                , Title    = 'Tags asymmetry'
                                , Value    = ATagsVal
                                , Error    = ATagsErr
@@ -1512,7 +1499,6 @@ class TagUntag_BinnedTaggingPdf( BinnedTaggingPdf ) :
                                , Constant = False
                               )
             self._parseArg(  'ABBbarSameTag', kwargs
-                           , Name     = self._namePF + 'ABBbarSameTag'
                            , Title    = 'B-Bbar asymmetry same tags'
                            , Value    = ABBbarSameVal
                            , Error    = ABBbarSameErr
@@ -1520,7 +1506,6 @@ class TagUntag_BinnedTaggingPdf( BinnedTaggingPdf ) :
                            , Constant = False
                           )
             self._parseArg(  'ABBbarOppTag', kwargs
-                           , Name     = self._namePF + 'ABBbarOppTag'
                            , Title    = 'B-Bbar asymmetry opposite tags'
                            , Value    = ABBbarOppVal
                            , Error    = ABBbarOppErr
@@ -1534,80 +1519,83 @@ class TagUntag_BinnedTaggingPdf( BinnedTaggingPdf ) :
         if not self._tagCats[0] :
             # one flavour tag
             if self._relativeCatCoefs :
-                self._taggedBCoef    = FormulaVar(  self._namePF + 'taggedBCoef', '0.5*(1.-@2/(1.-@2)*@0)*(1.+@1)'
-                                                  , [ self._AUntag, self._ABBbarTag, self._ws[ self._tagCatCoefNames[0][0] ] ]
-                                                 )
-                self._taggedBbarCoef = FormulaVar(  self._namePF + 'taggedBbarCoef', '0.5*(1.-@2/(1.-@2)*@0)*(1.-@1)'
-                                                  , [ self._AUntag, self._ABBbarTag, self._ws[ self._tagCatCoefNames[0][0] ] ]
-                                                 )
+                self._taggedBCoef    = self._parseArg( 'taggedBCoef', kwargs, Formula = '0.5*(1.-@2/(1.-@2)*@0)*(1.+@1)'
+                                                      , Arguments = [self._AUntag, self._ABBbarTag, self._ws[self._tagCatCoefNames[0][0]]]
+                                                      , ObjectType = 'FormulaVar'
+                                                     )
+                self._taggedBbarCoef = self._parseArg( 'taggedBbarCoef', kwargs, Formula = '0.5*(1.-@2/(1.-@2)*@0)*(1.-@1)'
+                                                      , Arguments = [self._AUntag, self._ABBbarTag, self._ws[self._tagCatCoefNames[0][0]]]
+                                                      , ObjectType = 'FormulaVar'
+                                                     )
             else :
-                self._taggedBCoef    = FormulaVar( self._namePF + 'taggedBCoef',    '0.5*(1.+@0)', [ self._ABBbarTag ] )
-                self._taggedBbarCoef = FormulaVar( self._namePF + 'taggedBbarCoef', '0.5*(1.-@0)', [ self._ABBbarTag ] )
+                self._taggedBCoef    = self._parseArg( 'taggedBCoef', kwargs, Formula = '0.5*(1.+@0)', Arguments = [ self._ABBbarTag ]
+                                                      , ObjectType = 'FormulaVar' )
+                self._taggedBbarCoef = self._parseArg( 'taggedBbarCoef', kwargs, Formula = '0.5*(1.-@0)', Arguments = [ self._ABBbarTag ]
+                                                      , ObjectType = 'FormulaVar' )
 
         else :
             # two flavour tags
             if self._relativeCatCoefs :
-                self._SSTaggedBCoef    = FormulaVar(  self._namePF + 'SSTaggedBCoef', '0.25*(1.+@0)*(1.+@1)'
-                                                    , [ self._ASSTag, self._ABBbarSSTag ]
-                                                   )
-                self._SSTaggedBbarCoef = FormulaVar(  self._namePF + 'SSTaggedBbarCoef', '0.25*(1.+@0)*(1.-@1)'
-                                                    , [ self._ASSTag, self._ABBbarSSTag ]
-                                                   )
-                self._OSTaggedBCoef    = FormulaVar(  self._namePF + 'OSTaggedBCoef', '0.25*(1.+@0)*(1.+@1)'
-                                                    , [ self._AOSTag, self._ABBbarOSTag ]
-                                                   )
-                self._OSTaggedBbarCoef = FormulaVar(  self._namePF + 'OSTaggedBbarCoef', '0.25*(1.+@0)*(1.-@1)'
-                                                    , [ self._AOSTag, self._ABBbarOSTag ]
-                                                   )
+                self._SSTaggedBCoef    = self._parseArg( 'SSTaggedBCoef', kwargs, Formula = '0.25*(1.+@0)*(1.+@1)'
+                                                        , Arguments = [ self._ASSTag, self._ABBbarSSTag ], ObjectType = 'FormulaVar' )
+                self._SSTaggedBbarCoef = self._parseArg( 'SSTaggedBbarCoef', kwargs, Formula = '0.25*(1.+@0)*(1.-@1)'
+                                                         , Arguments = [ self._ASSTag, self._ABBbarSSTag ], ObjectType = 'FormulaVar' )
+                self._OSTaggedBCoef    = self._parseArg( 'OSTaggedBCoef', kwargs, Formula = '0.25*(1.+@0)*(1.+@1)'
+                                                         , Arguments = [ self._AOSTag, self._ABBbarOSTag ], ObjectType = 'FormulaVar' )
+                self._OSTaggedBbarCoef = self._parseArg( 'OSTaggedBbarCoef', kwargs, Formula = '0.25*(1.+@0)*(1.-@1)'
+                                                        , Arguments = [ self._AOSTag, self._ABBbarOSTag ], ObjectType = 'FormulaVar' )
                 if not self._dilutions :
-                    self._taggedBBCoef       = FormulaVar(  self._namePF + 'taggedBBCoef'
-                                                          , '0.25*(1.-(@5*@0+@6*@1+@7*@2)/(1.-@5-@6-@7))*(1.+@3)*(1.+@4)'
-                                                          , [ self._AUntag, self._AOSTag, self._ASSTag, self._ATags, self._ABBbarSameTag
-                                                             , self._ws[ self._tagCatCoefNames[0][0] ], self._tagCatCoefOSTag
-                                                             , self._tagCatCoefSSTag ]
-                                                         )
-                    self._taggedBbarBbarCoef = FormulaVar(  self._namePF + 'taggedBbarBbarCoef'
-                                                          , '0.25*(1.-(@5*@0+@6*@1+@7*@2)/(1.-@5-@6-@7))*(1.+@3)*(1.-@4)'
-                                                          , [ self._AUntag, self._AOSTag, self._ASSTag, self._ATags, self._ABBbarSameTag
-                                                             , self._ws[ self._tagCatCoefNames[0][0] ], self._tagCatCoefOSTag
-                                                             , self._tagCatCoefSSTag ]
-                                                         )
-                    self._taggedBBbarCoef    = FormulaVar(  self._namePF + 'taggedBBbarCoef'
-                                                          , '0.25*(1.-(@5*@0+@6*@1+@7*@2)/(1.-@5-@6-@7))*(1.-@3)*(1.+@4)'
-                                                          , [ self._AUntag, self._AOSTag, self._ASSTag, self._ATags, self._ABBbarOppTag
-                                                             , self._ws[ self._tagCatCoefNames[0][0] ], self._tagCatCoefOSTag
-                                                             , self._tagCatCoefSSTag ]
-                                                         )
-                    self._taggedBbarBCoef    = FormulaVar(  self._namePF + 'taggedBbarBCoef'
-                                                          , '0.25*(1.-(@5*@0+@6*@1+@7*@2)/(1.-@5-@6-@7))*(1.-@3)*(1.-@4)'
-                                                          , [ self._AUntag, self._AOSTag, self._ASSTag, self._ATags, self._ABBbarOppTag
-                                                             , self._ws[ self._tagCatCoefNames[0][0] ], self._tagCatCoefOSTag
-                                                             , self._tagCatCoefSSTag ]
-                                                         )
+                    self._taggedBBCoef       = self._parseArg(  'taggedBBCoef', kwargs
+                                                              , Formula = '0.25*(1.-(@5*@0+@6*@1+@7*@2)/(1.-@5-@6-@7))*(1.+@3)*(1.+@4)'
+                                                              , Arguments = [ self._AUntag, self._AOSTag, self._ASSTag, self._ATags
+                                                                             , self._ABBbarSameTag, self._ws[ self._tagCatCoefNames[0][0] ]
+                                                                             , self._tagCatCoefOSTag, self._tagCatCoefSSTag ]
+                                                              , ObjectType = 'FormulaVar'
+                                                             )
+                    self._taggedBbarBbarCoef = self._parseArg(  'taggedBbarBbarCoef', kwargs
+                                                              , Formula = '0.25*(1.-(@5*@0+@6*@1+@7*@2)/(1.-@5-@6-@7))*(1.+@3)*(1.-@4)'
+                                                              , Arguments = [ self._AUntag, self._AOSTag, self._ASSTag, self._ATags
+                                                                             , self._ABBbarSameTag, self._ws[ self._tagCatCoefNames[0][0] ]
+                                                                             , self._tagCatCoefOSTag, self._tagCatCoefSSTag ]
+                                                              , ObjectType = 'FormulaVar'
+                                                             )
+                    self._taggedBBbarCoef    = self._parseArg(  'taggedBBbarCoef', kwargs
+                                                              , Formula = '0.25*(1.-(@5*@0+@6*@1+@7*@2)/(1.-@5-@6-@7))*(1.-@3)*(1.+@4)'
+                                                              , Arguments = [ self._AUntag, self._AOSTag, self._ASSTag, self._ATags
+                                                                             , self._ABBbarOppTag, self._ws[ self._tagCatCoefNames[0][0] ]
+                                                                             , self._tagCatCoefOSTag, self._tagCatCoefSSTag ]
+                                                              , ObjectType = 'FormulaVar'
+                                                             )
+                    self._taggedBbarBCoef    = self._parseArg(  'taggedBbarBCoef', kwargs
+                                                              , Formula = '0.25*(1.-(@5*@0+@6*@1+@7*@2)/(1.-@5-@6-@7))*(1.-@3)*(1.-@4)'
+                                                              , Arguments = [ self._AUntag, self._AOSTag, self._ASSTag, self._ATags
+                                                                             , self._ABBbarOppTag, self._ws[ self._tagCatCoefNames[0][0] ]
+                                                                             , self._tagCatCoefOSTag, self._tagCatCoefSSTag ]
+                                                              , ObjectType = 'FormulaVar'
+                                                             )
             else :
-                self._SSTaggedBCoef    = FormulaVar(  self._namePF + 'SSTaggedBCoef',    '0.25*(1.+@0)', [ self._ABBbarSSTag ] )
-                self._SSTaggedBbarCoef = FormulaVar(  self._namePF + 'SSTaggedBbarCoef', '0.25*(1.-@0)', [ self._ABBbarSSTag ] )
-                self._OSTaggedBCoef    = FormulaVar(  self._namePF + 'OSTaggedBCoef',    '0.25*(1.+@0)', [ self._ABBbarOSTag ] )
-                self._OSTaggedBbarCoef = FormulaVar(  self._namePF + 'OSTaggedBbarCoef', '0.25*(1.-@0)', [ self._ABBbarOSTag ] )
+                self._SSTaggedBCoef    = self._parseArg( 'SSTaggedBCoef', kwargs, Formula = '0.25*(1.+@0)'
+                                                        , Arguments = [ self._ABBbarSSTag ], ObjectType = 'FormulaVar' )
+                self._SSTaggedBbarCoef = self._parseArg( 'SSTaggedBbarCoef', kwargs, Formula = '0.25*(1.-@0)'
+                                                        , Arguments = [ self._ABBbarSSTag ], ObjectType = 'FormulaVar' )
+                self._OSTaggedBCoef    = self._parseArg( 'OSTaggedBCoef', kwargs, Formula = '0.25*(1.+@0)'
+                                                        , Arguments = [ self._ABBbarOSTag ], ObjectType = 'FormulaVar' )
+                self._OSTaggedBbarCoef = self._parseArg( 'OSTaggedBbarCoef', kwargs, Formula = '0.25*(1.-@0)'
+                                                        , Arguments = [ self._ABBbarOSTag ], ObjectType = 'FormulaVar' )
                 if not self._dilutions :
-                    self._taggedBBCoef       = FormulaVar(  self._namePF + 'taggedBBCoef', '0.25*(1.+@0)*(1.+@1)'
-                                                          , [ self._ATags, self._ABBbarSameTag ]
-                                                         )
-                    self._taggedBbarBbarCoef = FormulaVar(  self._namePF + 'taggedBbarBbarCoef', '0.25*(1.+@0)*(1.-@1)'
-                                                          , [ self._ATags, self._ABBbarSameTag ]
-                                                         )
-                    self._taggedBBbarCoef    = FormulaVar(  self._namePF + 'taggedBBbarCoef', '0.25*(1.-@0)*(1.+@1)'
-                                                          , [ self._ATags, self._ABBbarOppTag ]
-                                                         )
-                    self._taggedBbarBCoef    = FormulaVar(  self._namePF + 'taggedBbarBCoef', '0.25*(1.-@0)*(1.-@1)'
-                                                          , [ self._ATags, self._ABBbarOppTag ]
-                                                         )
+                    self._taggedBBCoef       = self._parseArg( 'taggedBBCoef', kwargs, Formula = '0.25*(1.+@0)*(1.+@1)'
+                                                              , Arguments = [self._ATags, self._ABBbarSameTag], ObjectType = 'FormulaVar' )
+                    self._taggedBbarBbarCoef = self._parseArg( 'taggedBbarBbarCoef', kwargs, Formula = '0.25*(1.+@0)*(1.-@1)'
+                                                              , Arguments = [self._ATags, self._ABBbarSameTag], ObjectType = 'FormulaVar' )
+                    self._taggedBBbarCoef    = self._parseArg( 'taggedBBbarCoef', kwargs, Formula = '0.25*(1.-@0)*(1.+@1)'
+                                                              , Arguments = [self._ATags, self._ABBbarOppTag], ObjectType = 'FormulaVar' )
+                    self._taggedBbarBCoef    = self._parseArg( 'taggedBbarBCoef', kwargs, Formula = '0.25*(1.-@0)*(1.-@1)'
+                                                              , Arguments = [self._ATags, self._ABBbarOppTag], ObjectType = 'FormulaVar' )
 
         ###################################################################################################################################
         ## tagging bin coefficients ##
         ##############################
         tagBinCoefs = [ ]
-        from P2VV.RooFitWrappers import Product
         if not self._tagCats[0] :
             # one flavour tag: loop over #cats * 2 bins
             for binIter in range( self._numTagCats[1] * 2 ) :
@@ -1618,25 +1606,24 @@ class TagUntag_BinnedTaggingPdf( BinnedTaggingPdf ) :
                 # create product of tagging category coefficient and bin asymmetry factor
                 if cat > 0 :
                     # tagged coefficient
-                    tagBinCoefs.append( Product(  self._namePF + 'tagBinCoef%d' % binIter
-                                                , [  self._ws[ self._tagCatCoefNames[0][cat] ]
-                                                   , self._taggedBCoef if not Bbar else self._taggedBbarCoef
-                                                  ]
-                                               )
+                    tagBinCoefs.append( self._parseArg( 'tagBinCoef%d' % binIter, kwargs, ObjectType = 'Product'
+                                                       , Arguments = [ self._ws[ self._tagCatCoefNames[0][cat] ]
+                                                                      , self._taggedBCoef if not Bbar else self._taggedBbarCoef ]
+                                                      )
                                       )
                 elif self._relativeCatCoefs :
                     # untagged coefficient (relative)
-                    tagBinCoefs.append( FormulaVar(  self._namePF + 'tagBinCoef%d' % binIter
-                                                   , '0.5*@0*(1.+@1)'
-                                                   , [ self._ws[ self._tagCatCoefNames[0][0] ], self._AUntag ]
-                                                  )
+                    tagBinCoefs.append( self._parseArg( 'tagBinCoef%d' % binIter, kwargs, Formula = '0.5*@0*(1.+@1)'
+                                                       , Arguments = [ self._ws[ self._tagCatCoefNames[0][0] ], self._AUntag ]
+                                                       , ObjectType = 'FormulaVar'
+                                                      )
                                       )
                 else :
                     # untagged coefficient (absolute)
-                    tagBinCoefs.append( FormulaVar(  self._namePF + 'tagBinCoef%d' % binIter
-                                                   , '0.5*@0'
-                                                   , [ self._ws[ self._tagCatCoefNames[0][0] ] ]
-                                                  )
+                    tagBinCoefs.append( self._parseArg( 'tagBinCoef%d' % binIter, kwargs, Formula = '0.5*@0'
+                                                       , Arguments = [ self._ws[ self._tagCatCoefNames[0][0] ] ]
+                                                       , ObjectType = 'FormulaVar'
+                                                      )
                                       )
 
         else :
@@ -1655,58 +1642,61 @@ class TagUntag_BinnedTaggingPdf( BinnedTaggingPdf ) :
                 if cat0 > 0 and cat1 > 0 :
                     # tagged coefficient
                     if self._dilutions and self._relativeCatCoefs :
-                        tagBinCoefs.append( FormulaVar(  self._namePF + 'tagBinCoef%d' % binIter
-                                                       , '0.25*@0*(1.-(@6*@1+@7*@2+@8*@3)/(1.-@6-@7-@8))*(1.%s@4)*(1.%s@5)'\
-                                                         % ( '-' if Bbar0 != Bbar1 else '+', '-' if Bbar0 else '+' )
-                                                       , [ self._ws[ self._tagCatCoefNames[cat0][cat1] ], self._AUntag, self._AOSTag
-                                                          , self._ASSTag, self._ATags[cat0][cat1]
-                                                          , self._ABBbarOppTag if Bbar0 != Bbar1 else self._ABBbarSameTag
-                                                          , self._ws[ self._tagCatCoefNames[0][0] ], self._tagCatCoefOSTag
-                                                          , self._tagCatCoefSSTag ]
-                                                      )
+                        tagBinCoefs.append( self._parseArg( 'tagBinCoef%d' % binIter, kwargs
+                                                           , Formula = '0.25*@0*(1.-(@6*@1+@7*@2+@8*@3)/(1.-@6-@7-@8))*(1.%s@4)*(1.%s@5)'\
+                                                                       % ( '-' if Bbar0 != Bbar1 else '+', '-' if Bbar0 else '+' )
+                                                           , Arguments = [ self._ws[ self._tagCatCoefNames[cat0][cat1] ], self._AUntag
+                                                                          , self._AOSTag, self._ASSTag, self._ATags[cat0][cat1]
+                                                                          , self._ABBbarOppTag if Bbar0 != Bbar1 else self._ABBbarSameTag
+                                                                          , self._ws[ self._tagCatCoefNames[0][0] ], self._tagCatCoefOSTag
+                                                                          , self._tagCatCoefSSTag ]
+                                                           , ObjectType = 'FormulaVar'
+                                                          )
                                           )
                     elif self._dilutions :
-                        tagBinCoefs.append( FormulaVar(  self._namePF + 'tagBinCoef%d' % binIter
-                                                       , '0.25*@0*(1.%s@1)*(1.%s@2)'\
-                                                         % ( '-' if Bbar0 != Bbar1 else '+', '-' if Bbar0 else '+' )
-                                                       , [ self._ws[ self._tagCatCoefNames[cat0][cat1] ], self._ATags[cat0][cat1]
-                                                          , self._ABBbarOppTag if Bbar0 != Bbar1 else self._ABBbarSameTag ]
-                                                      )
+                        tagBinCoefs.append( self._parseArg( 'tagBinCoef%d' % binIter, kwargs
+                                                           , Formula = '0.25*@0*(1.%s@1)*(1.%s@2)'\
+                                                                       % ( '-' if Bbar0 != Bbar1 else '+', '-' if Bbar0 else '+' )
+                                                           , Arguments = [ self._ws[ self._tagCatCoefNames[cat0][cat1] ]
+                                                                          , self._ATags[cat0][cat1], self._ABBbarOppTag if Bbar0 != Bbar1\
+                                                                                                     else self._ABBbarSameTag ]
+                                                           , ObjectType = 'FormulaVar'
+                                                          )
                                           )
                     else :
-                        tagBinCoefs.append( Product(  self._namePF + 'tagBinCoef%d' % binIter
-                                                    , [  self._ws[ self._tagCatCoefNames[cat0][cat1] ]
-                                                       , self._taggedBBCoef if not Bbar0 and not Bbar1\
-                                                         else self._taggedBbarBbarCoef if Bbar0 and Bbar1\
-                                                         else self._taggedBBbarCoef if not Bbar0\
-                                                         else self._taggedBbarBCoef
-                                                      ]
-                                                   )
+                        tagBinCoefs.append( self._parseArg( 'tagBinCoef%d' % binIter, kwargs, ObjectType = 'Product'
+                                                           , Arguments = [  self._ws[ self._tagCatCoefNames[cat0][cat1] ]
+                                                                          , self._taggedBBCoef if not Bbar0 and not Bbar1\
+                                                                            else self._taggedBbarBbarCoef if Bbar0 and Bbar1\
+                                                                            else self._taggedBBbarCoef if not Bbar0\
+                                                                            else self._taggedBbarBCoef
+                                                                         ]
+                                                          )
                                           )
                 elif cat0 > 0 or cat1 > 0 :
                     # OS tagged/SS tagged coefficient
-                    tagBinCoefs.append( Product(  self._namePF + 'tagBinCoef%d' % binIter
-                                                , [  self._ws[ self._tagCatCoefNames[cat0][cat1] ]
-                                                   , self._SSTaggedBCoef if cat1 > 0 and not Bbar1\
-                                                     else self._SSTaggedBbarCoef if cat1 > 0\
-                                                     else self._OSTaggedBCoef if not Bbar0\
-                                                     else self._OSTaggedBbarCoef
-                                                  ]
-                                               )
+                    tagBinCoefs.append( self._parseArg( 'tagBinCoef%d' % binIter, kwargs, ObjectType = 'Product'
+                                                       , Arguments = [  self._ws[ self._tagCatCoefNames[cat0][cat1] ]
+                                                                      , self._SSTaggedBCoef if cat1 > 0 and not Bbar1\
+                                                                        else self._SSTaggedBbarCoef if cat1 > 0\
+                                                                        else self._OSTaggedBCoef if not Bbar0\
+                                                                        else self._OSTaggedBbarCoef
+                                                                     ]
+                                                      )
                                       )
                 elif self._relativeCatCoefs :
                     # untagged coefficient (relative)
-                    tagBinCoefs.append( FormulaVar(  self._namePF + 'tagBinCoef%d' % binIter
-                                                   , '0.25*@0*(1.+@1)'
-                                                   , [ self._ws[ self._tagCatCoefNames[0][0] ], self._AUntag ]
-                                                  )
+                    tagBinCoefs.append( self._parseArg( 'tagBinCoef%d' % binIter, kwargs, Formula = '0.25*@0*(1.+@1)'
+                                                       , Arguments = [ self._ws[ self._tagCatCoefNames[0][0] ], self._AUntag ]
+                                                       , ObjectType = 'FormulaVar'
+                                                      )
                                       )
                 else :
                     # untagged coefficient (absolute)
-                    tagBinCoefs.append( FormulaVar(  self._namePF + 'tagBinCoef%d' % binIter
-                                                   , '0.25*@0'
-                                                   , [ self._ws[ self._tagCatCoefNames[0][0] ] ]
-                                                  )
+                    tagBinCoefs.append( self._parseArg( 'tagBinCoef%d' % binIter, kwargs, Formula = '0.25*@0'
+                                                       , Arguments = [ self._ws[ self._tagCatCoefNames[0][0] ] ]
+                                                       , ObjectType = 'FormulaVar'
+                                                      )
                                       )
 
         # initialize TaggingPdf
@@ -1726,7 +1716,8 @@ class TagCats_BinnedTaggingPdf( BinnedTaggingPdf ) :
         else : raise RuntimeError('TagUntag_BinnedTaggingPdf(): no tagging categories/tags specified')
 
         if self._data : from math import sqrt
-        from P2VV.RooFitWrappers import FormulaVar
+
+        namePF = self.getNamePrefix(kwargs)
 
         if self._relativeCatCoefs :
             ###############################################################################################################################
@@ -1756,7 +1747,6 @@ class TagCats_BinnedTaggingPdf( BinnedTaggingPdf ) :
 
                     # create asymmetry variable
                     self._parseArg( 'ATagCat%s-%s' % ( cat0Iter, cat1Iter ), kwargs, ContainerList = self._ATagCats[cat0Iter]
-                                   , Name     = self._namePF + 'ATagCat%s-%s' % ( cat0Iter, cat1Iter )
                                    , Title    = 'Tagging category coefficient asymmetry %d-%d' % ( cat0Iter, cat1Iter )
                                    , Value    = ACatVal
                                    , Error    = ACatErr
@@ -1768,12 +1758,13 @@ class TagCats_BinnedTaggingPdf( BinnedTaggingPdf ) :
             numCats = max( 1, self._numTagCats[0] ) * self._numTagCats[1]
             ATagArgs = [ self._ws[coefName] for coefNames in self._tagCatCoefNames for coefName in coefNames ]
             for cat0 in range( max( 1, self._numTagCats[0] ) ) : ATagArgs += self._ATagCats[cat0][ : ]
-            self._ATagCats[0] = [ FormulaVar(  self._namePF + 'ATagCat0'
-                                             , '-1./@0*(%s)'\
-                                               % '+'.join( '@%d*@%d' % ( cat, cat + numCats - 1 ) for cat in range( 1, numCats ) )
-                                             , ATagArgs
-                                             , Title = 'Tagging category coefficient asymmetry 0'
-                                            )
+            self._ATagCats[0] = [ self._parseArg( 'ATagCat0', kwargs
+                                                 , Formula = '-1./@0*(%s)' % '+'.join( '@%d*@%d' % ( cat, cat + numCats - 1 )\
+                                                                                       for cat in range( 1, numCats ) )
+                                                 , Arguments = ATagArgs
+                                                 , ObjectType = 'FormulaVar'
+                                                 , Title = 'Tagging category coefficient asymmetry 0'
+                                                )
                                 ] + self._ATagCats[0]
 
         ###################################################################################################################################
@@ -1845,7 +1836,6 @@ class TagCats_BinnedTaggingPdf( BinnedTaggingPdf ) :
                         # only flavour 1 is tagged
                         self._ATags[cat0Iter].append(None)
                         self._parseArg(  'ABBbarSS%d' % cat1Iter, kwargs, ContainerList = self._ABBbarsSame[cat0Iter]
-                                       , Name     = self._namePF + 'ABBbarSSTag%d' % cat1Iter
                                        , Title    = 'B-Bbar asymmetry same-side tagging category %d' % cat1Iter
                                        , Value    = ABBbarSameVal
                                        , Error    = ABBbarSameErr
@@ -1858,7 +1848,6 @@ class TagCats_BinnedTaggingPdf( BinnedTaggingPdf ) :
                         # only flavour 0 is tagged
                         self._ATags[cat0Iter].append(None)
                         self._parseArg(  'ABBbarOS%d' % cat0Iter, kwargs, ContainerList = self._ABBbarsSame[cat0Iter]
-                                       , Name     = self._namePF + 'ABBbarOSTag%d' % cat0Iter
                                        , Title    = 'B-Bbar asymmetry opposite-side tagging category %d' % cat0Iter
                                        , Value    = ABBbarSameVal
                                        , Error    = ABBbarSameErr
@@ -1870,7 +1859,6 @@ class TagCats_BinnedTaggingPdf( BinnedTaggingPdf ) :
                     else :
                         # both flavours are tagged
                         self._parseArg(  'ATags%d-%d' % ( cat0Iter, cat1Iter ), kwargs, ContainerList = self._ATags[cat0Iter]
-                                       , Name     = self._namePF + 'ATags%d-%d' % ( cat0Iter, cat1Iter )
                                        , Title    = 'Tags asymmetry tagging category %d-%d' % ( cat0Iter, cat1Iter )
                                        , Value    = ATagsVal
                                        , Error    = ATagsErr
@@ -1878,7 +1866,6 @@ class TagCats_BinnedTaggingPdf( BinnedTaggingPdf ) :
                                        , Constant = False
                                       )
                         self._parseArg(  'ABBbarSameTag%d-%d' % (cat0Iter, cat1Iter), kwargs, ContainerList = self._ABBbarsSame[cat0Iter]
-                                       , Name     = self._namePF + 'ABBbarSameTag%d-%d' % (cat0Iter, cat1Iter)
                                        , Title    = 'B-Bbar asymmetry same tags tagging category %d-%d' % ( cat0Iter, cat1Iter )
                                        , Value    = ABBbarSameVal
                                        , Error    = ABBbarSameErr
@@ -1886,7 +1873,6 @@ class TagCats_BinnedTaggingPdf( BinnedTaggingPdf ) :
                                        , Constant = False
                                       )
                         self._parseArg(  'ABBbarOppTag%d-%d' % ( cat0Iter, cat1Iter ), kwargs, ContainerList = self._ABBbarsOpp[cat0Iter]
-                                       , Name     = self._namePF + 'ABBbarOppTag%d-%d' % ( cat0Iter, cat1Iter )
                                        , Title    = 'B-Bbar asymmetry opposite tags tagging category %d-%d' % ( cat0Iter, cat1Iter )
                                        , Value    = ABBbarOppVal
                                        , Error    = ABBbarOppErr
@@ -1896,7 +1882,6 @@ class TagCats_BinnedTaggingPdf( BinnedTaggingPdf ) :
                 else :
                     # one flavour tag
                     self._parseArg(  'ABBbar%d' % cat1Iter, kwargs, ContainerList = self._ABBbars
-                                   , Name     = self._namePF + 'ABBbar%d' % cat1Iter
                                    , Title    = 'B-Bbar asymmetry tagging category %d' % cat1Iter
                                    , Value    = ABBbarSameVal
                                    , Error    = ABBbarSameErr
@@ -1924,7 +1909,8 @@ class TagCats_BinnedTaggingPdf( BinnedTaggingPdf ) :
                     tagBinForm = '0.5*@0*(1%s@1)' % '-' if Bbar else '+'
                     tagBinArgs = [ self._ws[ self._tagCatCoefNames[0][cat] ], self._ABBbars[cat] ]
 
-                tagBinCoefs.append( FormulaVar( self._namePF + 'tagBinCoef%d' % binIter, tagBinForm, tagBinArgs ) )
+                tagBinCoefs.append( self._parseArg( 'tagBinCoef%d' % binIter, kwargs, Formula = tagBinForm, Arguments = tagBinArgs
+                                                   , ObjectType = 'FormulaVar' ) )
 
         else :
             # two flavour tags: loop over #cats0 * #cats1 * 2 * 2 bins
@@ -1982,7 +1968,8 @@ class TagCats_BinnedTaggingPdf( BinnedTaggingPdf ) :
                                       , self._ABBbarsSame[cat0][cat1] if Bbar0 == Bbar1 else self._ABBbarsOpp[cat0][cat1]
                                      ]
 
-                tagBinCoefs.append( FormulaVar( self._namePF + 'tagBinCoef%d' % binIter, tagBinForm, tagBinArgs ) )
+                tagBinCoefs.append( self._parseArg( 'tagBinCoef%d' % binIter, kwargs, Formula = tagBinForm, Arguments = tagBinArgs
+                                   , ObjectType = 'FormulaVar' ) )
 
         # initialize TaggingPdf
         self._check_extraneous_kw( kwargs )

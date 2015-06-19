@@ -57,7 +57,16 @@ RooEffResModel::CacheElem::CacheElem(const RooEffResModel& parent, const RooArgS
    // the subset of iset on which the efficiency depends
    std::auto_ptr<const RooArgSet> effInt( eff.getObservables(iset) ); 
 
+   if (effInt->getSize()>1) {
+        std::cout << " got efficiency iset with more than 1 AbsArg -- not yet supported" << std::endl;
+        effInt->Print("V");
+   }
    assert(effInt->getSize() < 2); // for now, we only do 1D efficiency histograms...
+   //TODO: instead of the above, verify whether things factorize, i.e. 
+   //      allow the case where the overlap of effInt and model is 1D, and
+   //      all 'other' dependencies are from the efficiency only...
+   //      That works because we can then ingrate the 'ceff' coefficient below
+   //      over the remaining dependencies... 
    if (effInt->getSize()==0) {
       _I = model.createIntegral(iset,RooNameReg::str(rangeName)); 
       return;
@@ -93,7 +102,8 @@ RooEffResModel::CacheElem::CacheElem(const RooEffResModel& parent, const RooArgS
 
 //_____________________________________________________________________________
 RooEffResModel::RooEffResModel(const char *name, const char *title, RooResolutionModel& model, RooAbsReal& eff) 
-   : RooAbsEffResModel(name,title,model.convVar())
+   : RooResolutionModel(name, title, model.convVar()),
+     RooAbsEffResModel()
    , _observables("observables", "observables", this)
    , _model("!model","Original resolution model",this,model)
    , _eff("!efficiency","efficiency of convvar", this,eff)
@@ -105,7 +115,8 @@ RooEffResModel::RooEffResModel(const char *name, const char *title, RooResolutio
 
 //_____________________________________________________________________________
 RooEffResModel::RooEffResModel(const RooEffResModel& other, const char* name) 
-  : RooAbsEffResModel(other,name)
+  : RooResolutionModel(other, name),
+    RooAbsEffResModel()
   , _observables("observables", this, other._observables)
   , _model("!model",this,other._model)
   , _eff("!efficiency",this,other._eff)
@@ -164,8 +175,7 @@ RooEffResModel::convolution(RooFormulaVar* inBasis, RooAbsArg* owner) const
   TString newTitle = TString::Format("%s convoluted with basis function %s",conv->GetTitle(),inBasis->GetName()) ;
   conv->SetTitle(newTitle.Data()) ;
 
-  RooAbsReal* eff = efficiency();
-  RooEffResModel *effConv = new RooEffResModel(newName,newTitle, *conv, *eff);
+  RooEffResModel *effConv = new RooEffResModel(newName,newTitle, *conv, *static_cast<RooAbsReal*>(_eff.absArg()));
   effConv->addOwnedComponents(*conv);
   effConv->changeBasis(inBasis) ;
 
@@ -263,6 +273,11 @@ const RooArgList& RooEffResModel::getIntegralRanges(const RooArgSet& iset,
 
    RooArgList* ranges = new RooArgList;
    std::auto_ptr<std::list<Double_t> > bounds(efficiency()->binBoundaries(x, x.getMin(), x.getMax()));
+   if (bounds.get()==0) {
+        TString err = TString::Format( "RooEffResModel(%s): specified efficiency %s does not provide binBoundaries..." , GetName(), efficiency()->GetName() );
+        std::cout << err << std::endl;
+        throw err;
+   }
    std::list<Double_t>::const_iterator lo, hi = bounds->begin();
    for (unsigned int i = 0; i + 1 < bounds->size();++i) {
       lo = hi++;

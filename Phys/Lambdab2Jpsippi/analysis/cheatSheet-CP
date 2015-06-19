@@ -1,0 +1,11 @@
+TChain* TNN = new TChain("NetTree")
+TNN->Add("Lambdab-S20r1-1062-NN.root")
+TNN->Add("Lambdab-S20-1063-NN.root")
+TChain* TT = new TChain("TrainTree")
+TT->Add("Lambdab-S20r1-1062-All-SW.root")
+TT->Add("Lambdab-S20-1063-All-SW.root")
+TNN->AddFriend(TT)
+
+RooPlot* rasym = SandB(TNN,TNN,"PsiKpiMass[0]","Baryon==1","Baryon==-1","ErrorCode[0]==0","","remove",5000,5500)
+
+// need to start from full tuple, without paranoia cuts and require pidpi>0.1 and pipdK>0.1

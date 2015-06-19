@@ -4,6 +4,15 @@ from math import *
 from probavector import vector
 from matrixclass import matrix
 
+def Armenteros(p1,p2):
+    p = p1 + p2
+    pu = vunit(p)
+    pl1 = vdot(p1,pu)
+    pl2 = vdot(p2,pu)
+    ap_alpha = (pl1-pl2)/(pl1+pl2)
+    ap_pt = psqrt(vmod(p1)**2 - pl1**2)
+    return ap_alpha, ap_pt
+
 def ratio001(a,b):
     return abs(a -b)*(1./abs(a+b))
 

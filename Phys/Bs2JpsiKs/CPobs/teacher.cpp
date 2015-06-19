@@ -31,11 +31,11 @@ void analysis(string FileName = "teacherHistos.root",
 int trainOnce(const TString module, const TString data, const TString step,
               const TString dir, const TString decay,
               const TString weightMethod, const unsigned int tracktype,
-              const unsigned int prepFlag);
+              const int prepFlag);
 int runTeacher(const TString module, const TString data, const TString step,
                const TString dir, const TString decay,
                const TString weightMethod, const unsigned int tracktype,
-               const unsigned int prepFlag);
+               const int prepFlag);
 int prepareTrainingSample(IB2JpsiX* trainTuple, NeuroBayesTeacher* nb,
                           const TString step, const unsigned int tracktype,
                           const unsigned int target);
@@ -45,7 +45,7 @@ int prepareTrainingSample(IB2JpsiX* trainTuple, NeuroBayesTeacher* nb,
 int runTeacher(const TString module, const TString data, const TString step,
                const TString dir, const TString decay,
                const TString weightMethod,
-               const unsigned int tracktype, const unsigned int prepFlag) {
+               const unsigned int tracktype, const int prepFlag) {
 
   // Guard Clause
   if (step==m_NNKstar && tracktype==5) {
@@ -82,10 +82,18 @@ int runTeacher(const TString module, const TString data, const TString step,
   // *** Settings ***
   unsigned int nvar = trainTuple->nVar(step, tracktype);
   unsigned int nhidden = nvar;
-  if (step==m_NNUnbiased && prepFlag==1012) {
-    nhidden = (tracktype==m_LL ? 14 : 16);
-  } else if (step==m_NNUnbiased && prepFlag==1022) {
-    nhidden = 27;
+  if (step==m_NNUnbiased && TMath::Abs(prepFlag)==1012) {
+    nhidden = (tracktype==m_LL ? 16 : 25);
+  } else if (step==m_NNUnbiased && TMath::Abs(prepFlag)==1022) {
+    nhidden = (tracktype==m_LL ? 35 : 39);
+  } else if (step==m_NNUnbiased && TMath::Abs(prepFlag)==612) {
+    nhidden = (tracktype==m_LL ? 21 : 31);
+  } else if (step==m_NNKstar && TMath::Abs(prepFlag)==1012) {
+    nhidden = 3;
+  } else if (step==m_NNKstar && TMath::Abs(prepFlag)==1022) {
+    nhidden = 10;
+  } else if (step==m_NNKstar && TMath::Abs(prepFlag)==612) {
+    nhidden = 3;
   }
 
   // Task
@@ -105,9 +113,11 @@ int runTeacher(const TString module, const TString data, const TString step,
   nb->NB_DEF_ITER(1000);      // Number of training iteration
   nb->NB_DEF_METHOD("BFGS");  // Use BFGS algorith for optimisation
   nb->NB_DEF_LEARNDIAG(1);
-  nb->NB_DEF_MOM(0.5);        // Boost: Helps NB out of local minima
+  if (prepFlag>0) {
+    nb->NB_DEF_MOM(0.5);      // Boost: Helps NB out of local minima
+  }
   // General preprocessing
-  nb->NB_DEF_PRE(prepFlag);
+  nb->NB_DEF_PRE(TMath::Abs(prepFlag));
 
   // Individual preprocessing flags
   for (unsigned int i = 0; i!=nvar; i++) {
@@ -173,7 +183,7 @@ int prepareTrainingSample(IB2JpsiX* trainTuple, NeuroBayesTeacher* nb,
       sweight = trainTuple->weightVal(pv);
       unbiased = (step==m_NNUnbiased ? trainTuple->isUnbiased() : 1);
       // Select Teaching Sample
-      if (sweight<=-7 || trainTuple->TrackType()!=tracktype || unbiased==0) { 
+      if (sweight<=-7 || trainTuple->TrackType()!=tracktype) { 
         nFailed++;
         continue;
       } else if (sweight==ErrorCodes::KilledMuCa) {
@@ -231,7 +241,7 @@ int prepareTrainingSample(IB2JpsiX* trainTuple, NeuroBayesTeacher* nb,
 int trainOnce(const TString module, const TString data, const TString step,
               const TString dir, const TString decay,
               const TString weightMethod, const unsigned int tracktype,
-              const unsigned int prepFlag) {
+              const int prepFlag) {
 
   // *** Teach ***
   int out = runTeacher(module, data, step, dir, decay, weightMethod,
@@ -262,13 +272,15 @@ int main(int argc, char** argv) {
 
   // Extra argument
   unsigned int tracktype = 0;
-  unsigned int prepFlag = 1012;
+  int prepFlag = 1012;
   if (hasOpt) {
-    tracktype = (argc>3 ? (double) atoi(argv[3]) : 3);
-    prepFlag  = (argc>4 ? (double) atoi(argv[4]) : 1012);
+    tracktype = (argc>3 ? atoi(argv[3]) : 3);
+    prepFlag  = (argc>4 ? atoi(argv[4]) : 1012);
     std::cout << "Extra Arguments for " << module << std::endl;
     std::cout << "          Track Type: " << tracktype << std::endl;
-    std::cout << "  preprocessing Flag: " << prepFlag  << std::endl;
+    std::cout << "  Preprocessing Flag: " << TMath::Abs(prepFlag)  << std::endl;
+    std::cout << "      Momentum boost: " <<
+                                         (prepFlag>0 ? "0.5" : "No") << std::endl;
     std::cout << "########################################" << std::endl;
   }
   if (tracktype==0) {

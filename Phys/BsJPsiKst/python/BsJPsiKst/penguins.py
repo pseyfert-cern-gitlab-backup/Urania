@@ -37,7 +37,7 @@
 from math import *
 import os
 from penguin_inputs import * # gamma, eps constants
-
+from Urania.Mathematica import *
 
 
 ###############################################################################
@@ -404,7 +404,7 @@ for f in range(1,4):
 
 
     # Run mathematica and find theta
-    os.system("math < batch1.m")
+    mathematica_script("batch1.m")
     myfile = open("myOutput.txt","r")
 
 

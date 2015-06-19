@@ -1,8 +1,44 @@
 !-----------------------------------------------------------------------------
 ! Package     : PIDCalib/PIDPerfTools
-! Responsible : Andrew Powell
+! Responsible : Philip Hunt
 ! Purpose     : Classes for performing PID based studies
 !-----------------------------------------------------------------------------
+
+!============================================== v5r4 2013-10-9 ==============================
+! 2013-10-9 Diego Martinez Santos
+	 Make version v5r4
+! 2013-10-02 - Philip John Hunt
+ - Fix to PerfCalculator.icpp to avoid compilation errors on GCC4.8 in
+   Urania prerelease
+  * added strToDouble struct that implements the unary operation of converting
+    a string to a double (using boost::lexical_cast), which is used as 
+    an argument to std::transform in PerfCalculator<T>::Perf(const std::string&,
+		Bool_t)
+  * Added strToDouble and length structs to namespace PIDCalib to avoid
+    potential name collisions
+
+!============================== v5r3 18-09-2013 ============================
+
+! 2013-09-18 - Philip Hunt (LHCB)
+ - Make version v5r3
+
+! 2013-09-18 - Philip Hunt (LHCB)
+ - Added new method "SetTrackPtVarName" to MultiTrackCalibTool class
+ - Implementation of templated method MultiTrackCalibTool::ReOrderVector
+   has been moved to the header file
+ - MultiTrackCalibTool class methods that involve a const TString 
+   or std::string now accept a cost-reference, rather than a const-copy
+ - Changed the name of the maintainer of the package to myself, here and
+   in the requirements file
+ - MultiTrackCalibTool now explicitly initialises all data members in 
+   the constructor (some data members were not previously initialised)
+ - Checks for NULL pointers in MultiTrackCalibTool now explicitly
+   check for NULL pointers, rather than relying on implicit boolean 
+   conversion (for readability and code maintenance reasons)
+ - Minor update to src/TrackDataSet.cpp:
+   * The error messages in the Get_Param and Get_ParamName method resulting
+     from a non-existant internal parameter name now indicate which method
+     was called when the error occured
 
 !============================== v5r1p2 18-07-2013 ============================
 
@@ -320,58 +356,4 @@
 
 ! 2011-03-24 - Andrew Powell
  - Modified PerfCalculator to be a template class
-	 - Now allows both TrackDataSet and EvtDataSet to be passed to constructor 
-	 - Added PerfCalculator_imp.cpp to allow definition and implementation to reside in .h and .cpp files 
-
-! 2011-03-23 - Andrew Powell
- - Modified setup_env.csh to use ROOT v5.27
-	 - Bug in v5.28 TGraphAsymmErrors::Divide() reported: 
-		- https://savannah.cern.ch/bugs/index.php?78249
-
-! 2011-03-11 - Andrew Powell
- - Minor bug fix to correct lost cout information to terminal
-
-! 2011-03-09 - Andrew Powell
- - Minor change to requirements file to resolve compilation under i686-slc5:
-	  -lboost_regex -> $(Boost_linkopts_regex) 
-
-! 2011-02-28 - Andrew Powell
-	- Bug fixes in (Evt)TrackDataSet re. weighted reference samples 
-	- Compilation warnings resolved
-
-! 2011-02-08 - Andrew Powell
-  - Bug fix in PerfCalculator::Perf_Scan(list<const char*>,Bool_t) 
-
-! 2011-02-08 - Andrew Powell
-	- Added PIDResults.h
-	- Changed interface and added functionality to PerfCalculator.{h,cpp}.
-		- Possibility to determine effiencies with either Bayesian or Bayes' Theorem errors.
-		- TGraphAsymmErrors for efficiency vs DLL cut.
-		- Table for efficiencies in bins of P,PT,ETA.
-
-! 2011-01-30 - Andrew Powell
-	- Bug fix in DataBinCuts: Cuts now applied as [a,b) (half-open interval) and *not* (a,b) (open interval).
- 
-! 2011-01-17 - Andrew Powell
- - Added functionality to TrackDataSet and EvtTrackDataSet.
-	 - WeightInBins() takes an additional boolean argument to either. 
-			1) Preserve DataSet's overall size (kTRUE),
-		  2) Normalise to reference sample size (kFASLE).
-	 - ANDInBins() now considers a weight variable for the DataSet. 
-	 - SetInBinSchema() added. Returns DataSet within the 'global' acceptance of 
-	   a BinningSchema (vector<RooBinning*>).
-
-! 2011-01-11 - Andrew Powell
- - First import of package.
-
-	- TrackDataSet.{h,cpp}
-		A RooDataSet with parameters P, PT and ETA declared.
-
-	- EvtTrackDataSet.{h,cpp}
-	  A TrackDataSet with nTracks parameter declared.
-
-	- DataBinCuts.{h,cpp}
-	 	A simple helper class to construct a TCut for a given bin. 
-
-	- PerfCalulator.{h,cpp}
-	  Class to perform performance calculations on a RooDataSet.
+	 - Now allows both TrackDataSet and EvtDataSet to be passed to constructo

@@ -1,6 +1,5 @@
 import ROOT
 from PIDPerfScripts.RunRangeFuncs import *
-from GaudiPython import gbl
 import sys
 import exceptions
 import warnings
@@ -39,7 +38,7 @@ def GetMotherName(PartName):
     if PartName == 'K_MuonUnBiased' or PartName == 'Pi_MuonUnBiased':
         return 'DSt_MuonUnBiased'
     elif PartName == 'P_MuonUnBiased':
-        return 'Lam0'
+        return 'Lam0_MuonUnBiased'
     else:
         return 'Jpsi'
 
@@ -56,7 +55,7 @@ def GetWorkspaceName(PartName):
 
 def IsMuonUnBiased(PartName):
     CheckPartType(PartName)
-    if PartName in ("Mu", "K_MuonUnBiased", "Pi_MuonUnBiased", "P_MuonUnBiased"):
+    if PartName in GetMuonPIDPartTypes():
         return True
     else:
         return False
@@ -164,11 +163,15 @@ def GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, index, verbose=False,
     if fname_head is None:
         raise GetEnvError("Cannot retrieve dataset, environmental variable %s has not been set." %vname_head)
     
-    fname = "{prtcol}{topdir}/Reco{reco}_DATA/{pol}/{mother}_{part}_{pol}_Strip{strp}_{idx}.root{qry}".format(
+    fname = ("{prtcol}{topdir}/Reco{reco}_DATA/{pol}/"
+             "{mother}_{part}_{pol}_Strip{strp}_{idx}.root{qry}").format(
         prtcol=fname_protocol, topdir=fname_head, reco=DataDict['RecoVer'],
         pol=MagPolarity, mother=DataSetNameDict['MotherName'],
         part=PartType, strp=StripVer, idx=index, qry=fname_query)
-    
+   
+    if verbose:
+      print "Attempting to open file {0} for reading".format(fname)
+        
     f = ROOT.TFile.Open(fname)
     if not f:
         if allowMissingDataSets:
@@ -189,30 +192,60 @@ def GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, index, verbose=False,
     #======================================================================
     # Declare Instance of RICHTrackDataSet for Calibration tracks
     #======================================================================
+    ROOT.gSystem.Load('libRooStats.so')
+    ROOT.gSystem.Load('libCintex.so')
+    cintex=ROOT.Cintex
+    cintex.Enable()
+    ROOT.gSystem.Load('libPIDPerfToolsLib.so')
+    ROOT.gSystem.Load('libPIDPerfToolsDict.so')
+
+    DataSet = None
+    dsType = None
+    if (DataDict['RecoVer']>=14):
+        dsType = 'PIDTrackDataSet'
+        DataSet = ROOT.PIDTrackDataSet('Calib_Data'
+                                       , ''
+                                       , Data
+                                       , Data.get()
+                                       , PartType+'_P'
+                                       , PartType+'_PT'
+                                       , PartType+'_Eta'
+                                       , 'nTracks'
+                                       , PartType+'_CombDLLK'
+                                       , PartType+'_CombDLLp'
+                                       , PartType+'_CombDLLe'
+                                       , PartType+'_CombDLLmu'
+                                       , PartType+'_IsMuon'
+                                       , PartType+'_IsMuonLoose'
+                                       , PartType+'_nShared'
+                                       , PartType+'_ProbNNK'
+                                       , PartType+'_ProbNNpi'
+                                       , PartType+'_ProbNNp'
+                                       , PartType+'_ProbNNmu'
+                                       , PartType+'_ProbNNe'
+                                       , TrackCuts
+                                       , 'nsig_sw'
+                                       )
+
+    else:
+        dsType = 'RICHTrackDataSet'
+        DataSet = ROOT.RICHTrackDataSet('Calib_Data'
+                                        , ''
+                                        , Data
+                                        , Data.get()
+                                        , PartType+'_P'
+                                        , PartType+'_PT'
+                                        , PartType+'_Eta'
+                                        , 'nTracks'
+                                        , PartType+'_CombDLLK'
+                                        , PartType+'_CombDLLp'
+                                        , PartType+'_ProbNNK'
+                                        , PartType+'_ProbNNpi'
+                                        , PartType+'_ProbNNp'
+                                        , TrackCuts
+                                        , 'nsig_sw'
+                                        )
         
-    DataSet = gbl.PIDTrackDataSet('Calib_Data'
-                                  , ''
-                                  , Data
-                                  , Data.get()
-                                  , PartType+'_P'
-                                  , PartType+'_PT'
-                                  , PartType+'_Eta'
-                                  , 'nTracks'
-                                  , PartType+'_CombDLLK'
-                                  , PartType+'_CombDLLp'
-                                  , PartType+'_CombDLLe'
-                                  , PartType+'_CombDLLmu'
-                                  , PartType+'_IsMuon'
-                                  , PartType+'_IsMuonLoose'
-                                  , PartType+'_nShared'
-                                  , PartType+'_ProbNNK'
-                                  , PartType+'_ProbNNpi'
-                                  , PartType+'_ProbNNp'
-                                  , PartType+'_ProbNNmu'
-                                  , PartType+'_ProbNNe'
-                                  , TrackCuts
-                                  , 'nsig_sw'
-                                  )
     ws.Delete()
     f.Close()
     if verbose:
@@ -222,10 +255,12 @@ def GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, index, verbose=False,
     # Sanity test: do we have a dataset, and is it empty?
     #======================================================================
     if DataSet is None:
-        raise RooDataSetError("Failed to create PIDTrackDataSet from RooDataSet")
+        raise RooDataSetError("Failed to create {0} from RooDataSet".format(
+            dsType))
         
     if DataSet.sumEntries()==0:
-        raise RooDataSetError("PIDTrackDataSet contains no entries")
+        raise RooDataSetError("{0} contains no entries".format(
+            dsType))
 
     if verbose:
         DataSet.Print('v')
@@ -244,8 +279,11 @@ def GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, index, verbose=False,
     # Veto ranges with insufficient statistics
     #======================================================================
     if DataSet.sumEntries()<minEntries:
-        warnings.warn( 'Insufficient events in PIDTrackDataSet ({nEvt}). Requested at least {minEvts} entries. Skipping this sumsample'.format(
-            nEvt=DataSet.sumEntries(), minEvts=minEntries) )
+        msg=('Insufficient events in {dsType} ({nEvt}). '
+             'Requested at least {minEvts} entries. '
+             'Skipping this sumsample').format(
+            dsType=dsType, nEvt=DataSet.sumEntries(), minEvts=minEntries)
+        warnings.warn( msg )
         return None
                   
     return DataSet

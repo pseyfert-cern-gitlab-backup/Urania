@@ -6,6 +6,19 @@
 ##                                                                                                                                       ##
 ###########################################################################################################################################
 
+_parNamePrefix = ''
+
+def setParNamePrefix(prefix) :
+    global _parNamePrefix
+    if prefix : _parNamePrefix = prefix
+    else      : _parNamePrefix = ''
+
+def getParNamePrefix( fullPrefix = False ) :
+    global _parNamePrefix
+    if not _parNamePrefix : return ''
+    if fullPrefix : return _parNamePrefix + '_'
+    return _parNamePrefix
+
 class _util_parse_mixin( object ) :
     def parameters( self ) :
         return self._params
@@ -15,31 +28,51 @@ class _util_parse_mixin( object ) :
             if par.GetName() == name : return par
         return None
 
-    def _parseArg( self, arg, kwargs, **parsDict ) :
-        def _create( arg, kwargs, **parsDict ) :
+    def getNamePrefix( self, kwargs ) :
+        if hasattr( self, '_namePF' ) :
+            assert 'ParNamePrefix' not in kwargs or kwargs['ParNamePrefix'] == self._namePF\
+                , 'P2VV -- ERROR: _util_parse_mixin.getNamePrefix: parameter name prefix from arguments is not equal to existing prefix'
+        else :
+            self._namePF = kwargs.pop( 'ParNamePrefix', None )
+
+        if self._namePF : return self._namePF + '_'
+        else :            return getParNamePrefix(True)
+
+    def _parseArg( self, argName, kwargs, **parsDict ) :
+        def _create( argName, kwargs, **parsDict ) :
+            # get dictionary of parameters to construct the variable
+            if argName in kwargs :
+                argPars = kwargs.pop(argName)
+                parsDict.pop( argName, None )
+            else :
+                argPars = parsDict.pop( argName, { } )
+
+            # parse parameter dictionary
             import P2VV.RooFitWrappers
-            from copy import copy
-            _parsDict = copy(parsDict) # make sure we do not modify the input!!!
-            objType      = _parsDict.pop( 'ObjectType',   'RealVar' )
-            singleArgKey = _parsDict.pop( 'SingleArgKey', 'Value'   )
-            if arg in kwargs or arg in _parsDict :
-                argPars = kwargs.pop(arg) if arg in kwargs else _parsDict.pop(arg)
+            singleArgKey = parsDict.pop( 'SingleArgKey', 'Value' )
+            if argPars :
                 if isinstance( argPars, P2VV.RooFitWrappers.RooObject ) : return argPars
-                if type(argPars) == dict and 'ObjectType' in argPars : objType = argPars.pop('ObjectType')
-                _parsDict.update( argPars if type(argPars) == dict else { singleArgKey : argPars } )
-            if 'Name' not in _parsDict : _parsDict[ 'Name' ] = arg
+                parsDict.update( argPars if type(argPars) == dict else { singleArgKey : argPars } )
 
-            return vars(P2VV.RooFitWrappers)[objType](**_parsDict)
+            # construct variable name
+            if 'Name' not in parsDict : parsDict['Name'] = argName
+            namePF = self.getNamePrefix(kwargs)
+            if 'NamePrefix' in parsDict :
+                namePF = parsDict.pop('NamePrefix')
+                if namePF : namePF += '_'
+            if not parsDict.get( 'Observable', False ) and namePF : parsDict['Name'] = namePF + parsDict['Name']
 
-        # get object containter list
-        contList = parsDict.pop( 'ContainerList', None )
+            # create variable
+            objType = parsDict.pop( 'ObjectType', 'RealVar' )
+            return vars(P2VV.RooFitWrappers)[objType](**parsDict)
 
         # create object
-        obj = _create( arg, kwargs, **parsDict )
+        contList = parsDict.pop( 'ContainerList', None )
+        obj = _create( argName, kwargs, **parsDict )
 
         # either put object in container list or set it as attribute
         if contList != None : contList.append(obj)
-        else : setattr( self, '_%s' % arg, obj )
+        else : setattr( self, '_%s' % argName, obj )
 
         # put object in parameters
         if not hasattr( self, '_params' ) : self._params = []
@@ -72,25 +105,34 @@ class _util_parse_mixin( object ) :
 
 class _util_extConstraints_mixin( object ) :
     def __init__( self, kwargs ) :
-        if   'Constraints' in kwargs : self._constraints = [ constraint for constraint in kwargs.pop('Constraints') ]
-        elif 'Constraint'  in kwargs : self._constraints = [ kwargs.pop('Constraint') ]
-        else                         : self._constraints = [  ]
+        assert not hasattr(self,'_constraints')
+        if   'Constraints' in kwargs : self._constraints = kwargs.pop('Constraints') 
+        elif 'Constraint'  in kwargs : self._constraints = set(kwargs.pop('Constraint') )
+        else                         : self._constraints = set()
+        assert hasattr(self,'_constraints')
 
-    def externalConstraints( self ) : return self._constraints
+    def ExternalConstraints( self ) : return self._constraints
     def hasExtConstraints( self )   : return len(self._constraints) > 0
+
+    def addConstraint( self, constr ) :
+        self._constraints.add(constr)
+
+    def addConstraints( self, constrList ) :
+        for constr in constrList : self.addConstraint(constr)
 
 class _util_conditionalObs_mixin( object ) :
     def __init__( self, kwargs ) :
-        if   'Conditionals' in kwargs : self._conditionals = [ conditional for conditional in kwargs.pop('Conditionals') ]
-        elif 'Conditional'  in kwargs : self._conditionals = [ kwargs.pop('Conditional') ]
-        else                          : self._conditionals = [  ]
+        assert not hasattr(self,'_conditionals')
+        if   'Conditionals' in kwargs : self._conditionals = set( kwargs.pop('Conditionals') )
+        elif 'Conditional'  in kwargs : self._conditionals = set( kwargs.pop('Conditional') )
+        elif 'ConditionalObservables'  in kwargs : self._conditionals = set( kwargs.pop('ConditionalObservables') )
+        else                          : self._conditionals = set()
+        assert hasattr(self,'_conditionals')
 
-    def conditionalObservables( self ) : return self._conditionals
-    def hasCondObservables( self )     : return len(self._conditionals) > 0
+    def ConditionalObservables( self ) : return self._conditionals
 
     def addConditional( self, condObs ) :
-        if not condObs in self._conditionals : self._conditionals.append(condObs)
-        else : print 'P2VV - WARNING: _util_conditionalObs_mixin.addConditional(): observable "%s" is already conditional' % condObs
+        self._conditionals.add(condObs)
 
     def addConditionals( self, condObsList ) :
         for obs in condObsList : self.addConditional(obs)

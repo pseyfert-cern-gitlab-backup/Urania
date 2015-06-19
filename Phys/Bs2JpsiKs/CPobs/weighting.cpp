@@ -89,7 +89,7 @@ weighting::weighting(const TString module, const TString data,
   m_weightMethod = weightMethod;
   m_data = data;
   m_step = step;
-  m_fitBs = true;
+  m_fitBs = true; //!(data==m_LHCb2012Prescaled);
   m_fitKstar = (m_step==m_NNKstar ? true : false);
   m_doOptimisation = doOptimisation;
 
@@ -229,7 +229,10 @@ int weighting::fillDataSet(const double netCut_LL, const double netCut_DD) {
     for ( unsigned int pv = 0; pv!=nPV; pv++) {
       bool pass = false;
       if (m_step==m_NNKstar) {
-        pass = m_ntuple->applyAllCuts(m_data, pv);
+        pass = (m_ntuple->applyAllCuts(m_data, pv) &&
+          (m_ntuple->jpsiIPchi2(pv)<0 ||
+           (addLL==1 && m_ntuple->jpsiIPchi2(pv)>ipcut_LL) ||
+           (addLL==0 && m_ntuple->jpsiIPchi2(pv)>ipcut_DD)));
       } else {
         pass = 
            ((m_ntuple->TrackType()==3 && m_ntuple->neuralnet(pv)>=netCut_LL) ||
@@ -452,8 +455,14 @@ int weighting::fit(const unsigned int tracktype) {
   bool m_addKstar = (tracktype!=m_DD && m_fitKstar ? true : false);
   JpsiKsPdf* jpsiKsExt = new JpsiKsPdf(m_tag, m_mass, m_fitBs, m_addKstar,
     (tracktype==m_LL ? 3 : 5), m_step, numGood);
-  //jpsiKsExt->setConstant("Kstar");
-  
+  if (m_data==m_LHCb2012Prescaled) {
+    if (tracktype==m_LL) {
+      jpsiKsExt->setConstant("Prescaled_LL");
+    } else {
+      jpsiKsExt->setConstant("Prescaled_DD");
+    }
+  }
+
   // *** Fit ***
   bool weightedFit = (m_weightMethod==m_weighted ||
                       m_weightMethod==m_downscaled);
@@ -1026,7 +1035,7 @@ int weighting::writeTree() {
         TMath::Abs(sumBkg - fit_nbkg_LL - fit_nbkg_DD)>35) {
       std::cout << "ERROR: Mismatch between number of fitted and filled events"
                 << std::endl;
-      return -1;
+      if (!isPrescaled (m_data)) return -1;
     }
     std::cout << "########################################" << std::endl; 
   }

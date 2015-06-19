@@ -8,7 +8,6 @@
 #
 #  requires: scipy (scientific python)
 #
-#  version: v2r0
 #  authors: J.A Hernando (CERN,USC), D. Martinez (USC) 
 #               Santiago de Compostela, December 5 2007
 #-------------------------------------------------------------------
@@ -25,6 +24,8 @@ if not "matrixmultiply" in dir(numpy):
 f = file(os.environ["SOMEUTILSROOT"] + "/operators/toGauss_2008","r")
 sq2 = sqrt(2)
 toGauss_0 = cPickle.load(f)
+from numericFunctionClass import NF
+toGauss_0.inverse = NF(toGauss_0.DataBase.values(), toGauss_0.DataBase.keys())
 
 # number of minimum entries per uniform bin
 NMIN = 10
@@ -33,10 +34,16 @@ NBINSMAX = 500
 
 import scipy.special
 erfi = scipy.special.erfinv  ### SEEMS TO BE TOO SLOW
+erf = scipy.special.erf
+rnd = scipy.random
 
+sq2i = 1./sq2
 def toGauss(x):
     if x>0.99 or x < 0.01: return sq2*erfi(2*x-1)
     else: return toGauss_0(x)
+def toGauss_inv(x):
+    if abs(x) > 2.3263478740408408: return 0.5*(erf(x*sq2i)+1)
+    else: return toGauss_0.inverse(x)
 
 def mean(var):
     total = 0
@@ -185,6 +192,7 @@ class UnCorrGaussOperator:
         # create a unifun function of Gaussian to Uniform -> Gaussian transformations
 	#gaussianNumbers = []
         n0 = len(xmultivars[0])
+        
 	#for i in range(10000): gaussianNumbers.append(gauss(0.,1.)) ####OJO
 
 	def _UFS(mvars):
@@ -220,6 +228,7 @@ class UnCorrGaussOperator:
         
         # construct the uniform functions of the projected variables
 	self.U2FS = _UFS(x2)
+        self.Nvars = len(self.U2FS)
         # transform the projected variables into final ones
         
     def gaussianize(self,inputvars,UFS):
@@ -264,6 +273,28 @@ class UnCorrGaussOperator:
 	x2 = numpy.array(numpy.matrixmultiply(self.R,numpy.array(x1)))
         
 	return self.gaussianize(x2[0],self.U2FS)
+    
+    def FlatToOrigin(self, q):
+        w = []
+        for i in range(self.Nvars):
+            w.append(self.U2FS[i].inverse(q[i]))
+        w2 = numpy.matrixmultiply(self.R.I,numpy.array(w))
+        w2 = w2.tolist()[0]
+        out = []
+        for i in range(self.Nvars):
+            out.append(self.U1FS[i].inverse(toGauss_inv(w2[i])))    
+        return out
+    
+    def generate(self,N):
+        g = lambda x: rnd.random()
+        l = self.Nvars*[0.]
+        out_ = N*[self.Nvars*[0.]]
+        out = numpy.matrix(out_)
+        for i in range(N):
+            q = map(g,l)
+            out[i] = self.FlatToOrigin(q)
+        return out.transpose()
+            
 
 class GaussDiscriminantOperator:
     """ GaussDiscriminatOperator provides a discriminating variable between signal and noise

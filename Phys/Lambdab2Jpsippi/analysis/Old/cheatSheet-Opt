@@ -1,0 +1,383 @@
+root.exe
+TString NN = "opt"
+TString year = "2011"
+TString fN = ("2012"==year?"S20-951":"S20r1-950");
+char* text = "LHCb"
+TFile *_fileOpt = TFile::Open("Lambdab-"+fN+"-"+NN+"-SW.root")
+_fileOpt->ls()
+TTree* SW = (TTree*)_fileOpt->Get("WeightTree")
+gStyle->SetPalette(0)
+TFile *_fileNN = TFile::Open("Lambdab-"+fN+"-NN.root")
+TTree* NT = (TTree*)_fileNN->Get("NetTree")
+SW->AddFriend(NT)
+SW->Draw("PsippiMass:wPsippiMass","sweightLb>-5")
+TFile *_fileMC = TFile::Open("LambdabMC-MC11-Lb2Jpsippi-716-NN.root")
+TTree* MC = (TTree*)_fileMC->Get("NetTree")
+TCut OptimalNN("netOutput>0.846")
+TCut Signal("Category==1 && BKGCAT==0")
+TFile *_fileMCK = TFile::Open("LambdabMC-MC11-Lb2JpsipK-718-NN.root")
+TTree* MCK = (TTree*)_fileMCK->Get("NetTree")
+TCut KSignal("Category==-1 && BKGCAT==1")
+
+const double m_psi = 3096.916 ;
+const double m_p   =  938.272 ;
+const double m_pi  =  139.570 ;
+const double m_Lb  =  5620.0 ;
+const double m_K  =  493.677 ;
+
+char* WL = "sweightLb*(sweightLb>-5)*(wCategory==1)"
+char* WB = "sweightBkg*(sweightLb>-5)*(wCategory==1)"
+char* WLK = "sweightLb*(sweightLb>-5)*(wCategory==-1)"
+char* WBK = "sweightBkg*(sweightLb>-5)*(wCategory==-1)"
+char* WLB = "sweightLb*(sweightLb>-5)*(wBaryon==1)*(wCategory==1)"
+char* WLA = "sweightLb*(sweightLb>-5)*(wBaryon==-1)*(wCategory==1)"
+char* WLBK = "sweightLb*(sweightLb>-5)*(wBaryon==1)*(wCategory==-1)"
+char* WLAK = "sweightLb*(sweightLb>-5)*(wBaryon==-1)*(wCategory==-1)"
+
+// ======================================================= plots
+//_fileOpt->Get("TC_PsipKFit")->Draw()
+//_fileOpt->Get("TC_PsipKFitB")->Draw()
+_fileOpt->Get("TC_PsipKFitC")->Draw()
+png("TC_PsipKFit-"+NN)
+//_fileOpt->Get("TC_PsippiFit")->Draw()
+//_fileOpt->Get("TC_PsippiFitB")->Draw()
+_fileOpt->Get("TC_PsippiFitC")->Draw()
+png("TC_PsippiFit-"+NN)
+
+_fileOpt->Get("TC_PsipKFitBC")->Draw()
+png("TC_PsipKFitB-"+NN)
+_fileOpt->Get("TC_PsipKFitABC")->Draw()
+png("TC_PsipKFitAB-"+NN)
+_fileOpt->Get("TC_PsippiFitBC")->Draw()
+png("TC_PsippiFitB-"+NN)
+_fileOpt->Get("TC_PsippiFitABC")->Draw()
+png("TC_PsippiFitAB-"+NN)
+
+RooPlot* ppiFit = _fileOpt->Get("PsippiFit")
+ppiFit->SetMinimum(2)
+ppiFit->Draw()
+printLHCb("R","Other",text)
+png("PsippiFit-"+NN)
+
+gPad->SetLogy()
+RooPlot* pKFit = _fileOpt->Get("PsipKFit")
+pKFit->Draw()
+png("PsipKFit-"+NN)
+
+// ======================================================= optimisation
+((TH1D*)_fileOpt->Get("signal NN Category==1"))->Draw()
+((TH1D*)_fileOpt->Get("background NN Category==1"))->Draw()
+gPad->SetLogy()
+RooPlot* r = NiceRooPlot(((TH1D*)_fileOpt->Get("signal NN Category==1")),((TH1D*)_fileOpt->Get("background NN Category==1")),0,0,"NM")
+r->SetXTitle("Neural net output");
+png("Signal and Background -"+NN)
+
+//gPad->SetLogy(0)
+TGraphErrors* gp = _fileOpt->Get("FoM2 Category==1")
+TGraphErrors* gp2 = _fileOpt->Get("Best FoM Category==1")
+cout << gp2->GetX()[0] << " " << gp2->GetY()[0] << endl ;
+
+TH1 *frame = new TH1F("frame","",1000,-1,1);
+frame->SetMinimum(0);
+frame->SetMaximum(0.015);
+frame->SetDirectory(0);
+frame->SetStats(0);
+frame->Draw(" ")
+frame->GetXaxis()->SetTitle("NN cut")
+frame->GetYaxis()->SetTitle("F.o.M.")
+gPad->SetLogy(0)
+gp2->SetMarkerStyle(0)
+gp->Draw("")
+gp2->SetMarkerStyle(20)
+gp2->SetMarkerColor(2)
+gp2->Draw("P")
+png("FoM-"+NN)
+
+frame->GetXaxis()->SetLimits(0.5,1)
+frame->SetMinimum(0.010);
+frame->SetMaximum(0.013);
+frame->Draw(" ")
+gPad->SetLogy(0)
+gp2->SetMarkerStyle(0)
+gp->Draw("")
+gp2->SetMarkerStyle(20)
+gp2->SetMarkerColor(2)
+gp2->SetLineColor(2)
+gp2->Draw("P")
+png("FoM zoom-"+NN)
+
+
+gPad->SetLogy(0)
+gPad->SetLogx(0)
+TGraph* p = _fileOpt->Get("Pareto Category==1")
+TGraph* g = _fileOpt->Get("Best Category==1")
+g->SetMarkerStyle(20)
+g->SetMarkerColor(2)
+TH2D* h= Make2DPlot("Pareto","Signal Efficiency",100,0.0,1,"Background Efficiency",10000,0.0,1)
+h->GetXaxis()->SetLimits(0.0,1)
+h->Draw()
+p->Draw()
+g->Draw("p")
+png("Pareto Lin "+NN)
+
+gPad->SetLogy(1)
+gPad->SetLogx(0)
+// h->GetXaxis()->SetLimits(0.08,1)
+h->Draw()
+p->Draw()
+g->Draw("p")
+png("Pareto Log "+NN)
+
+gPad->SetLogy(0)
+gPad->SetLogx(0)
+
+
+TH1D* sb = (TH1D*)_fileOpt->Get("s to s and B Category==1")
+sb->SetStats(0)
+sb->GetXaxis()->SetTitle("NN cut")
+sb->GetYaxis()->SetTitle("S/sqrt(S+B)")
+sb->Draw()
+png("Signal to sqrt"+NN)
+
+//----------------------------------------------------------------------------
+// Non optimal cuts 
+//----------------------------------------------------------------------------
+TFile::Open("Lambdab-"+fN+"-0.95-SW.root")->Get("TC_PsippiFitC")->Draw()
+png("TC_PsippiFitC_0.95")
+TFile::Open("Lambdab-"+fN+"-0.9-SW.root")->Get("TC_PsippiFitC")->Draw()
+png("TC_PsippiFitC_0.9")
+TFile::Open("Lambdab-"+fN+"-0.85-SW.root")->Get("TC_PsippiFitC")->Draw()
+png("TC_PsippiFitC_0.85")
+TFile::Open("Lambdab-"+fN+"-0.8-SW.root")->Get("TC_PsippiFitC")->Draw()
+png("TC_PsippiFitC_0.8")
+TFile::Open("Lambdab-"+fN+"-0.75-SW.root")->Get("TC_PsippiFitC")->Draw()
+png("TC_PsippiFitC_0.75")
+TFile::Open("Lambdab-"+fN+"-0.7-SW.root")->Get("TC_PsippiFitC")->Draw()
+png("TC_PsippiFitC_0.7")
+TFile::Open("Lambdab-"+fN+"-0.6-SW.root")->Get("TC_PsippiFitC")->Draw()
+png("TC_PsippiFitC_0.6")
+TFile::Open("Lambdab-"+fN+"-0.5-SW.root")->Get("TC_PsippiFitC")->Draw()
+png("TC_PsippiFitC_0.5")
+TFile::Open("Lambdab-"+fN+"-0.4-SW.root")->Get("TC_PsippiFitC")->Draw()
+png("TC_PsippiFitC_0.4")
+TFile::Open("Lambdab-"+fN+"-0.3-SW.root")->Get("TC_PsippiFitC")->Draw()
+png("TC_PsippiFitC_0.3")
+TFile::Open("Lambdab-"+fN+"-0.2-SW.root")->Get("TC_PsippiFitC")->Draw()
+png("TC_PsippiFitC_0.2")
+TFile::Open("Lambdab-"+fN+"-0.1-SW.root")->Get("TC_PsippiFitC")->Draw()
+png("TC_PsippiFitC_0.1")
+TFile::Open("Lambdab-"+fN+"-0-SW.root")->Get("TC_PsippiFitC")->Draw()
+png("TC_PsippiFitC_0")
+TFile::Open("Lambdab-"+fN+"--0.5-SW.root")->Get("TC_PsippiFitC")->Draw()
+png("TC_PsippiFitC_-0.5")
+TFile::Open("Lambdab-"+fN+"--1.0-SW.root")->Get("TC_PsippiFitC")->Draw()
+png("TC_PsippiFitC_-1")
+
+//----------------------------------------------------------------------------
+// CP  weighting
+//----------------------------------------------------------------------------
+
+
+SandB(SW,0,"wBaryon==1",WL,WB,"","IN","wBaryon",0,1) // seems OK
+
+SandB(SW,0,"wMass",WLB,WLA,"","N","wBaryon",5500,5800,75)    //  5613.58 (447.589), 5612.06 (414.497)
+SandB(SW,0,"wMass",WLBK,WLAK,"","N","wBaryonK",5500,5800,75) //  5620.06 (4794.29), 5620.26 (4681.91)
+//----------------------------------------------------------------------------
+// MC 
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
+// ppi mass
+//----------------------------------------------------------------------------
+RooPlot* r = SandB(SW,0,"sqrt(pMMass2)",WL,WB,"","","remove",m_p+m_pi,m_Lb-m_psi,29)
+r->SetXTitle("m_{p#pi} [MeV/c^{2}]");
+png("ppiMass S and B")
+r = SandB(SW,MC,"sqrt(pMMass2)",WL,OptimalNN && Signal,"","N","remove",m_p+m_pi,m_Lb-m_psi,29)
+overlay_line(1440,r,1)
+overlay_line(1520,r,1)
+overlay_line(1535,r,1)
+overlay_line(1650,r,1)
+overlay_line(1700,r,1)
+overlay_line(1710,r,1)
+overlay_line(1720,r,1)
+overlay_line(1875,r,1)
+overlay_line(1880,r,1)
+overlay_line(1895,r,1)
+overlay_line(1900,r,1)
+overlay_line(2040,r,1)
+overlay_line(2100,r,1)
+overlay_line(2120,r,1)
+r->SetXTitle("m_{p#pi} [MeV/c^{2}]");
+png("ppiMass S and MC")
+
+r = SandB(SW,0,"sqrt(psiMMass2)",WL,WB,"","","remove",m_psi+m_pi,m_Lb-m_p,29)
+r->SetXTitle("m_{J/#psi#pi} [MeV/c^{2}]");
+png("psipiMass S and B")
+r = SandB(SW,MC,"sqrt(psiMMass2)",WL,OptimalNN && Signal,"","N","remove",m_psi+m_pi,m_Lb-m_p,29)
+r->SetXTitle("m_{J/#psi#pi} [MeV/c^{2}]");
+overlay_line(4051,r,1)
+overlay_line(4248,r,1)
+overlay_line(4443,r,1)
+png("psipiMass S and MC")
+
+r = SandB(SW,0,"sqrt(psipMass2)",WL,WB,"","","remove",m_psi+m_p,m_Lb-m_pi,29)
+r->SetXTitle("m_{J/#psip} [MeV/c^{2}]");
+png("psipMass S and B")
+r = SandB(SW,MC,"sqrt(psipMass2)",WL,OptimalNN && Signal,"","N","remove",m_psi+m_p,m_Lb-m_pi,29)
+r->SetXTitle("m_{J/#psip} [MeV/c^{2}]");
+png("psipMass S and MC")
+
+
+TH2D* h2 = Make2DPlot("h2","m_{p#pi}^{2} [GeV^{2}/c^{4}]",22,1,6.5,"m_{J/#psi#pi}^{2} [GeV^{2}/c^{4}]",24,10,22)
+TH2D* h2l = Make2DPlot("h2l","m_{p#pi}^{2} [GeV^{2}/c^{4}]",1100,1,6.5,"m_{J/#psi#pi}^{2} [GeV^{2}/c^{4}]",1200,10,22)
+TH2D* h2mc = Make2DPlot("h2mc","m_{p#pi}^{2} [GeV^{2}/c^{4}]",1100,1,6.5,"m_{J/#psi#pi}^{2} [GeV^{2}/c^{4}]",1200,10,22)
+
+SW->Draw("psiMMass2/1e6:pMMass2/1e6 >> h2",WL)
+gPad->SetLogz(1)
+h2->Draw("COLZ")
+png("Colourful Dalitz")
+
+gPad->SetLogz(0)
+SW->Draw("psiMMass2/1e6:pMMass2/1e6 >> h2l",OptimalNN && "abs(PsippiMass-5620)<20" && "Category==1")
+h2l->Draw()
+png("Dotted Dalitz")
+
+gPad->SetLogz(0)
+MC->Draw("psiMMass2/1e6:pMMass2/1e6 >> h2mc",OptimalNN && Signal)
+h2mc->Draw()
+png("Dotted MC Dalitz")
+h2l->SetMarkerStyle(20)
+h2l->Draw("same")
+png("Dotted MC and Data Dalitz")
+
+gPad->SetLogz(0)
+c1.SetTheta(30);  //theta angle=66 degrees
+c1.SetPhi(-40);
+h2->Draw("lego2")
+png("Dalitz 3D")
+
+
+//----------------------------------------------------------------------------
+// pK mass
+//----------------------------------------------------------------------------
+
+RooPlot* r = SandB(SW,0,"sqrt(pMMass2)",WLK,WBK,"","","remove",m_p+m_K,m_Lb-m_psi,55)
+r->SetXTitle("m_{pK} [MeV/c^{2}]");
+png("pKMass S and B (K)")
+r = SandB(SW,MCK,"sqrt(pMMass2)",WLK,OptimalNN && KSignal,"","N","remove",m_p+m_K,m_Lb-m_psi,55)
+overlay_line(1520,r,1)
+overlay_line(1600,r,1)
+overlay_line(1670,r,1)
+overlay_line(1690,r,1)
+overlay_line(1800,r,1)
+overlay_line(1810,r,1)
+overlay_line(1820,r,1)
+overlay_line(1830,r,1)
+overlay_line(1890,r,1)
+overlay_line(2325,r,1)
+r->SetXTitle("m_{pK} [MeV/c^{2}]");
+png("pKMass S and MC (K)")
+
+r = SandB(SW,0,"sqrt(psiMMass2)",WLK,WBK,"","","remove",m_psi+m_K,m_Lb-m_p,55)
+r->SetXTitle("m_{J/#psiK} [MeV/c^{2}]");
+png("psiKMass S and B (K)")
+r = SandB(SW,MCK,"sqrt(psiMMass2)",WLK,OptimalNN && KSignal,"","N","remove",m_psi+m_K,m_Lb-m_p,55)
+r->SetXTitle("m_{J/#psiK} [MeV/c^{2}]");
+png("psiKMass S and MC (K)")
+
+r = SandB(SW,0,"sqrt(psipMass2)",WLK,WBK,"","","remove",m_psi+m_p,m_Lb-m_K,55)
+r->SetXTitle("m_{J/#psip} [MeV/c^{2}]");
+png("psipMass S and B (K)")
+r = SandB(SW,MCK,"sqrt(psipMass2)",WLK,OptimalNN && KSignal,"","N","remove",m_psi+m_p,m_Lb-m_K,55)
+r->SetXTitle("m_{J/#psip} [MeV/c^{2}]");
+png("psipMass S and MC (K)")
+
+
+TH2D* h2 = Make2DPlot("h2","m_{pK}^{2} [GeV^{2}/c^{4}]",23,1.9,6.5,"m_{J/#psiK}^{2} [GeV^{2}/c^{4}]",23,12,22.5)
+TH2D* h2l = Make2DPlot("h2l","m_{pK}^{2} [GeV^{2}/c^{4}]",900,2,6.5,"m_{J/#psiK}^{2} [GeV^{2}/c^{4}]",1100,12,22)
+TH2D* h2mc = Make2DPlot("h2mc","m_{pK}^{2} [GeV^{2}/c^{4}]",900,2,6.5,"m_{J/#psiK}^{2} [GeV^{2}/c^{4}]",1100,12,22)
+
+SW->Draw("psiMMass2/1e6:pMMass2/1e6 >> h2",OptimalNN && "abs(PsipKMass-5620)<13" && "Category==-1")
+gPad->SetLogz(1)
+h2->Draw("COLZ")
+png("Colourful Dalitz (K)")
+
+gPad->SetLogz(0)
+SW->Draw("psiMMass2/1e6:pMMass2/1e6 >> h2l",OptimalNN && "abs(PsipKMass-5620)<13" && "Category==-1")
+h2l->Draw()
+png("Dotted Dalitz (K)")
+
+gPad->SetLogz(0)
+MCK->Draw("psiMMass2/1e6:pMMass2/1e6 >> h2mc",OptimalNN && KSignal)
+h2mc->Draw()
+png("Dotted MC Dalitz (K)")
+
+gPad->SetLogz(0)
+c1.SetTheta(30);  //theta angle=66 degrees
+c1.SetPhi(-40);
+h2->Draw("lego2")
+png("Dalitz 3D (K)")
+
+//------------------------------------------------------------------------------------------------------------
+// Reweight MC
+//------------------------------------------------------------------------------------------------------------
+int nb = 10
+TH2D* hKD = Make2DPlot("hKD","m_{pK}^{2} [MeV^{2}/c^{4}]",nb,1.9e6,6.5e6,"m_{J/#psiK}^{2} [MeV^{2}/c^{4}]",nb,12.0e6,22.5e6)
+TH2D* hKM = Make2DPlot("hKM","m_{pK}^{2} [MeV^{2}/c^{4}]",nb,1.9e6,6.5e6,"m_{J/#psiK}^{2} [MeV^{2}/c^{4}]",nb,12.0e6,22.5e6)
+// Try with a trivial TH2D
+//gPad->SetLogy(0)
+SW->Draw("psiMMass2:pMMass2 >> hKD",WLK)
+MCK->Draw("psiMMass2:pMMass2 >> hKM",OptimalNN && KSignal)
+//TH2* hK = Divide(&hKD,&hKM)  // crashes
+hKD->Divide(hKM)
+hKD->Draw("lego2")
+Normalise(hKD,"A")
+hKD->Draw("coltext")
+png("Kaon reweighting")
+for ( int i=0 ; i<(nb+2)*(nb+2); i++) { cout << ", " << hKD->GetBinContent(i) ; } cout << endl ;
+
+// Reweight MC
+nb = 10
+TH2D* hPiD = Make2DPlot("hPiD","m_{p#pi}^{2} [MeV^{2}/c^{4}]",nb,1.0e6,6.5e6,"m_{J/#psi#pi}^{2} [MeV^{2}/c^{4}]",nb,10.0e6,22.5e6)
+TH2D* hPiM = Make2DPlot("hPiM","m_{p#pi}^{2} [MeV^{2}/c^{4}]",nb,1.0e6,6.5e6,"m_{J/#psi#pi}^{2} [MeV^{2}/c^{4}]",nb,10.0e6,22.5e6)
+
+gPad->SetLogy(0)
+SW->Draw("psiMMass2:pMMass2 >> hPiD",WL)
+MC->Draw("psiMMass2:pMMass2 >> hPiM",OptimalNN && Signal)
+//TH1* hPi = Divide(&hPiD,&hPiM)
+hPiD->Divide(hPiM)
+hPiD->Draw("lego2")
+Normalise(hPiD,"A")
+hPiD->Draw("coltext")
+png("Pion reweighting")
+for ( int i =0 ; i<(nb+2)*(nb+2); i++) { cout << ", " << hPiD->GetBinContent(i) ; } cout << endl ;
+//------------------------------------------------------------------------------------------------------------
+// Weighted MC
+
+char* MCW = "(Category==1)*(BKGCAT==0)*(netOutput>0.846)*(MCWeight)"
+char* MCWK = "(Category==-1)*(BKGCAT==1)*(netOutput>0.846)*(MCWeight)"
+
+RooPlot* r = SandB(SW,MC,"sqrt(pMMass2)",WL,MCW,"","N","remove",m_p+m_pi,m_Lb-m_psi,22)
+r->SetXTitle("m_{p#pi} [MeV/c^{2}]");
+png("ppiMass S and WMC")
+
+r = SandB(SW,MC,"sqrt(psiMMass2)",WL,MCW,"","N","remove",m_psi+m_pi,m_Lb-m_p,22)
+r->SetXTitle("m_{J/#psi#pi} [MeV/c^{2}]");
+png("psipiMass S and WMC")
+
+r = SandB(SW,MC,"sqrt(psipMass2)",WL,MCW,"","N","remove",m_psi+m_p,m_Lb-m_pi,22)
+r->SetXTitle("m_{J/#psip} [MeV/c^{2}]");
+png("psipMass S and WMC")
+
+r = SandB(SW,MCK,"sqrt(pMMass2)",WLK,MCWK,"","N","remove",m_p+m_K,m_Lb-m_psi,55)
+r->SetXTitle("m_{pK} [MeV/c^{2}]");
+png("pKMass S and WMC (K)")
+
+r = SandB(SW,MCK,"sqrt(psiMMass2)",WLK,MCWK,"","N","remove",m_psi+m_K,m_Lb-m_p,55)
+r->SetXTitle("m_{J/#psiK} [MeV/c^{2}]");
+png("psiKMass S and WMC (K)")
+
+r = SandB(SW,MCK,"sqrt(psipMass2)",WLK,MCWK,"","N","remove",m_psi+m_p,m_Lb-m_K,55)
+r->SetXTitle("m_{J/#psip} [MeV/c^{2}]");
+png("psipMass S and WMC (K)")
+

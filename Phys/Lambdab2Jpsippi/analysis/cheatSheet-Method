@@ -1,0 +1,651 @@
+//------------------------------------------------------------------------------
+// all plots of method.tex
+//------------------------------------------------------------------------------
+root.exe
+.L ../analysis/FourPlots.C 
+// SWeighting
+TFile* fW11 = TFile::Open("Lambdab-S20r1-1062-All-SW.root")
+TFile* fW12 = TFile::Open("Lambdab-S20-1063-All-SW.root")
+fW11->Get("TC_PsipKFitC")->Draw()
+png("LbK 2011 weighting")
+fW12->Get("TC_PsipKFitC")->Draw()
+png("LbK 2012 weighting")
+//------------------------------------------------------------------------------
+.L ../analysis/FourPlots.C 
+TChain* T = new TChain("BetaSLambdab2JpsippiDetachedLine_Tuple/DecayTree")
+T->Add("/castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20r1-1062.root")
+T->Add("/castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20-1063.root")
+TChain* NN = new TChain("NetTree")
+NN->Add("Lambdab-S20r1-1062-NN.root")
+NN->Add("Lambdab-S20-1063-NN.root")
+T->AddFriend(NN)
+TChain* TT = new TChain("TrainTree")
+TT->Add("Lambdab-S20r1-1062-All-SW.root")
+TT->Add("Lambdab-S20-1063-All-SW.root")
+T->AddFriend(TT)
+T->Draw("tMass:B_SubpK_M","(runNumber==115332 ||runNumber==115332) && tCategory==-1") 
+T->Draw("B_FullFit_M:PsippiMass","(runNumber==115332 ||runNumber==115332) && Category==-1 && ErrorCode==0" )
+
+TT->AddFriend(NN)
+TT->Draw("tMass:PsipKMass","(RunNumber==115332 || RunNumber==115332) && Category==-1") 
+
+//------------------------------------------------------------------------------
+
+// T->Draw("B_SubpK_M:PsipKMass","(runNumber==115332 ||runNumber==115332) && Category==-1")  // 
+
+TFile* fpi = TFile::Open("/castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root")
+TFile* fK = TFile::Open("/castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root")
+Tpi = (TTree*)fpi->Get("BetaSLambdab2JpsippiDetachedLine_TupleMC/DecayTree")  
+TK = (TTree*)fK->Get("BetaSLambdab2JpsippiDetachedLine_TupleMC/DecayTree")  
+TFile* fnpi = TFile::Open("LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125-NN.root")
+TFile* fnk = TFile::Open("LambdabMC-LbK-Sim08a-1127-1128-1129-1137-NN.root")
+NNpi = (TTree*)fnpi->Get("NetTree")
+NNk = (TTree*)fnk->Get("NetTree")
+Tpi->AddFriend(NNpi)
+TK->AddFriend(NNk)
+
+TK->Draw("B_SubpK_M[0]:PsipKMass","Category==-1 && ErrorCode==0")
+Tpi->Draw("B_FullFit_M[0]:PsippiMass","Category==1 && ErrorCode==0" )
+
+TCut pistream("(piminus_ProbNNpi>piminus_ProbNNk) && (PsippiMass[0]<5580 || PsippiMass[0]>5650)")
+TCut kstream("(piminus_ProbNNpi<=piminus_ProbNNk)")
+TCut Y11("runNumber<110000")
+TCut Y12("runNumber>110000")
+TCut Presel("ErrorCode[0]==0")
+
+//------------------------------------------------------------------------------
+// Preselection cuts
+//------------------------------------------------------------------------------
+gPad->SetLogy(0)
+RooPlot* r = FourPreselPlots(T,Tpi,TK,"pplus_PZ","LN","remove",1000,200000)
+SetTitle("p log_{10}P_{z}",r)
+overlay_line(log(5000.)/log(10.),r)
+png("FourPreselPlots of pplus_PZ")
+
+gPad->SetLogy(0)TH1D hall("hall","hall",13,-10.5,2.5)
+NN->Draw("ErrorCode >> hall")
+TH1D hall0("hall0","hall0",13,-10.5,2.5)
+NN->Draw("ErrorCode[0] >> hall0")
+TH1D hpi("hpi","hpi",13,-10.5,2.5)
+TH1D hK("hK","hK",13,-10.5,2.5)
+NN->Draw("ErrorCode >> hK","Category==-1")
+NN->Draw("ErrorCode >> hpi","Category==1")
+TH1D hpi0("hpi0","hpi0",13,-10.5,2.5)
+TH1D hK0("hK0","hK0",13,-10.5,2.5)
+NN->Draw("ErrorCode[0] >> hK0","Category[0]==-1")
+NN->Draw("ErrorCode[0] >> hpi0","Category[0]==1")
+TH1D thK0("thK0","thK0",13,-10.5,2.5)
+TH1D thK("thK","thK",13,-10.5,2.5)
+TT->Draw("sweightLb >> thK","tCategory==-1")
+TT->Draw("sweightLb[0] >> thK0","tCategory[0]==-1")
+
+cout << " Events & \\multicolumn{3}{c}{" << (int)hall0->GetEntries() << "}\\\\ \n (\\Lb,PV) pairs & \\multicolumn{3}{c}{" << (int)hall->GetEntries() << "}\\\\ \n Fail preselection & \\multicolumn{3}{c}{" << (int)hall->GetBinContent(1) << "}\\\\ \n Fail trigger & \\multicolumn{3}{c}{" << (int)hall->GetBinContent(2) << "}\\\\ \\hline \n Pairs by category & " << (int)hpi.GetEntries() << " & \\multicolumn{2}{c}{" << (int)hK.GetEntries() << "} \\\\  \\hline \n At \\Lz mass & " << (int)hpi.GetBinContent(4) << " & " << (int)hK.GetBinContent(4) << " &\\\\ \n At \\Pphi mass &  & " << (int)hK.GetBinContent(5) << " & " << (int)thK.GetBinContent(5) << "\\\\ \n Reflection & & & " << (int)thK.GetBinContent(6) << "\\\\ \n Good Pairs & " << (int)hpi.GetBinContent(11) << " & " << (int)hK.GetBinContent(11) << " & " << "\\\\ \n Multiple Candidates & & & " << (int)thK.GetBinContent(7) << " \\\\ \n Good events & " << (int)hpi0.GetBinContent(11) << " & " << (int)hK0.GetBinContent(11) << " & " << (int)thK0.GetBinContent(11)+thK0.GetBinContent(12) << " \\\\ " << endl ;
+
+ Events & \multicolumn{3}{c}{20608810}\\ 
+ (\Lb,PV) pairs & \multicolumn{3}{c}{57655384}\\ 
+ Fail preselection & \multicolumn{3}{c}{56718071}\\ 
+ Fail trigger & \multicolumn{3}{c}{230180}\\ \hline 
+ Pairs by category & 48097813 & \multicolumn{2}{c}{9557571} \\  \hline 
+ At \Lz mass & 576 & 151 &\\ 
+ At \Pphi mass &  & 17857 & 0\\ 
+ Reflection & & & 49923\\ 
+ Good Pairs & 471271 & 195087 & \\ 
+ Multiple Candidates & & & 8625 \\ 
+ Good events & 429639 & 185971 & 101781 \\ 
+
+
+RooPlot* r = FourPreselPlots(T,Tpi,TK,"piminus_PZ","LN","remove",1000,200000)
+SetTitle("p log_{10}P_{z}",r)
+overlay_line(log(3000.)/log(10.),r)
+png("FourPreselPlots of piminus_PZ")
+
+gPad->SetLogy()
+RooPlot* r = FourPreselPlots(T,Tpi,TK,"pplus_ProbNNp","NM","remove",0,1)
+SetTitle("p P(p)",r) ; 
+r->SetMinimum(0.01)
+r->Draw()
+overlay_line(0.05,r)
+png("FourPreselPlots of pplus_ProbNNp")
+
+RooPlot* r = FourPreselPlots(T,Tpi,TK,"pplus_ProbNNp-pplus_ProbNNk","NM","remove",-1,1)
+SetTitle("p P(p)-P(k)",r) ; 
+r->SetMinimum(0.001); r->Draw()
+overlay_line(0.0,r)
+png("FourPreselPlots of pplus_ProbNNp-pplus_ProbNNk")
+
+RooPlot* r = FourPreselPlots(T,Tpi,TK,"max(piminus_ProbNNk,piminus_ProbNNpi)","NM","remove",0,1)
+SetTitle("M max(P(#pi),P(K))",r) ; 
+r->SetMinimum(0.01); r->Draw()
+overlay_line(0.05,r)
+png("FourPreselPlots of max(piminus_ProbNNk,piminus_ProbNNpi)")
+
+RooPlot* r = FourPreselPlots(T,Tpi,TK,"((piminus_ProbNNk>=piminus_ProbNNpi)*B_SubpK_chi2[0]/9)+((piminus_ProbNNk<piminus_ProbNNpi)*B_FullFit_chi2[0]/9)","NM","remove",0,16)
+SetTitle("DTF #chi^{2}/nDoF",r) ;
+r->SetMinimum(0.00001); r->Draw()
+overlay_line(8,r)
+png("FourPreselPlots of B_FullFit_chi2[0]")
+
+RooPlot* r = FourPreselPlots(T,Tpi,TK,"(piminus_ProbNNk>=piminus_ProbNNpi)*B_SubpK_MERR[0]+(piminus_ProbNNk<piminus_ProbNNpi)*B_FullFit_MERR[0]","NM","remove",0,50)
+SetTitle("#Lambda_{b} mass Error [MeV/c^{2}]",r) 
+r->SetMinimum(0.000001); r->Draw()
+overlay_line(20,r)
+png("FourPreselPlots of B_FullFit_MERR[0]")
+
+
+
+
+//SandB(T,0,"pplus_ProbNNp","sweightLb","sweightBkg","(sweightLb>-4)*(tCategory==-1)","N","sWeighted probNNp",0,1)
+//------------------------------------------------------------------------------
+// stats
+//------------------------------------------------------------------------------
+TH1D hall("hall","hall",13,-10.5,2.5)
+NN->Draw("ErrorCode >> hall")
+TH1D hall0("hall0","hall0",13,-10.5,2.5)
+NN->Draw("ErrorCode[0] >> hall0")
+TH1D hpi("hpi","hpi",13,-10.5,2.5)
+TH1D hK("hK","hK",13,-10.5,2.5)
+NN->Draw("ErrorCode >> hK","Category==-1")
+NN->Draw("ErrorCode >> hpi","Category==1")
+TH1D hpi0("hpi0","hpi0",13,-10.5,2.5)
+TH1D hK0("hK0","hK0",13,-10.5,2.5)
+NN->Draw("ErrorCode[0] >> hK0","Category[0]==-1")
+NN->Draw("ErrorCode[0] >> hpi0","Category[0]==1")
+TH1D thK0("thK0","thK0",13,-10.5,2.5)
+TH1D thK("thK","thK",13,-10.5,2.5)
+TT->Draw("sweightLb >> thK","tCategory==-1")
+TT->Draw("sweightLb[0] >> thK0","tCategory[0]==-1")
+
+cout << " Events & \\multicolumn{3}{c}{" << (int)hall0->GetEntries() << "}\\\\ \n (\\Lb,PV) pairs & \\multicolumn{3}{c}{" << (int)hall->GetEntries() << "}\\\\ \n Fail preselection & \\multicolumn{3}{c}{" << (int)hall->GetBinContent(1) << "}\\\\ \n Fail trigger & \\multicolumn{3}{c}{" << (int)hall->GetBinContent(2) << "}\\\\ \\hline \n Pairs by category & " << (int)hpi.GetEntries() << " & \\multicolumn{2}{c}{" << (int)hK.GetEntries() << "} \\\\  \\hline \n At \\Lz mass & " << (int)hpi.GetBinContent(4) << " & " << (int)hK.GetBinContent(4) << " &\\\\ \n At \\Pphi mass &  & " << (int)hK.GetBinContent(5) << " & " << (int)thK.GetBinContent(5) << "\\\\ \n Reflection & & & " << (int)thK.GetBinContent(6) << "\\\\ \n Good Pairs & " << (int)hpi.GetBinContent(11) << " & " << (int)hK.GetBinContent(11) << " & " << "\\\\ \n Multiple Candidates & & & " << (int)thK.GetBinContent(7) << " \\\\ \n Good events & " << (int)hpi0.GetBinContent(11) << " & " << (int)hK0.GetBinContent(11) << " & " << (int)thK0.GetBinContent(11)+thK0.GetBinContent(12) << " \\\\ " << endl ;
+
+ Events & \multicolumn{3}{c}{20608810}\\ 
+ (\Lb,PV) pairs & \multicolumn{3}{c}{57655384}\\ 
+ Fail preselection & \multicolumn{3}{c}{56718071}\\ 
+ Fail trigger & \multicolumn{3}{c}{194286}\\ \hline 
+ Pairs by category & 48097813 & \multicolumn{2}{c}{9557571} \\  \hline 
+ At \Lz mass & 609 & 152 &\\ 
+ At \Pphi mass &  & 18388 & 0\\ 
+ Reflection & & & 51424\\ 
+ Good Pairs & 498168 & 202483 & \\ 
+ Multiple Candidates & & & 9253 \\ 
+ Good events & 451476 & 192451 & 105407 \\ 
+
+// 
+gPad->SetLogy(0)
+RooPlot* r = 0 
+r = SandB(T,0,"Psi_MM",pistream,kstream,"1","N","stripping psi mass",3017,3177,150)
+SetTitle("m_{#mu#mu} [MeV/c^{2}]",r)
+r->Draw()
+png("B stripping psi mass")
+
+r = SandB(T,0,"(piminus_ProbNNpi>piminus_ProbNNk)*B_FullFit_M[0]+(piminus_ProbNNpi<=piminus_ProbNNk)*B_SubpK_M[0]",pistream,kstream,"1","","stripping pi and k stream mass",4900,6100,120)
+r = SandB(T,0,"B_FullFit_M[0]",pistream,kstream,"1","N","stripping pi mass",5000,6000)
+r->SetMinimum(0.)
+SetTitle("m_{J/#psip#pi} [MeV/c^{2}]",r)
+r->Draw()
+overlay_line(5580,r,2) ; overlay_line(5650,r,2) ; 
+png("B stripping pi mass")
+r = SandB(T,0,"B_SubpK_M[0]",pistream,kstream,"1","N","stripping k mass",5000,6100,110)
+r->SetMinimum(0.)
+SetTitle("m_{J/#psipK} [MeV/c^{2}]",r)
+r->Draw()
+png("B stripping k mass")
+r = SandB(T,0,"B_SubKpi_M[0]",pistream,kstream,"1","N","stripping Bd mass",4700,6000,130)
+
+// year 2011 vs 2012
+r = SandB(T,0,"Psi_MM",Y11,Y12,"1","N","stripping psi mass 2011 vs 2012",3017,3177,150)
+SetTitle("m_{#mu#mu} [MeV/c^{2}]",r)
+r->Draw()
+png("B stripping psi mass 2011 vs 2012")
+
+r = SandB(T,0,"(piminus_ProbNNpi>piminus_ProbNNk)*B_FullFit_M[0]+(piminus_ProbNNpi<=piminus_ProbNNk)*B_SubpK_M[0]",Y11,Y12,"1","N","stripping pi and k stream mass 2011 vs 2012",4900,6100,120)
+r->SetTitle("m_{J/#psipM} [MeV/c^{2}]",r)
+r->Draw()
+png("B stripping pi and k stream mass 2011 vs 2012")
+
+r = SandB(T,0,"B_FullFit_M[0]",Y11,Y12,pistream,"N","stripping pi mass 2011 vs 2012",5000,6000)
+r->SetMinimum(0.)
+SetTitle("m_{J/#psip#pi} [MeV/c^{2}]",r)
+r->Draw()
+overlay_line(5580,r,2) ; overlay_line(5650,r,2) ; 
+png("B stripping pi mass 2011 vs 2012")
+
+r = SandB(T,0,"B_SubpK_M[0]",Y11,Y12,kstream,"N","stripping k mass 2011 vs 2012",5000,6100,110)
+r->SetMinimum(0.)
+SetTitle("m_{J/#psipK} [MeV/c^{2}]",r)
+r->Draw()
+png("B stripping k mass 2011 vs 2012")
+
+// -----------------------------------------------------------------------
+//Preselection
+gPad->SetLogy(0)
+RooPlot* r = 0 
+r = SandB(T,0,"Psi_MM",pistream,kstream,Presel,"N","preselection psi mass",3017,3177,150)
+SetTitle("m_{#mu#mu} [MeV/c^{2}]",r)
+r->Draw()
+png("B preselection psi mass")
+
+r = SandB(T,0,"(piminus_ProbNNpi>piminus_ProbNNk)*B_FullFit_M[0]+(piminus_ProbNNpi<=piminus_ProbNNk)*B_SubpK_M[0]",pistream,kstream,Presel,"","preselection pi and k stream mass",4900,6100,120)
+r = SandB(T,0,"B_FullFit_M[0]",pistream,kstream,Presel,"N","preselection pi mass",5000,6000)
+r->SetMinimum(0.)
+SetTitle("m_{J/#psip#pi} [MeV/c^{2}]",r)
+r->Draw()
+overlay_line(5580,r,2) ; overlay_line(5650,r,2) ; 
+png("B preselection pi mass")
+r = SandB(T,0,"B_SubpK_M[0]",pistream,kstream,Presel,"N","preselection k mass",5000,6100,110)
+r->SetMinimum(0.)
+SetTitle("m_{J/#psipK} [MeV/c^{2}]",r)
+r->Draw()
+png("B preselection k mass")
+r = SandB(T,0,"B_SubKpi_M[0]",pistream,kstream,Presel,"N","preselection Bd mass",4700,6000,130)
+
+// year 2011 vs 2012
+r = SandB(T,0,"Psi_MM",Y11,Y12,Presel,"N","preselection psi mass 2011 vs 2012",3017,3177,150)
+SetTitle("m_{#mu#mu} [MeV/c^{2}]",r)
+r->Draw()
+png("B preselection psi mass 2011 vs 2012")
+
+r = SandB(T,0,"(piminus_ProbNNpi>piminus_ProbNNk)*B_FullFit_M[0]+(piminus_ProbNNpi<=piminus_ProbNNk)*B_SubpK_M[0]",Y11,Y12,Presel,"N","preselection pi and k stream mass 2011 vs 2012",4900,6100,120)
+r->SetTitle("m_{J/#psipM} [MeV/c^{2}]",r)
+r->Draw()
+png("B preselection pi and k stream mass 2011 vs 2012")
+
+r = SandB(T,0,"B_FullFit_M[0]",Y11,Y12,pistream && Presel,"N","preselection pi mass 2011 vs 2012",5000,6000)
+r->SetMinimum(0.)
+SetTitle("m_{J/#psip#pi} [MeV/c^{2}]",r)
+r->Draw()
+overlay_line(5580,r,2) ; overlay_line(5650,r,2) ; 
+png("B preselection pi mass 2011 vs 2012")
+
+r = SandB(T,0,"B_SubpK_M[0]",Y11,Y12,kstream && Presel,"N","preselection k mass 2011 vs 2012",5000,6100,110)
+r->SetMinimum(0.)
+SetTitle("m_{J/#psipK} [MeV/c^{2}]",r)
+r->Draw()
+png("B preselection k mass 2011 vs 2012")
+
+//--------------------------------------------------------------------------------------------
+gPad->SetLogy()
+RooPlot* r = FourMCPlots(T,Tpi,TK,"B_FullFit_M[0]","NM","",4900,6100)
+r->SetMinimum(1e-5)
+SetTitle("m_{J/#psip#pi} [MeV/c^{2}]",r)
+r->Draw()
+overlay_line(5580,r,2) ; overlay_line(5650,r,2) ; 
+png("B FourPlots of B_FullFit_M[0]")
+
+RooPlot* r = FourMCPlots(T,Tpi,TK,"PsipKMass[0]","NM","",5000,6200)
+SetTitle("m_{J/#psipK} [MeV/c^{2}]",r)
+png("B FourPlots of PsipKMass[0]")
+
+RooPlot* r = FourMCPlots(T,Tpi,TK,"PsiKpiMass[0]","NM","",4000,6000)
+SetTitle("m_{J/#psiK#pi} [MeV/c^{2}]",r)
+png("B FourPlots of PsiKpiMass[0]")
+
+RooPlot* r = FourMCPlots(T,Tpi,TK,"(PsippiMass[0]-139.570)*(Category==1)+(PsipKMass[0]-493.677)*(Category==-1)-3096.92-938.272","NM","Q",500,1900)
+r->SetMinimum(3e-4)
+SetTitle("Q [MeV]",r)
+r->Draw()
+r->Draw()
+overlay_line(5580-3096.92-938.272-139.570,r,2) ; overlay_line(5650-3096.92-938.272-139.570,r,2) ; 
+png("FourPlots of Q")
+
+gPad->SetLogy(0)
+RooPlot* r = FourMCPlots(T,Tpi,TK,"pMMass2[0]/1e6","NM","",1,6.5)
+SetTitle("m_{pM}^{2} [GeV^{2}/c^{4}]",r)
+png("FourPlots of pMMass2[0]/1e6")
+
+RooPlot* r = FourMCPlots(T,Tpi,TK,"psiMMass2[0]/1e6","NM","",10,23)
+SetTitle("m_{J/#psiM}^{2} [GeV^{2}/c^{4}]",r)
+png("FourPlots of psiMMass2[0]/1e6")
+
+//------------------------------------------------------------------------------
+// FourPlots of NN.tex - UNWEIGHTED
+//------------------------------------------------------------------------------
+
+gPad->SetLogy(1)
+r = FourTrainPlots(T,Tpi,TK,"(Category==1)*(B_FullFit_chi2[0])+(Category[0]==-1)*(B_SubpK_chi2[0])","NM","FourTrainPlots_of_B_FullFit_chi2_0_",0,72,72); 
+SetTitle("#Lambda_{b}^{0} DTF #chi^{2}")
+png("B FourTrainPlots_of_B_FullFit_chi2_0_")
+
+r = FourTrainPlots(T,Tpi,TK,"(Category==1)*(B_FullFit_ctau[0])+(Category[0]==-1)*(B_SubpK_ctau[0])","NM","FourTrainPlots_of_B_FullFit_ctau_0_",0.03,3); 
+SetTitle("#Lambda_{b}^{0} c#tau [mm]")
+png("B FourTrainPlots_of_B_FullFit_ctau_0_")
+
+r = FourTrainPlots(T,Tpi,TK,"B_ENDVERTEX_CHI2/B_ENDVERTEX_NDOF","N","remove",0,5,50); 
+r->SetMinimum(0.01)
+SetTitle("#Lambda_{b}^{0} vertex #chi^{2}/n_{DOF}")
+r->Draw()
+png("B_FourTrainPlots_of_B_ENDVERTEX_CHI2")
+r = FourTrainPlots(T,Tpi,TK,"B_AllIPchi2[0]","NML","",0.0001,1000); 
+SetTitle("#Lambda_{b}^{0} minimum IP #chi^{2}")
+png("B_FourTrainPlots_of_B_AllIPchi2[0]")
+
+r = FourTrainPlots(T,Tpi,TK,"pplus_PT","NML","",500,20000); 
+r = FourTrainPlots(T,Tpi,TK,"pplus_PZ","NML","",5000,300000); 
+r = FourTrainPlots(T,Tpi,TK,"pplus_IPCHI2_OWNPV","NML","",9,10000); 
+r->SetMinimum(0.02)
+r->Draw()
+SetTitle("p minimum IP #chi^{2}")
+png("B_FourTrainPlots_of_pplus_IPCHI2_OWNPV")
+
+r = FourTrainPlots(T,Tpi,TK,"pplus_ProbNNp","NM","",0,1); 
+r->SetMinimum(0.1)
+r->Draw()
+png("B_FourTrainPlots_of_pplus_ProbNNp")
+
+r = FourTrainPlots(T,Tpi,TK,"pplus_ProbNNk","NM","",0,1); 
+r = FourTrainPlots(T,Tpi,TK,"pplus_ProbNNpi","NM","",0,1); 
+r = FourTrainPlots(T,Tpi,TK,"piminus_PT","NML","",500,20000); 
+r = FourTrainPlots(T,Tpi,TK,"piminus_PZ","NML","",1000,300000); 
+r = FourTrainPlots(T,Tpi,TK,"piminus_IPCHI2_OWNPV","NML","",5,100000); 
+r = FourTrainPlots(T,Tpi,TK,"pplus_TRACK_GhostProb","NM","",0,1); 
+r = FourTrainPlots(T,Tpi,TK,"piminus_TRACK_GhostProb","NM","",0,1); 
+r = FourTrainPlots(T,Tpi,TK,"nPV","NMI","",1,9); 
+r = FourTrainPlots(T,Tpi,TK,"nSPDHits","NM","",0,900,90); 
+r->SetMinimum(1e-5)
+r->Draw()
+png("B_FourTrainPlots_of_nSPDHits")
+
+gPad->SetLogy(0)
+r = FourTrainPlots(T,0,0,"2011+(GpsTime-1293840000e6)/(3.15576e13)","NM","",2011,2013,24) 
+png("B_FourTrainPlots_of_GpsTime")
+
+gPad->SetLogy(1)
+r = FourTrainPlots(T,Tpi,TK,"netOutput[0]","NM","",-1,1,100); 
+r->SetMinimum(1e-2)
+r->Draw()
+//png("B_FourTrainPlots_of_netOutput_0_") // done in cheatSheet-NN
+
+//------------------------------------------------------------------------------
+// SPD weighting
+//------------------------------------------------------------------------------
+gPad->SetLogy(0)
+SandB(T,TK,"nSPDHits","sweightLb*(sweightLb>-4)*(tCategory==-1)","Category==-1 && BKGCAT==1 && ErrorCode==0","1","N","remove",0,900,45)
+gPad->SetLogy()
+png("SPD hits in LbK data and MC")
+TH1* h = Divide(T,TK,"nSPDHits","sweightLb*(sweightLb>-4)*(tCategory==-1)","(Category==-1)*(BKGCAT==1)*(ErrorCode==0)","1","N","MC/data ratio",0,900,45)
+//RooPlot* r = NiceRooPlot(*h,"e")
+h->SetMinimum(0.03)
+h->Fit("expo")
+png("SPD hits ratio in LbK data and MC")
+
+   1  Constant    -2.77786e+00   1.79095e-02   3.52777e-05   3.69258e-02
+   2  Slope        5.93233e-03   5.70471e-05   1.12370e-07   1.08675e+01
+
+//SandB(T,TK,"nSPDHits","sweightLb*(sweightLb>-4)*(tCategory==-1)","(Category==-1)*(BKGCAT==1)*(ErrorCode==0)*(exp(0.017482*nSPDHits))","1","N","remove",0,800,40)
+
+RooPlot* r = SandB(T,TK,"nSPDHits","sweightLb*(sweightLb>-4)*(tCategory==-1)","(Category==-1)*(BKGCAT==1)*(ErrorCode==0)*(exp(-2.77009+0.00591427*nSPDHits))","1","N","remove",0,800,40)
+r->SetMinimum(1e-4)
+r->Draw()
+png("SPD hits in LbK data and MC, weighted")
+
+//------------------------------------------------------------------------------
+// FourPlots of NN.tex - WEIGHTED
+//------------------------------------------------------------------------------
+Double_t mLb = 5620 ;
+Double_t mBd = 5279.5 ;
+Double_t mBu = 5279.17 ;
+Double_t mBs = 5366.3 ;
+const double m_psi = 3096.916 ;
+const double m_p   =  938.272 ;
+const double m_pi  =  139.570 ;
+const double m_Lb  =  5620.0 ;
+const double m_K  =  493.677 ;
+
+gPad->SetLogy(0)
+RooPlot* r = FiveWeightedTrainPlots(T,Tpi,TK,"thetaprime","N","",0,1,50); 
+r = FiveWeightedTrainPlots(T,Tpi,TK,"mprime","N","",0,1,50); 
+r = FiveWeightedTrainPlots(T,Tpi,TK,"sqrt(pMMass2)","N","remove",m_p+m_pi,m_Lb-m_psi,50)
+r->SetXTitle("m_{pM} [MeV/c^{2}]");
+png("B_FiveWeightedTrainPlots_of_pMMass2")
+r = FiveWeightedTrainPlots(T,Tpi,TK,"sqrt(psiMMass2)","N","remove",m_psi+m_pi,m_Lb-m_p,50)
+r->SetXTitle("m_{J/#psiM} [MeV/c^{2}]");
+png("B_FiveWeightedTrainPlots_of_psiMMass2")
+r = FiveWeightedTrainPlots(T,Tpi,TK,"sqrt(psipMass2)","N","remove",m_psi+m_p,m_Lb-m_pi,50)
+r->SetXTitle("m_{J/#psip} [MeV/c^{2}]");
+png("B_FiveWeightedTrainPlots_of_psipMass2")
+
+gPad->SetLogy(1)
+r = FiveWeightedTrainPlots(T,Tpi,TK,"nSPDHits","MN","",0,800,40); 
+r->SetMinimum(1e-4)
+r->Draw()
+png("B_FiveWeightedTrainPlots_of_nSPDHits")
+
+r = FiveWeightedTrainPlots(T,Tpi,TK,"(Category==1)*(B_FullFit _chi2[0])+(Category[0]==-1)*(B_SubpK_chi2[0])","NM","FiveWeightedTrainPlots_of_B_FullFit_chi2_0_",0,72,72); 
+SetTitle("#Lambda_{b}^{0} DTF #chi^{2}")
+png("B FiveWeightedTrainPlots_of_B_FullFit_chi2_0_")
+
+r = FiveWeightedTrainPlots(T,Tpi,TK,"(Category==1)*(B_FullFit_ctau[0])+(Category[0]==-1)*(B_SubpK_ctau[0])","NM","FiveWeightedTrainPlots_of_B_FullFit_ctau_0_",0.03,3); 
+SetTitle("#Lambda_{b}^{0} c#tau [mm]")
+png("B FiveWeightedTrainPlots_of_B_FullFit_ctau_0_")
+
+r = FiveWeightedTrainPlots(T,Tpi,TK,"B_ENDVERTEX_CHI2/B_ENDVERTEX_NDOF","N","remove",0,5,50); 
+r->SetMinimum(0.01)
+SetTitle("#Lambda_{b}^{0} vertex #chi^{2}/n_{DOF}")
+r->Draw()
+png("B_FiveWeightedTrainPlots_of_B_ENDVERTEX_CHI2")
+r = FiveWeightedTrainPlots(T,Tpi,TK,"B_AllIPchi2[0]","NML","",0.01,1000); 
+SetTitle("#Lambda_{b}^{0} log_{10}(min IP #chi^{2})")
+png("B_FiveWeightedTrainPlots_of_B_AllIPchi2[0]")
+
+r = FiveWeightedTrainPlots(T,Tpi,TK,"min(muplus_IPCHI2_OWNPV,muplus_IPCHI2_OWNPV)","NML","",0.01,300); 
+r->SetMinimum(0.001)
+SetTitle("#mu log_{10}(min(IP#chi^{2}))")
+r->Draw()
+png("B_FiveWeightedTrainPlots_of_min(muplus_IPCHI2_OWNPV,muplus_IPCHI2_OWNPV)")
+
+r = FiveWeightedTrainPlots(T,Tpi,TK,"pplus_PT","NML","",500,20000); 
+r = FiveWeightedTrainPlots(T,Tpi,TK,"pplus_PZ","NML","",1000,300000); 
+r = FourTrainPlots(T,Tpi,TK,"pplus_PZ","NM","",1000,20000); 
+
+r = FiveWeightedTrainPlots(T,Tpi,TK,"pplus_IPCHI2_OWNPV","NML","",9,10000); 
+r->SetMinimum(0.02)
+r->Draw()
+SetTitle("p minimum IP #chi^{2}")
+png("B_FiveWeightedTrainPlots_of_pplus_IPCHI2_OWNPV")
+
+gPad->SetLogy()
+r = FiveWeightedTrainPlots(T,Tpi,TK,"pplus_ProbNNp","NM","",0,1); 
+r->SetMinimum(0.1)
+r->Draw()
+png("B_FiveWeightedTrainPlots_of_pplus_ProbNNp")
+r = FiveWeightedTrainPlots(T,Tpi,TK,"pplus_ProbNNk","NM","",0,1); 
+r = FiveWeightedTrainPlots(T,Tpi,TK,"pplus_ProbNNpi","NM","",0,1); 
+
+
+gPad->SetLogy(0)
+r = FiveWeightedTrainPlots(T,Tpi,TK,"piminus_PT","NML","",500,20000); 
+r = FiveWeightedTrainPlots(T,Tpi,TK,"piminus_PZ","NML","",1000,300000); 
+
+r = FiveWeightedTrainPlots(T,Tpi,TK,"piminus_IPCHI2_OWNPV","NML","",5,100000); 
+r = FiveWeightedTrainPlots(T,Tpi,TK,"piminus_TRACK_GhostProb","NML","",0.003,1); 
+r->SetMinimum(0.01)
+r->Draw()
+SetTitle("M Track Ghost log(prob)/log(10.)")
+png("B_FiveWeightedTrainPlots_of_piminus_TRACK_GhostProb")
+
+r = FiveWeightedTrainPlots(T,Tpi,TK,"pplus_TRACK_GhostProb","NML","",0.0003,1); 
+r->SetMinimum(0.01)
+r->Draw()
+SetTitle("p Track Ghost log(prob)/log(10.)")
+png("B_FiveWeightedTrainPlots_of_pplus_TRACK_GhostProb")
+
+r = FiveWeightedTrainPlots(T,Tpi,TK,"piminus_ProbNNghost","NML","",0.0001,1); 
+r->SetMinimum(0.01)
+r->Draw()
+SetTitle("M ANN Ghost log(prob)/log(10.)")
+png("B_FiveWeightedTrainPlots_of_pimunus_ProbNNghost")
+
+png("B_FiveWeightedTrainPlots_of_pplus_ProbNNghost")
+r = FiveWeightedTrainPlots(T,Tpi,TK,"pplus_ProbNNghost","NML","",0.001,1); 
+r->SetMinimum(0.01)
+r->Draw()
+SetTitle("p ANN Ghost log(prob)/log(10.)",r)
+png("B_FiveWeightedTrainPlots_of_pplus_ProbNNghost")
+
+r = FiveWeightedTrainPlots(T,Tpi,TK,"nPV","NMI","",1,9); 
+
+gPad->SetLogy(0)
+r = FiveWeightedTrainPlots(T,0,0,"2011+(GpsTime-1293840000e6)/(3.15576e13)","NM","",2011,2013,24) 
+png("B_FiveWeightedTrainPlots_of_GpsTime")
+
+gPad->SetLogy(1)
+r = FiveWeightedTrainPlots(T,Tpi,TK,"netOutput[0]","NM","",-1,1,100); 
+r->SetMinimum(1e-1)
+r->Draw()
+png("B_FiveWeightedTrainPlots_of_netOutput_0_") // done in cheatSheet-NN
+//------------------------------------------------------------------------------
+// pid
+r = FiveWeightedTrainPlots(T,Tpi,TK,"piminus_ProbNNpi","NM","",0,1); 
+r = FiveWeightedTrainPlots(T,Tpi,TK,"piminus_ProbNNk","NM","",0,1); 
+
+//------------------------------------------------------------------------------
+// PT weights
+//------------------------------------------------------------------------------
+//r = FiveWeightedTrainPlots(T,Tpi,TK,"B_P","NL","",30000.,500000.,50); 
+//png("B_FiveWeightedTrainPlots_of_B_P_log")
+//r = FiveWeightedTrainPlots(T,Tpi,TK,"B_P","N","",0.,400000.,80); 
+//r = FiveWeightedTrainPlots(T,Tpi,TK,"B_PT","NL","",500.,30000.,50); 
+//png("B_FiveWeightedTrainPlots_of_B_PT_log")
+//r = FiveWeightedTrainPlots(T,Tpi,TK,"B_PT","N","",0.,30000.,50); 
+
+//TH1* PT30 = Divide(T,TK,"B_PT",KSig,KWtrue,"","N","",0.,30000.,30); 
+//TH1* PTl25 = Divide(T,TK,"B_PT",KSig,KWtrue,"","NL","",500.,30000.,25); 
+//TH1* PT10 = Divide(T,TK,"B_PT",KSig,KWtrue,"","N","",0.,30000.,10); 
+//TH1* PTl10 = Divide(T,TK,"B_PT",KSig,KWtrue,"","NL","",500.,30000.,10); 
+
+TCut KSig("sweightLb*(sweightLb>-4)*(tCategory==-1)") ;
+TCut Ktrue("(Category==-1)*(BKGCAT==1)*(ErrorCode==0)");
+TCut KWtrue("(Category==-1)*(BKGCAT==1)*(ErrorCode==0)*DalitzWeight*SPDWeight") ;
+const Int_t nbins=28;
+Double_t pbins2[nbins+1] = {0,1500,2200,3000,3500,4000,4500,5000,5500,6000,6500,7000,7500,8000,8500,9000,9500,10000,10750,11500,12500,14000,16000,18000,20000,22000,25000,30000,50000};
+TH1D* PTbinsMC = new TH1D("PTbinsMC","#Lambda_{b} p_{T} [MeV/c^2]",nbins,pbins2);
+TH1D* PTbinsMCW = new TH1D("PTbinsMCW","#Lambda_{b} p_{T} [MeV/c^2]",nbins,pbins2);
+TH1D* PTbinsK = new TH1D("PTbinsK","#Lambda_{b} p_{T} [MeV/c^2]",nbins,pbins2);
+T->Draw("B_PT >> PTbinsK",KSig.GetTitle())
+TK->Draw("B_PT >> PTbinsMCW",KWtrue.GetTitle())
+TK->Draw("B_PT >> PTbinsMC",Ktrue.GetTitle())
+
+double aK = PTbinsK->GetSumOfWeights()
+double aMC = PTbinsMC->GetSumOfWeights()
+double aMCW = PTbinsMCW->GetSumOfWeights()
+PTbinsMC->Scale(aK/aMC);
+PTbinsMCW->Scale(aK/aMCW);
+RooPlot* r = NiceRooPlot(PTbinsK,PTbinsMC,PTbinsMCW,"") // do not scale in NiceRooPlot
+png("Data and MC Lb pt")
+
+TH1D* PTbinsK2 = PTbinsK.Clone()
+PTbinsK->Divide(PTbinsMC)
+PTbinsK2->Divide(PTbinsMCW)
+PTbinsK->SetMinimum(0.)
+PTbinsK->SetMaximum(1.6)
+NicePlot(PTbinsK,PTbinsK2)
+png("Data and MC Lb pt weight")
+
+for ( int i = 1; i<=nbins ; i++) { cout << PTbinsK->GetBinContent(i) << ", " ;}
+0.666744, 1.07248, 1.23936, 1.40508, 1.41215, 1.43208, 1.33071, 1.32537, 1.1913, 1.09394, 1.0492, 1.07596, 0.993251, 0.985716, 0.885626, 0.863668, 0.848093, 0.817466, 0.871625, 0.688731, 0.747994, 0.703201, 0.625576, 0.599652, 0.569779, 0.605114, 0.600123, 0.451159
+
+for ( int i = 1; i<=nbins ; i++) { cout << PTbinsK2->GetBinContent(i) << ", " ;}
+1.03047, 1.39416, 1.38797, 1.40991, 1.45191, 1.57368, 1.27071, 1.43531, 1.2349, 1.09752, 1.01071, 1.1189, 0.968022, 0.968896, 0.787784, 0.876768, 0.8008, 0.7804, 0.843666, 0.687542, 0.68765, 0.666551, 0.502547, 0.559499, 0.465446, 0.544776, 0.62319, 0.369554
+
+
+// check it
+RooPlot* r1 = SandB(T,TK,"B_PT","sweightLb*(sweightLb>-4)*(tCategory==-1)","(Category==-1)*(BKGCAT==1)*(ErrorCode==0)*DalitzWeight*SPDWeight","1","NL","remove",500,100000)
+RooPlot* r2 = SandB(T,TK,"B_PT","sweightLb*(sweightLb>-4)*(tCategory==-1)","(Category==-1)*(BKGCAT==1)*(ErrorCode==0)*DalitzWeight*SPDWeight*PTWeight2","1","NL","remove",500,100000)
+
+
+
+//------------------------------------------------------------------------------
+// test
+r = FiveWeightedTrainPlots(T,Tpi,TK,"Psi_FDCHI2_ORIVX","NML","",0.0001,10); 
+r = FiveWeightedTrainPlots(T,Tpi,TK,"Psi_MM","NM","",3000,3200); 
+
+
+//========================================================================================
+//for tim
+TString mKp2("((sqrt(493.677**2+pplus_PX**2+pplus_PY**2+pplus_PZ**2)+sqrt(938.272**2+piminus_PX**2+piminus_PY**2+piminus_PZ**2))**2-(pplus_PX+piminus_PX)**2-(pplus_PY+piminus_PY)**2-(pplus_PZ+piminus_PZ)**2)")
+TString mpsiK2("((sqrt(493.677**2+pplus_PX**2+pplus_PY**2+pplus_PZ**2)+Psi_PE)**2-(pplus_PX+Psi_PX)**2-(pplus_PY+Psi_PY)**2-(pplus_PZ+Psi_PZ)**2)")
+T->Draw(mKp2+"/1e6","netOutput>0.552 && Category==-1")
+png("mKp2")
+T->Draw(mpsiK2+"/1e6","netOutput>0.552 && Category==-1")
+png("mpsiK2")
+TH2D* h2 = Make2DPlot("h2","m_{Kp}^{2}",50,2,12,"m_{J/#psiK}^{2}",56,12,26)
+T->Draw(mpsiK2+"/1e6:"+mKp2+"/1e6 >> h2","netOutput>0.552 && Category==-1")
+png("Dalitz_with_pK_swap")
+gStyle->SetPalette(0)
+gPad->SetLogz()
+h2->Draw("COL")
+png("Dalitz_with_pK_swap - colz")
+
+//========================================================================================
+// Asymmetries
+//
+SandB(T,0,"muplus_TRACK_CHI2NDOF","muplus_ID==-13","muplus_ID==13","sweightLb*(sweightLb>-4)*(tCategory==-1)","","remove")
+
+//------------------------------------------------------------------------------------------------------------
+// Cross check of Lb weight order
+//------------------------------------------------------------------------------------------------------------
+RooPlot* pt = SandB(TK,0,"B_PT","(Category==-1)*(BKGCAT==1)*(ErrorCode==0)*DalitzWeight*SPDWeight","(Category==-1)*(BKGCAT==1)*(ErrorCode==0)*SPDWeight","1","LN","remove",500.,50000.,50)
+SetTitle("#Lambda_{b} log_{10}(p_{T}) [MeV/c]",pt)
+png("LbK MC Lb Pt with and without Dalitz weight")
+
+TwoProfile(T,TK,"nSPDHits","B_PT","sweightLb*(sweightLb>-4)","(Category==-1)*(BKGCAT==1)*(ErrorCode==0)","")
+
+TString W1 = "(Category==-1)*(BKGCAT==1)*(ErrorCode==0)*DalitzWeight*SPDWeight*PTWeight2"
+TString W2 = "(Category==-1)*(BKGCAT==1)*(ErrorCode==0)*DalitzWeight2*SPDWeight*PTWeight"
+TString Wno = "(Category==-1)*(BKGCAT==1)*(ErrorCode==0)*DalitzWeight*SPDWeight"
+TString Wz = "(Category==-1)*(BKGCAT==1)*(ErrorCode==0)*DalitzWeight"
+RooPlot* rpt = SevenPlots(T,TK,TK,TK,TK,TK,0,"sweightLb*(sweightLb>-4)*(tCategory==-1)",W1,W2,Wno,Wz,"1","","B_PT","NL","remove",1000,50000,30)
+SetTitle("#Lambda_{b} log_{10}(p_{T}) [MeV/c]",rpt)
+png("LbK MC Lb Pt with and without PT weights")
+
+
+//------------------------------------------------------------------------------------------------------------
+// LbK plots by run period
+//------------------------------------------------------------------------------------------------------------
+TCut Y11("RunNumber<110000")
+TCut Y12("RunNumber>110000")
+TCut Run1("RunNumber<95000")
+TCut Run2(!Run1 && "RunNumber<101000")
+TCut Run3(!Run2 && "RunNumber<110000")
+TCut Run4(!Run3 && "RunNumber<114000")
+TCut Run5(!Run4 && "RunNumber<120000")
+TCut Run6(!Run5 && "RunNumber<129000")
+TCut Run7("RunNumber>129000")
+TCut KRun1(Run1 && "ErrorCode[0]==0 && Category[0]==-1 && PsipKMass[0]>5470 && PsipKMass[0]<5770")
+TCut KRun2(Run2 && "ErrorCode[0]==0 && Category[0]==-1 && PsipKMass[0]>5470 && PsipKMass[0]<5770")
+TCut KRun3(Run3 && "ErrorCode[0]==0 && Category[0]==-1 && PsipKMass[0]>5470 && PsipKMass[0]<5770")
+TCut KRun4(Run4 && "ErrorCode[0]==0 && Category[0]==-1 && PsipKMass[0]>5470 && PsipKMass[0]<5770")
+TCut KRun5(Run5 && "ErrorCode[0]==0 && Category[0]==-1 && PsipKMass[0]>5470 && PsipKMass[0]<5770")
+TCut KRun6(Run6 && "ErrorCode[0]==0 && Category[0]==-1 && PsipKMass[0]>5470 && PsipKMass[0]<5770")
+TCut KRun7(Run7 && "ErrorCode[0]==0 && Category[0]==-1 && PsipKMass[0]>5470 && PsipKMass[0]<5770")
+
+RooPlot* y1112 = SandB(NN,0,"PsipKMass[0]",Y11,Y12,"ErrorCode[0]==0 && Category[0]==-1","N","remove",5470,5770)
+SetTitle("m_{J/#psipK} [MeV/c^{2}]",y1112)
+png("PsipK mass in 2011 and 2012")
+gPad->SetLogy()
+RooPlot* krun = SevenPlots(NN,NN,NN,NN,NN,NN,NN,KRun1,KRun2,KRun3,KRun4,KRun5,KRun6,KRun7,"PsipKMass[0]","N","remove",5470,5770,15)
+krun->SetMinimum(0.001)
+SetTitle("m_{J/#psipK} [MeV/c^{2}]",krun)
+png("PsipK mass in run blocks")
+
+RooPlot* krun2 = SevenPlots(NN,NN,NN,NN,NN,NN,NN,KRun1,KRun2,KRun3,KRun4,KRun5,KRun6,KRun7,"abs(PsipKMass[0]-5620)<20","N","remove",-0.5,1.5,2)
+krun2->SetMinimum(0.4)
+krun2->Draw()
+
+TString WRun1("sweightLb*(sweightLb>-4)*(tCategory==-1)*("+TString(Run1.GetTitle())+")")
+TString WRun2("sweightLb*(sweightLb>-4)*(tCategory==-1)*("+TString(Run2.GetTitle())+")")
+TString WRun3("sweightLb*(sweightLb>-4)*(tCategory==-1)*("+TString(Run3.GetTitle())+")")
+TString WRun4("sweightLb*(sweightLb>-4)*(tCategory==-1)*("+TString(Run4.GetTitle())+")")
+TString WRun5("sweightLb*(sweightLb>-4)*(tCategory==-1)*("+TString(Run5.GetTitle())+")")
+TString WRun6("sweightLb*(sweightLb>-4)*(tCategory==-1)*("+TString(Run6.GetTitle())+")")
+TString WRun7("sweightLb*(sweightLb>-4)*(tCategory==-1)*("+TString(Run7.GetTitle())+")")
+
+RooPlot* krun3 = SevenPlots(T,T,T,T,T,T,T,WRun1,WRun2,WRun3,WRun4,WRun5,WRun6,WRun7,"B_SubpK_chi2[0]/B_SubpK_nDOF[0]","N","remove",0,4,8)
+SetTitle("DTF #chi^{2}",krun3)
+png("DTF chi2 in run blocks")
+
+
+RooPlot* krun4 = SevenPlots(T,T,T,T,T,T,T,WRun1,WRun2,WRun3,WRun4,WRun5,WRun6,WRun7,"pplus_ProbNNp","N","remove",0,1,10)
+SetTitle("p P(p)",krun4)
+png("prob p in run blocks")
+
+

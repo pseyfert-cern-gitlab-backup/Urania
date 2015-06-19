@@ -1,6 +1,5 @@
 from array import array
 from math import exp, log, sqrt
-from RooFitWrappers import FormulaVar
 
 __keep = []
 __bin_counter = 0
@@ -159,7 +158,7 @@ def dilution_bins(t_var, data, sigmat, sigmat_cat, result, signal = [], subtract
     return total
 
 # Calculate dilution
-def dilution(t_var, data, sigmat = None, result = None, signal = [], subtract = [], raw = False, simultaneous = False, calibration = None):
+def dilution_ft(t_var, data, sigmat = None, result = None, signal = [], subtract = [], raw = False, simultaneous = False, calibration = None):
     __bin_counter = 0
     if calibration:
         assert(sigmat.GetName() in [p.GetName() for p in calibration.getVariables()])
@@ -329,13 +328,60 @@ def dilution(t_var, data, sigmat = None, result = None, signal = [], subtract = 
     D = sigmaFromFT(ft_histo, 17.68, 0.024)
     return D
 
+def dilution(data, sfs, calib = None, error_fun = None):
+    """
+    Calculate the dilution of the data.
+    data should be [(st, weight), ...]
+    sfs should be [(calib_pars, frac), ..., (calib_pars, None)]
+    calib_pars = [par0, par1, ...]
+    if calib == None, a polynomial with parameters calib_pars is assumed
+    else calib = [fun(pars, st), ...]
+    error_fun should calculate the error on D^2 and be callable as (st, w, [list of calibration pars])
+    """
+    from math import pow
+    if not calib:
+        def __calib(pars, st):
+            return sum(pars[i] * pow(st, i) for i in range(len(pars)))
+        calib = [__calib for j in range(len(sfs))]
+    
+    if sfs[-1][1] == None:
+        sfs[-1][1] = 1 - sum(sf[1] for sf in sfs[:-1])
+    
+    ## reset the error functor
+    if error_fun:
+        error_fun.reset()
+    dms = 17.768 ** 2 / 2
+    total = 0
+    err_2 = 0
+    values = []
+    from math import exp, sqrt
+    for st, w in data:
+        d = 0
+        for (pars, frac), cal in zip(sfs, calib):
+            d += frac * exp(- dms * cal(pars, st) ** 2)
+        total += w * d ** 2
+        ## Call error calculator to update sums
+        if error_fun:
+            error_fun(w, st)
+    
+    sw = sum(e[1] for e in data)
+    if error_fun:
+        ## Error calculator return error on D^2
+        err = error_fun.error()
+        ## 
+        err = 2 * total / sw * err
+    else:
+        err = None
+        
+    total = sqrt(total / sw)
+    ## eff_res = sqrt(-log(total) / dms)
+    return total, err
+
 def signal_dilution(data, sigmat, calibration = None):
     if calibration:
         assert(sigmat.GetName() in [p.GetName() for p in calibration.getVariables()])
         calibration.redirectServers(data.get())
 
-    dms = 17.7 ** 2 / 2
-    total = 0
     res_var = data.get().find(sigmat.GetName())
     weighted = data.isWeighted()
 
@@ -353,10 +399,67 @@ def signal_dilution(data, sigmat, calibration = None):
             res = calibration.getVal()
         else:
             res = res_var.getVal()
-        total += w * (exp(- dms * (res ** 2)) ** 2)
-    total = sqrt(total / data.sumEntries())
-    eff_res = sqrt(-log(total) / dms)
-    print 'Dilution = %f' % total
-    print 'Effective resolution = %f' % eff_res
+        values.append((res, w))
+    return dilution(values, [((0, 1), 1)])
 
-    return total, eff_res
+def signal_dilution_dg(data, sigmat, sf1, frac, sf2):
+    res_var = data.get().find(sigmat.GetName())
+    weighted = data.isWeighted()
+    
+    values = []
+    total = 0
+    for i in range(data.numEntries()):
+        r = data.get(i)
+        ## External weight
+        if weighted:
+            w = data.weight()
+        else:
+            w = 1.
+        res = res_var.getVal()
+        values.append((res, w))
+        
+    return dilution(data, [((0, sf1), 1 - frac), ((0, sf2), frac)])
+
+class SolveSF(object):
+    def __init__(self, data, sigmat):
+        from ROOT import RooDataSet
+        self.setData(data, sigmat)
+        from ROOT import RooRealVar, RooArgList
+        self.__sf = 1.
+        
+        self.__min = 0.01
+        self.__max = 5
+        
+        import ROOT
+        from ROOT import TF1
+        self.__tf1 = TF1('_tf1', self, self.__min, self.__max, 0)
+        self.__wtf1 = ROOT.Math.WrappedTF1(self.__tf1)
+        self.__D = 1
+    
+    def setData(self, data, sigmat):
+        from ROOT import RooDataSet
+        if isinstance(data, RooDataSet):
+            self.__data = []
+            st = data.get().find(sigmat.GetName())
+            for i in range(data.numEntries()):
+                r = data.get(i)
+                self.__data.append((st.getVal(), data.weight()))
+        else:
+            raise TypeError("Data must be RooDataSet")
+        
+    def setSF(self, sf):
+        self.__sf = sf
+    
+    def __call__(self, x, par = []):
+        self.__sf = x[0]
+        d = dilution(self.__data, [((0, self.__sf), 1)])
+        return d[0] - self.__D
+    
+    def solve(self, D ):
+        self.__D = D
+        import ROOT
+        rf = ROOT.Math.BrentRootFinder()
+        rf.SetFunction(self.__wtf1, self.__min, self.__max)
+        rf.SetNpx(20)
+        rf.Solve()
+        return rf.Root()

@@ -128,7 +128,7 @@ void make_canvas(){
   return;
 }
 
-void printLHCb(char* optLR="L", char* optPrelim="Final", char* optText="")
+void printLHCb(const char* optLR="L", const char* optPrelim="Final", const char* optText="")
 {
 //////////////////////////////////////////////////////////////////////////
 // routine to print 'LHCb', 'LHCb Preliminary' on plots 

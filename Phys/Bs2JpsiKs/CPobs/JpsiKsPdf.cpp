@@ -208,6 +208,41 @@ void JpsiKsPdf::setConstant(TString which){
     if(m_tau_long) m_tau_long->setConstant(true);
     if(m_tau_short) m_tau_short->setConstant(true);
   }
+  if (which=="Prescaled_LL") {
+    if (m_Kstar_mean) {
+      m_Kstar_mean->setVal(5170.5);
+      m_Kstar_mean->setConstant(true);
+    }
+    if (m_Kstar_sigma) {
+      m_Kstar_sigma->setVal(29.358);
+      m_Kstar_sigma->setConstant(true);
+    }
+    if (m_frac) {
+      m_frac->setVal(0.59147);
+      m_frac->setConstant(true);
+    }
+    if (m_width) {
+      m_width->setVal(5.9590);
+      m_width->setConstant(true);
+    }
+    if (m_width2) {
+      m_width2->setVal(10.552);
+      m_width2->setConstant(true);
+    }
+  } else if (which=="Prescaled_DD") {
+    if (m_frac) {
+      m_frac->setVal(0.48128);
+      m_frac->setConstant(true);
+    }
+    if (m_width) {
+      m_width->setVal(6.4641);
+      m_width->setConstant(true);
+    }
+    if (m_width2) {
+      m_width2->setVal(10.904);
+      m_width2->setConstant(true);
+    }
+  }
 }
 
 // #############################################################################
@@ -320,17 +355,17 @@ void JpsiKsPdf::setTails(){
     setConstant("Tails");
   }
   else if(m_setup==m_NNKstar){
-    if(m_alpha) m_alpha->setVal(m_ttype==3 ? 1.8613 : 1.6323);
-    if(m_alpha2) m_alpha2->setVal(m_ttype==3 ? -2.0579 : -1.8193);
-    if(m_n) m_n->setVal(m_ttype==3 ? 1.7887 : 2.5197);
-    if(m_n2) m_n2->setVal(m_ttype==3 ? 3.1202 : 5.7716);
+    if(m_alpha) m_alpha->setVal(m_ttype==3 ? 1.8634 : 1.6309);
+    if(m_alpha2) m_alpha2->setVal(m_ttype==3 ? -2.0651 : -1.8401);
+    if(m_n) m_n->setVal(m_ttype==3 ? 1.7677 : 2.5130);
+    if(m_n2) m_n2->setVal(m_ttype==3 ? 3.0579 : 4.9832);
     setConstant("Tails");
   }
   else if(m_setup==m_NNUnbiased || m_setup==m_NNSecond){
-    if(m_alpha) m_alpha->setVal(m_ttype==3 ? 1.8517 : 1.6323);
-    if(m_alpha2) m_alpha2->setVal(m_ttype==3 ? -2.0261 : -1.8193);
-    if(m_n) m_n->setVal(m_ttype==3 ? 1.7908 : 2.5197);
-    if(m_n2) m_n2->setVal(m_ttype==3 ? 3.4626 : 5.7716);
+    if(m_alpha) m_alpha->setVal(m_ttype==3 ? 1.8405 : 1.6309);
+    if(m_alpha2) m_alpha2->setVal(m_ttype==3 ? -2.0145 : -1.8401);
+    if(m_n) m_n->setVal(m_ttype==3 ? 1.7943 : 2.5130);
+    if(m_n2) m_n2->setVal(m_ttype==3 ? 3.4124 : 4.9832);
     setConstant("Tails");
   }
 }
@@ -524,7 +559,7 @@ void JpsiKsPdf::buildMassPdf(){
   if(m_sigType=="GaussCB") std::cout << " SETUP: Signal Model = Gauss + Crystal Ball" << std::endl;
   if(m_sigType=="DoubleGauss") std::cout << " SETUP: Signal Model = Double Gauss" << std::endl;
   if(m_sigType=="DoubleCB" || m_sigType=="GaussCB" || m_sigType=="DoubleGauss"){
-    m_frac = new RooRealVar(m_name+"frac", "Fraction of narrow component", 0.67521, 0.0, 1.0);
+    m_frac = new RooRealVar(m_name+"frac", "Fraction of narrow component", 0.58498, 0.0, 1.0);
     m_Bd = new RooAddPdf(m_name+"Bd PDF","Bd PDF",RooArgList(*m_Bd_I,*m_Bd_II),RooArgList(*m_frac));
   }
 
@@ -573,8 +608,8 @@ void JpsiKsPdf::buildMassPdf(){
     }
     else if(m_KstarType=="ExpGauss"){
       std::cout << " SETUP: Kstar Model = Exp and Gauss" << std::endl;
-      m_Kstar_mean = new RooRealVar(m_name+"Kstar mean","mean",5173.5,5180,5225);
-      m_Kstar_sigma = new RooRealVar(m_name+"Kstar sigma","sigma",21.82,10.,30.); 
+      m_Kstar_mean = new RooRealVar(m_name+"Kstar mean","mean",5173.5,5150,5225);
+      m_Kstar_sigma = new RooRealVar(m_name+"Kstar sigma","sigma",26.99,10.,30.); 
       m_Kstar_shift = new RooRealVar(m_name+"Kstar shift","transition to Exp",-4.583);// Frozen to help convergence
       m_Kstar = new RooGaussAndExp(m_name+"EaGKstar","Kstar BKG",*m_mass,*m_Kstar_mean,*m_Kstar_sigma,*m_Kstar_shift);
       //m_Kstar = new RooGaussian(m_name+"EaGKstar","Kstar BKG",*m_mass,*m_Kstar_mean,*m_Kstar_sigma);
@@ -586,7 +621,7 @@ void JpsiKsPdf::buildMassPdf(){
   // *** Background ***
   if(m_bkgType=="Exp"){
     std::cout << " SETUP: Background Model = Exponential \n" << std::endl;
-    m_bkg1 = new RooRealVar(m_name+"expo","expo", -0.004,-0.1,0.);
+    m_bkg1 = new RooRealVar(m_name+"expo","expo", -0.002,-0.005,0.);
     m_comBKG = new RooExponential(m_name+"comBKG" , "combinatorial BKG", *m_mass, *m_bkg1);
   }
   else if(m_bkgType=="Poly"){

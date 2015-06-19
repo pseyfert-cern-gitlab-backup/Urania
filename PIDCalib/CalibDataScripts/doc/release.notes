@@ -4,6 +4,11 @@
 ! Purpose     : Scripts to generate PID Calibration samples
 !----------------------------------------------------------------------------- 
 
+!============================== v4r3 02-09-2013 ==============================
+
+! 2013-09-02 - Philip Hunt (LHCB)
+ - Make version v4r3 (erroneously tagged as v3r1)
+
 ! 2013-07-09 - Philip Hunt (LHCB)
  - Fixed bugs in Lam0Fit.cpp and Lam0Fit_MuonUnBiased.cpp introduced in v4r1
     * "high momentum" Lam0 events were being extracted from the LowP stripping line samples,

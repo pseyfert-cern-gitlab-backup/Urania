@@ -130,22 +130,43 @@ Candidate MultipleCandidates::randomCandidate(long int runNumber, ULong64_t even
   return *(allCandidatesInEvent(runNumber, eventNumber, true).begin());
 }
 // ###################################################################
-MultipleCandidates* createEventMap(NetTree* ntuple, double NNcut){
+MultipleCandidates* createEventMap(NetTree* ntuple, double NNcut, bool debug ){
   MultipleCandidates* eventmap = new MultipleCandidates(m_theSeed) ; // 0 means no reproducibility
   std::cout << " * Filling Duplicate Event Map \n" << std::endl;
   const Long64_t nentries = ntuple->fChain->GetEntries();  
   double frac = printFrac(nentries);
   for ( Long64_t i = 0; i < nentries; ++i ){
     ntuple->fChain->GetEntry( i );
-    //    if ( 0 == i % ( (int)(frac*nentries) ) ) {
-    //      std::cout << " |-> " << i << " / " << nentries << " -- run/event = " 
-    //                << ntuple->RunNumber << "/" <<  ntuple->EventNumber << std::endl;
-    //    }
+    if( debug || 0==i%((int)(0.1*nentries))) std::cout << " |-> " << i << " / " << nentries << " (" 
+						       << 100*i/nentries << "%) - " 
+						       << ntuple->EventNumber << "/" << ntuple->RunNumber << endl ;
     for( unsigned int pv = 0 ; pv!=ntuple->PVs ; ++pv){
-      if (ntuple->netOutput[pv]>=NNcut){
+      if (ntuple->netOutput[pv]>=NNcut && ntuple->ErrorCode[pv]==0){
         eventmap->fill(i, pv, ntuple->RunNumber, ntuple->EventNumber );
-        break ;
+        //        break ;
       }
+    }
+  }
+  return eventmap;
+}
+// ###################################################################
+MultipleCandidates* createEventMap(Lambdab* ntuple, bool doVetoes, bool debug){
+  MultipleCandidates* eventmap = new MultipleCandidates(m_theSeed) ; // 0 means no reproducibility
+  std::cout << " * Filling Duplicate Event Map \n" << std::endl;
+  const Long64_t nentries = ntuple->GetEntries(debug);  
+  double frac = printFrac(nentries);
+  for ( Long64_t i = 0; i < nentries; ++i ){
+    ntuple->fChain->GetEntry( i );
+    if( debug || 0==i%((int)(0.1*nentries))) std::cout << " |-> " << i << " / " << nentries << " (" 
+						       << 100*i/nentries << "%) - " 
+						       << ntuple->eventNumber << "/" << ntuple->runNumber << endl ;
+    if (!ntuple->pid()) continue;
+    if (!ntuple->trigger()) continue;
+    for( unsigned int pv = 0 ; pv!=ntuple->nPVs ; ++pv){
+      if (!ntuple->preselection(pv)) continue ;
+      if (doVetoes && !ntuple->PassesMassVetoesForTeaching(pv)) continue ;
+      eventmap->fill(i, pv, ntuple->runNumber, ntuple->eventNumber );
+      break ;
     }
   }
   return eventmap;

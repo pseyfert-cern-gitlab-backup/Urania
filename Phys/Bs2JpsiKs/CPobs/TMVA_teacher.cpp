@@ -137,30 +137,35 @@ int runTeacher(const TString module, const TString data, const TString step,
   ////////////////////////////////
 
   // Default setup
-  TString defSetup = "H:!V:NTrees=850:nEventsMin=50:BoostType=AdaBoost:AdaBoostBeta=0.5:SeparationType=GiniIndex";
+  TString defSetup = "!H:!V:NTrees=850:nEventsMin=150:BoostType=AdaBoost:AdaBoostBeta=0.5:SeparationType=GiniIndex";
   if (BDTtraining=="Def_Dep3" || BDTtraining=="All") {
     factory->BookMethod (TMVA::Types::kBDT, "BDT_Def_Dep3_"+trackName,
       ""+defSetup+":MaxDepth=3:nCuts=20:VarTransform=None:PruneMethod=NoPruning");
   }
+  // Gaussian-ate variables
+  if (BDTtraining=="Gau_Dep3" || BDTtraining=="All") {
+    factory->BookMethod (TMVA::Types::kBDT, "BDT_Gau_Dep3_"+trackName,
+      ""+defSetup+":MaxDepth=3:nCuts=20:VarTransform=Gauss:PruneMethod=NoPruning");
+  }
   // Decorrelate variables
   if (BDTtraining=="Dec_Dep3" || BDTtraining=="All") {
     factory->BookMethod (TMVA::Types::kBDT, "BDT_Dec_Dep3_"+trackName,
-      ""+defSetup+":MaxDepth=3:nCuts=20:VarTransform=Decorrelate:PruneMethod=NoPruning");
+      ""+defSetup+":MaxDepth=3:nCuts=20:VarTransform=G,D,G:PruneMethod=NoPruning");
   }
   // Decorrelate variables + extra depth
   if (BDTtraining=="Dec_Dep5" || BDTtraining=="All") {
     factory->BookMethod (TMVA::Types::kBDT, "BDT_Dec_Dep5_"+trackName,
-      ""+defSetup+":MaxDepth=5:nCuts=20:VarTransform=Decorrelate:PruneMethod=NoPruning");
+      ""+defSetup+":MaxDepth=5:nCuts=20:VarTransform=G,D,G:PruneMethod=NoPruning");
   }
   // Decorrelate variables + extra steps in Node cut optimisation
   if (BDTtraining=="Dec_Dep3_Cuts50" || BDTtraining=="All") {
     factory->BookMethod (TMVA::Types::kBDT, "BDT_Dec_Dep3_Cuts50_"+trackName,
-      ""+defSetup+":MaxDepth=3:nCuts=50:VarTransform=Decorrelate:PruneMethod=NoPruning");
+      ""+defSetup+":MaxDepth=3:nCuts=50:VarTransform=G,D,G:PruneMethod=NoPruning");
   }
   // Decorrelate variables + pruning
   if (BDTtraining=="Dec_Dep3_Prune" || BDTtraining=="All") {
     factory->BookMethod( TMVA::Types::kBDT, "BDT_Dec_Dep3_Prune_"+trackName,
-      ""+defSetup+":MaxDepth=3:nCuts=20:VarTransform=Decorrelate:PruneMethod=CostComplexity:PruneStrength=-1");
+      ""+defSetup+":MaxDepth=3:nCuts=20:VarTransform=G,D,G:PruneMethod=CostComplexity:PruneStrength=-1");
   }
   // ***** Run ***** //
   /////////////////////

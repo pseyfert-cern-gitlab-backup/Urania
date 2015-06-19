@@ -46,7 +46,7 @@ def translate(name):
     tup.close()
 
 
-def saveEvents(b,chose):
+def savevents(b,chose):
     """
     """
     f=open(chose+"_evt.txt","w")
@@ -103,10 +103,13 @@ def fromRootToDictionary(t):
         #list.append(thing)
     return output
 
-def saveInTuple(list,name,type="R"):
+def saveInTuple(list,name,type="R", keytypes = {}):
     """saveInTuple( list of dictionaries, filename , type = 'R')
     Saves the data in a .xroot ( type = 'X' ) or .root file (type = 'R' )
     """
+    if keytypes == {}:
+	    for key in list[0].keys(): keytypes[key] = "F"
+    
     print "saving data"
     labels=[]
     vvv=vector(0,0,0)
@@ -121,8 +124,8 @@ def saveInTuple(list,name,type="R"):
                                              
             s=len(list[0][key])
             for j in range(s):                                                        
-                labels.append(key+str(j+1)+"/F")
-        else: labels.append(key+"/F")
+                labels.append(key+str(j+1)+"/" + keytypes[key])
+        else: labels.append(key+"/"+keytypes[key])
     if type in ["X", "ASCII"]:
         TUP=XTuple(name,labels)
     if type=="R":
@@ -131,7 +134,7 @@ def saveInTuple(list,name,type="R"):
         TUP=MTuple(name,labels)
     for thing in list:
         for key in thing.keys():
-            if key+"1/F" in labels:
+            if key+"1/" + keytypes[key] in labels:
                 s=len(thing[key])
                 for j in range(s):
                     TUP.fillItem(key+str(j+1),thing[key][j])

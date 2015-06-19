@@ -3,7 +3,7 @@
 # Maintainer : Yuehong Xie, Paula Alvarez Cartelle, Diego Martinez Santos
 #============================================================================
 package           BsKstKst 
-version           v4r0
+version           v4r1
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -33,7 +33,7 @@ use     SomeUtils       v*      Math
 use     SomeMassModels  v*      PhysFit
 use     LHCbStyle       v*      RootTools
 #use 	BsMuMuPy 	v* 	Phys
-
+use 	GSL 	        v* 	LCG_Interfaces
 
 apply_pattern install_python_modules
 #path_prepend PYTHONPATH "$(BSKSTKSTPYROOT)/python"

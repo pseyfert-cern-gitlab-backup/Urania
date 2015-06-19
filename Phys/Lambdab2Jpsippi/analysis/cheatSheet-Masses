@@ -1,430 +1,620 @@
-root.exe ~/work/Baryons/Lambdab/Lambdab-R12S17b-721.root ~/work/Baryons/Lambdab/LambdabMC-MC11-IncPsi-717.root Lambdab-R12S17b-721-NN.root  Lambdab-R12S17b-721-opt-SW.root LambdabMC-MC11-IncPsi-717-NN.root
-
-TTree* TD = _file0->Get("BetaSLambdab2JpsippiDetachedLine_Tuple/DecayTree")
-TTree* TJ = _file1->Get("Lambdab2Jpsippi_TupleMC/DecayTree")
-TTree* ND = _file2->Get("NetTree")
-TTree* SD = _file3->Get("WeightTree")
-TTree* NJ = _file4->Get("NetTree")
-TD->AddFriend(SD)
-TD->AddFriend(ND)
-TD->Draw("B_FullFit_M:PsippiMass","Category==1")
-TJ->AddFriend(NJ)
-TD->Draw("sweightLb","Category==1 && wnetOutput>0.9")
-
+root.exe
+//==================================================================================
+// Look for masses in K stream
+//==================================================================================
+gStyle->SetPalette(0)
+.L ../analysis/FourPlots.C 
+TFile* fnpi = TFile::Open("LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125-NN.root")
+TFile* fnk = TFile::Open("LambdabMC-LbK-Sim08a-1127-1128-1129-1137-NN.root")
+TFile* fnkpi = TFile::Open("LambdabMC-B2JpsiKpi-Sim08a-1138-1139-NN.root")
+TNNppi = (TTree*)fnpi->Get("NetTree")
+TNNpK = (TTree*)fnk->Get("NetTree")
+TNNKpi = (TTree*)fnkpi->Get("NetTree")
+TChain* TNNKK = new TChain("NetTree")
+TNNKK->Add("LambdabMC-B2JpsiKK-Sim08a-1134-1135-NN.root")
+TChain* TNN = new TChain("NetTree")
+TNN->Add("Lambdab-S20r1-1062-NN.root")
+TNN->Add("Lambdab-S20-1063-NN.root")
+TChain* TT = new TChain("TrainTree")
+TT->Add("Lambdab-S20r1-1062-All-SW.root")
+TT->Add("Lambdab-S20-1063-All-SW.root")
+TNN->AddFriend(TT)
+//TCut Reflection("BKGCAT==30")
+TCut LooseNNAll("netOutput>-0.5")
+TCut LooseNN("netOutput>-0.5 && ErrorCode==0")
+TCut OptimalNNAll("netOutput>0.552")
+TCut OptimalNN("netOutput>0.552")
 TCut OK("ErrorCode==0")
-TCut OptimalNN("netOutput>0.846" && OK)
-
-TCut L0TIS("BL0HadronDecision_TIS==1")
-TCut L0Mu("BL0DiMuonDecision_TOS==1 || BL0MuonDecision_TOS==1")
-TCut L0(L0Mu || "BL0MuonDecision_TIS==1 || BL0DiMuonDecision_TIS==1")
-TCut Hlt1TIS(L0 && "BHlt1TrackAllL0Decision_TIS==1")
-TCut Hlt1(L0 && "BHlt1TrackMuonDecision_TOS==1 || PsiHlt1DiMuonHighMassDecision_TOS==1 || PsiHlt1TrackAllL0Decision_TOS==1")
-TCut Hlt2TIS(Hlt1 && "BHlt2Global_TIS==1")
-TCut Hlt2(Hlt1 && "PsiHlt2DiMuonDetachedJPsiDecision_TOS==1 || PsiHlt2DiMuonJPsiDecision_TOS==1 || PsiHlt2DiMuonJPsiHighPTDecision_TOS==1")
-TCut FitRange("PsippiMass>5560 && PsippiMass<5810")
-
-TCut BdVeto("(B_SubKpi_M < 5259.5) || (B_SubKpi_M> 5299.5)")
-TString piKMass = "sqrt((Psi_PE+sqrt(pplus_PE**2-938.272**2+139.57**2)+sqrt(piminus_PE**2-139.57**2+493.677**2))**2-(Psi_PX+pplus_PX+piminus_PX)**2-(Psi_PY+pplus_PY+piminus_PY)**2-(Psi_PZ+pplus_PZ+piminus_PZ)**2)"
-TString KMass = "sqrt((Psi_PE+sqrt(piminus_PE**2-139.57**2+493.677**2))**2-(Psi_PX+piminus_PX)**2-(Psi_PY+piminus_PY)**2-(Psi_PZ+piminus_PZ)**2)"
-TCut Bd2Veto("abs("+piKMass+"-5279.5)>20")
-TString KpMass = "sqrt((Psi_PE+sqrt(pplus_PE**2-938.272**2+493.677**2)+sqrt(piminus_PE**2-139.57**2+938.272**2))**2-(Psi_PX+pplus_PX+piminus_PX)**2-(Psi_PY+pplus_PY+piminus_PY)**2-(Psi_PZ+pplus_PZ+piminus_PZ)**2)"
-TString KMass = "sqrt((Psi_PE+sqrt(piminus_PE**2-139.57**2+493.677**2))**2-(Psi_PX+piminus_PX)**2-(Psi_PY+piminus_PY)**2-(Psi_PZ+piminus_PZ)**2)"
-TString K2Mass = "sqrt((Psi_PE+sqrt(pplus_PE**2-938.272**2+493.677**2))**2-(Psi_PX+pplus_PX)**2-(Psi_PY+pplus_PY)**2-(Psi_PZ+pplus_PZ)**2)"
-TString pipiMass = "sqrt((Psi_PE+sqrt(pplus_PE**2-938.272**2+139.57**2)+piminus_PE)**2-(Psi_PX+pplus_PX+piminus_PX)**2-(Psi_PY+pplus_PY+piminus_PY)**2-(Psi_PZ+pplus_PZ+piminus_PZ)**2)"
-TString ppMass = "sqrt((Psi_PE+pplus_PE+sqrt(piminus_PE**2-139.57**2+938.272**2))**2-(Psi_PX+pplus_PX+piminus_PX)**2-(Psi_PY+pplus_PY+piminus_PY)**2-(Psi_PZ+pplus_PZ+piminus_PZ)**2)"
-TString KKMass = "sqrt((Psi_PE+sqrt(pplus_PE**2-938.272**2+493.677**2)+sqrt(piminus_PE**2-139.57**2+493.677**2))**2-(Psi_PX+pplus_PX+piminus_PX)**2-(Psi_PY+pplus_PY+piminus_PY)**2-(Psi_PZ+pplus_PZ+piminus_PZ)**2)"
-TString pipMass = "sqrt((Psi_PE+sqrt(pplus_PE**2-938.272**2+139.57**2)+sqrt(piminus_PE**2-139.57**2+938.272**2))**2-(Psi_PX+pplus_PX+piminus_PX)**2-(Psi_PY+pplus_PY+piminus_PY)**2-(Psi_PZ+pplus_PZ+piminus_PZ)**2)"
-
-TCut splitter("(piminus_ProbNNpi>piminus_ProbNNk)")
-TCut pistream(splitter && OK)
-TCut kstream(!splitter && OK)
-TCut GoodPi(Hlt2 && "BKGCAT==0 && abs(PsippiMass-5620)<100" && OK)
-TCut GoodK(Hlt2 && "BKGCAT==1 && abs(PsipKMass-5620)<100" && OK)
-TCut Reflection(Hlt2 && "B_BKGCAT==30" && OK)
+TCut OKNoPhi("ErrorCode==0 || ErrorCode==-6")
+TCut Blind("(PsippiMass<5580 || PsippiMass>5650) || Category!=1")
+TCut kstream(OK && "Category==-1")
+TCut pistreamUB(OK &&"Category==1")
+TCut pistream(OK && pistreamUB && Blind)
+TCut pistreamAll("Category==1")
+TCut kstreamAll("Category==1")
 Double_t mLb = 5620 ;
 Double_t mBd = 5279.5 ;
 Double_t mBu = 5279.17 ;
 Double_t mBs = 5366.3 ;
 Double_t win = 20 ;
-RooPlot* r = 0 ; // r is defined here
+Double_t lwin = 100 ;
+TCut NoKK("abs(PsiKKMass-5366.3)>20")
+TCut NoKpi("abs(PsiKpiMass-5279.5)>20")
+TCut NopiK("abs(PsipiKMass-5279.5)>20")
+TCut NopK("abs(PsipKMass-5620)>20")
+TCut NoKp("abs(PsiKpMass-5620)>20")
+TCut TruepiK("BKGCAT==31")
+TCut TrueKpi("BKGCAT==32")
+TCut TrueKK("BKGCAT==33")
+TCut TrueKp("BKGCAT==34")
+TCut TruepK("BKGCAT==1")
+TCut Trueppi("BKGCAT==0")
 
+RooPlot* r = 0 ;
+
+//==================================================================================
+// Lbpi mass of LbK stream
+//==================================================================================
+
+TCut KSig("sweightLb*(sweightLb>-4)*(Category==-1)*(netOutput>0.552)") ;
+TCut KSigB("sweightLb*(sweightLb>-4)*(Category==-1)*(netOutput>0.552)*(Baryon==1)") ;
+TCut KSigAB("sweightLb*(sweightLb>-4)*(Category==-1)*(netOutput>0.552)*(Baryon==-1)") ;
+TCut Ktrue("(Category==-1)*(BKGCAT==1)*(ErrorCode==0)*(netOutput>0.552)*DalitzWeight*PTWeight2"); // ppi cat
+TCut KtruePi("(Category==1)*(BKGCAT==1)*(ErrorCode==0)*(netOutput>0.552)*DalitzWeight*PTWeight2"); // ppi cat
+ 
+RooPlot* r = SevenPlots(TNN,TNNpK,TNNpK,0,0,0,0,KSig,Ktrue,KtruePi,"","","","","PsippiMass","N","remove",5000,5600)
+r->GetXaxis()->SetTitle("m_{J/#psip#pi} [MeV/c^{2}]")
+png("LbK mass under Lbpi")
+ 
+RooPlot* r = SevenPlots(TNN,TNN,TNN,0,0,0,0,KSig,KSigB,KSigAB,"","","","","PsippiMass","N","remove",5000,5600)
+r->GetXaxis()->SetTitle("m_{J/#psip#pi} [MeV/c^{2}]")
+png("LbK mass under Lbpi, B and AB")
+
+// sWeight LbK also in pi stream -> Huge change in weighting.exe!
+
+// Cross-check for J/psiKK
+// SandB(TNNKK,TNNphi,"PsipKMass","1","1",Reflection && LooseNN,"N")
 //================================================================================
-// Understand reflections
+// 2D plots
 //================================================================================
-//r = SandB(TD,0,"pplus_ProbNNp","Category>-1.5","Category==-2",pistream && Hlt2 && OptimalNN,"N","remove") // cut at 0.3-4?
-//r = SandB(TD,0,"pplus_ProbNNk","Category>-1.5","Category==-2",pistream && Hlt2 && OptimalNN,"N","remove") // not clear
-//r = SandB(TD,0,"pplus_ProbNNpi","Category>-1.5","Category==-2",pistream && Hlt2 && OptimalNN,"N","remove")
-r = SandB(TD,0,"pplus_ProbNNp-pplus_ProbNNk","Category>-1.5","Category==-2",pistream && Hlt2 && OptimalNN,"N","remove")
-//r = SandB(TD,0,"pplus_PIDp-pplus_PIDK","Category>-1.5","Category==-2",pistream && Hlt2 && OptimalNN,"N","remove")
-//r = SandB(TD,0,"pplus_ProbNNp-pplus_ProbNNk>0","Category>-1.5","Category==-2",pistream && Hlt2 && OptimalNN,"NI","remove") // 92% vs 81%
-//r = SandB(TD,0,"pplus_PIDp-pplus_PIDK>0","Category>-1.5","Category==-2",pistream && Hlt2 && OptimalNN,"NI","remove") //  92.3% vs 81.5% (same)
-
-TCut Biz("abs(PsippiMass-5750)<30")
-
-//================================================================================
-gPad->SetLogy(1)
-r = SandB(TD,0,"(Category==1)*PsippiMass+(Category==-1)*PsipKMass","Category==1","Category==-1",Hlt2 && OptimalNN,"","Streams after NN",5000,6100,55)
-gPad->SetLogy(0)
-r->SetMaximum(200)
-r->Draw()
-png("B Streams after NN zoom")
-//================================================================================
-// Check the vetoing has done the right thing
-gPad->SetLogy(0)
-r = SandB(TD,0,"PsipKMass","sweightLb>-5","1","Category==1" &&  Hlt2 && OptimalNN,"","Remaining PsipK in Psippi",5410,5810,80)
-r = SandB(TD,0,"PsiKpiMass","sweightLb>-5","1","Category==1" &&  Hlt2 && OptimalNN,"","Remaining PsiKpi in Psippi",4800,5700)
-r = SandB(TD,0, piKMass ,"sweightLb>-5","1","Category==1" &&  Hlt2 && OptimalNN,"","Remaining PsipiK in Psippi",5100,5400)
-r = SandB(TD,0, KKMass ,"sweightLb>-5","1","Category==1" &&  Hlt2 && OptimalNN,"","Remaining PsiKK in Psippi",5100,5800)
-//================================================================================
-// Check the vetoing has done the right thing
-r = SandB(TD,0,"PsipKMass","sweightLb>-5","1","Category==-1" &&  Hlt2 && OptimalNN,"","Remaining PsipK in PsipK",5410,5810,80)
-r = SandB(TD,0,"PsiKpiMass","sweightLb>-5","1","Category==-1" &&  Hlt2 && OptimalNN,"","Remaining PsiKpi in PsipK",4800,5700)
-r = SandB(TD,0, piKMass ,"sweightLb>-5","1","Category==-1" &&  Hlt2 && OptimalNN,"","Remaining PsipiK in PsipK",5100,5400)
-r = SandB(TD,0, KKMass ,"sweightLb>-5","1","Category==-1" &&  Hlt2 && OptimalNN,"","Remaining PsiKK in PsipK",5100,5800)
-//================================================================================
-gPad->SetLogy(0)
-//---------------------------------------------------------------------------------
-r = SandB(TD,0,"PsippiMass","Category==1","1",pistream && OK && Hlt2,"","Psippi vetoes effect",5410,5810,80)
-r = SandB(TD,0,"PsippiMass","Category==1","1",pistream && OptimalNN && Hlt2,"","Psippi vetoes effect after NN",5410,5810,80)
-r = SandB(TD,0,"PsipKMass","Category==-1","1",kstream && OK && Hlt2,"","PsipK vetoes effect",5410,5810,80)
-gPad->SetLogy()
-r = SandB(TD,0,"PsipKMass","Category==-1","1",kstream && OptimalNN && Hlt2,"","PsipK vetoes effect after NN",5410,5810,80)
-r = SandB(TD,0,"PsipKMass","Category==-1","1",kstream && OptimalNN && Hlt2,"Baggpp","remove",5410,5810,80)
-
-//---------------------------------------------------------------------------------
-r = SandB(TD,TJ,"PsippiMass","1","1","Category==1" && Hlt2 && OptimalNN,"","Remaining PsipK in Psippi - data and MC",5410,5810,80)
-// too little
-
-//---------------------------------------------------------------------------------
-// Test various reflections
-//---------------------------------------------------------------------------------
-r = SandB(TD,0,"pplus_ProbNNp-pplus_ProbNNk",pistream,kstream,OptimalNN && Hlt2,"","Post NN p prob p-K",-0.1,1,55)
-r->SetXTitle("P(p)-p(K)");
-overlay_line(0,r);
-png("Post NN prob p minus K")
-
-gPad->SetLogy(0)
-r = SandB(TD,0,"Psi_MM",pistream,kstream,OptimalNN && Hlt2,"","Post NN psi mass",3017,3177,150)
-r->SetXTitle("m_{#mu#mu} [MeV/c^{2}]");
-png("Post NN mumu mass")
-
-// SandB(TD,0,"(piminus_ProbNNpi>piminus_ProbNNk)*PsippiMass+(piminus_ProbNNpi<=piminus_ProbNNk)*PsipKMass",pistream,kstream,OptimalNN && Hlt2,"","Post NN pi and k stream mass",5500,5700)
-
-// Lambdas
-r = SandB(TD,0,"PsippiMass",pistream,kstream,OptimalNN && Hlt2,"","remove",5400,5800)
-r->SetXTitle("m_{J/#psip#pi} [MeV/c^{2}]");
-overlay_line(mLb-win,r);
-overlay_line(mLb+win,r);
-png("Post NN ppi mass")
-
-r = SandB(TD,0,"PsipKMass",pistream,kstream,OptimalNN && Hlt2,"","remove",5400,5800)
-r->SetXTitle("m_{J/#psipK} [MeV/c^{2}]");
-overlay_line(mLb-win,r);
-overlay_line(mLb+win,r);
-png("Post NN pK mass")
-
-r = SandB(TD,0,KpMass,pistream,kstream,OptimalNN && Hlt2,"","remove",5400,5800) 
-r->SetXTitle("m_{J/#psiKp} [MeV/c^{2}]");
-overlay_line(mLb-win,r);
-overlay_line(mLb+win,r);
-png("Post NN Kp mass")
-
-r = SandB(TD,0,pipMass,pistream,kstream,OptimalNN && Hlt2,"","remove",5400,5800) 
-r->SetXTitle("m_{J/#psi#pip} [MeV/c^{2}]");
-overlay_line(mLb-win,r);
-overlay_line(mLb+win,r);
-png("Post NN pip mass")
-
-// Bd
-r = SandB(TD,0,"PsiKpiMass",pistream,kstream,OptimalNN && Hlt2,"","remove",5000,5500)
-r->SetXTitle("m_{J/#psiK#pi} [MeV/c^{2}]");
-overlay_line(mBd-win,r);
-overlay_line(mBd+win,r);
-png("Post NN Kpi mass")
-
-r = SandB(TD,0,piKMass,pistream,kstream,OptimalNN && Hlt2,"","remove",5000,5500)
-r->SetXTitle("m_{J/#psi#piK} [MeV/c^{2}]");
-overlay_line(mBd-win,r);
-overlay_line(mBd+win,r);
-png("Post NN piK mass")
-
-r = SandB(TD,0,ppMass,pistream,kstream,OptimalNN && Hlt2,"","remove",5100,5750,65)      // Nothing
-r->SetXTitle("m_{J/#psipp} [MeV/c^{2}]");
-overlay_line(mBd-win,r);
-overlay_line(mBd+win,r);
-png("Post NN pp mass")
-
-// B+
-r = SandB(TD,0,KMass,pistream,kstream,OptimalNN && Hlt2,"","remove",5000,5500) // not a problem
-r->SetXTitle("m_{J/#psiK} [MeV/c^{2}]");
-overlay_line(mBu-win,r);
-overlay_line(mBu+win,r);
-png("Post NN K mass")
-
-r = SandB(TD,0,K2Mass,pistream,kstream,OptimalNN && Hlt2,"","remove",5000,5500) // not a problem
-r->SetXTitle("m_{J/#psiK} [MeV/c^{2}]");
-overlay_line(mBu-win,r);
-overlay_line(mBu+win,r);
-png("Post NN K2 mass")
-
-// Bs
-r = SandB(TD,0,pipiMass,pistream,kstream,OptimalNN && Hlt2,"","remove",5200,5700)  // It's there!
-r->SetXTitle("m_{J/#psi#pi#pi} [MeV/c^{2}]");
-overlay_line(mBd-win,r);
-overlay_line(mBd+win,r);
-overlay_line(mBs-win,r);
-overlay_line(mBs+win,r);
-png("Post NN pipi mass")
-
-r = SandB(TD,0,KKMass,pistream,kstream,OptimalNN && Hlt2,"","remove",5100,5600)  
-r->SetXTitle("m_{J/#psiKK} [MeV/c^{2}]");
-overlay_line(mBs-win,r);
-overlay_line(mBs+win,r);
-png("Post NN KK mass")
-
-//================================================================================
-
-
-//================================================================================
-gPad->SetLogy(0)
-// 2d Plots
-TH2D* hp = Make2DPlot("hp","J/#psip#pi mass",110,5000,6100,"J/#psiK#pi mass",110,4800,5900)
-TD->Draw("PsiKpiMass:PsippiMass >> hp",OptimalNN && Hlt2 && pistream)
-hp->Draw("COL")
-png("pion stream 2D mass")
-
-TH2D* hk = Make2DPlot("hk","J/#psipK mass",110,5000,6100,"J/#psi#piK mass",110,4800,5900)
-TD->Draw(piKMass+":PsipKMass >> hk",OptimalNN && Hlt2 && kstream)
+//------------------- pion stream
+TH2D* hk = Make2DPlot("hk","J/#psip#pi mass",110,4900,6000,"J/#psi#piK mass",110,4800,5900)
+TNN->Draw("PsipiKMass:PsippiMass >> hk",LooseNN && pistream)
+hk->SetTitleOffset(1.5,"y");
 hk->Draw("COL")
-png("kaon stream 2D mass")
+png("pion stream piK vs ppi")
 
-TH2D* hp2 = Make2DPlot("hp2","J/#psip#pi mass",120,4900,6100,"J/#psipK mass",120,5000,6200)
-TD->Draw("PsipKMass:PsippiMass >> hp2",OptimalNN && Hlt2 && pistream)
-hp2->Draw("COL")
-png("pion stream 2D mass Lb")
-
-TH2D* hk2 = Make2DPlot("hk2","J/#psipK mass",100,5100,6100,"J/#psip#pi mass",100,5000,6000)
-TD->Draw("PsippiMass:PsipKMass >> hk2",OptimalNN && Hlt2 && kstream)
+TH2D* hk2 = Make2DPlot("hk2","J/#psip#pi mass",110,4900,6000,"J/#psiK#pi mass",110,4800,5900)
+TNN->Draw("PsiKpiMass:PsippiMass >> hk2",LooseNN && pistream)
+hk2->SetTitleOffset(1.5,"y");
 hk2->Draw("COL")
-png("kaon stream 2D mass Lb")
+png("pion stream Kpi vs ppi")
+
+TH2D* hLk = Make2DPlot("hLk","J/#psip#pi mass",110,4900,6000,"J/#psiKp mass",90,5200,6100)
+TNN->Draw("PsiKpMass:PsippiMass >> hLk",LooseNN && pistream)
+hLk->SetTitleOffset(1.5,"y");
+hLk->Draw("COL")
+png("pion stream Kp vs ppi")
+
+TH2D* hLk2 = Make2DPlot("hLk2","J/#psip#pi mass",110,4900,6000,"J/#psipK mass",90,5200,6100)
+TNN->Draw("PsipKMass:PsippiMass >> hLk2",LooseNN && pistream)
+hLk2->SetTitleOffset(1.5,"y");
+hLk2->Draw("COL")
+png("pion stream pK vs ppi")
+
+TH2D* hkK = Make2DPlot("hkK","J/#psip#pi mass",110,4900,6000,"J/#psiKK mass",110,4800,5900)
+TNN->Draw("PsiKKMass:PsippiMass >> hkK",LooseNN && pistream)
+hkK->SetTitleOffset(1.5,"y");
+hkK->Draw("COL")
+png("pion stream KK vs ppi")
+
+//------------------- kaon stream
+gStyle->SetPalette(0)
+TH2D* hk = Make2DPlot("hk","J/#psipK mass",110,5000,6100,"J/#psi#piK mass",110,4800,5900)
+TNN->Draw("PsipiKMass:PsipKMass >> hk",LooseNN && kstream)
+hk->SetTitleOffset(1.5,"y");
+hk->Draw("COL")
+png("kaon stream piK vs pK")
+
+TH2D* hk2 = Make2DPlot("hk2","J/#psipK mass",110,5000,6100,"J/#psiK#pi mass",110,4800,5900)
+TNN->Draw("PsiKpiMass:PsipKMass >> hk2",LooseNN && kstream)
+hk2->SetTitleOffset(1.5,"y");
+hk2->Draw("COL")
+png("kaon stream Kpi vs pK")
 
 TH2D* hLk = Make2DPlot("hLk","J/#psipK mass",90,5200,6100,"J/#psiKp mass",90,5200,6100)
-TD->Draw(KpMass+":PsipKMass >> hLk",OptimalNN && Hlt2 && kstream)
+TNN->Draw("PsiKpMass:PsipKMass >> hLk",LooseNN && kstream)
+hLk->SetTitleOffset(1.5,"y");
 hLk->Draw("COL")
-png("kaon stream 2D mass Lb crossfeed")
-
-TH2D* hLp = Make2DPlot("hLp","J/#psip#pi mass",90,5200,6100,"J/#psiKp mass",90,5200,6100)
-TD->Draw(KpMass+":PsippiMass >> hLp",OptimalNN && Hlt2 && pistream)
-hLp->Draw("COL")
-png("pion stream 2D mass Lb crossfeed")
+png("kaon stream Kp vs pK")
 
 TH2D* hkK = Make2DPlot("hkK","J/#psipK mass",110,5000,6100,"J/#psiKK mass",110,4800,5900)
-TD->Draw(KKMass+":PsipKMass >> hkK",OptimalNN && Hlt2 && kstream) // Bd2Velo removes the diagonal
+TNN->Draw("PsiKKMass:PsipKMass >> hkK",LooseNN && kstream)
+hkk->SetTitleOffset(1.5,"y");
 hkK->Draw("COL")
-png("kaon stream 2D mass KK")
+png("kaon stream KK vs pK")
 
-/================================================================================
-// how much do the vetoes loose me?
+// -------------------------------------------- KK
+TH2D* hk = Make2DPlot("hk","J/#psi#piK mass",80,5100,5500,"J/#psiKK mass",80,5200,5600)
+TNN->Draw("PsiKKMass:PsipiKMass >> hk",LooseNN && kstream)
+hk->SetTitleOffset(1.5,"y");
+hk->Draw("COL")
+png("kaon stream KK vs piK")
 
-TFile *_fs = TFile::Open("~/work/Baryons/Lambdab/LambdabMC-MC11-Lb2Jpsippi-716.root")
-TTree* Tp = (TTree*)_fs->Get("BetaSLambdab2JpsippiDetachedLine_TupleMC/DecayTree")  // in DST
-//TTree* Tp2 = (TTree*)_fs->Get("Lambdab2Jpsippi_TupleMC/DecayTree")                   // rerun
-_fs->ls()
-TFile *_fn = TFile::Open("LambdabMC-MC11-Lb2Jpsippi-716-NN.root")
-TTree* Np = (TTree*)_fn->Get("NetTree")
-Tp->AddFriend(Np)
-Tp->Draw("B_FullFit_M:PsippiMass","netOutput>0")
-cout << Tp->GetEntries() << " != " << Np->GetEntries() << " ? " << endl ;
+// 
+TH2D* hk = Make2DPlot("hk","J/#psiK#pi mass",80,5100,5500,"J/#psiKK mass",80,5200,5600)
+TNN->Draw("PsiKKMass:PsiKpiMass >> hk",LooseNN && pistreamUB)
+hk->SetTitleOffset(1.5,"y");
+hk->Draw("COL")
+png("pion stream KK vs Kpi")
 
-TFile *_fk = TFile::Open("~/work/Baryons/Lambdab/LambdabMC-MC11-Lb2JpsipK-718.root")
-TTree* Tk = (TTree*)_fk->Get("Lambdab2Jpsippi_TupleMC/DecayTree")  // rerun
-_fk->ls()
-TFile *_fnk = TFile::Open("LambdabMC-MC11-Lb2JpsipK-718-NN.root")
-TTree* Nk = (TTree*)_fnk->Get("NetTree")
-Tk->AddFriend(Nk)
-Tk->Draw("B_FullFit_M:PsippiMass","netOutput>0")
-cout << Tk->GetEntries() << " != " << Nk->GetEntries() << " ? " << endl ;
+TH2D* hk = Make2DPlot("hk","J/#psi#piK mass",80,5100,5500,"J/#psiKK mass",80,5200,5600)
+TNN->Draw("PsiKKMass:PsipiKMass >> hk",LooseNN && pistreamUB)
+hk->SetTitleOffset(1.5,"y");
+hk->Draw("COL")
+png("pion stream KK vs piK")
+
+// 
+TH2D* hk = Make2DPlot("hk","J/#psiK#pi mass",80,5100,5500,"J/#psiKK mass",80,5200,5600)
+TNN->Draw("PsiKKMass:PsiKpiMass >> hk",LooseNN && kstream)
+hk->SetTitleOffset(1.5,"y");
+hk->Draw("COL")
+png("kaon stream KK vs Kpi")
+
+TH2D* hk = Make2DPlot("hk","J/#psi#piK mass",80,5100,5500,"J/#psiKpi mass",80,5100,5500)
+TNN->Draw("PsiKpiMass:PsipiKMass >> hk",LooseNN && pistreamUB)
+hk->SetTitleOffset(1.5,"y");
+hk->Draw("COL")
+png("pion stream Kpi vs piK")
+
+TH2D* hk = Make2DPlot("hk","J/#psi#piK mass",80,5100,5500,"J/#psiKpi mass",80,5100,5500)
+TNN->Draw("PsiKpiMass:PsipiKMass >> hk",LooseNN && kstream)
+hk->SetTitleOffset(1.5,"y");
+hk->Draw("COL")
+png("kaon stream Kpi vs piK")
+
+// could it be that Bs->KK is the sume of Bd->Kpi and Bd->piK ?
+//TNNKK->Draw("PsiKpiMass",pistream)
+// TNNKpi->Draw("PsiKpiMass",pistream)
 
 
+RooPlot* r = SandB(TNNKpi,0,"(BKGCAT==32)*PsipiKMass+(BKGCAT==31)*PsiKpiMass",TrueKpi,TruepiK,OptimalNN,"N","",5000,5500,50)
+r->GetXaxis()->SetTitle("m_{J/#psi#piK} and m_{J/#psiK#pi}")
+r->GetYaxis()->SetTitle("pdf")
+r->Draw()
+overlay_line(mBd+win,r,2) ; overlay_line(mBd-win,r,2)
+png("Bd reflections")
+ 
+TNNKpi->Draw("abs(PsipiKMass-5279.5)>20",TrueKpi && OptimalNN )  // 85% \pm 1
+TNNKpi->Draw("abs(PsiKpiMass-5279.5)>20",TruepiK && OptimalNN )  // 83% \pm 1
 
-
-// Overall
-
-r = SandB(Tp,0,"PsipKMass",OptimalNN,"1",pistream && GoodPi,"","remove",5500,6300) 
-r->SetXTitle("m_{J/#psipK} [MeV/c^{2}]");
-overlay_line(mLb-win,r);
-overlay_line(mLb+win,r);
-png("PsipKMass on signal")
-
-r = SandB(Tp,0,KpMass,OptimalNN,"1",pistream && GoodPi,"","remove",5000,8000) 
-r->SetXTitle("m_{J/#psiKp} [MeV/c^{2}]");
-overlay_line(mLb-win,r);
-overlay_line(mLb+win,r);
-png("PsiKpMass on signal")
-
-r = SandB(Tp,0,"PsiKpiMass",OptimalNN,"1",pistream && GoodPi,"","remove",4500,5600) 
+//=======================================================================================
+// Peaks no NN
+//======================================================================================
+RooPlot* r = 0
+r = SandB(TNN,0,"PsiKpiMass",pistreamUB,kstream,OKNoPhi,"N","remove",4500,5500)
 r->SetXTitle("m_{J/#psiK#pi} [MeV/c^{2}]");
-overlay_line(mBd-win,r);
-overlay_line(mBd+win,r);
-png("PsiKpiMass on signal")
+r->SetMinimum(0.)
+r->Draw()
+overlay_line(mBd-win,r,2);
+overlay_line(mBd+win,r,2);
+png("PsiKpiMass after presel")
 
-// need to study Dalitz here -> Make a DalitzEff.C
-
-r = SandB(Tp,0,piKMass,OptimalNN,"1",pistream && GoodPi,"","remove",4500,6000) 
+r = SandB(TNN,0,"PsipiKMass",pistreamUB,kstream,OKNoPhi,"N","remove",4500,6000)
 r->SetXTitle("m_{J/#psi#piK} [MeV/c^{2}]");
-overlay_line(mBd-win,r);
-overlay_line(mBd+win,r);
-png("PsipiKMass on signal")
+r->SetMinimum(0.)
+r->Draw()
+overlay_line(mBd-win,r,2);
+overlay_line(mBd+win,r,2);
+png("PsipiKMass after presel")
 
-r = SandB(Tp,0,KKMass,OptimalNN,"1",pistream && GoodPi,"","remove",4800,6200) 
-r->SetXTitle("m_{J/#psiKp} [MeV/c^{2}]");
-overlay_line(mBs-win,r);
-overlay_line(mBs+win,r);
-png("PsiKKMass on signal")
+r = SandB(TNN,0,"PsiKKMass",pistreamUB,kstream,OKNoPhi,"N","remove",4700,6000)
+r->SetXTitle("m_{J/#psiKK} [MeV/c^{2}]");
+r->SetMinimum(0.)
+r->Draw()
+overlay_line(mBs-win,r,2);
+overlay_line(mBs+win,r,2);
+png("PsiKKMass after presel")
 
-//---------------------------------------------------------------------------------
-// kstream
-r = SandB(Tk,0,"PsippiMass",OptimalNN,"1",kstream && GoodK,"","remove",5100,5800) 
-r->SetXTitle("m_{J/#psip#pi} [MeV/c^{2}]");
-overlay_line(mLb-win,r);
-overlay_line(mLb+win,r);
-png("PsippiMass on PsipK")
-
-r = SandB(Tk,0,KpMass,OptimalNN,"1",kstream && GoodK,"","remove",4500,7000) 
-r->SetXTitle("m_{J/#psiKp} [MeV/c^{2}]");
-overlay_line(mLb-win,r);
-overlay_line(mLb+win,r);
-png("PsiKpMass on PsipK")
-
-r = SandB(Tk,0,"PsiKpiMass",OptimalNN,"1",kstream && GoodK,"","remove",4500,5600) 
-r->SetXTitle("m_{J/#psiK#pi} [MeV/c^{2}]");
-overlay_line(mBd-win,r);
-overlay_line(mBd+win,r);
-png("PsiKpiMass on PsipK")
-
-r = SandB(Tk,0,piKMass,OptimalNN,"1",kstream && GoodK,"","remove",4000,5600) 
-r->SetXTitle("m_{J/#psi#piK} [MeV/c^{2}]");
-overlay_line(mBd-win,r);
-overlay_line(mBd+win,r);
-png("PsipiKMass on PsipK")
-
-r = SandB(Tk,0,KKMass,OptimalNN,"1",kstream && GoodK,"","remove",4550,5550) 
-r->SetXTitle("m_{J/#psiKp} [MeV/c^{2}]");
-overlay_line(mBs-win,r);
-overlay_line(mBs+win,r);
-png("PsiKKMass on PsipK")
-
-//---------------------------------------------------------------------------------
-// Overall efficiencies
-//---------------------------------------------------------------------------------
-TCut TightPi(pistream && GoodPi && OptimalNN)
-TCut TightK(kstream && GoodK && OptimalNN)
 gPad->SetLogy()
-SandB(Tp,0,"abs(PsipKMass-5620)>20","1","MCWeight",TightPi,"NI","remove",0,1)     // Means (stats): 0.999845 (45205), 0.999972 (47802.4)
-SandB(Tp,0,"abs(PsipKMass-5620)>20","1","MCWeight",TightPi,"NI","remove",0,1)     // Means (stats): 0.999845 (45205), 0.999972 (47802.4)
-SandB(Tp,0,"abs("+KpMass+"-5620)>20","1","MCWeight",TightPi,"NI","remove",0,1)    // Means (stats): 0.963654 (45205), 0.958131 (47802.4)
-SandB(Tp,0,"abs(PsiKpiMass-5279.5)>20","1","MCWeight",TightPi,"NI","remove",0,1)  // Means (stats): 0.939188 (45205), 0.929149 (47802.4)
-SandB(Tp,0,"abs("+piKMass+"-5279.5)>20","1","MCWeight",TightPi,"NI","remove",0,1) // Means (stats): 0.959783 (45205), 0.953823 (47802.4)
-SandB(Tp,0,"abs("+KKMass+"-5366.3)>20","1","MCWeight",TightPi,"NI","remove",0,1)  // Means (stats): 0.958434 (45205), 0.954754 (47802.4)
-SandB(Tp,0,"Category==1","1","MCWeight",TightPi,"NI","remove",0,1)                // Means (stats): 0.937839 (45205), 0.927793 (47802.4)
-
-SandB(Tk,0,"abs(PsippiMass-5620)>20","1","MCWeight",TightK,"NI","remove",0,1)     // Means (stats): 0.99996  (75466), 0.999973 (81211.4)
-SandB(Tk,0,"abs("+KpMass+"-5620)>20","1","MCWeight",TightK,"NI","remove",0,1)     // Means (stats): 0.927623 (75466), 0.908434 (81211.4)
-SandB(Tk,0,"abs(PsiKpiMass-5279.5)>20","1","MCWeight",TightK,"NI","remove",0,1)   // Means (stats): 0.835038 (75466), 0.845191 (81211.4)
-SandB(Tk,0,"abs("+piKMass+"-5279.5)>20","1","MCWeight",TightK,"NI","remove",0,1)  // Means (stats): 0.892587 (75466), 0.876695 (81211.4)
-SandB(Tk,0,"abs("+KKMass+"-5366.3)>20","1","MCWeight",TightK,"NI","remove",0,1)   // Means (stats): 0.855962 (75466), 0.8324   (81211.4)
-SandB(Tk,0,"Category==-1","1","MCWeight",TightK,"NI","remove",0,1)                // Means (stats): 0.853523 (75466), 0.827662 (81211.4)
-
-cout << "% Phase space: " << 100*0.853523/0.937839 << "/% and Weighted: " << 100*0.827662/0.927793 << "/%" << endl ;
-% Phase space: 91.0095/% and Weighted: 89.2076/%
-
-//---------------------------------------------------------------------------------
-// Shapes
-
-TFile *_fB = TFile::Open("~/work/Baryons/Lambdab/LambdabMC-MC11-B2JpsiKpi-720.root")
-TTree* TB = (TTree*)_fB->Get("Lambdab2Jpsippi_TupleMC/DecayTree")  // rerun
-_fB->ls()
-TFile *_fnB = TFile::Open("LambdabMC-MC11-B2JpsiKpi-720-NN.root")
-TTree* NB = (TTree*)_fnB->Get("NetTree")
-TB->AddFriend(NB)
-TB->Draw("B_FullFit_M:PsippiMass","netOutput>0")
-cout << TB->GetEntries() << " != " << NB->GetEntries() << " ? " << endl ;
-
-TFile *_fBs = TFile::Open("~/work/Baryons/Lambdab/LambdabMC-MC11-Bs2JpsiKK-735.root")
-_fBs->ls()
-TTree* TBs = (TTree*)_fBs->Get("Lambdab2Jpsippi_TupleMC/DecayTree") 
-TFile *_fnBs = TFile::Open("LambdabMC-MC11-Bs2JpsiKK-735-NN.root")
-TTree* NBs = (TTree*)_fnBs->Get("NetTree")
-TBs->AddFriend(NBs)
-TBs->Draw("B_FullFit_M:PsippiMass","netOutput>0")
-cout << TBs->GetEntries() << " != " << NBs->GetEntries() << " ? " << endl ;
-
-// ppi =========================================
-
-// Reflection of ppi on itself
-r = SandB(Tp,0,"PsippiMass",OptimalNN,"1",pistream && Reflection,"N","remove",5100,6100,50) 
-r->SetXTitle("m_{J/#psip#pi} [MeV/c^{2}]");
-overlay_line(mLb-win,r);
-overlay_line(mLb+win,r);
-png("PsippiMass of Psippi")
-
-// Reflection of pK on ppi
-r = SandB(Tk,0,"PsippiMass",OptimalNN,"1",pistream && Reflection && "abs(pplus_TRUEID)==2212","N","remove",5100,6100,50) 
-r->SetXTitle("m_{J/#psip#pi} [MeV/c^{2}]");
-overlay_line(mLb-win,r);
-overlay_line(mLb+win,r);
-png("PsippiMass1 of PsipK")
-
-// Reflection 2 of pK on ppi
-r = SandB(Tk,0,"PsippiMass",OptimalNN,"1",pistream && Reflection && "abs(pplus_TRUEID)==321","N","remove",5100,6100,50) 
-r->SetXTitle("m_{J/#psip#pi} [MeV/c^{2}]");
-overlay_line(mLb-win,r);
-overlay_line(mLb+win,r);
-png("PsippiMass2 of PsipK")
-
-// Reflection of Kpi on ppi
-r = SandB(TB,0,"PsippiMass",OptimalNN,"1",pistream && Reflection,"N","remove",5100,6100) 
-r->SetXTitle("m_{J/#psip#pi} [MeV/c^{2}]");
-overlay_line(mLb-win,r);
-overlay_line(mLb+win,r);
-png("PsippiMass of PsiKpi")
-
-// Reflection of Bs on ppi
-r = SandB(TBs,0,"PsippiMass",OptimalNN,"1",pistream && Reflection,"N","remove",5100,6100,50) 
-r->SetXTitle("m_{J/#psip#pi} [MeV/c^{2}]");
-overlay_line(mLb-win,r);
-overlay_line(mLb+win,r);
-png("PsippiMass of Bs2JpsiKK")
-
-// pK =========================================
-
-// Reflection of Kp on itself
-r = SandB(Tk,0,"PsipKMass",OptimalNN,"1",kstream && Reflection && "abs(pplus_TRUEID)==321 && abs(piminus_TRUEID)==2212","N","remove",5100,6100,50) 
+r = SandB(TNN,0,"PsipKMass",pistreamUB,kstream,OKNoPhi,"N","remove",5000,6100)
 r->SetXTitle("m_{J/#psipK} [MeV/c^{2}]");
-overlay_line(mLb-win,r);
-overlay_line(mLb+win,r);
-png("PsipKMass of PsipK")
+r->SetMinimum(0.0001)
+r->Draw()
+overlay_line(mLb-win,r,2);
+overlay_line(mLb+win,r,2);
+png("PsipKMass after presel")
 
-// Reflection of ppi on Kpi
-r = SandB(Tp,0,"PsipKMass",OptimalNN,"1",kstream && Reflection,"N","remove",5100,6100,50) 
+gPad->SetLogy(0)
+r = SandB(TNN,0,"PsiKpMass",pistreamUB,kstream,OKNoPhi,"N","remove",5000,6500)
+r->SetXTitle("m_{J/#psiKp} [MeV/c^{2}]");
+r->SetMinimum(0.)
+r->Draw()
+overlay_line(mLb-win,r,2);
+overlay_line(mLb+win,r,2);
+png("PsiKpMass after presel")
+
+//=======================================================================================
+// Peaks
+//======================================================================================
+RooPlot* r = 0
+r = SandB(TNN,0,"PsiKpiMass",pistreamUB,kstream,OptimalNN,"N","remove",4500,5500)
+r->SetXTitle("m_{J/#psiK#pi} [MeV/c^{2}]");
+r->SetMinimum(0.)
+r->Draw()
+overlay_line(mBd-win,r,2);
+overlay_line(mBd+win,r,2);
+png("PsiKpiMass after NN")
+
+r = SandB(TNN,0,"PsipiKMass",pistreamUB,kstream,OptimalNN,"N","remove",4500,6000)
+r->SetXTitle("m_{J/#psi#piK} [MeV/c^{2}]");
+r->SetMinimum(0.)
+r->Draw()
+overlay_line(mBd-win,r,2);
+overlay_line(mBd+win,r,2);
+png("PsipiKMass after NN")
+
+r = SandB(TNN,0,"PsiKKMass",pistreamUB,kstream,OptimalNN,"N","remove",4700,6000)
+r->SetXTitle("m_{J/#psiKK} [MeV/c^{2}]");
+r->SetMinimum(0.)
+r->Draw()
+overlay_line(mBs-win,r,2);
+overlay_line(mBs+win,r,2);
+png("PsiKKMass after NN")
+
+gPad->SetLogy()
+r = SandB(TNN,0,"PsipKMass",pistreamUB,kstream,OptimalNN,"N","remove",5000,6100)
 r->SetXTitle("m_{J/#psipK} [MeV/c^{2}]");
-overlay_line(mLb-win,r);
-overlay_line(mLb+win,r);
-png("PsipKMass of Psippi")
+r->SetMinimum(0.0001)
+r->Draw()
+overlay_line(mLb-win,r,2);
+overlay_line(mLb+win,r,2);
+png("PsipKMass after NN")
 
-// Reflection of Kpi on pK
-r = SandB(TB,0,"PsipKMass",OptimalNN,"1",kstream && Reflection,"N","remove",5100,6100) 
+gPad->SetLogy(0)
+r = SandB(TNN,0,"PsiKpMass",pistreamUB,kstream,OptimalNN,"N","remove",5000,6500)
+r->SetXTitle("m_{J/#psiKp} [MeV/c^{2}]");
+r->SetMinimum(0.)
+r->Draw()
+overlay_line(mLb-win,r,2);
+overlay_line(mLb+win,r,2);
+png("PsiKpMass after NN")
+
+gPad->SetLogy(0)
+r = SandB(TNN,0,"PsippiMass",pistreamUB,kstream,OptimalNN,"N","HIDE",5300,6000)
+
+//------------------------------------------------------------------------------ 
+// zoom wrt 43925 entries in pistream and 50035 in kstream
+//------------------------------------------------------------------------------
+
+r = SandB(TNN,0,"PsiKpiMass",pistreamUB,kstream,OptimalNN,"NBdgpp","remove",mBd-lwin,mBd+lwin)
+r->SetXTitle("m_{J/#psiK#pi} [MeV/c^{2}]");
+r->SetMinimum(0.)
+r->Draw()
+overlay_line(mBd-win,r,2);
+overlay_line(mBd+win,r,2);
+png("PsiKpiMass after NN zoom")
+// Events in gaussian: 8811.31 +/- 12197.4 (0.72239sigma)
+
+r = SandB(TNN,0,"PsipiKMass",pistreamUB,kstream,OptimalNN && NoKpi,"N2Bdgpp","remove",mBd-lwin,mBd+lwin,50)
+r->SetXTitle("m_{J/#psi#piK} [MeV/c^{2}]");
+r->SetMinimum(0.)
+r->Draw()
+overlay_line(mBd-win,r,2);
+overlay_line(mBd+win,r,2);
+png("PsipiKMass after NN zoom")
+// Events in gaussian: 653.402 +/- 5690.73 (0.114819sigma)
+// Events in gaussian: 2451 +/- 14844.3 (0.165113sigma)
+
+// removing piK has a very bad effect
+r = SandB(TNN,0,"PsiKKMass",pistreamUB,kstream,OptimalNN && NoKpi,"N","remove",mBs-lwin,mBs+lwin,50)
+r->SetXTitle("m_{J/#psiKK} [MeV/c^{2}]");
+r->SetMinimum(0.)
+r->Draw()
+overlay_line(mBs-win,r,2);
+overlay_line(mBs+win,r,2);
+png("PsiKKMass after NN zoom")
+
+gPad->SetLogy(0)
+r = SandB(TNN,0,"PsipKMass",pistreamUB,kstream,OptimalNN,"N2Baggp","remove",mLb-lwin,mLb+lwin,50)
 r->SetXTitle("m_{J/#psipK} [MeV/c^{2}]");
-overlay_line(mLb-win,r);
-overlay_line(mLb+win,r);
-png("PsipKMass of PsiKpi")
+r->Draw()
+overlay_line(mLb-win,r,2);
+overlay_line(mLb+win,r,2);
+png("PsipKMass after NN zoom")
+// Fitted Signal Yield (1-p): 3958.66 +/- 8043.92
+// Fitted Signal Yield (1-p): 26056.2 +/- 23263.5
 
-// Reflection of Bs on pK
-r = SandB(TBs,0,"PsipKMass",OptimalNN,"1",kstream && Reflection,"N","remove",5100,6100) 
+gPad->SetLogy(0)
+r = SandB(TNN,0,"PsiKpMass",pistreamUB,kstream,OptimalNN && NopiK && NoKK && NoKpi,"NBagp","remove",mLb-3*lwin,mLb+2*lwin,50)
+r->SetXTitle("m_{J/#psiKp} [MeV/c^{2}]");
+r->SetMinimum(0.)
+r->Draw()
+overlay_line(mLb-win,r,2);overlay_line(mLb+win,r,2);
+png("PsiKpMass after NN zoom")
+// Events in gaussian: 573.387 +/- 2168.82 (0.264377sigma)
+
+//=======================================================================================
+// Peaks under other hypotheses
+//======================================================================================
+if (gPad) gPad->SetLogy(0);
+RooPlot* r = FourReflections(TNNKpi,TNNKK,TNNpK,"PsippiMass",LooseNN,"N","remove",5100,6100,50)
+r->SetXTitle("m_{J/#psip#pi} [MeV/c^{2}]");
+r->Draw();
+overlay_line(mLb-win,r,2);overlay_line(mLb+win,r,2);
+png("PsippiMass reflections from MC")
+
+r = FourReflections(TNNKpi,TNNKK,TNNpK,"PsippiMass",LooseNN,"N","remove",5500,5800,15)
+r->SetXTitle("m_{J/#psip#pi} [MeV/c^{2}]");
+r->Draw();
+overlay_line(mLb-win,r,2);overlay_line(mLb+win,r,2);
+png("PsippiMass reflections from MC zoom")
+
+RooPlot* r = FourReflections(TNNKpi,TNNKK,TNNpK,"PsipKMass",LooseNN,"N","remove",5400,6100,35)
 r->SetXTitle("m_{J/#psipK} [MeV/c^{2}]");
-overlay_line(mLb-win,r);
-overlay_line(mLb+win,r);
-png("PsipKMass of Bs2JpsiKK")
+r->Draw();
+overlay_line(mLb-win,r,2);overlay_line(mLb+win,r,2);
+png("PsipKMass reflections from MC")
 
-//
-r = SandB(TD,TJ,"PsippiMass","1","BKGCAT!=1","Category==1" && Hlt2,"N","Remaining PsipK in Psippi - data and MC",4900,6100,120)
+r = FourReflections(TNNKpi,TNNKK,TNNpK,"PsipKMass",LooseNN,"N","remove",5500,5800,15)
+r->SetXTitle("m_{J/#psipK} [MeV/c^{2}]");
+r->Draw();
+png("PsipKMass reflections from MC zoom")
+
+// need to separate out Kp and piK
+
+RooPlot* r = FourReflections(TNNKpi,TNNKK,TNNpK,"PsiKpiMass",LooseNN,"NM","remove",4900,5500,60)
+gPad->SetLogy(1)
+r->SetMinimum(0.0001);
+r->SetXTitle("m_{J/#psiK#pi} [MeV/c^{2}]");
+r->Draw();
+overlay_line(mBd-win,r,2);overlay_line(mBd+win,r,2);
+png("PsiKpiMass reflections from MC")
+
+RooPlot* r = FourReflections(TNNKpi,TNNKK,TNNpK,"PsiKKMass",LooseNN,"NM","remove",5300,5550,50)
+gPad->SetLogy(1)
+r->SetXTitle("m_{J/#psiKK} [MeV/c^{2}]");
+r->SetMinimum(0.0001);
+r->Draw();
+overlay_line(mBs-win,r,2);overlay_line(mBs+win,r,2);
+png("PsiKKMass reflections from MC")
+
+RooPlot* r = FourReflections(TNNKpi,TNNKK,TNNpK,"PsipiKMass",LooseNN,"NM","remove",5000,5400,40)
+gPad->SetLogy(1)
+r->SetXTitle("m_{J/#psi#piK} [MeV/c^{2}]");
+r->SetMinimum(0.0001);
+r->Draw();
+overlay_line(mBd-win,r,2);overlay_line(mBd+win,r,2);
+png("PsipiKMass reflections from MC")
+
+RooPlot* r = FourReflections(TNNKpi,TNNKK,TNNpK,"PsiKpMass",LooseNN,"NM","remove",5400,6400,40)
+gPad->SetLogy(1)
+r->SetXTitle("m_{J/#psiKp} [MeV/c^{2}]");
+r->SetMinimum(0.0001);
+r->Draw();
+overlay_line(mLb-win,r,2);overlay_line(mLb+win,r,2);
+png("PsiKpMass reflections from MC")
+
+//=======================================================================================
+// Test of phi mass
+//======================================================================================
+RooPlot* r = FourReflections(TNNKpi,TNNKK,TNNpK,"KKMass",LooseNNAll,"NM","remove",1000,2300,39)
+gPad->SetLogy(0)
+r->SetXTitle("m_{KK} [MeV/c^{2}]");
+r->SetMinimum(0.0001);
+r->Draw();
+overlay_line(mLb-win,r,2);overlay_line(mLb+win,r,2);
+png("KKMass reflections from MC")
+
+RooPlot* r = FourReflections(TNNKpi,TNNKK,TNNpK,"KKMass",LooseNNAll,"NM","remove",980,1100,24)
+gPad->SetLogy(0)
+r->SetXTitle("m_{KK} [MeV/c^{2}]");
+r->SetMinimum(0.001);
+r->Draw();
+overlay_line(mLb-win,r,2);overlay_line(mLb+win,r,2);
+png("KKMass reflections from MC zoom")
+
+RooPlot* r = FourReflections(TNNKpi,TNNKK,TNNpK,"PsipKMass",LooseNNAll && "KKMass<1035","NM","remove",5400,6100,35)
+gPad->SetLogy(0)
+r->SetXTitle("m_{J/#psipK} [MeV/c^{2}]");
+r->SetMinimum(0);
+r->Draw();
+overlay_line(mLb-win,r,2);overlay_line(mLb+win,r,2);
+png("PsipKMass reflections from MC at phi")
+
+r0 = SandB(TNN,0,"KKMass","KKMass>1035","",OptimalNNAll && "ErrorCode>-7 && Category==1","","remove",950,1250)  // Means (stats): 2013.03 (68619), 1511.99 (707) -> 1.03% +/- 0.03%
+r0->SetXTitle("m_{KK} [MeV/c^{2}]");
+r0->Draw();
+overlay_line(1035,r0,3)
+png("KKMass with phi cut")
+
+r1 = SandB(TNNpK,0,"sqrt(pMMass2)","KKMass>1035","","DalitzWeight*(netOutput>0.552)*("BKGCAT==1)*(ErrorCode>-7)*(Category==-1)","","remove",1400,2600)  // Means (stats): 2013.03 (68619), 1511.99 (707) -> 1.03% +/- 0.03%
+r1->SetXTitle("m_{pK} [MeV/c^{2}]");
+r1->Draw();
+png("pKMass with phi cut")
+
+gPad->SetLogy(0)
+r2 = SandB(TNNppi,0,"sqrt(pMMass2)","KKMass>1035","KKMass<1035",OptimalNNAll && "BKGCAT==0 && ErrorCode>-7 && Category==1","","remove")  // 1896.92 (77520), 1347.37 (623)  -> 0.8% 
+r2->SetXTitle("m_{p#pi} [MeV/c^{2}]");
+r2->Draw();
+png("ppiMass with phi cut")
+
+// 0.9 versus 1.1%. 
+
+r3 = SandB(TNN,0,"PsiKKMass","KKMass>1035","",OptimalNNAll && TCut("ErrorCode>-7 && Category==-1"),"M","remove",mBs-lwin,mBs+lwin,50)
+r3->SetXTitle("m_{J/#psiKK} [MeV/c^{2}]");
+r3->SetMinimum(0.)
+r3->Draw()
+overlay_line(mBs-win,r3,2);
+overlay_line(mBs+win,r3,2);
+png("PsiKKMass after veto")
+
+// understand
+TH2D* hkk = Make2DPlot("hkk","m_{p#pi} [MeV/c^{2}]",152,1000,2520,"m_{KK} [MeV/c^{2}]",205,950,3000)
+TNNppi->Draw("KKMass:sqrt(pMMass2) >> hkk","BKGCAT==0 && ErrorCode>-8 && Category==1")
+hkk->SetTitleOffset(1.5,"y");
+hkk->Draw()
+horizontal_line(1035,hkk,2)
+png("KK vs ppi mass in Lbpi")
+
+// understand
+TH2D* hkk2 = Make2DPlot("hkk2","m_{pK} [MeV/c^{2}]",112,1400,2520,"m_{KK} [MeV/c^{2}]",155,950,2500)
+TNNpK->Draw("KKMass:sqrt(pMMass2) >> hkk2","DalitzWeight*(BKGCAT==1)*(ErrorCode>-8)*(Category==-1)")
+hkk2->SetTitleOffset(1.5,"y");
+hkk2->Draw()
+horizontal_line(1035,hkk2,2)
+png("KK vs pK mass in LbK")
+
+//=======================================================================================
+// RooKeysPdf
+//======================================================================================
+if (gPad) gPad->SetLogy(0)
+double hmin = 5300
+double hmax = 6100
+RooRealVar mppi("PsippiMass","mass under ppi hypothesis",hmin,hmax)
+RooRealVar BKG("BKGCAT","BKGCAT",0,200)
+RooRealVar net("netOutput","Net Output",-10.,1.)
+RooRealVar ErrorCode("ErrorCode","ErrorCode",-100,0)
+
+RooDataSet dKpi_ppi("dKpi_ppi","Kpi under ppi", TNNKpi, RooArgList( mppi, BKG, net ,ErrorCode), "(32==BKGCAT)*(netOutput>0.552)*(ErrorCode==0)")
+RooDataSet dKpi_ppi1("dKpi_ppi1","Kpi under ppi", TNNKpi, RooArgList( mppi, BKG, net ,ErrorCode), "(32==BKGCAT)*(netOutput>-1)*(ErrorCode==0)")
+RooDataSet dKpi_ppi2("dKpi_ppi2","Kpi under ppi", TNNKpi, RooArgList( mppi, BKG, net ,ErrorCode), "(32==BKGCAT)*(netOutput>0.0)*(ErrorCode==0)")
+dKpi_ppi->sumEntries()
+RooPlot* plotM = mppi.frame(Bins(50));
+plotM->SetTitle("")
+plotM->SetXTitle("m_{J/#psip#pi} [MeV/c^{2}]");
+dKpi_ppi.plotOn(plotM)
+dKpi_ppi1.plotOn(plotM,LineColor(kRed),MarkerColor(kRed))
+dKpi_ppi2.plotOn(plotM,LineColor(kMagenta),MarkerColor(kMagenta))
+plotM->Draw()
+
+RooKeysPdf rk_Kpi_ppi("rk_Kpi_ppi","rk_Kpi_ppi",mppi,dKpi_ppi,RooKeysPdf::NoMirror,1)
+RooKeysPdf rk_Kpi_ppiA("rk_Kpi_ppiA","rk_Kpi_ppiA",mppi,dKpi_ppi,RooKeysPdf::NoMirror,2)
+RooKeysPdf rk_Kpi_ppiC("rk_Kpi_ppiA","rk_Kpi_ppiA",mppi,dKpi_ppi,RooKeysPdf::NoMirror,1.5)
+RooKeysPdf rk_Kpi_ppiB("rk_Kpi_ppiB","rk_Kpi_ppiB",mppi,dKpi_ppi,RooKeysPdf::MirrorBoth,1)
+
+RooPlot* plotM = mppi.frame(Bins(50));
+plotM->SetXTitle("m_{J/#psip#pi} [MeV/c^{2}]");
+plotM->SetTitle("")
+dKpi_ppi.plotOn(plotM)
+rk_Kpi_ppi.plotOn(plotM)
+rk_Kpi_ppiA.plotOn(plotM,LineColor(kCyan),LineStyle(kDashed))
+rk_Kpi_ppiB.plotOn(plotM,LineColor(kMagenta),LineStyle(kDashed))
+rk_Kpi_ppiC.plotOn(plotM,LineColor(kRed),LineStyle(kDashed))
+plotM->Draw()
+png("RKPDF PsippiMass of Kpi - tuning")
+
+RooKeysPdf rk_Kpi_ppi1("rk_Kpi_ppi1","rk_Kpi_ppi1",mppi,dKpi_ppi1,RooKeysPdf::NoMirror,1.5)
+RooKeysPdf rk_Kpi_ppi2("rk_Kpi_ppi2","rk_Kpi_ppi2",mppi,dKpi_ppi2,RooKeysPdf::NoMirror,1.5)
+
+RooPlot* plotM = mppi.frame(Bins(50));
+plotM->SetXTitle("m_{J/#psip#pi} [MeV/c^{2}]");
+plotM->SetTitle("")
+dKpi_ppi2.plotOn(plotM,LineColor(kMagenta),MarkerColor(kMagenta))
+dKpi_ppi1.plotOn(plotM,LineColor(kRed),MarkerColor(kRed))
+dKpi_ppi.plotOn(plotM)
+rk_Kpi_ppi2.plotOn(plotM,LineColor(kMagenta),Normalization(dKpi_ppi2->sumEntries(),RooAbsReal::NumEvent))
+rk_Kpi_ppi1.plotOn(plotM,LineColor(kRed),Normalization(dKpi_ppi1->sumEntries(),RooAbsReal::NumEvent))
+rk_Kpi_ppi.plotOn(plotM)
+//rk_Kpi_ppiA.plotOn(plotM,LineColor(kCyan))
+//rk_Kpi_ppiB.plotOn(plotM,LineColor(kYellow))
+plotM->Draw()
+png("RKPDF PsippiMass of Kpi")
+
+RooPlot* plotM = mppi.frame(Bins(50));
+rk_Kpi_ppi2.plotOn(plotM,LineColor(kMagenta))
+rk_Kpi_ppi1.plotOn(plotM,LineColor(kRed))
+rk_Kpi_ppi.plotOn(plotM)
+plotM->Draw()
+png("RKPDF PsippiMass of Kpi - 2")
+
+//-----------------------------------------------------------------------------------------------
+// range test
+mppi->setRange("Low", 5300,5500);
+mppi->setRange("High", 5650,6100);
+n = dKpi_ppi.sumEntries("1","Low,High")
+
+RooPlot* plotM = mppi.frame();
+dKpi_ppi.plotOn(plotM,CutRange("Low,High"))
+rk_Kpi_ppi.plotOn(plotM,LineColor(kMagenta))                // plots the whole pdf with the fit
+rk_Kpi_ppi.plotOn(plotM,LineColor(kRed),Range("Low,High"))  // plots the part pdf but with wrong norm
+rk_Kpi_ppi.plotOn(plotM,LineColor(kBlue),Range("Low,High"),Normalization(n,RooAbsReal::NumEvent)) // ok
+plotM->Draw()
+
+
+//================================================================================================
+// RooKeysPdf extracted from MC NN.root
+//================================================================================================
+root.exe LambdabMC-LbK-Sim08a-1127-1128-1129-1137-0.552-SW.root LambdabMC-B2JpsiKK-Sim08a-1134-1135-0.552-SW.root LambdabMC-B2JpsiKpi-Sim08a-1138-1139-0.552-SW.root LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125-0.552-SW.root 
+_file0->ls()
+RooKeysPdf* r1 = _file0->Get("RK_PsippiFit_pdf_1")
+RooKeysPdf* r34 = _file0->Get("RK_PsippiFit_pdf_34")
+RooKeysPdf* r33 = _file1->Get("RK_PsippiFit_pdf_33")
+RooKeysPdf* r31 = _file2->Get("RK_PsippiFit_pdf_31")
+RooKeysPdf* r32 = _file2->Get("RK_PsippiFit_pdf_32")
+RooRealVar n1("n1","n1",1829)
+RooRealVar n34("n34","n34",170)
+RooRealVar n33("n33","n33",950)
+RooRealVar n31("n31","n31",200)
+RooRealVar n32("n32","n32",5300)
+RooAddPdf pdf("pdf","pdf",RooArgList(*r1,*r31,*r32,*r33,*r34),RooArgList(n1,n31,n32,n33,n34))
+
+//static const int c_psipK_BKGCAT = 1 ;
+//static const int c_piK_BKGCAT = 31 ;
+//static const int c_Kpi_BKGCAT = 32 ;
+//static const int c_KK_BKGCAT = 33 ;
+//static const int c_Kp_BKGCAT = 34 ;
+//static const int c_ppi_BKGCAT = 0 ;
+
+double hmin = 5500
+double hmax = 5900
+RooRealVar mppi("PsippiMass","mass under ppi hypothesis",hmin,hmax)
+RooPlot* plotM = mppi.frame();
+plotM->SetXTitle("m_{J/#psip#pi} [MeV/c^{2}]");
+pdf->plotOn(plotM)
+pdf->plotOn(plotM,Components(*r1),LineColor(2),LineStyle(kDashed))        // pK red dashed
+pdf->plotOn(plotM,Components(*r31),LineColor(3),LineStyle(kDashed))       // piK light green dashed
+pdf->plotOn(plotM,Components(*r32),LineColor(7),LineStyle(kDashDotted))   // Kpi cyan dashed dotted
+pdf->plotOn(plotM,Components(*r33),LineColor(28),LineStyle(kDotted))      // KK brown dotted
+pdf->plotOn(plotM,Components(*r34),LineColor(6),LineStyle(kDashDotteded)) // invisible
+plotM->Draw()
+png("ppi rookeyspdfs")
+
+RooKeysPdf* k34 = _file0->Get("RK_PsipKFit_pdf_34")
+RooKeysPdf* k33 = _file1->Get("RK_PsipKFit_pdf_33")
+RooKeysPdf* k31 = _file2->Get("RK_PsipKFit_pdf_31")
+RooKeysPdf* k32 = _file2->Get("RK_PsipKFit_pdf_32")
+RooRealVar nk34("nk34","n34",278)
+RooRealVar nk33("nk33","n33",1600)
+RooRealVar nk31("nk31","n31",2400)
+RooRealVar nk32("nk32","n32",0)
+RooAddPdf pdfk("pdf","pdfk",RooArgList(*k31,*k32,*k33,*k34),RooArgList(nk31,nk32,nk33,nk34))
+
+double hmin = 5500
+double hmax = 5800
+RooRealVar mppi("PsipKMass","mass under pK hypothesis",hmin,hmax)
+RooPlot* plotM = mppi.frame();
+plotM->SetXTitle("m_{J/#psipK} [MeV/c^{2}]");
+pdfk->plotOn(plotM)
+pdfk->plotOn(plotM,Components(*k31),LineColor(3),LineStyle(kDashed))     // piK light green dashed
+pdfk->plotOn(plotM,Components(*k32),LineColor(7),LineStyle(kDashDotted)) // invisible
+pdfk->plotOn(plotM,Components(*k33),LineColor(28),LineStyle(kDotted))    // KK brown dotted
+pdfk->plotOn(plotM,Components(*k34),LineColor(6),LineStyle(kDashDotted)) // Kp magenta dashdotted
+plotM->Draw()
+png("pK rookeyspdfs")
+
+//=======================================================================================
+// Test
+//======================================================================================
+TNNKpi->Draw("PsippiMass","BKGCAT==31" && pistreamUB && "netOutput>-1")
+TNNKK->Draw("PsippiMass","BKGCAT==33" && pistreamUB && "netOutput>-1")
+
+TNNppi->Draw("mprime:psipMass2","BKGCAT==0 && Category==1")
+TNNppi->Draw("thetaprime:psipMass2","BKGCAT==0 && Category==1")
+
+TH2D* tm = Make2DPlot("tm","m'",20,0.,1.,"#theta'",20,0.,1.)
+TNNppi->Draw("thetaprime:mprime >> tm","BKGCAT==0 && Category==1")
+tm->Draw("LEGO")
+gStyle->SetPalette(0)
+tm->Draw("COL")
+png("Lbpi theta' m'")

@@ -120,7 +120,8 @@ Double_t PowLawAcceptance::evaluate() const
   // check if underlying data type is valid
   if (_correction.absArg()) ratio = (Double_t)_correction;
 
-  if (time < 0.2) return 0.;
+  if (time < _time.min()) return 0.;
+  if (time > _time.max()) return 0.;
   if (beta < -0.0) return 0.0;
   if (beta*time > 1.0) return 0.0;
   Double_t expnoff = std::pow(turnon*time, exponent) - __offset;

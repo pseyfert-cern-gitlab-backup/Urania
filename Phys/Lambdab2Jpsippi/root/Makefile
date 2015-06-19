@@ -10,22 +10,22 @@ ROOTLIBS := -L$(ROOTSYS)/lib  `root-config --libs`  -lRooFit -lRooFitCore -lRooS
 #	-lPhysics -pthread -lm -ldl -rdynamic
 ########################################################################################
 
-CPPFILES = $(filter-out teacher.cpp expert.cpp weighting.cpp, $(wildcard *.cpp))
+CPPFILES = $(filter-out teacher.cpp makemctuple.cpp expert.cpp weighting.cpp optimise.cpp, $(wildcard *.cpp))
 CFILES = $(wildcard *.C)
 OBJS = $(patsubst %.cpp,%.o, $(CPPFILES)) $(patsubst %.C,%.o, $(CFILES))
 
 # set the compiler options
+# http://stackoverflow.com/questions/5083047/linker-problem-with-libstdc-so-6-in-connection-with-cuda/5088954#5088954
 CXX           = g++
-CXXFLAGS      = -c -g -I$(ROOTSYS)/include  -fPIC  #set compiler options
+CXXFLAGS      = -c -g -fPIC  #set compiler options
                                    #-g compile with debug information
                                    #-O optimize
                                    #-Wall show warnings for everything
                                    #-fPIC compile source file as sharable object 
 DOTH = $(wildcard *.h) $(wildcard *.icpp)
 
-CXXOUT	    = -o 				   
 # set the linker options
-LD            = gcc
+LD            = g++
 LDFLAGS       = -O 
 SOFLAGS       = -shared
 
@@ -38,30 +38,40 @@ CXXFLAGS      += $(ROOTCFLAGS) -I. -I$(NEUROBAYES)/include -Iinc
 LIBSNB        = $(ROOTLIBS) $(NBLIBS) -lNeuroBayesTeacherCPP 
 LIBS          = $(ROOTLIBS) 
 
-default : weighting.exe expert.exe teacher.exe 
+default : weighting.exe optimise.exe makemctuple.exe expert.exe teacher.exe 
 
 clean:
 	@rm -rf *.o *.exe
 
+update : clean all
+
 %.o: %.cpp $(DOTH)
 	@echo now compile $<
-	@$(CXX) $(CXXFLAGS) $(CXXOUT)$@ -c $<
+	$(CXX) $(CXXFLAGS) -c $< -o  $@
 
 %.o: %.C $(DOTH)
 	@echo now compile $<
-	@$(CXX) $(CXXFLAGS) $(CXXOUT)$@ -c $<
+	$(CXX) $(CXXFLAGS) -c $< -o  $@
 
-teacher.exe: teacher.o $(OBJS)
-	@echo now link Teacher
-	@$(LD) $(LDFLAGS) $^ $(LIBSNB)  -o $@
+makemctuple.exe: makemctuple.o $(OBJS)
+	@echo now link makemctuple
+	$(LD) $(LDFLAGS) $^ $(ROOTLIBS)  -o $@
 
-expert.exe: expert.o $(OBJS)
-	@echo now link expert
-	@$(LD) $(LDFLAGS) $^ $(LIBSNB)  -o $@
+optimise.exe: optimise.o $(OBJS)
+	@echo now link optimise
+	$(LD) $(LDFLAGS) $^ $(ROOTLIBS)  -o $@
 
 weighting.exe: weighting.o $(OBJS)
 	@echo now link weighting
-	@$(LD) $(LDFLAGS) $^ $(LIBS)  -o $@
+	$(LD) $(LDFLAGS) $^ $(ROOTLIBS)  -o $@
+
+teacher.exe: teacher.o $(OBJS)
+	@echo now link Teacher
+	$(LD) $(LDFLAGS) $^ $(LIBSNB)  -o $@
+
+expert.exe: expert.o $(OBJS)
+	@echo now link expert
+	$(LD) $(LDFLAGS) $^ $(LIBSNB)  -o $@
 
 print :
 	@echo $(DOTH) $(OBJS)

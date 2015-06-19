@@ -113,6 +113,9 @@ int slimmingB2JpsiKs(const TString module, const TString data,
   UInt_t myBCID; // Replace with GpsSecond
     outtree.Branch("BCID", &myBCID,
     "BCID/i");
+  Short_t myPolarity;
+    outtree.Branch("Polarity", &myPolarity,
+    "Polarity/S");
 
   // *** Observables for Common Selection Cuts ***
   Float_t myB0_FitDaughtersPVConst_status[maxLeafs];
@@ -147,6 +150,9 @@ int slimmingB2JpsiKs(const TString module, const TString data,
   Float_t myB0_FitDaughtersPVConst_KS0_ctau[maxLeafs];
     outtree.Branch("B0_FitDaughtersPVConst_KS0_ctau", &myB0_FitDaughtersPVConst_KS0_ctau,
     "B0_FitDaughtersPVConst_KS0_ctau[B0_FitDaughtersPVConst_nPV]/F");
+  Float_t myJ_psi_1S_MINIPCHI2_OtherPVs[maxLeafs];
+    outtree.Branch("J_psi_1S_MINIPCHI2_OtherPVs", &myJ_psi_1S_MINIPCHI2_OtherPVs,
+    "J_psi_1S_MINIPCHI2_OtherPVs[B0_FitDaughtersPVConst_nPV]/F");  
 
   // Replace by KS0_M_with_pplus_piplus
   Float_t myB0_FitDaughtersPVConst_KS0_P0_PE[maxLeafs];
@@ -198,9 +204,18 @@ int slimmingB2JpsiKs(const TString module, const TString data,
     "J_psi_1S_Hlt2TopoMu2BodyBBDTDecision_TOS/O");
 
   // *** Neural Net ***
+  ULong64_t myGpsTime;
+  outtree.Branch("GpsTime", &myGpsTime,
+    "GpsTime/l");
   Int_t mynOTClusters;
     outtree.Branch("nOTClusters", &mynOTClusters,
     "nOTClusters/I");
+  Float_t myPVCHI2[maxLeafs];
+  outtree.Branch("PVCHI2", &myPVCHI2,
+    "PVCHI2[B0_FitDaughtersPVConst_nPV]/F");
+  Float_t myPVNTRACKS[maxLeafs];
+  outtree.Branch("PVNTRACKS", &myPVNTRACKS,
+    "PVNTRACKS[B0_FitDaughtersPVConst_nPV]/F");
   Int_t mynSPDHits;
     outtree.Branch("nSPDHits", &mynSPDHits,
     "nSPDHits/I");
@@ -345,28 +360,43 @@ int slimmingB2JpsiKs(const TString module, const TString data,
   Int_t myKS0_TRUEID;
   Int_t myB0_BKGCAT;
   Double_t myB0_TRUETAU;
+  Float_t  myB0_FitDaughtersPVConst_PV_X[maxLeafs];
+  Float_t  myB0_FitDaughtersPVConst_PV_Y[maxLeafs];
   Double_t myB0_TRUEORIGINVERTEX_X;
   Double_t myB0_TRUEORIGINVERTEX_Y;
   Double_t myB0_TRUEORIGINVERTEX_Z;
-  
+
   if (isSigMC(data) || data==m_IncJpsi) {
     outtree.Branch("B0_TRUEID", &myB0_TRUEID,
-    "B0_TRUEID/I");
+      "B0_TRUEID/I");
     outtree.Branch("J_psi_1S_TRUEID", &myJ_psi_1S_TRUEID,
-    "J_psi_1S_TRUEID/I");
+      "J_psi_1S_TRUEID/I");
     outtree.Branch("KS0_TRUEID", &myKS0_TRUEID,
-    "KS0_TRUEID/I");
+      "KS0_TRUEID/I");
     outtree.Branch("B0_BKGCAT", &myB0_BKGCAT,
-    "B0_BKGCAT/I");
+      "B0_BKGCAT/I");
     outtree.Branch("B0_TRUETAU", &myB0_TRUETAU,
-    "B0_TRUETAU/D");
+      "B0_TRUETAU/D");
+    outtree.Branch("B0_FitDaughtersPVConst_PV_X", &myB0_FitDaughtersPVConst_PV_X,
+      "B0_FitDaughtersPVConst_PV_X[B0_FitDaughtersPVConst_nPV]/F");
+    outtree.Branch("B0_FitDaughtersPVConst_PV_Y", &myB0_FitDaughtersPVConst_PV_Y,
+      "B0_FitDaughtersPVConst_PV_Y[B0_FitDaughtersPVConst_nPV]/F");
     outtree.Branch("B0_TRUEORIGINVERTEX_X", &myB0_TRUEORIGINVERTEX_X,
-    "B0_TRUEORIGINVERTEX_X/D");
+      "B0_TRUEORIGINVERTEX_X/D");
     outtree.Branch("B0_TRUEORIGINVERTEX_Y", &myB0_TRUEORIGINVERTEX_Y,
-    "B0_TRUEORIGINVERTEX_Y/D");
+      "B0_TRUEORIGINVERTEX_Y/D");
     outtree.Branch("B0_TRUEORIGINVERTEX_Z", &myB0_TRUEORIGINVERTEX_Z,
-    "B0_TRUEORIGINVERTEX_Z/D");
+      "B0_TRUEORIGINVERTEX_Z/D");
   }
+
+  // *** Other information ***
+  Float_t myB0_FitDaughtersPVConst_DeltaChi2[maxLeafs];
+    outtree.Branch("B0_FitDaughtersPVConst_DeltaChi2", &myB0_FitDaughtersPVConst_DeltaChi2,
+    "B0_FitDaughtersPVConst_DeltaChi2[B0_FitDaughtersPVConst_nPV]/F");
+  Int_t myPassLoose[maxLeafs];
+    outtree.Branch("PassLoose", &myPassLoose,
+    "PassLoose[B0_FitDaughtersPVConst_nPV]/I");
+
 
 // ***** PART I: Fill Data Set ***** //
 ///////////////////////////////////////
@@ -396,10 +426,8 @@ int slimmingB2JpsiKs(const TString module, const TString data,
 
     // *** Loose Cuts ***
     for (int pv=0; pv<maxPV; pv++){
-      pass = ntuple->applyAllCuts(data, pv);
-      if (pass) {
-        break;
-      }
+      myPassLoose[pv] = ntuple->applyAllCuts(data, pv);
+      if (myPassLoose[pv]) pass = true;
     }
     if (!pass) continue;
 
@@ -436,6 +464,7 @@ int slimmingB2JpsiKs(const TString module, const TString data,
     myeventNumber = ntuple->eventNumber;
     //myGpsSecond = ntuple->GpsSecond;
     myBCID = ntuple->BCID; // Replace with GpsSecond
+    myPolarity = ntuple->Polarity;
   
     // *** Observables for Common Selection Cuts ***
     for (int pv = 0; pv<maxPV; pv++) {
@@ -465,6 +494,7 @@ int slimmingB2JpsiKs(const TString module, const TString data,
       myB0_FitDaughtersPVConst_KS0_ctau[pv] = 
       (DTFgood[pv] ? ntuple->B0_FitDaughtersPVConst_KS0_ctau[pv] : -999);
     }
+    //myJ_psi_1S_MINIPCHI2_OtherPVs[pv] // defined later
 
     // Replace by KS0_M_with_pplus_piplus
     for (int pv = 0; pv<maxPV; pv++) {
@@ -510,7 +540,14 @@ int slimmingB2JpsiKs(const TString module, const TString data,
     myJ_psi_1S_Hlt2TopoMu2BodyBBDTDecision_TOS = ntuple->J_psi_1S_Hlt2TopoMu2BodyBBDTDecision_TOS;
 
     // *** Neural Net ***
+    myGpsTime = ntuple->GpsTime;
     mynOTClusters = ntuple->nOTClusters;
+    for (int pv = 0; pv<maxPV; pv++) {
+      myPVCHI2[pv] = (DTFgood[pv] ? ntuple->PVCHI2[pv] : -999);
+    }
+    for (int pv = 0; pv<maxPV; pv++) {
+      myPVNTRACKS[pv] = (DTFgood[pv] ? ntuple->PVNTRACKS[pv] : -999);
+    }
     mynSPDHits = ntuple->nSPDHits;
   
     for (int pv = 0; pv<maxPV; pv++) {
@@ -659,9 +696,56 @@ int slimmingB2JpsiKs(const TString module, const TString data,
       myB0_BKGCAT = ntuple->B0_BKGCAT;
 
       myB0_TRUETAU = ntuple->B0_TRUETAU;
+      for (int pv = 0; pv<maxPV; pv++) {
+        myB0_FitDaughtersPVConst_PV_X[pv] = 
+        (DTFgood[pv] ? ntuple->B0_FitDaughtersPVConst_PV_X[pv] : -999);
+      }
+      for (int pv = 0; pv<maxPV; pv++) {
+        myB0_FitDaughtersPVConst_PV_Y[pv] = 
+        (DTFgood[pv] ? ntuple->B0_FitDaughtersPVConst_PV_Y[pv] : -999);
+      }
       myB0_TRUEORIGINVERTEX_X = ntuple->B0_TRUEORIGINVERTEX_X;
       myB0_TRUEORIGINVERTEX_Y = ntuple->B0_TRUEORIGINVERTEX_Y;
       myB0_TRUEORIGINVERTEX_Z = ntuple->B0_TRUEORIGINVERTEX_Z;
+    }
+
+    // *** Other information ***
+    for (int pv = 0; pv<maxPV; pv++) {
+      myB0_FitDaughtersPVConst_DeltaChi2[pv] = -6;
+      if (myB0_FitDaughtersPVConst_chi2[pv]<0) {
+        myB0_FitDaughtersPVConst_DeltaChi2[pv] = -999;
+      } else if (maxPV==1) {
+        myB0_FitDaughtersPVConst_DeltaChi2[pv] = -3;
+      } else {
+        for (int pvNext = 0; pvNext<maxPV; pvNext++) {
+          if (myB0_FitDaughtersPVConst_chi2[pvNext]<0) continue;
+          else if (pvNext!=pv && (myB0_FitDaughtersPVConst_DeltaChi2[pv]<0 ||
+                   TMath::Abs(myB0_FitDaughtersPVConst_chi2[pv] - myB0_FitDaughtersPVConst_chi2[pvNext])
+                   <myB0_FitDaughtersPVConst_DeltaChi2[pv])) {
+            myB0_FitDaughtersPVConst_DeltaChi2[pv] =
+              TMath::Abs(myB0_FitDaughtersPVConst_chi2[pv] - myB0_FitDaughtersPVConst_chi2[pvNext]);
+          }
+        }
+      }
+    }
+    // Calculate Minimum IPCHI2 of all other PVs
+    for (int pv = 0; pv<maxPV; pv++) {
+      myJ_psi_1S_MINIPCHI2_OtherPVs[pv] = -6;
+      if (myB0_FitDaughtersPVConst_J_psi_1S_IPCHI2[pv]<0) {
+        myJ_psi_1S_MINIPCHI2_OtherPVs[pv] = -999;
+      } else if (maxPV==1) {
+        myJ_psi_1S_MINIPCHI2_OtherPVs[pv] = -3;
+      } else {
+        double ipmin = -6;
+        for (int pvNext = 0; pvNext < maxPV; pvNext++) {
+          if (pvNext!=pv && myB0_FitDaughtersPVConst_J_psi_1S_IPCHI2[pvNext]>0
+              && (ipmin<0 ||
+              myB0_FitDaughtersPVConst_J_psi_1S_IPCHI2[pvNext]<ipmin)) {
+            ipmin = myB0_FitDaughtersPVConst_J_psi_1S_IPCHI2[pvNext];
+          }
+        }
+        myJ_psi_1S_MINIPCHI2_OtherPVs[pv] = ipmin;
+      }
     }
 
     // Replace by KS0_M_with_pplus_piplus

@@ -4,21 +4,79 @@ import numpy as np
 from pprint import pprint
 import sys
 
-def CheckPartType(PartName):
-    ValidPartNames=("K", "Pi", "P",  "Mu", "K_MuonUnBiased", "Pi_MuonUnBiased", "P_MuonUnBiased")
+def GetMomBinVarName():
+    return "P"
+
+def GetPtBinVarName():
+    return "PT"
+
+def GetEtaBinVarName():
+    return "ETA"
+
+def GetNTracksBinVarName():
+    return "nTrack"
+
+def GetBinVarNames():
+   return (GetMomBinVarName(), GetPtBinVarName(),
+           GetEtaBinVarName(), GetNTracksBinVarName())
+
+def GetRICHPIDRealPartTypes():
+    return ("K", "Pi", "P")
+
+def GetRICHPIDPartTypes():
+    return GetRICHPIDRealPartTypes()
+
+def GetMuonPIDRealPartTypes():
+    return ("Mu",)
+
+def GetMuonPIDPartTypes():
+    return GetMuonPIDRealPartTypes()+tuple(['{0}_MuonUnBiased'.format(
+        p) for p in GetRICHPIDRealPartTypes()])
+
+def GetRealPartTypes():
+    return GetRICHPIDRealPartTypes()+GetMuonPIDRealPartTypes()
+
+def GetPartTypes():
+    return GetRICHPIDPartTypes()+GetMuonPIDPartTypes()
+
+def CheckRealPartType(PartName):
+    ValidPartNames=GetRealPartTypes()
     if PartName not in ValidPartNames:
-        raise TypeError("Invalid particle type. Allowed types are %s" %str(ValidPartNames))
+        msg=("Invalid particle type '{0}'. "
+             "Allowed types are {1}").format(
+            PartName, str(ValidPartNames))
+        raise TypeError(msg)
+
+def CheckPartType(PartName):
+    ValidPartNames=GetPartTypes()
+    if PartName not in ValidPartNames:
+        msg=("Invalid particle type '{0}'. "
+             "Allowed types are {1}").format(
+            PartName, str(ValidPartNames))
+        raise TypeError(msg)
 
 def CheckMagPol(MagPol):
     ValidMagPols=("MagUp", "MagDown")
     if MagPol not in ValidMagPols:
-        raise TypeError("Invalid magnet polarity. Allowed polarities are %s" %str(ValidMagPols))
+        msg=("Invalid magnet polarity '{0}'. "
+        "Allowed polarities are {1}").format(MagPol, str(ValidMagPols))
+        raise TypeError(msg)
 
 def CheckStripVer(StripVer):
-    ValidStripVers=("13b", "15", "17", "20", "20r1", "20_MCTuneV2", "20r1_MCTuneV2")
+    ValidStripVers=("13b", "15", "17", "20", "20r1", "20_MCTuneV2",
+         "20r1_MCTuneV2")
     if StripVer not in ValidStripVers:
-        raise TypeError("Invalid stripping version. Allowed versions are %s" %str(ValidStripVers))
-   
+        msg=("Invalid stripping version '{0}'. "
+             "Allowed versions are {1}").format(StripVer, str(ValidStripVers))
+        raise TypeError(msg)
+
+def CheckBinVarName(VarName):
+    ValidBinVarNames=GetBinVarNames()
+    if VarName not in ValidBinVarNames:
+        msg=("Invalid binning variable '{0}'. "
+             "Allowed variables are {1}").format(VarName, str(ValidBinVarNames))
+        raise TypeError(msg)
+            
 def GetRecoVer(StripVer):
     CheckStripVer(StripVer)
     if StripVer=='13b':
@@ -51,9 +109,11 @@ def GetRunDictionary(StripVer, PartName="K"):#, IsMuonUnBiased=False):
     #======================================================================
     # Dictionary of Dictionaires for StripVersion -> {UpRuns, DownRuns}
     #======================================================================
-    UpRunLims   = pickle.load( open( os.path.expandvars('$CALIBDATASCRIPTSROOT/jobs/Stripping{strp}/ChopTrees/up_runLimits_{suf}.pkl'.format(
+    UpRunLims   = pickle.load( open( os.path.expandvars(
+        '$CALIBDATASCRIPTSROOT/jobs/Stripping{strp}/ChopTrees/up_runLimits_{suf}.pkl'.format(
         strp=StripVer, suf=fileSuffix)), 'rb' ) )
-    DownRunLims = pickle.load( open( os.path.expandvars('$CALIBDATASCRIPTSROOT/jobs/Stripping{strp}/ChopTrees/down_runLimits_{suf}.pkl'.format(
+    DownRunLims = pickle.load( open( os.path.expandvars(
+        '$CALIBDATASCRIPTSROOT/jobs/Stripping{strp}/ChopTrees/down_runLimits_{suf}.pkl'.format(
         strp=StripVer, suf=fileSuffix)), 'rb' ) )    
 
     StripDict = {'StripVer'   : StripVer,

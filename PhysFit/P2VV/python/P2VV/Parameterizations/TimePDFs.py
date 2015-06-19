@@ -3,27 +3,38 @@
 ##                                                                                                                                       ##
 ## authors:                                                                                                                              ##
 ##   GR,  Gerhard Raven,      Nikhef & VU, Gerhard.Raven@nikhef.nl                                                                       ##
+##   RA,  Roel Aaij,          Nikhef, raaij@nikhef.nl                                                                                    ##
 ##                                                                                                                                       ##
 ###########################################################################################################################################
 
-class BDecayBasisCoefficients :
+from P2VV.Parameterizations.GeneralUtils import _util_parse_mixin
+class BDecayBasisCoefficients ( _util_parse_mixin ) :
     def __init__(self, **kwargs ) :
         for i in ['sin','cos','sinh','cosh' ] : setattr(self,i,kwargs.pop(i))
         if kwargs : raise KeyError('unknown keyword arguments: %s' % kwargs )
     def __getitem__(self,kw) :
         return getattr(self,kw)
 
+class Coefficients_BDecayBasisCoefficients ( BDecayBasisCoefficients ) :
+    def __init__( self, **kwargs ) :
+        cCosh = self._parseArg( 'cCosh', kwargs, Title = 'cosh coefficient', Value =  1., ObjectType = 'ConstVar' )
+        cCos  = self._parseArg( 'cCos',  kwargs, Title = 'cos coefficient',  Value =  0., MinMax = (-2., 2.) )
+        cSinh = self._parseArg( 'cSinh', kwargs, Title = 'sinh coefficient', Value = -1., MinMax = (-2., 2.) )
+        cSin  = self._parseArg( 'cSin',  kwargs, Title = 'sin coefficient',  Value =  0., MinMax = (-2., 2.) )
+        BDecayBasisCoefficients.__init__( self, **dict( cosh = cCosh, cos = cCos, sinh = cSinh, sin = cSin ) )
+
 class JpsiphiBTagDecayBasisCoefficients( BDecayBasisCoefficients ) :
     def __init__( self, AngFuncs, Amplitudes, CPParams, Order ) :
         def combine( tCoefType, angFuncs, amplitudes, CPParams, iIndex, jIndex ) :
-            from P2VV.RooFitWrappers import ConstVar, FormulaVar, Product, Addition
+            from P2VV.RooFitWrappers import ConstVar
             one   = ConstVar( Name = 'one',   Value =  1 )
             minus = ConstVar( Name = 'minus', Value = -1 )
 
             # define functions which return Re(Ai* Aj), Im( Ai* Aj)
-            # TODO: replace by Addition & Product
-            Re = lambda Ai, Aj : FormulaVar( 'Re_amps_%s_%s' % ( Ai, Aj ), '@0*@2+@1*@3', [ Ai.Re, Ai.Im, Aj.Re, Aj.Im ] )
-            Im = lambda Ai, Aj : FormulaVar( 'Im_amps_%s_%s' % ( Ai, Aj ), '@0*@3-@1*@2', [ Ai.Re, Ai.Im, Aj.Re, Aj.Im ] )
+            Re = lambda Ai, Aj : self._parseArg( 'Re_amps_%s_%s' % ( Ai, Aj ), { }, Type = 'ProdCarthCToRe', ObjectType = 'ConvertPolAmp'
+                                                , Arguments = [ Ai.Re, Ai.Im, Aj.Re, Aj.Im ] )
+            Im = lambda Ai, Aj : self._parseArg( 'Im_amps_%s_%s' % ( Ai, Aj ), { }, Type = 'ProdCarthCToIm', ObjectType = 'ConvertPolAmp'
+                                                , Arguments = [ Ai.Re, Ai.Im, Aj.Re, Aj.Im ] )
 
             # define functions which return the coefficients of the time dependence
             def CPVDec( termInd, iInd, jInd, amps, CPPar ) :
@@ -53,7 +64,8 @@ class JpsiphiBTagDecayBasisCoefficients( BDecayBasisCoefficients ) :
                 if mix in [ one, minus ] : mix = None
 
                 facs = [ fac for fac in ( sign, dec, mix ) if fac ]
-                return Product( name, facs ) if len(facs) > 1 else facs[0] if len(facs) == 1 else one
+                return self._parseArg( name, { }, Arguments = facs, ObjectType = 'Product' ) if len(facs) > 1\
+                       else facs[0] if len(facs) == 1 else one
 
             def tCoef( tCType, iInd, jInd, amps, CPPar ) :
                 # build the coefficient of the time function:
@@ -77,7 +89,8 @@ class JpsiphiBTagDecayBasisCoefficients( BDecayBasisCoefficients ) :
                         ]
                 assert any( comp for term in terms for comp in term )
 
-                add = lambda name, args : Addition( name, args ) if len(args) > 1 else args[0] if len(args) == 1 else None
+                add = lambda name, args : self._parseArg( name, { }, Arguments = args, ObjectType = 'Addition' ) if len(args) > 1\
+                                          else args[0] if len(args) == 1 else None
                 return (  add( 'Re_%s_%s_%s' % ( tCType, iInd, jInd ), [ term[0] for term in terms if term[0] ] )
                         , add( 'Im_%s_%s_%s' % ( tCType, iInd, jInd ), [ term[1] for term in terms if term[1] ] )
                        )
@@ -89,9 +102,9 @@ class JpsiphiBTagDecayBasisCoefficients( BDecayBasisCoefficients ) :
             ( reAng, imAng ) = angFuncs[ ( iIndex, jIndex ) ]
 
             # (real part of) product of amplitude, time and angular (complex) factors:
-            # Re(abc) = Re(ab)Re(c) - Im(ab)Im(c) = Re(a)Re(b)Re(c) - Im(a)Im(b)Re(c) - Re(a)Im(b)Im(c) - Im(a)Re(b)Im(c)
+            # Re(abc) = Re(a)Re(b)Re(c) - Im(a)Im(b)Re(c) - Re(a)Im(b)Im(c) - Im(a)Re(b)Im(c)
             # (there is a minus in case there are 2 imaginary contributions)
-            prod = lambda name, args : [ Product( name, args ) ] if all(args) else [ ]
+            prod = lambda name, args : [ self._parseArg( name, { }, Arguments = args, ObjectType = 'Product' ) ] if all(args) else [ ]
             return prod( 'ReReRe_%s_%s_%s' % ( tCoefType, amplitudes[iIndex], amplitudes[jIndex] ), [        reAmps , reTime, reAng ] ) \
                  + prod( 'ImImRe_%s_%s_%s' % ( tCoefType, amplitudes[iIndex], amplitudes[jIndex] ), [ minus, imAmps , imTime, reAng ] ) \
                  + prod( 'ReImIm_%s_%s_%s' % ( tCoefType, amplitudes[iIndex], amplitudes[jIndex] ), [ minus, reAmps , imTime, imAng ] ) \
@@ -103,13 +116,12 @@ class JpsiphiBTagDecayBasisCoefficients( BDecayBasisCoefficients ) :
             from P2VV.Compatibility import cwr
 
         args = dict()
-        from P2VV.RooFitWrappers import Addition
         for tCoefType in [ 'cosh', 'sinh', 'cos', 'sin' ] :
             # NOTE: 'Amplitudes' must be traversed 'in order' : A0, Apar, Aperp, AS, so we cannot use Amplitudes.keys() out of the box
-            args[ tCoefType ] = Addition( '%sCoef' % tCoefType
-                                         , [ term for ( i, j ) in cwr( Order, 2 )\
-                                                  for term in combine( tCoefType, AngFuncs, Amplitudes, CPParams, i, j ) ]
-                                        )
+            args[ tCoefType ] = self._parseArg( '%sCoef' % tCoefType, { }, ObjectType = 'Addition'
+                                               , Arguments = [ term for ( i, j ) in cwr( Order, 2 )\
+                                                               for term in combine( tCoefType, AngFuncs, Amplitudes, CPParams, i, j ) ]
+                                              )
 
         BDecayBasisCoefficients.__init__( self, **args )
 
@@ -117,18 +129,20 @@ class JpsiphiBDecayBasisCoefficients( BDecayBasisCoefficients ) :
     def __init__(self,  angFuncs, Amplitudes,CP, itag, dilution, order ) :
         def combine( name, afun, A, CPparams, tag, i, j) :
             # TODO: deal with tag = None: create the untagged PDF in that case!
-            from P2VV.RooFitWrappers import ConstVar, FormulaVar, Product
+            from P2VV.RooFitWrappers import ConstVar, Product
             plus  = ConstVar( Name = 'plus',  Value =  1 )
             minus = ConstVar( Name = 'minus', Value = -1 )
             if type(CP['C'])==ConstVar and CP['C'].getVal() == 0 : 
                 Norm = [ ]
             else :
-                Norm = [ FormulaVar('Norm','1.0/(1.0+sign(@0)*@1)',[tag,CP['C']] ) ]
+                Norm = [ self._parseArg( 'Norm', kwargs, Formula = '1.0/(1.0+sign(@0)*@1)', Arguments = [ tag, CP['C'] ]
+                        , ObjectType = 'FormulaVar' ) ]
                 Norm[0].setAttribute("CacheAndTrack")
             # define functions which return Re(Conj(Ai) Aj), Im( Conj(Ai) Aj)
-            # TODO: replace by Addition & Product... why? (only parameters)
-            Re        = lambda ai, aj  : FormulaVar('Re_c_%s_%s'%(ai,aj),'@0*@2+@1*@3',[ai.Re,ai.Im,aj.Re,aj.Im])
-            Im        = lambda ai, aj  : FormulaVar('Im_c_%s_%s'%(ai,aj),'@0*@3-@1*@2',[ai.Re,ai.Im,aj.Re,aj.Im])
+            Re = lambda ai, aj : self._parseArg( 'Re_c_%s_%s' % ( ai, aj ), { }, Type = 'ProdCarthCToRe', ObjectType = 'ConvertPolAmp'
+                                                , Arguments=[ ai.Re,ai.Im,aj.Re,aj.Im ] )
+            Im = lambda ai, aj : self._parseArg( 'Im_c_%s_%s' % ( ai, aj ), { }, Type = 'ProdCarthCToIm', ObjectType = 'ConvertPolAmp'
+                                                , Arguments=[ ai.Re,ai.Im,aj.Re,aj.Im ] )
             # define functions which return the coefficients that define the time-dependence...
             _minus_if = lambda b, x : [ minus ] + x if b else  x 
             coef = { 'cosh' : lambda ai,aj,CP : ( plus if ai.CP == aj.CP else  CP['C']
@@ -169,9 +183,7 @@ class JpsiphiBDecayBasisCoefficients( BDecayBasisCoefficients ) :
         BDecayBasisCoefficients.__init__( self, **args )
 
 
-def JpsiphiBDecay( Name, time, tag, lifetimeParams, sigtres, tagging,  angles, amplitudes, CP, order ) :
-    from P2VV.Parameterizations.TimePDFs import JpsiphiBDecayBasisCoefficients
-    basisCoefficients = JpsiphiBDecayBasisCoefficients( angles.functions, amplitudes, CP, tag, tagging['dilution'], order )
+def JpsiphiBDecay( Name, time, tag, lifetimeParams, sigtres, tagging, basisCoefficients ) :
     from P2VV.RooFitWrappers import BDecay
     return  BDecay(  Name                   = Name
                    , time                   = time
@@ -183,15 +195,13 @@ def JpsiphiBDecay( Name, time, tag, lifetimeParams, sigtres, tagging,  angles, a
                    , cosCoef                = basisCoefficients['cos']
                    , sinhCoef               = basisCoefficients['sinh']
                    , sinCoef                = basisCoefficients['sin']
-                   , ConditionalObservables = sigtres.conditionalObservables() + tagging.conditionalObservables()
-                   , ExternalConstraints    = lifetimeParams.externalConstraints()\
-                                              + sigtres.externalConstraints()\
-                                              + tagging.externalConstraints()
+                   , ConditionalObservables = sigtres.ConditionalObservables() + tagging.ConditionalObservables()
+                   , ExternalConstraints    = lifetimeParams.ExternalConstraints()\
+                                              + sigtres.ExternalConstraints()\
+                                              + tagging.ExternalConstraints()
                   )
 
-def JpsiphiBTagDecay( Name, time, tag, lifetimeParams, sigtres, tagging,  angles, amplitudes, CP, order ) :
-    from P2VV.Parameterizations.TimePDFs import JpsiphiBTagDecayBasisCoefficients
-    basisCoefficients = JpsiphiBTagDecayBasisCoefficients( angles.functions, amplitudes, CP, order )
+def JpsiphiBTagDecay( Name, time, tag, lifetimeParams, sigtres, tagging, basisCoefficients ) :
     from P2VV.RooFitWrappers import BTagDecay
     return  BTagDecay(  Name                   = Name
                       , time                   = time
@@ -208,16 +218,15 @@ def JpsiphiBTagDecay( Name, time, tag, lifetimeParams, sigtres, tagging,  angles
                       , ADilWTag               = tagging['ADilWTag']
                       , avgCEven               = tagging['avgCEven']
                       , avgCOdd                = tagging['avgCOdd']
-                      , ConditionalObservables = sigtres.conditionalObservables() + tagging.conditionalObservables()
-                      , ExternalConstraints    = lifetimeParams.externalConstraints()\
-                                                 + sigtres.externalConstraints()\
-                                                 + tagging.externalConstraints()
+                      , ConditionalObservables = sigtres.ConditionalObservables() + tagging.ConditionalObservables()
+                      , ExternalConstraints    = lifetimeParams.ExternalConstraints()\
+                                                 + sigtres.ExternalConstraints()\
+                                                 + tagging.ExternalConstraints()
                      )
 
 
 
 
-from P2VV.Parameterizations.GeneralUtils import _util_parse_mixin
 class TimePdf( _util_parse_mixin ) :
     def __init__( self, **kwargs ) :
         self._pdf = kwargs.pop('pdf')
@@ -280,11 +289,12 @@ class Single_Exponent_Time( TimePdf ) :
 
 class Prompt_Peak( TimePdf ) :
     def __init__(self, time, resolutionModel, **kwargs) :
-        self._parseArg('prompt_tau', kwargs, Title = 'lifetime', Unit = 'ps', Value = 0, Constant = True)
+        namePF = self.getNamePrefix(kwargs)
+        self._parseArg( 'prompt_tau', kwargs, Title = 'lifetime', Unit = 'ps', Value = 0, Constant = True )
 
         from P2VV.RooFitWrappers import Pdf
         from ROOT import RooDecay as Decay
-        TimePdf.__init__(self, pdf = Pdf( Name = kwargs.pop('Name',self.__class__.__name__)
+        TimePdf.__init__(self, pdf = Pdf( Name = namePF + kwargs.pop('Name', self.__class__.__name__)
                                           , Type = Decay
                                           , Parameters = (time, self._prompt_tau, resolutionModel, 'SingleSided')
                                           , ConditionalObservables = resolutionModel.ConditionalObservables()
