@@ -1,0 +1,29 @@
+#============================================================================
+# Created    : 2011-06-21
+# Maintainer : Patrick Koppenburg
+#============================================================================
+package           Bs2JpsiKs
+version           v4r1
+
+#============================================================================
+# Structure, i.e. directories to process. 
+#============================================================================
+branches          cmt doc src root
+#============================================================================
+# Used packages. Specify the version, * at the end specifies 'any revision'
+#    Put as many lines as needed, with all packages, without the '#'
+#============================================================================
+# use   Package      v1r*    Hat
+use GaudiPolicy v*
+
+include_path      none
+#============================================================================
+# Component library building rule
+#============================================================================
+# library          Bs2JpsiKs    ../src/*.cpp 
+#============================================================================
+# define component library link options
+#============================================================================
+# apply_pattern    component_library library=Bs2JpsiKs
+#============================================================================
+apply_pattern install_python_modules

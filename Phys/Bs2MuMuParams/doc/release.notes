@@ -1,0 +1,17 @@
+!-----------------------------------------------------------------------------
+! Package     : Phys/Bs2MuMuParams
+! Responsible : Marc-Olivier Bettler , Diego Martinez Santos, Mathieu Terrin Perrin
+! Purpose     : Bkk of parameters used for the limit
+!-----------------------------------------------------------------------------
+
+!============================== v2r0 28-07-2011 ==============================
+
+! 2011-07-28 - Diego Martinez Santos
+ - Make version v2r0. Johanes commited changes.
+
+
+!============================== v1r1 27-05-2011 ==============================
+
+! 2011-05-27 - Diego Martinez Santos
+ -Parameters for the limit
+

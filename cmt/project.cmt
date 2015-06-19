@@ -1,0 +1,11 @@
+project URANIA
+
+container UraniaSys
+
+use GAUDI     GAUDI_v23r5
+#use DBASE
+#use PARAM
+
+build_strategy with_installarea
+setup_strategy root
+#structure_strategy without_version_directory

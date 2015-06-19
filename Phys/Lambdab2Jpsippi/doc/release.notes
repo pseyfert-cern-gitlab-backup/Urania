@@ -1,0 +1,15 @@
+!-----------------------------------------------------------------------------
+! Package     : Phys/Lambdab2Jpsippi
+! Responsible : Patrick Koppenburg
+! Purpose     : Lambda_b -> J/psi p pi search
+!-----------------------------------------------------------------------------
+
+!====================== Lambdab2Jpsippi v1r0 2012-09-13 ======================
+! 2012-08-28 - Patrick Koppenburg
+ - Alex's macros added under analysis
+
+! 2012-08-24 - Alex Babeanu
+ - Status of Alex's project
+
+! 2012-07-13 - Patrick Koppenburg
+ - First import

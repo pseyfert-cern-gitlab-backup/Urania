@@ -1,0 +1,47 @@
+//##############################################################################
+// EXPERT
+//##############################################################################
+
+TString head("Bu2JpsiK-Eval1-")
+// file = _file0
+TFile* file = new TFile("Bu2JpsiK-Eval-1-random.root")
+file->ls()
+TTree* T = (TTree*)file->Get("NetTree")
+T->Draw("FullFitMass","netOutput>-1.1")
+
+TFile* fileW = new TFile("Bu2JpsiK-Weights-1-random.root")
+TTree* W = (TTree*)fileW->Get("WeightTree")
+W->Draw("mass","sweight>-5")
+
+T->AddFriend(W)
+
+char* bdW = "sweightB*(sweight>-5)"             
+char* bkgW = "sweightNonPeaking*(sweight>-5)"
+
+SandB(T,0,"FullFitMass",bdW,bkgW)
+SandB(T,0,"netOutput",bdW,bkgW,"","",head+"Iter1 NN")
+
+T->Draw("netOutput","sweightB*(netOutput>-1)")
+double allS = ((TH1F*)gPad->GetPrimitive("htemp"))->GetSumOfWeights()
+T->Draw("netOutput","sweightB*(netOutput>0)")
+double goodS = ((TH1F*)gPad->GetPrimitive("htemp"))->GetSumOfWeights()
+T->Draw("netOutput","sweightNonPeaking*(netOutput>-1)")
+double allB = ((TH1F*)gPad->GetPrimitive("htemp"))->GetSumOfWeights()
+T->Draw("netOutput","sweightNonPeaking*(netOutput>0)")
+double goodB = ((TH1F*)gPad->GetPrimitive("htemp"))->GetSumOfWeights()
+
+cout << "Cut at 0 keeps " << goodS << " of " << allS <<" signal and " << goodB << " of " << allB << " background" << endl;
+
+
+TH1D h1("h1","mass [MeV/c^{2}]",100,5190,5440)
+TH1D h2("h2","mass [MeV/c^{2}]",100,5190,5440)
+TH1D h3("h3","mass [MeV/c^{2}]",100,5190,5440)
+TH1D h4("h4","mass [MeV/c^{2}]",100,5190,5440)
+
+T->Draw("FullFitMass >> h1","netOutput>-1.1")
+T->Draw("FullFitMass >> h2","netOutput>-0.5")
+T->Draw("FullFitMass >> h3","netOutput>0")
+T->Draw("FullFitMass >> h4","netOutput>0.5")
+
+gPad->SetLogy()
+NiceRooPlot(h1,h2,h3,h4)

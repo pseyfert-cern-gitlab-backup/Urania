@@ -1,0 +1,68 @@
+!-----------------------------------------------------------------------------
+! Package     : RootTools/MoreSimpleTools
+! Responsible : Rob Lambert
+! Purpose     : C++ Command line tools for ntuple manipulation and analysis
+!-----------------------------------------------------------------------------
+
+
+!============================== v1r5 06-11-2011 ==============================
+
+! 2011-11-06 - Diego Martinez Santos
+ - Make version v1r5.
+
+
+! 2011-10-11 - Rob Lambert
+ - Added tuplesampler in python, to avoid the stupid TTree problem
+
+! 2011-08-11 - Rob Lambert
+ - Added StripTuple python script, reduce an ntuple to a list of colums, using regular expressions
+
+! 2011-04-16 - Diego Martinez Santos
+ - Clean up the source of the warnigs:
+
+      ../src/tupleshaper.cc:102: warning: unused variable 'minrat'
+	
+	and
+
+	 else if(histos[k-1]->GetEntries()==0) std::cout << "ERROR: no entries to plot?" << std::endl; ( just put <0.01 instead of ==0 )
+
+
+
+!============================== v1r2 2-04-2011 ==============================
+
+! 2011-04-02 - Diego Martinez Santos
+ - Make version v1r2.
+
+
+! 2011-02-08 - Rob Lambert
+ - Protected Efficacy against infinities and zeroes
+
+! 2011-02-08 - Rob Lambert
+ - Added new plot, of the efficacy of the cut, defined as:
+   additional background loss (relative) / additional signal loss (relative)
+   (b1-b2)s1/((s1-s2)b1) 
+
+! 2011-01-12 - Rob Lambert
+ - Added a new tool, Shaper, which will reshape one ntuple so that it looks like another ntuple, by resampling from within the first distribution.
+
+
+!============================== v1r1 06-12-2010 ==============================
+
+! 2010-12-06 - Diego Martinez Santos
+ - Make version v1r1.
+
+! 2010-12-01 - Rob Lambert
+ - Add a magic line to the requirements as suggested by Marco Cl
+
+!============================== v1r0 11-06-2010 ==============================
+
+! 2010-06-11 - Diego Martinez Santos
+ - Make version v1r0.
+
+! 2010-06-07 - Rob Lambert
+ - Fix for compilation problem on slc5, std::vector behaves oddly,
+   unsigned long seems to be preferred over "long unsigned int"
+
+! 2010-05-17 - Rob Lambert
+ - Creation of package, mostly a distant branch of SimpleTools
+

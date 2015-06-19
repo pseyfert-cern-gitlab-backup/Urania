@@ -1,0 +1,37 @@
+TFile* file = new TFile("Bu2JpsiK-Eval-2-random.root")
+TFile* file1 = new TFile("Bu2JpsiK-Weights-2-random.root")
+file->ls()
+TString head = "S17-Bu2JpsiK-I2-"
+TTree* T = (TTree*)file->Get("NetTree")
+TTree* W = (TTree*)file1->Get("WeightTree")
+T->AddFriend(W)
+T->Draw("FullFitMass","netOutput>-1")
+lhcbStyle();
+
+//T->Draw("FullFitMass","netOutput>-1")
+//RooPlot* best = (RooPlot*)file->Get("Best net>0.810") 
+//RooPlot* bestOdd = (RooPlot*)file->Get("Best odd && net>0.810") 
+
+
+gPad->SetLogy(0)
+T->Draw("FullFitMass >> h(100,5190,5440)", "netOutput<-1")
+T->Draw("FullFitMass >> h(100,5190,5440)", "netOutput>-1 && netOutput<0")
+T->Draw("FullFitMass >> h(100,5190,5440)", "netOutput>0 && netOutput<0.5")
+T->Draw("FullFitMass >> h(100,5190,5440)", "netOutput>0.5 && netOutput<0.8")
+T->Draw("FullFitMass >> h(100,5190,5440)", "netOutput>0.8 && netOutput<0.9")
+T->Draw("FullFitMass >> h(100,5190,5440)", "netOutput>0.9 && netOutput<1.1")
+
+
+TH1D h1("h1","Mass [MeV/c^{2}]",100,5190,5440)
+TH1D h2("h2","Mass [MeV/c^{2}]",100,5190,5440)
+TH1D h3("h3","Mass [MeV/c^{2}]",100,5190,5440)
+TH1D h4("h4","Mass [MeV/c^{2}]",100,5190,5440)
+
+gPad->SetLogy(1)
+T->Draw("FullFitMass >> h1","netOutput>-1")
+T->Draw("FullFitMass >> h2","netOutput>0")
+T->Draw("FullFitMass >> h3","netOutput>0.5")
+T->Draw("FullFitMass >> h4","netOutput>0.81")
+
+NiceRooPlot(h1,h2,h3,h4)
+

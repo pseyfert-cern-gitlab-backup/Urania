@@ -1,0 +1,23 @@
+#load up root on the command line, and open your root file
+
+root -l myfile.root
+
+//load up the correct ntuple, replace by your names, or use the TBrowser
+
+TBrowser b
+
+TNtuple* ntup=(TNtuple*)gDirectory->Get("OffB2DMu/DecayTree");
+
+//Automatically make text of all entries from ntuple
+
+TObjArray * members = ntup->GetListOfLeaves()
+
+members->ls() ; > tempfile.txt
+
+//print a list of all variables to a file called list.txt (in root)
+
+.! awk '{print $3  }' tempfile.txt; > list.txt
+.q
+
+#or on the command line:
+awk '{print $3  }' tempfile.txt > list.txt

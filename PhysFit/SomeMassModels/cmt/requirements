@@ -1,0 +1,45 @@
+#============================================================================
+# Created    : 2010-02-25
+# Maintainer : Diego Martinez Santos
+#============================================================================
+package           SomeMassModels
+version           v2r0
+
+#============================================================================
+# Structure, i.e. directories to process. 
+#============================================================================
+branches          cmt doc python src dict examples
+#============================================================================
+# Used packages. Specify the version, * at the end specifies 'any revision'
+#    Put as many lines as needed, with all packages, without the '#'
+#============================================================================
+
+use   GaudiPolicy v*
+use ROOT v* LCG_Interfaces
+#use   GaudiPython     v*
+use                ROOT             v* LCG_Interfaces
+use                Reflex           v* LCG_Interfaces
+use                Python           v* LCG_Interfaces
+
+
+#library RooExpAndGauss ../src/RooExpAndGauss.cxx 
+#library RooExpAndGaussInv ../src/RooExpAndGaussInv.cxx 
+#library RooPhysBkg ../src/RooPhysBkg.cxx 
+#library RooRadiativeTail ../src/RooRadiativeTail.cxx 
+#library SomeMassModels ../src/RooPhysBkg.cxx
+
+
+# =============== Produce LCG dictionary ======================================
+#apply_pattern     reflex_dictionary                                       \
+#                  dictionary=SomeMassModels                                   \
+#                  headerfiles=$(SOMEMASSMODELSROOT)/dict/SomeMassModelsDict.h     \
+#                  selectionfile=$(SOMEMASSMODELSROOT)/dict/SomeMassModels.xml      \
+#                 options=" -U__MINGW32__ "
+
+
+#macro_append ROOT_linkopts " -lMatrix -lRooFitCore -lRooFit -lMathCore -lMinuit -lHist -lGraf  -lMathMore -lCintex " 
+
+#apply_pattern linker_library library=SomeMassModels
+
+#path_prepend PYTHONPATH "$(SOMEMASSMODELSROOT)/python" ## comment out for release
+apply_pattern install_python_modules

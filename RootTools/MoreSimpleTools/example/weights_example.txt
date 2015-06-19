@@ -1,0 +1,27 @@
+#this file explains how to input tuples from any files
+#type	name		file				tuplepath		weight
+
+#is a comment
+
+S     signal		~/J388S_100pc.root		OffBd2KstarMuMu/DecayTree	1.762e-8
+#^ Signal or background?
+#     ^^name for plotting
+#			^^path to root file
+#                                                       ^^name of the ntuple in this file
+#                                                                                       ^^weight to apply to the candidates in this tuple
+#                           
+
+#you can have as many different files as you like, of type S or B, with different weights
+
+B	B_BKmm  	~/J388B_100pc.root		OffBd2KstarMuMu/DecayTree		1.508e-8		
+B	B_L0_mb		~/DVnTuples_100pc.root		OffBd2KstarMuMu/DecayTree		0.0276
+B	B_bbinc		~/J390B_100pc.root		OffBd2KstarMuMu/DecayTree		0.00149		
+B	B_bbmm  	~/J392_10pc_B_100pc.root	OffBd2KstarMuMu/DecayTree		7.692e-5		
+
+#the ntuples need to have all the variables which are given in the cut file, but that is all. They do not have to otherwise be the same in any way.
+
+#two ntuple entries can be defined which hold the unique identifiers for this event. These are used to calculate the number of candidates
+#per event and apply a weighting based on this to each dataset. This is recalculated for every cut.
+
+E      eventNumber    -the name of the column with the event numbers in. Any subsequent string is ignored.
+R      runNumber      -the name of the column with the run numbers in. Any subsequent string is ignored.

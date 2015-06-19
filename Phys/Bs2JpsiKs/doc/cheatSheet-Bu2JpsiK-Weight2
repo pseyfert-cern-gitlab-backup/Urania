@@ -1,0 +1,297 @@
+//##############################################################################
+TFile *_fileI2 = TFile::Open("Bu2JpsiK-Weights-2-random.root")
+TTree* W2 = (TTree*)_fileI2->Get("WeightTree")
+TString head = "S17-Bu2JpsiK-I2-"
+
+_fileI2->Get("ExtendedMassPlot")->Draw()
+RooRealVar* m_mass = new RooRealVar("Bmass","Bmass",5190,5440);
+.L RooExpAndGauss.C+
+.L JpsiKsPdf.cpp+
+JpsiKsPdf pdf("Bu2JpsiK",m_mass,false,false,1000)
+lhcbStyle();
+char* text = "LHCb"
+_fileI2->Get("ExtendedMassPlot")->Draw()
+png(head+"ExtendedMassPlot")
+RooPlot* rp2 = _fileI2->Get("ExtendedMassPlotNoParam")
+rp2->GetYaxis()->SetTitleOffset(1.5)
+rp2->Draw()
+printLHCb("R","Other",text)
+pdf.plotLegend()
+png(head+"ExtendedMassPlotNoParam")
+
+W2->Show(0)
+//  enum EC{ Error = -33 ,WrongHalf = -10 ,FailsCuts = -9 ,KilledMuCa = -8 ,NonTeaching = -7 ,Good = 0 };
+TCut OK("sweight>-8")
+TCut Teaching("mass>5440 || (mass>5230 && mass<5320)")
+
+gPad->SetLogy(0)
+W2->Draw("mass","5150<mass && 5550>mass && sweight>-1")
+W2->Draw("sweight:mass","5150<mass && 5550>mass")
+
+W2->Draw("sweightBd+sweightKstar+sweightNonPeaking:mass",OK)
+png(head+"sumIsOne")
+
+TH2D* ht = Make2DPlot("ht","mass [MeV/c^{2}]","sWeight",1000,5190,5440,1000,-0.5,2.0)
+TH2D* hs = Make2DPlot("hs","mass [MeV/c^{2}]","sWeight",1000,5190,5440,1000,-0.5,2.0)
+TH2D* hb = Make2DPlot("hb","mass [MeV/c^{2}]","sWeight",1000,5190,5440,1000,-0.5,2.0)
+TH2D* hk = Make2DPlot("hk","mass [MeV/c^{2}]","sWeight",1000,5190,5440,1000,-0.5,2.0)
+W2->Draw("sweightBd:mass >> hs",OK)
+W2->Draw("sweightNonPeaking:mass >> hb",OK)
+W2->Draw("sweightKstar:mass >> hk",OK)
+W2->Draw("sweight:mass >> ht",Teaching)
+hs->SetMarkerColor(3)
+hb->SetMarkerColor(2)
+hk->SetMarkerColor(4)
+ht->SetMarkerColor(3)
+ht->SetMarkerStyle(20)
+ht->Draw("")
+hs->Draw("same")
+hb->Draw("same")
+hk->Draw("same")
+png(head+"sWeights")
+
+//##############################################################################
+// Variables
+//##############################################################################
+TString dir("");
+// dir = "/castor/cern.ch/user/p/pkoppenb/B2JpsiKs/";
+TChain * C = new TChain("BetaSBu2JpsiKDetachedLine_Tuple/DecayTree","");
+C->Add(dir+TString("Bu2JpsiK-S17-277-312.root/BetaSBu2JpsiKDetachedLine_Tuple/DecayTree"));
+C->AddFriend(W2)  
+C->Draw("B_FullFit_M[0] >> h(100,5190,5440)")
+C->Draw("B_FullFit_M[0]:mass","abs(mass-5300)<300") /// must be diagonal
+
+
+char* bdW = "sweightB*(sweight>-5)"             
+char* bdWused = "sweightB*(mass<5340)*(sweight>-5)"             
+char* bkgW = "sweightNonPeaking*(mass>5390)*(sweight>-5)"
+char* bkgWall = "sweightNonPeaking*(sweight>-5)"
+char* kstW = "sweightKstar*(sweight>-5)"
+SandB(C,0,"B_FullFit_M[0]",bdWused,bkgW,"",head+"Mass")  // goes in note
+SandB(C,0,"B_FullFit_M[0]",bdW,bkgWall,"","",head+"AllWeights")  // goes in note
+
+SandB(C,0,"B_FullFit_ctau[0]/299.792458",bdW,bkgW,"","LR",head+"FullFit ctau",-4,-2)
+SandB(C,0,"muplus_TRACK_CHI2NDOF",bdW,bkgW,"","N",head+"mup chi2")
+//============================================
+// The variables
+//============================================
+gPad->SetLogy(1)
+SandB(C,0,"B_FullFit_chi2_B[0]",bdW,bkgW,"","NMR",head+"FullFit_chi2_B",0,96,96)
+SandB(C,0,"acos(B_DIRA_OWNPV)",bdW,bkgW,"","NLM",head+"acos(B_DIRA_OWNPV)")
+SandB(C,0,"Kplus_PT",bdW,bkgW,"","LMRN",head+"Kplus_PT",100,50000)
+SandB(C,0,"B_FullFit_MERR[0]",bdW,bkgW,"","MR",head+"B_FullFit_MERR",0,30)
+SandB(C,0,"Psi_IPCHI2_OWNPV ",bdW,bkgW,"","LMRN",head+"Psi_IPCHI2_OWNPV",0.01,10000)
+
+SandB(C,0,"B_FullFit_ctau[0]",bdW,bkgW,"","LMRN",head+"B_FullFit_ctau[0]",0.03,10)
+SandB(C,0,"B_ENDVERTEX_CHI2/B_ENDVERTEX_NDOF",bdW,bkgW,"","LMRN",head+"B_ENDVERTEX_CHI2",0.01,10)
+SandB(C,0,"B_IPCHI2_OWNPV",bdW,bkgW,"","LMRN",head+"B_IPCHI2_OWNPV",0.001,100)
+SandB(C,0,"B_P",bdW,bkgW,"","NLM",head+"B_P")
+SandB(C,0,"B_PT",bdW,bkgW,"","LMRN",head+"B_PT",100,100000)
+SandB(C,0,"B_FullFit_ctauErr[0]",bdW,bkgW,"","LMRN",head+"B_FullFit_ctauErr",0.003,0.05)
+SandB(C,0,"Psi_ENDVERTEX_CHI2",bdW,bkgW,"","LMRN",head+"Psi_ENDVERTEX_CHI2",0.00001,10)
+SandB(C,0,"Psi_MINIPCHI2",bdW,bkgW,"","LMRN",head+"Psi_MINIPCHI2",0.01,10000)
+SandB(C,0,"Psi_FDCHI2_ORIVX",bdW,bkgW,"","LMRN",head+"Psi_FDCHI2_ORIVX",0.000001,100)
+SandB(C,0,"Psi_MM",bdW,bkgW,"","NRgg",head+"Psi_MM",3010,3180,85)
+SandB(C,0,"Psi_MMERR",bdW,bkgW,"","NR",head+"Psi_MMERR",5,20)
+SandB(C,0,"Psi_P",bdW,bkgW,"","NLM",head+"Psi_P")
+SandB(C,0,"Psi_PT",bdW,bkgW,"","NLM",head+"Psi_PT")
+
+SandB(C,0,"Kplus_MINIPCHI2",bdW,bkgW,"","LMRN",head+"Kplus_MINIPCHI2",0.01,10000)
+SandB(C,0,"Kplus_P",bdW,bkgW,"","NLM",head+"Kplus_P")
+SandB(C,0,"Kplus_PIDK",bdW,bkgW,"","NLM",head+"Kplus_PIDK")
+
+SandB(C,0,"min(muminus_MINIPCHI2,muplus_MINIPCHI2) ",bdW,bkgW,"","LMRN",head+"muminus_MINIPCHI2",0.001,10000)
+SandB(C,0,"min(muminus_P,muplus_P)",bdW,bkgW,"","NLM",head+"muminus_P")
+SandB(C,0,"min(muminus_PIDmu,muplus_PIDmu) ",bdW,bkgW,"","LMRN",head+"muminus_PIDmu",0.1,10)
+
+SandB(C,0,"Primaries",bdW,bkgW,"","INR",head+"Primaries",0,7)
+SandB(C,0,"spdMult",bdW,bkgW,"","N",head+"spdMult")
+SandB(C,0,"OTClusters",bdW,bkgW,"","N",head+"OTClusters")
+
+//###########################################################################
+// RunRanges and Polarity - second sweights
+//
+TFile* file2 = new TFile("Bu2JpsiK-S17-277-312.root")
+TTree* D = (TTree*)file2->Get("BetaSBu2JpsiKDetachedLine_Tuple/DecayTree")
+D->AddFriend(T)
+D->Show(0)
+TFile *file4 = TFile::Open("Bu2JpsiK-Weights-2-random.root")
+TTree* W = (TTree*)file4->Get("WeightTree")
+TFile *file5 = TFile::Open("Bu2JpsiK-Weights-1-random.root")
+//TTree* W1 = (TTree*)file5->Get("WeightTree")
+TString head = "S17-Bu2JpsiK-I2-"
+D->AddFriend(W)
+//D->AddFriend(W1)
+TCut GoodPsiK = "(sweight>-5) && (abs(B_FullFit_M[0]-5280)<40) && (abs(B_OWNPV_Z)<250)"  
+
+double R12D = 588.31      
+double R12U = 435.20         
+double R10D = 199.33       
+double R10U = 170.58        
+double R11D = 179.74  
+double R11U =  67.92        
+double R11aD = R12D-R10D-R11D
+double R11aU = R12U-R10U-R11U         
+TH1D hu("hu","Mass [MeV/c^{2}]",160,5240,5320)
+TH1D hd("hd","Mass [MeV/c^{2}]",160,5240,5320)
+TString Wn = "W2"
+//TString Wn = "W1"
+TString R = "R10"
+
+// Funny
+SandB(D,0,"B_OWNPV_Z",bdW,bkgW,"","NM",head+"B_OWNPV_Z")
+TString pol1 = "sweightB*(sweight>-5)*(Polarity==-1)"
+TString pol2 = "sweightB*(sweight>-5)*(Polarity==1)"
+SandB(D,0,"B_OWNPV_Z",pol1,pol2,"","NM",head+"B_OWNPV_Z_Pol")
+
+TString R = "R10"
+D->Draw("B_FullFit_M[0] >> hu",GoodPsiK && "(Polarity==1) && (runNumber<95000)")    // 
+png(Wn+"-R10Up")
+D->Draw("B_FullFit_M[0] >> hd",GoodPsiK && "(Polarity==-1) && (runNumber<95000)")    // 
+png(Wn+"-R10Down")
+NiceRooPlot(hd,hu)
+png(Wn+"-R10")
+cout << "//% "<< Wn << R << " Down: " << int(hd.Integral()+0.5)  << " & " << int(hd.Integral()/R10D+0.5) << " \\\\ Up: " << int(hu.Integral()+0.5)  << " & " << int(hu.Integral()/R10U+0.5) << " \\\\ Up fraction: " << hu.Integral()/(hu.Integral()+hd.Integral()) << " vs " << R10U/(R10D+R10U) << endl ;
+//% W2R10 Down: 76299 & 383 \\ Up: 63854 & 374 \\ Up fraction: 0.455602 vs 0.461139
+
+R = "R11"
+D->Draw("B_FullFit_M[0] >> hu",GoodPsiK && "(Polarity==1) && (runNumber>95000) && (runNumber<98800)")    // 
+png(Wn+"-R11Up")
+D->Draw("B_FullFit_M[0] >> hd",GoodPsiK && "(Polarity==-1) && (runNumber>95000) && (runNumber<98800)")    // 
+png(Wn+"-R11Down")
+NiceRooPlot(hd,hu)
+png(Wn+"-R11")
+cout << "//% "<< Wn << R << " Down: " << int(hd.Integral()+0.5)  << " & " << int(hd.Integral()/R11D+0.5) << " \\\\ Up: " << int(hu.Integral()+0.5)  << " & " << int(hu.Integral()/R11U+0.5) << " \\\\ Up fraction: " << hu.Integral()/(hu.Integral()+hd.Integral()) << " vs " << R11U/(R11D+R11U) << endl ;
+//% W2R11 Down: 70646 & 393 \\ Up: 26316 & 387 \\ Up fraction: 0.271405 vs 0.274247
+
+R = "R11a"
+D->Draw("B_FullFit_M[0] >> hu",GoodPsiK && "(Polarity==1) && (runNumber>98800)")    // 
+png(Wn+"-R11aUp")
+D->Draw("B_FullFit_M[0] >> hd",GoodPsiK && "(Polarity==-1) && (runNumber>98800)")    // 
+png(Wn+"-R11aDown")
+NiceRooPlot(hd,hu)
+png(Wn+"-R11a")
+cout << "//% "<< Wn << R << " Down: " << int(hd.Integral()+0.5)  << " & " << int(hd.Integral()/R11aD+0.5) << " \\\\ Up: " << int(hu.Integral()+0.5)  << " & " << int(hu.Integral()/R11aU+0.5) << " \\\\ Up fraction: " << hu.Integral()/(hu.Integral()+hd.Integral()) << " vs " << R11aU/(R11aD+R11aU) << endl ;
+//% W2R11a Down: 84620 & 404 \\ Up: 73431 & 373 \\ Up fraction: 0.464603 vs 0.484554
+
+R = "R12"
+D->Draw("B_FullFit_M[0] >> hu",GoodPsiK && "(Polarity==1)")    // 
+png(Wn+"-R12Up")
+D->Draw("B_FullFit_M[0] >> hd",GoodPsiK && "(Polarity==-1)")    // 
+png(Wn+"-R12Down")
+NiceRooPlot(hd,hu)
+png(Wn+"-R12")
+cout << "//% "<< Wn << R << " Down: " << int(hd.Integral()+0.5)  << " & " << int(hd.Integral()/R12D+0.5) << " \\\\ Up: " << int(hu.Integral()+0.5)  << " & " << int(hu.Integral()/R12U+0.5) << " \\\\ Up fraction: " << hu.Integral()/(hu.Integral()+hd.Integral()) << " vs " << R12U/(R12D+R12U) << endl ;
+//% W2R12 Down: 231565 & 394 \\ Up: 163601 & 376 \\ Up fraction: 0.414006 vs 0.425203
+
+TH1D h10u("h10u","Month",248,3.,11.)
+TH1D h10d("h10d","Month",248,3.,11.)
+TH1D h11u("h11u","Month",248,3.,11.)
+TH1D h11d("h11d","Month",248,3.,11.)
+TH1D h11au("h11au","Month",248,3.,11.)
+TH1D h11ad("h11ad","Month",248,3.,11.)
+D->Draw("1+GpsMonth+GpsDay/31. >> h10u",GoodPsiK && "(Polarity==1) && (runNumber<95000)")
+D->Draw("1+GpsMonth+GpsDay/31. >> h10d",GoodPsiK && "(Polarity==-1) && (runNumber<95000)")
+D->Draw("1+GpsMonth+GpsDay/31. >> h11u",GoodPsiK && "(Polarity==1) && (runNumber>95000) && (runNumber<98800)")
+D->Draw("1+GpsMonth+GpsDay/31. >> h11d",GoodPsiK && "(Polarity==-1) && (runNumber>95000) && (runNumber<98800)")
+D->Draw("1+GpsMonth+GpsDay/31. >> h11au",GoodPsiK && "(Polarity==1) && (runNumber>98800)")
+D->Draw("1+GpsMonth+GpsDay/31. >> h11ad",GoodPsiK && "(Polarity==-1) && (runNumber>98800)")
+
+//kWhite, kBlack, kRed, kGreen, kBlue, kYellow, kMagenta, kCyan
+h10u.SetLineColor(kRed) ; h10u.SetFillColor(kRed)
+h10d.SetLineColor(kMagenta) ;h10d.SetFillColor(kMagenta)
+h11u.SetLineColor(30) ;h11u.SetFillColor(30)
+h11d.SetLineColor(kGreen) ;h11d.SetFillColor(kGreen)
+h11au.SetLineColor(kBlue) ;h11au.SetFillColor(kBlue)
+h11ad.SetLineColor(kCyan) ;h11ad.SetFillColor(kCyan)
+
+h10u.SetStats(0)
+h10u.SetMinimum(0)
+h10u.SetMaximum(16000)
+h10u.GetXaxis()->SetTitle("Month")
+h10d.SetStats(0)
+h11u.SetStats(0)
+h11d.SetStats(0)
+h11au.SetStats(0)
+h11ad.SetStats(0)
+h10u.Draw()
+h10d.Draw("same")
+h11u.Draw("same")
+h11d.Draw("same")
+h11au.Draw("same")
+h11ad.Draw("same")
+png("Month")
+
+TH1D r10u("r10u","Run",18000,87000,105000)
+TH1D r10d("r10d","Run",18000,87000,105000)
+TH1D r11u("r11u","Run",18000,87000,105000)
+TH1D r11d("r11d","Run",18000,87000,105000)
+TH1D r11au("r11au","Run",18000,87000,105000)
+TH1D r11ad("r11ad","Run",18000,87000,105000)
+D->Draw("runNumber >> r10u",GoodPsiK && "(Polarity==1) && (runNumber<95000)")
+D->Draw("runNumber >> r10d",GoodPsiK && "(Polarity==-1) && (runNumber<95000)")
+D->Draw("runNumber >> r11u",GoodPsiK && "(Polarity==1) && (runNumber>95000) && (runNumber<98800)")
+D->Draw("runNumber >> r11d",GoodPsiK && "(Polarity==-1) && (runNumber>95000) && (runNumber<98800)")
+D->Draw("runNumber >> r11au",GoodPsiK && "(Polarity==1) && (runNumber>98800)")
+D->Draw("runNumber >> r11ad",GoodPsiK && "(Polarity==-1) && (runNumber>98800)")
+
+//kWhite, kBlack, kRed, kGreen, kBlue, kYellow, kMagenta, kCyan
+r10u.SetLineColor(kRed) ; r10u.SetFillColor(kRed)
+r10d.SetLineColor(kMagenta) ;r10d.SetFillColor(kMagenta)
+r11u.SetLineColor(30) ;r11u.SetFillColor(30)
+r11d.SetLineColor(kGreen) ;r11u.SetFillColor(kGreen)
+r11au.SetLineColor(kBlue) ;r11au.SetFillColor(kBlue)
+r11ad.SetLineColor(kCyan) ;r11ad.SetFillColor(kCyan)
+
+r10u.SetStats(0)
+r10u.SetMinimum(0)
+r10u.SetMaximum(600)
+r10u.GetXaxis()->SetTitle("Run")
+r10d.SetStats(0)
+r11u.SetStats(0)
+r11d.SetStats(0)
+r11au.SetStats(0)
+r11ad.SetStats(0)
+r10u.Draw()
+r10d.Draw("same")
+r11u.Draw("same")
+r11d.Draw("same")
+r11au.Draw("same")
+r11ad.Draw("same")
+png("Run")
+
+
+//===========================================================================
+// RunRanges and Polarity
+//
+
+TCut Down("Polarity<0")
+TCut Up("Polarity>0")
+TCut Good("netOutput>0.81")
+SandB(D,0,"Polarity",Good,"1","1","NI")
+
+TCut Reco10("runNumber<95000")
+TCut Reco11("runNumber>95000 && runNumber<98800")
+TCut Reco11a("runNumber>98800")
+SandB(D,0,"Polarity",Good,"1",Reco10,"NI")
+SandB(D,0,"Polarity",Good,"1",Reco11,"NI")
+SandB(D,0,"Polarity",Good,"1",Reco11a,"NI")
+
+D->Draw("B_FullFit_M[0]",Good && Reco10 && Down)    // 61991
+png("R10Down")
+D->Draw("B_FullFit_M[0]",Good && Reco10 && Up)      // 52431
+png("R10Up")
+D->Draw("B_FullFit_M[0]",Good && Reco11 && Down)    // 52883
+png("R11Down")
+D->Draw("B_FullFit_M[0]",Good && Reco11 && Up)      // 21243
+png("R11Up")
+D->Draw("B_FullFit_M[0]",Good && Reco11a && Down)   // 59075
+png("R11aDown")
+D->Draw("B_FullFit_M[0]",Good && Reco11a && Up)     // 52044
+png("R11aUp")
+D->Draw("B_FullFit_M[0]",Good && Down)     // 173949
+png("R12Down")
+D->DraTChain* C = new TChain("DataTree")
+w("B_FullFit_M[0]",Good && Up)     // 125718
+png("R12Up")
+

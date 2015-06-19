@@ -1,0 +1,4 @@
+// file = _file0
+TFile* file = new TFile("B2JpsiKs-BR-1-random-LHCb2011.root")
+file->ls()
+

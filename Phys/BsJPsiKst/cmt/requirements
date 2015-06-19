@@ -1,0 +1,37 @@
+#============================================================================
+# Created    : 2010-02-03
+# Maintainer : Diego Martinez Santos, Paula Alvarez Cartelle
+#============================================================================
+package           
+version           v2r3
+
+#============================================================================
+# Structure, i.e. directories to process. 
+#============================================================================
+branches          cmt doc python src ganga
+
+#============================================================================
+# Used packages.
+#============================================================================
+
+use	GaudiPolicy 	v*
+use	Python          v*    	LCG_Interfaces 
+#use   	GaudiPython    	v*
+use   	pytools        	v* 	LCG_Interfaces -no_auto_imports
+use   	pyanalysis     	v* 	LCG_Interfaces -no_auto_imports
+use   	ROOT            v*    	LCG_Interfaces
+use	SomeUtils	v*	Math
+use	SomeMassModels	v*	PhysFit
+
+
+#------------------------------------------------------------------------------
+
+
+# =============== running options =============================================
+
+
+#path_prepend PYTHONPATH "$(BENDERALGOROOT)/python"
+
+
+#apply_pattern install_python_modules
+

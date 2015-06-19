@@ -1,0 +1,9 @@
+!-----------------------------------------------------------------------------
+! Package     : Phys/BsJPsiKst
+! Responsible : Diego Martinez Santos, Paula Alvarez Cartelle
+! Purpose     : Bs -> Jpsi K* analysis
+!-----------------------------------------------------------------------------
+
+
+! 2010-04-28 | Diego Martinez Santos
+create package.

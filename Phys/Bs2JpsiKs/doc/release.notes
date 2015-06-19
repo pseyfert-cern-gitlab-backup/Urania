@@ -1,0 +1,140 @@
+!-----------------------------------------------------------------------------
+! Package     : Phys/Bs2JpsiKs
+! Responsible : Patrick Koppenburg
+! Purpose     : BsJpsiKs analysis
+!-----------------------------------------------------------------------------
+!
+!  Workflow:
+! setenv appendix Default
+! setenv directory castor
+! ./weighting.exe 0 1 random $directory | tee test-weighting-NNI-${appendix}
+! ./teacher.exe 0 1 random $directory | tee test-teacher-NNI-${appendix}
+! ./expert.exe 0 1 random $directory | tee test-expert-NNI-${appendix}
+! ./weighting.exe 0 2 random $directory | tee test-weighting-NNII-${appendix}
+! ./teacher.exe 0 2 random $directory | tee test-teacher-NNII-${appendix}
+! ./expert.exe 0 2 random $directory | tee test-expert-NNII-${appendix}
+!
+! See LHCb-ANA-2011-093
+!-----------------------------------------------------------------------------
+
+
+!========================= Bs2JpsiKs v4r0 2013-01-25 =========================
+
+! 2013-01-25 - Patrick Koppenburg
+ - Move python and options to DiLeptonTuple. Move this package to Urania.
+
+! 2012-09-11 - Patrick Koppenburg
+ - rewrite done
+
+! 2012-09-10 - Patrick Koppenburg
+ - weighting: fill all PVs.
+
+! 2012-09-03 - Patrick Koppenburg
+ - branching.cpp:
+   . Make it a class
+   . Fill all (PV,B) combinations into RooDatSet
+   . Todo : kill multiple (PV,B) candidates 
+
+! 2012-08-31 - Patrick Koppenburg
+ - Never use bestPv any more. Try all combinations.
+ - weighting.cpp : split gigantic method and make it a class.
+
+! 2012-08-14 - Patrick Koppenburg
+ - NoKsFit renamed only psi fit 
+
+! 2012-08-14 - Patrick Koppenburg
+ - Allow FullFit_chi2_B and FullFit_chi2
+
+! 2012-08-14 - Patrick Koppenburg
+ - More consistent use of trigger lines in DiMuonTuple
+
+! 2012-04-20 - Patrick Koppenburg
+ - A skeleton NN to swim that compiles
+
+! 2012-03-21 - Patrick Koppenburg
+ - Make sequencers with HDR filters in DiMuonTuple.
+
+! 2012-02-27 - Patrick Koppenburg
+ - Replace B2JpsiKs Tuples by DaVinci v30r0 tuples
+
+! 2012-01-19 - Patrick Koppenburg
+ - Start developments for 2011 version -> v3r0
+
+!========================= Bs2JpsiKs v2r5 2012-01-19 =========================
+! 2012-01-19 - Patrick Koppenburg
+ - Version used for LHCb-PAPER-2011-041 is v2r5. If something needs to be 
+	changed, branch from here.
+
+!========================= Bs2JpsiKs v2r4 2011-12-29 =========================
+! 2011-12-29 - Diego Martinez Santos
+ -  Make version v2r4
+
+! 2011-12-16 - Patrick Koppenburg
+ - Final (?) version of the paper
+
+!-----------------------------------------------------------------------------
+! 2011-12-4 - Diego Martinez Santos
+ -  Make version v2r3
+
+! 2011-12-02 - Patrick Koppenburg
+ - The options to write a DST from B->eeK : options/DVBu2LLK_dimuonDST.py
+
+!-----------------------------------------------------------------------------
+! 2011-11-14 - Patrick Koppenburg
+ - Teacher: Fix bug in pi IPCHI2. But ghost prob=0.5 at -999.
+   New variable pigc to remember which values were at 0.5 and which at -1.
+
+! 2011-11-11 - Patrick Koppenburg
+ - Put LL+DD as default Ks BF extraction method
+
+! 2011-11-11 - Patrick Koppenburg
+ - Protect J/psiPi0 against DFT bug
+
+! 2011-11-10 - Patrick Koppenburg
+ - Changes of pdf and monotonous variables for paper
+
+! 2011-10-05 - Patrick Koppenburg
+ - Added trigger lines, corrected DecayTreeFits
+ - New options for D*
+
+! 2011-08-16 - Patrick Koppenburg
+ - Make sure the same events enter expert and weighting
+
+! 2011-08-12 - Patrick Koppenburg
+ - Add weighted option to expert.cpp
+   . By default run random fit
+   . Add a fit for the 5 best bins combined.
+
+! 2011-08-11 - Patrick Koppenburg
+ - Add Bd2JpsiPhi
+
+!-----------------------------------------------------------------------------
+! 2011-07-27 - Patrick Koppenburg
+ - Status of 27/7 - results of draft 1 of analysis note
+
+! 2011-07-21 - Patrick Koppenburg
+ - Use new Tuples
+ - Fix Tuple format
+ - Require selected trigger as pre-cuts
+ - Remove R09 
+ - Remove J/psi Pt from NeuralNet
+
+! 2011-07-19 - Patrick Koppenburg
+ - Add many trigger lines in DiMuonTuple.py
+
+! 2011-07-04 - Patrick Koppenburg
+ - Save status before big rehaul.
+
+! 2011-06-27 - Patrick Koppenburg
+ - New data samples again. Adapt Tuple class. Replace all uses of PVFit by FullFit.
+
+! 2011-06-23 - Patrick Koppenburg
+ - New data samples on castor
+
+
+! 2011-06-21 - Patrick Koppenburg
+ - First import of package. Status for REco09. Will be upgraded for Reco10 soon.
+   src: root programs analysing the nTuples. They are not compiled as they need 
+        NeuroBayes. A Makefile is provided.
+   python : Generic Tuple generator 
+   options : Various option files calling it. It does much more than Bs2JpsiKs

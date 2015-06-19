@@ -1,0 +1,377 @@
+TChain* S17 = new TChain("BetaSBd2JpsiKsDetachedLine_Tuple/DecayTree")
+S17->Add("~/work/Kristof/B2JpsiKs/B2JpsiKs-R12S17b-NewGP-625-637.root")
+TFile* f17 = TFile::Open("~/work/Kristof/B2JpsiKs/B2JpsiKs-Weights-1-random-LHCb2011.root")
+TTree* W17 = f17->Get("WeightTree")
+S17->AddFriend(W17)
+S17->Draw("b_mass:B_FullFit_M[0]","b_Weight>-5")
+TChain* L17 = new TChain("GetIntegratedLuminosity/LumiTuple")
+L17->Add("~/work/Kristof/B2JpsiKs/B2JpsiKs-R12S17b-NewGP-625-637.root")
+L17->Draw("IntegratedLuminosity")
+// 298*3.415 = 1.017669
+
+TChain* S17LD = new TChain("BetaSBd2JpsiKsLDDetachedLine_Tuple/DecayTree")
+S17LD->Add("~/work/Kristof/B2JpsiKs/B2JpsiKs-R12S17b-NewGP-625-637.root")
+S17LD->Draw("B_FullFit_M[0]",Sanity)
+TFile* f17LD = TFile::Open("~/work/Kristof/B2JpsiKs/B2JpsiKs-Weights-1-random-LHCb2011LD.root")
+TTree* W17LD = f17LD->Get("WeightTree")
+S17LD->AddFriend(W17LD)
+S17LD->Draw("b_mass:B_FullFit_M[0]","b_Weight>-5")
+
+TChain* S19 = new TChain("BetaSBd2JpsiKsDetachedLine_Tuple/DecayTree")
+S19->Add("~/work/Kristof/B2JpsiKs/B2JpsiKs-R13xS19x-NGP-642.root")
+TFile* f19 = TFile::Open("~/work/Kristof/B2JpsiKs/B2JpsiKs-Weights-1-random-LHCb2012.root")
+TTree* W19 = f19->Get("WeightTree")
+S19->AddFriend(W19)
+S19->Draw("b_mass:B_FullFit_M[0]","b_Weight>-5")
+TChain* L19 = new TChain("GetIntegratedLuminosity/LumiTuple")
+L19->Add("~/work/Kristof/B2JpsiKs/B2JpsiKs-R13xS19x-NGP-642.root")
+SandB(L17,L19,"IntegratedLuminosity","1","1") //
+// 293*3.077 = 901.561
+
+TChain* S19LD = new TChain("BetaSBd2JpsiKsLDDetachedLine_Tuple/DecayTree")
+S19LD->Add("~/work/Kristof/B2JpsiKs/B2JpsiKs-R13xS19x-NGP-642.root")
+S19LD->Draw("B_FullFit_M[0]",Sanity)
+TFile* f19LD = TFile::Open("~/work/Kristof/B2JpsiKs/B2JpsiKs-Weights-1-random-LHCb2012LD.root")
+TTree* W19LD = f19LD->Get("WeightTree")
+S19LD->AddFriend(W19LD)
+S19LD->Draw("b_mass:B_FullFit_M[0]","b_Weight>-5")
+
+TFile* fmc = TFile::Open("~/work/Kristof/B2JpsiKs/B2JpsiKs-MC11a-Bd2JpsiKs-605.root")
+TTree* MC11 = fmc->Get("BetaSBd2JpsiKsDetachedLine_TupleMC/DecayTree")
+TCut GoodMC("B_BKGCAT==0")
+TCut GoodMCLL("B_BKGCAT==0 && (piplus_TRACK_Type==3)")
+TCut GoodMCDD("B_BKGCAT==0 && (piplus_TRACK_Type==5)")
+
+TFile* fmc13 = TFile::Open("~/work/Kristof/B2JpsiKs/B2JpsiKs-MC11aR13-601-incomplete.root")
+TTree* MC13 = fmc13->Get("StrippingB2JpsiXforBeta_sBd2JpsiKsDetachedLine_Tuple/DecayTree")
+
+f17->Get("MassPlot_Legend")->Draw()
+png("JpsiKsMass11")
+f19->Get("MassPlot_Legend")->Draw()
+png("JpsiKsMass12")
+f17LD->Get("MassPlot_Legend")->Draw()
+png("JpsiKsMass11LD")
+f19LD->Get("MassPlot_Legend")->Draw()
+png("JpsiKsMass12LD")
+
+TCut Sanity("B_FullFit_chi2_B[0]<16*B_FullFit_nDOF[0] && B_FullFit_M[0]>5100 && B_FullFit_M[0]<5550")
+TCut Hlt("(PsiHlt1TrackMuonDecision_TOS==1 || PsiHlt1TrackAllL0Decision_TOS==1) && (PsiHlt2DiMuonDetachedJPsiDecision_TOS==1 || PsiHlt2DiMuonJPsiHighPTDecision_TOS==1 || PsiHlt2DiMuonJPsiDecision_TOS==1 || PsiHlt2TopoMu2BodyBBDTDecision_TOS==1 )") ;
+
+char* good = "(b_Weight>-5)*b_Weight"
+char* goodLL = "(b_Weight>-5)*(piplus_TRACK_Type==3)*b_Weight"
+char* goodDD = "(b_Weight>-5)*(piplus_TRACK_Type==5)*b_Weight"
+char* goodw11 = "(1000/1017.669)*(b_Weight>-5)*b_Weight"
+char* goodLLw11 = "(1000/1017.669)*(b_Weight>-5)*(piplus_TRACK_Type==3)*b_Weight"
+char* goodDDw11 = "(1000/1017.669)*(b_Weight>-5)*(piplus_TRACK_Type==5)*b_Weight"
+char* goodw12 = "(1000/901.561)*(b_Weight>-5)*b_Weight"
+char* goodLLw12 = "(1000/901.561)*(b_Weight>-5)*(piplus_TRACK_Type==3)*b_Weight"
+char* goodDDw12 = "(1000/901.561)*(b_Weight>-5)*(piplus_TRACK_Type==5)*b_Weight"
+
+// Numbers
+SandB(S17,S19,"GpsYear",goodLLw11,goodLLw12,"","I","",2011,2012) // 2011 (11001.6), 2012 (10411.1)
+SandB(S17,S19,"GpsYear",goodDDw11,goodDDw12,"","I","",2011,2012) // 2011 (25279.8), 2012 (26284.7)
+SandB(S17LD,S19LD,"GpsYear",goodw11,goodw12,"","I","",2011,2012) // 2011 (1702.79), 2012 (1014.56)
+
+SandB(S17,S17LD,"B_FullFit_M[0]","1","1",Sanity && Hlt,"N","S17 vs LD",5170,5520)
+SandB(S19,S19LD,"B_FullFit_M[0]","1","1",Sanity && Hlt,"N","S19 vs LD",5170,5520)
+
+SandB(S17,S19,"B_FullFit_M[0]","1","1",Sanity && Hlt,"N","S17 vs 19",5170,5520)
+SandB(S17,S19,"B_FullFit_M[0]",goodw11,goodw12,"","","S17 vs 19, lweighted",5170,5520)
+SandB(S17,S19,"B_FullFit_M[0]",goodLLw11,goodLLw12,"","","S17 vs 19, lweighted LL",5170,5520)
+SandB(S17,S19,"B_FullFit_M[0]",goodDDw11,goodDDw12,"","","S17 vs 19, lweighted DD",5170,5520)
+SandB(S17LD,S19LD,"B_FullFit_M[0]",goodw11,goodw12,"","","S17 vs 19, lweighted LD",5170,5520)
+
+// SandB(S17,S19,"B_FullFit_M[0]","1","1",good,"N","weighted S17 vs 19",5170,5520)
+// SandB(S17,S19,"piplus_TRACK_Type","1","1",Sanity,"NI","")
+SandB(S17,S19,"(piplus_TRACK_Type==5)",goodw11,goodw12,"","I","")
+TwoProfile(S17,S19,"B_FullFit_M[0]","piplus_TRACK_Type==5","1","1",Sanity && Hlt,"R","Track type, 11 vs 12",5170,5520,70,0.5,1)
+TwoProfile(S17,0,"B_FullFit_M[0]","piplus_TRACK_Type==5",Hlt,"",Sanity,"","Track type, not hlt",5170,5520,70,0.5,1.0)
+TwoProfile(S17,S19,"KS0_P","(piplus_TRACK_Type==5)","1","1",Sanity && Hlt,"","Ks p",3000,100000,100,0.5,1.0)
+TwoProfile(S17,S19,"KS0_PT","(piplus_TRACK_Type==5)","","",good,"L","Ks pt",300,20000,30,0.3,1.0)
+TwoProfile(S17,S19,"KS0_ENDVERTEX_Z","(piplus_TRACK_Type==5)","","",good,"","Ks z",-100,1000,55)
+TwoProfile(S17,S19,"sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2)","(piplus_TRACK_Type==5)","","",good,"","Ks r",0,40,40)
+
+SandB(S17,S19,"KS0_MM",goodLLw11,goodLLw12,"","","Ks m LL",450,540,60)
+SandB(S17,S19,"KS0_MM",goodDDw11,goodDDw12,"","","Ks m DD",450,540,80)
+SandB(S17LD,S19LD,"KS0_MM",goodw11,goodw12,"","","Ks m LD",450,540,40)
+
+SandB(S17,S19,"KS0_P",goodLLw11,goodLLw12,"","","Ks p LL",0,100000,50)
+SandB(S17,S19,"KS0_P",goodDDw11,goodDDw12,"","","Ks p DD",0,100000,50)
+SandB(S17LD,S19LD,"KS0_P",goodw11,goodw12,"","","Ks p LD",0,100000,50)
+
+SandB(S17,S19,"KS0_PT",goodLLw11,goodLLw12,"","","Ks pt LL",0,10000,50)
+SandB(S17,S19,"KS0_PT",goodDDw11,goodDDw12,"","","Ks pt DD",0,10000,50)
+SandB(S17LD,S19LD,"KS0_PT",goodw11,goodw12,"","","Ks pt LD",0,10000,50)
+
+SandB(S17,S19,"KS0_ENDVERTEX_Z",goodLLw11,goodLLw12,"","","Ks z LL",-200,800,50)
+SandB(S17,S19,"KS0_ENDVERTEX_Z",goodDDw11,goodDDw12,"","","Ks z DD",-200,2500,54)
+SandB(S17LD,S19LD,"KS0_ENDVERTEX_Z",goodw11,goodw12,"","","Ks z LD",-200,800,25)
+SandB(S17,S19,"KS0_ENDVERTEX_Z",goodLLw11,goodLLw12,"","","Ks z LL zoom",-100,900,50)
+SandB(S17,S19,"KS0_ENDVERTEX_Z",goodDDw11,goodDDw12,"","","Ks z DD zoom",-100,900,50)
+SandB(S17LD,S19LD,"KS0_ENDVERTEX_Z",goodw11,goodw12,"","","Ks z LD zoom",-100,900,25)
+SandB(S17,S19,"KS0_ENDVERTEX_Z",goodw11,goodw12,"","","Ks z LLDD zoom",-100,900,25)
+
+SandB(S17,MC11,"KS0_ENDVERTEX_Z",goodLL,GoodMCLL,"","N","Ks z LL zoom - MC11",-100,900,50)
+SandB(S17,MC11,"KS0_ENDVERTEX_Z",goodDD,GoodMCDD,"","N","Ks z DD zoom - MC11",-100,900,50)
+SandB(S17,MC11,"KS0_ENDVERTEX_Z",good,GoodMC,"","N","Ks z LLDD zoom - MC11",-100,900,50)
+
+SandB(S17,S19,"sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2)",goodLLw11,goodLLw12,"","","Ks r LL",0,40,40)
+SandB(S17,S19,"sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2)",goodDDw11,goodDDw12,"","","Ks r DD",0,400,40)
+SandB(S17LD,S19LD,"sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2)",goodw11,goodw12,"","","Ks r LD",0,40,40)
+
+// where are LL, DD and LD
+TH1D hLL("hLL","Ks z",108,-200,2500)
+TH1D hDD("hDD","Ks z",108,-200,2500)
+TH1D hLD("hLD","Ks z",108,-200,2500)
+TH1D hAll("hAll","Ks z",108,-200,2500)
+S17->Draw("KS0_ENDVERTEX_Z >> hLL",goodLLw11)
+S17->Draw("KS0_ENDVERTEX_Z >> hDD",goodDDw11)
+S17LD->Draw("KS0_ENDVERTEX_Z >> hLD",goodw11)
+S17->Draw("KS0_ENDVERTEX_Z >> hAll",goodw11)
+S17LD->Draw("KS0_ENDVERTEX_Z >>+ hAll",goodw11)
+NiceRooPlot(hAll,hLL,hDD,hLD)
+png("2011 Ks z") 
+
+S19->Draw("KS0_ENDVERTEX_Z >> hLL",goodLLw12)
+S19->Draw("KS0_ENDVERTEX_Z >> hDD",goodDDw12)
+S19LD->Draw("KS0_ENDVERTEX_Z >> hLD",goodw12)
+S19->Draw("KS0_ENDVERTEX_Z >> hAll",goodw12)
+S19LD->Draw("KS0_ENDVERTEX_Z >>+ hAll",goodw12)
+NiceRooPlot(hAll,hLL,hDD,hLD)
+png("2012 Ks z") 
+
+TH1D hLL("hLL","Ks r",50,0,50)
+TH1D hDD("hDD","Ks r",50,0,50)
+TH1D hLD("hLD","Ks r",50,0,50)
+TH1D hAll("hAll","Ks r",50,0,50)
+S17->Draw("sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2) >> hLL",goodLL)
+S17->Draw("sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2) >> hDD",goodDD)
+S17LD->Draw("sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2) >> hLD",good)
+S17->Draw("sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2) >> hAll",good)
+S17LD->Draw("sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2) >>+ hAll",good)
+NiceRooPlot(hAll,hLL,hDD,hLD)
+png("2011 Ks r") 
+
+TH1D hLL("hLL","Ks r",50,0,50)
+TH1D hDD("hDD","Ks r",50,0,50)
+TH1D hLD("hLD","Ks r",50,0,50)
+TH1D hAll("hAll","Ks r",50,0,50)
+S19->Draw("sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2) >> hLL",goodLL)
+S19->Draw("sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2) >> hDD",goodDD)
+S19LD->Draw("sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2) >> hLD",good)
+S19->Draw("sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2) >> hAll",good)
+S19LD->Draw("sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2) >>+ hAll",good)
+NiceRooPlot(hAll,hLL,hDD,hLD)
+png("2012 Ks r") 
+
+// compare LL and LD
+TH2D* h2dLL = Make2DPlot("h2dLL","z",85,-200,650,"r",70,0,35)
+TH2D* h2dLD = Make2DPlot("h2dLD","z",85,-200,650,"r",70,0,35)
+TH2D* h2dDD = Make2DPlot("h2dDD","z",85,-200,650,"r",70,0,35)
+S17->Draw("sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2):KS0_ENDVERTEX_Z >> h2dLL",goodLL)
+S17->Draw("sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2):KS0_ENDVERTEX_Z >> h2dDD",goodDD)
+S17LD->Draw("sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2):KS0_ENDVERTEX_Z >> h2dLD",good)
+h2dLD->Draw("COLZ")
+png("h2dLD")
+h2dLL->Draw("COLZ")
+png("h2dLL")
+h2dDD->Draw("COLZ")
+png("h2dDD")
+
+h2dLD->SetMarkerColor(3)
+
+S19->Draw("sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2):KS0_ENDVERTEX_Z >> h2dLL",goodLL)
+S19LD->Draw("sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2):KS0_ENDVERTEX_Z >> h2dLD",good)
+S19->Draw("sqrt(KS0_ENDVERTEX_X**2+KS0_ENDVERTEX_Y**2):KS0_ENDVERTEX_Z >> h2dDD",goodDD)
+h2dLD->Draw("COLZ")
+png("h2dLD12")
+h2dLL->Draw("COLZ")
+png("h2dLL12")
+h2dDD->Draw("COLZ")
+png("h2dDD12")
+
+//===============================================================================================================
+// KS0 puzzle
+//===============================================================================================================
+
+gPad->SetLogy(1)
+SandB(MC11,MC13,"muplus_TRACK_CHI2NDOF","1","1","","N","plus_TRACK_chi2 MC11 vs 13")
+SandB(MC11,MC13,"piplus_TRACK_CHI2NDOF","1","1","piplus_TRACK_Type==3","N","piplus_TRACK_chi2 LL MC11 vs 13")
+SandB(MC11,MC13,"piplus_TRACK_CHI2NDOF","1","1","piplus_TRACK_Type==5","N","piplus_TRACK_chi2 DD MC11 vs 13")
+SandB(S19,MC13,"piplus_TRACK_CHI2NDOF",goodLL,"piplus_TRACK_Type==3","","N","piplus_TRACK_chi2 LL S19 vs MC13")
+SandB(S19,MC13,"piplus_TRACK_CHI2NDOF",goodDD,"piplus_TRACK_Type==5","","N","piplus_TRACK_chi2 DD S19 vs MC13")
+SandB(S19,MC13,"muplus_TRACK_CHI2NDOF",good,"1","","N","muplus_TRACK_chi2 S19 vs MC13")
+TwoProfile(S19,MC13,"KS0_ENDVERTEX_Z","piplus_TRACK_CHI2NDOF",goodDD,"piplus_TRACK_Type==5","","","Track chi vs z, DD 2012 vs MC13",-100,1900,40,0.8,2.0)
+gPad->SetLogy(0)
+SandB(MC11,MC13,"KS0_ENDVERTEX_Z","1","1","","N","Ks z zoom - MC11 vs 13",-100,900,50)
+SandB(MC11,MC13,"KS0_ENDVERTEX_Z","1","1","piplus_TRACK_Type==3","N","Ks z LL zoom - MC11 vs 13",-100,900,50)
+SandB(MC11,MC13,"KS0_ENDVERTEX_Z","1","1","piplus_TRACK_Type==5","N","Ks z DD zoom - MC11 vs 13",-100,900,50)
+
+TCut TrackChi2("piplus_TRACK_CHI2NDOF<3 && piminus_TRACK_CHI2NDOF<3 && muminus_TRACK_CHI2NDOF<3 && muplus_TRACK_CHI2NDOF<3")
+SandB(MC11,MC13,"KS0_ENDVERTEX_Z","1","1",TrackChi2,"N","Ks z zoom - MC11 vs 13 cut at 3",-100,900,50)
+SandB(MC11,MC13,"KS0_ENDVERTEX_Z","1","1",TrackChi2 && "piplus_TRACK_Type==3","N","Ks z LL zoom - MC11 vs 13 cut at 3",-100,900,50)
+SandB(MC11,MC13,"KS0_ENDVERTEX_Z","1","1",TrackChi2 && "piplus_TRACK_Type==5","N","Ks z DD zoom - MC11 vs 13 cut at 3",-100,900,50)
+
+SandB(MC11,MC13,"KS0_ENDVERTEX_Z","1","1","","N","Ks z zoom - MC11 vs 13",-100,900,50)
+SandB(MC11,MC13,"KS0_ENDVERTEX_Z","1","1","piplus_TRACK_Type==3","N","Ks z LL zoom - MC11 vs 13",-100,900,50)
+SandB(MC11,MC13,"KS0_ENDVERTEX_Z","1","1","piplus_TRACK_Type==5 && Polarity==1","N","Ks z DD zoom - MC11 vs 13",-100,900,50)
+
+SandB(S19,MC13,"KS0_ENDVERTEX_Z",good,"1","","N","Ks z zoom - MC13 vs 2012",-100,900,50)
+SandB(S19,MC13,"KS0_ENDVERTEX_Z",goodLL,"piplus_TRACK_Type==3","","N","Ks z LL zoom - MC13 vs 2012",-100,900,50)
+SandB(S19,MC13,"KS0_ENDVERTEX_Z",goodDD,"piplus_TRACK_Type==5","","N","Ks z DD zoom - MC13 vs 2012",-100,900,50)
+
+TCut MCpuzzle("piplus_TRACK_Type==5 && KS0_ENDVERTEX_Z<300")
+char* puzzle = "(b_Weight>-5)*(piplus_TRACK_Type==5)*b_Weight*(KS0_ENDVERTEX_Z<300)"
+
+SandB(S19,MC13,"KS0_ENDVERTEX_Z",puzzle,MCpuzzle,"","N","",-100,900,50)
+SandB(S19,MC13,"KS0_ENDVERTEX_CHI2",puzzle,MCpuzzle,"","N","")
+SandB(S19,MC13,"KS0_ENDVERTEX_CHI2",puzzle,MCpuzzle,"","N","")
+SandB(S19,MC13,"piplus_MINIPCHI2",puzzle,MCpuzzle,"","NL","",3,300,25)
+SandB(S19,MC13,"piplus_PT",puzzle,MCpuzzle,"","NL","")
+SandB(S19,MC13,"piplus_TRACK_CHI2NDOF",puzzle,MCpuzzle,"","N","")
+
+
+//===============================================================================================================
+SandB(S17,S19,"B_OWNPV_Z","1","1","","N","B PV z, 2011 vs 2012",-150,150,100) //AHA
+SandB(S19,S17,"B_OWNPV_Z","1","1","","Ng","Ignore",-150,150,100) //AHA : Mean: 14, sigma : 51
+SandB(MC11,MC13,"B_OWNPV_Z","1","1","","N","B PV z, MC11 vs 13",-150,150,100) //AHA
+SandB(S17,MC11,"B_OWNPV_Z","1","1","","N","B PV z, 2011 vs MC11",-150,150,100) //AHA
+//===============================================================================================================
+// FIX PV
+char* goodDDpv = "(b_Weight>-5)*(piplus_TRACK_Type==5)*b_Weight*(abs(B_OWNPV_Z)<10)"
+SandB(S17,S19,"KS0_ENDVERTEX_Z","","",goodLL,"N","Ks z zoom 2011 vs 2012, fix PV",-100,900,50)
+SandB(S17,S19,"KS0_ENDVERTEX_Z-B_OWNPV_Z","","",goodLL,"N","Ks LL z-pvz zoom 2011 vs 2012",0,1000,50)
+SandB(S17,S19,"KS0_ENDVERTEX_Z-B_OWNPV_Z","","",goodDD,"N","Ks DD z-pvz zoom 2011 vs 2012",0,1000,50)
+SandB(S17,S19,"KS0_ENDVERTEX_Z-B_OWNPV_Z","","",good,"N","Ks z-pvz zoom 2011 vs 2012",0,1000,50)
+
+// need to correct one distribution to the other
+SandB(S17,S19,"B_OWNPV_Z","1","1","1","g","",-150,150) // -0.977 49.17
+SandB(S19,S17,"B_OWNPV_Z","1","1","1","g","",-150,150) // 14.961 51.77
+
+char* goodDDpv = "(b_Weight>-5)*(piplus_TRACK_Type==5)*b_Weight*(exp((B_OWNPV_Z+0.977)**2/(2*49.17**2))/exp((B_OWNPV_Z-14.961)**2/(2*51.77**2)))"
+S17->Draw("exp((B_OWNPV_Z+0.977)**2/(2*49.17**2))/exp((B_OWNPV_Z-14.961)**2/(2*51.77**2)) >> h(100,0,3)")
+SandB(S17,S19,"B_OWNPV_Z",goodDDpv,goodDD,"","N","Ks z reweighting",-150,150)
+SandB(S17,S19,"KS0_ENDVERTEX_Z",goodDDpv,goodDD,"","N","Ks z zoom 2011 vs 2012, fix PV",-100,900,50)
+SandB(S17,S19,"",goodDDpv,goodDD,"","N","Ks z reweighting",-150,150)
+
+// with true MC
+  # HERE #########################################################
+Plot Reconstructible values with revewighetd PV and see it decrease
+char* somthing like exp((B_OWNPV_Z+0.977)**2/(2*49.17**2))/exp((B_OWNPV_Z-14.961)**2/(2*51.77**2))
+SandB(TMC,TMC,"(muplus_Reconstructed==1 && muminus_Reconstructed==1)","1",,"N","Ks z reweighting",-150,150)
+
+//===============================================================================================================
+// True eff
+TFile* ft = TFile::Open("/castor/cern.ch/user/p/pkoppenb/B2JpsiKs/B2JpsiKs-TMP-SigMC-617.root")   // replace with 622
+ft->ls()
+TTree* TMC = ft->Get("MCTupleBd/MCDecayTree")
+TMC->Show(0)
+TCut MuMuReco("muplus_Reconstructed==1 && muminus_Reconstructed==1")
+TCut LLReco("piplus_Reconstructed==1 && piminus_Reconstructed==1")
+TCut DDReco("piplus_Reconstructed==2 && piminus_Reconstructed==2")
+TCut LDReco("(piplus_Reconstructed==2 && piminus_Reconstructed==1) || (piplus_Reconstructed==1 && piminus_Reconstructed==2) ")
+TCut KsReco(LLReco || DDReco)
+TCut TotReco(MuMuReco && KsReco)
+
+SandB(TMC,0,"B0_TRUEORIGINVERTEX_Z","","","","g","",-150,150,300)) // peak=3.544 sigma=40.3872
+SandB(TMC,0,"KS0_TRUEENDVERTEX_Z",KsReco,"",MuMuReco,"","Ks vertex z for reco and not reco",-200,3000,128)
+SandB(TMC,0,"KS0_TRUEENDVERTEX_Z",LLReco,DDReco,MuMuReco,"","Ks vertex z for LL and DD",-200,2600,112)
+TwoProfile(TMC,0,"KS0_TRUEENDVERTEX_Z",LLReco.GetTitle(),"1","",MuMuReco,"","LL reco versus Ks z",-200,700,90)
+TwoProfile(TMC,0,"KS0_TRUEENDVERTEX_Z",DDReco.GetTitle(),"1","",MuMuReco,"","DD reco versus Ks z",-200,2600,112)
+TwoProfile(TMC,0,"KS0_TRUEENDVERTEX_Z",LDReco.GetTitle(),"1","",MuMuReco,"","LD reco versus Ks z",-200,700,90)
+TwoProfile(TMC,0,"KS0_TRUEENDVERTEX_Z",KsReco.GetTitle(),"1","",MuMuReco,"","Ks reco versus Ks z",-200,2600,112)
+//TwoProfile(TMC,0,"B0_TRUEORIGINVERTEX_Z",LLReco.GetTitle(),"1","",MuMuReco,"p3","LL reco versus PV z",-180,180,180,0,0.1)
+//TwoProfile(TMC,0,"B0_TRUEORIGINVERTEX_Z",DDReco.GetTitle(),"1","",MuMuReco,"","DD reco versus PV z",-180,180,180)
+//TwoProfile(TMC,0,"B0_TRUEORIGINVERTEX_Z",LDReco.GetTitle(),"1","",MuMuReco,"","LD reco versus PV z",-180,180,180)
+TwoProfile(TMC,0,"B0_TRUEORIGINVERTEX_Z",MuMuReco.GetTitle(),"1","","1","","MuMu reco versus PV z",-180,180,180)
+TwoProfile(TMC,0,"B0_TRUEORIGINVERTEX_X",TotReco.GetTitle(),"1","","1","","Tot reco versus PV x",-0.12,0.12,100)
+TwoProfile(TMC,0,"B0_TRUEORIGINVERTEX_Y",TotReco.GetTitle(),"1","","1","","Tot reco versus PV y",-0.12,0.12,100)
+
+TwoProfile(TMC,0,"B0_TRUEORIGINVERTEX_Z",KsReco.GetTitle(),"1","",MuMuReco,"","Ks reco versus PV z",-180,180,180)
+TProfile LLPVz("LLPVz","Ks reco efficiency versus PV z",180,-180,180,0,1)
+TProfile DDPVz("DDPVz","Ks reco efficiency versus PV z",180,-180,180,0,1)
+TProfile LDPVz("LDPVz","Ks reco efficiency versus PV z",180,-180,180,0,1)
+TProfile KsPVz("KsPVz","Ks reco efficiency versus PV z",180,-180,180,0,1)
+TProfile TotPVz("TotPVz","Tot reco efficiency versus PV z",180,-180,180,0,1)
+TProfile MuMuPVz("MuMuPVz","Tot reco efficiency versus PV z",180,-180,180,0,1)
+TProfile AKsPVz("AKsPVz","Ks reco efficiency versus PV z",180,-180,180,0,1)
+
+TMC->Draw(TString(LLReco.GetTitle())+":B0_TRUEORIGINVERTEX_Z >> LLPVz",MuMuReco)
+TMC->Draw(TString(DDReco.GetTitle())+":B0_TRUEORIGINVERTEX_Z >> DDPVz",MuMuReco)
+TMC->Draw(TString(LDReco.GetTitle())+":B0_TRUEORIGINVERTEX_Z >> LDPVz",MuMuReco)
+TMC->Draw(TString(KsReco.GetTitle())+":B0_TRUEORIGINVERTEX_Z >> KsPVz",MuMuReco)
+TMC->Draw(TString(TotReco.GetTitle())+":B0_TRUEORIGINVERTEX_Z >> TotPVz")
+TMC->Draw(TString(MuMuReco.GetTitle())+":B0_TRUEORIGINVERTEX_Z >> MuMuPVz")
+TMC->Draw(TString(KsReco.GetTitle())+":B0_TRUEORIGINVERTEX_Z >> AKsPVz")
+
+RooPlot* rp = NiceRooPlot(KsPVz,LLPVz,DDPVz,LDPVz,"p1")
+rp->SetMaximum(0.3)
+rp->Draw()
+png("Ks Effs vs PVz")
+
+RooPlot* rp2 = NiceRooPlot(TotPVz,MuMuPVz,AKsPVz,"p1")
+rp2->Draw()
+png("Tot Effs vs PVz")
+
+TotPVz->Fit("pol2")
+png("Tot Effs vs PVz fit")
+
+p0                        =     0.165091   +/-   0.000135853 
+p1                        = -5.16163e-05   +/-   2.75447e-06 
+p2                        = -7.00203e-07   +/-   4.75697e-08 
+
+0.165091-(5.16163e-05*PVZ[1])-(7.00203e-07*(PVZ[1]**2))
+
+TCut OKPV("abs(PVZ[1])<200")
+S19->Draw("PVZ[1]",OKPV)
+S19->Draw("PVZ[1]",OKPV)
+S19->Draw("B_OWNPV_Z","abs(B_OWNPV_Z)<200")
+gPad->SetLogy(1)
+SandB(S17,S19,"0.165091-(5.16163e-05*PVZ[1])-(7.00203e-07*(PVZ[1]**2))","1","1",OKPV,"N","Average weight",0.1351,0.1651)
+SandB(S17,S19,"1/(0.165091-(5.16163e-05*B_OWNPV_Z)-(7.00203e-07*(B_OWNPV_Z**2)))","1","1",good,"N","Inverse Average weight",6,7.2)
+gPad->SetLogy(0)
+// Means (stats): 6.1277 (150486), 6.16953 (74476)
+
+
+// does it move?
+TCut Fill2692("runNumber>=117242 && runNumber<=117277")
+TCut Fill2717("runNumber>=118168 && runNumber<=118199")
+S19->Draw("86400*(GpsDay-2)+3600*GpsHour+60*GpsMinute+GpsSecond",Fill2692)
+S19->Draw("86400*(GpsDay)+3600*GpsHour+60*GpsMinute+GpsSecond-819000",Fill2717)
+TProfile PVvsTime("PVvsTime","Time in Fill [s]",40,0,80000,-100,100)
+TProfile PVvsTime2("PVvsTime2","Time in Fill [s]",28,0,56000,-100,100)
+S19->Draw("B_OWNPV_Z:86400*(GpsDay-2)+3600*GpsHour+60*GpsMinute+GpsSecond-20000 >> PVvsTime",Fill2692)
+S19->Draw("B_OWNPV_Z:86400*(GpsDay)+3600*GpsHour+60*GpsMinute+GpsSecond-819000 >> PVvsTime2",Fill2717)
+RooPlot* rt = NiceRooPlot(PVvsTime,PVvsTime2)
+rt->GetYaxis()->SetTitle("Average PV z [mm]")
+rt->Draw()
+png("z in Fill 2692 and 2717")
+
+// and x and y?
+TProfile PVvsTime_X("PVvsTime_X","Time in Fill [s]",40,0,80000,-1,1)
+TProfile PVvsTime_Y("PVvsTime_Y","Time in Fill [s]",40,0,80000,-1,1)
+
+S19->Draw("B_OWNPV_X:86400*(GpsDay-2)+3600*GpsHour+60*GpsMinute+GpsSecond-20000 >> PVvsTime_X",Fill2692)
+S19->Draw("B_OWNPV_Y:86400*(GpsDay-2)+3600*GpsHour+60*GpsMinute+GpsSecond-20000 >> PVvsTime_Y",Fill2692)
+
+RooPlot* xy = NiceRooPlot(PVvsTime_X,PVvsTime_Y)
+xy->GetYaxis()->SetTitle("Average PV x,y [mm]")
+xy->Draw()
+png("xy in Fill 2692")
+
+// Try some weighting
+
+
+//===============================================================================================================
+char* goodUp = "(b_Weight>-5)*b_Weight*(Polarity>0)"
+char* goodDown = "(b_Weight>-5)*b_Weight*(Polarity<0)"
+char* goodUp = "(b_Weight>-5)*b_Weight*(Polarity>0)"
+char* goodDown = "(b_Weight>-5)*b_Weight*(Polarity<0)"
+TwoProfile(S19,0,"1+(runNumber>114685)+(runNumber>118880)","(piplus_TRACK_Type==5)",goodDown,goodUp,"","I","Reco13, 13a, 13c",1,3,3,0.63,0.7)
+TwoProfile(S17,S19,"(runNumber>=111761)+(runNumber>114685)+(runNumber>118880)","(piplus_TRACK_Type==5)","","",good,"I","Reco12, 13, 13a, 13c",0,3,4,0.6,0.72)
+
+//===============================================================================================================
+// 3Body
+//===============================================================================================================
+char* goodDDl = "(b_Weight>-5)*(piplus_TRACK_Type==5)*b_Weight*(runNumber>120000)"
+SandB(S19,0,"b_mass","(BHlt2TopoMu3BodyBBDTDecision_TOS==1)*(piplus_TRACK_Type==5)*b_Weight*(runNumber>120000)","(BHlt2TopoMu3BodyBBDTDecision_TOS==0)*(piplus_TRACK_Type==5)*b_Weight*(runNumber>120000)","(b_Weight>-5)")

@@ -1,0 +1,38 @@
+#===========================================================================
+# Created    : 2013-01-09
+# Maintainer : Diego Martinez Santos
+#============================================================================
+package           UraniaSys
+version           v1r0
+#============================================================================
+# Structure, i.e. directories to process. 
+#============================================================================
+branches          cmt doc
+#============================================================================
+# Used packages. Specify the version, * at the end specifies 'any revision'
+#    Put as many lines as needed, with all packages, without the '#'
+#============================================================================
+
+use Urania			v1r0	Phys			# Diego Martinez Santos
+
+use  MCLimit			v1r3	Math			# Diego Martinez Santos
+use  SomeUtils			v3r1	Math			# Diego Martinez Santos
+
+use  Bs2JpsiPhiParams		v1r0	Phys			# ...
+use  Bs2MuMuParams		v2r3	Phys			# Diego Martinez Santos, Marc-Olivier Bettler, Matheiu Perrin-Terrin
+use  Bs2MuMu			v2r1	Phys			# Diego Martinez Santos
+use  BsJPsiKst                  v2r3   	Phys                    # Paula Alvarez, Diego Martinez Santos
+use  Bs2JpsiKs                  v4r1    Phys                    # Patrick Koppenburg
+use  Lambdab2Jpsippi            v1r0    Phys                    # P. Koppenburg
+
+use  B2DXFitters		v2r0	PhysFit			# Manuel Schiller, Eduardo Rodrigues
+use  P2VV			v3r0	PhysFit			# Jeroen Van Leerdam, Roel Aaij
+use  SomeMassModels		v2r0	PhysFit			# Diego Martinez Santos
+
+use  LHCbStyle			v2r3	RootTools		# D. Martinez Santos ?
+use  SimpleTools	  	v1r2	RootTools           	# Conor Fitzpatrick
+use  MoreSimpleTools	  	v1r6	RootTools           	# Rob Lambert
+
+
+apply_pattern container_package
+

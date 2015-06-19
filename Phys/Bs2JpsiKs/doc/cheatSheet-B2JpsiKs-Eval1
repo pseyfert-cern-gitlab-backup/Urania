@@ -1,0 +1,161 @@
+//##############################################################################
+// EXPERT
+//##############################################################################
+
+// file = _file0
+TFile* file = new TFile("B2JpsiKs-Eval-1-random-LHCb2011.root")
+file->ls()
+TTree* T = (TTree*)file->Get("NetTree")
+T->Show(0)
+T->Draw("FullFitMass","netOutput>-1.1")
+gPad->SetLogy()
+T->Draw("FullFitMass","netOutput>0.5")
+SandB(T,0,"FullFitMass","netOutput>0.5","","netOutput>-1.1","","",5180,5520,85)
+SandB(T,0,"FullFitMass","netOutput>0.76","","netOutput>-1.1","R","",5180,5520,85)
+T->Draw("goodPV")
+
+TFile* fileW = new TFile("B2JpsiKs-Weights-1-random-LHCb2011.root") // 
+//TFile* fileW = new TFile("B2JpsiKs-Weights-1-no-weight-LHCb2011.root") // TRY no-weight!!!
+TTree* W = (TTree*)fileW->Get("WeightTree")
+W->Show(3537)
+gPad->SetLogy(1)
+W->Draw("PVs")
+W->Draw("mass","sweight>-5")
+W->Draw("sweight", "sweight>-5")
+
+T->AddFriend(W)
+// interesting. This is not the same, but just for a few.
+gPad->SetLogy(0)
+T->Draw("mass:FullFitMass","sweight>-5 && netOutput>-5")
+T->Draw("PVs-nPV2")
+T->Draw("mass[0]:FullFitMass[0]","sweight[0]>-5 && netOutput[0]>-5")
+T->Draw("mass[1]:FullFitMass[1]","sweight[1]>-5 && netOutput[1]>-5")
+T->Draw("mass[2]:FullFitMass[2]","sweight[2]>-5 && netOutput[2]>-5")
+T->Draw("sweight[0]:WeightVal[0]", "WeightVal[0]>-5") // yes
+T->Draw("sweight:WeightVal", "WeightVal>-5") // yes
+T->Draw("sweight:WeightVal", "1") // yes
+
+T->Draw("netOutput[0]:sweight[0]","sweight[0]>-5")
+TwoProfile(T,0,"sweight[0]","netOutput[0]>0","1","1","netOutput[0]>-1","","",-0.3,1,100,-1,1)
+
+TFile* fileL = TFile::Open("~/work/Kristof/B2JpsiKs/B2JpsiKs-R12S17b-NewGP-625-637.root")
+TTree* L11 = fileL->Get("BetaSBd2JpsiKsDetachedLine_Tuple/DecayTree")
+T->AddFriend(L11)
+
+T->Draw("B_FullFit_M[0]")
+T->Draw("B_FullFit_M","sweight>-1")
+
+T->Draw("B_FullFit_M:mass","netOutput>-0.5")
+
+
+
+
+
+
+gPad->SetLogy(0)
+TwoProfile(T,0,"sweight","netOutput","1","0","1","","",-1,1)
+
+T->Scan("goodPV","goodPV>1") // 3537
+
+char* bdW = "sweightB*(netOutput>-5)"             
+char* bkgW = "sweightNonPeaking*(netOutput>-5)"
+
+SandB(T,0,"FullFitMass",bdW,bkgW)
+SandB(T,0,"netOutput",bdW,bkgW,"","","Iter1 NN")
+
+T->Draw("netOutput","sweightB*(netOutput>-1)")
+double allS = ((TH1F*)gPad->GetPrimitive("htemp"))->GetSumOfWeights()
+T->Draw("netOutput","sweightB*(netOutput>0)")
+double goodS = ((TH1F*)gPad->GetPrimitive("htemp"))->GetSumOfWeights()
+T->Draw("netOutput","sweightNonPeaking*(netOutput>-1)")
+double allB = ((TH1F*)gPad->GetPrimitive("htemp"))->GetSumOfWeights()
+T->Draw("netOutput","sweightNonPeaking*(netOutput>0)")
+double goodB = ((TH1F*)gPad->GetPrimitive("htemp"))->GetSumOfWeights()
+
+cout << "Cut at 0 keeps " << goodS << " of " << allS <<" signal and " << goodB << " of " << allB << " background" << endl;
+
+T->Draw("FullFitMass","netOutput>-1.1")
+
+// something about PVs
+TH1D h0("h0","Mass [MeV/c^{2}]",85,5180,5520)
+TH1D h1("h1","Mass [MeV/c^{2}]",85,5180,5520)
+T->Draw("FullFitMass[0] >> h0","netOutput[0]>0.")
+T->Draw("FullFitMass[1] >> h1","netOutput[1]>0.")
+T->Draw("FullFitMass[2] >>+ h1","netOutput[2]>0.")
+T->Draw("FullFitMass[3] >>+ h1","netOutput[3]>0.")
+T->Draw("FullFitMass[4] >>+ h1","netOutput[4]>0.")
+T->Draw("FullFitMass[5] >>+ h1","netOutput[5]>0.")
+T->Draw("FullFitMass[6] >>+ h1","netOutput[6]>0.")
+gPad->SetLogy(0)
+NiceRooPlot(h0,h1,"N")
+
+// something about PVs
+TH1D n0("n0","Net Output",100,-1,1)
+TH1D n1("n1","Net Output",100,-1,1)
+T->Draw("netOutput[0] >> n0")
+T->Draw("netOutput[1] >> n1")
+T->Draw("netOutput[2] >>+ n1")
+T->Draw("netOutput[3] >>+ n1")
+T->Draw("netOutput[4] >>+ n1")
+T->Draw("netOutput[5] >>+ n1")
+T->Draw("netOutput[6] >>+ n1")
+gPad->SetLogy(0)
+NiceRooPlot(n0,n1,"N")
+
+
+// something about PVs
+TH1D t0("t0","Decay Time [ps]",100,0,25)
+TH1D t1("t1","Decay Time [ps]",100,0,25)
+T->Draw("Tau[0] >> t0","netOutput[0]>0.")
+T->Draw("Tau[1] >> t1","netOutput[1]>0.")
+T->Draw("Tau[2] >>+ t1","netOutput[2]>0.")
+T->Draw("Tau[3] >>+ t1","netOutput[3]>0.")
+T->Draw("Tau[4] >>+ t1","netOutput[4]>0.")
+T->Draw("Tau[5] >>+ t1","netOutput[5]>0.")
+T->Draw("Tau[6] >>+ t1","netOutput[6]>0.")
+gPad->SetLogy(1)
+NiceRooPlot(t0,t1,"NM")
+
+// what's the bump ar 17?
+TH1D t2("t2","Decay Time [ps]",100,0,25)
+TH1D t3("t3","Decay Time [ps]",100,0,25)
+T->Draw("Tau[1]  >> t2","netOutput[1]>0 && netOutput[0]>0")
+T->Draw("Tau[2]  >>+ t2","netOutput[2]>0 && netOutput[0]>0")
+T->Draw("Tau[3]  >>+ t2","netOutput[3]>0 && netOutput[0]>0")
+T->Draw("Tau[4]  >>+ t2","netOutput[4]>0 && netOutput[0]>0")
+T->Draw("Tau[5]  >>+ t2","netOutput[5]>0 && netOutput[0]>0")
+T->Draw("Tau[6]  >>+ t2","netOutput[6]>0 && netOutput[0]>0")
+
+T->Draw("Tau[1]  >> t3","netOutput[1]>0 && netOutput[0]>0 && Tau[0]>15")
+T->Draw("Tau[2]  >>+ t3","netOutput[2]>0 && netOutput[0]>0 && Tau[0]>15")
+T->Draw("Tau[3]  >>+ t3","netOutput[3]>0 && netOutput[0]>0 && Tau[0]>15")
+T->Draw("Tau[4]  >>+ t3","netOutput[4]>0 && netOutput[0]>0 && Tau[0]>15")
+T->Draw("Tau[5]  >>+ t3","netOutput[5]>0 && netOutput[0]>0 && Tau[0]>15")
+T->Draw("Tau[6]  >>+ t3","netOutput[6]>0 && netOutput[0]>0 && Tau[0]>15")
+
+NiceRooPlot(t1,t2,t3,"M")
+
+gPad->SetLogy(0)
+TH2D* h2 = Make2DPlot("h2","Net Output best PV","Net Output other PV",102,-1.04,1,102,-1.04,1)
+
+T->Draw("max(netOutput[1],-1.005):max(netOutput[0],-1.005) >> h2")
+T->Draw("max(netOutput[2],-1.005):max(netOutput[0],-1.005) >>+ h2")
+T->Draw("max(netOutput[3],-1.005):max(netOutput[0],-1.005) >>+ h2")
+T->Draw("max(netOutput[4],-1.005):max(netOutput[0],-1.005) >>+ h2")
+T->Draw("max(netOutput[5],-1.005):max(netOutput[0],-1.005) >>+ h2")
+T->Draw("max(netOutput[6],-1.005):max(netOutput[0],-1.005) >>+ h2")
+
+gPad->SetLogy(0)
+gPad->SetLogz(1)
+h2->Draw("COLZ")
+
+TH2D* h3 = Make2DPlot("h2","Net Output best PV","Net Output other PV",201,-1.01,1,201,-1.01,1)
+
+
+h2->Draw("COLZ")
+
+
+ 
+
+
+

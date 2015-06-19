@@ -1,0 +1,79 @@
+// Observables for Analysis
+B_FullFit_M[j]
+// Observables for Data Manipulation
+runNumber
+eventNumber
+GpsSecond
+// Observables for Common Selection Cuts
+B_FullFit_status[j]
+B_FullFit_chi2_B[j]
+B_FullFit_ctau[j]
+B_OWNPV_Z					
+// Observables for Decay Specific Cuts
+piplus_TRACK_Type
+KS0_M_with_pplus_piplus 
+KS0_M_with_piplus_pplus
+B_FullFit_KS0_ctau						
+// Observables for Trigger
+PsiHlt1TrackMuonDecision_TOS
+PsiHlt1DiMuonHighMassDecision_TOS
+PsiHlt1TrackAllL0Decision_TOS
+PsiHlt2DiMuonDetachedJPsiDecision_TOS
+PsiHlt2DiMuonJPsiHighPTDecision_TOS
+PsiHlt2DiMuonJPsiDecision_TOS
+PsiHlt2TopoMu2BodyBBDTDecision_TOS
+// Observables for Neural Net
+// B_FullFit_chi2_B[j]
+B_DIRA_OWNPV
+KS0_PT
+B_FullFit_MERR[j]
+Psi_MINIPCHI2
+// B_FullFit_ctau[j]
+B_ENDVERTEX_CHI2
+B_ENDVERTEX_NDOF
+B_IPCHI2_OWNPV
+B_MINIPCHI2NEXTBEST
+B_P
+B_PT
+B_FullFit_ctauErr[j]
+Psi_ENDVERTEX_CHI2
+Psi_FDCHI2_ORIVX
+Psi_MM
+Psi_MMERR
+Psi_P
+Psi_PT
+Psi_SMALLESTDELTACHI2
+KS0_ENDVERTEX_Z
+// B_FullFit_KS0_ctau[j]
+B_FullFit_KS0_ctauErr[j]
+KS0_ENDVERTEX_CHI2
+KS0_MINIPCHI2
+KS0_MM
+KS0_MMERR
+KS0_P
+muminus_MINIPCHI2
+muplus_MINIPCHI2
+muminus_MINIP
+muplus_MINIP
+muminus_P
+muplus_P
+muminus_PT
+muplus_PT
+muminus_PIDmu
+muplus_PIDmu
+muplus_TRACK_CHI2NDOF
+muminus_TRACK_CHI2NDOF
+piminus_MINIPCHI2
+piplus_MINIPCHI2
+piminus_MINIP
+piplus_MINIP
+piminus_PT
+piplus_PT
+piminus_TRACK_GhostProb
+piplus_TRACK_GhostProb
+piplus_TRACK_CHI2NDOF
+piminus_TRACK_CHI2NDOF
+Primaries
+nSPDHits
+nOTClusters
+piminus_TRACK_Type

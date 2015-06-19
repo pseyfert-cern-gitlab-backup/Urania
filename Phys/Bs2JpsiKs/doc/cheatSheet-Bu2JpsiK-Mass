@@ -1,0 +1,211 @@
+TString m_name = ""
+TString head("Bu2JpsiK-SigMC-")
+TFile *_file0 = TFile::Open("Bu2JpsiK-SigMC-303.root")
+TFile* file2 = new TFile("Bu2JpsiK-Eval-2-random-SigMC.root")
+TTree* MC = (TTree*)_file0->Get("BetaSBu2JpsiKDetachedLine_TupleMC/DecayTree")
+TTree* N = (TTree*)file2->Get("NetTree")
+MC->AddFriend(N)
+N->Draw("netOutput")
+TCut OK("netOutput>-1")
+TCut Good("netOutput>0.8")
+MC->Draw("B_FullFit_M[0]:FullFitMass",OK)
+
+N->Draw("FullFitMass",OK)
+
+TH1D h1("h1","Mass [MeV/c^{2}]",100,5190,5440)
+TH1D h2("h2","Mass [MeV/c^{2}]",100,5190,5440)
+TH1D h3("h3","Mass [MeV/c^{2}]",100,5190,5440)
+TH1D h4("h4","Mass [MeV/c^{2}]",100,5190,5440)
+
+gPad->SetLogy(1)
+N->Draw("FullFitMass >> h1",OK && "netOutput>-1")
+N->Draw("FullFitMass >> h2",OK && "netOutput>0")
+N->Draw("FullFitMass >> h3",OK && "netOutput>0.5")
+N->Draw("FullFitMass >> h4",OK && "netOutput>0.8")
+
+
+NiceRooPlot(h1,h2,h3,h4,"M")
+png(head+"netcut masses")
+
+RooPlot* plotM = m_mass->frame();
+plotM->SetTitle("")
+data.plotOn( plotM, DataError(RooAbsData::SumW2), Binning(50) ); 
+plotM->Draw()
+
+// 
+N->Draw("FullFitMassErr",OK)
+TH1D he1("he1","Mass Error [MeV/c^{2}]",400,0,40)
+TH1D he2("he2","Mass Error [MeV/c^{2}]",400,0,40)
+TH1D he3("he3","Mass Error [MeV/c^{2}]",400,0,40)
+TH1D he4("he4","Mass Error [MeV/c^{2}]",400,0,40)
+
+gPad->SetLogy(1)
+N->Draw("FullFitMassErr >> he1",OK && "netOutput>-1")
+N->Draw("FullFitMassErr >> he2",OK && "netOutput>0")
+N->Draw("FullFitMassErr >> he3",OK && "netOutput>0.5")
+N->Draw("FullFitMassErr >> he4",OK && "netOutput>0.8")
+
+NiceRooPlot(he1,he2,he3,he4,"M")
+png(head+"netcut mass errors")
+
+NiceRooPlot(he4,"M")
+png(head+"netcut mass errors - tight")
+
+TCut OnPeak("abs(FullFitMassErr-6.0)<0.1")
+N->Draw("FullFitMass",OnPeak && Good)
+
+RooRealVar* m_mass = new RooRealVar("FullFitMass","FullFitMass",5190,5440);
+RooRealVar* m_massE = new RooRealVar("FullFitMassErr","FullFitMassErr",0,30);
+RooRealVar* m_net = new RooRealVar("netOutput","netOutput",-2.,1.);
+RooDataSet* data6 = new RooDataSet("data6","data6", N, RooArgList( *m_mass, *m_massE, *m_net ), "(netOutput>0.8)*(abs(FullFitMassErr-6)<0.1)"); 
+data6->sumEntries()
+
+RooPlot* plotM = m_mass->frame();
+plotM->SetTitle("")
+data6.plotOn( plotM, DataError(RooAbsData::SumW2) ); 
+plotM->Draw()
+
+TString m_name = ""
+double BM = 5279.0;
+double Bwidth = 6 ;
+RooRealVar* m_meanB = new RooRealVar(m_name+"mean","mean mass", BM);
+RooRealVar* m_width = new RooRealVar(m_name+"width","width", Bwidth, 0.5*Bwidth, 5*Bwidth);
+RooRealVar* m_width2 = new RooRealVar(m_name+"width2","width2", Bwidth, 0.5*Bwidth, 5*Bwidth);
+RooRealVar* m_alpha = new RooRealVar(m_name+"alpha","alpha",1.113,0.5,5); // Fixed from Bu2JpsiK
+RooRealVar* m_alpha2 = new RooRealVar(m_name+"alpha2","alpha2",-1.113,-5,-0.5); // 
+RooRealVar* m_n = new RooRealVar(m_name+"n","n",1.0,0.5,20); // 
+// RooRealVar* m_n2 = new RooRealVar(m_name+"n2","n2",2.5,0.5,20); // 
+RooCBShape* m_B_CB = new RooCBShape(m_name+"cb","B Crystal Ball",*m_mass,*m_meanB,*m_width,*m_alpha,*m_n);
+RooCBShape* m_B_CB2 = new RooCBShape(m_name+"cb2","B Crystal Ball2",*m_mass,*m_meanB,*m_width2,*m_alpha2,*m_n2);
+RooRealVar* m_neg = new RooRealVar(m_name+"Nneg", "number of CB1", 0.5); // , 0.2, 0.9
+
+// Bifurcated ====================================================================
+.L RooBifurcatedCB.cpp+
+RooRealVar* m_n2 = new RooRealVar(m_name+"n2","n2",1,0.5,20); // 
+RooRealVar* m_alpha3 = new RooRealVar(m_name+"alpha3","alpha3",1,0.5,5.); // 
+RooBifurcatedCB* m_BCB = new RooBifurcatedCB(m_name+"BCB","B PDF",*m_mass,*m_meanB,*m_width,*m_alpha,*m_n,*m_width,*m_alpha3,*m_n2)
+
+RooPlot* plotM = m_mass->frame();
+plotM->SetTitle("")
+data6->plotOn( plotM, DataError(RooAbsData::SumW2) ); 
+m_BCB->plotOn(plotM)
+plotM->Draw()
+
+RooFitResult* r3 = m_BCB->fitTo(*data6, Save())
+
+// Sum of CB ====================================================================
+RooAddPdf* m_B = new RooAddPdf(m_name+"B PDF","B PDF",RooArgList(*m_B_CB,*m_B_CB2),RooArgList(*m_neg));
+RooFitResult* r1 = m_B_CB->fitTo(*data6, Save())
+RooFitResult* r2 = m_B_CB2->fitTo(*data6, Save())
+//m_alpha->setConstant()
+//m_alpha2->setConstant()
+//m_n->setConstant()
+//m_n2->setConstant()
+
+RooFitResult* r3 = m_B->fitTo(*data6, Save(),  SumW2Error(true) )
+
+RooPlot* plotM = m_mass->frame();
+plotM->SetTitle("")
+data6->plotOn( plotM, DataError(RooAbsData::SumW2) ); 
+m_B_CB->plotOn(plotM,LineColor(3))
+m_B_CB2->plotOn(plotM,LineColor(2))
+m_B->plotOn(plotM)
+plotM->Draw()
+
+r1->Print()
+r2->Print()
+r3->Print()
+
+RooPlot* plotM = m_mass->frame();
+plotM->SetTitle("")
+data6->plotOn( plotM, DataError(RooAbsData::SumW2) ); 
+m_B->plotOn(plotM)
+m_B->paramOn(plotM,Layout(0.52,0.97,0.95))
+plotM->Draw()
+png(head+"Mass peak at error=6")
+
+// 8 MeV
+RooDataSet* data8 = new RooDataSet("data8","data8", N, RooArgList( *m_mass, *m_massE, *m_net ), "(netOutput>0.8)*(abs(FullFitMassErr-8)<0.2)"); 
+data8->sumEntries()
+
+RooFitResult* r1 = m_B_CB->fitTo(*data8, Save())
+r1->Print()
+
+RooPlot* plotM = m_mass->frame();
+plotM->SetTitle("")
+data8->plotOn( plotM, DataError(RooAbsData::SumW2) ); 
+m_B_CB->plotOn(plotM)
+m_B_CB->paramOn(plotM,Layout(0.52,0.97,0.95))
+plotM->Draw()
+png(head+"Mass peak at error=8")
+
+
+
+
+// MODELS
+// double crystal Ball ==================================
+RooRealVar* m_mass = new RooRealVar("FullFitMass","FullFitMass",5190,5440);
+RooRealVar* m_net = new RooRealVar("netOutput","netOutput",-2.,1.);
+RooDataSet* data = new RooDataSet("data","data", N, RooArgList( *m_mass, *m_net ), "netOutput>0.8"); 
+
+TString m_name = ""
+double BM = 5279.50;
+double Bvar = 10;             // by how much may it vary
+double Bwidth = 7.3535 ;
+RooRealVar* m_meanB = new RooRealVar(m_name+"meanB","mean B mass", BM, BM-Bvar,BM+Bvar );
+RooRealVar* m_width = new RooRealVar(m_name+"width","width", Bwidth, 0.5*Bwidth, 1.2*Bwidth);
+RooRealVar* m_narrow = new RooRealVar(m_name+"Nnarrow", "number of narrow", 0.67521, 0.0, 1.0);
+RooRealVar* m_width2 = new RooRealVar(m_name+"width2","width2",10.721 , 1*Bwidth, 3*Bwidth);
+RooRealVar* m_alpha = new RooRealVar(m_name+"alpha","alpha",1.113,0.5,5); // Fixed from Bu2JpsiK
+RooRealVar* m_n = new RooRealVar(m_name+"n","n",16.0,2,20); // Fixed from Bu2JpsiK
+RooCBShape* m_B_CB = new RooCBShape(m_name+"cbB","B Crystal Ball",*m_mass,*m_meanB,*m_width,*m_alpha,*m_n);
+RooRealVar* m_alpha2 = new RooRealVar(m_name+"alpha2","alpha2",-1.05,-0.5,5); // Fixed from Bu2JpsiK 
+RooRealVar* m_n2 = new RooRealVar(m_name+"n2","n2",11.2,2,20); // Fixed from Bu2JpsiK
+RooCBShape* m_B_WG = new RooCBShape(m_name+"cbB2","B Crystal Ball (up)",*m_mass,*m_meanB,*m_width2,*m_alpha2,*m_n2);
+RooAddPdf* m_B = new RooAddPdf(m_name+"B PDF","B PDF",RooArgList(*m_B_CB,*m_B_WG),RooArgList(*m_narrow));
+
+RooPlot* plotM = m_mass->frame();
+plotM->SetTitle("")
+data.plotOn( plotM, DataError(RooAbsData::SumW2) ); 
+m_B->plotOn(plotM)
+plotM->Draw()
+
+RooFitResult* r1 = m_B->fitTo(*data, Save())
+r1->Print()
+RooPlot* plotM = m_mass->frame();
+plotM->SetTitle("")
+data.plotOn( plotM, DataError(RooAbsData::SumW2) ); 
+m_B->plotOn(plotM)
+plotM->Draw()
+
+// Cruyff ====================================================================
+.L RooCruijff.cpp+
+RooCruijff* m_cruijff = new RooCruijff("Cruijff","Cruijff",*m_mass,*m_meanB,*m_width,*m_width2,*m_alpha,*m_alpha2)
+
+RooPlot* plotM = m_mass->frame();
+plotM->SetTitle("")
+data.plotOn( plotM, DataError(RooAbsData::SumW2) ); 
+m_cruijff->plotOn(plotM)
+plotM->Draw()
+
+RooFitResult* r1 = m_cruijff->fitTo(*data, Save())
+r1->Print()
+
+//=================================================================
+// JpsiKsPDF
+.L RooExpAndGauss.C+
+.L JpsiKsPdf.cpp+
+JpsiKsPdf pdf("Bu2JpsiK",m_mass,false,false,0)
+//pdf.setConstant();
+//pdf.freezeBkg();
+RooFitResult* r1 = pdf.fitToMass(data)
+r1->Print()
+
+// 
+RooPlot* plotM = m_mass->frame();
+plotM->SetTitle("")
+data.plotOn( plotM, DataError(RooAbsData::SumW2), Binning(50) ); 
+pdf.plotMassOn( plotM ); 
+plotM->Draw()
+// PullPlot(plotM,m_mass,1)
+png(head+"JpsiKsPdf")

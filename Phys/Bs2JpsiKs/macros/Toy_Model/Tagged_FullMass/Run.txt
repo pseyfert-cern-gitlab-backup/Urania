@@ -1,0 +1,9 @@
+.L LHCbAcceptance.cxx+
+.L RooAbsEffResModel.cxx+
+.L RooBinnedPdf.cxx+
+.L RooEffConvGenContext.cxx+
+.L RooEffResModel.cxx+
+.L ToyModel.cxx+
+.L Simulation.C+
+// Simulation(tracktype,seed,lumi,setup [for systematics])
+Simulation(3,125,3.06,"Default")

@@ -1,0 +1,19 @@
+setenv appendix Default
+setenv directory castor
+setenv channel B2JpsiKs
+./weighting.exe $channel 1 $directory | tee test-${channel}-weighting-NNI-${appendix}
+./teacher.exe  $channel 1 $directory | tee test-${channel}-teacher-NNI-${appendix}
+./expert.exe  $channel 1 $directory | tee test-${channel}-expert-NNI-${appendix}
+./weighting.exe  $channel 2 $directory | tee test-${channel}-weighting-NNII-${appendix}
+./teacher.exe  $channel 2 $directory  | tee test-${channel}-teacher-NNII-${appendix}
+./expert.exe  $channel 2 $directory | tee test-${channel}-expert-NNII-${appendix}
+./branching.exe  $channel 0 $directory | tee test-${channel}-branching-NNII-${appendix}
+
+
+./slimtuple.exe $channel 1 castor | tee test-${channel}-slimtuple-NNI-${appendix}
+setenv directory local
+./weighting.exe $channel 1 $directory | tee test-${channel}-weighting-NNI-${appendix}
+./teacher.exe  $channel 1 $directory | tee test-${channel}-teacher-NNI-${appendix}
+./expert.exe  $channel 1 $directory | tee test-${channel}-expert-NNI-${appendix}
+./branching.exe  $channel 0 $directory | tee test-${channel}-branching-NNII-${appendix}
+

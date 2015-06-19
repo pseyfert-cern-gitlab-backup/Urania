@@ -1,0 +1,23 @@
+!-----------------------------------------------------------------------------
+! Package     : Phys/Bs2MuMu
+! Responsible : Diego Martinez Santos
+! Purpose     : Bs2MuMu analysis scripts
+!-----------------------------------------------------------------------------
+
+! 2013-02-12 - Diego Martinez Santos
+ - Remove a lot of old stuff
+
+!============================== v1r3 06-11-2011 ==============================
+
+! 2011-11-06 - Diego Martinez Santos
+ - Make version v1r3.
+
+
+!============================== v1r1 27-05-2011 ==============================
+
+! 2011-05-27 - Diego Martinez Santos
+ - Make version v1r1.
+
+
+! 2010-05-26 | Diego Martinez Santos
+-scripts for Bs2mumu analysis (bender scripts, limit computation, ...)
