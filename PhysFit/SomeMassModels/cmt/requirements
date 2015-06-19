@@ -3,7 +3,7 @@
 # Maintainer : Diego Martinez Santos
 #============================================================================
 package           SomeMassModels
-version           v2r1
+version           v2r2
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -13,6 +13,12 @@ branches          cmt doc python src dict examples
 # Used packages. Specify the version, * at the end specifies 'any revision'
 #    Put as many lines as needed, with all packages, without the '#'
 #============================================================================
+
+private
+# genconfuser.py cannot be used here
+# Note: the tag must be set before including GaudiPolicy
+apply_tag skip_genconfuser
+end_private
 
 use   GaudiPolicy v*
 use ROOT v* LCG_Interfaces

@@ -26,7 +26,8 @@ public:
                         Bool_t extended = kFALSE, const char* rangeName = 0,
                         const char* addCoefRangeName = 0,
                         Int_t nCPU = 1,
-                        Bool_t interleave = kFALSE, Bool_t verbose = kTRUE,
+                        RooFit::MPSplit interleave = RooFit::BulkPartition,
+                        Bool_t verbose = kTRUE,
                         Bool_t splitCutRange = kTRUE,
                         RooAbsData::ErrorType = RooDataHist::SumW2);
 
@@ -60,7 +61,7 @@ public:
                        const char* rangeName = 0,
                        const char* addCoefRangeName = 0,
                        Int_t nCPU = 1,
-                       Bool_t interleave = kFALSE,
+                       RooFit::MPSplit interleave = RooFit::BulkPartition,
                        Bool_t verbose = kTRUE, Bool_t splitCutRange = kTRUE,
                        RooAbsData::ErrorType = RooDataHist::SumW2);
 
@@ -74,10 +75,10 @@ public:
                                         const char* rangeName = 0,
                                         const char* addCoefRangeName = 0,
                                         Int_t nCPU = 1,
-                                        Bool_t interleave = kFALSE,
+                                        RooFit::MPSplit interleave = RooFit::BulkPartition,
                                         Bool_t verbose = kTRUE,
                                         Bool_t splitCutRange = kTRUE)
-    {
+  {
         // Virtual constructor
         return new RooGaussianChi2Var(name,title,(RooAbsPdf&)pdf,
                                       (RooDataHist&)dhist,projDeps,

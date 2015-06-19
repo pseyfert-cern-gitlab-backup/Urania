@@ -4,53 +4,68 @@ import numpy as np
 from pprint import pprint
 import sys
 
-def GetRunDictionary(StripVer, PartName="K", IsMuonUnBiased=False):
+def CheckPartType(PartName):
+    ValidPartNames=("K", "Pi", "P",  "Mu", "K_MuonUnBiased", "Pi_MuonUnBiased", "P_MuonUnBiased")
+    if PartName not in ValidPartNames:
+        raise TypeError("Invalid particle type. Allowed types are %s" %str(ValidPartNames))
 
-    if PartName not in ("K", "Pi", "P", "Mu"):
-        print "**** ERROR: Invalid particle name: %s" %PartName
-        sys.exit(1)
-        a
-    fileSuffix=""
-    if not IsMuonUnBiased:
-        fileSuffix="h"
+def CheckMagPol(MagPol):
+    ValidMagPols=("MagUp", "MagDown")
+    if MagPol not in ValidMagPols:
+        raise TypeError("Invalid magnet polarity. Allowed polarities are %s" %str(ValidMagPols))
+
+def CheckStripVer(StripVer):
+    ValidStripVers=("13b", "15", "17", "20", "20r1", "20_MCTuneV2", "20r1_MCTuneV2")
+    if StripVer not in ValidStripVers:
+        raise TypeError("Invalid stripping version. Allowed versions are %s" %str(ValidStripVers))
+   
+def GetRecoVer(StripVer):
+    CheckStripVer(StripVer)
+    if StripVer=='13b':
+        return 10
+    elif StripVer=='15':
+        return 11
+    elif StripVer=='17':
+        return 12
     else:
-        if PartName=="Mu":
-            fileSuffix="mu_and_p_muonUnBiased"
-        elif PartName=="P":
-            fileSuffix="mu_and_p_muonUnBiased"
-        else:
-            fileSuffix="h_muonUnBiased"
+        return 14
+
+def GetFileSuffix(PartName):
+    CheckPartType(PartName)
+    if PartName in ("K", "Pi", "P"):
+        return "h"
+    if PartName in ("Mu",  "P_MuonUnBiased"):
+        return "mu_and_p_muonUnBiased"
+    else:
+        return "h_muonUnBiased"
             
-    MUONPreFix = ''
-    if IsMuonUnBiased or PartName=="Mu" : MUONPreFix = '/MUON'
+def GetRunDictionary(StripVer, PartName="K"):#, IsMuonUnBiased=False):
+
+    fileSuffix=GetFileSuffix(PartName)
+
+    #MUONPreFix = ''
+    ##   if PartName in ("Mu", "K_MuonUnBiased", "Pi_MuonUnBiased", "P_MuonUnBiased"):
+    ##         MUONPreFix = '/MUON'
     
+ 
     #======================================================================
     # Dictionary of Dictionaires for StripVersion -> {UpRuns, DownRuns}
     #======================================================================
-    UpRunLims   = pickle.load( open( os.path.expandvars('$CALIBDATASCRIPTSROOT/jobs%s/Stripping%s/ChopTrees/up_runLimits_%s.pkl' %(MUONPreFix,
-                                                          StripVer, fileSuffix)),
-                                                        'rb' ) )
-    DownRunLims = pickle.load( open( os.path.expandvars('$CALIBDATASCRIPTSROOT/jobs%s/Stripping%s/ChopTrees/down_runLimits_%s.pkl' %(MUONPreFix,
-                                                         StripVer, fileSuffix)),
-                                                        'rb' ) )
-    
-    Strip2Reco = {'13b'  : 10,
-                  '15'   : 11,
-                  '17'   : 12,
-                  '20'   : 14,
-                  '20r1' : 14
-                  }
+    UpRunLims   = pickle.load( open( os.path.expandvars('$CALIBDATASCRIPTSROOT/jobs/Stripping{strp}/ChopTrees/up_runLimits_{suf}.pkl'.format(
+        strp=StripVer, suf=fileSuffix)), 'rb' ) )
+    DownRunLims = pickle.load( open( os.path.expandvars('$CALIBDATASCRIPTSROOT/jobs/Stripping{strp}/ChopTrees/down_runLimits_{suf}.pkl'.format(
+        strp=StripVer, suf=fileSuffix)), 'rb' ) )    
 
-    StripDict = {'StripVer' : StripVer,
-                 'RecoVer'  : Strip2Reco[StripVer],
-                 'UpRuns'   : UpRunLims.astype(int),  
-                 'DownRuns' : DownRunLims.astype(int)        
+    StripDict = {'StripVer'   : StripVer,
+                 'RecoVer'    : GetRecoVer(StripVer),
+                 'UpRuns'     : UpRunLims.astype(int),  
+                 'DownRuns'   : DownRunLims.astype(int)        
                  }
 
-    print 'StripVer : ', StripDict['StripVer']
-    print 'RecoVer  : ', StripDict['RecoVer']
-    print 'UpRuns   : ', StripDict['UpRuns']
-    print 'DownRuns : ', StripDict['DownRuns']
+    print 'StripVer   : ', StripDict['StripVer']
+    print 'RecoVer    : ', StripDict['RecoVer']
+    print 'UpRuns     : ', StripDict['UpRuns']
+    print 'DownRuns   : ', StripDict['DownRuns']
     
     return StripDict
 
@@ -90,13 +105,14 @@ def GetMinMaxFileDictionary(DataDict, MagPolarity, runMin=None, runMax=None):
     #======================================================================
     # Determine file index ranges corresponding to RunMin and RunMax
     #======================================================================
+    CheckMagPol(MagPolarity)
     runFirst = 0
     runLast  = 0
     if MagPolarity=='MagUp':
         ndim = DataDict['UpRuns'].shape[0]
         runFirst = DataDict['UpRuns'][0:ndim,0]
         runLast  = DataDict['UpRuns'][0:ndim,1]
-    if MagPolarity=='MagDown':
+    else:
         ndim = DataDict['DownRuns'].shape[0]
         runFirst = DataDict['DownRuns'][0:ndim,0]
         runLast  = DataDict['DownRuns'][0:ndim,1]

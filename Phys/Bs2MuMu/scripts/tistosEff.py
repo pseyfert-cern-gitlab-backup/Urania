@@ -37,13 +37,15 @@ class tistosEff():
 	def getTisEff(self): #return a valAndErr object
 		eff = self.n_tistos / self.n_tos
 		print '   The eff = ', eff
-		err_binom = sqrt(  (eff*(1-eff))  / self.n_trig )
+		#err_binom = sqrt(  (eff*(1-eff))  / self.n_trig )
+		err_binom = sqrt(  (eff*(1-eff))  / self.n_tos ) #Correct
 		print '   The err_binom = ', err_binom
 		return valAndErr(eff,err_binom)
 
 	def getTosEff(self):
 		eff = self.n_tistos / self.n_tis
-		err_binom = sqrt(  (eff*(1-eff))  / self.n_trig )
+		#err_binom = sqrt(  (eff*(1-eff))  / self.n_trig )
+		err_binom = sqrt(  (eff*(1-eff))  / self.n_tis) #Correct
 		return valAndErr(eff,err_binom)
 
 	def getEff(self):

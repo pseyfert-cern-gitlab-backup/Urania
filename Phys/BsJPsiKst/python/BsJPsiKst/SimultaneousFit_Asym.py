@@ -4,6 +4,7 @@ import os
 #if not "BSJPSIKSTROOT" in os.environ.keys(): os.environ["BSJPSIKSTROOT"] = "../../"
 #gROOT.ProcessLine(".x " + os.environ["BSJPSIKSTROOT"]+"/src/AngJpsiKst_Swave.cxx++")
 #gSystem.Load("AngJPsiKst_cxx")
+
 from PDF_2012_Asym import *
 
 print "Class for fitting polarization: AngularPDF"
@@ -29,13 +30,14 @@ cuts += "&& abs(Kst_892_0_MM-896)<70"
         
 if __name__=="__main__":
 
-    f11 = TFile("~/vol5/OL_2011_GL.root")
-    #f11 = TFile("/user/diegoms/cmtuser/NTuples/OL_2011_GL.root")
+
+
+    f11 = TFile("/user/diegoms/cmtuser/NTuples/OL_2011_GL.root")
+
     t2_11 = f11.Get("T")
-    f12 = TFile("~/vol5/OL_2012_GL.root")
-    #f12 = TFile("/user/diegoms/cmtuser/NTuples/OL_2012_GL.root")
+
+    f12 = TFile("/user/diegoms/cmtuser/NTuples/OL_2012_GL.root")
     t2_12 = f12.Get("T")
-    #f=TFile("~diegoms/vol5/BsJPsiKst_341_v2.root")
  
 
     fx=TFile("/tmp/SimulFit_nada.root","recreate")
@@ -56,6 +58,10 @@ if __name__=="__main__":
     AngBd_2011p.modParam("dpa",-2.98,0.1,kTRUE)
     AngBd_2011p.modParam("dpe",3.07,0.1,kTRUE)
     AngBd_2011p.modParam("ds",2.20,0.1,kTRUE)
+    #AngBd_2011p.modParam("ds",3.09,0.1,kTRUE)
+    #AngBd_2011p.modParam("ds",2.66,0.1,kTRUE)
+    #AngBd_2011p.modParam("ds",1.94,0.1,kTRUE)
+    #AngBd_2011p.modParam("ds",1.53,0.1,kTRUE)
     AngBd_2011p.modParam("c1_psi",-0.592,0.1)
     
     AngBd_2011n.CopyFreeParams(AngBd_2011p)
@@ -116,12 +122,12 @@ if __name__=="__main__":
     ns_2011p_phys = RooFormulaVar("nBs_2011p_phys", "nBs_2011p_phys", "nBs_2011_phys*0.5/" + AngBs_2011p.psACP.GetName(), RooArgList(ns_2011,AngBs_2011p.psACP))
     ns_2011n_phys = RooFormulaVar("nBs_2011n_phys", "nBs_2011n_phys", "nBs_2011_phys - nBs_2011p_phys",RooArgList(ns_2011,ns_2011p_phys))
 
-    ns_2011p = RooFormulaVar("nBs_2011p","nBs_2011p", "nBs_2011p_phys*(1 + A_D + A_prod_s)",RooArgList(ns_2011p_phys, A_D, Aprod_s))
-    ns_2011n = RooFormulaVar("nBs_2011n","nBs_2011n", "nBs_2011n_phys*(1 - A_D - A_prod_s)",RooArgList(ns_2011n_phys, A_D, Aprod_s))
+    ns_2011p = RooFormulaVar("nBs_2011p","nBs_2011p", "nBs_2011p_phys*(1 + A_D - A_prod_s)",RooArgList(ns_2011p_phys, A_D, Aprod_s)) #wk 
+    ns_2011n = RooFormulaVar("nBs_2011n","nBs_2011n", "nBs_2011n_phys*(1 - A_D + A_prod_s)",RooArgList(ns_2011n_phys, A_D, Aprod_s))  
 
-    nd_2011p = RooFormulaVar("nBd_2011p","nBd_2011p", "nBd_2011p_phys*(1 + A_D + A_prod_d)",RooArgList(nd_2011p_phys, A_D, Aprod_d))
-    nd_2011n = RooFormulaVar("nBd_2011n","nBd_2011n", "nBd_2011n_phys*(1 - A_D - A_prod_d)",RooArgList(nd_2011n_phys, A_D, Aprod_d))
-    
+    nd_2011p = RooFormulaVar("nBd_2011p","nBd_2011p", "nBd_2011p_phys*(1 - A_D + A_prod_d)",RooArgList(nd_2011p_phys, A_D, Aprod_d))
+    nd_2011n = RooFormulaVar("nBd_2011n","nBd_2011n", "nBd_2011n_phys*(1 + A_D - A_prod_d)",RooArgList(nd_2011n_phys, A_D, Aprod_d))
+
     nbkg_2011p = RooRealVar("n nbkg 11p","n bkg 11p", 0.,0.1*t11p.GetEntries())
     nbkg_2011n = RooRealVar("n nbkg 11n","n bkg 11n", 0.,0.1*t11n.GetEntries())
 
@@ -135,12 +141,12 @@ if __name__=="__main__":
     ns_2012p_phys = RooFormulaVar("nBs_2012p_phys", "nBs_2012p_phys", "nBs_2012_phys*0.5/" + AngBs_2011p.psACP.GetName(), RooArgList(ns_2012,AngBs_2011p.psACP))
     ns_2012n_phys = RooFormulaVar("nBs_2012n_phys", "nBs_2012n_phys", "nBs_2012_phys - nBs_2012p_phys",RooArgList(ns_2012,ns_2012p_phys))
 
-    ns_2012p = RooFormulaVar("nBs_2012p","nBs_2012p", "nBs_2012p_phys*(1 + A_D + A_prod_s)",RooArgList(ns_2012p_phys, A_D, Aprod_s))
-    ns_2012n = RooFormulaVar("nBs_2012n","nBs_2012n", "nBs_2012n_phys*(1 - A_D - A_prod_s)",RooArgList(ns_2012n_phys, A_D, Aprod_s))
+    ns_2012p = RooFormulaVar("nBs_2012p","nBs_2012p", "nBs_2012p_phys*(1 + A_D - A_prod_s)",RooArgList(ns_2012p_phys, A_D, Aprod_s))
+    ns_2012n = RooFormulaVar("nBs_2012n","nBs_2012n", "nBs_2012n_phys*(1 - A_D + A_prod_s)",RooArgList(ns_2012n_phys, A_D, Aprod_s))
 
-    nd_2012p = RooFormulaVar("nBd_2012p","nBd_2012p", "nBd_2012p_phys*(1 + A_D + A_prod_d)",RooArgList(nd_2012p_phys, A_D, Aprod_d))
-    nd_2012n = RooFormulaVar("nBd_2012n","nBd_2012n", "nBd_2012n_phys*(1 - A_D - A_prod_d)",RooArgList(nd_2012n_phys, A_D, Aprod_d))
-    
+    nd_2012p = RooFormulaVar("nBd_2012p","nBd_2012p", "nBd_2012p_phys*(1 - A_D + A_prod_d)",RooArgList(nd_2012p_phys, A_D, Aprod_d))
+    nd_2012n = RooFormulaVar("nBd_2012n","nBd_2012n", "nBd_2012n_phys*(1 + A_D - A_prod_d)",RooArgList(nd_2012n_phys, A_D, Aprod_d))
+
     
     nbkg_2012p = RooRealVar("n nbkg 12p","n bkg 12p", 0.,0.1*t12p.GetEntries())
     nbkg_2012n = RooRealVar("n nbkg 12n","n bkg 12n", 0.,0.1*t12n.GetEntries())
@@ -206,7 +212,7 @@ def fixAcc():
     AngBd_2011p.modParam("c3_phi",  5.44128e-01 ,0.1, kTRUE)
 
     AngBd_2011p.modParam("c2_theta",  -1.82470e-01,0.1, kTRUE)
-
+    
     AngBd_2012p.modParam("c1_psi", -4.98121e-01 ,0.1, kTRUE)
     AngBd_2012p.modParam("c2_psi", -6.66902e-01 ,0.1, kTRUE)
     AngBd_2012p.modParam("c3_psi", -3.78649e-01  ,0.1, kTRUE)
@@ -217,7 +223,8 @@ def fixAcc():
     AngBd_2012p.modParam("c3_phi",  4.82842e-01 ,0.1, kTRUE)
     AngBd_2012p.modParam("c2_theta",   -1.68274e-01,0.1, kTRUE)
     
-    AngBd_2011n.modParam("c1_psi", -5.20101e-01 ,0.1, kTRUE)
+    
+    AngBd_2011n.modParam("c1_psi",  -5.20101e-01 ,0.1, kTRUE)
     AngBd_2011n.modParam("c2_psi", -7.33299e-01 ,0.1, kTRUE)
     AngBd_2011n.modParam("c3_psi", -2.90606e-01  ,0.1, kTRUE)
     AngBd_2011n.modParam("c4_psi", 2.69475e-01   ,0.1, kTRUE)
@@ -239,7 +246,7 @@ def fixAcc():
     AngBd_2012n.modParam("c2_theta",   -1.68274e-01,0.1, kTRUE)
     
 def fitAll(minos=0, offset = 0, noCP = 0):
-    fixAcc()
+    fixAcc()  # you cam leave acc param free by not calling the function "fixAcc()".
     if noCP:
         AngBd_2011p.ACPL.setVal(0)
         AngBs_2011p.ACPL.setVal(0)
@@ -247,7 +254,14 @@ def fitAll(minos=0, offset = 0, noCP = 0):
         AngBs_2011p.ACPL.setConstant(1)
         A_D.setMin(-0.3)
         A_D.setMax(0.3)
-        A_D.setConstant(0)
+        #A_D.setConstant(0)
+        A_D.setConstant(-0.01185)
+    
+
+
+ #A_D.setMin(-0.3)
+  #      A_D.setMax(0.3)
+   #     A_D.setConstant(0)
     
     if offset: fitres = fiter.fitTo(allData,RooFit.Minos(minos),RooFit.Save(), RooFit.NumCPU(8),RooFit.Offset(kTRUE))
     else: fitres = fiter.fitTo(allData,RooFit.Minos(minos),RooFit.Save(), RooFit.NumCPU(8))
@@ -283,6 +297,8 @@ def plotAngle(name,rangename,nbins):
     model.plotOn(cpsif,RooFit.ProjectionRange(rangename),RooFit.Components("Bs pdf " + name),RooFit.LineColor(TColor.GetColor("#ff99cc")),RooFit.LineStyle(9))
     model.plotOn(cpsif,RooFit.ProjectionRange(rangename),RooFit.Components("Bd pdf " + name),RooFit.LineColor(kRed),RooFit.LineStyle(7))
 #     model.paramOn(cpsif)
+    cpsif.SetTitle("")
+    cpsif.SetXTitle("cos(\Psi)")
     cpsif.Draw()
 
     cv3.cd(2)
@@ -292,6 +308,8 @@ def plotAngle(name,rangename,nbins):
     model.plotOn(cthf,RooFit.ProjectionRange(rangename),RooFit.Components("modelBkg_" + name[:-1]),RooFit.LineColor(kBlue),RooFit.LineStyle(kDashed))
     model.plotOn(cthf,RooFit.ProjectionRange(rangename),RooFit.Components("Bs pdf " + name),RooFit.LineColor(TColor.GetColor("#ff99cc")),RooFit.LineStyle(9))
     model.plotOn(cthf,RooFit.ProjectionRange(rangename),RooFit.Components("Bd pdf " + name),RooFit.LineColor(kRed),RooFit.LineStyle(7))
+    cthf.SetTitle("")
+    cthf.SetXTitle("cos(\Theta)")
     cthf.Draw()
 
     cv3.cd(3)
@@ -301,6 +319,8 @@ def plotAngle(name,rangename,nbins):
     model.plotOn(cphif,RooFit.ProjectionRange(rangename),RooFit.Components("modelBkg_" + name[:-1]),RooFit.LineColor(kBlue),RooFit.LineStyle(kDashed))
     model.plotOn(cphif,RooFit.ProjectionRange(rangename),RooFit.Components("Bs pdf " + name),RooFit.LineColor(TColor.GetColor("#ff99cc")),RooFit.LineStyle(9))
     model.plotOn(cphif,RooFit.ProjectionRange(rangename),RooFit.Components("Bd pdf " + name),RooFit.LineColor(kRed),RooFit.LineStyle(7))
+    cphif.SetTitle("")
+    cphif.SetXTitle("cos(\phi)")
     cphif.Draw()
 
     return cv3, cphif,cthf, cpsif
@@ -332,9 +352,51 @@ def plot_mass(name, nbins = 100):
     model.plotOn(cphif,RooFit.Components("Bs pdf " + name),RooFit.LineColor(TColor.GetColor("#ff99cc")),RooFit.LineStyle(9))
     model.plotOn(cphif,RooFit.Components("Bd pdf " + name),RooFit.LineColor(kRed),RooFit.LineStyle(7))
     #model.plotOn(cphif,RooFit.Components("sigmodel"),RooFit.LineColor(kRed),RooFit.LineStyle(kDotted))
+    cphif.SetTitle("")
+    cphif.SetXTitle("M_{J/\Psi K\pi} (MeV/c^{2})")
     cphif.Draw()
 
     return cv3, cphif#,cthf, cpsif
+
+fitres = fitAll()
+ff = TFile("FitResults.root","recreate")
+fitres.Write("FitResults")
+ff.Close()
+
+#-------------------------------------------------
+a_cv11p, a_cphif11p = plot_mass("2011p")
+a_cv11n, a_cphif11n = plot_mass("2011n")
+a_cv11p.SaveAs("a_cv11p.root")
+a_cv11n.SaveAs("a_cv11n.root")
+
+Bd_cv11p, Bd_psif11p, Bd_thf11p, Bd_phif11p = plotAngle("2011p","Bd_range",70)
+Bd_cv11n, Bd_psif11n, Bd_thf11n, Bd_phif11n = plotAngle("2011n","Bd_range",70)
+Bd_cv11p.SaveAs("Bd_cv11p.root")
+Bd_cv11n.SaveAs("Bd_cv11n.root")
+
+Bs_cv11p, Bs_psif11p, Bs_thf11p, Bs_phif11p = plotAngle("2011p","Bs_range",30)
+Bs_cv11n, Bs_psif11n, Bs_thf11n, Bs_phif11n = plotAngle("2011n","Bs_range",30)
+Bs_cv11p.SaveAs("Bs_cv11p.root")
+Bs_cv11n.SaveAs("Bs_cv11n.root")
+
+#-------------------------------------------------
+
+a_cv12p, a_cphif12p = plot_mass("2012p")
+a_cv12n, a_cphif12n = plot_mass("2012n")
+a_cv12p.SaveAs("a_cv12p.root")
+a_cv12n.SaveAs("a_cv12n.root")
+
+Bd_cv12p, Bd_psif12p, Bd_thf12p, Bd_phif12p = plotAngle("2012p","Bd_range",70)
+Bd_cv12n, Bd_psif12n, Bd_thf12n, Bd_phif12n = plotAngle("2012n","Bd_range",70)
+Bd_cv12p.SaveAs("Bd_cv12p.root")
+Bd_cv12n.SaveAs("Bd_cv12n.root")
+
+Bs_cv12p, Bs_psif12p, Bs_thf12p, Bs_phif12p = plotAngle("2012p","Bs_range",30)
+Bs_cv12n, Bs_psif12n, Bs_thf12n, Bs_phif12n = plotAngle("2012n","Bs_range",30)
+Bs_cv12p.SaveAs("Bs_cv12p.root")
+Bs_cv12n.SaveAs("Bs_cv12n.root")
+
+#-------------------------------------------------
 
 ## ratioBs = RooFormulaVar("rBs","rBs", "nBs/nBd", RooArgList(ns,nd))
 ## print "NBs/NBd = ", ratioBs.getVal(), "+/-", ratioBs.getPropagatedError(fitres)

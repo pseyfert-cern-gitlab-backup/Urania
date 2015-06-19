@@ -590,7 +590,7 @@ def DoSigModel(ns, dc = dc2012):
 #DataHist = fDat.Get("hbpdf 2012")
 
 if CHANNEL == "Bs":
-    fDat = TFile("~/public/Bsmm1fbLNF.root")#/afs/cern.ch/user/d/diegoms/public/top_secret/unblind_bsmumu_1fb_histo.root")
+    fDat = TFile(os.environ["BS2MUMUPARAMSROOT"]+"/histos/DataBs_1fb.root")#/afs/cern.ch/user/d/diegoms/public/top_secret/unblind_bsmumu_1fb_histo.root")
     DataHist = fDat.Get("xyz")
 else:
     fDat = TFile("~/public/for_Mathieu/Data_Bd_Comb.root")#/afs/cern.ch/user/d/diegoms/public/top_secret/unblind_bsmumu_1fb_histo.root")

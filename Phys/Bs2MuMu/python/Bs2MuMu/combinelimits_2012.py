@@ -1,13 +1,13 @@
 #! /usr/bin/env python
 
 CHANNEL = "Bs"
-use_2012= 0
-use_autum = 0
-use_2010 = 0
+use_2012= 1
+use_autum = 1
+use_2010 = 1
 use_cms = 1
 #use_cms = use_cms*use_2010
 use_cdf = 0*use_cms
-use_atlas = 0#*use_cms
+use_atlas = 1#*use_cms
 
 from ROOT import *
 from MCLimit import *
@@ -22,15 +22,24 @@ from SomeUtils.alyabar import *
     #use_atlas = 0
     #use_cdf = 0
 #else:
-import analysis2010_for_Comb_mc  as a2010
-import analysis2012_redone_mc as a2012   #### 2012 data, models, syst..
-import analysis2012_autum_mc as autum   #### 2012 data, models, syst....
-import cms_mc as cms
+#import analysis2010_for_Comb_mc  as a2010
+#import analysis2012_redone_mc as a2012   #### 2012 data, models, syst..
+#import analysis2012_autum_mc as autum   #### 2012 data, models, syst....
+#import cms_mc as cms
    
-import atlas_mc as atlas
-import cdf3_mc as cdf
+#import atlas_mc as atlas
+#import cdf3_mc as cdf
+
+import analysis2010_for_Comb  as a2010
+import analysis2012_redone as a2012   #### 2012 data, models, syst..
+import analysis2012_autum as autum   #### 2012 data, models, syst....
+import cms
+   
+import atlas#_mc as atlas
+import cdf3 as cdf
 if CHANNEL != a2012.CHANNEL : cancer
 if CHANNEL != autum.CHANNEL : cancer
+if CHANNEL != a2010.CHANNEL : cancer
 
 
 XFEED = (a2012.CHANNEL == "Bd")
@@ -339,9 +348,10 @@ def do_scan(filename, stop_95 = False):
    
     print a2012.CHANNEL
     c90, c95 = 0.,0
-    for j in range(4):
+    print filename
+    for j in range(st0,st0+5):
         
-        i = st0 + .05*j
+        i =  0.1*(1+j)
         print "ps for BR:", i
         CL = DoCL(i*1e-9 ,1000000, syst=SYST)
         #CL.setpxprintflag(1)
@@ -377,6 +387,7 @@ def do_scan(filename, stop_95 = False):
                 tup.close()
                 return c90, i
     tup.close()
+    print "Done? ", filename
 
 #do_scan("LHCb_CMS_CDF_Hi")
 #CL = DoCL(1e-8, syst=0)
@@ -595,7 +606,7 @@ def expected_fluct_yields_nok(sb, N0, N1):
         
 #BREAK
 #do_scan(os.environ["BS2MUMUROOT"]+ "/python/Bs2MuMu/SMB_SYST"+str(SYST)+"_MISID"+str(a2012.MISID) + "_sBk" + str(a2012.sigma_Bk) + "_sB" + str(a2012.sigma_B) + "_shh"+str(a2012.sigma_hh) + "_"+a2012.pfunc+"_Istyle"+ str(ISTYLE)+"_ATLAS_PROF"+str(PROFILEATLAS) + "_" + CHANNEL)
-#do_scan(os.environ["HOME"] + "/vol5/" + CHANNEL +  "TH_2012"*use_2012+ "_autum"*use_autum+ "_2010"*use_2010+ "_atlas"*use_atlas+ "_cms"*use_cms + "_cdf"*use_cdf+"_SYST"+ str(SYST) + "job"+ str(st0)+".dat")
+do_scan(os.environ["HOME"] + "/vol5/" + CHANNEL +  "TH_2012"*use_2012+ "_autum"*use_autum+ "_2010"*use_2010+ "_atlas"*use_atlas+ "_cms"*use_cms + "_cdf"*use_cdf+"_SYST"+ str(SYST) + "job"+ str(st0)+".dat")
 
 
 from SomeUtils.numericFunctionClass import *

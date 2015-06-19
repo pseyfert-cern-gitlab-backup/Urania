@@ -18,7 +18,7 @@ S'R'
 cnumpy.core.multiarray
 _reconstruct
 p9
-(cnumpy.core.defmatrix
+(cnumpy.matrixlib.defmatrix
 matrix
 p10
 (I0

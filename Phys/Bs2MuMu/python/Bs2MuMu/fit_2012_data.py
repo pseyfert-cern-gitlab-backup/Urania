@@ -11,7 +11,7 @@ if "NormBu_fullmass" not in dir(TheTable):
     TheTable.NormKPi_fullmass = TheTable.NormKPi
     TheTable.NormBu_fullmassErr = TheTable.NormBuErr
     TheTable.NormKPi_fullmassErr = TheTable.NormKPiErr
-    
+
 #BREEAK
 #massname = "B_mass"
 #samplename = "sample"
@@ -61,24 +61,24 @@ missid_corr7 = RooRealVar("missid_corr7_autum","missid_corr7_autum",mid_idf[6])
 
 
 #1,0.6)
-NormBu, NormBu_cons = createConst(TheTable.NormBu_fullmass, TheTable.NormBu_fullmassErr, "NormBu_autum", 1) 
+NormBu, NormBu_cons = createConst(TheTable.NormBu_fullmass, TheTable.NormBu_fullmassErr, "NormBu_autum", 1)
 NormKPi, NormKPi_cons = createConst(TheTable.NormKPi_fullmass, TheTable.NormKPi_fullmassErr, "NormKPi_autum", 1)
 
 alpha_s = RooFormulaVar("alpha_S_autum","alpha_S_autum" , "((NormBu_autum/pow(3.8859342678999996e-12 ,2)+NormKPi_autum/4.5045014793224593e-23)/(pow(3.8859342678999996e-12 ,-2.)+(1./4.5045014793224593e-23 )))*fdfs*1e09", RooArgList(NormBu,NormKPi,a2011.fdfs))
 #alpha_s =  RooRealVar("alpha_S_autum","alpha_S_autum" ,1)
 nbs = RooFormulaVar("NBs_autum","NBs_autum", "BRs/alpha_S_autum", RooArgList(alpha_s,a2011.BR_s))
-misid_global_factor, misid_global_cons =createConst(TheTable.MisIDGlobalFactor,TheTable.MisIDGlobalFactorErr, "misidP_autum") 
+misid_global_factor, misid_global_cons =createConst(TheTable.MisIDGlobalFactor,TheTable.MisIDGlobalFactorErr, "misidP_autum")
 
 nbd = RooRealVar("NBd_autum","NBd_autum",5.,0.,20)
 a = linkToConst(TheTable.CBTrans,TheTable.CBTransErr, a2011.a, a2011.TheTable.CBTrans,a2011.TheTable.CBTransErr, "_autum")
 
 
 
-meanBs, meanBs_cons = createConst(TheTable.MassMeanBs, TheTable.MassMeanErrBs, "meanBs_autum", 1) 
-meanBd, meanBd_cons = createConst(TheTable.MassMeanBd, TheTable.MassMeanErrBd, "meanBd_autum", 1) 
+meanBs, meanBs_cons = createConst(TheTable.MassMeanBs, TheTable.MassMeanErrBs, "meanBs_autum", 1)
+meanBd, meanBd_cons = createConst(TheTable.MassMeanBd, TheTable.MassMeanErrBd, "meanBd_autum", 1)
 
-sigmaBs, sigmaBs_cons = createConst(TheTable.MassResoBs, TheTable.MassResoErrBs, "sigmaBs_autum", 1) 
-sigmaBd, sigmaBd_cons = createConst(TheTable.MassResoBd, TheTable.MassResoErrBd, "sigmaBd_autum", 1) 
+sigmaBs, sigmaBs_cons = createConst(TheTable.MassResoBs, TheTable.MassResoErrBs, "sigmaBs_autum", 1)
+sigmaBd, sigmaBd_cons = createConst(TheTable.MassResoBd, TheTable.MassResoErrBd, "sigmaBd_autum", 1)
 
 Nhh1, Nhh1_cons = createConst(TheTable.BDT_sig1,TheTable.BDT_sigErr1,"Nhh1_autum",1)
 Nhh2, Nhh2_cons = createConst(TheTable.BDT_sig2,TheTable.BDT_sigErr2,"Nhh2_autum",1)
@@ -178,21 +178,21 @@ class BsMuMuModel:
     def __init__(self, glbin):
         self.i = str(glbin)
         i = self.i
-       
+
         self.nbs = RooFormulaVar("NBs_autum" + i ,"NBs_autum" + i, "NBs_autum*1/j"+i+"_autum*f"+i + "_autum", RooArgList(v["f"+i],v["nbs"],v["j"+i]))
         self.nbd = RooFormulaVar("NBd_autum" + i ,"NBd_autum" + i, "NBd_autum*1/j"+i+"_autum*f"+i + "_autum", RooArgList(v["f"+i],v["nbd"],v["j"+i]))
         #if COSME and i!= "1":self.nbkg = RooFormulaVar("MuMuBkg"+i,"MuMuBkg"+i, "MuMuBkg1*"+str(BDT_PDF[i]),RooArgList(mm[1].nbkg))
         self.nbkg = RooRealVar("MuMuBkg_autum"+i,"MuMuBkg_autum"+i, 0,70000)
         self.nmis = RooFormulaVar("Nmis_autum" + i ,"Nmis_autum" + i, "Nmis_autum*f"+i+ "_autum*1./missid_corr"+i+"_autum", RooArgList(v["f"+i],v["nmis"],v["j"+i],v["missid_corr"+i]))
-        
+
         if UNIFORM_KAPPA and i!= "1": self.k = mm[1].k
         else: self.k = RooRealVar("MuMu_k_"+i+"_autum","MuMu_k_" + i+"_autum", -7e-04, -1e-02,1e-02)
-        
+
         self.dk = RooRealVar("MuMu_dk_"+i+"_autum","MuMu_dk_" + i+"_autum",-7e-04, -1e-02,0)#1e-02)
         self.kb = RooFormulaVar("MuMu_kb_"+i+"_autum","MuMu_kb_" + i+"_autum","MuMu_k_"+i +"_autum" + " + MuMu_dk_" + i+"_autum", RooArgList(self.k,self.dk))
         self.bkg1 = RooExponential("bkg1 MuMu model_autum" + i , "bkg1 MuMu model_autum" + i, Mass,self.k)
         self.bkg2 = RooExponential("bkg2 MuMu model_autum" + i , "bkg2 MuMu model_autum" + i, Mass,self.kb)
-        
+
         self.fb = RooRealVar("MuMu_f_"+i +"_autum","MuMu_f_" + i+"_autum",0.5,0.,1.)
         if DOUBLE_EXPO: self.bkg = RooAddPdf("bkg MuMu model_autum" + i, "bkg MuMu model_autum" + i, self.bkg1,self.bkg2, self.fb)
         else: self.bkg = self.bkg1
@@ -212,7 +212,7 @@ class BsMuMuModel:
         self.missid_MS1 = RooAddPdf("missid_MS1_autum"+ "_"+ i,"missid_MS1_autum"+ "_"+ i,self.missid_MSu1,self.missid_MSd1,a2011.hh_f05)
         self.missid_MS2 = RooAddPdf("missid_MS2_autum"+ "_"+ i,"missid_MS2_autum"+ "_"+ i,self.missid_MSu2,self.missid_MSd2,a2011.hh_f05)
         self.missid_MS3 = RooAddPdf("missid_MS3_autum"+ "_"+ i,"missid_MS3_autum"+ "_"+ i,self.missid_MSu3,self.missid_MSd3,a2011.hh_f05)
-        
+
         self.missid_sig0  = RooAddPdf("missid_Sigmodel0_autum" + i,"missid_Sigmodel0_autum"+i, self.missid_MS1, self.missid_MS2, a2011.missid_f1)
         self.missid_peak  = RooAddPdf("missid_autum" + i ,"missid_autum"+i, self.missid_sig0, self.missid_MS3, a2011.missid_f2)
         self.nPiMuNu = RooFormulaVar("B0 pimunu_autum yield " + i,"PiMuNu"+i + "_autum*PiMuNu_autum",RooArgList(v["PiMuNu"+i],v["PiMuNu"]))
@@ -221,7 +221,7 @@ class BsMuMuModel:
             self.model = RooAddPdf("mumu_autum model " + i, "mumu_autum model " + i, RooArgList(self.bkg,self.Bs,self.Bd,self.missid_peak,self.PiMuNu,self.PiMuMu), RooArgList(self.nbkg,self.nbs,self.nbd,self.nmis,self.nPiMuNu,self.nPiMuMu))
         else: self.model = RooAddPdf("mumu_autum model " + i, "mumu_autum model " + i, RooArgList(self.bkg,self.Bs,self.Bd,self.missid_peak), RooArgList(self.nbkg,self.nbs,self.nbd,self.nmis))
 
-        
+
 mm = {}
 fiter = RooSimultaneous("fitter_autum", "fitter_autum", cat)
 combination = RooSimultaneous("combination", "combination", cat)
@@ -313,7 +313,7 @@ def fitThis(Minos = 0):
         lhcbName.Draw()
         fr[i].GetYaxis().SetTitle("Events /( "+str(int(size))+" MeV/c^{2} )")
         fr[i].GetYaxis().SetTitleOffset(1.4)
-    
+
         fr[i].Draw()
     return c, fr, result
 
@@ -343,10 +343,10 @@ def fitAll(plot = 0, Minos = 0):
             mm[i].model.plotOn(fr[i], RooFit.Components("BKmunu_autum "+str(i)),RooFit.LineColor(kCyan),RooFit.LineStyle(kDotted))#, RooFit.Slice(cat, "mumu bin1"), RooFit.ProjWData(allData))
         fr[i].GetXaxis().SetTitle("m_{#mu#mu} ( MeV/c^{2} )")
         fr[i].SetTitle("B_{s}^{0}#rightarrow#mu^{+}#mu^{-} candidates, BIN [" + str(Binning[bdtname][i-1]) + ", " +str(Binning[bdtname][i])+"]" )
-            
+
         fr[i].GetYaxis().SetTitle("Events /( "+str(int(size))+" MeV/c^{2} )")
         fr[i].GetYaxis().SetTitleOffset(1.4)
-    
+
         fr[i].Draw()
         lhcbName.Draw()
     for i in range(1,9):
@@ -363,10 +363,10 @@ def fitAll(plot = 0, Minos = 0):
             a2011.mm[i].model.plotOn(fr2[i], RooFit.Components("BKmunu "+str(i)),RooFit.LineColor(kCyan),RooFit.LineStyle(8))#, RooFit.Slice(cat, "mumu bin1"), RooFit.ProjWData(allData))
         fr2[i].GetXaxis().SetTitle("m_{#mu#mu} ( MeV/c^{2} )")
         fr2[i].SetTitle("B_{s}^{0}#rightarrow#mu^{+}#mu^{-} candidates, BIN [" + str(a2011.Binning[bdtname][i-1]) + ", " +str(a2011.Binning[bdtname][i])+"]" )
-            
+
         fr2[i].GetYaxis().SetTitle("Events /( "+str(int(size))+" MeV/c^{2} )")
         fr2[i].GetYaxis().SetTitleOffset(1.4)
-    
+
         fr2[i].Draw()
         lhcbName.Draw()
     return c, c2, fr, fr2, result
@@ -396,8 +396,8 @@ def printLinkedConstraints(result):
         x = "sigmaPiMuNu"+str(i+1)
         print  v[x].GetName(), v[x].getVal(), v[x].getPropagatedError(result)
     print a.GetName(), a.getVal(), a.getPropagatedError(result)
-    
-        
+
+
 www = fitThis()
 
 BREAK
@@ -415,7 +415,7 @@ BREAK
 
 ## pl_Bs = nll.createProfile(RooArgSet(a2011.BR_s))
 
-## #nll.plotOn(fr,RooFit.ShiftToZero()) 
+## #nll.plotOn(fr,RooFit.ShiftToZero())
 
 ## pl_Bs.plotOn(fr)
 
@@ -495,7 +495,7 @@ def setEverythingConstant():
     a2011.fdfs.setConstant(kTRUE)
     a2011.misid_global_factor.setConstant(kTRUE)
 
-    
+
     for i in range(1,9):
         if i > 1 :
             getattr(a2011,"Nhh" + str(i) ).setConstant(kTRUE)
@@ -503,13 +503,13 @@ def setEverythingConstant():
             getattr(a2011,"PiMuNu" + str(i) ).setConstant(kTRUE)
         getattr(a2011,"sigmaPiMuMu" + str(i) ).setConstant(kTRUE)
         getattr(a2011,"meanPiMuMu" + str(i) ).setConstant(kTRUE)
-        
+
         getattr(a2011,"sigmaPiMuNu" + str(i) ).setConstant(kTRUE)
         getattr(a2011,"meanPiMuNu" + str(i) ).setConstant(kTRUE)
-        
+
         a2011.mm[i].k.setConstant(kTRUE)
         a2011.mm[i].nbkg.setConstant(kTRUE)
-    
+
     NormBu.setConstant(kTRUE)
     NormKPi.setConstant(kTRUE)
     misid_global_factor.setConstant(kTRUE)
@@ -523,7 +523,7 @@ def setEverythingConstant():
     PiMuMu.setConstant(kTRUE)
     PiMuNu.setConstant(kTRUE)
     #a.setConstant(kTRUE)
-    
+
     for i in range(1,8):
         v["Nhh" + str(i) ].setConstant(kTRUE)
         #v["sigmaPiMuMu" str(i) ).setConstant(kTRUE)
@@ -532,7 +532,7 @@ def setEverythingConstant():
         #getattr(a2011,"sigmaPiMuNu" str(i) ).setConstant(kTRUE)
         #getattr(a2011,"meanPiMuNu" str(i) ).setConstant(kTRUE)
         #getattr(a2011,"PiMuNu" str(i) ).setConstant(kTRUE)
-        
+
         mm[i].k.setConstant(kTRUE)
         mm[i].nbkg.setConstant(kTRUE)
 def freebkg():
@@ -542,12 +542,12 @@ def freebkg():
     for i in range(1,8):
         mm[i].k.setConstant(kFALSE)
         mm[i].nbkg.setConstant(kFALSE)
-        
 
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+

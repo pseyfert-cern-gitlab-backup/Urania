@@ -6,14 +6,8 @@ import os
 os.sys.path.append(os.environ["BS2MUMUROOT"] + "/python/Bs2MuMu/")
 from RTuple import *
 
-Vus = 0.2252
-sVus = 0.0009
-
-Gamma = 65*pi/180
-
-Vus2 = Vus*Vus
-eps = Vus2/(1-Vus2)
-
+from penguin_inputs import *
+Gamma = gamma
 su3 = 1
 GR = 4.4e-05/0.9e-03
 
@@ -25,7 +19,7 @@ def TH(eps, af, thf, Gamma):
     st = sin(thf)
     sg = sin(Gamma)
     cg = cos(Gamma)
-    Hf = (1 - 2*af*ct*cg + af*af)*1./(1+eps*af*ct*cg+eps*eps*af*af)
+    Hf = (1 - 2*af*ct*cg + af*af)*1./(1+2*eps*af*ct*cg+eps*eps*af*af)
     Af = (2*af*st*sg)*1./(1-2*af*ct*cg+af*af)
     tg = (2*eps*af*ct*sg+eps*eps*af*af*sin(2*Gamma))*1./(1+2*eps*af*ct*cg+eps*eps*af*af*cos(2*Gamma))
     
@@ -34,10 +28,10 @@ def TH(eps, af, thf, Gamma):
 
 
 
-def maketup():
-    tup = RTuple("Faller",["tg/F","Af/F","Hf/F", "Hf_exp/F", "af/F","thf/F"])
+def maketup(N=10000000):
+    tup = RTuple(os.environ["HOME"] + "/vol5/Faller",["tg/F","Af/F","Hf/F", "Hf_exp/F", "af/F","thf/F"])
     Hf_e = Hf_exp(eps, su3, GR)
-    for i in range(1000000):
+    for i in range(10000000):
         af = 2*rnd.random()
         thf = 2*pi*rnd.random()
 

@@ -3,7 +3,7 @@
 # Maintainer : Diego Martinez Santos, Paula Alvarez Cartelle
 #============================================================================
 package           
-version           v2r4
+version           v2r5
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -13,6 +13,11 @@ branches          cmt doc python src ganga
 #============================================================================
 # Used packages.
 #============================================================================
+private
+# genconfuser.py cannot be used here
+# Note: the tag must be set before including GaudiPolicy
+apply_tag skip_genconfuser
+end_private
 
 use	GaudiPolicy 	v*
 use	Python          v*    	LCG_Interfaces 

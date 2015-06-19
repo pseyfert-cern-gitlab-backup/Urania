@@ -217,6 +217,13 @@ int slimmingB2JpsiKs(const TString module, const TString decay, const TString pl
   if(isSigMC(what) || what==m_IncJpsi) outtree.Branch("B_TRUEENDVERTEX_Y", &myB_TRUEENDVERTEX_Y, "b_B_TRUEENDVERTEX_Y/D");
   Double_t myB_TRUEENDVERTEX_Z = -999;
   if(isSigMC(what) || what==m_IncJpsi) outtree.Branch("B_TRUEENDVERTEX_Z", &myB_TRUEENDVERTEX_Z, "b_B_TRUEENDVERTEX_Z/D");
+
+  Double_t myKS0_TRUEENDVERTEX_X = -999;
+  if(isSigMC(what) || what==m_IncJpsi) outtree.Branch("KS0_TRUEENDVERTEX_X", &myKS0_TRUEENDVERTEX_X, "b_KS0_TRUEENDVERTEX_X/D");
+  Double_t myKS0_TRUEENDVERTEX_Y = -999;
+  if(isSigMC(what) || what==m_IncJpsi) outtree.Branch("KS0_TRUEENDVERTEX_Y", &myKS0_TRUEENDVERTEX_Y, "b_KS0_TRUEENDVERTEX_Y/D");
+  Double_t myKS0_TRUEENDVERTEX_Z = -999;
+  if(isSigMC(what) || what==m_IncJpsi) outtree.Branch("KS0_TRUEENDVERTEX_Z", &myKS0_TRUEENDVERTEX_Z, "b_KS0_TRUEENDVERTEX_Z/D");
   
   Double_t mypiplus_TRUEP_X = -999;
   if(isSigMC(what) || what==m_IncJpsi) outtree.Branch("piplus_TRUEP_X", &mypiplus_TRUEP_X, "b_piplus_TRUEP_X/D");
@@ -389,6 +396,10 @@ int slimmingB2JpsiKs(const TString module, const TString decay, const TString pl
       myB_TRUEENDVERTEX_X = ntuple->B_TRUEENDVERTEX_X;
       myB_TRUEENDVERTEX_Y = ntuple->B_TRUEENDVERTEX_Y;
       myB_TRUEENDVERTEX_Z = ntuple->B_TRUEENDVERTEX_Z;
+      
+      myKS0_TRUEENDVERTEX_X = ntuple->KS0_TRUEENDVERTEX_X;
+      myKS0_TRUEENDVERTEX_Y = ntuple->KS0_TRUEENDVERTEX_Y;
+      myKS0_TRUEENDVERTEX_Z = ntuple->KS0_TRUEENDVERTEX_Z;
       
       mypiplus_TRUEP_X = ntuple->piplus_TRUEP_X;
       mypiplus_TRUEP_Y = ntuple->piplus_TRUEP_Y;

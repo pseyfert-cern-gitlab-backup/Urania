@@ -85,3 +85,18 @@ def beta2012():
 
 def beta2011():
     return beta(alphaparam_1fb)
+
+def printBeta():
+    outfile = open("BetaParameters2011.txt","w")
+    beta, betas, beta_lambda = beta2011()
+    outfile.write("beta        "+beta.__str__()+"\n")
+    outfile.write("betas       "+betas.__str__()+"\n")
+    outfile.write("betabaryon  "+beta_lambda.__str__()+"\n")
+    outfile.close()
+    outfile = open("BetaParameters2012.txt","w")
+    beta, beta_s, beta_lambda = beta2012()
+    outfile.write("beta        "+beta.__str__()+"\n")
+    outfile.write("betas       "+betas.__str__()+"\n")
+    outfile.write("betabaryon  "+beta_lambda.__str__()+"\n")
+    outfile.close()
+    

@@ -43,6 +43,8 @@ public:
                    const std::string& ProbNNK_Name,
                    const std::string& ProbNNpi_Name,
                    const std::string& ProbNNp_Name,
+                   const std::string& ProbNNmu_Name,
+                   const std::string& ProbNNe_Name,
                    const std::string& Cuts = "",
                    const std::string& WgtVarName = ""
                    );
@@ -73,6 +75,8 @@ public:
                    const std::string& ProbNNK_Name,
                    const std::string& ProbNNpi_Name,
                    const std::string& ProbNNp_Name,
+                   const std::string& ProbNNmu_Name,
+                   const std::string& ProbNNe_Name,
                    const std::string& cuts = "", 
                    const std::string& wgtVarName = ""
                     );
@@ -111,6 +115,8 @@ public:
   const std::string Get_ParamName_ProbNNK() const;
   const std::string Get_ParamName_ProbNNpi() const;
   const std::string Get_ParamName_ProbNNp() const;
+  const std::string Get_ParamName_ProbNNmu() const;
+  const std::string Get_ParamName_ProbNNe() const;
   const std::string Get_ParamName_DLLe() const;
   const std::string Get_ParamName_DLLmu() const;
   const std::string Get_ParamName_IsMuon() const;
@@ -123,6 +129,8 @@ public:
   const RooRealVar* Get_Param_ProbNNK() const;
   const RooRealVar* Get_Param_ProbNNpi() const;
   const RooRealVar* Get_Param_ProbNNp() const;
+  const RooRealVar* Get_Param_ProbNNmu() const;
+  const RooRealVar* Get_Param_ProbNNe() const;
   const RooRealVar* Get_Param_DLLe() const;
   const RooRealVar* Get_Param_DLLmu() const;
   const RooRealVar* Get_Param_IsMuon() const;

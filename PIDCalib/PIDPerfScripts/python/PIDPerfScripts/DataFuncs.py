@@ -2,56 +2,86 @@ import ROOT
 from PIDPerfScripts.RunRangeFuncs import *
 from GaudiPython import gbl
 import sys
+import exceptions
+import warnings
 
+class GetEnvError(exceptions.Exception):
+    pass
+
+class TFileError(exceptions.Exception):
+    pass
+
+class RooWorkspaceError(exceptions.Exception):
+    pass
+
+class RooDataSetError(exceptions.Exception):
+    pass
+
+def GetRealPartType(PartName):
+    CheckPartType(PartName)
+    if PartName == 'K' or PartName == 'K_MuonUnBiased':
+        return 'K'
+    elif PartName == 'Pi' or PartName == 'Pi_MuonUnBiased':
+        return 'Pi'
+    elif PartName == 'P' or PartName == 'P_MuonUnBiased':
+        return 'P'
+    else:
+        return 'Mu'
+
+# N.B. The following method will need to be changed once the
+# Lambda_c proton samples are included
+def GetMotherName(PartName):
+    #PartType = GetRealPartType(PartName)
+    if PartName == 'K' or PartName == 'Pi':
+        return 'DSt'
+    elif PartName == 'P':
+        return 'Lam0'
+    if PartName == 'K_MuonUnBiased' or PartName == 'Pi_MuonUnBiased':
+        return 'DSt_MuonUnBiased'
+    elif PartName == 'P_MuonUnBiased':
+        return 'Lam0'
+    else:
+        return 'Jpsi'
+
+# N.B. The following method will need to be changed once the
+# Lambda_c proton samples are included
+def GetWorkspaceName(PartName):
+    PartType = GetRealPartType(PartName)
+    if PartType == 'K' or PartType == 'Pi':
+        return 'RSDStCalib'
+    elif PartType == 'P':
+        return 'Lam0Calib'
+    else:
+        return 'JpsiCalib'
+
+def IsMuonUnBiased(PartName):
+    CheckPartType(PartName)
+    if PartName in ("Mu", "K_MuonUnBiased", "Pi_MuonUnBiased", "P_MuonUnBiased"):
+        return True
+    else:
+        return False
+    
 def GetDataSetNameDictionary(PartName):
     #======================================================================
     # Define Mother and Workspace name given Particle name
     #======================================================================
-    MotherName = None
-    WSName = None
-    if PartName == 'K':
-        MotherName = 'DSt'
-        WSName = 'RSDStCalib'
-    elif PartName == 'Pi':
-        MotherName = 'DSt'
-        WSName = 'RSDStCalib'
-    elif PartName == 'P':
-        MotherName = 'Lam0'
-        WSName = 'Lam0Calib'
-    elif PartName == 'Mu':
-        MotherName = 'Jpsi'
-        WSName = 'JpsiCalib'
-    else:
-        print "**** ERROR: Invalid particle name: %s" %PartName
-        sys.exit(1)
+    MotherName = GetMotherName(PartName)
+    WSName = GetWorkspaceName(PartName)
         
-    ret = {'MotherName'    : MotherName,
-           'WorkspaceName' : WSName
+    ret = {'MotherName'    : GetMotherName(PartName),
+           'WorkspaceName' : GetWorkspaceName(PartName)
            }
         
     return ret
 
 
-def GetPerfPlotList( PerfFunc,
-                     StripVer,
-                     MagPolarity,
-                     PartName,
-                     DLLCutList,
-                     TrackCuts,
-                     BinningScheme=None,
-                     runMin=None,
-                     runMax=None,
-                     IsMuon=False,
-                  verbose=True):
-
-    if PartName not in ("K", "Pi", "P", "Mu"):
-        print "**** ERROR: Invalid particle name: %s" %PartName
-        sys.exit(1)
-        
-    MotherNamePostFix=''
-    if IsMuon and PartName in ("K", "Pi", "P"):
-        MotherNamePostFix = '_MuonUnBiased'
+def GetDataSets(StripVer, MagPolarity, PartName, TrackCuts, runMin=None, runMax=None,
+                verbose=False, allowMissingDataSets=False, minEntries=1000):
     
+    CheckStripVer(StripVer)
+    CheckMagPol(MagPolarity)
+    CheckPartType(PartName)
+      
     #======================================================================
     # Create dictionary holding:
     # - Reconstruction version    ['RecoVer']
@@ -59,7 +89,7 @@ def GetPerfPlotList( PerfFunc,
     #        - MagUp run limits   ['UpRuns']
     #        - MagDown run limits ['DownRuns']
     #======================================================================
-    DataDict = GetRunDictionary(StripVer, PartName, IsMuon)
+    DataDict = GetRunDictionary(StripVer, PartName)
 
     #======================================================================
     # Determine min and max file indicies 
@@ -77,92 +107,172 @@ def GetPerfPlotList( PerfFunc,
     if verbose:
         print 'Track Cuts: ', TrackCuts
 
+
+    #======================================================================
+    # Get the DataSets
+    #======================================================================
+    DataSets = []
+    
+    for i in xrange(IndexDict['minIndex'], IndexDict['maxIndex']+1):
+        DataSet = GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, i, verbose,
+                             allowMissingDataSets, minEntries)
+        if DataSet is not None:
+            DataSets.append(DataSet)
+    return DataSets
+
+def GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, index, verbose=False,
+               allowMissingDataSets=False, minEntries=1000):
+
+    from os import getenv
+    
+    CheckStripVer(StripVer)
+    CheckMagPol(MagPolarity)
+    CheckPartType(PartName)
+      
+    #======================================================================
+    # Create dictionary holding:
+    # - Reconstruction version    ['RecoVer']
+    # - np.array of:
+    #        - MagUp run limits   ['UpRuns']
+    #        - MagDown run limits ['DownRuns']
+    #======================================================================
+    DataDict = GetRunDictionary(StripVer, PartName)
+
     #======================================================================
     # Determine Mother and Workspace names
     #======================================================================
     DataSetNameDict = GetDataSetNameDictionary(PartName)
 
+    PartType = GetRealPartType(PartName)
+
+    fname_protocol = ""
+    fname_query = ""
+    
+    CalibDataProtocol=os.getenv("CALIBDATAURLPROTOCOL")
+    CalibDataQuery=os.getenv("CALIBDATAURLQUERY")   
+
+    # set the URL protocol (if applicable)
+    if CalibDataProtocol is not None and CalibDataProtocol!="":
+        fname_protocol = "{0}://".format(CalibDataProtocol)
+
+    # set the URL query (if applicable)
+    if CalibDataQuery is not None and CalibDataQuery!="":
+        fname_query = "?{0}".format(CalibDataQuery)
+
+    vname_head = "CALIBDATASTORE" if not IsMuonUnBiased(PartName) else "MUONCALIBDATASTORE"
+    fname_head = os.getenv(vname_head)
+    if fname_head is None:
+        raise GetEnvError("Cannot retrieve dataset, environmental variable %s has not been set." %vname_head)
+    
+    fname = "{prtcol}{topdir}/Reco{reco}_DATA/{pol}/{mother}_{part}_{pol}_Strip{strp}_{idx}.root{qry}".format(
+        prtcol=fname_protocol, topdir=fname_head, reco=DataDict['RecoVer'],
+        pol=MagPolarity, mother=DataSetNameDict['MotherName'],
+        part=PartType, strp=StripVer, idx=index, qry=fname_query)
+    
+    f = ROOT.TFile.Open(fname)
+    if not f:
+        if allowMissingDataSets:
+            warnings.warn("File %s does not exist. Skipping this subsample" %fname)
+            return None
+        else:
+            raise IOError("Failed to open file %s for reading" %fname)
+
+    wsname=DataSetNameDict['WorkspaceName']
+    ws = f.Get(wsname)
+    if not ws:
+        raise TFileError("Failed to retrieve workspace {wsname} from file {fname}".format(
+            wsname=DataSetNameDict['WorkspaceName'], fname=fname))
+    Data = ws.data('data')
+    if not Data:
+        raise RooWorkspaceError("RooDataSet not found in workspace %s" %wsname)
+        
+    #======================================================================
+    # Declare Instance of RICHTrackDataSet for Calibration tracks
+    #======================================================================
+        
+    DataSet = gbl.PIDTrackDataSet('Calib_Data'
+                                  , ''
+                                  , Data
+                                  , Data.get()
+                                  , PartType+'_P'
+                                  , PartType+'_PT'
+                                  , PartType+'_Eta'
+                                  , 'nTracks'
+                                  , PartType+'_CombDLLK'
+                                  , PartType+'_CombDLLp'
+                                  , PartType+'_CombDLLe'
+                                  , PartType+'_CombDLLmu'
+                                  , PartType+'_IsMuon'
+                                  , PartType+'_IsMuonLoose'
+                                  , PartType+'_nShared'
+                                  , PartType+'_ProbNNK'
+                                  , PartType+'_ProbNNpi'
+                                  , PartType+'_ProbNNp'
+                                  , PartType+'_ProbNNmu'
+                                  , PartType+'_ProbNNe'
+                                  , TrackCuts
+                                  , 'nsig_sw'
+                                  )
+    ws.Delete()
+    f.Close()
+    if verbose:
+        print DataSet, type(DataSet)
+        
+    #======================================================================
+    # Sanity test: do we have a dataset, and is it empty?
+    #======================================================================
+    if DataSet is None:
+        raise RooDataSetError("Failed to create PIDTrackDataSet from RooDataSet")
+        
+    if DataSet.sumEntries()==0:
+        raise RooDataSetError("PIDTrackDataSet contains no entries")
+
+    if verbose:
+        DataSet.Print('v')
+
+    #======================================================================
+    # Reduce dataset to only those events within binning limits
+    #======================================================================
+    #DataSet = None
+    #if BinningScheme is not None:
+    #    DataSet = AllDataSet.SetInBinSchema(BinningScheme)
+    #    AllDataSet.Delete()
+    #else:
+    #    DataSet = AllDataSet
+            
+    #======================================================================
+    # Veto ranges with insufficient statistics
+    #======================================================================
+    if DataSet.sumEntries()<minEntries:
+        warnings.warn( 'Insufficient events in PIDTrackDataSet ({nEvt}). Requested at least {minEvts} entries. Skipping this sumsample'.format(
+            nEvt=DataSet.sumEntries(), minEvts=minEntries) )
+        return None
+                  
+    return DataSet
+
+def GetPerfPlotList( PerfFunc,
+                     StripVer,
+                     MagPolarity,
+                     PartName,
+                     DLLCutList,
+                     TrackCuts,
+                     BinningScheme=None,
+                     runMin=None,
+                     runMax=None,
+                     verbose=True,
+                     allowMissingDataSets=False):
+  
     #======================================================================
     # Declare default list of PID plots
     #======================================================================
     Plots = []
-    
+ 
     #======================================================================
     # Loop over all calibration subsamples
     #======================================================================
-    for i in xrange(IndexDict['minIndex'], IndexDict['maxIndex']+1):
+    for DataSet in GetDataSets(StripVer, MagPolarity, PartName, TrackCuts,
+                               runMin, runMax, verbose, allowMissingDataSets):
         
-        ##      fname='$CALIBDATASTORE/Reco'+str(DataDict['RecoVer'])+'_DATA/'+MagPolarity+'/'+ \ 
-        ##                DataSetNameDict['MotherName']+'_'+PartName+'_'+MagPolarity+'_Strip'+StripVer+'_'+str(i)+'.root'
-        fname_head = "$CALIBDATASTORE" if not IsMuon else "$MUONCALIBDATASTORE"
-        fname = "%s/Reco%d_DATA/%s/%s%s_%s_%s_Strip%s_%d.root" %(fname_head, DataDict['RecoVer'], MagPolarity, 
-                                                               DataSetNameDict['MotherName'], MotherNamePostFix, PartName, MagPolarity,
-                                                               StripVer, i)
-        f = ROOT.TFile.Open(fname)
-        ws = f.Get(DataSetNameDict['WorkspaceName'])
-        Data = ws.data('data')
-
-        #======================================================================
-        # Declare Instance of RICHTrackDataSet for Calibration tracks
-        #======================================================================
-        
-        DataSet = gbl.PIDTrackDataSet('Calib_Data'
-                                      , ''
-                                      , Data
-                                      , Data.get()
-                                      , PartName+'_P'
-                                      , PartName+'_PT'
-                                      , PartName+'_Eta'
-                                      , 'nTracks'
-                                      , PartName+'_CombDLLK'
-                                      , PartName+'_CombDLLp'
-                                      , PartName+'_CombDLLe'
-                                      , PartName+'_CombDLLmu'
-                                      , PartName+'_IsMuon'
-                                      , PartName+'_IsMuonLoose'
-                                      , PartName+'_nShared'
-                                      , PartName+'_ProbNNK'
-                                      , PartName+'_ProbNNpi'
-                                      , PartName+'_ProbNNp'
-                                      , TrackCuts
-                                      , 'nsig_sw'
-                                      )
-        ws.Delete()
-        f.Close()
-        if verbose:
-            print DataSet, type(DataSet)
-        
-        #======================================================================
-        # Sanity test: do we have a dataset, and is it empty?
-        #======================================================================
-        if DataSet is None:
-            print '**** ERROR: No DataSet found ****'
-            sys.exit(1)
-        
-        if DataSet.sumEntries()==0:
-            print '**** ERROR: Zero events selected within this dataset ****'
-            sys.exit(1)
-
-        if verbose:
-            DataSet.Print('v')
-
-        #======================================================================
-        # Reduce dataset to only those events within binning limits
-        #======================================================================
-        #DataSet = None
-        #if BinningScheme is not None:
-        #    DataSet = AllDataSet.SetInBinSchema(BinningScheme)
-        #    AllDataSet.Delete()
-        #else:
-        #    DataSet = AllDataSet
-            
-        #======================================================================
-        # Veto ranges with insufficient statistics
-        #======================================================================
-        if DataSet.sumEntries()<1000:
-            print '**** Insufficient events in dataset ({nEvt})'.format(nEvt=DataSet.sumEntries())
-            continue
-
         #======================================================================
         # Run Specific implementation of PerfCalculator
         #======================================================================
@@ -188,40 +298,9 @@ def GetPerfResultList(PerfFunc,
                       TrackCuts,
                       runMin=None,
                       runMax=None,
-                      IsMuon=False,
-                      verbose=True):
+                      verbose=True,
+                      allowMissingDataSets=False):
 
-    MotherNamePostFix=''
-    if IsMuon and PartName in ("K", "Pi", "P") : MotherNamePostFix = '_MuonUnBiased'
-    
-    #======================================================================
-    # Create dictionary holding:
-    # - Reconstruction version    ['RecoVer']
-    # - np.array of:
-    #        - MagUp run limits   ['UpRuns']
-    #        - MagDown run limits ['DownRuns']
-    #======================================================================
-    DataDict = GetRunDictionary(StripVer, PartName, IsMuon)
-
-    #======================================================================
-    # Determine min and max file indicies 
-    #======================================================================
-    IndexDict = GetMinMaxFileDictionary(DataDict, MagPolarity,
-                                        runMin, runMax)
-
-    #======================================================================
-    # Append runNumber limits to TrackCuts
-    #======================================================================
-    if TrackCuts is not None:
-        TrackCuts+=' && '
-    TrackCuts+='runNumber>='+runMin+' && runNumber<='+runMax
-    if verbose:
-        print TrackCuts
-
-    #======================================================================
-    # Determine Mother and Workspace names
-    #======================================================================
-    DataSetNameDict = GetDataSetNameDictionary(PartName)
 
     #======================================================================
     # Declare default list of PID results
@@ -231,78 +310,8 @@ def GetPerfResultList(PerfFunc,
     #======================================================================
     # Loop over all calibration subsamples
     #======================================================================
-    for i in xrange(IndexDict['minIndex'], IndexDict['maxIndex']+1):
-
-        ## fname = '$CALIBDATASTORE/Reco'+str(DataDict['RecoVer'])+'_DATA/'+MagPolarity+'/'+ \
-        ##        DataSetNameDict['MotherName']+'_'+PartName+'_'+MagPolarity+'_Strip'+StripVer+'_'+str(i)+'.root'
-                            
-        fname_head = "$CALIBDATASTORE" if not IsMuon else "$MUONCALIBDATASTORE"
-        fname = "%s/Reco%d_DATA/%s/%s%s_%s_%s_Strip%s_%d.root" %(fname_head, DataDict['RecoVer'], MagPolarity,
-                                                               DataSetNameDict['MotherName'], MotherNamePostFix, PartName, MagPolarity,
-                                                               StripVer, i)
-
-        f = ROOT.TFile.Open(fname)
-        ws = f.Get(DataSetNameDict['WorkspaceName'])
-        Data = ws.data('data')
-
-        #======================================================================
-        # Declare Instance of RICHTrackDataSet for Calibration tracks
-        #======================================================================
-        DataSet = gbl.PIDTrackDataSet('Calib_Data'
-                                      , ''
-                                      , Data
-                                      , Data.get()
-                                      , PartName+'_P'
-                                      , PartName+'_PT'
-                                      , PartName+'_Eta'
-                                      , 'nTracks'
-                                      , PartName+'_CombDLLK'
-                                      , PartName+'_CombDLLp'
-                                      , PartName+'_CombDLLe'
-                                      , PartName+'_CombDLLmu'
-                                      , PartName+'_IsMuon'
-                                      , PartName+'_IsMuonLoose'
-                                      , PartName+'_nShared'
-                                      , PartName+'_ProbNNK'
-                                      , PartName+'_ProbNNpi'
-                                      , PartName+'_ProbNNp'
-                                      , TrackCuts
-                                      , 'nsig_sw'
-                                      )
-        #DataSet = gbl.EvtTrackDataSet('Calib_Data'
-        #                              , ''
-        #                              , Data
-        #                              , Data.get()
-        #                              , PartName+'_P'
-        #                              , PartName+'_PT'
-        #                              , PartName+'_Eta'
-        #                              , 'nTracks'
-        #                              , PartName+'_CombDLLK'
-        #                              , PartName+'_CombDLLp'
-        #                              , TrackCuts
-        #                              , 'nsig_sw'
-        #                              )
-        if verbose:
-            DataSet.Print('v')
-        ws.Delete()
-        f.Close()
-        
-        #======================================================================
-        # Sanity test: do we have a dataset, and is it empty?
-        #======================================================================
-        if DataSet is None:
-            continue
-        
-        if DataSet.sumEntries()==0:
-            print '**** Zero events selected within this dataset ****'
-            sys.exit(1)
-
-        #======================================================================
-        # Veto ranges with insufficient statistics
-        #======================================================================
-        if DataSet.sumEntries()<1000:
-            print '**** Insufficient events in dataset ({nEvt})'.format(nEvt=DataSet.sumEntries())
-            continue
+    for DataSet in GetDataSets(StripVer, MagPolarity, PartName, TrackCuts,
+                               runMin, runMax, verbose, allowMissingDataSets):
         
         #======================================================================
         # Run Specific implementation of PerfCalculator

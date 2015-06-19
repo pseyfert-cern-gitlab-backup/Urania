@@ -87,8 +87,8 @@ void Example1DPlot(Int_t colored = 1, Int_t stacked = 0)
   }
   
   // Set Axis Titles:
-  h1fb->GetXaxis()->SetTitle("#font[12]{m}_{#pi#pi} [GeV/#font[12]{c}^{2}]");
-  h1fb->GetYaxis()->SetTitle("Entries / 0.5 GeV/#font[12]{c}^{2} ");
+  h1fb->GetXaxis()->SetTitle("#font[12]{m}(#font[12]{D}^{+}#pi^{#font[122]{-}}) [GeV/#font[12]{c}^{2}]");
+  h1fb->GetYaxis()->SetTitle("Entries / (0.5 GeV/#font[12]{c}^{2})");
 
   // Draw plots 
   // options described at http://root.cern.ch/root/html/THistPainter.html#HP01b
@@ -176,12 +176,12 @@ void ExampleMultiplePlots()
   pad->Draw();
 
   // Best is to make titles ourselves:
-  TLatex* tyax = new TLatex(0.06, 0.55, "Entries / 0.5 GeV/#font[12]{c}^{2}");
+  TLatex* tyax = new TLatex(0.06, 0.52, "Entries / (0.5 GeV/#font[12]{c}^{2})");
   tyax->SetNDC(kTRUE);    
   tyax->SetTextSize(0.05);      
   tyax->SetTextAngle(90.);
   tyax->Draw();
-  TLatex* txax = new TLatex( 0.75, 0.03, "#font[12]{m}_{#pi#pi} [GeV/#font[12]{c}^{2}]");
+  TLatex* txax = new TLatex( 0.68, 0.03, "#font[12]{m}(#font[12]{D}^{+}#pi^{#font[122]{-}}) [GeV/#font[12]{c}^{2}]");
   txax->SetNDC(kTRUE);    
   txax->SetTextSize(0.05);      
   txax->Draw();      
@@ -252,6 +252,6 @@ void ExampleMultiplePlots()
   }
 
   c2->SaveAs("ExampleMultipad-root.pdf");
-  c2->SaveAs("ExampleMultipad-root.eps");
+  //c2->SaveAs("ExampleMultipad-root.eps");
   
 }

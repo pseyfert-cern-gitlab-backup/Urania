@@ -51,10 +51,10 @@ Double_t RooAmoroso::evaluate() const
    if (alpha <= 0.) {
       throw std::string("Alpha must always be >= 0");
    }
-   double thetai = 1./theta;
+   double thetai = theta > 1.e-6 ? 1./theta : 1.e6;
    double ji = (x-a)*thetai;
-   return pow( ji,alpha*beta-1)*exp(-pow(ji,beta));
-} 
+   double val= abs(beta/theta)*pow( ji,alpha*beta-1)*exp(-pow(ji,beta));
+   return val >= 0. ? val : 0.;} 
 
 
 

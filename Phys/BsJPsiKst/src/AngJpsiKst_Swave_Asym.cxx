@@ -119,7 +119,7 @@ ClassImp(AngJpsiKst_Swave_Asym)
    Double_t K6  =  Kcharge * A0  * Ape * sin(dpe)     ;
    Double_t K7  =            As  * As                 ;
    Double_t K8  =            Apa * As  * cos(dpa-ds)  ;
-   Double_t K9  =  Kcharge * Ape * As  * sin(ds-dpe)  ;
+   Double_t K9  =  Kcharge * Ape * As  * sin(dpe-ds)  ;
    Double_t K10 =            A0  * As  * cos(ds)      ;
  
    Double_t CPsi2 = CPsi*CPsi ;
@@ -199,7 +199,7 @@ ClassImp(AngJpsiKst_Swave_Asym)
    Double_t K6  =  Kcharge * A0  * Ape * sin(dpe)     ;
    Double_t K7  =            As  * As                 ;
    Double_t K8  =            Apa * As  * cos(dpa-ds)  ;
-   Double_t K9  =  Kcharge * Ape * As  * sin(ds-dpe)  ;
+   Double_t K9  =  Kcharge * Ape * As  * sin(dpe-ds)  ;
    Double_t K10 =            A0  * As  * cos(ds)      ;
 
    // x = CPsi,  z = CTheta

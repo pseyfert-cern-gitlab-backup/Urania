@@ -30,7 +30,8 @@ void DStFit_MuonUnBiased(TTree* tt,
             const char* d0Name,
             const char* delmName,
             std::vector<fptr>& fun_vec,
-            const char* index="0")
+            const char* index="0",
+            Bool_t verbose=kFALSE)
 {
   
   //==================================================//
@@ -57,6 +58,10 @@ void DStFit_MuonUnBiased(TTree* tt,
                           delmPDG+7.0,
                           "MeV/c^{2}",
                           "m_{K#pi#pi_{s}}-m_{K#pi}");
+
+  if (verbose) {
+    massFitter->SetPrintEntriesFlag(kTRUE);
+  }
 
   //==================================================//
   // If pName is sPi, set DataSet name to Pi
@@ -158,7 +163,7 @@ void DStFit_MuonUnBiased(TTree* tt,
   // Make composite model with following estimate of 
   // yield breakdown
   //==================================================//
-  massFitter->MakeDelmModel(0.67, 0.12, 0.15, 0.01);
+  massFitter->MakeDelmModel(0.67, 0.12, 0.15, 0.0);
 
  
 

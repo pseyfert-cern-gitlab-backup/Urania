@@ -606,7 +606,8 @@ protected:
         RooPhysFitter::PlotChi2TestStat statType,
         Bool_t extended = kFALSE, const char* rangeName = 0,
         const char* addCoefRangeName = 0, Int_t nCPU = 1,
-        Bool_t interleave = kFALSE, Bool_t verbose = kTRUE,
+        RooFit::MPSplit interleave = RooFit::BulkPartition,
+        Bool_t verbose = kTRUE,
         Bool_t splitCutRange = kTRUE,
         RooAbsData::ErrorType etype = RooDataHist::SumW2);
     Double_t GetPValFromChi2MCToyStudy(

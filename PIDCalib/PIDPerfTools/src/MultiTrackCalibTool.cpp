@@ -29,8 +29,12 @@ using std::endl;
 MultiTrackCalibTool::MultiTrackCalibTool(std::string Name,
                                          TTree* RefTree,
                                          const std::string OutputFileName,
-                                         const std::string mode) 
+                                         const std::string mode,
+                                         Bool_t verbose,
+                                         Int_t printFreq) 
   : m_name(Name),
+    m_verbose(verbose),
+    m_printFreq(printFreq),
     m_BinningDimensions(0),
     m_BinningVectorSorted(0),
     m_KinVarBranchesSet(0),
@@ -65,6 +69,7 @@ MultiTrackCalibTool::MultiTrackCalibTool(std::string Name,
   m_TrackVars.clear();
   m_TrackPIDVals.clear();
   m_vTrckIDandFracErrs.clear();
+  m_vTrckIDandFracErrsWeight.clear();
 
   m_IDVar_suffix = "";
 }
@@ -87,28 +92,27 @@ MultiTrackCalibTool::~MultiTrackCalibTool()
  
   // Write output TTree to output TFile
   //m_OutputTree->Write();
-  //cout << "Wrote output TTree" <<endl;
+  //if (m_verbose) cout << "Wrote output TTree" <<endl;
   
   if(m_OutputTree)
   {
-    //cout << "Deleting output TTree" << endl;
+    if (m_verbose) cout << "Deleting output TTree" << endl;
     delete m_OutputTree;
     m_OutputTree=0;
-    //cout << "Deleted output TTree" << endl;
+    if (m_verbose) cout << "Deleted output TTree" << endl;
   }
 
-  //cout << "Closing output TFile" <<endl;
+  //if (m_verbose) cout << "Closing output TFile" <<endl;
   //m_OutputFile->Close();
-  //cout << "Closed output TFile" <<endl;
+  //if (m_verbose) cout << "Closed output TFile" <<endl;
   
   // Delete dynamically allocated output TTree and TFile
-  //cout << "Deleting output TFile" <<endl;
+  if (m_verbose) cout << "Deleting output TFile" <<endl;
   if(m_OutputFile) {
     delete m_OutputFile;
     m_OutputFile=0;
   }
-  //cout << "Deleted output TFile" <<endl;
-  
+  if (m_verbose) cout << "Deleted output TFile" <<endl;
 }
 
 //=============================================================================
@@ -194,6 +198,14 @@ void MultiTrackCalibTool::SetTrackNTrackVarName(const std::string NameInTree)
 }
 
 //=============================================================================
+// Declare sWeights variable name in reference tree
+//=============================================================================
+void MultiTrackCalibTool::SetSWeightVarName(const std::string NameInTree)
+{  
+  m_sWeight_name = NameInTree;
+}
+
+//=============================================================================
 // Declare signal track and its associated performance histogram
 //=============================================================================
 void MultiTrackCalibTool::DeclareSignalTrackAndPerfHist(const std::string TrackNameInTree, TH1* PerfHist)
@@ -245,8 +257,10 @@ void MultiTrackCalibTool::ReOrderBinningVector()
   // Simple case of a 1-dimensional binning (no ordering necessary)
   if(m_BinningDimensions == 1)
   {
-    if(m_PerfParamMap.find(itr_begin->second->GetXaxis()->GetTitle()) != m_PerfParamMap.end())
+    if(m_PerfParamMap.find(itr_begin->second->GetXaxis()->GetTitle()) != m_PerfParamMap.end()) {
+      m_BinningVectorSorted = true;
       return;
+    }
     else
     {
       cout << "**ERROR** : Got invalid X bin type." << endl;
@@ -261,8 +275,10 @@ void MultiTrackCalibTool::ReOrderBinningVector()
     std::vector<std::pair<std::string,std::string> >::iterator itr;
     
     // Test x-Dimension
-    if (m_PerfParamMap.find(itr_begin->second->GetXaxis()->GetTitle()) == m_PerfParamMap.end()) 
+    if (m_PerfParamMap.find(itr_begin->second->GetXaxis()->GetTitle()) == m_PerfParamMap.end()) {
       cout << "**ERROR** : Got invalid X bin type." << endl;
+      exit(EXIT_FAILURE);
+    }
     else
     {
       // Loop over binning parameters
@@ -277,8 +293,10 @@ void MultiTrackCalibTool::ReOrderBinningVector()
     }
     
     // Test y-Dimension
-    if (m_PerfParamMap.find(itr_begin->second->GetYaxis()->GetTitle()) == m_PerfParamMap.end()) 
+    if (m_PerfParamMap.find(itr_begin->second->GetYaxis()->GetTitle()) == m_PerfParamMap.end()) {
       cout << "**ERROR** : Got invalid Y bin type." << endl;
+      exit(EXIT_FAILURE);
+    }
     else
     {
       // Loop over binning parameters
@@ -295,8 +313,10 @@ void MultiTrackCalibTool::ReOrderBinningVector()
     if (m_BinningDimensions > 2)
     {
       // Test z-Dimension
-      if (m_PerfParamMap.find(itr_begin->second->GetZaxis()->GetTitle()) == m_PerfParamMap.end()) 
+      if (m_PerfParamMap.find(itr_begin->second->GetZaxis()->GetTitle()) == m_PerfParamMap.end()) {
         cout << "**ERROR** : Got invalid Z bin type." << endl;
+        exit(EXIT_FAILURE);
+      }
       else
       {
         // Loop over binning parameters
@@ -321,10 +341,16 @@ void MultiTrackCalibTool::ReOrderBinningVector()
     this->ReOrderVector(m_BinningParam, order);
 
     cout<<"After ReOrdering..."<<endl;
+    unsigned int index_ = 0;
     for(itr=m_BinningParam.begin(); itr!=m_BinningParam.end(); ++itr)
     {
+      if (itr->first == "nTRACKS") {
+        m_indexNTracks = index_;
+      } 
       cout<<itr->first<<'\t'<<itr->second<<endl;
+      index_++;
     }
+    cout<<" Index nTracks = "<< m_indexNTracks <<endl;
   }
 
   m_BinningVectorSorted = true;
@@ -355,6 +381,21 @@ void MultiTrackCalibTool::SetTrackKinVarBranchAddressInInputTree()
   if(!m_BinningVectorSorted)
     this->ReOrderBinningVector();
 
+  // Assigning the Branch Address for SWeight variable
+  if(m_sWeight_name!="") {
+    std::string VarTypeSWeight = getBranchType(m_InputRefTree, m_sWeight_name);
+    if (VarTypeSWeight.compare("Float_t")==0) {
+      m_sWeight_var = new Float_t();
+    }
+    else if (VarTypeSWeight.compare("Double_t")==0) {
+      m_sWeight_var = new Double_t();
+    }
+    else if (VarTypeSWeight.compare("Int_t")==0) {
+      m_sWeight_var = new Int_t();
+    }
+    m_InputRefTree->SetBranchAddress(TString(m_sWeight_name).Data(), m_sWeight_var);
+  }
+
   // Loop over all tracks
   std::map<std::string, TH1*>::iterator itr_trk;
   for(itr_trk=m_TrackEffMap.begin(); itr_trk!=m_TrackEffMap.end(); ++itr_trk)
@@ -375,25 +416,30 @@ void MultiTrackCalibTool::SetTrackKinVarBranchAddressInInputTree()
       std::string var_string = (itr_binVar->first=="nTRACKS") ? 
         itr_binVar->second : itr_trk->first+"_"+itr_binVar->second;
     
-      // Dynamically assign appropriate type to void pointer
-      std::string VarType = getBranchType(m_InputRefTree, var_string);
-      if (VarType.compare("Float_t")==0) {
-        itr_trkVar->second.push_back(new Float_t());
+      if ((itr_trk!=m_TrackEffMap.begin())&&(itr_binVar->first=="nTRACKS")){
+         itr_trkVar->second.push_back(m_TrackVars.begin()->second.at(m_indexNTracks));
       }
-      else if (VarType.compare("Double_t")==0) {
-        itr_trkVar->second.push_back(new Double_t());
-      }
-      else if (VarType.compare("Int_t")==0) {
-        itr_trkVar->second.push_back(new Int_t());
-      }
-
-      // Assign variable to associated branch address in input Tree
-      cout<< "Setting address for variable " << var_string
-          << " of type " << getBranchType(m_InputRefTree, var_string)
-          << endl;
+      else {
+        // Dynamically assign appropriate type to void pointer
+        std::string VarType = getBranchType(m_InputRefTree, var_string);
+        if (VarType.compare("Float_t")==0) {
+          itr_trkVar->second.push_back(new Float_t());
+        }
+        else if (VarType.compare("Double_t")==0) {
+          itr_trkVar->second.push_back(new Double_t());
+        }
+        else if (VarType.compare("Int_t")==0) {
+          itr_trkVar->second.push_back(new Int_t());
+        }
+ 
+        // Assign variable to associated branch address in input Tree
+        cout<< "Setting address for variable " << var_string
+            << " of type " << getBranchType(m_InputRefTree, var_string)
+            << endl;
         
-      m_InputRefTree->SetBranchAddress(TString(var_string).Data(), 
+        m_InputRefTree->SetBranchAddress(TString(var_string).Data(), 
                                        itr_trkVar->second.back());
+     }
       
     }//Loop over all binning variables
     
@@ -480,6 +526,29 @@ void MultiTrackCalibTool::CreateTrkPIDEffBranches()
     }
     //m_OutputBranchList.Add(trk_PIDErrBranch);
     
+    TBranch * trk_PIDEffWeightBranch = 0;
+    trk_PIDEffWeightBranch = m_OutputTree->Branch(TString(itr_trk->first+"_PIDCalibEffWeight").Data(),
+                                            &itr_trk->second.TrkPIDEffWeight, 
+                                            TString(itr_trk->first+"_PIDCalibEffWeight/F").Data());
+    if (!trk_PIDEffWeightBranch) {
+      std::cout << "ERROR: Failed to create PID efficiency weight track branch"
+                << std::endl;
+      exit(EXIT_FAILURE);
+    }
+    //m_OutputBranchList.Add(trk_PIDEffWeightBranch);
+
+    TBranch * trk_PIDErrWeightBranch = 0;
+    trk_PIDErrWeightBranch = m_OutputTree->Branch(TString(itr_trk->first+"_PIDCalibEffErrorWeight").Data(),
+                                            &itr_trk->second.TrkPIDErrWeight, 
+                                            TString(itr_trk->first+"_PIDCalibEffErrorWeight/F").Data());
+
+    if (!trk_PIDErrWeightBranch) {
+      std::cout << "ERROR: Failed to create PID efficiency error weight track branch"
+                << std::endl;
+      exit(EXIT_FAILURE);
+    }
+    //m_OutputBranchList.Add(trk_PIDErrWeightBranch);
+    
     TBranch * trk_BinNumBranch = 0;
     trk_BinNumBranch = m_OutputTree->Branch(TString(itr_trk->first+"_PIDCalibBinNumber").Data(),
                                             &itr_trk->second.TrkBinNumber, 
@@ -527,6 +596,42 @@ void MultiTrackCalibTool::CreateTotPIDEffBranches(TTree* tt)
     exit(EXIT_FAILURE);
   }
   //m_OutputBranchList.Add(evt_PIDErrBranch);
+
+  TBranch * evt_PIDEffWeightBranch = 0;
+  evt_PIDEffWeightBranch = tt->Branch("Event_PIDCalibEffWeight",
+                                &m_TotPIDEffWeight, 
+                                "Event_PIDCalibEffWeight/F");
+  if (!evt_PIDEffWeightBranch) {
+    std::cout << "ERROR: Failed to create PID weighted efficiency event branch"
+              << std::endl;
+    exit(EXIT_FAILURE);
+  }
+  //m_OutputBranchList.Add(evt_PIDEffWeightBranch);
+  
+  TBranch *evt_PIDErrWeightBranch = 0;
+  evt_PIDErrWeightBranch = tt->Branch("Event_PIDCalibErrWeight",
+                                &m_TotPIDErrWeight,
+                                "Event_PIDCalibErrWeight/F");                                       
+
+  if (!evt_PIDErrWeightBranch) {
+    std::cout << "ERROR: Failed to create PID weighted efficiency error event branch"
+              << std::endl;
+    exit(EXIT_FAILURE);
+  }
+  //m_OutputBranchList.Add(evt_PIDErrWeightBranch);
+
+  TBranch *evt_WeightBranch = 0;
+  evt_WeightBranch = tt->Branch("Event_Weight",
+                                &m_TotWeight,
+                                "Event_Weight/F");                                       
+
+  if (!evt_WeightBranch) {
+    std::cout << "ERROR: Failed to create Weight event branch"
+              << std::endl;
+    exit(EXIT_FAILURE);
+  }
+  //m_OutputBranchList.Add(evt_WeightBranch);
+
 }
 
 //=============================================================================
@@ -603,6 +708,13 @@ void MultiTrackCalibTool::DeleteHeapMemVars()
     std::vector<void*>::iterator itr_v;
     for(itr_v=itr_trk->second.begin(); itr_v!=itr_trk->second.end(); ++itr_v)
     {
+
+      if ( (itr_trk!=m_TrackVars.begin())&&
+          (m_BinningParam.at(distance(itr_trk->second.begin(),itr_v)).first=="nTRACKS") )
+      {
+         continue;
+      }
+
       std::string branch_name = this->GetKinVarBranchName(itr_trk->first,
                                                           m_BinningParam.at(distance(itr_trk->second.begin(),
                                                                                      itr_v)).first,
@@ -647,57 +759,78 @@ void MultiTrackCalibTool::Loop()
     Long64_t entryNumber = m_InputRefTree->GetEntryNumber(i);
     m_InputRefTree->GetEntry(entryNumber);
 
+    Bool_t printEntry = m_verbose&&m_printFreq!=0&&((m_printFreq<0)||(i%m_printFreq==0));
+    if (printEntry) cout << "**** Processing entry number " << i << " ****" << endl;
+
+    // Get the SWeight
+    m_TotWeight = 1;
+    if(m_sWeight_name!="") {
+      m_TotWeight = CastVoidPointerToDouble(m_sWeight_var, m_InputRefTree, m_sWeight_name);
+      if (printEntry) cout << "m_TotWeight " << m_TotWeight << std::endl;
+    }
+
     m_TotPIDEff = 1;
+    m_TotPIDEffWeight = m_TotWeight;
 
     // Loop over all tracks
     std::map<std::string, std::vector<void*> >::iterator itr_trk;
+    cout.setf(std::ios::fixed, std::ios::floatfield);
+    cout.precision(3);
     for(itr_trk=m_TrackVars.begin(); itr_trk!=m_TrackVars.end(); ++itr_trk)
     {
       // Get the global bin number of the historgram that this event lies in
       Int_t track_bin = -100;
-      if (m_BinningDimensions==3)
-        track_bin =  
-          m_TrackEffMap[itr_trk->first]
-          ->FindBin(CastVoidPointerToDouble(itr_trk->second.at(0), 
-                                            m_InputRefTree, 
-                                            this->GetKinVarBranchName(itr_trk->first,
-                                                                      m_BinningParam.at(0).first,
-                                                                      m_BinningParam.at(0).second)),
-                    CastVoidPointerToDouble(itr_trk->second.at(1), 
-                                            m_InputRefTree, 
-                                            this->GetKinVarBranchName(itr_trk->first,
-                                                                      m_BinningParam.at(1).first,
-                                                                      m_BinningParam.at(1).second)),
-                    CastVoidPointerToDouble(itr_trk->second.at(2), 
-                                            m_InputRefTree, 
-                                            this->GetKinVarBranchName(itr_trk->first,
-                                                                      m_BinningParam.at(2).first,
-                                                                      m_BinningParam.at(2).second)));
-      else if (m_BinningDimensions==2) 
-        track_bin =  
-          m_TrackEffMap[itr_trk->first]
-          ->FindBin(CastVoidPointerToDouble(itr_trk->second.at(0), 
-                                            m_InputRefTree, 
-                                            this->GetKinVarBranchName(itr_trk->first,
-                                                                      m_BinningParam.at(0).first,
-                                                                      m_BinningParam.at(0).second)),
-                    CastVoidPointerToDouble(itr_trk->second.at(1), 
-                                            m_InputRefTree, 
-                                            this->GetKinVarBranchName(itr_trk->first,
-                                                                      m_BinningParam.at(1).first,
-                                                                      m_BinningParam.at(1).second)));
-      else if (m_BinningDimensions==1) 
-        track_bin =  
-          m_TrackEffMap[itr_trk->first]
-          ->FindBin(CastVoidPointerToDouble(itr_trk->second.at(0), 
-                                            m_InputRefTree, 
-                                            this->GetKinVarBranchName(itr_trk->first,
-                                                                      m_BinningParam.at(0).first,
-                                                                      m_BinningParam.at(0).second)));
+
+      std::string trkname = itr_trk->first;
+      
+      std::string xvarname = this->GetKinVarBranchName(trkname,
+                                                       m_BinningParam.at(0).first,
+                                                       m_BinningParam.at(0).second);
+      Double_t xvar = CastVoidPointerToDouble(itr_trk->second.at(0), 
+                                              m_InputRefTree, 
+                                              xvarname);
+      if (printEntry) cout << "Track " << trkname << " - " << xvarname << " = " << xvar;
+
+      if (m_BinningDimensions==1) {
+        track_bin = (m_TrackEffMap[itr_trk->first])->FindBin(xvar);
+      }
+      else {
+        std::string yvarname = this->GetKinVarBranchName(trkname,
+                                                         m_BinningParam.at(1).first,
+                                                         m_BinningParam.at(1).second);
+        
+        Double_t yvar = CastVoidPointerToDouble(itr_trk->second.at(1), 
+                                                m_InputRefTree, 
+                                                yvarname);
+        if (printEntry) {
+        cout << ", " << yvarname << " = " << yvar;
+        }
+        if (m_BinningDimensions==2) {
+          track_bin = (m_TrackEffMap[itr_trk->first])->FindBin(xvar,yvar);
+        }
+        else {
+          std::string zvarname = this->GetKinVarBranchName(trkname,
+                                                           m_BinningParam.at(2).first,
+                                                           m_BinningParam.at(2).second);
+          Double_t zvar = CastVoidPointerToDouble(itr_trk->second.at(2), 
+                                                  m_InputRefTree, 
+                                                  zvarname);
+          if (printEntry) {
+            cout << ", " << zvarname << " = " << zvar;
+          }
+          track_bin = (m_TrackEffMap[itr_trk->first])->FindBin(xvar,yvar,zvar);
+        }
+      }
+      
+      if (printEntry) cout << ": global bin number = " << track_bin << endl;
       
       //set the efficiency and error from this global bin number
       m_TrackPIDVals[itr_trk->first].TrkPIDEff    = m_TrackEffMap[itr_trk->first]->GetBinContent(track_bin);
       m_TrackPIDVals[itr_trk->first].TrkPIDErr    = m_TrackEffMap[itr_trk->first]->GetBinError(track_bin);
+
+      m_TrackPIDVals[itr_trk->first].TrkPIDEffWeight    = m_TotWeight*m_TrackPIDVals[itr_trk->first].TrkPIDEff;
+      m_TrackPIDVals[itr_trk->first].TrkPIDErrWeight    = m_TotWeight*m_TrackPIDVals[itr_trk->first].TrkPIDErr;
+
       m_TrackPIDVals[itr_trk->first].TrkBinNumber = track_bin;
 
       // Determine if this is a underflow or overflow bin. Not possible 
@@ -733,7 +866,7 @@ void MultiTrackCalibTool::Loop()
 
       // Append track efficiency to running event efficiency
       m_TotPIDEff *= m_TrackPIDVals[itr_trk->first].TrkPIDEff;
-      
+      m_TotPIDEffWeight *= m_TrackPIDVals[itr_trk->first].TrkPIDEff;
       // If ID variable declared, assign ID, else assign zero
       Int_t ID = (m_IDVarBranchesSet) ? CastVoidPointerToInt(itr_trk->second.at(m_BinningDimensions),
                                                              m_InputRefTree,
@@ -747,6 +880,14 @@ void MultiTrackCalibTool::Loop()
       // Push back this fraction along with the ID value of this track
       m_vTrckIDandFracErrs.push_back( std::make_pair(ID,
                                                      ErrOverEff) );
+      // Ensure the error-over-eff fraction is physical Weight
+      Float_t ErrOverEffWeight = 0;
+      if(m_TrackPIDVals[itr_trk->first].TrkPIDEffWeight!=0 && m_TrackPIDVals[itr_trk->first].TrkPIDErrWeight!=0)
+        ErrOverEffWeight = m_TrackPIDVals[itr_trk->first].TrkPIDErrWeight/m_TrackPIDVals[itr_trk->first].TrkPIDEffWeight;
+
+      // Push back this fraction along with the ID value of this track for Weight
+      m_vTrckIDandFracErrsWeight.push_back( std::make_pair(ID,
+                                                     ErrOverEffWeight) );
       /*
       cout<<i
           <<'\t'<<CastVoidPointerToInt(itr_trk->second.at(m_BinningDimensions),
@@ -754,6 +895,8 @@ void MultiTrackCalibTool::Loop()
                                        itr_trk->first+"_"+IDVar_suffix)
           <<'\t'<<m_TrackPIDVals[itr_trk->first].TrkPIDEff
           <<'\t'<<m_TrackPIDVals[itr_trk->first].TrkPIDErr 
+          <<'\t'<<m_TrackPIDVals[itr_trk->first].TrkPIDEffWeight
+          <<'\t'<<m_TrackPIDVals[itr_trk->first].TrkPIDErrWeight 
           <<'\t'<<m_TrackPIDVals[itr_trk->first].TrkBinNumber
           <<'\t'<<ErrOverEff
           <<endl;
@@ -762,12 +905,16 @@ void MultiTrackCalibTool::Loop()
     }// Loop over all tracks
 
     // Calculate event efficiency
-    m_TotPIDErr = fabs(m_TotPIDEff*this->CalcEventFracError());
-    
+    m_TotPIDErr = fabs(m_TotPIDEff*this->CalcEventFracError(m_vTrckIDandFracErrs));
+    m_TotPIDErrWeight = fabs(m_TotPIDEff*this->CalcEventFracError(m_vTrckIDandFracErrsWeight));
+
     //cout<<m_TotPIDEff<<'\t'<<m_TotPIDErr<<endl;
 
     m_NaiveAverageCounters.first += m_TotPIDEff;
     m_NaiveAverageCounters.second += pow(m_TotPIDErr,2);
+
+    m_NaiveAverageWeightCounters.first += m_TotPIDEffWeight;
+    m_NaiveAverageWeightCounters.second += pow(m_TotPIDErrWeight,2);
 
     //m_WeightedAverageCounters.first += m_TotPIDEff/pow(m_TotPIDErr,2);
     //m_WeightedAverageCounters.second += 1/pow(m_TotPIDErr,2);
@@ -777,6 +924,7 @@ void MultiTrackCalibTool::Loop()
 
     // Clear the current contents of vTrckIDandFracErrs
     m_vTrckIDandFracErrs.clear();
+    m_vTrckIDandFracErrsWeight.clear();
 
   }// Loop over events
 
@@ -947,19 +1095,19 @@ void MultiTrackCalibTool::CheckSanityOfPerfHists()
 //=============================================================================
 // Determine the per event fractional error (i.e. \frac{\sigma}{\eff} )
 //=============================================================================
-Float_t MultiTrackCalibTool::CalcEventFracError()
+Float_t MultiTrackCalibTool::CalcEventFracError(std::vector<std::pair<Int_t,Float_t> > vTrckIDandFracErrs)
 {
   Float_t evt_PIDErr = 0;
   
   //Loop over entries
   std::vector<std::pair<Int_t,Float_t> >::const_iterator itr;
-  for(itr=m_vTrckIDandFracErrs.begin(); itr!=m_vTrckIDandFracErrs.end(); ++itr)
+  for(itr=vTrckIDandFracErrs.begin(); itr!=vTrckIDandFracErrs.end(); ++itr)
   {
     evt_PIDErr += pow(itr->second,2);
   }
   
   if(m_IDVarBranchesSet)
-    evt_PIDErr = sqrt(evt_PIDErr + this->CalcPerEventErrorCrossTerm());
+    evt_PIDErr = sqrt(evt_PIDErr + this->CalcPerEventErrorCrossTerm(vTrckIDandFracErrs));
   else
     evt_PIDErr = sqrt(evt_PIDErr);
   
@@ -970,11 +1118,11 @@ Float_t MultiTrackCalibTool::CalcEventFracError()
 //=============================================================================
 // Determine the per event efficiency error cross term
 //=============================================================================
-Float_t MultiTrackCalibTool::CalcPerEventErrorCrossTerm()
+Float_t MultiTrackCalibTool::CalcPerEventErrorCrossTerm(std::vector<std::pair<Int_t,Float_t> > vTrckIDandFracErrs)
 {
   Float_t xTerms = 0;
 
-  if(m_vTrckIDandFracErrs.size()<2)
+  if(vTrckIDandFracErrs.size()<2)
     return xTerms;
 
   // 0) Let i=0
@@ -984,9 +1132,9 @@ Float_t MultiTrackCalibTool::CalcPerEventErrorCrossTerm()
 
   std::vector<std::pair<Int_t,Float_t> >::const_iterator i,j;
   
-  for(i=m_vTrckIDandFracErrs.begin(); i!=m_vTrckIDandFracErrs.end(); ++i)
+  for(i=vTrckIDandFracErrs.begin(); i!=vTrckIDandFracErrs.end(); ++i)
   {
-    for(j=i+1; j!=m_vTrckIDandFracErrs.end(); ++j)
+    for(j=i+1; j!=vTrckIDandFracErrs.end(); ++j)
     {
       xTerms += ( abs(i->first)==abs(j->first) ) ? 2*(i->second)*(j->second) : 0;
     }//j
@@ -1004,6 +1152,17 @@ std::pair<Float_t, Float_t> MultiTrackCalibTool::CalculateNaiveAverage()
 {
   Float_t av = m_NaiveAverageCounters.first/m_OutputTree->GetEntries();
   Float_t er = sqrt(m_NaiveAverageCounters.second)/m_OutputTree->GetEntries();
+  
+  return std::make_pair(av,er);
+}
+
+//=============================================================================
+// Calculate the naive event average weighted
+//=============================================================================
+std::pair<Float_t, Float_t> MultiTrackCalibTool::CalculateNaiveWeightAverage()
+{
+  Float_t av = m_NaiveAverageWeightCounters.first/m_OutputTree->GetEntries();
+  Float_t er = sqrt(m_NaiveAverageWeightCounters.second)/m_OutputTree->GetEntries();
   
   return std::make_pair(av,er);
 }

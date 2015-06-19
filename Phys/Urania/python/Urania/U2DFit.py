@@ -158,6 +158,7 @@ class UGraphFitBasis:
             self.fit(i, params = pj, printflag = 0)
             dy = sum(abs(self.function_list[i](self.fitRes[i],self.x)-self.y))*1./len(self.y)
             xx = dy/self.Ysize
+            if not xx == xx: xx = 999999999999999
             p.append([xx,pj])
             if quick and xx < tolerance: break
         p.sort()
@@ -206,7 +207,9 @@ class UGraphFitBasis:
     def CosmeticFOM(self,i=0):
         sy = self.Ysize
         dy = sum(abs(self.function_list[i](self.fitRes[i],self.x)-self.y))*1./len(self.y)
-        return dy/sy
+        out = dy/sy
+        if not out == out: return 999999999999999
+        return out
         
         
     def fitAll(self):

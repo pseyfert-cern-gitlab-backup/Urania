@@ -26,11 +26,16 @@ class ParticleData:
 phi = ParticleData(333)
 Kst0 = ParticleData(313)
 electron = ParticleData(11)
+proton = ParticleData(2212)
+neutron = ParticleData(2112)
+muon = ParticleData(13)
+Muon = muon
 Kplus = ParticleData(321)
+piplus = ParticleData(211)
 K0  = ParticleData(311)
 Jpsi = ParticleData(443)
 Bd = ParticleData(511)
 Bs = ParticleData(531)
 Bu = ParticleData(521)
-
+Lambda_b0 = ParticleData(5122)
         

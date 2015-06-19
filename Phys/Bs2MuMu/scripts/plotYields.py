@@ -24,7 +24,9 @@ def addFiles(directory,channel,entries, tr_level, mass_var):
 
         print ' o) The list of files selected:'
         print '   Entries will be read from the files: '
-        for e in entries: print e.get('file')
+        for e in entries:
+            print ' For nTuple: ',e.get('nTupleName')
+            print e.get('file')
 
         return entries
 
@@ -52,9 +54,11 @@ def readVars(directory,channel,entries):
                                 val = float(l.split(':')[1].split('+-')[0])
                                 err = float(l.split(':')[1].split('+-')[1]) #This is the fit error!
                                 n_sig_raw = valAndErr(val, 'P').plus(valAndErr(0., err)) #Add fit and poissonian errors
-                                e['n_sig_raw'] = n_sig_raw.over(e.get('lumi'))
-                                n_sig = n_sig_raw.over(e.get('trig_eff')).over(e.get('lumi'))
-                                e['n_sig'] = n_sig
+                                e['n_sig_raw'] = n_sig_raw
+                                n_sig = n_sig_raw.over(e.get('eff_cor'))
+                                e['n_sig_cor'] = n_sig #corrected for eff_cor
+                                e['n_sig_raw_perpb'] = n_sig_raw.over(e.get('lumi'))
+                                e['n_sig'] = n_sig_raw.over(e.get('eff_cor')).over(e.get('lumi')) #corrected n_sig per pb
 
 
         print ' o) Entries to be plotted:'
@@ -65,15 +69,16 @@ def readVars(directory,channel,entries):
 
 def plotVarInEntries(var, entries, plotOpts):
         #Loop over the points and fill the info
-	labels = [];x = []; y = []; ex = []; ey = []
+	labels = []; x = []; y = []; ex = []; ey = []
 
         bins = [0.]
         # Get the labels for the x axis
         # Set the bin sizes according to the luminosity within each bin
 
+
         for i,f in enumerate(entries):
 	        if f.get('type') is 'point':
-                        labels.append(f.get('nTupleName','noname')+''+str(f.get('lumi',0).getVal())+'pb')
+                        labels.append(f.get('nTupleName','noname')+'_'+str(f.get('lumi',0).getVal())+'pb')
                         bins.append(bins[i]+f.get('lumi',0.).getVal())
                         # Calculate x
                         x_val = bins[i] + (bins[i+1]-bins[i])/2

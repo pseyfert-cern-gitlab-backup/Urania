@@ -8,6 +8,7 @@ from math import sqrt
 from array import array
 import sys
 import optparse
+import tempfile
    
 ## def usage():
 ##     print ' --------------------------------------------------------------------------------------------------'
@@ -116,8 +117,10 @@ IMPORTANT: If using muon and/or 'MuonUnbiased' calibration samples, the option '
     MuonPostFix=""
     if opts.isMuon and PartName in ("K", "Pi", "P"):
         MuonPostFix="_MuonUnbiased"
-    fname_perf = "PerfHists_%s%s_Strip%s_%s_Syst_%s.root" %(PartName,MuonPostFix,StripVersion,MagPolarity,DLLVar)
-    fname_true = "PerfHists_%s%s_Strip%s_%s_OneBin_%s.root" %(PartName,MuonPostFix,StripVersion,MagPolarity,DLLVar)
+
+    DLLSuffix=DLLVar.copy().replace('/', '_div_')
+    fname_perf = "PerfHists_%s%s_Strip%s_%s_Syst_%s.root" %(PartName,MuonPostFix,StripVersion,MagPolarity,DLLSuffix)
+    fname_true = "PerfHists_%s%s_Strip%s_%s_OneBin_%s.root" %(PartName,MuonPostFix,StripVersion,MagPolarity,DLLSuffix)
     if opts.inputDir is not None:
         fname_perf = "%s/%s" %(opts.inputDir, fname_perf)
         fname_true = "%s/%s" %(opts.inputDir, fname_true)
@@ -168,7 +171,17 @@ IMPORTANT: If using muon and/or 'MuonUnbiased' calibration samples, the option '
         print "Evaluating efficiencies for PID cut %d" %iname
         print "================================================"
 
-        CalibTool = gbl.MultiTrackCalibTool("SystTool_%s" %(hname[0:-4]), t_Ref,
+        # Create a 'temporary' file to hold a copied reference tree
+        # Without copying the reference tree, each MTCT instance
+        # modifies the original tree. Eventually these modifications
+        # cause a failure during a PID cut iteration
+        #tempdir = ROOT.gSystem.TempDirectory()
+        tempdir = tempfile.mkdtemp()
+        f_tmp = ROOT.TFile("%s/tmp.root" %tempdir, "RECREATE")
+        t_copy = t_Ref.CopyTree("")
+        print "Reference TTree copied to temporary file %s" %f_tmp.GetName()
+        CalibTool = gbl.MultiTrackCalibTool("SystTool_%s" %(hname[0:-4]),
+                                            t_copy, 
                                             fname_out, openmode)
         # ROOT.SetOwnership(CalibTool, False)
         #ROOT.SetOwnership(CalibTool, True)
@@ -176,8 +189,9 @@ IMPORTANT: If using muon and/or 'MuonUnbiased' calibration samples, the option '
         #=============================================================================
         # Declare the name in the reference TTree for the various binning variables
         #=============================================================================
-        CalibTool.SetTrackEtaVarName('TRACK_Eta')
         CalibTool.SetTrackMomVarName('P')
+        #if not opts.isMuon:
+        CalibTool.SetTrackEtaVarName('TRACK_Eta')
         CalibTool.SetTrackNTrackVarName('nTracks')
 
         #=============================================================================
@@ -243,6 +257,8 @@ IMPORTANT: If using muon and/or 'MuonUnbiased' calibration samples, the option '
         #del CalibTool
         del CalibTool
         CalibTool=None
+        f_tmp.Close()
+        ROOT.gSystem.Exec("rm -rf %s" %tempdir)
         
     #=============================================================================
     # Create TGraph

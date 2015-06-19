@@ -1,9 +1,9 @@
 #============================================================================
 # Created    : 2010-10-07
-# Maintainer : Andrew Powell (LHCb)04
+# Maintainer : Philip Hunt
 #============================================================================
 package           PIDPerfScripts
-version           v5r0
+version           v5r2
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -14,6 +14,11 @@ branches          cmt doc src scripts make python
 # Used packages. 
 #============================================================================
 
+private
+# genconfuser.py cannot be used here
+# Note: the tag must be set before including GaudiPolicy
+apply_tag skip_genconfuser
+end_private
 use   GaudiPolicy         v*
 use   ROOT                v*    LCG_Interfaces
 use   Boost               v*    LCG_Interfaces
@@ -23,16 +28,56 @@ use   PIDPerfTools        v*    PIDCalib
 
 apply_pattern install_more_includes more=PIDPerfScripts
 
-#set CALIBDATASTORE /data/lhcb/users/powell/CalibData
-#set CALIBDATASTORE /afs/cern.ch/lhcb/group/rich/vol1/RichPidCalib/CalibData/
-#set CALIBREFDATASTORE /data/lhcb/users/hunt/CalibData
-
 #============================================================================
-# default for CERN access
-set CALIBDATASTORE /castor/cern.ch/grid/lhcb/user/p/powell/CalibData/
-set CALIBREFDATASTORE /castor/cern.ch/grid/lhcb/user/p/phunt/CalibData/
-set MUONCALIBDATASTORE /castor/cern.ch/grid/lhcb/user/j/jotalora/CalibData
-set MUONCALIBREFDATASTORE /castor/cern.ch/grid/lhcb/user/j/jotalora/CalibData
+# Define environmental variables used by the scripts
+#
+# NB. CALIBDATAURLPROTOCOL and CALIBDATAURLQUERY are optional variables
+# that set the URL protocol query. Typically, these are only needed for
+# certain remote filesystems such as CASTOR/EOS.
+#
+# For CERN access, CALIBDATAURLPROTOCOL should be set to 'root' (to use the
+# XROOTD protocol) and CALIBDATAURLQUERY should be set to 'svcClass=lhcbuser'
+# (to use the service class for grid user files)
+# In addition, the 'DATASTORE' variables should be prepended with
+# 'castorlhcb.cern.ch/'
+#
+#------------------------------------------------------------------------------
+# default for CERN access (S20r1 and later)
+set CALIBDATAURLPROTOCOL root
+set CALIBDATAURLQUERY svcClass=lhcbuser
+set CALIBDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/phunt/CalibData
+set CALIBREFDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/phunt/CalibData
+set MUONCALIBDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/phunt/CalibData
+set MUONCALIBREFDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/phunt/CalibData
+#------------------------------------------------------------------------------
+#
+###------------------------------------------------------------------------------
+### required for Oxford access (S20r1 and later)
+##set CALIBDATASTORE /data/lhcb/users/hunt/CalibData
+##set CALIBREFDATASTORE /data/lhcb/users/hunt/CalibData
+##set MUONCALIBDATASTORE /data/lhcb/users/hunt/CalibData
+##set MUONCALIBREFDATASTORE /data/lhcb/users/hunt/CalibData
+###------------------------------------------------------------------------------
+###
+###------------------------------------------------------------------------------
+### default for CERN access (S20 or earlier)
+##set CALIBDATAURLPROTOCOL root
+##set CALIBDATAURLQUERY svcClass=lhcbuser
+##set CALIBDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/powell/CalibData
+##set CALIBREFDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/phunt/CalibData
+##set MUONCALIBDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/j/jotalora/CalibData
+##set MUONCALIBREFDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/j/jotalora/CalibData
+###
+###------------------------------------------------------------------------------
+###
+###------------------------------------------------------------------------------
+### required for Oxford access (S20 or earlier)
+##set CALIBDATASTORE /data/lhcb/users/powell/CalibData
+##set CALIBREFDATASTORE /data/lhcb/users/hunt/CalibData
+##set MUONCALIBDATASTORE /data/lhcb/users/hunt/CalibData
+##set MUONCALIBREFDATASTORE /data/lhcb/users/hunt/CalibData
+###
+###------------------------------------------------------------------------------
 #============================================================================
 
 #============================================================================

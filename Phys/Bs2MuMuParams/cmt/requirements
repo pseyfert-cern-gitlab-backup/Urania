@@ -3,7 +3,7 @@
 # Maintainer : Marc-Olivier Bettler, Diego Martinez Santos, Mathieu Perrin Terrin
 #============================================================================
 package           Bs2MuMuParams
-version           v2r3
+version           v2r4
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -13,6 +13,11 @@ branches          cmt doc python histos
 #============================================================================
 # Used packages.
 #============================================================================
+private
+# genconfuser.py cannot be used here
+# Note: the tag must be set before including GaudiPolicy
+apply_tag skip_genconfuser
+end_private
 
 use	GaudiPolicy 	v*
 

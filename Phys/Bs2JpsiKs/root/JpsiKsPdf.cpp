@@ -238,7 +238,7 @@ void JpsiKsPdf::setModel(TString setSigType, TString setKstarType, TString setBk
   if(!(m_bkgType=="Exp" || m_bkgType=="Poly" || m_bkgType=="Uni")) std::cout << "ERROR: Unknown Background Model." << std::endl;
   
   if(setSigType!="Default") m_setup = setSigTails;
-  if(!(m_setup=="Loose" || m_setup=="Optimal" || m_setup=="FitTails")) std::cout << "ERROR: Unknow Setup for Tails." << std::endl;
+  if(!(m_setup=="Loose" || m_setup=="Optimal" || m_setup=="FitTails"|| m_setup=="Lambda")) std::cout << "ERROR: Unknow Setup for Tails." << std::endl;
   
   // Re-Initialise model
   if(m_tau_Bd) reInitialise("All");
@@ -313,7 +313,7 @@ void JpsiKsPdf::setTails(){
     if(m_n2) m_n2->setVal(m_ttype==3 ? 145.501 : (m_ttype==5 ? 7.5 : 8.9));
     setConstant("Tails");
   }
-  else if(m_setup=="Loose"){
+  else if(m_setup=="Loose" || m_setup=="Lambda"){
     if(m_alpha) m_alpha->setVal(m_ttype==3 ? 1.312 : (m_ttype==5 ? 2.339 : 2.305));
     if(m_n) m_n->setVal(m_ttype==3 ? 4.02 : (m_ttype==5 ? 1.71 : 1.75));
     if(m_alpha2) m_alpha2->setVal(m_ttype==3 ? -1.431 : (m_ttype==5 ? -2.248 : -2.207));
@@ -470,7 +470,11 @@ void JpsiKsPdf::buildFractions(int nevents){
 void JpsiKsPdf::buildMassPdf(){
 
   // *** Signal Bd ***
-  m_meanBd = new RooRealVar(m_name+"meanBd","mean Bd mass", 5279.50, 5279.50-10., 5279.50+10.);
+  if ("Lambda"==m_setup){
+    m_meanBd = new RooRealVar(m_name+"meanLb","mean Lb mass", 5620, 5610., 5630.);
+  } else {
+    m_meanBd = new RooRealVar(m_name+"meanBd","mean Bd mass", 5279.50, 5279.50-10., 5279.50+10.);
+  }
   m_width = new RooRealVar(m_name+"width","width",5.,1.,10.);
 
   // Individual Components
@@ -805,8 +809,8 @@ void JpsiKsPdf::plotOn(TCanvas* doek, RooDataSet* data, bool doSumW2, Int_t logy
   
   // Titles
   massFrame->SetTitle("");
-  massFrame->SetYTitle("Candidates/(5 MeV/c^{2})");
-  massFrame->SetXTitle("m_{J/#psi K_{S}^{0}} [MeV/c^{2}]");
+  massFrame->SetYTitle("Candidates / (5 MeV/#it{c}^{2})");
+  massFrame->SetXTitle("m_{J/#psi K_{S}^{0}} [MeV/#it{c}^{2}]");
   
   // Data
   if(doSumW2) data->plotOn(massFrame, DataError(RooAbsData::SumW2),MarkerStyle(8),MarkerSize(0.8));
@@ -869,7 +873,7 @@ void JpsiKsPdf::plotOnTime(TCanvas* doek, RooDataSet* data, bool doSumW2, Int_t 
 
   // Titles
   timeFrame->SetTitle("");
-  timeFrame->SetYTitle("Candidates/(0.2 ps)");
+  timeFrame->SetYTitle("Candidates / (0.2 ps)");
   timeFrame->SetXTitle("B decay time [ps]");
   
   // Data
@@ -881,26 +885,20 @@ void JpsiKsPdf::plotOnTime(TCanvas* doek, RooDataSet* data, bool doSumW2, Int_t 
     else data->plotOn(timeFrame,CutRange("massRange"),MarkerStyle(8),MarkerSize(0.8));
   
     // PDF components
-    m_twoDPdf->plotOn(timeFrame,ProjectionRange("massRange"), Components(*m_decay_acc_Bd), Range(m_tau->getMin(),m_tau->getMax()),
-      LineColor(m_BdCol));
-    if (m_Bs) m_twoDPdf->plotOn(timeFrame,ProjectionRange("massRange"), Components(*m_decay_acc_Bs),
-                                    Range(m_tau->getMin(),m_tau->getMax()),LineColor(m_BsCol));
-    m_twoDPdf->plotOn(timeFrame,ProjectionRange("massRange"), Components(*m_decay_background),
-                          Range(m_tau->getMin(),m_tau->getMax()),LineStyle(kDashed), LineColor(kBlack) );
-    m_twoDPdf->plotOn(timeFrame,ProjectionRange("massRange"), Range(m_tau->getMin(),m_tau->getMax()), LineColor(1) );
+    m_twoDPdf->plotOn(timeFrame, ProjectionRange("massRange"), Components(*m_twoD_Bd), LineColor(1), LineStyle(6));
+    m_twoDPdf->plotOn(timeFrame, ProjectionRange("massRange"), Components(*m_twoD_Bs), LineColor(1), LineStyle(4));
+    m_twoDPdf->plotOn(timeFrame, ProjectionRange("massRange"), Components(*m_twoD_comBKG), LineColor(1), LineStyle(9));
+    m_twoDPdf->plotOn(timeFrame, ProjectionRange("massRange"), LineColor(1));
   }
   else{
     if(doSumW2) data->plotOn(timeFrame, DataError(RooAbsData::SumW2),MarkerStyle(8),MarkerSize(0.8));
     else data->plotOn(timeFrame,MarkerStyle(8),MarkerSize(0.8));
   
     // PDF components
-    m_lifetimePdf->plotOn(timeFrame, Components(*m_decay_acc_Bd), Range(m_tau->getMin(),m_tau->getMax()),
-      LineColor(m_BdCol));
-    if (m_Bs) m_lifetimePdf->plotOn(timeFrame, Components(*m_decay_acc_Bs), Range(m_tau->getMin(),m_tau->getMax()),
-      LineColor(m_BsCol));
-    m_lifetimePdf->plotOn(timeFrame, Components(*m_decay_background), Range(m_tau->getMin(),m_tau->getMax()),
-      LineStyle(kDashed), LineColor(kBlack) );
-    m_lifetimePdf->plotOn(timeFrame, Range(m_tau->getMin(),m_tau->getMax()), LineColor(1) );
+    m_twoDPdf->plotOn(timeFrame, Components(*m_twoD_Bd), LineColor(1), LineStyle(6));
+    m_twoDPdf->plotOn(timeFrame, Components(*m_twoD_Bs), LineColor(1), LineStyle(4));
+    m_twoDPdf->plotOn(timeFrame, Components(*m_twoD_comBKG), LineColor(1), LineStyle(9));
+    m_twoDPdf->plotOn(timeFrame, LineColor(1));
   }
   std::cout << "@@ Finished Plotting PDF" << std::endl;
   
@@ -930,34 +928,46 @@ void JpsiKsPdf::plotOnTime(TCanvas* doek, RooDataSet* data, bool doSumW2, Int_t 
 
 // ####################################################################################################
 // *** Legend ***
-void JpsiKsPdf::plotLegend(double x1,double y1,double x2,double y2) const {
+void JpsiKsPdf::plotLegend(double x1,double y1,double x2,double y2, TString what) const {
+  string sWhat (what);
+
   std::cout << "@@ Starting Legend" << std::endl;
   TLegend* leg = new TLegend(x1,y1,x2,y2,""); // memory leak
 
   TGraphErrors* gr = new TGraphErrors(1);
   gr->SetLineWidth(2);
-  leg->AddEntry(gr,"data","lep"); 
+  leg->AddEntry(gr,"data","lep");
 
   TH1F* HBs = new TH1F("Bs","Bs",10,0,1);
-  HBs->SetLineColor(0);  
-  HBs->SetFillColor(m_BsCol);  
-  if (m_Bs) { // This macro is not design to work with Bu2JpsiKs and B2JpsiPhi anyway
-    //if (m_name=="B2JpsiKs") 
-    leg->AddEntry(HBs,"B_{s}^{0}#rightarrow J/#psiK_{S}^{0}","f"); 
-    //else if (m_name=="Bu2JpsiK") std::cout << "No charged Bs" << std::endl;
-    //else if (m_name=="Bs2JpsiPhi") leg->AddEntry(HBs,"B_{s}^{0}#rightarrow J/#psi#phi","f"); 
-    //else std::cout << "Unknown name " << m_name << std::endl;
+  if (m_Bs) {
+    if (sWhat.find("mass")!=string::npos) {
+      HBs->SetLineColor(0);  
+      HBs->SetFillColor(m_BsCol);
+      leg->AddEntry(HBs,"B_{s}^{0}#rightarrow J/#psiK_{S}^{0}","f");
+    }
+    else if (sWhat.find("time")!=string::npos) {
+      HBs->SetLineColor(1);  
+      HBs->SetLineStyle(4);
+      if (!(sWhat.find("Bkg")!=string::npos)) {
+        leg->AddEntry(HBs,"B_{s}^{0}#rightarrow J/#psiK_{S}^{0}","l");
+      }
+    }
   }
   
   TH1F* HBd = new TH1F("Bd","Bd",10,0,1);
-  HBd->SetLineColor(0);  
-  HBd->SetFillColor(m_BdCol);  
   if (m_Bd) {
-    //if (m_name=="B2JpsiKs") 
-    leg->AddEntry(HBd,"B^{0}#rightarrow J/#psiK_{S}^{0}","f");  
-    //else if (m_name=="Bu2JpsiK") leg->AddEntry(HBd,"B^{+}#rightarrow J/#psiK^{+}","f");  
-    //else if (m_name=="Bs2JpsiPhi") leg->AddEntry(HBd,"B^{0}#rightarrow J/#psi#phi","f"); 
-    //else std::cout << "Unknown name " << m_name << std::endl;
+    if (sWhat.find("mass")!=string::npos) {
+      HBd->SetLineColor(0);  
+      HBd->SetFillColor(m_BdCol);
+      leg->AddEntry(HBd,"B^{0}#rightarrow J/#psiK_{S}^{0}","f");
+    }
+    else if (sWhat.find("time")!=string::npos) {
+      HBd->SetLineColor(1);  
+      HBd->SetLineStyle(6);
+      if (sWhat.find("All")!=string::npos) {
+        leg->AddEntry(HBd,"B^{0}#rightarrow J/#psiK_{S}^{0}","l");
+      }
+    }
   }
 
   TH1F* HKstar = new TH1F("Kstar","Kstar",10,0,1);
@@ -967,14 +977,19 @@ void JpsiKsPdf::plotLegend(double x1,double y1,double x2,double y2) const {
   
   TF1* bkg = new TF1("bkg","x",0,1);
   bkg->SetLineColor(1);
-  bkg->SetLineWidth(2);  
-  bkg->SetLineStyle(kDashed);  
+  bkg->SetLineWidth(2);
+  if (sWhat.find("mass")!=string::npos) {
+    bkg->SetLineStyle(kDashed);  
+  }
+  else if (sWhat.find("time")!=string::npos) {
+    bkg->SetLineStyle(9);
+  }
   leg->AddEntry(bkg,"background","l"); 
 
-  TF1* sum = new TF1("sum","x",0,1);
-  sum->SetLineColor(1);
-  sum->SetLineWidth(2);  
-  leg->AddEntry(sum,"sum","l"); 
+  TF1* total = new TF1("total","x",0,1);
+  total->SetLineColor(1);
+  total->SetLineWidth(2);  
+  leg->AddEntry(total,"total","l"); 
 
   leg->SetFillColor(0);
   leg->SetLineColor(0);

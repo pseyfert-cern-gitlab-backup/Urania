@@ -40,6 +40,8 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& TrackName,
                                   const std::string& ProbNNK_Var,
                                   const std::string& ProbNNpi_Var,
                                   const std::string& ProbNNp_Var,
+                                  const std::string& ProbNNmu_Var,
+                                  const std::string& ProbNNe_Var,
                                   const std::string& Cuts,
                                   const std::string& WgtVarName
                                   )
@@ -64,6 +66,12 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& TrackName,
 
   SetTrackVar( ProbNNp_Var,
                "ProbNNp");
+
+  SetTrackVar( ProbNNmu_Var,
+               "ProbNNmu");
+
+  SetTrackVar( ProbNNe_Var,
+               "ProbNNe");
 
   SetTrackVar( DLLe_Var,
                "DLLe");
@@ -104,6 +112,12 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& TrackName,
   SetTrackVar( Data->Get_ParamName_ProbNNp(),
                "ProbNNp" );
 
+  SetTrackVar( Data->Get_ParamName_ProbNNmu(),
+               "ProbNNmu" );
+
+  SetTrackVar( Data->Get_ParamName_ProbNNe(),
+               "ProbNNe" );
+
   SetTrackVar( Data->Get_ParamName_DLLe(),
                "DLLe");
   
@@ -139,6 +153,8 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& TrackName,
                                   const std::string& ProbNNK_Var,
                                   const std::string& ProbNNpi_Var,
                                   const std::string& ProbNNp_Var,
+                                  const std::string& ProbNNmu_Var,
+                                  const std::string& ProbNNe_Var,
                                   const std::string& Cuts,
                                   const std::string& WgtVarName
                                   )
@@ -163,6 +179,12 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& TrackName,
 
   SetTrackVar( ProbNNp_Var,
                "ProbNNp");
+  
+  SetTrackVar( ProbNNmu_Var,
+               "ProbNNmu");
+  
+  SetTrackVar( ProbNNe_Var,
+               "ProbNNe");
   
   SetTrackVar( DLLe_Var,
                "DLLe");
@@ -210,6 +232,12 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& Name,
   SetTrackVar( Data->Get_ParamName_ProbNNp(),
                "ProbNNp" );
 
+  SetTrackVar( Data->Get_ParamName_ProbNNmu(),
+               "ProbNNmu" );
+
+  SetTrackVar( Data->Get_ParamName_ProbNNe(),
+               "ProbNNe" );
+
   SetTrackVar( Data->Get_ParamName_DLLe(),
                "DLLe");
 
@@ -256,6 +284,12 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& Name,
   SetTrackVar( Denominator->Get_ParamName_ProbNNp(),
                "ProbNNp" );
   
+  SetTrackVar( Denominator->Get_ParamName_ProbNNmu(),
+               "ProbNNmu" );
+    
+  SetTrackVar( Denominator->Get_ParamName_ProbNNe(),
+               "ProbNNe" );
+  
   SetTrackVar( Denominator->Get_ParamName_DLLe(),
                "DLLe");
   
@@ -285,6 +319,8 @@ void PIDTrackDataSet::append(PIDTrackDataSet& Data)
   assert( Data.Get_ParamName_ProbNNK() == this->Get_ParamName_ProbNNK() );
   assert( Data.Get_ParamName_ProbNNpi() == this->Get_ParamName_ProbNNpi() );
   assert( Data.Get_ParamName_ProbNNp() == this->Get_ParamName_ProbNNp() );
+  assert( Data.Get_ParamName_ProbNNmu() == this->Get_ParamName_ProbNNmu() );
+  assert( Data.Get_ParamName_ProbNNe() == this->Get_ParamName_ProbNNe() );
   assert( Data.Get_ParamName_DLLe() == this->Get_ParamName_DLLe() );
   assert( Data.Get_ParamName_DLLmu() == this->Get_ParamName_DLLmu() );
   assert( Data.Get_ParamName_IsMuon() == this->Get_ParamName_IsMuon() );
@@ -319,6 +355,22 @@ const std::string PIDTrackDataSet::Get_ParamName_ProbNNpi() const
 const std::string PIDTrackDataSet::Get_ParamName_ProbNNp() const
 {
   return Get_ParamName("ProbNNp");
+}
+
+//=============================================================================
+// Get ProbNNmu Param Name
+//=============================================================================
+const std::string PIDTrackDataSet::Get_ParamName_ProbNNmu() const
+{
+  return Get_ParamName("ProbNNmu");
+}
+
+//=============================================================================
+// Get ProbNNe Param Name
+//=============================================================================
+const std::string PIDTrackDataSet::Get_ParamName_ProbNNe() const
+{
+  return Get_ParamName("ProbNNe");
 }
 
 //=============================================================================
@@ -384,6 +436,22 @@ const RooRealVar* PIDTrackDataSet::Get_Param_ProbNNpi() const
 const RooRealVar* PIDTrackDataSet::Get_Param_ProbNNp() const
 {
   return Get_Param("ProbNNp");
+}
+
+//=============================================================================
+// Get ProbNNmu Parameter
+//=============================================================================
+const RooRealVar* PIDTrackDataSet::Get_Param_ProbNNmu() const
+{
+  return Get_Param("ProbNNmu");
+}
+
+//=============================================================================
+// Get ProbNNe Parameter
+//=============================================================================
+const RooRealVar* PIDTrackDataSet::Get_Param_ProbNNe() const
+{
+  return Get_Param("ProbNNe");
 }
 
 //=============================================================================

@@ -259,6 +259,9 @@ namespace RooPhysFit
     void SetSpectatorSetName(const char* name);
     void SetCategorySetName(const char* name);
 
+    void SetPrintEntriesFlag(Bool_t flag);
+    void SetPrintFreq(Int_t freq);
+
     const char* GetDplusMassSigPartName(RooDplusMassFitter::PartType pType) const;
     const char* GetDplusMassBkgPartName() const;
 
@@ -272,6 +275,9 @@ namespace RooPhysFit
 
     const char* GetSpectatorSetName() const;
     const char* GetCategorySetName() const;
+    
+    const Bool_t& GetPrintEntriesFlag() const;
+    const Int_t& GetPrintFreq() const;
     
     const char* GetDplusMassSigPartLabel(RooDplusMassFitter::PartType pType) const;
 
@@ -295,7 +301,9 @@ namespace RooPhysFit
     const char* m_dplusMassBkgYieldName;
     const char* m_spectSetName;
     const char* m_catSetName;
-
+    Bool_t m_printEntries;
+    Int_t m_printFreq;
+  
     // map of the RooRealVar name of the spectator to the leaf name in the TTree
     std::map< std::string, std::string > m_varNameToBranchName;
     

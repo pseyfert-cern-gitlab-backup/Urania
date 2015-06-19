@@ -3,7 +3,7 @@
 # Maintainer : Patrick Koppenburg
 #============================================================================
 package           Bs2JpsiKs
-version           v5r0
+version           v5r1
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -14,6 +14,11 @@ branches          cmt doc src root
 #    Put as many lines as needed, with all packages, without the '#'
 #============================================================================
 # use   Package      v1r*    Hat
+private
+# genconfuser.py cannot be used here
+# Note: the tag must be set before including GaudiPolicy
+apply_tag skip_genconfuser
+end_private
 use GaudiPolicy v*
 
 include_path      none

@@ -412,4 +412,4 @@ def averagealpha2012():
     alphas_mw = fdfs* alpha_mw
     print " Average alpha (mw)  = ", alpha_mw
     print " Average alphas (mw)  = ", alphas_mw
-    
+    return alpha, alphas, alpha_mw, alphas_mw

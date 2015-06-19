@@ -9,15 +9,12 @@
 
 // ####################################################################################################
 // *** Load Useful Classes ***
-class IB2JpsiX ;
-class B2JpsiKs_2011;
-class B2JpsiPhi_2011;
-class Bu2JpsiK_2011;
 class TString ;
 #include "IB2JpsiX.h"
 #include "B2JpsiKs_2011.h"
 #include "Bu2JpsiK_2011.h"
 #include "B2JpsiPhi_2011.h"
+#include "Lb2JpsiL_2012.h"
 #include "TFriendElement.h"
 #include "TString.h"
 #include "TParameter.h"
@@ -55,6 +52,8 @@ B2JpsiKs_2011* loadB2JpsiKsTuple(TString module, TString decay, TString dir, TSt
 B2JpsiPhi_2011* loadB2JpsiPhiTuple(TString module, TString decay, TString dir, TString what, 
                                    unsigned int NNtype, TString weightMethod, unsigned int ttype);
 Bu2JpsiK_2011* loadBu2JpsiKTuple(TString module, TString decay, TString dir, TString what,
+                                 unsigned int NNtype, TString weightMethod, unsigned int ttype);
+Lb2JpsiL_2012* loadLb2JpsiLTuple(TString module, TString decay, TString dir, TString what,
                                  unsigned int NNtype, TString weightMethod, unsigned int ttype);
 TChain* loadChain(TString file1, TString file2, TString line,
                   TString module, TString decay, TString dir, TString what,

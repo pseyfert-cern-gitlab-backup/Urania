@@ -1,5 +1,6 @@
 from ROOT import *
 from readData import *
+import cutStrings as cs
 
 def plotAllRuns(channel,files = [], plotName = 'runNumbers_'):
 
@@ -28,11 +29,23 @@ def plotAllRuns(channel,files = [], plotName = 'runNumbers_'):
        #         '2011_Strip20r1_g', '2011_Strip20r1_h', '2011_Strip20r1_i', '2011_Strip20r1_j', '2011_Strip20r1_k','2011_Strip20r1_l']
 
        # Reprocessed 2012
-        files = ['2012_Strip20',
-                '2012_Strip20_MagDown_a','2012_Strip20_MagDown_b','2012_Strip20_MagDown_c','2012_Strip20_MagDown_d','2012_Strip20_MagDown_e','2012_Strip20_MagDown_f',
-                '2012_Strip20_MagDown_g', '2012_Strip20_MagDown_h', '2012_Strip20_MagDown_i', '2012_Strip20_MagDown_j', '2012_Strip20_MagDown_k',
-                '2012_Strip20_MagUp_a','2012_Strip20_MagUp_b','2012_Strip20_MagUp_c','2012_Strip20_MagUp_d','2012_Strip20_MagUp_e','2012_Strip20_MagUp_f',
-                '2012_Strip20_MagUp_g', '2012_Strip20_MagUp_h', '2012_Strip20_MagUp_i']
+       # files = ['2012_Strip20',
+       #         '2012_Strip20_MagDown_a','2012_Strip20_MagDown_b','2012_Strip20_MagDown_c','2012_Strip20_MagDown_d','2012_Strip20_MagDown_e','2012_Strip20_MagDown_f',
+       #         '2012_Strip20_MagDown_g', '2012_Strip20_MagDown_h', '2012_Strip20_MagDown_i', '2012_Strip20_MagDown_j', '2012_Strip20_MagDown_k',
+       #         '2012_Strip20_MagUp_a','2012_Strip20_MagUp_b','2012_Strip20_MagUp_c','2012_Strip20_MagUp_d','2012_Strip20_MagUp_e','2012_Strip20_MagUp_f',
+       #         '2012_Strip20_MagUp_g', '2012_Strip20_MagUp_h', '2012_Strip20_MagUp_i']
+
+
+       # Study the difference between 2011 pre and after reprocessing (1020->1040 pb)
+        #files = ['2011_Strip20r1','2011_Strip17']
+        files = ['2011_Strip17']
+
+        # 2012 before and after repro
+        #files = ['2012_Strip20','2012_Strip19abc']
+        #files = ['2012_Strip20','2012_Strip20_Ipart','2012_Strip20_IIpart']
+        #files = ['2012_Strip20_Ipart','2012_Strip19abc']
+        #files = ['2012_Strip19abc']
+        #files = ['2012_Strip20']
 
         c = TCanvas('runNumbers','runNumbers')
 
@@ -56,8 +69,16 @@ def plotAllRuns(channel,files = [], plotName = 'runNumbers_'):
 
 	#get max and min run numbers
 	limits = getMaxMin(files[0], channel)
-	min = round(limits[0]-300,-2)
-	max = round(limits[1]+300,-2)
+        print ' The minimum and maximum runnumber from the nTuple: ', limits[0], '  ,  ', limits[1]
+
+        #min = round(limits[0]-300,-2)
+	#max = round(limits[1]+300,-2)
+        #Plot limits
+        min = limits[0]-300.5 # the 0.5 centers bins around the runNumbers
+	max = limits[1]+300.5
+        print '       ..after widening the range by 300.5 on both sides: ', min , '  ,  ', max
+        bins = int(max - min)
+        print '   bins = int(max - min) =', bins
 
 	#min = 111000
 	#max = 130000
@@ -143,13 +164,17 @@ def getMaxMin(nTupleName, channel):
 
 def getRunNrHist(nTupleName, channel, bins, min, max):
 
+        cut = cs.minimalNormBu_lnf
+	if channel == 'Bs':
+		cut = cs.normBs_lnf
+
 	gStyle.SetFillStyle(4000)
 	gStyle.SetOptStat(kFALSE);
-	t = readData(nTupleName, {'channel':channel}).get('tree')
+        t = readData(nTupleName, {'channel':channel, 'applyCut':True}).get('tree')
 	plotName = nTupleName +'_'+channel+'_runNumbers'
 
 	hist = TH1D(nTupleName+'_hist', nTupleName+'_hist', bins, min, max)
-	t.Draw('runNumber >>'+nTupleName+'_hist')
+	t.Draw('runNumber >>'+nTupleName+'_hist',cut)
 	#t.Draw('runNumber >> hist')
 	return hist
 

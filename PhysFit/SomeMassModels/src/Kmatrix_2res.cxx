@@ -80,16 +80,44 @@ ClassImp(Kmatrix_2res)
  Double_t Kmatrix_2res::evaluate() const 
  { 
    // ENTER EXPRESSION IN TERMS OF VARIABLE ARGUMENTS HERE 
-   std::complex<Double_t> c1( beta*TMath::Cos(phase),beta*TMath::Sin(phase));
-   std::complex<Double_t> T = Double_K_wF(m,mlo,gammalo,mhi,gammahi,MPion,MKaon,c1, L);
+   //std::complex<Double_t> c1( beta*TMath::Cos(phase),beta*TMath::Sin(phase));
+
+
+   //std::complex<Double_t> T = Double_K_wF(m,mlo,gammalo,mhi,gammahi,MPion,MKaon,c1, L);
 
    //Double_t kst1 = T2_Double_K(m,mlo,gammalo,mhi,gammahi,MPion,MKaon,real(c1), L);
 
-   Double_t  kst1 = real(T*conj(T));
+   //Double_t  kst1 = real(T*conj(T));
    //kst1 = kst1*pow(get_q(m,MPion,MKaon),2*L+1); //phase space from K* --> Kpi. Check this crap
-   return kst1*get_q(MB,MV,m); /// phase space from B --> X K*
+   //return kst1*get_q(MB,MV,m); /// phase space from B --> X K*
 
    //   return 1.0 ; 
+   Double_t c1 = beta; /// phases ignored for the moment
+   Double_t K0 = get_K(m,mlo,gammalo,MPion,MKaon,L);
+   Double_t K0h = get_K_hat(m,mlo,gammalo,MPion,MKaon,L);//(;m,m0,g0,mDa,mDb,J);
+
+   Double_t K02 = get_K(m,mhi,gammahi,MPion,MKaon,L);
+   Double_t K0h2 = get_K_hat(m,mhi,gammahi,MPion,MKaon,L);//(;m,m0,g0,mDa,mDb,J);
+   
+   std::complex<Double_t> num((1-c1)*K0h+c1*K0h2,0.);
+   std::complex<Double_t> den(1, -((1-c1)*K0 + c1*K02));
+   std::complex<Double_t> T = num/den;
+   Double_t q = get_q(m,MPion,MKaon);
+   //Double_t q0 = get_q(m0,MPion,MKaon);
+   if (q==0) return 0;
+   //Double_t rho_decay = pow(q,2*J+1)*Blatt_Weisskopf(q,q0,L);
+
+   // Warning: Check all these L's, J's and l's ....
+   Double_t p = get_q(MB,MV,m);
+   //Double_t p0 = get_q(MB,MV,m0);
+   if (p==0) return 0;
+   //Int_t l = 0;
+   //Double_t rho_birth = pow(p,2*l+1)*Blatt_Weisskopf(p,p0,l);
+   Double_t  kst1 = real(T*conj(T));
+
+   return kst1 * p*q;
+
+
  } 
 
 

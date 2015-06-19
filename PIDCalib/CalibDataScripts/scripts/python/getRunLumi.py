@@ -6,8 +6,8 @@ def usage():
     print 'Following:'
     print '> SetupLHCbDirac'
     print '> lhcb-proxy-init'
-    print 'Usage: %s <Config Version> <Processing Pass> <lumi range (pb^-1)> <fileSuffix>' %(Script.scriptName)
-    print '> python -u getRunLumi.py Collision12 /Reco14/Stripping20 30 h'
+    print 'Usage: %s <Config Version> <Processing Pass> <lumi range - MAG DOWN (pb^-1)> <lumi range - MAG UP (pb^-1)> <fileSuffix>' %(Script.scriptName)
+    print '> python -u getRunLumi.py Collision12 /Reco14/Stripping20 30 30 h'
 
 gLogger.setLevel("INFO")
 
@@ -23,10 +23,27 @@ if len(args) < 3:
 
 configVersion  = args[0]
 processingPass = args[1]
-lumiBlock      = float(args[2])
-fileSuffix     = args[3]
+lumiBlock_down = float(args[2])
+lumiBlock_up   = float(args[3])
+fileSuffix     = args[4]
 dqFlag         = 'OK'
 
+msg="Config version: %s" %configVersion
+print msg
+gLogger.info(msg)
+msg="Processing pass: %s" %processingPass
+print msg
+gLogger.info(msg)
+msg="Luminosity block (magnet down): %.2f pb-1" %lumiBlock_down
+print msg 
+gLogger.info(msg)
+msg="Luminosity block (magnet up): %.2f pb-1" %lumiBlock_up
+print msg 
+gLogger.info(msg)
+msg="File suffix: %s" %fileSuffix
+print msg
+gLogger.info(msg)
+ 
 bkDict = {'ConfigName'    : 'LHCb',
           'ConfigVersion' : configVersion,
           'ProcPass'      : processingPass}
@@ -69,7 +86,7 @@ for fileType in allTypes:
     allLFN = GetAllLFN(configVersion, processingPass, fileType, dqFlag)
     if not len(allLFN) > 0:
         continue
-
+    
     #======================================================================
     # Returns a dictionary of dictionaries:
     # magpol : runNumber = lumi
@@ -109,7 +126,7 @@ for fileType in allTypes:
         sumLumi += float(runHash['Up'][str(runId)])
         #print 'Up', runId, runHash['Up'][str(runId)], sumLumi
 
-        if sumLumi > (lumiBlock * 1000000 ):
+        if sumLumi > (lumiBlock_up * 1000000 ):
             # Append last run number to list
             runLimits.append(upRunNumbers[i-1])
             # Append this run number to list
@@ -136,7 +153,7 @@ for fileType in allTypes:
         sumLumi += float(runHash['Down'][str(runId)])
         #print 'Down', runId, runHash['Down'][str(runId)], sumLumi
 
-        if sumLumi > (lumiBlock * 1000000):
+        if sumLumi > (lumiBlock_down * 1000000):
             # Append last run number to list
             runLimits.append(downRunNumbers[i-1])
             # Append this run number to list

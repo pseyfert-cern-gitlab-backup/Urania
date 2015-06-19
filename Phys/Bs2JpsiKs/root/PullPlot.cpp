@@ -62,9 +62,12 @@ void AddPull(TCanvas* pullCanvas, RooPlot* frame, Int_t logy, double *chi2Val){
 	// General Settings
   pullframe->SetMinimum(-5);
 	pullframe->SetMaximum(5);
-	pullframe->GetYaxis()->SetNdivisions(503,true);	
-  pullframe->SetTitleSize(0,"y");// No title here	
-	pullframe->SetLabelSize(0.03,"y");
+	pullframe->GetYaxis()->SetNdivisions(503,true);
+  pullframe->SetTitleSize(0.03,"y");
+  pullframe->SetTitleOffset(0.8,"y");
+  pullframe->GetYaxis()->CenterTitle(true);
+  pullframe->SetLabelSize(0.03,"y");
+  pullframe->SetTickLength(0.1,"y");
 	
 	// *** Place the first frame ***
 	// To keep the correct scale of the labels, use the Margins instead of Pad coordinates
@@ -78,7 +81,7 @@ void AddPull(TCanvas* pullCanvas, RooPlot* frame, Int_t logy, double *chi2Val){
 	// Suppress X-axis decoration
 	frame->SetLabelSize(0,"x");
 	frame->SetTitleSize(0,"x");
-  frame->SetLabelOffset(0.015,"y");
+  frame->SetLabelOffset(0.02,"y");
 	// Fill Pad	
 	frame->Draw("");
 		

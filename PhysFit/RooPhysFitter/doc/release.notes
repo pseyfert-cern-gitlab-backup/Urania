@@ -5,6 +5,23 @@
                 fit results using the RooFit package
 !-----------------------------------------------------------------------------
 
+! 2013-08-06 - Philip John Hunt
+ - Removed extraneous arguments to RooGaussianChi2Var and RooLLRatioVar in
+   RooPhysFitter.cpp that were removed in the previous changes, which
+   caused compiler errors on GCC 4.7 (though not on other plaforms for 
+   some reason)
+
+! 2013-07-16 - Philip Hunt (LHCB)
+ - Updated RooPhysFitter and the GOF test statistics to reflect a 
+   reverse-incompatible change in the constructor arguments of 
+   RooAbsTestStatistic (which is seemingly undocumented in the release notes,
+   only in the development notes) between minor releases (5.34/05 -> 5.34/07a)
+
+! 2013-05-02 - Philip Hunt
+  - Updated RooPhysFitter to print chi2/d.o.f. in addition to chi2 and d.o.f. separately
+  - Allowed Dplus mass in RooDplusMassFitter to be double precision
+  - Modified RooDMassFitter, RooDstarD0MassFitter and RooDplusMassFitter to allow the printing of verbose information about the values of D masses, spectator variables and categories in the 'MakeDataSet' method with a specified print frequency
+
 ! 2012-11-02 - Andrew Powell
   - Modified RooDMassFitter, RooDstarMassFitter and RooDplusMassFitter to accept boolean
     variables as an acceptable type for a RooCategory

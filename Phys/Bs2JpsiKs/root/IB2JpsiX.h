@@ -29,12 +29,13 @@ static const bool testrun = false ; // For testing/debugging
 static const Long64_t maxEntries = 10;
 // Training sample contains parts/frac of sample
 static const double parts_in_teaching = 3;
-static const double frac_in_teaching = 8;
+static const double frac_in_teaching = 4;
 
 // Supported Decays
 static const TString m_B2JpsiKs = "B2JpsiKs" ;
 static const TString m_B2JpsiPhi = "B2JpsiPhi" ;
 static const TString m_Bu2JpsiK = "Bu2JpsiK" ;
+static const TString m_Lb2JpsiL = "Lb2JpsiL" ;
 
 // Supported Neural Net Settings
 static const unsigned int m_NNtype_one = 1;
@@ -86,8 +87,9 @@ static const TString m_SigKstarWM = "SigKstarWM";
 static const TString m_IncJpsi = "IncJpsi";
 static const TString m_Prescaled = "Prescaled";
 static const TString m_Test = "Test";
-static bool isSigMC(TString what){return (what==m_SigBd || what==m_SigBs || what==m_SigBdPrescaled || what==m_SigBsPrescaled || 
-                                          what==m_SigKstar || what==m_SigKstarWM);};
+static bool isSigMC(TString what){
+  return (what==m_SigBd || what==m_SigBs || what==m_SigBdPrescaled || what==m_SigBsPrescaled || 
+          what==m_SigKstar || what==m_SigKstarWM);};
 
 // Selection Cuts
 static const double m_NNICut = 0 ; 
@@ -120,8 +122,8 @@ static const double fsBr = 0.0117 ; // Result of 0.41 fb-1 analysis
 
 // Plotting Colours
 static const unsigned int m_BsCol = 12;
-static const unsigned int m_BdCol = 14;
-static const unsigned int m_KstarCol = 17;
+static const unsigned int m_BdCol = 17;
+static const unsigned int m_KstarCol = 14;
 
 // ####################################################################################################
 //
@@ -203,7 +205,6 @@ public:
     if(m_NNtype_one==NNtype){
       if (m_2011==what || m_2012==what || m_Prescaled==what || what ==m_2011LD ||  what==m_2012LD 
           ||  what==m_2012_25  || what==m_Test ){
-        //        std::cout << "## " << applyDecayCuts(pv,ttype) << " " <<  applyCommonCuts(what,pv) << " " << trigger() << std::endl ;
         return (applyDecayCuts(pv,ttype) && applyCommonCuts(what,pv) && trigger());
       }
       else if ((what==m_SigBd || what==m_SigBs || what==m_SigBdPrescaled || what==m_SigBsPrescaled || 
@@ -222,7 +223,8 @@ public:
   }
   
   // Training
-  inline bool teacherSample(){return (getGpsSecond()>numberofseconds*(frac_in_teaching-parts_in_teaching)/frac_in_teaching);}
+  inline bool teacherSample(){
+    return (getGpsSecond()>numberofseconds*(frac_in_teaching-parts_in_teaching)/frac_in_teaching);}
   inline bool expertSample(){return !teacherSample();}
  
  protected:

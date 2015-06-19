@@ -1,0 +1,63 @@
+diff --git a/roofit/roofitcore/inc/RooAbsAnaConvPdf.h b/roofit/roofitcore/inc/RooAbsAnaConvPdf.h
+index 5722ee6..d355a51 100644
+--- a/roofit/roofitcore/inc/RooAbsAnaConvPdf.h
++++ b/roofit/roofitcore/inc/RooAbsAnaConvPdf.h
+@@ -68,6 +68,11 @@ public:
+   virtual RooArgSet* coefVars(Int_t coefIdx) const ;
+ 
+   virtual Bool_t isDirectGenSafe(const RooAbsArg& arg) const ;
++
++  const RooArgList& funcList() const { 
++    // Return list of component functions
++    return _convSet ; 
++  }
+     
+ protected:
+   Double_t getCoefNorm(Int_t coefIdx, const RooArgSet* nset, const TNamed* rangeName) const ;
+diff --git a/roofit/roofitcore/src/RooAbsCachedReal.cxx b/roofit/roofitcore/src/RooAbsCachedReal.cxx
+index 8e86f09..73ed3ec 100644
+--- a/roofit/roofitcore/src/RooAbsCachedReal.cxx
++++ b/roofit/roofitcore/src/RooAbsCachedReal.cxx
+@@ -301,8 +301,11 @@ RooArgList RooAbsCachedReal::FuncCacheElem::containedArgs(Action)
+ {
+   // Return list of contained RooAbsArg objects
+   RooArgList ret(*func()) ;
+-
+-  ret.add(*_paramTracker) ;
++  if (sourceClone()) { 
++      //cout << "RooAbsCacheReal::FuncCacheElem::containedArgs: adding sourceClone " << sourceClone()->GetName() << " at " << sourceClone() << endl;
++      ret.add(*sourceClone()); 
++  }
++  ret.add(*paramTracker()) ;
+   if (_sourceClone) {
+     ret.add(*_sourceClone) ;
+   }
+diff --git a/roofit/roofitcore/src/RooAbsOptTestStatistic.cxx b/roofit/roofitcore/src/RooAbsOptTestStatistic.cxx
+index 183c983..385eb6f 100644
+--- a/roofit/roofitcore/src/RooAbsOptTestStatistic.cxx
++++ b/roofit/roofitcore/src/RooAbsOptTestStatistic.cxx
+@@ -58,6 +58,7 @@
+ #include "RooAddPdf.h"
+ #include "RooProduct.h"
+ #include "RooRealSumPdf.h"
++#include "RooAbsAnaConvPdf.h"
+ #include "RooTrace.h"
+ #include "RooVectorDataStore.h" 
+ 
+@@ -689,6 +690,16 @@ void RooAbsOptTestStatistic::optimizeConstantTerms(Bool_t activate, Bool_t apply
+ 	    }
+ 	  }
+ 	}
++        RooAbsAnaConvPdf *cpdf = dynamic_cast<RooAbsAnaConvPdf*>(arg);
++        if (cpdf) {
++          RooFIter citer = cpdf->funcList().fwdIterator() ;
++          RooAbsArg* carg ;
++          while ((carg=citer.next())) {
++            // cout << "Adding CacheAndTrack request to " << carg->GetName() << endl;
++            carg->setAttribute("CacheAndTrack") ;
++            trackNodes.add(*carg) ;
++          }
++        }
+       }
+     }
+     

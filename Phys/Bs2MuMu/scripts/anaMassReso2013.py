@@ -11,10 +11,15 @@ from MLLfit import fitBu2JpsiKplus
 
 def anaAll():
 
+        #'MassFitResults/'+dire
+        dire = 'Bu2JpsiKplus_Bplus_M'
+
 # For reprocessed 2011 and 2012 data:
-        #anaMassReso_Bu('2011_Strip20r1')
-        #anaMassReso_Bu('2012_Strip20', {'GoodRuns':True}) #GoodRuns...
-        #anaMassReso_Bu('2012_Strip20', {'GoodRuns':False}) #GoodRuns...
+        anaMassReso_Bu('2011_Strip17',{'directory':dire})
+        anaMassReso_Bu('2011_Strip20r1',{'directory':dire})
+        anaMassReso_Bu('2012_Strip19abc' ,{'directory':dire})
+        anaMassReso_Bu('2012_Strip20_1fb',{'directory':dire}) #Normalize to the pre repro 2011 sample
+        anaMassReso_Bu('2012_Strip20_',{'directory':dire}) #Normalize to the pre repro 2011 sample
 
 # For 2012 analyzed pre-reprocessing 2011 and 2012 data:
         #anaMassReso_Bu('2011_Strip17')
@@ -27,14 +32,17 @@ def anaAll():
 #        anaMassReso_Bu('2012_Strip20_BadITRuns' )
 
 # Study ranges withOUT bad IT alignment
-        anaMassReso_Bu('2012_Strip19abc_GoodITRuns' )
-        anaMassReso_Bu('2012_Strip20_GoodITRuns' )
+#        anaMassReso_Bu('2012_Strip19abc_GoodITRuns' )
+#        anaMassReso_Bu('2012_Strip20_GoodITRuns' )
+
+
+
 
 def anaMassReso_Bu(nTupleName = 'MC12_Sm0', opts =  {}):
         """ Function that combines steps for analyzing the mass resolution for the control channels """
 
         print ' o) Read in a dataset:'
-        Bu_data = readData(nTupleName, {'channel':'Bu'})
+        Bu_data = readData(nTupleName, {'channel':'Bu'}+opts)
 
         print ' o) Define the cut...'
         cut = Bu_data.get('cut','') + cs.minimalNormBu_rawM_lnf	# cut for raw mass
@@ -63,5 +71,5 @@ def anaMassReso_Bu(nTupleName = 'MC12_Sm0', opts =  {}):
         print ' o) Perform mass fits using an unconstrained mass...'
         massVar = 'Bplus_M'
 
-        fitBu2JpsiKplus(Bu_data,massVar,cutName+'_TRIG',cut)
-
+        #fitBu2JpsiKplus(Bu_data,massVar,cutName+'_TRIG',cut)
+        fitBu2JpsiKplus(Bu_data,massVar,cutName+'_TRIG',cut,opts.get('setLog',True), opts.get('directory',0))

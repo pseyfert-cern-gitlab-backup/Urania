@@ -1,10 +1,8 @@
 project URANIA
 
 container UraniaSys
-
-use GAUDI     GAUDI_v23r7
-#use DBASE
-#use PARAM
+#use GAUDI GAUDI_v23r9
+use LCGCMT    LCGCMT_65a
 
 build_strategy with_installarea
 setup_strategy root

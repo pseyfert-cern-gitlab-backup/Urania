@@ -99,25 +99,25 @@ if '__main__' == __name__:
                              'DLLCuts'  : DLLCuts_Kpi,
                              'Binning'  : BinSchema_A,
                              'TrackCuts': 'Charge==Charge::Positive && K_P<100000',
-                             'Isuon'    : False
+                             'IsMuon'    : False
                              },
                 'Pi_as_K' : {'TrackType': 'Pi',
                              'DLLCuts'  : DLLCuts_Kpi,
                              'Binning' : BinSchema_A,
                              'TrackCuts': 'Charge==Charge::Positive && Pi_P<100000',
-                             'Isuon'    : False
+                             'IsMuon'    : False
                              },
                  'P_as_P' : {'TrackType': 'P',
                              'DLLCuts'  : DLLCuts_Ppi,
                              'Binning'  : BinSchema_B,
                              'TrackCuts': 'Charge==Charge::Positive && P_P<100000',
-                             'Isuon'    : False
+                             'IsMuon'    : False
                              },
                 'Pi_as_P' : {'TrackType': 'Pi',
                              'DLLCuts'  : DLLCuts_Ppi,
                              'Binning'  : BinSchema_A,
                              'TrackCuts': 'Charge==Charge::Positive && Pi_P<100000',
-                             'Isuon'    : False
+                             'IsMuon'    : False
                              }
                  }                       
 

@@ -8,6 +8,8 @@ Mmom = Symbol("Mmom", positive = True)
 Msister = Symbol("Msister", positive = True)
 Mdau1 = Symbol("mdau1", positive = True)
 Mdau2 = Symbol("mdau2", positive = True)
+J = Symbol("J", natural = True)
+kappa = Symbol("kappa", real = True)
 
 muh = Symbol("muh", positive = True)
 mul = Symbol("mul", positive = True)
@@ -79,6 +81,7 @@ K0h = get_K_hat(mass,m0,Gamma0,Mdau1,Mdau2,J)
 FlatSwave = Sqrt(1/(muh-mul))
 NoRelBW = 1/(mass - m0 + I*0.5*Gamma0)
 EvtGen = K0h / (1-I*K0)
+Kmatrix_ResPlusFlat = (K0h + kappa)/( 1 - I*(K0+kappa*2*Pow(get_q(mass,Mdau1,Mdau2)/mass,2*J+1)))
 
 ### End Generic propagators
 
@@ -94,13 +97,16 @@ B2JpsiKK_ps = simplify(B2JpsiKK_ps.subs(Mdau2,PDG.Kplus.mass)) ## Now substitute
 Bs2JpsiKK_ps = y_ps.subs([(Mmom,PDG.Bs.mass),(Msister,PDG.Jpsi.mass),(Mdau1,Mdau2)]) ## Step by step. First we tell her the two daughters are the same
 Bs2JpsiKK_ps = simplify(Bs2JpsiKK_ps.subs(Mdau2,PDG.Kplus.mass)) ## Now substitute the daughter by a number
 
+B2JpsiKpi_ps = y_ps.subs([(Mmom,PDG.Bd.mass),(Msister,PDG.Jpsi.mass),(Mdau1,PDG.Kplus.mass),(Mdau2,PDG.piplus.mass)]) 
+
 ### Channel specific propagators
 
 phi_noRel = NoRelBW.subs( [(m0,PDG.phi.mass), (Gamma0,PDG.phi.width)])
 phi2KK_EvtGen = EvtGen.subs( [(m0,PDG.phi.mass), (Gamma0,PDG.phi.width),(Mdau1,Mdau2)])## Step by step. First we tell her the two daughters are the same
 phi2KK_EvtGen = phi2KK_EvtGen.subs(Mdau2,PDG.Kplus.mass)## Now substitute the daughter by a number
 
-
+Kst02Kpi_EvtGen = EvtGen.subs( [(m0,PDG.Kst0.mass), (Gamma0,PDG.Kst0.width),(Mdau1,PDG.Kplus.mass),(Mdau2,PDG.piplus.mass)])#
+Kmatrix_KpiSwave = Kmatrix_ResPlusFlat.subs([ (m0,PDG.ParticleData(10321).mass),(Gamma0,PDG.ParticleData(10321).width),(kappa, 2.23802e-03 ), (Mdau1,PDG.Kplus.mass), (Mdau2,PDG.piplus.mass)])
 
 ### Few tools
 
@@ -144,7 +150,7 @@ def test(lo, hi):   ### Test for the Jpsi Phi paper. Calculated CSP for differen
     print  Csp(FlatSwave,phi2KK_EvtGen, lo,hi, )
     
     
-def histogramResonance(res, lo, hi, N= 100):
+def histogramResonance(res, lo, hi, N= 100, PS=1):
     from ROOT import TH1F
     from sympy import simplify
     pdf = PS*res*res.conjugate()
@@ -153,9 +159,11 @@ def histogramResonance(res, lo, hi, N= 100):
     for i in range(N):
         x = lo + i*stp
         y = float( simplify(Abs(1./pdf.subs(mass,x))) )  ## if we invert the complex number we make her life easier
-        y = 1./y  ### now re-invert it to get the correct pdf
+        if y !=0: y = 1./y  ### now re-invert it to get the correct pdf
+        else: print "Warning, pdf seems to explode at ", x
         h.SetBinContent(i+1,y)
     h.SetLineWidth(3)
     return h
+
 
     

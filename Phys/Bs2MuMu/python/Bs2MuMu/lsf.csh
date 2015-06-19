@@ -2,6 +2,6 @@
 source $LBSCRIPTS_HOME/LbConfiguration/scripts/LbLogin.csh
 
 
-SetupProject Erasmus v8r1
+SetupUrania --dev-dir ~/vol5/
 python -V
-python $BS2MUMUROOT/python/Bs2MuMu/cdf3_mc.py $1 
+python $BS2MUMUROOT/python/Bs2MuMu/combinelimits_2012.py $1 

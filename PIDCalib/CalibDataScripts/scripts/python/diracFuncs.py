@@ -59,17 +59,26 @@ def GetRunList(allLFN):
 
         res = bkClient.getFileMetadata(rangeLFN)
         #res = bkClient.getFileMetaDataForUsers(allLFN)
-        #print res
         if not res['OK']:
             gLogger.error(res['Message'])
             DIRAC.exit(2)
         gLogger.info('Found LFN metadata step %d.' %(i))
 
-        lfnData = res['Value']
-
-        for lfn in lfnData.keys():
-            runNumber  = str(lfnData[lfn]['RunNumber'])
-            luminosity = lfnData[lfn]['Luminosity']
+        lfnData = res['Value']['Successful']
+     
+        for lfn, metadata in lfnData.items():
+            if not metadata.has_key('RunNumber'):
+                msg="Metadata for LFN %s has no key named 'Run Number'" %lfn
+                print "ERROR: %s" %msg
+                gLogger.error(msg)
+                DIRAC.exit(2)
+            if not metadata.has_key('Luminosity'):
+                msg="Metadata for LFN %s has no key named 'Luminosity'" %lfn
+                print "ERROR: %s" %msg
+                gLogger.error(msg)
+                DIRAC.exit(2)
+	    runNumber  = str(metadata['RunNumber'])
+            luminosity = metadata['Luminosity']
 
             if runHash['Up'].has_key(runNumber):
                 runHash['Up'][runNumber] += luminosity

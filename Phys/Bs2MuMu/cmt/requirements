@@ -3,7 +3,7 @@
 # Maintainer : Diego Martinez
 #============================================================================
 package           Bs2MuMu
-version           v2r2
+version           v2r3
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -16,7 +16,7 @@ branches          cmt doc python options operators fortran ganga
 
 use	GaudiPolicy 	v*
 use	Python          v*    	LCG_Interfaces 
-use   	GaudiPython    	v*
+#use   	GaudiPython    	v*
 use   	pytools        	v* 	LCG_Interfaces -no_auto_imports
 use   	pyanalysis     	v* 	LCG_Interfaces -no_auto_imports
 use   	ROOT            v*    	LCG_Interfaces

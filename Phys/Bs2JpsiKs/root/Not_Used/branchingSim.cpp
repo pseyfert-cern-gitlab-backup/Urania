@@ -33,7 +33,6 @@
 // *** Declarations ***
 // TCanvas* PullPlot(RooPlot* frame, RooRealVar* x, int logy=0);
 void make_canvas();
-void printLHCb(char* optLR="L", char* optPrelim="Final", char* optText="");
 
 class branchingSim {
 public :

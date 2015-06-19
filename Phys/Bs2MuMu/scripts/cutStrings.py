@@ -25,14 +25,12 @@ Hlt2_TIS = '&&(BplusHlt2SingleMuonDecision_TIS==1||BplusHlt2SingleMuonHighPTDeci
 
 Hlt2_TOS = '&&(BplusHlt2SingleMuonDecision_TOS==1||BplusHlt2SingleMuonHighPTDecision_TOS==1||BplusHlt2DiMuonJPsiDecision_TOS==1||BplusHlt2DiMuonJPsiHighPTDecision_TOS==1||BplusHlt2DiMuonPsi2SDecision_TOS==1||BplusHlt2DiMuonDetachedDecision_TOS==1||BplusHlt2DiMuonDetachedJPsiDecision_TOS==1||BplusHlt2DiMuonDetachedHeavyDecision_TOS==1||BplusHlt2TriMuonTauDecision_TOS==1||BplusHlt2B2HHDecision_TOS==1||BplusHlt2DiMuonBDecision_TOS==1||BplusHlt2DiMuonZDecision_TOS==1||BplusHlt2TopoMu2BodyBBDTDecision_TOS==1||BplusHlt2TopoMu3BodyBBDTDecision_TOS==1||BplusHlt2TopoMu4BodyBBDTDecision_TOS==1||BplusHlt2Topo2BodyBBDTDecision_TOS==1||BplusHlt2Topo3BodyBBDTDecision_TOS==1||BplusHlt2Topo4BodyBBDTDecision_TOS==1||BplusHlt2Topo2BodySimpleDecision_TOS==1||BplusHlt2Topo3BodySimpleDecision_TOS==1||BplusHlt2IncPhiDecision_TOS==1||BplusHlt2TopoE__Decision_TOS==1||BplusHlt2Topo__Decision_TOS==1||BplusHlt2Charm__Decision_TOS==1||BplusHlt2DiElectron__Decision_TOS==1||BplusHlt2__GammaDecision_TOS==1)'
 
-
 cut_TRIG_noHlt2 = L0_Dec + Hlt1_Dec
 cut_TRIG 	= cut_TRIG_noHlt2 + Hlt2_Dec
 cut_TIS_noHlt2 	= L0_TIS + Hlt1_TIS
 cut_TIS 	= cut_TIS_noHlt2 + Hlt2_TIS
 cut_TOS_noHlt2 	= L0_TOS + Hlt1_TOS
 cut_TOS 	= cut_TOS_noHlt2 + Hlt2_TOS
-
 
 #THOSE WILL BE USED IN getTrigEff in massFits:
 
@@ -44,9 +42,9 @@ Bu_cut_TOS = Bu_L0_TOS + Bu_Hlt1_TOS + Bu_Hlt2_TOS
 #Bu_cut_TIS = cut_TIS
 #Bu_cut_TOS = cut_TOS
 
-#Bu_cut_Dec = cut_TRIG_noHlt2
-#Bu_cut_TIS = cut_TIS_noHlt2
-#Bu_cut_TOS = cut_TOS_noHlt2
+Bu_cut_Dec_L0Hlt1 = Bu_L0_Dec + Bu_Hlt1_Dec
+Bu_cut_TIS_L0Hlt1 = Bu_L0_TIS + Bu_Hlt1_TIS
+Bu_cut_TOS_L0Hlt1 = Bu_L0_TOS + Bu_Hlt1_TOS
 
 #Test the LoHlt1 TIS efficiency bias on data when all the trigger levels are required by default
 
@@ -85,20 +83,31 @@ Bs_Jpsi_Hlt2 = '&&B_s0Hlt2DiMuonDetachedJPsiDecision_TOS==1'
 # Ghost Probability cuts
 Bu_GhostProb2011 = '&&Kplus_TRACK_GhostProb<0.3&&muminus_TRACK_GhostProb<0.3&&muplus_TRACK_GhostProb<0.3'
 Bu_GhostProb = '&&Kplus_TRACK_GhostProb<0.4373&&muminus_TRACK_GhostProb<0.4373&&muplus_TRACK_GhostProb<0.4373'
+
 MuMu_GhostProb = '&&muminus_TRACK_GhostProb<0.4373&&muplus_TRACK_GhostProb<0.4373'
+MuMu_GhostProb_03 = '&&muminus_TRACK_GhostProb<0.3&&muplus_TRACK_GhostProb<0.3'
+
+MuMinus_GhostProb = '&&muminus_TRACK_GhostProb<0.4373'
+MuMinus_GhostProb_03 = '&&muminus_TRACK_GhostProb<0.3'
+
+MuPlus_GhostProb = '&&muplus_TRACK_GhostProb<0.4373'
+MuPlus_GhostProb_03 = '&&muplus_TRACK_GhostProb<0.3'
 
 Bs_GhostProb2011 = Bu_GhostProb2011 + '&&Kminus_TRACK_GhostProb<0.3'
 Bs_GhostProb = Bu_GhostProb + '&&Kminus_TRACK_GhostProb<0.4373'
+Bs_GhostProb = Bu_GhostProb + '&&Kminus_TRACK_GhostProb<0.4373'
+
+K_GhostProb2011 = '&&Kplus_TRACK_GhostProb<0.3'
+KK_GhostProb2011 = K_GhostProb2011 + '&&Kminus_TRACK_GhostProb<0.3'
+
+K_GhostProb = '&&Kplus_TRACK_GhostProb<0.4373'
+KK_GhostProb = K_GhostProb + '&&Kminus_TRACK_GhostProb<0.4373'
 
 #-------------------------------------------#
 # Remove bad runs in Strip 19b
 
 cutBadRuns = '&&(runNumber<124272||runNumber>124505)'
 #-------------------------------------------#
-
-
-
-
 
 
 #from PDG
@@ -166,7 +175,6 @@ Bu_PID = "&&Kplus_PIDK>0"
 minimalNormBu_lnf="fabs(Bplus_JCMass-5279.17)<100&&fabs(J_psi_1S_M-3096.916)<60&&Jpsi_dist_chi2_r>15"+fcuts+moreCuts+bdts
 minimalNormBu_rawM_lnf="fabs(Bplus_M-5279.17)<100&&fabs(J_psi_1S_M-3096.916)<60&&Jpsi_dist_chi2_r>15"+fcuts+moreCuts+bdts
 
-
 minimalNormBu_noFid_lnf="fabs(Bplus_JCMass-5279.17)<100&&fabs(J_psi_1S_M-3096.916)<60&&Jpsi_dist_chi2_r>15&&Kplus_TRACK_CHI2NDOF<4"
 
 fullNormBs=commonCuts+JPsiCuts+BsCuts+phiCuts+extraCuts+"&&Vchi2<75"+clonesBs+tightM+fiducialBs2012+loosePID+BDTS_05
@@ -191,6 +199,11 @@ BuCuts = "&&k1ips>5&&kaon_track_Chi2DoF<4&&Bips<5&&fabs(Bmass_JC-5279.17)<400&&V
 recoBu=commonCuts+JPsiCuts+BuCuts+clonesBu+tightMBd+fiducialBu2012+JPsiRecoCuts+trigger+"&Bmass_JC>5200"+"&&PIDk>0"
 
 
+#Bs mumu cuts
+bsmumu_cuts = "B_s0_PT>500 &&B_s0_TAU*1000.<13.248&&muminus_P<500e03 &&muplus_P<500e03&&muminus_PT<40e03&&muplus_PT<40e03&&muplus_PT>250&&muminus_PT>250&&muplus_PIDmu>-5&&muplus_PIDK<10&&muminus_PIDmu>-5&&muminus_PIDK<10&&B_s0_BDTS>0.05"
+
+
+
 
 ###################################
 #
@@ -207,4 +220,5 @@ runNum5="&&runNum>92400&&runNum<93200"
 runNum7="&&runNum>93200&&runNum<93650"
 runNum8="&&runNum>93650&&runNum<94060"
 runNum9="runNum>94060&&runNum<94500"
+
 

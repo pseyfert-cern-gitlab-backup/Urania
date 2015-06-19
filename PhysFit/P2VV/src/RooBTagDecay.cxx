@@ -33,15 +33,13 @@ using std::endl;
 #include "RooMsgService.h"
 
 #include "TMath.h"
-#include "RooBTagDecay.h"
+#include "P2VV/RooBTagDecay.h"
 #include "RooCategory.h"
 #include "RooRandom.h"
 #include "RooRealVar.h"
 
 #include "TObjArray.h"
 
-
-ClassImp(RooBTagDecay);
 
 //_____________________________________________________________________________
 RooBTagDecay::RooBTagDecay(const char *name, const char* title, 
@@ -79,7 +77,7 @@ RooBTagDecay::RooBTagDecay(const char *name, const char* title,
   _iTag1Val(2),
   _fTagVal(2),
   _checkVars(checkVars),
-  _maxVal(0)
+  _maxVal(-1)
 {
   // constructor without flavour tags (behaves like RooBDecay)
   if (!checkVarDep(time, kTRUE)) assert(0);
@@ -124,7 +122,7 @@ RooBTagDecay::RooBTagDecay(const char *name, const char* title,
   _iTag1Val(2),
   _fTagVal(2),
   _checkVars(checkVars),
-  _maxVal(0)
+  _maxVal(-1)
 {
   // constructor with both initial and final state flavour tags
   // (decay into a flavour specific final state)
@@ -192,7 +190,7 @@ RooBTagDecay::RooBTagDecay(const char *name, const char* title,
   _iTag1Val(2),
   _fTagVal(2),
   _checkVars(checkVars),
-  _maxVal(0)
+  _maxVal(-1)
 {
   // constructor with only an initial state flavour tag
   // (decay into CP self-conjugate state)
@@ -259,7 +257,7 @@ RooBTagDecay::RooBTagDecay(const char *name, const char* title,
   _iTag1Val(2),
   _fTagVal(2),
   _checkVars(checkVars),
-  _maxVal(0)
+  _maxVal(-1)
 {
   // constructor with both initial and final state flavour tags (decay into
   // a flavour specific final state) and with tagging categories
@@ -330,7 +328,7 @@ RooBTagDecay::RooBTagDecay(const char *name, const char* title,
   _iTag1Val(2),
   _fTagVal(2),
   _checkVars(checkVars),
-  _maxVal(0)
+  _maxVal(-1)
 {
   // constructor with only an initial state flavour tag
   // (decay into CP self-conjugate state) and with tagging categories
@@ -400,7 +398,7 @@ RooBTagDecay::RooBTagDecay(const char *name, const char* title,
   _iTag1Val(2),
   _fTagVal(2),
   _checkVars(checkVars),
-  _maxVal(0)
+  _maxVal(-1)
 {
   // constructor with two initial state flavour tags and a final state flavour
   // tag (decay into a flavour specific final state) and with tagging
@@ -464,7 +462,7 @@ RooBTagDecay::RooBTagDecay(const char *name, const char* title,
   _iTag1Val(2),
   _fTagVal(2),
   _checkVars(checkVars),
-  _maxVal(0)
+  _maxVal(-1)
 {
   // constructor with two initial state flavour tags
   // (decay into CP self-conjugate state) and with tagging categories
@@ -523,14 +521,10 @@ RooBTagDecay::RooBTagDecay(const RooBTagDecay& other, const char* name) :
   _iTag0Val(other._iTag0Val),
   _iTag1Val(other._iTag1Val),
   _fTagVal(other._fTagVal),
-  _checkVars(other._checkVars)
+  _checkVars(other._checkVars),
+  _maxVal(other._maxVal)
 {
   // copy constructor
-  if (other._maxVal) {
-    _maxVal = new Double_t(*other._maxVal);
-  } else {
-    _maxVal = 0;
-  }
 
   // make tagging coefficient arrays owners of their lists
   _tagCatCoefs.SetOwner(kTRUE);
@@ -576,7 +570,6 @@ RooBTagDecay::RooBTagDecay(const RooBTagDecay& other, const char* name) :
 RooBTagDecay::~RooBTagDecay()
 {
   // destructor
-  if (_maxVal) delete _maxVal;
 }
 
 //_____________________________________________________________________________
@@ -1110,28 +1103,25 @@ Double_t RooBTagDecay::coefAnalyticalIntegral(Int_t coef, Int_t code,
 //_____________________________________________________________________________
 void RooBTagDecay::setMaxVal(const Double_t val)
 {
-  if (!_maxVal) {
-    _maxVal = new Double_t(val);
-  } else {
-    *_maxVal = val;
-  }
+  _maxVal = val;
 }
 
 //_____________________________________________________________________________
-Int_t RooBTagDecay::getMaxVal(const RooArgSet& vars) const
+Int_t RooBTagDecay::getMaxVal(const RooArgSet& /*vars*/) const
 {
-  if (!_maxVal) {
-    return 0;
-  } else {
-    return 1;
-  }
+  return _maxVal < 0 ? 0 : _maxVal;
 }
 
 //_____________________________________________________________________________
 Double_t RooBTagDecay::maxVal(Int_t code) const
 {
-   assert(code);
-   return *_maxVal;
+  if (code == 0) {
+    coutF(InputArguments) << "RooBTagDecay::maxVal(" << GetName()
+        << "): got code 0" << endl;
+    assert(0);
+  }
+
+  return _maxVal;
 }
 
 //_____________________________________________________________________________

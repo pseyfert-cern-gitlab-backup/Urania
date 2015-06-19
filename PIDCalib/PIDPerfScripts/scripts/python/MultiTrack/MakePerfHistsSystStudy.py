@@ -211,9 +211,9 @@ IMPORTANT: For muon 'unbiased' calibration samples, the option '-m' must be used
 
     BinSchema_OneBin = gbl.std.vector('RooBinning*')()
     BinSchema_OneBin.push_back(Mom_Bin_OneBin)
-    if not opts.isMuon :
-      BinSchema_OneBin.push_back(Eta_Bin_OneBin)
-      BinSchema_OneBin.push_back(nTrk_Bin_OneBin)
+    #if not opts.isMuon :
+    BinSchema_OneBin.push_back(Eta_Bin_OneBin)
+    BinSchema_OneBin.push_back(nTrk_Bin_OneBin)
 
     #=============================================================================
     # Declare Binning Schema (RooBinnings) - 'OneBin' binning
@@ -247,9 +247,9 @@ IMPORTANT: For muon 'unbiased' calibration samples, the option '-m' must be used
 
     BinSchema = gbl.std.vector('RooBinning*')()
     BinSchema.push_back(Mom_Bin)
-    if not opts.isMuon :
-      BinSchema.push_back(Eta_Bin)
-      BinSchema.push_back(nTrk_Bin)
+    #if not opts.isMuon :
+    BinSchema.push_back(Eta_Bin)
+    BinSchema.push_back(nTrk_Bin)
     
     if opts.verbose:
         print('========== Binning Schema ==========')
@@ -323,14 +323,15 @@ IMPORTANT: For muon 'unbiased' calibration samples, the option '-m' must be used
     if opts.isMuon and PartName in ("K", "Pi", "P"):
         MuonPostFix="_MuonUnbiased"
 
+    DLLSuffix=DLLVar[0:-1].replace('/', '_div_')
     fname = "PerfHists_%s%s_Strip%s_%s_Syst_%s.root" %(PartName,MuonPostFix,
                                                        StripVersion,
-                                                       MagPolarity, DLLVar[0:-1])
+                                                       MagPolarity, DLLSuffix)
     fname_onebin = "PerfHists_%s%s_Strip%s_%s_OneBin_%s.root" %(PartName,
                                                                 MuonPostFix,
                                                                 StripVersion,
                                                                 MagPolarity,
-                                                                DLLVar[0:-1])
+                                                                DLLSuffix)
     if opts.outputDir is not None:
         fname = "%s/%s" %(opts.outputDir, fname)
         fname_onebin = "%s/%s" %(opts.outputDir, fname_onebin)

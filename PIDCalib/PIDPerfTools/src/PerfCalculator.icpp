@@ -1189,8 +1189,9 @@ const std::string PerfCalculator<T>::TranslateCut( const std::string& Cut,
   boost::cmatch matches;
 
   //sre = "\\s*(\\w+)\\s*([>=<!]{1,2})\\s*([-+]?[0-9]*\\.?[0-9]+)\\s*";
-  sre = "\\s*(\\D+)\\s*([>=<!]{1,2})\\s*([-+]?[0-9]*\\.?[0-9]+)\\s*";
-  
+  //sre = "\\s*(\\D+)\\s*([>=<!]{1,2})\\s*([-+]?[0-9]*\\.?[0-9]+)\\s*";
+  sre = "\\s*(.+)\\s*([>=<!]{1,2})\\s*([-+]?[0-9]*\\.?[0-9]+)\\s*";
+
   try
   {
     // Assignment and construction initialize the FSM used

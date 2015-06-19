@@ -43,6 +43,7 @@ int CreateExpertTree(const TString module, const TString decay, const TString pl
   
   // Error Analysis
   if(!ntuple) {
+    std::cout << "ERROR: did not load NTuple" << std::endl;
     help("expert.exe");
     return -1;
   }
@@ -61,6 +62,7 @@ int CreateExpertTree(const TString module, const TString decay, const TString pl
   UInt_t runNumber = 0;
   unsigned int nPV  = 0 ;
   Int_t mytrack = 0;
+  unsigned int unbiased = 0;
 
   // Histograms  
   TH1F* h_net = new TH1F("h_net","Net Output",100,-1.0,1.0);  
@@ -77,6 +79,9 @@ int CreateExpertTree(const TString module, const TString decay, const TString pl
   outtree->Branch("FullFitMassErr",&FullFitMassErr, "FullFitMassErr[nPV2]/D");
   outtree->Branch("WeightVal",&sweight, "WeightVal[nPV2]/F");
   outtree->Branch("Tau",&tau, "Tau[nPV2]/D");
+  if (NNtype==m_NNtype_one) {
+    outtree->Branch("unbiased", &unbiased, "unbiased/I");
+  }
   outtree->SetDirectory(outfile); 
   
   // *** NeuroBayes ***
@@ -126,6 +131,7 @@ int CreateExpertTree(const TString module, const TString decay, const TString pl
       FullFitMassErr[pv] = ntuple->massErr(pv) ;
       tau[pv] = ntuple->time(pv);
       sweight[pv] = ntuple->weightVal(pv) ;
+      unbiased = (NNtype==m_NNtype_one ? ntuple->isUnbiased() : 0);
       if ( sweight[pv]!=ErrorCodes::FailsCuts ){
         if(doWhat=="Merge"){
           ntuple->prepareArray(nvar, InputArray, pv, m_LL);

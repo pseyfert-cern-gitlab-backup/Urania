@@ -49,7 +49,9 @@ For a full list of optional arguments, do: '%prog -h'.
 
 e.g. %prog  --minRun=114205 --maxRun=114287 '20' 'MagUp' 'K' '[DLLK > 0.0, DLLK > 4.0 && DLLpK < 0.0]'
 
-IMPORTANT: If using muon or 'MuonUnbiased' calibration samples, the option '-m' must be used.
+IMPORTANT: To use the 'MuonUnBiased' hadron samples for muon misID studies, one of the following particle types should be used: 'K_MuonUnBiased', 'Pi_MuonUnBiased' or 'P_MuonUnBiased'.
+
+
 """
     
     parser = optparse.OptionParser(usage)
@@ -57,9 +59,6 @@ IMPORTANT: If using muon or 'MuonUnbiased' calibration samples, the option '-m' 
                       help="the minimum run number to process (if applicable)")
     parser.add_option('-y', '--maxRun', dest="runMax", metavar="NUM",
                       help="the maximum run number to process (if applicable)")
-    parser.add_option("-m", "--isMuon", dest="isMuon",
-                      action="store_true", default=False,
-                      help="this option should be used for the muon calibration")
     parser.add_option("-o", "--outputDir", dest="outputDir", metavar="DIR",
                       help="save the performance histograms to this directory (default: current directory)")
 
@@ -73,21 +72,9 @@ IMPORTANT: If using muon or 'MuonUnbiased' calibration samples, the option '-m' 
                         default=False, help="print LaTeX-format tables (rather than ASCII)")
     addGroup.add_option("-t", "--tableFilename", dest="tabFile", metavar="FILE",
                       help="if this option is used, the tables will printed to the specified FILE rather than being printed to the screen")
+    addGroup.add_option("-M", "--allow-missing", dest="allowMissing", action="store_true",
+                        default=False, help="Allow missing calibration subsamples. N.B. You should only use this option if requested to do so by the PIDCalib authors") 
     parser.add_option_group(addGroup)
-    
-##     depGroup = optparse.OptionGroup(parser, "DEPRECATED OPTIONS",
-  ##                                   "These options are deprecated, and will be removed in future releases.")
-##     depGroup.add_option('-v', '--stripVersion', dest="stripVersion", metavar="VERSION",
-##                       help="process data from the specified stripping VERSION")
-    
-##     depGroup.add_option("-p", "--magPolarity", dest="magPol", metavar="POLARITY",
-##                         help="specifies whether the data to process corresponds to magnet POLARITY up " \
-##                         "('MagUp') or down ('MagDown')")
-##     depGroup.add_option('-n', '--partName', dest="partName", metavar="NAME",
-##                       help="specifies the particle NAME (i.e. the prefix of the track variables)")
-##     depGroup.add_option('-c', '--pidCuts', dest="pidCuts", metavar="CUTS",
-##                         help="the list of PID CUTS to process")
-##     parser.add_option_group(depGroup)
     
     # mandatory arguments are:
     # 1) stripping version
@@ -108,16 +95,15 @@ IMPORTANT: If using muon or 'MuonUnbiased' calibration samples, the option '-m' 
     RunMax = None
     
     StripVersion=args[0]
-  
+    CheckStripVer(StripVersion)
+    
     # set the magnet polarity
     MagPolarity=args[1]
-    if MagPolarity not in ("MagDown", "MagUp"):
-        parser.error("Expected 'MagDown' or 'MagUp' for magnet polarity, got %s" %MagPolarity)
+    CheckMagPol(MagPolarity)
         
     # set the particle name
     PartName=args[2]
-    if PartName not in ("K","Pi","P","Mu"):
-        parser.error("Expected 'K', 'Pi', 'P' or 'Mu' for particle name, got %s" %PartName)
+    CheckPartType(PartName)
       
     # set the PID cuts
     DLLCuts = args[3]
@@ -153,38 +139,6 @@ IMPORTANT: If using muon or 'MuonUnbiased' calibration samples, the option '-m' 
         if RunMin is None:
             parser.error("Max run was specified as %s, but no min run was given" %RunMax)
         
- ##    try:
-##         opts, args = getopt.getopt(sys.argv[1:],'v:p:x:y:c:n',
-##                                    ['stripVersion=',
-##                                     'magPolarity=',
-##                                     'minRun=',
-##                                     'maxRun=',
-##                                     'pidCuts=',
-##                                     'partName='])
-##     except getopt.GetoptError:
-##         usage()
-##     if len(opts) != 6:
-##         usage()
-##     for o,p in opts:
-##         if o in ['-v', '--stripVersion']:
-##             StripVersion = p
-##             print 'StripVersion :',StripVersion
-##         elif o in ['-p', '--magPolarity']:
-##             MagPolarity = p
-##             print 'MagPolarity  :',MagPolarity
-##         elif o in ['-x', '--minRun']:
-##             RunMin = (p if p!='None' else None)
-##             print 'RunMin       :',RunMin
-##         elif o in ['-y', '--maxRun']:
-##             RunMax = (p if p!='None' else None)
-##             print 'RunMax       :',RunMax
-##         elif o in ['-c', '--pidCuts']:
-##             DLLCuts = p[1:-1].split(',')
-##             print 'DLLCuts      :',DLLCuts
-##         elif o in ['-n', '--partName']:
-##             PartName = p
-##             print 'PartName     :',PartName
-
     #======================================================================
     # Check DLL Cuts etc.
     #======================================================================
@@ -195,21 +149,20 @@ IMPORTANT: If using muon or 'MuonUnbiased' calibration samples, the option '-m' 
         print "Particle name: %s" %PartName
         for icut, cut in enumerate(DLLCuts):
             print "PID cut %d: %s" %(icut,cut)
-        print "Muon calibration?: %s" %opts.isMuon
-        print '===================================='
+	print '===================================='
 
     #=============================================================================
     # Declare Binning Schema (RooBinnings)
     #=============================================================================
 
     minMom = 5000
-    if opts.isMuon : minMom = 3000
+    if IsMuonUnBiased(PartName) : minMom = 3000
 
-    Mom_Bin = ROOT.RooBinning(minMom,100000,'P')
-    Eta_Bin = ROOT.RooBinning(1.5,5,'ETA')
-    nTrk_Bin = ROOT.RooBinning(0,500,"nTrack");
+    Mom_Bin = ROOT.RooBinning(minMom, 100000, 'P')
+    Eta_Bin = ROOT.RooBinning(1.5, 5, 'ETA')
+    nTrk_Bin = ROOT.RooBinning(0, 500, "nTrack");
 
-    if opts.isMuon : 
+    if IsMuonUnBiased(PartName) : 
       Mom_Bin.addBoundary(6000);
       Mom_Bin.addBoundary(8000);
       Mom_Bin.addBoundary(10000);
@@ -234,9 +187,8 @@ IMPORTANT: If using muon or 'MuonUnbiased' calibration samples, the option '-m' 
 
     BinSchema = gbl.std.vector('RooBinning*')()
     BinSchema.push_back(Mom_Bin)
-    if not opts.isMuon :
-      BinSchema.push_back(Eta_Bin)
-      BinSchema.push_back(nTrk_Bin)
+    BinSchema.push_back(Eta_Bin)
+    BinSchema.push_back(nTrk_Bin)
 
     if opts.verbose:
         print('========== Binning Schema ==========')
@@ -256,8 +208,8 @@ IMPORTANT: If using muon or 'MuonUnbiased' calibration samples, the option '-m' 
                             BinSchema,
                             RunMin,
                             RunMax,
-                            opts.isMuon,
-                            opts.verbose)
+                            opts.verbose,
+                            opts.allowMissing)
     
     #======================================================================
     # Make Weighted Average
@@ -269,22 +221,17 @@ IMPORTANT: If using muon or 'MuonUnbiased' calibration samples, the option '-m' 
     #======================================================================
     # Open file to write TH1Fs to
     #======================================================================
-    MuonPostFix = ""
-    if opts.isMuon and PartName in ("K", "Pi", "P"):
-        MuonPostFix="_MuonUnbiased"
-    
-    fname = "PerfHists_%s%s_Strip%s_%s_3D.root" %(PartName,MuonPostFix,StripVersion,MagPolarity)
+ 
+    fname = "PerfHists_{part}_Strip{strp}_{pol}_3D.root".format(part=PartName,
+                                                                strp=StripVersion,
+                                                                pol=MagPolarity)
     if opts.outputDir is not None:
         fname = "%s/%s" %(opts.outputDir, fname)
 
-    print "Saving performance histograms to %s" %fname    
-    ## f_Out = ROOT.TFile('PerfHists_'+PartName+'_Strip'+StripVersion+'_'+MagPolarity+'_3D.root',
-##                        'RECREATE')
-    f_Out = ROOT.TFile(fname, "RECREATE")
-    if not f_Out or f_Out.IsZombie():
-        print "ERROR: Failed to open file %s for writing" %fname
-        sys.exit(1)
-        
+    print "Saving performance histograms to %s" %fname
+    f_Out = ROOT.TFile.Open(fname, "RECREATE")
+    if not f_Out:
+        raise IOError("Failed to open file %s for writing" %fname)
     
     for iPlot in Plots:
         iPlot[-1].Write()
@@ -294,15 +241,8 @@ IMPORTANT: If using muon or 'MuonUnbiased' calibration samples, the option '-m' 
     #======================================================================
     if opts.printTables:
         for i in range(len(Plots)):
-        #for iPlot in Plots:
-            ##  pidTable = gbl.PIDTable(Plots[i][-1] , Mom_Bin, Eta_Bin, nTrk_Bin)
-            ##             tabName=Plots[i][-1].GetName()
             plot=Plots[i][-1]
-            pidTable = None
-            if not opts.isMuon :
-                pidTable = gbl.PIDTable(plot, Mom_Bin, Eta_Bin, nTrk_Bin)
-            else : 
-                pidTable = gbl.PIDTable(plot, Mom_Bin)
+            pidTable = gbl.PIDTable(plot, Mom_Bin, Eta_Bin, nTrk_Bin)
             tabName=plot.GetName()
             tabHeader = "PID Table for histogram %s" %tabName
             if opts.tabFile is None:

@@ -1,0 +1,10 @@
+EventType 	 	15512012
+BranchingFraction	4.75e-4		2.11e-4
+GenerationEfficiency	0.0290911      0.000117567
+InputFile 	 	/castor/cern.ch/user/f/fdettori/bsmumu/background/MC2012_LbPMuNu_Down.root
+InputFile 	 	/castor/cern.ch/user/f/fdettori/bsmumu/background/MC2012_LbPMuNu_Up.root
+AnalysedEvents 	 	1004397
+ReweightParticle	2212
+WeightFile 		/castor/cern.ch/user/f/fdettori/bsmumu/pidefficiencies/Proton_misID_Comb.root
+NormalisationYear 	2013
+

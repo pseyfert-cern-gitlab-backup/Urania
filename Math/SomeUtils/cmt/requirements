@@ -3,7 +3,7 @@
 # Maintainer : Diego Martinez
 #============================================================================
 package           SomeUtils
-version           v3r2
+version           v3r3
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -13,6 +13,12 @@ version           v3r2
 #============================================================================
 # Used packages.
 #============================================================================
+
+private
+# genconfuser.py cannot be used here
+# Note: the tag must be set before including GaudiPolicy
+apply_tag skip_genconfuser
+end_private
 
 use	GaudiPolicy 	v*
 use	Python          v*    	LCG_Interfaces 

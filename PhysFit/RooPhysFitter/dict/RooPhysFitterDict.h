@@ -11,10 +11,6 @@
  *  @date   2011-05-10
  */
 #include "RooPhysFitter/Exceptions.h"
-#include "RooPhysFitter/RooLLRatioVar.h"
-#include "RooPhysFitter/RooPearsonsChi2Var.h"
-#include "RooPhysFitter/RooYatesChi2Var.h"
-#include "RooPhysFitter/RooGaussianChi2Var.h"
 #include "RooPhysFitter/RooCruijff.h"
 #include "RooPhysFitter/RooCruijffSimple.h"
 #include "RooPhysFitter/RooGranet.h"
@@ -23,4 +19,8 @@
 #include "RooPhysFitter/RooDplusMassFitter.h"
 #include "RooPhysFitter/RooDstarD0MassFitter.h"
 #include "RooPhysFitter/RooPhiBg.h"
+#include "RooPhysFitter/RooGaussianChi2Var.h"
+#include "RooPhysFitter/RooPearsonsChi2Var.h"
+#include "RooPhysFitter/RooYatesChi2Var.h"
+#include "RooPhysFitter/RooLLRatioVar.h"
 #endif // ROOPHYSFITTER_ROOPHYSFITTERDICT_H

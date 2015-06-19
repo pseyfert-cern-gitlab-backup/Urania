@@ -143,6 +143,10 @@ public :
   Double_t B_TRUEENDVERTEX_Y;
   Double_t B_TRUEENDVERTEX_Z;
   
+  Double_t KS0_TRUEENDVERTEX_X;
+  Double_t KS0_TRUEENDVERTEX_Y;
+  Double_t KS0_TRUEENDVERTEX_Z;
+  
   Double_t piplus_TRUEP_X;
   Double_t piplus_TRUEP_Y;
   Double_t piplus_TRUEP_Z;
@@ -180,6 +184,10 @@ public :
   TBranch        *b_B_TRUEENDVERTEX_X;   //!
   TBranch        *b_B_TRUEENDVERTEX_Y;   //!
   TBranch        *b_B_TRUEENDVERTEX_Z;   //!
+  
+  TBranch        *b_KS0_TRUEENDVERTEX_X;   //!
+  TBranch        *b_KS0_TRUEENDVERTEX_Y;   //!
+  TBranch        *b_KS0_TRUEENDVERTEX_Z;   //!
   
   TBranch        *b_piplus_TRUEP_X;   //!
   TBranch        *b_piplus_TRUEP_Y;   //!
@@ -2566,6 +2574,10 @@ void B2JpsiKs_2011::Init(TTree *tree, TString module, TString dir, TString what,
     fChain->SetBranchAddress("B_TRUEENDVERTEX_X",&B_TRUEENDVERTEX_X,&b_B_TRUEENDVERTEX_X);
     fChain->SetBranchAddress("B_TRUEENDVERTEX_Y",&B_TRUEENDVERTEX_Y,&b_B_TRUEENDVERTEX_Y);
     fChain->SetBranchAddress("B_TRUEENDVERTEX_Z",&B_TRUEENDVERTEX_Z,&b_B_TRUEENDVERTEX_Z);
+
+    fChain->SetBranchAddress("KS0_TRUEENDVERTEX_X",&KS0_TRUEENDVERTEX_X,&b_KS0_TRUEENDVERTEX_X);
+    fChain->SetBranchAddress("KS0_TRUEENDVERTEX_Y",&KS0_TRUEENDVERTEX_Y,&b_KS0_TRUEENDVERTEX_Y);
+    fChain->SetBranchAddress("KS0_TRUEENDVERTEX_Z",&KS0_TRUEENDVERTEX_Z,&b_KS0_TRUEENDVERTEX_Z);
     
     fChain->SetBranchAddress("piplus_TRUEP_X",&piplus_TRUEP_X,&b_piplus_TRUEP_X);
     fChain->SetBranchAddress("piplus_TRUEP_Y",&piplus_TRUEP_Y,&b_piplus_TRUEP_Y);

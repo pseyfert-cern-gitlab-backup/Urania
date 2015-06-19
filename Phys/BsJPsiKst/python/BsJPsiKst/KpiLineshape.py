@@ -1,6 +1,7 @@
 from ROOT import *
 from math import *
 from array import *
+from Urania import PDG
 
 gROOT.ProcessLine(".x $LHCBSTYLEROOT/src/lhcbStyle.C")
 #gROOT.ProcessLine('.x $SOMEMASSMODELSROOT/src/Kpi_resonances.cxx+')
@@ -9,6 +10,8 @@ gROOT.ProcessLine('.x $SOMEMASSMODELSROOT/src/Kmatrix_2res.cxx+')
 gROOT.ProcessLine('.x $SOMEMASSMODELSROOT/src/Kmatrix_nonRes.cxx+')
 gROOT.ProcessLine('.x $SOMEMASSMODELSROOT/src/Swave.cxx+')
 gROOT.ProcessLine('.x $SOMEMASSMODELSROOT/src/Wave_3res.cxx+')
+gROOT.ProcessLine('.x $SOMEMASSMODELSROOT/src/Kstar_evtgen.cxx++')
+
 
 gStyle.SetPalette(1)    #Color Palette
 RooFit.PrintLevel(3)
@@ -28,7 +31,7 @@ label = 'PLOT'
 
 
 h1 = fhist.Get('hist_Kst_Bs')
-
+#BREAK
 P1mass = RooRealVar("P1_mass","M(K#pi) ", h1.GetBinLowEdge(1), h1.GetBinLowEdge(h1.GetNbinsX()+1),"MeV/c^{2}")
 #P1mass.setRange("REDUCED",  h1.GetBinLowEdge(1), 1500)
 P1mass.setRange("REDUCED",  h1.GetBinLowEdge(1), h1.GetBinLowEdge(h1.GetNbinsX()+1))
@@ -50,8 +53,11 @@ mv = RooRealVar("mv","mv",3096.916)
 
 
 ###### S - wave
-m0S = RooRealVar("m0S","m0S",1425.)#, 1360,1480)
-gamma0S = RooRealVar("gamma0S","gamma0S",270.)#,170,370)
+m0S = RooRealVar("m0S","m0S",PDG.ParticleData(10321).mass)#, 1360,1480)
+gamma0S = RooRealVar("gamma0S","gamma0S",PDG.ParticleData(10321).width)#,170,370)
+m0S2 = RooRealVar("m0S2","m0S2",850.)#, 1360,1480)
+gamma0S2 = RooRealVar("gamma0S2","gamma0S2",450.)#,170,370)\
+
 kappaS = RooRealVar("kappaS","kappaS",0.1,0.,1)
 phaseS = RooRealVar("phaseS","phaseS",0.)#15)#,0,2*pi)
 
@@ -60,9 +66,9 @@ phaseS = RooRealVar("phaseS","phaseS",0.)#15)#,0,2*pi)
 sw_a = RooRealVar("sw_a","sw_a",4.03e-03)#, 1.e-03, 6.e-03)
 sw_r = RooRealVar("sw_r","sw_r",1.29e-03)#, 1
 #swave = Swave("swave","swave",P1mass,sw_a,sw_r, m0S, gamma0S,kappa,mb,mv)
-swave = Kmatrix_nonRes("swave","swave",P1mass, m0S, gamma0S,kappaS,phaseS,mb,mv,L0)
+swave = Kmatrix_nonRes("swave","swave",P1mass, m0S2, gamma0S2,kappaS,phaseS,mb,mv,L0)
 #swave= Wave_3res("swave", "swave",P1mass, m0S,gamma0S,m0S,gamma0S,m0S,gamma0S,L0,L0,L0,mb,mv,L0)
-
+#swave = Kmatrix_2res("swave","swave",P1mass,kappaS,phaseS, m0S2, m0S, gamma0S2, gamma0S,L0, mb,mv)
 ##### P-wave
 
 m0P = RooRealVar("m0P","m0P",895.94, (1-5e-03)*895.94,900)
@@ -82,7 +88,11 @@ cnR = RooRealVar("cPnR","cPnR",0)#,20)
 #
 #Signal= TwoBW("Signal", "Signaml",P1mass, beta,phase,m0P,m1P,gamma0P,gamma1P,L1, mb,mv)
 #Signal= Kmatrix_2res("Signal", "Signal",P1mass, beta,phase,m0P,m1P,gamma0P,gamma1P,L1, mb,mv)
-Signal = Kmatrix_nonRes("Signal","Signal",P1mass, m0P, gamma0P,cnR,L0,mb,mv,L1)
+m_kaon = RooRealVar("m_kaon","m_kaon",493.677000)
+m_pion = RooRealVar("m_pion","m_pion",139.570180)
+
+Signal = Kstar_evtgen("Signal","Signal",P1mass,m0P,gamma0P,m_kaon,m_pion,L1,mb,mv,L0)
+
 #Signal= Wave_3res("Signal", "Signal",P1mass, m0P,gamma0P,m1P,gamma1P,m2P,gamma2P,cP1,cP2,cnR,mb,mv,L1)
 
 
@@ -133,12 +143,12 @@ fnr = RooFormulaVar("fnr","fnr","nsig/(nsig+nbkg)",RooArgList(nsig,nbkg))
 SignalE = RooExtendPdf("extended signal", "extended signal",Signal, nsig,"TIGHT")
 ZE = RooExtendPdf("extended zw", "extended zw",Zwaves, nbkg,"TIGHT")
 
-#model = RooAddPdf("model", "model", RooArgList( Zwaves, Signal), RooArgList( f_nop))
-model = RooAddPdf("model", "model", RooArgList( ZE, SignalE))#, RooArgList( f_nop))
+model = RooAddPdf("model", "model", RooArgList( Lwaves, Signal), RooArgList( f_nop))
+#model = RooAddPdf("model", "model", RooArgList( ZE, SignalE))#, RooArgList( f_nop))
 #model = Signal
 
 #res = model.fitTo(data,RooFit.Minos(),RooFit.Save(), RooFit.Range("REDUCED"),RooFit.Minos(True), RooFit.Strategy(1), RooFit.Extended(True),RooFit.Save(true),RooFit.Verbose(False))
-res = model.fitTo(data,RooFit.Minos(),RooFit.Save(), RooFit.Range("REDUCED"))
+res = model.fitTo(data,RooFit.Minos(kTRUE))#, RooFit.Range("REDUCED"))
 
 #        number of events of BW1 should be (1 - f_nores)/(BW1*BW1 + beta*beta*BW2*BW2 + 2 beta Re{exp(iphi)*Int{BW1*BW2 } }
 
@@ -153,14 +163,14 @@ gStyle.SetOptTitle(0)
 
 Kstframe = P1mass.frame()
 Kstplot = RooAbsData.plotOn( data, Kstframe, RooFit.Name("histo_data"), RooFit.Binning(h1.GetNbinsX()))
-model.plotOn(Kstframe,RooFit.Range("REDUCED"))
+model.plotOn(Kstframe)#,RooFit.Range("REDUCED"))
 model.plotOn(Kstframe, RooFit.Components("Signal"), RooFit.LineStyle(kDashed),RooFit.LineColor(TColor.GetColor("#ff99cc")),RooFit.LineStyle(10))
-model.plotOn(Kstframe, RooFit.Components("logbkg"), RooFit.LineStyle(kDashed), RooFit.LineColor(kRed))
+#model.plotOn(Kstframe, RooFit.Components("logbkg"), RooFit.LineStyle(kDashed), RooFit.LineColor(kRed))
 model.plotOn(Kstframe, RooFit.Components("swave"), RooFit.LineStyle(kDashed), RooFit.LineColor(kRed),  RooFit.LineStyle(kDashed))
 model.plotOn(Kstframe, RooFit.Components("dwave"), RooFit.LineStyle(kDashed), RooFit.LineColor(kBlack), RooFit.LineStyle(kDotted))
-model.plotOn(Kstframe, RooFit.Components("fwave"), RooFit.LineStyle(kDashed), RooFit.LineColor(kGreen))
-model.plotOn(Kstframe, RooFit.Components("hwave"), RooFit.LineStyle(kDashed), RooFit.LineColor(kOrange))
-  
+#model.plotOn(Kstframe, RooFit.Components("fwave"), RooFit.LineStyle(kDashed), RooFit.LineColor(kGreen))
+#model.plotOn(Kstframe, RooFit.Components("hwave"), RooFit.LineStyle(kDashed), RooFit.LineColor(kOrange))
+#  
 Kstframe.Draw()   
 
 area = h1.GetSum()*(h1.GetBinLowEdge(h1.GetNbinsX()+1)*1.-h1.GetBinLowEdge(1))/h1.GetNbinsX() #para a normalizacion

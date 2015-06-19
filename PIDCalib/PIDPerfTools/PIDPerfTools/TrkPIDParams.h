@@ -23,6 +23,8 @@ public:
 
   Float_t TrkPIDEff;
   Float_t TrkPIDErr;
+  Float_t TrkPIDEffWeight;
+  Float_t TrkPIDErrWeight;
   Int_t   TrkBinNumber;
 
 protected:

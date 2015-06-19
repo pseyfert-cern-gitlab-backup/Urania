@@ -1,46 +1,93 @@
 #! /usr/bin/env python
 
-#import ROOT
+import ROOT
+import sys
 import subprocess
+import glob
+import os
 
-#local_path = '/afs/cern.ch/work/j/jotalora/PID_Calib/CalibData_2011/MagDown/Mu/'
-#local_path = '/afs/cern.ch/work/j/jotalora/PID_Calib/CalibData_2011/MagDown/P/'
-#local_path = '/afs/cern.ch/work/j/jotalora/PID_Calib/CalibData_2011/MagDown/Pi/'
-local_path = '/afs/cern.ch/work/j/jotalora/PID_Calib/CalibData_2011/MagDown/K/'
-pfn_path   = '/castor/cern.ch/grid/lhcb/user/j/jotalora/'
-#dir        = 'CalibData/Reco14_DATA/MagUp/'
-#dir        = 'CalibData/Reco14_DATA/MagDown/'
-#dir        = 'CalibData/Reco12_DATA/MagUp/'
-dir        = 'CalibData/Reco12_DATA/MagDown/'
-#mag_pol    = 'Up'
-mag_pol    = 'Down'
+local_path = '/data/lhcb/users/hunt'
+lfn_path   = '/lhcb/user/p/phunt'
+prefixes = ('DSt_MuonUnBiased_K', 'DSt_MuonUnBiased_Pi', 'Lam0_MuonUnBiased_P', 'Jpsi_Mu')
+##mag_pols = ('Up' 'Down')
+
+#dir        = 'CalibData/Reco14_DATA/Mag%s' %mag_pol
 #strip_ver  = '20'
-strip_ver   = '17'
-#pream      = 'DSt_K_Mag'+mag_pol+'_Strip'+strip_ver+'_'
-#pream      = 'DSt_Pi_Mag'+mag_pol+'_Strip'+strip_ver+'_'
-#pream      = 'Lam0_P_Mag'+mag_pol+'_Strip'+strip_ver+'_'
-#pream      = 'DSt_MuonUnBiased_K_Mag'+mag_pol+'_Strip'+strip_ver+'_'
-#pream      = 'Lam0_MuonUnBiased_P_Mag'+mag_pol+'_Strip'+strip_ver+'_'
-#pream      = 'Jpsi_Mu_Mag'+mag_pol+'_Strip'+strip_ver+'_'
-#pream      = 'DSt_MuonUnBiased_Pi_Mag'+mag_pol+'_Strip'+strip_ver+'_'
-pream      = 'DSt_MuonUnBiased_K_Mag'+mag_pol+'_Strip'+strip_ver+'_'
-#pream      = 'Lam0_MuonUnBiased_P_Mag'+mag_pol+'_Strip'+strip_ver+'_'
+#pream      = 'DSt_K_Mag'
+#pream      = 'DSt_Pi_Mag'
+#pream      = 'Lam0_P_Mag'
 
-for i in range(0,1+1):#um a mais do tamanho
-    #local_file = local_path+dir+pream+str(i)+'.root'
-    local_file = local_path+pream+str(i)+'.root'
-    #lfn_file   = lfn_path+dir+pream+str(i)+'.root'
-    pfn_file   = pfn_path+dir+pream+str(i)+'.root'
-    
-    cmd = 'rfcp %s %s' % (local_file, pfn_file)
+#imax=7 #32
+exitOnFailure=False
+
+def copyFile(fname, maxtries):
+    local_fname = "%s/%s" %(local_path, fname)
+    lfn_fname = "%s/%s" %(lfn_path, fname)
+    TF = ROOT.TFile.Open(local_fname)
+    if not TF:
+      print "ERROR: Failed to open file %s for reading" %local_fname
+      if exitOnFailure:
+        sys.exit(1)
+      else:
+        return
+    guID = TF.GetUUID()
+       
+    successful = False
+    ntries = 0
+
+    cmd = 'dirac-dms-add-file %s %s CERN-USER %s' % (lfn_fname, local_fname, guID.AsString())
     print cmd
 
-    successful = False
-    while(successful!=True):
+    while True:
         p = subprocess.Popen(cmd, shell=True)
         p.wait()
         if(p.returncode==0):
             successful = True
             print 'Success'
-        else:
+            return
+        elif ntries < maxtries:
             print 'Trying again...'
+            ntries+=1
+        else:
+            print "Giving up after %d tries" %maxtries
+            if exitOnFailure:
+              sys.exit(1)
+            else:
+	      return
+if __name__=='__main__':
+    args=sys.argv[1:]
+    if len(args)<2 or len(args)>3:
+      print "Usage: %s <recoVersion> <stripVersion> (<ntries=5>)" %os.path.basename(sys.argv[0])
+      print "<ntries> is the number of times the script will attempt to upload the file"
+      sys.exit(101)
+    reco_ver = args[0]
+    strip_ver = args[1]
+    maxtries = 5
+    if len(args)==3:
+      maxtries = int(args[2])
+
+    print 'Reco version: %s' %reco_ver
+    print 'Strip version: %s' %strip_ver
+    print 'Max tries: %d' %maxtries
+
+    # copy magnet down data
+    dir = "%s/CalibData/Reco%s_DATA/MagDown" %(local_path,reco_ver)
+    fname = "%s/%s_MagDown_Strip%s_*.root" %(dir, prefixes[0], strip_ver)
+    nFiles_down= len(glob.glob(fname))
+    for i in range(0, nFiles_down):
+        for prefix in prefixes:
+            dir = "CalibData/Reco%s_DATA/MagDown" %reco_ver
+            fname = "%s/%s_MagDown_Strip%s_%d.root" %(dir, prefix, strip_ver, i)
+            copyFile(fname, maxtries)
+
+    # copy magnet up data
+    dir = "%s/CalibData/Reco%s_DATA/MagUp" %(local_path,reco_ver)
+    fname = "%s/%s_MagUp_Strip%s_*.root" %(dir, prefixes[0], strip_ver)
+    nFiles_up = len(glob.glob(fname))
+    for i in range(0, nFiles_up):
+        for prefix in prefixes:
+            dir = "CalibData/Reco%s_DATA/MagUp" %reco_ver
+            fname = "%s/%s_MagUp_Strip%s_%d.root" %(dir, prefix, strip_ver, i)
+            copyFile(fname, maxtries)
+
+    sys.exit(0)

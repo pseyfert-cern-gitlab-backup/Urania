@@ -41,14 +41,14 @@ public :
   weighting(const TString module, const TString decay, const TString plotfilename,
 	  TString weightMethod, TString what, TString dir, unsigned int NNtype);
   ~weighting(){};
-  int run(double netCut_LL, double netCut_DD);
+  int run(double netCut_LL, double netCut_DD, bool);
  
 private:
   // Declarations
   double pDist(double px1, double py1, double pz1, double px2, double py2, double pz2, TH1* TA=0);
   int fillDataSet(double netCut_LL, double netCut_DD);
   void fillOneEntry(unsigned int pv,RooRealVar* keep, RooRealVar* weight);
-  int fit(unsigned int tracktype);
+  int fit(unsigned int tracktype,bool);
   int writeTree(unsigned int tracktype);
   
   // General Settings
@@ -365,7 +365,7 @@ int weighting::fillDataSet(double netCut_LL, double netCut_DD){
 
 // ####################################################################################################
 // *** Fitting ***
-int weighting::fit(unsigned int tracktype){
+int weighting::fit(unsigned int tracktype, bool isLambda){
 
   // ***** PART I: Mass Fit ***** //
   //////////////////////////////////
@@ -389,7 +389,8 @@ int weighting::fit(unsigned int tracktype){
        << goodfitdata->sumEntries() << std::endl ;
   
   // *** Create PDF ***
-  JpsiKsPdf* jpsiKsExt = new JpsiKsPdf(m_tag,m_mass,false,m_fitKstar,0,"Loose", numGood); // no Bs, Double Crystal Ball
+  TString setup = (isLambda?"Lambda":"Loose");
+  JpsiKsPdf* jpsiKsExt = new JpsiKsPdf(m_tag,m_mass,false,m_fitKstar,0,setup,numGood); // no Bs, Double Crystal Ball
   if(tracktype==m_LL) jpsiKsExt->setModel("DoubleCB","ExpGauss","Poly"); // Change background to second order polynomial
   
   // *** Fit ***
@@ -681,7 +682,7 @@ int weighting::writeTree(unsigned int tracktype){
 
 // ####################################################################################################
 // *** Weighting ***
-int weighting::run(double netCut_LL, double netCut_DD){ 
+int weighting::run(double netCut_LL, double netCut_DD,bool isLambda){ 
 
   // ***** PART I: Dataset ***** //
   /////////////////////////////////
@@ -701,14 +702,14 @@ int weighting::run(double netCut_LL, double netCut_DD){
   else{
     if(m_runFlag=="All" || m_runFlag=="Any"){
       std::cout << "\n PROGRESS: Combined LL+DD sWeights \n" << std::endl;
-      err += fit(m_ANY);
+      err += fit(m_ANY,isLambda);
       err += writeTree(m_ANY);
     }
     if(m_runFlag=="All" || m_runFlag=="Merged"){
       std::cout << "\n PROGRESS: LL sWeights \n" << std::endl;
-      err += fit(m_LL);
+      err += fit(m_LL,isLambda);
       std::cout << "\n PROGRESS: DD sWeights \n" << std::endl;
-      err += fit(m_DD);
+      err += fit(m_DD,isLambda);
       err += writeTree(m_LL);
     }
   }  
@@ -735,7 +736,7 @@ int main(int argc, char** argv){
   // Error Analysis
   if (out != 0) return out ;
   
-  TString wFile = makeFileName(module, decay,NNtype,weightMethod,what,ttype,dir);
+  TString wFile = makeFileName(module,decay,NNtype,weightMethod,what,ttype,dir);
   // Error Analysis
   if (""==wFile) {
     std::cout << "ERROR: Failed to generate file." << std::endl;
@@ -745,7 +746,7 @@ int main(int argc, char** argv){
   // *** Main Function ***
   make_canvas();
   weighting w(module, decay, wFile, weightMethod, what, dir, NNtype);
-  int e = w.run(netCut_LL,netCut_DD);
+  int e = w.run(netCut_LL,netCut_DD,(m_Lb2JpsiL==decay));
   if ( 0!=e ) help(argv[0]);
   return e;
 }

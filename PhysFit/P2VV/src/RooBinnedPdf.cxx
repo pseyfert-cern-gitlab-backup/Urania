@@ -40,7 +40,7 @@
 
 #include "RooAbsCategory.h"
 #include "RooAbsRealLValue.h"
-#include "RooBinnedPdf.h"
+#include "P2VV/RooBinnedPdf.h"
 #include "RooBinningCategory.h"
 #include "RooArgSet.h"
 #include "RooMsgService.h"
@@ -51,8 +51,6 @@
 #include <memory>
 
 using namespace std;
-
-ClassImp(RooBinnedPdf);
 
 //_____________________________________________________________________________
 RooBinnedPdf::RooBinnedPdf(const char* name, const char* title,
@@ -623,8 +621,11 @@ Int_t RooBinnedPdf::getMaxVal(const RooArgSet& vars) const
 Double_t RooBinnedPdf::maxVal(Int_t code) const 
 {
    // We only do 1D.
-   assert(code==1);
-   // assert(_function.absArg() != 0);
+   if (code != 1) {
+     coutF(InputArguments) << "RooBinnedPdf::maxVal(" << GetName()
+         << "): integration code should be 1 (got" << code << ")" << endl;
+     assert(0);
+   }
    
    Double_t max = -1;
    

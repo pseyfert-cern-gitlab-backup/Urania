@@ -1,0 +1,122 @@
+// #############################################################################
+// Phys/Bs2JpsiKs Package
+// Functions common to all decay modes
+// Authors: Patrick Koppenburg & Kristof De Bruyn
+// #############################################################################
+
+
+// #############################################################################
+// *** Declarations ***
+// List of functions whose content is decay channel specific
+
+// Initialization
+void defineConstants(const TString step, const unsigned int track);
+void Init(TTree *tree, const TString module, const TString data,
+          const TString step, const TString dir);
+
+// Accessors
+int TrackType();
+double sideband_low_min();
+double sideband_high_min();
+double sideband_high_max(const TString data);
+
+// Selection Cuts
+bool applyDecayCuts(const unsigned int pv);
+bool MCTruth(const TString data);
+bool teachingRegion(const unsigned int pv);
+
+// Teacher interaction
+void prepareNBArray(float* InputArray, const unsigned int pv,
+                    const TString step, const unsigned int tracktype);
+void fillNBArray(const TString ID, const unsigned int pv, float* InputArray);
+void fillVar(const TString ID, const unsigned int pv,
+             TString& varName, float& varVal);
+unsigned int individualPreproFlag(const unsigned int i,
+                                  const unsigned int track, const TString step);
+
+
+// #############################################################################
+// *** Accessors ***
+
+// Observables
+double mass(const unsigned int pv) { return B0_FitDaughtersPVConst_M[pv]; }
+double massErr(const unsigned int pv) { return B0_FitDaughtersPVConst_MERR[pv]; }
+double time(const unsigned int pv) {
+  return 1000*B0_FitDaughtersPVConst_tau[pv];
+}
+double timeErr(const unsigned int pv) {
+  return 1000*B0_FitDaughtersPVConst_tauErr[pv];
+}
+unsigned int primaries() { return B0_FitDaughtersPVConst_nPV; }
+// Variables for Data Manipulation
+UInt_t getRunNumber() { return runNumber; }
+ULong64_t getEventNumber() { return eventNumber; }
+float getGpsSecond() { return BCID%60; } // Replace with GpsSecond
+// Variables for selection
+double weightVal(const unsigned int pv) { return sweight[pv]; }
+float neuralnet(const unsigned int pv) { return netOutput[pv]; }
+int isUnbiased() { return unbiased; }
+int nVar(const TString step, const unsigned int track) {
+  defineConstants(step, track);
+  return nvar;
+}
+// Number of events
+Long64_t nEntries() {
+  Long64_t tupleEntries = GetChain()->GetEntries();
+  if (testrun) {
+    return TMath::Min(maxEntries, tupleEntries);
+  } else {
+    return tupleEntries;
+  }
+}
+
+// #############################################################################
+// *** Selection Cuts ***
+// Common Cuts
+bool applyCommonCuts(const TString data, const unsigned int pv) {
+  bool pass = (B0_FitDaughtersPVConst_status[pv]==0 &&
+               B0_FitDaughtersPVConst_chi2[pv]<DTF_chi2 &&
+               massErr(pv)<MMERR_cut &&
+               (isPrescaled(data) || (time(pv)>taucut)) &&
+               (TMath::Abs(B0_FitDaughtersPVConst_PV_Z[pv])<m_OWNPVZ_range) &&
+               (data==m_SigKstarWM || mass(pv) > sideband_low_min()) && 
+               mass(pv) < sideband_high_max(data)
+              );
+  return pass;
+};
+
+// Full Trigger
+bool fullTrigger() {
+  bool pass = (// HLT 1
+               (J_psi_1S_Hlt1TrackMuonDecision_TOS==1 || 
+                J_psi_1S_Hlt1DiMuonHighMassDecision_TOS==1 ||
+                J_psi_1S_Hlt1TrackAllL0Decision_TOS==1) && 
+               // HLT 2
+               (J_psi_1S_Hlt2DiMuonDetachedJPsiDecision_TOS==1 || 
+                J_psi_1S_Hlt2DiMuonJPsiHighPTDecision_TOS==1 || 
+                J_psi_1S_Hlt2DiMuonJPsiDecision_TOS==1 || 
+                J_psi_1S_Hlt2TopoMu2BodyBBDTDecision_TOS==1 )
+              );
+  return pass;
+};
+
+// Unbiased Trigger
+bool unbiasedTrigger() {
+  bool pass = (// HLT 1
+                J_psi_1S_Hlt1DiMuonHighMassDecision_TOS==1 && 
+               // HLT 2
+               (J_psi_1S_Hlt2DiMuonJPsiHighPTDecision_TOS==1 || 
+                J_psi_1S_Hlt2DiMuonJPsiDecision_TOS==1)
+              );
+  return pass;
+};
+
+// #############################################################################
+// *** Data Manipulation ***
+TTree* GetChain() { return fChain; }
+Int_t GetEntry(const Long64_t entry) {
+   if (!fChain) return 0;
+   return fChain->GetEntry(entry);
+}
+
+// #############################################################################

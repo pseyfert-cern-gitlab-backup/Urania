@@ -1,0 +1,28 @@
+!-----------------------------------------------------------------------------
+! Package     : OfflineSelections/BsKstKst
+! Responsible : Diego Martinez Santos, Paula Alvarez Cartelle, Juan Jose Saborido
+! Purpose     : Bs2KstKst analysis
+!-----------------------------------------------------------------------------
+
+!============================== v3r0 10-05-2013 ==============================
+
+! 2010-09-07 - Paula Alvarez Cartelle
+ - Make version v3r0
+ - Add Angular and Mass classes to build the full PDF
+
+
+!============================== v2r1 07-09-2010 ==============================
+
+! 2010-09-07 - Diego Martinez Santos
+ - Make version v2r1
+
+!============================== v2r0 11-05-2010 ==============================
+
+! 2010-05-11 - Diego Martinez Santos
+ - Make version v2r0, to adapt to changes in Phys/BsMuMuPy
+
+!============================== v1r0 24-03-2010 ==============================
+
+
+! 2010-03-17 | Paula Alvarez Cartelle
+create package

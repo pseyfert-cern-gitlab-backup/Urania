@@ -24,7 +24,8 @@ def MakePerfPlotsList(PartName, DataSet, DLLCutList, BinningScheme,
     ROOT.TH1.SetDefaultSumw2(True)
     dataset_index = len(Plots[0]) if Plots else 0
     for index, cut in enumerate(DLLCutList):
-        histname = "%s_%s_%d" %(PartName, cut.strip(), dataset_index)
+        parsed_cut = cut.strip().replace("/", "_div_")
+        histname = "%s_%s_%d" %(PartName, parsed_cut, dataset_index)
         Dummy = Calc.Perf_Hist(histname,
                                cut,
                                BinningScheme,

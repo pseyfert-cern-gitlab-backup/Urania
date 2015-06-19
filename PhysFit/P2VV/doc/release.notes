@@ -1,8 +1,55 @@
 !-----------------------------------------------------------------------------
 ! Package     : PhysFit/P2VV
-! Responsible : Juan PALACIOS, Tristan DUPREE
+! Responsible : Jeroen VAN LEERDAM, Diego MARTINEZ SANTOS
 ! Purpose     : keeping Tristan's crazy RooFit stuff.
 !-----------------------------------------------------------------------------
+
+!============================== v3r2 2013-08-06 ==============================
+
+! 2013-08-06 - Jeroen van Leerdam
+ - Updated RooFit patches (ROOT 5.34/09)
+ - Prevent "unused parameter" compiler warnings
+ - Prevent one of the "reference data members" dictionary warnings
+ - fixed RooEffResModel to work with new version of RooNameSet
+
+! 2013-08-05 - Diego Martinez Santos
+ - Added "apply_tag skip_genconfuser" line to cmt/requirements
+
+!============================== v3r1 2013-04-18 ==============================
+
+! 2013-04-17 - Jeroen van Leerdam
+ - Removed test version of P2VV II (v3r0)
+ - Added first P2VV II release (v3r1)
+
+   Starting from release v3r0, P2VV is no longer an update of its first
+   version. P2VV I is replaced by P2VV II, which is an entirely new
+   framework. Like the first version, P2VV II is an analysis framework based
+   on RooFit, primarily intended for decay time- and decay angle-dependent
+   analyses of B -> V h^+ h^- decays. Currently, its only application is the
+   analysis of the decay B_s^0 -> J/psi K^+ K^-.
+
+   P2VV II implements a number of custom RooFit classes, which are used to
+   build time- and angular-dependent probability density functions (PDFs).
+   Configuration and PDF building is handled by classes, functions and
+   scripts written in Python. PyROOT is used to interact with
+   ROOT/RooFit/P2VV C++ classes.
+
+   A new file/directory structure was created to use P2VV both stand-alone
+   and as a package in the LHCb software framework. The root directory has
+   the structure of an LHCb package, with the usual "cmt", "doc", "P2VV",
+   "src" and "python/P2VV" subdirectories. The stand-alone version lives in
+   the "standalone" directory.
+
+   "standalone" has a Makefile and setup scripts. The C++ and Python code
+   files are symlinks to their LHCb versions by default. If differences
+   between the stand-alone and LHCb versions are required, symlinks can be
+   replaced by real files.
+
+!============================== v3r0 2013-02-15 ==============================
+
+! 2013-01-29 - Diego Martinez Santos
+ - Removed final version of P2VV I (v2r5) by Tristan du Pree
+ - Added test version of P2VV II
 
 !============================== v2r5 2-04-2011 ==============================
 

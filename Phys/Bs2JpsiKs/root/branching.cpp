@@ -26,7 +26,6 @@
 // *** Declarations ***
 // TCanvas* PullPlot(RooPlot* frame, RooRealVar* x, int logy=0);
 void make_canvas();
-void printLHCb(char* optLR="L", char* optPrelim="Final", char* optText="");
 
 class branching {
 public :
@@ -817,7 +816,7 @@ void branching::doFullFit(char* netcut, double *Results, TString tag){
   if(tag=="LL+DD" || tag=="All"){
     TCanvas *massPlot = new TCanvas("massPlot","Canvas for MassPlot",900,800);
     jpsiKsExt->plotOn(massPlot,fitdata,false,1,0); // Plot with legend
-    jpsiKsExt->plotLegend(0.64,0.50,0.93,0.89);
+    jpsiKsExt->plotLegend(0.64,0.50,0.93,0.89,"mass");
     massPlot->Write("Full Mass Fit "+tag+" "+netcut);
     
     if (absent==string::npos){
@@ -829,14 +828,14 @@ void branching::doFullFit(char* netcut, double *Results, TString tag){
   if(absent==string::npos){
     TCanvas *pullPlot = new TCanvas("pullPlot","Canvas for MassPlot",900,800);
     jpsiKsExt->plotOn(pullPlot,fitdata,false,1,2,chi2Val); // Plot with pull
-    jpsiKsExt->plotLegend(0.64,0.50,0.93,0.89); // and legend
+    jpsiKsExt->plotLegend(0.64,0.50,0.93,0.89,"mass"); // and legend
     
     TPaveText *lhcbTag = new TPaveText(0.64,0.89,0.93,0.93,"NDC");
     lhcbTag->SetFillColor(0);
     lhcbTag->SetTextAlign(12);
     lhcbTag->SetBorderSize(0);
-    lhcbTag->SetTextSize(0.05);
-    lhcbTag->SetTextFont(62); // lhcbFont
+    lhcbTag->SetTextSize(0.06);
+    lhcbTag->SetTextFont(132); // lhcbFont
 		lhcbTag->AddText("LHCb");
     lhcbTag->Draw("same");
     
@@ -1003,7 +1002,7 @@ void branching::doLifetimeFit(double netVal, char* netcut, double *Results, TStr
   // *** Plot ***
   TCanvas *massPlot = new TCanvas("massPlot","Canvas for MassPlot",900,800);
   jpsiKsExt->plotOn(massPlot,fitdata,false,1,0); // Plot with legend
-  jpsiKsExt->plotLegend(0.6,0.5,0.89,0.89);
+  jpsiKsExt->plotLegend(0.6,0.5,0.89,0.89,"mass");
   massPlot->Write("Full Mass Fit "+tag+" "+netcut);
   
   size_t absent=cutString.find("odd");
@@ -1017,14 +1016,14 @@ void branching::doLifetimeFit(double netVal, char* netcut, double *Results, TStr
   lhcbTag->SetFillColor(0);
   lhcbTag->SetTextAlign(12);
   lhcbTag->SetBorderSize(0);
-  lhcbTag->SetTextSize(0.05);
-  lhcbTag->SetTextFont(62); // lhcbFont
+  lhcbTag->SetTextSize(0.06);
+  lhcbTag->SetTextFont(132); // lhcbFont
   lhcbTag->AddText("LHCb");
-  
+
   TCanvas *TauPlot = new TCanvas("TauPlot","Canvas for LifetimePlot",900,800);
   double chi2Val[] = {-999,-999};
   jpsiKsExt->plotOnTime(TauPlot,fitdata,false,1,2,0,chi2Val); // Pull with legend
-  jpsiKsExt->plotLegend(0.64,0.50,0.93,0.89);
+  jpsiKsExt->plotLegend(0.64,0.50,0.93,0.89,"All_time");
   lhcbTag->Draw("same");
   TauPlot->Write("Full Time Fit "+tag+" "+netcut);
   
@@ -1034,16 +1033,16 @@ void branching::doLifetimeFit(double netVal, char* netcut, double *Results, TStr
   
   TCanvas *TauZoomPlot = new TCanvas("TauZoomPlot","Canvas for LifetimePlot",900,800);
   jpsiKsExt->plotOnTime(TauZoomPlot,fitdata,false,1,2,1); // Pull with legend in Bs Box
-  jpsiKsExt->plotLegend(0.64,0.50,0.93,0.89);
+  jpsiKsExt->plotLegend(0.64,0.58,0.93,0.89,"Bs_time");
   lhcbTag->Draw("same");
   TauZoomPlot->Write("BsBox Time Fit "+tag+" "+netcut);
-  
+
   TCanvas *TauBkgPlot = new TCanvas("TauBkgPlot","Canvas for LifetimePlot",900,800);
   jpsiKsExt->plotOnTime(TauBkgPlot,fitdata,false,1,2,2); // Pull with legend in high mass sideband
-  jpsiKsExt->plotLegend(0.64,0.50,0.93,0.89);
+  jpsiKsExt->plotLegend(0.64,0.66,0.93,0.89,"Bkg_time");
   lhcbTag->Draw("same");
   TauBkgPlot->Write("MassSidebands Time Fit "+tag+" "+netcut);
-  
+
   // *** Results ***
   Results[2] = jpsiKsExt->nBd()->getVal();
   Results[3] = jpsiKsExt->nBd()->getError();
@@ -2492,7 +2491,7 @@ int branching::effectifeLifetime(){
   doLifetimeFit(m_bestCut_LL,LL_netcut,lifetime_LL,"Tau");
   double blinded_LL[] = {lifetime_LL[0],lifetime_LL[1]};
   double unblind_LL[] = {lifetime_LL[8],lifetime_LL[1]};
-  
+ 
   // *** Downstream ***
   char DD_netcut[30];
   makeCut(m_bestCut_DD,DD_netcut,m_DD);
@@ -2523,7 +2522,7 @@ int branching::effectifeLifetime(){
     std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl ;
     std::cout << std::endl;
   }
-  
+ 
   // *** Finilise ***
   m_outfile->Close();
   return 0;

@@ -17,7 +17,7 @@ UNIFORM_KAPPA = 0
 DOUBLE_EXPO = 0
 FORCE_INDEX = 1
 USE_7_BINS = 0
-BDT_DEN = 1.76201e+04 
+BDT_DEN = 1.76201e+04
 BDT_PDF = {"2":5.33030e+02*1./BDT_DEN, "3":1.26436e+02*1./BDT_DEN, "4":4.53571e+01*1./BDT_DEN, "5":3.15557e+01*1./BDT_DEN,"6":7.38383e+00*1./BDT_DEN, "7":9.30460e+00*1./BDT_DEN, "8": 1.97407e+00*1./BDT_DEN}
 
 if DOUBLE_EXPO: Mass = RooRealVar(massname,massname,4170, 6565)
@@ -48,7 +48,7 @@ missid_corr7 = RooRealVar("missid_corr7","missid_corr7",mid_idf[6])
 missid_corr8 = RooRealVar("missid_corr8","missid_corr8",mid_idf[7])
 
 alpha_s = RooRealVar("alpha_S","alpha_s", 0.31838135587209603,0.001,0.6)
-alpha_s_cons = RooGaussian("alpha_s_const","alpha_s_const",alpha_s,RooFit.RooConst(0.31838135587209603),RooFit.RooConst(0.027318398127746596)) 
+alpha_s_cons = RooGaussian("alpha_s_const","alpha_s_const",alpha_s,RooFit.RooConst(0.31838135587209603),RooFit.RooConst(0.027318398127746596))
 BR_s = RooRealVar("BRs","BRs", 1,-1.,10)
 nbs = RooFormulaVar("NBs","NBs", "BRs/alpha_S", RooArgList(alpha_s,BR_s))
 misid_global_factor = RooRealVar("misidP","misidP",TheTable.MisIDGlobalFactor, TheTable.MisIDGlobalFactor-5*TheTable.MisIDGlobalFactorErr, TheTable.MisIDGlobalFactor+5*TheTable.MisIDGlobalFactorErr)
@@ -63,12 +63,12 @@ a = RooRealVar("CB trans","CB trans", TheTable.CBTrans, 1.5,3)
 n = RooRealVar( "n", "n", 1)
 sigmaBs = RooRealVar("sigmaBs","sigmaBs", TheTable.MassResoBs, TheTable.MassResoBs-3*TheTable.MassResoErrBs,TheTable.MassResoBs+3*TheTable.MassResoErrBs)
 sigmaBd = RooRealVar("sigmaBd","sigmaBd", TheTable.MassResoBd, TheTable.MassResoBd-3*TheTable.MassResoErrBd,TheTable.MassResoBd+3*TheTable.MassResoErrBd)
-sigmaBd_cons = RooGaussian("sigmaBdconstext","sigmaBdconst",sigmaBd,RooFit.RooConst(TheTable.MassResoBd),RooFit.RooConst(TheTable.MassResoErrBd)) 
-sigmaBs_cons = RooGaussian("sigmaBsconstext","sigmaBsconst",sigmaBs,RooFit.RooConst(TheTable.MassResoBs),RooFit.RooConst(TheTable.MassResoErrBs)) 
+sigmaBd_cons = RooGaussian("sigmaBdconstext","sigmaBdconst",sigmaBd,RooFit.RooConst(TheTable.MassResoBd),RooFit.RooConst(TheTable.MassResoErrBd))
+sigmaBs_cons = RooGaussian("sigmaBsconstext","sigmaBsconst",sigmaBs,RooFit.RooConst(TheTable.MassResoBs),RooFit.RooConst(TheTable.MassResoErrBs))
 
 meanBs = RooRealVar("MBs","MBs", TheTable.MassMeanBs,TheTable.MassMeanBs-3*TheTable.MassMeanErrBs,TheTable.MassMeanBs+3*TheTable.MassMeanErrBs)d
 meanBd = RooRealVar("MBd","MBd", TheTable.MassMeanBd,TheTable.MassMeanBd-3*TheTable.MassMeanErrBd,TheTable.MassMeanBd+3*TheTable.MassMeanErrBd)
-meanBd_cons = RooGaussian("meanBdconstext","meanBdconst",meanBd,RooFit.RooConst(TheTable.MassMeanBd),RooFit.RooConst(TheTable.MassMeanErrBd)) 
+meanBd_cons = RooGaussian("meanBdconstext","meanBdconst",meanBd,RooFit.RooConst(TheTable.MassMeanBd),RooFit.RooConst(TheTable.MassMeanErrBd))
 meanBs_cons = RooGaussian("meanBsconstext","meanBsconst",meanBs,RooFit.RooConst(TheTable.MassMeanBs),RooFit.RooConst(TheTable.MassMeanErrBs))
 a_cons = RooGaussian("trans_cons","trans_cons",a,RooFit.RooConst(TheTable.CBTrans),RooFit.RooConst(TheTable.CBTransErr))
 
@@ -76,19 +76,19 @@ NhhTOT = RooRealVar("NhhTOT","NhhTOT",TheTable.TisTot,TheTable.TisTot-5*TheTable
 NhhTOT_cons = RooGaussian("NhhTOT_const","NhhTOT_const",NhhTOT,RooFit.RooConst(TheTable.TisTot),RooFit.RooConst(TheTable.TisErrTot))
 
 #Nhh1 = RooRealVar("Nhh1","Nhh1",1000,100,9000)
-#Nhh1_cons = RooGaussian("Nhh1_const","Nhh1_const",Nhh1,RooFit.RooConst(TheTable.Tis1),RooFit.RooConst(TheTable.Tis1Err)) 
+#Nhh1_cons = RooGaussian("Nhh1_const","Nhh1_const",Nhh1,RooFit.RooConst(TheTable.Tis1),RooFit.RooConst(TheTable.Tis1Err))
 Nhh2 = RooRealVar("Nhh2","Nhh2",TheTable.Tis2,TheTable.Tis2-5*TheTable.TisErr2, TheTable.Tis2+5*TheTable.TisErr2)
-Nhh2_cons = RooGaussian("Nhh2_const","Nhh2_const",Nhh2,RooFit.RooConst(TheTable.Tis2),RooFit.RooConst(TheTable.TisErr2)) 
+Nhh2_cons = RooGaussian("Nhh2_const","Nhh2_const",Nhh2,RooFit.RooConst(TheTable.Tis2),RooFit.RooConst(TheTable.TisErr2))
 Nhh3 = RooRealVar("Nhh3","Nhh3",TheTable.Tis3,TheTable.Tis3-5*TheTable.TisErr3, TheTable.Tis3+5*TheTable.TisErr3)
-Nhh3_cons = RooGaussian("Nhh3_const","Nhh3_const",Nhh3,RooFit.RooConst(TheTable.Tis3),RooFit.RooConst(TheTable.TisErr3)) 
+Nhh3_cons = RooGaussian("Nhh3_const","Nhh3_const",Nhh3,RooFit.RooConst(TheTable.Tis3),RooFit.RooConst(TheTable.TisErr3))
 Nhh4 = RooRealVar("Nhh4","Nhh4",TheTable.Tis4,TheTable.Tis4-5*TheTable.TisErr4, TheTable.Tis4+5*TheTable.TisErr4)
-Nhh4_cons = RooGaussian("Nhh4_const","Nhh4_const",Nhh4,RooFit.RooConst(TheTable.Tis4),RooFit.RooConst(TheTable.TisErr4)) 
+Nhh4_cons = RooGaussian("Nhh4_const","Nhh4_const",Nhh4,RooFit.RooConst(TheTable.Tis4),RooFit.RooConst(TheTable.TisErr4))
 Nhh5 = RooRealVar("Nhh5","Nhh5",TheTable.Tis5,TheTable.Tis5-5*TheTable.TisErr5, TheTable.Tis5+5*TheTable.TisErr5)
-Nhh5_cons = RooGaussian("Nhh5_const","Nhh5_const",Nhh5,RooFit.RooConst(TheTable.Tis5),RooFit.RooConst(TheTable.TisErr5)) 
+Nhh5_cons = RooGaussian("Nhh5_const","Nhh5_const",Nhh5,RooFit.RooConst(TheTable.Tis5),RooFit.RooConst(TheTable.TisErr5))
 Nhh6 = RooRealVar("Nhh6","Nhh6",TheTable.Tis6,TheTable.Tis6-5*TheTable.TisErr6, TheTable.Tis6+5*TheTable.TisErr6)
-Nhh6_cons = RooGaussian("Nhh6_const","Nhh6_const",Nhh6,RooFit.RooConst(TheTable.Tis6),RooFit.RooConst(TheTable.TisErr6)) 
+Nhh6_cons = RooGaussian("Nhh6_const","Nhh6_const",Nhh6,RooFit.RooConst(TheTable.Tis6),RooFit.RooConst(TheTable.TisErr6))
 Nhh7 = RooRealVar("Nhh7","Nhh7",TheTable.Tis7,TheTable.Tis7-5*TheTable.TisErr7, TheTable.Tis7+5*TheTable.TisErr7)
-Nhh7_cons = RooGaussian("Nhh7_const","Nhh7_const",Nhh7,RooFit.RooConst(TheTable.Tis7),RooFit.RooConst(TheTable.TisErr7)) 
+Nhh7_cons = RooGaussian("Nhh7_const","Nhh7_const",Nhh7,RooFit.RooConst(TheTable.Tis7),RooFit.RooConst(TheTable.TisErr7))
 Nhh8 = RooRealVar("Nhh8","Nhh8",TheTable.Tis8,TheTable.Tis8-5*TheTable.TisErr8, TheTable.Tis8+5*TheTable.TisErr8)
 Nhh8_cons = RooGaussian("Nhh8_const","Nhh8_const",Nhh8,RooFit.RooConst(TheTable.Tis8),RooFit.RooConst(TheTable.TisErr8))
 
@@ -230,22 +230,22 @@ class BsMuMuModel:
     def __init__(self, glbin):
         self.i = str(glbin)
         i = self.i
-       
+
         self.nbs = RooFormulaVar("NBs" + i ,"NBs" + i, "NBs*1/j"+i+"*f"+i, RooArgList(v["f"+i],v["nbs"],v["j"+i]))
         self.nbd = RooFormulaVar("NBd" + i ,"NBd" + i, "NBd*1/j"+i+"*f"+i, RooArgList(v["f"+i],v["nbd"],v["j"+i]))
         if COSME and i!= "1":self.nbkg = RooFormulaVar("MuMuBkg"+i,"MuMuBkg"+i, "MuMuBkg1*"+str(BDT_PDF[i]),RooArgList(mm[1].nbkg))
         else: self.nbkg = RooRealVar("MuMuBkg"+i,"MuMuBkg"+i, 0,70000)
         self.nmis = RooFormulaVar("Nmis" + i ,"Nmis" + i, "Nmis*f"+i+ "*1./missid_corr"+i, RooArgList(v["f"+i],v["nmis"],v["j"+i],v["missid_corr"+i]))
-        
+
         if UNIFORM_KAPPA and i!= "1": self.k = mm[1].k
         elif FORCE_INDEX and i=="8": self.k = mm[7].k
         else: self.k = RooRealVar("MuMu_k_"+i,"MuMu_k_" + i, -7e-04, -1e-02,1e-02)
-        
+
         self.dk = RooRealVar("MuMu_dk_"+i,"MuMu_dk_" + i,-7e-04, -1e-02,0)#1e-02)
         self.kb = RooFormulaVar("MuMu_kb_"+i,"MuMu_kb_" + i,"MuMu_k_"+i + " + MuMu_dk_" + i, RooArgList(self.k,self.dk))
         self.bkg1 = RooExponential("bkg1 MuMu model" + i , "bkg1 MuMu model" + i, Mass,self.k)
         self.bkg2 = RooExponential("bkg2 MuMu model" + i , "bkg2 MuMu model" + i, Mass,self.kb)
-        
+
         self.fb = RooRealVar("MuMu_f_"+i,"MuMu_f_" + i,0.5,0.,1.)
         if DOUBLE_EXPO: self.bkg = RooAddPdf("bkg MuMu model" + i, "bkg MuMu model" + i, self.bkg1,self.bkg2, self.fb)
         else: self.bkg = self.bkg1
@@ -265,7 +265,7 @@ class BsMuMuModel:
         self.missid_MS1 = RooAddPdf("missid_MS1"+ "_"+ i,"missid_MS1"+ "_"+ i,self.missid_MSu1,self.missid_MSd1,hh_f05)
         self.missid_MS2 = RooAddPdf("missid_MS2"+ "_"+ i,"missid_MS2"+ "_"+ i,self.missid_MSu2,self.missid_MSd2,hh_f05)
         self.missid_MS3 = RooAddPdf("missid_MS3"+ "_"+ i,"missid_MS3"+ "_"+ i,self.missid_MSu3,self.missid_MSd3,hh_f05)
-        
+
         self.missid_sig0  = RooAddPdf("missid_Sigmodel0" + i,"missid_Sigmodel0"+i, self.missid_MS1, self.missid_MS2, missid_f1)
         self.missid_peak  = RooAddPdf("missid" + i ,"missid"+i, self.missid_sig0, self.missid_MS3, missid_f2)
         self.nPiMuNu = RooFormulaVar("B0 pimunu yield " + i,"PiMuNu"+i + "*PiMuNu",RooArgList(v["PiMuNu"+i],v["PiMuNu"]))
@@ -274,7 +274,7 @@ class BsMuMuModel:
             self.model = RooAddPdf("mumu model " + i, "mumu model " + i, RooArgList(self.bkg,self.Bs,self.Bd,self.missid_peak,self.PiMuNu,self.KMuNu), RooArgList(self.nbkg,self.nbs,self.nbd,self.nmis,self.nPiMuNu,self.nKMuNu))
         else: self.model = RooAddPdf("mumu model " + i, "mumu model " + i, RooArgList(self.bkg,self.Bs,self.Bd,self.missid_peak), RooArgList(self.nbkg,self.nbs,self.nbd,self.nmis))
 
-        
+
 mm = {}
 fiter = RooSimultaneous("fitter", "fitter", cat)
 
@@ -325,10 +325,10 @@ summaryConstraints.add(RooArgSet(sigmaKMuNu1_cons,sigmaKMuNu2_cons,sigmaKMuNu3_c
 summaryConstraints.add(RooArgSet(meanKMuNu1_cons,meanKMuNu2_cons,meanKMuNu3_cons,meanKMuNu4_cons,meanKMuNu5_cons,meanKMuNu6_cons,meanKMuNu7_cons, meanKMuNu8_cons))
 
 if COSME:
-    
+
     NhhTOT.setConstant(kTRUE), Nhh2.setConstant(kTRUE), Nhh3.setConstant(kTRUE), Nhh4.setConstant(kTRUE), Nhh5.setConstant(kTRUE), Nhh6.setConstant(kTRUE), Nhh7.setConstant(kTRUE), Nhh8.setConstant(kTRUE)
     sigmaBs.setConstant(kTRUE), meanBs.setConstant(kTRUE),sigmaBd.setConstant(kTRUE), meanBd.setConstant(kTRUE)
-    
+
 #fiter.fitTo(allData,RooFit.Minos(kTRUE), RooFit.ExternalConstraints(RooArgSet(summaryConstraints)),RooFit.Strategy(2))
 
 #c = TCanvas()
@@ -350,12 +350,12 @@ if COSME:
 ##         mm[i].model.plotOn(fr[i], RooFit.Components("BKmunu "+str(i)),RooFit.LineColor(kCyan),RooFit.LineStyle(kDotted))#, RooFit.Slice(cat, "mumu bin1"), RooFit.ProjWData(allData))
 ##     fr[i].GetXaxis().SetTitle("m_{#mu#mu} ( MeV/c^{2} )")
 ##     fr[i].SetTitle("B_{s}^{0}#rightarrow#mu^{+}#mu^{-} candidates, BIN [" + str(Binning[bdtname][i-1]) + ", " +str(Binning[bdtname][i])+"]" )
-    
+
 ##     fr[i].GetYaxis().SetTitle("Events /( "+str(int(size))+" MeV/c^{2} )")
 ##     fr[i].GetYaxis().SetTitleOffset(1.4)
 ##     #else: fr[i].GetYaxis().SetTitleOffset(1.6)
 ##     fr[i].Draw()
-    
+
 #nll = fiter.createNLL(allData,RooFit.NumCPU(2),RooFit.ExternalConstraints(RooArgSet(summaryConstraints)))
 ## #nll.migrad()
 
@@ -370,7 +370,7 @@ if COSME:
 
 ##pl_Bs = nll.createProfile(RooArgSet(BR_s))
 
-#nll.plotOn(fr,RooFit.ShiftToZero()) 
+#nll.plotOn(fr,RooFit.ShiftToZero())
 
 #pl_Bs.plotOn(fr)
 

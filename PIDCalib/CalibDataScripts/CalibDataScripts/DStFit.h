@@ -30,7 +30,8 @@ void DStFit(TTree* tt,
             const char* d0Name,
             const char* delmName,
             std::vector<fptr>& fun_vec,
-            const char* index="0")
+            const char* index="0",
+            Bool_t verbose=kFALSE)
 {
   
   //==================================================//
@@ -57,6 +58,9 @@ void DStFit(TTree* tt,
                           delmPDG+7.0,
                           "MeV/c^{2}",
                           "m_{K#pi#pi_{s}}-m_{K#pi}");
+  if (verbose) {
+    massFitter->SetPrintEntriesFlag(kTRUE);
+  }
 
   //==================================================//
   // If pName is sPi, set DataSet name to Pi
@@ -148,7 +152,7 @@ void DStFit(TTree* tt,
   // Make composite model with following estimate of 
   // yield breakdown
   //==================================================//
-  massFitter->MakeDelmModel(0.67, 0.12, 0.15, 0.01);
+  massFitter->MakeDelmModel(0.67, 0.12, 0.15, 0.0);
 
 
   
@@ -255,12 +259,18 @@ void DStFit(TTree* tt,
   // Clean up
   //==================================================//
   delete rp_kpidk;
+  rp_kpidk=NULL;
   delete rp_mass;
+  rp_mass=NULL;
   delete rp_delm;
+  rp_delm=NULL;
   delete c1;
+  c1=NULL;
   delete c2;
+  c2=NULL;
   delete c3;
+  c3=NULL;
   delete massFitter;
-  
+  massFitter=NULL;
 }
 #endif // CALIBDATASCRIPTS_DSTFIT_H

@@ -132,7 +132,7 @@ def runComparison(x):
 		p = plotVars({	'includeMC12_S17':0, 'includeMC12_S20':0,
 				'includeMC10':0, 'includeMC12':0,
 				'include2011_Strip17':0, 'include2011_Strip20r1_71pb':0,
-				'include20.3_Strip19a':0, 'include20.3_Strip19abc':0, 'include20.3_Strip20':0,
+				'include2012_Strip19a':0, 'include2012_Strip19abc':0, 'include2012_Strip20':0,
 				#'include2012_Strip19abc_GoodBadITRuns':True,
 				'include2012_Strip20_GoodBadITRuns':True,
 				'channel':'Bu',
@@ -154,6 +154,36 @@ def runComparison(x):
 				#'plotDir':'VarPlots/BadGoodITRuns_2012_Strip19abc/',
 				'plotDir':'VarPlots/BadGoodITRuns_2012_Strip20/',
 				'doSBsubtraction':False
+				})
+
+        # Compare: 2011 S17, S20r1 and 2012 S19abc, S20
+	# Channel: BuJpsiKplus
+	# Cut: no cuts
+	if x is 6:
+		p = plotVars({	'includeMC12_S17':0, 'includeMC12_S20':0,
+				'includeMC10':0, 'includeMC12':0,
+				'include2011_Strip17':1, 'include2011_Strip20r1':1,
+				'include2012_Strip19a':0, 'include2012_Strip19abc':1, 'include2012_Strip20':1,
+				'channel':'Bu',
+				'JpsiTrig':False,
+				'selectRuns_2011_Strip20r1':0,
+				'selectRuns_2012_Strip19': 0,
+				'BhhMassCut':False,
+				'mu_GhostProb<':False,
+				'plotBVars':1,  'plotJpsiVars':1, 'plotMuonVars':1, 'plotKaonVars':1,
+				'plotBDT':0, 'plotBDTSVars':1, 'plotBDTVars':1,
+				'plotMuonGhostProb':1, 'plotKaonGhostProb':0,
+				'plotMultVars_forAll':False,
+				'plotMultVars_Trks':False,
+				'plotMultVars_Tracks':1,
+				'plotMultData':1,
+				'plotIsolationVars':1,
+				'plotUpstreamTracks':1,
+				'rootFileDir':'VarPlots/rootFiles/',
+				'plotDir':'VarPlots/ReproData_BuJpsiKplus_fid/',
+				#'plotDir':'VarPlots/ReproData_BuJpsiKplus_fid_SbSubtracted/',
+				'doSBsubtraction':False
+				#'doSBsubtraction':True
 				})
 
 

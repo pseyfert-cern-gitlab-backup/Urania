@@ -155,8 +155,9 @@ BuRatE_trg=BuRatE_trg.compress_errors()
 #BuNcan = EVal(124518.,364.) # Johannes 020911 - 341pb - Bpt>500, tau<7.36, Pt < 1TeV
 # number for 1.0 fb-1
 #BuNcan = EVal(367256.,873.) # Johannes 130112
-BuNcan = EVal(340129,640)#johannes 230112, 1025pb lnf, fiducial, BDTS 0.05
 
+BuNcan = EVal(340129,640)#johannes 230112, 1025pb lnf, fiducial, BDTS 0.05
+#BuNcan = EVal(364390.6,615.7)# Siim 04042013  from 1041.7pb 2011 S20r1
 
 BuNcan.add_relative_error(0.013) #Johannes, 230112 bkg substraction
 BuNcan = BuNcan.compress_errors()

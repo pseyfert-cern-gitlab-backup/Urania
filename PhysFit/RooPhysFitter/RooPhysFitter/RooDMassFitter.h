@@ -258,15 +258,19 @@ namespace RooPhysFit
     void SetDMassBkgYieldName(const char* name);
     void SetSpectatorSetName(const char* name);
     void SetCategorySetName(const char* name);
-    
-    const char* GetDMassPartName();
-    const char* GetDMassName();
-    const char* GetDMassSigModelName();
-    const char* GetDMassBkgModelName();
-    const char* GetDMassSigYieldName();
-    const char* GetDMassBkgYieldName();
-    const char* GetSpectatorSetName();
-    const char* GetCategorySetName();
+    void SetPrintEntriesFlag(Bool_t flag);
+    void SetPrintFreq(Int_t freq);
+
+    const char* GetDMassPartName() const;
+    const char* GetDMassName() const;
+    const char* GetDMassSigModelName() const;
+    const char* GetDMassBkgModelName() const;
+    const char* GetDMassSigYieldName() const;
+    const char* GetDMassBkgYieldName() const;
+    const char* GetSpectatorSetName() const;
+    const char* GetCategorySetName() const;
+    const Bool_t& GetPrintEntriesFlag() const;
+    const Int_t& GetPrintFreq() const;
     
     virtual ~RooDMassFitter( ); ///< Destructor
     
@@ -283,6 +287,8 @@ namespace RooPhysFit
     const char* m_dMassBkgYieldName;
     const char* m_spectSetName;
     const char* m_catSetName;
+    Bool_t m_printEntries;
+    Int_t m_printFreq;
     
     // map of the RooRealVar name of the spectator to the leaf name in the TTree
     std::map< std::string, std::string > m_varNameToBranchName;

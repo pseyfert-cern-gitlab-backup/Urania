@@ -4,6 +4,53 @@
 ! Purpose     : Classes for performing PID based studies
 !-----------------------------------------------------------------------------
 
+!============================== v5r1p2 18-07-2013 ============================
+
+! 2013-07-18 - Philip Hunt (LHCB)
+ - Make version v5r1p2
+
+! 2013-07-18 - Philip Hunt (LHCB)
+ - Fix to regular expression in PerfCalculator.icpp to allow any PID cut of 
+   the form "X > Y", where "X" is the variable (or function of variables), 
+   ">" is the (in)equality and "Y" is the cut value
+     * Previously, numeric characters were not supported on the left-hand side
+   of the (in)equality
+
+! 2013-07-17 - Philip Hunt (LHCB)
+ - Modified PIDTrackDataSet to include the ProbNNmu and ProbNNe variables,
+   which were previously missing
+     * NB. This class will have to be updated again once the RICH gas variables
+       (above/below threshold) are added to the calibration samples
+
+!============================== v5r1 05-07-2013 ==============================
+
+! 2013-07-05 - Philip Hunt
+  - Make version v5r0p1
+
+! 2013-06-28 - Juan Martin Otalora Goicochea
+ - Aded ability to consider weighted reference samples in MultiTrackCalibTool
+   Saved new variables: <PARTICLE_NAME>_PIDCalibEffWeight, <PARTICLE_NAME>_PIDCalibEffErrorWeight
+   Event_PIDCalibEffWeight, Event_PIDCalibEffErrorWeight, Event_Weight
+   to the output ntuple
+
+!============================== v5r0p1 26-04-2013 ==============================
+
+! 2013-04-26 - Philip Hunt
+  - Make version v5r0p1
+
+! 2013-04-26 - Philip Hunt
+  - Hotfix to MultiTrackCalibTool:
+    - nTracks branch was set multiple times, once for each track in the event.
+      The hotfix set the branch the first time, then has the other tracks
+      point to the original branch address. It is forseen to treat global
+      variables in a more sensible way in future.
+    - Added ability to print verbose information in the constructor (disabled by default)
+      and to print the nTrack and kinematic variables of the reference events
+      with a defined print frequency
+    - In MultiTrackCalibTool::ReOrderBinningVector
+       * Added "m_BinningVectorSorted = true" in the "if" statement for m_BinningDimension == 1
+         Without this, the tool thinks the vector is unsorted and crashes during MultiTrackCalibTool::DeleteHeapMemVars 
+ 
 ! 2013-03-12 - Philip Hunt
   - The Perf_Hist function in PerfCalculator.h now has the option to disable the printing of per-bin efficiencies, as is done in the other 'Perf' function
   - Updates to MultiTrackCalibTool

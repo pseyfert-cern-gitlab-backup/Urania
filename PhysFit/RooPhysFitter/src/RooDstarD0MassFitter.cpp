@@ -1411,6 +1411,12 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
   Long64_t localEntry=0;
   Long64_t entryNumber=0;
   
+  std::cout << "RooDstarD0MassFitter::MakeDelmDataSet: Initial entries = "
+            << nTotal << std::endl;
+  if (cuts&&strlen(cuts)>0) {
+    std::cout << "RooDstarD0MassFitter::MakeDelmDataSet: Entries passing selection cut (" 
+              << cuts << ") = " << nentries << std::endl;
+  }
 
   for (entry=0; entry<nentries; ++entry)
   {
@@ -1445,6 +1451,17 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
 
     Double_t Delm = (!useDelmVarFromTree) ? DstarM-D0M : DstarM;
     
+    Bool_t printEntry=m_printEntries&&(entry%m_printFreq==0);
+    if (printEntry) {
+      std::cout << "RooDstarD0MassFitter::MakeDelmDataSet: Entry " << entry
+                << ", entry number " << entryNumber 
+                << ", entry in current tree " << localEntry
+                << std::endl;
+      std::cout << "RooDMassFitter::MakeDMassDataSet: Delta mass = " << Delm
+                << ", D0 mass = " << D0M
+                << std::endl;
+    }
+
     if ( (mass->inRange(D0M,0)) && (delm->inRange(Delm,0)) ) {
       mass->setVal(D0M);
       delm->setVal(Delm);
@@ -1501,6 +1518,11 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
             throw GeneralException("RooDstarD0MassFitter::MakeDelmDataSet",
                                    msg.str());
           }
+          if (printEntry) {
+            std::cout << "RooDstarD0MassFitter::MakeDelmDataSet: Variable "
+                      << vname << ", value = " << v << std::endl;
+          }
+
           RooRealVar *var=dynamic_cast<RooRealVar*>(&args[vname.c_str()]);
           if (!var) {
             std::stringstream msg;
@@ -1514,6 +1536,13 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
             v = fun(v);
             if (!var->inRange(v,0)) {
               passed=kFALSE;
+             if (printEntry) {
+                std::cout << "RooDstarD0MassFitter::MakeDelmDataSet: Variable "
+                          << vname << ", value = " << v 
+                          << " is not in range (" 
+                          << var->getMin()
+                          << ", " << var->getMax() << ")" << std::endl;
+              }
               break;
             }
             var->setVal(v);
@@ -1523,6 +1552,13 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
             v = fun.Eval(v);
             if (!var->inRange(v,0)) {
               passed=kFALSE;
+              if (printEntry) {
+                std::cout << "RooDstarD0MassFitter::MakeDelmDataSet: Variable "
+                          << vname << ", value = " << v 
+                          << " is not in range (" 
+                          << var->getMin()
+                          << ", " << var->getMax() << ")" << std::endl;
+              }
               break;
             }
             var->setVal(v);
@@ -1531,6 +1567,13 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
             if (!var->inRange(v,0))
             {
               passed=kFALSE;
+              if (printEntry) {
+                std::cout << "RooDstarD0MassFitter::MakeDelmDataSet: Variable "
+                          << vname << ", value = " << v 
+                          << " is not in range (" 
+                          << var->getMin()
+                          << ", " << var->getMax() << ")" << std::endl;
+              }
               break;
             }
             var->setVal(v);
@@ -1565,6 +1608,10 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
           }
           if (!cat->isValidIndex(*val)) {
             passed=kFALSE;
+            if (printEntry) {
+              std::cout << "RooDstarD0MassFitter::MakeDelmDataSet: Category " << vname
+                        << ", value = " << *val << " is not a valid index" << std::endl;
+            }
             break;
           }
           cat->setIndex(*val);
@@ -1579,12 +1626,7 @@ void RooDstarD0MassFitter::MakeDelmDataSet(TTree* tt,
     throw GeneralException("RooDstarD0MassFitter::MakeDelmDataSet",
                            "No entries selected!");
   }
-  std::cout << "RooDstarD0MassFitter::MakeDelmDataSet: Initial entries = "
-            << nTotal << std::endl;
-  if (cuts&&strlen(cuts)>0) {
-    std::cout << "RooDstarD0MassFitter::MakeDelmDataSet: Entries passing selection cut (" 
-              << cuts << ") = " << nentries << std::endl;
-  }
+
   std::cout << "RooDstarD0MassFitter::MakeDelmDataSet: Selected entries = " 
             << rds->numEntries() << std::endl;
 

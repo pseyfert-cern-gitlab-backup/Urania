@@ -42,7 +42,9 @@
 //-----------------------------------------------------------------------------
 
 //using namespace RooPhysFit;
+// This is a really bad idea, and should be fixed!
 using namespace RooPhysFit;
+
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
@@ -59,6 +61,8 @@ RooDMassFitter::RooDMassFitter(  ) : RooPhysFitter() {
 
   m_spectSetName="Spectators";
   m_catSetName="Categories";
+  m_printEntries=kFALSE;
+  m_printFreq=100;
 }
 
 RooDMassFitter::RooDMassFitter( const char* name, const char* title ) 
@@ -74,6 +78,8 @@ RooDMassFitter::RooDMassFitter( const char* name, const char* title )
 
   m_spectSetName="Spectators";
   m_catSetName="Categories";
+  m_printEntries=kFALSE;
+  m_printFreq=100;
 }
 
 void RooDMassFitter::MakeDMassVar(Float_t xmin, Float_t xmax, 
@@ -1490,6 +1496,13 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
   Long64_t localEntry=0;
   Long64_t entryNumber=0;
   
+  std::cout << "RooDMassFitter::MakeDMassDataSet: Initial entries = "
+            << nTotal << std::endl;
+  if (cuts&&strlen(cuts)>0) {
+    std::cout << "RooDMassFitter::MakeDMassDataSet: Entries passing selection cut (" 
+              << cuts << ") = " << nentries << std::endl;
+  }
+
   for (entry=0; entry<nentries; ++entry)
   {
     entryNumber=tt->GetEntryNumber(entry);
@@ -1518,6 +1531,15 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
 
     if (masstype.compare("Float_t")==0) M=static_cast<Double_t>(M_f);
     
+    Bool_t printEntry=m_printEntries&&(entry%m_printFreq==0);
+    if (printEntry) {
+      std::cout << "RooDMassFitter::MakeDMassDataSet: Entry " << entry
+                << ", entry number " << entryNumber 
+                << ", entry in current tree " << localEntry
+                << std::endl;
+      std::cout << "RooDMassFitter::MakeDMassDataSet: D mass = " << M
+                << std::endl;
+    }
     if ( (mass->inRange(M,0)) ) {
       mass->setVal(M);
       Bool_t passed=kTRUE;
@@ -1572,6 +1594,11 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
             throw GeneralException("RooDMassFitter::MakeDMassDataSet",
                                    msg.str());
           }
+          if (printEntry) {
+            std::cout << "RooDMassFitter::MakeDMassDataSet: Variable "
+                      << vname << ", value = " << v << std::endl;
+          }
+
           RooRealVar *var=dynamic_cast<RooRealVar*>(&args[vname.c_str()]);
           if (!var) {
             std::stringstream msg;
@@ -1585,6 +1612,14 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
             v = fun(v);
             if (!var->inRange(v,0)) {
               passed=kFALSE;
+              if (printEntry) {
+                std::cout << "RooDMassFitter::MakeDMassDataSet: Variable "
+                          << vname << ", value = " << v 
+                          << " is not in range (" 
+                          << var->getMin()
+                          << ", " << var->getMax() << ")" << std::endl;
+              }
+
               break;
             }
             var->setVal(v);
@@ -1594,6 +1629,14 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
             v = fun.Eval(v);
             if (!var->inRange(v,0)) {
               passed=kFALSE;
+              if (printEntry) {
+                std::cout << "RooDMassFitter::MakeDMassDataSet: Variable "
+                          << vname
+                          << ", value = " << v << " is not in range (" 
+                          << var->getMin()
+                          << ", " << var->getMax() << ")" << std::endl;
+              }
+
               break;
             }
             var->setVal(v);
@@ -1602,6 +1645,14 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
             if (!var->inRange(v,0))
             {
               passed=kFALSE;
+              if (printEntry) {
+                std::cout << "RooDMassFitter::MakeDMassDataSet: Variable "
+                          << vname
+                          << ", value = " << v << " is not in range ("
+                          << var->getMin()
+                          << ", " << var->getMax() << ")" << std::endl;
+              }
+
               break;
             }
             var->setVal(v);
@@ -1636,6 +1687,10 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
           }
           if (!cat->isValidIndex(*val)) {
             passed=kFALSE;
+            if (printEntry) {
+              std::cout << "RooDMassFitter::MakeDMassDataSet: Category " << vname
+                        << ", value = " << *val << " is not a valid index" << std::endl;
+            }
             break;
           }
           cat->setIndex(*val);
@@ -1649,12 +1704,7 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
     throw GeneralException("RooDMassFitter::MakeDMassDataSet",
                            "No entries selected!");
   }
-  std::cout << "RooDMassFitter::MakeDMassDataSet: Initial entries = "
-            << nTotal << std::endl;
-  if (cuts&&strlen(cuts)>0) {
-    std::cout << "RooDMassFitter::MakeDMassDataSet: Entries passing selection cut (" 
-              << cuts << ") = " << nentries << std::endl;
-  }
+
   std::cout << "RooDMassFitter::MakeDMassDataSet: Selected entries = " 
             << rds->numEntries() << std::endl;
 
@@ -1782,18 +1832,25 @@ void RooDMassFitter::SetDMassBkgYieldName(const char* name) {m_dMassBkgYieldName
 void RooDMassFitter::SetSpectatorSetName(const char* name) {m_spectSetName=name;}
 void RooDMassFitter::SetCategorySetName(const char* name) {m_catSetName=name;}
 
+void RooDMassFitter::SetPrintEntriesFlag(Bool_t flag) {m_printEntries=flag;}
 
-const char* RooDMassFitter::GetDMassPartName() {return m_dMassPartName;}
-const char* RooDMassFitter::GetDMassName() {return m_dMassName;}
+void RooDMassFitter::SetPrintFreq(Int_t freq) {m_printFreq=freq;}
 
-const char* RooDMassFitter::GetDMassSigModelName() {return m_dMassSigModelName;}
-const char* RooDMassFitter::GetDMassBkgModelName() {return m_dMassBkgModelName;}
+const char* RooDMassFitter::GetDMassPartName() const {return m_dMassPartName;}
+const char* RooDMassFitter::GetDMassName() const {return m_dMassName;}
 
-const char* RooDMassFitter::GetDMassSigYieldName() {return m_dMassSigYieldName;}
-const char* RooDMassFitter::GetDMassBkgYieldName() {return m_dMassBkgYieldName;}
+const char* RooDMassFitter::GetDMassSigModelName() const {return m_dMassSigModelName;}
+const char* RooDMassFitter::GetDMassBkgModelName() const {return m_dMassBkgModelName;}
 
-const char* RooDMassFitter::GetSpectatorSetName() {return m_spectSetName;}
-const char* RooDMassFitter::GetCategorySetName() {return m_catSetName;}
+const char* RooDMassFitter::GetDMassSigYieldName() const {return m_dMassSigYieldName;}
+const char* RooDMassFitter::GetDMassBkgYieldName() const {return m_dMassBkgYieldName;}
+
+const char* RooDMassFitter::GetSpectatorSetName() const {return m_spectSetName;}
+const char* RooDMassFitter::GetCategorySetName() const {return m_catSetName;}
+
+const Bool_t& RooDMassFitter::GetPrintEntriesFlag() const {return m_printEntries;}
+
+const Int_t& RooDMassFitter::GetPrintFreq() const {return m_printFreq;}
 
 std::string RooDMassFitter::GetBranchType(TTree* tt, std::string brName) 
 {

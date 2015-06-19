@@ -56,7 +56,8 @@ bool getPsiHlt1DiMuonHighMassDecision_TOS(){
 bool getPsiHlt1TrackAllL0Decision_TOS(){
  return (b_PsiHlt1TrackAllL0Decision_TOS ? PsiHlt1TrackAllL0Decision_TOS : Psi_Hlt1TrackAllL0Decision_TOS); };
 bool getPsiHlt2DiMuonDetachedJPsiDecision_TOS(){
- return (b_PsiHlt2DiMuonDetachedJPsiDecision_TOS?PsiHlt2DiMuonDetachedJPsiDecision_TOS : Psi_Hlt2DiMuonDetachedJPsiDecision_TOS);};
+ return (b_PsiHlt2DiMuonDetachedJPsiDecision_TOS?PsiHlt2DiMuonDetachedJPsiDecision_TOS : 
+         Psi_Hlt2DiMuonDetachedJPsiDecision_TOS);};
 bool getPsiHlt2DiMuonJPsiHighPTDecision_TOS(){
  return (b_PsiHlt2DiMuonJPsiHighPTDecision_TOS ? PsiHlt2DiMuonJPsiHighPTDecision_TOS : Psi_Hlt2DiMuonJPsiHighPTDecision_TOS); };
 bool getPsiHlt2DiMuonJPsiDecision_TOS(){
@@ -138,6 +139,7 @@ bool trigger(){
 // *** Data Manipulation ***
 void fillArray(const int var, const float value, TString name, float* InputArray){
   if (var>=0) {
+    //    std::cout << var << " " << name << " " << value << std::endl ;
     InputArray[var] = value;
     if (firstFill) std::cout << "Filling variable " << var+2 << " (ID " << 
       var << ", page " << var+5 << ") ``" << name << "'' with " << value << std::endl ;
@@ -160,7 +162,7 @@ void printCandidates(std::list<unsigned int>& passPVs ){
     if (passPVs.size()>1 ){
       std::cout << "Interesting case of multiple PVs passing at event " << runNumber << "/" << eventNumber << std::endl;
       for ( std::list<unsigned int>::const_iterator i = passPVs.begin() ; i!=passPVs.end()  ; ++i){
-	printCandidate(*i);
+        printCandidate(*i);
       }
     }
   }

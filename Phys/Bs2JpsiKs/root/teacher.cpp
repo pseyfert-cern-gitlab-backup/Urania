@@ -147,6 +147,7 @@ int TrainTeacher(const TString module, const TString decay, unsigned int ttype,
 
           // Feed Teacher
           ntuple->prepareArray(nvar, InputArray, pv, ttype);
+          // std::cout << "target : " << sweight << " for " << i << "[" << pv << "]" << endl ;
           nb->SetTarget(sweight) ; 
           nb->SetNextInput(nvar,InputArray);     
         

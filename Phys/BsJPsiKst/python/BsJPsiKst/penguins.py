@@ -28,7 +28,7 @@
 #  physical results. 
 #
 # TOBEDONE:
-#  add uncertainties due to a=a' and theta=theta'
+# - remove duplication of code: gamma and eps are here and in batch1.m
 #
 # Olivier Leroy, Walaa Kanso (CPPM), Jan 2013
 ###############################################################################
@@ -38,11 +38,6 @@ from math import *
 import os
 from penguin_inputs import * # gamma, eps constants
 
-def mathematica_script(filename): ## Copied from Urania/__init__.py so that this script can run standalone
-    if os.path.exists("/afs/cern.ch/"): path = "/afs/cern.ch/project/parc/math80/bin/math"
-    else: path = "math"
-    os.system(path + " < " + filename)
-    
 
 
 ###############################################################################
@@ -129,7 +124,9 @@ def compute_err(f,i,j):
     print "debug dDeltathanPhi/dtheta = ", f,i,j, dPHIdtheta[f][i]
 
     # Simple error propagation:
-    e_dphi[f][i][j] = sqrt(dPHIda[f][i]**2*dtheta[f][i][j]**2 + dPHIdtheta[f][i]**2*da[f][i][j]**2 \
+#bug until 26 april 2013:
+#    e_dphi[f][i][j] = sqrt(dPHIda[f][i]**2*dtheta[f][i][j]**2 + dPHIdtheta[f][i]**2*da[f][i][j]**2 \
+    e_dphi[f][i][j] = sqrt(dPHIda[f][i]**2*da[f][i][j]**2 + dPHIdtheta[f][i]**2*dtheta[f][i][j]**2 \
                            +2*dPHIda[f][i]*dPHIdtheta[f][i]*Vatheta_exp )
     # for polarization f and solution i: 
     print "Exp error on Delta phi_s = ", f,i,j, e_dphi[f][i][j]
@@ -160,8 +157,9 @@ def compute_err(f,i,j):
     
     # Now compute theo uncertainty on tan(DeltaPhi):
 
-
-    e_dphit[f][i][j] = sqrt(dPHIda[f][i]**2*dthetat[f][i][j]**2 + dPHIdtheta[f][i]**2*dat[f][i][j]**2 +\
+# bug (until 26 april)
+#    e_dphit[f][i][j] = sqrt(dPHIda[f][i]**2*dthetat[f][i][j]**2 + dPHIdtheta[f][i]**2*dat[f][i][j]**2 +\
+    e_dphit[f][i][j] = sqrt(dPHIda[f][i]**2*dat[f][i][j]**2 + dPHIdtheta[f][i]**2*dthetat[f][i][j]**2 +\
                            +2*dPHIda[f][i]*dPHIdtheta[f][i]*Vatheta_theo )
     # for polarization f and solution i: 
     print "Theo error on Delta phi_s = ", f,i, e_dphit[f][i][j]
@@ -231,10 +229,16 @@ e_AprimeOverA = [0, 0.27, 0.29, 0.16]
 # fpar 0.0926
 
 
-# Bs->JpsiPhi polarization fractions
+# Bs->JpsiPhi polarization fractions, LHCb-PAPER-2013-002
 # order is          0, parallel, perp
-fJpsiPhi =  [0, 0.523, 0,      0.246]
-e_fJpsiPhi = [0, 0.025, 0.0214, 0.0164]
+fJpsiPhi =  [0, 0.521, 0,      0.249]
+e_fJpsiPhi = [0, 0.012, 0.0214, 0.011]
+# err_R0 = sqrt(0.006**2+0.010**2) # = 0.0116619
+# err_Rperp = sqrt(0.009**2+0.006**2) # = 0.011
+# old CONF-2012 moriond below:
+
+#fJpsiPhi =  [0, 0.523, 0,      0.246]
+#e_fJpsiPhi = [0, 0.025, 0.0214, 0.0164]
 fJpsiPhi[2] = 1-fJpsiPhi[1]-fJpsiPhi[3]
 
 
@@ -253,8 +257,9 @@ fJpsiPhi[2] = 1-fJpsiPhi[1]-fJpsiPhi[3]
 #e_fJpsiKstper = sqrt(e_fJpsiKst0**2+e_fJpsiKstpar**2-2*corelA0Apar*e_fJpsiKst0*e_fJpsiKstpar)  # private com Juan CDS corel = 0.439 = excat diego 370invpb paper
 # = 0.003
 
-fJpsiKst = [0, 0.57, 0.15, 0]
-e_fJpsiKst = [0, 0.03, 0.03, 0]
+# 25 2013 value 3fb-1, Walaa:
+fJpsiKst = [0, 0.55, 0.18, 0]
+e_fJpsiKst = [0, 0.025, 0.027, 0]
 fJpsiKst[3] = 1.-fJpsiKst[1]-fJpsiKst[2]
 corelA0Apar = 0.147 #  corel between coeff 18 and 19 (A0 and Appar), taken from 2012 fit OL
 e_fJpsiKst[3] = sqrt(e_fJpsiKst[1]**2+e_fJpsiKst[2]**2-2*corelA0Apar*e_fJpsiKst[1]*e_fJpsiKst[2]) 
@@ -274,7 +279,7 @@ e_fJpsiKst[3] = sqrt(e_fJpsiKst[1]**2+e_fJpsiKst[2]**2-2*corelA0Apar*e_fJpsiKst[
 
 
 
-################ Branchinig ratios
+################ Branching ratios
 BRJpsiPhi = 1.09e-3 # PDG online Dec 2012
 e_BRJpsiPhi = 0.255e-3
 
@@ -297,9 +302,10 @@ e_BRJpsiKst = 0.84558e-5  # sqrt((.45/sqrt(5.4))**2+.8**2) syst included. stat s
 
 
 # Direct CP violation! 
-# dec 2012 values: 
-A        = [0, -0.002, -0.093, 0.047]
-e_A      = [0, 0.065, 0.205, 0.127]
+# fev 2013 values: 
+# order is      0, parallel, perp
+A        = [0, -0.032, -0.082, 0.030]
+e_A      = [0, 0.055, 0.154, 0.110]
 
 # Zero theoretical uncertainty on ACP: 
 e_A_theo = [0,0,0,0]
@@ -365,8 +371,7 @@ print " Now use mathematica to find theta value, with above H and A in input "
 # or
 # 4) NSolve[{U - Sqrt[U^2 - V] - (Uprime - Sqrt[Uprime^2 - Vprime]) == 0} 
 #
-# In the following, only _1 has been debugged
-#
+
 
 
 # f is the polarization index, from 1 to 3
@@ -399,7 +404,7 @@ for f in range(1,4):
 
 
     # Run mathematica and find theta
-    mathematica_script("batch1.m")
+    os.system("math < batch1.m")
     myfile = open("myOutput.txt","r")
 
 
@@ -608,21 +613,22 @@ for i in range(1,5):
       for f in range(1,4):
         print " --------------------------------------------------  "
         # if (flagall[f][i][j]==0  and  af[f][i][j]>0):
+        if (af[f][i][j]>0):
         #print " H_",f,"           = ", H[f], "                +/-", e_H_exp[f],       "(exp) +/-",e_H_theo[f],    "(theo)"
         #print " A_",f,"           = ", A[f], "                +/-", e_A[f],           "(exp) +/-",e_A_theo[f],    "(theo)"
         #print " a_",f,"           = ", af[f][i][j], "           +/-", da[f][i][j] ,     "(exp) +/-",dat[f][i][j],      "(theo)"
         #print " theta_",f,"       = ", thetaf[f][i], "        +/-", dtheta[f][i][j] , "(exp) +/-",dthetat[f][i][j],  "(theo)"
         #print " Delta(phis)_",f," = ", atan(tanphi[f][i][j]) ," +/- ", e_dphi[f][i][j], "(exp) +/- ", e_dphit[f][i][j],"(theo)" 
 
-        print " H_%i           = %7.3f +/- %7.3f (exp) +/- %7.3f (theo)" % \
+         print " H_%i           = %7.3f +/- %7.3f (exp) +/- %7.3f (theo)" % \
               (f, H[f], e_H_exp[f], e_H_theo[f])
-        print " A_%i           = %7.3f +/- %7.3f (exp) +/- %7.3f (theo)" % \
+         print " A_%i           = %7.3f +/- %7.3f (exp) +/- %7.3f (theo)" % \
               (f, A[f], e_A[f], e_A_theo[f])
-        print " a_%i           = %7.3f +/- %7.3f (exp) +/- %7.3f (theo)" % \
+         print " a_%i           = %7.3f +/- %7.3f (exp) +/- %7.3f (theo)" % \
               (f, af[f][i][j], da[f][i][j], dat[f][i][j])
-        print " theta_%i       = %7.3f +/- %7.3f (exp) +/- %7.3f (theo)" % \
+         print " theta_%i       = %7.3f +/- %7.3f (exp) +/- %7.3f (theo)" % \
               (f, thetaf[f][i], dtheta[f][i][j], dthetat[f][i][j])
-        print " Delta(phis)_%i = %7.3f +/- %7.3f (exp) +/- %7.3f (theo)" % \
+         print " Delta(phis)_%i = %7.3f +/- %7.3f (exp) +/- %7.3f (theo)" % \
               (f, atan(tanphi[f][i][j]), e_dphi[f][i][j], e_dphit[f][i][j])
 
 

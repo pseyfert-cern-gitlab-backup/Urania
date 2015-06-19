@@ -1,0 +1,14 @@
+TChain* C = new TChain("RefinedLambdas_Tuple/DecayTree")
+C->Add("/castor/cern.ch/user/p/pkoppenb/B2JpsiKs/Bu2JpsiK-S20-Up-759.root")
+C->Add("/castor/cern.ch/user/p/pkoppenb/B2JpsiKs/Bu2JpsiK-S20-Down-760.root")
+C->Draw("B_FullFit_M[0] >> h(100,5200,6100)")
+TFile* fw= TFile::Open("Lb2JpsiL-Weights-1-random-LHCb2012.root")
+TTree* W = (TTree*)fw->Get("WeightTree_Combi")
+W->Draw("mass[0]","sweight[0]>-5")
+C->AddFriend(W)
+C->Draw("B_FullFit_M[0]:mass[0]","sweight[0]>-5")
+C->Draw("Lambda0_M_with_piplus_piplus","sweight[0]>-5")  // Ks0 veto
+C->Draw("Lambda0_M","sweight[0]>-5 && pplus_TRACK_Type==3")  // Ks0 veto
+C->Draw("Lambda0_M","sweight[0]>-5 && pplus_TRACK_Type==5")  // Ks0 veto
+
+W->Draw("mass","sweight*(sweight>-5)")

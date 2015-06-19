@@ -30,7 +30,8 @@ void Lam0Fit_MuonUnBiased(TTree* tt,
              const char* dsName,
              const char* lam0Name,
              std::vector<fptr>& fun_vec,
-             const char* index="0")
+             const char* index="0",
+             Bool_t isVerbose=kFALSE)
 {
   
   //==================================================//
@@ -51,6 +52,8 @@ void Lam0Fit_MuonUnBiased(TTree* tt,
                            lam0MassPDG+15,
                            "MeV/c^{2}",
                            "m_{p#pi}");
+
+  if (isVerbose) massFitter->SetPrintEntriesFlag(kTRUE);
 
   //==================================================//
   // Add Spectator variables

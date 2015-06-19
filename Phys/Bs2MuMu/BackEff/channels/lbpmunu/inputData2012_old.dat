@@ -1,0 +1,8 @@
+EventType 	 	15512012
+BranchingFraction	1.59e-4		0.84e-4
+GenerationEfficiency	0.1975          0.00006
+InputFile 	 	/castor/cern.ch/user/f/fdettori/bsmumu/background/MC11_LbPMuNu_all_500k.root
+AnalysedEvents 	 	514496
+ReweightParticle	2212
+WeightFile 		/castor/cern.ch/user/f/fdettori/bsmumu/pidefficiencies/Proton_2012Strip19a.root
+NormalisationYear	2012

@@ -1527,7 +1527,7 @@ RooPlot* RooPhysFitter::PlotFitResults(const char* name,
         {
             RooGaussianChi2Var chi2Var("chi2Var", "",
                                        *((RooAbsPdf*)model->cloneTree()),
-                                       *data_binned, kFALSE,
+                                       *data_binned,
                                        RooFit::Extended(extendedMode),
                                        RooFit::SumW2Error(sumW2Errors),
                                        RooFit::NumCPU(nChi2FitCores));
@@ -1535,9 +1535,11 @@ RooPlot* RooPhysFitter::PlotFitResults(const char* name,
 
             Int_t nDOF = GetNDOF(data_binned, model, kTRUE);
 
-            TString text = TString::Format("#chi^{2} / d.o.f. = %.3f/%d",
-                                           chi2, nDOF);
+            TString text = TString::Format("#chi^{2} / d.o.f. = %.3f/%d = %.3f",
+                                           chi2, nDOF, chi2/nDOF);
             std::cout << text << std::endl;
+            TString text_pval = TString::Format("p-value = %.3f", GetPValFromChi2Stat(chi2, nDOF));
+            std::cout << text_pval << std::endl;
             pv->AddText(text.Data());
         }
 
@@ -1552,7 +1554,7 @@ RooPlot* RooPhysFitter::PlotFitResults(const char* name,
                 try {
                   testStat = new RooPearsonsChi2Var(statName, "",
                                                     *((RooAbsPdf*)model->cloneTree()),
-                                                    *data_binned, kFALSE,
+                                                    *data_binned,
                                                     RooFit::Extended(extendedMode),
                                                     RooFit::SumW2Error(sumW2Errors),
                                                     RooFit::NumCPU(nChi2FitCores));
@@ -1571,7 +1573,7 @@ RooPlot* RooPhysFitter::PlotFitResults(const char* name,
                 try {
                   testStat = new RooYatesChi2Var(statName, "",
                                                  *((RooAbsPdf*)model->cloneTree()),
-                                                 *data_binned, kFALSE,
+                                                 *data_binned,
                                                  RooFit::Extended(extendedMode),
                                                  RooFit::SumW2Error(sumW2Errors),
                                                  RooFit::NumCPU(nChi2FitCores));
@@ -1590,7 +1592,7 @@ RooPlot* RooPhysFitter::PlotFitResults(const char* name,
                 try {
                   testStat = new RooLLRatioVar(statName, "",
                                                *((RooAbsPdf*)model->cloneTree()),
-                                               *data_binned, kFALSE,
+                                               *data_binned,
                                                RooFit::Extended(extendedMode),
                                                RooFit::SumW2Error(sumW2Errors),
                                                RooFit::NumCPU(nChi2FitCores));
@@ -3011,7 +3013,7 @@ Double_t RooPhysFitter::GetSignifFromPVal(Double_t pVal)
 Double_t RooPhysFitter::GetPValFromChi2MCToyStudy(
     RooAbsPdf& model, RooDataHist& data, Int_t nToys,
     PlotChi2TestStat statType, Bool_t extended, const char* rangeName,
-    const char* addCoefRangeName, Int_t nCPU, Bool_t interleave,
+    const char* addCoefRangeName, Int_t nCPU, RooFit::MPSplit interleave,
     Bool_t verbose, Bool_t splitCutRange, RooAbsData::ErrorType etype)
 {
     if (nToys<=0)

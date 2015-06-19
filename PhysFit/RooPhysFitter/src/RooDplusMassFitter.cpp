@@ -63,6 +63,8 @@ RooDplusMassFitter::RooDplusMassFitter() : RooPhysFitter()
   
   m_spectSetName="Spectators";
   m_catSetName="Categories";
+  m_printEntries=kFALSE;
+  m_printFreq=100;
 }
 
 RooDplusMassFitter::RooDplusMassFitter( const char* name, const char* title ) 
@@ -83,6 +85,8 @@ RooDplusMassFitter::RooDplusMassFitter( const char* name, const char* title )
   
   m_spectSetName="Spectators";
   m_catSetName="Categories";
+  m_printEntries=kFALSE;
+  m_printFreq=100;
 }
 
 const char* RooDplusMassFitter::GetPartName(RooDplusMassFitter::PartType pType) const
@@ -1329,17 +1333,41 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
                            "No entries in TTree after cuts.");
   }
   
-  Float_t M;
+  Float_t M_f=0;
+  Double_t M=0;
   // if this is a TChain, then we need to use the daughter's method
   tt->SetBranchStatus("*", 1);
 
   TChain* ch=0;
   ch=dynamic_cast<TChain*>(tt);
+  std::string masstype=ch?GetBranchType(ch, dplusMassVarname):GetBranchType(tt, dplusMassVarname);
   if (!ch) {
-    tt->SetBranchAddress(dplusMassVarname, &M);
+    if (masstype.compare("Float_t")==0) { 
+      tt->SetBranchAddress(dplusMassVarname, &M_f);
+    }
+    else if (masstype.compare("Double_t")==0) {
+      tt->SetBranchAddress(dplusMassVarname, &M);
+    }
+    else {
+      std::stringstream msg;
+      msg << "Got unexpected type " << masstype << " for variable " 
+          << dplusMassVarname;
+      throw GeneralException("RooDplusMassFitter::MakeDplusMassDataSet", msg.str());
+    }
   }
   else {
-    ch->SetBranchAddress(dplusMassVarname, &M);
+    if (masstype.compare("Float_t")==0) { 
+      ch->SetBranchAddress(dplusMassVarname, &M_f);
+    }
+    else if (masstype.compare("Double_t")==0) {
+      ch->SetBranchAddress(dplusMassVarname, &M);
+    }
+    else {
+      std::stringstream msg;
+      msg << "Got unexpected type " << masstype << " for variable " 
+          << dplusMassVarname;
+      throw GeneralException("RooDplusMassFitter::MakeDplusMassDataSet", msg.str());
+    }
   }
 
   RooArgSet observables(*mass);
@@ -1435,6 +1463,13 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
   Long64_t localEntry=0;
   Long64_t entryNumber=0;
   
+  std::cout << "RooDplusMassFitter::MakeDplusMassDataSet: Initial entries = "
+            << nTotal << std::endl;
+  if (cuts&&strlen(cuts)>0) {
+    std::cout << "RooDplusMassFitter::MakeDplusMassDataSet: Entries passing selection cut (" 
+              << cuts << ") = " << nentries << std::endl;
+  }
+
   for (entry=0; entry<nentries; ++entry)
   {
     entryNumber=tt->GetEntryNumber(entry);
@@ -1464,6 +1499,17 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
                              msg.str());
     }
   
+    if (masstype.compare("Float_t")==0) M=static_cast<Double_t>(M_f);
+
+    Bool_t printEntry=m_printEntries&&(entry%m_printFreq==0);
+    if (printEntry) {
+      std::cout << "RooDplusMassFitter::MakeDplusMassDataSet: Entry " << entry
+                << ", entry number " << entryNumber 
+                << ", entry in current tree " << localEntry
+                << std::endl;
+      std::cout << "RooDplusMassFitter::MakeDplusMassDataSet: D mass = " << M
+                << std::endl;
+    }
     if ( (mass->inRange(M,0)) ) {
       mass->setVal(M);
       Bool_t passed=kTRUE;
@@ -1500,6 +1546,11 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
             assert(ptr);
             v=(Double_t)(*ptr);
           }
+          else if (type.compare("Bool_t")==0) {
+            Bool_t* ptr = static_cast<Bool_t*>(val);
+            assert(ptr);
+            v=(Double_t)(*ptr);
+          }
           else {
             std::stringstream msg;
             msg << "Got unexpected type " << type << " for variable " 
@@ -1512,6 +1563,10 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
             msg << "Unable to find variable name " << vname << " in RooArgSet";
             throw GeneralException("RooDplusMassFitter::MakeDplusMassDataSet",
                                    msg.str());
+          }
+          if (printEntry) {
+            std::cout << "RooDplusMassFitter::MakeDplusMassDataSet: Variable "
+                      << vname << ", value = " << v << std::endl;
           }
           RooRealVar *var=dynamic_cast<RooRealVar*>(&args[vname.c_str()]);
           if (!var) {
@@ -1526,6 +1581,13 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
             v = fun(v);
             if (!var->inRange(v,0)) {
               passed=kFALSE;
+              if (printEntry) {
+                std::cout << "RooDplusMassFitter::MakeDplusMassDataSet: Variable "
+                          << vname << ", value = " << v 
+                          << " is not in range (" 
+                          << var->getMin()
+                          << ", " << var->getMax() << ")" << std::endl;
+              }
               break;
             }
             var->setVal(v);
@@ -1535,6 +1597,13 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
             v = fun.Eval(v);
             if (!var->inRange(v,0)) {
               passed=kFALSE;
+              if (printEntry) {
+                std::cout << "RooDplusMassFitter::MakeDplusMassDataSet: Variable "
+                          << vname
+                          << ", value = " << v << " is not in range (" 
+                          << var->getMin()
+                          << ", " << var->getMax() << ")" << std::endl;
+              }
               break;
             }
             var->setVal(v);
@@ -1543,7 +1612,14 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
             if (!var->inRange(v,0))
             {
               passed=kFALSE;
-              break;
+              if (printEntry) {
+                std::cout << "RooDplusMassFitter::MakeDplusMassDataSet: Variable "
+                          << vname<< ", value = " << v << " is not in range ("
+                          << var->getMin()
+                          << ", " << var->getMax() << ")" << std::endl;
+            }
+              
+            break;
             }
             var->setVal(v);
           }
@@ -1577,6 +1653,10 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
           }
           if (!cat->isValidIndex(*val)) {
             passed=kFALSE;
+            if (printEntry) {
+              std::cout << "RooDplusMassFitter::MakeDplusMassDataSet: Category " << vname
+                        << ", value = " << *val << " is not a valid index" << std::endl;
+            }
             break;
           }
           cat->setIndex(*val);
@@ -1590,12 +1670,7 @@ void RooDplusMassFitter::MakeDplusMassDataSet(TTree* tt,
     throw GeneralException("RooDplusMassFitter::MakeDplusMassDataSet",
                            "No entries selected!");
   }
-  std::cout << "RooDplusMassFitter::MakeDplusMassDataSet: Initial entries = "
-            << nTotal << std::endl;
-  if (cuts&&strlen(cuts)>0) {
-    std::cout << "RooDplusMassFitter::MakeDplusMassDataSet: Entries passing selection cut (" 
-              << cuts << ") = " << nentries << std::endl;
-  }
+
   std::cout << "RooDplusMassFitter::MakeDplusMassDataSet: Selected entries = " 
             << rds->numEntries() << std::endl;
 
@@ -1746,6 +1821,10 @@ void RooDplusMassFitter::SetCategorySetName(const char* name)
   m_catSetName=name;
 }
 
+void RooDplusMassFitter::SetPrintEntriesFlag(Bool_t flag) {m_printEntries=flag;}
+
+void RooDplusMassFitter::SetPrintFreq(Int_t freq) {m_printFreq=freq;}
+
 const char* RooDplusMassFitter::GetDplusMassSigPartName(RooDplusMassFitter::PartType pType) const
 {
   if (!this->ValidPartName(pType)) {
@@ -1823,6 +1902,9 @@ const char* RooDplusMassFitter::GetDplusMassSigPartLabel(RooDplusMassFitter::Par
   if (pType==RooDplusMassFitter::Dplus) return "dplus";
   else return "ds";
 }
+const Bool_t& RooDplusMassFitter::GetPrintEntriesFlag() const {return m_printEntries;}
+
+const Int_t& RooDplusMassFitter::GetPrintFreq() const {return m_printFreq;}
 
 std::string RooDplusMassFitter::GetBranchType(TTree* tt, std::string brName)
 {

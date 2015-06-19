@@ -4,6 +4,90 @@
 ! Purpose     : Scripts to generate PID Calibration samples
 !----------------------------------------------------------------------------- 
 
+! 2013-07-09 - Philip Hunt (LHCB)
+ - Fixed bugs in Lam0Fit.cpp and Lam0Fit_MuonUnBiased.cpp introduced in v4r1
+    * "high momentum" Lam0 events were being extracted from the LowP stripping line samples,
+      leading to a significant reduction in the number of high momentum protons in the calibration
+      samples
+
+!============================== v4r2 05-07-2013 ==============================
+! 2013-07-05 - Philip Hunt (LHCB)
+  - Make version v4r2
+
+! 2013-07-05 - Philip Hunt (LHCB)
+  - Addendum (to last comment): CalibDataScripts/DStFit.h and CalibDataScripts/DStFit_MuonUnBiased.h updated to remove unphysical 'fake D0' component
+    from D* mass fits (where the delta mass PDF is signal-like, but the D0 mass PDF is combinatoric-like).
+  
+! 2013-07-05 - Philip Hunt (LHCB)
+  - Added scripts to split the Stripping20{,r1} RICH and muon PID samples utilising the improved MCTuneV2 ANN retuning 
+    in jobs/Stripping20{,r1}_MCTuneV2/ChopTrees
+  - Added scripts to fit and merge the Stripping20{,r1} MCTuneV2 RICH and muon PID samples in 
+    jobs/Stripping20{,r1}/{DSt,Lam0,Jpsi,DSt_MuonUnBiased,Lam0_MuonUnBiased}
+  - Simplified the fitting jobs scripts:
+      * Shell scripts *Job_runRange.sh no longer have any hard-coding of variables such as the ganga job IDs and ganga jobs directory.
+        Instead, this information is supplied in a new file in each stripping subdirectory called 'configureGangaJobs.sh', which is sourced
+        by the fitting script
+      * scripts/python/gangaJobFuncs.py has been added to get the number of chopped trees for a given ganga directory, job ID and file suffix
+        and to read in the configureGangaJobs.sh shell script in the ganga job script. This has been done to reduce the possibility of making
+        mistakes, such as specifying the wrong ganga directory or the wrong number of chopped trees, when creating or modifying the ganga job 
+        scripts
+  - Removed jobs directories for stripping versions earlier than Stripping17
+  - Removed ganga job scripts for Stripping17, Stripping20 and Stripping20r1 RICH and muon calibration samples. 
+      * The 'ChopTrees' pickle files have been kept, since they are needed by PIDPerfScripts
+  - The jobs/MUON directory has been removed
+      * The muon calibration job scripts and pickle files are now located in the same place as the RICH scripts
+
+
+!============================== v4r1 14-06-2013 ==============================
+! 2013-06-14 - Philip Hunt (LHCB)
+  - Make version v4r0
+
+! 2013-06-14 - Philip Hunt (LHCB)
+  - Added scripts to reduce the muon PID samples and select the tagged muons
+    in jobs/MUON/Stripping20r1/MuonTagProb
+	- Added scripts to split the Stripping20r1 muon PID samples in jobs/MUON/Stripping20r1/ChopTrees
+  - Added scripts to fit and merge the Stripping20r1 muon PID samples in 
+    jobs/MUON/Stripping20r1/{DSt,Lam0,Jpsi}
+	- Added scripts/python/uploadData_refSamples_muon.py to upload muon reference samples to 
+    CERN grid storage
+	    * Also modified scripts/python/uploadData_muonSamples.py to minimise the number of attempts 
+        to upload a file
+  - Added pickle files for muon PID calibration Stripping20r1 samples:
+      * jobs/MUON/Stripping20r1/ChopTrees/{up,down}runLimits_h_muonUnBiased.pkl (620 pb-1)
+      * jobs/MUON/Stripping20r1/ChopTrees/{up,down}runLimits_mu_and_p_muonUnBiased.pkl 
+        (100 pb-1 magnet up, 75 pb-1 magnet down)
+  - Modified scripts/python/MuonProbTagTriggerProcess.py to allow writing the
+    reduced muon and MuonCalibration nTuples to the same ganga directory as the
+    input data (with a different filename)
+  - Added scripts/python/chopTrees_MUON.py, used to chop muon and MuonUnBiased
+    samples when MuonProbTagTriggerProcess.py is used to write the reduced 
+    nTuples to the same ganga directory
+  - All calibration data fitting scripts in the src directory now require a "DataType"
+    argument (similar to the DataType option of the LHCb configurables) that
+    indicates which sets of spectator variables should be used
+      * At present, the possible values of the DATATYPE argument are "2011" or "2012"
+	- Updated scripts/python/diracFuncs.py to work with recent Dirac versions (accounts for
+    modification to the output of the getFileMetaData function)
+  - Modified scripts/python/getRunLumi.py to allow different luminosity blocks for magnet
+    up and magnet down data
+	
+!============================== v4r0 02-05-2013 ==============================
+! 2013-05-02 Philip Hunt
+  - Make version v4r0
+
+!2013-05-02 - Philip Hunt
+	- Added scripts to split the Stripping20r1 RICH PID samples in jobs/Stripping20r1/ChopTrees
+  - Added scripts to fit and merge the Stripping20r1 RICH PID samples in jobs/Stripping20r1/{DSt,Lam0}
+  - Added scripts to make RICH PID reference TTrees for Stripping17, 20 and 20r1 in jobs/Stripping{17,20,20r1}/MakeRefTrees
+	- Modified Lam0Fit.h and DStFit.h to allow printing of variables and spectators in calibration TTrees (this feature has been added to RooPhysFitter)
+  - Modified ReducePIDCalibNTuple.C to ignore missing branches
+
+! 2013-04-22 - Philip Hunt
+  - Added pickle files for RICH PID calibration Stripping20r1 samples:
+    * jobs/Stripping20r1/ChopTrees/{up,down}runLimits_h.pkl (35 pb-1)
+  - Added shell scripts to configure the environment to run the scripts in
+    scripts/python (LHCbDirac with ROOT and pyanalysis external dependencies)
+
 ! 2013-03-29 - Philip Hunt
   - Removed redundant CalibDataScripts_v2, src_v2 and config directories,
     and all files within these directories

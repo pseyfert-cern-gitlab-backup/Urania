@@ -20,6 +20,8 @@ IB2JpsiX* loadTuple(TString module, TString decay, TString dir, TString what,
     ntuple = loadB2JpsiPhiTuple(module, decay, dir, what, NNtype, weightMethod, ttype);
   } else if ( m_Bu2JpsiK == decay){
     ntuple = loadBu2JpsiKTuple(module, decay, dir, what, NNtype, weightMethod, ttype);
+  } else if ( m_Lb2JpsiL == decay){
+    ntuple = loadLb2JpsiLTuple(module, decay, dir, what, NNtype, weightMethod, ttype);
   }
 
   return ntuple ;
@@ -214,6 +216,45 @@ Bu2JpsiK_2011* loadBu2JpsiKTuple(TString module, TString decay, TString dir, TSt
 }
 
 // ####################################################################################################
+Lb2JpsiL_2012* loadLb2JpsiLTuple(TString module, TString decay, TString dir, TString what,
+                                 unsigned int NNtype, TString weightMethod, unsigned int ttype){
+
+  // *** Error Check ***
+  if(decay!=m_Lb2JpsiL){
+    std::cout << "ERROR: Calling the wrong instance of IB2JpsiX for decay " << decay << std::endl;
+    return 0;
+  }
+  
+  // *** Construct Chain ***
+  
+  // Declare Stripping Line and File
+  TString line  = "RefinedLambdas_Tuple" ;
+  TString file1 = "" ;
+  TString file2 = "" ;
+  
+  if (dir.Contains(".root")) { // case where file name is give 
+    file1 = dir ; 
+  } else if( m_2012==what  ) {
+    file1 = dir+"Bu2JpsiK-S20-Up-759.root"; 
+    file2 = dir+"Bu2JpsiK-S20-Down-760.root"; 
+  }
+  
+  // *** Load Chain ***
+  TChain* chain = (TChain *) loadChain(file1, file2, line, module, decay, dir, what, NNtype, weightMethod, ttype);
+  if (0==chain) {
+    std::cout << "loadChain failed" << endl ;
+    return 0 ;
+  }
+  // Error Analysis
+  if(chain->GetEntries()==0) return 0;
+  
+  // *** Construct NTuple ***
+  Lb2JpsiL_2012* ntuple = new Lb2JpsiL_2012(chain, module, dir, what, NNtype);
+
+  return ntuple ;
+}
+
+// ####################################################################################################
 // *** Make Chain ***
 TChain* loadChain(TString file1, TString file2, TString line,
                   TString module, TString decay, TString dir, TString what, 
@@ -282,6 +323,7 @@ TChain* loadChain(TString file1, TString file2, TString line,
     if (!weights) return 0;
     TFriendElement* t = chain->AddFriend(weights);
     std::cout << "Opened " << coarseFile << " and got " << weights << " added as " << t << std::endl ;
+    weights->Scan("mass:sweight","","",10);
     
   }
   else std::cout << "No need to add friends" << std::endl ;
@@ -362,7 +404,7 @@ int decodeArgs(TString& module, TString& decay, unsigned int& NNtype, TString& d
     ttype        = argc > 6 ? atoi(argv[6])    : m_ANY ;
     
     // Cross-Checks: Valid Input
-    if(!( m_B2JpsiKs==decay || m_B2JpsiPhi==decay || m_Bu2JpsiK==decay)){
+    if(!( m_B2JpsiKs==decay || m_B2JpsiPhi==decay || m_Bu2JpsiK==decay || m_Lb2JpsiL==decay)){
       std::cout << "ERROR: Unsupported decay channel = " << decay << std::endl;
       error = -1;
     }
@@ -436,7 +478,7 @@ void help(std::string module){
     std::cout << module << " [decay] [EventType] [dir] [NN] [weight] [TT]" << std::endl ;
     std::cout << "Where:" <<
       "\n ``decay'' specifies which decay channel to run. Supported: " << 
-      m_B2JpsiKs << ", " << m_B2JpsiPhi << ", " << m_Bu2JpsiK <<
+      m_B2JpsiKs << ", " << m_B2JpsiPhi << ", " << m_Bu2JpsiK <<", " << m_Lb2JpsiL <<
       "\n ``EventType'' specifies the settings. Supported: " << m_2011 << " (d), " << m_2012 << ", " << m_SigBd
         << " (and Bs, Bu and Prescaled), " << m_IncJpsi <<
       "\n ``dir'' is the data directory. Supported: " << m_castor << " (d), " << m_local << ", or any directory " <<  

@@ -66,8 +66,8 @@ def Example1DPlot(colored = 1, stacked = 0):
         h1fb.SetMaximum(250.) # set y maximum
     
     # Axis Titles
-    h1fb.GetXaxis().SetTitle("#font[12]{m}_{#pi#pi} [GeV/#font[12]{c}^{2}]")
-    h1fb.GetYaxis().SetTitle("Entries / 0.5 GeV/#font[12]{c}^{2} ")
+    h1fb.GetXaxis().SetTitle("#font[12]{m}(#font[12]{D}^{+}#pi^{#font[122]{-}}) [GeV/#font[12]{c}^{2}]")
+    h1fb.GetYaxis().SetTitle("Entries / (0.5 GeV/#font[12]{c}^{2})")
     
     # Draw plots 
     # options described at http://root.cern.ch/root/html/THistPainter.html#HP01b
@@ -150,12 +150,12 @@ def ExampleMultiplePlots():
     pad.Draw()
 
     # Best is to make titles ourselves:
-    tyax = TLatex(0.06, 0.55, "Entries / 0.5 GeV/#font[12]{c}^{2}")
+    tyax = TLatex(0.06, 0.52, "Entries / (0.5 GeV/#font[12]{c}^{2})")
     tyax.SetNDC(kTRUE)    
     tyax.SetTextSize(0.05)      
     tyax.SetTextAngle(90.)
     tyax.Draw()
-    txax = TLatex( 0.75, 0.03, "#font[12]{m}_{#pi#pi} [GeV/#font[12]{c}^{2}]")
+    txax = TLatex( 0.68, 0.03, "#font[12]{m}(#font[12]{D}^{+}#pi^{#font[122]{-}}) [GeV/#font[12]{c}^{2}]")
     txax.SetNDC(kTRUE)    
     txax.SetTextSize(0.05)      
     txax.Draw()      

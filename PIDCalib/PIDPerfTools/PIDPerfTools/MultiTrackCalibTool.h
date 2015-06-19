@@ -23,8 +23,11 @@
 class MultiTrackCalibTool {
 public: 
   /// Standard constructor
-  MultiTrackCalibTool(std::string Name, TTree* RefTreeName, const std::string OutputFileName,
-                      const std::string mode="UPDATE"); 
+  MultiTrackCalibTool(std::string Name, TTree* RefTreeName,
+                      const std::string OutputFileName,
+                      const std::string mode="UPDATE",
+                      Bool_t verbose=kFALSE,
+                      Int_t printFreq=-1); 
 
   virtual ~MultiTrackCalibTool(); ///< Destructor
   
@@ -33,6 +36,8 @@ public:
   void SetTrackEtaVarName(const std::string NameInTree);
   
   void SetTrackNTrackVarName(const std::string NameInTree);
+
+  void SetSWeightVarName(const std::string NameInTree);
 
   void DeclareSignalTrackAndPerfHist(const std::string TrackNameInTree, TH1* PerfHist);
 
@@ -45,6 +50,7 @@ public:
   void Calculate(const std::string IDVar_suffix);
   
   std::pair<Float_t, Float_t> CalculateNaiveAverage();
+  std::pair<Float_t, Float_t> CalculateNaiveWeightAverage();
 
   void Write();
 
@@ -68,9 +74,9 @@ protected:
     
   void SetTrackIDVarBranchAddressInInputTree(const std::string IDVar_suffix);
   
-  Float_t CalcEventFracError();
+  Float_t CalcEventFracError(std::vector<std::pair<Int_t,Float_t> > vTrckIDandFracErrs);
 
-  Float_t CalcPerEventErrorCrossTerm();
+  Float_t CalcPerEventErrorCrossTerm(std::vector<std::pair<Int_t,Float_t> > vTrckIDandFracErrs);
 
 private:
 
@@ -89,12 +95,16 @@ private:
 
   std::string m_name;
 
+  Bool_t m_verbose;
+  Int_t m_printFreq;
+  
   std::map<std::string, TH1*> m_TrackEffMap;
   
   std::map<std::string, std::string> m_PerfParamMap;
   
   std::vector<std::pair<std::string, std::string> > m_BinningParam;
 
+  unsigned int m_indexNTracks;
   unsigned int m_BinningDimensions;
   
   Bool_t m_BinningVectorSorted;
@@ -111,6 +121,9 @@ private:
 
   TTree* m_OutputTree;
   
+  void* m_sWeight_var;
+  std::string m_sWeight_name;
+
   std::map<std::string, std::vector<void*> > m_TrackVars;
 
   std::map<std::string, TrkPIDParams> m_TrackPIDVals;
@@ -119,9 +132,17 @@ private:
   
   Float_t m_TotPIDErr;
 
+  Float_t m_TotPIDEffWeight;
+  
+  Float_t m_TotPIDErrWeight;
+
+  Float_t m_TotWeight;
+
   std::pair<Float_t, Float_t> m_NaiveAverageCounters;
+  std::pair<Float_t, Float_t> m_NaiveAverageWeightCounters;
 
   std::vector<std::pair<Int_t,Float_t> > m_vTrckIDandFracErrs;
+  std::vector<std::pair<Int_t,Float_t> > m_vTrckIDandFracErrsWeight;
 
   std::string m_IDVar_suffix;
 

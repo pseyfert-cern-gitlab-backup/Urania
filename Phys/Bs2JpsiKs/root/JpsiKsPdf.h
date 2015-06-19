@@ -65,7 +65,7 @@ public:
   RooFitResult* fitToMass(RooDataSet* data, bool doSumW2, TString range);
   RooFitResult* fitToAll(RooDataSet* data, bool doSumW2);
   
-  void plotLegend(double x1=0.65,double y1=0.84,double x2=0.92,double y2=0.47) const;
+  void plotLegend(double x1=0.65,double y1=0.84,double x2=0.92,double y2=0.47, TString what = "mass") const;
   void plotOn(TCanvas* doek, RooDataSet* data, bool doSumW2, Int_t logy, int param){
     double chi2Val[] = {-999,-999};
     plotOn(doek, data, doSumW2, logy, param, chi2Val);

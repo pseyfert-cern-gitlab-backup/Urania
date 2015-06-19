@@ -111,8 +111,8 @@ Lbpmunu_gamma = EVal(6.48e12,3.24e12) # partial gammma = 6.48e12*vub^2
 
 Lbpmunu_tau = EVal(1.425e-12, 0.032e-12)
 vub = EVal(4.15e-3, 0.49e-3)
-Lbpmunu_BR = Lbpmunu_tau * Lbpmunu_gamma * vub * vub
-
+#Lbpmunu_BR = Lbpmunu_tau * Lbpmunu_gamma * vub * vub
+Lbpmunu_BR = EVal(5.1e-4, 2.2e-4)
 
 # Efficiencies
 Lbpmunu_gen_eff    = EVal(0.1975,0.0006) 
@@ -179,7 +179,7 @@ printVector(Lbpmunu_h2012_bdmw,Lbpmunu_exp12_bdmw)
 #Lbpmunu_exp11_mw = beta_lambda11 * Lbpmunu_BR * Lbpmunu_tot_eff_mw
 #Lbpmunu_exp12_mw = beta_lambda12 * Lbpmunu_BR * Lbpmunu_tot_eff_mw
 
-def lambdaTable(histo, normalisation):
+def lambdaTable(histo):
     proj = histo.ProjectionY("",1, histo.GetNbinsX())#override stupid root defaults
     prof = histo.ProfileY()
     print "\\toprule " 
@@ -206,7 +206,7 @@ def lambdaTable(histo, normalisation):
     for n in nseen:
         total = n + total 
         
-    print "N_{exp} =  " ,tex(total)
+    print "Table N_{exp} =  " ,tex(totalexp)
     for i in range(1,9):
         print  i , " \t &" , tex(pt[i-1]), "\t & "#, tex(n) , "\t & " 
         frac = nexp[i-1]/totalexp
@@ -214,8 +214,8 @@ def lambdaTable(histo, normalisation):
         print tex(nexp[i-1]) , " \t & ", tex(frac), " \\\\"
     print " \\bottomrule" 
 
-lambdaTable(Lbpmunu_h2011, Lbpmunu_exp11)
-lambdaTable(Lbpmunu_h2012, Lbpmunu_exp12)
+lambdaTable(Lbpmunu_h2011)
+lambdaTable(Lbpmunu_h2012)
 
 print "============================================================"
 print "   B+ -> pi+ mu mu   " 

@@ -13,7 +13,7 @@
 #include "RooAbsCategory.h" 
 #include <math.h> 
 #include "TMath.h" 
-#define MPion 493.667//139.57018
+#define MPion 139.57018
 #define MKaon 493.667
 
 #include <vector>

@@ -2,20 +2,21 @@ from ROOT import *
 import os
 from SomeUtils.alyabar import *
 
-f1=TRFIOFile("/castor/cern.ch/user/o/ooleroy/stripping17b/upAndDown_2011_dimuon_dv33r0p1tag_961pb.root")
-t1 = f1.Get("BdTuple/DecayTree")
-f2=TRFIOFile("/castor/cern.ch/user/o/ooleroy/stripping20/updAndDown_dimuon_strip20_reco14_dv33r0p1tag_1041pb.root")
-t2 = f2.Get("BdTuple/DecayTree")
+## f1=TRFIOFile("/castor/cern.ch/user/o/ooleroy/stripping17b/upAndDown_2011_dimuon_dv33r0p1tag_961pb.root")
+## t1 = f1.Get("BdTuple/DecayTree")
+## f2=TRFIOFile("/castor/cern.ch/user/o/ooleroy/stripping20/updAndDown_dimuon_strip20_reco14_dv33r0p1tag_1041pb.root")
+## t2 = f2.Get("BdTuple/DecayTree")
 
 
-sel = "muplus_MINIPCHI2 > 25 && muminus_MINIPCHI2 > 25 && Kplus_MINIPCHI2 > 4 && piminus_MINIPCHI2 > 4  && Kplus_PT > 500 && piminus_PT>500 && piminus_PIDK<-6 && Kplus_PIDK > 6 && J_psi_1S_FDCHI2_TOPPV > 169 &&  J_psi_1S_LOKI_DOCA_1_2<0.3"
-sel += "&&  J_psi_1S_ENDVERTEX_CHI2 < 9 && B0_IPCHI2_OWNPV < 25"
+## sel = "muplus_MINIPCHI2 > 25 && muminus_MINIPCHI2 > 25 && Kplus_MINIPCHI2 > 4 && piminus_MINIPCHI2 > 4  && Kplus_PT > 500 && piminus_PT>500 && piminus_PIDK<-6 && Kplus_PIDK > 6 && J_psi_1S_FDCHI2_TOPPV > 169 &&  J_psi_1S_LOKI_DOCA_1_2<0.3"
+## sel += "&&  J_psi_1S_ENDVERTEX_CHI2 < 9 && B0_IPCHI2_OWNPV < 25"
 
-f4 = TFile("~/vol5/BsJPsiKst_2012OL_GL.root")
-t4 = f4.Get("T")
+## f4 = TFile("~/vol5/BsJPsiKst_2012OL_GL.root")
+## t4 = f4.Get("T")
 
-#gl.keys = ['max_DOCA', 'lessIPS', 'B0_IP_OWNPV,', 'B0_PT',"Blife_ps"] # B0_LOKI_DTF_CTAU
-#def addStuff(t, name):
+## #gl.keys = ['max_DOCA', 'lessIPS
+#', 'B0_IP_OWNPV,', 'B0_PT',"Blife_ps"] # B0_LOKI_DTF_CTAU
+##def addStuff(t, name):
  #   fx =
 light_cte = 3.3356409519815204
 import cPickle
@@ -117,7 +118,7 @@ def doSelTuple(t, name):
     fx.Close()
 #doSelTuple(t1,"~/vol5/OL_2011.root")
 #doSelTuple(t2,"~/vol5/OL_2012.root")
-f = TFile("~/vol5/OL_2012.root")
-t = f.Get("DecayTree")
+#f = TFile("~/vol5/OL_2012.root")
+#t = f.Get("DecayTree")
 
-addGL(t, "~/vol5/OL_2012_GL",gl)
+#addGL(t, "~/vol5/OL_2012_GL",gl)

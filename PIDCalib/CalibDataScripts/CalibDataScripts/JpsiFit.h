@@ -22,15 +22,16 @@ typedef void (*fptr)(RooDMassFitter*,
 namespace bass=boost::assign;
 
 void JpsiFit(TTree* tt, 
-            const char* charge,
-            const char* pName,
-            const char* otherPName,
-            const char* wsName,
-            const char* fName,
-            const char* dsName,
-            const char* jpsiName,
-            std::vector<fptr>& fun_vec,
-            const char* index="0")
+             const char* charge,
+             const char* pName,
+             const char* otherPName,
+             const char* wsName,
+             const char* fName,
+             const char* dsName,
+             const char* jpsiName,
+             std::vector<fptr>& fun_vec,
+             const char* index="0",
+             Bool_t isVerbose=kFALSE)
 {
   
   //==================================================//
@@ -51,6 +52,8 @@ void JpsiFit(TTree* tt,
                            jpsiMassPDG+110,
                            "MeV/c^{2}",
                            "m_{#mu#mu}");
+
+  if (isVerbose) massFitter->SetPrintEntriesFlag(kTRUE);
 
   //==================================================//
   // Add Spectator variables

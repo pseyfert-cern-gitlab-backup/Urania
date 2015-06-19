@@ -66,6 +66,7 @@ RooPearsonsChi2Var::RooPearsonsChi2Var(const char *name, const char* title,
                                0,
                                RooCmdConfig::decodeIntOnTheFly("RooPearsonsChi2Var::RooPearsonsChi2Var","NumCPU",0,1,
                                                                arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9),
+                               RooFit::Interleave,
                                RooCmdConfig::decodeIntOnTheFly("RooPearsonsChi2Var::RooPearsonsChi2Var","Verbose",
                                                                0,1,arg1,arg2,arg3,arg4,arg5,
                                                                arg6,arg7,arg8,arg9),
@@ -73,21 +74,24 @@ RooPearsonsChi2Var::RooPearsonsChi2Var(const char *name, const char* title,
 {
 
     RooCmdConfig pc("RooPearsonsChi2Var::RooPearsonsChi2Var") ;
-    pc.defineInt("etype","DataError",0,(Int_t)RooDataHist::SumW2) ;
+    pc.defineInt("etype","DataError",0,(Int_t)RooDataHist::Auto) ;
+    pc.defineInt("extended","Extended",0,kFALSE) ;
     pc.allowUndefined() ;
 
-    pc.process(arg1) ;
-    pc.process(arg2) ;
-    pc.process(arg3) ;
-    pc.process(arg4) ;
-    pc.process(arg5) ;
-    pc.process(arg6) ;
-    pc.process(arg7) ;
-    pc.process(arg8) ;
-    pc.process(arg9) ;
+    pc.process(arg1) ; pc.process(arg2) ; pc.process(arg3) ;
+    pc.process(arg4) ; pc.process(arg5) ; pc.process(arg6) ;
+    pc.process(arg7) ; pc.process(arg8) ; pc.process(arg9) ;
 
-    _funcMode = Function ;
+    if (func.IsA()->InheritsFrom(RooAbsPdf::Class())) {
+      _funcMode = pc.getInt("extended") ? ExtendedPdf : Pdf ;
+    } else {
+      _funcMode = Function ;
+    }
     _etype = (RooDataHist::ErrorType) pc.getInt("etype") ;
+
+    if (_etype==RooAbsData::Auto) {
+      _etype = hdata.isNonPoissonWeighted()? RooAbsData::SumW2 : RooAbsData::Expected ;
+    }
 }
 
 
@@ -113,6 +117,7 @@ RooPearsonsChi2Var::RooPearsonsChi2Var(const char *name, const char* title,
                                                                   arg6,arg7,arg8,arg9),
                                RooCmdConfig::decodeIntOnTheFly("RooPearsonsChi2Var::RooPearsonsChi2Var","NumCPU",0,1,
                                                                arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9),
+                               RooFit::Interleave,
                                RooCmdConfig::decodeIntOnTheFly("RooPearsonsChi2Var::RooPearsonsChi2Var","Verbose",0,1,
                                                                arg1,arg2,arg3,arg4,arg5,arg6,arg7,
                                                                arg8,arg9),
@@ -132,21 +137,18 @@ RooPearsonsChi2Var::RooPearsonsChi2Var(const char *name, const char* title,
 {
     RooCmdConfig pc("RooPearsonsChi2Var::RooPearsonsChi2Var") ;
     pc.defineInt("extended","Extended",0,kFALSE) ;
-    pc.defineInt("etype","DataError",0,(Int_t)RooDataHist::SumW2) ;
+    pc.defineInt("etype","DataError",0,(Int_t)RooDataHist::Auto) ;
     pc.allowUndefined() ;
 
-    pc.process(arg1) ;
-    pc.process(arg2) ;
-    pc.process(arg3) ;
-    pc.process(arg4) ;
-    pc.process(arg5) ;
-    pc.process(arg6) ;
-    pc.process(arg7) ;
-    pc.process(arg8) ;
-    pc.process(arg9) ;
+    pc.process(arg1) ; pc.process(arg2) ; pc.process(arg3) ;
+    pc.process(arg4) ; pc.process(arg5) ; pc.process(arg6) ;
+    pc.process(arg7) ; pc.process(arg8) ; pc.process(arg9) ;
 
     _funcMode = pc.getInt("extended") ? ExtendedPdf : Pdf ;
     _etype = (RooDataHist::ErrorType) pc.getInt("etype") ;
+    if (_etype==RooAbsData::Auto) {
+      _etype = hdata.isNonPoissonWeighted()? RooAbsData::SumW2 : RooAbsData::Expected ;
+    }
 }
 
 
@@ -154,7 +156,8 @@ RooPearsonsChi2Var::RooPearsonsChi2Var(const char *name, const char *title,
                                        RooAbsPdf& pdf, RooDataHist& hdata,
                                        Bool_t extended, const char* cutRange,
                                        const char* addCoefRange,
-                                       Int_t nCPU, Bool_t interleave,
+                                       Int_t nCPU, 
+                                       RooFit::MPSplit interleave,
                                        Bool_t verbose, Bool_t splitCutRange,
                                        RooDataHist::ErrorType etype) :
         RooAbsOptTestStatistic(name,title,pdf,hdata,RooArgSet(),cutRange,
@@ -185,12 +188,13 @@ RooPearsonsChi2Var::RooPearsonsChi2Var(const char *name, const char *title,
                                        RooPearsonsChi2Var::FuncMode fmode,
                                        const char* cutRange,
                                        const char* addCoefRange,
-                                       Int_t nCPU, Bool_t interleave,
+                                       Int_t nCPU, 
+                                       RooFit::MPSplit interleave,
                                        Bool_t verbose, Bool_t splitCutRange,
                                        RooDataHist::ErrorType etype) :
-RooAbsOptTestStatistic(name,title,func,hdata,projDeps,cutRange,
-                       addCoefRange,nCPU,interleave,verbose,splitCutRange),
-_etype(etype), _funcMode(fmode)
+  RooAbsOptTestStatistic(name,title,func,hdata,projDeps,cutRange,
+                         addCoefRange,nCPU,interleave,verbose,splitCutRange),
+  _etype(etype), _funcMode(fmode)
 
 {
     // Constructor of a chi2 for given p.d.f. with respect given binned

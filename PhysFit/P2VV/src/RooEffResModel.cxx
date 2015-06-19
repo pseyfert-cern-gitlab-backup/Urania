@@ -22,19 +22,16 @@
 
 #include "RooFit.h"
 #include "Riostream.h"
-#include "RooEffResModel.h"
+#include "P2VV/RooEffResModel.h"
 #include "RooRealConstant.h"
 #include "RooCustomizer.h"
 #include "RooAddition.h"
 #include "RooStringVar.h"
 #include "RooAbsAnaConvPdf.h"
-#include "RooEffConvGenContext.h"
+#include "P2VV/RooEffConvGenContext.h"
 #include "RooCachedReal.h"
 
 using namespace std;
-
-ClassImp(RooEffResModel) 
-;
 
 //_____________________________________________________________________________
 RooEffResModel::CacheElem::~CacheElem()
@@ -285,7 +282,7 @@ const RooArgList& RooEffResModel::getIntegralRanges(const RooArgSet& iset,
 
       trange.Append("_I_");
       RooNameSet ns(iset);
-      trange.Append(ns._nameList);
+      trange.Append(ns.content());
       const char* range = trange.Data();
 
       // Create a new name for the range

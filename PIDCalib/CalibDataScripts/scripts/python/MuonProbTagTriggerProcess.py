@@ -3,7 +3,7 @@ import pickle
 import sys
 import getopt
 from ROOT import TFile, TTree, TCut, gSystem, gDirectory, TObject, gROOT
-gROOT.LoadMacro( '/afs/cern.ch/user/j/jotalora/w0/newcmtuser/Erasmus_v9r0/PIDCalib/CalibDataScripts/scripts/root/MuonProbTagTrigger.C' )
+gROOT.LoadMacro( 'MuonProbTagTrigger.C+' )
 from ROOT import MuonProbTagTrigger
 
 def usage():
@@ -22,23 +22,31 @@ def usage():
     print '            --outputJobID=5                                                                        '
     print '            --minSubJob=0                                                                          '
     print '            --maxSubJob=90                                                                         '
-
+    print
+    
 def MuonProbTagTriggerProcess(input_job_id, 
-                             output_job_id, 
-                             subjob_min, 
-                             subjob_max,
-                             ganga_dir='/afs/cern.ch/work/j/jotalora/PID_Calib/gangadir/workspace/jotalora/LocalXML',
-                             input_dir='/tmp/jotalora/Collision12-Reco13a-Stripping19a-MagUp_CalibSel', 
-                             nTuple_name='PID_Modes.root'):
+                              output_job_id, 
+                              subjob_min, 
+                              subjob_max,
+                              ganga_dir='/afs/cern.ch/work/j/jotalora/PID_Calib/gangadir/workspace/jotalora/LocalXML',
+                              input_dir='/tmp/jotalora/Collision12-Reco13a-Stripping19a-MagUp_CalibSel',
+                              nTuple_name='PID_Modes.root'):
+    nTuple_name='PID_Modes.root'
     for subjob in xrange(subjob_min, subjob_max+1):
-        file_name_in  = input_dir+'/'+input_job_id+'/'+str(subjob)+'/'+nTuple_name
+        file_name_in  = input_dir+'/'+input_job_id+'/'+str(subjob)+'/output/'+nTuple_name
 
-        f_in   = TFile(file_name_in,'read')
-        if f_in.IsZombie() :
+        f_in   = TFile.Open(file_name_in,'read')
+        if not f_in:
           print 'File ' + file_name_in + ' Not Found'
           continue
         f_in.Close()
-        file_name_out = ganga_dir+'/'+output_job_id+'/'+str(subjob)+'/output/'+nTuple_name
+        # change the output filename if the input and output directories are the same
+        nTuple_name_out = nTuple_name
+        if ganga_dir==input_dir:
+            s = nTuple_name.rpartition('.')
+            if len(s[0])==0: s = s[::1]
+            nTuple_name_out = '%s_MuonUnBiased%s%s' %(s[0], s[1], s[2])
+        file_name_out = ganga_dir+'/'+output_job_id+'/'+str(subjob)+'/output/'+nTuple_name_out
         gSystem.Exec('mkdir -p ' + ganga_dir+'/'+output_job_id+'/'+str(subjob)+'/output')
         MuonProbTagTrigger(file_name_in,file_name_out)
 
@@ -47,12 +55,16 @@ if __name__ == '__main__':
     #======================================================================
     # Run the makeCurves function if run by the python interpretator
     #======================================================================
+    opts = None
+    args = None
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'g:t:i:o:x:y', ['ganga_dir=', 'input_dir=', 'inputJobID=', 'outputJobID=', 'minSubJob=','maxSubJob='])
     except getopt.GetoptError:
         usage()
+        sys.exit(0)
     if len(opts) != 6:
         usage()
+        sys.exit(0)
     for o,p in opts:
         if o in   ['x', '--minSubJob']:
             subjob_min = int(p)
@@ -67,14 +79,13 @@ if __name__ == '__main__':
         elif o in ['-g', '--ganga_dir']:
             ganga_dir = p
             
-    print ganga_dir, type(ganga_dir)
-    print input_dir, type(input_dir)
-    print input_job_id, type(input_job_id)
-    print output_job_id, type(output_job_id)
-    print subjob_min, type(subjob_min)
-    print subjob_max, type(subjob_max)
+    print "Ganga directory: ", ganga_dir, type(ganga_dir)
+    print "Input directory: ", input_dir, type(input_dir)
+    print "Input ID: ", input_job_id, type(input_job_id)
+    print "Output ID: ", output_job_id, type(output_job_id)
+    print "Min subjob: ", subjob_min, type(subjob_min)
+    print "Max subjob: ", subjob_max, type(subjob_max)
     
     MuonProbTagTriggerProcess(input_job_id, output_job_id, subjob_min, subjob_max, ganga_dir, input_dir)
 
     print 'Done'
-

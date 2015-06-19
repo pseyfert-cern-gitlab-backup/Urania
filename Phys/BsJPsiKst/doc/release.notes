@@ -7,3 +7,46 @@
 
 ! 2010-04-28 | Diego Martinez Santos
 create package.
+
+
+Walaa Kanso on 11/07/13
+========================================
+1) In order to fix Bd S_wave in the fit, I made the changes below in CreateAmplitudes(self) in PDF_2012_Asym.py:
+Before
+**********
+if not "As2" in dir(self):
+self.As2 = RooRealVar("As2"+name,"As2"+name,0.05, 0,0.3)
+
+Now
+**********
+if namephys== "Bd":
+self.As2=RooRealVar("As2"+namephys,"As2"+namephys,1.60099e-02)# this value is taken from the previous fit
+else:
+self.As2 = RooRealVar("As2"+namephys,"As2"+namephys,0.05, 0,0.3)
+
+Results compatible with previous ones, here:
+http://marwww.in2p3.fr/~kanso/jpsiK/results_fix_AsBd.txt
+=======================================================================
+
+2) Since Bd->K* & Bs->K*bar so we should add A_D & Aprod_s with different signs in both cases
+
+Before:
+***********
+$ns-2011p =(nBs2011p_{phys})*(1 + A_D +Aprod_s)$
+$nd-2011n =(nBd2011n_{phys})*(1 - A_D - Aprod_s)$
+$nd-2011p = (nBd2011p_{phys})*(1 + A_D + Aprod_s)$
+
+Now:
+********
+$ns-2011p =(nBs2011p_{phys})*(1 + A_D -Aprod_s)$
+$nd-2011n = (nBd2011n_{phys})*(1 + A_D - Aprod_s)$
+$nd-2011p = (nBd2011p_{phys})*(1 - A_D + Aprod_d)$
+
+With :
+$Aprod_s = -\kappa_{s}A^P(\Bs)=-0.00132$
+$Aprod_d =-\kappa_{d}A^P(\Bd)= 0.00030$
+$A_D = -0.01185$
+
+N.B: Equations & values taken from B2hh analysis. 
+
+====================================================================================
