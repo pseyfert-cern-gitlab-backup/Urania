@@ -1,7 +1,7 @@
 project URANIA
 
-use GAUDI    GAUDI_v25r1
-#use LCGCMT LCGCMT_67b
+use GAUDI    GAUDI_v25r1p1
+#se LCGCMT LCGCMT_67b
 build_strategy with_installarea
 setup_strategy root
 container UraniaSys
