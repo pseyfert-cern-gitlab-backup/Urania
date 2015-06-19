@@ -9,30 +9,38 @@ from PIDPerfScripts.RunRangeFuncs import GetMuonPIDPartTypes
 
 ### DLL(K-pi), RICH (alternative schemes)
 
-for trType in GetRICHPIDPartTypes():
+for trType in ["e","Mu"]:
     # momentum
-    AddBinScheme(trType, 'P', 'DLLKpi_alt', 2000, 100000)
-    AddBinBoundary(trType, 'P', 'DLLKpi_alt', 9300) # R1 Kaon threshold
-    AddBinBoundary(trType, 'P', 'DLLKpi_alt', 15600) # R2 Kaon threshold
-    AddUniformBins(trType, 'P', 'DLLKpi_alt', 15, 19000, 100000)
+    AddBinScheme(trType, 'P', 'emu', 3800, 150000)
+    AddBinBoundary(trType, 'P', 'emu', 120000)
+    AddBinBoundary(trType, 'P', 'emu', 100000)
+    AddUniformBins(trType, 'P', 'emu', 10, 3800, 100000)
 
     # eta
-    AddBinScheme(trType, 'ETA', 'DLLKpi_alt', 1.5, 5)
-    AddUniformBins(trType, 'ETA', 'DLLKpi_alt', 2, 1.5, 5)
+    AddBinScheme(trType, 'ETA', 'emu', 1.5, 5)
+    AddBinBoundary(trType, 'ETA', 'emu', 2.2)
+    AddBinBoundary(trType, 'ETA', 'emu', 4)
+    AddUniformBins(trType, 'ETA', 'emu', 2, 2.2, 4)
 
     # nTrack
-    AddBinScheme(trType, 'nTrack', 'DLLKpi_alt', 0, 500)
-    AddUniformBins(trType, 'nTrack', 'DLLKpi_alt', 2, 0, 500)
+    AddBinScheme(trType, 'nTrack', 'emu', 0, 500)
+    AddBinBoundary(trType, 'nTrack', 'emu', 300)
+    AddUniformBins(trType, 'nTrack', 'emu', 4, 0, 300)
 
-### DLL(K-pi), RICH (P and PT binning schemes)
-for trType in GetRICHPIDPartTypes():
+for trType in ["Pi"]:
     # momentum
-    AddBinScheme(trType, 'P', 'DLLKpi_PPT', 2000, 100000)
-    AddBinBoundary(trType, 'P', 'DLLKpi_PPT', 9300) # R1 Kaon threshold
-    AddBinBoundary(trType, 'P', 'DLLKpi_PPT', 15600) # R2 Kaon threshold
-    AddUniformBins(trType, 'P', 'DLLKpi_PPT', 15, 19000, 100000)
+    AddBinScheme(trType, 'P', 'emu', 1000, 20000)
+    AddBinBoundary(trType, 'P', 'emu', 15000)
+    AddUniformBins(trType, 'P', 'emu', 10, 1000, 15000)
 
-    # pt 
-    AddBinScheme(trType, 'PT', 'DLLKpi_PPT', 250, 5000)
-    AddUniformBins(trType, 'PT', 'DLLKpi_PPT', 10, 250, 5000)
+    # eta
+    AddBinScheme(trType, 'ETA', 'emu', 1.5, 5)
+    AddBinBoundary(trType, 'ETA', 'emu', 2.2)
+    AddBinBoundary(trType, 'ETA', 'emu', 4)
+    AddUniformBins(trType, 'ETA', 'emu', 2, 2.2, 4)
+
+    # nTrack
+    AddBinScheme(trType, 'nTrack', 'emu', 0, 500)
+    AddBinBoundary(trType, 'nTrack', 'emu', 300)
+    AddUniformBins(trType, 'nTrack', 'emu', 4, 0, 300)
  

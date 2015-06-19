@@ -72,4 +72,8 @@ void SetSpecVars_MuonVars(RooPhysFit::RooDMassFitter& Mfit,
                           const char* parPrefix_DataSet,
                           const char* parPrefix_nTuple);
 
+void SetSpecVars_ElectronVars(RooPhysFit::RooDMassFitter& Mfit,
+                         const char* parPrefix_DataSet,
+                         const char* parPrefix_nTuple);
+
 #endif // CALIBDATASCRIPTS_SETSPECTATORVARS_H

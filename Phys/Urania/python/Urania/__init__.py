@@ -52,3 +52,6 @@ def microsetup():
 
     
     
+def recoverTree():
+    from ROOT import RooDataSet, RooAbsData
+    RooDataSet.setDefaultStorageType(RooAbsData.Tree)

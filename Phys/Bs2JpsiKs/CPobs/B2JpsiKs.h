@@ -52,16 +52,15 @@ public :
   Double_t B0_TAGOMEGA;
   Int_t    B0_TAGDECISION_OS;
   Double_t B0_TAGOMEGA_OS;
-  Int_t    B0_SS_Kaon_DEC;
-  Double_t B0_SS_Kaon_PROB;
-  Int_t    B0_SS_Pion_DEC;
-  Double_t B0_SS_Pion_PROB;
+  Short_t  B0_SS_Kaon_DEC;
+  Float_t  B0_SS_Kaon_PROB;
+  Short_t  B0_SS_nnetKaon_DEC;
+  Float_t  B0_SS_nnetKaon_PROB;
 
   // *** Data Manipulation ***
   UInt_t    runNumber;
   ULong64_t eventNumber;
-  //Double_t GpsSecond;
-  UInt_t    BCID; // Replace with GpsSecond
+  Double_t  GpsSecond;
   Short_t   Polarity;
 
   // *** Observables for Common Selection Cuts ***
@@ -72,22 +71,12 @@ public :
 
   // *** Observables for Decay Specific Cuts ***
   Int_t    piplus_TRACK_Type;
-  Double_t KS0_M_with_pplus_piplus;
-  Double_t KS0_M_with_piplus_pplus;
+  Float_t  B0_FitSubstppi1_KS0_M[maxLeafs];
+  Float_t  B0_FitSubstppi2_KS0_M[maxLeafs];
   Double_t piminus_ProbNNk;
   Double_t piplus_ProbNNk;
   Float_t  B0_FitDaughtersPVConst_KS0_ctau[maxLeafs];
   Float_t  J_psi_1S_MINIPCHI2_OtherPVs[maxLeafs];
-
-  // Replace by KS0_M_with_pplus_piplus
-  Float_t B0_FitDaughtersPVConst_KS0_P0_PE[maxLeafs];
-  Float_t B0_FitDaughtersPVConst_KS0_P0_PX[maxLeafs];
-  Float_t B0_FitDaughtersPVConst_KS0_P0_PY[maxLeafs];
-  Float_t B0_FitDaughtersPVConst_KS0_P0_PZ[maxLeafs];
-  Float_t B0_FitDaughtersPVConst_KS0_P1_PE[maxLeafs];
-  Float_t B0_FitDaughtersPVConst_KS0_P1_PX[maxLeafs];
-  Float_t B0_FitDaughtersPVConst_KS0_P1_PY[maxLeafs];
-  Float_t B0_FitDaughtersPVConst_KS0_P1_PZ[maxLeafs];
 
   // *** Trigger ***
   Bool_t J_psi_1S_Hlt1TrackMuonDecision_TOS;
@@ -100,7 +89,6 @@ public :
 
   // *** Neural Net ***
   //Float_t  B0_FitDaughtersPVConst_chi2[maxLeafs]; // dtfc
-  ULong64_t GpsTime; // gpst
   Int_t     nOTClusters; // otcl
   //Int_t     B0_FitDaughtersPVConst_nPV; // prim
   Float_t   PVCHI2[maxLeafs]; // pvch
@@ -172,11 +160,35 @@ public :
   Double_t B0_TRUEORIGINVERTEX_X;
   Double_t B0_TRUEORIGINVERTEX_Y;
   Double_t B0_TRUEORIGINVERTEX_Z;
+  Double_t J_psi_1S_TRUEORIGINVERTEX_X;
+  Double_t J_psi_1S_TRUEORIGINVERTEX_Y;
+  Double_t J_psi_1S_TRUEORIGINVERTEX_Z;
+  Double_t KS0_TRUEORIGINVERTEX_X;
+  Double_t KS0_TRUEORIGINVERTEX_Y;
+  Double_t KS0_TRUEORIGINVERTEX_Z;
+
+  Int_t J_psi_1S_MC_MOTHER_ID;
+  Int_t J_psi_1S_MC_GD_MOTHER_ID;
+  Int_t J_psi_1S_MC_GD_GD_MOTHER_ID;
+  Int_t KS0_MC_MOTHER_ID;
+  Int_t KS0_MC_GD_MOTHER_ID;
+  Int_t KS0_MC_GD_GD_MOTHER_ID;
+
+  // *** Other information ***
+  Float_t B0_FitSubstKpi1_M[maxLeafs];
+  Float_t B0_FitSubstKpi2_M[maxLeafs];
+  Float_t B0_FitSubstKpi1_KS0_M[maxLeafs];
+  Float_t B0_FitSubstKpi2_KS0_M[maxLeafs];
+  Float_t B0_FitSubstppi1_M[maxLeafs];
+  Float_t B0_FitSubstppi2_M[maxLeafs];
+
+  Int_t InputFile;
 
   // *** sWeights && Neural Net ***
-  Double_t sweight[maxLeafs] ;
+  Double_t sweight[maxLeafs];
   Int_t unbiased;
   Float_t netOutput[maxLeafs];
+
 
 // #############################################################################
 // *** Common Content ***
@@ -233,14 +245,13 @@ void B2JpsiKs::Init(TTree *tree, const TString module, const TString data,
   fChain->SetBranchAddress("B0_TAGOMEGA_OS", &B0_TAGOMEGA_OS);
   fChain->SetBranchAddress("B0_SS_Kaon_DEC", &B0_SS_Kaon_DEC);
   fChain->SetBranchAddress("B0_SS_Kaon_PROB", &B0_SS_Kaon_PROB);
-  fChain->SetBranchAddress("B0_SS_Pion_DEC", &B0_SS_Pion_DEC);
-  fChain->SetBranchAddress("B0_SS_Pion_PROB", &B0_SS_Pion_PROB);
+  fChain->SetBranchAddress("B0_SS_nnetKaon_DEC", &B0_SS_nnetKaon_DEC);
+  fChain->SetBranchAddress("B0_SS_nnetKaon_PROB", &B0_SS_nnetKaon_PROB);
 
   // *** Data Manipulation ***
   fChain->SetBranchAddress("runNumber", &runNumber);
   fChain->SetBranchAddress("eventNumber", &eventNumber);
-  //fChain->SetBranchAddress("GpsSecond", &GpsSecond);
-  fChain->SetBranchAddress("BCID", &BCID); // Replace with GpsSecond
+  fChain->SetBranchAddress("GpsSecond", &GpsSecond);
   fChain->SetBranchAddress("Polarity", &Polarity);
 
   // *** Observables for Common Selection Cuts ***
@@ -251,26 +262,14 @@ void B2JpsiKs::Init(TTree *tree, const TString module, const TString data,
 
   // *** Observables for Decay Specific Cuts ***
   fChain->SetBranchAddress("piplus_TRACK_Type", &piplus_TRACK_Type);
-  fChain->SetBranchAddress("KS0_M_with_pplus_piplus", &KS0_M_with_pplus_piplus);
-  fChain->SetBranchAddress("KS0_M_with_piplus_pplus", &KS0_M_with_piplus_pplus);
+  fChain->SetBranchAddress("B0_FitSubstppi1_KS0_M", &B0_FitSubstppi1_KS0_M);
+  fChain->SetBranchAddress("B0_FitSubstppi2_KS0_M", &B0_FitSubstppi2_KS0_M);
   fChain->SetBranchAddress("piminus_ProbNNk", &piminus_ProbNNk);
   fChain->SetBranchAddress("piplus_ProbNNk", &piplus_ProbNNk);
   fChain->SetBranchAddress("B0_FitDaughtersPVConst_KS0_ctau", &B0_FitDaughtersPVConst_KS0_ctau);
   if (module!=m_slimtuple) {
     fChain->SetBranchAddress("J_psi_1S_MINIPCHI2_OtherPVs", &J_psi_1S_MINIPCHI2_OtherPVs);
   }
-
-  // Replace by KS0_M_with_pplus_piplus
-  KS0_M_with_pplus_piplus = m_Kzero;
-  KS0_M_with_piplus_pplus = m_Kzero;
-  fChain->SetBranchAddress("B0_FitDaughtersPVConst_KS0_P0_PE", &B0_FitDaughtersPVConst_KS0_P0_PE);
-  fChain->SetBranchAddress("B0_FitDaughtersPVConst_KS0_P0_PX", &B0_FitDaughtersPVConst_KS0_P0_PX);
-  fChain->SetBranchAddress("B0_FitDaughtersPVConst_KS0_P0_PY", &B0_FitDaughtersPVConst_KS0_P0_PY);
-  fChain->SetBranchAddress("B0_FitDaughtersPVConst_KS0_P0_PZ", &B0_FitDaughtersPVConst_KS0_P0_PZ);
-  fChain->SetBranchAddress("B0_FitDaughtersPVConst_KS0_P1_PE", &B0_FitDaughtersPVConst_KS0_P1_PE);
-  fChain->SetBranchAddress("B0_FitDaughtersPVConst_KS0_P1_PX", &B0_FitDaughtersPVConst_KS0_P1_PX);
-  fChain->SetBranchAddress("B0_FitDaughtersPVConst_KS0_P1_PY", &B0_FitDaughtersPVConst_KS0_P1_PY);
-  fChain->SetBranchAddress("B0_FitDaughtersPVConst_KS0_P1_PZ", &B0_FitDaughtersPVConst_KS0_P1_PZ);
 
   // *** Trigger ***
   fChain->SetBranchAddress("J_psi_1S_Hlt1TrackMuonDecision_TOS", &J_psi_1S_Hlt1TrackMuonDecision_TOS);
@@ -282,7 +281,6 @@ void B2JpsiKs::Init(TTree *tree, const TString module, const TString data,
   fChain->SetBranchAddress("J_psi_1S_Hlt2TopoMu2BodyBBDTDecision_TOS", &J_psi_1S_Hlt2TopoMu2BodyBBDTDecision_TOS);
 
   // *** Neural Net ***
-  fChain->SetBranchAddress("GpsTime", &GpsTime);
   fChain->SetBranchAddress("nOTClusters", &nOTClusters);
   fChain->SetBranchAddress("PVCHI2", &PVCHI2);
   fChain->SetBranchAddress("PVNTRACKS", &PVNTRACKS);
@@ -349,6 +347,32 @@ void B2JpsiKs::Init(TTree *tree, const TString module, const TString data,
     fChain->SetBranchAddress("B0_TRUEORIGINVERTEX_X", &B0_TRUEORIGINVERTEX_X);
     fChain->SetBranchAddress("B0_TRUEORIGINVERTEX_Y", &B0_TRUEORIGINVERTEX_Y);
     fChain->SetBranchAddress("B0_TRUEORIGINVERTEX_Z", &B0_TRUEORIGINVERTEX_Z);
+    fChain->SetBranchAddress("J_psi_1S_TRUEORIGINVERTEX_X", &J_psi_1S_TRUEORIGINVERTEX_X);
+    fChain->SetBranchAddress("J_psi_1S_TRUEORIGINVERTEX_Y", &J_psi_1S_TRUEORIGINVERTEX_Y);
+    fChain->SetBranchAddress("J_psi_1S_TRUEORIGINVERTEX_Z", &J_psi_1S_TRUEORIGINVERTEX_Z);
+    fChain->SetBranchAddress("KS0_TRUEORIGINVERTEX_X", &KS0_TRUEORIGINVERTEX_X);
+    fChain->SetBranchAddress("KS0_TRUEORIGINVERTEX_Y", &KS0_TRUEORIGINVERTEX_Y);
+    fChain->SetBranchAddress("KS0_TRUEORIGINVERTEX_Z", &KS0_TRUEORIGINVERTEX_Z);
+  }
+  if (data==m_IncJpsi) {
+    fChain->SetBranchAddress("J_psi_1S_MC_MOTHER_ID", &J_psi_1S_MC_MOTHER_ID);
+    fChain->SetBranchAddress("J_psi_1S_MC_GD_MOTHER_ID", &J_psi_1S_MC_GD_MOTHER_ID);
+    fChain->SetBranchAddress("J_psi_1S_MC_GD_GD_MOTHER_ID", &J_psi_1S_MC_GD_GD_MOTHER_ID);
+    fChain->SetBranchAddress("KS0_MC_MOTHER_ID", &KS0_MC_MOTHER_ID);
+    fChain->SetBranchAddress("KS0_MC_GD_MOTHER_ID", &KS0_MC_GD_MOTHER_ID);
+    fChain->SetBranchAddress("KS0_MC_GD_GD_MOTHER_ID", &KS0_MC_GD_GD_MOTHER_ID);
+  }
+
+  // *** Other information ***
+  fChain->SetBranchAddress("B0_FitSubstKpi1_M", &B0_FitSubstKpi1_M);
+  fChain->SetBranchAddress("B0_FitSubstKpi2_M", &B0_FitSubstKpi2_M);
+  fChain->SetBranchAddress("B0_FitSubstKpi1_KS0_M", &B0_FitSubstKpi1_KS0_M);
+  fChain->SetBranchAddress("B0_FitSubstKpi2_KS0_M", &B0_FitSubstKpi2_KS0_M);
+  fChain->SetBranchAddress("B0_FitSubstppi1_M", &B0_FitSubstppi1_M);
+  fChain->SetBranchAddress("B0_FitSubstppi2_M", &B0_FitSubstppi2_M);
+
+  if (module!=m_slimtuple) {
+    fChain->SetBranchAddress("InputFile", &InputFile);
   }
 
   // *** sWeights && Neural Net ***

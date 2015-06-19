@@ -9,7 +9,7 @@ setenv PHIT_LICENCE_PATH $NEUROBAYES/../../license
 # SLC6
 #if ( -e /afs/cern.ch/sw/lcg/external/gcc/4.7.1/x86_64-slc6/ ) then
 #  source /afs/cern.ch/sw/lcg/external/gcc/4.7.1/x86_64-slc6/setup.csh
-#  setenv ROOTSYS /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.07/x86_64-slc6-gcc46-opt/root
+#  setenv ROOTSYS /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.10/x86_64-slc6-gcc46-opt/root
 #endif
 # SLC5
 if ( -e /afs/cern.ch/sw/lcg/external/gcc/4.7.1/x86_64-slc5/ ) then

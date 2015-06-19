@@ -14,6 +14,7 @@
 #include <vector>
 #include <fstream>
 #include <stdexcept>
+#include <cmath>
 
 // ROOT and RooFit includes
 #include "TH1D.h"
@@ -545,6 +546,11 @@ namespace GeneralUtils {
       }
     }
 
+    for( unsigned int i =0; i< MCFileName.size(); i++ )
+      {
+	mode[i] = CheckMode(mode[i],debug); 
+      }
+
     unsigned kst_count(0), DsstPi_count(0), DsstK_count(0), DsRho_count(0);
 
     for( unsigned i = 0; i < MCFileName.size(); i++)
@@ -855,6 +861,35 @@ namespace GeneralUtils {
     return pdfH;
   }
 
+  RooHistPdf* CreateHistPDF(RooDataSet* dataSet1,
+                            RooDataSet* dataSet2,
+                            Double_t frac,
+                            RooRealVar* obs,
+                            TString &name,
+                            Int_t bin,
+                            bool debug)
+  {
+    if ( debug == true) std::cout<<"[INFO] ==> GeneralUtils::CreateHistPDFMC(...). Create RooHistPdf"<<std::endl;
+    TString n = "";
+    RooHistPdf* pdfH = NULL;
+
+    TH1* hist1 = NULL;
+    n = "hist1_"+name;
+    hist1 = dataSet1->createHistogram(n.Data(), *obs, RooFit::Binning(bin));
+
+    TH1* hist2 = NULL;
+    n = "hist2_"+name;
+    hist2 = dataSet2->createHistogram(n.Data(), *obs, RooFit::Binning(bin));
+
+    n = "hist_"+name;
+    TH1* hist = new TH1F(n.Data(), n.Data(), bin, obs->getMin(), obs->getMax());
+    hist->Add(hist1, hist2, frac, 1-frac);
+
+    pdfH = CreateHistPDF(hist, obs, name, bin, debug);
+
+    return pdfH;
+  }
+
   
 
   RooAbsPdf* CreateBinnedPDF(RooDataSet* dataSet,
@@ -952,10 +987,282 @@ namespace GeneralUtils {
     RooDataSet* data = NULL;
     data = (RooDataSet*)work->data(dat.Data());
     if( data != NULL ){ 
-      if ( debug == true) std::cout<<"Read data set: "<<data->GetName()<<" with number of entries: "<<data->numEntries()<<std::endl; 
+      if ( debug == true) 
+	{
+	  std::cout<<"Read data set: "<<data->GetName()<<" with number of entries: "<<data->numEntries() 
+		   <<" and the sum of entries: "<<data->sumEntries()<<std::endl;
+	}
       return data; 
     }
     else{ if ( debug == true) std::cout<<"Cannot read data set"<<std::endl; return NULL;}
+
+  }
+
+  RooDataSet* GetDataSet(RooWorkspace* work, RooArgSet* obs, RooCategory& sam, 
+			 TString &dat, TString & sample, TString& mode, 
+			 bool merge, bool debug )
+  {
+    
+    std::vector <RooDataSet*> data;
+    std::vector <TString> sm; 
+    std::vector <Int_t> nEntries;
+    RooDataSet* combData = NULL; 
+    TString dataName = "combData";
+
+    
+    if (debug == true ){ std::cout<<"[INFO] Sample "<<sample<<". Mode "<<mode<<std::endl; }
+    if ( merge == true && sample != "both") { std::cout<<"[ERROR] Option merge only possible for sample = both"<<std::endl; return NULL; }  
+
+    std::vector <TString> s;
+    std::vector <TString> m; 
+
+    s = GetSample(sample,debug);
+    m = GetMode(mode, debug );
+    sm = GetSampleMode(sample, mode, false, debug);
+    
+    for (unsigned int i=0; i<sm.size(); i++ )
+      {
+	TString name = dat+sm[i]; 
+	data.push_back(GetDataSet(work,name,debug));	
+	nEntries.push_back(data[i]->numEntries());
+      }
+
+    if ( debug == true )
+      {
+	Int_t nEntries_up = 0;
+	Int_t nEntries_dw = 0; 
+	if ( sample == "both" ) 
+	  {
+	    for(unsigned int i=0; i<m.size()*s.size(); i++ )
+	      {
+		if( i%2 == 0 ) { nEntries_up += nEntries[i]; }
+		else { nEntries_dw +=  nEntries[i]; }
+	      }
+	    std::cout<<"Magnet up: "<<nEntries_up<<" Magnet down: "<<nEntries_dw<<" Both polarities: "<<nEntries_up+nEntries_dw<<std::endl;
+	  }
+	else
+	  {
+	    for(unsigned int i=0; i<m.size()*s.size(); i++ )
+              {
+		nEntries_up += nEntries[i];
+              }
+	    std::cout<<"Magnet "<<sample<<": "<<nEntries_up<<std::endl;
+	  }
+      }
+    if( merge == true )
+      {
+	for (unsigned int i =0; i<s.size()*m.size(); i++)
+	  {
+	    if(i%2 == 0) 
+	      {
+		data[i]->append(*data[i+1]);
+	      }
+	  }
+		
+	sm = GetSampleMode(sample, mode, true, debug);
+	for (unsigned int i=0; i<m.size(); i++ )
+	  {
+	    sam.defineType(sm[i].Data());
+	  }
+ 
+	if (  mode == "all" )
+	  {
+	    
+	    combData = new RooDataSet(dataName.Data(),dataName.Data(),*obs,
+				      RooFit::Index(sam),
+				      RooFit::Import(sm[0].Data(),*data[0]), RooFit::Import(sm[1].Data(),*data[2]),
+				      RooFit::Import(sm[2].Data(),*data[4]), RooFit::Import(sm[3].Data(),*data[6]), 
+				      RooFit::Import(sm[4].Data(),*data[8]));
+	  }
+	else if ( mode == "3modes" or mode == "3modeskkpi" )
+	  {
+	    combData = new RooDataSet(dataName.Data(),dataName.Data(),*obs,
+                                      RooFit::Index(sam),
+                                      RooFit::Import(sm[0].Data(),*data[0]), 
+				      RooFit::Import(sm[1].Data(),*data[2]),
+                                      RooFit::Import(sm[2].Data(),*data[4]));
+	  }
+	else
+	  {
+	    combData = new RooDataSet(dataName.Data(),dataName.Data(),*obs,
+                                      RooFit::Index(sam),
+                                      RooFit::Import(sm[0].Data(),*data[0]));
+	  }
+      }
+    else
+      {
+	for (unsigned int i=0; i<sm.size(); i++ )
+	  {
+	    sam.defineType(sm[i].Data());
+	  }
+	if ( sample == "both" )
+	  {
+	    if (  mode == "all" )
+	      {
+		combData = new RooDataSet(dataName.Data(),dataName.Data(),*obs,
+					  RooFit::Index(sam),
+					  RooFit::Import(sm[0].Data(),*data[0]), RooFit::Import(sm[1].Data(),*data[1]),
+					  RooFit::Import(sm[2].Data(),*data[2]), RooFit::Import(sm[3].Data(),*data[3]),
+					  RooFit::Import(sm[4].Data(),*data[4]));
+	    
+		TString dataName2 = "combData2"; 
+		RooDataSet* combData2 = new RooDataSet(dataName2.Data(), dataName2.Data(), *obs, 
+						       RooFit::Index(sam),
+						       RooFit::Import(sm[5].Data(),*data[5]),
+						       RooFit::Import(sm[6].Data(),*data[6]), RooFit::Import(sm[7].Data(),*data[7]),
+						       RooFit::Import(sm[8].Data(),*data[8]), RooFit::Import(sm[9].Data(),*data[9]));
+		combData->append(*combData2); 
+		
+	      }
+	    else if ( mode == "3modes" or mode == "3modeskkpi" )
+	      {
+		combData = new RooDataSet(dataName.Data(),dataName.Data(),*obs,
+					  RooFit::Index(sam),
+					  RooFit::Import(sm[0].Data(),*data[0]), RooFit::Import(sm[1].Data(),*data[1]),
+					  RooFit::Import(sm[2].Data(),*data[2]), RooFit::Import(sm[3].Data(),*data[3]),
+					  RooFit::Import(sm[4].Data(),*data[4]), RooFit::Import(sm[5].Data(),*data[5]));
+		
+	      }
+	    else
+	      {
+		combData = new RooDataSet(dataName.Data(),dataName.Data(),*obs,
+					  RooFit::Index(sam),
+					  RooFit::Import(sm[0].Data(),*data[0]),
+					  RooFit::Import(sm[1].Data(),*data[1]));
+	      }
+	  }
+	else
+	  {
+	    if (  mode == "all" )
+              {
+                combData = new RooDataSet(dataName.Data(),dataName.Data(),*obs,
+                                          RooFit::Index(sam),
+                                          RooFit::Import(sm[0].Data(),*data[0]), RooFit::Import(sm[1].Data(),*data[1]),
+                                          RooFit::Import(sm[2].Data(),*data[2]), RooFit::Import(sm[3].Data(),*data[3]),
+                                          RooFit::Import(sm[4].Data(),*data[4]));
+	      }
+	    else if ( mode == "3modes" or mode == "3modeskkpi" )
+              {
+                combData = new RooDataSet(dataName.Data(),dataName.Data(),*obs,
+                                          RooFit::Index(sam),
+                                          RooFit::Import(sm[0].Data(),*data[0]), RooFit::Import(sm[1].Data(),*data[1]),
+                                          RooFit::Import(sm[2].Data(),*data[2]));
+
+	      }
+            else
+              {
+                combData = new RooDataSet(dataName.Data(),dataName.Data(),*obs,
+                                          RooFit::Index(sam),
+                                          RooFit::Import(sm[0].Data(),*data[0]));
+              }
+
+	  }
+	
+      }
+    if( combData != NULL ){
+      if ( debug == true) 
+	{
+	  std::cout<<"Read data set: "<<combData->GetName()<<" with number of entries: "<<combData->numEntries()
+		   <<" and the sum of entries: "<<combData->sumEntries()<<std::endl;
+	}
+      return combData;
+    }
+    else{ if ( debug == true) std::cout<<"Cannot read data set"<<std::endl; return NULL;}
+
+    
+  }
+  
+  std::vector <TString> GetSampleMode(TString& sample, TString& mode, bool merge, bool debug )
+  {
+    std::vector <TString> sm;
+    std::vector <TString> s;
+    std::vector <TString> m;
+    
+    if (debug == true ){ std::cout<<"[INFO] Sample "<<sample<<". Mode "<<mode<<std::endl; }
+    if ( merge == true && sample != "both") { std::cout<<"[ERROR] Option merge only possible for sample = both"<<std::endl; return sm; }
+
+    s =  GetSample(sample,debug);
+    m =  GetMode(mode, debug );
+    
+    for (unsigned int i=0; i<m.size(); i++ )
+      {
+        for(unsigned int j = 0; j<s.size(); j++ )
+          {
+            sm.push_back(s[j]+"_"+m[i]);
+          }
+      }
+
+    if( merge == true )
+      {
+	TString s1 = "both";
+        for (unsigned int i=0; i<m.size(); i++ )
+          {
+            sm[i] =s1+"_"+m[i];
+          }
+      }
+    
+    return sm; 
+    
+  }
+
+  std::vector <TString>  GetSample(TString& sample, bool debug )
+  {
+    std::vector <TString> s;
+    if ( sample == "both")  { s.push_back("up"); s.push_back("down"); }
+    else { s.push_back(sample); }
+
+    return s;
+  }
+
+  std::vector <TString>  GetMode(TString& mode, bool debug )
+  {
+    std::vector <TString> m;
+    if ( mode == "all" ) { m.push_back("nonres"); m.push_back("phipi"); m.push_back("kstk"); m.push_back("kpipi"); m.push_back("pipipi"); }
+    else if (mode == "3modeskkpi") {  m.push_back("nonres"); m.push_back("phipi"); m.push_back("kstk"); }
+    else if (mode == "3modes" ) { m.push_back("kkpi"); m.push_back("kpipi"); m.push_back("pipipi"); }
+    else { m.push_back(mode); }
+    return m;
+  }
+
+  std::vector <Int_t> GetEntriesCombData(RooWorkspace* work, 
+					 TString &dat, TString & sample, TString& mode,
+					 bool merge, bool debug )
+  {
+    std::vector <RooDataSet*> data;
+    std::vector <TString> sm;
+    std::vector <Int_t> nEntries;
+    std::vector <Int_t> nE; 
+
+    if (debug == true ){ std::cout<<"[INFO] Sample "<<sample<<". Mode "<<mode<<std::endl; }
+    if ( merge == true && sample != "both") { std::cout<<"[ERROR] Option merge only possible for sample = both"<<std::endl; return nEntries; }
+
+    std::vector <TString> s;
+    std::vector <TString> m;
+
+    s = GetSample(sample,debug);
+    m = GetMode(mode, debug );
+    sm = GetSampleMode(sample, mode, false, debug);
+
+    for (unsigned int i=0; i<sm.size(); i++ )
+      {
+        TString name = dat+sm[i];
+        data.push_back(GetDataSet(work,name,debug));
+        nEntries.push_back(data[i]->numEntries());
+      }
+    
+    if( merge == true )
+      {
+        for (unsigned int i =0; i<s.size()*m.size(); i++)
+          {
+            if(i%2 == 0)
+              {
+                nEntries[i] += nEntries[i+1];
+		nE.push_back(nEntries[i]); 
+              }
+	  }
+      }
+   
+    return nE; 
 
   }
 
@@ -1081,6 +1388,11 @@ namespace GeneralUtils {
       {
         dmode = "pipipi";
       }
+    else if ( check.find("hhhpi0") != std::string::npos || check.find("HHHPi0") != std::string::npos ||
+              check.find("hhhPi0") != std::string::npos || check.find("HHHpi0") != std::string::npos)
+      {
+        dmode = "hhhpi0";
+      }
     else 
       {
         dmode = "";
@@ -1103,6 +1415,11 @@ namespace GeneralUtils {
     else if ( check.Contains("pipipi") == true || check.Contains("PiPiPi") == true)
       {
         dmode = "pipipi";
+      }
+    else if ( check.Contains("hhhpi0") == true || check.Contains("HHHPi0") == true ||
+              check.Contains("hhhPi0") == true || check.Contains("HHHpi0") == true)
+      {
+        dmode ="hhhpi0";
       }
     else
       {
@@ -1130,6 +1447,11 @@ namespace GeneralUtils {
       {
         dmode = "kstk";
       }
+    else if ( check.find("hhhpi0") != std::string::npos || check.find("HHHPi0") != std::string::npos ||
+              check.find("hhhPi0") != std::string::npos || check.find("HHHpi0") != std::string::npos)
+      {
+	dmode = "hhhpi0";
+      }
     else
       {
         dmode = "";
@@ -1154,6 +1476,11 @@ namespace GeneralUtils {
       {
         kkpimode = "kstk";
       }
+    else if ( check.Contains("hhhpi0") == true || check.Contains("HHHPi0") == true || 
+	      check.Contains("hhhPi0") == true || check.Contains("HHHpi0") == true)
+      {
+	kkpimode ="hhhpi0";
+      }
     else
       {
 	kkpimode = "";
@@ -1162,7 +1489,55 @@ namespace GeneralUtils {
     return kkpimode;
   }
 
+  std::string CheckMode(std::string& check, bool debug )
+  {
+    std::string mode;
+    std::string Bs = "";
+    std::string Ds = "";
+    std::string Bach = "";
 
+    if ( check.find("Lb") != std::string::npos ||
+	 check.find("lambdab") != std::string::npos ||
+	 check.find("Lambdab") != std::string::npos  ){ Bs="Lb";}
+    else if( check.find("Bs") != std::string::npos || check.find("bs") != std::string::npos) { Bs = "Bs"; }
+    else if (( check.find("Bd") != std::string::npos || check.find("bd") != std::string::npos ) && check.find("ambda") == std::string::npos )
+      { Bs="Bd"; }
+    else { Bs="Comb";}
+
+    if (check.find("Lc") != std::string::npos ||
+	check.find("lambdac") != std::string::npos ||
+	check.find("Lambdac") != std::string::npos) { Ds = "Lc";}
+    else if (check.find("Dsst") != std::string::npos || check.find("dsst") != std::string::npos)
+      { Ds ="Dsst";}
+    else if ( (check.find("Ds") != std::string::npos  || check.find("ds") != std::string::npos) && 
+	 (check.find("Dsst") == std::string::npos || check.find("dsst") == std::string::npos ))
+      { Ds = "Ds";}
+    else if (( check.find("D") != std::string::npos  || check.find("d") != std::string::npos )  &&
+	     (check.find("Ds") == std::string::npos  || check.find("ds") == std::string::npos) && check.find("ambda") == std::string::npos) 
+      {Ds = "D";}
+    else { Ds ="bkg";}
+
+    if ( check.find("Pi") != std::string::npos || check.find("pi") != std::string::npos) { Bach = "Pi"; }
+    else if( ( check.find("P") != std::string::npos || check.find("p") != std::string::npos ) && 
+	     ( check.find("Pi") == std::string::npos || check.find("pi") == std::string::npos))
+      {Bach = "p";}
+    else if( (check.find("K") != std::string::npos || check.find("k") != std::string::npos )&& 
+	     (check.find("Kst") == std::string::npos || check.find("kst") == std::string::npos) )
+      {Bach = "K";}
+    else if( check.find("Kst") != std::string::npos || check.find("kst") != std::string::npos ) {Bach ="Kst";}
+    else if( check.find("Rho") != std::string::npos || check.find("rho") != std::string::npos ) {Bach = "Rho";}
+    else { Bach ="";}
+
+    mode = Bs+"2"+Ds+Bach;
+    if (debug == true )
+      {
+	if ( mode != check )
+	  {
+	    std::cout<<"[INFO] Changed mode label from: "<< check <<" to: "<<mode<<std::endl;
+	  } 
+      }
+    return mode; 
+  }
   
   TString GetLabel(TString& mode, bool bs, bool ds, bool pol, bool debug)
   {
@@ -1178,22 +1553,26 @@ namespace GeneralUtils {
     DsState = CheckDMode(mode, debug);
     if ( DsState == "" || DsState == "kkpi" ) { DsState = CheckKKPiMode(mode, debug); } 
 
-    if( mode.Contains("Bs") == true) { Bs = "B_{s}"; }
-    else if ( mode.Contains("Bd") == true || mode.Contains("DPi") == true){ Bs="B_{d}"; }
-    else if ( mode.Contains("Lb") == true){ Bs="#Lambda_{b}";}
+    if ( mode.Contains("Lb") == true || mode.Contains("lambdab") == true || mode.Contains("Lambdab") == true  ){ Bs="#Lambda_{b}";}
+    else if( mode.Contains("Bs") == true || mode.Contains("bs") == true) { Bs = "B_{s}"; }
+    else if ( mode.Contains("Bd") == true || mode.Contains("bd") == true ){ Bs="B_{d}"; }
     else { Bs="Comb";}
 
-    if ( mode.Contains("Ds") == true  && mode.Contains("Dsst") != true) { Ds = "D_{s}";}
-    else if (mode.Contains("Dsst") == true ) { Ds ="D^{*}_{s}";}
-    else if (mode.Contains("D")==true && mode.Contains("Ds") != true) {Ds = "D";}
-    else if (mode.Contains("Lc") == true ) { Ds = "#Lambda_{c}";}
+    if (mode.Contains("Lc") == true || mode.Contains("Lambdac") == true || mode.Contains("lambdac") == true) { Ds = "#Lambda_{c}";}
+    else if (mode.Contains("Dsst") == true || mode.Contains("dsst") == true){ Ds ="D^{*}_{s}";}
+    else if ( (mode.Contains("Ds") == true  || mode.Contains("ds") == true) && (mode.Contains("Dsst") != true || mode.Contains("dsst") != true )) 
+      { Ds = "D_{s}";}
+    else if ((mode.Contains("D")==true || mode.Contains("d") == true )  &&  
+	     ( mode.Contains("Ds") != true || mode.Contains("ds") == true )) {Ds = "D";}
     else { Ds ="bkg";}
 
-    if ( mode.Contains("Pi") == true ) { Bach = "#pi"; }
-    else if( mode.Contains("p") == true ) {Bach = "p";}
-    else if( mode.Contains("K") == true && mode.Contains("Kst")!=true ) {Bach = "K";}
-    else if( mode.Contains("Kst") == true) {Bach ="K^{*}";}
-    else if( mode.Contains("Rho") == true) {Bach = "#rho";}
+    if ( mode.Contains("Pi") == true || mode.Contains("pi") == true ) { Bach = "#pi"; }
+    else if( (mode.Contains("p") == true || mode.Contains("P") == true ) && (mode.Contains("pi") == true || mode.Contains("Pi") == true )) 
+      {Bach = "p";}
+    else if( (mode.Contains("K") == true || mode.Contains("k") == true )&& (mode.Contains("Kst")!=true || mode.Contains("kst") != true) ) 
+      {Bach = "K";}
+    else if( ( mode.Contains("Kst") == true || mode.Contains("kst") == true ) ) {Bach ="K^{*}";}
+    else if( mode.Contains("Rho") == true || mode.Contains("rho") == true ) {Bach = "#rho";}
     else { Bach ="";}
 
     if ( DsState.Contains("kkpi") == true ) { DsStateTex = Ds+ar+" KK#pi"; }
@@ -1202,6 +1581,7 @@ namespace GeneralUtils {
     else if ( DsState.Contains("nonres") == true ) { DsStateTex = Ds+ar+"KK#pi (Non Resonant)";}
     else if ( DsState.Contains("kpipi") == true ) { DsStateTex = Ds+ar+" K#pi#pi";}
     else if ( DsState.Contains("pipipi") == true ) { DsStateTex = Ds+ar+" #pi#pi#pi";}
+    else if ( DsState.Contains("hhhpi0") == true ) { DsStateTex = Ds+ar+" hhh#pi^{0}"; }
     else { DsStateTex = ""; }
     
     TString tex = "";
@@ -1269,14 +1649,26 @@ namespace GeneralUtils {
   TString CheckObservable(TString& check, bool debug)
   {
     TString label = "";
-    if( check.Contains("lab0_MassFitConsD_M") == true || check.Contains("lab0_MM") == true  ) { label = "mass B_{(s)} [MeV/c^{2}]"; }
-    else if ( check.Contains("lab2_MassFitConsD_M") == true || check.Contains("lab2_MM") == true ) { label = "mass D_{(s)} [MeV/c^{2}]";}
-    else if ( check.Contains("TAGDECISION") == true || check.Contains("DEC") == true ) { label = "tagging decision [1]"; }
-    else if ( check.Contains("TAGOMEGA") == true || check.Contains("PROB") == true) {label ="#omega [1]"; }
-    else if ( check.Contains("lab0_LifetimeFit_ctau") == true || check.Contains("lab0_TAU") == true ||  check.Contains("lab0_TRUETAU") == true ) 
+    if( check.Contains("lab0_MassFitConsD_M") == true || check.Contains("lab0_MM") == true  ||
+	(check.Contains("Bs") == true && check.Contains("Mass") == true) ) { label = "mass B_{(s)} [MeV/c^{2}]"; }
+    else if ( check.Contains("Ds_MM") == true || check.Contains("lab2_MM") == true ) { label = "mass D_{(s)} [MeV/c^{2}]";}
+    else if ( check.Contains("TAGDECISION") == true || check.Contains("DEC") == true ) 
+      { 
+	if ( check.Contains("SS_nnetKaon") == true )  { label = "tagging decision SS [1]"; }
+	else if ( check.Contains("TAGDECISION_OS") == true )  { label = "tagging decision OS [1]"; }
+	else { label = "tagging decision [1]"; }
+      }
+    else if ( check.Contains("TAGOMEGA") == true || check.Contains("PROB") == true) 
+      {
+	if ( check.Contains("SS_nnetKaon") == true )  { label = "#omega SS [1]"; }
+	else if( check.Contains("TAGOMEGA_OS") == true )  { label = "#omega OS [1]"; }
+	else { label = "#omega [1]"; }
+      }
+    else if ( check.Contains("LifetimeFit_ctau") == true || check.Contains("TAU") == true ||  check.Contains("TRUETAU") == true ) 
       {label ="t [ps]"; }
-    else if ( check.Contains("lab1_ID") == true ) {label ="bachelor ID [1]"; }
-    else if ( check.Contains("lab1_PIDK") == true ) {label ="bachelor log(PIDK) [1]"; }
+    else if ( check.Contains("ID") == true && check.Contains("PIDK") == false && 
+	      ( check.Contains("lab1") == true || check.Contains("Bac") ==true) ) {label ="bachelor ID [1]"; }
+    else if ( check.Contains("PIDK") == true && ( check.Contains("lab1") == true || check.Contains("Bac") ==true) ) {label ="bachelor PIDK [1]"; }
     else if ( check.Contains("_PT") == true ) {label ="log(p_{t}) [MeV/c]"; }
     else if ( check.Contains("_P") == true && check.Contains("_PT") == false ) {label ="log(p) [MeV/c]"; }
     else if ( check.Contains("nTracks") == true ) {label ="log(nTracks) [1]"; }
@@ -1352,5 +1744,46 @@ namespace GeneralUtils {
     
     list = new RooArgList(*c1Var,*c2Var);
     return list;
+  }
+
+  double pe_from_pid(int pid, double px, double py, double pz)
+  {
+    // some constants
+    const double BSMASS(5366.77), BDMASS(5279.58), DSMASS(1968.49),
+      DSSTMASS(2112.3), DMASS(1869.62), PIMASS(139.57018), KMASS(493.677),
+      KSTMASS(891.66), PI0MASS(134.9766), LBMASS(5619.4), LCMASS(2286.46),
+      PMASS(938.272046), RHOMASS(775.49);
+
+    double p2(px*px + py*py + pz*pz), mass(0.0);
+    switch (std::abs(pid)) {
+    case 531:		// Bs
+      mass = BSMASS; break;
+    case 511:		// Bd
+      mass = BDMASS; break;
+    case 431:		// Ds+
+      mass = DSMASS; break;
+    case 411:		// D+
+      mass = DMASS; break;
+    case 433:		// Dsst
+      mass = DSSTMASS; break;
+    case 321:		// K
+      mass = KMASS; break;
+    case 211:		// Pi
+      mass = PIMASS; break;
+    case 5122:	// Lb
+      mass = LBMASS; break;
+    case 2212:	// p
+      mass = PMASS; break;
+    case 4122:	// Lc+
+      mass = LCMASS; break;
+    case 213:		// Rho(770)+
+      mass = RHOMASS; break;
+    case 111:		// Pi0
+      mass = PI0MASS; break;
+    case 22:		// photon
+    default:
+      mass = 0.0;
+    }
+    return std::sqrt(mass*mass + p2);
   }
 } //end of namespace

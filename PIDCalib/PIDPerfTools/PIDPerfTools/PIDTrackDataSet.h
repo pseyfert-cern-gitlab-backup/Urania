@@ -33,6 +33,7 @@ public:
                    const std::string& PT_Name,
                    const std::string& ETA_Name,
                    const std::string& nTrack_Var,
+                   const std::string& nSPDHits_Var,
                    const std::string& DLLK_Name,
                    const std::string& DLLp_Name,
                    const std::string& DLLe_Name,
@@ -40,6 +41,8 @@ public:
                    const std::string& IsMuon_Name,
                    const std::string& IsMuonLoose_Name,
                    const std::string& nShared_Name,
+                   const std::string& HasBremAdded_Name,
+                   const std::string& CaloRegion_Name,
                    const std::string& ProbNNK_Name,
                    const std::string& ProbNNpi_Name,
                    const std::string& ProbNNp_Name,
@@ -65,13 +68,16 @@ public:
                    const std::string& PT_Name,
                    const std::string& ETA_Name,
                    const std::string& nTrack_Var,
+                   const std::string& nSPDHits_Var,
                    const std::string& DLLK_Name,
                    const std::string& DLLp_Name,
                    const std::string& DLLe_Name,
                    const std::string& DLLmu_Name,
                    const std::string& IsMuon_Name,
                    const std::string& IsMuonLoose_Name,
-                   const std::string& nShared_Name,                   
+                   const std::string& nShared_Name,    
+                   const std::string& HasBremAdded_Name,
+                   const std::string& CaloRegion_Name,               
                    const std::string& ProbNNK_Name,
                    const std::string& ProbNNpi_Name,
                    const std::string& ProbNNp_Name,
@@ -122,6 +128,8 @@ public:
   const std::string Get_ParamName_IsMuon() const;
   const std::string Get_ParamName_IsMuonLoose() const;
   const std::string Get_ParamName_nShared() const;
+  const std::string Get_ParamName_HasBremAdded() const;
+  const std::string Get_ParamName_CaloRegion() const;
 
   //========================================================
   // Get track parameter  
@@ -136,6 +144,8 @@ public:
   const RooRealVar* Get_Param_IsMuon() const;
   const RooRealVar* Get_Param_IsMuonLoose() const;
   const RooRealVar* Get_Param_nShared() const;
+  const RooRealVar* Get_Param_HasBremAdded() const;
+  const RooRealVar* Get_Param_CaloRegion() const;
 
   //========================================================
   // An additional reduce method that takes a vector of

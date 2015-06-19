@@ -4,6 +4,26 @@
 ! Purpose     : Classes for performing PID based studies
 !-----------------------------------------------------------------------------
 
+!============================================== v5r6 2014-4-11 ==============================
+! 2014-4-11 Diego Martinez Santos
+	 Make version v5r6
+! 2014-03-25 - Marco Clemencic
+ - Fixed CMake build.
+
+! 2014-03-20 - Marco Clemencic
+ - Added CMake configuration file.
+
+! 2014-3-11 Thomaas Bird
+- Fix bug where by variables passed to the dataset for reducing calibration 
+  dataset didn't have their names translated into the ones used in the actual 
+  dataset, for example DLLmu -> mu_CombDLLmu.
+- Added LHCbPIDTrackDataSet based classes to the python dictonaries
+- Created new GenericDataSet to replace LHCbPIDTrackDataSet
+
+! 2014-3-05 Thomaas Bird
+  - Update the dataset classes to add more variables, nSPDHits and some 
+    electron variables
+
 !============================================== v5r5 2014-1-20 ==============================
 ! 2014-1-20 Diego Martinez Santos
 	 Make version v5r5
@@ -337,24 +357,4 @@
 	- Added DLLpK (i.e DLL(p - K)) as a TrackDataSet variable 
 
 ! 2011-04-19 - Gareth Rogers
- - Fixed a bug introduced by the new std::string APIs in TrackDataSet and
-   EvtDataSet. The WeightInBins function checked the input string against
-   NULL (as for old char*). Now checking std::string.empty.
-
-!============================== v1r1 18-04-2011 ==============================
-
-! 2011-04-18 - Diego Martinez Santos
- - Make version v1r1.
-
-! 2011-04-12 - Chris Jones
- - Update APIs to use std::string instead of char *, in order to improve 
-   compatibility with python. In particular a NULL char * cannot be passed in 
-   python, and these changes replace this with an empty ("") string.
-
-! 2011-04-05 - Chris Jones
- - Add (a first attempt) at support for running in GaudiPython. May need fine tuning.
-
-! 2011-03-26 - Andrew Powell
- - Added setup_env.sh for bash shell users
-
-! 201
+ - Fixed a bug introduced by the new std::st

@@ -1,7 +1,10 @@
-def begintex(f):
+from sympy import latex
+def begintex(f, width = 5.5, height = 8.5):
     """ adds some lines at the startup to make a tex file
     """
-    f.write("\\documentclass[11pt,a4paper]{article}\n")
+    f.write("\\documentclass{article}\n")
+    f.write("\\usepackage[paperwidth="+str(width) +"in, paperheight="+str(height)+ "in]{geometry}\n")
+    #f.write("\\documentclass[11pt,a4paper]{article}\n")
     f.write("\\pdfoutput=1\n")
     #f.write("\\usepackage{jheppub}\n")
     f.write("\\usepackage{graphicx}\n") 
@@ -34,3 +37,11 @@ def page_break(f):
     f.write("\\clearpage\n")
     f.write("\\newpage\n")
     
+def Ulatex(expr):
+    things = expr.atoms()
+    for thing in things:
+        if "useLatexName" in dir(thing):thing.useLatexName()
+    out = latex(expr)
+    for thing in things:
+        if "useLatexName" in dir(thing):thing.useFirstName()
+    return out

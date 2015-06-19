@@ -4,7 +4,7 @@
 ##export GANGAJOBSDIR=/data/lhcb/users/hunt/gangadir_calib/workspace/huntp/LocalXML
 
 # top level directory where the calibration samples should be stored
-export CALIBDATADIR=/data/lhcb/users/malde
+export CALIBDATADIR=/data/lhcb/users/malde/PID/DstMassModel/Threshold/
 
 #export CALIBDATADIR=/home/malde
 

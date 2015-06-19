@@ -218,7 +218,14 @@ namespace GeneralUtils {
                             TString &name,
                             Int_t bin,
                             bool debug = false);
-  
+
+  RooHistPdf* CreateHistPDF(RooDataSet* dataSet1,
+                            RooDataSet*dataSet2,
+                            Double_t frac,
+                            RooRealVar* obs,
+                            TString &name,
+                            Int_t bin,
+                            bool debug = false);
   
   RooAbsPdf* CreateBinnedPDF(RooDataSet* dataSet,
                              RooRealVar* obs,
@@ -247,6 +254,18 @@ namespace GeneralUtils {
   //==========================================================================
   RooDataSet* GetDataSet(RooWorkspace* work, TString &obs, bool        debug = false);
 
+  RooDataSet* GetDataSet(RooWorkspace* work, RooArgSet* obs, RooCategory& sam,
+                         TString &dat, TString & sample, TString& mode,
+                         bool merge, bool debug );
+
+  std::vector <TString> GetSampleMode(TString& sample, TString& mode, bool merge, bool debug );
+  std::vector <TString>  GetSample(TString& sample, bool debug );
+  std::vector <TString>  GetMode(TString& mode, bool debug );
+  std::vector <Int_t> GetEntriesCombData(RooWorkspace* work, 
+                                         TString &dat, TString & sample, TString& mode,
+                                         bool merge, bool debug );
+
+
   //===========================================================================
   // Get data histogram ( dat ) from workspace (work)
   //==========================================================================
@@ -271,6 +290,8 @@ namespace GeneralUtils {
   //===========================================================================
   // Check D/Ds final state (kkpi,kpipi,pipipi) from check
   //==========================================================================
+  std::string CheckMode(std::string& check, bool debug = false);
+
   TString CheckDMode(std::string& check, bool debug = false);
   TString CheckDMode(TString& check, bool debug = false);
 
@@ -292,7 +313,9 @@ namespace GeneralUtils {
   // Get coefficient for acceptance
   //==========================================================================
   RooArgList* GetCoeffFromBinning(RooBinning* binning, RooRealVar* time, bool debug = false);
-    
+
+  double pe_from_pid(int pid, double px, double py, double pz);
+
 }
 // end of namespace
 

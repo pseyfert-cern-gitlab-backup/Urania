@@ -30,8 +30,11 @@ static const Long64_t maxEntries = 10000;
 static const int maxLeafs = 25;
 
 // Training (sample will contain parts/frac of the events)
+static const TString trainset = "Full"; // Options: 2011/2012/All/Full
 static const double parts_in_teaching = 3;
 static const double frac_in_teaching = 4;
+// For comparing 2011 vs. 2012 vs. All use
+// 2011 (3/4) - 2012 (3/8) - All (3/12)
 
 // #############################################################################
 // *** Initialize Constants ***
@@ -50,6 +53,8 @@ static const TString m_LHCb2011          = "LHCb2011";
 static const TString m_LHCb2011Prescaled = "LHCb2011Prescaled";
 static const TString m_LHCb2012          = "LHCb2012";
 static const TString m_LHCb2012Prescaled = "LHCb2012Prescaled";
+static const TString m_LHCbAll           = "LHCbAll";
+static const TString m_LHCbAllPrescaled  = "LHCbAllPrescaled";
 static const TString m_SigBd             = "SigBd";
 static const TString m_SigBdPrescaled    = "SigBdPrescaled";
 static const TString m_SigBs             = "SigBs";
@@ -65,11 +70,13 @@ static bool isSigMC (TString data) {
 };
 static bool isLHCb (TString data) {
   return (data==m_LHCb2011 || data==m_LHCb2011Prescaled ||
-          data==m_LHCb2012 || data==m_LHCb2012Prescaled);
+          data==m_LHCb2012 || data==m_LHCb2012Prescaled ||
+          data==m_LHCbAll || data==m_LHCbAllPrescaled);
 };
 static bool isPrescaled (TString data) {
   return (data==m_LHCb2011Prescaled || data==m_LHCb2012Prescaled ||
-          data==m_SigBdPrescaled || data==m_SigBsPrescaled || data==m_IncJpsi);
+          data==m_LHCbAllPrescaled || data==m_IncJpsi ||
+          data==m_SigBdPrescaled || data==m_SigBsPrescaled);
 };
 
 // Supported Steps in Selection
@@ -109,11 +116,11 @@ static const double numberofseconds = 60.;
 static const double clight = 299.792458; // Units: mm/ns
 
 // Selection Cuts
-static const double tauErrcut = 0.0002; // Units: ps
+static const double tauErrcut = 0.2; // Units: ps
 static const double taucut = 0.2; // Units: ps
 static const double m_OWNPVZ_range = 250; // Units: cm
-static const int ipcut_LL = 29;
-static const int ipcut_DD = 43;
+static const int ipcut_LL = 28;
+static const int ipcut_DD = 44;
 
 // Mass Ranges
 static const double BdBox_min = 5230;
@@ -154,6 +161,7 @@ public:
   virtual UInt_t getRunNumber() = 0;
   virtual ULong64_t getEventNumber() = 0;
   virtual float getGpsSecond() = 0;
+  virtual int getInputFile() = 0;
   virtual double weightVal(const unsigned int pv) = 0;
   virtual float neuralnet(const unsigned int pv) = 0;
   virtual int isUnbiased() = 0;

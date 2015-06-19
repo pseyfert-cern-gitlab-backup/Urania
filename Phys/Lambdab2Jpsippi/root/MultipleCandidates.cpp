@@ -130,7 +130,7 @@ Candidate MultipleCandidates::randomCandidate(long int runNumber, ULong64_t even
   return *(allCandidatesInEvent(runNumber, eventNumber, true).begin());
 }
 // ###################################################################
-MultipleCandidates* createEventMap(NetTree* ntuple, double NNcut, bool debug ){
+MultipleCandidates* createEventMap(NetTree* ntuple, double NNcut, double NN2cut, bool debug ){
   MultipleCandidates* eventmap = new MultipleCandidates(m_theSeed) ; // 0 means no reproducibility
   std::cout << " * Filling Duplicate Event Map \n" << std::endl;
   const Long64_t nentries = ntuple->fChain->GetEntries();  
@@ -141,7 +141,7 @@ MultipleCandidates* createEventMap(NetTree* ntuple, double NNcut, bool debug ){
 						       << 100*i/nentries << "%) - " 
 						       << ntuple->EventNumber << "/" << ntuple->RunNumber << endl ;
     for( unsigned int pv = 0 ; pv!=ntuple->PVs ; ++pv){
-      if (ntuple->netOutput[pv]>=NNcut && ntuple->ErrorCode[pv]==0){
+      if (ntuple->netOutput[pv]>NNcut && ntuple->netOutput[pv]<=NN2cut && ntuple->ErrorCode[pv]==0){
         eventmap->fill(i, pv, ntuple->RunNumber, ntuple->EventNumber );
         //        break ;
       }

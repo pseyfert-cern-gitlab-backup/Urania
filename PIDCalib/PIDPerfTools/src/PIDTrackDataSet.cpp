@@ -30,6 +30,7 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& TrackName,
                                   const std::string& PT_Var,
                                   const std::string& ETA_Var,
                                   const std::string& nTrack_Var,
+                                  const std::string& nSPDHits_Var,
                                   const std::string& DLLK_Var,
                                   const std::string& DLLp_Var,
                                   const std::string& DLLe_Var,
@@ -37,6 +38,8 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& TrackName,
                                   const std::string& IsMuon_Var,
                                   const std::string& IsMuonLoose_Var,
                                   const std::string& nShared_Var,
+                                  const std::string& HasBremAdded_Var,
+                                  const std::string& CaloRegion_Var,
                                   const std::string& ProbNNK_Var,
                                   const std::string& ProbNNpi_Var,
                                   const std::string& ProbNNp_Var,
@@ -53,10 +56,12 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& TrackName,
                      PT_Var,
                      ETA_Var,
                      nTrack_Var,
+                     nSPDHits_Var,
                      DLLK_Var,
                      DLLp_Var,
-                     Cuts,
-                     WgtVarName)
+                     "",
+                     WgtVarName
+                   )
 {
   SetTrackVar( ProbNNK_Var,
                "ProbNNK");
@@ -87,6 +92,16 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& TrackName,
 
   SetTrackVar( nShared_Var,
                "nShared" ); 
+
+  SetTrackVar( HasBremAdded_Var,
+               "HasBremAdded" );
+
+  SetTrackVar( CaloRegion_Var,
+               "CaloRegion" ); 
+  
+  if (not Cuts.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts).c_str())->store();
+  }
 }
 
 PIDTrackDataSet::PIDTrackDataSet( const std::string& TrackName,
@@ -100,8 +115,9 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& TrackName,
                      Charge,
                      Data,
                      vars,
-                     Cuts,
-                     WgtVarName )
+                     "",
+                     WgtVarName
+                   )
 {
   SetTrackVar( Data->Get_ParamName_ProbNNK(),
                "ProbNNK" );
@@ -132,6 +148,16 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& TrackName,
 
   SetTrackVar( Data->Get_ParamName_nShared(),
                "nShared" );
+
+  SetTrackVar( Data->Get_ParamName_HasBremAdded(),
+               "HasBremAdded" );
+
+  SetTrackVar( Data->Get_ParamName_CaloRegion(),
+               "CaloRegion" ); 
+  
+  if (not Cuts.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts).c_str())->store();
+  }
 }
 
 
@@ -143,6 +169,7 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& TrackName,
                                   const std::string& PT_Var,
                                   const std::string& ETA_Var,
                                   const std::string& nTrack_Var,
+                                  const std::string& nSPDHits_Var,
                                   const std::string& DLLK_Var,
                                   const std::string& DLLp_Var,
                                   const std::string& DLLe_Var,
@@ -150,6 +177,8 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& TrackName,
                                   const std::string& IsMuon_Var,
                                   const std::string& IsMuonLoose_Var,
                                   const std::string& nShared_Var,
+                                  const std::string& HasBremAdded_Var,
+                                  const std::string& CaloRegion_Var,
                                   const std::string& ProbNNK_Var,
                                   const std::string& ProbNNpi_Var,
                                   const std::string& ProbNNp_Var,
@@ -166,10 +195,12 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& TrackName,
                      PT_Var,
                      ETA_Var,
                      nTrack_Var,
+                     nSPDHits_Var,
                      DLLK_Var,
                      DLLp_Var,
-                     Cuts,
-                     WgtVarName )
+                     "",
+                     WgtVarName
+                   )
 {
   SetTrackVar( ProbNNK_Var,
                "ProbNNK");
@@ -200,6 +231,16 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& TrackName,
 
   SetTrackVar( nShared_Var,
                "nShared" ); 
+
+  SetTrackVar( HasBremAdded_Var,
+               "HasBremAdded" ); 
+
+  SetTrackVar( CaloRegion_Var,
+               "CaloRegion" ); 
+  
+  if (not Cuts.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts).c_str())->store();
+  }
 }
 
 PIDTrackDataSet::PIDTrackDataSet( const std::string& Name,
@@ -211,7 +252,8 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& Name,
                                   int nStart,
                                   int nStop,
                                   Bool_t copyCache,
-                                  const std::string& wgtVarName)
+                                  const std::string& wgtVarName
+                                )
   : EvtTrackDataSet(Name,
                     Title,
                     dynamic_cast<PIDTrackDataSet*>(Data),
@@ -221,7 +263,8 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& Name,
                     nStart,
                     nStop,
                     copyCache,
-                    wgtVarName)
+                    wgtVarName
+                   )
 {
   SetTrackVar( Data->Get_ParamName_ProbNNK(),
                "ProbNNK" );
@@ -252,6 +295,12 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& Name,
 
   SetTrackVar( Data->Get_ParamName_nShared(),
                "nShared" );
+
+  SetTrackVar( Data->Get_ParamName_HasBremAdded(),
+               "HasBremAdded" );
+
+  SetTrackVar( Data->Get_ParamName_CaloRegion(),
+               "CaloRegion" ); 
 }
 
 PIDTrackDataSet::PIDTrackDataSet( const std::string& Name,
@@ -270,7 +319,7 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& Name,
                     Denominator,
                     WgtVar,
                     Cuts_Num,
-                    Cuts_Denom,
+                    "",
                     WgtVar_Num,
                     WgtVar_Denom
                     )
@@ -304,6 +353,16 @@ PIDTrackDataSet::PIDTrackDataSet( const std::string& Name,
 
   SetTrackVar( Denominator->Get_ParamName_nShared(),
                "nShared" );
+
+  SetTrackVar( Denominator->Get_ParamName_HasBremAdded(),
+               "HasBremAdded" );
+
+  SetTrackVar( Denominator->Get_ParamName_CaloRegion(),
+               "CaloRegion" ); 
+  
+  if (not Cuts_Denom.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts_Denom).c_str())->store();
+  }
 }
 
 //=============================================================================
@@ -326,6 +385,8 @@ void PIDTrackDataSet::append(PIDTrackDataSet& Data)
   assert( Data.Get_ParamName_IsMuon() == this->Get_ParamName_IsMuon() );
   assert( Data.Get_ParamName_IsMuonLoose() == this->Get_ParamName_IsMuonLoose() );
   assert( Data.Get_ParamName_nShared() == this->Get_ParamName_nShared() );
+  assert( Data.Get_ParamName_HasBremAdded() == this->Get_ParamName_HasBremAdded() );
+  assert( Data.Get_ParamName_CaloRegion() == this->Get_ParamName_CaloRegion() );
 
   //RooDataSet::append(dynamic_cast<RooDataSet&>(Data));
   EvtTrackDataSet::append(dynamic_cast<EvtTrackDataSet&>(Data));
@@ -413,6 +474,22 @@ const std::string PIDTrackDataSet::Get_ParamName_nShared() const
   return Get_ParamName("nShared");
 }
 
+//=============================================================================
+// Get HasBremAdded Param Name
+//=============================================================================
+const std::string PIDTrackDataSet::Get_ParamName_HasBremAdded() const
+{
+  return Get_ParamName("HasBremAdded");
+}
+
+//=============================================================================
+// Get CaloRegion Param Name
+//=============================================================================
+const std::string PIDTrackDataSet::Get_ParamName_CaloRegion() const
+{
+  return Get_ParamName("CaloRegion");
+}
+
 
 //=============================================================================
 // Get ProbNNK Parameter
@@ -492,6 +569,22 @@ const RooRealVar* PIDTrackDataSet::Get_Param_IsMuonLoose() const
 const RooRealVar* PIDTrackDataSet::Get_Param_nShared() const
 {
   return Get_Param("nShared");
+}
+
+//=============================================================================
+// Get HasBremAdded Parameter
+//=============================================================================
+const RooRealVar* PIDTrackDataSet::Get_Param_HasBremAdded() const
+{
+  return Get_Param("HasBremAdded");
+}
+
+//=============================================================================
+// Get CaloRegion Parameter
+//=============================================================================
+const RooRealVar* PIDTrackDataSet::Get_Param_CaloRegion() const
+{
+  return Get_Param("CaloRegion");
 }
 
 //=============================================================================

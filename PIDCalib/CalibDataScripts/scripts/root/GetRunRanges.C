@@ -38,20 +38,30 @@ Long64_t GetMaxEntries(const Long64_t& nentries,
 {
   Long64_t maxEntries=maxEntries_init;
   Long64_t step=(Long64_t)(stepFraction*maxEntries_init);
-  if (step!=0) {
-    while ( nentries%maxEntries<(Long64_t)(minFraction*maxEntries) )
+  
+  
+  if (step!=0 and not (nentries<((Long64_t)(minFraction*maxEntries)))) {
+    bool remanderTooLarge = true;
+    
+    while ( remanderTooLarge )
     {
       // if there's no remainder, then keep maxEntries
-      if (nentries%maxEntries==0) break;
+      if (nentries%maxEntries==0) {
+        break;
+      }
       Long64_t newMaxEntries = maxEntries-step;
-      if (newMaxEntries==maxEntries) break;
-      maxEntries=newMaxEntries;
+      if (newMaxEntries==maxEntries) {
+        break;
+      }
+      maxEntries = newMaxEntries;
+      remanderTooLarge = nentries%maxEntries<((Long64_t)(minFraction*maxEntries));
     }
   }
   if (verbose) {
-    std::cout << "Initial maxEntries = " << maxEntries_init << std::endl;
+    std::cout << "Number of entries = " << nentries << std::endl;
     std::cout << "Step fraction = " << stepFraction << std::endl;
     std::cout << "Minimum remainder fraction = " << minFraction << std::endl;
+    std::cout << "Initial maxEntries = " << maxEntries_init << std::endl;
     std::cout << "Final maxEntries = " << maxEntries << std::endl;
   }
   return maxEntries;

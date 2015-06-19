@@ -5,6 +5,7 @@
   <class name="MUONTrackDataSet" />
   <class name="PIDTrackDataSet" />
   <class name="LHCbPIDTrackDataSet" />
+  <class name="GenericDataSet" />
   <class name="DataBinCuts" />
   <class name="PIDResult" />
   <class name="PIDTable" /> 
@@ -18,4 +19,7 @@
   <class name="std::pair&lt;std::string, RooBinning*&gt;" />
   <class name="std::list&lt;std::pair&lt;std::string, RooBinning*&gt; &gt;" />
   <class name="std::vector&lt;std::string&gt;" />
+  <class name="std::pair&lt;std::string, std::string&gt;" />
+  <class name="std::vector&lt;std::pair&lt;std::string, std::string&gt; &gt;" />
 </lcgdict>
+

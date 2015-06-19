@@ -70,7 +70,7 @@ private:
   TRandom* m_rndm ;
 
 };
-MultipleCandidates* createEventMap(NetTree* ntuple, double NNcut, bool debug = false);
+MultipleCandidates* createEventMap(NetTree* ntuple, double NNcut, double NN2cut, bool debug = false);
 MultipleCandidates* createEventMap(Lambdab* ntuple, bool doVetoes=true, bool debug = false);
 double printFrac(Long64_t n) ;
 

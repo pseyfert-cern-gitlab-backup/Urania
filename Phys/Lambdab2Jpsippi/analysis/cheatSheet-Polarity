@@ -1,0 +1,404 @@
+root.exe
+
+TString head = "/home/pkoppenb/work/Baryons/LbJpsippi/"
+// TString head = "root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb/Lambdab/"
+
+
+TString UW = "(1)*(Polarity==1)" ;  // extracted from LbK yield before weighting
+TString DW = "(0.893222264293828117)*(Polarity==-1)" ;  // 0.4718/0.5282
+TString LbKA = "sweightLb*(sweightLb>-3)*(Category==-1)"
+TString LbK = "sweightLb*(sweightLb>-3)*(Category==-1)*(eventNumber%2==0)"
+TString LbKb = "(1-sweightLb)*(sweightLb>-3)*(Category==-1)*(eventNumber%2==0)"
+TString Lbpi = "sweightLb*(sweightLb>-3)*(Category==1)"
+TString Lbpib = "(1-sweightLb)*(sweightLb>-3)*(Category==1)"
+
+.L ../analysis/FourPlots.C 
+TChain* Tub = new TChain("BetaSLambdab2JpsippiDetachedLine_Tuple/DecayTree")
+Tub->Add(head+"Lambdab-S20r1-1062.root")
+Tub->Add(head+"Lambdab-S20-1063.root")
+TChain* NN = new TChain("NetTree")
+NN->Add("Lambdab-S20r1-1062-NN.root")
+NN->Add("Lambdab-S20-1063-NN.root")
+Tub->AddFriend(NN)
+TChain* TW = new TChain("WeightTree")
+TW->Add("Lambdab-S20X-1062-tree-0.552-SW.root")
+Tub->AddFriend(TW) // unblinded
+TChain* Tub2 = new TChain("BetaSLambdab2JpsippiDetachedLine_Tuple/DecayTree")
+Tub2->Add(head+"Lambdab-S20r1-1062.root")
+Tub2->Add(head+"Lambdab-S20-1063.root")
+TChain* NN = new TChain("NetTree")
+NN->Add("Lambdab-S20r1-1062-NN.root")
+NN->Add("Lambdab-S20-1063-NN.root")
+Tub2->AddFriend(NN)
+TChain* TW2 = new TChain("WeightTree")
+TW2->Add("Lambdab-S20X-1062-tree-0.0-SW.root")
+Tub2->AddFriend(TW2) // unblinded
+
+TChain* Train = new TChain("BetaSLambdab2JpsippiDetachedLine_Tuple/DecayTree")
+Train->Add(head+"Lambdab-S20r1-1062.root")
+Train->Add(head+"Lambdab-S20-1063.root")
+Train->AddFriend(NN)
+TChain* TT = new TChain("TrainTree")
+TT->Add("Lambdab-S20r1-1062-All-SW.root")
+TT->Add("Lambdab-S20-1063-All-SW.root")
+Train->AddFriend(TT) // blinded
+
+Train->Draw("B_SubpK_M[0]:PsipKMass[0]","Category[0]==-1 && ErrorCode[0]==0")
+Train->Draw("B_SubpK_M[0]:tMass[0]","Category[0]==-1 && ErrorCode[0]==0")
+Tub2->Draw("B_FullFit_M[0]:wMass[0]","Category[0]==1 && ErrorCode[0]==0")
+
+// PolarityPlots(Train,TK,"Polarity","K","","",-1.5,1.5,3)
+// PolarityPlots(Tub2,Tpi,"Polarity","pi","","",-1.5,1.5,3)
+
+RooPlot* Kpp = PolarityPlots(Train,"1-pplus_ProbNNp","K","L","remove",-3,0,20)
+SetTitle("Proton log_{10}(1-P(p))",Kpp)
+png("PolarityPlots of LbK Proton P(p) UD")
+
+RooPlot* pipp = PolarityPlots(Tub2,"1-pplus_ProbNNp","pi","L","remove",-3,0,10)
+SetTitle("Proton log_{10}(1-P(p))",pipp)
+png("PolarityPlots of Lbpi Proton P(p) UD")
+
+RooPlot* Kkk = PolarityPlots(Train,"1-piminus_ProbNNk","K","L","remove",-3,0,20)
+SetTitle("Kaon log_{10}(1-P(K))",Kkk)
+png("PolarityPlots of LbK Kaon P(K) UD")
+
+RooPlot* pipip = PolarityPlots(Tub2,"1-piminus_ProbNNpi","pi","L","remove",-3,0,10)
+SetTitle("Pion log_{10}(1-P(pi))",pipip)
+png("PolarityPlots of Lbpi Pion P(pi) UD")
+
+RooPlot* piDTF = PolarityPlots(Tub2,"B_FullFit_chi2[0]/B_FullFit_nDOF[0]","pi","","remove",0,4,10)
+SetTitle("DTF #chi^{2}",piDTF)
+png("PolarityPlots of Lbpi DTF UD")
+
+RooPlot* KDTF = PolarityPlots(Train,"B_SubpK_chi2[0]/B_SubpK_nDOF[0]","K","","remove",0,4,20)
+SetTitle("DTF #chi^{2}",KDTF)
+png("PolarityPlots of LbK DTF UD")
+
+RooPlot* pictau = PolarityPlots(Tub2,"B_FullFit_ctau[0]","pi","","remove",0.03,3,10)
+SetTitle("c#tau [mm]",pictau)
+png("PolarityPlots of Lbpi ctau UD")
+
+RooPlot* Kctau = PolarityPlots(Train,"B_SubpK_ctau[0]","K","","remove",0.03,3,20)
+SetTitle("c#tau [mm]",Kctau)
+png("PolarityPlots of LbK ctau UD")
+
+RooPlot* pipt = PolarityPlots(Tub2,"piminus_PT","pi","L","remove",500,20000,20); 
+SetTitle("Pion log_{10}(P_{T}/MeV)",pipt)
+png("PolarityPlots of Lbpi Pion PT UD")
+
+RooPlot* Kpt = PolarityPlots(Train,"piminus_PT","K","L","remove",500,20000,20); 
+SetTitle("Kaon log_{10}(P_{T}/MeV)",Kpt)
+png("PolarityPlots of LbK Kaon PT UD")
+
+RooPlot* pippt = PolarityPlots(Tub2,"pplus_PT","pi","L","remove",500,10000,10); 
+SetTitle("Proton log_{10}(P_{T}/MeV)",pippt)
+png("PolarityPlots of Lbpi Proton PT UD")
+
+RooPlot* Kppt = PolarityPlots(Train,"pplus_PT","K","L","remove",500,10000,20); 
+SetTitle("Proton log_{10}(P_{T}/MeV)",Kppt)
+png("PolarityPlots of LbK Proton PT UD")
+
+RooPlot* Knn = PolarityPlots(Train,"netOutput","K","","remove",-1,1,20); 
+SetTitle("NN output",Knn)
+png("PolarityPlots of LbK NN UD")
+
+RooPlot* pinn = PolarityPlots(Tub2,"netOutput","pi","","remove",0.0,1,10); 
+SetTitle("NN output",pinn)
+png("PolarityPlots of Lbpi NN UD")
+
+RooPlot* Knn1 = PolarityPlots(Train,"(netOutput>0.75)+(netOutput>0.5)+(netOutput>0)","K","","remove",-0.5,3.5,4); 
+SetTitle("NN output bins",Knn1)
+png("PolarityPlots of LbK NN bins UD")
+
+RooPlot* pinn1 = PolarityPlots(Tub2,"(netOutput>0.75)+(netOutput>0.5)+(netOutput>0)","pi","","remove",-0.5,3.5,4); 
+SetTitle("NN output bins",pinn1)
+png("PolarityPlots of Lbpi NN bins UD")
+
+// ================================================================================
+// now ratios for all of them
+
+TwoProfile(Train,0,"netOutput","Baryon",UW,DW,LbK,"2p1","remove",-0.6,1,10,-0.2,0.2)
+png("Ratio PolarityPlots of LbK NN UD")
+// p1                        =   -0.0034318   +/-   0.0283801 ,  0.0562587   +/-   0.0294319 (2sigma)
+
+TwoProfile(Tub2,0,"netOutput","Baryon",UW,DW,Lbpi,"2p1","remove",0.0,1,5,-1,1)
+png("Ratio PolarityPlots of Lbpi NN UD")
+// p1                        =    -0.417493   +/-   0.309489, -0.242682   +/-   0.30253
+
+TwoProfile(Tub2,0,"netOutput","Baryon",Lbpi,Lbpib,"1","2p1","remove",0.0,1,5,-1,1)
+png("Ratio PolarityPlots of Lbpi NN S and B")
+// p1                        =    -0.417493   +/-   0.309489, -0.242682   +/-   0.30253
+
+TwoProfile(Tub2,0,"(netOutput>0.75)+(netOutput>0.5)+(netOutput>0)","Baryon",Lbpi,Lbpib,"1","2p1","remove",-0.5,3.5,4,-0.1,0.2)
+png("Ratio PolarityPlots of Lbpi NN bins S and B")
+// p1                        =    -0.417493   +/-   0.309489, -0.242682   +/-   0.30253
+
+TwoProfile(Train,0,"(netOutput>0.75)+(netOutput>0.5)+(netOutput>0)","Baryon",LbK,LbKb,"1","2p1","remove",-0.5,3.5,4,-0.1,0.1)
+png("Ratio PolarityPlots of LbK NN bins - all")
+
+TwoProfile(Train,0,"(netOutput>0.75)+(netOutput>0.5)+(netOutput>0)","Baryon","eventNumber%2==0","eventNumber%2==1",LbKA,"2p1","remove",-0.5,3.5,4,-0.1,0.1)
+png("Ratio PolarityPlots of LbK NN bins - teach")
+// p1                        =    0.0201187   +/-   0.00912115  , -0.0128787   +/-   0.00924804
+
+
+TwoProfile(Train,0,"(netOutput>0.75)+(netOutput>0.5)+(netOutput>0)","Baryon",UW,DW,LbK,"2p1","remove",-0.5,3.5,4,-0.1,0.1)
+png("Ratio PolarityPlots of LbK NN bins UD")
+// p1                        =  -0.00433477   +/-   0.00940746, 0.0114875   +/-   0.00950205 
+
+TwoProfile(Tub2,0,"(netOutput>0.75)+(netOutput>0.5)+(netOutput>0)","Baryon",UW,DW,Lbpi,"2p1","remove",0.5,3.5,3,-0.2,0.2)
+png("Ratio PolarityPlots of Lbpi NN bins UD")
+
+TwoProfile(Train,0,"1-pplus_ProbNNp","Baryon",UW,DW,LbK,"2p1L","remove",-3,0,15,-0.2,0.2)
+png("Ratio PolarityPlots of LbK Proton P(p) UD")
+// p1                        =   -0.0280549   +/-   0.0316967   ,  0.0064609   +/-   0.031699
+
+TwoProfile(Tub2,0,"1-pplus_ProbNNp","Baryon",UW,DW,Lbpi,"2p1L","remove",-3,0,10,-0.5,0.5)
+png("Ratio PolarityPlots of Lbpi Proton P(p) UD")
+// p1                        =     0.064361   +/-   0.173234    , 0.0821337   +/-   0.184573
+
+TwoProfile(Train,0,"1-piminus_ProbNNk","Baryon",UW,DW,LbK,"2p1L","remove",-3,0,15,-0.2,0.2)
+png("Ratio PolarityPlots of LbK Kaon P(K) UD")
+// p1                        =    0.0336174   +/-   0.0396545,  -0.0925319   +/-   0.0397241 (2sigma)
+
+TwoProfile(Tub2,0,"1-piminus_ProbNNpi","Baryon",UW,DW,Lbpi,"2p1L","remove",-3,0,10,-0.5,0.5)
+png("Ratio PolarityPlots of Lbpi Pion P(pi) UD")
+// p1                        =   0.0338025   +/-   0.0357921, 0.0374794   +/-   0.040009
+
+TwoProfile(Train,0,"B_SubpK_chi2[0]/B_SubpK_nDOF[0]","Baryon",UW,DW,LbK,"2p1","remove",0,4,10,-0.2,0.2)
+png("Ratio PolarityPlots of LbK DTF UD")
+// p1                        =  -0.00422133   +/-   0.0105736, -0.00954194   +/-   0.0106102
+
+TwoProfile(Tub2,0,"B_FullFit_chi2[0]/B_FullFit_nDOF[0]","Baryon",UW,DW,Lbpi,"2p1","remove",0,4,10,-0.5,0.5)
+png("Ratio PolarityPlots of Lbpi DTF UD")
+// p1                        =    0.0610463   +/-   0.0409095, -0.00733628   +/-   0.0422986 
+
+TwoProfile(Train,0,"B_SubpK_ctau[0]","Baryon",UW,DW,LbK,"2p1L","remove",0.08,4,10,-0.2,0.2)
+png("Ratio PolarityPlots of LbK ctau UD")
+// p1                        =  -0.00160179   +/-   0.0286552   ,  -0.00380543   +/-   0.0285127  
+
+TwoProfile(Tub2,0,"B_FullFit_ctau[0]","Baryon",UW,DW,Lbpi,"2p1L","remove",0.1,2.5,10,-1.,1.)
+png("Ratio PolarityPlots of Lbpi ctau UD")
+// p1                        =     -0.19041   +/-   0.107527  (1.8sigma) ,  -0.0659793   +/-   0.110151 
+
+TwoProfile(Train,0,"piminus_PT","Baryon",UW,DW,LbK,"2p1L","remove",500,10000,10,-0.2,0.2); 
+png("Ratio PolarityPlots of LbK Kaon PT UD")
+// p1                        =    0.0249257   +/-   0.0381476 ,  0.0368156   +/-   0.038405 
+
+ TwoProfile(Tub2,0,"piminus_PT","Baryon",UW,DW,Lbpi,"2p1L","remove",500,8000,10,-0.5,0.5); 
+png("Ratio PolarityPlots of Lbpi Pion PT UD")
+// p1                        =    0.0149099   +/-   0.132397   ,  -0.0106889   +/-   0.133733 
+
+TwoProfile(Train,0,"pplus_PT","Baryon",UW,DW,LbK,"2p1L","remove",500,10000,10,-0.2,0.2); 
+png("Ratio PolarityPlots of LbK Proton PT UD")
+// p1                        =   -0.0374903   +/-   0.0378824   ,  -0.0392654   +/-   0.0382849   
+
+TwoProfile(Tub2,0,"pplus_PT","Baryon",UW,DW,Lbpi,"2p1L","remove",500,10000,10,-0.5,0.5); 
+png("Ratio PolarityPlots of Lbpi Proton PT UD")
+// p1                        =    0.0997656   +/-   0.146728    ,  -0.10831   +/-   0.148099    
+
+// now background
+TString Lbpib = "(1-sweightLb)*(sweightLb>-3)*(Category==1)"
+
+TwoProfile(Tub2,0,"netOutput","Baryon",UW,DW,Lbpib,"2p1","remove",0.55,1,9,-0.3,0.3)
+png("Ratio PolarityPlots of Lbpib NN UD")
+// p1                        =     0.056885   +/-   0.171934, 0.104972   +/-   0.175099 
+
+TwoProfile(Tub2,0,"pplus_ProbNNp","Baryon",UW,DW,Lbpib,"2p1","remove",0.2,1,8,-0.3,0.3)
+png("Ratio PolarityPlots of Lbpib Proton P(p) UD")
+// p1                        =   -0.0174418   +/-   0.0811308 , 0.113642   +/-   0.0820911 
+
+TwoProfile(Tub2,0,"piminus_ProbNNpi","Baryon",UW,DW,Lbpib,"2p1","remove",0,1,10,-0.3,0.3)
+png("Ratio PolarityPlots of Lbpib Pion P(pi) UD")
+// p1                        =    -0.114558   +/-   0.0661514 (2sigma) , 0.0579278   +/-   0.0657823
+
+TwoProfile(Tub2,0,"B_FullFit_chi2[0]/B_FullFit_nDOF[0]","Baryon",UW,DW,Lbpib,"2p1","remove",0,4,10,-0.3,0.3)
+png("Ratio PolarityPlots of Lbpib DTF UD")
+// p1                        =   -0.0110161   +/-   0.0204846   , 0.51276e-05   +/-   0.0211771  
+
+
+TwoProfile(Tub2,0,"B_FullFit_ctau[0]","Baryon",UW,DW,Lbpib,"2p1L","remove",0.08,4,10,-0.3,0.3)
+png("Ratio PolarityPlots of Lbpib ctau UD")
+// p1                        =    0.0802226   +/-   0.0543522   ,  -0.0329271   +/-   0.0556563  
+
+TwoProfile(Tub2,0,"piminus_PT","Baryon",UW,DW,Lbpib,"2p1L","remove",500,8000,10,-0.3,0.3); 
+png("Ratio PolarityPlots of Lbpib Pion PT UD")
+// p1                        =   -0.0344284   +/-   0.0609036 ,  0.0203779   +/-   0.0599915   
+
+TwoProfile(Tub2,0,"pplus_PT","Baryon",UW,DW,Lbpib,"2p1L","remove",500,10000,10,-0.3,0.3); 
+png("Ratio PolarityPlots of Lbpib Proton PT UD")
+// p1                        =    -0.125651   +/-   0.0686783 (2sigma),    -0.0952916   +/-   0.0699432  
+
+Tub2->Draw("Baryon >> h(3,-1.5,1.5)","(sweightBkg)*(sweightLb>-3)*(Category==1)")
+cout << "BKG: " << 100*h->GetMean() << " \\pm " << 100*h->GetMeanError() << "\\%" << endl;
+Tub2->Draw("Baryon >> h(3,-1.5,1.5)","(sweightKpi)*(sweightLb>-3)*(Category==1)")
+cout << "Kpi: " << 100*h->GetMean() << " \\pm " << 100*h->GetMeanError() << "\\%" << endl;
+Tub2->Draw("Baryon >> h(3,-1.5,1.5)","(sweightpiK)*(sweightLb>-3)*(Category==1)")
+cout << "piK: " << 100*h->GetMean() << " \\pm " << 100*h->GetMeanError() << "\\%" << endl;
+Tub2->Draw("Baryon >> h(3,-1.5,1.5)","(sweightKK)*(sweightLb>-3)*(Category==1)")
+cout << "KK: " << 100*h->GetMean() << " \\pm " << 100*h->GetMeanError() << "\\%" << endl;
+Tub2->Draw("Baryon >> h(3,-1.5,1.5)","(sweightKp)*(sweightLb>-3)*(Category==1)")
+cout << "Kp: " << 100*h->GetMean() << " \\pm " << 100*h->GetMeanError() << "\\%" << endl;
+Tub2->Draw("Baryon >> h(3,-1.5,1.5)","(sweightLref)*(sweightLb>-3)*(Category==1)")
+cout << "Lref: " << 100*h->GetMean() << " \\pm " << 100*h->GetMeanError() << "\\%" << endl;
+Tub2->Draw("Baryon >> h(3,-1.5,1.5)","(sweightNon)*(sweightLb>-3)*(Category==1)")
+cout << "Non: " << 100*h->GetMean() << " \\pm " << 100*h->GetMeanError() << "\\%" << endl;
+Tub2->Draw("Baryon >> h(3,-1.5,1.5)","(sweightPartReco)*(sweightLb>-3)*(Category==1)")
+cout << "PartReco: " << 100*h->GetMean() << " \\pm " << 100*h->GetMeanError() << "\\%" << endl;
+Tub2->Draw("Baryon >> h(3,-1.5,1.5)","(1-sweightLb)*(sweightLb>-3)*(Category==1)")
+cout << "1-Lb: " << 100*h->GetMean() << " \\pm " << 100*h->GetMeanError() << "\\%" << endl;
+Tub2->Draw("Baryon >> h(3,-1.5,1.5)","(sweightLb)*(sweightLb>-3)*(Category==1)")
+cout << "Lb: " << 100*h->GetMean() << " \\pm " << 100*h->GetMeanError() << "\\%" << endl;
+Tub2->Draw("Baryon >> h(3,-1.5,1.5)","(sweightNon)*(sweightLb>-3)*(Category==1)")
+cout << "Non: " << 100*h->GetMean() << " \\pm " << 100*h->GetMeanError() << "\\%" << endl;
+
+BKG: 3.31006 \pm 0.950795\%
+Kpi: -53.2737 \pm 43.6214\%
+piK: 1420.72 \pm 16122.1\%
+KK: 24.7313 \pm 754.486\%
+Kp: 23864.7 \pm 5.37365e+06\%
+Lref: 5.90487 \pm 10.6964\%
+PartReco: 3.27365 \pm 0.950449\%
+1-Lb: 2.43141 \pm 1.13749\%
+Lb: 6.86675 \pm 2.82321\%
+Non: -39.0032 \pm 32.6657\%
+// ================================================================================
+// ETA dependence
+// ================================================================================
+
+TString Lbpi = "sweightLb*(sweightLb>-3)*(Category==1)"
+TString LbK = "sweightLb*(sweightLb>-3)*(Category==-1)"
+TString ULbpi = "sweightLb*(sweightLb>-3)*(Category==1)*(Polarity>0)"
+TString ULbK = "sweightLb*(sweightLb>-3)*(Category==-1)*(Polarity>0)"
+TString DLbpi = "sweightLb*(sweightLb>-3)*(Category==1)*(Polarity<0)"
+TString DLbK = "sweightLb*(sweightLb>-3)*(Category==-1)*(Polarity<0)"
+
+TwoProfile(Tub2,Tub2,"-log(tan(atan(atan2(B_PT,B_PZ)/2)))","Baryon",Lbpi,LbK,"1","2p1","remove",2,7,10,-0.3,0.3)
+png("baryon versus eta")
+****************************************
+Minimizer is Linear
+Chi2                      =      10.1041
+NDf                       =            8
+p0                        =     0.126709   +/-   0.11903     
+p1                        =   -0.0164567   +/-   0.0329655   
+
+****************************************
+Minimizer is Linear
+Chi2                      =      14.8398
+NDf                       =            7
+p0                        =  -0.00658054   +/-   0.0553649   
+p1                        =   0.00371693   +/-   0.0156083   
+
+TwoProfile(Tub2,Tub2,"-log(tan(atan(atan2(B_PT,B_PZ)/2)))","Baryon",ULbpi,ULbK,"1","2p1","remove",2,6,8,-0.3,0.3)
+png("baryon versus eta UP")
+****************************************
+Minimizer is Linear
+Chi2                      =      11.1942
+NDf                       =            6
+p0                        =     0.155098   +/-   0.171881    
+p1                        =   -0.0100478   +/-   0.0477706   
+
+****************************************
+Minimizer is Linear
+Chi2                      =      20.0517
+NDf                       =            6
+p0                        =   0.00735178   +/-   0.0801112   
+p1                        =   0.00303946   +/-   0.0226544   
+TwoProfile(Tub2,Tub2,"-log(tan(atan(atan2(B_PT,B_PZ)/2)))","Baryon",DLbpi,DLbK,"1","2p1","remove",2,6,8,-0.3,0.3)
+png("baryon versus eta DOWN")
+****************************************
+Minimizer is Linear
+Chi2                      =      22.5002
+NDf                       =            6
+p0                        =    0.0872591   +/-   0.162335    
+p1                        =   -0.0181692   +/-   0.0447164   
+
+****************************************
+Minimizer is Linear
+Chi2                      =      11.1507
+NDf                       =            6
+p0                        =   -0.0274223   +/-   0.0769633   
+p1                        =   0.00667459   +/-   0.021664
+
+TString LbK = "sweightLb*(sweightLb>-3)*(tCategory==-1)"
+TString Lbpi = "sweightLb*(sweightLb>-3)*(wCategory==1)"
+TString LbpiB = "sweightBkg*(sweightLb>-3)*(wCategory==1)"
+TString ULbK = "sweightLb*(sweightLb>-3)*(tCategory==-1)*(Polarity>0)"
+TString ULbpi = "sweightLb*(sweightLb>-3)*(wCategory==1)*(Polarity>0)"
+TString DLbK = "sweightLb*(sweightLb>-3)*(tCategory==-1)*(Polarity<0)"
+TString DLbpi = "sweightLb*(sweightLb>-3)*(wCategory==1)*(Polarity<0)"
+
+TwoProfile(T2pi,T2K,"-log(tan(atan(atan2(B_PT,B_PZ)/2)))","-1+2*(pplus_ID>0)",Lbpi,LbK,"1","2p1","remove",2,6,16,-0.7,0.7)
+png("baryon_versus_eta")
+****************************************
+Minimizer is Linear
+Chi2                      =      25.4422
+NDf                       =           14
+p0                        =     0.122976   +/-   0.123405    
+p1                        =   -0.0159094   +/-   0.0342911   
+
+****************************************
+Minimizer is Linear
+Chi2                      =      24.2257
+NDf                       =           14
+p0                        =    0.0181166   +/-   0.0347869   
+p1                        =   -0.0023082   +/-   0.00967597  
+
+TwoProfile(T2pi,T2K,"-log(tan(atan(atan2(B_PT,B_PZ)/2)))","-1+2*(pplus_ID>0)",ULbpi,ULbK,"1","2p1","remove",2,6,16,-0.7,0.7)
+png("baryon_versus_eta UP")
+TwoProfile(T2pi,T2K,"-log(tan(atan(atan2(B_PT,B_PZ)/2)))","-1+2*(pplus_ID>0)",DLbpi,DLbK,"1","2p1","remove",2,6,16,-0.7,0.7)
+png("baryon_versus_eta Down")
+
+
+RooPlot* pi_eta = SandB(Tub,0,"-log(tan(atan(atan2(B_PT,B_PZ)/2)))","(pplus_ID>0)","(pplus_ID<0)",Lbpi,"","remove",2,6,16)
+SetTitle("#eta",pi_eta)
+png("Lbpi eta by baryons")
+RooPlot* K_eta = SandB(Tub,0,"-log(tan(atan(atan2(B_PT,B_PZ)/2)))","(pplus_ID>0)","(pplus_ID<0)",LbK,"","remove",2,6,32)
+SetTitle("#eta",K_eta)
+png("LbK eta by baryons")
+
+RooPlot* Kpi_eta = SandB(Tub,0,"-log(tan(atan(atan2(B_PT,B_PZ)/2)))",Lbpi, LbK,"1","N","remove",2,6,16)
+SetTitle("#eta",Kpi_eta)
+png("LbK and pi eta")
+
+
+//==========================================================================
+// UP-DOWN asym
+
+TString polw = "(0.4779*(Polarity==-1)+0.5221*(Polarity==1))"
+TString apol = "-(Polarity==-1)+(Polarity==1)"
+
+TwoProfile(Tub,Tub,"piminus_PT",apol,Lbpi,LbK,polw,"2p1L","remove",500,10000,10,-0.5,0.5); 
+png("Polarity Asym vs Meson PT")
+
+TwoProfile(Tub,Tub,"pplus_PT",apol,Lbpi,LbK,polw,"2p1L","remove",500,10000,10,-0.5,0.5); 
+png("Polarity Asym vs proton PT")
+
+TwoProfile(Tub,Tub,"-log(tan(atan(atan2(B_PT,B_PZ)/2)))",apol,Lbpi,LbK,polw,"2p1L","remove",2,7,10,-0.5,0.5); 
+png("Polarity Asym vs Lb eta")
+
+SandB(Tub,Tub,apol,Lbpi,LbK,polw,"N","remove")
+// Means (stats): -0.0148086 (1047.18), -6.42351e-05 (5578.07)
+// double ap =-0.0148086
+// sqrt((1-ap)*(ap+1)/1047.18)
+// 3.08988065972133075e-02
+// double ak =-6.42351e-05
+// sqrt((1-ak)*(ak+1)/5578.07)
+// 1.33893045215275307e-02
+Tub->Draw(apol,"("+Lbpi+")*("+polw+")") 
+Tub->Draw(apol,"("+LbK+")*("+polw+")")
+
+
+//==========================================================================
+// UP-DOWN asym
+
+TString apolb = "-(Polarity*Baryon==-1)+(Polarity*Baryon==1)"
+
+TwoProfile(Tub,Tub,"piminus_PT",apolb,Lbpi,LbK,polw,"2p1L","remove",500,10000,10,-0.5,0.5); 
+png("Polarity*Baryon Asym vs Meson PT")
+
+TwoProfile(Tub,Tub,"pplus_PT",apolb,Lbpi,LbK,polw,"2p1L","remove",500,10000,10,-0.5,0.5); 
+png("Polarity*Baryon Asym vs proton PT")
+
+TwoProfile(Tub,Tub,"-log(tan(atan(atan2(B_PT,B_PZ)/2)))",apolb,Lbpi,LbK,polw,"2p1L","remove",2,7,10,-0.5,0.5); 
+png("Polarity*Baryon Asym vs Lb eta")
+

@@ -275,7 +275,8 @@ public:
                           const char* fitName="fitResults",
                           const char* range="",
                           const char* rangeTitle="",
-                          Bool_t sumW2Errors=kFALSE);
+                          Bool_t sumW2Errors=kFALSE,
+                          Bool_t paramBox=kTRUE);
   
   
   /** Plot the specified variable with name 'name'
@@ -355,6 +356,12 @@ public:
       workspace.
   */
   void LoadSnapshot(const char* fitName);
+  
+  /** Save the snapshot of the fit parameters to "fitName".
+      Will raise an exception if the snapshot cannot be created in the
+      workspace.
+  */
+  void SaveSnapshot(const char* fitName);
 
   /** Add the range "range" for the specified variable "name", with limits
       ["min", "max"].

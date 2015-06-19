@@ -3,7 +3,7 @@
 # Maintainer : Philip Hunt
 #============================================================================
 package           PIDPerfScripts
-version           v6r2p1
+version           v6r3
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -47,7 +47,7 @@ set CALIBDATAURLPROTOCOL root
 set CALIBDATAURLQUERY svcClass=lhcbuser
 set CALIBDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/s/smalde/CalibData
 set CALIBREFDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/phunt/CalibData
-set MUONCALIBDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/phunt/CalibData
+set MUONCALIBDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/s/smalde/CalibData
 set MUONCALIBREFDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/phunt/CalibData
 #------------------------------------------------------------------------------
 #
@@ -83,7 +83,7 @@ set MUONCALIBREFDATASTORE castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/p/ph
 ### required for Oxford access (S20r1 and later)
 ###set CALIBDATASTORE /data/lhcb/users/malde/CalibData
 ##set CALIBREFDATASTORE /data/lhcb/users/hunt/CalibData
-##set MUONCALIBDATASTORE /data/lhcb/users/hunt/CalibData
+##set MUONCALIBDATASTORE /data/lhcb/users/malde/CalibData
 ##set MUONCALIBREFDATASTORE /data/lhcb/users/hunt/CalibData
 ##set CALIBDATAURLPROTOCOL 
 ##set CALIBDATAURLQUERY

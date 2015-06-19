@@ -1,9 +1,9 @@
 
 ## Branching Fraction
-Bsmumu_BR = 3.56e-09
-Bsmumu_BRErr = 2.9e-10
-Bdmumu_BR = 1.07e-10
-Bdmumu_BRErr = 1e-11
+Bsmumu_BR = 3.65e-09
+Bsmumu_BRErr = 2.3e-10
+Bdmumu_BR = 1.06e-10
+Bdmumu_BRErr = 9e-12
 
 ## Normalisation
 BuJpsiK_BF = 6.09604e-05

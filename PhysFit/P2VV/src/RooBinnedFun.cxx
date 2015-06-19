@@ -48,7 +48,8 @@ RooBinnedFun::RooBinnedFun(const char* name, const char* title,
                            bool constCoeffs) :
   RooAbsGaussModelEfficiency(name, title),
   _x("x", "Dependent", this, x),
-  _coefList("coefficients","List of coefficients",this)
+  _coefList("coefficients","List of coefficients",this),
+  _yieldList("yields","List of yields",this)
 {
     int nBins = hist->GetNbinsX();
     _u.reserve(nBins+1);
@@ -73,7 +74,8 @@ RooBinnedFun::RooBinnedFun(const char* name, const char* title,
                            const RooArgList& coefList):
   RooAbsGaussModelEfficiency(name, title),
   _x("x", "Dependent", this, x),
-  _coefList("coefficients","List of coefficients",this)
+  _coefList("coefficients","List of coefficients",this),
+  _yieldList("yields","List of yields",this)
 {
   const RooAbsBinning* binning = x.getBinningPtr(binningName);
   assert( binning!=0);
@@ -91,6 +93,7 @@ RooBinnedFun::RooBinnedFun(const RooBinnedFun& other, const char* name) :
   RooAbsGaussModelEfficiency(other, name),
   _x("x", this, other._x),
   _coefList("coefList", this, other._coefList),
+  _yieldList("yields",this, other._yieldList),
   _u(other._u)
 {
 }
@@ -101,15 +104,25 @@ RooBinnedFun::~RooBinnedFun()
 }
 
 namespace {
-  Double_t get(const RooArgList& b,int i) { return ((RooAbsReal&)b[i]).getVal() ; }
+  Double_t get(const RooArgList& b,int i)
+  {
+     return ((RooAbsReal&)b[i]).getVal();
+  }
 }
+
 //_____________________________________________________________________________
 Double_t RooBinnedFun::evaluate() const
 {
-    if (_x<_u.front()) get(_coefList,0);
-    if (_x>_u.back())  get(_coefList,_u.size()-2);
-    std::vector<double>::const_iterator i = --std::upper_bound(_u.begin(),_u.end()-1,_x);
-    return get(_coefList,std::distance(_u.begin(),i));
+   if (_x<=_u.front()) return get(_coefList,0);
+   if (_x>=_u.back()) return get(_coefList,_u.size()-2);
+   std::vector<double>::const_iterator i = --std::upper_bound(_u.begin(),_u.end()-1,_x);
+   size_t d = std::distance(_u.begin(),i);
+   if (d > size_t(_coefList.getSize())) {
+      cout << "RooBinnedFun::evaluate(): index " << d << " > size of coefs " 
+           << _coefList.getSize() << " for x == " << double(_x) << endl;
+      assert(false);
+   }
+   return get(_coefList, d);
 }
 
 //_____________________________________________________________________________
@@ -145,26 +158,40 @@ RooBinnedFun::productAnalyticalIntegral(Double_t umin, Double_t umax,
                                              Double_t scale, Double_t offset,
                                              const std::complex<double>& z) const
 {
+    double sign = 1.;
+    double xmin = scale * umin + offset;
+    double xmax = scale * umax + offset;
+    if (xmin > xmax) {
+        sign = -1.;
+        double xtmp = xmin;
+        xmin = xmax;
+        xmax = xtmp;
+    }
+    if (xmax < _u[0] || xmin > _u[_u.size() - 1]) return 0.;
+
     RooGaussModelAcceptance::K_n K(z);
     typedef RooGaussModelAcceptance::M_n<1U> M_n;
     std::vector<M_n> M; M.reserve( _u.size() );
-    for (unsigned int i=0;i<_u.size();++i) {
-        double x = (_u[i]-offset)/scale ;
-        M.push_back( M_n( x, z ) );
+    if (_u[0] <= xmin) M.push_back(M_n(umin, z));
+    else  M.push_back(M_n((_u[0] - offset) / scale, z));
+    unsigned int startBin = 0;
+    for (unsigned int boundIt = 1; boundIt < _u.size(); ++boundIt) {
+        if (_u[boundIt] <= xmin) {
+            ++startBin;
+            continue;
+        }
+        if (_u[boundIt] >= xmax) break;
+        M.push_back(M_n((_u[boundIt] - offset) / scale, z));
     }
-    double lo = scale*umin+offset;
-    double hi = scale*umax+offset;
-    //TODO: verify we remain within [lo,hi]
-    assert(fabs(lo-_u.front())<1e-7*fabs(lo+_u.front()));
-    assert(fabs(hi-_u.back())<1e-7*fabs(hi+_u.back()));
-    std::complex<double> sum(0,0);
-    for (unsigned i=0; i<_u.size()-1 && _u[i]<hi ;++i) {
-        if (_u[i+1]<lo) continue;
-        // FIXME:TODO: we currently assume that u(0),u(knotSize()-1)] fully contained in [lo,hi]
-        M_n dM = M[i+1]-M[i]; // take M[i] if lo<=u(i) else M_n(lo) ; take M[i+1] if u(i+1)<=hi else M_n(hi)
-        sum += dM(0)*K(0) * get(_coefList, i ) ;
+    if (startBin == _u.size() - 1) return 0.;
+    if (_u[_u.size() - 1] >= xmax) M.push_back(M_n(umax, z));
+
+    std::complex<double> sum(0., 0.);
+    for (unsigned int binIt = 0; binIt < M.size() - 1; ++binIt) {
+        M_n dM = M[binIt + 1] - M[binIt];
+        sum += dM(0) * K(0) * get(_coefList, startBin + binIt);
     }
-    return sum;
+    return sign * sum;
 }
 
 //_____________________________________________________________________________

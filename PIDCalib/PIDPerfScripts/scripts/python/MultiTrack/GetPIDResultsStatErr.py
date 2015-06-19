@@ -80,7 +80,7 @@ def getLeafVal(br, ientry):
              "branch {br}").format(nb=nb, entry=ientry, br=br.GetName())
         raise TTreeError(msg)
     return br.GetLeaf(br.GetName()).GetValue()
-            
+
 
 # class speficying the track type and bin number
 class TrackBin(object):
@@ -99,7 +99,7 @@ class TrackBin(object):
 
     def bin(self):
         return self._bin
-    
+
     def __str__(self):
         s="track type = '{0}', bin number = {1:d}".format(
             self._trType, self._bin)
@@ -107,11 +107,11 @@ class TrackBin(object):
     def __repr__(self):
         s="TrackBin({0}, {1:d})".format(self._trType, self._bin)
         return s
-    
+
     # comparison operators
     def __eq__(self, other):
         if self._trType!=other._trType: return False
-        if self._bin!=other._bin: return False 
+        if self._bin!=other._bin: return False
         return True
     def __ne__(self, other):
         if self._trType==other._trType: return False
@@ -149,7 +149,7 @@ class TrackBin(object):
             # now compare bin number
             if self._bin >= other._bin: return True
         return False
-        
+
 class ShowArgumentsParser(argparse.ArgumentParser):
     def error(self, message):
         sys.stderr.write('error: %s\n\n' %message)
@@ -159,7 +159,7 @@ class ShowArgumentsParser(argparse.ArgumentParser):
 
 if '__main__'==__name__:
     start()
-    
+
     parser = ShowArgumentsParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         prog=os.path.basename(sys.argv[0]),
@@ -187,14 +187,14 @@ Reference tracks of the same type are treated as 100% statistically correlated.
 
 NB. It is assumed that the TTree is named 'CalibTool_PIDCalibTree'
 
-Valid track types are \"K\", \"P\", \"Pi\" or \"Mu\".
+Valid track types are \"K\", \"P\", \"Pi\", \"e\" or \"Mu\".
 
 For a full list of arguments, do: 'python {0} -h'
 
 e.g. python {0} \"$HOME/PIDResults.root\" \"[Kaon, K]\" \"[Pion, Pi]\"
 """).format(os.path.basename(sys.argv[0]))
     )
-       
+
     ## add the positional arguments
     parser.add_argument('inputFilename', metavar='<inputFilename>',
                         help="Sets the input filename")
@@ -225,11 +225,11 @@ e.g. python {0} \"$HOME/PIDResults.root\" \"[Kaon, K]\" \"[Pion, Pi]\"
                         action="store_true", default=False,
                         help="use the reference sample event "
                         "weights when calculating the average "
-                        "efficiency and uncertainty")    
+                        "efficiency and uncertainty")
     opts = parser.parse_args()
-        
+
     fname = opts.inputFilename
-    
+
     trackArgs = opts.tracks
 
     trackMap = {} # map of track name to type
@@ -255,19 +255,19 @@ e.g. python {0} \"$HOME/PIDResults.root\" \"[Kaon, K]\" \"[Pion, Pi]\"
         trackMap[trackName]=trackType
 
     tname='CalibTool_PIDCalibTree'
-        
+
     print '===================================='
     print "Input filename: {0}".format(fname)
     for i, v in trackMap.items():
         print "Track name and type (track {0}): {0}".format(i, str(v))
     print "Weighted reference sample? {0}".format(opts.isWeighted)
     print '===================================='
-        
+
     f = ROOT.TFile.Open(fname)
     if not f:
         msg=("Failed to open file '{0}' for reading").format(fname)
         raise TFileError(msg)
-    
+
     tt = f.Get(tname)
     if not tt:
         msg=("Failed to retrieve TTree '{tt}' from file '{tf}'").format(
@@ -276,22 +276,22 @@ e.g. python {0} \"$HOME/PIDResults.root\" \"[Kaon, K]\" \"[Pion, Pi]\"
 
     print "Total entries: {0:d}".format(tt.GetEntries())
 
-    
+
     # Get branches for each track
     # Store track name to TBranch pointer
     branches_eff={} # PID calib. efficiency for each track
     branches_err={} # PID calib. eff. error for each track
     branches_bin={} # Bin number for each track
-    
+
     for trackName in trackMap.keys():
         # get calibration efficiency and uncertainty branches
         branches_eff[trackName]=getBranch(tt, '%s_PIDCalibEff' %trackName)
         branches_err[trackName]=getBranch(tt, '%s_PIDCalibEffError' %trackName)
-            
-        # get bin number branch      
+
+        # get bin number branch
         branches_bin[trackName]=getBranch(tt,
                                           '%s_PIDCalibBinNumber' %trackName)
-            
+
 
     # get the 'naive' average efficiency and uncertainty branches
     br_eff = getBranch(tt, 'Event_PIDCalibEff')
@@ -303,13 +303,13 @@ e.g. python {0} \"$HOME/PIDResults.root\" \"[Kaon, K]\" \"[Pion, Pi]\"
     br_weight = None
     if opts.isWeighted:
         br_weight = getBranch(tt, 'Event_Weight')
-     
+
     # floats to store the 'naive' average efficiencies and errors
     naiveAvgEff=0.
     naiveAvgErrSq=0. # sigma^2
     naiveAvgEffWeighted=0.
     naiveAvgErrSqWeighted=0.
-   
+
     # We need the following information to obtain the efficiencies/errors:
     #
     # 1) For each event, we need to get the list of TrackBins, where each
@@ -324,11 +324,11 @@ e.g. python {0} \"$HOME/PIDResults.root\" \"[Kaon, K]\" \"[Pion, Pi]\"
     #
     # 3) Globally, we need a map of TrackBin list to the number of
     # entries in the reference sample corresponding to this TrackBin list
-    
+
     effMap={} # map of track bin list to efficiency
     errMap={} # map of track bin list to efficiency uncertainty
     sumwMap={} # map of track bin list to sum of weights
-    
+
     # loop over events and get the above information
     nentries = tt.GetEntries()
     nentriesSq = nentries*nentries
@@ -342,7 +342,7 @@ e.g. python {0} \"$HOME/PIDResults.root\" \"[Kaon, K]\" \"[Pion, Pi]\"
         if printEntry:
             print 70*"*"
             print "Entry number {0:d}".format(ientry)
-        
+
         # get the naive efficiency and uncertainty
         naiveEff = getLeafVal(br_eff, ientry)
         naiveErr = getLeafVal(br_err, ientry)
@@ -359,13 +359,13 @@ e.g. python {0} \"$HOME/PIDResults.root\" \"[Kaon, K]\" \"[Pion, Pi]\"
                 eff=100.*naiveEffWeighted,
                 err=100.*naiveErrWeighted)
             print msg
-                    
+
         trackBinList = []
 
         # maps of track bin to efficiency and uncertainty
         eff_trackBinMap={}
         err_trackBinMap={}
-        
+
         # loop over tracks and fill track bin list
         iTr = 0
         for trackName, trackType in trackMap.iteritems():
@@ -375,7 +375,7 @@ e.g. python {0} \"$HOME/PIDResults.root\" \"[Kaon, K]\" \"[Pion, Pi]\"
 
             # get track bin number
             bin_tr = int(getLeafVal(branches_bin[trackName], ientry))
-                
+
             # create the track bin
             trBin=TrackBin(trackType, bin_tr)
 
@@ -384,7 +384,7 @@ e.g. python {0} \"$HOME/PIDResults.root\" \"[Kaon, K]\" \"[Pion, Pi]\"
                      "({eff:.3f}+/-{err:.3f})%").format(
                     itr=iTr, trbin=trBin, eff=100*eff_tr, err=100*err_tr)
                 print msg
-                    
+
             # add the track bin to the list of track bins
             # for the current event
             trackBinList.append(trBin)
@@ -393,16 +393,16 @@ e.g. python {0} \"$HOME/PIDResults.root\" \"[Kaon, K]\" \"[Pion, Pi]\"
             # efficiency/uncertainty
             eff_trackBinMap[trBin]=eff_tr
             err_trackBinMap[trBin]=err_tr
-            
+
             iTr+=1
-            
+
         # end loop over tracks
-        
+
         # convert the track bin list to a tuple
         trackBinTuple = tuple(trackBinList)
         if printEntry:
             print "Track bin tuple: {0}".format(str(trackBinTuple))
-            
+
         # get the event efficiency and error
         eff_evt = getEvtEff(trackBinTuple, eff_trackBinMap)
         err_evt = getEvtErr(trackBinTuple, eff_trackBinMap, err_trackBinMap)
@@ -410,7 +410,7 @@ e.g. python {0} \"$HOME/PIDResults.root\" \"[Kaon, K]\" \"[Pion, Pi]\"
         if printEntry:
             print "Event efficiency = ({eff:.3f}+/-{err:.3f})%".format(
                 eff=100.*eff_evt, err=100.*err_evt)
-                
+
         effMap[trackBinTuple]=eff_evt
         errMap[trackBinTuple]=err_evt
 
@@ -424,31 +424,31 @@ e.g. python {0} \"$HOME/PIDResults.root\" \"[Kaon, K]\" \"[Pion, Pi]\"
         if printEntry:
             print "Event weight = {0:.3f}".format(weight)
             #print "Total efficiency weight = %.3f" %evtWeight
-            
+
         sumwMap[trackBinTuple]=sumwMap.setdefault(trackBinTuple,0)+weight
 
         sumEntries+=weight
-        
+
         # naive weighted error is wrong - no weight applied
         naiveErrWeighted*=weight
-        
+
         # increment to 'naive' average efficency + uncertainty
         naiveAvgEff += naiveEff/nentries
         naiveAvgErrSq += (naiveErr*naiveErr)/nentriesSq
         naiveAvgEffWeighted += naiveEffWeighted/nentries
         naiveAvgErrSqWeighted += (naiveErrWeighted*naiveErrWeighted)/nentriesSq
 
-    # end loop over entries 
+    # end loop over entries
     if opts.debug:
         print "Number of entries = {0:d}".format(nentries)
         print "Sum of entries = {0:d}".format(sumEntries)
-        
+
     # finally, calculate the average efficiency and error
 
     # first, the 'naive' values
     naiveAvgErr = math.sqrt(naiveAvgErrSq)
     naiveAvgErrWeighted = math.sqrt(naiveAvgErrSqWeighted)
-                
+
     # now, the 'correct' values
     iBin=0
     weightList=[]
@@ -472,7 +472,7 @@ e.g. python {0} \"$HOME/PIDResults.root\" \"[Kaon, K]\" \"[Pion, Pi]\"
         iBin+=1
 
     avgEff = sum(weightedEffList)/sumEntries
-    
+
     avgErrNumList=[ ( (eff-avgEff)*(eff-avgEff)*weight ) + (weight*weight*err*err) \
                     for eff, err, weight in zip(effList, errList, weightList) ]
     avgErr = math.sqrt( sum(avgErrNumList) ) / sumEntries

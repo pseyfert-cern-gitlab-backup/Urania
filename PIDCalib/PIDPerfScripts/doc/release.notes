@@ -1,8 +1,42 @@
 !-----------------------------------------------------------------------------
 ! Package     : PIDCalib/PIDPerfScripts
-! Responsible : Philip Hunt
+! Responsible : Sneha Malde
 ! Purpose     : Scripts using PIDPerfTools to perform PID studies
 !-----------------------------------------------------------------------------
+
+!============================================== v6r3 2014-4-11 ==============================
+! 2014-4-11 Diego Martinez Santos
+	 Make version v6r3
+! 2014-03-20 - Marco Clemencic
+ - Added CMake configuration file.
+
+! 2014-03-19 Thomas Bird
+ - Added new script for PID cut optimisation
+
+! 2014-03-13 Sneha Malde
+
+ - Add to publicity plots scripts to correctly handle plots on variables that 
+   have names starting with particle type.
+
+! 2014-02-13 Thomas Bird
+ - Added new script for making plots with no mid-ID
+ - Added max files option incase you only want to run over the first N
+   files, helps with quicker debugging
+
+! 2014-02-13 Thomas Bird
+ - made an electron a valid rich particle 
+ - added electron mother, particle and tuple names to DataFuncs.py 
+ - added electron to help texts of MultiTrack and PubPlot scripts
+ 
+!============================= v6r2p2 24-01-2014 =============================
+
+! 2014-01-24 Sneha Malde
+ - Make version v6r2p2
+
+! 2014-01-23 Sneha Malde
+ - Adapt RunRangeFuncs to accept the new pkl file names for the muon samples.
+
+
 !============================= v6r2p1 20-12-2013 =============================
 
 ! 2013-12-20 Sneha Malde
@@ -462,29 +496,4 @@
   - Updates to PlotWeightedDLLs.cpp
     - Now 4 functions: 
       - PlotWeightedDLLs_Pion{MC,Data}(), 
-      - PlotWeightedDLLs_Kaon{MC,Data}().
-      Configured to run on the default output of Test_Evt{MC,Data}.cpp
-
-! 2011-01-26 - Andrew Powell
-  - Bug fix to Test_Data.cpp 
-
-! 2011-01-18 - Andrew Powell
- 	- Added Test_PerCalc.cpp 
- 	- Added two plotting scripts:
-   	- PlotWeightedDLLs.cpp
-   	- PlotPerfCurves.cpp
- 
-! 2011-01-17 - Andrew Powell
- 	- Bug fix to Test_EvtMC.cpp
-
-! 2011-01-17 - Andrew Powell
- 	- Bug fixes to Test_Data.cpp and Test_EvtData.cpp
-
-! 2011-01-17 - Andrew Powell
-	- Updates to scripts following changes to PIDPerfTools package
- 	- Added Test_Data.cpp and Test_EvtData.cpp
- 	- Updates to README
-
-! 2011-01-11 - Andrew Powell
- 	- First import of package.
- 
+   

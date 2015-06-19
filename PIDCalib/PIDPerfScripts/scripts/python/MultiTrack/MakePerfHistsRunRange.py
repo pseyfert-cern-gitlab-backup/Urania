@@ -18,18 +18,18 @@ class ShowArgumentsParser(argparse.ArgumentParser):
         parser.print_usage(sys.stderr)
         sys.stderr.write('\n'+self.description)
         sys.exit(2)
-        
+
 if '__main__' == __name__:
     start()
     print ""
-    
+
     parser = ShowArgumentsParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         prog=os.path.basename(sys.argv[0]),
         description=("""Make performance histograms for a given:
         a) stripping version <stripVersion> (e.g. \"20\")
         b) magnet polarity  <magPol> (\"MagUp\" or \"MagDown\")
-        c) particle type <partName> (\"K\", \"P\", \"Pi\" or \"Mu\")
+        c) particle type <partName> (\"K\", \"P\", \"Pi\", \"e\" or \"Mu\")
         d) PID cut, <pidCut>
 Multiple PID cuts can be specified if necessary, e.g. \"[DLLK > 0.0, DLLK > 4.0]\".
 In this case, a performance histogram will be produced for each PID cut.
@@ -59,13 +59,15 @@ or \"P_MuonUnBiased\"."""
                         help="Sets the minimum run number to process (if applicable)")
     parser.add_argument('-y', '--maxRun', dest="runMax", metavar="NUM",
                         help="Sets the maximum run number to process (if applicable)")
+    parser.add_argument('-f', '--maxFiles', dest="maxFiles", metavar="NUM",
+                        help="Sets the maximum number of calibration files to run over")
     parser.add_argument('-c', '--cuts', dest='cuts', metavar='CUTS', default='',
                         help=("Sets the list of cuts to apply to the calibration "
                              "sample(s) prior to determine the PID efficiencies "
                              "(default: (default)s). "
                              "NB. It is up to the user to ensure that their reference "
                              "sample has the same cuts applied."
-                             ))                      
+                             ))
     parser.add_argument("-o", "--outputDir", dest="outputDir", metavar="DIR",
                         help="Save the performance histograms to directory DIR "
                         "(default: current directory)")
@@ -100,7 +102,7 @@ or \"P_MuonUnBiased\"."""
                           "user-defined binning schema. Without this option, "
                           "the script will only look for binning schema in "
                           "the 'PIDPerfScripts.binning' module")
-    
+
     addGroup = parser.add_argument_group("further options")
     addGroup.add_argument("-q", "--quiet", dest="verbose", action="store_false",
                           default=True,
@@ -109,7 +111,7 @@ or \"P_MuonUnBiased\"."""
                           action="store_false", default=True,
                           help="Disables the printing of performance tables "
                           "(they will still be written to a TFile)")
-    
+
     addGroup.add_argument("-l", "--latexTables", dest="latexTables",
                           action="store_true", default=False,
                           help="print LaTeX-format tables (rather than ASCII)")
@@ -120,10 +122,10 @@ or \"P_MuonUnBiased\"."""
                           action="store_true", default=False,
                           help="Allow missing calibration subsamples. "
                           "N.B. You should only use this option if requested to "
-                          "do so by the PIDCalib authors") 
+                          "do so by the PIDCalib authors")
 
-    opts = parser.parse_args()      
-    
+    opts = parser.parse_args()
+
     StripVersion = None
     MagPolarity = None
     PartName = None
@@ -134,18 +136,18 @@ or \"P_MuonUnBiased\"."""
     # set the stripping version
     StripVersion=opts.stripVersion
     CheckStripVer(StripVersion)
-    
+
     # set the magnet polarity
     MagPolarity=opts.magPol
     CheckMagPol(MagPolarity)
-        
+
     # set the particle name
     PartName=opts.partName
     CheckPartType(PartName)
-      
+
     # set the PID cuts
     DLLCuts = opts.pidCut
-    
+
     if DLLCuts.startswith("["):
         if not DLLCuts.endswith("]"):
             parser.error("Invalid DLL cut string %s" %DLLCuts)
@@ -156,9 +158,18 @@ or \"P_MuonUnBiased\"."""
         DLLCuts = DLLCuts[1:-1].split(',')
     else:
         DLLCuts = (DLLCuts,)
-   
+
     RunMin = opts.runMin
     RunMax = opts.runMax
+    MaxFiles = opts.maxFiles
+    
+    if (len(opts.cuts)>0):
+        if isinstance(opts.cuts,str):
+            if not CheckCuts(opts.cuts):
+                parser.error("Invalid cut string %s" %str(opts.cuts))
+        elif isinstance(opts.cuts,list):
+            if not CheckCuts(opts.cuts.join(" ")):
+                parser.error("Invalid cut string %s" %str(opts.cuts))
 
     if RunMin is not None:
         try:
@@ -166,7 +177,7 @@ or \"P_MuonUnBiased\"."""
         except ValueError:
             parser.error(
                 "Argument to --minRun ('%s') is not an integer'." %RunMin)
-            
+
         if RunMax is None:
             parser.error(
                 "Min run was specified as %s, but no max run was given." %RunMin)
@@ -181,11 +192,21 @@ or \"P_MuonUnBiased\"."""
             parser.error(
                 "Max run was specified as %s, but no min run was given." %RunMax)
 
-    
+    if MaxFiles is not None:
+        try:
+            int(MaxFiles)
+        except ValueError:
+            parser.error(
+                "Argument to --maxFiles ('%s') is not an integer'." %MaxFiles)
+        if MaxFiles is None:
+            parser.error(
+                "Max files was specified as %s, but no min run was given." %MaxFiles)
+
+
     XVarName = opts.xVarName
     if XVarName=='':
         parser.error("Argument to --xBinVarName is an empty string.")
-        
+
     YVarName = opts.yVarName
     ZVarName = opts.zVarName
 
@@ -197,7 +218,7 @@ or \"P_MuonUnBiased\"."""
             ZVarName, YVarName))
 
     SchemeName=opts.schemeName
-    
+
     #=============================================================================
     # Declare Binning Schema (RooBinnings)
     #=============================================================================
@@ -229,7 +250,7 @@ or \"P_MuonUnBiased\"."""
 ##     Eta_Bin = ROOT.RooBinning(1.5, 5, 'ETA')
 ##     nTrk_Bin = ROOT.RooBinning(0, 500, "nTrack");
 
-##     if IsMuonUnBiased(PartName) : 
+##     if IsMuonUnBiased(PartName) :
 ##       Mom_Bin.addBoundary(6000);
 ##       Mom_Bin.addBoundary(8000);
 ##       Mom_Bin.addBoundary(10000);
@@ -279,7 +300,7 @@ or \"P_MuonUnBiased\"."""
 
     BinSchema = ROOT.vector('RooBinning*')()
     BinVarNames = []
-    
+
     BinSchema.push_back(X_Bin)
     BinVarNames.append(XVarName)
 
@@ -290,7 +311,7 @@ or \"P_MuonUnBiased\"."""
     if Z_Bin is not None:
       BinSchema.push_back(Z_Bin)
       BinVarNames.append(ZVarName)
-     
+
     if opts.verbose:
         print('========== Binning Schema ==========')
         if SchemeName is None:
@@ -305,9 +326,9 @@ or \"P_MuonUnBiased\"."""
         print('====================================')
 
     #======================================================================
-    # Final list of plots 
+    # Final list of plots
     #======================================================================
-    Plots = GetPerfPlotList(MakePerfPlotsList, 
+    Plots = GetPerfPlotList(MakePerfPlotsList,
                             StripVersion,
                             MagPolarity,
                             PartName,
@@ -317,15 +338,16 @@ or \"P_MuonUnBiased\"."""
                             RunMin,
                             RunMax,
                             opts.verbose,
-                            opts.allowMissing)
-    
+                            opts.allowMissing,
+                            MaxFiles)
+
     #======================================================================
     # Make Weighted Average
     #======================================================================
     MakeAveragePlotList(Plots)
     if opts.verbose:
         print 'Plots:', Plots
-    
+
     #======================================================================
     # Open file to write TH1Fs to
     #======================================================================
@@ -344,7 +366,7 @@ or \"P_MuonUnBiased\"."""
     f_Out = ROOT.TFile.Open(fname, "RECREATE")
     if not f_Out:
         raise IOError("Failed to open file %s for writing" %fname)
-    
+
     for iPlot in Plots:
         iPlot[-1].Write()
 
@@ -375,7 +397,7 @@ or \"P_MuonUnBiased\"."""
                 os = ROOT.std.fstream(opts.tabFile,
                         ROOT.std.fstream.out|ROOT.std.fstream.app)
                 pidTable.PrintTable(os, opts.latexTables)
-                
+
     #======================================================================
     # Close file
     #======================================================================

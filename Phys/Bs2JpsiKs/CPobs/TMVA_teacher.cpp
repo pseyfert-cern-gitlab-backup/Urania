@@ -121,7 +121,7 @@ int runTeacher(const TString module, const TString data, const TString step,
     " && (B0_FitDaughtersPVConst_M[0]<%f || B0_FitDaughtersPVConst_M[0]>%f)",
     BsBox_min, BsBox_max);
   // Training fraction
-  TString trainFrac = " && BCID%60>15"; // Replace with GpsSecond
+  TString trainFrac = " && GpsSecond>15";
   // Extra regularisation Cuts
   TString regCuts = " && B0_FitPVConst_KS0_MERR[0]>0 && B0_FitPVConst_KS0_MERR[0]<50 && B0_FitPVConst_J_psi_1S_MERR[0]<50";
   // Compose

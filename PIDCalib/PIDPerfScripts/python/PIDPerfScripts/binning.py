@@ -211,6 +211,40 @@ for trType in ('Mu', 'P_MuonUnBiased'):
     AddBinScheme(trType, 'nTrack', 'PerfPlots_MuP_MuonUnBiased', 0, 500)
     AddUniformBins(trType, 'nTrack', 'PerfPlots_MuP_MuonUnBiased', 50, 0, 500)
 
+for trType in ('e', 'Pi'):
+    ### for e/pi ID/misID performance plots
+    
+    # momentum
+    AddBinScheme(trType, 'P', 'PerfPlots_ePi', 5000, 100000)
+    AddUniformBins(trType, 'P', 'PerfPlots_ePi', 38, 5000, 100000)
+
+    # eta
+    AddBinScheme(trType, 'ETA', 'PerfPlots_ePi', 1.5, 5)
+    AddUniformBins(trType, 'ETA', 'PerfPlots_ePi', 35, 1.5, 5)
+
+    # nTrack
+    AddBinScheme(trType, 'nTrack', 'PerfPlots_ePi', 0, 500)
+    AddUniformBins(trType, 'nTrack', 'PerfPlots_ePi', 50, 0, 500)
+
+for trType in GetPartTypes():
+    AddBinScheme(trType, 'P', 'PerfPlots_%s'%(trType), 0, 100000)
+    AddUniformBins(trType, 'P', 'PerfPlots_%s'%(trType), 20, 0, 100000)
+
+    AddBinScheme(trType, 'ETA', 'PerfPlots_%s'%(trType), 1.5, 5.0)
+    AddUniformBins(trType, 'ETA', 'PerfPlots_%s'%(trType), 20, 1.5, 5.0)
+
+    AddBinScheme(trType, 'HasBremAdded', 'PerfPlots_%s'%(trType), 0, 2)
+    AddUniformBins(trType, 'HasBremAdded', 'PerfPlots_%s'%(trType), 2, 0, 2)
+
+    AddBinScheme(trType, 'CaloRegion', 'PerfPlots_%s'%(trType), 2, 5)
+    AddUniformBins(trType, 'CaloRegion', 'PerfPlots_%s'%(trType), 3, 2, 5)
+
+    AddBinScheme(trType, 'nTrack', 'PerfPlots_%s'%(trType), 0, 500)
+    AddUniformBins(trType, 'nTrack', 'PerfPlots_%s'%(trType), 20, 0, 500)
+
+    AddBinScheme(trType, 'nSPDHits', 'PerfPlots_%s'%(trType), 0, 500)
+    AddUniformBins(trType, 'nSPDHits', 'PerfPlots_%s'%(trType), 20, 0, 500)
+
 ### set the default binning schemes
 for trType in GetRICHPIDPartTypes():
     SetDefaultBinScheme(trType, 'P', 'DLLKpi')

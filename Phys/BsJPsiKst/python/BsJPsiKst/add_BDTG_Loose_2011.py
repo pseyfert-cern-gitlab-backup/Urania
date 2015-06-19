@@ -1,6 +1,6 @@
 from ROOT import *
-from sys import exit
-from os import system
+import sys
+import os
 import time
 
 #####################################
@@ -10,7 +10,7 @@ import time
 
 #####################################
 ##### Input file and name of the tree:
-inputPath = "./MagUpAndDown3500GeVReco14s20r1dv33r4_1019pb_StrippingBetaSBs2JpsiKstarWideLine_2011_DOCA_withcuts.root"
+inputPath = "/scratch02/carlos_vazquez/FinalTuples/MagUpAndDown3500GeVReco14s20r1dv33r4_1019pb_StrippingBetaSBs2JpsiKstarWideLine_2011_DOCA_withcuts.root"
 inputTree = "DecayTree"
 ##### Output file:
 outputPath = "./MagUpAndDown3500GeVReco14s20r1dv33r4_1019pb_StrippingBetaSBs2JpsiKstarWideLine_2011_BDTG_Loose.root"
@@ -36,16 +36,17 @@ try:
   dummyFile = open(inputClass,"r")
   dummyFile.close()
 except:
-  exit("\nERROR: "+inputClass+" does not exist.\n")
+  sys.exit("\nERROR: "+inputClass+" does not exist.\n")
 
 print '\nLoading and copying input file...\n'
-system("cp " + inputPath + " " + outputPath)
+os.system("cp " + inputPath + " " + outputPath)
 myFile = TFile(outputPath,"UPDATE")
 myTree = myFile.Get(inputTree)
 
 print 'Loading TMVAoperators...\n'
-system("cp $SOMEUTILSROOT/src/vdouble.C .")
-from Bs2MuMu.TMVAoperators import *
+os.system("cp $SOMEUTILSROOT/src/vdouble.C .")
+sys.path.append(os.environ["BS2MUMUROOT"] +"/python/Bs2MuMu/") # This path is not defined in Erasmus anymore. Needs Urania.
+from TMVAoperators import *
 print '\nLoading TMVAoperator class...\n'
 myMethod = TMVAoperator(inputClass,nameMethod,variablesList)
 
@@ -75,5 +76,5 @@ myFile.Close()
 
 totalTime = time.time()-timeZero
 print 'Elapsed time: ' + str(round(totalTime,4)) + ' s.'
-system("rm vdouble*")
+os.system("rm vdouble*")
 print 'Done.\n'

@@ -2,6 +2,8 @@
 // all plots of method.tex
 //------------------------------------------------------------------------------
 root.exe
+TString head = "/home/pkoppenb/work/Baryons/LbJpsippi/"
+// TString head = "root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb/Lambdab/"
 // SWeighting
 TFile* fW11 = TFile::Open("Lambdab-S20r1-1062-All-SW.root")
 TFile* fW12 = TFile::Open("Lambdab-S20-1063-All-SW.root")
@@ -12,8 +14,8 @@ png("LbK 2012 weighting")
 //------------------------------------------------------------------------------
 .L ../analysis/FourPlots.C 
 TChain* T = new TChain("BetaSLambdab2JpsippiDetachedLine_Tuple/DecayTree")
-T->Add("/castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20r1-1062.root")
-T->Add("/castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20-1063.root")
+T->Add(TString(head+"Lambdab-S20r1-1062.root"))
+T->Add(TString(head+"Lambdab-S20-1063.root"))
 TChain* NN = new TChain("NetTree")
 NN->Add("Lambdab-S20r1-1062-NN.root")
 NN->Add("Lambdab-S20-1063-NN.root")
@@ -32,8 +34,8 @@ TT->Draw("tMass:PsipKMass","(RunNumber==115332 || RunNumber==115332) && Category
 
 // T->Draw("B_SubpK_M:PsipKMass","(runNumber==115332 ||runNumber==115332) && Category==-1")  // 
 
-TFile* fpi = TFile::Open("/castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root")
-TFile* fK = TFile::Open("/castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root")
+TFile* fpi = TFile::Open(head+"LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root")
+TFile* fK = TFile::Open(head+"LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root")
 Tpi = (TTree*)fpi->Get("BetaSLambdab2JpsippiDetachedLine_TupleMC/DecayTree")  
 TK = (TTree*)fK->Get("BetaSLambdab2JpsippiDetachedLine_TupleMC/DecayTree")  
 TFile* fnpi = TFile::Open("LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125-NN.root")
@@ -475,7 +477,7 @@ png("B_FiveWeightedTrainPlots_of_pplus_TRACK_GhostProb")
 r = FiveWeightedTrainPlots(T,Tpi,TK,"piminus_ProbNNghost","NML","",0.0001,1); 
 r->SetMinimum(0.01)
 r->Draw()
-SetTitle("M ANN Ghost log(prob)/log(10.)")
+SetTitle("M ANN Ghost log(prob)/log(10.)",r)
 png("B_FiveWeightedTrainPlots_of_pimunus_ProbNNghost")
 
 png("B_FiveWeightedTrainPlots_of_pplus_ProbNNghost")
@@ -506,7 +508,6 @@ r = FiveWeightedTrainPlots(T,Tpi,TK,"piminus_ProbNNk","NM","",0,1);
 // PT weights
 //------------------------------------------------------------------------------
 //r = FiveWeightedTrainPlots(T,Tpi,TK,"B_P","NL","",30000.,500000.,50); 
-//png("B_FiveWeightedTrainPlots_of_B_P_log")
 //r = FiveWeightedTrainPlots(T,Tpi,TK,"B_P","N","",0.,400000.,80); 
 //r = FiveWeightedTrainPlots(T,Tpi,TK,"B_PT","NL","",500.,30000.,50); 
 //png("B_FiveWeightedTrainPlots_of_B_PT_log")
@@ -626,6 +627,11 @@ SetTitle("muons PT product",rt9)
 png("TwoWeightedTrainPlots of muons PT*PT")
 
 
+//========================================================================================
+// numbers for paper
+SandB(T,0,"netOutput>0.552","sweightLb*(sweightLb>-4)*(tCategory==-1)","(tCategory==1)*(ErrorCode[0]==0)*(B_FullFit_M[0]>5700)*(B_FullFit_M[0]<6100)","1","N","remove")
+// Means (stats): 0.640592 (28150.8), 0.0139792 (261459)
+
 //------------------------------------------------------------------------------
 // test
 r = FiveWeightedTrainPlots(T,Tpi,TK,"Psi_FDCHI2_ORIVX","NML","",0.0001,10); 
@@ -720,5 +726,38 @@ png("DTF chi2 in run blocks")
 RooPlot* krun4 = SevenPlots(T,T,T,T,T,T,T,WRun1,WRun2,WRun3,WRun4,WRun5,WRun6,WRun7,"pplus_ProbNNp","N","remove",0,1,10)
 SetTitle("p P(p)",krun4)
 png("prob p in run blocks")
+
+
+SandB(T,0,"pplus_ProbNNp*(1-pplus_ProbNNk)","sweightLb*(sweightLb>-4)*(tCategory==-1)","sweightBkg*(sweightLb>-4)*(tCategory==-1)","pplus_P<10000","N","remove",0,1)
+png("probnnp-nnk at low p")
+SandB(T,0,"pplus_ProbNNp*(1-pplus_ProbNNk)","sweightLb*(sweightLb>-4)*(tCategory==-1)","sweightBkg*(sweightLb>-4)*(tCategory==-1)","pplus_P>10000","N","remove",0,1)
+png("probnnp-nnk at high p")
+
+SandB(T,0,"pplus_ProbNNp","sweightLb*(sweightLb>-4)*(tCategory==-1)","sweightBkg*(sweightLb>-4)*(tCategory==-1)","pplus_P<10000","N","remove",0,1)
+png("probnnp at low p")
+SandB(T,0,"pplus_ProbNNp","sweightLb*(sweightLb>-4)*(tCategory==-1)","sweightBkg*(sweightLb>-4)*(tCategory==-1)","pplus_P>10000","N","remove",0,1)
+png("probnnp at high p")
+
+
+SandB(T,0,"pplus_ProbNNk","sweightLb*(sweightLb>-4)*(tCategory==-1)","sweightBkg*(sweightLb>-4)*(tCategory==-1)","pplus_P<10000","N","remove",0,1)
+png("probnnk at low p")
+SandB(T,0,"pplus_ProbNNk","sweightLb*(sweightLb>-4)*(tCategory==-1)","sweightBkg*(sweightLb>-4)*(tCategory==-1)","pplus_P>10000","N","remove",0,1)
+png("probnnk at high p")
+
+SandB(T,0,"pplus_PIDp-pplus_PIDK","sweightLb*(sweightLb>-4)*(tCategory==-1)","sweightBkg*(sweightLb>-4)*(tCategory==-1)","pplus_P<10000","N","remove",-10,50,60)
+png("DLLp-k at low p")
+SandB(T,0,"pplus_PIDp-pplus_PIDK","sweightLb*(sweightLb>-4)*(tCategory==-1)","sweightBkg*(sweightLb>-4)*(tCategory==-1)","pplus_P>10000","N","remove",-10,50,60)
+png("DLLp-k at high p")
+
+
+// eta
+SandB(T,0,"-log(tan(atan(atan2(B_PT,B_PZ)/2)))","netOutput>0.552","netOutput<0.552","sweightLb*(sweightLb>-4)*(tCategory==-1)","N","remove",2,7,50)
+png("LbK eta above and below NN cut")
+
+TwoProfile(T,Tpi,"-log(tan(atan(atan2(B_PT,B_PZ)/2)))","netOutput>0.552","sweightLb*(sweightLb>-4)*(tCategory==-1)","(ErrorCode==0)*DalitzWeight*SPDWeight*PTWeight2*(BKGCAT==0)","1","","remove",2,7,25,0,1)
+png("LbK/pi NN eff versus eta")
+
+
+
 
 

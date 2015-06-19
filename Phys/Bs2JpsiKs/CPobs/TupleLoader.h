@@ -65,10 +65,10 @@ IB2JpsiX* loadTuple(const TString module, const TString data,
 B2JpsiKs* loadB2JpsiKsTuple(const TString module, const TString data,
                             const TString step, const TString dir,
                             const TString decay, const TString weightMethod);
-TChain* loadChain(const TString file1, const TString file2, const TString line,
-                  const TString module, const TString data, const TString step,
-                  const TString dir, const TString decay,
-                  const TString weightMethod);
+TChain* loadChain(const TString file1, const TString file2, const TString file3,
+                  const TString file4, const TString line, const TString module,
+                  const TString data, const TString step, const TString dir,
+                  const TString decay, const TString weightMethod);
 // Other
 Long64_t printFrac(const Long64_t nentries);
 #endif 

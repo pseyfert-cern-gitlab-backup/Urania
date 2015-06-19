@@ -123,6 +123,10 @@ public:
   // global acceptance of the Binning schema
   virtual RooAbsData* SetInBinSchema(const std::vector<RooBinning*>& BinSchema);
   //========================================================
+  
+  void SplitCut( const std::string& Cut, std::vector< std::string >& SplitVec );
+  const std::string FormatCutList( const std::string& Cut );
+  const std::string TranslateCut( const std::string& Cut );
 
 protected:
   

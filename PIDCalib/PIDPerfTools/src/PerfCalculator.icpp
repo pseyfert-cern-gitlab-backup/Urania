@@ -103,7 +103,7 @@ PIDResult PerfCalculator<T>::Perf( const std::string& PIDCut,
 }
 
 //=============================================================================
-// Return list of PIDRESULTs for given list of PID cut
+// Return list of PIDRESULTs for given list of PID cuts
 //=============================================================================
 template <class T>
 PIDResult::Container PerfCalculator<T>::Perf( const std::list<std::string>& PIDCuts,
@@ -189,27 +189,37 @@ TH1F* PerfCalculator<T>::Perf( const std::string& PIDCut,
                                    Cut_DLLs,
                                    Cut_Ops,
                                    Cut_Vals);
+//   BinSchema->Print("v");
+//   std::cout << BinSchema->lowBound() << " " << BinSchema->highBound() << std::endl;
 
+//   std::cout << "here1?" << std::endl;
   TH1* RawHist = (TH1*)m_Data->createHistogram(m_Data->Get_Param(BinSchema->GetName())->GetTitle(),
                                                *m_Data->Get_Param(BinSchema->GetName()),
                                                Binning(*BinSchema)
                                                );
-
+//   RawHist->Print("all");
+//   std::cout << RawHist->GetBinLowEdge(1) << " " << RawHist->GetBinLowEdge(2) << std::endl;
+//   std::cout << "here2?" << std::endl;
 
   TrackDataSet* Data_Cut = (TrackDataSet*)m_Data->reduce( Cut.c_str() );
 
+//   std::cout << "here3?" << std::endl;
 
   TH1* CutHist = (TH1*)Data_Cut->createHistogram(m_Data->Get_Param(BinSchema->GetName())->GetTitle(),
                                                  *m_Data->Get_Param(BinSchema->GetName()),
                                                  Binning(*BinSchema)
                                                  );
+//   CutHist->Print("all");
+//   std::cout << CutHist->GetBinLowEdge(1) << " " << CutHist->GetBinLowEdge(2) << std::endl;
+//   std::cout << "here4?" << std::endl;
   TH1F* RatioHist = new TH1F("Ratio",
                              PIDCut.c_str(),
                              BinSchema->numBins(),
                              BinSchema->array()
                              );
-  
+//   std::cout << "here5?" << std::endl;
   RatioHist->Divide(CutHist,RawHist,1.0,1.0,"B");
+//   std::cout << "here6?" << std::endl;
   RatioHist->SetYTitle("Efficiency");
 
   if (printVals) {

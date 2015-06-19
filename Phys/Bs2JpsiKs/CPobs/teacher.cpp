@@ -82,18 +82,28 @@ int runTeacher(const TString module, const TString data, const TString step,
   // *** Settings ***
   unsigned int nvar = trainTuple->nVar(step, tracktype);
   unsigned int nhidden = nvar;
-  if (step==m_NNUnbiased && TMath::Abs(prepFlag)==1012) {
-    nhidden = (tracktype==m_LL ? 16 : 25);
-  } else if (step==m_NNUnbiased && TMath::Abs(prepFlag)==1022) {
-    nhidden = (tracktype==m_LL ? 35 : 39);
-  } else if (step==m_NNUnbiased && TMath::Abs(prepFlag)==612) {
-    nhidden = (tracktype==m_LL ? 21 : 31);
-  } else if (step==m_NNKstar && TMath::Abs(prepFlag)==1012) {
-    nhidden = 3;
-  } else if (step==m_NNKstar && TMath::Abs(prepFlag)==1022) {
-    nhidden = 10;
-  } else if (step==m_NNKstar && TMath::Abs(prepFlag)==612) {
-    nhidden = 3;
+  if (step==m_NNUnbiased) {
+    if (TMath::Abs(prepFlag)==1012) {
+      nhidden = (tracktype==m_LL ? 21 : 24);
+    } else if (TMath::Abs(prepFlag)==1022) {
+      nhidden = (tracktype==m_LL ? 37 : 40);
+    } else if (TMath::Abs(prepFlag)==612) {
+      if (trainset!="Full") {
+        nhidden = (tracktype==m_LL ? 18 : 33);
+      } else {
+        nhidden = (tracktype==m_LL ? 23 : 33);
+      }
+    }
+  } else if (step==m_NNKstar) {
+    if (TMath::Abs(prepFlag)==1012) {
+      nhidden = 5;
+    } else if (TMath::Abs(prepFlag)==1022) {
+      nhidden = 14;
+    } else if (TMath::Abs(prepFlag)==612) {
+      nhidden = 8;
+    } else if (TMath::Abs(prepFlag)==212) {
+      nhidden = 11;
+    }
   }
 
   // Task
@@ -156,7 +166,9 @@ int prepareTrainingSample(IB2JpsiX* trainTuple, NeuroBayesTeacher* nb,
   trainTuple->firstFill = true;
   
   Double_t sweight = -999;
-  Int_t unbiased = 0;
+  //Int_t unbiased = 0;
+  bool inset = false;
+  Long64_t trainLimit = (tracktype==m_LL ? 23000 : 81000);
   
   Long64_t nentries = trainTuple->nEntries();
   Long64_t printMod = printFrac(nentries);
@@ -176,12 +188,18 @@ int prepareTrainingSample(IB2JpsiX* trainTuple, NeuroBayesTeacher* nb,
       std::cout << " |-> " << i << " / " << nentries
                 << " (" << 100*i/nentries << "%)" << std::endl;
     }
-    
+
+    inset = (trainset=="Full" || (nTeach<trainLimit && (trainset=="All" ||
+            (trainset=="2011" && trainTuple->getInputFile()==0) ||
+            (trainset=="2012" && trainTuple->getInputFile()==1))));
+    if (!inset) continue;
+
     // Get Data
     unsigned int npv = trainTuple->primaries();
     for (unsigned int pv=0; pv!=npv; pv++) {
       sweight = trainTuple->weightVal(pv);
-      unbiased = (step==m_NNUnbiased ? trainTuple->isUnbiased() : 1);
+      //unbiased = (step==m_NNUnbiased ? trainTuple->isUnbiased() : 1);
+      // For training on subsamples
       // Select Teaching Sample
       if (sweight<=-7 || trainTuple->TrackType()!=tracktype) { 
         nFailed++;
@@ -208,12 +226,14 @@ int prepareTrainingSample(IB2JpsiX* trainTuple, NeuroBayesTeacher* nb,
         }
         // Error Handling
         // NeuroBayes only allows 1.5 million training patterns
+        /*
         if (nTeach>= NB_MAXPATTERN - 3*(nvar+1)) {
           std::cout << "ERROR: Used " << nTeach << "/"
                     << NB_MAXPATTERN - 3*(nvar+1) << " events." 
                     << " Exiting before NeuroBayes kills the job" << std::endl;
           break;
         }
+        */
       } else {
         // Error Handling
         std::cout << "WARNING: read sweight " << sweight
@@ -245,7 +265,7 @@ int trainOnce(const TString module, const TString data, const TString step,
 
   // *** Teach ***
   int out = runTeacher(module, data, step, dir, decay, weightMethod,
-                         tracktype, prepFlag);
+                       tracktype, prepFlag);
   // Error Analysis
   if (out!=0) return out;
 

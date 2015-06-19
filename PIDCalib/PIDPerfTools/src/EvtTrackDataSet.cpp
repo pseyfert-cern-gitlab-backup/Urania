@@ -30,6 +30,7 @@ EvtTrackDataSet::EvtTrackDataSet( const std::string& TrackName,
                                   const std::string& PT_Var,
                                   const std::string& ETA_Var,
                                   const std::string& nTrack_Var,
+                                  const std::string& nSPDHits_Var,
                                   const std::string& DLLK_Var,
                                   const std::string& DLLp_Var,
                                   const std::string& Cuts,
@@ -44,11 +45,19 @@ EvtTrackDataSet::EvtTrackDataSet( const std::string& TrackName,
                   ETA_Var,
                   DLLK_Var,
                   DLLp_Var,
-                  Cuts,
-                  WgtVarName)
+                  "",
+                  WgtVarName
+                )
 {
   SetTrackVar( nTrack_Var,
                "nTrack");
+  
+  SetTrackVar( nSPDHits_Var,
+               "nSPDHits");
+  
+  if (not Cuts.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts).c_str())->store();
+  }
 }
 
 EvtTrackDataSet::EvtTrackDataSet( const std::string& TrackName,
@@ -62,11 +71,19 @@ EvtTrackDataSet::EvtTrackDataSet( const std::string& TrackName,
                   Charge,
                   Data,
                   vars,
-                  Cuts,
-                  WgtVarName )
+                  "",
+                  WgtVarName
+                )
 {
   SetTrackVar( Data->Get_ParamName_nTrack(),
                "nTrack");
+  
+  SetTrackVar( Data->Get_ParamName_nSPDHits(),
+               "nSPDHits");
+  
+  if (not Cuts.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts).c_str())->store();
+  }
 }
 
 
@@ -78,6 +95,7 @@ EvtTrackDataSet::EvtTrackDataSet( const std::string& TrackName,
                                   const std::string& PT_Var,
                                   const std::string& ETA_Var,
                                   const std::string& nTrack_Var,
+                                  const std::string& nSPDHits_Var,
                                   const std::string& DLLK_Var,
                                   const std::string& DLLp_Var,
                                   const std::string& Cuts,
@@ -92,11 +110,19 @@ EvtTrackDataSet::EvtTrackDataSet( const std::string& TrackName,
                   ETA_Var,
                   DLLK_Var,
                   DLLp_Var,
-                  Cuts,
-                  WgtVarName )
+                  "",
+                  WgtVarName
+                )
 {
   SetTrackVar( nTrack_Var,
                "nTrack");
+  
+  SetTrackVar( nSPDHits_Var,
+               "nSPDHits");
+  
+  if (not Cuts.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts).c_str())->store();
+  }
 }
 
 EvtTrackDataSet::EvtTrackDataSet( const std::string& Name,
@@ -122,6 +148,9 @@ EvtTrackDataSet::EvtTrackDataSet( const std::string& Name,
 {
   SetTrackVar( Data->Get_ParamName_nTrack(),
                "nTrack");
+  
+  SetTrackVar( Data->Get_ParamName_nSPDHits(),
+               "nSPDHits");
 }
 
 EvtTrackDataSet::EvtTrackDataSet( const std::string& Name,
@@ -140,13 +169,20 @@ EvtTrackDataSet::EvtTrackDataSet( const std::string& Name,
                  Denominator,
                  WgtVar,
                  Cuts_Num,
-                 Cuts_Denom,
+                 "",
                  WgtVar_Num,
                  WgtVar_Denom
                  )
 {
   SetTrackVar( Denominator->Get_ParamName_nTrack(),
                "nTrack");
+  
+  SetTrackVar( Denominator->Get_ParamName_nSPDHits(),
+               "nSPDHits");
+  
+  if (not Cuts_Denom.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts_Denom).c_str())->store();
+  }
 }
 
 //=============================================================================
@@ -175,11 +211,27 @@ const std::string EvtTrackDataSet::Get_ParamName_nTrack() const
 }
 
 //=============================================================================
+// Get nSPDHits Param Name
+//=============================================================================
+const std::string EvtTrackDataSet::Get_ParamName_nSPDHits() const
+{
+  return Get_ParamName("nSPDHits");
+}
+
+//=============================================================================
 // Get nTrack Parameter
 //=============================================================================
 const RooRealVar* EvtTrackDataSet::Get_Param_nTrack() const
 {
   return Get_Param("nTrack");
+}
+
+//=============================================================================
+// Get nSPDHits Parameter
+//=============================================================================
+const RooRealVar* EvtTrackDataSet::Get_Param_nSPDHits() const
+{
+  return Get_Param("nSPDHits");
 }
 
 //=============================================================================

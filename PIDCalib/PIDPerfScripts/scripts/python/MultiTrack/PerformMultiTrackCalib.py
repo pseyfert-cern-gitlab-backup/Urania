@@ -7,6 +7,7 @@ import sys
 #import optparse
 import argparse
 import warnings
+import math
 
 class ShowArgumentsParser(argparse.ArgumentParser):
     def error(self, message):
@@ -15,7 +16,7 @@ class ShowArgumentsParser(argparse.ArgumentParser):
         sys.stderr.write('\n'+self.description)
         sys.exit(2)
 
-        
+
 if '__main__' == __name__:
 
     start()
@@ -40,7 +41,7 @@ track and <pidCut> is the PID cut to evaluate for that track.
 If the reference sample contains multiple final-state tracks, the remaining tracks
 can be specified as additional arguments.
 
-Valid track types are: \"K\", \"Pi\", \"P\" or \"Mu\".
+Valid track types are: \"K\", \"P\", \"Pi\", \"e\" or \"Mu\".
 
 For a full list of arguments, do: 'python {0} -h'
 
@@ -68,9 +69,9 @@ or \"P_MuonUnBiased\".
     parser.add_argument('tracks', metavar='<track>', nargs='+',
                         help="Sets the name of one of the reference tracks, "
                         "its track type and the PID cut to apply")
-     
+
     ## add the optional arguments
-    
+
     parser.add_argument("-i", "--inputDir", dest="inputDir", metavar="DIR",
                         help=("directory containing the performance histograms "
                         "(default: current directory)"))
@@ -102,10 +103,10 @@ or \"P_MuonUnBiased\".
                           "of type TYPE, as defined in the module "
                           "'PIDPerfScripts.binning'. This option can be used "
                           "multiple times to specify the binning scheme for "
-                          "each particle type in the reference sample" 
+                          "each particle type in the reference sample"
                           "If this option is not set for a particular particle "
                           "type, the default binning scheme is used."))
-                         
+
     addGroup = parser.add_argument_group("further options")
     addGroup.add_argument("-q", "--quiet", dest="verbose", action="store_false",
                           default=True,
@@ -147,15 +148,15 @@ or \"P_MuonUnBiased\".
                           metavar="NAME", default="nsig_sw",
                           help=("Name of the 'sWeights' variable in the reference "
                                 "sample (default: %(default)s)"))
-    
+
     opts = parser.parse_args()
-    
+
     StripVersion=opts.stripVersion
     CheckStripVer(StripVersion)
-    
+
     MagPolarity=opts.magPol
     CheckMagPol(MagPolarity)
-    
+
     fname_Ref = opts.refFilename
     tname_Ref = opts.refTree
     fname_out = opts.outputFilename
@@ -178,7 +179,7 @@ or \"P_MuonUnBiased\".
         DLLCut = trackInfo[2].strip().replace("/", "_div_")
 
         CheckPartType(trackType)
-        
+
         if trackType not in trackTypes:
             trackTypes.append(trackType)
         trackList.append((trackName,trackType,DLLCut))
@@ -186,7 +187,7 @@ or \"P_MuonUnBiased\".
     XVarName = opts.xVarName
     if XVarName=='':
         parser.error("Argument to --xBinVarName is an empty string.")
-        
+
     YVarName = opts.yVarName
     ZVarName = opts.zVarName
 
@@ -198,7 +199,7 @@ or \"P_MuonUnBiased\".
             ZVarName, YVarName)
         parser.error(msg)
 
-    for vname_calib in (XVarName, YVarName, ZVarName): 
+    for vname_calib in (XVarName, YVarName, ZVarName):
       if vname_calib=='': continue
       CheckBinVarName(vname_calib)
 
@@ -218,16 +219,16 @@ or \"P_MuonUnBiased\".
             print "Track name, type and PID cut (track {num}): {trInfo}".format(
                 num=i, trInfo=str(v))
         print '===================================='
-        
+
     #=============================================================================
     # Source reference sample TTree
-    #============================================================================= 
+    #=============================================================================
     #ROOT.gSystem.Load('libRooStats.so')
-    
-    ##  f_Ref = ROOT.TFile.Open('$PIDPERFSCRIPTSROOT/scripts/root/' 
+
+    ##  f_Ref = ROOT.TFile.Open('$PIDPERFSCRIPTSROOT/scripts/root/'
     ##                             'B2DX/Ref_K0SPiPi_DD_S20_DOWN.root')
-    
-    ##     f_Ref = ROOT.TFile.Open('$HOME/CalibTests/Ref_K0SPiPi_DD_S20_DOWN.root') 
+
+    ##     f_Ref = ROOT.TFile.Open('$HOME/CalibTests/Ref_K0SPiPi_DD_S20_DOWN.root')
     ##     t_Ref = f_Ref.Get('TTT')
     f_Ref = ROOT.TFile.Open(fname_Ref)
     if not f_Ref:
@@ -247,9 +248,9 @@ or \"P_MuonUnBiased\".
     ROOT.gSystem.Load('libPIDPerfToolsLib.so')
     ROOT.gSystem.Load('libPIDPerfToolsDict.so')
 
-    CalibTool = ROOT.MultiTrackCalibTool("CalibTool", t_Ref, fname_out, "RECREATE", 
+    CalibTool = ROOT.MultiTrackCalibTool("CalibTool", t_Ref, fname_out, "RECREATE",
                                          opts.verbose, opts.printFreq)
-    
+
     #=============================================================================
     # Declare the name in the reference TTree for the various binning variables
     #=============================================================================
@@ -257,19 +258,19 @@ or \"P_MuonUnBiased\".
                                        (opts.xRefVarName, opts.yRefVarName,
                                         opts.zRefVarName) ):
         if vname_calib=='': continue
-        
+
         if vname_calib==GetMomBinVarName():
             CalibTool.SetTrackMomVarName(vname_ref)
-            
+
         elif vname_calib==GetEtaBinVarName():
             CalibTool.SetTrackEtaVarName(vname_ref)
-            
+
         elif vname_calib==GetNTracksBinVarName():
             CalibTool.SetNTracksVarName(vname_ref)
-            
+
         else:
             CalibTool.SetTrackPtVarName(vname_ref)
-    
+
     #=============================================================================
     # Declare the name in the reference TTree for the sWeight variable
     #=============================================================================
@@ -280,7 +281,7 @@ or \"P_MuonUnBiased\".
     # Obtain Performance histogram for each track under consideration,
     # declare the name in the reference TTree of each track to be considered and
     # the PID performance histogram to be associated with it
-    #=============================================================================    
+    #=============================================================================
     #
     # Open files containing performance histograms for each track type to consider
     #
@@ -292,7 +293,7 @@ or \"P_MuonUnBiased\".
         for vname in (XVarName, YVarName, ZVarName):
             if vname=='': continue
             fnameSuffix+='_{0}'.format(vname)
-        
+
         fname = "PerfHists_{part}_Strip{strp}_{pol}{suf}.root".format(
             part=trackType, strp=StripVersion, pol=MagPolarity, suf=fnameSuffix)
         if opts.inputDir is not None:
@@ -323,9 +324,9 @@ or \"P_MuonUnBiased\".
                "from file {fname}").format(
               tname=trackName, hname=PerfHist.GetName(), fname=f_Perf.GetName())
           print msg
-          
+
     #===========================================================================
-    # Ensure the reference sample tracks reside with the bin ranges of the 
+    # Ensure the reference sample tracks reside with the bin ranges of the
     # declared PID performance histograms
     #===========================================================================
     if opts.setRefLimits:
@@ -335,19 +336,21 @@ or \"P_MuonUnBiased\".
     # Calculate the per track event efficiencies
     #===========================================================================
     CalibTool.Calculate()
-  
+
     #===========================================================================
     # Calculate the naive average event efficiency and associated error
     #===========================================================================
     NaiveResult = CalibTool.CalculateNaiveAverage();
-    print 'Naive event efficiency and error: ({eff:.3f} +/- {err:.3f})%'.format(
+    dp = int(math.floor(math.log(100*NaiveResult.second,10))-1)
+    dp = -1 if dp > -1 else dp
+    print ('Naive event efficiency and error: ({eff:.%if} +/- {err:.%if})%%'%(abs(dp),abs(dp))).format(
         eff=100*NaiveResult.first, err=100*NaiveResult.second)
 
-    if opts.use_sWeights: 
+    if opts.use_sWeights:
       NaiveResultWeight = CalibTool.CalculateNaiveWeightAverage();
-      print 'Naive event efficiency and error (weighted): ({eff:.3f} +/- {err:.3f})%'.format(
+      print ('Naive event efficiency and error (weighted): ({eff:.%if} +/- {err:.%if})%%'%(abs(dp),abs(dp))).format(
           eff=100*NaiveResultWeight.first, err=100*NaiveResultWeight.second)
-    
+
     CalibTool.Write()
     #del CalibTool
     CalibTool=None

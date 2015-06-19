@@ -39,22 +39,27 @@ unsigned int individualPreproFlag(const unsigned int i,
 // *** Accessors ***
 
 // Observables
-double mass(const unsigned int pv) { return B0_FitDaughtersPVConst_M[pv]; }
-double massErr(const unsigned int pv) { return B0_FitDaughtersPVConst_MERR[pv]; }
+double mass(const unsigned int pv) {
+  return (double) B0_FitDaughtersPVConst_M[pv];
+}
+double massErr(const unsigned int pv) {
+  return (double) B0_FitDaughtersPVConst_MERR[pv];
+}
 double time(const unsigned int pv) {
-  return 1000*B0_FitDaughtersPVConst_tau[pv];
+  return (double) 1000*B0_FitDaughtersPVConst_tau[pv];
 }
 double timeErr(const unsigned int pv) {
-  return 1000*B0_FitDaughtersPVConst_tauErr[pv];
+  return (double) 1000*B0_FitDaughtersPVConst_tauErr[pv];
 }
 double jpsiIPchi2(const unsigned int pv) {
-  return J_psi_1S_MINIPCHI2_OtherPVs[pv];
+  return (double) J_psi_1S_MINIPCHI2_OtherPVs[pv];
 }
 unsigned int primaries() { return B0_FitDaughtersPVConst_nPV; }
 // Variables for Data Manipulation
 UInt_t getRunNumber() { return runNumber; }
 ULong64_t getEventNumber() { return eventNumber; }
-float getGpsSecond() { return BCID%60; } // Replace with GpsSecond
+float getGpsSecond() { return GpsSecond; }
+int getInputFile() { return InputFile; }
 // Variables for selection
 double weightVal(const unsigned int pv) { return sweight[pv]; }
 float neuralnet(const unsigned int pv) { return netOutput[pv]; }
@@ -77,7 +82,7 @@ Long64_t nEntries() {
 // *** Selection Cuts ***
 // Common Cuts
 bool applyCommonCuts(const TString data, const unsigned int pv) {
-  bool pass = (B0_FitDaughtersPVConst_status[pv]==0 &&
+  bool pass = (TMath::Abs(B0_FitDaughtersPVConst_status[pv])<pow(10,-5) &&
                B0_FitDaughtersPVConst_chi2[pv]<DTF_chi2 &&
                massErr(pv)<MMERR_cut &&
                (isPrescaled(data) || (time(pv)>taucut)) &&

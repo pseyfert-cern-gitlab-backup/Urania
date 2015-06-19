@@ -93,6 +93,8 @@ from optparse import OptionParser
 from math     import pi, log
 import os, sys, gc
 gROOT.SetBatch()
+gStyle.SetOptStat(0)
+gStyle.SetOptFit(1011)
 
 import sys
 sys.path.append("../data/")
@@ -101,8 +103,8 @@ debug = True
 largeToys = False
 drawGeneratedYields = False
 
-ntoys               = 5000
-toysdir             = '/afs/cern.ch/work/a/adudziak/public/Bs2DsKToys/Gamma70_5M/'
+ntoys               = 1000
+toysdir             = '/afs/cern.ch/work/a/adudziak/public/Bs2DsKToys/Gamma70_5M_2T_MD/3D/'
 toystupleprefix     = 'DsK_Toys_sWeights_ForTimeFit_'
 if largeToys : toystupleprefix     = 'DsK_Toys_FullLarge_Tree_'
 toystuplesuffix     = '.root'
@@ -111,7 +113,8 @@ if largeToys : toysresultprefix    = 'DsK_Toys_FullLarge_MassFitResult_'
 toysresultsuffix    = '.log'    
 
 #outputdir = '/afs/cern.ch/work/g/gligorov/public/Bs2DsKToys/sWeightToys/DsKToysAgnieszka_010813/'
-outputdir = '/afs/cern.ch/work/a/adudziak/public/Bs2DsKToys/Gamma70_5M/'
+#outputdir = '/afs/cern.ch/work/a/adudziak/public/Bs2DsKToys/Gamma70_5M_2T_MD/3D/'
+outputdir = "./"
 
 nbinspull = 50
 lowerpullrange = -3
@@ -132,28 +135,28 @@ eventtypes = {"Signal" : 1.0,
 myconfigfilegrabber = __import__("Bs2DsKConfigForGenerator",fromlist=['getconfig']).getconfig
 myconfigfile = myconfigfilegrabber()
 
-numgenevt ={"Signal" : ntoys*[1856.0]} #1857.0]} #1856.0]} #1854.0]}
+numgenevt ={"Signal" : ntoys*[1809.0]} #1857.0]} #1856.0]} #1854.0]}
 numfitted ={"Signal1" : ntoys*[(0,0)]}
 numfitted["Signal2"] = ntoys*[(0,0)]
 numfitted["Signal3"] = ntoys*[(0,0)]
 numfitted["Signal4"] = ntoys*[(0,0)]
 numfitted["Signal5"] = ntoys*[(0,0)]
 
-numgenevt["Combo"] = ntoys*[3966.0] #3967.0] #3970]
+numgenevt["Combo"] = ntoys*[3750.0] #3967.0] #3970]
 numfitted["Combo1"] = ntoys*[(0,0)]
 numfitted["Combo2"] = ntoys*[(0,0)]
 numfitted["Combo3"] = ntoys*[(0,0)]
 numfitted["Combo4"] = ntoys*[(0,0)]
 numfitted["Combo5"] = ntoys*[(0,0)]
 
-numgenevt["LMK"] = ntoys*[148.9] #150.3] #149.2] #149.5]
+numgenevt["LMK"] = ntoys*[137.8] #150.3] #149.2] #149.5]
 numfitted["LMK1"] = ntoys*[(0,0)]
 numfitted["LMK2"] = ntoys*[(0,0)]
 numfitted["LMK3"] = ntoys*[(0,0)]
 numfitted["LMK4"] = ntoys*[(0,0)]
 numfitted["LMK5"] = ntoys*[(0,0)]
 
-numgenevt["LMPi"] = ntoys*[1378.0] #1380.0] #1379]
+numgenevt["LMPi"] = ntoys*[1436.0] #1380.0] #1379]
 numfitted["LMPi1"] = ntoys*[(0,0)]
 numfitted["LMPi2"] = ntoys*[(0,0)]
 numfitted["LMPi3"] = ntoys*[(0,0)]
@@ -189,10 +192,10 @@ numfitted["DK3"] = ntoys*[(0,0)]
 numfitted["DK4"] = ntoys*[(0,0)]
 numfitted["DK5"] = ntoys*[(0,0)]
 
-numgenevt["g5_f1"] = ntoys*[0.936]
+numgenevt["g5_f1"] = ntoys*[0.979]
 numfitted["g5_f1"] = ntoys*[(0,0)]
 
-numgenevt["g2_f1"] = ntoys*[0.711]
+numgenevt["g2_f1"] = ntoys*[0.653]
 numfitted["g2_f1"] = ntoys*[(0,0)]
 
 numgenevt["g3_f1"] = ntoys*[0.75]
@@ -284,7 +287,7 @@ for thistoy in range(0,ntoys) :
         if counter == counterstop + 19 :
             result = line.split()
             numfitted["g2_f1"][thistoy] =  (float(result[2]), float(result[4]))
-            print numfitted["g2_f1"][thistoy]
+            #print numfitted["g2_f1"][thistoy]
         '''    
         if counter == counterstop + 20 :
             result = line.split()
@@ -301,23 +304,23 @@ for thistoy in range(0,ntoys) :
         if counter == counterstop + 21 :
             result = line.split()
             numfitted["LMK1"][thistoy] =  (float(result[2]), float(result[4]))
-            print numfitted["LMK1"][thistoy]
+            #print numfitted["LMK1"][thistoy]
         if counter == counterstop + 22 :
             result = line.split()
             numfitted["LMK2"][thistoy] =  (float(result[2]), float(result[4]))
-            print numfitted["LMK2"][thistoy]
+            #print numfitted["LMK2"][thistoy]
         if counter == counterstop + 23:
             result = line.split()
             numfitted["LMK3"][thistoy] =  (float(result[2]), float(result[4]))
-            print numfitted["LMK3"][thistoy]
+            #print numfitted["LMK3"][thistoy]
         if counter == counterstop + 24 :
             result = line.split()
             numfitted["LMK4"][thistoy] =  (float(result[2]), float(result[4]))
-            print numfitted["LMK4"][thistoy]
+            #print numfitted["LMK4"][thistoy]
         if counter == counterstop + 25 :
             result = line.split()
             numfitted["LMK5"][thistoy] =  (float(result[2]), float(result[4]))
-            print numfitted["LMK5"][thistoy]
+            #print numfitted["LMK5"][thistoy]
             #exit(0)
         #----------------------------------------------------------------------#                    
              
@@ -409,32 +412,32 @@ for thistoy in range(0,ntoys) :
         if counter == counterstop + 36:
             result = line.split()
             numfitted["Signal1"][thistoy] =  (float(result[2]), float(result[4]))
-            print "Signal"
-            print numfitted["Signal1"][thistoy]
+            #print "Signal"
+            #print numfitted["Signal1"][thistoy]
             #exit(0)
         if counter == counterstop + 37:
             result = line.split()
             numfitted["Signal2"][thistoy] =  (float(result[2]), float(result[4]))
-            print numfitted["Signal2"][thistoy]
+            #print numfitted["Signal2"][thistoy]
         if counter == counterstop + 38:
             result = line.split()
             numfitted["Signal3"][thistoy] =  (float(result[2]), float(result[4]))
-            print numfitted["Signal3"][thistoy]
+            #print numfitted["Signal3"][thistoy]
         if counter == counterstop + 39:
             result = line.split()
             numfitted["Signal4"][thistoy] =  (float(result[2]), float(result[4]))
-            print numfitted["Signal4"][thistoy]
+            #print numfitted["Signal4"][thistoy]
         if counter == counterstop + 40:
             result = line.split()
             numfitted["Signal5"][thistoy] =  (float(result[2]), float(result[4]))
-            print numfitted["Signal5"][thistoy]
+            #print numfitted["Signal5"][thistoy]
             #exit(0)
             break
     if counterstop == -100 and not badfit :
         print "Something went wrong with fit",thistoy
         nfailed.append(thistoy)
     f.close()
-
+#exit(0)
 if debug : 
     print nfailed
     print '\n\n\n'
@@ -750,11 +753,16 @@ fitted_f5 = TH1F("fitted_f5","fitted_f5",100,0.5,1)
 fitted_f5.GetXaxis().SetTitle("Fitted g5_f1 events")
 errf_f5   = TH1F("errf_f5","errf_f5",100,0,0.3)
 errf_f5.GetXaxis().SetTitle("Fitted error")
-pull_f5   = TH1F("pull_5f","pull_5f",50,-5,5)
+pull_f5   = TH1F("pull_5f","pull_5f",nbinspull,lowerpullrange,upperpullrange)
 pull_f5.GetXaxis().SetTitle("Fitted Pull")
+
 
 for thistoy in range(0,ntoys) :
     if thistoy in nfailed : continue
+    if numfitted["g5_f1"][thistoy][0] > 0.999: 
+        print numfitted["g5_f1"][thistoy][0]
+        continue
+
     gen_f5.Fill(numgenevt["g5_f1"][thistoy])
     fitted_f5.Fill(numfitted["g5_f1"][thistoy][0])
     errf_f5.Fill(numfitted["g5_f1"][thistoy][1])
@@ -772,7 +780,8 @@ pullcanvasf5.cd(2)
 errf_f5.Fit("gaus")
 errf_f5.Draw("PE")
 pullcanvasf5.cd(3)
-pull_f5.Fit("gaus")
+f1 = TF1("f1","gaus",-0.05,3)
+pull_f5.Fit("f1","R")
 pull_f5.Draw("PE")
 
 if largeToys:
@@ -787,7 +796,7 @@ fitted_f2 = TH1F("fitted_f2","fitted_f2",100,0.4,1)
 fitted_f2.GetXaxis().SetTitle("Fitted g2_f1 events")
 errf_f2   = TH1F("errf_f2","errf_f2",100,0,0.3)
 errf_f2.GetXaxis().SetTitle("Fitted error")
-pull_f2   = TH1F("pull_f2","pull_f2",50,-5,5)
+pull_f2   = TH1F("pull_f2","pull_f2",nbinspull,lowerpullrange,upperpullrange)
 pull_f2.GetXaxis().SetTitle("Fitted Pull")
 
 for thistoy in range(0,ntoys) :
@@ -824,7 +833,7 @@ fitted_f3 = TH1F("fitted_f3","fitted_f3",100,0,1)
 fitted_f3.GetXaxis().SetTitle("Fitted g3_f1 events")
 errf_f3   = TH1F("errf_f3","errf_f3",100,0,100)
 errf_f3.GetXaxis().SetTitle("Fitted error")
-pull_f3   = TH1F("pull_f3","pull_f3",50,-5,5)
+pull_f3   = TH1F("pull_f3","pull_f3",nbinspull,lowerpullrange,upperpullrange)
 pull_f3.GetXaxis().SetTitle("Fitted Pull")
 
 for thistoy in range(0,ntoys) :
@@ -861,7 +870,7 @@ fitted_dk = TH1F("fitted_dk","fitted_dk",100,0,100)
 fitted_dk.GetXaxis().SetTitle("Fitted dk events")
 errf_dk   = TH1F("errf_dk","errf_dk",100,0,100)
 errf_dk.GetXaxis().SetTitle("Fitted error")
-pull_dk   = TH1F("pull_dk","pull_dk",50,-5,5)
+pull_dk   = TH1F("pull_dk","pull_dk",50,nbinspull,lowerpullrange,upperpullrange)
 pull_dk.GetXaxis().SetTitle("Fitted Pull")
 
 for thistoy in range(0,ntoys) :
@@ -895,7 +904,7 @@ fitted_lck = TH1F("fitted_lck","fitted_lck",100,0,100)
 fitted_lck.GetXaxis().SetTitle("Fitted lck events")
 errf_lck   = TH1F("errf_lck","errf_lck",100,0,100)
 errf_lck.GetXaxis().SetTitle("Fitted error")
-pull_lck   = TH1F("pull_lck","pull_lck",50,-5,5)
+pull_lck   = TH1F("pull_lck","pull_lck",nbinspull,lowerpullrange,upperpullrange)
 pull_lck.GetXaxis().SetTitle("Fitted Pull")
 
 for thistoy in range(0,ntoys) :

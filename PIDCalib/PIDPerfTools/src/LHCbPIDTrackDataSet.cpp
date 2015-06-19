@@ -42,7 +42,8 @@ LHCbPIDTrackDataSet::LHCbPIDTrackDataSet( const std::string& TrackName,
                                           const std::string& ProbNNpi_Name,
                                           const std::string& ProbNNp_Name,
                                           const std::string& Cuts,
-                                          const std::string& WgtVarName )
+                                          const std::string& WgtVarName
+                                        )
   : EvtTrackDataSet( TrackName,
                      Charge,
                      Data,
@@ -53,8 +54,9 @@ LHCbPIDTrackDataSet::LHCbPIDTrackDataSet( const std::string& TrackName,
                      nTrack_Var,
                      DLLK_Var,
                      DLLp_Var,
-                     Cuts,
-                     WgtVarName)
+                     "",
+                     WgtVarName
+                   )
     //    RICHTrackDataSet(),
     //    MUONTrackDataSet()
 {
@@ -81,6 +83,10 @@ LHCbPIDTrackDataSet::LHCbPIDTrackDataSet( const std::string& TrackName,
   
   SetTrackVar( nShared_Var,
                "nShared" );
+  
+  if (not Cuts.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts).c_str())->store();
+  }
 }
 
 LHCbPIDTrackDataSet::LHCbPIDTrackDataSet( const std::string& TrackName,
@@ -94,8 +100,9 @@ LHCbPIDTrackDataSet::LHCbPIDTrackDataSet( const std::string& TrackName,
                      Charge,
                      Data,
                      vars,
-                     Cuts,
-                     WgtVarName ),
+                     "",
+                     WgtVarName
+                   ),
     RICHTrackDataSet(),
     MUONTrackDataSet()
 {
@@ -122,6 +129,10 @@ LHCbPIDTrackDataSet::LHCbPIDTrackDataSet( const std::string& TrackName,
   
   SetTrackVar( Data->Get_ParamName_nShared(),
                "nShared" );
+  
+  if (not Cuts.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts).c_str())->store();
+  }
 }
 
 LHCbPIDTrackDataSet::LHCbPIDTrackDataSet( const std::string& Name,

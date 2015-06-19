@@ -36,8 +36,8 @@ cuts_mass_big = "abs(J_psi_1S_MM-3090)<60 && abs(phi_1020_MM-1020.)<30.&& B_s0_M
 training_sel = cuts_mass_big + " && B_s0_LOKI_DTF_CTAU/0.299792458 > 0.3 && B_s0_LOKI_DTF_CTAU/0.299792458 < 14 &&  B_s0_LOKI_DTF_CTAUERR/0.299792458 < 0.12 &&  Kplus_PIDK>0 && Kminus_PIDK > 0 " + next_PV
 
 
-trig_biased = "(hlt1_excl_biased_dec==1 && hlt2_biased==1)"
-trig_unbiased = "(hlt1_unbiased_dec==1 && hlt2_biased==1)"
+trig_biased = "(hlt1_excl_biased==1 && hlt2_biased==1)"
+trig_unbiased = "(hlt1_unbiased==1 && hlt2_biased==1)"
 
 
 def makeKKbins4(var):

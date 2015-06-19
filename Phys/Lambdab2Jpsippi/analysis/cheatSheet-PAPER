@@ -1,5 +1,4 @@
 root.exe 
-gROOT->ProcessLine(".x lhcbStyle.C");
 RooPlot* r = 0 
 TString optNN = "0.552"
 .L ../analysis/FourPlots.C
@@ -7,13 +6,11 @@ gStyle->SetPalette(0)
 TString NN = "opt"
 TFile* _fileOptFit = TFile::Open("Lambdab-S20X-1062-tree-"+optNN+"-SW.root")
 TString head = "PAPER-"
-char* text = "LHCb"          
-  TCollection* l = new TList();
-  l->Add(new TLatex(0.1,0.03,"(a)"));
-  l->Add(new TLatex(0.1,0.03,"(b)"));
-  l->Add(new TLatex(0.1,0.03,"(c)"));
-  l->Add(new TLatex(0.1,0.03,"(d)"));
-  TIter myiter(l);
+char* text = "LHCb"     
+.L MassPdf.cpp     
+
+_fileOptFit->Get("PsippiFitAB")->Draw()
+gROOT->ProcessLine(".x lhcbStyle.C");
 
 RooPlot* rpiAB = _fileOptFit->Get("PsippiFitAB")
 RooPlot* rpiB = _fileOptFit->Get("PsippiFitB")
@@ -22,14 +19,24 @@ rpiAB->SetMaximum(700.)
 rpiB->SetMaximum(700.)
 rpi->SetMaximum(1400.)
 
+rpiAB->GetYaxis()->SetTitleOffset(1.47)
+rpiB->GetYaxis()->SetTitleOffset(1.47)
+rpi->GetYaxis()->SetTitleOffset(1.47)
+
+rpiAB->GetYaxis()->SetTitle("Candidates per 5 MeV/c^{2}")
 rpiAB->Draw()
 lhcbName->Draw();
+plotLegend("Psippi");
 pdf(head+"PsippiFitAB-opt")
+rpiB->GetYaxis()->SetTitle("Candidates per 5 MeV/c^{2}")
 rpiB->Draw()
 lhcbName->Draw();
+plotLegend("Psippi");
 pdf(head+"PsippiFitB-opt")
+rpi->GetYaxis()->SetTitle("Candidates per 5 MeV/c^{2}")
 rpi->Draw()
 lhcbName->Draw();
+plotLegend("Psippi");
 pdf(head+"PsippiFit-opt")
 
 // Kaons in log
@@ -38,17 +45,26 @@ RooPlot* rKAB = _fileOptFit->Get("PsipKFitAB")
 RooPlot* rKB = _fileOptFit->Get("PsipKFitB")
 RooPlot* rK = _fileOptFit->Get("PsipKFit")
 
-rK->SetMaximum(4000)
-rKB->SetMaximum(2000)
-rKAB->SetMaximum(2000)
+rK->SetMaximum(5000)
+rKB->SetMaximum(2500)
+rKAB->SetMaximum(2500)
+rK->SetMinimum(3)
+rKB->SetMinimum(2)
+rKAB->SetMinimum(2)
 
+rKAB->GetYaxis()->SetTitle("Candidates per 5 MeV/c^{2}")
 rKAB->Draw()
+plotLegend("PsipK");
 lhcbName->Draw();
 pdf(head+"PsipKFitAB-opt")
+rKB->GetYaxis()->SetTitle("Candidates per 5 MeV/c^{2}")
 rKB->Draw()
+plotLegend("PsipK");
 lhcbName->Draw();
 pdf(head+"PsipKFitB-opt")
+rK->GetYaxis()->SetTitle("Candidates per 5 MeV/c^{2}")
 rK->Draw()
+plotLegend("PsipK");
 lhcbName->Draw();
 pdf(head+"PsipKFit-opt")
 

@@ -17,21 +17,35 @@
 // Lambdab2JPsippi Package
 #include "Lambdab.h"
 
+static const TString c_pos = "pos";
+static const TString c_neg = "neg";
 using namespace std ;
 
 
 // ####################################################################################################
 // *** Declarations ***
-int loop(Lambdab* ntuple, bool isPi){
+int loop(Lambdab* ntuple, bool isPi, TString charge){
 
   if (!ntuple) return -1 ;
   if (!(ntuple->fChain)) {
     std::cout << "fchain is NULL" << std::endl ;
     return -2 ;
   }
+
+  int theCharge = 0 ;
+  if (""!=charge){
+    if (c_pos==charge) theCharge = 1;
+    else if (c_neg==charge) theCharge = -1;
+    else {
+      cout << "Unknown charge " << charge << endl ;
+      return -55 ;
+    }
+  }
+  std::cout << "Will only keep candidates with mesons of charge " << theCharge << " (0: all)" << endl ;
+
   const Long64_t nentries = ntuple->fChain->GetEntries();
   double frac = printFrac(nentries);  
-  TFile* outfile = new TFile( (isPi?"PIDLb2Psippi.root":"PIDLb2PsipK.root"), "RECREATE" );
+  TFile* outfile = new TFile( (isPi?"PIDLb2Psippi"+charge+".root":"PIDLb2PsipK"+charge+".root"), "RECREATE" );
   TRandom2* m_rndm = new TRandom2(m_theSeed); // 0 : use time
   m_rndm->SetSeed(m_theSeed);
   fillFluctuateBins(m_rndm);
@@ -39,7 +53,7 @@ int loop(Lambdab* ntuple, bool isPi){
   unsigned long int runNumber, eventNumber ;
   Double_t mprime, thetaprime, pMMass2, psipMass2, psiMMass2, DalitzWeight,  DalitzWeightWE, PTWeight2,  PTWeight2WE ;
   // PIDCalib vars
-  Double_t nTracks, nPVs, meson_P, meson_PT, meson_ETA, meson_PIDK, meson_PIDp, meson_ProbNNK, meson_ProbNNpi, nsig_sw  ;
+  Double_t nTracks, nPVs, meson_P, meson_PT, meson_ETA, meson_PIDK, meson_PIDp, meson_ProbNNK, meson_ProbNNpi, nsig_sw, meson_c  ;
   TString meson = (isPi?"Pi_":"K_");
   Int_t Polarity ;
   
@@ -57,6 +71,7 @@ int loop(Lambdab* ntuple, bool isPi){
   outtree.Branch("PTWeight2WE",&PTWeight2WE,"PTWeight2WE/D");
   outtree.Branch("nTracks",&nTracks);
   outtree.Branch("nPVs",&nPVs);
+  outtree.Branch(meson+"Charge",&meson_c);
   outtree.Branch(meson+"P",&meson_P);
   outtree.Branch(meson+"PT",&meson_PT);
   outtree.Branch(meson+"TRACK_Eta",&meson_ETA);
@@ -64,6 +79,7 @@ int loop(Lambdab* ntuple, bool isPi){
   outtree.Branch(meson+"PIDp",&meson_PIDp);
   outtree.Branch(meson+"ProbNNK",&meson_ProbNNK);
   outtree.Branch(meson+"ProbNNpi",&meson_ProbNNpi);
+  outtree.Branch("Meson_Charge",&meson_c);  
   outtree.Branch("Meson_P",&meson_P);  // just to overcome a stupid PIDCalib feature
   outtree.Branch("Meson_PT",&meson_PT);
   outtree.Branch("Meson_TRACK_Eta",&meson_ETA);
@@ -83,13 +99,13 @@ int loop(Lambdab* ntuple, bool isPi){
   unsigned int BadTk = 0 ;  
   unsigned int BadTrig = 0 ;  
   unsigned int BadPresel = 0 ;  
+  unsigned int BadCharge = 0 ;  
   unsigned int Good = 0 ;  
 
   for (Long64_t i=0; i<nentries;i++) {
     ntuple->fChain->GetEntry(i);
-    // 3000 <= K_P && 100000 > K_P && 1.5 <= K_TRACK_Eta && 5 > K_TRACK_Eta && 0 <= nTracks && 500 > nTracks
     if ((isPi && 0!=ntuple->backgroundCategory()) ||
-	(!isPi && c_psipK_BKGCAT!=ntuple->backgroundCategory())){
+        (!isPi && c_psipK_BKGCAT!=ntuple->backgroundCategory())){
       BadBK++;
       continue ;
     }
@@ -113,6 +129,12 @@ int loop(Lambdab* ntuple, bool isPi){
     if ( !ntuple->preselection(0,false,true) ){
       BadPresel++;
       continue;
+    }
+    meson_c = (ntuple->piminus_ID>0?1.:-1.) ;
+   // 3000 <= K_P && 100000 > K_P && 1.5 <= K_TRACK_Eta && 5 > K_TRACK_Eta && 0 <= nTracks && 500 > nTracks
+    if (0!=theCharge && theCharge!=meson_c ){
+      BadCharge++;
+      continue ;
     }
     Good++;
     runNumber = ntuple->runNumber;
@@ -149,6 +171,7 @@ int loop(Lambdab* ntuple, bool isPi){
   std::cout << "Bad Tracks : " << BadTk << std::endl ;
   std::cout << "Bad Trigger: " << BadTrig << std::endl ;
   std::cout << "Bad Presel : " << BadPresel << std::endl ;
+  std::cout << "Bad Charge : " << BadCharge << std::endl ;
   std::cout << "Good       : " << Good << std::endl ;
 
   std::cout << "Done" << std::endl  ;
@@ -168,15 +191,16 @@ int main(int argc, char** argv) {
 
   if(argc<2){
     std::cout << "ERROR: Insufficient arguments given" << std::endl;  
-    std::cout << "./makePIDtuple.exe $CASTOR_HOME/Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root" 
+    std::cout << "./makePIDtuple.exe $CASTOR_HOME/Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root [ charge ]" 
               << "  | tee test-makePIDtuple" << std::endl;  
     return -9;
   }
 
   // *** Decode Arguments ***
   TString fullname = TString(argv[1]);
+  TString charge   = (argc>2)?TString(argv[2]):"";
   
-  std::cout << "Configured makePIDtuple with file: ``" << fullname << "''" << std::endl ;
+  std::cout << "Configured makePIDtuple with file: ``" << fullname << "'' charge: " << charge << std::endl ;
   
   bool isPi =  fullname.Contains("Lbpi");
   Lambdab* tuple = new Lambdab(fullname,"","","");
@@ -184,5 +208,5 @@ int main(int argc, char** argv) {
     std::cout << "Tuple is " << tuple << std::endl ;
     return -1 ;
   }
-  return loop(tuple, isPi);
+  return loop(tuple, isPi, charge);
 }

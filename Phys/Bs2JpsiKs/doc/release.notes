@@ -3,6 +3,9 @@
 ! Responsible : Patrick Koppenburg
 ! Purpose     : BsJpsiKs analysis
 !-----------------------------------------------------------------------------
+!============================================== v5r3 2014-4-11 ==============================
+! 2014-4-11 Diego Martinez Santos
+	 Make version v5r3
 !============================================== v5r2 2013-10-9 ==============================
 ! 2013-10-9 Diego Martinez Santos
 	 Make version v5r2
@@ -19,6 +22,9 @@
 !
 ! See LHCb-ANA-2011-093
 !-----------------------------------------------------------------------------
+
+! 2014-03-20 - Marco Clemencic
+ - Added CMake configuration file.
 
 !========================= Bs2JpsiKs v5r0 2013-03-05 =========================
 
@@ -109,11 +115,4 @@ This gets branched off to svn+ssh://svn.cern.ch/reps/lhcb/Urania/branches/Phys/B
 
 ! 2011-08-12 - Patrick Koppenburg
  - Add weighted option to expert.cpp
-   . By default run random fit
-   . Add a fit for the 5 best bins combined.
-
-! 2011-08-11 - Patrick Koppenburg
- - Add Bd2JpsiPhi
-
-!-----------------------------------------------------------------------------
-! 2011-07-27 - Patrick 
+   . By default r

@@ -54,10 +54,10 @@ TNN->Draw("PsipKMass:wPsipKMass","sweightLb>-4 && wCategory==-1")
 
 // Just for SPD mult
 TChain* T = new TChain("BetaSLambdab2JpsippiDetachedLine_Tuple/DecayTree")
-T->Add("/castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20r1-1062.root")
-T->Add("/castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20-1063.root")
-TFile* fpi = TFile::Open("/castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root")
-TFile* fK = TFile::Open("/castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root")
+T->Add("root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20r1-1062.root")
+T->Add("root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20-1063.root")
+TFile* fpi = TFile::Open("root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root")
+TFile* fK = TFile::Open("root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root")
 Tpi = (TTree*)fpi->Get("BetaSLambdab2JpsippiDetachedLine_TupleMC/DecayTree")  
 TK = (TTree*)fK->Get("BetaSLambdab2JpsippiDetachedLine_TupleMC/DecayTree")  
 TNN2->AddFriend(T)
@@ -141,6 +141,7 @@ png("NN cut efficiency versus psip mass for data and MC")
 //FourProfile(TNN2,TNNpK,TNNppi,0,wD,wMCa,wMCpi,"","mprime","(netOutput>0.552)","","p1","remove",0,1,25)
 //png("NN cut efficiency versus m' for data and MC with fit")
 
+// ----------------------------------------------------------------------
 // fit is no good I need a ratio
 int bins = 25
 TH1D* tpK1 = new TH1D("tpK1","tpK1",bins,0,1)
@@ -177,16 +178,16 @@ rtpDr->Draw()
 NicePlot(rtpDr,rtpD,rtpK)
 png("LbK Data/MC efficiency ratio versus m'")
 
-Chi2                      =         25.8
-NDf                       =           22
-p0                        =     0.970823   +/-   0.0175233   
-p1                        =    -0.141184   +/-   0.0354758   
-
-// DATA over DATA. So far not used.
+// DATA over DATA. 
 Chi2                      =      36.1872
 NDf                       =           22
-p0                        =      1.27219   +/-   0.0141117   
-p1                        =     -0.54569   +/-   0.0275166   
+p0                        =     0.818213   +/-   0.00907603  
+p1                        =    -0.350963   +/-   0.0176974   
+
+Chi2                      =       25.601
+NDf                       =           22
+p0                        =     0.973015   +/-   0.017757    
+p1                        =    -0.126901   +/-   0.0360256   
 
 
 TProfile* rtppir = (TProfile*)Divide(rtppi,rtpK)
@@ -199,16 +200,119 @@ rtppir->Fit("pol1","","",0.0,1)
 NicePlot(rtppir,rtppi,rtpK)
 png("Lbpi/LbK MC efficiency ratio versus m'")
 
-Chi2                      =      32.0834
+Chi2                      =       25.653
 NDf                       =           22
-p0                        =      0.91063   +/-   0.019566    
-p1                        =     0.170704   +/-   0.0385128   
+p0                        =     0.969952   +/-   0.0215632   
+p1                        =    0.0465888   +/-   0.0425166   
 
 rtppir->Fit("pol0","","",0.0,1)
-Chi2                      =      51.7295
+Chi2                      =      26.8538
 NDf                       =           23
-p0                        =     0.993525   +/-   0.00574975  
+p0                        =     0.992609   +/-   0.00612074  
 
+// ----------------------------------------------------------------------
+// The same for up and down
+TString UD("Up")
+TString UD("Down")
+
+TString Pol("*(Polarity==1)")
+if (UD=="Down") Pol = TString("*(Polarity==-1)")
+
+// fit is no good I need a ratio
+int bins = 25
+TH1D* tpK1 = new TH1D("tpK1","tpK1",bins,0,1)
+TH1D* tpK2 = new TH1D("tpK2","tpK2",bins,0,1)
+TH1D* tpD1 = new TH1D("tpD1","tpD1",bins,0,1)
+TH1D* tpD2 = new TH1D("tpD2","tpD2",bins,0,1)
+TH1D* tppi1 = new TH1D("tppi1","tppi1",bins,0,1)
+TH1D* tppi2 = new TH1D("tppi2","tppi2",bins,0,1)
+
+//TNN2->Draw("(netOutput>0.552):mprime >> tpD",wD)   // gets wrong errors
+
+TNN2->Draw("mprime >> tpD1",TString(wD)+Pol)   // 
+TNN2->Draw("mprime >> tpD2",TString(wD)+"*(netOutput>0.552)"+Pol)   // 
+
+TNNppi->Draw("mprime >> tppi1",TString(wMCpi)+Pol)
+TNNppi->Draw("mprime >> tppi2",TString(wMCpi)+"*(netOutput>0.552)"+Pol)
+
+TNNpK->Draw("mprime >> tpK1",TString(wMCa)+Pol)
+TNNpK->Draw("mprime >> tpK2",TString(wMCa)+"*(netOutput>0.552)"+Pol)
+
+TH1* rtpK = Divide(tpK2,tpK1,"E")
+TH1* rtppi = Divide(tppi2,tppi1,"E")
+TH1* rtpD = Divide(tpD2,tpD1,"E")
+
+TProfile* rtpDr = (TProfile*)Divide(rtpD,rtpK)
+rtpDr->SetMaximum(1.5)
+rtpDr->SetMinimum(0.0)
+rtpDr->GetXaxis()->SetTitle("m'")
+rtpDr->GetYaxis()->SetTitle("efficiency (ratio)")
+rtpDr->Draw()
+rtpD->Fit("pol1","","",0.1,0.95)
+rtpDr->Fit("pol1","","",0.1,0.95)
+rtpDr->Draw()
+NicePlot(rtpDr,rtpD,rtpK)
+png("LbK Data/MC efficiency ratio versus m' "+UD)
+
+// UP
+***************************************
+Minimizer is Linear
+Chi2                      =      22.4436
+NDf                       =           20
+p0                        =     0.824246   +/-   0.0130956   
+p1                        =    -0.362481   +/-   0.0254344   
+(class TFitResultPtr)27386976
+root [111] rtpDr->Fit("pol1","","",0.1,0.95)
+
+****************************************
+Minimizer is Linear
+Chi2                      =      29.5158
+NDf                       =           20
+p0                        =     0.987218   +/-   0.0249305   
+p1                        =    -0.161591   +/-   0.0500987   
+
+// Down
+****************************************
+Minimizer is Linear
+Chi2                      =      36.0861
+NDf                       =           20
+p0                        =     0.812752   +/-   0.0125923   
+p1                        =    -0.339184   +/-   0.0246477   
+(class TFitResultPtr)20429264
+root [153] rtpDr->Fit("pol1","","",0.1,0.95)
+
+****************************************
+Minimizer is Linear
+Chi2                      =      27.9913
+NDf                       =           20
+p0                        =     0.957219   +/-   0.0251623   
+p1                        =   -0.0987998   +/-   0.0514842   
+
+TProfile* rtppir = (TProfile*)Divide(rtppi,rtpK)
+rtppir->SetMaximum(1.5)
+rtppir->SetMinimum(0)
+rtppir->GetXaxis()->SetTitle("m'")
+rtppir->GetYaxis()->SetTitle("efficiency (ratio)")
+rtppir->Draw()
+rtppir->Fit("pol1","","",0.0,1)
+NicePlot(rtppir,rtppi,rtpK)
+png("Lbpi/LbK MC efficiency ratio versus m' "+UD)
+
+// UP
+****************************************
+Minimizer is Linear
+Chi2                      =      31.8895
+NDf                       =           22
+p0                        =       1.0023   +/-   0.0287073   
+p1                        =   -0.0219422   +/-   0.056448    
+
+//DOWN
+****************************************
+Minimizer is Linear
+Chi2                      =      33.2894
+NDf                       =           21
+p0                        =     0.956548   +/-   0.0309789   
+p1                        =    0.0690256   +/-   0.0613219   
 
 
 //=======================================================================

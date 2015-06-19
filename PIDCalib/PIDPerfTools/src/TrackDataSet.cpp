@@ -2,6 +2,12 @@
 // Include files
 #include <algorithm>
 #include <iomanip>
+#include <boost/regex.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/bind.hpp>
+#include <boost/algorithm/string/find.hpp>
+#include <boost/foreach.hpp>
 
 // local
 #include "PIDPerfTools/TrackDataSet.h"
@@ -16,6 +22,25 @@
 
 using std::cout;
 using std::endl;
+
+namespace PIDCalib 
+{
+  struct length 
+  {
+    bool operator() ( const std::string& a, const std::string& b )
+    {
+      return a.size() < b.size();   
+    } 
+  };
+
+  struct strToDouble
+  {
+    double operator() ( const std::string& s )
+    {
+      return boost::lexical_cast<double>(s);
+    }
+  };
+}
 
 //=============================================================================
 // Overloaded operators
@@ -55,7 +80,7 @@ TrackDataSet::TrackDataSet( const std::string& TrackName,
                 Data->GetTitle(),
                 Data,
                 vars,
-                Cuts.empty()       ? NULL : Cuts.c_str(),
+                NULL,
                 WgtVarName.empty() ? NULL : WgtVarName.c_str() ),
     m_Charge( Charge )
     
@@ -73,6 +98,11 @@ TrackDataSet::TrackDataSet( const std::string& TrackName,
   SetTrackVar_DLLpK( DLLp_Var,
                      DLLK_Var,
                      "DLLpK" );
+  
+  if (not Cuts.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts).c_str())->store();
+  }
+  
 }
 
 
@@ -88,7 +118,7 @@ TrackDataSet::TrackDataSet( const std::string& TrackName,
                 Data->GetTitle(),
                 Data,
                 vars,
-                Cuts.empty()       ? NULL : Cuts.c_str(),
+                NULL,
                 WgtVarName.empty() ? NULL : WgtVarName.c_str() ),
     m_Charge( Charge )
 {
@@ -104,6 +134,10 @@ TrackDataSet::TrackDataSet( const std::string& TrackName,
                "DLLp" ); 
   SetTrackVar( Data->Get_ParamName_DLLpK(),
                "DLLpK" );
+  
+  if (not Cuts.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts).c_str())->store();
+  }
 }
 
 
@@ -123,7 +157,7 @@ TrackDataSet::TrackDataSet( const std::string& TrackName,
                 Charge.c_str(), 
                 Ntuple, 
                 Vars, 
-                Cuts.empty()       ? NULL : Cuts.c_str(), 
+                NULL, 
                 WgtVarName.empty() ? NULL : WgtVarName.c_str() ),
     m_Charge( Charge ) 
 {
@@ -139,7 +173,11 @@ TrackDataSet::TrackDataSet( const std::string& TrackName,
                "DLLp" );
   SetTrackVar_DLLpK( DLLp_Var,
                      DLLK_Var,
-                     "DLLpK" );  
+                     "DLLpK" ); 
+  
+  if (not Cuts.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts).c_str())->store();
+  }
 }
 
 TrackDataSet::TrackDataSet( const std::string& Name, 
@@ -175,7 +213,7 @@ TrackDataSet::TrackDataSet( const std::string& Name,
   SetTrackVar( Data->Get_ParamName_DLLp(),
                "DLLp");
   SetTrackVar(Data->Get_ParamName_DLLpK(),
-              "DLLpK" );
+               "DLLpK" );
 }
 
 TrackDataSet::TrackDataSet( const std::string& Name,
@@ -192,10 +230,28 @@ TrackDataSet::TrackDataSet( const std::string& Name,
                Charge.c_str(),
                Denominator,
                *Denominator->get(),
-               Cuts_Denom.empty() ? NULL : Cuts_Denom.c_str(),
+               NULL,
                0),
     m_Charge( Charge ) 
 { 
+
+  SetTrackVar( Denominator->Get_ParamName_P(),
+               "P");
+  SetTrackVar( Denominator->Get_ParamName_PT(),
+               "PT");
+  SetTrackVar( Denominator->Get_ParamName_ETA(),
+               "ETA");
+  SetTrackVar( Denominator->Get_ParamName_DLLK(),
+               "DLLK");
+  SetTrackVar( Denominator->Get_ParamName_DLLp(),
+               "DLLp");
+  SetTrackVar_DLLpK( Denominator->Get_ParamName_DLLp(),
+                     Denominator->Get_ParamName_DLLK(),
+                     "DLLpK" );
+  
+  if (not Cuts_Denom.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts_Denom).c_str())->store();
+  }
 
   RooRealVar* Weight_Var = NULL;
 
@@ -235,7 +291,7 @@ TrackDataSet::TrackDataSet( const std::string& Name,
                                          Numerator->GetTitle(),
                                          Numerator,
                                          *Numerator->get(),
-                                         Cuts_Num,
+                                         FormatCutList(Cuts_Num),
                                          WgtVar_Num
                                          );
   
@@ -243,7 +299,7 @@ TrackDataSet::TrackDataSet( const std::string& Name,
                                            Denominator->GetTitle(),
                                            Denominator,
                                            *Denominator->get(),
-                                           Cuts_Denom,
+                                           FormatCutList(Cuts_Denom),
                                            WgtVar_Denom
                                            );
   
@@ -260,20 +316,6 @@ TrackDataSet::TrackDataSet( const std::string& Name,
                        Formula.Data(),
                        RooArgList(*Weight_Var,
                                   wValue) );
-
-  SetTrackVar( Denominator->Get_ParamName_P(),
-               "P");
-  SetTrackVar( Denominator->Get_ParamName_PT(),
-               "PT");
-  SetTrackVar( Denominator->Get_ParamName_ETA(),
-               "ETA");
-  SetTrackVar( Denominator->Get_ParamName_DLLK(),
-               "DLLK");
-  SetTrackVar( Denominator->Get_ParamName_DLLp(),
-               "DLLp");
-  SetTrackVar_DLLpK( Denominator->Get_ParamName_DLLp(),
-                     Denominator->Get_ParamName_DLLK(),
-                     "DLLpK" );
 
   this->addColumn(wFunc) ;  
 }
@@ -307,8 +349,8 @@ void TrackDataSet::SetTrackVar( const std::string& InputName,
   }
   else
   {
-    cout<<"***ERROR*** "<<InputName<<" is not in DataSet"<<endl;
-    RooErrorHandler::softAbort();
+    cout<<"WARNING: "<<InputName<<" is not in DataSet"<<endl;
+//     RooErrorHandler::softAbort();
   }
 
 }
@@ -586,3 +628,162 @@ RooAbsData* TrackDataSet::reduceEng(const RooArgSet& varSubset,
 }
 
 //=============================================================================
+
+
+
+//=============================================================================
+// Split composite cut string into individual cuts. Here we assumme the 
+// individual cuts are separated by the Boolean logic operator '&&'.
+//=============================================================================
+void TrackDataSet::SplitCut( const std::string& Cut,
+                                  std::vector< std::string >& SplitVec)
+{
+  boost::split( SplitVec, Cut, boost::is_any_of("&&") ); 
+  
+  // Above split command erroneously fills SplitVec with empty strings, in 
+  // addition to the wanted sub strings. To correct for this, it is therefore 
+  // necessary to remove these entries.
+
+  SplitVec.erase( std::remove_if( SplitVec.begin(), SplitVec.end(), 
+                                  boost::bind( &std::string::empty, _1 ) ), 
+                  SplitVec.end() );
+}
+
+//=============================================================================
+// Translate a cut on (P, PT, ETA, DLLK, DLLp, DLLKp) into a cut on the defined
+// corresponding TrackDataSet variable
+//=============================================================================
+const std::string TrackDataSet::TranslateCut( const std::string& Cut )
+{
+  std::string s(Cut), sre, ret;
+  boost::regex re;
+  boost::cmatch matches;
+
+  //sre = "\\s*(\\w+)\\s*([>=<!]{1,2})\\s*([-+]?[0-9]*\\.?[0-9]+)\\s*";
+  //sre = "\\s*(\\D+)\\s*([>=<!]{1,2})\\s*([-+]?[0-9]*\\.?[0-9]+)\\s*";
+  sre = "\\s*(.+)\\s*([>=<!]{1,2})\\s*([-+]?[0-9]*\\.?[0-9]+)\\s*";
+
+  try
+  {
+    // Assignment and construction initialize the FSM used
+    // for regexp parsing
+    re = sre;
+  }
+
+  catch (boost::regex_error& e)
+  {
+    std::cout << sre << " is not a valid regular expression: \""
+         << e.what() << "\"" << std::endl;
+  }
+
+  if (boost::regex_match(s.c_str(), matches, re))
+  {
+    //std::cout<<"Found a match"<<std::endl;
+    // matches[0] contains the original string.  matches[n]
+    // contains a sub_match object for each matching
+    // subexpression
+    for (unsigned int i = 1; i < matches.size(); i++)
+    {
+      // sub_match::first and sub_match::second are iterators that
+      // refer to the first and one past the last chars of the
+      // matching subexpression
+      std::string match(matches[i].first, matches[i].second);
+
+      //std::cout << "\tmatches[" << i << "] = " << match << std::endl;
+    }
+    
+    //If all matches found, format the cut string
+    if (matches.size()==4)
+    {
+      std::string A, B, C;
+      A.assign(matches[1].first, matches[1].second);
+      B.assign(matches[2].first, matches[2].second);
+      C.assign(matches[3].first, matches[3].second);
+      
+      // Create a vector<string> storing the keys of m_ParamMap 
+      std::pair<std::string, RooRealVar*> me;
+      std::vector<std::string> vec_keys;      
+      BOOST_FOREACH(me, this->m_ParamMap) 
+      {  
+        if(me.first!="P"){
+          vec_keys.push_back(me.first);  
+        }
+      }
+      // Sort strings with shortest -> longest
+      sort( vec_keys.begin(), vec_keys.end(), PIDCalib::length() );
+
+      // Declare string to store updated cut-variable string
+      std::string newCut = A;
+
+      std::vector<std::string>::iterator iter;
+      for(iter=vec_keys.begin(); iter!=vec_keys.end(); ++iter)
+      {
+        //std::cout<<*iter<<'\t'<<"Current:" <<A;
+
+        // Regular expression to find PID variable surrounded either side by non-word character
+        std::string _regex = "\\b"+(*iter)+"\\b";
+        boost::regex re2(_regex.c_str());
+        
+        std::string temp = boost::regex_replace(newCut, 
+                                             re2,
+                                             (this->m_ParamMap[*iter])->GetName()
+                                             );
+        newCut = temp;
+        //std::cout<<'\t'<<"New: "<<A<<'\t'<<temp<<'\t'<<newCut<<std::endl; 
+      }
+      
+      ret = newCut;
+      ret += B;
+      ret += C;
+
+      //std::cout<<Cut<<" -->> "<<ret<<std::endl;
+
+      return ret;
+    }
+    else
+    {
+      std::cout <<"Only "<<matches.size()<<" matches made in "<< s <<std::endl;
+      return NULL;
+    }
+
+  }
+  else
+  {
+    std::cout<<"The regexp \"" << re << "\" does not match \"" << s << "\"" <<std::endl;
+    return NULL;
+  }
+}
+
+//=============================================================================
+// Format a given cut string, possibly composed of multiple cuts separated by 
+// the Boolean '&&' operator, into a string to be passed to RooDataSet::reduce()
+//=============================================================================
+const std::string TrackDataSet::FormatCutList(const std::string& Cut)
+{
+  std::vector< std::string > CutSeries;
+
+  // If there exist at least one instance of "&&" in the string, then pass it
+  // to the SplitCut function for splitting into individual cuts, else simply 
+  // pass cut into CutSeries vector
+  if(boost::algorithm::find_first(Cut, "&&"))
+  {
+    SplitCut( Cut, CutSeries );    
+  }
+  else
+  {
+    CutSeries.push_back(Cut);
+  }
+  
+  std::string TotCut = "";
+  std::vector< std::string >::iterator cut_itr;
+  for(cut_itr=CutSeries.begin(); cut_itr!=CutSeries.end(); ++cut_itr)
+  {
+    if(!TotCut.empty())
+      TotCut += " && ";
+    TotCut += TranslateCut(*cut_itr);
+  }
+  return TotCut;
+}
+
+
+

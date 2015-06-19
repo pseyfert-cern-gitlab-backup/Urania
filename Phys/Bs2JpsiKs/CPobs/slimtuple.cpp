@@ -62,10 +62,18 @@ int slimmingB2JpsiKs(const TString module, const TString data,
 
   // *** Declare Observables and Create Branches ***  
 
-  // *** Observables ***
+  // *** File/Event Tracking ***
   Int_t myB0_FitDaughtersPVConst_nPV;
     outtree.Branch("B0_FitDaughtersPVConst_nPV", &myB0_FitDaughtersPVConst_nPV,
     "B0_FitDaughtersPVConst_nPV/I");
+  Int_t myInputFile;
+    outtree.Branch("InputFile", &myInputFile,
+    "InputFile/I");
+  Int_t myPassLoose[maxLeafs];
+    outtree.Branch("PassLoose", &myPassLoose,
+    "PassLoose[B0_FitDaughtersPVConst_nPV]/I");
+
+  // *** Observables ***  
   Float_t myB0_FitDaughtersPVConst_M[maxLeafs];
     outtree.Branch("B0_FitDaughtersPVConst_M", &myB0_FitDaughtersPVConst_M,
     "B0_FitDaughtersPVConst_M[B0_FitDaughtersPVConst_nPV]/F");
@@ -87,18 +95,18 @@ int slimmingB2JpsiKs(const TString module, const TString data,
   Double_t myB0_TAGOMEGA_OS;
     outtree.Branch("B0_TAGOMEGA_OS", &myB0_TAGOMEGA_OS,
     "B0_TAGOMEGA_OS/D");
-  Int_t myB0_SS_Kaon_DEC;
+  Short_t myB0_SS_Kaon_DEC;
     outtree.Branch("B0_SS_Kaon_DEC", &myB0_SS_Kaon_DEC,
-    "B0_SS_Kaon_DEC/I");
-  Double_t myB0_SS_Kaon_PROB;
+    "B0_SS_Kaon_DEC/S");
+  Float_t myB0_SS_Kaon_PROB;
     outtree.Branch("B0_SS_Kaon_PROB", &myB0_SS_Kaon_PROB,
-    "B0_SS_Kaon_PROB/D");
-  Int_t myB0_SS_Pion_DEC;
-    outtree.Branch("B0_SS_Pion_DEC", &myB0_SS_Pion_DEC,
-    "B0_SS_Pion_DEC/I");
-  Double_t myB0_SS_Pion_PROB;
-    outtree.Branch("B0_SS_Pion_PROB", &myB0_SS_Pion_PROB,
-    "B0_SS_Pion_PROB/D");
+    "B0_SS_Kaon_PROB/F");
+  Short_t myB0_SS_nnetKaon_DEC;
+    outtree.Branch("B0_SS_nnetKaon_DEC", &myB0_SS_nnetKaon_DEC,
+    "B0_SS_nnetKaon_DEC/S");
+  Float_t myB0_SS_nnetKaon_PROB;
+    outtree.Branch("B0_SS_nnetKaon_PROB", &myB0_SS_nnetKaon_PROB,
+    "B0_SS_nnetKaon_PROB/F");
 
   // *** Data Manipulation ***
   UInt_t myrunNumber;
@@ -107,12 +115,9 @@ int slimmingB2JpsiKs(const TString module, const TString data,
   ULong64_t myeventNumber;
     outtree.Branch("eventNumber", &myeventNumber,
     "eventNumber/l");
-  //Double_t myGpsSecond;
-    //outtree.Branch("GpsSecond", &myGpsSecond,
-    //"GpsSecond/D");
-  UInt_t myBCID; // Replace with GpsSecond
-    outtree.Branch("BCID", &myBCID,
-    "BCID/i");
+  Double_t myGpsSecond;
+    outtree.Branch("GpsSecond", &myGpsSecond,
+    "GpsSecond/D");
   Short_t myPolarity;
     outtree.Branch("Polarity", &myPolarity,
     "Polarity/S");
@@ -135,12 +140,12 @@ int slimmingB2JpsiKs(const TString module, const TString data,
   Int_t mypiplus_TRACK_Type;
     outtree.Branch("piplus_TRACK_Type", &mypiplus_TRACK_Type,
     "piplus_TRACK_Type/I");
-  Double_t myKS0_M_with_pplus_piplus;
-    outtree.Branch("KS0_M_with_pplus_piplus", &myKS0_M_with_pplus_piplus,
-    "KS0_M_with_pplus_piplus/D");
-  Double_t myKS0_M_with_piplus_pplus;
-    outtree.Branch("KS0_M_with_piplus_pplus", &myKS0_M_with_piplus_pplus,
-    "KS0_M_with_piplus_pplus/D");
+  Float_t myB0_FitSubstppi1_KS0_M[maxLeafs];
+    outtree.Branch("B0_FitSubstppi1_KS0_M", &myB0_FitSubstppi1_KS0_M,
+    "B0_FitSubstppi1_KS0_M[B0_FitDaughtersPVConst_nPV]/F");
+  Float_t myB0_FitSubstppi2_KS0_M[maxLeafs];
+    outtree.Branch("B0_FitSubstppi2_KS0_M", &myB0_FitSubstppi2_KS0_M,
+    "B0_FitSubstppi2_KS0_M[B0_FitDaughtersPVConst_nPV]/F");
   Double_t mypiminus_ProbNNk;
     outtree.Branch("piminus_ProbNNk", &mypiminus_ProbNNk,
     "piminus_ProbNNk/D");
@@ -152,33 +157,7 @@ int slimmingB2JpsiKs(const TString module, const TString data,
     "B0_FitDaughtersPVConst_KS0_ctau[B0_FitDaughtersPVConst_nPV]/F");
   Float_t myJ_psi_1S_MINIPCHI2_OtherPVs[maxLeafs];
     outtree.Branch("J_psi_1S_MINIPCHI2_OtherPVs", &myJ_psi_1S_MINIPCHI2_OtherPVs,
-    "J_psi_1S_MINIPCHI2_OtherPVs[B0_FitDaughtersPVConst_nPV]/F");  
-
-  // Replace by KS0_M_with_pplus_piplus
-  Float_t myB0_FitDaughtersPVConst_KS0_P0_PE[maxLeafs];
-    outtree.Branch("B0_FitDaughtersPVConst_KS0_P0_PE", &myB0_FitDaughtersPVConst_KS0_P0_PE,
-    "B0_FitDaughtersPVConst_KS0_P0_PE[B0_FitDaughtersPVConst_nPV]/F");
-  Float_t myB0_FitDaughtersPVConst_KS0_P0_PX[maxLeafs];
-    outtree.Branch("B0_FitDaughtersPVConst_KS0_P0_PX", &myB0_FitDaughtersPVConst_KS0_P0_PX,
-    "B0_FitDaughtersPVConst_KS0_P0_PX[B0_FitDaughtersPVConst_nPV]/F");
-  Float_t myB0_FitDaughtersPVConst_KS0_P0_PY[maxLeafs];
-    outtree.Branch("B0_FitDaughtersPVConst_KS0_P0_PY", &myB0_FitDaughtersPVConst_KS0_P0_PY,
-    "B0_FitDaughtersPVConst_KS0_P0_PY[B0_FitDaughtersPVConst_nPV]/F");
-  Float_t myB0_FitDaughtersPVConst_KS0_P0_PZ[maxLeafs];
-    outtree.Branch("B0_FitDaughtersPVConst_KS0_P0_PZ", &myB0_FitDaughtersPVConst_KS0_P0_PZ,
-    "B0_FitDaughtersPVConst_KS0_P0_PZ[B0_FitDaughtersPVConst_nPV]/F");
-  Float_t myB0_FitDaughtersPVConst_KS0_P1_PE[maxLeafs];
-    outtree.Branch("B0_FitDaughtersPVConst_KS0_P1_PE", &myB0_FitDaughtersPVConst_KS0_P1_PE,
-    "B0_FitDaughtersPVConst_KS0_P1_PE[B0_FitDaughtersPVConst_nPV]/F");
-  Float_t myB0_FitDaughtersPVConst_KS0_P1_PX[maxLeafs];
-    outtree.Branch("B0_FitDaughtersPVConst_KS0_P1_PX", &myB0_FitDaughtersPVConst_KS0_P1_PX,
-    "B0_FitDaughtersPVConst_KS0_P1_PX[B0_FitDaughtersPVConst_nPV]/F");
-  Float_t myB0_FitDaughtersPVConst_KS0_P1_PY[maxLeafs];
-    outtree.Branch("B0_FitDaughtersPVConst_KS0_P1_PY", &myB0_FitDaughtersPVConst_KS0_P1_PY,
-    "B0_FitDaughtersPVConst_KS0_P1_PY[B0_FitDaughtersPVConst_nPV]/F");
-  Float_t myB0_FitDaughtersPVConst_KS0_P1_PZ[maxLeafs];
-    outtree.Branch("B0_FitDaughtersPVConst_KS0_P1_PZ", &myB0_FitDaughtersPVConst_KS0_P1_PZ,
-    "B0_FitDaughtersPVConst_KS0_P1_PZ[B0_FitDaughtersPVConst_nPV]/F");
+    "J_psi_1S_MINIPCHI2_OtherPVs[B0_FitDaughtersPVConst_nPV]/F");
 
   // *** Trigger ***
   Bool_t myJ_psi_1S_Hlt1TrackMuonDecision_TOS;
@@ -204,9 +183,6 @@ int slimmingB2JpsiKs(const TString module, const TString data,
     "J_psi_1S_Hlt2TopoMu2BodyBBDTDecision_TOS/O");
 
   // *** Neural Net ***
-  ULong64_t myGpsTime;
-  outtree.Branch("GpsTime", &myGpsTime,
-    "GpsTime/l");
   Int_t mynOTClusters;
     outtree.Branch("nOTClusters", &mynOTClusters,
     "nOTClusters/I");
@@ -359,13 +335,27 @@ int slimmingB2JpsiKs(const TString module, const TString data,
   Int_t myJ_psi_1S_TRUEID;
   Int_t myKS0_TRUEID;
   Int_t myB0_BKGCAT;
+
   Double_t myB0_TRUETAU;
   Float_t  myB0_FitDaughtersPVConst_PV_X[maxLeafs];
   Float_t  myB0_FitDaughtersPVConst_PV_Y[maxLeafs];
   Double_t myB0_TRUEORIGINVERTEX_X;
   Double_t myB0_TRUEORIGINVERTEX_Y;
   Double_t myB0_TRUEORIGINVERTEX_Z;
+  Double_t myJ_psi_1S_TRUEORIGINVERTEX_X;
+  Double_t myJ_psi_1S_TRUEORIGINVERTEX_Y;
+  Double_t myJ_psi_1S_TRUEORIGINVERTEX_Z;
+  Double_t myKS0_TRUEORIGINVERTEX_X;
+  Double_t myKS0_TRUEORIGINVERTEX_Y;
+  Double_t myKS0_TRUEORIGINVERTEX_Z;
 
+  Int_t myJ_psi_1S_MC_MOTHER_ID;
+  Int_t myJ_psi_1S_MC_GD_MOTHER_ID;
+  Int_t myJ_psi_1S_MC_GD_GD_MOTHER_ID;
+  Int_t myKS0_MC_MOTHER_ID;
+  Int_t myKS0_MC_GD_MOTHER_ID;
+  Int_t myKS0_MC_GD_GD_MOTHER_ID;
+  
   if (isSigMC(data) || data==m_IncJpsi) {
     outtree.Branch("B0_TRUEID", &myB0_TRUEID,
       "B0_TRUEID/I");
@@ -387,15 +377,53 @@ int slimmingB2JpsiKs(const TString module, const TString data,
       "B0_TRUEORIGINVERTEX_Y/D");
     outtree.Branch("B0_TRUEORIGINVERTEX_Z", &myB0_TRUEORIGINVERTEX_Z,
       "B0_TRUEORIGINVERTEX_Z/D");
+    outtree.Branch("J_psi_1S_TRUEORIGINVERTEX_X", &myJ_psi_1S_TRUEORIGINVERTEX_X,
+      "J_psi_1S_TRUEORIGINVERTEX_X/D");
+    outtree.Branch("J_psi_1S_TRUEORIGINVERTEX_Y", &myJ_psi_1S_TRUEORIGINVERTEX_Y,
+      "J_psi_1S_TRUEORIGINVERTEX_Y/D");
+    outtree.Branch("J_psi_1S_TRUEORIGINVERTEX_Z", &myJ_psi_1S_TRUEORIGINVERTEX_Z,
+      "J_psi_1S_TRUEORIGINVERTEX_Z/D");
+    outtree.Branch("KS0_TRUEORIGINVERTEX_X", &myKS0_TRUEORIGINVERTEX_X,
+      "KS0_TRUEORIGINVERTEX_X/D");
+    outtree.Branch("KS0_TRUEORIGINVERTEX_Y", &myKS0_TRUEORIGINVERTEX_Y,
+      "KS0_TRUEORIGINVERTEX_Y/D");
+    outtree.Branch("KS0_TRUEORIGINVERTEX_Z", &myKS0_TRUEORIGINVERTEX_Z,
+      "KS0_TRUEORIGINVERTEX_Z/D");
+  }
+  if (data==m_IncJpsi) {
+    outtree.Branch("J_psi_1S_MC_MOTHER_ID", &myJ_psi_1S_MC_MOTHER_ID,
+      "J_psi_1S_MC_MOTHER_ID/I");
+    outtree.Branch("J_psi_1S_MC_GD_MOTHER_ID", &myJ_psi_1S_MC_GD_MOTHER_ID,
+      "J_psi_1S_MC_GD_MOTHER_ID/I");
+    outtree.Branch("J_psi_1S_MC_GD_GD_MOTHER_ID", &myJ_psi_1S_MC_GD_GD_MOTHER_ID,
+      "J_psi_1S_MC_GD_GD_MOTHER_ID/I");
+    outtree.Branch("KS0_MC_MOTHER_ID", &myKS0_MC_MOTHER_ID,
+      "KS0_MC_MOTHER_ID/I");
+    outtree.Branch("KS0_MC_GD_MOTHER_ID", &myKS0_MC_GD_MOTHER_ID,
+      "KS0_MC_GD_MOTHER_ID/I");
+    outtree.Branch("KS0_MC_GD_GD_MOTHER_ID", &myKS0_MC_GD_GD_MOTHER_ID,
+      "KS0_MC_GD_GD_MOTHER_ID/I");
   }
 
   // *** Other information ***
-  Float_t myB0_FitDaughtersPVConst_DeltaChi2[maxLeafs];
-    outtree.Branch("B0_FitDaughtersPVConst_DeltaChi2", &myB0_FitDaughtersPVConst_DeltaChi2,
-    "B0_FitDaughtersPVConst_DeltaChi2[B0_FitDaughtersPVConst_nPV]/F");
-  Int_t myPassLoose[maxLeafs];
-    outtree.Branch("PassLoose", &myPassLoose,
-    "PassLoose[B0_FitDaughtersPVConst_nPV]/I");
+  Float_t myB0_FitSubstKpi1_M[maxLeafs];
+    outtree.Branch("B0_FitSubstKpi1_M", &myB0_FitSubstKpi1_M,
+    "B0_FitSubstKpi1_M[B0_FitDaughtersPVConst_nPV]/F");
+  Float_t myB0_FitSubstKpi2_M[maxLeafs];
+    outtree.Branch("B0_FitSubstKpi2_M", &myB0_FitSubstKpi2_M,
+    "B0_FitSubstKpi2_M[B0_FitDaughtersPVConst_nPV]/F");
+  Float_t myB0_FitSubstKpi1_KS0_M[maxLeafs];
+    outtree.Branch("B0_FitSubstKpi1_KS0_M", &myB0_FitSubstKpi1_KS0_M,
+    "B0_FitSubstKpi1_KS0_M[B0_FitDaughtersPVConst_nPV]/F");
+  Float_t myB0_FitSubstKpi2_KS0_M[maxLeafs];
+    outtree.Branch("B0_FitSubstKpi2_KS0_M", &myB0_FitSubstKpi2_KS0_M,
+    "B0_FitSubstKpi2_KS0_M[B0_FitDaughtersPVConst_nPV]/F");
+  Float_t myB0_FitSubstppi1_M[maxLeafs];
+    outtree.Branch("B0_FitSubstppi1_M", &myB0_FitSubstppi1_M,
+    "B0_FitSubstppi1_M[B0_FitDaughtersPVConst_nPV]/F");
+  Float_t myB0_FitSubstppi2_M[maxLeafs];
+    outtree.Branch("B0_FitSubstppi2_M", &myB0_FitSubstppi2_M,
+    "B0_FitSubstppi2_M[B0_FitDaughtersPVConst_nPV]/F");
 
 
 // ***** PART I: Fill Data Set ***** //
@@ -414,6 +442,9 @@ int slimmingB2JpsiKs(const TString module, const TString data,
 
   // *** Loop ***
   for (Long64_t i=0; i<nentries; i++) {
+    // Reset
+    pass = false;
+
     // Progress
     if (i%printMod==0) {
       std::cout << " |-> " << i << " / " << nentries
@@ -424,7 +455,8 @@ int slimmingB2JpsiKs(const TString module, const TString data,
     ntuple->GetChain()->GetEntry(i);
     maxPV = ntuple->B0_FitDaughtersPVConst_nPV;
 
-    // *** Loose Cuts ***
+    // *** File/Event Tracking ***
+    myInputFile = ntuple->GetChain()->GetTreeNumber();
     for (int pv=0; pv<maxPV; pv++){
       myPassLoose[pv] = ntuple->applyAllCuts(data, pv);
       if (myPassLoose[pv]) pass = true;
@@ -434,7 +466,7 @@ int slimmingB2JpsiKs(const TString module, const TString data,
     // *** Read Original Branch Values ***
     // Observables for Analysis
     for (int pv = 0; pv<maxPV; pv++) {
-      DTFgood[pv] = (ntuple->B0_FitDaughtersPVConst_status[pv]==0);
+      DTFgood[pv] = TMath::Abs(ntuple->B0_FitDaughtersPVConst_status[pv])<pow(10,-5);
     }
     // *** Observables ***
     myB0_FitDaughtersPVConst_nPV = ntuple->B0_FitDaughtersPVConst_nPV;
@@ -456,14 +488,13 @@ int slimmingB2JpsiKs(const TString module, const TString data,
     myB0_TAGOMEGA_OS = ntuple->B0_TAGOMEGA_OS;
     myB0_SS_Kaon_DEC = ntuple->B0_SS_Kaon_DEC;
     myB0_SS_Kaon_PROB = ntuple->B0_SS_Kaon_PROB;
-    myB0_SS_Pion_DEC = ntuple->B0_SS_Pion_DEC;
-    myB0_SS_Pion_PROB = ntuple->B0_SS_Pion_PROB;
+    myB0_SS_nnetKaon_DEC = ntuple->B0_SS_nnetKaon_DEC;
+    myB0_SS_nnetKaon_PROB = ntuple->B0_SS_nnetKaon_PROB;
   
     // *** Data Manipulation ***
     myrunNumber = ntuple->runNumber;
     myeventNumber = ntuple->eventNumber;
-    //myGpsSecond = ntuple->GpsSecond;
-    myBCID = ntuple->BCID; // Replace with GpsSecond
+    myGpsSecond = ntuple->GpsSecond;
     myPolarity = ntuple->Polarity;
   
     // *** Observables for Common Selection Cuts ***
@@ -486,8 +517,14 @@ int slimmingB2JpsiKs(const TString module, const TString data,
   
     // *** Observables for Decay Specific Cuts ***
     mypiplus_TRACK_Type = ntuple->piplus_TRACK_Type;
-    //myKS0_M_with_pplus_piplus = ntuple->KS0_M_with_pplus_piplus;
-    //myKS0_M_with_piplus_pplus = ntuple->KS0_M_with_piplus_pplus;
+    for (int pv = 0; pv<maxPV; pv++) {
+      myB0_FitSubstppi1_KS0_M[pv] = 
+      (DTFgood[pv] ? ntuple->B0_FitSubstppi1_KS0_M[pv] : -999);
+    }
+    for (int pv = 0; pv<maxPV; pv++) {
+      myB0_FitSubstppi2_KS0_M[pv] = 
+      (DTFgood[pv] ? ntuple->B0_FitSubstppi2_KS0_M[pv] : -999);
+    }
     mypiminus_ProbNNk = ntuple->piminus_ProbNNk;
     mypiplus_ProbNNk = ntuple->piplus_ProbNNk;
     for (int pv = 0; pv<maxPV; pv++) {
@@ -495,40 +532,6 @@ int slimmingB2JpsiKs(const TString module, const TString data,
       (DTFgood[pv] ? ntuple->B0_FitDaughtersPVConst_KS0_ctau[pv] : -999);
     }
     //myJ_psi_1S_MINIPCHI2_OtherPVs[pv] // defined later
-
-    // Replace by KS0_M_with_pplus_piplus
-    for (int pv = 0; pv<maxPV; pv++) {
-      myB0_FitDaughtersPVConst_KS0_P0_PE[pv] = 
-      (DTFgood[pv] ? ntuple->B0_FitDaughtersPVConst_KS0_P0_PE[pv] : -999);
-    }
-    for (int pv = 0; pv<maxPV; pv++) {
-      myB0_FitDaughtersPVConst_KS0_P0_PX[pv] = 
-      (DTFgood[pv] ? ntuple->B0_FitDaughtersPVConst_KS0_P0_PX[pv] : -999);
-    }
-    for (int pv = 0; pv<maxPV; pv++) {
-      myB0_FitDaughtersPVConst_KS0_P0_PY[pv] = 
-      (DTFgood[pv] ? ntuple->B0_FitDaughtersPVConst_KS0_P0_PY[pv] : -999);
-    }
-    for (int pv = 0; pv<maxPV; pv++) {
-      myB0_FitDaughtersPVConst_KS0_P0_PZ[pv] = 
-      (DTFgood[pv] ? ntuple->B0_FitDaughtersPVConst_KS0_P0_PZ[pv] : -999);
-    }
-    for (int pv = 0; pv<maxPV; pv++) {
-      myB0_FitDaughtersPVConst_KS0_P1_PE[pv] = 
-      (DTFgood[pv] ? ntuple->B0_FitDaughtersPVConst_KS0_P1_PE[pv] : -999);
-    }
-    for (int pv = 0; pv<maxPV; pv++) {
-      myB0_FitDaughtersPVConst_KS0_P1_PX[pv] = 
-      (DTFgood[pv] ? ntuple->B0_FitDaughtersPVConst_KS0_P1_PX[pv] : -999);
-    }
-    for (int pv = 0; pv<maxPV; pv++) {
-      myB0_FitDaughtersPVConst_KS0_P1_PY[pv] = 
-      (DTFgood[pv] ? ntuple->B0_FitDaughtersPVConst_KS0_P1_PY[pv] : -999);
-    }
-    for (int pv = 0; pv<maxPV; pv++) {
-      myB0_FitDaughtersPVConst_KS0_P1_PZ[pv] = 
-      (DTFgood[pv] ? ntuple->B0_FitDaughtersPVConst_KS0_P1_PZ[pv] : -999);
-    }
 
     // *** Trigger ***
     myJ_psi_1S_Hlt1TrackMuonDecision_TOS = ntuple->J_psi_1S_Hlt1TrackMuonDecision_TOS;
@@ -540,7 +543,6 @@ int slimmingB2JpsiKs(const TString module, const TString data,
     myJ_psi_1S_Hlt2TopoMu2BodyBBDTDecision_TOS = ntuple->J_psi_1S_Hlt2TopoMu2BodyBBDTDecision_TOS;
 
     // *** Neural Net ***
-    myGpsTime = ntuple->GpsTime;
     mynOTClusters = ntuple->nOTClusters;
     for (int pv = 0; pv<maxPV; pv++) {
       myPVCHI2[pv] = (DTFgood[pv] ? ntuple->PVCHI2[pv] : -999);
@@ -689,7 +691,7 @@ int slimmingB2JpsiKs(const TString module, const TString data,
     mypiplus_TRACK_CHI2NDOF = ntuple->piplus_TRACK_CHI2NDOF;
 
     // *** Truth information ***
-    if(isSigMC(data) || data==m_IncJpsi){
+    if(isSigMC(data) || data==m_IncJpsi) {
       myB0_TRUEID = ntuple->B0_TRUEID;
       myJ_psi_1S_TRUEID = ntuple->J_psi_1S_TRUEID;
       myKS0_TRUEID = ntuple->KS0_TRUEID;
@@ -707,30 +709,27 @@ int slimmingB2JpsiKs(const TString module, const TString data,
       myB0_TRUEORIGINVERTEX_X = ntuple->B0_TRUEORIGINVERTEX_X;
       myB0_TRUEORIGINVERTEX_Y = ntuple->B0_TRUEORIGINVERTEX_Y;
       myB0_TRUEORIGINVERTEX_Z = ntuple->B0_TRUEORIGINVERTEX_Z;
+      myJ_psi_1S_TRUEORIGINVERTEX_X = ntuple->J_psi_1S_TRUEORIGINVERTEX_X;
+      myJ_psi_1S_TRUEORIGINVERTEX_Y = ntuple->J_psi_1S_TRUEORIGINVERTEX_Y;
+      myJ_psi_1S_TRUEORIGINVERTEX_Z = ntuple->J_psi_1S_TRUEORIGINVERTEX_Z;
+      myKS0_TRUEORIGINVERTEX_X = ntuple->KS0_TRUEORIGINVERTEX_X;
+      myKS0_TRUEORIGINVERTEX_Y = ntuple->KS0_TRUEORIGINVERTEX_Y;
+      myKS0_TRUEORIGINVERTEX_Z = ntuple->KS0_TRUEORIGINVERTEX_Z;
+    }
+    if (data==m_IncJpsi) {
+      myJ_psi_1S_MC_MOTHER_ID = ntuple->J_psi_1S_MC_MOTHER_ID;
+      myJ_psi_1S_MC_GD_MOTHER_ID = ntuple->J_psi_1S_MC_GD_MOTHER_ID;
+      myJ_psi_1S_MC_GD_GD_MOTHER_ID = ntuple->J_psi_1S_MC_GD_GD_MOTHER_ID;
+      myKS0_MC_MOTHER_ID = ntuple->KS0_MC_MOTHER_ID;
+      myKS0_MC_GD_MOTHER_ID = ntuple->KS0_MC_GD_MOTHER_ID;
+      myKS0_MC_GD_GD_MOTHER_ID = ntuple->KS0_MC_GD_GD_MOTHER_ID;
     }
 
     // *** Other information ***
-    for (int pv = 0; pv<maxPV; pv++) {
-      myB0_FitDaughtersPVConst_DeltaChi2[pv] = -6;
-      if (myB0_FitDaughtersPVConst_chi2[pv]<0) {
-        myB0_FitDaughtersPVConst_DeltaChi2[pv] = -999;
-      } else if (maxPV==1) {
-        myB0_FitDaughtersPVConst_DeltaChi2[pv] = -3;
-      } else {
-        for (int pvNext = 0; pvNext<maxPV; pvNext++) {
-          if (myB0_FitDaughtersPVConst_chi2[pvNext]<0) continue;
-          else if (pvNext!=pv && (myB0_FitDaughtersPVConst_DeltaChi2[pv]<0 ||
-                   TMath::Abs(myB0_FitDaughtersPVConst_chi2[pv] - myB0_FitDaughtersPVConst_chi2[pvNext])
-                   <myB0_FitDaughtersPVConst_DeltaChi2[pv])) {
-            myB0_FitDaughtersPVConst_DeltaChi2[pv] =
-              TMath::Abs(myB0_FitDaughtersPVConst_chi2[pv] - myB0_FitDaughtersPVConst_chi2[pvNext]);
-          }
-        }
-      }
-    }
+
     // Calculate Minimum IPCHI2 of all other PVs
     for (int pv = 0; pv<maxPV; pv++) {
-      myJ_psi_1S_MINIPCHI2_OtherPVs[pv] = -6;
+      myJ_psi_1S_MINIPCHI2_OtherPVs[pv] = -6; // Assigned if DTF only converged for 1 pv
       if (myB0_FitDaughtersPVConst_J_psi_1S_IPCHI2[pv]<0) {
         myJ_psi_1S_MINIPCHI2_OtherPVs[pv] = -999;
       } else if (maxPV==1) {
@@ -748,19 +747,32 @@ int slimmingB2JpsiKs(const TString module, const TString data,
       }
     }
 
-    // Replace by KS0_M_with_pplus_piplus
-    myKS0_M_with_pplus_piplus = TMath::Sqrt(
-      pow(myB0_FitDaughtersPVConst_KS0_P0_PE[0] + TMath::Sqrt(pow(938.272, 2) + pow(myB0_FitDaughtersPVConst_KS0_P1_P[0], 2)), 2)
-      - pow(myB0_FitDaughtersPVConst_KS0_P0_PX[0] + myB0_FitDaughtersPVConst_KS0_P1_PX[0], 2)
-      - pow(myB0_FitDaughtersPVConst_KS0_P0_PY[0] + myB0_FitDaughtersPVConst_KS0_P1_PY[0], 2)
-      - pow(myB0_FitDaughtersPVConst_KS0_P0_PZ[0] + myB0_FitDaughtersPVConst_KS0_P1_PZ[0], 2)
-      );
-    myKS0_M_with_piplus_pplus = TMath::Sqrt(
-      pow(myB0_FitDaughtersPVConst_KS0_P1_PE[0] + TMath::Sqrt(pow(938.272, 2) + pow(myB0_FitDaughtersPVConst_KS0_P0_P[0], 2)), 2)
-      - pow(myB0_FitDaughtersPVConst_KS0_P0_PX[0] + myB0_FitDaughtersPVConst_KS0_P1_PX[0], 2)
-      - pow(myB0_FitDaughtersPVConst_KS0_P0_PY[0] + myB0_FitDaughtersPVConst_KS0_P1_PY[0], 2)
-      - pow(myB0_FitDaughtersPVConst_KS0_P0_PZ[0] + myB0_FitDaughtersPVConst_KS0_P1_PZ[0], 2)
-      );
+    // Alternative Mass Hypotheses
+    for (int pv = 0; pv<maxPV; pv++) {
+      myB0_FitSubstKpi1_M[pv] = 
+      (DTFgood[pv] ? ntuple->B0_FitSubstKpi1_M[pv] : -999);
+    }
+    for (int pv = 0; pv<maxPV; pv++) {
+      myB0_FitSubstKpi2_M[pv] = 
+      (DTFgood[pv] ? ntuple->B0_FitSubstKpi2_M[pv] : -999);
+    }
+    for (int pv = 0; pv<maxPV; pv++) {
+      myB0_FitSubstKpi1_KS0_M[pv] = 
+      (DTFgood[pv] ? ntuple->B0_FitSubstKpi1_KS0_M[pv] : -999);
+    }
+    for (int pv = 0; pv<maxPV; pv++) {
+      myB0_FitSubstKpi2_KS0_M[pv] = 
+      (DTFgood[pv] ? ntuple->B0_FitSubstKpi2_KS0_M[pv] : -999);
+    }
+    for (int pv = 0; pv<maxPV; pv++) {
+      myB0_FitSubstppi1_M[pv] = 
+      (DTFgood[pv] ? ntuple->B0_FitSubstppi1_M[pv] : -999);
+    }
+    for (int pv = 0; pv<maxPV; pv++) {
+      myB0_FitSubstppi2_M[pv] = 
+      (DTFgood[pv] ? ntuple->B0_FitSubstppi2_M[pv] : -999);
+    }
+
 
 // ***** PART III: Write Tree ***** //
 //////////////////////////////////////

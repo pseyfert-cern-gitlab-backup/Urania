@@ -89,8 +89,8 @@ weighting::weighting(const TString module, const TString data,
   m_weightMethod = weightMethod;
   m_data = data;
   m_step = step;
-  m_fitBs = true; //!(data==m_LHCb2012Prescaled);
-  m_fitKstar = (m_step==m_NNKstar ? true : false);
+  m_fitBs = !isPrescaled (m_data);
+  m_fitKstar = (m_step==m_NNKstar && !isPrescaled (m_data) ? true : false);
   m_doOptimisation = doOptimisation;
 
   // *** Load NTuple ***
@@ -455,7 +455,7 @@ int weighting::fit(const unsigned int tracktype) {
   bool m_addKstar = (tracktype!=m_DD && m_fitKstar ? true : false);
   JpsiKsPdf* jpsiKsExt = new JpsiKsPdf(m_tag, m_mass, m_fitBs, m_addKstar,
     (tracktype==m_LL ? 3 : 5), m_step, numGood);
-  if (m_data==m_LHCb2012Prescaled) {
+  if (isPrescaled(m_data)) {
     if (tracktype==m_LL) {
       jpsiKsExt->setConstant("Prescaled_LL");
     } else {
@@ -481,24 +481,23 @@ int weighting::fit(const unsigned int tracktype) {
   std::cout << "########################################" << std::endl;
   std::cout << "  RESULTS for " << (tracktype==3 ? "Long Ks" : "Downstream Ks")
             << std::endl;
-  std::cout << "  # Bd2JpsiKs = " << jpsiKsExt->nBd()->getVal() << " +/- "
-            << jpsiKsExt->nBd()->getError() << std::endl;
+  printf("  # Bd2JpsiKs = %.0f +/- %.0f\n",
+    jpsiKsExt->nBd()->getVal(), jpsiKsExt->nBd()->getError());
   if (m_fitBs) {
-    std::cout << "  # Bs2JpsiKs = " << jpsiKsExt->nBs()->getVal() << " +/- "
-              << jpsiKsExt->nBs()->getError() << std::endl;
+    printf("  # Bs2JpsiKs = %.0f +/- %.0f\n",
+      jpsiKsExt->nBs()->getVal(), jpsiKsExt->nBs()->getError());
   }
   if (m_addKstar) {
-    std::cout << "  # B2JpsiKstar = " << jpsiKsExt->nKstar()->getVal() 
-              << " +/- " << jpsiKsExt->nKstar()->getError() << std::endl;
+    printf("  # Bd2JpsiKstar = %.0f +/- %.0f\n",
+      jpsiKsExt->nKstar()->getVal(), jpsiKsExt->nKstar()->getError());
   }
-  std::cout << "  # Background = " << jpsiKsExt->nonPeaking()->getVal() 
-            << " +/- " << jpsiKsExt->nonPeaking()->getError() << std::endl;
+  printf("  # Background = %.0f +/- %.0f\n",
+    jpsiKsExt->nonPeaking()->getVal(), jpsiKsExt->nonPeaking()->getError());
   float sumOfFit = jpsiKsExt->nBd()->getVal() +
                    (m_fitBs ? jpsiKsExt->nBs()->getVal() : 0) +
                    jpsiKsExt->nonPeaking()->getVal() +
                    (m_addKstar ? jpsiKsExt->nKstar()->getVal() : 0);
-  std::cout << "  Sum = " << sumOfFit << " fitted versus " << numGood
-            << " selected." << std::endl;
+  printf("  Sum = %.0f fitted versus %lld selected.\n", sumOfFit, numGood);
   std::cout << "########################################" << std::endl;
   fitresult->Print();  
   std::cout << "########################################" << std::endl;  
@@ -1011,31 +1010,34 @@ int weighting::writeTree() {
   if (!isSigMC(m_data)) {
     std::cout << "########################################" << std::endl;
     std::cout << "  RESULTS" << std::endl;
-    std::cout << "  # Bd2JpsiKs: " << sumBd << " weighted versus "
-              << fit_nBd_LL << " + " << fit_nBd_DD << " fitted." << std::endl;
+    printf("  # Bd2JpsiKs: %.0f weighted versus %.0f + %.0f fitted. Diff = %.0f\n",
+      sumBd, fit_nBd_LL, fit_nBd_DD, sumBd - fit_nBd_LL - fit_nBd_DD);
     if (m_fitBs) {
-      std::cout << "  # Bs2JpsiKs: " << sumBs << " weighted versus "
-                << fit_nBs_LL << " + " << fit_nBs_DD << " fitted." << std::endl;
+      printf("  # Bs2JpsiKs: %.0f weighted versus %.0f + %.0f fitted. Diff = %.0f\n",
+        sumBs, fit_nBs_LL, fit_nBs_DD, sumBs - fit_nBs_LL - fit_nBs_DD);
     }
     if (m_fitKstar) {
-      std::cout << "  # B2JpsiK*: " << sumKstar << " weighted versus "
-                << fit_nKstar_LL << " + " << fit_nKstar_DD << " fitted."
-                << std::endl;
+      printf("  # Bd2JpsiK*: %.0f weighted versus %.0f + %.0f fitted. Diff = %.0f\n",
+        sumKstar, fit_nKstar_LL, fit_nKstar_DD,
+        sumKstar - fit_nKstar_LL - fit_nKstar_DD);
     }
-    std::cout << "  # Background: " << sumBkg << " weighted versus "
-              << fit_nbkg_LL << " + " << fit_nbkg_DD
-              << " fitted." << std::endl;
-    std::cout << "  Sum: " << sumBd + sumBs + sumKstar + sumBkg
-              << " weighted versus " << sLLEntry << " + " << sDDEntry
-              << " fitted." << std::endl;
+    printf("  # Background: %.0f weighted versus %.0f + %.0f fitted. Diff = %.0f\n",
+      sumBkg, fit_nbkg_LL, fit_nbkg_DD, sumBkg - fit_nbkg_LL - fit_nbkg_DD);
+    printf("  # Sum: %.0f weighted versus %lld + %lld fitted. Diff = %.0f\n",
+      sumBd + sumBs + sumKstar + sumBkg, sLLEntry, sDDEntry,
+      sumBd + sumBs + sumKstar + sumBkg - sLLEntry - sDDEntry);
 
     if (TMath::Abs(sumBd - fit_nBd_LL - fit_nBd_DD)>10 ||
         TMath::Abs(sumBs - fit_nBs_LL - fit_nBs_DD)>10 ||
-        TMath::Abs(sumKstar - fit_nKstar_LL - fit_nKstar_DD)>5 ||
+        TMath::Abs(sumKstar - fit_nKstar_LL - fit_nKstar_DD)>20 ||
         TMath::Abs(sumBkg - fit_nbkg_LL - fit_nbkg_DD)>35) {
       std::cout << "ERROR: Mismatch between number of fitted and filled events"
                 << std::endl;
-      if (!isPrescaled (m_data)) return -1;
+      if (!isPrescaled (m_data)) {
+        std::cout << "Exiting: Tree will not be properly written to file!"
+                  << " You need to fix things first." << std::endl;
+        return -1;
+      }
     }
     std::cout << "########################################" << std::endl; 
   }

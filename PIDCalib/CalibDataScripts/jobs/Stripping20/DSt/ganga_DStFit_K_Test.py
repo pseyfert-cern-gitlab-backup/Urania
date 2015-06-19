@@ -129,7 +129,7 @@ for jid in jobIDs:
         # run over ~10% of all events,
         # and only process one "chopped tree" (index 0)
         nChoppedTrees = 1
-        nSubJobs = 300
+        nSubJobs = 3
         subIDString = "{"+",".join([str(s) for s in range(nSubJobs)])+"}"
 
     # Make the lists of arguments used by the ArgSplitter

@@ -1,14 +1,14 @@
 #============================================================================
 # Created    : 2010-02-03
-# Maintainer : Marc-Olivier Bettler, Diego Martinez Santos, Mathieu Perrin Terrin
+# Maintainer : Marc-Olivier Bettler, Francesco Dettori, Diego Martinez Santos
 #============================================================================
 package           Bs2MuMuParams
-version           v2r5
+version           v2r6
 
 #============================================================================
 # Structure, i.e. directories to process. 
 #============================================================================
-branches          cmt doc python histos
+branches          cmt doc python histos src
 
 #============================================================================
 # Used packages.
@@ -16,11 +16,14 @@ branches          cmt doc python histos
 private
 # genconfuser.py cannot be used here
 # Note: the tag must be set before including GaudiPolicy
-apply_tag skip_genconfuser
-end_private
+#apply_tag skip_genconfuser
+#end_private
 
 use	GaudiPolicy 	v*
+use 	ROOT		v*     LCG_Interfaces
+use	Math/SomeUtils 	v*
 
+application sm_prediction	../src/sm_prediction.C 
 
 #------------------------------------------------------------------------------
 

@@ -101,7 +101,7 @@ For a full list of arguments, do: 'python {0} -h'""".format(
 
     ROOT.gROOT.SetBatch(True)
 
-    ROOT.gROOT.LoadMacro('GetRunRanges.C+')
+    ROOT.gROOT.LoadMacro('{0}/../root/GetRunRanges.C+'.format(os.path.dirname(os.path.realpath(__file__))))
     ROOT.gInterpreter.GenerateDictionary('std::pair<unsigned int, unsigned int>',
                                          'utility')
     ROOT.gInterpreter.GenerateDictionary('std::pair< std::pair<unsigned int, '

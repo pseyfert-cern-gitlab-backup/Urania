@@ -82,7 +82,7 @@ public:
         while ((file=(TSystemFile*)next())) {
           fname = file->GetName();
           if (!file->IsDirectory() && fname.EndsWith(ext) && fname.Contains(pattern)) {
-	    std::cout << "Opening " << fname << " instead." << std::endl ;
+            std::cout << "Opening " << fname << " instead." << std::endl ;
            return  TFile::Open(fname);
           }
         }

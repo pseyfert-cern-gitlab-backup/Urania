@@ -24,6 +24,8 @@ def GetRealPartType(PartName):
         return 'Pi'
     elif PartName == 'P' or PartName == 'P_MuonUnBiased':
         return 'P'
+    elif PartName == 'e' or PartName == 'e_MuonUnBiased':
+        return 'e'
     else:
         return 'Mu'
 
@@ -35,10 +37,14 @@ def GetMotherName(PartName):
         return 'DSt'
     elif PartName == 'P':
         return 'Lam0'
+    elif PartName == 'e':
+        return 'Jpsi'
     if PartName == 'K_MuonUnBiased' or PartName == 'Pi_MuonUnBiased':
         return 'DSt_MuonUnBiased'
     elif PartName == 'P_MuonUnBiased':
         return 'Lam0_MuonUnBiased'
+    elif PartName == 'e_MuonUnBiased':
+        return 'Jpsi'
     else:
         return 'Jpsi'
 
@@ -50,6 +56,8 @@ def GetWorkspaceName(PartName):
         return 'RSDStCalib'
     elif PartType == 'P':
         return 'Lam0Calib'
+    elif PartType == 'e':
+        return 'JpsieeCalib'
     else:
         return 'JpsiCalib'
 
@@ -59,28 +67,49 @@ def IsMuonUnBiased(PartName):
         return True
     else:
         return False
+      
+      
+def CheckCuts(cuts):
+    simple_cuts = cuts
+    for i in "()[]&!|><=:+-*/":
+        simple_cuts = simple_cuts.replace(i," ")
+        
+    simple_cuts = [x for x in simple_cuts.split(" ") if x!=""]
+    valid_varibles = [x for x,y in DataSetVariables().iteritems()]
+    valid_varibles.sort()
     
+    for var in simple_cuts:
+        try:
+            float(var)
+        except ValueError:
+            if var not in valid_varibles:
+                print "'%s' is not numeric or a valid variable"%var
+                print "Known variables are as follows:"
+                print valid_varibles
+                return False
+    return True
+
 def GetDataSetNameDictionary(PartName):
     #======================================================================
     # Define Mother and Workspace name given Particle name
     #======================================================================
     MotherName = GetMotherName(PartName)
     WSName = GetWorkspaceName(PartName)
-        
+
     ret = {'MotherName'    : GetMotherName(PartName),
            'WorkspaceName' : GetWorkspaceName(PartName)
            }
-        
+
     return ret
 
 
 def GetDataSets(StripVer, MagPolarity, PartName, TrackCuts, runMin=None, runMax=None,
-                verbose=False, allowMissingDataSets=False, minEntries=1000):
-    
+                verbose=False, allowMissingDataSets=False, minEntries=1000, maxFiles=-1):
+
     CheckStripVer(StripVer)
     CheckMagPol(MagPolarity)
     CheckPartType(PartName)
-      
+
     #======================================================================
     # Create dictionary holding:
     # - Reconstruction version    ['RecoVer']
@@ -91,10 +120,10 @@ def GetDataSets(StripVer, MagPolarity, PartName, TrackCuts, runMin=None, runMax=
     DataDict = GetRunDictionary(StripVer, PartName)
 
     #======================================================================
-    # Determine min and max file indicies 
+    # Determine min and max file indicies
     #======================================================================
     IndexDict = GetMinMaxFileDictionary(DataDict, MagPolarity,
-                                        runMin, runMax)
+                                        runMin, runMax, maxFiles)
 
     #======================================================================
     # Append runNumber limits to TrackCuts
@@ -111,7 +140,7 @@ def GetDataSets(StripVer, MagPolarity, PartName, TrackCuts, runMin=None, runMax=
     # Get the DataSets
     #======================================================================
     DataSets = []
-    
+
     for i in xrange(IndexDict['minIndex'], IndexDict['maxIndex']+1):
         DataSet = GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, i, verbose,
                              allowMissingDataSets, minEntries)
@@ -123,11 +152,11 @@ def GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, index, verbose=False,
                allowMissingDataSets=False, minEntries=1000):
 
     from os import getenv
-    
+
     CheckStripVer(StripVer)
     CheckMagPol(MagPolarity)
     CheckPartType(PartName)
-      
+
     #======================================================================
     # Create dictionary holding:
     # - Reconstruction version    ['RecoVer']
@@ -146,9 +175,9 @@ def GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, index, verbose=False,
 
     fname_protocol = ""
     fname_query = ""
-    
+
     CalibDataProtocol=os.getenv("CALIBDATAURLPROTOCOL")
-    CalibDataQuery=os.getenv("CALIBDATAURLQUERY")   
+    CalibDataQuery=os.getenv("CALIBDATAURLQUERY")
 
     # set the URL protocol (if applicable)
     if CalibDataProtocol is not None and CalibDataProtocol!="":
@@ -162,7 +191,7 @@ def GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, index, verbose=False,
     fname_head = os.getenv(vname_head)
     if fname_head is None:
         raise GetEnvError("Cannot retrieve dataset, environmental variable %s has not been set." %vname_head)
-    
+
     fname = ("{prtcol}{topdir}/Reco{reco}_DATA/{pol}/"
              "{mother}_{part}_{pol}_Strip{strp}_{idx}.root{qry}").format(
         prtcol=fname_protocol, topdir=fname_head, reco=DataDict['RecoVer'],
@@ -176,10 +205,10 @@ def GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, index, verbose=False,
 #         part=PartType, strp=StripVer, idx=index, qry=fname_query)
 
 
-   
+
     if verbose:
       print "Attempting to open file {0} for reading".format(fname)
-        
+
     f = ROOT.TFile.Open(fname)
     if not f:
         if allowMissingDataSets:
@@ -196,7 +225,7 @@ def GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, index, verbose=False,
     Data = ws.data('data')
     if not Data:
         raise RooWorkspaceError("RooDataSet not found in workspace %s" %wsname)
-        
+
     #======================================================================
     # Declare Instance of RICHTrackDataSet for Calibration tracks
     #======================================================================
@@ -210,30 +239,48 @@ def GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, index, verbose=False,
     DataSet = None
     dsType = None
     if (DataDict['RecoVer']>=14):
-        dsType = 'PIDTrackDataSet'
-        DataSet = ROOT.PIDTrackDataSet('Calib_Data'
-                                       , ''
+        dsType = 'GenericDataSet'
+        
+        VariableVector = ROOT.std.vector(ROOT.std.pair("string,string"))()
+        
+        for VarName, DataSetVarName in DataSetVariables().iteritems():
+          VariableAlias = ROOT.std.pair("string,string")(VarName, DataSetVarName.format(particle=PartType))
+          VariableVector.push_back(VariableAlias)
+        
+        DataSet = ROOT.GenericDataSet('Calib_Data'
                                        , Data
                                        , Data.get()
-                                       , PartType+'_P'
-                                       , PartType+'_PT'
-                                       , PartType+'_Eta'
-                                       , 'nTracks'
-                                       , PartType+'_CombDLLK'
-                                       , PartType+'_CombDLLp'
-                                       , PartType+'_CombDLLe'
-                                       , PartType+'_CombDLLmu'
-                                       , PartType+'_IsMuon'
-                                       , PartType+'_IsMuonLoose'
-                                       , PartType+'_nShared'
-                                       , PartType+'_ProbNNK'
-                                       , PartType+'_ProbNNpi'
-                                       , PartType+'_ProbNNp'
-                                       , PartType+'_ProbNNmu'
-                                       , PartType+'_ProbNNe'
+                                       , VariableVector
                                        , TrackCuts
                                        , 'nsig_sw'
                                        )
+        #dsType = 'PIDTrackDataSet'
+        #DataSet = ROOT.PIDTrackDataSet('Calib_Data'
+                                       #, ''
+                                       #, Data
+                                       #, Data.get()
+                                       #, PartType+'_P'
+                                       #, PartType+'_PT'
+                                       #, PartType+'_Eta'
+                                       #, 'nTracks'
+                                       #, 'nSPDHits'
+                                       #, PartType+'_CombDLLK'
+                                       #, PartType+'_CombDLLp'
+                                       #, PartType+'_CombDLLe'
+                                       #, PartType+'_CombDLLmu'
+                                       #, PartType+'_IsMuon'
+                                       #, PartType+'_IsMuonLoose'
+                                       #, PartType+'_nShared'
+                                       #, PartType+'_HasBremAdded'
+                                       #, PartType+'_CaloRegion'
+                                       #, PartType+'_ProbNNK'
+                                       #, PartType+'_ProbNNpi'
+                                       #, PartType+'_ProbNNp'
+                                       #, PartType+'_ProbNNmu'
+                                       #, PartType+'_ProbNNe'
+                                       #, TrackCuts
+                                       #, 'nsig_sw'
+                                       #)
 
     else:
         dsType = 'RICHTrackDataSet'
@@ -245,6 +292,7 @@ def GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, index, verbose=False,
                                         , PartType+'_PT'
                                         , PartType+'_Eta'
                                         , 'nTracks'
+                                        , 'nSPDHits'
                                         , PartType+'_CombDLLK'
                                         , PartType+'_CombDLLp'
                                         , PartType+'_ProbNNK'
@@ -253,19 +301,19 @@ def GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, index, verbose=False,
                                         , TrackCuts
                                         , 'nsig_sw'
                                         )
-        
+
     ws.Delete()
     f.Close()
     if verbose:
         print DataSet, type(DataSet)
-        
+
     #======================================================================
     # Sanity test: do we have a dataset, and is it empty?
     #======================================================================
     if DataSet is None:
         raise RooDataSetError("Failed to create {0} from RooDataSet".format(
             dsType))
-        
+
     if DataSet.sumEntries()==0:
         raise RooDataSetError("{0} contains no entries".format(
             dsType))
@@ -282,7 +330,7 @@ def GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, index, verbose=False,
     #    AllDataSet.Delete()
     #else:
     #    DataSet = AllDataSet
-            
+
     #======================================================================
     # Veto ranges with insufficient statistics
     #======================================================================
@@ -293,7 +341,7 @@ def GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, index, verbose=False,
             dsType=dsType, nEvt=DataSet.sumEntries(), minEvts=minEntries)
         warnings.warn( msg )
         return None
-                  
+
     return DataSet
 
 def GetPerfPlotListOLD( PerfFunc,
@@ -307,18 +355,18 @@ def GetPerfPlotListOLD( PerfFunc,
                      runMax=None,
                      verbose=True,
                      allowMissingDataSets=False):
-  
+
     #======================================================================
     # Declare default list of PID plots
     #======================================================================
     Plots = []
- 
+
     #======================================================================
     # Loop over all calibration subsamples
     #======================================================================
     for DataSet in GetDataSets(StripVer, MagPolarity, PartName, TrackCuts,
                                runMin, runMax, verbose, allowMissingDataSets):
-        
+
         #======================================================================
         # Run Specific implementation of PerfCalculator
         #======================================================================
@@ -358,14 +406,14 @@ def GetPerfResultListOLD(PerfFunc,
     #======================================================================
     for DataSet in GetDataSets(StripVer, MagPolarity, PartName, TrackCuts,
                                runMin, runMax, verbose, allowMissingDataSets):
-        
+
         #======================================================================
         # Run Specific implementation of PerfCalculator
         #======================================================================
         PerfFunc(DataSet, DLLCutList, PIDResults, verbose)
         if verbose:
             print PIDResults
-        
+
         #======================================================================
         # Delete DataSet
         #======================================================================
@@ -386,13 +434,14 @@ def GetPerfPlotList( PerfFunc,
                      runMin=None,
                      runMax=None,
                      verbose=True,
-                     allowMissingDataSets=False):
-  
+                     allowMissingDataSets=False,
+                     maxFiles=-1 ):
+
     #**********************************************************************
     CheckStripVer(StripVer)
     CheckMagPol(MagPolarity)
     CheckPartType(PartName)
-      
+
     #======================================================================
     # Create dictionary holding:
     # - Reconstruction version    ['RecoVer']
@@ -403,10 +452,10 @@ def GetPerfPlotList( PerfFunc,
     DataDict = GetRunDictionary(StripVer, PartName)
 
     #======================================================================
-    # Determine min and max file indicies 
+    # Determine min and max file indicies
     #======================================================================
     IndexDict = GetMinMaxFileDictionary(DataDict, MagPolarity,
-                                        runMin, runMax)
+                                        runMin, runMax, maxFiles)
 
     #======================================================================
     # Append runNumber limits to TrackCuts
@@ -456,12 +505,13 @@ def GetPerfResultList(PerfFunc,
                       runMin=None,
                       runMax=None,
                       verbose=True,
-                      allowMissingDataSets=False):
+                      allowMissingDataSets=False,
+                      maxFiles=-1):
  #**********************************************************************
     CheckStripVer(StripVer)
     CheckMagPol(MagPolarity)
     CheckPartType(PartName)
-      
+
     #======================================================================
     # Create dictionary holding:
     # - Reconstruction version    ['RecoVer']
@@ -472,10 +522,10 @@ def GetPerfResultList(PerfFunc,
     DataDict = GetRunDictionary(StripVer, PartName)
 
     #======================================================================
-    # Determine min and max file indicies 
+    # Determine min and max file indicies
     #======================================================================
     IndexDict = GetMinMaxFileDictionary(DataDict, MagPolarity,
-                                        runMin, runMax)
+                                        runMin, runMax, maxFiles)
 
     #======================================================================
     # Append runNumber limits to TrackCuts
@@ -492,24 +542,25 @@ def GetPerfResultList(PerfFunc,
     # Declare default list of PID results
     #======================================================================
     PIDResults = []
+    minEntries = 1000
 
     #======================================================================
     # Loop over all calibration subsamples
     #======================================================================
   #  for DataSet in GetDataSets(StripVer, MagPolarity, PartName, TrackCuts,
   #                             runMin, runMax, verbose, allowMissingDataSets):
-   
+
     for i in xrange(IndexDict['minIndex'], IndexDict['maxIndex']+1):
-        DataSet = GetDataSet(StripVer,MagPolarity,PartName,TrackCuts,i,verbose,allowMissingDataSets, minEntries)
+        DataSet = GetDataSet(StripVer,MagPolarity,PartName,TrackCuts,i,verbose,allowMissingDataSets, 1000)
         if DataSet is not None:
-    
+
         #======================================================================
         # Run Specific implementation of PerfCalculator
         #======================================================================
             PerfFunc(DataSet, DLLCutList, PIDResults, verbose)
             if verbose:
                 print PIDResults
-        
+
         #======================================================================
         # Delete DataSet
         #======================================================================

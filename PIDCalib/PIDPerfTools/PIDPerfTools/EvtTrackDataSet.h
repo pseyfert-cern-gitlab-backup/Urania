@@ -33,6 +33,7 @@ public:
                    const std::string& PT_Name,
                    const std::string& ETA_Name,
                    const std::string& nTrack_Var,
+                   const std::string& nSPDHits_Var,
                    const std::string& DLLK_Name,
                    const std::string& DLLp_Name,
                    const std::string& Cuts = "",
@@ -55,6 +56,7 @@ public:
                    const std::string& PT_Name,
                    const std::string& ETA_Name,
                    const std::string& nTrack_Var,
+                   const std::string& nSPDHits_Var,
                    const std::string& DLLK_Name,
                    const std::string& DLLp_Name,
                    const std::string& cuts = "", 
@@ -92,11 +94,13 @@ public:
   //========================================================
   // Get track parameter names 
   const std::string Get_ParamName_nTrack() const;
+  const std::string Get_ParamName_nSPDHits() const;
   //========================================================  
 
   //========================================================
   // Get track parameter  
   const RooRealVar* Get_Param_nTrack() const;
+  const RooRealVar* Get_Param_nSPDHits() const;
   //========================================================
 
   //========================================================

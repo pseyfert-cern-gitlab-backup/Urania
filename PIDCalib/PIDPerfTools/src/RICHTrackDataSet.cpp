@@ -48,7 +48,7 @@ RICHTrackDataSet::RICHTrackDataSet( const std::string& TrackName,
                      nTrack_Var,
                      DLLK_Var,
                      DLLp_Var,
-                     Cuts,
+                     "",
                      WgtVarName)
 {
   SetTrackVar( ProbNNK_Name,
@@ -59,6 +59,10 @@ RICHTrackDataSet::RICHTrackDataSet( const std::string& TrackName,
 
   SetTrackVar( ProbNNp_Name,
                "ProbNNp");
+  
+  if (not Cuts.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts).c_str())->store();
+  }
 }
 
 RICHTrackDataSet::RICHTrackDataSet( const std::string& TrackName,
@@ -72,7 +76,7 @@ RICHTrackDataSet::RICHTrackDataSet( const std::string& TrackName,
                      Charge,
                      Data,
                      vars,
-                     Cuts,
+                     "",
                      WgtVarName )
 {
   SetTrackVar( Data->Get_ParamName_ProbNNK(),
@@ -83,6 +87,10 @@ RICHTrackDataSet::RICHTrackDataSet( const std::string& TrackName,
 
   SetTrackVar( Data->Get_ParamName_ProbNNp(),
                "ProbNNp" );
+  
+  if (not Cuts.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts).c_str())->store();
+  }
 }
 
 
@@ -112,8 +120,8 @@ RICHTrackDataSet::RICHTrackDataSet( const std::string& TrackName,
                      nTrack_Var,
                      DLLK_Var,
                      DLLp_Var,
-                     Cuts,
-                     WgtVarName )
+                     "",
+                     WgtVarName)
 {
   SetTrackVar( ProbNNK_Name,
                "ProbNNK");
@@ -123,6 +131,10 @@ RICHTrackDataSet::RICHTrackDataSet( const std::string& TrackName,
 
   SetTrackVar( ProbNNp_Name,
                "ProbNNp");
+  
+  if (not Cuts.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts).c_str())->store();
+  }
 
 }
 
@@ -145,7 +157,7 @@ RICHTrackDataSet::RICHTrackDataSet( const std::string& Name,
                     nStart,
                     nStop,
                     copyCache,
-                    wgtVarName)
+                    wgtVarName) 
 {
   SetTrackVar( Data->Get_ParamName_ProbNNK(),
                "ProbNNK" );
@@ -173,7 +185,7 @@ RICHTrackDataSet::RICHTrackDataSet( const std::string& Name,
                     Denominator,
                     WgtVar,
                     Cuts_Num,
-                    Cuts_Denom,
+                    "",
                     WgtVar_Num,
                     WgtVar_Denom
                     )
@@ -186,6 +198,10 @@ RICHTrackDataSet::RICHTrackDataSet( const std::string& Name,
   
   SetTrackVar( Denominator->Get_ParamName_ProbNNp(),
                "ProbNNp" );
+  
+  if (not Cuts_Denom.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts_Denom).c_str())->store();
+  }
 }
 
 //=============================================================================

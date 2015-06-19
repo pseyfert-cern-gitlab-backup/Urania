@@ -149,7 +149,7 @@ def Csp(sw, pw, lo, hi, PS = Bs2JpsiKK_ps):
 
     CSP = sqrt(x**2 + y**2)
     theta = -atan(y/x)
-    if theta < 0 : theta = theta+pi
+    if theta < 0 : theta = theta+2*pi
     
 
     return CSP, theta
@@ -220,7 +220,7 @@ def Csp_res(sw, pw, sigma, stp,  phys_min, phys_max, lo, hi, PS = Bs2JpsiKK_ps):
     print x, y
     CSP = sqrt(x.n()**2 + y.n()**2)
     theta = -atan(y/x)
-    if theta < 0 : theta = theta+pi
+    if theta < 0 : theta = theta+2*pi
     
 
     return CSP, theta
@@ -259,7 +259,7 @@ def Csp_stt(sw, pw, sigma, l, stp, phys_min, phys_max, lo, hi, PS = Bs2JpsiKK_ps
     print x, y
     CSP = sqrt(x.n()**2 + y.n()**2)
     theta = -atan(y/x)
-    if theta < 0 : theta = theta+pi
+    if theta < 0 : theta = theta+2*pi
     
 
     return CSP, theta

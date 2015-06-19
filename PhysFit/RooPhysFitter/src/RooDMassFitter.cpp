@@ -16,13 +16,14 @@
 #include "RooFormulaVar.h"
 #include "RooGaussian.h"
 #include "RooChebychev.h"
+#include "RooExponential.h"
 #include "RooCBShape.h"
 #include "RooVoigtian.h"
 #include "RooPhysFitter/RooCruijff.h"
 #include "RooPhysFitter/RooCruijffSimple.h"
 #include "RooPhysFitter/RooPhiBg.h"
 
-// ROOT 
+// ROOT
 #include "TChain.h"
 #include "TTree.h"
 #include "TTreeFormula.h"
@@ -49,7 +50,7 @@ using namespace RooPhysFit;
 // Standard constructor, initializes variables
 //=============================================================================
 
-RooDMassFitter::RooDMassFitter(  ) 
+RooDMassFitter::RooDMassFitter(  )
   : RooPhysFitter(), m_dMassPartName(""), m_dMassName("mass"),
     m_dMassSigModelName("sigModel"), m_dMassBkgModelName("bkgModel"),
     m_dMassSigYieldName("nsig"), m_dMassBkgYieldName("nbkg"),
@@ -60,7 +61,7 @@ RooDMassFitter::RooDMassFitter(  )
 {
 }
 
-RooDMassFitter::RooDMassFitter( const char* name, const char* title ) 
+RooDMassFitter::RooDMassFitter( const char* name, const char* title )
   : RooPhysFitter(name, title), m_dMassPartName(""), m_dMassName("mass"),
     m_dMassSigModelName("sigModel"), m_dMassBkgModelName("bkgModel"),
     m_dMassSigYieldName("nsig"), m_dMassBkgYieldName("nbkg"),
@@ -71,8 +72,8 @@ RooDMassFitter::RooDMassFitter( const char* name, const char* title )
 {
 }
 
-void RooDMassFitter::MakeDMassVar(Float_t xmin, Float_t xmax, 
-                                  const char* unit, const char* title) 
+void RooDMassFitter::MakeDMassVar(Float_t xmin, Float_t xmax,
+                                  const char* unit, const char* title)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassVar",
@@ -106,7 +107,7 @@ void RooDMassFitter::AddSpectator(const char *name, Double_t xmin,
     throw WSImportFailure("RooDMassFitter::AddSpectator", *m_rws, var);
   }
   std::string s_brName = (brName==NULL) ? "" : brName;
- 
+
   if (s_brName!="") {
     m_varNameToBranchName[name]=s_brName;
   }
@@ -115,22 +116,22 @@ void RooDMassFitter::AddSpectator(const char *name, Double_t xmin,
                            "No spectator set name specified.");
   }
   if (m_rws->extendSet(m_spectSetName, name)) {
-      throw WSImportFailure("RooDMassFitter::AddSpectator", *m_rws, 
+      throw WSImportFailure("RooDMassFitter::AddSpectator", *m_rws,
                             m_spectSetName, name);
   }
   if (setName&&strcmp(setName,"")!=0) {
     if (m_rws->extendSet(setName, name)) {
-      throw WSImportFailure("RooDMassFitter::AddSpectator", *m_rws, 
+      throw WSImportFailure("RooDMassFitter::AddSpectator", *m_rws,
                             setName, name);
     }
   }
 }
 
 void RooDMassFitter::AddSpectator(const char *name, Double_t xmin,
-                                  Double_t xmax, 
+                                  Double_t xmax,
                                   RooDMassFitter::DoubleFun fun,
                                   const char *brName, const char *unit,
-                                  const char *title, const char* setName) 
+                                  const char *title, const char* setName)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::AddSpectator",
@@ -146,7 +147,7 @@ void RooDMassFitter::AddSpectator(const char *name, Double_t xmin,
                            "No spectator set name specified.");
   }
   if (m_rws->extendSet(m_spectSetName, name)) {
-      throw WSImportFailure("RooDMassFitter::AddSpectator", *m_rws, 
+      throw WSImportFailure("RooDMassFitter::AddSpectator", *m_rws,
                             m_spectSetName, name);
   }
   std::string s_brName = (brName==NULL) ? "" : brName;
@@ -156,17 +157,17 @@ void RooDMassFitter::AddSpectator(const char *name, Double_t xmin,
   m_varNameToFunction[name]=fun;
   if (setName&&strcmp(setName,"")!=0) {
     if (m_rws->extendSet(setName, name)) {
-      throw WSImportFailure("RooDMassFitter::AddSpectator", *m_rws, 
+      throw WSImportFailure("RooDMassFitter::AddSpectator", *m_rws,
                             setName, name);
     }
   }
 }
 
 void RooDMassFitter::AddSpectator(const char *name, Double_t xmin,
-                                  Double_t xmax, 
+                                  Double_t xmax,
                                   TFormula& fun,
                                   const char *brName, const char *unit,
-                                  const char *title, const char* setName) 
+                                  const char *title, const char* setName)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::AddSpectator",
@@ -194,7 +195,7 @@ void RooDMassFitter::AddSpectator(const char *name, Double_t xmin,
     throw GeneralException("RooDMassFitter::AddSpectator",msg.str());
   }
   if (m_rws->extendSet(m_spectSetName, name)) {
-      throw WSImportFailure("RooDMassFitter::AddSpectator", *m_rws, 
+      throw WSImportFailure("RooDMassFitter::AddSpectator", *m_rws,
                             m_spectSetName, name);
   }
   std::string s_brName = (brName==NULL) ? "" : brName;
@@ -204,7 +205,7 @@ void RooDMassFitter::AddSpectator(const char *name, Double_t xmin,
   m_varNameToFormula[name]=fun;
   if (setName&&strcmp(setName,"")!=0) {
     if (m_rws->extendSet(setName, name)) {
-      throw WSImportFailure("RooDMassFitter::AddSpectator", *m_rws, 
+      throw WSImportFailure("RooDMassFitter::AddSpectator", *m_rws,
                             setName, name);
     }
   }
@@ -215,7 +216,7 @@ void RooDMassFitter::AddCategory(const char* name,
                                   std::vector<std::string> types,
                                   std::vector<Int_t> indices,
                                   const char* brName,
-                                  const char* title) 
+                                  const char* title)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::AddCategory",
@@ -225,14 +226,14 @@ void RooDMassFitter::AddCategory(const char* name,
     throw GeneralException("RooDMassFitter::AddCategory",
                            "No category types have been specified.");
   }
-  
+
   if (indices.size()!=types.size()) {
     std::stringstream msg;
     msg << "Number of category types " << types.size()
         << " does not match number of indices " << indices.size();
     throw GeneralException("RooDMassFitter::AddCategory", msg.str());
   }
-  
+
   RooCategory cat(name, ((!title)||(strcmp(title,"")==0))?"":title);
   for (UInt_t i=0; i<types.size(); ++i) {
     std::string type = types[i];
@@ -252,7 +253,7 @@ void RooDMassFitter::AddCategory(const char* name,
                            "No category set name specified.");
   }
   if (m_rws->extendSet(m_catSetName, name)) {
-    throw WSImportFailure("RooDMassFitter::AddSpectator", *m_rws, 
+    throw WSImportFailure("RooDMassFitter::AddSpectator", *m_rws,
                             m_catSetName, name);
   }
   std::string s_brName = (brName==NULL) ? "" : brName;
@@ -275,8 +276,8 @@ void RooDMassFitter::AddCategory(const char* name,
     }
     this->AddCategory(name, v_types, v_indices, brName, title);
 }
-                                  
-void RooDMassFitter::MakeDMassSigGauss(RooRealVar& mu, RooRealVar& sig) 
+
+void RooDMassFitter::MakeDMassSigGauss(RooRealVar& mu, RooRealVar& sig)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassSigGauss",
@@ -297,7 +298,7 @@ void RooDMassFitter::MakeDMassSigGauss(RooRealVar& mu, RooRealVar& sig)
 void RooDMassFitter::MakeDMassSigGauss(Float_t mu_start, Float_t mu_min,
                                        Float_t mu_max, Float_t sig_start,
                                        Float_t sig_min, Float_t sig_max,
-                                       const char* unit) 
+                                       const char* unit)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassSigGauss",
@@ -318,9 +319,9 @@ void RooDMassFitter::MakeDMassSigGauss(Float_t mu_start, Float_t mu_min,
     muTitle.Form("%s #mu", m_dMassPartName);
     sigTitle.Form("%s #sigma", m_dMassPartName);
   }
-  
+
   RooRealVar mu("dmass_sig_mu", muTitle.Data(), mu_start, mu_min, mu_max, unit);
-  RooRealVar sig("dmass_sig_sigma", sigTitle.Data(), sig_start, sig_min, 
+  RooRealVar sig("dmass_sig_sigma", sigTitle.Data(), sig_start, sig_min,
                  sig_max, unit);
   RooGaussian dMassSigModel(m_dMassSigModelName, "", *mass, mu, sig);
   if (m_rws->import(dMassSigModel)) {
@@ -333,7 +334,7 @@ void RooDMassFitter::MakeDMassSigBiGauss(RooRealVar& mu, RooRealVar& sig0,
                                          RooRealVar& sig1oSig0,
                                          RooRealVar& coreFrac,
                                          const char* sig1Name,
-                                         const char* sig1Title) 
+                                         const char* sig1Title)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassSigBiGauss",
@@ -346,10 +347,10 @@ void RooDMassFitter::MakeDMassSigBiGauss(RooRealVar& mu, RooRealVar& sig0,
   }
 
   RooGaussian dmass_sig_g0("dmass_sig_gauss0", "", *mass, mu, sig0);
-  RooFormulaVar sig1(sig1Name, sig1Title, "@0*@1", 
+  RooFormulaVar sig1(sig1Name, sig1Title, "@0*@1",
                      RooArgList(sig1oSig0,sig0));
   sig1.setUnit(sig0.getUnit());
-  
+
   RooGaussian dmass_sig_g1("dmass_sig_gauss1", "", *mass, mu, sig1);
   RooAddPdf dMassSigModel(m_dMassSigModelName, "",
                           RooArgList(dmass_sig_g0,dmass_sig_g1),
@@ -367,7 +368,7 @@ void RooDMassFitter::MakeDMassSigBiGauss(Float_t mu_start, Float_t mu_min,
                                          Float_t sig1oSig0_min,
                                          Float_t sig1oSig0_max,
                                          Float_t coreFrac_start,
-                                         const char* unit) 
+                                         const char* unit)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassSigBiGauss",
@@ -378,7 +379,7 @@ void RooDMassFitter::MakeDMassSigBiGauss(Float_t mu_start, Float_t mu_min,
     throw WSRetrievalFailure("RooDMassFitter::MakeDMassSigBiGauss",
                            *m_rws, m_dMassName, "RooRealVar");
   }
-  
+
   TString muTitle="";
   TString sig0Title="";
   TString sig1oSig0Title="";
@@ -398,7 +399,7 @@ void RooDMassFitter::MakeDMassSigBiGauss(Float_t mu_start, Float_t mu_min,
     sig1oSig0Title.Form("%s #sigma_{tail}/#sigma_{core}", m_dMassPartName);
     coreFracTitle.Form("%s f_{core}", m_dMassPartName);
   }
-   
+
   RooRealVar mu("dmass_sig_mu", muTitle.Data(), mu_start,
                 mu_min, mu_max, unit);
   RooRealVar sig0("dmass_sig_sigma0", sig0Title.Data(),
@@ -407,17 +408,17 @@ void RooDMassFitter::MakeDMassSigBiGauss(Float_t mu_start, Float_t mu_min,
 
   RooRealVar sig1oSig0("dmass_sig_s1oS0", sig1oSig0Title.Data(),
                        sig1oSig0_start, sig1oSig0_min, sig1oSig0_max);
-  
-  RooFormulaVar sig1("dmass_sig_sigma1", sig1Title.Data(), "@0*@1", 
+
+  RooFormulaVar sig1("dmass_sig_sigma1", sig1Title.Data(), "@0*@1",
                      RooArgList(sig1oSig0,sig0));
   sig1.setUnit(unit);
-  
+
   RooGaussian dmass_sig_g1("dmass_sig_gauss1", "", *mass, mu, sig1);
 
   RooRealVar coreFrac("dmass_sig_coreFrac", coreFracTitle.Data(),
                       coreFrac_start,0.0,1);
-  
-  RooAddPdf dMassSigModel(m_dMassSigModelName, "", 
+
+  RooAddPdf dMassSigModel(m_dMassSigModelName, "",
                           RooArgList(dmass_sig_g0,dmass_sig_g1),
                           RooArgList(coreFrac));
   if (m_rws->import(dMassSigModel)) {
@@ -431,7 +432,7 @@ void RooDMassFitter::MakeDMassSigBiGauss(RooRealVar& mu0, RooRealVar& mu1,
                                          RooRealVar& sig1oSig0,
                                          RooRealVar& coreFrac,
                                          const char* sig1Name,
-                                         const char* sig1Title) 
+                                         const char* sig1Title)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassSigBiGauss",
@@ -443,12 +444,12 @@ void RooDMassFitter::MakeDMassSigBiGauss(RooRealVar& mu0, RooRealVar& mu1,
                            *m_rws, m_dMassName, "RooRealVar");
   }
   RooGaussian dmass_sig_g0("dmass_sig_gauss0", "", *mass, mu0, sig0);
-  RooFormulaVar sig1(sig1Name, sig1Title, "@0*@1", 
+  RooFormulaVar sig1(sig1Name, sig1Title, "@0*@1",
                      RooArgList(sig1oSig0,sig0));
   sig1.setUnit(sig0.getUnit());
-  
+
   RooGaussian dmass_sig_g1("dmass_sig_gauss1", "", *mass, mu1, sig1);
-  
+
   RooAddPdf dMassSigModel(m_dMassSigModelName, "",
                           RooArgList(dmass_sig_g0,dmass_sig_g1),
                           RooArgList(coreFrac));
@@ -459,7 +460,7 @@ void RooDMassFitter::MakeDMassSigBiGauss(RooRealVar& mu0, RooRealVar& mu1,
 }
 
 void RooDMassFitter::MakeDMassSigBiGauss(Float_t mu0_start, Float_t mu0_min,
-                                         Float_t mu0_max, 
+                                         Float_t mu0_max,
                                          Float_t mu1_start, Float_t mu1_min,
                                          Float_t mu1_max,Float_t sig0_start,
                                          Float_t sig0_min, Float_t sig0_max,
@@ -467,7 +468,7 @@ void RooDMassFitter::MakeDMassSigBiGauss(Float_t mu0_start, Float_t mu0_min,
                                          Float_t sig1oSig0_min,
                                          Float_t sig1oSig0_max,
                                          Float_t coreFrac_start,
-                                         const char* unit) 
+                                         const char* unit)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassSigBiGauss",
@@ -514,17 +515,17 @@ void RooDMassFitter::MakeDMassSigBiGauss(Float_t mu0_start, Float_t mu0_min,
   RooRealVar sig1oSig0("dmass_sig_s1oS0", sig1oSig0Title.Data(),
                        sig1oSig0_start, sig1oSig0_min, sig1oSig0_max);
   RooRealVar mu1("dmass_sig_mu1", mu1Title.Data(),
-                 mu1_start, mu1_min, mu1_max, unit);  
-  RooFormulaVar sig1("dmass_sig_sigma1", sig1Title.Data(), "@0*@1", 
+                 mu1_start, mu1_min, mu1_max, unit);
+  RooFormulaVar sig1("dmass_sig_sigma1", sig1Title.Data(), "@0*@1",
                      RooArgList(sig1oSig0,sig0));
   sig1.setUnit(unit);
-  
+
   RooGaussian dmass_sig_g1("dmass_sig_gauss1", "", *mass, mu1, sig1);
 
   RooRealVar coreFrac("dmass_sig_coreFrac", coreFracTitle.Data(),
                       coreFrac_start,0.0,1);
-  
-  RooAddPdf dMassSigModel(m_dMassSigModelName, "", 
+
+  RooAddPdf dMassSigModel(m_dMassSigModelName, "",
                        RooArgList(dmass_sig_g0,dmass_sig_g1),
                        RooArgList(coreFrac));
   if (m_rws->import(dMassSigModel)) {
@@ -541,7 +542,7 @@ void RooDMassFitter::MakeDMassSigTriGauss(RooRealVar& mu,
                                           RooRealVar& coreFrac0,
                                           RooRealVar& coreFrac1,
                                           const char* sig1Name,
-                                          const char* sig1Title) 
+                                          const char* sig1Title)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassSigTriGauss",
@@ -553,15 +554,15 @@ void RooDMassFitter::MakeDMassSigTriGauss(RooRealVar& mu,
                            *m_rws, m_dMassName, "RooRealVar");
   }
   RooGaussian dmass_sig_g0("dmass_sig_gauss0", "", *mass, mu, sig0);
-  RooFormulaVar sig1(sig1Name, sig1Title, "@0*@1", 
+  RooFormulaVar sig1(sig1Name, sig1Title, "@0*@1",
                      RooArgList(sig1oSig0,sig0));
-  RooFormulaVar sig2(sig1Name, sig1Title, "@0*@1", 
+  RooFormulaVar sig2(sig1Name, sig1Title, "@0*@1",
                      RooArgList(sig2oSig0,sig0));
   sig1.setUnit(sig0.getUnit());
-  
+
   RooGaussian dmass_sig_g1("dmass_sig_gauss1", "", *mass, mu, sig1);
   RooGaussian dmass_sig_g2("dmass_sig_gauss2", "", *mass, mu, sig2);
-  
+
   RooAddPdf dMassSigModel(m_dMassSigModelName, "",
                           RooArgList(dmass_sig_g0,dmass_sig_g1,dmass_sig_g2),
                           RooArgList(coreFrac0,coreFrac1));
@@ -582,7 +583,7 @@ void RooDMassFitter::MakeDMassSigTriGauss(Float_t mu_start, Float_t mu_min,
                                           Float_t sig2oSig0_max,
                                           Float_t coreFrac0_start,
                                           Float_t coreFrac1_start,
-                                          const char* unit) 
+                                          const char* unit)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassSigTriGauss",
@@ -593,7 +594,7 @@ void RooDMassFitter::MakeDMassSigTriGauss(Float_t mu_start, Float_t mu_min,
     throw WSRetrievalFailure("RooDMassFitter::MakeDMassSigTriGauss",
                            *m_rws, m_dMassName, "RooRealVar");
   }
-  
+
   TString muTitle="";
   TString sig0Title="";
   TString sig1oSig0Title="";
@@ -622,7 +623,7 @@ void RooDMassFitter::MakeDMassSigTriGauss(Float_t mu_start, Float_t mu_min,
     coreFrac0Title.Form("%s f_{core}", m_dMassPartName);
     coreFrac1Title.Form("%s f_{wide}", m_dMassPartName);
   }
-   
+
   RooRealVar mu("dmass_sig_mu", muTitle.Data(), mu_start,
                 mu_min, mu_max, unit);
   RooRealVar sig0("dmass_sig_sigma0", sig0Title.Data(),
@@ -633,14 +634,14 @@ void RooDMassFitter::MakeDMassSigTriGauss(Float_t mu_start, Float_t mu_min,
                        sig1oSig0_start, sig1oSig0_min, sig1oSig0_max);
   RooRealVar sig2oSig0("dmass_sig_s2oS0", sig2oSig0Title.Data(),
                        sig2oSig0_start, sig2oSig0_min, sig2oSig0_max);
-  
-  RooFormulaVar sig1("dmass_sig_sigma1", sig1Title.Data(), "@0*@1", 
+
+  RooFormulaVar sig1("dmass_sig_sigma1", sig1Title.Data(), "@0*@1",
                      RooArgList(sig1oSig0,sig0));
   sig1.setUnit(unit);
-  RooFormulaVar sig2("dmass_sig_sigma2", sig2Title.Data(), "@0*@1", 
+  RooFormulaVar sig2("dmass_sig_sigma2", sig2Title.Data(), "@0*@1",
                      RooArgList(sig2oSig0,sig0));
   sig2.setUnit(unit);
-  
+
   RooGaussian dmass_sig_g1("dmass_sig_gauss1", "", *mass, mu, sig1);
   RooGaussian dmass_sig_g2("dmass_sig_gauss2", "", *mass, mu, sig2);
 
@@ -648,8 +649,8 @@ void RooDMassFitter::MakeDMassSigTriGauss(Float_t mu_start, Float_t mu_min,
                       coreFrac0_start,0.0,1);
   RooRealVar coreFrac1("dmass_sig_coreFrac1", coreFrac1Title.Data(),
                       coreFrac1_start,0.0,1);
-  
-  RooAddPdf dMassSigModel(m_dMassSigModelName, "", 
+
+  RooAddPdf dMassSigModel(m_dMassSigModelName, "",
                           RooArgList(dmass_sig_g0,dmass_sig_g1,dmass_sig_g2),
                           RooArgList(coreFrac0,coreFrac1));
   if (m_rws->import(dMassSigModel)) {
@@ -660,7 +661,7 @@ void RooDMassFitter::MakeDMassSigTriGauss(Float_t mu_start, Float_t mu_min,
 
 void RooDMassFitter::MakeDMassSigCruijff(RooRealVar& mu, RooRealVar& sigL,
                                          RooRealVar& sigR, RooRealVar& alphaL,
-                                         RooRealVar& alphaR) 
+                                         RooRealVar& alphaR)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassSigCruijff",
@@ -673,7 +674,7 @@ void RooDMassFitter::MakeDMassSigCruijff(RooRealVar& mu, RooRealVar& sigL,
   }
   RooCruijff dMassSigModel(m_dMassSigModelName, "", *mass, mu, sigL, sigR, alphaL,
                            alphaR);
-  
+
  //  if (m_rws->importClassCode(RooCruijff::Class(),kTRUE)) {
 //     throw WSImportCodeFailure("RooDMassFitter::MakeDMassSigCruijff",
 //                                    *m_rws, "RooCruijff");
@@ -693,7 +694,7 @@ void RooDMassFitter::MakeDMassSigCruijff(Float_t mu_start, Float_t mu_min,
                                          Float_t sigR_max, Float_t alphaL_start,
                                          Float_t alphaL_min, Float_t alphaL_max,
                                          Float_t alphaR_start, Float_t alphaR_min,
-                                         Float_t alphaR_max, const char* unit) 
+                                         Float_t alphaR_max, const char* unit)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassSigCruijff",
@@ -724,13 +725,13 @@ void RooDMassFitter::MakeDMassSigCruijff(Float_t mu_start, Float_t mu_min,
     sigRTitle.Form("%s #sigma_{R}", m_dMassPartName);
     alphaRTitle.Form("%s #alpha_{R}", m_dMassPartName);
   }
-  
+
   RooRealVar mu("dmass_sig_mu", muTitle.Data(), mu_start, mu_min, mu_max, unit);
-  RooRealVar sigL("dmass_sig_sigmaL", sigLTitle.Data(), sigL_start, sigL_min, 
+  RooRealVar sigL("dmass_sig_sigmaL", sigLTitle.Data(), sigL_start, sigL_min,
                  sigL_max, unit);
   RooRealVar alphaL("dmass_sig_alphaL", alphaLTitle.Data(), alphaL_start,
                    alphaL_min, alphaL_max);
-  RooRealVar sigR("dmass_sig_sigmaR", sigRTitle.Data(), sigR_start, sigR_min, 
+  RooRealVar sigR("dmass_sig_sigmaR", sigRTitle.Data(), sigR_start, sigR_min,
                  sigR_max, unit);
   RooRealVar alphaR("dmass_sig_alphaR", alphaRTitle.Data(), alphaR_start,
                    alphaR_min, alphaR_max);
@@ -748,7 +749,7 @@ void RooDMassFitter::MakeDMassSigCruijff(Float_t mu_start, Float_t mu_min,
 }
 
 void RooDMassFitter::MakeDMassSigCruijff(RooRealVar& mu, RooRealVar& sig,
-                                         RooRealVar& alphaL, RooRealVar& alphaR) 
+                                         RooRealVar& alphaL, RooRealVar& alphaR)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassSigCruijff",
@@ -777,7 +778,7 @@ void RooDMassFitter::MakeDMassSigCruijff(Float_t mu_start, Float_t mu_min,
                                          Float_t alphaL_start, Float_t alphaL_min,
                                          Float_t alphaL_max,
                                          Float_t alphaR_start, Float_t alphaR_min,
-                                         Float_t alphaR_max, const char* unit) 
+                                         Float_t alphaR_max, const char* unit)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassSigCruijff",
@@ -805,9 +806,9 @@ void RooDMassFitter::MakeDMassSigCruijff(Float_t mu_start, Float_t mu_min,
     alphaLTitle.Form("%s #alpha_{L}", m_dMassPartName);
     alphaRTitle.Form("%s #alpha_{R}", m_dMassPartName);
   }
-  
+
   RooRealVar mu("dmass_sig_mu", muTitle.Data(), mu_start, mu_min, mu_max, unit);
-  RooRealVar sig("dmass_sig_sigma", sigTitle.Data(), sig_start, sig_min, 
+  RooRealVar sig("dmass_sig_sigma", sigTitle.Data(), sig_start, sig_min,
                  sig_max, unit);
   RooRealVar alphaL("dmass_sig_alphaL", alphaLTitle.Data(), alphaL_start,
                    alphaL_min, alphaL_max);
@@ -828,7 +829,7 @@ void RooDMassFitter::MakeDMassSigCruijff(Float_t mu_start, Float_t mu_min,
 
 
 void RooDMassFitter::MakeDMassSigCB(RooRealVar& mu, RooRealVar& sig,
-                                    RooRealVar& alpha, RooRealVar& n) 
+                                    RooRealVar& alpha, RooRealVar& n)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassSigCB",
@@ -852,7 +853,7 @@ void RooDMassFitter::MakeDMassSigCB(Float_t mu_start, Float_t mu_min,
                                     Float_t alpha_start, Float_t alpha_min,
                                     Float_t alpha_max, Float_t n_start,
                                     Float_t n_min, Float_t n_max,
-                                    const char* unit) 
+                                    const char* unit)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassSigCB",
@@ -880,9 +881,9 @@ void RooDMassFitter::MakeDMassSigCB(Float_t mu_start, Float_t mu_min,
     alphaTitle.Form("%s #alpha", m_dMassPartName);
     nTitle.Form("%s n", m_dMassPartName);
   }
-  
+
   RooRealVar mu("dmass_sig_mu", muTitle.Data(), mu_start, mu_min, mu_max, unit);
-  RooRealVar sig("dmass_sig_sigma", sigTitle.Data(), sig_start, sig_min, 
+  RooRealVar sig("dmass_sig_sigma", sigTitle.Data(), sig_start, sig_min,
                  sig_max, unit);
   RooRealVar alpha("dmass_sig_alpha", alphaTitle.Data(), alpha_start,
                    alpha_min, alpha_max);
@@ -895,8 +896,8 @@ void RooDMassFitter::MakeDMassSigCB(Float_t mu_start, Float_t mu_min,
   }
 }
 
-void RooDMassFitter::MakeDMassSigVoigtian(RooRealVar& mu, RooRealVar& sig, 
-                                          RooRealVar& gamma, Bool_t doFast) 
+void RooDMassFitter::MakeDMassSigVoigtian(RooRealVar& mu, RooRealVar& sig,
+                                          RooRealVar& gamma, Bool_t doFast)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassSigVoigtian",
@@ -942,11 +943,11 @@ void RooDMassFitter::MakeDMassSigVoigtian(Float_t mu_start, Float_t mu_min, Floa
     sigTitle.Form("%s #sigma", m_dMassPartName);
     gammaTitle.Form("%s #Gamma", m_dMassPartName);
   }
-  
+
   RooRealVar mu("dmass_sig_mu", muTitle.Data(), mu_start, mu_min, mu_max, unit);
-  RooRealVar sig("dmass_sig_sigma", sigTitle.Data(), sig_start, sig_min, 
+  RooRealVar sig("dmass_sig_sigma", sigTitle.Data(), sig_start, sig_min,
                  sig_max, unit);
-  RooRealVar gamma("dmass_sig_gamma", gammaTitle.Data(), gamma_start, gamma_min, 
+  RooRealVar gamma("dmass_sig_gamma", gammaTitle.Data(), gamma_start, gamma_min,
                    gamma_max, unit);
   RooVoigtian dMassSigModel(m_dMassSigModelName, "", *mass, mu, gamma, sig, doFast);
   if (m_rws->import(dMassSigModel)) {
@@ -982,9 +983,9 @@ void RooDMassFitter::MakeDMassSigVoigtian(Float_t mu_start, Float_t mu_min, Floa
     sigTitle.Form("%s #sigma", m_dMassPartName);
     gammaTitle.Form("%s #Gamma", m_dMassPartName);
   }
-  
+
   RooRealVar mu("dmass_sig_mu", muTitle.Data(), mu_start, mu_min, mu_max, unit);
-  RooRealVar sig("dmass_sig_sigma", sigTitle.Data(), sig_start, sig_min, 
+  RooRealVar sig("dmass_sig_sigma", sigTitle.Data(), sig_start, sig_min,
                  sig_max, unit);
   RooRealVar gammaVar("dmass_sig_gamma", gammaTitle.Data(), gamma, unit);
   RooVoigtian dMassSigModel(m_dMassSigModelName, "", *mass, mu, gammaVar, sig, doFast);
@@ -994,7 +995,7 @@ void RooDMassFitter::MakeDMassSigVoigtian(Float_t mu_start, Float_t mu_min, Floa
   }
 }
 
-void RooDMassFitter::MakeDMassBkgFlat(RooRealVar& grad) 
+void RooDMassFitter::MakeDMassBkgFlat(RooRealVar& grad)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassBkgFlat",
@@ -1013,7 +1014,7 @@ void RooDMassFitter::MakeDMassBkgFlat(RooRealVar& grad)
 }
 
 void RooDMassFitter::MakeDMassBkgFlat(Float_t grad_start, Float_t grad_min,
-                                        Float_t grad_max,const char* unit) 
+                                        Float_t grad_max,const char* unit)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassBkgFlat",
@@ -1035,7 +1036,7 @@ void RooDMassFitter::MakeDMassBkgFlat(Float_t grad_start, Float_t grad_min,
   else {
     gradTitle.Form("%s #nabla", m_dMassPartName);
   }
-  
+
   RooRealVar grad("dmass_bkg_poly_c1", gradTitle.Data(), grad_start, grad_min,
                   grad_max, invMassUnit);
   RooChebychev dMassBkgModel(m_dMassBkgModelName,"",*mass,RooArgList(grad));
@@ -1045,8 +1046,59 @@ void RooDMassFitter::MakeDMassBkgFlat(Float_t grad_start, Float_t grad_min,
   }
 }
 
+void RooDMassFitter::MakeDMassBkgExp(RooRealVar& decay)
+{
+  if (!m_rws) {
+    throw GeneralException("RooDMassFitter::MakeDMassBkgExp",
+                           "No RooWorkspace object is defined.");
+  }
+  RooRealVar* mass = m_rws->var(m_dMassName);
+  if (!mass) {
+    throw WSRetrievalFailure("RooDMassFitter:MakeDMassBkgExp",
+                           *m_rws, m_dMassName, "RooRealVar");
+  }
+  RooExponential dMassBkgModel(m_dMassBkgModelName,"",*mass,decay);
+  if (m_rws->import(dMassBkgModel)) {
+    throw WSImportFailure("RooDMassFitter::MakeDMassBkgExp",
+                          *m_rws, dMassBkgModel);
+  }
+}
+
+void RooDMassFitter::MakeDMassBkgExp(Float_t decay_start, Float_t decay_min,
+                                        Float_t decay_max,const char* unit)
+{
+  if (!m_rws) {
+    throw GeneralException("RooDMassFitter::MakeDMassBkgExp",
+                           "No RooWorkspace object is defined.");
+  }
+  RooRealVar* mass = m_rws->var(m_dMassName);
+  if (!mass) {
+    throw WSRetrievalFailure("RooDMassFitter:MakeDMassBkgExp",
+                           *m_rws, m_dMassName, "RooRealVar");
+  }
+  TString invMassUnit="";
+  if (unit&&strcmp(unit,"")!=0) {
+    invMassUnit.Form("(%s)^{-1}", unit);
+  }
+  TString decayTitle="";
+  if (!m_dMassPartName||strcmp(m_dMassPartName,"")==0) {
+    decayTitle="#gamma";
+  }
+  else {
+    decayTitle.Form("%s #gamma", m_dMassPartName);
+  }
+
+  RooRealVar decay("dmass_bkg_exp_decay", decayTitle.Data(), decay_start, decay_min,
+                  decay_max, invMassUnit);
+  RooExponential dMassBkgModel(m_dMassBkgModelName,"",*mass,decay);
+  if (m_rws->import(dMassBkgModel)) {
+    throw WSImportFailure("RooDMassFitter::MakeDMassBkgExp",
+                          *m_rws, dMassBkgModel);
+  }
+}
+
 void RooDMassFitter::MakeDMassBkgQuadratic(RooRealVar& c1,
-                                           RooRealVar& c2) 
+                                           RooRealVar& c2)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassBkgQuadratic",
@@ -1067,7 +1119,7 @@ void RooDMassFitter::MakeDMassBkgQuadratic(RooRealVar& c1,
 void RooDMassFitter::MakeDMassBkgQuadratic(Float_t c1_start,Float_t c1_min,
                                            Float_t c1_max, Float_t c2_start,
                                            Float_t c2_min, Float_t c2_max,
-                                           const char* unit) 
+                                           const char* unit)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassBkgQuadratic",
@@ -1096,7 +1148,7 @@ void RooDMassFitter::MakeDMassBkgQuadratic(Float_t c1_start,Float_t c1_min,
     c1Title.Form("%s c_{1}", m_dMassPartName);
     c2Title.Form("%s c_{2}", m_dMassPartName);
   }
-  
+
   RooRealVar c1("dmass_bkg_poly_c1", c1Title.Data(), c1_start, c1_min,
                 c1_max, invMassUnit.Data());
   RooRealVar c2("dmass_bkg_poly_c2", c2Title.Data(), c2_start, c2_min,
@@ -1110,7 +1162,7 @@ void RooDMassFitter::MakeDMassBkgQuadratic(Float_t c1_start,Float_t c1_min,
 
 void RooDMassFitter::MakeDMassBkgCubic(RooRealVar& c1,
                                        RooRealVar& c2,
-                                       RooRealVar& c3) 
+                                       RooRealVar& c3)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassBkgCubic",
@@ -1132,7 +1184,7 @@ void RooDMassFitter::MakeDMassBkgCubic(Float_t c1_start,Float_t c1_min,
                                        Float_t c1_max, Float_t c2_start,
                                        Float_t c2_min, Float_t c2_max,
                                        Float_t c3_start, Float_t c3_min,
-                                       Float_t c3_max, const char* unit) 
+                                       Float_t c3_max, const char* unit)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakeDMassBkgCubic",
@@ -1168,7 +1220,7 @@ void RooDMassFitter::MakeDMassBkgCubic(Float_t c1_start,Float_t c1_min,
     c2Title.Form("%s c_{2}", m_dMassPartName);
     c3Title.Form("%s c_{3}", m_dMassPartName);
   }
-  
+
   RooRealVar c1("dmass_bkg_poly_c1", c1Title.Data(), c1_start, c1_min,
                 c1_max, invMassUnit.Data());
   RooRealVar c2("dmass_bkg_poly_c2", c2Title.Data(), c2_start, c2_min,
@@ -1182,7 +1234,7 @@ void RooDMassFitter::MakeDMassBkgCubic(Float_t c1_start,Float_t c1_min,
   }
 }
 
-void RooDMassFitter::MakePhiBkg(RooRealVar& c1, RooRealVar& c2) 
+void RooDMassFitter::MakePhiBkg(RooRealVar& c1, RooRealVar& c2)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakePhiBkg",
@@ -1194,7 +1246,7 @@ void RooDMassFitter::MakePhiBkg(RooRealVar& c1, RooRealVar& c2)
                            *m_rws, m_dMassName, "RooRealVar");
   }
   RooPhiBg dMassBkgModel(m_dMassBkgModelName,"",*mass,c1,c2);
-  
+
   if (m_rws->import(dMassBkgModel)) {
     throw WSImportFailure("RooDMassFitter::MakePhiBkg",
                           *m_rws, dMassBkgModel);
@@ -1204,7 +1256,7 @@ void RooDMassFitter::MakePhiBkg(RooRealVar& c1, RooRealVar& c2)
 void RooDMassFitter::MakePhiBkg(Float_t c1_start, Float_t c1_min,
                                 Float_t c1_max,
                                 Float_t c2_start, Float_t c2_min,
-                                Float_t c2_max, const char* unit) 
+                                Float_t c2_max, const char* unit)
 {
   if (!m_rws) {
     throw GeneralException("RooDMassFitter::MakePhiBkg",
@@ -1237,20 +1289,20 @@ void RooDMassFitter::MakePhiBkg(Float_t c1_start, Float_t c1_min,
                 c2_max, unit);
 
   RooPhiBg dMassBkgModel(m_dMassBkgModelName,"",*mass,c1,c2);
-  
+
   if (m_rws->import(dMassBkgModel)) {
     throw WSImportFailure("RooDMassFitter::MakePhiBkg",
                           *m_rws, dMassBkgModel);
-  }  
+  }
 }
 
 // make 1D D0 model - specify expected fraction of each background type
 // NB. No check that sum(frac)==1
-void RooDMassFitter::MakeDMassModel(Float_t frac_sig, Float_t frac_bkg) 
+void RooDMassFitter::MakeDMassModel(Float_t frac_sig, Float_t frac_bkg)
 {
   if (frac_sig<0&&frac_bkg<0) {
     throw GeneralException("RooDMassFitter::MakeDMassModel",
-       "Fit fractions are less than zero. At least one fraction must be >0"); 
+       "Fit fractions are less than zero. At least one fraction must be >0");
   }
   if (frac_sig>1) {
     std::stringstream msg;
@@ -1297,9 +1349,11 @@ void RooDMassFitter::MakeDMassModel(Float_t frac_sig, Float_t frac_bkg)
   }
   Int_t nsig_est = static_cast<Int_t>(frac_sig*nentries);
   Int_t nbkg_est = static_cast<Int_t>(frac_bkg*nentries);
-  
+
   RooRealVar nsig(m_dMassSigYieldName, "N_{sig.}", nsig_est, 0, nentries);
   RooRealVar nbkg(m_dMassBkgYieldName, "N_{bkg.}", nbkg_est, 0, nentries);
+  
+  
   RooArgList yieldList;//(nsig, nbkg);
   RooArgList pdfList;//(*sigModel, *bkgModel);
 
@@ -1315,7 +1369,7 @@ void RooDMassFitter::MakeDMassModel(Float_t frac_sig, Float_t frac_bkg)
   assert(yieldList.getSize()!=0);
 
   RooAddPdf model(m_modelName, "", pdfList, yieldList);
-  
+
   if (m_rws->import(model)) {
     throw WSImportFailure("RooDMassFitter::MakeDMassModel",
                           *m_rws, model);
@@ -1324,7 +1378,7 @@ void RooDMassFitter::MakeDMassModel(Float_t frac_sig, Float_t frac_bkg)
 
 void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
                                       const char* name, const char* title,
-                                      const char* cuts) 
+                                      const char* cuts)
 {
   if (!m_rws)
   {
@@ -1366,14 +1420,14 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
     }
     tt->SetEntryList(elist);
   }
-  
+
   // TTree* ttReduced = tt->CopyTree(cuts);
   Long64_t nentries = !elist?tt->GetEntries():elist->GetN();
   if (nentries==0) {
     throw GeneralException("RooDMassFitter::MakeDMassDataSet",
                            "No entries in TTree after cuts.");
   }
-  
+
   Float_t M_f=0;
   Double_t M=0;
   // if this is a TChain, then we need to use the daughter's method
@@ -1383,7 +1437,7 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
   ch=dynamic_cast<TChain*>(tt);
   std::string masstype=ch?GetBranchType(ch, dMassVarname):GetBranchType(tt, dMassVarname);
   if (!ch) {
-    if (masstype.compare("Float_t")==0) { 
+    if (masstype.compare("Float_t")==0) {
       tt->SetBranchAddress(dMassVarname, &M_f);
     }
     else if (masstype.compare("Double_t")==0) {
@@ -1391,13 +1445,13 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
     }
     else {
       std::stringstream msg;
-      msg << "Got unexpected type " << masstype << " for variable " 
+      msg << "Got unexpected type " << masstype << " for variable "
           << dMassVarname;
       throw GeneralException("RooDMassFitter::MakeDMassDataSet", msg.str());
     }
   }
   else {
-    if (masstype.compare("Float_t")==0) { 
+    if (masstype.compare("Float_t")==0) {
       ch->SetBranchAddress(dMassVarname, &M_f);
     }
     else if (masstype.compare("Double_t")==0) {
@@ -1405,7 +1459,7 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
     }
     else {
       std::stringstream msg;
-      msg << "Got unexpected type " << masstype << " for variable " 
+      msg << "Got unexpected type " << masstype << " for variable "
           << dMassVarname;
       throw GeneralException("RooDMassFitter::MakeDMassDataSet", msg.str());
     }
@@ -1413,13 +1467,13 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
 
   RooArgSet observables(*mass);
   RooArgSet args(*mass);
-  
+
   std::map<std::string, void*> varMap;
   std::map<std::string, void*> catMap;
-  
+
   const RooArgSet* extraArgs = m_rws->set(m_spectSetName);
   const RooArgSet* categories = m_rws->set(m_catSetName);
-  
+
   if (extraArgs) {
     TIterator *it = extraArgs->createIterator();
     std::string varName;
@@ -1429,7 +1483,7 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
       varName=v->GetName();
       if (!args.add(*v)) {
         std::stringstream msg;
-        msg << "Request to add RooRealVar " << varName 
+        msg << "Request to add RooRealVar " << varName
             << " to dataset, which has already been included";
         throw GeneralException("RooDMassFitter::MakeDMassDataSet", msg.str());
       }
@@ -1472,7 +1526,7 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
       catName=cat->GetName();
       if (!args.add(*cat)) {
         std::stringstream msg;
-        msg << "Request to add RooCategory " << catName 
+        msg << "Request to add RooCategory " << catName
             << " to dataset, which has already been included";
         throw GeneralException("RooDMassFitter::MakeDMassDataSet", msg.str());
       }
@@ -1498,19 +1552,19 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
       }
       else {
         ch->SetBranchAddress(branchName.c_str(), catMap[catName]);
-      }      
+      }
     }
   }
-  
+
   RooDataSet *rds = new RooDataSet(name, title?title:"", args);
   Long64_t entry=0;
   Long64_t localEntry=0;
   Long64_t entryNumber=0;
-  
+
   std::cout << "RooDMassFitter::MakeDMassDataSet: Initial entries = "
             << nTotal << std::endl;
   if (cuts&&strlen(cuts)>0) {
-    std::cout << "RooDMassFitter::MakeDMassDataSet: Entries passing selection cut (" 
+    std::cout << "RooDMassFitter::MakeDMassDataSet: Entries passing selection cut ("
               << cuts << ") = " << nentries << std::endl;
   }
 
@@ -1530,22 +1584,22 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
         throw GeneralException("RooDMassFitter::MakeDMassDataSet", msg.str());
       }
     }
-    
+
     Int_t nb;
     nb=tt->GetEntry(entryNumber);
     if (nb<=0) {
       std::stringstream msg;
-      msg << "Got invalid number of bytes " << nb 
+      msg << "Got invalid number of bytes " << nb
           << " for entry " << entry;
       throw GeneralException("RooDMassFitter::MakeDMassDataSet", msg.str());
     }
 
     if (masstype.compare("Float_t")==0) M=static_cast<Double_t>(M_f);
-    
+
     Bool_t printEntry=m_printEntries&&(entry%m_printFreq==0);
     if (printEntry) {
       std::cout << "RooDMassFitter::MakeDMassDataSet: Entry " << entry
-                << ", entry number " << entryNumber 
+                << ", entry number " << entryNumber
                 << ", entry in current tree " << localEntry
                 << std::endl;
       std::cout << "RooDMassFitter::MakeDMassDataSet: D mass = " << M
@@ -1591,7 +1645,7 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
           }
           else {
             std::stringstream msg;
-            msg << "Got unexpected type " << type << " for variable " 
+            msg << "Got unexpected type " << type << " for variable "
                 << vname;
             throw GeneralException("RooDMassFitter::MakeDMassDataSet",
                                    msg.str());
@@ -1618,7 +1672,7 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
           it_func=m_varNameToFunction.find(vname);
           std::map< std::string, TFormula >::const_iterator it_form;
           it_form=m_varNameToFormula.find(vname);
-          if (it_func!=m_varNameToFunction.end()) { 
+          if (it_func!=m_varNameToFunction.end()) {
             const DoubleFun& fun = it_func->second;
             assert(fun);
             v = fun(v);
@@ -1626,8 +1680,8 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
               passed=kFALSE;
               if (printEntry) {
                 std::cout << "RooDMassFitter::MakeDMassDataSet: Variable "
-                          << vname << ", value = " << v 
-                          << " is not in range (" 
+                          << vname << ", value = " << v
+                          << " is not in range ("
                           << var->getMin()
                           << ", " << var->getMax() << ")" << std::endl;
               }
@@ -1644,7 +1698,7 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
               if (printEntry) {
                 std::cout << "RooDMassFitter::MakeDMassDataSet: Variable "
                           << vname
-                          << ", value = " << v << " is not in range (" 
+                          << ", value = " << v << " is not in range ("
                           << var->getMin()
                           << ", " << var->getMax() << ")" << std::endl;
               }
@@ -1735,7 +1789,7 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
                            "No entries selected!");
   }
 
-  std::cout << "RooDMassFitter::MakeDMassDataSet: Selected entries = " 
+  std::cout << "RooDMassFitter::MakeDMassDataSet: Selected entries = "
             << rds->numEntries() << std::endl;
 
   if (m_rws->import(*rds)) {
@@ -1765,7 +1819,7 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
     }
     else {
       std::stringstream msg;
-      msg << "Got invalid data type " << type; 
+      msg << "Got invalid data type " << type;
       throw GeneralException("RooDMassFitter::MakeDMassDataSet", msg.str());
     }
   }
@@ -1788,14 +1842,14 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
     }
     else {
       std::stringstream msg;
-      msg << "Got invalid data type " << type; 
+      msg << "Got invalid data type " << type;
       throw GeneralException("RooDMassFitter::MakeDMassDataSet", msg.str());
     }
   }
   catMap.clear();
   m_dataSetName = name;
 }
-  
+
 // Perform a binned fit to the model PDF
 // A binned clone of the data is made, which is then used to fit the PDF
 // The default binning for each variable in the original dataset is used,
@@ -1805,13 +1859,13 @@ void RooDMassFitter::MakeDMassDataSet(TTree* tt, const char* dMassVarname,
 // By default, a maximum likelihood fit is performed. If useChi2Method is
 // set to true, then a chi^2 fit is performed instead
 void RooDMassFitter::PerformDMassBinnedFit(Int_t nBins,
-                                           const char* fitName, 
+                                           const char* fitName,
                                            Int_t nCores,
-                                           Bool_t saveSnapshot, 
+                                           Bool_t saveSnapshot,
                                            Bool_t printResults,
-                                           Bool_t useSumW2Errors, 
+                                           Bool_t useSumW2Errors,
                                            Bool_t extendedMode,
-                                           Bool_t useChi2Method) 
+                                           Bool_t useChi2Method)
 {
   if (!m_rws)
   {
@@ -1830,16 +1884,16 @@ void RooDMassFitter::PerformDMassBinnedFit(Int_t nBins,
                          useSumW2Errors,extendedMode, useChi2Method);
   mass->setBins(oldBins);
 }
-                            
+
 void RooDMassFitter::PerformDMassIterativeBinnedFit(Int_t nBins,
                                                     std::vector<Int_t>& minuitStrategies,
-                                                    const char* fitName, 
+                                                    const char* fitName,
                                                     Int_t nCores,
-                                                    Bool_t saveSnapshot, 
+                                                    Bool_t saveSnapshot,
                                                     Bool_t printResults,
-                                                    Bool_t useSumW2Errors, 
+                                                    Bool_t useSumW2Errors,
                                                     Bool_t extendedMode,
-                                                    Bool_t useChi2Method) 
+                                                    Bool_t useChi2Method)
 {
   std::cout<<"In RooDMassFitter::PerformDMassIterativeBinnedFit"<<std::endl;
   if (!m_rws)

@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # top level ganga directory containing the job subdirectories
-##export GANGAJOBSDIR=/data/lhcb/users/hunt/gangadir_calib/workspace/huntp/LocalXML
+export GANGAJOBSDIR=/data/lhcb/users/hunt/gangadir_calib/workspace/huntp/LocalXML
 
 # top level directory where the calibration samples should be stored
-export CALIBDATADIR=/data/lhcb/users/malde
+export CALIBDATADIR=/data/lhcb/users/malde/PID/NewFormat/
 
 # Datatype (e.g. 2011 or 2012)
 export CALIBDATATYPE=2011

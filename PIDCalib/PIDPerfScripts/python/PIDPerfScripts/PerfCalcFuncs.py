@@ -15,7 +15,7 @@ def MakePerfPlotsList(PartName, DataSet, DLLCutList, BinningScheme,
     cintex.Enable()
     ROOT.gSystem.Load('libPIDPerfToolsLib.so')
     ROOT.gSystem.Load('libPIDPerfToolsDict.so')
-    Calc = ROOT.PerfCalculator(ROOT.EvtTrackDataSet)(DataSet)                
+    Calc = ROOT.PerfCalculator(ROOT.GenericDataSet)(DataSet)                
        
     #======================================================================
     # Define array of lists, one for each DLL cut
@@ -90,7 +90,7 @@ def MakePIDResultList(DataSet, DLLCutList, PIDResults, verbose=True):
     ROOT.gSystem.Load('libPIDPerfToolsLib.so')
     ROOT.gSystem.Load('libPIDPerfToolsDict.so')
     
-    Calc = ROOT.PerfCalculator(ROOT.EvtTrackDataSet)(DataSet)                
+    Calc = ROOT.PerfCalculator(ROOT.GenericDataSet)(DataSet) 
     
     #======================================================================
     # Calculate Efficiency

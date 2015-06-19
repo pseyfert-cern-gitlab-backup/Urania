@@ -87,6 +87,7 @@ int CreateExpertTree(const TString fullname, const TString type){
   Double_t CosTheta[PVS];
   Int_t category[PVS] ;
   Int_t ErrorCode[PVS] ;
+  Int_t polarity ;
   Int_t baryon = true ;
   float* InputArray = new float[nvar]; // array to hold input data
   unsigned int nVar = 0 ;/// I can't pass a static const as variable
@@ -100,8 +101,10 @@ int CreateExpertTree(const TString fullname, const TString type){
    // Tree
   TTree outtree("NetTree","Neural Net Tree");
   outtree.Branch("PVs",&nPV, "PVs/I");
-  outtree.Branch("EventNumber",&eventNumber, "EventNumber/l");
-  outtree.Branch("RunNumber",&runNumber, "RunNumber/i");
+  outtree.Branch("EventNumber",&eventNumber, "EventNumber/L");
+  outtree.Branch("RunNumber",&runNumber, "RunNumber/I");
+  outtree.Branch("Polarity",&polarity, "Polarity/I");
+  outtree.Branch("Polarity",&polarity, "Polarity/i");
   outtree.Branch( c_NetOutput,&netOutput, c_NetOutput+pvs+"/D");
   outtree.Branch( c_PsippiMass,&PsippiMass, c_PsippiMass+pvs+"/D");
   outtree.Branch( c_PsipKMass ,&PsipKMass, c_PsipKMass+pvs+"/D");
@@ -173,7 +176,8 @@ int CreateExpertTree(const TString fullname, const TString type){
     nVar = nvar ; /// I can't pass a statis const as variable
     runNumber = ntuple->runNumber;
     eventNumber = ntuple->eventNumber;
-   
+    polarity = ntuple->Polarity ;
+
     // Progress
     if(0==i%((int)(frac*nentries))) std::cout << " |-> " << i << " / " 
                                               << nentries << " (" << 100*i/nentries << "%)" << std::endl; 

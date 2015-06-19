@@ -3,7 +3,7 @@
 # Maintainer : Andrew Powell (Originally written by Philip Hunt)
 #============================================================================
 package           RooPhysFitter
-version           v2r2
+version           v2r3
 
 #============================================================================
 # Structure, i.e. directories to process. 

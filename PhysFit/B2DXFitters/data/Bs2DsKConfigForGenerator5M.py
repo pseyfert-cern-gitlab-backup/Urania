@@ -48,7 +48,7 @@ def getconfig() :
 
     configdict["tacc_size"]   = 6
     configdict["tacc_knots"]  = [0.25, 0.5, 1.0, 2.0, 3.0, 12.0]
-    configdict["tacc_values"] = [1.86413e-01, 2.83214e-01, 7.24952e-01, 1.18847e+00, 1.33798e+00, 1.32593e+00] 
+    configdict["tacc_values"] = [1.77520e-01, 2.89603e-01, 6.79455e-01, 1.11726e+00, 1.23189e+00, 1.26661e+00] 
 
     configdict["tagEff_OS"] = 0.387
     configdict["tagEff_SS"] = 0.4772
@@ -59,6 +59,9 @@ def getconfig() :
     configdict["tagEff_dk"]        = [configdict["tagEff_OS"] - configdict["tagEff_OS"]*configdict["tagEff_SS"],
                                       configdict["tagEff_SS"] - configdict["tagEff_OS"]*configdict["tagEff_SS"],
                                       configdict["tagEff_OS"]*configdict["tagEff_SS"]]
+    configdict["tagEff_dpi"]        = [configdict["tagEff_OS"] - configdict["tagEff_OS"]*configdict["tagEff_SS"],
+                                      configdict["tagEff_SS"] - configdict["tagEff_OS"]*configdict["tagEff_SS"],
+                                      configdict["tagEff_OS"]*configdict["tagEff_SS"]]
     configdict["tagEff_dsk"]       = [configdict["tagEff_OS"] - configdict["tagEff_OS"]*configdict["tagEff_SS"],
                                       configdict["tagEff_SS"] - configdict["tagEff_OS"]*configdict["tagEff_SS"],
                                       configdict["tagEff_OS"]*configdict["tagEff_SS"]]
@@ -66,6 +69,9 @@ def getconfig() :
                                       configdict["tagEff_SS"] - configdict["tagEff_OS"]*configdict["tagEff_SS"],
                                       configdict["tagEff_OS"]*configdict["tagEff_SS"]]
     configdict["tagEff_lck"]       = [configdict["tagEff_OS"] - configdict["tagEff_OS"]*configdict["tagEff_SS"],
+                                      configdict["tagEff_SS"] - configdict["tagEff_OS"]*configdict["tagEff_SS"],
+                                      configdict["tagEff_OS"]*configdict["tagEff_SS"]]
+    configdict["tagEff_lcpi"]       = [configdict["tagEff_OS"] - configdict["tagEff_OS"]*configdict["tagEff_SS"],
                                       configdict["tagEff_SS"] - configdict["tagEff_OS"]*configdict["tagEff_SS"],
                                       configdict["tagEff_OS"]*configdict["tagEff_SS"]]
     configdict["tagEff_combo"]     = [configdict["tagEff_OS"] - configdict["tagEff_OS"]*configdict["tagEff_SS"],
@@ -91,9 +97,11 @@ def getconfig() :
 
     configdict["aprod_signal"]    = 0.0 #0.03
     configdict["aprod_dk"]        = 0.0 #0.03
+    configdict["aprod_dpi"]       = 0.0 #0.03 
     configdict["aprod_dsk"]       = 0.0 #3
     configdict["aprod_dspi"]      = 0.0 # 3
     configdict["aprod_lck"]       = 0.0 # 3
+    configdict["aprod_lcpi"]      = 0.0 # 3
     configdict["aprod_combo"]     = 0.0 #3
     configdict["aprod_dsp"]       = 0.0 #3
     configdict["aprod_dsstp"]     = 0.0 #3
@@ -103,9 +111,11 @@ def getconfig() :
                                     
     configdict["atageff_signal"]    = [0.0, 0.0, 0.0]
     configdict["atageff_dk"]        = [0.0, 0.0, 0.0]
+    configdict["atageff_dpi"]       = [0.0, 0.0, 0.0]
     configdict["atageff_dsk"]       = [0.0, 0.0, 0.0]
     configdict["atageff_dspi"]      = [0.0, 0.0, 0.0]
     configdict["atageff_lck"]       = [0.0, 0.0, 0.0]
+    configdict["atageff_lcpi"]      = [0.0, 0.0, 0.0]
     configdict["atageff_combo"]     = [0.0, 0.0, 0.0]
     configdict["atageff_dsp"]       = [0.0, 0.0, 0.0]
     configdict["atageff_dsstp"]     = [0.0, 0.0, 0.0]
@@ -115,9 +125,11 @@ def getconfig() :
 
     configdict["adet_signal"]    = 0.0
     configdict["adet_dk"]        = 0.0
+    configdict["adet_dpi"]       = 0.0
     configdict["adet_dsk"]       = 0.0
     configdict["adet_dspi"]      = 0.0
     configdict["adet_lck"]       = 0.0
+    configdict["adet_lcpi"]      = 0.0
     configdict["adet_combo"]     = 0.0
     configdict["adet_dsp"]       = 0.0
     configdict["adet_dsstp"]     = 0.0
@@ -125,55 +137,52 @@ def getconfig() :
     configdict["adet_dsstpi"]    = 0.0
     configdict["adet_dsrho"]     = 0.0
     
-    configdict["num_signal"]    = [308, 608, 500, 115,  326]
-    configdict["num_dk"]        = [15,    0,   4,   0,    0]
-    configdict["num_dsk"]       = [19,   36,  46,  12,   36]
-    configdict["num_dspi"]      = [230*0.936*0.711, 496*0.936*0.711, 328*0.936*0.711, 86*0.936*0.711, 238*0.936*0.711]
+    configdict["num_signal"]    = [308, 591, 487, 109,  314]
+    configdict["num_dk"]        = [17,    0,   5,   0,    0]
+    configdict["num_dpi"]       = [14,    3,   3,   0,    0]
+    configdict["num_dsk"]       = [18,   35,  42,  11,   32]
+    configdict["num_dspi"]      = [231*0.979*0.653, 514*0.979*0.653, 342*0.979*0.653, 90*0.979*0.653, 258*0.979*0.653]
     configdict["num_lck"]       = [15,    2,   4,   0,    0]
-    configdict["num_combo"]     = [723, 474, 346, 648, 1776]
-    configdict["num_dsp"]       = [230*0.064*0.75, 496*0.064*0.75, 328*0.064*0.75, 86*0.064*0.75, 238*0.064*0.75]
-    configdict["num_dsstp"]     = [230*0.064*0.25, 496*0.064*0.25, 328*0.064*0.25, 86*0.064*0.25, 238*0.064*0.25]
+    configdict["num_lcpi"]      = [11,    1,   3,   0,    0]
+    configdict["num_combo"]     = [664, 439, 327, 619, 1702]
+    configdict["num_dsp"]       = [231*0.021*0.75, 514*0.021*0.75, 342*0.021*0.75, 90*0.021*0.75, 258*0.021*0.75]
+    configdict["num_dsstp"]     = [231*0.021*0.25, 514*0.021*0.25, 342*0.021*0.25, 90*0.021*0.25, 258*0.021*0.25]
     configdict["num_lm1"]       = [0,     0,   0,   0,    0]
-    configdict["num_dsstpi"]    = [230*0.936*0.289*0.5, 496*0.936*0.289*0.5, 328*0.936*0.289*0.5, 86*0.936*0.289*0.5, 238*0.936*0.289*0.5]
-    configdict["num_dsrho"]     = [230*0.936*0.289*0.5, 496*0.936*0.289*0.5, 328*0.936*0.289*0.5, 86*0.936*0.289*0.5, 238*0.936*0.289*0.5]
+    configdict["num_dsstpi"]    = [231*0.979*0.347*0.5, 514*0.979*0.347*0.5, 342*0.979*0.347*0.5, 90*0.979*0.347*0.5, 258*0.979*0.347*0.5]
+    configdict["num_dsrho"]     = [231*0.979*0.347*0.5, 514*0.979*0.347*0.5, 342*0.979*0.347*0.5, 90*0.979*0.347*0.5, 258*0.979*0.347*0.5]
 
     #----------------------------Signal----------------------------#
 
     configdict["mean"]    = [5367.51, 5367.51, 5367.51, 5367.51, 5367.51]
-    configdict["sigma1"]  = [18.082*1.145,  10.627*1.255,  11.417*1.255,  18.901*1.145,  19.658*1.145 ] 
-    configdict["sigma2"]  = [10.727*1.255,  15.289*1.145,  16.858*1.145,  11.058*1.255,  11.512*1.255 ] 
-    configdict["alpha1"]  = [2.0550,  1.6086,  2.0304,  2.0490,  1.8844 ]
-    configdict["alpha2"]  = [-2.9184, -1.9642, -1.9823, -3.3876, -3.0227]
-    configdict["n1"]      = [1.1123,  1.5879,  1.3059,  1.0988,  1.3397 ]
-    configdict["n2"]      = [1.3312,  5.1315,  4.2083,  0.96197,  1.2083 ]
-    configdict["frac"]    = [0.42743, 0.43480, 0.61540, 0.38142, 0.37901]
+
+    configdict["sigma1"]  = [1.0717e+01*1.28,  1.1235e+01*1.28,  1.0772e+01*1.28,  1.1268e+01*1.28,  1.1391e+01*1.28 ]
+    configdict["sigma2"]  = [1.6005e+01*1.22,  1.7031e+01*1.22,  1.5339e+01*1.22,  1.9408e+01*1.22,  1.7647e+01*1.22 ]
+    configdict["alpha1"]  = [2.2118e+00,       2.2144e+00,       2.0480e+00,       2.3954e+00,       2.0930e+00 ]
+    configdict["alpha2"]  = [-2.4185e+00,      -2.1918e+00,      -2.0291e+00,      -3.4196e+00,      -2.3295e+00]
+    configdict["n1"]      = [1.0019e+00,       1.1193e+00,       1.2137e+00,       9.8202e-01,       1.2674e+00 ]
+    configdict["n2"]      = [3.1469e+00,       3.6097e+00,       6.5735e+00,       5.2237e-01,       4.0195e+00 ]
+    configdict["frac"]    = [6.1755e-01,       7.0166e-01,       5.8012e-01,       7.8103e-01,       7.0398e-01]
+
 
     configdict["ratio1"]  = 0.998944636665
     configdict["ratio2"]  = 1.00022181515
 
     configdict["meanDs"]    = [1968.49, 1968.49, 1968.49, 1968.49, 1968.49]
-    configdict["sigma1Ds"]  = [7.6526*1.074,  8.7205*1.074,  5.3844*1.185,  11.590*1.074,  11.217*1.074 ]
-    configdict["sigma2Ds"]  = [4.2202*1.185,  4.5795*1.185,  11.981*1.074,  6.0350*1.185,  6.8617*1.185 ]
-    configdict["alpha1Ds"]  = [1.9266,  1.9260,  4.8339,  1.5839,  1.0902 ]
-    configdict["alpha2Ds"]  = [-2.5456, -3.2773, -3.0116, -6.2018, -2.4987]
-    configdict["n1Ds"]      = [2.8434,  1.4224,  48.516,  1.8532,  69.861 ]
-    configdict["n2Ds"]      = [1.5942,  0.36197, 0.25888, 65.824,  1.0790 ]
-    configdict["fracDs"]    = [0.50702, 0.36627, 0.84549, 0.29362, 0.46289]
-           
-    configdict["cB"] = [-3.3787e-03, -2.1411e-03, -2.9391e-03, -1.5331e-03, -2.1068e-03]
-    configdict["cD"] = [-1.5285e-03, -2.0302e-03, -5.4197e-03, -2.7012e-04, -3.5133e-03]
-    configdict["fracDsComb"] = [9.4632e-01, 5.2072e-01, 7.5645e-01,  1.0, 1.0]
 
-    configdict["fracPIDKComb1"] = 6.2260e-01
-    configdict["fracPIDKComb2"] = 5.6321e-01
-    
-    configdict["frac_dsdsstp"]   = 0.75
-    
-    #configdict["frac_g1_1lmk"]  = 0.14536
-    #configdict["frac_g1_2lmk"]  = 0.169091
-                
-    configdict["frac_g2_1"]  = 0.5
-    #configdict["frac_g2_2"]  = 0.202776
-    
+    configdict["sigma1Ds"]  = [5.3468e+00*1.16,  8.2412e+00*1.16,  6.0845e+00*1.16,  8.8531e+00*1.16,  8.0860e+00*1.16 ]
+    configdict["sigma2Ds"]  = [5.1848e+00*1.19,  4.4944e+00*1.19,  5.1266e+00*1.19,  5.2073e+00*1.19,  7.3773e+00*1.19 ]
+    configdict["alpha1Ds"]  = [1.2252e+00,       1.9827e+00,       1.1316e+00,       1.7131e+00,       9.0639e-01 ]
+    configdict["alpha2Ds"]  = [-1.1167e+00,      -3.0525e+00,      -1.3760e+00,      -2.5276e+00,      -1.1122e+00]
+    configdict["n1Ds"]      = [4.6625e+00,       1.4867e+00,       1.3280e+01,       2.0239e+00,       1.1486e+01 ]
+    configdict["n2Ds"]      = [6.9989e+01,       6.1022e-01,       1.1017e+01,       1.0860e+00,       4.0001e+01 ]
+    configdict["fracDs"]    = [4.7565e-01,       3.9628e-01 ,      4.0048e-01,       5.5084e-01,       4.8729e-01 ]
+
+           
+    configdict["cB"] = [-3.2717e-03, -2.0784e-03, -3.0429e-03, -1.5052e-03, -2.2054e-03]
+    configdict["cD"] = [-2.7157e-03, -2.4707e-03, -5.1842e-03, -3.3044e-04, -3.7356e-03]
+    configdict["fracDsComb"] = [9.4614e-01, 5.3355e-01, 7.7153e-01,  1.0, 1.0]
+
+    configdict["fracPIDKComb1"] = 6.2485e-01
+    configdict["fracPIDKComb2"] = 5.4107e-01
        
     return configdict

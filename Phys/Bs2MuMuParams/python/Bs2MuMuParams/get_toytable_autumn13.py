@@ -12,7 +12,7 @@ from errors import *
 import alphaparam_autumn13 as alpha_comb
 import alphaparam_summer13_2011 as alpha11
 import alphaparam_spring13_2012 as alpha12
-from BRparams import *
+import BRparams as BF 
 from BDTparam_summer13 import *
 from PeakingParam_autumn13 import *
 from odict import ODict
@@ -25,10 +25,10 @@ bins = range(1,9)
 def setBkg(operator, name):
     ''' Sets given background values for toytable '''
     operator[name+'_comment']    = "\n## "+name+" parameters" 
-    operator[name+'BR']    = val(eval(name+"BR"))
-    operator[name+'BRErr'] = err(eval(name+"BR"))
-    operator[name+'Eff']    = val(eval(name+"Eff"))
-    operator[name+'EffErr'] = err(eval(name+"Eff"))
+    operator[name+'BR']    = val(eval("BF."+name+"BR"))
+    operator[name+'BRErr'] = err(eval("BF."+name+"BR"))
+    operator[name+'Eff']   = val(eval(name+"Eff"))
+    operator[name+'EffErr']= err(eval(name+"Eff"))
     variables = ['Frac','Mean','Sigma','Shc']
     for i in range(1,9):
         for v in variables : 
@@ -44,18 +44,18 @@ def toytable():
 
     operator['BR_comment'     ] = '\n## Branching Fraction'
     
-    operator['Bsmumu_BR']    = val(alpha12.Bsmumu_BR)
-    operator['Bsmumu_BRErr'] = err(alpha12.Bsmumu_BR)
-    operator['Bdmumu_BR']    = val(alpha12.Bdmumu_BR)
-    operator['Bdmumu_BRErr'] = err(alpha12.Bdmumu_BR)
+    operator['Bsmumu_BR']    = val(BF.Bsmumu_BR)
+    operator['Bsmumu_BRErr'] = err(BF.Bsmumu_BR)
+    operator['Bdmumu_BR']    = val(BF.Bdmumu_BR)
+    operator['Bdmumu_BRErr'] = err(BF.Bdmumu_BR)
 
     operator['Norm_comment'   ] = '\n## Normalisation'
 
     
-    operator['BuJpsiK_BF']   = val(BuBR)
-    operator['BuJpsiK_BFErr']= err(BuBR)
-    operator['BdKpi_BF']     = val(BdBR)
-    operator['BdKpi_BFErr']  = err(BdBR)
+    operator['BuJpsiK_BF']   = val(BF.BuBR)
+    operator['BuJpsiK_BFErr']= err(BF.BuBR)
+    operator['BdKpi_BF']     = val(BF.BdBR)
+    operator['BdKpi_BFErr']  = err(BF.BdBR)
 
     operator['TimeAcceptanceCorrBs']     = val(alpha12.TimeAcceptanceCorrBs)
     operator['TimeAcceptanceCorrBsErr']  = err(alpha12.TimeAcceptanceCorrBs)

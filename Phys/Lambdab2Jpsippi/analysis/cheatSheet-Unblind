@@ -107,9 +107,9 @@ png("TC_PsippiFitBp1-opt")
 _fileOptFit->Get("TC_PsippiFitBm1C")->Draw()
 png("TC_PsippiFitBm1-opt")
 
-RooPlot* rpiAB = _fileOptFit->Get("PsippiFitAB")
-RooPlot* rpiB = _fileOptFit->Get("PsippiFitB")
-RooPlot* rpi = _fileOptFit->Get("PsippiFit")
+RooPlot* rpiAB = (RooPlot*)_fileOptFit->Get("PsippiFitAB")
+RooPlot* rpiB = (RooPlot*)_fileOptFit->Get("PsippiFitB")
+RooPlot* rpi = (RooPlot*)_fileOptFit->Get("PsippiFit")
 rpiAB->SetMaximum(700.)
 rpiB->SetMaximum(700.)
 rpi->SetMaximum(1400.)
@@ -122,9 +122,9 @@ rpi->Draw()
 png("PsippiFit-opt")
 
 // Kaons in non-log
-RooPlot* rKAB = _fileOptFit->Get("PsipKFitAB")
-RooPlot* rKB = _fileOptFit->Get("PsipKFitB")
-RooPlot* rK = _fileOptFit->Get("PsipKFit")
+RooPlot* rKAB = (RooPlot*)_fileOptFit->Get("PsipKFitAB")
+RooPlot* rKB = (RooPlot*)_fileOptFit->Get("PsipKFitB")
+RooPlot* rK = (RooPlot*)_fileOptFit->Get("PsipKFit")
 
 rK->SetMaximum(4000)
 rKB->SetMaximum(2000)
@@ -387,9 +387,9 @@ png("thetaprime Lbpi and LbK")
 //====================================================================================== 
 gStyle->SetPalette(0)
 gStyle->SetPaintTextFormat("5.1f");
-TH2D* h2 = Make2DPlot("h2","m_{p#pi}^{2} [GeV^{2}/c^{4}]",12,1.0,7,"m_{J/#psi#pi}^{2} [GeV^{2}/c^{4}]",12,10,22)
-TH2D* h2a = Make2DPlot("h2a","m_{p#pi}^{2} [GeV^{2}/c^{4}]",12,1.0,7,"m_{J/#psi#pi}^{2} [GeV^{2}/c^{4}]",12,10,22)
-TH2D* h2b = Make2DPlot("h2b","m_{p#pi}^{2} [GeV^{2}/c^{4}]",12,1.0,7,"m_{J/#psi#pi}^{2} [GeV^{2}/c^{4}]",12,10,22)
+TH2D* h2 = Make2DPlot("h2","m_{p#pi}^{2} [GeV^{2}/c^{4}]",11,1.0,6.5,"m_{J/#psi#pi}^{2} [GeV^{2}/c^{4}]",12,10,22)
+TH2D* h2a = Make2DPlot("h2a","m_{p#pi}^{2} [GeV^{2}/c^{4}]",11,1.0,6.5,"m_{J/#psi#pi}^{2} [GeV^{2}/c^{4}]",12,10,22)
+TH2D* h2b = Make2DPlot("h2b","m_{p#pi}^{2} [GeV^{2}/c^{4}]",11,1.0,6.5,"m_{J/#psi#pi}^{2} [GeV^{2}/c^{4}]",12,10,22)
 TNN->Draw("psiMMass2/1e6:pMMass2/1e6 >> h2a",WLA)
 TNN->Draw("psiMMass2/1e6:pMMass2/1e6 >> h2b",WLB)
 
@@ -432,6 +432,8 @@ RooPlot* m = (RooPlot*)Miranda(h2m2); // NLL
 png("Miranda 1D (pi)")
 TH1D* hh = (TH1D*)Miranda(h2m2,"chi2");
 
+h2->Draw("BOX")
+png("Boxed Dalitz (pi)")
 // square
 
 gStyle->SetPalette(0)
@@ -481,10 +483,118 @@ TH1D* hh = (TH1D*)Miranda(s2m,"chi2");
 
 gStyle->SetPalette(0)
 
-h2->Draw("BOX")
-png("Boxed Dalitz (pi)")
 s2->Draw("BOX")
 png("Boxed Square Dalitz (pi)")
+
+// square UP
+char* UWL = "sweightLb*(sweightLb>-3)*(wCategory==1)*(Polarity>0)"
+char* UWLB = "sweightLb*(sweightLb>-3)*(wBaryon==1)*(wCategory==1)*(Polarity>0)"
+char* UWLA = "sweightLb*(sweightLb>-3)*(wBaryon==-1)*(wCategory==1)*(Polarity>0)"
+
+gStyle->SetPalette(0)
+TH2D* s2 = Make2DPlot("s2","m'",10,0,1,"#theta'",10,0,1)
+TH2D* s2b = Make2DPlot("s2b","m'",10,0,1,"#theta'",10,0,1)
+TH2D* s2a = Make2DPlot("s2a","m'",10,0,1,"#theta'",10,0,1)
+TH2D* s2x = Make2DPlot("s2x","m'",10,0,1,"#theta'",10,0,1)
+
+TNN->Draw("thetaprime:mprime >> s2",UWL)
+TNN->Draw("thetaprime:mprime >> s2a",UWLA)
+TNN->Draw("thetaprime:mprime >> s2b",UWLB)
+
+s2->Draw("coltext")
+s2->SetMinimum(0)
+png("UP Square Dalitz (pi)")
+
+
+s2a->SetMinimum(0)
+s2a->SetMaximum(150)
+s2a->Draw("coltext")
+png("UP Square Dalitz (pi) antibaryons")
+
+
+s2b->SetMinimum(0)
+s2b->SetMaximum(150)
+s2b->Draw("coltext")
+png("UP Square Dalitz (pi) baryons")
+
+gStyle->SetPalette(0)
+TH2D* s2x = new TH2D(*s2b); 
+s2x->Draw("coltext")
+s2x->Add(s2a,-1)
+s2x->Draw("coltext")
+s2x->SetMinimum(-40)
+s2x->SetMaximum(40)
+s2x->Draw("coltext")
+png("UP Square Dalitz (pi) difference")
+
+gStyle->SetPalette(1)
+TH2D* s2m = Miranda(s2b,s2a);
+s2m->Draw("coltext");
+png("UP Square Miranda (pi)")
+
+RooPlot* m = (RooPlot*)Miranda(s2m);
+png("UP Square Miranda 1D (pi)")
+TH1D* hh = (TH1D*)Miranda(s2m,"chi2");
+
+gStyle->SetPalette(0)
+
+s2->Draw("BOX")
+png("UP Boxed Square Dalitz (pi)")
+
+// square DOWN
+char* DWL = "sweightLb*(sweightLb>-3)*(wCategory==1)*(Polarity<0)"
+char* DWLB = "sweightLb*(sweightLb>-3)*(wBaryon==1)*(wCategory==1)*(Polarity<0)"
+char* DWLA = "sweightLb*(sweightLb>-3)*(wBaryon==-1)*(wCategory==1)*(Polarity<0)"
+
+gStyle->SetPalette(0)
+TH2D* s2 = Make2DPlot("s2","m'",10,0,1,"#theta'",10,0,1)
+TH2D* s2b = Make2DPlot("s2b","m'",10,0,1,"#theta'",10,0,1)
+TH2D* s2a = Make2DPlot("s2a","m'",10,0,1,"#theta'",10,0,1)
+TH2D* s2x = Make2DPlot("s2x","m'",10,0,1,"#theta'",10,0,1)
+
+TNN->Draw("thetaprime:mprime >> s2",DWL)
+TNN->Draw("thetaprime:mprime >> s2a",DWLA)
+TNN->Draw("thetaprime:mprime >> s2b",DWLB)
+
+s2->Draw("coltext")
+s2->SetMinimum(0)
+png("DOWN Square Dalitz (pi)")
+
+
+s2a->SetMinimum(0)
+s2a->SetMaximum(150)
+s2a->Draw("coltext")
+png("DOWN Square Dalitz (pi) antibaryons")
+
+
+s2b->SetMinimum(0)
+s2b->SetMaximum(150)
+s2b->Draw("coltext")
+png("DOWN Square Dalitz (pi) baryons")
+
+gStyle->SetPalette(0)
+TH2D* s2x = new TH2D(*s2b); 
+s2x->Draw("coltext")
+s2x->Add(s2a,-1)
+s2x->Draw("coltext")
+s2x->SetMinimum(-40)
+s2x->SetMaximum(40)
+s2x->Draw("coltext")
+png("DOWN Square Dalitz (pi) difference")
+
+gStyle->SetPalette(1)
+TH2D* s2m = Miranda(s2b,s2a);
+s2m->Draw("coltext");
+png("DOWN Square Miranda (pi)")
+
+RooPlot* m = (RooPlot*)Miranda(s2m);
+png("DOWN Square Miranda 1D (pi)")
+TH1D* hh = (TH1D*)Miranda(s2m,"chi2");
+
+gStyle->SetPalette(0)
+
+s2->Draw("BOX")
+png("DOWN Boxed Square Dalitz (pi)")
 
 //####################################################################################################################
 // Dalitz - Kaon

@@ -33,6 +33,14 @@ void SetSpecVars_EvtVars2012(RooPhysFit::RooDMassFitter& Mfit,
                     "No. Best Tracks in Event",  // Title
                     "Event variables");          // NamedSet  
 
+  Mfit.AddSpectator("nSPDHits",
+                    0.,
+                    1000.,
+                    "nSPDHits",
+                    "",
+                    "Number of hits in the SPD",
+                    "Event variables");
+
   Mfit.AddSpectator("runNumber",
                     111761,
                     999999,
@@ -40,7 +48,28 @@ void SetSpecVars_EvtVars2012(RooPhysFit::RooDMassFitter& Mfit,
                     "",
                     "Run Number",
                     "Event variables");
+   Mfit.AddSpectator("nRich1Hits",
+                    0,
+                    10000,
+                    "nRich1Hits",
+                    "",
+                    "No. RICH1 Pixel Hits",
+                    "Event variables");
   
+  Mfit.AddSpectator("nRich2Hits",
+                    0,
+                    10000,
+                    "nRich2Hits",
+                    "",
+                    "No. RICH2 Pixel Hits",
+                    "Event variables");
+ Mfit.AddSpectator("nPVs",              // Name in DataSet
+                    0,                  // Min value
+                    20,                 // Max value
+                    "nPVs",              // Branch name
+                    "",                 // Units
+                    "No. PV in Event",  // Title
+                    "Event variables"); // NamedSet
 }
 
 void SetSpecVars_EvtVars2011(RooPhysFit::RooDMassFitter& Mfit,
@@ -61,6 +90,14 @@ void SetSpecVars_EvtVars2011(RooPhysFit::RooDMassFitter& Mfit,
                     "No. Best Tracks in Event",  // Title
                     "Event variables");          // NamedSet  
 
+  Mfit.AddSpectator("nSPDHits",
+                    0.,
+                    1000.,
+                    "nSPDHits",
+                    "",
+                    "Number of hits in the SPD",
+                    "Event variables");
+
   Mfit.AddSpectator("runNumber",
                     87660,
                     104300,
@@ -68,6 +105,31 @@ void SetSpecVars_EvtVars2011(RooPhysFit::RooDMassFitter& Mfit,
                     "",
                     "Run Number",
                     "Event variables");
+  Mfit.AddSpectator("nRich1Hits",
+                    0,
+                    10000,
+                    "nRich1Hits",
+                    "",
+                    "No. RICH1 Pixel Hits",
+                    "Event variables");
+  
+  Mfit.AddSpectator("nRich2Hits",
+                    0,
+                    10000,
+                    "nRich2Hits",
+                    "",
+                    "No. RICH2 Pixel Hits",
+                    "Event variables");
+ Mfit.AddSpectator("nPVs",              // Name in DataSet
+                    0,                  // Min value
+                    20,                 // Max value
+                    "nPVs",              // Branch name
+                    "",                 // Units
+                    "No. PV in Event",  // Title
+                    "Event variables"); // NamedSet
+
+
+
 }
 
 void SetSpecVars_MCEvtVars2011(RooPhysFit::RooDMassFitter& Mfit,
@@ -87,6 +149,30 @@ void SetSpecVars_MCEvtVars2011(RooPhysFit::RooDMassFitter& Mfit,
                     "",                          // Units
                     "No. Best Tracks in Event",  // Title
                     "Event variables");          // NamedSet
+}
+
+void SetSpecVars_ElectronVars(RooPhysFit::RooDMassFitter& Mfit,
+                               const char* parPrefix_DataSet,
+                               const char* parPrefix_nTuple)
+{
+  //======================================
+  // Electron Variables
+  //======================================
+  Mfit.AddSpectator(TString::Format("%s_HasBremAdded", parPrefix_DataSet).Data(), 
+                    0,
+                    10, 
+                    TString::Format("%s_HasBremAdded", parPrefix_nTuple).Data(),
+                    "",
+                    "Were bremsstrahlung photons added to electron",
+                    "Track variables");
+  
+  Mfit.AddSpectator(TString::Format("%s_CaloRegion", parPrefix_DataSet).Data(), 
+                    0,
+                    10, 
+                    TString::Format("%s_CaloRegion", parPrefix_nTuple).Data(),
+                    "",
+                    "Region of calo electron hit (0=Unknown, 1=Beam pipe, 2=Inner, 3=Middle, 4=Outer)",
+                    "Track variables");
 }
 
 void SetSpecVars_StdDLLs2011(RooPhysFit::RooDMassFitter& Mfit,
@@ -461,63 +547,63 @@ void SetSpecVars_RICHVars(RooPhysFit::RooDMassFitter& Mfit,
   Mfit.AddSpectator(TString::Format("%s_RICHThreshold_pi", parPrefix_DataSet).Data(),
                    -2.,
                    2.,
-		    TString::Format("%s_RICHThresholdPi", parPrefix_nTuple).Data()," ",
+		    TString::Format("%s_RICHThresholdPi", parPrefix_nTuple).Data(),"",
                    "Track RICH threshold for pions",
                    "Track variables");
                     
   Mfit.AddSpectator(TString::Format("%s_RICHThreshold_K", parPrefix_DataSet).Data(),
                    -2.,
                    2.,
-		    TString::Format("%s_RICHThresholdKa", parPrefix_nTuple).Data()," ",
+		    TString::Format("%s_RICHThresholdKa", parPrefix_nTuple).Data(),"",
                    "Track RICH threshold for kaons",
                    "Track variables");
   
   Mfit.AddSpectator(TString::Format("%s_RICHThreshold_p", parPrefix_DataSet).Data(),
                    -2.,
                    2., 
-		    TString::Format("%s_RICHThresholdPr", parPrefix_nTuple).Data()," ",
+		    TString::Format("%s_RICHThresholdPr", parPrefix_nTuple).Data(),"",
                    "Track RICH threshold for protons",
                    "Track variables");
                     
   Mfit.AddSpectator(TString::Format("%s_RICHThreshold_mu", parPrefix_DataSet).Data(),
                    -2., 
                    2.,
-		    TString::Format("%s_RICHThresholdMu", parPrefix_nTuple).Data()," ",
+		    TString::Format("%s_RICHThresholdMu", parPrefix_nTuple).Data(),"",
                    "Track RICH threshold for muons",
                    "Track variables");
                     
   Mfit.AddSpectator(TString::Format("%s_RICHThreshold_e", parPrefix_DataSet).Data(),
                    -2., 
                    2.,
-		    TString::Format("%s_RICHThresholdEl", parPrefix_nTuple).Data()," ",
+		    TString::Format("%s_RICHThresholdEl", parPrefix_nTuple).Data(),"",
                    "Track RICH threshold for electrons",
                    "Track variables");
                    
   Mfit.AddSpectator(TString::Format("%s_RICHAerogelUsed", parPrefix_DataSet).Data(),
                    -2.,
                    2., 
-		    TString::Format("%s_RICHAerogelUsed", parPrefix_nTuple).Data()," ",
+		    TString::Format("%s_RICHAerogelUsed", parPrefix_nTuple).Data(),"",
                    "Track has Aerogel information",
                    "Track variables");
 
   Mfit.AddSpectator(TString::Format("%s_RICH1GasUsed", parPrefix_DataSet).Data(),
                    -2., 
                    2., 
-		    TString::Format("%s_RICH1GasUsed", parPrefix_nTuple).Data()," ",
+		    TString::Format("%s_RICH1GasUsed", parPrefix_nTuple).Data(),"",
                    "Track has RICH1 gas information",
                    "Track variables");
 
   Mfit.AddSpectator(TString::Format("%s_RICH2GasUsed", parPrefix_DataSet).Data(),
                    -2., 
                    2., 
-		    TString::Format("%s_RICH2GasUsed", parPrefix_nTuple).Data()," ",
+		    TString::Format("%s_RICH2GasUsed", parPrefix_nTuple).Data(),"",
                    "Track has RICH2 gas information",
                    "Track variables");
                    
   Mfit.AddSpectator(TString::Format("%s_hasRich", parPrefix_DataSet).Data(),
                     -1.,
                     2.,
-                    TString::Format("%s_hasRich", parPrefix_nTuple).Data()," ",
+                    TString::Format("%s_hasRich", parPrefix_nTuple).Data(),"",
                     "Track has RICH information",
                     "Track variables");
 }
@@ -527,7 +613,7 @@ void SetSpecVars_RICHCategories(RooPhysFit::RooDMassFitter& Mfit,
                                 const char* parPrefix_nTuple)
 {
   //======================================
-  // Categories Associated with the RICH
+  // Categories Associated with the RICH - not used. Philip Hunt said resulting file size too large.
   //======================================
   std::vector<std::string> types;
   std::vector<Int_t> indices;
@@ -607,7 +693,7 @@ void SetSpecVars_MUONCategories(RooPhysFit::RooDMassFitter& Mfit,
                                 const char* parPrefix_nTuple)
 {
   //======================================
-  // Categories Associated with the MUONs
+  // Categories Associated with the MUONs - also not used.
   //======================================
   std::vector<std::string> types;
   std::vector<Int_t> indices;

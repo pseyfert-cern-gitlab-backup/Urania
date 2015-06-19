@@ -4,9 +4,84 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
+!============================================== v2r5 2014-4-11 ==============================
+! 2014-4-11 Diego Martinez Santos
+	 Make version v2r5
+! 2014-04-04 - Manuel Tobias Schiller
+ - change FitResult behaviour in case of blinding:
+   - blinding now works according param_blind = U(a, b) + sign * param_unblind
+     where U(a, b) is a random number between a and b, and sign is +1 or -1
+     (random), both chosen according to the blinding string
+   - this has the advantage that you cannot tell in the difference which of
+     the two fits has the larger/smaller true value in a given parameter
+
+! 2014-04-03 - Manuel Tobias Schiller
+ - added python class to wrap RooFitResults in a python-only object that's a
+   bit friendlier for comparing fitters/toys/...
+   the interface is probably not final yet
+
+! 2014-03-25 - Marco Clemencic
+ - Fixed CMake build.
+
+! 2014-03-20 - Marco Clemencic
+ - Added CMake configuration file.
+
+! 2014-03-11 - Agnieszka Dziurda
+ - add scripts for DsK (DsK* analysis)
+ - update everything according to version 2 of DsK note
+
+! 2014-03-07 - Manuel Tobias Schiller
+ - tagging toys: update to new calibration parameters and latest set of
+   templates from DsPi data
+
+! 2014-03-04 - Manuel Tobias Schiller
+ - Rules.mk: get gccxml to work in SLC6 standalone builds
+
+! 2014-03-04 - Manuel Tobias Schiller
+ - cFit changes:
+   * allow complex constraints (constrain a RooFormulaVar to a given value/error)
+   * adapt to new CombBkg MDFitter pdf namespaces
+   * update personalities with new BG modes, new GammaComb
+
+! 2014-03-04 - Manuel Tobias Schiller
+ - adapt cFit to new MDFitter template naming conventions
+
+! 2014-02-27 - Agnieszka Dziurda
+ - Bs->DsPi Ds->HHHPi0 update, we are able to do 2D fit!
+ - update MDFitter toys for DsK
+
+! 2014-02-23 Suvayu Ali
+ - Fix global weights & PID reweighting for k-factor templates
+ - Update MC samples for k-factor templates
+ - Bd2DPi & Λb2LcPi k-factor templates for Bs2DsK
+ - Enable 4-momenta refit before k-factor evaluation
+
+! 2014-02-19 - Agnieszka Dziurda
+ - add function for correlations  
+ - MDFitter update:
+  - new signal line shapes
+  - new funcionality: posibility to do 1D, 2D, 3D fits
+  - clean up all parts of MDFitter
+  - add DPi and LcPi to DsK
+  - new fd/fs fraction in misID predicition
+  - new ratio data/MC
+  - new scale factor for signal widths
+  - update old scripts to be used with MDFitterSettings
+
+! 2014-02-08 - Agnieszka Dziurda
+ - Small extension of  package for DsK* analysis
+ - First scripts for DsK* 
+
+! 2014-01-24 - Manuel Tobias Schiller
+ - DecayTreeTupleSucksFitter: adapt to double precision tuples
+
+! 2014-01-24 - Manuel Tobias Schiller
+ - QRDecomposition: fix stupid bug affecting mass constraints for k-factors
+
 !============================================== v2r4 2014-1-20 ==============================
 ! 2014-1-20 Diego Martinez Santos
-	 Make version v2r4
+    Make version v2r4
+
 ! 2014-01-13 - Manuel Tobias Schiller
  - small changes to Suvayu's new k-factor template code:
    * fix typo ("else if" -> "elif"
@@ -2038,62 +2113,4 @@
 ! 2011-11-06 - Diego Martinez Santos
  - Make version v1r2.
 
-! 2011-10-25 - Eduardo Rodrigues
- - Added scripts/runBs2DsKCPAsymmObsFitterToyMC.py, a test/development script
-   for the TD CP asymmetry fit with DsPi+DsK
-
-!============================== v1r1 28-07-2011 ==============================
-! 2011-07-28 - Diego Martinez Santos
- - Make version v1r1.
-
-! 2011-07-29 - Eduardo Rodrigues
- - Added tests/test_combBkgPTPdf.py to check the CombBkgPTPdf class
- - Trivial improvements here and there
-
-! 2011-06-20 - Eduardo Rodrigues
- - new module python/B2DXFitters/cpobservables.py to deal with CP observables
- - FitMeTool: new functions for calculation of yields in specified region
- - New scripts for Bs -> Ds K toy studies:
-   - scripts/runBs2DsKMassFitterToyMC.py: (too) simple toy for the mass fit
-   - scripts/plotBs2DsKMassModels.py: make the model plots in mass
- - Major updates to scripts/runBdDeltaMFitterToyMC.py concerning background
-
-! 2011-06-09 - Eduardo Rodrigues
- - Added new module taggingutils.py under python/B2DXFitters containing helper
-   functions to deal with tagging.
- - Added a test script for taggingutils.py under tests/
- - Improvements to various scripts
- - Added documentation to FitMeTool
- - Bd -> D pi mass fit with 2010 data:
-   - Added scripts/runBdMassFitterOnData.py to run the Bd -> D pi mass fit
-   - Added data/2010DataNtuple_Bd2DPi.root with the data sample from the 2010
-     Delta m_d analysis
-
-! 2011-06-07 - Eduardo Rodrigues
- - scripts/runBdDeltaMFitterToyMC.py extended to take into account acceptances,
-   etc.
-
-! 2011-06-01 - Eduardo Rodrigues
- - Added a test script to tests/: checks the mass fit plotter
- - Major improvements to the Gamma_d fit
- - Bd2DhModels added the no-tagging background model in time as used in the
-   Delta m_d analysis
- - Added scripts/plotBdTimeModels.py to plot the Bd -> D pi time models
- - Minor improvements to various running and plotting scripts
-
-! 2011-05-31 - Eduardo Rodrigues
- - GeneralModels: added easy creation of (extended) RooBDecay PDFs
- - Added scripts/runBdDeltaMFitterToyMC.py to run a toy delta m_d fit
- - Added scripts/runBsMassFitterToyMC.py to run a toy mass Bs -> Ds pi fit
- - Added scripts/plotBdMassModels.py to plot the Bd -> D pi mass models
- - Added scripts/plotBsMassModels.py to plot the Bs -> Ds pi mass models
- - New tests/ directory created.
-   Added a script testToyFitFromWorkspace.py and corresponding ROOT file
-   to test running a toy MC fit defining the model PDF from the one stored
-   on a RooWorkspace.
-
-! 2011-05-27 - Eduardo Rodrigues
- - New helper files PropertimeResolutionModels.h/.cxx implementing various
-   propertime resolution models for Bx -> Dx h. So far are available:
-   truth, Gaussian and DoubleGaussian models
- - GeneralModels: added easy creation of (extended) RooDecay 
+! 2011-10-25 - Eduard

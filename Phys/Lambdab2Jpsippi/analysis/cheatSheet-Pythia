@@ -1,5 +1,5 @@
-TFile* fpi = TFile::Open("/castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root")
-TFile* fK = TFile::Open("/castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root")
+TFile* fpi = TFile::Open("root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root")
+TFile* fK = TFile::Open("root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root")
 
 TTree* MCpi = fpi->Get("MCTuplepp/MCDecayTree")
 TTree* MCK = fK->Get("MCTuplepp/MCDecayTree")

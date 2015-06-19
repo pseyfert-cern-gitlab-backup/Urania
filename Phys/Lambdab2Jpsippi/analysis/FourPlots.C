@@ -268,6 +268,65 @@ RooPlot* FiveWeightedTrainPlots(TTree* T, TTree* TPi, TTree* TK,
                     limit,limit2,nbins) ;
 }
 //=====================================================================================
+// Polarity
+//
+//
+RooPlot* OldPolarityPlots(TTree* T, TTree* TMC,
+                       TString variable, TString category,
+                       TString opts="NML", TString title="", 
+                       Double_t limit = 0.,Double_t limit2 = -1.,int nbins=50){
+  
+  TString mc = "(Category==1)*(BKGCAT==0)" ;
+  TString md = "(Category==1)" ;
+  if ("K"==category){
+    mc = "(Category==-1)*(BKGCAT==1)";
+    md = "(Category==-1)";
+  }
+  TCut SigU("sweightLb*(sweightLb>-3)*(Polarity==1)*("+md+")") ;
+  TCut SigD("sweightLb*(sweightLb>-3)*(Polarity==-1)*("+md+")") ;
+  TCut WtrueU("(ErrorCode==0)*DalitzWeight*SPDWeight*PTWeight2*(Polarity==1)*("+mc+")") ;
+  TCut WtrueD("(ErrorCode==0)*DalitzWeight*SPDWeight*PTWeight2*(Polarity==-1)*("+mc+")") ;
+ 
+  if ( ""==title) title=goodName("PolarityPlots of "+variable);
+
+  return SevenPlots(T, T, TMC, TMC,0,0,0,
+                    SigD.GetTitle(),SigU.GetTitle(),WtrueD.GetTitle(),WtrueU.GetTitle(),
+                    "","","",
+                    variable, opts,title, 
+                    limit,limit2,nbins) ;
+}
+//=====================================================================================
+// Polarity
+//
+//
+RooPlot* PolarityPlots(TTree* T, 
+                       TString variable, TString category,
+                       TString opts="M", TString title="", 
+                       Double_t limit = 0.,Double_t limit2 = -1.,int nbins=50){
+  
+  TString UW = "(Polarity==1)" ;  // extracted from LbK yield before weighting
+  TString DW = "(0.893222264293828117)*(Polarity==-1)" ;  // 0.4718/0.5282
+  
+  TString md = "Category==1" ;
+  if ("K"==category){
+    md = "(Category==-1)*(eventNumber%2==0)";
+  }
+  TCut SigUB(UW+"*sweightLb*(sweightLb>-3)*(Baryon==1)*("+md+")") ;
+  TCut SigDB(DW+"*sweightLb*(sweightLb>-3)*(Baryon==1)*("+md+")") ;
+  TCut SigUAB(UW+"*sweightLb*(sweightLb>-3)*(Baryon==-1)*("+md+")") ;
+  TCut SigDAB(DW+"*sweightLb*(sweightLb>-3)*(Baryon==-1)*("+md+")") ;
+ 
+  if ( ""==title) title=goodName("PolarityPlots of "+variable);
+
+  RooPlot* s = SevenPlots(T, T, T, T,0,0,0,
+			  SigUB.GetTitle(),SigDB.GetTitle(),SigUAB.GetTitle(),SigDAB.GetTitle(),
+			  "","","",
+			  variable, opts,title, 
+			  limit,limit2,nbins) ;
+  s->SetMinimum(0.);
+  return s;
+}
+//=====================================================================================
 // The FourPlots function for sWeighted data and MC signal
 //
 //

@@ -32,6 +32,7 @@ label = 'PLOT'
 
 h1 = fhist.Get('hist_Kst_Bs')
 #BREAK
+
 P1mass = RooRealVar("P1_mass","M(K#pi) ", h1.GetBinLowEdge(1), h1.GetBinLowEdge(h1.GetNbinsX()+1),"MeV/c^{2}")
 #P1mass.setRange("REDUCED",  h1.GetBinLowEdge(1), 1500)
 P1mass.setRange("REDUCED",  h1.GetBinLowEdge(1), h1.GetBinLowEdge(h1.GetNbinsX()+1))

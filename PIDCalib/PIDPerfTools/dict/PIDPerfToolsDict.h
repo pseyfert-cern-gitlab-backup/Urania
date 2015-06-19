@@ -16,6 +16,7 @@
 #include "PIDPerfTools/MUONTrackDataSet.h"
 #include "PIDPerfTools/PIDTrackDataSet.h"
 #include "PIDPerfTools/LHCbPIDTrackDataSet.h"
+#include "PIDPerfTools/GenericDataSet.h"
 #include "PIDPerfTools/DataBinCuts.h"
 #include "PIDPerfTools/PerfCalculator.h"
 #include "PIDPerfTools/PIDResult.h"
@@ -36,6 +37,8 @@ namespace
     PerfCalculator<RICHTrackDataSet>                c;
     PerfCalculator<MUONTrackDataSet>                d;
     PerfCalculator<PIDTrackDataSet>                 e;
+    PerfCalculator<LHCbPIDTrackDataSet>             ee;
+    PerfCalculator<GenericDataSet>                  eee;
     std::pair<std::string, RooBinning*>             f;
     std::list<std::pair<std::string, RooBinning*> > g;
     std::vector<RooBinning*>                        h;
@@ -46,6 +49,8 @@ namespace
     WeightDataSetTool<RICHTrackDataSet>             m;
     WeightDataSetTool<MUONTrackDataSet>             n;
     WeightDataSetTool<PIDTrackDataSet>              o;
+    std::pair<std::string, std::string>             r;
+    std::vector<std::pair<std::string, std::string> > s;
   };
 }
 

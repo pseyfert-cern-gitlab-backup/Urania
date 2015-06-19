@@ -197,6 +197,11 @@ void RooPhysFitter::SaveWS()
         throw GeneralException("RooPhysFitter::SaveWS",
                                "No output file specified. Cannot save workspace.");
     }
+    if (!m_rws)
+    {
+        throw GeneralException("RooPhysFitter::SaveWS",
+                               "Workspace is null. Cannot save workspace.");
+    }
     m_file->cd();
     m_rws->Write();
 }
@@ -1080,7 +1085,7 @@ RooPlot* RooPhysFitter::PlotFitPulls(const char* name,
                                      const char* fitName)
 {
   // get the fit results plot
-  RooPlot* rp = this->PlotFitResults(name, fitName, "", "", kFALSE);
+  RooPlot* rp = this->PlotFitResults(name, fitName, "", "", kFALSE, kFALSE);
   
   std::string histName = this->GetDataHistName();
   std::string curveName = this->GetModelCurveName(name);
@@ -1122,7 +1127,8 @@ RooPlot* RooPhysFitter::PlotFitResults(const char* name,
                                        const char* fitName,
                                        const char* range,
                                        const char* rangeTitle,
-                                       Bool_t sumW2Errors)
+                                       Bool_t sumW2Errors,
+                                       Bool_t paramBox)
 {
     if (!m_rws)
     {
@@ -1204,7 +1210,10 @@ RooPlot* RooPhysFitter::PlotFitResults(const char* name,
       }
     }
     // get the RooFitResult
-    const RooFitResult* rfres = this->GetFitResult(fitName);
+    const RooFitResult* rfres = NULL;
+    if (paramBox) {
+        rfres = this->GetFitResult(fitName);
+    }
     
     const RooArgList& yieldList = model->coefList();
     const RooArgList& pdfList = model->pdfList();
@@ -1370,34 +1379,36 @@ RooPlot* RooPhysFitter::PlotFitResults(const char* name,
 
    
     // add parameter box
-    TIterator *pIter = params->createIterator();
-    RooAbsReal *pvar;
-    while ( (pvar=(RooAbsReal*)pIter->Next()) )
-    {
-      assert(pvar);
-      // swap name and title if title is specified, 
-      // else use the original name
-      const char* ptitle="";
-      if (pvar->GetTitle()!=0&&strcmp(pvar->GetTitle(),"")!=0)
-      {
-        ptitle=pvar->GetTitle();
-      }
-      else
-      {
-        ptitle=pvar->GetName();
-      }
-      
-      RooAbsReal* pvarTmp = (RooAbsReal*)pvar->Clone(ptitle);
-      assert(pvarTmp);
-      
-      TString *formatted=this->format(pvarTmp,rfres,1,"NEPLU");
-      //TString *formatted=pvarTmp->format(1, "NEPLU");
-      pv->AddText(formatted->Data());
-      
-      delete formatted;
-      formatted=0;
-      delete pvarTmp;
-      pvarTmp=0;
+    if (paramBox) {
+        TIterator *pIter = params->createIterator();
+        RooAbsReal *pvar;
+        while ( (pvar=(RooAbsReal*)pIter->Next()) )
+        {
+          assert(pvar);
+          // swap name and title if title is specified, 
+          // else use the original name
+          const char* ptitle="";
+          if (pvar->GetTitle()!=0&&strcmp(pvar->GetTitle(),"")!=0)
+          {
+            ptitle=pvar->GetTitle();
+          }
+          else
+          {
+            ptitle=pvar->GetName();
+          }
+          
+          RooAbsReal* pvarTmp = (RooAbsReal*)pvar->Clone(ptitle);
+          assert(pvarTmp);
+          
+          TString *formatted=this->format(pvarTmp,rfres,1,"NEPLU");
+          //TString *formatted=pvarTmp->format(1, "NEPLU");
+          pv->AddText(formatted->Data());
+          
+          delete formatted;
+          formatted=0;
+          delete pvarTmp;
+          pvarTmp=0;
+        }
     }
     if (range&&strcmp(range,"")!=0)
     {
@@ -1770,6 +1781,48 @@ void RooPhysFitter::LoadSnapshot(const char* fitName)
     {
         throw WSRetrievalFailure("RooPhysFitter::LoadSnapshot",
                                  *m_rws, fitName, "fit snapshot");
+    }
+}
+
+// Save a snapshot of the fit parameters to fitName
+// Will raise an exception if the fit name cannot be created in the
+// workspace
+void RooPhysFitter::SaveSnapshot(const char* fitName)
+{  
+  
+    if (!m_rws)
+    {
+        throw GeneralException("RooPhysFitter::SaveSnapshot",
+                               "No RooWorkspace object is defined!");
+    }
+
+    if (!fitName||strcmp(fitName,"")==0)
+    {
+        throw GeneralException("RooPhysFitter::SaveSnapshot",
+                               "No fit name given");
+    }
+
+    RooDataSet* rds = dynamic_cast<RooDataSet*>(m_rws->data(m_dataSetName));
+    if (!rds)
+    {
+        throw WSRetrievalFailure("RooPhysFitter::SaveSnapshot",
+                                 *m_rws, m_dataSetName, "RooDataSet");
+    }
+
+    RooAddPdf* model = dynamic_cast<RooAddPdf*>(m_rws->pdf(m_modelName));
+    if (!model)
+    {
+        throw WSRetrievalFailure("RooPhysFitter::SaveSnapshot",
+                                 *m_rws, m_modelName, "RooAddPdf");
+    }
+    
+    const RooArgSet* fitParams = model->getParameters(*rds);
+    assert(fitParams);
+
+    if (!m_rws->saveSnapshot(fitName,*fitParams,kTRUE))
+    {
+        throw GeneralException("RooPhysFitter::SaveSnapshot",
+                                 "Fit couldn't be saved");
     }
 }
 

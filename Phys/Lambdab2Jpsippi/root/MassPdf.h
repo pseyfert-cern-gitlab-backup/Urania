@@ -40,24 +40,33 @@
 #include "RooExpAndGauss.h"
 
 const TString c_range = "All";
+const unsigned int c_LbCol = 15 ;
+const unsigned int c_pKCol = kRed ;
+const unsigned int c_RefCol = kGreen ;
+const unsigned int c_BkgCol = kBlack ;
+const unsigned int c_LbStyle = 1001 ;
+const unsigned int c_pKStyle = kDotted ;
+const unsigned int c_RefStyle = kDashDotted ;
+const unsigned int c_BkgStyle = kDashed ;
+const unsigned int c_PRCol = kMagenta ;
 
 using namespace RooFit;
 
 class MassPdf{
  public:
-  MassPdf(TString name, RooRealVar* mass, int nevents,  backgrounds bkgs, 
+  MassPdf(TString name, RooRealVar* rmass, int nevents,  backgrounds bkgs, 
           TString opt="", TString range = "",
           TString sigType="DoubleCB", TString bkgType="Poly2",
-	  bool withXib=false, bool withPartReco=false){
-  make(name,mass,nevents,bkgs,opt,range,sigType,bkgType,withXib,withPartReco);
+          bool withXib=false, bool withPartReco=false){
+  make(name,rmass,nevents,bkgs,opt,range,sigType,bkgType,withXib,withPartReco);
   } ;
   
-  MassPdf(TString name, RooRealVar* mass, int nevents,
+  MassPdf(TString name, RooRealVar* rmass, int nevents,
           TString opt="", TString range = "",
           TString sigType="DoubleCB", TString bkgType="Poly2",
 	  bool withXib=false, bool withPartReco=false){
     backgrounds bkgs;
-    make(name,mass,nevents,bkgs,opt,range,sigType,bkgType,withXib,withPartReco);
+    make(name,rmass,nevents,bkgs,opt,range,sigType,bkgType,withXib,withPartReco);
   };
   
   ~MassPdf();
@@ -103,6 +112,7 @@ class MassPdf{
   // ####################################################################################################
   // *** Accessors ***
   void setName(TString name){m_name = name ;};
+  TString name(){return m_name ;};
   RooRealVar* mass()const{return m_mass;};
   RooRealVar* nLambdab()const { return m_nLambdab ;}; 
   RooRealVar* nNonPeaking(){ return m_nonPeaking ;};
@@ -116,14 +126,14 @@ class MassPdf{
   void Print();
   RooRealVar* nPartReco()const{return m_nPartReco;};
   void freezeComb(MassPdf* prevFit, double offset=0.);
-  void freezePeak(MassPdf* prevFit);
+  void freezePeak(MassPdf* prevFit=0);
   RooRealVar* bkg1()const{return m_bkg1;};   
   RooRealVar* bkg2()const{return m_bkg2;};   
   RooRealVar* mean()const{return m_mean;};   
   RooRealVar* width()const{return m_width;};   
   RooRealVar* width2()const{return m_width2;};   
   RooRealVar* frac()const{return m_frac;};   
-  
+ 
  private:
   void make(TString name, RooRealVar* mass, int nevents,backgrounds bkgs,
             TString opt, TString range ,
@@ -175,5 +185,6 @@ class MassPdf{
 double ebRule(double v, double e);   // v is the value, e the error
 double ebRule(double e); ///< display only the error
 void printEbRule(double v, double e, TString sep="\\pm") ;
+void plotLegend(TString name,bool PR=false, double x1=0.65,double y1=0.6,double x2=0.92,double y2=0.92);
 
 #endif

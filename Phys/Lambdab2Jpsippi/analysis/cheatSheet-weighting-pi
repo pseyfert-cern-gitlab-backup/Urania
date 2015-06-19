@@ -27,18 +27,18 @@ char* WK = "(netOutput>0.552)*(BKGCAT==1)*(Category==-1)*(ErrorCode==0)*PTWeight
 
 // if on lxplus
 TChain* T = new TChain("BetaSLambdab2JpsippiDetachedLine_Tuple/DecayTree")
-T->Add("/castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20r1-1062.root")
-T->Add("/castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20-1063.root")
+T->Add("root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20r1-1062.root")
+T->Add("root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20-1063.root")
 T->AddFriend(TNN)
 T->AddFriend(TT)
 
-TFile* fTpi = TFile::Open("/castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root")
+TFile* fTpi = TFile::Open("root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root")
 TTree* Tpi = (TTree*)fTpi->Get("BetaSLambdab2JpsippiDetachedLine_TupleMC/DecayTree")
 Tpi->AddFriend(TNNppi)
 Tpi->Draw("netOutput[0] >> h(100,-1,1)")
 Tpi->Draw("B_FullFit_M[0]:PsippiMass[0]", "Category[0]==1 && ErrorCode[0]==0")
 
-TFile* fTK = TFile::Open("/castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root")
+TFile* fTK = TFile::Open("root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb/Lambdab/LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root")
 TTree* TK = (TTree*)fTK->Get("BetaSLambdab2JpsippiDetachedLine_TupleMC/DecayTree")
 TK->AddFriend(TNNpK)
 TK->Draw("netOutput[0] >> h(100,-1,1)")

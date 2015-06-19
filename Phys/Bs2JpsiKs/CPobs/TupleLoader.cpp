@@ -83,7 +83,7 @@ int decodeArgs(const int argc, char** const argv, TString& module,
 
   // *** Set Directory ***
   if (dir==m_castor) { // data should be read from castor
-    dir = "/castor/cern.ch/grid/lhcb/user/f/fkruse/20130709-Tuples/";
+    dir = "root://castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/f/fkruse/Tuples201403/";
   } else if (dir==m_local) { // data can be read locally
     dir = "";
   }
@@ -229,48 +229,72 @@ B2JpsiKs* loadB2JpsiKsTuple(const TString module, const TString data,
 
   // *** Construct Chain ***
   // 1. Tree
-  TString line  = (dir=="" ? "Slim_"+decay+"_Tuple" : "Bd2JpsiKS");
+  TString line  = (module==m_slimtuple ? "Bd2JpsiKS" : "Slim_"+decay+"_Tuple");
 
   // 2. File
-  TString file1 = "";
-  TString file2 = "";
+  TString file1 = ""; TString file2 = ""; TString file3 = ""; TString file4 = "";
   
   if (dir.Contains(".root")) { // case where file name is give 
     file1 = dir;
-  } else if (dir=="") {
+  } else if (module!=m_slimtuple) {
     file1 = "B2JpsiKs-"+data+"-Slim.root";
   } else { // Select DaVinci tuple for slimming
     if (data==m_LHCb2011) {
-      file1 = dir+"B2JpsiKSDetached_data_Stripping20r1_DVv33r5_FTfromDV_v1_20130630_rniet_combined_tupleA.root";
+      file1 = dir+"B2JpsiKSDetached_data_Stripping20r1_DVv33r6p1_FTr162594_v2_20131007_fkruse_combined_tupleA.root";
+      //file1 = dir+"B2JpsiKSDetached_data_Stripping20r1_DVv33r9_FTr167275_v3_20140306_fkruse_combined_tupleA.root";
     } else if (data==m_LHCb2011Prescaled) {
-      file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r1_DVv33r5_FTfromDV_v1_20130630_rniet_combined_tupleA.root";
+      file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r1_DVv33r6p1_FTr162594_v2_20131007_fkruse_combined_tupleA.root";
+      //file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r1_DVv33r9_FTr167275_v3_20140306_fkruse_combined_tupleA.root";
     } else if (data==m_LHCb2012) {
-      file1 = dir+"B2JpsiKSDetached_data_Stripping20r0_DVv33r5_FTfromDV_v1_20130701_rniet_combined_tupleA.root";
+      file1 = dir+"B2JpsiKSDetached_data_Stripping20r1_DVv33r6p1_FTr162594_v2_20131007_fkruse_combined_tupleA.root";
+      //file1 = dir+"B2JpsiKSDetached_data_Stripping20r0_DVv33r9_FTr167275_v3_20140306_fkruse_combined_tupleA.root";
     } else if (data==m_LHCb2012Prescaled) {
-      file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r0_DVv33r5_FTfromDV_v1_20130701_rniet_combined_tupleA.root";
+      file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r0_DVv33r6p1_FTr162594_v2_20131007_fkruse_combined_tupleA.root";
+      //file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r0_DVv33r9_FTr167275_v3_20140306_fkruse_combined_tupleA.root";
+    } else if (data==m_LHCbAll) {
+      file1 = dir+"B2JpsiKSDetached_data_Stripping20r1_DVv33r6p1_FTr162594_v2_20131007_fkruse_combined_tupleA.root";
+      file2 = dir+"B2JpsiKSDetached_data_Stripping20r0_DVv33r6p1_FTr162594_v2_20131007_fkruse_combined_tupleA.root";
+      //file1 = dir+"B2JpsiKSDetached_data_Stripping20r1_DVv33r9_FTr167275_v3_20140306_fkruse_combined_tupleA.root";
+      //file2 = dir+"B2JpsiKSDetached_data_Stripping20r0_DVv33r9_FTr167275_v3_20140306_fkruse_combined_tupleA.root";
+    } else if (data==m_LHCbAllPrescaled) {
+      file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r1_DVv33r6p1_FTr162594_v2_20131007_fkruse_combined_tupleA.root";
+      file2 = dir+"B2JpsiKSPrescaled_data_Stripping20r0_DVv33r6p1_FTr162594_v2_20131007_fkruse_combined_tupleA.root";
+      //file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r1_DVv33r9_FTr167275_v3_20140306_fkruse_combined_tupleA.root";
+      //file2 = dir+"B2JpsiKSPrescaled_data_Stripping20r0_DVv33r9_FTr167275_v3_20140306_fkruse_combined_tupleA.root";
     } else if (data==m_SigBd) {
       file1 = dir+
-      //"B2JpsiKSDetached_MC_Sim08_Pythia8_Bd2JpsiKS_Stripping20r0_DVv33r5_FTfromDV_v6_20130706_rniet_combined_tupleA_PRELIMINARY.root";
-      "B2JpsiKSDetached_MC_Sim08_Pythia6_Bd2JpsiKS_Stripping20r0_DVv33r5_FTfromDV_v6_20130705_rniet_combined_tupleA.root";
+      "B2JpsiKSDetached_Sim08_2012_Pythia6_Bd2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
+      file2 = dir+
+      "B2JpsiKSDetached_Sim08_2012_Pythia8_Bd2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
     } else if (data==m_SigBdPrescaled) {
       file1 = dir+
-      //"B2JpsiKSPrescaled_MC_Sim08_Pythia8_Bd2JpsiKS_Stripping20r0_DVv33r5_FTfromDV_v6_20130706_rniet_combined_tupleA_PRELIMINARY.root";
-      "B2JpsiKSPrescaled_MC_Sim08_Pythia6_Bd2JpsiKS_Stripping20r0_DVv33r5_FTfromDV_v6_20130705_rniet_combined_tupleA.root";
+      "B2JpsiKSPrescaled_Sim08_2012_Pythia6_Bd2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
+      file2 = dir+
+      "B2JpsiKSPrescaled_Sim08_2012_Pythia8_Bd2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
     } else if (data==m_SigBs) {
       file1 = dir+
-      //"B2JpsiKSDetached_MC_Sim08_Pythia8_Bs2JpsiKS_Stripping20r0_DVv33r5_FTfromDV_v1_20130706_rniet_combined_tupleA.root";
-      "B2JpsiKSDetached_MC_Sim08_Pythia6_Bs2JpsiKS_Stripping20r0_DVv33r5_FTfromDV_v6_20130706_rniet_combined_tupleA.root";
+      "B2JpsiKSDetached_Sim08_2012_Pythia6_Bs2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
+      file2 = dir+
+      "B2JpsiKSDetached_Sim08_2012_Pythia8_Bs2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
     } else if (data==m_SigBsPrescaled) {
       file1 = dir+
-      //"B2JpsiKSPrescaled_MC_Sim08_Pythia8_Bs2JpsiKS_Stripping20r0_DVv33r5_FTfromDV_v1_20130706_rniet_combined_tupleA.root";
-      "B2JpsiKSPrescaled_MC_Sim08_Pythia6_Bs2JpsiKS_Stripping20r0_DVv33r5_FTfromDV_v6_20130706_rniet_combined_tupleA.root";
+      "B2JpsiKSPrescaled_Sim08_2012_Pythia6_Bs2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
+      file2 = dir+
+      "B2JpsiKSPrescaled_Sim08_2012_Pythia8_Bs2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
     } else if (data==m_SigKstar || data==m_SigKstarWM) {
       file1 = dir+
-      "B2JpsiKSPrescaled_MC_Sim08_Pythia6_Bd2JpsiKstar_Stripping20r0_DVv33r5_FTfromDV_v6_20130716_rniet_combined_tupleA.root";
-      //"B2JpsiKSDetached_MC_Sim08_Pythia6_Bd2JpsiKstar_Stripping20r0_DVv33r5_FTfromDV_v6_20130716_rniet_combined_tupleA.root";
+      "B2JpsiKSDetached_Sim08a_2012_Pythia6_Bd2JpsiKst_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
+      file2 = dir+
+      "B2JpsiKSDetached_Sim08a_2012_Pythia8_Bd2JpsiKst_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
+      file3 = dir+
+      "B2JpsiKSDetached_Sim08c_2012_Pythia6_Bd2JpsiKst_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
+      file4 = dir+
+      "B2JpsiKSDetached_Sim08c_2012_Pythia8_Bd2JpsiKst_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
     } else if (data==m_IncJpsi) {
-      file1 = dir+
-      "B2JpsiKSPrescaled_MC_Sim08_Pythia6_inclJPsi_Stripping20r0_DVv33r5_FTfromDV_v1_20130707_rniet_combined_tupleA.root";
+      file1 = dir +
+      "B2JpsiKSPrescaled_Sim08_2012_Pythia6_inclJpsi_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
+      file2 = dir +
+      "B2JpsiKSPrescaled_Sim08_2012_Pythia8_inclJpsi_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
     }
   }
 
@@ -279,17 +303,22 @@ B2JpsiKs* loadB2JpsiKsTuple(const TString module, const TString data,
     std::cout << "ERROR: Did not find file-specification for data set " << data
               << " and decay channel " << decay << std::endl;
     return 0;
-  }
-  else {
+  } else {
     std::cout << "Found file: " << file1 << " for line " << line << std::endl;
     if (file2!="") {
       std::cout << "Found file: " << file2 << " for line " << line << std::endl;
+    }
+    if (file3!="") {
+      std::cout << "Found file: " << file3 << " for line " << line << std::endl;
+    }
+    if (file4!="") {
+      std::cout << "Found file: " << file4 << " for line " << line << std::endl;
     }
   }
   
   // *** Load Chain ***
   TChain* chain = (TChain *)
-    loadChain(file1, file2, line, module, data, step, dir, decay, weightMethod);
+    loadChain(file1, file2, file3, file4, line, module, data, step, dir, decay, weightMethod);
   if (chain==0 || chain->GetEntries()==0) return 0;
   
   // *** Construct NTuple ***
@@ -300,15 +329,17 @@ B2JpsiKs* loadB2JpsiKsTuple(const TString module, const TString data,
 
 // #############################################################################
 // *** Make Chain ***
-TChain* loadChain(const TString file1, const TString file2, const TString line,
-                  const TString module, const TString data, const TString step,
-                  const TString dir, const TString decay,
-                  const TString weightMethod) {
+TChain* loadChain(const TString file1, const TString file2, const TString file3,
+                  const TString file4, const TString line, const TString module,
+                  const TString data, const TString step, const TString dir,
+                  const TString decay, const TString weightMethod) {
   
   // *** Define chain ***
   TChain* chain = new TChain(line, "");
   chain->Add(file1);
   if (file2!="") chain->Add(file2);
+  if (file3!="") chain->Add(file3);
+  if (file4!="") chain->Add(file4);
   std::cout << "Total number of entries: " << chain->GetEntries() << std::endl;
   
   // Error Handling

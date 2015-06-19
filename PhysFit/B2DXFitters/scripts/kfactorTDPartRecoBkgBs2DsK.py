@@ -1,7 +1,7 @@
 #!/bin/sh
 # -*- mode: python; coding: utf-8 -*-
 # vim: ft=python:sw=4:tw=78
-# --------------------------------------------------------------------------- 
+# ---------------------------------------------------------------------------
 # coding=utf-8
 """:"
 # This part is run by the shell. It does some setup which is convenient to save
@@ -11,7 +11,7 @@
 if test -n "$CMTCONFIG" \
          -a -f $B2DXFITTERSROOT/$CMTCONFIG/libB2DXFittersDict.so \
      -a -f $B2DXFITTERSROOT/$CMTCONFIG/libB2DXFittersLib.so; then
-    # all ok, software environment set up correctly, so don't need to do 
+    # all ok, software environment set up correctly, so don't need to do
     # anything
     true
 else
@@ -96,7 +96,34 @@ background to Bs⁰ → DsK.
 # Python standard libraries
 import os
 import sys
-from optparse import OptionParser
+sys.path.append("../data/")
+
+# options
+import argparse
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('-o', '--outfile', dest='fname',
+                    default=os.environ['B2DXFITTERSROOT']+'/data/workspace/kfactor_wspace.root',
+                    help='Filename with saved workspace')
+parser.add_argument('--mvar', dest='mvar',
+                    default='lab0_MassFitConsD_M',
+                    help = 'Set mass observable')
+parser.add_argument('--masslo', dest='masslo',
+                    type=float, default=5320.0,
+                    help='Mass window lower edge')
+parser.add_argument('--masshi', dest='masshi',
+                    type=float, default=5420.0,
+                    help='Mass window upper edge')
+parser.add_argument('--nomasswin', dest='nomasswin',
+                    action='store_false', default=False,
+                    help='Turn off mass window')
+parser.add_argument('--configname', dest = 'configname',
+                    default='Bs2DsKConfigForNominalMassFitBDTGA',
+                    help='Configuration file name')
+parser.add_argument('-d', '--debug', dest='debug',
+                    action='store_true', default=True)
+
+options = parser.parse_args()
+
 
 # ROOT globals
 import B2DXFitters
@@ -116,6 +143,8 @@ from ROOT import RooAbsPdf, RooGaussian
 from ROOT import RooGenericPdf, RooEffProd, RooAddPdf, RooProdPdf, RooHistPdf
 from ROOT import RooDataSet, RooDataHist
 from ROOT import RooDecay, RooGaussModel, TString, TLorentzVector
+
+
 
 # avoid memory leaks - will have to explicitly relinquish and acquire ownership
 # if required, but PyROOT does not do what it thinks best without our knowing
@@ -143,19 +172,6 @@ Pcut_up = 100000000000.0
 BDTGCut = 0.50
 Dmass_down = 1948
 Dmass_up = 1990
-
-
-def cpp_to_pylist(cpplist):
-    """Convert a C++ list (from PyROOT) to a Python list.
-
-    NB: Calling this empties the original C++ list.
-
-    """
-    pylist = []
-    for i in range(cpplist.size()):
-        pylist.append(cpplist.back())
-        cpplist.pop_back()
-    return pylist
 
 
 def get_workspace(configname, varnames, masslo, masshi, debug):
@@ -194,68 +210,112 @@ def get_workspace(configname, varnames, masslo, masshi, debug):
     # MDSettingsMC.SetMassDRange()
     MDSettingsMC.Print("v")
 
+    MDRatio= 1.0-myconfigfile["lumRatio"]
+    MURatio= myconfigfile["lumRatio"]
+
     if configname.startswith('Bs2DsK'):
         hypo = TString("BsDsK")
+        ffile = TFile('dsk_treedump_mass_bin_{}_{}.root'.format(masslo, masshi), 'recreate')
     elif configname.startswith('Bs2DsPi'):
         hypo = TString("BsDsPi")
+        ffile = TFile('dspi_treedump_mass_bin_{}_{}.root'.format(masslo, masshi), 'recreate')
     else:
         print 'Unknown mass hypothesis; job will crash.'
         return None
 
-    ffile = TFile('treedump.root', 'recreate')
     workspace = 0
     workspace = getSpecBkg4kfactor(TString(myconfigfile["dataName"]),
                                    TString('#Kfactor MC FileName MU'),
                                    TString('#Kfactor MC TreeName'),
                                    MDSettingsMC, hypo,
-                                   workspace, ffile, debug)
+                                   workspace, MURatio, ffile, debug)
     workspace = getSpecBkg4kfactor(TString(myconfigfile["dataName"]),
                                    TString('#Kfactor MC FileName MD'),
                                    TString('#Kfactor MC TreeName'),
                                    MDSettingsMC, hypo,
-                                   workspace, ffile, debug)
+                                   workspace, MDRatio, ffile, debug)
     ffile.Close()
 
     if debug:
         print 'Dataset read from ntuples.\n', '=' * 50
         workspace.Print()
         print '=' * 50
-    return workspace
 
-# options
-_usage = '%prog [options]'
-parser = OptionParser( _usage )
-parser.add_option('-o', '--outfile', dest='fname',
-                  default=os.environ['B2DXFITTERSROOT']+'/data/workspace/kfactor_wspace.root',
-                  help='Filename with saved workspace')
-parser.add_option('--mvar', dest='mvar',
-                   default='lab0_MassFitConsD_M',
-                   help = 'Set mass observable')
-parser.add_option('--masslo', dest='masslo',
-                  type='float', default=5320.0,
-                  help='Mass window lower edge')
-parser.add_option('--masshi', dest='masshi',
-                  type='float', default=5420.0,
-                  help='Mass window upper edge')
-parser.add_option('--nomasswin', dest='nomasswin',
-                  action='store_false', default=False,
-                  help='Turn off mass window')
-parser.add_option('--configname', dest = 'configname',
-                   default='Bs2DsKConfigForNominalMassFitBDTGA',
-                   help='Configuration file name')
-parser.add_option('-d', '--debug', dest='debug',
-                  action='store_true', default=True)
+    kFactor = GeneralUtils.GetObservable(workspace,TString("kfactorVar"), debug)
+    kFactor.setRange(0.80, 1.10)
+
+    if DsK:
+        names = ["Bd2DK","Bd2DPi","Lb2LcK","Lb2LcPi","Lb2Dsstp","Lb2Dsp","Bs2DsstPi","Bs2DsRho","Bs2DsPi"]
+    else:
+        names = ["Bs2DsstPi","Bs2DsK","Lb2LcPi","Bd2DPi"]
+
+    hi, lo = [], []
+    dataup, datadown = [], []
+    for mode in names:
+        dataName = "kfactor_dataset_"+mode+"_up"
+        dataup.append(GeneralUtils.GetDataSet(workspace,TString(dataName), debug))
+        dataup[i].Print("v")
+        print dataup[i].sumEntries()
+        dataName = "kfactor_dataset_" + mode + "_down"
+        datadown.append(GeneralUtils.GetDataSet(workspace,TString(dataName), debug))
+        datadown[-1].Print("v")
+        print datadown[-1].sumEntries()
+        hi.append(-2.0)
+        lo.append(2.0)
+
+    for i in range(len(names)):
+        for j in range(dataup[i].numEntries()):
+            obsKF = dataup[i].get(j)
+            kF = obsKF.find("kfactorVar")
+            kNum = kF.getVal()
+            if kNum > hi[i]:
+                hi[i] = kNum
+            if kNum < lo[i]:
+                lo[i] = kNum
+        for j in range(datadown[i].numEntries()):
+            obsKF = datadown[i].get(j)
+            kF = obsKF.find("kfactorVar")
+            kNum = kF.getVal()
+            if kNum > hi[i]:
+                hi[i] = kNum
+            if kNum < lo[i]:
+                lo[i] = kNum
+
+    print hi
+    print lo
+    maxRange = []
+    minRange = []
+    for i in range(len(names)):
+        q = hi[i] - lo[i]
+        maxRange.append(hi[i]+0.05*q)
+        minRange.append(lo[i]-0.05*q)
+    print maxRange
+    print minRange
+
+    plotSet = PlotSettings("plotSet","plotSet")
+
+    histDW = []
+    histUP = []
+    hist   = []
+    pdfKF  = []
+    lumRatio = RooRealVar("lumRatio","lumRatio",myconfigfile["lumRatio"])
+    for i in range(len(names)):
+        kFactor.setRange(minRange[i], maxRange[i])
+
+        name = "kFactor_"+names[i]+"_both"
+        pdfKF.append(GeneralUtils.CreateHistPDF(dataup[i], datadown[i], myconfigfile["lumRatio"],
+                                                kFactor, TString(name), 100, debug))
+        t = TString("both")
+        GeneralUtils.SaveTemplate(NULL, pdfKF[i], kFactor, TString(names[i]), t, plotSet, debug );
+
+    workOut = RooWorkspace("workspace","workspace")
+    for i in range(len(names)):
+        getattr(workOut,'import')(pdfKF[i])
+    workOut.Print("v")
+    return workOut
 
 
 if __name__ == "__main__":
-
-    (options, args) = parser.parse_args()
-    if len(args) > 0:
-        parser.print_help()
-        exit(-1)
-
-    import sys
-    sys.path.append("../data/")
 
     fname = options.fname
     debug = options.debug

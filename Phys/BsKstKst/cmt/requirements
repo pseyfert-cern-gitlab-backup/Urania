@@ -3,7 +3,7 @@
 # Maintainer : Yuehong Xie, Paula Alvarez Cartelle, Diego Martinez Santos
 #============================================================================
 package           BsKstKst 
-version           v4r1
+version           v4r2
 
 #============================================================================
 # Structure, i.e. directories to process. 

@@ -94,6 +94,21 @@ png(what+"-TC_PsipKFit-opt")
 _filea->Get("TC_PsippiFitC")->Draw()
 png(what+"-TC_PsippiFit-opt")
 
+TString what = "FrozenCB"
+TFile* _filea = TFile::Open("Lambdab-S20X-1062-"+what+"-"+optNN+"-SW.root")
+_filea->Get("TC_PsipKFitC")->Draw()
+png(what+"-TC_PsipKFit-opt")
+_filea->Get("TC_PsippiFitC")->Draw()
+png(what+"-TC_PsippiFit-opt")
+_filea->Get("TC_PsipKFitBC")->Draw()
+png(what+"-TC_PsipKFit-opt-B")
+_filea->Get("TC_PsipKFitABC")->Draw()
+png(what+"-TC_PsipKFit-opt-AB")
+_filea->Get("TC_PsippiFitBC")->Draw()
+png(what+"-TC_PsippiFit-opt-B")
+_filea->Get("TC_PsippiFitABC")->Draw()
+png(what+"-TC_PsippiFit-opt-AB")
+
 TString what = "GaussCB"
 TFile* _filea = TFile::Open("Lambdab-S20X-1062-"+what+"-"+optNN+"-SW.root")
 _filea->Get("TC_PsipKFitC")->Draw()
@@ -283,9 +298,8 @@ png("TC_PsippiFit-Xib")
 //----------------------------------------------------------------------------
 // Non optimal cuts - needs unblinding
 //----------------------------------------------------------------------------
-TString fN = "S20X-1062"
+TString fN = "S20X-1062-notree"
 TString blind = "C"
-TFile* ff = TFile::Open("Lambdab-"+fN+"-0.8-SW.root")
 
 TFile::Open("Lambdab-"+fN+"-0.9-SW.root")->Get("TC_PsippiFit"+blind)->Draw()
 png("TC_PsippiFitC_0.9")
@@ -299,7 +313,7 @@ TFile::Open("Lambdab-"+fN+"-0.65-SW.root")->Get("TC_PsippiFit"+blind)->Draw()
 png("TC_PsippiFitC_0.65")
 TFile::Open("Lambdab-"+fN+"-0.6-SW.root")->Get("TC_PsippiFit"+blind)->Draw()
 png("TC_PsippiFitC_0.6")
-TFile::Open("Lambdab-"+fN+"-0.55-SW.root")->Get("TC_PsippiFit"+blind)->Draw()
+TFile::Open("Lambdab-"+fN+"-0.552-SW.root")->Get("TC_PsippiFit"+blind)->Draw()
 png("TC_PsippiFitC_0.55")
 TFile::Open("Lambdab-"+fN+"-0.5-SW.root")->Get("TC_PsippiFit"+blind)->Draw()
 png("TC_PsippiFitC_0.5")
@@ -353,7 +367,7 @@ TFile::Open("Lambdab-"+fN+"-0.65-SW.root")->Get("TC_PsipKFit"+blind)->Draw()
 png("TC_PsipKFitC_0.65")
 TFile::Open("Lambdab-"+fN+"-0.6-SW.root")->Get("TC_PsipKFit"+blind)->Draw()
 png("TC_PsipKFitC_0.6")
-TFile::Open("Lambdab-"+fN+"-0.55-SW.root")->Get("TC_PsipKFit"+blind)->Draw()
+TFile::Open("Lambdab-"+fN+"-0.552-SW.root")->Get("TC_PsipKFit"+blind)->Draw()
 png("TC_PsipKFitC_0.55")
 TFile::Open("Lambdab-"+fN+"-0.5-SW.root")->Get("TC_PsipKFit"+blind)->Draw()
 png("TC_PsipKFitC_0.5")
@@ -394,3 +408,55 @@ png("TC_PsipKFitC_-0.1")
 TFile::Open("Lambdab-"+fN+"--1.0-SW.root")->Get("TC_PsipKFit"+blind)->Draw()
 png("TC_PsipKFitC_-1.0")
 
+//----------------------------------------------------------------------------
+// Subsamples
+//----------------------------------------------------------------------------
+TString iv = "0.5-0"
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsippiFitC")->Draw()
+png("TC_PsippiFitC_"+iv)
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsippiFitBC")->Draw()
+png("TC_PsippiFitBC_"+iv)
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsippiFitABC")->Draw()
+png("TC_PsippiFitABC_"+iv)
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsipKFitC")->Draw()
+png("TC_PsipKFitC_"+iv)
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsipKFitBC")->Draw()
+png("TC_PsipKFitBC_"+iv)
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsipKFitABC")->Draw()
+png("TC_PsipKFitABC_"+iv)
+
+TString iv = "0.75-0.5"
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsippiFitC")->Draw()
+png("TC_PsippiFitC_"+iv)
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsippiFitBC")->Draw()
+png("TC_PsippiFitBC_"+iv)
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsippiFitABC")->Draw()
+png("TC_PsippiFitABC_"+iv)
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsipKFitC")->Draw()
+png("TC_PsipKFitC_"+iv)
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsipKFitBC")->Draw()
+png("TC_PsipKFitBC_"+iv)
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsipKFitABC")->Draw()
+png("TC_PsipKFitABC_"+iv)
+
+TString iv = "notree-0.75"  
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsippiFitC")->Draw()
+png("TC_PsippiFitC_"+iv)
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsippiFitBC")->Draw()
+png("TC_PsippiFitBC_"+iv)
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsippiFitABC")->Draw()
+png("TC_PsippiFitABC_"+iv)
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsipKFitC")->Draw()
+png("TC_PsipKFitC_"+iv)
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsipKFitBC")->Draw()
+png("TC_PsipKFitBC_"+iv)
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsipKFitABC")->Draw()
+png("TC_PsipKFitABC_"+iv)
+
+TString iv = "0.0--1"
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsipKFitC")->Draw()
+png("TC_PsipKFitC_"+iv)
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsipKFitBC")->Draw()
+png("TC_PsipKFitBC_"+iv)
+TFile::Open("Lambdab-S20X-1062-"+iv+"-SW.root")->Get("TC_PsipKFitABC")->Draw()
+png("TC_PsipKFitABC_"+iv)

@@ -209,37 +209,29 @@ void JpsiKsPdf::setConstant(TString which){
     if(m_tau_short) m_tau_short->setConstant(true);
   }
   if (which=="Prescaled_LL") {
-    if (m_Kstar_mean) {
-      m_Kstar_mean->setVal(5170.5);
-      m_Kstar_mean->setConstant(true);
-    }
-    if (m_Kstar_sigma) {
-      m_Kstar_sigma->setVal(29.358);
-      m_Kstar_sigma->setConstant(true);
-    }
     if (m_frac) {
-      m_frac->setVal(0.59147);
+      m_frac->setVal(0.54840);
       m_frac->setConstant(true);
     }
     if (m_width) {
-      m_width->setVal(5.9590);
+      m_width->setVal(5.9063);
       m_width->setConstant(true);
     }
     if (m_width2) {
-      m_width2->setVal(10.552);
+      m_width2->setVal(10.005);
       m_width2->setConstant(true);
     }
   } else if (which=="Prescaled_DD") {
     if (m_frac) {
-      m_frac->setVal(0.48128);
+      m_frac->setVal(0.59933);
       m_frac->setConstant(true);
     }
     if (m_width) {
-      m_width->setVal(6.4641);
+      m_width->setVal(6.8896);
       m_width->setConstant(true);
     }
     if (m_width2) {
-      m_width2->setVal(10.904);
+      m_width2->setVal(12.837);
       m_width2->setConstant(true);
     }
   }
@@ -355,17 +347,17 @@ void JpsiKsPdf::setTails(){
     setConstant("Tails");
   }
   else if(m_setup==m_NNKstar){
-    if(m_alpha) m_alpha->setVal(m_ttype==3 ? 1.8634 : 1.6309);
-    if(m_alpha2) m_alpha2->setVal(m_ttype==3 ? -2.0651 : -1.8401);
-    if(m_n) m_n->setVal(m_ttype==3 ? 1.7677 : 2.5130);
-    if(m_n2) m_n2->setVal(m_ttype==3 ? 3.0579 : 4.9832);
+    if(m_alpha) m_alpha->setVal(m_ttype==3 ? 1.9022 : 1.7922);
+    if(m_alpha2) m_alpha2->setVal(m_ttype==3 ? -2.0590 : -1.9330);
+    if(m_n) m_n->setVal(m_ttype==3 ? 1.8959 : 2.3794);
+    if(m_n2) m_n2->setVal(m_ttype==3 ? 2.8106 : 4.4326);
     setConstant("Tails");
   }
   else if(m_setup==m_NNUnbiased || m_setup==m_NNSecond){
-    if(m_alpha) m_alpha->setVal(m_ttype==3 ? 1.8405 : 1.6309);
-    if(m_alpha2) m_alpha2->setVal(m_ttype==3 ? -2.0145 : -1.8401);
-    if(m_n) m_n->setVal(m_ttype==3 ? 1.7943 : 2.5130);
-    if(m_n2) m_n2->setVal(m_ttype==3 ? 3.4124 : 4.9832);
+    if(m_alpha) m_alpha->setVal(m_ttype==3 ? 1.8702 : 1.9540);
+    if(m_alpha2) m_alpha2->setVal(m_ttype==3 ? -2.0220 : -2.0360);
+    if(m_n) m_n->setVal(m_ttype==3 ? 1.8254 : 2.0952);
+    if(m_n2) m_n2->setVal(m_ttype==3 ? 3.1019 : 3.8934);
     setConstant("Tails");
   }
 }
@@ -501,16 +493,16 @@ JpsiKsPdf::~JpsiKsPdf() {
 void JpsiKsPdf::buildFractions(int nevents){
 
   // Individual Components 
-  double fracBd = 0.5*nevents;
+  double fracBd = 0.27*nevents;
   double fracBs = (m_fitBs ? fracBd*0.0116 : 0.);
-  double fracKs = (m_fitKstar ? 0.001*fracBd : 0.);
+  double fracKs = (m_fitKstar ? 0.02*fracBd : 0.);
   double fracCombi = nevents-fracBd-fracBs-fracKs;
   
   // RooRealVars
   m_nBd = new RooRealVar(m_name+"nBd", "number of Bd",fracBd, 0.0, 1.0*nevents);
-  m_nBs = new RooRealVar(m_name+"nBs","number of Bs",fracBs, 0.0, 0.15*nevents);
+  m_nBs = new RooRealVar(m_name+"nBs","number of Bs",fracBs, 0.0, 0.05*nevents);
   m_nKstar = new RooRealVar(m_name+"nKstar","number of Kstar", fracKs, 0.0, 0.1*nevents);
-  m_nonPeaking = new RooRealVar(m_name+"nonPeaking","number of Background not peaking", fracCombi, 0.0, 1.0*nevents);
+  m_nonPeaking = new RooRealVar(m_name+"nonPeaking","number of Background not peaking", fracCombi, 0., 1.0*nevents);
 }
 
 // #############################################################################
@@ -522,7 +514,7 @@ void JpsiKsPdf::buildMassPdf(){
   } else {
     m_meanBd = new RooRealVar(m_name+"meanBd","mean Bd mass", 5279.50, 5279.50-10., 5279.50+10.);
   }
-  m_width = new RooRealVar(m_name+"width","width",5.,1.,10.);
+  m_width = new RooRealVar(m_name+"width","width",6.,3.,10.);
 
   // Individual Components
   if(m_sigType=="CB" || m_sigType=="DoubleCB" || m_sigType=="GaussCB"){
@@ -531,7 +523,7 @@ void JpsiKsPdf::buildMassPdf(){
     m_Bd_I = new RooCBShape(m_name+"CBshapeBd","Bd Crystal Ball",*m_mass,*m_meanBd,*m_width,*m_alpha,*m_n);
   }
   if(m_sigType=="DoubleCB"){
-    m_width2 = new RooRealVar(m_name+"width2","width2",10.,1.,25.);
+    m_width2 = new RooRealVar(m_name+"width2","width2",10.,5.,25.);
     m_alpha2 = new RooRealVar(m_name+"alpha2","alpha2",-2.,-5.,0.); 
     m_n2 = new RooRealVar(m_name+"n2","n2",7.,0.,150.);
     m_Bd_II = new RooCBShape(m_name+"CBshapeBd_refl","Bd Refl Crystal Ball",*m_mass,*m_meanBd,*m_width2,*m_alpha2,*m_n2);
@@ -540,7 +532,7 @@ void JpsiKsPdf::buildMassPdf(){
     m_Bd_I = new RooGaussian(m_name+"BdGauss_core", "Bd core gaussian" , *m_mass, *m_meanBd, *m_width);
   }
   if(m_sigType=="GaussCB" || m_sigType=="DoubleGauss"){
-    m_width2 = new RooRealVar(m_name+"width2","width2",10.,1.,25.);
+    m_width2 = new RooRealVar(m_name+"width2","width2",10.,5.,25.);
     m_Bd_II = new RooGaussian(m_name+"BdGauss_wide", "Bd wide gaussian" , *m_mass, *m_meanBd, *m_width2);
   }
   // Set the correct tail parameters
@@ -559,7 +551,7 @@ void JpsiKsPdf::buildMassPdf(){
   if(m_sigType=="GaussCB") std::cout << " SETUP: Signal Model = Gauss + Crystal Ball" << std::endl;
   if(m_sigType=="DoubleGauss") std::cout << " SETUP: Signal Model = Double Gauss" << std::endl;
   if(m_sigType=="DoubleCB" || m_sigType=="GaussCB" || m_sigType=="DoubleGauss"){
-    m_frac = new RooRealVar(m_name+"frac", "Fraction of narrow component", 0.58498, 0.0, 1.0);
+    m_frac = new RooRealVar(m_name+"frac", "Fraction of narrow component", 0.52, 0.0, 1.0);
     m_Bd = new RooAddPdf(m_name+"Bd PDF","Bd PDF",RooArgList(*m_Bd_I,*m_Bd_II),RooArgList(*m_frac));
   }
 
@@ -608,9 +600,9 @@ void JpsiKsPdf::buildMassPdf(){
     }
     else if(m_KstarType=="ExpGauss"){
       std::cout << " SETUP: Kstar Model = Exp and Gauss" << std::endl;
-      m_Kstar_mean = new RooRealVar(m_name+"Kstar mean","mean",5173.5,5150,5225);
-      m_Kstar_sigma = new RooRealVar(m_name+"Kstar sigma","sigma",26.99,10.,30.); 
-      m_Kstar_shift = new RooRealVar(m_name+"Kstar shift","transition to Exp",-4.583);// Frozen to help convergence
+      m_Kstar_mean = new RooRealVar(m_name+"Kstar mean","mean",5177.6, 5150., 5200.);
+      m_Kstar_sigma = new RooRealVar(m_name+"Kstar sigma","sigma",22.688,10.,35.); 
+      m_Kstar_shift = new RooRealVar(m_name+"Kstar shift","transition to Exp",-5.2174);// Frozen to help convergence
       m_Kstar = new RooGaussAndExp(m_name+"EaGKstar","Kstar BKG",*m_mass,*m_Kstar_mean,*m_Kstar_sigma,*m_Kstar_shift);
       //m_Kstar = new RooGaussian(m_name+"EaGKstar","Kstar BKG",*m_mass,*m_Kstar_mean,*m_Kstar_sigma);
     }
@@ -827,22 +819,22 @@ RooArgList JpsiKsPdf::twoDPdfList()const{
 RooFitResult* JpsiKsPdf::fitToMass(RooDataSet* data, bool doSumW2){
   if (!data) return 0 ;
   //  std::cout << "Fitting " << data->numEntries() << " " << data->sumEntries() << " " << doSumW2 << std::endl ;
-  if(doSumW2) return m_massPdf->fitTo(*data, Save(), SumW2Error(true));
-  else return m_massPdf->fitTo(*data, Save());
+  if(doSumW2) return m_massPdf->fitTo(*data, Save(), SumW2Error(true), Verbose());
+  else return m_massPdf->fitTo(*data, Save(), Verbose());
 }
 // #############################################################################
 RooFitResult* JpsiKsPdf::fitToMass(RooDataSet* data, bool doSumW2, TString range){
   if (!data) return 0 ;
   //std::cout << "Range Fitting " << data->numEntries() << " " << data->sumEntries() << " " << doSumW2 << std::endl ;
-  if(doSumW2) return m_massPdf->fitTo(*data, Range(range), Save(), SumW2Error(true));
-  else return m_massPdf->fitTo(*data, Range(range), Save());
+  if(doSumW2) return m_massPdf->fitTo(*data, Range(range), Save(), SumW2Error(true), Verbose());
+  else return m_massPdf->fitTo(*data, Range(range), Save(), Verbose());
 }
 // #############################################################################
 RooFitResult* JpsiKsPdf::fitToAll(RooDataSet* data, bool doSumW2){
   if (!data) return 0 ;
   // WARNING: Ranges do not work for multi-dimensional fits
-  if(doSumW2) return m_twoDPdf->fitTo(*data, Save(), SumW2Error(true));
-  else return m_twoDPdf->fitTo(*data, Save());
+  if(doSumW2) return m_twoDPdf->fitTo(*data, Save(), SumW2Error(true), Verbose());
+  else return m_twoDPdf->fitTo(*data, Save(), Verbose());
 }
 
 // #############################################################################
@@ -892,8 +884,8 @@ void JpsiKsPdf::plotOn(TCanvas* doek, RooDataSet* data, bool doSumW2, Int_t logy
     AddPull(doek,massFrame,logy); 
   }
   else if(param==2){
-    massFrame->SetMinimum((m_ttype==m_LL ? 500 : 2000));
-    massFrame->SetMaximum((m_ttype==m_LL ? 10000 : 30000));
+    massFrame->SetMinimum((m_ttype==m_LL ? 500 : 1000));
+    massFrame->SetMaximum((m_ttype==m_LL ? 25000 : 50000));
     std::cout << "@@ Adding Pull" << std::endl; 
     AddPull(doek,massFrame,logy); 
   }

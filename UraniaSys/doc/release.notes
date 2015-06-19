@@ -4,6 +4,9 @@ Package Coordinator : Diego Martinez Santos
 Purpose             : LHCb physics repository
 
 
+! 2014-03-20 - Marco Clemencic
+ - Added CMake configuration file.
+
 ! 2013-01-20 - Diego Martinez Santos
  - Make version v2r2
 

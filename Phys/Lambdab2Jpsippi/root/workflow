@@ -1,18 +1,20 @@
 source NBVars.csh
 make
-./makemctuple.exe $CASTOR_HOME/Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root >! test-mctuple-pi &
-./makemctuple.exe $CASTOR_HOME/Lambdab/LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root >! test-mctuple-K &
-./makePIDtuple.exe $CASTOR_HOME/Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root >! test-pidtuple-pi &
-./makePIDtuple.exe $CASTOR_HOME/Lambdab/LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root >! test-pidtuple-K &
+./makemctuple.exe root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb//Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root >! test-mctuple-pi &
+./makemctuple.exe root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb//Lambdab/LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root >! test-mctuple-K &
+./makePIDtuple.exe root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb//Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root pos >! test-pidtuple-pi-pos &
+./makePIDtuple.exe root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb//Lambdab/LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root pos >! test-pidtuple-K-pos &
+./makePIDtuple.exe root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb//Lambdab/LambdabMC-Lbpi-Sim08a-1122-1123-1124-1125.root neg >! test-pidtuple-pi-neg &
+./makePIDtuple.exe root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb//Lambdab/LambdabMC-LbK-Sim08a-1127-1128-1129-1137.root neg >! test-pidtuple-K-neg &
 
 ./weighting.exe /castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20r1-1062.root All >! test-weighting-S20r1 &
 ./weighting.exe /castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20-1063.root All | tee test-weighting-S20 
 ./teacher.exe /castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20-1063.root  /castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20r1-1062.root All-SW | tee test-teach
 ./expert.exe /castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20r1-1062.root >! test-expert-S20r1 &
-foreach a ( `nsls $CASTOR_HOME/Lambdab | grep Sim08`)
+foreach a ( `nsls root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb//Lambdab | grep Sim08`)
   set root = `echo $a | awk -F. '{print $1}'`
   echo $root
-  ./expert.exe $CASTOR_HOME/Lambdab/$a >! test-expert-${root}  &
+  ./expert.exe root://castorlhcb.cern.ch///castor/cern.ch/user/p/pkoppenb/Lambdab/$a >! test-expert-${root}  &
 end
 ./expert.exe /castor/cern.ch/user/p/pkoppenb/Lambdab/Lambdab-S20-1063.root | tee test-expert-S20 
 ./optimise.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root | tee test-optimise
@@ -20,7 +22,9 @@ set NNcut = `grep "Neural net cut to be applied will be " test-optimise | awk '{
 foreach a ( `ls -1 *Sim08a*NN.root` )
   set root = `echo $a | awk -F. '{print $1}'`
   echo $root
-  ./weighting.exe ${a} $NNcut >! test-weighting-${root}  &
+  foreach b ( -1.0 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0.0 0.1 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 0.6 0.65 0.7 0.75 0.8 0.9 $NNcut )
+    ./weighting.exe ${a} $b >! test-weighting-${root}-$b  &
+  end
   ./weighting.exe ${a} $NNcut Rho05 >! test-weighting-${root}-Rho05  &
   ./weighting.exe ${a} $NNcut Rho10 >! test-weighting-${root}-Rho10  &
   ./weighting.exe ${a} $NNcut Rho20 >! test-weighting-${root}-Rho20  &
@@ -28,16 +32,19 @@ foreach a ( `ls -1 *Sim08a*NN.root` )
   ./weighting.exe ${a} $NNcut Rho30 >! test-weighting-${root}-Rho30  &
 end
 ./weighting.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root $NNcut withXib >! test-weighting-withXib-$NNcut &
-foreach a ( -1.0 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0.0 0.1 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 0.6 0.65 0.7 0.75 0.8 0.9 )
+foreach a ( -1.0 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0.0 0.1 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 0.6 0.65 0.7 0.75 0.8 0.9 $NNcut )
   ./weighting.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root $a notree >! test-weighting-${a} &
 end
-foreach x ( nofreeze PartReco GaussCB CB DoubleGauss Gauss Poly2 Poly1 Uni free notree FreeBkg Rho05 Rho10 Rho20 Rho25 Rho30 Up Down )
+foreach x ( nofreeze PartReco GaussCB FrozenCB CB DoubleGauss Gauss Poly2 Poly1 Uni free notree FreeBkg Rho05 Rho10 Rho20 Rho25 Rho30 Up Down NoPeak FixPeak )
   ./weighting.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root $NNcut $x > ! test-weighting-${NNcut}-${x} &
 end
 ./weighting.exe Lambdab-S20r1-1062-NN.root $NNcut notree >! test-weighting-${NNcut}-2011 &
 ./weighting.exe Lambdab-S20-1063-NN.root $NNcut notree >! test-weighting-${NNcut}-2012 &
 ./weighting.exe Lambdab-S20-1063-NN.root $NNcut Up >! test-weighting-${NNcut}-2012-Up & 
 ./weighting.exe Lambdab-S20-1063-NN.root $NNcut Down >! test-weighting-${NNcut}-2012-Down &
-./weighting.exe Lambdab-S20-1063-NN.root $NNcut NoPeak >! test-weighting-${NNcut}-2012-NoPeak &
+./weighting.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root 0.0 tree >! test-weighting-0.0-tree &
+./weighting.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root 0 0.5 >! test-weighting-0-0.5 &
+./weighting.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root 0.5 0.75 >! test-weighting-0.5-0.75 &
+./weighting.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root -1 0.0 >! test-weighting--1-0.0 &
 ./weighting.exe Lambdab-S20r1-1062-NN.root Lambdab-S20-1063-NN.root $NNcut tree | tee test-weighting-${NNcut}-tree
 

@@ -69,12 +69,13 @@ void MassPdf::make(TString name, RooRealVar* mass, int nevents,backgrounds bkgs,
   m_PartReco_trans=0;
   m_PartReco=0;
 
-  m_nLambdab = new RooRealVar(c_Yield+" "+c_Lambdab, "number of Lambdab", 0.2*nevents, 0.0, 1.0*nevents);
+  m_nLambdab = new RooRealVar(c_Yield+" "+c_Lambdab, "number of Lambdab", 2101.6, 0.0, 1.0*nevents);
   m_nonPeaking = new RooRealVar(c_Yield+" "+c_NonPeaking, "number of BKG",0.2*nevents, 0.0, ("None"==bkgType)?0.:1.0*nevents);
-  m_nPartReco = (withPartReco?new RooRealVar(c_Yield+" "+c_PartReco,"number of PartReco", 0.01*nevents, 0.0*nevents, 0.3*nevents):0);
+  m_nPartReco = (withPartReco?new RooRealVar(c_Yield+" "+c_PartReco,"number of PartReco", 
+                                             0.01*nevents, 0.0*nevents, 0.3*nevents):0);
 
-  m_mean = new RooRealVar("mean","mean mass", 5620,5600,5650);
-  m_width = new RooRealVar("width","width", 7.9, 2., 10.);
+  m_mean = new RooRealVar("mean","mean mass", 5619.3,5600,5650);
+  m_width = new RooRealVar("width","width", 7.9096, 2., 10.);
   m_extended = true ; // (m_nevents>0);
   m_lastFit = 0 ;
 
@@ -82,7 +83,7 @@ void MassPdf::make(TString name, RooRealVar* mass, int nevents,backgrounds bkgs,
   m_meanXib = (withXib?new RooRealVar("mean Xib","mean mass Xib", 5788,5773,5803):0); // +/- 3*5 MeV
   
   // Individual Components
-  if(sigType=="CB" || sigType=="DoubleCB" || sigType=="GaussCB"){
+  if(sigType=="CB" || sigType=="DoubleCB" || sigType=="GaussCB" ||  sigType=="FrozenCB"){
     std::cout << " SETUP: Signal Model m_Lambdab_I" << std::endl;
     if ("free"==opt){
       m_alpha = new RooRealVar("alpha","alpha",1.68, 0.,10.);         
@@ -94,7 +95,7 @@ void MassPdf::make(TString name, RooRealVar* mass, int nevents,backgrounds bkgs,
     m_Lambdab_I = new RooCBShape(m_name+"CBshapeLambdab","Lambdab Crystal Ball",*m_mass,*m_mean,*m_width,*m_alpha,*m_n);
     m_Xib_I = (withXib?new RooCBShape(m_name+"CBshapeXib","Xib Crystal Ball",*m_mass,*m_meanXib,*m_width,*m_alpha,*m_n):0);
   }
-  if(sigType=="DoubleCB"){
+  if(sigType=="DoubleCB" ||  sigType=="FrozenCB"){
     std::cout << " SETUP: Signal Model m_Lambdab_II" << std::endl;
     if ("free"==opt){
       m_alpha2 = new RooRealVar("alpha2","alpha2",-1.68, -10.,0.);         
@@ -124,12 +125,16 @@ void MassPdf::make(TString name, RooRealVar* mass, int nevents,backgrounds bkgs,
 
   if (withPartReco){
     std::cout << " SETUP: PartReco Model = Exp and Gauss" << std::endl;
-    m_PartReco_mean = new RooRealVar(m_name+"PartReco mean","mean",5340,5300,5500);
-    m_PartReco_sigma = new RooRealVar(m_name+"PartReco sigma","sigma",22.07,10.,30.); 
+    m_PartReco_mean = new RooRealVar(m_name+"PartReco mean","mean",5340,5300,5550);
+    m_PartReco_sigma = new RooRealVar(m_name+"PartReco sigma","sigma",22.07,10.,50.); 
     m_PartReco_shift = new RooRealVar(m_name+"PartReco shift","transition to Exp",4.50,0.,25.);
-    m_PartReco_trans = new RooFormulaVar(m_name+"PartReco trans","transition to Exp","@0-@1",RooArgSet(*m_PartReco_mean,*m_PartReco_shift));
-    m_PartReco = new RooExpAndGauss(m_name+"EaGPartReco","PartReco BKG",*m_mass,*m_PartReco_mean,*m_PartReco_sigma,*m_PartReco_trans);
+    m_PartReco_trans = new RooFormulaVar(m_name+"PartReco trans","transition to Exp","@0-@1",
+                                         RooArgSet(*m_PartReco_mean,*m_PartReco_shift));
+    m_PartReco = new RooExpAndGauss(m_name+"EaGPartReco","PartReco BKG",*m_mass,*m_PartReco_mean,*m_PartReco_sigma,
+                                    *m_PartReco_trans);
   }
+
+
   // Final Model
   if(sigType=="CB"){
     std::cout << " SETUP: Signal Model = Single Crystal Ball" << std::endl;
@@ -142,10 +147,13 @@ void MassPdf::make(TString name, RooRealVar* mass, int nevents,backgrounds bkgs,
     m_Xib = (withXib?(RooAbsPdf *)m_Xib_I:0) ;
   }
   if(sigType=="DoubleCB") std::cout << " SETUP: Signal Model = Double Crystal Ball" << std::endl;
+  if(sigType=="FrozenCB") std::cout << " SETUP: Signal Model = Double Crystal Ball with frozen fraction" << std::endl;
   if(sigType=="GaussCB") std::cout << " SETUP: Signal Model = Gauss + Crystal Ball" << std::endl;
   if(sigType=="DoubleGauss") std::cout << " SETUP: Signal Model = Double Gauss" << std::endl;
-  if(sigType=="DoubleCB" || sigType=="GaussCB" || sigType=="DoubleGauss"){
-    m_frac = new RooRealVar("frac", "Fraction of narrow component", 0.19, 0.0, 1.0);
+  if(sigType=="DoubleCB" || sigType=="GaussCB" || sigType=="DoubleGauss" || sigType=="FrozenCB"){
+    if (sigType=="FrozenCB") m_frac = new RooRealVar("frac", "Fraction of narrow component", 0.5);
+    else m_frac = new RooRealVar("frac", "Fraction of narrow component", 0.1971, 0.0, 1.0);
+    std::cout << "DEBUG frac " << m_frac << std::endl ;
     m_Lambdab = new RooAddPdf("Lambdab PDF","Lambdab PDF",RooArgList(*m_Lambdab_I,*m_Lambdab_II),RooArgList(*m_frac));
     m_Xib = (withXib?new RooAddPdf("Xib PDF","Xib PDF",RooArgList(*m_Xib_I,*m_Xib_II),RooArgList(*m_frac)):0);
   }
@@ -213,38 +221,48 @@ RooPlot* MassPdf::plotOn(TCanvas* canvas, RooDataSet* data, bool doSumW2, Int_t 
   if (c_range!=m_range) n = data->sumEntries("1",m_range); // weight 1 in range
   m_massPdf->plotOn(massFrame, Components(*m_Lambdab), Range(m_range),
                     Normalization(n,RooAbsReal::NumEvent),
-                    FillColor(15), FillStyle(1001), DrawOption("F")); // VisualizeERange(m_range)or(*m_lastFit));
+                    FillColor(c_LbCol), FillStyle(c_LbStyle), DrawOption("F")); // VisualizeERange(m_range)or(*m_lastFit));
   if (m_Xib) m_massPdf->plotOn(massFrame, Components(*m_Xib), Range(m_range),
                                Normalization(n,RooAbsReal::NumEvent),
                                FillColor(16), FillStyle(1001), DrawOption("F"));
+  if (m_PartReco) m_massPdf->plotOn(massFrame, Components(*m_PartReco), Range(m_range),
+                                    Normalization(n,RooAbsReal::NumEvent),
+                                    FillColor(c_PRCol), FillStyle(1001), DrawOption("F"));
   m_massPdf->plotOn(massFrame, Components(*m_comBKG), Range(m_range),
                     Normalization(n,RooAbsReal::NumEvent),
-                    LineStyle(kDashed), LineColor(kBlack)); // ,VisualizeError(*m_lastFit) ); 
+                    LineStyle(c_BkgStyle), LineColor(c_BkgCol)); // ,VisualizeError(*m_lastFit) ); 
   int c = 2 ;
   RooArgList BList;
+  RooArgList BFrac;  // how to fill?
   bool plotAll = false ; // switch on to get all pdfs
+  double sumOfBs = 0 ;
   
   if (!m_backgrounds.empty()){
     for (backgrounds::iterator b = m_backgrounds.begin(); b!=m_backgrounds.end() ; ++b){
       //      (*b)->pdf()->Print() ;
       if ("PsipKMass"==(*b)->name() || plotAll){
-	m_massPdf->plotOn(massFrame, Components(*((*b)->pdf())), Range(m_range),
-			  Normalization(n,RooAbsReal::NumEvent),
-			  LineStyle(kDotted), LineColor(c)); 
-	std::cout << m_name << " : plotted " << (*b)->name() << " with colour " << c << std::endl ;
-      // 2 red, 3 green, 4 blue, 6 magenta, 7 cyan, 8 dark green
-	c++ ;
-	if (5==c) c++; // not yellow
+        m_massPdf->plotOn(massFrame, Components(*((*b)->pdf())), Range(m_range),
+                          Normalization(n,RooAbsReal::NumEvent),
+                          LineStyle(c_pKStyle), LineColor(c_pKCol)); 
+        std::cout << m_name << " : plotted " << (*b)->name() << " with colour " << c_pKCol << std::endl ;
+        // 2 red, 3 green, 4 blue, 6 magenta, 7 cyan, 8 dark green
+        c++ ; // still increment
+        if (5==c) c++; // not yellow
       } else {
-	BList.add(*((*b)->pdf()));
+        BList.add(*((*b)->pdf()));
+        BFrac.add(*((*b)->yield()));
+        std::cout << "@@@@ " << (*b)->name() << " " << (*b)->yield()->getVal() << std::endl ;
+        sumOfBs += (*b)->yield()->getVal() ;
       }
     }
   }
   if (!plotAll){
-    RooAddPdf allB("AllB","AllB",BList);
-    m_massPdf->plotOn(massFrame, Components(allB), Range(m_range),
-		      Normalization(n,RooAbsReal::NumEvent),
-		      LineStyle(kDotted), LineColor(c)); 
+    RooAddPdf allB("AllB","AllB",BList,BFrac);
+    allB.plotOn(massFrame, Range(m_range),
+		Normalization(sumOfBs,RooAbsReal::NumEvent),
+		LineStyle(c_RefStyle), LineColor(c_RefCol)); 
+    std::cout << m_name << " : plotted " << allB.GetName() << " with colour " << 3 << " total yield: " << sumOfBs << std::endl ;
+    allB.Print() ;
   }
   // Data
   if(doSumW2) data->plotOn(massFrame, DataError(RooAbsData::SumW2),MarkerStyle(8),MarkerSize(0.8));
@@ -383,7 +401,7 @@ void MassPdf::setConstant(TString which){
     if(m_alpha) m_alpha->setConstant(true);
     if(m_n) m_n->setConstant(true);
     if(m_frac) m_frac->setConstant(true);
-    if (m_width2) m_width2->setConstant(true);
+    if(m_width2) m_width2->setConstant(true);
     if(m_alpha2) m_alpha2->setConstant(true);
     if(m_n2) m_n2->setConstant(true);
   }
@@ -515,29 +533,86 @@ void MassPdf::freezeComb(MassPdf* prevFit, double offset){
     m_bkg2->setConstant();
   }
 }
- //#####################################################################################################
+//#####################################################################################################
 void MassPdf::freezePeak(MassPdf* prevFit){
-  if (!prevFit) return ;
   std::cout << "Constraining Peak" << std::endl ;
-  m_mean->setVal(prevFit->mean()->getVal());
-  m_mean->setError(prevFit->mean()->getError());
+  if (prevFit) m_mean->setVal(prevFit->mean()->getVal());
+  if (prevFit) m_mean->setError(prevFit->mean()->getError());
   m_mean->setConstant();
-  m_width->setVal(prevFit->width()->getVal());
-  m_width->setError(prevFit->width()->getError());
+  if (prevFit) m_width->setVal(prevFit->width()->getVal());
+  if (prevFit) m_width->setError(prevFit->width()->getError());
   m_width->setConstant();
   if (m_width2){
-    m_width2->setVal(prevFit->width2()->getVal());
-    m_width2->setError(prevFit->width2()->getError());
+    if (prevFit) m_width2->setVal(prevFit->width2()->getVal());
+    if (prevFit) m_width2->setError(prevFit->width2()->getError());
     m_width2->setConstant();
   }
   if (m_frac){
-    m_frac->setVal(prevFit->frac()->getVal());
-    m_frac->setError(prevFit->frac()->getError());
+    if (prevFit) m_frac->setVal(prevFit->frac()->getVal());
+    if (prevFit) m_frac->setError(prevFit->frac()->getError());
     m_frac->setConstant();
   }
 }
 //#####################################################################################################
+// Out of class
+//#####################################################################################################
+void plotLegend(TString name, bool PR, double x1,double y1,double x2,double y2){
+
+  std::cout << "@@ Starting Legend " << PR << std::endl;
+  TLegend* leg = new TLegend(x1,y1,x2,y2,""); // memory leak
+
+  TGraphErrors* gr = new TGraphErrors(1);
+  gr->SetLineWidth(2);
+  gr->SetMarkerStyle(20);
+  leg->AddEntry(gr," Data","lep");
+  TString meson = (name.Contains("Psippi")?"#pi":"K");
+
+  TH1F* HLb = new TH1F("Lb","Lb",10,0,1);
+  if (m_Lb) {
+    HLb->SetLineColor(0);  
+    HLb->SetFillColor(c_LbCol);
+    leg->AddEntry(HLb," #Lambda_{b}#rightarrowJ/#psip"+meson,"f");
+  }
+  
+  if ("K"!=meson){
+    TH1F* HKp = new TH1F("Kp","Kp",10,0,1);
+    HKp->SetLineColor(c_pKCol);  
+    HKp->SetLineStyle(c_pKStyle);
+    leg->AddEntry(HKp," #Lambda_{b}#rightarrowJ/#psipK","f");
+  }
+  
+  TH1F* HRef = new TH1F("Ref","Ref",10,0,1);
+  HRef->SetLineColor(c_RefCol);  
+  HRef->SetLineStyle(c_RefStyle);
+  leg->AddEntry(HRef," Reflections","f");
+
+  TH1F* Hbkg = new TH1F("Ref","Ref",10,0,1);
+  Hbkg->SetLineColor(c_BkgCol);
+  Hbkg->SetLineStyle(c_BkgStyle);  
+  leg->AddEntry(Hbkg," Combinatorial","f"); 
+
+  TH1F* HPR = new TH1F("PR","PR",10,0,1);
+  if (PR) {
+    HPR->SetLineColor(0);  
+    HPR->SetFillColor(c_PRCol);
+    leg->AddEntry(HPR," Part.Reco.","f");
+  }
+
+  TF1* total = new TF1("total","x",0,1);
+  total->SetLineColor(1);
+  total->SetLineWidth(2);  
+  leg->AddEntry(total," Total","l"); 
+
+  leg->SetFillColor(0);
+  leg->SetLineColor(0);
+  leg->SetShadowColor(0);
+
+  std::cout << "@@ Adding Legend" << std::endl;
+  leg->Draw("same");
+}
+//#####################################################################################################
 // out of class
+//#####################################################################################################
 double ebRule(double v, double e){   // v is the value, e the error
   if (e<=0.) return v;
   double j = int(log(e/3.5449999)/log(10.)-1); // not exactly EB rule

@@ -4,6 +4,7 @@ import os
 
 if not "BSJPSIKSTROOT" in os.environ.keys(): os.environ["BSJPSIKSTROOT"] = "../../"
 gROOT.ProcessLine(".x " + os.environ["BSJPSIKSTROOT"]+"/src/AccAngJpsiKpi_J1.cxx++")
+gROOT.ProcessLine(".x " + os.environ["BSJPSIKSTROOT"]+"/src/TristanJpsiKpi_J1.cxx++")
 gROOT.ProcessLine(".x " + os.environ["BSJPSIKSTROOT"]+"/src/RooPhiBkg.cxx++")
 
 #gROOT.ProcessLine(".x ./AngJpsiKst_Swave_Asym.cxx++")
@@ -16,16 +17,18 @@ mvar = "B0_MM"# "B_s0_LOKI_MASS_JpsiConstr"
 #gSystem.Load("AngJPsiKst_cxx")
 
 #Kcharge = RooRealVar("Kcharge","Kcharge",-1.)
-SFIT = 2
-CPsi = RooRealVar("helcosthetaK","helcosthetaK",-1.,1.)
-CTheta = RooRealVar("helcosthetaL","helcosthetaL",-1.,1.)
-Phi = RooRealVar("B0_Phi","B0_Phi",-1.*pi,pi)
+SFIT = 0
+#cKname, cLname, phName = "cK", "cL", "ph" ## kozyulin MCT tuple
+cKname, cLname, phName = "helcosthetaK", "helcosthetaL", "B0_Phi" ## other
+
+CPsi = RooRealVar(cKname,cKname,-1.,1.)
+CTheta = RooRealVar(cLname,cLname,-1.,1.)
+Phi = RooRealVar(phName,phName,-1.*pi,pi)
 
 Mass = RooRealVar(mvar,mvar,5150, 5450.)
 
 sWeights_Bd =  RooRealVar("sWeights_Bd","sWeights_Bd",-3.,3.)
 sWeights_Bs =  RooRealVar("sWeights_Bs","sWeights_Bs",-3.,3.)
-
 
 cor_sWeights_Bd =  RooRealVar("cor_sWeights_Bd","cor_sWeights_Bd",-3.,3.)
 cor_sWeights_Bs =  RooRealVar("cor_sWeights_Bs","cor_sWeights_Bs",-3.,3.)
@@ -44,15 +47,15 @@ Aprod_d = RooRealVar("A_prod_d","A_prod_d", 0.00030)#wk
 A_D = RooRealVar("A_D","A_D", -0.01185)# ok  
 
 
-s_a = 5
+s_a = 5.0
 class AngularPDFMOD:
-    def __init__(self, namephys = "Bd", namesample = "2011", Kcharge = 0. ):
+    def __init__(self, namephys = "Bd", namesample = "2011", Kcharge = 0. , acc_type = 1):
 
         ## Parameters of interest
         self.namephys = namephys
         self.namesample = namesample
         self.Kcharge =RooRealVar("Kcharge" + self.namephys + self.namesample,"Kcharge"+ self.namephys + self.namesample,Kcharge)
-        
+        self.acc_type = acc_type
     def OwnPhys(self, equalAsym = 0):
         namephys = self.namephys
         
@@ -92,6 +95,7 @@ class AngularPDFMOD:
     def CopyFreeParams(self, other):
         self.fL = other.fL
         self.fpa = other.fpa
+        self.As2 = other.As2
         self.ACPL = other.ACPL
         self.ACPpe = other.ACPpe
         self.ACPpa = other.ACPpa
@@ -125,12 +129,16 @@ class AngularPDFMOD:
             self.fpa_ = RooFormulaVar("fpa"+name,"fpa" + name, " ( 1 - ACPpa" + namephys+")*fpa"+namephys + "*psACP"+namephys + "*1./( -1 + 2*psACP"+namephys + ")", RooArgList( self.ACPpa, self.fpa, self.psACP))
             self.fL_ = RooFormulaVar("fL"+name,"fL" + name, " ( 1 - ACPL" + namephys+")*fL"+namephys + "*psACP"+namephys + "*1./( -1 + 2*psACP"+namephys + ")", RooArgList( self.ACPL, self.fL, self.psACP))
         
+
+        #### DMS: Comment out the lines below /*
         #wk if not "As2" in dir(self):
             #print "Warning, nothing said about As2 for sample ", name , ". Creating it now as a free parameter"
-        if namephys== "Bd":
-           self.As2 = RooRealVar("As2"+namephys,"As2"+namephys,1.60099e-02)#0.05, 0,0.3)#wk changed name ->namephys
-        else:
-           self.As2 = RooRealVar("As2"+namephys,"As2"+namephys,0.05, 0,0.3)# check
+        #if namephys== "Bd":
+         #  self.As2 = RooRealVar("As2"+namephys,"As2"+namephys,1.60099e-02)#0.05, 0,0.3)#wk changed name ->namephys
+        #else:
+           #self.As2 = RooRealVar("As2"+namephys,"As2"+namephys,0.05, 0,0.3)# check
+
+        #### DMS */
            #self.As2 = RooRealVar("As2"+namephys,"As2"+namephys,0.053)
         #As2.setConstant(1.60099e-02)
         #self.A02 = RooFormulaVar("A02"+name,"A02"+name,"fL"+name+"*(1-"+self.As2.GetName()+")",RooArgList(self.fL_,self.As2))
@@ -144,56 +152,71 @@ class AngularPDFMOD:
             
     def OwnAcc(self):
         name = self.namephys + self.namesample
-        self.c1_psi = RooRealVar("c1_psi" + name,"c1_psi" + name,-0.522,-0.522-s_a*0.014,-0.522+s_a*.014)
-        self.c2_psi = RooRealVar("c2_psi" + name,"c2_psi" + name,-0.723,-0.723-s_a*0.022,-0.723+s_a*0.022)
-        self.c3_psi = RooRealVar("c3_psi" + name,"c3_psi" + name,-0.190,-0.190-3*s_a,0.190+3*s_a)
-        self.c4_psi = RooRealVar("c4_psi" + name,"c4_psi" + name,0.208,0.208-s_a*0.023,0.208+s_a*0.023) 
-        self.y_acc = RooRealVar("y" + name,"y" + name,0.)#,0.,s_a*1.6e-04)
-        self.c5_psi = RooFormulaVar("c5_psi" + name,"c5_psi" + name,"y" + name + " + (-1.-c1_psi"+ name + "-c2_psi" + name + "-c3_psi" + name + "-c4_psi" + name + ")",RooArgList(self.y_acc,self.c1_psi,self.c2_psi,self.c3_psi,self.c4_psi))
-       
-        #self.c1_theta = RooRealVar("c1_theta" + name,"c1_theta" + name,0.)
-        self.c2_theta = RooRealVar("c2_theta" + name,"c2_theta" + name,0,-0.5,0.5)
+        if self.acc_type == 1:
+            self.c1_psi = RooRealVar("c1_psi" + name,"c1_psi" + name,-0.522,-0.522-s_a*0.014,-0.522+s_a*.014)
+            self.c2_psi = RooRealVar("c2_psi" + name,"c2_psi" + name,-0.723,-0.723-s_a*0.022,-0.723+s_a*0.022)
+            self.c3_psi = RooRealVar("c3_psi" + name,"c3_psi" + name,-0.190,-0.190-3*s_a,0.190+3*s_a)
+            self.c4_psi = RooRealVar("c4_psi" + name,"c4_psi" + name,0.208,0.208-s_a*0.023,0.208+s_a*0.023) 
+            self.y_acc = RooRealVar("y" + name,"y" + name,0.)#,0.,s_a*1.6e-04)
+            self.c5_psi = RooFormulaVar("c5_psi" + name,"c5_psi" + name,"y" + name + " + (-1.-c1_psi"+ name + "-c2_psi" + name + "-c3_psi" + name + "-c4_psi" + name + ")",RooArgList(self.y_acc,self.c1_psi,self.c2_psi,self.c3_psi,self.c4_psi))
+            self.c2_theta = RooRealVar("c2_theta" + name,"c2_theta" + name,0,-0.5,0.5)
 
-        #self.c1_phi = RooRealVar("c1_phi" + name,"c1_phi" + name,0.090,0.0784-s_a*0.0039,0.0784+s_a*0.0039)
-        #self.c2_phi = RooRealVar("c2_phi" + name,"c2_phi" + name,2.019,2.019-s_a*0.029,2.109+s_a*0.029)
-        #self.c3_phi = RooRealVar("c3_phi" + name,"c3_phi" + name,.33,.33-s_a*0.048,.33+s_a*0.048)
-        #self.c4_phi = RooRealVar("c4_phi" + name,"c4_phi" + name,0)#.090,0.0784-s_a*0.0039,0.0784+s_a*0.0039)
-        #self.c5_phi = RooRealVar("c5_phi" + name,"c5_phi" + name,0)#2.019,2.019-s_a*0.029,2.109+s_a*0.029)
-        #self.c6_phi = RooRealVar("c6_phi" + name,"c6_phi" + name,0)#.33,.33-s_a*0.048,.33+s_a*0.048)
+        elif self.Kcharge.getVal() > 0:
+            
+            self.w_pe2 = RooRealVar("w_pepe" + name, "w_pepe", 1.35936017771)
+            self.w_S2 = RooRealVar("w_SS" + name, "w_SS", 1.12655077245)
+            self.w_0pe = RooRealVar("w_0pe" + name, "w_0pe",0.0372838151557)
+            self.w_Spe = RooRealVar("w_Spe" + name, "w_Spe", -0.0182640306589)
+            self.w_pape = RooRealVar("w_pape" + name, "w_pape",0.000615662501311)
+            self.w_pa2 = RooRealVar("w_papa" + name, "w_papa", 1.30360543766)
+            self.w_Spa  = RooRealVar("w_Spa" + name, "w_Spa", -0.0903905533147)
+            self.w_0pa  = RooRealVar("w_0pa" + name, "w_0pa", 0.316742644858)
+            self.w_S0  = RooRealVar("w_S0" + name, "w_S0", -0.885548216644)
+            self.w_00 = RooRealVar("w_00" + name, "w_00", 0.946643232271)
+            self.Tristan_weights = (self.w_pe2, self.w_S2, self.w_0pe, self.w_Spe, self.w_pape, self.w_pa2, self.w_Spa, self.w_0pa, self.w_S0, self.w_00)
+        else:
+            self.w_pe2 = RooRealVar("w_pepe" + name, "w_pepe", 1.36983102913)
+            self.w_S2 = RooRealVar("w_SS" + name, "w_SS", 1.13781455653)
+            self.w_0pe = RooRealVar("w_0pe" + name, "w_0pe",-0.0423490771681)
+            self.w_Spe = RooRealVar("w_Spe" + name, "w_Spe", 0.0210624257516)
+            self.w_pape = RooRealVar("w_pape" + name, "w_pape", 0.000451413962717)
+            self.w_pa2 = RooRealVar("w_papa" + name, "w_papa", 1.29931565082)
+            self.w_Spa  = RooRealVar("w_Spa" + name, "w_Spa", -0.0887872488755)
+            self.w_0pa  = RooRealVar("w_0pa" + name, "w_0pa", 0.306243989632)
+            self.w_S0  = RooRealVar("w_S0" + name, "w_S0", -0.858930200605)
+            self.w_00 = RooRealVar("w_00" + name, "w_00", 0.94084814649)
+            self.Tristan_weights = (self.w_pe2, self.w_S2, self.w_0pe, self.w_Spe, self.w_pape, self.w_pa2, self.w_Spa, self.w_0pa, self.w_S0, self.w_00)
+            
+    
     def FlatAcc(self):
-        name = self.namephys + self.namesample
-        self.c1_psi = RooRealVar("c1_psi" + name,"c1_psi" + name,0)#-0.522,-0.522-s_a*0.014,-0.522+s_a*.014)
-        self.c2_psi = RooRealVar("c2_psi" + name,"c2_psi" + name,0)#-0.723,-0.723-s_a*0.022,-0.723+s_a*0.022)
-        self.c3_psi = RooRealVar("c3_psi" + name,"c3_psi" + name,0)#-0.190,-0.190-3*s_a,0.190+3*s_a)
-        self.c4_psi = RooRealVar("c4_psi" + name,"c4_psi" + name,0)#0.208,0.208-s_a*0.023,0.208+s_a*0.023) 
-        self.y_acc = RooRealVar("y" + name,"y" + name,1.)#,0.,s_a*1.6e-04)
-        #self.c5_psi = RooFormulaVar("c5_psi" + name,"c5_psi" + name,"y" + name + " + (-1.-c1_psi"+ name + "-c2_psi" + name + "-c3_psi" + name + "-c4_psi" + name + ")",RooArgList(self.y,self.c1_psi,self.c2_psi,self.c3_psi,self.c4_psi))
-       
-        #self.c1_theta = RooRealVar("c1_theta" + name,"c1_theta" + name,0.)
-        self.c2_theta = RooRealVar("c2_theta" + name,"c2_theta" + name,0)#-0.1783,-0.1783-s_a*0.0075,-0.1783+s_a*0.0075)
-
-        #self.c1_phi = RooRealVar("c1_phi" + name,"c1_phi" + name,0)#0.090,0.0784-s_a*0.0039,0.0784+s_a*0.0039)
-        #self.c2_phi = RooRealVar("c2_phi" + name,"c2_phi" + name,0)#2.019,2.019-s_a*0.029,2.109+s_a*0.029)
-        #self.c3_phi = RooRealVar("c3_phi" + name,"c3_phi" + name,0)#.33,.33-s_a*0.048,.33+s_a*0.048)
-        #self.c4_phi = RooRealVar("c4_phi" + name,"c4_phi" + name,0)#.090,0.0784-s_a*0.0039,0.0784+s_a*0.0039)
-        #self.c5_phi = RooRealVar("c5_phi" + name,"c5_phi" + name,0)#2.019,2.019-s_a*0.029,2.109+s_a*0.029)
-        #self.c6_phi = RooRealVar("c6_phi" + name,"c6_phi" + name,0)#.33,.33-s_a*0.048,.33+s_a*0.048)
+        if self.acc_type == 1:
+            name = self.namephys + self.namesample
+            self.c1_psi = RooRealVar("c1_psi" + name,"c1_psi" + name,0)#-0.522,-0.522-s_a*0.014,-0.522+s_a*.014)
+            self.c2_psi = RooRealVar("c2_psi" + name,"c2_psi" + name,0)#-0.723,-0.723-s_a*0.022,-0.723+s_a*0.022)
+            self.c3_psi = RooRealVar("c3_psi" + name,"c3_psi" + name,0)#-0.190,-0.190-3*s_a,0.190+3*s_a)
+            self.c4_psi = RooRealVar("c4_psi" + name,"c4_psi" + name,0)#0.208,0.208-s_a*0.023,0.208+s_a*0.023) 
+            self.y_acc = RooRealVar("y" + name,"y" + name,1.)#,0.,s_a*1.6e-04)
+        
+            self.c2_theta = RooRealVar("c2_theta" + name,"c2_theta" + name,0)#-0.1783,-0.1783-s_a*0.0075,-0.1783+s_a*0.0075)
+        else:
+            for w in self.Tristan_weights:
+                wname = w.GetName()
+                if "00" in wname or "SS" in wname or "papa" in wname or "pepe" in wname: w.setVal(1.)#16.*pi/9)
+                else: w.setVal(0.) 
+                w.setConstant(kTRUE)
+                print w.GetName(), w.getVal()
         
     def CopyAcc(self, other):
-        self.c1_psi = other.c1_psi
-        self.c2_psi = other.c2_psi
-        self.c3_psi = other.c3_psi
-        self.c4_psi = other.c4_psi
-        self.c5_psi = other.c5_psi
-        self.y_acc = other.y_acc
-        #self.c1_theta = other.c1_theta
-        self.c2_theta = other.c2_theta
-        #self.c1_phi = other.c1_phi
-        #self.c2_phi = other.c2_phi
-        #self.c3_phi = other.c3_phi
-        #self.c4_phi = other.c4_phi
-        #self.c5_phi = other.c5_phi
-        #self.c6_phi = other.c6_phi
+        if self.acc_type == 1:
+            self.c1_psi = other.c1_psi
+            self.c2_psi = other.c2_psi
+            self.c3_psi = other.c3_psi
+            self.c4_psi = other.c4_psi
+            self.c5_psi = other.c5_psi
+            self.y_acc = other.y_acc
+            #self.c1_theta = other.c1_theta
+            self.c2_theta = other.c2_theta
+        else: self.Tristan_weights = other.Tristan_weights
     def modParamAsym(self, name, v0, v1,v2, cte):
         _min = v0 - v1
         _max = v0 + v2
@@ -216,9 +239,10 @@ class AngularPDFMOD:
     def make(self):
         name = self.namephys + self.namesample
     
-        self.model = AccAngJpsiKpi_J1("angular " + name,"angular " + name, CPsi, CTheta, Phi, self.As2, self.fL_, self.fpa_, \
+        if self.acc_type == 1: self.model = AccAngJpsiKpi_J1("angular " + name,"angular " + name, CPsi, CTheta, Phi, self.As2, self.fL_, self.fpa_, \
                                           self.dpa, self.dpe, self.ds, self.c1_psi, self.c2_psi, self.c3_psi, self.c4_psi, self.y_acc, self.c2_theta)#, self.c1_phi, self.c2_phi, self.c3_phi, self.c4_phi, self.c5_phi, self.c6_phi)
-    
+        else: self.model = TristanJpsiKpi_J1("angular " + name,"angular " + name, CPsi, CTheta, Phi, self.As2, self.fL_, self.fpa_, \
+                                          self.dpa, self.dpe, self.ds, *self.Tristan_weights)
 # Background
 class FullBackground:
     def __init__(self, name = "Bkg"):
@@ -232,6 +256,20 @@ class FullBackground:
             print 'no bkg angular fit'
         self.kbkg = RooRealVar("k"+name,"k"+name,-1e-03,-1e-02,0)
         self.massbkg = RooExponential("Mass" + name, "Mass" + name, Mass, self.kbkg)
+
+    def OwnTheta(self):
+        name = self.name
+        self.c1_psi = RooRealVar("c1_psi" + name,"c1_psi" + name,-5.20101e-01)#-0.522,-0.522-s_a*0.014,-0.522+s_a*.014)
+        self.c2_psi = RooRealVar("c2_psi" + name,"c2_psi" + name,-7.33299e-01)#,-0.723-s_a*0.022,-0.723+s_a*0.022)
+        self.c3_psi = RooRealVar("c3_psi" + name,"c3_psi" + name,-2.90606e-01)#-0.190,-0.190-3*s_a,0.190+3*s_a)
+        self.c4_psi = RooRealVar("c4_psi" + name,"c4_psi" + name,2.69475e-01 )#0.208,0.208-s_a*0.023,0.208+s_a*0.023) 
+        self.y_acc = RooRealVar("y" + name,"y" + name,0.)#,0.,s_a*1.6e-04)
+        self.c5_psi = RooFormulaVar("c5_psi" + name,"c5_psi" + name,"y" + name + " + (-1.-c1_psi"+ name + "-c2_psi" + name + "-c3_psi" + name + "-c4_psi" + name + ")",RooArgList(self.y_acc,self.c1_psi,self.c2_psi,self.c3_psi,self.c4_psi))
+        self.c1_theta = RooRealVar("c1_theta" + name,"c1_theta" + name,0)
+        self.c2_theta = RooRealVar("c2_theta" + name,"c2_theta" + name,2.76201e-01)
+        self.psibkg = RooPolynomial("psi" + name ,"psi" + name,CPsi,RooArgList(self.c1_psi,self.c2_psi,self.c3_psi,self.c4_psi,self.c5_psi))
+        self.thetabkg = RooPolynomial("theta" + name,"theta" + name,CTheta,RooArgList(self.c1_theta,self.c2_theta))
+
 
     def thetaFromAcc(self, other):
         name = self.name
@@ -314,9 +352,9 @@ class SignalMass:
         
 
 
-def InitSignalPdfs(namephys, namesample ):
-    sp =  AngularPDFMOD( namephys, namesample + "_pos_", 1)
-    sn =  AngularPDFMOD( namephys, namesample + "_neg_", -1)
+def InitSignalPdfs(namephys, namesample, acc_type = 1 ):
+    sp =  AngularPDFMOD( namephys, namesample + "_pos_", 1, acc_type = acc_type)
+    sn =  AngularPDFMOD( namephys, namesample + "_neg_", -1, acc_type = acc_type)
     return sp, sn
     
     

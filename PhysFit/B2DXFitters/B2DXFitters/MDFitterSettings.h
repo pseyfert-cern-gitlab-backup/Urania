@@ -334,7 +334,17 @@ public:
     vec.push_back(_av[i]);
     return vec;
   }
+
+
+  Int_t GetNotation() { return _labX; }
+
+  void SetNotation( Int_t notation ) { _labX = notation; }
   
+  TString GetAddDataCuts() { return _addDataCuts; }
+  TString GetAddMCCuts() {return _addMCCuts; }
+  
+  void SetAddDataCuts( TString cut ) { _addDataCuts = cut; }
+  void SetAddMCCuts( TString cut ) {  _addMCCuts = cut; }
 
 protected:
 
@@ -393,6 +403,11 @@ protected:
   std::vector <Double_t> _p1;
   std::vector <Double_t> _av;
 
+  Int_t _labX;
+  TString _addDataCuts; 
+  TString _addMCCuts; 
+  
+  
 private:
   ClassDef(MDFitterSettings, 1);
 };

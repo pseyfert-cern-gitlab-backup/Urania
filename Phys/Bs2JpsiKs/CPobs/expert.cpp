@@ -112,10 +112,14 @@ int runExpert(const TString module, const TString data, const TString step,
   const Long64_t nentries = ntuple->nEntries();
   const Long64_t printMod = printFrac(nentries); 
   Long64_t nFailed = 0;
+  Long64_t nReject = 0;
   Long64_t nGood = 0;
 
   bool filled_LL = false;
   bool filled_DD = false;
+
+  bool inset = false;
+  Long64_t fitLimit = 159000; // Max for 2011: 159186
 
   std::cout << "EXPERT: Will loop over " << nentries << " entries." << std::endl;
   for (Long64_t i=0; i<nentries;i++) {
@@ -126,6 +130,11 @@ int runExpert(const TString module, const TString data, const TString step,
       std::cout << " |-> " << i << " / " << nentries
                 << " (" << 100*i/nentries << "%)" << std::endl;
     }
+
+    inset = (trainset=="Full" || (nGood<fitLimit && (
+            (trainset=="All" && ntuple->getGpsSecond()>numberofseconds*2./3.) ||
+            (trainset=="2011" && ntuple->getInputFile()==0) ||
+            (trainset=="2012" && ntuple->getInputFile()==1))));
 
     // Fill Variables
     runNumber   = ntuple->getRunNumber();
@@ -141,7 +150,10 @@ int runExpert(const TString module, const TString data, const TString step,
       time[pv]    = ntuple->time(pv);
 
       // Get Neural Net Output
-      if (sweight[pv]>-7) {
+      if (!inset) {
+        netOutput[pv] = -7.;
+        nReject++;
+      } else if (sweight[pv]>-6.5) {
         if (tracktype==m_LL) {
           if (!filled_LL) ntuple->firstFill = true;
           ntuple->prepareNBArray(InputArray_LL, pv, step, m_LL);
@@ -170,6 +182,7 @@ int runExpert(const TString module, const TString data, const TString step,
   std::cout << "########################################" << std::endl;
   std::cout << "  RESULTS" << std::endl;
   std::cout << "  # Events with netOutput assigned: " << nGood   << std::endl;
+  std::cout << "  # Events rejected to have netOut: " << nReject << std::endl;
   std::cout << "  # Events failing previous cuts  : " << nFailed << std::endl; 
   std::cout << "########################################" << std::endl;
 

@@ -194,7 +194,7 @@ MultipleCandidates* createEventMap(IB2JpsiX* ntuple, const TString data,
     bool pass = false;
     for (unsigned int pv = 0; (pv!=ntuple->primaries() && !pass); pv++) {
       // First weighting
-      if (netCut_LL<=-3.) {
+      if (netCut_LL<=-2.5) {
         pass = (ntuple->applyAllCuts(data, pv) &&
           (ntuple->jpsiIPchi2(pv)<0 ||
            (ntuple->TrackType()==3 && ntuple->jpsiIPchi2(pv)>ipcut_LL) ||

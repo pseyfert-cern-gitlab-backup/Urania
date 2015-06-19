@@ -49,7 +49,7 @@ MUONTrackDataSet::MUONTrackDataSet( const std::string& TrackName,
                      nTrack_Var,
                      DLLK_Var,
                      DLLp_Var,
-                     Cuts,
+                     "",
                      WgtVarName)
 {
   SetTrackVar( DLLmu_Var,
@@ -63,6 +63,10 @@ MUONTrackDataSet::MUONTrackDataSet( const std::string& TrackName,
 
   SetTrackVar( nShared_Var,
                "nShared" );
+  
+  if (not Cuts.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts).c_str())->store();
+  }
 }
 
 MUONTrackDataSet::MUONTrackDataSet( const std::string& TrackName,
@@ -76,8 +80,9 @@ MUONTrackDataSet::MUONTrackDataSet( const std::string& TrackName,
                      Charge,
                      Data,
                      vars,
-                     Cuts,
-                     WgtVarName )
+                     "",
+                     WgtVarName
+                   )
 {
   SetTrackVar( Data->Get_ParamName_DLLmu(),
                "DLLmu");
@@ -90,6 +95,10 @@ MUONTrackDataSet::MUONTrackDataSet( const std::string& TrackName,
 
   SetTrackVar( Data->Get_ParamName_nShared(),
                "nShared" );
+  
+  if (not Cuts.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts).c_str())->store();
+  }
 }
 
 
@@ -120,8 +129,9 @@ MUONTrackDataSet::MUONTrackDataSet( const std::string& TrackName,
                      nTrack_Var,
                      DLLK_Var,
                      DLLp_Var,
-                     Cuts,
-                     WgtVarName )
+                     "",
+                     WgtVarName
+                   )
 {
   SetTrackVar( DLLmu_Var,
                "DLLmu");
@@ -134,6 +144,10 @@ MUONTrackDataSet::MUONTrackDataSet( const std::string& TrackName,
 
   SetTrackVar( nShared_Var,
                "nShared" );
+  
+  if (not Cuts.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts).c_str())->store();
+  }
 
 }
 
@@ -187,7 +201,7 @@ MUONTrackDataSet::MUONTrackDataSet( const std::string& Name,
                     Denominator,
                     WgtVar,
                     Cuts_Num,
-                    Cuts_Denom,
+                    "",
                     WgtVar_Num,
                     WgtVar_Denom
                     )
@@ -203,6 +217,10 @@ MUONTrackDataSet::MUONTrackDataSet( const std::string& Name,
 
   SetTrackVar( Denominator->Get_ParamName_nShared(),
                "nShared" );
+  
+  if (not Cuts_Denom.empty()) {
+    _dstore = this->reduce(FormatCutList(Cuts_Denom).c_str())->store();
+  }
 }
 
 //=============================================================================

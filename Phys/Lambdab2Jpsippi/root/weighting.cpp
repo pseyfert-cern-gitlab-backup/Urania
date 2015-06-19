@@ -32,20 +32,21 @@ public :
   int weight();
 private :
   double getNNCut();
+  double getUpNNCut();
   RooDataSet* getDataSet(RooRealVar* mass, int cat = -100, 
-                         double nnCut = -100, bool killMuCa = true);
+                         double nnCut = -100, double nn2Cut = 100., bool killMuCa = true);
   //  RooDataSet* reduceDataSet(RooDataSet* rd, int category, double nnCut);
   int fit(TString, RooDataSet* data, MassPdf* pdf);
   int RKFit(TString name, RooRealVar* mass, RooDataSet* data);
   void plotRK(backgrounds& bs, RooRealVar* mass, TString name);
   background* reflectionFit(TString name, RooRealVar* mass, RooDataSet* data);
   backgrounds getBackgrounds(TString name, RooRealVar* mass, RooDataSet* Data);
-  int writeTree(double nnCut);
+  int writeTree(double nnCut, double nn2Cut);
   int writeTrainTree();
   MassPdf* doAllFits(TString name,RooRealVar* mass, RooDataSet* Data, const int catCode, 
-		  double nnCut, bool blinded);
+		  double nnCut, double nn2Cut, bool blinded);
   MassPdf* doFits(TString name,RooRealVar* mass, RooDataSet* Data, const int catCode, 
-		  double nnCut, bool blinded, TString baryon, MassPdf* previouspdf, double offset=0.);
+		  double nnCut, double nn2Cut, bool blinded, TString baryon, MassPdf* previouspdf, double offset=0.);
   int extractSWeight(TString name,RooDataSet* Data, RooStats::SPlot* sData, 
                      Long64_t& jentry, double& sweightLb, double& sweightNon,
                      double& sweightKpi, double& sweightpiK, double& sweightKK,
@@ -56,7 +57,7 @@ private :
     data->plotOn(massFrame);
     massFrame->Write(mass->GetName()+name);
   };
-  void printBFs(double nnCut);
+  void printBFs(double nnCut, double nn2Cut);
   inline double round(double a, double f){
     return f*int(a/f+0.5);
   } 
@@ -76,7 +77,8 @@ private :
   RooStats::SPlot* m_sData ;
   RooStats::SPlot* m_sData_PsipK ;
   bool m_debug ;
-  double m_defaultNNCut ;
+  double m_lowerNNCut ;
+  double m_upperNNCut ;
   MultipleCandidates* m_eventMap;
   double m_Lbpi_s ;
   double m_Lbpi_e ;
@@ -119,6 +121,7 @@ private :
   TString m_RhoString ;
   TString m_UpDown ;
   bool m_noPeak ;
+  bool m_fixPeak ; /// fix peak parameters to optimum
   
 };
 
@@ -166,23 +169,32 @@ weighting::weighting( const TString fullname1, const TString fullname2,
     cout << "Will be using data to optimize NN" << endl ;    
     m_sigCut = TCut("Category==-1 && ErrorCode==0"); // use J/psipK
     m_NNCut = c_Opt ;
-    m_defaultNNCut = -5 ;
+    m_lowerNNCut = -5 ;
   } else if (m_all) {
     m_NNCut = c_All; 
-    m_defaultNNCut = -10 ;
+    m_lowerNNCut = -10 ;
     m_first = true ;
     m_minMass = c_minpKFit ;
     m_maxMass = c_maxpKFit ;
     cout << "######## This is an initial weighting on J/psipK in " << m_minMass 
-	 << " " << m_maxMass << endl ;
+         << " " << m_maxMass << endl ;
   } else {
     m_NNCut = m_what ;     
-    m_defaultNNCut = m_NNCut.Atof() ;
-    cout << "######## Using cut " << m_defaultNNCut << endl ;
+    m_lowerNNCut = m_NNCut.Atof() ;
+    cout << "######## Using cut " << m_lowerNNCut << endl ;
   }
+  if (opt.Contains("0.")) {
+    m_upperNNCut = opt.Atof() ;
+    cout << "######## Using upper cut " << m_upperNNCut << endl ;
+  } else {
+    m_upperNNCut = 1.0;
+  }
+  
+  
   if ("Up"==opt || "Down"==opt) m_UpDown = opt;
   else m_UpDown="";
   m_noPeak = ( "NoPeak" == opt );
+  m_fixPeak = ("FixPeak"==opt);
   
   // now get files
 
@@ -245,6 +257,7 @@ weighting::weighting( const TString fullname1, const TString fullname2,
   if ("CB"==opt) m_signalShape = "CB";
   if ("DoubleGauss"==opt) m_signalShape = "DoubleGauss";
   if ("Gauss"==opt) m_signalShape = "Gauss";
+  if ("FrozenCB"==opt) m_signalShape = "FrozenCB" ;
 
   m_bkgShape = "Exp";
   if (("Poly2"==opt) || (!m_ExpTuple)) m_bkgShape="Poly2";
@@ -278,14 +291,20 @@ weighting::weighting( const TString fullname1, const TString fullname2,
 //=============================================================================
 double weighting::getNNCut(){
   if (m_debug) std::cout << "DEBUG getNNCut:: " << std::endl ;
-  double nn = m_defaultNNCut ;  // default
+  double nn = m_lowerNNCut ;  // default
+  return nn ;
+}
+//=============================================================================
+double weighting::getUpNNCut(){
+  if (m_debug) std::cout << "DEBUG getUpNNCut:: " << std::endl ;
+  double nn = m_upperNNCut ;  // default
   return nn ;
 }
 //=============================================================================
 // Make DataSet
 //=============================================================================
 RooDataSet* weighting::getDataSet(RooRealVar* mass, int catCut, 
-                                  double netCut, bool killMuCa){
+                                  double nnCut,  double nn2Cut, bool killMuCa){
   TString name = TString(mass->GetName())+TString("Set");
   if (m_debug) cout << "DEBUG :: getting all data for " << name << endl ;
 
@@ -321,6 +340,7 @@ RooDataSet* weighting::getDataSet(RooRealVar* mass, int catCut,
   double frac = printFrac(nentries/10.);
   unsigned int nPairs = 0 ;
   unsigned int nBadNN = 0 ;
+  unsigned int nBad2NN = 0 ;
   unsigned int nBadCat = 0 ;
   unsigned int nBadMuCa = 0 ;
   unsigned int nOutOfRange = 0 ;
@@ -331,7 +351,7 @@ RooDataSet* weighting::getDataSet(RooRealVar* mass, int catCut,
   unsigned int nErrorCode = 0 ;
   unsigned int nTeaching = 0 ;
   cout << "### Getting " << mass->GetName() << " data with catCut " 
-       << catCut << " netCut " << netCut << endl ; 
+       << catCut << " nnCuts " << nnCut << " - " << nn2Cut << endl ; 
   //  m_LambdabTuple->fChain->Scan("B_M","","",10);
   for ( Long64_t i = 0 ; i<nentries ; i++){
     m_ExpTuple?m_ExpTuple->fChain->GetEntry(i):m_LambdabTuple->fChain->GetEntry(i);
@@ -404,11 +424,15 @@ RooDataSet* weighting::getDataSet(RooRealVar* mass, int catCut,
         return 0 ;
       }
       if (m_debug) std::cout << "Cat " << cat << " mass " << m 
-                             << " netCut " << netCut << " " <<  ErrorCodes::Splitter << std::endl ; 
-      if (netCut>ErrorCodes::Splitter){ // do test netcut 
+                             << " nnCuts " << nnCut << " " << nn2Cut << " " <<  ErrorCodes::Splitter << std::endl ; 
+      if (nnCut>ErrorCodes::Splitter){ // do test netcut 
         if (m_debug) std::cout << "Testing netcut versus " << m_ExpTuple->netOutput[pv] << std::endl ;
-        if (m_ExpTuple->netOutput[pv]<netCut) {
+        if (m_ExpTuple->netOutput[pv]<nnCut) {
           nBadNN++ ;
+          continue; 
+        }
+        if (m_ExpTuple->netOutput[pv]>nn2Cut) {
+          nBad2NN++ ;
           continue; 
         }
         mca = m_eventMap->randomCandidate(m_ExpTuple->RunNumber, m_ExpTuple->EventNumber);        
@@ -466,7 +490,7 @@ RooDataSet* weighting::getDataSet(RooRealVar* mass, int catCut,
                                << m << std::endl ;
         mass->setVal(m);
         m_PsipKMass->setVal(m_LambdabTuple->B_SubpK_M[pv]); // Lb
-        netOutput->setVal(netCut);
+        netOutput->setVal(nnCut);
         baryon->setVal((m_LambdabTuple->pplus_ID>0)?1:-1);
         if (m_debug) std::cout << "Adding " << i << " " << cat << " " 
                                << m_LambdabTuple->eventNumber << "/" 
@@ -485,7 +509,8 @@ RooDataSet* weighting::getDataSet(RooRealVar* mass, int catCut,
   if (nErrorCode)  std::cout << "    Number of error code pairs            : " << nErrorCode << std::endl;
   if (nBadCat)     std::cout << "    Number of bad category pairs          : " << nBadCat << std::endl;
   if (nBlinded)    std::cout << "    Number of pairs blinded               : " << nBlinded << std::endl;
-  if (nBadNN)      std::cout << "    Number of pairs failing cuts          : " << nBadNN << std::endl;
+  if (nBadNN)      std::cout << "    Number of pairs failing NN cut        : " << nBadNN << std::endl;
+  if (nBad2NN)     std::cout << "    Number of pairs failing upper cut     : " << nBad2NN << std::endl;
   if (nBadMuCa)    std::cout << "    Number of killed Multiple pairs       : " << nBadMuCa << std::endl ;
   if (nBadPV)      std::cout << "    Number of Multiple PV pairs           : " << nBadPV << std::endl;
   if (nOutOfRange) std::cout << "    Number of bad masses                  : " << nOutOfRange << std::endl ;
@@ -493,7 +518,7 @@ RooDataSet* weighting::getDataSet(RooRealVar* mass, int catCut,
   std::cout                  << "    Number of Good pairs                  : " << int(rd->sumEntries()) << std::endl;
   std::cout << "###########################################################" << std::endl ;
 
-  if (netCut<ErrorCodes::Splitter) dataPlot("AllData",mass,rd);
+  if (nnCut<ErrorCodes::Splitter) dataPlot("AllData",mass,rd);
   if (m_debug) std::cout << "DEBUG :: getDatset returns " << name << " with " 
                          << rd->sumEntries() << " entries" << std::endl ;
   return rd ;
@@ -502,7 +527,7 @@ RooDataSet* weighting::getDataSet(RooRealVar* mass, int catCut,
 //=============================================================================
 // Write Tree
 //=============================================================================
-int weighting::writeTree(double nnCut){
+int weighting::writeTree(double nnCut, double nn2Cut){
 
   if (m_debug) std::cout << "INFO :: writeTree" << std::endl ;
   Double_t wPsippiMass[100], wPsipKMass[100], sweightLb[100], sweightBkg[100];
@@ -586,7 +611,7 @@ int weighting::writeTree(double nnCut){
       }
       if (m_debug) std::cout << "DEBUG:: " << i << " M:" << wPsippiMass[pv] << " " << wCategory[pv]
                              << " " << wNetOutput[pv] << " " << wPsipKMass[pv] << std::endl ;
-      if ( wNetOutput[pv]>nnCut && wErrorCode[pv]==0 ){        
+      if ( wNetOutput[pv]>nnCut && wNetOutput[pv]<=nn2Cut && wErrorCode[pv]==0 ){        
         Candidate mca = m_eventMap->randomCandidate(m_ExpTuple->RunNumber, m_ExpTuple->EventNumber);
         if ( mca.first>=0 && m_debug) std::cout << "DEBUG:: Multiple Candidate. " 
                                                 << i << " Kept is " << mca.first << " " << mca.second << std::endl ;
@@ -1027,6 +1052,7 @@ int weighting::fit(TString name, RooDataSet* data, MassPdf* pdf){
   cout << "% Minimised likelihood " << r->minNll() << endl;
   TCanvas* getBestPlot1 = new TCanvas(name,"Canvas for MassPlot",600,600);
   RooPlot* r1 = pdf->plotOn(getBestPlot1,data2,kFALSE,logy,false,false); // Plot without Pull
+  plotLegend(pdf->name(),m_withPartReco);
   r1->Write(name);
   getBestPlot1->Write("TC_"+name);
   TCanvas* getBestPlot2 = new TCanvas(name+"B","Canvas for MassPlot",600,600);
@@ -1035,6 +1061,7 @@ int weighting::fit(TString name, RooDataSet* data, MassPdf* pdf){
   getBestPlot2->Write("TC_"+name+"B");
   TCanvas* getBestPlot3 = new TCanvas(name+"C","Canvas for MassPlot",600,600);
   RooPlot* r3 = pdf->plotOn(getBestPlot3,data2,kFALSE,logy,false,true); // Plot with pull
+  plotLegend(pdf->name(),m_withPartReco);
   r3->Write(name+"C");
   getBestPlot3->Write("TC_"+name+"C");
   pdf->Print();
@@ -1045,15 +1072,15 @@ int weighting::fit(TString name, RooDataSet* data, MassPdf* pdf){
 // Fit
 //=============================================================================
 MassPdf* weighting::doAllFits(TString name,RooRealVar* mass, RooDataSet* Data, 
-                           const int catCode,double nnCut,bool blinded){
-  MassPdf* mFit =  doFits(name, mass, Data, catCode, nnCut, blinded, "", 0);
-  MassPdf* mFitB = doFits(name, mass, Data, catCode, nnCut, blinded, "B", mFit ); // baryons only
-  MassPdf* mFitAB = doFits(name, mass, Data, catCode, nnCut, blinded, "AB", mFit); // anti-baryons only
+                           const int catCode,double nnCut,double nn2Cut,bool blinded){
+  MassPdf* mFit =  doFits(name, mass, Data, catCode, nnCut, nn2Cut, blinded, "", 0);
+  MassPdf* mFitB = doFits(name, mass, Data, catCode, nnCut, nn2Cut, blinded, "B", mFit ); // baryons only
+  MassPdf* mFitAB = doFits(name, mass, Data, catCode, nnCut, nn2Cut, blinded, "AB", mFit); // anti-baryons only
   if ( m_freezeSlope){
-    MassPdf* mFitBm1 = doFits(name, mass, Data, catCode, nnCut, blinded, "Bm1", mFit, -1. ); // baryons only
-    MassPdf* mFitBp1 = doFits(name, mass, Data, catCode, nnCut, blinded, "Bp1", mFit, 1. ); // baryons only
-    MassPdf* mFitABm1 = doFits(name, mass, Data, catCode, nnCut, blinded, "ABm1", mFit, -1.); // AB only
-    MassPdf* mFitABp1 = doFits(name, mass, Data, catCode, nnCut, blinded, "ABp1", mFit, 1.); // AB only
+    MassPdf* mFitBm1 = doFits(name, mass, Data, catCode, nnCut, nn2Cut, blinded, "Bm1", mFit, -1. ); // baryons only
+    MassPdf* mFitBp1 = doFits(name, mass, Data, catCode, nnCut, nn2Cut, blinded, "Bp1", mFit, 1. ); // baryons only
+    MassPdf* mFitABm1 = doFits(name, mass, Data, catCode, nnCut, nn2Cut, blinded, "ABm1", mFit, -1.); // AB only
+    MassPdf* mFitABp1 = doFits(name, mass, Data, catCode, nnCut, nn2Cut, blinded, "ABp1", mFit, 1.); // AB only
   }
   return mFit ;
 }
@@ -1061,7 +1088,7 @@ MassPdf* weighting::doAllFits(TString name,RooRealVar* mass, RooDataSet* Data,
 // Fit
 //=============================================================================
 MassPdf* weighting::doFits(TString name1,RooRealVar* mass, RooDataSet* Data, const int catCode,
-                           double nnCut,bool blinded,TString baryon, MassPdf* prevFit, double offset){
+                           double nnCut,double nn2Cut,bool blinded,TString baryon, MassPdf* prevFit, double offset){
   if (""!=baryon && m_freeTails) return 0 ; /// no need to do baryons
   int ok = 0;
   name1 = name1+baryon ;
@@ -1088,6 +1115,7 @@ MassPdf* weighting::doFits(TString name1,RooRealVar* mass, RooDataSet* Data, con
     mFit->nLambdab()->setConstant();
     mFit->setConstant("Signal");
   }
+  if ( m_fixPeak ) mFit->freezePeak();
   if (m_mc && !m_allmc) {
     std::cout << "Constraining NonPeaking to 0" << std::endl ;
     mFit->nNonPeaking()->setVal(0.);
@@ -1112,8 +1140,8 @@ MassPdf* weighting::doFits(TString name1,RooRealVar* mass, RooDataSet* Data, con
 //=============================================================================
 // BFs
 //=============================================================================
-void weighting::printBFs(double nnCut){
-  cout << "\n\n%%% Yields with NN cut = " << nnCut << endl ;
+void weighting::printBFs(double nnCut, double nn2Cut){
+  cout << "\n\n%%% Yields with NN cuts = " << nnCut << "-" << nn2Cut<< endl ;
   cout << "The fit on the full sample yields:\n" << endl ;
   cout << "\\begin{eqnarray*}" << endl ;
   cout << "N(\\LbK) & = & " << round(m_LbK_s,1.) << " \\pm " << round(m_LbK_e,1.)
@@ -1191,22 +1219,23 @@ int weighting::weight(){
   int ok = 0 ;
   //  m_allData = getDataSet(m_allMass);
   double nnCut = getNNCut();
-  cout << "Neural net cut to be applied will be " << nnCut << endl ;  
+  double nn2Cut = getUpNNCut();
+  cout << "Neural net cuts to be applied will be " << nnCut << " - " << nn2Cut << endl ;  
   /*
    * @todo: Make the Kpi fit first, freeze the tails (now fixed)
    * Write sWeighting of Kpi. Check TisTos for signal and background.
    * There may be some more preselection cuts to apply.
    */
-  if (!m_first) m_eventMap = createEventMap(m_ExpTuple, nnCut,false) ; // m_debug
+  if (!m_first) m_eventMap = createEventMap(m_ExpTuple, nnCut,nn2Cut,false) ; // m_debug
   else m_eventMap = createEventMap(m_LambdabTuple,true,false) ; // m_debug
   /*
    * Kpi hypothesis
    */
   // *** sWeight Magic ***
   MassPdf* pdf_pK = 0 ;
-  RooDataSet* Data_pK = getDataSet(m_PsipKMass,CatCodes::pKCand,nnCut,true);
+  RooDataSet* Data_pK = getDataSet(m_PsipKMass,CatCodes::pKCand,nnCut,nn2Cut,true);
   if (!m_mc || (m_signalmc && !m_signalmc_pi)){
-    pdf_pK = doAllFits(c_PsipKName,m_PsipKMass,Data_pK,CatCodes::pKCand,nnCut,false);
+    pdf_pK = doAllFits(c_PsipKName,m_PsipKMass,Data_pK,CatCodes::pKCand,nnCut,nn2Cut,false);
     if (!pdf_pK ){
       if (!m_mc) {
         m_outfile->Close();
@@ -1223,9 +1252,9 @@ int weighting::weight(){
   MassPdf* pdf_ppi = 0 ;
   RooDataSet* Data_ppi = 0 ;
   if ( m_ExpTuple ){
-    Data_ppi = getDataSet(m_PsippiMass,CatCodes::SignalCand,nnCut,true);
+    Data_ppi = getDataSet(m_PsippiMass,CatCodes::SignalCand,nnCut,nn2Cut,true);
     if (!m_mc || m_signalmc_pi){
-      pdf_ppi = doAllFits(c_PsippiName,m_PsippiMass,Data_ppi,CatCodes::SignalCand,nnCut,!m_unblind);
+      pdf_ppi = doAllFits(c_PsippiName,m_PsippiMass,Data_ppi,CatCodes::SignalCand,nnCut,nn2Cut,!m_unblind);
       if (!pdf_ppi && !m_mc ) return -5 ;
     }
     ok = RKFit(c_PsippiName,m_PsippiMass,Data_ppi);
@@ -1237,7 +1266,7 @@ int weighting::weight(){
 						    pdf_pK->pdf(), pdf_pK->fracPdfList());
     if (pdf_ppi && m_unblind) m_sData = new RooStats::SPlot(c_PsippiName+"sData",c_PsippiName+"sData", *Data_ppi, 
 							    pdf_ppi->pdf(), pdf_ppi->fracPdfList());
-    ok = writeTree(nnCut);
+    ok = writeTree(nnCut,nn2Cut);
     if (0!=ok) return ok;
   } else if (m_LambdabTuple){
     if (pdf_pK) m_sData_PsipK = new RooStats::SPlot(c_PsipKName+"sData",c_PsipKName+"sData", *Data_pK, 
@@ -1245,7 +1274,7 @@ int weighting::weight(){
     ok = writeTrainTree();
   }
   
-  if (m_ExpTuple && !m_mc) printBFs(nnCut);
+  if (m_ExpTuple && !m_mc) printBFs(nnCut,nn2Cut);
 
   m_outfile->Close();
   std::cout << "Weighting Done. Returning " << ok << std::endl;

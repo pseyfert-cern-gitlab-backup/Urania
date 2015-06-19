@@ -3,7 +3,7 @@
 # Maintainer : Andrew Powell (LHCb)04
 #============================================================================
 package           CalibDataScripts
-version           v4r4
+version           v4r5p3
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -20,6 +20,7 @@ private
 apply_tag skip_genconfuser
 end_private
 
+use   GSL                 v*     LCG_Interfaces
 use   GaudiPolicy         v*
 use   ROOT                v*    LCG_Interfaces
 use   Boost               v*    LCG_Interfaces
@@ -37,10 +38,19 @@ macro_append ROOT_linkopts " -lRooFitCore -lRooFit -lRooStats"
 macro_append ROOT_linkopts " -lCintex"
 
 #macro_append ROOT_linkopts " -lRooPhysFitterLib"
-apply_pattern install_more_includes more = CalibDataScripts
+
 
 # boost::program_options library
 macro_append Boost_linkopts $(Boost_linkopts_program_options)
+
+
+library CDScommonLib ../src/GetData.cpp ../src/SetSpectatorVars.cpp \
+		  ../src/CheckFitResults.cpp 
+
+
+apply_pattern linker_library library=CDScommonLib
+
+apply_pattern install_more_includes more = CalibDataScripts
 
 #============================================================================
 # Declare Environment Variables
@@ -51,28 +61,37 @@ macro_append Boost_linkopts $(Boost_linkopts_program_options)
 # Applications
 #============================================================================
 # Test suites
-application     TestCheckFitResults ../src/CheckFitResults.cpp \
-    ../src/TestCheckFitResults.cpp
+#application     TestCheckFitResults ../src/CheckFitResults.cpp \
+#    ../src/TestCheckFitResults.cpp
+
+
+macro_append      DStFit_dependencies " CDScommonLib "
+application     DStFit   ../src/DStFit.cpp
 
 # For the RICH
-application     DStFit            ../src/GetData.cpp \ 
-    ../src/SetSpectatorVars.cpp ../src/CheckFitResults.cpp ../src/DStFit.cpp 
-application     Lam0Fit            ../src/GetData.cpp \ 
-    ../src/SetSpectatorVars.cpp ../src/CheckFitResults.cpp ../src/Lam0Fit.cpp 
+macro_append      Lam0Fit_dependencies " CDScommonLib "
+application     Lam0Fit             ../src/Lam0Fit.cpp 
+macro_append      MergeCharges_dependencies " CDScommonLib "
+
+
 
 application     MergeCharges      ../src/MergeCharges.cpp
+macro_append      MergeProtonLines_dependencies " CDScommonLib "
 application     MergeProtonLines  ../src/MergeProtonLines.cpp
 
 #For the MUONS
-application     JpsiFit            ../src/GetData.cpp \ 
-    ../src/SetSpectatorVars.cpp ../src/CheckFitResults.cpp ../src/JpsiFit.cpp 
 
-application     DStFit_MuonUnBiased            ../src/GetData.cpp \ 
-    ../src/SetSpectatorVars.cpp ../src/CheckFitResults.cpp \
-    ../src/DStFit_MuonUnBiased.cpp 
-#application     Lam0Fit_MuonUnBiased            ../src/GetData.cpp \ 
-#    ../src/SetSpectatorVars.cpp ../src/CheckFitResults.cpp \
-#    ../src/Lam0Fit_MuonUnBiased.cpp 
+macro_append      JpsiFit_dependencies " CDScommonLib "
+application     JpsiFit    ../src/JpsiFit.cpp 
 
-#application     MergeProtonLines_MuonUnBiased  ../src/MergeProtonLines_MuonUnBiased.cpp
+macro_append      JpsieeFit_dependencies " CDScommonLib "
+           
+#application     JpsieeFit          ../src/JpsieeFit.cpp 
+
+macro_append      DStFit_MuonUnBiased_dependencies " CDScommonLib "
+application     DStFit_MuonUnBiased         ../src/DStFit_MuonUnBiased.cpp
+macro_append      Lam0Fit_MuonUnBiased_dependencies " CDScommonLib " 
+application     Lam0Fit_MuonUnBiased       ../src/Lam0Fit_MuonUnBiased.cpp 
+macro_append      MergeProtonLines_MuonUnBiased_dependencies " CDScommonLib
+application     MergeProtonLines_MuonUnBiased  ../src/MergeProtonLines_MuonUnBiased.cpp
 

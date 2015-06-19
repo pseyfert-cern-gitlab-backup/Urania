@@ -3,14 +3,33 @@ print RooFit
 
 def createConst(m,s1, name, signed = 0):
     if s1 :
-        if not signed: x = RooRealVar(name,name, m, m-10*s1,m+10*s1)
-        if signed == 1:  x = RooRealVar(name,name, m, max(0, m-10*s1),m+10*s1)
-        if signed == -1 :  x = RooRealVar(name,name, m, m-10*s1,min( m+10*s1,0.))
-        x_cons = RooGaussian(name + "_const",name + "_const",x,RooFit.RooConst(m),RooFit.RooConst(s1))
+        if not signed:
+            x = RooRealVar(name,name, m, m-10*s1,m+10*s1)
+            _mean = RooRealVar(name+"_mean",name+"_mean", m)
+            _mean.setConstant(True)
+            _sigma = RooRealVar(name+"_sigma",name+"_sigma", s1)
+            _sigma.setConstant(True)
+        if signed == 1:
+            x = RooRealVar(name,name, m, max(0, m-10*s1),m+10*s1)
+            _mean = RooRealVar(name+"_mean",name+"_mean", m,max(0, m-10*s1),m+10*s1)
+            _mean.setConstant(True)
+            _sigma = RooRealVar(name+"_sigma",name+"_sigma", s1)
+            _sigma.setConstant(True)
+        if signed == -1 :
+            x = RooRealVar(name,name, m, m-10*s1,min( m+10*s1,0.))
+            _mean = RooRealVar(name+"_mean",name+"_mean", m, m-10*s1,min( m+10*s1,0.))
+            _mean.setConstant(True)
+            _sigma = RooRealVar(name+"_sigma",name+"_sigma", s1)
+            _sigma.setConstant(True)
+        x_cons = RooGaussian(name + "_const",name + "_const",x, _mean, _sigma)
     else:
-        x = RooRealVar(name,name, m)#,m-10*s1,m+10*s1)
-        x_cons = RooGaussian(name + "_const",name + "_const",x,RooFit.RooConst(m),RooFit.RooConst(400))
-    return x, x_cons
+        x = RooRealVar(name,name, m)
+        _mean = RooRealVar(name+"_mean",name+"_mean", m)
+        _mean.setConstant(True)
+        _sigma = RooRealVar(name+"_sigma",name+"_sigma", 400)
+        _sigma.setConstant(True)
+        x_cons = RooGaussian(name + "_const",name + "_const",x,_mean, _sigma)
+    return x,_mean,_sigma,  x_cons
 
 def createStableConst(m,s1, name, signed = 0):
     mymax = m+10*s1

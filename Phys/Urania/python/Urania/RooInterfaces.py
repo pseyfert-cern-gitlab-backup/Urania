@@ -48,6 +48,7 @@ class RooClassEditor:
         usedvars = []
         for var in vars_and_ranges: usedvars.append(var[0])
         self.integrals[code] = [usedvars,math_integrate(self.symfunction,*vars_and_ranges)]
+    def forceIntegral(self, code, usedvars, integral_val): self.integrals[code] = [usedvars,integral_val]
     
     def copyname(self): return self.filename.replace(".cxx","_copy.cxx")
     def cleanUnresolvedIntegrals(self):

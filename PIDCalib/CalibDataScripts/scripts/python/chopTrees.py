@@ -60,8 +60,15 @@ def chopTrees(fname_in, ntpname_list, fname_pkl, fileSuffix, out_path=''):
             sys.stderr.write(("Failed to retrieve TTree '{0}' "
                               "from file {1}").format(
                 ntpname, fname_in))
-            sys.exit(1)
-        _trees.append(tree)
+            #sys.exit(1)
+        else:
+            _trees.append(tree)
+        
+    #==================================================
+    # Skip if no events in this file
+    #==================================================
+    if len(_trees) == 0:
+      return
 
     #==================================================
     # Loop over array of run ranges

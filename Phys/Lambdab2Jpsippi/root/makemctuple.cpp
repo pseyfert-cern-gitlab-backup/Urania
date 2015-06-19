@@ -38,6 +38,7 @@ int loop(MCTuple* ntuple){
  
   unsigned long int runNumber, eventNumber ;
   Double_t mprime, thetaprime, pMMass2, psipMass2, psiMMass2, DalitzWeight,  DalitzWeightWE, PTWeight2,  PTWeight2WE ;
+  int Polarity ;
   TTree outtree("MCTree","MC Truth Helper Tree");
   outtree.Branch("EventNumber",&eventNumber, "EventNumber/l");
   outtree.Branch("RunNumber",&runNumber, "RunNumber/i");
@@ -50,6 +51,7 @@ int loop(MCTuple* ntuple){
   outtree.Branch("DalitzWeightWE",&DalitzWeightWE,"DalitzWeightWE/D");
   outtree.Branch("PTWeight2",&PTWeight2,"PTWeight2/D");
   outtree.Branch("PTWeight2WE",&PTWeight2WE,"PTWeight2WE/D");
+  outtree.Branch("Polarity",&Polarity,"Polarity/I");
   outtree.SetDirectory(outfile); 
   for (Long64_t i=0; i<nentries;i++) {
     ntuple->fChain->GetEntry(i);
@@ -64,6 +66,7 @@ int loop(MCTuple* ntuple){
     DalitzWeightWE = mcWeight(mprime,thetaprime,ntuple->m_isPi,1,m_rndm);
     PTWeight2 = ptWeight(ntuple->Lambda_b0_TRUEPT,2);
     PTWeight2WE = ptWeight(ntuple->Lambda_b0_TRUEPT,2,m_rndm);
+    Polarity = ntuple->Polarity ;
     outtree.Fill() ;
     if(0==i%((int)(frac*nentries))) std::cout << " |-> " << i << " / " 
                                               << nentries << " (" << 100*i/nentries << "%)" 

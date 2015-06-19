@@ -14,12 +14,11 @@ import alphaparam_summer13_2011 as a11
 import BRparams as BF
 
 fdfs = a12.fdfs
-Bdmumu_BR = a12.Bdmumu_BR
-Bsmumu_BR = a12.Bsmumu_BR
-
-
 TimeAcceptanceCorrBd = a12.TimeAcceptanceCorrBd
 TimeAcceptanceCorrBs = a12.TimeAcceptanceCorrBs
+
+Bdmumu_BR = BF.Bdmumu_BR
+Bsmumu_BR = BF.Bsmumu_BR
 
 from texlper import *
 #For the formula explanation see

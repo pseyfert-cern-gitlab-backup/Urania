@@ -16,6 +16,7 @@
 #include "RooPhysFitter/RooGranet.h"
 #include "RooPhysFitter/RooPhysFitter.h"
 #include "RooPhysFitter/RooDMassFitter.h"
+#include "RooPhysFitter/RooJpsiMassFitter.h"
 #include "RooPhysFitter/RooDplusMassFitter.h"
 #include "RooPhysFitter/RooDstarD0MassFitter.h"
 #include "RooPhysFitter/RooPhiBg.h"

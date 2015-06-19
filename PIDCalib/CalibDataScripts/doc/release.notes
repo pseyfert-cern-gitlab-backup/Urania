@@ -1,8 +1,34 @@
 !-----------------------------------------------------------------------------
 ! Package     : PIDCalib/CalibDataScripts
-! Responsible : Andrew Powell
+! Responsible : Sneha Malde
 ! Purpose     : Scripts to generate PID Calibration samples
-!----------------------------------------------------------------------------- 
+!-----------------------------------------------------------------------------
+
+! 2014-4-28 Sneha Malde
+  Link everything to the new library
+
+! 2014-4-24 Sneha Malde
+  Change the requirements file to make shared library
+
+! 2014-4-17 Diego Martinez Santos
+  	    Add explicit dependence on GSL
+!============================================== v4r5 2014-4-11 ==============================
+! 2014-4-11 Diego Martinez Santos
+	 Make version v4r5
+! 2014-03-03 - Thomas Bird 
+ - Fixed crash in GetRunRanges.C if nentries < stepfrac*maxEntries
+ - chop trees asssumed all subjobs contained all tree, removed this requirement
+ - added full path to macro in getRunRanges.py
+ - added Jpsiee tuple name to MergeCharges
+ - new GetRunRanges and ChopTrees scripts for Jpsi -> ee samples
+ - added Jpsi -> ee mass fit and scripts to run these
+ - added function in SetSpectatorVars to include number of bremsstrahlung 
+   photons as one of the spectator vars
+
+
+! 2014-03-20 - Marco Clemencic
+ - Added CMake configuration file.
+
 !============================== v4r4 13-12-2013 ==============================
 
 ! 2013-12-13 - Sneha Malde (LHCB)
