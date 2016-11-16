@@ -19,13 +19,14 @@
 #pragma link C++ class RooCruijff+;
 #pragma link C++ class RooEfficiencyBin+;
 #pragma link C++ class RooAvEffConstraint+;
-#pragma link C++ class RooCorrectedSWeight+;
-#pragma link C++ class RooAbsEffResModel;
+#pragma link C++ class RooCorrectedWeight+;
+#pragma link C++ class RooAbsEffResModel+;
 #pragma link C++ class RooEffResModel+;
 #pragma link C++ class MultiHistEntry+;
 #pragma link C++ class RooMultiEffResModel+;
 #pragma link C++ class RooComplementCoef+;
 #pragma link C++ class RooEffConvGenContext+;
+#pragma link C++ class RooTPConvGenContext+;
 #pragma link C++ class RooCubicSplineKnot::BoundaryConditions+;
 #pragma link C++ class RooCubicSplineKnot+;
 #pragma link C++ class RooCubicSplineFun+;
@@ -34,19 +35,27 @@
 #pragma link C++ class RooExplicitNormPdf+;
 #pragma link C++ class RooAmoroso+;
 #pragma link C++ class RooTPDecay+;
+#pragma link C++ class RooTPGen+;
 #pragma link C++ class RooMassDependence+;
 #pragma link C++ class RooEffResAddModel+;
 #pragma link C++ class RooCategoryVar+;
 #pragma link C++ class RooConvertPolAmp+;
+#pragma link C++ class RooIpatia2+;
+#pragma link C++ class RooEffConstraint+;
+#pragma link C++ class RooCombEffConstraint+;
 
 #pragma link off all functions;
 #pragma link C++ function computeRooRealMoments;
 #pragma link C++ function RooDataSetToTree;
 #pragma link C++ function TreeToRooDataSet;
 #pragma link C++ function addSWeightToTree;
-#pragma link C++ function addRunPeriodToTree;
+#pragma link C++ function addIntegerToTree;
+#pragma link C++ function addFloatToTree;
+#pragma link C++ function addProductToTree;
+#pragma link C++ function copyFloatInTree;
+#pragma link C++ function addCategoryToTree;
 #pragma link C++ function addVertexErrors;
-#pragma link C++ function sigmaFromFT;
+#pragma link C++ function addJpsiDLS;
 #pragma link C++ function hessian;
 #pragma link C++ function hessian_with_errors;
 #pragma link C++ function gradient;
@@ -55,6 +64,8 @@
 #pragma link C++ function second_gradient_with_errors;
 #pragma link C++ function cross_with_errors;
 #pragma link C++ function initial_stepsizes;
+#pragma link C++ function GetOwnership;
+#pragma link C++ function getRooRealMaxVal;
 
 #pragma link C++ class std::map<RooAbsCategory*, std::string>;
 #pragma link C++ class std::map<RooCategoryProxy*, std::string>;
@@ -63,9 +74,15 @@
 #pragma link C++ class std::map<RooRealProxy*, bool>;
 #pragma link C++ class std::map<RooAbsReal*, bool>;
 #pragma link C++ class std::pair<RooAbsReal*, bool>;
-#pragma link C++ class std::pair<RooRealProxy*, bool>;
+//#pragma link C++ class std::pair<RooRealProxy*, bool>;
 #pragma link C++ class std::pair<double, TString>;
 #pragma link C++ class std::pair<RooCategoryProxy*, std::string>;
+#pragma link C++ class std::pair<std::string, std::pair<RooRealProxy*,bool> >;
+#pragma link C++ class std::map<std::string, std::pair<RooRealProxy*, bool> >;
+#pragma link C++ class std::map<RooCategoryProxy*, std::map<std::string, std::pair<RooRealProxy*, bool> > >;
+
+#pragma link C++ class std::map<std::string, RooDataSet*>;
+#pragma link C++ class std::pair<std::string, RooDataSet*>;
 
 #pragma link C++ class std::map<Int_t, MultiHistEntry*>;
 #pragma link C++ class std::pair<Int_t, MultiHistEntry*>;

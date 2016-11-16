@@ -85,8 +85,8 @@ int decodeArgs(const int argc, char** const argv, TString& module,
   if (dir==m_castor) { // data should be read from castor
     if (isLHCb(data)) {
       dir = "root://castorlhcb.cern.ch//castor/cern.ch/user/f/fkruse/20140611-FixedOsTaggingTuples/";
-    } else if (data==m_SigBsCP) {
-      dir = "/afs/cern.ch/user/j/jwishahi/public/Bs2JpsiKSTupleTemp/";
+    } else if (data==m_SigBdA || data==m_SigBsA || data==m_SigBdE || data==m_SigBsE || data==m_SigLambdab) {
+      dir = "/tmp/fkruse/";
     } else {
       dir = "root://castorlhcb.cern.ch//castor/cern.ch/grid/lhcb/user/f/fkruse/Tuples201403/";
     }
@@ -131,12 +131,9 @@ void help(const TString module) {
 
     std::cout << "The arguments are:" << std::endl;
     std::cout << "``data'' specifies which data type to run." <<
-      "Supported: " << m_LHCb2011 << ", " << m_LHCb2011Prescaled << ", " <<
-      m_LHCb2012 << ", " << m_LHCb2012Prescaled << ", " <<
-      m_SigBd << ", " << m_SigBdPrescaled << ", " <<
-      m_SigBs << ", " << m_SigBsPrescaled << ", " <<
-      m_SigBsCP << ", " << m_SigBsCPPrescaled << ", " <<
-      m_SigKstar << ", " << m_SigKstarWM << ", " << m_IncJpsi << std::endl;
+      "Supported: " << m_LHCb << ", " << m_LHCbPrescaled << ", " <<
+      m_SigBdA << ", " << m_SigBsA << ", " << m_SigBdE << ", " << m_SigBsE <<
+      ", " << m_SigKstar << ", " << m_SigLambdab << ", " << m_IncJpsi << std::endl;
     std::cout << "``step'' specifies which stage of the selection is run." <<
       "Supported: " << m_NNInitialise << ", " << m_NNKstar << ", " <<
       m_NNUnbiased << ", " << m_NNSecond << ", " << m_NNAnalyse << std::endl;
@@ -248,52 +245,31 @@ B2JpsiKs* loadB2JpsiKsTuple(const TString module, const TString data,
   } else if (module!=m_slimtuple) {
     file1 = "B2JpsiKs-"+data+"-Slim.root";
   } else { // Select DaVinci tuple for slimming
-    if (data==m_LHCb2011) {
-      file1 = dir+"B2JpsiKSDetached_data_Stripping20r1_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA_tagfix.root";
-      //file1 = dir+"B2JpsiKSDetached_data_Stripping20r1_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA.root";
-    } else if (data==m_LHCb2011Prescaled) {
-      file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r1_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA_tagfix.root";
-      //file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r1_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA.root";
-    } else if (data==m_LHCb2012) {
-      file1 = dir+"B2JpsiKSDetached_data_Stripping20r0_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA_tagfix.root";
-      //file1 = dir+"B2JpsiKSDetached_data_Stripping20r0_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA.root";
-    } else if (data==m_LHCb2012Prescaled) {
-      file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r0_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA_tagfix.root";
-      //file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r0_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA.root";
-    } else if (data==m_LHCbAll) {
+    if (data==m_LHCb) {
       file1 = dir+"B2JpsiKSDetached_data_Stripping20r1_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA_tagfix.root";
       file2 = dir+"B2JpsiKSDetached_data_Stripping20r0_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA_tagfix.root";
-      //file1 = dir+"B2JpsiKSDetached_data_Stripping20r1_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA.root";
-      //file2 = dir+"B2JpsiKSDetached_data_Stripping20r0_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA.root";
-    } else if (data==m_LHCbAllPrescaled) {
+    } else if (data==m_LHCbPrescaled) {
       file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r1_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA_tagfix.root";
       file2 = dir+"B2JpsiKSPrescaled_data_Stripping20r0_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA_tagfix.root";
-      //file1 = dir+"B2JpsiKSPrescaled_data_Stripping20r1_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA.root";
-      //file2 = dir+"B2JpsiKSPrescaled_data_Stripping20r0_DVv33r9_FTr167275_v4_20140408_fkruse_combined_tupleA.root";
-    } else if (data==m_SigBd) {
+    } else if (data==m_SigBdA) {
       file1 = dir+
-      "B2JpsiKSDetached_Sim08_2012_Pythia6_Bd2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
+      "B2JpsiKSPrescaled_Sim08a_2011_Pythia68_Bd2JpsiKS_Stripping20_DVv35r1_FTFromDVMCTune_v9_20141028_fkruse_combined_tupleA.root";
       file2 = dir+
-      "B2JpsiKSDetached_Sim08_2012_Pythia8_Bd2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
-    } else if (data==m_SigBdPrescaled) {
+      "B2JpsiKSPrescaled_Sim08a_2012_Pythia68_Bd2JpsiKS_Stripping20_DVv35r1_FTFromDVMCTune_v9_20141028_fkruse_combined_tupleA.root";
+    } else if (data==m_SigBdE) {
       file1 = dir+
-      "B2JpsiKSPrescaled_Sim08_2012_Pythia6_Bd2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
+      "B2JpsiKSPrescaled_Sim08e_2012_Pythia68_Bd2JpsiKS_Stripping20_DVv35r1_FTFromDVMCTune_v9_20141028_fkruse_combined_tupleA.root";
+    } else if (data==m_SigBsA) {
+      file1 = dir+
+      "B2JpsiKSPrescaled_Sim08a_2011_Pythia68_Bs2JpsiKS_Stripping20_DVv35r1_FTFromDVMCTune_v9_20141028_fkruse_combined_tupleA.root";
       file2 = dir+
-      "B2JpsiKSPrescaled_Sim08_2012_Pythia8_Bd2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
-    } else if (data==m_SigBs) {
+      "B2JpsiKSPrescaled_Sim08a_2012_Pythia68_Bs2JpsiKS_Stripping20_DVv35r1_FTFromDVMCTune_v9_20141028_fkruse_combined_tupleA.root";
+    } else if (data==m_SigBsE) {
       file1 = dir+
-      "B2JpsiKSDetached_Sim08_2012_Pythia6_Bs2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
+      "B2JpsiKSPrescaled_Sim08e_2011_Pythia68_Bs2JpsiKS_Stripping20_DVv35r1_FTFromDVMCTune_v9_20141028_fkruse_combined_tupleA.root";
       file2 = dir+
-      "B2JpsiKSDetached_Sim08_2012_Pythia8_Bs2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
-    } else if (data==m_SigBsPrescaled) {
-      file1 = dir+
-      "B2JpsiKSPrescaled_Sim08_2012_Pythia6_Bs2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
-      file2 = dir+
-      "B2JpsiKSPrescaled_Sim08_2012_Pythia8_Bs2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
-    } else if (data==m_SigBsCP) {
-      file1 = dir+
-      "B2JpsiKSDetached_Sim08_2011+2012_Pythia68_Bs2JpsiKS_Stripping20_DVv33r9_FTr167275MCTune_v8_20140819_fkruse_combined_tupleA_premerge.root";
-    } else if (data==m_SigKstar || data==m_SigKstarWM) {
+      "B2JpsiKSPrescaled_Sim08e_2012_Pythia68_Bs2JpsiKS_Stripping20_DVv35r1_FTFromDVMCTune_v9_20141028_fkruse_combined_tupleA.root";
+    } else if (data==m_SigKstar) {
       file1 = dir+
       "B2JpsiKSDetached_Sim08a_2012_Pythia6_Bd2JpsiKst_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
       file2 = dir+
@@ -307,6 +283,9 @@ B2JpsiKs* loadB2JpsiKsTuple(const TString module, const TString data,
       "B2JpsiKSPrescaled_Sim08_2012_Pythia6_inclJpsi_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
       file2 = dir +
       "B2JpsiKSPrescaled_Sim08_2012_Pythia8_inclJpsi_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA.root";
+    } else if (data==m_SigLambdab) {
+      file1 = dir +
+      "B2JpsiKSDetached_Sim08_2012_Pythia68_Lb2JpsiLambda_Stripping20_DVv33r9_FTr167275MCTune_v8_20140303_fkruse_combined_tupleA_ostagfix.root";
     }
   }
 

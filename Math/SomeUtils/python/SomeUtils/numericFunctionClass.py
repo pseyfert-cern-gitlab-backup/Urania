@@ -55,6 +55,7 @@ class NF:
             x1 = self.References[i]
             if number == x1:
                 return (self.DataBase[self.References[i+1]] -  self.DataBase[self.References[i-1]])/(self.References[i+1] -  self.References[i-1])
+                #return (self.DataBase[self.References[i]] -  self.DataBase[self.References[i-1]])/(self.References[i] -  self.References[i-1])
             if x1 > number:
                 x0 = self.References[i-1]
                 y1 = self.DataBase[x1]
@@ -71,6 +72,7 @@ class NF:
             y.append(self.derivative(self.References[i]))
             
         return NF(x,y)
+
     def Draw(self, color = 1):
         from ROOT import TGraph, TCanvas
         g = TGraph()

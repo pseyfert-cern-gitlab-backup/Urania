@@ -96,8 +96,9 @@ def TranslateMathematica(s):
         (r"\((.+)\)\((.+)\)",  # Parenthesized implied multiplication
         lambda m: "(" + TranslateMathematica(m.group(1)) + ")*(" + TranslateMathematica(m.group(2)) + ")" ),
 
-        (r"\((.+)\)\/\((.+)\)",  # Parenthesized division
+        (r"\((.+)\)\/\((.+)\)\Z",  # Parenthesized division
         lambda m: "(" + TranslateMathematica(m.group(1)) + ")/(" + TranslateMathematica(m.group(2)) + ")" ),
+
 
         (r"\A\((.+)\)\Z",  # Parenthesized expression
         lambda m: "(" + TranslateMathematica(m.group(1)) + ")" ),
@@ -148,6 +149,15 @@ def actionCompFunction(m):
     return TranslateMathematica(m2.group(1))+translateOperator(m2.group(2))+translateFunction(m2.group(3))+"("+TranslateMathematica(inside)+")"+TranslateMathematica(after)
 
 
+# def actionParenthesizedDivision(m):
+#     num = m.group(1)
+#     denom = m.group(2)
+    
+#     if len(m.groups())>2: denom = denom+"^"+m.group(3)
+
+#     return "("+TranslateMathematica(num) + ")/(" + TranslateMathematica(denom) + ")" 
+
+    
 def translateFunction(s):
     if s.startswith("Arc"):
         return "a" + s[3:]

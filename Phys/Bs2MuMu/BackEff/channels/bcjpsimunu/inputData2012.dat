@@ -1,0 +1,8 @@
+EventType 	 	14543009   
+BranchingFraction	  0.132 0.051 0.052   # this is Bc/Bu ratio! from CDF
+GenerationEfficiency	0.137 0.001 # Patrick Robbe 2012-10-17
+InputFile 	 	/castor/cern.ch/user/f/fdettori/bsmumu/background/MC2012_BcJpsiMuNu_Down.root
+InputFile 	 	/castor/cern.ch/user/f/fdettori/bsmumu/background/MC2012_BcJpsiMuNu_Up.root
+AnalysedEvents 	 	1019399 
+NormalisationYear	2012
+

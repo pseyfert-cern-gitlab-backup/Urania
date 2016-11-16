@@ -87,6 +87,9 @@ class DoubleGauss_Signal_Mass ( MassPdf ) :
     def __init__( self, mass, **kwargs ) :
         namePF = self.getNamePrefix(kwargs)
         self._transWidthPars = kwargs.pop( 'TransformWidthPars', ( ) )
+        self._paramAvSig = kwargs.pop('AvSigParameterisation', False)
+        assert(not (self._transWidthPars and self._paramAvSig))
+
         self._parseArg( 'm_sig_mean', kwargs, Title = 'B Mass', Unit = 'MeV/c^2', Value = 5368., Error = 0.05, MinMax = ( 5000., 5700. ) )
 
         if self._transWidthPars :
@@ -103,6 +106,15 @@ class DoubleGauss_Signal_Mass ( MassPdf ) :
                                , ObjectType = 'FormulaVar'
                               )
 
+        elif self._paramAvSig:
+            self._parseArg( 'm_sig_frac', kwargs, Title = 'B mass fraction first Gaussian', Value = 0.8, Error = 0.03
+                           , MinMax = ( 0., 1. ) )
+            self._parseArg('m_sig_av', kwargs, Title = 'Average Sigma', Value = 8, Error = 0.2, MinMax = (0.1, 20.))
+            self._parseArg('m_sig_sigma', kwargs, Title = 'Sigma of Sigmas', Value = 2, Error = 0.2, MinMax = (0.1, 20.))
+            self._parseArg('m_sig_sigma_1', kwargs, Formula = '- sqrt((1-@0) / @0) * @1 + @2',
+                           Arguments = (self._m_sig_frac, self._m_sig_sigma, self._m_sig_av), ObjectType = 'FormulaVar')
+            self._parseArg( 'm_sig_sigma_2', kwargs, Formula = 'sqrt(@0 /(1 - @0)) * @1 + @2',
+                           Arguments = (self._m_sig_frac, self._m_sig_sigma, self._m_sig_av), ObjectType = 'FormulaVar')
         else :
             # use fraction of first Gaussian and widths directly
             self._parseArg( 'm_sig_frac', kwargs, Title = 'B mass fraction first Gaussian', Value = 0.8, Error = 0.03
@@ -217,6 +229,40 @@ class DoubleCB_Signal_Mass ( MassPdf ) :
         self._check_extraneous_kw( kwargs )
 
 
+class Ipatia2_Signal_Mass ( MassPdf ) :
+    def __init__( self, mass, **kwargs ) :
+        self._parseArg( 'm_sig_mean', kwargs, Title = 'B Mass', Unit = 'MeV/c^2', Value = 5368.254, Error = 0.05
+                       , MinMax = ( 5000., 5700. ), Constant = False )
+        self._parseArg( 'm_sig_sigma', kwargs, Title = 'B Mass resolution', Unit = 'MeV/c^2', Value = 9.678, Error = 0.1
+                       , MinMax = ( 0.1, 40. ), Constant = False )
+        self._parseArg( 'm_sig_lambda', kwargs, Title = 'B Mass resolution lambda', Value = -2.5, Error = 0.1, MinMax = ( -10., 10. )
+                       , Constant = True )
+        self._parseArg( 'm_sig_zeta', kwargs, Title = 'B Mass resolution zeta', Value = 0.46, Error = 0.2, MinMax = ( -10., 10. )
+                       , Constant = True )
+        self._parseArg( 'm_sig_beta', kwargs, Title = 'B Mass resolution beta', Value = 0., ObjectType = 'ConstVar' )
+        self._parseArg( 'm_sig_alpha_1', kwargs, Title = 'B Mass tail parameter 1', Value = 1.754, Error = 1., MinMax = ( 0.01, 10. )
+                       , Constant = True )
+        self._parseArg( 'm_sig_alpha_2', kwargs, Title = 'B Mass tail parameter 2', Value = 1.548, Error = 1., MinMax = ( 0.01, 10. )
+                       , Constant = True )
+        self._parseArg( 'm_sig_n_1', kwargs, Title = 'B Mass tail order 1', Value = 1.80, Error = 0.5, MinMax = ( 0., 10. )
+                       , Constant = True )
+        self._parseArg( 'm_sig_n_2', kwargs, Title = 'B Mass tail order 2', Value = 1.70, Error = 0.5, MinMax = ( 0., 10. )
+                       , Constant = True )
+
+        from P2VV.Load import P2VVLibrary
+        from ROOT import RooIpatia2 as Ipatia2
+        from P2VV.RooFitWrappers import Pdf
+        MassPdf.__init__(  self
+                         , pdf = Pdf(  Name = kwargs.pop( 'Name', 'Ipatia2_Signal_Mass' )
+                                     , Type = Ipatia2
+                                     , Parameters = ( mass, self._m_sig_lambda, self._m_sig_zeta, self._m_sig_beta
+                                                     , self._m_sig_sigma, self._m_sig_mean, self._m_sig_alpha_1, self._m_sig_n_1
+                                                     , self._m_sig_alpha_2, self._m_sig_n_2 )
+                                    )
+                        )
+        self._check_extraneous_kw( kwargs )
+
+
 class Box_Signal_Mass ( MassPdf ) :
     def __init__( self, mass, **kwargs ) :
         self._parseArg( 'm_sig_mean', kwargs, Title = 'B Mass', Unit = 'MeV/c^2', Value = 5368., Error = 0.05, MinMax = ( 5000., 5700. ) )
@@ -234,7 +280,7 @@ class Box_Signal_Mass ( MassPdf ) :
 
 class LP2011_Background_Mass ( MassPdf ) :
     def __init__(self, mass, **kwargs ) :
-        self._parseArg( 'm_bkg_exp', kwargs, Title = 'Mass background slope', Unit = 'c^2/MeV', Value = -0.002, Error = 0.0001
+        self._parseArg( 'm_bkg_exp', kwargs, Title = 'Mass background slope', Unit = 'c^2/MeV', Value = -0.0016, Error = 0.0001
                        , MinMax = ( -0.05, 0. ) )
 
         from ROOT import RooExponential as Exponential
@@ -295,26 +341,39 @@ class DoubleCB_Psi_Mass ( MassPdf ) :
         self._parseArg( 'mpsi_alpha_sf', kwargs, Title = 'psi Mass tail parameter 2:1 scale factor', Value = 1., ObjectType = 'ConstVar' )
         self._parseArg( 'mpsi_n_1', kwargs, Title = 'psi Mass tail order 1', Value = 2., ObjectType = 'ConstVar' )
         self._parseArg( 'mpsi_n_2', kwargs, Title = 'psi Mass tail order 2', Value = 2.,    ObjectType = 'ConstVar' )
-        self._parseArg( 'mpsi_frac', kwargs, Title = 'psi mass fraction first CB', Value = 0.8, Error = 0.03, MinMax = ( 0., 1. ) )
 
+        self._parseArg( 'mpsi_frac', kwargs, Title = 'psi mass fraction second CB', Value = 0.8, Error = 0.03, MinMax = ( 0., 1. ) )
+        self._parseArg( 'mpsi_sigma_2', kwargs, Formula = '@0*@1', Arguments = ( self._mpsi_sigma_sf, self._mpsi_sigma_1 ), ObjectType = 'FormulaVar' ),
+        self._parseArg( 'mpsi_alpha_2', kwargs, Formula = '@0*@1', Arguments = ( self._mpsi_alpha_sf, self._mpsi_alpha_1 ), ObjectType = 'FormulaVar' )
+        
+        name = kwargs.pop( 'Name', 'DoubleCB_Psi_Mass' )
+        param_sigma = kwargs.pop('ParameteriseSigma', None)
+
+        if param_sigma == 'MeanSigma':
+            from math import sqrt
+            f2 = self._mpsi_frac.getVal()
+            s1 = self._mpsi_sigma_1.getVal()
+            s2 = self._mpsi_sigma_sf.getVal() * s1
+            self._sigma_mean = self._parseArg('mpsi_sigma_mean', kwargs, MinMax = (1, 20),
+                                              Value = (( 1. - f2 ) * s1 + f2 * s2))
+            self._sigma_sigma = self._parseArg('mpsi_sigma_sigma', kwargs, MinMax = (0.01, 50),
+                                               Value = sqrt((1 - f2) * s1 ** 2 + f2 * s2 ** 2 -
+                                                            self._sigma_mean.getVal() ** 2))
+            self._mpsi_sigma_1 = self._parseArg('sigma_1_param', kwargs, Formula = '- sqrt((1 - @0) / @0) * @1 + @2',
+                                                Arguments = (self._mpsi_frac, self._sigma_sigma, self._sigma_mean),
+                                                ObjectType = 'FormulaVar')
+            self._mpsi_sigma_2 = self._parseArg('sigma_2_param', kwargs, Formula = 'sqrt(@0 / (1 - @0)) * @1 + @2',
+                                                Arguments = (self._mpsi_frac, self._sigma_sigma, self._sigma_mean),
+                                                ObjectType = 'FormulaVar')
+            
         from ROOT import RooCBShape as CrystalBall
         from P2VV.RooFitWrappers import Pdf, SumPdf
-        CB1 = Pdf( Name = '%smpsi_1' % namePF, Type = CrystalBall
-                  , Parameters = ( mass, self._mpsi_mean, self._mpsi_sigma_1, self._mpsi_alpha_1, self._mpsi_n_1 )
-                 )
-        CB2 = Pdf( Name = '%smpsi_2' % namePF, Type = CrystalBall
-                  , Parameters = (  mass, self._mpsi_mean
-                                  , self._parseArg( 'mpsi_sigma_2', kwargs, Formula = '@0*@1'
-                                                   , Arguments = ( self._mpsi_sigma_sf, self._mpsi_sigma_1 ), ObjectType = 'FormulaVar' )
-                                  , self._parseArg( 'mpsi_alpha_2', kwargs, Formula = '@0*@1'
-                                                   , Arguments = ( self._mpsi_alpha_sf, self._mpsi_alpha_1 ), ObjectType = 'FormulaVar' )
-                                  , self._mpsi_n_2
-                                 )
-                 )
-        MassPdf.__init__( self, pdf = SumPdf( Name = kwargs.pop( 'Name', 'DoubleCB_Psi_Mass' ), PDFs = (CB1, CB2)
-                                             , Yields = { CB1.GetName() : self._mpsi_frac } )
-                        )
-        self._check_extraneous_kw( kwargs )
+        CB1 = Pdf(Name = '%smpsi_1' % namePF, Type = CrystalBall,
+                  Parameters = (mass, self._mpsi_mean, self._mpsi_sigma_1, self._mpsi_alpha_1, self._mpsi_n_1))
+        CB2 = Pdf(Name = '%smpsi_2' % namePF, Type = CrystalBall, Parameters = (mass, self._mpsi_mean, self._mpsi_sigma_2,
+                                                                                self._mpsi_alpha_2, self._mpsi_n_2))
+        MassPdf.__init__( self, pdf = SumPdf(Name = name, PDFs = (CB1, CB2), Yields = {CB2.GetName() : self._mpsi_frac}))
+        self._check_extraneous_kw(kwargs)
 
 class Background_PsiMass ( MassPdf ) :
     def __init__(self, mass, **kwargs ) :

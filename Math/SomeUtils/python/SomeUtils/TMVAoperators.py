@@ -1,7 +1,7 @@
 from ROOT import *
 import cPickle
 from SomeUtils.NewKarlen import *
-gROOT.ProcessLine(".x $SOMEUTILSROOT/src/vdouble.C++")
+#gROOT.ProcessLine(".x $SOMEUTILSROOT/src/vdouble.C")#++")
 
 
 class TMVAoperator:
@@ -11,9 +11,9 @@ class TMVAoperator:
         self.b = std.vector(std.string)()
         for var in variables:
             self.b.push_back(var)
-
         self.op =globals()["Read" + methodname](self.b) 
-        self.stdvector = vdouble(len(variables))
+        self.stdvector = std.vector(Double)(len(variables))#vdouble(len(variables))
+        print methodname, " from ", filename, " initialized successfully"
         
     def GetMvaValue(self,input):
         if isinstance(input,dict):  #### if the input is a dictionary
@@ -28,9 +28,9 @@ class TMVAoperator:
             return self.GetMvaValue(x0)
         #print len(input)
         for i in range(len(input)): #### if the input is a list of numbers
-            self.stdvector.V[i] = input[i]
+            self.stdvector[i] = input[i]
          #   print input[i],self.stdvector.V[i] , i
-        a = self.op.GetMvaValue(self.stdvector.V) ### Don't forget the .V !!!!!
+        a = self.op.GetMvaValue(self.stdvector) ### Don't forget the .V !!!!!
         return a
     def __call__(self,input):
         return self.GetMvaValue(input)

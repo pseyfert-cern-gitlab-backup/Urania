@@ -943,8 +943,8 @@ Int_t RooBTagDecay::getCoefAnalyticalIntegral(Int_t coef, RooArgSet& allVars,
     bool odd = ( coef == _sinhBasis || coef == _sinBasis );
     if (odd && _tags > 1 ) return 0;
     
-    intCode += 32 * coefArg(coef).getAnalyticalIntegral(intVars, analVars,
-        rangeName);
+    intCode += 32 * coefArg(coef).getAnalyticalIntegralWN(intVars, analVars,
+        0, rangeName);
   }
 
   // return the integration code if there are no explicit tags
@@ -1001,7 +1001,9 @@ Double_t RooBTagDecay::coefAnalyticalIntegral(Int_t coef, Int_t code,
   // determine if basis function is even or odd
   Bool_t odd = coef == _cosBasis || coef == _sinBasis;
   if (odd && _tags>1) return 0;
-  coefInt = (coefCode!=0?coefArg(coef).analyticalIntegral(coefCode, rangeName):coefArg(coef).getVal());
+  coefInt = (coefCode != 0 ?
+      coefArg(coef).analyticalIntegralWN(coefCode, 0, rangeName)
+      : coefArg(coef).getVal());
 
   // return the integral if we don't have to evaluate explicit tags
   if (_tags < 1 || coefInt == 0.) return coefInt;
@@ -1034,16 +1036,17 @@ Double_t RooBTagDecay::coefAnalyticalIntegral(Int_t coef, Int_t code,
 
   if (calc0 || calc1) {
     // loop over tagging categories
-    Int_t cat0High = catPos0 > -1 ? catPos0 + 1 : (_tagCat0Type < 1 ? 1
+    Int_t cat0High = catPos0 > -1 ? catPos0 + 1 : (_tagCat0Type < 2 ? 1
         : _tagCat0.arg().numTypes());
-    Int_t cat1High = catPos1 > -1 ? catPos1 + 1 : (_tagCat1Type < 1 ? 1
+    Int_t cat1High = catPos1 > -1 ? catPos1 + 1 : (_tagCat1Type < 2 ? 1
         : _tagCat1.arg().numTypes());
     for (Int_t cat0It = catPos0 > -1 ? catPos0 : 0; cat0It < cat0High;
         ++cat0It) {
       for (Int_t cat1It = catPos1 > -1 ? catPos1 : 0; cat1It < cat1High;
           ++cat1It) {
         // get category coefficients
-        Double_t catCoef = tagCatCoefUnsafe(cat0It, cat1It);
+        Double_t catCoef = _tagCat0Type > 1 || _tagCat1Type > 1
+            ? tagCatCoefUnsafe(cat0It, cat1It) : 1.;
         Double_t cEvenOdd0 = ((RooAbsReal*)((RooArgList*)
             (odd ? _avgCOdds : _avgCEvens).At(cat0It))->at(cat1It))
             ->getVal();
@@ -1109,7 +1112,7 @@ void RooBTagDecay::setMaxVal(const Double_t val)
 //_____________________________________________________________________________
 Int_t RooBTagDecay::getMaxVal(const RooArgSet& /*vars*/) const
 {
-  return _maxVal < 0 ? 0 : _maxVal;
+  return _maxVal > 0;
 }
 
 //_____________________________________________________________________________
@@ -1159,7 +1162,9 @@ Int_t RooBTagDecay::getGenerator(const RooArgSet& directVars,
     // find the tagging category variable for tag 0
     arg0 = directVars.find(_tagCat0.arg().GetName());
     if (arg0 == 0) return genCode;
+  }
 
+  if (_tagCat0Type > 0) {
     // find initial state tag 0 variable
     arg10 = directVars.find(_iTag0.arg().GetName());
     if (arg10 == 0) return genCode;
@@ -1171,7 +1176,9 @@ Int_t RooBTagDecay::getGenerator(const RooArgSet& directVars,
     // find the tagging category variable for tag 1
     arg01 = directVars.find(_tagCat1.arg().GetName());
     if (arg01 == 0) return genCode;
+  }
 
+  if (_tagCat1Type > 0) {
     // find initial state tag 1 variable
     arg11 = directVars.find(_iTag1.arg().GetName());
     if (arg11 == 0) return genCode;
@@ -1372,7 +1379,8 @@ void RooBTagDecay::generateEvent(Int_t code)
       while (catGen[0] < cat0Max) {
         while (catGen[1] < cat1Max) {
           // get tagging category coefficient
-          Double_t catCoef = tagCatCoefUnsafe(catGen[0], catGen[1]);
+          Double_t catCoef = _tagCat0Type > 1 || _tagCat1Type > 1
+              ? tagCatCoefUnsafe(catGen[0], catGen[1]) : 1.;
 
           // check coefficient
           if (catCoef < 0.) {
@@ -1424,6 +1432,12 @@ void RooBTagDecay::generateEvent(Int_t code)
       // set tagging category value
       if (_tagCat0Type > 1) _tagCat0 = getTagCatIndex(catGen[0], kFALSE);
       if (_tagCat1Type > 1) _tagCat1 = getTagCatIndex(catGen[1], kTRUE);
+    } else if (_tagCat0Type > 0 || _tagCat1Type > 0) {
+      // get average even and odd coefficients
+      avgCEven = ((RooAbsReal*)((RooArgList*)_avgCEvens.At(0))
+          ->at(catGen[1]))->getVal();
+      avgCOdd = ((RooAbsReal*)((RooArgList*)_avgCOdds.At(0))
+          ->at(catGen[1]))->getVal();
     }
 
     // calculate dilution factors

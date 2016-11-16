@@ -10,36 +10,36 @@
 from P2VV.Parameterizations.GeneralUtils import _util_parse_mixin, _util_extConstraints_mixin, _util_conditionalObs_mixin
 
 # initial values for tagging calibration parameters in fit
-P0OSVal     =  0.39
+P0OSVal     =  0.38
 P0OSErr     =  0.01
-DelP0OSVal  =  0.011
-DelP0OSErr  =  0.003
+DelP0OSVal  =  0.014
+DelP0OSErr  =  0.001
 P1OSVal     =  1.00
-P1OSErr     =  0.02
-DelP1OSVal  =  0.000
-DelP1OSErr  =  0.001
+P1OSErr     =  0.06
+DelP1OSVal  =  0.07
+DelP1OSErr  =  0.01
 
-P0SSVal     =  0.44 #0.35
-P0SSErr     =  0.02
-DelP0SSVal  = -0.02
-DelP0SSErr  =  0.01
+P0SSVal     =  0.44
+P0SSErr     =  0.01
+DelP0SSVal  = -0.016
+DelP0SSErr  =  0.002
 P1SSVal     =  1.0
-P1SSErr     =  0.2
-DelP1SSVal  =  0.00
-DelP1SSErr  =  0.01
+P1SSErr     =  0.1
+DelP1SSVal  =  0.02
+DelP1SSErr  =  0.02
 
 # values for tagging calibration parameters from tagging calibration: correspond to specific data sample!
 from P2VV.Imports import extConstraintValues
 
-( P0OSConstrVal, P0OSConstrErr, avgEtaOSVal ) = extConstraintValues.getSetVal( 'P0OS',    (  0.392, 0.008, 0.392 ) )
-( DelP0OSConstrVal, DelP0OSConstrErr )        = extConstraintValues.getSetVal( 'DelP0OS', (  0.0110, 0.0034 ) )
-( P1OSConstrVal,    P1OSConstrErr    )        = extConstraintValues.getSetVal( 'P1OS',    (  1.000,  0.023  ) )
-( DelP1OSConstrVal, DelP1OSConstrErr )        = extConstraintValues.getSetVal( 'DelP1OS', (  0.000,  0.001  ) )
+( P0OSConstrVal, P0OSConstrErr, avgEtaOSVal ) = extConstraintValues.getSetVal( 'P0OS',    (  0.379,  0.011, 0.379 ) )
+( DelP0OSConstrVal, DelP0OSConstrErr )        = extConstraintValues.getSetVal( 'DelP0OS', (  0.0137, 0.0012 ) )
+( P1OSConstrVal,    P1OSConstrErr    )        = extConstraintValues.getSetVal( 'P1OS',    (  1.00,   0.06   ) )
+( DelP1OSConstrVal, DelP1OSConstrErr )        = extConstraintValues.getSetVal( 'DelP1OS', (  0.070,  0.012  ) )
 
-( P0SSConstrVal, P0SSConstrErr, avgEtaSSVal ) = extConstraintValues.getSetVal( 'P0SS',    (  0.350, 0.017, 0.350 ) )
-( DelP0SSConstrVal, DelP0SSConstrErr )        = extConstraintValues.getSetVal( 'DelP0SS', ( -0.019, 0.005   ) )
-( P1SSConstrVal,    P1SSConstrErr    )        = extConstraintValues.getSetVal( 'P1SS',    (  1.00,  0.16    ) )
-( DelP1SSConstrVal, DelP1SSConstrErr )        = extConstraintValues.getSetVal( 'DelP1SS', (  0.00,  0.01    ) )
+( P0SSConstrVal, P0SSConstrErr, avgEtaSSVal ) = extConstraintValues.getSetVal( 'P0SS',    (  0.437, 0.008, 0.437 ) )
+( DelP0SSConstrVal, DelP0SSConstrErr )        = extConstraintValues.getSetVal( 'DelP0SS', ( -0.016, 0.002 ) )
+( P1SSConstrVal,    P1SSConstrErr    )        = extConstraintValues.getSetVal( 'P1SS',    (  1.00,  0.12  ) )
+( DelP1SSConstrVal, DelP1SSConstrErr )        = extConstraintValues.getSetVal( 'DelP1SS', (  0.015, 0.019 ) )
 
 from ROOT import RooNumber
 RooInf = RooNumber.infinity()
@@ -78,7 +78,7 @@ def getTagCatParamsFromData( data, estWTagName, tagCats = [ ], numSigmas = 1., S
 
         # determine binning in estimated wrong-tag probability from data
         bin = 0
-        binUpperEdges = [ 0.4999999 ]
+        binUpperEdges = [ 0.499999999 ]
         while True :
             bin += 1
 
@@ -178,7 +178,7 @@ class TaggingParams ( _util_parse_mixin, _util_extConstraints_mixin, _util_condi
         if self._numTagCats[0] == 0 : self._ADilWTags = ( [ ], self._ADilWTags )
         if self._numTagCats[0] == 0 : self._CEvenOdds = [ self._CEvenOdds ]
 
-        if self._numTagCats[0] > 1 or self._numTagCats[1] > 1 :
+        if self._numTagCats[0] > 0 or self._numTagCats[1] > 1 :
             self._tagCatCoefs = kwargs.pop('TagCatCoefs')
             if self._numTagCats[0] == 0 : self._tagCatCoefs = [ self._tagCatCoefs ]
 
@@ -337,9 +337,6 @@ class WTagsCoefAsyms_TaggingParams( TaggingParams ) :
                 # (values for the) coefficients are specified
                 avgCEven = kwargs.pop('AvgCEven')
                 avgCOdd  = kwargs.pop('AvgCOdd')
-                if not isinstance( avgCEven, RooObject ) and not isinstance( avgCOdd, RooObject ) :
-                    avgCOdd  /= avgCEven
-                    avgCEven  = 1.
 
             elif 'AProd' in kwargs and 'ANorm' in kwargs :
                 # values for the production and normalization asymmetries are specified
@@ -348,13 +345,17 @@ class WTagsCoefAsyms_TaggingParams( TaggingParams ) :
                 if isinstance( self._AProdVal, RooObject ) : self._AProdVal = self._AProdVal.getVal()
                 if isinstance( self._ANormVal, RooObject ) : self._ANormVal = self._ANormVal.getVal()
 
-                avgCEven = 1.
-                avgCOdd  = ( self._AProdVal + self._ANormVal ) / ( 1. + self._AProdVal * self._ANormVal )
+                avgCEven = 1. + self._AProdVal * self._ANormVal
+                avgCOdd  = self._AProdVal + self._ANormVal
 
             else :
                 # use default values
                 avgCEven = 1.
                 avgCOdd  = 0.
+
+            if not isinstance( avgCEven, RooObject ) and not isinstance( avgCOdd, RooObject ) :
+                avgCOdd  = dict( Name = 'avgCOdd',  Value = avgCOdd / avgCEven, Constant = True )
+                avgCEven = dict( Name = 'avgCEven', Value = 1., ObjectType = 'ConstVar' )
 
             # create coefficients object
             from P2VV.Parameterizations.BBbarAsymmetries import Coefficients_CEvenOdd
@@ -434,10 +435,6 @@ class CatDilutionsCoefAsyms_TaggingParams( TaggingParams ) :
                 avgCEvenSum = kwargs.pop('AvgCEvenSum')
                 avgCOddSum  = kwargs.pop('AvgCOddSum')
 
-                if not isinstance( avgCEvenSum, RooObject ) and not isinstance( avgCOddSum, RooObject ) :
-                    avgCOddSum  /= avgCEvenSum
-                    avgCEvenSum  = 1.
-
             elif 'AProd' in kwargs and 'ANorm' in kwargs :
                 # values for the production and normalization asymmetries are specified
                 self._AProdVal = kwargs.pop('AProd')
@@ -445,20 +442,20 @@ class CatDilutionsCoefAsyms_TaggingParams( TaggingParams ) :
                 if isinstance( self._AProdVal, RooObject ) : self._AProdVal = self._AProdVal.getVal()
                 if isinstance( self._ANormVal, RooObject ) : self._ANormVal = self._ANormVal.getVal()
 
-                avgCEvenSum = 1.
-                avgCOddSum  = ( self._AProdVal + self._ANormVal ) / ( 1. + self._AProdVal * self._ANormVal )
+                avgCEvenSum = 1. + self._AProdVal * self._ANormVal
+                avgCOddSum  = self._AProdVal + self._ANormVal
 
             else :
                 # use default values
                 avgCEvenSum = 1.
                 avgCOddSum  = 0.
 
+            if not isinstance( avgCEvenSum, RooObject ) and not isinstance( avgCOddSum, RooObject ) :
+                avgCOddSum  = dict( Name = 'avgCOddSum',  Value = avgCOddSum / avgCEvenSum, Constant = True )
+                avgCEvenSum = dict( Name = 'avgCEvenSum', Value = 1., ObjectType = 'ConstVar' )
+
             from P2VV.Parameterizations.BBbarAsymmetries import Coefficients_CEvenOdd
-            CEvenOddSum = Coefficients_CEvenOdd(  avgCEven = avgCEvenSum if isinstance( avgCEvenSum, RooObject ) \
-                                                             else { 'Name' : 'avgCEvenSum', 'Value' : avgCEvenSum }
-                                                , avgCOdd  = avgCOddSum if isinstance( avgCOddSum, RooObject )   \
-                                                             else { 'Name' : 'avgCOddSum', 'Value' : avgCOddSum }
-                                               )
+            CEvenOddSum = Coefficients_CEvenOdd( avgCEven = avgCEvenSum, avgCOdd = avgCOddSum )
 
         CEvenOdds[0].append(CEvenOddSum)
 
@@ -521,7 +518,7 @@ class CatDilutionsCoefAsyms_TaggingParams( TaggingParams ) :
 
         else :
             self._ATagEffVals[1].append(0)
-            self._singleTagCatCoefs[1][0] = self._parseArg( 'tagCatCoef%s0' % namePF, kwargs, Value = 1., ObjectType = 'ConstVar' )
+            self._singleTagCatCoefs[1].insert( 0, self._parseArg( 'tagCatCoef%s0' % namePF, kwargs, Value = 1., ObjectType = 'ConstVar' ) )
 
         # loop over tagging categories
         for index0 in range( numTagCats[0] if numTagCats[0] > 0 else 1 ) :
@@ -579,11 +576,6 @@ class CatDilutionsCoefAsyms_TaggingParams( TaggingParams ) :
                             avgCEven = kwargs.pop( 'AvgCEven%d-%d' % ( index0, index1 ) if namePF else 'AvgCEven%d' % index1 )
                             avgCOdd  = kwargs.pop( 'AvgCOdd%d-%d'  % ( index0, index1 ) if namePF else 'AvgCOdd%d'  % index1 )
 
-                            if not isinstance( avgCEven, RooObject ) and not isinstance( avgCOdd, RooObject )\
-                                    and hasattr( self, '_AProdVal' ) and hasattr( self, '_ANormVal' ) :
-                                avgCOdd  /= 1. + self._AProdVal * self._ANormVal
-                                avgCEven /= 1. + self._AProdVal * self._ANormVal
-
                         elif hasattr(self, '_AProdVal') and hasattr(self, '_ANormVal') :
                             # values for the asymmetries are specified
                             avgCEven = 1. + self._AProdVal * self._ANormVal \
@@ -594,19 +586,19 @@ class CatDilutionsCoefAsyms_TaggingParams( TaggingParams ) :
                                        + self._AProdVal * self._ANormVal * self._ATagEffVals[0][index0] \
                                        + self._AProdVal * self._ANormVal * self._ATagEffVals[1][index1]
 
-                            avgCEven /= 1. + self._AProdVal * self._ANormVal
-                            avgCOdd  /= 1. + self._AProdVal * self._ANormVal
-
                         else :
                             # use values for tagging efficiency asymmetry = 0
                             avgCEven = CEvenOddSum['avgCEven'].getVal()
                             avgCOdd  = CEvenOddSum['avgCOdd'].getVal()
 
-                        CEvenOdd = Coefficients_CEvenOdd(  avgCEven = avgCEven if isinstance( avgCEven, RooObject ) \
-                                                               else { 'Name' : 'avgCEven%d-%d' % ( index0, index1 ), 'Value' : avgCEven }
-                                                         , avgCOdd  = avgCOdd if isinstance( avgCOdd, RooObject )   \
-                                                               else { 'Name' : 'avgCOdd%d-%d'  % ( index0, index1 ), 'Value' : avgCOdd  }
-                                                        )
+                        if not isinstance( avgCEven, RooObject ) and not isinstance( avgCOdd, RooObject )\
+                                and hasattr( self, '_AProdVal' ) and hasattr( self, '_ANormVal' ) :
+                            avgCEven = dict( Name = 'avgCEven%d-%d' % ( index0, index1 )
+                                            , Value = avgCOdd  / ( 1. + self._AProdVal * self._ANormVal ), Constant = True )
+                            avgCOdd  = dict( Name = 'avgCOdd%d-%d'  % ( index0, index1 )
+                                            , Value = avgCEven / ( 1. + self._AProdVal * self._ANormVal ), Constant = True )
+
+                        CEvenOdd = Coefficients_CEvenOdd( avgCEven = avgCEven, avgCOdd = avgCOdd )
 
                     CEvenOdds[index0].append(CEvenOdd)
 
@@ -708,11 +700,14 @@ class TaggingCategories( _util_parse_mixin, _util_extConstraints_mixin, _util_co
 
 class Independent_TaggingCategories( TaggingCategories ) :
     def __init__( self, **kwargs ) :
+        # get tagging category parameters
+        tagCats = kwargs.pop( 'TagCats', [ ] )
+
         # get number of tagging categories
-        if 'NumTagCats' not in kwargs : 
+        if not tagCats and 'NumTagCats' not in kwargs :
             raise KeyError('Independent_TaggingCategories: did not find "NumTagCats" argument')
         else :
-            numTagCats = kwargs.pop('NumTagCats')
+            numTagCats = kwargs.pop( 'NumTagCats', len(tagCats) )
 
         # get tagging category variable (or its name)
         tagCat = kwargs.pop( 'tagCat', 'tagCat' )
@@ -726,27 +721,23 @@ class Independent_TaggingCategories( TaggingCategories ) :
                                     )
             return params
 
+        # set default category parameters
         catParams = [ getCatParam(params) for params in [ 'TagCatCoefs', 'ATagEffs', 'TagDilutions', 'ADilWTags' ] ]
-
-        if numTagCats == 6 :
-            # set default parameters for the six (standard) categories
-            if not catParams[0] : catParams[0] = [ 0.15, 0.07, 0.03, 0.01, 0.003 ]
-            if not catParams[1] : catParams[1] = 5 * [ 0. ]
-            if not catParams[2] : catParams[2] = [ 0.20, 0.30, 0.46, 0.52, 0.76  ]
-            if not catParams[3] : catParams[3] = 5 * [ 0. ]
-
-        else :
-            # loop over tagging categories and set default parameters
-            for cat in range( numTagCats - 1 ) :
-                if len(catParams[0]) == cat :
+        for cat in range( numTagCats - 1 ) :
+            catDil = 1. - 2. * tagCats[ cat + 1 ][4] if tagCats else float(cat + 1) / float(numTagCats)
+            catCoef = tagCats[ cat + 1 ][6] if tagCats else 1.
+            if len(catParams[0]) == cat :
+                if not tagCats :
                     from math import pow
                     numCatsFrac = float(numTagCats) / 6.
-                    tagCatCoef  = 0.15 / numCatsFrac * pow( 0.5, float(cat) / numCatsFrac )
-                    catParams[0].append( tagCatCoef )
+                    catCoef  = 0.15 / numCatsFrac * pow( 0.5, float(cat) / numCatsFrac )
+                catParams[0].append(catCoef)
 
-                if len(catParams[1]) == cat : catParams[1].append(0.)
-                if len(catParams[2]) == cat : catParams[2].append( float(cat + 1) / float(numTagCats) )
-                if len(catParams[3]) == cat : catParams[3].append(0.)
+            if len(catParams[1]) == cat : catParams[1].append(0.)
+            if len(catParams[2]) == cat : catParams[2].append(catDil)
+            if len(catParams[3]) == cat : catParams[3].append(0.)
+        if len(catParams[0]) < numTagCats : catParams[0].insert( 0, 1. - sum(catParams[0]) )
+        if len(catParams[1]) < numTagCats : catParams[1].insert( 0, 0. )
 
         # check for remaining arguments and initialize
         self._check_extraneous_kw( kwargs )
@@ -857,6 +848,9 @@ class Linear_TaggingCategories( TaggingCategories ) :
             self._wTagP1.setConstant(True)
             self._wTagP1.setVal(self._calVals['P1'])
             self._wTagP1.setError(self._calVals['P1Err'])
+            self._wTagDelP1.setConstant(True)
+            self._wTagDelP1.setVal(self._calVals['DelP1'])
+            self._wTagDelP1.setError(self._calVals['DelP1Err'])
 
         elif wTagP1Constraint :
             from P2VV.RooFitWrappers import Pdf
@@ -883,11 +877,11 @@ class Linear_TaggingCategories( TaggingCategories ) :
         # get tagging category binning in estimated wrong-tag probability (eta)
         self._tagCats = kwargs.pop( 'TagCats', None )
         if not self._tagCats :
-            self._tagCats = [  ( 'Untagged', 0, 0.5000001, 0.50, 0.50, 0., 0.65,  0. )
-                             , ( 'Tagged',   1, 0.4999999, 0.40, 0.40, 0., 0.35,  0. )
+            self._tagCats = [  ( 'Untagged', 0, 0.500000001, 0.50, 0.50, 0., 0.65,  0. )
+                             , ( 'Tagged',   1, 0.499999999, 0.40, 0.40, 0., 0.35,  0. )
                             ] if self._estWTag else \
-                            [  ( 'Untagged', 0, 0.5000001, 0.50, 0.50, 0., 0.65,  0. )
-                             , ( 'TagCat1',  1, 0.4999999, 0.44, 0.44, 0., 0.24,  0. )
+                            [  ( 'Untagged', 0, 0.500000001, 0.50, 0.50, 0., 0.65,  0. )
+                             , ( 'TagCat1',  1, 0.499999999, 0.44, 0.44, 0., 0.24,  0. )
                              , ( 'TagCat2',  2, 0.38,      0.35, 0.35, 0., 0.062, 0. )
                              , ( 'TagCat3',  3, 0.31,      0.28, 0.28, 0., 0.032, 0. )
                              , ( 'TagCat4',  4, 0.24,      0.21, 0.21, 0., 0.012, 0. )
@@ -929,10 +923,6 @@ class Linear_TaggingCategories( TaggingCategories ) :
                                              , AP1        = self._wTagAP1
                                             )
                             )
-
-        # adjust errors on calibration parameters
-        if not wTagP0Constraint : self._wTagP0.setError(  3. * self._wTagP0.getError() )
-        if not wTagP1Constraint : self._wTagP1.setError( 17. * self._wTagP1.getError() )
 
         # check for remaining arguments and initialize
         self._check_extraneous_kw( kwargs )

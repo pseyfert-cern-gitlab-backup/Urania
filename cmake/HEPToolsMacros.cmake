@@ -55,16 +55,25 @@ function(lcg_find_host_os)
       set(os winxp)
       set(osvers)
     else()
-      execute_process(COMMAND cat /etc/issue OUTPUT_VARIABLE issue OUTPUT_STRIP_TRAILING_WHITESPACE)
-      if(issue MATCHES Ubuntu)
+      if(EXISTS /etc/redhat-release)
+        file(READ /etc/redhat-release release_file)
+      else()
+        file(READ /etc/issue release_file)
+      endif()
+      if(release_file MATCHES Ubuntu)
         set(os ubuntu)
         string(REGEX REPLACE ".*Ubuntu ([0-9]+)[.]([0-9]+).*" "\\1.\\2" osvers "${issue}")
-      elseif(issue MATCHES SLC|Fedora) # RedHat-like distributions
-        string(TOLOWER "${CMAKE_MATCH_0}" os)
-        if(os STREQUAL fedora)
-          set(os fc) # we use an abbreviation for Fedora
+      elseif(release_file MATCHES "Fedora|Scientific Linux( CERN)?|CentOS") # RedHat-like distributions
+        if(CMAKE_MATCH_0 STREQUAL "Scientific Linux CERN")
+          set(os slc)
+        elseif(CMAKE_MATCH_0 STREQUAL "Scientific Linux") # SL or CernVM
+          set(os sl)
+        elseif(CMAKE_MATCH_0 STREQUAL "Fedora")
+          set(os fc)
+        else()
+          string(TOLOWER "${CMAKE_MATCH_0}" os)
         endif()
-        string(REGEX REPLACE ".*release ([0-9]+)[. ].*" "\\1" osvers "${issue}")
+        string(REGEX REPLACE ".*release ([0-9]+)[. ].*" "\\1" osvers "${release_file}")
       else()
         message(WARNING "Unkown OS, assuming 'linux'")
         set(os linux)
@@ -165,6 +174,12 @@ function(lcg_get_target_platform)
   list(GET out 2 comp)
   list(GET out 3 type)
 
+  # special cases for the build type
+  if(type STREQUAL "do0")
+    # "*-do0" in Gaudi means "-g -O0" and it corresponds to "*-dbg" in AA
+    set(type "dbg")
+  endif()
+
   set(LCG_BUILD_TYPE ${type} CACHE STRING "Type of build (LCG id).")
 
   set(LCG_TARGET ${arch}-${os}-${comp})
@@ -236,7 +251,7 @@ function(lcg_get_target_platform)
   message(STATUS "Target system: ${LCG_TARGET}")
   message(STATUS "Build type: ${LCG_BUILD_TYPE}")
 
-  if(NOT LCG_HOST_SYSTEM STREQUAL LCG_TARGET)
+  if(LCG_HOST_SYSTEM AND NOT LCG_HOST_SYSTEM STREQUAL LCG_TARGET)
     message(STATUS "Host system: ${LCG_HOST_SYSTEM}")
   endif()
 
@@ -252,66 +267,107 @@ endfunction()
 
 ################################################################################
 # Define variables and location of the compiler.
+macro(lcg_set_compiler flavor)
+  if(NOT lcg_compiler_set)
+    if(NOT ${flavor} STREQUAL "NATIVE")
+      set(version ${ARGV1})
+      if(${flavor} MATCHES "^gcc|GNU$")
+        set(compiler_root ${LCG_external}/gcc/${version}/${LCG_HOST_ARCH}-${LCG_HOST_OS}${LCG_HOST_OSVERS})
+        set(c_compiler_names lcg-gcc-${version})
+        set(cxx_compiler_names lcg-g++-${version})
+        set(fortran_compiler_names lcg-gfortran-${version})
+      elseif(${flavor} STREQUAL "icc")
+        # Note: icc must be in the path already because of the licensing
+        set(compiler_root)
+        set(c_compiler_names lcg-icc-${version} icc)
+        set(cxx_compiler_names lcg-icpc-${version} icpc)
+        set(fortran_compiler_names lcg-ifort-${version} ifort)
+      elseif(${flavor} STREQUAL "clang")
+        set(compiler_root ${LCG_external}/llvm/${version}/${LCG_HOST_ARCH}-${LCG_HOST_OS}${LCG_HOST_OSVERS})
+        set(c_compiler_names lcg-clang-${version} clang)
+        set(cxx_compiler_names lcg-clang++-${version} clang++)
+        # FIXME: clang does not come with a Fortran compiler
+        set(fortran_compiler_names lcg-gfortran-4.8.1)
+      else()
+        message(FATAL_ERROR "Uknown compiler flavor ${flavor}.")
+      endif()
+      #message(STATUS "LCG_compiler(${ARGV}) -> '${c_compiler_names}' '${cxx_compiler_names}' '${fortran_compiler_names}' ${compiler_root}")
+      find_program(CMAKE_C_COMPILER
+                   NAMES ${c_compiler_names}
+                   PATHS ${compiler_root}/bin
+         DOC "C compiler")
+      find_program(CMAKE_CXX_COMPILER
+                   NAMES ${cxx_compiler_names}
+                   PATHS ${compiler_root}/bin
+         DOC "C++ compiler")
+      find_program(CMAKE_Fortran_COMPILER
+                   NAMES ${fortran_compiler_names}
+                   PATHS ${compiler_root}/bin
+         DOC "Fortran compiler")
+      #message(STATUS "LCG_compiler(${ARGV}) -> ${CMAKE_C_COMPILER} ${CMAKE_CXX_COMPILER} ${CMAKE_Fortran_COMPILER}")
+    endif()
+    set(lcg_compiler_set "${ARGV}")
+  else()
+    if(NOT "${lcg_compiler_set}" STREQUAL "${ARGV}")
+      message(WARNING "Attempt to change the compiler from ${lcg_compiler_set} to ${ARGV}")
+    endif()
+  endif()
+endmacro()
+
+################################################################################
+# Add a specific compiler to the path 
+macro(lcg_set_lcg_system_compiler_path flavor)
+  set(version ${ARGV1})
+  if(${flavor} MATCHES "^gcc|GNU$")
+    set(lcg_system_compiler_path ${LCG_external}/gcc/${version}/${LCG_HOST_ARCH}-${LCG_HOST_OS}${LCG_HOST_OSVERS})   
+  elseif(${flavor} STREQUAL "icc")
+    # Note: icc must be in the path already because of the licensing
+    set(lcg_system_compiler_path)
+  elseif(${flavor} STREQUAL "clang")
+    set(lcg_system_compiler_path ${LCG_external}/llvm/${version}/${LCG_HOST_ARCH}-${LCG_HOST_OS}${LCG_HOST_OSVERS})   
+  else()
+    message(FATAL_ERROR "Uknown compiler flavor ${flavor}.")
+  endif()
+endmacro()
+
+################################################################################
+# Define variables and location of the compiler.
 macro(_lcg_compiler id flavor version)
   #message(STATUS "LCG_compiler(${ARGV})")
-  if(${id} STREQUAL ${LCG_COMP}${LCG_COMPVERS} AND NOT LCG_USE_NATIVE_COMPILER)
-    if(${flavor} STREQUAL "gcc")
-      set(compiler_root ${LCG_external}/${flavor}/${version}/${LCG_HOST_ARCH}-${LCG_HOST_OS}${LCG_HOST_OSVERS})
-      set(c_compiler_names lcg-gcc-${version})
-      set(cxx_compiler_names lcg-g++-${version})
-      set(fortran_compiler_names lcg-gfortran-${version})
-    elseif(${flavor} STREQUAL "icc")
-      # Note: icc must be in the path already because of the licensing
-      set(compiler_root)
-      set(c_compiler_names lcg-icc-${version} icc)
-      set(cxx_compiler_names lcg-icpc-${version} icpc)
-      set(fortran_compiler_names lcg-ifort-${version} ifort)
-    elseif(${flavor} STREQUAL "clang")
-      set(compiler_root ${LCG_external}/llvm/${version}/${LCG_HOST_ARCH}-${LCG_HOST_OS}${LCG_HOST_OSVERS})
-      set(c_compiler_names lcg-clang-${version} clang)
-      set(cxx_compiler_names lcg-clang++-${version} clang++)
-      # FIXME: clang does not come with a Fortran compiler
-      set(fortran_compiler_names lcg-gfortran-4.8.1)
-    else()
-      message(FATAL_ERROR "Uknown compiler flavor ${flavor}.")
-    endif()
-    #message(STATUS "LCG_compiler(${ARGV}) -> '${c_compiler_names}' '${cxx_compiler_names}' '${fortran_compiler_names}' ${compiler_root}")
-    find_program(CMAKE_C_COMPILER
-                 NAMES ${c_compiler_names}
-                 PATHS ${compiler_root}/bin
-		 DOC "C compiler")
-    find_program(CMAKE_CXX_COMPILER
-                 NAMES ${cxx_compiler_names}
-                 PATHS ${compiler_root}/bin
-		 DOC "C++ compiler")
-    find_program(CMAKE_Fortran_COMPILER
-                 NAMES ${fortran_compiler_names}
-                 PATHS ${compiler_root}/bin
-		 DOC "Fortran compiler")
-    #message(STATUS "LCG_compiler(${ARGV}) -> ${CMAKE_C_COMPILER} ${CMAKE_CXX_COMPILER} ${CMAKE_Fortran_COMPILER}")
+  if(${id} STREQUAL ${LCG_COMP}${LCG_COMPVERS})
+    lcg_set_compiler(${flavor} ${version})
   endif()
 endmacro()
 
 ################################################################################
 # Enable the correct compiler.
-macro(lcg_define_compiler)
+macro(lcg_common_compilers_definitions)
+  if(NOT lcg_compiler_set)
     _lcg_compiler(gcc43 gcc 4.3.6)
     _lcg_compiler(gcc46 gcc 4.6.3)
     _lcg_compiler(gcc47 gcc 4.7.2)
     _lcg_compiler(gcc48 gcc 4.8.1)
+    _lcg_compiler(gcc49 gcc 4.9.1)
     _lcg_compiler(clang30 clang 3.0)
     _lcg_compiler(clang32 clang 3.2)
     _lcg_compiler(clang33 clang 3.3)
-    _lcg_compiler(gccmax gcc 4.8.1)
+    _lcg_compiler(clang34 clang 3.4)
+    _lcg_compiler(clang35 clang 3.5)
+    _lcg_compiler(clang37 clang 3.7)
+  endif()
 endmacro()
 
 ################################################################################
-# Enable the correct compiler.
+# Define variables for an LCG external.
 macro(lcg_set_external name hash version dir)
-    set(${name}_config_version ${version} CACHE STRING "Version of ${name}")
+    set(${name}_config_version ${version} CACHE STRING "Version of ${name}" FORCE)
     mark_as_advanced(${name}_config_version)
     set(${name}_native_version ${${name}_config_version})
-    set(${name}_home ${LCG_releases}/${dir})
+    if(NOT IS_ABSOLUTE ${dir})
+      set(${name}_home ${LCG_releases}/${dir})
+    else()
+      set(${name}_home ${dir})
+    endif()
 
     if("${name}" MATCHES "ROOT|COOL|CORAL|RELAX|LCGCMT")
         #message(STATUS "AA Project ${name} -> ${${name}_config_version}")
@@ -330,8 +386,12 @@ macro(lcg_set_external name hash version dir)
           endif()
         endif()
         list(APPEND LCG_projects ${name})
-    elseif("${name}" STREQUAL "cmaketools")
-        # ignore problematic externals
+    elseif("${name}" STREQUAL "cmaketools" AND
+           NOT EXISTS "${cmaketools_home}/CMakeToolsConfig.cmake")
+        # ignore old versions of cmaketools
+    elseif("${name}" STREQUAL "Qt5" AND
+           CMAKE_VERSION VERSION_LESS "2.12")
+        # we cannot mix Qt5 and Qt4 with CMake < 2.12, so we ignore Qt5
     else()
         #message(STATUS "External ${name} -> ${${name}_config_version}")
         list(APPEND LCG_externals ${name})
@@ -363,8 +423,10 @@ macro(lcg_prepare_paths)
   #===============================================================================
   # Derived variables
   #===============================================================================
-  string(REGEX MATCH "[0-9]+\\.[0-9]+" Python_config_version_twodigit ${Python_config_version})
-  set(Python_ADDITIONAL_VERSIONS ${Python_config_version_twodigit})
+  if(Python_config_version)
+    string(REGEX MATCH "[0-9]+\\.[0-9]+" Python_config_version_twodigit ${Python_config_version})
+    set(Python_ADDITIONAL_VERSIONS ${Python_config_version_twodigit})
+  endif()
 
   # Note: this is needed because FindBoost.cmake requires both if the patch version is 0.
   if (Boost_config_version)
@@ -392,9 +454,17 @@ macro(lcg_prepare_paths)
   endif()
 
   # Required if both Qt3 and Qt4 are available.
-  string(REGEX MATCH "[0-9]+" _qt_major_version ${Qt_config_version})
-  set(DESIRED_QT_VERSION ${_qt_major_version} CACHE STRING "Pick a version of QT to use: 3 or 4")
-  mark_as_advanced(DESIRED_QT_VERSION)
+  if(Qt_config_version)
+    string(REGEX MATCH "[0-9]+" _qt_major_version ${Qt_config_version})
+    set(DESIRED_QT_VERSION ${_qt_major_version} CACHE STRING "Pick a version of QT to use: 3 or 4")
+    mark_as_advanced(DESIRED_QT_VERSION)
+    if(Qt5_config_version AND NOT CMAKE_VERSION VERSION_LESS "2.12")
+      # Required if both Qt(4) and Qt5 are available.
+      if(EXISTS "${Qt_home}/bin/qmake")
+        set(QT_QMAKE_EXECUTABLE "${Qt_home}/bin/qmake" CACHE INTERNAL "")
+      endif()
+    endif()
+  endif()
 
   if(LCG_COMP MATCHES "clang")
     set(GCCXML_CXX_COMPILER g++ CACHE STRING "Compiler that GCCXML must use.")
@@ -422,7 +492,7 @@ macro(lcg_prepare_paths)
   endforeach()
 
   # AIDA is special
-  list(APPEND LCG_INCLUDE_PATH ${LCG_external}/${AIDA_directory_name}/${AIDA_native_version}/share/src/cpp)
+  list(APPEND LCG_INCLUDE_PATH ${LCG_external}/${AIDA_directory_name}/${AIDA_config_version}/share/src/cpp)
 
   set(CMAKE_PREFIX_PATH ${LCG_PREFIX_PATH} ${CMAKE_PREFIX_PATH})
   set(CMAKE_INCLUDE_PATH ${LCG_INCLUDE_PATH} ${CMAKE_INCLUDE_PATH})

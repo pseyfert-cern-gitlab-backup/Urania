@@ -1,0 +1,49 @@
+#compiler settings
+CXX           = g++
+CXXFLAGS      = -O -Wall -fPIC -g -ansi
+LD            = g++
+LDFLAGS       = -O
+SOFLAGS       = -shared
+
+all: $(TARGET)
+
+#find out about the installed ROOT
+ROOTCONFIG   := $(ROOTSYS)/bin/root-config
+ROOTCFLAGS   := $(shell $(ROOTCONFIG) --cflags)
+ROOTLDFLAGS  := $(shell $(ROOTCONFIG) --ldflags) $(shell $(ROOTCONFIG) --libs)
+
+#append to options
+CXXFLAGS     += $(ROOTCFLAGS)
+LDFLAGS      += $(ROOTLDFLAGS)
+
+LIBS = -lRooFit -lRooFitCore -lRooStats
+
+#source files
+ACLICKHEADERS = Main.h 
+ACLICKSOURCE = Main.cpp
+ACLICKOBJS = rootdict.o Main.o 
+
+HEADERS	= confinte.h
+SOURCE = testFC_grid.C
+SOURCE += $(ACLICKSOURCE)
+OBJS  = testFC_grid.o confinte.o
+OBJS += $(ACLICKOBJS)
+
+EXE = foo_exe
+SHAREDLIB = libFoo.so 
+
+all: $(EXE)       
+
+$(EXE): $(HEADERS) $(OBJS) main.o libFoo.so
+	$(LD) $(LDFLAGS) $(LIBS) $(OBJS) main.o -o $(EXE)
+
+$(SHAREDLIB):	$(HEADERS) $(OBJS) 
+	$(LD) $(LDFLAGS) $(LIBS) $(OBJS) -$(SOFLAGS) -o $(SHAREDLIB)
+
+rootdict.cpp:  $(ACLICKHEADERS)
+	@echo "Making the rootdict"
+	@$(ROOTSYS)/bin/rootcint -f rootdict.cpp -c $(ACLICKHEADERS)
+
+.PHONY clean:
+clean:		
+	@rm -f $(OBJS) rootdict.cpp main.o $(EXE) $(SHAREDLIB)

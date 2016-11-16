@@ -31,6 +31,14 @@ class Environment(object):
         else:
             self.searchPath = list(searchPath)
 
+        def addToSearchPath(n, _1, _2):
+            '''
+            Add entries to the search path expanding variables inside.
+            '''
+            entries = Variable.List('_SEARCH_PATH')
+            entries.set(n, os.pathsep, environment=self.variables)
+            self.searchPath.extend(entries)
+
         self.actions = {}
         self.actions['include'] = lambda n, c, h: self.loadXML(self._locate(n, c, h))
         self.actions['append'] = lambda n, v, _: self.append(n, v)
@@ -41,7 +49,7 @@ class Environment(object):
         self.actions['remove'] = lambda n, v, _: self.remove(n, v)
         self.actions['remove-regexp'] = lambda n, v, _: self.remove_regexp(n, v)
         self.actions['declare'] = self.declare
-        self.actions['search_path'] = lambda n, _1, _2: self.searchPath.extend(n.split(self.separator))
+        self.actions['search_path'] = addToSearchPath
 
         self.variables = {}
 
@@ -104,9 +112,15 @@ class Environment(object):
     def vars(self, strings=True):
         '''returns dictionary of all variables optionally converted to string'''
         if strings:
-            return dict([(n, v.value(True)) for n, v in self.variables.items()])
+            return dict([(n, v.value(True))
+                         for n, v in self.variables.items()
+                         if n != '.'])
         else:
-            return self.variables
+            # clone the dictionary to remove the internal special var '.'
+            vars_ = dict(self.variables)
+            if '.' in vars_:
+                del vars_['.']
+            return vars_
 
     def var(self, name):
         '''Gets a single variable. If not available then tries to load from system.'''
@@ -248,7 +262,9 @@ class Environment(object):
         XMLfile = xmlModule.XMLFile()
         fileName = self._locate(fileName)
         if fileName in self.loadedFiles:
+            self.log.debug('ignore %s: already loaded', fileName)
             return # ignore recursion
+        self.log.debug('loading %s', fileName)
         self.loadedFiles.add(fileName)
         dot = self.variables['.']
         # push the previous value of ${.} onto the stack...

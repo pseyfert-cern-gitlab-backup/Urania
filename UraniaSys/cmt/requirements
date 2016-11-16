@@ -3,7 +3,7 @@
 # Maintainer : Diego Martinez Santos
 #============================================================================
 package           UraniaSys
-version           v3r0
+version           v4r0
 #============================================================================
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -14,34 +14,36 @@ branches          cmt doc
 #============================================================================
 #set GAUDI_home .
 
-#use GaudiPolicy			v13r1
-#use  MCLimit			v1r5	Math			# Diego Martinez Santos
-use  SomeUtils			v4r0	Math			# Diego Martinez Santos
+use GaudiPolicy			v15r6
+use  MCLimit			v2r0	Math			# Diego Martinez Santos
+use  SomeUtils			v5r0	Math			# Diego Martinez Santos
 
-use  Urania			v3r0	Phys			# Diego Martinez Santos
-#use  A2MuMu			v1r1	Phys			# ...
+use  Urania			v4r0	Phys			# Diego Martinez Santos
+use  A2MuMu			v1r2	Phys			# ...
 use  B2CCtuples			v2r0	Phys			# ...
 use  Bs2JpsiKs                  v5r5    Phys                    # Patrick Koppenburg
 
 use  Bs2JpsiPhiParams		v1r5	Phys			# ...
-#use  Bs2MuMu			v2r7	Phys			# Diego Martinez Santos
-use  Bs2MuMuParams		v2r8	Phys			# Diego Martinez Santos, Marc-Olivier Bettler, Matheiu Perrin-Terrin
-use  BsJPsiKst                  v3r1   	Phys                    # Paula Alvarez, Diego Martinez Santos
-#use  BsKstKst                  	v4r2    Phys                    # Paula Alvarez, Juan Saborido
+use  Bs2MuMu			v3r0	Phys			# Diego Martinez Santos
+use  Bs2MuMuParams		v3r0	Phys			# Diego Martinez Santos, Marc-Olivier Bettler, Matheiu Perrin-Terrin
+use  BsJPsiKst                  v3r5   	Phys                    # Paula Alvarez, Diego Martinez Santos
+use  BsKstKst                  	v5r0    Phys                    # Paula Alvarez, Juan Saborido
+use  Ks2MuMu			v1r0	Phys			# Xabier Cid Vidal, Diego Martinez Santos
+use  Ks2Pi0MuMu			v1r0	Phys			# Veronika Chobanova, Diego Martinez Santos
 use  Lambdab2Jpsippi            v3r6    Phys                    # Patrick Koppenburg
 
-#use  B2DXFitters		v2r7	PhysFit			# Manuel Schiller, Eduardo Rodrigues
-use  P2VV			v3r6	PhysFit			# Jeroen Van Leerdam, Roel Aaij
+use  B2DXFitters		v3r0	PhysFit			# Manuel Schiller, Eduardo Rodrigues
+use  P2VV			v4r0	PhysFit			# Jeroen Van Leerdam, Roel Aaij
 use  SomeMassModels		v2r4	PhysFit			# Diego Martinez Santos
-use  RooPhysFitter              v2r7    PhysFit                 # Philip Hunt
+use  RooPhysFitter              v3r0    PhysFit                 # Philip Hunt
 
-#use CalibDataScripts            v5r1    PIDCalib                # Philip Hunt
-#use PIDPerfScripts              v7r1    PIDCalib                # Philip Hunt
-#use PIDPerfTools                v6r1    PIDCalib                # Philip Hunt
+use CalibDataScripts            v5r2    PIDCalib                # Philip Hunt
+use PIDPerfScripts              v9r4    PIDCalib                # Philip Hunt
+use PIDPerfTools                v7r0    PIDCalib                # Philip Hunt
 use  LHCbStyle			v2r6	 RootTools		# Rolf Oldeman, Niels Tuning
 use  SimpleTools	  	v2r0	RootTools           	# Conor Fitzpatrick
 #use  MoreSimpleTools	  	v2r0	RootTools           	# Rob Lambert
-
+#use GammaPi0SeparationCalib v1r0 Phys        # Albert Puig
 
 apply_pattern container_package
 

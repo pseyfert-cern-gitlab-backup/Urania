@@ -24,16 +24,18 @@
         <class name = "RooCruijff" />
         <class name = "RooEfficiencyBin" />
         <class name = "RooAvEffConstraint" />
-        <class name = "RooCorrectedSWeight" />
+        <class name = "RooCorrectedWeight" />
         <class name = "RooAbsEffResModel" />
         <class name = "RooEffResModel" />
         <class name = "MultiHistEntry" />
         <class name = "RooMultiEffResModel" />
         <class name = "RooComplementCoef" />
         <class name = "RooEffConvGenContext" />
+        <class name = "RooTPConvGenContext" />
         <class name = "RooBoxPdf" />
         <class name = "RooExplicitNormPdf" />
         <class name = "RooTPDecay" />
+        <class name = "RooTPGen" />
         <class name = "RooAmoroso" />
         <class name = "RooMassDependence" />
         <class name = "RooCubicSplineKnot::BoundaryConditions" />
@@ -44,6 +46,9 @@
         <class name = "RooEffResAddModel" />
         <class name = "RooCategoryVar" />
         <class name = "RooConvertPolAmp" />
+        <class name = "RooIpatia2" />
+        <class name = "RooEffConstraint" />
+        <class name = "RooCombEffConstraint" />
 
         <class name = "std::map<RooAbsCategory*, std::string>" />
         <class name = "std::map<RooCategoryProxy*, std::string>" />
@@ -69,8 +74,13 @@
         <function name = "RooDataSetToTree" />
         <function name = "TreeToRooDataSet" />
         <function name = "addSWeightToTree" />
-        <function name = "addRunPeriodToTree" />
+        <function name = "addIntegerToTree" />
+        <function name = "addFloatToTree" />
+        <function name = "addProductToTree" />
+        <function name = "copyFloatInTree" />
+        <function name = "addCategoryToTree" />
         <function name = "addVertexErrors" />
+        <function name = "addJpsiDLS" />
         <function name = "sigmaFromFT" />
         <function name = "hessian" />
         <function name = "hessian_with_errors" />
@@ -79,6 +89,7 @@
         <function name = "gradient" />
         <function name = "gradient_with_errors" />
         <function name = "cross_with_errors" />
+	<function name = "getRooRealMaxVal" />
 
     </selection>
 </lcgdict>

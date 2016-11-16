@@ -40,6 +40,9 @@ class Coefficients_AngularPdfTerms ( AngularPdfTerms ) :
         # get keys for angular terms
         self._keys = kwargs.pop( 'Keys', self._angFuncs.keys() )
 
+        # get coefficients of pdf terms sum
+        angTermsSumCoefs = kwargs.pop( 'AngTermsSumCoef', '')
+
         # get angular function coefficients (dictionary with complex ( Re, Im ) wrapped RooFit objects)
         if 'AngCoefficients' in kwargs :
             # get coefficients from arguments
@@ -62,11 +65,24 @@ class Coefficients_AngularPdfTerms ( AngularPdfTerms ) :
         newAngTerm = lambda func, coef, minSign :\
               [ Product( coef.GetName() + '_x_' + func.GetName(), [ minSign, coef, func ] if minSign else [ coef, func ] ) ]\
               if func and coef else [ ]
+        newAngTermWithCoef = lambda coef, angTerm :\
+            [ Product( coef.GetName() + '_x_' + angTerm.GetName(), [ coef, angTerm ] ) ]
 
-        angTerms = []
-        for key in self._keys :
-            angTerms += newAngTerm( self._angFuncs[key][0], self._angCoefs[key][0], None  )
-            angTerms += newAngTerm( self._angFuncs[key][1], self._angCoefs[key][1], minus )
+        if not angTermsSumCoefs:
+            angTerms = []
+            for key in self._keys :
+                angTerms += newAngTerm( self._angFuncs[key][0], self._angCoefs[key][0], None  )
+                angTerms += newAngTerm( self._angFuncs[key][1], self._angCoefs[key][1], minus )
+        else:
+            assert type(angTermsSumCoefs)==dict, 'P2VV - ERROR: Coefficients_AngularPdfTerms: Provide coefficients for the sum of pdf terms in a dictionary'
+            angTerms = []
+            for key in self._keys :
+                dummyAngTermContainer = []
+                sumCoef = angTermsSumCoefs[key]
+                dummyAngTermContainer += newAngTerm( self._angFuncs[key][0], self._angCoefs[key][0], None  )
+                dummyAngTermContainer += newAngTerm( self._angFuncs[key][1], self._angCoefs[key][1], minus )
+                for angTerm in dummyAngTermContainer:
+                    if angTerm: angTerms += newAngTermWithCoef( sumCoef, angTerm )
 
         # initialize
         AngularPdfTerms.__init__( self, angTerms )
@@ -138,12 +154,18 @@ class Amplitudes_AngularPdfTerms ( Coefficients_AngularPdfTerms ) :
         try :   from itertools import combinations_with_replacement as cwr
         except: from P2VV.Compatibility import cwr
 
+        # get parameter name prefix
+        namePF = kwargs.pop('ParNamePrefix', '')
+
         # get amplitude names from arguments
         self._ampNames = kwargs.pop('AmpNames')
 
         # get amplitudes from arguments
         self._amplitudes = kwargs.pop('Amplitudes')
         for amp in self._ampNames : assert amp in self._amplitudes, 'Amplitudes_AngularPdfTerms: no amplitude \'%s\' found' % amp
+
+        # get coefficients of pdf terms sum
+        angTermsSumCoef = kwargs.pop('AngTermsSumCoef','')
 
         # get keys for angular terms
         keys = [ key for key in cwr( self._ampNames, 2 ) ]
@@ -162,13 +184,16 @@ class Amplitudes_AngularPdfTerms ( Coefficients_AngularPdfTerms ) :
         # build angular coefficients
         from P2VV.RooFitWrappers import FormulaVar
         angCoefs = { }
-        Re = lambda Ai, Aj : FormulaVar( 'Re_c_%s_%s' % ( Ai, Aj ), '@0*@2 + @1*@3', [ Ai.Re, Ai.Im, Aj.Re, Aj.Im ] )
-        Im = lambda Ai, Aj : FormulaVar( 'Im_c_%s_%s' % ( Ai, Aj ), '@0*@3 - @1*@2', [ Ai.Re, Ai.Im, Aj.Re, Aj.Im ] )
+        Re = lambda Ai, Aj :\
+             FormulaVar( Name = '%sRe_c_%s_%s' % ( namePF, Ai, Aj ), Formula = '@0*@2 + @1*@3', Arguments = [ Ai.Re, Ai.Im, Aj.Re, Aj.Im ] )
+        Im = lambda Ai, Aj :\
+             FormulaVar( Name = '%sIm_c_%s_%s' % ( namePF, Ai, Aj ), Formula = '@0*@3 - @1*@2', Arguments = [ Ai.Re, Ai.Im, Aj.Re, Aj.Im ] )
         for key in keys :
             angCoefs[key] = (  Re( self._amplitudes[ key[0] ], self._amplitudes[ key[1] ] )
                              , Im( self._amplitudes[ key[0] ], self._amplitudes[ key[1] ] ) )
+
         # initialize
-        Coefficients_AngularPdfTerms.__init__( self, Keys = keys, AngCoefficients = angCoefs, AngFunctions = angFuncs )
+        Coefficients_AngularPdfTerms.__init__( self, Keys = keys, AngCoefficients = angCoefs, AngFunctions = angFuncs, AngTermsSumCoef = angTermsSumCoef )
 
 
 class Uniform_Angles( _util_parse_mixin ) :

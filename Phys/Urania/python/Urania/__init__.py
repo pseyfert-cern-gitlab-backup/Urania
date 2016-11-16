@@ -2,7 +2,8 @@
 """
 import os
 print "importing from ", os.path.abspath(__path__[0])
-
+from ROOT import *
+gSystem.Load("libMathMore.so")
 def AccesPackage(name):
     NAME = name.upper()+"ROOT"
     if NAME not in os.environ.keys():
@@ -30,6 +31,7 @@ def collect_packages(req):
     for line in lines:
         if line.find("use"): continue
         words = line.split()
+        print "Trying to find the fucking ", words
         packs.append([words[1],words[3]]) ## [Package Name, Hat ]
         
     return packs
@@ -37,7 +39,8 @@ def collect_packages(req):
 def microsetup():
     ## try to find UraniaSys requirements file
     this = os.path.abspath(__path__[0])
-    urania = os.path.abspath(__path__[0]) + "/../../../.."
+    urania = "/home/pc/fakeUrania/"
+    print "Setting Urania from ", urania, " or at least trying"
     req = file(urania +"/UraniaSys/cmt/requirements")
     packs = collect_packages(req)
     raised_flag = 0

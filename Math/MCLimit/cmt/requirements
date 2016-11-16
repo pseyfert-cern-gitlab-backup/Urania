@@ -1,0 +1,46 @@
+#============================================================================
+# Created    : 2010-02-25
+# Maintainer : Diego Martinez Santos
+#============================================================================
+package           MCLimit
+version           v2r0
+
+#============================================================================
+# Structure, i.e. directories to process. 
+#============================================================================
+branches          cmt doc python src dict examples
+#============================================================================
+# Used packages. Specify the version, * at the end specifies 'any revision'
+#    Put as many lines as needed, with all packages, without the '#'
+#============================================================================
+private
+# genconfuser.py cannot be used here
+# Note: the tag must be set before including GaudiPolicy
+apply_tag skip_genconfuser
+end_private
+
+use   GaudiPolicy v*
+use ROOT v* LCG_Interfaces
+#use   GaudiPython     v*
+use                ROOT             v* LCG_Interfaces
+use                Reflex           v* LCG_Interfaces
+use                Python           v* LCG_Interfaces
+
+
+library MCLimit ../src/junkInterface.cpp 
+
+# =============== Produce LCG dictionary ======================================
+apply_pattern     reflex_dictionary                                       \
+                  dictionary=MCLimit                                     \
+                  headerfiles=$(MCLIMITROOT)/dict/MCLimitDict.h         \
+                  selectionfile=$(MCLIMITROOT)/dict/MCLimit.xml         \
+                  options=" -U__MINGW32__ "
+
+
+
+apply_pattern linker_library library=MCLimit
+macro_append ROOT_linkopts " -lMathCore -lMinuit -lHist -lGraf" 
+
+
+apply_pattern install_python_modules
+

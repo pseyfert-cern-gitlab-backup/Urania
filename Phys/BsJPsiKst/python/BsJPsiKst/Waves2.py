@@ -48,6 +48,8 @@ def changeFreeVars(function):
     return function
 
 func = changeFreeVars(phys)
+
+BREAK
 ### Replace amplitudes by more suitable fit parameters
 
 s_As2 = Symbol("As2",positive = True)
@@ -80,7 +82,7 @@ y_acc = Symbol("y_acc", positive = True)
 c2_theta = Symbol("c2_theta", real = True)
 
 c5_psi = -1-c1_psi - c2_psi - c3_psi - c4_psi + y_acc
-acc = (1. + c1_psi*x + c2_psi*x*x + c3_psi*x*x*x + c4_psi*x*x*x*x + c5_psi*x*x*x*x*x)#*(1.  + c2_theta*y*y)
+acc = (1. + c1_psi*x + c2_psi*x*x + c3_psi*x*x*x + c4_psi*x*x*x*x + c5_psi*x*x*x*x*x)*(1.  + c2_theta*y*y)
 
 func = func*acc
 ### Figure out which variables the fit will depend on
@@ -116,10 +118,10 @@ op2.addSubstitutions([(Sqrt(2),"sq2"),(Sqrt(3),"sq3"),(Sqrt(5),"sq5")])
 #op2.addSubstitutions([((-x**2+1),"sthk2"),((-y**2+1),"sthl2"),(x**2,"cthk2"),(y**2,"cthl2"),(Cos(z),"cosphi"),(Sin(z),"sinphi"),(Sqrt(2),"sq2"),(Sqrt(5),"sq5")])
 op2.makePdf(integrable = kTRUE)
 
-zz = integrate(func,(z,-Pi,Pi))
+#zz = integrate(func,(z,-Pi,Pi))
 
-#op2.doIntegral(1,(z,-Pi,Pi),(x,-1,1),(y,-1,1))
-#op2.doIntegralM(2,(x,-1,1),(y,-1,1))
+op2.doIntegral(1,(z,-Pi,Pi),(x,-1,1),(y,-1,1))
+op2.doIntegralM(2,(x,-1,1),(y,-1,1))
 #op2.doIntegralM(3,(z,-Pi,Pi),(x,-1,1))
 #op2.doIntegralM(4,(z,-Pi,Pi),(y,-1,1))
 #op2.doIntegralM(5,(x,-1,1))

@@ -5,6 +5,12 @@
                 fit results using the RooFit package
 !-----------------------------------------------------------------------------
 
+!============================================== v3r0 2015-11-20 ==============================
+! 2015-11-20 Diego Martinez Santos
+	 Make version v3r0
+! 2014-11-18 - Marco Clemencic
+ - Fixed CMake configuration.
+
 !============================================== v2r7 2014-10-17 ==============================
 ! 2014-10-17 Diego Martinez Santos
 	 Make version v2r7
@@ -166,6 +172,4 @@ Added some functionality in the D*D0 fit so that all backgrounds do not need to 
    can be either a float or double.
  
 ! 2011-10-10 Sneha Malde
- - Added new function in RooDstarDmassFitter which allows 2 bkg components in the D* bkg to be fixed
- - Added a perform fit function which allows a fit with strategy 0 followed by strategy 1 which 
-   improves behaviour for large da
+ - Added new functio

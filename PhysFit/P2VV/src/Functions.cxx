@@ -1,3 +1,6 @@
+// low level stuff
+#include <sys/types.h>
+
 // STD & STL
 #include <memory>
 #include <iostream>
@@ -17,6 +20,8 @@
 #include <TBranch.h>
 #include <TLeaf.h>
 #include <TObjArray.h>
+#include <TVector3.h>
+#include <TEfficiency.h>
 
 // RooFit
 #include <RooFit.h>
@@ -25,48 +30,16 @@
 #include <RooDataSet.h>
 #include <RooArgSet.h>
 #include <RooLinkedListIter.h>
+#include <RooNumber.h>
+
+#include "P2VV/Functions.h"
 
 namespace {
    using std::cout;
    using std::endl;
+   using std::vector;
    using std::list;
 }
-
-double sigmaFromFT( const TH1& h1, const double dMs, const double dMsErr, std::ostream& out)
-{
-   double sum(0), sumdt(0), sumdterr(0), sumcos(0), sumx2(0), error(0) ;
-   for(int i=1; i<=h1.GetNbinsX() ; ++i) {
-      double c = h1.GetBinContent( i ) ;
-      double e = h1.GetBinError( i ) ;
-      double x = h1.GetBinCenter( i ) ;
-      double dt = h1.GetBinWidth( i ) ;
-      sum += c ;
-      sumdt += c * dt ;
-      sumdterr += e * e * dt * dt;
-
-      double cosv = cos( - dMs * x );
-      sumcos += c * cosv * dt ;
-      sumx2 += c * x * x ;
-
-      double coserr = fabs(sin(dMsErr)) * dMsErr;
-      error += (c * c * coserr * coserr +  cosv * cosv * e * e) * dt * dt;
-   }
-
-   error = sqrt(error / (sumdt * sumdt) + sumdterr * sumcos * sumcos / pow(sumdt, 4));
-
-   double rms = sqrt(sumx2/sum) ;
-   double D = sumcos / sumdt ;
-   double sigma = sqrt( -2*log(D) ) / dMs ;
-
-   out << sum << " " << sumdt << " " << sumcos << " " << sumx2 << std::endl;
-   out << "RMS of input histogram: " << rms<< std::endl
-       << "If distribution were Gaussian, dilution is: " << exp(-0.5*rms*rms*dMs*dMs) << std::endl 
-       << "Dilution from FT: " << D << " +- " << error << std::endl
-       << "Corresponding Gaussian resolution: " << sigma << std::endl;
-
-   return D;
-}
-
 
 void addSWeightToTree(const std::vector<double>& weights, TTree& tree, const std::string& branch_name)
 {
@@ -116,10 +89,165 @@ void addSWeightToTree(const RooDataSet& ds, TTree& tree, const std::string& bran
    addSWeightToTree(weights, tree, branch_name);
 }
 
-void addRunPeriodToTree(TTree& tree, Int_t period, const char* branchName) {
+void addIntegerToTree(TTree& tree, Int_t value, const char* branchName) {
   TString branchNameStr(branchName);
-  TBranch* branch = tree.Branch(branchNameStr, &period, branchNameStr + "/I");
+  Int_t* output = new Int_t(value);
+  TBranch* branch = tree.Branch(branchNameStr, output, branchNameStr + "/I");
   for (Long64_t it = 0; it < tree.GetEntries(); ++it) branch->Fill();
+  tree.FlushBaskets();
+}
+
+void addFloatToTree(TTree& tree, Double_t value, const char* branchName) {
+  TString branchNameStr(branchName);
+  Double_t* output = new Double_t(value);
+  TBranch* branch = tree.Branch(branchNameStr, output, branchNameStr + "/D");
+  for (Long64_t it = 0; it < tree.GetEntries(); ++it) branch->Fill();
+  tree.FlushBaskets();
+}
+
+void addProductToTree(TTree& tree, vector<TString> inBranches,
+    const char* outBranch) {
+  vector<Float_t*> inputF;
+  vector<Double_t*> inputD;
+  for (vector<TString>::const_iterator brIt = inBranches.begin();
+      brIt != inBranches.end(); ++brIt) {
+    TObjArray* lfList = tree.GetBranch(*brIt)->GetListOfLeaves();
+    TString brType = lfList->GetEntries() == 1 ?
+        ((TLeaf*)lfList->At(0))->GetTypeName() : "";
+    if (brType == "Double_t") {
+      Double_t* input = new Double_t(0.);
+      tree.SetBranchAddress(*brIt, input);
+      inputD.push_back(input);
+    } else if (brType == "Float_t") {
+      cout << "P2VV - INFO: copyFloatInTree(): values from Float_t branch \""
+        << *brIt << "\" will be converted to double precision" << endl;
+      Float_t* input = new Float_t(0.);
+      tree.SetBranchAddress(*brIt, input);
+      inputF.push_back(input);
+    } else {
+      cout << "P2VV - ERROR: addProductToTree(): branch \"" << *brIt
+        << "\" has unknown type \"" << brType << "\"" << endl;
+      assert(0);
+    }
+  }
+  if (inputF.size() + inputD.size() <= 0.) {
+      cout << "P2VV - ERROR: addProductToTree(): no input branches found"
+          << endl;
+      assert(0);
+  }
+
+  TString branchNameStr(outBranch);
+  Double_t* output = new Double_t(0.);
+  TBranch* branch = tree.Branch(branchNameStr, output, branchNameStr + "/D");
+
+  for (Long64_t it = 0; it < tree.GetEntries(); ++it) {
+    tree.GetEntry(it);
+    *output = 1.;
+    for (vector<Float_t*>::const_iterator fIt = inputF.begin();
+        fIt != inputF.end(); ++fIt) {
+      *output *= *(*fIt);
+    }
+    for (vector<Double_t*>::const_iterator dIt = inputD.begin();
+        dIt != inputD.end(); ++dIt) {
+      *output *= *(*dIt);
+    }
+    branch->Fill();
+  }
+  tree.FlushBaskets();
+}
+
+void copyFloatInTree(TTree& tree, const char* inBranch, const char* outBranch) {
+  Float_t*  inputF = 0;
+  Double_t* inputD = 0;
+  TObjArray* lfList = tree.GetBranch(inBranch)->GetListOfLeaves();
+  TString brType = lfList->GetEntries() == 1 ?
+      ((TLeaf*)lfList->At(0))->GetTypeName() : "";
+  if (brType == "Double_t") {
+    inputD = new Double_t(0.);
+    tree.SetBranchAddress(inBranch, inputD);
+  } else if (brType == "Float_t") {
+    cout << "P2VV - INFO: copyFloatInTree(): values from Float_t branch \""
+      << inBranch << "\" will be converted to double precision" << endl;
+    inputF = new Float_t(0.);
+    tree.SetBranchAddress(inBranch, inputF);
+  } else {
+    cout << "P2VV - ERROR: copyFloatInTree(): branch \"" << inBranch
+      << "\" has unknown type \"" << brType << "\"" << endl;
+    assert(0);
+  }
+
+  TString branchNameStr(outBranch);
+  Double_t* output = new Double_t(0.);
+  TBranch* branch = tree.Branch(branchNameStr, output, branchNameStr + "/D");
+
+  for (Long64_t it = 0; it < tree.GetEntries(); ++it) {
+    tree.GetEntry(it);
+    *output = inputD != 0 ? *inputD : *inputF;
+    branch->Fill();
+  }
+  tree.FlushBaskets();
+}
+
+void addCategoryToTree(TTree& tree, const char* inBranch,
+    const char* catBranch, std::vector<Double_t> boundaries,
+    std::vector<Int_t> indices) {
+  if (indices.size() != boundaries.size() + 1) {
+    std::cerr << "ERROR: addCategoryToTree(): number of boundaries ("
+        << boundaries.size() << ") and number of indices (" << indices.size()
+        << ") do not match" << std::endl;
+    assert(indices.size() == boundaries.size() + 1);
+  }
+
+  TString branchNameStr(catBranch);
+  Int_t* output = new Int_t(0);
+  TBranch* branch = tree.Branch(branchNameStr, output, branchNameStr + "/I");
+
+  TObjArray* lfList = tree.GetBranch(inBranch)->GetListOfLeaves();
+  TString brType = lfList->GetEntries() == 1 ?
+      ((TLeaf*)lfList->At(0))->GetTypeName() : "";
+  Double_t* inputD = 0; Float_t* inputF = 0;
+  Int_t* inputI = 0; UInt_t* inputUI = 0;
+  Long64_t* inputL = 0; ULong64_t* inputUL = 0;
+  if (brType == "Double_t") {
+    inputD = new Double_t(0.);
+    tree.SetBranchAddress(inBranch, inputD);
+  } else if (brType == "Float_t") {
+    inputF = new Float_t(0.);
+    tree.SetBranchAddress(inBranch, inputF);
+  } else if (brType == "Int_t") {
+    inputI = new Int_t(0);
+    tree.SetBranchAddress(inBranch, inputI);
+  } else if (brType == "UInt_t") {
+    inputUI = new UInt_t(0);
+    tree.SetBranchAddress(inBranch, inputUI);
+  } else if (brType == "Long64_t") {
+    inputL = new Long64_t(0);
+    tree.SetBranchAddress(inBranch, inputL);
+  } else if (brType == "ULong64_t") {
+    inputUL = new ULong64_t(0);
+    tree.SetBranchAddress(inBranch, inputUL);
+  } else {
+    cout << "P2VV - ERROR: addCategoryToTree(): branch \"" << inBranch
+      << "\" has unknown type \"" << brType << "\"" << endl;
+    assert(0);
+  }
+
+  for (Long64_t it = 0; it < tree.GetEntries(); ++it) {
+    tree.GetEntry(it);
+    Int_t pos(0);
+    for (std::vector<Double_t>::const_iterator boundIt = boundaries.begin();
+        boundIt != boundaries.end(); ++boundIt) {
+      if (brType == "Double_t" && *inputD < *boundIt) break;
+      else if (brType == "Float_t" && (Double_t)*inputF < *boundIt) break;
+      else if (brType == "Int_t" && (Double_t)*inputI < *boundIt) break;
+      else if (brType == "UInt_t" && (Double_t)*inputUI < *boundIt) break;
+      else if (brType == "Long64_t" && (Double_t)*inputL < *boundIt) break;
+      else if (brType == "ULong64_t" && (Double_t)*inputUL < *boundIt) break;
+      ++pos;
+    }
+    *output = indices[pos];
+    branch->Fill();
+  }
   tree.FlushBaskets();
 }
 
@@ -209,6 +337,97 @@ void addVertexErrors(TTree* tree, const std::list<RooDataSet*>& dss, const std::
 
       // Result is (c * tau)^2, set value in ps
       psi_err->setVal(sqrt(r(0, 0)) / 0.299792458);
+      ds->fill();
+   }
+   cout << endl;
+
+   cout << "Adding vertex errors to RooDataSets" << endl;
+   for (list<RooDataSet*>::const_iterator it = dss.begin(), end = dss.end(); it != end; ++it) {
+      (*it)->merge(ds);
+   }
+}
+
+void addJpsiDLS(TTree* tree, const std::list<RooDataSet*>& dss, const std::string& cut) {
+
+   cout << "Reading tree " << tree->GetName() << " to get vertex errors." << endl;
+
+   tree->Draw(">>dls_elist", cut.c_str(), "entrylist");
+   TEntryList *cut_list = static_cast<TEntryList*>(gDirectory->Get( "dls_elist" ));
+
+   Double_t x = 0., y = 0., z = 0.;
+   Double_t pv_x = 0., pv_y = 0., pv_z = 0.;
+
+   Float_t cov_pv[3][3];
+   Float_t cov_jpsi[3][3];
+
+   tree->SetBranchAddress("J_psi_1S_OWNPV_X", &pv_x);
+   tree->SetBranchAddress("J_psi_1S_OWNPV_Y", &pv_y);
+   tree->SetBranchAddress("J_psi_1S_OWNPV_Z", &pv_z);
+
+   tree->SetBranchAddress("J_psi_1S_ENDVERTEX_X", &x);
+   tree->SetBranchAddress("J_psi_1S_ENDVERTEX_Y", &y);
+   tree->SetBranchAddress("J_psi_1S_ENDVERTEX_Z", &z);
+
+   tree->SetBranchAddress("J_psi_1S_OWNPV_COV_", &cov_pv);
+   tree->SetBranchAddress("J_psi_1S_ENDVERTEX_COV_", &cov_jpsi);
+
+   TMatrixT<float> X(3, 1);
+   TMatrixT<float> r(1, 1);
+   TMatrixT<float> tmp(3, 1);
+
+   RooRealVar* dl = new RooRealVar("jpsi_DL", "jpsi_DL", -1000, 1000);
+   RooRealVar* dle = new RooRealVar("jpsi_DLE", "jpsi_DLE", -1000, 1000);
+   RooRealVar* dls = new RooRealVar("jpsi_DLS", "jpsi_DLS", -1000, 1000);
+
+   RooDataSet* ds = new RooDataSet("dls", "dls", RooArgSet(*dl, *dle, *dls));
+   const RooArgSet* obs = ds->get();
+   std::string dln = dl->GetName();
+   std::string dlen = dle->GetName();
+   std::string dlsn = dls->GetName();
+   delete dl;
+   delete dls;
+   delete dle;
+   dl = static_cast<RooRealVar*>(obs->find(dln.c_str()));
+   dle = static_cast<RooRealVar*>(obs->find(dlen.c_str()));
+   dls = static_cast<RooRealVar*>(obs->find(dlsn.c_str()));
+
+   Long64_t n = tree->GetEntries();
+   for (Long64_t i = 0; i < n; ++i) {
+      if (i != 0 && i != n && i % (n / 20) == 0) {
+         cout << int(double(i + 20) / double(n) * 100) << "% ";
+         cout.flush();
+      }
+      if (!cut_list->Contains(i)) {
+         continue;
+      } else {
+         tree->GetEntry(i);
+      }
+
+      double D = sqrt((x - pv_x) * (x - pv_x) + (y- pv_y) * (y- pv_y) + (z- pv_z) + (z- pv_z));
+      dl->setVal(D);
+
+      X(0, 0) = x - pv_x;
+      X(1, 0) = y - pv_y;
+      X(2, 0) = z - pv_z;
+      X *= 1 / D;
+
+      TMatrixT<float> X_T(TMatrixT<float>::kTransposed, X);
+
+      TMatrixT<float> cjpsi(3, 3, &cov_jpsi[0][0]);
+
+      tmp.Mult(cjpsi, X);
+      r.Mult(X_T, tmp);
+
+      double dle_jpsi = sqrt(r(0, 0));
+
+      TMatrixT<float> cpv(3, 3, &cov_pv[0][0]);
+      tmp.Mult(cpv, X);
+      r.Mult(X_T, tmp);
+
+      double dle_pv = sqrt(r(0, 0));
+
+      dle->setVal(sqrt(dle_jpsi * dle_jpsi + dle_pv * dle_pv));
+      dls->setVal(dl->getVal() / dle->getVal());
       ds->fill();
    }
    cout << endl;
@@ -330,7 +549,7 @@ TTree* RooDataSetToTree(const RooDataSet& dataSet, const char* name,
 
 RooDataSet* TreeToRooDataSet(TTree& tree, const RooArgSet& observables,
       const char* name, const char* title, const char* cuts,
-      const char* indexName, RooDataSet* origDataSet)
+      const char* indexName, const char* weightName, RooDataSet* origDataSet)
 {
   // get tree name and title
   TString dsName(name);
@@ -338,9 +557,19 @@ RooDataSet* TreeToRooDataSet(TTree& tree, const RooArgSet& observables,
   if (dsName.Length() < 1) dsName = tree.GetName();
   if (dsTitle.Length() < 1) dsTitle = tree.GetTitle();
 
-  if (cuts == 0 && indexName == 0 && origDataSet == 0)
+  TString selStr(cuts);
+  TString indStr(indexName);
+  TString wStr(weightName);
+  if (selStr.Length() < 1 && indStr.Length() < 1 && origDataSet == 0) {
     // default: import tree with RooDataSet constructor
-    return new RooDataSet(dsName, dsTitle, observables, RooFit::Import(tree));
+    if (wStr.Length() > 0) {
+      return new RooDataSet(dsName, dsTitle, observables,
+          RooFit::Import(tree), RooFit::WeightVar(wStr));
+    } else {
+      return new RooDataSet(dsName, dsTitle, observables,
+          RooFit::Import(tree));
+    }
+  }
 
   // check number of entries in tree and original data set
   if (origDataSet != 0
@@ -353,7 +582,7 @@ RooDataSet* TreeToRooDataSet(TTree& tree, const RooArgSet& observables,
   // get number of data set entries
   Long64_t numEntr = origDataSet == 0 ?
       tree.GetEntries() : (Long64_t)origDataSet->numEntries();
-  if (indexName != 0 && numEntr > (Long64_t)1.e15) {
+  if (indStr.Length() > 0 && numEntr > (Long64_t)1.e15) {
     cout << "P2VV - ERROR: TreeToRooDataSet(): number of entries with index variable limited to 10^15"
         << endl;
     return 0;
@@ -367,15 +596,15 @@ RooDataSet* TreeToRooDataSet(TTree& tree, const RooArgSet& observables,
   // find index variable
   RooRealVar* index(0);
   RooRealVar* origIndex(0);
-  if (indexName != 0) {
-    index = dynamic_cast<RooRealVar*>(obsSet.find(indexName));
-    if (index == 0 && obsSet.find(indexName) != 0) {
+  if (indStr.Length() > 0) {
+    index = dynamic_cast<RooRealVar*>(obsSet.find(indStr));
+    if (index == 0 && obsSet.find(indStr) != 0) {
       cout << "P2VV - ERROR: TreeToRooDataSet(): index variable is not a RooRealVar"
           << endl;
       return 0;
     }
-    origIndex = dynamic_cast<RooRealVar*>(origObsSet->find(indexName));
-    if (origIndex == 0 && origObsSet->find(indexName) != 0) {
+    origIndex = dynamic_cast<RooRealVar*>(origObsSet->find(indStr));
+    if (origIndex == 0 && origObsSet->find(indStr) != 0) {
       cout << "P2VV - ERROR: TreeToRooDataSet(): original index variable is not a RooRealVar"
           << endl;
       return 0;
@@ -392,7 +621,6 @@ RooDataSet* TreeToRooDataSet(TTree& tree, const RooArgSet& observables,
   }
 
   // initialize observables
-  TString selStr(cuts);
   std::map<TString,Double_t*> doubleMap;
   std::map<TString,Float_t*> floatMap;
   std::map<TString,Int_t*> intMap;
@@ -459,9 +687,15 @@ RooDataSet* TreeToRooDataSet(TTree& tree, const RooArgSet& observables,
     // set branch status
     UInt_t brFound = 0;
     tree.SetBranchStatus(arg->GetName(), kTRUE, &brFound);
-    if (brFound != 1) {
+    if (brFound < 1) {
       cout << "P2VV - WARNING: TreeToRooDataSet(): branch \""
           << arg->GetName() << "\" not found in tree" << endl;
+      obsSet.remove(*arg);
+      continue;
+    } else if (brFound > 1) {
+      cout << "P2VV - WARNING: TreeToRooDataSet(): " << brFound
+          << " branches \"" << arg->GetName()
+          << "\" found in tree: not reading this branch" << endl;
       obsSet.remove(*arg);
       continue;
     }
@@ -566,8 +800,24 @@ RooDataSet* TreeToRooDataSet(TTree& tree, const RooArgSet& observables,
     (*it)->SetStatus(kFALSE);
   disabledBrList.clear();
 
+  // get weight variable
+  RooRealVar* weight = 0;
+  if (wStr.Length() > 0) {
+    weight = dynamic_cast<RooRealVar*>(obsSet.find(wStr));
+    if (weight == 0)
+      cout << "P2VV - WARNING: TreeToRooDataSet(): no RooRealVar named "
+          << wStr << " found in set of observables: no event weights applied"
+          << endl;
+  }
+
   // create data set
-  RooDataSet* dataSet = new RooDataSet(dsName, dsTitle, obsSet);
+  RooDataSet* dataSet = 0;
+  if (weight != 0) {
+    dataSet = new RooDataSet(dsName, dsTitle, obsSet, wStr);
+  } else {
+    dataSet = new RooDataSet(dsName, dsTitle, obsSet);
+  }
+
   for (Long64_t it = 0; it < numEntr; ++it) {
     // get entries in tree and original data set
     if (origDataSet != 0) {
@@ -617,7 +867,10 @@ RooDataSet* TreeToRooDataSet(TTree& tree, const RooArgSet& observables,
     }
 
     // add row to data set
-    dataSet->add(obsSet);
+    if (weight != 0)
+      dataSet->add(obsSet, weight->getVal());
+    else
+      dataSet->add(obsSet);
   }
 
   // delete branch addresses
@@ -645,4 +898,125 @@ RooDataSet* TreeToRooDataSet(TTree& tree, const RooArgSet& observables,
 
   // return data set
   return dataSet;
+}
+
+bool GetOwnership(_object* obj) {
+   return (reinterpret_cast<TFakeObjectProxy*>(obj))->fFlags & 0x0001;
+}
+
+Double_t getRooRealMaxVal(RooAbsReal& function, const RooArgList& scanVars,
+    const vector<Int_t>& numPoints) {
+  Double_t maxVal = -RooNumber::infinity();
+
+  // check number of scan variables
+  Int_t numVars(scanVars.getSize());
+  if (numVars < 1) {
+    std::cerr << "P2VV - ERROR: getRooRealMaxVal(): no scan variables found"
+         << std::endl;
+    assert(numVars > 0);
+    return maxVal;
+  }
+  if ((Int_t)numPoints.size() != numVars) {
+    std::cerr << "P2VV - ERROR: getRooRealMaxVal(): number of variables in \"numPoints\" ("
+        << numPoints.size() << ") does not match number of scan variables ("
+         << numVars << ")" << std::endl;
+    assert((Int_t)numPoints.size() == numVars);
+    return maxVal;
+  }
+
+  // create vector of variable values
+  RooRealVar** varAdds = new RooRealVar*[numVars];
+  vector<Double_t>* varVals = new vector<Double_t>[numVars];
+  vector<Double_t>::const_iterator* varValsIts
+      = new vector<Double_t>::const_iterator[numVars];
+  for (Int_t varIt = 0; varIt < numVars; ++varIt) {
+    // get variable
+    RooRealVar* var = dynamic_cast<RooRealVar*>(scanVars.at(varIt));
+    if (var == 0) {
+      std::cerr << "P2VV - ERROR: getRooRealMaxVal(): variable \""
+          << scanVars.at(varIt)->GetName() << "\" is not a RooRealVar"
+          << std::endl;
+      assert(var != 0);
+      return maxVal;
+    }
+
+    // get number of points for variable
+    Int_t nPts = numPoints.at(varIt);
+    if (nPts < 1) {
+      std::cerr << "P2VV - ERROR: getRooRealMaxVal(): number of scan points for variable \""
+          << var->GetName() << "\" is smaller than one" << std::endl;
+      assert(nPts > 0);
+      return maxVal;
+    }
+
+    // create vector of variable values
+    if (!var->hasMin() || !var->hasMax()) {
+      std::cerr << "P2VV - ERROR: getRooRealMaxVal(): range of variable \""
+          << var->GetName() << "\" is infinite" << std::endl;
+      assert(var->hasMin() && var->hasMax());
+      return maxVal;
+    }
+    vector<Double_t> vals;
+    if (nPts == 1) {
+      vals.push_back(0.5 * (var->getMin() + var->getMax()));
+    } else {
+      vals.push_back(var->getMin());
+      vals.push_back(var->getMax());
+    }
+    for (Int_t valIt = 1; valIt < nPts - 1; ++valIt) {
+      vals.push_back(var->getMin() + ((Double_t)valIt) / (Double_t)(nPts - 1)
+          * (var->getMax() - var->getMin()));
+    }
+
+    // fill vectors
+    varAdds[varIt]    = var;
+    varVals[varIt]    = vals;
+    varValsIts[varIt] = varVals[varIt].begin();
+    var->setVal(vals.front());
+  }
+
+  // find maximum of function
+  std::cout << "P2VV - INFO: getRooRealMaxVal(): find maximum of function \""
+      << function.GetName() << "\":"<< std::endl << "    ";
+  function.Print();
+
+  Int_t varIt(0);
+  Long64_t itCount(0);
+  Long64_t numIts0(varVals[0].size());
+  while (varIt < numVars) {
+    // print number of iterations
+    if (itCount % 100000 == 0) {
+      std::cout << "    iteration " << itCount << ": maximum = " << maxVal
+          << std::endl;
+    }
+
+    // loop over values of first variable and find function maximum
+    while (varValsIts[0] != varVals[0].end()) {
+      varAdds[0]->setVal(*varValsIts[0]);
+      Double_t funcVal(function.getVal());
+      if (funcVal > maxVal) maxVal = funcVal;
+      ++varValsIts[0];
+    }
+    varValsIts[0] -= varVals[0].size();
+
+    // set values of variables other than the first
+    varIt = 1;
+    while (varIt < numVars) {
+      if (++varValsIts[varIt] != varVals[varIt].end()) {
+        varAdds[varIt]->setVal(*varValsIts[varIt]);
+        break;
+      }
+      varValsIts[varIt] -= varVals[varIt].size();
+      varAdds[varIt]->setVal(*varValsIts[varIt]);
+      ++varIt;
+    }
+
+    itCount += numIts0;
+  }
+  std::cout << "    maximum = " << maxVal << std::endl;
+
+  delete[] varAdds;
+  delete[] varVals;
+  delete[] varValsIts;
+  return maxVal;
 }

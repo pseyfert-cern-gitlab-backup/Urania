@@ -2,9 +2,12 @@ __author__ = "Marco Clemencic <marco.clemencic@cern.ch>"
 
 import os
 import sys
+
 assert sys.version_info >= (2, 6), "Python 2.6 required"
 
 import logging
+
+from string import Template
 
 __all__ = []
 
@@ -206,16 +209,40 @@ class Script(object):
             pprint(self.env)
         else:
             template = {'sh':  "export %s='%s'",
-                        'csh': "setenv %s '%s'"}.get(self.opts.shell, "%s=%s")
+                        'csh': "setenv %s '%s';"}.get(self.opts.shell, "%s=%s")
             for nv in sorted(self.env.items()):
                 print template % nv
+
+    def expandEnvVars(self, iterable):
+        '''
+        Return a copy of iterable where all the elements have the environment
+        variables expanded.
+
+        >>> s = Script([])
+        >>> s.env = {'A': '1', 'B': 'test'}
+        >>> s.expandEnvVars(['$A', '${B}-$A', '$DUMMY-$A', '$$B'])
+        ['1', 'test-1', '$DUMMY-1', '$B']
+        '''
+        return [Template(elem).safe_substitute(self.env) for elem in iterable]
 
     def runCmd(self):
         '''
         Execute a command in the modified environment and return the exit code.
         '''
         from subprocess import Popen
-        return Popen(self.cmd, env=self.env).wait()
+        cmd = self.expandEnvVars(self.cmd)
+        proc = Popen(cmd, env=self.env)
+        while proc.poll() is None:
+            try:
+                proc.wait()
+            except KeyboardInterrupt:
+                self.log.fatal('KeyboardInterrupt, '
+                               'waiting for subprocess %d to end', proc.pid)
+        rc = proc.returncode
+        # There is a mismatch between Popen return code and sys.exit argument in
+        # case of signal.
+        # E.g. Popen returns -6 that is translated to 250 instead of 134
+        return rc if rc >= 0 else 128 - rc
 
     def main(self):
         '''

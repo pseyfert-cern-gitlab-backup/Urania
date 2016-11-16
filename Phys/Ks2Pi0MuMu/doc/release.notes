@@ -1,0 +1,8 @@
+!-----------------------------------------------------------------------------
+! Package     : Phys/Ks2Pi0MuMu
+! Responsible : V.Chobanova, D. Martinez Santos... 
+! Purpose     : Analysis code for Ks --> mm
+!-----------------------------------------------------------------------------
+
+! 2015-09-14 - Diego Martinez Santos
+- Create package

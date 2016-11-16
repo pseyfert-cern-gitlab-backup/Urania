@@ -4,9 +4,12 @@
 gaudi_subdir(RooPhysFitter v2r2)
 
 find_package(Boost)
-find_package(ROOT COMPONENTS Core Reflex Tree RIO Hist TreePlayer Graf Graf3d
+find_package(ROOT COMPONENTS Core Tree RIO Hist TreePlayer Graf Graf3d
                              Gpad Matrix MathCore MathMore RooFitCore RooFit
-                             RooStats Cintex)
+                             RooStats)
+
+# override the genreflex call to wrap it in the right environment
+set(ROOT_genreflex_CMD ${env_cmd} --xml ${env_xml} ${ROOT_genreflex_CMD})
 
 include_directories(${ROOT_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 reflex_generate_dictionary(RooPhysFitter

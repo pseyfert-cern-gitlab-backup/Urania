@@ -35,7 +35,8 @@ public:
 	      RooAbsReal& _Cfact_21,
 	      RooAbsReal& _Cfact_20,
 	      RooAbsReal& _Cfact_10,
-	      RooAbsReal& _w_A_SA_2pa,
+	      const RooArgList& _weights);
+  /*RooAbsReal& _w_A_SA_2pa,
 	      RooAbsReal& _w_A_SA_20,
 	      RooAbsReal& _w_2A_20,
 	      RooAbsReal& _w_A_0A_2pe,
@@ -62,7 +63,7 @@ public:
 	      RooAbsReal& _w_A_20A_pa,
 	      RooAbsReal& _w_A_2peA_pe,
 	      RooAbsReal& _w_2A_2pa,
-	      RooAbsReal& _w_2A_pe);
+	      RooAbsReal& _w_2A_pe);*/
   TristanJpsiKpi_J2(const TristanJpsiKpi_J2& other, const char* name=0) ;
   virtual TObject* clone(const char* newname) const { return new TristanJpsiKpi_J2(*this,newname); }
   inline virtual ~TristanJpsiKpi_J2() { }

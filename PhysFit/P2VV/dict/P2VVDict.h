@@ -21,13 +21,14 @@
 #include "P2VV/RooCruijff.h"
 #include "P2VV/RooEfficiencyBin.h"
 #include "P2VV/RooAvEffConstraint.h"
-#include "P2VV/RooCorrectedSWeight.h"
+#include "P2VV/RooCorrectedWeight.h"
 #include "P2VV/RooAbsEffResModel.h"
 #include "P2VV/RooEffResModel.h"
 #include "P2VV/RooMultiEffResModel.h"
 #include "P2VV/MultiHistEntry.h"
 #include "P2VV/RooComplementCoef.h"
 #include "P2VV/RooEffConvGenContext.h"
+#include "P2VV/RooTPConvGenContext.h"
 #include "P2VV/RooBoxPdf.h"
 #include "P2VV/RooExplicitNormPdf.h"
 #include "P2VV/RooCubicSplineKnot.h"
@@ -35,11 +36,15 @@
 #include "P2VV/RooGaussEfficiencyModel.h"
 #include "P2VV/RooAmoroso.h"
 #include "P2VV/RooTPDecay.h"
+#include "P2VV/RooTPGen.h"
 #include "P2VV/RooMassDependence.h"
 #include "P2VV/RooEffResAddModel.h"
 #include "P2VV/RooHessian.h"
 #include "P2VV/RooCategoryVar.h"
 #include "P2VV/RooConvertPolAmp.h"
+#include "P2VV/RooIpatia2.h"
+#include "P2VV/RooEffConstraint.h"
+#include "P2VV/RooCombEffConstraint.h"
 
 #include <map>
 #include <string>
@@ -73,6 +78,9 @@ struct Instantiations {
    std::list<RooDataSet*> _i20;
    std::vector<std::pair<double, double> > _i21;
    std::pair<TMatrixDSym, TMatrixDSym> _i22;
+
+   std::map<std::string, RooDataSet*> _i23;
+   std::pair<std::string, RooDataSet*> _i24;
 
 };
 #endif // DICT_P2VVDICT_H

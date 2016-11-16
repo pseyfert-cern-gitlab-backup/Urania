@@ -5,32 +5,51 @@ import sys
 import os
 from math import sqrt
 
-parser = optparse.OptionParser(usage = '%prog data_type')
+parser = optparse.OptionParser(usage = '%prog data_type top_dirs sub_dir')
+
+parser.add_option("--refit", dest = "refit", default = False, action = 'store_true',
+                  help = 'Use new PV refitting.')
+parser.add_option("--split-mean", dest = "split_mean", default = False, action = 'store_true',
+                  help = 'Use split mean result.')
+parser.add_option("--note-labels", dest = "note_labels", default = False, action = 'store_true',
+                  help = 'Use ana not axis labels.')
+parser.add_option("--mixing", dest = "mixing", default = False, action = 'store_true',
+                  help = 'Mixing results.')
+
 (options, args) = parser.parse_args()
 
-if len(args) != 1:
-    print parser.usage
+from P2VV.Utilities.Resolution import input_data, prefix
+
+if len(args) not in [1, 3]:
+    print parser.print_usage()
     sys.exit(-2)
-elif args[0] not in ['2011', '2012', 'MC11a']:
-    print parser.usage
+elif args[0] not in input_data.keys():
+    print parser.print_usage()
+    print "Possible samples are: %s" % ' '.join(input_data.keys())
     sys.exit(-2)
+
+
+if not args[0].startswith('MC'):
+    data_type = 'data'
+elif args[0].endswith('Jpsi'):
+    data_type = 'prompt_mc'
+else:
+    data_type = 'signal_mc'
 
 from ROOT import *
 from collections import defaultdict
 from P2VV.Load import LHCbStyle
+
+if options.note_labels:
+    gEnv.SetValue("Root.TTFont.13", "FreeSerif.otf")
+    TStdFonts.SetFont(13, "Times-Roman")
+
 from P2VV.RooFitDecorators import *
 
-if args[0] == 'MC11a':
-    input_file = 'Bs2JpsiPhi_MC11a_Prescaled_st.root'
-elif args[0] == '2011':
-    input_file = 'Bs2JpsiPhi_2011_Prescaled.root'
-elif args[0] == '2012':
-    input_file = 'Bs2JpsiPhi_2012_Prescaled.root'
-prefix = '/stuff/PhD' if os.path.exists('/stuff') else '/bfys/raaij'
 directory = os.path.join(prefix, 'p2vv/data')
 
 from P2VV.CacheUtils import CacheFiles
-cfs = CacheFiles(directory, input_file)
+cfs = CacheFiles(*input_data[args[0]]['cache'].rsplit('/', 1))
 cache_files = cfs.getCacheFiles()
 
 sdatas = defaultdict(dict)
@@ -69,6 +88,15 @@ for key, d in dirs.iteritems():
     if not cut:
         continue
     interesting[key] = d
+    
+if len(args) == 1:
+    print 'possible top level directories are:'
+    for k, d in interesting.iteritems():
+        cut = d.Get('cut')
+        sub_dirs = filter(lambda x: len(x.split('/')) == 3 and x.startswith(k) and x.endswith('bins'), dirs.keys())
+        print k + ':', ' '.join([s.split('/')[-1] for s in sub_dirs]), str(cut)
+    sys.exit(0)
+
 
 titles = {}
 for k, d in interesting.items():
@@ -88,39 +116,55 @@ for k, d in interesting.items():
     titles[k] = dc
     print k, dc
 
-if args[0] == '2011':
-    ## good = {'1243785060103642893' : 4, 'm2334064025374600976' : 3,
-    ##         '1626518906014697943' : 2, 'm3832912631969227654' : 1,
-    ##         '4086600821164745518' : 6, 'm6573713017788044320' : 5}
-    good = {'m934737057402830078' : 1}
-    sig_name = 'psi_ll'
-elif args[0] == '2012':
-    good = {'m934737057402830078' : 1}
-    sig_name = 'psi_ll'
-elif args[0] == 'MC11a':
-    good = {'389085267962218368' : 4, 'm3019457528953402347' : 3,
-            'm7780668933605436626' : 2, 'm8376372569899625413' : 1,
-            'm1545059518337894505' : 6, 'm8342219958663192955' : 5}
-    sig_name = 'signal'
+good = defaultdict(set)
+for e in args[1].split(','):
+    td, cd = e.split('/')
+    good[td].add(cd)
+assert(len(good.keys()) == 1)
 
+top_dir = good.keys()[0]
+sub_dir = args[2]
+# Refit uses Gauss WPV so single directory is always 15.5 ps.
+if (args[0] in ['MC2011_Sim08a', 'MC2012'] and not options.refit) or options.mixing:
+    single_dir = '1bin_19000.00fs_simple'
+else:
+    single_dir = '1bin_15500.00fs_simple' 
+
+interesting.update(dict([(k, dirs[k]) for k in set([k.replace(top_dir, single_dir)
+                                                    for k in interesting.iterkeys()]) if k in dirs]))
+
+good = dict([(cd, i) for i, cd in enumerate(sorted(list(good[top_dir])))])
+
+if data_type == 'signal_mc':
+    sig_name = 'signal'
+else:
+    sig_name = 'psi_ll'
+
+from itertools import chain
 PDFs = defaultdict(dict)
-for k, cache_dir in filter(lambda k: k[0].split('/')[0] in ['9bins_14.10fs_simul'], interesting.iteritems()):
+for k, cache_dir in filter(lambda k: k[0].split('/')[0] in [top_dir, single_dir], interesting.iteritems()):
     hd = k.split('/')[-1]
     try:
         index = good[hd]
     except KeyError:
         continue
-    sdata_dir = cache_dir.Get('sdata')
-    for e in sdata_dir.GetListOfKeys():
-        if e.GetClassName() == 'RooDataSet':
-            sdatas[index][e.GetName()] = e.ReadObj()
-    rd = cache_dir.Get('results')
-    for e in rd.GetListOfKeys():
-        if e.GetClassName() == 'RooFitResult':
-            results[k][e.GetName()] = e.ReadObj()
-    ## pdf_dir = cache_dir.Get('PDFs')
-    ## for e in pdf_dir.GetListOfKeys():
-    ##     PDFs[index][e.GetName()] = e.ReadObj()
+
+    def add_sdata(d, name):
+        for e in d.GetListOfKeys():
+            if e.GetClassName() == 'RooDataSet':
+                sdatas[index]['/'.join((name, e.GetName())) if name else e.GetName()] = e.ReadObj()
+
+    def add_results(d):
+        for e in d.GetListOfKeys():
+            if e.GetClassName() == 'RooFitResult':
+                results[k][e.GetName()] = e.ReadObj()
+
+    add_sdata(cache_dir.Get('sdata'), '')
+    add_results(cache_dir.Get('results'))
+    sub_cache_dir = cache_dir.Get(sub_dir)
+    if sub_cache_dir:
+        add_sdata(sub_cache_dir.Get('sdata'), sub_dir)
+        add_results(sub_cache_dir.Get('results'))
 
 from ROOT import kGray
 from ROOT import TH1D
@@ -129,10 +173,20 @@ from math import sqrt
 from P2VV.PropagateErrors import propagateScaleFactor
 
 __canvases = []
-__histos = []
+from collections import defaultdict
+__histos = defaultdict(dict)
 __fit_funcs = []
 
-fit_type = 'double_Comb_Gauss'
+if options.mixing:
+    fit_type = 'double_RMS_Mixing'
+else:
+    fit_type = 'double_RMS_Gauss'
+if args[0] in ['MC2012', 'MC2011_Sim08a'] and not options.refit:
+    fit_type = 'double_RMS_Rest'
+## if options.refit:
+##     fit_type += '_PVRefit'
+## if options.split_mean:
+##    fit_type += '_split_mean'
 
 __fit_results = defaultdict(list)
 from array import array
@@ -171,43 +225,83 @@ def draw_res_graph(res_graph, hist_events):
     res_max = TMath.MaxElement(res_graph.GetN(), res_graph.GetY()) * 1.10
     scale = res_max / hist_events.GetMaximum()
     hist_events = hist_events.Clone()
-    __histos.append(hist_events)
+    __histos[res_graph.GetName()]['events'] = hist_events
     hist_events.Scale(scale)
     hist_events.GetYaxis().SetRangeUser(0, res_max * 1.10)
     res_graph.GetYaxis().SetRangeUser(0, res_max * 1.10)
-    hist_events.Draw('hist') 
     from ROOT import kGray
     hist_events.SetFillColor(kGray + 1)
+    hist_events.Draw('hist') 
     res_graph.Draw('P')
+    hist_events.GetXaxis().SetTitle('#sigma_{t} [ps]')
     return hist_events
+
+if top_dir.split('_')[0].startswith('momentum'):
+    split_cat_name = 'B_P_cat'
+    binning_name = 'momentum_binning'
+    obs_name = 'B_P'
+else:
+    split_cat_name = 'sigmat_cat' if not options.refit else 'sigmat_refit_cat'
+    binning_name = 'st_binning'
+    obs_name = 'sigmat' if not options.refit else 'sigmat_refit'
+
+from ROOT import TPaveText
+labels = {'width' : TPaveText(0.71, 0.72, 0.89, 0.85, "NDC")}
+if data_type == 'signal_mc':
+    labels['mean'] = TPaveText(0.71, 0.72, 0.89, 0.85, "NDC")
+else:
+    labels['mean'] = TPaveText(0.21, 0.72, 0.39, 0.85, "NDC")
+
+for label in labels.itervalues():
+    label.SetFillColor(0)
+    pos = args[0].find('201')
+    label.AddText(args[0][pos : pos + 4])
+    label.SetBorderSize(0)
     
+ffs = defaultdict(dict)
 for key, fit_results in sorted(results.items(), key = lambda e: good[e[0].split('/')[-1]]):
+    if top_dir not in key:
+        continue
     index = good[key.split('/')[-1]]
-    full_sdata = sdatas[index]['sig_sdata']
-    st = full_sdata.get().find('sigmat')
-    st_cat = full_sdata.get().find('sigmat_cat')
-    st_binning = st.getBinning('st_binning')
-    split_bounds = array('d', [st_binning.binLow(0)] + [st_binning.binHigh(k) for k in range(st_binning.numBins())])
+    full_sdata = sdatas[index][sub_dir + '/sig_sdata']
+    observable = full_sdata.get().find(obs_name)
+    split_cat = full_sdata.get().find(split_cat_name)
+    binning = observable.getBinning(binning_name)
+    split_bounds = array('d', [binning.binLow(0)] + [binning.binHigh(k) for k in range(binning.numBins())])
     
     name = 'canvas_%s' % index
-    canvas = TCanvas(name, titles[key], 1000, 500)
+    canvas = TCanvas(name, titles[key], 1200, 400)
+    
     canvas.Divide(2, 1)
     __canvases.append(canvas)
     name = 'hist_events_%s' % index
     hist_events = TH1D(name, name, len(split_bounds) - 1, array('d', [v for v in split_bounds]))
-    __histos.append(hist_events)
+    __histos['events'][key] = hist_events
     mass_result = mass_fpf = fit_results['sWeight_mass_result']
     mass_fpf = mass_result.floatParsFinal()
-    time_result = fit_results['time_result_%s' % fit_type]
+    for suffix in (fit_type, fit_type + '_pee'):
+        if options.refit:
+            suffix += '_PVRefit'
+        if options.split_mean:
+            suffix += '_split_mean'
+        if 'time_result_' + suffix in fit_results:
+            time_result = fit_results['time_result_' + suffix]
+            break
+    else:
+        continue
     time_fpf = time_result.floatParsFinal()
-    
+
+    split_mean = time_fpf.find('timeResMu_st_bin_0')
+
     res_x = array('d')
     comb = array('d')
     comb_e = array('d')
-    sf2s = array('d')
-    sf2_es = array('d')
+    sfos = array('d')
+    means = array('d')
+    mean_es = array('d')
+    sfo_es = array('d')
     total = full_sdata.sumEntries()
-    for b, ct in enumerate(st_cat):
+    for b, ct in enumerate(split_cat):
         d = split_bounds[b + 1] - split_bounds[b]
         bin_name = '_'.join(('N', sig_name, ct.GetName()))
         events = mass_fpf.find(bin_name)
@@ -218,7 +312,12 @@ for key, fit_results in sorted(results.items(), key = lambda e: good[e[0].split(
             sf_comb = time_fpf.find('timeResComb_%s' % ct.GetName())
             sf, sf_e = sf_comb.getVal(), sf_comb.getError()
             tmp = time_fpf.find('timeResSigmaSF_2_%s' % ct.GetName())
-            sf2, sf2_e = tmp.getVal(), tmp.getError()
+            sfo, sfo_e = tmp.getVal(), tmp.getError()
+        elif fit_type.startswith('double_RMS'):
+            sf_av = time_fpf.find('timeResSFMean_%s' % ct.GetName())
+            sf_sigma = time_fpf.find('timeResSFSigma_%s' % ct.GetName())
+            sf, sf_e = sf_av.getVal(), sf_av.getError()
+            sfo, sfo_e = sf_sigma.getVal(), sf_sigma.getError()
         elif fit_type == 'double':
             from P2VV.PropagateErrors import propagateScaleFactor
             sf, sf_e = propagateScaleFactor(time_result, '_' + ct.GetName())
@@ -226,54 +325,185 @@ for key, fit_results in sorted(results.items(), key = lambda e: good[e[0].split(
             sf_var = time_fpf.find('sigmaSF_%s' % ct.GetName())
             sf, sf_e = sf_var.getVal(), sf_var.getError()
         
-        range_cut = '{0} == {0}::{1}'.format(st_cat.GetName(), ct.GetName())
-        mean = full_sdata.mean(st, range_cut)
+        if split_mean:
+            mean_var = time_fpf.find('timeResMu_%s' % ct.GetName())
+            # Do this in fs
+            means.append(mean_var.getVal() * 1000)
+            mean_es.append(mean_var.getError() * 1000)
+
+        range_cut = '{0} == {0}::{1}'.format(split_cat.GetName(), ct.GetName())
+        mean = full_sdata.mean(observable, range_cut)
         res_x.append(mean)
         comb.append(sf)
         comb_e.append(sf_e)
-        sf2s.append(sf2)
-        sf2_es.append(sf2_e)
+        sfos.append(sfo)
+        sfo_es.append(sfo_e)
     
     res_ex = array('d', [0 for i in range(len(res_x))])
     res_graph = TGraphErrors(len(res_x), res_x, comb, res_ex, comb_e)
     res_graph.SetName('res_graph_%d' % index)
-    sf2_graph = TGraphErrors(len(res_x), res_x, sf2s, res_ex, sf2_es)
-    sf2_graph.SetName('sf2_graph_%d' % index)
-    __histos.extend([res_graph, sf2_graph])
-    
+    sfo_graph = TGraphErrors(len(res_x), res_x, sfos, res_ex, sfo_es)
+    sfo_graph.SetName('sfo_graph_%d' % index)
+    __histos['res_graphs'][key] = (res_graph, sfo_graph)
+
+    if split_mean:
+        mean_graph = TGraphErrors(len(res_x), res_x, means, res_ex, mean_es)
+        mean_graph.SetName('mean_graph_%d' % index)
+        __histos['mean_graph'][key] = mean_graph
+
     from ROOT import TF1
-    fit_funcs = {'pol1' : ('pol1', 'S0+'),
+    fit_funcs = {'pol0' : ('pol0', 'S0+'),
+                 'pol1' : ('pol1', 'S0+'),
                  'pol2' : ('pol2', 'S0+'),
-                 'pol1_mean_param' : ('[0] + [1] + [2] * (x - [0])', 'S+'),
-                 'pol2_no_offset' : ('x ++ x * x', 'S0+'),
-                 'pol2_mean_param' : ('[0] + [1] + [2] * (x - [0]) + [3] * (x - [0])^2', 'S0+')}
+                 'pol1_mean_param' : ('[1] + [2] * (x - [0])', 'S0+'),
+                 'pol2_mean_param_no_offset' : ('([1] + [2] * (x - [0])) * x', 'S0+'),
+                 'pol2_mean_param' : ('[1] + [2] * (x - [0]) + [3] * (x - [0])^2', 'S0+')}
     print titles[key]
-    st_mean = full_sdata.mean(st)
-    for g in (res_graph, sf2_graph):
+    mean = full_sdata.mean(observable)
+    graphs = [res_graph, sfo_graph]
+    if split_mean:
+        graphs.append(mean_graph)
+    for g in graphs:
+        print ('-' * 15) + g.GetName() + ('-' * 15)
         frs = []
         for i, (name, (func, opts)) in enumerate(fit_funcs.iteritems()):
             fit_func = TF1(name, func, split_bounds[0], split_bounds[-1])
-            if name.endswith('mean_param'):
-                fit_func.FixParameter(0, st_mean)
+            if 'mean_param' in name:
+                fit_func.FixParameter(0, mean)
             print name
             fit_result = g.Fit(fit_func, opts, "L")
             fit_result.SetName('result_' + name)
             print 'Chi2 / nDoF = %5.3f\n' % (fit_result.Chi2() / fit_result.Ndf())
             __fit_results[g.GetName().rsplit('_', 1)[0]].append(fit_result)
             frs.append(fit_result.Get())
+            ffs[g.GetName()][name] = fit_func
         print fr_latex(frs)
     
     print ''
+
+    def draw_calib_graph(res_graph, prefix, calib_type, formula, pars, color):
+        if key.replace(top_dir, single_dir) not in results:
+            return
+        ## Try extra _pee suffix for backwards compatibility
+        for rn in [(calib_type,), (calib_type, 'pee')]:
+            time_name = time_result.GetName().replace('_pee', '')
+            if options.split_mean:
+                time_name = time_name.replace('_split_mean', '')
+            calib_name = time_name.replace(fit_type, '_'.join((fit_type,) + rn))
+            calib_result = results[key.replace(top_dir, single_dir)].get(calib_name, None)
+            if calib_result:
+                break
+        else:
+            return
+        calib_fpf = dict([(p.GetName(), [p.getVal(), p.getError()]) for p in calib_result.floatParsFinal()])
+        calib_func = TF1('%s_%s' % (prefix, calib_type), formula,
+                         (split_bounds[0] + split_bounds[1]) / 2.,
+                         (split_bounds[-2] + split_bounds[-1]) / 2.)
+        for i, par_name in enumerate(pars):
+            par = calib_fpf[prefix + '_' + par_name]
+            calib_func.SetParameter(i + 1, par[0])
+            calib_func.SetParError(i, par[1])
+        calib_func.SetParameter(0, mean)
+        calib_func.SetLineColor(color)
+        calib_func.Draw('same')
+        if res_graph.GetName() in __histos['calib']:
+            __histos['calib'][res_graph.GetName()].append(calib_func)
+        else:
+            __histos['calib'][res_graph.GetName()] = [calib_func]
     
     canvas.cd(1)
     sf1_hist = draw_res_graph(res_graph, hist_events)
-    sf1_hist.GetXaxis().SetTitle('estimated decay time resolution [ps]')
-    sf1_hist.GetYaxis().SetTitle('combined scale factor')
+    if options.note_labels:
+        sf1_hist.GetYaxis().SetTitle("#delta'")
+        sf1_hist.GetYaxis().SetTitleOffset(0.9)
+    else:
+        sf1_hist.GetYaxis().SetTitle('#bar{#sigma}')
+        sf1_hist.GetYaxis().SetTitleOffset(1.05)
     
     canvas.cd(2)
-    sf2_hist = draw_res_graph(sf2_graph, hist_events)
-    sf2_hist.GetXaxis().SetTitle('estimated decay time resolution [ps]')
-    sf2_hist.GetYaxis().SetTitle('2nd scale factor')
+    sfo_hist = draw_res_graph(sfo_graph, hist_events)
+    if options.note_labels:
+        sfo_hist.GetYaxis().SetTitle("#delta''")
+        sfo_hist.GetYaxis().SetTitleOffset(0.9)
+    else:
+        sfo_hist.GetYaxis().SetTitle('#sigma_{#sigma}')
+        sfo_hist.GetYaxis().SetTitleOffset(1.05)
+
+    from itertools import product
+    par_defs = [('linear', '[1] + [2] * (x - [0])', ('offset', 'slope'), kBlue),
+                ## ('quadratic', '[1] + [2] * (x - [0]) + [3] * (x - [0])^2', ('offset', 'slope', 'quad'), kGreen),
+                ('quadratic_no_offset', '([1] + [2] * (x - [0])) * x', ('slope', 'quad'), kOrange)]
+    for (pad, prefix), fargs in product(((1, (res_graph, 'sf_mean')), (2, (sfo_graph, 'sf_sigma'))), par_defs):
+        canvas.cd(pad)
+        draw_calib_graph(*tuple(prefix + fargs))
+    canvas.cd(1)
+    labels['width'].Draw()
+    canvas.cd(2)
+    labels['width'].Draw()
+    canvas.Update()
+    if not options.split_mean:
+        from P2VV.Utilities.Resolution import plot_dir
+        plot_name = 'sigma_calib_%s.pdf' % args[0]
+        if options.note_labels:
+            plot_name = plot_name.replace('.pdf', '_note.pdf')
+        if options.refit:
+            plot_name = plot_name.replace('.pdf', '_refit.pdf')
+        if options.mixing:
+            plot_name = plot_name.replace('.pdf', '_mixing.pdf')
+        canvas.Print(os.path.join(plot_dir, plot_name), EmbedFonts = not options.note_labels)
+
+    if split_mean:
+        name = 'mean_canvas_%s' % index
+        mean_canvas = TCanvas(name, titles[key], 600, 400)
+        mean_canvas.SetLeftMargin(0.15)
+        __canvases.append(mean_canvas)
+        mean_graph.Draw("AP")
+        mean_graph.GetXaxis().SetTitle("#sigma_{t} [ps]")
+        mean_graph.GetYaxis().SetTitle("#mu [fs]")
+        mean_graph.GetYaxis().SetTitleOffset(1.0)
+        def __dg(n, c):
+            g = ffs[mean_graph.GetName()][n]
+            g.SetLineColor(c)
+            g.SetRange((split_bounds[0] + split_bounds[1]) / 2.,
+                       (split_bounds[-2] + split_bounds[-1]) / 2.)
+            g.Draw('same')
+        curves = [('pol1_mean_param', kBlue), ('pol2_mean_param', kGreen)]
+        if data_type != 'signal_mc':
+            # for signal MC don't plot the flat one
+            curves += [('pol0', 7)]
+        for n, c in curves:
+            __dg(n, c)
+        labels['mean'].Draw()    
+        mean_canvas.Update()
+        if options.split_mean:
+            from P2VV.Utilities.Resolution import plot_dir
+            plot_name = 'mean_calib_%s.pdf' % args[0]
+            if options.refit:
+                plot_name = plot_name.replace('.pdf', '_refit.pdf')
+            mean_canvas.Print(os.path.join(plot_dir, plot_name), EmbedFonts = not options.note_labels)
+
+chi2s = {}
+from ROOT import Double
+for rgn, cfs in __histos['calib'].iteritems():
+    rg = filter(lambda x: x.GetName() == rgn, __histos['res_graphs'].values()[0])[0]
+    x = Double(0)
+    y = Double(0)
+    for cf in cfs:
+        chi2 = 0
+        for i in range(rg.GetN()):
+            res = rg.GetPoint(i, x, y)
+            ey = rg.GetErrorY(i)
+            chi2 += ((y - cf.Eval(x)) / ey) ** 2
+        chi2s[(rgn, cf.GetName())] = chi2 / (rg.GetN() - (cf.GetNpar() - 1))
+
+def write_constraints(constraints, sample_key, mu_key, sf_key):
+    import shelve
+    dbase = shelve.open('constraints.db')
+    pars = dbase[sample_key]
+    par_key = str({'mu' : mu_key, 'sf' : sf_key})
+    pars[par_key] = constraints
+    dbase[sample_key] = pars
+    dbase.close()
 
 ## def chunks(l, n):
 ##     """ Yield successive n-sized chunks from l.
@@ -304,185 +534,3 @@ for key, fit_results in sorted(results.items(), key = lambda e: good[e[0].split(
 ##         g.Draw('AP')
 ##     else:
 ##         g.Draw('P')
-
-## Make datasets for simultaneous fit
-import ROOT
-         
-######################################################################
-
-class SimFunction( ROOT.TPyMultiGenFunction ):
-    def __init__(self, x, c, ce, s2, s2e, sim = True):
-        ROOT.TPyMultiGenFunction.__init__(self, self)
-        self.__x = x
-        self.__c = c
-        self.__ce = ce
-        self.__s2 = s2
-        self.__s2e = s2e
-        self.__sim = sim
-        
-        self.__mean = sum(x) / float(len(x))
-        
-    def NDim(self):
-        return 3 if self.__sim else 4
-    
-    def __fun(self, x, par):
-        return par[0] + par[1] * (x - self.__mean)
-    
-    def DoEval(self, x):
-        # calculate chisquare
-        chisq, delta = 0., 0.
-        if self.__sim:
-            par_c = [x[0], x[1]]
-            par_s2 = [x[0], x[2]]
-        else:
-            par_c = [x[0], x[1]]
-            par_s2 = [x[2], x[3]]
-        for z, ze, par in [(self.__c, self.__ce, par_c),
-                           (self.__s2, self.__s2e, par_s2)]:
-            for i in range(len(self.__x)):
-                delta  = (z[i]-self.__fun(self.__x[i], par)) / ze[i]
-                chisq += delta*delta
-        
-        return chisq
-
-def sim_fit(x, c, ce, s2, s2e, sim = True):
-    fitter = ROOT.Fit.Fitter()
-    fitter.Config().MinimizerOptions().SetMinimizerType("Minuit2")
-    fitter.Config().MinimizerOptions().SetMinimizerAlgorithm("Migrad")
-    fitter.Config().MinimizerOptions().SetPrintLevel(2) 
-    
-    fcn = SimFunction(x, c, ce, s2, s2e, sim)
-    
-    start = array('d', (0, -3, -3))
-    fitter.FitFCN(fcn, start)
-    
-    return fitter.Result()
-
-## sim_result = sim_fit(res_x, comb, comb_e, sf2s, sf2_es, True)
-## sep_result = sim_fit(res_x, comb, comb_e, sf2s, sf2_es, False)
-
-from ROOT import TFile
-sig_file = TFile.Open("/bfys/raaij/p2vv/data/P2VVDataSets_4KKMassBins_noTagCats.root")
-sig_data = sig_file.Get("JpsiKK_splotdata_weighted_sigMass")
-sig_st = sig_data.get().find("sigmat")
-st_data = []
-for i in range(sig_data.numEntries()):
-    r = sig_data.get(i)
-    st_data.append((sig_st.getVal(), sig_data.weight()))
-
-from operator import itemgetter
-st_data = sorted(st_data, key = itemgetter(0))
-binning = st.getBinning('st_binning')
-
-bins = []
-for i in range(st_binning.numBins()):
-    bins.append(st_binning.binLow(i))
-bins.append(st_binning.binHigh(st_binning.numBins() - 1))
-
-binned_data = []
-it = iter(bins)
-boundary = it.next()
-bin_list = []
-for v in st_data:
-    try:
-        if not bin_list and v[0] < boundary:
-            continue
-        if v[0] > boundary:
-            if bin_list:
-                binned_data.append(bin_list)
-                bin_list = []
-            boundary = it.next()
-        bin_list.append(v)
-    except StopIteration:
-        break
-
-def calib_sf1(pars, st):
-    sfc_pars = pars[0]
-    sf2_pars = pars[1]
-    frac = pars[2]
-    sfc = sum(sfc_pars[i + 1] * pow(st - sfc_pars[0], i) for i in range(len(sfc_pars) - 1))
-    sf2 = calib_sf2(sf2_pars, st) / st
-    sf1 = (sfc - frac * sf2) / (1 - frac)
-    return sf1 * st
-
-def calib_sf2(pars, st):
-    return sum(pars[i + 1] * pow(st - pars[0], i) for i in range(len(pars) - 1)) * st
-
-def sf1(p, st):
-    return (p[0].value() - p[1].value() * p[2].value()) / (1 - p[1].value()) * st
-
-from P2VV.PropagateErrors import Parameter, ErrorSFC, ErrorSG, ErrorCDG
-
-def make_parameter(result, name):
-    p = result.floatParsFinal().find(name)
-    return Parameter(name, p.getVal(), p.getError())
-
-dms = Parameter('dms', 17.768,  0.024)
-
-from P2VV.Dilution import dilution
-# Dilution of double Gauss with scalefactors calibrated.
-cdg_rd = dirs['9bins_14.10fs_simul/m934737057402830078/results']
-result_cdg = rd.Get("time_result_double_Comb_Gauss_linear")
-sfc_offset = make_parameter(result_cdg, "sfc_offset")
-sfc_slope = make_parameter(result_cdg, "sfc_slope")
-cdg_frac = make_parameter(result_cdg, "timeResFrac2")
-sf2_offset = make_parameter(result_cdg, "sf2_offset")
-sf2_slope = make_parameter(result_cdg, "sf2_slope")
-cdg_cv = result_cdg.reducedCovarianceMatrix(RooArgList(*[result_cdg.floatParsFinal().find(p.name()) for p in [sfc_offset, sfc_slope, cdg_frac, sf2_offset, sf2_slope]]))
-error_cdg = ErrorCDG(st_mean, dms, sfc_offset, sfc_slope, cdg_frac, sf2_offset, sf2_slope, cdg_cv)
-calib_dilutions = []
-for bin_data in binned_data:
-    d = dilution(bin_data, [([(st_mean, sfc_offset.value(), sfc_slope.value()),
-                              (st_mean, sf2_offset.value(), sf2_slope.value()), cdg_frac.value()],
-                              (1 - cdg_frac.value())), ((st_mean, sf2_offset.value(), sf2_slope.value()), cdg_frac.value())],
-                              (calib_sf1, calib_sf2), error_cdg)
-    calib_dilutions.append(d)
-
-# Dilution of single Gauss fit.
-sg_dilutions = []
-sf_sg = Parameter('sf_sg', 1.45, 0.06)
-sf_sge = ErrorSG(dms, sf_sg)
-for bin_data in binned_data:
-    d = dilution(bin_data, [((sf_sg,), 1)], (lambda p, st: p[0].value() * st,), sf_sge)
-    sg_dilutions.append(d)
-
-# Dilution of Double Gauss fit
-sfc_dir = result_sfc = dirs['1bin_9500.00fs_simple/m934737057402830078/results']
-result_sfc = sfc_dir.Get("time_result_double_Comb_Gauss")
-sfc = make_parameter(result_sfc, "timeResComb")
-dg_frac = make_parameter(result_sfc, "timeResFrac2")
-sf2 = make_parameter(result_sfc, "timeResSigmaSF_2")
-matrix = result_sfc.reducedCovarianceMatrix(RooArgList(*[result_sfc.floatParsFinal().find(p.name()) for p in [sfc, dg_frac, sf2]]))
-
-dg_dilutions = []
-error_dg = ErrorSFC(dms, sfc, dg_frac, sf2, matrix)
-for bin_data in binned_data:
-    d = dilution(bin_data, [((sfc, dg_frac, sf2), (1 - dg_frac.value())), ((0, sf2), dg_frac.value())], (sf1, lambda p, st: p[1].value() * st), error_dg)
-    dg_dilutions.append(d)
-
-# Plot Dilutions
-means = array('d')
-for bin_data in binned_data:
-    means.append(sum(e[0] * e[1] for e in bin_data) / sum(e[1] for e in bin_data))
-    
-graphs = []
-canvas = TCanvas('dilution_canvas', 'dilution_canvas', 550, 500)
-canvas.SetLeftMargin(0.18)
-colors = [kGreen, kBlue, kBlack]
-first = True
-for color, (ds, name) in zip(colors, [(calib_dilutions, 'calibrated'), (dg_dilutions, 'double'),
-                                (sg_dilutions, 'single')]):
-    graph = TGraphErrors(len(means), means, array('d', [d[0] for d in ds]),
-                         array('d', len(ds) * [0]), array('d', [d[1] for d in ds]))
-    graph.SetName(name)
-    if first:
-        graph.Draw("AP")
-        graph.GetXaxis().SetTitle('estimated decay time error [ps]')
-        graph.GetYaxis().SetTitle('dilution')
-        graph.GetYaxis().SetTitleOffset(1.2)
-        first = False
-    else:
-        graph.Draw("P, same")
-    graph.SetLineColor(color)
-    graph.SetMarkerColor(color)
-    graphs.append(graph)

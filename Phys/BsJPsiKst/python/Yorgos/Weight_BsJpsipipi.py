@@ -14,7 +14,10 @@ z=Symbol("z", real = True)
 m=Symbol("m", positive = True)
 
 ####  Sum of norm weights in this script is 694  and the expected number is 623 ###
+import yields as Carlos
 
+year = 2012
+yields = Carlos.Yields['Bs_Jpsipipi']
 
 ############################################################################
 #                    Constants                                             #
@@ -202,11 +205,11 @@ def weights(filename):
     weight_Branch = f_MC_tree_1.Branch("weights", weight_addr,"weights/F")
     
     Norm_weight_addr = array('f',[0])
-    Norm_weight_Branch = f_MC_tree_1.Branch("Norm_weights",Norm_weight_addr,"Norm_weights/F")    
+    Norm_weight_Branch = f_MC_tree_1.Branch("wMC",Norm_weight_addr,"wMC/F")    
     #####################################################################
     #        MC expected event =  623                                   #
     #####################################################################
-    W_exp= -623./f_MC_tree_1.GetEntries()
+    W_exp= -yields[year]/f_MC_tree_1.GetEntries()
  
     for entry in range(int(f_MC_tree_1.GetEntries())):
         f_MC_tree_1.GetEntry(entry)
@@ -251,7 +254,8 @@ def weights(filename):
         tha2_Branch.Fill()
         tha3_Branch.Fill()
         Invariant_mass=f_MC_tree_1.Inv_mass
-        w0 =  new_pdf(angles[0],angles[1],angles[2], Invariant_mass + 0J)/old_pdf(angles[0],angles[1],angles[2], Invariant_mass +0J)
+        if Carlos.PHSPWeight: w0 =  new_pdf(angles[0],angles[1],angles[2], Invariant_mass + 0J)/old_pdf(angles[0],angles[1],angles[2], Invariant_mass +0J)
+        else: w0 = 1.0
         weight_addr[0] = w0
         Norm_weight_addr[0] = W_exp * w0
         weight_Branch.Fill()
@@ -259,7 +263,63 @@ def weights(filename):
     f_MC_tree_1.Write("",TObject.kOverwrite)
     f_MC_data_1.Close()
 
+fname = "~/NTuplesFast/MC/peaking/"+ str(year) + "/Bs_Jpsipipi_sel.root"
+System_Mass(fname,"pions")
+weights(fname)
 
-System_Mass("BsJpsipipi.root","pions")
-weights("BsJpsipipi.root")
+def make_plot():
+    f = TFile(fname)
+    t = f.Get("DecayTree")
+    c = TCanvas()
+    #if weight: w = "-wMC"
+    #else: w = "(1>0)"
+    
+    c.Divide(2,1)
+    c.cd(1)
+    t.Draw("Inv_mass")
+    c.cd(2)
+    t.Draw("Inv_mass", "-wMC")
+    return c
+N = {1:0,2:0,3:0,4:0}
+f = TFile(fname)
+t = f.Get("DecayTree")
+from Urania import *
+AccessPackage("BsJPsiKst")
+from parameters import KpiBins4 as Kpibins
+for entry in t:
+    m =t.Kst_892_0_MM
+    for i in range(4):
+        if  m > Kpibins[i] and m < Kpibins[i+1]: N[i+1]+= -t.wMC
+print N
+print sum(N.values())
 
+
+
+## 2015 numbers
+#2011
+#{1: 1.6181586865277495, 2: 2.2347492477856576, 3: 2.849341981811449, 4: 2.6423543263226748}
+#9.34460424245
+
+#2012
+#{1: 3.8767055327625712, 2: 4.68394180021096, 3: 7.003198517020792, 4: 9.404357547638938}
+#24.9682033976
+
+
+### Plus one sigma
+#2011
+#{1: 1.9807603327790275, 2: 2.735518283676356, 3: 3.4878307186299935, 4: 3.2344606835395098}
+#11.4385700186
+
+#2012
+#{1: 4.724440268284525, 2: 5.708198108519355, 3: 8.534615954849869, 4: 11.460845991969109}
+#30.4281003236
+
+
+## Minus one sigma
+
+# 2011
+#{1: 1.2555570394615643, 2: 1.7339802305214107, 3: 2.2108532799757086, 4: 2.050247995182872}
+#7.25063854514
+#2012
+#{1: 3.028970810264582, 2: 3.6596855008065177, 3: 5.471781039843336, 4: 7.34786904376233}
+#19.5083063947

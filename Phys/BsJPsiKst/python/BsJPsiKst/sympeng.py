@@ -33,5 +33,14 @@ def Penguins(Hf_exp, Af_exp, guessAmpls = [0.01,0.2, 0.4,0.6,0.8], guessPhases =
             if dphi_ in dphis: continue
             else: dphis.append(dphi_)
     return dphis
+Kstpol_f = [0.484, 0.181, 1- .484-.181]
+Phipol_f =  [0.5241, 1- 0.5241-.2504 , 0.2504]
+BR_r = 3.61e-02
+Hf_exp = 3*[0.]
+for i in range(3): Hf_exp[i] = BR_r*Kstpol_f[i]/Phipol_f[i] * 1./eps #for i in range(3)
 
-s = Penguins(1.996,-0.022)
+ACP_exp = [0.,0.,0.]
+
+#s = Penguins(1.996,-0.022)
+
+def doPenguins(i) : print Penguins(Hf_exp[i], ACP_exp[i])

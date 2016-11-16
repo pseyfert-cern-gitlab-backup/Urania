@@ -1,7 +1,7 @@
 ################################################################################
 # Package: SimpleTools
 ################################################################################
-gaudi_subdir(SimpleTools v1r2)
+gaudi_subdir(SimpleTools v2r0)
 
 find_package(Boost)
 find_package(ROOT COMPONENTS Core RIO Tree TreePlayer Gui Hist Gpad Graf

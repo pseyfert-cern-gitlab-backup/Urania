@@ -41,13 +41,13 @@ void B2JpsiKs::defineConstants(const TString step, const unsigned int track) {
                        (step==m_NNUnbiased && track==m_LL ?  5 : 
                        (step==m_NNUnbiased && track==m_DD ?       4 :  6)));
   (*mvaVars)["b0pt"] = (step==m_NNKstar ? -1 : 
-                       (step==m_NNUnbiased && track==m_LL ? -1 :
+                       (step==m_NNUnbiased && track==m_LL ?  6 :
                        (step==m_NNUnbiased && track==m_DD ?       5 :  7)));
   (*mvaVars)["bch2"] = (step==m_NNKstar ? -1 : 
-                       (step==m_NNUnbiased && track==m_LL ?  6 :
+                       (step==m_NNUnbiased && track==m_LL ?  7 :
                        (step==m_NNUnbiased && track==m_DD ?       6 :  8)));
   (*mvaVars)["bmom"] = (step==m_NNKstar ? -1 : 
-                       (step==m_NNUnbiased && track==m_LL ?  7 :
+                       (step==m_NNUnbiased && track==m_LL ? -1 :
                        (step==m_NNUnbiased && track==m_DD ?       7 :  9)));
   (*mvaVars)["dira"] = (step==m_NNKstar ? -1 : 
                        (step==m_NNUnbiased && track==m_LL ?  8 : 
@@ -179,17 +179,19 @@ bool B2JpsiKs::applyDecayCuts(const unsigned int pv) {
 // Monte Carlo Truth
 bool B2JpsiKs::MCTruth(const TString what) {
   bool pass = false;
-  if(what==m_SigBd || what==m_SigBdPrescaled) {
+  if(what==m_SigBdA || what==m_SigBdE) {
     pass = (TMath::Abs(B0_TRUEID)==511 && J_psi_1S_TRUEID==443 &&
             KS0_TRUEID==310 && (B0_BKGCAT==0 || B0_BKGCAT==10));
-  } else if(what==m_SigBs || what==m_SigBsPrescaled ||
-            what==m_SigBsCP || what==m_SigBsCPPrescaled) {
+  } else if(what==m_SigBsA || what==m_SigBsE) {
     pass = (TMath::Abs(B0_TRUEID)==531 && J_psi_1S_TRUEID==443 &&
             KS0_TRUEID==310 && B0_BKGCAT==20);
-  } else if(what==m_SigKstar || what==m_SigKstarWM) {
+  } else if(what==m_SigKstar) {
     pass = (TMath::Abs(B0_TRUEID)==511 && J_psi_1S_TRUEID==443 &&
             TMath::Abs(KS0_TRUEID)==313);
             // Ignore: && B0_BKGCAT==30
+  } else if(what==m_SigLambdab) {
+    pass = (TMath::Abs(B0_TRUEID)==5122 && J_psi_1S_TRUEID==443 &&
+            TMath::Abs(KS0_TRUEID)==3122);
   }
   return pass ;
 };

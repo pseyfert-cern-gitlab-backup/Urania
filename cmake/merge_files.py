@@ -7,6 +7,7 @@
 import os
 import sys
 from datetime import datetime
+import fcntl
 
 def mergeFiles( fragFileNames, mergedFileName, commentChar, doMerge, ignoreMissing ):
 
@@ -30,43 +31,65 @@ def mergeFiles( fragFileNames, mergedFileName, commentChar, doMerge, ignoreMissi
             os.makedirs(path_to_file)
         open(mergedFileName,'a')
 
-    mergedFile = open( mergedFileName, 'r+' )
+    lockFile = open( mergedFileName + '.lock', 'a' )
 
-    newLines = [ ]
-    skipBlock = ""
-    for line in mergedFile.readlines():
-        if line.startswith(startMark) and line[nameOffset:].strip() in basenames:
-            skipBlock = endMark + line[nameOffset:].strip()
-            # remove all the empty lines occurring before the start mark
-            while (len(newLines) > 0) and (newLines[-1].strip() == ''):
-                newLines.pop()
-        if not skipBlock:
-            newLines.append(line)
-        if line.startswith(skipBlock):
-            skipBlock = ""
-    if skipBlock:
-        print "WARNING: missing end mark ('%s')" % skipBlock
+    # locking file, gaining exclusive access to it
+    # code from locker.py, only posix relevant part - we don't support NT - did we ever ??
+    # Lock with a simple call to lockf() - this blocks until the lock is aquired
+    try:
+        fcntl.lockf( lockFile, fcntl.LOCK_EX )
+    except IOError, exc_value:
+        print "Problem when trying to lock {0}, IOError {1}".format(mergedFile, exc_value[0])
+        raise
 
-    if doMerge:
-        for f in fragFileNames:
-            if ignoreMissing and not os.path.exists(f):
-                print "WARNING: '%s' does not exist, I'm ignoring it" % f
-                continue
-            # I do not want to add 2 empty lines at the beginning of a file
-            if newLines:
-                newLines.append('\n\n')
-            bf = os.path.basename(f)
-            newLines.append(startMark + bf + '\n')
-            newLines.append(timeMark + '\n')
-            fileData = open(f, 'r').read()
-            newLines.append(fileData)
-            if fileData and fileData[-1] != '\n':
-                newLines.append('\n')
-            newLines.append(endMark + bf + '\n')
+    mergedFile = open( mergedFileName, 'r' )
 
-    mergedFile.seek(0)
-    mergedFile.truncate(0)
-    mergedFile.writelines(newLines)
+    try:
+
+        newLines = [ ]
+        skipBlock = ""
+        for line in mergedFile.readlines():
+            if line.startswith(startMark) and line[nameOffset:].strip() in basenames:
+                skipBlock = endMark + line[nameOffset:].strip()
+                # remove all the empty lines occurring before the start mark
+                while (len(newLines) > 0) and (newLines[-1].strip() == ''):
+                    newLines.pop()
+            if not skipBlock:
+                newLines.append(line)
+            if line.startswith(skipBlock):
+                skipBlock = ""
+        if skipBlock:
+            print "WARNING: missing end mark ('%s')" % skipBlock
+
+        if doMerge:
+            for f in fragFileNames:
+                if ignoreMissing and not os.path.exists(f):
+                    print "WARNING: '%s' does not exist, I'm ignoring it" % f
+                    continue
+                # I do not want to add 2 empty lines at the beginning of a file
+                if newLines:
+                    newLines.append('\n\n')
+                bf = os.path.basename(f)
+                newLines.append(startMark + bf + '\n')
+                newLines.append(timeMark + '\n')
+                fileData = open(f, 'r').read()
+                newLines.append(fileData)
+                if fileData and fileData[-1] != '\n':
+                    newLines.append('\n')
+                newLines.append(endMark + bf + '\n')
+
+        #mergedFile.seek(0)
+        #mergedFile.truncate(0)
+        #mergedFile.writelines(newLines)
+
+        newFile = open( mergedFileName + ".new" , 'w' )
+        newFile.writelines(newLines)
+        newFile.close()
+        os.rename(mergedFileName + ".new",mergedFileName)
+
+    finally:
+        # unlock file
+        fcntl.lockf( lockFile, fcntl.LOCK_UN )
 
     return 0
 
@@ -159,12 +182,27 @@ if __name__ == "__main__":
     import logging
     logging.basicConfig(level = logging.INFO)
 
-    sc = mergeFiles( options.fragFileNames, options.mergedFileName,
-                     options.commentChar,
-                     doMerge = options.doMerge,
-                     ignoreMissing = options.ignoreMissing)
-    if not options.no_stamp:
-        for stamp in map(stampFileName, options.fragFileNames):
-            open(stamp, 'w')
+    if "GAUDI_BUILD_LOCK" in os.environ:
+        import locker
+        globalLock = locker.LockFile(os.environ["GAUDI_BUILD_LOCK"], temporary =  True)
+    else:
+        globalLock = None
+
+    if True: #try:
+        sc = mergeFiles( options.fragFileNames, options.mergedFileName,
+                         options.commentChar,
+                         doMerge = options.doMerge,
+                         ignoreMissing = options.ignoreMissing)
+        if not options.no_stamp:
+            for stamp in map(stampFileName, options.fragFileNames):
+                open(stamp, 'w')
+    #except IOError, err:
+    #    print "ERROR:",err
+    #except Exception, err:
+    #    print "ERROR:",err
+    #except:
+    #    print "ERROR: unknown error !!"
+
+    del globalLock
 
     sys.exit( sc )

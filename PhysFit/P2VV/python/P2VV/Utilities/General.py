@@ -68,6 +68,31 @@ def getSplitPar( parName, stateName, parSet ) :
     return None
 
 
+# function for creating lists of split parameters and categories
+def createSplitParsList( splitParsDict ) :
+    # create lists of split categories and parameters
+    splitParsDict = splitParsDict.copy()
+    pars = splitParsDict.keys()
+    splitPars = [ ]
+    for par in pars :
+        if par not in splitParsDict : continue
+        splitPars.append( [ set( [par] ), splitParsDict.pop(par) ] )
+        for par1 in pars :
+            if par1 not in splitParsDict : continue
+            if splitParsDict[par1] == splitPars[-1][1] :
+                splitPars[-1][0].add(par1)
+                splitParsDict.pop(par1)
+
+    # sort lists of split categories and parameters
+    compFunc = lambda a, b : cmp( a.GetName(), b.GetName() )
+    for it in range( len(splitPars) ) :
+        splitPars[it][0] = sorted( list( splitPars[it][0] ), compFunc )
+        splitPars[it][1] = sorted( list( splitPars[it][1] ), compFunc )
+    splitPars.sort( cmp = lambda a, b : cmp( a[0][0].GetName(), b[0][0].GetName() ) )
+
+    return splitPars
+
+
 def make_binning(data, var, n_bins):
     tmp = data.get().find(var.GetName())
     values = []
@@ -89,5 +114,72 @@ def make_binning(data, var, n_bins):
         if total >= d:
             total = 0
             bounds.append(v)
-    bounds.append(var.getMax())
+
+    def __ae(a, b, tol):
+        return (abs(a-b) / max(abs(a), abs(b))) < tol
+
+    if __ae(bounds[-1], var.getMax(), 0.05):
+        bounds[-1] = var.getMax()
+    else:
+        bounds.append(var.getMax())
+
+    bounds = [float('%4.3e' % e) for e in bounds]
     return bounds
+
+def make_exp_binning(n_bins, t_min, t_max, tau = 1.5):
+    # Make an exponential binning
+    def next_bin(prev_bin, min_bin, max_bin):
+        from math import e, log
+        a = e ** (- min_bin / tau) - e ** (- max_bin / tau)
+        return - tau * log(e ** (- prev_bin / tau) - a / n_bins)
+    from array import array
+    bins = array('d', [t_min])
+    for i in range(n_bins - 1):
+        bins.append(next_bin(bins[-1], t_min, t_max))
+    bins.append(t_max)
+    return bins
+
+class input_paths_parser(dict):
+    def __init__( self, **kwargs ):
+
+        # identify site from hostname
+        import subprocess, os
+        host_name = subprocess.check_output(['hostname' ,'--fqdn'])
+        self.atNikhef = 'nikhef.nl' in host_name.lower()
+        self.atLxplus = 'cern.ch' in host_name.lower()
+
+        if self.atNikhef:
+            pass
+        elif self.atLxplus:
+            print 'P2VV - INFO: Running at a cern site, hostname: %s'%host_name
+
+            # locate eos mount point
+            eos_p2vv_inputs = kwargs.pop( 'EosInputsPath', '/lhcb/wg/B2CC/p2vv_fitting_package_inputs/Bs2JpsiPhi' )
+
+            user_name = os.environ['USER']
+            user_init = os.environ['USER'][0]
+            eos_mount_point = '/afs/cern.ch/user/%s/%s/eos'%(user_init,user_name)
+
+            if eos_mount_point and os.path.exists(eos_mount_point):
+                self.other = eos_mount_point
+            else:
+                print 'P2VV - INFO: Cannot locate eos mount point at default locations.'
+                self.other = raw_input('P2VV - INFO: Please provide mount point of eos. ( No quotes!! e.g. %s): '%eos_mount_point)
+
+                if not os.path.exists(self.other):
+                    self.other = raw_input('P2VV - INFO: Provided eos mount point does not exists or the input format is incorrect. Try again!!')
+                    if not path.exists(self.other):
+                        sys.exit( 'P2VV - INFO: Failed to access provided eos mount point. Extiting program.')
+
+            # build inputs full path
+            if self.other[-1] == '/':
+                pass
+            else:
+                self.other += '/'
+            self.other += eos_p2vv_inputs
+        else:
+            print """P2VV - ERROR: Unknown host site (%s). Do not know where to find inputs. \n
+            Either Edit input_paths_parser() in P2VV/Utilities/General.py and accomodate a new host,
+            or create your own script under scripts/. Do not edit files under /examples!!"""%host_name
+
+

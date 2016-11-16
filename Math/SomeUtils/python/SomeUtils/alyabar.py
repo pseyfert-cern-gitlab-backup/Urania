@@ -4,6 +4,7 @@ from math import *
 from probavector import vector
 from matrixclass import matrix
 
+
 def Armenteros(p1,p2):
     p = p1 + p2
     pu = vunit(p)
@@ -778,3 +779,25 @@ def HelicityAngles(Kplus_P, Kminus_P, muplus_P, muminus_P ):
         angles[2] = - TMath.ACos( eta_KK.Dot(eta_mm) )
 
     return angles
+def TranslateHelicity(Hp, Hz, Hm, pHp, pHz, pHm):
+    _Hp = complex(Hp *cos(pHp), Hp*sin(pHp))
+    _Hm = complex(Hm *cos(pHm), Hm*sin(pHm))
+    _Hz = complex(Hz *cos(pHz), Hz*sin(pHz))
+## ## Define pHz 0.0
+
+    _a1 = 1./sqrt(2) *(_Hp + _Hm)
+    _a2 = 1./sqrt(2) *(_Hp - _Hm)
+    suma =  Hp**2 + Hz**2 + Hm**2
+    Apa2 = (_a1*_a1.conjugate()).real/suma
+    Ape2 = (_a2*_a2.conjugate()).real/suma #0.1601
+    A02 = 1.-Apa2-Ape2
+    d0 = atan(_Hz.imag/_Hz.real)
+    if _Hz.real < 0: d0 = d0 + pi
+    
+    dpa = atan(_a1.imag/_a1.real)
+    if _a1.real < 0: dpa = dpa + pi
+    
+    dpe = atan(_a2.imag/_a2.real)
+    if _a2.real < 0: dpe = dpe + pi
+   # print "d0"
+    return A02, Apa2, dpa-d0, dpe-d0

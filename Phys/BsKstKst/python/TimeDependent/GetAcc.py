@@ -1,0 +1,132 @@
+#********************************************************************
+#
+# DESCRIPTION: script used to compute the 5-D normalization weights,
+# the time integrals and the parametric 6-D acceptance used for
+# visualization, corresponding to the Bs->(K+pi-)(K-pi+) decay.
+# AUTHOR: Julian Garcia Pardinhas, julian.garcia.pardinas@rai.usc.es
+# UNIVERSITY: Universidade de Santiago de Compostela
+# DATE: 11/2014
+#
+#********************************************************************
+
+from ROOT import *
+from math import *
+import sys
+from GetAccInterface import *
+
+
+# ################################################################
+# G L O B A L   O P T I O N S
+# ################################################################
+
+# Data used to obtain the acceptance.
+data_file = 'AnalysisOutWithCuts_AllBranches.root'
+data_tree = 'AnalysisTree'
+evnum_limit = 0
+
+# NW computation options.
+compute_cov_matrix = 0
+
+# Time acceptance histograms.
+tacc_nbins = 20
+tacc_plot_outtag = 'TAcc_histos'
+
+
+# ################################################################
+# N O R M A L I Z A T I O N   W E I G H T S
+# ################################################################
+
+def GetNW():
+
+	# Data importation.
+	data0_2011_wide,data0_2012_wide,data0_2011_narrow,data0_2012_narrow = LoadDataNW(data_file,data_tree,evnum_limit)
+
+	# Construction of the physical PDF.
+	PDF_phys_wide,PDF_phys_narrow = CreatePhysPDF()
+
+	# Computation of the normalization weights.
+	ComputeNW(compute_cov_matrix,PDF_phys_wide,PDF_phys_narrow,data0_2011_wide,data0_2012_wide,data0_2011_narrow,data0_2012_narrow)
+
+	# Print of the normalization weights.
+	PrintNW()
+
+
+# ################################################################
+# T I M E   A C C E P T A N C E   H I S T O G R A M S
+# ################################################################
+
+def GetTimeAccHistos():
+
+	# Data importation.
+	data4_2011_wide,data4_2012_wide,data4_2011_narrow,data4_2012_narrow = LoadDataTime(data_file,data_tree,evnum_limit)
+
+	# Obtaintion of the binning scheme (from 2012 wide window data).
+	bounds = adaptiveBinning(t_MC,tacc_nbins,0,data4_2012_wide)
+
+	# Creation of the histograms.
+	tacchistosclass, tacchistosplot = createTimeAccHistos(bounds,data4_2011_wide,data4_2012_wide,data4_2011_narrow,data4_2012_narrow)
+
+	# Print out of the C++ class containing the histograms.
+	printTimeAccHistos(bounds,tacchistosclass)
+
+	# Plot of the histograms.
+	plotTimeAccHistos(bounds,tacchistosplot,tacc_plot_outtag)
+
+
+# ################################################################
+# T I M E   I N T E G R A L S
+# ################################################################
+
+def GetTimeInts():
+
+	# Data importation.
+	data4_2011_wide,data4_2012_wide,data4_2011_narrow,data4_2012_narrow = LoadDataTime(data_file,data_tree,evnum_limit)
+
+	# Construction of the physical PDF.
+	PDF_phys_wide,PDF_phys_narrow = CreatePhysPDF()
+
+	# Computation of the time integrals.
+	ComputeTimeIntegrals(PDF_phys_wide,PDF_phys_narrow,data4_2011_wide,data4_2012_wide,data4_2011_narrow,data4_2012_narrow)
+
+	# Print of the time integrals.
+	PrintTimeInts()
+
+
+# ################################################################
+# V I S U A L I Z A T I O N   A C C E P T A N C E
+# ################################################################
+
+def GetVisAcc():
+
+	# Data importation.
+	data1_2011_wide,data1_2012_wide,data2_2011_wide,data2_2012_wide,data3_2011_wide,data3_2012_wide,\
+data4_2011_wide,data4_2012_wide,data1_2011_narrow,data1_2012_narrow,data2_2011_narrow,data2_2012_narrow,\
+data3_2011_narrow,data3_2012_narrow,data4_2011_narrow,data4_2012_narrow = LoadDataVis(data_file,data_tree,evnum_limit)
+
+	# Construction of the acceptance model.
+	PDF_acc_2011_wide,PDF_acc_2012_wide,model_acc_2011_wide,model_acc_2012_wide,\
+PDF_acc_2011_narrow,PDF_acc_2012_narrow,model_acc_2011_narrow,model_acc_2012_narrow = CreateAccPDF()
+
+	# Fit and plot of the 6-D acceptance.
+	c_vis_2011_wide,c_vis_2012_wide,c_vis_2011_narrow,c_vis_2012_narrow = FitnPlotVisAcc(model_acc_2011_wide,model_acc_2012_wide,\
+model_acc_2011_narrow,model_acc_2012_narrow,data1_2011_wide,data1_2012_wide,data2_2011_wide,data2_2012_wide,data3_2011_wide,data3_2012_wide,\
+data4_2011_wide,data4_2012_wide,data1_2011_narrow,data1_2012_narrow,data2_2011_narrow,data2_2012_narrow,data3_2011_narrow,data3_2012_narrow,\
+data4_2011_narrow,data4_2012_narrow)
+	c_vis_2011_wide.Print("plots/Vis_Acc_2011_wide.pdf")
+	c_vis_2012_wide.Print("plots/Vis_Acc_2012_wide.pdf")
+	c_vis_2011_narrow.Print("plots/Vis_Acc_2011_narrow.pdf")
+	c_vis_2012_narrow.Print("plots/Vis_Acc_2012_narrow.pdf")
+
+	# Print of the resulting parameters.
+	PrintVisAccPars()
+
+
+# ################################################################
+# A C T I O N S
+# ################################################################
+
+if (len(sys.argv) > 1):
+	if (sys.argv[1] == "nw"): GetNW()
+	elif (sys.argv[1] == "timehistos"): GetTimeAccHistos()
+	elif (sys.argv[1] == "timeints"): GetTimeInts()
+	elif (sys.argv[1] == "visacc"): GetVisAcc()

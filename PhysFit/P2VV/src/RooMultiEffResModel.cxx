@@ -35,8 +35,6 @@
 #include "P2VV/RooEffConvGenContext.h"
 #include "P2VV/MultiHistEntry.h"
 
-using namespace std;
-
 namespace {
    TString makeName(const char* name, const RooArgSet& terms ) {
       TString pname;
@@ -61,9 +59,16 @@ namespace {
       return new RooSuperCategory(catName.Data(), catName, _catVars);
    }
 
+   using std::string;
+   using std::stringstream;
+   using std::vector;
+   using std::list;
+   using std::map;
+   using std::pair;
+   using std::auto_ptr;
+   using std::endl;
+   using std::make_pair;
 }
-
-using namespace std;
 
 //_____________________________________________________________________________
 RooMultiEffResModel::CacheElem::~CacheElem()
@@ -249,7 +254,7 @@ RooMultiEffResModel::convolution(RooFormulaVar* inBasis, RooAbsArg* owner) const
 
       RooAbsEffResModel* effModel = dynamic_cast<RooAbsEffResModel*>(conv);
       if (!effModel) {
-         cout << conv->GetName() << " is not a RooAbsEffResModel!" << endl;
+         coutE(InputArguments) << conv->GetName() << " is not a RooAbsEffResModel!" << std::endl;
          assert(false);
       }
       MultiHistEntry* entry = new MultiHistEntry(*(it->second), effModel);

@@ -8,7 +8,7 @@ recoverTree()
 AccessPackage("Bs2MuMu")
 from smartpyROOT import *
 from PDF_2013_Asym import *
-#from OurSites import NTUPLE_PATH
+from OurSites import NTUPLE_PATH
 from parameters import KpiBins23 as Kpibins
 import Lb_params
 import ipa_params
@@ -36,7 +36,7 @@ massB.ncb2.setVal(ipa_params.Bin[ibin]["n2"])
 massB.ncb2.setConstant(1)
 
 bkgmodel = FullBackground("Bkg")
-LAMBDA = 1
+LAMBDA = 0
 #bkgmodel.make()
 
 #BREAK
@@ -161,7 +161,7 @@ def computeWeights(filename,  WEIGHT_CAT, plot = 1):
 
 #f = TFile("~/NTuplesFast/Carlos_newsel/" + neim)
 #t = f.Get("DecayTree")
-f2 = TFile("~/w7folder/NTuples/Bs_Jpsi_Kst_2013/" + neim)#, "recreate")
+f2 = TFile(NTUPLE_PATH + neim)#, "recreate")
 #t2 = t.CopyTree("B0_MM >= " +str(Mass.getMin()) + " && B0_MM <= " + str(Mass.getMax()))
 #t2.Write()
 f2.Close()

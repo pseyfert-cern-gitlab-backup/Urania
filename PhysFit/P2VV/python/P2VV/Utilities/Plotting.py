@@ -1,3 +1,4 @@
+
 ###########################################################################################################################################
 ## Utilities.Plotting: P2VV utilities for making plots                                                                                   ##
 ##                                                                                                                                       ##
@@ -16,13 +17,14 @@ _P2VVPlotStash = []
 
 # plotting function
 def plot(  canv, obs, data = None, pdf = None, addPDFs = [ ], components = None, xTitle = '', yTitle = '', xTitleOffset = None
-           , yTitleOffset = None, yScale = ( None, None ), yScaleRel = ( None, None ), frameOpts = { }, dataOpts = { }, pdfOpts = { }
-           , addPDFsOpts = [ { } ], plotResidHist = False, logy = False, logx = False, normalize = True, symmetrize = True, usebar = True
+           , yTitleOffset = None, xTitleSize = None, yTitleSize = None, xLabelOffset = None, yLabelOffset = None, xLabelSize = None, yLabelSize = None, 
+           yScale = ( None, None ), yScaleRel = ( None, None ), frameOpts = { }, dataOpts = { }, pdfOpts = { }, addPDFsOpts = [ { } ], plotResidHist = False, 
+           logy = False, logx = False, normalize = True, symmetrize = True, usebar = True
         ) :
     """makes a P2VV plot
 
     example usage:
-
+    
     canvas = plot( canvas.cd(1), observable, data, pdf
                   , {  'psi'    : { 'LineColor' : RooFit.kGreen, 'LineStyle' : RooFit.kDashed }
                      , 'nonpsi' : { 'LineColor' : RooFit.kBlue,  'LineStyle' : RooFit.kDashed }
@@ -135,6 +137,18 @@ def plot(  canv, obs, data = None, pdf = None, addPDFs = [ ], components = None,
     if yTitleOffset: yAxis.SetTitleOffset(yTitleOffset)
     if xTitleOffset: xAxis.SetTitleOffset(xTitleOffset)
 
+    # set axis title size
+    if yTitleSize: yAxis.SetTitleSize(yTitleSize)
+    if xTitleSize: xAxis.SetTitleSize(xTitleSize)
+
+    # set axis label size
+    if yLabelSize: yAxis.SetLabelSize(yLabelSize)
+    if yLabelSize: xAxis.SetLabelSize(yLabelSize)
+
+    # set axis label offset
+    if yLabelOffset: yAxis.SetLabelOffset(yLabelOffset)
+    if yLabelOffset: xAxis.SetLabelOffset(yLabelOffset)
+
     # get residuals histogram
     if plotResidHist and data and pdf :
         residHist = obsFrame.residHist( 'data', 'pdf', normalize )
@@ -143,8 +157,8 @@ def plot(  canv, obs, data = None, pdf = None, addPDFs = [ ], components = None,
         _P2VVPlotStash.append(residHist)
 
         xAxis.SetLabelOffset(0.1)
-        #yAxis.SetTitleSize(0.10)
-        #yAxis.SetLabelSize(0.08)
+        yAxis.SetTitleSize(0.10)
+        yAxis.SetLabelSize(0.08)
         yAxis.SetTitleOffset( 0.7 * yAxis.GetTitleOffset() )
 
         # create residuals frame
@@ -156,7 +170,7 @@ def plot(  canv, obs, data = None, pdf = None, addPDFs = [ ], components = None,
         xAxis.SetLabelSize(0.15)
         xAxis.SetTitleSize(0.15)
         xAxis.SetLabelOffset(0.02)
-        xAxis.SetTitleOffset(1.0)
+        xAxis.SetTitleOffset(1.1)
         yAxis = residFrame.GetYaxis()
         yAxis.SetTitle('')
         yAxis.SetLabelSize(0.13)
@@ -197,8 +211,8 @@ def plot(  canv, obs, data = None, pdf = None, addPDFs = [ ], components = None,
             residFrame.SetMinimum(-maxY)
 
         if normalize :
-            if residHist.getYAxisMin() > -5.5 : residFrame.SetMinimum(-5.5)
-            if residHist.getYAxisMax() < +5.5 : residFrame.SetMaximum(+5.5)
+            residFrame.SetMinimum(-5.5)
+            residFrame.SetMaximum(+5.5)
 
         # add a line at y=0
         zeroLine = TLine( xAxis.GetXmin(), 0, xAxis.GetXmax(), 0 )
@@ -324,251 +338,318 @@ def getCondObsPlotsInKKbins(pdf, data, canv):
 
     return canv
 
+def compareDataSets( canv, obs, data={}, dataOpts={}, frameOpts={}, **kwargs):  
+    """ Superimpose RooDataSets
+    example usage:  compareDistributions(     data = dict( dataSet1   = mcBefore
+                                                           dataSet2   = mcAfter                                  ),
+                                          dataOpts = dict( dataSet1   = dict( MarkerColor = 2, MarkerSize = 1 ),
+                                                           dataSet2   = dict( MarkerColor = 4, MarkerSize = 1 )  )
+                                         frameOpts = dict( Bins = 100, Range=( lo, high ) )             
+                                                           """
+    logy          = kwargs.pop( 'logy',           False ) 
+    RangeY        = kwargs.pop( 'RangeY',            [] )
+    titleY        = kwargs.pop( 'titleY',            '' )
+    statOn        = kwargs.pop( 'statOn',          False)
+    legendEntries = kwargs.pop( 'includeInLegend',   [] )
+    Xtitle        = kwargs.pop( 'xTitle',           ''  )
+    save          = kwargs.pop('save',             False)
 
-# class for plotting a PDF in KK mass bins
-class CPcomponentsPlotingToolkit():
-    def __init__(self, pdf, data):
-        #Initializer builds the CP component pdfs
-        #Create objects
-        self._data = data
-        self._tPdf = pdf
-        self._CpCompPdfs = dict(total = self._tPdf)
-        self._comps = ['even','odd','swave']
-        self._condObservables = self._tPdf.ConditionalObservables()
-        self._observables = self._tPdf.Observables() - self._condObservables
-        self._CPnormFracs = {}
-        self._lineColors = dict(total=1,even=4,odd=4,swave=2)
-        self._lineStyles = dict(total=1,even=9,odd=3,swave=5)
-        self._lineWidth  = 2
+    # get dataset scales (scale down the largest samples)
+    entries = [ data[k].sumEntries() for k in data.keys() ]
+    for k in data.keys(): dataOpts[k]['Rescale'] = min(entries) / data[k].sumEntries()
+        
+    # create frame
+    obsFrame = obs.frame(**frameOpts)
 
-        # Check if KK mass binning feature is active
-        from P2VV.RooFitWrappers import SimultaneousPdf
-        self._flagKKbin = isinstance( self._tPdf, SimultaneousPdf )
-        if (self._flagKKbin):
-            self._nKKbins = self._tPdf.indexCat().numTypes()
-            self._binNames = [('bin{0}'.format(bin))for bin in xrange(self._nKKbins)]
-            self._pdfsSuperDict = {}
-            self._sliceNormFracs = {}
+    # plot data on frame
+    for key in data.keys():                                                                                                                  
+        if key not in dataOpts.keys():                                                                                                           
+            assert  False, 'P2VV - EROR: compareDataSets: data and dataOpts dictionaries must have the same keys.'                              
 
-        #Start CP components projection of pdf
-        # Create pdf paramters dictionary and a set for the original paramters.
-        parsDict    = dict((p.GetName(),p) for p in self._tPdf.Parameters()  )
-        originalSet = set([ self._tPdf.ws().function("AparMag2"), parsDict['AperpMag2'], parsDict['A0Mag2']])
-        if self._flagKKbin: # In the case of KK binning there are several f_S fractions
-            f_sSet = set([ parsDict['f_S_bin{0}'.format(b)] for b in xrange(self._nKKbins) ])
-        else: f_sSet = set([parsDict['f_S']])
-        originalSet.update(f_sSet)
+    if statOn: # make legend with mean and rms                                                                                                                     
+        from ROOT import TPaveText                                                                                                               
+        legend = TPaveText(.455, .818, .944, .951, 'NDC' )                                                                                       
+        legend.SetFillColor(0)                                                                                                                   
+        legend.SetShadowColor(0)           
+                 
+    YaxisMaxima, YaxisMinima = [], []                                                                                                                     
+    for d in data.keys():                                                                                                                        
+        frame = data[d].plotOn( obsFrame, **dataOpts[d] )                                                                                        
+        if statOn and d in legendEntries:
+            mean = data[d].meanVar(obs).getVal()                                                                                                 
+            rms  = data[d].rmsVar(obs).getVal()                                                                                                  
+            legend.AddText( '#color[%s]{#bullet} mean=%.3e, rms=%.3e'%(dataOpts[d]['MarkerColor'],mean,rms) )                                    
+        YaxisMaxima += [frame.GetMaximum()]                                                                                                      
+        YaxisMinima += [frame.GetMinimum()]                                                                                                      
+        del frame
 
-        #Construct CP pdf components
-        from P2VV.RooFitWrappers import ConstVar, Customizer
-        for Comp in self._comps:
-            #Dictionary with the values  of the parameters to be replaced
-            replacementDict = {}
-            if (Comp == "even"):
-                replacementDict.update(dict(A0Mag2    = parsDict['A0Mag2'].getVal(),
-                                            AperpMag2 =            0               ,
-                                            AparMag2  = 1-parsDict['A0Mag2'].getVal()-parsDict['AperpMag2'].getVal()
-                                            ))
-                replacementDict.update(dict( (f_S_i.GetName(), 0 ) for f_S_i in f_sSet)  )
+    # title and axis ranges
+    if RangeY: obsFrame.SetAxisRange( RangeY[0], RangeY[1], 'Y' )
+    else:
+        scales = []
+        for k in data.keys(): scales += [dataOpts[k]['Rescale']]
+        obsFrame.SetAxisRange( min(YaxisMinima),  1.15 * min(scales) * max(YaxisMaxima) , 'Y' )
+    obsFrame.SetYTitle(titleY)
+    obsFrame.SetTitle('')
+    xtitle = Xtitle if Xtitle else obsFrame.GetXaxis().GetTitle().replace('(M','[M').replace('c^2)','c^{2}]') 
+    obsFrame.SetXTitle(xtitle)
+    obsFrame.SetName( obs.GetName() )
 
-            if (Comp == "odd"):
-                replacementDict.update(dict(A0Mag2    =                  0             ,
-                                            AperpMag2 = parsDict['AperpMag2'].getVal() ,
-                                            AparMag2  =                  0
-                                            ))
-                replacementDict.update(dict( (f_S_i.GetName(), 0 ) for f_S_i in f_sSet)  )
+    # set logy
+    if logy:
+        if obsFrame.GetMinimum() <= 0:
+            obsFrame.SetMinimum(.1)
+        canv.SetLogy(1)
+    
+    # draw / save
+    canv.cd()
+    obsFrame.Draw()
+    if statOn: # save intemediate canvas.
+        legend.Draw()
+        from ROOT import TCanvas
+        c = TCanvas( obs.GetName() +'_'+ canv.GetName(), obs.GetName() +'_'+ canv.GetName())
+        obsFrame.Draw()
+        legend.Draw()
+        c.Print(obs.GetName() +'_'+ canv.GetName() + '.pdf')
+        if save:
+            names = ''
+            for n in legendEntries: names += n + '_' 
+            saveInRootFile(c, obsFrame.getPlotVar().GetName() +'_'+ names)
+        return obsFrame, legend
+    return obsFrame, None
 
-            if (Comp == "swave"):
-                replacementDict.update(dict(A0Mag2    = 0 ,
-                                            AperpMag2 = 0 ,
-                                            AparMag2  = 0
-                                            ))
-                replacementDict.update(dict( (f_S_i.GetName(), f_S_i.getVal() ) for f_S_i in f_sSet)  )
+def makeAssymetryPlot( canv, frame, refHist, numOfFrames, yRange=[], save=False ):
+    # get list of RooHist objects from frame
+    from ROOT import RooHist
+    HistList = []
+    for idx in range( int(frame.numItems()) ): 
+        if type(frame.getObject(idx))==RooHist: HistList.append( frame.getObject(idx) )
+  
+    # grab reference histogram
+    for h in HistList: 
+        if refHist in h.GetName(): hRef = h
+    if not hRef: assert False, 'P2VV - ERROR: makeAssymetryPlot(): Cannot find reference histogram.'
+    HistList.remove(hRef)
+    
+    # get bin content and errors of reference histogram
+    ylistRef = hRef.GetY()
+    yErrHRef = hRef.GetEYhigh()
+    yErrLRef = hRef.GetEYlow()
 
-            replacementSet = set([ConstVar(Name=k + Comp, Value=v) for k,v in replacementDict.iteritems()])
-            CPcompPDF = Customizer( Pdf = self._tPdf, OriginalArgs = originalSet, SubstituteArgs = replacementSet
-                                   , ReplaceByName = True, ArgumentSuffix = Comp )
+    # functions for error caclulation 
+    from array import array
+    from math import sqrt
+    _l2a      = lambda List: array('d', List) # python list to array
+    _assym    = lambda x0,x1: (x0-x1) / (x0+x1) # assymetry value
+    _assymErr = lambda x0,e0,x1,e1: 2*sqrt((x1*e1)**2 + (x0*e0)**2) / (x1+x0)**2 # assymentry error
+      
+    # make assymetry plots
+    from ROOT import TGraphAsymmErrors
+    assymPlotsList = []
+    for hist in HistList: # loop over histograms present in frame 
+        ylist = hist.GetY()      # array of y-axis values
+        yErrH = hist.GetEYhigh() # array of y-axis high errors 
+        yErrL = hist.GetEYlow()  # array of y-axis low errors
+        assymYlist, assymYerrH, assymYerrL = [],[],[] # prepare relevant assymetry lists 
+        
+        # loop over histogram and calculate per bin assymetry
+        for point in xrange(frame.GetNbinsX()):
+            if ylistRef[point]==0 and ylist[point]==0 :
+                assymYlist.append(.0)
+                assymYerrH.append(.0)
+                assymYerrL.append(.0)
+            else:
+                assymYlist.append( _assym(ylistRef[point], ylist[point]) )
+                assymYerrH.append( _assymErr(ylistRef[point], yErrHRef[point], ylist[point], yErrH[point]) )
+                assymYerrL.append( _assymErr(ylistRef[point], yErrLRef[point], ylist[point], yErrL[point]) )
 
-            if (Comp == "even") : self._CpCompPdfs.update(dict(even  = CPcompPDF ))
-            if (Comp == "odd")  : self._CpCompPdfs.update(dict(odd   = CPcompPDF ))
-            if (Comp == "swave"): self._CpCompPdfs.update(dict(swave = CPcompPDF ))
+        graph = TGraphAsymmErrors( frame.GetNbinsX(),   # bins in x-axis
+                                   hRef.GetX(),         # array of x-axis values
+                                   _l2a(assymYlist),    # array of y-axis values
+                                   _l2a( 100*[.0] ),    # array of x-axis high errors 
+                                   _l2a( 100*[.0] ),    # array of x-axis low errors 
+                                   _l2a( assymYerrH ),  # array of y-axis high errors 
+                                   _l2a( assymYerrL )   # array of y-axis low errors 
+                                   )
+        
+        if yRange: 
+            graph.SetMinimum(yRange[0])
+            graph.SetMaximum(yRange[1])
+        graph.SetName(hist.GetName() + frame.getPlotVar().GetName())
+        graph.SetTitle(frame.getPlotVar().GetName())
+        graph.GetXaxis().SetTitle( frame.GetXaxis().GetTitle() )
+        graph.GetYaxis().SetTitle('Normalised Assymetry')
+        graph.SetMarkerColor(hist.GetMarkerColor())
+        graph.SetMarkerStyle(20)
+        markerSize = 1.5 if save else .5
+        graph.SetMarkerSize(markerSize)
+        assymPlotsList.append(graph)
+        _P2VVPlotStash.append(graph)
 
-        if self._flagKKbin:
-            #Split the Cp Components further into individual KK mass copmponents
-            tPdfs = dict( (bin, self._CpCompPdfs['total'].getPdf(bin)) for bin in self._binNames)
-            ePdfs = dict( (bin, self._CpCompPdfs['even' ].getPdf(bin)) for bin in self._binNames)
-            oPdfs = dict( (bin, self._CpCompPdfs['odd'  ].getPdf(bin)) for bin in self._binNames)
-            sPdfs = dict( (bin, self._CpCompPdfs['swave'].getPdf(bin)) for bin in self._binNames)
-        self._pdfsSuperDict.update(dict( (bin, dict(total = tPdfs[bin],
-                                                    even  = ePdfs[bin],
-                                                    odd   = oPdfs[bin],
-                                                    swave = sPdfs[bin] ) ) for bin in self._binNames ))
-        #Sneek these lines that set a unit for the phi, it helps RooFit
-        #  when creating the RooPlot. for some reason the unit of phi was not set up
-        try: list(self._observables)[[a.GetName() for a in list(self._observables)].index('helphi')].setUnit('rad')
-        except ValueError: print 'helphi observable not in angles lsit, Failed to set, rad, as a unit. '
+    canv.cd()
+    onePlot = assymPlotsList.pop()
+    onePlot.Draw('APZ')
 
-    #End of the initialazation
+    if save:
+        from ROOT import TCanvas
+        cw = TCanvas(canv.GetName() + '.pdf')    
+        cw.cd()
+        onePlot.Draw('APZ')
+        histNames = ''
+        for h in HistList: histNames += h.GetName().replace('h_','') 
+        saveInRootFile(cw,'assym_' + frame.getPlotVar().GetName() +'_'+ histNames)
 
-    #Internal methods
-    def calculateNormFracs(self, pdfDict):
-        from ROOT import RooArgSet
-        obs = RooArgSet(o._target_() for o in self._observables )
-        totInt = pdfDict['total'].getNorm(obs)
-        fEven  = pdfDict['even' ].getNorm(obs) / totInt
-        fOdd   = pdfDict['odd'  ].getNorm(obs) / totInt
-        fSwave = pdfDict['swave'].getNorm(obs) / totInt
-        return dict(even=fEven, odd=fOdd, swave=fSwave)
+    for g in assymPlotsList: 
+        canv.cd()
+        g.Draw('ZPsame')
+        if save: 
+            cw.cd()
+            g.Draw('ZPsame')
+            cw.Print('assym_' + frame.getPlotVar().GetName() +'_'+ histNames + '.pdf')
+    
+    del assymPlotsList
 
-    def calculateCPnormFracs(self):
-        print 'P2VV - INFO: Calculating relative normaliation fractions of the CP components.'
-        if not self._flagKKbin:
-             print 'P2VV - INFO: Finished calculating relative normaliation fractions of the CP components.'
-             return calculateNormFracs(self._CpCompPdfs)
-        if self._flagKKbin:
-            self._CPnormFracs = dict( (bin ,self.calculateNormFracs(dict(
-                                 total = self._CpCompPdfs['total'].getPdf(bin),
-                                 even  = self._CpCompPdfs['even'].getPdf(bin),
-                                 odd   = self._CpCompPdfs['odd'].getPdf(bin),
-                                 swave = self._CpCompPdfs['swave'].getPdf(bin)
-                                 )))for bin in self._binNames )
-            print 'P2VV - INFO: Finished calculating relative normaliation fractions of the CP components.'
-            return self._CPnormFracs
 
-    def calculateKKslicesNormFracs(self):
-        table = self._data.table(self._tPdf.indexCat())
-        total = float(self._data.sumEntries()) if   self._data.isWeighted() \
-                                               else float(self_.data.numEntries())
-        self._sliceNormFracs =  dict( (bin,table.get(bin)/total)for bin in self._binNames )
-        return self._sliceNormFracs
+class PlotAngPdfComponentsToolKit( dict ):
+    def __init__(self, pdf, data, components, angFuncCoefs, **kwargs ):
+        self['pdf'] = pdf
+        self['data'] = data
+        self['components'] = components
+        self['angFuncCoefs'] = angFuncCoefs
 
-    def getProJWdata(self,bin,Bins):
-        #Helping internal function to aviodavoid dublicating code,
-        #  Usefull in the case where you make 6x4 observable plots
-        if bin:
-            projData = self.binDataSet(Bins)
-            from ROOT import RooRealVar
-            projVars = []
-            for pV in projData.get():
-                if isinstance(pV,RooRealVar): projVars.append(pV)
-        else :
-            projVars = list(self._condObservables)
-            if self._flagKKbin: projVars.append(self._tPdf.indexCat())
-            projData = self._data.reduce(ArgSet=projVars)
+        self['colors'] = kwargs.pop( 'LineColors', {} )
+        self['styles'] = kwargs.pop( 'LineStyles', {} )
+        self['useExplNormPdf'] = kwargs.pop( 'UseExplicitNormPdf', False )
+        self['dataCatNames']   = kwargs.pop( 'DataCatNames',  ['per_x_sign', 'KpiMassCat'] )
+        self['angleNames']     = kwargs.pop( 'AngleNames', ['helcosthetaK','helcosthetaL','helphi'] )
+        self['angAmpsMap']     = kwargs.pop( 'AngAmpsMap', self._angAmpsMap() )
+        self['numKpiBins']     = kwargs.pop( 'NumKpiBins', 4 )
+        self['numAngTerms']    = kwargs.pop( 'NumAngterms', 10 )
+        
+        self['normScaleFactors'] = { comp : {} for comp in self['components'] }
+        self['cachedNormIntegrals'] = {}
+        self['cachedNormFracsKeys'] = []
+        
+        from ROOT import RooSuperCategory, RooArgSet
+        data_cat = RooSuperCategory('data_cata','data_cat', RooArgSet( self['data'].get().find(x) for x in self['dataCatNames']) )
+        cat_names = map( lambda t: t.GetName(), data_cat )
+        self['dataCatFracs'] = { '%s'%specie : self['data'].table(data_cat).getFrac(specie) for specie in cat_names }
 
-        return dict(data=projData, vars=projVars)
+        assert len(self['colors']) == len(self['styles']) == len(self['components']), 'P2VV - ERROR:PlotAngPdfComponentsToolKit: Length of line colors(%s), styles(%s) do not match components(%s)'\
+            %( len(self['colors']), len(self['styles']), len(self['components']) )  
+        
+        print 'P2VV - INFO: Initialiasing: PlotAngPdfComponentsToolKit %s.'\
+            %{ k : map(lambda term: self['angAmpsMap'][str(term)] , v) for k,v in self['components'].iteritems() }
+        self._buildPdfs( useExplicitNormPdf = self['useExplNormPdf'] )
 
-    def binDataSet(self, nBins):
-        if self._flagKKbin: projVars = list(self._condObservables) + [self._tPdf.indexCat()]
-        else              : projVars = list(self._condObservables)
+    def _angAmpsMap( self ):
+        return { '1':'A0_A0', '2':'Apar_Apar', '3':'Aperp_Aperp', '4':'Apar_Aperp', '5':'A0_Apar', 
+                 '6':'Apar_Aperp', '7':'AS', '8':'Apar_AS', '9':'Aperp_AS', '10':'A0_AS' }
 
-        from P2VV.RooFitWrappers import Category
-        from ROOT import RooArgSet, RooDataHist
-        binnedVarsList = []
-        #Bin only the continous observables
-        for pV in list(self._condObservables):
-            if    isinstance(pV,Category):pass
-            else: binnedVarsList.append(pV)
-        for pV in binnedVarsList: pV.setBins(nBins)
-
-        binnedVars =  RooArgSet(self._tPdf.indexCat(), *binnedVarsList)
-        return RooDataHist('RDH', 'RDH', binnedVars, self._data.reduce(RooArgSet(*projVars)))
-
-    #Interface
-    def getCPcompPdf(self):        return self._CpCompPdfs
-    def getNumKKbins(self):        return self._nKKbins
-    def getCPcompPdfKKbins(self):  return self._pdfsSuperDict
-    def getKKbinNames(self):       return self._binNames
-    def getCpCompNames(self):      return self._comps
-    def getCPnormFracs(self):
-        if not self._CPnormFracs: self.calculateCPnormFracs()
-        return self._CPnormFracs
-
-    def getKKslicesNormFracs(self):
-        if not self._sliceNormFracs: self.calculateKKslicesNormFracs()
-        return self._sliceNormFracs
-
-    def getPdfOpts(self, BinData=True,bins=20):
-        if   BinData: projDataSet=self.binDataSet(bins)
+    def _buildPdfs( self, useExplicitNormPdf ):
+        if useExplicitNormPdf:
+            self._buildPdfsUsingExplicitPdf()
         else:
-            projVars = list(self._condObservables) + [self._tPdf.indexCat()]
-            projDataSet = self._data.reduce(ArgSet=projVars)
-        return dict( LineWidth = self._lineWidth
-                   , LineColor = self._lineColors['total']
-                   , ProjWData = (projDataSet, False)
-                     )
+            self._builPdfsUsingCustomizer()
 
-    def getAddPdfs(self):
-        return [self._CpCompPdfs['even' ].getPdf(b)for b in self._binNames] +\
-               [self._CpCompPdfs['odd'  ].getPdf(b)for b in self._binNames] +\
-               [self._CpCompPdfs['swave'].getPdf(b)for b in self._binNames]
+    def _builPdfsUsingCustomizer( self ):
+        from P2VV.RooFitWrappers import RealVar, Customizer
 
-    def getAddPdfsOpts(self, BinData=True,bins=20):
-        if not self._CPnormFracs:    self.calculateCPnormFracs()
-        if not self._sliceNormFracs: self.calculateKKslicesNormFracs()
-        if BinData:
-            data     = self.binDataSet(bins)
-            projVars = self.getProJWdata(BinData,bins)['vars']
+        self['outPdfs'] = {}
+        for key, keepTerms in self['components'].iteritems():
+            keepTerms = map(lambda v: str(v), keepTerms)
+            originalSet    = set( filter( lambda par: par.GetName().split('_')[1] not in keepTerms, self['angFuncCoefs'])  )
+            replacementSet = set( [RealVar(Name='%s_%s'%(par.GetName(),key), Value = 0) for par in originalSet] )
+
+            for v in replacementSet: v.setConstant()
+
+            print 'P2VV - INFO: PlotAngPdfComponentsToolKit: Building %s component of %s.'%(key,self['pdf'].GetName())
+            self['outPdfs'][key] = Customizer( Pdf = self['pdf'], OriginalArgs = originalSet, SubstituteArgs = replacementSet, 
+                                               ReplaceByName = True, ArgumentSuffix = '_%s'%(key) )
+    
+    def _buildPdfsUsingExplicitPdf( self ):
+        print 'P2VV - INFO: PlotAngPdfComponentsToolKit: Use of RooExplicitNormPdf is not available yet.'
+
+    def _getIntegrateTerm( self, idx, KpiBin, sign, period, integrate = True ):
+        from ROOT import RooExtendPdf, RooRealSumPdf, RooArgSet
+    
+        pdf = self['pdf'].getPdf('{%s%s;%s}'%(sign,period,KpiBin))
+        if  type(pdf) == RooRealSumPdf: 
+            sumCoefList = pdf.funcList()
+        elif type(pdf) == RooExtendPdf:
+            assert type(pdf.findServer(0)) == RooRealSumPdf, 'P2VV - ERROR: PlotAngPdfComponentsToolKit: Wrong server index, extended pdf has no pdf of type RooRealSumPdf.'
+            pdf = pdf.findServer(0)
+            sumCoefList = pdf.funcList()
+
+        term = filter( lambda c: str(idx) == c.GetName().split('_')[1], sumCoefList )[0]
+
+        obsSet = filter( lambda o: o.GetName() in self['angleNames'], self['pdf'].getObservables(self['data']) )
+        intgrl = lambda arg: arg.createIntegral( RooArgSet( var for var in obsSet), RooArgSet() ).getVal()
+        
+        output = intgrl(term) if integrate else term
+        return output
+
+    def _calcNormScaleFactors( self, sign, period, KpiBin ):
+        
+        integral = lambda int_terms: [ self._getIntegrateTerm(i, KpiBin, sign, period) for i in int_terms ]
+
+        allTerms   = range( 1, self['numAngTerms'] + 1) 
+        if '%s%s%s'%(sign,period,KpiBin) in self['cachedNormIntegrals'].keys():
+            normIntgrl = self['cachedNormIntegrals']['%s%s%s'%(sign,period,KpiBin)]
         else:
-            data     = self._data
-            projVars = list(self._condObservables)
-        opts = []
-        for comp in self._comps:
-            for bin in self._binNames:
-                binInd = self._binNames.index(bin)
-                addPdfOpt_i = dict( ProjWData     = (data.reduce('KKMassCat==KKMassCat::' + bin),False),
-                                    Normalization =  self._CPnormFracs[bin][comp] * self._sliceNormFracs[bin] )
-                if not binInd==self._nKKbins-1:addPdfOpt_i.update(dict( Invisible = ()                       ))
-                if     binInd==self._nKKbins-1:addPdfOpt_i.update(dict( LineColor = self._lineColors[comp],
-                                                                        LineStyle = self._lineStyles[comp],
-                                                                        LineWidth = self._lineWidth          ))
-                if not binInd==0: #odd   Components First index = len(self._binNames)
-                                  #swave Components First index = 2 *( len(self._binNames)
-                                  if comp=='even' : argAddTo = ( 'addPDF{0}'.format(binInd-1),1.,1.)
-                                  if comp=='odd'  : argAddTo = ( 'addPDF{0}'.format(  len(self._binNames) + binInd-1 ,1.,1.) )
-                                  if comp=='swave': argAddTo = ( 'addPDF{0}'.format(2*len(self._binNames) + binInd-1 ,1.,1.) )
-                                  addPdfOpt_i.update(dict(AddTo = argAddTo))
-                opts.append(addPdfOpt_i)
-        return opts
+            normIntgrl = 1. / sum( integral(allTerms) )
+            self['cachedNormIntegrals']['%s%s%s'%(sign,period,KpiBin)] = normIntgrl
+        
+        for comp, terms in self['components'].iteritems():
+            self['normScaleFactors'][comp].update({ '{%s%s;%s}'%(sign,period,KpiBin) :  normIntgrl * sum( integral(terms) ) })
 
-    def getPdfOptsSixKKbins(self, BinData=True, bins=20):
-        projecting = self.getProJWdata(BinData,bins)
-        projData   = projecting['data']
-        projVars   = projecting['vars']
-        if not BinData:  projVars.remove( self._tPdf.indexCat() )
-        opts = {}
-        KKCat = 'KKMassCat==KKMassCat::'
-        for b in self._binNames:
-            opts.update( {b : dict(  ProjWData = (projData.reduce(KKCat+b).reduce(ArgSet=projVars), False)
-                                   , LineWidth = self._lineWidth
-                                   , LineStyle = self._lineStyles['total']
-                                   , LineColor = self._lineColors['total'])
-                          }  )
-        return opts
+    def _averageFractions( self, sign, period, KpiBins ):
+        
+        averaged_fracs = {}
+        for comp in self['components']:
+            sum_of_weights = 0.
+            averaged_fracs[comp] = 0.
+            for s in sign:
+                for p in period:
+                    for b in KpiBins:
+                        key = '{%s%s;%s}'%(s,p,b)
+                        val = self['normScaleFactors'][comp][key]
+                        wgt = self['dataCatFracs'][key]
+                        averaged_fracs[comp] += val * wgt            
+                        sum_of_weights += wgt
+            averaged_fracs[comp] /= sum_of_weights 
+        return averaged_fracs
 
-    def getAddPdfsOptsSixKKbins(self,BinData=True,bins=20):
-        if not self._CPnormFracs:    self.calculateCPnormFracs()
-        projecting = self.getProJWdata(BinData,bins)
-        projData   = projecting['data']
-        projVars   = projecting['vars']
-        if not BinData:  projVars.remove( self._tPdf.indexCat() )
-        opts = []
-        for bin in self._binNames:
-            ith_binOpts = { }
-            for comp in self._comps:
-                opt = dict(  ProjWData     = (projData.reduce('KKMassCat==KKMassCat::'+bin).reduce(ArgSet=projVars),False)
-                           , LineColor     =  self._lineColors[comp]
-                           , LineStyle     =  self._lineStyles[comp]
-                           , LineWidth     =  self._lineWidth
-                           , Normalization =  self._CPnormFracs[bin][comp]
-                             )
-                ith_binOpts.update( {comp:opt} )
-            opts.append( ith_binOpts  )
-        return opts
+    
+    def getFracs( self, sign, period, KpiBin, verbose = True ):
+        assert type(sign)==list and type(period)==list and type(KpiBin)==str, 'P2VV - ERROR: PlotAngPdfComponentsToolKit.getFracs(): Invalid input types. Should be sign(list), period(list), KpiBin(str)'
 
-    def setLineColors(self,colors): self._lineColors = colors
-    def setLineStyles(self,styles): self._lineStyles = styles
-    def setLineWidth(self, width ): self._lineWidth  = width
+        def _calc_if( s, p, KpiBin ):
+            key = '{%s%s;%s}'%(s,p,KpiBin)
+            if key not in self['cachedNormFracsKeys']:
+                self._calcNormScaleFactors(s, p, KpiBin )                
+                self['cachedNormFracsKeys'].append(key) 
+
+        # normalization scales and averaging over data categories
+        if not KpiBin == 'all':
+            assert len(KpiBin)>2 and 'bin' in KpiBin, 'P2VV - ERROR: PlotAngPdfComponentsToolKit.getFracs(): Invalid input type for KpiBin. Should be bin{1,2,...}'
+
+            if verbose: print 'P2VV - INFO: Calculating normalization fractions in %s and averaging over signs: %s, periods: %s. '%(KpiBin,sign,period)
+            for s in sign:
+                for p in period:
+                    _calc_if( s, p, '%s'%KpiBin )
+            returned_fracs = self._averageFractions( sign, period, [KpiBin] )
+
+        else:
+            if verbose: print 'P2VV - INFO: Calculating normalization fractions and averaging over signs: %s, periods: %s and %s Kpi bins. '%(sign,period,KpiBin)
+            for s in sign:
+                for p in period:
+                    for b in range( 1, self['numKpiBins'] + 1 ):
+                        _calc_if( s, p, 'bin%s'%b )
+            bins = [ 'bin%s'%b for b in range( 1, self['numKpiBins'] + 1 ) ]
+            returned_fracs = self._averageFractions( sign, period, bins )
+ 
+        return returned_fracs
 
 
 # function for plotting the S-wave parameters versus the (binned) KK mass
@@ -792,3 +873,199 @@ class Sorter(object):
     def __call__(self, o):
         if o in self.__d:  return self.__d[o]
         else:              return len(self.__d) + 1
+
+# Save a plot/Canvas in a root file
+def saveInRootFile(plot, fileName=''):
+    from ROOT import TFile
+    if '.C' in fileName: name = fileName
+    elif fileName: name = fileName + '.C'
+    else:          name = plot.GetName() + '.C'
+    
+    f = TFile.Open(name,'recreate')
+    plot.Write()
+    f.Close()
+    print 'P2VV -INFO:saveInRootFile: Wrote %s to file: %s.'%(plot.GetName(),name)
+
+
+def plot2DacceptanceDivide(canvs, pdf, data, nbins=20):
+    from math import pi
+    from ROOT import TH2D, RooArgSet
+    from P2VV.Load import LHCbStyle
+
+    # integrals for 2D projections
+    angles = pdf.getObservables(data)
+    PHI  = angles.find('helphi')
+    CTHK = angles.find('helcosthetaK')
+    CTHL = angles.find('helcosthetaL')
+
+    cThK_cThL_Integral = pdf.createIntegral( RooArgSet(PHI),  RooArgSet() )
+    cThK_Phi_Integral  = pdf.createIntegral( RooArgSet(CTHL), RooArgSet() )
+    cThL_Phi_Integral  = pdf.createIntegral( RooArgSet(CTHK), RooArgSet() )
+
+    contKL   = TH2D('cThK-cThL_div',   'cThK-cThL_div',   nbins, -1, 1, nbins, -1,  1 )
+    contKphi = TH2D('cThK-cThphi_div', 'cThK-cThphi_div', nbins, -1, 1, nbins, -pi, pi)
+    contLphi = TH2D('cThL-cThphi_div', 'cThL-cThphi_div', nbins, -1, 1, nbins, -pi, pi)
+    _P2VVPlotStash.append([contKL, contKphi, contLphi])
+
+    # loop over observavble's space and map 2D shape of acceptance
+    # KL
+    for i in range(contKL.GetXaxis().GetNbins()):
+        cThK = contKL.GetXaxis().GetBinCenter(i+1)
+        CTHK.setVal(cThK)
+        for j in range(contKL.GetYaxis().GetNbins()):
+            cThL = contKL.GetYaxis().GetBinCenter(j+1)            
+            CTHL.setVal(cThL)
+            contKL.Fill( cThK, cThL, cThK_cThL_Integral.getVal() )
+
+    # K phi
+    for i in range(contKphi.GetXaxis().GetNbins()):
+        cThK = contKphi.GetXaxis().GetBinCenter(i+1)
+        CTHK.setVal(cThK)
+        for j in range(contKphi.GetYaxis().GetNbins()):
+            phi = contKphi.GetYaxis().GetBinCenter(j+1)            
+            PHI.setVal(phi)
+            contKphi.Fill( cThK, phi, cThK_Phi_Integral.getVal() )
+
+    # L phi
+    for i in range(contLphi.GetXaxis().GetNbins()):
+        cThL = contLphi.GetXaxis().GetBinCenter(i+1)
+        CTHL.setVal(cThL)
+        for j in range(contLphi.GetYaxis().GetNbins()):
+            phi = contLphi.GetYaxis().GetBinCenter(j+1)            
+            PHI.setVal(phi)
+            contLphi.Fill( cThL, phi, cThL_Phi_Integral.getVal() )
+
+     # 2D histograms of data
+    dataContKL   = data.createHistogram( CTHK, CTHL, nbins, nbins )
+    dataContKPhi = data.createHistogram( CTHK, PHI,  nbins, nbins )
+    dataContLPhi = data.createHistogram( CTHL, PHI,  nbins, nbins )
+    _P2VVPlotStash.append([dataContKL, dataContKPhi, dataContLPhi])
+
+    # draw options
+    for contour in [contKL, dataContKL]:
+        contour.SetXTitle('cos#theta_{K}')
+        contour.SetYTitle('cos#theta_{L}')
+        contour.GetXaxis().SetNdivisions(4,0,0)
+        contour.GetYaxis().SetNdivisions(4,0,0)
+        contour.GetZaxis().SetNdivisions(4,0,0)
+ 
+    for contour in [contKphi, dataContKPhi]:
+        contour.SetXTitle('cos#theta_{K}')
+        contour.SetYTitle('#phi_{h}')
+        contour.GetXaxis().SetNdivisions(4,0,0)
+        contour.GetYaxis().SetNdivisions(4,0,0)
+        contour.GetZaxis().SetNdivisions(4,0,0)
+        
+    for contour in [contLphi, dataContLPhi]:
+        contour.SetXTitle('cos#theta_{L}')
+        contour.SetYTitle('#phi_{h}')
+        contour.GetXaxis().SetNdivisions(4,0,0)
+        contour.GetYaxis().SetNdivisions(4,0,0)
+        contour.GetZaxis().SetNdivisions(4,0,0)
+
+    canvs[0].cd()
+    dataContKL.Divide(contKL)
+    dataContKL.Draw('Lego2')
+
+    canvs[1].cd()
+    dataContKPhi.Divide(contKphi)
+    dataContKPhi.Draw('Lego2')
+
+    canvs[2].cd()
+    dataContLPhi.Divide(contLphi)
+    dataContLPhi.Draw('Lego2')
+
+    return canvs
+
+
+def plot2DefficiencyFunc(canvs, effFunc, angles, nbins = 100, surfStyle = 'Surf4'):
+    # integrals for 2D projections
+    PHI  = angles[2]
+    CTHK = angles[0]
+    CTHL = angles[1]
+
+    from ROOT import RooArgSet, TH2D
+    cThK_cThL_Integral = effFunc.createIntegral( RooArgSet(PHI), RooArgSet() )
+    cThK_Phi_Integral = effFunc.createIntegral( RooArgSet(CTHL), RooArgSet() )
+    cThL_Phi_Integral = effFunc.createIntegral( RooArgSet(CTHK), RooArgSet() )
+
+    from P2VV.Load import LHCbStyle
+    from math import pi
+    contKL   = TH2D('cThK-cThL',   'cThK-cThL',   nbins,-1,1, nbins,-1,1)
+    contKphi = TH2D('cThK-cThphi', 'cThK-cThphi', nbins,-1,1, nbins,-pi,pi)
+    contLphi = TH2D('cThL-cThphi', 'cThL-cThphi', nbins,-1,1, nbins,-pi,pi)
+    _P2VVPlotStash.append( [contKL, contKphi, contLphi] )
+
+    # KL
+    for i in range(contKL.GetXaxis().GetNbins()):
+        cThK = contKL.GetXaxis().GetBinCenter(i+1)
+        CTHK.setVal(cThK)
+        for j in range(contKL.GetYaxis().GetNbins()):
+            cThL = contKL.GetYaxis().GetBinCenter(j+1)            
+            CTHL.setVal(cThL)
+            contKL.Fill( cThK, cThL, cThK_cThL_Integral.getVal() )
+
+    # K phi
+    for i in range(contKphi.GetXaxis().GetNbins()):
+        cThK = contKphi.GetXaxis().GetBinCenter(i+1)
+        CTHK.setVal(cThK)
+        for j in range(contKphi.GetYaxis().GetNbins()):
+            phi = contKphi.GetYaxis().GetBinCenter(j+1)            
+            PHI.setVal(phi)
+            contKphi.Fill( cThK, phi, cThK_Phi_Integral.getVal() )
+
+    # L phi
+    for i in range(contLphi.GetXaxis().GetNbins()):
+        cThL = contLphi.GetXaxis().GetBinCenter(i+1)
+        CTHL.setVal(cThL)
+        for j in range(contLphi.GetYaxis().GetNbins()):
+            phi = contLphi.GetYaxis().GetBinCenter(j+1)            
+            PHI.setVal(phi)
+            contLphi.Fill( cThL, phi, cThL_Phi_Integral.getVal() )
+
+    # K - L
+    contKL.SetXTitle('cos#theta_{K}')
+    contKL.SetYTitle('cos#theta_{L}')
+    contKL.SetZTitle('A.U.')
+
+    contKL.GetZaxis().SetTitleOffset(0.7)
+    contKL.GetYaxis().SetTitleOffset(1.3)
+
+    contKL.GetXaxis().SetNdivisions(4,0,0)
+    contKL.GetYaxis().SetNdivisions(4,0,0)
+    contKL.GetZaxis().SetNdivisions(4,0,0)
+ 
+    # K - phi
+    contKphi.SetXTitle('cos#theta_{K}')
+    contKphi.SetYTitle('#varphi_{h} [rad]')
+    contKphi.SetZTitle('A.U.')
+
+    contKphi.GetZaxis().SetTitleOffset(0.7)
+    contKphi.GetYaxis().SetTitleOffset(1.3)
+
+    contKphi.GetXaxis().SetNdivisions(4,0,0)
+    contKphi.GetYaxis().SetNdivisions(4,0,0)
+    contKphi.GetZaxis().SetNdivisions(4,0,0)
+
+    # L - phi
+    contLphi.SetXTitle('cos#theta_{L}')
+    contLphi.SetYTitle('#varphi_{h} [rad]')
+    contLphi.SetZTitle('A.U.')
+
+    contLphi.GetZaxis().SetTitleOffset(0.9)
+    contLphi.GetYaxis().SetTitleOffset(1.3)
+
+    contLphi.GetXaxis().SetNdivisions(4,0,0)
+    contLphi.GetYaxis().SetNdivisions(4,0,0)
+    contLphi.GetZaxis().SetNdivisions(4,0,0)
+
+    canvs[0].cd()
+    contKL.Draw(surfStyle)
+
+    canvs[1].cd()
+    contKphi.Draw(surfStyle)
+
+    canvs[2].cd()
+    contLphi.Draw(surfStyle)
+
+    return [canvs[0],canvs[1],canvs[2]]

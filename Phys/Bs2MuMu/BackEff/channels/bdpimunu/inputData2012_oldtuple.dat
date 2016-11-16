@@ -1,0 +1,9 @@
+EventType 	 	11512012
+BranchingFraction	1.44e-4 	0.05e-4
+GenerationEfficiency	0.1847 		0.000608
+InputFile 	 	/castor/cern.ch/user/f/fdettori/bsmumu/background/MC11_BdPiMuNu_all_5M.root
+AnalysedEvents 	 	4985981
+ReweightParticle	211
+WeightFile 		/castor/cern.ch/user/f/fdettori/bsmumu/pidefficiencies/Pion_2011Strip17.root
+NormalisationYear	2012
+

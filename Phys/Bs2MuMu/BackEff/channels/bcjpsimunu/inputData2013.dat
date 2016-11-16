@@ -1,0 +1,8 @@
+EventType 	 	14543009   # first guess
+AsymBF	  0.132 0.051 0.052   # this is Bc/Bu ratio!
+GenerationEfficiency	0.002869309 0.000028693 # Marc-Olivier 20130618 (intrinsic 1% error)
+InputFile 	 	/castor/cern.ch/user/f/fdettori/bsmumu/background/MC2012_BcJpsiMuNu_Down.root
+InputFile 	 	/castor/cern.ch/user/f/fdettori/bsmumu/background/MC2012_BcJpsiMuNu_Up.root
+AnalysedEvents 	 	1019399 
+NormalisationYear	2013
+

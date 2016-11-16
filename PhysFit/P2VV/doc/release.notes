@@ -1,47 +1,16 @@
 !-----------------------------------------------------------------------------
 ! Package     : PhysFit/P2VV
 ! Responsible : Jeroen VAN LEERDAM, Diego MARTINEZ SANTOS
-! Purpose     : RooFit framework for decay-time and angular dependent analyses.
+! Purpose     : keeping Tristan's crazy RooFit stuff.
 !-----------------------------------------------------------------------------
 
-!============================================== v3r6 2014-10-20 ==============================
-! 2014-10-20 Diego Martinez Santos
-	 Make version v3r6
-! 2014-09-04 - Marco Clemencic
- - Fixed build with ROOT 6.
+!============================================== v4r0 2015-11-20 ==============================
+! 2015-11-20 Diego Martinez Santos
+	 Make version v4r0
+!============================== v3r4 2013-10-09 ==============================
 
-! 2014-05-28 - Marco Clemencic
- - Fixed compilation with ROOT 6.
-
-! 2014-05-12 - Marco Clemencic
- - Fixed CMake configuration.
-
-! 2014-05-11 - Marco Clemencic
- - Minor change to work with the latest changes in the reflex dictionary pattern,
-   needed for ROOT 6's PCMs.
-
-!============================================== v3r5 2014-4-11 ==============================
-! 2014-4-11 Diego Martinez Santos
-	 Make version v3r5
-! 2014-04-04 - Roel Aaij
- - Fix RooBinnedFun
- - Fix standalone Makefile
-
-! 2014-03-25 - Marco Clemencic
- - Fixed CMake build.
-
-! 2014-03-20 - Marco Clemencic
- - Added CMake configuration file.
-
-! 2013-11-05 - Roel Aaij
- - Fix library loading for the LHCb version where the reflex dictionary is
-   needed.
- - Update library loading with a fix from Manuel (many thanks!) it now works.
- 
-!=============================== v3r4 2013-10-9 ==============================
-
-! 2013-10-9 Diego Martinez Santos
-	 Make version v3r4
+! 2013-10-09 - Diego Martinez Santos
+ - Make version v3r4
 
 !============================== v3r3 2013-09-18 ==============================
 
@@ -323,75 +292,3 @@
   . Inline angle accessor methods.
 
 ! 2008-05-27 - Juan PALACIOS
- - ThreeAngles, TwoAngles, OneAngle classes now are simple holders for 3, 2 and
-   1 RooRealVars representing the corresponding angles. No parent is involved,
-   the classes are standalone, and have accessors to references to the data.
-
- - Add P2VV::OneAngleProxy, P2VV::TwoAngleProxy.h, P2VV::ThreeAngleProxy
-   . These classes are constructed from a OneAngle, TwoAngles or ThreeAngles
-     respectively, plus a pointer to a RooAbsReal parent. The RooRealVar data
-     from the simple Angles classes are used to construct RooRealProxies, with
-     the parent pointer used for ownership. These are used internally by all
-     derived classes of AbsAnglesFunc (HelFX and TransFX).
-
- - P2VV/AnglesAbsFunc.h, src/AnglesAbsFunc.cpp
-   . Modify to be templated on one of the new AnglesProxy classes, while
-     taking a simple Angles type in the constructor.
-
- - P2VV/HelF*.h, P2VV/TransF*.h
-  . Modify to adapt to changes related to new AnglesProxy classes. Concretely,
-    these classes are now all public AnglesAbsFunc<P2VV::ThreeAngleProxy>.
-
- - dict/P2VVDict.h, dict/P2VV.xml
-  . Make dicitonaries for the new P2VV::OneAngleProxy, P2VV::TwoAngleProxy and
-    P2VV::ThreeAngleProxy classes.
-  . Fix a bunch of other problems with the dictionaries.
-
-! 2008-05-26 - Tristan Arnoldus DU PREE
- - Removed AngularAcceptanceCorretions.{h,cpp}
-  . Inheritance from RooAbsReal was unnecessary. phi(unsigned int) was possibly dangerous.
- - Added AngularAcceptanceCorrectionSet.{h,cpp}
-  . Is a RooArgSet which can return the (6 phi) RooRealVars it takes as argument. Removed the -possibly dangerous- functions which take unsigned ints as arguments.
-
-! 2008-05-13 - Tristan Arnoldus DU PREE
- - ThreeAngles, TwoAngles, OneAngle classes
-  . Added these classes which hold {3,2,1} classes
- - AnglesAbsFunc<xAngles>
-  . Templated to hold xAngles
- - TransFi, HelFi
-  . Adjusted to above new setup
- - AngularAcceptanceCorrections
-  . Fixed minor bugs (int==double), removed inheritance from RooAbsReal
-
-! 2008-04-24 - Tristan Arnoldus DU PREE
- - src/AngularAcceptanceCorrections
- - P2VV/AngularAcceptanceCorrections
-	. Added new class which holds 6 Phi's
-
-! 2008-04-22 - Tristan Arnoldus DU PREE
- - src/AnglesAbsFunc.cpp
-	. Changed _usePhi(false) to _usePhi(true) in 6 argument constructor of AnglesAbsFunc(name, title, 3 angles, Phi).
-
-! 2008-04-04 - Juan PALACIOS
- - src/TransF5.cpp
-  . Fix typo in THREEANGLES::FFSS::TransF5::analyticalIntegral(Int_t code,const char* range) const
-
-! 2008-01-25 - Juan PALACIOS
-
- -  P2VV/TransF*.h, P2VV/HelF*.h (and corresponding .cpp files in src/)
-  . Put all TransF* and HelF* classes unsed P2VV::THREEANGLES::FFSS namespace.
-
- - src/P2VVPdfMakerFunctions.cpp, dict/P2VVDict.xml
-  . Adapt to new P2VV::THREEANGLES::FFSS namespaces (see above)
-
-! 2008-01-25 - Juan PALACIOS
-
- - P2VV/AnglesAbsFunc.h, src/AnglesAbsFunc.cpp
-  . Add five parameter constructor:
-     AnglesAbsFunc::AnglesAbsFunc(const char *name, 
-                                  const char *title,
-                                  RooRealVar& cpsi, 
-                                  RooRealVar& ctheta, 
-                                  RooRealVar& phi);
- - cmt/requirements
-  . Prepare for ROOT 5.18. libRooFit has bee

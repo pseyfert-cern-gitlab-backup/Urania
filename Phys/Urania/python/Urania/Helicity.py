@@ -24,14 +24,20 @@ Phi_tr = Symbol("\\phi_{tr}", real = True)
 Theta_tr = Symbol("\\theta_{tr}",positive = True)
 
 
-
 ## Make the test for B -->J/psi hh
+def doKsPizeroMMTerm(J,alpha):
+    """ Does a J, lambda, alpha term ...
+    """
+    thingie = str(J)+"_"+str(0)
+    if not thingie in H.keys(): H[thingie] = Symbol("H_("+thingie+")")
+    z = Sqrt( (2*J+1)/(Pi*4)) * H[thingie]*Exp(I*0*Phi)*Rotation.d(J,0,alpha,ThetaL)*Rotation.d(0,0,0,ThetaK)
+    return z.doit()
 
 def doTerm(J,l,alpha):
     """ Does a J, lambda, alpha term ...
     """
     thingie = str(J)+"_"+str(l)
-    H[thingie] = Symbol("H_("+thingie+")")
+    if not thingie in H.keys(): H[thingie] = Symbol("H_("+thingie+")")
     z = Sqrt( (2*J+1)/(Pi*4)) * H[thingie]*Exp(I*l*Phi)*Rotation.d(1,l,alpha,ThetaL)*Rotation.d(J,-l,0,ThetaK)
     return z.doit()
 
@@ -61,7 +67,9 @@ def UseTransAmp(expr, Jlist):
         if not a0 in TransAmplitudes.keys(): TransAmplitudes[a0] = Symbol("A_"+j+"0")
         if not apa in TransAmplitudes.keys(): TransAmplitudes[apa] = Symbol("A_"+j+"pa")
         if not ape in TransAmplitudes.keys(): TransAmplitudes[ape] = Symbol("A_"+j+"pe")
-        out = out.subs( [(H[j+"_0"],TransAmplitudes[j+"_0"]), (H[j+"_1"],1/Sqrt(2)*( TransAmplitudes[j+"_pa"] +TransAmplitudes[j+"_pe"])),(H[j+"_-1"],1/Sqrt(2)*( TransAmplitudes[j+"_pa"]-TransAmplitudes[j+"_pe"]))])
+        if j+"_0" in H.keys(): out = out.subs(H[j+"_0"],TransAmplitudes[j+"_0"])
+        if j + "_1" in H.keys(): out = out.subs(H[j+"_1"],1/Sqrt(2)*( TransAmplitudes[j+"_pa"] +TransAmplitudes[j+"_pe"]))
+        if j +  "_-1" in H.keys(): out = out.subs(H[j+"_-1"],1/Sqrt(2)*( TransAmplitudes[j+"_pa"]-TransAmplitudes[j+"_pe"]))
         
     return out
                          
@@ -115,6 +123,28 @@ def squareAmpl(A):
     return Ab.expand()
     
     
+def doKsPizeroMuMu(Jlist, transAmp = 1):
+    AllTerms = {}
+    out = 0
+    helicities = [0]
+    for i in range(max(Jlist)):
+        helicities += [i,-i]
+    helicities.sort()
+#    print helicities
+    for h in helicities:
+ #       print h
+        AllTerms[h] = 0
+        
+        for i in Jlist:
+            if i < abs(h): continue
+            NewTerm =  doKsPizeroMMTerm(i,h) 
+  #          print i, NewTerm
+            AllTerms[h] += NewTerm #doKsPizeroMMTerm(i,h) 
+    for h in helicities:
+        if transAmp: AllTerms[h] = UseTransAmp(AllTerms[h] , Jlist)
+        out += squareAmpl(AllTerms[h])
+    #if transAng: out = TransversityAngles(out)
+    return out.expand()   
 
 def doB2VX(Jlist,  helicities = [1,-1], transAmp = 1,transAng = 0):
     """Generates an angular pdf for B-->Jpsi hh' for intermediate
@@ -207,8 +237,8 @@ def DefineStrongPhases(free_delta0 = 0):
     for key in TransAmplitudes:
         amp = str(TransAmplitudes[key])
         #name = str(amp)
-        if key not in TransAmpModuli.keys(): TransAmpModuli[key] = Symbol(amp+"_mod",positive = True)
-        if key not in TransAmpPhases.keys(): TransAmpPhases[key] = Symbol("delta" + amp.replace("A",""),real = True)
+        if key not in TransAmpModuli.keys(): TransAmpModuli[key] = USymbol(amp+"_mod","\\|"+amp+"\\|", positive = True)
+        if key not in TransAmpPhases.keys(): TransAmpPhases[key] = USymbol("delta" + amp.replace("A",""),"\\delta" + amp.replace("A",""),real = True)
     if not free_delta0: TransAmpPhases["1_0"] = UraniaSR(0)
 
 def StrongPhases(expr, free_delta0=0):

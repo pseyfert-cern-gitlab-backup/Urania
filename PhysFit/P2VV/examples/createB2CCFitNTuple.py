@@ -2,9 +2,9 @@
 ## script settings ##
 #####################
 
-nTupleFilePath  =  "~/vol5/BPT1.root"#'data/Reco14/2011_2012_dv33r6p1_s20_201309_tupleB_add.root'
+nTupleFilePath  = 'data/Reco14/2011_2012_dv33r6p1_s20_201309_tupleB_add.root'
 nTupleName       = 'DecayTree'
-dataSetsFilePath = nTupleFilePath.replace(".root","_newSw.root")
+dataSetsFilePath = 'fitNTuple_2011_2012_Reco14.root'
 appendToFile     = False
 
 runPeriods       = [ 2011, 2012 ]
@@ -402,7 +402,6 @@ if splitDataSet :
         preDS = dataSets['preS'][0].reduce( Cut = sample[1] )
         mainDSList.append( dataTree.buildDataSet( Observables = obsSetMain, Name = 'JpsiKK_' + sample[0], Title = 'JpsiKK'
                                                  , IndexName = 'index', OrigDataSet = preDS ) )
-        preDS.IsA().Destructor(preDS)
         mainDS.append( mainDSList[-1] )
 
 else :
@@ -412,9 +411,6 @@ else :
 
 dataSets['main'] = ( mainDS, mainDSList )
 
-if dataSets['preS'][0] : dataSets['preS'][0].IsA().Destructor(dataSets['preS'][0])
-if dataSets['pre'][0]  : dataSets['pre'][0].IsA().Destructor(dataSets['pre'][0])
-if dataTree            : dataTree.IsA().Destructor(dataTree)
 dataSets.pop('pre')
 dataSets.pop('preS')
 dataTreeFile.Close()

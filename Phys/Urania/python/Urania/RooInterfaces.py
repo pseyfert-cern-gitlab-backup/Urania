@@ -1,6 +1,7 @@
 from ROOT import *
 from Urania.SympyBasic import *
 from Urania.LatexFunctions import *
+from Urania.CppFunctionsMaker import strCPP
 from math import pi
 from os import environ, system as shell
 from sympy.utilities import codegen
@@ -31,7 +32,6 @@ def makeVarString(variables):
     out = str(variables[0])
     for var in variables[1:]: out += ","+ str(var)
     return out
-def strCPP(symfunction): return codegen.ccode(symfunction)
 
 class RooClassEditor:
     def __init__(self,  symfunction, variables,filename):
@@ -40,6 +40,8 @@ class RooClassEditor:
 
         self.symfunction = symfunction
         self.variables = variables
+        for var in self.variables:
+            if 'useFirstName' in dir(var): var.useFirstName()
         self.integrals = {}
         self.sublist = []
     def doIntegral(self, code, *vars_and_ranges):

@@ -18,7 +18,7 @@
 #include "Riostream.h"
 
 #include <iostream>
-using namespace std;
+using std::endl;
 
 //_____________________________________________________________________________
 RooComplementCoef::RooComplementCoef(const char* name, const char* title,

@@ -3,28 +3,32 @@ from scipy import random as rnd
 from ROOT import *
 from Urania import * ## make available the old ".tree()" method of RooDataSets
 from SomeUtils.numericFunctionClass import *
-
+from parameters import *
 AccessPackage("Bs2MuMu")
 from smartpyROOT import *
 recoverTree()
 from OurSites import *
-#gROOT.ProcessLine('.x $SOMEMASSMODELSROOT/src/Kstar_evtgen.cxx++')
-gROOT.ProcessLine('.x $SOMEMASSMODELSROOT/src/B2JPsiKpi_ps_evtgen.cxx++')
-t,fp = getTuple("/home/galaceos/cmtuser/URANIA/URANIA_HEAD/Phys/BsJPsiKst/ntuples/BdJpsiKpi_MC_BDTG_2012p", thing = "DecayTree")
+CHANNEL = "Bd"
+gROOT.ProcessLine('.x $SOMEMASSMODELSROOT/src/Kstar_evtgen.cxx++')
+#gROOT.ProcessLine('.x $SOMEMASSMODELSROOT/src/B2JPsiKpi_ps_evtgen.cxx++')
+#t,fp = getTuple("/afs/cern.ch/user/j/jugarcia/cmtuser/Bs2JPsiKst/MC_ntuples/BdJpsiKpi_MC_BDTG_2012p", thing = "DecayTree")
+fp = TFile.Open("~/NTuplesFast/MC/selsignal/"+ CHANNEL +"/" + CHANNEL + "_11_sel.root")
+t = fp.Get("DecayTree")
 f2 = TFile("/tmp/eraseme","recreate")
-
+Bmasses = {"Bs": PDG.Bs.mass, "Bd": PDG.Bd.mass}
+Bmass = Bmasses[CHANNEL]
 lo = PDG.Kplus.mass + PDG.piplus.mass
-hi = PDG.Bs.mass - PDG.Jpsi.mass #- 0.001
+hi = Bmass - PDG.Jpsi.mass #- 0.001
 Nbins = 1000
 L0 = RooRealVar("L0","L0",0.)
 L1 = RooRealVar("L0","L0",0.)
 
 m0P = RooRealVar("m0P","m0P",PDG.Kst0.mass)
 gamma0P = RooRealVar("gamma0P","gamma0P",PDG.Kst0.width)
-#P1mass = RooRealVar("P1_mass","M(K#pi) ",lo, hi,"MeV/c^{2}")
-Kpimass = RooRealVar("Kpimass","M(K#pi) ",lo, hi,"MeV/c^{2}")
+P1mass = RooRealVar("P1_mass","M(K#pi) ",lo, hi,"MeV/c^{2}")
+#Kpimass = RooRealVar("Kpimass","M(K#pi) ",lo, hi,"MeV/c^{2}")
 
-mb = RooRealVar("mb","mb",PDG.Bd.mass)
+mb = RooRealVar("mb","mb",Bmass)
 mv = RooRealVar("mv","mv",PDG.Jpsi.mass)
 m_kaon = RooRealVar("m_kaon","m_kaon",PDG.Kplus.mass)
 m_pion = RooRealVar("m_pion","m_pion",PDG.piplus.mass)
@@ -33,10 +37,10 @@ m_pion = RooRealVar("m_pion","m_pion",PDG.piplus.mass)
 def_sw = Kmatrix_KpiSwave
 def_pw = Kst02Kpi_EvtGen
 def_dw = Kst0_1430_2_2Kpi_EvtGen
-#gen = Kstar_evtgen("Signal","Signal",P1mass,m0P,gamma0P,m_kaon,m_pion,L1,mb,mv,L0)
-gen = B2JPsiKpi_ps_evtgen("Signal","Signal",Kpimass,m0P,gamma0P,m_kaon,m_pion,L1,mb,mv,L0)
-#eu = gen.generate(RooArgSet(P1mass),1000000)
-eu = gen.generate(RooArgSet(Kpimass),1000000)
+gen = Kstar_evtgen("Signal","Signal",P1mass,m0P,gamma0P,m_kaon,m_pion,L1,mb,mv,L0)
+#gen = B2JPsiKpi_ps_evtgen("Signal","Signal",Kpimass,m0P,gamma0P,m_kaon,m_pion,L1,mb,mv,L0)
+eu = gen.generate(RooArgSet(P1mass),1000000)
+#eu = gen.generate(RooArgSet(Kpimass),1000000)
 
 #BREAK
 
@@ -191,8 +195,8 @@ def makePhi(t, x0,x1):
         if mcm>x1: continue
         h3.Fill(mcm)
     tgen = eu.tree()
-    #for entry in tgen: h4.Fill(tgen.P1_mass)
-    for entry in tgen: h4.Fill(tgen.Kpimass)
+    for entry in tgen: h4.Fill(tgen.P1_mass)
+    #for entry in tgen: h4.Fill(tgen.Kpimass)
     
     h3.Divide(h4)
     x, y = [], []
@@ -202,9 +206,8 @@ def makePhi(t, x0,x1):
     return NF(x,y)
 #ph = makePhi(t,700,800)
 
-#Kpibins = [825,860,895,930,965]
-Kpibins = [826, 861, 896, 931, 966, 1001, 1036, 1071, 1106, 1141, 1176, 1211, 1246, 1281, 1316, 1351, 1386, 1421, 1456, 1491, 1526, 1561, 1596, 1631]
-
+Kpibins = KpiBins4 #[825,860,895,930,965]
+Kpibins = [826, 966]
 phis = []
 for i in range(len(Kpibins)-1):
     x0 = Kpibins[i]

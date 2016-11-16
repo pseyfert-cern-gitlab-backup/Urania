@@ -1,0 +1,61 @@
+class accparclass {
+
+  public:
+
+  Double_t k1(Int_t year_opt, Int_t wide_window) {
+    if ((year_opt == 0) and (wide_window == 1)) {return -0.36008584559;}
+    else if ((year_opt == 0) and (wide_window == 0)) {return -0.630359734493;}
+    else if ((year_opt == 1) and (wide_window == 1)) {return -0.355896931518;}
+    else if ((year_opt == 1) and (wide_window == 0)) {return -0.616916005627;}
+    return 0.;
+    };
+
+  Double_t k2(Int_t year_opt, Int_t wide_window) {
+    if ((year_opt == 0) and (wide_window == 1)) {return -0.589545433939;}
+    else if ((year_opt == 0) and (wide_window == 0)) {return -0.402657677707;}
+    else if ((year_opt == 1) and (wide_window == 1)) {return -0.583759602376;}
+    else if ((year_opt == 1) and (wide_window == 0)) {return -0.439108009272;}
+    return 0.;
+    };
+
+  Double_t k3(Int_t year_opt, Int_t wide_window) {
+    if ((year_opt == 0) and (wide_window == 1)) {return -6.29513365916e-06;}
+    else if ((year_opt == 0) and (wide_window == 0)) {return -0.000118678460237;}
+    else if ((year_opt == 1) and (wide_window == 1)) {return -1.91265800004e-08;}
+    else if ((year_opt == 1) and (wide_window == 0)) {return -3.86414164062e-05;}
+    return 0.;
+    };
+
+  Double_t k4(Int_t year_opt, Int_t wide_window) {
+    if ((year_opt == 0) and (wide_window == 1)) {return -0.000293510152499;}
+    else if ((year_opt == 0) and (wide_window == 0)) {return -5.92366074845e-06;}
+    else if ((year_opt == 1) and (wide_window == 1)) {return -0.000651347762424;}
+    else if ((year_opt == 1) and (wide_window == 0)) {return -6.78505985174e-07;}
+    return 0.;
+    };
+
+  Double_t p1(Int_t year_opt, Int_t wide_window) {
+    if ((year_opt == 0) and (wide_window == 1)) {return -0.000257416963069;}
+    else if ((year_opt == 0) and (wide_window == 0)) {return -0.000331437635605;}
+    else if ((year_opt == 1) and (wide_window == 1)) {return -0.000217681826821;}
+    else if ((year_opt == 1) and (wide_window == 0)) {return -0.000118168898876;}
+    return 0.;
+    };
+
+  Double_t a_acc(Int_t year_opt, Int_t wide_window) {
+    if ((year_opt == 0) and (wide_window == 1)) {return 1.5309204308;}
+    else if ((year_opt == 0) and (wide_window == 0)) {return 1.96568834271;}
+    else if ((year_opt == 1) and (wide_window == 1)) {return 1.49407151553;}
+    else if ((year_opt == 1) and (wide_window == 0)) {return 1.1110585485;}
+    return 0.;
+    };
+
+  Double_t b_acc(Int_t year_opt, Int_t wide_window) {
+    if ((year_opt == 0) and (wide_window == 1)) {return 0.00838197702007;}
+    else if ((year_opt == 0) and (wide_window == 0)) {return 1.2390402417e-05;}
+    else if ((year_opt == 1) and (wide_window == 1)) {return 3.00548523902e-08;}
+    else if ((year_opt == 1) and (wide_window == 0)) {return 0.000768244063777;}
+    return 0.;
+    };
+
+};

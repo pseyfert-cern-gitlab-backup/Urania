@@ -30,8 +30,6 @@
 #include "RooProduct.h"
 #include "P2VV/RooP2VVAngleBasis.h"
 
-using namespace std;
-
 //_____________________________________________________________________________
 RooP2VVAngleBasis::RooP2VVAngleBasis(const char *name, const char *title,
     RooRealVar& cpsi, RooRealVar& ctheta, RooRealVar& phi,
@@ -123,8 +121,8 @@ Bool_t RooP2VVAngleBasis::createProdSum(std::vector<Int_t> i,
     RooAbsReal* coef = dynamic_cast<RooAbsReal*>(coefs.at(it));
     if (coef == 0) {
       coutE(InputArguments) << "RooP2VVAngleBasis::createProdSum(" << GetName()
-          << "): coefficient " << coefs.at(it)->GetName()
-          << " is not of type RooAbsReal" << endl;
+			    << "): coefficient " << coefs.at(it)->GetName()
+			    << " is not of type RooAbsReal" << std::endl;
       reset();
       init();
       return kFALSE;
@@ -147,7 +145,7 @@ Bool_t RooP2VVAngleBasis::createProdSum(const RooArgList& funcs,
   Int_t numBases = funcs.getSize();
   if (coefs.getSize() != numBases) {
     coutE(InputArguments) << "RooP2VVAngleBasis::createProdSum(" << GetName()
-        << "): lengths of input lists do not match" << std::endl;
+			  << "): lengths of input lists do not match" << std::endl;
     reset();
     init();
     return kFALSE;
@@ -160,8 +158,8 @@ Bool_t RooP2VVAngleBasis::createProdSum(const RooArgList& funcs,
     RooP2VVAngleBasis* func = dynamic_cast<RooP2VVAngleBasis*>(funcs.at(it));
     if (func == 0) {
       coutE(InputArguments) << "RooP2VVAngleBasis::createProdSum(" << GetName()
-          << "): function " << funcs.at(it)->GetName()
-          << " is not of type RooP2VVAngleBasis" << endl;
+			    << "): function " << funcs.at(it)->GetName()
+			    << " is not of type RooP2VVAngleBasis" << std::endl;
       reset();
       init();
       return kFALSE;
@@ -171,8 +169,8 @@ Bool_t RooP2VVAngleBasis::createProdSum(const RooArgList& funcs,
     RooAbsReal* coef = dynamic_cast<RooAbsReal*>(coefs.at(it));
     if (coef == 0) {
       coutE(InputArguments) << "RooP2VVAngleBasis::createProdSum(" << GetName()
-          << "): coefficient " << coefs.at(it)->GetName()
-          << " is not of type RooAbsReal" << endl;
+			    << "): coefficient " << coefs.at(it)->GetName()
+			    << " is not of type RooAbsReal" << std::endl;
       reset();
       init();
       return kFALSE;
@@ -192,7 +190,7 @@ void RooP2VVAngleBasis::removeProduct()
 {
   if (!_isProd) {
     coutW(ObjectHandling) << "RooP2VVAngleBasis::removeProduct(" << GetName()
-        << "): function is not a product" << endl;
+			  << "): function is not a product" << std::endl;
     return;
   }
 
@@ -201,14 +199,14 @@ void RooP2VVAngleBasis::removeProduct()
 }
 
 //_____________________________________________________________________________
-void RooP2VVAngleBasis::printArgs(ostream& os) const
+void RooP2VVAngleBasis::printArgs(std::ostream& os) const
 {
   // print function
   os << "[";
   if (!_isProd && _coef.absArg() != 0)
     os << " " << _coef.absArg()->GetName() << " *";
   if (_c != 1.)
-    os << " " << setprecision(3) << _c;
+    os << " " << _c;
   os << " P_" << _i;
   if (_j != 0)
     os << "^" << _j;
@@ -221,7 +219,7 @@ void RooP2VVAngleBasis::printArgs(ostream& os) const
     for (Int_t it = 0; it < _set.getSize(); ++it) {
       os << " " << _prodCoefs.at(it)->GetName() << " *";
       if (_cProd.at(it) != 1.)
-        os << " " << setprecision(3) << _cProd.at(it);
+	os << " " << _cProd.at(it);
       os << " P_" << _iProd.at(it);
       if (_jProd.at(it) != 0)
         os << "^" << _jProd.at(it);

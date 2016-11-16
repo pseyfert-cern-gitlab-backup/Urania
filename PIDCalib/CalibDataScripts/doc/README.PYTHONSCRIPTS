@@ -1,0 +1,6 @@
+In order to use several of the python scripts, including getRunLumi.py and
+uploadData.py, you need to setup the environment for LHCbDirac.
+Furthermore, you will need to include several external (LCG) packages
+in the enviroment.
+You can do this (in a clean environment) by sourcing the shell script
+"scripts/setenv_dirac.(c)sh". 

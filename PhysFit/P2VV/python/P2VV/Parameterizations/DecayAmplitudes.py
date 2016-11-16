@@ -492,3 +492,113 @@ class JpsiVBank_AmplitudeSet( AmplitudeSet ) :
 
         self._check_extraneous_kw( kwargs )
         AmplitudeSet.__init__( self, A0Amp, AparAmp, AperpAmp, ASAmp, Conditionals = [ self._KKMassCat ] if self._KKMassCat else [ ] )
+
+
+class JpsiVPolarSWaveFracFloatAcpAssym_AmplitudeSet( AmplitudeSet ) :
+    def __init__( self, **kwargs ) :
+        ambiguityPars = kwargs.pop( 'AmbiguityParameters',  False       )
+        namePF        = self.getNamePrefix(kwargs)
+
+        from math import pi
+        deltaPar   = AparPh - A0Ph
+        delParErr  = AparPhErr
+        deltaPerp  = AperpPh - A0Ph
+        delPerpErr = AperpPhErr
+        deltaS     = ASPh - A0Ph
+        delSErr    = ASPhErr
+        if ambiguityPars :
+            deltaPar  = -deltaPar
+            deltaPerp = pi - deltaPerp
+            deltaS    = -deltaS
+
+        from math import sqrt, sin, cos
+
+        # create amplitude variables
+        # A_0
+        self._parseArg( 'A0Mag2',  kwargs, Title = '|A0|^2',  Value = A02, Error = A02Err, MinMax = ( 0., 1. ) )
+        self._parseArg( 'A0Phase', kwargs, Title = 'delta_0', Value = 0.,  Constant = True )
+
+        # A_perp
+        self._parseArg( 'AperpMag2',  kwargs, Title = '|A_perp|^2', Value = Aperp2,    Error = Aperp2Err,  MinMax = (  0.,     1.     ) )
+        self._parseArg( 'AperpPhase', kwargs, Title = 'delta_perp', Value = deltaPerp, Error = delPerpErr, MinMax = ( -RooInf, RooInf ) )
+
+        # A_par
+        self._AparMag2 = self._parseArg( 'AparMag2', kwargs, Title = '|A_par|^2', Coefficients = [ self._A0Mag2, self._AperpMag2 ]
+                                        , ObjectType = 'ComplementCoef' )
+        self._parseArg( 'AparPhase', kwargs, Title = 'delta_par', Value = deltaPar, Error = delParErr, MinMax = ( -RooInf, RooInf ) )
+
+        # A_S
+        self._parseArg( 'C_SP',    kwargs, Title = 'S-P wave couping factor', Value = C_SP,   Error = C_SPErr, MinMax = ( 0., 1. ) )
+        self._parseArg( 'f_S',     kwargs, Title = 'S wave fraction',         Value = f_S,    Error = f_SErr,  MinMax = ( 0., 1. ) )
+        self._parseArg( 'ASPhase', kwargs, Title = 'delta_S',                 Value = deltaS, Error = delSErr, MinMax = ( -RooInf, RooInf ) )
+
+        self._ASMag2 = self._parseArg( 'ASMag2', kwargs, Title = 'Re(A_S)', Type = 'FracToMagSq', ObjectType = 'ConvertPolAmp', Arguments = [ self._f_S ] )
+
+        # build Acp assymetries
+        from P2VV.Parameterizations.CPVParams import ACP_AssymetryParametrization as AcpAssymetries
+        self._AcpAssym = AcpAssymetries( Amplitudes = { 'A0':self._A0Mag2, 'Aperp':self._AperpMag2, 'Apar':self._AparMag2, 'AS':self._ASMag2} )
+
+        # build normalization factors
+        # for s wave
+        self._nFS    = self._parseArg( 'nFS', kwargs, ObjectType = 'FormulaVar', Formula = '1 / (1+@0)'
+                                       , Arguments = [ self._AcpAssym['fACP'] ], Title = 'S wave amplitde norm' )
+
+        self._nFSBar = self._parseArg( 'nFSBar', kwargs, ObjectType = 'FormulaVar', Formula = '1 / (1-@0)'
+                                       , Arguments = [ self._AcpAssym['fACP'] ], Title = 'S wave amplitde bar norm' )
+
+        # for p wave
+        self._nFP    = self._parseArg( 'nFP', kwargs, ObjectType = 'FormulaVar', Formula = '(1-@0) / (1+@1 - @0*(1+@2) )'
+                                    , Arguments = [ self._ASMag2, self._AcpAssym['fACP'], self._AcpAssym['ACPS'] ], Title = 'A0 amplitde norm' )
+
+        self._nFPBar = self._parseArg( 'nFPBar', kwargs, ObjectType = 'FormulaVar', Formula = '(1-@0) / (1-@1 - @0*(1-@2) )'
+                                       , Arguments = [ self._ASMag2, self._AcpAssym['ACP0'], self._AcpAssym['ACPS'] ], Title = 'A0 bar amplitde norm' )
+
+        # normalize amplitude and build amplitude objects
+        # A0
+        self._A0Mag2Norm       = self._parseArg( 'A0Mag2Norm', kwargs, ObjectType = 'FormulaVar', Formula = '@0 * (1 + @1) * @2'
+                                              , Arguments = [ self._A0Mag2, self._AcpAssym['ACP0'], self._nFP ], Title = 'A0Mag2 normalized' )
+        self._A0BarMag2Norm    = self._parseArg( 'A0BarMag2Norm', kwargs, ObjectType = 'FormulaVar', Formula = '@0 * (1 - @1) * @2'
+                                              , Arguments = [ self._A0Mag2, self._AcpAssym['ACP0'], self._nFPBar ], Title = 'A0barMag2 normalized' )
+
+        A0Amp    = Polar2_Amplitude( 'A0',    self._A0Mag2Norm,    self._A0Phase, +1, ParNamePrefix = namePF )
+        A0BarAmp = Polar2_Amplitude( 'A0Bar', self._A0BarMag2Norm, self._A0Phase, +1, ParNamePrefix = namePF )
+
+        # Aperp
+        self._AperpMag2Norm       = self._parseArg( 'AperpMag2Norm', kwargs, ObjectType = 'FormulaVar', Formula = '@0 * (1 + @1) * @2'
+                                              , Arguments = [ self._AperpMag2, self._AcpAssym['ACPperp'], self._nFP ], Title = 'AperpMag2 normalized' )
+        self._AperpBarMag2Norm    = self._parseArg( 'AperpBarMag2Norm', kwargs, ObjectType = 'FormulaVar', Formula = '@0 * (1 - @1) * @2'
+                                              , Arguments = [ self._AperpMag2, self._AcpAssym['ACPperp'], self._nFPBar ], Title = 'AperpbarMag2 normalized' )
+
+        AperpAmp    = Polar2_Amplitude( 'Aperp',    self._AperpMag2Norm,    self._AperpPhase, -1, ParNamePrefix = namePF )
+        AperpBarAmp = Polar2_Amplitude( 'AperpBar', self._AperpBarMag2Norm, self._AperpPhase, -1, ParNamePrefix = namePF )
+
+        # Apar
+        self._AparMag2Norm       = self._parseArg( 'AparMag2Norm', kwargs, ObjectType = 'FormulaVar', Formula = '@0 * (1 + @1) * @2'
+                                              , Arguments = [ self._AparMag2, self._AcpAssym['ACPpar'], self._nFP ], Title = 'AparMag2 normalized' )
+        self._AparBarMag2Norm    = self._parseArg( 'AparBarMag2Norm', kwargs, ObjectType = 'FormulaVar', Formula = '@0 * (1 - @1) * @2'
+                                              , Arguments = [ self._AparMag2, self._AcpAssym['ACPpar'], self._nFPBar ], Title = 'AparbarMag2 normalized' )
+
+        AparAmp    = Polar2_Amplitude( 'Apar',    self._AparMag2Norm,    self._AparPhase, +1, ParNamePrefix = namePF )
+        AparBarAmp = Polar2_Amplitude( 'AparBar', self._AparBarMag2Norm, self._AparPhase, +1, ParNamePrefix = namePF )
+
+        # AS
+        self._ASMag2Norm       = self._parseArg( 'ASMag2Norm', kwargs, ObjectType = 'FormulaVar', Formula = '@0 * (1 + @1) * @2'
+                                              , Arguments = [ self._ASMag2, self._AcpAssym['ACPS'], self._nFS ], Title = 'ASMag2 normalized' )
+        self._ASBarMag2Norm    = self._parseArg( 'ASBarMag2Norm', kwargs, ObjectType = 'FormulaVar', Formula = '@0 * (1 - @1) * @2'
+                                              , Arguments = [ self._ASMag2, self._AcpAssym['ACPS'], self._nFSBar ], Title = 'ASbarMag2 normalized' )
+
+        self._ReASNorm = self._parseArg( 'ReASNorm', kwargs, Title = 'Re(A_S)', Type = 'PolSqToReC', ObjectType = 'ConvertPolAmp'
+                                     , Arguments = [ self._ASMag2Norm, self._ASPhase, self._C_SP ] )
+        self._ImASNorm = self._parseArg( 'ImASNorm', kwargs, Title = 'Im(A_S)', Type = 'PolSqToImC', ObjectType = 'ConvertPolAmp'
+                                     , Arguments = [ self._ASMag2Norm, self._ASPhase, self._C_SP ] )
+
+        self._ReASBarNorm = self._parseArg( 'ReASBarNorm', kwargs, Title = 'Re(A_S)', Type = 'PolSqToReC', ObjectType = 'ConvertPolAmp'
+                                     , Arguments = [ self._ASBarMag2Norm, self._ASPhase, self._C_SP ] )
+        self._ImASBarNorm = self._parseArg( 'ImASBarNorm', kwargs, Title = 'Im(A_S)', Type = 'PolSqToImC', ObjectType = 'ConvertPolAmp'
+                                     , Arguments = [ self._ASBarMag2Norm, self._ASPhase, self._C_SP ] )
+
+        ASAmp    = Carthesian_Amplitude( 'AS',    self._ReASNorm,    self._ImASNorm,    -1, getattr(self, '_ASMag2Norm', None),    getattr(self, '_ASPhase', None) , namePF )
+        ASBarAmp = Carthesian_Amplitude( 'ASBar', self._ReASBarNorm, self._ImASBarNorm, -1, getattr(self, '_ASBarMag2Norm', None), getattr(self, '_ASPhase', None) , namePF )
+
+        self._check_extraneous_kw( kwargs )
+        AmplitudeSet.__init__( self, A0Amp, AparAmp, AperpAmp, ASAmp, A0BarAmp, AparBarAmp, AperpBarAmp, ASBarAmp )

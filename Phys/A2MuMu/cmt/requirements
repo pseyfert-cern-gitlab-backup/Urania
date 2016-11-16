@@ -1,0 +1,33 @@
+#============================================================================
+# Created    : 2013-09-03
+# Maintainer : TBC
+#============================================================================
+package           A2MuMu
+version           v1r2
+
+#============================================================================
+# Structure, i.e. directories to process. 
+#============================================================================
+branches          cmt doc python src
+
+#============================================================================
+# Used packages.
+#============================================================================
+
+use	GaudiPolicy 	v*
+use	Python          v*    	LCG_Interfaces 
+use   	pytools        	v* 	LCG_Interfaces -no_auto_imports
+use   	pyanalysis     	v* 	LCG_Interfaces -no_auto_imports
+use   	ROOT            v*    	LCG_Interfaces
+use	MCLimit		v*	Math
+use	SomeUtils	v*	Math
+
+use	SomeMassModels	v*	PhysFit
+use	LHCbStyle	v*	RootTools
+
+
+#------------------------------------------------------------------------------
+
+
+# =============== running options =============================================
+

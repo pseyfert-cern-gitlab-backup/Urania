@@ -35,7 +35,8 @@ ClassImp(TristanJpsiKpi_J2)
                         RooAbsReal& _Cfact_21,
                         RooAbsReal& _Cfact_20,
                         RooAbsReal& _Cfact_10,
-                        RooAbsReal& _w_A_SA_2pa,
+			const RooArgList& _weights):
+			/*_w_A_SA_2pa,
                         RooAbsReal& _w_A_SA_20,
                         RooAbsReal& _w_2A_20,
                         RooAbsReal& _w_A_0A_2pe,
@@ -62,7 +63,7 @@ ClassImp(TristanJpsiKpi_J2)
                         RooAbsReal& _w_A_20A_pa,
                         RooAbsReal& _w_A_2peA_pe,
                         RooAbsReal& _w_2A_2pa,
-                        RooAbsReal& _w_2A_pe) :
+                        RooAbsReal& _w_2A_pe): */ 
    RooAbsPdf(name,title), 
    helcosthetaK("helcosthetaK","helcosthetaK",this,_helcosthetaK),
    helcosthetaL("helcosthetaL","helcosthetaL",this,_helcosthetaL),
@@ -81,37 +82,67 @@ ClassImp(TristanJpsiKpi_J2)
    delta_S("delta_S","delta_S",this,_delta_S),
    Cfact_21("Cfact_21","Cfact_21",this,_Cfact_21),
    Cfact_20("Cfact_20","Cfact_20",this,_Cfact_20),
-   Cfact_10("Cfact_10","Cfact_10",this,_Cfact_10),
-   w_A_SA_2pa("w_A_SA_2pa","w_A_SA_2pa",this,_w_A_SA_2pa),
-   w_A_SA_20("w_A_SA_20","w_A_SA_20",this,_w_A_SA_20),
-   w_2A_20("w_2A_20","w_2A_20",this,_w_2A_20),
-   w_A_0A_2pe("w_A_0A_2pe","w_A_0A_2pe",this,_w_A_0A_2pe),
-   w_A_SA_pa("w_A_SA_pa","w_A_SA_pa",this,_w_A_SA_pa),
-   w_A_SA_0("w_A_SA_0","w_A_SA_0",this,_w_A_SA_0),
-   w_A_SA_pe("w_A_SA_pe","w_A_SA_pe",this,_w_A_SA_pe),
-   w_A_paA_pe("w_A_paA_pe","w_A_paA_pe",this,_w_A_paA_pe),
-   w_2A_2pe("w_2A_2pe","w_2A_2pe",this,_w_2A_2pe),
-   w_A_0A_pe("w_A_0A_pe","w_A_0A_pe",this,_w_A_0A_pe),
-   w_A_S2("w_A_S2","w_A_S2",this,_w_A_S2),
-   w_A_2paA_pe("w_A_2paA_pe","w_A_2paA_pe",this,_w_A_2paA_pe),
-   w_A_SA_2pe("w_A_SA_2pe","w_A_SA_2pe",this,_w_A_SA_2pe),
-   w_A_0A_pa("w_A_0A_pa","w_A_0A_pa",this,_w_A_0A_pa),
-   w_A_paA_2pa("w_A_paA_2pa","w_A_paA_2pa",this,_w_A_paA_2pa),
-   w_A_2peA_20("w_A_2peA_20","w_A_2peA_20",this,_w_A_2peA_20),
-   w_A_02("w_A_02","w_A_02",this,_w_A_02),
-   w_A_2peA_2pa("w_A_2peA_2pa","w_A_2peA_2pa",this,_w_A_2peA_2pa),
-   w_2A_pa("w_2A_pa","w_2A_pa",this,_w_2A_pa),
-   w_A_0A_2pa("w_A_0A_2pa","w_A_0A_2pa",this,_w_A_0A_2pa),
-   w_A_20A_pe("w_A_20A_pe","w_A_20A_pe",this,_w_A_20A_pe),
-   w_A_20A_2pa("w_A_20A_2pa","w_A_20A_2pa",this,_w_A_20A_2pa),
-   w_A_0A_20("w_A_0A_20","w_A_0A_20",this,_w_A_0A_20),
-   w_A_2peA_pa("w_A_2peA_pa","w_A_2peA_pa",this,_w_A_2peA_pa),
-   w_A_20A_pa("w_A_20A_pa","w_A_20A_pa",this,_w_A_20A_pa),
-   w_A_2peA_pe("w_A_2peA_pe","w_A_2peA_pe",this,_w_A_2peA_pe),
-   w_2A_2pa("w_2A_2pa","w_2A_2pa",this,_w_2A_2pa),
-   w_2A_pe("w_2A_pe","w_2A_pe",this,_w_2A_pe)
- { 
- } 
+  Cfact_10("Cfact_10","Cfact_10",this,_Cfact_10)
+{
+   RooAbsReal* coef ;
+   TIterator* cIter = _weights.createIterator() ;
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_SA_2pa = RooRealProxy("w_A_SA_2pa","w_A_SA_2pa",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_SA_20= RooRealProxy("w_A_SA_20","w_A_SA_20",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_2A_20= RooRealProxy("w_2A_20","w_2A_20",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_0A_2pe= RooRealProxy("w_A_0A_2pe","w_A_0A_2pe",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_SA_pa= RooRealProxy("w_A_SA_pa","w_A_SA_pa",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_SA_0= RooRealProxy("w_A_SA_0","w_A_SA_0",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_SA_pe= RooRealProxy("w_A_SA_pe","w_A_SA_pe",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_paA_pe= RooRealProxy("w_A_paA_pe","w_A_paA_pe",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();  
+   w_2A_2pe= RooRealProxy("w_2A_2pe","w_2A_2pe",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_0A_pe= RooRealProxy("w_A_0A_pe","w_A_0A_pe",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_S2= RooRealProxy("w_A_S2","w_A_S2",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_2paA_pe= RooRealProxy("w_A_2paA_pe","w_A_2paA_pe",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_SA_2pe= RooRealProxy("w_A_SA_2pe","w_A_SA_2pe",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_0A_pa= RooRealProxy("w_A_0A_pa","w_A_0A_pa",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_paA_2pa= RooRealProxy("w_A_paA_2pa","w_A_paA_2pa",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_2peA_20= RooRealProxy("w_A_2peA_20","w_A_2peA_20",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_02= RooRealProxy("w_A_02","w_A_02",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_2peA_2pa= RooRealProxy("w_A_2peA_2pa","w_A_2peA_2pa",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_2A_pa= RooRealProxy("w_2A_pa","w_2A_pa",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_0A_2pa= RooRealProxy("w_A_0A_2pa","w_A_0A_2pa",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_20A_pe= RooRealProxy("w_A_20A_pe","w_A_20A_pe",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_20A_2pa= RooRealProxy("w_A_20A_2pa","w_A_20A_2pa",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_0A_20= RooRealProxy("w_A_0A_20","w_A_0A_20",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_2peA_pa= RooRealProxy("w_A_2peA_pa","w_A_2peA_pa",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_20A_pa= RooRealProxy("w_A_20A_pa","w_A_20A_pa",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_A_2peA_pe= RooRealProxy("w_A_2peA_pe","w_A_2peA_pe",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+   w_2A_2pa= RooRealProxy("w_2A_2pa","w_2A_2pa",this,*coef);
+   coef=(RooAbsReal*)cIter->Next();
+w_2A_pe= RooRealProxy("w_2A_pe","w_2A_pe",this,*coef);  
+}
 
 
  TristanJpsiKpi_J2::TristanJpsiKpi_J2(const TristanJpsiKpi_J2& other, const char* name) :  

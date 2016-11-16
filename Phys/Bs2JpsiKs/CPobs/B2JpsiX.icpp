@@ -56,12 +56,12 @@ double timeErr(const unsigned int pv) {
   return (double) 1000*B0_FitDaughtersPVConst_tauErr[pv];
 }
 int tagOS(TString data) {
-  if (isSigMC(data)) return (int) B0_TAGDECISION_OS;
-  else return (int) obsTagOS_StdComb;
+  if (isLHCb(data) || data==m_SigLambdab) return (int) obsTagOS_StdComb;
+  else return (int) B0_TAGDECISION_OS;
 }
 double etaOS(TString data) {
-  if (isSigMC(data)) return (double) B0_TAGOMEGA_OS;
-  else return (double) obsEtaOS_StdComb;
+  if (isLHCb(data) || data==m_SigLambdab) return (double) obsEtaOS_StdComb;
+  else return (double) B0_TAGOMEGA_OS;
 }
 int tagSSK() {
   return (int) B0_SS_Kaon_DEC;
@@ -74,6 +74,12 @@ int tagCombi() {
 }
 double etaCombi() {
   return (double) B0_CombinedTag_Omega;
+}
+double truetime() {
+  return B0_TRUETAU;
+}
+int truetag() {
+  return B0_TRUEID;
 }
 double jpsiIPchi2(const unsigned int pv) {
   return (double) J_psi_1S_MINIPCHI2_OtherPVs[pv];
@@ -112,7 +118,7 @@ bool applyCommonCuts(const TString data, const unsigned int pv) {
                massErr(pv)<MMERR_cut &&
                (isPrescaled(data) || (time(pv)>taucut)) &&
                (TMath::Abs(B0_FitDaughtersPVConst_PV_Z[pv])<m_OWNPVZ_range) &&
-               (data==m_SigKstarWM || mass(pv) > sideband_low_min()) && 
+               (data==m_SigKstar || mass(pv) > sideband_low_min()) &&
                mass(pv) < sideband_high_max(data)
               );
   return pass;

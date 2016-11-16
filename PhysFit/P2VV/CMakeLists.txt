@@ -3,10 +3,12 @@
 ################################################################################
 gaudi_subdir(P2VV v3r4)
 
-find_package(ROOT COMPONENTS Core Reflex Cintex
+find_package(ROOT COMPONENTS Core
                              Tree RooFitCore RooFit
                              Matrix MathCore MathMore)
 
+# override the genreflex call to wrap it in the right environment
+set(ROOT_genreflex_CMD ${env_cmd} --xml ${env_xml} ${ROOT_genreflex_CMD})
 
 include_directories(${ROOT_INCLUDE_DIRS})
 reflex_generate_dictionary(P2VV

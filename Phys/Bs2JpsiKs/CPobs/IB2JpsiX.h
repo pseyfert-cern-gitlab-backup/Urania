@@ -50,38 +50,25 @@ static const TString m_optimisation = "optimisationTag";
 static const TString m_createTuple  = "./createTuple.exe";
 
 // Supported Data Types
-static const TString m_LHCb2011          = "LHCb2011";
-static const TString m_LHCb2011Prescaled = "LHCb2011Prescaled";
-static const TString m_LHCb2012          = "LHCb2012";
-static const TString m_LHCb2012Prescaled = "LHCb2012Prescaled";
-static const TString m_LHCbAll           = "LHCbAll";
-static const TString m_LHCbAllPrescaled  = "LHCbAllPrescaled";
-static const TString m_SigBd             = "SigBd";
-static const TString m_SigBdPrescaled    = "SigBdPrescaled";
-static const TString m_SigBs             = "SigBs";
-static const TString m_SigBsPrescaled    = "SigBsPrescaled";
-static const TString m_SigBsCP           = "SigBsCP";
-static const TString m_SigBsCPPrescaled  = "SigBsCPPrescaled";
-static const TString m_SigKstar          = "SigKstar";
-static const TString m_SigKstarWM        = "SigKstarWM";
-static const TString m_IncJpsi           = "IncJpsi";
+static const TString m_LHCb          = "LHCb";
+static const TString m_LHCbPrescaled = "LHCbPrescaled";
+static const TString m_SigBdA        = "SigBdA";
+static const TString m_SigBdE        = "SigBdE";
+static const TString m_SigBsA        = "SigBsA";
+static const TString m_SigBsE        = "SigBsE";
+static const TString m_SigKstar      = "SigKstar";
+static const TString m_SigLambdab    = "SigLambdab";
+static const TString m_IncJpsi       = "IncJpsi";
 
 static bool isSigMC (TString data) {
-  return (data==m_SigBd || data==m_SigBdPrescaled ||
-          data==m_SigBs || data==m_SigBsPrescaled ||
-          data==m_SigBsCP || data==m_SigBsCPPrescaled ||
-          data==m_SigKstar || data==m_SigKstarWM);
+  return (data==m_SigBdA || data==m_SigBdE || data==m_SigBsA || data==m_SigBsE ||
+          data==m_SigKstar || data==m_SigLambdab);
 };
 static bool isLHCb (TString data) {
-  return (data==m_LHCb2011 || data==m_LHCb2011Prescaled ||
-          data==m_LHCb2012 || data==m_LHCb2012Prescaled ||
-          data==m_LHCbAll || data==m_LHCbAllPrescaled);
+  return (data==m_LHCb || data==m_LHCbPrescaled);
 };
 static bool isPrescaled (TString data) {
-  return (data==m_LHCb2011Prescaled || data==m_LHCb2012Prescaled ||
-          data==m_LHCbAllPrescaled || data==m_IncJpsi ||
-          data==m_SigBdPrescaled || data==m_SigBsPrescaled ||
-          data==m_SigBsCPPrescaled);
+  return (data==m_LHCbPrescaled || data==m_IncJpsi || isSigMC(data));
 };
 
 // Supported Steps in Selection
@@ -166,6 +153,8 @@ public:
   virtual double etaSSK() = 0;
   virtual int    tagCombi() = 0;
   virtual double etaCombi() = 0;
+  virtual double truetime() = 0;
+  virtual int    truetag() = 0;
   virtual double jpsiIPchi2(const unsigned int pv) = 0;
   virtual unsigned int primaries() = 0;
   virtual int TrackType() = 0;

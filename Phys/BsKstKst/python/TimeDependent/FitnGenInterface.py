@@ -1,0 +1,1314 @@
+from ROOT import *
+from math import *
+import time
+import sys
+import os
+from parameters import *
+gROOT.ProcessLine( "struct MyStructF{ Float_t afloat; };" )
+
+
+# ################################################################
+# F U N C T I O N S
+# ################################################################
+
+
+def ForceCompileLibs():
+
+	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'KpiKpiSpectrumNW.cxx++')
+	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'ComputeIntegrals.cxx++')
+	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'lhcbStyle.C')
+	gROOT.Reset()
+
+
+def CompileLibs():
+
+	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'KpiKpiSpectrumNW.cxx+')
+	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'ComputeIntegrals.cxx+')
+	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'lhcbStyle.C')
+	gROOT.Reset()
+
+
+def CompileLibsGRID():
+
+	gROOT.ProcessLine('.x KpiKpiSpectrumNW.cxx++')
+	gROOT.ProcessLine('.x ComputeIntegrals.cxx++')
+	gROOT.ProcessLine('.x lhcbStyle.C')
+	gROOT.Reset()
+
+
+def information(datatype, Blinding = 1, NOCP = 0, NODIRCP = 0, SAMECP = 1, flat_acc = 0, nw_acc = 1, inf_t_res = 0, wide_window = 1, fix_wave_fractions = 0,\
+fix_dirCP_asyms = 0, fix_strong_phases = 0, fix_weak_phases = 0, fix_mixing_params = 0, fix_calib_params = 0, pw_alternative_model = 0):
+
+	print "\n#####################################################################"
+	print " R E L E V A N T   I N F O R M A T I O N   A B O U T   T H E   F I T"
+	print "#####################################################################\n"
+	if (datatype == "real"): print " - Fit to REAL DATA corresponding to 2011 and 2012."
+	else: print " - Fit to MONTE CARLO DATA."
+	if (wide_window): print "   (WIDE WINDOW used in the Kpi invariant mass, from 750 MeV to 1700 MeV.)\n"
+	else: print "   (NARROW WINDOW used in the Kpi invariant mass, of 150 MeV around the Kst nominal mass.)\n"
+	if NOCP: print " - CPV parameters NOT INCLUDED in the model.\n"
+	else:
+		print " - CPV parameters INCLUDED in the model."
+		if Blinding: print "   BLINDED parameters."
+		else: print "   UNBLINDED parameters !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!."
+		if NODIRCP:
+			if SAMECP: print "   One phi_s phase COMMON TO ALL THE CHANNELS.\n"
+			else: print "   One phi_s phase FOR EACH CHANNEL.\n"
+		else:
+			if SAMECP: print "   One phi_s phase and direct CP violation asymmetry COMMON TO ALL THE CHANNELS.\n"
+			else: print "   One phi_s phase and direct CP violation asymmetry FOR EACH CHANNEL.\n"
+
+	if flat_acc: print " - FLAT ACCEPTANCE model.\n"
+	else:
+		if nw_acc: print " - NORMALIZATION WEIGHTS used for the acceptance model (parametric factorized acceptance for visualization).\n"
+		else: print " - PARAMETRIC FACTORIZED ACCEPTANCE model.\n"
+	if inf_t_res: print " - INFINITE TIME RESOLUTION assumed."
+	else: print " - FINITE TIME RESOLUTION included via gaussian convolutions."
+	if pw_alternative_model: print "\n WARNING: an alternative mass model for systematic uncertainty studies is beeing used."
+	if fix_wave_fractions: print "\n WARNING: wave fractions fixed."
+	if fix_dirCP_asyms: print "\n WARNING: direct CP violation asymmetries fixed."
+	if fix_strong_phases: print "\n WARNING: strong phases fixed."
+	if fix_weak_phases: print "\n WARNING: weak phases fixed."
+	if fix_mixing_params: print "\n WARNING: Bs-Bsbar mixing parameters fixed."
+	if fix_calib_params: print "\n WARNING: calibration parameters fixed."
+
+
+def setInterval(quantity,deviation):
+	value = quantity.getVal()
+	quantity.setRange(min([value*deviation,value/deviation]),max([value*deviation,value/deviation]))
+
+
+def component(j1,j2,h,j1p,j2p,hp):
+	A_j1.setVal(j1)
+	A_j2.setVal(j2)
+	A_h.setVal(h)
+	A_j1p.setVal(j1p)
+	A_j2p.setVal(j2p)
+	A_hp.setVal(hp)
+
+
+def aux_PDF():
+	""" Used to compute some normalization integrals."""
+
+	for argument in options: options_list_aux.add(argument)
+	for argument in observables: observables_list_aux.add(argument)
+	for argument in wave_fractions: wave_fractions_list_aux.add(argument)
+	for argument in dirCP_asyms: dirCP_asyms_list_aux.add(argument)
+	for argument in strong_phases: strong_phases_list_aux.add(argument)
+	for argument in weak_phases: weak_phases_list_aux.add(argument)
+	for argument in mixing_params: mixing_params_list_aux.add(argument)
+	for argument in calib_params_aux: calib_params_list_aux.add(argument)
+	for argument in cond_distr_params: cond_distr_params_list_aux.add(argument)
+	for argument in sys_studies: sys_studies_list_aux.add(argument)
+
+	auxiliar_PDF = KpiKpiSpectrumNW("auxiliar_PDF","auxiliar_PDF",options_list_aux,observables_list_aux,wave_fractions_list_aux,dirCP_asyms_list_aux,\
+strong_phases_list_aux,weak_phases_list_aux,mixing_params_list_aux,calib_params_list_aux,cond_distr_params_list_aux,sys_studies_list_aux,\
+mass_integrals_list_aux,ang_integrals_list_aux,time_integrals_list_aux)
+
+	return auxiliar_PDF
+	
+
+def PDF_with_integrals(name,description,options_arglist,wide_window,data_file,observables_arglist,wave_fractions_arglist,dirCP_asyms_arglist,strong_phases_arglist,\
+weak_phases_arglist,mixing_params_arglist,calib_params_arglist,sys_studies_arglist):
+
+	RooMsgService.instance().setGlobalKillBelow(RooFit.WARNING)
+	Integrator = ComputeIntegrals("Integrator","Integrator",options_arglist,observables_arglist,mixing_params_arglist,calib_params_arglist,mass_integrals_list)
+
+	# Calculation of the invariant mass integrals for normalization.
+	if wide_window:
+		option.setVal(100)
+		integral100 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Im00.setVal(integral100.getVal())
+		option.setVal(101)
+		integral101 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Im01.setVal(integral101.getVal())
+		option.setVal(110)
+		integral110 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Im10.setVal(integral110.getVal())
+		option.setVal(102)
+		integral102 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Im02.setVal(integral102.getVal())
+		option.setVal(120)
+		integral120 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Im20.setVal(integral120.getVal())
+		option.setVal(111)
+		integral111 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Im11.setVal(integral111.getVal())
+		option.setVal(112)
+		integral112 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Im12.setVal(integral112.getVal())
+		option.setVal(121)
+		integral121 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Im21.setVal(integral121.getVal())
+		option.setVal(122)
+		integral122 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Im22.setVal(integral122.getVal())
+	else:
+		option.setVal(100)
+		integral100 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Im00.setVal(integral100.getVal())
+		option.setVal(101)
+		integral101 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Im01.setVal(integral101.getVal())
+		option.setVal(110)
+		integral110 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Im10.setVal(integral110.getVal())
+		option.setVal(102)
+		integral102 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Im02.setVal(integral102.getVal())
+		option.setVal(120)
+		integral120 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Im20.setVal(integral120.getVal())
+		option.setVal(111)
+		integral111 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Im11.setVal(integral111.getVal())
+		option.setVal(112)
+		integral112 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Im12.setVal(integral112.getVal())
+		option.setVal(121)
+		integral121 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Im21.setVal(integral121.getVal())
+		option.setVal(122)
+		integral122 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Im22.setVal(integral122.getVal())
+
+	# Calculation of the angular integrals for visualization.
+	option.setVal(21)
+	integral21 = Integrator.createIntegral(RooArgSet(cos1))
+	If1.setVal(integral21.getVal())
+	option.setVal(22)
+	integral22 = Integrator.createIntegral(RooArgSet(cos1))
+	If2.setVal(integral22.getVal())
+	option.setVal(23)
+	integral23 = Integrator.createIntegral(RooArgSet(cos1))
+	If3.setVal(integral23.getVal())
+	option.setVal(24)
+	integral24 = Integrator.createIntegral(RooArgSet(cos1))
+	If4.setVal(integral24.getVal())
+	option.setVal(25)
+	integral25 = Integrator.createIntegral(RooArgSet(cos1))
+	If5.setVal(integral25.getVal())
+	option.setVal(26)
+	integral26 = Integrator.createIntegral(RooArgSet(cos1))
+	If6.setVal(integral26.getVal())
+	option.setVal(27)
+	integral27 = Integrator.createIntegral(RooArgSet(cos1))
+	If7.setVal(integral27.getVal())
+	option.setVal(28)
+	integral28 = Integrator.createIntegral(RooArgSet(cos1))
+	If8.setVal(integral28.getVal())
+	option.setVal(29)
+	integral29 = Integrator.createIntegral(RooArgSet(cos1))
+	If9.setVal(integral29.getVal())
+	option.setVal(210)
+	integral210 = Integrator.createIntegral(RooArgSet(cos1))
+	If10.setVal(integral210.getVal())
+	option.setVal(211)
+	integral211 = Integrator.createIntegral(RooArgSet(cos1))
+	If11.setVal(integral211.getVal())
+	option.setVal(212)
+	integral212 = Integrator.createIntegral(RooArgSet(cos1))
+	If12.setVal(integral212.getVal())
+	option.setVal(213)
+	integral213 = Integrator.createIntegral(RooArgSet(cos1))
+	If13.setVal(integral213.getVal())
+	option.setVal(214)
+	integral214 = Integrator.createIntegral(RooArgSet(cos1))
+	If14.setVal(integral214.getVal())
+	option.setVal(215)
+	integral215 = Integrator.createIntegral(RooArgSet(cos1))
+	If15.setVal(integral215.getVal())
+	option.setVal(216)
+	integral216 = Integrator.createIntegral(RooArgSet(cos1))
+	If16.setVal(integral216.getVal())
+	option.setVal(217)
+	integral217 = Integrator.createIntegral(RooArgSet(cos1))
+	If17.setVal(integral217.getVal())
+	option.setVal(218)
+	integral218 = Integrator.createIntegral(RooArgSet(cos1))
+	If18.setVal(integral218.getVal())
+
+	# Calculation of the invariant mass integrals for visualization.
+	if wide_window:
+		option.setVal(31)
+		integral31 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih1Re.setVal(integral31.getVal())
+		option.setVal(32)
+		integral32 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih2Re.setVal(integral32.getVal())
+		option.setVal(33)
+		integral33 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih3Re.setVal(integral33.getVal())
+		option.setVal(34)
+		integral34 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih4Re.setVal(integral34.getVal())
+		option.setVal(35)
+		integral35 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih5Re.setVal(integral35.getVal())
+		option.setVal(36)
+		integral36 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih6Re.setVal(integral36.getVal())
+		option.setVal(37)
+		integral37 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih7Re.setVal(integral37.getVal())
+		option.setVal(38)
+		integral38 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih8Re.setVal(integral38.getVal())
+		option.setVal(39)
+		integral39 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih9Re.setVal(integral39.getVal())
+		option.setVal(310)
+		integral310 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih10Re.setVal(integral310.getVal())
+		option.setVal(311)
+		integral311 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih11Re.setVal(integral311.getVal())
+		option.setVal(312)
+		integral312 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih12Re.setVal(integral312.getVal())
+		option.setVal(313)
+		integral313 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih13Re.setVal(integral313.getVal())
+		option.setVal(314)
+		integral314 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih14Re.setVal(integral314.getVal())
+		option.setVal(315)
+		integral315 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih15Re.setVal(integral315.getVal())
+		option.setVal(316)
+		integral316 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih16Re.setVal(integral316.getVal())
+		option.setVal(317)
+		integral317 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih17Re.setVal(integral317.getVal())
+		option.setVal(318)
+		integral318 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih18Re.setVal(integral318.getVal())
+		option.setVal(319)
+		integral319 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih19Re.setVal(integral319.getVal())
+		option.setVal(320)
+		integral320 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih20Re.setVal(integral320.getVal())
+		option.setVal(321)
+		integral321 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih21Re.setVal(integral321.getVal())
+		option.setVal(322)
+		integral322 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih22Re.setVal(integral322.getVal())
+		option.setVal(323)
+		integral323 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih23Re.setVal(integral323.getVal())
+		option.setVal(324)
+		integral324 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih24Re.setVal(integral324.getVal())
+		option.setVal(325)
+		integral325 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih25Re.setVal(integral325.getVal())
+		option.setVal(326)
+		integral326 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih26Re.setVal(integral326.getVal())
+		option.setVal(327)
+		integral327 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih27Re.setVal(integral327.getVal())
+		option.setVal(328)
+		integral328 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih28Re.setVal(integral328.getVal())
+		option.setVal(329)
+		integral329 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih29Re.setVal(integral329.getVal())
+		option.setVal(330)
+		integral330 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih30Re.setVal(integral330.getVal())
+		option.setVal(41)
+		integral41 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih1Im.setVal(integral41.getVal())
+		option.setVal(42)
+		integral42 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih2Im.setVal(integral42.getVal())
+		option.setVal(43)
+		integral43 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih3Im.setVal(integral43.getVal())
+		option.setVal(44)
+		integral44 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih4Im.setVal(integral44.getVal())
+		option.setVal(45)
+		integral45 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih5Im.setVal(integral45.getVal())
+		option.setVal(46)
+		integral46 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih6Im.setVal(integral46.getVal())
+		option.setVal(47)
+		integral47 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih7Im.setVal(integral47.getVal())
+		option.setVal(48)
+		integral48 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih8Im.setVal(integral48.getVal())
+		option.setVal(49)
+		integral49 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih9Im.setVal(integral49.getVal())
+		option.setVal(410)
+		integral410 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih10Im.setVal(integral410.getVal())
+		option.setVal(411)
+		integral411 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih11Im.setVal(integral411.getVal())
+		option.setVal(412)
+		integral412 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih12Im.setVal(integral412.getVal())
+		option.setVal(413)
+		integral413 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih13Im.setVal(integral413.getVal())
+		option.setVal(414)
+		integral414 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih14Im.setVal(integral414.getVal())
+		option.setVal(415)
+		integral415 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih15Im.setVal(integral415.getVal())
+		option.setVal(416)
+		integral416 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih16Im.setVal(integral416.getVal())
+		option.setVal(417)
+		integral417 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih17Im.setVal(integral417.getVal())
+		option.setVal(418)
+		integral418 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih18Im.setVal(integral418.getVal())
+		option.setVal(419)
+		integral419 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih19Im.setVal(integral419.getVal())
+		option.setVal(420)
+		integral420 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih20Im.setVal(integral420.getVal())
+		option.setVal(421)
+		integral421 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		Ih21Im.setVal(integral421.getVal())
+	else:
+		option.setVal(31)
+		integral31 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih1Re.setVal(integral31.getVal())
+		option.setVal(32)
+		integral32 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih2Re.setVal(integral32.getVal())
+		option.setVal(33)
+		integral33 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih3Re.setVal(integral33.getVal())
+		option.setVal(34)
+		integral34 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih4Re.setVal(integral34.getVal())
+		option.setVal(35)
+		integral35 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih5Re.setVal(integral35.getVal())
+		option.setVal(36)
+		integral36 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih6Re.setVal(integral36.getVal())
+		option.setVal(37)
+		integral37 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih7Re.setVal(integral37.getVal())
+		option.setVal(38)
+		integral38 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih8Re.setVal(integral38.getVal())
+		option.setVal(39)
+		integral39 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih9Re.setVal(integral39.getVal())
+		option.setVal(310)
+		integral310 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih10Re.setVal(integral310.getVal())
+		option.setVal(311)
+		integral311 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih11Re.setVal(integral311.getVal())
+		option.setVal(312)
+		integral312 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih12Re.setVal(integral312.getVal())
+		option.setVal(313)
+		integral313 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih13Re.setVal(integral313.getVal())
+		option.setVal(314)
+		integral314 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih14Re.setVal(integral314.getVal())
+		option.setVal(315)
+		integral315 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih15Re.setVal(integral315.getVal())
+		option.setVal(316)
+		integral316 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih16Re.setVal(integral316.getVal())
+		option.setVal(317)
+		integral317 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih17Re.setVal(integral317.getVal())
+		option.setVal(318)
+		integral318 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih18Re.setVal(integral318.getVal())
+		option.setVal(319)
+		integral319 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih19Re.setVal(integral319.getVal())
+		option.setVal(320)
+		integral320 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih20Re.setVal(integral320.getVal())
+		option.setVal(321)
+		integral321 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih21Re.setVal(integral321.getVal())
+		option.setVal(322)
+		integral322 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih22Re.setVal(integral322.getVal())
+		option.setVal(323)
+		integral323 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih23Re.setVal(integral323.getVal())
+		option.setVal(324)
+		integral324 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih24Re.setVal(integral324.getVal())
+		option.setVal(325)
+		integral325 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih25Re.setVal(integral325.getVal())
+		option.setVal(326)
+		integral326 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih26Re.setVal(integral326.getVal())
+		option.setVal(327)
+		integral327 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih27Re.setVal(integral327.getVal())
+		option.setVal(328)
+		integral328 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih28Re.setVal(integral328.getVal())
+		option.setVal(329)
+		integral329 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih29Re.setVal(integral329.getVal())
+		option.setVal(330)
+		integral330 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih30Re.setVal(integral330.getVal())
+		option.setVal(41)
+		integral41 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih1Im.setVal(integral41.getVal())
+		option.setVal(42)
+		integral42 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih2Im.setVal(integral42.getVal())
+		option.setVal(43)
+		integral43 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih3Im.setVal(integral43.getVal())
+		option.setVal(44)
+		integral44 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih4Im.setVal(integral44.getVal())
+		option.setVal(45)
+		integral45 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih5Im.setVal(integral45.getVal())
+		option.setVal(46)
+		integral46 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih6Im.setVal(integral46.getVal())
+		option.setVal(47)
+		integral47 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih7Im.setVal(integral47.getVal())
+		option.setVal(48)
+		integral48 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih8Im.setVal(integral48.getVal())
+		option.setVal(49)
+		integral49 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih9Im.setVal(integral49.getVal())
+		option.setVal(410)
+		integral410 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih10Im.setVal(integral410.getVal())
+		option.setVal(411)
+		integral411 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih11Im.setVal(integral411.getVal())
+		option.setVal(412)
+		integral412 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih12Im.setVal(integral412.getVal())
+		option.setVal(413)
+		integral413 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih13Im.setVal(integral413.getVal())
+		option.setVal(414)
+		integral414 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih14Im.setVal(integral414.getVal())
+		option.setVal(415)
+		integral415 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih15Im.setVal(integral415.getVal())
+		option.setVal(416)
+		integral416 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih16Im.setVal(integral416.getVal())
+		option.setVal(417)
+		integral417 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih17Im.setVal(integral417.getVal())
+		option.setVal(418)
+		integral418 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih18Im.setVal(integral418.getVal())
+		option.setVal(419)
+		integral419 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih19Im.setVal(integral419.getVal())
+		option.setVal(420)
+		integral420 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih20Im.setVal(integral420.getVal())
+		option.setVal(421)
+		integral421 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		Ih21Im.setVal(integral421.getVal())
+	
+	# Calculation of the time integrals for visualization.
+	option.setVal(91)
+	integral91 = Integrator.createIntegral(RooArgSet(t))
+	IT_cosh.setVal(integral91.getVal())
+	option.setVal(92)
+	integral92 = Integrator.createIntegral(RooArgSet(t))
+	IT_sinh.setVal(integral92.getVal())
+	option.setVal(93)
+	integral93 = Integrator.createIntegral(RooArgSet(t))
+	IT_cos.setVal(integral93.getVal())
+	option.setVal(94)
+	integral94 = Integrator.createIntegral(RooArgSet(t))
+	IT_sin.setVal(integral94.getVal())
+
+	# Backup of the integrals and normalization factors.
+	integrals = ''
+	integrals += 'Double_t Im00 = ' + str(Im00.getVal()) + ';\n'
+	integrals += 'Double_t Im01 = ' + str(Im01.getVal()) + ';\n'
+	integrals += 'Double_t Im10 = ' + str(Im10.getVal()) + ';\n'
+	integrals += 'Double_t Im02 = ' + str(Im02.getVal()) + ';\n'
+	integrals += 'Double_t Im20 = ' + str(Im20.getVal()) + ';\n'
+	integrals += 'Double_t Im11 = ' + str(Im11.getVal()) + ';\n'
+	integrals += 'Double_t Im12 = ' + str(Im12.getVal()) + ';\n'
+	integrals += 'Double_t Im21 = ' + str(Im21.getVal()) + ';\n'
+	integrals += 'Double_t Im22 = ' + str(Im22.getVal()) + ';\n\n'
+	integrals += 'Double_t If1 = ' + str(If1.getVal()) + ';\n'
+	integrals += 'Double_t If2 = ' + str(If2.getVal()) + ';\n'
+	integrals += 'Double_t If3 = ' + str(If3.getVal()) + ';\n'
+	integrals += 'Double_t If4 = ' + str(If4.getVal()) + ';\n'
+	integrals += 'Double_t If5 = ' + str(If5.getVal()) + ';\n'
+	integrals += 'Double_t If6 = ' + str(If6.getVal()) + ';\n'
+	integrals += 'Double_t If7 = ' + str(If7.getVal()) + ';\n'
+	integrals += 'Double_t If8 = ' + str(If8.getVal()) + ';\n'
+	integrals += 'Double_t If9 = ' + str(If9.getVal()) + ';\n'
+	integrals += 'Double_t If10 = ' + str(If10.getVal()) + ';\n'
+	integrals += 'Double_t If11 = ' + str(If11.getVal()) + ';\n'
+	integrals += 'Double_t If12 = ' + str(If12.getVal()) + ';\n'
+	integrals += 'Double_t If13 = ' + str(If13.getVal()) + ';\n'
+	integrals += 'Double_t If14 = ' + str(If14.getVal()) + ';\n'
+	integrals += 'Double_t If15 = ' + str(If15.getVal()) + ';\n'
+	integrals += 'Double_t If16 = ' + str(If16.getVal()) + ';\n'
+	integrals += 'Double_t If17 = ' + str(If17.getVal()) + ';\n'
+	integrals += 'Double_t If18 = ' + str(If18.getVal()) + ';\n\n'
+	integrals += 'Double_t Ih1Re = ' + str(Ih1Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih2Re = ' + str(Ih2Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih3Re = ' + str(Ih3Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih4Re = ' + str(Ih4Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih5Re = ' + str(Ih5Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih6Re = ' + str(Ih6Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih7Re = ' + str(Ih7Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih8Re = ' + str(Ih8Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih9Re = ' + str(Ih9Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih10Re = ' + str(Ih10Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih11Re = ' + str(Ih11Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih12Re = ' + str(Ih12Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih13Re = ' + str(Ih13Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih14Re = ' + str(Ih14Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih15Re = ' + str(Ih15Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih16Re = ' + str(Ih16Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih17Re = ' + str(Ih17Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih18Re = ' + str(Ih18Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih19Re = ' + str(Ih19Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih20Re = ' + str(Ih20Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih21Re = ' + str(Ih21Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih22Re = ' + str(Ih22Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih23Re = ' + str(Ih23Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih24Re = ' + str(Ih24Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih25Re = ' + str(Ih25Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih26Re = ' + str(Ih26Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih27Re = ' + str(Ih27Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih28Re = ' + str(Ih28Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih29Re = ' + str(Ih29Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih30Re = ' + str(Ih30Re.getVal()) + ';\n'
+	integrals += 'Double_t Ih1Im = ' + str(Ih1Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih2Im = ' + str(Ih2Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih3Im = ' + str(Ih3Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih4Im = ' + str(Ih4Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih5Im = ' + str(Ih5Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih6Im = ' + str(Ih6Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih7Im = ' + str(Ih7Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih8Im = ' + str(Ih8Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih9Im = ' + str(Ih9Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih10Im = ' + str(Ih10Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih11Im = ' + str(Ih11Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih12Im = ' + str(Ih12Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih13Im = ' + str(Ih13Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih14Im = ' + str(Ih14Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih15Im = ' + str(Ih15Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih16Im = ' + str(Ih16Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih17Im = ' + str(Ih17Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih18Im = ' + str(Ih18Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih19Im = ' + str(Ih19Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih20Im = ' + str(Ih20Im.getVal()) + ';\n'
+	integrals += 'Double_t Ih21Im = ' + str(Ih21Im.getVal()) + ';\n\n'
+	integrals += 'Double_t IT_cosh = ' + str(IT_cosh.getVal()) + ';\n'
+	integrals += 'Double_t IT_sinh = ' + str(IT_sinh.getVal()) + ';\n'
+	integrals += 'Double_t IT_cos = ' + str(IT_cos.getVal()) + ';\n'
+	integrals += 'Double_t IT_sin = ' + str(IT_sin.getVal()) + ';\n\n'
+	fintegrals = open('integrals.C','w')
+	fintegrals.write(integrals)
+	fintegrals.close()
+
+	RooMsgService.instance().setGlobalKillBelow(RooFit.INFO)
+	option.setVal(0)
+
+	# Construction of the PDF.
+	PDF = KpiKpiSpectrumNW(name,description,options_arglist,observables_arglist,wave_fractions_arglist,dirCP_asyms_arglist,strong_phases_arglist,weak_phases_arglist,mixing_params_arglist,\
+calib_params_arglist,cond_distr_params_list,sys_studies_arglist,mass_integrals_list,ang_integrals_list,time_integrals_list)
+
+	return PDF
+
+
+def loadData(file_path, datatype, data_file, MC_file, weighted, flatacc = 0, wide_window = 1, evnum_limit = 0):
+
+	# Information.
+	print "\n#####################################################################"
+	print " I N P U T   D A T A"
+	print "#####################################################################\n"
+	if (evnum_limit == 0): print 'All events selected.'
+	else: print str(evnum_limit)+' events selected.'
+	if weighted: print 'Using sWeights.'
+	else: print 'Not using sWeights.'
+
+	# Input file.
+	if (datatype == "real"):
+		file_in = TFile(file_path + data_file)
+		print 'Loading data from file ' + data_file + ' ...'
+	elif (datatype == "MC"):
+		file_in = TFile(file_path + MC_file)
+		print 'Loading data from file ' + MC_file + ' ...'
+	else: return 0.
+
+	# Tree with the selected events.
+	tree = file_in.Get("DecayTree")
+	file_out = TFile(file_path + "trash.root","recreate")
+	if wide_window: range_cut = t_name+">=0. && "+t_name+"<=12. && "+eta_SSK_name+"<=0.5 && "+eta_OS_name+"<=0.5"
+	else: range_cut = "abs("+m1_name+"-900.)<150. && abs("+m2_name+"-900.)<150. && "+t_name+">=0. && "+t_name+"<=12. && "+eta_SSK_name+"<=0.5 && "+eta_OS_name+"<=0.5"
+	tree2 = tree.CopyTree(range_cut)
+
+	# Construction of sWeighted datasets.
+	mean_eta_SSK = 0.
+	mean_eta_OS = 0.
+	norm_mean_eta = 0.
+	if (wide_window): data_ = RooDataSet("data_","data_",RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,weight))
+	else: data_ = RooDataSet("data_","data_",RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,weight))
+	more_real = RooDataSet("more_real","more_real",RooArgSet(etamistag_SSK,etamistag_OS,terror))
+	more_cat = RooDataSet("more_cat","more_cat",RooArgSet(decision_SSK,decision_OS))
+	hist_mistag_SSK = RooDataHist("hist_mistag_SSK","hist_mistag_SSK",RooArgSet(etamistag_SSK))
+	hist_mistag_OS = RooDataHist("hist_mistag_OS","hist_mistag_OS",RooArgSet(etamistag_OS))
+	hist_deltat = RooDataHist("hist_deltat","hist_deltat",RooArgSet(terror))
+	ev_counter = 0
+	for i in tree2:
+		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))):
+			if weighted:
+				mean_eta_SSK += eval("i."+weight_name) * eval("i."+eta_SSK_name)
+				mean_eta_OS += eval("i."+weight_name) * eval("i."+eta_OS_name)
+				norm_mean_eta += eval("i."+weight_name)
+			else:
+				mean_eta_SSK += eval("i."+eta_SSK_name)
+				mean_eta_OS += eval("i."+eta_OS_name)
+				norm_mean_eta += 1
+			if (wide_window):
+				mKp1.setVal(eval("i."+m1_name))
+				mKp2.setVal(eval("i."+m2_name))
+			else:
+				mKp1_narrowwin.setVal(eval("i."+m1_name))
+				mKp2_narrowwin.setVal(eval("i."+m2_name))
+			cos1.setVal(eval("i."+cos1_name))
+			cos2.setVal(eval("i."+cos2_name))
+			phi.setVal(eval("i."+phi_name))
+			t.setVal(eval("i."+t_name))
+			etamistag_SSK.setVal(eval("i."+eta_SSK_name))
+			etamistag_OS.setVal(eval("i."+eta_OS_name))
+			terror.setVal(eval("i."+terror_name))
+			if weighted: weight.setVal(eval("i."+weight_name))
+			else: weight.setVal(1)
+			decision_SSK.setIndex(int(eval("i."+dec_SSK_name)))
+			decision_OS.setIndex(int(eval("i."+dec_OS_name)))
+			if (wide_window): data_.add(RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,weight))
+			else: data_.add(RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,weight))
+			more_real.add(RooArgSet(etamistag_SSK,etamistag_OS,terror))
+			more_cat.add(RooArgSet(decision_SSK,decision_OS))
+			if weighted:
+				if (etamistag_SSK.getVal() < 0.5): hist_mistag_SSK.add(RooArgSet(etamistag_SSK),eval("i."+weight_name))
+				if (etamistag_OS.getVal() < 0.5): hist_mistag_OS.add(RooArgSet(etamistag_OS),eval("i."+weight_name))
+				hist_deltat.add(RooArgSet(terror),eval("i."+weight_name))
+			else:
+				if (etamistag_SSK.getVal() < 0.5): hist_mistag_SSK.add(RooArgSet(etamistag_SSK),1)
+				if (etamistag_OS.getVal() < 0.5): hist_mistag_OS.add(RooArgSet(etamistag_OS),1)
+				hist_deltat.add(RooArgSet(terror),1)
+			ev_counter += 1
+	data_.merge(more_real)
+	data_.merge(more_cat)
+	data = RooDataSet("data","data",data_,data_.get(),"",weight_name)
+	mean_eta_SSK = mean_eta_SSK/norm_mean_eta
+	mean_eta_OS = mean_eta_OS/norm_mean_eta
+	etac_SSK.setVal(mean_eta_SSK)
+	etac_OS.setVal(mean_eta_OS)
+	print 'SSK tagger: <eta> = '+str(mean_eta_SSK)
+	print 'OS tagger: <eta> = '+str(mean_eta_OS)
+
+	print str(ev_counter) + ' events loaded.'
+
+	return data, hist_mistag_SSK, hist_mistag_OS, hist_deltat
+
+def createPDF(Blinding, NOCP, NODIRCP, SAMECP, flat_acc, nw_acc, inf_t_res, wide_window, data_file,\
+fix_wave_fractions = 0, fix_dirCP_asyms = 0, fix_strong_phases = 0, fix_weak_phases = 0, fix_mixing_params = 0, fix_calib_params = 0,\
+pw_alternative_model = 0,f_Kst1410_rel2_Kst892 = 0,delta_Kst1410_rel2_Kst892 = 0,f_Kst1680_rel2_Kst892 = 0,delta_Kst1680_rel2_Kst892 = 0):
+
+	# -----------------------------------------------------------
+	# SETUP OF THE PARAMETERS ENTERING THE PDF
+	# -----------------------------------------------------------
+
+	# Mass window size.
+	wide_window_opt.setVal(wide_window)
+	if (wide_window):
+		for argument in observables: observables_list.add(argument)
+	else:
+		for argument in observables_narrowwin: observables_list.add(argument)
+
+	# CP violation options.
+	blindCat.setIndex(Blinding)
+	if NOCP:
+		for argument in dirCP_asyms_noCP:
+			dirCP_asyms_list.add(argument)
+			dirCP_asyms_unblinded_list.add(argument)
+		for argument in weak_phases_noCP:
+			weak_phases_list.add(argument)
+			weak_phases_unblinded_list.add(argument)
+	else:
+		if SAMECP:
+			for argument in weak_phases_sameCP: weak_phases_list.add(argument)
+			for argument in weak_phases_sameCP_unblinded: weak_phases_unblinded_list.add(argument)
+			if NODIRCP:
+				for argument in dirCP_asyms_noCP:
+					dirCP_asyms_list.add(argument)
+					dirCP_asyms_unblinded_list.add(argument)
+			else:
+				if wide_window:
+					for argument in dirCP_asyms_sameCP: dirCP_asyms_list.add(argument)
+					for argument in dirCP_asyms_sameCP_unblinded: dirCP_asyms_unblinded_list.add(argument)
+				else:
+					for argument in dirCP_asyms_sameCP_narrowwin: dirCP_asyms_list.add(argument)
+					for argument in dirCP_asyms_sameCP_narrowwin_unblinded: dirCP_asyms_unblinded_list.add(argument)
+		else:
+			if wide_window:
+				for argument in weak_phases: weak_phases_list.add(argument)
+				for argument in weak_phases_unblinded: weak_phases_unblinded_list.add(argument)
+			else:
+				for argument in weak_phases_narrowwin: weak_phases_list.add(argument)
+				for argument in weak_phases_narrowwin_unblinded: weak_phases_unblinded_list.add(argument)
+			if NODIRCP:
+				for argument in dirCP_asyms_noCP:
+					dirCP_asyms_list.add(argument)
+					dirCP_asyms_unblinded_list.add(argument)
+			else:
+				if wide_window:
+					for argument in dirCP_asyms: dirCP_asyms_list.add(argument)
+					for argument in dirCP_asyms_unblinded: dirCP_asyms_unblinded_list.add(argument)
+				else:
+					for argument in dirCP_asyms_narrowwin: dirCP_asyms_list.add(argument)
+					for argument in dirCP_asyms_narrowwin_unblinded: dirCP_asyms_unblinded_list.add(argument)
+
+	# Configuration of the model in order to be used for systematic uncertainty studies.
+	if pw_alternative_model:
+		pw_mass_altmodel.setVal(1)
+		f_1410_rel2_892.setVal(f_Kst1410_rel2_Kst892)
+		delta_1410_rel2_892.setVal(delta_Kst1410_rel2_Kst892)
+		f_1680_rel2_892.setVal(f_Kst1680_rel2_Kst892)
+		delta_1680_rel2_892.setVal(delta_Kst1680_rel2_Kst892)
+
+	# Configuration of the rest of the parameters.
+	for argument in options: options_list.add(argument)
+	for argument in wave_fractions: wave_fractions_list.add(argument)
+	for argument in strong_phases: strong_phases_list.add(argument)
+	for argument in mixing_params: mixing_params_list.add(argument)
+	for argument in calib_params: calib_params_list.add(argument)
+	for argument in cond_distr_params: cond_distr_params_list.add(argument)
+	for argument in sys_studies: sys_studies_list.add(argument)
+
+	# If narrow window is used: removal of the unnecesary CP conserving parameters.
+	if (not wide_window):
+		f_Swave.setVal(1.)
+		f_Swave.setConstant(1)
+		f_VTTV.setConstant(1)
+		f_TT.setConstant(1)
+		D_VTTV.setConstant(1)
+		D_STTS.setConstant(1)
+		fL_VT.setConstant(1)
+		xpar_VT.setConstant(1)
+		fL_TV.setConstant(1)
+		xpar_TV.setConstant(1)
+		fL_TT.setConstant(1)
+		xpar1_TT.setConstant(1)
+		xperp1_TT.setConstant(1)
+		xpar2_TT.setConstant(1)
+		delta02.setConstant(1)
+		delta20.setConstant(1)
+		delta120.setConstant(1)
+		delta12par.setConstant(1)
+		delta12perp.setConstant(1)
+		delta210.setConstant(1)
+		delta21par.setConstant(1)
+		delta21perp.setConstant(1)
+		delta220.setConstant(1)
+		delta22par.setConstant(1)
+		delta22perp.setConstant(1)
+		delta22par2.setConstant(1)
+		delta22perp2.setConstant(1)
+
+	# Printing out the list with the free physical parameters in the PDF.
+	parameters = []
+	print "\n#####################################################################"
+	print " F R E E   P H Y S I C A L   P A R A M E T E R S"
+	print "#####################################################################"
+	lenghts = [len(wave_fractions),len(dirCP_asyms),len(strong_phases),len(weak_phases),len(mixing_params),len(calib_params)]
+	lists = [wave_fractions_list,dirCP_asyms_list,strong_phases_list,weak_phases_list,mixing_params_list,calib_params_list]
+	lists_unblinded = [wave_fractions_list,dirCP_asyms_unblinded_list,strong_phases_list,weak_phases_unblinded_list,mixing_params_list,calib_params_list]
+	fixed_list = [fix_wave_fractions,fix_dirCP_asyms,fix_strong_phases,fix_weak_phases,fix_mixing_params,fix_calib_params]
+	names = ["CP averaged wave fractions:\n","Direct CP asymmetries:\n","Strong phases:\n","Weak phases:\n","Bs-Bsbar mixing parameters:\n","Calibration parameters:\n"]
+	counter = 1
+	DCPcounter = -1
+	empty_counter = []
+	for i in range(len(lists)): empty_counter.append(0)
+	for i in range(len(lists)):
+		if fixed_list[i]:
+			for k in range(lenghts[i]): lists_unblinded[i].at(k).setConstant(1)
+		print "\n----------------------------------"
+		print names[i]
+		for j in range(lenghts[i]):
+			if ((not lists_unblinded[i].at(j).isConstant()) and (type(lists_unblinded[i].at(j)) == type(phis))):
+				if (lists[i].at(j).GetName() == "DCP_withBlinding"): DCPcounter += 1
+				if ((lists[i].at(j).GetName() != "DCP_withBlinding") or ((lists[i].at(j).GetName() == "DCP_withBlinding") and (DCPcounter == 0))):
+					print " Parameter #"+str(counter)+" --> "+lists_unblinded[i].at(j).GetName()
+					parameters += [lists_unblinded[i].at(j)]
+					counter += 1
+					empty_counter[i] += 1
+		if empty_counter[i] == 0: print " Parameters FIXED."
+	print "\n#####################################################################\n"
+
+	# -----------------------------------------------------------
+	# ACCEPTANCE MODEL
+	# -----------------------------------------------------------
+
+	flatacc.setVal(flat_acc)
+	nwacc.setVal(nw_acc)
+
+	# -----------------------------------------------------------
+	# TIME RESOLUTION MODEL
+	# -----------------------------------------------------------
+
+	inftres.setVal(inf_t_res)
+
+	# -----------------------------------------------------------
+	# PDF CONSTRUCTION
+	# -----------------------------------------------------------
+
+	model = PDF_with_integrals("model","model",options_list,wide_window,data_file,observables_list,wave_fractions_list,dirCP_asyms_list,\
+strong_phases_list,weak_phases_list,mixing_params_list,calib_params_list,sys_studies_list)
+
+	return model, parameters
+
+def DoFit(model_,data_,num_CPU,minos_opt,fix_mixing,fix_calib):
+
+   # Function to perform the fit.
+
+   if fix_mixing:
+      if fix_calib:
+         res = model_.fitTo(data_,RooFit.NumCPU(num_CPU),RooFit.Minos(minos_opt),RooFit.Timer(kTRUE),RooFit.SumW2Error(kTRUE),RooFit.Save(kTRUE))
+      else:
+         res = model_.fitTo(data_,RooFit.NumCPU(num_CPU),RooFit.Minos(minos_opt),RooFit.Timer(kTRUE),RooFit.SumW2Error(kTRUE),RooFit.Save(kTRUE),RooFit.ExternalConstraints(RooArgSet(ctrt_p0metac_SSK,ctrt_Dp0half_SSK,ctrt_p1_SSK,ctrt_Dp1half_SSK,ctrt_p0metac_OS,ctrt_Dp0half_OS,ctrt_p1_OS,ctrt_Dp1half_OS)))
+
+   else:
+      if fix_calib:
+         res = model_.fitTo(data_,RooFit.NumCPU(num_CPU),RooFit.Minos(minos_opt),RooFit.Timer(kTRUE),RooFit.SumW2Error(kTRUE),RooFit.Save(kTRUE),RooFit.ExternalConstraints(RooArgSet(ctrt_delta_m_Bs,ctrt_gamma_Bs,ctrt_delta_gamma_Bs)))
+      else:
+         res = model_.fitTo(data_,RooFit.NumCPU(num_CPU),RooFit.Minos(minos_opt),RooFit.Timer(kTRUE),RooFit.SumW2Error(kTRUE),RooFit.Save(kTRUE),RooFit.ExternalConstraints(RooArgSet(ctrt_delta_m_Bs,ctrt_gamma_Bs,ctrt_delta_gamma_Bs,ctrt_p0metac_SSK,ctrt_Dp0half_SSK,ctrt_p1_SSK,ctrt_Dp1half_SSK,ctrt_p0metac_OS,ctrt_Dp0half_OS,ctrt_p1_OS,ctrt_Dp1half_OS)))
+
+   return res
+
+def PDFfun(PDF_,method_,m1_,m2_,cos1_,cos2_,phi_,t_,dt_,q1_,q2_,eta1_,eta2_):
+
+   # Function to transform the fitting PDF into an independent usable function.
+
+   mKp1_ini = mKp1.getVal()
+   mKp2_ini = mKp2.getVal()
+   mKp1_narrowwin_ini = mKp1_narrowwin.getVal()
+   mKp2_narrowwin_ini = mKp2_narrowwin.getVal()
+   cos1_ini = cos1.getVal()
+   cos2_ini = cos2.getVal()
+   phi_ini = phi.getVal()
+   t_ini = t.getVal()
+   terror_ini = terror.getVal()
+   decision_SSK_ini = decision_SSK.getIndex()
+   decision_OS_ini = decision_OS.getIndex()
+   etamistag_SSK_ini = etamistag_SSK.getVal()
+   etamistag_OS_ini = etamistag_OS.getVal()
+
+   mKp1.setVal(m1_)
+   mKp2.setVal(m2_)
+   mKp1_narrowwin.setVal(m1_)
+   mKp2_narrowwin.setVal(m2_)
+   cos1.setVal(cos1_)
+   cos2.setVal(cos2_)
+   phi.setVal(phi_)
+   t.setVal(t_)
+   terror.setVal(dt_)
+   decision_SSK.setIndex(q1_)
+   decision_OS.setIndex(q2_)
+   etamistag_SSK.setVal(eta1_)
+   etamistag_OS.setVal(eta2_)
+
+   res = eval('PDF_.'+method_)
+
+   mKp1.setVal(mKp1_ini)
+   mKp2.setVal(mKp2_ini)
+   mKp1_narrowwin.setVal(mKp1_narrowwin_ini)
+   mKp2_narrowwin.setVal(mKp2_narrowwin_ini)
+   cos1.setVal(cos1_ini)
+   cos2.setVal(cos2_ini)
+   phi.setVal(phi_ini)
+   t.setVal(t_ini)
+   terror.setVal(terror_ini)
+   decision_SSK.setIndex(decision_SSK_ini)
+   decision_OS.setIndex(decision_OS_ini)
+   etamistag_SSK.setVal(etamistag_SSK_ini)
+   etamistag_OS.setVal(etamistag_OS_ini)
+
+   return res
+
+def errorscan(PDF_,method_,n,nt,t0,tlimit):
+   errors_nan = 0
+   errors_neg = 0
+   error_list = []
+   counter = 0
+   total = (n+1)**8*(nt+1)*9
+   for i_m1 in range(n+1):
+      for i_m2 in range(n+1):
+         for i_cos1 in range(n+1):
+            for i_cos2 in range(n+1):
+               for i_phi in range(n+1):
+                  for i_t in range(nt+1):
+                     for i_dt in range(n+1):
+                        for i_q1 in range(-1,2):
+                           for i_q2 in range(-1,2):
+                              for i_eta1 in range(n+1):
+                                 for i_eta2 in range(n+1):
+                                    if isnan(PDFfun(PDF_,method_,750.+float(i_m1)/n*(1050.-750.),750.+float(i_m2)/n*(1050.-750.),-1.+float(i_cos1)/n*2.,-1.+float(i_cos2)/n*2.,-3.141593+float(i_phi)/n*2.*3.141593,t0+float(i_t)/nt*(tlimit-t0),float(i_dt)/n*0.08,i_q1,i_q2,float(i_eta1)/n*0.5,float(i_eta2)/n*0.5)):
+                                       errors_nan += 1
+                                       error_list.append([750.+float(i_m1)/n*(1050.-750.),750.+float(i_m2)/n*(1050.-750.),-1.+float(i_cos1)/n*2.,-1.+float(i_cos2)/n*2.,-3.141593+float(i_phi)/n*2.*3.141593,t0+float(i_t)/nt*(tlimit-t0),float(i_dt)/n*0.08,i_q1,i_q2,float(i_eta1)/n*0.5,float(i_eta2)/n*0.5])
+                                    elif (PDFfun(PDF_,method_,750.+float(i_m1)/n*(1050.-750.),750.+float(i_m2)/n*(1050.-750.),-1.+float(i_cos1)/n*2.,-1.+float(i_cos2)/n*2.,-3.141593+float(i_phi)/n*2.*3.141593,t0+float(i_t)/nt*(tlimit-t0),float(i_dt)/n*0.08,i_q1,i_q2,float(i_eta1)/n*0.5,float(i_eta2)/n*0.5) < 0.):
+                                       errors_neg += 1
+                                       error_list.append([750.+float(i_m1)/n*(1050.-750.),750.+float(i_m2)/n*(1050.-750.),-1.+float(i_cos1)/n*2.,-1.+float(i_cos2)/n*2.,-3.141593+float(i_phi)/n*2.*3.141593,t0+float(i_t)/nt*(tlimit-t0),float(i_dt)/n*0.08,i_q1,i_q2,float(i_eta1)/n*0.5,float(i_eta2)/n*0.5])
+                                    counter += 1.
+                                    if (float(counter)%(float(total)/20.) <= 1.):
+                                       print '%.1f'%(counter/total*100.)+' % scanned.'
+                                       print 750.+float(i_m1)/n*(1050.-750.),750.+float(i_m2)/n*(1050.-750.),-1.+float(i_cos1)/n*2.,-1.+float(i_cos2)/n*2.,-3.141593+float(i_phi)/n*2.*3.141593,t0+float(i_t)/nt*(tlimit-t0),float(i_dt)/n*0.08,i_q1,i_q2,float(i_eta1)/n*0.5,float(i_eta2)/n*0.5
+   for i in error_list: print i
+   print str(errors_nan)+' NaN errors found.'
+   print str(errors_neg)+' neg. PDF errors found.'
+   return
+
+def stringline(name,listpar,blinded):
+   var = 0
+   for par in listpar:
+      if par.GetName() == name: var = [str(par.getTitle()),par.getVal(),par.getError()]
+   if var != 0:
+      if (("DCP" in name) or ("phi" in name)) and blinded: return '$'+var[0]+'$ & $xxx$ & %.4f'%var[2]+' \\\\\n'
+      else: return '$'+var[0]+'$ & %.4f'%var[1]+' & %.4f'%var[2]+' \\\\\n'
+   else: return ''
+
+def fitprint2LaTeX(filename,parameters,wide_window,noCP,blinded,mixing_params_fixed,calib_params_fixed):
+	partext = '\\documentclass[11pt,a4paper]{article}\n\\usepackage[left=2.5cm,top=2.5cm,right=2.5cm,bottom=2.5cm]{geometry}\n\n\\begin{document}\n\n\\begin{table}[h]\n\\centering\n\\begin{tabular}{|c|c|c|}\n\hline\nParameter & Value & Stat. uncertainty \\\\\n\\hline\n\\hline\n'
+	if (not noCP) or (not mixing_params_fixed): partext += '\\multicolumn{3}{|c|}{Common parameters}\\\\\n\\hline\n\\hline\n'
+	if not noCP:
+		partext += stringline("phis",parameters,blinded)
+		partext += stringline("DCP",parameters,blinded)
+	if not mixing_params_fixed:
+		partext += stringline("delta_m_Bs",parameters,blinded)
+		partext += stringline("gamma_Bs",parameters,blinded)
+		partext += stringline("delta_gamma_Bs",parameters,blinded)
+	if (not noCP) or (not mixing_params_fixed): partext += '\\hline\n\\hline\n'
+	partext += '\\multicolumn{3}{|c|}{$B_{s}^{0}\\to K^{*}(892)^{0}\\bar{K}^{*}(892)^{0}$ (VV)}\\\\\n\\hline\n\\hline\n'
+	partext += stringline("f_VV",parameters,blinded)
+	partext += stringline("fL_VV",parameters,blinded)
+	partext += stringline("xpar_VV",parameters,blinded)
+	partext += stringline("delta11par",parameters,blinded)
+	partext += stringline("delta11perp",parameters,blinded)
+	partext += stringline("DCP_VV",parameters,blinded)
+	partext += '\\hline\n\\hline\n'
+	partext += '\\multicolumn{3}{|c|}{Single $S-wave$ (SV and VS)}\\\\\n\\hline\n\\hline\n'
+	partext += stringline("f_Swave",parameters,blinded)
+	partext += stringline("D_SVVS",parameters,blinded)
+	partext += stringline("delta01",parameters,blinded)
+	partext += stringline("delta10",parameters,blinded)
+	partext += stringline("DCP_SV",parameters,blinded)
+	partext += stringline("DCP_VS",parameters,blinded)
+	partext += stringline("dphi_SV",parameters,blinded)
+	partext += stringline("dphi_VS",parameters,blinded)
+	partext += '\\hline\n\\hline\n'
+	partext += '\\multicolumn{3}{|c|}{Double $S-wave$ (SS)}\\\\\n\\hline\n\\hline\n'
+	partext += stringline("f_SS",parameters,blinded)
+	partext += stringline("delta00",parameters,blinded)
+	partext += stringline("DCP_SS",parameters,blinded)
+	partext += stringline("dphi_SS",parameters,blinded)
+	partext += '\\hline\n\\hline\n'
+	if wide_window:
+		partext += '\\multicolumn{3}{|c|}{Single $D-wave$ (VT and TV)}\\\\\n\\hline\n\\hline\n'
+		partext += stringline("f_VTTV",parameters,blinded)
+		partext += stringline("D_VTTV",parameters,blinded)
+		partext += stringline("fL_VT",parameters,blinded)
+		partext += stringline("fL_TV",parameters,blinded)
+		partext += stringline("xpar_VT",parameters,blinded)
+		partext += stringline("xpar_TV",parameters,blinded)
+		partext += stringline("delta120",parameters,blinded)
+		partext += stringline("delta210",parameters,blinded)
+		partext += stringline("delta12par",parameters,blinded)
+		partext += stringline("delta21par",parameters,blinded)
+		partext += stringline("delta12perp",parameters,blinded)
+		partext += stringline("delta21perp",parameters,blinded)
+		partext += stringline("DCP_VT",parameters,blinded)
+		partext += stringline("DCP_TV",parameters,blinded)
+		partext += stringline("dphi_VT",parameters,blinded)
+		partext += stringline("dphi_TV",parameters,blinded)
+		partext += '\\hline\n\\hline\n'
+		partext += '\\multicolumn{3}{|c|}{Double $D-wave$ (TT)}\\\\\n\\hline\n\\hline\n'
+		partext += stringline("f_TT",parameters,blinded)
+		partext += stringline("fL_TT",parameters,blinded)
+		partext += stringline("xpar1_TT",parameters,blinded)
+		partext += stringline("xperp1_TT",parameters,blinded)
+		partext += stringline("xpar2_TT",parameters,blinded)
+		partext += stringline("delta220",parameters,blinded)
+		partext += stringline("delta22par",parameters,blinded)
+		partext += stringline("delta22perp",parameters,blinded)
+		partext += stringline("delta22par2",parameters,blinded)
+		partext += stringline("delta22perp2",parameters,blinded)
+		partext += stringline("DCP_TT",parameters,blinded)
+		partext += stringline("dphi_TT",parameters,blinded)
+		partext += '\\hline\n\\hline\n'
+		partext += '\\multicolumn{3}{|c|}{$Scalar-Tensor$ decays (ST and TS)}\\\\\n\\hline\n\\hline\n'
+		partext += stringline("D_STTS",parameters,blinded)
+		partext += stringline("delta02",parameters,blinded)
+		partext += stringline("delta20",parameters,blinded)
+		partext += stringline("DCP_ST",parameters,blinded)
+		partext += stringline("DCP_TS",parameters,blinded)
+		partext += stringline("dphi_ST",parameters,blinded)
+		partext += stringline("dphi_TS",parameters,blinded)
+		partext += '\\hline\n\\hline\n'
+	partext += '\\end{tabular}\n\\end{table}\n\n'
+	if not calib_params_fixed:
+		partext += '\\begin{table}[h]\n\\centering\n\\begin{tabular}{|c|c|c|}\n\hline\nParameter & Value & Stat. uncertainty \\\\\n\\hline\n\\hline\n'
+		partext += '\\multicolumn{3}{|c|}{SSK tagger}\\\\\n\\hline\n\\hline\n'
+		partext += stringline("p0metac_SSK",parameters,blinded)
+		partext += stringline("Dp0half_SSK",parameters,blinded)
+		partext += stringline("p1_SSK",parameters,blinded)
+		partext += stringline("Dp1half_SSK",parameters,blinded)
+		partext += '\\hline\n\\hline\n'
+		partext += '\\multicolumn{3}{|c|}{OS tagger}\\\\\n\\hline\n\\hline\n'
+		partext += stringline("p0metac_OS",parameters,blinded)
+		partext += stringline("Dp0half_OS",parameters,blinded)
+		partext += stringline("p1_OS",parameters,blinded)
+		partext += stringline("Dp1half_OS",parameters,blinded)
+		partext += '\\hline\n\\hline\n\\end{tabular}\n\\end{table}\n\n'
+	partext += '\\end{document}'
+	partext = partext.replace('#','\\')
+	partext = partext.replace('\\hline\n\\end{tabular}','\\end{tabular}')
+
+	texfile = open('latex/'+filename+'.tex','w')
+	texfile.write(partext)
+	texfile.close()
+	os.system('pdflatex latex/'+filename+'.tex')
+
+def CondVarStudy(fit_bool,model_,parameters_,data_,hist_mistag_SSK_,hist_mistag_OS_,hist_deltat_):
+
+	if fit_bool:
+		hist_mistag_SSK_.plotOn(frame_eta_SSK,RooFit.Binning(25))
+		hist_mistag_OS_.plotOn(frame_eta_OS,RooFit.Binning(25))
+		hist_deltat_.plotOn(frame_terr,RooFit.Binning(25))
+		for i in observables: i.setConstant(1)
+		for i in observables_narrowwin: i.setConstant(1)
+		for i in parameters_: i.setConstant(1)
+
+		# Fit of the t_err distribution.
+		for i in [gamma1_dt,beta1_dt,c_dt,gamma2_dt,beta2_dt]: i.setConstant(0)
+		alt_fit.setVal(1)
+		model_.fitTo(hist_deltat_,RooFit.SumW2Error(kTRUE))
+		model_.plotOn(frame_terr)
+		for i in [gamma1_dt,beta1_dt,c_dt,gamma2_dt,beta2_dt]: i.setConstant(1)
+
+		# Fit of the eta_SSK distribution.
+		for i in [mu1_SSK,sigma1_SSK,c_SSK,mu2_SSK,sigma2_SSK]: i.setConstant(0)
+		alt_fit.setVal(2)
+		model_.fitTo(hist_mistag_SSK_,RooFit.SumW2Error(kTRUE))
+		model_.plotOn(frame_eta_SSK)
+		for i in [mu1_SSK,sigma1_SSK,c_SSK,mu2_SSK,sigma2_SSK]: i.setConstant(1)
+
+		# Fit of the eta_OS distribution.
+		for i in [mu1_OS,sigma1_OS,c_OS,mu2_OS,sigma2_OS]: i.setConstant(0)
+		alt_fit.setVal(3)
+		model_.fitTo(hist_mistag_OS_,RooFit.SumW2Error(kTRUE))
+		model_.plotOn(frame_eta_OS)
+		for i in [mu1_OS,sigma1_OS,c_OS,mu2_OS,sigma2_OS]: i.setConstant(1)
+
+		alt_fit.setVal(0)
+		for i in observables: i.setConstant(0)
+		for i in observables_narrowwin: i.setConstant(0)
+		for i in parameters_: i.setConstant(0)
+
+		# Plot of the resulting distributions.
+		c_cond = TCanvas("c_cond","c_cond",1800,600)
+		c_cond.Divide(3)
+		c_cond.cd(1)
+		frame_eta_SSK.Draw()
+		c_cond.cd(2)
+		frame_eta_OS.Draw()
+		c_cond.cd(3)
+		frame_terr.Draw()
+		c_cond.Print("plotCondVar.pdf")
+
+	# Computation of the tagging efficiencies.
+	tag_eff_SSK.setVal(hist_mistag_SSK_.sumEntries()/data_.sumEntries())
+	tag_eff_OS.setVal(hist_mistag_OS_.sumEntries()/data_.sumEntries())
+	print 'SSK tagging efficiency = '+str(tag_eff_SSK.getVal())
+	print 'OS tagging efficiency = '+str(tag_eff_OS.getVal())
+
+def genTree(nevents,model,output_tag):
+	print 'Generating events ...'
+	d_ = model.generate(FullArgSet,nevents)
+	print 'Events generated.'
+	d_.write("tmp.dat")
+	gROOT.Reset()
+	fout = TFile(output_tag + "_" + str(nevents) + "ev.root","RECREATE")
+	tout = TTree("DecayTree","DecayTree")
+	tout.ReadFile("tmp.dat",m1_name+":"+m2_name+":"+cos1_name+":"+cos2_name+":"+phi_name+":"+t_name+":"+terror_name+":"+dec_SSK_name+":"+dec_OS_name+":"+eta_SSK_name+":"+eta_OS_name)
+	tout.Write()
+	fout.Close()
+	os.system("rm tmp.dat")
+
+def doToyMCStudy(nexp,neve,model,output_tag,job_id,GRID):
+
+	RooRandom.randomGenerator().SetSeed(0)
+
+	start = time.time()
+
+	MCS = RooMCStudy(model,FullArgSet,RooFit.Silence(),RooFit.FitOptions(RooFit.NumCPU(10),RooFit.Strategy(0),RooFit.Timer(kTRUE),RooFit.Save(kTRUE)))
+	MCS.generateAndFit(nexp,neve)
+
+	if GRID: fout_MCS = TFile("MCS_" + output_tag + "_Job" + str(job_id) + "_" + str(nexp) + "exp_" + str(neve) +"ev.root","RECREATE")
+	else: fout_MCS = TFile("/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/ganga/" + output_tag + "/MCS_" + output_tag + "_Job" + str(job_id) + "_" + str(nexp) + "exp_" + str(neve) +"ev.root","RECREATE")
+	tout_MCS = TTree("tree","tree")
+
+	strl = [ "_valu", "_erro", "_errl", "_errh", "_pull" ]
+
+	parlist = []
+	fitResult = MCS.fitResult(0)
+	for par in range( 0, fitResult.floatParsFinal().getSize() ):
+		param = fitResult.floatParsFinal().at(par)
+		for ii in range(0,len(strl)):
+			parlist.append( MyStructF() )
+			tout_MCS.Branch( param.GetName()+strl[ii], AddressOf(parlist[len(strl)*par+ii],'afloat'), param.GetName()+strl[ii]+"/F" )
+
+	branches = tout_MCS.GetListOfBranches()
+
+	for iter in range(0,nexp):
+		fitResult = MCS.fitResult(iter)
+		for par in range( 0, fitResult.floatParsFinal().getSize() ):
+			pull = 0.
+			val_ini = fitResult.floatParsInit().at(par).getVal()
+			val_fit = fitResult.floatParsFinal().at(par).getVal()
+			errlo	 = fitResult.floatParsFinal().at(par).getErrorLo()
+			errhi	 = fitResult.floatParsFinal().at(par).getErrorHi()
+			if ( abs(errlo*errhi) > 0. ):
+				delta = val_fit - val_ini
+				if ( delta < 0. ):
+					pull =	delta / errhi
+				else:
+					pull = -delta / errlo
+			param = fitResult.floatParsFinal().at(par)
+			parlist[len(strl)*par+0].afloat = param.getVal()
+			parlist[len(strl)*par+1].afloat = param.getError()
+			parlist[len(strl)*par+2].afloat = param.getErrorLo() # =AsymmErrorLo if MINOS, =-Error if only HESSE
+			parlist[len(strl)*par+3].afloat = param.getErrorHi() # =AsymmErrorHi if MINOS, =+Error if only HESSE
+			parlist[len(strl)*par+4].afloat = pull
+			
+		tout_MCS.Fill()
+
+	tout_MCS.Write()
+	fout_MCS.Close()
+
+	end = time.time()
+	print 'Process finished in',(end - start)/60.,'min.'
+
+def MCSGrid(nexp,neve,njob,output_tag,GRID):
+	os.system('mkdir /afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/ganga/' + output_tag)
+	os.system('ganga SendExperimentsGanga.py ' + str(neve) + ' ' + str(nexp) + ' ' + str(njob) + ' ' + output_tag + ' ' + str(GRID))
+
+def genprint2LaTeX(filename,parameters):
+	partext = '\\documentclass[11pt,a4paper]{article}\n\\usepackage[left=2.5cm,top=2.5cm,right=2.5cm,bottom=2.5cm]{geometry}\n\n\\begin{document}\n\n\\begin{table}[h]\n\\centering\n\\begin{tabular}{|c|c|}\n\hline\nParameter & Value \\\\\n\\hline\n'
+	texfile = open('latex/'+filename+'.tex','w')
+	for par in parameters: partext += '$'+str(par.getTitle())+'$ & '+str(par.getVal())+' \\\\\n\\hline\n'
+	partext += '\\end{tabular}\n\\end{table}\n\n\\end{document}'
+	partext = partext.replace('#','\\')
+	texfile.write(partext)
+	texfile.close()
+
+def llprofile(parameter,model,data,num_CPU = 8):
+	nll = RooNLLVar("nll","nll",model,data,RooFit.NumCPU(num_CPU))
+	frame = parameter.frame(RooFit.Title(parameter.GetName()))
+	nll.plotOn(frame,RooFit.PrintEvalErrors(0),RooFit.ShiftToZero(),RooFit.LineColor(kRed))
+	c = TCanvas("c_"+parameter.GetName(),"c_"+parameter.GetName())
+	frame.Draw()
+	return c
+
+def plot61Ddata(data, wide_window = 1, mbinning = 40, cosbinning = 40, phibinning = 40, tbinning = 40):
+
+	if wide_window:
+		data.plotOn(frame_m1,RooFit.Binning(mbinning))
+		data.plotOn(frame_m2,RooFit.Binning(mbinning))
+	else:
+		data.plotOn(frame_m1_narrowwin,RooFit.Binning(mbinning))
+		data.plotOn(frame_m2_narrowwin,RooFit.Binning(mbinning))
+	data.plotOn(frame_cos1,RooFit.Binning(cosbinning))
+	data.plotOn(frame_cos2,RooFit.Binning(cosbinning))
+	data.plotOn(frame_phi,RooFit.Binning(phibinning))
+	data.plotOn(frame_t,RooFit.Binning(tbinning))
+
+def plot61Dmodel(model, wide_window = 1, color = kBlue):
+
+	if wide_window:
+		model.plotOn(frame_m1,RooFit.DrawOption("c"),RooFit.LineColor(color))
+		model.plotOn(frame_m2,RooFit.DrawOption("c"),RooFit.LineColor(color))
+	else:
+		model.plotOn(frame_m1_narrowwin,RooFit.DrawOption("c"),RooFit.LineColor(color))
+		model.plotOn(frame_m2_narrowwin,RooFit.DrawOption("c"),RooFit.LineColor(color))
+	model.plotOn(frame_cos1,RooFit.DrawOption("c"),RooFit.LineColor(color))
+	model.plotOn(frame_cos2,RooFit.DrawOption("c"),RooFit.LineColor(color))
+	model.plotOn(frame_phi,RooFit.DrawOption("c"),RooFit.LineColor(color))
+	model.plotOn(frame_t,RooFit.DrawOption("c"),RooFit.LineColor(color))
+
+def plot61Dcomponent(model, wide_window = 1, j1 = 10, j2 = 10, h = 10, j1p = 10, j2p = 10, hp = 10, color = kRed, linestyle = 9):
+
+	component(j1,j2,h,j1p,j2p,hp)
+	if wide_window:
+		model.plotOn(frame_m1,RooFit.DrawOption("c"),RooFit.LineColor(color),RooFit.LineStyle(linestyle))
+		model.plotOn(frame_m2,RooFit.DrawOption("c"),RooFit.LineColor(color),RooFit.LineStyle(linestyle))
+	else:
+		model.plotOn(frame_m1_narrowwin,RooFit.DrawOption("c"),RooFit.LineColor(color),RooFit.LineStyle(linestyle))
+		model.plotOn(frame_m2_narrowwin,RooFit.DrawOption("c"),RooFit.LineColor(color),RooFit.LineStyle(linestyle))
+	model.plotOn(frame_cos1,RooFit.DrawOption("c"),RooFit.LineColor(color),RooFit.LineStyle(linestyle))
+	model.plotOn(frame_cos2,RooFit.DrawOption("c"),RooFit.LineColor(color),RooFit.LineStyle(linestyle))
+	model.plotOn(frame_phi,RooFit.DrawOption("c"),RooFit.LineColor(color),RooFit.LineStyle(linestyle))
+	model.plotOn(frame_t,RooFit.DrawOption("c"),RooFit.LineColor(color),RooFit.LineStyle(linestyle))
+	component(9,9,9,9,9,9)
+
+def create61Dcanvas(wide_window = 1):
+
+	c1 = TCanvas("c1","c1",1000,800)
+	c1.Divide(2,3)
+	c1.cd(1)
+	if wide_window: frame_m1.Draw()
+	else: frame_m1_narrowwin.Draw()
+	c1.cd(2)
+	if wide_window: frame_m2.Draw()
+	else: frame_m2_narrowwin.Draw()
+	c1.cd(3)
+	frame_cos1.Draw()
+	c1.cd(4)
+	frame_cos2.Draw()
+	c1.cd(5)
+	frame_phi.Draw()
+	c1.cd(6)
+	frame_t.Draw()
+
+	return c1

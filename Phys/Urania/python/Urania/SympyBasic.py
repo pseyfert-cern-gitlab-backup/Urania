@@ -86,7 +86,46 @@ def math_integrate(func, *args):
 #     os.remove("int_tmp.txt")
 
     return MathematicaToSympy(line)
+def math_limit(func, *args):
 
+    mp = MathematicaPrinter()
+    args_math = ""
+    
+    for arg in args:
+        var = arg[0]
+        var_lim = arg[1]
+        args_math += mp(var)+"->"+mp(var_lim)
+
+    func_math = mp(func)
+    
+    ftmo = open("int_tmp.nb","w")
+    ftmo.write("Put[FullSimplify[Limit["+func_math+","+args_math+"]],\"int_tmp.txt\"]\n")
+    ftmo.close()
+
+    mathematica_script("int_tmp.nb");
+
+    if not os.path.isfile("int_tmp.txt"):
+        print "Mathematica failed executing. Returning zero"
+        return "zero"
+    
+    ftin = open("int_tmp.txt","r")
+    line = ""
+    while True:
+        line_ = ftin.readline()
+        if not line_: break
+        line += line_[:-1]
+    if not line:
+        print "Something weird happened... Returning zero"
+        return "zero"
+
+    if "Limit" in line:
+        print "Mathematica failed calculating limit. Returning zero."
+        return "zero"
+
+#     os.remove("int_tmp.nb")
+#     os.remove("int_tmp.txt")
+    line = line.replace("/ ", "/")
+    return MathematicaToSympy(line)
 
 class USymbol(Symbol):
 
@@ -181,6 +220,17 @@ class UMatrix(Matrix):
 
 def getThing(A,thing): return simplify(A.collect(thing,evaluate = False) [thing])
 
+from math import sqrt
+def GaussErrorPropagator(expr, xi, sxi):
+    s = 0
+    for i in range(len(xi)):
+        duo = xi[i] ## symbol, value
+        s+= (sxi[i]*expr.diff(duo[0]).subs(xi))**2
+    return sqrt(s)
+
+
+        
+    
 
 ## A = UMatrix([[1,2,3],[1,0,0],[1,1,1])
 ## x = {}

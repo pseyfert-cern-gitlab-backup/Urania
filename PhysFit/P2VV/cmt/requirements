@@ -3,10 +3,10 @@
 # Maintainer : Jeroen van Leerdam
 #============================================================================
 package  P2VV
-version           v3r6
+version           v4r0
 
 #============================================================================
-# Structure, i.e. directories to process. 
+# Structure, i.e. directories to process.
 #============================================================================
 branches  cmt doc src P2VV dict
 
@@ -39,10 +39,11 @@ apply_pattern  reflex_dictionary_src                        \
 # Component library building rule
 #============================================================================
 private
-macro classdef_ext "_dict_classdef.cpp" ROOT_GE_6_00 "_classdef.cpp"
+macro classdef_file "../$(tag)/dict/P2VV/P2VVDict_dict_classdef.cpp" \
+       ROOT_GE_6_00 "../$(tag)/dict/P2VV/P2VVDict_classdef.cpp"
 end_private
-library  P2VVLib  ../src/*.cxx  \
-         ../$(tag)/dict/P2VV/P2VVDict$(classdef_ext)
+
+library  P2VVLib  ../src/*.cxx  $(classdef_file)
 
 macro_append  P2VVLib_cppflags " -g"
 
@@ -51,8 +52,8 @@ macro_append  P2VVLib_cppflags " -g"
 #============================================================================
 apply_pattern  linker_library        library=P2VVLib
 macro_append   P2VVLib_dependencies  P2VVGen
-macro_append   ROOT_linkopts         "  -lRooFitCore -lRooFit -lMatrix -lMathCore -lMathMore "
-macro_append   ROOT_linkopts         " -lCintex " ROOT_GE_6_00 ""
+macro_append   ROOT_linkopts         "  -lPhysics -lRooFitCore -lRooFit -lMatrix -lMathCore -lMathMore "
+macro_append   ROOT_linkopts         "-lCintex " ROOT_GE_6_00 ""
 
 #if you want own (latest) RooFit
 #macro  ROOT_home  "/afs/cern.ch/user/t/tdupree/new_rootsys/slc4_ia32_gcc34/root"

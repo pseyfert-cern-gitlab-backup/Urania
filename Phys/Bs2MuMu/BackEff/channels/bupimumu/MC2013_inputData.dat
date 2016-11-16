@@ -1,0 +1,7 @@
+EventType 	 	12113023
+GenerationEfficiency 	0.25075 		0.0007575     #Francesco 12/04/2013 (0.5015*0.50)
+BranchingFraction	2.3e-8	 	0.6e-8
+InputFile 	 	/castor/cern.ch/user/f/fdettori/bsmumu/background/MC2012_BuPiMuMu_Down.root
+InputFile 	 	/castor/cern.ch/user/f/fdettori/bsmumu/background/MC2012_BuPiMuMu_Up.root
+AnalysedEvents 	 	1013594
+NormalisationYear	2013

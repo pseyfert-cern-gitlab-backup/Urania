@@ -1,14 +1,17 @@
 from ROOT import *
 from OurSites import *
-from Cuts2013 import cuts11noKpi as cuts11, cuts12noKpi as cuts12
+IMPOSE_CUTS = 0
+if IMPOSE_CUTS: from Cuts2013 import cuts11noKpi as cuts11, cuts12noKpi as cuts12
+else:
+    cuts11 = "(1>0)"
+    cuts12 = "(1>0)"
+NTUPLE_PATH = "~/vol5/Kst_2014/MC/selsignal/Bs/"
 from parameters import * 
 def createTTrees(KpiBins = []):
-    #f11 = TFile(NTUPLE_PATH + "/MagUpAndDown3500GeVReco14s20r1dv33r4_1019pb_StrippingBetaSBs2JpsiKstarWideLine_2011_BDTG_Loose_wCosines.root")
-    f11 = TFile("~/vol5/Tuple_BsJPsiKst2011.root")
-    t2_11 = f11.Get("DecayTree")#/DecayTree")
-    f12 = TFile(NTUPLE_PATH + "/MagUpAndDown4000GeVReco14s20r0p1dv33r4_2062pb_StrippingBetaSBs2JpsiKstarWideLine_2012_BDTG_Loose_wCosines.root")
-    f12 = TFile("~/vol5/Tuple_BsJPsiKst2012.root")
-    t2_12 = f12.Get("DecayTree")#/DecayTree")
+    f11 = TFile("~/vol5/Kst_2014/MC/selsignal/Bs/Bs_11.root")#uple_BsJPsiKst2011.root")
+    t2_11 = f11.Get("DecayTree/DecayTree")
+    f12 = TFile("~/vol5/Kst_2014/MC/selsignal/Bs/Bs_12.root")#uple_BsJPsiKst2012.root")
+    t2_12 = f12.Get("DecayTree/DecayTree")
 
     if not KpiBins: ### OLD STYLE
          

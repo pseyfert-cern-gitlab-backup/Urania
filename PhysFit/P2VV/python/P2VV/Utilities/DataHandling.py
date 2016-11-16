@@ -148,15 +148,17 @@ def readData( filePath, dataSetName, NTuple = False, observables = None, **kwarg
     if observables :
         print 'P2VV - INFO: readData: reading data for observables [ %s ]' % ', '.join( obs.GetName() for obs in observables )
 
+    dataSetArgs = { }
+    if 'WeightVar' in kwargs : dataSetArgs['WeightVar'] = kwargs.pop('WeightVar')
     if NTuple :
-      from ROOT import RooDataSet, TChain
+      from ROOT import RooDataSet, TFile
       assert observables != None, 'P2VV - ERROR: readData: set of observables is required for reading an n-tuple'
 
       # create data set from NTuple file(s)
-      print 'P2VV - INFO: readData: reading NTuple(s) "%s" from file(s) "%s"' % ( dataSetName, filePath )
-      chain = TChain(dataSetName)
-      status = chain.Add( filePath, -1 )
-      if status == 0 : raise RuntimeError( 'P2VV - ERROR: could not locate tree "%s" in file "%s"' % ( dataSetName, filePath ) )
+      print 'P2VV - INFO: readData: reading NTuple "%s" from file "%s"' % ( dataSetName, filePath )
+      ntupleFile = TFile.Open(filePath)
+      ntupleOrig = ntupleFile.Get(dataSetName)
+      if not ntupleOrig : raise RuntimeError( 'P2VV - ERROR: could not locate tree "%s" in file "%s"' % ( dataSetName, filePath ) )
 
       if 'ntupleCuts' in kwargs :
           ntupleCuts = kwargs.pop( 'ntupleCuts', '' )
@@ -178,17 +180,17 @@ def readData( filePath, dataSetName, NTuple = False, observables = None, **kwarg
           os.close(fd)
           os.remove(temp_name)
           tmp_file = TFile.Open(temp_name, 'recreate')
-          ntuple = chain.CopyTree(ntupleCuts)
+          ntuple = ntupleOrig.CopyTree(ntupleCuts)
       else :
-          ntuple = chain
+          ntuple = ntupleOrig
 
       if cuts : print 'P2VV - INFO: readData: applying cuts on data set: %s' % cuts
-      data = RooDataSet( dataSetName, dataSetName
+      data = RooDataSet(  dataSetName, dataSetName
                        , [ obs._var for obs in observables ]
                        , Import = ntuple
-                       , Cut = noNAN + ' && ' + cuts if cuts else noNAN )
-      ntuple.IsA().Destructor(ntuple)
-      if chain : chain.IsA().Destructor(chain)
+                       , Cut = noNAN + ' && ' + cuts if cuts else noNAN
+                       , **dataSetArgs
+                       )
 
     else :
       from ROOT import TFile
@@ -215,10 +217,10 @@ def readData( filePath, dataSetName, NTuple = False, observables = None, **kwarg
                                    , [ obs._var for obs in observables ]
                                    , Import = dataSet
                                    , Cut = noNAN + ' && ' + cuts if cuts else noNAN
+                                   , **dataSetArgs
                                    )
               else :
                   data = dataSet
-
           else :
               data.append(dataSet)
 
@@ -228,13 +230,21 @@ def readData( filePath, dataSetName, NTuple = False, observables = None, **kwarg
 
     # import data set into current workspace
     from P2VV.RooFitWrappers import RooObject
-    wsData = RooObject().ws().put( data, **kwargs )
-    data.IsA().Destructor(data)
+    importIntoWS = kwargs.pop( 'ImportIntoWS', True )
+    rData = None
+    if importIntoWS :
+        # import data set into current workspace
+        from P2VV.RooFitWrappers import RooObject
+        wsData = RooObject().ws().put( data, **kwargs )
+        rData = wsData
+    else :
+        rData = data
+
     if tmp_file:
         tmp_file.Close()
         os.remove(tmp_file.GetName())
         if orig_file: orig_file.cd()
-    return wsData
+    return rData
 
 
 def writeData( filePath, dataSetName, data, NTuple = False ) :
@@ -252,25 +262,43 @@ def writeData( filePath, dataSetName, data, NTuple = False ) :
     f.Close()
 
 
-def correctSWeights( dataSet, bkgWeightName, splitCatName, **kwargs ) :
-    """correct sWeights in dataSet for background dilution
+def correctWeights( dataSet, splitCatNames, **kwargs ) :
+    """correct weights in dataSet for background dilution
     """
 
-    # check if background weight variable exists in data set
-    bkgWeight = dataSet.get().find(bkgWeightName)
-    assert bkgWeight, 'P2VV - ERROR: correctSWeights: unknown background weight: "%s"' % bkgWeightName
-
-    if splitCatName :
+    if splitCatNames :
         # get category that splits data sample
-        splitCat = dataSet.get().find(splitCatName)
-        assert splitCat, 'P2VV - ERROR: correctSWeights: unknown spit category: "%s"' % splitCat
+        if type(splitCatNames) == str : splitCatNames = [ splitCatNames ]
+        if len(splitCatNames) == 1 :
+            splitCat = dataSet.get().find( splitCatNames[0] )
+            assert splitCat, 'P2VV - ERROR: correctWeights: unknown split category: "%s"' % splitCatNames[0]
+
+        else :
+            from ROOT import RooArgSet
+            catSet = RooArgSet()
+            for catName in splitCatNames :
+                cat = dataSet.get().find(catName)
+                assert cat, 'P2VV - ERROR: correctWeights: unknown split category: "%s"' % catName
+                catSet.add(cat)
+
+            from ROOT import RooSuperCategory
+            splitCat = RooSuperCategory( 'splitCat', 'splitCat', catSet)
 
         indexDict = { }
-        for iter, catType in enumerate( splitCat ) : indexDict[ iter ] = catType.getVal()
+        for iter, catType in enumerate( splitCat ) : indexDict[ iter ] = ( catType.GetName(), catType.getVal() )
+
+    # get variable that contains original event weights
+    origWeightVar = None
+    origWeightName = kwargs.pop( 'WeightName', '' )
+    if origWeightName :
+        origWeightVar = dataSet.get().find(origWeightName)
+        from ROOT import RooAbsReal
+        assert origWeightVar and isinstance( origWeightVar, RooAbsReal )\
+               , 'P2VV - ERROR: correctWeights: unknown weight variable: "%s"' % origWeightName
 
     corrFactors = kwargs.pop( 'CorrectionFactors', [ ] )
     if not corrFactors :
-        if splitCatName :
+        if splitCatNames :
             # initialize sums for the weights and the weights squared per category
             sumWeights   = [ 0. ] * ( splitCat.numTypes() + 1 )
             sumSqWeights = [ 0. ] * ( splitCat.numTypes() + 1 )
@@ -284,36 +312,43 @@ def correctSWeights( dataSet, bkgWeightName, splitCatName, **kwargs ) :
 
         # loop over events and get sums of weights and weights squared
         for varSet in dataSet :
-            weight = dataSet.weight()
-            sumWeights[0]   += dataSet.weight()
-            sumSqWeights[0] += dataSet.weight()**2
-            if splitCatName :
-                sumWeights[ posDict[ varSet.getCatIndex(splitCatName) ] + 1 ]   += dataSet.weight()
-                sumSqWeights[ posDict[ varSet.getCatIndex(splitCatName) ] + 1 ] += dataSet.weight()**2
+            weight = origWeightVar.getVal() if origWeightVar else dataSet.weight()
+            sumWeights[0]   += weight
+            sumSqWeights[0] += weight**2
+            if splitCatNames :
+                sumWeights[   posDict[ splitCat.getIndex() ] + 1 ] += weight
+                sumSqWeights[ posDict[ splitCat.getIndex() ] + 1 ] += weight**2
 
         # get correction factors
-        corrFactors = (  sumWeights[0] / sumSqWeights[0]
-                       , [ sum / sumSq for sum, sumSq in zip( sumWeights[ 1 : ], sumSqWeights[ 1 : ] ) ]
+        corrFactors = (  ( sumWeights[0] / sumSqWeights[0], sumWeights[0] )
+                       , [ ( sum / sumSq, sum ) for sum, sumSq in zip( sumWeights[ 1 : ], sumSqWeights[ 1 : ] ) ]
                       )
 
     # add corrected weights to data set
     from P2VV.Load import P2VVLibrary
-    from ROOT import RooCorrectedSWeight
-    if splitCatName :
+    from ROOT import RooCorrectedWeight
+    if splitCatNames :
         from ROOT import std
         corrFactorsVec = std.vector('Double_t')()
-        print 'P2VV - INFO: correctSWeights: multiplying sWeights (-ln(L)) to correct for background dilution with factors (overall factor %.4f):'\
+        print 'P2VV - INFO: correctWeights: multiplying sWeights (-ln(L)) to correct for background dilution with factors (overall factor %.4f for %.1f events):'\
               % corrFactors[0]
+        maxLenStateName = max( len( ind[0] ) for ind in indexDict.values() )
         for iter, fac in enumerate( corrFactors[1] ) :
-            corrFactorsVec.push_back(fac)
-            print '    %d: %.4f' % ( indexDict[iter], fac )
+            corrFactorsVec.push_back( fac[0] )
+            print ( '    {0:%ds} : {1:.4f} (events: {2:.1f})' % maxLenStateName ).format( indexDict[iter][0], fac[0], fac[1] )
 
-        weightVar = RooCorrectedSWeight( 'weightVar', 'weight variable', bkgWeight, splitCat, corrFactorsVec, True )
+        if origWeightVar :
+            weightVar = RooCorrectedWeight( 'weightVar', 'weight variable', origWeightVar, splitCat, corrFactorsVec )
+        else :
+            weightVar = RooCorrectedWeight( 'weightVar', 'weight variable', dataSet, splitCat, corrFactorsVec )
 
     else :
-        print 'P2VV - INFO: correctSWeights: multiplying sWeights (-ln(L)) to correct for background dilution with a factor %.4f'\
+        print 'P2VV - INFO: correctWeights: multiplying sWeights (-ln(L)) to correct for background dilution with a factor %.4f for %.1f events'\
               % corrFactors[0]
-        weightVar = RooCorrectedSWeight( 'weightVar', 'weight variable', bkgWeight, corrFactors[0], True )
+        if origWeightVar :
+            weightVar = RooCorrectedWeight( 'weightVar', 'weight variable', origWeightVar, corrFactors[0][0] )
+        else :
+            weightVar = RooCorrectedWeight( 'weightVar', 'weight variable', dataSet, corrFactors[0][0] )
 
     from ROOT import RooDataSet
     dataSet.addColumn(weightVar)
@@ -363,6 +398,7 @@ def addTaggingObservables( dataSet, iTagName, tagCatName, tagDecisionName, estim
     for obsSet in dataSet :
         assert obsSet.getCatIndex(iTagName) == +1 or obsSet.getCatIndex(iTagName) == -1,\
                 'P2VV - ERROR: addTaggingObservables: initial state flavour tag has value %+d' % obsSet.getCatIndex(iTagName)
+        if len(binBounds) < 3 : continue
         assert obsSet.getCatIndex(tagDecisionName) == 0 or obsSet.getCatIndex(iTagName) == obsSet.getCatIndex(tagDecisionName),\
                 'P2VV - ERROR: addTaggingObservables: initial state flavour tag and tag decision have different values: %+d and %+d'\
                 % ( obsSet.getCatIndex(iTagName), obsSet.getCatIndex(tagDecisionName) )
@@ -374,6 +410,31 @@ def addTaggingObservables( dataSet, iTagName, tagCatName, tagDecisionName, estim
                 or ( obsSet.getCatIndex(tagDecisionName) != 0 and obsSet.getCatIndex(tagCatName) > 0 ),\
                 'P2VV - ERROR: addTaggingObservables: tag decision = %+d, while tagging category = %d'\
                 % ( obsSet.getCatIndex(tagDecisionName), obsSet.getCatIndex(tagCatName) )
+
+
+def addGlobalTagCat( dataSet, tagCatOSName, tagCatSSName ) :
+    tagCatOS = dataSet.get().find(tagCatOSName)
+    tagCatSS = dataSet.get().find(tagCatSSName)
+    assert tagCatOS and tagCatSS\
+           , 'P2VV - ERROR: addGlobalTagCat(): one or more tagging categories not found in data set ("%s" and "%s")'\
+             % ( tagCatOSName, tagCatSSName )
+
+    from ROOT import RooMappedCategory, RooMultiCategory, RooArgSet
+    tagCatMult = RooMultiCategory( 'tagCatMult', 'tagCatMult', RooArgSet( tagCatOS, tagCatSS ) )
+    tagCatP2VV = RooMappedCategory( 'tagCatP2VV', 'tagCatP2VV', tagCatMult, 'Tagged', 1 )
+
+    tagCatOS.setIndex(0)
+    tagCatSS.setIndex(0)
+    tagCatP2VV.map( tagCatMult.getLabel(), 'Untagged', 0 )
+
+    tagCatP2VV = dataSet.addColumn(tagCatP2VV)
+
+    for obsSet in dataSet :
+        assert (obsSet.getCatIndex('tagCatP2VV') == 0 and obsSet.getCatIndex(tagCatOSName) == 0 and obsSet.getCatIndex(tagCatSSName) == 0)\
+            or (obsSet.getCatIndex('tagCatP2VV') == 1 and (obsSet.getCatIndex(tagCatOSName) > 0 or obsSet.getCatIndex(tagCatSSName) > 0))\
+            , 'P2VV - ERROR: addGlobalTagCat(): "tagCatP2VV" index (%d) does not correspond to "%s" and "%s" indices (%d and %d)'\
+              % ( obsSet.getCatIndex('tagCatP2VV'), tagCatOSName, tagCatSSName
+                 , obsSet.getCatIndex(tagCatOSName), obsSet.getCatIndex(tagCatSSName) )
 
 
 def addTransversityAngles( dataSet, cpsiName, cthetaTrName, phiTrName, cthetaKName, cthetalName, phiName ) :
@@ -437,7 +498,8 @@ def printEventYields( **kwargs ) :
     assert parSet,     'P2VV - ERROR: printEventYields: no parameter set with yield variables found in arguments ("ParameterSet")'
     assert yieldNames, 'P2VV - ERROR: printEventYields: no yield names found in arguments ("YieldNames")'
 
-    if splitCats : splitCats = list( set( cat for cat in splitCats ) )
+    if splitCats :
+        splitCats = sorted( list( set( cat for cat in splitCats ) ), cmp = lambda a, b : cmp( a.GetName(), b.GetName() ) )
 
     # variables for looping over splitting category states
     iters = { }
@@ -456,10 +518,10 @@ def printEventYields( **kwargs ) :
 
     # print yields and fractions with error from S/(S+B) fraction only (no Poisson error for number of events!)
     print
-    print '-'.join( dashes for dashes in [ ' ' * 4 + '-' * 22, '-' * 8 ] + [ '-' * num for name in yieldNames for num in ( 23, 19 ) ] )
-    print ' '.join( ( '{0:^%ds}' % width ).format(title) for ( title, width ) in [ ( '', 26 ), ( ' total', 8 ) ]\
+    print '-'.join( dashes for dashes in [ ' ' * 4 + '-' * 26, '-' * 8 ] + [ '-' * num for name in yieldNames for num in ( 23, 19 ) ] )
+    print ' '.join( ( '{0:^%ds}' % width ).format(title) for ( title, width ) in [ ( '', 30 ), ( ' total', 8 ) ]\
                    + [ ( name if num == 23 else 'f(' + name + ')', num ) for name in yieldNames for num in ( 23, 19 ) ] )
-    print '-'.join( dashes for dashes in [ ' ' * 4 + '-' * 22, '-' * 8 ] + [ '-' * num for name in yieldNames for num in ( 23, 19 ) ] )
+    print '-'.join( dashes for dashes in [ ' ' * 4 + '-' * 26, '-' * 8 ] + [ '-' * num for name in yieldNames for num in ( 23, 19 ) ] )
 
     from P2VV.Utilities.General import getSplitPar
     cont = True
@@ -472,10 +534,10 @@ def printEventYields( **kwargs ) :
         nEvErr     = [ yieldVar.getError() for yieldVar in yields ]
         nEvTot     = sum(nEv)
         frac       = [ num / nEvTot if nEvTot > 0. else 0. for num in nEv ]
-        nEvCorrErr = [ sqrt( numErr**2 - num**2 / nEvTot ) for num, numErr in zip( nEv, nEvErr ) ]
+        nEvCorrErr = [ sqrt( ( numErr**2 - num**2 / nEvTot ) if numErr**2 > num**2 / nEvTot else 0. ) for num, numErr in zip(nEv, nEvErr) ]
         fracErr    = [ err / nEvTot if nEvTot > 0. else 0. for err in nEvCorrErr ]
 
-        print '     {0:>20s}   {1:>6.0f}  '.format( stateName, nEvTot )\
+        print '     {0:>24s}   {1:>6.0f}  '.format( stateName, nEvTot )\
               + ' '.join( ' {0:>9.2f} +/- {1:>7.2f}   {2:>6.4f} +/- {3:>6.4f} '.format( num, err, fr, frErr )\
                          for ( num, err, fr, frErr ) in zip( nEv, nEvCorrErr, frac, fracErr ) )
 
@@ -492,27 +554,26 @@ def printEventYields( **kwargs ) :
             else :
                 continue
 
-    print '-'.join( dashes for dashes in [ ' ' * 4 + '-' * 22, '-' * 8 ] + [ '-' * num for name in yieldNames for num in ( 23, 19 ) ] )
+    print '-'.join( dashes for dashes in [ ' ' * 4 + '-' * 26, '-' * 8 ] + [ '-' * num for name in yieldNames for num in ( 23, 19 ) ] )
     print
 
 
 def printEventYieldsData( **kwargs ) :
     # get arguments
-    fullDataSet    = kwargs.pop( 'FullDataSet',         None )
     weightDataSets = kwargs.pop( 'WeightedDataSets',    [ ]  )
     dataSetNames   = kwargs.pop( 'DataSetNames',        [ ]  )
     splitCats      = kwargs.pop( 'SplittingCategories', [ ]  )
 
-    assert fullDataSet,    'P2VV - ERROR: printEventYieldsData: no data set found in arguments ("FullDataSet")'
     assert weightDataSets, 'P2VV - ERROR: printEventYieldsData: no weighted data sets found in arguments ("WeightedDataSets")'
     if not dataSetNames : dataSetNames = [ 'data set %d' % it for it, dataSet in enumerate(weightDataSets) ]
 
-    if splitCats : splitCats = list( set( cat for cat in splitCats ) )
+    if splitCats :
+        splitCats = sorted( list( set( cat for cat in splitCats ) ), cmp = lambda a, b : cmp( a.GetName(), b.GetName() ) )
 
     # print total numbers of events
     from math import sqrt
-    nEvTot = fullDataSet.sumEntries()
     nEv    = [ dataSet.sumEntries() for dataSet in weightDataSets ]
+    nEvTot = sum(nEv)
     frac   = [ num / nEvTot       if nEvTot > 0. else 0. for num in nEv ]
     signif = [ num / sqrt(nEvTot) if nEvTot > 0. else 0. for num in nEv ]
 
@@ -545,8 +606,8 @@ def printEventYieldsData( **kwargs ) :
             labs[cat].append( catState.GetName() )
 
             cut    = '!(%s-%d)' % ( cat.GetName(), inds[cat][-1] )
-            nEvTot = fullDataSet.sumEntries(cut)
             nEv    = [ dataSet.sumEntries(cut) for dataSet in weightDataSets ]
+            nEvTot = sum(nEv)
             frac   = [ num / nEvTot       if nEvTot > 0. else 0. for num in nEv ]
             signif = [ num / sqrt(nEvTot) if nEvTot > 0. else 0. for num in nEv ]
             print ' ' *  4 + ' {0:>30s}   {1:>6.0f} |'.format( labs[cat][-1], nEvTot ) + '|'.join( ' {0:>9.2f}   {1:>6.4f}   {2:>7.3f} '\
@@ -565,8 +626,8 @@ def printEventYieldsData( **kwargs ) :
     while cont :
         stateName = ';'.join( labs[cat][ iters[cat] ] for cat in splitCats )
         cut       = '&&'.join( '!(%s-%d)' % ( cat.GetName(), inds[cat][ iters[cat] ] ) for cat in splitCats )
-        nEvTot    = fullDataSet.sumEntries(cut)
         nEv       = [ dataSet.sumEntries(cut) for dataSet in weightDataSets ]
+        nEvTot    = sum(nEv)
         frac      = [ num / nEvTot       if nEvTot > 0. else 0. for num in nEv ]
         signif    = [ num / sqrt(nEvTot) if nEvTot > 0. else 0. for num in nEv ]
         print ' ' *  4 + ' {0:>30s}   {1:>6.0f} |'.format( stateName, nEvTot ) + '|'.join( ' {0:>9.2f}   {1:>6.4f}   {2:>7.3f} '\

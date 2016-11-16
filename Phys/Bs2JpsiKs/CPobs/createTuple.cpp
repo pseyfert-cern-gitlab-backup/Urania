@@ -96,6 +96,8 @@ int createTuple::fillDataSet(const double netCut_LL, const double netCut_DD) {
   int inputfile = 0;
   int polarity = 0;
   double gpsSecond = 0;
+  double trueTime = 0;
+  int trueTag = 0;
 
   // TTree
   TTree* outtree = new TTree("Bs2JpsiKs_Fitters", "Data Tree for Fitters");
@@ -112,6 +114,10 @@ int createTuple::fillDataSet(const double netCut_LL, const double netCut_DD) {
   outtree->Branch("dataYear",     &inputfile, "dataYear/I");
   outtree->Branch("polarity",     &polarity,  "polarity/I");
   outtree->Branch("gpsSecond",    &gpsSecond, "gpsSecond/D");
+  if(isSigMC(m_data) || m_data==m_IncJpsi) {
+    outtree->Branch("trueTime",   &trueTime,  "trueTime/D");
+    outtree->Branch("trueTag",    &trueTag,   "trueTag/I");
+  }
   outtree->SetDirectory(m_outfile);
 
   std::cout << "\n PROGRESS: Multiple Candidates \n" << std::endl;
@@ -215,6 +221,10 @@ int createTuple::fillDataSet(const double netCut_LL, const double netCut_DD) {
         inputfile = (m_ntuple->getInputFile()==0 ? 2011 : 2012);
         polarity = m_ntuple->getPolarity();
         gpsSecond = (double) m_ntuple->getGpsSecond();
+        if(isSigMC(m_data) || m_data==m_IncJpsi) {
+          trueTime = m_ntuple->truetime();
+          trueTag = m_ntuple->truetag();
+        }
         outtree->Fill();
       // Eliminated Multiple Candidates: update counters
       } else {

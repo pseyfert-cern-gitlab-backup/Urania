@@ -295,18 +295,9 @@ macro(LCG_AA_project name version)
   set(${name}_native_version ${version})
   set(${name}_base ${LCG_releases}/${name}/${${name}_native_version})
   set(${name}_home ${${name}_base}/${LCG_platform})
-  if(${name} STREQUAL ROOT)
-    # ROOT is special
-    set(ROOT_home ${ROOT_home}/root)
-  endif()
   if(NOT LCG_platform STREQUAL LCG_system)
     # For AA projects we want to be able to fall back on non-debug builds.
-    if(NOT ${name} STREQUAL ROOT)
-      set(${name}_home ${${name}_home} ${${name}_base}/${LCG_system})
-    else()
-      # ROOT is special
-      set(ROOT_home ${ROOT_home} ${ROOT_base}/${LCG_system}/root)
-    endif()
+    set(${name}_home ${${name}_home} ${${name}_base}/${LCG_system})
   endif()
   list(APPEND LCG_projects ${name})
 endmacro()
@@ -339,15 +330,15 @@ macro(LCG_compiler id flavor version)
     find_program(CMAKE_C_COMPILER
                  NAMES ${c_compiler_names}
                  PATHS ${compiler_root}/bin
-		 DOC "C compiler")
+                 DOC "C compiler")
     find_program(CMAKE_CXX_COMPILER
                  NAMES ${cxx_compiler_names}
                  PATHS ${compiler_root}/bin
-		 DOC "C++ compiler")
+                 DOC "C++ compiler")
     find_program(CMAKE_Fortran_COMPILER
                  NAMES ${fortran_compiler_names}
                  PATHS ${compiler_root}/bin
-		 DOC "Fortran compiler")
+                 DOC "Fortran compiler")
     #message(STATUS "LCG_compiler(${ARGV}) -> ${CMAKE_C_COMPILER} ${CMAKE_CXX_COMPILER} ${CMAKE_Fortran_COMPILER}")
   endif()
 endmacro()

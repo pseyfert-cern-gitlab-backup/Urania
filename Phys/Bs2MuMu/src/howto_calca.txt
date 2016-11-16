@@ -1,0 +1,45 @@
+==== Get the package
+  setenvErasmus v6r1
+  SetupProject Erasmus v6r1
+  getpack Phys/Bs2MuMu head 
+  cd Phys/Bs2MuMu/src 
+
+==== Compile it 
+ I usually compile with a newer version of root: 
+
+   source /afs/cern.ch/sw/lcg/external/gcc/4.3.5/x86_64-slc5/setup.sh; 
+   source  /afs/cern.ch/sw/lcg/app/releases/ROOT/5.32.02/x86_64-slc5-gcc43-opt/root/bin/thisroot.sh;
+   
+   make work; 
+   make calca; 
+
+==== Generate the workspace 
+   Fake data: 
+   ./work     
+   Other data: 
+   ./work -in inputfile.txt
+   Add constraints also:        
+   ./work -prior
+   
+==== Use "calca " code: 
+
+
+     ./calca 
+     options: 
+     -b       batch mode
+     -bs N    Add N bs fake events to the dataset
+     -bd N    Add N bd fake events to the dataset 
+     -var X   X=0 fit both Nbs and Nbd    
+     	      X=1 fit only bs
+	      X=2 fit only bd
+     -bin N   number of bins to be scanned 
+     	      (note if you fit both bs and bd the real points scanned will be N^2)
+     -trial abc   where abc is an additional name to distinguish different runs
+     -C       if the workspace has constraints... in order to use them. 
+
+
+
+
+
+
+

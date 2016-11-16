@@ -9,10 +9,17 @@ from RTuple import *
 from penguin_inputs import *
 Gamma = gamma
 su3 = 1
-GR = 4.4e-05/0.9e-03
+GR = 3.61e-02
+Kstpol_f = [0.484, 0.181, 1- .484-.181]
+Phipol_f =  [0.5241, 1- 0.5241-.2504 , 0.2504]
+def Hf_exp(eps, su3, GR, i):
+    return 1/eps*su3*GR*Kstpol_f[i]/Phipol_f[i]
 
-def Hf_exp(eps, su3, GR):
-    return 1/eps*su3*GR
+Hf_e_0 = Hf_exp(eps, su3, GR,0)
+Hf_e_pa = Hf_exp(eps, su3, GR,1)
+Hf_e_pe = Hf_exp(eps, su3, GR,2)
+priors = {"P": "PolarPrior", "C": "CartesianPrior"}
+colors = {"P": kBlue, "C":kRed}
 
 def TH(eps, af, thf, Gamma):
     ct = cos(thf)
@@ -28,15 +35,17 @@ def TH(eps, af, thf, Gamma):
 
 
 
-def maketup(N=10000000):
-    tup = RTuple(os.environ["HOME"] + "/vol5/Faller",["tg/F","Af/F","Hf/F", "Hf_exp/F", "af/F","thf/F"])
-    Hf_e = Hf_exp(eps, su3, GR)
+def maketup_Polar(N=10000000):
+    tup = RTuple("./Faller_PolarPrior",["tg/F","Af/F","Hf/F", "Hf_exp_0/F", "Hf_exp_pa/F","Hf_exp_pe/F","af/F","thf/F"])
+    
     for i in range(10000000):
         af = 2*rnd.random()
         thf = 2*pi*rnd.random()
 
         Hf, Af, tg = TH(eps,af,thf,Gamma)
-        tup.fillItem("Hf_exp", Hf_e)
+        tup.fillItem("Hf_exp_0", Hf_e_0)
+        tup.fillItem("Hf_exp_pa", Hf_e_pa)
+        tup.fillItem("Hf_exp_pe", Hf_e_pe)
         tup.fillItem("af",af)
         tup.fillItem("thf",thf)
         tup.fillItem("Hf",Hf)
@@ -46,12 +55,37 @@ def maketup(N=10000000):
         tup.fill()
 
     tup.close()
+def maketup_Cartesian(N=10000000):
+    tup = RTuple("./Faller_CartesianPrior",["tg/F","Af/F","Hf/F", "Hf_exp_0/F", "Hf_exp_pa/F","Hf_exp_pe/F","af/F","thf/F"])
+   
+    for i in range(10000000):
+        re_af = -1 + 2*rnd.random()
+        im_af = -1 + 2*rnd.random()
+        af = sqrt(re_af**2 + im_af**2)
+        thf = atan(im_af/re_af)
+        if im_af <0 and re_af > 0: thf +=2*pi
+        if re_af < 0: thf += pi
+        
+        
+        Hf, Af, tg = TH(eps,af,thf,Gamma)
+        tup.fillItem("Hf_exp_0", Hf_e_0)
+        tup.fillItem("Hf_exp_pa", Hf_e_pa)
+        tup.fillItem("Hf_exp_pe", Hf_e_pe)
+        tup.fillItem("af",af)
+        tup.fillItem("thf",thf)
+        tup.fillItem("Hf",Hf)
+        tup.fillItem("Af",Af)
+        tup.fillItem("tg", tg)
     
-def make_phis_h(Hf,sHf, Af, sAf):
+        tup.fill()
+
+    tup.close()
+def make_phis_h(Hf,sHf, Af, sAf, opt = "P"):
+   
     h1 = TH1F("prior","prior",100, -0.2,0.2)
     h2 = TH1F("posterior","posterior",100, -0.2,0.2)
     h3 = TH1F("ratio","ratio",100, -0.2,0.2)
-    f = TFile("Faller.root")
+    f = TFile("Faller_" + priors[opt]+".root")
     t = f.Get("T")
     
     for entry in t:
@@ -65,7 +99,7 @@ def make_phis_h(Hf,sHf, Af, sAf):
     h3.Divide(h1)
     return h3, h2, h1
         
-def makeLL(h):
+def cook2DLL(h):
     g = TGraph()
     j = 0
     l = []
@@ -87,3 +121,9 @@ def makeLL(h):
     
     return g
                    
+def make2DLL(Hf,sHf, Af, sAf, opt = "P"):
+    
+    hs = make_phis_h(Hf,sHf, Af, sAf, opt )
+    g = cook2DLL(hs[0])
+    g.SetLineColor(colors[opt])
+    return g

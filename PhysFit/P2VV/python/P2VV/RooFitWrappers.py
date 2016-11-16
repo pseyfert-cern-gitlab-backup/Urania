@@ -96,7 +96,8 @@ class RooObject(object) :
             self.setWorkspace(workspace)
             self._var = self.ws()
 
-    def ws(self) :
+    @staticmethod
+    def ws(self = None):
         if not RooObject._ws : raise RuntimeError('No workspace defined!')
         return RooObject._ws
 
@@ -107,31 +108,34 @@ class RooObject(object) :
         if not hasattr(ws, '_mappings') :  ws._mappings    = {}
         if not hasattr(ws, '_spec') :      ws._spec        = {} # factory string -> object
 
-    def _rooobject(self,Name) :
+    @staticmethod
+    def _rooobject(Name) :
         # get name string
         if type(Name) != str : Name = Name.GetName()
 
-        if Name not in self.ws()._rooobjects :
+        if not RooObject._ws : raise RuntimeError('No workspace defined!')
+        ws = RooObject._ws
+        if Name not in ws._rooobjects :
             # object is not in work space dictionary of RooObjects
-            if Name in self.ws() :
+            if Name in ws:
                 # try to create a RooObject wrapper if the requested object exists in work space
                 import ROOT
-                if   isinstance( self.ws()[Name], ROOT.RooRealVar  ) : return RealVar(Name)
-                elif isinstance( self.ws()[Name], ROOT.RooCategory ) : return Category(Name)
+                if   isinstance( ws[Name], ROOT.RooRealVar  ) : return RealVar(Name)
+                elif isinstance( ws[Name], ROOT.RooCategory ) : return Category(Name)
             else :
                 # object does not exist
                 raise KeyError, 'P2VV - ERROR: RooObject._rooobject(): object does not exist (%s)' % Name
 
         # return object
-        return self.ws()._rooobjects[Name]
+        return ws._rooobjects[Name]
 
     # WARNING: the object 'o' given to _addObject should NEVER be used again
     # instead, use the item returned by _addObject
-    def _addObject(self, o):
+    def _addObject(self, o, **kwargs):
         if o.GetName() not in self.ws(): 
             # print 'P2VV: WARNING: importing %s into workspace.... ' % o.GetName() 
             # assert o.GetName() != 'sig_t_angles'
-            self.ws().put(o)
+            self.ws().put(o, **kwargs)
         o = self.ws()[o.GetName()]
         if o.GetName() not in self.ws()._objects:
             self.ws()._objects[o.GetName()] = o
@@ -196,7 +200,10 @@ class RooObject(object) :
         self.ws()._rooobjects[x.GetName()] = self
 
     def __getattr__(self, name):
-        return getattr(self._target_(), name)
+        if hasattr(self, '_var'):
+            return getattr(self._var, name)
+        else:
+            raise AttributeError
 
     def _target_(self) :
         return self._var
@@ -220,9 +227,9 @@ class RooObject(object) :
         return self.GetName()
 
     def Observables(self) :
-        return set( self._rooobject(i) for i in self._var.getVariables() if i.getAttribute('Observable') )
+        return set( RooObject._rooobject(i) for i in self._var.getVariables() if i.getAttribute('Observable') )
     def Parameters(self) :
-        return set( self._rooobject(i) for i in self._var.getVariables() if not i.getAttribute('Observable') )
+        return set( RooObject._rooobject(i) for i in self._var.getVariables() if not i.getAttribute('Observable') )
 
     ## FIXME: Should these be in RooObject?? Do we need an LValue wrapper and move these there?
     def observable(self) :
@@ -400,13 +407,17 @@ class SuperCategory( Category ) :
         for (k,v) in kwargs.iteritems() : self.__setitem__(k,v)
 
 class MappedCategory( Category ) :
-    def __init__(self,Name,cat,mapper,**kwargs):
+    def __init__(self, Name, cat, mapper, **kwargs):
         if Name not in self.ws():
             # construct factory string on the fly: no factory string for MappedCategory???
             from ROOT import RooMappedCategory
             obj =  RooMappedCategory(Name,Name,__dref__(cat) )
             for k,vs in mapper.iteritems() :
-                for v in vs : obj.map( v, k )
+                for v in vs :
+                    if len(v) == 2:
+                        obj.map( v[0], k, v[1] )
+                    else:
+                        obj.map( v, k )
             data = kwargs.pop('Data', None)
             def init(o, t):
                 obj = self._addObject(o)
@@ -472,20 +483,27 @@ class FormulaVar (RooObject) :
                ,'Dependents' : lambda s : s.dependents()
                ,'Value'      : lambda s : s.getVal()
                }
-    def __init__(self, Name, Formula, Arguments, **kwargs):
-        # construct factory string on the fly...
-        __check_name_syntax__(Name)
-        data = kwargs.pop('data', None)
-        if not data:
-            spec = "expr::%s('%s',{%s})" % (Name, Formula, ','.join(i.GetName() for i in Arguments))
+    def __init__(self, **kwargs):
+        __check_req_kw__( 'Name', kwargs )
+        __check_name_syntax__( kwargs['Name'] )
+        name = kwargs.pop( 'Name' )
+        data = kwargs.pop( 'data', None )
+        form = kwargs.pop( 'Formula', '' )
+        args = kwargs.pop( 'Arguments', [ ] )
+        if name in self.ws() :
+            assert not data and not form and not args\
+                   , 'P2VV - ERROR: FormulaVar: formula arguments specified, while object "%s" is already in workspace' % name
+            self._init(name, 'RooFormulaVar')
+        elif not data:
+            spec = "expr::%s('%s',{%s})" % ( name, form, ','.join( i.GetName() for i in args ) )
             self._declare(spec)
-            self._init(Name, 'RooFormulaVar')
+            self._init(name, 'RooFormulaVar')
         else:
             from ROOT import RooFormulaVar, RooArgList
-            form = RooFormulaVar(Name, Name, Formula, RooArgList(Arguments) )
+            form = RooFormulaVar( name, name, form, RooArgList(args) )
             form = data.addColumn(form)
             form = self._addObject(form)
-            self._init(Name, 'RooRealVar')
+            self._init( name, 'RooRealVar' )
             self.setObservable(True)
         for (k,v) in kwargs.iteritems() : self.__setitem__(k,v)
 
@@ -512,7 +530,34 @@ class ConstVar(RooObject) :
             self._init(Name,'RooConstVar')
             # Make sure we are the same as last time
             for k, v in kwargs.iteritems():
+                if k == 'Value':
+                    ## Need to implement proper checking for floating point here
+                    continue
                 assert v == self[k], '\'%s\' is not the same for %s; %s != %s' % ( k, Name, v, self[k] )
+
+class ErrorVar(RooObject) :
+    def __init__(self,**kwargs):
+        __check_req_kw__( 'Name', kwargs )
+        __check_name_syntax__( kwargs['Name'] )
+        __check_req_kw__( 'RealVar', kwargs )
+        rv = kwargs.pop('RealVar')
+        Name = kwargs.pop('Name')
+        data = kwargs.pop('Data', None)
+        if Name in self.ws():
+            assert not data and not args\
+                   , 'P2VV - ERROR: FormulaVar: formula arguments specified, while object "%s" is already in workspace' % name
+            self._init(name, 'RooErrorVar')
+        elif not data:
+            self._declare("ErrorVar::%s(%s)" % (Name, rv.GetName()))
+            self._init(name, 'RooErrorVar')
+        else:
+            from ROOT import RooErrorVar
+            ev = RooErrorVar(Name, Name, __dref__(rv))
+            ev = data.addColumn(ev)
+            ev = self._addObject(ev)
+            self._init(Name, 'RooRealVar')
+            self.setObservable(True)
+        for (k,v) in kwargs.iteritems() : self.__setitem__(k,v)
 
 class LinearVar(RooObject) :
     def __init__(self, **kwargs):
@@ -540,8 +585,15 @@ class MultiVarGaussian(RooObject):
 
         name = kwargs.pop('Name')
         from ROOT import RooArgList
-        args = [RooArgList(*kwargs.pop(k)) for k in ['Parameters', 'CentralValues']] \
-               + [kwargs.pop('Covariance')]
+        pars = RooArgList()
+        for p in kwargs.pop('Parameters'):
+            pars.add(__dref__(p))
+        cv = kwargs.pop('CentralValues')
+        if hasattr(cv, '__iter__'):
+            cvs = RooArgList()
+            for p in cv:
+                cvs.add(__dref__(p))
+        args = [pars, cv, kwargs.pop('Covariance')]
         from ROOT import RooMultiVarGaussian
         mvg = RooMultiVarGaussian(name, name, *args)
         mvg = self._addObject(mvg)
@@ -709,7 +761,6 @@ class ComplementCoef( RooObject ) :
 		coefList = RooArgList( coefs )
 		complCoef = RooComplementCoef( name, name, coefList )
 		self._addObject(complCoef)
-		complCoef.IsA().Destructor(complCoef)
 
         # initialize
         self._init( name, 'RooComplementCoef' )
@@ -746,10 +797,18 @@ class EfficiencyBin(RooObject):
         Bins = kwargs.pop('Bins')
 
         from ROOT import RooEfficiencyBin
-        b = RooEfficiencyBin(Name, Name)
-        for v, f in Bins.iteritems():
-            b.addEntry(__dref__(v), f)
-        b = self._addObject(b)
+        from ROOT import RooCategory
+
+        if Name not in self.ws() :
+            b = RooEfficiencyBin(Name, Name)
+            for v, f in Bins.iteritems():
+                v = __dref__(v)
+                if isinstance(v, RooCategory):
+                    for state, var, flag in f:
+                        b.addEntry(__dref__(v), state, __dref__(var), flag)
+                else:
+                    b.addEntry(__dref__(v), f)
+            b = self._addObject(b)
         self._init( Name, 'RooEfficiencyBin' )
         for k, v in kwargs.iteritems() : self.__setitem__( k, v )
 
@@ -823,6 +882,7 @@ class RealVar (RooObject) :
 
             if 'Blind' in kwargs: # wrap the blinding class around us...
                 b = kwargs.pop('Blind')
+                print 'P2VV - INFO: RealVar: blinding parameters for %s: %s' % ( Name, b )
                 _type = b[0] if type(b[0])==str else b[0].__name__
                 _bs   = b[1]
                 _args = b[2:]
@@ -889,11 +949,8 @@ class CategoryVar(RooObject) :
             self._init( name, 'RooCategoryVar' )
         else :
             self._init( name, 'RooCategoryVar' )
-            for key, val in kwargs.iteritems() :
-                assert val == self[key], '"%s" is not the same for "%s"' % ( key, name )
-
-        for key, val in kwargs.iteritems() : self.__setitem__( key, val )
-
+            ## for key, val in kwargs.iteritems():
+            ##     assert val == self[key], '"%s" is not the same for "%s"' % ( key, name )
 
 ##TODO, factor out common code in Pdf and ResolutionModel
 
@@ -920,7 +977,7 @@ class Pdf(RooObject):
             self[d] = kwargs.pop(d)
 
     def _get(self, name):
-        return getattr(self._target_(), '_' + name.lower())
+        return getattr(self._target_(), '_' + name.lower(), None)
 
     def __getitem__(self, k):
         if hasattr(self, '_dict') and self._dict and k in self._dict:
@@ -996,7 +1053,7 @@ class Pdf(RooObject):
             print 'INFO: adding GlobalObservables: %s' % [ i.GetName() for i in globalObs ]
             kwargs['GlobalObservables'] = globalObs
         for d in set(('ConditionalObservables','ExternalConstraints','GlobalObservables','Minos')).intersection( kwargs ) :
-            kwargs[d] = RooArgSet( kwargs.pop(d) )
+            if d != 'Minos' or type(kwargs[d]) != bool : kwargs[d] = RooArgSet( kwargs.pop(d) )
         return kwargs
 
     @wraps(RooAbsPdf.createNLL)
@@ -1014,12 +1071,21 @@ class Pdf(RooObject):
     @wraps(RooAbsPdf.generate)
     def generate(self, whatvars, *args, **kwargs):
         #if not whatvars : whatvars = [ i for i in self._var.getVariables() if i.getAttribute('Observable') ]
-        whatvars = RooArgSet([ __dref__(i) for i in whatvars] if not isinstance(__dref__(whatvars),RooAbsCategory) else __dref__(whatvars))
+        from ROOT import RooAbsPdf
+        if isinstance(whatvars, RooAbsPdf.GenSpec):
+            spec = True
+        else:
+            spec = False
+            whatvars = RooArgSet([ __dref__(i) for i in whatvars] if isinstance(__dref__(whatvars),RooAbsCategory) else __dref__(whatvars))
+
         conditionals = set(o.GetName() for o in self.ConditionalObservables())
         pdfVars = self._var.getVariables()
         for v in pdfVars:
             if v.GetName() in conditionals: v.setAttribute("GenerateConditional", True)
-        data = self._var.generate(whatvars, *args,**kwargs)
+        if spec:
+            data = self._var.generate(whatvars)
+        else:
+            data = self._var.generate(whatvars, *args,**kwargs)
         for v in pdfVars:
             if v.GetName() in conditionals: v.setAttribute("GenerateConditional", False)
         return data
@@ -1102,22 +1168,22 @@ class ProdPdf(Pdf):
 class SumPdf(Pdf):
     def __init__(self, **kwargs) :
         self._yields = {}
-        pdfs = list(kwargs['PDFs'])
-        co = set([ i for pdf in pdfs for i in pdf.ConditionalObservables() ])
+        self.__pdfs = list(kwargs['PDFs'])
+        co = set([ i for pdf in self.__pdfs for i in pdf.ConditionalObservables() ])
         if 'ConditionalObservables' in kwargs :
             if co != set(kwargs['ConditionalObservables']):
                 print 'WARNING: inconsistent conditional observables: %s vs %s' % ( co, kwargs['ConditionalObservables'] )
         elif co :
             kwargs['ConditionalObservables'] = list(co)
 
-        ec = set([ i for pdf in pdfs for i in pdf.ExternalConstraints() ])
+        ec = set([ i for pdf in self.__pdfs for i in pdf.ExternalConstraints() ])
         if 'ExternalConstraints' in kwargs:
             if ec != set(kwargs['ExternalConstraints']):
                 print 'WARNING: inconsistent external constraints: %s vs %s' % ( ec, kwargs['ExternalConstraints'] )
         elif ec:
             kwargs['ExternalConstraints'] = ec
 
-        diff = set([p.GetName() for p in pdfs]).symmetric_difference(set(kwargs['Yields'].keys()))
+        diff = set([p.GetName() for p in self.__pdfs]).symmetric_difference(set(kwargs['Yields'].keys()))
         if len(diff) not in [0, 1]:
             raise StandardError('The number of yield variables must be equal to or 1'
                                 + 'less then the number of PDFs.')
@@ -1152,6 +1218,9 @@ class SumPdf(Pdf):
     def _separator(self):
         return '_P_'
 
+    def PDFs(self):
+        return self.__pdfs
+    
 class SimultaneousPdf( Pdf ) :
     def __init__( self, Name, **kwargs ) :
         args = { 'Name' : Name }
@@ -1161,9 +1230,31 @@ class SimultaneousPdf( Pdf ) :
             ## pdfs = [e[1] for e in pdfs]
             simul = RooSimultaneous(Name, Name, __dref__(kwargs.pop('SplitCategory')))
             for s, pdf in kwargs.pop('States').iteritems():
-                simul.addPdf(pdf, s)
-            self._addObject(simul)
-            simul.IsA().Destructor(simul)
+                simul.addPdf(__dref__(pdf), s)
+            self._addObject(simul, RecycleConflictNodes = True)
+        elif 'PrototypePdfs' in kwargs:
+            __check_req_kw__( 'PrototypeCategory', kwargs )
+            __check_req_kw__( 'PrototypePdfs',     kwargs )
+            __check_req_kw__( 'SplitParameters',   kwargs )
+            __check_req_kw__( 'SplitCategory',     kwargs )
+
+            from ROOT import RooSimWSTool, RooFit
+            ## TODO: There must be a way not to invoke RooFit namespace
+            SimultaneousPdfTool   = RooSimWSTool( kwargs['PrototypeCategory'].ws() )
+            MultiPrototypePdfTool = RooSimWSTool.MultiBuildConfig( kwargs.pop('PrototypeCategory').GetName() )
+
+            pdfs = kwargs.pop('PrototypePdfs')
+            pars = kwargs.pop('SplitParameters')
+            cats = kwargs.pop('SplitCategory')
+            assert len(cats) == 1, 'P2VV - ERROR: SimultaneousPdf: Multiple split categories in multiprototype pdf is not supported yet.'
+
+            for proto_key in pdfs.keys():
+                MultiPrototypePdfTool.addPdf( proto_key,
+                                              pdfs[proto_key].GetName(),
+                                              RooFit.SplitParam(','.join(pars[0][proto_key]),cats[0]) )
+            simul = SimultaneousPdfTool.build( Name, MultiPrototypePdfTool )
+            self._addObject(simul, RecycleConflictNodes = True)
+
         elif 'SplitParameters' in kwargs :
             args['Master']     = kwargs.pop('MasterPdf')
             args['SplitCats']  = [ kwargs.pop('SplitCategory').GetName() ] if 'SplitCategory' in kwargs\
@@ -1329,6 +1420,21 @@ class KeysPdf(Pdf):
     def _make_pdf(self):
         pass
 
+class Chebychev(Pdf):
+    def __init__(self,**kwargs) :
+        name = kwargs.pop('Name')
+        observable = kwargs.pop('Observable')
+        coefs = kwargs.pop('Coefficients')
+
+        self._declare("Chebychev::%s(%s, {%s})" % (name, observable.GetName(), ','.join([c.GetName() for c in coefs])))
+        self._init(name,'RooChebychev')
+
+        Pdf.__init__(self , Name = name , Type = 'RooChebychev')
+        for (k,v) in kwargs.iteritems() : self.__setitem__(k,v)
+
+    def _make_pdf(self):
+        pass
+
 class GenericPdf( Pdf ) :
     def _make_pdf(self) : pass
     def __init__(self,Name,**kwargs) :
@@ -1367,22 +1473,46 @@ class TPDecay(Pdf):
     def __init__(self, Name, **kwargs):
         from ROOT import RooTPDecay
         from ROOT import RooArgList
-        tps = RooArgList( kwargs.pop('TurningPoints'))
         t = kwargs.pop('Time')
         tau = kwargs.pop('Tau')
         model = kwargs.pop('ResolutionModel')
+        gen = kwargs.pop('TPGen')
+        tps = gen.turning_points()
+        norm_range = ','.join(tps[i].GetName() + tps[i + 1].GetName() for i in range(0, len(tps), 2))
+        from ROOT import RooDecay
+        tp_decay = RooTPDecay(Name, Name, __dref__(t), __dref__(tau), __dref__(model),
+                              RooDecay.SingleSided, norm_range)
+        tp_decay = self._addObject(tp_decay)
+        self._init(Name, 'RooTPDecay')
+        for (k,v) in kwargs.iteritems() :
+            self.__setitem__(k,v)
+
+    def _make_pdf(self):
+        pass
+
+class TPGen(Pdf):
+    def __init__(self, Name, **kwargs):
+        from ROOT import RooTPGen
+        from ROOT import RooArgList
+        self.__tps = RooArgList(*kwargs.pop('TurningPoints'))
         nPVs = kwargs.pop('nPVs')
         data = kwargs.pop('Data')
         PV_table = data.table(__dref__(nPVs))
         pvz = kwargs.pop('PVZ')
         pvz_pdf = kwargs.pop('PVZPdf')
 
-        tp_decay = RooTPDecay(Name, Name, __dref__(t), __dref__(tau), tps, __dref__(model),
-                              PV_table, __dref__(pvz), __dref__(pvz_pdf))
-        tp_decay = self._addObject(tp_decay)
-        self._init(Name, 'RooTPDecay')
+        tp_gen = RooTPGen(Name, Name, self.__tps, PV_table, __dref__(pvz),
+                              __dref__(pvz_pdf))
+        tp_gen = self._addObject(tp_gen)
+        self._init(Name, 'RooTPGen')
         for (k,v) in kwargs.iteritems() :
             self.__setitem__(k,v)
+
+    def turning_points(self):
+        return [tp for tp in self.__tps]
+            
+    def _make_pdf(self):
+        pass
 
 class BDecay( Pdf ) :
     def __init__(self, Name, **kwargs):
@@ -1451,7 +1581,6 @@ class BTagDecay( Pdf ) :
                                  , int( argDict['checkVars'] )
                                 )
             self._addObject(decay)
-            decay.IsA().Destructor(decay)
 
         elif 'tagCat' in kwargs :
             # one tagging category
@@ -1468,8 +1597,8 @@ class BTagDecay( Pdf ) :
                                               " %(resolutionModel)s, %(decayType)s, %(checkVars)s )" % argDict
                          )
 
-        else :
-            # no tagging categories
+        elif 'iTag' in kwargs :
+            # tagging without tagging categories
             for argName in [  'time', 'iTag', 'tau', 'dGamma', 'dm'
                             , 'dilution', 'ADilWTag', 'avgCEven', 'avgCOdd'
                             , 'coshCoef', 'sinhCoef', 'cosCoef', 'sinCoef'
@@ -1483,6 +1612,20 @@ class BTagDecay( Pdf ) :
                                               " %(resolutionModel)s, %(decayType)s, %(checkVars)s )" % argDict
                          )
 
+        else :
+            # no tagging
+            for argName in [  'time', 'tau', 'dGamma', 'dm'
+                            , 'coshCoef', 'sinhCoef', 'cosCoef', 'sinCoef'
+                            , 'resolutionModel', 'decayType', 'checkVars'
+                           ] :
+                if argName not in argDict or argName in kwargs : argDict[argName] = convert( kwargs.pop(argName) )
+
+
+            self._declare("BTagDecay::%(Name)s( %(time)s, %(tau)s, %(dGamma)s, %(dm)s,"\
+                                              " %(coshCoef)s, %(sinhCoef)s, %(cosCoef)s, %(sinCoef)s,"\
+                                              " %(resolutionModel)s, %(decayType)s, %(checkVars)s)" % argDict
+                         )
+
         self._init( Name, 'RooBTagDecay' )
         Pdf.__init__(  self
                      , Name = Name
@@ -1493,8 +1636,16 @@ class BTagDecay( Pdf ) :
 
 class BinnedPdf( Pdf ) :
     def __init__( self, Name, **kwargs ) :
-	# !!! Since the workspace factory doesn't know about RooBinnedPdf and its constructors, the default approach doesn't seem to
-	# !!! work very well. We create the object directly and then add it to RooObject and the workspace.
+        # !!! Since the workspace factory doesn't know about RooBinnedPdf and
+        # !!! its constructors, the default approach doesn't seem to work very
+        # !!! well. We create the object directly and then add it to RooObject
+        # !!! and the workspace.
+        if Name in self.ws():
+            # initialize PDF
+            self._init( Name, 'RooBinnedPdf' )
+            Pdf.__init__(self, Name = Name, Type = 'RooBinnedPdf')
+            return
+        
         from P2VV.Load import P2VVLibrary
         argDict = { 'Name' : Name }
 
@@ -1638,14 +1789,10 @@ class BinnedPdf( Pdf ) :
         if bPdf :
             # import the BinnedPdf in the workspace
             self._addObject(bPdf)
-            bPdf.IsA().Destructor(bPdf)
 
         # initialize PDF
         self._init( Name, 'RooBinnedPdf' )
-        Pdf.__init__(  self
-                     , Name = Name
-                     , Type = 'RooBinnedPdf'
-                    )
+        Pdf.__init__(self, Name = Name, Type = 'RooBinnedPdf')
         for ( k, v ) in kwargs.iteritems() : self.__setitem__( k, v )
 
     def _make_pdf(self) : pass
@@ -1678,13 +1825,13 @@ class Customizer(Pdf) :
                 customizer.replaceArg( __dref__(item), __dref__( rep ))
         else:
             for origItem, subsItem in zip( origSet, subsSet ) :
-                if item in pdf.Observables():
+                if origItem in pdf.Observables():
                     self.__transplant_binnings(origItem, subsItem)
                 customizer.replaceArg( __dref__(origItem), __dref__(subsItem) )
 
         custom = customizer.build()
 
-        self._addObject(custom)
+        self._addObject(custom, RenameConflictNodes = 'cust')
         self._init( custom.GetName(), pdf['Type'] )
         Pdf.__init__(  self
                      , Name = custom.GetName()
@@ -1705,6 +1852,142 @@ class Customizer(Pdf) :
                 dest.setBinning(b, n)
             else:
                 dest.setBinning(b)
+
+    def _make_pdf(self) : pass
+
+class EffConstraint(Pdf):
+    def __init__( self, **kwargs ) :
+        __check_req_kw__('Name', kwargs )
+        __check_req_kw__('Epsilons', kwargs )
+        __check_req_kw__('N', kwargs )
+
+        name = kwargs.pop('Name')
+        epsilons =  kwargs.pop('Epsilons')
+        N =  kwargs.pop('N')
+        assert(len(epsilons) == 2)
+        assert(len(N) in [2, 3])
+
+        def __make_vector(bins):
+            from ROOT import std
+            vbins = std.vector('double')(len(bins))
+            for i in range(len(bins)):
+                vbins[i] = bins[i]
+            return vbins
+        N = [__make_vector(b) for b in N]
+
+        from ROOT import RooArgList
+        for i, eps in enumerate(epsilons):
+            l = RooArgList()
+            for e in eps:
+                l.add(e)
+            epsilons[i] = l
+        
+        if name in self.ws():
+            # initialize PDF
+            self._init(name, 'RooEffConstraint')
+        else:
+            from ROOT import RooEffConstraint
+            self._addObject(RooEffConstraint(name, name, *tuple(epsilons + N)))
+            self._init(name, 'RooEffConstraint')
+
+        Pdf.__init__(self, Name = name, Type = 'RooEffConstraint')
+
+    def _make_pdf(self) : pass    
+
+class CombEffConstraint(Pdf):
+    def __init__( self, **kwargs ) :
+        __check_req_kw__( 'Name', kwargs )
+        name = kwargs.pop('Name')
+        if name in self.ws() :
+            self._init( name, 'RooCombEffConstraint' )
+
+        else :
+            __check_req_kw__( 'NumBins', kwargs )
+            __check_req_kw__( 'Parameters', kwargs )
+            __check_req_kw__( 'SumW', kwargs )
+            __check_req_kw__( 'SumWSq', kwargs )
+            strat   = kwargs.pop( 'Strategy', 0 )
+            numBins = kwargs.pop('NumBins')
+            pars    = kwargs.pop('Parameters')
+            sumW    = kwargs.pop('SumW')
+            sumWSq  = kwargs.pop('SumWSq')
+            assert strat in range(3)
+            assert len(pars) == 5
+            assert len(sumW) == 6
+            assert len(sumWSq) == 6
+
+            args = [ name, name, numBins ]
+            from ROOT import RooArgList
+            for parsName in [ 'nu', 'eps1A', 'eps1B', 'eps2A', 'eps2B' ] :
+                assert parsName in pars and len( pars[parsName] ) in [ 1, numBins ]
+                al = RooArgList()
+                for par in pars[parsName] : al.add(__dref__(par))
+                args.append(al)
+
+            def __makeSumWVec(elems) :
+                from ROOT import std
+                vec = std.vector('vector<Double_t>')(6)
+                for vIt, catName in enumerate( [ '1A2A', '1A2B', '1A2AB', '1B2A', '1B2B', '1B2AB' ] ) :
+                    assert catName in elems and len( elems[catName] ) == numBins
+                    vec[vIt] = std.vector('Double_t')(numBins)
+                    for eIt in range(numBins) : vec[vIt][eIt] = elems[catName][eIt]
+                return vec
+            args.append( __makeSumWVec(sumW)   )
+            args.append( __makeSumWVec(sumWSq) )
+            args.append(strat)
+
+            from ROOT import RooCombEffConstraint
+            self._addObject( RooCombEffConstraint( *tuple(args) ) )
+            self._init(name, 'RooCombEffConstraint')
+
+        Pdf.__init__( self, Name = name, Type = 'RooCombEffConstraint' )
+
+    def _make_pdf(self) : pass
+
+
+class ExplicitNormPdf(Pdf):
+    def __init__( self, **kwargs ) :
+        __check_req_kw__( 'Name', kwargs )
+        __check_req_kw__( 'Observables', kwargs )
+        __check_req_kw__( 'Function', kwargs )
+        from ROOT import RooArgSet
+        name = kwargs.pop('Name')
+        obsSet = RooArgSet( __dref__(obs) for obs in kwargs.pop('Observables') )
+        intObsSet = RooArgSet( __dref__(obs) for obs in kwargs.pop( 'IntegrationObs', [ ] ) )
+        func = __dref__( kwargs.pop('Function') )
+        normFunc = __dref__( kwargs.pop( 'NormFunction', func ) )
+        normFac = kwargs.pop( 'NormFactor', 1. )
+        projData = kwargs.pop( 'ProjectionData', None )
+        intRangeFunc = kwargs.pop( 'IntegRangeFunc', '' )
+        intRangeNorm = kwargs.pop( 'IntegRangeNorm', '' )
+
+        from ROOT import RooExplicitNormPdf
+        if projData :
+            pdf = RooExplicitNormPdf( name, name, obsSet, intObsSet, func, normFunc, normFac, projData, intRangeFunc, intRangeNorm )
+        else :
+            pdf = RooExplicitNormPdf( name, name, obsSet, intObsSet, func, normFunc, normFac, intRangeFunc, intRangeNorm )
+        self._addObject(pdf)
+        self._init( name, 'RooExplicitNormPdf' )
+        Pdf.__init__( self, Name = name, Type = 'RooExplicitNormPdf' )
+
+    def _make_pdf(self) : pass
+
+
+class ExtendPdf( Pdf ):
+    def __init__( self, Name, **kwargs ) :
+        __check_req_kw__( 'BasePdf', kwargs )
+        __check_req_kw__( 'ExtendTerm', kwargs )
+
+        from ROOT import RooExtendPdf
+
+        pdfOpts = dict([(a, kwargs.pop(a, set())) for a in ['ConditionalObservables', 'ExternalConstraints']])
+        extPdf  = RooExtendPdf( Name, Name, __dref__(kwargs.pop('BasePdf')), kwargs.pop('ExtendTerm')._var )
+        self._addObject(extPdf)
+
+        self._init( Name, 'RooExtendPdf' )
+        Pdf.__init__( self , Name = Name , Type = 'RooExtendPdf', **pdfOpts )
+
+        for ( k, v ) in kwargs.iteritems() : self.__setitem__( k, v )
 
     def _make_pdf(self) : pass
 
@@ -1743,18 +2026,29 @@ class AddModel(ResolutionModel) :
                 setattr(self._target_(), attr, v)
         else:
             self._init(self._dict['Name'], 'RooAddModel')
-            # Make sure we are the same as last time
+            # set attributes
             for k, v in self._dict.iteritems():
-                assert v == self._get(k)
+                origVal = self._get(k)
+                if origVal :
+                    assert v == origVal
+                else :
+                    attr = '_' + k.lower()
+                    setattr(self._target_(), attr, v)
 
     def _makeRecipe(self):
         models = self._dict['Models']
         fractions = self._dict['Fractions']
         return "AddModel::%s({%s},{%s})"%(self._dict['Name'],','.join(i.GetName() for i in models),','.join(j.GetName() for j in fractions) )
 
+    def setModels(self, models):
+        self.__models = models
+        
     def models(self):
         return self.__models
 
+    def setFractions(self, fractions):
+        self.__fractions = fractions
+        
     def fractions(self):
         return self.__fractions
 
@@ -1775,11 +2069,12 @@ class EffResAddModel(ResolutionModel):
             conditionals |= model.ConditionalObservables()
             externals |= set(model.ExternalConstraints())
 
-        from ROOT import RooEffResAddModel
-        models = RooArgList(self.__models)
-        fracs = RooArgList(self.__fractions)
-        model = RooEffResAddModel(name, name, models, fracs)
-        self._addObject(model)
+        if name not in self.ws() :
+            from ROOT import RooEffResAddModel
+            models = RooArgList(self.__models)
+            fracs = RooArgList(self.__fractions)
+            model = RooEffResAddModel(name, name, models, fracs)
+            self._addObject(model)
         self._init(name, 'RooEffResAddModel')
 
         ResolutionModel.__init__(self, Name = name, Type = 'RooEffResAddModel',
@@ -1827,64 +2122,214 @@ class BinnedFun(RooObject):
         # TODO: add support for _multiple histograms and a Category, using RooCategoryVar to select
         #       the right coefficient
         __check_mutually_exclusive_kw__(kwargs,('Histogram'),('Binning'))
-        name = kwargs.pop('Name')
+        self.__namePF = kwargs.pop('ParNamePrefix', '')
+        self.__name = kwargs.pop('Name')
+        if self.__namePF and not self.__name.startswith(self.__namePF):
+            self.__name = self.__namePF + self.__name
         observable = kwargs.pop('ObsVar')
         hist = kwargs.pop('Histogram', None)
         histograms = kwargs.pop('Histograms', None)
+        self.__random_bin_order = kwargs.pop('RandomBinOrder', False)
+        self.__fit = kwargs.pop('Fit', False)
+        self.__binning = None
+        self.__coefficients = {}
+        self.__yields = []
+        
         if hist:
-            self.__build_from_hist( name,observable
-                                  , hist )
+            self.__build_from_hist(self.__name, observable, hist )
         elif histograms :
-            self.__build_from_histograms( name, observable
-                                        , kwargs.pop('Category')
-                                        , histograms )
+            self.__build_from_histograms(self.__name, observable, histograms)
         else :
-            self.__build_from_coef( name,observable
-                                  , kwargs.pop('Binning')
-                                  , kwargs.pop('Coefficients') )
-        self._init(name, 'RooBinnedFun')
+            self.__coefficients[self.__name] = kwargs.pop('Coefficients')
+            self.__build_from_coef(self.__name, observable, kwargs.pop('Binning'),
+                                   self.__coefficients[self.__name])
+        self._init(self.__name, 'RooBinnedFun')
 
-    def __create_binning(self,name,observable,hist) :
+    def __create_binning(self, name, observable, hist) :
         from ROOT import RooBinning
-        bname = '%s_%s_binning'%(name,hist.GetName())
-        binning = RooBinning(1,observable.getMin(),observable.getMax(),bname)
-        nbins = hist.GetNbinsX()
-        for i in range(1,nbins) : binning.addBoundary( hist.GetBinLowEdge(1+i) )
-        observable.setBinning(binning,bname)
-        return bname
+        from array import array
+        if type(hist) in [list, array]:
+            bounds = hist
+            bname = name
+        else:
+            bname = '%s_%s_binning' % (name, hist.GetName())
+            bounds = array('d', (hist.GetBinLowEdge(1+i) for i in range(hist.GetNbinsX() + 1)))
+        binning = RooBinning(len(bounds) - 1, bounds, bname)
+        if observable.hasBinning(bname):
+            ba = observable.getBinning(bname)
+            bab = array('d', [ba.binLow(i) for i in range(ba.numBins())] + [ba.highBound()])
+            assert(bab == bounds)
+        else:
+            observable.setBinning(binning,bname)
+        return binning
 
-    def __build_from_coef(self,name,observable,bname,coeffs) :
+    def __build_from_coef(self, name, observable, binning, coeffs) :
         spec = 'RooBinnedFun::%s(%s,"%s",{%s})' \
              % ( name, observable.GetName()
-               , bname
-               , ','.join( i.GetName() for i in coeffs ) )
+               , binning.GetName(), ','.join( i.GetName() for i in coeffs ) )
         self._declare( spec )
 
     def __build_from_hist(self,name,observable,hist) :
-        cvar = lambda i : ConstVar( Name = '%s_bin_%d'%(name,i)
-                                  , Value = hist.GetBinContent(1+i) )
-        return self.__build_from_coef( name,observable
-                                     , self.__create_binning(name,observable,hist)
-                                     , [ cvar(i) for i in range(hist.GetNbinsX()) ] )
+        cvar = lambda i : RealVar(Name = '%s_bin_%d' % (name, i), Value = hist.GetBinContent(1 + i), Constant = True)
+        self.__coefficients[name] = [cvar(i) for i in range(hist.GetNbinsX())]
+        return self.__build_from_coef(name, observable, self.__create_binning(name, observable, hist),
+                                      self.__coefficients[name])
 
-    def __build_from_histograms( self, name, observable, cat, hists ) :
-        # check that all states are present as keys
+    def __build_from_histograms(self, name, observable, hists) :
+        # This condition is not very pretty and quite incomplete, it works for
+        # our use-cases though
+        if len(hists) == 1 and not self.__fit:
+            # check that all states are present as keys
+            cat, hs = hists.items()[0]
+            hs = dict([(s, info['histogram']) for s, info in hs.iteritems()])
+            return self.__build_for_single_cat(name, observable, cat, hs)
+        else:
+            return self.__build_for_fit(name, observable, hists)
+
+    def __build_for_single_cat(self, name, observable, cat, hists):
         assert set( s.GetName() for s in cat ) == set( hists.keys() )
         # check that histograms all have the same binning...
-        boundaries = dict( ( k, [ v.GetBinLowEdge(1+i) for i in range(v.GetNbinsX()) ] ) \
-                           for k,v in hists.iteritems() )
+        boundaries = dict((k, [v.GetBinLowEdge(1 + i) for i in range(v.GetNbinsX() + 1)]) \
+                          for k,v in hists.iteritems())
         for refboundaries in boundaries.itervalues() : break # grab first item in dictionary
         if any( b != refboundaries for b in boundaries.values() ) :
             raise ValueError('histograms do not share boundaries: %s' % boundaries)
 
-        cvars = lambda i : [ ConstVar( Name = '%s_state_%s_bin_%d'%(name,s.GetName(),i)
-                                     , Value = hists[ s.GetName() ].GetBinContent( 1+i ) ) for s in cat ]
-        cvar  = lambda i : CategoryVar(Name = '%s_bin_%d' % (name,i)
-                                     , Category = cat
-                                     , Variables = cvars(i) )
-        return self.__build_from_coef( name, observable
-                                     , self.__create_binning(name,observable,hists.values()[0])
-                                     , [ cvar(i) for i in range(hists.values()[0].GetNbinsX()) ] )
+        key = lambda c, s: (self.__namePF, c.GetName(), s.GetName())
+        for s in cat:
+            k = key(cat, s)
+            self.__coefficients[k] = [ConstVar(Name = '%s_state_%s_bin_%d'%(name, s.GetName(), i),
+                                               Value = hists[s.GetName()].GetBinContent(1 + i)) \
+                                               for i in range(hists.values()[0].GetNbinsX())]
+        cvar  = lambda i : CategoryVar(Name = '%s_bin_%d' % (name, i + 1), Category = cat,
+                                       Variables = [self.__coefficients[key(cat, s)][i] for s in cat])
+        return self.__build_from_coef(name, observable,
+                                      self.__create_binning(name,observable,hists.values()[0]),
+                                      [cvar(i) for i in range(len(refboundaries) - 1)])
+
+    def __build_for_fit(self, name, observable, hists):
+        self.__base_bounds = None
+        coefficients = {}
+
+        n_vars = 0
+        for category, entries in hists.iteritems():
+            for state, state_info in entries.iteritems():
+                hist = state_info.pop('histogram', None)
+                if hist:
+                    xaxis = hist.GetXaxis()
+                    bins = [xaxis.GetBinLowEdge(i) for i in range(1, hist.GetNbinsX() + 2)]
+                    heights = [hist.GetBinContent(i) for i in range(1, hist.GetNbinsX() + 1)]
+                    state_info['bins'] = bins
+                    state_info['heights'] = heights
+                n_vars += len(state_info['heights'])
+        if self.__random_bin_order:
+            ## Seed the random numbers with the name prefix so we only get different
+            ## random numbers when we really need them
+            import random
+            random.seed(self.__namePF)
+            ## Generate some random prefixes to ensure there are no bin to bin
+            ## correlations because of Minuit
+            from math import log
+            nn = int(log(n_vars, 10))
+            order = [i for i in range(n_vars)]
+            random.shuffle(order)
+            order = [('%' + ('0%d' % (nn + 1)) + 'd') % (i + 1) for i in order]
+
+        ## Create the RealVars which are the real floating parameters for the
+        ## acceptance
+        for (category, entries) in hists.iteritems():
+            states = set([s.GetName() for s in category])
+            coef_info = {}
+            for state, state_info in [(s, entries[s]) for s in states if s in entries]:
+                heights = list(state_info['heights'])
+                bins = state_info['bins']
+                from array import array    
+                bounds = array('d', bins)
+
+                # Add a binning for this category and state
+                binning_name = '_'.join([category.GetName(), state, 'binning'])
+                shape_binning = self.__create_binning(binning_name, observable, bounds)
+
+                # Make the RealVars which represent the bin heights
+                for i, v in enumerate(heights):
+                    if self.__random_bin_order:
+                        bin_name = '%s_%s%s_%s_bin_%03d' % (order.pop(), self.__namePF, category.GetName(), state, i + 1)
+                    else:
+                        bin_name = '%s%s_%s_bin_%03d' % (self.__namePF, category.GetName(), state, i + 1)                        
+                    if v > 0.999: v = 0.999
+                    heights[i] = RealVar(bin_name, Observable = False, Value = v, MinMax = (0.001, 0.999))
+                if not self.__fit:
+                    # If we're not fitting set all bins constant
+                    for h in heights: h.setConstant(True)
+                if not self.__base_bounds or len(bounds) > len(self.__base_bounds):
+                    self.__base_bounds = bounds
+                    self.__binning = shape_binning
+                from copy import copy
+                coef_info[state] = copy(state_info)
+                coef_info[state].update({'heights' : heights})
+
+            coefficients[category] = coef_info
+        ## Save the RealVars so they can be retrieved later, for example to
+        ## build the average constraint.
+        for c, state_info in coefficients.iteritems():
+            for state, i in state_info.iteritems():
+                self.__coefficients[(self.__namePF.strip('_'), c.GetName(), state)] = i['heights']
+            
+        # Make one combination by looping over the entries and taking the first
+        # state for each.
+        from itertools import chain, izip
+        bins = self.__build_bins(coefficients, list(chain.from_iterable([izip([c] * c.numTypes(), [s.GetName() for s in c]) for c in hists.iterkeys()])))
+        self.__build_from_coef(name, observable, self.__binning, bins)
+                               
+    def __build_bins(self, coefficients, categories):
+        # Make EfficiencyBins for the bin values
+        from collections import defaultdict
+        bin_vars = [defaultdict(list) for i in range(len(self.__base_bounds) - 1)]
+        # Loop over the categories, a single state is given per category. The
+        # info in self.__coefficients tells us whether this is the 1 or 0 state
+        # and which RealVar to use in both cases.
+        for category, state in categories:
+            category_info = coefficients[category]
+            states = [s.GetName() for s in category if s.GetName() in category_info]
+            if len(states) == 1:
+                category_heights = category_info[states[0]]['heights']
+                category_bounds  = category_info[states[0]]['bins']
+            elif len(states) > 1:
+                category_heights = category_info[state]['heights']
+                category_bounds  = category_info[state]['bins']
+            else:
+                raise ValueError("Number of states must not be 0")
+            for i in range(len(self.__base_bounds) - 1):
+                val = (self.__base_bounds[i] + self.__base_bounds[i + 1]) / 2
+                coefficient = self.__find_coefficient(val, category_bounds, category_heights)
+                bin_vars[i][category].append((state, coefficient, state in category_info))
+        return [EfficiencyBin(Name = '%s_bin_%d' % (self.__name, i), Bins = d) for i, d in enumerate(bin_vars)]
+
+    def __find_coefficient(self, val, bounds, coefficients):
+        for i in range(len(bounds) - 1):
+            if val > bounds[i] and val < bounds[i + 1]:
+                break
+        else:
+            raise RuntimeError;
+        return coefficients[i]
+
+    def base_binning(self):
+        return self.__binning
+
+    def coefficients(self):
+        return self.__coefficients
+
+    def yields(self):
+        return self.__yields
+
+    def setYields(self, yields):
+        from ROOT import RooArgList
+        al = RooArgList()
+        self.__yields = []
+        for y in yields:
+            self.__yields.append(y)
+            al.add(__dref__(y))
+        __dref__(self).setYields(al)
 
 class CubicSplineFun(RooObject):
     def __init__(self, **kwargs):
@@ -1927,13 +2372,14 @@ class CubicSplineGaussModel(ResolutionModel) :
 
     def __init__(self, **kwargs):
         name = kwargs.pop('Name')
+        namePF = kwargs.pop('ParNamePrefix', '')
         res_model = kwargs.pop('ResolutionModel', None)
         params = [__dref__(p) for p in kwargs.pop('Parameters', [])]
         efficiency = kwargs.pop('Efficiency', None)
 
         constraints = kwargs.pop('ExternalConstraints', set())
         conds = kwargs.pop('ConditionalObservables', set())
-
+        
         assert(not res_model or not params)
         if res_model:
             constraints |= set(res_model.ExternalConstraints())
@@ -1943,6 +2389,7 @@ class CubicSplineGaussModel(ResolutionModel) :
             for t, fun in types.iteritems():
                 if isinstance(res_model._target_(), t):
                     model, this_type, name = fun(name, res_model, efficiency)
+                    break
         else:
             model = 'RooGaussEfficiencyModel::{0}({1},{2},{3})'.format(name, params[0].GetName(), efficiency.GetName(), ','.join([p.GetName() for p in params[1:]]))
             this_type = 'RooGaussEfficiencyModel'
@@ -1954,7 +2401,7 @@ class CubicSplineGaussModel(ResolutionModel) :
         if constraints : extraOpts['ExternalConstraints' ]   = constraints
         if conds:        extraOpts['ConditionalObservables'] = conds
         ResolutionModel.__init__(self, Name = name , Type = this_type, **extraOpts)
-
+        
     def __from_gauss(self, name, gauss_model, spline_fun):
         params = gauss_model['Parameters']
         name = name + '_' + gauss_model.GetName().replace( '{', '' ).replace( '}', '' ).replace( ';', '_' ) + '_spline'
@@ -1965,7 +2412,7 @@ class CubicSplineGaussModel(ResolutionModel) :
     def __from_add_model(self, name, add_model, spline_fun):
         spline_models = []
         for model in add_model.models():
-            spline_models.append(CubicSplineGaussModel(Name = name, ResolutionModel = model, SplineFunction = spline_fun))
+            spline_models.append(CubicSplineGaussModel(Name = name, ResolutionModel = model, Efficiency = spline_fun))
         fractions = add_model.fractions()
         name = name + '_' + add_model.GetName().replace( '{', '' ).replace( '}', '' ).replace( ';', '_' ) + '_spline'
         model = EffResAddModel(Name = name, Models = spline_models, Fractions = fractions)
@@ -2119,7 +2566,8 @@ class MultiHistEfficiencyModel(ResolutionModel):
                 raise RuntimeError("More than one relative efficiency is None")
         # FIXME: perhaps this should be a dedicated class too
         form = '-'.join(['1'] + [e.GetName() for e in self.__relative_efficiencies.itervalues()])
-        self.__relative_efficiencies[remaining] = FormulaVar("remaining_efficiency", form, self.__relative_efficiencies.values())
+        self.__relative_efficiencies[remaining] = FormulaVar( Name = 'remaining_efficiency', Formula = form
+                                                             , Arguments = self.__relative_efficiencies.values() )
 
         efficiency_entries = self.__build_shapes(relative)
 
@@ -2130,7 +2578,6 @@ class MultiHistEfficiencyModel(ResolutionModel):
         from ROOT import RooMultiEffResModel
         mhe = RooMultiEffResModel(self.__pdf_name, self.__pdf_name, efficiency_entries)
         self._addObject(mhe)
-        mhe.IsA().Destructor(mhe)
 
         extraOpts = dict()
         if self.__conditionals: extraOpts['ConditionalObservables'] = self.__conditionals
@@ -2150,11 +2597,13 @@ class MultiHistEfficiencyModel(ResolutionModel):
     def heights(self) : return self.__heights
 
     def __build_shapes(self, relative):
-        from ROOT import std
+        import ROOT
+        std = ROOT.std
+
         from ROOT import MultiHistEntry
 
         efficiency_entries = std.vector('MultiHistEntry*')()
-
+        map_type = std.map('RooAbsCategory*', 'std::string')
         for categories, relative_efficiency in relative.iteritems():
             # Make EfficiencyBins for the bin values
             # WIP: allow two extra coefficients for spline
@@ -2194,7 +2643,7 @@ class MultiHistEfficiencyModel(ResolutionModel):
                 eff_model = self.__build_eff_res(prefix, heights)
 
             # MultiHistEntry
-            cm = std.map('RooAbsCategory*', 'string')()
+            cm = map_type()
             for category, state in categories: cm[__dref__(category)] = state
             efficiency = self.__relative_efficiencies[state_name]
             entry = MultiHistEntry(cm, __dref__(eff_model), __dref__(efficiency))
@@ -2219,7 +2668,7 @@ class MultiHistEfficiencyModel(ResolutionModel):
                                      SplineFunction = spline_fun)
 
     def __add_constraints(self):
-        self.setExternalConstraints(self.__constraints)
+        self.setExternalConstraints(set(self.__constraints))
 
     def __find_coefficient(self, val, bounds, coefficients):
         for i in range(len(bounds) - 1):
@@ -2228,6 +2677,7 @@ class MultiHistEfficiencyModel(ResolutionModel):
         else:
             raise RuntimeError;
         return coefficients[i]
+
 
 class Component(object):
     _d = {}
@@ -2243,7 +2693,7 @@ class Component(object):
                 for i,j in args[0].iteritems() : self[i] = j
             else :
                 for j in args[0] : self.append(j)
-        if 'Yield' in kw : self.setYield( *kw.pop('Yield') )
+        self.setYield(*kw.pop('Yield', []))
         if kw : raise IndexError('unknown keyword arguments %s' % kw.keys() )
     def _yieldName(self) : return 'N_%s' % self.name
     def getYield(self):
@@ -2253,13 +2703,13 @@ class Component(object):
         y = None
         if len(args) == 1 and type(args[0]) == RealVar:
             y = args[0]
-        else :
+        elif len(args) == 3:
             n, nlo, nhi = args
             assert n>=nlo
             assert n<=nhi
             y = RealVar(self._yieldName(), MinMax=(nlo,nhi), Value=n)
         Component._d[self.name]['Yield'] = y
-        Component._d[self.name]['Yield'].setAttribute('Yield',True)
+        if y: Component._d[self.name]['Yield'].setAttribute('Yield',True)
     def __iadd__(self,pdf) :
         self.append(pdf)
         return self
@@ -2348,7 +2798,8 @@ def buildPdf( Components, Observables, Name ) :
     for comp in Components:
         # build PDF
         pdf = comp[obsList]
-        if len(Components) > 1 : args['Yields'][pdf.GetName()] = comp['Yield']
+        if len(Components) > 1 and comp['Yield']:
+            args['Yields'][pdf.GetName()] = comp['Yield']
         args['PDFs'].append(pdf)
 
         # add external constraints
@@ -2414,3 +2865,32 @@ def buildSimultaneousPdf(Components, Observables, Spec, Name) :
         states[state] = SumPdf(Name = '_'.join((Name, suffix)) , **args)
     ## return states
     return SimultaneousPdf(Name, SplitCategory = split_cat, States = states)
+
+
+def getFuncMaxVal( **kwargs ) :
+    __check_req_kw__( 'Function', kwargs )
+    __check_req_kw__( 'ScanSet', kwargs )
+    __check_req_kw__( 'NumScanPoints', kwargs )
+    func      = kwargs.pop('Function')
+    scanSet   = kwargs.pop('ScanSet')
+    numPoints = kwargs.pop('NumScanPoints')
+    intSet    = kwargs.pop( 'IntegrationSet', [ ] )
+    normSet   = kwargs.pop( 'NormalizationSet', [ ] )
+
+    # normalize and integrate PDF
+    from ROOT import RooArgSet
+    RooIntSet  = RooArgSet( __dref__(obs) for obs in intSet  )
+    RooNormSet = RooArgSet( __dref__(obs) for obs in normSet )
+    intFunc = func.createIntegral( RooIntSet, RooNormSet )
+
+    # get maximum value of normalized PDF in space of observables in scan set
+    from ROOT import RooArgList, std
+    RooScanList = RooArgList()
+    numPointsVec = std.vector('Int_t')()
+    for obs in scanSet :
+        RooScanList.add( __dref__(obs) )
+        assert obs.GetName() in numPoints
+        numPointsVec.push_back( numPoints[ obs.GetName() ] )
+    from P2VV.Load import P2VVLibrary
+    from ROOT import getRooRealMaxVal
+    return getRooRealMaxVal( intFunc, RooScanList, numPointsVec )

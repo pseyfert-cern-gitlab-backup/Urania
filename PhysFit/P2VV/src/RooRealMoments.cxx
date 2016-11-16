@@ -20,8 +20,6 @@
 #include "TMath.h"
 #include "RooArgSet.h"
 
-using namespace std;
-
 //_____________________________________________________________________________
 RooRealMoment::RooRealMoment(const RooAbsReal& basisFunc, Double_t norm,
     const char* name) :
@@ -218,7 +216,7 @@ void RooRealMoment::clearMoments()
 }
 
 //_____________________________________________________________________________
-ostream& RooRealMoment::print(ostream& os, Bool_t normalize) const
+std::ostream& RooRealMoment::print(std::ostream& os, Bool_t normalize) const
 {
   return os << "moment(" << _name << ") = " << coefficient(normalize) << " +- "
       << stdDev(normalize) << " (significance: " << significance() << ")"

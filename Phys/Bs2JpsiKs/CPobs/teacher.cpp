@@ -142,7 +142,7 @@ int runTeacher(const TString module, const TString data, const TString step,
 
   // Also load "background" for training on Simulation
   if (step==m_NNKstar) {
-    trainTuple = loadTuple(module, "SigKstarWM", step, dir, decay, weightMethod);
+    trainTuple = loadTuple(module, "SigKstar", step, dir, decay, weightMethod);
     prepareTrainingSample(trainTuple, nb, step, tracktype, 0);
   }
 
