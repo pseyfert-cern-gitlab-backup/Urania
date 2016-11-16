@@ -10,10 +10,10 @@ Method         : BDT::BDTD
 TMVA Release   : 4.2.0         [262656]
 ROOT Release   : 5.34/18       [336402]
 Creator        : diego.santos
-Date           : Fri Oct  2 18:53:27 2015
+Date           : Fri Dec 11 13:57:41 2015
 Host           : ec-slc6-x86-64-spi-9
 Dir            : /scratch19/URANIA/URANIA_HEAD/Phys/Ks2Pi0MuMu/python/Ks2Pi0MuMu
-Training events: 58642
+Training events: 104032
 Analysis type  : [Classification]
 
 
@@ -34,7 +34,7 @@ nEventsMin: "400" [deprecated: Use MinNodeSize (in % of training events) instead
 VerbosityLevel: "Default" [Verbosity level]
 CreateMVAPdfs: "False" [Create PDFs for classifier outputs (signal and background)]
 IgnoreNegWeightsInTraining: "False" [Events with negative weights are ignored in the training (but are included for testing and performance evaluation)]
-MinNodeSize: "0.6821053.2" [Minimum percentage of training events required in a leaf node (default: Classification: 5%, Regression: 0.2%)]
+MinNodeSize: "0.3844973.2" [Minimum percentage of training events required in a leaf node (default: Classification: 5%, Regression: 0.2%)]
 AdaBoostR2Loss: "quadratic" [Type of Loss function in AdaBoostR2]
 UseBaggedBoost: "False" [Use only a random subsample of all events for growing the trees in each boost iteration.]
 Shrinkage: "1.000000e+00" [Learning rate for GradBoost algorithm]
@@ -67,74 +67,72 @@ NNodesMax: "0" [deprecated: Use MaxDepth instead to limit the tree size]
 
 #VAR -*-*-*-*-*-*-*-*-*-*-*-* variables *-*-*-*-*-*-*-*-*-*-*-*-
 
-NVar 39
+NVar 37
 GLmvas0.                      GLmvas0.                      GLmvas0.                      GLmvas0.                      units                             'F'    [-3.77433300018,3.77433300018]
-GLmvan0.                      GLmvan0.                      GLmvan0.                      GLmvan0.                      units                             'F'    [-4.27538537979,4.27538537979]
+GLmvan0.                      GLmvan0.                      GLmvan0.                      GLmvan0.                      units                             'F'    [-4.41235876083,4.41235876083]
 GLmvas1.                      GLmvas1.                      GLmvas1.                      GLmvas1.                      units                             'F'    [-3.77433300018,3.77433300018]
-GLmvan1.                      GLmvan1.                      GLmvan1.                      GLmvan1.                      units                             'F'    [-4.27538537979,4.27538537979]
+GLmvan1.                      GLmvan1.                      GLmvan1.                      GLmvan1.                      units                             'F'    [-4.41235876083,4.41235876083]
 GLmvas2.                      GLmvas2.                      GLmvas2.                      GLmvas2.                      units                             'F'    [-3.77433300018,3.77433300018]
-GLmvan2.                      GLmvan2.                      GLmvan2.                      GLmvan2.                      units                             'F'    [-4.27538537979,4.27538537979]
+GLmvan2.                      GLmvan2.                      GLmvan2.                      GLmvan2.                      units                             'F'    [-4.41235876083,4.41235876083]
 GLmvas3.                      GLmvas3.                      GLmvas3.                      GLmvas3.                      units                             'F'    [-3.77433300018,3.77433300018]
-GLmvan3.                      GLmvan3.                      GLmvan3.                      GLmvan3.                      units                             'F'    [-4.27538537979,4.27538537979]
+GLmvan3.                      GLmvan3.                      GLmvan3.                      GLmvan3.                      units                             'F'    [-4.41235876083,4.41235876083]
 GLmvas4.                      GLmvas4.                      GLmvas4.                      GLmvas4.                      units                             'F'    [-3.77433300018,3.77433300018]
-GLmvan4.                      GLmvan4.                      GLmvan4.                      GLmvan4.                      units                             'F'    [-4.27538537979,4.27538537979]
+GLmvan4.                      GLmvan4.                      GLmvan4.                      GLmvan4.                      units                             'F'    [-4.41235876083,4.41235876083]
 GLmvas5.                      GLmvas5.                      GLmvas5.                      GLmvas5.                      units                             'F'    [-3.77433300018,3.77433300018]
-GLmvan5.                      GLmvan5.                      GLmvan5.                      GLmvan5.                      units                             'F'    [-4.27538537979,4.27538537979]
+GLmvan5.                      GLmvan5.                      GLmvan5.                      GLmvan5.                      units                             'F'    [-4.41235876083,4.41235876083]
 GLmvas6.                      GLmvas6.                      GLmvas6.                      GLmvas6.                      units                             'F'    [-3.77433300018,3.77433300018]
-GLmvan6.                      GLmvan6.                      GLmvan6.                      GLmvan6.                      units                             'F'    [-4.27538537979,4.27538537979]
+GLmvan6.                      GLmvan6.                      GLmvan6.                      GLmvan6.                      units                             'F'    [-4.41235876083,4.41235876083]
 GLmvas7.                      GLmvas7.                      GLmvas7.                      GLmvas7.                      units                             'F'    [-3.77433300018,3.77433300018]
-GLmvan7.                      GLmvan7.                      GLmvan7.                      GLmvan7.                      units                             'F'    [-4.27538537979,4.27538537979]
+GLmvan7.                      GLmvan7.                      GLmvan7.                      GLmvan7.                      units                             'F'    [-4.41235876083,4.41235876083]
 GLmvas8.                      GLmvas8.                      GLmvas8.                      GLmvas8.                      units                             'F'    [-3.77433300018,3.77433300018]
-GLmvan8.                      GLmvan8.                      GLmvan8.                      GLmvan8.                      units                             'F'    [-4.27538537979,4.27538537979]
+GLmvan8.                      GLmvan8.                      GLmvan8.                      GLmvan8.                      units                             'F'    [-4.41235876083,4.41235876083]
 GLmvas9.                      GLmvas9.                      GLmvas9.                      GLmvas9.                      units                             'F'    [-3.77433300018,3.77433300018]
-GLmvan9.                      GLmvan9.                      GLmvan9.                      GLmvan9.                      units                             'F'    [-4.27538537979,4.27538537979]
+GLmvan9.                      GLmvan9.                      GLmvan9.                      GLmvan9.                      units                             'F'    [-4.41235876083,4.41235876083]
 GLmvas10.                     GLmvas10.                     GLmvas10.                     GLmvas10.                     units                             'F'    [-3.77433300018,3.77433300018]
-GLmvan10.                     GLmvan10.                     GLmvan10.                     GLmvan10.                     units                             'F'    [-4.27538537979,4.27538537979]
+GLmvan10.                     GLmvan10.                     GLmvan10.                     GLmvan10.                     units                             'F'    [-4.41235876083,4.41235876083]
 GLmvas11.                     GLmvas11.                     GLmvas11.                     GLmvas11.                     units                             'F'    [-3.77433300018,3.77433300018]
-GLmvan11.                     GLmvan11.                     GLmvan11.                     GLmvan11.                     units                             'F'    [-4.27538537979,4.27538537979]
+GLmvan11.                     GLmvan11.                     GLmvan11.                     GLmvan11.                     units                             'F'    [-4.41235876083,4.41235876083]
 GLmvas12.                     GLmvas12.                     GLmvas12.                     GLmvas12.                     units                             'F'    [-3.77433300018,3.77433300018]
-GLmvan12.                     GLmvan12.                     GLmvan12.                     GLmvan12.                     units                             'F'    [-4.27538537979,4.27538537979]
-GLmvas13.                     GLmvas13.                     GLmvas13.                     GLmvas13.                     units                             'F'    [-3.77433300018,3.77433300018]
-GLmvan13.                     GLmvan13.                     GLmvan13.                     GLmvan13.                     units                             'F'    [-4.27538537979,4.27538537979]
-mu1_hitsInOT                  mu1_hitsInOT                  mu1_hitsInOT                  mu1_hitsInOT                  units                             'F'    [0,29]
+GLmvan12.                     GLmvan12.                     GLmvan12.                     GLmvan12.                     units                             'F'    [-4.41235876083,4.41235876083]
+mu1_hitsInOT                  mu1_hitsInOT                  mu1_hitsInOT                  mu1_hitsInOT                  units                             'F'    [0,30]
 mu2_hitsInOT                  mu2_hitsInOT                  mu2_hitsInOT                  mu2_hitsInOT                  units                             'F'    [0,29]
-mu1_hitsInIT                  mu1_hitsInIT                  mu1_hitsInIT                  mu1_hitsInIT                  units                             'F'    [0,17]
+mu1_hitsInIT                  mu1_hitsInIT                  mu1_hitsInIT                  mu1_hitsInIT                  units                             'F'    [0,19]
 mu2_hitsInIT                  mu2_hitsInIT                  mu2_hitsInIT                  mu2_hitsInIT                  units                             'F'    [0,19]
 mu1_hitsInTT                  mu1_hitsInTT                  mu1_hitsInTT                  mu1_hitsInTT                  units                             'F'    [3,8]
 mu2_hitsInTT                  mu2_hitsInTT                  mu2_hitsInTT                  mu2_hitsInTT                  units                             'F'    [3,8]
-mu1_hitsInV                   mu1_hitsInV                   mu1_hitsInV                   mu1_hitsInV                   units                             'F'    [6,29]
-mu2_hitsInV                   mu2_hitsInV                   mu2_hitsInV                   mu2_hitsInV                   units                             'F'    [6,27]
-SV1                           SV1                           SV1                           SV1                           units                             'F'    [-81.8467025757,104.29019928]
-SV2                           SV2                           SV2                           SV2                           units                             'F'    [-91.4517974854,68.1399002075]
-SV3                           SV3                           SV3                           SV3                           units                             'F'    [-125.957199097,2795.20874023]
+mu1_hitsInV                   mu1_hitsInV                   mu1_hitsInV                   mu1_hitsInV                   units                             'F'    [6,30]
+mu2_hitsInV                   mu2_hitsInV                   mu2_hitsInV                   mu2_hitsInV                   units                             'F'    [6,30]
+SV1                           SV1                           SV1                           SV1                           units                             'F'    [-111.141098022,164.41960144]
+SV2                           SV2                           SV2                           SV2                           units                             'F'    [-104.330703735,101.817497253]
+SV3                           SV3                           SV3                           SV3                           units                             'F'    [-227.276306152,2624.94458008]
 NSpec 27
-KSmass                        KSmass                        KSmass                        Spectator 1                   units                             'F'    [325.894958496,599.999206543]
-evt                           evt                           evt                           Spectator 2                   units                             'F'    [1000001,181326832]
-DOCA                          DOCA                          DOCA                          Spectator 0                   units                             'F'    [8.54361137501e-14,0.314359307289]
-mu1ips                        mu1ips                        mu1ips                        Spectator 1                   units                             'F'    [6.00004482269,723.679260254]
-mu2ips                        mu2ips                        mu2ips                        Spectator 2                   units                             'F'    [6.00004053116,1382.91491699]
-Phi                           Phi                           Phi                           Spectator 3                   units                             'F'    [-3.14157009125,3.14141583443]
-cTh1                          cTh1                          cTh1                          Spectator 4                   units                             'F'    [-0.999924480915,0.999835252762]
-K_dec_angle                   K_dec_angle                   K_dec_angle                   Spectator 5                   units                             'F'    [0.00576415611431,2.43018746376]
-KSips                         KSips                         KSips                         Spectator 6                   units                             'F'    [0.00262172333896,65.7126312256]
-KS_pt                         KS_pt                         KS_pt                         Spectator 7                   units                             'F'    [465.058990479,9101.92578125]
-pi0mass                       pi0mass                       pi0mass                       Spectator 8                   units                             'F'    [104.978172302,164.974884033]
-Xi                            Xi                            Xi                            Spectator 9                   units                             'F'    [1.4432965517,1.69843363762]
+KSmass                        KSmass                        KSmass                        Spectator 1                   units                             'F'    [323.641387939,599.999572754]
+evt                           evt                           evt                           Spectator 2                   units                             'F'    [1000001,4696815]
+DOCA                          DOCA                          DOCA                          Spectator 0                   units                             'F'    [5.69127671423e-14,0.314359307289]
+mu1ips                        mu1ips                        mu1ips                        Spectator 1                   units                             'F'    [6.0005812645,1208.8861084]
+mu2ips                        mu2ips                        mu2ips                        Spectator 2                   units                             'F'    [6.00009822845,1307.06005859]
+Phi                           Phi                           Phi                           Spectator 3                   units                             'F'    [-3.14157056808,3.14156270027]
+cTh1                          cTh1                          cTh1                          Spectator 4                   units                             'F'    [-0.999963402748,0.999974548817]
+K_dec_angle                   K_dec_angle                   K_dec_angle                   Spectator 5                   units                             'F'    [0.00502956379205,2.49506783485]
+KSips                         KSips                         KSips                         Spectator 6                   units                             'F'    [0.00058646092657,53.5419807434]
+KS_pt                         KS_pt                         KS_pt                         Spectator 7                   units                             'F'    [437.21572876,8516.65332031]
+pi0mass                       pi0mass                       pi0mass                       Spectator 8                   units                             'F'    [104.977226257,164.975845337]
+Xi                            Xi                            Xi                            Spectator 9                   units                             'F'    [1.51630938053,1.64037740231]
 mu1_probNNmu                  mu1_probNNmu                  mu1_probNNmu                  Spectator 10                  units                             'F'    [-1000,0.995960175991]
 mu2_probNNmu                  mu2_probNNmu                  mu2_probNNmu                  Spectator 11                  units                             'F'    [-1000,0.987714111805]
-Vchi2                         Vchi2                         Vchi2                         Spectator 12                  units                             'F'    [1.18724430955e-17,1331.11083984]
-KS_IP                         KS_IP                         KS_IP                         Spectator 13                  units                             'F'    [0.00172994472086,9.70869350433]
-mu1_hitsInOT                  mu1_hitsInOT                  mu1_hitsInOT                  Spectator 14                  units                             'F'    [0,29]
+Vchi2                         Vchi2                         Vchi2                         Spectator 12                  units                             'F'    [9.38323180038e-29,1636.45373535]
+KS_IP                         KS_IP                         KS_IP                         Spectator 13                  units                             'F'    [0.00186829909217,9.70869350433]
+mu1_hitsInOT                  mu1_hitsInOT                  mu1_hitsInOT                  Spectator 14                  units                             'F'    [0,30]
 mu2_hitsInOT                  mu2_hitsInOT                  mu2_hitsInOT                  Spectator 15                  units                             'F'    [0,29]
-mu1_hitsInIT                  mu1_hitsInIT                  mu1_hitsInIT                  Spectator 16                  units                             'F'    [0,17]
+mu1_hitsInIT                  mu1_hitsInIT                  mu1_hitsInIT                  Spectator 16                  units                             'F'    [0,19]
 mu2_hitsInIT                  mu2_hitsInIT                  mu2_hitsInIT                  Spectator 17                  units                             'F'    [0,19]
 mu1_hitsInTT                  mu1_hitsInTT                  mu1_hitsInTT                  Spectator 18                  units                             'F'    [3,8]
 mu2_hitsInTT                  mu2_hitsInTT                  mu2_hitsInTT                  Spectator 19                  units                             'F'    [3,8]
-mu1_hitsInV                   mu1_hitsInV                   mu1_hitsInV                   Spectator 20                  units                             'F'    [6,29]
-mu2_hitsInV                   mu2_hitsInV                   mu2_hitsInV                   Spectator 21                  units                             'F'    [6,27]
-SV1                           SV1                           SV1                           Spectator 22                  units                             'F'    [-81.8467025757,104.29019928]
-SV2                           SV2                           SV2                           Spectator 23                  units                             'F'    [-91.4517974854,68.1399002075]
-SV3                           SV3                           SV3                           Spectator 24                  units                             'F'    [-125.957199097,2795.20874023]
+mu1_hitsInV                   mu1_hitsInV                   mu1_hitsInV                   Spectator 20                  units                             'F'    [6,30]
+mu2_hitsInV                   mu2_hitsInV                   mu2_hitsInV                   Spectator 21                  units                             'F'    [6,30]
+SV1                           SV1                           SV1                           Spectator 22                  units                             'F'    [-111.141098022,164.41960144]
+SV2                           SV2                           SV2                           Spectator 23                  units                             'F'    [-104.330703735,101.817497253]
+SV3                           SV3                           SV3                           Spectator 24                  units                             'F'    [-227.276306152,2624.94458008]
 
 
 ============================================================================ */
@@ -255,11 +253,11 @@ class ReadBDTD : public IClassifierReader {
    ReadBDTD( std::vector<std::string>& theInputVars ) 
       : IClassifierReader(),
         fClassName( "ReadBDTD" ),
-        fNvars( 39 ),
+        fNvars( 37 ),
         fIsNormalised( false )
    {      
       // the training input variables
-      const char* inputVars[] = { "GLmvas0.", "GLmvan0.", "GLmvas1.", "GLmvan1.", "GLmvas2.", "GLmvan2.", "GLmvas3.", "GLmvan3.", "GLmvas4.", "GLmvan4.", "GLmvas5.", "GLmvan5.", "GLmvas6.", "GLmvan6.", "GLmvas7.", "GLmvan7.", "GLmvas8.", "GLmvan8.", "GLmvas9.", "GLmvan9.", "GLmvas10.", "GLmvan10.", "GLmvas11.", "GLmvan11.", "GLmvas12.", "GLmvan12.", "GLmvas13.", "GLmvan13.", "mu1_hitsInOT", "mu2_hitsInOT", "mu1_hitsInIT", "mu2_hitsInIT", "mu1_hitsInTT", "mu2_hitsInTT", "mu1_hitsInV", "mu2_hitsInV", "SV1", "SV2", "SV3" };
+      const char* inputVars[] = { "GLmvas0.", "GLmvan0.", "GLmvas1.", "GLmvan1.", "GLmvas2.", "GLmvan2.", "GLmvas3.", "GLmvan3.", "GLmvas4.", "GLmvan4.", "GLmvas5.", "GLmvan5.", "GLmvas6.", "GLmvan6.", "GLmvas7.", "GLmvan7.", "GLmvas8.", "GLmvan8.", "GLmvas9.", "GLmvan9.", "GLmvas10.", "GLmvan10.", "GLmvas11.", "GLmvan11.", "GLmvas12.", "GLmvan12.", "mu1_hitsInOT", "mu2_hitsInOT", "mu1_hitsInIT", "mu2_hitsInIT", "mu1_hitsInTT", "mu2_hitsInTT", "mu1_hitsInV", "mu2_hitsInV", "SV1", "SV2", "SV3" };
 
       // sanity checks
       if (theInputVars.size() <= 0) {
@@ -283,84 +281,80 @@ class ReadBDTD : public IClassifierReader {
       }
 
       // initialize min and max vectors (for normalisation)
-      fVmin[0] = -0.690701067447662;
-      fVmax[0] = 10.4984130859375;
-      fVmin[1] = -11.2101564407349;
-      fVmax[1] = 9.5987434387207;
-      fVmin[2] = -6.66414642333984;
-      fVmax[2] = 9.32458400726318;
-      fVmin[3] = -10.0535678863525;
-      fVmax[3] = 20.8347263336182;
-      fVmin[4] = -5.95415782928467;
-      fVmax[4] = 6.39415740966797;
-      fVmin[5] = -8.64599227905273;
-      fVmax[5] = 8.03744316101074;
-      fVmin[6] = -8.91375923156738;
-      fVmax[6] = 4.2473931312561;
-      fVmin[7] = -8.84498405456543;
-      fVmax[7] = 6.15006446838379;
-      fVmin[8] = -5.39884328842163;
-      fVmax[8] = 8.76639842987061;
-      fVmin[9] = -7.74391031265259;
-      fVmax[9] = 5.13910961151123;
-      fVmin[10] = -2.26718091964722;
-      fVmax[10] = 8.94013786315918;
-      fVmin[11] = -7.10034608840942;
-      fVmax[11] = 4.53793001174927;
-      fVmin[12] = -3.67653131484985;
-      fVmax[12] = 9.72157955169678;
-      fVmin[13] = -5.83472776412964;
-      fVmax[13] = 5.94731092453003;
-      fVmin[14] = -9.23362445831299;
-      fVmax[14] = 2.69086861610413;
-      fVmin[15] = -6.41971635818481;
-      fVmax[15] = 8.64887046813965;
-      fVmin[16] = -5.87031507492065;
-      fVmax[16] = 5.55453681945801;
-      fVmin[17] = -7.70828723907471;
-      fVmax[17] = 7.46823787689209;
-      fVmin[18] = -8.41889476776123;
-      fVmax[18] = 5.93930149078369;
-      fVmin[19] = -9.28409194946289;
-      fVmax[19] = 10.3351612091064;
-      fVmin[20] = -14.1513862609863;
-      fVmax[20] = 6.1784405708313;
-      fVmin[21] = -6.90115070343018;
-      fVmax[21] = 6.89585590362549;
-      fVmin[22] = -9.07870101928711;
-      fVmax[22] = 8.90103912353516;
-      fVmin[23] = -12.3885812759399;
-      fVmax[23] = 14.3545083999634;
-      fVmin[24] = -7.17973613739014;
-      fVmax[24] = 6.26901960372925;
-      fVmin[25] = -14.8217830657959;
-      fVmax[25] = 16.6290283203125;
-      fVmin[26] = -7.65337467193604;
-      fVmax[26] = 8.0617847442627;
-      fVmin[27] = -16.3306922912598;
-      fVmax[27] = 9.21441745758057;
-      fVmin[28] = 1.16780936717987;
-      fVmax[28] = 7.8688907623291;
-      fVmin[29] = 1.16585230827332;
-      fVmax[29] = 8.66204452514648;
-      fVmin[30] = 0.968848586082458;
-      fVmax[30] = 11.2186098098755;
-      fVmin[31] = 0.912453055381775;
-      fVmax[31] = 11.1998157501221;
-      fVmin[32] = 4.16321897506714;
-      fVmax[32] = 14.2385749816895;
-      fVmin[33] = 4.01036691665649;
-      fVmax[33] = 14.4434862136841;
-      fVmin[34] = 0.684675991535187;
-      fVmax[34] = 11.2860994338989;
-      fVmin[35] = 0.661781251430511;
-      fVmax[35] = 10.4961090087891;
-      fVmin[36] = -9.05858707427979;
-      fVmax[36] = 11.6727094650269;
-      fVmin[37] = -12.3688583374023;
-      fVmax[37] = 8.74240016937256;
-      fVmin[38] = -0.791498422622681;
-      fVmax[38] = 20.9464569091797;
+      fVmin[0] = -0.957972645759583;
+      fVmax[0] = 10.894100189209;
+      fVmin[1] = -12.1542987823486;
+      fVmax[1] = 8.3679666519165;
+      fVmin[2] = -7.34455966949463;
+      fVmax[2] = 8.91898536682129;
+      fVmin[3] = -10.0082311630249;
+      fVmax[3] = 12.595401763916;
+      fVmin[4] = -7.71259832382202;
+      fVmax[4] = 5.13739824295044;
+      fVmin[5] = -6.25404787063599;
+      fVmax[5] = 5.96675205230713;
+      fVmin[6] = -6.92002010345459;
+      fVmax[6] = 4.88580894470215;
+      fVmin[7] = -9.40061950683594;
+      fVmax[7] = 6.13486480712891;
+      fVmin[8] = -7.42452907562256;
+      fVmax[8] = 4.39759159088135;
+      fVmin[9] = -6.47415590286255;
+      fVmax[9] = 6.18552160263062;
+      fVmin[10] = -5.13736534118652;
+      fVmax[10] = 11.290885925293;
+      fVmin[11] = -4.74452638626099;
+      fVmax[11] = 5.492262840271;
+      fVmin[12] = -4.77833604812622;
+      fVmax[12] = 9.60579490661621;
+      fVmin[13] = -9.26729297637939;
+      fVmax[13] = 10.0316638946533;
+      fVmin[14] = -8.30335998535156;
+      fVmax[14] = 1.75617253780365;
+      fVmin[15] = -12.5175113677979;
+      fVmax[15] = 7.09110260009766;
+      fVmin[16] = -5.29252052307129;
+      fVmax[16] = 7.8699779510498;
+      fVmin[17] = -7.56382751464844;
+      fVmax[17] = 6.31548166275024;
+      fVmin[18] = -6.86016893386841;
+      fVmax[18] = 6.18453454971313;
+      fVmin[19] = -8.5388126373291;
+      fVmax[19] = 7.9995265007019;
+      fVmin[20] = -6.27024126052856;
+      fVmax[20] = 4.75465679168701;
+      fVmin[21] = -4.02634716033936;
+      fVmax[21] = 7.96532869338989;
+      fVmin[22] = -7.19955730438232;
+      fVmax[22] = 6.44506120681763;
+      fVmin[23] = -10.2195587158203;
+      fVmax[23] = 9.9109992980957;
+      fVmin[24] = -5.16563367843628;
+      fVmax[24] = 5.1254940032959;
+      fVmin[25] = -8.80127906799316;
+      fVmax[25] = 8.07831382751465;
+      fVmin[26] = 1.04863226413727;
+      fVmax[26] = 7.23482227325439;
+      fVmin[27] = 0.962747871875763;
+      fVmax[27] = 7.20876598358154;
+      fVmin[28] = 0.662051498889923;
+      fVmax[28] = 10.8081884384155;
+      fVmin[29] = 0.627047955989838;
+      fVmax[29] = 10.6892423629761;
+      fVmin[30] = 3.35502743721008;
+      fVmax[30] = 12.7834739685059;
+      fVmin[31] = 3.21031951904297;
+      fVmax[31] = 12.7400150299072;
+      fVmin[32] = 0.249212026596069;
+      fVmax[32] = 10.6598863601685;
+      fVmin[33] = 0.643390893936157;
+      fVmax[33] = 10.3083515167236;
+      fVmin[34] = -12.8620080947876;
+      fVmax[34] = 19.3324699401855;
+      fVmin[35] = -13.363790512085;
+      fVmax[35] = 12.2124223709106;
+      fVmin[36] = -1.35320103168488;
+      fVmax[36] = 17.8420181274414;
 
       // initialize input variable types
       fType[0] = 'F';
@@ -400,8 +394,6 @@ class ReadBDTD : public IClassifierReader {
       fType[34] = 'F';
       fType[35] = 'F';
       fType[36] = 'F';
-      fType[37] = 'F';
-      fType[38] = 'F';
 
       // initialize constants
       Initialize();
@@ -427,7 +419,7 @@ class ReadBDTD : public IClassifierReader {
 
    // input variable transformation
 
-   double fDecTF_1[3][39][39];
+   double fDecTF_1[3][37][37];
    void InitTransform_1();
    void Transform_1( std::vector<double> & iv, int sigOrBgd ) const;
    void InitTransform();
@@ -443,15 +435,15 @@ class ReadBDTD : public IClassifierReader {
    // normalisation of input variables
    const bool fIsNormalised;
    bool IsNormalised() const { return fIsNormalised; }
-   double fVmin[39];
-   double fVmax[39];
+   double fVmin[37];
+   double fVmax[37];
    double NormVariable( double x, double xmin, double xmax ) const {
       // normalise to output range: [-1, 1]
       return 2*(x - xmin)/(xmax - xmin) - 1.0;
    }
 
    // type of input variable: 'F' or 'I'
-   char   fType[39];
+   char   fType[37];
 
    // initialize internal variables
    void Initialize();
@@ -481,118 +473,124 @@ double ReadBDTD::GetMvaValue__( const std::vector<double>& inputValues ) const
 void ReadBDTD::Initialize()
 {
   // itree = 0
-  fBoostWeights.push_back(0.724156820581011);
+  fBoostWeights.push_back(0.857486768477444);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, -5.32504, 0, 1, 0.82944,-99) , 
 NN(
 0, 
 0, 
--1, -3.50945, 1, -1, 0.290728,-99) , 
-15, 3.97611, 0, 0, 0.764502,-99) , 
+-1, 0, 1, 1, 0.909094,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.400106,-99) , 
+0, 5.94491, 1, 0, 0.844654,-99) , 
+NN(
+0, 
+0, 
+-1, -4.13102, 0, -1, 0.297874,-99) , 
+14, -3.99213, 0, 0, 0.731832,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.700063,-99) , 
+-1, 0, 1, 1, 0.711567,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.257801,-99) , 
-10, 5.68728, 1, 0, 0.572151,-99) , 
+-1, 0, 1, -1, 0.278959,-99) , 
+3, 3.30801, 0, 0, 0.441116,-99) , 
 NN(
 0, 
 0, 
--1, 5.35389, 1, -1, 0.140262,-99) , 
-14, -4.40569, 0, 0, 0.29832,-99) , 
-10, 4.67068, 1, 0, 0.5,-99)    );
+-1, 4.58548, 1, -1, 0.0961545,-99) , 
+14, -3.01411, 0, 0, 0.168283,-99) , 
+10, 4.25021, 1, 0, 0.5,-99)    );
   // itree = 1
-  fBoostWeights.push_back(0.60422);
+  fBoostWeights.push_back(0.696752);
   fForest.push_back( 
 NN(
 NN(
 NN(
-NN(
 0, 
 0, 
--1, 0, 1, 1, 0.803941,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.392762,-99) , 
-11, -3.39811, 1, 0, 0.734173,-99) , 
+-1, -4.87082, 0, 1, 0.900373,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.627649,-99) , 
+-1, 0, 1, 1, 0.536083,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.252019,-99) , 
-14, -4.04239, 0, 0, 0.351613,-99) , 
-7, -2.24568, 1, 0, 0.617363,-99) , 
+-1, 0, 1, -1, 0.0427304,-99) , 
+13, 2.90856, 0, 0, 0.355861,-99) , 
+3, 2.29945, 0, 0, 0.853287,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.680568,-99) , 
+-1, 0, 1, 1, 0.692589,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.216844,-99) , 
-8, -2.6388, 0, 0, 0.607512,-99) , 
+-1, 0, 1, -1, 0.261257,-99) , 
+10, 4.5857, 1, 0, 0.536975,-99) , 
 NN(
 0, 
 0, 
--1, 2.65911, 0, -1, 0.180534,-99) , 
-14, -3.74386, 0, 0, 0.250034,-99) , 
-10, 5.20436, 1, 0, 0.487595,-99)    );
+-1, -3.20443, 0, -1, 0.146807,-99) , 
+8, -4.38099, 0, 0, 0.387922,-99) , 
+10, 3.46791, 1, 0, 0.533586,-99)    );
   // itree = 2
-  fBoostWeights.push_back(0.521325);
+  fBoostWeights.push_back(0.572411);
   fForest.push_back( 
 NN(
 NN(
 NN(
-NN(
 0, 
 0, 
--1, 0, 1, 1, 0.858882,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.0911839,-99) , 
-11, -1.99217, 1, 0, 0.829243,-99) , 
+-1, -3.94855, 0, 1, 0.756641,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.649879,-99) , 
+-1, 0, 1, 1, 0.680772,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.32044,-99) , 
-8, -1.79075, 0, 0, 0.497081,-99) , 
-10, 4.10315, 1, 0, 0.582589,-99) , 
+-1, 0, 1, -1, 0.208628,-99) , 
+10, 3.33348, 1, 0, 0.326628,-99) , 
+4, 1.41262, 1, 0, 0.676832,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.592496,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.232853,-99) , 
+8, -4.13164, 0, 0, 0.431705,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.754199,-99) , 
+-1, 0, 1, 1, 0.664279,-99) , 
 NN(
 0, 
 0, 
--1, 2.67326, 0, -1, 0.179736,-99) , 
-10, 3.15942, 1, 0, 0.228139,-99) , 
-14, -5.25879, 0, 0, 0.49438,-99)    );
+-1, 0, 1, -1, 0.0883108,-99) , 
+10, 2.24434, 1, 0, 0.11887,-99) , 
+0, 5.6249, 1, 0, 0.309966,-99) , 
+14, -3.51311, 0, 0, 0.510815,-99)    );
   // itree = 3
-  fBoostWeights.push_back(0.449097);
+  fBoostWeights.push_back(0.554078);
   fForest.push_back( 
 NN(
 NN(
@@ -600,42 +598,42 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.776433,-99) , 
+-1, 0, 1, 1, 0.721466,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.309639,-99) , 
-0, 4.63565, 1, 0, 0.743862,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.935909,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.392485,-99) , 
-10, 2.74809, 1, 0, 0.446529,-99) , 
-11, -3.84378, 1, 0, 0.60016,-99) , 
-NN(
+-1, 0, 1, -1, 0.220329,-99) , 
+0, 6.3653, 1, 0, 0.672614,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.608871,-99) , 
+-1, 0, 1, 1, 0.542204,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.344931,-99) , 
-4, 1.10202, 1, 0, 0.469327,-99) , 
+-1, 0, 1, -1, 0.176057,-99) , 
+0, 4.82454, 1, 0, 0.240794,-99) , 
+10, 4.96311, 1, 0, 0.597648,-99) , 
+NN(
+NN(
 NN(
 0, 
 0, 
--1, 4.32246, 0, -1, 0.215398,-99) , 
-6, -2.64654, 0, 0, 0.331938,-99) , 
-7, -2.41853, 1, 0, 0.491874,-99)    );
+-1, 0, 1, 1, 0.565388,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.215429,-99) , 
+7, -2.56446, 1, 0, 0.452462,-99) , 
+NN(
+0, 
+0, 
+-1, -2.9727, 0, -1, 0.11326,-99) , 
+13, 3.71048, 0, 0, 0.259481,-99) , 
+3, 2.90813, 0, 0, 0.469194,-99)    );
   // itree = 4
-  fBoostWeights.push_back(0.518672);
+  fBoostWeights.push_back(0.495035);
   fForest.push_back( 
 NN(
 NN(
@@ -643,177 +641,141 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.841749,-99) , 
+-1, 0, 1, 1, 0.829301,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.456238,-99) , 
-0, 4.15666, 1, 0, 0.796688,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.560045,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.143709,-99) , 
-6, -2.55548, 0, 0, 0.337809,-99) , 
-15, 3.98113, 0, 0, 0.744492,-99) , 
-NN(
+-1, 0, 1, -1, 0.469848,-99) , 
+19, -0.393498, 0, 0, 0.787943,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.701794,-99) , 
+-1, 0, 1, 1, 0.578306,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.278688,-99) , 
-32, 5.64825, 0, 0, 0.582749,-99) , 
+-1, 0, 1, -1, 0.294721,-99) , 
+6, -2.61498, 0, 0, 0.440444,-99) , 
+8, -3.93599, 0, 0, 0.640351,-99) , 
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.572841,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.219479,-99) , 
-32, 7.65877, 0, 0, 0.292903,-99) , 
-32, 6.56211, 1, 0, 0.447805,-99) , 
-38, 2.31392, 0, 0, 0.514761,-99)    );
+-1, 0, 1, 1, 0.714532,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.296547,-99) , 
+8, -4.43184, 0, 0, 0.565657,-99) , 
+NN(
+0, 
+0, 
+-1, 2.90813, 0, -1, 0.265425,-99) , 
+10, 3.46791, 1, 0, 0.333997,-99) , 
+14, -3.03408, 0, 0, 0.435427,-99)    );
   // itree = 5
-  fBoostWeights.push_back(0.421691);
+  fBoostWeights.push_back(0.356532);
   fForest.push_back( 
 NN(
 NN(
 NN(
-NN(
 0, 
 0, 
--1, 0, 1, 1, 0.720576,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.182137,-99) , 
-11, -2.50677, 1, 0, 0.699918,-99) , 
-NN(
-0, 
-0, 
--1, -0.375396, 0, -1, 0.284312,-99) , 
-14, -5.85995, 0, 0, 0.66676,-99) , 
-NN(
+-1, 1.14047, 1, 1, 0.71084,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.701904,-99) , 
+-1, 0, 1, 1, 0.528204,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.301594,-99) , 
-11, -3.10383, 1, 0, 0.633432,-99) , 
+-1, 0, 1, -1, 0.240143,-99) , 
+4, 1.06589, 1, 0, 0.431078,-99) , 
+8, -3.48382, 0, 0, 0.525224,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.606708,-99) , 
+-1, 0, 1, 1, 0.635615,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.29433,-99) , 
-38, 2.35538, 0, 0, 0.361099,-99) , 
-6, -2.01982, 0, 0, 0.426278,-99) , 
-7, -3.13258, 1, 0, 0.49922,-99)    );
+-1, 2.70339, 1, -1, 0.16189,-99) , 
+2, -0.515891, 1, 0, 0.183002,-99) , 
+14, -4.47116, 0, 0, 0.471245,-99)    );
   // itree = 6
-  fBoostWeights.push_back(0.395972);
+  fBoostWeights.push_back(0.390427);
   fForest.push_back( 
 NN(
 NN(
 NN(
+0, 
+0, 
+-1, 3.6415, 1, 1, 0.63149,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.751684,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.224078,-99) , 
-11, -2.3061, 1, 0, 0.725133,-99) , 
-NN(
-0, 
-0, 
--1, -4.80388, 0, -1, 0.270258,-99) , 
-0, 5.28686, 1, 0, 0.684748,-99) , 
+-1, -2.11019, 1, -1, 0.171016,-99) , 
+3, 2.39174, 0, 0, 0.575719,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.710992,-99) , 
+-1, 0, 1, 1, 0.71883,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.433323,-99) , 
-38, 1.30895, 0, 0, 0.601944,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.847877,-99) , 
+-1, 0, 1, -1, 0.383546,-99) , 
+9, -4.16178, 1, 0, 0.458677,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.33418,-99) , 
-2, 0.949535, 1, 0, 0.35976,-99) , 
-9, -3.44957, 1, 0, 0.434725,-99) , 
-10, 4.137, 1, 0, 0.494641,-99)    );
+-1, 5.01223, 0, -1, 0.238376,-99) , 
+8, -3.74412, 0, 0, 0.331705,-99) , 
+6, -2.42256, 0, 0, 0.439196,-99)    );
   // itree = 7
-  fBoostWeights.push_back(0.374257);
+  fBoostWeights.push_back(0.298299);
   fForest.push_back( 
 NN(
 NN(
 NN(
-NN(
 0, 
 0, 
--1, 0, 1, 1, 0.683819,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.349264,-99) , 
-14, -5.56142, 0, 0, 0.654256,-99) , 
+-1, 2.68561, 1, 1, 0.563733,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.797201,-99) , 
+-1, 0, 1, 1, 0.614833,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.378218,-99) , 
-10, 3.03987, 1, 0, 0.42491,-99) , 
-4, 1.31576, 1, 0, 0.586791,-99) , 
+-1, 0, 1, -1, 0.25112,-99) , 
+14, -2.48566, 0, 0, 0.303808,-99) , 
+15, 0.687231, 0, 0, 0.501643,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.640526,-99) , 
+-1, 0, 1, 1, 0.616598,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.363992,-99) , 
-8, -2.55445, 0, 0, 0.552353,-99) , 
+-1, 0, 1, -1, 0.343771,-99) , 
+10, 3.81953, 1, 0, 0.45623,-99) , 
 NN(
 0, 
 0, 
--1, -1.35047, 0, -1, 0.262404,-99) , 
-6, -2.29921, 0, 0, 0.372564,-99) , 
-15, 4.34356, 0, 0, 0.52028,-99)    );
+-1, 4.53869, 0, -1, 0.0702876,-99) , 
+31, 3.90133, 1, 0, 0.201845,-99) , 
+31, 5.0255, 0, 0, 0.446905,-99)    );
   // itree = 8
-  fBoostWeights.push_back(0.301086);
+  fBoostWeights.push_back(0.380143);
   fForest.push_back( 
 NN(
 NN(
@@ -821,79 +783,73 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.609358,-99) , 
+-1, 0, 1, 1, 0.862083,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.323961,-99) , 
-8, -3.0729, 0, 0, 0.576471,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.509102,-99) , 
+-1, 0, 1, -1, 0.278841,-99) , 
+21, 1.84446, 0, 0, 0.817353,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.172636,-99) , 
-14, -4.19081, 0, 0, 0.293542,-99) , 
-10, 5.84297, 1, 0, 0.542193,-99) , 
+-1, 0.63424, 0, -1, 0.279196,-99) , 
+7, -1.8526, 1, 0, 0.746176,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.652141,-99) , 
+-1, 0, 1, 1, 0.582211,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.344909,-99) , 
-12, 0.227163, 0, 0, 0.546194,-99) , 
+-1, 0, 1, -1, 0.338499,-99) , 
+0, 5.38654, 1, 0, 0.470571,-99) , 
 NN(
 0, 
 0, 
--1, -2.32358, 1, -1, 0.148623,-99) , 
-1, -4.27386, 1, 0, 0.247584,-99) , 
-11, -2.66672, 1, 0, 0.512479,-99)    );
+-1, 2.54427, 0, -1, 0.267865,-99) , 
+4, 0.854066, 1, 0, 0.385052,-99) , 
+10, 2.68561, 1, 0, 0.417285,-99)    );
   // itree = 9
-  fBoostWeights.push_back(0.256871);
+  fBoostWeights.push_back(0.268637);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, 1.74829, 0, 1, 0.576433,-99) , 
-NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.656645,-99) , 
+-1, 0, 1, 1, 0.686327,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.365796,-99) , 
-37, 1.47311, 0, 0, 0.404584,-99) , 
-7, -2.38017, 1, 0, 0.511168,-99) , 
-NN(
+-1, 0, 1, -1, 0.47108,-99) , 
+36, 1.99623, 0, 0, 0.523979,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.684952,-99) , 
+-1, 4.08224, 1, -1, 0.238435,-99) , 
+14, -4.47079, 0, 0, 0.485799,-99) , 
+NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.540837,-99) , 
+-1, 0, 1, 1, 0.788438,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.201088,-99) , 
-14, -3.47897, 0, 0, 0.245405,-99) , 
-12, 1.87069, 0, 0, 0.280276,-99) , 
-17, 0.964013, 0, 0, 0.473248,-99)    );
+-1, 0, 1, -1, 0.420525,-99) , 
+36, 2.03603, 0, 0, 0.480166,-99) , 
+NN(
+0, 
+0, 
+-1, 2.88098, 1, -1, 0.08712,-99) , 
+30, 4.03907, 1, 0, 0.233109,-99) , 
+30, 5.15092, 0, 0, 0.440091,-99)    );
   // itree = 10
-  fBoostWeights.push_back(0.256667);
+  fBoostWeights.push_back(0.261955);
   fForest.push_back( 
 NN(
 NN(
@@ -901,36 +857,24 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.754036,-99) , 
+-1, 0, 1, 1, 0.57398,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.303341,-99) , 
-1, -1.85677, 1, 0, 0.717958,-99) , 
+-1, 0, 1, -1, 0.173792,-99) , 
+19, 0.986671, 1, 0, 0.54959,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.243051,-99) , 
-14, -6.12342, 0, 0, 0.679839,-99) , 
-NN(
-NN(
+-1, -1.03849, 0, -1, 0.202886,-99) , 
+19, -0.663413, 0, 0, 0.519521,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.678005,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.425813,-99) , 
-2, 2.47227, 1, 0, 0.457286,-99) , 
-NN(
-0, 
-0, 
--1, 0.621032, 0, -1, 0.164872,-99) , 
-0, 4.89601, 1, 0, 0.431201,-99) , 
-10, 3.60332, 1, 0, 0.460029,-99)    );
+-1, -4.18019, 0, -1, 0.241475,-99) , 
+10, 5.0325, 1, 0, 0.481462,-99)    );
   // itree = 11
-  fBoostWeights.push_back(0.277158);
+  fBoostWeights.push_back(0.3607);
   fForest.push_back( 
 NN(
 NN(
@@ -938,79 +882,79 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.601801,-99) , 
+-1, 0, 1, 1, 0.739351,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.215531,-99) , 
-11, -2.32505, 1, 0, 0.584006,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.526772,-99) , 
+-1, 0, 1, -1, 0.487423,-99) , 
+36, 1.03516, 0, 0, 0.662641,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.30169,-99) , 
-38, 1.56866, 0, 0, 0.400361,-99) , 
-6, -3.0615, 0, 0, 0.53126,-99) , 
+-1, 3.40454, 0, -1, 0.263447,-99) , 
+13, 2.51672, 0, 0, 0.621962,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.587087,-99) , 
+-1, 0, 1, 1, 0.602068,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.340702,-99) , 
-6, -3.01129, 0, 0, 0.51988,-99) , 
+-1, 0, 1, -1, 0.378284,-99) , 
+10, 3.924, 1, 0, 0.479089,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, -1.01896, 1, -1, 0.079268,-99) , 
-33, 4.71977, 1, 0, 0.299888,-99) , 
-33, 5.50081, 0, 0, 0.49845,-99)    );
+-1, 0, 1, 1, 0.759993,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.225997,-99) , 
+2, 0.160318, 1, 0, 0.259273,-99) , 
+7, -2.74255, 1, 0, 0.398364,-99) , 
+9, -4.06279, 1, 0, 0.448458,-99)    );
   // itree = 12
-  fBoostWeights.push_back(0.230522);
+  fBoostWeights.push_back(0.213595);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, -1.97499, 0, 1, 0.554971,-99) , 
-NN(
-0, 
-0, 
--1, 4.34422, 1, -1, 0.230838,-99) , 
-0, 5.02051, 1, 0, 0.529482,-99) , 
-NN(
+-1, 2.76892, 1, 1, 0.729222,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.563257,-99) , 
+-1, 0, 1, 1, 0.505665,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.17259,-99) , 
-11, -2.95244, 1, 0, 0.532574,-99) , 
+-1, 0, 1, -1, 0.26157,-99) , 
+14, -4.47079, 0, 0, 0.470873,-99) , 
+30, 5.51457, 1, 0, 0.510158,-99) , 
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.614266,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.300488,-99) , 
-14, -3.34401, 0, 0, 0.333955,-99) , 
-7, -3.39331, 1, 0, 0.381211,-99) , 
-17, 1.6867, 0, 0, 0.463605,-99)    );
+-1, 0, 1, 1, 0.730171,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.480089,-99) , 
+32, 3.60635, 1, 0, 0.579247,-99) , 
+NN(
+0, 
+0, 
+-1, 4.06762, 1, -1, 0.143887,-99) , 
+30, 3.95357, 1, 0, 0.265295,-99) , 
+30, 5.15092, 0, 0, 0.468101,-99)    );
   // itree = 13
-  fBoostWeights.push_back(0.286699);
+  fBoostWeights.push_back(0.167866);
   fForest.push_back( 
 NN(
 NN(
@@ -1018,48 +962,42 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.595764,-99) , 
+-1, 0, 1, 1, 0.513629,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.052213,-99) , 
-11, -1.99217, 1, 0, 0.582381,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.585524,-99) , 
+-1, 0, 1, -1, 0.139917,-99) , 
+17, -0.954633, 1, 0, 0.492871,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.356004,-99) , 
-9, -3.8752, 1, 0, 0.413262,-99) , 
-10, 5.07055, 1, 0, 0.510062,-99) , 
+-1, 3.49143, 0, -1, 0.120752,-99) , 
+0, 6.94341, 1, 0, 0.470879,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.542202,-99) , 
+-1, 0, 1, 1, 0.648334,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.217953,-99) , 
-10, 5.54351, 1, 0, 0.494154,-99) , 
+-1, 0, 1, -1, 0.319889,-99) , 
+7, -3.58513, 1, 0, 0.445398,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.619097,-99) , 
+-1, 0, 1, 1, 0.504762,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.272569,-99) , 
-0, 2.50687, 1, 0, 0.296456,-99) , 
-8, -1.43406, 0, 0, 0.366908,-99) , 
-14, -4.69096, 0, 0, 0.445489,-99)    );
+-1, 0, 1, -1, 0.130146,-99) , 
+9, -4.82658, 1, 0, 0.152833,-99) , 
+16, 0.597127, 0, 0, 0.200473,-99) , 
+8, -5.1727, 0, 0, 0.440475,-99)    );
   // itree = 14
-  fBoostWeights.push_back(0.295551);
+  fBoostWeights.push_back(0.279775);
   fForest.push_back( 
 NN(
 NN(
@@ -1067,67 +1005,61 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.639628,-99) , 
+-1, 0, 1, 1, 0.665533,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.269405,-99) , 
-0, 5.17279, 1, 0, 0.612715,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.501978,-99) , 
+-1, 0, 1, -1, 0.449883,-99) , 
+17, -1.80153, 1, 0, 0.614983,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.220747,-99) , 
-17, 2.22404, 0, 0, 0.31664,-99) , 
-1, -2.38475, 1, 0, 0.563649,-99) , 
-NN(
-NN(
+-1, 6.34854, 1, -1, 0.386347,-99) , 
+14, -3.61239, 0, 0, 0.527113,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.592954,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.415079,-99) , 
-38, 1.74044, 0, 0, 0.477185,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.678042,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.305338,-99) , 
-37, -1.97331, 1, 0, 0.327714,-99) , 
-4, 0.791013, 1, 0, 0.402203,-99) , 
-6, -2.01982, 0, 0, 0.439978,-99)    );
+-1, -0.383704, 0, -1, 0.360118,-99) , 
+8, -3.48382, 0, 0, 0.414039,-99)    );
   // itree = 15
-  fBoostWeights.push_back(0.118741);
+  fBoostWeights.push_back(0.174893);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.821572,-99) , 
 NN(
 0, 
 0, 
--1, 6.19591, 1, -1, 0.472947,-99) , 
-10, 2.53596, 1, 0, 0.485052,-99) , 
+-1, 0, 1, 1, 0.730217,-99) , 
 NN(
 0, 
 0, 
--1, 4.79071, 1, -1, 0.301302,-99) , 
-33, 5.50081, 0, 0, 0.460221,-99)    );
+-1, 0, 1, -1, 0.494514,-99) , 
+10, 3.13225, 1, 0, 0.529084,-99) , 
+NN(
+0, 
+0, 
+-1, -1.6177, 1, -1, 0.0145966,-99) , 
+19, -1.02315, 0, 0, 0.513467,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.50735,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.120707,-99) , 
+21, 2.08762, 0, 0, 0.4622,-99) , 
+NN(
+0, 
+0, 
+-1, 3.86504, 1, -1, 0.261141,-99) , 
+14, -3.03408, 0, 0, 0.336671,-99) , 
+6, -2.98474, 0, 0, 0.460895,-99)    );
   // itree = 16
-  fBoostWeights.push_back(0.168761);
+  fBoostWeights.push_back(0.234153);
   fForest.push_back( 
 NN(
 NN(
@@ -1135,24 +1067,24 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.562905,-99) , 
+-1, 0, 1, 1, 0.624206,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.434013,-99) , 
-34, 4.07353, 1, 0, 0.513536,-99) , 
+-1, 0, 1, -1, 0.465488,-99) , 
+16, -0.449484, 0, 0, 0.560308,-99) , 
 NN(
 0, 
 0, 
--1, 3.83932, 1, -1, 0.226356,-99) , 
-10, 6.27173, 1, 0, 0.498978,-99) , 
+-1, 3.18653, 0, -1, 0.0173379,-99) , 
+19, -1.02315, 0, 0, 0.545083,-99) , 
 NN(
 0, 
 0, 
--1, 5.23251, 0, -1, 0.1125,-99) , 
-14, -6.39446, 0, 0, 0.488006,-99)    );
+-1, 3.86504, 1, -1, 0.346849,-99) , 
+6, -2.98474, 0, 0, 0.486989,-99)    );
   // itree = 17
-  fBoostWeights.push_back(0.237073);
+  fBoostWeights.push_back(0.193341);
   fForest.push_back( 
 NN(
 NN(
@@ -1160,650 +1092,752 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.734691,-99) , 
+-1, 0, 1, 1, 0.625669,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.353585,-99) , 
-16, -0.441677, 0, 0, 0.651451,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.589016,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.430872,-99) , 
-14, -4.05999, 0, 0, 0.478208,-99) , 
-36, -0.646801, 1, 0, 0.509563,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.68377,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.448152,-99) , 
-9, -3.55912, 1, 0, 0.543522,-99) , 
-NN(
-0, 
-0, 
--1, -0.956394, 1, -1, 0.269472,-99) , 
-1, -4.27386, 1, 0, 0.337482,-99) , 
-7, -1.70448, 1, 0, 0.481938,-99)    );
-  // itree = 18
-  fBoostWeights.push_back(0.167167);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 3.74792, 1, 1, 0.857232,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.53715,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.377553,-99) , 
-10, 5.50768, 1, 0, 0.504053,-99) , 
-2, 1.50519, 1, 0, 0.520136,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.611652,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.309441,-99) , 
-6, -4.58885, 0, 0, 0.468193,-99) , 
-NN(
-0, 
-0, 
--1, 0.327183, 1, -1, 0.232814,-99) , 
-7, -3.7628, 1, 0, 0.284858,-99) , 
-6, -3.89999, 0, 0, 0.500757,-99)    );
-  // itree = 19
-  fBoostWeights.push_back(0.203875);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.648564,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.199207,-99) , 
-15, 3.5478, 0, 0, 0.629374,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.6433,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.441064,-99) , 
-37, 1.10239, 0, 0, 0.472544,-99) , 
-4, 0.0599882, 1, 0, 0.504012,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.500736,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.252735,-99) , 
-31, 4.32569, 1, 0, 0.456098,-99) , 
-NN(
-0, 
-0, 
--1, 3.65692, 1, -1, 0.0725559,-99) , 
-33, 4.79071, 1, 0, 0.322802,-99) , 
-33, 5.50081, 0, 0, 0.480003,-99)    );
-  // itree = 20
-  fBoostWeights.push_back(0.128473);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, -1.31058, 1, 1, 0.535424,-99) , 
-NN(
-0, 
-0, 
--1, 6.53109, 1, -1, 0.201322,-99) , 
-7, -0.990435, 1, 0, 0.523068,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.50156,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.328348,-99) , 
-38, 0.976743, 0, 0, 0.449156,-99) , 
-NN(
-0, 
-0, 
--1, 3.23107, 1, -1, 0.124617,-99) , 
-33, 4.71977, 1, 0, 0.312463,-99) , 
-33, 5.50081, 0, 0, 0.495612,-99)    );
-  // itree = 21
-  fBoostWeights.push_back(0.188408);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.854921,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.339904,-99) , 
-6, -3.82657, 0, 0, 0.745052,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.641404,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.451055,-99) , 
-7, -3.62694, 1, 0, 0.477659,-99) , 
-2, 1.7109, 1, 0, 0.493328,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.585333,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.38145,-99) , 
-9, -4.04353, 1, 0, 0.415492,-99) , 
-NN(
-0, 
-0, 
--1, 3.65692, 1, -1, 0.0983471,-99) , 
-33, 4.79071, 1, 0, 0.314138,-99) , 
-33, 5.50081, 0, 0, 0.470345,-99)    );
-  // itree = 22
-  fBoostWeights.push_back(0.127293);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 2.12648, 1, 1, 0.689225,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.519163,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.362266,-99) , 
-4, 1.5655, 1, 0, 0.48862,-99) , 
-10, 3.53156, 1, 0, 0.508712,-99) , 
-NN(
-0, 
-0, 
--1, -0.660417, 1, -1, 0.00835627,-99) , 
-11, -1.55831, 1, 0, 0.501417,-99)    );
-  // itree = 23
-  fBoostWeights.push_back(0.191535);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.718766,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.302606,-99) , 
-7, -1.35431, 1, 0, 0.673063,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.567911,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.438139,-99) , 
-37, 0.604444, 0, 0, 0.480712,-99) , 
-37, -1.31058, 1, 0, 0.503888,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.51174,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.369749,-99) , 
-35, 3.60085, 1, 0, 0.423292,-99) , 
-NN(
-0, 
-0, 
--1, 3.65692, 1, -1, 0.108831,-99) , 
-33, 4.79071, 1, 0, 0.325967,-99) , 
-33, 5.50081, 0, 0, 0.481385,-99)    );
-  // itree = 24
-  fBoostWeights.push_back(0.112774);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 2.05265, 1, 1, 0.75643,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.749188,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.48157,-99) , 
-2, 1.72676, 1, 0, 0.496019,-99) , 
-10, 3.06964, 1, 0, 0.51005,-99) , 
-NN(
-0, 
-0, 
--1, -6.47563, 0, -1, 0.287262,-99) , 
-14, -5.82663, 0, 0, 0.49284,-99)    );
-  // itree = 25
-  fBoostWeights.push_back(0.134893);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, -2.77508, 1, 1, 0.586073,-99) , 
-NN(
-0, 
-0, 
--1, 2.90846, 0, -1, 0.47443,-99) , 
-6, -2.64654, 0, 0, 0.532459,-99) , 
-NN(
-0, 
-0, 
--1, -6.47563, 0, -1, 0.310893,-99) , 
-14, -5.82663, 0, 0, 0.515648,-99)    );
-  // itree = 26
-  fBoostWeights.push_back(0.121959);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 2.27562, 1, 1, 0.54484,-99) , 
-NN(
-0, 
-0, 
--1, 4.71863, 1, -1, 0.3709,-99) , 
-33, 5.50081, 0, 0, 0.523807,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.0123395,-99) , 
-11, -1.55831, 1, 0, 0.517127,-99)    );
-  // itree = 27
-  fBoostWeights.push_back(0.199388);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 4.65415, 0, 1, 0.688623,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.539083,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.351237,-99) , 
-14, -5.31101, 0, 0, 0.508062,-99) , 
-36, -0.847372, 1, 0, 0.539007,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.606641,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.400395,-99) , 
-29, 5.21609, 0, 0, 0.529917,-99) , 
-NN(
-0, 
-0, 
--1, -4.84023, 0, -1, 0.355325,-99) , 
-36, 0.679467, 0, 0, 0.421377,-99) , 
-16, -0.429909, 0, 0, 0.494699,-99)    );
-  // itree = 28
-  fBoostWeights.push_back(0.125891);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.873403,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.608759,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.45882,-99) , 
-9, -4.06305, 1, 0, 0.479918,-99) , 
-10, 2.05649, 1, 0, 0.487747,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.0123758,-99) , 
-11, -1.55831, 1, 0, 0.481669,-99)    );
-  // itree = 29
-  fBoostWeights.push_back(0.0882374);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.525014,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.116023,-99) , 
-14, -6.58044, 0, 0, 0.517868,-99) , 
-NN(
-0, 
-0, 
--1, -4.65814, 0, -1, 0.178214,-99) , 
-10, 6.48169, 1, 0, 0.509326,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.0140129,-99) , 
-11, -1.55831, 1, 0, 0.503333,-99)    );
-  // itree = 30
-  fBoostWeights.push_back(0.174672);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.717724,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.342063,-99) , 
-10, 5.54995, 1, 0, 0.649886,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.580475,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.442252,-99) , 
-36, -0.556633, 1, 0, 0.474916,-99) , 
-36, 1.24851, 0, 0, 0.493968,-99) , 
-NN(
-0, 
-0, 
--1, -2.96978, 1, -1, 0.213675,-99) , 
-7, -0.990435, 1, 0, 0.483595,-99)    );
-  // itree = 31
-  fBoostWeights.push_back(0.113446);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, -3.51358, 1, 1, 0.775709,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.520832,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.140941,-99) , 
-15, 2.90846, 0, 0, 0.51151,-99) , 
-6, -0.752848, 0, 0, 0.52474,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.509768,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.200569,-99) , 
-6, -3.75192, 0, 0, 0.477532,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.567056,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.252304,-99) , 
-16, 1.24831, 0, 0, 0.285282,-99) , 
-2, 3.03502, 1, 0, 0.375784,-99) , 
-7, -1.70448, 1, 0, 0.502032,-99)    );
-  // itree = 32
-  fBoostWeights.push_back(0.162885);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, -0.380628, 0, 1, 0.788696,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.406916,-99) , 
-11, -3.54151, 1, 0, 0.706386,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.546652,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.0788414,-99) , 
-15, 2.90846, 0, 0, 0.535328,-99) , 
-NN(
-0, 
-0, 
--1, -5.18513, 0, -1, 0.415325,-99) , 
-7, -2.84561, 1, 0, 0.467394,-99) , 
-6, -0.766379, 0, 0, 0.479204,-99)    );
-  // itree = 33
-  fBoostWeights.push_back(0.18303);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, -0.723019, 0, 1, 0.67204,-99) , 
-NN(
-0, 
-0, 
--1, -0.711314, 0, -1, 0.289663,-99) , 
-35, 4.45887, 1, 0, 0.626215,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.676668,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.48334,-99) , 
-11, -3.70977, 1, 0, 0.60416,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.744748,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.432828,-99) , 
-2, 0.863496, 1, 0, 0.443508,-99) , 
-4, -0.250265, 1, 0, 0.464695,-99) , 
-37, -1.31058, 1, 0, 0.483766,-99)    );
-  // itree = 34
-  fBoostWeights.push_back(0.0706728);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 3.53156, 1, 1, 0.523949,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.0152441,-99) , 
-11, -1.55831, 1, 0, 0.518795,-99) , 
-NN(
-0, 
-0, 
--1, 4.32028, 1, -1, 0.17511,-99) , 
-14, -6.39446, 0, 0, 0.51107,-99)    );
-  // itree = 35
-  fBoostWeights.push_back(0.114208);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.703252,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.451601,-99) , 
-7, -1.54376, 1, 0, 0.667851,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.748748,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.476636,-99) , 
-2, 1.7109, 1, 0, 0.488765,-99) , 
-10, 3.60332, 1, 0, 0.506413,-99) , 
-NN(
-0, 
-0, 
--1, 4.33527, 1, -1, 0.292289,-99) , 
-4, 2.27805, 1, 0, 0.494539,-99)    );
-  // itree = 36
-  fBoostWeights.push_back(0.0972183);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 2.21604, 1, 1, 0.535434,-99) , 
+-1, 0, 1, -1, 0.486982,-99) , 
+7, -3.23496, 1, 0, 0.542986,-99) , 
 NN(
 0, 
 0, 
 -1, 0, 1, -1, 0,-99) , 
-11, -1.55831, 1, 0, 0.530726,-99) , 
+19, -1.37203, 0, 0, 0.532326,-99) , 
+NN(
+NN(
 NN(
 0, 
 0, 
--1, 4.34356, 0, -1, 0.343086,-99) , 
-6, -3.89999, 0, 0, 0.516439,-99)    );
+-1, 0, 1, 1, 0.595007,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.365609,-99) , 
+14, -3.47747, 0, 0, 0.519237,-99) , 
+NN(
+0, 
+0, 
+-1, 4.06557, 0, -1, 0.133964,-99) , 
+31, 3.90133, 1, 0, 0.302652,-99) , 
+31, 5.0255, 0, 0, 0.497349,-99)    );
+  // itree = 18
+  fBoostWeights.push_back(0.18372);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, -4.0329, 1, 1, 0.555324,-99) , 
+NN(
+0, 
+0, 
+-1, 1.46808, 0, -1, 0.00798545,-99) , 
+19, -1.0083, 0, 0, 0.541951,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.618683,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.407853,-99) , 
+9, -3.43009, 1, 0, 0.495186,-99) , 
+NN(
+0, 
+0, 
+-1, 2.76051, 1, -1, 0.108466,-99) , 
+31, 3.92338, 1, 0, 0.30508,-99) , 
+31, 4.5717, 0, 0, 0.509056,-99)    );
+  // itree = 19
+  fBoostWeights.push_back(0.205069);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.725467,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.455151,-99) , 
+6, -3.28227, 0, 0, 0.692486,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.508766,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0135439,-99) , 
+13, 2.30577, 0, 0, 0.474795,-99) , 
+3, 3.07084, 0, 0, 0.614102,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 2.09888, 1, 1, 0.524829,-99) , 
+NN(
+0, 
+0, 
+-1, 0.242303, 1, -1, 0.359318,-99) , 
+1, 3.01893, 0, 0, 0.434177,-99) , 
+9, -4.06279, 1, 0, 0.474805,-99)    );
+  // itree = 20
+  fBoostWeights.push_back(0.248452);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.703691,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0342292,-99) , 
+21, 1.39004, 0, 0, 0.670985,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.654159,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.447565,-99) , 
+14, -2.82473, 0, 0, 0.49813,-99) , 
+36, 1.38897, 0, 0, 0.569665,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 1.5879, 1, 1, 0.69171,-99) , 
+NN(
+0, 
+0, 
+-1, 2.54427, 0, -1, 0.39173,-99) , 
+10, 2.61482, 1, 0, 0.414715,-99) , 
+4, 0.242161, 1, 0, 0.468769,-99)    );
+  // itree = 21
+  fBoostWeights.push_back(0.166088);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, -1.86038, 0, 1, 0.547512,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.758073,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.307885,-99) , 
+2, -0.656265, 1, 0, 0.339926,-99) , 
+8, -4.92965, 0, 0, 0.517271,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.651866,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.224995,-99) , 
+4, -0.331327, 1, 0, 0.279012,-99) , 
+NN(
+0, 
+0, 
+-1, -1.49765, 0, -1, 0.00812963,-99) , 
+14, -3.93127, 0, 0, 0.188411,-99) , 
+0, 6.94341, 1, 0, 0.50128,-99)    );
+  // itree = 22
+  fBoostWeights.push_back(0.188463);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.545479,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.17577,-99) , 
+3, 1.83177, 0, 0, 0.532359,-99) , 
+NN(
+0, 
+0, 
+-1, 1.26129, 0, -1, 0.253123,-99) , 
+14, -4.93375, 0, 0, 0.514775,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.700683,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.440043,-99) , 
+6, -1.65443, 0, 0, 0.490805,-99) , 
+NN(
+0, 
+0, 
+-1, -2.71768, 0, -1, 0.299835,-99) , 
+28, 4.62637, 0, 0, 0.360134,-99) , 
+26, 4.5836, 0, 0, 0.473852,-99)    );
+  // itree = 23
+  fBoostWeights.push_back(0.206277);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.681717,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.410926,-99) , 
+4, 1.44749, 1, 0, 0.620818,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.504123,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.356247,-99) , 
+33, 3.86504, 1, 0, 0.448271,-99) , 
+6, -1.68174, 0, 0, 0.480922,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.780883,-99) , 
+NN(
+0, 
+0, 
+-1, 3.98544, 0, -1, 0.222308,-99) , 
+10, 1.74291, 1, 0, 0.282028,-99) , 
+13, 2.67968, 0, 0, 0.456089,-99)    );
+  // itree = 24
+  fBoostWeights.push_back(0.229984);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 5.40984, 1, 1, 0.84587,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.611181,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.43187,-99) , 
+9, -4.22101, 1, 0, 0.467274,-99) , 
+2, 0.846806, 1, 0, 0.486588,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.571096,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.353872,-99) , 
+8, -2.65856, 0, 0, 0.383711,-99) , 
+NN(
+0, 
+0, 
+-1, -1.23777, 1, -1, 0.139641,-99) , 
+17, -1.61555, 1, 0, 0.348583,-99) , 
+6, -2.98474, 0, 0, 0.446412,-99)    );
+  // itree = 25
+  fBoostWeights.push_back(0.0826612);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.511501,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.103127,-99) , 
+14, -5.5145, 0, 0, 0.502355,-99) , 
+NN(
+0, 
+0, 
+-1, -1.66828, 1, -1, 0.0195402,-99) , 
+19, -1.04823, 0, 0, 0.493109,-99) , 
+NN(
+0, 
+0, 
+-1, 2.25501, 0, -1, 0.18615,-99) , 
+17, -0.954633, 1, 0, 0.479868,-99)    );
+  // itree = 26
+  fBoostWeights.push_back(0.142887);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.813487,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.452792,-99) , 
+3, 2.97354, 0, 0, 0.713432,-99) , 
+NN(
+0, 
+0, 
+-1, -1.92843, 1, -1, 0.465572,-99) , 
+2, 1.39074, 1, 0, 0.484502,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.594499,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.336129,-99) , 
+16, 0.243494, 0, 0, 0.430408,-99) , 
+NN(
+0, 
+0, 
+-1, 3.54319, 0, -1, 0.21673,-99) , 
+17, -2.93739, 1, 0, 0.293035,-99) , 
+6, -3.54693, 0, 0, 0.462494,-99)    );
+  // itree = 27
+  fBoostWeights.push_back(0.149281);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.537747,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0,-99) , 
+19, -1.45095, 0, 0, 0.530613,-99) , 
+NN(
+0, 
+0, 
+-1, 3.2873, 0, -1, 0.219963,-99) , 
+10, 5.56562, 1, 0, 0.516344,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.743701,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.2659,-99) , 
+1, 3.20159, 0, 0, 0.561578,-99) , 
+NN(
+0, 
+0, 
+-1, 4.83707, 0, -1, 0.274804,-99) , 
+7, -4.52076, 1, 0, 0.313232,-99) , 
+6, -3.54693, 0, 0, 0.493538,-99)    );
+  // itree = 28
+  fBoostWeights.push_back(0.13299);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.659648,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.470568,-99) , 
+6, -1.2982, 0, 0, 0.492093,-99) , 
+NN(
+0, 
+0, 
+-1, 3.17573, 1, -1, 0.072204,-99) , 
+19, -0.888446, 0, 0, 0.48047,-99) , 
+NN(
+0, 
+0, 
+-1, -1.85596, 1, -1, 0.220099,-99) , 
+19, 0.911667, 1, 0, 0.467474,-99)    );
+  // itree = 29
+  fBoostWeights.push_back(0.108376);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.525694,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0315557,-99) , 
+19, -1.04823, 0, 0, 0.518306,-99) , 
+NN(
+0, 
+0, 
+-1, 2.25501, 0, -1, 0.224679,-99) , 
+17, -0.954633, 1, 0, 0.506241,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.578817,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.237355,-99) , 
+10, 3.18398, 1, 0, 0.3258,-99) , 
+NN(
+0, 
+0, 
+-1, 0.216126, 0, -1, 0.00902309,-99) , 
+14, -3.93127, 0, 0, 0.224908,-99) , 
+0, 6.94341, 1, 0, 0.493634,-99)    );
+  // itree = 30
+  fBoostWeights.push_back(0.0858982);
+  fForest.push_back( 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.864158,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 6.58781, 1, -1, 0.478017,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.500506,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.051982,-99) , 
+3, 4.47273, 0, 0, 0.110986,-99) , 
+13, 2.15092, 0, 0, 0.463505,-99) , 
+10, 1.12102, 1, 0, 0.471262,-99)    );
+  // itree = 31
+  fBoostWeights.push_back(0.100752);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.658755,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.491462,-99) , 
+4, -0.425285, 1, 0, 0.514808,-99) , 
+NN(
+0, 
+0, 
+-1, 3.17573, 1, -1, 0.0888795,-99) , 
+19, -0.888446, 0, 0, 0.504233,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.520491,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.143969,-99) , 
+31, 5.60259, 1, 0, 0.365838,-99) , 
+NN(
+0, 
+0, 
+-1, 3.25479, 1, -1, 0.0415427,-99) , 
+17, -1.85596, 1, 0, 0.242324,-99) , 
+19, 0.911667, 1, 0, 0.491643,-99)    );
+  // itree = 32
+  fBoostWeights.push_back(0.133084);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.54145,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.176392,-99) , 
+14, -5.42921, 0, 0, 0.533049,-99) , 
+NN(
+0, 
+0, 
+-1, 3.17573, 1, -1, 0.0973835,-99) , 
+19, -0.888446, 0, 0, 0.522639,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.507444,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.134087,-99) , 
+14, -3.42772, 0, 0, 0.3591,-99) , 
+NN(
+0, 
+0, 
+-1, 3.25479, 1, -1, 0.0457449,-99) , 
+17, -1.85596, 1, 0, 0.242048,-99) , 
+19, 0.911667, 1, 0, 0.509454,-99)    );
+  // itree = 33
+  fBoostWeights.push_back(0.0645416);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.506754,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.140708,-99) , 
+19, -0.871381, 0, 0, 0.498963,-99) , 
+NN(
+0, 
+0, 
+-1, 3.56233, 0, -1, 0.148995,-99) , 
+19, 1.26623, 1, 0, 0.490996,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.541783,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0696383,-99) , 
+27, 4.81988, 0, 0, 0.38722,-99) , 
+NN(
+0, 
+0, 
+-1, 4.86437, 1, -1, 0.087973,-99) , 
+14, -3.10809, 0, 0, 0.195762,-99) , 
+3, 1.83177, 0, 0, 0.480944,-99)    );
+  // itree = 34
+  fBoostWeights.push_back(0.158798);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.740378,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.477141,-99) , 
+7, -2.36897, 1, 0, 0.666556,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.775289,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.45949,-99) , 
+10, 1.90331, 1, 0, 0.469007,-99) , 
+35, 1.25119, 0, 0, 0.48723,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.53489,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.336202,-99) , 
+16, -0.796085, 0, 0, 0.479204,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.571103,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0769022,-99) , 
+27, 2.76051, 1, 0, 0.148972,-99) , 
+31, 3.92338, 1, 0, 0.330379,-99) , 
+31, 4.5717, 0, 0, 0.466935,-99)    );
+  // itree = 35
+  fBoostWeights.push_back(0.13318);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.534243,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.192777,-99) , 
+8, -5.62797, 0, 0, 0.52578,-99) , 
+NN(
+0, 
+0, 
+-1, 1.02344, 0, -1, 0.0311992,-99) , 
+19, -1.0083, 0, 0, 0.519605,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.551757,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.385535,-99) , 
+7, -3.07657, 1, 0, 0.461359,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.531845,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0889598,-99) , 
+27, 2.76051, 1, 0, 0.156816,-99) , 
+31, 3.92338, 1, 0, 0.327827,-99) , 
+31, 4.5717, 0, 0, 0.4953,-99)    );
+  // itree = 36
+  fBoostWeights.push_back(0.145221);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.526042,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.313381,-99) , 
+17, -1.26827, 1, 0, 0.510858,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.568964,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.347245,-99) , 
+27, 4.65109, 0, 0, 0.395965,-99) , 
+29, 3.02281, 0, 0, 0.480469,-99) , 
+NN(
+0, 
+0, 
+-1, -3.93127, 0, -1, 0.225192,-99) , 
+0, 6.94341, 1, 0, 0.469635,-99)    );
   // itree = 37
-  fBoostWeights.push_back(0.114109);
+  fBoostWeights.push_back(0.222794);
   fForest.push_back( 
 NN(
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.85305,-99) , 
+-1, 0, 1, 1, 0.608965,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.367513,-99) , 
+16, -1.88434, 0, 0, 0.583588,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.024772,-99) , 
+17, 0.252399, 1, 0, 0.569739,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.541661,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.19847,-99) , 
+3, 2.10057, 0, 0, 0.523639,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.566919,-99) , 
+-1, 0, 1, 1, 0.674731,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.464415,-99) , 
-11, -4.15332, 1, 0, 0.497183,-99) , 
-10, 2.00227, 1, 0, 0.503319,-99) , 
-NN(
-0, 
-0, 
--1, 4.32028, 1, -1, 0.178846,-99) , 
-14, -6.39446, 0, 0, 0.496229,-99)    );
+-1, 0, 1, -1, 0.372067,-99) , 
+2, 1.04913, 1, 0, 0.391812,-99) , 
+7, -3.48234, 1, 0, 0.432577,-99) , 
+14, -2.55506, 0, 0, 0.453958,-99)    );
   // itree = 38
-  fBoostWeights.push_back(0.0613108);
+  fBoostWeights.push_back(0.166045);
   fForest.push_back( 
 NN(
 NN(
@@ -1811,99 +1845,123 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.758946,-99) , 
+-1, 0, 1, 1, 0.580755,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.462222,-99) , 
-11, -3.43962, 1, 0, 0.714011,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.508582,-99) , 
+-1, 0, 1, -1, 0.461303,-99) , 
+9, -3.45995, 1, 0, 0.50842,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.140867,-99) , 
-14, -6.31027, 0, 0, 0.500257,-99) , 
-6, -0.766379, 0, 0, 0.510602,-99) , 
+-1, 2.10712, 0, -1, 0.364149,-99) , 
+4, 1.51515, 1, 0, 0.486087,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.0182694,-99) , 
-11, -1.55831, 1, 0, 0.506291,-99)    );
+-1, 3.59868, 0, -1, 0.35276,-99) , 
+15, 0.554898, 0, 0, 0.461747,-99)    );
   // itree = 39
-  fBoostWeights.push_back(0.0540855);
+  fBoostWeights.push_back(0.174232);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, -0.380628, 0, 1, 0.755438,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.498495,-99) , 
-11, -3.54151, 1, 0, 0.699352,-99) , 
+-1, 0, 1, 1, 0.569869,-99) , 
 NN(
 0, 
 0, 
--1, -6.31027, 0, -1, 0.48168,-99) , 
-6, -0.766379, 0, 0, 0.492098,-99)    );
+-1, 0, 1, -1, 0.449363,-99) , 
+36, 1.20611, 0, 0, 0.51289,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.572605,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.311427,-99) , 
+16, 0.576334, 0, 0, 0.366231,-99) , 
+8, -4.85916, 0, 0, 0.490512,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.721877,-99) , 
+NN(
+0, 
+0, 
+-1, 0.598051, 1, -1, 0.168489,-99) , 
+27, 5.7552, 0, 0, 0.23633,-99) , 
+1, 1.52721, 0, 0, 0.480321,-99)    );
   // itree = 40
-  fBoostWeights.push_back(0.0922553);
+  fBoostWeights.push_back(0.120619);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, -1.21922, 1, 1, 0.528348,-99) , 
 NN(
 0, 
 0, 
--1, 6.68555, 1, -1, 0.34444,-99) , 
-14, -5.68467, 0, 0, 0.511833,-99) , 
-NN(
+-1, 0, 1, 1, 0.593506,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.519509,-99) , 
+-1, 0, 1, -1, 0.48108,-99) , 
+8, -3.31123, 0, 0, 0.511482,-99) , 
 NN(
 0, 
 0, 
--1, -0.598293, 0, -1, 0.0878266,-99) , 
-6, -2.13456, 0, 0, 0.232098,-99) , 
-15, 2.90846, 0, 0, 0.504612,-99)    );
+-1, 3.2873, 0, -1, 0.266237,-99) , 
+10, 5.56562, 1, 0, 0.500569,-99) , 
+NN(
+0, 
+0, 
+-1, -3.51311, 0, -1, 0.337068,-99) , 
+6, -3.54693, 0, 0, 0.483156,-99)    );
   // itree = 41
-  fBoostWeights.push_back(0.0787241);
+  fBoostWeights.push_back(0.103499);
   fForest.push_back( 
 NN(
 NN(
+NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.818567,-99) , 
+-1, 0, 1, 1, 0.528536,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.318065,-99) , 
+10, 5.4645, 1, 0, 0.516553,-99) , 
+NN(
+0, 
+0, 
+-1, 3.17573, 1, -1, 0.155461,-99) , 
+19, -0.888446, 0, 0, 0.509558,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.784471,-99) , 
+-1, 0, 1, 1, 0.510737,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.483584,-99) , 
-2, 0.949535, 1, 0, 0.491954,-99) , 
+-1, 0, 1, -1, 0.156654,-99) , 
+31, 5.60259, 1, 0, 0.372625,-99) , 
 NN(
 0, 
 0, 
--1, -5.32462, 0, -1, 0.269461,-99) , 
-4, 2.27805, 1, 0, 0.480575,-99) , 
-10, 2.00227, 1, 0, 0.486331,-99)    );
+-1, 3.20829, 0, -1, 0.0604486,-99) , 
+17, -1.85596, 1, 0, 0.26645,-99) , 
+19, 0.911667, 1, 0, 0.499363,-99)    );
   // itree = 42
-  fBoostWeights.push_back(0.090332);
+  fBoostWeights.push_back(0.12088);
   fForest.push_back( 
 NN(
 NN(
@@ -1911,24 +1969,36 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.527491,-99) , 
+-1, 0, 1, 1, 0.643191,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.247374,-99) , 
-10, 6.48169, 1, 0, 0.520488,-99) , 
+-1, 0, 1, -1, 0.492752,-99) , 
+13, 4.33413, 0, 0, 0.520732,-99) , 
 NN(
 0, 
 0, 
--1, 1.71516, 1, -1, 0.350585,-99) , 
-21, -0.331148, 0, 0, 0.508355,-99) , 
+-1, -1.63737, 1, -1, 0.389114,-99) , 
+6, -3.22683, 0, 0, 0.495997,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.0201992,-99) , 
-11, -1.55831, 1, 0, 0.504324,-99)    );
+-1, 1.75561, 1, -1, 0.467737,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.532605,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.112083,-99) , 
+27, 2.76051, 1, 0, 0.182512,-99) , 
+31, 3.92338, 1, 0, 0.350651,-99) , 
+31, 4.5717, 0, 0, 0.478417,-99)    );
   // itree = 43
-  fBoostWeights.push_back(0.130017);
+  fBoostWeights.push_back(0.168305);
   fForest.push_back( 
 NN(
 NN(
@@ -1936,147 +2006,141 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.712797,-99) , 
+-1, 0, 1, 1, 0.600549,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.490277,-99) , 
-10, 5.09878, 1, 0, 0.636281,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.633122,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.465337,-99) , 
-6, -1.36377, 0, 0, 0.481309,-99) , 
-36, 1.24851, 0, 0, 0.498086,-99) , 
+-1, 0, 1, -1, 0.388121,-99) , 
+16, -1.72282, 0, 0, 0.582362,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.556232,-99) , 
+-1, 0, 1, 1, 0.681729,-99) , 
 NN(
 0, 
 0, 
--1, 3.94289, 0, -1, 0.259272,-99) , 
-14, -3.69117, 0, 0, 0.3266,-99) , 
-5, -1.49595, 0, 0, 0.486309,-99)    );
+-1, 0, 1, -1, 0.4664,-99) , 
+6, -0.918579, 0, 0, 0.483729,-99) , 
+4, 0.242161, 1, 0, 0.519272,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 2.58858, 0, 1, 0.587125,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.596938,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.234095,-99) , 
+26, 2.8461, 1, 0, 0.282199,-99) , 
+30, 3.93222, 1, 0, 0.38143,-99) , 
+30, 4.70195, 0, 0, 0.500084,-99)    );
   // itree = 44
-  fBoostWeights.push_back(0.107721);
+  fBoostWeights.push_back(0.133584);
   fForest.push_back( 
 NN(
 NN(
 NN(
-NN(
 0, 
 0, 
--1, 0, 1, 1, 0.761452,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.430047,-99) , 
-35, 3.98431, 1, 0, 0.696106,-99) , 
-NN(
-0, 
-0, 
--1, -2.98746, 0, 1, 0.514942,-99) , 
-36, -1.16095, 1, 0, 0.528763,-99) , 
-NN(
+-1, 0, 1, 1, 0.869446,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.590299,-99) , 
+-1, 0, 1, 1, 0.534401,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.320427,-99) , 
-3, 0.0936345, 1, 0, 0.498673,-99) , 
+-1, 0, 1, -1, 0.234206,-99) , 
+13, 2.29428, 0, 0, 0.522983,-99) , 
+10, 1.12102, 1, 0, 0.529591,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.696619,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.451627,-99) , 
+35, 0.900849, 0, 0, 0.498827,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.633887,-99) , 
+-1, 0, 1, 1, 0.602312,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.275703,-99) , 
-8, -0.0296446, 0, 0, 0.321889,-99) , 
-10, 4.51493, 1, 0, 0.40498,-99) , 
-4, 1.69004, 1, 0, 0.508401,-99)    );
+-1, 0, 1, -1, 0.158283,-99) , 
+26, 2.8461, 1, 0, 0.236602,-99) , 
+30, 4.06049, 1, 0, 0.384854,-99) , 
+30, 4.70195, 0, 0, 0.509818,-99)    );
   // itree = 45
-  fBoostWeights.push_back(0.113383);
+  fBoostWeights.push_back(0.0983445);
   fForest.push_back( 
 NN(
 NN(
-NN(
-NN(
 0, 
 0, 
--1, 0, 1, 1, 0.740142,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.471584,-99) , 
-35, 3.98431, 1, 0, 0.688546,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.306397,-99) , 
-15, 3.84366, 0, 0, 0.643273,-99) , 
+-1, 0, 1, 1, 0.843188,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.745977,-99) , 
+-1, 0, 1, 1, 0.514926,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.456802,-99) , 
-20, -0.629373, 0, 0, 0.651913,-99) , 
+-1, 0, 1, -1, 0.402641,-99) , 
+6, -3.11036, 0, 0, 0.489098,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, -1.3625, 0, -1, 0.463683,-99) , 
-14, -2.98746, 0, 0, 0.475175,-99) , 
-36, -1.16095, 1, 0, 0.4876,-99)    );
+-1, 0, 1, 1, 0.574665,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0673683,-99) , 
+16, -2.16865, 1, 0, 0.167463,-99) , 
+13, 2.15092, 0, 0, 0.479471,-99) , 
+10, 1.12102, 1, 0, 0.485915,-99)    );
   // itree = 46
-  fBoostWeights.push_back(0.0682884);
+  fBoostWeights.push_back(0.0994761);
   fForest.push_back( 
 NN(
 NN(
 NN(
-NN(
 0, 
 0, 
--1, 0, 1, 1, 0.771437,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.466104,-99) , 
-34, 4.10081, 1, 0, 0.712711,-99) , 
+-1, 3.28471, 1, 1, 0.797537,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.675749,-99) , 
+-1, 0, 1, 1, 0.802104,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.498758,-99) , 
-37, -1.64574, 1, 0, 0.511774,-99) , 
-37, 1.70531, 0, 0, 0.522631,-99) , 
+-1, 0, 1, -1, 0.4926,-99) , 
+31, 8.65586, 0, 0, 0.50159,-99) , 
+10, 1.90331, 1, 0, 0.512075,-99) , 
 NN(
 0, 
 0, 
--1, 4.52383, 0, -1, 0.345743,-99) , 
-5, -1.49595, 0, 0, 0.510843,-99)    );
+-1, 5.72699, 1, -1, 0.415293,-99) , 
+17, -2.27647, 1, 0, 0.473148,-99)    );
   // itree = 47
-  fBoostWeights.push_back(0.124748);
+  fBoostWeights.push_back(0.131072);
   fForest.push_back( 
 NN(
 NN(
@@ -2084,1153 +2148,1141 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.546769,-99) , 
+-1, 0, 1, 1, 0.597078,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.234551,-99) , 
-0, 5.82713, 1, 0, 0.539919,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.557148,-99) , 
+-1, 0, 1, -1, 0.494543,-99) , 
+15, 1.33604, 0, 0, 0.540256,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.309524,-99) , 
-14, -3.69117, 0, 0, 0.368167,-99) , 
-5, -1.47507, 0, 0, 0.528117,-99) , 
+-1, -0.906444, 1, -1, 0.0881187,-99) , 
+14, -5.83469, 0, 0, 0.533858,-99) , 
+NN(
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.0236295,-99) , 
-11, -1.55831, 1, 0, 0.524359,-99)    );
+-1, 0, 1, 1, 0.522817,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.323541,-99) , 
+3, 2.5806, 0, 0, 0.49618,-99) , 
+NN(
+0, 
+0, 
+-1, 7.09394, 0, -1, 0.33959,-99) , 
+30, 5.72699, 1, 0, 0.439634,-99) , 
+17, -2.27647, 1, 0, 0.496093,-99)    );
   // itree = 48
-  fBoostWeights.push_back(0.111419);
+  fBoostWeights.push_back(0.153869);
   fForest.push_back( 
 NN(
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.76968,-99) , 
+-1, 0, 1, 1, 0.588526,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0924675,-99) , 
+1, 0.672397, 0, 0, 0.582837,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.543983,-99) , 
+-1, 0, 1, 1, 0.547524,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.458636,-99) , 
-4, 0.751496, 1, 0, 0.498744,-99) , 
-10, 2.53596, 1, 0, 0.505986,-99) , 
-NN(
-NN(
+-1, 0, 1, -1, 0.395237,-99) , 
+16, -0.305489, 0, 0, 0.478509,-99) , 
+14, -3.36602, 0, 0, 0.538073,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.557179,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.320109,-99) , 
-27, -1.88076, 1, 0, 0.435519,-99) , 
-NN(
-0, 
-0, 
--1, 4.07863, 1, -1, 0.143033,-99) , 
-9, -2.96978, 1, 0, 0.273461,-99) , 
-7, -0.990435, 1, 0, 0.498168,-99)    );
+-1, 0.911667, 1, -1, 0.435409,-99) , 
+17, -2.27647, 1, 0, 0.497036,-99)    );
   // itree = 49
-  fBoostWeights.push_back(0.156966);
+  fBoostWeights.push_back(0.103262);
   fForest.push_back( 
 NN(
 NN(
 NN(
-NN(
 0, 
 0, 
--1, 0, 1, 1, 0.569739,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.140265,-99) , 
-14, -6.39446, 0, 0, 0.562504,-99) , 
-NN(
-0, 
-0, 
--1, 4.78813, 1, -1, 0.369749,-99) , 
-33, 5.50081, 0, 0, 0.541092,-99) , 
+-1, 2.98185, 1, 1, 0.53012,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 2.46104, 0, 1, 0.598155,-99) , 
+-1, 0, 1, 1, 0.504459,-99) , 
 NN(
 0, 
 0, 
--1, 2.92726, 0, -1, 0.429727,-99) , 
-9, -4.03176, 1, 0, 0.457274,-99) , 
-26, -0.918306, 0, 0, 0.499549,-99)    );
+-1, 0, 1, -1, 0.198458,-99) , 
+2, 2.39098, 1, 0, 0.386248,-99) , 
+7, -2.03068, 1, 0, 0.514552,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.515766,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.19752,-99) , 
+4, 1.75561, 1, 0, 0.495487,-99) , 
+NN(
+0, 
+0, 
+-1, 2.76051, 1, -1, 0.19642,-99) , 
+31, 3.92338, 1, 0, 0.379357,-99) , 
+31, 4.5717, 0, 0, 0.498584,-99)    );
   // itree = 50
-  fBoostWeights.push_back(0.0924324);
+  fBoostWeights.push_back(0.0941838);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 1.24851, 0, 1, 0.525929,-99) , 
+-1, 0, 1, 1, 0.887468,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.524362,-99) , 
+-1, 0, 1, 1, 0.699056,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.359287,-99) , 
-2, 2.9269, 1, 0, 0.421451,-99) , 
-7, -1.94571, 1, 0, 0.504439,-99) , 
+-1, 0, 1, -1, 0.488911,-99) , 
+9, -2.82822, 1, 0, 0.611289,-99) , 
+2, 1.45259, 1, 0, 0.746436,-99) , 
+NN(
+NN(
 NN(
 0, 
 0, 
--1, -1.938, 1, -1, 0.225613,-99) , 
-15, 2.90846, 0, 0, 0.497811,-99)    );
+-1, 0, 1, 1, 0.817939,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.469959,-99) , 
+10, 1.44068, 1, 0, 0.476526,-99) , 
+NN(
+0, 
+0, 
+-1, 3.78028, 1, -1, 0.119612,-99) , 
+14, -5.50236, 0, 0, 0.470156,-99) , 
+0, 4.12149, 1, 0, 0.477176,-99)    );
   // itree = 51
-  fBoostWeights.push_back(0.112645);
+  fBoostWeights.push_back(0.0643972);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 1.7987, 1, 1, 0.677418,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.604471,-99) , 
+-1, -1.64166, 1, 1, 0.516009,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.464325,-99) , 
-14, -3.36208, 0, 0, 0.47969,-99) , 
-10, 3.06964, 1, 0, 0.489329,-99) , 
+-1, 4.22508, 1, -1, 0.32796,-99) , 
+14, -4.95018, 0, 0, 0.506294,-99) , 
+NN(
+NN(
 NN(
 0, 
 0, 
--1, 1.13291, 0, -1, 0.283601,-99) , 
-19, 1.92691, 1, 0, 0.48152,-99)    );
+-1, 0, 1, 1, 0.613222,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.167604,-99) , 
+13, 3.53221, 0, 0, 0.441106,-99) , 
+NN(
+0, 
+0, 
+-1, 4.86437, 1, -1, 0.118328,-99) , 
+14, -3.10809, 0, 0, 0.246077,-99) , 
+3, 1.83177, 0, 0, 0.498909,-99)    );
   // itree = 52
-  fBoostWeights.push_back(0.0934599);
+  fBoostWeights.push_back(0.156893);
   fForest.push_back( 
 NN(
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 3.71418, 1, 1, 0.655579,-99) , 
+-1, 0, 1, 1, 0.667268,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.478978,-99) , 
+32, 3.51408, 1, 0, 0.568602,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.636437,-99) , 
+-1, 0, 1, 1, 0.566173,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.478098,-99) , 
-36, 1.28361, 0, 0, 0.494647,-99) , 
-36, -1.16095, 1, 0, 0.506114,-99) , 
+-1, 0, 1, -1, 0.431389,-99) , 
+7, -3.71768, 1, 0, 0.46199,-99) , 
+3, 3.43615, 0, 0, 0.489805,-99) , 
 NN(
 0, 
 0, 
--1, -2.77022, 0, -1, 0.171072,-99) , 
-15, 2.1909, 0, 0, 0.501376,-99)    );
+-1, 4.74122, 0, -1, 0.136954,-99) , 
+1, 0.549961, 0, 0, 0.485091,-99)    );
   // itree = 53
-  fBoostWeights.push_back(0.08432);
+  fBoostWeights.push_back(0.133626);
   fForest.push_back( 
 NN(
 NN(
 NN(
+NN(
 0, 
 0, 
--1, -3.63416, 1, 1, 0.745335,-99) , 
+-1, 0, 1, 1, 0.707183,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.220036,-99) , 
+33, 4.46922, 1, 0, 0.665332,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.522789,-99) , 
+-1, 0, 1, 1, 0.569076,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.182848,-99) , 
-14, -6.31027, 0, 0, 0.516219,-99) , 
-6, -0.528344, 0, 0, 0.524264,-99) , 
+-1, 0, 1, -1, 0.463683,-99) , 
+35, 0.543298, 0, 0, 0.496069,-99) , 
+35, -1.40184, 1, 0, 0.509432,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.546866,-99) , 
+-1, 0, 1, 1, 0.558522,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.359232,-99) , 
-27, -1.88076, 1, 0, 0.451327,-99) , 
+-1, 0, 1, -1, 0.136187,-99) , 
+17, -1.83366, 1, 0, 0.457089,-99) , 
 NN(
 0, 
 0, 
--1, 3.70687, 1, -1, 0.166364,-99) , 
-9, -2.96978, 1, 0, 0.298503,-99) , 
-7, -0.990435, 1, 0, 0.51705,-99)    );
+-1, 0.981561, 0, -1, 0.140942,-99) , 
+14, -3.21217, 0, 0, 0.301812,-99) , 
+19, 0.911667, 1, 0, 0.501702,-99)    );
   // itree = 54
-  fBoostWeights.push_back(0.0668688);
+  fBoostWeights.push_back(0.13004);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, -0.380628, 0, 1, 0.731683,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.483169,-99) , 
-11, -3.54151, 1, 0, 0.676865,-99) , 
+-1, 0, 1, 1, 0.550315,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.31998,-99) , 
+6, -3.93008, 0, 0, 0.54,-99) , 
+NN(
+0, 
+0, 
+-1, -2.00953, 1, -1, 0.439444,-99) , 
+28, 3.13756, 0, 0, 0.519246,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.508376,-99) , 
+-1, 0, 1, 1, 0.589447,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.346882,-99) , 
-17, 0.618325, 0, 0, 0.495539,-99) , 
+-1, 0, 1, -1, 0.104582,-99) , 
+31, 4.77091, 0, 0, 0.428492,-99) , 
 NN(
 0, 
 0, 
--1, -3.42209, 0, -1, 0.193372,-99) , 
-15, 2.90846, 0, 0, 0.489054,-99) , 
-6, -0.766379, 0, 0, 0.497775,-99)    );
+-1, 6.12245, 0, -1, 0.127922,-99) , 
+31, 5.60259, 1, 0, 0.302975,-99) , 
+19, 0.911667, 1, 0, 0.511385,-99)    );
   // itree = 55
-  fBoostWeights.push_back(0.0895055);
+  fBoostWeights.push_back(0.0483969);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.770361,-99) , 
-NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.728529,-99) , 
+-1, 0, 1, 1, 0.665068,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.445116,-99) , 
-7, -2.76471, 1, 0, 0.585292,-99) , 
-11, -4.03222, 1, 0, 0.669616,-99) , 
-NN(
-NN(
+-1, 0, 1, -1, 0.494896,-99) , 
+2, 1.17444, 1, 0, 0.505321,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.797366,-99) , 
+-1, 4.86027, 1, -1, 0.181449,-99) , 
+14, -5.5145, 0, 0, 0.499671,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.474475,-99) , 
-0, 2.19469, 1, 0, 0.481547,-99) , 
-NN(
-0, 
-0, 
--1, 5.23251, 0, -1, 0.174862,-99) , 
-14, -6.31027, 0, 0, 0.475618,-99) , 
-6, -0.766379, 0, 0, 0.484535,-99)    );
+-1, 3.27136, 0, -1, 0.138445,-99) , 
+17, -0.293713, 1, 0, 0.495462,-99)    );
   // itree = 56
-  fBoostWeights.push_back(0.0709715);
+  fBoostWeights.push_back(0.0547587);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, -1.15383, 1, 1, 0.610506,-99) , 
-NN(
-NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.812307,-99) , 
+-1, 0, 1, 1, 0.813178,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.490749,-99) , 
-2, 0.949535, 1, 0, 0.499178,-99) , 
+-1, 0, 1, 1, 0.512487,-99) , 
 NN(
 0, 
 0, 
--1, -2.47933, 0, -1, 0.276016,-99) , 
-6, -4.26761, 0, 0, 0.490336,-99) , 
-8, -0.677096, 0, 0, 0.504508,-99)    );
+-1, 0, 1, -1, 0.256456,-99) , 
+0, 6.94341, 1, 0, 0.504283,-99) , 
+10, 1.12102, 1, 0, 0.509158,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0,-99) , 
+19, -1.45095, 0, 0, 0.506127,-99)    );
   // itree = 57
-  fBoostWeights.push_back(0.0718252);
+  fBoostWeights.push_back(0.139049);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, 1.47311, 0, 1, 0.527519,-99) , 
 NN(
 0, 
 0, 
--1, 1.61119, 0, -1, 0.236327,-99) , 
-19, 2.32732, 1, 0, 0.522116,-99) , 
+-1, 0, 1, 1, 0.625732,-99) , 
 NN(
 0, 
 0, 
--1, -3.12309, 1, -1, 0.216856,-99) , 
-19, -0.875841, 0, 0, 0.517316,-99)    );
+-1, 0, 1, -1, 0.352174,-99) , 
+8, -5.17882, 0, 0, 0.606449,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.745906,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.472422,-99) , 
+10, 2.34214, 1, 0, 0.484279,-99) , 
+13, 4.32965, 0, 0, 0.506358,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.671047,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.119977,-99) , 
+6, -3.1549, 0, 0, 0.594091,-99) , 
+NN(
+0, 
+0, 
+-1, -4.08034, 0, -1, 0.283773,-99) , 
+2, 1.79617, 1, 0, 0.376619,-99) , 
+7, -2.00277, 1, 0, 0.493452,-99)    );
   // itree = 58
-  fBoostWeights.push_back(0.0614026);
+  fBoostWeights.push_back(0.0967891);
   fForest.push_back( 
 NN(
 NN(
 NN(
+0, 
+0, 
+-1, 0.984684, 0, 1, 0.530667,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.832384,-99) , 
+-1, 0, 1, -1, 0,-99) , 
+36, 4.41775, 1, 0, 0.527139,-99) , 
+NN(
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.390105,-99) , 
-0, 3.74792, 1, 0, 0.710556,-99) , 
-NN(
+-1, 0, 1, 1, 0.639657,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.506249,-99) , 
+-1, 0, 1, -1, 0.135451,-99) , 
+6, -3.1549, 0, 0, 0.571053,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.301112,-99) , 
-10, 6.27173, 1, 0, 0.497845,-99) , 
-2, 1.7109, 1, 0, 0.506994,-99) , 
-NN(
-0, 
-0, 
--1, 4.55703, 0, -1, 0.286752,-99) , 
-6, -4.52671, 0, 0, 0.500589,-99)    );
+-1, -4.08034, 0, -1, 0.312862,-99) , 
+2, 1.79617, 1, 0, 0.390236,-99) , 
+7, -2.00277, 1, 0, 0.513792,-99)    );
   // itree = 59
-  fBoostWeights.push_back(0.0608383);
+  fBoostWeights.push_back(0.0636514);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 2.4269, 1, 1, 0.726761,-99) , 
+-1, 0, 1, 1, 0.856171,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.504182,-99) , 
+-1, 0, 1, 1, 0.622816,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.404785,-99) , 
-8, -2.56763, 0, 0, 0.485361,-99) , 
-0, 2.27778, 1, 0, 0.491546,-99) , 
+-1, 0, 1, -1, 0.382383,-99) , 
+14, -3.63503, 0, 0, 0.556303,-99) , 
+0, 4.67919, 1, 0, 0.62924,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.154261,-99) , 
-0, 6.23589, 1, 0, 0.487634,-99)    );
+-1, -5.44177, 0, -1, 0.481274,-99) , 
+9, -4.66563, 1, 0, 0.493367,-99)    );
   // itree = 60
-  fBoostWeights.push_back(0.126111);
+  fBoostWeights.push_back(0.0747541);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.761079,-99) , 
-NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.641081,-99) , 
+-1, 0, 1, 1, 0.522608,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.398952,-99) , 
-13, 0.949496, 1, 0, 0.578767,-99) , 
-10, 4.37459, 1, 0, 0.643941,-99) , 
-NN(
-NN(
+-1, 0, 1, -1, 0.253467,-99) , 
+17, -0.636291, 1, 0, 0.517272,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.626226,-99) , 
+-1, 4.74122, 0, -1, 0.169062,-99) , 
+1, 0.583556, 0, 0, 0.512818,-99) , 
 NN(
-0, 
-0, 
--1, 0, 1, -1, 0.478015,-99) , 
-34, 2.72478, 1, 0, 0.492682,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.566294,-99) , 
+-1, 0, 1, 1, 0.705786,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.31617,-99) , 
-8, -1.20787, 0, 0, 0.388626,-99) , 
-14, -5.18513, 0, 0, 0.470506,-99) , 
-6, -0.766379, 0, 0, 0.478287,-99)    );
+-1, 0, 1, -1, 0.25665,-99) , 
+8, -4.33926, 1, 0, 0.439397,-99) , 
+NN(
+0, 
+0, 
+-1, -5.83986, 0, -1, 0.0344378,-99) , 
+0, 4.86027, 1, 0, 0.235116,-99) , 
+14, -5.42921, 0, 0, 0.507233,-99)    );
   // itree = 61
-  fBoostWeights.push_back(0.10921);
+  fBoostWeights.push_back(0.0757198);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, -1.05993, 1, 1, 0.52946,-99) , 
 NN(
 0, 
 0, 
--1, 4.2651, 0, -1, 0.371174,-99) , 
-27, -0.862382, 1, 0, 0.517988,-99) , 
-NN(
-NN(
+-1, 0, 1, 1, 0.513742,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.528451,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.229591,-99) , 
-17, 1.00804, 0, 0, 0.489875,-99) , 
+-1, 0, 1, -1, 0.0738939,-99) , 
+19, -1.0083, 0, 0, 0.510112,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.643162,-99) , 
+-1, 0, 1, 1, 0.512262,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.210873,-99) , 
-12, 2.08634, 0, 0, 0.279124,-99) , 
-5, -0.321214, 0, 0, 0.418318,-99) , 
-14, -5.25879, 0, 0, 0.49901,-99)    );
+-1, 0, 1, -1, 0.152789,-99) , 
+0, 4.85693, 1, 0, 0.22902,-99) , 
+8, -5.62797, 0, 0, 0.504027,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.55146,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.408421,-99) , 
+31, 3.7536, 1, 0, 0.481307,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.537416,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.145045,-99) , 
+27, 2.76051, 1, 0, 0.219295,-99) , 
+31, 3.92338, 1, 0, 0.384387,-99) , 
+31, 4.5717, 0, 0, 0.490311,-99)    );
   // itree = 62
-  fBoostWeights.push_back(0.141149);
+  fBoostWeights.push_back(0.0709454);
   fForest.push_back( 
 NN(
 NN(
-NN(
-NN(
 0, 
 0, 
--1, 0, 1, 1, 0.618723,-99) , 
+-1, 3.40148, 1, 1, 0.703991,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.413992,-99) , 
-0, 4.00168, 1, 0, 0.58222,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.510355,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.406956,-99) , 
-6, -2.8277, 0, 0, 0.473738,-99) , 
-7, -3.55559, 1, 0, 0.493908,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.685012,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.441545,-99) , 
-16, -0.457856, 0, 0, 0.615504,-99) , 
-NN(
-0, 
-0, 
--1, -4.22988, 0, -1, 0.327441,-99) , 
-11, -4.4474, 1, 0, 0.39069,-99) , 
-1, -2.29206, 1, 0, 0.478664,-99)    );
+-1, 6.94341, 1, -1, 0.468916,-99) , 
+31, 8.20206, 0, 0, 0.474802,-99)    );
   // itree = 63
-  fBoostWeights.push_back(0.14887);
+  fBoostWeights.push_back(0.0487493);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, 2.09589, 0, 1, 0.691126,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.250816,-99) , 
-35, 4.3008, 1, 0, 0.630223,-99) , 
+-1, 0, 1, 1, 0.507658,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.27719,-99) , 
+8, -5.57091, 0, 0, 0.501058,-99) , 
+NN(
+0, 
+0, 
+-1, -3.91911, 1, -1, 0.0913218,-99) , 
+1, 0.26975, 0, 0, 0.497738,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.555128,-99) , 
+-1, 0, 1, 1, 0.616441,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.451642,-99) , 
-4, 0.564307, 1, 0, 0.491658,-99) , 
+-1, 0, 1, -1, 0.19102,-99) , 
+13, 3.53221, 0, 0, 0.461819,-99) , 
 NN(
 0, 
 0, 
--1, -0.142048, 0, -1, 0.398951,-99) , 
-14, -4.92013, 0, 0, 0.462283,-99) , 
-37, 1.70531, 0, 0, 0.471228,-99)    );
+-1, 4.86437, 1, -1, 0.138415,-99) , 
+14, -3.10809, 0, 0, 0.269821,-99) , 
+3, 1.83177, 0, 0, 0.491622,-99)    );
   // itree = 64
-  fBoostWeights.push_back(0.10959);
+  fBoostWeights.push_back(0.0844883);
   fForest.push_back( 
 NN(
 NN(
-NN(
 0, 
 0, 
--1, 0, 1, 1, 0.806586,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.340847,-99) , 
-6, -3.93865, 0, 0, 0.695945,-99) , 
+-1, 0, 1, 1, 0.766166,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.568299,-99) , 
+-1, 0, 1, 1, 0.513077,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.468278,-99) , 
-10, 4.137, 1, 0, 0.49008,-99) , 
+-1, 0, 1, -1, 0.437671,-99) , 
+8, -4.04678, 0, 0, 0.48135,-99) , 
 NN(
 0, 
 0, 
--1, -3.4472, 1, -1, 0.304968,-99) , 
-7, -1.25472, 1, 0, 0.480015,-99) , 
-2, 0.949535, 1, 0, 0.486235,-99)    );
+-1, 3.5716, 1, -1, 0.208314,-99) , 
+14, -5.42921, 0, 0, 0.47626,-99) , 
+2, -1.14892, 1, 0, 0.480765,-99)    );
   // itree = 65
-  fBoostWeights.push_back(0.117277);
+  fBoostWeights.push_back(0.0634781);
   fForest.push_back( 
 NN(
 NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.774861,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.706051,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.405341,-99) , 
-8, -2.65753, 0, 0, 0.675833,-99) , 
+-1, 5.96511, 1, -1, 0.480428,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.58921,-99) , 
+-1, 0, 1, 1, 0.600177,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.349184,-99) , 
-4, 0.500818, 1, 0, 0.426822,-99) , 
-5, -0.723019, 0, 0, 0.59896,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 3.71418, 1, 1, 0.63847,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.696443,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.469648,-99) , 
-37, 2.04055, 0, 0, 0.477858,-99) , 
-36, -1.16095, 1, 0, 0.488977,-99) , 
-37, -1.31058, 1, 0, 0.501453,-99)    );
+-1, 0, 1, -1, 0.0809231,-99) , 
+16, -2.16865, 1, 0, 0.198131,-99) , 
+13, 2.15092, 0, 0, 0.473093,-99) , 
+10, 1.12102, 1, 0, 0.477512,-99)    );
   // itree = 66
-  fBoostWeights.push_back(0.0741896);
+  fBoostWeights.push_back(0.104129);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, 1.72676, 1, 1, 0.529788,-99) , 
 NN(
 0, 
 0, 
--1, 4.32028, 1, -1, 0.252852,-99) , 
-14, -6.3473, 0, 0, 0.524862,-99) , 
+-1, 0, 1, 1, 0.666349,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.202321,-99) , 
-15, 2.1909, 0, 0, 0.520741,-99)    );
+-1, 0, 1, -1, 0.239361,-99) , 
+33, 4.46922, 1, 0, 0.629738,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.522434,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.445633,-99) , 
+7, -2.92865, 1, 0, 0.488931,-99) , 
+35, -1.40184, 1, 0, 0.499481,-99) , 
+NN(
+0, 
+0, 
+-1, 4.25672, 0, -1, 0.30413,-99) , 
+19, 0.911667, 1, 0, 0.492713,-99)    );
   // itree = 67
-  fBoostWeights.push_back(0.125233);
+  fBoostWeights.push_back(0.106837);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 1.07469, 0, 1, 0.582385,-99) , 
+-1, 0, 1, 1, 0.841509,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.567528,-99) , 
+-1, 0, 1, 1, 0.710646,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.457754,-99) , 
-9, -3.66577, 1, 0, 0.488799,-99) , 
-3, -0.52614, 1, 0, 0.50866,-99) , 
+-1, 0, 1, -1, 0.478795,-99) , 
+6, -1.94799, 0, 0, 0.545941,-99) , 
+0, 4.67919, 1, 0, 0.616445,-99) , 
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.622975,-99) , 
 NN(
 0, 
 0, 
--1, 4.04446, 0, -1, 0.0742219,-99) , 
-1, -4.27386, 1, 0, 0.275119,-99) , 
-11, -2.11251, 1, 0, 0.503336,-99)    );
+-1, 0, 1, 1, 0.596612,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.46809,-99) , 
+34, 1.1291, 0, 0, 0.484058,-99) , 
+NN(
+0, 
+0, 
+-1, 3.31189, 1, -1, 0.220676,-99) , 
+10, 5.8148, 1, 0, 0.477812,-99) , 
+9, -4.66563, 1, 0, 0.489034,-99)    );
   // itree = 68
-  fBoostWeights.push_back(0.0665258);
+  fBoostWeights.push_back(0.094246);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, -3.36936, 0, 1, 0.720031,-99) , 
-NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.514768,-99) , 
+-1, 0, 1, 1, 0.550388,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.312711,-99) , 
-7, -1.16769, 1, 0, 0.506725,-99) , 
-2, 0.949535, 1, 0, 0.512815,-99) , 
-NN(
+-1, 0, 1, -1, 0.473742,-99) , 
+24, -0.38074, 0, 0, 0.516558,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.59314,-99) , 
+-1, 4.86027, 1, -1, 0.201929,-99) , 
+14, -5.5145, 0, 0, 0.511694,-99) , 
 NN(
 0, 
 0, 
--1, 3.86208, 1, -1, 0.0832992,-99) , 
-1, -4.27386, 1, 0, 0.274616,-99) , 
-11, -2.11251, 1, 0, 0.507557,-99)    );
+-1, 3.27136, 0, -1, 0.161321,-99) , 
+17, -0.293713, 1, 0, 0.50783,-99)    );
   // itree = 69
-  fBoostWeights.push_back(0.100732);
+  fBoostWeights.push_back(0.0592281);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 1.11998, 0, 1, 0.652205,-99) , 
+-1, 1.12102, 1, 1, 0.517636,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.602519,-99) , 
+-1, 0, 1, 1, 0.588558,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.317638,-99) , 
-13, 0.710758, 0, 0, 0.454169,-99) , 
-15, 4.34356, 0, 0, 0.600556,-99) , 
-NN(
-NN(
+-1, 0, 1, -1, 0.316637,-99) , 
+29, 1.44845, 1, 0, 0.377205,-99) , 
+29, 2.54366, 0, 0, 0.508375,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.654607,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.350311,-99) , 
-10, 5.36481, 1, 0, 0.606456,-99) , 
-NN(
-0, 
-0, 
--1, -6.39446, 0, -1, 0.470309,-99) , 
-18, 0.659527, 0, 0, 0.481621,-99) , 
-7, -3.84663, 1, 0, 0.492631,-99)    );
+-1, 0, 1, -1, 0,-99) , 
+19, -1.45095, 0, 0, 0.505787,-99)    );
   // itree = 70
-  fBoostWeights.push_back(0.0901337);
+  fBoostWeights.push_back(0.0704463);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.812435,-99) , 
-NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.70654,-99) , 
+-1, 0, 1, 1, 0.645302,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.338399,-99) , 
-5, -1.03813, 0, 0, 0.645413,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.519177,-99) , 
+-1, 0, 1, -1, 0.420875,-99) , 
+10, 4.37925, 1, 0, 0.58968,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.41407,-99) , 
-14, -5.18513, 0, 0, 0.498626,-99) , 
-36, 1.57941, 0, 0, 0.506937,-99) , 
-2, -0.573201, 1, 0, 0.510627,-99)    );
+-1, -5.68337, 0, -1, 0.482739,-99) , 
+6, -1.43846, 0, 0, 0.496504,-99) , 
+NN(
+0, 
+0, 
+-1, 1.42339, 1, -1, 0.173466,-99) , 
+1, 0.549961, 0, 0, 0.492632,-99)    );
   // itree = 71
-  fBoostWeights.push_back(0.0264275);
+  fBoostWeights.push_back(0.096184);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.771422,-99) , 
-NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.500922,-99) , 
+-1, 0, 1, 1, 0.532552,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.0894922,-99) , 
-15, 1.79412, 0, 0, 0.497386,-99) , 
+-1, 0, 1, -1, 0.375685,-99) , 
+4, 1.78144, 1, 0, 0.519101,-99) , 
 NN(
 0, 
 0, 
--1, -4.13321, 0, -1, 0.157529,-99) , 
-10, 6.62791, 1, 0, 0.49253,-99) , 
-10, 2.00227, 1, 0, 0.49672,-99)    );
+-1, 2.53326, 0, -1, 0.387761,-99) , 
+9, -1.65142, 1, 0, 0.509334,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0,-99) , 
+19, -1.45095, 0, 0, 0.506886,-99)    );
   // itree = 72
-  fBoostWeights.push_back(0.0351202);
+  fBoostWeights.push_back(0.05258);
   fForest.push_back( 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.766728,-99) , 
+-1, 0, 1, 1, 0.769843,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 6.62791, 1, -1, 0.486221,-99) , 
-10, 2.00227, 1, 0, 0.490407,-99)    );
+-1, 0, 1, 1, 0.784314,-99) , 
+NN(
+0, 
+0, 
+-1, 2.15092, 0, -1, 0.481509,-99) , 
+10, 1.12102, 1, 0, 0.485906,-99) , 
+2, -1.14892, 1, 0, 0.490397,-99)    );
   // itree = 73
-  fBoostWeights.push_back(0.0638658);
+  fBoostWeights.push_back(0.0788118);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.835071,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.465875,-99) , 
-6, -3.39487, 0, 0, 0.692271,-99) , 
-NN(
-NN(
+-1, 0, 1, 1, 0.688898,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.645654,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.491037,-99) , 
-36, 1.41072, 0, 0, 0.50188,-99) , 
+-1, 0, 1, -1, 0.35472,-99) , 
+32, 4.02147, 1, 0, 0.628366,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.509094,-99) , 
+-1, 0, 1, 1, 0.667675,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.222276,-99) , 
-9, -3.4472, 1, 0, 0.336516,-99) , 
-7, -1.25472, 1, 0, 0.493293,-99) , 
-2, 0.949535, 1, 0, 0.498923,-99)    );
+-1, 0, 1, -1, 0.491029,-99) , 
+35, -1.64166, 1, 0, 0.499842,-99) , 
+34, -1.07143, 1, 0, 0.510405,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.803049,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.417133,-99) , 
+21, 2.15567, 1, 0, 0.559799,-99) , 
+NN(
+0, 
+0, 
+-1, 4.22508, 1, -1, 0.257609,-99) , 
+34, -0.896304, 1, 0, 0.349384,-99) , 
+14, -4.95018, 0, 0, 0.502752,-99)    );
   // itree = 74
-  fBoostWeights.push_back(0.0950177);
+  fBoostWeights.push_back(0.0656097);
   fForest.push_back( 
 NN(
 NN(
 NN(
+0, 
+0, 
+-1, 1.17444, 1, 1, 0.526057,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.535168,-99) , 
+-1, 4.86027, 1, -1, 0.224795,-99) , 
+14, -5.5145, 0, 0, 0.521624,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.429465,-99) , 
-16, -1.21474, 0, 0, 0.521569,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.104943,-99) , 
-19, -1.27636, 0, 0, 0.518006,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.51699,-99) , 
-NN(
-0, 
-0, 
--1, 1.48853, 0, -1, 0.244304,-99) , 
-12, 1.13291, 0, 0, 0.340415,-99) , 
-19, 1.92691, 1, 0, 0.51165,-99)    );
+-1, 3.27136, 0, -1, 0.183012,-99) , 
+17, -0.293713, 1, 0, 0.518048,-99)    );
   // itree = 75
-  fBoostWeights.push_back(0.0793614);
+  fBoostWeights.push_back(0.0465002);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.70569,-99) , 
-NN(
-NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.515928,-99) , 
+-1, 3.82837, 1, 1, 0.512841,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.406574,-99) , 
-7, -1.94571, 1, 0, 0.49485,-99) , 
+-1, 0, 1, 1, 0.577168,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.118143,-99) , 
-15, 2.74889, 0, 0, 0.489946,-99) , 
-14, -2.41963, 0, 0, 0.495222,-99)    );
+-1, 0, 1, -1, 0.315101,-99) , 
+3, 3.98225, 0, 0, 0.363323,-99) , 
+16, -2.01692, 0, 0, 0.504742,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0,-99) , 
+19, -1.45095, 0, 0, 0.502481,-99)    );
   // itree = 76
-  fBoostWeights.push_back(0.0484924);
+  fBoostWeights.push_back(0.0379434);
   fForest.push_back( 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.75508,-99) , 
+-1, 3.40148, 1, 1, 0.699439,-99) , 
+NN(
+NN(
 NN(
 0, 
 0, 
--1, 6.62791, 1, -1, 0.479185,-99) , 
-10, 2.00227, 1, 0, 0.483204,-99)    );
+-1, 0, 1, 1, 0.500484,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.299584,-99) , 
+1, 1.52721, 0, 0, 0.494088,-99) , 
+NN(
+0, 
+0, 
+-1, -3.93127, 0, -1, 0.25507,-99) , 
+0, 6.94341, 1, 0, 0.486611,-99) , 
+31, 8.20206, 0, 0, 0.491976,-99)    );
   // itree = 77
-  fBoostWeights.push_back(0.0294979);
+  fBoostWeights.push_back(0.0519565);
   fForest.push_back( 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.699173,-99) , 
+-1, 3.40148, 1, 1, 0.691402,-99) , 
 NN(
 0, 
 0, 
--1, 2.74889, 0, -1, 0.489863,-99) , 
-14, -2.41963, 0, 0, 0.494965,-99)    );
+-1, 6.94341, 1, -1, 0.478293,-99) , 
+31, 8.20206, 0, 0, 0.483628,-99)    );
   // itree = 78
-  fBoostWeights.push_back(0.0546191);
+  fBoostWeights.push_back(0.0280832);
   fForest.push_back( 
 NN(
 NN(
 NN(
-NN(
 0, 
 0, 
--1, 0, 1, 1, 0.82943,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.40971,-99) , 
-0, 3.74792, 1, 0, 0.712614,-99) , 
+-1, 0, 1, 1, 0.873852,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.505631,-99) , 
+-1, 0, 1, 1, 0.637737,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.322871,-99) , 
-10, 6.27173, 1, 0, 0.498482,-99) , 
-2, 1.7109, 1, 0, 0.507343,-99) , 
-NN(
-NN(
+-1, 0, 1, -1, 0.470194,-99) , 
+32, 3.32622, 1, 0, 0.573857,-99) , 
+2, 1.45259, 1, 0, 0.712441,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.502503,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.281381,-99) , 
-7, -3.27642, 1, 0, 0.404118,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.131079,-99) , 
-8, -2.02493, 0, 0, 0.315139,-99) , 
-6, -4.52671, 0, 0, 0.501981,-99)    );
+-1, 6.0453, 1, -1, 0.490892,-99) , 
+0, 4.12149, 1, 0, 0.495959,-99)    );
   // itree = 79
-  fBoostWeights.push_back(0.106532);
+  fBoostWeights.push_back(0.0282227);
   fForest.push_back( 
 NN(
 NN(
 NN(
-NN(
 0, 
 0, 
--1, 0, 1, 1, 0.831139,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.440901,-99) , 
-0, 3.74792, 1, 0, 0.725209,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.170581,-99) , 
-6, -4.32546, 0, 0, 0.640375,-99) , 
+-1, 0, 1, 1, 0.777474,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, -3.43827, 1, 1, 0.536821,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.506597,-99) , 
+-1, 0, 1, 1, 0.504576,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.425157,-99) , 
-10, 4.67068, 1, 0, 0.460435,-99) , 
-13, 0.897866, 0, 0, 0.482919,-99) , 
-2, 1.7109, 1, 0, 0.490092,-99)    );
+-1, 0, 1, -1, 0.0600209,-99) , 
+13, 1.49419, 0, 0, 0.500911,-99) , 
+10, 1.12102, 1, 0, 0.504877,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0,-99) , 
+19, -1.45095, 0, 0, 0.502725,-99)    );
   // itree = 80
-  fBoostWeights.push_back(0.137432);
+  fBoostWeights.push_back(0.0411283);
   fForest.push_back( 
 NN(
 NN(
-NN(
-NN(
 0, 
 0, 
--1, 0, 1, 1, 0.852905,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.487441,-99) , 
-0, 3.74792, 1, 0, 0.75492,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.319663,-99) , 
-6, -3.75192, 0, 0, 0.638087,-99) , 
+-1, 0, 1, 1, 0.768015,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.595951,-99) , 
+-1, 0, 1, 1, 0.504115,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.416482,-99) , 
-6, -3.14728, 0, 0, 0.553109,-99) , 
+-1, 0, 1, -1, 0.203022,-99) , 
+10, 5.96511, 1, 0, 0.498873,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.643136,-99) , 
+-1, 0, 1, 1, 0.58765,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.451543,-99) , 
-36, 1.57941, 0, 0, 0.461593,-99) , 
-37, 0.955665, 0, 0, 0.477494,-99) , 
-2, 1.7109, 1, 0, 0.484641,-99)    );
+-1, 0, 1, -1, 0.0922261,-99) , 
+16, -2.16865, 1, 0, 0.208369,-99) , 
+13, 2.15092, 0, 0, 0.491906,-99) , 
+10, 1.12102, 1, 0, 0.495842,-99)    );
   // itree = 81
-  fBoostWeights.push_back(0.058542);
+  fBoostWeights.push_back(0.0439231);
   fForest.push_back( 
 NN(
 NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.760607,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.814865,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.427971,-99) , 
-5, -1.01604, 0, 0, 0.708458,-99) , 
+-1, 5.96511, 1, -1, 0.488946,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.511231,-99) , 
+-1, 0, 1, 1, 0.57765,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.357563,-99) , 
-13, -1.07433, 0, 0, 0.503075,-99) , 
-37, -2.15913, 1, 0, 0.509849,-99) , 
-NN(
-0, 
-0, 
--1, 4.32028, 1, -1, 0.244803,-99) , 
-14, -6.39446, 0, 0, 0.505853,-99)    );
+-1, 0, 1, -1, 0.0957276,-99) , 
+16, -2.16865, 1, 0, 0.20986,-99) , 
+13, 2.15092, 0, 0, 0.48234,-99) , 
+10, 1.12102, 1, 0, 0.486267,-99)    );
   // itree = 82
-  fBoostWeights.push_back(0.0652207);
+  fBoostWeights.push_back(0.062307);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, -0.380628, 0, 1, 0.683445,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.48626,-99) , 
-11, -3.54151, 1, 0, 0.638999,-99) , 
+-1, 0, 1, 1, 0.704271,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.240647,-99) , 
+4, 1.92964, 1, 0, 0.64292,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.502847,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.299393,-99) , 
+7, -1.72835, 1, 0, 0.495192,-99) , 
+2, 1.17444, 1, 0, 0.504007,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.707136,-99) , 
+-1, 0, 1, 1, 0.780382,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.483803,-99) , 
-37, -2.15913, 1, 0, 0.491342,-99) , 
+-1, 0, 1, -1, 0.422628,-99) , 
+21, 2.15567, 1, 0, 0.551879,-99) , 
 NN(
 0, 
 0, 
--1, 0.697826, 1, -1, 0.190839,-99) , 
-14, -6.31027, 0, 0, 0.486516,-99) , 
-6, -0.766379, 0, 0, 0.493392,-99)    );
+-1, 4.22508, 1, -1, 0.263926,-99) , 
+34, -0.896304, 1, 0, 0.350433,-99) , 
+14, -4.95018, 0, 0, 0.496811,-99)    );
   // itree = 83
-  fBoostWeights.push_back(0.0593468);
+  fBoostWeights.push_back(0.0773192);
   fForest.push_back( 
 NN(
 NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.75138,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.518569,-99) , 
+-1, 4.67919, 1, 1, 0.5935,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.158301,-99) , 
-10, 6.71863, 1, 0, 0.515061,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.171235,-99) , 
-15, 1.81397, 0, 0, 0.512054,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.591459,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.102031,-99) , 
-1, -4.27386, 1, 0, 0.292872,-99) , 
-11, -2.11251, 1, 0, 0.507535,-99)    );
+-1, -5.1727, 0, -1, 0.469758,-99) , 
+9, -4.66563, 1, 0, 0.479691,-99) , 
+2, -1.14892, 1, 0, 0.483794,-99)    );
   // itree = 84
-  fBoostWeights.push_back(0.0729394);
+  fBoostWeights.push_back(0.108564);
   fForest.push_back( 
 NN(
 NN(
+NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.688353,-99) , 
+-1, 0, 1, 1, 0.693739,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.399358,-99) , 
+15, 0.405478, 0, 0, 0.667939,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.712675,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.456438,-99) , 
+3, 3.68246, 0, 0, 0.503525,-99) , 
+16, -0.028366, 0, 0, 0.578828,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.600334,-99) , 
+-1, 0, 1, 1, 0.556667,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.480177,-99) , 
-4, -0.377036, 1, 0, 0.493144,-99) , 
+-1, 0, 1, -1, 0.467919,-99) , 
+14, -2.72564, 0, 0, 0.489325,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.135284,-99) , 
-15, 2.74889, 0, 0, 0.48876,-99) , 
-14, -2.41963, 0, 0, 0.493599,-99)    );
+-1, 0, 1, -1, 0.0216886,-99) , 
+1, 0.26975, 0, 0, 0.485561,-99) , 
+4, -0.369743, 1, 0, 0.499474,-99)    );
   // itree = 85
-  fBoostWeights.push_back(0.0755066);
+  fBoostWeights.push_back(0.0686726);
   fForest.push_back( 
 NN(
 NN(
@@ -3238,92 +3290,80 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.52744,-99) , 
+-1, 0, 1, 1, 0.705402,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.208277,-99) , 
-14, -6.49625, 0, 0, 0.523877,-99) , 
+-1, 0, 1, -1, 0.231867,-99) , 
+4, 1.97505, 1, 0, 0.643178,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, -2.22547, 1, -1, 0.44185,-99) , 
-31, 3.36183, 0, 0, 0.510376,-99) , 
+-1, 0, 1, 1, 0.513243,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.210295,-99) , 
-0, 6.23589, 1, 0, 0.50717,-99)    );
+-1, 0, 1, -1, 0.303441,-99) , 
+7, -1.72835, 1, 0, 0.505373,-99) , 
+2, 1.17444, 1, 0, 0.513891,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0752616,-99) , 
+17, 0.367206, 1, 0, 0.51143,-99)    );
   // itree = 86
-  fBoostWeights.push_back(0.0671035);
+  fBoostWeights.push_back(0.0667037);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 3.74792, 1, 1, 0.744914,-99) , 
+-1, 4.73762, 1, 1, 0.677777,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.343919,-99) , 
-6, -3.75192, 0, 0, 0.6355,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.736239,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.499391,-99) , 
-36, -1.37917, 1, 0, 0.508223,-99) , 
+-1, -0.742054, 1, -1, 0.23595,-99) , 
+4, 1.97505, 1, 0, 0.619149,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.501344,-99) , 
+-1, 1.2558, 0, 1, 0.723373,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.335468,-99) , 
-34, 3.75101, 1, 0, 0.422704,-99) , 
-7, -2.04537, 1, 0, 0.488871,-99) , 
-2, 1.7109, 1, 0, 0.495184,-99)    );
+-1, 1.93097, 0, -1, 0.481959,-99) , 
+10, 1.90331, 1, 0, 0.487784,-99) , 
+2, 1.17444, 1, 0, 0.49593,-99)    );
   // itree = 87
-  fBoostWeights.push_back(0.045303);
+  fBoostWeights.push_back(0.0552573);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, -3.60864, 1, 1, 0.514497,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.138275,-99) , 
-19, -1.23198, 0, 0, 0.511684,-99) , 
-NN(
-NN(
+-1, 0, 1, 1, 0.519533,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.5603,-99) , 
+-1, 0, 1, -1, 0.327579,-99) , 
+10, 5.8148, 1, 0, 0.514437,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.317999,-99) , 
-22, -0.453836, 0, 0, 0.414707,-99) , 
+-1, 0, 1, -1, 0.0789864,-99) , 
+19, 2.14931, 1, 0, 0.512094,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.170394,-99) , 
-9, -2.49237, 1, 0, 0.321934,-99) , 
-7, -0.990435, 1, 0, 0.506172,-99)    );
+-1, 0, 1, -1, 0,-99) , 
+19, -1.45095, 0, 0, 0.510074,-99)    );
   // itree = 88
-  fBoostWeights.push_back(0.0395572);
+  fBoostWeights.push_back(0.0567242);
   fForest.push_back( 
 NN(
 NN(
@@ -3331,74 +3371,80 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.704697,-99) , 
+-1, 0, 1, 1, 0.59773,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.498593,-99) , 
-2, 1.7109, 1, 0, 0.50617,-99) , 
+-1, 0, 1, -1, 0.352065,-99) , 
+16, -1.69252, 0, 0, 0.573233,-99) , 
 NN(
 0, 
 0, 
--1, -2.24987, 0, -1, 0.346319,-99) , 
-6, -4.26761, 0, 0, 0.499721,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.570337,-99) , 
+-1, 0.26975, 0, -1, 0.486928,-99) , 
+4, -0.369743, 1, 0, 0.499541,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.109368,-99) , 
-1, -4.27386, 1, 0, 0.291083,-99) , 
-11, -2.11251, 1, 0, 0.495503,-99)    );
+-1, 0, 1, -1, 0.0804009,-99) , 
+17, 0.367206, 1, 0, 0.497243,-99)    );
   // itree = 89
-  fBoostWeights.push_back(0.0653456);
+  fBoostWeights.push_back(0.0782175);
   fForest.push_back( 
 NN(
 NN(
 NN(
-NN(
 0, 
 0, 
--1, 0, 1, 1, 0.519492,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.184776,-99) , 
-10, 6.6163, 1, 0, 0.515336,-99) , 
-NN(
-0, 
-0, 
--1, -2.24987, 0, -1, 0.355328,-99) , 
-6, -4.26761, 0, 0, 0.508916,-99) , 
+-1, 2.59489, 1, 1, 0.577439,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.560618,-99) , 
+-1, 0, 1, 1, 0.514306,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.113281,-99) , 
-1, -4.27386, 1, 0, 0.29099,-99) , 
-11, -2.11251, 1, 0, 0.504553,-99)    );
+-1, 0, 1, -1, 0.396421,-99) , 
+10, 4.81975, 1, 0, 0.495679,-99) , 
+8, -2.92086, 0, 0, 0.510002,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0846959,-99) , 
+17, 0.367206, 1, 0, 0.507723,-99)    );
   // itree = 90
-  fBoostWeights.push_back(0.0331182);
+  fBoostWeights.push_back(0.0321554);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.733347,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 6.62791, 1, -1, 0.48666,-99) , 
-10, 2.00227, 1, 0, 0.490262,-99)    );
+-1, 0, 1, 1, 0.851807,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.498509,-99) , 
+0, 3.82837, 1, 0, 0.502721,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.590479,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.321114,-99) , 
+28, 4.68501, 0, 0, 0.365618,-99) , 
+16, -2.01692, 0, 0, 0.495352,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0,-99) , 
+19, -1.45095, 0, 0, 0.493435,-99)    );
   // itree = 91
-  fBoostWeights.push_back(0.101285);
+  fBoostWeights.push_back(0.0336962);
   fForest.push_back( 
 NN(
 NN(
@@ -3406,235 +3452,265 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.615083,-99) , 
+-1, 0, 1, 1, 0.755573,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.419488,-99) , 
-26, -1.66665, 0, 0, 0.577482,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.585347,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.47405,-99) , 
-11, -4.50162, 1, 0, 0.488888,-99) , 
-7, -3.60864, 1, 0, 0.503347,-99) , 
-NN(
+-1, 0, 1, -1, 0.433968,-99) , 
+21, 3.46679, 1, 0, 0.694686,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.554123,-99) , 
+-1, 0, 1, 1, 0.502256,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.321315,-99) , 
-4, 0.564307, 1, 0, 0.417319,-99) , 
+-1, 0, 1, -1, 0.235076,-99) , 
+8, -5.68337, 0, 0, 0.497741,-99) , 
+6, -0.441807, 0, 0, 0.504346,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.178127,-99) , 
-9, -2.49237, 1, 0, 0.327089,-99) , 
-7, -0.990435, 1, 0, 0.498298,-99)    );
+-1, 1.42339, 1, -1, 0.200341,-99) , 
+1, 0.549961, 0, 0, 0.501151,-99)    );
   // itree = 92
-  fBoostWeights.push_back(0.0577865);
+  fBoostWeights.push_back(0.0312844);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, -2.15913, 1, 1, 0.520602,-99) , 
 NN(
 0, 
 0, 
--1, 4.08668, 1, -1, 0.264359,-99) , 
-14, -6.31027, 0, 0, 0.516408,-99) , 
-NN(
-NN(
+-1, 0, 1, 1, 0.844641,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.556099,-99) , 
+-1, 0, 1, -1, 0.498668,-99) , 
+0, 3.82837, 1, 0, 0.502709,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.330243,-99) , 
-22, -0.453836, 0, 0, 0.420731,-99) , 
+-1, 0, 1, 1, 0.575271,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.193441,-99) , 
-9, -2.49237, 1, 0, 0.336064,-99) , 
-7, -0.990435, 1, 0, 0.51132,-99)    );
+-1, 0, 1, -1, 0.321007,-99) , 
+28, 4.68501, 0, 0, 0.362885,-99) , 
+16, -2.01692, 0, 0, 0.495193,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0,-99) , 
+19, -1.45095, 0, 0, 0.493279,-99)    );
   // itree = 93
-  fBoostWeights.push_back(0.0480017);
+  fBoostWeights.push_back(0.0674747);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, -2.91408, 1, 1, 0.702462,-99) , 
+-1, 0.831715, 1, 1, 0.749939,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.505916,-99) , 
+-1, 0, 1, 1, 0.658388,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.263757,-99) , 
-15, 3.04044, 0, 0, 0.501175,-99) , 
-10, 2.53596, 1, 0, 0.506182,-99) , 
+-1, 0, 1, -1, 0.396669,-99) , 
+0, 5.24741, 1, 0, 0.523142,-99) , 
+9, -2.69817, 1, 0, 0.630253,-99) , 
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.579193,-99) , 
 NN(
 0, 
 0, 
--1, 3.63979, 0, -1, 0.347532,-99) , 
-35, 5.00266, 0, 0, 0.39001,-99) , 
-21, -0.331148, 0, 0, 0.497944,-99)    );
+-1, 0, 1, 1, 0.608744,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.489531,-99) , 
+34, -1.07143, 1, 0, 0.500186,-99) , 
+NN(
+0, 
+0, 
+-1, 1.32227, 1, -1, 0.252293,-99) , 
+8, -5.53371, 0, 0, 0.493661,-99) , 
+6, -0.736014, 0, 0, 0.50079,-99)    );
   // itree = 94
-  fBoostWeights.push_back(0.0616374);
+  fBoostWeights.push_back(0.0891181);
   fForest.push_back( 
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.692905,-99) , 
+-1, 1.08254, 1, 1, 0.543009,-99) , 
+NN(
+0, 
+0, 
+-1, -0.954633, 1, -1, 0.469885,-99) , 
+6, -2.81178, 0, 0, 0.518443,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.672297,-99) , 
+-1, 0, 1, 1, 0.699823,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.481641,-99) , 
-37, -2.15913, 1, 0, 0.487739,-99) , 
+-1, 0, 1, -1, 0.299575,-99) , 
+9, -3.12724, 1, 0, 0.518004,-99) , 
 NN(
 0, 
 0, 
--1, 4.32028, 1, -1, 0.209891,-99) , 
-14, -6.31027, 0, 0, 0.48346,-99) , 
-6, -0.139658, 0, 0, 0.487747,-99)    );
+-1, -3.10351, 1, -1, 0.173182,-99) , 
+14, -3.10809, 0, 0, 0.323672,-99) , 
+3, 1.83177, 0, 0, 0.513621,-99)    );
   // itree = 95
-  fBoostWeights.push_back(0.0412196);
+  fBoostWeights.push_back(0.0541815);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, -2.61149, 1, 1, 0.681597,-99) , 
-NN(
-NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.507199,-99) , 
+-1, 4.04414, 1, 1, 0.518427,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.367656,-99) , 
-10, 6.19591, 1, 0, 0.500352,-99) , 
+-1, -3.12222, 1, -1, 0.399011,-99) , 
+16, -1.85228, 0, 0, 0.50992,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.136948,-99) , 
-0, 6.23589, 1, 0, 0.497031,-99) , 
-10, 2.53596, 1, 0, 0.501573,-99)    );
+-1, 1.42339, 1, -1, 0.208057,-99) , 
+1, 0.549961, 0, 0, 0.506812,-99)    );
   // itree = 96
-  fBoostWeights.push_back(0.0526885);
+  fBoostWeights.push_back(0.132451);
   fForest.push_back( 
 NN(
 NN(
+NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.728284,-99) , 
+-1, 0, 1, 1, 0.633115,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.294574,-99) , 
+22, -1.93071, 0, 0, 0.60977,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.521429,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.388974,-99) , 
+30, 5.79396, 1, 0, 0.500216,-99) , 
+30, 6.54207, 0, 0, 0.513467,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.681122,-99) , 
+-1, 0, 1, 1, 0.563434,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.489266,-99) , 
-2, 1.7109, 1, 0, 0.496111,-99) , 
+-1, 0, 1, -1, 0.269825,-99) , 
+30, 4.90036, 0, 0, 0.502111,-99) , 
 NN(
 0, 
 0, 
--1, -4.91453, 0, -1, 0.342521,-99) , 
-4, 2.27805, 1, 0, 0.488965,-99) , 
-10, 2.00227, 1, 0, 0.492424,-99)    );
+-1, -3.64686, 0, -1, 0.355342,-99) , 
+30, 5.67305, 1, 0, 0.443582,-99) , 
+29, 3.02281, 0, 0, 0.495452,-99)    );
   // itree = 97
-  fBoostWeights.push_back(0.0534334);
+  fBoostWeights.push_back(0.138597);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 5.38011, 1, 1, 0.69534,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.479547,-99) , 
-5, -0.193885, 0, 0, 0.646228,-99) , 
-NN(
+-1, -2.41884, 0, 1, 0.634443,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.626413,-99) , 
+-1, 0, 1, 1, 0.590402,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.495542,-99) , 
-4, -0.549966, 1, 0, 0.506556,-99) , 
+-1, 0, 1, -1, 0.158836,-99) , 
+5, -0.414677, 1, 0, 0.313448,-99) , 
+33, 4.11616, 1, 0, 0.581311,-99) , 
+NN(
+NN(
 NN(
 0, 
 0, 
--1, -0.917784, 0, -1, 0.344486,-99) , 
-17, 0.241321, 0, 0, 0.498684,-99) , 
-3, -1.22834, 1, 0, 0.504336,-99)    );
+-1, 0, 1, 1, 0.725659,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.401064,-99) , 
+32, 3.72361, 1, 0, 0.59847,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.5362,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.443316,-99) , 
+4, -0.284483, 1, 0, 0.459929,-99) , 
+35, -1.53262, 1, 0, 0.468606,-99) , 
+35, 1.25119, 0, 0, 0.478458,-99)    );
   // itree = 98
-  fBoostWeights.push_back(0.0906046);
+  fBoostWeights.push_back(0.115412);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, -1.86359, 1, 1, 0.602153,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.554941,-99) , 
+-1, 1.15713, 0, 1, 0.59466,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.476981,-99) , 
-5, 0.0929501, 0, 0, 0.505199,-99) , 
-14, -3.46098, 0, 0, 0.517435,-99) , 
+-1, 0, 1, -1, 0.206201,-99) , 
+0, 6.62934, 1, 0, 0.579018,-99) , 
+NN(
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.202048,-99) , 
-15, 1.47335, 0, 0, 0.514865,-99)    );
+-1, 0, 1, 1, 0.527517,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.416832,-99) , 
+30, 4.8363, 0, 0, 0.506504,-99) , 
+NN(
+0, 
+0, 
+-1, 4.96478, 0, -1, 0.400141,-99) , 
+30, 5.74785, 1, 0, 0.483447,-99) , 
+30, 6.94682, 0, 0, 0.494604,-99)    );
   // itree = 99
-  fBoostWeights.push_back(0.0904583);
+  fBoostWeights.push_back(0.131239);
   fForest.push_back( 
 NN(
 NN(
@@ -3642,240 +3718,222 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.568731,-99) , 
+-1, 0, 1, 1, 0.598961,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.499642,-99) , 
-7, -2.83077, 1, 0, 0.531605,-99) , 
+-1, 0, 1, -1, 0.361107,-99) , 
+4, 1.71664, 1, 0, 0.573818,-99) , 
 NN(
 0, 
 0, 
--1, 5.90062, 0, -1, 0.345521,-99) , 
-8, -3.53809, 0, 0, 0.524635,-99) , 
+-1, 0.0377823, 0, -1, 0.239198,-99) , 
+10, 5.31466, 1, 0, 0.547576,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.701047,-99) , 
+-1, 0, 1, 1, 0.625523,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.39203,-99) , 
-24, -0.476655, 0, 0, 0.55773,-99) , 
+-1, 0, 1, -1, 0.23742,-99) , 
+33, 4.50176, 1, 0, 0.584672,-99) , 
 NN(
 0, 
 0, 
--1, -0.801349, 0, -1, 0.281912,-99) , 
-15, 5.14806, 0, 0, 0.397697,-99) , 
-17, 0.241321, 0, 0, 0.517705,-99)    );
+-1, -0.206993, 0, -1, 0.456506,-99) , 
+34, -1.03547, 1, 0, 0.470514,-99) , 
+34, 0.935625, 0, 0, 0.484558,-99)    );
   // itree = 100
-  fBoostWeights.push_back(0.160813);
+  fBoostWeights.push_back(0.0475733);
   fForest.push_back( 
 NN(
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.765013,-99) , 
+-1, 0, 1, 1, 0.681821,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.270659,-99) , 
+4, 1.97505, 1, 0, 0.630333,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.598172,-99) , 
+-1, 0, 1, 1, 0.504143,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.413818,-99) , 
-18, -1.04274, 0, 0, 0.572279,-99) , 
-4, -0.333564, 1, 0, 0.600479,-99) , 
-NN(
-NN(
+-1, 0, 1, -1, 0.317347,-99) , 
+7, -1.72835, 1, 0, 0.497404,-99) , 
+2, 1.17444, 1, 0, 0.505244,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.560577,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.44517,-99) , 
-33, 5.63682, 0, 0, 0.542601,-99) , 
-NN(
-0, 
-0, 
--1, 6.75501, 1, -1, 0.354822,-99) , 
-33, 6.63772, 1, 0, 0.510434,-99) , 
-33, 7.48807, 0, 0, 0.520806,-99)    );
+-1, 3.27136, 0, -1, 0.191277,-99) , 
+17, -0.293713, 1, 0, 0.502258,-99)    );
   // itree = 101
-  fBoostWeights.push_back(0.0915859);
+  fBoostWeights.push_back(0.0316696);
   fForest.push_back( 
 NN(
 NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.742962,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.644282,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.376175,-99) , 
-4, 1.9228, 1, 0, 0.614726,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.240628,-99) , 
-35, 4.88079, 1, 0, 0.590821,-99) , 
+-1, 7.66577, 1, -1, 0.494254,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 3.99733, 1, 1, 0.623685,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.772008,-99) , 
+-1, 0, 1, 1, 0.567743,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.477945,-99) , 
-37, 2.51926, 0, 0, 0.482913,-99) , 
-36, -1.16095, 1, 0, 0.492254,-99) , 
-37, -1.31058, 1, 0, 0.503162,-99)    );
+-1, 0, 1, -1, 0.103699,-99) , 
+16, -2.16865, 1, 0, 0.211065,-99) , 
+13, 2.15092, 0, 0, 0.488038,-99) , 
+10, 1.12102, 1, 0, 0.491558,-99)    );
   // itree = 102
-  fBoostWeights.push_back(0.136808);
+  fBoostWeights.push_back(0.0320998);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 4.3334, 0, 1, 0.568801,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.611102,-99) , 
+-1, 0.286064, 1, 1, 0.50796,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.447711,-99) , 
-36, 0.743542, 0, 0, 0.492074,-99) , 
-28, 5.18191, 0, 0, 0.54082,-99) , 
-NN(
-NN(
+-1, 4.86027, 1, -1, 0.243958,-99) , 
+14, -5.5145, 0, 0, 0.504377,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.555962,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.218567,-99) , 
-35, 5.42204, 1, 0, 0.540737,-99) , 
-NN(
-0, 
-0, 
--1, 4.54069, 0, -1, 0.432393,-99) , 
-15, 4.6847, 0, 0, 0.481409,-99) , 
-16, -0.429909, 0, 0, 0.51856,-99)    );
+-1, 2.25501, 0, -1, 0.335191,-99) , 
+17, -0.954633, 1, 0, 0.499176,-99)    );
   // itree = 103
-  fBoostWeights.push_back(0.090709);
+  fBoostWeights.push_back(0.0653023);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, 2.62404, 1, 1, 0.551876,-99) , 
-NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.604198,-99) , 
+-1, 0, 1, 1, 0.844438,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.484641,-99) , 
-6, -1.7313, 0, 0, 0.505739,-99) , 
+-1, 0, 1, -1, 0.480572,-99) , 
+6, -3.4157, 0, 0, 0.781118,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 4.89317, 1, -1, 0.380418,-99) , 
-32, 5.55752, 0, 0, 0.490221,-99) , 
-35, 3.47159, 1, 0, 0.510388,-99)    );
+-1, 0, 1, 1, 0.543149,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.142699,-99) , 
+30, 5.06421, 0, 0, 0.498039,-99) , 
+0, 4.73762, 1, 0, 0.606437,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 5.08354, 1, 1, 0.693752,-99) , 
+NN(
+0, 
+0, 
+-1, 1.93097, 0, -1, 0.479501,-99) , 
+10, 1.90331, 1, 0, 0.484594,-99) , 
+2, 1.17444, 1, 0, 0.491852,-99)    );
   // itree = 104
-  fBoostWeights.push_back(0.071077);
+  fBoostWeights.push_back(0.0438729);
   fForest.push_back( 
 NN(
 NN(
+NN(
 0, 
 0, 
--1, -2.61149, 1, 1, 0.691696,-99) , 
+-1, -1.15691, 1, 1, 0.513186,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.106948,-99) , 
+7, -0.886403, 1, 0, 0.510967,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.523989,-99) , 
+-1, 0, 1, 1, 0.585586,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.441198,-99) , 
-4, 1.69004, 1, 0, 0.512002,-99) , 
+-1, 0, 1, -1, 0.170893,-99) , 
+13, 2.25707, 0, 0, 0.48741,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.161809,-99) , 
-0, 6.23589, 1, 0, 0.509116,-99) , 
-10, 2.53596, 1, 0, 0.513565,-99)    );
+-1, 0.981561, 0, -1, 0.184544,-99) , 
+14, -3.21217, 0, 0, 0.350567,-99) , 
+19, 0.911667, 1, 0, 0.505775,-99)    );
   // itree = 105
-  fBoostWeights.push_back(0.118664);
+  fBoostWeights.push_back(0.123102);
   fForest.push_back( 
 NN(
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.78081,-99) , 
+-1, 0, 1, 1, 0.636214,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.350729,-99) , 
+4, 1.61112, 1, 0, 0.6043,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.524749,-99) , 
+-1, 0, 1, 1, 0.597114,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.125965,-99) , 
-10, 6.54544, 1, 0, 0.518894,-99) , 
-10, 2.24656, 1, 0, 0.525442,-99) , 
+-1, 0, 1, -1, 0.440305,-99) , 
+7, -3.38733, 1, 0, 0.495998,-99) , 
+2, 2.17688, 1, 0, 0.537244,-99) , 
 NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.686841,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.484608,-99) , 
-17, 2.60871, 0, 0, 0.538573,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.588247,-99) , 
+-1, 0, 1, 1, 0.597273,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.380619,-99) , 
-4, -0.401118, 1, 0, 0.403117,-99) , 
-9, -3.09397, 1, 0, 0.46875,-99) , 
-3, 0.24253, 1, 0, 0.501068,-99)    );
+-1, 0, 1, -1, 0.474923,-99) , 
+1, 3.61355, 0, 0, 0.489802,-99) , 
+NN(
+0, 
+0, 
+-1, 3.21399, 0, -1, 0.348266,-99) , 
+13, 2.82966, 0, 0, 0.476524,-99) , 
+17, -2.93739, 1, 0, 0.495333,-99)    );
   // itree = 106
-  fBoostWeights.push_back(0.042537);
+  fBoostWeights.push_back(0.0932785);
   fForest.push_back( 
 NN(
 NN(
@@ -3883,267 +3941,273 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.710997,-99) , 
+-1, 0, 1, 1, 0.565208,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.49981,-99) , 
-8, 0.227744, 0, 0, 0.505459,-99) , 
+-1, 0, 1, -1, 0.495152,-99) , 
+22, -0.466982, 0, 0, 0.529755,-99) , 
 NN(
 0, 
 0, 
--1, 3.71138, 0, -1, 0.338671,-99) , 
-8, -3.53809, 0, 0, 0.499378,-99) , 
+-1, 3.08891, 0, -1, 0.389651,-99) , 
+15, 0.00858443, 0, 0, 0.52053,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.649512,-99) , 
+-1, 0, 1, 1, 0.56497,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.369072,-99) , 
-24, -0.476655, 0, 0, 0.517688,-99) , 
+-1, 0, 1, -1, 0.405823,-99) , 
+8, -3.10806, 0, 0, 0.450601,-99) , 
 NN(
 0, 
 0, 
--1, -0.801349, 0, -1, 0.272092,-99) , 
-15, 5.14806, 0, 0, 0.374934,-99) , 
-17, 0.241321, 0, 0, 0.492631,-99)    );
+-1, 0, 1, -1, 0.170723,-99) , 
+6, -3.60768, 0, 0, 0.430593,-99) , 
+20, -1.54528, 0, 0, 0.510846,-99)    );
   // itree = 107
-  fBoostWeights.push_back(0.0584103);
+  fBoostWeights.push_back(0.0909578);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, 3.15211, 0, 1, 0.515527,-99) , 
 NN(
 0, 
 0, 
--1, 3.71138, 0, -1, 0.348262,-99) , 
-8, -3.53809, 0, 0, 0.509467,-99) , 
-NN(
-NN(
+-1, 0, 1, 1, 0.530821,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.639768,-99) , 
+-1, 0, 1, -1, 0.340923,-99) , 
+8, -5.53371, 0, 0, 0.524881,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.379031,-99) , 
-24, -0.476655, 0, 0, 0.517154,-99) , 
+-1, 0, 1, 1, 0.640739,-99) , 
 NN(
 0, 
 0, 
--1, -0.801349, 0, -1, 0.280598,-99) , 
-15, 5.14806, 0, 0, 0.37987,-99) , 
-17, 0.241321, 0, 0, 0.502491,-99)    );
+-1, 0, 1, -1, 0.378486,-99) , 
+10, 3.23827, 1, 0, 0.430417,-99) , 
+12, -0.374103, 0, 0, 0.515511,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0987561,-99) , 
+12, -2.0385, 0, 0, 0.513709,-99)    );
   // itree = 108
-  fBoostWeights.push_back(0.0542184);
+  fBoostWeights.push_back(0.0589782);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.667204,-99) , 
-NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.505712,-99) , 
+-1, 0, 1, 1, 0.554697,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.41822,-99) , 
-7, -1.94571, 1, 0, 0.489186,-99) , 
+-1, 0, 1, -1, 0.485504,-99) , 
+13, 4.20842, 0, 0, 0.501977,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.157403,-99) , 
-15, 2.74889, 0, 0, 0.485625,-99) , 
-14, -2.41963, 0, 0, 0.490099,-99)    );
+-1, -3.57743, 0, -1, 0.245072,-99) , 
+10, 5.99139, 1, 0, 0.498258,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.166543,-99) , 
+13, 0.841684, 0, 0, 0.49604,-99)    );
   // itree = 109
-  fBoostWeights.push_back(0.0815779);
+  fBoostWeights.push_back(0.0529983);
   fForest.push_back( 
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.655059,-99) , 
+-1, 0, 1, 1, 0.801493,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.593314,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.32228,-99) , 
+25, 0.478938, 1, 0, 0.539014,-99) , 
+0, 4.67919, 1, 0, 0.596741,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.578791,-99) , 
+-1, 0, 1, 1, 0.506045,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.470117,-99) , 
-36, 1.24851, 0, 0, 0.480733,-99) , 
+-1, 0, 1, -1, 0.310934,-99) , 
+10, 5.68458, 1, 0, 0.500602,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.164728,-99) , 
-15, 2.74889, 0, 0, 0.4774,-99) , 
-14, -2.41963, 0, 0, 0.481744,-99)    );
+-1, 4.73062, 0, -1, 0.297398,-99) , 
+3, 1.83177, 0, 0, 0.495888,-99) , 
+9, -4.66563, 1, 0, 0.503917,-99)    );
   // itree = 110
-  fBoostWeights.push_back(0.0471019);
+  fBoostWeights.push_back(0.0698418);
   fForest.push_back( 
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.679719,-99) , 
+-1, 0, 1, 1, 0.792926,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.580465,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.333963,-99) , 
+25, 0.478938, 1, 0, 0.531258,-99) , 
+0, 4.67919, 1, 0, 0.588347,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.681416,-99) , 
+-1, 0, 1, 1, 0.659204,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.490502,-99) , 
-2, 1.7109, 1, 0, 0.497753,-99) , 
+-1, 0, 1, -1, 0.482191,-99) , 
+34, 1.84341, 0, 0, 0.487717,-99) , 
 NN(
 0, 
 0, 
--1, -2.02493, 0, -1, 0.325753,-99) , 
-6, -4.52671, 0, 0, 0.493297,-99) , 
-33, 9.47533, 0, 0, 0.497277,-99)    );
+-1, -1.40281, 1, -1, 0.242733,-99) , 
+14, -5.44177, 0, 0, 0.483965,-99) , 
+9, -4.66563, 1, 0, 0.492219,-99)    );
   // itree = 111
-  fBoostWeights.push_back(0.0758265);
+  fBoostWeights.push_back(0.0445448);
   fForest.push_back( 
 NN(
 NN(
+0, 
+0, 
+-1, 3.40148, 1, 1, 0.677784,-99) , 
 NN(
-0, 
-0, 
--1, 2.37087, 1, 1, 0.526363,-99) , 
-NN(
-0, 
-0, 
--1, 4.34356, 0, -1, 0.435731,-99) , 
-17, 0.956613, 0, 0, 0.515031,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.601979,-99) , 
+-1, 0, 1, 1, 0.588355,-99) , 
 NN(
 0, 
 0, 
--1, 3.63979, 0, -1, 0.367214,-99) , 
-35, 5.00266, 0, 0, 0.410669,-99) , 
-21, -0.331148, 0, 0, 0.507704,-99)    );
+-1, 0, 1, -1, 0.496667,-99) , 
+32, 2.72794, 1, 0, 0.507535,-99) , 
+NN(
+0, 
+0, 
+-1, -3.93127, 0, -1, 0.313402,-99) , 
+0, 6.94341, 1, 0, 0.502031,-99) , 
+31, 8.20206, 0, 0, 0.50637,-99)    );
   // itree = 112
-  fBoostWeights.push_back(0.0414917);
+  fBoostWeights.push_back(0.0498875);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, -2.61149, 1, 1, 0.668409,-99) , 
-NN(
-NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.683118,-99) , 
+-1, 3.12068, 1, 1, 0.520101,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.489302,-99) , 
-0, 2.27778, 1, 0, 0.493742,-99) , 
+-1, -3.57743, 0, -1, 0.269881,-99) , 
+10, 5.99139, 1, 0, 0.516652,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.16617,-99) , 
-0, 6.23589, 1, 0, 0.491147,-99) , 
-10, 2.53596, 1, 0, 0.495316,-99)    );
+-1, 0, 1, -1, 0.179737,-99) , 
+13, 0.841684, 0, 0, 0.514468,-99)    );
   // itree = 113
-  fBoostWeights.push_back(0.0606896);
+  fBoostWeights.push_back(0.0329176);
   fForest.push_back( 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.68943,-99) , 
-NN(
+-1, 0, 1, 1, 0.72474,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.516009,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.421288,-99) , 
-12, -0.486505, 0, 0, 0.50502,-99) , 
+-1, 1.12102, 1, 1, 0.506862,-99) , 
 NN(
 0, 
 0, 
--1, -0.388066, 0, -1, 0.218101,-99) , 
-14, -6.31027, 0, 0, 0.500901,-99) , 
-6, -0.139658, 0, 0, 0.504744,-99)    );
+-1, 2.08681, 0, -1, 0.402156,-99) , 
+9, -1.65142, 1, 0, 0.499291,-99) , 
+2, -1.14892, 1, 0, 0.502505,-99)    );
   // itree = 114
-  fBoostWeights.push_back(0.0289437);
+  fBoostWeights.push_back(0.0332308);
   fForest.push_back( 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.676288,-99) , 
-NN(
+-1, 0, 1, 1, 0.718125,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.500404,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.366067,-99) , 
-13, -1.07433, 0, 0, 0.493362,-99) , 
+-1, 0, 1, 1, 0.724744,-99) , 
 NN(
 0, 
 0, 
--1, -0.388066, 0, -1, 0.228628,-99) , 
-14, -6.31027, 0, 0, 0.489621,-99) , 
-6, -0.139658, 0, 0, 0.493389,-99)    );
+-1, 2.15092, 0, -1, 0.489122,-99) , 
+10, 1.12102, 1, 0, 0.492249,-99) , 
+2, -1.14892, 1, 0, 0.495447,-99)    );
   // itree = 115
-  fBoostWeights.push_back(0.0761916);
+  fBoostWeights.push_back(0.0332111);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.669919,-99) , 
-NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.538794,-99) , 
+-1, 0, 1, 1, 0.510181,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.470147,-99) , 
-36, -0.440465, 1, 0, 0.486883,-99) , 
+-1, 0, 1, -1, 0.273003,-99) , 
+14, -5.5145, 0, 0, 0.507084,-99) , 
 NN(
 0, 
 0, 
--1, -0.388066, 0, -1, 0.233772,-99) , 
-14, -6.31027, 0, 0, 0.483332,-99) , 
-6, -0.139658, 0, 0, 0.487081,-99)    );
+-1, 0, 1, -1, 0.117639,-99) , 
+19, 1.94801, 1, 0, 0.505038,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.11291,-99) , 
+17, 0.367206, 1, 0, 0.503303,-99)    );
   // itree = 116
-  fBoostWeights.push_back(0.0922631);
+  fBoostWeights.push_back(0.0894196);
   fForest.push_back( 
 NN(
 NN(
@@ -4151,30 +4215,42 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.618368,-99) , 
+-1, 0, 1, 1, 0.731811,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.327635,-99) , 
-9, -2.24699, 1, 0, 0.573123,-99) , 
+-1, 0, 1, -1, 0.387828,-99) , 
+35, 0.649705, 1, 0, 0.681884,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.51778,-99) , 
+-1, 0, 1, 1, 0.548618,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.454885,-99) , 
-0, 3.49934, 0, 0, 0.488633,-99) , 
-17, 2.5096, 0, 0, 0.499897,-99) , 
+-1, 0, 1, -1, 0.275757,-99) , 
+24, -1.41411, 0, 0, 0.516636,-99) , 
+33, 4.20884, 0, 0, 0.566511,-99) , 
+NN(
+NN(
 NN(
 0, 
 0, 
--1, -3.28296, 1, -1, 0.312061,-99) , 
-11, -2.11251, 1, 0, 0.496375,-99)    );
+-1, 0, 1, 1, 0.581983,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.475344,-99) , 
+10, 3.15803, 1, 0, 0.489448,-99) , 
+NN(
+0, 
+0, 
+-1, 2.39574, 0, -1, 0.182177,-99) , 
+21, 1.11294, 0, 0, 0.485932,-99) , 
+30, 6.94682, 0, 0, 0.495373,-99)    );
   // itree = 117
-  fBoostWeights.push_back(0.0607669);
+  fBoostWeights.push_back(0.0423526);
   fForest.push_back( 
 NN(
 NN(
@@ -4182,36 +4258,98 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.79316,-99) , 
+-1, 0, 1, 1, 0.561848,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.454356,-99) , 
-0, 3.74792, 1, 0, 0.655908,-99) , 
-NN(
-0, 
-0, 
--1, 1.05402, 1, -1, 0.489636,-99) , 
-2, 2.21604, 1, 0, 0.500456,-99) , 
-NN(
+-1, 0, 1, -1, 0.497948,-99) , 
+6, -1.86038, 0, 0, 0.512916,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.539153,-99) , 
+-1, 0, 1, 1, 0.583363,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.271518,-99) , 
-15, 4.66916, 0, 0, 0.487633,-99) , 
+-1, 0, 1, -1, 0.0428599,-99) , 
+0, 4.99072, 1, 0, 0.252921,-99) , 
+19, 1.28752, 1, 0, 0.510126,-99) , 
 NN(
 0, 
 0, 
--1, 4.15118, 1, -1, 0.283389,-99) , 
-14, -4.24152, 0, 0, 0.39863,-99) , 
-6, -3.89999, 0, 0, 0.493268,-99)    );
+-1, 0, 1, -1, 0.173937,-99) , 
+13, 0.841684, 0, 0, 0.508011,-99)    );
   // itree = 118
-  fBoostWeights.push_back(0.0613104);
+  fBoostWeights.push_back(0.061301);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.824651,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.519081,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.175439,-99) , 
+10, 6.0453, 1, 0, 0.515787,-99) , 
+0, 3.82837, 1, 0, 0.519163,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.691116,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.389406,-99) , 
+13, 2.14601, 1, 0, 0.426021,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.167067,-99) , 
+10, 4.31872, 1, 0, 0.385348,-99) , 
+16, -2.15859, 0, 0, 0.513646,-99)    );
+  // itree = 119
+  fBoostWeights.push_back(0.0515172);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, -1.4247, 1, 1, 0.511679,-99) , 
+NN(
+0, 
+0, 
+-1, 4.86027, 1, -1, 0.285555,-99) , 
+14, -5.33714, 0, 0, 0.507209,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.580146,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.36095,-99) , 
+9, -2.50914, 1, 0, 0.48921,-99) , 
+NN(
+0, 
+0, 
+-1, 3.95078, 1, -1, 0.27394,-99) , 
+14, -3.19045, 0, 0, 0.406336,-99) , 
+11, -1.33226, 0, 0, 0.499738,-99)    );
+  // itree = 120
+  fBoostWeights.push_back(0.104217);
   fForest.push_back( 
 NN(
 NN(
@@ -4219,2027 +4357,1863 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.783014,-99) , 
+-1, 0, 1, 1, 0.59273,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.469459,-99) , 
-0, 3.74792, 1, 0, 0.65484,-99) , 
+-1, 0, 1, -1, 0.355568,-99) , 
+17, -1.45578, 1, 0, 0.564796,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.508449,-99) , 
+-1, 0, 1, 1, 0.591986,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.471211,-99) , 
+35, -1.18464, 1, 0, 0.484371,-99) , 
+7, -3.8371, 1, 0, 0.497674,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, -4.68233, 0, -1, 0.458128,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.602099,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0792427,-99) , 
+27, 2.75844, 1, 0, 0.238058,-99) , 
+31, 4.05302, 1, 0, 0.412751,-99) , 
+31, 4.5717, 0, 0, 0.488539,-99)    );
+  // itree = 121
+  fBoostWeights.push_back(0.054756);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.723566,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.420161,-99) , 
+21, 3.46679, 1, 0, 0.663702,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.568616,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.48914,-99) , 
+9, -4.41468, 1, 0, 0.500598,-99) , 
+6, -0.441807, 0, 0, 0.505874,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.514263,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0057971,-99) , 
+4, 1.42339, 1, 0, 0.222783,-99) , 
+1, 0.549961, 0, 0, 0.503231,-99)    );
+  // itree = 122
+  fBoostWeights.push_back(0.0720465);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.549037,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.488525,-99) , 
+15, 1.14551, 0, 0, 0.519315,-99) , 
+NN(
+0, 
+0, 
+-1, 4.0994, 1, -1, 0.335559,-99) , 
+13, 2.10452, 0, 0, 0.515051,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.500578,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00612138,-99) , 
+4, 1.42339, 1, 0, 0.220358,-99) , 
+1, 0.549961, 0, 0, 0.512339,-99)    );
+  // itree = 123
+  fBoostWeights.push_back(0.0766579);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.525762,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.345501,-99) , 
+0, 6.94341, 1, 0, 0.521119,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.750721,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.325025,-99) , 
+7, -5.07736, 1, 0, 0.387216,-99) , 
+6, -3.93008, 0, 0, 0.515196,-99) , 
+NN(
+0, 
+0, 
+-1, 1.42339, 1, -1, 0.217052,-99) , 
+1, 0.549961, 0, 0, 0.5125,-99)    );
+  // itree = 124
+  fBoostWeights.push_back(0.104228);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, -0.608061, 0, 1, 0.706395,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.543334,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.414136,-99) , 
+4, 1.24185, 1, 0, 0.514545,-99) , 
+31, 6.56609, 0, 0, 0.53324,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.537859,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.46033,-99) , 
+27, 5.10879, 0, 0, 0.484251,-99) , 
+NN(
+0, 
+0, 
+-1, 1.01072, 1, -1, 0.222731,-99) , 
+1, 1.52721, 0, 0, 0.478426,-99) , 
+29, 3.50196, 0, 0, 0.496048,-99)    );
+  // itree = 125
+  fBoostWeights.push_back(0.0190785);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.848484,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.603031,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.438258,-99) , 
+32, 3.32622, 1, 0, 0.537043,-99) , 
+2, 1.45259, 1, 0, 0.674,-99) , 
+NN(
+0, 
+0, 
+-1, 6.0453, 1, -1, 0.494418,-99) , 
+0, 4.12149, 1, 0, 0.498041,-99)    );
+  // itree = 126
+  fBoostWeights.push_back(0.0230583);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 1.45259, 1, 1, 0.680212,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.503643,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.188926,-99) , 
+10, 6.0453, 1, 0, 0.500702,-99) , 
+0, 4.12149, 1, 0, 0.504275,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.109628,-99) , 
+12, -2.0385, 0, 0, 0.502662,-99)    );
+  // itree = 127
+  fBoostWeights.push_back(0.0172011);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.745878,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.497715,-99) , 
+0, 3.82837, 1, 0, 0.500592,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.118814,-99) , 
+19, 1.94801, 1, 0, 0.498684,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.120649,-99) , 
+17, 0.367206, 1, 0, 0.497049,-99)    );
+  // itree = 128
+  fBoostWeights.push_back(0.0232625);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.506528,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.108605,-99) , 
+7, -0.83707, 1, 0, 0.504793,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.120627,-99) , 
+19, 1.94801, 1, 0, 0.502885,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.122486,-99) , 
+17, 0.367206, 1, 0, 0.501251,-99)    );
+  // itree = 129
+  fBoostWeights.push_back(0.0366499);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, -1.82378, 1, 1, 0.506517,-99) , 
+NN(
+0, 
+0, 
+-1, 4.65491, 1, -1, 0.377205,-99) , 
+14, -4.71608, 0, 0, 0.498559,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.642435,-99) , 
+NN(
+0, 
+0, 
+-1, 4.14681, 1, -1, 0.00146276,-99) , 
+32, 3.95273, 1, 0, 0.291804,-99) , 
+36, 4.13115, 1, 0, 0.495592,-99)    );
+  // itree = 130
+  fBoostWeights.push_back(0.0692031);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.782633,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.486197,-99) , 
+33, 3.40148, 1, 0, 0.644293,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.520413,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.467954,-99) , 
+5, -0.434619, 1, 0, 0.488216,-99) , 
+NN(
+0, 
+0, 
+-1, -3.93127, 0, -1, 0.329347,-99) , 
+0, 6.94341, 1, 0, 0.483812,-99) , 
+31, 8.20206, 0, 0, 0.487677,-99)    );
+  // itree = 131
+  fBoostWeights.push_back(0.0308568);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.842618,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.592823,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.439965,-99) , 
+32, 3.32622, 1, 0, 0.531517,-99) , 
+2, 1.45259, 1, 0, 0.667953,-99) , 
+NN(
+0, 
+0, 
+-1, 6.0453, 1, -1, 0.488239,-99) , 
+0, 4.12149, 1, 0, 0.491831,-99)    );
+  // itree = 132
+  fBoostWeights.push_back(0.0198006);
+  fForest.push_back( 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.711238,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.501828,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0651253,-99) , 
+0, 7.66577, 1, 0, 0.499588,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0579414,-99) , 
+13, 1.49419, 0, 0, 0.496437,-99) , 
+10, 1.12102, 1, 0, 0.499305,-99)    );
+  // itree = 133
+  fBoostWeights.push_back(0.0220756);
+  fForest.push_back( 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.707154,-99) , 
+NN(
+0, 
+0, 
+-1, 1.49419, 0, -1, 0.491607,-99) , 
+10, 1.12102, 1, 0, 0.494474,-99)    );
+  // itree = 134
+  fBoostWeights.push_back(0.0692081);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.516759,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.287915,-99) , 
+14, -5.28338, 0, 0, 0.511986,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.57666,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.388965,-99) , 
+35, 0.617597, 0, 0, 0.443142,-99) , 
+12, 1.9184, 1, 0, 0.501521,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.146219,-99) , 
+21, 0.54191, 0, 0, 0.499845,-99)    );
+  // itree = 135
+  fBoostWeights.push_back(0.0397548);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.835054,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.589852,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.435981,-99) , 
+9, -2.82822, 1, 0, 0.520271,-99) , 
+2, 1.45259, 1, 0, 0.657397,-99) , 
+NN(
+0, 
+0, 
+-1, 6.0453, 1, -1, 0.483572,-99) , 
+0, 4.12149, 1, 0, 0.487014,-99)    );
+  // itree = 136
+  fBoostWeights.push_back(0.0327988);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.612363,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.493457,-99) , 
+1, 3.91099, 0, 0, 0.500434,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.1212,-99) , 
+1, 0.26975, 0, 0, 0.498334,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.149666,-99) , 
+3, 0.755404, 0, 0, 0.496656,-99)    );
+  // itree = 137
+  fBoostWeights.push_back(0.0225764);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, -0.34297, 0, 1, 0.507674,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.124737,-99) , 
+1, 0.26975, 0, 0, 0.505579,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.153889,-99) , 
+3, 0.755404, 0, 0, 0.503905,-99)    );
+  // itree = 138
+  fBoostWeights.push_back(0.0190203);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 3.40148, 1, 1, 0.651799,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.500321,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.346107,-99) , 
+0, 6.94341, 1, 0, 0.496117,-99) , 
+31, 8.20206, 0, 0, 0.499864,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.115398,-99) , 
+12, -2.0385, 0, 0, 0.498376,-99)    );
+  // itree = 139
+  fBoostWeights.push_back(0.0261895);
+  fForest.push_back( 
+NN(
+NN(
+0, 
+0, 
+-1, 3.40148, 1, 1, 0.646096,-99) , 
+NN(
+0, 
+0, 
+-1, 0.755404, 0, -1, 0.490173,-99) , 
+31, 8.20206, 0, 0, 0.493908,-99)    );
+  // itree = 140
+  fBoostWeights.push_back(0.0748927);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0.283841, 0, 1, 0.691681,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.242632,-99) , 
+14, -3.94339, 0, 0, 0.629207,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.523151,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.465906,-99) , 
+4, 0.725682, 1, 0, 0.499732,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.548651,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.152665,-99) , 
+14, -3.01525, 0, 0, 0.314389,-99) , 
+3, 1.83177, 0, 0, 0.495776,-99) , 
+17, -4.25923, 1, 0, 0.500142,-99)    );
+  // itree = 141
+  fBoostWeights.push_back(0.0829257);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 3.36276, 0, 1, 0.770644,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.514844,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.340235,-99) , 
+23, -2.55077, 0, 0, 0.507543,-99) , 
+7, -4.66591, 1, 0, 0.514554,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.522112,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0715177,-99) , 
+4, 1.85241, 1, 0, 0.506951,-99) , 
+NN(
+0, 
+0, 
+-1, 3.15323, 0, -1, 0.356246,-99) , 
+21, 2.82604, 0, 0, 0.459239,-99) , 
+1, 2.50446, 0, 0, 0.49654,-99)    );
+  // itree = 142
+  fBoostWeights.push_back(0.0470765);
+  fForest.push_back( 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.691202,-99) , 
+NN(
+0, 
+0, 
+-1, 1.49419, 0, -1, 0.4787,-99) , 
+10, 1.12102, 1, 0, 0.481477,-99)    );
+  // itree = 143
+  fBoostWeights.push_back(0.0564043);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0.108699, 0, 1, 0.806608,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.534495,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.267906,-99) , 
+11, -1.2074, 0, 0, 0.51451,-99) , 
+32, 2.59489, 1, 0, 0.544751,-99) , 
+NN(
+0, 
+0, 
+-1, -4.86425, 0, -1, 0.481949,-99) , 
+8, -2.92086, 0, 0, 0.492928,-99)    );
+  // itree = 144
+  fBoostWeights.push_back(0.0452713);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.805959,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.316567,-99) , 
+0, 5.56917, 1, 0, 0.722748,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.1301,-99) , 
+4, 1.80086, 1, 0, 0.634805,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.506036,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0,-99) , 
+36, 4.41775, 1, 0, 0.503076,-99) , 
+NN(
+0, 
+0, 
+-1, -3.97549, 0, -1, 0.287419,-99) , 
+7, -1.6118, 1, 0, 0.498102,-99) , 
+2, 0.399986, 1, 0, 0.502432,-99)    );
+  // itree = 145
+  fBoostWeights.push_back(0.0905766);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.798781,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.326442,-99) , 
+0, 5.56917, 1, 0, 0.718095,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.13531,-99) , 
+4, 1.80086, 1, 0, 0.631902,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.608862,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.490131,-99) , 
+34, -0.974234, 1, 0, 0.500744,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.646213,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.37779,-99) , 
+11, 0.922894, 0, 0, 0.423461,-99) , 
+7, -2.31604, 1, 0, 0.48743,-99) , 
+2, 0.399986, 1, 0, 0.491949,-99)    );
+  // itree = 146
+  fBoostWeights.push_back(0.0419041);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.695236,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.239179,-99) , 
+0, 5.77076, 1, 0, 0.642415,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.64395,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.498954,-99) , 
+35, -1.58965, 1, 0, 0.505586,-99) , 
+34, 1.56518, 0, 0, 0.511921,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.644661,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0015629,-99) , 
+32, 3.95273, 1, 0, 0.305243,-99) , 
+36, 4.13115, 1, 0, 0.509085,-99)    );
+  // itree = 147
+  fBoostWeights.push_back(0.0495708);
+  fForest.push_back( 
+NN(
+NN(
+0, 
+0, 
+-1, 1.17952, 0, 1, 0.520638,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.635005,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00162968,-99) , 
+32, 3.95273, 1, 0, 0.303091,-99) , 
+36, 4.13115, 1, 0, 0.517693,-99)    );
+  // itree = 148
+  fBoostWeights.push_back(0.0438641);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, -2.41884, 0, 1, 0.5948,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.722991,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.494568,-99) , 
+34, -1.74303, 1, 0, 0.499573,-99) , 
+35, 1.17952, 0, 0, 0.508257,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.623441,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00171235,-99) , 
+32, 3.95273, 1, 0, 0.300469,-99) , 
+36, 4.13115, 1, 0, 0.505485,-99)    );
+  // itree = 149
+  fBoostWeights.push_back(0.0631773);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 1.12102, 1, 1, 0.523714,-99) , 
+NN(
+0, 
+0, 
+-1, 4.65491, 1, -1, 0.407322,-99) , 
+14, -4.71608, 0, 0, 0.516798,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.613088,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.001789,-99) , 
+32, 3.95273, 1, 0, 0.298078,-99) , 
+36, 4.13115, 1, 0, 0.513918,-99)    );
+  // itree = 150
+  fBoostWeights.push_back(0.0863374);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.543602,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.480027,-99) , 
+7, -2.89093, 1, 0, 0.515934,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.539196,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.283181,-99) , 
+2, 2.26327, 0, 0, 0.406121,-99) , 
+9, -1.63187, 1, 0, 0.508496,-99) , 
+NN(
+0, 
+0, 
+-1, -3.60768, 0, -1, 0.431266,-99) , 
+20, -1.54528, 0, 0, 0.500196,-99)    );
+  // itree = 151
+  fBoostWeights.push_back(0.122341);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.556735,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.414518,-99) , 
+4, 1.38319, 1, 0, 0.533778,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.518098,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.368621,-99) , 
+23, -1.34042, 0, 0, 0.478185,-99) , 
+24, -0.38074, 0, 0, 0.50869,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.784028,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.486088,-99) , 
+15, -0.388424, 1, 0, 0.510057,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.562416,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.277115,-99) , 
+30, 5.36128, 1, 0, 0.33211,-99) , 
+22, -0.736888, 0, 0, 0.431854,-99) , 
+23, 0.325019, 1, 0, 0.50024,-99)    );
+  // itree = 152
+  fBoostWeights.push_back(0.039867);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.73932,-99) , 
+NN(
+0, 
+0, 
+-1, 2.15092, 0, -1, 0.486555,-99) , 
+10, 1.12102, 1, 0, 0.489672,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.571596,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00164465,-99) , 
+32, 3.95273, 1, 0, 0.274258,-99) , 
+36, 4.13115, 1, 0, 0.48681,-99)    );
+  // itree = 153
+  fBoostWeights.push_back(0.0486343);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.674878,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.238162,-99) , 
+0, 5.77076, 1, 0, 0.623619,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.741234,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.490133,-99) , 
+35, 2.19955, 0, 0, 0.493422,-99) , 
+34, 1.56518, 0, 0, 0.499391,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.561807,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00171143,-99) , 
+32, 3.95273, 1, 0, 0.272017,-99) , 
+36, 4.13115, 1, 0, 0.496404,-99)    );
+  // itree = 154
+  fBoostWeights.push_back(0.0385893);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.740215,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.510294,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0621449,-99) , 
+13, 1.49419, 0, 0, 0.507394,-99) , 
+10, 1.12102, 1, 0, 0.51027,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.549801,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00179657,-99) , 
+32, 3.95273, 1, 0, 0.269212,-99) , 
+36, 4.13115, 1, 0, 0.507143,-99)    );
+  // itree = 155
+  fBoostWeights.push_back(0.0272453);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.732726,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.502734,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.24772,-99) , 
+13, 2.15092, 0, 0, 0.497872,-99) , 
+10, 1.12102, 1, 0, 0.500747,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.540232,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00186712,-99) , 
+32, 3.95273, 1, 0, 0.266931,-99) , 
+36, 4.13115, 1, 0, 0.497745,-99)    );
+  // itree = 156
+  fBoostWeights.push_back(0.0292341);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.727357,-99) , 
+NN(
+0, 
+0, 
+-1, 1.49419, 0, -1, 0.491319,-99) , 
+10, 1.12102, 1, 0, 0.494191,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.533458,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00191859,-99) , 
+32, 3.95273, 1, 0, 0.265292,-99) , 
+36, 4.13115, 1, 0, 0.491273,-99)    );
+  // itree = 157
+  fBoostWeights.push_back(0.0428873);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 4.73762, 1, 1, 0.606758,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.684869,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.490782,-99) , 
+10, 1.90331, 1, 0, 0.495038,-99) , 
+2, 1.17444, 1, 0, 0.501322,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.526175,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00197539,-99) , 
+32, 3.95273, 1, 0, 0.263506,-99) , 
+36, 4.13115, 1, 0, 0.498313,-99)    );
+  // itree = 158
+  fBoostWeights.push_back(0.0282552);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.788925,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.477266,-99) , 
+5, 0.0249427, 1, 0, 0.647302,-99) , 
+NN(
+0, 
+0, 
+-1, -0.441807, 0, 1, 0.505802,-99) , 
+35, -1.86284, 1, 0, 0.510401,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.515473,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00206178,-99) , 
+32, 3.95273, 1, 0, 0.260836,-99) , 
+36, 4.13115, 1, 0, 0.507275,-99)    );
+  // itree = 159
+  fBoostWeights.push_back(0.0378538);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.784181,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.484319,-99) , 
+5, 0.0249427, 1, 0, 0.647357,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.647788,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.493583,-99) , 
+6, -0.441807, 0, 0, 0.498739,-99) , 
+35, -1.86284, 1, 0, 0.503547,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.508413,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00212074,-99) , 
+32, 3.95273, 1, 0, 0.259044,-99) , 
+36, 4.13115, 1, 0, 0.500506,-99)    );
+  // itree = 160
+  fBoostWeights.push_back(0.0565117);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.777706,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.493778,-99) , 
+5, 0.0249427, 1, 0, 0.647432,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.547694,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.490158,-99) , 
+14, -2.86686, 0, 0, 0.507572,-99) , 
+35, -1.86284, 1, 0, 0.512071,-99) , 
+NN(
+0, 
+0, 
+-1, 3.95273, 1, -1, 0.256605,-99) , 
+36, 4.13115, 1, 0, 0.508922,-99)    );
+  // itree = 161
+  fBoostWeights.push_back(0.045354);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.711562,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.276351,-99) , 
+33, 3.79678, 1, 0, 0.643169,-99) , 
+NN(
+0, 
+0, 
+-1, 1.15691, 0, 1, 0.51291,-99) , 
+34, -1.49858, 1, 0, 0.517455,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.513075,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00233012,-99) , 
+32, 3.95273, 1, 0, 0.267532,-99) , 
+36, 4.13115, 1, 0, 0.514411,-99)    );
+  // itree = 162
+  fBoostWeights.push_back(0.0509859);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.744214,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.421754,-99) , 
+6, -2.99722, 0, 0, 0.636719,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.57945,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.491305,-99) , 
+34, 1.15691, 0, 0, 0.501574,-99) , 
+34, -1.49858, 1, 0, 0.506248,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.50174,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00243797,-99) , 
+32, 3.95273, 1, 0, 0.264468,-99) , 
+36, 4.13115, 1, 0, 0.503333,-99)    );
+  // itree = 163
+  fBoostWeights.push_back(0.0364579);
+  fForest.push_back( 
+NN(
+NN(
+0, 
+0, 
+-1, -1.86284, 1, 1, 0.515556,-99) , 
+NN(
+0, 
+0, 
+-1, 3.95273, 1, -1, 0.260944,-99) , 
+36, 4.13115, 1, 0, 0.512519,-99)    );
+  // itree = 164
+  fBoostWeights.push_back(0.0275814);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.758958,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.496924,-99) , 
+5, 0.0249427, 1, 0, 0.636886,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.636684,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.497522,-99) , 
+6, -0.441807, 0, 0, 0.50216,-99) , 
+35, -1.86284, 1, 0, 0.506446,-99) , 
+NN(
+0, 
+0, 
+-1, 3.95273, 1, -1, 0.268036,-99) , 
+36, 4.13115, 1, 0, 0.503626,-99)    );
+  // itree = 165
+  fBoostWeights.push_back(0.0432612);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.516039,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.139457,-99) , 
+1, 0.26975, 0, 0, 0.514176,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.16938,-99) , 
+3, 0.755404, 0, 0, 0.512665,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.505003,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00273435,-99) , 
+32, 3.95273, 1, 0, 0.273482,-99) , 
+36, 4.13115, 1, 0, 0.509853,-99)    );
+  // itree = 166
+  fBoostWeights.push_back(0.0282505);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.683487,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.626386,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.495002,-99) , 
+35, -1.86284, 1, 0, 0.499202,-99) , 
+30, 3.798, 1, 0, 0.502055,-99) , 
+NN(
+0, 
+0, 
+-1, 3.95273, 1, -1, 0.270333,-99) , 
+36, 4.13115, 1, 0, 0.499355,-99)    );
+  // itree = 167
+  fBoostWeights.push_back(0.0310631);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 3.40148, 1, 1, 0.654155,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.580031,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.497402,-99) , 
+35, 1.17952, 0, 0, 0.504918,-99) , 
+31, 8.20206, 0, 0, 0.508457,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.50125,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00293645,-99) , 
+32, 3.95273, 1, 0, 0.275942,-99) , 
+36, 4.13115, 1, 0, 0.505764,-99)    );
+  // itree = 168
+  fBoostWeights.push_back(0.050864);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.519125,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.289306,-99) , 
+10, 5.99139, 1, 0, 0.516136,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.205972,-99) , 
+13, 0.841684, 0, 0, 0.51448,-99) , 
+NN(
+0, 
+0, 
+-1, 3.95273, 1, -1, 0.273613,-99) , 
+36, 4.13115, 1, 0, 0.511709,-99)    );
+  // itree = 169
+  fBoostWeights.push_back(0.0181532);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.504467,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.109862,-99) , 
+7, -0.83707, 1, 0, 0.502928,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.129837,-99) , 
+19, 1.94801, 1, 0, 0.501222,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.129561,-99) , 
+17, 0.367206, 1, 0, 0.499748,-99)    );
+  // itree = 170
+  fBoostWeights.push_back(0.0492377);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.509986,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.258337,-99) , 
+16, -2.78538, 0, 0, 0.506948,-99) , 
+NN(
+0, 
+0, 
+-1, 1.02042, 0, -1, 0.303741,-99) , 
+8, -5.62797, 0, 0, 0.503288,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.513717,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.288381,-99) , 
+20, 0.907068, 1, 0, 0.486598,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.554324,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.219677,-99) , 
+27, 2.76051, 1, 0, 0.297937,-99) , 
+31, 3.92338, 1, 0, 0.427921,-99) , 
+31, 4.5717, 0, 0, 0.495321,-99)    );
+  // itree = 171
+  fBoostWeights.push_back(0.0498498);
+  fForest.push_back( 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0.283841, 0, 1, 0.668201,-99) , 
 NN(
 0, 
 0, 
 -1, 0, 1, -1, 0.237303,-99) , 
-25, 1.05402, 1, 0, 0.504826,-99) , 
-2, 2.21604, 1, 0, 0.514487,-99) , 
+14, -3.94339, 0, 0, 0.610076,-99) , 
 NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.641837,-99) , 
-NN(
-0, 
-0, 
--1, -4.24158, 0, -1, 0.364743,-99) , 
-7, -4.32749, 1, 0, 0.399139,-99) , 
-6, -3.89999, 0, 0, 0.506397,-99)    );
-  // itree = 119
-  fBoostWeights.push_back(0.0658254);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 2.16732, 0, 1, 0.675798,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.351771,-99) , 
-34, 4.10081, 1, 0, 0.606251,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.612765,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.484115,-99) , 
-37, -1.73611, 1, 0, 0.492071,-99) , 
-NN(
-0, 
-0, 
--1, 0.514007, 1, -1, 0.237907,-99) , 
-11, -2.11251, 1, 0, 0.488114,-99) , 
-37, 1.70531, 0, 0, 0.494052,-99)    );
-  // itree = 120
-  fBoostWeights.push_back(0.0702072);
-  fForest.push_back( 
-NN(
-NN(
-0, 
-0, 
--1, 2.21604, 1, 1, 0.519646,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.550484,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.39259,-99) , 
-5, -0.408465, 1, 0, 0.486651,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.564821,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.252372,-99) , 
-16, 0.771704, 0, 0, 0.337697,-99) , 
-15, 4.34356, 0, 0, 0.45622,-99) , 
-6, -3.27327, 0, 0, 0.507318,-99)    );
-  // itree = 121
-  fBoostWeights.push_back(0.0255165);
-  fForest.push_back( 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.712543,-99) , 
-NN(
-0, 
-0, 
--1, 6.62791, 1, -1, 0.489969,-99) , 
-10, 2.00227, 1, 0, 0.492963,-99)    );
-  // itree = 122
-  fBoostWeights.push_back(0.0305034);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 1.00483, 1, 1, 0.727561,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.729864,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.495982,-99) , 
-37, 2.38177, 0, 0, 0.499782,-99) , 
-36, 2.19616, 0, 0, 0.503334,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.526462,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.404984,-99) , 
-8, -1.88861, 1, 0, 0.463934,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.231467,-99) , 
-9, -2.96978, 1, 0, 0.351031,-99) , 
-7, -0.990435, 1, 0, 0.49917,-99)    );
-  // itree = 123
-  fBoostWeights.push_back(0.0320613);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 1.00483, 1, 1, 0.721473,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.608617,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.499098,-99) , 
-37, 1.47311, 0, 0, 0.507161,-99) , 
-36, 2.19616, 0, 0, 0.510481,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.518852,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.412356,-99) , 
-8, -1.88861, 1, 0, 0.464091,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.236938,-99) , 
-9, -2.96978, 1, 0, 0.354128,-99) , 
-7, -0.990435, 1, 0, 0.506225,-99)    );
-  // itree = 124
-  fBoostWeights.push_back(0.0934106);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, -1.93293, 1, 1, 0.539301,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.522802,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.344525,-99) , 
-8, -2.46679, 0, 0, 0.487202,-99) , 
-14, -4.62256, 0, 0, 0.517093,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.522561,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.402838,-99) , 
-29, 5.25559, 0, 0, 0.464257,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.242783,-99) , 
-9, -2.96978, 1, 0, 0.357416,-99) , 
-7, -0.990435, 1, 0, 0.512765,-99)    );
-  // itree = 125
-  fBoostWeights.push_back(0.0361797);
-  fForest.push_back( 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.751331,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, -2.61149, 1, 1, 0.65871,-99) , 
-NN(
-0, 
-0, 
--1, -1.56737, 1, -1, 0.487652,-99) , 
-10, 2.53596, 1, 0, 0.491619,-99) , 
-2, -0.573201, 1, 0, 0.494198,-99)    );
-  // itree = 126
-  fBoostWeights.push_back(0.0302972);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 1.7109, 1, 1, 0.509218,-99) , 
-NN(
-0, 
-0, 
--1, -1.35047, 0, -1, 0.347316,-99) , 
-6, -4.52671, 0, 0, 0.505133,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.253271,-99) , 
-27, 0.699381, 1, 0, 0.502649,-99)    );
-  // itree = 127
-  fBoostWeights.push_back(0.0584763);
-  fForest.push_back( 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.740166,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.595802,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.492142,-99) , 
-4, -0.491554, 1, 0, 0.501533,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.616854,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.370126,-99) , 
-34, 2.8629, 1, 0, 0.419216,-99) , 
-7, -1.56737, 1, 0, 0.493189,-99) , 
-2, -0.573201, 1, 0, 0.495601,-99)    );
-  // itree = 128
-  fBoostWeights.push_back(0.042156);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0.131755, 0, 1, 0.689835,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.509984,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.182337,-99) , 
-0, 6.23589, 1, 0, 0.507501,-99) , 
-10, 2.53596, 1, 0, 0.511617,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.542165,-99) , 
-NN(
-0, 
-0, 
--1, 5.54871, 1, -1, 0.283677,-99) , 
-12, 1.13291, 0, 0, 0.38049,-99) , 
-19, 1.92691, 1, 0, 0.507002,-99)    );
-  // itree = 129
-  fBoostWeights.push_back(0.0726761);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.564381,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.385503,-99) , 
-7, -1.54127, 1, 0, 0.543345,-99) , 
-NN(
-0, 
-0, 
--1, -0.451394, 0, -1, 0.480519,-99) , 
-15, 4.89034, 0, 0, 0.499092,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.215604,-99) , 
-15, 1.47335, 0, 0, 0.497077,-99)    );
-  // itree = 130
-  fBoostWeights.push_back(0.0792971);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.575574,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.304288,-99) , 
-1, -2.23325, 1, 0, 0.557512,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.601421,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.483218,-99) , 
-10, 3.60332, 1, 0, 0.495101,-99) , 
-7, -3.44555, 1, 0, 0.508267,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.25756,-99) , 
-27, 0.699381, 1, 0, 0.505845,-99)    );
-  // itree = 131
-  fBoostWeights.push_back(0.0884079);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.765706,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.450328,-99) , 
-0, 3.74792, 1, 0, 0.670304,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.53026,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.452968,-99) , 
-7, -2.0446, 1, 0, 0.513065,-99) , 
-2, 1.7109, 1, 0, 0.518864,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.579275,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.30543,-99) , 
-23, 0.284705, 0, 0, 0.46275,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.190675,-99) , 
-14, -4.25387, 0, 0, 0.362636,-99) , 
-6, -4.52671, 0, 0, 0.514865,-99)    );
-  // itree = 132
-  fBoostWeights.push_back(0.0756295);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, -2.6763, 1, 1, 0.709694,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.42556,-99) , 
-9, -2.07226, 1, 0, 0.632671,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.526476,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.466087,-99) , 
-10, 5.00662, 1, 0, 0.501772,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.237561,-99) , 
-25, 1.05402, 1, 0, 0.498285,-99) , 
-8, -0.00256073, 0, 0, 0.503213,-99)    );
-  // itree = 133
-  fBoostWeights.push_back(0.0439829);
-  fForest.push_back( 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.661059,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.507732,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.394431,-99) , 
-14, -5.66569, 0, 0, 0.49889,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.180714,-99) , 
-15, 2.74889, 0, 0, 0.495718,-99) , 
-14, -2.41963, 0, 0, 0.499869,-99)    );
-  // itree = 134
-  fBoostWeights.push_back(0.0336238);
-  fForest.push_back( 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.651136,-99) , 
-NN(
-0, 
-0, 
--1, 2.74889, 0, -1, 0.486631,-99) , 
-14, -2.41963, 0, 0, 0.490736,-99)    );
-  // itree = 135
-  fBoostWeights.push_back(0.0316029);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, -0.0678368, 0, 1, 0.674866,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.427132,-99) , 
-38, 1.73521, 1, 0, 0.613977,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.501217,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.239941,-99) , 
-27, 0.213065, 1, 0, 0.497281,-99) , 
-NN(
-0, 
-0, 
--1, 0.173498, 0, -1, 0.309612,-99) , 
-25, 0.813395, 1, 0, 0.493092,-99) , 
-22, 0.339258, 0, 0, 0.498721,-99)    );
-  // itree = 136
-  fBoostWeights.push_back(0.0575474);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, -0.438957, 1, 1, 0.716849,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.717855,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.393684,-99) , 
-28, 4.94346, 1, 0, 0.50653,-99) , 
-37, -0.307608, 1, 0, 0.610484,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 1.13826, 1, 1, 0.661374,-99) , 
-NN(
-0, 
-0, 
--1, 0.213065, 1, -1, 0.481805,-99) , 
-6, -0.202234, 0, 0, 0.485773,-99) , 
-22, 0.339258, 0, 0, 0.491555,-99)    );
-  // itree = 137
-  fBoostWeights.push_back(0.0376938);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.744667,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.620033,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.407229,-99) , 
-12, 0.791807, 1, 0, 0.521014,-99) , 
-9, -2.98307, 1, 0, 0.627211,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 1.7109, 1, 1, 0.506887,-99) , 
-NN(
-0, 
-0, 
--1, 4.5383, 1, -1, 0.390542,-99) , 
-4, 2.09991, 1, 0, 0.499853,-99) , 
-8, -0.00256073, 0, 0, 0.504445,-99)    );
-  // itree = 138
-  fBoostWeights.push_back(0.0390829);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.737434,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.611113,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.416359,-99) , 
-12, 0.791807, 1, 0, 0.520443,-99) , 
-9, -2.98307, 1, 0, 0.623195,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.722397,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.491581,-99) , 
-10, 2.05649, 1, 0, 0.494587,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.259476,-99) , 
-25, 1.05402, 1, 0, 0.491566,-99) , 
-8, -0.00256073, 0, 0, 0.496285,-99)    );
-  // itree = 139
-  fBoostWeights.push_back(0.131338);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.825491,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.55581,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.376632,-99) , 
-6, -3.28246, 0, 0, 0.525326,-99) , 
-28, 2.5798, 1, 0, 0.549007,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.542812,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.371194,-99) , 
-20, -1.85203, 0, 0, 0.529223,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.613743,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.437892,-99) , 
-14, -3.21882, 0, 0, 0.456761,-99) , 
-28, 5.41788, 0, 0, 0.492512,-99) , 
-36, 0.813459, 0, 0, 0.505287,-99)    );
-  // itree = 140
-  fBoostWeights.push_back(0.0723461);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 3.74792, 1, 1, 0.717199,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.34132,-99) , 
-6, -3.75192, 0, 0, 0.619416,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 3.71418, 1, 1, 0.571861,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.699042,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.480113,-99) , 
-36, 2.12505, 0, 0, 0.484566,-99) , 
-36, -0.875514, 1, 0, 0.494746,-99) , 
-2, 1.7109, 1, 0, 0.499755,-99)    );
-  // itree = 141
-  fBoostWeights.push_back(0.0514179);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.641176,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.376158,-99) , 
-13, 0.0517321, 0, 0, 0.601351,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.510096,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.139295,-99) , 
-14, -6.3473, 0, 0, 0.506297,-99) , 
-18, 0.659527, 0, 0, 0.514112,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.224533,-99) , 
-15, 1.47335, 0, 0, 0.51212,-99)    );
-  // itree = 142
-  fBoostWeights.push_back(0.0735933);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.729783,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.597652,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.482022,-99) , 
-18, -0.510899, 0, 0, 0.538941,-99) , 
-4, -0.333564, 1, 0, 0.56626,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.512897,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.408872,-99) , 
-16, -1.44504, 0, 0, 0.502621,-99) , 
-NN(
-0, 
-0, 
--1, 3.57248, 1, -1, 0.215516,-99) , 
-33, 6.80192, 1, 0, 0.491444,-99) , 
-33, 7.48807, 0, 0, 0.5,-99)    );
-  // itree = 143
-  fBoostWeights.push_back(0.0655228);
-  fForest.push_back( 
-NN(
-NN(
-0, 
-0, 
--1, -0.333564, 1, 1, 0.564259,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.744399,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.484202,-99) , 
-37, -2.52544, 1, 0, 0.487846,-99) , 
-NN(
-0, 
-0, 
--1, 3.57248, 1, -1, 0.228219,-99) , 
-33, 6.80192, 1, 0, 0.477928,-99) , 
-33, 7.48807, 0, 0, 0.487768,-99)    );
-  // itree = 144
-  fBoostWeights.push_back(0.092432);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 3.32226, 1, 1, 0.626008,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.598906,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.421869,-99) , 
-4, 0.434636, 1, 0, 0.490126,-99) , 
-0, 3.40338, 1, 0, 0.556755,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.514311,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.261542,-99) , 
-10, 6.42675, 1, 0, 0.50845,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.566009,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.406377,-99) , 
-23, -0.581285, 1, 0, 0.431445,-99) , 
-26, -1.66665, 0, 0, 0.490341,-99) , 
-9, -4.06305, 1, 0, 0.500019,-99)    );
-  // itree = 145
-  fBoostWeights.push_back(0.0860865);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.600936,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.421339,-99) , 
-6, -3.34019, 0, 0, 0.571254,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.385656,-99) , 
-2, 4.01166, 1, 0, 0.5486,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.667847,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.462802,-99) , 
-11, -3.43579, 1, 0, 0.620916,-99) , 
-NN(
-0, 
-0, 
--1, 0.184778, 1, -1, 0.471054,-99) , 
-3, -1.22834, 1, 0, 0.477148,-99) , 
-9, -4.06305, 1, 0, 0.487502,-99)    );
-  // itree = 146
-  fBoostWeights.push_back(0.0425093);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 1.47311, 0, 1, 0.512065,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.561732,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.362592,-99) , 
-24, 0.191072, 0, 0, 0.416839,-99) , 
-23, 1.6197, 1, 0, 0.505589,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.263096,-99) , 
-27, 0.699381, 1, 0, 0.503301,-99)    );
-  // itree = 147
-  fBoostWeights.push_back(0.0452495);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.747471,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.694991,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.357814,-99) , 
-7, -2.22435, 0, 0, 0.533852,-99) , 
-38, 1.79276, 0, 0, 0.616058,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.715247,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.489413,-99) , 
-10, 2.05649, 1, 0, 0.492311,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.264424,-99) , 
-25, 1.05402, 1, 0, 0.489394,-99) , 
-8, -0.00256073, 0, 0, 0.493912,-99)    );
-  // itree = 148
-  fBoostWeights.push_back(0.0564422);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, -3.39487, 0, 1, 0.666389,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.512497,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.396493,-99) , 
-7, -1.25472, 1, 0, 0.506758,-99) , 
-2, 0.949535, 1, 0, 0.510625,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.674597,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.428236,-99) , 
-26, -0.613548, 0, 0, 0.537431,-99) , 
-NN(
-0, 
-0, 
--1, -2.47042, 1, -1, 0.363393,-99) , 
-2, 3.63979, 0, 0, 0.420165,-99) , 
-21, -0.331148, 0, 0, 0.504381,-99)    );
-  // itree = 149
-  fBoostWeights.push_back(0.074395);
-  fForest.push_back( 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.719806,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.563405,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.414003,-99) , 
-20, -1.40869, 0, 0, 0.536195,-99) , 
-NN(
-0, 
-0, 
--1, -2.29206, 1, -1, 0.475609,-99) , 
-14, -3.86938, 0, 0, 0.490883,-99) , 
-37, 2.71061, 0, 0, 0.493197,-99)    );
-  // itree = 150
-  fBoostWeights.push_back(0.017027);
-  fForest.push_back( 
-NN(
-NN(
-0, 
-0, 
--1, -3.72721, 1, 1, 0.652192,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.728814,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.500279,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.20505,-99) , 
-14, -6.49625, 0, 0, 0.497856,-99) , 
-37, 2.68605, 0, 0, 0.500316,-99) , 
-2, 0.949535, 1, 0, 0.503834,-99)    );
-  // itree = 151
-  fBoostWeights.push_back(0.0237717);
-  fForest.push_back( 
-NN(
-NN(
-0, 
-0, 
--1, -3.72721, 1, 1, 0.64832,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.725436,-99) , 
-NN(
-0, 
-0, 
--1, -6.49625, 0, -1, 0.493668,-99) , 
-37, 2.68605, 0, 0, 0.496128,-99) , 
-2, 0.949535, 1, 0, 0.499644,-99)    );
-  // itree = 152
-  fBoostWeights.push_back(0.0612366);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.616003,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.355954,-99) , 
-11, -3.07376, 1, 0, 0.594201,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.609119,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.494719,-99) , 
-18, 0.652385, 0, 0, 0.504335,-99) , 
-6, -1.3931, 0, 0, 0.512838,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.520088,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.309421,-99) , 
-29, 4.88233, 0, 0, 0.47242,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.179439,-99) , 
-14, -5.18622, 0, 0, 0.438315,-99) , 
-13, -0.785283, 0, 0, 0.505191,-99)    );
-  // itree = 153
-  fBoostWeights.push_back(0.0916615);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.702424,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.33696,-99) , 
-34, 4.0543, 1, 0, 0.613345,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.546837,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.4884,-99) , 
-0, 3.57182, 0, 0, 0.516199,-99) , 
-38, 3.33666, 0, 0, 0.523194,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.523237,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.358704,-99) , 
-18, -0.408307, 1, 0, 0.463912,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.188634,-99) , 
-14, -5.18622, 0, 0, 0.432324,-99) , 
-13, -0.785283, 0, 0, 0.513902,-99)    );
-  // itree = 154
-  fBoostWeights.push_back(0.0848946);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 2.21604, 1, 1, 0.535485,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.522895,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.405614,-99) , 
-5, -0.408465, 1, 0, 0.470507,-99) , 
-6, -3.27327, 0, 0, 0.523467,-99) , 
-NN(
-0, 
-0, 
--1, -5.18622, 0, -1, 0.428685,-99) , 
-13, -0.785283, 0, 0, 0.513819,-99)    );
-  // itree = 155
-  fBoostWeights.push_back(0.0304589);
-  fForest.push_back( 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.719496,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.596648,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.494459,-99) , 
-2, 2.13175, 1, 0, 0.500147,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.27738,-99) , 
-19, -0.912497, 0, 0, 0.497661,-99) , 
-0, 1.97337, 1, 0, 0.500074,-99)    );
-  // itree = 156
-  fBoostWeights.push_back(0.0399945);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 2.4269, 1, 1, 0.683758,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.558158,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.494295,-99) , 
-8, -0.868908, 0, 0, 0.50491,-99) , 
-0, 2.27778, 1, 0, 0.508804,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.262739,-99) , 
-0, 6.23589, 1, 0, 0.506697,-99)    );
-  // itree = 157
-  fBoostWeights.push_back(0.0449906);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 2.4269, 1, 1, 0.675047,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.51469,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.329832,-99) , 
-11, -2.11251, 1, 0, 0.51159,-99) , 
-0, 2.27778, 1, 0, 0.515126,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.270559,-99) , 
-0, 6.23589, 1, 0, 0.51305,-99)    );
-  // itree = 158
-  fBoostWeights.push_back(0.0288464);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, -0.0678368, 0, 1, 0.659862,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.428379,-99) , 
-38, 1.73521, 1, 0, 0.60223,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.772515,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.498274,-99) , 
-10, 2.00227, 1, 0, 0.501378,-99) , 
-NN(
-0, 
-0, 
--1, 0.173498, 0, -1, 0.326486,-99) , 
-25, 0.813395, 1, 0, 0.497557,-99) , 
-22, 0.339258, 0, 0, 0.502363,-99)    );
-  // itree = 159
-  fBoostWeights.push_back(0.0654837);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.808286,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.467223,-99) , 
-0, 3.58093, 1, 0, 0.667141,-99) , 
-NN(
-0, 
-0, 
--1, -1.42101, 1, 1, 0.511021,-99) , 
-2, 2.08157, 1, 0, 0.517993,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.599019,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.417749,-99) , 
-3, 0.0936345, 1, 0, 0.542248,-99) , 
-NN(
-0, 
-0, 
--1, -2.68006, 1, -1, 0.374057,-99) , 
-10, 4.51493, 1, 0, 0.456925,-99) , 
-4, 1.69004, 1, 0, 0.508928,-99)    );
-  // itree = 160
-  fBoostWeights.push_back(0.060551);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, -0.732239, 1, 1, 0.741581,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.44942,-99) , 
-0, 3.38113, 1, 0, 0.641702,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.559424,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.21566,-99) , 
-34, 5.30516, 1, 0, 0.544092,-99) , 
-NN(
-0, 
-0, 
--1, -2.66672, 1, -1, 0.482128,-99) , 
-37, 0.955665, 0, 0, 0.4929,-99) , 
-2, 0.949535, 1, 0, 0.496285,-99)    );
-  // itree = 161
-  fBoostWeights.push_back(0.0478231);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.623961,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.447985,-99) , 
-5, -0.723019, 0, 0, 0.571994,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.657975,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.496504,-99) , 
-37, 2.07891, 0, 0, 0.501635,-99) , 
-37, -1.25287, 1, 0, 0.51006,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.547157,-99) , 
-NN(
-0, 
-0, 
--1, 5.54871, 1, -1, 0.298999,-99) , 
-12, 1.13291, 0, 0, 0.392665,-99) , 
-19, 1.92691, 1, 0, 0.506063,-99)    );
-  // itree = 162
-  fBoostWeights.push_back(0.0873766);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 5.27903, 0, 1, 0.558265,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.521537,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.401775,-99) , 
-16, -1.07457, 0, 0, 0.506336,-99) , 
-36, 0.760434, 0, 0, 0.519345,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.65821,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.303319,-99) , 
-21, 1.57266, 0, 0, 0.495718,-99) , 
-NN(
-0, 
-0, 
--1, 2.32792, 1, -1, 0.264623,-99) , 
-17, 1.61119, 0, 0, 0.394876,-99) , 
-19, 1.92691, 1, 0, 0.515132,-99)    );
-  // itree = 163
-  fBoostWeights.push_back(0.0308531);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.591762,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.497377,-99) , 
-34, 2.5922, 1, 0, 0.503724,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.594495,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.16537,-99) , 
-15, 4.74849, 0, 0, 0.35086,-99) , 
-19, -0.538328, 0, 0, 0.500321,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.284429,-99) , 
-27, 0.699381, 1, 0, 0.498335,-99)    );
-  // itree = 164
-  fBoostWeights.push_back(0.0338444);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 1.80066, 0, 1, 0.510402,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.587036,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.169673,-99) , 
-15, 4.74849, 0, 0, 0.350843,-99) , 
-19, -0.538328, 0, 0, 0.506874,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.29075,-99) , 
-27, 0.699381, 1, 0, 0.504898,-99)    );
-  // itree = 165
-  fBoostWeights.push_back(0.0351533);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.77732,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.442136,-99) , 
-38, 1.27224, 0, 0, 0.640011,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.642695,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.50119,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.425353,-99) , 
-33, 6.77008, 1, 0, 0.490703,-99) , 
-33, 9.47533, 0, 0, 0.493845,-99) , 
-29, 2.23674, 1, 0, 0.4968,-99)    );
-  // itree = 166
-  fBoostWeights.push_back(0.0528656);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.771176,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.450824,-99) , 
-38, 1.27224, 0, 0, 0.639341,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, -3.72721, 1, 1, 0.630173,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.672236,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.481407,-99) , 
-37, -2.50511, 1, 0, 0.484205,-99) , 
-2, 0.949535, 1, 0, 0.487432,-99) , 
-29, 2.23674, 1, 0, 0.490485,-99)    );
-  // itree = 167
-  fBoostWeights.push_back(0.0694936);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.711096,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.371708,-99) , 
-4, 2.13725, 1, 0, 0.63953,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.523864,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.470076,-99) , 
-7, -2.57171, 1, 0, 0.500913,-99) , 
-2, 1.7109, 1, 0, 0.505725,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.504046,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.220668,-99) , 
-26, -0.992532, 1, 0, 0.374888,-99) , 
-6, -4.52671, 0, 0, 0.502445,-99)    );
-  // itree = 168
-  fBoostWeights.push_back(0.0421193);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 2.39065, 1, 1, 0.781202,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.582113,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.313895,-99) , 
-8, -1.34134, 0, 0, 0.449601,-99) , 
-28, 4.92004, 1, 0, 0.618881,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.653543,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.49322,-99) , 
-36, -1.54226, 1, 0, 0.498584,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.25384,-99) , 
-14, -6.31027, 0, 0, 0.495566,-99) , 
-36, 1.80066, 0, 0, 0.49967,-99)    );
-  // itree = 169
-  fBoostWeights.push_back(0.0873824);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.633574,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.485192,-99) , 
-14, -4.95158, 0, 0, 0.589158,-99) , 
-NN(
-0, 
-0, 
--1, 4.784, 0, -1, 0.36718,-99) , 
-9, -2.24699, 1, 0, 0.554569,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.520534,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.446961,-99) , 
-12, -0.0893188, 0, 0, 0.503804,-99) , 
-NN(
-0, 
-0, 
--1, 3.69045, 1, -1, 0.259343,-99) , 
-10, 6.48169, 1, 0, 0.499763,-99) , 
-17, 2.4094, 0, 0, 0.509002,-99)    );
-  // itree = 170
-  fBoostWeights.push_back(0.0724122);
-  fForest.push_back( 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 3.1903, 1, 1, 0.581091,-99) , 
-NN(
-0, 
-0, 
--1, 4.784, 0, -1, 0.387709,-99) , 
-9, -2.24699, 1, 0, 0.551036,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, -0.554786, 0, 1, 0.58221,-99) , 
-NN(
-0, 
-0, 
--1, 6.62228, 1, -1, 0.479314,-99) , 
-10, 3.53156, 1, 0, 0.488386,-99) , 
-17, 2.4094, 0, 0, 0.498892,-99)    );
-  // itree = 171
-  fBoostWeights.push_back(0.032561);
-  fForest.push_back( 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.652073,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 1.7109, 1, 1, 0.510011,-99) , 
-NN(
 0, 
 0, 
--1, 5.15666, 0, -1, 0.349631,-99) , 
-6, -4.52671, 0, 0, 0.506174,-99) , 
-33, 9.47533, 0, 0, 0.50923,-99)    );
+-1, 0.911667, 1, -1, 0.4803,-99) , 
+17, -4.25923, 1, 0, 0.484488,-99)    );
   // itree = 172
-  fBoostWeights.push_back(0.0430126);
+  fBoostWeights.push_back(0.040458);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.64465,-99) , 
-NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.510325,-99) , 
+-1, 0, 1, 1, 0.685851,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.447301,-99) , 
-33, 6.73436, 1, 0, 0.500468,-99) , 
+-1, 0, 1, -1, 0.268775,-99) , 
+33, 3.79678, 1, 0, 0.618881,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.220084,-99) , 
-0, 6.23589, 1, 0, 0.498423,-99) , 
-33, 9.47533, 0, 0, 0.501473,-99)    );
+-1, 0, 1, 1, 0.659756,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.49121,-99) , 
+17, -4.46834, 1, 0, 0.494469,-99) , 
+34, -1.49858, 1, 0, 0.498704,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.505179,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0031611,-99) , 
+32, 3.95273, 1, 0, 0.282471,-99) , 
+36, 4.13115, 1, 0, 0.496248,-99)    );
   // itree = 173
-  fBoostWeights.push_back(0.0561051);
+  fBoostWeights.push_back(0.0305915);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, -0.333564, 1, 1, 0.563574,-99) , 
-NN(
-NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.712457,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.489422,-99) , 
-36, 2.11986, 0, 0, 0.49356,-99) , 
+-1, 0, 1, 1, 0.710102,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.532198,-99) , 
+-1, 0, 1, 1, 0.508063,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.0638008,-99) , 
-29, 3.57248, 1, 0, 0.261581,-99) , 
-33, 6.80192, 1, 0, 0.485158,-99) , 
-33, 7.48807, 0, 0, 0.494138,-99)    );
+-1, 0, 1, -1, 0.0707807,-99) , 
+13, 1.49419, 0, 0, 0.505442,-99) , 
+10, 1.12102, 1, 0, 0.507867,-99) , 
+NN(
+0, 
+0, 
+-1, 3.95273, 1, -1, 0.279337,-99) , 
+36, 4.13115, 1, 0, 0.505293,-99)    );
   // itree = 174
-  fBoostWeights.push_back(0.0289037);
+  fBoostWeights.push_back(0.023806);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.730864,-99) , 
-NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.731055,-99) , 
+-1, 0, 1, 1, 0.597407,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.41998,-99) , 
-28, 4.95894, 1, 0, 0.525663,-99) , 
-37, -0.692207, 1, 0, 0.597154,-99) , 
-NN(
+-1, 0, 1, -1, 0.495798,-99) , 
+7, -4.32304, 1, 0, 0.500956,-99) , 
 NN(
 0, 
 0, 
--1, 2.00227, 1, 1, 0.503485,-99) , 
+-1, 0, 1, -1, 0.134746,-99) , 
+19, 1.94801, 1, 0, 0.499325,-99) , 
 NN(
 0, 
 0, 
--1, -0.547461, 1, -1, 0.32754,-99) , 
-25, 0.813395, 1, 0, 0.499658,-99) , 
-22, 0.339258, 0, 0, 0.504131,-99)    );
+-1, 0, 1, -1, 0.134513,-99) , 
+17, 0.367206, 1, 0, 0.497906,-99)    );
   // itree = 175
-  fBoostWeights.push_back(0.0366104);
+  fBoostWeights.push_back(0.0239035);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, -0.0678368, 0, 1, 0.652062,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.430409,-99) , 
-38, 1.73521, 1, 0, 0.596609,-99) , 
-NN(
-NN(
+-1, 0, 1, 1, 0.507699,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.758161,-99) , 
+-1, 0, 1, -1, 0.167106,-99) , 
+1, 0.0203958, 0, 0, 0.506304,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.493308,-99) , 
-10, 2.00227, 1, 0, 0.496259,-99) , 
+-1, 0, 1, -1, 0.137545,-99) , 
+19, 1.94801, 1, 0, 0.504675,-99) , 
 NN(
 0, 
 0, 
--1, -0.547461, 1, -1, 0.333938,-99) , 
-25, 0.813395, 1, 0, 0.492746,-99) , 
-22, 0.339258, 0, 0, 0.49749,-99)    );
+-1, 0, 1, -1, 0.137308,-99) , 
+17, 0.367206, 1, 0, 0.503259,-99)    );
   // itree = 176
-  fBoostWeights.push_back(0.0428749);
+  fBoostWeights.push_back(0.0219204);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.681971,-99) , 
+-1, 0, 1, 1, 0.703223,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.511894,-99) , 
+-1, 0, 1, 1, 0.501896,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.411656,-99) , 
-23, 1.6197, 1, 0, 0.505195,-99) , 
-0, 2.19469, 1, 0, 0.507975,-99) , 
+-1, 0, 1, -1, 0.258932,-99) , 
+13, 2.15092, 0, 0, 0.497412,-99) , 
+10, 1.12102, 1, 0, 0.499834,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.322399,-99) , 
-14, -6.39446, 0, 0, 0.505828,-99)    );
+-1, 0, 1, 1, 0.501676,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00339642,-99) , 
+32, 3.95273, 1, 0, 0.284944,-99) , 
+36, 4.13115, 1, 0, 0.49743,-99)    );
   // itree = 177
-  fBoostWeights.push_back(0.0251037);
+  fBoostWeights.push_back(0.0388473);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, 3.99265, 0, 1, 0.664792,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.487118,-99) , 
-14, -4.41586, 1, 0, 0.589036,-99) , 
+-1, 0, 1, 1, 0.783933,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.437306,-99) , 
+14, -3.40562, 0, 0, 0.621278,-99) , 
+NN(
+0, 
+0, 
+-1, -3.91143, 0, -1, 0.491222,-99) , 
+7, -4.44916, 1, 0, 0.496081,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.500531,-99) , 
+-1, 0, 1, 1, 0.520479,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.380089,-99) , 
-21, -0.6069, 0, 0, 0.495342,-99) , 
+-1, 0, 1, -1, 0.220563,-99) , 
+8, -3.95964, 0, 0, 0.455491,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.263043,-99) , 
-14, -6.31027, 0, 0, 0.492491,-99) , 
-6, -0.766379, 0, 0, 0.49675,-99)    );
+-1, -0.423408, 0, -1, 0.12072,-99) , 
+31, 5.63583, 1, 0, 0.363954,-99) , 
+17, -0.954633, 1, 0, 0.492199,-99)    );
   // itree = 178
-  fBoostWeights.push_back(0.0356082);
+  fBoostWeights.push_back(0.0271955);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, -2.54314, 1, 1, 0.663289,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.540111,-99) , 
+-1, 0.286064, 1, 1, 0.507703,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.40589,-99) , 
-17, 1.46305, 0, 0, 0.487454,-99) , 
-13, 0.562849, 1, 0, 0.588334,-99) , 
+-1, -2.35117, 0, -1, 0.276908,-99) , 
+27, 6.01905, 1, 0, 0.505409,-99) , 
 NN(
 0, 
 0, 
--1, -6.31027, 0, -1, 0.486901,-99) , 
-6, -0.766379, 0, 0, 0.491365,-99)    );
+-1, 2.25501, 0, -1, 0.361756,-99) , 
+17, -0.954633, 1, 0, 0.501212,-99)    );
   // itree = 179
-  fBoostWeights.push_back(0.0412944);
+  fBoostWeights.push_back(0.0194816);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.620883,-99) , 
-NN(
-NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.575632,-99) , 
+-1, 0, 1, 1, 0.700977,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.491084,-99) , 
-36, 1.24851, 0, 0, 0.499234,-99) , 
+-1, 1.49419, 0, -1, 0.494857,-99) , 
+10, 1.12102, 1, 0, 0.497275,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.184917,-99) , 
-15, 2.74889, 0, 0, 0.49644,-99) , 
-14, -2.41963, 0, 0, 0.499614,-99)    );
+-1, 0, 1, 1, 0.50131,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00351973,-99) , 
+32, 3.95273, 1, 0, 0.28664,-99) , 
+36, 4.13115, 1, 0, 0.49494,-99)    );
   // itree = 180
-  fBoostWeights.push_back(0.0707542);
+  fBoostWeights.push_back(0.0621488);
   fForest.push_back( 
 NN(
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.742665,-99) , 
+-1, 0, 1, 1, 0.768489,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.488557,-99) , 
+0, 4.73762, 1, 0, 0.592103,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.648893,-99) , 
+-1, 0, 1, 1, 0.518664,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.383199,-99) , 
-25, -1.19318, 0, 0, 0.55852,-99) , 
-15, 5.29246, 0, 0, 0.608788,-99) , 
-NN(
-NN(
+-1, 0, 1, -1, 0.468274,-99) , 
+13, 3.59868, 0, 0, 0.496669,-99) , 
+2, 1.17444, 1, 0, 0.502032,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.526929,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.47119,-99) , 
-4, 1.07129, 1, 0, 0.507047,-99) , 
-NN(
-0, 
-0, 
--1, 4.07278, 0, -1, 0.305738,-99) , 
-17, -0.481371, 0, 0, 0.503685,-99) , 
-3, -1.22834, 1, 0, 0.507494,-99)    );
+-1, 3.95273, 1, -1, 0.285071,-99) , 
+36, 4.13115, 1, 0, 0.499636,-99)    );
   // itree = 181
-  fBoostWeights.push_back(0.0428917);
+  fBoostWeights.push_back(0.0425492);
   fForest.push_back( 
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 0.948934, 1, 1, 0.663203,-99) , 
+-1, 0.831715, 1, 1, 0.734052,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.61781,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.380125,-99) , 
+6, 0.0673673, 0, 0, 0.465515,-99) , 
+9, -2.69817, 1, 0, 0.591556,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.611482,-99) , 
+-1, 0, 1, 1, 0.686771,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.425637,-99) , 
-8, -2.23916, 0, 0, 0.558503,-99) , 
+-1, 0, 1, -1, 0.494225,-99) , 
+11, 1.97777, 0, 0, 0.497531,-99) , 
 NN(
 0, 
 0, 
--1, 0.242497, 1, -1, 0.492083,-99) , 
-15, 5.25062, 0, 0, 0.500162,-99) , 
-7, -4.56068, 1, 0, 0.502658,-99)    );
+-1, 1.32227, 1, -1, 0.31666,-99) , 
+8, -5.53371, 0, 0, 0.493164,-99) , 
+6, -0.736014, 0, 0, 0.498187,-99)    );
   // itree = 182
-  fBoostWeights.push_back(0.0943414);
+  fBoostWeights.push_back(0.0277304);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0.380637, 0, 1, 0.52497,-99) , 
+-1, -0.34297, 0, 1, 0.510917,-99) , 
 NN(
 0, 
 0, 
--1, 4.00194, 1, -1, 0.355492,-99) , 
-13, -1.11, 0, 0, 0.519579,-99) , 
-NN(
-NN(
+-1, 0, 1, -1, 0.152113,-99) , 
+1, 0.26975, 0, 0, 0.509197,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.640106,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.403634,-99) , 
-38, 0.831991, 0, 0, 0.583167,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.590755,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.296014,-99) , 
-11, -4.48048, 1, 0, 0.357719,-99) , 
-14, -4.22988, 0, 0, 0.460877,-99) , 
-1, -2.29206, 1, 0, 0.511225,-99)    );
+-1, 0, 1, -1, 0.175864,-99) , 
+3, 0.755404, 0, 0, 0.507775,-99)    );
   // itree = 183
-  fBoostWeights.push_back(0.0554585);
+  fBoostWeights.push_back(0.0414759);
   fForest.push_back( 
 NN(
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.686371,-99) , 
+-1, 0, 1, 1, 0.776974,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.449359,-99) , 
+14, -3.40562, 0, 0, 0.622893,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.613204,-99) , 
+-1, 0, 1, 1, 0.506023,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.348635,-99) , 
-13, 0.562849, 1, 0, 0.508575,-99) , 
-11, -4.03222, 1, 0, 0.586979,-99) , 
+-1, 0, 1, -1, 0.334891,-99) , 
+6, -3.91143, 0, 0, 0.500163,-99) , 
+7, -4.44916, 1, 0, 0.50471,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.586255,-99) , 
+-1, 0, 1, 1, 0.506735,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.484979,-99) , 
-36, -1.21922, 1, 0, 0.490951,-99) , 
+-1, 0, 1, -1, 0.187707,-99) , 
+31, 5.63583, 1, 0, 0.436484,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.260202,-99) , 
-14, -6.31027, 0, 0, 0.488169,-99) , 
-6, -0.766379, 0, 0, 0.492526,-99)    );
+-1, 0, 1, -1, 0.00160039,-99) , 
+21, 2.25501, 0, 0, 0.375883,-99) , 
+17, -0.954633, 1, 0, 0.500969,-99)    );
   // itree = 184
-  fBoostWeights.push_back(0.0469514);
+  fBoostWeights.push_back(0.0806939);
   fForest.push_back( 
 NN(
 NN(
@@ -6247,321 +6221,297 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.656397,-99) , 
+-1, 0, 1, 1, 0.784933,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.419091,-99) , 
-8, -2.19066, 0, 0, 0.585859,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.658511,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.494434,-99) , 
-34, 2.32025, 1, 0, 0.500137,-99) , 
-15, 5.41736, 0, 0, 0.506468,-99) , 
+-1, 0, 1, -1, 0.453618,-99) , 
+3, 3.12328, 0, 0, 0.676278,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.587257,-99) , 
+-1, 0, 1, 1, 0.569811,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.145124,-99) , 
-1, -4.27386, 1, 0, 0.351675,-99) , 
-11, -2.11251, 1, 0, 0.503897,-99)    );
+-1, 0, 1, -1, 0.218271,-99) , 
+17, -2.8836, 1, 0, 0.390515,-99) , 
+6, -3.03878, 0, 0, 0.580976,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.556403,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.478704,-99) , 
+1, 3.59314, 0, 0, 0.491074,-99) , 
+NN(
+0, 
+0, 
+-1, -3.97549, 0, -1, 0.353165,-99) , 
+7, -1.72835, 1, 0, 0.486476,-99) , 
+2, 1.17444, 1, 0, 0.491807,-99)    );
   // itree = 185
-  fBoostWeights.push_back(0.0540506);
+  fBoostWeights.push_back(0.0633683);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, 1.7109, 1, 1, 0.520764,-99) , 
 NN(
 0, 
 0, 
--1, -2.24987, 0, -1, 0.397224,-99) , 
-6, -4.26761, 0, 0, 0.516245,-99) , 
-NN(
+-1, 0, 1, 1, 0.517769,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.575832,-99) , 
+-1, 0, 1, -1, 0.300511,-99) , 
+16, -2.57504, 0, 0, 0.513933,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.151046,-99) , 
-1, -4.27386, 1, 0, 0.350836,-99) , 
-11, -2.11251, 1, 0, 0.513525,-99)    );
+-1, 0, 1, -1, 0.14916,-99) , 
+19, -1.0083, 0, 0, 0.512049,-99) , 
+NN(
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.570734,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.404899,-99) , 
+10, 3.74942, 1, 0, 0.470496,-99) , 
+NN(
+0, 
+0, 
+-1, 4.29552, 1, -1, 0.17862,-99) , 
+31, 4.18267, 1, 0, 0.442122,-99) , 
+31, 4.5717, 0, 0, 0.504738,-99)    );
   // itree = 186
-  fBoostWeights.push_back(0.0960756);
+  fBoostWeights.push_back(0.0532735);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 3.60251, 1, 1, 0.646605,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.516016,-99) , 
+-1, 3.03669, 1, 1, 0.599433,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.288416,-99) , 
-8, -2.97377, 0, 0, 0.483853,-99) , 
-34, 3.54596, 1, 0, 0.547906,-99) , 
-NN(
+-1, 0.44056, 1, -1, 0.348686,-99) , 
+26, 5.43309, 1, 0, 0.550137,-99) , 
 NN(
 0, 
 0, 
--1, -3.57208, 1, 1, 0.531313,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.590009,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.45821,-99) , 
-38, 3.05568, 0, 0, 0.472536,-99) , 
-34, 4.25088, 0, 0, 0.493057,-99) , 
-29, 5.80635, 0, 0, 0.501225,-99)    );
+-1, 6.22668, 1, -1, 0.484108,-99) , 
+32, 2.72794, 1, 0, 0.491658,-99)    );
   // itree = 187
-  fBoostWeights.push_back(0.0927813);
+  fBoostWeights.push_back(0.0453211);
   fForest.push_back( 
 NN(
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 0.0623732, 0, 1, 0.597357,-99) , 
+-1, 0, 1, 1, 0.695752,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.265046,-99) , 
+14, -4.31989, 0, 0, 0.629189,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.544127,-99) , 
+-1, 0, 1, 1, 0.50691,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.421979,-99) , 
-36, 0.194032, 0, 0, 0.493464,-99) , 
-16, 0.372003, 0, 0, 0.526661,-99) , 
+-1, 0, 1, -1, 0.345451,-99) , 
+6, -3.91143, 0, 0, 0.501453,-99) , 
+7, -4.44916, 1, 0, 0.506148,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.680686,-99) , 
+-1, 0, 1, 1, 0.525856,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.481653,-99) , 
-38, 3.89093, 0, 0, 0.487179,-99) , 
+-1, 0, 1, -1, 0.240345,-99) , 
+8, -3.95964, 0, 0, 0.465965,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.226708,-99) , 
-38, 4.38421, 1, 0, 0.482307,-99) , 
-34, 3.71365, 1, 0, 0.501544,-99)    );
+-1, 0, 1, -1, 0.138826,-99) , 
+31, 5.63583, 1, 0, 0.380363,-99) , 
+17, -0.954633, 1, 0, 0.50253,-99)    );
   // itree = 188
-  fBoostWeights.push_back(0.0385803);
+  fBoostWeights.push_back(0.0454089);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 4.90126, 0, 1, 0.514299,-99) , 
+-1, 1.21309, 0, 1, 0.55479,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.283477,-99) , 
-10, 6.71863, 1, 0, 0.512222,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.566268,-99) , 
+-1, 3.05, 0, -1, 0.483918,-99) , 
+9, -4.42689, 1, 0, 0.493658,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.154724,-99) , 
-1, -4.27386, 1, 0, 0.350259,-99) , 
-11, -2.11251, 1, 0, 0.509617,-99)    );
+-1, 0, 1, -1, 0.174908,-99) , 
+3, 0.755404, 0, 0, 0.492307,-99)    );
   // itree = 189
-  fBoostWeights.push_back(0.0287452);
+  fBoostWeights.push_back(0.0168369);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, -2.6763, 1, 1, 0.668252,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.438764,-99) , 
-9, -2.07226, 1, 0, 0.601491,-99) , 
-NN(
-NN(
+-1, 0, 1, 1, 0.656189,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.503395,-99) , 
+-1, 0, 1, -1, 0.498881,-99) , 
+6, -0.34297, 0, 0, 0.503437,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.370647,-99) , 
-8, -3.60024, 0, 0, 0.499306,-99) , 
+-1, 0, 1, -1, 0.172859,-99) , 
+1, 0.26975, 0, 0, 0.50189,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.281002,-99) , 
-25, 1.05402, 1, 0, 0.496613,-99) , 
-8, -0.00256073, 0, 0, 0.500307,-99)    );
+-1, 0, 1, -1, 0.181558,-99) , 
+3, 0.755404, 0, 0, 0.500551,-99)    );
   // itree = 190
-  fBoostWeights.push_back(0.0651746);
+  fBoostWeights.push_back(0.0203175);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.708722,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.633068,-99) , 
+-1, -4.43924, 1, 1, 0.507403,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.431441,-99) , 
-4, 1.80536, 0, 0, 0.509173,-99) , 
-9, -2.98307, 1, 0, 0.598876,-99) , 
-NN(
-NN(
+-1, 0, 1, -1, 0.175279,-99) , 
+1, 0.26975, 0, 0, 0.505857,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.566031,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.487433,-99) , 
-36, -0.87607, 1, 0, 0.496375,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.683205,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.352208,-99) , 
-32, 8.19977, 0, 0, 0.408874,-99) , 
-10, 5.99, 1, 0, 0.490039,-99) , 
-8, -0.00256073, 0, 0, 0.493859,-99)    );
+-1, 0, 1, -1, 0.184074,-99) , 
+3, 0.755404, 0, 0, 0.504519,-99)    );
   // itree = 191
-  fBoostWeights.push_back(0.0499072);
+  fBoostWeights.push_back(0.0169347);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 5.53154, 0, 1, 0.527199,-99) , 
-NN(
-0, 
-0, 
--1, -5.9161, 0, -1, 0.484402,-99) , 
-10, 4.94143, 1, 0, 0.508241,-99) , 
+-1, 0, 1, 1, 0.709664,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.553251,-99) , 
+-1, 0, 1, 1, 0.50144,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.159942,-99) , 
-1, -4.27386, 1, 0, 0.347974,-99) , 
-11, -2.11251, 1, 0, 0.505696,-99)    );
+-1, 0, 1, -1, 0.0850595,-99) , 
+13, 1.49419, 0, 0, 0.499133,-99) , 
+10, 1.12102, 1, 0, 0.501678,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.514512,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00439523,-99) , 
+32, 3.95273, 1, 0, 0.302532,-99) , 
+36, 4.13115, 1, 0, 0.499529,-99)    );
   // itree = 192
-  fBoostWeights.push_back(0.0412755);
+  fBoostWeights.push_back(0.0406609);
   fForest.push_back( 
 NN(
 NN(
 NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.761114,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.544381,-99) , 
+-1, 0, 1, -1, 0.475741,-99) , 
+33, 3.40148, 1, 0, 0.627166,-99) , 
 NN(
-0, 
-0, 
--1, 0, 1, -1, 0.495689,-99) , 
-15, 4.90126, 0, 0, 0.509351,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.519378,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.145268,-99) , 
-15, 5.00792, 0, 0, 0.335323,-99) , 
-27, 0.242497, 1, 0, 0.506826,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.529762,-99) , 
+-1, 0, 1, 1, 0.590139,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.140453,-99) , 
-25, -1.27132, 1, 0, 0.346972,-99) , 
-11, -2.11251, 1, 0, 0.50431,-99)    );
+-1, 0, 1, -1, 0.488243,-99) , 
+13, 4.82977, 0, 0, 0.493542,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.153406,-99) , 
+3, 0.755404, 0, 0, 0.492172,-99) , 
+31, 8.20206, 0, 0, 0.495379,-99)    );
   // itree = 193
-  fBoostWeights.push_back(0.0481105);
+  fBoostWeights.push_back(0.0258635);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, -0.491554, 1, 1, 0.516184,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.322372,-99) , 
-27, 0.213065, 1, 0, 0.513469,-99) , 
+-1, 0, 1, 1, 0.714313,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.651418,-99) , 
+-1, 0, 1, 1, 0.506077,-99) , 
 NN(
 0, 
 0, 
--1, -3.46052, 1, -1, 0.375902,-99) , 
-26, 0.306543, 0, 0, 0.419595,-99) , 
-17, 0.241321, 0, 0, 0.508696,-99)    );
+-1, 0, 1, -1, 0.0896434,-99) , 
+13, 1.49419, 0, 0, 0.503822,-99) , 
+10, 1.12102, 1, 0, 0.506378,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.518102,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00465014,-99) , 
+32, 3.95273, 1, 0, 0.3079,-99) , 
+36, 4.13115, 1, 0, 0.504262,-99)    );
   // itree = 194
-  fBoostWeights.push_back(0.0241581);
+  fBoostWeights.push_back(0.023253);
   fForest.push_back( 
 NN(
 NN(
@@ -6569,261 +6519,273 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.656521,-99) , 
+-1, 0, 1, 1, 0.633405,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.499278,-99) , 
-2, 1.7109, 1, 0, 0.504547,-99) , 
+-1, 0, 1, -1, 0.495756,-99) , 
+7, -4.43924, 1, 0, 0.500724,-99) , 
 NN(
 0, 
 0, 
--1, -2.24987, 0, -1, 0.396556,-99) , 
-6, -4.26761, 0, 0, 0.500604,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.508784,-99) , 
+-1, 0, 1, -1, 0.172907,-99) , 
+1, 0.26975, 0, 0, 0.499213,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.140544,-99) , 
-25, -1.27132, 1, 0, 0.335865,-99) , 
-11, -2.11251, 1, 0, 0.498017,-99)    );
+-1, 0, 1, -1, 0.185895,-99) , 
+3, 0.755404, 0, 0, 0.497921,-99)    );
   // itree = 195
-  fBoostWeights.push_back(0.0361309);
+  fBoostWeights.push_back(0.0176277);
   fForest.push_back( 
 NN(
 NN(
 NN(
+0, 
+0, 
+-1, -0.34297, 0, 1, 0.506119,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.511058,-99) , 
+-1, 0, 1, -1, 0.176258,-99) , 
+1, 0.26975, 0, 0, 0.504609,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.26905,-99) , 
-14, -6.39446, 0, 0, 0.508793,-99) , 
-NN(
-0, 
-0, 
--1, 0.322419, 1, -1, 0.341715,-99) , 
-8, -3.84202, 0, 0, 0.506254,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.526279,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.160374,-99) , 
-1, -4.27386, 1, 0, 0.334805,-99) , 
-11, -2.11251, 1, 0, 0.503573,-99)    );
+-1, 0, 1, -1, 0.18944,-99) , 
+3, 0.755404, 0, 0, 0.503319,-99)    );
   // itree = 196
-  fBoostWeights.push_back(0.0650007);
+  fBoostWeights.push_back(0.0150279);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0.619846, 0, 1, 0.550648,-99) , 
+-1, 0, 1, 1, 0.709506,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.514121,-99) , 
+-1, 0, 1, 1, 0.500688,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.451585,-99) , 
-1, -2.70872, 1, 0, 0.48997,-99) , 
-11, -4.48767, 1, 0, 0.497662,-99) , 
+-1, 0, 1, -1, 0.0922792,-99) , 
+13, 1.49419, 0, 0, 0.498505,-99) , 
+10, 1.12102, 1, 0, 0.501056,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.50187,-99) , 
+-1, 0, 1, 1, 0.512005,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.14356,-99) , 
-25, -1.27132, 1, 0, 0.334086,-99) , 
-11, -2.11251, 1, 0, 0.49512,-99)    );
+-1, 0, 1, -1, 0.00479088,-99) , 
+32, 3.95273, 1, 0, 0.30595,-99) , 
+36, 4.13115, 1, 0, 0.498988,-99)    );
   // itree = 197
-  fBoostWeights.push_back(0.0645135);
+  fBoostWeights.push_back(0.0194504);
   fForest.push_back( 
 NN(
 NN(
 NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.706399,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.547922,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.37406,-99) , 
-14, -5.49003, 0, 0, 0.532532,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.503265,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.434312,-99) , 
-22, -1.52071, 0, 0, 0.4814,-99) , 
-3, -0.52614, 1, 0, 0.492359,-99) , 
+-1, 1.49419, 0, -1, 0.494788,-99) , 
+10, 1.12102, 1, 0, 0.497338,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.513917,-99) , 
+-1, 0, 1, 1, 0.50825,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.164258,-99) , 
-1, -4.27386, 1, 0, 0.331213,-99) , 
-11, -2.11251, 1, 0, 0.489877,-99)    );
+-1, 0, 1, -1, 0.00486307,-99) , 
+32, 3.95273, 1, 0, 0.304634,-99) , 
+36, 4.13115, 1, 0, 0.495302,-99)    );
   // itree = 198
-  fBoostWeights.push_back(0.0819737);
+  fBoostWeights.push_back(0.0167049);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.618512,-99) , 
-NN(
-NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.526259,-99) , 
+-1, 0, 1, 1, 0.702349,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.40423,-99) , 
-11, -3.22092, 1, 0, 0.504107,-99) , 
+-1, 0, 1, 1, 0.501794,-99) , 
 NN(
 0, 
 0, 
--1, 4.81903, 1, -1, 0.460411,-99) , 
-32, 6.56211, 0, 0, 0.479651,-99) , 
-33, 9.47533, 0, 0, 0.482489,-99)    );
+-1, 0, 1, -1, 0.0952082,-99) , 
+13, 1.49419, 0, 0, 0.499651,-99) , 
+10, 1.12102, 1, 0, 0.502084,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.503388,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00495811,-99) , 
+32, 3.95273, 1, 0, 0.302919,-99) , 
+36, 4.13115, 1, 0, 0.499987,-99)    );
   // itree = 199
-  fBoostWeights.push_back(0.0360345);
+  fBoostWeights.push_back(0.0176409);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.61104,-99) , 
 NN(
 0, 
 0, 
--1, 2.74889, 0, -1, 0.484415,-99) , 
-14, -2.41963, 0, 0, 0.487632,-99)    );
+-1, 0, 1, 1, 0.698845,-99) , 
+NN(
+0, 
+0, 
+-1, 1.49419, 0, -1, 0.495518,-99) , 
+10, 1.12102, 1, 0, 0.497951,-99) , 
+NN(
+0, 
+0, 
+-1, 3.95273, 1, -1, 0.301435,-99) , 
+36, 4.13115, 1, 0, 0.495889,-99)    );
   // itree = 200
-  fBoostWeights.push_back(0.0237382);
+  fBoostWeights.push_back(0.0511886);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, -2.92747, 1, 1, 0.67031,-99) , 
 NN(
 0, 
 0, 
--1, -5.97088, 0, -1, 0.494254,-99) , 
-37, 2.09105, 0, 0, 0.49847,-99) , 
+-1, 0, 1, 1, 0.605776,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.330571,-99) , 
-38, 4.38421, 1, 0, 0.496179,-99)    );
+-1, 0, 1, -1, 0.322835,-99) , 
+10, 5.0325, 1, 0, 0.56465,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.703775,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.49091,-99) , 
+17, -4.50447, 1, 0, 0.494719,-99) , 
+34, -0.885828, 1, 0, 0.502256,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.503622,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00513047,-99) , 
+32, 3.95273, 1, 0, 0.305162,-99) , 
+36, 4.13115, 1, 0, 0.500195,-99)    );
   // itree = 201
-  fBoostWeights.push_back(0.0295625);
+  fBoostWeights.push_back(0.0377298);
   fForest.push_back( 
 NN(
 NN(
 NN(
+NN(
 0, 
 0, 
--1, -2.92747, 1, 1, 0.665043,-99) , 
+-1, 0, 1, 1, 0.691942,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.372182,-99) , 
+0, 5.35576, 1, 0, 0.61206,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.504753,-99) , 
+-1, 0, 1, 1, 0.583732,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.369812,-99) , 
-14, -5.97088, 0, 0, 0.500188,-99) , 
-37, 2.09105, 0, 0, 0.504121,-99) , 
+-1, 0, 1, -1, 0.498957,-99) , 
+35, -1.116, 1, 0, 0.507597,-99) , 
+34, 1.56518, 0, 0, 0.5123,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.335845,-99) , 
-38, 4.38421, 1, 0, 0.501834,-99)    );
+-1, 3.95273, 1, -1, 0.300522,-99) , 
+36, 4.13115, 1, 0, 0.510105,-99)    );
   // itree = 202
-  fBoostWeights.push_back(0.0465688);
+  fBoostWeights.push_back(0.0683656);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.644302,-99) , 
-NN(
-NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.509888,-99) , 
+-1, 0.820066, 0, 1, 0.53118,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.458977,-99) , 
-14, -4.90414, 0, 0, 0.494785,-99) , 
+-1, 0, 1, 1, 0.510162,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.22448,-99) , 
-15, 2.1909, 0, 0, 0.492587,-99) , 
-26, 2.07506, 0, 0, 0.495124,-99)    );
+-1, 0, 1, -1, 0.192123,-99) , 
+33, 4.2384, 1, 0, 0.481923,-99) , 
+36, 1.78051, 1, 0, 0.51927,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.500257,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.00560489,-99) , 
+32, 3.95273, 1, 0, 0.308512,-99) , 
+36, 4.13115, 1, 0, 0.517101,-99)    );
   // itree = 203
-  fBoostWeights.push_back(0.056228);
+  fBoostWeights.push_back(0.0180476);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, -4.96879, 1, 1, 0.648752,-99) , 
-NN(
-NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.63226,-99) , 
+-1, 0, 1, 1, 0.694968,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.484762,-99) , 
-2, 2.21604, 1, 0, 0.493248,-99) , 
+-1, 0, 1, 1, 0.502724,-99) , 
 NN(
 0, 
 0, 
--1, -4.24158, 0, -1, 0.409209,-99) , 
-6, -3.89999, 0, 0, 0.488006,-99) , 
-7, -4.56068, 1, 0, 0.490395,-99)    );
+-1, 0, 1, -1, 0.0986662,-99) , 
+13, 1.49419, 0, 0, 0.500607,-99) , 
+10, 1.12102, 1, 0, 0.502926,-99) , 
+NN(
+0, 
+0, 
+-1, 3.95273, 1, -1, 0.302078,-99) , 
+36, 4.13115, 1, 0, 0.500881,-99)    );
   // itree = 204
-  fBoostWeights.push_back(0.0539725);
+  fBoostWeights.push_back(0.0482671);
   fForest.push_back( 
 NN(
 NN(
@@ -6831,222 +6793,252 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.649503,-99) , 
+-1, 0, 1, 1, 0.674598,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.460175,-99) , 
-17, 1.5436, 0, 0, 0.59378,-99) , 
+-1, 0, 1, -1, 0.376195,-99) , 
+30, 5.90152, 1, 0, 0.636653,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.237299,-99) , 
-6, -3.60269, 0, 0, 0.558337,-99) , 
+-1, 0, 1, -1, 0.294862,-99) , 
+20, 0.667198, 1, 0, 0.594812,-99) , 
 NN(
 NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.75058,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.58334,-99) , 
+-1, 0, 1, 1, 0.644777,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.492504,-99) , 
-4, -0.662023, 1, 0, 0.498972,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.179287,-99) , 
-14, -6.39446, 0, 0, 0.496379,-99) , 
-18, 0.469512, 0, 0, 0.502541,-99)    );
+-1, 0, 1, -1, 0.486812,-99) , 
+30, 8.77114, 0, 0, 0.490305,-99) , 
+32, 6.89264, 0, 0, 0.492524,-99) , 
+4, -0.981648, 1, 0, 0.496506,-99)    );
   // itree = 205
-  fBoostWeights.push_back(0.068765);
+  fBoostWeights.push_back(0.0398037);
   fForest.push_back( 
 NN(
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 2.00358, 1, 1, 0.531766,-99) , 
+-1, 0, 1, 1, 0.745217,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.428029,-99) , 
+14, -3.71038, 0, 0, 0.63052,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.506375,-99) , 
+-1, 0, 1, 1, 0.50799,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.328532,-99) , 
-12, -0.349704, 0, 0, 0.481396,-99) , 
-6, -2.91621, 0, 0, 0.515621,-99) , 
+-1, 0, 1, -1, 0.126574,-99) , 
+7, -1.00081, 1, 0, 0.505942,-99) , 
+7, -4.44916, 1, 0, 0.510522,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.58953,-99) , 
+-1, 0, 1, 1, 0.529425,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.373702,-99) , 
-28, 5.47808, 0, 0, 0.47792,-99) , 
+-1, 0, 1, -1, 0.26071,-99) , 
+8, -3.95964, 0, 0, 0.474104,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.243754,-99) , 
-9, -2.49237, 1, 0, 0.399214,-99) , 
-7, -0.990435, 1, 0, 0.512628,-99)    );
+-1, 0, 1, -1, 0.1534,-99) , 
+31, 5.63583, 1, 0, 0.391966,-99) , 
+17, -0.954633, 1, 0, 0.507153,-99)    );
   // itree = 206
-  fBoostWeights.push_back(0.0258435);
+  fBoostWeights.push_back(0.0627007);
   fForest.push_back( 
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.640481,-99) , 
+-1, 0, 1, 1, 0.804985,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.421217,-99) , 
+3, 2.20962, 0, 0, 0.672676,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.640644,-99) , 
+-1, 0, 1, 1, 0.564432,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.494124,-99) , 
-7, -4.37371, 1, 0, 0.49721,-99) , 
+-1, 0, 1, -1, 0.487386,-99) , 
+7, -3.78186, 1, 0, 0.501715,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.235842,-99) , 
-15, 2.1909, 0, 0, 0.495122,-99) , 
-26, 2.07506, 0, 0, 0.497546,-99)    );
+-1, 0, 1, 1, 0.530702,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.319946,-99) , 
+31, 5.56897, 1, 0, 0.423004,-99) , 
+8, -5.1727, 0, 0, 0.49559,-99) , 
+11, 2.08, 0, 0, 0.49779,-99)    );
   // itree = 207
-  fBoostWeights.push_back(0.0343572);
+  fBoostWeights.push_back(0.0732041);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, -0.802301, 1, 1, 0.65568,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.493095,-99) , 
-6, -2.24994, 1, 0, 0.598559,-99) , 
-NN(
+-1, 0, 1, 1, 0.705435,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.507411,-99) , 
+-1, 0, 1, 1, 0.519265,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.383358,-99) , 
-6, -4.26761, 0, 0, 0.503145,-99) , 
+-1, 0, 1, -1, 0.454214,-99) , 
+29, 2.8469, 0, 0, 0.509783,-99) , 
+30, 3.78563, 1, 0, 0.51262,-99) , 
+NN(
+NN(
 NN(
 0, 
 0, 
--1, 4.07278, 0, -1, 0.310361,-99) , 
-17, -0.481371, 0, 0, 0.500059,-99) , 
-3, -1.22834, 1, 0, 0.503527,-99)    );
+-1, 0, 1, 1, 0.747177,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.426161,-99) , 
+24, 0.917528, 0, 0, 0.516873,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.520268,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.150262,-99) , 
+17, -3.00595, 1, 0, 0.270125,-99) , 
+12, 0.89481, 1, 0, 0.438717,-99) , 
+8, -5.1727, 0, 0, 0.506732,-99)    );
   // itree = 208
-  fBoostWeights.push_back(0.0358443);
+  fBoostWeights.push_back(0.0760462);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.715371,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.634679,-99) , 
+-1, 0, 1, 1, 0.750537,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.438485,-99) , 
-20, -0.768598, 1, 0, 0.551154,-99) , 
-22, -2.07703, 1, 0, 0.596348,-99) , 
+-1, 0, 1, -1, 0.483347,-99) , 
+33, 3.40148, 1, 0, 0.623973,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.638393,-99) , 
+-1, 0, 1, 1, 0.600416,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.491852,-99) , 
-8, 0.264429, 0, 0, 0.495078,-99) , 
+-1, 0, 1, -1, 0.320108,-99) , 
+6, -3.17274, 0, 0, 0.558456,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 0.80154, 0, -1, 0.308138,-99) , 
-27, 0.184778, 1, 0, 0.492323,-99) , 
-3, -1.22834, 1, 0, 0.495974,-99)    );
+-1, 0, 1, 1, 0.560815,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.476232,-99) , 
+34, 1.1914, 0, 0, 0.485671,-99) , 
+33, 5.24575, 0, 0, 0.492227,-99) , 
+31, 8.20206, 0, 0, 0.495316,-99)    );
   // itree = 209
-  fBoostWeights.push_back(0.0202655);
+  fBoostWeights.push_back(0.0221327);
   fForest.push_back( 
 NN(
 NN(
+0, 
+0, 
+-1, -1.14892, 1, 1, 0.509255,-99) , 
 NN(
 0, 
 0, 
--1, -0.440614, 1, 1, 0.661728,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.490122,-99) , 
-14, -4.41586, 1, 0, 0.587933,-99) , 
-NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.699895,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.499053,-99) , 
-7, -4.51648, 1, 0, 0.502328,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.24537,-99) , 
-15, 2.1909, 0, 0, 0.500289,-99) , 
-6, -0.766379, 0, 0, 0.504127,-99)    );
+-1, -2.35117, 0, -1, 0.311326,-99) , 
+27, 6.01905, 1, 0, 0.507259,-99)    );
   // itree = 210
-  fBoostWeights.push_back(0.0258916);
+  fBoostWeights.push_back(0.0531486);
   fForest.push_back( 
 NN(
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 5.18945, 0, 1, 0.642435,-99) , 
+-1, 0, 1, 1, 0.51237,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.335565,-99) , 
+8, -5.68337, 0, 0, 0.509337,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.553498,-99) , 
+-1, 0, 1, 1, 0.533101,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.499319,-99) , 
-34, 5.00012, 0, 0, 0.507635,-99) , 
-0, 2.27778, 1, 0, 0.510385,-99) , 
+-1, 0, 1, -1, 0.0770377,-99) , 
+0, 5.16316, 1, 0, 0.283077,-99) , 
+19, 1.28348, 1, 0, 0.506819,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.306424,-99) , 
-0, 6.23589, 1, 0, 0.508785,-99)    );
+-1, 5.54802, 1, 1, 0.627415,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.51198,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.216385,-99) , 
+21, 3.61958, 0, 0, 0.32778,-99) , 
+6, -2.18339, 0, 0, 0.425909,-99) , 
+12, -0.668584, 0, 0, 0.501839,-99)    );
   // itree = 211
-  fBoostWeights.push_back(0.0478981);
+  fBoostWeights.push_back(0.0989785);
   fForest.push_back( 
 NN(
 NN(
@@ -7054,335 +7046,365 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.719289,-99) , 
+-1, 0, 1, 1, 0.593117,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.499126,-99) , 
-11, -3.73645, 1, 0, 0.635166,-99) , 
+-1, 0, 1, -1, 0.267074,-99) , 
+21, 2.004, 0, 0, 0.567152,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.514957,-99) , 
+-1, 0, 1, 1, 0.810362,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.358761,-99) , 
-8, -3.53809, 0, 0, 0.510349,-99) , 
-6, -0.574722, 0, 0, 0.514594,-99) , 
+-1, 0, 1, -1, 0.439178,-99) , 
+11, 1.43609, 0, 0, 0.453577,-99) , 
+15, 1.12768, 0, 0, 0.514588,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.296485,-99) , 
-3, 3.18427, 1, 0, 0.513069,-99)    );
+-1, 4.13115, 1, -1, 0.474667,-99) , 
+33, 3.40481, 1, 0, 0.489801,-99)    );
   // itree = 212
-  fBoostWeights.push_back(0.014121);
+  fBoostWeights.push_back(0.0499157);
   fForest.push_back( 
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.63084,-99) , 
+-1, 5.51793, 0, 1, 0.633111,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.581833,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.312142,-99) , 
+4, 0.315312, 1, 0, 0.451968,-99) , 
+9, -2.41685, 1, 0, 0.561745,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.715375,-99) , 
+-1, 0, 1, 1, 0.632505,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.499995,-99) , 
-9, -4.93207, 1, 0, 0.502085,-99) , 
+-1, 0, 1, -1, 0.497083,-99) , 
+7, -4.44916, 1, 0, 0.502219,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.288486,-99) , 
-14, -6.31027, 0, 0, 0.499613,-99) , 
-6, -0.139658, 0, 0, 0.502253,-99)    );
+-1, 0.212578, 0, -1, 0.300084,-99) , 
+8, -5.53371, 0, 0, 0.498042,-99) , 
+6, -1.2982, 0, 0, 0.504945,-99)    );
   // itree = 213
-  fBoostWeights.push_back(0.0355836);
+  fBoostWeights.push_back(0.113022);
   fForest.push_back( 
 NN(
 NN(
+NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.661264,-99) , 
+-1, 0, 1, 1, 0.568202,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.229054,-99) , 
+4, 2.04557, 1, 0, 0.557546,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.510785,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.396954,-99) , 
+7, -2.45326, 1, 0, 0.487238,-99) , 
+2, 2.29176, 1, 0, 0.520027,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.510061,-99) , 
+-1, 0, 1, 1, 0.599513,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.377208,-99) , 
-19, 1.99399, 1, 0, 0.506265,-99) , 
+-1, 0, 1, -1, 0.238445,-99) , 
+0, 5.46442, 1, 0, 0.539851,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.242599,-99) , 
-10, 6.62791, 1, 0, 0.503484,-99) , 
-10, 2.00227, 1, 0, 0.505576,-99)    );
+-1, -0.716781, 0, -1, 0.372421,-99) , 
+2, 2.44032, 0, 0, 0.442998,-99) , 
+9, -1.65142, 1, 0, 0.514422,-99)    );
   // itree = 214
-  fBoostWeights.push_back(0.0133656);
+  fBoostWeights.push_back(0.0484511);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.653249,-99) , 
 NN(
 0, 
 0, 
--1, 6.62791, 1, -1, 0.495277,-99) , 
-10, 2.00227, 1, 0, 0.497361,-99)    );
+-1, -2.41884, 0, 1, 0.569376,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.68902,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.486153,-99) , 
+34, -1.74303, 1, 0, 0.49022,-99) , 
+35, 1.17952, 0, 0, 0.49738,-99) , 
+NN(
+NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.537791,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.098525,-99) , 
+33, 3.68588, 1, 0, 0.292908,-99) , 
+36, 4.13115, 1, 0, 0.495374,-99)    );
   // itree = 215
-  fBoostWeights.push_back(0.0206991);
+  fBoostWeights.push_back(0.0259454);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, -2.54314, 1, 1, 0.652993,-99) , 
+-1, 0, 1, 1, 0.71164,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.539902,-99) , 
+-1, 0, 1, 1, 0.506412,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.415691,-99) , 
-17, 1.46305, 0, 0, 0.490754,-99) , 
-13, 0.562849, 1, 0, 0.584045,-99) , 
-NN(
+-1, 0, 1, -1, 0.0968428,-99) , 
+13, 1.49419, 0, 0, 0.504373,-99) , 
+10, 1.12102, 1, 0, 0.506865,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.501287,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.249057,-99) , 
-15, 2.1909, 0, 0, 0.499266,-99) , 
+-1, 0, 1, 1, 0.525728,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.286088,-99) , 
-14, -6.31027, 0, 0, 0.496818,-99) , 
-6, -0.766379, 0, 0, 0.500614,-99)    );
+-1, 0, 1, -1, 0.102913,-99) , 
+33, 3.68588, 1, 0, 0.291875,-99) , 
+36, 4.13115, 1, 0, 0.504779,-99)    );
   // itree = 216
-  fBoostWeights.push_back(0.0233626);
+  fBoostWeights.push_back(0.0132604);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, -0.440614, 1, 1, 0.650201,-99) , 
+-1, 0, 1, 1, 0.706287,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.490217,-99) , 
-14, -4.41586, 1, 0, 0.580798,-99) , 
+-1, 1.49419, 0, -1, 0.497951,-99) , 
+10, 1.12102, 1, 0, 0.500443,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, -6.31027, 0, -1, 0.491844,-99) , 
-6, -0.766379, 0, 0, 0.495706,-99)    );
+-1, 0, 1, 1, 0.519255,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.105333,-99) , 
+33, 3.68588, 1, 0, 0.291312,-99) , 
+36, 4.13115, 1, 0, 0.498425,-99)    );
   // itree = 217
-  fBoostWeights.push_back(0.0606728);
+  fBoostWeights.push_back(0.0192571);
   fForest.push_back( 
 NN(
 NN(
 NN(
-NN(
 0, 
 0, 
--1, 0, 1, 1, 0.561704,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.373084,-99) , 
-5, -0.962258, 0, 0, 0.541992,-99) , 
+-1, 0, 1, 1, 0.703528,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.57405,-99) , 
+-1, 0, 1, 1, 0.503241,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.485621,-99) , 
-17, 2.67942, 0, 0, 0.493969,-99) , 
-3, -0.60495, 1, 0, 0.502837,-99) , 
+-1, 0, 1, -1, 0.100326,-99) , 
+13, 1.49419, 0, 0, 0.501266,-99) , 
+10, 1.12102, 1, 0, 0.503679,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.300607,-99) , 
-0, 6.23589, 1, 0, 0.50126,-99)    );
+-1, 0, 1, 1, 0.515944,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.106589,-99) , 
+33, 3.68588, 1, 0, 0.291022,-99) , 
+36, 4.13115, 1, 0, 0.501633,-99)    );
   // itree = 218
-  fBoostWeights.push_back(0.0683081);
+  fBoostWeights.push_back(0.0157574);
   fForest.push_back( 
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.696836,-99) , 
+-1, 0, 1, 1, 0.699496,-99) , 
+NN(
+0, 
+0, 
+-1, 1.49419, 0, -1, 0.496499,-99) , 
+10, 1.12102, 1, 0, 0.498912,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 3.44398, 1, 1, 0.555868,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.542104,-99) , 
+-1, 0, 1, 1, 0.511133,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.478372,-99) , 
-13, 0.897866, 0, 0, 0.496938,-99) , 
-2, 2.72608, 1, 0, 0.507471,-99) , 
-2, -0.573201, 1, 0, 0.509148,-99)    );
+-1, 0, 1, -1, 0.108437,-99) , 
+33, 3.68588, 1, 0, 0.290597,-99) , 
+36, 4.13115, 1, 0, 0.496915,-99)    );
   // itree = 219
-  fBoostWeights.push_back(0.0596309);
+  fBoostWeights.push_back(0.0263109);
   fForest.push_back( 
 NN(
 NN(
 NN(
+NN(
 0, 
 0, 
--1, -3.82495, 1, 1, 0.648813,-99) , 
+-1, 0, 1, 1, 0.722,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.435866,-99) , 
+28, 3.23263, 0, 0, 0.621785,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.515669,-99) , 
+-1, 0, 1, 1, 0.715985,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.243452,-99) , 
-6, -4.96341, 0, 0, 0.512954,-99) , 
-6, -0.528344, 0, 0, 0.517334,-99) , 
-NN(
+-1, 0, 1, -1, 0.496341,-99) , 
+35, 2.3098, 0, 0, 0.49884,-99) , 
+35, -1.86284, 1, 0, 0.502757,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.643556,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.457309,-99) , 
-15, 5.30851, 0, 0, 0.514485,-99) , 
+-1, 0, 1, 1, 0.507195,-99) , 
 NN(
 0, 
 0, 
--1, 4.27214, 1, -1, 0.206317,-99) , 
-14, -4.69096, 0, 0, 0.440234,-99) , 
-13, 1.45892, 1, 0, 0.511799,-99)    );
+-1, 0, 1, -1, 0.10997,-99) , 
+33, 3.68588, 1, 0, 0.290248,-99) , 
+36, 4.13115, 1, 0, 0.500728,-99)    );
   // itree = 220
-  fBoostWeights.push_back(0.0353941);
+  fBoostWeights.push_back(0.029078);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.709062,-99) , 
+-1, 0, 1, 1, 0.701363,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.715118,-99) , 
+-1, 0, 1, 1, 0.508529,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.411841,-99) , 
-28, 4.95894, 1, 0, 0.513175,-99) , 
-37, -0.692207, 1, 0, 0.581187,-99) , 
-NN(
+-1, 0, 1, -1, 0.105886,-99) , 
+13, 1.49419, 0, 0, 0.5066,-99) , 
+10, 1.12102, 1, 0, 0.50892,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.771422,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.495093,-99) , 
-10, 2.00227, 1, 0, 0.498222,-99) , 
+-1, 0, 1, 1, 0.500618,-99) , 
 NN(
 0, 
 0, 
--1, -0.547461, 1, -1, 0.343569,-99) , 
-25, 0.813395, 1, 0, 0.494923,-99) , 
-22, 0.339258, 0, 0, 0.498802,-99)    );
+-1, 0, 1, -1, 0.112571,-99) , 
+33, 3.68588, 1, 0, 0.289658,-99) , 
+36, 4.13115, 1, 0, 0.506837,-99)    );
   // itree = 221
-  fBoostWeights.push_back(0.0450866);
+  fBoostWeights.push_back(0.0146544);
   fForest.push_back( 
 NN(
 NN(
 NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.695237,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.52497,-99) , 
+-1, 0, 1, 1, 0.501261,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.487936,-99) , 
-26, -1.22831, 0, 0, 0.510211,-99) , 
+-1, 0, 1, -1, 0.10867,-99) , 
+13, 1.49419, 0, 0, 0.499401,-99) , 
+10, 1.12102, 1, 0, 0.501721,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.323987,-99) , 
-27, 0.699381, 1, 0, 0.508578,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.305614,-99) , 
-0, 6.23589, 1, 0, 0.507017,-99)    );
+-1, 3.68588, 1, -1, 0.288998,-99) , 
+36, 4.13115, 1, 0, 0.499711,-99)    );
   // itree = 222
-  fBoostWeights.push_back(0.0406161);
+  fBoostWeights.push_back(0.0166927);
   fForest.push_back( 
 NN(
 NN(
 NN(
+0, 
+0, 
+-1, 0, 1, 1, 0.692123,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.513212,-99) , 
+-1, 1.49419, 0, -1, 0.495772,-99) , 
+10, 1.12102, 1, 0, 0.498091,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.406522,-99) , 
-6, -4.26761, 0, 0, 0.50945,-99) , 
-NN(
-0, 
-0, 
--1, -2.0713, 0, -1, 0.346385,-99) , 
-27, 0.242497, 1, 0, 0.507153,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.53387,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.19006,-99) , 
-1, -4.27386, 1, 0, 0.35888,-99) , 
-11, -2.11251, 1, 0, 0.504957,-99)    );
+-1, 3.68588, 1, -1, 0.292019,-99) , 
+36, 4.13115, 1, 0, 0.49615,-99)    );
   // itree = 223
-  fBoostWeights.push_back(0.0524348);
+  fBoostWeights.push_back(0.0460543);
   fForest.push_back( 
 NN(
 NN(
@@ -7390,104 +7412,92 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.545431,-99) , 
+-1, 0, 1, 1, 0.623241,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.491208,-99) , 
-7, -3.40602, 1, 0, 0.50376,-99) , 
+-1, 0, 1, -1, 0.498226,-99) , 
+35, 0.820066, 0, 0, 0.51392,-99) , 
 NN(
 0, 
 0, 
--1, 3.71138, 0, -1, 0.392454,-99) , 
-8, -3.53809, 0, 0, 0.49996,-99) , 
-NN(
+-1, 4.6122, 1, -1, 0.465401,-99) , 
+36, 1.78051, 1, 0, 0.502166,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.699235,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.445426,-99) , 
-36, -0.382358, 1, 0, 0.529625,-99) , 
+-1, 0, 1, 1, 0.501185,-99) , 
 NN(
 0, 
 0, 
--1, -0.801349, 0, -1, 0.33705,-99) , 
-15, 5.14806, 0, 0, 0.419378,-99) , 
-17, 0.241321, 0, 0, 0.495932,-99)    );
+-1, 0, 1, -1, 0.118751,-99) , 
+33, 3.68588, 1, 0, 0.295482,-99) , 
+36, 4.13115, 1, 0, 0.500226,-99)    );
   // itree = 224
-  fBoostWeights.push_back(0.0265387);
+  fBoostWeights.push_back(0.0434291);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, -3.73645, 1, 1, 0.625922,-99) , 
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.504393,-99) , 
+-1, -1.82378, 1, 1, 0.516714,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.373497,-99) , 
-8, -3.53809, 0, 0, 0.500552,-99) , 
-6, -0.574722, 0, 0, 0.504747,-99) , 
+-1, 4.65491, 1, -1, 0.427595,-99) , 
+14, -4.71608, 0, 0, 0.511499,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.294239,-99) , 
-3, 3.18427, 1, 0, 0.503289,-99)    );
+-1, 3.68588, 1, -1, 0.294407,-99) , 
+36, 4.13115, 1, 0, 0.509478,-99)    );
   // itree = 225
-  fBoostWeights.push_back(0.0400068);
+  fBoostWeights.push_back(0.0449441);
   fForest.push_back( 
 NN(
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.696315,-99) , 
+-1, 0, 1, 1, 0.85924,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.49435,-99) , 
+3, 3.45918, 0, 0, 0.758154,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.61405,-99) , 
+-1, 0, 1, 1, 0.534031,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.488499,-99) , 
-25, -1.50211, 1, 0, 0.521459,-99) , 
-4, -0.333564, 1, 0, 0.545709,-99) , 
+-1, 0, 1, -1, 0.181937,-99) , 
+25, -0.243564, 1, 0, 0.354189,-99) , 
+0, 5.19992, 1, 0, 0.612792,-99) , 
 NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.710457,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.496104,-99) , 
-37, -2.52544, 1, 0, 0.49894,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.509643,-99) , 
+-1, 0, 1, 1, 0.584024,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.0637535,-99) , 
-29, 3.57248, 1, 0, 0.260446,-99) , 
-33, 6.80192, 1, 0, 0.490865,-99) , 
-33, 7.48807, 0, 0, 0.497119,-99)    );
+-1, 0, 1, -1, 0.493155,-99) , 
+13, 4.72699, 0, 0, 0.500238,-99) , 
+NN(
+0, 
+0, 
+-1, -3.97549, 0, -1, 0.33188,-99) , 
+7, -1.6118, 1, 0, 0.496681,-99) , 
+2, 0.399986, 1, 0, 0.500083,-99)    );
   // itree = 226
-  fBoostWeights.push_back(0.0414284);
+  fBoostWeights.push_back(0.0749336);
   fForest.push_back( 
 NN(
 NN(
@@ -7495,736 +7505,754 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.512659,-99) , 
+-1, 0, 1, 1, 0.703986,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.259442,-99) , 
-19, -1.0084, 0, 0, 0.510793,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.274884,-99) , 
-1, -1.20882, 1, 0, 0.508872,-99) , 
-NN(
+-1, 0, 1, -1, 0.450305,-99) , 
+10, 4.46456, 1, 0, 0.654624,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.63039,-99) , 
+-1, 0, 1, 1, 0.576862,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.388337,-99) , 
-24, -1.25116, 1, 0, 0.497003,-99) , 
+-1, 0, 1, -1, 0.369317,-99) , 
+30, 5.69991, 1, 0, 0.521407,-99) , 
+29, 3.49564, 0, 0, 0.563157,-99) , 
+NN(
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.230236,-99) , 
-9, -1.67383, 1, 0, 0.406633,-99) , 
-25, -2.84052, 0, 0, 0.505801,-99)    );
+-1, 0, 1, 1, 0.545305,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.486484,-99) , 
+4, 0.0929173, 1, 0, 0.505073,-99) , 
+NN(
+0, 
+0, 
+-1, -1.40281, 1, -1, 0.254532,-99) , 
+14, -5.34435, 0, 0, 0.501832,-99) , 
+17, -3.59831, 1, 0, 0.509242,-99)    );
   // itree = 227
-  fBoostWeights.push_back(0.0488405);
+  fBoostWeights.push_back(0.0904482);
   fForest.push_back( 
 NN(
 NN(
+0, 
+0, 
+-1, -4.66591, 1, 1, 0.52773,-99) , 
 NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.719271,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.47222,-99) , 
-14, -5.20567, 0, 0, 0.629821,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.530066,-99) , 
+-1, 0, 1, 1, 0.669668,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.483137,-99) , 
-4, 0.18723, 1, 0, 0.494909,-99) , 
-7, -4.37371, 1, 0, 0.497808,-99) , 
+-1, 0, 1, -1, 0.482348,-99) , 
+21, 3.46877, 0, 0, 0.57408,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.311682,-99) , 
-15, 2.1909, 0, 0, 0.49619,-99)    );
+-1, 0, 1, 1, 0.548258,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.41042,-99) , 
+32, 4.51999, 0, 0, 0.450629,-99) , 
+14, -2.86686, 0, 0, 0.486056,-99) , 
+1, 2.50446, 0, 0, 0.514318,-99)    );
   // itree = 228
-  fBoostWeights.push_back(0.114943);
+  fBoostWeights.push_back(0.060214);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 1.44346, 1, 1, 0.611494,-99) , 
+-1, 0, 1, 1, 0.776695,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.561784,-99) , 
+-1, 0, 1, 1, 0.643841,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.354904,-99) , 
-4, 0.500818, 1, 0, 0.423288,-99) , 
-5, -0.723019, 0, 0, 0.552392,-99) , 
+-1, 0, 1, -1, 0.445972,-99) , 
+21, 3.55003, 0, 0, 0.519008,-99) , 
+0, 4.67919, 1, 0, 0.573294,-99) , 
 NN(
-NN(
-NN(
-0, 
-0, 
--1, 0, 1, 1, 0.578763,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.470743,-99) , 
-8, -1.63022, 1, 0, 0.530878,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.533831,-99) , 
+-1, 0, 1, 1, 0.510457,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.446622,-99) , 
-37, 0.604444, 0, 0, 0.475892,-99) , 
-14, -4.12313, 0, 0, 0.49611,-99) , 
-37, -1.31058, 1, 0, 0.502127,-99)    );
+-1, 0, 1, -1, 0.447981,-99) , 
+12, 1.71132, 1, 0, 0.49841,-99) , 
+NN(
+0, 
+0, 
+-1, -0.166985, 1, -1, 0.314819,-99) , 
+10, 5.8148, 1, 0, 0.494931,-99) , 
+9, -4.66563, 1, 0, 0.501201,-99)    );
   // itree = 229
-  fBoostWeights.push_back(0.0331138);
+  fBoostWeights.push_back(0.0749749);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, -2.92747, 1, 1, 0.65992,-99) , 
+-1, 0, 1, 1, 0.766078,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.567045,-99) , 
+-1, 0, 1, 1, 0.578155,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.495539,-99) , 
-36, 1.19931, 0, 0, 0.503111,-99) , 
-37, 2.09105, 0, 0, 0.506846,-99) , 
+-1, 0, 1, -1, 0.373657,-99) , 
+14, -3.63503, 0, 0, 0.523068,-99) , 
+0, 4.67919, 1, 0, 0.573798,-99) , 
+NN(
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.343152,-99) , 
-38, 4.38421, 1, 0, 0.504639,-99)    );
+-1, 0, 1, 1, 0.520553,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.472199,-99) , 
+16, -0.028366, 0, 0, 0.491972,-99) , 
+NN(
+0, 
+0, 
+-1, 3.59868, 0, -1, 0.39956,-99) , 
+15, -0.0531967, 0, 0, 0.486128,-99) , 
+9, -4.66563, 1, 0, 0.493102,-99)    );
   // itree = 230
-  fBoostWeights.push_back(0.0387593);
+  fBoostWeights.push_back(0.0701269);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, -2.92747, 1, 1, 0.652449,-99) , 
+-1, 0.108699, 0, 1, 0.793409,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.512136,-99) , 
+-1, 0, 1, 1, 0.668553,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.312937,-99) , 
-11, -2.11251, 1, 0, 0.509639,-99) , 
-37, 2.09105, 0, 0, 0.513024,-99) , 
+-1, 0, 1, -1, 0.480596,-99) , 
+35, -1.18464, 1, 0, 0.51302,-99) , 
+32, 2.59489, 1, 0, 0.542114,-99) , 
+NN(
+NN(
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.350654,-99) , 
-38, 4.38421, 1, 0, 0.510845,-99)    );
+-1, 0, 1, 1, 0.511364,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.452702,-99) , 
+20, -0.635582, 0, 0, 0.488698,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.0690747,-99) , 
+12, -1.78064, 0, 0, 0.486509,-99) , 
+8, -2.92086, 0, 0, 0.49627,-99)    );
   // itree = 231
-  fBoostWeights.push_back(0.0241061);
+  fBoostWeights.push_back(0.0610891);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, -2.54314, 1, 1, 0.658882,-99) , 
+-1, 0.108699, 0, 1, 0.781678,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.533338,-99) , 
+-1, 0, 1, 1, 0.588739,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.412815,-99) , 
-17, 1.46305, 0, 0, 0.485705,-99) , 
-13, 0.562849, 1, 0, 0.586781,-99) , 
-NN(
-NN(
+-1, 0, 1, -1, 0.450148,-99) , 
+9, -2.94147, 1, 0, 0.524576,-99) , 
+32, 2.59489, 1, 0, 0.550835,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.502578,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.283857,-99) , 
-14, -6.26838, 0, 0, 0.499758,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.244551,-99) , 
-15, 2.1909, 0, 0, 0.497745,-99) , 
-6, -0.766379, 0, 0, 0.501652,-99)    );
+-1, -1.78064, 0, -1, 0.482606,-99) , 
+8, -2.92086, 0, 0, 0.494553,-99)    );
   // itree = 232
-  fBoostWeights.push_back(0.0249765);
+  fBoostWeights.push_back(0.0294168);
   fForest.push_back( 
 NN(
 NN(
 NN(
+NN(
 0, 
 0, 
--1, -2.54314, 1, 1, 0.653444,-99) , 
+-1, 0, 1, 1, 0.760563,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.496899,-99) , 
+35, 0.0923147, 0, 0, 0.648515,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.527334,-99) , 
+-1, 0, 1, 1, 0.507352,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.41867,-99) , 
-17, 1.46305, 0, 0, 0.484422,-99) , 
-13, 0.562849, 1, 0, 0.582969,-99) , 
+-1, 0, 1, -1, 0.135537,-99) , 
+10, 6.17454, 1, 0, 0.505118,-99) , 
+12, 3.30981, 0, 0, 0.508638,-99) , 
 NN(
 0, 
 0, 
--1, 2.1909, 0, -1, 0.491967,-99) , 
-6, -0.766379, 0, 0, 0.49595,-99)    );
+-1, 3.68588, 1, -1, 0.299333,-99) , 
+36, 4.13115, 1, 0, 0.506709,-99)    );
   // itree = 233
-  fBoostWeights.push_back(0.0575891);
+  fBoostWeights.push_back(0.0637802);
   fForest.push_back( 
 NN(
 NN(
-NN(
 0, 
 0, 
--1, 0, 1, 1, 0.753531,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.450754,-99) , 
-38, 1.27224, 0, 0, 0.627371,-99) , 
+-1, 0, 1, 1, 0.637987,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.512333,-99) , 
+-1, 0, 1, 1, 0.55335,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.421787,-99) , 
-31, 5.83692, 1, 0, 0.506345,-99) , 
+-1, 0, 1, -1, 0.487963,-99) , 
+15, 1.54939, 0, 0, 0.502982,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.540038,-99) , 
+-1, 0, 1, 1, 0.626332,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.324377,-99) , 
-5, -0.193885, 0, 0, 0.441885,-99) , 
-30, 3.40927, 0, 0, 0.499272,-99) , 
-29, 2.23674, 1, 0, 0.501737,-99)    );
+-1, 0, 1, -1, 0.296472,-99) , 
+36, 0.836698, 1, 0, 0.370288,-99) , 
+10, 5.42042, 1, 0, 0.496602,-99) , 
+12, 3.44117, 0, 0, 0.499728,-99)    );
   // itree = 234
-  fBoostWeights.push_back(0.0386579);
+  fBoostWeights.push_back(0.0293395);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.74268,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.465048,-99) , 
-38, 1.27224, 0, 0, 0.626196,-99) , 
-NN(
+-1, 0.820179, 1, 1, 0.595447,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.725472,-99) , 
+-1, 0, 1, 1, 0.505856,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.489104,-99) , 
-10, 1.79892, 1, 0, 0.491638,-99) , 
+-1, 0, 1, -1, 0.0936445,-99) , 
+0, 7.66577, 1, 0, 0.504085,-99) , 
+10, 2.68561, 1, 0, 0.509712,-99) , 
 NN(
 0, 
 0, 
--1, 3.85156, 1, -1, 0.389414,-99) , 
-10, 6.27173, 1, 0, 0.487994,-99) , 
-29, 2.23674, 1, 0, 0.490632,-99)    );
+-1, 3.68588, 1, -1, 0.304581,-99) , 
+36, 4.13115, 1, 0, 0.507827,-99)    );
   // itree = 235
-  fBoostWeights.push_back(0.0418363);
+  fBoostWeights.push_back(0.0486392);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0.667579, 0, 1, 0.514425,-99) , 
+-1, 1.21309, 0, 1, 0.555801,-99) , 
+NN(
 NN(
 0, 
 0, 
--1, -1.7233, 1, -1, 0.468867,-99) , 
-20, -1.16514, 0, 0, 0.502333,-99) , 
+-1, 0, 1, 1, 0.506881,-99) , 
 NN(
 0, 
 0, 
--1, -2.2758, 1, -1, 0.373436,-99) , 
-17, -0.481371, 0, 0, 0.499885,-99)    );
+-1, 0, 1, -1, 0.429494,-99) , 
+13, 3.05, 0, 0, 0.493377,-99) , 
+9, -4.42689, 1, 0, 0.501925,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.194549,-99) , 
+3, 0.755404, 0, 0, 0.500686,-99)    );
   // itree = 236
-  fBoostWeights.push_back(0.0544435);
+  fBoostWeights.push_back(0.0421423);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.733042,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.470934,-99) , 
-38, 1.27224, 0, 0, 0.62277,-99) , 
-NN(
+-1, 0, 1, 1, 0.803521,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.53592,-99) , 
+-1, 0, 1, 1, 0.626275,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.482917,-99) , 
-36, 0.760434, 0, 0, 0.496431,-99) , 
+-1, 0, 1, -1, 0.40915,-99) , 
+27, 5.08354, 1, 0, 0.518065,-99) , 
+36, 0.741796, 1, 0, 0.569784,-99) , 
 NN(
 0, 
 0, 
--1, 3.85156, 1, -1, 0.394011,-99) , 
-10, 6.27173, 1, 0, 0.492796,-99) , 
-29, 2.23674, 1, 0, 0.495266,-99)    );
+-1, -5.50236, 0, -1, 0.487111,-99) , 
+10, 2.68561, 1, 0, 0.492265,-99)    );
   // itree = 237
-  fBoostWeights.push_back(0.0695226);
+  fBoostWeights.push_back(0.0287587);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.806904,-99) , 
+-1, 3.45918, 0, 1, 0.761253,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.720009,-99) , 
+-1, 0, 1, 1, 0.523232,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.469025,-99) , 
-22, 0.0216355, 0, 0, 0.519091,-99) , 
-29, 3.58841, 1, 0, 0.559903,-99) , 
+-1, 0, 1, -1, 0.196647,-99) , 
+25, -0.243564, 1, 0, 0.354743,-99) , 
+0, 5.19992, 1, 0, 0.614168,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.520375,-99) , 
+-1, 0, 1, 1, 0.665513,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.463781,-99) , 
-38, 1.57467, 1, 0, 0.499262,-99) , 
+-1, 0, 1, -1, 0.498918,-99) , 
+10, 1.90331, 1, 0, 0.502363,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.263171,-99) , 
-19, -0.614106, 0, 0, 0.49674,-99) , 
-16, 1.20221, 0, 0, 0.502012,-99)    );
+-1, -3.97549, 0, -1, 0.325017,-99) , 
+7, -1.6118, 1, 0, 0.498679,-99) , 
+2, 0.399986, 1, 0, 0.502023,-99)    );
   // itree = 238
-  fBoostWeights.push_back(0.0483487);
+  fBoostWeights.push_back(0.0482791);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.79584,-99) , 
+-1, 0.108699, 0, 1, 0.770406,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.705782,-99) , 
+-1, 0, 1, 1, 0.535037,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.48637,-99) , 
-22, 0.0216355, 0, 0, 0.529675,-99) , 
-29, 3.58841, 1, 0, 0.566877,-99) , 
+-1, 0, 1, -1, 0.161345,-99) , 
+32, 5.71081, 1, 0, 0.524812,-99) , 
+32, 2.59489, 1, 0, 0.549573,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.604853,-99) , 
+-1, 0, 1, 1, 0.507996,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.493322,-99) , 
-2, 2.16682, 1, 0, 0.499808,-99) , 
+-1, 0, 1, -1, 0.366397,-99) , 
+12, 2.33126, 1, 0, 0.502103,-99) , 
 NN(
 0, 
 0, 
--1, 5.26501, 1, -1, 0.416959,-99) , 
-0, 4.7657, 1, 0, 0.492547,-99) , 
-16, 1.20221, 0, 0, 0.498722,-99)    );
+-1, 0, 1, -1, 0.0759673,-99) , 
+12, -1.78064, 0, 0, 0.499982,-99) , 
+8, -2.92086, 0, 0, 0.508595,-99)    );
   // itree = 239
-  fBoostWeights.push_back(0.0556763);
+  fBoostWeights.push_back(0.0402003);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.787872,-99) , 
+-1, 0.108699, 0, 1, 0.761755,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.610445,-99) , 
+-1, 0, 1, 1, 0.645051,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.434445,-99) , 
-36, -0.227858, 1, 0, 0.537081,-99) , 
-29, 3.58841, 1, 0, 0.571777,-99) , 
+-1, 0, 1, -1, 0.486464,-99) , 
+35, -1.18464, 1, 0, 0.513433,-99) , 
+32, 2.59489, 1, 0, 0.538221,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.550779,-99) , 
+-1, 0, 1, 1, 0.50058,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.497244,-99) , 
-2, 2.90273, 1, 0, 0.510493,-99) , 
+-1, 0, 1, -1, 0.347514,-99) , 
+12, 2.37826, 1, 0, 0.494999,-99) , 
 NN(
 0, 
 0, 
--1, 5.26501, 1, -1, 0.428758,-99) , 
-0, 4.7657, 1, 0, 0.503352,-99) , 
-16, 1.20221, 0, 0, 0.50902,-99)    );
+-1, 5.22961, 1, -1, 0.3472,-99) , 
+14, -4.86425, 0, 0, 0.489026,-99) , 
+8, -2.92086, 0, 0, 0.497553,-99)    );
   // itree = 240
-  fBoostWeights.push_back(0.0703063);
+  fBoostWeights.push_back(0.0528269);
   fForest.push_back( 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, -1.76381, 1, 1, 0.535899,-99) , 
+-1, 0.108699, 0, 1, 0.754383,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.503438,-99) , 
+-1, 0, 1, 1, 0.529734,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.347751,-99) , 
-12, -0.349704, 0, 0, 0.481748,-99) , 
-6, -2.91621, 0, 0, 0.518642,-99) , 
-NN(
-NN(
+-1, 0, 1, -1, 0.17063,-99) , 
+32, 5.71081, 1, 0, 0.520093,-99) , 
+32, 2.59489, 1, 0, 0.543289,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.587731,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.384766,-99) , 
-22, -0.453836, 0, 0, 0.473236,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.257169,-99) , 
-9, -2.49237, 1, 0, 0.40169,-99) , 
-7, -0.990435, 1, 0, 0.515717,-99)    );
+-1, -1.78064, 0, -1, 0.480483,-99) , 
+8, -2.92086, 0, 0, 0.491352,-99)    );
   // itree = 241
-  fBoostWeights.push_back(0.0514743);
+  fBoostWeights.push_back(0.0244686);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.625951,-99) , 
-NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.544454,-99) , 
+-1, 0, 1, 1, 0.506353,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.485851,-99) , 
-36, -0.440465, 1, 0, 0.5001,-99) , 
+-1, 0, 1, -1, 0.139988,-99) , 
+10, 6.3081, 1, 0, 0.504602,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.288862,-99) , 
-14, -6.31027, 0, 0, 0.497714,-99) , 
-6, -0.139658, 0, 0, 0.500292,-99)    );
+-1, 3.7754, 1, -1, 0.347709,-99) , 
+18, -2.69744, 0, 0, 0.501299,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.212273,-99) , 
+13, 0.841684, 0, 0, 0.500096,-99)    );
   // itree = 242
-  fBoostWeights.push_back(0.0449489);
+  fBoostWeights.push_back(0.0922809);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.82039,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.498021,-99) , 
-9, -2.61149, 1, 0, 0.624561,-99) , 
+-1, 0, 1, 1, 0.523495,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.42908,-99) , 
+23, 0.37471, 1, 0, 0.513097,-99) , 
+NN(
+0, 
+0, 
+-1, 3.5607, 1, -1, 0.345062,-99) , 
+6, -3.98284, 0, 0, 0.507411,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.512777,-99) , 
+-1, 0, 1, 1, 0.626123,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.340698,-99) , 
-11, -2.27427, 1, 0, 0.509377,-99) , 
+-1, 0, 1, -1, 0.470273,-99) , 
+33, 4.27217, 0, 0, 0.515495,-99) , 
 NN(
 0, 
 0, 
--1, 3.85015, 1, -1, 0.385883,-99) , 
-10, 6.19591, 1, 0, 0.503876,-99) , 
-10, 2.53596, 1, 0, 0.506588,-99)    );
+-1, -2.76518, 0, -1, 0.410086,-99) , 
+10, 4.08864, 1, 0, 0.468063,-99) , 
+24, -0.75515, 0, 0, 0.494342,-99)    );
   // itree = 243
-  fBoostWeights.push_back(0.0495334);
+  fBoostWeights.push_back(0.0579025);
   fForest.push_back( 
 NN(
 NN(
-0, 
-0, 
--1, -2.61149, 1, 1, 0.627705,-99) , 
-NN(
-NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.747656,-99) , 
-NN(
-0, 
-0, 
--1, 0, 1, -1, 0.472269,-99) , 
-16, 0.330678, 0, 0, 0.594333,-99) , 
+-1, 0, 1, 1, 0.700389,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.504919,-99) , 
+-1, 0, 1, 1, 0.523297,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.455911,-99) , 
-7, -2.37135, 1, 0, 0.489241,-99) , 
-11, -4.75111, 1, 0, 0.49406,-99) , 
-10, 2.53596, 1, 0, 0.497049,-99)    );
+-1, 0, 1, -1, 0.473833,-99) , 
+36, 0.894108, 1, 0, 0.488053,-99) , 
+2, -1.14892, 1, 0, 0.490317,-99) , 
+NN(
+0, 
+0, 
+-1, -2.35117, 0, -1, 0.3048,-99) , 
+27, 6.01905, 1, 0, 0.488428,-99)    );
   // itree = 244
-  fBoostWeights.push_back(0.0633898);
+  fBoostWeights.push_back(0.0328196);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.806045,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.496875,-99) , 
-9, -2.61149, 1, 0, 0.616058,-99) , 
-NN(
-NN(
+-1, 0, 1, 1, 0.672359,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.738196,-99) , 
+-1, 0, 1, -1, 0.253769,-99) , 
+14, -4.31989, 0, 0, 0.610699,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.484629,-99) , 
-16, 0.330678, 0, 0, 0.596336,-99) , 
+-1, -1.00081, 1, -1, 0.493371,-99) , 
+7, -4.44916, 1, 0, 0.497608,-99) , 
+NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.542612,-99) , 
+-1, 0, 1, 1, 0.515831,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.476726,-99) , 
-37, -1.19123, 1, 0, 0.484769,-99) , 
-11, -4.75111, 1, 0, 0.489859,-99) , 
-10, 2.53596, 1, 0, 0.492667,-99)    );
+-1, 0, 1, -1, 0.258391,-99) , 
+8, -3.95964, 0, 0, 0.462159,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.162714,-99) , 
+31, 5.63583, 1, 0, 0.385141,-99) , 
+17, -0.954633, 1, 0, 0.494436,-99)    );
   // itree = 245
-  fBoostWeights.push_back(0.0407332);
+  fBoostWeights.push_back(0.0258413);
   fForest.push_back( 
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.616827,-99) , 
+-1, 1.90331, 1, 1, 0.50729,-99) , 
+NN(
+0, 
+0, 
+-1, -2.35117, 0, -1, 0.304636,-99) , 
+27, 6.01905, 1, 0, 0.50531,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.510208,-99) , 
+-1, 0, 1, 1, 0.527411,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.417811,-99) , 
-14, -5.66569, 0, 0, 0.50351,-99) , 
+-1, 0, 1, -1, 0.316914,-99) , 
+25, 0.19842, 1, 0, 0.457287,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.198225,-99) , 
-15, 2.74889, 0, 0, 0.501001,-99) , 
-14, -2.41963, 0, 0, 0.504013,-99)    );
+-1, 0, 1, -1, 0.167234,-99) , 
+31, 5.63583, 1, 0, 0.383186,-99) , 
+17, -0.954633, 1, 0, 0.501878,-99)    );
   // itree = 246
-  fBoostWeights.push_back(0.0416045);
+  fBoostWeights.push_back(0.0278068);
   fForest.push_back( 
 NN(
 NN(
+NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.607155,-99) , 
+-1, 0, 1, 1, 0.659347,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.255161,-99) , 
+14, -4.31989, 0, 0, 0.599411,-99) , 
+NN(
+0, 
+0, 
+-1, -1.00081, 1, -1, 0.495245,-99) , 
+7, -4.44916, 1, 0, 0.498976,-99) , 
 NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.57804,-99) , 
+-1, 0, 1, 1, 0.505211,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.488473,-99) , 
-10, 3.40155, 1, 0, 0.494801,-99) , 
+-1, 0, 1, -1, 0.262945,-99) , 
+8, -3.95964, 0, 0, 0.455039,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.204778,-99) , 
-15, 2.74889, 0, 0, 0.492445,-99) , 
-14, -2.41963, 0, 0, 0.495417,-99)    );
+-1, 0, 1, -1, 0.170864,-99) , 
+31, 5.63583, 1, 0, 0.382795,-99) , 
+17, -0.954633, 1, 0, 0.495723,-99)    );
   // itree = 247
-  fBoostWeights.push_back(0.0500029);
+  fBoostWeights.push_back(0.0250104);
   fForest.push_back( 
 NN(
 NN(
 NN(
+NN(
 0, 
 0, 
--1, 0, 1, 1, 0.830624,-99) , 
+-1, 0, 1, 1, 0.814057,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.487357,-99) , 
+2, 2.08096, 1, 0, 0.653552,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.652727,-99) , 
+-1, 0, 1, 1, 0.504455,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.294186,-99) , 
-34, 3.52034, 1, 0, 0.428263,-99) , 
-36, 0.531967, 0, 0, 0.592234,-99) , 
+-1, 0, 1, -1, 0.171961,-99) , 
+1, 0.26975, 0, 0, 0.503059,-99) , 
+0, 4.12149, 1, 0, 0.505504,-99) , 
 NN(
-NN(
-0, 
-0, 
--1, 2.00227, 1, 1, 0.506522,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.691263,-99) , 
+-1, 0, 1, 1, 0.549268,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.389027,-99) , 
-32, 7.64322, 0, 0, 0.437534,-99) , 
-16, -1.51799, 0, 0, 0.500535,-99) , 
-28, 2.44421, 1, 0, 0.503861,-99)    );
+-1, 0, 1, -1, 0.356982,-99) , 
+11, 0.0291465, 0, 0, 0.450894,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.17484,-99) , 
+31, 5.63583, 1, 0, 0.381118,-99) , 
+17, -0.954633, 1, 0, 0.502032,-99)    );
   // itree = 248
-  fBoostWeights.push_back(0.0409486);
+  fBoostWeights.push_back(0.0192652);
   fForest.push_back( 
 NN(
 NN(
 NN(
-0, 
-0, 
--1, 0, 1, 1, 0.823472,-99) , 
-NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.641307,-99) , 
+-1, 0, 1, 1, 0.810242,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.304675,-99) , 
-34, 3.52034, 1, 0, 0.43077,-99) , 
-36, 0.531967, 0, 0, 0.590111,-99) , 
-NN(
+-1, 0, 1, -1, 0.493607,-99) , 
+2, 2.08096, 1, 0, 0.654083,-99) , 
 NN(
 0, 
 0, 
--1, 0.170329, 1, -1, 0.495007,-99) , 
+-1, 0.26975, 0, -1, 0.496859,-99) , 
+0, 4.12149, 1, 0, 0.499403,-99) , 
+NN(
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.551516,-99) , 
+-1, 0, 1, 1, 0.536373,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.351972,-99) , 
-2, 3.63979, 0, 0, 0.418588,-99) , 
-21, -0.331148, 0, 0, 0.48985,-99) , 
-28, 2.44421, 1, 0, 0.493446,-99)    );
+-1, 0, 1, -1, 0.346824,-99) , 
+6, -2.25761, 0, 0, 0.45092,-99) , 
+NN(
+0, 
+0, 
+-1, 0, 1, -1, 0.178477,-99) , 
+31, 5.63583, 1, 0, 0.382351,-99) , 
+17, -0.954633, 1, 0, 0.496148,-99)    );
   // itree = 249
-  fBoostWeights.push_back(0.0564971);
+  fBoostWeights.push_back(0.0196942);
   fForest.push_back( 
 NN(
 NN(
@@ -8232,34 +8260,28 @@ NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.51554,-99) , 
+-1, 0, 1, 1, 0.807262,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.277633,-99) , 
-25, 1.05402, 1, 0, 0.512745,-99) , 
-NN(
-0, 
-0, 
--1, 4.34356, 0, -1, 0.435311,-99) , 
-23, 1.6197, 1, 0, 0.507681,-99) , 
-NN(
+-1, 0, 1, -1, 0.498423,-99) , 
+2, 2.08096, 1, 0, 0.654495,-99) , 
 NN(
 NN(
 0, 
 0, 
--1, 0, 1, 1, 0.685418,-99) , 
+-1, 0, 1, 1, 0.503019,-99) , 
 NN(
 0, 
 0, 
--1, 0, 1, -1, 0.421094,-99) , 
-16, 0.151371, 0, 0, 0.526799,-99) , 
+-1, 0, 1, -1, 0.178357,-99) , 
+1, 0.26975, 0, 0, 0.501675,-99) , 
+0, 4.12149, 1, 0, 0.504141,-99) , 
 NN(
 0, 
 0, 
--1, 3.92284, 1, -1, 0.369041,-99) , 
-24, -0.753517, 0, 0, 0.435462,-99) , 
-21, -0.331148, 0, 0, 0.502778,-99)    );
+-1, 5.63583, 1, -1, 0.382876,-99) , 
+17, -0.954633, 1, 0, 0.500777,-99)    );
    return;
 };
  
@@ -8313,4569 +8335,4113 @@ inline void ReadBDTD::Clear()
 inline void ReadBDTD::InitTransform_1()
 {
    // Decorrelation transformation, initialisation
-   fDecTF_1[0][0][0] = 7.0505921584;
-   fDecTF_1[0][0][1] = -3.60307144733;
-   fDecTF_1[0][0][2] = -0.141159640373;
-   fDecTF_1[0][0][3] = 6.59488649332;
-   fDecTF_1[0][0][4] = 0.336540070838;
-   fDecTF_1[0][0][5] = 0.0871790316497;
-   fDecTF_1[0][0][6] = -0.383610017545;
-   fDecTF_1[0][0][7] = -0.846103258263;
-   fDecTF_1[0][0][8] = 1.3084369231;
-   fDecTF_1[0][0][9] = 0.354903079729;
-   fDecTF_1[0][0][10] = 0.588517822704;
-   fDecTF_1[0][0][11] = -0.393040202349;
-   fDecTF_1[0][0][12] = -0.55410856677;
-   fDecTF_1[0][0][13] = -0.180381259489;
-   fDecTF_1[0][0][14] = -0.0896002813774;
-   fDecTF_1[0][0][15] = 0.601569562206;
-   fDecTF_1[0][0][16] = 0.000334723401522;
-   fDecTF_1[0][0][17] = 0.663210305648;
-   fDecTF_1[0][0][18] = 0.076721156461;
-   fDecTF_1[0][0][19] = 0.194764238968;
-   fDecTF_1[0][0][20] = -0.308389464393;
-   fDecTF_1[0][0][21] = -0.202589173816;
-   fDecTF_1[0][0][22] = -0.206291103263;
-   fDecTF_1[0][0][23] = 0.614566969632;
-   fDecTF_1[0][0][24] = -0.097728077029;
-   fDecTF_1[0][0][25] = -0.430543844156;
-   fDecTF_1[0][0][26] = 0.591722313832;
-   fDecTF_1[0][0][27] = -1.54344792626;
-   fDecTF_1[0][0][28] = 0.00805006398942;
-   fDecTF_1[0][0][29] = 0.00525299612923;
-   fDecTF_1[0][0][30] = -0.0037038853574;
-   fDecTF_1[0][0][31] = 0.00113455378336;
-   fDecTF_1[0][0][32] = -0.0216754849595;
-   fDecTF_1[0][0][33] = -0.0338297010956;
-   fDecTF_1[0][0][34] = 0.0010385420639;
-   fDecTF_1[0][0][35] = 0.000734877926159;
-   fDecTF_1[0][0][36] = 0.000737869930292;
-   fDecTF_1[0][0][37] = 0.00108916790491;
-   fDecTF_1[0][0][38] = 0.000545544728147;
-   fDecTF_1[0][1][0] = -3.60307144733;
-   fDecTF_1[0][1][1] = 7.67983963545;
-   fDecTF_1[0][1][2] = 0.60846195534;
-   fDecTF_1[0][1][3] = -0.066926688586;
-   fDecTF_1[0][1][4] = -0.447307765908;
-   fDecTF_1[0][1][5] = -0.151439898058;
-   fDecTF_1[0][1][6] = 0.434241784268;
-   fDecTF_1[0][1][7] = 0.734893854047;
-   fDecTF_1[0][1][8] = 2.92353456767;
-   fDecTF_1[0][1][9] = 1.22878314793;
-   fDecTF_1[0][1][10] = -0.620842152809;
-   fDecTF_1[0][1][11] = 1.33329154558;
-   fDecTF_1[0][1][12] = -1.64973676446;
-   fDecTF_1[0][1][13] = 0.0193480562846;
-   fDecTF_1[0][1][14] = -0.265925874555;
-   fDecTF_1[0][1][15] = 0.439262657385;
-   fDecTF_1[0][1][16] = 0.250776730953;
-   fDecTF_1[0][1][17] = 0.406718609596;
-   fDecTF_1[0][1][18] = -0.18579618466;
-   fDecTF_1[0][1][19] = 0.289993611135;
-   fDecTF_1[0][1][20] = -0.255598750777;
-   fDecTF_1[0][1][21] = -0.0777842426981;
-   fDecTF_1[0][1][22] = -0.610525792139;
-   fDecTF_1[0][1][23] = 0.201898389264;
-   fDecTF_1[0][1][24] = -0.336806780017;
-   fDecTF_1[0][1][25] = -0.14342743684;
-   fDecTF_1[0][1][26] = 0.811690072222;
-   fDecTF_1[0][1][27] = -0.239384436235;
-   fDecTF_1[0][1][28] = 0.008977780417;
-   fDecTF_1[0][1][29] = 0.00963682885388;
-   fDecTF_1[0][1][30] = 0.0034555581361;
-   fDecTF_1[0][1][31] = 0.00347812124494;
-   fDecTF_1[0][1][32] = -0.0118628244856;
-   fDecTF_1[0][1][33] = 0.0176500038148;
-   fDecTF_1[0][1][34] = -0.0484388748459;
-   fDecTF_1[0][1][35] = -0.0378071625466;
-   fDecTF_1[0][1][36] = 0.00152564384275;
-   fDecTF_1[0][1][37] = 0.000495186761032;
-   fDecTF_1[0][1][38] = -0.00273641439185;
-   fDecTF_1[0][2][0] = -0.141159640373;
-   fDecTF_1[0][2][1] = 0.60846195534;
-   fDecTF_1[0][2][2] = 6.68520959134;
-   fDecTF_1[0][2][3] = -2.63814866702;
-   fDecTF_1[0][2][4] = 0.21676318288;
-   fDecTF_1[0][2][5] = -0.0258205527383;
-   fDecTF_1[0][2][6] = -0.321912002741;
-   fDecTF_1[0][2][7] = 0.0336524164787;
-   fDecTF_1[0][2][8] = -0.501307942904;
-   fDecTF_1[0][2][9] = -4.4363941082;
-   fDecTF_1[0][2][10] = -0.278189803603;
-   fDecTF_1[0][2][11] = 0.16348905521;
-   fDecTF_1[0][2][12] = 0.924215052447;
-   fDecTF_1[0][2][13] = -0.0344773501553;
-   fDecTF_1[0][2][14] = -0.513007660531;
-   fDecTF_1[0][2][15] = 1.16562402999;
-   fDecTF_1[0][2][16] = -0.0641164131009;
-   fDecTF_1[0][2][17] = 1.17547043494;
-   fDecTF_1[0][2][18] = -0.029566239863;
-   fDecTF_1[0][2][19] = 0.0657220793342;
-   fDecTF_1[0][2][20] = -0.853243255895;
-   fDecTF_1[0][2][21] = -0.160044692;
-   fDecTF_1[0][2][22] = -0.28268610093;
-   fDecTF_1[0][2][23] = 1.34018429578;
-   fDecTF_1[0][2][24] = -0.0869017074441;
-   fDecTF_1[0][2][25] = -0.541774499073;
-   fDecTF_1[0][2][26] = 0.409476765209;
-   fDecTF_1[0][2][27] = -1.57432158273;
-   fDecTF_1[0][2][28] = 0.00491312449218;
-   fDecTF_1[0][2][29] = -0.0052623208438;
-   fDecTF_1[0][2][30] = 0.0049561270299;
-   fDecTF_1[0][2][31] = -0.0143007743257;
-   fDecTF_1[0][2][32] = 0.0358011130533;
-   fDecTF_1[0][2][33] = -0.00168330847556;
-   fDecTF_1[0][2][34] = -0.0163216692505;
-   fDecTF_1[0][2][35] = 0.00746124823531;
-   fDecTF_1[0][2][36] = -0.000676267798061;
-   fDecTF_1[0][2][37] = 0.000422503841299;
-   fDecTF_1[0][2][38] = 0.00034670686781;
-   fDecTF_1[0][3][0] = 6.59488649332;
-   fDecTF_1[0][3][1] = -0.066926688586;
-   fDecTF_1[0][3][2] = -2.63814866702;
-   fDecTF_1[0][3][3] = 13.5453740595;
-   fDecTF_1[0][3][4] = -0.216922522038;
-   fDecTF_1[0][3][5] = 0.115543292346;
-   fDecTF_1[0][3][6] = 0.137992627356;
-   fDecTF_1[0][3][7] = -0.415332196154;
-   fDecTF_1[0][3][8] = 6.02772872559;
-   fDecTF_1[0][3][9] = 2.1955546474;
-   fDecTF_1[0][3][10] = 0.607425805587;
-   fDecTF_1[0][3][11] = -0.0114130315861;
-   fDecTF_1[0][3][12] = -1.32869950979;
-   fDecTF_1[0][3][13] = -0.034940296106;
-   fDecTF_1[0][3][14] = 0.196280782774;
-   fDecTF_1[0][3][15] = 0.0589519897642;
-   fDecTF_1[0][3][16] = 0.408908722675;
-   fDecTF_1[0][3][17] = -0.923607906721;
-   fDecTF_1[0][3][18] = -0.050986275838;
-   fDecTF_1[0][3][19] = 0.269812019051;
-   fDecTF_1[0][3][20] = 0.8797915113;
-   fDecTF_1[0][3][21] = 0.0435092610238;
-   fDecTF_1[0][3][22] = 0.0289928728064;
-   fDecTF_1[0][3][23] = -0.631291145174;
-   fDecTF_1[0][3][24] = 0.0919644010372;
-   fDecTF_1[0][3][25] = 0.203862409183;
-   fDecTF_1[0][3][26] = -0.37726526816;
-   fDecTF_1[0][3][27] = 0.542109490002;
-   fDecTF_1[0][3][28] = 0.00313206888794;
-   fDecTF_1[0][3][29] = 0.00323161089212;
-   fDecTF_1[0][3][30] = 0.00666169111021;
-   fDecTF_1[0][3][31] = 0.00418334292832;
-   fDecTF_1[0][3][32] = 0.0123327897405;
-   fDecTF_1[0][3][33] = 0.02419774721;
-   fDecTF_1[0][3][34] = 0.000155942256204;
-   fDecTF_1[0][3][35] = 0.000483112106237;
-   fDecTF_1[0][3][36] = 0.000287806598293;
-   fDecTF_1[0][3][37] = -0.00151081143698;
-   fDecTF_1[0][3][38] = -0.000477873569462;
-   fDecTF_1[0][4][0] = 0.336540070838;
-   fDecTF_1[0][4][1] = -0.447307765908;
-   fDecTF_1[0][4][2] = 0.21676318288;
-   fDecTF_1[0][4][3] = -0.216922522038;
-   fDecTF_1[0][4][4] = 2.94149681361;
-   fDecTF_1[0][4][5] = -2.36616457903;
-   fDecTF_1[0][4][6] = 0.488147504833;
-   fDecTF_1[0][4][7] = -1.52287929902;
-   fDecTF_1[0][4][8] = 0.652635508872;
-   fDecTF_1[0][4][9] = -0.641963210197;
-   fDecTF_1[0][4][10] = 0.212931674987;
-   fDecTF_1[0][4][11] = 0.0669681768022;
-   fDecTF_1[0][4][12] = -0.560234988901;
-   fDecTF_1[0][4][13] = -0.0389941127769;
-   fDecTF_1[0][4][14] = -0.139342587625;
-   fDecTF_1[0][4][15] = -0.0084847151359;
-   fDecTF_1[0][4][16] = 0.019487039587;
-   fDecTF_1[0][4][17] = 0.294410360406;
-   fDecTF_1[0][4][18] = -0.0165180405821;
-   fDecTF_1[0][4][19] = 0.0270002216633;
-   fDecTF_1[0][4][20] = 0.0162373532831;
-   fDecTF_1[0][4][21] = -0.0881761196825;
-   fDecTF_1[0][4][22] = -0.0243043308279;
-   fDecTF_1[0][4][23] = -0.0113372715381;
-   fDecTF_1[0][4][24] = 0.00407940754848;
-   fDecTF_1[0][4][25] = -0.0318877358373;
-   fDecTF_1[0][4][26] = 0.0203419591546;
-   fDecTF_1[0][4][27] = -0.0683667792295;
-   fDecTF_1[0][4][28] = -0.00663659004672;
-   fDecTF_1[0][4][29] = 0.00540709579966;
-   fDecTF_1[0][4][30] = -0.00955684073217;
-   fDecTF_1[0][4][31] = 0.0114607962797;
-   fDecTF_1[0][4][32] = -0.0236765923993;
-   fDecTF_1[0][4][33] = -0.0140615547096;
-   fDecTF_1[0][4][34] = -0.00744530577473;
-   fDecTF_1[0][4][35] = -0.0181361973102;
-   fDecTF_1[0][4][36] = 0.00126152164037;
-   fDecTF_1[0][4][37] = -0.00153332066902;
-   fDecTF_1[0][4][38] = -0.00176059032768;
-   fDecTF_1[0][5][0] = 0.0871790316497;
-   fDecTF_1[0][5][1] = -0.151439898058;
-   fDecTF_1[0][5][2] = -0.0258205527383;
-   fDecTF_1[0][5][3] = 0.115543292346;
-   fDecTF_1[0][5][4] = -2.36616457903;
-   fDecTF_1[0][5][5] = 4.59571223306;
-   fDecTF_1[0][5][6] = -2.30182871669;
-   fDecTF_1[0][5][7] = 0.258764409988;
-   fDecTF_1[0][5][8] = -1.14407423332;
-   fDecTF_1[0][5][9] = 0.183230566279;
-   fDecTF_1[0][5][10] = -0.226731334454;
-   fDecTF_1[0][5][11] = 0.451097434756;
-   fDecTF_1[0][5][12] = 0.786521869201;
-   fDecTF_1[0][5][13] = 0.010440165999;
-   fDecTF_1[0][5][14] = 0.774447451999;
-   fDecTF_1[0][5][15] = 0.0121468254604;
-   fDecTF_1[0][5][16] = 0.00108671907566;
-   fDecTF_1[0][5][17] = -0.11010902349;
-   fDecTF_1[0][5][18] = 0.0400758662536;
-   fDecTF_1[0][5][19] = -0.0447292435079;
-   fDecTF_1[0][5][20] = 0.178129023038;
-   fDecTF_1[0][5][21] = 0.0617256140703;
-   fDecTF_1[0][5][22] = 0.0679928504277;
-   fDecTF_1[0][5][23] = -0.0134710162723;
-   fDecTF_1[0][5][24] = 0.0443105277818;
-   fDecTF_1[0][5][25] = -0.0204500831709;
-   fDecTF_1[0][5][26] = -0.0776719797668;
-   fDecTF_1[0][5][27] = -0.149817066765;
-   fDecTF_1[0][5][28] = -0.00211622561539;
-   fDecTF_1[0][5][29] = -0.00839778996604;
-   fDecTF_1[0][5][30] = 0.000766587268109;
-   fDecTF_1[0][5][31] = -0.0192596435201;
-   fDecTF_1[0][5][32] = 0.0261883800617;
-   fDecTF_1[0][5][33] = 0.00263951522188;
-   fDecTF_1[0][5][34] = -0.0232128247447;
-   fDecTF_1[0][5][35] = -0.0286279446411;
-   fDecTF_1[0][5][36] = 0.00136664020689;
-   fDecTF_1[0][5][37] = 0.00102889883636;
-   fDecTF_1[0][5][38] = -0.000316955171914;
-   fDecTF_1[0][6][0] = -0.383610017545;
-   fDecTF_1[0][6][1] = 0.434241784268;
-   fDecTF_1[0][6][2] = -0.321912002741;
-   fDecTF_1[0][6][3] = 0.137992627356;
-   fDecTF_1[0][6][4] = 0.488147504833;
-   fDecTF_1[0][6][5] = -2.30182871669;
-   fDecTF_1[0][6][6] = 3.48704955399;
-   fDecTF_1[0][6][7] = 1.75498806411;
-   fDecTF_1[0][6][8] = 0.355056476906;
-   fDecTF_1[0][6][9] = 0.668568177999;
-   fDecTF_1[0][6][10] = 0.00904663735438;
-   fDecTF_1[0][6][11] = -0.67995746786;
-   fDecTF_1[0][6][12] = -0.283999069148;
-   fDecTF_1[0][6][13] = 0.0297242206373;
-   fDecTF_1[0][6][14] = -0.568548875402;
-   fDecTF_1[0][6][15] = -0.405916375784;
-   fDecTF_1[0][6][16] = -0.0307160315469;
-   fDecTF_1[0][6][17] = -0.168602207443;
-   fDecTF_1[0][6][18] = -0.0363202809405;
-   fDecTF_1[0][6][19] = 0.0364221428611;
-   fDecTF_1[0][6][20] = -0.215517442916;
-   fDecTF_1[0][6][21] = 0.015460785704;
-   fDecTF_1[0][6][22] = -0.08849715161;
-   fDecTF_1[0][6][23] = 0.041317784839;
-   fDecTF_1[0][6][24] = -0.065197724788;
-   fDecTF_1[0][6][25] = 0.0264921190837;
-   fDecTF_1[0][6][26] = 0.0353326429952;
-   fDecTF_1[0][6][27] = 0.379962646788;
-   fDecTF_1[0][6][28] = 0.00344761780629;
-   fDecTF_1[0][6][29] = 0.00714425873531;
-   fDecTF_1[0][6][30] = 0.000108590765399;
-   fDecTF_1[0][6][31] = 0.00314221486169;
-   fDecTF_1[0][6][32] = -0.0207680476969;
-   fDecTF_1[0][6][33] = 0.0211719343872;
-   fDecTF_1[0][6][34] = -0.0333840991034;
-   fDecTF_1[0][6][35] = -0.0461817899309;
-   fDecTF_1[0][6][36] = -0.0017270862339;
-   fDecTF_1[0][6][37] = -0.000730924498488;
-   fDecTF_1[0][6][38] = 0.000468166512378;
-   fDecTF_1[0][7][0] = -0.846103258263;
-   fDecTF_1[0][7][1] = 0.734893854047;
-   fDecTF_1[0][7][2] = 0.0336524164787;
-   fDecTF_1[0][7][3] = -0.415332196154;
-   fDecTF_1[0][7][4] = -1.52287929902;
-   fDecTF_1[0][7][5] = 0.258764409988;
-   fDecTF_1[0][7][6] = 1.75498806411;
-   fDecTF_1[0][7][7] = 4.17086168125;
-   fDecTF_1[0][7][8] = -0.680788461488;
-   fDecTF_1[0][7][9] = 0.655671689084;
-   fDecTF_1[0][7][10] = -1.07013922843;
-   fDecTF_1[0][7][11] = -0.000795551566219;
-   fDecTF_1[0][7][12] = 0.741052142853;
-   fDecTF_1[0][7][13] = 0.0474531431196;
-   fDecTF_1[0][7][14] = -1.13586004669;
-   fDecTF_1[0][7][15] = 0.599203830554;
-   fDecTF_1[0][7][16] = 0.0390732792638;
-   fDecTF_1[0][7][17] = -0.631419821707;
-   fDecTF_1[0][7][18] = -0.00122315882176;
-   fDecTF_1[0][7][19] = 0.0427813353872;
-   fDecTF_1[0][7][20] = -0.290966280673;
-   fDecTF_1[0][7][21] = 0.255069304782;
-   fDecTF_1[0][7][22] = -0.188629354539;
-   fDecTF_1[0][7][23] = -0.141488200923;
-   fDecTF_1[0][7][24] = -0.118909545992;
-   fDecTF_1[0][7][25] = -0.0810694578057;
-   fDecTF_1[0][7][26] = 0.20041980558;
-   fDecTF_1[0][7][27] = 0.152056821495;
-   fDecTF_1[0][7][28] = -0.00104814539647;
-   fDecTF_1[0][7][29] = -0.0031948915879;
-   fDecTF_1[0][7][30] = 0.0205972727128;
-   fDecTF_1[0][7][31] = 0.012715079891;
-   fDecTF_1[0][7][32] = -0.00122058100846;
-   fDecTF_1[0][7][33] = 0.0323692155999;
-   fDecTF_1[0][7][34] = 0.0385097704223;
-   fDecTF_1[0][7][35] = 0.0402241463724;
-   fDecTF_1[0][7][36] = 0.00206561806477;
-   fDecTF_1[0][7][37] = 0.000440511536031;
-   fDecTF_1[0][7][38] = -0.00149899859415;
-   fDecTF_1[0][8][0] = 1.3084369231;
-   fDecTF_1[0][8][1] = 2.92353456767;
-   fDecTF_1[0][8][2] = -0.501307942904;
-   fDecTF_1[0][8][3] = 6.02772872559;
-   fDecTF_1[0][8][4] = 0.652635508872;
-   fDecTF_1[0][8][5] = -1.14407423332;
-   fDecTF_1[0][8][6] = 0.355056476906;
-   fDecTF_1[0][8][7] = -0.680788461488;
-   fDecTF_1[0][8][8] = 6.45789944455;
-   fDecTF_1[0][8][9] = -0.546924357917;
-   fDecTF_1[0][8][10] = -0.253879874014;
-   fDecTF_1[0][8][11] = 0.964868608578;
-   fDecTF_1[0][8][12] = 0.474317761398;
-   fDecTF_1[0][8][13] = 0.0388671001314;
-   fDecTF_1[0][8][14] = -0.212020533557;
-   fDecTF_1[0][8][15] = 0.480599683425;
-   fDecTF_1[0][8][16] = -0.00861981006925;
-   fDecTF_1[0][8][17] = -2.46721404259;
-   fDecTF_1[0][8][18] = -0.0620199400708;
-   fDecTF_1[0][8][19] = -0.199707763305;
-   fDecTF_1[0][8][20] = -0.437571161755;
-   fDecTF_1[0][8][21] = 0.734334515554;
-   fDecTF_1[0][8][22] = -0.324709723579;
-   fDecTF_1[0][8][23] = 0.442431360879;
-   fDecTF_1[0][8][24] = -0.108556119892;
-   fDecTF_1[0][8][25] = -0.428363936733;
-   fDecTF_1[0][8][26] = -0.548021556405;
-   fDecTF_1[0][8][27] = 0.716956657921;
-   fDecTF_1[0][8][28] = -0.00349440690207;
-   fDecTF_1[0][8][29] = -0.00706746858677;
-   fDecTF_1[0][8][30] = 0.00302990225587;
-   fDecTF_1[0][8][31] = 0.00357465918158;
-   fDecTF_1[0][8][32] = 0.00888154705736;
-   fDecTF_1[0][8][33] = 0.0261799696547;
-   fDecTF_1[0][8][34] = 0.00731900064166;
-   fDecTF_1[0][8][35] = 0.0109673519697;
-   fDecTF_1[0][8][36] = -0.000860983556503;
-   fDecTF_1[0][8][37] = -0.000894516352068;
-   fDecTF_1[0][8][38] = 0.000226654464612;
-   fDecTF_1[0][9][0] = 0.354903079729;
-   fDecTF_1[0][9][1] = 1.22878314793;
-   fDecTF_1[0][9][2] = -4.4363941082;
-   fDecTF_1[0][9][3] = 2.1955546474;
-   fDecTF_1[0][9][4] = -0.641963210197;
-   fDecTF_1[0][9][5] = 0.183230566279;
-   fDecTF_1[0][9][6] = 0.668568177999;
-   fDecTF_1[0][9][7] = 0.655671689084;
-   fDecTF_1[0][9][8] = -0.546924357917;
-   fDecTF_1[0][9][9] = 7.79710912265;
-   fDecTF_1[0][9][10] = 0.750078935475;
-   fDecTF_1[0][9][11] = -0.427707424212;
-   fDecTF_1[0][9][12] = -4.58253267078;
-   fDecTF_1[0][9][13] = -0.00849060275008;
-   fDecTF_1[0][9][14] = 0.83909527734;
-   fDecTF_1[0][9][15] = -0.953788606102;
-   fDecTF_1[0][9][16] = -0.363894086188;
-   fDecTF_1[0][9][17] = 3.01839960119;
-   fDecTF_1[0][9][18] = -0.0713037593037;
-   fDecTF_1[0][9][19] = -0.259697552864;
-   fDecTF_1[0][9][20] = -1.49260786832;
-   fDecTF_1[0][9][21] = -0.981879025932;
-   fDecTF_1[0][9][22] = -0.293315666565;
-   fDecTF_1[0][9][23] = 1.61310672633;
-   fDecTF_1[0][9][24] = -0.182600621339;
-   fDecTF_1[0][9][25] = 0.145120695942;
-   fDecTF_1[0][9][26] = 1.37173891544;
-   fDecTF_1[0][9][27] = -0.854767965535;
-   fDecTF_1[0][9][28] = -0.000435908489681;
-   fDecTF_1[0][9][29] = 0.00292024318016;
-   fDecTF_1[0][9][30] = 0.00463657982226;
-   fDecTF_1[0][9][31] = 0.00536252218245;
-   fDecTF_1[0][9][32] = 0.000168434298874;
-   fDecTF_1[0][9][33] = 0.020604103588;
-   fDecTF_1[0][9][34] = 0.00478191113957;
-   fDecTF_1[0][9][35] = -0.00133533595407;
-   fDecTF_1[0][9][36] = 0.0009748662446;
-   fDecTF_1[0][9][37] = -2.526424479e-05;
-   fDecTF_1[0][9][38] = 0.00113348982618;
-   fDecTF_1[0][10][0] = 0.588517822704;
-   fDecTF_1[0][10][1] = -0.620842152809;
-   fDecTF_1[0][10][2] = -0.278189803603;
-   fDecTF_1[0][10][3] = 0.607425805587;
-   fDecTF_1[0][10][4] = 0.212931674987;
-   fDecTF_1[0][10][5] = -0.226731334454;
-   fDecTF_1[0][10][6] = 0.00904663735438;
-   fDecTF_1[0][10][7] = -1.07013922843;
-   fDecTF_1[0][10][8] = -0.253879874014;
-   fDecTF_1[0][10][9] = 0.750078935475;
-   fDecTF_1[0][10][10] = 4.97517968675;
-   fDecTF_1[0][10][11] = -4.43474612263;
-   fDecTF_1[0][10][12] = -0.121668484806;
-   fDecTF_1[0][10][13] = -0.0554446241763;
-   fDecTF_1[0][10][14] = 0.594405355088;
-   fDecTF_1[0][10][15] = -0.864329365295;
-   fDecTF_1[0][10][16] = 0.082063322028;
-   fDecTF_1[0][10][17] = 0.14597844363;
-   fDecTF_1[0][10][18] = -0.0769369796416;
-   fDecTF_1[0][10][19] = 1.00198878579;
-   fDecTF_1[0][10][20] = -0.696438648557;
-   fDecTF_1[0][10][21] = -0.290279302774;
-   fDecTF_1[0][10][22] = -0.154551939231;
-   fDecTF_1[0][10][23] = 1.26762753391;
-   fDecTF_1[0][10][24] = -0.118988525794;
-   fDecTF_1[0][10][25] = -0.178889900822;
-   fDecTF_1[0][10][26] = 0.380247207279;
-   fDecTF_1[0][10][27] = -1.10735802324;
-   fDecTF_1[0][10][28] = 0.00979670115384;
-   fDecTF_1[0][10][29] = 0.00758160583853;
-   fDecTF_1[0][10][30] = 0.0102028898626;
-   fDecTF_1[0][10][31] = 0.00251547004486;
-   fDecTF_1[0][10][32] = -0.00126716094438;
-   fDecTF_1[0][10][33] = -0.0319780550368;
-   fDecTF_1[0][10][34] = -0.0111213037767;
-   fDecTF_1[0][10][35] = -0.0234455266743;
-   fDecTF_1[0][10][36] = 0.00300649951177;
-   fDecTF_1[0][10][37] = 0.000541182330419;
-   fDecTF_1[0][10][38] = -7.96948225557e-05;
-   fDecTF_1[0][11][0] = -0.393040202349;
-   fDecTF_1[0][11][1] = 1.33329154558;
-   fDecTF_1[0][11][2] = 0.16348905521;
-   fDecTF_1[0][11][3] = -0.0114130315861;
-   fDecTF_1[0][11][4] = 0.0669681768022;
-   fDecTF_1[0][11][5] = 0.451097434756;
-   fDecTF_1[0][11][6] = -0.67995746786;
-   fDecTF_1[0][11][7] = -0.00079555156622;
-   fDecTF_1[0][11][8] = 0.964868608578;
-   fDecTF_1[0][11][9] = -0.427707424212;
-   fDecTF_1[0][11][10] = -4.43474612263;
-   fDecTF_1[0][11][11] = 6.28901157881;
-   fDecTF_1[0][11][12] = -0.399764044127;
-   fDecTF_1[0][11][13] = 0.212743319928;
-   fDecTF_1[0][11][14] = 0.467319050234;
-   fDecTF_1[0][11][15] = 0.0526422462474;
-   fDecTF_1[0][11][16] = 0.793739288814;
-   fDecTF_1[0][11][17] = -0.0105959802504;
-   fDecTF_1[0][11][18] = -0.400258165202;
-   fDecTF_1[0][11][19] = 0.273979001665;
-   fDecTF_1[0][11][20] = -0.0546352422537;
-   fDecTF_1[0][11][21] = 0.0296089876544;
-   fDecTF_1[0][11][22] = -0.19633909727;
-   fDecTF_1[0][11][23] = -0.233978060616;
-   fDecTF_1[0][11][24] = 0.0315283970528;
-   fDecTF_1[0][11][25] = 0.161419699317;
-   fDecTF_1[0][11][26] = 0.249040587889;
-   fDecTF_1[0][11][27] = 0.602786570777;
-   fDecTF_1[0][11][28] = 0.00122418184125;
-   fDecTF_1[0][11][29] = 0.00625249301198;
-   fDecTF_1[0][11][30] = -0.0129773781716;
-   fDecTF_1[0][11][31] = -0.00432876887866;
-   fDecTF_1[0][11][32] = -0.0041528617918;
-   fDecTF_1[0][11][33] = 0.0429982851336;
-   fDecTF_1[0][11][34] = -0.0131479361579;
-   fDecTF_1[0][11][35] = -0.00226168763486;
-   fDecTF_1[0][11][36] = -0.00061814443341;
-   fDecTF_1[0][11][37] = -0.00375838225651;
-   fDecTF_1[0][11][38] = 0.000786183637212;
-   fDecTF_1[0][12][0] = -0.55410856677;
-   fDecTF_1[0][12][1] = -1.64973676446;
-   fDecTF_1[0][12][2] = 0.924215052447;
-   fDecTF_1[0][12][3] = -1.32869950979;
-   fDecTF_1[0][12][4] = -0.560234988901;
-   fDecTF_1[0][12][5] = 0.786521869201;
-   fDecTF_1[0][12][6] = -0.283999069148;
-   fDecTF_1[0][12][7] = 0.741052142853;
-   fDecTF_1[0][12][8] = 0.474317761398;
-   fDecTF_1[0][12][9] = -4.58253267078;
-   fDecTF_1[0][12][10] = -0.121668484806;
-   fDecTF_1[0][12][11] = -0.399764044127;
-   fDecTF_1[0][12][12] = 7.7840858514;
-   fDecTF_1[0][12][13] = 0.00926918369169;
-   fDecTF_1[0][12][14] = -0.953110086776;
-   fDecTF_1[0][12][15] = 0.84967681774;
-   fDecTF_1[0][12][16] = 0.109298711585;
-   fDecTF_1[0][12][17] = -6.05564566183;
-   fDecTF_1[0][12][18] = -0.184367285636;
-   fDecTF_1[0][12][19] = 1.26602387225;
-   fDecTF_1[0][12][20] = -1.15054170815;
-   fDecTF_1[0][12][21] = 3.03786397099;
-   fDecTF_1[0][12][22] = -1.99652499478;
-   fDecTF_1[0][12][23] = 0.381239011995;
-   fDecTF_1[0][12][24] = -1.24604431597;
-   fDecTF_1[0][12][25] = -2.59387400637;
-   fDecTF_1[0][12][26] = -0.515096827458;
-   fDecTF_1[0][12][27] = -0.511607594155;
-   fDecTF_1[0][12][28] = -0.00319447154087;
-   fDecTF_1[0][12][29] = 0.00178784065142;
-   fDecTF_1[0][12][30] = -0.00769385432885;
-   fDecTF_1[0][12][31] = -0.00661134754081;
-   fDecTF_1[0][12][32] = -0.014366900648;
-   fDecTF_1[0][12][33] = -0.0337274249686;
-   fDecTF_1[0][12][34] = 0.00374188542308;
-   fDecTF_1[0][12][35] = 0.00363035645998;
-   fDecTF_1[0][12][36] = 0.000603785365829;
-   fDecTF_1[0][12][37] = 0.000649403821555;
-   fDecTF_1[0][12][38] = 0.00142001066804;
-   fDecTF_1[0][13][0] = -0.180381259489;
-   fDecTF_1[0][13][1] = 0.0193480562846;
-   fDecTF_1[0][13][2] = -0.0344773501553;
-   fDecTF_1[0][13][3] = -0.034940296106;
-   fDecTF_1[0][13][4] = -0.0389941127769;
-   fDecTF_1[0][13][5] = 0.010440165999;
-   fDecTF_1[0][13][6] = 0.0297242206373;
-   fDecTF_1[0][13][7] = 0.0474531431196;
-   fDecTF_1[0][13][8] = 0.0388671001314;
-   fDecTF_1[0][13][9] = -0.00849060275008;
-   fDecTF_1[0][13][10] = -0.0554446241763;
-   fDecTF_1[0][13][11] = 0.212743319928;
-   fDecTF_1[0][13][12] = 0.00926918369169;
-   fDecTF_1[0][13][13] = 6.76495800954;
-   fDecTF_1[0][13][14] = -0.0367340522129;
-   fDecTF_1[0][13][15] = -0.166907660086;
-   fDecTF_1[0][13][16] = -1.20414333157;
-   fDecTF_1[0][13][17] = -0.00656482077132;
-   fDecTF_1[0][13][18] = -5.80589386432;
-   fDecTF_1[0][13][19] = -0.0787949713039;
-   fDecTF_1[0][13][20] = 0.0986518532819;
-   fDecTF_1[0][13][21] = -0.0578235505519;
-   fDecTF_1[0][13][22] = 0.565666625785;
-   fDecTF_1[0][13][23] = 0.0731883645674;
-   fDecTF_1[0][13][24] = 0.368015117392;
-   fDecTF_1[0][13][25] = -0.0585928784228;
-   fDecTF_1[0][13][26] = -0.201103752376;
-   fDecTF_1[0][13][27] = -0.15279981703;
-   fDecTF_1[0][13][28] = 0.00214961166644;
-   fDecTF_1[0][13][29] = -0.00514997641197;
-   fDecTF_1[0][13][30] = 0.0105652298808;
-   fDecTF_1[0][13][31] = -0.0127329028914;
-   fDecTF_1[0][13][32] = -0.0343515098767;
-   fDecTF_1[0][13][33] = -0.0247723652882;
-   fDecTF_1[0][13][34] = 0.00109350475663;
-   fDecTF_1[0][13][35] = 0.00374922280057;
-   fDecTF_1[0][13][36] = 0.000581851869764;
-   fDecTF_1[0][13][37] = -0.000703321666235;
-   fDecTF_1[0][13][38] = -5.59859205565e-05;
-   fDecTF_1[0][14][0] = -0.0896002813774;
-   fDecTF_1[0][14][1] = -0.265925874555;
-   fDecTF_1[0][14][2] = -0.513007660531;
-   fDecTF_1[0][14][3] = 0.196280782774;
-   fDecTF_1[0][14][4] = -0.139342587625;
-   fDecTF_1[0][14][5] = 0.774447451999;
-   fDecTF_1[0][14][6] = -0.568548875402;
-   fDecTF_1[0][14][7] = -1.13586004669;
-   fDecTF_1[0][14][8] = -0.212020533557;
-   fDecTF_1[0][14][9] = 0.83909527734;
-   fDecTF_1[0][14][10] = 0.594405355088;
-   fDecTF_1[0][14][11] = 0.467319050234;
-   fDecTF_1[0][14][12] = -0.953110086776;
-   fDecTF_1[0][14][13] = -0.0367340522129;
-   fDecTF_1[0][14][14] = 7.06830722047;
-   fDecTF_1[0][14][15] = -7.20755534945;
-   fDecTF_1[0][14][16] = 0.0642825533614;
-   fDecTF_1[0][14][17] = 0.743777324426;
-   fDecTF_1[0][14][18] = -0.244794149958;
-   fDecTF_1[0][14][19] = 0.461746284263;
-   fDecTF_1[0][14][20] = -1.66205629316;
-   fDecTF_1[0][14][21] = -0.32529063745;
-   fDecTF_1[0][14][22] = -0.779530350365;
-   fDecTF_1[0][14][23] = 3.26363781465;
-   fDecTF_1[0][14][24] = -0.31755484878;
-   fDecTF_1[0][14][25] = -0.705243132869;
-   fDecTF_1[0][14][26] = -0.0264233445284;
-   fDecTF_1[0][14][27] = 0.758131925193;
-   fDecTF_1[0][14][28] = -0.00774779410656;
-   fDecTF_1[0][14][29] = -0.00976319740822;
-   fDecTF_1[0][14][30] = 0.00177452120925;
-   fDecTF_1[0][14][31] = -0.00628674345714;
-   fDecTF_1[0][14][32] = -0.072643751764;
-   fDecTF_1[0][14][33] = -0.0196730196361;
-   fDecTF_1[0][14][34] = 0.00438441743524;
-   fDecTF_1[0][14][35] = 0.00777826139356;
-   fDecTF_1[0][14][36] = 0.00338144116789;
-   fDecTF_1[0][14][37] = -0.00181614621821;
-   fDecTF_1[0][14][38] = -0.000225823710494;
-   fDecTF_1[0][15][0] = 0.601569562206;
-   fDecTF_1[0][15][1] = 0.439262657385;
-   fDecTF_1[0][15][2] = 1.16562402999;
-   fDecTF_1[0][15][3] = 0.0589519897642;
-   fDecTF_1[0][15][4] = -0.00848471513589;
-   fDecTF_1[0][15][5] = 0.0121468254604;
-   fDecTF_1[0][15][6] = -0.405916375784;
-   fDecTF_1[0][15][7] = 0.599203830554;
-   fDecTF_1[0][15][8] = 0.480599683425;
-   fDecTF_1[0][15][9] = -0.953788606102;
-   fDecTF_1[0][15][10] = -0.864329365295;
-   fDecTF_1[0][15][11] = 0.0526422462474;
-   fDecTF_1[0][15][12] = 0.84967681774;
-   fDecTF_1[0][15][13] = -0.166907660086;
-   fDecTF_1[0][15][14] = -7.20755534945;
-   fDecTF_1[0][15][15] = 10.3603869735;
-   fDecTF_1[0][15][16] = 0.116422481852;
-   fDecTF_1[0][15][17] = -0.377432813921;
-   fDecTF_1[0][15][18] = 0.386641490057;
-   fDecTF_1[0][15][19] = -0.230753845726;
-   fDecTF_1[0][15][20] = -0.564237962045;
-   fDecTF_1[0][15][21] = 0.350759100332;
-   fDecTF_1[0][15][22] = -0.0515555468694;
-   fDecTF_1[0][15][23] = -1.16055513072;
-   fDecTF_1[0][15][24] = 0.856513412865;
-   fDecTF_1[0][15][25] = -0.123632906465;
-   fDecTF_1[0][15][26] = -0.805467840998;
-   fDecTF_1[0][15][27] = -0.270642224863;
-   fDecTF_1[0][15][28] = -0.00337083275524;
-   fDecTF_1[0][15][29] = -0.00854850500882;
-   fDecTF_1[0][15][30] = -0.0045055271678;
-   fDecTF_1[0][15][31] = -0.00694518386262;
-   fDecTF_1[0][15][32] = 0.0165561166035;
-   fDecTF_1[0][15][33] = -0.0114535636722;
-   fDecTF_1[0][15][34] = 0.00328685357469;
-   fDecTF_1[0][15][35] = 0.0135312926426;
-   fDecTF_1[0][15][36] = 0.000347421023983;
-   fDecTF_1[0][15][37] = -4.48042102775e-05;
-   fDecTF_1[0][15][38] = 0.000546793492702;
-   fDecTF_1[0][16][0] = 0.000334723401524;
-   fDecTF_1[0][16][1] = 0.250776730953;
-   fDecTF_1[0][16][2] = -0.0641164131009;
-   fDecTF_1[0][16][3] = 0.408908722675;
-   fDecTF_1[0][16][4] = 0.019487039587;
-   fDecTF_1[0][16][5] = 0.00108671907566;
-   fDecTF_1[0][16][6] = -0.0307160315469;
-   fDecTF_1[0][16][7] = 0.0390732792638;
-   fDecTF_1[0][16][8] = -0.00861981006925;
-   fDecTF_1[0][16][9] = -0.363894086188;
-   fDecTF_1[0][16][10] = 0.082063322028;
-   fDecTF_1[0][16][11] = 0.793739288814;
-   fDecTF_1[0][16][12] = 0.109298711585;
-   fDecTF_1[0][16][13] = -1.20414333157;
-   fDecTF_1[0][16][14] = 0.0642825533614;
-   fDecTF_1[0][16][15] = 0.116422481852;
-   fDecTF_1[0][16][16] = 8.3733922692;
-   fDecTF_1[0][16][17] = -0.0940583133166;
-   fDecTF_1[0][16][18] = -0.561212914694;
-   fDecTF_1[0][16][19] = 9.29600574674;
-   fDecTF_1[0][16][20] = -0.0905215756828;
-   fDecTF_1[0][16][21] = -0.369904660358;
-   fDecTF_1[0][16][22] = 0.00989414226281;
-   fDecTF_1[0][16][23] = 0.156592943116;
-   fDecTF_1[0][16][24] = -0.0791495365535;
-   fDecTF_1[0][16][25] = 3.53536546488;
-   fDecTF_1[0][16][26] = -0.0679669173992;
-   fDecTF_1[0][16][27] = 1.26200353994;
-   fDecTF_1[0][16][28] = -0.017293910622;
-   fDecTF_1[0][16][29] = 0.0109785386778;
-   fDecTF_1[0][16][30] = -0.010183018231;
-   fDecTF_1[0][16][31] = 0.000367089944954;
-   fDecTF_1[0][16][32] = 0.00843152019512;
-   fDecTF_1[0][16][33] = 0.0174827905072;
-   fDecTF_1[0][16][34] = 0.0212757540936;
-   fDecTF_1[0][16][35] = -0.0158660339438;
-   fDecTF_1[0][16][36] = 0.00146578414022;
-   fDecTF_1[0][16][37] = 0.000190576189875;
-   fDecTF_1[0][16][38] = -0.0001548427541;
-   fDecTF_1[0][17][0] = 0.663210305648;
-   fDecTF_1[0][17][1] = 0.406718609596;
-   fDecTF_1[0][17][2] = 1.17547043494;
-   fDecTF_1[0][17][3] = -0.923607906721;
-   fDecTF_1[0][17][4] = 0.294410360406;
-   fDecTF_1[0][17][5] = -0.11010902349;
-   fDecTF_1[0][17][6] = -0.168602207443;
-   fDecTF_1[0][17][7] = -0.631419821707;
-   fDecTF_1[0][17][8] = -2.46721404259;
-   fDecTF_1[0][17][9] = 3.01839960119;
-   fDecTF_1[0][17][10] = 0.14597844363;
-   fDecTF_1[0][17][11] = -0.0105959802504;
-   fDecTF_1[0][17][12] = -6.05564566183;
-   fDecTF_1[0][17][13] = -0.00656482077132;
-   fDecTF_1[0][17][14] = 0.743777324426;
-   fDecTF_1[0][17][15] = -0.377432813921;
-   fDecTF_1[0][17][16] = -0.0940583133166;
-   fDecTF_1[0][17][17] = 8.85849307872;
-   fDecTF_1[0][17][18] = -0.132510851773;
-   fDecTF_1[0][17][19] = -0.135105381882;
-   fDecTF_1[0][17][20] = 1.18825763664;
-   fDecTF_1[0][17][21] = -0.0192448037669;
-   fDecTF_1[0][17][22] = -1.34087469761;
-   fDecTF_1[0][17][23] = -0.886145527379;
-   fDecTF_1[0][17][24] = -0.808129809206;
-   fDecTF_1[0][17][25] = -0.0781160356151;
-   fDecTF_1[0][17][26] = -0.968480999979;
-   fDecTF_1[0][17][27] = 0.916458214788;
-   fDecTF_1[0][17][28] = -0.010090397251;
-   fDecTF_1[0][17][29] = -0.00605571831229;
-   fDecTF_1[0][17][30] = -0.00761019166102;
-   fDecTF_1[0][17][31] = 0.00495144798392;
-   fDecTF_1[0][17][32] = -0.0106746836729;
-   fDecTF_1[0][17][33] = -0.00569149487221;
-   fDecTF_1[0][17][34] = 0.00995092490498;
-   fDecTF_1[0][17][35] = 0.014525765105;
-   fDecTF_1[0][17][36] = 0.00028505069563;
-   fDecTF_1[0][17][37] = -0.00317138902597;
-   fDecTF_1[0][17][38] = 0.000459818154271;
-   fDecTF_1[0][18][0] = 0.076721156461;
-   fDecTF_1[0][18][1] = -0.18579618466;
-   fDecTF_1[0][18][2] = -0.029566239863;
-   fDecTF_1[0][18][3] = -0.050986275838;
-   fDecTF_1[0][18][4] = -0.0165180405821;
-   fDecTF_1[0][18][5] = 0.0400758662536;
-   fDecTF_1[0][18][6] = -0.0363202809405;
-   fDecTF_1[0][18][7] = -0.00122315882176;
-   fDecTF_1[0][18][8] = -0.0620199400708;
-   fDecTF_1[0][18][9] = -0.0713037593037;
-   fDecTF_1[0][18][10] = -0.0769369796416;
-   fDecTF_1[0][18][11] = -0.400258165202;
-   fDecTF_1[0][18][12] = -0.184367285636;
-   fDecTF_1[0][18][13] = -5.80589386432;
-   fDecTF_1[0][18][14] = -0.244794149958;
-   fDecTF_1[0][18][15] = 0.386641490057;
-   fDecTF_1[0][18][16] = -0.561212914694;
-   fDecTF_1[0][18][17] = -0.132510851773;
-   fDecTF_1[0][18][18] = 6.85287536016;
-   fDecTF_1[0][18][19] = -2.58894747229;
-   fDecTF_1[0][18][20] = 0.638426684031;
-   fDecTF_1[0][18][21] = -0.579524890746;
-   fDecTF_1[0][18][22] = 0.616348811527;
-   fDecTF_1[0][18][23] = -0.771383148936;
-   fDecTF_1[0][18][24] = 0.296757355021;
-   fDecTF_1[0][18][25] = 0.302730725615;
-   fDecTF_1[0][18][26] = 0.0465081838633;
-   fDecTF_1[0][18][27] = 0.310638212654;
-   fDecTF_1[0][18][28] = 0.00595946147613;
-   fDecTF_1[0][18][29] = 0.00859799812709;
-   fDecTF_1[0][18][30] = 0.000267356695186;
-   fDecTF_1[0][18][31] = 0.0166049075892;
-   fDecTF_1[0][18][32] = 0.0281646288446;
-   fDecTF_1[0][18][33] = 0.017765930455;
-   fDecTF_1[0][18][34] = -0.0030566874709;
-   fDecTF_1[0][18][35] = 0.0121747342001;
-   fDecTF_1[0][18][36] = 0.000761033019101;
-   fDecTF_1[0][18][37] = 0.000760415727842;
-   fDecTF_1[0][18][38] = 0.000216848053231;
-   fDecTF_1[0][19][0] = 0.194764238968;
-   fDecTF_1[0][19][1] = 0.289993611135;
-   fDecTF_1[0][19][2] = 0.0657220793342;
-   fDecTF_1[0][19][3] = 0.269812019051;
-   fDecTF_1[0][19][4] = 0.0270002216633;
-   fDecTF_1[0][19][5] = -0.0447292435079;
-   fDecTF_1[0][19][6] = 0.0364221428611;
-   fDecTF_1[0][19][7] = 0.0427813353872;
-   fDecTF_1[0][19][8] = -0.199707763305;
-   fDecTF_1[0][19][9] = -0.259697552864;
-   fDecTF_1[0][19][10] = 1.00198878579;
-   fDecTF_1[0][19][11] = 0.273979001665;
-   fDecTF_1[0][19][12] = 1.26602387225;
-   fDecTF_1[0][19][13] = -0.0787949713039;
-   fDecTF_1[0][19][14] = 0.461746284263;
-   fDecTF_1[0][19][15] = -0.230753845726;
-   fDecTF_1[0][19][16] = 9.29600574674;
-   fDecTF_1[0][19][17] = -0.135105381881;
-   fDecTF_1[0][19][18] = -2.58894747229;
-   fDecTF_1[0][19][19] = 14.6118335077;
-   fDecTF_1[0][19][20] = -1.633737376;
-   fDecTF_1[0][19][21] = 0.665477295594;
-   fDecTF_1[0][19][22] = -4.27527311939;
-   fDecTF_1[0][19][23] = 1.43521742002;
-   fDecTF_1[0][19][24] = -0.852829827145;
-   fDecTF_1[0][19][25] = -0.0205605986982;
-   fDecTF_1[0][19][26] = 0.548121722407;
-   fDecTF_1[0][19][27] = 0.451512307039;
-   fDecTF_1[0][19][28] = 0.0169703281733;
-   fDecTF_1[0][19][29] = -0.0175654428181;
-   fDecTF_1[0][19][30] = 0.0136114074995;
-   fDecTF_1[0][19][31] = -0.0133487772399;
-   fDecTF_1[0][19][32] = -0.0126388564975;
-   fDecTF_1[0][19][33] = -0.0125066565643;
-   fDecTF_1[0][19][34] = -0.00751039051808;
-   fDecTF_1[0][19][35] = 0.0050462286156;
-   fDecTF_1[0][19][36] = 2.7499349438e-05;
-   fDecTF_1[0][19][37] = -7.06391889314e-05;
-   fDecTF_1[0][19][38] = 9.14235137632e-05;
-   fDecTF_1[0][20][0] = -0.308389464393;
-   fDecTF_1[0][20][1] = -0.255598750777;
-   fDecTF_1[0][20][2] = -0.853243255895;
-   fDecTF_1[0][20][3] = 0.8797915113;
-   fDecTF_1[0][20][4] = 0.0162373532831;
-   fDecTF_1[0][20][5] = 0.178129023038;
-   fDecTF_1[0][20][6] = -0.215517442916;
-   fDecTF_1[0][20][7] = -0.290966280673;
-   fDecTF_1[0][20][8] = -0.437571161755;
-   fDecTF_1[0][20][9] = -1.49260786832;
-   fDecTF_1[0][20][10] = -0.696438648557;
-   fDecTF_1[0][20][11] = -0.0546352422537;
-   fDecTF_1[0][20][12] = -1.15054170815;
-   fDecTF_1[0][20][13] = 0.0986518532819;
-   fDecTF_1[0][20][14] = -1.66205629316;
-   fDecTF_1[0][20][15] = -0.564237962045;
-   fDecTF_1[0][20][16] = -0.0905215756828;
-   fDecTF_1[0][20][17] = 1.18825763664;
-   fDecTF_1[0][20][18] = 0.638426684031;
-   fDecTF_1[0][20][19] = -1.633737376;
-   fDecTF_1[0][20][20] = 14.6407612676;
-   fDecTF_1[0][20][21] = -3.64466304762;
-   fDecTF_1[0][20][22] = 4.21585643691;
-   fDecTF_1[0][20][23] = -14.5439657317;
-   fDecTF_1[0][20][24] = 2.21845684606;
-   fDecTF_1[0][20][25] = 3.79488413115;
-   fDecTF_1[0][20][26] = 1.25780550644;
-   fDecTF_1[0][20][27] = 0.956932079264;
-   fDecTF_1[0][20][28] = -0.00823307445348;
-   fDecTF_1[0][20][29] = -0.000149965203135;
-   fDecTF_1[0][20][30] = -0.0130610746746;
-   fDecTF_1[0][20][31] = 0.00112246723638;
-   fDecTF_1[0][20][32] = 0.00118284367209;
-   fDecTF_1[0][20][33] = -0.012808078451;
-   fDecTF_1[0][20][34] = -0.00286476095245;
-   fDecTF_1[0][20][35] = -0.00476752061077;
-   fDecTF_1[0][20][36] = -0.00184331793182;
-   fDecTF_1[0][20][37] = 0.00138838073965;
-   fDecTF_1[0][20][38] = -0.000128293407805;
-   fDecTF_1[0][21][0] = -0.202589173816;
-   fDecTF_1[0][21][1] = -0.0777842426981;
-   fDecTF_1[0][21][2] = -0.160044692;
-   fDecTF_1[0][21][3] = 0.0435092610238;
-   fDecTF_1[0][21][4] = -0.0881761196825;
-   fDecTF_1[0][21][5] = 0.0617256140703;
-   fDecTF_1[0][21][6] = 0.015460785704;
-   fDecTF_1[0][21][7] = 0.255069304782;
-   fDecTF_1[0][21][8] = 0.734334515554;
-   fDecTF_1[0][21][9] = -0.981879025932;
-   fDecTF_1[0][21][10] = -0.290279302774;
-   fDecTF_1[0][21][11] = 0.0296089876544;
-   fDecTF_1[0][21][12] = 3.03786397099;
-   fDecTF_1[0][21][13] = -0.0578235505518;
-   fDecTF_1[0][21][14] = -0.32529063745;
-   fDecTF_1[0][21][15] = 0.350759100332;
-   fDecTF_1[0][21][16] = -0.369904660358;
-   fDecTF_1[0][21][17] = -0.0192448037669;
-   fDecTF_1[0][21][18] = -0.579524890746;
-   fDecTF_1[0][21][19] = 0.665477295594;
-   fDecTF_1[0][21][20] = -3.64466304762;
-   fDecTF_1[0][21][21] = 13.154631069;
-   fDecTF_1[0][21][22] = -5.0142966954;
-   fDecTF_1[0][21][23] = 2.32179751943;
-   fDecTF_1[0][21][24] = -9.18871542783;
-   fDecTF_1[0][21][25] = -2.31275619277;
-   fDecTF_1[0][21][26] = -4.51651646168;
-   fDecTF_1[0][21][27] = 0.668656143711;
-   fDecTF_1[0][21][28] = -0.0110944620201;
-   fDecTF_1[0][21][29] = 0.00345784733449;
-   fDecTF_1[0][21][30] = -0.0167616076062;
-   fDecTF_1[0][21][31] = 0.00244011509234;
-   fDecTF_1[0][21][32] = 0.0145485893183;
-   fDecTF_1[0][21][33] = -0.00759960315334;
-   fDecTF_1[0][21][34] = 0.000524215458863;
-   fDecTF_1[0][21][35] = -0.00490263337461;
-   fDecTF_1[0][21][36] = -0.000745411070149;
-   fDecTF_1[0][21][37] = -0.00121703838638;
-   fDecTF_1[0][21][38] = 8.43930966394e-05;
-   fDecTF_1[0][22][0] = -0.206291103263;
-   fDecTF_1[0][22][1] = -0.610525792139;
-   fDecTF_1[0][22][2] = -0.28268610093;
-   fDecTF_1[0][22][3] = 0.0289928728064;
-   fDecTF_1[0][22][4] = -0.0243043308279;
-   fDecTF_1[0][22][5] = 0.0679928504277;
-   fDecTF_1[0][22][6] = -0.08849715161;
-   fDecTF_1[0][22][7] = -0.188629354539;
-   fDecTF_1[0][22][8] = -0.324709723579;
-   fDecTF_1[0][22][9] = -0.293315666565;
-   fDecTF_1[0][22][10] = -0.154551939231;
-   fDecTF_1[0][22][11] = -0.19633909727;
-   fDecTF_1[0][22][12] = -1.99652499478;
-   fDecTF_1[0][22][13] = 0.565666625785;
-   fDecTF_1[0][22][14] = -0.779530350365;
-   fDecTF_1[0][22][15] = -0.0515555468694;
-   fDecTF_1[0][22][16] = 0.00989414226282;
-   fDecTF_1[0][22][17] = -1.34087469761;
-   fDecTF_1[0][22][18] = 0.616348811527;
-   fDecTF_1[0][22][19] = -4.27527311939;
-   fDecTF_1[0][22][20] = 4.21585643691;
-   fDecTF_1[0][22][21] = -5.0142966954;
-   fDecTF_1[0][22][22] = 13.1809333143;
-   fDecTF_1[0][22][23] = -2.97108043278;
-   fDecTF_1[0][22][24] = 2.56520200622;
-   fDecTF_1[0][22][25] = 11.8623346593;
-   fDecTF_1[0][22][26] = 1.94019980477;
-   fDecTF_1[0][22][27] = -1.40728003575;
-   fDecTF_1[0][22][28] = 0.0022089616123;
-   fDecTF_1[0][22][29] = -0.00524280242812;
-   fDecTF_1[0][22][30] = -0.00112559464821;
-   fDecTF_1[0][22][31] = -0.00546826071319;
-   fDecTF_1[0][22][32] = -0.00742330610798;
-   fDecTF_1[0][22][33] = 0.0137085574873;
-   fDecTF_1[0][22][34] = -0.00389153082759;
-   fDecTF_1[0][22][35] = 8.95394669803e-05;
-   fDecTF_1[0][22][36] = 0.00281758014675;
-   fDecTF_1[0][22][37] = 0.00196084619832;
-   fDecTF_1[0][22][38] = 0.000142959048712;
-   fDecTF_1[0][23][0] = 0.614566969632;
-   fDecTF_1[0][23][1] = 0.201898389264;
-   fDecTF_1[0][23][2] = 1.34018429578;
-   fDecTF_1[0][23][3] = -0.631291145174;
-   fDecTF_1[0][23][4] = -0.0113372715381;
-   fDecTF_1[0][23][5] = -0.0134710162723;
-   fDecTF_1[0][23][6] = 0.041317784839;
-   fDecTF_1[0][23][7] = -0.141488200923;
-   fDecTF_1[0][23][8] = 0.442431360879;
-   fDecTF_1[0][23][9] = 1.61310672633;
-   fDecTF_1[0][23][10] = 1.26762753391;
-   fDecTF_1[0][23][11] = -0.233978060616;
-   fDecTF_1[0][23][12] = 0.381239011995;
-   fDecTF_1[0][23][13] = 0.0731883645674;
-   fDecTF_1[0][23][14] = 3.26363781465;
-   fDecTF_1[0][23][15] = -1.16055513072;
-   fDecTF_1[0][23][16] = 0.156592943116;
-   fDecTF_1[0][23][17] = -0.886145527379;
-   fDecTF_1[0][23][18] = -0.771383148936;
-   fDecTF_1[0][23][19] = 1.43521742002;
-   fDecTF_1[0][23][20] = -14.5439657317;
-   fDecTF_1[0][23][21] = 2.32179751943;
-   fDecTF_1[0][23][22] = -2.97108043278;
-   fDecTF_1[0][23][23] = 16.7279313792;
-   fDecTF_1[0][23][24] = -1.56331974711;
-   fDecTF_1[0][23][25] = -2.695367602;
-   fDecTF_1[0][23][26] = -0.817637684399;
-   fDecTF_1[0][23][27] = -1.2737570126;
-   fDecTF_1[0][23][28] = 0.0140431376848;
-   fDecTF_1[0][23][29] = 0.00129412031713;
-   fDecTF_1[0][23][30] = 0.0228320650335;
-   fDecTF_1[0][23][31] = 0.004262381322;
-   fDecTF_1[0][23][32] = -0.00441157599833;
-   fDecTF_1[0][23][33] = 0.0194441393364;
-   fDecTF_1[0][23][34] = -0.00242107627163;
-   fDecTF_1[0][23][35] = 0.00998639588787;
-   fDecTF_1[0][23][36] = -0.000121540120635;
-   fDecTF_1[0][23][37] = 0.000253185890127;
-   fDecTF_1[0][23][38] = 5.51367010085e-05;
-   fDecTF_1[0][24][0] = -0.0977280770291;
-   fDecTF_1[0][24][1] = -0.336806780017;
-   fDecTF_1[0][24][2] = -0.0869017074441;
-   fDecTF_1[0][24][3] = 0.0919644010372;
-   fDecTF_1[0][24][4] = 0.00407940754848;
-   fDecTF_1[0][24][5] = 0.0443105277818;
-   fDecTF_1[0][24][6] = -0.065197724788;
-   fDecTF_1[0][24][7] = -0.118909545992;
-   fDecTF_1[0][24][8] = -0.108556119892;
-   fDecTF_1[0][24][9] = -0.182600621339;
-   fDecTF_1[0][24][10] = -0.118988525794;
-   fDecTF_1[0][24][11] = 0.0315283970528;
-   fDecTF_1[0][24][12] = -1.24604431597;
-   fDecTF_1[0][24][13] = 0.368015117392;
-   fDecTF_1[0][24][14] = -0.31755484878;
-   fDecTF_1[0][24][15] = 0.856513412865;
-   fDecTF_1[0][24][16] = -0.0791495365535;
-   fDecTF_1[0][24][17] = -0.808129809206;
-   fDecTF_1[0][24][18] = 0.296757355021;
-   fDecTF_1[0][24][19] = -0.852829827145;
-   fDecTF_1[0][24][20] = 2.21845684606;
-   fDecTF_1[0][24][21] = -9.18871542783;
-   fDecTF_1[0][24][22] = 2.56520200622;
-   fDecTF_1[0][24][23] = -1.56331974711;
-   fDecTF_1[0][24][24] = 8.86629884336;
-   fDecTF_1[0][24][25] = 0.238030288426;
-   fDecTF_1[0][24][26] = 1.06441577283;
-   fDecTF_1[0][24][27] = 2.40712422874;
-   fDecTF_1[0][24][28] = 0.00429580334327;
-   fDecTF_1[0][24][29] = 0.00189901698593;
-   fDecTF_1[0][24][30] = 0.0126700787973;
-   fDecTF_1[0][24][31] = -0.000495925202616;
-   fDecTF_1[0][24][32] = 0.00408386768512;
-   fDecTF_1[0][24][33] = 0.0128461960914;
-   fDecTF_1[0][24][34] = -0.000292605977978;
-   fDecTF_1[0][24][35] = 0.00695301688977;
-   fDecTF_1[0][24][36] = 0.000889457523949;
-   fDecTF_1[0][24][37] = 1.62095421335e-05;
-   fDecTF_1[0][24][38] = 0.000300863415698;
-   fDecTF_1[0][25][0] = -0.430543844156;
-   fDecTF_1[0][25][1] = -0.14342743684;
-   fDecTF_1[0][25][2] = -0.541774499073;
-   fDecTF_1[0][25][3] = 0.203862409183;
-   fDecTF_1[0][25][4] = -0.0318877358373;
-   fDecTF_1[0][25][5] = -0.0204500831709;
-   fDecTF_1[0][25][6] = 0.0264921190837;
-   fDecTF_1[0][25][7] = -0.0810694578057;
-   fDecTF_1[0][25][8] = -0.428363936733;
-   fDecTF_1[0][25][9] = 0.145120695942;
-   fDecTF_1[0][25][10] = -0.178889900822;
-   fDecTF_1[0][25][11] = 0.161419699317;
-   fDecTF_1[0][25][12] = -2.59387400637;
-   fDecTF_1[0][25][13] = -0.0585928784228;
-   fDecTF_1[0][25][14] = -0.705243132869;
-   fDecTF_1[0][25][15] = -0.123632906465;
-   fDecTF_1[0][25][16] = 3.53536546488;
-   fDecTF_1[0][25][17] = -0.0781160356151;
-   fDecTF_1[0][25][18] = 0.302730725615;
-   fDecTF_1[0][25][19] = -0.0205605986982;
-   fDecTF_1[0][25][20] = 3.79488413115;
-   fDecTF_1[0][25][21] = -2.31275619277;
-   fDecTF_1[0][25][22] = 11.8623346593;
-   fDecTF_1[0][25][23] = -2.695367602;
-   fDecTF_1[0][25][24] = 0.238030288426;
-   fDecTF_1[0][25][25] = 14.6764539705;
-   fDecTF_1[0][25][26] = 0.579406967389;
-   fDecTF_1[0][25][27] = -0.249899617651;
-   fDecTF_1[0][25][28] = 0.00219734232458;
-   fDecTF_1[0][25][29] = -0.00320088716759;
-   fDecTF_1[0][25][30] = -0.00292889893976;
-   fDecTF_1[0][25][31] = -0.00334228980543;
-   fDecTF_1[0][25][32] = 0.00551461144427;
-   fDecTF_1[0][25][33] = 0.0114924185658;
-   fDecTF_1[0][25][34] = -0.00118947679515;
-   fDecTF_1[0][25][35] = 0.00893432765437;
-   fDecTF_1[0][25][36] = -0.000137031287977;
-   fDecTF_1[0][25][37] = 0.00142069389564;
-   fDecTF_1[0][25][38] = 5.18059577142e-05;
-   fDecTF_1[0][26][0] = 0.591722313832;
-   fDecTF_1[0][26][1] = 0.811690072222;
-   fDecTF_1[0][26][2] = 0.409476765209;
-   fDecTF_1[0][26][3] = -0.37726526816;
-   fDecTF_1[0][26][4] = 0.0203419591546;
-   fDecTF_1[0][26][5] = -0.0776719797668;
-   fDecTF_1[0][26][6] = 0.0353326429952;
-   fDecTF_1[0][26][7] = 0.20041980558;
-   fDecTF_1[0][26][8] = -0.548021556405;
-   fDecTF_1[0][26][9] = 1.37173891544;
-   fDecTF_1[0][26][10] = 0.380247207279;
-   fDecTF_1[0][26][11] = 0.249040587889;
-   fDecTF_1[0][26][12] = -0.515096827458;
-   fDecTF_1[0][26][13] = -0.201103752376;
-   fDecTF_1[0][26][14] = -0.0264233445284;
-   fDecTF_1[0][26][15] = -0.805467840998;
-   fDecTF_1[0][26][16] = -0.0679669173992;
-   fDecTF_1[0][26][17] = -0.968480999979;
-   fDecTF_1[0][26][18] = 0.0465081838633;
-   fDecTF_1[0][26][19] = 0.548121722407;
-   fDecTF_1[0][26][20] = 1.25780550644;
-   fDecTF_1[0][26][21] = -4.51651646168;
-   fDecTF_1[0][26][22] = 1.94019980477;
-   fDecTF_1[0][26][23] = -0.817637684399;
-   fDecTF_1[0][26][24] = 1.06441577283;
-   fDecTF_1[0][26][25] = 0.579406967389;
-   fDecTF_1[0][26][26] = 8.5245000521;
-   fDecTF_1[0][26][27] = -7.96112336316;
-   fDecTF_1[0][26][28] = 0.00374963130597;
-   fDecTF_1[0][26][29] = -0.00292558684257;
-   fDecTF_1[0][26][30] = 0.0155087417031;
-   fDecTF_1[0][26][31] = -0.0011913701168;
-   fDecTF_1[0][26][32] = 0.00180400146432;
-   fDecTF_1[0][26][33] = 0.0127566615253;
-   fDecTF_1[0][26][34] = 0.00657263701246;
-   fDecTF_1[0][26][35] = 0.00743848352135;
-   fDecTF_1[0][26][36] = -0.000357090890724;
-   fDecTF_1[0][26][37] = 0.000129217989457;
-   fDecTF_1[0][26][38] = -0.000360398410286;
-   fDecTF_1[0][27][0] = -1.54344792626;
-   fDecTF_1[0][27][1] = -0.239384436235;
-   fDecTF_1[0][27][2] = -1.57432158273;
-   fDecTF_1[0][27][3] = 0.542109490002;
-   fDecTF_1[0][27][4] = -0.0683667792295;
-   fDecTF_1[0][27][5] = -0.149817066765;
-   fDecTF_1[0][27][6] = 0.379962646788;
-   fDecTF_1[0][27][7] = 0.152056821495;
-   fDecTF_1[0][27][8] = 0.716956657921;
-   fDecTF_1[0][27][9] = -0.854767965535;
-   fDecTF_1[0][27][10] = -1.10735802324;
-   fDecTF_1[0][27][11] = 0.602786570777;
-   fDecTF_1[0][27][12] = -0.511607594155;
-   fDecTF_1[0][27][13] = -0.15279981703;
-   fDecTF_1[0][27][14] = 0.758131925193;
-   fDecTF_1[0][27][15] = -0.270642224863;
-   fDecTF_1[0][27][16] = 1.26200353994;
-   fDecTF_1[0][27][17] = 0.916458214788;
-   fDecTF_1[0][27][18] = 0.310638212654;
-   fDecTF_1[0][27][19] = 0.451512307039;
-   fDecTF_1[0][27][20] = 0.956932079264;
-   fDecTF_1[0][27][21] = 0.668656143711;
-   fDecTF_1[0][27][22] = -1.40728003575;
-   fDecTF_1[0][27][23] = -1.2737570126;
-   fDecTF_1[0][27][24] = 2.40712422874;
-   fDecTF_1[0][27][25] = -0.249899617651;
-   fDecTF_1[0][27][26] = -7.96112336316;
-   fDecTF_1[0][27][27] = 11.5403814664;
-   fDecTF_1[0][27][28] = -0.00395451184352;
-   fDecTF_1[0][27][29] = 0.0012193534833;
-   fDecTF_1[0][27][30] = -0.00955746154605;
-   fDecTF_1[0][27][31] = -0.00474521420301;
-   fDecTF_1[0][27][32] = 0.00073847702404;
-   fDecTF_1[0][27][33] = -0.00890229947016;
-   fDecTF_1[0][27][34] = -0.0110954427294;
-   fDecTF_1[0][27][35] = -0.00399356896928;
-   fDecTF_1[0][27][36] = 0.00184682716196;
-   fDecTF_1[0][27][37] = 0.000953703045515;
-   fDecTF_1[0][27][38] = -0.00024080752719;
-   fDecTF_1[0][28][0] = 0.00805006398942;
-   fDecTF_1[0][28][1] = 0.008977780417;
-   fDecTF_1[0][28][2] = 0.00491312449218;
-   fDecTF_1[0][28][3] = 0.00313206888794;
-   fDecTF_1[0][28][4] = -0.00663659004672;
-   fDecTF_1[0][28][5] = -0.00211622561539;
-   fDecTF_1[0][28][6] = 0.00344761780629;
-   fDecTF_1[0][28][7] = -0.00104814539647;
-   fDecTF_1[0][28][8] = -0.00349440690207;
-   fDecTF_1[0][28][9] = -0.000435908489681;
-   fDecTF_1[0][28][10] = 0.00979670115384;
-   fDecTF_1[0][28][11] = 0.00122418184125;
-   fDecTF_1[0][28][12] = -0.00319447154087;
-   fDecTF_1[0][28][13] = 0.00214961166644;
-   fDecTF_1[0][28][14] = -0.00774779410656;
-   fDecTF_1[0][28][15] = -0.00337083275524;
-   fDecTF_1[0][28][16] = -0.017293910622;
-   fDecTF_1[0][28][17] = -0.010090397251;
-   fDecTF_1[0][28][18] = 0.00595946147613;
-   fDecTF_1[0][28][19] = 0.0169703281733;
-   fDecTF_1[0][28][20] = -0.00823307445348;
-   fDecTF_1[0][28][21] = -0.0110944620201;
-   fDecTF_1[0][28][22] = 0.0022089616123;
-   fDecTF_1[0][28][23] = 0.0140431376848;
-   fDecTF_1[0][28][24] = 0.00429580334327;
-   fDecTF_1[0][28][25] = 0.00219734232458;
-   fDecTF_1[0][28][26] = 0.00374963130598;
-   fDecTF_1[0][28][27] = -0.00395451184352;
-   fDecTF_1[0][28][28] = 0.287546158718;
-   fDecTF_1[0][28][29] = -0.00129057999194;
-   fDecTF_1[0][28][30] = 0.255401749553;
-   fDecTF_1[0][28][31] = 0.00444676201043;
-   fDecTF_1[0][28][32] = -0.0100730162138;
-   fDecTF_1[0][28][33] = -0.00385150311592;
-   fDecTF_1[0][28][34] = -0.0011148789508;
-   fDecTF_1[0][28][35] = 0.00356469191631;
-   fDecTF_1[0][28][36] = -0.00125542801605;
-   fDecTF_1[0][28][37] = -0.000112660891309;
-   fDecTF_1[0][28][38] = 0.000671798938898;
-   fDecTF_1[0][29][0] = 0.00525299612923;
-   fDecTF_1[0][29][1] = 0.00963682885388;
-   fDecTF_1[0][29][2] = -0.0052623208438;
-   fDecTF_1[0][29][3] = 0.00323161089212;
-   fDecTF_1[0][29][4] = 0.00540709579966;
-   fDecTF_1[0][29][5] = -0.00839778996604;
-   fDecTF_1[0][29][6] = 0.00714425873531;
-   fDecTF_1[0][29][7] = -0.0031948915879;
-   fDecTF_1[0][29][8] = -0.00706746858677;
-   fDecTF_1[0][29][9] = 0.00292024318016;
-   fDecTF_1[0][29][10] = 0.00758160583853;
-   fDecTF_1[0][29][11] = 0.00625249301198;
-   fDecTF_1[0][29][12] = 0.00178784065142;
-   fDecTF_1[0][29][13] = -0.00514997641197;
-   fDecTF_1[0][29][14] = -0.00976319740822;
-   fDecTF_1[0][29][15] = -0.00854850500882;
-   fDecTF_1[0][29][16] = 0.0109785386778;
-   fDecTF_1[0][29][17] = -0.00605571831229;
-   fDecTF_1[0][29][18] = 0.00859799812709;
-   fDecTF_1[0][29][19] = -0.0175654428181;
-   fDecTF_1[0][29][20] = -0.000149965203135;
-   fDecTF_1[0][29][21] = 0.00345784733449;
-   fDecTF_1[0][29][22] = -0.00524280242812;
-   fDecTF_1[0][29][23] = 0.00129412031713;
-   fDecTF_1[0][29][24] = 0.00189901698593;
-   fDecTF_1[0][29][25] = -0.00320088716759;
-   fDecTF_1[0][29][26] = -0.00292558684257;
-   fDecTF_1[0][29][27] = 0.0012193534833;
-   fDecTF_1[0][29][28] = -0.00129057999194;
-   fDecTF_1[0][29][29] = 0.287190330145;
-   fDecTF_1[0][29][30] = 0.00842758703143;
-   fDecTF_1[0][29][31] = 0.259583175655;
-   fDecTF_1[0][29][32] = -0.000366152928696;
-   fDecTF_1[0][29][33] = -0.0108887159789;
-   fDecTF_1[0][29][34] = 0.00503064255879;
-   fDecTF_1[0][29][35] = 0.00255653851841;
-   fDecTF_1[0][29][36] = 0.000323806203892;
-   fDecTF_1[0][29][37] = -9.65898097137e-05;
-   fDecTF_1[0][29][38] = 0.000779096489923;
-   fDecTF_1[0][30][0] = -0.0037038853574;
-   fDecTF_1[0][30][1] = 0.0034555581361;
-   fDecTF_1[0][30][2] = 0.0049561270299;
-   fDecTF_1[0][30][3] = 0.00666169111021;
-   fDecTF_1[0][30][4] = -0.00955684073217;
-   fDecTF_1[0][30][5] = 0.000766587268109;
-   fDecTF_1[0][30][6] = 0.000108590765399;
-   fDecTF_1[0][30][7] = 0.0205972727128;
-   fDecTF_1[0][30][8] = 0.00302990225587;
-   fDecTF_1[0][30][9] = 0.00463657982226;
-   fDecTF_1[0][30][10] = 0.0102028898626;
-   fDecTF_1[0][30][11] = -0.0129773781716;
-   fDecTF_1[0][30][12] = -0.00769385432885;
-   fDecTF_1[0][30][13] = 0.0105652298808;
-   fDecTF_1[0][30][14] = 0.00177452120925;
-   fDecTF_1[0][30][15] = -0.0045055271678;
-   fDecTF_1[0][30][16] = -0.010183018231;
-   fDecTF_1[0][30][17] = -0.00761019166102;
-   fDecTF_1[0][30][18] = 0.000267356695186;
-   fDecTF_1[0][30][19] = 0.0136114074995;
-   fDecTF_1[0][30][20] = -0.0130610746746;
-   fDecTF_1[0][30][21] = -0.0167616076062;
-   fDecTF_1[0][30][22] = -0.00112559464821;
-   fDecTF_1[0][30][23] = 0.0228320650335;
-   fDecTF_1[0][30][24] = 0.0126700787973;
-   fDecTF_1[0][30][25] = -0.00292889893976;
-   fDecTF_1[0][30][26] = 0.0155087417031;
-   fDecTF_1[0][30][27] = -0.00955746154605;
-   fDecTF_1[0][30][28] = 0.255401749553;
-   fDecTF_1[0][30][29] = 0.00842758703143;
-   fDecTF_1[0][30][30] = 0.617970669606;
-   fDecTF_1[0][30][31] = 0.0107889461437;
-   fDecTF_1[0][30][32] = -0.000837578136528;
-   fDecTF_1[0][30][33] = -0.000952150077476;
-   fDecTF_1[0][30][34] = -0.00679488579424;
-   fDecTF_1[0][30][35] = -0.0020143002908;
-   fDecTF_1[0][30][36] = 0.000482591719804;
-   fDecTF_1[0][30][37] = 0.00112227250143;
-   fDecTF_1[0][30][38] = -0.00079031302583;
-   fDecTF_1[0][31][0] = 0.00113455378336;
-   fDecTF_1[0][31][1] = 0.00347812124494;
-   fDecTF_1[0][31][2] = -0.0143007743257;
-   fDecTF_1[0][31][3] = 0.00418334292832;
-   fDecTF_1[0][31][4] = 0.0114607962797;
-   fDecTF_1[0][31][5] = -0.0192596435201;
-   fDecTF_1[0][31][6] = 0.00314221486169;
-   fDecTF_1[0][31][7] = 0.012715079891;
-   fDecTF_1[0][31][8] = 0.00357465918158;
-   fDecTF_1[0][31][9] = 0.00536252218245;
-   fDecTF_1[0][31][10] = 0.00251547004486;
-   fDecTF_1[0][31][11] = -0.00432876887866;
-   fDecTF_1[0][31][12] = -0.00661134754081;
-   fDecTF_1[0][31][13] = -0.0127329028914;
-   fDecTF_1[0][31][14] = -0.00628674345714;
-   fDecTF_1[0][31][15] = -0.00694518386262;
-   fDecTF_1[0][31][16] = 0.000367089944954;
-   fDecTF_1[0][31][17] = 0.00495144798392;
-   fDecTF_1[0][31][18] = 0.0166049075892;
-   fDecTF_1[0][31][19] = -0.0133487772399;
-   fDecTF_1[0][31][20] = 0.00112246723638;
-   fDecTF_1[0][31][21] = 0.00244011509234;
-   fDecTF_1[0][31][22] = -0.00546826071319;
-   fDecTF_1[0][31][23] = 0.004262381322;
-   fDecTF_1[0][31][24] = -0.000495925202616;
-   fDecTF_1[0][31][25] = -0.00334228980543;
-   fDecTF_1[0][31][26] = -0.0011913701168;
-   fDecTF_1[0][31][27] = -0.00474521420301;
-   fDecTF_1[0][31][28] = 0.00444676201043;
-   fDecTF_1[0][31][29] = 0.259583175655;
-   fDecTF_1[0][31][30] = 0.0107889461437;
-   fDecTF_1[0][31][31] = 0.640509953106;
-   fDecTF_1[0][31][32] = 0.00440565160903;
-   fDecTF_1[0][31][33] = -0.00627287514207;
-   fDecTF_1[0][31][34] = -0.000473636561363;
-   fDecTF_1[0][31][35] = -0.00120164346649;
-   fDecTF_1[0][31][36] = -0.00268640438731;
-   fDecTF_1[0][31][37] = 0.00191071008831;
-   fDecTF_1[0][31][38] = -0.000717213652867;
-   fDecTF_1[0][32][0] = -0.0216754849595;
-   fDecTF_1[0][32][1] = -0.0118628244856;
-   fDecTF_1[0][32][2] = 0.0358011130533;
-   fDecTF_1[0][32][3] = 0.0123327897405;
-   fDecTF_1[0][32][4] = -0.0236765923993;
-   fDecTF_1[0][32][5] = 0.0261883800617;
-   fDecTF_1[0][32][6] = -0.0207680476969;
-   fDecTF_1[0][32][7] = -0.00122058100846;
-   fDecTF_1[0][32][8] = 0.00888154705736;
-   fDecTF_1[0][32][9] = 0.000168434298874;
-   fDecTF_1[0][32][10] = -0.00126716094438;
-   fDecTF_1[0][32][11] = -0.0041528617918;
-   fDecTF_1[0][32][12] = -0.014366900648;
-   fDecTF_1[0][32][13] = -0.0343515098767;
-   fDecTF_1[0][32][14] = -0.072643751764;
-   fDecTF_1[0][32][15] = 0.0165561166035;
-   fDecTF_1[0][32][16] = 0.00843152019512;
-   fDecTF_1[0][32][17] = -0.0106746836729;
-   fDecTF_1[0][32][18] = 0.0281646288446;
-   fDecTF_1[0][32][19] = -0.0126388564975;
-   fDecTF_1[0][32][20] = 0.00118284367209;
-   fDecTF_1[0][32][21] = 0.0145485893183;
-   fDecTF_1[0][32][22] = -0.00742330610798;
-   fDecTF_1[0][32][23] = -0.00441157599833;
-   fDecTF_1[0][32][24] = 0.00408386768512;
-   fDecTF_1[0][32][25] = 0.00551461144427;
-   fDecTF_1[0][32][26] = 0.00180400146432;
-   fDecTF_1[0][32][27] = 0.00073847702404;
-   fDecTF_1[0][32][28] = -0.0100730162138;
-   fDecTF_1[0][32][29] = -0.000366152928696;
-   fDecTF_1[0][32][30] = -0.000837578136528;
-   fDecTF_1[0][32][31] = 0.00440565160903;
-   fDecTF_1[0][32][32] = 1.87044486766;
-   fDecTF_1[0][32][33] = -0.00486956648322;
-   fDecTF_1[0][32][34] = -0.0124334339815;
-   fDecTF_1[0][32][35] = -0.0061094167855;
-   fDecTF_1[0][32][36] = 0.00081256631036;
-   fDecTF_1[0][32][37] = 0.000288654126799;
-   fDecTF_1[0][32][38] = -0.000541027689455;
-   fDecTF_1[0][33][0] = -0.0338297010956;
-   fDecTF_1[0][33][1] = 0.0176500038148;
-   fDecTF_1[0][33][2] = -0.00168330847556;
-   fDecTF_1[0][33][3] = 0.02419774721;
-   fDecTF_1[0][33][4] = -0.0140615547096;
-   fDecTF_1[0][33][5] = 0.00263951522188;
-   fDecTF_1[0][33][6] = 0.0211719343872;
-   fDecTF_1[0][33][7] = 0.0323692155999;
-   fDecTF_1[0][33][8] = 0.0261799696547;
-   fDecTF_1[0][33][9] = 0.020604103588;
-   fDecTF_1[0][33][10] = -0.0319780550368;
-   fDecTF_1[0][33][11] = 0.0429982851336;
-   fDecTF_1[0][33][12] = -0.0337274249686;
-   fDecTF_1[0][33][13] = -0.0247723652882;
-   fDecTF_1[0][33][14] = -0.0196730196361;
-   fDecTF_1[0][33][15] = -0.0114535636722;
-   fDecTF_1[0][33][16] = 0.0174827905072;
-   fDecTF_1[0][33][17] = -0.00569149487221;
-   fDecTF_1[0][33][18] = 0.017765930455;
-   fDecTF_1[0][33][19] = -0.0125066565643;
-   fDecTF_1[0][33][20] = -0.012808078451;
-   fDecTF_1[0][33][21] = -0.00759960315334;
-   fDecTF_1[0][33][22] = 0.0137085574873;
-   fDecTF_1[0][33][23] = 0.0194441393364;
-   fDecTF_1[0][33][24] = 0.0128461960914;
-   fDecTF_1[0][33][25] = 0.0114924185658;
-   fDecTF_1[0][33][26] = 0.0127566615253;
-   fDecTF_1[0][33][27] = -0.00890229947016;
-   fDecTF_1[0][33][28] = -0.00385150311592;
-   fDecTF_1[0][33][29] = -0.0108887159789;
-   fDecTF_1[0][33][30] = -0.000952150077476;
-   fDecTF_1[0][33][31] = -0.00627287514207;
-   fDecTF_1[0][33][32] = -0.00486956648322;
-   fDecTF_1[0][33][33] = 1.85656414404;
-   fDecTF_1[0][33][34] = -0.00402831358604;
-   fDecTF_1[0][33][35] = -0.004862826798;
-   fDecTF_1[0][33][36] = -4.13774959822e-05;
-   fDecTF_1[0][33][37] = -0.00119433986285;
-   fDecTF_1[0][33][38] = -0.000782653948661;
-   fDecTF_1[0][34][0] = 0.0010385420639;
-   fDecTF_1[0][34][1] = -0.0484388748459;
-   fDecTF_1[0][34][2] = -0.0163216692505;
-   fDecTF_1[0][34][3] = 0.000155942256204;
-   fDecTF_1[0][34][4] = -0.00744530577473;
-   fDecTF_1[0][34][5] = -0.0232128247447;
-   fDecTF_1[0][34][6] = -0.0333840991034;
-   fDecTF_1[0][34][7] = 0.0385097704223;
-   fDecTF_1[0][34][8] = 0.00731900064166;
-   fDecTF_1[0][34][9] = 0.00478191113957;
-   fDecTF_1[0][34][10] = -0.0111213037767;
-   fDecTF_1[0][34][11] = -0.0131479361579;
-   fDecTF_1[0][34][12] = 0.00374188542308;
-   fDecTF_1[0][34][13] = 0.00109350475663;
-   fDecTF_1[0][34][14] = 0.00438441743524;
-   fDecTF_1[0][34][15] = 0.00328685357469;
-   fDecTF_1[0][34][16] = 0.0212757540936;
-   fDecTF_1[0][34][17] = 0.00995092490498;
-   fDecTF_1[0][34][18] = -0.0030566874709;
-   fDecTF_1[0][34][19] = -0.00751039051808;
-   fDecTF_1[0][34][20] = -0.00286476095245;
-   fDecTF_1[0][34][21] = 0.000524215458863;
-   fDecTF_1[0][34][22] = -0.00389153082759;
-   fDecTF_1[0][34][23] = -0.00242107627163;
-   fDecTF_1[0][34][24] = -0.000292605977978;
-   fDecTF_1[0][34][25] = -0.00118947679515;
-   fDecTF_1[0][34][26] = 0.00657263701246;
-   fDecTF_1[0][34][27] = -0.0110954427294;
-   fDecTF_1[0][34][28] = -0.0011148789508;
-   fDecTF_1[0][34][29] = 0.00503064255879;
-   fDecTF_1[0][34][30] = -0.00679488579424;
-   fDecTF_1[0][34][31] = -0.000473636561363;
-   fDecTF_1[0][34][32] = -0.0124334339815;
-   fDecTF_1[0][34][33] = -0.00402831358604;
-   fDecTF_1[0][34][34] = 0.420406100116;
-   fDecTF_1[0][34][35] = -0.0967804113919;
-   fDecTF_1[0][34][36] = 0.00279220164547;
-   fDecTF_1[0][34][37] = 0.000152019120089;
-   fDecTF_1[0][34][38] = 0.0046329813297;
-   fDecTF_1[0][35][0] = 0.000734877926159;
-   fDecTF_1[0][35][1] = -0.0378071625466;
-   fDecTF_1[0][35][2] = 0.00746124823531;
-   fDecTF_1[0][35][3] = 0.000483112106237;
-   fDecTF_1[0][35][4] = -0.0181361973102;
-   fDecTF_1[0][35][5] = -0.0286279446411;
-   fDecTF_1[0][35][6] = -0.0461817899309;
-   fDecTF_1[0][35][7] = 0.0402241463724;
-   fDecTF_1[0][35][8] = 0.0109673519697;
-   fDecTF_1[0][35][9] = -0.00133533595407;
-   fDecTF_1[0][35][10] = -0.0234455266743;
-   fDecTF_1[0][35][11] = -0.00226168763486;
-   fDecTF_1[0][35][12] = 0.00363035645998;
-   fDecTF_1[0][35][13] = 0.00374922280057;
-   fDecTF_1[0][35][14] = 0.00777826139356;
-   fDecTF_1[0][35][15] = 0.0135312926426;
-   fDecTF_1[0][35][16] = -0.0158660339438;
-   fDecTF_1[0][35][17] = 0.014525765105;
-   fDecTF_1[0][35][18] = 0.0121747342001;
-   fDecTF_1[0][35][19] = 0.0050462286156;
-   fDecTF_1[0][35][20] = -0.00476752061077;
-   fDecTF_1[0][35][21] = -0.00490263337461;
-   fDecTF_1[0][35][22] = 8.95394669803e-05;
-   fDecTF_1[0][35][23] = 0.00998639588787;
-   fDecTF_1[0][35][24] = 0.00695301688977;
-   fDecTF_1[0][35][25] = 0.00893432765437;
-   fDecTF_1[0][35][26] = 0.00743848352135;
-   fDecTF_1[0][35][27] = -0.00399356896928;
-   fDecTF_1[0][35][28] = 0.00356469191631;
-   fDecTF_1[0][35][29] = 0.00255653851841;
-   fDecTF_1[0][35][30] = -0.0020143002908;
-   fDecTF_1[0][35][31] = -0.00120164346649;
-   fDecTF_1[0][35][32] = -0.0061094167855;
-   fDecTF_1[0][35][33] = -0.004862826798;
-   fDecTF_1[0][35][34] = -0.0967804113919;
-   fDecTF_1[0][35][35] = 0.420433703543;
-   fDecTF_1[0][35][36] = 0.00174424955093;
-   fDecTF_1[0][35][37] = -0.000199148303606;
-   fDecTF_1[0][35][38] = 0.00467137194641;
-   fDecTF_1[0][36][0] = 0.000737869930292;
-   fDecTF_1[0][36][1] = 0.00152564384275;
-   fDecTF_1[0][36][2] = -0.000676267798061;
-   fDecTF_1[0][36][3] = 0.000287806598293;
-   fDecTF_1[0][36][4] = 0.00126152164037;
-   fDecTF_1[0][36][5] = 0.00136664020689;
-   fDecTF_1[0][36][6] = -0.0017270862339;
-   fDecTF_1[0][36][7] = 0.00206561806477;
-   fDecTF_1[0][36][8] = -0.000860983556503;
-   fDecTF_1[0][36][9] = 0.0009748662446;
-   fDecTF_1[0][36][10] = 0.00300649951177;
-   fDecTF_1[0][36][11] = -0.00061814443341;
-   fDecTF_1[0][36][12] = 0.000603785365829;
-   fDecTF_1[0][36][13] = 0.000581851869764;
-   fDecTF_1[0][36][14] = 0.00338144116789;
-   fDecTF_1[0][36][15] = 0.000347421023983;
-   fDecTF_1[0][36][16] = 0.00146578414022;
-   fDecTF_1[0][36][17] = 0.00028505069563;
-   fDecTF_1[0][36][18] = 0.000761033019101;
-   fDecTF_1[0][36][19] = 2.7499349438e-05;
-   fDecTF_1[0][36][20] = -0.00184331793182;
-   fDecTF_1[0][36][21] = -0.000745411070149;
-   fDecTF_1[0][36][22] = 0.00281758014675;
-   fDecTF_1[0][36][23] = -0.000121540120635;
-   fDecTF_1[0][36][24] = 0.000889457523949;
-   fDecTF_1[0][36][25] = -0.000137031287977;
-   fDecTF_1[0][36][26] = -0.000357090890724;
-   fDecTF_1[0][36][27] = 0.00184682716196;
-   fDecTF_1[0][36][28] = -0.00125542801605;
-   fDecTF_1[0][36][29] = 0.000323806203892;
-   fDecTF_1[0][36][30] = 0.000482591719804;
-   fDecTF_1[0][36][31] = -0.00268640438731;
-   fDecTF_1[0][36][32] = 0.00081256631036;
-   fDecTF_1[0][36][33] = -4.13774959822e-05;
-   fDecTF_1[0][36][34] = 0.00279220164547;
-   fDecTF_1[0][36][35] = 0.00174424955093;
-   fDecTF_1[0][36][36] = 0.10969165882;
-   fDecTF_1[0][36][37] = 0.000172837610112;
-   fDecTF_1[0][36][38] = -6.01773002485e-06;
-   fDecTF_1[0][37][0] = 0.00108916790491;
-   fDecTF_1[0][37][1] = 0.000495186761032;
-   fDecTF_1[0][37][2] = 0.000422503841299;
-   fDecTF_1[0][37][3] = -0.00151081143698;
-   fDecTF_1[0][37][4] = -0.00153332066902;
-   fDecTF_1[0][37][5] = 0.00102889883636;
-   fDecTF_1[0][37][6] = -0.000730924498488;
-   fDecTF_1[0][37][7] = 0.000440511536031;
-   fDecTF_1[0][37][8] = -0.000894516352068;
-   fDecTF_1[0][37][9] = -2.526424479e-05;
-   fDecTF_1[0][37][10] = 0.000541182330419;
-   fDecTF_1[0][37][11] = -0.00375838225651;
-   fDecTF_1[0][37][12] = 0.000649403821555;
-   fDecTF_1[0][37][13] = -0.000703321666235;
-   fDecTF_1[0][37][14] = -0.00181614621821;
-   fDecTF_1[0][37][15] = -4.48042102775e-05;
-   fDecTF_1[0][37][16] = 0.000190576189875;
-   fDecTF_1[0][37][17] = -0.00317138902597;
-   fDecTF_1[0][37][18] = 0.000760415727842;
-   fDecTF_1[0][37][19] = -7.06391889314e-05;
-   fDecTF_1[0][37][20] = 0.00138838073965;
-   fDecTF_1[0][37][21] = -0.00121703838638;
-   fDecTF_1[0][37][22] = 0.00196084619832;
-   fDecTF_1[0][37][23] = 0.000253185890127;
-   fDecTF_1[0][37][24] = 1.62095421335e-05;
-   fDecTF_1[0][37][25] = 0.00142069389564;
-   fDecTF_1[0][37][26] = 0.000129217989457;
-   fDecTF_1[0][37][27] = 0.000953703045515;
-   fDecTF_1[0][37][28] = -0.000112660891309;
-   fDecTF_1[0][37][29] = -9.65898097137e-05;
-   fDecTF_1[0][37][30] = 0.00112227250143;
-   fDecTF_1[0][37][31] = 0.00191071008831;
-   fDecTF_1[0][37][32] = 0.000288654126799;
-   fDecTF_1[0][37][33] = -0.00119433986285;
-   fDecTF_1[0][37][34] = 0.000152019120089;
-   fDecTF_1[0][37][35] = -0.000199148303606;
-   fDecTF_1[0][37][36] = 0.000172837610112;
-   fDecTF_1[0][37][37] = 0.104517997099;
-   fDecTF_1[0][37][38] = -0.000369645375898;
-   fDecTF_1[0][38][0] = 0.000545544728147;
-   fDecTF_1[0][38][1] = -0.00273641439185;
-   fDecTF_1[0][38][2] = 0.00034670686781;
-   fDecTF_1[0][38][3] = -0.000477873569462;
-   fDecTF_1[0][38][4] = -0.00176059032768;
-   fDecTF_1[0][38][5] = -0.000316955171914;
-   fDecTF_1[0][38][6] = 0.000468166512378;
-   fDecTF_1[0][38][7] = -0.00149899859415;
-   fDecTF_1[0][38][8] = 0.000226654464612;
-   fDecTF_1[0][38][9] = 0.00113348982618;
-   fDecTF_1[0][38][10] = -7.96948225557e-05;
-   fDecTF_1[0][38][11] = 0.000786183637212;
-   fDecTF_1[0][38][12] = 0.00142001066804;
-   fDecTF_1[0][38][13] = -5.59859205565e-05;
-   fDecTF_1[0][38][14] = -0.000225823710494;
-   fDecTF_1[0][38][15] = 0.000546793492702;
-   fDecTF_1[0][38][16] = -0.0001548427541;
-   fDecTF_1[0][38][17] = 0.000459818154271;
-   fDecTF_1[0][38][18] = 0.000216848053231;
-   fDecTF_1[0][38][19] = 9.14235137632e-05;
-   fDecTF_1[0][38][20] = -0.000128293407805;
-   fDecTF_1[0][38][21] = 8.43930966394e-05;
-   fDecTF_1[0][38][22] = 0.000142959048712;
-   fDecTF_1[0][38][23] = 5.51367010085e-05;
-   fDecTF_1[0][38][24] = 0.000300863415698;
-   fDecTF_1[0][38][25] = 5.18059577142e-05;
-   fDecTF_1[0][38][26] = -0.000360398410286;
-   fDecTF_1[0][38][27] = -0.00024080752719;
-   fDecTF_1[0][38][28] = 0.000671798938898;
-   fDecTF_1[0][38][29] = 0.000779096489923;
-   fDecTF_1[0][38][30] = -0.00079031302583;
-   fDecTF_1[0][38][31] = -0.000717213652867;
-   fDecTF_1[0][38][32] = -0.000541027689455;
-   fDecTF_1[0][38][33] = -0.000782653948661;
-   fDecTF_1[0][38][34] = 0.0046329813297;
-   fDecTF_1[0][38][35] = 0.00467137194641;
-   fDecTF_1[0][38][36] = -6.01773002485e-06;
-   fDecTF_1[0][38][37] = -0.000369645375898;
-   fDecTF_1[0][38][38] = 0.00699313077687;
-   fDecTF_1[1][0][0] = 4.65327797535;
-   fDecTF_1[1][0][1] = -2.69059293508;
-   fDecTF_1[1][0][2] = 0.529998750315;
-   fDecTF_1[1][0][3] = 3.90771277547;
-   fDecTF_1[1][0][4] = 0.104229291163;
-   fDecTF_1[1][0][5] = 0.125085135587;
-   fDecTF_1[1][0][6] = -0.242151873659;
-   fDecTF_1[1][0][7] = -0.286570116556;
-   fDecTF_1[1][0][8] = 0.495389597088;
-   fDecTF_1[1][0][9] = -0.181179603549;
-   fDecTF_1[1][0][10] = -0.0987024437705;
-   fDecTF_1[1][0][11] = 0.237466308567;
-   fDecTF_1[1][0][12] = -0.392286232394;
-   fDecTF_1[1][0][13] = -0.017469675971;
-   fDecTF_1[1][0][14] = 0.229777424366;
-   fDecTF_1[1][0][15] = -0.0609764214761;
-   fDecTF_1[1][0][16] = 0.185629404341;
-   fDecTF_1[1][0][17] = 0.599679731156;
-   fDecTF_1[1][0][18] = -0.0911008291892;
-   fDecTF_1[1][0][19] = 0.20725186428;
-   fDecTF_1[1][0][20] = -0.0876838567562;
-   fDecTF_1[1][0][21] = -0.284276653623;
-   fDecTF_1[1][0][22] = -0.0108446358924;
-   fDecTF_1[1][0][23] = 0.351177868619;
-   fDecTF_1[1][0][24] = -0.0158767756066;
-   fDecTF_1[1][0][25] = -0.106826602171;
-   fDecTF_1[1][0][26] = 0.492806293158;
-   fDecTF_1[1][0][27] = -0.930755578679;
-   fDecTF_1[1][0][28] = 0.00818166565381;
-   fDecTF_1[1][0][29] = 0.0142692357886;
-   fDecTF_1[1][0][30] = 0.0147116389701;
-   fDecTF_1[1][0][31] = 0.02657945307;
-   fDecTF_1[1][0][32] = 0.0599358663999;
-   fDecTF_1[1][0][33] = 0.0478694007347;
-   fDecTF_1[1][0][34] = 0.0113490033947;
-   fDecTF_1[1][0][35] = 0.0144659176904;
-   fDecTF_1[1][0][36] = -0.000820802776451;
-   fDecTF_1[1][0][37] = -0.000505908528046;
-   fDecTF_1[1][0][38] = -0.000373874144639;
-   fDecTF_1[1][1][0] = -2.69059293508;
-   fDecTF_1[1][1][1] = 6.34494537241;
-   fDecTF_1[1][1][2] = 0.885842157274;
-   fDecTF_1[1][1][3] = -0.247289644545;
-   fDecTF_1[1][1][4] = -0.245824984585;
-   fDecTF_1[1][1][5] = -0.209908926141;
-   fDecTF_1[1][1][6] = 0.153224469282;
-   fDecTF_1[1][1][7] = 0.0938756105478;
-   fDecTF_1[1][1][8] = 2.22672618609;
-   fDecTF_1[1][1][9] = 0.818038335738;
-   fDecTF_1[1][1][10] = 0.389817041377;
-   fDecTF_1[1][1][11] = -0.0195294065716;
-   fDecTF_1[1][1][12] = -1.6074017914;
-   fDecTF_1[1][1][13] = -0.181590294636;
-   fDecTF_1[1][1][14] = -0.394926563675;
-   fDecTF_1[1][1][15] = 0.52172752045;
-   fDecTF_1[1][1][16] = -0.0323031055152;
-   fDecTF_1[1][1][17] = 0.959029398157;
-   fDecTF_1[1][1][18] = 0.096135134035;
-   fDecTF_1[1][1][19] = 0.112182801444;
-   fDecTF_1[1][1][20] = 0.071900024804;
-   fDecTF_1[1][1][21] = 0.128595515356;
-   fDecTF_1[1][1][22] = -0.670331705253;
-   fDecTF_1[1][1][23] = -0.0719086765325;
-   fDecTF_1[1][1][24] = -0.516202805452;
-   fDecTF_1[1][1][25] = -0.272733896229;
-   fDecTF_1[1][1][26] = 0.578634740349;
-   fDecTF_1[1][1][27] = -0.445529568729;
-   fDecTF_1[1][1][28] = 0.00940004033513;
-   fDecTF_1[1][1][29] = 0.0102489601575;
-   fDecTF_1[1][1][30] = 0.00845576131653;
-   fDecTF_1[1][1][31] = 0.00567586029474;
-   fDecTF_1[1][1][32] = -0.0112340532782;
-   fDecTF_1[1][1][33] = 0.0139242974966;
-   fDecTF_1[1][1][34] = -0.0117147447843;
-   fDecTF_1[1][1][35] = -0.00315230604615;
-   fDecTF_1[1][1][36] = 0.00109989276272;
-   fDecTF_1[1][1][37] = -0.00107906016929;
-   fDecTF_1[1][1][38] = -0.0012096270042;
-   fDecTF_1[1][2][0] = 0.529998750315;
-   fDecTF_1[1][2][1] = 0.885842157274;
-   fDecTF_1[1][2][2] = 7.46960437877;
-   fDecTF_1[1][2][3] = -1.41224455842;
-   fDecTF_1[1][2][4] = -0.00401210520295;
-   fDecTF_1[1][2][5] = 0.191016477416;
-   fDecTF_1[1][2][6] = -0.30459761227;
-   fDecTF_1[1][2][7] = 0.124944814314;
-   fDecTF_1[1][2][8] = 0.265908314221;
-   fDecTF_1[1][2][9] = -4.98146099075;
-   fDecTF_1[1][2][10] = -0.317080190321;
-   fDecTF_1[1][2][11] = 0.206724314642;
-   fDecTF_1[1][2][12] = 1.03481089887;
-   fDecTF_1[1][2][13] = -0.0400766015469;
-   fDecTF_1[1][2][14] = -0.182858529301;
-   fDecTF_1[1][2][15] = 0.780474067124;
-   fDecTF_1[1][2][16] = 0.076724818427;
-   fDecTF_1[1][2][17] = 1.11314817571;
-   fDecTF_1[1][2][18] = -0.0412926498331;
-   fDecTF_1[1][2][19] = 0.172591902141;
-   fDecTF_1[1][2][20] = -0.71307502697;
-   fDecTF_1[1][2][21] = -0.128344703692;
-   fDecTF_1[1][2][22] = -0.306149536832;
-   fDecTF_1[1][2][23] = 1.35597191016;
-   fDecTF_1[1][2][24] = -0.0489536705147;
-   fDecTF_1[1][2][25] = -0.547923707846;
-   fDecTF_1[1][2][26] = 0.136389608279;
-   fDecTF_1[1][2][27] = -1.27594351541;
-   fDecTF_1[1][2][28] = -0.00333088510265;
-   fDecTF_1[1][2][29] = -0.00240837598642;
-   fDecTF_1[1][2][30] = -0.0127674638475;
-   fDecTF_1[1][2][31] = -0.0131921004693;
-   fDecTF_1[1][2][32] = -0.00765302359628;
-   fDecTF_1[1][2][33] = 0.00202852740314;
-   fDecTF_1[1][2][34] = -0.00322958446893;
-   fDecTF_1[1][2][35] = -0.00334486720507;
-   fDecTF_1[1][2][36] = 0.000441829983681;
-   fDecTF_1[1][2][37] = 0.000492245773576;
-   fDecTF_1[1][2][38] = 0.000915714463969;
-   fDecTF_1[1][3][0] = 3.90771277547;
-   fDecTF_1[1][3][1] = -0.247289644544;
-   fDecTF_1[1][3][2] = -1.41224455842;
-   fDecTF_1[1][3][3] = 8.06739505005;
-   fDecTF_1[1][3][4] = -0.148090248077;
-   fDecTF_1[1][3][5] = -0.0950020799458;
-   fDecTF_1[1][3][6] = 0.137058566226;
-   fDecTF_1[1][3][7] = -0.372682212388;
-   fDecTF_1[1][3][8] = 3.45285926862;
-   fDecTF_1[1][3][9] = 1.25730046256;
-   fDecTF_1[1][3][10] = 0.651731633595;
-   fDecTF_1[1][3][11] = -0.269013758596;
-   fDecTF_1[1][3][12] = -1.28464970722;
-   fDecTF_1[1][3][13] = 0.0307142262744;
-   fDecTF_1[1][3][14] = 0.299172336845;
-   fDecTF_1[1][3][15] = -0.295510820503;
-   fDecTF_1[1][3][16] = 0.136346077633;
-   fDecTF_1[1][3][17] = 0.149951206791;
-   fDecTF_1[1][3][18] = -0.0178193494113;
-   fDecTF_1[1][3][19] = -0.0842672060786;
-   fDecTF_1[1][3][20] = 1.19024891369;
-   fDecTF_1[1][3][21] = -0.193062452488;
-   fDecTF_1[1][3][22] = 0.28881615617;
-   fDecTF_1[1][3][23] = -0.931848700098;
-   fDecTF_1[1][3][24] = 0.138216190071;
-   fDecTF_1[1][3][25] = 0.403091708555;
-   fDecTF_1[1][3][26] = -0.384027970399;
-   fDecTF_1[1][3][27] = 0.488626903086;
-   fDecTF_1[1][3][28] = 0.00622083164398;
-   fDecTF_1[1][3][29] = 0.00739919236953;
-   fDecTF_1[1][3][30] = 0.0228914632474;
-   fDecTF_1[1][3][31] = 0.0257538979561;
-   fDecTF_1[1][3][32] = 0.0430808341741;
-   fDecTF_1[1][3][33] = 0.0266555919987;
-   fDecTF_1[1][3][34] = 0.00324399259027;
-   fDecTF_1[1][3][35] = 0.00398866196104;
-   fDecTF_1[1][3][36] = -0.000666139708247;
-   fDecTF_1[1][3][37] = -0.000153700083056;
-   fDecTF_1[1][3][38] = -0.00050955767958;
-   fDecTF_1[1][4][0] = 0.104229291163;
-   fDecTF_1[1][4][1] = -0.245824984585;
-   fDecTF_1[1][4][2] = -0.00401210520295;
-   fDecTF_1[1][4][3] = -0.148090248077;
-   fDecTF_1[1][4][4] = 2.02651371974;
-   fDecTF_1[1][4][5] = -1.22508242315;
-   fDecTF_1[1][4][6] = 0.0622202368007;
-   fDecTF_1[1][4][7] = -1.09336630411;
-   fDecTF_1[1][4][8] = 0.33701332378;
-   fDecTF_1[1][4][9] = -0.355867727157;
-   fDecTF_1[1][4][10] = -0.015074637357;
-   fDecTF_1[1][4][11] = 0.218157331827;
-   fDecTF_1[1][4][12] = -0.394952399078;
-   fDecTF_1[1][4][13] = -0.015538084958;
-   fDecTF_1[1][4][14] = -0.00817654641727;
-   fDecTF_1[1][4][15] = 0.0181372105644;
-   fDecTF_1[1][4][16] = 0.0225480524444;
-   fDecTF_1[1][4][17] = 0.168088438028;
-   fDecTF_1[1][4][18] = -0.0215464712466;
-   fDecTF_1[1][4][19] = 0.0120542522107;
-   fDecTF_1[1][4][20] = -0.0107688404827;
-   fDecTF_1[1][4][21] = -0.048117358897;
-   fDecTF_1[1][4][22] = -0.0422323026837;
-   fDecTF_1[1][4][23] = 0.0153289574605;
-   fDecTF_1[1][4][24] = -0.0258971440021;
-   fDecTF_1[1][4][25] = -0.0309930273602;
-   fDecTF_1[1][4][26] = 0.0596851040136;
-   fDecTF_1[1][4][27] = -0.0664204616074;
-   fDecTF_1[1][4][28] = 0.00148523234334;
-   fDecTF_1[1][4][29] = 0.00380647634008;
-   fDecTF_1[1][4][30] = 0.00470192997284;
-   fDecTF_1[1][4][31] = 0.00587838078259;
-   fDecTF_1[1][4][32] = 0.00798904706649;
-   fDecTF_1[1][4][33] = -0.00465815310462;
-   fDecTF_1[1][4][34] = -0.00592698472722;
-   fDecTF_1[1][4][35] = -0.0115597332742;
-   fDecTF_1[1][4][36] = 0.00074068886365;
-   fDecTF_1[1][4][37] = -0.000124293589609;
-   fDecTF_1[1][4][38] = -0.00164547206061;
-   fDecTF_1[1][5][0] = 0.125085135587;
-   fDecTF_1[1][5][1] = -0.209908926141;
-   fDecTF_1[1][5][2] = 0.191016477416;
-   fDecTF_1[1][5][3] = -0.0950020799458;
-   fDecTF_1[1][5][4] = -1.22508242315;
-   fDecTF_1[1][5][5] = 2.59601707063;
-   fDecTF_1[1][5][6] = -1.30255225654;
-   fDecTF_1[1][5][7] = -0.109863427477;
-   fDecTF_1[1][5][8] = -0.4308942878;
-   fDecTF_1[1][5][9] = -0.130139897223;
-   fDecTF_1[1][5][10] = -0.0732687688915;
-   fDecTF_1[1][5][11] = 0.218000252457;
-   fDecTF_1[1][5][12] = 0.325721999322;
-   fDecTF_1[1][5][13] = -0.0155135824408;
-   fDecTF_1[1][5][14] = 0.312686106682;
-   fDecTF_1[1][5][15] = 0.0343548840206;
-   fDecTF_1[1][5][16] = 0.0221699045447;
-   fDecTF_1[1][5][17] = 0.097560687395;
-   fDecTF_1[1][5][18] = 0.0338246244684;
-   fDecTF_1[1][5][19] = -0.0071399764553;
-   fDecTF_1[1][5][20] = 0.161669295175;
-   fDecTF_1[1][5][21] = 0.0144725300244;
-   fDecTF_1[1][5][22] = 0.052058899867;
-   fDecTF_1[1][5][23] = -0.0760007472132;
-   fDecTF_1[1][5][24] = 0.0381687837969;
-   fDecTF_1[1][5][25] = 0.018643270583;
-   fDecTF_1[1][5][26] = -0.0869298455863;
-   fDecTF_1[1][5][27] = -0.0604797220297;
-   fDecTF_1[1][5][28] = -0.000160306431086;
-   fDecTF_1[1][5][29] = -0.00083302409425;
-   fDecTF_1[1][5][30] = -9.09930755693e-06;
-   fDecTF_1[1][5][31] = -0.000495763810542;
-   fDecTF_1[1][5][32] = 0.0065324187077;
-   fDecTF_1[1][5][33] = 0.0174153538429;
-   fDecTF_1[1][5][34] = -0.024258402427;
-   fDecTF_1[1][5][35] = -0.0279773273586;
-   fDecTF_1[1][5][36] = -0.00199830631949;
-   fDecTF_1[1][5][37] = 0.000213837698241;
-   fDecTF_1[1][5][38] = 0.000762515043836;
-   fDecTF_1[1][6][0] = -0.242151873659;
-   fDecTF_1[1][6][1] = 0.153224469282;
-   fDecTF_1[1][6][2] = -0.30459761227;
-   fDecTF_1[1][6][3] = 0.137058566226;
-   fDecTF_1[1][6][4] = 0.0622202368007;
-   fDecTF_1[1][6][5] = -1.30255225654;
-   fDecTF_1[1][6][6] = 2.90118889513;
-   fDecTF_1[1][6][7] = 1.74514024586;
-   fDecTF_1[1][6][8] = -0.13610812955;
-   fDecTF_1[1][6][9] = 0.735320336528;
-   fDecTF_1[1][6][10] = -0.0405917572378;
-   fDecTF_1[1][6][11] = -0.58376284409;
-   fDecTF_1[1][6][12] = -0.125313364703;
-   fDecTF_1[1][6][13] = 0.00501757210735;
-   fDecTF_1[1][6][14] = -0.26527713402;
-   fDecTF_1[1][6][15] = -0.500241111401;
-   fDecTF_1[1][6][16] = -0.0496290485141;
-   fDecTF_1[1][6][17] = -0.202887775666;
-   fDecTF_1[1][6][18] = 0.000489389916677;
-   fDecTF_1[1][6][19] = 0.025641870355;
-   fDecTF_1[1][6][20] = -0.180065232041;
-   fDecTF_1[1][6][21] = -0.0030297661288;
-   fDecTF_1[1][6][22] = -0.0934041819428;
-   fDecTF_1[1][6][23] = 0.0523958356951;
-   fDecTF_1[1][6][24] = -0.0675212730508;
-   fDecTF_1[1][6][25] = -0.027248696647;
-   fDecTF_1[1][6][26] = 0.135046769856;
-   fDecTF_1[1][6][27] = 0.218290817461;
-   fDecTF_1[1][6][28] = -0.00309098022707;
-   fDecTF_1[1][6][29] = 0.00284833752834;
-   fDecTF_1[1][6][30] = -0.0062402500176;
-   fDecTF_1[1][6][31] = 0.00178444596297;
-   fDecTF_1[1][6][32] = 0.0106696233746;
-   fDecTF_1[1][6][33] = -0.00347961308478;
-   fDecTF_1[1][6][34] = -0.00819696903716;
-   fDecTF_1[1][6][35] = -0.00975179511193;
-   fDecTF_1[1][6][36] = -0.000765399251533;
-   fDecTF_1[1][6][37] = 0.000835585218363;
-   fDecTF_1[1][6][38] = 0.00032827377526;
-   fDecTF_1[1][7][0] = -0.286570116556;
-   fDecTF_1[1][7][1] = 0.0938756105478;
-   fDecTF_1[1][7][2] = 0.124944814314;
-   fDecTF_1[1][7][3] = -0.372682212388;
-   fDecTF_1[1][7][4] = -1.09336630411;
-   fDecTF_1[1][7][5] = -0.109863427477;
-   fDecTF_1[1][7][6] = 1.74514024586;
-   fDecTF_1[1][7][7] = 3.30810765081;
-   fDecTF_1[1][7][8] = -0.643793182477;
-   fDecTF_1[1][7][9] = 0.333581101402;
-   fDecTF_1[1][7][10] = -0.772901665378;
-   fDecTF_1[1][7][11] = -0.0209133863615;
-   fDecTF_1[1][7][12] = 0.611974278914;
-   fDecTF_1[1][7][13] = -0.0197590603565;
-   fDecTF_1[1][7][14] = -0.687400383421;
-   fDecTF_1[1][7][15] = 0.213362436546;
-   fDecTF_1[1][7][16] = 0.0098305208849;
-   fDecTF_1[1][7][17] = -0.488771747617;
-   fDecTF_1[1][7][18] = 0.0235812410978;
-   fDecTF_1[1][7][19] = 0.0788121412482;
-   fDecTF_1[1][7][20] = -0.389398780498;
-   fDecTF_1[1][7][21] = 0.203294527712;
-   fDecTF_1[1][7][22] = -0.228322241254;
-   fDecTF_1[1][7][23] = 0.086911057703;
-   fDecTF_1[1][7][24] = -0.0988455820179;
-   fDecTF_1[1][7][25] = -0.204858436121;
-   fDecTF_1[1][7][26] = 0.203682422031;
-   fDecTF_1[1][7][27] = -0.0144439584396;
-   fDecTF_1[1][7][28] = 0.000223491061404;
-   fDecTF_1[1][7][29] = 0.000953139756257;
-   fDecTF_1[1][7][30] = 0.01258002329;
-   fDecTF_1[1][7][31] = 0.0165895798731;
-   fDecTF_1[1][7][32] = 0.0180620954489;
-   fDecTF_1[1][7][33] = 0.0193702578162;
-   fDecTF_1[1][7][34] = 0.0203651119054;
-   fDecTF_1[1][7][35] = 0.0256141458215;
-   fDecTF_1[1][7][36] = 0.000493795415454;
-   fDecTF_1[1][7][37] = 0.000806317606034;
-   fDecTF_1[1][7][38] = -0.00142924779507;
-   fDecTF_1[1][8][0] = 0.495389597088;
-   fDecTF_1[1][8][1] = 2.22672618609;
-   fDecTF_1[1][8][2] = 0.265908314221;
-   fDecTF_1[1][8][3] = 3.45285926862;
-   fDecTF_1[1][8][4] = 0.33701332378;
-   fDecTF_1[1][8][5] = -0.4308942878;
-   fDecTF_1[1][8][6] = -0.13610812955;
-   fDecTF_1[1][8][7] = -0.643793182477;
-   fDecTF_1[1][8][8] = 4.36405035456;
-   fDecTF_1[1][8][9] = -0.809501831868;
-   fDecTF_1[1][8][10] = 0.397459852871;
-   fDecTF_1[1][8][11] = -0.0142376212602;
-   fDecTF_1[1][8][12] = 0.570783082686;
-   fDecTF_1[1][8][13] = 0.0508846694323;
-   fDecTF_1[1][8][14] = -0.213288950998;
-   fDecTF_1[1][8][15] = 0.536349155259;
-   fDecTF_1[1][8][16] = -0.167071732538;
-   fDecTF_1[1][8][17] = -1.39077390862;
-   fDecTF_1[1][8][18] = 0.00921748940706;
-   fDecTF_1[1][8][19] = -0.174337847616;
-   fDecTF_1[1][8][20] = -0.15624494201;
-   fDecTF_1[1][8][21] = 0.469099412888;
-   fDecTF_1[1][8][22] = -0.138136012635;
-   fDecTF_1[1][8][23] = 0.23271864696;
-   fDecTF_1[1][8][24] = -0.0470932636192;
-   fDecTF_1[1][8][25] = -0.292854246679;
-   fDecTF_1[1][8][26] = -0.480745089332;
-   fDecTF_1[1][8][27] = 0.3198510389;
-   fDecTF_1[1][8][28] = -0.00827046069628;
-   fDecTF_1[1][8][29] = -0.0104693674806;
-   fDecTF_1[1][8][30] = -0.0102838847636;
-   fDecTF_1[1][8][31] = -0.0129741519457;
-   fDecTF_1[1][8][32] = -0.0271033978738;
-   fDecTF_1[1][8][33] = -0.0261972123834;
-   fDecTF_1[1][8][34] = 0.0121343054851;
-   fDecTF_1[1][8][35] = 0.00505872218566;
-   fDecTF_1[1][8][36] = 0.00295780908429;
-   fDecTF_1[1][8][37] = -0.000640943417519;
-   fDecTF_1[1][8][38] = 0.00128621093787;
-   fDecTF_1[1][9][0] = -0.181179603549;
-   fDecTF_1[1][9][1] = 0.818038335738;
-   fDecTF_1[1][9][2] = -4.98146099075;
-   fDecTF_1[1][9][3] = 1.25730046256;
-   fDecTF_1[1][9][4] = -0.355867727157;
-   fDecTF_1[1][9][5] = -0.130139897223;
-   fDecTF_1[1][9][6] = 0.735320336528;
-   fDecTF_1[1][9][7] = 0.333581101402;
-   fDecTF_1[1][9][8] = -0.809501831868;
-   fDecTF_1[1][9][9] = 7.36150049145;
-   fDecTF_1[1][9][10] = 0.439116009656;
-   fDecTF_1[1][9][11] = -0.120931791316;
-   fDecTF_1[1][9][12] = -4.04346361688;
-   fDecTF_1[1][9][13] = -0.096090734909;
-   fDecTF_1[1][9][14] = 0.556927609408;
-   fDecTF_1[1][9][15] = -0.846436334884;
-   fDecTF_1[1][9][16] = -0.126965296152;
-   fDecTF_1[1][9][17] = 2.05973437086;
-   fDecTF_1[1][9][18] = 0.00714617664318;
-   fDecTF_1[1][9][19] = -0.127424322752;
-   fDecTF_1[1][9][20] = -0.804022618121;
-   fDecTF_1[1][9][21] = -0.60708395581;
-   fDecTF_1[1][9][22] = -0.104544876859;
-   fDecTF_1[1][9][23] = 0.608302751204;
-   fDecTF_1[1][9][24] = -0.259187120072;
-   fDecTF_1[1][9][25] = 0.474835138755;
-   fDecTF_1[1][9][26] = 1.03111062061;
-   fDecTF_1[1][9][27] = -0.200397026697;
-   fDecTF_1[1][9][28] = -0.00349104045491;
-   fDecTF_1[1][9][29] = -0.00434130950351;
-   fDecTF_1[1][9][30] = -0.0041230769405;
-   fDecTF_1[1][9][31] = -0.00563558546344;
-   fDecTF_1[1][9][32] = -0.000797772222807;
-   fDecTF_1[1][9][33] = -0.00828901946498;
-   fDecTF_1[1][9][34] = -0.00189353105159;
-   fDecTF_1[1][9][35] = -0.00206011342556;
-   fDecTF_1[1][9][36] = 0.00107466624894;
-   fDecTF_1[1][9][37] = -0.000560960404882;
-   fDecTF_1[1][9][38] = 0.000604408338312;
-   fDecTF_1[1][10][0] = -0.0987024437705;
-   fDecTF_1[1][10][1] = 0.389817041377;
-   fDecTF_1[1][10][2] = -0.317080190321;
-   fDecTF_1[1][10][3] = 0.651731633595;
-   fDecTF_1[1][10][4] = -0.015074637357;
-   fDecTF_1[1][10][5] = -0.0732687688915;
-   fDecTF_1[1][10][6] = -0.0405917572378;
-   fDecTF_1[1][10][7] = -0.772901665378;
-   fDecTF_1[1][10][8] = 0.397459852871;
-   fDecTF_1[1][10][9] = 0.439116009656;
-   fDecTF_1[1][10][10] = 4.07068163176;
-   fDecTF_1[1][10][11] = -2.92704662357;
-   fDecTF_1[1][10][12] = 0.131420513774;
-   fDecTF_1[1][10][13] = -0.0168097456142;
-   fDecTF_1[1][10][14] = 0.729470159205;
-   fDecTF_1[1][10][15] = -0.98220637585;
-   fDecTF_1[1][10][16] = 0.0307514569282;
-   fDecTF_1[1][10][17] = -0.372572788648;
-   fDecTF_1[1][10][18] = -0.0747833773439;
-   fDecTF_1[1][10][19] = 0.567690014047;
-   fDecTF_1[1][10][20] = -0.262792089166;
-   fDecTF_1[1][10][21] = -0.240191249433;
-   fDecTF_1[1][10][22] = 0.0186824453133;
-   fDecTF_1[1][10][23] = 0.787441850728;
-   fDecTF_1[1][10][24] = -0.023230657478;
-   fDecTF_1[1][10][25] = -0.0819490142941;
-   fDecTF_1[1][10][26] = 0.180448133196;
-   fDecTF_1[1][10][27] = -0.554376757036;
-   fDecTF_1[1][10][28] = -0.00103382389782;
-   fDecTF_1[1][10][29] = -0.00344199848232;
-   fDecTF_1[1][10][30] = -0.0168760509198;
-   fDecTF_1[1][10][31] = -0.0216374453985;
-   fDecTF_1[1][10][32] = -0.0172846005676;
-   fDecTF_1[1][10][33] = -0.0116809288001;
-   fDecTF_1[1][10][34] = -0.00739834879452;
-   fDecTF_1[1][10][35] = -0.0126439267941;
-   fDecTF_1[1][10][36] = -0.00378813488972;
-   fDecTF_1[1][10][37] = 0.000314950468288;
-   fDecTF_1[1][10][38] = -0.000219848208751;
-   fDecTF_1[1][11][0] = 0.237466308567;
-   fDecTF_1[1][11][1] = -0.0195294065716;
-   fDecTF_1[1][11][2] = 0.206724314642;
-   fDecTF_1[1][11][3] = -0.269013758596;
-   fDecTF_1[1][11][4] = 0.218157331827;
-   fDecTF_1[1][11][5] = 0.218000252457;
-   fDecTF_1[1][11][6] = -0.58376284409;
-   fDecTF_1[1][11][7] = -0.0209133863615;
-   fDecTF_1[1][11][8] = -0.0142376212602;
-   fDecTF_1[1][11][9] = -0.120931791316;
-   fDecTF_1[1][11][10] = -2.92704662357;
-   fDecTF_1[1][11][11] = 3.68053478994;
-   fDecTF_1[1][11][12] = -0.460241843213;
-   fDecTF_1[1][11][13] = 0.0695060024573;
-   fDecTF_1[1][11][14] = -0.230917797195;
-   fDecTF_1[1][11][15] = 0.669507653317;
-   fDecTF_1[1][11][16] = 0.189398851205;
-   fDecTF_1[1][11][17] = 0.536355775904;
-   fDecTF_1[1][11][18] = -0.128173985466;
-   fDecTF_1[1][11][19] = -0.104246936535;
-   fDecTF_1[1][11][20] = -0.147636121419;
-   fDecTF_1[1][11][21] = 0.113322587711;
-   fDecTF_1[1][11][22] = -0.245398350387;
-   fDecTF_1[1][11][23] = -0.173224488474;
-   fDecTF_1[1][11][24] = -0.0952328138909;
-   fDecTF_1[1][11][25] = -0.0875415164356;
-   fDecTF_1[1][11][26] = 0.275573207806;
-   fDecTF_1[1][11][27] = -0.0348703443376;
-   fDecTF_1[1][11][28] = 0.0135022869475;
-   fDecTF_1[1][11][29] = 0.0135940635859;
-   fDecTF_1[1][11][30] = 0.0126210007031;
-   fDecTF_1[1][11][31] = 0.0147519088937;
-   fDecTF_1[1][11][32] = 0.024889404584;
-   fDecTF_1[1][11][33] = 0.0302923604162;
-   fDecTF_1[1][11][34] = 0.00936380640564;
-   fDecTF_1[1][11][35] = 0.0129118915891;
-   fDecTF_1[1][11][36] = 0.000159118395875;
-   fDecTF_1[1][11][37] = -0.00265936336637;
-   fDecTF_1[1][11][38] = 0.000885582969528;
-   fDecTF_1[1][12][0] = -0.392286232394;
-   fDecTF_1[1][12][1] = -1.6074017914;
-   fDecTF_1[1][12][2] = 1.03481089887;
-   fDecTF_1[1][12][3] = -1.28464970722;
-   fDecTF_1[1][12][4] = -0.394952399078;
-   fDecTF_1[1][12][5] = 0.325721999322;
-   fDecTF_1[1][12][6] = -0.125313364703;
-   fDecTF_1[1][12][7] = 0.611974278914;
-   fDecTF_1[1][12][8] = 0.570783082686;
-   fDecTF_1[1][12][9] = -4.04346361688;
-   fDecTF_1[1][12][10] = 0.131420513774;
-   fDecTF_1[1][12][11] = -0.460241843213;
-   fDecTF_1[1][12][12] = 6.86446356851;
-   fDecTF_1[1][12][13] = 0.0927584101897;
-   fDecTF_1[1][12][14] = -0.80409217598;
-   fDecTF_1[1][12][15] = 0.65490155143;
-   fDecTF_1[1][12][16] = -0.095159977374;
-   fDecTF_1[1][12][17] = -5.13443137626;
-   fDecTF_1[1][12][18] = -0.242469971363;
-   fDecTF_1[1][12][19] = 1.06725404445;
-   fDecTF_1[1][12][20] = -1.36261006868;
-   fDecTF_1[1][12][21] = 2.35255637621;
-   fDecTF_1[1][12][22] = -1.84340776295;
-   fDecTF_1[1][12][23] = 0.76524574402;
-   fDecTF_1[1][12][24] = -1.0103863586;
-   fDecTF_1[1][12][25] = -2.5607943397;
-   fDecTF_1[1][12][26] = 0.127149339041;
-   fDecTF_1[1][12][27] = -1.07463736201;
-   fDecTF_1[1][12][28] = 0.00434433442894;
-   fDecTF_1[1][12][29] = 0.00132677550103;
-   fDecTF_1[1][12][30] = 0.00708008081028;
-   fDecTF_1[1][12][31] = 0.00132642657957;
-   fDecTF_1[1][12][32] = 0.00211419344124;
-   fDecTF_1[1][12][33] = 0.0168887189044;
-   fDecTF_1[1][12][34] = -0.0143713391357;
-   fDecTF_1[1][12][35] = -0.0147931355346;
-   fDecTF_1[1][12][36] = -0.000971308209373;
-   fDecTF_1[1][12][37] = 0.000618321466486;
-   fDecTF_1[1][12][38] = -0.000337558010186;
-   fDecTF_1[1][13][0] = -0.017469675971;
-   fDecTF_1[1][13][1] = -0.181590294636;
-   fDecTF_1[1][13][2] = -0.0400766015469;
-   fDecTF_1[1][13][3] = 0.0307142262744;
-   fDecTF_1[1][13][4] = -0.015538084958;
-   fDecTF_1[1][13][5] = -0.0155135824408;
-   fDecTF_1[1][13][6] = 0.00501757210735;
-   fDecTF_1[1][13][7] = -0.0197590603565;
-   fDecTF_1[1][13][8] = 0.0508846694323;
-   fDecTF_1[1][13][9] = -0.096090734909;
-   fDecTF_1[1][13][10] = -0.0168097456142;
-   fDecTF_1[1][13][11] = 0.0695060024573;
-   fDecTF_1[1][13][12] = 0.0927584101897;
-   fDecTF_1[1][13][13] = 4.91096310836;
-   fDecTF_1[1][13][14] = 0.0392277230901;
-   fDecTF_1[1][13][15] = -0.230706244172;
-   fDecTF_1[1][13][16] = -1.38451359033;
-   fDecTF_1[1][13][17] = -0.0982661589502;
-   fDecTF_1[1][13][18] = -3.9787940063;
-   fDecTF_1[1][13][19] = -0.754519211116;
-   fDecTF_1[1][13][20] = 0.102365375194;
-   fDecTF_1[1][13][21] = 0.0701232528202;
-   fDecTF_1[1][13][22] = 0.41117944998;
-   fDecTF_1[1][13][23] = 0.0272243324001;
-   fDecTF_1[1][13][24] = 0.241104135761;
-   fDecTF_1[1][13][25] = -0.267107189038;
-   fDecTF_1[1][13][26] = -0.245751985247;
-   fDecTF_1[1][13][27] = -0.0829235254408;
-   fDecTF_1[1][13][28] = -0.00259481103349;
-   fDecTF_1[1][13][29] = -0.00378787643636;
-   fDecTF_1[1][13][30] = -0.00838023229347;
-   fDecTF_1[1][13][31] = -0.000988532394757;
-   fDecTF_1[1][13][32] = 0.0025294139535;
-   fDecTF_1[1][13][33] = 0.0046620296022;
-   fDecTF_1[1][13][34] = -0.0104446914429;
-   fDecTF_1[1][13][35] = 0.00708855070102;
-   fDecTF_1[1][13][36] = 0.00452550313962;
-   fDecTF_1[1][13][37] = 0.000552686671327;
-   fDecTF_1[1][13][38] = -1.72981841427e-05;
-   fDecTF_1[1][14][0] = 0.229777424366;
-   fDecTF_1[1][14][1] = -0.394926563675;
-   fDecTF_1[1][14][2] = -0.182858529301;
-   fDecTF_1[1][14][3] = 0.299172336845;
-   fDecTF_1[1][14][4] = -0.00817654641728;
-   fDecTF_1[1][14][5] = 0.312686106682;
-   fDecTF_1[1][14][6] = -0.26527713402;
-   fDecTF_1[1][14][7] = -0.687400383421;
-   fDecTF_1[1][14][8] = -0.213288950998;
-   fDecTF_1[1][14][9] = 0.556927609408;
-   fDecTF_1[1][14][10] = 0.729470159205;
-   fDecTF_1[1][14][11] = -0.230917797195;
-   fDecTF_1[1][14][12] = -0.80409217598;
-   fDecTF_1[1][14][13] = 0.0392277230901;
-   fDecTF_1[1][14][14] = 3.93021980918;
-   fDecTF_1[1][14][15] = -3.58622704617;
-   fDecTF_1[1][14][16] = -0.291123499997;
-   fDecTF_1[1][14][17] = 0.855833269474;
-   fDecTF_1[1][14][18] = -0.0925615783658;
-   fDecTF_1[1][14][19] = -0.000927569534752;
-   fDecTF_1[1][14][20] = -0.32475890788;
-   fDecTF_1[1][14][21] = -0.126482136185;
-   fDecTF_1[1][14][22] = -0.420552549643;
-   fDecTF_1[1][14][23] = 1.19851613855;
-   fDecTF_1[1][14][24] = -0.351742961384;
-   fDecTF_1[1][14][25] = -0.436191979148;
-   fDecTF_1[1][14][26] = 0.085734655594;
-   fDecTF_1[1][14][27] = 0.124212130364;
-   fDecTF_1[1][14][28] = -0.00772510512745;
-   fDecTF_1[1][14][29] = -0.0031584056736;
-   fDecTF_1[1][14][30] = -0.00686500240153;
-   fDecTF_1[1][14][31] = -0.000343720138221;
-   fDecTF_1[1][14][32] = -0.0147730087191;
-   fDecTF_1[1][14][33] = -0.0216235321617;
-   fDecTF_1[1][14][34] = -0.00625413412932;
-   fDecTF_1[1][14][35] = -0.00274429824029;
-   fDecTF_1[1][14][36] = 0.000860084428596;
-   fDecTF_1[1][14][37] = -0.0007388037795;
-   fDecTF_1[1][14][38] = -0.000972809152046;
-   fDecTF_1[1][15][0] = -0.0609764214761;
-   fDecTF_1[1][15][1] = 0.52172752045;
-   fDecTF_1[1][15][2] = 0.780474067124;
-   fDecTF_1[1][15][3] = -0.295510820503;
-   fDecTF_1[1][15][4] = 0.0181372105644;
-   fDecTF_1[1][15][5] = 0.0343548840206;
-   fDecTF_1[1][15][6] = -0.500241111401;
-   fDecTF_1[1][15][7] = 0.213362436546;
-   fDecTF_1[1][15][8] = 0.536349155259;
-   fDecTF_1[1][15][9] = -0.846436334884;
-   fDecTF_1[1][15][10] = -0.98220637585;
-   fDecTF_1[1][15][11] = 0.669507653317;
-   fDecTF_1[1][15][12] = 0.65490155143;
-   fDecTF_1[1][15][13] = -0.230706244172;
-   fDecTF_1[1][15][14] = -3.58622704617;
-   fDecTF_1[1][15][15] = 5.431838431;
-   fDecTF_1[1][15][16] = 0.446838963718;
-   fDecTF_1[1][15][17] = -0.611834664546;
-   fDecTF_1[1][15][18] = 0.258013803419;
-   fDecTF_1[1][15][19] = 0.148052624883;
-   fDecTF_1[1][15][20] = -1.55406145117;
-   fDecTF_1[1][15][21] = 0.0221255840591;
-   fDecTF_1[1][15][22] = -0.209329853467;
-   fDecTF_1[1][15][23] = 0.725744719513;
-   fDecTF_1[1][15][24] = 0.910532038268;
-   fDecTF_1[1][15][25] = -0.180431062299;
-   fDecTF_1[1][15][26] = -0.989743221864;
-   fDecTF_1[1][15][27] = 0.674543632436;
-   fDecTF_1[1][15][28] = -0.011609840536;
-   fDecTF_1[1][15][29] = -0.016080771337;
-   fDecTF_1[1][15][30] = -0.0165805126905;
-   fDecTF_1[1][15][31] = -0.023331005118;
-   fDecTF_1[1][15][32] = -0.032373335987;
-   fDecTF_1[1][15][33] = -0.0179373166209;
-   fDecTF_1[1][15][34] = 0.00789868205961;
-   fDecTF_1[1][15][35] = 0.0064058377478;
-   fDecTF_1[1][15][36] = 0.00120811539169;
-   fDecTF_1[1][15][37] = 0.00191806725952;
-   fDecTF_1[1][15][38] = 0.00103521179341;
-   fDecTF_1[1][16][0] = 0.185629404341;
-   fDecTF_1[1][16][1] = -0.0323031055152;
-   fDecTF_1[1][16][2] = 0.076724818427;
-   fDecTF_1[1][16][3] = 0.136346077633;
-   fDecTF_1[1][16][4] = 0.0225480524444;
-   fDecTF_1[1][16][5] = 0.0221699045447;
-   fDecTF_1[1][16][6] = -0.0496290485141;
-   fDecTF_1[1][16][7] = 0.0098305208849;
-   fDecTF_1[1][16][8] = -0.167071732538;
-   fDecTF_1[1][16][9] = -0.126965296152;
-   fDecTF_1[1][16][10] = 0.0307514569282;
-   fDecTF_1[1][16][11] = 0.189398851205;
-   fDecTF_1[1][16][12] = -0.0951599773739;
-   fDecTF_1[1][16][13] = -1.38451359033;
-   fDecTF_1[1][16][14] = -0.291123499997;
-   fDecTF_1[1][16][15] = 0.446838963718;
-   fDecTF_1[1][16][16] = 3.42562291137;
-   fDecTF_1[1][16][17] = 0.154134536543;
-   fDecTF_1[1][16][18] = 0.771916116387;
-   fDecTF_1[1][16][19] = 2.74548244854;
-   fDecTF_1[1][16][20] = -0.250168917434;
-   fDecTF_1[1][16][21] = 0.129508728398;
-   fDecTF_1[1][16][22] = 0.103714377872;
-   fDecTF_1[1][16][23] = 0.211184869666;
-   fDecTF_1[1][16][24] = -0.211379290274;
-   fDecTF_1[1][16][25] = 1.42432413375;
-   fDecTF_1[1][16][26] = -0.316144908059;
-   fDecTF_1[1][16][27] = 0.579461280882;
-   fDecTF_1[1][16][28] = -0.00455157188462;
-   fDecTF_1[1][16][29] = 0.00342154115618;
-   fDecTF_1[1][16][30] = 0.00247897576158;
-   fDecTF_1[1][16][31] = -0.00597444150145;
-   fDecTF_1[1][16][32] = 0.00433505238319;
-   fDecTF_1[1][16][33] = 0.00578640050166;
-   fDecTF_1[1][16][34] = -0.0174309884668;
-   fDecTF_1[1][16][35] = 0.0211874204482;
-   fDecTF_1[1][16][36] = -0.0420291041861;
-   fDecTF_1[1][16][37] = -0.00137314398712;
-   fDecTF_1[1][16][38] = 0.000236292503892;
-   fDecTF_1[1][17][0] = 0.599679731156;
-   fDecTF_1[1][17][1] = 0.959029398157;
-   fDecTF_1[1][17][2] = 1.11314817571;
-   fDecTF_1[1][17][3] = 0.149951206791;
-   fDecTF_1[1][17][4] = 0.168088438028;
-   fDecTF_1[1][17][5] = 0.097560687395;
-   fDecTF_1[1][17][6] = -0.202887775666;
-   fDecTF_1[1][17][7] = -0.488771747617;
-   fDecTF_1[1][17][8] = -1.39077390862;
-   fDecTF_1[1][17][9] = 2.05973437086;
-   fDecTF_1[1][17][10] = -0.372572788648;
-   fDecTF_1[1][17][11] = 0.536355775904;
-   fDecTF_1[1][17][12] = -5.13443137626;
-   fDecTF_1[1][17][13] = -0.0982661589502;
-   fDecTF_1[1][17][14] = 0.855833269474;
-   fDecTF_1[1][17][15] = -0.611834664546;
-   fDecTF_1[1][17][16] = 0.154134536543;
-   fDecTF_1[1][17][17] = 7.05947755533;
-   fDecTF_1[1][17][18] = -0.0623488986777;
-   fDecTF_1[1][17][19] = -0.0616760668798;
-   fDecTF_1[1][17][20] = 1.33261135144;
-   fDecTF_1[1][17][21] = 0.344038589993;
-   fDecTF_1[1][17][22] = -1.2180452875;
-   fDecTF_1[1][17][23] = -1.04305714553;
-   fDecTF_1[1][17][24] = -0.861749758564;
-   fDecTF_1[1][17][25] = 0.0812099706255;
-   fDecTF_1[1][17][26] = -1.4051767308;
-   fDecTF_1[1][17][27] = 1.40015181391;
-   fDecTF_1[1][17][28] = -0.00997502412544;
-   fDecTF_1[1][17][29] = -0.0119282814317;
-   fDecTF_1[1][17][30] = -0.0167720435021;
-   fDecTF_1[1][17][31] = -0.0183292042169;
-   fDecTF_1[1][17][32] = -0.00691434939275;
-   fDecTF_1[1][17][33] = -0.0192097841278;
-   fDecTF_1[1][17][34] = 0.00637168861886;
-   fDecTF_1[1][17][35] = 0.0100004619952;
-   fDecTF_1[1][17][36] = 0.00109875049043;
-   fDecTF_1[1][17][37] = 0.00177305770646;
-   fDecTF_1[1][17][38] = 0.00134149404202;
-   fDecTF_1[1][18][0] = -0.0911008291892;
-   fDecTF_1[1][18][1] = 0.096135134035;
-   fDecTF_1[1][18][2] = -0.0412926498331;
-   fDecTF_1[1][18][3] = -0.0178193494113;
-   fDecTF_1[1][18][4] = -0.0215464712466;
-   fDecTF_1[1][18][5] = 0.0338246244684;
-   fDecTF_1[1][18][6] = 0.000489389916676;
-   fDecTF_1[1][18][7] = 0.0235812410978;
-   fDecTF_1[1][18][8] = 0.00921748940706;
-   fDecTF_1[1][18][9] = 0.00714617664318;
-   fDecTF_1[1][18][10] = -0.0747833773439;
-   fDecTF_1[1][18][11] = -0.128173985466;
-   fDecTF_1[1][18][12] = -0.242469971363;
-   fDecTF_1[1][18][13] = -3.9787940063;
-   fDecTF_1[1][18][14] = -0.0925615783658;
-   fDecTF_1[1][18][15] = 0.258013803419;
-   fDecTF_1[1][18][16] = 0.771916116387;
-   fDecTF_1[1][18][17] = -0.0623488986777;
-   fDecTF_1[1][18][18] = 4.77805529686;
-   fDecTF_1[1][18][19] = -0.265889357255;
-   fDecTF_1[1][18][20] = 0.432328937806;
-   fDecTF_1[1][18][21] = -0.769045522401;
-   fDecTF_1[1][18][22] = 0.59379844449;
-   fDecTF_1[1][18][23] = -0.466744155716;
-   fDecTF_1[1][18][24] = 0.396806237426;
-   fDecTF_1[1][18][25] = 0.89195083976;
-   fDecTF_1[1][18][26] = 0.13234144372;
-   fDecTF_1[1][18][27] = 0.392235611902;
-   fDecTF_1[1][18][28] = 0.00508577627994;
-   fDecTF_1[1][18][29] = -0.00324113897665;
-   fDecTF_1[1][18][30] = 0.00351833794695;
-   fDecTF_1[1][18][31] = -0.00321231145411;
-   fDecTF_1[1][18][32] = -0.00378698283492;
-   fDecTF_1[1][18][33] = -0.00180748174708;
-   fDecTF_1[1][18][34] = -0.0166733006335;
-   fDecTF_1[1][18][35] = 0.0169033342646;
-   fDecTF_1[1][18][36] = 0.0184295960771;
-   fDecTF_1[1][18][37] = 0.000296687696005;
-   fDecTF_1[1][18][38] = -1.60129094528e-05;
-   fDecTF_1[1][19][0] = 0.20725186428;
-   fDecTF_1[1][19][1] = 0.112182801444;
-   fDecTF_1[1][19][2] = 0.172591902141;
-   fDecTF_1[1][19][3] = -0.0842672060786;
-   fDecTF_1[1][19][4] = 0.0120542522107;
-   fDecTF_1[1][19][5] = -0.0071399764553;
-   fDecTF_1[1][19][6] = 0.025641870355;
-   fDecTF_1[1][19][7] = 0.0788121412482;
-   fDecTF_1[1][19][8] = -0.174337847616;
-   fDecTF_1[1][19][9] = -0.127424322752;
-   fDecTF_1[1][19][10] = 0.567690014047;
-   fDecTF_1[1][19][11] = -0.104246936535;
-   fDecTF_1[1][19][12] = 1.06725404445;
-   fDecTF_1[1][19][13] = -0.754519211116;
-   fDecTF_1[1][19][14] = -0.000927569534751;
-   fDecTF_1[1][19][15] = 0.148052624883;
-   fDecTF_1[1][19][16] = 2.74548244854;
-   fDecTF_1[1][19][17] = -0.0616760668798;
-   fDecTF_1[1][19][18] = -0.265889357255;
-   fDecTF_1[1][19][19] = 5.32700524764;
-   fDecTF_1[1][19][20] = -1.2750624057;
-   fDecTF_1[1][19][21] = 1.29898886826;
-   fDecTF_1[1][19][22] = -3.65377056162;
-   fDecTF_1[1][19][23] = 0.901585826582;
-   fDecTF_1[1][19][24] = -0.990085669644;
-   fDecTF_1[1][19][25] = -2.36172548967;
-   fDecTF_1[1][19][26] = 0.225879800435;
-   fDecTF_1[1][19][27] = -0.238975156139;
-   fDecTF_1[1][19][28] = 0.0201189105878;
-   fDecTF_1[1][19][29] = -0.0219638668915;
-   fDecTF_1[1][19][30] = 0.0170405343947;
-   fDecTF_1[1][19][31] = -0.0232519820881;
-   fDecTF_1[1][19][32] = 0.0272315069925;
-   fDecTF_1[1][19][33] = -0.0282717983162;
-   fDecTF_1[1][19][34] = 0.0120598754437;
-   fDecTF_1[1][19][35] = -0.0104007289193;
-   fDecTF_1[1][19][36] = 0.0228547895918;
-   fDecTF_1[1][19][37] = -0.000581392046054;
-   fDecTF_1[1][19][38] = 0.000240809352397;
-   fDecTF_1[1][20][0] = -0.0876838567562;
-   fDecTF_1[1][20][1] = 0.071900024804;
-   fDecTF_1[1][20][2] = -0.71307502697;
-   fDecTF_1[1][20][3] = 1.19024891369;
-   fDecTF_1[1][20][4] = -0.0107688404827;
-   fDecTF_1[1][20][5] = 0.161669295175;
-   fDecTF_1[1][20][6] = -0.180065232041;
-   fDecTF_1[1][20][7] = -0.389398780498;
-   fDecTF_1[1][20][8] = -0.15624494201;
-   fDecTF_1[1][20][9] = -0.804022618121;
-   fDecTF_1[1][20][10] = -0.262792089166;
-   fDecTF_1[1][20][11] = -0.147636121419;
-   fDecTF_1[1][20][12] = -1.36261006868;
-   fDecTF_1[1][20][13] = 0.102365375194;
-   fDecTF_1[1][20][14] = -0.32475890788;
-   fDecTF_1[1][20][15] = -1.55406145117;
-   fDecTF_1[1][20][16] = -0.250168917434;
-   fDecTF_1[1][20][17] = 1.33261135144;
-   fDecTF_1[1][20][18] = 0.432328937806;
-   fDecTF_1[1][20][19] = -1.2750624057;
-   fDecTF_1[1][20][20] = 11.7802956375;
-   fDecTF_1[1][20][21] = -2.7763436628;
-   fDecTF_1[1][20][22] = 2.94270385146;
-   fDecTF_1[1][20][23] = -11.3238431129;
-   fDecTF_1[1][20][24] = 1.42147866168;
-   fDecTF_1[1][20][25] = 2.6276052605;
-   fDecTF_1[1][20][26] = 1.31941843942;
-   fDecTF_1[1][20][27] = 0.447675954083;
-   fDecTF_1[1][20][28] = -0.0025966176089;
-   fDecTF_1[1][20][29] = -0.00163516023006;
-   fDecTF_1[1][20][30] = -0.00918638984899;
-   fDecTF_1[1][20][31] = -0.00781436540859;
-   fDecTF_1[1][20][32] = -0.00457983334702;
-   fDecTF_1[1][20][33] = -0.00753246984495;
-   fDecTF_1[1][20][34] = -0.0063394728532;
-   fDecTF_1[1][20][35] = -0.00431802926218;
-   fDecTF_1[1][20][36] = -0.00285696719849;
-   fDecTF_1[1][20][37] = 0.00171888067087;
-   fDecTF_1[1][20][38] = -6.11556907528e-05;
-   fDecTF_1[1][21][0] = -0.284276653623;
-   fDecTF_1[1][21][1] = 0.128595515356;
-   fDecTF_1[1][21][2] = -0.128344703692;
-   fDecTF_1[1][21][3] = -0.193062452488;
-   fDecTF_1[1][21][4] = -0.048117358897;
-   fDecTF_1[1][21][5] = 0.0144725300244;
-   fDecTF_1[1][21][6] = -0.0030297661288;
-   fDecTF_1[1][21][7] = 0.203294527712;
-   fDecTF_1[1][21][8] = 0.469099412888;
-   fDecTF_1[1][21][9] = -0.60708395581;
-   fDecTF_1[1][21][10] = -0.240191249433;
-   fDecTF_1[1][21][11] = 0.113322587711;
-   fDecTF_1[1][21][12] = 2.35255637621;
-   fDecTF_1[1][21][13] = 0.0701232528202;
-   fDecTF_1[1][21][14] = -0.126482136185;
-   fDecTF_1[1][21][15] = 0.0221255840591;
-   fDecTF_1[1][21][16] = 0.129508728398;
-   fDecTF_1[1][21][17] = 0.344038589993;
-   fDecTF_1[1][21][18] = -0.769045522401;
-   fDecTF_1[1][21][19] = 1.29898886826;
-   fDecTF_1[1][21][20] = -2.7763436628;
-   fDecTF_1[1][21][21] = 11.3893669759;
-   fDecTF_1[1][21][22] = -4.39585890815;
-   fDecTF_1[1][21][23] = 1.65789431626;
-   fDecTF_1[1][21][24] = -8.26411296343;
-   fDecTF_1[1][21][25] = -1.84996862596;
-   fDecTF_1[1][21][26] = -3.64805266282;
-   fDecTF_1[1][21][27] = 0.291624765712;
-   fDecTF_1[1][21][28] = -0.0018486262597;
-   fDecTF_1[1][21][29] = 0.0032611605874;
-   fDecTF_1[1][21][30] = -0.00150747823105;
-   fDecTF_1[1][21][31] = 0.00132135328195;
-   fDecTF_1[1][21][32] = -0.00442089410138;
-   fDecTF_1[1][21][33] = 0.0136412105211;
-   fDecTF_1[1][21][34] = -0.00102459655465;
-   fDecTF_1[1][21][35] = -0.000591811509233;
-   fDecTF_1[1][21][36] = -0.00247301558159;
-   fDecTF_1[1][21][37] = -0.000238248069061;
-   fDecTF_1[1][21][38] = -6.75694036773e-05;
-   fDecTF_1[1][22][0] = -0.0108446358924;
-   fDecTF_1[1][22][1] = -0.670331705253;
-   fDecTF_1[1][22][2] = -0.306149536832;
-   fDecTF_1[1][22][3] = 0.28881615617;
-   fDecTF_1[1][22][4] = -0.0422323026837;
-   fDecTF_1[1][22][5] = 0.052058899867;
-   fDecTF_1[1][22][6] = -0.0934041819428;
-   fDecTF_1[1][22][7] = -0.228322241254;
-   fDecTF_1[1][22][8] = -0.138136012635;
-   fDecTF_1[1][22][9] = -0.104544876859;
-   fDecTF_1[1][22][10] = 0.0186824453133;
-   fDecTF_1[1][22][11] = -0.245398350387;
-   fDecTF_1[1][22][12] = -1.84340776295;
-   fDecTF_1[1][22][13] = 0.41117944998;
-   fDecTF_1[1][22][14] = -0.420552549643;
-   fDecTF_1[1][22][15] = -0.209329853467;
-   fDecTF_1[1][22][16] = 0.103714377872;
-   fDecTF_1[1][22][17] = -1.2180452875;
-   fDecTF_1[1][22][18] = 0.59379844449;
-   fDecTF_1[1][22][19] = -3.65377056162;
-   fDecTF_1[1][22][20] = 2.94270385146;
-   fDecTF_1[1][22][21] = -4.39585890815;
-   fDecTF_1[1][22][22] = 11.7780643779;
-   fDecTF_1[1][22][23] = -1.66383706524;
-   fDecTF_1[1][22][24] = 2.25934167776;
-   fDecTF_1[1][22][25] = 10.5726657065;
-   fDecTF_1[1][22][26] = 1.70120079965;
-   fDecTF_1[1][22][27] = -1.21540102433;
-   fDecTF_1[1][22][28] = -0.0011349171024;
-   fDecTF_1[1][22][29] = -0.000813942103224;
-   fDecTF_1[1][22][30] = -0.00200970187803;
-   fDecTF_1[1][22][31] = -0.000649944441131;
-   fDecTF_1[1][22][32] = -0.00268431352822;
-   fDecTF_1[1][22][33] = -0.00940737594385;
-   fDecTF_1[1][22][34] = -0.00332271853095;
-   fDecTF_1[1][22][35] = -0.00967909284408;
-   fDecTF_1[1][22][36] = 0.00150845941981;
-   fDecTF_1[1][22][37] = -0.000404505865638;
-   fDecTF_1[1][22][38] = -0.00035495666599;
-   fDecTF_1[1][23][0] = 0.351177868619;
-   fDecTF_1[1][23][1] = -0.0719086765325;
-   fDecTF_1[1][23][2] = 1.35597191016;
-   fDecTF_1[1][23][3] = -0.931848700098;
-   fDecTF_1[1][23][4] = 0.0153289574605;
-   fDecTF_1[1][23][5] = -0.0760007472132;
-   fDecTF_1[1][23][6] = 0.0523958356951;
-   fDecTF_1[1][23][7] = 0.086911057703;
-   fDecTF_1[1][23][8] = 0.23271864696;
-   fDecTF_1[1][23][9] = 0.608302751204;
-   fDecTF_1[1][23][10] = 0.787441850728;
-   fDecTF_1[1][23][11] = -0.173224488474;
-   fDecTF_1[1][23][12] = 0.76524574402;
-   fDecTF_1[1][23][13] = 0.0272243324001;
-   fDecTF_1[1][23][14] = 1.19851613855;
-   fDecTF_1[1][23][15] = 0.725744719513;
-   fDecTF_1[1][23][16] = 0.211184869666;
-   fDecTF_1[1][23][17] = -1.04305714553;
-   fDecTF_1[1][23][18] = -0.466744155716;
-   fDecTF_1[1][23][19] = 0.901585826582;
-   fDecTF_1[1][23][20] = -11.3238431129;
-   fDecTF_1[1][23][21] = 1.65789431626;
-   fDecTF_1[1][23][22] = -1.66383706524;
-   fDecTF_1[1][23][23] = 12.8134639023;
-   fDecTF_1[1][23][24] = -0.780423236086;
-   fDecTF_1[1][23][25] = -1.59478869871;
-   fDecTF_1[1][23][26] = -0.978426754717;
-   fDecTF_1[1][23][27] = -0.673083267256;
-   fDecTF_1[1][23][28] = 0.000578379749631;
-   fDecTF_1[1][23][29] = 0.00340806529405;
-   fDecTF_1[1][23][30] = 0.00591808518649;
-   fDecTF_1[1][23][31] = 0.00797199380168;
-   fDecTF_1[1][23][32] = 0.00060382015573;
-   fDecTF_1[1][23][33] = 0.00702973364467;
-   fDecTF_1[1][23][34] = 0.00443307822982;
-   fDecTF_1[1][23][35] = 0.00264706928452;
-   fDecTF_1[1][23][36] = 0.000183503850891;
-   fDecTF_1[1][23][37] = -0.000821097085066;
-   fDecTF_1[1][23][38] = 9.89862487826e-06;
-   fDecTF_1[1][24][0] = -0.0158767756066;
-   fDecTF_1[1][24][1] = -0.516202805452;
-   fDecTF_1[1][24][2] = -0.0489536705147;
-   fDecTF_1[1][24][3] = 0.138216190071;
-   fDecTF_1[1][24][4] = -0.0258971440021;
-   fDecTF_1[1][24][5] = 0.0381687837969;
-   fDecTF_1[1][24][6] = -0.0675212730508;
-   fDecTF_1[1][24][7] = -0.0988455820179;
-   fDecTF_1[1][24][8] = -0.0470932636192;
-   fDecTF_1[1][24][9] = -0.259187120072;
-   fDecTF_1[1][24][10] = -0.023230657478;
-   fDecTF_1[1][24][11] = -0.0952328138909;
-   fDecTF_1[1][24][12] = -1.0103863586;
-   fDecTF_1[1][24][13] = 0.241104135761;
-   fDecTF_1[1][24][14] = -0.351742961384;
-   fDecTF_1[1][24][15] = 0.910532038268;
-   fDecTF_1[1][24][16] = -0.211379290274;
-   fDecTF_1[1][24][17] = -0.861749758564;
-   fDecTF_1[1][24][18] = 0.396806237426;
-   fDecTF_1[1][24][19] = -0.990085669644;
-   fDecTF_1[1][24][20] = 1.42147866168;
-   fDecTF_1[1][24][21] = -8.26411296343;
-   fDecTF_1[1][24][22] = 2.25934167776;
-   fDecTF_1[1][24][23] = -0.780423236086;
-   fDecTF_1[1][24][24] = 8.23021381642;
-   fDecTF_1[1][24][25] = 0.0309763914822;
-   fDecTF_1[1][24][26] = 0.657437021402;
-   fDecTF_1[1][24][27] = 2.36473535125;
-   fDecTF_1[1][24][28] = 0.00049528281754;
-   fDecTF_1[1][24][29] = -0.00136308349124;
-   fDecTF_1[1][24][30] = 0.00148323871159;
-   fDecTF_1[1][24][31] = -0.000842417137437;
-   fDecTF_1[1][24][32] = -0.0070810557944;
-   fDecTF_1[1][24][33] = -0.0116641564978;
-   fDecTF_1[1][24][34] = -0.00459035513478;
-   fDecTF_1[1][24][35] = -0.00549152962943;
-   fDecTF_1[1][24][36] = -0.00232240308794;
-   fDecTF_1[1][24][37] = 0.000566901469436;
-   fDecTF_1[1][24][38] = -0.000114382263609;
-   fDecTF_1[1][25][0] = -0.106826602171;
-   fDecTF_1[1][25][1] = -0.272733896229;
-   fDecTF_1[1][25][2] = -0.547923707846;
-   fDecTF_1[1][25][3] = 0.403091708555;
-   fDecTF_1[1][25][4] = -0.0309930273602;
-   fDecTF_1[1][25][5] = 0.018643270583;
-   fDecTF_1[1][25][6] = -0.027248696647;
-   fDecTF_1[1][25][7] = -0.204858436121;
-   fDecTF_1[1][25][8] = -0.292854246679;
-   fDecTF_1[1][25][9] = 0.474835138755;
-   fDecTF_1[1][25][10] = -0.0819490142941;
-   fDecTF_1[1][25][11] = -0.0875415164356;
-   fDecTF_1[1][25][12] = -2.5607943397;
-   fDecTF_1[1][25][13] = -0.267107189038;
-   fDecTF_1[1][25][14] = -0.436191979148;
-   fDecTF_1[1][25][15] = -0.180431062299;
-   fDecTF_1[1][25][16] = 1.42432413375;
-   fDecTF_1[1][25][17] = 0.0812099706255;
-   fDecTF_1[1][25][18] = 0.89195083976;
-   fDecTF_1[1][25][19] = -2.36172548967;
-   fDecTF_1[1][25][20] = 2.6276052605;
-   fDecTF_1[1][25][21] = -1.84996862596;
-   fDecTF_1[1][25][22] = 10.5726657065;
-   fDecTF_1[1][25][23] = -1.59478869871;
-   fDecTF_1[1][25][24] = 0.0309763914822;
-   fDecTF_1[1][25][25] = 12.2472015036;
-   fDecTF_1[1][25][26] = 0.327137620809;
-   fDecTF_1[1][25][27] = -0.42492897642;
-   fDecTF_1[1][25][28] = 0.00402615071977;
-   fDecTF_1[1][25][29] = -0.0032923822086;
-   fDecTF_1[1][25][30] = 0.000456928709716;
-   fDecTF_1[1][25][31] = -0.00364374341174;
-   fDecTF_1[1][25][32] = 0.0155872093596;
-   fDecTF_1[1][25][33] = -0.0138521384299;
-   fDecTF_1[1][25][34] = 0.0015087940906;
-   fDecTF_1[1][25][35] = -0.00649883529044;
-   fDecTF_1[1][25][36] = 0.00695502689769;
-   fDecTF_1[1][25][37] = -0.00050380953633;
-   fDecTF_1[1][25][38] = -0.000132763598271;
-   fDecTF_1[1][26][0] = 0.492806293158;
-   fDecTF_1[1][26][1] = 0.578634740349;
-   fDecTF_1[1][26][2] = 0.136389608279;
-   fDecTF_1[1][26][3] = -0.384027970399;
-   fDecTF_1[1][26][4] = 0.0596851040136;
-   fDecTF_1[1][26][5] = -0.0869298455863;
-   fDecTF_1[1][26][6] = 0.135046769856;
-   fDecTF_1[1][26][7] = 0.203682422031;
-   fDecTF_1[1][26][8] = -0.480745089332;
-   fDecTF_1[1][26][9] = 1.03111062061;
-   fDecTF_1[1][26][10] = 0.180448133196;
-   fDecTF_1[1][26][11] = 0.275573207806;
-   fDecTF_1[1][26][12] = 0.127149339041;
-   fDecTF_1[1][26][13] = -0.245751985247;
-   fDecTF_1[1][26][14] = 0.085734655594;
-   fDecTF_1[1][26][15] = -0.989743221864;
-   fDecTF_1[1][26][16] = -0.316144908059;
-   fDecTF_1[1][26][17] = -1.4051767308;
-   fDecTF_1[1][26][18] = 0.13234144372;
-   fDecTF_1[1][26][19] = 0.225879800435;
-   fDecTF_1[1][26][20] = 1.31941843942;
-   fDecTF_1[1][26][21] = -3.64805266282;
-   fDecTF_1[1][26][22] = 1.70120079965;
-   fDecTF_1[1][26][23] = -0.978426754717;
-   fDecTF_1[1][26][24] = 0.657437021402;
-   fDecTF_1[1][26][25] = 0.327137620809;
-   fDecTF_1[1][26][26] = 7.97685236119;
-   fDecTF_1[1][26][27] = -7.13796318725;
-   fDecTF_1[1][26][28] = 0.000239532361887;
-   fDecTF_1[1][26][29] = 0.000709724201926;
-   fDecTF_1[1][26][30] = 0.00393795029894;
-   fDecTF_1[1][26][31] = 0.00454196529355;
-   fDecTF_1[1][26][32] = 0.0014096222091;
-   fDecTF_1[1][26][33] = -0.00189328627366;
-   fDecTF_1[1][26][34] = 0.00701674198551;
-   fDecTF_1[1][26][35] = 0.0119918462458;
-   fDecTF_1[1][26][36] = -0.0017698950562;
-   fDecTF_1[1][26][37] = -0.00128223379338;
-   fDecTF_1[1][26][38] = 0.000501110960548;
-   fDecTF_1[1][27][0] = -0.930755578679;
-   fDecTF_1[1][27][1] = -0.445529568729;
-   fDecTF_1[1][27][2] = -1.27594351541;
-   fDecTF_1[1][27][3] = 0.488626903086;
-   fDecTF_1[1][27][4] = -0.0664204616074;
-   fDecTF_1[1][27][5] = -0.0604797220297;
-   fDecTF_1[1][27][6] = 0.218290817461;
-   fDecTF_1[1][27][7] = -0.0144439584396;
-   fDecTF_1[1][27][8] = 0.3198510389;
-   fDecTF_1[1][27][9] = -0.200397026697;
-   fDecTF_1[1][27][10] = -0.554376757036;
-   fDecTF_1[1][27][11] = -0.0348703443376;
-   fDecTF_1[1][27][12] = -1.07463736201;
-   fDecTF_1[1][27][13] = -0.0829235254408;
-   fDecTF_1[1][27][14] = 0.124212130364;
-   fDecTF_1[1][27][15] = 0.674543632436;
-   fDecTF_1[1][27][16] = 0.579461280882;
-   fDecTF_1[1][27][17] = 1.40015181391;
-   fDecTF_1[1][27][18] = 0.392235611902;
-   fDecTF_1[1][27][19] = -0.238975156139;
-   fDecTF_1[1][27][20] = 0.447675954083;
-   fDecTF_1[1][27][21] = 0.291624765712;
-   fDecTF_1[1][27][22] = -1.21540102433;
-   fDecTF_1[1][27][23] = -0.673083267256;
-   fDecTF_1[1][27][24] = 2.36473535125;
-   fDecTF_1[1][27][25] = -0.42492897642;
-   fDecTF_1[1][27][26] = -7.13796318725;
-   fDecTF_1[1][27][27] = 9.46781518557;
-   fDecTF_1[1][27][28] = 0.00578341145347;
-   fDecTF_1[1][27][29] = 0.00417562463519;
-   fDecTF_1[1][27][30] = 0.00738611506348;
-   fDecTF_1[1][27][31] = 0.00801746394851;
-   fDecTF_1[1][27][32] = 0.00550503751223;
-   fDecTF_1[1][27][33] = -0.00601995601048;
-   fDecTF_1[1][27][34] = -0.00426867274264;
-   fDecTF_1[1][27][35] = -0.00708389719267;
-   fDecTF_1[1][27][36] = 0.00206412051039;
-   fDecTF_1[1][27][37] = 9.68557763589e-05;
-   fDecTF_1[1][27][38] = -0.00049580931794;
-   fDecTF_1[1][28][0] = 0.00818166565381;
-   fDecTF_1[1][28][1] = 0.00940004033513;
-   fDecTF_1[1][28][2] = -0.00333088510265;
-   fDecTF_1[1][28][3] = 0.00622083164398;
-   fDecTF_1[1][28][4] = 0.00148523234334;
-   fDecTF_1[1][28][5] = -0.000160306431086;
-   fDecTF_1[1][28][6] = -0.00309098022707;
-   fDecTF_1[1][28][7] = 0.000223491061404;
-   fDecTF_1[1][28][8] = -0.00827046069628;
-   fDecTF_1[1][28][9] = -0.00349104045491;
-   fDecTF_1[1][28][10] = -0.00103382389782;
-   fDecTF_1[1][28][11] = 0.0135022869475;
-   fDecTF_1[1][28][12] = 0.00434433442894;
-   fDecTF_1[1][28][13] = -0.00259481103349;
-   fDecTF_1[1][28][14] = -0.00772510512745;
-   fDecTF_1[1][28][15] = -0.011609840536;
-   fDecTF_1[1][28][16] = -0.00455157188462;
-   fDecTF_1[1][28][17] = -0.00997502412544;
-   fDecTF_1[1][28][18] = 0.00508577627994;
-   fDecTF_1[1][28][19] = 0.0201189105878;
-   fDecTF_1[1][28][20] = -0.0025966176089;
-   fDecTF_1[1][28][21] = -0.0018486262597;
-   fDecTF_1[1][28][22] = -0.0011349171024;
-   fDecTF_1[1][28][23] = 0.000578379749631;
-   fDecTF_1[1][28][24] = 0.00049528281754;
-   fDecTF_1[1][28][25] = 0.00402615071977;
-   fDecTF_1[1][28][26] = 0.000239532361887;
-   fDecTF_1[1][28][27] = 0.00578341145347;
-   fDecTF_1[1][28][28] = 0.257570145618;
-   fDecTF_1[1][28][29] = -0.00945780331409;
-   fDecTF_1[1][28][30] = 0.209185703159;
-   fDecTF_1[1][28][31] = -0.00883581230915;
-   fDecTF_1[1][28][32] = -0.032450591871;
-   fDecTF_1[1][28][33] = -0.00580887295451;
-   fDecTF_1[1][28][34] = -0.000222846923526;
-   fDecTF_1[1][28][35] = 0.00161786135019;
-   fDecTF_1[1][28][36] = -0.0157946209171;
-   fDecTF_1[1][28][37] = -0.000535231671409;
-   fDecTF_1[1][28][38] = 0.000560904395391;
-   fDecTF_1[1][29][0] = 0.0142692357886;
-   fDecTF_1[1][29][1] = 0.0102489601575;
-   fDecTF_1[1][29][2] = -0.00240837598642;
-   fDecTF_1[1][29][3] = 0.00739919236953;
-   fDecTF_1[1][29][4] = 0.00380647634008;
-   fDecTF_1[1][29][5] = -0.00083302409425;
-   fDecTF_1[1][29][6] = 0.00284833752834;
-   fDecTF_1[1][29][7] = 0.000953139756257;
-   fDecTF_1[1][29][8] = -0.0104693674806;
-   fDecTF_1[1][29][9] = -0.00434130950351;
-   fDecTF_1[1][29][10] = -0.00344199848232;
-   fDecTF_1[1][29][11] = 0.0135940635859;
-   fDecTF_1[1][29][12] = 0.00132677550103;
-   fDecTF_1[1][29][13] = -0.00378787643636;
-   fDecTF_1[1][29][14] = -0.0031584056736;
-   fDecTF_1[1][29][15] = -0.016080771337;
-   fDecTF_1[1][29][16] = 0.00342154115618;
-   fDecTF_1[1][29][17] = -0.0119282814317;
-   fDecTF_1[1][29][18] = -0.00324113897665;
-   fDecTF_1[1][29][19] = -0.0219638668915;
-   fDecTF_1[1][29][20] = -0.00163516023006;
-   fDecTF_1[1][29][21] = 0.0032611605874;
-   fDecTF_1[1][29][22] = -0.000813942103224;
-   fDecTF_1[1][29][23] = 0.00340806529405;
-   fDecTF_1[1][29][24] = -0.00136308349124;
-   fDecTF_1[1][29][25] = -0.0032923822086;
-   fDecTF_1[1][29][26] = 0.000709724201926;
-   fDecTF_1[1][29][27] = 0.00417562463519;
-   fDecTF_1[1][29][28] = -0.00945780331409;
-   fDecTF_1[1][29][29] = 0.255401260857;
-   fDecTF_1[1][29][30] = -0.00721232628583;
-   fDecTF_1[1][29][31] = 0.204124201453;
-   fDecTF_1[1][29][32] = -0.00361891496843;
-   fDecTF_1[1][29][33] = -0.0337224268055;
-   fDecTF_1[1][29][34] = 0.00105559328525;
-   fDecTF_1[1][29][35] = -0.00213469844175;
-   fDecTF_1[1][29][36] = 0.0158257235043;
-   fDecTF_1[1][29][37] = -0.00084590925636;
-   fDecTF_1[1][29][38] = 0.000574089146712;
-   fDecTF_1[1][30][0] = 0.0147116389701;
-   fDecTF_1[1][30][1] = 0.00845576131653;
-   fDecTF_1[1][30][2] = -0.0127674638475;
-   fDecTF_1[1][30][3] = 0.0228914632474;
-   fDecTF_1[1][30][4] = 0.00470192997284;
-   fDecTF_1[1][30][5] = -9.09930755695e-06;
-   fDecTF_1[1][30][6] = -0.0062402500176;
-   fDecTF_1[1][30][7] = 0.01258002329;
-   fDecTF_1[1][30][8] = -0.0102838847636;
-   fDecTF_1[1][30][9] = -0.0041230769405;
-   fDecTF_1[1][30][10] = -0.0168760509198;
-   fDecTF_1[1][30][11] = 0.0126210007031;
-   fDecTF_1[1][30][12] = 0.00708008081028;
-   fDecTF_1[1][30][13] = -0.00838023229347;
-   fDecTF_1[1][30][14] = -0.00686500240153;
-   fDecTF_1[1][30][15] = -0.0165805126905;
-   fDecTF_1[1][30][16] = 0.00247897576158;
-   fDecTF_1[1][30][17] = -0.0167720435021;
-   fDecTF_1[1][30][18] = 0.00351833794695;
-   fDecTF_1[1][30][19] = 0.0170405343947;
-   fDecTF_1[1][30][20] = -0.00918638984899;
-   fDecTF_1[1][30][21] = -0.00150747823105;
-   fDecTF_1[1][30][22] = -0.00200970187803;
-   fDecTF_1[1][30][23] = 0.00591808518649;
-   fDecTF_1[1][30][24] = 0.00148323871159;
-   fDecTF_1[1][30][25] = 0.000456928709716;
-   fDecTF_1[1][30][26] = 0.00393795029894;
-   fDecTF_1[1][30][27] = 0.00738611506348;
-   fDecTF_1[1][30][28] = 0.209185703159;
-   fDecTF_1[1][30][29] = -0.00721232628583;
-   fDecTF_1[1][30][30] = 0.566432920221;
-   fDecTF_1[1][30][31] = -0.0188656662027;
-   fDecTF_1[1][30][32] = -0.0638794950368;
-   fDecTF_1[1][30][33] = -0.0143780623456;
-   fDecTF_1[1][30][34] = -0.0145897165206;
-   fDecTF_1[1][30][35] = 0.000351730226789;
-   fDecTF_1[1][30][36] = 0.0136894322709;
-   fDecTF_1[1][30][37] = 0.00139127886269;
-   fDecTF_1[1][30][38] = -0.000408420407329;
-   fDecTF_1[1][31][0] = 0.02657945307;
-   fDecTF_1[1][31][1] = 0.00567586029474;
-   fDecTF_1[1][31][2] = -0.0131921004693;
-   fDecTF_1[1][31][3] = 0.0257538979561;
-   fDecTF_1[1][31][4] = 0.00587838078259;
-   fDecTF_1[1][31][5] = -0.000495763810542;
-   fDecTF_1[1][31][6] = 0.00178444596297;
-   fDecTF_1[1][31][7] = 0.0165895798731;
-   fDecTF_1[1][31][8] = -0.0129741519457;
-   fDecTF_1[1][31][9] = -0.00563558546344;
-   fDecTF_1[1][31][10] = -0.0216374453985;
-   fDecTF_1[1][31][11] = 0.0147519088937;
-   fDecTF_1[1][31][12] = 0.00132642657957;
-   fDecTF_1[1][31][13] = -0.000988532394757;
-   fDecTF_1[1][31][14] = -0.000343720138221;
-   fDecTF_1[1][31][15] = -0.023331005118;
-   fDecTF_1[1][31][16] = -0.00597444150145;
-   fDecTF_1[1][31][17] = -0.0183292042169;
-   fDecTF_1[1][31][18] = -0.00321231145411;
-   fDecTF_1[1][31][19] = -0.0232519820881;
-   fDecTF_1[1][31][20] = -0.00781436540859;
-   fDecTF_1[1][31][21] = 0.00132135328195;
-   fDecTF_1[1][31][22] = -0.000649944441131;
-   fDecTF_1[1][31][23] = 0.00797199380168;
-   fDecTF_1[1][31][24] = -0.000842417137437;
-   fDecTF_1[1][31][25] = -0.00364374341174;
-   fDecTF_1[1][31][26] = 0.00454196529355;
-   fDecTF_1[1][31][27] = 0.00801746394851;
-   fDecTF_1[1][31][28] = -0.00883581230915;
-   fDecTF_1[1][31][29] = 0.204124201453;
-   fDecTF_1[1][31][30] = -0.0188656662027;
-   fDecTF_1[1][31][31] = 0.560161544063;
-   fDecTF_1[1][31][32] = -0.0109696118703;
-   fDecTF_1[1][31][33] = -0.0692737106955;
-   fDecTF_1[1][31][34] = 0.00125855737706;
-   fDecTF_1[1][31][35] = -0.0144710483065;
-   fDecTF_1[1][31][36] = -0.0144792718727;
-   fDecTF_1[1][31][37] = 0.000549918526892;
-   fDecTF_1[1][31][38] = -0.000331483528004;
-   fDecTF_1[1][32][0] = 0.0599358663999;
-   fDecTF_1[1][32][1] = -0.0112340532782;
-   fDecTF_1[1][32][2] = -0.00765302359628;
-   fDecTF_1[1][32][3] = 0.0430808341741;
-   fDecTF_1[1][32][4] = 0.00798904706649;
-   fDecTF_1[1][32][5] = 0.0065324187077;
-   fDecTF_1[1][32][6] = 0.0106696233746;
-   fDecTF_1[1][32][7] = 0.0180620954489;
-   fDecTF_1[1][32][8] = -0.0271033978738;
-   fDecTF_1[1][32][9] = -0.000797772222807;
-   fDecTF_1[1][32][10] = -0.0172846005676;
-   fDecTF_1[1][32][11] = 0.024889404584;
-   fDecTF_1[1][32][12] = 0.00211419344124;
-   fDecTF_1[1][32][13] = 0.0025294139535;
-   fDecTF_1[1][32][14] = -0.0147730087191;
-   fDecTF_1[1][32][15] = -0.032373335987;
-   fDecTF_1[1][32][16] = 0.00433505238319;
-   fDecTF_1[1][32][17] = -0.00691434939275;
-   fDecTF_1[1][32][18] = -0.00378698283492;
-   fDecTF_1[1][32][19] = 0.0272315069925;
-   fDecTF_1[1][32][20] = -0.00457983334702;
-   fDecTF_1[1][32][21] = -0.00442089410138;
-   fDecTF_1[1][32][22] = -0.00268431352822;
-   fDecTF_1[1][32][23] = 0.00060382015573;
-   fDecTF_1[1][32][24] = -0.0070810557944;
-   fDecTF_1[1][32][25] = 0.0155872093596;
-   fDecTF_1[1][32][26] = 0.0014096222091;
-   fDecTF_1[1][32][27] = 0.00550503751223;
-   fDecTF_1[1][32][28] = -0.032450591871;
-   fDecTF_1[1][32][29] = -0.00361891496843;
-   fDecTF_1[1][32][30] = -0.0638794950368;
-   fDecTF_1[1][32][31] = -0.0109696118703;
-   fDecTF_1[1][32][32] = 1.89524654875;
-   fDecTF_1[1][32][33] = -0.046843989896;
-   fDecTF_1[1][32][34] = -0.014379919094;
-   fDecTF_1[1][32][35] = 0.0106849181265;
-   fDecTF_1[1][32][36] = -0.00053865111698;
-   fDecTF_1[1][32][37] = -0.000666907466252;
-   fDecTF_1[1][32][38] = 0.000412575415681;
-   fDecTF_1[1][33][0] = 0.0478694007347;
-   fDecTF_1[1][33][1] = 0.0139242974966;
-   fDecTF_1[1][33][2] = 0.00202852740314;
-   fDecTF_1[1][33][3] = 0.0266555919987;
-   fDecTF_1[1][33][4] = -0.00465815310462;
-   fDecTF_1[1][33][5] = 0.0174153538429;
-   fDecTF_1[1][33][6] = -0.00347961308478;
-   fDecTF_1[1][33][7] = 0.0193702578162;
-   fDecTF_1[1][33][8] = -0.0261972123834;
-   fDecTF_1[1][33][9] = -0.00828901946498;
-   fDecTF_1[1][33][10] = -0.0116809288001;
-   fDecTF_1[1][33][11] = 0.0302923604162;
-   fDecTF_1[1][33][12] = 0.0168887189044;
-   fDecTF_1[1][33][13] = 0.0046620296022;
-   fDecTF_1[1][33][14] = -0.0216235321617;
-   fDecTF_1[1][33][15] = -0.0179373166209;
-   fDecTF_1[1][33][16] = 0.00578640050166;
-   fDecTF_1[1][33][17] = -0.0192097841278;
-   fDecTF_1[1][33][18] = -0.00180748174708;
-   fDecTF_1[1][33][19] = -0.0282717983162;
-   fDecTF_1[1][33][20] = -0.00753246984495;
-   fDecTF_1[1][33][21] = 0.0136412105211;
-   fDecTF_1[1][33][22] = -0.00940737594385;
-   fDecTF_1[1][33][23] = 0.00702973364467;
-   fDecTF_1[1][33][24] = -0.0116641564978;
-   fDecTF_1[1][33][25] = -0.0138521384299;
-   fDecTF_1[1][33][26] = -0.00189328627366;
-   fDecTF_1[1][33][27] = -0.00601995601048;
-   fDecTF_1[1][33][28] = -0.00580887295451;
-   fDecTF_1[1][33][29] = -0.0337224268055;
-   fDecTF_1[1][33][30] = -0.0143780623456;
-   fDecTF_1[1][33][31] = -0.0692737106955;
-   fDecTF_1[1][33][32] = -0.046843989896;
-   fDecTF_1[1][33][33] = 1.92477054783;
-   fDecTF_1[1][33][34] = 0.00824732812074;
-   fDecTF_1[1][33][35] = -0.0153520872556;
-   fDecTF_1[1][33][36] = -0.000276463549931;
-   fDecTF_1[1][33][37] = 0.000529807749394;
-   fDecTF_1[1][33][38] = 0.000405740809892;
-   fDecTF_1[1][34][0] = 0.0113490033947;
-   fDecTF_1[1][34][1] = -0.0117147447843;
-   fDecTF_1[1][34][2] = -0.00322958446893;
-   fDecTF_1[1][34][3] = 0.00324399259027;
-   fDecTF_1[1][34][4] = -0.00592698472722;
-   fDecTF_1[1][34][5] = -0.024258402427;
-   fDecTF_1[1][34][6] = -0.00819696903716;
-   fDecTF_1[1][34][7] = 0.0203651119054;
-   fDecTF_1[1][34][8] = 0.0121343054851;
-   fDecTF_1[1][34][9] = -0.00189353105159;
-   fDecTF_1[1][34][10] = -0.00739834879452;
-   fDecTF_1[1][34][11] = 0.00936380640564;
-   fDecTF_1[1][34][12] = -0.0143713391357;
-   fDecTF_1[1][34][13] = -0.0104446914429;
-   fDecTF_1[1][34][14] = -0.00625413412932;
-   fDecTF_1[1][34][15] = 0.00789868205961;
-   fDecTF_1[1][34][16] = -0.0174309884668;
-   fDecTF_1[1][34][17] = 0.00637168861886;
-   fDecTF_1[1][34][18] = -0.0166733006335;
-   fDecTF_1[1][34][19] = 0.0120598754437;
-   fDecTF_1[1][34][20] = -0.0063394728532;
-   fDecTF_1[1][34][21] = -0.00102459655465;
-   fDecTF_1[1][34][22] = -0.00332271853095;
-   fDecTF_1[1][34][23] = 0.00443307822982;
-   fDecTF_1[1][34][24] = -0.00459035513478;
-   fDecTF_1[1][34][25] = 0.0015087940906;
-   fDecTF_1[1][34][26] = 0.00701674198551;
-   fDecTF_1[1][34][27] = -0.00426867274264;
-   fDecTF_1[1][34][28] = -0.000222846923526;
-   fDecTF_1[1][34][29] = 0.00105559328525;
-   fDecTF_1[1][34][30] = -0.0145897165206;
-   fDecTF_1[1][34][31] = 0.00125855737706;
-   fDecTF_1[1][34][32] = -0.014379919094;
-   fDecTF_1[1][34][33] = 0.00824732812074;
-   fDecTF_1[1][34][34] = 0.374898856628;
-   fDecTF_1[1][34][35] = -0.10038265147;
-   fDecTF_1[1][34][36] = 0.00093680782183;
-   fDecTF_1[1][34][37] = -0.000118653658681;
-   fDecTF_1[1][34][38] = 0.00277909523695;
-   fDecTF_1[1][35][0] = 0.0144659176904;
-   fDecTF_1[1][35][1] = -0.00315230604615;
-   fDecTF_1[1][35][2] = -0.00334486720507;
-   fDecTF_1[1][35][3] = 0.00398866196104;
-   fDecTF_1[1][35][4] = -0.0115597332742;
-   fDecTF_1[1][35][5] = -0.0279773273586;
-   fDecTF_1[1][35][6] = -0.00975179511193;
-   fDecTF_1[1][35][7] = 0.0256141458215;
-   fDecTF_1[1][35][8] = 0.00505872218566;
-   fDecTF_1[1][35][9] = -0.00206011342556;
-   fDecTF_1[1][35][10] = -0.0126439267941;
-   fDecTF_1[1][35][11] = 0.0129118915891;
-   fDecTF_1[1][35][12] = -0.0147931355346;
-   fDecTF_1[1][35][13] = 0.00708855070102;
-   fDecTF_1[1][35][14] = -0.00274429824029;
-   fDecTF_1[1][35][15] = 0.0064058377478;
-   fDecTF_1[1][35][16] = 0.0211874204482;
-   fDecTF_1[1][35][17] = 0.0100004619952;
-   fDecTF_1[1][35][18] = 0.0169033342646;
-   fDecTF_1[1][35][19] = -0.0104007289193;
-   fDecTF_1[1][35][20] = -0.00431802926218;
-   fDecTF_1[1][35][21] = -0.000591811509233;
-   fDecTF_1[1][35][22] = -0.00967909284408;
-   fDecTF_1[1][35][23] = 0.00264706928452;
-   fDecTF_1[1][35][24] = -0.00549152962943;
-   fDecTF_1[1][35][25] = -0.00649883529044;
-   fDecTF_1[1][35][26] = 0.0119918462458;
-   fDecTF_1[1][35][27] = -0.00708389719267;
-   fDecTF_1[1][35][28] = 0.00161786135019;
-   fDecTF_1[1][35][29] = -0.00213469844175;
-   fDecTF_1[1][35][30] = 0.000351730226789;
-   fDecTF_1[1][35][31] = -0.0144710483065;
-   fDecTF_1[1][35][32] = 0.0106849181265;
-   fDecTF_1[1][35][33] = -0.0153520872556;
-   fDecTF_1[1][35][34] = -0.10038265147;
-   fDecTF_1[1][35][35] = 0.376386935759;
-   fDecTF_1[1][35][36] = 0.0056212885745;
-   fDecTF_1[1][35][37] = -0.00130946244261;
-   fDecTF_1[1][35][38] = 0.00278943197842;
-   fDecTF_1[1][36][0] = -0.000820802776451;
-   fDecTF_1[1][36][1] = 0.00109989276272;
-   fDecTF_1[1][36][2] = 0.000441829983681;
-   fDecTF_1[1][36][3] = -0.000666139708247;
-   fDecTF_1[1][36][4] = 0.00074068886365;
-   fDecTF_1[1][36][5] = -0.00199830631949;
-   fDecTF_1[1][36][6] = -0.000765399251533;
-   fDecTF_1[1][36][7] = 0.000493795415454;
-   fDecTF_1[1][36][8] = 0.00295780908429;
-   fDecTF_1[1][36][9] = 0.00107466624894;
-   fDecTF_1[1][36][10] = -0.00378813488972;
-   fDecTF_1[1][36][11] = 0.000159118395875;
-   fDecTF_1[1][36][12] = -0.000971308209373;
-   fDecTF_1[1][36][13] = 0.00452550313962;
-   fDecTF_1[1][36][14] = 0.000860084428596;
-   fDecTF_1[1][36][15] = 0.00120811539169;
-   fDecTF_1[1][36][16] = -0.0420291041861;
-   fDecTF_1[1][36][17] = 0.00109875049043;
-   fDecTF_1[1][36][18] = 0.0184295960771;
-   fDecTF_1[1][36][19] = 0.0228547895918;
-   fDecTF_1[1][36][20] = -0.00285696719849;
-   fDecTF_1[1][36][21] = -0.00247301558159;
-   fDecTF_1[1][36][22] = 0.00150845941981;
-   fDecTF_1[1][36][23] = 0.000183503850891;
-   fDecTF_1[1][36][24] = -0.00232240308794;
-   fDecTF_1[1][36][25] = 0.00695502689769;
-   fDecTF_1[1][36][26] = -0.0017698950562;
-   fDecTF_1[1][36][27] = 0.00206412051039;
-   fDecTF_1[1][36][28] = -0.0157946209171;
-   fDecTF_1[1][36][29] = 0.0158257235043;
-   fDecTF_1[1][36][30] = 0.0136894322709;
-   fDecTF_1[1][36][31] = -0.0144792718727;
-   fDecTF_1[1][36][32] = -0.00053865111698;
-   fDecTF_1[1][36][33] = -0.000276463549931;
-   fDecTF_1[1][36][34] = 0.00093680782183;
-   fDecTF_1[1][36][35] = 0.0056212885745;
-   fDecTF_1[1][36][36] = 0.114730177107;
-   fDecTF_1[1][36][37] = 0.00114135292171;
-   fDecTF_1[1][36][38] = 8.33708356514e-05;
-   fDecTF_1[1][37][0] = -0.000505908528046;
-   fDecTF_1[1][37][1] = -0.00107906016929;
-   fDecTF_1[1][37][2] = 0.000492245773576;
-   fDecTF_1[1][37][3] = -0.000153700083056;
-   fDecTF_1[1][37][4] = -0.000124293589609;
-   fDecTF_1[1][37][5] = 0.000213837698241;
-   fDecTF_1[1][37][6] = 0.000835585218363;
-   fDecTF_1[1][37][7] = 0.000806317606034;
-   fDecTF_1[1][37][8] = -0.000640943417519;
-   fDecTF_1[1][37][9] = -0.000560960404882;
-   fDecTF_1[1][37][10] = 0.000314950468288;
-   fDecTF_1[1][37][11] = -0.00265936336637;
-   fDecTF_1[1][37][12] = 0.000618321466486;
-   fDecTF_1[1][37][13] = 0.000552686671327;
-   fDecTF_1[1][37][14] = -0.0007388037795;
-   fDecTF_1[1][37][15] = 0.00191806725952;
-   fDecTF_1[1][37][16] = -0.00137314398712;
-   fDecTF_1[1][37][17] = 0.00177305770646;
-   fDecTF_1[1][37][18] = 0.000296687696005;
-   fDecTF_1[1][37][19] = -0.000581392046054;
-   fDecTF_1[1][37][20] = 0.00171888067087;
-   fDecTF_1[1][37][21] = -0.000238248069061;
-   fDecTF_1[1][37][22] = -0.000404505865638;
-   fDecTF_1[1][37][23] = -0.000821097085066;
-   fDecTF_1[1][37][24] = 0.000566901469436;
-   fDecTF_1[1][37][25] = -0.00050380953633;
-   fDecTF_1[1][37][26] = -0.00128223379338;
-   fDecTF_1[1][37][27] = 9.68557763589e-05;
-   fDecTF_1[1][37][28] = -0.000535231671409;
-   fDecTF_1[1][37][29] = -0.00084590925636;
-   fDecTF_1[1][37][30] = 0.00139127886269;
-   fDecTF_1[1][37][31] = 0.000549918526892;
-   fDecTF_1[1][37][32] = -0.000666907466252;
-   fDecTF_1[1][37][33] = 0.000529807749394;
-   fDecTF_1[1][37][34] = -0.000118653658681;
-   fDecTF_1[1][37][35] = -0.00130946244261;
-   fDecTF_1[1][37][36] = 0.00114135292171;
-   fDecTF_1[1][37][37] = 0.135868408452;
-   fDecTF_1[1][37][38] = -0.000158819771964;
-   fDecTF_1[1][38][0] = -0.000373874144639;
-   fDecTF_1[1][38][1] = -0.0012096270042;
-   fDecTF_1[1][38][2] = 0.000915714463969;
-   fDecTF_1[1][38][3] = -0.00050955767958;
-   fDecTF_1[1][38][4] = -0.00164547206061;
-   fDecTF_1[1][38][5] = 0.000762515043836;
-   fDecTF_1[1][38][6] = 0.00032827377526;
-   fDecTF_1[1][38][7] = -0.00142924779507;
-   fDecTF_1[1][38][8] = 0.00128621093787;
-   fDecTF_1[1][38][9] = 0.000604408338312;
-   fDecTF_1[1][38][10] = -0.000219848208751;
-   fDecTF_1[1][38][11] = 0.000885582969528;
-   fDecTF_1[1][38][12] = -0.000337558010186;
-   fDecTF_1[1][38][13] = -1.72981841427e-05;
-   fDecTF_1[1][38][14] = -0.000972809152046;
-   fDecTF_1[1][38][15] = 0.00103521179341;
-   fDecTF_1[1][38][16] = 0.000236292503892;
-   fDecTF_1[1][38][17] = 0.00134149404202;
-   fDecTF_1[1][38][18] = -1.60129094528e-05;
-   fDecTF_1[1][38][19] = 0.000240809352397;
-   fDecTF_1[1][38][20] = -6.11556907528e-05;
-   fDecTF_1[1][38][21] = -6.75694036773e-05;
-   fDecTF_1[1][38][22] = -0.00035495666599;
-   fDecTF_1[1][38][23] = 9.89862487826e-06;
-   fDecTF_1[1][38][24] = -0.000114382263609;
-   fDecTF_1[1][38][25] = -0.000132763598271;
-   fDecTF_1[1][38][26] = 0.000501110960548;
-   fDecTF_1[1][38][27] = -0.00049580931794;
-   fDecTF_1[1][38][28] = 0.000560904395391;
-   fDecTF_1[1][38][29] = 0.000574089146712;
-   fDecTF_1[1][38][30] = -0.000408420407329;
-   fDecTF_1[1][38][31] = -0.000331483528004;
-   fDecTF_1[1][38][32] = 0.000412575415681;
-   fDecTF_1[1][38][33] = 0.000405740809892;
-   fDecTF_1[1][38][34] = 0.00277909523695;
-   fDecTF_1[1][38][35] = 0.00278943197842;
-   fDecTF_1[1][38][36] = 8.33708356514e-05;
-   fDecTF_1[1][38][37] = -0.000158819771964;
-   fDecTF_1[1][38][38] = 0.00761482278481;
-   fDecTF_1[2][0][0] = 4.72885373499;
-   fDecTF_1[2][0][1] = -2.71027103414;
-   fDecTF_1[2][0][2] = 0.477344407369;
-   fDecTF_1[2][0][3] = 4.02199685069;
-   fDecTF_1[2][0][4] = 0.112180955202;
-   fDecTF_1[2][0][5] = 0.125979494157;
-   fDecTF_1[2][0][6] = -0.244871594717;
-   fDecTF_1[2][0][7] = -0.334818845012;
-   fDecTF_1[2][0][8] = 0.558411398488;
-   fDecTF_1[2][0][9] = -0.155537876916;
-   fDecTF_1[2][0][10] = -0.117775624641;
-   fDecTF_1[2][0][11] = 0.22106661152;
-   fDecTF_1[2][0][12] = -0.415776611505;
-   fDecTF_1[2][0][13] = -0.0272139709917;
-   fDecTF_1[2][0][14] = 0.25724532406;
-   fDecTF_1[2][0][15] = -0.045069671464;
-   fDecTF_1[2][0][16] = 0.185622886805;
-   fDecTF_1[2][0][17] = 0.624999881569;
-   fDecTF_1[2][0][18] = -0.0769805385236;
-   fDecTF_1[2][0][19] = 0.209443245076;
-   fDecTF_1[2][0][20] = -0.0885216367586;
-   fDecTF_1[2][0][21] = -0.280145003681;
-   fDecTF_1[2][0][22] = -0.0219815742957;
-   fDecTF_1[2][0][23] = 0.356315486149;
-   fDecTF_1[2][0][24] = -0.0204908300019;
-   fDecTF_1[2][0][25] = -0.117250667768;
-   fDecTF_1[2][0][26] = 0.493975197819;
-   fDecTF_1[2][0][27] = -0.940814519914;
-   fDecTF_1[2][0][28] = 0.00850834496951;
-   fDecTF_1[2][0][29] = 0.0144061594254;
-   fDecTF_1[2][0][30] = 0.0149738172483;
-   fDecTF_1[2][0][31] = 0.0260889033501;
-   fDecTF_1[2][0][32] = 0.0636314707537;
-   fDecTF_1[2][0][33] = 0.0521591252034;
-   fDecTF_1[2][0][34] = 0.00930800705052;
-   fDecTF_1[2][0][35] = 0.0123872719753;
-   fDecTF_1[2][0][36] = -0.000375037481745;
-   fDecTF_1[2][0][37] = 0.00011275935575;
-   fDecTF_1[2][0][38] = -8.078615912e-05;
-   fDecTF_1[2][1][0] = -2.71027103414;
-   fDecTF_1[2][1][1] = 6.3384308337;
-   fDecTF_1[2][1][2] = 0.841350967768;
-   fDecTF_1[2][1][3] = -0.221598349539;
-   fDecTF_1[2][1][4] = -0.257299720871;
-   fDecTF_1[2][1][5] = -0.212460830672;
-   fDecTF_1[2][1][6] = 0.183011991942;
-   fDecTF_1[2][1][7] = 0.123769138446;
-   fDecTF_1[2][1][8] = 2.25632355459;
-   fDecTF_1[2][1][9] = 0.8386715841;
-   fDecTF_1[2][1][10] = 0.35404798844;
-   fDecTF_1[2][1][11] = 0.00409565138835;
-   fDecTF_1[2][1][12] = -1.57174261725;
-   fDecTF_1[2][1][13] = -0.169362278599;
-   fDecTF_1[2][1][14] = -0.375840937626;
-   fDecTF_1[2][1][15] = 0.517735405175;
-   fDecTF_1[2][1][16] = -0.0392630917705;
-   fDecTF_1[2][1][17] = 0.896101830562;
-   fDecTF_1[2][1][18] = 0.0868332966111;
-   fDecTF_1[2][1][19] = 0.0989332728039;
-   fDecTF_1[2][1][20] = 0.0442094553809;
-   fDecTF_1[2][1][21] = 0.111270510003;
-   fDecTF_1[2][1][22] = -0.651318911593;
-   fDecTF_1[2][1][23] = -0.0449609335181;
-   fDecTF_1[2][1][24] = -0.492937554719;
-   fDecTF_1[2][1][25] = -0.272075079527;
-   fDecTF_1[2][1][26] = 0.590581844562;
-   fDecTF_1[2][1][27] = -0.443832615666;
-   fDecTF_1[2][1][28] = 0.00967371444441;
-   fDecTF_1[2][1][29] = 0.0108266094037;
-   fDecTF_1[2][1][30] = 0.00799416710147;
-   fDecTF_1[2][1][31] = 0.00616585455426;
-   fDecTF_1[2][1][32] = -0.015112218707;
-   fDecTF_1[2][1][33] = 0.00733166654968;
-   fDecTF_1[2][1][34] = -0.0149486866323;
-   fDecTF_1[2][1][35] = -0.00634303557322;
-   fDecTF_1[2][1][36] = 0.000910222894801;
-   fDecTF_1[2][1][37] = -0.000527068206828;
-   fDecTF_1[2][1][38] = -0.00119467459854;
-   fDecTF_1[2][2][0] = 0.477344407369;
-   fDecTF_1[2][2][1] = 0.841350967768;
-   fDecTF_1[2][2][2] = 7.29775274439;
-   fDecTF_1[2][2][3] = -1.46143975298;
-   fDecTF_1[2][2][4] = 0.00488550711553;
-   fDecTF_1[2][2][5] = 0.178675129676;
-   fDecTF_1[2][2][6] = -0.297020941642;
-   fDecTF_1[2][2][7] = 0.120766742179;
-   fDecTF_1[2][2][8] = 0.21270220895;
-   fDecTF_1[2][2][9] = -4.87517292111;
-   fDecTF_1[2][2][10] = -0.307819925929;
-   fDecTF_1[2][2][11] = 0.192295059517;
-   fDecTF_1[2][2][12] = 1.03131286998;
-   fDecTF_1[2][2][13] = -0.0386816036171;
-   fDecTF_1[2][2][14] = -0.168925619097;
-   fDecTF_1[2][2][15] = 0.766596468016;
-   fDecTF_1[2][2][16] = 0.0699045126005;
-   fDecTF_1[2][2][17] = 1.08506093509;
-   fDecTF_1[2][2][18] = -0.0424612688537;
-   fDecTF_1[2][2][19] = 0.172346171096;
-   fDecTF_1[2][2][20] = -0.734826301022;
-   fDecTF_1[2][2][21] = -0.125187283079;
-   fDecTF_1[2][2][22] = -0.306517638595;
-   fDecTF_1[2][2][23] = 1.36653698049;
-   fDecTF_1[2][2][24] = -0.0532699119406;
-   fDecTF_1[2][2][25] = -0.547646930227;
-   fDecTF_1[2][2][26] = 0.154063271297;
-   fDecTF_1[2][2][27] = -1.27800409268;
-   fDecTF_1[2][2][28] = -0.00256495250994;
-   fDecTF_1[2][2][29] = -0.00270716989594;
-   fDecTF_1[2][2][30] = -0.0113258313486;
-   fDecTF_1[2][2][31] = -0.013844016723;
-   fDecTF_1[2][2][32] = -0.00355335898435;
-   fDecTF_1[2][2][33] = -0.00150654639939;
-   fDecTF_1[2][2][34] = -0.00498183368787;
-   fDecTF_1[2][2][35] = -0.00254371107125;
-   fDecTF_1[2][2][36] = 0.000384070285216;
-   fDecTF_1[2][2][37] = 0.000651422258382;
-   fDecTF_1[2][2][38] = 0.000915005474728;
-   fDecTF_1[2][3][0] = 4.02199685069;
-   fDecTF_1[2][3][1] = -0.221598349539;
-   fDecTF_1[2][3][2] = -1.46143975298;
-   fDecTF_1[2][3][3] = 8.30001951385;
-   fDecTF_1[2][3][4] = -0.137880898369;
-   fDecTF_1[2][3][5] = -0.104117671591;
-   fDecTF_1[2][3][6] = 0.148445747332;
-   fDecTF_1[2][3][7] = -0.385934633612;
-   fDecTF_1[2][3][8] = 3.56492989729;
-   fDecTF_1[2][3][9] = 1.32452108781;
-   fDecTF_1[2][3][10] = 0.619232681794;
-   fDecTF_1[2][3][11] = -0.242262492707;
-   fDecTF_1[2][3][12] = -1.3345071873;
-   fDecTF_1[2][3][13] = 0.0240610428142;
-   fDecTF_1[2][3][14] = 0.291715132767;
-   fDecTF_1[2][3][15] = -0.276411814003;
-   fDecTF_1[2][3][16] = 0.147373015735;
-   fDecTF_1[2][3][17] = 0.146309246434;
-   fDecTF_1[2][3][18] = -0.0153599481176;
-   fDecTF_1[2][3][19] = -0.0741135488049;
-   fDecTF_1[2][3][20] = 1.19084054741;
-   fDecTF_1[2][3][21] = -0.192082207601;
-   fDecTF_1[2][3][22] = 0.276017542949;
-   fDecTF_1[2][3][23] = -0.936791796901;
-   fDecTF_1[2][3][24] = 0.128986829078;
-   fDecTF_1[2][3][25] = 0.398127165327;
-   fDecTF_1[2][3][26] = -0.353899079483;
-   fDecTF_1[2][3][27] = 0.469713370782;
-   fDecTF_1[2][3][28] = 0.00647615623994;
-   fDecTF_1[2][3][29] = 0.00782286869215;
-   fDecTF_1[2][3][30] = 0.0232102345096;
-   fDecTF_1[2][3][31] = 0.0260333900426;
-   fDecTF_1[2][3][32] = 0.0466653593502;
-   fDecTF_1[2][3][33] = 0.0336019545556;
-   fDecTF_1[2][3][34] = 0.00309364879547;
-   fDecTF_1[2][3][35] = 0.00391348059732;
-   fDecTF_1[2][3][36] = -0.000566865354402;
-   fDecTF_1[2][3][37] = -0.000340437850605;
-   fDecTF_1[2][3][38] = -0.000452558278633;
-   fDecTF_1[2][4][0] = 0.112180955202;
-   fDecTF_1[2][4][1] = -0.257299720871;
-   fDecTF_1[2][4][2] = 0.00488550711552;
-   fDecTF_1[2][4][3] = -0.137880898369;
-   fDecTF_1[2][4][4] = 2.05894451671;
-   fDecTF_1[2][4][5] = -1.26308482492;
-   fDecTF_1[2][4][6] = 0.0801112561579;
-   fDecTF_1[2][4][7] = -1.11629266478;
-   fDecTF_1[2][4][8] = 0.363015389146;
-   fDecTF_1[2][4][9] = -0.370778598221;
-   fDecTF_1[2][4][10] = -0.00872504706352;
-   fDecTF_1[2][4][11] = 0.196342254222;
-   fDecTF_1[2][4][12] = -0.386968391341;
-   fDecTF_1[2][4][13] = -0.0129317142817;
-   fDecTF_1[2][4][14] = 0.00135808881148;
-   fDecTF_1[2][4][15] = 0.0206021842988;
-   fDecTF_1[2][4][16] = 0.0227998326298;
-   fDecTF_1[2][4][17] = 0.162656912428;
-   fDecTF_1[2][4][18] = -0.022494199589;
-   fDecTF_1[2][4][19] = 0.012851092327;
-   fDecTF_1[2][4][20] = -0.0120952405905;
-   fDecTF_1[2][4][21] = -0.0471811703533;
-   fDecTF_1[2][4][22] = -0.0388304430417;
-   fDecTF_1[2][4][23] = 0.0177941888314;
-   fDecTF_1[2][4][24] = -0.021637731754;
-   fDecTF_1[2][4][25] = -0.0324410440407;
-   fDecTF_1[2][4][26] = 0.053979688221;
-   fDecTF_1[2][4][27] = -0.0643441125487;
-   fDecTF_1[2][4][28] = 0.00114788006767;
-   fDecTF_1[2][4][29] = 0.00434690120467;
-   fDecTF_1[2][4][30] = 0.0042194571974;
-   fDecTF_1[2][4][31] = 0.00663238699449;
-   fDecTF_1[2][4][32] = 0.00657890545082;
-   fDecTF_1[2][4][33] = -0.00388066059943;
-   fDecTF_1[2][4][34] = -0.00654234101559;
-   fDecTF_1[2][4][35] = -0.0127174487444;
-   fDecTF_1[2][4][36] = 0.000854829597038;
-   fDecTF_1[2][4][37] = -0.000113014523303;
-   fDecTF_1[2][4][38] = -0.00153279833297;
-   fDecTF_1[2][5][0] = 0.125979494157;
-   fDecTF_1[2][5][1] = -0.212460830672;
-   fDecTF_1[2][5][2] = 0.178675129676;
-   fDecTF_1[2][5][3] = -0.104117671591;
-   fDecTF_1[2][5][4] = -1.26308482492;
-   fDecTF_1[2][5][5] = 2.66078331112;
-   fDecTF_1[2][5][6] = -1.33545983176;
-   fDecTF_1[2][5][7] = -0.0935154804407;
-   fDecTF_1[2][5][8] = -0.48280179135;
-   fDecTF_1[2][5][9] = -0.103782247899;
-   fDecTF_1[2][5][10] = -0.0556603201292;
-   fDecTF_1[2][5][11] = 0.221468293289;
-   fDecTF_1[2][5][12] = 0.323583218456;
-   fDecTF_1[2][5][13] = -0.0178656993483;
-   fDecTF_1[2][5][14] = 0.327765846346;
-   fDecTF_1[2][5][15] = 0.0200951427861;
-   fDecTF_1[2][5][16] = 0.0254712904584;
-   fDecTF_1[2][5][17] = 0.106132672029;
-   fDecTF_1[2][5][18] = 0.0334291140895;
-   fDecTF_1[2][5][19] = 0.00113784511712;
-   fDecTF_1[2][5][20] = 0.166646507143;
-   fDecTF_1[2][5][21] = 0.0143549890729;
-   fDecTF_1[2][5][22] = 0.0459721623504;
-   fDecTF_1[2][5][23] = -0.0762188016511;
-   fDecTF_1[2][5][24] = 0.0329713795003;
-   fDecTF_1[2][5][25] = 0.0171566230393;
-   fDecTF_1[2][5][26] = -0.0821660552593;
-   fDecTF_1[2][5][27] = -0.06696163682;
-   fDecTF_1[2][5][28] = -7.39812594114e-05;
-   fDecTF_1[2][5][29] = -0.00114439309806;
-   fDecTF_1[2][5][30] = 0.000246148461215;
-   fDecTF_1[2][5][31] = -0.00141599914022;
-   fDecTF_1[2][5][32] = 0.00885016405955;
-   fDecTF_1[2][5][33] = 0.0153442186598;
-   fDecTF_1[2][5][34] = -0.023524971658;
-   fDecTF_1[2][5][35] = -0.0270936203824;
-   fDecTF_1[2][5][36] = -0.00186735348921;
-   fDecTF_1[2][5][37] = 0.000142988949113;
-   fDecTF_1[2][5][38] = 0.000576315600126;
-   fDecTF_1[2][6][0] = -0.244871594717;
-   fDecTF_1[2][6][1] = 0.183011991942;
-   fDecTF_1[2][6][2] = -0.297020941642;
-   fDecTF_1[2][6][3] = 0.148445747332;
-   fDecTF_1[2][6][4] = 0.0801112561579;
-   fDecTF_1[2][6][5] = -1.33545983176;
-   fDecTF_1[2][6][6] = 2.89605944085;
-   fDecTF_1[2][6][7] = 1.75192085828;
-   fDecTF_1[2][6][8] = -0.10268628728;
-   fDecTF_1[2][6][9] = 0.709639447602;
-   fDecTF_1[2][6][10] = -0.0294850390535;
-   fDecTF_1[2][6][11] = -0.561508953269;
-   fDecTF_1[2][6][12] = -0.10938786296;
-   fDecTF_1[2][6][13] = 0.0069276500114;
-   fDecTF_1[2][6][14] = -0.307292130114;
-   fDecTF_1[2][6][15] = -0.477081823095;
-   fDecTF_1[2][6][16] = -0.0543794972442;
-   fDecTF_1[2][6][17] = -0.226723915506;
-   fDecTF_1[2][6][18] = -0.00190801969014;
-   fDecTF_1[2][6][19] = 0.0173253619203;
-   fDecTF_1[2][6][20] = -0.186316218381;
-   fDecTF_1[2][6][21] = -0.00156353681181;
-   fDecTF_1[2][6][22] = -0.0870364206013;
-   fDecTF_1[2][6][23] = 0.0556120814865;
-   fDecTF_1[2][6][24] = -0.0607505959383;
-   fDecTF_1[2][6][25] = -0.0231626634656;
-   fDecTF_1[2][6][26] = 0.120985285906;
-   fDecTF_1[2][6][27] = 0.227970815043;
-   fDecTF_1[2][6][28] = -0.00291347965493;
-   fDecTF_1[2][6][29] = 0.002424667992;
-   fDecTF_1[2][6][30] = -0.00612916300873;
-   fDecTF_1[2][6][31] = 0.000657008376743;
-   fDecTF_1[2][6][32] = 0.00498657483657;
-   fDecTF_1[2][6][33] = -0.00172471049753;
-   fDecTF_1[2][6][34] = -0.0096698924128;
-   fDecTF_1[2][6][35] = -0.0125562859339;
-   fDecTF_1[2][6][36] = -0.000784433896263;
-   fDecTF_1[2][6][37] = 0.000467074395679;
-   fDecTF_1[2][6][38] = 0.000189958238505;
-   fDecTF_1[2][7][0] = -0.334818845012;
-   fDecTF_1[2][7][1] = 0.123769138446;
-   fDecTF_1[2][7][2] = 0.120766742179;
-   fDecTF_1[2][7][3] = -0.385934633612;
-   fDecTF_1[2][7][4] = -1.11629266478;
-   fDecTF_1[2][7][5] = -0.0935154804407;
-   fDecTF_1[2][7][6] = 1.75192085828;
-   fDecTF_1[2][7][7] = 3.32572309709;
-   fDecTF_1[2][7][8] = -0.616313415786;
-   fDecTF_1[2][7][9] = 0.324771279191;
-   fDecTF_1[2][7][10] = -0.840449973327;
-   fDecTF_1[2][7][11] = -0.0216977168876;
-   fDecTF_1[2][7][12] = 0.629816841579;
-   fDecTF_1[2][7][13] = -0.017036897427;
-   fDecTF_1[2][7][14] = -0.685701003302;
-   fDecTF_1[2][7][15] = 0.248336103049;
-   fDecTF_1[2][7][16] = 0.0102905295548;
-   fDecTF_1[2][7][17] = -0.491966383368;
-   fDecTF_1[2][7][18] = 0.0301586568752;
-   fDecTF_1[2][7][19] = 0.066794943033;
-   fDecTF_1[2][7][20] = -0.380598469423;
-   fDecTF_1[2][7][21] = 0.209705312586;
-   fDecTF_1[2][7][22] = -0.221188780478;
-   fDecTF_1[2][7][23] = 0.0707293378052;
-   fDecTF_1[2][7][24] = -0.0988743133373;
-   fDecTF_1[2][7][25] = -0.197724589139;
-   fDecTF_1[2][7][26] = 0.202327274889;
-   fDecTF_1[2][7][27] = -0.00390502034351;
-   fDecTF_1[2][7][28] = 0.000651924616291;
-   fDecTF_1[2][7][29] = 0.00140518359377;
-   fDecTF_1[2][7][30] = 0.0145856136871;
-   fDecTF_1[2][7][31] = 0.0174350322463;
-   fDecTF_1[2][7][32] = 0.0205580382397;
-   fDecTF_1[2][7][33] = 0.0279558808414;
-   fDecTF_1[2][7][34] = 0.0191715909976;
-   fDecTF_1[2][7][35] = 0.024251515645;
-   fDecTF_1[2][7][36] = 0.000733467718851;
-   fDecTF_1[2][7][37] = 0.0011296285946;
-   fDecTF_1[2][7][38] = -0.00114460497719;
-   fDecTF_1[2][8][0] = 0.558411398488;
-   fDecTF_1[2][8][1] = 2.25632355459;
-   fDecTF_1[2][8][2] = 0.21270220895;
-   fDecTF_1[2][8][3] = 3.56492989729;
-   fDecTF_1[2][8][4] = 0.363015389146;
-   fDecTF_1[2][8][5] = -0.48280179135;
-   fDecTF_1[2][8][6] = -0.10268628728;
-   fDecTF_1[2][8][7] = -0.616313415786;
-   fDecTF_1[2][8][8] = 4.40431571169;
-   fDecTF_1[2][8][9] = -0.722915059941;
-   fDecTF_1[2][8][10] = 0.416411301056;
-   fDecTF_1[2][8][11] = 0.0228227089897;
-   fDecTF_1[2][8][12] = 0.507956580614;
-   fDecTF_1[2][8][13] = 0.0512748204994;
-   fDecTF_1[2][8][14] = -0.251856173592;
-   fDecTF_1[2][8][15] = 0.530283946755;
-   fDecTF_1[2][8][16] = -0.15380851584;
-   fDecTF_1[2][8][17] = -1.39815217267;
-   fDecTF_1[2][8][18] = -0.00663040326898;
-   fDecTF_1[2][8][19] = -0.159936061438;
-   fDecTF_1[2][8][20] = -0.16625652295;
-   fDecTF_1[2][8][21] = 0.477954288482;
-   fDecTF_1[2][8][22] = -0.162205591481;
-   fDecTF_1[2][8][23] = 0.234048345067;
-   fDecTF_1[2][8][24] = -0.0627633324321;
-   fDecTF_1[2][8][25] = -0.299323115548;
-   fDecTF_1[2][8][26] = -0.466527303175;
-   fDecTF_1[2][8][27] = 0.32159103359;
-   fDecTF_1[2][8][28] = -0.00807244065327;
-   fDecTF_1[2][8][29] = -0.0108299447856;
-   fDecTF_1[2][8][30] = -0.00980729407099;
-   fDecTF_1[2][8][31] = -0.0118469243389;
-   fDecTF_1[2][8][32] = -0.0286375001226;
-   fDecTF_1[2][8][33] = -0.0281886851793;
-   fDecTF_1[2][8][34] = 0.01445586327;
-   fDecTF_1[2][8][35] = 0.00864465304205;
-   fDecTF_1[2][8][36] = 0.00202122140728;
-   fDecTF_1[2][8][37] = -0.0011605852872;
-   fDecTF_1[2][8][38] = 0.000934992780237;
-   fDecTF_1[2][9][0] = -0.155537876916;
-   fDecTF_1[2][9][1] = 0.8386715841;
-   fDecTF_1[2][9][2] = -4.87517292111;
-   fDecTF_1[2][9][3] = 1.32452108781;
-   fDecTF_1[2][9][4] = -0.370778598221;
-   fDecTF_1[2][9][5] = -0.103782247899;
-   fDecTF_1[2][9][6] = 0.709639447602;
-   fDecTF_1[2][9][7] = 0.324771279191;
-   fDecTF_1[2][9][8] = -0.722915059941;
-   fDecTF_1[2][9][9] = 7.24037689277;
-   fDecTF_1[2][9][10] = 0.41967577829;
-   fDecTF_1[2][9][11] = -0.121840358383;
-   fDecTF_1[2][9][12] = -3.99144437394;
-   fDecTF_1[2][9][13] = -0.0920317771235;
-   fDecTF_1[2][9][14] = 0.586835543815;
-   fDecTF_1[2][9][15] = -0.832884940375;
-   fDecTF_1[2][9][16] = -0.145587116758;
-   fDecTF_1[2][9][17] = 2.06286818022;
-   fDecTF_1[2][9][18] = 0.0134372214453;
-   fDecTF_1[2][9][19] = -0.154901627297;
-   fDecTF_1[2][9][20] = -0.841763517218;
-   fDecTF_1[2][9][21] = -0.639600096967;
-   fDecTF_1[2][9][22] = -0.0864567088227;
-   fDecTF_1[2][9][23] = 0.677041257362;
-   fDecTF_1[2][9][24] = -0.226805579983;
-   fDecTF_1[2][9][25] = 0.460758703707;
-   fDecTF_1[2][9][26] = 1.02967639718;
-   fDecTF_1[2][9][27] = -0.229209386379;
-   fDecTF_1[2][9][28] = -0.00342432110282;
-   fDecTF_1[2][9][29] = -0.00389986852713;
-   fDecTF_1[2][9][30] = -0.00371181036598;
-   fDecTF_1[2][9][31] = -0.00534223092201;
-   fDecTF_1[2][9][32] = 0.00201327718524;
-   fDecTF_1[2][9][33] = -0.00252021614344;
-   fDecTF_1[2][9][34] = -0.00343787816457;
-   fDecTF_1[2][9][35] = -0.00422601750377;
-   fDecTF_1[2][9][36] = 0.00116743226418;
-   fDecTF_1[2][9][37] = -3.0173625713e-06;
-   fDecTF_1[2][9][38] = 0.000804184766763;
-   fDecTF_1[2][10][0] = -0.117775624641;
-   fDecTF_1[2][10][1] = 0.35404798844;
-   fDecTF_1[2][10][2] = -0.307819925929;
-   fDecTF_1[2][10][3] = 0.619232681794;
-   fDecTF_1[2][10][4] = -0.00872504706352;
-   fDecTF_1[2][10][5] = -0.0556603201292;
-   fDecTF_1[2][10][6] = -0.0294850390535;
-   fDecTF_1[2][10][7] = -0.840449973327;
-   fDecTF_1[2][10][8] = 0.416411301056;
-   fDecTF_1[2][10][9] = 0.41967577829;
-   fDecTF_1[2][10][10] = 3.89986642326;
-   fDecTF_1[2][10][11] = -2.91586816841;
-   fDecTF_1[2][10][12] = 0.105719210764;
-   fDecTF_1[2][10][13] = -0.0207338854715;
-   fDecTF_1[2][10][14] = 0.793933878723;
-   fDecTF_1[2][10][15] = -0.953491524076;
-   fDecTF_1[2][10][16] = 0.0207814469976;
-   fDecTF_1[2][10][17] = -0.309968086394;
-   fDecTF_1[2][10][18] = -0.0519333852965;
-   fDecTF_1[2][10][19] = 0.540755752845;
-   fDecTF_1[2][10][20] = -0.270630544927;
-   fDecTF_1[2][10][21] = -0.240521780653;
-   fDecTF_1[2][10][22] = 0.0214524795242;
-   fDecTF_1[2][10][23] = 0.78715344349;
-   fDecTF_1[2][10][24] = -0.0214750753152;
-   fDecTF_1[2][10][25] = -0.0830763903293;
-   fDecTF_1[2][10][26] = 0.191354504235;
-   fDecTF_1[2][10][27] = -0.556502057268;
-   fDecTF_1[2][10][28] = -0.000377414974836;
-   fDecTF_1[2][10][29] = -0.00106120037503;
-   fDecTF_1[2][10][30] = -0.0130383034542;
-   fDecTF_1[2][10][31] = -0.0179237132882;
-   fDecTF_1[2][10][32] = -0.00656551852139;
-   fDecTF_1[2][10][33] = -0.000871476947791;
-   fDecTF_1[2][10][34] = -0.0120853318707;
-   fDecTF_1[2][10][35] = -0.0175063224795;
-   fDecTF_1[2][10][36] = -0.00221765413578;
-   fDecTF_1[2][10][37] = 0.00103930225016;
-   fDecTF_1[2][10][38] = 0.000388127464409;
-   fDecTF_1[2][11][0] = 0.22106661152;
-   fDecTF_1[2][11][1] = 0.00409565138836;
-   fDecTF_1[2][11][2] = 0.192295059517;
-   fDecTF_1[2][11][3] = -0.242262492707;
-   fDecTF_1[2][11][4] = 0.196342254222;
-   fDecTF_1[2][11][5] = 0.221468293289;
-   fDecTF_1[2][11][6] = -0.561508953269;
-   fDecTF_1[2][11][7] = -0.0216977168876;
-   fDecTF_1[2][11][8] = 0.0228227089897;
-   fDecTF_1[2][11][9] = -0.121840358383;
-   fDecTF_1[2][11][10] = -2.91586816841;
-   fDecTF_1[2][11][11] = 3.68936057667;
-   fDecTF_1[2][11][12] = -0.439978602447;
-   fDecTF_1[2][11][13] = 0.0794908009571;
-   fDecTF_1[2][11][14] = -0.196103062005;
-   fDecTF_1[2][11][15] = 0.655887238761;
-   fDecTF_1[2][11][16] = 0.211048229454;
-   fDecTF_1[2][11][17] = 0.512538053924;
-   fDecTF_1[2][11][18] = -0.141798998301;
-   fDecTF_1[2][11][19] = -0.079956330768;
-   fDecTF_1[2][11][20] = -0.148127127797;
-   fDecTF_1[2][11][21] = 0.112319164664;
-   fDecTF_1[2][11][22] = -0.246173641326;
-   fDecTF_1[2][11][23] = -0.165672878563;
-   fDecTF_1[2][11][24] = -0.0917719998064;
-   fDecTF_1[2][11][25] = -0.0878069225393;
-   fDecTF_1[2][11][26] = 0.277003972629;
-   fDecTF_1[2][11][27] = -0.0298644391494;
-   fDecTF_1[2][11][28] = 0.0137222528001;
-   fDecTF_1[2][11][29] = 0.0143087364024;
-   fDecTF_1[2][11][30] = 0.012423296969;
-   fDecTF_1[2][11][31] = 0.0151449709032;
-   fDecTF_1[2][11][32] = 0.0256890802102;
-   fDecTF_1[2][11][33] = 0.0323005975508;
-   fDecTF_1[2][11][34] = 0.00794886469319;
-   fDecTF_1[2][11][35] = 0.0123868407222;
-   fDecTF_1[2][11][36] = -0.000311115797061;
-   fDecTF_1[2][11][37] = -0.00231930167549;
-   fDecTF_1[2][11][38] = 0.00112877378885;
-   fDecTF_1[2][12][0] = -0.415776611505;
-   fDecTF_1[2][12][1] = -1.57174261725;
-   fDecTF_1[2][12][2] = 1.03131286998;
-   fDecTF_1[2][12][3] = -1.3345071873;
-   fDecTF_1[2][12][4] = -0.386968391341;
-   fDecTF_1[2][12][5] = 0.323583218456;
-   fDecTF_1[2][12][6] = -0.10938786296;
-   fDecTF_1[2][12][7] = 0.629816841579;
-   fDecTF_1[2][12][8] = 0.507956580614;
-   fDecTF_1[2][12][9] = -3.99144437394;
-   fDecTF_1[2][12][10] = 0.105719210764;
-   fDecTF_1[2][12][11] = -0.439978602447;
-   fDecTF_1[2][12][12] = 6.79210856966;
-   fDecTF_1[2][12][13] = 0.0847599121681;
-   fDecTF_1[2][12][14] = -0.835893245505;
-   fDecTF_1[2][12][15] = 0.673079753077;
-   fDecTF_1[2][12][16] = -0.0675644873904;
-   fDecTF_1[2][12][17] = -5.05352659642;
-   fDecTF_1[2][12][18] = -0.245786406559;
-   fDecTF_1[2][12][19] = 1.09662427153;
-   fDecTF_1[2][12][20] = -1.33405652532;
-   fDecTF_1[2][12][21] = 2.40915802777;
-   fDecTF_1[2][12][22] = -1.89975847254;
-   fDecTF_1[2][12][23] = 0.714896545994;
-   fDecTF_1[2][12][24] = -1.04926168491;
-   fDecTF_1[2][12][25] = -2.57035485738;
-   fDecTF_1[2][12][26] = 0.0634998478769;
-   fDecTF_1[2][12][27] = -1.00517447585;
-   fDecTF_1[2][12][28] = 0.00419689729511;
-   fDecTF_1[2][12][29] = 0.0018405890344;
-   fDecTF_1[2][12][30] = 0.0074838986618;
-   fDecTF_1[2][12][31] = 0.00244964046382;
-   fDecTF_1[2][12][32] = 0.00449820036321;
-   fDecTF_1[2][12][33] = 0.0175126460553;
-   fDecTF_1[2][12][34] = -0.0127053721607;
-   fDecTF_1[2][12][35] = -0.0125337429938;
-   fDecTF_1[2][12][36] = -0.000994476769822;
-   fDecTF_1[2][12][37] = 0.000439382590505;
-   fDecTF_1[2][12][38] = -0.000242166682473;
-   fDecTF_1[2][13][0] = -0.0272139709917;
-   fDecTF_1[2][13][1] = -0.169362278599;
-   fDecTF_1[2][13][2] = -0.0386816036171;
-   fDecTF_1[2][13][3] = 0.0240610428142;
-   fDecTF_1[2][13][4] = -0.0129317142817;
-   fDecTF_1[2][13][5] = -0.0178656993483;
-   fDecTF_1[2][13][6] = 0.0069276500114;
-   fDecTF_1[2][13][7] = -0.017036897427;
-   fDecTF_1[2][13][8] = 0.0512748204994;
-   fDecTF_1[2][13][9] = -0.0920317771235;
-   fDecTF_1[2][13][10] = -0.0207338854715;
-   fDecTF_1[2][13][11] = 0.0794908009571;
-   fDecTF_1[2][13][12] = 0.0847599121681;
-   fDecTF_1[2][13][13] = 5.02875000911;
-   fDecTF_1[2][13][14] = 0.0344516992157;
-   fDecTF_1[2][13][15] = -0.232554567529;
-   fDecTF_1[2][13][16] = -1.40968396684;
-   fDecTF_1[2][13][17] = -0.0920456525674;
-   fDecTF_1[2][13][18] = -4.08541713331;
-   fDecTF_1[2][13][19] = -0.76194654242;
-   fDecTF_1[2][13][20] = 0.101783195423;
-   fDecTF_1[2][13][21] = 0.0695045703529;
-   fDecTF_1[2][13][22] = 0.421392658941;
-   fDecTF_1[2][13][23] = 0.0302084272854;
-   fDecTF_1[2][13][24] = 0.245718295846;
-   fDecTF_1[2][13][25] = -0.268535530177;
-   fDecTF_1[2][13][26] = -0.248913225054;
-   fDecTF_1[2][13][27] = -0.0865912380986;
-   fDecTF_1[2][13][28] = -0.00223571639515;
-   fDecTF_1[2][13][29] = -0.00405112631999;
-   fDecTF_1[2][13][30] = -0.00706237508841;
-   fDecTF_1[2][13][31] = -0.00197833185527;
-   fDecTF_1[2][13][32] = -0.000529981730054;
-   fDecTF_1[2][13][33] = 0.00190811850502;
-   fDecTF_1[2][13][34] = -0.00941935003266;
-   fDecTF_1[2][13][35] = 0.00698768593125;
-   fDecTF_1[2][13][36] = 0.00425714642046;
-   fDecTF_1[2][13][37] = 0.000340044670533;
-   fDecTF_1[2][13][38] = -5.37696416642e-05;
-   fDecTF_1[2][14][0] = 0.25724532406;
-   fDecTF_1[2][14][1] = -0.375840937626;
-   fDecTF_1[2][14][2] = -0.168925619097;
-   fDecTF_1[2][14][3] = 0.291715132767;
-   fDecTF_1[2][14][4] = 0.00135808881148;
-   fDecTF_1[2][14][5] = 0.327765846346;
-   fDecTF_1[2][14][6] = -0.307292130114;
-   fDecTF_1[2][14][7] = -0.685701003302;
-   fDecTF_1[2][14][8] = -0.251856173592;
-   fDecTF_1[2][14][9] = 0.586835543815;
-   fDecTF_1[2][14][10] = 0.793933878723;
-   fDecTF_1[2][14][11] = -0.196103062005;
-   fDecTF_1[2][14][12] = -0.835893245505;
-   fDecTF_1[2][14][13] = 0.0344516992157;
-   fDecTF_1[2][14][14] = 3.95643228158;
-   fDecTF_1[2][14][15] = -3.66615245522;
-   fDecTF_1[2][14][16] = -0.275273466611;
-   fDecTF_1[2][14][17] = 0.865634594412;
-   fDecTF_1[2][14][18] = -0.108681791177;
-   fDecTF_1[2][14][19] = 0.0272827254173;
-   fDecTF_1[2][14][20] = -0.409665745427;
-   fDecTF_1[2][14][21] = -0.146886495712;
-   fDecTF_1[2][14][22] = -0.447474745562;
-   fDecTF_1[2][14][23] = 1.30150403898;
-   fDecTF_1[2][14][24] = -0.341123594558;
-   fDecTF_1[2][14][25] = -0.455098582136;
-   fDecTF_1[2][14][26] = 0.0866761990829;
-   fDecTF_1[2][14][27] = 0.125403232617;
-   fDecTF_1[2][14][28] = -0.00726974188614;
-   fDecTF_1[2][14][29] = -0.00425516610299;
-   fDecTF_1[2][14][30] = -0.00517974837507;
-   fDecTF_1[2][14][31] = -0.000732428568316;
-   fDecTF_1[2][14][32] = -0.025292114666;
-   fDecTF_1[2][14][33] = -0.0265997179094;
-   fDecTF_1[2][14][34] = -0.00351449515674;
-   fDecTF_1[2][14][35] = 0.000524798105686;
-   fDecTF_1[2][14][36] = 0.000526388176915;
-   fDecTF_1[2][14][37] = -0.00147922983293;
-   fDecTF_1[2][14][38] = -0.00131406738553;
-   fDecTF_1[2][15][0] = -0.045069671464;
-   fDecTF_1[2][15][1] = 0.517735405175;
-   fDecTF_1[2][15][2] = 0.766596468016;
-   fDecTF_1[2][15][3] = -0.276411814003;
-   fDecTF_1[2][15][4] = 0.0206021842988;
-   fDecTF_1[2][15][5] = 0.0200951427861;
-   fDecTF_1[2][15][6] = -0.477081823095;
-   fDecTF_1[2][15][7] = 0.248336103049;
-   fDecTF_1[2][15][8] = 0.530283946755;
-   fDecTF_1[2][15][9] = -0.832884940375;
-   fDecTF_1[2][15][10] = -0.953491524076;
-   fDecTF_1[2][15][11] = 0.655887238761;
-   fDecTF_1[2][15][12] = 0.673079753077;
-   fDecTF_1[2][15][13] = -0.232554567529;
-   fDecTF_1[2][15][14] = -3.66615245522;
-   fDecTF_1[2][15][15] = 5.52225789256;
-   fDecTF_1[2][15][16] = 0.431333249663;
-   fDecTF_1[2][15][17] = -0.637603847195;
-   fDecTF_1[2][15][18] = 0.264026516006;
-   fDecTF_1[2][15][19] = 0.13947583616;
-   fDecTF_1[2][15][20] = -1.50121301286;
-   fDecTF_1[2][15][21] = 0.0473974523209;
-   fDecTF_1[2][15][22] = -0.204708775063;
-   fDecTF_1[2][15][23] = 0.651179903394;
-   fDecTF_1[2][15][24] = 0.885768427632;
-   fDecTF_1[2][15][25] = -0.17630899403;
-   fDecTF_1[2][15][26] = -0.972466466642;
-   fDecTF_1[2][15][27] = 0.64642944992;
-   fDecTF_1[2][15][28] = -0.0126282039887;
-   fDecTF_1[2][15][29] = -0.017054281626;
-   fDecTF_1[2][15][30] = -0.0190391067385;
-   fDecTF_1[2][15][31] = -0.0246715575139;
-   fDecTF_1[2][15][32] = -0.0302883411353;
-   fDecTF_1[2][15][33] = -0.0230723854314;
-   fDecTF_1[2][15][34] = 0.00951081840727;
-   fDecTF_1[2][15][35] = 0.0082212463975;
-   fDecTF_1[2][15][36] = 0.00132741356334;
-   fDecTF_1[2][15][37] = 0.00138537204784;
-   fDecTF_1[2][15][38] = 0.000767974336218;
-   fDecTF_1[2][16][0] = 0.185622886805;
-   fDecTF_1[2][16][1] = -0.0392630917705;
-   fDecTF_1[2][16][2] = 0.0699045126005;
-   fDecTF_1[2][16][3] = 0.147373015735;
-   fDecTF_1[2][16][4] = 0.0227998326298;
-   fDecTF_1[2][16][5] = 0.0254712904584;
-   fDecTF_1[2][16][6] = -0.0543794972442;
-   fDecTF_1[2][16][7] = 0.0102905295548;
-   fDecTF_1[2][16][8] = -0.15380851584;
-   fDecTF_1[2][16][9] = -0.145587116758;
-   fDecTF_1[2][16][10] = 0.0207814469976;
-   fDecTF_1[2][16][11] = 0.211048229454;
-   fDecTF_1[2][16][12] = -0.0675644873904;
-   fDecTF_1[2][16][13] = -1.40968396684;
-   fDecTF_1[2][16][14] = -0.275273466611;
-   fDecTF_1[2][16][15] = 0.431333249663;
-   fDecTF_1[2][16][16] = 3.5114692009;
-   fDecTF_1[2][16][17] = 0.124436527359;
-   fDecTF_1[2][16][18] = 0.782784140164;
-   fDecTF_1[2][16][19] = 2.86521619948;
-   fDecTF_1[2][16][20] = -0.235537457737;
-   fDecTF_1[2][16][21] = 0.124159317751;
-   fDecTF_1[2][16][22] = 0.112215625455;
-   fDecTF_1[2][16][23] = 0.198538588748;
-   fDecTF_1[2][16][24] = -0.215111582372;
-   fDecTF_1[2][16][25] = 1.47150830869;
-   fDecTF_1[2][16][26] = -0.302078939535;
-   fDecTF_1[2][16][27] = 0.584569011362;
-   fDecTF_1[2][16][28] = -0.00674364183306;
-   fDecTF_1[2][16][29] = 0.00474450922896;
-   fDecTF_1[2][16][30] = 0.00209261541247;
-   fDecTF_1[2][16][31] = -0.00750637528511;
-   fDecTF_1[2][16][32] = 0.0049365081536;
-   fDecTF_1[2][16][33] = 0.00340088150465;
-   fDecTF_1[2][16][34] = -0.0136908826702;
-   fDecTF_1[2][16][35] = 0.017802846809;
-   fDecTF_1[2][16][36] = -0.0361247358217;
-   fDecTF_1[2][16][37] = -0.00110545752629;
-   fDecTF_1[2][16][38] = 0.00017134317014;
-   fDecTF_1[2][17][0] = 0.624999881569;
-   fDecTF_1[2][17][1] = 0.896101830562;
-   fDecTF_1[2][17][2] = 1.08506093509;
-   fDecTF_1[2][17][3] = 0.146309246434;
-   fDecTF_1[2][17][4] = 0.162656912428;
-   fDecTF_1[2][17][5] = 0.106132672029;
-   fDecTF_1[2][17][6] = -0.226723915506;
-   fDecTF_1[2][17][7] = -0.491966383368;
-   fDecTF_1[2][17][8] = -1.39815217267;
-   fDecTF_1[2][17][9] = 2.06286818022;
-   fDecTF_1[2][17][10] = -0.309968086394;
-   fDecTF_1[2][17][11] = 0.512538053924;
-   fDecTF_1[2][17][12] = -5.05352659642;
-   fDecTF_1[2][17][13] = -0.0920456525674;
-   fDecTF_1[2][17][14] = 0.865634594412;
-   fDecTF_1[2][17][15] = -0.637603847195;
-   fDecTF_1[2][17][16] = 0.124436527359;
-   fDecTF_1[2][17][17] = 6.98881783896;
-   fDecTF_1[2][17][18] = -0.0635120946422;
-   fDecTF_1[2][17][19] = -0.0766621035859;
-   fDecTF_1[2][17][20] = 1.29122013603;
-   fDecTF_1[2][17][21] = 0.312370456102;
-   fDecTF_1[2][17][22] = -1.18323302287;
-   fDecTF_1[2][17][23] = -0.991119784895;
-   fDecTF_1[2][17][24] = -0.841314838572;
-   fDecTF_1[2][17][25] = 0.0743850531404;
-   fDecTF_1[2][17][26] = -1.33904908364;
-   fDecTF_1[2][17][27] = 1.33092735602;
-   fDecTF_1[2][17][28] = -0.0106819918478;
-   fDecTF_1[2][17][29] = -0.0128141111459;
-   fDecTF_1[2][17][30] = -0.018265587984;
-   fDecTF_1[2][17][31] = -0.0192322836348;
-   fDecTF_1[2][17][32] = -0.0135802563717;
-   fDecTF_1[2][17][33] = -0.0272131054131;
-   fDecTF_1[2][17][34] = 0.00756519912755;
-   fDecTF_1[2][17][35] = 0.0104860641126;
-   fDecTF_1[2][17][36] = 0.00117427593145;
-   fDecTF_1[2][17][37] = 0.000811510178752;
-   fDecTF_1[2][17][38] = 0.00104539103214;
-   fDecTF_1[2][18][0] = -0.0769805385236;
-   fDecTF_1[2][18][1] = 0.0868332966111;
-   fDecTF_1[2][18][2] = -0.0424612688537;
-   fDecTF_1[2][18][3] = -0.0153599481176;
-   fDecTF_1[2][18][4] = -0.022494199589;
-   fDecTF_1[2][18][5] = 0.0334291140895;
-   fDecTF_1[2][18][6] = -0.00190801969014;
-   fDecTF_1[2][18][7] = 0.0301586568752;
-   fDecTF_1[2][18][8] = -0.00663040326898;
-   fDecTF_1[2][18][9] = 0.0134372214453;
-   fDecTF_1[2][18][10] = -0.0519333852965;
-   fDecTF_1[2][18][11] = -0.141798998301;
-   fDecTF_1[2][18][12] = -0.245786406559;
-   fDecTF_1[2][18][13] = -4.08541713331;
-   fDecTF_1[2][18][14] = -0.108681791177;
-   fDecTF_1[2][18][15] = 0.264026516006;
-   fDecTF_1[2][18][16] = 0.782784140164;
-   fDecTF_1[2][18][17] = -0.0635120946422;
-   fDecTF_1[2][18][18] = 4.87067900445;
-   fDecTF_1[2][18][19] = -0.28811001252;
-   fDecTF_1[2][18][20] = 0.442910999654;
-   fDecTF_1[2][18][21] = -0.772750909513;
-   fDecTF_1[2][18][22] = 0.590603961699;
-   fDecTF_1[2][18][23] = -0.48091962323;
-   fDecTF_1[2][18][24] = 0.394348540832;
-   fDecTF_1[2][18][25] = 0.890360646767;
-   fDecTF_1[2][18][26] = 0.140632863868;
-   fDecTF_1[2][18][27] = 0.386658396077;
-   fDecTF_1[2][18][28] = 0.00564824844468;
-   fDecTF_1[2][18][29] = -0.00268436108011;
-   fDecTF_1[2][18][30] = 0.00285612563993;
-   fDecTF_1[2][18][31] = -0.00109466324515;
-   fDecTF_1[2][18][32] = -0.00301270315932;
-   fDecTF_1[2][18][33] = -0.000464015802435;
-   fDecTF_1[2][18][34] = -0.0151434974992;
-   fDecTF_1[2][18][35] = 0.0167623615273;
-   fDecTF_1[2][18][36] = 0.0156164473753;
-   fDecTF_1[2][18][37] = 0.000224848825815;
-   fDecTF_1[2][18][38] = -4.64555670696e-05;
-   fDecTF_1[2][19][0] = 0.209443245076;
-   fDecTF_1[2][19][1] = 0.0989332728039;
-   fDecTF_1[2][19][2] = 0.172346171096;
-   fDecTF_1[2][19][3] = -0.0741135488049;
-   fDecTF_1[2][19][4] = 0.012851092327;
-   fDecTF_1[2][19][5] = 0.00113784511712;
-   fDecTF_1[2][19][6] = 0.0173253619203;
-   fDecTF_1[2][19][7] = 0.066794943033;
-   fDecTF_1[2][19][8] = -0.159936061438;
-   fDecTF_1[2][19][9] = -0.154901627297;
-   fDecTF_1[2][19][10] = 0.540755752845;
-   fDecTF_1[2][19][11] = -0.079956330768;
-   fDecTF_1[2][19][12] = 1.09662427153;
-   fDecTF_1[2][19][13] = -0.76194654242;
-   fDecTF_1[2][19][14] = 0.0272827254173;
-   fDecTF_1[2][19][15] = 0.13947583616;
-   fDecTF_1[2][19][16] = 2.86521619948;
-   fDecTF_1[2][19][17] = -0.0766621035859;
-   fDecTF_1[2][19][18] = -0.28811001252;
-   fDecTF_1[2][19][19] = 5.50164142562;
-   fDecTF_1[2][19][20] = -1.29092732287;
-   fDecTF_1[2][19][21] = 1.30055476826;
-   fDecTF_1[2][19][22] = -3.68061518401;
-   fDecTF_1[2][19][23] = 0.918666679081;
-   fDecTF_1[2][19][24] = -0.991336704162;
-   fDecTF_1[2][19][25] = -2.33806229595;
-   fDecTF_1[2][19][26] = 0.221081241652;
-   fDecTF_1[2][19][27] = -0.216810229655;
-   fDecTF_1[2][19][28] = 0.0201262687804;
-   fDecTF_1[2][19][29] = -0.022382976188;
-   fDecTF_1[2][19][30] = 0.0157821162856;
-   fDecTF_1[2][19][31] = -0.0226202615939;
-   fDecTF_1[2][19][32] = 0.0266327638981;
-   fDecTF_1[2][19][33] = -0.0288450835509;
-   fDecTF_1[2][19][34] = 0.0108236566269;
-   fDecTF_1[2][19][35] = -0.0110142900144;
-   fDecTF_1[2][19][36] = 0.021383955818;
-   fDecTF_1[2][19][37] = -0.000490688432354;
-   fDecTF_1[2][19][38] = 0.000270261227021;
-   fDecTF_1[2][20][0] = -0.0885216367586;
-   fDecTF_1[2][20][1] = 0.0442094553809;
-   fDecTF_1[2][20][2] = -0.734826301022;
-   fDecTF_1[2][20][3] = 1.19084054741;
-   fDecTF_1[2][20][4] = -0.0120952405905;
-   fDecTF_1[2][20][5] = 0.166646507143;
-   fDecTF_1[2][20][6] = -0.186316218381;
-   fDecTF_1[2][20][7] = -0.380598469423;
-   fDecTF_1[2][20][8] = -0.16625652295;
-   fDecTF_1[2][20][9] = -0.841763517217;
-   fDecTF_1[2][20][10] = -0.270630544927;
-   fDecTF_1[2][20][11] = -0.148127127797;
-   fDecTF_1[2][20][12] = -1.33405652532;
-   fDecTF_1[2][20][13] = 0.101783195423;
-   fDecTF_1[2][20][14] = -0.409665745427;
-   fDecTF_1[2][20][15] = -1.50121301286;
-   fDecTF_1[2][20][16] = -0.235537457737;
-   fDecTF_1[2][20][17] = 1.29122013603;
-   fDecTF_1[2][20][18] = 0.442910999654;
-   fDecTF_1[2][20][19] = -1.29092732287;
-   fDecTF_1[2][20][20] = 11.9284867653;
-   fDecTF_1[2][20][21] = -2.8479828267;
-   fDecTF_1[2][20][22] = 3.02901035428;
-   fDecTF_1[2][20][23] = -11.4895025126;
-   fDecTF_1[2][20][24] = 1.48759964;
-   fDecTF_1[2][20][25] = 2.70139631131;
-   fDecTF_1[2][20][26] = 1.32251867736;
-   fDecTF_1[2][20][27] = 0.472143307164;
-   fDecTF_1[2][20][28] = -0.00261800834376;
-   fDecTF_1[2][20][29] = -0.00159228125081;
-   fDecTF_1[2][20][30] = -0.00859703849665;
-   fDecTF_1[2][20][31] = -0.00715156672399;
-   fDecTF_1[2][20][32] = -0.00680395169335;
-   fDecTF_1[2][20][33] = -0.0104847312243;
-   fDecTF_1[2][20][34] = -0.00589196000693;
-   fDecTF_1[2][20][35] = -0.00392578132848;
-   fDecTF_1[2][20][36] = -0.00280773376557;
-   fDecTF_1[2][20][37] = 0.00155618742114;
-   fDecTF_1[2][20][38] = -0.000109641554371;
-   fDecTF_1[2][21][0] = -0.280145003681;
-   fDecTF_1[2][21][1] = 0.111270510003;
-   fDecTF_1[2][21][2] = -0.125187283079;
-   fDecTF_1[2][21][3] = -0.192082207601;
-   fDecTF_1[2][21][4] = -0.0471811703533;
-   fDecTF_1[2][21][5] = 0.0143549890729;
-   fDecTF_1[2][21][6] = -0.00156353681181;
-   fDecTF_1[2][21][7] = 0.209705312586;
-   fDecTF_1[2][21][8] = 0.477954288482;
-   fDecTF_1[2][21][9] = -0.639600096967;
-   fDecTF_1[2][21][10] = -0.240521780653;
-   fDecTF_1[2][21][11] = 0.112319164664;
-   fDecTF_1[2][21][12] = 2.40915802777;
-   fDecTF_1[2][21][13] = 0.0695045703529;
-   fDecTF_1[2][21][14] = -0.146886495712;
-   fDecTF_1[2][21][15] = 0.0473974523209;
-   fDecTF_1[2][21][16] = 0.124159317751;
-   fDecTF_1[2][21][17] = 0.312370456102;
-   fDecTF_1[2][21][18] = -0.772750909513;
-   fDecTF_1[2][21][19] = 1.30055476826;
-   fDecTF_1[2][21][20] = -2.8479828267;
-   fDecTF_1[2][21][21] = 11.4991827979;
-   fDecTF_1[2][21][22] = -4.43581824255;
-   fDecTF_1[2][21][23] = 1.71749226631;
-   fDecTF_1[2][21][24] = -8.32492491174;
-   fDecTF_1[2][21][25] = -1.87235324824;
-   fDecTF_1[2][21][26] = -3.68117872698;
-   fDecTF_1[2][21][27] = 0.289578743253;
-   fDecTF_1[2][21][28] = -0.00251306652189;
-   fDecTF_1[2][21][29] = 0.00341443444563;
-   fDecTF_1[2][21][30] = -0.00250042664537;
-   fDecTF_1[2][21][31] = 0.00190652193056;
-   fDecTF_1[2][21][32] = -0.00334048351762;
-   fDecTF_1[2][21][33] = 0.0109532778679;
-   fDecTF_1[2][21][34] = -0.000990203900241;
-   fDecTF_1[2][21][35] = -0.000819418765861;
-   fDecTF_1[2][21][36] = -0.00245334346903;
-   fDecTF_1[2][21][37] = -0.000336930782452;
-   fDecTF_1[2][21][38] = -6.5712854666e-05;
-   fDecTF_1[2][22][0] = -0.0219815742957;
-   fDecTF_1[2][22][1] = -0.651318911593;
-   fDecTF_1[2][22][2] = -0.306517638595;
-   fDecTF_1[2][22][3] = 0.276017542949;
-   fDecTF_1[2][22][4] = -0.0388304430417;
-   fDecTF_1[2][22][5] = 0.0459721623504;
-   fDecTF_1[2][22][6] = -0.0870364206013;
-   fDecTF_1[2][22][7] = -0.221188780478;
-   fDecTF_1[2][22][8] = -0.162205591481;
-   fDecTF_1[2][22][9] = -0.0864567088227;
-   fDecTF_1[2][22][10] = 0.0214524795242;
-   fDecTF_1[2][22][11] = -0.246173641326;
-   fDecTF_1[2][22][12] = -1.89975847254;
-   fDecTF_1[2][22][13] = 0.421392658941;
-   fDecTF_1[2][22][14] = -0.447474745562;
-   fDecTF_1[2][22][15] = -0.204708775063;
-   fDecTF_1[2][22][16] = 0.112215625455;
-   fDecTF_1[2][22][17] = -1.18323302287;
-   fDecTF_1[2][22][18] = 0.590603961699;
-   fDecTF_1[2][22][19] = -3.68061518401;
-   fDecTF_1[2][22][20] = 3.02901035428;
-   fDecTF_1[2][22][21] = -4.43581824255;
-   fDecTF_1[2][22][22] = 11.8621280123;
-   fDecTF_1[2][22][23] = -1.75366967846;
-   fDecTF_1[2][22][24] = 2.27657350039;
-   fDecTF_1[2][22][25] = 10.6682760138;
-   fDecTF_1[2][22][26] = 1.69253673968;
-   fDecTF_1[2][22][27] = -1.19764392643;
-   fDecTF_1[2][22][28] = -0.000701796045506;
-   fDecTF_1[2][22][29] = -0.00127329650726;
-   fDecTF_1[2][22][30] = -0.00158677881321;
-   fDecTF_1[2][22][31] = -0.00098991210194;
-   fDecTF_1[2][22][32] = -0.00249400302656;
-   fDecTF_1[2][22][33] = -0.00545640295362;
-   fDecTF_1[2][22][34] = -0.00329096990496;
-   fDecTF_1[2][22][35] = -0.00839789454383;
-   fDecTF_1[2][22][36] = 0.0014088890737;
-   fDecTF_1[2][22][37] = -0.000100774788518;
-   fDecTF_1[2][22][38] = -0.000354176125632;
-   fDecTF_1[2][23][0] = 0.356315486149;
-   fDecTF_1[2][23][1] = -0.0449609335181;
-   fDecTF_1[2][23][2] = 1.36653698049;
-   fDecTF_1[2][23][3] = -0.936791796901;
-   fDecTF_1[2][23][4] = 0.0177941888314;
-   fDecTF_1[2][23][5] = -0.0762188016511;
-   fDecTF_1[2][23][6] = 0.0556120814865;
-   fDecTF_1[2][23][7] = 0.0707293378052;
-   fDecTF_1[2][23][8] = 0.234048345067;
-   fDecTF_1[2][23][9] = 0.677041257362;
-   fDecTF_1[2][23][10] = 0.78715344349;
-   fDecTF_1[2][23][11] = -0.165672878563;
-   fDecTF_1[2][23][12] = 0.714896545994;
-   fDecTF_1[2][23][13] = 0.0302084272854;
-   fDecTF_1[2][23][14] = 1.30150403898;
-   fDecTF_1[2][23][15] = 0.651179903394;
-   fDecTF_1[2][23][16] = 0.198538588748;
-   fDecTF_1[2][23][17] = -0.991119784895;
-   fDecTF_1[2][23][18] = -0.48091962323;
-   fDecTF_1[2][23][19] = 0.918666679081;
-   fDecTF_1[2][23][20] = -11.4895025126;
-   fDecTF_1[2][23][21] = 1.71749226631;
-   fDecTF_1[2][23][22] = -1.75366967846;
-   fDecTF_1[2][23][23] = 13.0108393153;
-   fDecTF_1[2][23][24] = -0.844744374831;
-   fDecTF_1[2][23][25] = -1.66282044893;
-   fDecTF_1[2][23][26] = -0.979471183146;
-   fDecTF_1[2][23][27] = -0.701002316505;
-   fDecTF_1[2][23][28] = 0.00130184880026;
-   fDecTF_1[2][23][29] = 0.00334628547092;
-   fDecTF_1[2][23][30] = 0.00670666364394;
-   fDecTF_1[2][23][31] = 0.00788914254722;
-   fDecTF_1[2][23][32] = 0.00299638084536;
-   fDecTF_1[2][23][33] = 0.0110129208342;
-   fDecTF_1[2][23][34] = 0.00363175306541;
-   fDecTF_1[2][23][35] = 0.00292297052621;
-   fDecTF_1[2][23][36] = 0.000216517771597;
-   fDecTF_1[2][23][37] = -0.000623602405456;
-   fDecTF_1[2][23][38] = 5.27746145195e-05;
-   fDecTF_1[2][24][0] = -0.0204908300019;
-   fDecTF_1[2][24][1] = -0.492937554719;
-   fDecTF_1[2][24][2] = -0.0532699119406;
-   fDecTF_1[2][24][3] = 0.128986829078;
-   fDecTF_1[2][24][4] = -0.021637731754;
-   fDecTF_1[2][24][5] = 0.0329713795003;
-   fDecTF_1[2][24][6] = -0.0607505959383;
-   fDecTF_1[2][24][7] = -0.0988743133373;
-   fDecTF_1[2][24][8] = -0.0627633324321;
-   fDecTF_1[2][24][9] = -0.226805579983;
-   fDecTF_1[2][24][10] = -0.0214750753152;
-   fDecTF_1[2][24][11] = -0.0917719998064;
-   fDecTF_1[2][24][12] = -1.04926168491;
-   fDecTF_1[2][24][13] = 0.245718295846;
-   fDecTF_1[2][24][14] = -0.341123594558;
-   fDecTF_1[2][24][15] = 0.885768427632;
-   fDecTF_1[2][24][16] = -0.215111582372;
-   fDecTF_1[2][24][17] = -0.841314838572;
-   fDecTF_1[2][24][18] = 0.394348540832;
-   fDecTF_1[2][24][19] = -0.991336704162;
-   fDecTF_1[2][24][20] = 1.48759964;
-   fDecTF_1[2][24][21] = -8.32492491174;
-   fDecTF_1[2][24][22] = 2.27657350039;
-   fDecTF_1[2][24][23] = -0.844744374831;
-   fDecTF_1[2][24][24] = 8.25526258642;
-   fDecTF_1[2][24][25] = 0.0428661789531;
-   fDecTF_1[2][24][26] = 0.715835364976;
-   fDecTF_1[2][24][27] = 2.33547720374;
-   fDecTF_1[2][24][28] = 0.000659125300411;
-   fDecTF_1[2][24][29] = -0.00109101584953;
-   fDecTF_1[2][24][30] = 0.00248641060015;
-   fDecTF_1[2][24][31] = -0.00104986493383;
-   fDecTF_1[2][24][32] = -0.00428522292056;
-   fDecTF_1[2][24][33] = -0.00739249025691;
-   fDecTF_1[2][24][34] = -0.00403758334659;
-   fDecTF_1[2][24][35] = -0.00427243611255;
-   fDecTF_1[2][24][36] = -0.00178156263445;
-   fDecTF_1[2][24][37] = 0.000420464095537;
-   fDecTF_1[2][24][38] = -0.000100556885594;
-   fDecTF_1[2][25][0] = -0.117250667768;
-   fDecTF_1[2][25][1] = -0.272075079527;
-   fDecTF_1[2][25][2] = -0.547646930227;
-   fDecTF_1[2][25][3] = 0.398127165327;
-   fDecTF_1[2][25][4] = -0.0324410440407;
-   fDecTF_1[2][25][5] = 0.0171566230393;
-   fDecTF_1[2][25][6] = -0.0231626634656;
-   fDecTF_1[2][25][7] = -0.197724589139;
-   fDecTF_1[2][25][8] = -0.299323115548;
-   fDecTF_1[2][25][9] = 0.460758703707;
-   fDecTF_1[2][25][10] = -0.0830763903293;
-   fDecTF_1[2][25][11] = -0.0878069225393;
-   fDecTF_1[2][25][12] = -2.57035485738;
-   fDecTF_1[2][25][13] = -0.268535530177;
-   fDecTF_1[2][25][14] = -0.455098582136;
-   fDecTF_1[2][25][15] = -0.17630899403;
-   fDecTF_1[2][25][16] = 1.47150830869;
-   fDecTF_1[2][25][17] = 0.0743850531404;
-   fDecTF_1[2][25][18] = 0.890360646767;
-   fDecTF_1[2][25][19] = -2.33806229595;
-   fDecTF_1[2][25][20] = 2.70139631131;
-   fDecTF_1[2][25][21] = -1.87235324824;
-   fDecTF_1[2][25][22] = 10.6682760138;
-   fDecTF_1[2][25][23] = -1.66282044893;
-   fDecTF_1[2][25][24] = 0.0428661789531;
-   fDecTF_1[2][25][25] = 12.378307847;
-   fDecTF_1[2][25][26] = 0.336419171713;
-   fDecTF_1[2][25][27] = -0.423004098457;
-   fDecTF_1[2][25][28] = 0.00419678829468;
-   fDecTF_1[2][25][29] = -0.0035419314514;
-   fDecTF_1[2][25][30] = 3.93959115597e-05;
-   fDecTF_1[2][25][31] = -0.00375735890097;
-   fDecTF_1[2][25][32] = 0.0149416113731;
-   fDecTF_1[2][25][33] = -0.0119691055048;
-   fDecTF_1[2][25][34] = 0.00140624077363;
-   fDecTF_1[2][25][35] = -0.00588409601354;
-   fDecTF_1[2][25][36] = 0.00636332695278;
-   fDecTF_1[2][25][37] = -0.000190053553313;
-   fDecTF_1[2][25][38] = -0.000114515886633;
-   fDecTF_1[2][26][0] = 0.493975197819;
-   fDecTF_1[2][26][1] = 0.590581844562;
-   fDecTF_1[2][26][2] = 0.154063271297;
-   fDecTF_1[2][26][3] = -0.353899079483;
-   fDecTF_1[2][26][4] = 0.053979688221;
-   fDecTF_1[2][26][5] = -0.0821660552593;
-   fDecTF_1[2][26][6] = 0.120985285906;
-   fDecTF_1[2][26][7] = 0.202327274889;
-   fDecTF_1[2][26][8] = -0.466527303175;
-   fDecTF_1[2][26][9] = 1.02967639718;
-   fDecTF_1[2][26][10] = 0.191354504235;
-   fDecTF_1[2][26][11] = 0.277003972629;
-   fDecTF_1[2][26][12] = 0.0634998478769;
-   fDecTF_1[2][26][13] = -0.248913225054;
-   fDecTF_1[2][26][14] = 0.0866761990829;
-   fDecTF_1[2][26][15] = -0.972466466642;
-   fDecTF_1[2][26][16] = -0.302078939535;
-   fDecTF_1[2][26][17] = -1.33904908364;
-   fDecTF_1[2][26][18] = 0.140632863868;
-   fDecTF_1[2][26][19] = 0.221081241652;
-   fDecTF_1[2][26][20] = 1.32251867736;
-   fDecTF_1[2][26][21] = -3.68117872698;
-   fDecTF_1[2][26][22] = 1.69253673968;
-   fDecTF_1[2][26][23] = -0.979471183146;
-   fDecTF_1[2][26][24] = 0.715835364976;
-   fDecTF_1[2][26][25] = 0.336419171713;
-   fDecTF_1[2][26][26] = 7.85463838552;
-   fDecTF_1[2][26][27] = -7.01769167485;
-   fDecTF_1[2][26][28] = 4.49637191134e-05;
-   fDecTF_1[2][26][29] = -0.00017506423826;
-   fDecTF_1[2][26][30] = 0.00400979580076;
-   fDecTF_1[2][26][31] = 0.00248049902378;
-   fDecTF_1[2][26][32] = -0.00161758791022;
-   fDecTF_1[2][26][33] = -0.00416068897536;
-   fDecTF_1[2][26][34] = 0.00711924490476;
-   fDecTF_1[2][26][35] = 0.0120079188295;
-   fDecTF_1[2][26][36] = -0.00151108221341;
-   fDecTF_1[2][26][37] = -0.00106277068257;
-   fDecTF_1[2][26][38] = 0.000374089332768;
-   fDecTF_1[2][27][0] = -0.940814519914;
-   fDecTF_1[2][27][1] = -0.443832615666;
-   fDecTF_1[2][27][2] = -1.27800409268;
-   fDecTF_1[2][27][3] = 0.469713370782;
-   fDecTF_1[2][27][4] = -0.0643441125487;
-   fDecTF_1[2][27][5] = -0.06696163682;
-   fDecTF_1[2][27][6] = 0.227970815043;
-   fDecTF_1[2][27][7] = -0.00390502034351;
-   fDecTF_1[2][27][8] = 0.32159103359;
-   fDecTF_1[2][27][9] = -0.229209386379;
-   fDecTF_1[2][27][10] = -0.556502057268;
-   fDecTF_1[2][27][11] = -0.0298644391494;
-   fDecTF_1[2][27][12] = -1.00517447585;
-   fDecTF_1[2][27][13] = -0.0865912380986;
-   fDecTF_1[2][27][14] = 0.125403232617;
-   fDecTF_1[2][27][15] = 0.64642944992;
-   fDecTF_1[2][27][16] = 0.584569011362;
-   fDecTF_1[2][27][17] = 1.33092735602;
-   fDecTF_1[2][27][18] = 0.386658396077;
-   fDecTF_1[2][27][19] = -0.216810229655;
-   fDecTF_1[2][27][20] = 0.472143307164;
-   fDecTF_1[2][27][21] = 0.289578743253;
-   fDecTF_1[2][27][22] = -1.19764392643;
-   fDecTF_1[2][27][23] = -0.701002316505;
-   fDecTF_1[2][27][24] = 2.33547720374;
-   fDecTF_1[2][27][25] = -0.423004098457;
-   fDecTF_1[2][27][26] = -7.01769167485;
-   fDecTF_1[2][27][27] = 9.38847362143;
-   fDecTF_1[2][27][28] = 0.00593945482481;
-   fDecTF_1[2][27][29] = 0.00488685645912;
-   fDecTF_1[2][27][30] = 0.00745370475723;
-   fDecTF_1[2][27][31] = 0.0087035428568;
-   fDecTF_1[2][27][32] = 0.00725534723155;
-   fDecTF_1[2][27][33] = -0.0035494438517;
-   fDecTF_1[2][27][34] = -0.00478750142094;
-   fDecTF_1[2][27][35] = -0.00732686433173;
-   fDecTF_1[2][27][36] = 0.00201357902231;
-   fDecTF_1[2][27][37] = 0.000262621593513;
-   fDecTF_1[2][27][38] = -0.000404118220859;
-   fDecTF_1[2][28][0] = 0.00850834496951;
-   fDecTF_1[2][28][1] = 0.00967371444441;
-   fDecTF_1[2][28][2] = -0.00256495250994;
-   fDecTF_1[2][28][3] = 0.00647615623994;
-   fDecTF_1[2][28][4] = 0.00114788006767;
-   fDecTF_1[2][28][5] = -7.39812594114e-05;
-   fDecTF_1[2][28][6] = -0.00291347965493;
-   fDecTF_1[2][28][7] = 0.000651924616291;
-   fDecTF_1[2][28][8] = -0.00807244065327;
-   fDecTF_1[2][28][9] = -0.00342432110282;
-   fDecTF_1[2][28][10] = -0.000377414974836;
-   fDecTF_1[2][28][11] = 0.0137222528001;
-   fDecTF_1[2][28][12] = 0.00419689729511;
-   fDecTF_1[2][28][13] = -0.00223571639515;
-   fDecTF_1[2][28][14] = -0.00726974188614;
-   fDecTF_1[2][28][15] = -0.0126282039887;
-   fDecTF_1[2][28][16] = -0.00674364183306;
-   fDecTF_1[2][28][17] = -0.0106819918478;
-   fDecTF_1[2][28][18] = 0.00564824844468;
-   fDecTF_1[2][28][19] = 0.0201262687804;
-   fDecTF_1[2][28][20] = -0.00261800834376;
-   fDecTF_1[2][28][21] = -0.00251306652189;
-   fDecTF_1[2][28][22] = -0.000701796045506;
-   fDecTF_1[2][28][23] = 0.00130184880026;
-   fDecTF_1[2][28][24] = 0.000659125300412;
-   fDecTF_1[2][28][25] = 0.00419678829468;
-   fDecTF_1[2][28][26] = 4.49637191135e-05;
-   fDecTF_1[2][28][27] = 0.00593945482481;
-   fDecTF_1[2][28][28] = 0.25967619567;
-   fDecTF_1[2][28][29] = -0.00876995171055;
-   fDecTF_1[2][28][30] = 0.213167957132;
-   fDecTF_1[2][28][31] = -0.00840785361779;
-   fDecTF_1[2][28][32] = -0.030736757622;
-   fDecTF_1[2][28][33] = -0.00609729649549;
-   fDecTF_1[2][28][34] = -0.000271871522012;
-   fDecTF_1[2][28][35] = 0.00191147764878;
-   fDecTF_1[2][28][36] = -0.0141588613353;
-   fDecTF_1[2][28][37] = -0.00048869046967;
-   fDecTF_1[2][28][38] = 0.000545184113743;
-   fDecTF_1[2][29][0] = 0.0144061594254;
-   fDecTF_1[2][29][1] = 0.0108266094037;
-   fDecTF_1[2][29][2] = -0.00270716989594;
-   fDecTF_1[2][29][3] = 0.00782286869215;
-   fDecTF_1[2][29][4] = 0.00434690120467;
-   fDecTF_1[2][29][5] = -0.00114439309806;
-   fDecTF_1[2][29][6] = 0.002424667992;
-   fDecTF_1[2][29][7] = 0.00140518359377;
-   fDecTF_1[2][29][8] = -0.0108299447856;
-   fDecTF_1[2][29][9] = -0.00389986852713;
-   fDecTF_1[2][29][10] = -0.00106120037503;
-   fDecTF_1[2][29][11] = 0.0143087364024;
-   fDecTF_1[2][29][12] = 0.0018405890344;
-   fDecTF_1[2][29][13] = -0.00405112631999;
-   fDecTF_1[2][29][14] = -0.00425516610299;
-   fDecTF_1[2][29][15] = -0.017054281626;
-   fDecTF_1[2][29][16] = 0.00474450922896;
-   fDecTF_1[2][29][17] = -0.0128141111459;
-   fDecTF_1[2][29][18] = -0.00268436108011;
-   fDecTF_1[2][29][19] = -0.022382976188;
-   fDecTF_1[2][29][20] = -0.00159228125081;
-   fDecTF_1[2][29][21] = 0.00341443444563;
-   fDecTF_1[2][29][22] = -0.00127329650726;
-   fDecTF_1[2][29][23] = 0.00334628547092;
-   fDecTF_1[2][29][24] = -0.00109101584953;
-   fDecTF_1[2][29][25] = -0.0035419314514;
-   fDecTF_1[2][29][26] = -0.00017506423826;
-   fDecTF_1[2][29][27] = 0.00488685645912;
-   fDecTF_1[2][29][28] = -0.00876995171055;
-   fDecTF_1[2][29][29] = 0.25743468977;
-   fDecTF_1[2][29][30] = -0.00662568427162;
-   fDecTF_1[2][29][31] = 0.208705887568;
-   fDecTF_1[2][29][32] = -0.00384671616923;
-   fDecTF_1[2][29][33] = -0.0322065513086;
-   fDecTF_1[2][29][34] = 0.00149254229655;
-   fDecTF_1[2][29][35] = -0.00183653946866;
-   fDecTF_1[2][29][36] = 0.0140920761322;
-   fDecTF_1[2][29][37] = -0.000794980289644;
-   fDecTF_1[2][29][38] = 0.000547778308169;
-   fDecTF_1[2][30][0] = 0.0149738172483;
-   fDecTF_1[2][30][1] = 0.00799416710147;
-   fDecTF_1[2][30][2] = -0.0113258313486;
-   fDecTF_1[2][30][3] = 0.0232102345096;
-   fDecTF_1[2][30][4] = 0.0042194571974;
-   fDecTF_1[2][30][5] = 0.000246148461215;
-   fDecTF_1[2][30][6] = -0.00612916300873;
-   fDecTF_1[2][30][7] = 0.0145856136871;
-   fDecTF_1[2][30][8] = -0.00980729407099;
-   fDecTF_1[2][30][9] = -0.00371181036598;
-   fDecTF_1[2][30][10] = -0.0130383034542;
-   fDecTF_1[2][30][11] = 0.012423296969;
-   fDecTF_1[2][30][12] = 0.0074838986618;
-   fDecTF_1[2][30][13] = -0.00706237508841;
-   fDecTF_1[2][30][14] = -0.00517974837507;
-   fDecTF_1[2][30][15] = -0.0190391067385;
-   fDecTF_1[2][30][16] = 0.00209261541247;
-   fDecTF_1[2][30][17] = -0.018265587984;
-   fDecTF_1[2][30][18] = 0.00285612563993;
-   fDecTF_1[2][30][19] = 0.0157821162856;
-   fDecTF_1[2][30][20] = -0.00859703849665;
-   fDecTF_1[2][30][21] = -0.00250042664537;
-   fDecTF_1[2][30][22] = -0.00158677881321;
-   fDecTF_1[2][30][23] = 0.00670666364394;
-   fDecTF_1[2][30][24] = 0.00248641060015;
-   fDecTF_1[2][30][25] = 3.93959115598e-05;
-   fDecTF_1[2][30][26] = 0.00400979580076;
-   fDecTF_1[2][30][27] = 0.00745370475723;
-   fDecTF_1[2][30][28] = 0.213167957132;
-   fDecTF_1[2][30][29] = -0.00662568427162;
-   fDecTF_1[2][30][30] = 0.569219290645;
-   fDecTF_1[2][30][31] = -0.0168851997309;
-   fDecTF_1[2][30][32] = -0.0583522764962;
-   fDecTF_1[2][30][33] = -0.0143722023487;
-   fDecTF_1[2][30][34] = -0.0135580072617;
-   fDecTF_1[2][30][35] = 0.00012085886991;
-   fDecTF_1[2][30][36] = 0.0118577573086;
-   fDecTF_1[2][30][37] = 0.00125506850459;
-   fDecTF_1[2][30][38] = -0.000474978930974;
-   fDecTF_1[2][31][0] = 0.0260889033501;
-   fDecTF_1[2][31][1] = 0.00616585455426;
-   fDecTF_1[2][31][2] = -0.013844016723;
-   fDecTF_1[2][31][3] = 0.0260333900426;
-   fDecTF_1[2][31][4] = 0.00663238699449;
-   fDecTF_1[2][31][5] = -0.00141599914022;
-   fDecTF_1[2][31][6] = 0.000657008376743;
-   fDecTF_1[2][31][7] = 0.0174350322463;
-   fDecTF_1[2][31][8] = -0.0118469243389;
-   fDecTF_1[2][31][9] = -0.00534223092201;
-   fDecTF_1[2][31][10] = -0.0179237132882;
-   fDecTF_1[2][31][11] = 0.0151449709032;
-   fDecTF_1[2][31][12] = 0.00244964046382;
-   fDecTF_1[2][31][13] = -0.00197833185527;
-   fDecTF_1[2][31][14] = -0.000732428568316;
-   fDecTF_1[2][31][15] = -0.0246715575139;
-   fDecTF_1[2][31][16] = -0.00750637528511;
-   fDecTF_1[2][31][17] = -0.0192322836348;
-   fDecTF_1[2][31][18] = -0.00109466324515;
-   fDecTF_1[2][31][19] = -0.0226202615939;
-   fDecTF_1[2][31][20] = -0.00715156672399;
-   fDecTF_1[2][31][21] = 0.00190652193056;
-   fDecTF_1[2][31][22] = -0.00098991210194;
-   fDecTF_1[2][31][23] = 0.00788914254722;
-   fDecTF_1[2][31][24] = -0.00104986493383;
-   fDecTF_1[2][31][25] = -0.00375735890097;
-   fDecTF_1[2][31][26] = 0.00248049902378;
-   fDecTF_1[2][31][27] = 0.0087035428568;
-   fDecTF_1[2][31][28] = -0.00840785361779;
-   fDecTF_1[2][31][29] = 0.208705887568;
-   fDecTF_1[2][31][30] = -0.0168851997309;
-   fDecTF_1[2][31][31] = 0.565478068231;
-   fDecTF_1[2][31][32] = -0.0107298219131;
-   fDecTF_1[2][31][33] = -0.0644691168679;
-   fDecTF_1[2][31][34] = 0.00116927434981;
-   fDecTF_1[2][31][35] = -0.013168663477;
-   fDecTF_1[2][31][36] = -0.0127965918772;
-   fDecTF_1[2][31][37] = 0.000710906310971;
-   fDecTF_1[2][31][38] = -0.000400757576577;
-   fDecTF_1[2][32][0] = 0.0636314707537;
-   fDecTF_1[2][32][1] = -0.015112218707;
-   fDecTF_1[2][32][2] = -0.00355335898435;
-   fDecTF_1[2][32][3] = 0.0466653593502;
-   fDecTF_1[2][32][4] = 0.00657890545082;
-   fDecTF_1[2][32][5] = 0.00885016405955;
-   fDecTF_1[2][32][6] = 0.00498657483657;
-   fDecTF_1[2][32][7] = 0.0205580382397;
-   fDecTF_1[2][32][8] = -0.0286375001226;
-   fDecTF_1[2][32][9] = 0.00201327718524;
-   fDecTF_1[2][32][10] = -0.00656551852139;
-   fDecTF_1[2][32][11] = 0.0256890802102;
-   fDecTF_1[2][32][12] = 0.00449820036321;
-   fDecTF_1[2][32][13] = -0.000529981730054;
-   fDecTF_1[2][32][14] = -0.025292114666;
-   fDecTF_1[2][32][15] = -0.0302883411353;
-   fDecTF_1[2][32][16] = 0.0049365081536;
-   fDecTF_1[2][32][17] = -0.0135802563717;
-   fDecTF_1[2][32][18] = -0.00301270315932;
-   fDecTF_1[2][32][19] = 0.0266327638981;
-   fDecTF_1[2][32][20] = -0.00680395169335;
-   fDecTF_1[2][32][21] = -0.00334048351762;
-   fDecTF_1[2][32][22] = -0.00249400302656;
-   fDecTF_1[2][32][23] = 0.00299638084536;
-   fDecTF_1[2][32][24] = -0.00428522292056;
-   fDecTF_1[2][32][25] = 0.0149416113731;
-   fDecTF_1[2][32][26] = -0.00161758791022;
-   fDecTF_1[2][32][27] = 0.00725534723155;
-   fDecTF_1[2][32][28] = -0.030736757622;
-   fDecTF_1[2][32][29] = -0.00384671616923;
-   fDecTF_1[2][32][30] = -0.0583522764962;
-   fDecTF_1[2][32][31] = -0.0107298219131;
-   fDecTF_1[2][32][32] = 1.88629884954;
-   fDecTF_1[2][32][33] = -0.0468911289797;
-   fDecTF_1[2][32][34] = -0.0137586808626;
-   fDecTF_1[2][32][35] = 0.00969290528319;
-   fDecTF_1[2][32][36] = -0.00034554896044;
-   fDecTF_1[2][32][37] = -0.000644796592865;
-   fDecTF_1[2][32][38] = 0.000267954589294;
-   fDecTF_1[2][33][0] = 0.0521591252034;
-   fDecTF_1[2][33][1] = 0.00733166654968;
-   fDecTF_1[2][33][2] = -0.00150654639939;
-   fDecTF_1[2][33][3] = 0.0336019545556;
-   fDecTF_1[2][33][4] = -0.00388066059943;
-   fDecTF_1[2][33][5] = 0.0153442186598;
-   fDecTF_1[2][33][6] = -0.00172471049753;
-   fDecTF_1[2][33][7] = 0.0279558808414;
-   fDecTF_1[2][33][8] = -0.0281886851793;
-   fDecTF_1[2][33][9] = -0.00252021614344;
-   fDecTF_1[2][33][10] = -0.000871476947791;
-   fDecTF_1[2][33][11] = 0.0323005975508;
-   fDecTF_1[2][33][12] = 0.0175126460553;
-   fDecTF_1[2][33][13] = 0.00190811850502;
-   fDecTF_1[2][33][14] = -0.0265997179094;
-   fDecTF_1[2][33][15] = -0.0230723854314;
-   fDecTF_1[2][33][16] = 0.00340088150465;
-   fDecTF_1[2][33][17] = -0.0272131054131;
-   fDecTF_1[2][33][18] = -0.000464015802434;
-   fDecTF_1[2][33][19] = -0.0288450835509;
-   fDecTF_1[2][33][20] = -0.0104847312243;
-   fDecTF_1[2][33][21] = 0.0109532778679;
-   fDecTF_1[2][33][22] = -0.00545640295362;
-   fDecTF_1[2][33][23] = 0.0110129208342;
-   fDecTF_1[2][33][24] = -0.00739249025691;
-   fDecTF_1[2][33][25] = -0.0119691055048;
-   fDecTF_1[2][33][26] = -0.00416068897536;
-   fDecTF_1[2][33][27] = -0.0035494438517;
-   fDecTF_1[2][33][28] = -0.00609729649549;
-   fDecTF_1[2][33][29] = -0.0322065513086;
-   fDecTF_1[2][33][30] = -0.0143722023487;
-   fDecTF_1[2][33][31] = -0.0644691168679;
-   fDecTF_1[2][33][32] = -0.0468911289797;
-   fDecTF_1[2][33][33] = 1.90962735527;
-   fDecTF_1[2][33][34] = 0.0080318574592;
-   fDecTF_1[2][33][35] = -0.013774013404;
-   fDecTF_1[2][33][36] = -0.00025745712135;
-   fDecTF_1[2][33][37] = 5.12698828315e-05;
-   fDecTF_1[2][33][38] = 0.000207630616816;
-   fDecTF_1[2][34][0] = 0.00930800705052;
-   fDecTF_1[2][34][1] = -0.0149486866323;
-   fDecTF_1[2][34][2] = -0.00498183368787;
-   fDecTF_1[2][34][3] = 0.00309364879547;
-   fDecTF_1[2][34][4] = -0.00654234101559;
-   fDecTF_1[2][34][5] = -0.023524971658;
-   fDecTF_1[2][34][6] = -0.0096698924128;
-   fDecTF_1[2][34][7] = 0.0191715909976;
-   fDecTF_1[2][34][8] = 0.01445586327;
-   fDecTF_1[2][34][9] = -0.00343787816457;
-   fDecTF_1[2][34][10] = -0.0120853318707;
-   fDecTF_1[2][34][11] = 0.00794886469319;
-   fDecTF_1[2][34][12] = -0.0127053721607;
-   fDecTF_1[2][34][13] = -0.00941935003266;
-   fDecTF_1[2][34][14] = -0.00351449515674;
-   fDecTF_1[2][34][15] = 0.00951081840727;
-   fDecTF_1[2][34][16] = -0.0136908826702;
-   fDecTF_1[2][34][17] = 0.00756519912755;
-   fDecTF_1[2][34][18] = -0.0151434974992;
-   fDecTF_1[2][34][19] = 0.0108236566269;
-   fDecTF_1[2][34][20] = -0.00589196000693;
-   fDecTF_1[2][34][21] = -0.000990203900241;
-   fDecTF_1[2][34][22] = -0.00329096990496;
-   fDecTF_1[2][34][23] = 0.00363175306541;
-   fDecTF_1[2][34][24] = -0.00403758334659;
-   fDecTF_1[2][34][25] = 0.00140624077363;
-   fDecTF_1[2][34][26] = 0.00711924490476;
-   fDecTF_1[2][34][27] = -0.00478750142094;
-   fDecTF_1[2][34][28] = -0.000271871522012;
-   fDecTF_1[2][34][29] = 0.00149254229655;
-   fDecTF_1[2][34][30] = -0.0135580072617;
-   fDecTF_1[2][34][31] = 0.00116927434981;
-   fDecTF_1[2][34][32] = -0.0137586808626;
-   fDecTF_1[2][34][33] = 0.0080318574592;
-   fDecTF_1[2][34][34] = 0.377877415534;
-   fDecTF_1[2][34][35] = -0.100689841573;
-   fDecTF_1[2][34][36] = 0.00107807792742;
-   fDecTF_1[2][34][37] = 5.06100186171e-05;
-   fDecTF_1[2][34][38] = 0.00299940955144;
-   fDecTF_1[2][35][0] = 0.0123872719753;
-   fDecTF_1[2][35][1] = -0.00634303557322;
-   fDecTF_1[2][35][2] = -0.00254371107125;
-   fDecTF_1[2][35][3] = 0.00391348059732;
-   fDecTF_1[2][35][4] = -0.0127174487444;
-   fDecTF_1[2][35][5] = -0.0270936203824;
-   fDecTF_1[2][35][6] = -0.0125562859339;
-   fDecTF_1[2][35][7] = 0.024251515645;
-   fDecTF_1[2][35][8] = 0.00864465304205;
-   fDecTF_1[2][35][9] = -0.00422601750377;
-   fDecTF_1[2][35][10] = -0.0175063224795;
-   fDecTF_1[2][35][11] = 0.0123868407222;
-   fDecTF_1[2][35][12] = -0.0125337429938;
-   fDecTF_1[2][35][13] = 0.00698768593125;
-   fDecTF_1[2][35][14] = 0.000524798105686;
-   fDecTF_1[2][35][15] = 0.0082212463975;
-   fDecTF_1[2][35][16] = 0.017802846809;
-   fDecTF_1[2][35][17] = 0.0104860641126;
-   fDecTF_1[2][35][18] = 0.0167623615273;
-   fDecTF_1[2][35][19] = -0.0110142900144;
-   fDecTF_1[2][35][20] = -0.00392578132848;
-   fDecTF_1[2][35][21] = -0.000819418765861;
-   fDecTF_1[2][35][22] = -0.00839789454383;
-   fDecTF_1[2][35][23] = 0.00292297052621;
-   fDecTF_1[2][35][24] = -0.00427243611255;
-   fDecTF_1[2][35][25] = -0.00588409601354;
-   fDecTF_1[2][35][26] = 0.0120079188295;
-   fDecTF_1[2][35][27] = -0.00732686433173;
-   fDecTF_1[2][35][28] = 0.00191147764878;
-   fDecTF_1[2][35][29] = -0.00183653946866;
-   fDecTF_1[2][35][30] = 0.00012085886991;
-   fDecTF_1[2][35][31] = -0.013168663477;
-   fDecTF_1[2][35][32] = 0.00969290528319;
-   fDecTF_1[2][35][33] = -0.013774013404;
-   fDecTF_1[2][35][34] = -0.100689841573;
-   fDecTF_1[2][35][35] = 0.379185474467;
-   fDecTF_1[2][35][36] = 0.00536549050105;
-   fDecTF_1[2][35][37] = -0.00102243152453;
-   fDecTF_1[2][35][38] = 0.00300915614834;
-   fDecTF_1[2][36][0] = -0.000375037481745;
-   fDecTF_1[2][36][1] = 0.000910222894801;
-   fDecTF_1[2][36][2] = 0.000384070285215;
-   fDecTF_1[2][36][3] = -0.000566865354402;
-   fDecTF_1[2][36][4] = 0.000854829597038;
-   fDecTF_1[2][36][5] = -0.00186735348921;
-   fDecTF_1[2][36][6] = -0.000784433896263;
-   fDecTF_1[2][36][7] = 0.000733467718851;
-   fDecTF_1[2][36][8] = 0.00202122140728;
-   fDecTF_1[2][36][9] = 0.00116743226418;
-   fDecTF_1[2][36][10] = -0.00221765413578;
-   fDecTF_1[2][36][11] = -0.000311115797061;
-   fDecTF_1[2][36][12] = -0.000994476769822;
-   fDecTF_1[2][36][13] = 0.00425714642046;
-   fDecTF_1[2][36][14] = 0.000526388176915;
-   fDecTF_1[2][36][15] = 0.00132741356334;
-   fDecTF_1[2][36][16] = -0.0361247358217;
-   fDecTF_1[2][36][17] = 0.00117427593145;
-   fDecTF_1[2][36][18] = 0.0156164473753;
-   fDecTF_1[2][36][19] = 0.021383955818;
-   fDecTF_1[2][36][20] = -0.00280773376557;
-   fDecTF_1[2][36][21] = -0.00245334346903;
-   fDecTF_1[2][36][22] = 0.0014088890737;
-   fDecTF_1[2][36][23] = 0.000216517771597;
-   fDecTF_1[2][36][24] = -0.00178156263445;
-   fDecTF_1[2][36][25] = 0.00636332695278;
-   fDecTF_1[2][36][26] = -0.00151108221341;
-   fDecTF_1[2][36][27] = 0.00201357902231;
-   fDecTF_1[2][36][28] = -0.0141588613353;
-   fDecTF_1[2][36][29] = 0.0140920761322;
-   fDecTF_1[2][36][30] = 0.0118577573086;
-   fDecTF_1[2][36][31] = -0.0127965918772;
-   fDecTF_1[2][36][32] = -0.00034554896044;
-   fDecTF_1[2][36][33] = -0.00025745712135;
-   fDecTF_1[2][36][34] = 0.00107807792742;
-   fDecTF_1[2][36][35] = 0.00536549050105;
-   fDecTF_1[2][36][36] = 0.113066939348;
-   fDecTF_1[2][36][37] = 0.000968640667071;
-   fDecTF_1[2][36][38] = 7.05371249072e-05;
-   fDecTF_1[2][37][0] = 0.00011275935575;
-   fDecTF_1[2][37][1] = -0.000527068206828;
-   fDecTF_1[2][37][2] = 0.000651422258382;
-   fDecTF_1[2][37][3] = -0.000340437850605;
-   fDecTF_1[2][37][4] = -0.000113014523303;
-   fDecTF_1[2][37][5] = 0.000142988949113;
-   fDecTF_1[2][37][6] = 0.000467074395679;
-   fDecTF_1[2][37][7] = 0.0011296285946;
-   fDecTF_1[2][37][8] = -0.0011605852872;
-   fDecTF_1[2][37][9] = -3.01736257131e-06;
-   fDecTF_1[2][37][10] = 0.00103930225016;
-   fDecTF_1[2][37][11] = -0.00231930167549;
-   fDecTF_1[2][37][12] = 0.000439382590505;
-   fDecTF_1[2][37][13] = 0.000340044670533;
-   fDecTF_1[2][37][14] = -0.00147922983293;
-   fDecTF_1[2][37][15] = 0.00138537204784;
-   fDecTF_1[2][37][16] = -0.00110545752629;
-   fDecTF_1[2][37][17] = 0.000811510178752;
-   fDecTF_1[2][37][18] = 0.000224848825815;
-   fDecTF_1[2][37][19] = -0.000490688432354;
-   fDecTF_1[2][37][20] = 0.00155618742114;
-   fDecTF_1[2][37][21] = -0.000336930782452;
-   fDecTF_1[2][37][22] = -0.000100774788518;
-   fDecTF_1[2][37][23] = -0.000623602405456;
-   fDecTF_1[2][37][24] = 0.000420464095537;
-   fDecTF_1[2][37][25] = -0.000190053553313;
-   fDecTF_1[2][37][26] = -0.00106277068257;
-   fDecTF_1[2][37][27] = 0.000262621593513;
-   fDecTF_1[2][37][28] = -0.00048869046967;
-   fDecTF_1[2][37][29] = -0.000794980289644;
-   fDecTF_1[2][37][30] = 0.00125506850459;
-   fDecTF_1[2][37][31] = 0.000710906310971;
-   fDecTF_1[2][37][32] = -0.000644796592865;
-   fDecTF_1[2][37][33] = 5.12698828315e-05;
-   fDecTF_1[2][37][34] = 5.06100186171e-05;
-   fDecTF_1[2][37][35] = -0.00102243152453;
-   fDecTF_1[2][37][36] = 0.000968640667071;
-   fDecTF_1[2][37][37] = 0.131105826136;
-   fDecTF_1[2][37][38] = -0.000205895303039;
-   fDecTF_1[2][38][0] = -8.078615912e-05;
-   fDecTF_1[2][38][1] = -0.00119467459854;
-   fDecTF_1[2][38][2] = 0.000915005474728;
-   fDecTF_1[2][38][3] = -0.000452558278633;
-   fDecTF_1[2][38][4] = -0.00153279833297;
-   fDecTF_1[2][38][5] = 0.000576315600126;
-   fDecTF_1[2][38][6] = 0.000189958238505;
-   fDecTF_1[2][38][7] = -0.00114460497719;
-   fDecTF_1[2][38][8] = 0.000934992780237;
-   fDecTF_1[2][38][9] = 0.000804184766763;
-   fDecTF_1[2][38][10] = 0.000388127464409;
-   fDecTF_1[2][38][11] = 0.00112877378885;
-   fDecTF_1[2][38][12] = -0.000242166682473;
-   fDecTF_1[2][38][13] = -5.37696416642e-05;
-   fDecTF_1[2][38][14] = -0.00131406738553;
-   fDecTF_1[2][38][15] = 0.000767974336218;
-   fDecTF_1[2][38][16] = 0.00017134317014;
-   fDecTF_1[2][38][17] = 0.00104539103214;
-   fDecTF_1[2][38][18] = -4.64555670696e-05;
-   fDecTF_1[2][38][19] = 0.000270261227021;
-   fDecTF_1[2][38][20] = -0.000109641554371;
-   fDecTF_1[2][38][21] = -6.5712854666e-05;
-   fDecTF_1[2][38][22] = -0.000354176125632;
-   fDecTF_1[2][38][23] = 5.27746145195e-05;
-   fDecTF_1[2][38][24] = -0.000100556885594;
-   fDecTF_1[2][38][25] = -0.000114515886633;
-   fDecTF_1[2][38][26] = 0.000374089332768;
-   fDecTF_1[2][38][27] = -0.000404118220859;
-   fDecTF_1[2][38][28] = 0.000545184113743;
-   fDecTF_1[2][38][29] = 0.000547778308169;
-   fDecTF_1[2][38][30] = -0.000474978930974;
-   fDecTF_1[2][38][31] = -0.000400757576577;
-   fDecTF_1[2][38][32] = 0.000267954589294;
-   fDecTF_1[2][38][33] = 0.000207630616816;
-   fDecTF_1[2][38][34] = 0.00299940955144;
-   fDecTF_1[2][38][35] = 0.00300915614834;
-   fDecTF_1[2][38][36] = 7.05371249072e-05;
-   fDecTF_1[2][38][37] = -0.000205895303039;
-   fDecTF_1[2][38][38] = 0.00747297600023;
+   fDecTF_1[0][0][0] = 7.5577191156;
+   fDecTF_1[0][0][1] = 0.150568267748;
+   fDecTF_1[0][0][2] = 0.462927279432;
+   fDecTF_1[0][0][3] = 7.37295685077;
+   fDecTF_1[0][0][4] = 0.428102985205;
+   fDecTF_1[0][0][5] = 0.635142175389;
+   fDecTF_1[0][0][6] = 0.401270848962;
+   fDecTF_1[0][0][7] = 0.223529674022;
+   fDecTF_1[0][0][8] = -1.90478981369;
+   fDecTF_1[0][0][9] = -0.982958477318;
+   fDecTF_1[0][0][10] = -1.15771348256;
+   fDecTF_1[0][0][11] = 0.124283760913;
+   fDecTF_1[0][0][12] = -0.492830664708;
+   fDecTF_1[0][0][13] = -0.758112845114;
+   fDecTF_1[0][0][14] = -0.846467882685;
+   fDecTF_1[0][0][15] = 1.12578949264;
+   fDecTF_1[0][0][16] = -0.370921118267;
+   fDecTF_1[0][0][17] = -1.22338653905;
+   fDecTF_1[0][0][18] = 0.243604072546;
+   fDecTF_1[0][0][19] = 0.642683860688;
+   fDecTF_1[0][0][20] = -0.4465820731;
+   fDecTF_1[0][0][21] = 1.80825856076;
+   fDecTF_1[0][0][22] = -0.257398736868;
+   fDecTF_1[0][0][23] = -0.796936079355;
+   fDecTF_1[0][0][24] = 0.0163015876248;
+   fDecTF_1[0][0][25] = -0.3432443935;
+   fDecTF_1[0][0][26] = -0.00125755720373;
+   fDecTF_1[0][0][27] = 0.00508359311075;
+   fDecTF_1[0][0][28] = -0.0140511355056;
+   fDecTF_1[0][0][29] = 0.000610864012545;
+   fDecTF_1[0][0][30] = -0.0340904007926;
+   fDecTF_1[0][0][31] = -0.0269381076969;
+   fDecTF_1[0][0][32] = -0.0069067819192;
+   fDecTF_1[0][0][33] = -0.0123675740123;
+   fDecTF_1[0][0][34] = 0.000552116467537;
+   fDecTF_1[0][0][35] = 0.000576570121701;
+   fDecTF_1[0][0][36] = -0.000200364670121;
+   fDecTF_1[0][1][0] = 0.150568267748;
+   fDecTF_1[0][1][1] = 11.9452747995;
+   fDecTF_1[0][1][2] = 0.319008569506;
+   fDecTF_1[0][1][3] = 0.401721991895;
+   fDecTF_1[0][1][4] = -0.0709695166893;
+   fDecTF_1[0][1][5] = -0.785985731125;
+   fDecTF_1[0][1][6] = -0.436207751706;
+   fDecTF_1[0][1][7] = 1.04251496604;
+   fDecTF_1[0][1][8] = -7.40955170047;
+   fDecTF_1[0][1][9] = -1.96952890691;
+   fDecTF_1[0][1][10] = -1.84068352484;
+   fDecTF_1[0][1][11] = -0.00116663034286;
+   fDecTF_1[0][1][12] = 1.63440144319;
+   fDecTF_1[0][1][13] = -0.581521421637;
+   fDecTF_1[0][1][14] = -0.953443907576;
+   fDecTF_1[0][1][15] = 0.297794146836;
+   fDecTF_1[0][1][16] = -0.546351279316;
+   fDecTF_1[0][1][17] = -0.651368126756;
+   fDecTF_1[0][1][18] = 0.300524174291;
+   fDecTF_1[0][1][19] = 0.617753685477;
+   fDecTF_1[0][1][20] = -0.65419906911;
+   fDecTF_1[0][1][21] = 0.927067286054;
+   fDecTF_1[0][1][22] = -0.0391767372274;
+   fDecTF_1[0][1][23] = -0.36402413162;
+   fDecTF_1[0][1][24] = 0.148239739786;
+   fDecTF_1[0][1][25] = -0.167841060809;
+   fDecTF_1[0][1][26] = -0.00819962277563;
+   fDecTF_1[0][1][27] = -0.00976693413367;
+   fDecTF_1[0][1][28] = -0.00236229304465;
+   fDecTF_1[0][1][29] = -0.00484625676032;
+   fDecTF_1[0][1][30] = 0.00176485450207;
+   fDecTF_1[0][1][31] = -0.0243510733344;
+   fDecTF_1[0][1][32] = 0.0115081050368;
+   fDecTF_1[0][1][33] = 0.00272782405839;
+   fDecTF_1[0][1][34] = -0.000192645207435;
+   fDecTF_1[0][1][35] = 0.00143406902165;
+   fDecTF_1[0][1][36] = 0.000911776023053;
+   fDecTF_1[0][2][0] = 0.462927279432;
+   fDecTF_1[0][2][1] = 0.319008569506;
+   fDecTF_1[0][2][2] = 5.97764060329;
+   fDecTF_1[0][2][3] = -1.72930209232;
+   fDecTF_1[0][2][4] = -0.115426492562;
+   fDecTF_1[0][2][5] = -0.466986956218;
+   fDecTF_1[0][2][6] = -0.406691810243;
+   fDecTF_1[0][2][7] = 0.422407596355;
+   fDecTF_1[0][2][8] = 0.218948450062;
+   fDecTF_1[0][2][9] = -3.83098466709;
+   fDecTF_1[0][2][10] = -0.124336596763;
+   fDecTF_1[0][2][11] = -0.0124615384322;
+   fDecTF_1[0][2][12] = 0.684855978609;
+   fDecTF_1[0][2][13] = 0.144800328191;
+   fDecTF_1[0][2][14] = -0.516201884325;
+   fDecTF_1[0][2][15] = -0.171702168579;
+   fDecTF_1[0][2][16] = -0.114857133196;
+   fDecTF_1[0][2][17] = -0.754533821737;
+   fDecTF_1[0][2][18] = 0.0575375511559;
+   fDecTF_1[0][2][19] = 0.187254458632;
+   fDecTF_1[0][2][20] = -0.0753936438159;
+   fDecTF_1[0][2][21] = 1.34233617171;
+   fDecTF_1[0][2][22] = -0.0952703914872;
+   fDecTF_1[0][2][23] = -0.796226416209;
+   fDecTF_1[0][2][24] = 0.220389461158;
+   fDecTF_1[0][2][25] = -0.325654323508;
+   fDecTF_1[0][2][26] = 0.00696895268429;
+   fDecTF_1[0][2][27] = -0.00534603439194;
+   fDecTF_1[0][2][28] = 0.0111743153435;
+   fDecTF_1[0][2][29] = -0.0113890487624;
+   fDecTF_1[0][2][30] = 0.0353649917145;
+   fDecTF_1[0][2][31] = 0.00532586188099;
+   fDecTF_1[0][2][32] = -0.0119475129893;
+   fDecTF_1[0][2][33] = 0.0124253130936;
+   fDecTF_1[0][2][34] = -0.000251046543737;
+   fDecTF_1[0][2][35] = 0.000331983937744;
+   fDecTF_1[0][2][36] = 0.000276431090445;
+   fDecTF_1[0][3][0] = 7.37295685077;
+   fDecTF_1[0][3][1] = 0.401721991895;
+   fDecTF_1[0][3][2] = -1.72930209232;
+   fDecTF_1[0][3][3] = 10.6110585586;
+   fDecTF_1[0][3][4] = -0.0542237441532;
+   fDecTF_1[0][3][5] = 0.0995370102437;
+   fDecTF_1[0][3][6] = 0.659419110564;
+   fDecTF_1[0][3][7] = 0.72125454235;
+   fDecTF_1[0][3][8] = -2.84516755834;
+   fDecTF_1[0][3][9] = 0.357234437878;
+   fDecTF_1[0][3][10] = -0.837746151681;
+   fDecTF_1[0][3][11] = -0.034914011429;
+   fDecTF_1[0][3][12] = 0.0100611755067;
+   fDecTF_1[0][3][13] = -0.263352689172;
+   fDecTF_1[0][3][14] = 0.0275118464447;
+   fDecTF_1[0][3][15] = 0.56575072621;
+   fDecTF_1[0][3][16] = -0.379718314988;
+   fDecTF_1[0][3][17] = -0.18943736772;
+   fDecTF_1[0][3][18] = 0.111581311386;
+   fDecTF_1[0][3][19] = 0.47700546785;
+   fDecTF_1[0][3][20] = -0.302063385522;
+   fDecTF_1[0][3][21] = 0.602469826351;
+   fDecTF_1[0][3][22] = 0.219794824926;
+   fDecTF_1[0][3][23] = -0.154535082431;
+   fDecTF_1[0][3][24] = -0.00776479077761;
+   fDecTF_1[0][3][25] = -0.279443685336;
+   fDecTF_1[0][3][26] = -0.0151501185626;
+   fDecTF_1[0][3][27] = -0.00452033992591;
+   fDecTF_1[0][3][28] = -0.00862748549764;
+   fDecTF_1[0][3][29] = 0.00122261965073;
+   fDecTF_1[0][3][30] = 0.00573490803991;
+   fDecTF_1[0][3][31] = 0.0115790581559;
+   fDecTF_1[0][3][32] = 0.0228742003568;
+   fDecTF_1[0][3][33] = 0.00502655743129;
+   fDecTF_1[0][3][34] = -0.00092200011672;
+   fDecTF_1[0][3][35] = -0.00226684107305;
+   fDecTF_1[0][3][36] = 0.000603467088104;
+   fDecTF_1[0][4][0] = 0.428102985205;
+   fDecTF_1[0][4][1] = -0.0709695166893;
+   fDecTF_1[0][4][2] = -0.115426492562;
+   fDecTF_1[0][4][3] = -0.0542237441532;
+   fDecTF_1[0][4][4] = 2.21196210732;
+   fDecTF_1[0][4][5] = 1.34077196401;
+   fDecTF_1[0][4][6] = -0.295987854356;
+   fDecTF_1[0][4][7] = -1.71238570811;
+   fDecTF_1[0][4][8] = 0.711490139655;
+   fDecTF_1[0][4][9] = -0.731301069826;
+   fDecTF_1[0][4][10] = 0.130391943368;
+   fDecTF_1[0][4][11] = -0.0116998552978;
+   fDecTF_1[0][4][12] = -0.437551385978;
+   fDecTF_1[0][4][13] = -0.100114127483;
+   fDecTF_1[0][4][14] = 0.104955195489;
+   fDecTF_1[0][4][15] = 0.141617547015;
+   fDecTF_1[0][4][16] = 0.0370787273134;
+   fDecTF_1[0][4][17] = -0.0587455345744;
+   fDecTF_1[0][4][18] = -0.0646411264275;
+   fDecTF_1[0][4][19] = -0.0181243844455;
+   fDecTF_1[0][4][20] = 0.0474862212341;
+   fDecTF_1[0][4][21] = 0.0741038079829;
+   fDecTF_1[0][4][22] = -0.056142644707;
+   fDecTF_1[0][4][23] = -0.0731053379606;
+   fDecTF_1[0][4][24] = -0.0237396698835;
+   fDecTF_1[0][4][25] = -0.00779182362523;
+   fDecTF_1[0][4][26] = -0.00995266614539;
+   fDecTF_1[0][4][27] = -9.45973605628e-05;
+   fDecTF_1[0][4][28] = -0.00972284211964;
+   fDecTF_1[0][4][29] = 0.00157881860973;
+   fDecTF_1[0][4][30] = -0.0090182573696;
+   fDecTF_1[0][4][31] = -0.0106459548824;
+   fDecTF_1[0][4][32] = -0.00852047314414;
+   fDecTF_1[0][4][33] = -0.0217946318156;
+   fDecTF_1[0][4][34] = 0.00167297862962;
+   fDecTF_1[0][4][35] = -0.00114829979787;
+   fDecTF_1[0][4][36] = -0.00171374317827;
+   fDecTF_1[0][5][0] = 0.635142175389;
+   fDecTF_1[0][5][1] = -0.785985731125;
+   fDecTF_1[0][5][2] = -0.466986956218;
+   fDecTF_1[0][5][3] = 0.0995370102437;
+   fDecTF_1[0][5][4] = 1.34077196401;
+   fDecTF_1[0][5][5] = 3.55183799221;
+   fDecTF_1[0][5][6] = 1.37403569493;
+   fDecTF_1[0][5][7] = -0.168491434844;
+   fDecTF_1[0][5][8] = 1.13511415674;
+   fDecTF_1[0][5][9] = 0.11753817911;
+   fDecTF_1[0][5][10] = -0.183561145968;
+   fDecTF_1[0][5][11] = -0.0259433809218;
+   fDecTF_1[0][5][12] = -0.553581444472;
+   fDecTF_1[0][5][13] = 0.0614351012519;
+   fDecTF_1[0][5][14] = -0.427382730816;
+   fDecTF_1[0][5][15] = -0.0146525726423;
+   fDecTF_1[0][5][16] = 0.0699413946245;
+   fDecTF_1[0][5][17] = -0.084959515453;
+   fDecTF_1[0][5][18] = -0.0408781830861;
+   fDecTF_1[0][5][19] = -0.0473926796791;
+   fDecTF_1[0][5][20] = -0.027515562602;
+   fDecTF_1[0][5][21] = -0.126730266784;
+   fDecTF_1[0][5][22] = -0.149950532429;
+   fDecTF_1[0][5][23] = 0.0874713468099;
+   fDecTF_1[0][5][24] = -0.11656704893;
+   fDecTF_1[0][5][25] = 0.112595781773;
+   fDecTF_1[0][5][26] = -0.00736369580848;
+   fDecTF_1[0][5][27] = -0.00409294091946;
+   fDecTF_1[0][5][28] = -0.00524822750568;
+   fDecTF_1[0][5][29] = -0.00339041600894;
+   fDecTF_1[0][5][30] = 0.00335889182607;
+   fDecTF_1[0][5][31] = -0.000628155455363;
+   fDecTF_1[0][5][32] = 0.0223008667002;
+   fDecTF_1[0][5][33] = 0.0227370447415;
+   fDecTF_1[0][5][34] = -0.000669086576278;
+   fDecTF_1[0][5][35] = 9.82828790683e-05;
+   fDecTF_1[0][5][36] = 0.000698495519999;
+   fDecTF_1[0][6][0] = 0.401270848962;
+   fDecTF_1[0][6][1] = -0.436207751706;
+   fDecTF_1[0][6][2] = -0.406691810243;
+   fDecTF_1[0][6][3] = 0.659419110564;
+   fDecTF_1[0][6][4] = -0.295987854356;
+   fDecTF_1[0][6][5] = 1.37403569493;
+   fDecTF_1[0][6][6] = 2.96791426238;
+   fDecTF_1[0][6][7] = 2.29281334602;
+   fDecTF_1[0][6][8] = -0.211878151082;
+   fDecTF_1[0][6][9] = 1.09873009601;
+   fDecTF_1[0][6][10] = -0.549055043265;
+   fDecTF_1[0][6][11] = -0.0438329835917;
+   fDecTF_1[0][6][12] = -0.0854046579428;
+   fDecTF_1[0][6][13] = -0.0395741765982;
+   fDecTF_1[0][6][14] = -0.333265697044;
+   fDecTF_1[0][6][15] = -0.0208928955925;
+   fDecTF_1[0][6][16] = 0.0420998571618;
+   fDecTF_1[0][6][17] = 0.300616168247;
+   fDecTF_1[0][6][18] = -0.0010178502671;
+   fDecTF_1[0][6][19] = -0.0722126844326;
+   fDecTF_1[0][6][20] = -0.062847418814;
+   fDecTF_1[0][6][21] = -0.391068626857;
+   fDecTF_1[0][6][22] = -0.144592468469;
+   fDecTF_1[0][6][23] = 0.181089896301;
+   fDecTF_1[0][6][24] = -0.12856033368;
+   fDecTF_1[0][6][25] = 0.239823454542;
+   fDecTF_1[0][6][26] = -0.00208943161549;
+   fDecTF_1[0][6][27] = -0.000285678663908;
+   fDecTF_1[0][6][28] = -0.0055439474923;
+   fDecTF_1[0][6][29] = -0.0119107829988;
+   fDecTF_1[0][6][30] = -0.00169729187224;
+   fDecTF_1[0][6][31] = 0.0179253367434;
+   fDecTF_1[0][6][32] = -0.0376898649828;
+   fDecTF_1[0][6][33] = -0.0523867846993;
+   fDecTF_1[0][6][34] = -0.00113642673524;
+   fDecTF_1[0][6][35] = 0.000335919464334;
+   fDecTF_1[0][6][36] = 0.000591694952957;
+   fDecTF_1[0][7][0] = 0.223529674022;
+   fDecTF_1[0][7][1] = 1.04251496604;
+   fDecTF_1[0][7][2] = 0.422407596355;
+   fDecTF_1[0][7][3] = 0.72125454235;
+   fDecTF_1[0][7][4] = -1.71238570811;
+   fDecTF_1[0][7][5] = -0.168491434844;
+   fDecTF_1[0][7][6] = 2.29281334602;
+   fDecTF_1[0][7][7] = 5.44438145487;
+   fDecTF_1[0][7][8] = -1.90756649031;
+   fDecTF_1[0][7][9] = 1.35614786643;
+   fDecTF_1[0][7][10] = -1.54846323041;
+   fDecTF_1[0][7][11] = 0.00288744374457;
+   fDecTF_1[0][7][12] = 0.939471098011;
+   fDecTF_1[0][7][13] = -0.412646968252;
+   fDecTF_1[0][7][14] = -1.09944190984;
+   fDecTF_1[0][7][15] = -0.577118301553;
+   fDecTF_1[0][7][16] = 0.00777446014729;
+   fDecTF_1[0][7][17] = -0.355824963064;
+   fDecTF_1[0][7][18] = 0.182710752423;
+   fDecTF_1[0][7][19] = 0.0880831248567;
+   fDecTF_1[0][7][20] = -0.255088299254;
+   fDecTF_1[0][7][21] = 0.103079390185;
+   fDecTF_1[0][7][22] = -0.17390145885;
+   fDecTF_1[0][7][23] = 0.18789751967;
+   fDecTF_1[0][7][24] = -0.109391977033;
+   fDecTF_1[0][7][25] = 0.222160787416;
+   fDecTF_1[0][7][26] = -0.00337204823401;
+   fDecTF_1[0][7][27] = -0.00619343189277;
+   fDecTF_1[0][7][28] = 0.0180303743511;
+   fDecTF_1[0][7][29] = 0.00888549029442;
+   fDecTF_1[0][7][30] = 0.00121827831814;
+   fDecTF_1[0][7][31] = 0.0239777070521;
+   fDecTF_1[0][7][32] = 0.035008756227;
+   fDecTF_1[0][7][33] = 0.0369286101471;
+   fDecTF_1[0][7][34] = 0.00237770288071;
+   fDecTF_1[0][7][35] = 0.00181520866103;
+   fDecTF_1[0][7][36] = -0.00177745486351;
+   fDecTF_1[0][8][0] = -1.90478981369;
+   fDecTF_1[0][8][1] = -7.40955170047;
+   fDecTF_1[0][8][2] = 0.218948450062;
+   fDecTF_1[0][8][3] = -2.84516755834;
+   fDecTF_1[0][8][4] = 0.711490139655;
+   fDecTF_1[0][8][5] = 1.13511415674;
+   fDecTF_1[0][8][6] = -0.211878151082;
+   fDecTF_1[0][8][7] = -1.90756649031;
+   fDecTF_1[0][8][8] = 7.41367802116;
+   fDecTF_1[0][8][9] = 0.356210187185;
+   fDecTF_1[0][8][10] = 1.27900976036;
+   fDecTF_1[0][8][11] = -0.150323834569;
+   fDecTF_1[0][8][12] = 0.424760555123;
+   fDecTF_1[0][8][13] = 0.413559366584;
+   fDecTF_1[0][8][14] = 0.334912167388;
+   fDecTF_1[0][8][15] = -2.45300998374;
+   fDecTF_1[0][8][16] = 0.217846511053;
+   fDecTF_1[0][8][17] = -0.100098895543;
+   fDecTF_1[0][8][18] = -0.247366666816;
+   fDecTF_1[0][8][19] = -0.149753416536;
+   fDecTF_1[0][8][20] = 0.302762638329;
+   fDecTF_1[0][8][21] = -0.748651746096;
+   fDecTF_1[0][8][22] = 0.10560843692;
+   fDecTF_1[0][8][23] = 0.200318022152;
+   fDecTF_1[0][8][24] = 0.113773724737;
+   fDecTF_1[0][8][25] = 0.261227202178;
+   fDecTF_1[0][8][26] = -0.00273478994067;
+   fDecTF_1[0][8][27] = -0.00915428809302;
+   fDecTF_1[0][8][28] = 0.00357084352425;
+   fDecTF_1[0][8][29] = -0.00130332704214;
+   fDecTF_1[0][8][30] = 0.0133581436614;
+   fDecTF_1[0][8][31] = 0.0215829839424;
+   fDecTF_1[0][8][32] = 0.018385203132;
+   fDecTF_1[0][8][33] = 0.0244121535557;
+   fDecTF_1[0][8][34] = -0.00143151553579;
+   fDecTF_1[0][8][35] = -0.00113680244653;
+   fDecTF_1[0][8][36] = 0.00110105174257;
+   fDecTF_1[0][9][0] = -0.982958477318;
+   fDecTF_1[0][9][1] = -1.96952890691;
+   fDecTF_1[0][9][2] = -3.83098466709;
+   fDecTF_1[0][9][3] = 0.357234437878;
+   fDecTF_1[0][9][4] = -0.731301069826;
+   fDecTF_1[0][9][5] = 0.11753817911;
+   fDecTF_1[0][9][6] = 1.09873009601;
+   fDecTF_1[0][9][7] = 1.35614786643;
+   fDecTF_1[0][9][8] = 0.356210187185;
+   fDecTF_1[0][9][9] = 5.11533876663;
+   fDecTF_1[0][9][10] = 0.0968434882921;
+   fDecTF_1[0][9][11] = -0.0173623188043;
+   fDecTF_1[0][9][12] = -1.43119092786;
+   fDecTF_1[0][9][13] = 0.0344734573653;
+   fDecTF_1[0][9][14] = -0.519770888032;
+   fDecTF_1[0][9][15] = 1.08682887697;
+   fDecTF_1[0][9][16] = -0.0367041463214;
+   fDecTF_1[0][9][17] = -0.121007030025;
+   fDecTF_1[0][9][18] = -0.0162249233065;
+   fDecTF_1[0][9][19] = -0.00711288959752;
+   fDecTF_1[0][9][20] = -0.50418105505;
+   fDecTF_1[0][9][21] = -0.510131831742;
+   fDecTF_1[0][9][22] = -0.241271947007;
+   fDecTF_1[0][9][23] = -0.246103809042;
+   fDecTF_1[0][9][24] = 0.204973941906;
+   fDecTF_1[0][9][25] = -0.0403581569852;
+   fDecTF_1[0][9][26] = 0.00201921570059;
+   fDecTF_1[0][9][27] = 0.00513163502433;
+   fDecTF_1[0][9][28] = 0.000792111322145;
+   fDecTF_1[0][9][29] = 0.0010881817226;
+   fDecTF_1[0][9][30] = -0.00346254949805;
+   fDecTF_1[0][9][31] = 0.0151469735941;
+   fDecTF_1[0][9][32] = 0.00113150507006;
+   fDecTF_1[0][9][33] = -0.00127031279523;
+   fDecTF_1[0][9][34] = 0.000930289802573;
+   fDecTF_1[0][9][35] = 0.00157900022046;
+   fDecTF_1[0][9][36] = 0.000995912357133;
+   fDecTF_1[0][10][0] = -1.15771348256;
+   fDecTF_1[0][10][1] = -1.84068352484;
+   fDecTF_1[0][10][2] = -0.124336596763;
+   fDecTF_1[0][10][3] = -0.837746151681;
+   fDecTF_1[0][10][4] = 0.130391943368;
+   fDecTF_1[0][10][5] = -0.183561145968;
+   fDecTF_1[0][10][6] = -0.549055043265;
+   fDecTF_1[0][10][7] = -1.54846323041;
+   fDecTF_1[0][10][8] = 1.27900976036;
+   fDecTF_1[0][10][9] = 0.0968434882921;
+   fDecTF_1[0][10][10] = 5.14402657924;
+   fDecTF_1[0][10][11] = 0.275587073862;
+   fDecTF_1[0][10][12] = -0.438498550216;
+   fDecTF_1[0][10][13] = 4.41214066772;
+   fDecTF_1[0][10][14] = 0.837584631342;
+   fDecTF_1[0][10][15] = 0.905260739675;
+   fDecTF_1[0][10][16] = -0.175668475124;
+   fDecTF_1[0][10][17] = 1.14774178674;
+   fDecTF_1[0][10][18] = -0.027366065713;
+   fDecTF_1[0][10][19] = -0.369183681378;
+   fDecTF_1[0][10][20] = 0.0434959421193;
+   fDecTF_1[0][10][21] = -0.648706981737;
+   fDecTF_1[0][10][22] = 0.091153731683;
+   fDecTF_1[0][10][23] = -0.218938318136;
+   fDecTF_1[0][10][24] = 0.151881718795;
+   fDecTF_1[0][10][25] = 0.0600780598866;
+   fDecTF_1[0][10][26] = 0.0134490639502;
+   fDecTF_1[0][10][27] = 0.0109843747886;
+   fDecTF_1[0][10][28] = 0.0143584075152;
+   fDecTF_1[0][10][29] = 0.00631648765882;
+   fDecTF_1[0][10][30] = -0.00819939099224;
+   fDecTF_1[0][10][31] = -0.0186025743015;
+   fDecTF_1[0][10][32] = -0.00987418406475;
+   fDecTF_1[0][10][33] = -0.0183483199342;
+   fDecTF_1[0][10][34] = 0.00347497824147;
+   fDecTF_1[0][10][35] = -0.00218215295887;
+   fDecTF_1[0][10][36] = 6.59402513188e-05;
+   fDecTF_1[0][11][0] = 0.124283760913;
+   fDecTF_1[0][11][1] = -0.00116663034286;
+   fDecTF_1[0][11][2] = -0.0124615384322;
+   fDecTF_1[0][11][3] = -0.034914011429;
+   fDecTF_1[0][11][4] = -0.0116998552978;
+   fDecTF_1[0][11][5] = -0.0259433809218;
+   fDecTF_1[0][11][6] = -0.0438329835917;
+   fDecTF_1[0][11][7] = 0.00288744374457;
+   fDecTF_1[0][11][8] = -0.150323834569;
+   fDecTF_1[0][11][9] = -0.0173623188043;
+   fDecTF_1[0][11][10] = 0.275587073862;
+   fDecTF_1[0][11][11] = 5.59370810707;
+   fDecTF_1[0][11][12] = -0.142747482323;
+   fDecTF_1[0][11][13] = 0.064782097919;
+   fDecTF_1[0][11][14] = -0.141551639805;
+   fDecTF_1[0][11][15] = 0.22265826082;
+   fDecTF_1[0][11][16] = 1.06147784094;
+   fDecTF_1[0][11][17] = -0.232762242337;
+   fDecTF_1[0][11][18] = 4.29075006081;
+   fDecTF_1[0][11][19] = 0.388399057686;
+   fDecTF_1[0][11][20] = 0.134154663285;
+   fDecTF_1[0][11][21] = 0.00659177249364;
+   fDecTF_1[0][11][22] = -0.492801989284;
+   fDecTF_1[0][11][23] = 0.0635338110455;
+   fDecTF_1[0][11][24] = -0.218542271859;
+   fDecTF_1[0][11][25] = -0.00217490054847;
+   fDecTF_1[0][11][26] = -0.00162600582045;
+   fDecTF_1[0][11][27] = 0.00550241915815;
+   fDecTF_1[0][11][28] = -0.0070212158121;
+   fDecTF_1[0][11][29] = 0.0103953081776;
+   fDecTF_1[0][11][30] = 0.0153538844453;
+   fDecTF_1[0][11][31] = 0.017540019197;
+   fDecTF_1[0][11][32] = -0.0036878220044;
+   fDecTF_1[0][11][33] = -0.00485527133489;
+   fDecTF_1[0][11][34] = -0.00111104534881;
+   fDecTF_1[0][11][35] = 0.00100599088461;
+   fDecTF_1[0][11][36] = 4.33871424407e-05;
+   fDecTF_1[0][12][0] = -0.492830664708;
+   fDecTF_1[0][12][1] = 1.63440144319;
+   fDecTF_1[0][12][2] = 0.684855978609;
+   fDecTF_1[0][12][3] = 0.0100611755067;
+   fDecTF_1[0][12][4] = -0.437551385978;
+   fDecTF_1[0][12][5] = -0.553581444472;
+   fDecTF_1[0][12][6] = -0.0854046579428;
+   fDecTF_1[0][12][7] = 0.939471098011;
+   fDecTF_1[0][12][8] = 0.424760555123;
+   fDecTF_1[0][12][9] = -1.43119092786;
+   fDecTF_1[0][12][10] = -0.438498550216;
+   fDecTF_1[0][12][11] = -0.142747482323;
+   fDecTF_1[0][12][12] = 7.37433892717;
+   fDecTF_1[0][12][13] = 0.753890430962;
+   fDecTF_1[0][12][14] = -1.90002336743;
+   fDecTF_1[0][12][15] = -6.96518472668;
+   fDecTF_1[0][12][16] = 0.0619561111581;
+   fDecTF_1[0][12][17] = -2.23380632661;
+   fDecTF_1[0][12][18] = -0.147798148697;
+   fDecTF_1[0][12][19] = 0.0143923234086;
+   fDecTF_1[0][12][20] = -0.300047683923;
+   fDecTF_1[0][12][21] = 1.2106015165;
+   fDecTF_1[0][12][22] = -0.965182122186;
+   fDecTF_1[0][12][23] = 0.511771890547;
+   fDecTF_1[0][12][24] = -0.500545238817;
+   fDecTF_1[0][12][25] = 2.19873168133;
+   fDecTF_1[0][12][26] = -0.00179648610562;
+   fDecTF_1[0][12][27] = 0.00274884962063;
+   fDecTF_1[0][12][28] = -0.00314792393644;
+   fDecTF_1[0][12][29] = -0.000404066805212;
+   fDecTF_1[0][12][30] = -0.0144308633726;
+   fDecTF_1[0][12][31] = -0.0303201923312;
+   fDecTF_1[0][12][32] = 0.000560727223752;
+   fDecTF_1[0][12][33] = -0.000199784518074;
+   fDecTF_1[0][12][34] = -0.000208129531707;
+   fDecTF_1[0][12][35] = -0.000531232221432;
+   fDecTF_1[0][12][36] = 0.000906472769063;
+   fDecTF_1[0][13][0] = -0.758112845114;
+   fDecTF_1[0][13][1] = -0.581521421637;
+   fDecTF_1[0][13][2] = 0.144800328191;
+   fDecTF_1[0][13][3] = -0.263352689172;
+   fDecTF_1[0][13][4] = -0.100114127483;
+   fDecTF_1[0][13][5] = 0.0614351012519;
+   fDecTF_1[0][13][6] = -0.0395741765982;
+   fDecTF_1[0][13][7] = -0.412646968252;
+   fDecTF_1[0][13][8] = 0.413559366584;
+   fDecTF_1[0][13][9] = 0.0344734573653;
+   fDecTF_1[0][13][10] = 4.41214066772;
+   fDecTF_1[0][13][11] = 0.064782097919;
+   fDecTF_1[0][13][12] = 0.753890430962;
+   fDecTF_1[0][13][13] = 6.05915364634;
+   fDecTF_1[0][13][14] = -0.432965714496;
+   fDecTF_1[0][13][15] = -0.000829000500831;
+   fDecTF_1[0][13][16] = -0.740821284418;
+   fDecTF_1[0][13][17] = 0.0998562849918;
+   fDecTF_1[0][13][18] = 0.00777900023598;
+   fDecTF_1[0][13][19] = 0.27733342435;
+   fDecTF_1[0][13][20] = -0.245720803894;
+   fDecTF_1[0][13][21] = 0.0812014440071;
+   fDecTF_1[0][13][22] = 0.366537572428;
+   fDecTF_1[0][13][23] = -0.0979634527221;
+   fDecTF_1[0][13][24] = 0.174051071297;
+   fDecTF_1[0][13][25] = -0.187122144664;
+   fDecTF_1[0][13][26] = 0.00490531208505;
+   fDecTF_1[0][13][27] = -0.00461396803447;
+   fDecTF_1[0][13][28] = 0.0216844857978;
+   fDecTF_1[0][13][29] = 0.00391793554844;
+   fDecTF_1[0][13][30] = -0.00848781760885;
+   fDecTF_1[0][13][31] = -0.029676253686;
+   fDecTF_1[0][13][32] = 0.00883968040754;
+   fDecTF_1[0][13][33] = 0.00405792554406;
+   fDecTF_1[0][13][34] = 0.00115657439095;
+   fDecTF_1[0][13][35] = 0.000405623150255;
+   fDecTF_1[0][13][36] = -0.000679550822762;
+   fDecTF_1[0][14][0] = -0.846467882685;
+   fDecTF_1[0][14][1] = -0.953443907576;
+   fDecTF_1[0][14][2] = -0.516201884325;
+   fDecTF_1[0][14][3] = 0.0275118464447;
+   fDecTF_1[0][14][4] = 0.104955195489;
+   fDecTF_1[0][14][5] = -0.427382730816;
+   fDecTF_1[0][14][6] = -0.333265697044;
+   fDecTF_1[0][14][7] = -1.09944190984;
+   fDecTF_1[0][14][8] = 0.334912167388;
+   fDecTF_1[0][14][9] = -0.519770888032;
+   fDecTF_1[0][14][10] = 0.837584631342;
+   fDecTF_1[0][14][11] = -0.141551639805;
+   fDecTF_1[0][14][12] = -1.90002336743;
+   fDecTF_1[0][14][13] = -0.432965714496;
+   fDecTF_1[0][14][14] = 5.78921167853;
+   fDecTF_1[0][14][15] = 1.68476100883;
+   fDecTF_1[0][14][16] = 0.0138903918816;
+   fDecTF_1[0][14][17] = 5.07104755324;
+   fDecTF_1[0][14][18] = -0.297404446428;
+   fDecTF_1[0][14][19] = -0.472971954912;
+   fDecTF_1[0][14][20] = 0.393575581297;
+   fDecTF_1[0][14][21] = -3.64762875246;
+   fDecTF_1[0][14][22] = -0.462593049949;
+   fDecTF_1[0][14][23] = -0.748075537863;
+   fDecTF_1[0][14][24] = 0.32887341293;
+   fDecTF_1[0][14][25] = 0.931833949572;
+   fDecTF_1[0][14][26] = -0.0116929267244;
+   fDecTF_1[0][14][27] = -0.00776974138741;
+   fDecTF_1[0][14][28] = -0.00791697009643;
+   fDecTF_1[0][14][29] = -0.00425373857322;
+   fDecTF_1[0][14][30] = -0.0584692910438;
+   fDecTF_1[0][14][31] = -0.0307304082033;
+   fDecTF_1[0][14][32] = 0.00775566341126;
+   fDecTF_1[0][14][33] = 0.0069192880854;
+   fDecTF_1[0][14][34] = 0.00362044860065;
+   fDecTF_1[0][14][35] = -0.00167523560132;
+   fDecTF_1[0][14][36] = -0.000173113294355;
+   fDecTF_1[0][15][0] = 1.12578949264;
+   fDecTF_1[0][15][1] = 0.297794146836;
+   fDecTF_1[0][15][2] = -0.171702168579;
+   fDecTF_1[0][15][3] = 0.56575072621;
+   fDecTF_1[0][15][4] = 0.141617547015;
+   fDecTF_1[0][15][5] = -0.0146525726423;
+   fDecTF_1[0][15][6] = -0.0208928955925;
+   fDecTF_1[0][15][7] = -0.577118301553;
+   fDecTF_1[0][15][8] = -2.45300998374;
+   fDecTF_1[0][15][9] = 1.08682887697;
+   fDecTF_1[0][15][10] = 0.905260739675;
+   fDecTF_1[0][15][11] = 0.22265826082;
+   fDecTF_1[0][15][12] = -6.96518472668;
+   fDecTF_1[0][15][13] = -0.000829000500833;
+   fDecTF_1[0][15][14] = 1.68476100883;
+   fDecTF_1[0][15][15] = 9.61299301628;
+   fDecTF_1[0][15][16] = -0.191318159037;
+   fDecTF_1[0][15][17] = 2.27554028839;
+   fDecTF_1[0][15][18] = -0.00290577887741;
+   fDecTF_1[0][15][19] = -0.05563970234;
+   fDecTF_1[0][15][20] = 0.727199186072;
+   fDecTF_1[0][15][21] = 0.116240910766;
+   fDecTF_1[0][15][22] = -0.641654323548;
+   fDecTF_1[0][15][23] = -0.331118851581;
+   fDecTF_1[0][15][24] = -0.674693062696;
+   fDecTF_1[0][15][25] = -0.445354729143;
+   fDecTF_1[0][15][26] = -0.00771604813242;
+   fDecTF_1[0][15][27] = -0.00468020841432;
+   fDecTF_1[0][15][28] = -0.00614580105463;
+   fDecTF_1[0][15][29] = 0.00128796863447;
+   fDecTF_1[0][15][30] = -0.0150057447814;
+   fDecTF_1[0][15][31] = -0.00584154680919;
+   fDecTF_1[0][15][32] = 0.00788709185152;
+   fDecTF_1[0][15][33] = 0.0109919292016;
+   fDecTF_1[0][15][34] = 0.00200661334661;
+   fDecTF_1[0][15][35] = -0.00121935675566;
+   fDecTF_1[0][15][36] = 0.000903024554159;
+   fDecTF_1[0][16][0] = -0.370921118267;
+   fDecTF_1[0][16][1] = -0.546351279316;
+   fDecTF_1[0][16][2] = -0.114857133196;
+   fDecTF_1[0][16][3] = -0.379718314988;
+   fDecTF_1[0][16][4] = 0.0370787273134;
+   fDecTF_1[0][16][5] = 0.0699413946245;
+   fDecTF_1[0][16][6] = 0.0420998571618;
+   fDecTF_1[0][16][7] = 0.00777446014729;
+   fDecTF_1[0][16][8] = 0.217846511053;
+   fDecTF_1[0][16][9] = -0.0367041463214;
+   fDecTF_1[0][16][10] = -0.175668475124;
+   fDecTF_1[0][16][11] = 1.06147784094;
+   fDecTF_1[0][16][12] = 0.0619561111581;
+   fDecTF_1[0][16][13] = -0.740821284418;
+   fDecTF_1[0][16][14] = 0.0138903918816;
+   fDecTF_1[0][16][15] = -0.191318159037;
+   fDecTF_1[0][16][16] = 6.00328549874;
+   fDecTF_1[0][16][17] = -0.641420710316;
+   fDecTF_1[0][16][18] = -0.697586869515;
+   fDecTF_1[0][16][19] = -6.49549686601;
+   fDecTF_1[0][16][20] = 0.596345817175;
+   fDecTF_1[0][16][21] = -0.614147424902;
+   fDecTF_1[0][16][22] = 0.104561950014;
+   fDecTF_1[0][16][23] = 0.771128913287;
+   fDecTF_1[0][16][24] = 0.314875658927;
+   fDecTF_1[0][16][25] = -0.0244476880463;
+   fDecTF_1[0][16][26] = -0.018593386992;
+   fDecTF_1[0][16][27] = 0.00974508370853;
+   fDecTF_1[0][16][28] = -0.0194364404444;
+   fDecTF_1[0][16][29] = 0.00444706398225;
+   fDecTF_1[0][16][30] = 0.0348100636601;
+   fDecTF_1[0][16][31] = 0.0121201401784;
+   fDecTF_1[0][16][32] = 0.0220400689815;
+   fDecTF_1[0][16][33] = -0.0271972825443;
+   fDecTF_1[0][16][34] = -0.000221553695922;
+   fDecTF_1[0][16][35] = 0.000944267651239;
+   fDecTF_1[0][16][36] = -0.000329410882972;
+   fDecTF_1[0][17][0] = -1.22338653905;
+   fDecTF_1[0][17][1] = -0.651368126756;
+   fDecTF_1[0][17][2] = -0.754533821737;
+   fDecTF_1[0][17][3] = -0.18943736772;
+   fDecTF_1[0][17][4] = -0.0587455345744;
+   fDecTF_1[0][17][5] = -0.084959515453;
+   fDecTF_1[0][17][6] = 0.300616168247;
+   fDecTF_1[0][17][7] = -0.355824963064;
+   fDecTF_1[0][17][8] = -0.100098895543;
+   fDecTF_1[0][17][9] = -0.121007030025;
+   fDecTF_1[0][17][10] = 1.14774178674;
+   fDecTF_1[0][17][11] = -0.232762242337;
+   fDecTF_1[0][17][12] = -2.23380632661;
+   fDecTF_1[0][17][13] = 0.0998562849918;
+   fDecTF_1[0][17][14] = 5.07104755324;
+   fDecTF_1[0][17][15] = 2.27554028839;
+   fDecTF_1[0][17][16] = -0.641420710316;
+   fDecTF_1[0][17][17] = 6.58941729279;
+   fDecTF_1[0][17][18] = -0.210391400222;
+   fDecTF_1[0][17][19] = 0.309189536419;
+   fDecTF_1[0][17][20] = 0.92662730288;
+   fDecTF_1[0][17][21] = -3.54290800135;
+   fDecTF_1[0][17][22] = -0.273098536051;
+   fDecTF_1[0][17][23] = 0.394262640405;
+   fDecTF_1[0][17][24] = -0.6083225564;
+   fDecTF_1[0][17][25] = 1.14152474472;
+   fDecTF_1[0][17][26] = -0.00216307504898;
+   fDecTF_1[0][17][27] = 0.00912425853873;
+   fDecTF_1[0][17][28] = -0.00777085937351;
+   fDecTF_1[0][17][29] = 0.00660663094294;
+   fDecTF_1[0][17][30] = 0.00237967287949;
+   fDecTF_1[0][17][31] = -0.00197542993738;
+   fDecTF_1[0][17][32] = -0.00131670794674;
+   fDecTF_1[0][17][33] = -0.0142735771631;
+   fDecTF_1[0][17][34] = 0.000305596653518;
+   fDecTF_1[0][17][35] = 0.000257879881435;
+   fDecTF_1[0][17][36] = -9.24835091209e-05;
+   fDecTF_1[0][18][0] = 0.243604072546;
+   fDecTF_1[0][18][1] = 0.300524174291;
+   fDecTF_1[0][18][2] = 0.0575375511559;
+   fDecTF_1[0][18][3] = 0.111581311386;
+   fDecTF_1[0][18][4] = -0.0646411264275;
+   fDecTF_1[0][18][5] = -0.0408781830861;
+   fDecTF_1[0][18][6] = -0.0010178502671;
+   fDecTF_1[0][18][7] = 0.182710752423;
+   fDecTF_1[0][18][8] = -0.247366666816;
+   fDecTF_1[0][18][9] = -0.0162249233065;
+   fDecTF_1[0][18][10] = -0.027366065713;
+   fDecTF_1[0][18][11] = 4.29075006081;
+   fDecTF_1[0][18][12] = -0.147798148697;
+   fDecTF_1[0][18][13] = 0.00777900023599;
+   fDecTF_1[0][18][14] = -0.297404446428;
+   fDecTF_1[0][18][15] = -0.0029057788774;
+   fDecTF_1[0][18][16] = -0.697586869515;
+   fDecTF_1[0][18][17] = -0.210391400222;
+   fDecTF_1[0][18][18] = 5.20722487112;
+   fDecTF_1[0][18][19] = 2.60217624021;
+   fDecTF_1[0][18][20] = -0.111873496876;
+   fDecTF_1[0][18][21] = -0.0391388468948;
+   fDecTF_1[0][18][22] = 0.388115913044;
+   fDecTF_1[0][18][23] = 0.0100524324871;
+   fDecTF_1[0][18][24] = 0.0434515810831;
+   fDecTF_1[0][18][25] = -0.975978463998;
+   fDecTF_1[0][18][26] = 0.00599151461988;
+   fDecTF_1[0][18][27] = 0.0106147524886;
+   fDecTF_1[0][18][28] = 0.00698445749202;
+   fDecTF_1[0][18][29] = 0.013610735847;
+   fDecTF_1[0][18][30] = -0.000424883364269;
+   fDecTF_1[0][18][31] = 0.0150315223695;
+   fDecTF_1[0][18][32] = -0.00491041978329;
+   fDecTF_1[0][18][33] = 0.0153818848698;
+   fDecTF_1[0][18][34] = 0.00081188889892;
+   fDecTF_1[0][18][35] = 0.000632652900777;
+   fDecTF_1[0][18][36] = 0.000223743578916;
+   fDecTF_1[0][19][0] = 0.642683860688;
+   fDecTF_1[0][19][1] = 0.617753685477;
+   fDecTF_1[0][19][2] = 0.187254458632;
+   fDecTF_1[0][19][3] = 0.47700546785;
+   fDecTF_1[0][19][4] = -0.0181243844455;
+   fDecTF_1[0][19][5] = -0.0473926796791;
+   fDecTF_1[0][19][6] = -0.0722126844326;
+   fDecTF_1[0][19][7] = 0.0880831248567;
+   fDecTF_1[0][19][8] = -0.149753416536;
+   fDecTF_1[0][19][9] = -0.00711288959752;
+   fDecTF_1[0][19][10] = -0.369183681378;
+   fDecTF_1[0][19][11] = 0.388399057686;
+   fDecTF_1[0][19][12] = 0.0143923234086;
+   fDecTF_1[0][19][13] = 0.27733342435;
+   fDecTF_1[0][19][14] = -0.472971954912;
+   fDecTF_1[0][19][15] = -0.05563970234;
+   fDecTF_1[0][19][16] = -6.49549686601;
+   fDecTF_1[0][19][17] = 0.309189536419;
+   fDecTF_1[0][19][18] = 2.60217624021;
+   fDecTF_1[0][19][19] = 9.76014660608;
+   fDecTF_1[0][19][20] = -0.522625254928;
+   fDecTF_1[0][19][21] = 1.05823579283;
+   fDecTF_1[0][19][22] = 0.163160157011;
+   fDecTF_1[0][19][23] = -0.404799066719;
+   fDecTF_1[0][19][24] = -0.683675475292;
+   fDecTF_1[0][19][25] = -0.383923858907;
+   fDecTF_1[0][19][26] = -0.016310753619;
+   fDecTF_1[0][19][27] = 0.0200039449865;
+   fDecTF_1[0][19][28] = 0.000735228019263;
+   fDecTF_1[0][19][29] = 0.0082777276216;
+   fDecTF_1[0][19][30] = -0.0271505118885;
+   fDecTF_1[0][19][31] = 0.0146542862223;
+   fDecTF_1[0][19][32] = 0.00671090428148;
+   fDecTF_1[0][19][33] = 0.00777111550512;
+   fDecTF_1[0][19][34] = 0.00191816565475;
+   fDecTF_1[0][19][35] = -0.00092621174395;
+   fDecTF_1[0][19][36] = 0.000139529783151;
+   fDecTF_1[0][20][0] = -0.4465820731;
+   fDecTF_1[0][20][1] = -0.65419906911;
+   fDecTF_1[0][20][2] = -0.0753936438159;
+   fDecTF_1[0][20][3] = -0.302063385522;
+   fDecTF_1[0][20][4] = 0.0474862212341;
+   fDecTF_1[0][20][5] = -0.027515562602;
+   fDecTF_1[0][20][6] = -0.062847418814;
+   fDecTF_1[0][20][7] = -0.255088299254;
+   fDecTF_1[0][20][8] = 0.302762638329;
+   fDecTF_1[0][20][9] = -0.50418105505;
+   fDecTF_1[0][20][10] = 0.0434959421193;
+   fDecTF_1[0][20][11] = 0.134154663285;
+   fDecTF_1[0][20][12] = -0.300047683923;
+   fDecTF_1[0][20][13] = -0.245720803894;
+   fDecTF_1[0][20][14] = 0.393575581297;
+   fDecTF_1[0][20][15] = 0.727199186072;
+   fDecTF_1[0][20][16] = 0.596345817175;
+   fDecTF_1[0][20][17] = 0.92662730288;
+   fDecTF_1[0][20][18] = -0.111873496876;
+   fDecTF_1[0][20][19] = -0.522625254928;
+   fDecTF_1[0][20][20] = 3.52276685902;
+   fDecTF_1[0][20][21] = 0.428884523205;
+   fDecTF_1[0][20][22] = 0.768078102594;
+   fDecTF_1[0][20][23] = 4.28363719021;
+   fDecTF_1[0][20][24] = -2.65478849348;
+   fDecTF_1[0][20][25] = 0.659999563391;
+   fDecTF_1[0][20][26] = -0.00307030458101;
+   fDecTF_1[0][20][27] = 0.000614807434307;
+   fDecTF_1[0][20][28] = -0.00623096039089;
+   fDecTF_1[0][20][29] = 0.00368128200419;
+   fDecTF_1[0][20][30] = 0.0125946143151;
+   fDecTF_1[0][20][31] = -0.00458955811989;
+   fDecTF_1[0][20][32] = -0.0025826852887;
+   fDecTF_1[0][20][33] = 0.000308609289717;
+   fDecTF_1[0][20][34] = -0.00141262334979;
+   fDecTF_1[0][20][35] = 0.00136662514136;
+   fDecTF_1[0][20][36] = -5.61205686006e-05;
+   fDecTF_1[0][21][0] = 1.80825856076;
+   fDecTF_1[0][21][1] = 0.927067286054;
+   fDecTF_1[0][21][2] = 1.34233617171;
+   fDecTF_1[0][21][3] = 0.602469826351;
+   fDecTF_1[0][21][4] = 0.0741038079829;
+   fDecTF_1[0][21][5] = -0.126730266784;
+   fDecTF_1[0][21][6] = -0.391068626857;
+   fDecTF_1[0][21][7] = 0.103079390185;
+   fDecTF_1[0][21][8] = -0.748651746096;
+   fDecTF_1[0][21][9] = -0.510131831742;
+   fDecTF_1[0][21][10] = -0.648706981737;
+   fDecTF_1[0][21][11] = 0.00659177249364;
+   fDecTF_1[0][21][12] = 1.2106015165;
+   fDecTF_1[0][21][13] = 0.0812014440071;
+   fDecTF_1[0][21][14] = -3.64762875246;
+   fDecTF_1[0][21][15] = 0.116240910766;
+   fDecTF_1[0][21][16] = -0.614147424902;
+   fDecTF_1[0][21][17] = -3.54290800135;
+   fDecTF_1[0][21][18] = -0.0391388468948;
+   fDecTF_1[0][21][19] = 1.05823579283;
+   fDecTF_1[0][21][20] = 0.428884523205;
+   fDecTF_1[0][21][21] = 5.74882615012;
+   fDecTF_1[0][21][22] = -2.02348940111;
+   fDecTF_1[0][21][23] = 1.12602402807;
+   fDecTF_1[0][21][24] = -2.45060826761;
+   fDecTF_1[0][21][25] = 2.09896487912;
+   fDecTF_1[0][21][26] = -0.00236750613304;
+   fDecTF_1[0][21][27] = -0.00360706802992;
+   fDecTF_1[0][21][28] = -0.00277107511697;
+   fDecTF_1[0][21][29] = 0.00417355187665;
+   fDecTF_1[0][21][30] = -0.0129470916871;
+   fDecTF_1[0][21][31] = -0.00155461020299;
+   fDecTF_1[0][21][32] = 0.0075123879898;
+   fDecTF_1[0][21][33] = 0.00733773819361;
+   fDecTF_1[0][21][34] = -0.00141401194891;
+   fDecTF_1[0][21][35] = -0.00197952733711;
+   fDecTF_1[0][21][36] = 0.000534152857155;
+   fDecTF_1[0][22][0] = -0.257398736868;
+   fDecTF_1[0][22][1] = -0.0391767372274;
+   fDecTF_1[0][22][2] = -0.0952703914872;
+   fDecTF_1[0][22][3] = 0.219794824926;
+   fDecTF_1[0][22][4] = -0.056142644707;
+   fDecTF_1[0][22][5] = -0.149950532429;
+   fDecTF_1[0][22][6] = -0.144592468469;
+   fDecTF_1[0][22][7] = -0.17390145885;
+   fDecTF_1[0][22][8] = 0.10560843692;
+   fDecTF_1[0][22][9] = -0.241271947007;
+   fDecTF_1[0][22][10] = 0.091153731683;
+   fDecTF_1[0][22][11] = -0.492801989284;
+   fDecTF_1[0][22][12] = -0.965182122186;
+   fDecTF_1[0][22][13] = 0.366537572428;
+   fDecTF_1[0][22][14] = -0.462593049949;
+   fDecTF_1[0][22][15] = -0.641654323548;
+   fDecTF_1[0][22][16] = 0.104561950014;
+   fDecTF_1[0][22][17] = -0.273098536051;
+   fDecTF_1[0][22][18] = 0.388115913044;
+   fDecTF_1[0][22][19] = 0.163160157011;
+   fDecTF_1[0][22][20] = 0.768078102594;
+   fDecTF_1[0][22][21] = -2.02348940111;
+   fDecTF_1[0][22][22] = 9.05632454812;
+   fDecTF_1[0][22][23] = 3.48583732579;
+   fDecTF_1[0][22][24] = 1.83021297833;
+   fDecTF_1[0][22][25] = -8.43214055578;
+   fDecTF_1[0][22][26] = 0.00353970254855;
+   fDecTF_1[0][22][27] = -0.00387671795325;
+   fDecTF_1[0][22][28] = 0.000721965510102;
+   fDecTF_1[0][22][29] = -0.00339492233581;
+   fDecTF_1[0][22][30] = -0.0118993004931;
+   fDecTF_1[0][22][31] = 0.0129580248299;
+   fDecTF_1[0][22][32] = -0.00808121801223;
+   fDecTF_1[0][22][33] = 0.000472679895464;
+   fDecTF_1[0][22][34] = 0.00350558160943;
+   fDecTF_1[0][22][35] = 0.00135228383874;
+   fDecTF_1[0][22][36] = 5.43895461091e-05;
+   fDecTF_1[0][23][0] = -0.796936079355;
+   fDecTF_1[0][23][1] = -0.36402413162;
+   fDecTF_1[0][23][2] = -0.796226416209;
+   fDecTF_1[0][23][3] = -0.154535082431;
+   fDecTF_1[0][23][4] = -0.0731053379606;
+   fDecTF_1[0][23][5] = 0.0874713468099;
+   fDecTF_1[0][23][6] = 0.181089896301;
+   fDecTF_1[0][23][7] = 0.18789751967;
+   fDecTF_1[0][23][8] = 0.200318022152;
+   fDecTF_1[0][23][9] = -0.246103809042;
+   fDecTF_1[0][23][10] = -0.218938318136;
+   fDecTF_1[0][23][11] = 0.0635338110455;
+   fDecTF_1[0][23][12] = 0.511771890547;
+   fDecTF_1[0][23][13] = -0.0979634527221;
+   fDecTF_1[0][23][14] = -0.748075537863;
+   fDecTF_1[0][23][15] = -0.331118851581;
+   fDecTF_1[0][23][16] = 0.771128913287;
+   fDecTF_1[0][23][17] = 0.394262640405;
+   fDecTF_1[0][23][18] = 0.0100524324871;
+   fDecTF_1[0][23][19] = -0.404799066719;
+   fDecTF_1[0][23][20] = 4.28363719021;
+   fDecTF_1[0][23][21] = 1.12602402807;
+   fDecTF_1[0][23][22] = 3.48583732579;
+   fDecTF_1[0][23][23] = 9.01678564705;
+   fDecTF_1[0][23][24] = -4.29265376408;
+   fDecTF_1[0][23][25] = -1.04148667999;
+   fDecTF_1[0][23][26] = -0.00848248293897;
+   fDecTF_1[0][23][27] = 0.000774524077755;
+   fDecTF_1[0][23][28] = -0.0158272858565;
+   fDecTF_1[0][23][29] = -0.00047935909398;
+   fDecTF_1[0][23][30] = 0.0197680682337;
+   fDecTF_1[0][23][31] = -0.0105053459325;
+   fDecTF_1[0][23][32] = 0.00127217348899;
+   fDecTF_1[0][23][33] = -0.00593625944482;
+   fDecTF_1[0][23][34] = 0.000316081600931;
+   fDecTF_1[0][23][35] = 0.000840811455358;
+   fDecTF_1[0][23][36] = -0.000201500469839;
+   fDecTF_1[0][24][0] = 0.0163015876248;
+   fDecTF_1[0][24][1] = 0.148239739786;
+   fDecTF_1[0][24][2] = 0.220389461158;
+   fDecTF_1[0][24][3] = -0.00776479077761;
+   fDecTF_1[0][24][4] = -0.0237396698835;
+   fDecTF_1[0][24][5] = -0.11656704893;
+   fDecTF_1[0][24][6] = -0.12856033368;
+   fDecTF_1[0][24][7] = -0.109391977033;
+   fDecTF_1[0][24][8] = 0.113773724737;
+   fDecTF_1[0][24][9] = 0.204973941906;
+   fDecTF_1[0][24][10] = 0.151881718795;
+   fDecTF_1[0][24][11] = -0.218542271859;
+   fDecTF_1[0][24][12] = -0.500545238817;
+   fDecTF_1[0][24][13] = 0.174051071297;
+   fDecTF_1[0][24][14] = 0.32887341293;
+   fDecTF_1[0][24][15] = -0.674693062696;
+   fDecTF_1[0][24][16] = 0.314875658927;
+   fDecTF_1[0][24][17] = -0.6083225564;
+   fDecTF_1[0][24][18] = 0.0434515810832;
+   fDecTF_1[0][24][19] = -0.683675475292;
+   fDecTF_1[0][24][20] = -2.65478849348;
+   fDecTF_1[0][24][21] = -2.45060826761;
+   fDecTF_1[0][24][22] = 1.83021297833;
+   fDecTF_1[0][24][23] = -4.29265376408;
+   fDecTF_1[0][24][24] = 5.33971828646;
+   fDecTF_1[0][24][25] = -3.68569461867;
+   fDecTF_1[0][24][26] = 0.00546227663317;
+   fDecTF_1[0][24][27] = 0.00297897067037;
+   fDecTF_1[0][24][28] = 0.0142949216262;
+   fDecTF_1[0][24][29] = 0.00201519490276;
+   fDecTF_1[0][24][30] = 0.00490094540292;
+   fDecTF_1[0][24][31] = 0.0241491951197;
+   fDecTF_1[0][24][32] = -0.00129295343545;
+   fDecTF_1[0][24][33] = 0.00995234314151;
+   fDecTF_1[0][24][34] = 0.000324225014066;
+   fDecTF_1[0][24][35] = -0.000797413519331;
+   fDecTF_1[0][24][36] = 0.000284299742319;
+   fDecTF_1[0][25][0] = -0.3432443935;
+   fDecTF_1[0][25][1] = -0.167841060809;
+   fDecTF_1[0][25][2] = -0.325654323508;
+   fDecTF_1[0][25][3] = -0.279443685336;
+   fDecTF_1[0][25][4] = -0.00779182362523;
+   fDecTF_1[0][25][5] = 0.112595781773;
+   fDecTF_1[0][25][6] = 0.239823454542;
+   fDecTF_1[0][25][7] = 0.222160787416;
+   fDecTF_1[0][25][8] = 0.261227202178;
+   fDecTF_1[0][25][9] = -0.0403581569852;
+   fDecTF_1[0][25][10] = 0.0600780598865;
+   fDecTF_1[0][25][11] = -0.00217490054846;
+   fDecTF_1[0][25][12] = 2.19873168133;
+   fDecTF_1[0][25][13] = -0.187122144664;
+   fDecTF_1[0][25][14] = 0.931833949572;
+   fDecTF_1[0][25][15] = -0.445354729143;
+   fDecTF_1[0][25][16] = -0.0244476880463;
+   fDecTF_1[0][25][17] = 1.14152474472;
+   fDecTF_1[0][25][18] = -0.975978463998;
+   fDecTF_1[0][25][19] = -0.383923858907;
+   fDecTF_1[0][25][20] = 0.659999563391;
+   fDecTF_1[0][25][21] = 2.09896487912;
+   fDecTF_1[0][25][22] = -8.43214055578;
+   fDecTF_1[0][25][23] = -1.04148667999;
+   fDecTF_1[0][25][24] = -3.68569461867;
+   fDecTF_1[0][25][25] = 10.6116538822;
+   fDecTF_1[0][25][26] = -0.0051795406439;
+   fDecTF_1[0][25][27] = -0.00182462023241;
+   fDecTF_1[0][25][28] = -0.00622034277778;
+   fDecTF_1[0][25][29] = -0.00211087778202;
+   fDecTF_1[0][25][30] = 0.0105445521078;
+   fDecTF_1[0][25][31] = -0.0198540268041;
+   fDecTF_1[0][25][32] = 0.00208746999403;
+   fDecTF_1[0][25][33] = -0.013728318076;
+   fDecTF_1[0][25][34] = -0.000437741710092;
+   fDecTF_1[0][25][35] = -0.00102423963783;
+   fDecTF_1[0][25][36] = -0.000217148389386;
+   fDecTF_1[0][26][0] = -0.00125755720373;
+   fDecTF_1[0][26][1] = -0.00819962277563;
+   fDecTF_1[0][26][2] = 0.00696895268429;
+   fDecTF_1[0][26][3] = -0.0151501185626;
+   fDecTF_1[0][26][4] = -0.00995266614539;
+   fDecTF_1[0][26][5] = -0.00736369580848;
+   fDecTF_1[0][26][6] = -0.00208943161549;
+   fDecTF_1[0][26][7] = -0.00337204823401;
+   fDecTF_1[0][26][8] = -0.00273478994067;
+   fDecTF_1[0][26][9] = 0.00201921570059;
+   fDecTF_1[0][26][10] = 0.0134490639502;
+   fDecTF_1[0][26][11] = -0.00162600582045;
+   fDecTF_1[0][26][12] = -0.00179648610562;
+   fDecTF_1[0][26][13] = 0.00490531208505;
+   fDecTF_1[0][26][14] = -0.0116929267244;
+   fDecTF_1[0][26][15] = -0.00771604813242;
+   fDecTF_1[0][26][16] = -0.018593386992;
+   fDecTF_1[0][26][17] = -0.00216307504898;
+   fDecTF_1[0][26][18] = 0.00599151461988;
+   fDecTF_1[0][26][19] = -0.016310753619;
+   fDecTF_1[0][26][20] = -0.00307030458101;
+   fDecTF_1[0][26][21] = -0.00236750613304;
+   fDecTF_1[0][26][22] = 0.00353970254855;
+   fDecTF_1[0][26][23] = -0.00848248293897;
+   fDecTF_1[0][26][24] = 0.00546227663317;
+   fDecTF_1[0][26][25] = -0.0051795406439;
+   fDecTF_1[0][26][26] = 0.287577725405;
+   fDecTF_1[0][26][27] = -0.00130227397211;
+   fDecTF_1[0][26][28] = 0.255407477949;
+   fDecTF_1[0][26][29] = 0.00444502954149;
+   fDecTF_1[0][26][30] = -0.010059996867;
+   fDecTF_1[0][26][31] = -0.00389484385296;
+   fDecTF_1[0][26][32] = -0.00116125031628;
+   fDecTF_1[0][26][33] = 0.0035329035743;
+   fDecTF_1[0][26][34] = -0.00125819407596;
+   fDecTF_1[0][26][35] = -0.00011207282512;
+   fDecTF_1[0][26][36] = 0.000672022630167;
+   fDecTF_1[0][27][0] = 0.00508359311075;
+   fDecTF_1[0][27][1] = -0.00976693413367;
+   fDecTF_1[0][27][2] = -0.00534603439194;
+   fDecTF_1[0][27][3] = -0.00452033992591;
+   fDecTF_1[0][27][4] = -9.45973605628e-05;
+   fDecTF_1[0][27][5] = -0.00409294091946;
+   fDecTF_1[0][27][6] = -0.000285678663908;
+   fDecTF_1[0][27][7] = -0.00619343189277;
+   fDecTF_1[0][27][8] = -0.00915428809302;
+   fDecTF_1[0][27][9] = 0.00513163502433;
+   fDecTF_1[0][27][10] = 0.0109843747886;
+   fDecTF_1[0][27][11] = 0.00550241915815;
+   fDecTF_1[0][27][12] = 0.00274884962063;
+   fDecTF_1[0][27][13] = -0.00461396803447;
+   fDecTF_1[0][27][14] = -0.00776974138741;
+   fDecTF_1[0][27][15] = -0.00468020841432;
+   fDecTF_1[0][27][16] = 0.00974508370853;
+   fDecTF_1[0][27][17] = 0.00912425853873;
+   fDecTF_1[0][27][18] = 0.0106147524886;
+   fDecTF_1[0][27][19] = 0.0200039449865;
+   fDecTF_1[0][27][20] = 0.000614807434307;
+   fDecTF_1[0][27][21] = -0.00360706802992;
+   fDecTF_1[0][27][22] = -0.00387671795325;
+   fDecTF_1[0][27][23] = 0.000774524077755;
+   fDecTF_1[0][27][24] = 0.00297897067037;
+   fDecTF_1[0][27][25] = -0.00182462023241;
+   fDecTF_1[0][27][26] = -0.00130227397211;
+   fDecTF_1[0][27][27] = 0.287199385054;
+   fDecTF_1[0][27][28] = 0.00843232633655;
+   fDecTF_1[0][27][29] = 0.259542213145;
+   fDecTF_1[0][27][30] = -0.000362523316579;
+   fDecTF_1[0][27][31] = -0.0109088331578;
+   fDecTF_1[0][27][32] = 0.00500011844265;
+   fDecTF_1[0][27][33] = 0.00253897047635;
+   fDecTF_1[0][27][34] = 0.000328821268092;
+   fDecTF_1[0][27][35] = -9.24039013444e-05;
+   fDecTF_1[0][27][36] = 0.000781378811739;
+   fDecTF_1[0][28][0] = -0.0140511355056;
+   fDecTF_1[0][28][1] = -0.00236229304465;
+   fDecTF_1[0][28][2] = 0.0111743153435;
+   fDecTF_1[0][28][3] = -0.00862748549764;
+   fDecTF_1[0][28][4] = -0.00972284211964;
+   fDecTF_1[0][28][5] = -0.00524822750568;
+   fDecTF_1[0][28][6] = -0.0055439474923;
+   fDecTF_1[0][28][7] = 0.0180303743511;
+   fDecTF_1[0][28][8] = 0.00357084352425;
+   fDecTF_1[0][28][9] = 0.000792111322145;
+   fDecTF_1[0][28][10] = 0.0143584075152;
+   fDecTF_1[0][28][11] = -0.0070212158121;
+   fDecTF_1[0][28][12] = -0.00314792393644;
+   fDecTF_1[0][28][13] = 0.0216844857978;
+   fDecTF_1[0][28][14] = -0.00791697009643;
+   fDecTF_1[0][28][15] = -0.00614580105463;
+   fDecTF_1[0][28][16] = -0.0194364404444;
+   fDecTF_1[0][28][17] = -0.00777085937351;
+   fDecTF_1[0][28][18] = 0.00698445749202;
+   fDecTF_1[0][28][19] = 0.000735228019263;
+   fDecTF_1[0][28][20] = -0.00623096039089;
+   fDecTF_1[0][28][21] = -0.00277107511697;
+   fDecTF_1[0][28][22] = 0.000721965510102;
+   fDecTF_1[0][28][23] = -0.0158272858565;
+   fDecTF_1[0][28][24] = 0.0142949216262;
+   fDecTF_1[0][28][25] = -0.00622034277778;
+   fDecTF_1[0][28][26] = 0.255407477949;
+   fDecTF_1[0][28][27] = 0.00843232633655;
+   fDecTF_1[0][28][28] = 0.61794925766;
+   fDecTF_1[0][28][29] = 0.0107823299448;
+   fDecTF_1[0][28][30] = -0.000880488471754;
+   fDecTF_1[0][28][31] = -0.00104341902863;
+   fDecTF_1[0][28][32] = -0.00686520933425;
+   fDecTF_1[0][28][33] = -0.00207026262775;
+   fDecTF_1[0][28][34] = 0.000486758667827;
+   fDecTF_1[0][28][35] = 0.00111511364269;
+   fDecTF_1[0][28][36] = -0.000789562773437;
+   fDecTF_1[0][29][0] = 0.000610864012545;
+   fDecTF_1[0][29][1] = -0.00484625676032;
+   fDecTF_1[0][29][2] = -0.0113890487624;
+   fDecTF_1[0][29][3] = 0.00122261965073;
+   fDecTF_1[0][29][4] = 0.00157881860973;
+   fDecTF_1[0][29][5] = -0.00339041600894;
+   fDecTF_1[0][29][6] = -0.0119107829988;
+   fDecTF_1[0][29][7] = 0.00888549029442;
+   fDecTF_1[0][29][8] = -0.00130332704214;
+   fDecTF_1[0][29][9] = 0.0010881817226;
+   fDecTF_1[0][29][10] = 0.00631648765882;
+   fDecTF_1[0][29][11] = 0.0103953081776;
+   fDecTF_1[0][29][12] = -0.000404066805212;
+   fDecTF_1[0][29][13] = 0.00391793554844;
+   fDecTF_1[0][29][14] = -0.00425373857322;
+   fDecTF_1[0][29][15] = 0.00128796863447;
+   fDecTF_1[0][29][16] = 0.00444706398225;
+   fDecTF_1[0][29][17] = 0.00660663094294;
+   fDecTF_1[0][29][18] = 0.013610735847;
+   fDecTF_1[0][29][19] = 0.0082777276216;
+   fDecTF_1[0][29][20] = 0.00368128200419;
+   fDecTF_1[0][29][21] = 0.00417355187664;
+   fDecTF_1[0][29][22] = -0.00339492233581;
+   fDecTF_1[0][29][23] = -0.00047935909398;
+   fDecTF_1[0][29][24] = 0.00201519490276;
+   fDecTF_1[0][29][25] = -0.00211087778202;
+   fDecTF_1[0][29][26] = 0.00444502954149;
+   fDecTF_1[0][29][27] = 0.259542213145;
+   fDecTF_1[0][29][28] = 0.0107823299448;
+   fDecTF_1[0][29][29] = 0.640383803629;
+   fDecTF_1[0][29][30] = 0.00446460538598;
+   fDecTF_1[0][29][31] = -0.00636461557428;
+   fDecTF_1[0][29][32] = -0.000637809605197;
+   fDecTF_1[0][29][33] = -0.00136506929599;
+   fDecTF_1[0][29][34] = -0.00268043271726;
+   fDecTF_1[0][29][35] = 0.00191631009011;
+   fDecTF_1[0][29][36] = -0.000717470520082;
+   fDecTF_1[0][30][0] = -0.0340904007926;
+   fDecTF_1[0][30][1] = 0.00176485450207;
+   fDecTF_1[0][30][2] = 0.0353649917145;
+   fDecTF_1[0][30][3] = 0.00573490803991;
+   fDecTF_1[0][30][4] = -0.0090182573696;
+   fDecTF_1[0][30][5] = 0.00335889182607;
+   fDecTF_1[0][30][6] = -0.00169729187224;
+   fDecTF_1[0][30][7] = 0.00121827831814;
+   fDecTF_1[0][30][8] = 0.0133581436614;
+   fDecTF_1[0][30][9] = -0.00346254949805;
+   fDecTF_1[0][30][10] = -0.00819939099224;
+   fDecTF_1[0][30][11] = 0.0153538844453;
+   fDecTF_1[0][30][12] = -0.0144308633726;
+   fDecTF_1[0][30][13] = -0.00848781760885;
+   fDecTF_1[0][30][14] = -0.0584692910438;
+   fDecTF_1[0][30][15] = -0.0150057447814;
+   fDecTF_1[0][30][16] = 0.0348100636601;
+   fDecTF_1[0][30][17] = 0.00237967287949;
+   fDecTF_1[0][30][18] = -0.000424883364269;
+   fDecTF_1[0][30][19] = -0.0271505118885;
+   fDecTF_1[0][30][20] = 0.0125946143151;
+   fDecTF_1[0][30][21] = -0.0129470916871;
+   fDecTF_1[0][30][22] = -0.0118993004931;
+   fDecTF_1[0][30][23] = 0.0197680682337;
+   fDecTF_1[0][30][24] = 0.00490094540292;
+   fDecTF_1[0][30][25] = 0.0105445521078;
+   fDecTF_1[0][30][26] = -0.010059996867;
+   fDecTF_1[0][30][27] = -0.000362523316579;
+   fDecTF_1[0][30][28] = -0.000880488471754;
+   fDecTF_1[0][30][29] = 0.00446460538598;
+   fDecTF_1[0][30][30] = 1.87012454664;
+   fDecTF_1[0][30][31] = -0.00492556352192;
+   fDecTF_1[0][30][32] = -0.0123456130315;
+   fDecTF_1[0][30][33] = -0.00611378431875;
+   fDecTF_1[0][30][34] = 0.000799725093984;
+   fDecTF_1[0][30][35] = 0.000281408504419;
+   fDecTF_1[0][30][36] = -0.000543538936594;
+   fDecTF_1[0][31][0] = -0.0269381076969;
+   fDecTF_1[0][31][1] = -0.0243510733344;
+   fDecTF_1[0][31][2] = 0.00532586188099;
+   fDecTF_1[0][31][3] = 0.0115790581559;
+   fDecTF_1[0][31][4] = -0.0106459548824;
+   fDecTF_1[0][31][5] = -0.000628155455363;
+   fDecTF_1[0][31][6] = 0.0179253367434;
+   fDecTF_1[0][31][7] = 0.0239777070521;
+   fDecTF_1[0][31][8] = 0.0215829839424;
+   fDecTF_1[0][31][9] = 0.0151469735941;
+   fDecTF_1[0][31][10] = -0.0186025743015;
+   fDecTF_1[0][31][11] = 0.017540019197;
+   fDecTF_1[0][31][12] = -0.0303201923312;
+   fDecTF_1[0][31][13] = -0.029676253686;
+   fDecTF_1[0][31][14] = -0.0307304082033;
+   fDecTF_1[0][31][15] = -0.00584154680919;
+   fDecTF_1[0][31][16] = 0.0121201401784;
+   fDecTF_1[0][31][17] = -0.00197542993738;
+   fDecTF_1[0][31][18] = 0.0150315223695;
+   fDecTF_1[0][31][19] = 0.0146542862223;
+   fDecTF_1[0][31][20] = -0.00458955811989;
+   fDecTF_1[0][31][21] = -0.00155461020299;
+   fDecTF_1[0][31][22] = 0.0129580248299;
+   fDecTF_1[0][31][23] = -0.0105053459325;
+   fDecTF_1[0][31][24] = 0.0241491951197;
+   fDecTF_1[0][31][25] = -0.0198540268041;
+   fDecTF_1[0][31][26] = -0.00389484385296;
+   fDecTF_1[0][31][27] = -0.0109088331578;
+   fDecTF_1[0][31][28] = -0.00104341902863;
+   fDecTF_1[0][31][29] = -0.00636461557428;
+   fDecTF_1[0][31][30] = -0.00492556352192;
+   fDecTF_1[0][31][31] = 1.85617586076;
+   fDecTF_1[0][31][32] = -0.00410142444844;
+   fDecTF_1[0][31][33] = -0.00490830946817;
+   fDecTF_1[0][31][34] = -4.24693642307e-05;
+   fDecTF_1[0][31][35] = -0.00116990333276;
+   fDecTF_1[0][31][36] = -0.000780035657986;
+   fDecTF_1[0][32][0] = -0.0069067819192;
+   fDecTF_1[0][32][1] = 0.0115081050368;
+   fDecTF_1[0][32][2] = -0.0119475129893;
+   fDecTF_1[0][32][3] = 0.0228742003568;
+   fDecTF_1[0][32][4] = -0.00852047314414;
+   fDecTF_1[0][32][5] = 0.0223008667002;
+   fDecTF_1[0][32][6] = -0.0376898649828;
+   fDecTF_1[0][32][7] = 0.035008756227;
+   fDecTF_1[0][32][8] = 0.018385203132;
+   fDecTF_1[0][32][9] = 0.00113150507006;
+   fDecTF_1[0][32][10] = -0.00987418406475;
+   fDecTF_1[0][32][11] = -0.0036878220044;
+   fDecTF_1[0][32][12] = 0.000560727223752;
+   fDecTF_1[0][32][13] = 0.00883968040754;
+   fDecTF_1[0][32][14] = 0.00775566341126;
+   fDecTF_1[0][32][15] = 0.00788709185152;
+   fDecTF_1[0][32][16] = 0.0220400689815;
+   fDecTF_1[0][32][17] = -0.00131670794674;
+   fDecTF_1[0][32][18] = -0.00491041978329;
+   fDecTF_1[0][32][19] = 0.00671090428148;
+   fDecTF_1[0][32][20] = -0.0025826852887;
+   fDecTF_1[0][32][21] = 0.0075123879898;
+   fDecTF_1[0][32][22] = -0.00808121801223;
+   fDecTF_1[0][32][23] = 0.00127217348899;
+   fDecTF_1[0][32][24] = -0.00129295343545;
+   fDecTF_1[0][32][25] = 0.00208746999403;
+   fDecTF_1[0][32][26] = -0.00116125031628;
+   fDecTF_1[0][32][27] = 0.00500011844265;
+   fDecTF_1[0][32][28] = -0.00686520933425;
+   fDecTF_1[0][32][29] = -0.000637809605197;
+   fDecTF_1[0][32][30] = -0.0123456130315;
+   fDecTF_1[0][32][31] = -0.00410142444844;
+   fDecTF_1[0][32][32] = 0.419891447338;
+   fDecTF_1[0][32][33] = -0.0973353310576;
+   fDecTF_1[0][32][34] = 0.00280121976827;
+   fDecTF_1[0][32][35] = 0.0001606786756;
+   fDecTF_1[0][32][36] = 0.0046192865446;
+   fDecTF_1[0][33][0] = -0.0123675740123;
+   fDecTF_1[0][33][1] = 0.00272782405839;
+   fDecTF_1[0][33][2] = 0.0124253130936;
+   fDecTF_1[0][33][3] = 0.00502655743129;
+   fDecTF_1[0][33][4] = -0.0217946318156;
+   fDecTF_1[0][33][5] = 0.0227370447415;
+   fDecTF_1[0][33][6] = -0.0523867846993;
+   fDecTF_1[0][33][7] = 0.0369286101471;
+   fDecTF_1[0][33][8] = 0.0244121535557;
+   fDecTF_1[0][33][9] = -0.00127031279523;
+   fDecTF_1[0][33][10] = -0.0183483199342;
+   fDecTF_1[0][33][11] = -0.00485527133489;
+   fDecTF_1[0][33][12] = -0.000199784518074;
+   fDecTF_1[0][33][13] = 0.00405792554406;
+   fDecTF_1[0][33][14] = 0.0069192880854;
+   fDecTF_1[0][33][15] = 0.0109919292016;
+   fDecTF_1[0][33][16] = -0.0271972825443;
+   fDecTF_1[0][33][17] = -0.0142735771631;
+   fDecTF_1[0][33][18] = 0.0153818848698;
+   fDecTF_1[0][33][19] = 0.00777111550512;
+   fDecTF_1[0][33][20] = 0.000308609289717;
+   fDecTF_1[0][33][21] = 0.00733773819361;
+   fDecTF_1[0][33][22] = 0.000472679895464;
+   fDecTF_1[0][33][23] = -0.00593625944482;
+   fDecTF_1[0][33][24] = 0.00995234314151;
+   fDecTF_1[0][33][25] = -0.013728318076;
+   fDecTF_1[0][33][26] = 0.0035329035743;
+   fDecTF_1[0][33][27] = 0.00253897047635;
+   fDecTF_1[0][33][28] = -0.00207026262775;
+   fDecTF_1[0][33][29] = -0.00136506929599;
+   fDecTF_1[0][33][30] = -0.00611378431875;
+   fDecTF_1[0][33][31] = -0.00490830946817;
+   fDecTF_1[0][33][32] = -0.0973353310576;
+   fDecTF_1[0][33][33] = 0.419815873311;
+   fDecTF_1[0][33][34] = 0.00175768628751;
+   fDecTF_1[0][33][35] = -0.000185262417535;
+   fDecTF_1[0][33][36] = 0.00465874615823;
+   fDecTF_1[0][34][0] = 0.000552116467537;
+   fDecTF_1[0][34][1] = -0.000192645207435;
+   fDecTF_1[0][34][2] = -0.000251046543737;
+   fDecTF_1[0][34][3] = -0.00092200011672;
+   fDecTF_1[0][34][4] = 0.00167297862962;
+   fDecTF_1[0][34][5] = -0.000669086576278;
+   fDecTF_1[0][34][6] = -0.00113642673524;
+   fDecTF_1[0][34][7] = 0.00237770288071;
+   fDecTF_1[0][34][8] = -0.00143151553579;
+   fDecTF_1[0][34][9] = 0.000930289802573;
+   fDecTF_1[0][34][10] = 0.00347497824147;
+   fDecTF_1[0][34][11] = -0.00111104534881;
+   fDecTF_1[0][34][12] = -0.000208129531707;
+   fDecTF_1[0][34][13] = 0.00115657439095;
+   fDecTF_1[0][34][14] = 0.00362044860065;
+   fDecTF_1[0][34][15] = 0.00200661334661;
+   fDecTF_1[0][34][16] = -0.000221553695922;
+   fDecTF_1[0][34][17] = 0.000305596653518;
+   fDecTF_1[0][34][18] = 0.00081188889892;
+   fDecTF_1[0][34][19] = 0.00191816565475;
+   fDecTF_1[0][34][20] = -0.00141262334979;
+   fDecTF_1[0][34][21] = -0.00141401194891;
+   fDecTF_1[0][34][22] = 0.00350558160943;
+   fDecTF_1[0][34][23] = 0.000316081600931;
+   fDecTF_1[0][34][24] = 0.000324225014066;
+   fDecTF_1[0][34][25] = -0.000437741710092;
+   fDecTF_1[0][34][26] = -0.00125819407596;
+   fDecTF_1[0][34][27] = 0.000328821268092;
+   fDecTF_1[0][34][28] = 0.000486758667827;
+   fDecTF_1[0][34][29] = -0.00268043271726;
+   fDecTF_1[0][34][30] = 0.000799725093984;
+   fDecTF_1[0][34][31] = -4.24693642307e-05;
+   fDecTF_1[0][34][32] = 0.00280121976827;
+   fDecTF_1[0][34][33] = 0.00175768628751;
+   fDecTF_1[0][34][34] = 0.109692214772;
+   fDecTF_1[0][34][35] = 0.000172382743105;
+   fDecTF_1[0][34][36] = -5.72953356744e-06;
+   fDecTF_1[0][35][0] = 0.000576570121701;
+   fDecTF_1[0][35][1] = 0.00143406902165;
+   fDecTF_1[0][35][2] = 0.000331983937744;
+   fDecTF_1[0][35][3] = -0.00226684107305;
+   fDecTF_1[0][35][4] = -0.00114829979787;
+   fDecTF_1[0][35][5] = 9.82828790683e-05;
+   fDecTF_1[0][35][6] = 0.000335919464334;
+   fDecTF_1[0][35][7] = 0.00181520866103;
+   fDecTF_1[0][35][8] = -0.00113680244653;
+   fDecTF_1[0][35][9] = 0.00157900022046;
+   fDecTF_1[0][35][10] = -0.00218215295887;
+   fDecTF_1[0][35][11] = 0.00100599088461;
+   fDecTF_1[0][35][12] = -0.000531232221432;
+   fDecTF_1[0][35][13] = 0.000405623150255;
+   fDecTF_1[0][35][14] = -0.00167523560132;
+   fDecTF_1[0][35][15] = -0.00121935675566;
+   fDecTF_1[0][35][16] = 0.000944267651239;
+   fDecTF_1[0][35][17] = 0.000257879881435;
+   fDecTF_1[0][35][18] = 0.000632652900777;
+   fDecTF_1[0][35][19] = -0.00092621174395;
+   fDecTF_1[0][35][20] = 0.00136662514136;
+   fDecTF_1[0][35][21] = -0.00197952733711;
+   fDecTF_1[0][35][22] = 0.00135228383874;
+   fDecTF_1[0][35][23] = 0.000840811455358;
+   fDecTF_1[0][35][24] = -0.000797413519331;
+   fDecTF_1[0][35][25] = -0.00102423963783;
+   fDecTF_1[0][35][26] = -0.00011207282512;
+   fDecTF_1[0][35][27] = -9.24039013444e-05;
+   fDecTF_1[0][35][28] = 0.00111511364269;
+   fDecTF_1[0][35][29] = 0.00191631009011;
+   fDecTF_1[0][35][30] = 0.000281408504419;
+   fDecTF_1[0][35][31] = -0.00116990333276;
+   fDecTF_1[0][35][32] = 0.0001606786756;
+   fDecTF_1[0][35][33] = -0.000185262417535;
+   fDecTF_1[0][35][34] = 0.000172382743105;
+   fDecTF_1[0][35][35] = 0.104516116604;
+   fDecTF_1[0][35][36] = -0.000369038245013;
+   fDecTF_1[0][36][0] = -0.000200364670121;
+   fDecTF_1[0][36][1] = 0.000911776023053;
+   fDecTF_1[0][36][2] = 0.000276431090445;
+   fDecTF_1[0][36][3] = 0.000603467088104;
+   fDecTF_1[0][36][4] = -0.00171374317827;
+   fDecTF_1[0][36][5] = 0.000698495519999;
+   fDecTF_1[0][36][6] = 0.000591694952957;
+   fDecTF_1[0][36][7] = -0.00177745486351;
+   fDecTF_1[0][36][8] = 0.00110105174257;
+   fDecTF_1[0][36][9] = 0.000995912357133;
+   fDecTF_1[0][36][10] = 6.59402513188e-05;
+   fDecTF_1[0][36][11] = 4.33871424407e-05;
+   fDecTF_1[0][36][12] = 0.000906472769063;
+   fDecTF_1[0][36][13] = -0.000679550822762;
+   fDecTF_1[0][36][14] = -0.000173113294355;
+   fDecTF_1[0][36][15] = 0.000903024554159;
+   fDecTF_1[0][36][16] = -0.000329410882972;
+   fDecTF_1[0][36][17] = -9.24835091209e-05;
+   fDecTF_1[0][36][18] = 0.000223743578916;
+   fDecTF_1[0][36][19] = 0.000139529783151;
+   fDecTF_1[0][36][20] = -5.61205686006e-05;
+   fDecTF_1[0][36][21] = 0.000534152857155;
+   fDecTF_1[0][36][22] = 5.43895461091e-05;
+   fDecTF_1[0][36][23] = -0.000201500469839;
+   fDecTF_1[0][36][24] = 0.000284299742319;
+   fDecTF_1[0][36][25] = -0.000217148389386;
+   fDecTF_1[0][36][26] = 0.000672022630167;
+   fDecTF_1[0][36][27] = 0.000781378811739;
+   fDecTF_1[0][36][28] = -0.000789562773437;
+   fDecTF_1[0][36][29] = -0.000717470520082;
+   fDecTF_1[0][36][30] = -0.000543538936594;
+   fDecTF_1[0][36][31] = -0.000780035657986;
+   fDecTF_1[0][36][32] = 0.0046192865446;
+   fDecTF_1[0][36][33] = 0.00465874615823;
+   fDecTF_1[0][36][34] = -5.72953356744e-06;
+   fDecTF_1[0][36][35] = -0.000369038245013;
+   fDecTF_1[0][36][36] = 0.00699240529449;
+   fDecTF_1[1][0][0] = 4.07537440437;
+   fDecTF_1[1][0][1] = -0.2460093513;
+   fDecTF_1[1][0][2] = 0.880450183602;
+   fDecTF_1[1][0][3] = 3.61744269365;
+   fDecTF_1[1][0][4] = 0.2135538773;
+   fDecTF_1[1][0][5] = 0.212243142157;
+   fDecTF_1[1][0][6] = 0.188204456622;
+   fDecTF_1[1][0][7] = 0.298118508783;
+   fDecTF_1[1][0][8] = -0.930107784921;
+   fDecTF_1[1][0][9] = -0.945693938272;
+   fDecTF_1[1][0][10] = -1.19900611719;
+   fDecTF_1[1][0][11] = 0.0124407121109;
+   fDecTF_1[1][0][12] = -0.349613626535;
+   fDecTF_1[1][0][13] = -1.18763072092;
+   fDecTF_1[1][0][14] = -0.142843815158;
+   fDecTF_1[1][0][15] = 0.43672493923;
+   fDecTF_1[1][0][16] = 0.210693300088;
+   fDecTF_1[1][0][17] = -0.424418427948;
+   fDecTF_1[1][0][18] = -0.0291369160173;
+   fDecTF_1[1][0][19] = -0.0651305917845;
+   fDecTF_1[1][0][20] = -0.184366155951;
+   fDecTF_1[1][0][21] = 0.67292364202;
+   fDecTF_1[1][0][22] = -0.228634986361;
+   fDecTF_1[1][0][23] = -0.543365478975;
+   fDecTF_1[1][0][24] = 0.117319204875;
+   fDecTF_1[1][0][25] = -0.115940683038;
+   fDecTF_1[1][0][26] = 0.00175782288453;
+   fDecTF_1[1][0][27] = 0.00482092279996;
+   fDecTF_1[1][0][28] = -0.00371852293135;
+   fDecTF_1[1][0][29] = -0.00129054255736;
+   fDecTF_1[1][0][30] = 0.0178352383857;
+   fDecTF_1[1][0][31] = 0.0156636625638;
+   fDecTF_1[1][0][32] = 0.0171657101183;
+   fDecTF_1[1][0][33] = 0.0181221655742;
+   fDecTF_1[1][0][34] = 0.000916447374729;
+   fDecTF_1[1][0][35] = -0.00017332506881;
+   fDecTF_1[1][0][36] = 0.000402598037416;
+   fDecTF_1[1][1][0] = -0.2460093513;
+   fDecTF_1[1][1][1] = 5.68527576785;
+   fDecTF_1[1][1][2] = -0.523303208546;
+   fDecTF_1[1][1][3] = 0.146894246006;
+   fDecTF_1[1][1][4] = 0.206140094713;
+   fDecTF_1[1][1][5] = -0.22478514513;
+   fDecTF_1[1][1][6] = -0.184988919621;
+   fDecTF_1[1][1][7] = 0.264208704627;
+   fDecTF_1[1][1][8] = -3.25318049743;
+   fDecTF_1[1][1][9] = -0.335676158372;
+   fDecTF_1[1][1][10] = -1.37048726618;
+   fDecTF_1[1][1][11] = -0.056993034318;
+   fDecTF_1[1][1][12] = 1.05261976222;
+   fDecTF_1[1][1][13] = -0.891264760214;
+   fDecTF_1[1][1][14] = -0.28047113756;
+   fDecTF_1[1][1][15] = -0.532553985517;
+   fDecTF_1[1][1][16] = -0.0928895304092;
+   fDecTF_1[1][1][17] = -0.327573240524;
+   fDecTF_1[1][1][18] = 0.070113670378;
+   fDecTF_1[1][1][19] = 0.11766608289;
+   fDecTF_1[1][1][20] = -0.426745402526;
+   fDecTF_1[1][1][21] = 0.0223924624068;
+   fDecTF_1[1][1][22] = -0.0687867553999;
+   fDecTF_1[1][1][23] = -0.282948427806;
+   fDecTF_1[1][1][24] = 0.258602006989;
+   fDecTF_1[1][1][25] = 0.034248927295;
+   fDecTF_1[1][1][26] = -0.00817335960723;
+   fDecTF_1[1][1][27] = -0.00788630935065;
+   fDecTF_1[1][1][28] = -0.0208304437984;
+   fDecTF_1[1][1][29] = -0.0219403291709;
+   fDecTF_1[1][1][30] = -0.0224601905818;
+   fDecTF_1[1][1][31] = -0.026393874958;
+   fDecTF_1[1][1][32] = -0.00284606746738;
+   fDecTF_1[1][1][33] = -0.0060866263029;
+   fDecTF_1[1][1][34] = -0.00164125702837;
+   fDecTF_1[1][1][35] = 0.000201304942979;
+   fDecTF_1[1][1][36] = 0.0010859507426;
+   fDecTF_1[1][2][0] = 0.880450183602;
+   fDecTF_1[1][2][1] = -0.523303208546;
+   fDecTF_1[1][2][2] = 6.68241929195;
+   fDecTF_1[1][2][3] = -1.44751880159;
+   fDecTF_1[1][2][4] = -0.0934240786828;
+   fDecTF_1[1][2][5] = -0.371132024755;
+   fDecTF_1[1][2][6] = -0.406952522786;
+   fDecTF_1[1][2][7] = 0.185708576994;
+   fDecTF_1[1][2][8] = 0.795761168305;
+   fDecTF_1[1][2][9] = -4.40154299843;
+   fDecTF_1[1][2][10] = 0.0352070344877;
+   fDecTF_1[1][2][11] = -0.0287299687528;
+   fDecTF_1[1][2][12] = 0.669307969315;
+   fDecTF_1[1][2][13] = 0.118849774754;
+   fDecTF_1[1][2][14] = -0.00533706265944;
+   fDecTF_1[1][2][15] = -0.232595722822;
+   fDecTF_1[1][2][16] = 0.0508385896493;
+   fDecTF_1[1][2][17] = -0.314238603138;
+   fDecTF_1[1][2][18] = -0.0228911657045;
+   fDecTF_1[1][2][19] = -0.0306754558748;
+   fDecTF_1[1][2][20] = 0.0905284257641;
+   fDecTF_1[1][2][21] = 1.10260418926;
+   fDecTF_1[1][2][22] = -0.0568724804981;
+   fDecTF_1[1][2][23] = -0.720501231576;
+   fDecTF_1[1][2][24] = 0.179663520345;
+   fDecTF_1[1][2][25] = -0.233459612135;
+   fDecTF_1[1][2][26] = 0.00332978345197;
+   fDecTF_1[1][2][27] = 0.00250637092973;
+   fDecTF_1[1][2][28] = 0.00283513134799;
+   fDecTF_1[1][2][29] = 0.00186402159222;
+   fDecTF_1[1][2][30] = -0.0107061261122;
+   fDecTF_1[1][2][31] = 0.00130761459452;
+   fDecTF_1[1][2][32] = -0.00346909467874;
+   fDecTF_1[1][2][33] = -0.00281573817971;
+   fDecTF_1[1][2][34] = -0.000807648798594;
+   fDecTF_1[1][2][35] = -0.000329248616242;
+   fDecTF_1[1][2][36] = 0.000384073853552;
+   fDecTF_1[1][3][0] = 3.61744269365;
+   fDecTF_1[1][3][1] = 0.146894246006;
+   fDecTF_1[1][3][2] = -1.44751880159;
+   fDecTF_1[1][3][3] = 5.80945394053;
+   fDecTF_1[1][3][4] = -0.0633319812697;
+   fDecTF_1[1][3][5] = 0.187286064646;
+   fDecTF_1[1][3][6] = 0.598749568239;
+   fDecTF_1[1][3][7] = 0.619789864389;
+   fDecTF_1[1][3][8] = -1.4405404717;
+   fDecTF_1[1][3][9] = 0.512458209571;
+   fDecTF_1[1][3][10] = -1.16205967918;
+   fDecTF_1[1][3][11] = -0.0748577202183;
+   fDecTF_1[1][3][12] = -0.0327569217263;
+   fDecTF_1[1][3][13] = -1.08063677564;
+   fDecTF_1[1][3][14] = 0.376065267784;
+   fDecTF_1[1][3][15] = 0.0499073993334;
+   fDecTF_1[1][3][16] = 0.0853006013411;
+   fDecTF_1[1][3][17] = 0.189092810509;
+   fDecTF_1[1][3][18] = -0.0429763769505;
+   fDecTF_1[1][3][19] = -0.0179729833701;
+   fDecTF_1[1][3][20] = -0.140636622399;
+   fDecTF_1[1][3][21] = -0.181770443759;
+   fDecTF_1[1][3][22] = 0.192512345671;
+   fDecTF_1[1][3][23] = -0.0976553100572;
+   fDecTF_1[1][3][24] = 0.148994781858;
+   fDecTF_1[1][3][25] = -0.181813408051;
+   fDecTF_1[1][3][26] = -0.00658278184244;
+   fDecTF_1[1][3][27] = -0.00935968929191;
+   fDecTF_1[1][3][28] = -0.00830050908041;
+   fDecTF_1[1][3][29] = -0.013039083393;
+   fDecTF_1[1][3][30] = 0.00207104024101;
+   fDecTF_1[1][3][31] = -0.00773073362335;
+   fDecTF_1[1][3][32] = -0.0187357534782;
+   fDecTF_1[1][3][33] = -0.0207580621078;
+   fDecTF_1[1][3][34] = -0.000620997197585;
+   fDecTF_1[1][3][35] = 0.000664471551008;
+   fDecTF_1[1][3][36] = -2.68030372646e-05;
+   fDecTF_1[1][4][0] = 0.2135538773;
+   fDecTF_1[1][4][1] = 0.206140094713;
+   fDecTF_1[1][4][2] = -0.0934240786828;
+   fDecTF_1[1][4][3] = -0.0633319812697;
+   fDecTF_1[1][4][4] = 1.47920766262;
+   fDecTF_1[1][4][5] = 0.727525367364;
+   fDecTF_1[1][4][6] = -0.222786542508;
+   fDecTF_1[1][4][7] = -0.975402574668;
+   fDecTF_1[1][4][8] = 0.238094541969;
+   fDecTF_1[1][4][9] = -0.446612699741;
+   fDecTF_1[1][4][10] = -0.0345535097306;
+   fDecTF_1[1][4][11] = 0.00376279029422;
+   fDecTF_1[1][4][12] = -0.335745136803;
+   fDecTF_1[1][4][13] = -0.131421238598;
+   fDecTF_1[1][4][14] = 0.0779925715635;
+   fDecTF_1[1][4][15] = 0.144173889408;
+   fDecTF_1[1][4][16] = 0.0354159478786;
+   fDecTF_1[1][4][17] = -0.0355882176893;
+   fDecTF_1[1][4][18] = -0.0212168993495;
+   fDecTF_1[1][4][19] = -0.0144474091683;
+   fDecTF_1[1][4][20] = 0.0422825839634;
+   fDecTF_1[1][4][21] = 0.0400948783613;
+   fDecTF_1[1][4][22] = -0.0349919331959;
+   fDecTF_1[1][4][23] = -0.024707591031;
+   fDecTF_1[1][4][24] = -0.0406451069684;
+   fDecTF_1[1][4][25] = -0.0227170643102;
+   fDecTF_1[1][4][26] = 0.00241517316896;
+   fDecTF_1[1][4][27] = 0.00192418491181;
+   fDecTF_1[1][4][28] = 0.00941716662737;
+   fDecTF_1[1][4][29] = 0.00806807529996;
+   fDecTF_1[1][4][30] = 0.0121489472092;
+   fDecTF_1[1][4][31] = 0.0121719279925;
+   fDecTF_1[1][4][32] = -0.0163855429471;
+   fDecTF_1[1][4][33] = -0.0141444435866;
+   fDecTF_1[1][4][34] = -0.000474938678635;
+   fDecTF_1[1][4][35] = -7.47627642333e-05;
+   fDecTF_1[1][4][36] = -0.00174160001602;
+   fDecTF_1[1][5][0] = 0.212243142157;
+   fDecTF_1[1][5][1] = -0.22478514513;
+   fDecTF_1[1][5][2] = -0.371132024755;
+   fDecTF_1[1][5][3] = 0.187286064646;
+   fDecTF_1[1][5][4] = 0.727525367364;
+   fDecTF_1[1][5][5] = 2.09041535858;
+   fDecTF_1[1][5][6] = 0.915719767622;
+   fDecTF_1[1][5][7] = 0.185098765125;
+   fDecTF_1[1][5][8] = 0.224658618429;
+   fDecTF_1[1][5][9] = 0.295095920147;
+   fDecTF_1[1][5][10] = -0.217058344772;
+   fDecTF_1[1][5][11] = -0.00778338126288;
+   fDecTF_1[1][5][12] = -0.333754258451;
+   fDecTF_1[1][5][13] = -0.0562688323116;
+   fDecTF_1[1][5][14] = -0.194862316161;
+   fDecTF_1[1][5][15] = 0.0921669475664;
+   fDecTF_1[1][5][16] = 0.00962108192131;
+   fDecTF_1[1][5][17] = -0.0244157917843;
+   fDecTF_1[1][5][18] = 0.00341244301572;
+   fDecTF_1[1][5][19] = 0.00398871929793;
+   fDecTF_1[1][5][20] = -0.0354787564802;
+   fDecTF_1[1][5][21] = -0.0978676340687;
+   fDecTF_1[1][5][22] = -0.0760747373714;
+   fDecTF_1[1][5][23] = 0.038029454562;
+   fDecTF_1[1][5][24] = -0.0555653499915;
+   fDecTF_1[1][5][25] = 0.0425618828274;
+   fDecTF_1[1][5][26] = 0.00193690355791;
+   fDecTF_1[1][5][27] = 0.0039650097087;
+   fDecTF_1[1][5][28] = 0.0065744162716;
+   fDecTF_1[1][5][29] = 0.00951468973216;
+   fDecTF_1[1][5][30] = 0.0127915812506;
+   fDecTF_1[1][5][31] = 0.00451247866652;
+   fDecTF_1[1][5][32] = 0.0120376273904;
+   fDecTF_1[1][5][33] = 0.0117226495438;
+   fDecTF_1[1][5][34] = 0.000249078716842;
+   fDecTF_1[1][5][35] = 0.000812261236853;
+   fDecTF_1[1][5][36] = -0.000501564945779;
+   fDecTF_1[1][6][0] = 0.188204456622;
+   fDecTF_1[1][6][1] = -0.184988919621;
+   fDecTF_1[1][6][2] = -0.406952522786;
+   fDecTF_1[1][6][3] = 0.598749568239;
+   fDecTF_1[1][6][4] = -0.222786542508;
+   fDecTF_1[1][6][5] = 0.915719767622;
+   fDecTF_1[1][6][6] = 2.3362758912;
+   fDecTF_1[1][6][7] = 1.69769844519;
+   fDecTF_1[1][6][8] = -0.344829445176;
+   fDecTF_1[1][6][9] = 0.919562329585;
+   fDecTF_1[1][6][10] = -0.503730794503;
+   fDecTF_1[1][6][11] = -0.0176975886257;
+   fDecTF_1[1][6][12] = -0.173538007047;
+   fDecTF_1[1][6][13] = -0.0724688127687;
+   fDecTF_1[1][6][14] = -0.193497503209;
+   fDecTF_1[1][6][15] = 0.0919384622377;
+   fDecTF_1[1][6][16] = -0.0127425762245;
+   fDecTF_1[1][6][17] = 0.262882303639;
+   fDecTF_1[1][6][18] = 0.0379345027111;
+   fDecTF_1[1][6][19] = -0.00192681778873;
+   fDecTF_1[1][6][20] = -0.0948162345785;
+   fDecTF_1[1][6][21] = -0.332154753146;
+   fDecTF_1[1][6][22] = -0.137191614056;
+   fDecTF_1[1][6][23] = 0.0686674594226;
+   fDecTF_1[1][6][24] = -0.0604441461729;
+   fDecTF_1[1][6][25] = 0.175645591124;
+   fDecTF_1[1][6][26] = -0.000264965181288;
+   fDecTF_1[1][6][27] = 0.00216958805748;
+   fDecTF_1[1][6][28] = -0.00258759881612;
+   fDecTF_1[1][6][29] = -0.000551098196328;
+   fDecTF_1[1][6][30] = 0.00315514231689;
+   fDecTF_1[1][6][31] = -8.21173658322e-05;
+   fDecTF_1[1][6][32] = -0.0148581246799;
+   fDecTF_1[1][6][33] = -0.0136930097464;
+   fDecTF_1[1][6][34] = -0.00158058210724;
+   fDecTF_1[1][6][35] = 0.000143049577941;
+   fDecTF_1[1][6][36] = 0.000245313287859;
+   fDecTF_1[1][7][0] = 0.298118508783;
+   fDecTF_1[1][7][1] = 0.264208704627;
+   fDecTF_1[1][7][2] = 0.185708576994;
+   fDecTF_1[1][7][3] = 0.619789864389;
+   fDecTF_1[1][7][4] = -0.975402574668;
+   fDecTF_1[1][7][5] = 0.185098765125;
+   fDecTF_1[1][7][6] = 1.69769844519;
+   fDecTF_1[1][7][7] = 3.31104219123;
+   fDecTF_1[1][7][8] = -0.82653657978;
+   fDecTF_1[1][7][9] = 0.658137260221;
+   fDecTF_1[1][7][10] = -1.14226681792;
+   fDecTF_1[1][7][11] = 0.0131647327639;
+   fDecTF_1[1][7][12] = 0.368861995805;
+   fDecTF_1[1][7][13] = -0.565575590082;
+   fDecTF_1[1][7][14] = -0.527593777406;
+   fDecTF_1[1][7][15] = -0.296597315325;
+   fDecTF_1[1][7][16] = 0.0102226664527;
+   fDecTF_1[1][7][17] = -0.183040128494;
+   fDecTF_1[1][7][18] = 0.117077066036;
+   fDecTF_1[1][7][19] = 0.060324353808;
+   fDecTF_1[1][7][20] = -0.173133270936;
+   fDecTF_1[1][7][21] = 0.0304954137854;
+   fDecTF_1[1][7][22] = -0.205534099017;
+   fDecTF_1[1][7][23] = 0.00137387266435;
+   fDecTF_1[1][7][24] = -0.0341641514666;
+   fDecTF_1[1][7][25] = 0.206717630136;
+   fDecTF_1[1][7][26] = -0.00216671315784;
+   fDecTF_1[1][7][27] = -0.00149584861931;
+   fDecTF_1[1][7][28] = 0.00964920548238;
+   fDecTF_1[1][7][29] = 0.00908214004403;
+   fDecTF_1[1][7][30] = 0.00905356000695;
+   fDecTF_1[1][7][31] = 0.0116872357121;
+   fDecTF_1[1][7][32] = -0.00650632234964;
+   fDecTF_1[1][7][33] = -0.00644332609927;
+   fDecTF_1[1][7][34] = -0.000518385766669;
+   fDecTF_1[1][7][35] = -0.000163891677529;
+   fDecTF_1[1][7][36] = -0.00191989345757;
+   fDecTF_1[1][8][0] = -0.930107784921;
+   fDecTF_1[1][8][1] = -3.25318049743;
+   fDecTF_1[1][8][2] = 0.795761168305;
+   fDecTF_1[1][8][3] = -1.4405404717;
+   fDecTF_1[1][8][4] = 0.238094541969;
+   fDecTF_1[1][8][5] = 0.224658618429;
+   fDecTF_1[1][8][6] = -0.344829445176;
+   fDecTF_1[1][8][7] = -0.82653657978;
+   fDecTF_1[1][8][8] = 3.81902661953;
+   fDecTF_1[1][8][9] = -0.387765576451;
+   fDecTF_1[1][8][10] = 0.939518298503;
+   fDecTF_1[1][8][11] = -0.030245630216;
+   fDecTF_1[1][8][12] = 0.676556173101;
+   fDecTF_1[1][8][13] = 0.790643163183;
+   fDecTF_1[1][8][14] = 0.0970734172189;
+   fDecTF_1[1][8][15] = -1.17191475342;
+   fDecTF_1[1][8][16] = -0.242689946472;
+   fDecTF_1[1][8][17] = -0.18727090159;
+   fDecTF_1[1][8][18] = 0.0345054029363;
+   fDecTF_1[1][8][19] = 0.224276156253;
+   fDecTF_1[1][8][20] = 0.112682818955;
+   fDecTF_1[1][8][21] = -0.0401281897411;
+   fDecTF_1[1][8][22] = 0.107126741086;
+   fDecTF_1[1][8][23] = 0.0625003564369;
+   fDecTF_1[1][8][24] = 0.0214900593528;
+   fDecTF_1[1][8][25] = 0.0950534002016;
+   fDecTF_1[1][8][26] = -0.00791718019488;
+   fDecTF_1[1][8][27] = -0.00904875441109;
+   fDecTF_1[1][8][28] = -0.0093310289381;
+   fDecTF_1[1][8][29] = -0.00858369737776;
+   fDecTF_1[1][8][30] = -0.0191980934394;
+   fDecTF_1[1][8][31] = -0.0262560462415;
+   fDecTF_1[1][8][32] = 0.00298759335266;
+   fDecTF_1[1][8][33] = 0.00134796922879;
+   fDecTF_1[1][8][34] = 0.000686593168548;
+   fDecTF_1[1][8][35] = -6.33748097789e-05;
+   fDecTF_1[1][8][36] = 0.00103966134368;
+   fDecTF_1[1][9][0] = -0.945693938272;
+   fDecTF_1[1][9][1] = -0.335676158372;
+   fDecTF_1[1][9][2] = -4.40154299843;
+   fDecTF_1[1][9][3] = 0.512458209571;
+   fDecTF_1[1][9][4] = -0.446612699741;
+   fDecTF_1[1][9][5] = 0.295095920147;
+   fDecTF_1[1][9][6] = 0.919562329585;
+   fDecTF_1[1][9][7] = 0.658137260221;
+   fDecTF_1[1][9][8] = -0.387765576451;
+   fDecTF_1[1][9][9] = 4.9868846022;
+   fDecTF_1[1][9][10] = -0.0225348352596;
+   fDecTF_1[1][9][11] = 0.0067789482828;
+   fDecTF_1[1][9][12] = -1.3216654576;
+   fDecTF_1[1][9][13] = -0.0419115692114;
+   fDecTF_1[1][9][14] = -0.497460264619;
+   fDecTF_1[1][9][15] = 0.899858576944;
+   fDecTF_1[1][9][16] = -0.0812642701454;
+   fDecTF_1[1][9][17] = -0.0614494639782;
+   fDecTF_1[1][9][18] = 0.00449884069843;
+   fDecTF_1[1][9][19] = 0.0483742281348;
+   fDecTF_1[1][9][20] = -0.533373147093;
+   fDecTF_1[1][9][21] = -0.675046753346;
+   fDecTF_1[1][9][22] = -0.222691836177;
+   fDecTF_1[1][9][23] = -0.128464001046;
+   fDecTF_1[1][9][24] = 0.201110191445;
+   fDecTF_1[1][9][25] = -0.00879219142292;
+   fDecTF_1[1][9][26] = -0.000968094430182;
+   fDecTF_1[1][9][27] = -0.00172174787014;
+   fDecTF_1[1][9][28] = -0.0025055009533;
+   fDecTF_1[1][9][29] = -0.00411192187978;
+   fDecTF_1[1][9][30] = 0.00520085152217;
+   fDecTF_1[1][9][31] = 0.00081846141793;
+   fDecTF_1[1][9][32] = -0.00732008953677;
+   fDecTF_1[1][9][33] = -0.00817838245321;
+   fDecTF_1[1][9][34] = -0.000939421257553;
+   fDecTF_1[1][9][35] = 0.000145434607393;
+   fDecTF_1[1][9][36] = 0.000403145928561;
+   fDecTF_1[1][10][0] = -1.19900611719;
+   fDecTF_1[1][10][1] = -1.37048726618;
+   fDecTF_1[1][10][2] = 0.0352070344877;
+   fDecTF_1[1][10][3] = -1.16205967918;
+   fDecTF_1[1][10][4] = -0.0345535097306;
+   fDecTF_1[1][10][5] = -0.217058344772;
+   fDecTF_1[1][10][6] = -0.503730794503;
+   fDecTF_1[1][10][7] = -1.14226681792;
+   fDecTF_1[1][10][8] = 0.939518298503;
+   fDecTF_1[1][10][9] = -0.0225348352596;
+   fDecTF_1[1][10][10] = 5.04423905056;
+   fDecTF_1[1][10][11] = 0.0865502884548;
+   fDecTF_1[1][10][12] = 0.188783444964;
+   fDecTF_1[1][10][13] = 4.02488416906;
+   fDecTF_1[1][10][14] = 0.541323684526;
+   fDecTF_1[1][10][15] = 0.126899409878;
+   fDecTF_1[1][10][16] = 0.0328865077424;
+   fDecTF_1[1][10][17] = 1.04604970827;
+   fDecTF_1[1][10][18] = -0.271230328609;
+   fDecTF_1[1][10][19] = -0.506246200425;
+   fDecTF_1[1][10][20] = -0.0522072990579;
+   fDecTF_1[1][10][21] = -0.696718371961;
+   fDecTF_1[1][10][22] = 0.194194667486;
+   fDecTF_1[1][10][23] = -0.235707770524;
+   fDecTF_1[1][10][24] = 0.293320536414;
+   fDecTF_1[1][10][25] = 0.017512144055;
+   fDecTF_1[1][10][26] = 0.00275914176644;
+   fDecTF_1[1][10][27] = 0.00300312018784;
+   fDecTF_1[1][10][28] = -0.00372226116712;
+   fDecTF_1[1][10][29] = -0.00479290820177;
+   fDecTF_1[1][10][30] = -0.00217057817897;
+   fDecTF_1[1][10][31] = 0.00432800998854;
+   fDecTF_1[1][10][32] = -0.00683884299301;
+   fDecTF_1[1][10][33] = -0.00351610880292;
+   fDecTF_1[1][10][34] = -0.000409690325741;
+   fDecTF_1[1][10][35] = 0.00121057877062;
+   fDecTF_1[1][10][36] = -0.000155302437974;
+   fDecTF_1[1][11][0] = 0.0124407121109;
+   fDecTF_1[1][11][1] = -0.056993034318;
+   fDecTF_1[1][11][2] = -0.0287299687528;
+   fDecTF_1[1][11][3] = -0.0748577202183;
+   fDecTF_1[1][11][4] = 0.00376279029422;
+   fDecTF_1[1][11][5] = -0.00778338126288;
+   fDecTF_1[1][11][6] = -0.0176975886257;
+   fDecTF_1[1][11][7] = 0.0131647327639;
+   fDecTF_1[1][11][8] = -0.030245630216;
+   fDecTF_1[1][11][9] = 0.0067789482828;
+   fDecTF_1[1][11][10] = 0.0865502884548;
+   fDecTF_1[1][11][11] = 3.65765601553;
+   fDecTF_1[1][11][12] = -0.0857483555358;
+   fDecTF_1[1][11][13] = -0.0961134451593;
+   fDecTF_1[1][11][14] = -0.029959804135;
+   fDecTF_1[1][11][15] = 0.0966332779568;
+   fDecTF_1[1][11][16] = 0.972156636416;
+   fDecTF_1[1][11][17] = -0.164978753609;
+   fDecTF_1[1][11][18] = 2.6447017757;
+   fDecTF_1[1][11][19] = -0.226095476872;
+   fDecTF_1[1][11][20] = 0.0982074769893;
+   fDecTF_1[1][11][21] = -0.0730691946792;
+   fDecTF_1[1][11][22] = -0.310339828382;
+   fDecTF_1[1][11][23] = 0.0453594917536;
+   fDecTF_1[1][11][24] = -0.0896312607994;
+   fDecTF_1[1][11][25] = 0.0100075749247;
+   fDecTF_1[1][11][26] = 0.0022749089341;
+   fDecTF_1[1][11][27] = -9.71992565376e-05;
+   fDecTF_1[1][11][28] = 0.00153448213609;
+   fDecTF_1[1][11][29] = -0.00152631062419;
+   fDecTF_1[1][11][30] = -0.00533808135576;
+   fDecTF_1[1][11][31] = 0.000927480562798;
+   fDecTF_1[1][11][32] = 0.00929734594624;
+   fDecTF_1[1][11][33] = -0.0116755495841;
+   fDecTF_1[1][11][34] = -0.000142268687942;
+   fDecTF_1[1][11][35] = 0.000112352635742;
+   fDecTF_1[1][11][36] = 5.58962754032e-05;
+   fDecTF_1[1][12][0] = -0.349613626535;
+   fDecTF_1[1][12][1] = 1.05261976222;
+   fDecTF_1[1][12][2] = 0.669307969315;
+   fDecTF_1[1][12][3] = -0.0327569217263;
+   fDecTF_1[1][12][4] = -0.335745136803;
+   fDecTF_1[1][12][5] = -0.333754258451;
+   fDecTF_1[1][12][6] = -0.173538007047;
+   fDecTF_1[1][12][7] = 0.368861995805;
+   fDecTF_1[1][12][8] = 0.676556173101;
+   fDecTF_1[1][12][9] = -1.3216654576;
+   fDecTF_1[1][12][10] = 0.188783444964;
+   fDecTF_1[1][12][11] = -0.0857483555358;
+   fDecTF_1[1][12][12] = 5.65179220108;
+   fDecTF_1[1][12][13] = 0.929844988065;
+   fDecTF_1[1][12][14] = -0.832383689097;
+   fDecTF_1[1][12][15] = -4.70133433013;
+   fDecTF_1[1][12][16] = -0.0965085472222;
+   fDecTF_1[1][12][17] = -1.16783795473;
+   fDecTF_1[1][12][18] = -0.128210294633;
+   fDecTF_1[1][12][19] = 0.0634314332143;
+   fDecTF_1[1][12][20] = -0.245292085355;
+   fDecTF_1[1][12][21] = 0.63721874031;
+   fDecTF_1[1][12][22] = -1.18886824926;
+   fDecTF_1[1][12][23] = 0.053613858757;
+   fDecTF_1[1][12][24] = -0.39234330837;
+   fDecTF_1[1][12][25] = 2.15273844556;
+   fDecTF_1[1][12][26] = 0.00166593318873;
+   fDecTF_1[1][12][27] = 0.000216110662924;
+   fDecTF_1[1][12][28] = -0.000998669600861;
+   fDecTF_1[1][12][29] = -0.000968377967176;
+   fDecTF_1[1][12][30] = 0.00195423211304;
+   fDecTF_1[1][12][31] = 0.00362905955975;
+   fDecTF_1[1][12][32] = -0.00646921333391;
+   fDecTF_1[1][12][33] = -0.00650902076384;
+   fDecTF_1[1][12][34] = 0.000383734990143;
+   fDecTF_1[1][12][35] = 0.00015790835572;
+   fDecTF_1[1][12][36] = 0.000940719157471;
+   fDecTF_1[1][13][0] = -1.18763072092;
+   fDecTF_1[1][13][1] = -0.891264760214;
+   fDecTF_1[1][13][2] = 0.118849774754;
+   fDecTF_1[1][13][3] = -1.08063677564;
+   fDecTF_1[1][13][4] = -0.131421238598;
+   fDecTF_1[1][13][5] = -0.0562688323116;
+   fDecTF_1[1][13][6] = -0.0724688127687;
+   fDecTF_1[1][13][7] = -0.565575590082;
+   fDecTF_1[1][13][8] = 0.790643163183;
+   fDecTF_1[1][13][9] = -0.0419115692114;
+   fDecTF_1[1][13][10] = 4.02488416906;
+   fDecTF_1[1][13][11] = -0.0961134451593;
+   fDecTF_1[1][13][12] = 0.929844988065;
+   fDecTF_1[1][13][13] = 4.77235369202;
+   fDecTF_1[1][13][14] = 0.0970400091123;
+   fDecTF_1[1][13][15] = -0.675935502274;
+   fDecTF_1[1][13][16] = -0.267898559622;
+   fDecTF_1[1][13][17] = 0.619670684422;
+   fDecTF_1[1][13][18] = -0.272933257734;
+   fDecTF_1[1][13][19] = -0.190638888612;
+   fDecTF_1[1][13][20] = -0.197921141426;
+   fDecTF_1[1][13][21] = -0.600649650866;
+   fDecTF_1[1][13][22] = 0.410615760605;
+   fDecTF_1[1][13][23] = -0.182742081986;
+   fDecTF_1[1][13][24] = 0.398230914088;
+   fDecTF_1[1][13][25] = -0.126302611888;
+   fDecTF_1[1][13][26] = -0.0103584640381;
+   fDecTF_1[1][13][27] = -0.0140494576214;
+   fDecTF_1[1][13][28] = -0.0113209286444;
+   fDecTF_1[1][13][29] = -0.0141952650021;
+   fDecTF_1[1][13][30] = -0.0196435495944;
+   fDecTF_1[1][13][31] = -0.0211619376524;
+   fDecTF_1[1][13][32] = 0.00388398637993;
+   fDecTF_1[1][13][33] = -0.00357076161868;
+   fDecTF_1[1][13][34] = 0.000943187822223;
+   fDecTF_1[1][13][35] = 0.00181633035903;
+   fDecTF_1[1][13][36] = -0.000335822767828;
+   fDecTF_1[1][14][0] = -0.142843815158;
+   fDecTF_1[1][14][1] = -0.28047113756;
+   fDecTF_1[1][14][2] = -0.00533706265944;
+   fDecTF_1[1][14][3] = 0.376065267784;
+   fDecTF_1[1][14][4] = 0.0779925715635;
+   fDecTF_1[1][14][5] = -0.194862316161;
+   fDecTF_1[1][14][6] = -0.193497503209;
+   fDecTF_1[1][14][7] = -0.527593777406;
+   fDecTF_1[1][14][8] = 0.0970734172189;
+   fDecTF_1[1][14][9] = -0.497460264619;
+   fDecTF_1[1][14][10] = 0.541323684526;
+   fDecTF_1[1][14][11] = -0.029959804135;
+   fDecTF_1[1][14][12] = -0.832383689097;
+   fDecTF_1[1][14][13] = 0.0970400091123;
+   fDecTF_1[1][14][14] = 3.1320099191;
+   fDecTF_1[1][14][15] = 0.876263881907;
+   fDecTF_1[1][14][16] = -0.273845325054;
+   fDecTF_1[1][14][17] = 2.50523223876;
+   fDecTF_1[1][14][18] = -0.00108752182448;
+   fDecTF_1[1][14][19] = 0.0207948316052;
+   fDecTF_1[1][14][20] = 0.140686427357;
+   fDecTF_1[1][14][21] = -1.51541301277;
+   fDecTF_1[1][14][22] = -0.234033110436;
+   fDecTF_1[1][14][23] = -0.459184352056;
+   fDecTF_1[1][14][24] = 0.130328234368;
+   fDecTF_1[1][14][25] = 0.427046279855;
+   fDecTF_1[1][14][26] = -0.010338239331;
+   fDecTF_1[1][14][27] = -0.00727869564095;
+   fDecTF_1[1][14][28] = -0.0129389457701;
+   fDecTF_1[1][14][29] = -0.00814384903147;
+   fDecTF_1[1][14][30] = -0.0180143513796;
+   fDecTF_1[1][14][31] = -0.0190370732815;
+   fDecTF_1[1][14][32] = 0.00192448331427;
+   fDecTF_1[1][14][33] = 0.00361763646601;
+   fDecTF_1[1][14][34] = 0.000265000488231;
+   fDecTF_1[1][14][35] = -0.000534676157718;
+   fDecTF_1[1][14][36] = -3.09992217684e-05;
+   fDecTF_1[1][15][0] = 0.43672493923;
+   fDecTF_1[1][15][1] = -0.532553985517;
+   fDecTF_1[1][15][2] = -0.232595722822;
+   fDecTF_1[1][15][3] = 0.0499073993334;
+   fDecTF_1[1][15][4] = 0.144173889408;
+   fDecTF_1[1][15][5] = 0.0921669475664;
+   fDecTF_1[1][15][6] = 0.0919384622377;
+   fDecTF_1[1][15][7] = -0.296597315325;
+   fDecTF_1[1][15][8] = -1.17191475342;
+   fDecTF_1[1][15][9] = 0.899858576944;
+   fDecTF_1[1][15][10] = 0.126899409878;
+   fDecTF_1[1][15][11] = 0.0966332779568;
+   fDecTF_1[1][15][12] = -4.70133433013;
+   fDecTF_1[1][15][13] = -0.675935502274;
+   fDecTF_1[1][15][14] = 0.876263881907;
+   fDecTF_1[1][15][15] = 5.83862370648;
+   fDecTF_1[1][15][16] = 0.074927404791;
+   fDecTF_1[1][15][17] = 1.39866799406;
+   fDecTF_1[1][15][18] = -0.0803828844671;
+   fDecTF_1[1][15][19] = -0.106039649818;
+   fDecTF_1[1][15][20] = 0.724598174136;
+   fDecTF_1[1][15][21] = 0.0944390991504;
+   fDecTF_1[1][15][22] = -0.297919782427;
+   fDecTF_1[1][15][23] = 0.282739167098;
+   fDecTF_1[1][15][24] = -0.715425388053;
+   fDecTF_1[1][15][25] = -0.29981034965;
+   fDecTF_1[1][15][26] = -0.00550473881824;
+   fDecTF_1[1][15][27] = -0.0107192990984;
+   fDecTF_1[1][15][28] = -0.00853594057085;
+   fDecTF_1[1][15][29] = -0.0148222084238;
+   fDecTF_1[1][15][30] = -0.00221207184806;
+   fDecTF_1[1][15][31] = -0.00564967994134;
+   fDecTF_1[1][15][32] = -0.00401821200325;
+   fDecTF_1[1][15][33] = -0.00344991018264;
+   fDecTF_1[1][15][34] = -0.00121560580785;
+   fDecTF_1[1][15][35] = 0.00144058602279;
+   fDecTF_1[1][15][36] = 0.00135740020981;
+   fDecTF_1[1][16][0] = 0.210693300088;
+   fDecTF_1[1][16][1] = -0.0928895304092;
+   fDecTF_1[1][16][2] = 0.0508385896493;
+   fDecTF_1[1][16][3] = 0.0853006013411;
+   fDecTF_1[1][16][4] = 0.0354159478786;
+   fDecTF_1[1][16][5] = 0.00962108192131;
+   fDecTF_1[1][16][6] = -0.0127425762245;
+   fDecTF_1[1][16][7] = 0.0102226664527;
+   fDecTF_1[1][16][8] = -0.242689946472;
+   fDecTF_1[1][16][9] = -0.0812642701454;
+   fDecTF_1[1][16][10] = 0.0328865077424;
+   fDecTF_1[1][16][11] = 0.972156636416;
+   fDecTF_1[1][16][12] = -0.0965085472222;
+   fDecTF_1[1][16][13] = -0.267898559622;
+   fDecTF_1[1][16][14] = -0.273845325054;
+   fDecTF_1[1][16][15] = 0.074927404791;
+   fDecTF_1[1][16][16] = 3.22057888412;
+   fDecTF_1[1][16][17] = -0.491677354483;
+   fDecTF_1[1][16][18] = 0.123648216888;
+   fDecTF_1[1][16][19] = -2.4776887159;
+   fDecTF_1[1][16][20] = 0.231264914887;
+   fDecTF_1[1][16][21] = -0.0884282789599;
+   fDecTF_1[1][16][22] = 0.136222028584;
+   fDecTF_1[1][16][23] = 0.340184850236;
+   fDecTF_1[1][16][24] = 0.166947538467;
+   fDecTF_1[1][16][25] = -0.26652660914;
+   fDecTF_1[1][16][26] = -0.0142185343939;
+   fDecTF_1[1][16][27] = 0.0104850789716;
+   fDecTF_1[1][16][28] = 0.00041921238652;
+   fDecTF_1[1][16][29] = -0.00853807640588;
+   fDecTF_1[1][16][30] = -0.0245225100425;
+   fDecTF_1[1][16][31] = 0.0130726706581;
+   fDecTF_1[1][16][32] = -0.0255805554966;
+   fDecTF_1[1][16][33] = 0.0246248073022;
+   fDecTF_1[1][16][34] = 0.00206550374491;
+   fDecTF_1[1][16][35] = 0.000324029954572;
+   fDecTF_1[1][16][36] = 0.000136112338756;
+   fDecTF_1[1][17][0] = -0.424418427948;
+   fDecTF_1[1][17][1] = -0.327573240524;
+   fDecTF_1[1][17][2] = -0.314238603138;
+   fDecTF_1[1][17][3] = 0.189092810509;
+   fDecTF_1[1][17][4] = -0.0355882176893;
+   fDecTF_1[1][17][5] = -0.0244157917843;
+   fDecTF_1[1][17][6] = 0.262882303639;
+   fDecTF_1[1][17][7] = -0.183040128494;
+   fDecTF_1[1][17][8] = -0.18727090159;
+   fDecTF_1[1][17][9] = -0.0614494639782;
+   fDecTF_1[1][17][10] = 1.04604970827;
+   fDecTF_1[1][17][11] = -0.164978753609;
+   fDecTF_1[1][17][12] = -1.16783795473;
+   fDecTF_1[1][17][13] = 0.619670684422;
+   fDecTF_1[1][17][14] = 2.50523223876;
+   fDecTF_1[1][17][15] = 1.39866799406;
+   fDecTF_1[1][17][16] = -0.491677354483;
+   fDecTF_1[1][17][17] = 3.75944729298;
+   fDecTF_1[1][17][18] = -0.14352572803;
+   fDecTF_1[1][17][19] = 0.194172936198;
+   fDecTF_1[1][17][20] = 0.672633567543;
+   fDecTF_1[1][17][21] = -1.24592518197;
+   fDecTF_1[1][17][22] = -0.0887192097485;
+   fDecTF_1[1][17][23] = 0.590380997203;
+   fDecTF_1[1][17][24] = -0.727946533377;
+   fDecTF_1[1][17][25] = 0.617882087002;
+   fDecTF_1[1][17][26] = 0.00773889943096;
+   fDecTF_1[1][17][27] = 0.0105816347273;
+   fDecTF_1[1][17][28] = 0.0114215158539;
+   fDecTF_1[1][17][29] = 0.0093336650104;
+   fDecTF_1[1][17][30] = 0.0227001283415;
+   fDecTF_1[1][17][31] = 0.0273171460857;
+   fDecTF_1[1][17][32] = -0.00541775181113;
+   fDecTF_1[1][17][33] = -0.00347287577816;
+   fDecTF_1[1][17][34] = -0.001245319411;
+   fDecTF_1[1][17][35] = -0.00063037983617;
+   fDecTF_1[1][17][36] = -0.000492064032245;
+   fDecTF_1[1][18][0] = -0.0291369160173;
+   fDecTF_1[1][18][1] = 0.070113670378;
+   fDecTF_1[1][18][2] = -0.0228911657045;
+   fDecTF_1[1][18][3] = -0.0429763769505;
+   fDecTF_1[1][18][4] = -0.0212168993495;
+   fDecTF_1[1][18][5] = 0.00341244301572;
+   fDecTF_1[1][18][6] = 0.0379345027111;
+   fDecTF_1[1][18][7] = 0.117077066036;
+   fDecTF_1[1][18][8] = 0.0345054029363;
+   fDecTF_1[1][18][9] = 0.00449884069843;
+   fDecTF_1[1][18][10] = -0.271230328609;
+   fDecTF_1[1][18][11] = 2.6447017757;
+   fDecTF_1[1][18][12] = -0.128210294633;
+   fDecTF_1[1][18][13] = -0.272933257734;
+   fDecTF_1[1][18][14] = -0.00108752182448;
+   fDecTF_1[1][18][15] = -0.0803828844671;
+   fDecTF_1[1][18][16] = 0.123648216888;
+   fDecTF_1[1][18][17] = -0.14352572803;
+   fDecTF_1[1][18][18] = 3.46381789191;
+   fDecTF_1[1][18][19] = 0.67316227585;
+   fDecTF_1[1][18][20] = -0.0241088486047;
+   fDecTF_1[1][18][21] = -0.306798070489;
+   fDecTF_1[1][18][22] = 0.48779234253;
+   fDecTF_1[1][18][23] = 0.0777090998946;
+   fDecTF_1[1][18][24] = 0.214185037746;
+   fDecTF_1[1][18][25] = -0.847551202414;
+   fDecTF_1[1][18][26] = 0.00621237201873;
+   fDecTF_1[1][18][27] = -0.00585496830581;
+   fDecTF_1[1][18][28] = -0.000419029103753;
+   fDecTF_1[1][18][29] = 0.00212111081385;
+   fDecTF_1[1][18][30] = -0.0110966192389;
+   fDecTF_1[1][18][31] = 0.00435944641709;
+   fDecTF_1[1][18][32] = -0.0239727898738;
+   fDecTF_1[1][18][33] = 0.0221818231409;
+   fDecTF_1[1][18][34] = -0.000900706112679;
+   fDecTF_1[1][18][35] = 6.73924857832e-05;
+   fDecTF_1[1][18][36] = -5.17694321759e-05;
+   fDecTF_1[1][19][0] = -0.0651305917845;
+   fDecTF_1[1][19][1] = 0.11766608289;
+   fDecTF_1[1][19][2] = -0.0306754558748;
+   fDecTF_1[1][19][3] = -0.0179729833701;
+   fDecTF_1[1][19][4] = -0.0144474091683;
+   fDecTF_1[1][19][5] = 0.00398871929793;
+   fDecTF_1[1][19][6] = -0.00192681778873;
+   fDecTF_1[1][19][7] = 0.060324353808;
+   fDecTF_1[1][19][8] = 0.224276156253;
+   fDecTF_1[1][19][9] = 0.0483742281348;
+   fDecTF_1[1][19][10] = -0.506246200425;
+   fDecTF_1[1][19][11] = -0.226095476872;
+   fDecTF_1[1][19][12] = 0.0634314332143;
+   fDecTF_1[1][19][13] = -0.190638888612;
+   fDecTF_1[1][19][14] = 0.0207948316052;
+   fDecTF_1[1][19][15] = -0.106039649818;
+   fDecTF_1[1][19][16] = -2.4776887159;
+   fDecTF_1[1][19][17] = 0.194172936198;
+   fDecTF_1[1][19][18] = 0.67316227585;
+   fDecTF_1[1][19][19] = 3.49778080301;
+   fDecTF_1[1][19][20] = -0.0355741539565;
+   fDecTF_1[1][19][21] = 0.273647335824;
+   fDecTF_1[1][19][22] = 0.076459638124;
+   fDecTF_1[1][19][23] = 0.0967389003673;
+   fDecTF_1[1][19][24] = -0.391955844849;
+   fDecTF_1[1][19][25] = 0.0248418487413;
+   fDecTF_1[1][19][26] = -0.0270709510862;
+   fDecTF_1[1][19][27] = 0.0291270437158;
+   fDecTF_1[1][19][28] = -0.0116716297428;
+   fDecTF_1[1][19][29] = 0.0155671010111;
+   fDecTF_1[1][19][30] = -0.0323781010274;
+   fDecTF_1[1][19][31] = 0.0337551918559;
+   fDecTF_1[1][19][32] = -0.0183450608985;
+   fDecTF_1[1][19][33] = 0.0197516360284;
+   fDecTF_1[1][19][34] = 0.00247055999625;
+   fDecTF_1[1][19][35] = 0.000534244083527;
+   fDecTF_1[1][19][36] = 3.31166766976e-05;
+   fDecTF_1[1][20][0] = -0.184366155951;
+   fDecTF_1[1][20][1] = -0.426745402526;
+   fDecTF_1[1][20][2] = 0.0905284257641;
+   fDecTF_1[1][20][3] = -0.140636622399;
+   fDecTF_1[1][20][4] = 0.0422825839634;
+   fDecTF_1[1][20][5] = -0.0354787564802;
+   fDecTF_1[1][20][6] = -0.0948162345785;
+   fDecTF_1[1][20][7] = -0.173133270936;
+   fDecTF_1[1][20][8] = 0.112682818955;
+   fDecTF_1[1][20][9] = -0.533373147093;
+   fDecTF_1[1][20][10] = -0.0522072990579;
+   fDecTF_1[1][20][11] = 0.0982074769893;
+   fDecTF_1[1][20][12] = -0.245292085355;
+   fDecTF_1[1][20][13] = -0.197921141426;
+   fDecTF_1[1][20][14] = 0.140686427357;
+   fDecTF_1[1][20][15] = 0.724598174136;
+   fDecTF_1[1][20][16] = 0.231264914887;
+   fDecTF_1[1][20][17] = 0.672633567543;
+   fDecTF_1[1][20][18] = -0.0241088486047;
+   fDecTF_1[1][20][19] = -0.0355741539565;
+   fDecTF_1[1][20][20] = 3.20235038682;
+   fDecTF_1[1][20][21] = 0.741131576287;
+   fDecTF_1[1][20][22] = 0.55612320813;
+   fDecTF_1[1][20][23] = 3.81021093591;
+   fDecTF_1[1][20][24] = -2.62783405092;
+   fDecTF_1[1][20][25] = 0.812904606342;
+   fDecTF_1[1][20][26] = -0.000101287335509;
+   fDecTF_1[1][20][27] = -0.00108104548668;
+   fDecTF_1[1][20][28] = -0.00216294123079;
+   fDecTF_1[1][20][29] = -0.0060933612634;
+   fDecTF_1[1][20][30] = -0.00891703121889;
+   fDecTF_1[1][20][31] = -0.00128071125748;
+   fDecTF_1[1][20][32] = -0.000409350818352;
+   fDecTF_1[1][20][33] = 0.00238289887075;
+   fDecTF_1[1][20][34] = 0.000486156814028;
+   fDecTF_1[1][20][35] = -0.000173379382486;
+   fDecTF_1[1][20][36] = 0.000136500930539;
+   fDecTF_1[1][21][0] = 0.67292364202;
+   fDecTF_1[1][21][1] = 0.0223924624068;
+   fDecTF_1[1][21][2] = 1.10260418926;
+   fDecTF_1[1][21][3] = -0.181770443759;
+   fDecTF_1[1][21][4] = 0.0400948783613;
+   fDecTF_1[1][21][5] = -0.0978676340687;
+   fDecTF_1[1][21][6] = -0.332154753146;
+   fDecTF_1[1][21][7] = 0.0304954137854;
+   fDecTF_1[1][21][8] = -0.0401281897411;
+   fDecTF_1[1][21][9] = -0.675046753346;
+   fDecTF_1[1][21][10] = -0.696718371961;
+   fDecTF_1[1][21][11] = -0.0730691946792;
+   fDecTF_1[1][21][12] = 0.63721874031;
+   fDecTF_1[1][21][13] = -0.600649650866;
+   fDecTF_1[1][21][14] = -1.51541301277;
+   fDecTF_1[1][21][15] = 0.0944390991504;
+   fDecTF_1[1][21][16] = -0.0884282789599;
+   fDecTF_1[1][21][17] = -1.24592518197;
+   fDecTF_1[1][21][18] = -0.306798070489;
+   fDecTF_1[1][21][19] = 0.273647335824;
+   fDecTF_1[1][21][20] = 0.741131576287;
+   fDecTF_1[1][21][21] = 3.46836274526;
+   fDecTF_1[1][21][22] = -2.04426103777;
+   fDecTF_1[1][21][23] = 1.09294010927;
+   fDecTF_1[1][21][24] = -2.24442522891;
+   fDecTF_1[1][21][25] = 2.4273148571;
+   fDecTF_1[1][21][26] = -0.00963669489001;
+   fDecTF_1[1][21][27] = -0.0104073058658;
+   fDecTF_1[1][21][28] = -0.0108323932432;
+   fDecTF_1[1][21][29] = -0.0135362060438;
+   fDecTF_1[1][21][30] = -0.0189135323634;
+   fDecTF_1[1][21][31] = -0.0140108760536;
+   fDecTF_1[1][21][32] = -0.00226941463208;
+   fDecTF_1[1][21][33] = -0.00180997555007;
+   fDecTF_1[1][21][34] = -3.1523437232e-06;
+   fDecTF_1[1][21][35] = 0.000932275265192;
+   fDecTF_1[1][21][36] = 0.000705620569632;
+   fDecTF_1[1][22][0] = -0.228634986361;
+   fDecTF_1[1][22][1] = -0.0687867553999;
+   fDecTF_1[1][22][2] = -0.0568724804981;
+   fDecTF_1[1][22][3] = 0.192512345671;
+   fDecTF_1[1][22][4] = -0.0349919331959;
+   fDecTF_1[1][22][5] = -0.0760747373714;
+   fDecTF_1[1][22][6] = -0.137191614056;
+   fDecTF_1[1][22][7] = -0.205534099017;
+   fDecTF_1[1][22][8] = 0.107126741086;
+   fDecTF_1[1][22][9] = -0.222691836177;
+   fDecTF_1[1][22][10] = 0.194194667486;
+   fDecTF_1[1][22][11] = -0.310339828382;
+   fDecTF_1[1][22][12] = -1.18886824926;
+   fDecTF_1[1][22][13] = 0.410615760605;
+   fDecTF_1[1][22][14] = -0.234033110436;
+   fDecTF_1[1][22][15] = -0.297919782427;
+   fDecTF_1[1][22][16] = 0.136222028584;
+   fDecTF_1[1][22][17] = -0.0887192097485;
+   fDecTF_1[1][22][18] = 0.48779234253;
+   fDecTF_1[1][22][19] = 0.076459638124;
+   fDecTF_1[1][22][20] = 0.55612320813;
+   fDecTF_1[1][22][21] = -2.04426103777;
+   fDecTF_1[1][22][22] = 8.44726904378;
+   fDecTF_1[1][22][23] = 2.86423937049;
+   fDecTF_1[1][22][24] = 1.98089157631;
+   fDecTF_1[1][22][25] = -7.96374424649;
+   fDecTF_1[1][22][26] = -0.00144372468944;
+   fDecTF_1[1][22][27] = -0.00126061239855;
+   fDecTF_1[1][22][28] = -0.00601216620465;
+   fDecTF_1[1][22][29] = -0.002613151008;
+   fDecTF_1[1][22][30] = -0.00868973464741;
+   fDecTF_1[1][22][31] = -0.00501763553773;
+   fDecTF_1[1][22][32] = 0.00153686975051;
+   fDecTF_1[1][22][33] = -0.00636661755162;
+   fDecTF_1[1][22][34] = 4.06244958977e-05;
+   fDecTF_1[1][22][35] = 0.000538253119753;
+   fDecTF_1[1][22][36] = -6.65236552921e-05;
+   fDecTF_1[1][23][0] = -0.543365478975;
+   fDecTF_1[1][23][1] = -0.282948427806;
+   fDecTF_1[1][23][2] = -0.720501231576;
+   fDecTF_1[1][23][3] = -0.0976553100572;
+   fDecTF_1[1][23][4] = -0.024707591031;
+   fDecTF_1[1][23][5] = 0.038029454562;
+   fDecTF_1[1][23][6] = 0.0686674594226;
+   fDecTF_1[1][23][7] = 0.00137387266435;
+   fDecTF_1[1][23][8] = 0.0625003564369;
+   fDecTF_1[1][23][9] = -0.128464001046;
+   fDecTF_1[1][23][10] = -0.235707770524;
+   fDecTF_1[1][23][11] = 0.0453594917536;
+   fDecTF_1[1][23][12] = 0.053613858757;
+   fDecTF_1[1][23][13] = -0.182742081986;
+   fDecTF_1[1][23][14] = -0.459184352056;
+   fDecTF_1[1][23][15] = 0.282739167098;
+   fDecTF_1[1][23][16] = 0.340184850236;
+   fDecTF_1[1][23][17] = 0.590380997203;
+   fDecTF_1[1][23][18] = 0.0777090998946;
+   fDecTF_1[1][23][19] = 0.0967389003673;
+   fDecTF_1[1][23][20] = 3.81021093591;
+   fDecTF_1[1][23][21] = 1.09294010927;
+   fDecTF_1[1][23][22] = 2.86423937049;
+   fDecTF_1[1][23][23] = 7.97603084373;
+   fDecTF_1[1][23][24] = -4.20837112796;
+   fDecTF_1[1][23][25] = -0.60731422201;
+   fDecTF_1[1][23][26] = 0.00212287844168;
+   fDecTF_1[1][23][27] = -0.000324487471226;
+   fDecTF_1[1][23][28] = 0.000114416583473;
+   fDecTF_1[1][23][29] = -0.00141012422208;
+   fDecTF_1[1][23][30] = -0.0107472843125;
+   fDecTF_1[1][23][31] = -0.00399656362816;
+   fDecTF_1[1][23][32] = -0.00190180839056;
+   fDecTF_1[1][23][33] = -0.000429734706303;
+   fDecTF_1[1][23][34] = 0.000357890498493;
+   fDecTF_1[1][23][35] = -0.000115391248689;
+   fDecTF_1[1][23][36] = -0.000388589592214;
+   fDecTF_1[1][24][0] = 0.117319204875;
+   fDecTF_1[1][24][1] = 0.258602006989;
+   fDecTF_1[1][24][2] = 0.179663520345;
+   fDecTF_1[1][24][3] = 0.148994781858;
+   fDecTF_1[1][24][4] = -0.0406451069684;
+   fDecTF_1[1][24][5] = -0.0555653499915;
+   fDecTF_1[1][24][6] = -0.0604441461729;
+   fDecTF_1[1][24][7] = -0.0341641514666;
+   fDecTF_1[1][24][8] = 0.0214900593528;
+   fDecTF_1[1][24][9] = 0.201110191445;
+   fDecTF_1[1][24][10] = 0.293320536414;
+   fDecTF_1[1][24][11] = -0.0896312607994;
+   fDecTF_1[1][24][12] = -0.39234330837;
+   fDecTF_1[1][24][13] = 0.398230914088;
+   fDecTF_1[1][24][14] = 0.130328234368;
+   fDecTF_1[1][24][15] = -0.715425388053;
+   fDecTF_1[1][24][16] = 0.166947538467;
+   fDecTF_1[1][24][17] = -0.727946533377;
+   fDecTF_1[1][24][18] = 0.214185037746;
+   fDecTF_1[1][24][19] = -0.391955844849;
+   fDecTF_1[1][24][20] = -2.62783405092;
+   fDecTF_1[1][24][21] = -2.24442522891;
+   fDecTF_1[1][24][22] = 1.98089157631;
+   fDecTF_1[1][24][23] = -4.20837112796;
+   fDecTF_1[1][24][24] = 5.21756948144;
+   fDecTF_1[1][24][25] = -3.72566892012;
+   fDecTF_1[1][24][26] = -0.00133438827176;
+   fDecTF_1[1][24][27] = -0.00110424710015;
+   fDecTF_1[1][24][28] = 0.000761335339606;
+   fDecTF_1[1][24][29] = -0.000926670919655;
+   fDecTF_1[1][24][30] = 0.00610372625741;
+   fDecTF_1[1][24][31] = -0.00236791354036;
+   fDecTF_1[1][24][32] = -0.000997191640073;
+   fDecTF_1[1][24][33] = -0.00261607745064;
+   fDecTF_1[1][24][34] = -0.000705088626573;
+   fDecTF_1[1][24][35] = -0.000601672281735;
+   fDecTF_1[1][24][36] = 4.95902375221e-05;
+   fDecTF_1[1][25][0] = -0.115940683038;
+   fDecTF_1[1][25][1] = 0.034248927295;
+   fDecTF_1[1][25][2] = -0.233459612135;
+   fDecTF_1[1][25][3] = -0.181813408051;
+   fDecTF_1[1][25][4] = -0.0227170643102;
+   fDecTF_1[1][25][5] = 0.0425618828274;
+   fDecTF_1[1][25][6] = 0.175645591124;
+   fDecTF_1[1][25][7] = 0.206717630136;
+   fDecTF_1[1][25][8] = 0.0950534002016;
+   fDecTF_1[1][25][9] = -0.00879219142292;
+   fDecTF_1[1][25][10] = 0.017512144055;
+   fDecTF_1[1][25][11] = 0.0100075749247;
+   fDecTF_1[1][25][12] = 2.15273844556;
+   fDecTF_1[1][25][13] = -0.126302611888;
+   fDecTF_1[1][25][14] = 0.427046279855;
+   fDecTF_1[1][25][15] = -0.29981034965;
+   fDecTF_1[1][25][16] = -0.26652660914;
+   fDecTF_1[1][25][17] = 0.617882087002;
+   fDecTF_1[1][25][18] = -0.847551202414;
+   fDecTF_1[1][25][19] = 0.0248418487413;
+   fDecTF_1[1][25][20] = 0.812904606342;
+   fDecTF_1[1][25][21] = 2.4273148571;
+   fDecTF_1[1][25][22] = -7.96374424649;
+   fDecTF_1[1][25][23] = -0.60731422201;
+   fDecTF_1[1][25][24] = -3.72566892012;
+   fDecTF_1[1][25][25] = 9.9769320515;
+   fDecTF_1[1][25][26] = 0.00239035798578;
+   fDecTF_1[1][25][27] = 0.00316265692197;
+   fDecTF_1[1][25][28] = 0.00501251042131;
+   fDecTF_1[1][25][29] = 0.00445721174017;
+   fDecTF_1[1][25][30] = 0.00480413600101;
+   fDecTF_1[1][25][31] = 0.0032077196248;
+   fDecTF_1[1][25][32] = -0.00126372771154;
+   fDecTF_1[1][25][33] = 0.000567309962817;
+   fDecTF_1[1][25][34] = -0.000222552699929;
+   fDecTF_1[1][25][35] = -0.000795641092138;
+   fDecTF_1[1][25][36] = -0.000122788828434;
+   fDecTF_1[1][26][0] = 0.00175782288453;
+   fDecTF_1[1][26][1] = -0.00817335960723;
+   fDecTF_1[1][26][2] = 0.00332978345197;
+   fDecTF_1[1][26][3] = -0.00658278184244;
+   fDecTF_1[1][26][4] = 0.00241517316896;
+   fDecTF_1[1][26][5] = 0.00193690355791;
+   fDecTF_1[1][26][6] = -0.000264965181288;
+   fDecTF_1[1][26][7] = -0.00216671315784;
+   fDecTF_1[1][26][8] = -0.00791718019488;
+   fDecTF_1[1][26][9] = -0.000968094430182;
+   fDecTF_1[1][26][10] = 0.00275914176644;
+   fDecTF_1[1][26][11] = 0.0022749089341;
+   fDecTF_1[1][26][12] = 0.00166593318873;
+   fDecTF_1[1][26][13] = -0.0103584640381;
+   fDecTF_1[1][26][14] = -0.010338239331;
+   fDecTF_1[1][26][15] = -0.00550473881824;
+   fDecTF_1[1][26][16] = -0.0142185343939;
+   fDecTF_1[1][26][17] = 0.00773889943096;
+   fDecTF_1[1][26][18] = 0.00621237201873;
+   fDecTF_1[1][26][19] = -0.0270709510862;
+   fDecTF_1[1][26][20] = -0.000101287335509;
+   fDecTF_1[1][26][21] = -0.00963669489001;
+   fDecTF_1[1][26][22] = -0.00144372468944;
+   fDecTF_1[1][26][23] = 0.00212287844168;
+   fDecTF_1[1][26][24] = -0.00133438827176;
+   fDecTF_1[1][26][25] = 0.00239035798578;
+   fDecTF_1[1][26][26] = 0.248239514047;
+   fDecTF_1[1][26][27] = -0.00994935013232;
+   fDecTF_1[1][26][28] = 0.192401125777;
+   fDecTF_1[1][26][29] = -0.0137629879028;
+   fDecTF_1[1][26][30] = -0.0381294222049;
+   fDecTF_1[1][26][31] = -0.00360730131349;
+   fDecTF_1[1][26][32] = -0.00266360917404;
+   fDecTF_1[1][26][33] = 0.000471192224743;
+   fDecTF_1[1][26][34] = 0.00067763433253;
+   fDecTF_1[1][26][35] = -0.000674682511397;
+   fDecTF_1[1][26][36] = 0.000362233704157;
+   fDecTF_1[1][27][0] = 0.00482092279996;
+   fDecTF_1[1][27][1] = -0.00788630935065;
+   fDecTF_1[1][27][2] = 0.00250637092973;
+   fDecTF_1[1][27][3] = -0.00935968929191;
+   fDecTF_1[1][27][4] = 0.00192418491181;
+   fDecTF_1[1][27][5] = 0.0039650097087;
+   fDecTF_1[1][27][6] = 0.00216958805748;
+   fDecTF_1[1][27][7] = -0.00149584861931;
+   fDecTF_1[1][27][8] = -0.00904875441109;
+   fDecTF_1[1][27][9] = -0.00172174787014;
+   fDecTF_1[1][27][10] = 0.00300312018784;
+   fDecTF_1[1][27][11] = -9.71992565376e-05;
+   fDecTF_1[1][27][12] = 0.000216110662924;
+   fDecTF_1[1][27][13] = -0.0140494576214;
+   fDecTF_1[1][27][14] = -0.00727869564095;
+   fDecTF_1[1][27][15] = -0.0107192990984;
+   fDecTF_1[1][27][16] = 0.0104850789716;
+   fDecTF_1[1][27][17] = 0.0105816347273;
+   fDecTF_1[1][27][18] = -0.00585496830581;
+   fDecTF_1[1][27][19] = 0.0291270437158;
+   fDecTF_1[1][27][20] = -0.00108104548668;
+   fDecTF_1[1][27][21] = -0.0104073058658;
+   fDecTF_1[1][27][22] = -0.00126061239855;
+   fDecTF_1[1][27][23] = -0.000324487471226;
+   fDecTF_1[1][27][24] = -0.00110424710015;
+   fDecTF_1[1][27][25] = 0.00316265692197;
+   fDecTF_1[1][27][26] = -0.00994935013232;
+   fDecTF_1[1][27][27] = 0.246476721734;
+   fDecTF_1[1][27][28] = -0.014645467575;
+   fDecTF_1[1][27][29] = 0.18396467273;
+   fDecTF_1[1][27][30] = -0.00342863876572;
+   fDecTF_1[1][27][31] = -0.0424166321179;
+   fDecTF_1[1][27][32] = 0.00116028961362;
+   fDecTF_1[1][27][33] = -0.00333057547087;
+   fDecTF_1[1][27][34] = -0.00143922909077;
+   fDecTF_1[1][27][35] = -0.000325801410493;
+   fDecTF_1[1][27][36] = 0.000391366409973;
+   fDecTF_1[1][28][0] = -0.00371852293135;
+   fDecTF_1[1][28][1] = -0.0208304437984;
+   fDecTF_1[1][28][2] = 0.00283513134799;
+   fDecTF_1[1][28][3] = -0.00830050908041;
+   fDecTF_1[1][28][4] = 0.00941716662737;
+   fDecTF_1[1][28][5] = 0.0065744162716;
+   fDecTF_1[1][28][6] = -0.00258759881612;
+   fDecTF_1[1][28][7] = 0.00964920548238;
+   fDecTF_1[1][28][8] = -0.0093310289381;
+   fDecTF_1[1][28][9] = -0.0025055009533;
+   fDecTF_1[1][28][10] = -0.00372226116712;
+   fDecTF_1[1][28][11] = 0.00153448213609;
+   fDecTF_1[1][28][12] = -0.000998669600861;
+   fDecTF_1[1][28][13] = -0.0113209286444;
+   fDecTF_1[1][28][14] = -0.0129389457701;
+   fDecTF_1[1][28][15] = -0.00853594057085;
+   fDecTF_1[1][28][16] = 0.00041921238652;
+   fDecTF_1[1][28][17] = 0.0114215158539;
+   fDecTF_1[1][28][18] = -0.000419029103753;
+   fDecTF_1[1][28][19] = -0.0116716297428;
+   fDecTF_1[1][28][20] = -0.00216294123079;
+   fDecTF_1[1][28][21] = -0.0108323932432;
+   fDecTF_1[1][28][22] = -0.00601216620465;
+   fDecTF_1[1][28][23] = 0.000114416583473;
+   fDecTF_1[1][28][24] = 0.000761335339606;
+   fDecTF_1[1][28][25] = 0.00501251042131;
+   fDecTF_1[1][28][26] = 0.192401125777;
+   fDecTF_1[1][28][27] = -0.014645467575;
+   fDecTF_1[1][28][28] = 0.555564378092;
+   fDecTF_1[1][28][29] = -0.0144125810871;
+   fDecTF_1[1][28][30] = -0.0712040979482;
+   fDecTF_1[1][28][31] = -0.00700717021015;
+   fDecTF_1[1][28][32] = -0.0149784522019;
+   fDecTF_1[1][28][33] = 0.00132906872009;
+   fDecTF_1[1][28][34] = -0.000996579787097;
+   fDecTF_1[1][28][35] = 7.40606498788e-06;
+   fDecTF_1[1][28][36] = -0.000156758994387;
+   fDecTF_1[1][29][0] = -0.00129054255736;
+   fDecTF_1[1][29][1] = -0.0219403291709;
+   fDecTF_1[1][29][2] = 0.00186402159222;
+   fDecTF_1[1][29][3] = -0.013039083393;
+   fDecTF_1[1][29][4] = 0.00806807529996;
+   fDecTF_1[1][29][5] = 0.00951468973216;
+   fDecTF_1[1][29][6] = -0.000551098196328;
+   fDecTF_1[1][29][7] = 0.00908214004403;
+   fDecTF_1[1][29][8] = -0.00858369737776;
+   fDecTF_1[1][29][9] = -0.00411192187978;
+   fDecTF_1[1][29][10] = -0.00479290820177;
+   fDecTF_1[1][29][11] = -0.00152631062419;
+   fDecTF_1[1][29][12] = -0.000968377967176;
+   fDecTF_1[1][29][13] = -0.0141952650021;
+   fDecTF_1[1][29][14] = -0.00814384903147;
+   fDecTF_1[1][29][15] = -0.0148222084238;
+   fDecTF_1[1][29][16] = -0.00853807640588;
+   fDecTF_1[1][29][17] = 0.0093336650104;
+   fDecTF_1[1][29][18] = 0.00212111081385;
+   fDecTF_1[1][29][19] = 0.0155671010111;
+   fDecTF_1[1][29][20] = -0.0060933612634;
+   fDecTF_1[1][29][21] = -0.0135362060438;
+   fDecTF_1[1][29][22] = -0.002613151008;
+   fDecTF_1[1][29][23] = -0.00141012422208;
+   fDecTF_1[1][29][24] = -0.000926670919655;
+   fDecTF_1[1][29][25] = 0.00445721174017;
+   fDecTF_1[1][29][26] = -0.0137629879028;
+   fDecTF_1[1][29][27] = 0.18396467273;
+   fDecTF_1[1][29][28] = -0.0144125810871;
+   fDecTF_1[1][29][29] = 0.548438098795;
+   fDecTF_1[1][29][30] = -0.00695907705303;
+   fDecTF_1[1][29][31] = -0.0779811444929;
+   fDecTF_1[1][29][32] = 0.00196017914034;
+   fDecTF_1[1][29][33] = -0.0160533926924;
+   fDecTF_1[1][29][34] = 0.00104718698805;
+   fDecTF_1[1][29][35] = -5.65904226957e-05;
+   fDecTF_1[1][29][36] = -6.59282357966e-05;
+   fDecTF_1[1][30][0] = 0.0178352383857;
+   fDecTF_1[1][30][1] = -0.0224601905818;
+   fDecTF_1[1][30][2] = -0.0107061261122;
+   fDecTF_1[1][30][3] = 0.00207104024101;
+   fDecTF_1[1][30][4] = 0.0121489472092;
+   fDecTF_1[1][30][5] = 0.0127915812506;
+   fDecTF_1[1][30][6] = 0.00315514231689;
+   fDecTF_1[1][30][7] = 0.00905356000695;
+   fDecTF_1[1][30][8] = -0.0191980934394;
+   fDecTF_1[1][30][9] = 0.00520085152217;
+   fDecTF_1[1][30][10] = -0.00217057817897;
+   fDecTF_1[1][30][11] = -0.00533808135576;
+   fDecTF_1[1][30][12] = 0.00195423211304;
+   fDecTF_1[1][30][13] = -0.0196435495944;
+   fDecTF_1[1][30][14] = -0.0180143513796;
+   fDecTF_1[1][30][15] = -0.00221207184806;
+   fDecTF_1[1][30][16] = -0.0245225100425;
+   fDecTF_1[1][30][17] = 0.0227001283415;
+   fDecTF_1[1][30][18] = -0.0110966192389;
+   fDecTF_1[1][30][19] = -0.0323781010274;
+   fDecTF_1[1][30][20] = -0.00891703121889;
+   fDecTF_1[1][30][21] = -0.0189135323634;
+   fDecTF_1[1][30][22] = -0.00868973464741;
+   fDecTF_1[1][30][23] = -0.0107472843125;
+   fDecTF_1[1][30][24] = 0.00610372625741;
+   fDecTF_1[1][30][25] = 0.00480413600101;
+   fDecTF_1[1][30][26] = -0.0381294222049;
+   fDecTF_1[1][30][27] = -0.00342863876572;
+   fDecTF_1[1][30][28] = -0.0712040979482;
+   fDecTF_1[1][30][29] = -0.00695907705303;
+   fDecTF_1[1][30][30] = 1.71113836863;
+   fDecTF_1[1][30][31] = -0.0479888372761;
+   fDecTF_1[1][30][32] = -0.020143955181;
+   fDecTF_1[1][30][33] = 0.0075876704836;
+   fDecTF_1[1][30][34] = -0.00102059672988;
+   fDecTF_1[1][30][35] = 0.000314614710239;
+   fDecTF_1[1][30][36] = 0.000358824292253;
+   fDecTF_1[1][31][0] = 0.0156636625638;
+   fDecTF_1[1][31][1] = -0.026393874958;
+   fDecTF_1[1][31][2] = 0.00130761459452;
+   fDecTF_1[1][31][3] = -0.00773073362335;
+   fDecTF_1[1][31][4] = 0.0121719279925;
+   fDecTF_1[1][31][5] = 0.00451247866652;
+   fDecTF_1[1][31][6] = -8.21173658322e-05;
+   fDecTF_1[1][31][7] = 0.0116872357121;
+   fDecTF_1[1][31][8] = -0.0262560462415;
+   fDecTF_1[1][31][9] = 0.00081846141793;
+   fDecTF_1[1][31][10] = 0.00432800998854;
+   fDecTF_1[1][31][11] = 0.000927480562798;
+   fDecTF_1[1][31][12] = 0.00362905955975;
+   fDecTF_1[1][31][13] = -0.0211619376524;
+   fDecTF_1[1][31][14] = -0.0190370732815;
+   fDecTF_1[1][31][15] = -0.00564967994134;
+   fDecTF_1[1][31][16] = 0.0130726706581;
+   fDecTF_1[1][31][17] = 0.0273171460857;
+   fDecTF_1[1][31][18] = 0.00435944641709;
+   fDecTF_1[1][31][19] = 0.0337551918559;
+   fDecTF_1[1][31][20] = -0.00128071125748;
+   fDecTF_1[1][31][21] = -0.0140108760536;
+   fDecTF_1[1][31][22] = -0.00501763553773;
+   fDecTF_1[1][31][23] = -0.00399656362816;
+   fDecTF_1[1][31][24] = -0.00236791354036;
+   fDecTF_1[1][31][25] = 0.0032077196248;
+   fDecTF_1[1][31][26] = -0.00360730131349;
+   fDecTF_1[1][31][27] = -0.0424166321179;
+   fDecTF_1[1][31][28] = -0.00700717021015;
+   fDecTF_1[1][31][29] = -0.0779811444929;
+   fDecTF_1[1][31][30] = -0.0479888372761;
+   fDecTF_1[1][31][31] = 1.70522864673;
+   fDecTF_1[1][31][32] = 0.00685200982359;
+   fDecTF_1[1][31][33] = -0.0209935372324;
+   fDecTF_1[1][31][34] = -0.000280727796725;
+   fDecTF_1[1][31][35] = 0.000190866821897;
+   fDecTF_1[1][31][36] = 0.000348517149721;
+   fDecTF_1[1][32][0] = 0.0171657101183;
+   fDecTF_1[1][32][1] = -0.00284606746738;
+   fDecTF_1[1][32][2] = -0.00346909467874;
+   fDecTF_1[1][32][3] = -0.0187357534782;
+   fDecTF_1[1][32][4] = -0.0163855429471;
+   fDecTF_1[1][32][5] = 0.0120376273904;
+   fDecTF_1[1][32][6] = -0.0148581246799;
+   fDecTF_1[1][32][7] = -0.00650632234964;
+   fDecTF_1[1][32][8] = 0.00298759335266;
+   fDecTF_1[1][32][9] = -0.00732008953677;
+   fDecTF_1[1][32][10] = -0.00683884299301;
+   fDecTF_1[1][32][11] = 0.00929734594624;
+   fDecTF_1[1][32][12] = -0.00646921333391;
+   fDecTF_1[1][32][13] = 0.00388398637993;
+   fDecTF_1[1][32][14] = 0.00192448331427;
+   fDecTF_1[1][32][15] = -0.00401821200325;
+   fDecTF_1[1][32][16] = -0.0255805554966;
+   fDecTF_1[1][32][17] = -0.00541775181113;
+   fDecTF_1[1][32][18] = -0.0239727898738;
+   fDecTF_1[1][32][19] = -0.0183450608985;
+   fDecTF_1[1][32][20] = -0.000409350818352;
+   fDecTF_1[1][32][21] = -0.00226941463208;
+   fDecTF_1[1][32][22] = 0.00153686975051;
+   fDecTF_1[1][32][23] = -0.00190180839056;
+   fDecTF_1[1][32][24] = -0.000997191640073;
+   fDecTF_1[1][32][25] = -0.00126372771154;
+   fDecTF_1[1][32][26] = -0.00266360917404;
+   fDecTF_1[1][32][27] = 0.00116028961362;
+   fDecTF_1[1][32][28] = -0.0149784522019;
+   fDecTF_1[1][32][29] = 0.00196017914034;
+   fDecTF_1[1][32][30] = -0.020143955181;
+   fDecTF_1[1][32][31] = 0.00685200982359;
+   fDecTF_1[1][32][32] = 0.367197537415;
+   fDecTF_1[1][32][33] = -0.0903961935098;
+   fDecTF_1[1][32][34] = 0.00364181435641;
+   fDecTF_1[1][32][35] = -0.00013879389339;
+   fDecTF_1[1][32][36] = 0.00259742740423;
+   fDecTF_1[1][33][0] = 0.0181221655742;
+   fDecTF_1[1][33][1] = -0.0060866263029;
+   fDecTF_1[1][33][2] = -0.00281573817971;
+   fDecTF_1[1][33][3] = -0.0207580621078;
+   fDecTF_1[1][33][4] = -0.0141444435866;
+   fDecTF_1[1][33][5] = 0.0117226495438;
+   fDecTF_1[1][33][6] = -0.0136930097464;
+   fDecTF_1[1][33][7] = -0.00644332609927;
+   fDecTF_1[1][33][8] = 0.00134796922879;
+   fDecTF_1[1][33][9] = -0.00817838245321;
+   fDecTF_1[1][33][10] = -0.00351610880292;
+   fDecTF_1[1][33][11] = -0.0116755495841;
+   fDecTF_1[1][33][12] = -0.00650902076384;
+   fDecTF_1[1][33][13] = -0.00357076161868;
+   fDecTF_1[1][33][14] = 0.00361763646601;
+   fDecTF_1[1][33][15] = -0.00344991018264;
+   fDecTF_1[1][33][16] = 0.0246248073022;
+   fDecTF_1[1][33][17] = -0.00347287577816;
+   fDecTF_1[1][33][18] = 0.0221818231409;
+   fDecTF_1[1][33][19] = 0.0197516360284;
+   fDecTF_1[1][33][20] = 0.00238289887075;
+   fDecTF_1[1][33][21] = -0.00180997555007;
+   fDecTF_1[1][33][22] = -0.00636661755162;
+   fDecTF_1[1][33][23] = -0.000429734706303;
+   fDecTF_1[1][33][24] = -0.00261607745064;
+   fDecTF_1[1][33][25] = 0.000567309962817;
+   fDecTF_1[1][33][26] = 0.000471192224743;
+   fDecTF_1[1][33][27] = -0.00333057547087;
+   fDecTF_1[1][33][28] = 0.00132906872009;
+   fDecTF_1[1][33][29] = -0.0160533926924;
+   fDecTF_1[1][33][30] = 0.0075876704836;
+   fDecTF_1[1][33][31] = -0.0209935372324;
+   fDecTF_1[1][33][32] = -0.0903961935098;
+   fDecTF_1[1][33][33] = 0.366432133151;
+   fDecTF_1[1][33][34] = 0.00379717158889;
+   fDecTF_1[1][33][35] = -6.7591087716e-05;
+   fDecTF_1[1][33][36] = 0.00259450475493;
+   fDecTF_1[1][34][0] = 0.000916447374729;
+   fDecTF_1[1][34][1] = -0.00164125702837;
+   fDecTF_1[1][34][2] = -0.000807648798594;
+   fDecTF_1[1][34][3] = -0.000620997197585;
+   fDecTF_1[1][34][4] = -0.000474938678635;
+   fDecTF_1[1][34][5] = 0.000249078716842;
+   fDecTF_1[1][34][6] = -0.00158058210724;
+   fDecTF_1[1][34][7] = -0.000518385766669;
+   fDecTF_1[1][34][8] = 0.000686593168548;
+   fDecTF_1[1][34][9] = -0.000939421257553;
+   fDecTF_1[1][34][10] = -0.000409690325741;
+   fDecTF_1[1][34][11] = -0.000142268687942;
+   fDecTF_1[1][34][12] = 0.000383734990143;
+   fDecTF_1[1][34][13] = 0.000943187822223;
+   fDecTF_1[1][34][14] = 0.000265000488231;
+   fDecTF_1[1][34][15] = -0.00121560580785;
+   fDecTF_1[1][34][16] = 0.00206550374491;
+   fDecTF_1[1][34][17] = -0.001245319411;
+   fDecTF_1[1][34][18] = -0.000900706112679;
+   fDecTF_1[1][34][19] = 0.00247055999625;
+   fDecTF_1[1][34][20] = 0.000486156814028;
+   fDecTF_1[1][34][21] = -3.15234372321e-06;
+   fDecTF_1[1][34][22] = 4.06244958977e-05;
+   fDecTF_1[1][34][23] = 0.000357890498493;
+   fDecTF_1[1][34][24] = -0.000705088626573;
+   fDecTF_1[1][34][25] = -0.000222552699929;
+   fDecTF_1[1][34][26] = 0.00067763433253;
+   fDecTF_1[1][34][27] = -0.00143922909077;
+   fDecTF_1[1][34][28] = -0.000996579787097;
+   fDecTF_1[1][34][29] = 0.00104718698805;
+   fDecTF_1[1][34][30] = -0.00102059672988;
+   fDecTF_1[1][34][31] = -0.000280727796725;
+   fDecTF_1[1][34][32] = 0.00364181435641;
+   fDecTF_1[1][34][33] = 0.00379717158889;
+   fDecTF_1[1][34][34] = 0.117216516068;
+   fDecTF_1[1][34][35] = -0.000447649726804;
+   fDecTF_1[1][34][36] = 4.98301204378e-06;
+   fDecTF_1[1][35][0] = -0.00017332506881;
+   fDecTF_1[1][35][1] = 0.000201304942979;
+   fDecTF_1[1][35][2] = -0.000329248616242;
+   fDecTF_1[1][35][3] = 0.000664471551008;
+   fDecTF_1[1][35][4] = -7.47627642333e-05;
+   fDecTF_1[1][35][5] = 0.000812261236853;
+   fDecTF_1[1][35][6] = 0.000143049577941;
+   fDecTF_1[1][35][7] = -0.000163891677529;
+   fDecTF_1[1][35][8] = -6.33748097789e-05;
+   fDecTF_1[1][35][9] = 0.000145434607393;
+   fDecTF_1[1][35][10] = 0.00121057877062;
+   fDecTF_1[1][35][11] = 0.000112352635742;
+   fDecTF_1[1][35][12] = 0.00015790835572;
+   fDecTF_1[1][35][13] = 0.00181633035903;
+   fDecTF_1[1][35][14] = -0.000534676157718;
+   fDecTF_1[1][35][15] = 0.00144058602279;
+   fDecTF_1[1][35][16] = 0.000324029954572;
+   fDecTF_1[1][35][17] = -0.00063037983617;
+   fDecTF_1[1][35][18] = 6.73924857832e-05;
+   fDecTF_1[1][35][19] = 0.000534244083527;
+   fDecTF_1[1][35][20] = -0.000173379382486;
+   fDecTF_1[1][35][21] = 0.000932275265192;
+   fDecTF_1[1][35][22] = 0.000538253119753;
+   fDecTF_1[1][35][23] = -0.000115391248689;
+   fDecTF_1[1][35][24] = -0.000601672281735;
+   fDecTF_1[1][35][25] = -0.000795641092138;
+   fDecTF_1[1][35][26] = -0.000674682511397;
+   fDecTF_1[1][35][27] = -0.000325801410493;
+   fDecTF_1[1][35][28] = 7.40606498788e-06;
+   fDecTF_1[1][35][29] = -5.65904226957e-05;
+   fDecTF_1[1][35][30] = 0.000314614710239;
+   fDecTF_1[1][35][31] = 0.000190866821897;
+   fDecTF_1[1][35][32] = -0.00013879389339;
+   fDecTF_1[1][35][33] = -6.7591087716e-05;
+   fDecTF_1[1][35][34] = -0.000447649726804;
+   fDecTF_1[1][35][35] = 0.126474265055;
+   fDecTF_1[1][35][36] = -0.000163754227102;
+   fDecTF_1[1][36][0] = 0.000402598037416;
+   fDecTF_1[1][36][1] = 0.0010859507426;
+   fDecTF_1[1][36][2] = 0.000384073853552;
+   fDecTF_1[1][36][3] = -2.68030372646e-05;
+   fDecTF_1[1][36][4] = -0.00174160001602;
+   fDecTF_1[1][36][5] = -0.000501564945779;
+   fDecTF_1[1][36][6] = 0.000245313287859;
+   fDecTF_1[1][36][7] = -0.00191989345757;
+   fDecTF_1[1][36][8] = 0.00103966134368;
+   fDecTF_1[1][36][9] = 0.000403145928561;
+   fDecTF_1[1][36][10] = -0.000155302437974;
+   fDecTF_1[1][36][11] = 5.58962754032e-05;
+   fDecTF_1[1][36][12] = 0.000940719157471;
+   fDecTF_1[1][36][13] = -0.000335822767828;
+   fDecTF_1[1][36][14] = -3.09992217684e-05;
+   fDecTF_1[1][36][15] = 0.00135740020981;
+   fDecTF_1[1][36][16] = 0.000136112338756;
+   fDecTF_1[1][36][17] = -0.000492064032245;
+   fDecTF_1[1][36][18] = -5.17694321759e-05;
+   fDecTF_1[1][36][19] = 3.31166766976e-05;
+   fDecTF_1[1][36][20] = 0.000136500930539;
+   fDecTF_1[1][36][21] = 0.000705620569632;
+   fDecTF_1[1][36][22] = -6.65236552921e-05;
+   fDecTF_1[1][36][23] = -0.000388589592214;
+   fDecTF_1[1][36][24] = 4.95902375221e-05;
+   fDecTF_1[1][36][25] = -0.000122788828434;
+   fDecTF_1[1][36][26] = 0.000362233704157;
+   fDecTF_1[1][36][27] = 0.000391366409973;
+   fDecTF_1[1][36][28] = -0.000156758994387;
+   fDecTF_1[1][36][29] = -6.59282357966e-05;
+   fDecTF_1[1][36][30] = 0.000358824292253;
+   fDecTF_1[1][36][31] = 0.000348517149721;
+   fDecTF_1[1][36][32] = 0.00259742740423;
+   fDecTF_1[1][36][33] = 0.00259450475493;
+   fDecTF_1[1][36][34] = 4.98301204378e-06;
+   fDecTF_1[1][36][35] = -0.000163754227102;
+   fDecTF_1[1][36][36] = 0.00677403171126;
+   fDecTF_1[2][0][0] = 4.10455051978;
+   fDecTF_1[2][0][1] = -0.241943091737;
+   fDecTF_1[2][0][2] = 0.855806924482;
+   fDecTF_1[2][0][3] = 3.70320410263;
+   fDecTF_1[2][0][4] = 0.202974468777;
+   fDecTF_1[2][0][5] = 0.210130468582;
+   fDecTF_1[2][0][6] = 0.203003409333;
+   fDecTF_1[2][0][7] = 0.292659358579;
+   fDecTF_1[2][0][8] = -0.901296593803;
+   fDecTF_1[2][0][9] = -0.949549365955;
+   fDecTF_1[2][0][10] = -1.24659172621;
+   fDecTF_1[2][0][11] = 0.0141917221458;
+   fDecTF_1[2][0][12] = -0.318463051375;
+   fDecTF_1[2][0][13] = -1.18429025116;
+   fDecTF_1[2][0][14] = -0.107908197872;
+   fDecTF_1[2][0][15] = 0.42234369868;
+   fDecTF_1[2][0][16] = 0.19666857807;
+   fDecTF_1[2][0][17] = -0.432924390908;
+   fDecTF_1[2][0][18] = -0.0159835972415;
+   fDecTF_1[2][0][19] = -0.0467894965592;
+   fDecTF_1[2][0][20] = -0.187766939543;
+   fDecTF_1[2][0][21] = 0.676839247225;
+   fDecTF_1[2][0][22] = -0.22056645386;
+   fDecTF_1[2][0][23] = -0.546123380783;
+   fDecTF_1[2][0][24] = 0.122005209136;
+   fDecTF_1[2][0][25] = -0.117327209977;
+   fDecTF_1[2][0][26] = 0.0019617095806;
+   fDecTF_1[2][0][27] = 0.00534285820984;
+   fDecTF_1[2][0][28] = -0.00337105526109;
+   fDecTF_1[2][0][29] = -0.000171571930118;
+   fDecTF_1[2][0][30] = 0.0200005424541;
+   fDecTF_1[2][0][31] = 0.0171009629131;
+   fDecTF_1[2][0][32] = 0.0142930725209;
+   fDecTF_1[2][0][33] = 0.0147255992799;
+   fDecTF_1[2][0][34] = 0.000909744674062;
+   fDecTF_1[2][0][35] = 0.000218505944224;
+   fDecTF_1[2][0][36] = 0.000556375122836;
+   fDecTF_1[2][1][0] = -0.241943091737;
+   fDecTF_1[2][1][1] = 5.78059997339;
+   fDecTF_1[2][1][2] = -0.500187431714;
+   fDecTF_1[2][1][3] = 0.132637910232;
+   fDecTF_1[2][1][4] = 0.206358256006;
+   fDecTF_1[2][1][5] = -0.23682181329;
+   fDecTF_1[2][1][6] = -0.199271343876;
+   fDecTF_1[2][1][7] = 0.278700656809;
+   fDecTF_1[2][1][8] = -3.32290397263;
+   fDecTF_1[2][1][9] = -0.38018432329;
+   fDecTF_1[2][1][10] = -1.35092120811;
+   fDecTF_1[2][1][11] = -0.0597340500113;
+   fDecTF_1[2][1][12] = 1.07452209611;
+   fDecTF_1[2][1][13] = -0.882507654152;
+   fDecTF_1[2][1][14] = -0.295615985983;
+   fDecTF_1[2][1][15] = -0.539474373466;
+   fDecTF_1[2][1][16] = -0.0931398359475;
+   fDecTF_1[2][1][17] = -0.323846352872;
+   fDecTF_1[2][1][18] = 0.0656250258389;
+   fDecTF_1[2][1][19] = 0.113082169441;
+   fDecTF_1[2][1][20] = -0.432684640416;
+   fDecTF_1[2][1][21] = 0.0296315014976;
+   fDecTF_1[2][1][22] = -0.0666550968648;
+   fDecTF_1[2][1][23] = -0.289706562682;
+   fDecTF_1[2][1][24] = 0.262703995829;
+   fDecTF_1[2][1][25] = 0.030369341545;
+   fDecTF_1[2][1][26] = -0.00865876403684;
+   fDecTF_1[2][1][27] = -0.00851846967838;
+   fDecTF_1[2][1][28] = -0.0211551016478;
+   fDecTF_1[2][1][29] = -0.0225298191427;
+   fDecTF_1[2][1][30] = -0.0232221839403;
+   fDecTF_1[2][1][31] = -0.028350881176;
+   fDecTF_1[2][1][32] = -0.00184203545594;
+   fDecTF_1[2][1][33] = -0.00512024078066;
+   fDecTF_1[2][1][34] = -0.00157231093956;
+   fDecTF_1[2][1][35] = 0.000156582707574;
+   fDecTF_1[2][1][36] = 0.00101252391917;
+   fDecTF_1[2][2][0] = 0.855806924482;
+   fDecTF_1[2][2][1] = -0.500187431714;
+   fDecTF_1[2][2][2] = 6.60767904135;
+   fDecTF_1[2][2][3] = -1.4500413783;
+   fDecTF_1[2][2][4] = -0.0939524948805;
+   fDecTF_1[2][2][5] = -0.370310275065;
+   fDecTF_1[2][2][6] = -0.400151130776;
+   fDecTF_1[2][2][7] = 0.193636224682;
+   fDecTF_1[2][2][8] = 0.773036014086;
+   fDecTF_1[2][2][9] = -4.34576177266;
+   fDecTF_1[2][2][10] = 0.0334911575194;
+   fDecTF_1[2][2][11] = -0.028947294208;
+   fDecTF_1[2][2][12] = 0.65233617809;
+   fDecTF_1[2][2][13] = 0.121729202468;
+   fDecTF_1[2][2][14] = -0.0181990762722;
+   fDecTF_1[2][2][15] = -0.218813037951;
+   fDecTF_1[2][2][16] = 0.0497044615375;
+   fDecTF_1[2][2][17] = -0.321917774333;
+   fDecTF_1[2][2][18] = -0.0233627873776;
+   fDecTF_1[2][2][19] = -0.0305303023884;
+   fDecTF_1[2][2][20] = 0.0830158121612;
+   fDecTF_1[2][2][21] = 1.09835376294;
+   fDecTF_1[2][2][22] = -0.0621056578882;
+   fDecTF_1[2][2][23] = -0.724362158843;
+   fDecTF_1[2][2][24] = 0.182616826339;
+   fDecTF_1[2][2][25] = -0.233778166496;
+   fDecTF_1[2][2][26] = 0.00349921861762;
+   fDecTF_1[2][2][27] = 0.00217589119911;
+   fDecTF_1[2][2][28] = 0.00323741006932;
+   fDecTF_1[2][2][29] = 0.00116596131997;
+   fDecTF_1[2][2][30] = -0.00789594036193;
+   fDecTF_1[2][2][31] = 0.0011026043961;
+   fDecTF_1[2][2][32] = -0.00424770957008;
+   fDecTF_1[2][2][33] = -0.00232197180598;
+   fDecTF_1[2][2][34] = -0.000776290232064;
+   fDecTF_1[2][2][35] = -0.0002397018938;
+   fDecTF_1[2][2][36] = 0.000385993293798;
+   fDecTF_1[2][3][0] = 3.70320410263;
+   fDecTF_1[2][3][1] = 0.132637910232;
+   fDecTF_1[2][3][2] = -1.4500413783;
+   fDecTF_1[2][3][3] = 5.8900566744;
+   fDecTF_1[2][3][4] = -0.0568167038692;
+   fDecTF_1[2][3][5] = 0.184418328656;
+   fDecTF_1[2][3][6] = 0.588495305934;
+   fDecTF_1[2][3][7] = 0.616347011318;
+   fDecTF_1[2][3][8] = -1.47774539262;
+   fDecTF_1[2][3][9] = 0.516343791203;
+   fDecTF_1[2][3][10] = -1.10816670353;
+   fDecTF_1[2][3][11] = -0.0776460971896;
+   fDecTF_1[2][3][12] = -0.0258863555394;
+   fDecTF_1[2][3][13] = -1.05505326339;
+   fDecTF_1[2][3][14] = 0.357296669527;
+   fDecTF_1[2][3][15] = 0.0398566404531;
+   fDecTF_1[2][3][16] = 0.0856932654764;
+   fDecTF_1[2][3][17] = 0.197550401974;
+   fDecTF_1[2][3][18] = -0.0519439280531;
+   fDecTF_1[2][3][19] = -0.0260205897339;
+   fDecTF_1[2][3][20] = -0.141028024257;
+   fDecTF_1[2][3][21] = -0.181063842584;
+   fDecTF_1[2][3][22] = 0.1874326199;
+   fDecTF_1[2][3][23] = -0.0916534818993;
+   fDecTF_1[2][3][24] = 0.141097399671;
+   fDecTF_1[2][3][25] = -0.171401612037;
+   fDecTF_1[2][3][26] = -0.00734774904243;
+   fDecTF_1[2][3][27] = -0.0100365080947;
+   fDecTF_1[2][3][28] = -0.00944417709374;
+   fDecTF_1[2][3][29] = -0.0141336818327;
+   fDecTF_1[2][3][30] = -0.000281736247061;
+   fDecTF_1[2][3][31] = -0.00933653508993;
+   fDecTF_1[2][3][32] = -0.0154146645389;
+   fDecTF_1[2][3][33] = -0.0181061421409;
+   fDecTF_1[2][3][34] = -0.000670995868865;
+   fDecTF_1[2][3][35] = 0.000228737293497;
+   fDecTF_1[2][3][36] = -0.000123684962703;
+   fDecTF_1[2][4][0] = 0.202974468777;
+   fDecTF_1[2][4][1] = 0.206358256006;
+   fDecTF_1[2][4][2] = -0.0939524948805;
+   fDecTF_1[2][4][3] = -0.0568167038692;
+   fDecTF_1[2][4][4] = 1.493411912;
+   fDecTF_1[2][4][5] = 0.73797606766;
+   fDecTF_1[2][4][6] = -0.219387758627;
+   fDecTF_1[2][4][7] = -0.994016889452;
+   fDecTF_1[2][4][8] = 0.263026326361;
+   fDecTF_1[2][4][9] = -0.459443984149;
+   fDecTF_1[2][4][10] = -0.0505513565865;
+   fDecTF_1[2][4][11] = 0.00362261452889;
+   fDecTF_1[2][4][12] = -0.326211963899;
+   fDecTF_1[2][4][13] = -0.127054473797;
+   fDecTF_1[2][4][14] = 0.0950198674395;
+   fDecTF_1[2][4][15] = 0.139559365399;
+   fDecTF_1[2][4][16] = 0.0334227677584;
+   fDecTF_1[2][4][17] = -0.0384252363371;
+   fDecTF_1[2][4][18] = -0.0186071672051;
+   fDecTF_1[2][4][19] = -0.0101506773453;
+   fDecTF_1[2][4][20] = 0.0419087463755;
+   fDecTF_1[2][4][21] = 0.0398435513152;
+   fDecTF_1[2][4][22] = -0.0314028153919;
+   fDecTF_1[2][4][23] = -0.0267635455016;
+   fDecTF_1[2][4][24] = -0.0368886283561;
+   fDecTF_1[2][4][25] = -0.023822895022;
+   fDecTF_1[2][4][26] = 0.00240324448407;
+   fDecTF_1[2][4][27] = 0.00238068152695;
+   fDecTF_1[2][4][28] = 0.00979039312247;
+   fDecTF_1[2][4][29] = 0.00899953914076;
+   fDecTF_1[2][4][30] = 0.0132844465187;
+   fDecTF_1[2][4][31] = 0.0132273006185;
+   fDecTF_1[2][4][32] = -0.0170879416516;
+   fDecTF_1[2][4][33] = -0.0154031334225;
+   fDecTF_1[2][4][34] = -0.000335495563753;
+   fDecTF_1[2][4][35] = 4.35076448699e-05;
+   fDecTF_1[2][4][36] = -0.00166585244691;
+   fDecTF_1[2][5][0] = 0.210130468582;
+   fDecTF_1[2][5][1] = -0.23682181329;
+   fDecTF_1[2][5][2] = -0.370310275065;
+   fDecTF_1[2][5][3] = 0.184418328656;
+   fDecTF_1[2][5][4] = 0.73797606766;
+   fDecTF_1[2][5][5] = 2.11936357962;
+   fDecTF_1[2][5][6] = 0.926317904601;
+   fDecTF_1[2][5][7] = 0.178909711392;
+   fDecTF_1[2][5][8] = 0.253155683638;
+   fDecTF_1[2][5][9] = 0.286961595226;
+   fDecTF_1[2][5][10] = -0.225457807439;
+   fDecTF_1[2][5][11] = -0.00842083426782;
+   fDecTF_1[2][5][12] = -0.328126140015;
+   fDecTF_1[2][5][13] = -0.0491291035206;
+   fDecTF_1[2][5][14] = -0.192902220217;
+   fDecTF_1[2][5][15] = 0.084772727361;
+   fDecTF_1[2][5][16] = 0.0096797184951;
+   fDecTF_1[2][5][17] = -0.0281675333718;
+   fDecTF_1[2][5][18] = 0.00419236338871;
+   fDecTF_1[2][5][19] = 0.00566683235519;
+   fDecTF_1[2][5][20] = -0.0345999654885;
+   fDecTF_1[2][5][21] = -0.0976015207536;
+   fDecTF_1[2][5][22] = -0.0755777711758;
+   fDecTF_1[2][5][23] = 0.0410194361982;
+   fDecTF_1[2][5][24] = -0.0568174274502;
+   fDecTF_1[2][5][25] = 0.044479607345;
+   fDecTF_1[2][5][26] = 0.00171118109955;
+   fDecTF_1[2][5][27] = 0.00387666481435;
+   fDecTF_1[2][5][28] = 0.00691836373985;
+   fDecTF_1[2][5][29] = 0.009750554333;
+   fDecTF_1[2][5][30] = 0.0142362176894;
+   fDecTF_1[2][5][31] = 0.0068917526469;
+   fDecTF_1[2][5][32] = 0.0118132281737;
+   fDecTF_1[2][5][33] = 0.0115803676957;
+   fDecTF_1[2][5][34] = 0.000250564228927;
+   fDecTF_1[2][5][35] = 0.000818502521384;
+   fDecTF_1[2][5][36] = -0.000421334225794;
+   fDecTF_1[2][6][0] = 0.203003409333;
+   fDecTF_1[2][6][1] = -0.199271343876;
+   fDecTF_1[2][6][2] = -0.400151130776;
+   fDecTF_1[2][6][3] = 0.588495305934;
+   fDecTF_1[2][6][4] = -0.219387758627;
+   fDecTF_1[2][6][5] = 0.926317904601;
+   fDecTF_1[2][6][6] = 2.34305065407;
+   fDecTF_1[2][6][7] = 1.71191557565;
+   fDecTF_1[2][6][8] = -0.352551580476;
+   fDecTF_1[2][6][9] = 0.923878142572;
+   fDecTF_1[2][6][10] = -0.468528330774;
+   fDecTF_1[2][6][11] = -0.0193834955909;
+   fDecTF_1[2][6][12] = -0.17003584887;
+   fDecTF_1[2][6][13] = -0.0608564893715;
+   fDecTF_1[2][6][14] = -0.21510786364;
+   fDecTF_1[2][6][15] = 0.0865008502955;
+   fDecTF_1[2][6][16] = -0.00779840263615;
+   fDecTF_1[2][6][17] = 0.264600015594;
+   fDecTF_1[2][6][18] = 0.0303191592495;
+   fDecTF_1[2][6][19] = -0.0108226523514;
+   fDecTF_1[2][6][20] = -0.09277697272;
+   fDecTF_1[2][6][21] = -0.330330381725;
+   fDecTF_1[2][6][22] = -0.14117093472;
+   fDecTF_1[2][6][23] = 0.0737311710659;
+   fDecTF_1[2][6][24] = -0.065818292027;
+   fDecTF_1[2][6][25] = 0.18127181292;
+   fDecTF_1[2][6][26] = -0.000548382170422;
+   fDecTF_1[2][6][27] = 0.00176671432046;
+   fDecTF_1[2][6][28] = -0.00304450977192;
+   fDecTF_1[2][6][29] = -0.00157149316552;
+   fDecTF_1[2][6][30] = 0.00292101036211;
+   fDecTF_1[2][6][31] = 0.00173000553364;
+   fDecTF_1[2][6][32] = -0.0151656768954;
+   fDecTF_1[2][6][33] = -0.0146787372703;
+   fDecTF_1[2][6][34] = -0.00162761612534;
+   fDecTF_1[2][6][35] = 2.13761114795e-05;
+   fDecTF_1[2][6][36] = 0.000192950772095;
+   fDecTF_1[2][7][0] = 0.292659358579;
+   fDecTF_1[2][7][1] = 0.278700656809;
+   fDecTF_1[2][7][2] = 0.193636224682;
+   fDecTF_1[2][7][3] = 0.616347011318;
+   fDecTF_1[2][7][4] = -0.994016889452;
+   fDecTF_1[2][7][5] = 0.178909711392;
+   fDecTF_1[2][7][6] = 1.71191557565;
+   fDecTF_1[2][7][7] = 3.34722691857;
+   fDecTF_1[2][7][8] = -0.843333432034;
+   fDecTF_1[2][7][9] = 0.677483397086;
+   fDecTF_1[2][7][10] = -1.13284495403;
+   fDecTF_1[2][7][11] = 0.0111895865856;
+   fDecTF_1[2][7][12] = 0.37959596;
+   fDecTF_1[2][7][13] = -0.538675777725;
+   fDecTF_1[2][7][14] = -0.540582124945;
+   fDecTF_1[2][7][15] = -0.29652333808;
+   fDecTF_1[2][7][16] = 0.0205052830289;
+   fDecTF_1[2][7][17] = -0.189979532227;
+   fDecTF_1[2][7][18] = 0.110865065198;
+   fDecTF_1[2][7][19] = 0.0491231792435;
+   fDecTF_1[2][7][20] = -0.172538221137;
+   fDecTF_1[2][7][21] = 0.0354789705318;
+   fDecTF_1[2][7][22] = -0.208516070295;
+   fDecTF_1[2][7][23] = 0.00885230754265;
+   fDecTF_1[2][7][24] = -0.0390198408232;
+   fDecTF_1[2][7][25] = 0.212434597681;
+   fDecTF_1[2][7][26] = -0.0018690067688;
+   fDecTF_1[2][7][27] = -0.00139886923449;
+   fDecTF_1[2][7][28] = 0.0108043126706;
+   fDecTF_1[2][7][29] = 0.00978410528014;
+   fDecTF_1[2][7][30] = 0.0103449453448;
+   fDecTF_1[2][7][31] = 0.015466027656;
+   fDecTF_1[2][7][32] = -0.00579405993033;
+   fDecTF_1[2][7][33] = -0.00581736940723;
+   fDecTF_1[2][7][34] = -0.000407668663028;
+   fDecTF_1[2][7][35] = -5.035635047e-05;
+   fDecTF_1[2][7][36] = -0.0018764835694;
+   fDecTF_1[2][8][0] = -0.901296593803;
+   fDecTF_1[2][8][1] = -3.32290397263;
+   fDecTF_1[2][8][2] = 0.773036014086;
+   fDecTF_1[2][8][3] = -1.47774539262;
+   fDecTF_1[2][8][4] = 0.263026326361;
+   fDecTF_1[2][8][5] = 0.253155683638;
+   fDecTF_1[2][8][6] = -0.352551580476;
+   fDecTF_1[2][8][7] = -0.843333432034;
+   fDecTF_1[2][8][8] = 3.81010700726;
+   fDecTF_1[2][8][9] = -0.333899646426;
+   fDecTF_1[2][8][10] = 1.03511052235;
+   fDecTF_1[2][8][11] = -0.0347213309803;
+   fDecTF_1[2][8][12] = 0.612369906187;
+   fDecTF_1[2][8][13] = 0.815170091839;
+   fDecTF_1[2][8][14] = 0.0366119175894;
+   fDecTF_1[2][8][15] = -1.14206131668;
+   fDecTF_1[2][8][16] = -0.215517581077;
+   fDecTF_1[2][8][17] = -0.189786968405;
+   fDecTF_1[2][8][18] = 0.00748584226515;
+   fDecTF_1[2][8][19] = 0.190466562894;
+   fDecTF_1[2][8][20] = 0.113961091769;
+   fDecTF_1[2][8][21] = -0.0355632445666;
+   fDecTF_1[2][8][22] = 0.0887908429499;
+   fDecTF_1[2][8][23] = 0.063681570587;
+   fDecTF_1[2][8][24] = 0.0131761554516;
+   fDecTF_1[2][8][25] = 0.101940566462;
+   fDecTF_1[2][8][26] = -0.00802031706682;
+   fDecTF_1[2][8][27] = -0.00962741486726;
+   fDecTF_1[2][8][28] = -0.00946614277022;
+   fDecTF_1[2][8][29] = -0.00949969148687;
+   fDecTF_1[2][8][30] = -0.0231531454537;
+   fDecTF_1[2][8][31] = -0.0286413006032;
+   fDecTF_1[2][8][32] = 0.00709573948271;
+   fDecTF_1[2][8][33] = 0.00645265357453;
+   fDecTF_1[2][8][34] = 0.000651334642472;
+   fDecTF_1[2][8][35] = -0.000553059748877;
+   fDecTF_1[2][8][36] = 0.0008320085841;
+   fDecTF_1[2][9][0] = -0.949549365955;
+   fDecTF_1[2][9][1] = -0.38018432329;
+   fDecTF_1[2][9][2] = -4.34576177266;
+   fDecTF_1[2][9][3] = 0.516343791203;
+   fDecTF_1[2][9][4] = -0.459443984149;
+   fDecTF_1[2][9][5] = 0.286961595226;
+   fDecTF_1[2][9][6] = 0.923878142572;
+   fDecTF_1[2][9][7] = 0.677483397086;
+   fDecTF_1[2][9][8] = -0.333899646426;
+   fDecTF_1[2][9][9] = 4.93155652457;
+   fDecTF_1[2][9][10] = -0.0610118718187;
+   fDecTF_1[2][9][11] = 0.0078448779304;
+   fDecTF_1[2][9][12] = -1.29641479153;
+   fDecTF_1[2][9][13] = -0.0574459544394;
+   fDecTF_1[2][9][14] = -0.473266004938;
+   fDecTF_1[2][9][15] = 0.885204258625;
+   fDecTF_1[2][9][16] = -0.0890864885082;
+   fDecTF_1[2][9][17] = -0.0667396829958;
+   fDecTF_1[2][9][18] = 0.0150295517705;
+   fDecTF_1[2][9][19] = 0.0624528209526;
+   fDecTF_1[2][9][20] = -0.529573077398;
+   fDecTF_1[2][9][21] = -0.663713826599;
+   fDecTF_1[2][9][22] = -0.212673668696;
+   fDecTF_1[2][9][23] = -0.135552948797;
+   fDecTF_1[2][9][24] = 0.205692978082;
+   fDecTF_1[2][9][25] = -0.0173557995056;
+   fDecTF_1[2][9][26] = -0.000769419416067;
+   fDecTF_1[2][9][27] = -0.001241914325;
+   fDecTF_1[2][9][28] = -0.00174082965733;
+   fDecTF_1[2][9][29] = -0.00317204078865;
+   fDecTF_1[2][9][30] = 0.00868575448137;
+   fDecTF_1[2][9][31] = 0.00511650506701;
+   fDecTF_1[2][9][32] = -0.00917895742904;
+   fDecTF_1[2][9][33] = -0.0102340766142;
+   fDecTF_1[2][9][34] = -0.000887449018588;
+   fDecTF_1[2][9][35] = 0.000522245933731;
+   fDecTF_1[2][9][36] = 0.000513900489348;
+   fDecTF_1[2][10][0] = -1.24659172621;
+   fDecTF_1[2][10][1] = -1.35092120811;
+   fDecTF_1[2][10][2] = 0.0334911575194;
+   fDecTF_1[2][10][3] = -1.10816670353;
+   fDecTF_1[2][10][4] = -0.0505513565865;
+   fDecTF_1[2][10][5] = -0.225457807439;
+   fDecTF_1[2][10][6] = -0.468528330774;
+   fDecTF_1[2][10][7] = -1.13284495403;
+   fDecTF_1[2][10][8] = 1.03511052235;
+   fDecTF_1[2][10][9] = -0.0610118718187;
+   fDecTF_1[2][10][10] = 4.79409127807;
+   fDecTF_1[2][10][11] = 0.102252464446;
+   fDecTF_1[2][10][12] = 0.21562068712;
+   fDecTF_1[2][10][13] = 3.89466875457;
+   fDecTF_1[2][10][14] = 0.648913934932;
+   fDecTF_1[2][10][15] = 0.103202723495;
+   fDecTF_1[2][10][16] = -0.0274562278145;
+   fDecTF_1[2][10][17] = 1.04631127217;
+   fDecTF_1[2][10][18] = -0.204573808465;
+   fDecTF_1[2][10][19] = -0.417683130491;
+   fDecTF_1[2][10][20] = -0.0399912936792;
+   fDecTF_1[2][10][21] = -0.712345503415;
+   fDecTF_1[2][10][22] = 0.222449519283;
+   fDecTF_1[2][10][23] = -0.221424044748;
+   fDecTF_1[2][10][24] = 0.291773088799;
+   fDecTF_1[2][10][25] = 0.000360112239868;
+   fDecTF_1[2][10][26] = 0.00307140194133;
+   fDecTF_1[2][10][27] = 0.00379646670278;
+   fDecTF_1[2][10][28] = -0.00226865617902;
+   fDecTF_1[2][10][29] = -0.00249381558925;
+   fDecTF_1[2][10][30] = 0.00318353250695;
+   fDecTF_1[2][10][31] = 0.00746150013059;
+   fDecTF_1[2][10][32] = -0.0113838807949;
+   fDecTF_1[2][10][33] = -0.00936566849359;
+   fDecTF_1[2][10][34] = -7.98487740261e-05;
+   fDecTF_1[2][10][35] = 0.00145535036428;
+   fDecTF_1[2][10][36] = 0.000163083041605;
+   fDecTF_1[2][11][0] = 0.0141917221458;
+   fDecTF_1[2][11][1] = -0.0597340500113;
+   fDecTF_1[2][11][2] = -0.028947294208;
+   fDecTF_1[2][11][3] = -0.0776460971896;
+   fDecTF_1[2][11][4] = 0.00362261452889;
+   fDecTF_1[2][11][5] = -0.00842083426782;
+   fDecTF_1[2][11][6] = -0.0193834955909;
+   fDecTF_1[2][11][7] = 0.0111895865856;
+   fDecTF_1[2][11][8] = -0.0347213309803;
+   fDecTF_1[2][11][9] = 0.0078448779304;
+   fDecTF_1[2][11][10] = 0.102252464446;
+   fDecTF_1[2][11][11] = 3.71670571026;
+   fDecTF_1[2][11][12] = -0.0888686692665;
+   fDecTF_1[2][11][13] = -0.0861011448539;
+   fDecTF_1[2][11][14] = -0.0351336689998;
+   fDecTF_1[2][11][15] = 0.102044469278;
+   fDecTF_1[2][11][16] = 0.99419971002;
+   fDecTF_1[2][11][17] = -0.168296488426;
+   fDecTF_1[2][11][18] = 2.6852949106;
+   fDecTF_1[2][11][19] = -0.233330567164;
+   fDecTF_1[2][11][20] = 0.100325099472;
+   fDecTF_1[2][11][21] = -0.0723292405902;
+   fDecTF_1[2][11][22] = -0.318335175222;
+   fDecTF_1[2][11][23] = 0.0461034241516;
+   fDecTF_1[2][11][24] = -0.0920573552187;
+   fDecTF_1[2][11][25] = 0.0122898105988;
+   fDecTF_1[2][11][26] = 0.00214171055769;
+   fDecTF_1[2][11][27] = 5.94694122397e-05;
+   fDecTF_1[2][11][28] = 0.00127207220265;
+   fDecTF_1[2][11][29] = -0.00116159467542;
+   fDecTF_1[2][11][30] = -0.0049585577001;
+   fDecTF_1[2][11][31] = 0.00155816135858;
+   fDecTF_1[2][11][32] = 0.00882562186675;
+   fDecTF_1[2][11][33] = -0.0111841117637;
+   fDecTF_1[2][11][34] = -0.000170960838564;
+   fDecTF_1[2][11][35] = 0.000162757525633;
+   fDecTF_1[2][11][36] = 5.46085567183e-05;
+   fDecTF_1[2][12][0] = -0.318463051375;
+   fDecTF_1[2][12][1] = 1.07452209611;
+   fDecTF_1[2][12][2] = 0.65233617809;
+   fDecTF_1[2][12][3] = -0.0258863555394;
+   fDecTF_1[2][12][4] = -0.326211963899;
+   fDecTF_1[2][12][5] = -0.328126140015;
+   fDecTF_1[2][12][6] = -0.17003584887;
+   fDecTF_1[2][12][7] = 0.37959596;
+   fDecTF_1[2][12][8] = 0.612369906187;
+   fDecTF_1[2][12][9] = -1.29641479153;
+   fDecTF_1[2][12][10] = 0.21562068712;
+   fDecTF_1[2][12][11] = -0.0888686692665;
+   fDecTF_1[2][12][12] = 5.61710115747;
+   fDecTF_1[2][12][13] = 0.939215627435;
+   fDecTF_1[2][12][14] = -0.882670520492;
+   fDecTF_1[2][12][15] = -4.68075957855;
+   fDecTF_1[2][12][16] = -0.0735532485754;
+   fDecTF_1[2][12][17] = -1.1858260418;
+   fDecTF_1[2][12][18] = -0.145063177537;
+   fDecTF_1[2][12][19] = 0.0370277101388;
+   fDecTF_1[2][12][20] = -0.244819740786;
+   fDecTF_1[2][12][21] = 0.662989800265;
+   fDecTF_1[2][12][22] = -1.19552701854;
+   fDecTF_1[2][12][23] = 0.0595975186084;
+   fDecTF_1[2][12][24] = -0.401268596064;
+   fDecTF_1[2][12][25] = 2.1503361068;
+   fDecTF_1[2][12][26] = 0.00174710827319;
+   fDecTF_1[2][12][27] = 0.000496639743277;
+   fDecTF_1[2][12][28] = -0.000469432392306;
+   fDecTF_1[2][12][29] = -0.000585834802428;
+   fDecTF_1[2][12][30] = -0.000710210050575;
+   fDecTF_1[2][12][31] = 0.00100221152324;
+   fDecTF_1[2][12][32] = -0.00502068488089;
+   fDecTF_1[2][12][33] = -0.0047785404992;
+   fDecTF_1[2][12][34] = 0.000392115433425;
+   fDecTF_1[2][12][35] = -5.07572142684e-05;
+   fDecTF_1[2][12][36] = 0.000862345140994;
+   fDecTF_1[2][13][0] = -1.18429025116;
+   fDecTF_1[2][13][1] = -0.882507654152;
+   fDecTF_1[2][13][2] = 0.121729202468;
+   fDecTF_1[2][13][3] = -1.05505326339;
+   fDecTF_1[2][13][4] = -0.127054473797;
+   fDecTF_1[2][13][5] = -0.0491291035206;
+   fDecTF_1[2][13][6] = -0.0608564893715;
+   fDecTF_1[2][13][7] = -0.538675777725;
+   fDecTF_1[2][13][8] = 0.815170091839;
+   fDecTF_1[2][13][9] = -0.0574459544394;
+   fDecTF_1[2][13][10] = 3.89466875457;
+   fDecTF_1[2][13][11] = -0.0861011448539;
+   fDecTF_1[2][13][12] = 0.939215627435;
+   fDecTF_1[2][13][13] = 4.67910761522;
+   fDecTF_1[2][13][14] = 0.12445112142;
+   fDecTF_1[2][13][15] = -0.699506663812;
+   fDecTF_1[2][13][16] = -0.317088305534;
+   fDecTF_1[2][13][17] = 0.62344004829;
+   fDecTF_1[2][13][18] = -0.230740396847;
+   fDecTF_1[2][13][19] = -0.126854123721;
+   fDecTF_1[2][13][20] = -0.191345100642;
+   fDecTF_1[2][13][21] = -0.609577690691;
+   fDecTF_1[2][13][22] = 0.426847960952;
+   fDecTF_1[2][13][23] = -0.168509579521;
+   fDecTF_1[2][13][24] = 0.390578619849;
+   fDecTF_1[2][13][25] = -0.138415212459;
+   fDecTF_1[2][13][26] = -0.0109850146198;
+   fDecTF_1[2][13][27] = -0.0148465538737;
+   fDecTF_1[2][13][28] = -0.01249182239;
+   fDecTF_1[2][13][29] = -0.0155635933535;
+   fDecTF_1[2][13][30] = -0.0207285811821;
+   fDecTF_1[2][13][31] = -0.024265250995;
+   fDecTF_1[2][13][32] = 0.00317182039101;
+   fDecTF_1[2][13][33] = -0.0047602685543;
+   fDecTF_1[2][13][34] = 0.000935778241606;
+   fDecTF_1[2][13][35] = 0.00160742814836;
+   fDecTF_1[2][13][36] = -0.000384100594622;
+   fDecTF_1[2][14][0] = -0.107908197872;
+   fDecTF_1[2][14][1] = -0.295615985983;
+   fDecTF_1[2][14][2] = -0.0181990762722;
+   fDecTF_1[2][14][3] = 0.357296669527;
+   fDecTF_1[2][14][4] = 0.0950198674395;
+   fDecTF_1[2][14][5] = -0.192902220217;
+   fDecTF_1[2][14][6] = -0.21510786364;
+   fDecTF_1[2][14][7] = -0.540582124945;
+   fDecTF_1[2][14][8] = 0.0366119175894;
+   fDecTF_1[2][14][9] = -0.473266004938;
+   fDecTF_1[2][14][10] = 0.648913934932;
+   fDecTF_1[2][14][11] = -0.0351336689998;
+   fDecTF_1[2][14][12] = -0.882670520492;
+   fDecTF_1[2][14][13] = 0.12445112142;
+   fDecTF_1[2][14][14] = 3.12506827789;
+   fDecTF_1[2][14][15] = 0.917059854784;
+   fDecTF_1[2][14][16] = -0.253173756409;
+   fDecTF_1[2][14][17] = 2.55256103974;
+   fDecTF_1[2][14][18] = -0.0295835910076;
+   fDecTF_1[2][14][19] = -0.0137248862358;
+   fDecTF_1[2][14][20] = 0.142931865522;
+   fDecTF_1[2][14][21] = -1.54153591654;
+   fDecTF_1[2][14][22] = -0.259730456676;
+   fDecTF_1[2][14][23] = -0.465173498111;
+   fDecTF_1[2][14][24] = 0.122848916512;
+   fDecTF_1[2][14][25] = 0.450926077058;
+   fDecTF_1[2][14][26] = -0.0104443865557;
+   fDecTF_1[2][14][27] = -0.00778449720364;
+   fDecTF_1[2][14][28] = -0.0132697059501;
+   fDecTF_1[2][14][29] = -0.00920016884827;
+   fDecTF_1[2][14][30] = -0.0243878859253;
+   fDecTF_1[2][14][31] = -0.0229886199496;
+   fDecTF_1[2][14][32] = 0.00537707339192;
+   fDecTF_1[2][14][33] = 0.00752949953719;
+   fDecTF_1[2][14][34] = 0.00040646416608;
+   fDecTF_1[2][14][35] = -0.00102996974834;
+   fDecTF_1[2][14][36] = -0.000246800086262;
+   fDecTF_1[2][15][0] = 0.42234369868;
+   fDecTF_1[2][15][1] = -0.539474373466;
+   fDecTF_1[2][15][2] = -0.218813037951;
+   fDecTF_1[2][15][3] = 0.0398566404531;
+   fDecTF_1[2][15][4] = 0.139559365399;
+   fDecTF_1[2][15][5] = 0.084772727361;
+   fDecTF_1[2][15][6] = 0.0865008502955;
+   fDecTF_1[2][15][7] = -0.29652333808;
+   fDecTF_1[2][15][8] = -1.14206131668;
+   fDecTF_1[2][15][9] = 0.885204258625;
+   fDecTF_1[2][15][10] = 0.103202723495;
+   fDecTF_1[2][15][11] = 0.102044469278;
+   fDecTF_1[2][15][12] = -4.68075957855;
+   fDecTF_1[2][15][13] = -0.699506663812;
+   fDecTF_1[2][15][14] = 0.917059854784;
+   fDecTF_1[2][15][15] = 5.83712515327;
+   fDecTF_1[2][15][16] = 0.0438971441209;
+   fDecTF_1[2][15][17] = 1.4264832659;
+   fDecTF_1[2][15][18] = -0.0592608005838;
+   fDecTF_1[2][15][19] = -0.0741362625043;
+   fDecTF_1[2][15][20] = 0.723589912047;
+   fDecTF_1[2][15][21] = 0.0655091389136;
+   fDecTF_1[2][15][22] = -0.291629742344;
+   fDecTF_1[2][15][23] = 0.27447734198;
+   fDecTF_1[2][15][24] = -0.706296945692;
+   fDecTF_1[2][15][25] = -0.300133406785;
+   fDecTF_1[2][15][26] = -0.00639632955716;
+   fDecTF_1[2][15][27] = -0.011430366241;
+   fDecTF_1[2][15][28] = -0.0106175618145;
+   fDecTF_1[2][15][29] = -0.0163766545193;
+   fDecTF_1[2][15][30] = -0.00281804069118;
+   fDecTF_1[2][15][31] = -0.00798469344824;
+   fDecTF_1[2][15][32] = -0.0030843867018;
+   fDecTF_1[2][15][33] = -0.00284797745002;
+   fDecTF_1[2][15][34] = -0.00112796174555;
+   fDecTF_1[2][15][35] = 0.00115872815313;
+   fDecTF_1[2][15][36] = 0.00131732725374;
+   fDecTF_1[2][16][0] = 0.19666857807;
+   fDecTF_1[2][16][1] = -0.0931398359475;
+   fDecTF_1[2][16][2] = 0.0497044615375;
+   fDecTF_1[2][16][3] = 0.0856932654764;
+   fDecTF_1[2][16][4] = 0.0334227677584;
+   fDecTF_1[2][16][5] = 0.0096797184951;
+   fDecTF_1[2][16][6] = -0.00779840263615;
+   fDecTF_1[2][16][7] = 0.0205052830289;
+   fDecTF_1[2][16][8] = -0.215517581077;
+   fDecTF_1[2][16][9] = -0.0890864885082;
+   fDecTF_1[2][16][10] = -0.0274562278145;
+   fDecTF_1[2][16][11] = 0.99419971002;
+   fDecTF_1[2][16][12] = -0.0735532485754;
+   fDecTF_1[2][16][13] = -0.317088305534;
+   fDecTF_1[2][16][14] = -0.253173756409;
+   fDecTF_1[2][16][15] = 0.0438971441209;
+   fDecTF_1[2][16][16] = 3.22332235734;
+   fDecTF_1[2][16][17] = -0.491060864519;
+   fDecTF_1[2][16][18] = 0.15237731518;
+   fDecTF_1[2][16][19] = -2.48720355303;
+   fDecTF_1[2][16][20] = 0.236341559868;
+   fDecTF_1[2][16][21] = -0.101928495865;
+   fDecTF_1[2][16][22] = 0.146016128901;
+   fDecTF_1[2][16][23] = 0.350651530429;
+   fDecTF_1[2][16][24] = 0.167129455317;
+   fDecTF_1[2][16][25] = -0.269850220116;
+   fDecTF_1[2][16][26] = -0.0145646695361;
+   fDecTF_1[2][16][27] = 0.0100178055276;
+   fDecTF_1[2][16][28] = -0.001357131982;
+   fDecTF_1[2][16][29] = -0.00849204315898;
+   fDecTF_1[2][16][30] = -0.0207335551579;
+   fDecTF_1[2][16][31] = 0.0107045986433;
+   fDecTF_1[2][16][32] = -0.0227385913504;
+   fDecTF_1[2][16][33] = 0.0210015341174;
+   fDecTF_1[2][16][34] = 0.00190784449925;
+   fDecTF_1[2][16][35] = 0.000300628121557;
+   fDecTF_1[2][16][36] = 0.000121494587789;
+   fDecTF_1[2][17][0] = -0.432924390908;
+   fDecTF_1[2][17][1] = -0.323846352872;
+   fDecTF_1[2][17][2] = -0.321917774333;
+   fDecTF_1[2][17][3] = 0.197550401974;
+   fDecTF_1[2][17][4] = -0.0384252363371;
+   fDecTF_1[2][17][5] = -0.0281675333718;
+   fDecTF_1[2][17][6] = 0.264600015594;
+   fDecTF_1[2][17][7] = -0.189979532227;
+   fDecTF_1[2][17][8] = -0.189786968405;
+   fDecTF_1[2][17][9] = -0.0667396829958;
+   fDecTF_1[2][17][10] = 1.04631127217;
+   fDecTF_1[2][17][11] = -0.168296488426;
+   fDecTF_1[2][17][12] = -1.1858260418;
+   fDecTF_1[2][17][13] = 0.62344004829;
+   fDecTF_1[2][17][14] = 2.55256103974;
+   fDecTF_1[2][17][15] = 1.4264832659;
+   fDecTF_1[2][17][16] = -0.491060864519;
+   fDecTF_1[2][17][17] = 3.80327206775;
+   fDecTF_1[2][17][18] = -0.148983359289;
+   fDecTF_1[2][17][19] = 0.194056655522;
+   fDecTF_1[2][17][20] = 0.679258060824;
+   fDecTF_1[2][17][21] = -1.27736997856;
+   fDecTF_1[2][17][22] = -0.0978206821885;
+   fDecTF_1[2][17][23] = 0.59070425138;
+   fDecTF_1[2][17][24] = -0.731485783934;
+   fDecTF_1[2][17][25] = 0.635965567776;
+   fDecTF_1[2][17][26] = 0.00811007434944;
+   fDecTF_1[2][17][27] = 0.011431396417;
+   fDecTF_1[2][17][28] = 0.0122064412724;
+   fDecTF_1[2][17][29] = 0.0111110213467;
+   fDecTF_1[2][17][30] = 0.0233831369546;
+   fDecTF_1[2][17][31] = 0.0292644577052;
+   fDecTF_1[2][17][32] = -0.00624913052742;
+   fDecTF_1[2][17][33] = -0.00455291254771;
+   fDecTF_1[2][17][34] = -0.00116105360002;
+   fDecTF_1[2][17][35] = -0.000466092545849;
+   fDecTF_1[2][17][36] = -0.000412233684976;
+   fDecTF_1[2][18][0] = -0.0159835972415;
+   fDecTF_1[2][18][1] = 0.0656250258389;
+   fDecTF_1[2][18][2] = -0.0233627873776;
+   fDecTF_1[2][18][3] = -0.0519439280531;
+   fDecTF_1[2][18][4] = -0.0186071672051;
+   fDecTF_1[2][18][5] = 0.00419236338871;
+   fDecTF_1[2][18][6] = 0.0303191592495;
+   fDecTF_1[2][18][7] = 0.110865065198;
+   fDecTF_1[2][18][8] = 0.00748584226515;
+   fDecTF_1[2][18][9] = 0.0150295517705;
+   fDecTF_1[2][18][10] = -0.204573808465;
+   fDecTF_1[2][18][11] = 2.6852949106;
+   fDecTF_1[2][18][12] = -0.145063177537;
+   fDecTF_1[2][18][13] = -0.230740396847;
+   fDecTF_1[2][18][14] = -0.0295835910076;
+   fDecTF_1[2][18][15] = -0.0592608005838;
+   fDecTF_1[2][18][16] = 0.15237731518;
+   fDecTF_1[2][18][17] = -0.148983359289;
+   fDecTF_1[2][18][18] = 3.48066400116;
+   fDecTF_1[2][18][19] = 0.657442251512;
+   fDecTF_1[2][18][20] = -0.0244194356208;
+   fDecTF_1[2][18][21] = -0.297323851095;
+   fDecTF_1[2][18][22] = 0.473975414267;
+   fDecTF_1[2][18][23] = 0.0758404008157;
+   fDecTF_1[2][18][24] = 0.210188038323;
+   fDecTF_1[2][18][25] = -0.842318564767;
+   fDecTF_1[2][18][26] = 0.00626071158813;
+   fDecTF_1[2][18][27] = -0.00506645715505;
+   fDecTF_1[2][18][28] = 0.000112648299393;
+   fDecTF_1[2][18][29] = 0.00230147716106;
+   fDecTF_1[2][18][30] = -0.0126793787462;
+   fDecTF_1[2][18][31] = 0.00505170209117;
+   fDecTF_1[2][18][32] = -0.0227503055129;
+   fDecTF_1[2][18][33] = 0.0230774835237;
+   fDecTF_1[2][18][34] = -0.000781425922807;
+   fDecTF_1[2][18][35] = 5.11488157263e-05;
+   fDecTF_1[2][18][36] = -8.34388572154e-05;
+   fDecTF_1[2][19][0] = -0.0467894965592;
+   fDecTF_1[2][19][1] = 0.113082169441;
+   fDecTF_1[2][19][2] = -0.0305303023884;
+   fDecTF_1[2][19][3] = -0.0260205897339;
+   fDecTF_1[2][19][4] = -0.0101506773453;
+   fDecTF_1[2][19][5] = 0.00566683235519;
+   fDecTF_1[2][19][6] = -0.0108226523514;
+   fDecTF_1[2][19][7] = 0.0491231792435;
+   fDecTF_1[2][19][8] = 0.190466562894;
+   fDecTF_1[2][19][9] = 0.0624528209526;
+   fDecTF_1[2][19][10] = -0.417683130491;
+   fDecTF_1[2][19][11] = -0.233330567164;
+   fDecTF_1[2][19][12] = 0.0370277101388;
+   fDecTF_1[2][19][13] = -0.126854123721;
+   fDecTF_1[2][19][14] = -0.0137248862358;
+   fDecTF_1[2][19][15] = -0.0741362625043;
+   fDecTF_1[2][19][16] = -2.48720355303;
+   fDecTF_1[2][19][17] = 0.194056655522;
+   fDecTF_1[2][19][18] = 0.657442251512;
+   fDecTF_1[2][19][19] = 3.52738000604;
+   fDecTF_1[2][19][20] = -0.0426881605898;
+   fDecTF_1[2][19][21] = 0.290954819786;
+   fDecTF_1[2][19][22] = 0.0646889734622;
+   fDecTF_1[2][19][23] = 0.0850553010383;
+   fDecTF_1[2][19][24] = -0.394443802707;
+   fDecTF_1[2][19][25] = 0.0271135581034;
+   fDecTF_1[2][19][26] = -0.0266581317082;
+   fDecTF_1[2][19][27] = 0.0290878567067;
+   fDecTF_1[2][19][28] = -0.0112692726011;
+   fDecTF_1[2][19][29] = 0.0159713818879;
+   fDecTF_1[2][19][30] = -0.034643497959;
+   fDecTF_1[2][19][31] = 0.0345406451962;
+   fDecTF_1[2][19][32] = -0.0174622853646;
+   fDecTF_1[2][19][33] = 0.0214071592328;
+   fDecTF_1[2][19][34] = 0.00248391659631;
+   fDecTF_1[2][19][35] = 0.000410250285344;
+   fDecTF_1[2][19][36] = -1.39550488667e-05;
+   fDecTF_1[2][20][0] = -0.187766939543;
+   fDecTF_1[2][20][1] = -0.432684640416;
+   fDecTF_1[2][20][2] = 0.0830158121612;
+   fDecTF_1[2][20][3] = -0.141028024257;
+   fDecTF_1[2][20][4] = 0.0419087463755;
+   fDecTF_1[2][20][5] = -0.0345999654885;
+   fDecTF_1[2][20][6] = -0.09277697272;
+   fDecTF_1[2][20][7] = -0.172538221137;
+   fDecTF_1[2][20][8] = 0.113961091769;
+   fDecTF_1[2][20][9] = -0.529573077398;
+   fDecTF_1[2][20][10] = -0.0399912936792;
+   fDecTF_1[2][20][11] = 0.100325099472;
+   fDecTF_1[2][20][12] = -0.244819740786;
+   fDecTF_1[2][20][13] = -0.191345100642;
+   fDecTF_1[2][20][14] = 0.142931865522;
+   fDecTF_1[2][20][15] = 0.723589912047;
+   fDecTF_1[2][20][16] = 0.236341559868;
+   fDecTF_1[2][20][17] = 0.679258060824;
+   fDecTF_1[2][20][18] = -0.0244194356208;
+   fDecTF_1[2][20][19] = -0.0426881605898;
+   fDecTF_1[2][20][20] = 3.21063286572;
+   fDecTF_1[2][20][21] = 0.732778830525;
+   fDecTF_1[2][20][22] = 0.564899412618;
+   fDecTF_1[2][20][23] = 3.8242434367;
+   fDecTF_1[2][20][24] = -2.62737273781;
+   fDecTF_1[2][20][25] = 0.804210573797;
+   fDecTF_1[2][20][26] = -0.000172679286806;
+   fDecTF_1[2][20][27] = -0.00107831069457;
+   fDecTF_1[2][20][28] = -0.00235035312672;
+   fDecTF_1[2][20][29] = -0.00571206615125;
+   fDecTF_1[2][20][30] = -0.00823631897225;
+   fDecTF_1[2][20][31] = -0.0023266447867;
+   fDecTF_1[2][20][32] = -0.000286721005408;
+   fDecTF_1[2][20][33] = 0.00244760211765;
+   fDecTF_1[2][20][34] = 0.000376470227092;
+   fDecTF_1[2][20][35] = -6.29952823735e-05;
+   fDecTF_1[2][20][36] = 0.000116682156087;
+   fDecTF_1[2][21][0] = 0.676839247225;
+   fDecTF_1[2][21][1] = 0.0296315014976;
+   fDecTF_1[2][21][2] = 1.09835376294;
+   fDecTF_1[2][21][3] = -0.181063842584;
+   fDecTF_1[2][21][4] = 0.0398435513152;
+   fDecTF_1[2][21][5] = -0.0976015207536;
+   fDecTF_1[2][21][6] = -0.330330381725;
+   fDecTF_1[2][21][7] = 0.0354789705318;
+   fDecTF_1[2][21][8] = -0.0355632445666;
+   fDecTF_1[2][21][9] = -0.663713826599;
+   fDecTF_1[2][21][10] = -0.712345503415;
+   fDecTF_1[2][21][11] = -0.0723292405902;
+   fDecTF_1[2][21][12] = 0.662989800265;
+   fDecTF_1[2][21][13] = -0.609577690691;
+   fDecTF_1[2][21][14] = -1.54153591654;
+   fDecTF_1[2][21][15] = 0.0655091389136;
+   fDecTF_1[2][21][16] = -0.101928495865;
+   fDecTF_1[2][21][17] = -1.27736997856;
+   fDecTF_1[2][21][18] = -0.297323851095;
+   fDecTF_1[2][21][19] = 0.290954819786;
+   fDecTF_1[2][21][20] = 0.732778830525;
+   fDecTF_1[2][21][21] = 3.49029967775;
+   fDecTF_1[2][21][22] = -2.03537963066;
+   fDecTF_1[2][21][23] = 1.09257021961;
+   fDecTF_1[2][21][24] = -2.2389839504;
+   fDecTF_1[2][21][25] = 2.41893822327;
+   fDecTF_1[2][21][26] = -0.010240876776;
+   fDecTF_1[2][21][27] = -0.0110337650805;
+   fDecTF_1[2][21][28] = -0.0124505080725;
+   fDecTF_1[2][21][29] = -0.0144671388252;
+   fDecTF_1[2][21][30] = -0.0193099322351;
+   fDecTF_1[2][21][31] = -0.0160645572783;
+   fDecTF_1[2][21][32] = -0.0010637892048;
+   fDecTF_1[2][21][33] = -0.00076337355508;
+   fDecTF_1[2][21][34] = -0.000111334092456;
+   fDecTF_1[2][21][35] = 0.000641755697356;
+   fDecTF_1[2][21][36] = 0.000663327979235;
+   fDecTF_1[2][22][0] = -0.22056645386;
+   fDecTF_1[2][22][1] = -0.0666550968648;
+   fDecTF_1[2][22][2] = -0.0621056578882;
+   fDecTF_1[2][22][3] = 0.1874326199;
+   fDecTF_1[2][22][4] = -0.0314028153919;
+   fDecTF_1[2][22][5] = -0.0755777711758;
+   fDecTF_1[2][22][6] = -0.14117093472;
+   fDecTF_1[2][22][7] = -0.208516070295;
+   fDecTF_1[2][22][8] = 0.08879084295;
+   fDecTF_1[2][22][9] = -0.212673668696;
+   fDecTF_1[2][22][10] = 0.222449519283;
+   fDecTF_1[2][22][11] = -0.318335175222;
+   fDecTF_1[2][22][12] = -1.19552701854;
+   fDecTF_1[2][22][13] = 0.426847960952;
+   fDecTF_1[2][22][14] = -0.259730456676;
+   fDecTF_1[2][22][15] = -0.291629742344;
+   fDecTF_1[2][22][16] = 0.146016128901;
+   fDecTF_1[2][22][17] = -0.0978206821885;
+   fDecTF_1[2][22][18] = 0.473975414267;
+   fDecTF_1[2][22][19] = 0.0646889734622;
+   fDecTF_1[2][22][20] = 0.564899412618;
+   fDecTF_1[2][22][21] = -2.03537963066;
+   fDecTF_1[2][22][22] = 8.45928100381;
+   fDecTF_1[2][22][23] = 2.88960725274;
+   fDecTF_1[2][22][24] = 1.96688954265;
+   fDecTF_1[2][22][25] = -7.97242818672;
+   fDecTF_1[2][22][26] = -0.00111454958916;
+   fDecTF_1[2][22][27] = -0.00141149941061;
+   fDecTF_1[2][22][28] = -0.00561407249911;
+   fDecTF_1[2][22][29] = -0.00269016598237;
+   fDecTF_1[2][22][30] = -0.0100993787588;
+   fDecTF_1[2][22][31] = -0.00456483497949;
+   fDecTF_1[2][22][32] = 0.0016675915713;
+   fDecTF_1[2][22][33] = -0.00536157309799;
+   fDecTF_1[2][22][34] = 0.000280118440412;
+   fDecTF_1[2][22][35] = 0.000539105607339;
+   fDecTF_1[2][22][36] = -9.28321074252e-05;
+   fDecTF_1[2][23][0] = -0.546123380783;
+   fDecTF_1[2][23][1] = -0.289706562682;
+   fDecTF_1[2][23][2] = -0.724362158843;
+   fDecTF_1[2][23][3] = -0.0916534818993;
+   fDecTF_1[2][23][4] = -0.0267635455016;
+   fDecTF_1[2][23][5] = 0.0410194361982;
+   fDecTF_1[2][23][6] = 0.0737311710659;
+   fDecTF_1[2][23][7] = 0.00885230754265;
+   fDecTF_1[2][23][8] = 0.063681570587;
+   fDecTF_1[2][23][9] = -0.135552948797;
+   fDecTF_1[2][23][10] = -0.221424044748;
+   fDecTF_1[2][23][11] = 0.0461034241516;
+   fDecTF_1[2][23][12] = 0.0595975186084;
+   fDecTF_1[2][23][13] = -0.168509579521;
+   fDecTF_1[2][23][14] = -0.465173498111;
+   fDecTF_1[2][23][15] = 0.27447734198;
+   fDecTF_1[2][23][16] = 0.350651530429;
+   fDecTF_1[2][23][17] = 0.59070425138;
+   fDecTF_1[2][23][18] = 0.0758404008157;
+   fDecTF_1[2][23][19] = 0.0850553010383;
+   fDecTF_1[2][23][20] = 3.8242434367;
+   fDecTF_1[2][23][21] = 1.09257021961;
+   fDecTF_1[2][23][22] = 2.88960725274;
+   fDecTF_1[2][23][23] = 8.00489729106;
+   fDecTF_1[2][23][24] = -4.20544634883;
+   fDecTF_1[2][23][25] = -0.629416507666;
+   fDecTF_1[2][23][26] = 0.00178668580943;
+   fDecTF_1[2][23][27] = -0.000230723751172;
+   fDecTF_1[2][23][28] = -0.000368412287068;
+   fDecTF_1[2][23][29] = -0.00121347546544;
+   fDecTF_1[2][23][30] = -0.00920015091353;
+   fDecTF_1[2][23][31] = -0.00463835528634;
+   fDecTF_1[2][23][32] = -0.00223766175599;
+   fDecTF_1[2][23][33] = -0.00113072675308;
+   fDecTF_1[2][23][34] = 0.000375332730555;
+   fDecTF_1[2][23][35] = 2.12712774495e-05;
+   fDecTF_1[2][23][36] = -0.000387557126448;
+   fDecTF_1[2][24][0] = 0.122005209136;
+   fDecTF_1[2][24][1] = 0.262703995829;
+   fDecTF_1[2][24][2] = 0.182616826339;
+   fDecTF_1[2][24][3] = 0.141097399671;
+   fDecTF_1[2][24][4] = -0.0368886283561;
+   fDecTF_1[2][24][5] = -0.0568174274502;
+   fDecTF_1[2][24][6] = -0.065818292027;
+   fDecTF_1[2][24][7] = -0.0390198408232;
+   fDecTF_1[2][24][8] = 0.0131761554516;
+   fDecTF_1[2][24][9] = 0.205692978082;
+   fDecTF_1[2][24][10] = 0.291773088799;
+   fDecTF_1[2][24][11] = -0.0920573552187;
+   fDecTF_1[2][24][12] = -0.401268596064;
+   fDecTF_1[2][24][13] = 0.390578619849;
+   fDecTF_1[2][24][14] = 0.122848916512;
+   fDecTF_1[2][24][15] = -0.706296945692;
+   fDecTF_1[2][24][16] = 0.167129455317;
+   fDecTF_1[2][24][17] = -0.731485783934;
+   fDecTF_1[2][24][18] = 0.210188038323;
+   fDecTF_1[2][24][19] = -0.394443802707;
+   fDecTF_1[2][24][20] = -2.62737273781;
+   fDecTF_1[2][24][21] = -2.2389839504;
+   fDecTF_1[2][24][22] = 1.96688954265;
+   fDecTF_1[2][24][23] = -4.20544634883;
+   fDecTF_1[2][24][24] = 5.21187700572;
+   fDecTF_1[2][24][25] = -3.71782313336;
+   fDecTF_1[2][24][26] = -0.000996317682809;
+   fDecTF_1[2][24][27] = -0.00104686009706;
+   fDecTF_1[2][24][28] = 0.00140875646055;
+   fDecTF_1[2][24][29] = -0.00106384667557;
+   fDecTF_1[2][24][30] = 0.00537613800553;
+   fDecTF_1[2][24][31] = -0.00127007793482;
+   fDecTF_1[2][24][32] = -0.000523841649494;
+   fDecTF_1[2][24][33] = -0.0018252318836;
+   fDecTF_1[2][24][34] = -0.000628567964337;
+   fDecTF_1[2][24][35] = -0.000673573725414;
+   fDecTF_1[2][24][36] = 4.51134553833e-05;
+   fDecTF_1[2][25][0] = -0.117327209977;
+   fDecTF_1[2][25][1] = 0.030369341545;
+   fDecTF_1[2][25][2] = -0.233778166496;
+   fDecTF_1[2][25][3] = -0.171401612037;
+   fDecTF_1[2][25][4] = -0.023822895022;
+   fDecTF_1[2][25][5] = 0.044479607345;
+   fDecTF_1[2][25][6] = 0.18127181292;
+   fDecTF_1[2][25][7] = 0.212434597681;
+   fDecTF_1[2][25][8] = 0.101940566462;
+   fDecTF_1[2][25][9] = -0.0173557995056;
+   fDecTF_1[2][25][10] = 0.000360112239868;
+   fDecTF_1[2][25][11] = 0.0122898105988;
+   fDecTF_1[2][25][12] = 2.1503361068;
+   fDecTF_1[2][25][13] = -0.138415212459;
+   fDecTF_1[2][25][14] = 0.450926077058;
+   fDecTF_1[2][25][15] = -0.300133406785;
+   fDecTF_1[2][25][16] = -0.269850220116;
+   fDecTF_1[2][25][17] = 0.635965567776;
+   fDecTF_1[2][25][18] = -0.842318564767;
+   fDecTF_1[2][25][19] = 0.0271135581034;
+   fDecTF_1[2][25][20] = 0.804210573797;
+   fDecTF_1[2][25][21] = 2.41893822327;
+   fDecTF_1[2][25][22] = -7.97242818672;
+   fDecTF_1[2][25][23] = -0.629416507666;
+   fDecTF_1[2][25][24] = -3.71782313336;
+   fDecTF_1[2][25][25] = 9.98785118115;
+   fDecTF_1[2][25][26] = 0.0021397264475;
+   fDecTF_1[2][25][27] = 0.00312211625632;
+   fDecTF_1[2][25][28] = 0.00487376707549;
+   fDecTF_1[2][25][29] = 0.00468078148073;
+   fDecTF_1[2][25][30] = 0.0062086961743;
+   fDecTF_1[2][25][31] = 0.00267383482075;
+   fDecTF_1[2][25][32] = -0.00168296042251;
+   fDecTF_1[2][25][33] = -0.000500994183438;
+   fDecTF_1[2][25][34] = -0.00025527380699;
+   fDecTF_1[2][25][35] = -0.000758232214682;
+   fDecTF_1[2][25][36] = -0.000112271342703;
+   fDecTF_1[2][26][0] = 0.0019617095806;
+   fDecTF_1[2][26][1] = -0.00865876403684;
+   fDecTF_1[2][26][2] = 0.00349921861762;
+   fDecTF_1[2][26][3] = -0.00734774904243;
+   fDecTF_1[2][26][4] = 0.00240324448407;
+   fDecTF_1[2][26][5] = 0.00171118109955;
+   fDecTF_1[2][26][6] = -0.000548382170422;
+   fDecTF_1[2][26][7] = -0.0018690067688;
+   fDecTF_1[2][26][8] = -0.00802031706682;
+   fDecTF_1[2][26][9] = -0.000769419416067;
+   fDecTF_1[2][26][10] = 0.00307140194133;
+   fDecTF_1[2][26][11] = 0.00214171055769;
+   fDecTF_1[2][26][12] = 0.00174710827319;
+   fDecTF_1[2][26][13] = -0.0109850146198;
+   fDecTF_1[2][26][14] = -0.0104443865557;
+   fDecTF_1[2][26][15] = -0.00639632955716;
+   fDecTF_1[2][26][16] = -0.0145646695361;
+   fDecTF_1[2][26][17] = 0.00811007434944;
+   fDecTF_1[2][26][18] = 0.00626071158813;
+   fDecTF_1[2][26][19] = -0.0266581317082;
+   fDecTF_1[2][26][20] = -0.000172679286806;
+   fDecTF_1[2][26][21] = -0.010240876776;
+   fDecTF_1[2][26][22] = -0.00111454958916;
+   fDecTF_1[2][26][23] = 0.00178668580943;
+   fDecTF_1[2][26][24] = -0.000996317682809;
+   fDecTF_1[2][26][25] = 0.0021397264475;
+   fDecTF_1[2][26][26] = 0.249808018373;
+   fDecTF_1[2][26][27] = -0.00987892269912;
+   fDecTF_1[2][26][28] = 0.195024115661;
+   fDecTF_1[2][26][29] = -0.0133450004014;
+   fDecTF_1[2][26][30] = -0.0372351408561;
+   fDecTF_1[2][26][31] = -0.00396513404406;
+   fDecTF_1[2][26][32] = -0.00258110371979;
+   fDecTF_1[2][26][33] = 0.000696263111554;
+   fDecTF_1[2][26][34] = 0.000556038787413;
+   fDecTF_1[2][26][35] = -0.000656424436734;
+   fDecTF_1[2][26][36] = 0.000370528946982;
+   fDecTF_1[2][27][0] = 0.00534285820984;
+   fDecTF_1[2][27][1] = -0.00851846967838;
+   fDecTF_1[2][27][2] = 0.00217589119911;
+   fDecTF_1[2][27][3] = -0.0100365080947;
+   fDecTF_1[2][27][4] = 0.00238068152695;
+   fDecTF_1[2][27][5] = 0.00387666481435;
+   fDecTF_1[2][27][6] = 0.00176671432046;
+   fDecTF_1[2][27][7] = -0.00139886923449;
+   fDecTF_1[2][27][8] = -0.00962741486726;
+   fDecTF_1[2][27][9] = -0.001241914325;
+   fDecTF_1[2][27][10] = 0.00379646670278;
+   fDecTF_1[2][27][11] = 5.94694122397e-05;
+   fDecTF_1[2][27][12] = 0.000496639743277;
+   fDecTF_1[2][27][13] = -0.0148465538737;
+   fDecTF_1[2][27][14] = -0.00778449720364;
+   fDecTF_1[2][27][15] = -0.011430366241;
+   fDecTF_1[2][27][16] = 0.0100178055276;
+   fDecTF_1[2][27][17] = 0.011431396417;
+   fDecTF_1[2][27][18] = -0.00506645715505;
+   fDecTF_1[2][27][19] = 0.0290878567067;
+   fDecTF_1[2][27][20] = -0.00107831069457;
+   fDecTF_1[2][27][21] = -0.0110337650805;
+   fDecTF_1[2][27][22] = -0.00141149941061;
+   fDecTF_1[2][27][23] = -0.000230723751172;
+   fDecTF_1[2][27][24] = -0.00104686009706;
+   fDecTF_1[2][27][25] = 0.00312211625632;
+   fDecTF_1[2][27][26] = -0.00987892269912;
+   fDecTF_1[2][27][27] = 0.247919329934;
+   fDecTF_1[2][27][28] = -0.0139073845859;
+   fDecTF_1[2][27][29] = 0.187068457455;
+   fDecTF_1[2][27][30] = -0.00364821216638;
+   fDecTF_1[2][27][31] = -0.0415669128105;
+   fDecTF_1[2][27][32] = 0.00144722196178;
+   fDecTF_1[2][27][33] = -0.00308168744383;
+   fDecTF_1[2][27][34] = -0.00132072950483;
+   fDecTF_1[2][27][35] = -0.000343282969928;
+   fDecTF_1[2][27][36] = 0.000400608673914;
+   fDecTF_1[2][28][0] = -0.00337105526109;
+   fDecTF_1[2][28][1] = -0.0211551016478;
+   fDecTF_1[2][28][2] = 0.00323741006932;
+   fDecTF_1[2][28][3] = -0.00944417709374;
+   fDecTF_1[2][28][4] = 0.00979039312247;
+   fDecTF_1[2][28][5] = 0.00691836373985;
+   fDecTF_1[2][28][6] = -0.00304450977192;
+   fDecTF_1[2][28][7] = 0.0108043126706;
+   fDecTF_1[2][28][8] = -0.00946614277022;
+   fDecTF_1[2][28][9] = -0.00174082965733;
+   fDecTF_1[2][28][10] = -0.00226865617902;
+   fDecTF_1[2][28][11] = 0.00127207220265;
+   fDecTF_1[2][28][12] = -0.000469432392306;
+   fDecTF_1[2][28][13] = -0.01249182239;
+   fDecTF_1[2][28][14] = -0.0132697059501;
+   fDecTF_1[2][28][15] = -0.0106175618145;
+   fDecTF_1[2][28][16] = -0.001357131982;
+   fDecTF_1[2][28][17] = 0.0122064412724;
+   fDecTF_1[2][28][18] = 0.000112648299393;
+   fDecTF_1[2][28][19] = -0.0112692726011;
+   fDecTF_1[2][28][20] = -0.00235035312672;
+   fDecTF_1[2][28][21] = -0.0124505080725;
+   fDecTF_1[2][28][22] = -0.00561407249911;
+   fDecTF_1[2][28][23] = -0.000368412287068;
+   fDecTF_1[2][28][24] = 0.00140875646055;
+   fDecTF_1[2][28][25] = 0.00487376707549;
+   fDecTF_1[2][28][26] = 0.195024115661;
+   fDecTF_1[2][28][27] = -0.0139073845859;
+   fDecTF_1[2][28][28] = 0.556806092072;
+   fDecTF_1[2][28][29] = -0.014468182258;
+   fDecTF_1[2][28][30] = -0.0685024692844;
+   fDecTF_1[2][28][31] = -0.00778321879166;
+   fDecTF_1[2][28][32] = -0.0142875501169;
+   fDecTF_1[2][28][33] = 0.00137974803935;
+   fDecTF_1[2][28][34] = -0.0008820890524;
+   fDecTF_1[2][28][35] = 3.5115894301e-05;
+   fDecTF_1[2][28][36] = -0.000206975270899;
+   fDecTF_1[2][29][0] = -0.000171571930118;
+   fDecTF_1[2][29][1] = -0.0225298191427;
+   fDecTF_1[2][29][2] = 0.00116596131997;
+   fDecTF_1[2][29][3] = -0.0141336818327;
+   fDecTF_1[2][29][4] = 0.00899953914076;
+   fDecTF_1[2][29][5] = 0.009750554333;
+   fDecTF_1[2][29][6] = -0.00157149316552;
+   fDecTF_1[2][29][7] = 0.00978410528014;
+   fDecTF_1[2][29][8] = -0.00949969148687;
+   fDecTF_1[2][29][9] = -0.00317204078865;
+   fDecTF_1[2][29][10] = -0.00249381558925;
+   fDecTF_1[2][29][11] = -0.00116159467542;
+   fDecTF_1[2][29][12] = -0.000585834802428;
+   fDecTF_1[2][29][13] = -0.0155635933535;
+   fDecTF_1[2][29][14] = -0.00920016884827;
+   fDecTF_1[2][29][15] = -0.0163766545193;
+   fDecTF_1[2][29][16] = -0.00849204315898;
+   fDecTF_1[2][29][17] = 0.0111110213467;
+   fDecTF_1[2][29][18] = 0.00230147716106;
+   fDecTF_1[2][29][19] = 0.0159713818879;
+   fDecTF_1[2][29][20] = -0.00571206615125;
+   fDecTF_1[2][29][21] = -0.0144671388252;
+   fDecTF_1[2][29][22] = -0.00269016598237;
+   fDecTF_1[2][29][23] = -0.00121347546544;
+   fDecTF_1[2][29][24] = -0.00106384667557;
+   fDecTF_1[2][29][25] = 0.00468078148073;
+   fDecTF_1[2][29][26] = -0.0133450004014;
+   fDecTF_1[2][29][27] = 0.187068457455;
+   fDecTF_1[2][29][28] = -0.014468182258;
+   fDecTF_1[2][29][29] = 0.550955520589;
+   fDecTF_1[2][29][30] = -0.00723951075264;
+   fDecTF_1[2][29][31] = -0.0758781385174;
+   fDecTF_1[2][29][32] = 0.00210815432993;
+   fDecTF_1[2][29][33] = -0.0151429654239;
+   fDecTF_1[2][29][34] = 0.000780152433078;
+   fDecTF_1[2][29][35] = 4.168856554e-05;
+   fDecTF_1[2][29][36] = -0.000119509588726;
+   fDecTF_1[2][30][0] = 0.0200005424541;
+   fDecTF_1[2][30][1] = -0.0232221839403;
+   fDecTF_1[2][30][2] = -0.00789594036193;
+   fDecTF_1[2][30][3] = -0.000281736247061;
+   fDecTF_1[2][30][4] = 0.0132844465187;
+   fDecTF_1[2][30][5] = 0.0142362176894;
+   fDecTF_1[2][30][6] = 0.00292101036211;
+   fDecTF_1[2][30][7] = 0.0103449453448;
+   fDecTF_1[2][30][8] = -0.0231531454537;
+   fDecTF_1[2][30][9] = 0.00868575448137;
+   fDecTF_1[2][30][10] = 0.00318353250695;
+   fDecTF_1[2][30][11] = -0.0049585577001;
+   fDecTF_1[2][30][12] = -0.000710210050575;
+   fDecTF_1[2][30][13] = -0.0207285811821;
+   fDecTF_1[2][30][14] = -0.0243878859253;
+   fDecTF_1[2][30][15] = -0.00281804069118;
+   fDecTF_1[2][30][16] = -0.0207335551579;
+   fDecTF_1[2][30][17] = 0.0233831369546;
+   fDecTF_1[2][30][18] = -0.0126793787462;
+   fDecTF_1[2][30][19] = -0.034643497959;
+   fDecTF_1[2][30][20] = -0.00823631897225;
+   fDecTF_1[2][30][21] = -0.0193099322351;
+   fDecTF_1[2][30][22] = -0.0100993787588;
+   fDecTF_1[2][30][23] = -0.00920015091353;
+   fDecTF_1[2][30][24] = 0.00537613800553;
+   fDecTF_1[2][30][25] = 0.0062086961743;
+   fDecTF_1[2][30][26] = -0.0372351408561;
+   fDecTF_1[2][30][27] = -0.00364821216638;
+   fDecTF_1[2][30][28] = -0.0685024692844;
+   fDecTF_1[2][30][29] = -0.00723951075264;
+   fDecTF_1[2][30][30] = 1.7162141276;
+   fDecTF_1[2][30][31] = -0.0479743041032;
+   fDecTF_1[2][30][32] = -0.0195625178415;
+   fDecTF_1[2][30][33] = 0.00765901772268;
+   fDecTF_1[2][30][34] = -0.000891887666736;
+   fDecTF_1[2][30][35] = 0.000218054697793;
+   fDecTF_1[2][30][36] = 0.000296074818437;
+   fDecTF_1[2][31][0] = 0.0171009629131;
+   fDecTF_1[2][31][1] = -0.028350881176;
+   fDecTF_1[2][31][2] = 0.0011026043961;
+   fDecTF_1[2][31][3] = -0.00933653508993;
+   fDecTF_1[2][31][4] = 0.0132273006185;
+   fDecTF_1[2][31][5] = 0.0068917526469;
+   fDecTF_1[2][31][6] = 0.00173000553364;
+   fDecTF_1[2][31][7] = 0.015466027656;
+   fDecTF_1[2][31][8] = -0.0286413006032;
+   fDecTF_1[2][31][9] = 0.00511650506701;
+   fDecTF_1[2][31][10] = 0.00746150013059;
+   fDecTF_1[2][31][11] = 0.00155816135858;
+   fDecTF_1[2][31][12] = 0.00100221152324;
+   fDecTF_1[2][31][13] = -0.024265250995;
+   fDecTF_1[2][31][14] = -0.0229886199496;
+   fDecTF_1[2][31][15] = -0.00798469344824;
+   fDecTF_1[2][31][16] = 0.0107045986433;
+   fDecTF_1[2][31][17] = 0.0292644577052;
+   fDecTF_1[2][31][18] = 0.00505170209117;
+   fDecTF_1[2][31][19] = 0.0345406451962;
+   fDecTF_1[2][31][20] = -0.0023266447867;
+   fDecTF_1[2][31][21] = -0.0160645572783;
+   fDecTF_1[2][31][22] = -0.00456483497949;
+   fDecTF_1[2][31][23] = -0.00463835528634;
+   fDecTF_1[2][31][24] = -0.00127007793482;
+   fDecTF_1[2][31][25] = 0.00267383482075;
+   fDecTF_1[2][31][26] = -0.00396513404406;
+   fDecTF_1[2][31][27] = -0.0415669128105;
+   fDecTF_1[2][31][28] = -0.00778321879166;
+   fDecTF_1[2][31][29] = -0.0758781385174;
+   fDecTF_1[2][31][30] = -0.0479743041032;
+   fDecTF_1[2][31][31] = 1.70947786628;
+   fDecTF_1[2][31][32] = 0.00710672208558;
+   fDecTF_1[2][31][33] = -0.0198635005376;
+   fDecTF_1[2][31][34] = -0.000228343769847;
+   fDecTF_1[2][31][35] = -2.27541633499e-05;
+   fDecTF_1[2][31][36] = 0.00026758558261;
+   fDecTF_1[2][32][0] = 0.0142930725209;
+   fDecTF_1[2][32][1] = -0.00184203545594;
+   fDecTF_1[2][32][2] = -0.00424770957008;
+   fDecTF_1[2][32][3] = -0.0154146645389;
+   fDecTF_1[2][32][4] = -0.0170879416516;
+   fDecTF_1[2][32][5] = 0.0118132281737;
+   fDecTF_1[2][32][6] = -0.0151656768954;
+   fDecTF_1[2][32][7] = -0.00579405993033;
+   fDecTF_1[2][32][8] = 0.00709573948271;
+   fDecTF_1[2][32][9] = -0.00917895742904;
+   fDecTF_1[2][32][10] = -0.0113838807949;
+   fDecTF_1[2][32][11] = 0.00882562186675;
+   fDecTF_1[2][32][12] = -0.00502068488089;
+   fDecTF_1[2][32][13] = 0.00317182039101;
+   fDecTF_1[2][32][14] = 0.00537707339192;
+   fDecTF_1[2][32][15] = -0.0030843867018;
+   fDecTF_1[2][32][16] = -0.0227385913504;
+   fDecTF_1[2][32][17] = -0.00624913052742;
+   fDecTF_1[2][32][18] = -0.0227503055129;
+   fDecTF_1[2][32][19] = -0.0174622853646;
+   fDecTF_1[2][32][20] = -0.000286721005408;
+   fDecTF_1[2][32][21] = -0.0010637892048;
+   fDecTF_1[2][32][22] = 0.0016675915713;
+   fDecTF_1[2][32][23] = -0.00223766175599;
+   fDecTF_1[2][32][24] = -0.000523841649494;
+   fDecTF_1[2][32][25] = -0.00168296042251;
+   fDecTF_1[2][32][26] = -0.00258110371979;
+   fDecTF_1[2][32][27] = 0.00144722196178;
+   fDecTF_1[2][32][28] = -0.0142875501169;
+   fDecTF_1[2][32][29] = 0.00210815432993;
+   fDecTF_1[2][32][30] = -0.0195625178415;
+   fDecTF_1[2][32][31] = 0.00710672208558;
+   fDecTF_1[2][32][32] = 0.368636367522;
+   fDecTF_1[2][32][33] = -0.0914339183837;
+   fDecTF_1[2][32][34] = 0.00357029751573;
+   fDecTF_1[2][32][35] = -1.30084841591e-05;
+   fDecTF_1[2][32][36] = 0.00270912461323;
+   fDecTF_1[2][33][0] = 0.0147255992799;
+   fDecTF_1[2][33][1] = -0.00512024078066;
+   fDecTF_1[2][33][2] = -0.00232197180598;
+   fDecTF_1[2][33][3] = -0.0181061421409;
+   fDecTF_1[2][33][4] = -0.0154031334225;
+   fDecTF_1[2][33][5] = 0.0115803676957;
+   fDecTF_1[2][33][6] = -0.0146787372703;
+   fDecTF_1[2][33][7] = -0.00581736940723;
+   fDecTF_1[2][33][8] = 0.00645265357453;
+   fDecTF_1[2][33][9] = -0.0102340766142;
+   fDecTF_1[2][33][10] = -0.00936566849359;
+   fDecTF_1[2][33][11] = -0.0111841117637;
+   fDecTF_1[2][33][12] = -0.0047785404992;
+   fDecTF_1[2][33][13] = -0.0047602685543;
+   fDecTF_1[2][33][14] = 0.00752949953719;
+   fDecTF_1[2][33][15] = -0.00284797745002;
+   fDecTF_1[2][33][16] = 0.0210015341174;
+   fDecTF_1[2][33][17] = -0.00455291254771;
+   fDecTF_1[2][33][18] = 0.0230774835237;
+   fDecTF_1[2][33][19] = 0.0214071592328;
+   fDecTF_1[2][33][20] = 0.00244760211765;
+   fDecTF_1[2][33][21] = -0.00076337355508;
+   fDecTF_1[2][33][22] = -0.00536157309799;
+   fDecTF_1[2][33][23] = -0.00113072675308;
+   fDecTF_1[2][33][24] = -0.0018252318836;
+   fDecTF_1[2][33][25] = -0.000500994183438;
+   fDecTF_1[2][33][26] = 0.000696263111554;
+   fDecTF_1[2][33][27] = -0.00308168744383;
+   fDecTF_1[2][33][28] = 0.00137974803935;
+   fDecTF_1[2][33][29] = -0.0151429654239;
+   fDecTF_1[2][33][30] = 0.00765901772268;
+   fDecTF_1[2][33][31] = -0.0198635005376;
+   fDecTF_1[2][33][32] = -0.0914339183837;
+   fDecTF_1[2][33][33] = 0.367858116302;
+   fDecTF_1[2][33][34] = 0.0036727765076;
+   fDecTF_1[2][33][35] = 1.67443274151e-05;
+   fDecTF_1[2][33][36] = 0.00270733416853;
+   fDecTF_1[2][34][0] = 0.000909744674062;
+   fDecTF_1[2][34][1] = -0.00157231093956;
+   fDecTF_1[2][34][2] = -0.000776290232064;
+   fDecTF_1[2][34][3] = -0.000670995868865;
+   fDecTF_1[2][34][4] = -0.000335495563753;
+   fDecTF_1[2][34][5] = 0.000250564228927;
+   fDecTF_1[2][34][6] = -0.00162761612534;
+   fDecTF_1[2][34][7] = -0.000407668663028;
+   fDecTF_1[2][34][8] = 0.000651334642472;
+   fDecTF_1[2][34][9] = -0.000887449018588;
+   fDecTF_1[2][34][10] = -7.98487740261e-05;
+   fDecTF_1[2][34][11] = -0.000170960838564;
+   fDecTF_1[2][34][12] = 0.000392115433425;
+   fDecTF_1[2][34][13] = 0.000935778241606;
+   fDecTF_1[2][34][14] = 0.00040646416608;
+   fDecTF_1[2][34][15] = -0.00112796174555;
+   fDecTF_1[2][34][16] = 0.00190784449925;
+   fDecTF_1[2][34][17] = -0.00116105360002;
+   fDecTF_1[2][34][18] = -0.000781425922807;
+   fDecTF_1[2][34][19] = 0.00248391659631;
+   fDecTF_1[2][34][20] = 0.000376470227092;
+   fDecTF_1[2][34][21] = -0.000111334092456;
+   fDecTF_1[2][34][22] = 0.000280118440412;
+   fDecTF_1[2][34][23] = 0.000375332730555;
+   fDecTF_1[2][34][24] = -0.000628567964337;
+   fDecTF_1[2][34][25] = -0.00025527380699;
+   fDecTF_1[2][34][26] = 0.000556038787413;
+   fDecTF_1[2][34][27] = -0.00132072950483;
+   fDecTF_1[2][34][28] = -0.0008820890524;
+   fDecTF_1[2][34][29] = 0.000780152433078;
+   fDecTF_1[2][34][30] = -0.000891887666736;
+   fDecTF_1[2][34][31] = -0.000228343769847;
+   fDecTF_1[2][34][32] = 0.00357029751573;
+   fDecTF_1[2][34][33] = 0.0036727765076;
+   fDecTF_1[2][34][34] = 0.11670508954;
+   fDecTF_1[2][34][35] = -0.000392483215641;
+   fDecTF_1[2][34][36] = 3.58654249435e-06;
+   fDecTF_1[2][35][0] = 0.000218505944224;
+   fDecTF_1[2][35][1] = 0.000156582707574;
+   fDecTF_1[2][35][2] = -0.0002397018938;
+   fDecTF_1[2][35][3] = 0.000228737293497;
+   fDecTF_1[2][35][4] = 4.35076448699e-05;
+   fDecTF_1[2][35][5] = 0.000818502521384;
+   fDecTF_1[2][35][6] = 2.13761114795e-05;
+   fDecTF_1[2][35][7] = -5.035635047e-05;
+   fDecTF_1[2][35][8] = -0.000553059748877;
+   fDecTF_1[2][35][9] = 0.000522245933731;
+   fDecTF_1[2][35][10] = 0.00145535036428;
+   fDecTF_1[2][35][11] = 0.000162757525633;
+   fDecTF_1[2][35][12] = -5.07572142684e-05;
+   fDecTF_1[2][35][13] = 0.00160742814836;
+   fDecTF_1[2][35][14] = -0.00102996974834;
+   fDecTF_1[2][35][15] = 0.00115872815313;
+   fDecTF_1[2][35][16] = 0.000300628121557;
+   fDecTF_1[2][35][17] = -0.000466092545849;
+   fDecTF_1[2][35][18] = 5.11488157263e-05;
+   fDecTF_1[2][35][19] = 0.000410250285344;
+   fDecTF_1[2][35][20] = -6.29952823735e-05;
+   fDecTF_1[2][35][21] = 0.000641755697356;
+   fDecTF_1[2][35][22] = 0.000539105607339;
+   fDecTF_1[2][35][23] = 2.12712774495e-05;
+   fDecTF_1[2][35][24] = -0.000673573725414;
+   fDecTF_1[2][35][25] = -0.000758232214682;
+   fDecTF_1[2][35][26] = -0.000656424436734;
+   fDecTF_1[2][35][27] = -0.000343282969928;
+   fDecTF_1[2][35][28] = 3.5115894301e-05;
+   fDecTF_1[2][35][29] = 4.168856554e-05;
+   fDecTF_1[2][35][30] = 0.000218054697793;
+   fDecTF_1[2][35][31] = -2.27541633499e-05;
+   fDecTF_1[2][35][32] = -1.30084841591e-05;
+   fDecTF_1[2][35][33] = 1.67443274151e-05;
+   fDecTF_1[2][35][34] = -0.000392483215641;
+   fDecTF_1[2][35][35] = 0.12473205273;
+   fDecTF_1[2][35][36] = -0.000180659108777;
+   fDecTF_1[2][36][0] = 0.000556375122836;
+   fDecTF_1[2][36][1] = 0.00101252391917;
+   fDecTF_1[2][36][2] = 0.000385993293798;
+   fDecTF_1[2][36][3] = -0.000123684962703;
+   fDecTF_1[2][36][4] = -0.00166585244691;
+   fDecTF_1[2][36][5] = -0.000421334225794;
+   fDecTF_1[2][36][6] = 0.000192950772095;
+   fDecTF_1[2][36][7] = -0.0018764835694;
+   fDecTF_1[2][36][8] = 0.0008320085841;
+   fDecTF_1[2][36][9] = 0.000513900489348;
+   fDecTF_1[2][36][10] = 0.000163083041605;
+   fDecTF_1[2][36][11] = 5.46085567183e-05;
+   fDecTF_1[2][36][12] = 0.000862345140994;
+   fDecTF_1[2][36][13] = -0.000384100594622;
+   fDecTF_1[2][36][14] = -0.000246800086262;
+   fDecTF_1[2][36][15] = 0.00131732725374;
+   fDecTF_1[2][36][16] = 0.000121494587789;
+   fDecTF_1[2][36][17] = -0.000412233684976;
+   fDecTF_1[2][36][18] = -8.34388572154e-05;
+   fDecTF_1[2][36][19] = -1.39550488667e-05;
+   fDecTF_1[2][36][20] = 0.000116682156087;
+   fDecTF_1[2][36][21] = 0.000663327979235;
+   fDecTF_1[2][36][22] = -9.28321074252e-05;
+   fDecTF_1[2][36][23] = -0.000387557126448;
+   fDecTF_1[2][36][24] = 4.51134553833e-05;
+   fDecTF_1[2][36][25] = -0.000112271342703;
+   fDecTF_1[2][36][26] = 0.000370528946982;
+   fDecTF_1[2][36][27] = 0.000400608673914;
+   fDecTF_1[2][36][28] = -0.000206975270899;
+   fDecTF_1[2][36][29] = -0.000119509588726;
+   fDecTF_1[2][36][30] = 0.000296074818437;
+   fDecTF_1[2][36][31] = 0.00026758558261;
+   fDecTF_1[2][36][32] = 0.00270912461323;
+   fDecTF_1[2][36][33] = 0.00270733416853;
+   fDecTF_1[2][36][34] = 3.58654249435e-06;
+   fDecTF_1[2][36][35] = -0.000180659108777;
+   fDecTF_1[2][36][36] = 0.00677803973277;
 }
 
 //_______________________________________________________________________
@@ -12930,8 +12496,6 @@ inline void ReadBDTD::Transform_1( std::vector<double>& iv, int cls) const
       indicesGet.push_back( 34);
       indicesGet.push_back( 35);
       indicesGet.push_back( 36);
-      indicesGet.push_back( 37);
-      indicesGet.push_back( 38);
    } 
    if ( indicesPut.empty() ) { 
       indicesPut.reserve(fNvars);
@@ -12972,18 +12536,16 @@ inline void ReadBDTD::Transform_1( std::vector<double>& iv, int cls) const
       indicesPut.push_back( 34);
       indicesPut.push_back( 35);
       indicesPut.push_back( 36);
-      indicesPut.push_back( 37);
-      indicesPut.push_back( 38);
    } 
 
    std::vector<double> tv;
-   for (int i=0; i<39;i++) {
+   for (int i=0; i<37;i++) {
       double v = 0;
-      for (int j=0; j<39; j++)
+      for (int j=0; j<37; j++)
          v += iv[indicesGet.at(j)] * fDecTF_1[cls][i][j];
       tv.push_back(v);
    }
-   for (int i=0; i<39;i++) iv[indicesPut.at(i)] = tv[i];
+   for (int i=0; i<37;i++) iv[indicesPut.at(i)] = tv[i];
 }
 
 //_______________________________________________________________________

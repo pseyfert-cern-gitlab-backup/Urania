@@ -5,6 +5,9 @@
                 fit results using the RooFit package
 !-----------------------------------------------------------------------------
 
+!============================================== v3r1 2016-6-14 ==============================
+! 2016-6-14 Carlos Vazquez Sierra
+	 Make version v3r1
 !============================================== v3r0 2015-11-20 ==============================
 ! 2015-11-20 Diego Martinez Santos
 	 Make version v3r0
@@ -168,8 +171,4 @@ Added some functionality in the D*D0 fit so that all backgrounds do not need to 
    than CREATE mode if recreateFile is set to true.
  - Added an additional SaveWS method to RooPhysFitter which takes an already 
    opened TFile as argument.
- - Modified the MakeDMassDataSet method of RooDMassFitter so that the mass variable
-   can be either a float or double.
- 
-! 2011-10-10 Sneha Malde
- - Added new functio
+ - Modified the Mak

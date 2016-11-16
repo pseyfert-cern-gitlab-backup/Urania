@@ -36,6 +36,16 @@ def multline_break(f):
 def begin_multline(f): f.write("\\begin{multline}\n")
 def end_multline(f): f.write("\\end{multline}\n")
 
+def begin_align(f): f.write("\\begin{align}\n")
+def end_align(f): f.write("\\end{align}\n")
+
+def align_break(f):
+    """ breaks a multline and makes new page starting another multline
+    """
+    end_align(f)
+    page_break(f)
+    begin_align(f)
+    
 def page_break(f):
     f.write("\\clearpage\n")
     f.write("\\newpage\n")

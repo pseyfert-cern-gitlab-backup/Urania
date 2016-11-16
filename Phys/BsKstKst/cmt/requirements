@@ -3,7 +3,7 @@
 # Maintainer : Julian Garcia Pardinas, Yuehong Xie, Paula Alvarez Cartelle, Diego Martinez Santos
 #============================================================================
 package           BsKstKst 
-version           v5r0
+version           v5r1
 
 #============================================================================
 # Structure, i.e. directories to process. 

@@ -133,7 +133,7 @@ void JpsiFit(TChain* ch,
   //==================================================//
   // Configure D0 Background Shape
   //==================================================//
-  massFitter->MakeDMassBkgFlat(-0.1, -0.9, 0.9);
+  massFitter->MakeDMassBkgExp(-0.1, -0.9, 0.9);
 
   //==================================================//
   // Make composite model with following estimate of 
@@ -183,7 +183,7 @@ void JpsiFit(TChain* ch,
     if (minuit2Message!="OK.") cerr << minuit2Message << endl;
     if (minosMessage!="OK.") cerr << minosMessage << endl;
     if (hesseMessage!="OK.") cerr << hesseMessage << endl;
-    if (exitOnBadFit) exit(EXIT_FAILURE);
+    //    if (exitOnBadFit) exit(EXIT_FAILURE);
   }
   int covQual=-1;
   if ( !(checkCovQual(*massFitter, "fitResults", covQual)) ) 
@@ -191,7 +191,7 @@ void JpsiFit(TChain* ch,
     cerr << "J/psi " << charge << " " << pName 
          << " fit has invalid covariance matrix: " 
          << getCovQualMessage(covQual) << endl;
-    if (exitOnBadFit) exit(EXIT_FAILURE);
+    //if (exitOnBadFit) exit(EXIT_FAILURE);
   }
   
   // print warning if EDM is > 1e-2

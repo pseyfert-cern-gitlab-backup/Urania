@@ -8,6 +8,7 @@ def DataSetVariables(var=None):
         'Charge': 'Charge',
         'nTracks': 'nTracks',
         'runNumber': 'runNumber',
+        'nPVs' : 'nPVs',
         'DLLK': '{particle}_CombDLLK',
         'DLLp': '{particle}_CombDLLp',
         'DLLe': '{particle}_CombDLLe',
@@ -33,6 +34,12 @@ def DataSetVariables(var=None):
         'V3ProbNNmu': '{particle}_V3ProbNNmu',
         'V3ProbNNe': '{particle}_V3ProbNNe',
         'V3ProbNNghost': '{particle}_V3ProbNNghost',
+        'V4ProbNNK': '{particle}_V4ProbNNK',
+        'V4ProbNNpi': '{particle}_V4ProbNNpi',
+        'V4ProbNNp': '{particle}_V4ProbNNp',
+        'V4ProbNNmu': '{particle}_V4ProbNNmu',
+        'V4ProbNNe': '{particle}_V4ProbNNe',
+        'V4ProbNNghost': '{particle}_V4ProbNNghost',
         'trackcharge': '{particle}_trackcharge',
         'P': '{particle}_P',
         'PT': '{particle}_PT',
@@ -60,6 +67,8 @@ def DataSetVariables(var=None):
         'HasBremAdded': '{particle}_HasBremAdded',
         'CaloRegion': '{particle}_CaloRegion',
         'nSPDHits': 'nSPDHits',
+        'nRich1Hits':'nRich1Hits',
+        'nRich2Hits':'nRich2Hits',
         'Unbias_HLT1': '{particle}_Unbias_HLT1',
         'Unbias_HLT12': '{particle}_Unbias_HLT12',
         'ProbeTIS': '{particle}_Probe_TIS',
@@ -76,6 +85,7 @@ def NtupleVariables(var=None):
         'Charge': 'Charge',
         'nTracks': 'nTracks',
         'runNumber': 'runNumber',
+        'nPVs': 'nPVs',
         'Tesla_DLLK': '{particle}_PIDK',
         'Tesla_DLLp': '{particle}_PIDp',
         'Tesla_DLLe': '{particle}_PIDe',
@@ -102,6 +112,12 @@ def NtupleVariables(var=None):
         'V3ProbNNmu': '{particle}_V3ProbNNmu',
         'V3ProbNNe': '{particle}_V3ProbNNe',
         'V3ProbNNghost': '{particle}_V3ProbNNghost',
+        'V4ProbNNK': '{particle}_V4ProbNNK',
+        'V4ProbNNpi': '{particle}_V4ProbNNpi',
+        'V4ProbNNp': '{particle}_V4ProbNNp',
+        'V4ProbNNmu': '{particle}_V4ProbNNmu',
+        'V4ProbNNe': '{particle}_V4ProbNNe',
+        'V4ProbNNghost': '{particle}_V4ProbNNghost',
         'trackcharge': '{particle}_trackcharge',
         'P': '{particle}_Brunel_P',
         'PT': '{particle}_Brunel_PT',
@@ -243,6 +259,16 @@ def GetRecoVer(StripVer):
         return 12
     elif StripVer=='22':
         return '15a'
+    elif StripVer=='23Val':
+        return '15a'
+    elif StripVer=='23':
+        return '15a'
+    elif StripVer=='5TeV':
+        return '15a'
+    elif StripVer=='21_MCTuneV4':
+        return '14V4'
+    elif StripVer=='21r1_MCTuneV4':
+        return '14V4'  
     else:
         return 14
 
@@ -355,7 +381,7 @@ def CheckMagPol(MagPol):
 
 def CheckStripVer(StripVer):
     ValidStripVers=("13b", "15", "17", "20", "20r1", "20_MCTuneV2",
-         "20r1_MCTuneV2","20_MCTunev3", "21r1","21","22")
+         "20r1_MCTuneV2","20_MCTunev3", "21r1","21","22", "23Val","23","5TeV","21_MCTuneV4","21r1_MCTuneV4")
     if StripVer not in ValidStripVers:
         msg=("Invalid stripping version '{0}'. "
              "Allowed versions are {1}").format(StripVer, str(ValidStripVers))

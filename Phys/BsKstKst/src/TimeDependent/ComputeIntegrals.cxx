@@ -7,8 +7,6 @@
 #include "TF1.h"
 #include <stdexcept>
 #include "KpiKpiSpectrumNW.h"
-//#include "accparclass.h"
-//#include "TReseffclass.h"
 #include "RooMath.h"
 
 #define pi 3.14159265358979323846264
@@ -19,12 +17,6 @@
 #define MKst_1_1680 1717.
 #define GKst_1_1680 322.
 #define MBs 5366.77
-
-//accparclass accpar;
-//TReseffclass TReseff;
-
-//Double_t a_lass = 0.00195;
-//Double_t r_lass = 0.00176;
 
 ClassImp(ComputeIntegrals) 
 
@@ -56,15 +48,15 @@ ClassImp(ComputeIntegrals)
    coef_options=(RooAbsReal*)options_iter->Next();
    year_opt = RooRealProxy("year_opt","year_opt",this,*coef_options);
    coef_options=(RooAbsReal*)options_iter->Next();
+   trig_opt = RooRealProxy("trig_opt","trig_opt",this,*coef_options);
+   coef_options=(RooAbsReal*)options_iter->Next();
    gen = RooRealProxy("gen","gen",this,*coef_options);
    coef_options=(RooAbsReal*)options_iter->Next();
    option = RooRealProxy("option","option",this,*coef_options);
    coef_options=(RooAbsReal*)options_iter->Next();
    inftres = RooRealProxy("inftres","inftres",this,*coef_options);
    coef_options=(RooAbsReal*)options_iter->Next();
-   flatacc = RooRealProxy("flatacc","flatacc",this,*coef_options);
-   coef_options=(RooAbsReal*)options_iter->Next();
-   nwacc = RooRealProxy("nwacc","nwacc",this,*coef_options);
+   acctype = RooRealProxy("acctype","acctype",this,*coef_options);
    coef_options=(RooAbsReal*)options_iter->Next();
    A_j1 = RooRealProxy("A_j1","A_j1",this,*coef_options);
    coef_options=(RooAbsReal*)options_iter->Next();
@@ -280,11 +272,11 @@ ClassImp(ComputeIntegrals)
    RooAbsReal(other,name),
    wide_window("wide_window",this,other.wide_window),
    year_opt("year_opt",this,other.year_opt),
+   trig_opt("trig_opt",this,other.trig_opt),
    gen("gen",this,other.gen),
    option("option",this,other.option),
    inftres("inftres",this,other.inftres),
-   flatacc("flatacc",this,other.flatacc),
-   nwacc("nwacc",this,other.nwacc),
+   acctype("acctype",this,other.acctype),
    A_j1("A_j1",this,other.A_j1),
    A_j2("A_j2",this,other.A_j2),
    A_h("A_h",this,other.A_h),
@@ -679,7 +671,7 @@ Double_t ComputeIntegrals::Blatt_Weisskopf2(Double_t q, Double_t q0, Int_t L) co
 
    if (L<1.) {return 1.;}  
    Double_t d;
-   if (L == 1) {d = 3.4e-03;}
+   if (L == 1) {d = 3.e-03;}
    else if (L == 2) {d = 2.7e-03;}
    else {d = 3.e-03/L;}
    Double_t z = q*d*q*d;
@@ -716,7 +708,7 @@ TComplex ComputeIntegrals::Resonance(Double_t m, Double_t m_sister, Double_t m0,
 
    // Relativistic spin-J Breit Wigner amplitude.
    Double_t gamma = g0*pow(q/q0,2*J+1)*m0/m*Blatt_Weisskopf2(q,q0,J);
-   TComplex denom(m*m-m0*m0,-gamma*m0);
+   TComplex denom(m0*m0-m*m,-m0*gamma);
    TComplex num(m0*g0,0.);
    TComplex BW = num/denom;
 
@@ -760,17 +752,17 @@ TComplex ComputeIntegrals::Mji(Double_t m, Double_t m_sister, Int_t ji) const
 
    if (ji == 0)
 	{
-	T = Lass(m,m_sister,ms,gs);
+	T = Lass(m,m_sister,ms,gs)*TComplex(0.00021167233881101775,-0.6904181463662509,1);
 	}
 
    else if (ji == 1.)
 	{
-	T = Resonance(m,m_sister,mv,gv,1);
+	T = Resonance(m,m_sister,mv,gv,1)*TComplex(3.0782434270248222,1.5707963267948966-pi,1);
 	}
 
    else if (ji == 2)
 	{
-	T = Resonance(m,m_sister,mt,gt,2);
+	T = Resonance(m,m_sister,mt,gt,2)*TComplex(112.27484112040055,3.1314804474438556-pi,1);
 	}
    
    return T;
@@ -804,7 +796,7 @@ Double_t ComputeIntegrals::phasespace(Double_t ma, Double_t mb) const
    Double_t Q1 = get_q(ma,MKaon,MPion);
    Double_t Q2 = get_q(mb,MKaon,MPion);
    Double_t QB = get_q(MBs,ma,mb);
-   Double_t phsp = Q1*Q2*QB;
+   Double_t phsp = Q1*Q2*QB*4.668198266871305e-09;
 
    return phsp;
 
@@ -823,8 +815,57 @@ TComplex ComputeIntegrals::hj1j2j1pj2p(Double_t ma, Double_t mb, Int_t j1, Int_t
 
 Double_t ComputeIntegrals::accTime(Double_t tau) const 
  { 
+
+   if (acctype == 0) {return 1.;}
+   else if (acctype == 1 or acctype == 2) {
+
+      Int_t tau_bin;
+      if (tau < spl.knot(wide_window,1)) {tau_bin = 0;}
+      else if ((tau >= spl.knot(wide_window,1)) and (tau < spl.knot(wide_window,2))) {tau_bin = 1;}
+      else if ((tau >= spl.knot(wide_window,2)) and (tau < spl.knot(wide_window,3))) {tau_bin = 2;}
+      else if ((tau >= spl.knot(wide_window,3)) and (tau < spl.knot(wide_window,4))) {tau_bin = 3;}
+      else {tau_bin = 4;}
+
+      return spl.coef(year_opt,trig_opt,wide_window,tau_bin,0)+tau*spl.coef(year_opt,trig_opt,wide_window,tau_bin,1)+tau*tau*spl.coef(year_opt,trig_opt,wide_window,tau_bin,2)+tau*tau*tau*spl.coef(year_opt,trig_opt,wide_window,tau_bin,3);
+
+   }
+
+   else if (acctype == 3) {
+
+      Int_t tau_bin;
+      if (tau < genaccpar.knot_gen(wide_window,1)) {tau_bin = 0;}
+      else if ((tau >= genaccpar.knot_gen(wide_window,1)) and (tau < genaccpar.knot_gen(wide_window,2))) {tau_bin = 1;}
+      else if ((tau >= genaccpar.knot_gen(wide_window,2)) and (tau < genaccpar.knot_gen(wide_window,3))) {tau_bin = 2;}
+      else if ((tau >= genaccpar.knot_gen(wide_window,3)) and (tau < genaccpar.knot_gen(wide_window,4))) {tau_bin = 3;}
+      else {tau_bin = 4;}
+
+      return genaccpar.coef_gen(wide_window,tau_bin,0)+tau*genaccpar.coef_gen(wide_window,tau_bin,1)+tau*tau*genaccpar.coef_gen(wide_window,tau_bin,2)+tau*tau*tau*genaccpar.coef_gen(wide_window,tau_bin,3);
+
+   }
+
+   return 0.;
+
+ }
+
+// ---------------------------------------------------
+
+Double_t ComputeIntegrals::accTimeParam(Double_t tau) const 
+ { 
    
-   return flatacc+(1.-flatacc)*tau*tau*tau/(accpar.a_acc(year_opt,wide_window)+tau*tau*tau)*(1.-accpar.b_acc(year_opt,wide_window)*tau);
+   return tau*tau*tau/(accpar.a_acc(year_opt,trig_opt,wide_window)+tau*tau*tau)*(1.+accpar.b_acc(year_opt,trig_opt,wide_window)*tau+accpar.c_acc(year_opt,trig_opt,wide_window)*tau*tau);
+
+ }
+
+// ---------------------------------------------------
+
+Double_t ComputeIntegrals::accTimeHisto(Double_t tau) const 
+ { 
+
+   for (int i=0; i<TAcc.nbins; ++i) {
+      if (tau >= TAcc.bounds(i) and tau < TAcc.bounds(i+1)) {return TAcc.val(year_opt,trig_opt,wide_window,i);}
+   }
+
+   return TAcc.val(year_opt,trig_opt,wide_window,TAcc.nbins-1);
 
  }
 
@@ -833,7 +874,11 @@ Double_t ComputeIntegrals::accTime(Double_t tau) const
 Double_t ComputeIntegrals::accAng(Double_t x) const
  { 
 
-   return 1.+(1.-flatacc)*(accpar.k1(year_opt,wide_window)*x+accpar.k2(year_opt,wide_window)*(2.*x*x-1.)+accpar.k3(year_opt,wide_window)*(4.*x*x*x-3.*x)+accpar.k4(year_opt,wide_window)*(8.*x*x*x*x-8.*x*x+1.));
+   if (acctype == 0) {return 1.;}
+   else if (acctype == 1 or acctype == 2) {return 1.+accpar.k1(year_opt,trig_opt,wide_window)*x+accpar.k2(year_opt,trig_opt,wide_window)*(2.*x*x-1.)+accpar.k3(year_opt,trig_opt,wide_window)*(4.*x*x*x-3.*x)+accpar.k4(year_opt,trig_opt,wide_window)*(8.*x*x*x*x-8.*x*x+1.)+accpar.k5(year_opt,trig_opt,wide_window)*(16.*x*x*x*x*x-20.*x*x*x+5.*x);}
+   else if (acctype == 3) {return 1.+genaccpar.k1_gen(wide_window)*x+genaccpar.k2_gen(wide_window)*(2.*x*x-1.)+genaccpar.k3_gen(wide_window)*(4.*x*x*x-3.*x)+genaccpar.k4_gen(wide_window)*(8.*x*x*x*x-8.*x*x+1.)+genaccpar.k5_gen(wide_window)*(16.*x*x*x*x*x-20.*x*x*x+5.*x);}
+
+   return 0.;
 
  }
 
@@ -842,7 +887,11 @@ Double_t ComputeIntegrals::accAng(Double_t x) const
 Double_t ComputeIntegrals::accMass(Double_t m) const 
  { 
    
-   return flatacc+(1.-flatacc)*(1. + accpar.p1(year_opt,wide_window)*m);
+   if (acctype == 0) {return 1.;}
+   else if (acctype == 1 or acctype == 2) {return 1. + accpar.p1(year_opt,trig_opt,wide_window)*m;}
+   else if (acctype == 3) {return 1. + genaccpar.p1_gen(wide_window)*m;}
+
+   return 0.;
 
  }
 
@@ -861,79 +910,79 @@ Double_t ComputeIntegrals::accMass(Double_t m) const
 	else if (option == 112) {return hj1j2j1pj2p(m1,m2,1,2,1,2).Re();}
 	else if (option == 121) {return hj1j2j1pj2p(m1,m2,2,1,2,1).Re();}
 	else if (option == 122) {return hj1j2j1pj2p(m1,m2,2,2,2,2).Re();}
- 	
-	// Integrals of the angular terms for plotting.
-	else if (option == 21) {return fi(cos1,1)*accAng(cos1);}
-	else if (option == 22) {return fi(cos1,2)*accAng(cos1);}
-	else if (option == 23) {return fi(cos1,3)*accAng(cos1);}
-	else if (option == 24) {return fi(cos1,4)*accAng(cos1);}
-	else if (option == 25) {return fi(cos1,5)*accAng(cos1);}
-	else if (option == 26) {return fi(cos1,6)*accAng(cos1);}
-	else if (option == 27) {return fi(cos1,7)*accAng(cos1);}
-	else if (option == 28) {return fi(cos1,8)*accAng(cos1);}
-	else if (option == 29) {return fi(cos1,9)*accAng(cos1);}
-	else if (option == 210) {return fi(cos1,10)*accAng(cos1);}
-	else if (option == 211) {return fi(cos1,11)*accAng(cos1);}
-	else if (option == 212) {return fi(cos1,12)*accAng(cos1);}
-	else if (option == 213) {return fi(cos1,13)*accAng(cos1);}
-	else if (option == 214) {return fi(cos1,14)*accAng(cos1);}
-	else if (option == 215) {return fi(cos1,15)*accAng(cos1);}
-	else if (option == 216) {return fi(cos1,16)*accAng(cos1);}
-	else if (option == 217) {return fi(cos1,17)*accAng(cos1);}
-	else if (option == 218) {return fi(cos1,18)*accAng(cos1);}
 
-	// Integrals of the invariant mass dependent terms for plotting.
-	else if (option == 31) {return hj1j2j1pj2p(m1,m2,0,0,0,1).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 32) {return hj1j2j1pj2p(m1,m2,0,0,0,2).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 33) {return hj1j2j1pj2p(m1,m2,0,0,1,1).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 34) {return hj1j2j1pj2p(m1,m2,0,0,1,2).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 35) {return hj1j2j1pj2p(m1,m2,0,0,2,2).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 36) {return hj1j2j1pj2p(m1,m2,0,1,0,2).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 37) {return hj1j2j1pj2p(m1,m2,0,1,1,0).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 38) {return hj1j2j1pj2p(m1,m2,0,1,1,1).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 39) {return hj1j2j1pj2p(m1,m2,0,1,1,2).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 310) {return hj1j2j1pj2p(m1,m2,1,0,0,2).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 311) {return hj1j2j1pj2p(m1,m2,1,0,1,2).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 312) {return hj1j2j1pj2p(m1,m2,0,1,2,2).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 313) {return hj1j2j1pj2p(m1,m2,0,2,1,1).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 314) {return hj1j2j1pj2p(m1,m2,0,2,1,2).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 315) {return hj1j2j1pj2p(m1,m2,0,2,2,0).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 316) {return hj1j2j1pj2p(m1,m2,2,0,1,2).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 317) {return hj1j2j1pj2p(m1,m2,0,2,2,2).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 318) {return hj1j2j1pj2p(m1,m2,1,1,1,2).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 319) {return hj1j2j1pj2p(m1,m2,1,1,2,2).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 320) {return hj1j2j1pj2p(m1,m2,1,2,2,1).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 321) {return hj1j2j1pj2p(m1,m2,1,2,2,2).Re()*accMass(m1)*accMass(m2);}
- 	else if (option == 322) {return hj1j2j1pj2p(m1,m2,0,0,0,0).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 323) {return hj1j2j1pj2p(m1,m2,0,1,0,1).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 324) {return hj1j2j1pj2p(m1,m2,1,0,1,0).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 325) {return hj1j2j1pj2p(m1,m2,0,2,0,2).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 326) {return hj1j2j1pj2p(m1,m2,2,0,2,0).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 327) {return hj1j2j1pj2p(m1,m2,1,1,1,1).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 328) {return hj1j2j1pj2p(m1,m2,1,2,1,2).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 329) {return hj1j2j1pj2p(m1,m2,2,1,2,1).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 330) {return hj1j2j1pj2p(m1,m2,2,2,2,2).Re()*accMass(m1)*accMass(m2);}
-	else if (option == 41) {return hj1j2j1pj2p(m1,m2,0,0,0,1).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 42) {return hj1j2j1pj2p(m1,m2,0,0,0,2).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 43) {return hj1j2j1pj2p(m1,m2,0,0,1,1).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 44) {return hj1j2j1pj2p(m1,m2,0,0,1,2).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 45) {return hj1j2j1pj2p(m1,m2,0,0,2,2).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 46) {return hj1j2j1pj2p(m1,m2,0,1,0,2).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 47) {return hj1j2j1pj2p(m1,m2,0,1,1,0).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 48) {return hj1j2j1pj2p(m1,m2,0,1,1,1).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 49) {return hj1j2j1pj2p(m1,m2,0,1,1,2).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 410) {return hj1j2j1pj2p(m1,m2,1,0,0,2).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 411) {return hj1j2j1pj2p(m1,m2,1,0,1,2).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 412) {return hj1j2j1pj2p(m1,m2,0,1,2,2).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 413) {return hj1j2j1pj2p(m1,m2,0,2,1,1).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 414) {return hj1j2j1pj2p(m1,m2,0,2,1,2).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 415) {return hj1j2j1pj2p(m1,m2,0,2,2,0).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 416) {return hj1j2j1pj2p(m1,m2,2,0,1,2).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 417) {return hj1j2j1pj2p(m1,m2,0,2,2,2).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 418) {return hj1j2j1pj2p(m1,m2,1,1,1,2).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 419) {return hj1j2j1pj2p(m1,m2,1,1,2,2).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 420) {return hj1j2j1pj2p(m1,m2,1,2,2,1).Im()*accMass(m1)*accMass(m2);}
-	else if (option == 421) {return hj1j2j1pj2p(m1,m2,1,2,2,2).Im()*accMass(m1)*accMass(m2);}
+        // Integrals of the angular terms for plotting.
+        else if (option == 21) {return fi(cos1,1)*accAng(cos1);}
+        else if (option == 22) {return fi(cos1,2)*accAng(cos1);}
+        else if (option == 23) {return fi(cos1,3)*accAng(cos1);}
+        else if (option == 24) {return fi(cos1,4)*accAng(cos1);}
+        else if (option == 25) {return fi(cos1,5)*accAng(cos1);}
+        else if (option == 26) {return fi(cos1,6)*accAng(cos1);}
+        else if (option == 27) {return fi(cos1,7)*accAng(cos1);}
+        else if (option == 28) {return fi(cos1,8)*accAng(cos1);}
+        else if (option == 29) {return fi(cos1,9)*accAng(cos1);}
+        else if (option == 210) {return fi(cos1,10)*accAng(cos1);}
+        else if (option == 211) {return fi(cos1,11)*accAng(cos1);}
+        else if (option == 212) {return fi(cos1,12)*accAng(cos1);}
+        else if (option == 213) {return fi(cos1,13)*accAng(cos1);}
+        else if (option == 214) {return fi(cos1,14)*accAng(cos1);}
+        else if (option == 215) {return fi(cos1,15)*accAng(cos1);}
+        else if (option == 216) {return fi(cos1,16)*accAng(cos1);}
+        else if (option == 217) {return fi(cos1,17)*accAng(cos1);}
+        else if (option == 218) {return fi(cos1,18)*accAng(cos1);}
+
+        // Integrals of the invariant mass dependent terms for plotting.
+        else if (option == 31) {return hj1j2j1pj2p(m1,m2,0,0,0,1).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 32) {return hj1j2j1pj2p(m1,m2,0,0,0,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 33) {return hj1j2j1pj2p(m1,m2,0,0,1,1).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 34) {return hj1j2j1pj2p(m1,m2,0,0,1,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 35) {return hj1j2j1pj2p(m1,m2,0,0,2,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 36) {return hj1j2j1pj2p(m1,m2,0,1,0,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 37) {return hj1j2j1pj2p(m1,m2,0,1,1,0).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 38) {return hj1j2j1pj2p(m1,m2,0,1,1,1).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 39) {return hj1j2j1pj2p(m1,m2,0,1,1,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 310) {return hj1j2j1pj2p(m1,m2,1,0,0,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 311) {return hj1j2j1pj2p(m1,m2,1,0,1,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 312) {return hj1j2j1pj2p(m1,m2,0,1,2,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 313) {return hj1j2j1pj2p(m1,m2,0,2,1,1).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 314) {return hj1j2j1pj2p(m1,m2,0,2,1,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 315) {return hj1j2j1pj2p(m1,m2,0,2,2,0).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 316) {return hj1j2j1pj2p(m1,m2,2,0,1,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 317) {return hj1j2j1pj2p(m1,m2,0,2,2,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 318) {return hj1j2j1pj2p(m1,m2,1,1,1,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 319) {return hj1j2j1pj2p(m1,m2,1,1,2,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 320) {return hj1j2j1pj2p(m1,m2,1,2,2,1).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 321) {return hj1j2j1pj2p(m1,m2,1,2,2,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 322) {return hj1j2j1pj2p(m1,m2,0,0,0,0).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 323) {return hj1j2j1pj2p(m1,m2,0,1,0,1).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 324) {return hj1j2j1pj2p(m1,m2,1,0,1,0).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 325) {return hj1j2j1pj2p(m1,m2,0,2,0,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 326) {return hj1j2j1pj2p(m1,m2,2,0,2,0).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 327) {return hj1j2j1pj2p(m1,m2,1,1,1,1).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 328) {return hj1j2j1pj2p(m1,m2,1,2,1,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 329) {return hj1j2j1pj2p(m1,m2,2,1,2,1).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 330) {return hj1j2j1pj2p(m1,m2,2,2,2,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 41) {return hj1j2j1pj2p(m1,m2,0,0,0,1).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 42) {return hj1j2j1pj2p(m1,m2,0,0,0,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 43) {return hj1j2j1pj2p(m1,m2,0,0,1,1).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 44) {return hj1j2j1pj2p(m1,m2,0,0,1,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 45) {return hj1j2j1pj2p(m1,m2,0,0,2,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 46) {return hj1j2j1pj2p(m1,m2,0,1,0,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 47) {return hj1j2j1pj2p(m1,m2,0,1,1,0).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 48) {return hj1j2j1pj2p(m1,m2,0,1,1,1).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 49) {return hj1j2j1pj2p(m1,m2,0,1,1,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 410) {return hj1j2j1pj2p(m1,m2,1,0,0,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 411) {return hj1j2j1pj2p(m1,m2,1,0,1,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 412) {return hj1j2j1pj2p(m1,m2,0,1,2,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 413) {return hj1j2j1pj2p(m1,m2,0,2,1,1).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 414) {return hj1j2j1pj2p(m1,m2,0,2,1,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 415) {return hj1j2j1pj2p(m1,m2,0,2,2,0).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 416) {return hj1j2j1pj2p(m1,m2,2,0,1,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 417) {return hj1j2j1pj2p(m1,m2,0,2,2,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 418) {return hj1j2j1pj2p(m1,m2,1,1,1,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 419) {return hj1j2j1pj2p(m1,m2,1,1,2,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 420) {return hj1j2j1pj2p(m1,m2,1,2,2,1).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 421) {return hj1j2j1pj2p(m1,m2,1,2,2,2).Im()*accMass(m1)*accMass(m2);}
 
 	// Integrals of the time dependent terms for plotting.
 	else if (option == 91) {return T_cosh_eff(t)*accTime(t);}

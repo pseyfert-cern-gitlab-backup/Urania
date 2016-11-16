@@ -1,6 +1,7 @@
 // $Id: $
 // Include files
 #include <iomanip>
+#include <RooErrorHandler.h>
 
 // local
 #include "PIDPerfTools/WeightDataSetTool.h"

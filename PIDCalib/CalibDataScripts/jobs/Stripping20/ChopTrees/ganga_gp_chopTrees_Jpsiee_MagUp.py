@@ -1,5 +1,5 @@
 # set the stripping version
-stripVersion = "20"
+stripVersion = "21"
 
 # magnet 'Up' or 'Down'?
 magPol='Up'
@@ -11,13 +11,13 @@ magPol='Up'
 # jpsi_mu: Muons from J/psi
 # dst_k_and_pi_muonUnBiased: 'MuonUnBiased' kaons + pions from D*
 # lam0_p_muonUnBiased: 'MuonUnBiased' protons from Lambda0
-fileSuffix='IncLc_P'
+fileSuffix='jpsi_e'
 
 # set the pbs options (e.g. CPU/walltime)
 pbsopts = "-l cput=1:00:00,walltime=2:00:00"
 
 # list of input directories (as a comma-separated list)
-treeList='IncLc2PKPiTuple'
+treeList='JpsieeKFromBTuple'
 
 # the platform to run on
 # if this is not set, it will default to the value of CMTCONFIG
@@ -98,13 +98,13 @@ gangadir='%s/workspace/%s/%s' %(config['Configuration']['gangadir'],
 #gangadir='$DATADISK/gangadir_calib/workspace/powell/LocalXML'
 
 # use the PBS backend and set the CPU/walltime etc.
-#bck = PBS()
-#bck.extraopts = pbsopts
+bck = PBS()
+bck.extraopts = pbsopts
 #if isTest:
     #bck.queue = 'testing'
 
 # Uncomment to use the local backend
-bck = Local()
+#bck = Local()
 
 
 ##  configure the jobs

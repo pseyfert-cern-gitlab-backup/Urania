@@ -31,6 +31,7 @@
 # for help type "python TMVAClassification.py --help"                            #
 # ------------------------------------------------------------------------------ #
 import TMVA_cut
+from OurSites import *
 
 ##### IMPORTANT, MODIFY ME ##############################################################
 normalizationS = 1 # Signal normalization for the computation of the optimal GL value.
@@ -129,10 +130,10 @@ for i in range(len(variablesx)):
 
     # Get the signal and background trees for training (INPUT FILES)
 ##FILES
-signal_train, f1      = getTuple("kspi0mm_DTFMC12_Strip_GL_1",thing = "T")
-signal_test, f2      = getTuple("kspi0mm_DTFMC12_Strip_GL_2",thing = "T")
-bkg_train, f3      = getTuple("KsPi0MM_dataL0Tis_GL_1", thing = "T")#getTuple("bkgMini", thing = "BenderKspi0mumuSignal/BenderKspi0mumuSignal")
-bkg_test, f4     = getTuple("KsPi0MM_dataL0Tis_GL_2", thing = "T")#getTuple("bkgMini", thing = "BenderKspi0mumuSignal/BenderKspi0mumuSignal")
+signal_train, f1      = getTuple(MY_TUPLE_PATH + "kspi0mm_DTFMC12_Strip_GL_1_basic",thing = "T")
+signal_test, f2      = getTuple(MY_TUPLE_PATH + "kspi0mm_DTFMC12_Strip_GL_2_basic",thing = "T")
+bkg_train, f3      = getTuple(MY_TUPLE_PATH + "TIS_GL_1_basic", thing = "T")#getTuple("bkgMini", thing = "BenderKspi0mumuSignal/BenderKspi0mumuSignal")
+bkg_test, f4     = getTuple(MY_TUPLE_PATH + "TIS_GL_2_basic", thing = "T")#getTuple("bkgMini", thing = "BenderKspi0mumuSignal/BenderKspi0umuSignal")
 
 signalWeight = 1.0
 bkgWeight = 1.0
@@ -305,7 +306,7 @@ Nb = len(b2)
 #REMOVE COMMENT AFTER TESTING GL = NewKarlen(s,b ,variables )
 GL = NewKarlen(s,b,variablesx)
 import cPickle
-cPickle.dump(GL,file("./GL_data",'w'))
+cPickle.dump(GL,file("./GL_data_basic",'w'))
 
 #GLK = NewKarlen(s,b , ["mu1iso5","mu2iso5","DOCA", "Blife_ps","Bip","lessIPSmu", "Bpt"] )
 #GLKb =GLK # NewKarlen(s,b , ["mu1iso5","mu2iso5","DOCA", "Blife_ps","Bip","lessIPSmu", "Bpt","Vchi2", "buggy_angle"] )
@@ -469,7 +470,7 @@ glGraph.SetLineColor(kBlack)
 glGraph.SetMarkerStyle(21)
 glGraph.SetMarkerSize(0.35)
 glGraph.Draw("P,same")
-myFile = TFile("./GL_BDT.root","RECREATE")
+myFile = TFile("./GL_BDT_basic.root","RECREATE")
 mLegend = TLegend(0.2,0.2,0.5,0.7)
 mLegend.SetFillStyle(0)
 d = {}

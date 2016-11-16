@@ -1,7 +1,7 @@
 ################################################################################
 # Package: MCLimit
 ################################################################################
-gaudi_subdir(MCLimit v1r6)
+gaudi_subdir(MCLimit v2r1)
 
 find_package(ROOT COMPONENTS Core RIO MathCore Minuit Hist Graf MathCore Minuit Hist Graf)
 

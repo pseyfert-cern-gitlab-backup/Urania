@@ -1,5 +1,5 @@
 # set the stripping version
-stripVersion = "20"
+stripVersion = "21"
 
 # magnet 'Up' or 'Down'?
 magPol='Up'
@@ -28,7 +28,7 @@ platform=''
 jobname="ChopTrees"
 
 # the maximum number of input files to process per subjob
-filesPerJob=2000
+filesPerJob=20
 
 # is this a test job?
 isTest=False
@@ -98,9 +98,9 @@ gangadir='%s/workspace/%s/%s' %(config['Configuration']['gangadir'],
 #gangadir='$DATADISK/gangadir_calib/workspace/powell/LocalXML'
 
 # use the PBS backend and set the CPU/walltime etc.
-#bck = PBS()
-#bck.extraopts = pbsopts
-bck = Local()
+bck = PBS()
+bck.extraopts = pbsopts
+#bck = Local()
 if isTest:
     bck.queue = 'testing'
 

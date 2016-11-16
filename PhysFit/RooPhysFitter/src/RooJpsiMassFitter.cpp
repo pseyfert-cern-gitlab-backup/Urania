@@ -52,6 +52,129 @@ using namespace RooPhysFit;
 
 
 
+void RooJpsiMassFitter::MakeDMassSigCBplusGauss(RooRealVar& mu, RooRealVar& sig_left,
+                                  RooRealVar& alpha_left, RooRealVar& n_left,
+						RooRealVar& m_gaus, RooRealVar& sig_gaus, RooRealVar& frac_CB)
+{
+  if (!m_rws) {
+    throw GeneralException("RooJpsiMassFitter::MakeDMassSigBiCB",
+                           "No RooWorkspace object is defined.");
+  }
+  RooRealVar* mass = m_rws->var(m_dMassName);
+  if (!mass) {
+    throw WSRetrievalFailure("RooJpsiMassFitter::MakeDMassSigBiCB",
+                           *m_rws, m_dMassName, "RooRealVar");
+  }
+
+  RooCBShape dmass_sig_cb("dmass_sig_cb", "", *mass, mu, sig_left, alpha_left, n_left);
+  RooGaussian dmass_sig_gaus("dmass_sig_gauss", "", *mass, m_gaus, sig_gaus);
+
+  RooAddPdf dMassSigModel(m_dMassSigModelName, "",
+                          RooArgList(dmass_sig_cb,dmass_sig_gaus),
+                          RooArgList(frac_CB));
+
+  if (m_rws->import(dMassSigModel)) {
+    throw WSImportFailure("RooJpsiMassFitter::MakeDMassSigBiCB",
+                          *m_rws, dMassSigModel);
+  }
+}
+
+void RooJpsiMassFitter::MakeDMassSigCBplusGauss(Float_t mu_start,
+                                      Float_t mu_min,
+                                      Float_t mu_max,
+                                      Float_t sig_left_start,
+                                      Float_t sig_left_min,
+                                      Float_t sig_left_max,
+                                      Float_t alpha_left_start,
+                                      Float_t alpha_left_min,
+                                      Float_t alpha_left_max,
+                                      Float_t n_left_fix,
+                                      Float_t m_gaus_start,
+                                      Float_t m_gaus_min,
+                                      Float_t m_gaus_max,
+				      Float_t sig_gaus_start,
+                                      Float_t sig_gaus_min,
+                                      Float_t sig_gaus_max,
+                                      Float_t frac_CB_start,
+                                      Float_t frac_CB_min,
+                                      Float_t frac_CB_max,
+                                      const char* unit)
+{
+  if (!m_rws) {
+    throw GeneralException("RooJpsiMassFitter::MakeDMassSigCBplusGauss",
+                           "No RooWorkspace object is defined.");
+  }
+  RooRealVar* mass = m_rws->var(m_dMassName);
+  if (!mass) {
+    throw WSRetrievalFailure("RooJpsiMassFitter::MakeDMassSigCBplusGauss",
+                           *m_rws, m_dMassName, "RooRealVar");
+  }
+  TString mu_title="";
+  TString sig_left_title="";
+  TString alpha_left_title="";
+  TString n_left_title="";
+TString m_gaus_title="";
+TString sig_gaus_title="";
+
+  TString frac_CB_title="";
+
+
+  if (!m_dMassPartName||strcmp(m_dMassPartName,"")==0) {
+    mu_title="#mu";
+    sig_left_title="#sigma_{left}";
+    alpha_left_title="#alpha_{left}";
+    n_left_title="n_{left}";
+    m_gaus_title="m_{gaus}";
+    sig_gaus_title="#sigma_{gaus}";
+    frac_CB_title="f_{CB}";
+
+  }
+  else {
+    mu_title.Form("%s #mu", m_dMassPartName);
+    sig_left_title.Form("%s #sigma_{left}", m_dMassPartName);
+    alpha_left_title.Form("%s #alpha_{left}", m_dMassPartName);
+    n_left_title.Form("%s n_{left}", m_dMassPartName);
+    m_gaus_title.Form("%s m_{gaus}", m_dMassPartName);
+    sig_gaus_title.Form("%s #sigma_{gaus}", m_dMassPartName);
+    frac_CB_title.Form("%s f_{CB}", m_dMassPartName);
+    
+  }
+
+  std::cout<<"done setting titles "<<std::endl;
+
+
+  RooRealVar mu("dmass_sig_mu", mu_title.Data(), mu_start, mu_min, mu_max, unit);
+  RooRealVar sig_left("dmass_sig_sigma_left", sig_left_title.Data(), sig_left_start, sig_left_min, sig_left_max, unit);
+  RooRealVar alpha_left("dmass_sig_alpha_left", alpha_left_title.Data(), alpha_left_start, alpha_left_min, alpha_left_max);
+
+  RooRealVar n_left("dmass_sig_n_left", n_left_title.Data(), n_left_fix,0,100);
+  RooRealVar m_gaus("dmass_sig_m_gaus", m_gaus_title.Data(), m_gaus_start, m_gaus_min, m_gaus_max,unit);
+  RooRealVar sig_gaus("dmass_sig_sigma_gaus", sig_gaus_title.Data(), sig_gaus_start, sig_gaus_min, sig_gaus_max,unit);
+  RooRealVar frac_CB("dmass_sig_frac_CB", frac_CB_title.Data(), frac_CB_start, frac_CB_min, frac_CB_max);
+
+  std::cout<<"done setting roo real vars"<<std::endl;
+
+  RooCBShape dmass_sig_cb("dmass_sig_cb", "", *mass, mu, sig_left, alpha_left, n_left);
+  RooGaussian dmass_sig_gaus("dmass_sig_gauss", "", *mass, m_gaus, sig_gaus);
+
+  RooAddPdf dMassSigModel(m_dMassSigModelName, "",
+                          RooArgList(dmass_sig_cb,dmass_sig_gaus),
+                          RooArgList(frac_CB));
+  std::cout<<"done setting model"<<std::endl;
+
+  //m_rws->var("dmass_sig_n_left")->setConstant(true);
+
+  //std::cout<<"done setting const"<<std::endl;
+
+  if (m_rws->import(dMassSigModel)) {
+    throw WSImportFailure("RooJpsiMassFitter::MakeDMassSigCBplusGauss",
+                          *m_rws, dMassSigModel);
+  }
+}
+
+
+
+
 void RooJpsiMassFitter::MakeDMassSigBiCB(RooRealVar& mu, RooRealVar& sig_left,
                                   RooRealVar& sig_right, RooRealVar& alpha_left,
                                   RooRealVar& alpha_right, RooRealVar& n_left,

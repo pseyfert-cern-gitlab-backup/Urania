@@ -36,6 +36,14 @@ namespace RooPhysFit
     /// Overloaded constructor
     RooJpsiMassFitter( const char* name, const char* title) : RooDMassFitter(name,title) {}
 
+    //Crystal Ball PDF with gaus. Not same means
+
+    void MakeDMassSigCBplusGauss( RooRealVar& mu, RooRealVar& sig_left,
+                            RooRealVar& alpha_left,
+                            RooRealVar& n_left,
+				  RooRealVar& m_gaus, RooRealVar& sig_gaus,RooRealVar& frac_CB );
+
+
     /// Double D0 model Crystal Ball PDF with single mean and oppisite tails
     void MakeDMassSigBiCB(  RooRealVar& mu, RooRealVar& sig_left,
                             RooRealVar& sig_right, RooRealVar& alpha_left,
@@ -55,6 +63,17 @@ namespace RooPhysFit
                             Float_t n_right_min, Float_t n_right_max,
                             Float_t frac_left_start, Float_t frac_left_min,
                             Float_t frac_left_max, const char* unit="MeV/c^{2}");
+
+
+void MakeDMassSigCBplusGauss(  Float_t mu_start, Float_t mu_min,
+                            Float_t mu_max, Float_t sig_left_start,
+                            Float_t sig_left_min, Float_t sig_left_max,
+                            Float_t alpha_left_start,
+                            Float_t alpha_left_min, Float_t alpha_left_max,
+			      Float_t n_left_fix, Float_t m_gaus_start, Float_t m_gaus_min, Float_t m_gaus_max,
+Float_t sig_gaus_start, Float_t sig_gaus_min, Float_t sig_gaus_max,
+Float_t frac_CB, Float_t frac_CB_min,
+                            Float_t frac_CB_max, const char* unit="MeV/c^{2}");
 
 
     /// Double D0 model Crystal Ball PDF with single mean and oppisite tails, fixed n

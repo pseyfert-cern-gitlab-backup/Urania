@@ -22,6 +22,7 @@ from GetAccInterface import *
 # Data used to obtain the acceptance.
 data_file = 'AnalysisOutWithCuts_AllBranches.root'
 data_tree = 'AnalysisTree'
+MC_datatype = 2 # 0 for PhSp only, 1 for VV only, 2 for both
 evnum_limit = 0
 
 # NW computation options.
@@ -39,16 +40,32 @@ tacc_plot_outtag = 'TAcc_histos'
 def GetNW():
 
 	# Data importation.
-	data0_2011_wide,data0_2012_wide,data0_2011_narrow,data0_2012_narrow = LoadDataNW(data_file,data_tree,evnum_limit)
+	datalist = LoadDataNW(data_file,data_tree,MC_datatype,evnum_limit)
 
 	# Construction of the physical PDF.
-	PDF_phys_wide,PDF_phys_narrow = CreatePhysPDF()
+	pdflist = CreatePhysPDF()
 
 	# Computation of the normalization weights.
-	ComputeNW(compute_cov_matrix,PDF_phys_wide,PDF_phys_narrow,data0_2011_wide,data0_2012_wide,data0_2011_narrow,data0_2012_narrow)
+	ComputeNW(compute_cov_matrix,*(pdflist+datalist))
 
 	# Print of the normalization weights.
 	PrintNW()
+
+
+# ################################################################
+# T I M E   A C C E P T A N C E   S P L I N E S
+# ################################################################
+
+def GetSplines():
+
+	# Data importation.
+	datalist = LoadDataTime(data_file,data_tree,MC_datatype,evnum_limit)
+
+	# Obtaintion of the knots.
+	knots = getKnots(6,*datalist)
+
+	# Computation of the spline coefficients.
+	getSplineCoeffs(knots,*datalist)
 
 
 # ################################################################
@@ -58,13 +75,13 @@ def GetNW():
 def GetTimeAccHistos():
 
 	# Data importation.
-	data4_2011_wide,data4_2012_wide,data4_2011_narrow,data4_2012_narrow = LoadDataTime(data_file,data_tree,evnum_limit)
+	datalist = LoadDataTime(data_file,data_tree,MC_datatype,evnum_limit)
 
-	# Obtaintion of the binning scheme (from 2012 wide window data).
-	bounds = adaptiveBinning(t_MC,tacc_nbins,0,data4_2012_wide)
+	# Obtaintion of the binning scheme (from 2012 L0TIS wide window data).
+	bounds = adaptiveBinning(t_MC,tacc_nbins,1,datalist[1])
 
 	# Creation of the histograms.
-	tacchistosclass, tacchistosplot = createTimeAccHistos(bounds,data4_2011_wide,data4_2012_wide,data4_2011_narrow,data4_2012_narrow)
+	tacchistosclass, tacchistosplot = createTimeAccHistos(bounds,*datalist)
 
 	# Print out of the C++ class containing the histograms.
 	printTimeAccHistos(bounds,tacchistosclass)
@@ -80,13 +97,13 @@ def GetTimeAccHistos():
 def GetTimeInts():
 
 	# Data importation.
-	data4_2011_wide,data4_2012_wide,data4_2011_narrow,data4_2012_narrow = LoadDataTime(data_file,data_tree,evnum_limit)
+	datalist = LoadDataTime(data_file,data_tree,MC_datatype,evnum_limit)
 
 	# Construction of the physical PDF.
-	PDF_phys_wide,PDF_phys_narrow = CreatePhysPDF()
+	pdflist = CreatePhysPDF()
 
 	# Computation of the time integrals.
-	ComputeTimeIntegrals(PDF_phys_wide,PDF_phys_narrow,data4_2011_wide,data4_2012_wide,data4_2011_narrow,data4_2012_narrow)
+	ComputeTimeIntegrals(*(pdflist+datalist))
 
 	# Print of the time integrals.
 	PrintTimeInts()
@@ -99,26 +116,44 @@ def GetTimeInts():
 def GetVisAcc():
 
 	# Data importation.
-	data1_2011_wide,data1_2012_wide,data2_2011_wide,data2_2012_wide,data3_2011_wide,data3_2012_wide,\
-data4_2011_wide,data4_2012_wide,data1_2011_narrow,data1_2012_narrow,data2_2011_narrow,data2_2012_narrow,\
-data3_2011_narrow,data3_2012_narrow,data4_2011_narrow,data4_2012_narrow = LoadDataVis(data_file,data_tree,evnum_limit)
+	datalist = LoadDataVis(data_file,data_tree,MC_datatype,evnum_limit)
 
 	# Construction of the acceptance model.
-	PDF_acc_2011_wide,PDF_acc_2012_wide,model_acc_2011_wide,model_acc_2012_wide,\
-PDF_acc_2011_narrow,PDF_acc_2012_narrow,model_acc_2011_narrow,model_acc_2012_narrow = CreateAccPDF()
+	auxlist,pdflist = CreateAccPDF()
 
 	# Fit and plot of the 6-D acceptance.
-	c_vis_2011_wide,c_vis_2012_wide,c_vis_2011_narrow,c_vis_2012_narrow = FitnPlotVisAcc(model_acc_2011_wide,model_acc_2012_wide,\
-model_acc_2011_narrow,model_acc_2012_narrow,data1_2011_wide,data1_2012_wide,data2_2011_wide,data2_2012_wide,data3_2011_wide,data3_2012_wide,\
-data4_2011_wide,data4_2012_wide,data1_2011_narrow,data1_2012_narrow,data2_2011_narrow,data2_2012_narrow,data3_2011_narrow,data3_2012_narrow,\
-data4_2011_narrow,data4_2012_narrow)
-	c_vis_2011_wide.Print("plots/Vis_Acc_2011_wide.pdf")
-	c_vis_2012_wide.Print("plots/Vis_Acc_2012_wide.pdf")
-	c_vis_2011_narrow.Print("plots/Vis_Acc_2011_narrow.pdf")
-	c_vis_2012_narrow.Print("plots/Vis_Acc_2012_narrow.pdf")
+	c_vis_2011_L0TIS_wide,c_vis_2012_L0TIS_wide,c_vis_2011_L0TIS_narrow,c_vis_2012_L0TIS_narrow,\
+c_vis_2011_L0noTIS_wide,c_vis_2012_L0noTIS_wide,c_vis_2011_L0noTIS_narrow,c_vis_2012_L0noTIS_narrow = FitnPlotVisAcc(*(pdflist+datalist))
+	c_vis_2011_L0TIS_wide.Print("Vis_Acc_2011_L0TIS_wide.pdf")
+	c_vis_2012_L0TIS_wide.Print("Vis_Acc_2012_L0TIS_wide.pdf")
+	c_vis_2011_L0TIS_narrow.Print("Vis_Acc_2011_L0TIS_narrow.pdf")
+	c_vis_2012_L0TIS_narrow.Print("Vis_Acc_2012_L0TIS_narrow.pdf")
+	c_vis_2011_L0noTIS_wide.Print("Vis_Acc_2011_L0noTIS_wide.pdf")
+	c_vis_2012_L0noTIS_wide.Print("Vis_Acc_2012_L0noTIS_wide.pdf")
+	c_vis_2011_L0noTIS_narrow.Print("Vis_Acc_2011_L0noTIS_narrow.pdf")
+	c_vis_2012_L0noTIS_narrow.Print("Vis_Acc_2012_L0noTIS_narrow.pdf")
 
 	# Print of the resulting parameters.
 	PrintVisAccPars()
+
+
+# ################################################################
+# T O Y   M C   G E N E R A T I O N   A C C E P T A N C E
+# ################################################################
+
+def GetGenAcc():
+
+	# Data importation.
+	datalist = LoadDataGen2012(data_file,data_tree,MC_datatype,evnum_limit)
+
+	# Construction of the acceptance model.
+	auxlist,pdflist = CreateAccPDFGen()
+
+	# Fit and plot of the 5-D acceptance.
+	FitnPlotGenAcc(*(pdflist+datalist))
+
+	# Print of the resulting parameters.
+	PrintGenAccPars(*pdflist)
 
 
 # ################################################################
@@ -127,6 +162,8 @@ data4_2011_narrow,data4_2012_narrow)
 
 if (len(sys.argv) > 1):
 	if (sys.argv[1] == "nw"): GetNW()
+	elif (sys.argv[1] == "splines"): GetSplines()
 	elif (sys.argv[1] == "timehistos"): GetTimeAccHistos()
 	elif (sys.argv[1] == "timeints"): GetTimeInts()
 	elif (sys.argv[1] == "visacc"): GetVisAcc()
+	elif (sys.argv[1] == "genacc"): GetGenAcc()

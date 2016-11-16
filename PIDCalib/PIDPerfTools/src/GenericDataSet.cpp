@@ -11,6 +11,7 @@
 #include "RooFit.h"
 #include "RooCmdArg.h"
 #include "RooRealVar.h"
+#include "RooErrorHandler.h"
 
 // local
 #include "PIDPerfTools/GenericDataSet.h"

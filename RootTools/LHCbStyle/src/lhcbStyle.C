@@ -165,11 +165,11 @@
   gROOT->ForceStyle();
 
   // add LHCb label
-  lhcbName = new TPaveText(gStyle->GetPadLeftMargin() + 0.05,
-                           0.87 - gStyle->GetPadTopMargin(),
-                           gStyle->GetPadLeftMargin() + 0.20,
-                           0.95 - gStyle->GetPadTopMargin(),
-                           "BRNDC");
+  TPaveText* lhcbName = new TPaveText(gStyle->GetPadLeftMargin() + 0.05,
+                                      0.87 - gStyle->GetPadTopMargin(),
+                                      gStyle->GetPadLeftMargin() + 0.20,
+                                      0.95 - gStyle->GetPadTopMargin(),
+                                      "BRNDC");
   lhcbName->AddText("LHCb");
   lhcbName->SetFillColor(0);
   lhcbName->SetTextAlign(12);

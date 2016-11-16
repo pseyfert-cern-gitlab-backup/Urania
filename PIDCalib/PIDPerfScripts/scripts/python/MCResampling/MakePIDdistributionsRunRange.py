@@ -118,8 +118,9 @@ def mcreweight_dslisttothsparse(StripVersion, MagPolarity, RunMin, RunMax, verbo
         ds = GetDataSet(StripVersion, MagPolarity, Part, 'runNumber>='+str(RunMin)+' && runNumber<='+str(RunMax), i, verbose, allowMissing)
         if ds is not None:
             if cuts!="":
-                mcreweight_datasettothsparse(ds.reduce(cuts),Part,hs,varnames,weight,h1d_list)
-               
+                cutds=ds.reduce(cuts)
+                mcreweight_datasettothsparse(cutds,Part,hs,varnames,weight,h1d_list)
+                cutds.IsA().Destructor(cutds) #free memory from cut dataset
             else:
                 mcreweight_datasettothsparse(ds,Part,hs,varnames,weight,h1d_list)
         ds.Delete() #needed to free memory
@@ -361,9 +362,9 @@ or \"P_MuonUnBiased\"."""
             msg="Failed to load binning scheme file '{0}'".format(opts.binSchemeFile)
             raise IOError(msg)
     ROOT.gSystem.Load('libRooStats.so')
-    ROOT.gSystem.Load('libCintex.so')
-    cintex=ROOT.Cintex
-    cintex.Enable()
+#    ROOT.gSystem.Load('libCintex.so')
+#    cintex=ROOT.Cintex
+#    cintex.Enable()
     ROOT.gSystem.Load('libPIDPerfToolsLib.so')
     ROOT.gSystem.Load('libPIDPerfToolsDict.so')
 

@@ -534,6 +534,11 @@ seqB2JpsiX.Members       = [locationFilter, evtTuple, smear, TupleSeq]
 from FileStager.Configuration import configureFileStager
 configureFileStager()
 
+## TAKE CARE OF THE TAGS.
+DaVinci().DDDBtag   = "Sim08-20130503-1"
+DaVinci().CondDBtag = "Sim08-20130503-1-vc-md100" ## Magnet down (md).
+#DaVinci().CondDBtag = "Sim08-20130503-1-vc-mu100" ## Magnet up (mu).
+
 ## DaVinci().EvtMax        =  5000
 DaVinci().EvtMax        =  -1
 DaVinci().SkipEvents    =  0

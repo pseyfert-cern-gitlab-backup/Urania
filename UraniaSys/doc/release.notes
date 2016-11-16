@@ -3,6 +3,8 @@ Package             : Urania
 Package Coordinator : Diego Martinez Santos
 Purpose             : LHCb physics repository
 
+! 2016-06-14 - Carlos Vazquez Sierra
+ - Make version v5r0
 
 ! 2014-03-20 - Marco Clemencic
  - Added CMake configuration file.

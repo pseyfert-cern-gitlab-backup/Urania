@@ -82,5 +82,17 @@ for trType in GetRICHPIDPartTypes() :
     AddUniformBins(trType, 'nSPDHits', 'DummyTesla', 5,0,1000)
 
 
+for trType in ["Pi","K"]:
+    # momentum
+    AddBinScheme(trType, 'P', 'Broad', 0, 100000)
+    AddUniformBins(trType, 'P', 'Broad', 10, 0, 100000)
 
+    # eta
+    AddBinScheme(trType, 'ETA', 'Broad', 2.0, 5.0)
+    AddUniformBins(trType, 'ETA', 'Broad', 4, 2.0, 5.0)
+
+    # nTracks
+    AddBinScheme(trType, 'nTracks', 'Broad', 0, 500)
+#    AddBinBoundary(trType, 'nTracks', 'Broad', 300)
+    AddUniformBins(trType, 'nTracks', 'Broad', 4, 0,500)
 

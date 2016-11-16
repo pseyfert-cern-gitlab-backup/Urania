@@ -18,7 +18,6 @@ import ROOT
 
 # ROOT should not parse the command-line options
 ROOT.PyConfig.IgnoreCommandLineOptions=True
-
 # ROOT should not start the Gui
 ROOT.PyConfig.StartGuiThread = 0
   
@@ -215,11 +214,11 @@ For a full list of arguments, do: 'python {0} -h'""".format(
     
     # add the optional arguments
     parser.add_argument('-t', '--tupleName', dest='tupleName',
-                        metavar='NAME', default='CalibPID',
+                        metavar='NAME', default='DecayTree',
                         help=("The name of the nTuple, exlc. the "
                               "directory (default: '%(default)s')."))
     parser.add_argument('-f', '--fileName', dest='inputFilename',
-                        metavar='NAME', default='PID_Modes.root',
+                        metavar='NAME', default='PIDCalib.root',
                         help=("The name of the input file, excl. the "
                               "path (default: '%(default)s')."))
     opts = parser.parse_args()

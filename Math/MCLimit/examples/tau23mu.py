@@ -15,7 +15,7 @@ from MCLimit import *
 alpha = 1.1e-08
 s_alpha = 0.2e-08
 
-
+SYST = 0 ## Set to 1 to run the code with systematics
 ######  bkg pdf (TH1D or TH2D)
 #  Asmue flat in mass, 4 bins between -30 and 30 around tau mass
 #  Content per BDT bin (mass integrated): 40, 8.3, 2.6  (invented numbers. Just took the sidebands and divide by 10)
@@ -145,21 +145,24 @@ def doSignalHyp(br, DataHist):
     CL.set_test_hypothesis(test_no_syst[br])
 
     ## nul and test hypothesis for pseudexperiments
-    CL.set_null_hypothesis_pe(nul)
-    CL.set_test_hypothesis_pe(test[br])
-    
+    if SYST:
+        CL.set_null_hypothesis_pe(nul)
+        CL.set_test_hypothesis_pe(test[br])
+    else:
+        CL.set_null_hypothesis_pe(nul_no_syst)
+        CL.set_test_hypothesis_pe(test_no_syst[br])
     ### Add the observed data
     
     CL.set_datahist(DataHist, "TheData")
-    ##  CL.set_npe(20000)  to tune the no. of pe. default is usually fine unless you have several np.
+    CL.set_npe(800000)  #to tune the no. of pe. default is usually fine unless you have several np.
    
     CL.run_pseudoexperiments()
 
     cls = CL.cls()
     clb = CL.clb()
     clsb = CL.clsb()
-
-    return cls, clb, clsb
+    ts = CL.ts()
+    return cls, clb, clsb, ts
 
 #### Set data histogram
 ## (invented)
@@ -189,22 +192,47 @@ def do_scan():
     """
     from XTuple import XTuple
 
-    tup = XTuple("tau23mu",["br/F","cls/F","clb/F","clsb/F"])
+    tup = XTuple("tau23mu",["br/F","cls/F","clb/F","clsb/F","ts/F", "ns/F"])
     dc = {}
-    for i in range(20):
-        ns = float(5+0.5*i)
+    for i in range(15):
+        ns = float(.1+0.3*i)
         br = ns*alpha
         print ns, br
-        cls,clb,clsb = doSignalHyp(br,DataHist )
+        cls,clb,clsb,ts = doSignalHyp(br,DataHist )
         print "still alive"
+        tup.fillItem("ns",ns)
         tup.fillItem("br",br)
         tup.fillItem("cls", cls)
         tup.fillItem("clb", clb)
         tup.fillItem("clsb", clsb)
+        tup.fillItem("ts", ts)
+         #tup.fillItem("chi2", CL.calc_chi2(testpes[i*1e-9],a2012.DataHist))
+
         tup.fill()
         print " ---- DONE", cls, clb
     tup.close()
     return dc
-do_scan()
-
-
+#do_scan()
+from triggerclass import *
+def doWeirdPlot(yname = "clsb"):
+    
+    ch = channelData("tau23mu.dat", typ = "ASCII")
+    x = ch.takeKey("ns")
+    y = ch.takeKey(yname)
+    y2 = ch.takeKey("ts")
+    f1 = NF(x,y)
+    d = f1.derivativeF()
+    y3 = []
+    for x_ in x: y3.append(-2*log(-d(x_)))
+    y3m = min(y3)
+    y2m = min(y2)
+    y2b = []
+    y3b = []
+    for y_ in y2: y2b.append(y_-y2m)
+    for y_ in y3: y3b.append(y_-y3m)
+    f2 = NF(x, y2b)
+    f3 = NF(x, y3b)
+    zzz2 = f2.Draw(kBlue)
+    zzz3 = f3.Draw(kRed)
+    zzz2[-1].Draw("*L")
+    return zzz2,zzz3

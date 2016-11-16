@@ -221,11 +221,16 @@ class UMatrix(Matrix):
 def getThing(A,thing): return simplify(A.collect(thing,evaluate = False) [thing])
 
 from math import sqrt
-def GaussErrorPropagator(expr, xi, sxi):
+def GaussErrorPropagator(expr, xi, sxi, debug = 0):
     s = 0
     for i in range(len(xi)):
         duo = xi[i] ## symbol, value
-        s+= (sxi[i]*expr.diff(duo[0]).subs(xi))**2
+        #print duo
+        deltas = (sxi[i]*expr.diff(duo[0]).subs(xi).n())**2
+        s+= deltas #(sxi[i]*expr.diff(duo[0]).subs(xi).n())**2
+        if debug:
+            print duo
+            print "delta s^2 = " , deltas
     return sqrt(s)
 
 

@@ -1,7 +1,7 @@
 ################################################################################
 # Package: Bs2MuMuParams
 ################################################################################
-gaudi_subdir(Bs2MuMuParams v2r5)
+gaudi_subdir(Bs2MuMuParams v3r1)
 
 gaudi_install_python_modules()
 

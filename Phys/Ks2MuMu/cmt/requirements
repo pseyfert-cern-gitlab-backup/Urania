@@ -3,7 +3,7 @@
 # Maintainer : X. Cid, D. Martinez Santos,...
 #============================================================================
 package           Ks2MuMu 
-version           v1r0
+version           v1r1
 
 #============================================================================
 # Structure, i.e. directories to process. 

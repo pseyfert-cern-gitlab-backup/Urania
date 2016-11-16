@@ -19,365 +19,259 @@
 #include "RooAddPdf.h"
 #include "RooExtendPdf.h"
 #include "RooExponential.h"
+#include "RooGaussian.h"
 #include "RooDecay.h"
 #include "RooEffProd.h"
 #include "RooWorkspace.h"
 
 // B2DXFitters includes
 #include "B2DXFitters/Bd2DhModels.h"
-#include "B2DXFitters/CombBkgPTPdf.h"
-#include "B2DXFitters/Inverse.h"
+#include "B2DXFitters/GeneralUtils.h"
+#include "B2DXFitters/RooBinned1DQuinticBase.h"
+#include "B2DXFitters/Bs2Dsh2011TDAnaModels.h"
+#include "B2DXFitters/RooJohnsonSU.h"
+
+using namespace std;
+using namespace GeneralUtils;
+using namespace Bs2Dsh2011TDAnaModels;
+
 
 
 namespace Bd2DhModels {
   
-  //===========================================================================
-  // Extended PDF background models for Bd -> D pi as defined in the
-  // Delta m_d analysis
-  // - combinatorial backgroud
-  // - physical backgrounds
-  //===========================================================================
-  RooAbsPdf* buildBdBackgroundEPDFInMass( RooAbsReal& mass,
-                                          RooStringVar& filesDir,
-                                          RooRealVar& nCombBkgEvts,
-                                          RooRealVar& nBd2DKEvts,
-                                          RooRealVar& nBd2DRhoEvts,
-                                          RooRealVar& nBd2DstPiEvts,
-                                          RooRealVar& nBd2DXEvts,
-                                          bool debug
-                                          )
-  {
-    if ( debug )
-      printf( "==> Bd2DhModels::buildBdBackgroundEPDFInMass( ... )\n"); 
-    
-    // Create the background PDFs in mass: combinatorial and physical
-    // ==============================================================
-    RooRealVar* pdf_combBkg_slope = new RooRealVar( "CombBkgPDF_slope",
-                                                    "Combinatorial background PDF in mass - exponential slope",
-                                                    -0.002, -0.01, 0., "[MeV/c^{2}]^{-1}" );
-    RooExponential* pdf_combBkg = new RooExponential( "CombBkgPDF_m", "Combinatorial background PDF in mass",
-                                                      mass, *pdf_combBkg_slope );
-    // Physical background from partially reconstructed decays
-    // -------------------------------------------------------
-    char fileName[200];
-    sprintf( fileName, "%s%s%s", filesDir.getVal(),
-             ( filesDir.getVal() == NULL ? "" : "/" ),
-             "Bd2DPiPhysBkg_Bd2DK.root"
-             );   // "filesName" or "filesDir/fileName"
-    TFile* file_Bd2DK = TFile::Open( fileName );
-    RooWorkspace* ws_Bd2DK = (RooWorkspace*) file_Bd2DK -> Get( "PhysBkg_Bd2DK" );
-    if ( ! ws_Bd2DK ) {
-      printf( "[ERROR] Retrieving the workspace for Bd -> D K!\n" );
-      exit( -1 );
-    }
-    RooAbsPdf* pdf_Bd2DK = (RooAbsPdf*) ws_Bd2DK -> pdf( "PhysBkgBd2DKPdf_m" );
-    if ( ! pdf_Bd2DK ) {
-      printf( "[ERROR] Retrieving the Bd -> D K PDF from the workspace!\n" );
-      exit( -1 );
-    }
-    pdf_Bd2DK -> SetName( "Bd2DKPDF_m" );
-    
-    sprintf( fileName, "%s%s%s", filesDir.getVal(),
-             ( filesDir.getVal() == NULL ? "" : "/" ),
-             "Bd2DPiPhysBkg_Bd2DRho.root"
-             );   // "filesName" or "filesDir/fileName"
-    TFile* file_Bd2DRho = TFile::Open( fileName );
-    RooWorkspace* ws_Bd2DRho = (RooWorkspace*) file_Bd2DRho -> Get( "PhysBkg_Bd2DRho" );
-    if ( ! ws_Bd2DRho ) {
-      printf( "[ERROR] Retrieving the workspace for Bd -> D rho!\n" );
-      exit( -1 );
-    }
-    RooAbsPdf* pdf_Bd2DRho = (RooAbsPdf*) ws_Bd2DRho -> pdf( "PhysBkgBd2DRhoPdf_m" );
-    if ( ! pdf_Bd2DRho ) {
-      printf( "[ERROR] Retrieving the Bd -> D rho PDF from the workspace!\n" );
-      exit( -1 );
-    }
-    pdf_Bd2DRho -> SetName( "Bd2DRhoPDF_m" );
-    
-    sprintf( fileName, "%s%s%s", filesDir.getVal(),
-             ( filesDir.getVal() == NULL ? "" : "/" ),
-             "Bd2DPiPhysBkg_Bd2DstPi.root"
-             );   // "filesName" or "filesDir/fileName"
-    TFile* file_Bd2DstPi = TFile::Open( fileName );
-    RooWorkspace* ws_Bd2DstPi = (RooWorkspace*) file_Bd2DstPi -> Get( "PhysBkg_Bd2DstPi" );
-    if ( ! ws_Bd2DstPi ) {
-      printf( "[ERROR] Retrieving the workspace for Bd -> D* pi!\n" );
-      exit( -1 );
-    }
-    RooAbsPdf* pdf_Bd2DstPi = (RooAbsPdf*) ws_Bd2DstPi -> pdf( "PhysBkgBd2DstPiPdf_m" );
-    if ( ! pdf_Bd2DstPi ) {
-      printf( "[ERROR] Retrieving the Bd -> D* pi PDF from the workspace!\n" );
-      exit( -1 );
-    }
-    pdf_Bd2DstPi -> SetName( "Bd2DstPiPDF_m" );
-    
-    sprintf( fileName, "%s%s%s", filesDir.getVal(),
-             ( filesDir.getVal() == NULL ? "" : "/" ),
-             "Bd2DPiPhysBkg_Bd2DX.root"
-             );   // "filesName" or "filesDir/fileName"
-    TFile* file_Bd2DX = TFile::Open( fileName );
-    RooWorkspace* ws_Bd2DX = (RooWorkspace*) file_Bd2DX -> Get( "PhysBkg_Bd2DX" );
-    if ( ! ws_Bd2DX ) {
-      printf( "[ERROR] Retrieving the workspace for Bd -> D X!\n" );
-      exit( -1 );
-    }
-    RooAbsPdf* pdf_Bd2DX = (RooAbsPdf*) ws_Bd2DX -> pdf( "PhysBkgBd2DXPdf_m" );
-    if ( ! pdf_Bd2DX ) {
-      printf( "[ERROR] Retrieving the Bd -> D X PDF from the workspace!\n" );
-      exit( -1 );
-    }
-    pdf_Bd2DX -> SetName( "Bd2DXPDF_m" );
-    
+  RooAbsPdf* build_Bd2DPi_BKG_MDFitter( RooAbsReal& mass,
+					RooAbsReal& massDs,
+					RooWorkspace* work,
+					RooWorkspace* workInt,
+					TString &samplemode,
+					TString merge,
+					Int_t dim,
+					bool debug
+					){
+    if (debug == true)
+      {
+        cout<<"[INFO] =====> Build background model Bd->DPi --------------"<<endl;
+      }
+
+    RooArgList* list = new RooArgList();
+    TString charmVarName = massDs.GetName();
+
+    RooExtendPdf* epdf_Bd2DK = NULL;
+    epdf_Bd2DK = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DK", "", merge, dim, charmVarName, debug);
+    Double_t valBd2DK = CheckEvts(workInt, samplemode, "Bd2DK",debug);
+    list = AddEPDF(list, epdf_Bd2DK, valBd2DK, debug);
+
+    RooExtendPdf* epdf_Bd2DRho = NULL;
+    epdf_Bd2DRho = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DRho", "", merge, dim, charmVarName, debug);
+    Double_t valBd2DRho = CheckEvts(workInt, samplemode, "Bd2DRho",debug);
+    list = AddEPDF(list, epdf_Bd2DRho, valBd2DRho, debug);
+
+    RooExtendPdf* epdf_Bd2DstPi = NULL;
+    epdf_Bd2DstPi = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DstPi", "", merge, dim, charmVarName, debug);
+    Double_t valBd2DstPi = CheckEvts(workInt, samplemode, "Bd2DstPi",debug);
+    list = AddEPDF(list, epdf_Bd2DstPi, valBd2DstPi, debug);
+
+    RooExtendPdf* epdf_Lb2LcPi = NULL;
+    epdf_Lb2LcPi = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Lb2LcPi", "", merge, dim, "", debug);
+    Double_t valLb2LcPi = CheckEvts(workInt, samplemode, "Lb2LcPi",debug);
+    list = AddEPDF(list, epdf_Lb2LcPi, valLb2LcPi, debug);
+
+    RooExtendPdf* epdf_Bs2DsPi = NULL;
+    epdf_Bs2DsPi = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bs2DsPi", "", merge, dim, "", debug);
+    Double_t valBs2DsPi = CheckEvts(workInt, samplemode, "Bs2DsPi",debug);
+    list = AddEPDF(list, epdf_Bs2DsPi, valBs2DsPi, debug);
+
     RooAbsPdf* pdf_totBkg = NULL;
-    RooExtendPdf* epdf_combBkg  = new RooExtendPdf( "CombBkgEPDF_m" , pdf_combBkg  -> GetTitle(), *pdf_combBkg , nCombBkgEvts  );
-    RooExtendPdf* epdf_Bd2DK    = new RooExtendPdf( "Bd2DKEPDF_m"   , pdf_Bd2DK    -> GetTitle(), *pdf_Bd2DK   , nBd2DKEvts    );
-    RooExtendPdf* epdf_Bd2DRho  = new RooExtendPdf( "Bd2DRhoEPDF_m" , pdf_Bd2DRho  -> GetTitle(), *pdf_Bd2DRho , nBd2DRhoEvts  );
-    RooExtendPdf* epdf_Bd2DstPi = new RooExtendPdf( "Bd2DstPiEPDF_m", pdf_Bd2DstPi -> GetTitle(), *pdf_Bd2DstPi, nBd2DstPiEvts );
-    RooExtendPdf* epdf_Bd2DX    = new RooExtendPdf( "Bd2DXEPDF_m"   , pdf_Bd2DX    -> GetTitle(), *pdf_Bd2DX   , nBd2DXEvts    );
-    pdf_totBkg = new RooAddPdf( "BkgEPDF_m", "Background EPDF (combinatorial + physical) in mass",
-                                RooArgList(*epdf_combBkg,*epdf_Bd2DK,*epdf_Bd2DRho,*epdf_Bd2DstPi,*epdf_Bd2DX) );
-    
-    // Create a local workspace
-    RooWorkspace* workSpace = new RooWorkspace( "BkgWS", kTRUE );
-    
-    Bool_t error_1 = workSpace -> import( mass );
-    Bool_t error_2 = workSpace -> import( *pdf_totBkg );
-    
-    if ( error_1 || error_2 ) {
-      printf( "[ERROR] Mass observable or Bd background PDFs in mass failed to be imported to the local workspace!\n" );
-      exit( -1 );
+    TString name = "BkgEPDF_m_"+samplemode;
+    pdf_totBkg = new RooAddPdf( name.Data(), name.Data(), *list);
+    if (debug == true)
+      {
+        cout<<endl;
+        if( pdf_totBkg != NULL ){ cout<<" ------------- CREATED TOTAL BACKGROUND PDF: SUCCESFULL------------"<<endl; }
+        else { cout<<" ---------- CREATED TOTAL BACKGROUND PDF: FAILED ----------------"<<endl;}
+      }
+    return pdf_totBkg;
+
+  }
+  
+  //===============================================================================
+  // Build JohnsonSU pdf
+  //===============================================================================
+  
+  RooAbsPdf* buildJohnsonSUPDF( RooAbsReal& obs,
+                                RooWorkspace* workInt,
+                                TString samplemode,
+                                TString typemode,
+                                bool debug)
+  { 
+    if ( debug == true )
+    {   
+      std::cout<<"Bd2DhModels::buildJohnsonSUPDF(..)==> building JohnsonSU pdf... "<<std::endl; 
     }
+
+    RooRealVar* mean = NULL;    
+    RooRealVar* sigmaVar =NULL;
+    RooRealVar* nuVar =NULL;
+    RooRealVar* tauVar =NULL;
+
+    TString varName = obs.GetName();
+
+    TString meanName = typemode+"_"+varName+"_mean_"+samplemode;
+    mean = tryVar(meanName, workInt, debug);
+    TString sigmaName = typemode+"_"+varName+"_sigma_"+samplemode;
+    sigmaVar = tryVar(sigmaName, workInt, debug);
+    TString nuName = typemode+"_"+varName+"_nu_"+samplemode;
+    nuVar = tryVar(nuName, workInt, debug);
+    TString tauName = typemode+"_"+varName+"_tau_"+samplemode;
+    tauVar = tryVar(tauName, workInt, debug);
     
-    // This is necessary since the import statement actually makes a clone
-    return workSpace -> pdf( "BkgEPDF_m" );    
+    RooJohnsonSU* pdf = NULL;
+    TString pdfName = typemode+"_"+varName+"_johnsonSU_"+samplemode;
+    pdf = new RooJohnsonSU( pdfName.Data(), pdfName.Data(), obs, *mean, *sigmaVar, *nuVar, *tauVar);    
+    CheckPDF( pdf, debug );
+
+    return pdf;  
+  }
+  
+  //===============================================================================
+  // Build JohnsonSU + gaussian pdf
+  //===============================================================================
+
+  RooAbsPdf* buildJohnsonSUPlusGaussianPDF( RooAbsReal& obs,
+                                            RooWorkspace* workInt,
+                                            TString samplemode,
+                                            TString typemode,
+                                            bool debug)
+  {
+    if ( debug == true )
+    {
+      std::cout<<"Bd2DhModels::buildJohnsonSUPlusGaussianPDF(..)==> building JohnsonSU + gaussian pdf..."<<std::endl;      
+    }
+
+    RooRealVar* meanJ = NULL;
+    RooRealVar* sigmaJVar =NULL;
+    RooRealVar* nuJVar =NULL;
+    RooRealVar* tauJVar =NULL;
+    RooRealVar* meanG = NULL;
+    RooRealVar* sigmaGVar =NULL;
+    RooRealVar* fracVar = NULL;
+
+    TString varName = obs.GetName();
+    
+    TString meanJName = typemode+"_"+varName+"_meanJ_"+samplemode;
+    meanJ = tryVar(meanJName, workInt, debug);
+    TString sigmaJName = typemode+"_"+varName+"_sigmaJ_"+samplemode;
+    sigmaJVar = tryVar(sigmaJName, workInt, debug);
+    TString nuJName = typemode+"_"+varName+"_nuJ_"+samplemode;
+    nuJVar = tryVar(nuJName, workInt, debug);
+    TString tauJName = typemode+"_"+varName+"_tauJ_"+samplemode;
+    tauJVar = tryVar(tauJName, workInt, debug);
+    TString meanGName = typemode+"_"+varName+"_meanG_"+samplemode;
+    meanG = tryVar(meanGName, workInt, debug);
+    TString sigmaGName = typemode+"_"+varName+"_sigmaG_"+samplemode;
+    sigmaGVar = tryVar(sigmaGName, workInt, debug);
+    TString fracName = typemode+"_"+varName+"_frac_"+samplemode;
+    fracVar = tryVar(fracName, workInt, debug);
+  
+    RooAbsPdf* pdf = NULL; 
+
+    RooGaussian *pdf1 = NULL;
+    TString pdf1Name = typemode+"_"+varName+"_gaussian_"+samplemode;
+    RooJohnsonSU *pdf2 = NULL;
+    TString pdf2Name = typemode+"_"+varName+"_johnsonSU_"+samplemode;
+    pdf1 = new RooGaussian( pdf1Name.Data(), pdf1Name.Data(), obs, *meanG, *sigmaGVar);
+    pdf2 = new RooJohnsonSU( pdf2Name.Data(), pdf2Name.Data(), obs, *meanJ, *sigmaJVar, *nuJVar, *tauJVar);
+    
+    TString pdfName = typemode+"_"+varName+"_JohnsonSUPlusGaussian_"+samplemode;
+    pdf = new RooAddPdf( pdfName.Data(), pdfName.Data(), *pdf1, *pdf2, *fracVar);
+    CheckPDF( pdf, debug );
+    
+    return pdf;
+  }
+  
+  //===============================================================================
+  // Build JohnsonSU + 2 gaussian pdf                                
+  //===============================================================================
+
+  RooAbsPdf* buildJohnsonSUPlus2GaussianPDF( RooAbsReal& obs,
+                                             RooWorkspace* workInt,
+                                             TString samplemode,
+                                             TString typemode,
+                                             bool sameMean,
+                                             bool debug)
+  {
+    if ( debug == true )
+    {
+      std::cout<<"Bd2DhModels::buildJohnsonSUPlus2GaussianPDF(..)==> building JohnsonSU + 2 gaussian pdf..."<<std::endl;      
+    }
+
+    RooRealVar* meanJ = NULL;
+    RooRealVar* sigmaJVar =NULL;
+    RooRealVar* nuJVar =NULL; 
+    RooRealVar* tauJVar =NULL;
+    RooRealVar* meanG1 = NULL;
+    RooRealVar* meanG2 = NULL;
+    RooRealVar* sigma1GVar =NULL;
+    RooRealVar* sigma2GVar = NULL;
+    RooRealVar* frac1GVar = NULL;
+    RooRealVar* frac2GVar = NULL;
+
+    TString varName = obs.GetName();
+
+    TString meanJName = typemode+"_"+varName+"_meanJ_"+samplemode;
+    meanJ = tryVar(meanJName, workInt, debug);
+    TString sigmaJName = typemode+"_"+varName+"_sigmaJ_"+samplemode;
+    sigmaJVar = tryVar(sigmaJName, workInt, debug);
+    TString nuJName = typemode+"_"+varName+"_nuJ_"+samplemode;
+    nuJVar = tryVar(nuJName, workInt, debug);
+    TString tauJName = typemode+"_"+varName+"_tauJ_"+samplemode;
+    tauJVar = tryVar(tauJName, workInt, debug);
+    TString meanG1Name = typemode+"_"+varName+"_meanG1_"+samplemode;
+    meanG1 = tryVar(meanG1Name, workInt, debug);
+    if(!sameMean)
+    {
+      TString meanG2Name = typemode+"_"+varName+"_meanG2_"+samplemode;
+      meanG2 = tryVar(meanG2Name, workInt, debug); 
+    }
+    TString sigma1GName = typemode+"_"+varName+"_sigma1G_"+samplemode;
+    sigma1GVar = tryVar(sigma1GName, workInt, debug);
+    TString sigma2GName = typemode+"_"+varName+"_sigma2G_"+samplemode;
+    sigma2GVar = tryVar(sigma2GName, workInt, debug);
+    TString frac1GName = typemode+"_"+varName+"_frac1G_"+samplemode;
+    frac1GVar = tryVar(frac1GName, workInt, debug);
+    TString frac2GName = typemode+"_"+varName+"_frac2G_"+samplemode;
+    frac2GVar = tryVar(frac2GName, workInt, debug);
+
+    RooAbsPdf* pdf = NULL;
+
+    RooGaussian *pdf1 = NULL;
+    TString pdf1Name = typemode+"_"+varName+"_gaussian1_"+samplemode;
+    RooGaussian *pdf2 = NULL;
+    TString pdf2Name = typemode+"_"+varName+"_gaussian2_"+samplemode;
+    RooJohnsonSU *pdf3 = NULL;
+    TString pdf3Name = typemode+"_"+varName+"_johnsonSU_"+samplemode;
+  
+    pdf1 = new RooGaussian( pdf1Name.Data(), pdf1Name.Data(), obs, *meanG1, *sigma1GVar);
+    if(sameMean)
+    {
+      pdf2 = new RooGaussian( pdf2Name.Data(), pdf2Name.Data(), obs, *meanG1, *sigma2GVar);
+    }
+    else
+    {
+      pdf2 = new RooGaussian( pdf2Name.Data(), pdf2Name.Data(), obs, *meanG2, *sigma2GVar);
+    }
+    pdf3 = new RooJohnsonSU( pdf3Name.Data(), pdf3Name.Data(), obs, *meanJ, *sigmaJVar, *nuJVar, *tauJVar);
+    CheckPDF( pdf1, debug );
+    CheckPDF( pdf2, debug );
+    CheckPDF( pdf3, debug );
+    
+    TString pdfName = typemode+"_"+varName+"_JohnsonSUPlus2Gaussian_"+samplemode;
+    pdf = new RooAddPdf( pdfName.Data(), pdfName.Data(), RooArgList(*pdf1, *pdf2, *pdf3), RooArgList(*frac1GVar, *frac2GVar));
+    CheckPDF( pdf, debug );
+    
+    return pdf;
   }
 
-  //===========================================================================
-  // PDF background models for Bd -> D pi as defined in the
-  // Delta m_d analysis
-  // - combinatorial backgroud
-  // - physical backgrounds
-  //===========================================================================
-  RooAbsPdf* buildBdBackgroundPDFInMass( RooAbsReal& mass,
-                                         RooStringVar& filesDir,
-                                         const long fracCombBkgEvts,
-                                         const long fracBd2DKEvts,
-                                         const long fracBd2DstPiEvts,
-                                         const long fracBd2DXEvts,
-                                         bool debug
-                                         )
-  {
-    if ( debug )
-      printf( "==> Bd2DhModels::buildBdBackgroundPDFInMass( ... )\n"); 
-    
-    // Create the background PDFs in mass: combinatorial and physical
-    // ==============================================================
-    RooRealVar* pdf_combBkg_slope = new RooRealVar( "CombBkgPDF_slope",
-                                                    "Combinatorial background PDF in mass - exponential slope",
-                                                    -0.002, -0.01, 0., "[MeV/c^{2}]^{-1}" );
-    RooExponential* pdf_combBkg = new RooExponential( "CombBkgPDF_m", "Combinatorial background PDF in mass",
-                                                      mass, *pdf_combBkg_slope );
-    // Physical background from partially reconstructed decays
-    // -------------------------------------------------------
-    char fileName[200];
-    sprintf( fileName, "%s%s%s", filesDir.getVal(),
-             ( filesDir.getVal() == NULL ? "" : "/" ),
-             "Bd2DPiPhysBkg_Bd2DK.root"
-             );   // "filesName" or "filesDir/fileName"
-    TFile* file_Bd2DK = TFile::Open( fileName );
-    RooWorkspace* ws_Bd2DK = (RooWorkspace*) file_Bd2DK -> Get( "PhysBkg_Bd2DK" );
-    if ( ! ws_Bd2DK ) {
-      printf( "[ERROR] Retrieving the workspace for Bd -> D K!\n" );
-      exit( -1 );
-    }
-    RooAbsPdf* pdf_Bd2DK = (RooAbsPdf*) ws_Bd2DK -> pdf( "PhysBkgBd2DKPdf_m" );
-    if ( ! pdf_Bd2DK ) {
-      printf( "[ERROR] Retrieving the Bd -> D K PDF from the workspace!\n" );
-      exit( -1 );
-    }
-    pdf_Bd2DK -> SetName( "Bd2DKPDF_m" );
-    
-    sprintf( fileName, "%s%s%s", filesDir.getVal(),
-             ( filesDir.getVal() == NULL ? "" : "/" ),
-             "Bd2DPiPhysBkg_Bd2DRho.root"
-             );   // "filesName" or "filesDir/fileName"
-    TFile* file_Bd2DRho = TFile::Open( fileName );
-    RooWorkspace* ws_Bd2DRho = (RooWorkspace*) file_Bd2DRho -> Get( "PhysBkg_Bd2DRho" );
-    if ( ! ws_Bd2DRho ) {
-      printf( "[ERROR] Retrieving the workspace for Bd -> D rho!\n" );
-      exit( -1 );
-    }
-    RooAbsPdf* pdf_Bd2DRho = (RooAbsPdf*) ws_Bd2DRho -> pdf( "PhysBkgBd2DRhoPdf_m" );
-    if ( ! pdf_Bd2DRho ) {
-      printf( "[ERROR] Retrieving the Bd -> D rho PDF from the workspace!\n" );
-      exit( -1 );
-    }
-    pdf_Bd2DRho -> SetName( "Bd2DRhoPDF_m" );
-    
-    sprintf( fileName, "%s%s%s", filesDir.getVal(),
-             ( filesDir.getVal() == NULL ? "" : "/" ),
-             "Bd2DPiPhysBkg_Bd2DstPi.root"
-             );   // "filesName" or "filesDir/fileName"
-    TFile* file_Bd2DstPi = TFile::Open( fileName );
-    RooWorkspace* ws_Bd2DstPi = (RooWorkspace*) file_Bd2DstPi -> Get( "PhysBkg_Bd2DstPi" );
-    if ( ! ws_Bd2DstPi ) {
-      printf( "[ERROR] Retrieving the workspace for Bd -> D* pi!\n" );
-      exit( -1 );
-    }
-    RooAbsPdf* pdf_Bd2DstPi = (RooAbsPdf*) ws_Bd2DstPi -> pdf( "PhysBkgBd2DstPiPdf_m" );
-    if ( ! pdf_Bd2DstPi ) {
-      printf( "[ERROR] Retrieving the Bd -> D* pi PDF from the workspace!\n" );
-      exit( -1 );
-    }
-    pdf_Bd2DstPi -> SetName( "Bd2DstPiPDF_m" );
-    
-    sprintf( fileName, "%s%s%s", filesDir.getVal(),
-             ( filesDir.getVal() == NULL ? "" : "/" ),
-             "Bd2DPiPhysBkg_Bd2DX.root"
-             );   // "filesName" or "filesDir/fileName"
-    TFile* file_Bd2DX = TFile::Open( fileName );
-    RooWorkspace* ws_Bd2DX = (RooWorkspace*) file_Bd2DX -> Get( "PhysBkg_Bd2DX" );
-    if ( ! ws_Bd2DX ) {
-      printf( "[ERROR] Retrieving the workspace for Bd -> D X!\n" );
-      exit( -1 );
-    }
-    RooAbsPdf* pdf_Bd2DX = (RooAbsPdf*) ws_Bd2DX -> pdf( "PhysBkgBd2DXPdf_m" );
-    if ( ! pdf_Bd2DX ) {
-      printf( "[ERROR] Retrieving the Bd -> D X PDF from the workspace!\n" );
-      exit( -1 );
-    }
-    pdf_Bd2DX -> SetName( "Bd2DXPDF_m" );
-    
-    RooAbsPdf* pdf_totBkg = NULL;
-    RooRealVar* fracCombBkg  = new RooRealVar( "fracCombBkg" , "fracCombBkg" , fracCombBkgEvts , 0., 1. );
-    RooRealVar* fracBd2DK    = new RooRealVar( "fracBd2DK"   , "fracBd2DK"   , fracBd2DKEvts   , 0., 1. );
-    RooRealVar* fracBd2DX    = new RooRealVar( "fracBd2DX"   , "fracBd2DX"   , fracBd2DstPiEvts, 0., 1. );
-    RooRealVar* fracBd2DstPi = new RooRealVar( "fracBd2DstPi", "fracBd2DstPi", fracBd2DXEvts   , 0., 1. );
-    pdf_totBkg = new RooAddPdf( "BkgPDF_m","Background PDF (combinatorial + physical) in mass",
-                                RooArgList(*pdf_combBkg,*pdf_Bd2DK,*pdf_Bd2DX,*pdf_Bd2DstPi,*pdf_Bd2DRho),
-                                RooArgList(*fracCombBkg,*fracBd2DK,*fracBd2DX,*fracBd2DstPi),
-                                kTRUE ); // kTRUE for recursive addition of PDFs
-    
-    // Create a local workspace
-    RooWorkspace* workSpace = new RooWorkspace( "BkgWS", kTRUE );
-    
-    Bool_t error_1 = workSpace -> import( mass );
-    Bool_t error_2 = workSpace -> import( *pdf_totBkg );
-    
-    if ( error_1 || error_2 ) {
-      printf( "[ERROR] Mass observable or Bd background PDFs in mass failed to be imported to the local workspace!\n" );
-      exit( -1 );
-    }
-    
-    // This is necessary since the import statement actually makes a clone
-    return workSpace -> pdf( "BkgPDF_m" );    
-  }
-  
-  //===========================================================================
-  // Extended PDF background models in time for Bd -> D pi as defined in the
-  // Delta m_d analysis, when no tagging information is used
-  // - combinatorial backgroud
-  // - Bd -> D K physical background
-  //===========================================================================
-  RooAbsPdf* buildBdBackgroundNoTagEPDFInTime( RooAbsReal& time,
-                                               RooRealVar& Gamma,
-                                               RooRealVar& nCombBkgEvts,
-                                               RooRealVar& CombBkgPTPdf_a,
-                                               RooRealVar& CombBkgPTPdf_f,
-                                               RooRealVar& CombBkgPTPdf_alpha,
-                                               RooRealVar& CombBkgPTPdf_beta,
-                                               RooRealVar& nBd2DKEvts,
-                                               RooResolutionModel* resModel,
-                                               RooAbsReal* acceptance,
-                                               bool debug
-                                               )
-  {
-    if ( debug )
-      printf( "==> Bd2DhModels::buildBdBackgroundNoTagPDFInTime( ... )\n"); 
-    
-    if ( ! resModel ) {
-      printf( "[ERROR] No propertime resolution model set!\n" );
-      exit( -1 );
-    }
-    
-    // Create a local workspace
-    RooWorkspace* workSpace = new RooWorkspace( "BkgNoTagWS", kTRUE );
-    
-    Bool_t error_t  = workSpace -> import( time );
-    Bool_t error_rm = workSpace -> import( *resModel );
-    if ( error_t || error_rm ) {
-      printf( "[ERROR] Time observable or resolution model failed to be imported to the local workspace!\n" );
-      exit( -1 );
-    }
-    
-    RooRealVar* new_time = workSpace -> var( time.GetName() );
-    RooResolutionModel* new_resModel =
-      dynamic_cast<RooResolutionModel*>( &( workSpace -> allResolutionModels()[ resModel -> GetName() ] ) );
-    
-    CombBkgPTPdf* pdf_combBkg = new CombBkgPTPdf( "CombBkgPdf_t", "CombBkgPdf_t",
-                                                  *new_time,
-                                                  CombBkgPTPdf_a, CombBkgPTPdf_f,
-                                                  CombBkgPTPdf_alpha, CombBkgPTPdf_beta
-                                                  );
-    
-    Inverse tau( "Bd2DKPDF_tau", "Bd2DKPDF_tau", Gamma );
-    RooDecay* pdf_Bd2DK_noAcc = new RooDecay( "Bd2DKPDF_noAcc_t",
-                                              "B_{d} #rightarrow D K background PDF in time (without acc.)",
-                                              *new_time,
-                                              tau,
-                                              *new_resModel,
-                                              RooDecay::SingleSided
-                                              );
-    
-    // Include the acceptance function for the phys. bkg. component only, if non NULL!
-    // PDF -> PDF * acceptance
-    if ( acceptance ) {
-      RooEffProd* pdf_Bd2DK = new RooEffProd( "Bd2DKPDF_t",
-                                              "B_{d} #rightarrow D K background PDF in time (with acc.)",
-                                              *pdf_Bd2DK_noAcc, *acceptance );
-      RooAbsPdf* epdf_totBkg = NULL;
-      
-      RooExtendPdf* epdf_combBkg  = new RooExtendPdf( "CombBkgEPDF_t",
-                                                      "Combinatorial background  EPDF in time" ,
-                                                      *pdf_combBkg , nCombBkgEvts );
-      RooExtendPdf* epdf_Bd2DK    = new RooExtendPdf( "Bd2DKEPDF_t", 
-                                                      "B_{d} #rightarrow D K bkg. EPDF in time (with acc.)",
-                                                      *pdf_Bd2DK, nBd2DKEvts );
-      epdf_totBkg = new RooAddPdf( "BkgEPDF_t", "Background EPDF (combinatorial + physical) in time",
-                                   RooArgList( *epdf_combBkg, *epdf_Bd2DK ) );
-      
-      Bool_t error = workSpace -> import( *epdf_totBkg );
-      
-      if ( error ) {
-        printf( "[ERROR] Bd background PDFs in time failed to be imported to the fitter workspace!\n" );
-        exit( -1 );
-      }
-      
-      return workSpace -> pdf( "BkgEPDF_t" );
-    }
-    else { // no acceptance
-      RooAbsPdf* epdf_totBkg = NULL;
-      
-      RooExtendPdf* epdf_combBkg  = new RooExtendPdf( "CombBkgEPDF_t",
-                                                      "Combinatorial background  EPDF in time" ,
-                                                      *pdf_combBkg , nCombBkgEvts );
-      RooExtendPdf* epdf_Bd2DK    = new RooExtendPdf( "Bd2DKEPDF_t", 
-                                                      "B_{d} #rightarrow D K bkg. EPDF in time (with acc.)",
-                                                      *pdf_Bd2DK_noAcc, nBd2DKEvts );
-      epdf_totBkg = new RooAddPdf( "BkgEPDF_t", "Background EPDF (combinatorial + physical) in time",
-                                   RooArgList( *epdf_combBkg, *epdf_Bd2DK ) );
-      
-      Bool_t error = workSpace -> import( *epdf_totBkg );
-      
-      if ( error ) {
-        printf( "[ERROR] Bd background PDFs in time failed to be imported to the fitter workspace!\n" );
-        exit( -1 );
-      }
-      
-      return workSpace -> pdf( "BkgEPDF_t" );
-    } 
-  }
-  
 } // end of namespace
 
 //=============================================================================

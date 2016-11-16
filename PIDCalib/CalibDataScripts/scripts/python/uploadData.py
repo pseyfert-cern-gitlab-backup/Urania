@@ -5,10 +5,12 @@ import sys
 import subprocess
 import glob
 
-local_path = '/data/lhcb/users/malde'
-lfn_path   = '/lhcb/user/s/smalde'
-prefixes = ('Jpsi_e', 'junk')
+local_path = '/data/lhcb/users/'
+lfn_path   = '/lhcb/calib/pid'
+prefixes = ('Lam0_P','DSt_K','DSt_Pi','Jpsi_Mu')
 ## script will only work if in the above line the prefix with the most files goes first.
+# other prefixes are 'Jpsi_Mu', 'Lam0_P' etc
+# it is important that it is checked that all the files were uploaded sucessfully
 
 ##mag_pols = ('Up' 'Down')
 
@@ -36,8 +38,8 @@ def copyFile(fname, maxtries):
     successful = False
     ntries = 0
 
-    cmd = 'dirac-dms-add-file %s %s CERN-USER %s' % (lfn_fname, local_fname, guID.AsString())
-#    cmd = ' %s %s CERN-USER %s' % (lfn_fname, local_fname, guID.AsString())
+    cmd = 'dirac-dms-add-file %s %s CERN-CALIB %s' % (lfn_fname, local_fname, guID.AsString())
+ #   cmd = ' %s %s' % (lfn_fname, local_fname)
     print cmd
 
     while True:
@@ -55,7 +57,10 @@ def copyFile(fname, maxtries):
             if exitOnFailure:
               sys.exit(1)
             else:
-	      return
+              return
+
+   
+
 if __name__=='__main__':
     args=sys.argv[1:]
     if len(args)<2 or len(args)>5:
@@ -72,7 +77,7 @@ if __name__=='__main__':
     nFiles_up = -1 
     if len(args)>=4:
       nFiles_up = int(args[3])
-    maxtries = 5
+    maxtries = 0
     if len(args)==5:
       maxtries = int(args[4])
 
@@ -84,9 +89,10 @@ if __name__=='__main__':
 
     # copy magnet down data
     if (nFiles_down<0):
-	dir = "%s/CalibData/Reco%s_DATA/MagDown" %(local_path,reco_ver)
-        fname = "%s/%s_MagDown_Strip%s_*.root" %(dir, prefixes[0], strip_ver)
-        nFiles_down= len(glob.glob(fname))
+      dir = "%s/CalibData/Reco%s_DATA/MagDown" %(local_path,reco_ver)
+      fname = "%s/%s_MagDown_Strip%s_*.root" %(dir, prefixes[0], strip_ver)
+      nFiles_down= len(glob.glob(fname))
+       # nFiles_down= 0
     for i in range(0, nFiles_down):
         for prefix in prefixes:
             dir = "CalibData/Reco%s_DATA/MagDown" %reco_ver
@@ -95,9 +101,10 @@ if __name__=='__main__':
 
     # copy magnet up data
     if (nFiles_up<0):
-	dir = "%s/CalibData/Reco%s_DATA/MagUp" %(local_path,reco_ver)
-        fname = "%s/%s_MagUp_Strip%s_*.root" %(dir, prefixes[0], strip_ver)
-        nFiles_up = len(glob.glob(fname))
+      dir = "%s/CalibData/Reco%s_DATA/MagUp" %(local_path,reco_ver)
+      fname = "%s/%s_MagUp_Strip%s_*.root" %(dir, prefixes[0], strip_ver)
+      nFiles_up = len(glob.glob(fname))
+#        nFiles_up = 0
     for i in range(0, nFiles_up):
         for prefix in prefixes:
             dir = "CalibData/Reco%s_DATA/MagUp" %reco_ver

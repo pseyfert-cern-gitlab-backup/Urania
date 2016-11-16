@@ -66,7 +66,7 @@ sigmaBd = RooRealVar("sigmaBd","sigmaBd", TheTable.MassResoBd, TheTable.MassReso
 sigmaBd_cons = RooGaussian("sigmaBdconstext","sigmaBdconst",sigmaBd,RooFit.RooConst(TheTable.MassResoBd),RooFit.RooConst(TheTable.MassResoErrBd))
 sigmaBs_cons = RooGaussian("sigmaBsconstext","sigmaBsconst",sigmaBs,RooFit.RooConst(TheTable.MassResoBs),RooFit.RooConst(TheTable.MassResoErrBs))
 
-meanBs = RooRealVar("MBs","MBs", TheTable.MassMeanBs,TheTable.MassMeanBs-3*TheTable.MassMeanErrBs,TheTable.MassMeanBs+3*TheTable.MassMeanErrBs)d
+meanBs = RooRealVar("MBs","MBs", TheTable.MassMeanBs,TheTable.MassMeanBs-3*TheTable.MassMeanErrBs,TheTable.MassMeanBs+3*TheTable.MassMeanErrBs)
 meanBd = RooRealVar("MBd","MBd", TheTable.MassMeanBd,TheTable.MassMeanBd-3*TheTable.MassMeanErrBd,TheTable.MassMeanBd+3*TheTable.MassMeanErrBd)
 meanBd_cons = RooGaussian("meanBdconstext","meanBdconst",meanBd,RooFit.RooConst(TheTable.MassMeanBd),RooFit.RooConst(TheTable.MassMeanErrBd))
 meanBs_cons = RooGaussian("meanBsconstext","meanBsconst",meanBs,RooFit.RooConst(TheTable.MassMeanBs),RooFit.RooConst(TheTable.MassMeanErrBs))

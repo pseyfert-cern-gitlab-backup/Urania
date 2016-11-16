@@ -223,6 +223,77 @@ void SetSpecVars_StdDLLs2011(RooPhysFit::RooDMassFitter& Mfit,
                     "Track variables");
 }
 
+void SetSpecVars_Dummy(RooPhysFit::RooDMassFitter& Mfit,
+                             const char* parPrefix_DataSet,
+                             const char* parPrefix_nTuple)
+{
+  //======================================
+  // Track PID Variables - Std DLLs
+  //======================================
+  Mfit.AddSpectator(TString::Format("%s_dum1", parPrefix_DataSet).Data(), 
+                    -1e36,
+                    1e36, 
+                    TString::Format("%s_BremMultiplicity", parPrefix_nTuple).Data(),
+                    "",
+                    "Comb. DLL(K - #pi)",
+                    "Track variables");
+  
+  Mfit.AddSpectator(TString::Format("%s_dum2", parPrefix_DataSet).Data(), 
+                    -1e36,
+                    1e36, 
+                    TString::Format("%s_BremP", parPrefix_nTuple).Data(),
+                    "",
+                    "Comb. DLL(p - #pi)",
+                    "Track variables");
+
+  Mfit.AddSpectator(TString::Format("%s_dum3", parPrefix_DataSet).Data(), 
+                    -1e36,
+                    1e36, 
+                    TString::Format("%s_CaloRegion", parPrefix_nTuple).Data(),
+                    "",
+                    "Comb. DLL(#mu - #pi)",
+                    "Track variables");
+  
+  Mfit.AddSpectator(TString::Format("%s_dum4", parPrefix_DataSet).Data(), 
+                    -1e36,
+                    1e36, 
+                    TString::Format("%s_CaloHyp", parPrefix_nTuple).Data(),
+                    "",
+                    "Comb. DLL(e - #pi)",
+                    "Track variables");
+
+  Mfit.AddSpectator(TString::Format("%s_dum5", parPrefix_DataSet).Data(), 
+                    -1e36,
+                    1e36, 
+                    TString::Format("%s_CaloX", parPrefix_nTuple).Data(),
+                    "",
+                    "Comb. DLL(e - #pi)",
+                    "Track variables");
+
+  Mfit.AddSpectator(TString::Format("%s_dum6", parPrefix_DataSet).Data(), 
+                    -1e36,
+                    1e36, 
+                    TString::Format("%s_CaloY", parPrefix_nTuple).Data(),
+                    "",
+                    "Comb. DLL(e - #pi)",
+                    "Track variables");
+
+  Mfit.AddSpectator(TString::Format("%s_dum7", parPrefix_DataSet).Data(), 
+                    -1e36,
+                    1e36, 
+                    TString::Format("%s_CaloZ", parPrefix_nTuple).Data(),
+                    "",
+                    "Comb. DLL(e - #pi)",
+                    "Track variables");
+  Mfit.AddSpectator(TString::Format("%s_dum8", parPrefix_DataSet).Data(), 
+                    -1e36,
+                    1e36, 
+                    TString::Format("%s_CaloLH", parPrefix_nTuple).Data(),
+                    "",
+                    "Comb. DLL(e - #pi)",
+                    "Track variables");
+}
+
 void SetSpecVars_EvtVars(RooPhysFit::RooDMassFitter& Mfit,
                          const char* parPrefix_DataSet,
                          const char* parPrefix_nTuple)
@@ -820,6 +891,7 @@ void SetSpecVars_MuonVars(RooPhysFit::RooDMassFitter& Mfit,
                     -1.,
                     2.,
                     TString::Format("%s_hasMuon", parPrefix_nTuple).Data(),
+		    "",
                     "Track has muon information",
                     "Track variables");
                     

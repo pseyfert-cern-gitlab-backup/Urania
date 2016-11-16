@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # top level ganga directory containing the job subdirectories
-export GANGAJOBSDIR=/afs/cern.ch/work/z/zhangy/private/gangadir/workspace/zhangy/LocalXML
+
 
 # top level directory where the calibration samples should be stored
-export CALIBDATADIR=/afs/cern.ch/work/z/zhangy/LcPIDData
+export CALIBDATADIR=/data/lhcb/users/malde/testSizeCalib/
 
 #export CALIBDATADIR=/home/malde
 
@@ -14,5 +14,5 @@ export CALIBDATATYPE=2012
 # Ganga job IDs (as space separated list)
 # NB. Can be looped over in bash as 'for i in $JIDS; do ...',
 # or in python as 'jids=os.getenv("JIDS").split()
-export CALIBDATA_JIDS_DOWN="988"
-export CALIBDATA_JIDS_UP="987"
+export CALIBDATA_JIDS_DOWN="441"
+export CALIBDATA_JIDS_UP="447"

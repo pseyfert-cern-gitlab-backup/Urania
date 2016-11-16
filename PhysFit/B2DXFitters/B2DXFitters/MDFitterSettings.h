@@ -10,7 +10,8 @@
 #ifndef MDFITTERSETTINGS
 #define MDFITTERSETTINGS
 
-#include "B2DXFitters/PIDCalibrationSample.h"
+#include "PIDCalibrationSample.h"
+#include "HistPID1D.h"
 #include "TString.h"
 #include "TNamed.h"
 #include "TCut.h"
@@ -146,13 +147,13 @@ public:
   void SetBin(Int_t bin1, Int_t bin2, Int_t bin3 ) { _bin[0] = bin1; _bin[1] = bin2; _bin[3] = bin3; }
   void SetVar(Int_t var1, Int_t var2, Int_t var3 ) { _var[0] = var1; _var[1] = var2; _var[3] = var3; }
 
-  Int_t GetPIDBach()   { return  _PIDBach;   }
-  Int_t GetPIDChild()  { return  _PIDChild;  }
-  Int_t GetPIDProton() { return  _PIDProton; }
+  //  Int_t GetPIDBach()   { return  _PIDBach;   }
+  //Int_t GetPIDChild()  { return  _PIDChild;  }
+  //Int_t GetPIDProton() { return  _PIDProton; }
 
-  void SetPIDBach( Int_t value ) { _PIDBach = value; }
-  void SetPIDChild( Int_t value ) { _PIDChild = value; }
-  void SetPIDProton( Int_t value ) { _PIDProton = value; }
+  //void SetPIDBach( Int_t value ) { _PIDBach = value; }
+  // void SetPIDChild( Int_t value ) { _PIDChild = value; }
+  //void SetPIDProton( Int_t value ) { _PIDProton = value; }
 
   void SetLum(TString year, Double_t valmd, Double_t valmu); 
   Double_t GetLum(TString year, TString pol); 
@@ -195,8 +196,7 @@ public:
 
     _calib.push_back(calib); 
   }
-		      
-
+  
   PIDCalibrationSample GetCalibSample( TString sample, TString year, TString pol, TString strip, bool debug = false)
   {
     TString name = "Calib_"+sample+"_"+strip+"_"+year+"_"+pol;
@@ -249,9 +249,9 @@ public:
 
 
   std::vector <TString> GetTagVar() { return _tagVarNames; }
-  std::vector <TString> GetTagOmegaVar() { return _tagOmegaVarNames; }
-  
+  std::vector <TString> GetTagOmegaVar() { return _tagOmegaVarNames; }  
   std::vector <TString> GetVarNames(Bool_t reg = true, Bool_t id = true, Bool_t add = true, Bool_t tag = true, Bool_t tagOmega = true);
+  std::vector <TString> GetVarOutNames(Bool_t reg, Bool_t id, Bool_t add, Bool_t tag, Bool_t tagOmega);
 
   void SetMassBVar(TString name)    { _mVar        = name; }
   void SetMassDVar(TString name)    { _mDVar       = name; }
@@ -313,7 +313,9 @@ public:
   TString GetAddVarName(int i ) { return _addVarNames[i]; }
   TString GetAddVarOutName(int i ) { return _addVarNamesOut[i]; }
   Bool_t CheckVarName( TString name );
+  Bool_t CheckVarOutName (TString name); 
   TString GetVarOutName(TString name);
+
 
   void AddVar(TString name, Double_t dw, Double_t up ) { 
     _addVarNames.push_back(name);
@@ -391,6 +393,12 @@ public:
     _tagVarRU.push_back(up);
     _tagVarRD.push_back(dw);
     if ( _tagVar == false ) { _tagVar = true; }
+    _p0.push_back(1.0); 
+    _p1.push_back(1.0);
+    _av.push_back(1.0); 
+    _useTag.push_back(true);
+    TString match = this->CheckTagger(name);
+    _matchTag.push_back(match);
   }
  
   void AddTagVar(TString inName, TString outName, Double_t dw, Double_t up ) {
@@ -398,7 +406,13 @@ public:
     _tagVarNamesOut.push_back(outName);
     _tagVarRU.push_back(up);
     _tagVarRD.push_back(dw);
+    _p0.push_back(1.0);
+    _p1.push_back(1.0);
+    _av.push_back(1.0);
+    _useTag.push_back(true);
     if ( _tagVar == false ) { _tagVar = true; }
+    TString match = this->CheckTagger(outName); 
+    _matchTag.push_back(match); 
   }
 
   Bool_t CheckTagOmegaVar() { return _tagOmegaVar; }
@@ -423,13 +437,28 @@ public:
   void SetCalibp1(Int_t i, Double_t val){ _p1[i] = val;}
   void SetCalibAv(Int_t i, Double_t val){ _av[i] = val;}
   
+  Double_t GetCalibp0(TString match);
+  Double_t GetCalibp1(TString match);
+  Double_t GetCalibAv(TString match);
+
   void SetCalibp0(std::vector <Double_t> val){ _p0 = val;}
   void SetCalibp1(std::vector <Double_t> val){ _p1 = val;}
   void SetCalibAv(std::vector <Double_t> val){ _av = val;}
-  
-  void SetCalibration(Int_t i, Double_t p0, Double_t p1, Double_t av) { _p0[i] = p0; _p1[i] = p1; _av[i] = av; }
-  void AddCalibration(Double_t p0, Double_t p1, Double_t av) { _p0.push_back(p0); _p1.push_back(p1); _av.push_back(av); }
-  
+
+  void SetCalibration(TString match, Double_t p0, Double_t p1, Double_t av, Bool_t use);
+  void SetCalibration(Int_t i, Double_t p0, Double_t p1, Double_t av) { _p0[i] = p0; _p1[i] = p1; _av[i] = av; _useTag[i] = true; }
+  void AddCalibration(Double_t p0, Double_t p1, Double_t av, Bool_t use) { _p0.push_back(p0); _p1.push_back(p1); _av.push_back(av); _useTag.push_back(use); }
+
+  TString GetTagMatch(Int_t i) { return _matchTag[i]; }
+  Bool_t CheckUseTag(Int_t i) { return _useTag[i]; } 
+  void SetUseTag(Int_t i, Bool_t use){ _useTag[i] = use; }  
+  Int_t GetSizeUseTag(){ return _useTag.size(); } 
+  void CorrectTagging(); 
+  TString CheckTagger(TString name); 
+  std::vector <TString> CheckTaggerList(); 
+  Int_t CheckNumUsedTag(); 
+
+
   Double_t GetCalibp0(Int_t i) { return _p0[i]; }
   Double_t GetCalibp1(Int_t i) { return _p1[i];}
   Double_t GetCalibAv(Int_t i) { return _av[i];}
@@ -467,14 +496,38 @@ public:
   
   Bool_t CheckDataMCWeighting() { return _weightRatioDataMC; }
   Bool_t CheckMassWeighting() { return _weightMassTemp; } 
-  TString GetMassWeightingVar(int i) { return _weightMassTempVar[i]; }
-  std::vector <TString> GetMassWeightingVar() { return _weightMassTempVar; } 
-  void AddWeightingMassVar(TString name) { _weightMassTempVar.push_back(name);}
   void SetRatioDataMC(Bool_t cut){ _weightRatioDataMC = cut; } 
   void SetMassWeighting(Bool_t cut) { _weightMassTemp = cut; }
 
   void SetPIDComboShapeFor5Modes(){ _calibCombo = true; }
   Bool_t CheckPIDComboShapeForDsModes(){ return _calibCombo; }
+
+  void SetPIDProperties(TString key, TString file1, TString file2, TString var, TString histName); 
+  TString GetPIDFileName(TString key, TString year); 
+  std::pair<TString,TString> GetPIDHist(TString key); 
+  TString GetPIDHistName(TString key); 
+  TString GetPIDHistVar(TString key); 
+  HistPID1D  GetHistPID1D(TString key,  TString year);
+
+  void SetConfigFile(TString config) { _data = config; } 
+  TString GetConfigFile() { return _data; }
+  
+  void SetMassShift(TString var, Double_t shift) 
+  { 
+    if ( var == _mVarOut ) { _massShift.first = shift; }
+    else if ( var == _mDVarOut ) { _massShift.second = shift; } 
+  }
+
+  Double_t GetMassShift(TString var)
+  {
+    if ( var == _mVarOut ) { return _massShift.first; }
+    else if ( var == _mDVarOut ) { return _massShift.second; }
+    else { return 0.0; }
+  }
+
+  void SetLabelDataMC(TString label, TString year); 
+  TString GetLabelDataMC(TString year); 
+
 protected:
 
   std::vector <Double_t> _massBRange;
@@ -513,13 +566,14 @@ protected:
   std::vector <Int_t> _bin;
   std::vector <TString> _var;
 
-  Int_t _PIDBach;
-  Int_t _PIDChild;
-  Int_t _PIDProton;
+  //  Int_t _PIDBach;
+  //Int_t _PIDChild;
+  //Int_t _PIDProton;
   Int_t _weightDim;
-  std::vector <TString> _weightMassTempVar;
+  //std::vector <TString> _weightMassTempVar;
   Bool_t _weightMassTemp;
   Bool_t _weightRatioDataMC; 
+  std::pair <TString, TString> _ratioDMC; 
 
   std::vector < std::vector <Double_t> > _lumRatio;
   std::vector < bool > _lumFlag; 
@@ -539,6 +593,8 @@ protected:
   std::vector <Double_t> _tagVarRD;
   Bool_t _tagVar;
 
+  
+
   std::vector <TString>  _tagOmegaVarNames;
   std::vector <TString>  _tagOmegaVarNamesOut;
   std::vector <Double_t> _tagOmegaVarRU;
@@ -548,6 +604,8 @@ protected:
   std::vector <Double_t> _p0;
   std::vector <Double_t> _p1;
   std::vector <Double_t> _av;
+  std::vector <Bool_t> _useTag; 
+  std::vector <TString> _matchTag; 
 
   std::vector <TString> _addModeCuts; 
   std::vector <TString> _addDataCuts; 
@@ -557,7 +615,24 @@ protected:
   std::vector <Int_t> _addBKGCATCuts;
   std::vector <Int_t> _addDsHypoCuts;
   std::vector <TString> _prefixDsChild;
- 
+
+  std::vector <TString> _PIDHpion;
+  std::vector <TString> _PIDHkaon;
+  std::vector <TString> _PIDHproton; 
+
+  std::pair <TString, TString> _filePIDBacEff;
+  std::pair <TString, TString> _filePIDBacMisID;
+  std::pair <TString, TString> _filePIDChildMisID;
+  std::pair <TString, TString> _filePIDChildProtonMisID;
+
+  std::pair <TString, TString> _PIDBacEff;
+  std::pair <TString, TString> _PIDBacMisID;
+  std::pair <TString, TString> _PIDChildMisID;
+  std::pair <TString, TString> _PIDChildProtonMisID; 
+  
+  std::pair <Double_t, Double_t> _massShift; 
+  
+  TString _data; 
 
 private:
   ClassDef(MDFitterSettings, 1);

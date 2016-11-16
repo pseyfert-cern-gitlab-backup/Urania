@@ -3,8 +3,16 @@
 ! Responsible : Sneha Malde
 ! Purpose     : Scripts to generate PID Calibration samples
 !-----------------------------------------------------------------------------
-
+!============================================== v5r3 2016-6-14 ==============================
+! 2016-6-14 Carlos Vazquez Sierra
+	 Make version v5r3
 !============================================== v5r2 2015-11-20 ==============================
+! 2016-06-04 Wenbin Qian
+  Add v4ProbNN samples
+
+! 2016-03-23 Wenbin Qian
+  Add 5 TeV samples
+
 ! 2015-11-20 Diego Martinez Santos
 	 Make version v5r2
 ! 2014-11-19 - Marco Clemencic
@@ -470,10 +478,4 @@
   - Added a new file for filtering the charm 14nb^-1 inc. phi ntuples:
     + src_v2/CharmXsec_PhiStrip.cpp
       and associated batch/ganga scripts:
-    + jobs/Charm14nb_PhiStrip.csh, jobs/CharmXsec
-  - Updated batch submission scripts so one single job process all the data for 
-    a given track type from a given parent particle. The master scripts are now:
-    + jobs/DStJob.sh
-    + jobs/Lam0Job.sh
-    + jobs/K0SJobs.sh
-  - Add
+    + jobs/Charm14nb_PhiStrip.csh, jobs/Ch

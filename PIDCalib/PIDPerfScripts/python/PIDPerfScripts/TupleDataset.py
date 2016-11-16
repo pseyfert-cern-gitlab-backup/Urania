@@ -1,6 +1,7 @@
 import ROOT
 from ROOT import (RooRealVar, RooDataSet, RooArgSet, TFile)
 from copy import copy
+import os
 
 ###
 ### MuPlusFromJpsi2MuMu;16  DecayTree
@@ -67,6 +68,12 @@ vars_dataset = {
         'V3ProbNNmu':       var('{particle}_V3ProbNNmu',       '{particle}_Brunel_V3ProbNNmu'      , 'prob'        ),
         'V3ProbNNe':        var('{particle}_V3ProbNNe',        '{particle}_Brunel_V3ProbNNe'       , 'prob'        ),
         'V3ProbNNghost':    var('{particle}_V3ProbNNghost',    '{particle}_Brunel_V3ProbNNghost'   , 'prob'        ),
+        'V4ProbNNK':        var('{particle}_V4ProbNNK',        '{particle}_Brunel_V4ProbNNk'       , 'prob'        ),
+        'V4ProbNNpi':       var('{particle}_V4ProbNNpi',       '{particle}_Brunel_V4ProbNNpi'      , 'prob'        ),
+        'V4ProbNNp':        var('{particle}_V4ProbNNp',        '{particle}_Brunel_V4ProbNNp'       , 'prob'        ),
+        'V4ProbNNmu':       var('{particle}_V4ProbNNmu',       '{particle}_Brunel_V4ProbNNmu'      , 'prob'        ),
+        'V4ProbNNe':        var('{particle}_V4ProbNNe',        '{particle}_Brunel_V4ProbNNe'       , 'prob'        ),
+        'V4ProbNNghost':    var('{particle}_V4ProbNNghost',    '{particle}_Brunel_V4ProbNNghost'   , 'prob'        ),
 #        'trackcharge':      var('{particle}_trackcharge',      '{particle}_trackcharge'     , 'charge'      ),
         'P':                var('{particle}_P',                '{particle}_Brunel_P'               , 'p'           ),
         'PT':               var('{particle}_PT',               '{particle}_Brunel_PT'              , 'pt'          ),
@@ -134,9 +141,9 @@ vars_dataset = {
 
 
 datasets = {
-  'DSt_Pi' : ["DSt_PiTuple"],
-  'DSt_K'  : ["DSt_KTuple"],
-  'Lam0_P' : ["Lam0_PTuple"],
+  'DSt_Pi' : ["DSt_PiMTuple", "DSt_PiPTuple"],
+  'DSt_K'  : ["DSt_KPTuple", "DSt_KMTuple"],
+  'Lam0_P' : ["Lam0_PTuple", "Lam0_PbarTuple", "Lam0_HPT_PTuple", "Lam0_HPT_PbarTuple", "Lam0_VHPT_PTuple", "Lam0_VHPT_PbarTuple"],
   'Jpsi_Mu': ["Jpsi_MuPTuple", "Jpsi_MuMTuple"]
 }
 
@@ -145,7 +152,6 @@ additionalVariables = {
     'HasCalo': var('{particle}_hasCalo',  '{particle}_hasCalo', 'bool'),
   }
 }
-
 
 def getDataSetFromTuple ( file, mother, part ):
   roovars = {}
@@ -165,7 +171,10 @@ def getDataSetFromTuple ( file, mother, part ):
   for dataset in datasets [ datasetname ]:
     list.Add ( file.Get ( dataset + "/DecayTree" ) )
 
+  tmp = ROOT.TFile.Open ( "/tmp/" + os.getenv('USER') + "/tmpPidCalib.root" , "RECREATE")
   tree = ROOT.TTree.MergeTrees ( list )  
+  if not tree:
+    raise Exception ( "No data for dataset: " + datasetname )
 
   for varid in vars:
     myvar = vars [ varid  ]

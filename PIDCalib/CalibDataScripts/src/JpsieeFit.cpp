@@ -490,7 +490,7 @@ void JpsieeFit(TChain* ch,
     if (minuit2Message!="OK.") cerr << minuit2Message << endl;
     if (minosMessage!="OK.") cerr << minosMessage << endl;
     if (hesseMessage!="OK.") cerr << hesseMessage << endl;
-    if (exitOnBadFit) exit(EXIT_FAILURE);
+    //    if (exitOnBadFit) exit(EXIT_FAILURE);
   }
   int covQual=-1;
   if ( !(checkCovQual(*massFitter, "fitResults", covQual)) )
@@ -498,7 +498,7 @@ void JpsieeFit(TChain* ch,
     cerr << "J/psi ee " << charge << " " << pName << (bremAdded == 0 ? " No Brem" : " Brem")
          << " fit has invalid covariance matrix: "
          << getCovQualMessage(covQual) << endl;
-    if (exitOnBadFit) exit(EXIT_FAILURE);
+    //if (exitOnBadFit) exit(EXIT_FAILURE);
   }
 
   // print warning if EDM is > 1e-2
@@ -508,7 +508,7 @@ void JpsieeFit(TChain* ch,
     cerr << "WARNING: " << "J/psi ee " << charge << " "
          << pName << (bremAdded == 0 ? " No Brem" : " Brem") << " fit has EDM > 1e-2 ("
          << std::setprecision(3) << edm << ")" << endl;
-    if (exitOnBadFit) exit(EXIT_FAILURE);
+    //if (exitOnBadFit) exit(EXIT_FAILURE);
   }
   cout << "Fit is acceptable" << endl ;
   

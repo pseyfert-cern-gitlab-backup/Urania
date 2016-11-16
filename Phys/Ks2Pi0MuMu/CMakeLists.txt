@@ -1,7 +1,7 @@
 ################################################################################
 # Package: Ks2Pi0MuMu
 ################################################################################
-gaudi_subdir(Ks2Pi0MuMu v1r0)
+gaudi_subdir(Ks2Pi0MuMu v1r1)
 
 gaudi_depends_on_subdirs(Math/MCLimit
                          Math/SomeUtils

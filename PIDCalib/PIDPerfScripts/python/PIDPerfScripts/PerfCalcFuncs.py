@@ -1,9 +1,13 @@
 import ROOT
 from ROOT import RooFit
+from ROOT import vector
 from operator import add
 from math import sqrt
 import warnings
+import io
+import sys
 from PIDPerfScripts.Definitions import *
+from PIDPerfScripts.Binning import GetBinScheme
 
 def MakePerfPlotsList(PartName, DataSet, DLLCutList, BinningScheme,
                       Plots=None, verbose=True):
@@ -12,9 +16,9 @@ def MakePerfPlotsList(PartName, DataSet, DLLCutList, BinningScheme,
     # Declare instances of PerfCalculator tool : (class)(instance of class)
     #======================================================================
     ROOT.gSystem.Load('libRooStats.so')
-    ROOT.gSystem.Load('libCintex.so')
-    cintex=ROOT.Cintex
-    cintex.Enable()
+#    ROOT.gSystem.Load('libCintex.so')
+ #   cintex=ROOT.Cintex
+  #  cintex.Enable()
     ROOT.gSystem.Load('libPIDPerfToolsLib.so')
     ROOT.gSystem.Load('libPIDPerfToolsDict.so')
     Calc = ROOT.PerfCalculator(ROOT.GenericDataSet)(DataSet)
@@ -58,10 +62,14 @@ def MakePerfPlotsList(PartName, DataSet, DLLCutList, BinningScheme,
 
 def MakePerfPlotsListPyth(PartName, DataSet, DLLCutList, BinningScheme,
                           Plots=None, verbose=True):
-
+    #print "in perfplots list pyth"
     ROOT.TH1.SetDefaultSumw2(True)
     dataset_index = len(Plots[0]) if Plots else 0
     PlotsByCut = []
+    #print " abit further"
+    print BinningScheme.at(0)
+
+
 
     if BinningScheme.size() > 0:
         BinSchema1 = BinningScheme.at(0)
@@ -70,11 +78,12 @@ def MakePerfPlotsListPyth(PartName, DataSet, DLLCutList, BinningScheme,
     if BinningScheme.size() > 2:
         BinSchema3 = BinningScheme.at(2)
 
+    #print "understood bin scheme"
     for index, cut in enumerate(DLLCutList):
         parsed_cut = cut.strip().replace("/", "_div_")
         histname = "%s_%s_%d" %(PartName, parsed_cut, dataset_index)
 
-
+     #   print "understood the Cut list"     
         YVarArgVar = ROOT.RooCmdArg.none()
         ZVarArgVar = ROOT.RooCmdArg.none()
         if BinningScheme.size() > 1:
@@ -138,18 +147,20 @@ def MakePerfPlotsListPyth(PartName, DataSet, DLLCutList, BinningScheme,
             # print scheme.GetName()
             setTitle(title)
             # print "-----"
-
+            
         #RatioHist = PassedHist.Clone(histname)
         RatioHist.Divide(PassedHist,TotalHist,1.0,1.0,"B")
-
+        #print "done some dividing"
         if BinningScheme.size() > 2:
             pidTable = ROOT.PIDTable(RatioHist, BinSchema1, BinSchema2, BinSchema3)
         elif BinningScheme.size() > 1:
             pidTable = ROOT.PIDTable(RatioHist, BinSchema1, BinSchema2)
         elif BinningScheme.size() > 0:
             pidTable = ROOT.PIDTable(RatioHist, BinSchema1)
-        pidTable.PrintTable(ROOT.std.cout, False)
-
+        print "pidTable made"    
+        #pidTable.PrintTable(sys.stdout, False)
+        #sys.stdout.flush()
+        print "but not printed the table"
         PlotsByCut.append([[RatioHist,TotalHist,PassedHist]])
 
     NewPlots = map(add, Plots, PlotsByCut) if Plots else PlotsByCut
@@ -166,9 +177,9 @@ def MakePIDResultList(DataSet, DLLCutList, PIDResults, verbose=True):
     #======================================================================
 
     ROOT.gSystem.Load('libRooStats.so')
-    ROOT.gSystem.Load('libCintex.so')
-    cintex=ROOT.Cintex
-    cintex.Enable()
+    #ROOT.gSystem.Load('libCintex.so')
+    #cintex=ROOT.Cintex
+    #cintex.Enable()
     ROOT.gSystem.Load('libPIDPerfToolsLib.so')
     ROOT.gSystem.Load('libPIDPerfToolsDict.so')
 

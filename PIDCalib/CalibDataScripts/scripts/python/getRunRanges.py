@@ -68,7 +68,7 @@ For a full list of arguments, do: 'python {0} -h'""".format(
 
     # add the optional arguments
     parser.add_argument('-t', '--tupleName', dest='tupleName',
-                        metavar='NAME', default='CalibPID',
+                        metavar='NAME', default='DecayTree',
                         help=("Sets the name of the nTuple, exlc. the "
                               "directory (default: '%(default)s')."))
     parser.add_argument('-c', '--cuts', dest='cuts', metavar='CUTS',

@@ -5,6 +5,7 @@ from PIDPerfScripts.Definitions import *
 from PIDPerfScripts.Exceptions import *
 from PIDPerfScripts.RunDictFuncs import *
 from PIDPerfScripts.TupleDataset import *
+from  PIDPerfScripts import OverrideCalibDataStore
 
 def GetDataSetNameDictionary(PartName):
     #======================================================================
@@ -93,34 +94,39 @@ def GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, index, verbose=False,
 
     fname_protocol = ""
     fname_query = ""
+    fname_extra = ""
 
-    CalibDataProtocol=os.getenv("CALIBDATAURLPROTOCOL")
-    CalibDataQuery=os.getenv("CALIBDATAURLQUERY")
+    merged_fname = ""
+    fname = OverrideCalibDataStore.GetFileName ( index )
+    if fname == None or fname == "":
+      CalibDataProtocol=os.getenv("CALIBDATAURLPROTOCOL")
+      CalibDataExtra=os.getenv("CALIBDATAEXTRA")
+      
 
-    # set the URL protocol (if applicable)
-    if CalibDataProtocol is not None and CalibDataProtocol!="":
-        fname_protocol = "{0}://".format(CalibDataProtocol)
+      # set the URL protocol (if applicable)
+      if CalibDataProtocol is not None and CalibDataProtocol!="":
+          fname_protocol = "{0}".format(CalibDataProtocol)
 
-    # set the URL query (if applicable)
-    if CalibDataQuery is not None and CalibDataQuery!="":
-        fname_query = "?{0}".format(CalibDataQuery)
 
-    vname_head = "CALIBDATASTORE" if not IsMuonUnBiased(PartName) else "MUONCALIBDATASTORE"
-    fname_head = os.getenv(vname_head)
-    if fname_head is None:
-        raise GetEnvError("Cannot retrieve dataset, environmental variable %s has not been set." %vname_head)
+      if CalibDataExtra is not None and CalibDataExtra!="":
+          fname_extra = "{0}".format(CalibDataExtra)
 
-    fname = ("{prtcol}{topdir}/Reco{reco}_DATA/{pol}/"
-             "{mother}_{part}_{pol}_Strip{strp}_{idx}.root{qry}").format(
-        prtcol=fname_protocol, topdir=fname_head, reco=RecoVer,
-        pol=MagPolarity, mother=DataSetNameDict['MotherName'],
-        part=PartType, strp=StripVer, idx=index, qry=fname_query)
+      vname_head = "CALIBDATASTORE" 
+      fname_head = os.getenv(vname_head)
+      if fname_head is None:
+          raise GetEnvError("Cannot retrieve dataset, environmental variable %s has not been set." %vname_head)
 
-    merged_fname = ("{prtcol}{topdir}/Reco{reco}_DATA/{pol}/"
-             "PIDCalib_{pol}_Strip{strp}_{idx}.root{qry}").format(
-        prtcol=fname_protocol, topdir=fname_head, reco=RecoVer,
-        pol=MagPolarity, mother=DataSetNameDict['MotherName'],
-        part=PartType, strp=StripVer, idx=index, qry=fname_query)
+      fname = ("{prtcol}//{extra}//{topdir}/Reco{reco}_DATA/{pol}/"
+               "{mother}_{part}_{pol}_Strip{strp}_{idx}.root").format(
+          prtcol=fname_protocol, extra=fname_extra,topdir=fname_head, reco=RecoVer,
+          pol=MagPolarity, mother=DataSetNameDict['MotherName'],
+          part=PartType, strp=StripVer, idx=index)
+
+      merged_fname = ("{prtcol}//{extra}//{topdir}/Reco{reco}_DATA/{pol}/"
+               "PIDCalib_{pol}_Strip{strp}_{idx}.root").format(
+          prtcol=fname_protocol, extra=fname_extra,topdir=fname_head, reco=RecoVer,
+          pol=MagPolarity, mother=DataSetNameDict['MotherName'],
+          part=PartType, strp=StripVer, idx=index)
 
 
 #    fname = ("{prtcol}{topdir}/{pol}/{part}/"
@@ -235,9 +241,9 @@ def GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, index, verbose=False,
     # Declare Instance of RICHTrackDataSet for Calibration tracks
     #======================================================================
     ROOT.gSystem.Load('libRooStats.so')
-    ROOT.gSystem.Load('libCintex.so')
-    cintex=ROOT.Cintex
-    cintex.Enable()
+    #ROOT.gSystem.Load('libCintex.so')
+    #cintex=ROOT.Cintex
+    #cintex.Enable()
     ROOT.gSystem.Load('libPIDPerfToolsLib.so')
     ROOT.gSystem.Load('libPIDPerfToolsDict.so')
 

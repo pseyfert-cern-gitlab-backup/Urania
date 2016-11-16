@@ -2,7 +2,7 @@
 stripVersion = '20'
 
 # Set the magnet polarity ('Up' or 'Down')
-magPol='Down'
+magPol='Up'
 
 # Set the file suffix:
 #

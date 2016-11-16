@@ -1,7 +1,7 @@
 ################################################################################
 # Package: SomeUtils
 ################################################################################
-gaudi_subdir(SomeUtils v3r6)
+gaudi_subdir(SomeUtils v5r1)
 
 find_package(pyanalysis)
 find_package(pytools)

@@ -245,9 +245,9 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
                 opts.binSchemeFile)
             raise IOError(msg)
     ROOT.gSystem.Load('libRooStats.so')
-    ROOT.gSystem.Load('libCintex.so')
-    cintex=ROOT.Cintex
-    cintex.Enable()
+#    ROOT.gSystem.Load('libCintex.so')
+#    cintex=ROOT.Cintex
+#    cintex.Enable()
     X_Bin = GetBinScheme(PartName, XVarName, SchemeName)
     Y_Bin = None
     if YVarName!='':
@@ -363,32 +363,34 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
     #======================================================================
     # Create PIDTable for each PID cut and print to screen
     #======================================================================
-    if opts.printTables:
-        for i in range(len(Plots)):
-            plot = Plots[i][-1] if opts.oldAveraging else Plots[i][-1][0]
-            print plot
-            nDim = BinSchema.size()
-            pidTable = None
-            if nDim==3:
-                print plot, X_Bin, Y_Bin, Z_Bin
-                pidTable = ROOT.PIDTable(plot, X_Bin, Y_Bin, Z_Bin)
-            elif nDim==2:
-                pidTable = ROOT.PIDTable(plot, X_Bin, Y_Bin)
-            else:
-                pidTable = ROOT.PIDTable(plot, X_Bin)
-            tabName=plot.GetName()
-            tabHeader = "PID Table for histogram %s" %tabName
-            if opts.tabFile is None:
-                print tabHeader
-                pidTable.PrintTable(ROOT.std.cout, opts.latexTables)
-            else:
-                appMode = "w" if i==0 else "a"
-                os = open(opts.tabFile, appMode)
-                os.write(tabHeader+'\n')
-                os.close()
-                os = ROOT.std.fstream(opts.tabFile,
-                        ROOT.std.fstream.out|ROOT.std.fstream.app)
-                pidTable.PrintTable(os, opts.latexTables)
+ 
+
+#   if opts.printTables:
+#        for i in range(len(Plots)):
+#            plot = Plots[i][-1] if opts.oldAveraging else Plots[i][-1][0]
+#            print plot
+#            nDim = BinSchema.size()
+#            pidTable = None
+#            if nDim==3:
+#                print plot, X_Bin, Y_Bin, Z_Bin
+#                pidTable = ROOT.PIDTable(plot, X_Bin, Y_Bin, Z_Bin)
+#            elif nDim==2:
+#                pidTable = ROOT.PIDTable(plot, X_Bin, Y_Bin)
+#            else:
+#                pidTable = ROOT.PIDTable(plot, X_Bin)
+#            tabName=plot.GetName()
+#            tabHeader = "PID Table for histogram %s" %tabName
+#            if opts.tabFile is None:
+#                print tabHeader
+#                pidTable.PrintTable(ROOT.std.cout, opts.latexTables)
+#            else:
+#                appMode = "w" if i==0 else "a"
+#                os = open(opts.tabFile, appMode)
+#                os.write(tabHeader+'\n')
+#                os.close()
+#                os = ROOT.std.fstream(opts.tabFile,
+#                        ROOT.std.fstream.out|ROOT.std.fstream.app)
+#                pidTable.PrintTable(os, opts.latexTables)
 
     #======================================================================
     # Close file

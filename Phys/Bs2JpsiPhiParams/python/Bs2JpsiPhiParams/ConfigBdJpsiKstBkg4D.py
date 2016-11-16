@@ -17,6 +17,8 @@ for key in pdf_split:
 x = Symbol("helcosthetaK",real = True)
 y = Symbol("helcosthetaL", real = True)
 z = Symbol("helphi", real = True)
+time = Symbol("helphi", positive = True)
+
 CThL = Cos(ThetaL)
 CThK = Cos(ThetaK)
 

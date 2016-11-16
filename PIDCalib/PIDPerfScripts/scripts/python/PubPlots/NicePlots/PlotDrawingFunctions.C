@@ -11,7 +11,7 @@ void PlotFourTH1FwErrors(TH1F* His1,
   His1->SetMarkerColor(2);
   His1->SetMarkerStyle(24);
   His1->SetMarkerSize(0.9);
-  His1->GetYaxis()->SetRangeUser(0.0, 1.8);
+  His1->GetYaxis()->SetRangeUser(0.0, 1.5);
   His1->SetYTitle("Efficiency");
   His1->SetXTitle("Momentum (MeV/c)");
   //His1->GetYaxis()->SetTitleFont(62);
@@ -21,7 +21,7 @@ void PlotFourTH1FwErrors(TH1F* His1,
   His2->SetMarkerColor(1);
   His2->SetMarkerStyle(25);
   His2->SetMarkerSize(0.9);
-  His2->GetYaxis()->SetRangeUser(0.0, 1.8);
+  His2->GetYaxis()->SetRangeUser(0.0, 1.5);
   His2->SetYTitle("Efficiency");
   His2->SetXTitle("Momentum (MeV/c)");
   His2->GetYaxis()->SetTitleFont(62);
@@ -31,21 +31,21 @@ void PlotFourTH1FwErrors(TH1F* His1,
   His3->SetMarkerColor(2);
   His3->SetMarkerStyle(20);
   His3->SetMarkerSize(0.9);
-  His3->GetYaxis()->SetRangeUser(0.0, 1.8);
+  His3->GetYaxis()->SetRangeUser(0.0, 1.5);
   His3->SetYTitle("Efficiency");
   His3->SetXTitle("Momentum (MeV/c)");
   His3->GetYaxis()->SetTitleFont(62);
-  //His3->Draw("Esames");
+  His3->Draw("Esames");
   gPad->Modified();
   His4->SetLineColor(1);
   His4->SetMarkerColor(1);
   His4->SetMarkerStyle(21);
   His4->SetMarkerSize(0.9);
-  His4->GetYaxis()->SetRangeUser(0.0, 1.8);
+  His4->GetYaxis()->SetRangeUser(0.0, 1.5);
   His4->SetYTitle("Efficiency");
   His4->SetXTitle("Momentum (MeV/c)");
   His4->GetYaxis()->SetTitleFont(62);
-  //  His4->Draw("Esames");
+    His4->Draw("Esames");
   gPad->Modified();
 }
 

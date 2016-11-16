@@ -16,8 +16,8 @@
 #include "RooArgSet.h"
 #include "TFile.h"
 #include "RooWorkspace.h" 
-#include "B2DXFitters/GeneralUtils.h"
-#include "B2DXFitters/PlotSettings.h"
+#include "GeneralUtils.h"
+#include "PlotSettings.h"
 
 
 #include "math.h"
@@ -126,7 +126,6 @@ class PIDCalibrationSample : public TNamed {
   TFile* GetFile(){ return _file; }
   RooWorkspace* GetWorkspace() { return _work; }
   RooDataSet* GetData() { return _data; }
-  
 
   TString GetFileName() {   return _fileName; }
   TString GetWorkName() {   return _workName; } 
@@ -157,7 +156,8 @@ class PIDCalibrationSample : public TNamed {
   void ObtainVar2Name(TString check, bool debug); 
   void ObtainPIDVarName(bool debug); 
   
-  RooDataSet* PrepareDataSet(RooRealVar* Var1, RooRealVar* Var2, PlotSettings* plotSet, bool debug );
+  RooDataSet* PrepareDataSet(RooRealVar* Var1, RooRealVar* Var2, RooRealVar* Var3 = NULL, 
+			     PlotSettings* plotSet = NULL, bool debug = false);
   
   TString CheckPIDVarName()
   {

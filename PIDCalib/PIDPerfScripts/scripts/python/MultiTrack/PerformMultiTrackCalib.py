@@ -242,9 +242,9 @@ e.g. python {0} \"20\" \"MagUp\" \"$HOME/MyAnalysis/MySignalSample.root\" \"Sign
     #=============================================================================
     # Create instance of MultiTrackCalibTool
     #=============================================================================
-    ROOT.gSystem.Load('libCintex.so')
-    cintex=ROOT.Cintex
-    cintex.Enable()
+    #ROOT.gSystem.Load('libCintex.so')
+    #cintex=ROOT.Cintex
+    #cintex.Enable()
     ROOT.gSystem.Load('libPIDPerfToolsLib.so')
     ROOT.gSystem.Load('libPIDPerfToolsDict.so')
 

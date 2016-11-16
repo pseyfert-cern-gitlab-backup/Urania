@@ -1,6 +1,22 @@
 import sys
 import os
-sys.path += ['/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/python/TimeDependent','/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/src/TimeDependent']
+import Ganga.GPI
+Job = Ganga.GPI.Job
+Dirac = Ganga.GPI.Dirac
+Local = Ganga.GPI.Local
+Executable = Ganga.GPI.Executable
+GaudiPython = Ganga.GPI.GaudiPython
+LHCbDataset = Ganga.GPI.LHCbDataset
+
+currentpath = os.getcwd()
+if currentpath == '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/python/TimeDependent':
+    pythonpath = '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/python/TimeDependent'
+    srcpath = '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/src/TimeDependent'
+elif currentpath == '/home/galaceos/Escritorio/DATA_Analysis/Software/Bs2KpiKpi/lxplus/python/TimeDependent':
+    pythonpath = '/home/galaceos/Escritorio/DATA_Analysis/Software/Bs2KpiKpi/lxplus/python/TimeDependent'
+    srcpath = '/home/galaceos/Escritorio/DATA_Analysis/Software/Bs2KpiKpi/lxplus/src/TimeDependent'
+
+sys.path += [pythonpath,srcpath]
 
 nev = int(sys.argv[1])
 nexp = int(sys.argv[2])
@@ -30,11 +46,11 @@ for ijob in range(njob):
     for script in Script:
         if not os.path.exists(script):
             raise Exception("Script : %s does'nt exist, abort"%(script))
-    Args  = ["mcsjob",str(ijob+1),str(nev),str(nexpjob[ijob]),output_tag,str(USE_GRID)]
-    User_release_area = '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/python/TimeDependent'
-    Project = 'Urania'
+    Args = ["mcsjob",str(ijob+1),str(nev),str(nexpjob[ijob]),output_tag,str(USE_GRID)]
+    User_release_area = pythonpath
+    Project = 'Erasmus'
     Platform = 'x86_64-slc6-gcc48-opt'
-    Version = 'v2r4'
+    Version = 'v10r3'
 
     # =============================================================================================================
     # Job properties
@@ -44,45 +60,37 @@ for ijob in range(njob):
     # -----------
     Application = GaudiPython()
     Application.script = Script
-    Application.masterpackage = "Phys/BsKstKst"
-    Application.package = "Phys/BsKstKst"
     Application.args += Args
     Application.user_release_area = User_release_area
     Application.project = Project
-    Application.platform = Platform
     Application.version = Version
-    Application.setupProjectOptions = '--use Phys/BsKstKst'
 
     # I/O
     # ---
-    Inputsandbox  =[]
-    Outputsandbox =[]
-
-    Inputsandbox += [
-        '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/python/TimeDependent/FitnGen.py',
-        '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/python/TimeDependent/FitnGenInterface.py',
-        '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/python/TimeDependent/parameters.py',
-        '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/src/TimeDependent/KpiKpiSpectrumNW.cxx',
-        '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/src/TimeDependent/KpiKpiSpectrumNW.h',
-        '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/src/TimeDependent/KpiKpiSpectrumNW_cxx.so',
-        '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/src/TimeDependent/ComputeIntegrals.cxx',
-        '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/src/TimeDependent/ComputeIntegrals.h',
-        '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/src/TimeDependent/ComputeIntegrals_cxx.so',
-        '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/src/TimeDependent/integrals.C',
-        '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/src/TimeDependent/NWclass.h',
-        '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/src/TimeDependent/ITclass.h',
-        '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/src/TimeDependent/accparclass.h',
-        '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/src/TimeDependent/TResclass.h',
-        '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/src/TimeDependent/TReseffclass.h',
-        '/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/src/TimeDependent/lhcbStyle.C'
+    Inputsandbox = [
+        pythonpath + '/FitnGen.py',
+        pythonpath + '/FitnGenInterface.py',
+        pythonpath + '/parameters.py',
+        srcpath + '/KpiKpiSpectrumNW.cxx',
+        srcpath + '/KpiKpiSpectrumNW.h',
+        srcpath + '/KpiKpiSpectrumNW_cxx.so',
+        srcpath + '/ComputeIntegrals.cxx',
+        srcpath + '/ComputeIntegrals.h',
+        srcpath + '/ComputeIntegrals_cxx.so',
+        srcpath + '/NWclass.h',
+        srcpath + '/TAccclass.h',
+        srcpath + '/accparclass.h',
+        srcpath + '/genaccparclass.h',
+        srcpath + '/Splineclass.h',
+        srcpath + '/TResclass.h',
+        srcpath + '/TReseffclass.h',
+        srcpath + '/lhcbStyle.C',
+        pythonpath + '/InvariantMassFitOut.dat'
         ]
 
-    if USE_GRID: Inputdata = LHCbDataset('LFN:/lhcb/user/j/jugarcia/NTuples/Bs2KpiKpi_Data1112_withCuts_sWeighted.root')
-    else: Inputdata = None
+    Inputdata = []
 
-    # - put output ntuple in output sandbox
-    l_ntupleName = ["/afs/cern.ch/user/j/jugarcia/cmtuser/Phys/BsKstKst/ganga/" + output_tag + "/MCS_" + output_tag + "_Job" + str(ijob) + "_" + str(nexpjob[ijob]) + "exp_" + str(nev) +"ev.root"]
-    Outputsandbox = l_ntupleName
+    Outputsandbox = ["MCS_" + output_tag + "_Job" + str(ijob) + "_" + str(nexpjob[ijob]) + "exp_" + str(nev) +"ev.root"]
 
     # Backend
     # -------
@@ -104,10 +112,6 @@ for ijob in range(njob):
           backend      = Backend,\
           ))
 
-
-#if USE_GRID:
-#    lf = LogicalFile('LFN:/lhcb/user/j/jugarcia/NTuples/Bs2KpiKpi_Data1112_withCuts_sWeighted.root')
-#    for j in listofjobs: j.backend.inputSandboxLFNs=[lf]
 
 print '\nSubmitting the jobs ...\n'
 for j in listofjobs:

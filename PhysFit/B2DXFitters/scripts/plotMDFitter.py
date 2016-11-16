@@ -193,7 +193,6 @@ parser.add_option( '--logscale', '--log',
                    )
 parser.add_option( '--bin',
                    dest = 'bin',
-                   action = 'store_true',
                    default = 100,
                    help = 'set number of bins'
                    )
@@ -226,7 +225,8 @@ def getTotPDF(w, sam, mod, year, merge, comp, debug):
     c = []
     n = []
 
-    smy = sm = GeneralUtils.GetSampleModeYear(TString(sam), TString(mod), TString(year), merge, debug )
+    hypo = TString("") 
+    smy = sm = GeneralUtils.GetSampleModeYearHypo(TString(sam), TString(mod), TString(year), hypo, merge, debug )
     for p in comp:
         for s in smy:
             var = w.var("n%s_%s_Evts"%(p,s))
@@ -294,7 +294,7 @@ def getTotPDF(w, sam, mod, year, merge, comp, debug):
 #------------------------------------------------------------------------------ 
 def getDataCut(sam, mod, year, merge, debug):
     
-    smy = sm = GeneralUtils.GetSampleModeYear(TString(sam), TString(mod), TString(year), merge, debug )
+    smy = sm = GeneralUtils.GetSampleModeYearHypo(TString(sam), TString(mod), TString(year), TString(""), merge, debug )
 
     c = [ ]
     for s in smy:
@@ -323,8 +323,9 @@ def plotDataSet( dataset, frame, Bin ) :
 #------------------------------------------------------------------------------
 def plotFitModel( model, frame, var, sam, mode, year, merge, decay, comp, color) :
     #if debug :
-    
-    smy = sm = GeneralUtils.GetSampleModeYear(TString(sam), TString(mod), TString(year), merge, debug )
+
+    hypo = TString("")
+    smy = sm = GeneralUtils.GetSampleModeYearHypo(TString(sam), TString(mod), TString(year), TString(hypo), merge, debug )
     
     c = []
     for p in comp:
@@ -453,7 +454,7 @@ if __name__ == '__main__' :
 
     f.Close()
     dim = int(options.dim)
-    bin = options.bin
+    bin = int(options.bin)
     mVarTS = TString(options.var)    
     mass = w.var(mVarTS.Data())
     sam = TString(options.pol)
@@ -611,12 +612,12 @@ if __name__ == '__main__' :
             if log:
                 frame_m.GetYaxis().SetRangeUser(1.5,frame_m.GetMaximum()*scale)
             else:
-                frame_m.GetYaxis().SetRangeUser(1,frame_m.GetMaximum()*scale)
+                frame_m.GetYaxis().SetRangeUser(1.0,frame_m.GetMaximum()*scale)
         else:
             print "[ERROR] You need to specify position of legend in configfile using 'LegendSettings'"
             exit(0) 
     else:
-        frame_m.GetYaxis().SetRangeUser(1.5,frame_m.GetMaximum()*1.1)
+        frame_m.GetYaxis().SetRangeUser(5.0,frame_m.GetMaximum()*1.1)
         legend = TLegend( 0.05, 0.05, 0.95, 0.95 )
         legend.SetTextSize(0.09)
 
@@ -679,8 +680,10 @@ if __name__ == '__main__' :
             yl = myconfigfile["LegendSettings"][mVarTS.Data()]["LHCbText"][1]
             lhcbtext.DrawTextNDC(xl,yl,"LHCb")
     else:
-        if mVarTS == "lab0_MassFitConsD_M" or mVarTS == "BeautyMass":
-            lhcbtext.DrawTextNDC(0.7,0.87,"LHCb")
+        if myconfigfile.has_key("LegendSettings"):
+            xl = myconfigfile["LegendSettings"][mVarTS.Data()]["LHCbText"][0]
+            yl = myconfigfile["LegendSettings"][mVarTS.Data()]["LHCbText"][1]
+            lhcbtext.DrawTextNDC(xl,yl,"LHCb")
         else:
             lhcbtext.DrawTextNDC(0.75,0.87,"LHCb")
 
@@ -760,15 +763,15 @@ if __name__ == '__main__' :
     graph2 = TGraph(2)
     graph2.SetMaximum(max)
     graph2.SetMinimum(min)
-    graph2.SetPoint(1,range_dw,-3)
-    graph2.SetPoint(2,range_up,-3)
+    graph2.SetPoint(0,range_dw,-3)
+    graph2.SetPoint(1,range_up,-3)
     graph2.SetLineColor(kRed)
 
     graph3 = TGraph(2)
     graph3.SetMaximum(max)
     graph3.SetMinimum(min)
-    graph3.SetPoint(1,range_dw,3)
-    graph3.SetPoint(2,range_up,3)
+    graph3.SetPoint(0,range_dw,3)
+    graph3.SetPoint(1,range_up,3)
     graph3.SetLineColor(kRed)
 
     pullHist.GetXaxis().SetLabelFont( 132 )

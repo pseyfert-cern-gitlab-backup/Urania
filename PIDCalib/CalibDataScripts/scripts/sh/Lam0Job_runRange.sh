@@ -127,7 +127,7 @@ sleep 3
 
 # merge the h+ and h- samples
 echo "Merging proton and antiproton samples" 
-$CALIBAPPDIR/MergeCharges.exe "Lam0" "$OUT_DIR" "$PART_NAME" "$MAG_POL" \
+$CALIBAPPDIR/MergeCharges.exe "Lam0" "$OUT_DIR" "P" "$MAG_POL" \
   "$STRIP_VER" "$OUT_DIR" "$INDEX"
 EXITCODE=$?
 if [ $EXITCODE -ne 0 ]; then

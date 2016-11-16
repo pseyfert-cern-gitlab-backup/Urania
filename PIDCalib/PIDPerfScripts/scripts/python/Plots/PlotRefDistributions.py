@@ -162,9 +162,9 @@ e.g. python PlotRefDistributions.py "P_IncLc" "P" "PID_Modes.root" "IncLc2PKPiTu
                 opts.binSchemeFile)
             raise IOError(msg)
     ROOT.gSystem.Load('libRooStats.so')
-    ROOT.gSystem.Load('libCintex.so')
-    cintex=ROOT.Cintex
-    cintex.Enable()
+    #ROOT.gSystem.Load('libCintex.so')
+    #cintex=ROOT.Cintex
+    #cintex.Enable()
     if opts.schemeName is None:
         schemeName = 'PerfPlots_{IDPart}'.format(
             IDPart=PartName)

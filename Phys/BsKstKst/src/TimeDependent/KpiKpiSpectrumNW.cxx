@@ -64,7 +64,7 @@
 #include "RooNumGenConfig.h"
 #include <assert.h>
 
-#define pi 3.14159265358979323846264
+#define pi TMath::Pi()
 #define MPion 139.57018
 #define MKaon 493.667
 #define MKst_1_1410 1414.
@@ -127,15 +127,15 @@ ClassImp(KpiKpiSpectrumNW)
    coef_options=(RooAbsReal*)options_iter->Next();
    year_opt = RooRealProxy("year_opt","year_opt",this,*coef_options);
    coef_options=(RooAbsReal*)options_iter->Next();
+   trig_opt = RooRealProxy("trig_opt","trig_opt",this,*coef_options);
+   coef_options=(RooAbsReal*)options_iter->Next();
    alt_fit = RooRealProxy("alt_fit","alt_fit",this,*coef_options);
    coef_options=(RooAbsReal*)options_iter->Next();
    option = RooRealProxy("option","option",this,*coef_options);
    coef_options=(RooAbsReal*)options_iter->Next();
    inftres = RooRealProxy("inftres","inftres",this,*coef_options);
    coef_options=(RooAbsReal*)options_iter->Next();
-   flatacc = RooRealProxy("flatacc","flatacc",this,*coef_options);
-   coef_options=(RooAbsReal*)options_iter->Next();
-   nwacc = RooRealProxy("nwacc","nwacc",this,*coef_options);
+   acctype = RooRealProxy("acctype","acctype",this,*coef_options);
    coef_options=(RooAbsReal*)options_iter->Next();
    A_j1 = RooRealProxy("A_j1","A_j1",this,*coef_options);
    coef_options=(RooAbsReal*)options_iter->Next();
@@ -555,6 +555,279 @@ ClassImp(KpiKpiSpectrumNW)
    coef_time_integrals=(RooAbsReal*)time_integrals_iter->Next();
    IT_sin = RooRealProxy("IT_sin","IT_sin",this,*coef_time_integrals);
 
+   if (acctype == 0) {
+      f1_eff[(int) year_opt] = TReseff.f1(year_opt);
+      f2_eff[(int) year_opt] = 1.-TReseff.f1(year_opt);
+      s1_eff[(int) year_opt] = TReseff.sigma1(year_opt);
+      s2_eff[(int) year_opt] = TReseff.sigma2(year_opt);
+   }
+   else if (acctype == 1 or acctype == 2) {
+      f1_eff[(int) year_opt] = TReseff.f1(year_opt);
+      f2_eff[(int) year_opt] = 1.-TReseff.f1(year_opt);
+      s1_eff[(int) year_opt] = TReseff.sigma1(year_opt);
+      s2_eff[(int) year_opt] = TReseff.sigma2(year_opt);
+      for (int i=0; i<6; ++i) {spl_knot_vector[(int) year_opt][(int) trig_opt][i] = spl.knot(wide_window,i);}
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      for (int ibin=0; ibin<5; ++ibin) {
+         for (int k=0; k<4; ++k) {
+            for (int i=0; i<(k+1); ++i) {
+               for (int j=0; j<(i+1); ++j) {
+                  spl_coef_array_1[(int) year_opt][(int) trig_opt][ibin][k][i][j] = spl.coef(year_opt,trig_opt,wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s1_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(year_opt),k-i);
+                  spl_coef_array_2[(int) year_opt][(int) trig_opt][ibin][k][i][j] = spl.coef(year_opt,trig_opt,wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s2_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(year_opt),k-i);
+               }
+            }
+         }
+      }
+   }
+   else if (acctype == 3) {
+      f1_eff[(int) year_opt] = TReseff.f1(1);
+      f2_eff[(int) year_opt] = 1.-TReseff.f1(1);
+      s1_eff[(int) year_opt] = TReseff.sigma1(1);
+      s2_eff[(int) year_opt] = TReseff.sigma2(1);
+      for (int i=0; i<6; ++i) {spl_knot_vector[(int) year_opt][(int) trig_opt][i] = genaccpar.knot_gen(wide_window,i);}
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      for (int ibin=0; ibin<5; ++ibin) {
+         for (int k=0; k<4; ++k) {
+            for (int i=0; i<(k+1); ++i) {
+               for (int j=0; j<(i+1); ++j) {
+                  spl_coef_array_1[(int) year_opt][(int) trig_opt][ibin][k][i][j] = genaccpar.coef_gen(wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s1_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(1),k-i);
+                  spl_coef_array_2[(int) year_opt][(int) trig_opt][ibin][k][i][j] = genaccpar.coef_gen(wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s2_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(1),k-i);
+               }
+            }
+         }
+      }
+   }
+   DCP_prod[0] = -0.0101;
+   DCP_prod[1] = -0.0072;
+   fjjphhpindexdict[0][0][0][0] = 1;
+   fjjphhpindexdict[0][1][0][0] = 2;
+   fjjphhpindexdict[0][1][0][1] = 3;
+   fjjphhpindexdict[0][1][0][2] = 3;
+   fjjphhpindexdict[0][2][0][0] = 4;
+   fjjphhpindexdict[0][2][0][1] = 5;
+   fjjphhpindexdict[0][2][0][2] = 5;
+   fjjphhpindexdict[1][0][0][0] = 2;
+   fjjphhpindexdict[1][1][0][0] = 6;
+   fjjphhpindexdict[1][1][0][1] = 5;
+   fjjphhpindexdict[1][1][0][2] = 5;
+   fjjphhpindexdict[1][2][0][0] = 7;
+   fjjphhpindexdict[1][2][0][1] = 8;
+   fjjphhpindexdict[1][2][0][2] = 8;
+   fjjphhpindexdict[1][0][1][0] = 3;
+   fjjphhpindexdict[1][0][2][0] = 3;
+   fjjphhpindexdict[1][1][1][0] = 5;
+   fjjphhpindexdict[1][1][2][0] = 5;
+   fjjphhpindexdict[1][1][1][1] = 9;
+   fjjphhpindexdict[1][1][1][2] = 9;
+   fjjphhpindexdict[1][1][2][1] = 9;
+   fjjphhpindexdict[1][1][2][2] = 9;
+   fjjphhpindexdict[1][2][1][0] = 10;
+   fjjphhpindexdict[1][2][2][0] = 10;
+   fjjphhpindexdict[1][2][1][1] = 11;
+   fjjphhpindexdict[1][2][1][2] = 11;
+   fjjphhpindexdict[1][2][2][1] = 11;
+   fjjphhpindexdict[1][2][2][2] = 11;
+   fjjphhpindexdict[2][0][0][0] = 4;
+   fjjphhpindexdict[2][1][0][0] = 7;
+   fjjphhpindexdict[2][1][0][1] = 10;
+   fjjphhpindexdict[2][1][0][2] = 10;
+   fjjphhpindexdict[2][2][0][0] = 12;
+   fjjphhpindexdict[2][2][0][1] = 13;
+   fjjphhpindexdict[2][2][0][2] = 13;
+   fjjphhpindexdict[2][0][1][0] = 5;
+   fjjphhpindexdict[2][0][2][0] = 5;
+   fjjphhpindexdict[2][1][1][0] = 8;
+   fjjphhpindexdict[2][1][2][0] = 8;
+   fjjphhpindexdict[2][1][1][1] = 11;
+   fjjphhpindexdict[2][1][1][2] = 11;
+   fjjphhpindexdict[2][1][2][1] = 11;
+   fjjphhpindexdict[2][1][2][2] = 11;
+   fjjphhpindexdict[2][2][1][0] = 13;
+   fjjphhpindexdict[2][2][2][0] = 13;
+   fjjphhpindexdict[2][2][1][1] = 14;
+   fjjphhpindexdict[2][2][1][2] = 14;
+   fjjphhpindexdict[2][2][2][1] = 14;
+   fjjphhpindexdict[2][2][2][2] = 14;
+   fjjphhpindexdict[0][2][0][3] = 9;
+   fjjphhpindexdict[0][2][0][4] = 9;
+   fjjphhpindexdict[1][2][0][3] = 11;
+   fjjphhpindexdict[1][2][0][4] = 11;
+   fjjphhpindexdict[1][2][1][3] = 15;
+   fjjphhpindexdict[1][2][1][4] = 15;
+   fjjphhpindexdict[1][2][2][3] = 15;
+   fjjphhpindexdict[1][2][2][4] = 15;
+   fjjphhpindexdict[2][2][0][3] = 16;
+   fjjphhpindexdict[2][2][0][4] = 16;
+   fjjphhpindexdict[2][2][1][3] = 17;
+   fjjphhpindexdict[2][2][1][4] = 17;
+   fjjphhpindexdict[2][2][2][3] = 17;
+   fjjphhpindexdict[2][2][2][4] = 17;
+   fjjphhpindexdict[2][0][3][0] = 9;
+   fjjphhpindexdict[2][0][4][0] = 9;
+   fjjphhpindexdict[2][1][3][0] = 11;
+   fjjphhpindexdict[2][1][4][0] = 11;
+   fjjphhpindexdict[2][1][3][1] = 15;
+   fjjphhpindexdict[2][1][3][2] = 15;
+   fjjphhpindexdict[2][1][4][1] = 15;
+   fjjphhpindexdict[2][1][4][2] = 15;
+   fjjphhpindexdict[2][2][3][0] = 16;
+   fjjphhpindexdict[2][2][4][0] = 16;
+   fjjphhpindexdict[2][2][3][1] = 17;
+   fjjphhpindexdict[2][2][3][2] = 17;
+   fjjphhpindexdict[2][2][4][1] = 17;
+   fjjphhpindexdict[2][2][4][2] = 17;
+   fjjphhpindexdict[2][2][3][3] = 18;
+   fjjphhpindexdict[2][2][3][4] = 18;
+   fjjphhpindexdict[2][2][4][3] = 18;
+   fjjphhpindexdict[2][2][4][4] = 18;
+   ghhpindexdict[0][0] = 1;
+   ghhpindexdict[0][1] = 2;
+   ghhpindexdict[0][2] = 3;
+   ghhpindexdict[1][0] = 2;
+   ghhpindexdict[1][1] = 4;
+   ghhpindexdict[1][2] = 5;
+   ghhpindexdict[2][0] = 3;
+   ghhpindexdict[2][1] = 5;
+   ghhpindexdict[2][2] = 6;
+   ghhpindexdict[0][3] = 7;
+   ghhpindexdict[0][4] = 8;
+   ghhpindexdict[1][3] = 9;
+   ghhpindexdict[1][4] = 10;
+   ghhpindexdict[2][3] = 11;
+   ghhpindexdict[2][4] = 12;
+   ghhpindexdict[3][0] = 7;
+   ghhpindexdict[3][1] = 9;
+   ghhpindexdict[3][2] = 11;
+   ghhpindexdict[3][3] = 13;
+   ghhpindexdict[3][4] = 14;
+   ghhpindexdict[4][0] = 8;
+   ghhpindexdict[4][1] = 10;
+   ghhpindexdict[4][2] = 12;
+   ghhpindexdict[4][3] = 14;
+   ghhpindexdict[4][4] = 15;
+   Nj1j2hdict[0][0][0] = TComplex(1./(2.*sqrt(2.*pi)),0.);
+   Nj1j2hdict[0][1][0] = TComplex(-sqrt(3.)/(2.*sqrt(2.*pi)),0.);
+   Nj1j2hdict[0][2][0] = TComplex(sqrt(5.)/(4.*sqrt(2.*pi)),0.);
+   Nj1j2hdict[1][0][0] = TComplex(sqrt(3.)/(2.*sqrt(2.*pi)),0.);
+   Nj1j2hdict[1][1][0] = TComplex(-3./(2.*sqrt(2.*pi)),0.);
+   Nj1j2hdict[1][1][1] = TComplex(-3./(4.*sqrt(pi)),0.);
+   Nj1j2hdict[1][1][2] = TComplex(0.,-3./(4.*sqrt(pi)));
+   Nj1j2hdict[1][2][0] = TComplex(sqrt(15.)/(4.*sqrt(2.*pi)),0.);
+   Nj1j2hdict[1][2][1] = TComplex(3.*sqrt(5.)/(4.*sqrt(pi)),0.);
+   Nj1j2hdict[1][2][2] = TComplex(0.,3.*sqrt(5.)/(4.*sqrt(pi)));
+   Nj1j2hdict[2][0][0] = TComplex(sqrt(5.)/(4.*sqrt(2.*pi)),0.);
+   Nj1j2hdict[2][1][0] = TComplex(-sqrt(15.)/(4.*sqrt(2.*pi)),0.);
+   Nj1j2hdict[2][1][1] = TComplex(-3.*sqrt(5.)/(4.*sqrt(pi)),0.);
+   Nj1j2hdict[2][1][2] = TComplex(0.,-3.*sqrt(5.)/(4.*sqrt(pi)));
+   Nj1j2hdict[2][2][0] = TComplex(5./(8.*sqrt(2.*pi)),0.);
+   Nj1j2hdict[2][2][1] = TComplex(15./(4.*sqrt(pi)),0.);
+   Nj1j2hdict[2][2][2] = TComplex(0.,15./(4.*sqrt(pi)));
+   Nj1j2hdict[2][2][3] = TComplex(15./(16.*sqrt(pi)),0.);
+   Nj1j2hdict[2][2][4] = TComplex(0.,15./(16.*sqrt(pi)));
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][0][0][0] = TComplex(Ih22Re,0.);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][0][0][1] = TComplex(Ih1Re,Ih1Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][0][0][2] = TComplex(Ih2Re,Ih2Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][0][1][0] = TComplex(Ih1Re,Ih1Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][0][1][1] = TComplex(Ih3Re,Ih3Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][0][1][2] = TComplex(Ih4Re,Ih4Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][0][2][0] = TComplex(Ih2Re,Ih2Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][0][2][1] = TComplex(Ih4Re,Ih4Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][0][2][2] = TComplex(Ih5Re,Ih5Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][1][0][0] = TComplex(Ih1Re,-Ih1Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][1][0][1] = TComplex(Ih23Re,0.);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][1][0][2] = TComplex(Ih6Re,Ih6Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][1][1][0] = TComplex(Ih7Re,Ih7Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][1][1][1] = TComplex(Ih8Re,Ih8Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][1][1][2] = TComplex(Ih9Re,Ih9Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][1][2][0] = TComplex(Ih10Re,Ih10Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][1][2][1] = TComplex(Ih11Re,Ih11Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][1][2][2] = TComplex(Ih12Re,Ih12Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][2][0][0] = TComplex(Ih2Re,-Ih2Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][2][0][1] = TComplex(Ih6Re,-Ih6Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][2][0][2] = TComplex(Ih25Re,0.);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][2][1][0] = TComplex(Ih10Re,-Ih10Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][2][1][1] = TComplex(Ih13Re,Ih13Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][2][1][2] = TComplex(Ih14Re,Ih14Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][2][2][0] = TComplex(Ih15Re,Ih15Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][2][2][1] = TComplex(Ih16Re,Ih16Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][2][2][2] = TComplex(Ih17Re,Ih17Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][0][0][0] = TComplex(Ih1Re,-Ih1Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][0][0][1] = TComplex(Ih7Re,Ih7Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][0][0][2] = TComplex(Ih10Re,Ih10Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][0][1][0] = TComplex(Ih24Re,0.);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][0][1][1] = TComplex(Ih8Re,Ih8Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][0][1][2] = TComplex(Ih11Re,Ih11Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][0][2][0] = TComplex(Ih6Re,Ih6Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][0][2][1] = TComplex(Ih9Re,Ih9Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][0][2][2] = TComplex(Ih12Re,Ih12Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][1][0][0] = TComplex(Ih3Re,-Ih3Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][1][0][1] = TComplex(Ih8Re,-Ih8Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][1][0][2] = TComplex(Ih13Re,-Ih13Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][1][1][0] = TComplex(Ih8Re,-Ih8Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][1][1][1] = TComplex(Ih27Re,0.);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][1][1][2] = TComplex(Ih18Re,Ih18Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][1][2][0] = TComplex(Ih13Re,-Ih13Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][1][2][1] = TComplex(Ih18Re,Ih18Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][1][2][2] = TComplex(Ih19Re,Ih19Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][2][0][0] = TComplex(Ih4Re,-Ih4Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][2][0][1] = TComplex(Ih9Re,-Ih9Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][2][0][2] = TComplex(Ih14Re,-Ih14Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][2][1][0] = TComplex(Ih11Re,-Ih11Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][2][1][1] = TComplex(Ih18Re,-Ih18Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][2][1][2] = TComplex(Ih28Re,0.);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][2][2][0] = TComplex(Ih16Re,-Ih16Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][2][2][1] = TComplex(Ih20Re,Ih20Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][2][2][2] = TComplex(Ih21Re,Ih21Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][0][0][0] = TComplex(Ih2Re,-Ih2Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][0][0][1] = TComplex(Ih10Re,-Ih10Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][0][0][2] = TComplex(Ih15Re,Ih15Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][0][1][0] = TComplex(Ih6Re,-Ih6Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][0][1][1] = TComplex(Ih13Re,Ih13Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][0][1][2] = TComplex(Ih16Re,Ih16Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][0][2][0] = TComplex(Ih26Re,0.);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][0][2][1] = TComplex(Ih14Re,Ih14Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][0][2][2] = TComplex(Ih17Re,Ih17Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][1][0][0] = TComplex(Ih4Re,-Ih4Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][1][0][1] = TComplex(Ih11Re,-Ih11Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][1][0][2] = TComplex(Ih16Re,-Ih16Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][1][1][0] = TComplex(Ih9Re,-Ih9Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][1][1][1] = TComplex(Ih18Re,-Ih18Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][1][1][2] = TComplex(Ih20Re,Ih20Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][1][2][0] = TComplex(Ih14Re,-Ih14Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][1][2][1] = TComplex(Ih29Re,0.);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][1][2][2] = TComplex(Ih21Re,Ih21Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][0][0] = TComplex(Ih5Re,-Ih5Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][0][1] = TComplex(Ih12Re,-Ih12Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][0][2] = TComplex(Ih17Re,-Ih17Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][1][0] = TComplex(Ih12Re,-Ih12Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][1][1] = TComplex(Ih19Re,-Ih19Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][1][2] = TComplex(Ih21Re,-Ih21Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][2][0] = TComplex(Ih17Re,-Ih17Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][2][1] = TComplex(Ih21Re,-Ih21Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][2][2] = TComplex(Ih30Re,0.);
+
  }
 
 // ---------------------------------------------------
@@ -563,11 +836,11 @@ ClassImp(KpiKpiSpectrumNW)
    RooAbsPdf(other,name),
    wide_window("wide_window",this,other.wide_window),
    year_opt("year_opt",this,other.year_opt),
+   trig_opt("trig_opt",this,other.trig_opt),
    alt_fit("alt_fit",this,other.alt_fit),
    option("option",this,other.option),
    inftres("inftres",this,other.inftres),
-   flatacc("flatacc",this,other.flatacc),
-   nwacc("nwacc",this,other.nwacc),
+   acctype("acctype",this,other.acctype),
    A_j1("A_j1",this,other.A_j1),
    A_j2("A_j2",this,other.A_j2),
    A_h("A_h",this,other.A_h),
@@ -764,7 +1037,280 @@ ClassImp(KpiKpiSpectrumNW)
    IT_sinh("IT_sinh",this,other.IT_sinh),
    IT_cos("IT_cos",this,other.IT_cos),
    IT_sin("IT_sin",this,other.IT_sin)
- { 
+ {
+   if (acctype == 0) {
+      f1_eff[(int) year_opt] = TReseff.f1(year_opt);
+      f2_eff[(int) year_opt] = 1.-TReseff.f1(year_opt);
+      s1_eff[(int) year_opt] = TReseff.sigma1(year_opt);
+      s2_eff[(int) year_opt] = TReseff.sigma2(year_opt);
+   }
+   else if (acctype == 1 or acctype == 2) {
+      f1_eff[(int) year_opt] = TReseff.f1(year_opt);
+      f2_eff[(int) year_opt] = 1.-TReseff.f1(year_opt);
+      s1_eff[(int) year_opt] = TReseff.sigma1(year_opt);
+      s2_eff[(int) year_opt] = TReseff.sigma2(year_opt);
+      for (int i=0; i<6; ++i) {spl_knot_vector[(int) year_opt][(int) trig_opt][i] = spl.knot(wide_window,i);}
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      for (int ibin=0; ibin<5; ++ibin) {
+         for (int k=0; k<4; ++k) {
+            for (int i=0; i<(k+1); ++i) {
+               for (int j=0; j<(i+1); ++j) {
+                  spl_coef_array_1[(int) year_opt][(int) trig_opt][ibin][k][i][j] = spl.coef(year_opt,trig_opt,wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s1_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(year_opt),k-i);
+                  spl_coef_array_2[(int) year_opt][(int) trig_opt][ibin][k][i][j] = spl.coef(year_opt,trig_opt,wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s2_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(year_opt),k-i);
+               }
+            }
+         }
+      }
+   }
+   else if (acctype == 3) {
+      f1_eff[(int) year_opt] = TReseff.f1(1);
+      f2_eff[(int) year_opt] = 1.-TReseff.f1(1);
+      s1_eff[(int) year_opt] = TReseff.sigma1(1);
+      s2_eff[(int) year_opt] = TReseff.sigma2(1);
+      for (int i=0; i<6; ++i) {spl_knot_vector[(int) year_opt][(int) trig_opt][i] = genaccpar.knot_gen(wide_window,i);}
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      for (int ibin=0; ibin<5; ++ibin) {
+         for (int k=0; k<4; ++k) {
+            for (int i=0; i<(k+1); ++i) {
+               for (int j=0; j<(i+1); ++j) {
+                  spl_coef_array_1[(int) year_opt][(int) trig_opt][ibin][k][i][j] = genaccpar.coef_gen(wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s1_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(1),k-i);
+                  spl_coef_array_2[(int) year_opt][(int) trig_opt][ibin][k][i][j] = genaccpar.coef_gen(wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s2_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(1),k-i);
+               }
+            }
+         }
+      }
+   }
+   DCP_prod[0] = -0.0101;
+   DCP_prod[1] = -0.0072;
+   fjjphhpindexdict[0][0][0][0] = 1;
+   fjjphhpindexdict[0][1][0][0] = 2;
+   fjjphhpindexdict[0][1][0][1] = 3;
+   fjjphhpindexdict[0][1][0][2] = 3;
+   fjjphhpindexdict[0][2][0][0] = 4;
+   fjjphhpindexdict[0][2][0][1] = 5;
+   fjjphhpindexdict[0][2][0][2] = 5;
+   fjjphhpindexdict[1][0][0][0] = 2;
+   fjjphhpindexdict[1][1][0][0] = 6;
+   fjjphhpindexdict[1][1][0][1] = 5;
+   fjjphhpindexdict[1][1][0][2] = 5;
+   fjjphhpindexdict[1][2][0][0] = 7;
+   fjjphhpindexdict[1][2][0][1] = 8;
+   fjjphhpindexdict[1][2][0][2] = 8;
+   fjjphhpindexdict[1][0][1][0] = 3;
+   fjjphhpindexdict[1][0][2][0] = 3;
+   fjjphhpindexdict[1][1][1][0] = 5;
+   fjjphhpindexdict[1][1][2][0] = 5;
+   fjjphhpindexdict[1][1][1][1] = 9;
+   fjjphhpindexdict[1][1][1][2] = 9;
+   fjjphhpindexdict[1][1][2][1] = 9;
+   fjjphhpindexdict[1][1][2][2] = 9;
+   fjjphhpindexdict[1][2][1][0] = 10;
+   fjjphhpindexdict[1][2][2][0] = 10;
+   fjjphhpindexdict[1][2][1][1] = 11;
+   fjjphhpindexdict[1][2][1][2] = 11;
+   fjjphhpindexdict[1][2][2][1] = 11;
+   fjjphhpindexdict[1][2][2][2] = 11;
+   fjjphhpindexdict[2][0][0][0] = 4;
+   fjjphhpindexdict[2][1][0][0] = 7;
+   fjjphhpindexdict[2][1][0][1] = 10;
+   fjjphhpindexdict[2][1][0][2] = 10;
+   fjjphhpindexdict[2][2][0][0] = 12;
+   fjjphhpindexdict[2][2][0][1] = 13;
+   fjjphhpindexdict[2][2][0][2] = 13;
+   fjjphhpindexdict[2][0][1][0] = 5;
+   fjjphhpindexdict[2][0][2][0] = 5;
+   fjjphhpindexdict[2][1][1][0] = 8;
+   fjjphhpindexdict[2][1][2][0] = 8;
+   fjjphhpindexdict[2][1][1][1] = 11;
+   fjjphhpindexdict[2][1][1][2] = 11;
+   fjjphhpindexdict[2][1][2][1] = 11;
+   fjjphhpindexdict[2][1][2][2] = 11;
+   fjjphhpindexdict[2][2][1][0] = 13;
+   fjjphhpindexdict[2][2][2][0] = 13;
+   fjjphhpindexdict[2][2][1][1] = 14;
+   fjjphhpindexdict[2][2][1][2] = 14;
+   fjjphhpindexdict[2][2][2][1] = 14;
+   fjjphhpindexdict[2][2][2][2] = 14;
+   fjjphhpindexdict[0][2][0][3] = 9;
+   fjjphhpindexdict[0][2][0][4] = 9;
+   fjjphhpindexdict[1][2][0][3] = 11;
+   fjjphhpindexdict[1][2][0][4] = 11;
+   fjjphhpindexdict[1][2][1][3] = 15;
+   fjjphhpindexdict[1][2][1][4] = 15;
+   fjjphhpindexdict[1][2][2][3] = 15;
+   fjjphhpindexdict[1][2][2][4] = 15;
+   fjjphhpindexdict[2][2][0][3] = 16;
+   fjjphhpindexdict[2][2][0][4] = 16;
+   fjjphhpindexdict[2][2][1][3] = 17;
+   fjjphhpindexdict[2][2][1][4] = 17;
+   fjjphhpindexdict[2][2][2][3] = 17;
+   fjjphhpindexdict[2][2][2][4] = 17;
+   fjjphhpindexdict[2][0][3][0] = 9;
+   fjjphhpindexdict[2][0][4][0] = 9;
+   fjjphhpindexdict[2][1][3][0] = 11;
+   fjjphhpindexdict[2][1][4][0] = 11;
+   fjjphhpindexdict[2][1][3][1] = 15;
+   fjjphhpindexdict[2][1][3][2] = 15;
+   fjjphhpindexdict[2][1][4][1] = 15;
+   fjjphhpindexdict[2][1][4][2] = 15;
+   fjjphhpindexdict[2][2][3][0] = 16;
+   fjjphhpindexdict[2][2][4][0] = 16;
+   fjjphhpindexdict[2][2][3][1] = 17;
+   fjjphhpindexdict[2][2][3][2] = 17;
+   fjjphhpindexdict[2][2][4][1] = 17;
+   fjjphhpindexdict[2][2][4][2] = 17;
+   fjjphhpindexdict[2][2][3][3] = 18;
+   fjjphhpindexdict[2][2][3][4] = 18;
+   fjjphhpindexdict[2][2][4][3] = 18;
+   fjjphhpindexdict[2][2][4][4] = 18;
+   ghhpindexdict[0][0] = 1;
+   ghhpindexdict[0][1] = 2;
+   ghhpindexdict[0][2] = 3;
+   ghhpindexdict[1][0] = 2;
+   ghhpindexdict[1][1] = 4;
+   ghhpindexdict[1][2] = 5;
+   ghhpindexdict[2][0] = 3;
+   ghhpindexdict[2][1] = 5;
+   ghhpindexdict[2][2] = 6;
+   ghhpindexdict[0][3] = 7;
+   ghhpindexdict[0][4] = 8;
+   ghhpindexdict[1][3] = 9;
+   ghhpindexdict[1][4] = 10;
+   ghhpindexdict[2][3] = 11;
+   ghhpindexdict[2][4] = 12;
+   ghhpindexdict[3][0] = 7;
+   ghhpindexdict[3][1] = 9;
+   ghhpindexdict[3][2] = 11;
+   ghhpindexdict[3][3] = 13;
+   ghhpindexdict[3][4] = 14;
+   ghhpindexdict[4][0] = 8;
+   ghhpindexdict[4][1] = 10;
+   ghhpindexdict[4][2] = 12;
+   ghhpindexdict[4][3] = 14;
+   ghhpindexdict[4][4] = 15;
+   Nj1j2hdict[0][0][0] = TComplex(1./(2.*sqrt(2.*pi)),0.);
+   Nj1j2hdict[0][1][0] = TComplex(-sqrt(3.)/(2.*sqrt(2.*pi)),0.);
+   Nj1j2hdict[0][2][0] = TComplex(sqrt(5.)/(4.*sqrt(2.*pi)),0.);
+   Nj1j2hdict[1][0][0] = TComplex(sqrt(3.)/(2.*sqrt(2.*pi)),0.);
+   Nj1j2hdict[1][1][0] = TComplex(-3./(2.*sqrt(2.*pi)),0.);
+   Nj1j2hdict[1][1][1] = TComplex(-3./(4.*sqrt(pi)),0.);
+   Nj1j2hdict[1][1][2] = TComplex(0.,-3./(4.*sqrt(pi)));
+   Nj1j2hdict[1][2][0] = TComplex(sqrt(15.)/(4.*sqrt(2.*pi)),0.);
+   Nj1j2hdict[1][2][1] = TComplex(3.*sqrt(5.)/(4.*sqrt(pi)),0.);
+   Nj1j2hdict[1][2][2] = TComplex(0.,3.*sqrt(5.)/(4.*sqrt(pi)));
+   Nj1j2hdict[2][0][0] = TComplex(sqrt(5.)/(4.*sqrt(2.*pi)),0.);
+   Nj1j2hdict[2][1][0] = TComplex(-sqrt(15.)/(4.*sqrt(2.*pi)),0.);
+   Nj1j2hdict[2][1][1] = TComplex(-3.*sqrt(5.)/(4.*sqrt(pi)),0.);
+   Nj1j2hdict[2][1][2] = TComplex(0.,-3.*sqrt(5.)/(4.*sqrt(pi)));
+   Nj1j2hdict[2][2][0] = TComplex(5./(8.*sqrt(2.*pi)),0.);
+   Nj1j2hdict[2][2][1] = TComplex(15./(4.*sqrt(pi)),0.);
+   Nj1j2hdict[2][2][2] = TComplex(0.,15./(4.*sqrt(pi)));
+   Nj1j2hdict[2][2][3] = TComplex(15./(16.*sqrt(pi)),0.);
+   Nj1j2hdict[2][2][4] = TComplex(0.,15./(16.*sqrt(pi)));
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][0][0][0] = TComplex(Ih22Re,0.);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][0][0][1] = TComplex(Ih1Re,Ih1Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][0][0][2] = TComplex(Ih2Re,Ih2Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][0][1][0] = TComplex(Ih1Re,Ih1Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][0][1][1] = TComplex(Ih3Re,Ih3Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][0][1][2] = TComplex(Ih4Re,Ih4Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][0][2][0] = TComplex(Ih2Re,Ih2Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][0][2][1] = TComplex(Ih4Re,Ih4Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][0][2][2] = TComplex(Ih5Re,Ih5Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][1][0][0] = TComplex(Ih1Re,-Ih1Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][1][0][1] = TComplex(Ih23Re,0.);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][1][0][2] = TComplex(Ih6Re,Ih6Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][1][1][0] = TComplex(Ih7Re,Ih7Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][1][1][1] = TComplex(Ih8Re,Ih8Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][1][1][2] = TComplex(Ih9Re,Ih9Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][1][2][0] = TComplex(Ih10Re,Ih10Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][1][2][1] = TComplex(Ih11Re,Ih11Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][1][2][2] = TComplex(Ih12Re,Ih12Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][2][0][0] = TComplex(Ih2Re,-Ih2Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][2][0][1] = TComplex(Ih6Re,-Ih6Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][2][0][2] = TComplex(Ih25Re,0.);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][2][1][0] = TComplex(Ih10Re,-Ih10Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][2][1][1] = TComplex(Ih13Re,Ih13Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][2][1][2] = TComplex(Ih14Re,Ih14Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][2][2][0] = TComplex(Ih15Re,Ih15Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][2][2][1] = TComplex(Ih16Re,Ih16Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][0][2][2][2] = TComplex(Ih17Re,Ih17Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][0][0][0] = TComplex(Ih1Re,-Ih1Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][0][0][1] = TComplex(Ih7Re,Ih7Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][0][0][2] = TComplex(Ih10Re,Ih10Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][0][1][0] = TComplex(Ih24Re,0.);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][0][1][1] = TComplex(Ih8Re,Ih8Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][0][1][2] = TComplex(Ih11Re,Ih11Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][0][2][0] = TComplex(Ih6Re,Ih6Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][0][2][1] = TComplex(Ih9Re,Ih9Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][0][2][2] = TComplex(Ih12Re,Ih12Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][1][0][0] = TComplex(Ih3Re,-Ih3Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][1][0][1] = TComplex(Ih8Re,-Ih8Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][1][0][2] = TComplex(Ih13Re,-Ih13Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][1][1][0] = TComplex(Ih8Re,-Ih8Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][1][1][1] = TComplex(Ih27Re,0.);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][1][1][2] = TComplex(Ih18Re,Ih18Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][1][2][0] = TComplex(Ih13Re,-Ih13Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][1][2][1] = TComplex(Ih18Re,Ih18Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][1][2][2] = TComplex(Ih19Re,Ih19Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][2][0][0] = TComplex(Ih4Re,-Ih4Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][2][0][1] = TComplex(Ih9Re,-Ih9Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][2][0][2] = TComplex(Ih14Re,-Ih14Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][2][1][0] = TComplex(Ih11Re,-Ih11Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][2][1][1] = TComplex(Ih18Re,-Ih18Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][2][1][2] = TComplex(Ih28Re,0.);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][2][2][0] = TComplex(Ih16Re,-Ih16Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][2][2][1] = TComplex(Ih20Re,Ih20Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][1][2][2][2] = TComplex(Ih21Re,Ih21Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][0][0][0] = TComplex(Ih2Re,-Ih2Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][0][0][1] = TComplex(Ih10Re,-Ih10Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][0][0][2] = TComplex(Ih15Re,Ih15Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][0][1][0] = TComplex(Ih6Re,-Ih6Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][0][1][1] = TComplex(Ih13Re,Ih13Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][0][1][2] = TComplex(Ih16Re,Ih16Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][0][2][0] = TComplex(Ih26Re,0.);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][0][2][1] = TComplex(Ih14Re,Ih14Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][0][2][2] = TComplex(Ih17Re,Ih17Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][1][0][0] = TComplex(Ih4Re,-Ih4Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][1][0][1] = TComplex(Ih11Re,-Ih11Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][1][0][2] = TComplex(Ih16Re,-Ih16Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][1][1][0] = TComplex(Ih9Re,-Ih9Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][1][1][1] = TComplex(Ih18Re,-Ih18Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][1][1][2] = TComplex(Ih20Re,Ih20Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][1][2][0] = TComplex(Ih14Re,-Ih14Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][1][2][1] = TComplex(Ih29Re,0.);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][1][2][2] = TComplex(Ih21Re,Ih21Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][0][0] = TComplex(Ih5Re,-Ih5Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][0][1] = TComplex(Ih12Re,-Ih12Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][0][2] = TComplex(Ih17Re,-Ih17Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][1][0] = TComplex(Ih12Re,-Ih12Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][1][1] = TComplex(Ih19Re,-Ih19Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][1][2] = TComplex(Ih21Re,-Ih21Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][2][0] = TComplex(Ih17Re,-Ih17Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][2][1] = TComplex(Ih21Re,-Ih21Im);
+   Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][2][2] = TComplex(Ih30Re,0.);
+
  } 
 
 
@@ -778,20 +1324,25 @@ ClassImp(KpiKpiSpectrumNW)
 Double_t KpiKpiSpectrumNW::wfj1j2(Int_t j1, Int_t j2) const
  {
 
-   if (j1 == 0) {
-      if (j2 == 0) {return (1.-f_VV)*f_Swave*f_SS;}
-      else if (j2 == 1) {return (1.-f_VV)*f_Swave*(1.-f_SS)*0.5*(1.+D_SVVS);}
-      else if (j2 == 2) {return (1.-f_VV)*(1.-f_Swave)*(1.-f_VTTV)*(1.-f_TT)*0.5*(1.+D_STTS);}
-   }
-   else if (j1 == 1) {
-      if (j2 == 0) {return (1.-f_VV)*f_Swave*(1.-f_SS)*0.5*(1.-D_SVVS);}
-      else if (j2 == 1) {return f_VV;}
-      else if (j2 == 2) {return (1.-f_VV)*(1.-f_Swave)*f_VTTV*0.5*(1.+D_VTTV);}
-   }
-   else if (j1 == 2) {
-      if (j2 == 0) {return (1.-f_VV)*(1.-f_Swave)*(1.-f_VTTV)*(1.-f_TT)*0.5*(1.-D_STTS);}
-      else if (j2 == 1) {return (1.-f_VV)*(1.-f_Swave)*f_VTTV*0.5*(1.-D_VTTV);}
-      else if (j2 == 2) {return (1.-f_VV)*(1.-f_Swave)*(1.-f_VTTV)*f_TT;}
+   switch(j1) {
+   case 0 :
+      switch(j2) {
+      case 0 : return (1.-f_VV)*f_Swave*f_SS;
+      case 1 : return (1.-f_VV)*f_Swave*(1.-f_SS)*0.5*(1.+D_SVVS);
+      case 2 : return (1.-f_VV)*(1.-f_Swave)*(1.-f_VTTV)*(1.-f_TT)*0.5*(1.+D_STTS);
+      }
+   case 1 :
+      switch(j2) {
+      case 0 : return (1.-f_VV)*f_Swave*(1.-f_SS)*0.5*(1.-D_SVVS);
+      case 1 : return f_VV;
+      case 2 : return (1.-f_VV)*(1.-f_Swave)*f_VTTV*0.5*(1.+D_VTTV);
+      }
+   case 2 :
+      switch(j2) {
+      case 0 : return (1.-f_VV)*(1.-f_Swave)*(1.-f_VTTV)*(1.-f_TT)*0.5*(1.-D_STTS);
+      case 1 : return (1.-f_VV)*(1.-f_Swave)*f_VTTV*0.5*(1.-D_VTTV);
+      case 2 : return (1.-f_VV)*(1.-f_Swave)*(1.-f_VTTV)*f_TT;
+      }
    }
    return 0;
 
@@ -803,50 +1354,41 @@ Double_t KpiKpiSpectrumNW::wfj1j2(Int_t j1, Int_t j2) const
 Double_t KpiKpiSpectrumNW::pfj1j2h(Int_t j1, Int_t j2, Int_t h) const
  {
 
-   if (j1 == 0) {
-      if (j2 == 0) {
-         if (h == 0) {return 1.;}
+   switch(j1) {
+   case 1 :
+      switch(j2) {
+      case 1 :
+         switch(h) {
+         case 0 : return fL_VV;
+         case 1 : return (1.-fL_VV)*xpar_VV;
+         case 2 : return (1.-fL_VV)*(1.-xpar_VV);
+         }
+      case 2 :
+         switch(h) {
+         case 0 : return fL_VT;
+         case 1 : return (1.-fL_VT)*xpar_VT;
+         case 2 : return (1.-fL_VT)*(1.-xpar_VT);
+         }
       }
-      else if (j2 == 1) {
-         if (h == 0) {return 1.;}
-      }
-      else if (j2 == 2) {
-         if (h == 0) {return 1.;}
-      }
-   }
-   else if (j1 == 1) {
-      if (j2 == 0) {
-         if (h == 0) {return 1.;}
-      }
-      else if (j2 == 1) {
-         if (h == 0) {return fL_VV;}
-         else if (h == 1) {return (1.-fL_VV)*xpar_VV;}
-         else if (h == 2) {return (1.-fL_VV)*(1.-xpar_VV);}
-      }
-      else if (j2 == 2) {
-         if (h == 0) {return fL_VT;}
-         else if (h == 1) {return (1.-fL_VT)*xpar_VT;}
-         else if (h == 2) {return (1.-fL_VT)*(1.-xpar_VT);}
-      }
-   }
-   else if (j1 == 2) {
-      if (j2 == 0) {
-         if (h == 0) {return 1.;}
-      }
-      else if (j2 == 1) {
-         if (h == 0) {return fL_TV;}
-         else if (h == 1) {return (1.-fL_TV)*xpar_TV;}
-         else if (h == 2) {return (1.-fL_TV)*(1.-xpar_TV);}
-      }
-      else if (j2 == 2) {
-         if (h == 0) {return fL_TT;}
-         else if (h == 1) {return (1.-fL_TT)*xpar1_TT;}
-         else if (h == 2) {return (1.-fL_TT)*(1.-xpar1_TT)*xperp1_TT;}
-         else if (h == 3) {return (1.-fL_TT)*(1.-xpar1_TT)*(1.-xperp1_TT)*xpar2_TT;}
-         else if (h == 4) {return (1.-fL_TT)*(1.-xpar1_TT)*(1.-xperp1_TT)*(1.-xpar2_TT);}
+   case 2 :
+      switch(j2) {
+      case 1 :
+         switch(h) {
+         case 0 : return fL_TV;
+         case 1 : return (1.-fL_TV)*xpar_TV;
+         case 2 : return (1.-fL_TV)*(1.-xpar_TV);
+         }
+      case 2 :
+         switch(h) {
+         case 0 : return fL_TT;
+         case 1 : return (1.-fL_TT)*xpar1_TT;
+         case 2 : return (1.-fL_TT)*(1.-xpar1_TT)*xperp1_TT;
+         case 3 : return (1.-fL_TT)*(1.-xpar1_TT)*(1.-xperp1_TT)*xpar2_TT;
+         case 4 : return (1.-fL_TT)*(1.-xpar1_TT)*(1.-xperp1_TT)*(1.-xpar2_TT);
+         }
       }
    }
-   return 0;
+   return 1.;
 
  }
 
@@ -856,37 +1398,46 @@ Double_t KpiKpiSpectrumNW::pfj1j2h(Int_t j1, Int_t j2, Int_t h) const
 Double_t KpiKpiSpectrumNW::deltaj1j2h(Int_t j1, Int_t j2, Int_t h) const
  {
 
-   if (j1 == 0) {
-      if (j2 == 0) {return delta00;}
-      else if (j2 == 1) {return delta01;}
-      else if (j2 == 2) {return delta02;}
-   }
-   else if (j1 == 1) {
-      if (j2 == 0) {return delta10;}
-      else if (j2 == 1) {
-         if (h == 0) {return 0.;}
-         else if (h == 1) {return delta11par;}
-         else if (h == 2) {return delta11perp;}
+   switch(j1) {
+   case 0 :
+      switch(j2) {
+      case 0 : return delta00;
+      case 1 : return delta01;
+      case 2 : return delta02;
       }
-      else if (j2 == 2) {
-         if (h == 0) {return delta120;}
-         else if (h == 1) {return delta12par;}
-         else if (h == 2) {return delta12perp;}      
+   case 1 :
+      switch(j2) {
+      case 0 : return delta10;
+      case 1 :
+         switch(h) {
+         case 0 : return 0.;
+         case 1 : return delta11par;
+         case 2 : return delta11perp;
+         }
+      case 2 :
+         switch(h) {
+         case 0 : return delta120;
+         case 1 : return delta12par;
+         case 2 : return delta12perp;      
+         }
       }
-   }
-   else if (j1 == 2) {
-      if (j2 == 0) {return delta20;}
-      else if (j2 == 1) {
-         if (h == 0) {return delta210;}
-         else if (h == 1) {return delta21par;}
-         else if (h == 2) {return delta21perp;}
-      }
-      else if (j2 == 2) {
-         if (h == 0) {return delta220;}
-         else if (h == 1) {return delta22par;}
-         else if (h == 2) {return delta22perp;}      
-         else if (h == 3) {return delta22par2;}
-         else if (h == 4) {return delta22perp2;}   
+   case 2 :
+      switch(j2) {
+      case 0 : return delta20;
+      case 1 :
+         switch(h) {
+         case 0 : return delta210;
+         case 1 : return delta21par;
+         case 2 : return delta21perp;
+         }
+      case 2 :
+         switch(h) {
+         case 0 : return delta220;
+         case 1 : return delta22par;
+         case 2 : return delta22perp;
+         case 3 : return delta22par2;
+         case 4 : return delta22perp2;
+         }
       }
    }
    return 0.;
@@ -899,20 +1450,25 @@ Double_t KpiKpiSpectrumNW::deltaj1j2h(Int_t j1, Int_t j2, Int_t h) const
 Double_t KpiKpiSpectrumNW::DCPj1j2(Int_t j1, Int_t j2) const
  {
 
-   if (j1 == 0) {
-      if (j2 == 0) {return DCP_SS;}
-      else if (j2 == 1) {return DCP_SV;}
-      else if (j2 == 2) {return DCP_ST;}
-   }
-   else if (j1 == 1) {
-      if (j2 == 0) {return DCP_VS;}
-      else if (j2 == 1) {return DCP_VV;}
-      else if (j2 == 2) {return DCP_VT;}
-   }
-   else if (j1 == 2) {
-      if (j2 == 0) {return DCP_TS;}
-      else if (j2 == 1) {return DCP_TV;}
-      else if (j2 == 2) {return DCP_TT;}
+   switch(j1) {
+   case 0 :
+      switch(j2) {
+      case 0 : return DCP_SS;
+      case 1 : return DCP_SV;
+      case 2 : return DCP_ST;
+      }
+   case 1 :
+      switch(j2) {
+      case 0 : return DCP_VS;
+      case 1 : return DCP_VV;
+      case 2 : return DCP_VT;
+      }
+   case 2 :
+      switch(j2) {
+      case 0 : return DCP_TS;
+      case 1 : return DCP_TV;
+      case 2 : return DCP_TT;
+      }
    }
    return 0;
 
@@ -924,23 +1480,27 @@ Double_t KpiKpiSpectrumNW::DCPj1j2(Int_t j1, Int_t j2) const
 Double_t KpiKpiSpectrumNW::dphij1j2(Int_t j1, Int_t j2) const
  {
 
-   if (j1 == 0) {
-      if (j2 == 0) {return dphi_SS;}
-      else if (j2 == 1) {return dphi_SV;}
-      else if (j2 == 2) {return dphi_ST;}
-   }
-   else if (j1 == 1) {
-      if (j2 == 0) {return dphi_VS;}
-      else if (j2 == 1) {
+   switch(j1) {
+   case 0 :
+      switch(j2) {
+      case 0 : return dphi_SS;
+      case 1 : return dphi_SV;
+      case 2 : return dphi_ST;
+      }
+   case 1 :
+      switch(j2) {
+      case 0 : return dphi_VS;
+      case 1 :
          if (f_VV != 0) {return -1./f_VV*(wfj1j2(0,0)*dphi_SS+wfj1j2(0,1)*dphi_SV+wfj1j2(0,2)*dphi_ST+wfj1j2(1,0)*dphi_VS+wfj1j2(1,2)*dphi_VT+wfj1j2(2,0)*dphi_TS+wfj1j2(2,1)*dphi_TV+wfj1j2(2,2)*dphi_TT);}
          else {return 0.;}
+      case 2 : return dphi_VT;
       }
-      else if (j2 == 2) {return dphi_VT;}
-   }
-   else if (j1 == 2) {
-      if (j2 == 0) {return dphi_TS;}
-      else if (j2 == 1) {return dphi_TV;}
-      else if (j2 == 2) {return dphi_TT;}
+   case 2 :
+      switch(j2) {
+      case 0 : return dphi_TS;
+      case 1 : return dphi_TV;
+      case 2 : return dphi_TT;
+      }
    }
    return 0;
 
@@ -993,7 +1553,7 @@ TComplex KpiKpiSpectrumNW::Abarj1j2h(Int_t j1, Int_t j2, Int_t h) const
 TComplex KpiKpiSpectrumNW::M_Average(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const
  {
 
-   return Aj1j2h(j1,j2,h)*TComplex::Conjugate(Aj1j2h(j1p,j2p,hp))+Abarj1j2h(j1,j2,h)*TComplex::Conjugate(Abarj1j2h(j1p,j2p,hp));
+   return Aj1j2h_temp[j1][j2][h]*TComplex::Conjugate(Aj1j2h_temp[j1p][j2p][hp])+Abarj1j2h_temp[j1][j2][h]*TComplex::Conjugate(Abarj1j2h_temp[j1p][j2p][hp]);
 
  }
 
@@ -1003,7 +1563,7 @@ TComplex KpiKpiSpectrumNW::M_Average(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int
 TComplex KpiKpiSpectrumNW::M_DeltaGamma(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const
  {
 
-   return Aj1j2h(j1,j2,h)*TComplex::Conjugate(Abarj1j2h(j1p,j2p,hp))+Abarj1j2h(j1,j2,h)*TComplex::Conjugate(Aj1j2h(j1p,j2p,hp));
+   return Aj1j2h_temp[j1][j2][h]*TComplex::Conjugate(Abarj1j2h_temp[j1p][j2p][hp])+Abarj1j2h_temp[j1][j2][h]*TComplex::Conjugate(Aj1j2h_temp[j1p][j2p][hp]);
 
  }
 
@@ -1013,7 +1573,7 @@ TComplex KpiKpiSpectrumNW::M_DeltaGamma(Int_t j1, Int_t j2, Int_t h, Int_t j1p, 
 TComplex KpiKpiSpectrumNW::M_DirCP(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const
  {
 
-   return Aj1j2h(j1,j2,h)*TComplex::Conjugate(Aj1j2h(j1p,j2p,hp))-Abarj1j2h(j1,j2,h)*TComplex::Conjugate(Abarj1j2h(j1p,j2p,hp));
+   return Aj1j2h_temp[j1][j2][h]*TComplex::Conjugate(Aj1j2h_temp[j1p][j2p][hp])-Abarj1j2h_temp[j1][j2][h]*TComplex::Conjugate(Abarj1j2h_temp[j1p][j2p][hp]);
 
  }
 
@@ -1023,7 +1583,7 @@ TComplex KpiKpiSpectrumNW::M_DirCP(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t
 TComplex KpiKpiSpectrumNW::M_MixCP(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const
  {
 
-   return TComplex(0.,-1.)*(Aj1j2h(j1,j2,h)*TComplex::Conjugate(Abarj1j2h(j1p,j2p,hp))-Abarj1j2h(j1,j2,h)*TComplex::Conjugate(Aj1j2h(j1p,j2p,hp)));
+   return TComplex(0.,-1.)*(Aj1j2h_temp[j1][j2][h]*TComplex::Conjugate(Abarj1j2h_temp[j1p][j2p][hp])-Abarj1j2h_temp[j1][j2][h]*TComplex::Conjugate(Aj1j2h_temp[j1p][j2p][hp]));
 
  }
 
@@ -1097,7 +1657,7 @@ Double_t KpiKpiSpectrumNW::P_Bsbar(Int_t q1, Int_t q2, Double_t eta1, Double_t e
 Double_t KpiKpiSpectrumNW::zeta(Int_t q1, Int_t q2, Double_t eta1, Double_t eta2) const
  {
 
-   return 0.5*((1.+DCP_prod)*P_Bs(q1,q2,eta1,eta2)+(1.-DCP_prod)*P_Bsbar(q1,q2,eta1,eta2));
+   return 0.5*((1.+DCP_prod[int(wide_window)])*P_Bs(q1,q2,eta1,eta2)+(1.-DCP_prod[int(wide_window)])*P_Bsbar(q1,q2,eta1,eta2));
 
  }
 
@@ -1107,7 +1667,7 @@ Double_t KpiKpiSpectrumNW::zeta(Int_t q1, Int_t q2, Double_t eta1, Double_t eta2
 Double_t KpiKpiSpectrumNW::DCP_tzero(Int_t q1, Int_t q2, Double_t eta1, Double_t eta2) const
  {
 
-   return 0.5/zeta(q1,q2,eta1,eta2)*((1.+DCP_prod)*P_Bs(q1,q2,eta1,eta2)-(1.-DCP_prod)*P_Bsbar(q1,q2,eta1,eta2));
+   return 0.5/zeta(q1,q2,eta1,eta2)*((1.+DCP_prod[int(wide_window)])*P_Bs(q1,q2,eta1,eta2)-(1.-DCP_prod[int(wide_window)])*P_Bsbar(q1,q2,eta1,eta2));
 
  }
 
@@ -1116,31 +1676,25 @@ Double_t KpiKpiSpectrumNW::DCP_tzero(Int_t q1, Int_t q2, Double_t eta1, Double_t
 // ######################################################################################################
 
 // ---------------------------------------------------
-// Width of a gaussian used in the time resolution model.
+// Width of a gaussian used in the per event time resolution model.
 
 Double_t KpiKpiSpectrumNW::sigma_tres(Double_t tau_err, Int_t g_i) const 
  { 
 
-   Double_t g_f1 = TRes.f1(year_opt);
-   Double_t sigma_A = TRes.q0A(year_opt)+(TRes.q1A(year_opt)+TRes.q2A(year_opt)*(tau_err-TRes.mean(year_opt)))*tau_err;
-   Double_t sigma_B = TRes.q0B(year_opt)+(TRes.q1B(year_opt)+TRes.q2B(year_opt)*(tau_err-TRes.mean(year_opt)))*tau_err;
-
-   if (g_i == 1) {return sigma_A-sqrt(g_f1/(1.-g_f1))*sigma_B;}
-   else if (g_i == 2) {return sigma_A+sqrt((1.-g_f1)/g_f1)*sigma_B;}
+   if (g_i == 1) {return (TRes.q0A(year_opt)+(TRes.q1A(year_opt)+TRes.q2A(year_opt)*(tau_err-TRes.mean(year_opt)))*tau_err)-sqrt(TRes.f1(year_opt)/(1.-TRes.f1(year_opt)))*(TRes.q0B(year_opt)+(TRes.q1B(year_opt)+TRes.q2B(year_opt)*(tau_err-TRes.mean(year_opt)))*tau_err);}
+   else if (g_i == 2) {return (TRes.q0A(year_opt)+(TRes.q1A(year_opt)+TRes.q2A(year_opt)*(tau_err-TRes.mean(year_opt)))*tau_err)+sqrt((1.-TRes.f1(year_opt))/TRes.f1(year_opt))*(TRes.q0B(year_opt)+(TRes.q1B(year_opt)+TRes.q2B(year_opt)*(tau_err-TRes.mean(year_opt)))*tau_err);}
 
    return 0.;
 
  }
 
 // ---------------------------------------------------
-// Average gaussian width used in the time resolution model as an order of magnitude estimate.
+// Average gaussian width used in the per event time resolution model as a time range separator.
 
 Double_t KpiKpiSpectrumNW::sigma_ref(Double_t tau_err) const 
  { 
 
-   Double_t sigma_val = TRes.f1(year_opt)*sigma_tres(tau_err,1)+(1.-TRes.f1(year_opt))*sigma_tres(tau_err,2);
-
-   return sigma_val;
+   return TRes.f1(year_opt)*sigma_tres(tau_err,1)+(1.-TRes.f1(year_opt))*sigma_tres(tau_err,2);
 
  }
 
@@ -1158,14 +1712,12 @@ Double_t KpiKpiSpectrumNW::sigma_tres_eff(Int_t g_i) const
  }
 
 // ---------------------------------------------------
-// Average effective gaussian width used in the time resolution model as an order of magnitude estimate.
+// Average gaussian width used in the effective time resolution model as a time range separator.
 
 Double_t KpiKpiSpectrumNW::sigma_ref_eff() const 
  { 
 
-   Double_t sigma_val = TReseff.f1(year_opt)*sigma_tres_eff(1)+(1.-TReseff.f1(year_opt))*sigma_tres_eff(2);
-
-   return sigma_val;
+   return TReseff.f1(year_opt)*sigma_tres_eff(1)+(1.-TReseff.f1(year_opt))*sigma_tres_eff(2);
 
  }
 
@@ -1195,9 +1747,7 @@ Double_t KpiKpiSpectrumNW::x0_tres(Double_t tau_err, Int_t g_i) const
 std::complex<Double_t> KpiKpiSpectrumNW::z_tres(Double_t tau, Double_t tau_err, Int_t g_i) const
  { 
 
-   std::complex<Double_t> z_hat(delta_m_freq*sigma_tres(tau_err,g_i)*sigma_tres(tau_err,g_i),-tau+TRes.off(year_opt)+gamma_Bs_freq*sigma_tres(tau_err,g_i)*sigma_tres(tau_err,g_i));
-
-   return 1./(sqrt(2.)*sigma_tres(tau_err,g_i))*z_hat;
+   return 1./(sqrt(2.)*sigma_tres(tau_err,g_i))*std::complex<Double_t>(delta_m_freq*sigma_tres(tau_err,g_i)*sigma_tres(tau_err,g_i),-tau+TRes.off(year_opt)+gamma_Bs_freq*sigma_tres(tau_err,g_i)*sigma_tres(tau_err,g_i));
 
  }
 
@@ -1235,11 +1785,9 @@ Double_t KpiKpiSpectrumNW::x0_tres_eff(Int_t g_i) const
 // Complex variable used in the effective time resolution model.
 
 std::complex<Double_t> KpiKpiSpectrumNW::z_tres_eff(Double_t tau, Int_t g_i) const
- { 
+ {
 
-   std::complex<Double_t> z_hat(delta_m_freq*sigma_tres_eff(g_i)*sigma_tres_eff(g_i),-tau+TReseff.off(year_opt)+gamma_Bs_freq*sigma_tres_eff(g_i)*sigma_tres_eff(g_i));
-
-   return 1./(sqrt(2.)*sigma_tres_eff(g_i))*z_hat;
+   return 1./(sqrt(2.)*sigma_tres_eff(g_i))*std::complex<Double_t>(delta_m_freq*sigma_tres_eff(g_i)*sigma_tres_eff(g_i),-tau+TReseff.off(year_opt)+gamma_Bs_freq*sigma_tres_eff(g_i)*sigma_tres_eff(g_i));
 
  }
 
@@ -1585,7 +2133,7 @@ Double_t KpiKpiSpectrumNW::T_sin_eff(Double_t tau) const
 TComplex KpiKpiSpectrumNW::Tj1j2hj1pj2php(Double_t tau, Double_t tau_err, Int_t q1, Int_t q2, Double_t eta1, Double_t eta2, Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const
  {
 
-   return zeta(q1,q2,eta1,eta2)*((T_cosh(tau,tau_err)*M_Average(j1,j2,h,j1p,j2p,hp)-T_sinh(tau,tau_err)*M_DeltaGamma(j1,j2,h,j1p,j2p,hp))+DCP_tzero(q1,q2,eta1,eta2)*(T_cos(tau,tau_err)*M_DirCP(j1,j2,h,j1p,j2p,hp)+T_sin(tau,tau_err)*M_MixCP(j1,j2,h,j1p,j2p,hp)));
+   return zeta_temp*((T_cosh_temp*M_Average(j1,j2,h,j1p,j2p,hp)-T_sinh_temp*M_DeltaGamma(j1,j2,h,j1p,j2p,hp))+DCP_tzero_temp*(T_cos_temp*M_DirCP(j1,j2,h,j1p,j2p,hp)+T_sin_temp*M_MixCP(j1,j2,h,j1p,j2p,hp)));
 
  }
 
@@ -1595,7 +2143,7 @@ TComplex KpiKpiSpectrumNW::Tj1j2hj1pj2php(Double_t tau, Double_t tau_err, Int_t 
 TComplex KpiKpiSpectrumNW::Teffj1j2hj1pj2php(Double_t tau, Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const
  {
 
-   return (T_cosh_eff(tau)*M_Average(j1,j2,h,j1p,j2p,hp)-T_sinh_eff(tau)*M_DeltaGamma(j1,j2,h,j1p,j2p,hp))+DCP_prod*(T_cos_eff(tau)*M_DirCP(j1,j2,h,j1p,j2p,hp)+T_sin_eff(tau)*M_MixCP(j1,j2,h,j1p,j2p,hp));
+   return (T_cosh_eff(tau)*M_Average(j1,j2,h,j1p,j2p,hp)-T_sinh_eff(tau)*M_DeltaGamma(j1,j2,h,j1p,j2p,hp))+DCP_prod[int(wide_window)]*(T_cos_eff(tau)*M_DirCP(j1,j2,h,j1p,j2p,hp)+T_sin_eff(tau)*M_MixCP(j1,j2,h,j1p,j2p,hp));
 
  }
 
@@ -1645,8 +2193,8 @@ Double_t KpiKpiSpectrumNW::IT_sin_resapprox_eff_bin(Double_t tau1, Double_t tau2
 Double_t KpiKpiSpectrumNW::IT_cosh_resapprox_eff() const
  {
    
-   Double_t timefun_integral = 0.;
-   for (int i=0; i<TAcc.nbins; ++i) {timefun_integral += TAcc.val(year_opt,wide_window,i)*IT_cosh_resapprox_eff_bin(TAcc.bounds(i),TAcc.bounds(i+1));}
+   timefun_integral = 0.;
+   for (int i=0; i<TAcc.nbins; ++i) {timefun_integral += TAcc.val(year_opt,trig_opt,wide_window,i)*IT_cosh_resapprox_eff_bin(TAcc.bounds(i),TAcc.bounds(i+1));}
 
    return timefun_integral;
 
@@ -1658,8 +2206,8 @@ Double_t KpiKpiSpectrumNW::IT_cosh_resapprox_eff() const
 Double_t KpiKpiSpectrumNW::IT_sinh_resapprox_eff() const
  {
    
-   Double_t timefun_integral = 0.;
-   for (int i=0; i<TAcc.nbins; ++i) {timefun_integral += TAcc.val(year_opt,wide_window,i)*IT_sinh_resapprox_eff_bin(TAcc.bounds(i),TAcc.bounds(i+1));}
+   timefun_integral = 0.;
+   for (int i=0; i<TAcc.nbins; ++i) {timefun_integral += TAcc.val(year_opt,trig_opt,wide_window,i)*IT_sinh_resapprox_eff_bin(TAcc.bounds(i),TAcc.bounds(i+1));}
 
    return timefun_integral;
 
@@ -1671,8 +2219,8 @@ Double_t KpiKpiSpectrumNW::IT_sinh_resapprox_eff() const
 Double_t KpiKpiSpectrumNW::IT_cos_resapprox_eff() const
  {
    
-   Double_t timefun_integral = 0.;
-   for (int i=0; i<TAcc.nbins; ++i) {timefun_integral += TAcc.val(year_opt,wide_window,i)*IT_cos_resapprox_eff_bin(TAcc.bounds(i),TAcc.bounds(i+1));}
+   timefun_integral = 0.;
+   for (int i=0; i<TAcc.nbins; ++i) {timefun_integral += TAcc.val(year_opt,trig_opt,wide_window,i)*IT_cos_resapprox_eff_bin(TAcc.bounds(i),TAcc.bounds(i+1));}
 
    return timefun_integral;
 
@@ -1684,10 +2232,280 @@ Double_t KpiKpiSpectrumNW::IT_cos_resapprox_eff() const
 Double_t KpiKpiSpectrumNW::IT_sin_resapprox_eff() const
  {
    
-   Double_t timefun_integral = 0.;
-   for (int i=0; i<TAcc.nbins; ++i) {timefun_integral += TAcc.val(year_opt,wide_window,i)*IT_sin_resapprox_eff_bin(TAcc.bounds(i),TAcc.bounds(i+1));}
+   timefun_integral = 0.;
+   for (int i=0; i<TAcc.nbins; ++i) {timefun_integral += TAcc.val(year_opt,trig_opt,wide_window,i)*IT_sin_resapprox_eff_bin(TAcc.bounds(i),TAcc.bounds(i+1));}
 
    return timefun_integral;
+
+ }
+
+// ---------------------------------------------------
+// 
+
+std::complex<Double_t> KpiKpiSpectrumNW::conv_exp(Double_t x, std::complex<Double_t> z) const 
+ {
+
+   Double_t re = z.real()-x;
+
+   if (re>-5.0) {return 0.5*RooMath::faddeeva_fast(std::complex<Double_t>(-z.imag(),re))*exp(-x*x);}
+
+   else {
+      // compute exp(-x^2)cwerf(-i(z-x)), cwerf(z) = exp(-z^2)erfc(-iz)
+      // use the approximation: erfc(z) = exp(-z*z)/(sqrt(pi)*z)
+      // to explicitly cancel the divergent exp(y*y) behaviour of
+      // CWERF for z = x + i y with large negative y
+      static const std::complex<Double_t> mi(0,-1);
+      std::complex<Double_t> zp  = mi*(z-x);
+      std::complex<Double_t> zsq = zp*zp;
+      std::complex<Double_t> v = -zsq -x*x;
+      std::complex<Double_t> iz(z.imag()+x,z.real()-x);
+      return 0.5*exp(v)*(exp(zsq)/(iz*sqrt(pi)) + 1.)*2. ;
+   }
+
+ }
+
+// ---------------------------------------------------
+// 
+
+std::complex<Double_t> KpiKpiSpectrumNW::Kn(std::complex<Double_t> z, Int_t n) const 
+ {
+
+   if (n == 0) {return 1./(2.*z);}
+   else if (n == 1) {return 1./(2.*z*z);}
+   else if (n == 2) {return 1./z*(1.+1./(z*z));}
+   else if (n == 3) {return 3./(z*z)*(1.+1./(z*z));}
+
+   throw std::invalid_argument( "Not implemented for n>3." );
+
+ }
+
+// ---------------------------------------------------
+// 
+
+std::complex<Double_t> KpiKpiSpectrumNW::Mn_x(Double_t x, std::complex<Double_t> z, Int_t n) const 
+ {
+
+   if (n == 0) {return std::complex<Double_t>(RooMath::erf(x),0.)-2.*conv_exp(x,z);}
+   else if (n == 1) {return 2.*(-std::complex<Double_t>(sqrt(1./pi)*exp(-x*x),0.)-2.*x*conv_exp(x,z));}
+   else if (n == 2) {return 2.*(-2.*x*exp(-x*x)*std::complex<Double_t>(sqrt(1./pi),0.)-(2.*x*x-1.)*2.*conv_exp(x,z));}
+   else if (n == 3) {return 4.*(-(2.*x*x-1.)*exp(-x*x)*std::complex<Double_t>(sqrt(1./pi),0.)-x*(2.*x*x-3.)*2.*conv_exp(x,z));}
+
+   throw std::invalid_argument( "Not implemented for n>3." );
+
+ }
+
+// ---------------------------------------------------
+// 
+
+std::complex<Double_t> KpiKpiSpectrumNW::Mn(Double_t x_1, Double_t x_2, std::complex<Double_t> z, Int_t n) const 
+ {
+
+   return Mn_x(x_2,z,n)-Mn_x(x_1,z,n);
+
+ }
+
+// ---------------------------------------------------
+// 
+
+void KpiKpiSpectrumNW::set_buffer_differential_vars(Double_t m1var, Double_t m2var, Double_t cos1var, Double_t cos2var, Double_t phivar, Double_t tvar, Double_t terrvar, Int_t decisionSSKvar, Int_t decisionOSvar, Double_t etamistagSSKvar, Double_t etamistagOSvar) const 
+ {
+
+   // Physical terms.
+
+   Aj1j2h_temp[0][0][0] = Aj1j2h(0,0,0);
+   Aj1j2h_temp[0][1][0] = Aj1j2h(0,1,0);
+   Aj1j2h_temp[1][0][0] = Aj1j2h(1,0,0);
+   Aj1j2h_temp[0][2][0] = Aj1j2h(0,2,0);
+   Aj1j2h_temp[2][0][0] = Aj1j2h(2,0,0);
+   Aj1j2h_temp[1][1][0] = Aj1j2h(1,1,0);
+   Aj1j2h_temp[1][1][1] = Aj1j2h(1,1,1);
+   Aj1j2h_temp[1][1][2] = Aj1j2h(1,1,2);
+   Aj1j2h_temp[1][2][0] = Aj1j2h(1,2,0);
+   Aj1j2h_temp[1][2][1] = Aj1j2h(1,2,1);
+   Aj1j2h_temp[1][2][2] = Aj1j2h(1,2,2);
+   Aj1j2h_temp[2][1][0] = Aj1j2h(2,1,0);
+   Aj1j2h_temp[2][1][1] = Aj1j2h(2,1,1);
+   Aj1j2h_temp[2][1][2] = Aj1j2h(2,1,2);
+   Aj1j2h_temp[2][2][0] = Aj1j2h(2,2,0);
+   Aj1j2h_temp[2][2][1] = Aj1j2h(2,2,1);
+   Aj1j2h_temp[2][2][2] = Aj1j2h(2,2,2);
+   Aj1j2h_temp[2][2][3] = Aj1j2h(2,2,3);
+   Aj1j2h_temp[2][2][4] = Aj1j2h(2,2,4);
+   Abarj1j2h_temp[0][0][0] = Abarj1j2h(0,0,0);
+   Abarj1j2h_temp[0][1][0] = Abarj1j2h(0,1,0);
+   Abarj1j2h_temp[1][0][0] = Abarj1j2h(1,0,0);
+   Abarj1j2h_temp[0][2][0] = Abarj1j2h(0,2,0);
+   Abarj1j2h_temp[2][0][0] = Abarj1j2h(2,0,0);
+   Abarj1j2h_temp[1][1][0] = Abarj1j2h(1,1,0);
+   Abarj1j2h_temp[1][1][1] = Abarj1j2h(1,1,1);
+   Abarj1j2h_temp[1][1][2] = Abarj1j2h(1,1,2);
+   Abarj1j2h_temp[1][2][0] = Abarj1j2h(1,2,0);
+   Abarj1j2h_temp[1][2][1] = Abarj1j2h(1,2,1);
+   Abarj1j2h_temp[1][2][2] = Abarj1j2h(1,2,2);
+   Abarj1j2h_temp[2][1][0] = Abarj1j2h(2,1,0);
+   Abarj1j2h_temp[2][1][1] = Abarj1j2h(2,1,1);
+   Abarj1j2h_temp[2][1][2] = Abarj1j2h(2,1,2);
+   Abarj1j2h_temp[2][2][0] = Abarj1j2h(2,2,0);
+   Abarj1j2h_temp[2][2][1] = Abarj1j2h(2,2,1);
+   Abarj1j2h_temp[2][2][2] = Abarj1j2h(2,2,2);
+   Abarj1j2h_temp[2][2][3] = Abarj1j2h(2,2,3);
+   Abarj1j2h_temp[2][2][4] = Abarj1j2h(2,2,4);
+
+   // Time dependent terms.
+
+   Double_t f1,f2,s1,s2,x1,x2;
+
+   if (acctype == 3) {
+      f1 = TRes.f1(1);
+      f2 = 1.-f1;
+      s1 = (TRes.q0A(1)+(TRes.q1A(1)+TRes.q2A(1)*(terrvar-TRes.mean(1)))*terrvar)-sqrt(TRes.f1(1)/(1.-TRes.f1(1)))*(TRes.q0B(1)+(TRes.q1B(1)+TRes.q2B(1)*(terrvar-TRes.mean(1)))*terrvar);
+      s2 = (TRes.q0A(1)+(TRes.q1A(1)+TRes.q2A(1)*(terrvar-TRes.mean(1)))*terrvar)+sqrt((1.-TRes.f1(1))/TRes.f1(1))*(TRes.q0B(1)+(TRes.q1B(1)+TRes.q2B(1)*(terrvar-TRes.mean(1)))*terrvar);
+      x1 = (tvar-TRes.off(1))/(sqrt(2.)*s1);
+      x2 = (tvar-TRes.off(1))/(sqrt(2.)*s2);
+   }
+   else {
+      f1 = TRes.f1(year_opt);
+      f2 = 1.-f1;
+      s1 = sigma_tres(terrvar,1);
+      s2 = sigma_tres(terrvar,2);
+      x1 = (tvar-TRes.off(year_opt))/(sqrt(2.)*s1);
+      x2 = (tvar-TRes.off(year_opt))/(sqrt(2.)*s2);
+   }
+
+   std::complex<Double_t> z1_hyper_plus = s1/sqrt(2.)*std::complex<Double_t>(gamma_Bs_freq-0.5*delta_gamma_freq,0.);
+   std::complex<Double_t> z2_hyper_plus = s2/sqrt(2.)*std::complex<Double_t>(gamma_Bs_freq-0.5*delta_gamma_freq,0.);
+   std::complex<Double_t> z1_hyper_minus = s1/sqrt(2.)*std::complex<Double_t>(gamma_Bs_freq+0.5*delta_gamma_freq,0.);
+   std::complex<Double_t> z2_hyper_minus = s2/sqrt(2.)*std::complex<Double_t>(gamma_Bs_freq+0.5*delta_gamma_freq,0.);
+   std::complex<Double_t> z1_trigo = s1/sqrt(2.)*std::complex<Double_t>(gamma_Bs_freq,-delta_m_freq);
+   std::complex<Double_t> z2_trigo = s2/sqrt(2.)*std::complex<Double_t>(gamma_Bs_freq,-delta_m_freq);
+
+   Double_t conv_exp_hyper_plus = (f1*conv_exp(x1,z1_hyper_plus)+f2*conv_exp(x2,z2_hyper_plus)).real();
+   Double_t conv_exp_hyper_minus = (f1*conv_exp(x1,z1_hyper_minus)+f2*conv_exp(x2,z2_hyper_minus)).real();
+   std::complex<Double_t> conv_exp_trigo = f1*conv_exp(x1,z1_trigo)+f2*conv_exp(x2,z2_trigo);
+
+   T_cosh_temp = 0.5*(conv_exp_hyper_plus + conv_exp_hyper_minus);
+   T_sinh_temp = 0.5*(conv_exp_hyper_plus - conv_exp_hyper_minus);
+   T_cos_temp = conv_exp_trigo.real();
+   T_sin_temp = conv_exp_trigo.imag();
+
+   // Tagging terms.
+
+   zeta_temp = zeta(decisionSSKvar,decisionOSvar,etamistagSSKvar,etamistagOSvar);
+   DCP_tzero_temp = DCP_tzero(decisionSSKvar,decisionOSvar,etamistagSSKvar,etamistagOSvar);
+
+   // Angular terms.
+
+   for (int i=0; i<18; ++i) {fi_cos1_temp[i] = fi(cos1var,i+1);}
+   for (int i=0; i<18; ++i) {fi_cos2_temp[i] = fi(cos2var,i+1);}
+   for (int i=0; i<15; ++i) {gi_temp[i] = gi(phivar,i+1);}
+
+   // Mass terms.
+
+   for (int j1=0; j1<3; ++j1) {
+      for (int j2=0; j2<3; ++j2) {
+         Mj1j2_temp[j1][j2] = Mj1j2(m1var,m2var,j1,j2);
+      }
+   }
+   phasespace_temp = phasespace(m1var,m2var);
+
+ }
+
+// ---------------------------------------------------
+// 
+
+void KpiKpiSpectrumNW::set_buffer_integral_vars() const 
+ {
+
+   // Physical terms.
+
+   Aj1j2h_temp[0][0][0] = Aj1j2h(0,0,0);
+   Aj1j2h_temp[0][1][0] = Aj1j2h(0,1,0);
+   Aj1j2h_temp[1][0][0] = Aj1j2h(1,0,0);
+   Aj1j2h_temp[0][2][0] = Aj1j2h(0,2,0);
+   Aj1j2h_temp[2][0][0] = Aj1j2h(2,0,0);
+   Aj1j2h_temp[1][1][0] = Aj1j2h(1,1,0);
+   Aj1j2h_temp[1][1][1] = Aj1j2h(1,1,1);
+   Aj1j2h_temp[1][1][2] = Aj1j2h(1,1,2);
+   Aj1j2h_temp[1][2][0] = Aj1j2h(1,2,0);
+   Aj1j2h_temp[1][2][1] = Aj1j2h(1,2,1);
+   Aj1j2h_temp[1][2][2] = Aj1j2h(1,2,2);
+   Aj1j2h_temp[2][1][0] = Aj1j2h(2,1,0);
+   Aj1j2h_temp[2][1][1] = Aj1j2h(2,1,1);
+   Aj1j2h_temp[2][1][2] = Aj1j2h(2,1,2);
+   Aj1j2h_temp[2][2][0] = Aj1j2h(2,2,0);
+   Aj1j2h_temp[2][2][1] = Aj1j2h(2,2,1);
+   Aj1j2h_temp[2][2][2] = Aj1j2h(2,2,2);
+   Aj1j2h_temp[2][2][3] = Aj1j2h(2,2,3);
+   Aj1j2h_temp[2][2][4] = Aj1j2h(2,2,4);
+   Abarj1j2h_temp[0][0][0] = Abarj1j2h(0,0,0);
+   Abarj1j2h_temp[0][1][0] = Abarj1j2h(0,1,0);
+   Abarj1j2h_temp[1][0][0] = Abarj1j2h(1,0,0);
+   Abarj1j2h_temp[0][2][0] = Abarj1j2h(0,2,0);
+   Abarj1j2h_temp[2][0][0] = Abarj1j2h(2,0,0);
+   Abarj1j2h_temp[1][1][0] = Abarj1j2h(1,1,0);
+   Abarj1j2h_temp[1][1][1] = Abarj1j2h(1,1,1);
+   Abarj1j2h_temp[1][1][2] = Abarj1j2h(1,1,2);
+   Abarj1j2h_temp[1][2][0] = Abarj1j2h(1,2,0);
+   Abarj1j2h_temp[1][2][1] = Abarj1j2h(1,2,1);
+   Abarj1j2h_temp[1][2][2] = Abarj1j2h(1,2,2);
+   Abarj1j2h_temp[2][1][0] = Abarj1j2h(2,1,0);
+   Abarj1j2h_temp[2][1][1] = Abarj1j2h(2,1,1);
+   Abarj1j2h_temp[2][1][2] = Abarj1j2h(2,1,2);
+   Abarj1j2h_temp[2][2][0] = Abarj1j2h(2,2,0);
+   Abarj1j2h_temp[2][2][1] = Abarj1j2h(2,2,1);
+   Abarj1j2h_temp[2][2][2] = Abarj1j2h(2,2,2);
+   Abarj1j2h_temp[2][2][3] = Abarj1j2h(2,2,3);
+   Abarj1j2h_temp[2][2][4] = Abarj1j2h(2,2,4);
+
+   // Time dependent terms.
+
+   std::complex<Double_t> z1_hyper_plus = s1_eff[(int) year_opt]/sqrt(2.)*std::complex<Double_t>(gamma_Bs_freq-0.5*delta_gamma_freq,0.);
+   std::complex<Double_t> z2_hyper_plus = s2_eff[(int) year_opt]/sqrt(2.)*std::complex<Double_t>(gamma_Bs_freq-0.5*delta_gamma_freq,0.);
+   std::complex<Double_t> z1_hyper_minus = s1_eff[(int) year_opt]/sqrt(2.)*std::complex<Double_t>(gamma_Bs_freq+0.5*delta_gamma_freq,0.);
+   std::complex<Double_t> z2_hyper_minus = s2_eff[(int) year_opt]/sqrt(2.)*std::complex<Double_t>(gamma_Bs_freq+0.5*delta_gamma_freq,0.);
+   std::complex<Double_t> z1_trigo = s1_eff[(int) year_opt]/sqrt(2.)*std::complex<Double_t>(gamma_Bs_freq,-delta_m_freq);
+   std::complex<Double_t> z2_trigo = s2_eff[(int) year_opt]/sqrt(2.)*std::complex<Double_t>(gamma_Bs_freq,-delta_m_freq);
+
+   Double_t integral_conv_exp_hyper_plus_1 = 0;
+   Double_t integral_conv_exp_hyper_plus_2 = 0;
+   Double_t integral_conv_exp_hyper_minus_1 = 0;
+   Double_t integral_conv_exp_hyper_minus_2 = 0;
+   std::complex<Double_t> integral_conv_exp_trigo_1 = std::complex<Double_t>(0.,0.);
+   std::complex<Double_t> integral_conv_exp_trigo_2 = std::complex<Double_t>(0.,0.);
+
+   if (acctype == 0) {
+      integral_conv_exp_hyper_plus_1 += (s1_eff[(int) year_opt]/sqrt(2.)*Mn((0.-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]),(12.-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]),z1_hyper_plus,0)*Kn(z1_hyper_plus,0)).real();
+      integral_conv_exp_hyper_plus_2 += (s2_eff[(int) year_opt]/sqrt(2.)*Mn((0.-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]),(12.-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]),z2_hyper_plus,0)*Kn(z2_hyper_plus,0)).real();
+      integral_conv_exp_hyper_minus_1 += (s1_eff[(int) year_opt]/sqrt(2.)*Mn((0.-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]),(12.-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]),z1_hyper_minus,0)*Kn(z1_hyper_minus,0)).real();
+      integral_conv_exp_hyper_minus_2 += (s2_eff[(int) year_opt]/sqrt(2.)*Mn((0.-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]),(12.-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]),z2_hyper_minus,0)*Kn(z2_hyper_minus,0)).real();
+      integral_conv_exp_trigo_1 += s1_eff[(int) year_opt]/sqrt(2.)*Mn((0.-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]),(12.-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]),z1_trigo,0)*Kn(z1_trigo,0);
+      integral_conv_exp_trigo_2 += s2_eff[(int) year_opt]/sqrt(2.)*Mn((0.-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]),(12.-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]),z2_trigo,0)*Kn(z2_trigo,0);
+   }
+   else {
+      for (int ibin=0; ibin<5; ++ibin) {
+         for (int k=0; k<4; ++k) {
+            for (int i=0; i<(k+1); ++i) {
+               for (int j=0; j<(i+1); ++j) {
+                  integral_conv_exp_hyper_plus_1 += (spl_coef_array_1[(int) year_opt][(int) trig_opt][ibin][k][i][j]*Mn(spl_knot_x1_vector[(int) year_opt][(int) trig_opt][ibin],spl_knot_x1_vector[(int) year_opt][(int) trig_opt][ibin+1],z1_hyper_plus,i-j)*Kn(z1_hyper_plus,j)).real();
+                  integral_conv_exp_hyper_plus_2 += (spl_coef_array_2[(int) year_opt][(int) trig_opt][ibin][k][i][j]*Mn(spl_knot_x2_vector[(int) year_opt][(int) trig_opt][ibin],spl_knot_x2_vector[(int) year_opt][(int) trig_opt][ibin+1],z2_hyper_plus,i-j)*Kn(z2_hyper_plus,j)).real();
+                  integral_conv_exp_hyper_minus_1 += (spl_coef_array_1[(int) year_opt][(int) trig_opt][ibin][k][i][j]*Mn(spl_knot_x1_vector[(int) year_opt][(int) trig_opt][ibin],spl_knot_x1_vector[(int) year_opt][(int) trig_opt][ibin+1],z1_hyper_minus,i-j)*Kn(z1_hyper_minus,j)).real();
+                  integral_conv_exp_hyper_minus_2 += (spl_coef_array_2[(int) year_opt][(int) trig_opt][ibin][k][i][j]*Mn(spl_knot_x2_vector[(int) year_opt][(int) trig_opt][ibin],spl_knot_x2_vector[(int) year_opt][(int) trig_opt][ibin+1],z2_hyper_minus,i-j)*Kn(z2_hyper_minus,j)).real();
+                  integral_conv_exp_trigo_1 += spl_coef_array_1[(int) year_opt][(int) trig_opt][ibin][k][i][j]*Mn(spl_knot_x1_vector[(int) year_opt][(int) trig_opt][ibin],spl_knot_x1_vector[(int) year_opt][(int) trig_opt][ibin+1],z1_trigo,i-j)*Kn(z1_trigo,j);
+                  integral_conv_exp_trigo_2 += spl_coef_array_2[(int) year_opt][(int) trig_opt][ibin][k][i][j]*Mn(spl_knot_x2_vector[(int) year_opt][(int) trig_opt][ibin],spl_knot_x2_vector[(int) year_opt][(int) trig_opt][ibin+1],z2_trigo,i-j)*Kn(z2_trigo,j);
+               }
+            }
+         }
+      }
+   }
+
+   Double_t integral_conv_exp_hyper_plus = f1_eff[(int) year_opt]*integral_conv_exp_hyper_plus_1+f2_eff[(int) year_opt]*integral_conv_exp_hyper_plus_2;
+   Double_t integral_conv_exp_hyper_minus = f1_eff[(int) year_opt]*integral_conv_exp_hyper_minus_1+f2_eff[(int) year_opt]*integral_conv_exp_hyper_minus_2;
+   std::complex<Double_t> integral_conv_exp_trigo = f1_eff[(int) year_opt]*integral_conv_exp_trigo_1+f2_eff[(int) year_opt]*integral_conv_exp_trigo_2;
+
+   IT_cosh_temp = 0.5*(integral_conv_exp_hyper_plus + integral_conv_exp_hyper_minus);
+   IT_sinh_temp = 0.5*(integral_conv_exp_hyper_plus - integral_conv_exp_hyper_minus);
+   IT_cos_temp = integral_conv_exp_trigo.real();
+   IT_sin_temp = integral_conv_exp_trigo.imag();
 
  }
 
@@ -1700,31 +2518,29 @@ Double_t KpiKpiSpectrumNW::IT_sin_resapprox_eff() const
 
 Double_t KpiKpiSpectrumNW::fi(Double_t x, Int_t i) const 
  { 
-   
-   Double_t f;
 
-   if (i == 1) {f = 1.;}
-   else if (i == 2) {f = x;}
-   else if (i == 3) {f = sqrt(1.-x*x);}
-   else if (i == 4) {f = 3.*x*x-1.;}
-   else if (i == 5) {f = x*sqrt(1.-x*x);}
-   else if (i == 6) {f = x*x;}
-   else if (i == 7) {f = x*(3.*x*x-1.);}
-   else if (i == 8) {f = x*x*sqrt(1.-x*x);}
-   else if (i == 9) {f = 1.-x*x;}
-   else if (i == 10) {f = (3.*x*x-1.)*sqrt(1.-x*x);}
-   else if (i == 11) {f = x*(1.-x*x);}
-   else if (i == 12) {f = (3.*x*x-1.)*(3.*x*x-1.);}
-   else if (i == 13) {f = x*(3.*x*x-1.)*sqrt(1.-x*x);}
-   else if (i == 14) {f = x*x*(1.-x*x);}
-   else if (i == 15) {f = (1.-x*x)*sqrt(1.-x*x);}
-   else if (i == 16) {f = (3.*x*x-1.)*(1.-x*x);}
-   else if (i == 17) {f = x*(1.-x*x)*sqrt(1.-x*x);}
-   else if (i == 18) {f = (1.-x*x)*(1.-x*x);}
+   switch(i) {
+      case 1 : return 1.;
+      case 2 : return x;
+      case 3 : return sqrt(1.-x*x);
+      case 4 : return 3.*x*x-1.;
+      case 5 : return x*sqrt(1.-x*x);
+      case 6 : return x*x;
+      case 7 : return x*(3.*x*x-1.);
+      case 8 : return x*x*sqrt(1.-x*x);
+      case 9 : return 1.-x*x;
+      case 10 : return (3.*x*x-1.)*sqrt(1.-x*x);
+      case 11 : return x*(1.-x*x);
+      case 12 : return (3.*x*x-1.)*(3.*x*x-1.);
+      case 13 : return x*(3.*x*x-1.)*sqrt(1.-x*x);
+      case 14 : return x*x*(1.-x*x);
+      case 15 : return (1.-x*x)*sqrt(1.-x*x);
+      case 16 : return (3.*x*x-1.)*(1.-x*x);
+      case 17 : return x*(1.-x*x)*sqrt(1.-x*x);
+      case 18 : return (1.-x*x)*(1.-x*x);
+   }
 
-   else {throw std::invalid_argument( "Invalid argument" );}
-
-   return f;
+   throw std::invalid_argument( "Invalid argument #1" );
 
  }
 
@@ -1734,23 +2550,25 @@ Double_t KpiKpiSpectrumNW::fi(Double_t x, Int_t i) const
 Double_t KpiKpiSpectrumNW::gi(Double_t x, Int_t i) const 
  { 
 
-   if (i == 1) {return 1.;}
-   else if (i == 2) {return cos(x);}
-   else if (i == 3) {return sin(x);}
-   else if (i == 4) {return cos(x)*cos(x);}
-   else if (i == 5) {return sin(x)*cos(x);}
-   else if (i == 6) {return sin(x)*sin(x);}
-   else if (i == 7) {return cos(2.*x);}
-   else if (i == 8) {return sin(2.*x);}
-   else if (i == 9) {return cos(x)*cos(2.*x);}
-   else if (i == 10) {return cos(x)*sin(2.*x);}
-   else if (i == 11) {return sin(x)*cos(2.*x);}
-   else if (i == 12) {return sin(x)*sin(2.*x);}
-   else if (i == 13) {return cos(2.*x)*cos(2.*x);}
-   else if (i == 14) {return sin(2.*x)*cos(2.*x);}
-   else if (i == 15) {return sin(2.*x)*sin(2.*x);}
+   switch(i) {
+      case 1 : return 1.;
+      case 2 : return cos(x);
+      case 3 : return sin(x);
+      case 4 : return cos(x)*cos(x);
+      case 5 : return sin(x)*cos(x);
+      case 6 : return sin(x)*sin(x);
+      case 7 : return cos(2.*x);
+      case 8 : return sin(2.*x);
+      case 9 : return cos(x)*cos(2.*x);
+      case 10 : return cos(x)*sin(2.*x);
+      case 11 : return sin(x)*cos(2.*x);
+      case 12 : return sin(x)*sin(2.*x);
+      case 13 : return cos(2.*x)*cos(2.*x);
+      case 14 : return sin(2.*x)*cos(2.*x);
+      case 15 : return sin(2.*x)*sin(2.*x);
+   }
 
-   throw std::invalid_argument( "Invalid argument" );
+   throw std::invalid_argument( "Invalid argument #2" );
 
  }
 
@@ -1760,44 +2578,27 @@ Double_t KpiKpiSpectrumNW::gi(Double_t x, Int_t i) const
 Double_t KpiKpiSpectrumNW::fjjphhp(Double_t x, Int_t j, Int_t jp, Int_t h, Int_t hp) const 
  { 
 
-   if ((j == 0) and (jp == 0) and (h == 0) and (hp == 0)) {return fi(x,1);}
-   else if ((j == 0) and (jp == 1) and (h == 0) and (hp == 0)) {return fi(x,2);}
-   else if ((j == 0) and (jp == 1) and (h == 0) and ((hp == 1) or (hp == 2))) {return fi(x,3);}
-   else if ((j == 0) and (jp == 2) and (h == 0) and (hp == 0)) {return fi(x,4);}
-   else if ((j == 0) and (jp == 2) and (h == 0) and ((hp == 1) or (hp == 2))) {return fi(x,5);}
-   else if ((j == 1) and (jp == 0) and (h == 0) and (hp == 0)) {return fi(x,2);}
-   else if ((j == 1) and (jp == 1) and (h == 0) and (hp == 0)) {return fi(x,6);}
-   else if ((j == 1) and (jp == 1) and (h == 0) and ((hp == 1) or (hp == 2))) {return fi(x,5);}
-   else if ((j == 1) and (jp == 2) and (h == 0) and (hp == 0)) {return fi(x,7);}
-   else if ((j == 1) and (jp == 2) and (h == 0) and ((hp == 1) or (hp == 2))) {return fi(x,8);}
-   else if ((j == 1) and (jp == 0) and ((h == 1) or (h == 2)) and (hp == 0)) {return fi(x,3);}
-   else if ((j == 1) and (jp == 1) and ((h == 1) or (h == 2)) and (hp == 0)) {return fi(x,5);}
-   else if ((j == 1) and (jp == 1) and ((h == 1) or (h == 2)) and ((hp == 1) or (hp == 2))) {return fi(x,9);}
-   else if ((j == 1) and (jp == 2) and ((h == 1) or (h == 2)) and (hp == 0)) {return fi(x,10);}
-   else if ((j == 1) and (jp == 2) and ((h == 1) or (h == 2)) and ((hp == 1) or (hp == 2))) {return fi(x,11);}
-   else if ((j == 2) and (jp == 0) and (h == 0) and (hp == 0)) {return fi(x,4);}
-   else if ((j == 2) and (jp == 1) and (h == 0) and (hp == 0)) {return fi(x,7);}
-   else if ((j == 2) and (jp == 1) and (h == 0) and ((hp == 1) or (hp == 2))) {return fi(x,10);}
-   else if ((j == 2) and (jp == 2) and (h == 0) and (hp == 0)) {return fi(x,12);}
-   else if ((j == 2) and (jp == 2) and (h == 0) and ((hp == 1) or (hp == 2))) {return fi(x,13);}
-   else if ((j == 2) and (jp == 0) and ((h == 1) or (h == 2)) and (hp == 0)) {return fi(x,5);}
-   else if ((j == 2) and (jp == 1) and ((h == 1) or (h == 2)) and (hp == 0)) {return fi(x,8);}
-   else if ((j == 2) and (jp == 1) and ((h == 1) or (h == 2)) and ((hp == 1) or (hp == 2))) {return fi(x,11);}
-   else if ((j == 2) and (jp == 2) and ((h == 1) or (h == 2)) and (hp == 0)) {return fi(x,13);}
-   else if ((j == 2) and (jp == 2) and ((h == 1) or (h == 2)) and ((hp == 1) or (hp == 2))) {return fi(x,14);}
-   else if ((j == 0) and (jp == 2) and (h == 0) and ((hp == 3) or (hp == 4))) {return fi(x,9);}
-   else if ((j == 1) and (jp == 2) and (h == 0) and ((hp == 3) or (hp == 4))) {return fi(x,11);}
-   else if ((j == 1) and (jp == 2) and ((h == 1) or (h == 2)) and ((hp == 3) or (hp == 4))) {return fi(x,15);}
-   else if ((j == 2) and (jp == 2) and (h == 0) and ((hp == 3) or (hp == 4))) {return fi(x,16);}
-   else if ((j == 2) and (jp == 2) and ((h == 1) or (h == 2)) and ((hp == 3) or (hp == 4))) {return fi(x,17);}
-   else if ((j == 2) and (jp == 0) and ((h == 3) or (h == 4)) and (hp == 0)) {return fi(x,9);}
-   else if ((j == 2) and (jp == 1) and ((h == 3) or (h == 4)) and (hp == 0)) {return fi(x,11);}
-   else if ((j == 2) and (jp == 1) and ((h == 3) or (h == 4)) and ((hp == 1) or (hp == 2))) {return fi(x,15);}
-   else if ((j == 2) and (jp == 2) and ((h == 3) or (h == 4)) and (hp == 0)) {return fi(x,16);}
-   else if ((j == 2) and (jp == 2) and ((h == 3) or (h == 4)) and ((hp == 1) or (hp == 2))) {return fi(x,17);}
-   else if ((j == 2) and (jp == 2) and ((h == 3) or (h == 4)) and ((hp == 3) or (hp == 4))) {return fi(x,18);}
+   return fi(x,fjjphhpindexdict[j][jp][h][hp]);
 
-   else {return 0.;}
+ }
+
+// ---------------------------------------------------
+//
+
+Double_t KpiKpiSpectrumNW::fjjphhp_cos1(Int_t j, Int_t jp, Int_t h, Int_t hp) const 
+ { 
+
+   return fi_cos1_temp[(int) fjjphhpindexdict[j][jp][h][hp]-1];
+
+ }
+
+// ---------------------------------------------------
+//
+
+Double_t KpiKpiSpectrumNW::fjjphhp_cos2(Int_t j, Int_t jp, Int_t h, Int_t hp) const 
+ { 
+
+   return fi_cos2_temp[(int) fjjphhpindexdict[j][jp][h][hp]-1];
 
  }
 
@@ -1807,63 +2608,17 @@ Double_t KpiKpiSpectrumNW::fjjphhp(Double_t x, Int_t j, Int_t jp, Int_t h, Int_t
 Double_t KpiKpiSpectrumNW::ghhp(Double_t x, Int_t h, Int_t hp) const 
  { 
 
-   if ((h == 0) and (hp == 0)) {return gi(x,1);}
-   else if ((h == 0) and (hp == 1)) {return gi(x,2);}
-   else if ((h == 0) and (hp == 2)) {return gi(x,3);}
-   else if ((h == 1) and (hp == 0)) {return gi(x,2);}
-   else if ((h == 1) and (hp == 1)) {return gi(x,4);}
-   else if ((h == 1) and (hp == 2)) {return gi(x,5);}
-   else if ((h == 2) and (hp == 0)) {return gi(x,3);}
-   else if ((h == 2) and (hp == 1)) {return gi(x,5);}
-   else if ((h == 2) and (hp == 2)) {return gi(x,6);}
-   else if ((h == 0) and (hp == 3)) {return gi(x,7);}
-   else if ((h == 0) and (hp == 4)) {return gi(x,8);}
-   else if ((h == 1) and (hp == 3)) {return gi(x,9);}
-   else if ((h == 1) and (hp == 4)) {return gi(x,10);}
-   else if ((h == 2) and (hp == 3)) {return gi(x,11);}
-   else if ((h == 2) and (hp == 4)) {return gi(x,12);}
-   else if ((h == 3) and (hp == 0)) {return gi(x,7);}
-   else if ((h == 3) and (hp == 1)) {return gi(x,9);}
-   else if ((h == 3) and (hp == 2)) {return gi(x,11);}
-   else if ((h == 3) and (hp == 3)) {return gi(x,13);}
-   else if ((h == 3) and (hp == 4)) {return gi(x,14);}
-   else if ((h == 4) and (hp == 0)) {return gi(x,8);}
-   else if ((h == 4) and (hp == 1)) {return gi(x,10);}
-   else if ((h == 4) and (hp == 2)) {return gi(x,12);}
-   else if ((h == 4) and (hp == 3)) {return gi(x,14);}
-   else if ((h == 4) and (hp == 4)) {return gi(x,15);}
-
-   throw std::invalid_argument( "Invalid argument" );
+   return gi(x,ghhpindexdict[h][hp]);
 
  }
 
 // ---------------------------------------------------
-// Components of the numerical normalization factors.
+// 
 
-TComplex KpiKpiSpectrumNW::Nj1j2h(Int_t j1, Int_t j2, Int_t h) const 
- {
-  
-   if ((j1 == 0) and (j2 == 0) and (h == 0)) {return TComplex(1./(2.*sqrt(2.*pi)),0.);}
-   else if ((j1 == 0) and (j2 == 1) and (h == 0)) {return TComplex(-sqrt(3.)/(2.*sqrt(2.*pi)),0.);}
-   else if ((j1 == 0) and (j2 == 2) and (h == 0)) {return TComplex(sqrt(5.)/(4.*sqrt(2.*pi)),0.);}
-   else if ((j1 == 1) and (j2 == 0) and (h == 0)) {return TComplex(sqrt(3.)/(2.*sqrt(2.*pi)),0.);}
-   else if ((j1 == 1) and (j2 == 1) and (h == 0)) {return TComplex(-3./(2.*sqrt(2.*pi)),0.);}
-   else if ((j1 == 1) and (j2 == 1) and (h == 1)) {return TComplex(-3./(4.*sqrt(pi)),0.);}
-   else if ((j1 == 1) and (j2 == 1) and (h == 2)) {return TComplex(0.,-3./(4.*sqrt(pi)));}
-   else if ((j1 == 1) and (j2 == 2) and (h == 0)) {return TComplex(sqrt(15.)/(4.*sqrt(2.*pi)),0.);}
-   else if ((j1 == 1) and (j2 == 2) and (h == 1)) {return TComplex(3.*sqrt(5.)/(4.*sqrt(pi)),0.);}
-   else if ((j1 == 1) and (j2 == 2) and (h == 2)) {return TComplex(0.,3.*sqrt(5.)/(4.*sqrt(pi)));}
-   else if ((j1 == 2) and (j2 == 0) and (h == 0)) {return TComplex(sqrt(5.)/(4.*sqrt(2.*pi)),0.);}
-   else if ((j1 == 2) and (j2 == 1) and (h == 0)) {return TComplex(-sqrt(15.)/(4.*sqrt(2.*pi)),0.);}
-   else if ((j1 == 2) and (j2 == 1) and (h == 1)) {return TComplex(-3.*sqrt(5.)/(4.*sqrt(pi)),0.);}
-   else if ((j1 == 2) and (j2 == 1) and (h == 2)) {return TComplex(0.,-3.*sqrt(5.)/(4.*sqrt(pi)));}
-   else if ((j1 == 2) and (j2 == 2) and (h == 0)) {return TComplex(5./(8.*sqrt(2.*pi)),0.);}
-   else if ((j1 == 2) and (j2 == 2) and (h == 1)) {return TComplex(15./(4.*sqrt(pi)),0.);}
-   else if ((j1 == 2) and (j2 == 2) and (h == 2)) {return TComplex(0.,15./(4.*sqrt(pi)));}
-   else if ((j1 == 2) and (j2 == 2) and (h == 3)) {return TComplex(15./(16.*sqrt(pi)),0.);}
-   else if ((j1 == 2) and (j2 == 2) and (h == 4)) {return TComplex(0.,15./(16.*sqrt(pi)));}
+Double_t KpiKpiSpectrumNW::ghhp_phi(Int_t h, Int_t hp) const 
+ { 
 
-   else {return TComplex(0.,0.);}
+   return gi_temp[(int) ghhpindexdict[h][hp]-1];
 
  }
 
@@ -1872,10 +2627,8 @@ TComplex KpiKpiSpectrumNW::Nj1j2h(Int_t j1, Int_t j2, Int_t h) const
 
 TComplex KpiKpiSpectrumNW::Nj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const 
  {
-   
-   TComplex N = Nj1j2h(j1,j2,h);
-   TComplex Np = Nj1j2h(j1p,j2p,hp);
-   return N*TComplex::Conjugate(Np);
+
+   return Nj1j2hdict[j1][j2][h]*TComplex::Conjugate(Nj1j2hdict[j1p][j2p][hp]);
   
  }
 
@@ -1906,7 +2659,7 @@ Double_t KpiKpiSpectrumNW::Blatt_Weisskopf2(Double_t q, Double_t q0, Int_t L) co
 
    if (L<1.) {return 1.;}  
    Double_t d;
-   if (L == 1) {d = 3.4e-03;}
+   if (L == 1) {d = 3.e-03;}
    else if (L == 2) {d = 2.7e-03;}
    else {d = 3.e-03/L;}
    Double_t z = q*d*q*d;
@@ -1944,7 +2697,7 @@ TComplex KpiKpiSpectrumNW::Resonance(Double_t m, Double_t m_sister, Double_t m0,
 
    // Relativistic spin-J Breit Wigner amplitude.
    Double_t gamma = g0*pow(q/q0,2*J+1)*m0/m*Blatt_Weisskopf2(q,q0,J);
-   TComplex denom(m*m-m0*m0,-gamma*m0);
+   TComplex denom(m0*m0-m*m,-m0*gamma);
    TComplex num(m0*g0,0.);
    TComplex BW = num/denom;
 
@@ -1990,19 +2743,19 @@ TComplex KpiKpiSpectrumNW::Mji(Double_t m, Double_t m_sister, Int_t ji) const
 
    if (ji == 0)
 	{
-	T = Lass(m,m_sister,ms,gs);
+	T = Lass(m,m_sister,ms,gs)*TComplex(0.00021167233881101775,-0.6904181463662509,1);
 	}
 
    else if (ji == 1.)
 	{
-	if (pw_mass_altmodel == 0) {T = Resonance(m,m_sister,mv,gv,1);}
+	if (pw_mass_altmodel == 0) {T = Resonance(m,m_sister,mv,gv,1)*TComplex(3.0782434270248222,1.5707963267948966-pi,1);}
 	else if (pw_mass_altmodel == 1) {T = Resonance(m,m_sister,mv,gv,1) + TComplex(sqrt(f_1410_rel2_892),delta_1410_rel2_892,1)*Resonance(m,m_sister,MKst_1_1410,GKst_1_1410,1) + TComplex(sqrt(f_1680_rel2_892),delta_1680_rel2_892,1)*Resonance(m,m_sister,MKst_1_1680,GKst_1_1680,1);}
-	else {throw std::invalid_argument( "Invalid argument" );}
+	else {throw std::invalid_argument( "Invalid argument #4" );}
 	}
 
    else if (ji == 2)
 	{
-	T = Resonance(m,m_sister,mt,gt,2);
+	T = Resonance(m,m_sister,mt,gt,2)*TComplex(112.27484112040055,3.1314804474438556-pi,1);
 	}
    
    return T;
@@ -2025,7 +2778,7 @@ TComplex KpiKpiSpectrumNW::Mj1j2(Double_t ma, Double_t mb, Int_t j1, Int_t j2) c
  else if ((j1 == 2) and (j2 == 1)) {return Mji(ma,mb,2)*Mji(mb,ma,1)/sqrt(Im21);}
  else if ((j1 == 2) and (j2 == 2)) {return Mji(ma,mb,2)*Mji(mb,ma,2)/sqrt(Im22);}
 
- throw std::invalid_argument( "Invalid argument" );
+ throw std::invalid_argument( "Invalid argument #5" );
 
  }
 
@@ -2038,7 +2791,7 @@ Double_t KpiKpiSpectrumNW::phasespace(Double_t ma, Double_t mb) const
    Double_t Q1 = get_q(ma,MKaon,MPion);
    Double_t Q2 = get_q(mb,MKaon,MPion);
    Double_t QB = get_q(MBs,ma,mb);
-   Double_t phsp = Q1*Q2*QB;
+   Double_t phsp = Q1*Q2*QB*4.668198266871305e-09;
 
    return phsp;
 
@@ -2050,7 +2803,7 @@ Double_t KpiKpiSpectrumNW::phasespace(Double_t ma, Double_t mb) const
 TComplex KpiKpiSpectrumNW::hj1j2j1pj2p(Double_t ma, Double_t mb, Int_t j1, Int_t j2, Int_t j1p, Int_t j2p) const 
  { 
 
-   return Mj1j2(ma,mb,j1,j2)*TComplex::Conjugate(Mj1j2(ma,mb,j1p,j2p))*phasespace(ma,mb);
+   return Mj1j2_temp[j1][j2]*TComplex::Conjugate(Mj1j2_temp[j1p][j2p])*phasespace_temp;
 
  }
 
@@ -2059,12 +2812,63 @@ TComplex KpiKpiSpectrumNW::hj1j2j1pj2p(Double_t ma, Double_t mb, Int_t j1, Int_t
 // ######################################################################################################
 
 // ---------------------------------------------------
-// Time dependent acceptance.
+// Time dependent acceptance, spline version.
 
 Double_t KpiKpiSpectrumNW::accTime(Double_t tau) const 
  { 
+
+   if (acctype == 0) {return 1.;}
+   else if (acctype == 1 or acctype == 2) {
+
+      Int_t tau_bin;
+      if (tau < spl.knot(wide_window,1)) {tau_bin = 0;}
+      else if ((tau >= spl.knot(wide_window,1)) and (tau < spl.knot(wide_window,2))) {tau_bin = 1;}
+      else if ((tau >= spl.knot(wide_window,2)) and (tau < spl.knot(wide_window,3))) {tau_bin = 2;}
+      else if ((tau >= spl.knot(wide_window,3)) and (tau < spl.knot(wide_window,4))) {tau_bin = 3;}
+      else {tau_bin = 4;}
+
+      return spl.coef(year_opt,trig_opt,wide_window,tau_bin,0)+tau*spl.coef(year_opt,trig_opt,wide_window,tau_bin,1)+tau*tau*spl.coef(year_opt,trig_opt,wide_window,tau_bin,2)+tau*tau*tau*spl.coef(year_opt,trig_opt,wide_window,tau_bin,3);
+
+   }
+
+   else if (acctype == 3) {
+
+      Int_t tau_bin;
+      if (tau < genaccpar.knot_gen(wide_window,1)) {tau_bin = 0;}
+      else if ((tau >= genaccpar.knot_gen(wide_window,1)) and (tau < genaccpar.knot_gen(wide_window,2))) {tau_bin = 1;}
+      else if ((tau >= genaccpar.knot_gen(wide_window,2)) and (tau < genaccpar.knot_gen(wide_window,3))) {tau_bin = 2;}
+      else if ((tau >= genaccpar.knot_gen(wide_window,3)) and (tau < genaccpar.knot_gen(wide_window,4))) {tau_bin = 3;}
+      else {tau_bin = 4;}
+
+      return genaccpar.coef_gen(wide_window,tau_bin,0)+tau*genaccpar.coef_gen(wide_window,tau_bin,1)+tau*tau*genaccpar.coef_gen(wide_window,tau_bin,2)+tau*tau*tau*genaccpar.coef_gen(wide_window,tau_bin,3);
+
+   }
+
+   return 0.;
+
+ }
+
+// ---------------------------------------------------
+// Time dependent acceptance, parametric version.
+
+Double_t KpiKpiSpectrumNW::accTimeParam(Double_t tau) const 
+ { 
    
-   return flatacc+(1.-flatacc)*tau*tau*tau/(accpar.a_acc(year_opt,wide_window)+tau*tau*tau)*(1.-accpar.b_acc(year_opt,wide_window)*tau);
+   return tau*tau*tau/(accpar.a_acc(year_opt,trig_opt,wide_window)+tau*tau*tau)*(1.+accpar.b_acc(year_opt,trig_opt,wide_window)*tau+accpar.c_acc(year_opt,trig_opt,wide_window)*tau*tau);
+
+ }
+
+// ---------------------------------------------------
+// Time dependent acceptance, histogram version.
+
+Double_t KpiKpiSpectrumNW::accTimeHisto(Double_t tau) const 
+ { 
+
+   for (int i=0; i<TAcc.nbins; ++i) {
+      if (tau >= TAcc.bounds(i) and tau < TAcc.bounds(i+1)) {return TAcc.val(year_opt,trig_opt,wide_window,i);}
+   }
+
+   return TAcc.val(year_opt,trig_opt,wide_window,TAcc.nbins-1);
 
  }
 
@@ -2074,7 +2878,11 @@ Double_t KpiKpiSpectrumNW::accTime(Double_t tau) const
 Double_t KpiKpiSpectrumNW::accAng(Double_t x) const
  { 
 
-   return 1.+(1.-flatacc)*(accpar.k1(year_opt,wide_window)*x+accpar.k2(year_opt,wide_window)*(2.*x*x-1.)+accpar.k3(year_opt,wide_window)*(4.*x*x*x-3.*x)+accpar.k4(year_opt,wide_window)*(8.*x*x*x*x-8.*x*x+1.));
+   if (acctype == 0) {return 1.;}
+   else if (acctype == 1 or acctype == 2) {return 1.+accpar.k1(year_opt,trig_opt,wide_window)*x+accpar.k2(year_opt,trig_opt,wide_window)*(2.*x*x-1.)+accpar.k3(year_opt,trig_opt,wide_window)*(4.*x*x*x-3.*x)+accpar.k4(year_opt,trig_opt,wide_window)*(8.*x*x*x*x-8.*x*x+1.)+accpar.k5(year_opt,trig_opt,wide_window)*(16.*x*x*x*x*x-20.*x*x*x+5.*x);}
+   else if (acctype == 3) {return 1.+genaccpar.k1_gen(wide_window)*x+genaccpar.k2_gen(wide_window)*(2.*x*x-1.)+genaccpar.k3_gen(wide_window)*(4.*x*x*x-3.*x)+genaccpar.k4_gen(wide_window)*(8.*x*x*x*x-8.*x*x+1.)+genaccpar.k5_gen(wide_window)*(16.*x*x*x*x*x-20.*x*x*x+5.*x);}
+
+   return 0.;
 
  }
 
@@ -2084,7 +2892,11 @@ Double_t KpiKpiSpectrumNW::accAng(Double_t x) const
 Double_t KpiKpiSpectrumNW::accMass(Double_t m) const 
  { 
    
-   return flatacc+(1.-flatacc)*(1. + accpar.p1(year_opt,wide_window)*m);
+   if (acctype == 0) {return 1.;}
+   else if (acctype == 1 or acctype == 2) {return 1. + accpar.p1(year_opt,trig_opt,wide_window)*m;}
+   else if (acctype == 3) {return 1. + genaccpar.p1_gen(wide_window)*m;}
+
+   return 0.;
 
  }
 
@@ -2094,7 +2906,7 @@ Double_t KpiKpiSpectrumNW::accMass(Double_t m) const
 TComplex KpiKpiSpectrumNW::ITj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const
  {
 
-   return (IT_cosh*M_Average(j1,j2,h,j1p,j2p,hp)-IT_sinh*M_DeltaGamma(j1,j2,h,j1p,j2p,hp))+DCP_prod*(IT_cos*M_DirCP(j1,j2,h,j1p,j2p,hp)+IT_sin*M_MixCP(j1,j2,h,j1p,j2p,hp));
+   return (IT_cosh_temp*M_Average(j1,j2,h,j1p,j2p,hp)-IT_sinh_temp*M_DeltaGamma(j1,j2,h,j1p,j2p,hp))+DCP_prod[int(wide_window)]*(IT_cos_temp*M_DirCP(j1,j2,h,j1p,j2p,hp)+IT_sin_temp*M_MixCP(j1,j2,h,j1p,j2p,hp));
 
  }
 
@@ -2123,7 +2935,7 @@ Double_t KpiKpiSpectrumNW::Ifi(Int_t i) const
    else if (i == 17) {return If17;}
    else if (i == 18) {return If18;}
 
-   throw std::invalid_argument( "Invalid argument" );
+   throw std::invalid_argument( "Invalid argument #6" );
 
  }
 
@@ -2150,7 +2962,7 @@ Double_t KpiKpiSpectrumNW::Igi(Int_t i) const
    else if (i == 14) {return 0.;}
    else if (i == 15) {return pi;}
 
-   throw std::invalid_argument( "Invalid argument" );
+   throw std::invalid_argument( "Invalid argument #7" );
 
  }
 
@@ -2160,44 +2972,7 @@ Double_t KpiKpiSpectrumNW::Igi(Int_t i) const
 Double_t KpiKpiSpectrumNW::Ifjjphhp(Int_t j, Int_t jp, Int_t h, Int_t hp) const 
  { 
 
-   if ((j == 0) and (jp == 0) and (h == 0) and (hp == 0)) {return Ifi(1);}
-   else if ((j == 0) and (jp == 1) and (h == 0) and (hp == 0)) {return Ifi(2);}
-   else if ((j == 0) and (jp == 1) and (h == 0) and ((hp == 1) or (hp == 2))) {return Ifi(3);}
-   else if ((j == 0) and (jp == 2) and (h == 0) and (hp == 0)) {return Ifi(4);}
-   else if ((j == 0) and (jp == 2) and (h == 0) and ((hp == 1) or (hp == 2))) {return Ifi(5);}
-   else if ((j == 1) and (jp == 0) and (h == 0) and (hp == 0)) {return Ifi(2);}
-   else if ((j == 1) and (jp == 1) and (h == 0) and (hp == 0)) {return Ifi(6);}
-   else if ((j == 1) and (jp == 1) and (h == 0) and ((hp == 1) or (hp == 2))) {return Ifi(5);}
-   else if ((j == 1) and (jp == 2) and (h == 0) and (hp == 0)) {return Ifi(7);}
-   else if ((j == 1) and (jp == 2) and (h == 0) and ((hp == 1) or (hp == 2))) {return Ifi(8);}
-   else if ((j == 1) and (jp == 0) and ((h == 1) or (h == 2)) and (hp == 0)) {return Ifi(3);}
-   else if ((j == 1) and (jp == 1) and ((h == 1) or (h == 2)) and (hp == 0)) {return Ifi(5);}
-   else if ((j == 1) and (jp == 1) and ((h == 1) or (h == 2)) and ((hp == 1) or (hp == 2))) {return Ifi(9);}
-   else if ((j == 1) and (jp == 2) and ((h == 1) or (h == 2)) and (hp == 0)) {return Ifi(10);}
-   else if ((j == 1) and (jp == 2) and ((h == 1) or (h == 2)) and ((hp == 1) or (hp == 2))) {return Ifi(11);}
-   else if ((j == 2) and (jp == 0) and (h == 0) and (hp == 0)) {return Ifi(4);}
-   else if ((j == 2) and (jp == 1) and (h == 0) and (hp == 0)) {return Ifi(7);}
-   else if ((j == 2) and (jp == 1) and (h == 0) and ((hp == 1) or (hp == 2))) {return Ifi(10);}
-   else if ((j == 2) and (jp == 2) and (h == 0) and (hp == 0)) {return Ifi(12);}
-   else if ((j == 2) and (jp == 2) and (h == 0) and ((hp == 1) or (hp == 2))) {return Ifi(13);}
-   else if ((j == 2) and (jp == 0) and ((h == 1) or (h == 2)) and (hp == 0)) {return Ifi(5);}
-   else if ((j == 2) and (jp == 1) and ((h == 1) or (h == 2)) and (hp == 0)) {return Ifi(8);}
-   else if ((j == 2) and (jp == 1) and ((h == 1) or (h == 2)) and ((hp == 1) or (hp == 2))) {return Ifi(11);}
-   else if ((j == 2) and (jp == 2) and ((h == 1) or (h == 2)) and (hp == 0)) {return Ifi(13);}
-   else if ((j == 2) and (jp == 2) and ((h == 1) or (h == 2)) and ((hp == 1) or (hp == 2))) {return Ifi(14);}
-   else if ((j == 0) and (jp == 2) and (h == 0) and ((hp == 3) or (hp == 4))) {return Ifi(9);}
-   else if ((j == 1) and (jp == 2) and (h == 0) and ((hp == 3) or (hp == 4))) {return Ifi(11);}
-   else if ((j == 1) and (jp == 2) and ((h == 1) or (h == 2)) and ((hp == 3) or (hp == 4))) {return Ifi(15);}
-   else if ((j == 2) and (jp == 2) and (h == 0) and ((hp == 3) or (hp == 4))) {return Ifi(16);}
-   else if ((j == 2) and (jp == 2) and ((h == 1) or (h == 2)) and ((hp == 3) or (hp == 4))) {return Ifi(17);}
-   else if ((j == 2) and (jp == 0) and ((h == 3) or (h == 4)) and (hp == 0)) {return Ifi(9);}
-   else if ((j == 2) and (jp == 1) and ((h == 3) or (h == 4)) and (hp == 0)) {return Ifi(11);}
-   else if ((j == 2) and (jp == 1) and ((h == 3) or (h == 4)) and ((hp == 1) or (hp == 2))) {return Ifi(15);}
-   else if ((j == 2) and (jp == 2) and ((h == 3) or (h == 4)) and (hp == 0)) {return Ifi(16);}
-   else if ((j == 2) and (jp == 2) and ((h == 3) or (h == 4)) and ((hp == 1) or (hp == 2))) {return Ifi(17);}
-   else if ((j == 2) and (jp == 2) and ((h == 3) or (h == 4)) and ((hp == 3) or (hp == 4))) {return Ifi(18);}
-
-   else {return 0.;}
+   return Ifi(fjjphhpindexdict[j][jp][h][hp]);
 
  }
 
@@ -2207,32 +2982,7 @@ Double_t KpiKpiSpectrumNW::Ifjjphhp(Int_t j, Int_t jp, Int_t h, Int_t hp) const
 Double_t KpiKpiSpectrumNW::Ighhp(Int_t h, Int_t hp) const 
  { 
 
-   if ((h == 0) and (hp == 0)) {return Igi(1);}
-   else if ((h == 0) and (hp == 1)) {return Igi(2);}
-   else if ((h == 0) and (hp == 2)) {return Igi(3);}
-   else if ((h == 1) and (hp == 1)) {return Igi(4);}
-   else if ((h == 1) and (hp == 2)) {return Igi(5);}
-   else if ((h == 2) and (hp == 0)) {return Igi(3);}
-   else if ((h == 2) and (hp == 1)) {return Igi(5);}
-   else if ((h == 2) and (hp == 2)) {return Igi(6);}
-   else if ((h == 0) and (hp == 3)) {return Igi(7);}
-   else if ((h == 0) and (hp == 4)) {return Igi(8);}
-   else if ((h == 1) and (hp == 3)) {return Igi(9);}
-   else if ((h == 1) and (hp == 4)) {return Igi(10);}
-   else if ((h == 2) and (hp == 3)) {return Igi(11);}
-   else if ((h == 2) and (hp == 4)) {return Igi(12);}
-   else if ((h == 3) and (hp == 0)) {return Igi(7);}
-   else if ((h == 3) and (hp == 1)) {return Igi(9);}
-   else if ((h == 3) and (hp == 2)) {return Igi(11);}
-   else if ((h == 3) and (hp == 3)) {return Igi(13);}
-   else if ((h == 3) and (hp == 4)) {return Igi(14);}
-   else if ((h == 4) and (hp == 0)) {return Igi(8);}
-   else if ((h == 4) and (hp == 1)) {return Igi(10);}
-   else if ((h == 4) and (hp == 2)) {return Igi(12);}
-   else if ((h == 4) and (hp == 3)) {return Igi(14);}
-   else if ((h == 4) and (hp == 4)) {return Igi(15);}
-
-   throw std::invalid_argument( "Invalid argument" );
+   return Igi(ghhpindexdict[h][hp]);
 
  }
 
@@ -2242,97 +2992,7 @@ Double_t KpiKpiSpectrumNW::Ighhp(Int_t h, Int_t hp) const
 TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p) const 
  { 
 
-   if ((j1 == 0) and (j2 == 0) and (j1p == 0) and (j2p == 0)) {return TComplex(Ih22Re,0.);}
-   if ((j1 == 0) and (j2 == 0) and (j1p == 0) and (j2p == 1)) {return TComplex(Ih1Re,Ih1Im);}
-   if ((j1 == 0) and (j2 == 0) and (j1p == 0) and (j2p == 2)) {return TComplex(Ih2Re,Ih2Im);}
-   if ((j1 == 0) and (j2 == 0) and (j1p == 1) and (j2p == 0)) {return TComplex(Ih1Re,Ih1Im);}
-   if ((j1 == 0) and (j2 == 0) and (j1p == 1) and (j2p == 1)) {return TComplex(Ih3Re,Ih3Im);}
-   if ((j1 == 0) and (j2 == 0) and (j1p == 1) and (j2p == 2)) {return TComplex(Ih4Re,Ih4Im);}
-   if ((j1 == 0) and (j2 == 0) and (j1p == 2) and (j2p == 0)) {return TComplex(Ih2Re,Ih2Im);}
-   if ((j1 == 0) and (j2 == 0) and (j1p == 2) and (j2p == 1)) {return TComplex(Ih4Re,Ih4Im);}
-   if ((j1 == 0) and (j2 == 0) and (j1p == 2) and (j2p == 2)) {return TComplex(Ih5Re,Ih5Im);}
-   if ((j1 == 0) and (j2 == 1) and (j1p == 0) and (j2p == 0)) {return TComplex(Ih1Re,-Ih1Im);}
-
-   if ((j1 == 0) and (j2 == 1) and (j1p == 0) and (j2p == 1)) {return TComplex(Ih23Re,0.);}
-   if ((j1 == 0) and (j2 == 1) and (j1p == 0) and (j2p == 2)) {return TComplex(Ih6Re,Ih6Im);}
-   if ((j1 == 0) and (j2 == 1) and (j1p == 1) and (j2p == 0)) {return TComplex(Ih7Re,Ih7Im);}
-   if ((j1 == 0) and (j2 == 1) and (j1p == 1) and (j2p == 1)) {return TComplex(Ih8Re,Ih8Im);}
-   if ((j1 == 0) and (j2 == 1) and (j1p == 1) and (j2p == 2)) {return TComplex(Ih9Re,Ih9Im);}
-   if ((j1 == 0) and (j2 == 1) and (j1p == 2) and (j2p == 0)) {return TComplex(Ih10Re,Ih10Im);}
-   if ((j1 == 0) and (j2 == 1) and (j1p == 2) and (j2p == 1)) {return TComplex(Ih11Re,Ih11Im);}
-   if ((j1 == 0) and (j2 == 1) and (j1p == 2) and (j2p == 2)) {return TComplex(Ih12Re,Ih12Im);}
-   if ((j1 == 0) and (j2 == 2) and (j1p == 0) and (j2p == 0)) {return TComplex(Ih2Re,-Ih2Im);}
-   if ((j1 == 0) and (j2 == 2) and (j1p == 0) and (j2p == 1)) {return TComplex(Ih6Re,-Ih6Im);}
-
-   if ((j1 == 0) and (j2 == 2) and (j1p == 0) and (j2p == 2)) {return TComplex(Ih25Re,0.);}
-   if ((j1 == 0) and (j2 == 2) and (j1p == 1) and (j2p == 0)) {return TComplex(Ih10Re,-Ih10Im);}
-   if ((j1 == 0) and (j2 == 2) and (j1p == 1) and (j2p == 1)) {return TComplex(Ih13Re,Ih13Im);}
-   if ((j1 == 0) and (j2 == 2) and (j1p == 1) and (j2p == 2)) {return TComplex(Ih14Re,Ih14Im);}
-   if ((j1 == 0) and (j2 == 2) and (j1p == 2) and (j2p == 0)) {return TComplex(Ih15Re,Ih15Im);}
-   if ((j1 == 0) and (j2 == 2) and (j1p == 2) and (j2p == 1)) {return TComplex(Ih16Re,Ih16Im);}
-   if ((j1 == 0) and (j2 == 2) and (j1p == 2) and (j2p == 2)) {return TComplex(Ih17Re,Ih17Im);}
-   if ((j1 == 1) and (j2 == 0) and (j1p == 0) and (j2p == 0)) {return TComplex(Ih1Re,-Ih1Im);}
-   if ((j1 == 1) and (j2 == 0) and (j1p == 0) and (j2p == 1)) {return TComplex(Ih7Re,Ih7Im);}
-   if ((j1 == 1) and (j2 == 0) and (j1p == 0) and (j2p == 2)) {return TComplex(Ih10Re,Ih10Im);}
-
-   if ((j1 == 1) and (j2 == 0) and (j1p == 1) and (j2p == 0)) {return TComplex(Ih24Re,0.);}
-   if ((j1 == 1) and (j2 == 0) and (j1p == 1) and (j2p == 1)) {return TComplex(Ih8Re,Ih8Im);}
-   if ((j1 == 1) and (j2 == 0) and (j1p == 1) and (j2p == 2)) {return TComplex(Ih11Re,Ih11Im);}
-   if ((j1 == 1) and (j2 == 0) and (j1p == 2) and (j2p == 0)) {return TComplex(Ih6Re,Ih6Im);}
-   if ((j1 == 1) and (j2 == 0) and (j1p == 2) and (j2p == 1)) {return TComplex(Ih9Re,Ih9Im);}
-   if ((j1 == 1) and (j2 == 0) and (j1p == 2) and (j2p == 2)) {return TComplex(Ih12Re,Ih12Im);}
-   if ((j1 == 1) and (j2 == 1) and (j1p == 0) and (j2p == 0)) {return TComplex(Ih3Re,-Ih3Im);}
-   if ((j1 == 1) and (j2 == 1) and (j1p == 0) and (j2p == 1)) {return TComplex(Ih8Re,-Ih8Im);}
-   if ((j1 == 1) and (j2 == 1) and (j1p == 0) and (j2p == 2)) {return TComplex(Ih13Re,-Ih13Im);}
-   if ((j1 == 1) and (j2 == 1) and (j1p == 1) and (j2p == 0)) {return TComplex(Ih8Re,-Ih8Im);}
-
-   if ((j1 == 1) and (j2 == 1) and (j1p == 1) and (j2p == 1)) {return TComplex(Ih27Re,0.);}
-   if ((j1 == 1) and (j2 == 1) and (j1p == 1) and (j2p == 2)) {return TComplex(Ih18Re,Ih18Im);}
-   if ((j1 == 1) and (j2 == 1) and (j1p == 2) and (j2p == 0)) {return TComplex(Ih13Re,-Ih13Im);}
-   if ((j1 == 1) and (j2 == 1) and (j1p == 2) and (j2p == 1)) {return TComplex(Ih18Re,Ih18Im);}
-   if ((j1 == 1) and (j2 == 1) and (j1p == 2) and (j2p == 2)) {return TComplex(Ih19Re,Ih19Im);}
-   if ((j1 == 1) and (j2 == 2) and (j1p == 0) and (j2p == 0)) {return TComplex(Ih4Re,-Ih4Im);}
-   if ((j1 == 1) and (j2 == 2) and (j1p == 0) and (j2p == 1)) {return TComplex(Ih9Re,-Ih9Im);}
-   if ((j1 == 1) and (j2 == 2) and (j1p == 0) and (j2p == 2)) {return TComplex(Ih14Re,-Ih14Im);}
-   if ((j1 == 1) and (j2 == 2) and (j1p == 1) and (j2p == 0)) {return TComplex(Ih11Re,-Ih11Im);}
-   if ((j1 == 1) and (j2 == 2) and (j1p == 1) and (j2p == 1)) {return TComplex(Ih18Re,-Ih18Im);}
-
-   if ((j1 == 1) and (j2 == 2) and (j1p == 1) and (j2p == 2)) {return TComplex(Ih28Re,0.);}
-   if ((j1 == 1) and (j2 == 2) and (j1p == 2) and (j2p == 0)) {return TComplex(Ih16Re,-Ih16Im);}
-   if ((j1 == 1) and (j2 == 2) and (j1p == 2) and (j2p == 1)) {return TComplex(Ih20Re,Ih20Im);}
-   if ((j1 == 1) and (j2 == 2) and (j1p == 2) and (j2p == 2)) {return TComplex(Ih21Re,Ih21Im);}
-   if ((j1 == 2) and (j2 == 0) and (j1p == 0) and (j2p == 0)) {return TComplex(Ih2Re,-Ih2Im);}
-   if ((j1 == 2) and (j2 == 0) and (j1p == 0) and (j2p == 1)) {return TComplex(Ih10Re,-Ih10Im);}
-   if ((j1 == 2) and (j2 == 0) and (j1p == 0) and (j2p == 2)) {return TComplex(Ih15Re,Ih15Im);}
-   if ((j1 == 2) and (j2 == 0) and (j1p == 1) and (j2p == 0)) {return TComplex(Ih6Re,-Ih6Im);}
-   if ((j1 == 2) and (j2 == 0) and (j1p == 1) and (j2p == 1)) {return TComplex(Ih13Re,Ih13Im);}
-   if ((j1 == 2) and (j2 == 0) and (j1p == 1) and (j2p == 2)) {return TComplex(Ih16Re,Ih16Im);}
-
-   if ((j1 == 2) and (j2 == 0) and (j1p == 2) and (j2p == 0)) {return TComplex(Ih26Re,0.);}
-   if ((j1 == 2) and (j2 == 0) and (j1p == 2) and (j2p == 1)) {return TComplex(Ih14Re,Ih14Im);}
-   if ((j1 == 2) and (j2 == 0) and (j1p == 2) and (j2p == 2)) {return TComplex(Ih17Re,Ih17Im);}
-   if ((j1 == 2) and (j2 == 1) and (j1p == 0) and (j2p == 0)) {return TComplex(Ih4Re,-Ih4Im);}
-   if ((j1 == 2) and (j2 == 1) and (j1p == 0) and (j2p == 1)) {return TComplex(Ih11Re,-Ih11Im);}
-   if ((j1 == 2) and (j2 == 1) and (j1p == 0) and (j2p == 2)) {return TComplex(Ih16Re,-Ih16Im);}
-   if ((j1 == 2) and (j2 == 1) and (j1p == 1) and (j2p == 0)) {return TComplex(Ih9Re,-Ih9Im);}
-   if ((j1 == 2) and (j2 == 1) and (j1p == 1) and (j2p == 1)) {return TComplex(Ih18Re,-Ih18Im);}
-   if ((j1 == 2) and (j2 == 1) and (j1p == 1) and (j2p == 2)) {return TComplex(Ih20Re,Ih20Im);}
-   if ((j1 == 2) and (j2 == 1) and (j1p == 2) and (j2p == 0)) {return TComplex(Ih14Re,-Ih14Im);}
-
-   if ((j1 == 2) and (j2 == 1) and (j1p == 2) and (j2p == 1)) {return TComplex(Ih29Re,0.);}
-   if ((j1 == 2) and (j2 == 1) and (j1p == 2) and (j2p == 2)) {return TComplex(Ih21Re,Ih21Im);}
-   if ((j1 == 2) and (j2 == 2) and (j1p == 0) and (j2p == 0)) {return TComplex(Ih5Re,-Ih5Im);}
-   if ((j1 == 2) and (j2 == 2) and (j1p == 0) and (j2p == 1)) {return TComplex(Ih12Re,-Ih12Im);}
-   if ((j1 == 2) and (j2 == 2) and (j1p == 0) and (j2p == 2)) {return TComplex(Ih17Re,-Ih17Im);}
-   if ((j1 == 2) and (j2 == 2) and (j1p == 1) and (j2p == 0)) {return TComplex(Ih12Re,-Ih12Im);}
-   if ((j1 == 2) and (j2 == 2) and (j1p == 1) and (j2p == 1)) {return TComplex(Ih19Re,-Ih19Im);}
-   if ((j1 == 2) and (j2 == 2) and (j1p == 1) and (j2p == 2)) {return TComplex(Ih21Re,-Ih21Im);}
-   if ((j1 == 2) and (j2 == 2) and (j1p == 2) and (j2p == 0)) {return TComplex(Ih17Re,-Ih17Im);}
-   if ((j1 == 2) and (j2 == 2) and (j1p == 2) and (j2p == 1)) {return TComplex(Ih21Re,-Ih21Im);}
-
-   if ((j1 == 2) and (j2 == 2) and (j1p == 2) and (j2p == 2)) {return TComplex(Ih30Re,0.);}
-
-   throw std::invalid_argument( "Invalid argument" );
+   return Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][j1][j2][j1p][j2p];
 
  }
 
@@ -2345,7 +3005,7 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
 
  Double_t KpiKpiSpectrumNW::comp_num_fit(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const 
  {
-   return (Tj1j2hj1pj2php(t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS,j1,j2,h,j1p,j2p,hp)*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*hj1j2j1pj2p(m1,m2,j1,j2,j1p,j2p)).Re()*ghhp(phi,h,hp)*fjjphhp(cos1,j1,j1p,h,hp)*fjjphhp(cos2,j2,j2p,h,hp);
+   return (Tj1j2hj1pj2php(t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS,j1,j2,h,j1p,j2p,hp)*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*hj1j2j1pj2p(m1,m2,j1,j2,j1p,j2p)).Re()*ghhp_phi(h,hp)*fjjphhp_cos1(j1,j1p,h,hp)*fjjphhp_cos2(j2,j2p,h,hp);
  }
 
 // ---------------------------------------------------
@@ -2353,7 +3013,7 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
 
  Double_t KpiKpiSpectrumNW::comp_den_fit(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const 
  { 
-   return ((IT.IT_cosh(year_opt,wide_window)*M_Average(j1,j2,h,j1p,j2p,hp)-IT.IT_sinh(year_opt,wide_window)*M_DeltaGamma(j1,j2,h,j1p,j2p,hp)+DCP_prod*(IT.IT_cos(year_opt,wide_window)*M_DirCP(j1,j2,h,j1p,j2p,hp)+IT.IT_sin(year_opt,wide_window)*M_MixCP(j1,j2,h,j1p,j2p,hp)))*TComplex(NW.comp(year_opt,wide_window,j1,j2,h,j1p,j2p,hp,0),NW.comp(year_opt,wide_window,j1,j2,h,j1p,j2p,hp,1))).Re();
+   return (ITj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*TComplex(NW.comp(year_opt,trig_opt,wide_window,j1,j2,h,j1p,j2p,hp,0),NW.comp(year_opt,trig_opt,wide_window,j1,j2,h,j1p,j2p,hp,1))).Re();
  }
 
 // ---------------------------------------------------
@@ -2409,7 +3069,8 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
 
  Double_t KpiKpiSpectrumNW::getReCompVal(Double_t ma, Double_t mb, Double_t cos1ang, Double_t cos2ang, Double_t phiang, Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const 
  { 
-   return (Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*hj1j2j1pj2p(ma,mb,j1,j2,j1p,j2p)).Re()*ghhp(phiang,h,hp)*fjjphhp(cos1ang,j1,j1p,h,hp)*fjjphhp(cos2ang,j2,j2p,h,hp);
+   set_buffer_differential_vars(ma,mb,cos1ang,cos2ang,phiang,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+   return (Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*hj1j2j1pj2p(ma,mb,j1,j2,j1p,j2p)).Re()*ghhp_phi(h,hp)*fjjphhp_cos1(j1,j1p,h,hp)*fjjphhp_cos2(j2,j2p,h,hp);
  }
 
 // ---------------------------------------------------
@@ -2417,7 +3078,8 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
 
  Double_t KpiKpiSpectrumNW::getImCompVal(Double_t ma, Double_t mb, Double_t cos1ang, Double_t cos2ang, Double_t phiang, Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const 
  { 
-   return (Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*hj1j2j1pj2p(ma,mb,j1,j2,j1p,j2p)).Im()*ghhp(phiang,h,hp)*fjjphhp(cos1ang,j1,j1p,h,hp)*fjjphhp(cos2ang,j2,j2p,h,hp);
+   set_buffer_differential_vars(ma,mb,cos1ang,cos2ang,phiang,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+   return (Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*hj1j2j1pj2p(ma,mb,j1,j2,j1p,j2p)).Im()*ghhp_phi(h,hp)*fjjphhp_cos1(j1,j1p,h,hp)*fjjphhp_cos2(j2,j2p,h,hp);
  }
 
 // ######################################################################################################
@@ -2451,7 +3113,9 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
  Double_t KpiKpiSpectrumNW::num_fit() const 
  {
 
-   Double_t result = comp_num_fit(0,0,0,0,0,0)+comp_num_fit(0,1,0,0,1,0)+comp_num_fit(0,2,0,0,2,0)+comp_num_fit(1,0,0,1,0,0)+comp_num_fit(1,1,0,1,1,0)+comp_num_fit(1,1,1,1,1,1)
+   set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+
+   return comp_num_fit(0,0,0,0,0,0)+comp_num_fit(0,1,0,0,1,0)+comp_num_fit(0,2,0,0,2,0)+comp_num_fit(1,0,0,1,0,0)+comp_num_fit(1,1,0,1,1,0)+comp_num_fit(1,1,1,1,1,1)
 +comp_num_fit(1,1,2,1,1,2)+comp_num_fit(1,2,0,1,2,0)+comp_num_fit(1,2,1,1,2,1)+comp_num_fit(1,2,2,1,2,2)+comp_num_fit(2,0,0,2,0,0)+comp_num_fit(2,1,0,2,1,0)+comp_num_fit(2,1,1,2,1,1)
 +comp_num_fit(2,1,2,2,1,2)+comp_num_fit(2,2,0,2,2,0)+comp_num_fit(2,2,1,2,2,1)+comp_num_fit(2,2,2,2,2,2)+comp_num_fit(2,2,3,2,2,3)+comp_num_fit(2,2,4,2,2,4)+2.*comp_num_fit(0,1,0,0,0,0)
 +2.*comp_num_fit(0,1,0,1,0,0)+2.*comp_num_fit(0,1,0,2,0,0)+2.*comp_num_fit(0,2,0,0,0,0)+2.*comp_num_fit(0,2,0,0,1,0)+2.*comp_num_fit(0,2,0,1,0,0)+2.*comp_num_fit(0,2,0,1,1,0)
@@ -2484,8 +3148,6 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
 +2.*comp_num_fit(2,2,4,2,0,0)+2.*comp_num_fit(2,2,4,2,1,0)+2.*comp_num_fit(2,2,4,2,1,1)+2.*comp_num_fit(2,2,4,2,1,2)+2.*comp_num_fit(2,2,4,2,2,0)+2.*comp_num_fit(2,2,4,2,2,1)
 +2.*comp_num_fit(2,2,4,2,2,2)+2.*comp_num_fit(2,2,4,2,2,3);
 
-   return result;
-
  }
 
 // ---------------------------------------------------
@@ -2494,7 +3156,9 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
  Double_t KpiKpiSpectrumNW::den_fit() const 
  {
 
-   Double_t result = comp_den_fit(0,0,0,0,0,0)+comp_den_fit(0,1,0,0,1,0)+comp_den_fit(0,2,0,0,2,0)+comp_den_fit(1,0,0,1,0,0)+comp_den_fit(1,1,0,1,1,0)+comp_den_fit(1,1,1,1,1,1)
+   set_buffer_integral_vars();
+
+   return comp_den_fit(0,0,0,0,0,0)+comp_den_fit(0,1,0,0,1,0)+comp_den_fit(0,2,0,0,2,0)+comp_den_fit(1,0,0,1,0,0)+comp_den_fit(1,1,0,1,1,0)+comp_den_fit(1,1,1,1,1,1)
 +comp_den_fit(1,1,2,1,1,2)+comp_den_fit(1,2,0,1,2,0)+comp_den_fit(1,2,1,1,2,1)+comp_den_fit(1,2,2,1,2,2)+comp_den_fit(2,0,0,2,0,0)+comp_den_fit(2,1,0,2,1,0)+comp_den_fit(2,1,1,2,1,1)
 +comp_den_fit(2,1,2,2,1,2)+comp_den_fit(2,2,0,2,2,0)+comp_den_fit(2,2,1,2,2,1)+comp_den_fit(2,2,2,2,2,2)+comp_den_fit(2,2,3,2,2,3)+comp_den_fit(2,2,4,2,2,4)+2.*comp_den_fit(0,1,0,0,0,0)
 +2.*comp_den_fit(0,1,0,1,0,0)+2.*comp_den_fit(0,1,0,2,0,0)+2.*comp_den_fit(0,2,0,0,0,0)+2.*comp_den_fit(0,2,0,0,1,0)+2.*comp_den_fit(0,2,0,1,0,0)+2.*comp_den_fit(0,2,0,1,1,0)
@@ -2527,8 +3191,6 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
 +2.*comp_den_fit(2,2,4,2,0,0)+2.*comp_den_fit(2,2,4,2,1,0)+2.*comp_den_fit(2,2,4,2,1,1)+2.*comp_den_fit(2,2,4,2,1,2)+2.*comp_den_fit(2,2,4,2,2,0)+2.*comp_den_fit(2,2,4,2,2,1)
 +2.*comp_den_fit(2,2,4,2,2,2)+2.*comp_den_fit(2,2,4,2,2,3);
 
-   return result;
-
  }
 
 // ---------------------------------------------------
@@ -2537,7 +3199,10 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
  Double_t KpiKpiSpectrumNW::den_plot() const 
  {
 
-   Double_t result = comp_den_plot(0,0,0,0,0,0)+comp_den_plot(0,1,0,0,1,0)+comp_den_plot(0,2,0,0,2,0)+comp_den_plot(1,0,0,1,0,0)+comp_den_plot(1,1,0,1,1,0)
+   set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+   set_buffer_integral_vars();
+
+   return comp_den_plot(0,0,0,0,0,0)+comp_den_plot(0,1,0,0,1,0)+comp_den_plot(0,2,0,0,2,0)+comp_den_plot(1,0,0,1,0,0)+comp_den_plot(1,1,0,1,1,0)
 +comp_den_plot(1,1,1,1,1,1)+comp_den_plot(1,1,2,1,1,2)+comp_den_plot(1,2,0,1,2,0)+comp_den_plot(1,2,1,1,2,1)+comp_den_plot(1,2,2,1,2,2)
 +comp_den_plot(2,0,0,2,0,0)+comp_den_plot(2,1,0,2,1,0)+comp_den_plot(2,1,1,2,1,1)+comp_den_plot(2,1,2,2,1,2)+comp_den_plot(2,2,0,2,2,0)
 +comp_den_plot(2,2,1,2,2,1)+comp_den_plot(2,2,2,2,2,2)+comp_den_plot(2,2,3,2,2,3)+comp_den_plot(2,2,4,2,2,4)+2.*comp_den_plot(0,1,0,0,0,0)
@@ -2552,8 +3217,6 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
 +2.*comp_den_plot(2,2,0,2,1,0)+2.*comp_den_plot(2,2,1,1,1,1)+2.*comp_den_plot(2,2,1,1,2,1)+2.*comp_den_plot(2,2,1,2,1,1)+2.*comp_den_plot(2,2,2,1,1,2)
 +2.*comp_den_plot(2,2,2,1,2,2)+2.*comp_den_plot(2,2,2,2,1,2);
 
-   return result;
-
  }
 
 // ---------------------------------------------------
@@ -2562,7 +3225,10 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
  Double_t KpiKpiSpectrumNW::num_plot_t() const 
  {
 
-   Double_t result = comp_num_plot_t(0,0,0,0,0,0)+comp_num_plot_t(0,1,0,0,1,0)+comp_num_plot_t(0,2,0,0,2,0)+comp_num_plot_t(1,0,0,1,0,0)+comp_num_plot_t(1,1,0,1,1,0)
+   set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+   set_buffer_integral_vars();
+
+   return comp_num_plot_t(0,0,0,0,0,0)+comp_num_plot_t(0,1,0,0,1,0)+comp_num_plot_t(0,2,0,0,2,0)+comp_num_plot_t(1,0,0,1,0,0)+comp_num_plot_t(1,1,0,1,1,0)
 +comp_num_plot_t(1,1,1,1,1,1)+comp_num_plot_t(1,1,2,1,1,2)+comp_num_plot_t(1,2,0,1,2,0)+comp_num_plot_t(1,2,1,1,2,1)+comp_num_plot_t(1,2,2,1,2,2)
 +comp_num_plot_t(2,0,0,2,0,0)+comp_num_plot_t(2,1,0,2,1,0)+comp_num_plot_t(2,1,1,2,1,1)+comp_num_plot_t(2,1,2,2,1,2)+comp_num_plot_t(2,2,0,2,2,0)
 +comp_num_plot_t(2,2,1,2,2,1)+comp_num_plot_t(2,2,2,2,2,2)+comp_num_plot_t(2,2,3,2,2,3)+comp_num_plot_t(2,2,4,2,2,4)+2.*comp_num_plot_t(0,1,0,0,0,0)
@@ -2577,9 +3243,6 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
 +2.*comp_num_plot_t(2,2,0,2,1,0)+2.*comp_num_plot_t(2,2,1,1,1,1)+2.*comp_num_plot_t(2,2,1,1,2,1)+2.*comp_num_plot_t(2,2,1,2,1,1)+2.*comp_num_plot_t(2,2,2,1,1,2)
 +2.*comp_num_plot_t(2,2,2,1,2,2)+2.*comp_num_plot_t(2,2,2,2,1,2);
 
-   if (nwacc == 1) {return result*den_fit()/den_plot();}
-   else {return result;}
-
  }
 
 // ---------------------------------------------------
@@ -2588,7 +3251,10 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
  Double_t KpiKpiSpectrumNW::num_plot_phi() const 
  {
 
-   Double_t result = comp_num_plot_phi(0,0,0,0,0,0)+comp_num_plot_phi(0,1,0,0,1,0)+comp_num_plot_phi(0,2,0,0,2,0)+comp_num_plot_phi(1,0,0,1,0,0)+comp_num_plot_phi(1,1,0,1,1,0)+comp_num_plot_phi(1,1,1,1,1,1)
+   set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+   set_buffer_integral_vars();
+
+   return comp_num_plot_phi(0,0,0,0,0,0)+comp_num_plot_phi(0,1,0,0,1,0)+comp_num_plot_phi(0,2,0,0,2,0)+comp_num_plot_phi(1,0,0,1,0,0)+comp_num_plot_phi(1,1,0,1,1,0)+comp_num_plot_phi(1,1,1,1,1,1)
 +comp_num_plot_phi(1,1,2,1,1,2)+comp_num_plot_phi(1,2,0,1,2,0)+comp_num_plot_phi(1,2,1,1,2,1)+comp_num_plot_phi(1,2,2,1,2,2)+comp_num_plot_phi(2,0,0,2,0,0)+comp_num_plot_phi(2,1,0,2,1,0)+comp_num_plot_phi(2,1,1,2,1,1)
 +comp_num_plot_phi(2,1,2,2,1,2)+comp_num_plot_phi(2,2,0,2,2,0)+comp_num_plot_phi(2,2,1,2,2,1)+comp_num_plot_phi(2,2,2,2,2,2)+comp_num_plot_phi(2,2,3,2,2,3)+comp_num_plot_phi(2,2,4,2,2,4)+2.*comp_num_plot_phi(0,1,0,0,0,0)
 +2.*comp_num_plot_phi(0,1,0,1,0,0)+2.*comp_num_plot_phi(0,1,0,2,0,0)+2.*comp_num_plot_phi(0,2,0,0,0,0)+2.*comp_num_plot_phi(0,2,0,0,1,0)+2.*comp_num_plot_phi(0,2,0,1,0,0)+2.*comp_num_plot_phi(0,2,0,1,1,0)
@@ -2621,9 +3287,6 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
 +2.*comp_num_plot_phi(2,2,4,2,0,0)+2.*comp_num_plot_phi(2,2,4,2,1,0)+2.*comp_num_plot_phi(2,2,4,2,1,1)+2.*comp_num_plot_phi(2,2,4,2,1,2)+2.*comp_num_plot_phi(2,2,4,2,2,0)+2.*comp_num_plot_phi(2,2,4,2,2,1)
 +2.*comp_num_plot_phi(2,2,4,2,2,2)+2.*comp_num_plot_phi(2,2,4,2,2,3);
 
-   if (nwacc == 1) {return result*den_fit()/den_plot();}
-   else {return result;}
-
  }
 
 // ---------------------------------------------------
@@ -2632,7 +3295,10 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
  Double_t KpiKpiSpectrumNW::num_plot_cos1() const 
  {
 
-   Double_t result = comp_num_plot_cos1(0,0,0,0,0,0)+comp_num_plot_cos1(0,1,0,0,1,0)+comp_num_plot_cos1(0,2,0,0,2,0)+comp_num_plot_cos1(1,0,0,1,0,0)+comp_num_plot_cos1(1,1,0,1,1,0)
+   set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+   set_buffer_integral_vars();
+
+   return comp_num_plot_cos1(0,0,0,0,0,0)+comp_num_plot_cos1(0,1,0,0,1,0)+comp_num_plot_cos1(0,2,0,0,2,0)+comp_num_plot_cos1(1,0,0,1,0,0)+comp_num_plot_cos1(1,1,0,1,1,0)
 +comp_num_plot_cos1(1,1,1,1,1,1)+comp_num_plot_cos1(1,1,2,1,1,2)+comp_num_plot_cos1(1,2,0,1,2,0)+comp_num_plot_cos1(1,2,1,1,2,1)+comp_num_plot_cos1(1,2,2,1,2,2)
 +comp_num_plot_cos1(2,0,0,2,0,0)+comp_num_plot_cos1(2,1,0,2,1,0)+comp_num_plot_cos1(2,1,1,2,1,1)+comp_num_plot_cos1(2,1,2,2,1,2)+comp_num_plot_cos1(2,2,0,2,2,0)
 +comp_num_plot_cos1(2,2,1,2,2,1)+comp_num_plot_cos1(2,2,2,2,2,2)+comp_num_plot_cos1(2,2,3,2,2,3)+comp_num_plot_cos1(2,2,4,2,2,4)+2.*comp_num_plot_cos1(0,1,0,0,0,0)
@@ -2647,9 +3313,6 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
 +2.*comp_num_plot_cos1(2,2,0,2,1,0)+2.*comp_num_plot_cos1(2,2,1,1,1,1)+2.*comp_num_plot_cos1(2,2,1,1,2,1)+2.*comp_num_plot_cos1(2,2,1,2,1,1)+2.*comp_num_plot_cos1(2,2,2,1,1,2)
 +2.*comp_num_plot_cos1(2,2,2,1,2,2)+2.*comp_num_plot_cos1(2,2,2,2,1,2);
 
-   if (nwacc == 1) {return result*den_fit()/den_plot();}
-   else {return result;}
-
  }
 
 // ---------------------------------------------------
@@ -2658,7 +3321,10 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
  Double_t KpiKpiSpectrumNW::num_plot_cos2() const 
  {
 
-   Double_t result = comp_num_plot_cos2(0,0,0,0,0,0)+comp_num_plot_cos2(0,1,0,0,1,0)+comp_num_plot_cos2(0,2,0,0,2,0)+comp_num_plot_cos2(1,0,0,1,0,0)+comp_num_plot_cos2(1,1,0,1,1,0)
+   set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+   set_buffer_integral_vars();
+
+   return comp_num_plot_cos2(0,0,0,0,0,0)+comp_num_plot_cos2(0,1,0,0,1,0)+comp_num_plot_cos2(0,2,0,0,2,0)+comp_num_plot_cos2(1,0,0,1,0,0)+comp_num_plot_cos2(1,1,0,1,1,0)
 +comp_num_plot_cos2(1,1,1,1,1,1)+comp_num_plot_cos2(1,1,2,1,1,2)+comp_num_plot_cos2(1,2,0,1,2,0)+comp_num_plot_cos2(1,2,1,1,2,1)+comp_num_plot_cos2(1,2,2,1,2,2)
 +comp_num_plot_cos2(2,0,0,2,0,0)+comp_num_plot_cos2(2,1,0,2,1,0)+comp_num_plot_cos2(2,1,1,2,1,1)+comp_num_plot_cos2(2,1,2,2,1,2)+comp_num_plot_cos2(2,2,0,2,2,0)
 +comp_num_plot_cos2(2,2,1,2,2,1)+comp_num_plot_cos2(2,2,2,2,2,2)+comp_num_plot_cos2(2,2,3,2,2,3)+comp_num_plot_cos2(2,2,4,2,2,4)+2.*comp_num_plot_cos2(0,1,0,0,0,0)
@@ -2673,9 +3339,6 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
 +2.*comp_num_plot_cos2(2,2,0,2,1,0)+2.*comp_num_plot_cos2(2,2,1,1,1,1)+2.*comp_num_plot_cos2(2,2,1,1,2,1)+2.*comp_num_plot_cos2(2,2,1,2,1,1)+2.*comp_num_plot_cos2(2,2,2,1,1,2)
 +2.*comp_num_plot_cos2(2,2,2,1,2,2)+2.*comp_num_plot_cos2(2,2,2,2,1,2);
 
-   if (nwacc == 1) {return result*den_fit()/den_plot();}
-   else {return result;}
-
  }
 
 // ---------------------------------------------------
@@ -2684,7 +3347,10 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
  Double_t KpiKpiSpectrumNW::num_plot_m() const 
  {
 
-   Double_t result = comp_num_plot_m(0,0,0,0,0,0)+comp_num_plot_m(0,1,0,0,1,0)+comp_num_plot_m(0,2,0,0,2,0)+comp_num_plot_m(1,0,0,1,0,0)+comp_num_plot_m(1,1,0,1,1,0)
+   set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+   set_buffer_integral_vars();
+
+   return comp_num_plot_m(0,0,0,0,0,0)+comp_num_plot_m(0,1,0,0,1,0)+comp_num_plot_m(0,2,0,0,2,0)+comp_num_plot_m(1,0,0,1,0,0)+comp_num_plot_m(1,1,0,1,1,0)
 +comp_num_plot_m(1,1,1,1,1,1)+comp_num_plot_m(1,1,2,1,1,2)+comp_num_plot_m(1,2,0,1,2,0)+comp_num_plot_m(1,2,1,1,2,1)+comp_num_plot_m(1,2,2,1,2,2)
 +comp_num_plot_m(2,0,0,2,0,0)+comp_num_plot_m(2,1,0,2,1,0)+comp_num_plot_m(2,1,1,2,1,1)+comp_num_plot_m(2,1,2,2,1,2)+comp_num_plot_m(2,2,0,2,2,0)
 +comp_num_plot_m(2,2,1,2,2,1)+comp_num_plot_m(2,2,2,2,2,2)+comp_num_plot_m(2,2,3,2,2,3)+comp_num_plot_m(2,2,4,2,2,4)+2.*comp_num_plot_m(0,1,0,0,0,0)
@@ -2699,14 +3365,22 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
 +2.*comp_num_plot_m(2,2,0,2,1,0)+2.*comp_num_plot_m(2,2,1,1,1,1)+2.*comp_num_plot_m(2,2,1,1,2,1)+2.*comp_num_plot_m(2,2,1,2,1,1)+2.*comp_num_plot_m(2,2,2,1,1,2)
 +2.*comp_num_plot_m(2,2,2,1,2,2)+2.*comp_num_plot_m(2,2,2,2,1,2);
 
-   if (nwacc == 1) {return result*den_fit()/den_plot();}
-   else {return result;}
-
  }
 
 // ######################################################################################################
 // I N T E G R A L S
 // ######################################################################################################
+
+// ---------------------------------------------------
+
+void KpiKpiSpectrumNW::setDenPlotVarVal() const
+{
+
+   den_plot_var[(int) year_opt][(int) trig_opt] = den_plot();
+
+   return;
+
+}
 
 // ---------------------------------------------------
 
@@ -2730,64 +3404,287 @@ Int_t KpiKpiSpectrumNW::getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& ana
 // ---------------------------------------------------
 
 Double_t KpiKpiSpectrumNW::analyticalIntegral(Int_t code, const char* rangeName ) const
-{	
+{
 
    // Normalization integral for fitting.
-   if (code == 1) {
-      if (nwacc == 1) {return den_fit();}
-      else {return den_plot();}
-      }
+   if (code == 1) {return 1.;}
 
    // Integrals for plotting, full model.
-   else if (code == 2 and ((A_j1 == 9) or (A_j2 == 9) or (A_h == 9) or (A_j1p == 9) or (A_j2p == 9) or (A_hp == 9))) {return num_plot_t();}
-   else if (code == 3 and ((A_j1 == 9) or (A_j2 == 9) or (A_h == 9) or (A_j1p == 9) or (A_j2p == 9) or (A_hp == 9))) {return num_plot_phi();}
-   else if (code == 4 and ((A_j1 == 9) or (A_j2 == 9) or (A_h == 9) or (A_j1p == 9) or (A_j2p == 9) or (A_hp == 9))) {return num_plot_cos1();}
-   else if (code == 5 and ((A_j1 == 9) or (A_j2 == 9) or (A_h == 9) or (A_j1p == 9) or (A_j2p == 9) or (A_hp == 9))) {return num_plot_cos2();}
-   else if (code == 6 and ((A_j1 == 9) or (A_j2 == 9) or (A_h == 9) or (A_j1p == 9) or (A_j2p == 9) or (A_hp == 9))) {return num_plot_m();}
+   else if (code == 2 and ((A_j1 == 9) or (A_j2 == 9) or (A_h == 9) or (A_j1p == 9) or (A_j2p == 9) or (A_hp == 9))) {return num_plot_t()/den_plot_var[(int) year_opt][(int) trig_opt];}
+   else if (code == 3 and ((A_j1 == 9) or (A_j2 == 9) or (A_h == 9) or (A_j1p == 9) or (A_j2p == 9) or (A_hp == 9))) {return num_plot_phi()/den_plot_var[(int) year_opt][(int) trig_opt];}
+   else if (code == 4 and ((A_j1 == 9) or (A_j2 == 9) or (A_h == 9) or (A_j1p == 9) or (A_j2p == 9) or (A_hp == 9))) {return num_plot_cos1()/den_plot_var[(int) year_opt][(int) trig_opt];}
+   else if (code == 5 and ((A_j1 == 9) or (A_j2 == 9) or (A_h == 9) or (A_j1p == 9) or (A_j2p == 9) or (A_hp == 9))) {return num_plot_cos2()/den_plot_var[(int) year_opt][(int) trig_opt];}
+   else if (code == 6 and ((A_j1 == 9) or (A_j2 == 9) or (A_h == 9) or (A_j1p == 9) or (A_j2p == 9) or (A_hp == 9))) {return num_plot_m()/den_plot_var[(int) year_opt][(int) trig_opt];}
 
-   // Integrals for plotting, KstKst channel.
+   // Integrals for plotting, VV component.
    else if (code == 2 and ((A_j1 == 10) or (A_j2 == 10) or (A_h == 10) or (A_j1p == 10) or (A_j2p == 10) or (A_hp == 10))) {
-      if (nwacc == 1) {return (comp_num_plot_t(1,1,0,1,1,0)+comp_num_plot_t(1,1,1,1,1,1)+comp_num_plot_t(1,1,2,1,1,2))*den_fit()/den_plot();}
-      else {return (comp_num_plot_t(1,1,0,1,1,0)+comp_num_plot_t(1,1,1,1,1,1)+comp_num_plot_t(1,1,2,1,1,2));}
-      }
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_t(1,1,0,1,1,0)+comp_num_plot_t(1,1,1,1,1,1)+comp_num_plot_t(1,1,2,1,1,2))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
    else if (code == 3 and ((A_j1 == 10) or (A_j2 == 10) or (A_h == 10) or (A_j1p == 10) or (A_j2p == 10) or (A_hp == 10))) {
-      if (nwacc == 1) {return (comp_num_plot_phi(1,1,0,1,1,0)+comp_num_plot_phi(1,1,1,1,1,1)+comp_num_plot_phi(1,1,2,1,1,2)+2.*comp_num_plot_phi(1,1,1,1,1,0)+2.*comp_num_plot_phi(1,1,2,1,1,0)+2.*comp_num_plot_phi(1,1,2,1,1,1))*den_fit()/den_plot();}
-      else {return (comp_num_plot_phi(1,1,0,1,1,0)+comp_num_plot_phi(1,1,1,1,1,1)+comp_num_plot_phi(1,1,2,1,1,2)+2.*comp_num_plot_phi(1,1,1,1,1,0)+2.*comp_num_plot_phi(1,1,2,1,1,0)+2.*comp_num_plot_phi(1,1,2,1,1,1));}
-      }
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_phi(1,1,0,1,1,0)+comp_num_plot_phi(1,1,1,1,1,1)+comp_num_plot_phi(1,1,2,1,1,2)+2.*comp_num_plot_phi(1,1,1,1,1,0)+2.*comp_num_plot_phi(1,1,2,1,1,0)+2.*comp_num_plot_phi(1,1,2,1,1,1))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
    else if (code == 4 and ((A_j1 == 10) or (A_j2 == 10) or (A_h == 10) or (A_j1p == 10) or (A_j2p == 10) or (A_hp == 10))) {
-      if (nwacc == 1) {return (comp_num_plot_cos1(1,1,0,1,1,0)+comp_num_plot_cos1(1,1,1,1,1,1)+comp_num_plot_cos1(1,1,2,1,1,2))*den_fit()/den_plot();}
-      else {return (comp_num_plot_cos1(1,1,0,1,1,0)+comp_num_plot_cos1(1,1,1,1,1,1)+comp_num_plot_cos1(1,1,2,1,1,2));}
-      }
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_cos1(1,1,0,1,1,0)+comp_num_plot_cos1(1,1,1,1,1,1)+comp_num_plot_cos1(1,1,2,1,1,2))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
    else if (code == 5 and ((A_j1 == 10) or (A_j2 == 10) or (A_h == 10) or (A_j1p == 10) or (A_j2p == 10) or (A_hp == 10))) {
-      if (nwacc == 1) {return (comp_num_plot_cos2(1,1,0,1,1,0)+comp_num_plot_cos2(1,1,1,1,1,1)+comp_num_plot_cos2(1,1,2,1,1,2))*den_fit()/den_plot();}
-      else {return (comp_num_plot_cos2(1,1,0,1,1,0)+comp_num_plot_cos2(1,1,1,1,1,1)+comp_num_plot_cos2(1,1,2,1,1,2));}
-      }
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_cos2(1,1,0,1,1,0)+comp_num_plot_cos2(1,1,1,1,1,1)+comp_num_plot_cos2(1,1,2,1,1,2))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
    else if (code == 6 and ((A_j1 == 10) or (A_j2 == 10) or (A_h == 10) or (A_j1p == 10) or (A_j2p == 10) or (A_hp == 10))) {
-      if (nwacc == 1) {return (comp_num_plot_m(1,1,0,1,1,0)+comp_num_plot_m(1,1,1,1,1,1)+comp_num_plot_m(1,1,2,1,1,2))*den_fit()/den_plot();}
-      else {return (comp_num_plot_m(1,1,0,1,1,0)+comp_num_plot_m(1,1,1,1,1,1)+comp_num_plot_m(1,1,2,1,1,2));}
-      }
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_m(1,1,0,1,1,0)+comp_num_plot_m(1,1,1,1,1,1)+comp_num_plot_m(1,1,2,1,1,2))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+
+   // Integrals for plotting, SS component.
+   else if (code == 2 and (A_j1 == 11) and (A_j2 == 11) and (A_h == 11) and (A_j1p == 11) and (A_j2p == 11) and (A_hp == 11)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_t(0,0,0,0,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 3 and (A_j1 == 11) and (A_j2 == 11) and (A_h == 11) and (A_j1p == 11) and (A_j2p == 11) and (A_hp == 11)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_phi(0,0,0,0,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 4 and (A_j1 == 11) and (A_j2 == 11) and (A_h == 11) and (A_j1p == 11) and (A_j2p == 11) and (A_hp == 11)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_cos1(0,0,0,0,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 5 and (A_j1 == 11) and (A_j2 == 11) and (A_h == 11) and (A_j1p == 11) and (A_j2p == 11) and (A_hp == 11)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_cos2(0,0,0,0,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 6 and (A_j1 == 11) and (A_j2 == 11) and (A_h == 11) and (A_j1p == 11) and (A_j2p == 11) and (A_hp == 11)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_m(0,0,0,0,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+
+   // Integrals for plotting, SV component.
+   else if (code == 2 and (A_j1 == 12) and (A_j2 == 12) and (A_h == 12) and (A_j1p == 12) and (A_j2p == 12) and (A_hp == 12)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_t(0,1,0,0,1,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 3 and (A_j1 == 12) and (A_j2 == 12) and (A_h == 12) and (A_j1p == 12) and (A_j2p == 12) and (A_hp == 12)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_phi(0,1,0,0,1,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 4 and (A_j1 == 12) and (A_j2 == 12) and (A_h == 12) and (A_j1p == 12) and (A_j2p == 12) and (A_hp == 12)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_cos1(0,1,0,0,1,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 5 and (A_j1 == 12) and (A_j2 == 12) and (A_h == 12) and (A_j1p == 12) and (A_j2p == 12) and (A_hp == 12)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_cos2(0,1,0,0,1,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 6 and (A_j1 == 12) and (A_j2 == 12) and (A_h == 12) and (A_j1p == 12) and (A_j2p == 12) and (A_hp == 12)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_m(0,1,0,0,1,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+
+   // Integrals for plotting, VS component.
+   else if (code == 2 and (A_j1 == 13) and (A_j2 == 13) and (A_h == 13) and (A_j1p == 13) and (A_j2p == 13) and (A_hp == 13)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_t(1,0,0,1,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 3 and (A_j1 == 13) and (A_j2 == 13) and (A_h == 13) and (A_j1p == 13) and (A_j2p == 13) and (A_hp == 13)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_phi(1,0,0,1,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 4 and (A_j1 == 13) and (A_j2 == 13) and (A_h == 13) and (A_j1p == 13) and (A_j2p == 13) and (A_hp == 13)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_cos1(1,0,0,1,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 5 and (A_j1 == 13) and (A_j2 == 13) and (A_h == 13) and (A_j1p == 13) and (A_j2p == 13) and (A_hp == 13)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_cos2(1,0,0,1,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 6 and (A_j1 == 13) and (A_j2 == 13) and (A_h == 13) and (A_j1p == 13) and (A_j2p == 13) and (A_hp == 13)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_m(1,0,0,1,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+
+   // Integrals for plotting, ST component.
+   else if (code == 2 and (A_j1 == 14) and (A_j2 == 14) and (A_h == 14) and (A_j1p == 14) and (A_j2p == 14) and (A_hp == 14)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_t(0,2,0,0,2,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 3 and (A_j1 == 14) and (A_j2 == 14) and (A_h == 14) and (A_j1p == 14) and (A_j2p == 14) and (A_hp == 14)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_phi(0,2,0,0,2,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 4 and (A_j1 == 14) and (A_j2 == 14) and (A_h == 14) and (A_j1p == 14) and (A_j2p == 14) and (A_hp == 14)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_cos1(0,2,0,0,2,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 5 and (A_j1 == 14) and (A_j2 == 14) and (A_h == 14) and (A_j1p == 14) and (A_j2p == 14) and (A_hp == 14)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_cos2(0,2,0,0,2,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 6 and (A_j1 == 14) and (A_j2 == 14) and (A_h == 14) and (A_j1p == 14) and (A_j2p == 14) and (A_hp == 14)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_m(0,2,0,0,2,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+
+   // Integrals for plotting, TS component.
+   else if (code == 2 and (A_j1 == 15) and (A_j2 == 15) and (A_h == 15) and (A_j1p == 15) and (A_j2p == 15) and (A_hp == 15)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_t(2,0,0,2,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 3 and (A_j1 == 15) and (A_j2 == 15) and (A_h == 15) and (A_j1p == 15) and (A_j2p == 15) and (A_hp == 15)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_phi(2,0,0,2,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 4 and (A_j1 == 15) and (A_j2 == 15) and (A_h == 15) and (A_j1p == 15) and (A_j2p == 15) and (A_hp == 15)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_cos1(2,0,0,2,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 5 and (A_j1 == 15) and (A_j2 == 15) and (A_h == 15) and (A_j1p == 15) and (A_j2p == 15) and (A_hp == 15)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_cos2(2,0,0,2,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 6 and (A_j1 == 15) and (A_j2 == 15) and (A_h == 15) and (A_j1p == 15) and (A_j2p == 15) and (A_hp == 15)) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_m(2,0,0,2,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+
+   // Integrals for plotting, VT component.
+   else if (code == 2 and ((A_j1 == 16) or (A_j2 == 16) or (A_h == 16) or (A_j1p == 16) or (A_j2p == 16) or (A_hp == 16))) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_t(1,2,0,1,2,0)+comp_num_plot_t(1,2,1,1,2,1)+comp_num_plot_t(1,2,2,1,2,2))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 3 and ((A_j1 == 16) or (A_j2 == 16) or (A_h == 16) or (A_j1p == 16) or (A_j2p == 16) or (A_hp == 16))) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_phi(1,2,0,1,2,0)+comp_num_plot_phi(1,2,1,1,2,1)+comp_num_plot_phi(1,2,2,1,2,2)+2.*comp_num_plot_phi(1,2,1,1,2,0)+2.*comp_num_plot_phi(1,2,2,1,2,0)+2.*comp_num_plot_phi(1,2,2,1,2,1))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 4 and ((A_j1 == 16) or (A_j2 == 16) or (A_h == 16) or (A_j1p == 16) or (A_j2p == 16) or (A_hp == 16))) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_cos1(1,2,0,1,2,0)+comp_num_plot_cos1(1,2,1,1,2,1)+comp_num_plot_cos1(1,2,2,1,2,2))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 5 and ((A_j1 == 16) or (A_j2 == 16) or (A_h == 16) or (A_j1p == 16) or (A_j2p == 16) or (A_hp == 16))) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_cos2(1,2,0,1,2,0)+comp_num_plot_cos2(1,2,1,1,2,1)+comp_num_plot_cos2(1,2,2,1,2,2))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 6 and ((A_j1 == 16) or (A_j2 == 16) or (A_h == 16) or (A_j1p == 16) or (A_j2p == 16) or (A_hp == 16))) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_m(1,2,0,1,2,0)+comp_num_plot_m(1,2,1,1,2,1)+comp_num_plot_m(1,2,2,1,2,2))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+
+   // Integrals for plotting, TV component.
+   else if (code == 2 and ((A_j1 == 17) or (A_j2 == 17) or (A_h == 17) or (A_j1p == 17) or (A_j2p == 17) or (A_hp == 17))) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_t(2,1,0,2,1,0)+comp_num_plot_t(2,1,1,2,1,1)+comp_num_plot_t(2,1,2,2,1,2))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 3 and ((A_j1 == 17) or (A_j2 == 17) or (A_h == 17) or (A_j1p == 17) or (A_j2p == 17) or (A_hp == 17))) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_phi(2,1,0,2,1,0)+comp_num_plot_phi(2,1,1,2,1,1)+comp_num_plot_phi(2,1,2,2,1,2)+2.*comp_num_plot_phi(2,1,1,2,1,0)+2.*comp_num_plot_phi(2,1,2,2,1,0)+2.*comp_num_plot_phi(2,1,2,2,1,1))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 4 and ((A_j1 == 17) or (A_j2 == 17) or (A_h == 17) or (A_j1p == 17) or (A_j2p == 17) or (A_hp == 17))) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_cos1(2,1,0,2,1,0)+comp_num_plot_cos1(2,1,1,2,1,1)+comp_num_plot_cos1(2,1,2,2,1,2))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 5 and ((A_j1 == 17) or (A_j2 == 17) or (A_h == 17) or (A_j1p == 17) or (A_j2p == 17) or (A_hp == 17))) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_cos2(2,1,0,2,1,0)+comp_num_plot_cos2(2,1,1,2,1,1)+comp_num_plot_cos2(2,1,2,2,1,2))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 6 and ((A_j1 == 17) or (A_j2 == 17) or (A_h == 17) or (A_j1p == 17) or (A_j2p == 17) or (A_hp == 17))) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_m(2,1,0,2,1,0)+comp_num_plot_m(2,1,1,2,1,1)+comp_num_plot_m(2,1,2,2,1,2))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+
+   // Integrals for plotting, TT component.
+   else if (code == 2 and ((A_j1 == 18) or (A_j2 == 18) or (A_h == 18) or (A_j1p == 18) or (A_j2p == 18) or (A_hp == 18))) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_t(2,2,0,2,2,0)+comp_num_plot_t(2,2,1,2,2,1)+comp_num_plot_t(2,2,2,2,2,2)+comp_num_plot_t(2,2,3,2,2,3)+comp_num_plot_t(2,2,4,2,2,4))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 3 and ((A_j1 == 18) or (A_j2 == 18) or (A_h == 18) or (A_j1p == 18) or (A_j2p == 18) or (A_hp == 18))) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_phi(2,2,0,2,2,0)+comp_num_plot_phi(2,2,1,2,2,1)+comp_num_plot_phi(2,2,2,2,2,2)+comp_num_plot_phi(2,2,3,2,2,3)+comp_num_plot_phi(2,2,4,2,2,4)+2.*comp_num_plot_phi(2,2,0,2,2,1)+2.*comp_num_plot_phi(2,2,0,2,2,2)+2.*comp_num_plot_phi(2,2,0,2,2,3)+2.*comp_num_plot_phi(2,2,0,2,2,4)+2.*comp_num_plot_phi(2,2,1,2,2,2)+2.*comp_num_plot_phi(2,2,1,2,2,3)+2.*comp_num_plot_phi(2,2,1,2,2,4)+2.*comp_num_plot_phi(2,2,2,2,2,3)+2.*comp_num_plot_phi(2,2,2,2,2,4)+2.*comp_num_plot_phi(2,2,3,2,2,4))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 4 and ((A_j1 == 18) or (A_j2 == 18) or (A_h == 18) or (A_j1p == 18) or (A_j2p == 18) or (A_hp == 18))) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_cos1(2,2,0,2,2,0)+comp_num_plot_cos1(2,2,1,2,2,1)+comp_num_plot_cos1(2,2,2,2,2,2)+comp_num_plot_cos1(2,2,3,2,2,3)+comp_num_plot_cos1(2,2,4,2,2,4))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 5 and ((A_j1 == 18) or (A_j2 == 18) or (A_h == 18) or (A_j1p == 18) or (A_j2p == 18) or (A_hp == 18))) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_cos2(2,2,0,2,2,0)+comp_num_plot_cos2(2,2,1,2,2,1)+comp_num_plot_cos2(2,2,2,2,2,2)+comp_num_plot_cos2(2,2,3,2,2,3)+comp_num_plot_cos2(2,2,4,2,2,4))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
+   else if (code == 6 and ((A_j1 == 18) or (A_j2 == 18) or (A_h == 18) or (A_j1p == 18) or (A_j2p == 18) or (A_hp == 18))) {
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return (comp_num_plot_m(2,2,0,2,2,0)+comp_num_plot_m(2,2,1,2,2,1)+comp_num_plot_m(2,2,2,2,2,2)+comp_num_plot_m(2,2,3,2,2,3)+comp_num_plot_m(2,2,4,2,2,4))/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
 
    // Integrals for plotting, j1j2hj1pj2php component.
    else if (code == 2 and (A_j1 < 9) and (A_j2 < 9) and (A_h < 9) and (A_j1p < 9) and (A_j2p < 9) and (A_hp < 9)) {
-      if (nwacc == 1) {return comp_num_plot_t(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp)*den_fit()/den_plot();}
-      else {return comp_num_plot_t(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp);}
-      }
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_t(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
    else if (code == 3 and (A_j1 < 9) and (A_j2 < 9) and (A_h < 9) and (A_j1p < 9) and (A_j2p < 9) and (A_hp < 9)) {
-      if (nwacc == 1) {return comp_num_plot_phi(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp)*den_fit()/den_plot();}
-      else {return comp_num_plot_phi(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp);}
-      }
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_phi(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
    else if (code == 4 and (A_j1 < 9) and (A_j2 < 9) and (A_h < 9) and (A_j1p < 9) and (A_j2p < 9) and (A_hp < 9)) {
-      if (nwacc == 1) {return comp_num_plot_cos1(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp)*den_fit()/den_plot();}
-      else {return comp_num_plot_cos1(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp);}
-      }
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_cos1(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
    else if (code == 5 and (A_j1 < 9) and (A_j2 < 9) and (A_h < 9) and (A_j1p < 9) and (A_j2p < 9) and (A_hp < 9)) {
-      if (nwacc == 1) {return comp_num_plot_cos2(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp)*den_fit()/den_plot();}
-      else {return comp_num_plot_cos2(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp);}
-      }
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_cos2(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
    else if (code == 6 and (A_j1 < 9) and (A_j2 < 9) and (A_h < 9) and (A_j1p < 9) and (A_j2p < 9) and (A_hp < 9)) {
-      if (nwacc == 1) {return comp_num_plot_m(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp)*den_fit()/den_plot();}
-      else {return comp_num_plot_m(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp);}
-      }
+      set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+      set_buffer_integral_vars();
+      return comp_num_plot_m(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp)/den_plot_var[(int) year_opt][(int) trig_opt];
+   }
 
    return 0;
 
@@ -2832,104 +3729,134 @@ Double_t KpiKpiSpectrumNW::analyticalIntegral(Int_t code, const char* rangeName 
  }
 
 // ---------------------------------------------------
+// Bs time dependent function.
+
+TComplex KpiKpiSpectrumNW::TBsj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const
+ {
+
+   return T_cosh_temp*M_Average(j1,j2,h,j1p,j2p,hp)-T_sinh_temp*M_DeltaGamma(j1,j2,h,j1p,j2p,hp)+T_cos_temp*M_DirCP(j1,j2,h,j1p,j2p,hp)+T_sin_temp*M_MixCP(j1,j2,h,j1p,j2p,hp);
+
+ }
+
+// ---------------------------------------------------
+// Bsbar time dependent function.
+
+TComplex KpiKpiSpectrumNW::TBsbarj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const
+ {
+
+   return T_cosh_temp*M_Average(j1,j2,h,j1p,j2p,hp)-T_sinh_temp*M_DeltaGamma(j1,j2,h,j1p,j2p,hp)-T_cos_temp*M_DirCP(j1,j2,h,j1p,j2p,hp)-T_sin_temp*M_MixCP(j1,j2,h,j1p,j2p,hp);
+
+ }
+
+// ---------------------------------------------------
 // Components of the Bs decay rate.
 
- Double_t KpiKpiSpectrumNW::comp_fun_Bs(Double_t tau, Double_t tau_err, Double_t ma, Double_t mb, Double_t cos1var, Double_t cos2var, Double_t phivar, Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const 
+ Double_t KpiKpiSpectrumNW::comp_fun_Bs(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const 
  {
-   return ((T_cosh(tau,tau_err)*M_Average(j1,j2,h,j1p,j2p,hp)-T_sinh(tau,tau_err)*M_DeltaGamma(j1,j2,h,j1p,j2p,hp)+T_cos(tau,tau_err)*M_DirCP(j1,j2,h,j1p,j2p,hp)+T_sin(tau,tau_err)*M_MixCP(j1,j2,h,j1p,j2p,hp))*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*hj1j2j1pj2p(ma,mb,j1,j2,j1p,j2p)).Re()*ghhp(phivar,h,hp)*fjjphhp(cos1var,j1,j1p,h,hp)*fjjphhp(cos2var,j2,j2p,h,hp);
+
+   return (TBsj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*hj1j2j1pj2p(m1,m2,j1,j2,j1p,j2p)).Re()*ghhp_phi(h,hp)*fjjphhp_cos1(j1,j1p,h,hp)*fjjphhp_cos2(j2,j2p,h,hp);
+
  }
 
 // ---------------------------------------------------
 // Components of the Bsbar decay rate.
 
- Double_t KpiKpiSpectrumNW::comp_fun_Bsbar(Double_t tau, Double_t tau_err, Double_t ma, Double_t mb, Double_t cos1var, Double_t cos2var, Double_t phivar, Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const 
+ Double_t KpiKpiSpectrumNW::comp_fun_Bsbar(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const 
  {
-   return ((T_cosh(tau,tau_err)*M_Average(j1,j2,h,j1p,j2p,hp)-T_sinh(tau,tau_err)*M_DeltaGamma(j1,j2,h,j1p,j2p,hp)-T_cos(tau,tau_err)*M_DirCP(j1,j2,h,j1p,j2p,hp)-T_sin(tau,tau_err)*M_MixCP(j1,j2,h,j1p,j2p,hp))*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*hj1j2j1pj2p(ma,mb,j1,j2,j1p,j2p)).Re()*ghhp(phivar,h,hp)*fjjphhp(cos1var,j1,j1p,h,hp)*fjjphhp(cos2var,j2,j2p,h,hp);
+
+   return (TBsbarj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*hj1j2j1pj2p(m1,m2,j1,j2,j1p,j2p)).Re()*ghhp_phi(h,hp)*fjjphhp_cos1(j1,j1p,h,hp)*fjjphhp_cos2(j2,j2p,h,hp);
+
  }
 
 // ---------------------------------------------------
 // Bs decay rate.
 
- Double_t KpiKpiSpectrumNW::fun_Bs(Double_t tau, Double_t tau_err, Double_t ma, Double_t mb, Double_t cos1var, Double_t cos2var, Double_t phivar) const 
+ Double_t KpiKpiSpectrumNW::fun_Bs() const 
  {
 
-   Double_t result = comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,0,0,0,0,0)+comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,1,0,0,1,0)+comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,2,0,0,2,0)+comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,0,0,1,0,0)+comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,0,1,1,0)+comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,1,1,1)
-+comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,1,1,2)+comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,0,1,2,0)+comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,1,2,1)+comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,1,2,2)+comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,0,0,2,0,0)+comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,0,2,1,0)+comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,2,1,1)
-+comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,2,1,2)+comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,0,2,2,0)+comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,2,2,1)+comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,2,2,2)+comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,2,2,3)+comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,2,2,4)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,1,0,0,0,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,1,0,1,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,1,0,2,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,2,0,0,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,2,0,0,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,2,0,1,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,2,0,1,1,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,2,0,2,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,2,0,2,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,0,0,0,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,0,0,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,0,0,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,0,1,0,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,0,2,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,0,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,0,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,0,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,1,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,1,1,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,1,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,2,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,2,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,2,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,0,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,0,1,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,0,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,1,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,1,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,1,1,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,1,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,1,2,1)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,2,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,2,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,2,1,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,2,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,2,2,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,0,0,0,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,0,0,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,0,0,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,0,1,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,0,1,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,0,2,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,0,2,1,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,0,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,0,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,0,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,1,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,1,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,1,1,1)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,1,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,2,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,2,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,2,1,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,2,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,0,0,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,0,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,0,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,1,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,1,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,1,1,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,1,1,2)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,1,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,1,2,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,2,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,2,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,2,1,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,2,1,2)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,2,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,2,2,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,0,0,0,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,0,0,1,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,0,0,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,0,0,1,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,0,1,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,0,1,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,0,2,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,0,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,0,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,0,2,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,1,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,1,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,1,1,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,1,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,2,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,2,1,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,2,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,0,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,0,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,0,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,1,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,1,1,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,1,1,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,1,1,2)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,1,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,1,2,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,2,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,2,1,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,2,1,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,2,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,2,2,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,0,0,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,0,0,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,0,0,2,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,0,1,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,0,1,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,0,1,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,0,2,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,0,2,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,0,0,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,0,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,0,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,1,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,1,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,1,1,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,1,2,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,1,2,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,2,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,2,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,2,1,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,2,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,0,0,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,0,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,0,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,1,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,1,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,1,1,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,1,1,2)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,1,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,1,2,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,1,2,2)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,2,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,2,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,2,1,1)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,2,1,2)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,2,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,2,2,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,0,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,0,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,0,2,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,1,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,1,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,1,1,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,1,1,2)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,1,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,1,2,1)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,1,2,2)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,2,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,2,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,2,1,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,2,1,2)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,2,2,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,2,2,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,2,2,2)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,0,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,0,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,0,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,1,0,0)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,1,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,1,1,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,1,1,2)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,1,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,1,2,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,1,2,2)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,2,0,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,2,1,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,2,1,1)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,2,1,2)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,2,2,0)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,2,2,1)
-+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,2,2,2)+2.*comp_fun_Bs(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,2,2,3);
-
-   return result;
+   return comp_fun_Bs(0,0,0,0,0,0)+comp_fun_Bs(0,1,0,0,1,0)+comp_fun_Bs(0,2,0,0,2,0)+comp_fun_Bs(1,0,0,1,0,0)+comp_fun_Bs(1,1,0,1,1,0)+comp_fun_Bs(1,1,1,1,1,1)
++comp_fun_Bs(1,1,2,1,1,2)+comp_fun_Bs(1,2,0,1,2,0)+comp_fun_Bs(1,2,1,1,2,1)+comp_fun_Bs(1,2,2,1,2,2)+comp_fun_Bs(2,0,0,2,0,0)+comp_fun_Bs(2,1,0,2,1,0)+comp_fun_Bs(2,1,1,2,1,1)
++comp_fun_Bs(2,1,2,2,1,2)+comp_fun_Bs(2,2,0,2,2,0)+comp_fun_Bs(2,2,1,2,2,1)+comp_fun_Bs(2,2,2,2,2,2)+comp_fun_Bs(2,2,3,2,2,3)+comp_fun_Bs(2,2,4,2,2,4)+2.*comp_fun_Bs(0,1,0,0,0,0)
++2.*comp_fun_Bs(0,1,0,1,0,0)+2.*comp_fun_Bs(0,1,0,2,0,0)+2.*comp_fun_Bs(0,2,0,0,0,0)+2.*comp_fun_Bs(0,2,0,0,1,0)+2.*comp_fun_Bs(0,2,0,1,0,0)+2.*comp_fun_Bs(0,2,0,1,1,0)
++2.*comp_fun_Bs(0,2,0,2,0,0)+2.*comp_fun_Bs(0,2,0,2,1,0)+2.*comp_fun_Bs(1,0,0,0,0,0)+2.*comp_fun_Bs(1,1,0,0,0,0)+2.*comp_fun_Bs(1,1,0,0,1,0)+2.*comp_fun_Bs(1,1,0,1,0,0)
++2.*comp_fun_Bs(1,1,0,2,0,0)+2.*comp_fun_Bs(1,1,1,0,0,0)+2.*comp_fun_Bs(1,1,1,0,1,0)+2.*comp_fun_Bs(1,1,1,0,2,0)+2.*comp_fun_Bs(1,1,1,1,0,0)+2.*comp_fun_Bs(1,1,1,1,1,0)
++2.*comp_fun_Bs(1,1,1,1,2,0)+2.*comp_fun_Bs(1,1,1,2,0,0)+2.*comp_fun_Bs(1,1,1,2,1,0)+2.*comp_fun_Bs(1,1,1,2,2,0)+2.*comp_fun_Bs(1,1,2,0,0,0)+2.*comp_fun_Bs(1,1,2,0,1,0)
++2.*comp_fun_Bs(1,1,2,0,2,0)+2.*comp_fun_Bs(1,1,2,1,0,0)+2.*comp_fun_Bs(1,1,2,1,1,0)+2.*comp_fun_Bs(1,1,2,1,1,1)+2.*comp_fun_Bs(1,1,2,1,2,0)+2.*comp_fun_Bs(1,1,2,1,2,1)
++2.*comp_fun_Bs(1,1,2,2,0,0)+2.*comp_fun_Bs(1,1,2,2,1,0)+2.*comp_fun_Bs(1,1,2,2,1,1)+2.*comp_fun_Bs(1,1,2,2,2,0)+2.*comp_fun_Bs(1,1,2,2,2,1)+2.*comp_fun_Bs(1,2,0,0,0,0)
++2.*comp_fun_Bs(1,2,0,0,1,0)+2.*comp_fun_Bs(1,2,0,0,2,0)+2.*comp_fun_Bs(1,2,0,1,0,0)+2.*comp_fun_Bs(1,2,0,1,1,0)+2.*comp_fun_Bs(1,2,0,2,0,0)+2.*comp_fun_Bs(1,2,0,2,1,0)
++2.*comp_fun_Bs(1,2,1,0,0,0)+2.*comp_fun_Bs(1,2,1,0,1,0)+2.*comp_fun_Bs(1,2,1,0,2,0)+2.*comp_fun_Bs(1,2,1,1,0,0)+2.*comp_fun_Bs(1,2,1,1,1,0)+2.*comp_fun_Bs(1,2,1,1,1,1)
++2.*comp_fun_Bs(1,2,1,1,2,0)+2.*comp_fun_Bs(1,2,1,2,0,0)+2.*comp_fun_Bs(1,2,1,2,1,0)+2.*comp_fun_Bs(1,2,1,2,1,1)+2.*comp_fun_Bs(1,2,1,2,2,0)+2.*comp_fun_Bs(1,2,2,0,0,0)
++2.*comp_fun_Bs(1,2,2,0,1,0)+2.*comp_fun_Bs(1,2,2,0,2,0)+2.*comp_fun_Bs(1,2,2,1,0,0)+2.*comp_fun_Bs(1,2,2,1,1,0)+2.*comp_fun_Bs(1,2,2,1,1,1)+2.*comp_fun_Bs(1,2,2,1,1,2)
++2.*comp_fun_Bs(1,2,2,1,2,0)+2.*comp_fun_Bs(1,2,2,1,2,1)+2.*comp_fun_Bs(1,2,2,2,0,0)+2.*comp_fun_Bs(1,2,2,2,1,0)+2.*comp_fun_Bs(1,2,2,2,1,1)+2.*comp_fun_Bs(1,2,2,2,1,2)
++2.*comp_fun_Bs(1,2,2,2,2,0)+2.*comp_fun_Bs(1,2,2,2,2,1)+2.*comp_fun_Bs(2,0,0,0,0,0)+2.*comp_fun_Bs(2,0,0,1,0,0)+2.*comp_fun_Bs(2,1,0,0,0,0)+2.*comp_fun_Bs(2,1,0,0,1,0)
++2.*comp_fun_Bs(2,1,0,1,0,0)+2.*comp_fun_Bs(2,1,0,1,1,0)+2.*comp_fun_Bs(2,1,0,2,0,0)+2.*comp_fun_Bs(2,1,1,0,0,0)+2.*comp_fun_Bs(2,1,1,0,1,0)+2.*comp_fun_Bs(2,1,1,0,2,0)
++2.*comp_fun_Bs(2,1,1,1,0,0)+2.*comp_fun_Bs(2,1,1,1,1,0)+2.*comp_fun_Bs(2,1,1,1,1,1)+2.*comp_fun_Bs(2,1,1,1,2,0)+2.*comp_fun_Bs(2,1,1,2,0,0)+2.*comp_fun_Bs(2,1,1,2,1,0)
++2.*comp_fun_Bs(2,1,1,2,2,0)+2.*comp_fun_Bs(2,1,2,0,0,0)+2.*comp_fun_Bs(2,1,2,0,1,0)+2.*comp_fun_Bs(2,1,2,0,2,0)+2.*comp_fun_Bs(2,1,2,1,0,0)+2.*comp_fun_Bs(2,1,2,1,1,0)
++2.*comp_fun_Bs(2,1,2,1,1,1)+2.*comp_fun_Bs(2,1,2,1,1,2)+2.*comp_fun_Bs(2,1,2,1,2,0)+2.*comp_fun_Bs(2,1,2,1,2,1)+2.*comp_fun_Bs(2,1,2,2,0,0)+2.*comp_fun_Bs(2,1,2,2,1,0)
++2.*comp_fun_Bs(2,1,2,2,1,1)+2.*comp_fun_Bs(2,1,2,2,2,0)+2.*comp_fun_Bs(2,1,2,2,2,1)+2.*comp_fun_Bs(2,2,0,0,0,0)+2.*comp_fun_Bs(2,2,0,0,1,0)+2.*comp_fun_Bs(2,2,0,0,2,0)
++2.*comp_fun_Bs(2,2,0,1,0,0)+2.*comp_fun_Bs(2,2,0,1,1,0)+2.*comp_fun_Bs(2,2,0,1,2,0)+2.*comp_fun_Bs(2,2,0,2,0,0)+2.*comp_fun_Bs(2,2,0,2,1,0)+2.*comp_fun_Bs(2,2,1,0,0,0)
++2.*comp_fun_Bs(2,2,1,0,1,0)+2.*comp_fun_Bs(2,2,1,0,2,0)+2.*comp_fun_Bs(2,2,1,1,0,0)+2.*comp_fun_Bs(2,2,1,1,1,0)+2.*comp_fun_Bs(2,2,1,1,1,1)+2.*comp_fun_Bs(2,2,1,1,2,0)
++2.*comp_fun_Bs(2,2,1,1,2,1)+2.*comp_fun_Bs(2,2,1,2,0,0)+2.*comp_fun_Bs(2,2,1,2,1,0)+2.*comp_fun_Bs(2,2,1,2,1,1)+2.*comp_fun_Bs(2,2,1,2,2,0)+2.*comp_fun_Bs(2,2,2,0,0,0)
++2.*comp_fun_Bs(2,2,2,0,1,0)+2.*comp_fun_Bs(2,2,2,0,2,0)+2.*comp_fun_Bs(2,2,2,1,0,0)+2.*comp_fun_Bs(2,2,2,1,1,0)+2.*comp_fun_Bs(2,2,2,1,1,1)+2.*comp_fun_Bs(2,2,2,1,1,2)
++2.*comp_fun_Bs(2,2,2,1,2,0)+2.*comp_fun_Bs(2,2,2,1,2,1)+2.*comp_fun_Bs(2,2,2,1,2,2)+2.*comp_fun_Bs(2,2,2,2,0,0)+2.*comp_fun_Bs(2,2,2,2,1,0)+2.*comp_fun_Bs(2,2,2,2,1,1)
++2.*comp_fun_Bs(2,2,2,2,1,2)+2.*comp_fun_Bs(2,2,2,2,2,0)+2.*comp_fun_Bs(2,2,2,2,2,1)+2.*comp_fun_Bs(2,2,3,0,0,0)+2.*comp_fun_Bs(2,2,3,0,1,0)+2.*comp_fun_Bs(2,2,3,0,2,0)
++2.*comp_fun_Bs(2,2,3,1,0,0)+2.*comp_fun_Bs(2,2,3,1,1,0)+2.*comp_fun_Bs(2,2,3,1,1,1)+2.*comp_fun_Bs(2,2,3,1,1,2)+2.*comp_fun_Bs(2,2,3,1,2,0)+2.*comp_fun_Bs(2,2,3,1,2,1)
++2.*comp_fun_Bs(2,2,3,1,2,2)+2.*comp_fun_Bs(2,2,3,2,0,0)+2.*comp_fun_Bs(2,2,3,2,1,0)+2.*comp_fun_Bs(2,2,3,2,1,1)+2.*comp_fun_Bs(2,2,3,2,1,2)+2.*comp_fun_Bs(2,2,3,2,2,0)
++2.*comp_fun_Bs(2,2,3,2,2,1)+2.*comp_fun_Bs(2,2,3,2,2,2)+2.*comp_fun_Bs(2,2,4,0,0,0)+2.*comp_fun_Bs(2,2,4,0,1,0)+2.*comp_fun_Bs(2,2,4,0,2,0)+2.*comp_fun_Bs(2,2,4,1,0,0)
++2.*comp_fun_Bs(2,2,4,1,1,0)+2.*comp_fun_Bs(2,2,4,1,1,1)+2.*comp_fun_Bs(2,2,4,1,1,2)+2.*comp_fun_Bs(2,2,4,1,2,0)+2.*comp_fun_Bs(2,2,4,1,2,1)+2.*comp_fun_Bs(2,2,4,1,2,2)
++2.*comp_fun_Bs(2,2,4,2,0,0)+2.*comp_fun_Bs(2,2,4,2,1,0)+2.*comp_fun_Bs(2,2,4,2,1,1)+2.*comp_fun_Bs(2,2,4,2,1,2)+2.*comp_fun_Bs(2,2,4,2,2,0)+2.*comp_fun_Bs(2,2,4,2,2,1)
++2.*comp_fun_Bs(2,2,4,2,2,2)+2.*comp_fun_Bs(2,2,4,2,2,3);
 
  }
 
 // ---------------------------------------------------
 // Bsbar decay rate.
 
- Double_t KpiKpiSpectrumNW::fun_Bsbar(Double_t tau, Double_t tau_err, Double_t ma, Double_t mb, Double_t cos1var, Double_t cos2var, Double_t phivar) const 
+ Double_t KpiKpiSpectrumNW::fun_Bsbar() const 
  {
 
-   Double_t result = comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,0,0,0,0,0)+comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,1,0,0,1,0)+comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,2,0,0,2,0)+comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,0,0,1,0,0)+comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,0,1,1,0)+comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,1,1,1)
-+comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,1,1,2)+comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,0,1,2,0)+comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,1,2,1)+comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,1,2,2)+comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,0,0,2,0,0)+comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,0,2,1,0)+comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,2,1,1)
-+comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,2,1,2)+comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,0,2,2,0)+comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,2,2,1)+comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,2,2,2)+comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,2,2,3)+comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,2,2,4)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,1,0,0,0,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,1,0,1,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,1,0,2,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,2,0,0,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,2,0,0,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,2,0,1,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,2,0,1,1,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,2,0,2,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,0,2,0,2,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,0,0,0,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,0,0,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,0,0,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,0,1,0,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,0,2,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,0,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,0,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,0,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,1,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,1,1,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,1,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,2,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,2,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,1,2,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,0,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,0,1,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,0,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,1,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,1,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,1,1,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,1,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,1,2,1)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,2,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,2,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,2,1,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,2,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,1,2,2,2,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,0,0,0,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,0,0,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,0,0,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,0,1,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,0,1,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,0,2,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,0,2,1,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,0,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,0,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,0,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,1,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,1,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,1,1,1)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,1,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,2,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,2,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,2,1,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,1,2,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,0,0,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,0,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,0,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,1,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,1,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,1,1,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,1,1,2)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,1,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,1,2,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,2,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,2,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,2,1,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,2,1,2)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,2,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,1,2,2,2,2,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,0,0,0,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,0,0,1,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,0,0,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,0,0,1,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,0,1,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,0,1,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,0,2,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,0,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,0,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,0,2,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,1,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,1,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,1,1,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,1,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,2,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,2,1,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,1,2,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,0,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,0,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,0,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,1,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,1,1,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,1,1,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,1,1,2)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,1,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,1,2,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,2,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,2,1,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,2,1,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,2,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,1,2,2,2,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,0,0,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,0,0,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,0,0,2,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,0,1,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,0,1,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,0,1,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,0,2,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,0,2,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,0,0,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,0,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,0,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,1,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,1,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,1,1,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,1,2,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,1,2,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,2,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,2,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,2,1,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,1,2,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,0,0,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,0,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,0,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,1,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,1,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,1,1,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,1,1,2)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,1,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,1,2,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,1,2,2)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,2,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,2,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,2,1,1)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,2,1,2)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,2,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,2,2,2,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,0,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,0,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,0,2,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,1,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,1,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,1,1,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,1,1,2)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,1,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,1,2,1)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,1,2,2)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,2,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,2,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,2,1,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,2,1,2)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,2,2,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,2,2,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,3,2,2,2)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,0,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,0,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,0,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,1,0,0)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,1,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,1,1,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,1,1,2)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,1,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,1,2,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,1,2,2)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,2,0,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,2,1,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,2,1,1)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,2,1,2)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,2,2,0)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,2,2,1)
-+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,2,2,2)+2.*comp_fun_Bsbar(tau,tau_err,ma,mb,cos1var,cos2var,phivar,2,2,4,2,2,3);
+   return comp_fun_Bsbar(0,0,0,0,0,0)+comp_fun_Bsbar(0,1,0,0,1,0)+comp_fun_Bsbar(0,2,0,0,2,0)+comp_fun_Bsbar(1,0,0,1,0,0)+comp_fun_Bsbar(1,1,0,1,1,0)+comp_fun_Bsbar(1,1,1,1,1,1)
++comp_fun_Bsbar(1,1,2,1,1,2)+comp_fun_Bsbar(1,2,0,1,2,0)+comp_fun_Bsbar(1,2,1,1,2,1)+comp_fun_Bsbar(1,2,2,1,2,2)+comp_fun_Bsbar(2,0,0,2,0,0)+comp_fun_Bsbar(2,1,0,2,1,0)+comp_fun_Bsbar(2,1,1,2,1,1)
++comp_fun_Bsbar(2,1,2,2,1,2)+comp_fun_Bsbar(2,2,0,2,2,0)+comp_fun_Bsbar(2,2,1,2,2,1)+comp_fun_Bsbar(2,2,2,2,2,2)+comp_fun_Bsbar(2,2,3,2,2,3)+comp_fun_Bsbar(2,2,4,2,2,4)+2.*comp_fun_Bsbar(0,1,0,0,0,0)
++2.*comp_fun_Bsbar(0,1,0,1,0,0)+2.*comp_fun_Bsbar(0,1,0,2,0,0)+2.*comp_fun_Bsbar(0,2,0,0,0,0)+2.*comp_fun_Bsbar(0,2,0,0,1,0)+2.*comp_fun_Bsbar(0,2,0,1,0,0)+2.*comp_fun_Bsbar(0,2,0,1,1,0)
++2.*comp_fun_Bsbar(0,2,0,2,0,0)+2.*comp_fun_Bsbar(0,2,0,2,1,0)+2.*comp_fun_Bsbar(1,0,0,0,0,0)+2.*comp_fun_Bsbar(1,1,0,0,0,0)+2.*comp_fun_Bsbar(1,1,0,0,1,0)+2.*comp_fun_Bsbar(1,1,0,1,0,0)
++2.*comp_fun_Bsbar(1,1,0,2,0,0)+2.*comp_fun_Bsbar(1,1,1,0,0,0)+2.*comp_fun_Bsbar(1,1,1,0,1,0)+2.*comp_fun_Bsbar(1,1,1,0,2,0)+2.*comp_fun_Bsbar(1,1,1,1,0,0)+2.*comp_fun_Bsbar(1,1,1,1,1,0)
++2.*comp_fun_Bsbar(1,1,1,1,2,0)+2.*comp_fun_Bsbar(1,1,1,2,0,0)+2.*comp_fun_Bsbar(1,1,1,2,1,0)+2.*comp_fun_Bsbar(1,1,1,2,2,0)+2.*comp_fun_Bsbar(1,1,2,0,0,0)+2.*comp_fun_Bsbar(1,1,2,0,1,0)
++2.*comp_fun_Bsbar(1,1,2,0,2,0)+2.*comp_fun_Bsbar(1,1,2,1,0,0)+2.*comp_fun_Bsbar(1,1,2,1,1,0)+2.*comp_fun_Bsbar(1,1,2,1,1,1)+2.*comp_fun_Bsbar(1,1,2,1,2,0)+2.*comp_fun_Bsbar(1,1,2,1,2,1)
++2.*comp_fun_Bsbar(1,1,2,2,0,0)+2.*comp_fun_Bsbar(1,1,2,2,1,0)+2.*comp_fun_Bsbar(1,1,2,2,1,1)+2.*comp_fun_Bsbar(1,1,2,2,2,0)+2.*comp_fun_Bsbar(1,1,2,2,2,1)+2.*comp_fun_Bsbar(1,2,0,0,0,0)
++2.*comp_fun_Bsbar(1,2,0,0,1,0)+2.*comp_fun_Bsbar(1,2,0,0,2,0)+2.*comp_fun_Bsbar(1,2,0,1,0,0)+2.*comp_fun_Bsbar(1,2,0,1,1,0)+2.*comp_fun_Bsbar(1,2,0,2,0,0)+2.*comp_fun_Bsbar(1,2,0,2,1,0)
++2.*comp_fun_Bsbar(1,2,1,0,0,0)+2.*comp_fun_Bsbar(1,2,1,0,1,0)+2.*comp_fun_Bsbar(1,2,1,0,2,0)+2.*comp_fun_Bsbar(1,2,1,1,0,0)+2.*comp_fun_Bsbar(1,2,1,1,1,0)+2.*comp_fun_Bsbar(1,2,1,1,1,1)
++2.*comp_fun_Bsbar(1,2,1,1,2,0)+2.*comp_fun_Bsbar(1,2,1,2,0,0)+2.*comp_fun_Bsbar(1,2,1,2,1,0)+2.*comp_fun_Bsbar(1,2,1,2,1,1)+2.*comp_fun_Bsbar(1,2,1,2,2,0)+2.*comp_fun_Bsbar(1,2,2,0,0,0)
++2.*comp_fun_Bsbar(1,2,2,0,1,0)+2.*comp_fun_Bsbar(1,2,2,0,2,0)+2.*comp_fun_Bsbar(1,2,2,1,0,0)+2.*comp_fun_Bsbar(1,2,2,1,1,0)+2.*comp_fun_Bsbar(1,2,2,1,1,1)+2.*comp_fun_Bsbar(1,2,2,1,1,2)
++2.*comp_fun_Bsbar(1,2,2,1,2,0)+2.*comp_fun_Bsbar(1,2,2,1,2,1)+2.*comp_fun_Bsbar(1,2,2,2,0,0)+2.*comp_fun_Bsbar(1,2,2,2,1,0)+2.*comp_fun_Bsbar(1,2,2,2,1,1)+2.*comp_fun_Bsbar(1,2,2,2,1,2)
++2.*comp_fun_Bsbar(1,2,2,2,2,0)+2.*comp_fun_Bsbar(1,2,2,2,2,1)+2.*comp_fun_Bsbar(2,0,0,0,0,0)+2.*comp_fun_Bsbar(2,0,0,1,0,0)+2.*comp_fun_Bsbar(2,1,0,0,0,0)+2.*comp_fun_Bsbar(2,1,0,0,1,0)
++2.*comp_fun_Bsbar(2,1,0,1,0,0)+2.*comp_fun_Bsbar(2,1,0,1,1,0)+2.*comp_fun_Bsbar(2,1,0,2,0,0)+2.*comp_fun_Bsbar(2,1,1,0,0,0)+2.*comp_fun_Bsbar(2,1,1,0,1,0)+2.*comp_fun_Bsbar(2,1,1,0,2,0)
++2.*comp_fun_Bsbar(2,1,1,1,0,0)+2.*comp_fun_Bsbar(2,1,1,1,1,0)+2.*comp_fun_Bsbar(2,1,1,1,1,1)+2.*comp_fun_Bsbar(2,1,1,1,2,0)+2.*comp_fun_Bsbar(2,1,1,2,0,0)+2.*comp_fun_Bsbar(2,1,1,2,1,0)
++2.*comp_fun_Bsbar(2,1,1,2,2,0)+2.*comp_fun_Bsbar(2,1,2,0,0,0)+2.*comp_fun_Bsbar(2,1,2,0,1,0)+2.*comp_fun_Bsbar(2,1,2,0,2,0)+2.*comp_fun_Bsbar(2,1,2,1,0,0)+2.*comp_fun_Bsbar(2,1,2,1,1,0)
++2.*comp_fun_Bsbar(2,1,2,1,1,1)+2.*comp_fun_Bsbar(2,1,2,1,1,2)+2.*comp_fun_Bsbar(2,1,2,1,2,0)+2.*comp_fun_Bsbar(2,1,2,1,2,1)+2.*comp_fun_Bsbar(2,1,2,2,0,0)+2.*comp_fun_Bsbar(2,1,2,2,1,0)
++2.*comp_fun_Bsbar(2,1,2,2,1,1)+2.*comp_fun_Bsbar(2,1,2,2,2,0)+2.*comp_fun_Bsbar(2,1,2,2,2,1)+2.*comp_fun_Bsbar(2,2,0,0,0,0)+2.*comp_fun_Bsbar(2,2,0,0,1,0)+2.*comp_fun_Bsbar(2,2,0,0,2,0)
++2.*comp_fun_Bsbar(2,2,0,1,0,0)+2.*comp_fun_Bsbar(2,2,0,1,1,0)+2.*comp_fun_Bsbar(2,2,0,1,2,0)+2.*comp_fun_Bsbar(2,2,0,2,0,0)+2.*comp_fun_Bsbar(2,2,0,2,1,0)+2.*comp_fun_Bsbar(2,2,1,0,0,0)
++2.*comp_fun_Bsbar(2,2,1,0,1,0)+2.*comp_fun_Bsbar(2,2,1,0,2,0)+2.*comp_fun_Bsbar(2,2,1,1,0,0)+2.*comp_fun_Bsbar(2,2,1,1,1,0)+2.*comp_fun_Bsbar(2,2,1,1,1,1)+2.*comp_fun_Bsbar(2,2,1,1,2,0)
++2.*comp_fun_Bsbar(2,2,1,1,2,1)+2.*comp_fun_Bsbar(2,2,1,2,0,0)+2.*comp_fun_Bsbar(2,2,1,2,1,0)+2.*comp_fun_Bsbar(2,2,1,2,1,1)+2.*comp_fun_Bsbar(2,2,1,2,2,0)+2.*comp_fun_Bsbar(2,2,2,0,0,0)
++2.*comp_fun_Bsbar(2,2,2,0,1,0)+2.*comp_fun_Bsbar(2,2,2,0,2,0)+2.*comp_fun_Bsbar(2,2,2,1,0,0)+2.*comp_fun_Bsbar(2,2,2,1,1,0)+2.*comp_fun_Bsbar(2,2,2,1,1,1)+2.*comp_fun_Bsbar(2,2,2,1,1,2)
++2.*comp_fun_Bsbar(2,2,2,1,2,0)+2.*comp_fun_Bsbar(2,2,2,1,2,1)+2.*comp_fun_Bsbar(2,2,2,1,2,2)+2.*comp_fun_Bsbar(2,2,2,2,0,0)+2.*comp_fun_Bsbar(2,2,2,2,1,0)+2.*comp_fun_Bsbar(2,2,2,2,1,1)
++2.*comp_fun_Bsbar(2,2,2,2,1,2)+2.*comp_fun_Bsbar(2,2,2,2,2,0)+2.*comp_fun_Bsbar(2,2,2,2,2,1)+2.*comp_fun_Bsbar(2,2,3,0,0,0)+2.*comp_fun_Bsbar(2,2,3,0,1,0)+2.*comp_fun_Bsbar(2,2,3,0,2,0)
++2.*comp_fun_Bsbar(2,2,3,1,0,0)+2.*comp_fun_Bsbar(2,2,3,1,1,0)+2.*comp_fun_Bsbar(2,2,3,1,1,1)+2.*comp_fun_Bsbar(2,2,3,1,1,2)+2.*comp_fun_Bsbar(2,2,3,1,2,0)+2.*comp_fun_Bsbar(2,2,3,1,2,1)
++2.*comp_fun_Bsbar(2,2,3,1,2,2)+2.*comp_fun_Bsbar(2,2,3,2,0,0)+2.*comp_fun_Bsbar(2,2,3,2,1,0)+2.*comp_fun_Bsbar(2,2,3,2,1,1)+2.*comp_fun_Bsbar(2,2,3,2,1,2)+2.*comp_fun_Bsbar(2,2,3,2,2,0)
++2.*comp_fun_Bsbar(2,2,3,2,2,1)+2.*comp_fun_Bsbar(2,2,3,2,2,2)+2.*comp_fun_Bsbar(2,2,4,0,0,0)+2.*comp_fun_Bsbar(2,2,4,0,1,0)+2.*comp_fun_Bsbar(2,2,4,0,2,0)+2.*comp_fun_Bsbar(2,2,4,1,0,0)
++2.*comp_fun_Bsbar(2,2,4,1,1,0)+2.*comp_fun_Bsbar(2,2,4,1,1,1)+2.*comp_fun_Bsbar(2,2,4,1,1,2)+2.*comp_fun_Bsbar(2,2,4,1,2,0)+2.*comp_fun_Bsbar(2,2,4,1,2,1)+2.*comp_fun_Bsbar(2,2,4,1,2,2)
++2.*comp_fun_Bsbar(2,2,4,2,0,0)+2.*comp_fun_Bsbar(2,2,4,2,1,0)+2.*comp_fun_Bsbar(2,2,4,2,1,1)+2.*comp_fun_Bsbar(2,2,4,2,1,2)+2.*comp_fun_Bsbar(2,2,4,2,2,0)+2.*comp_fun_Bsbar(2,2,4,2,2,1)
++2.*comp_fun_Bsbar(2,2,4,2,2,2)+2.*comp_fun_Bsbar(2,2,4,2,2,3);
 
-   return result;
+ }
+
+// ---------------------------------------------------
+// Integral of the Bs time dependent function, effective resolution.
+
+TComplex KpiKpiSpectrumNW::ITBsj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const
+ {
+
+   return IT_cosh_temp*M_Average(j1,j2,h,j1p,j2p,hp)-IT_sinh_temp*M_DeltaGamma(j1,j2,h,j1p,j2p,hp)+IT_cos_temp*M_DirCP(j1,j2,h,j1p,j2p,hp)+IT_sin_temp*M_MixCP(j1,j2,h,j1p,j2p,hp);
 
  }
 
@@ -2938,7 +3865,7 @@ Double_t KpiKpiSpectrumNW::analyticalIntegral(Int_t code, const char* rangeName 
 
  Double_t KpiKpiSpectrumNW::comp_int_Bs(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const 
  { 
-   return ((IT.IT_cosh(year_opt,wide_window)*M_Average(j1,j2,h,j1p,j2p,hp)-IT.IT_sinh(year_opt,wide_window)*M_DeltaGamma(j1,j2,h,j1p,j2p,hp)+IT.IT_cos(year_opt,wide_window)*M_DirCP(j1,j2,h,j1p,j2p,hp)+IT.IT_sin(year_opt,wide_window)*M_MixCP(j1,j2,h,j1p,j2p,hp))*TComplex(NW.comp(year_opt,wide_window,j1,j2,h,j1p,j2p,hp,0),NW.comp(year_opt,wide_window,j1,j2,h,j1p,j2p,hp,1))).Re();
+   return (ITBsj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*Ihj1j2j1pj2p(j1,j2,j1p,j2p)).Re()*Ighhp(h,hp)*Ifjjphhp(j1,j1p,h,hp)*Ifjjphhp(j2,j2p,h,hp);
  }
 
 // ---------------------------------------------------
@@ -2947,40 +3874,20 @@ Double_t KpiKpiSpectrumNW::analyticalIntegral(Int_t code, const char* rangeName 
  Double_t KpiKpiSpectrumNW::int_Bs() const 
  {
 
-   Double_t result = comp_int_Bs(0,0,0,0,0,0)+comp_int_Bs(0,1,0,0,1,0)+comp_int_Bs(0,2,0,0,2,0)+comp_int_Bs(1,0,0,1,0,0)+comp_int_Bs(1,1,0,1,1,0)+comp_int_Bs(1,1,1,1,1,1)
-+comp_int_Bs(1,1,2,1,1,2)+comp_int_Bs(1,2,0,1,2,0)+comp_int_Bs(1,2,1,1,2,1)+comp_int_Bs(1,2,2,1,2,2)+comp_int_Bs(2,0,0,2,0,0)+comp_int_Bs(2,1,0,2,1,0)+comp_int_Bs(2,1,1,2,1,1)
-+comp_int_Bs(2,1,2,2,1,2)+comp_int_Bs(2,2,0,2,2,0)+comp_int_Bs(2,2,1,2,2,1)+comp_int_Bs(2,2,2,2,2,2)+comp_int_Bs(2,2,3,2,2,3)+comp_int_Bs(2,2,4,2,2,4)+2.*comp_int_Bs(0,1,0,0,0,0)
-+2.*comp_int_Bs(0,1,0,1,0,0)+2.*comp_int_Bs(0,1,0,2,0,0)+2.*comp_int_Bs(0,2,0,0,0,0)+2.*comp_int_Bs(0,2,0,0,1,0)+2.*comp_int_Bs(0,2,0,1,0,0)+2.*comp_int_Bs(0,2,0,1,1,0)
-+2.*comp_int_Bs(0,2,0,2,0,0)+2.*comp_int_Bs(0,2,0,2,1,0)+2.*comp_int_Bs(1,0,0,0,0,0)+2.*comp_int_Bs(1,1,0,0,0,0)+2.*comp_int_Bs(1,1,0,0,1,0)+2.*comp_int_Bs(1,1,0,1,0,0)
-+2.*comp_int_Bs(1,1,0,2,0,0)+2.*comp_int_Bs(1,1,1,0,0,0)+2.*comp_int_Bs(1,1,1,0,1,0)+2.*comp_int_Bs(1,1,1,0,2,0)+2.*comp_int_Bs(1,1,1,1,0,0)+2.*comp_int_Bs(1,1,1,1,1,0)
-+2.*comp_int_Bs(1,1,1,1,2,0)+2.*comp_int_Bs(1,1,1,2,0,0)+2.*comp_int_Bs(1,1,1,2,1,0)+2.*comp_int_Bs(1,1,1,2,2,0)+2.*comp_int_Bs(1,1,2,0,0,0)+2.*comp_int_Bs(1,1,2,0,1,0)
-+2.*comp_int_Bs(1,1,2,0,2,0)+2.*comp_int_Bs(1,1,2,1,0,0)+2.*comp_int_Bs(1,1,2,1,1,0)+2.*comp_int_Bs(1,1,2,1,1,1)+2.*comp_int_Bs(1,1,2,1,2,0)+2.*comp_int_Bs(1,1,2,1,2,1)
-+2.*comp_int_Bs(1,1,2,2,0,0)+2.*comp_int_Bs(1,1,2,2,1,0)+2.*comp_int_Bs(1,1,2,2,1,1)+2.*comp_int_Bs(1,1,2,2,2,0)+2.*comp_int_Bs(1,1,2,2,2,1)+2.*comp_int_Bs(1,2,0,0,0,0)
-+2.*comp_int_Bs(1,2,0,0,1,0)+2.*comp_int_Bs(1,2,0,0,2,0)+2.*comp_int_Bs(1,2,0,1,0,0)+2.*comp_int_Bs(1,2,0,1,1,0)+2.*comp_int_Bs(1,2,0,2,0,0)+2.*comp_int_Bs(1,2,0,2,1,0)
-+2.*comp_int_Bs(1,2,1,0,0,0)+2.*comp_int_Bs(1,2,1,0,1,0)+2.*comp_int_Bs(1,2,1,0,2,0)+2.*comp_int_Bs(1,2,1,1,0,0)+2.*comp_int_Bs(1,2,1,1,1,0)+2.*comp_int_Bs(1,2,1,1,1,1)
-+2.*comp_int_Bs(1,2,1,1,2,0)+2.*comp_int_Bs(1,2,1,2,0,0)+2.*comp_int_Bs(1,2,1,2,1,0)+2.*comp_int_Bs(1,2,1,2,1,1)+2.*comp_int_Bs(1,2,1,2,2,0)+2.*comp_int_Bs(1,2,2,0,0,0)
-+2.*comp_int_Bs(1,2,2,0,1,0)+2.*comp_int_Bs(1,2,2,0,2,0)+2.*comp_int_Bs(1,2,2,1,0,0)+2.*comp_int_Bs(1,2,2,1,1,0)+2.*comp_int_Bs(1,2,2,1,1,1)+2.*comp_int_Bs(1,2,2,1,1,2)
-+2.*comp_int_Bs(1,2,2,1,2,0)+2.*comp_int_Bs(1,2,2,1,2,1)+2.*comp_int_Bs(1,2,2,2,0,0)+2.*comp_int_Bs(1,2,2,2,1,0)+2.*comp_int_Bs(1,2,2,2,1,1)+2.*comp_int_Bs(1,2,2,2,1,2)
-+2.*comp_int_Bs(1,2,2,2,2,0)+2.*comp_int_Bs(1,2,2,2,2,1)+2.*comp_int_Bs(2,0,0,0,0,0)+2.*comp_int_Bs(2,0,0,1,0,0)+2.*comp_int_Bs(2,1,0,0,0,0)+2.*comp_int_Bs(2,1,0,0,1,0)
-+2.*comp_int_Bs(2,1,0,1,0,0)+2.*comp_int_Bs(2,1,0,1,1,0)+2.*comp_int_Bs(2,1,0,2,0,0)+2.*comp_int_Bs(2,1,1,0,0,0)+2.*comp_int_Bs(2,1,1,0,1,0)+2.*comp_int_Bs(2,1,1,0,2,0)
-+2.*comp_int_Bs(2,1,1,1,0,0)+2.*comp_int_Bs(2,1,1,1,1,0)+2.*comp_int_Bs(2,1,1,1,1,1)+2.*comp_int_Bs(2,1,1,1,2,0)+2.*comp_int_Bs(2,1,1,2,0,0)+2.*comp_int_Bs(2,1,1,2,1,0)
-+2.*comp_int_Bs(2,1,1,2,2,0)+2.*comp_int_Bs(2,1,2,0,0,0)+2.*comp_int_Bs(2,1,2,0,1,0)+2.*comp_int_Bs(2,1,2,0,2,0)+2.*comp_int_Bs(2,1,2,1,0,0)+2.*comp_int_Bs(2,1,2,1,1,0)
-+2.*comp_int_Bs(2,1,2,1,1,1)+2.*comp_int_Bs(2,1,2,1,1,2)+2.*comp_int_Bs(2,1,2,1,2,0)+2.*comp_int_Bs(2,1,2,1,2,1)+2.*comp_int_Bs(2,1,2,2,0,0)+2.*comp_int_Bs(2,1,2,2,1,0)
-+2.*comp_int_Bs(2,1,2,2,1,1)+2.*comp_int_Bs(2,1,2,2,2,0)+2.*comp_int_Bs(2,1,2,2,2,1)+2.*comp_int_Bs(2,2,0,0,0,0)+2.*comp_int_Bs(2,2,0,0,1,0)+2.*comp_int_Bs(2,2,0,0,2,0)
-+2.*comp_int_Bs(2,2,0,1,0,0)+2.*comp_int_Bs(2,2,0,1,1,0)+2.*comp_int_Bs(2,2,0,1,2,0)+2.*comp_int_Bs(2,2,0,2,0,0)+2.*comp_int_Bs(2,2,0,2,1,0)+2.*comp_int_Bs(2,2,1,0,0,0)
-+2.*comp_int_Bs(2,2,1,0,1,0)+2.*comp_int_Bs(2,2,1,0,2,0)+2.*comp_int_Bs(2,2,1,1,0,0)+2.*comp_int_Bs(2,2,1,1,1,0)+2.*comp_int_Bs(2,2,1,1,1,1)+2.*comp_int_Bs(2,2,1,1,2,0)
-+2.*comp_int_Bs(2,2,1,1,2,1)+2.*comp_int_Bs(2,2,1,2,0,0)+2.*comp_int_Bs(2,2,1,2,1,0)+2.*comp_int_Bs(2,2,1,2,1,1)+2.*comp_int_Bs(2,2,1,2,2,0)+2.*comp_int_Bs(2,2,2,0,0,0)
-+2.*comp_int_Bs(2,2,2,0,1,0)+2.*comp_int_Bs(2,2,2,0,2,0)+2.*comp_int_Bs(2,2,2,1,0,0)+2.*comp_int_Bs(2,2,2,1,1,0)+2.*comp_int_Bs(2,2,2,1,1,1)+2.*comp_int_Bs(2,2,2,1,1,2)
-+2.*comp_int_Bs(2,2,2,1,2,0)+2.*comp_int_Bs(2,2,2,1,2,1)+2.*comp_int_Bs(2,2,2,1,2,2)+2.*comp_int_Bs(2,2,2,2,0,0)+2.*comp_int_Bs(2,2,2,2,1,0)+2.*comp_int_Bs(2,2,2,2,1,1)
-+2.*comp_int_Bs(2,2,2,2,1,2)+2.*comp_int_Bs(2,2,2,2,2,0)+2.*comp_int_Bs(2,2,2,2,2,1)+2.*comp_int_Bs(2,2,3,0,0,0)+2.*comp_int_Bs(2,2,3,0,1,0)+2.*comp_int_Bs(2,2,3,0,2,0)
-+2.*comp_int_Bs(2,2,3,1,0,0)+2.*comp_int_Bs(2,2,3,1,1,0)+2.*comp_int_Bs(2,2,3,1,1,1)+2.*comp_int_Bs(2,2,3,1,1,2)+2.*comp_int_Bs(2,2,3,1,2,0)+2.*comp_int_Bs(2,2,3,1,2,1)
-+2.*comp_int_Bs(2,2,3,1,2,2)+2.*comp_int_Bs(2,2,3,2,0,0)+2.*comp_int_Bs(2,2,3,2,1,0)+2.*comp_int_Bs(2,2,3,2,1,1)+2.*comp_int_Bs(2,2,3,2,1,2)+2.*comp_int_Bs(2,2,3,2,2,0)
-+2.*comp_int_Bs(2,2,3,2,2,1)+2.*comp_int_Bs(2,2,3,2,2,2)+2.*comp_int_Bs(2,2,4,0,0,0)+2.*comp_int_Bs(2,2,4,0,1,0)+2.*comp_int_Bs(2,2,4,0,2,0)+2.*comp_int_Bs(2,2,4,1,0,0)
-+2.*comp_int_Bs(2,2,4,1,1,0)+2.*comp_int_Bs(2,2,4,1,1,1)+2.*comp_int_Bs(2,2,4,1,1,2)+2.*comp_int_Bs(2,2,4,1,2,0)+2.*comp_int_Bs(2,2,4,1,2,1)+2.*comp_int_Bs(2,2,4,1,2,2)
-+2.*comp_int_Bs(2,2,4,2,0,0)+2.*comp_int_Bs(2,2,4,2,1,0)+2.*comp_int_Bs(2,2,4,2,1,1)+2.*comp_int_Bs(2,2,4,2,1,2)+2.*comp_int_Bs(2,2,4,2,2,0)+2.*comp_int_Bs(2,2,4,2,2,1)
-+2.*comp_int_Bs(2,2,4,2,2,2)+2.*comp_int_Bs(2,2,4,2,2,3);
-
-   return result;
+   return comp_int_Bs(0,0,0,0,0,0)+comp_int_Bs(0,1,0,0,1,0)+comp_int_Bs(0,2,0,0,2,0)+comp_int_Bs(1,0,0,1,0,0)+comp_int_Bs(1,1,0,1,1,0)
++comp_int_Bs(1,1,1,1,1,1)+comp_int_Bs(1,1,2,1,1,2)+comp_int_Bs(1,2,0,1,2,0)+comp_int_Bs(1,2,1,1,2,1)+comp_int_Bs(1,2,2,1,2,2)
++comp_int_Bs(2,0,0,2,0,0)+comp_int_Bs(2,1,0,2,1,0)+comp_int_Bs(2,1,1,2,1,1)+comp_int_Bs(2,1,2,2,1,2)+comp_int_Bs(2,2,0,2,2,0)
++comp_int_Bs(2,2,1,2,2,1)+comp_int_Bs(2,2,2,2,2,2)+comp_int_Bs(2,2,3,2,2,3)+comp_int_Bs(2,2,4,2,2,4)+2.*comp_int_Bs(0,1,0,0,0,0)
++2.*comp_int_Bs(0,1,0,1,0,0)+2.*comp_int_Bs(0,1,0,2,0,0)+2.*comp_int_Bs(0,2,0,0,0,0)+2.*comp_int_Bs(0,2,0,0,1,0)+2.*comp_int_Bs(0,2,0,1,0,0)
++2.*comp_int_Bs(0,2,0,1,1,0)+2.*comp_int_Bs(0,2,0,2,0,0)+2.*comp_int_Bs(0,2,0,2,1,0)+2.*comp_int_Bs(1,0,0,0,0,0)+2.*comp_int_Bs(1,1,0,0,0,0)
++2.*comp_int_Bs(1,1,0,0,1,0)+2.*comp_int_Bs(1,1,0,1,0,0)+2.*comp_int_Bs(1,1,0,2,0,0)+2.*comp_int_Bs(1,2,0,0,0,0)+2.*comp_int_Bs(1,2,0,0,1,0)
++2.*comp_int_Bs(1,2,0,0,2,0)+2.*comp_int_Bs(1,2,0,1,0,0)+2.*comp_int_Bs(1,2,0,1,1,0)+2.*comp_int_Bs(1,2,0,2,0,0)+2.*comp_int_Bs(1,2,0,2,1,0)
++2.*comp_int_Bs(1,2,1,1,1,1)+2.*comp_int_Bs(1,2,1,2,1,1)+2.*comp_int_Bs(1,2,2,1,1,2)+2.*comp_int_Bs(1,2,2,2,1,2)+2.*comp_int_Bs(2,0,0,0,0,0)
++2.*comp_int_Bs(2,0,0,1,0,0)+2.*comp_int_Bs(2,1,0,0,0,0)+2.*comp_int_Bs(2,1,0,0,1,0)+2.*comp_int_Bs(2,1,0,1,0,0)+2.*comp_int_Bs(2,1,0,1,1,0)
++2.*comp_int_Bs(2,1,0,2,0,0)+2.*comp_int_Bs(2,1,1,1,1,1)+2.*comp_int_Bs(2,1,2,1,1,2)+2.*comp_int_Bs(2,2,0,0,0,0)+2.*comp_int_Bs(2,2,0,0,1,0)
++2.*comp_int_Bs(2,2,0,0,2,0)+2.*comp_int_Bs(2,2,0,1,0,0)+2.*comp_int_Bs(2,2,0,1,1,0)+2.*comp_int_Bs(2,2,0,1,2,0)+2.*comp_int_Bs(2,2,0,2,0,0)
++2.*comp_int_Bs(2,2,0,2,1,0)+2.*comp_int_Bs(2,2,1,1,1,1)+2.*comp_int_Bs(2,2,1,1,2,1)+2.*comp_int_Bs(2,2,1,2,1,1)+2.*comp_int_Bs(2,2,2,1,1,2)
++2.*comp_int_Bs(2,2,2,1,2,2)+2.*comp_int_Bs(2,2,2,2,1,2);
 
  }
 
@@ -2990,7 +3897,11 @@ Double_t KpiKpiSpectrumNW::analyticalIntegral(Int_t code, const char* rangeName 
 Double_t KpiKpiSpectrumNW::P_trueBs() const
 {
 
-  return 0.5*(1.+DCP_prod)*int_Bs()/den_fit();
+  set_buffer_integral_vars();
+
+  cout << "P(Bs_true) = " << 0.5*(1.+DCP_prod[int(wide_window)])*int_Bs()/den_plot() << endl;
+
+  return 0.5*(1.+DCP_prod[int(wide_window)])*int_Bs()/den_plot();
 
 }
 
@@ -3001,8 +3912,8 @@ Double_t KpiKpiSpectrumNW::P_trueBs() const
  {
 
    if (wide_window_gen == 1) {
-      m1_ran = 750.+ran.Rndm()*(1700.-750.);
-      m2_ran = 750.+ran.Rndm()*(1700.-750.);
+      m1_ran = 750.+ran.Rndm()*(1500.-750.);
+      m2_ran = 750.+ran.Rndm()*(1500.-750.);
       }
    else {
       m1_ran = 750.+ran.Rndm()*(1050.-750.);
@@ -3025,13 +3936,13 @@ Double_t KpiKpiSpectrumNW::P_trueBs() const
  void KpiKpiSpectrumNW::Randomize7D_fun_max() const 
  {
 
-   m1_ran = 800.+ran.Rndm()*(1000.-800.);
-   m2_ran = 800.+ran.Rndm()*(1000.-800.);
+   m1_ran = 850.+ran.Rndm()*(950.-850.);
+   m2_ran = 850.+ran.Rndm()*(950.-850.);
    cos1_ran = -1.+ran.Rndm()*2.;
    cos2_ran = -1.+ran.Rndm()*2.;
    phi_ran = -pi+ran.Rndm()*2.*pi;
-   t_ran = ran.Rndm()*5.;
-   t_err_ran = 0.01+ran.Rndm()*(0.06-0.01);
+   t_ran = ran.Rndm()*3.;
+   t_err_ran = 0.01+ran.Rndm()*(0.04-0.01);
 
    return;
 
@@ -3070,11 +3981,11 @@ void KpiKpiSpectrumNW::SetGenerator(Int_t wide_window_gen, Int_t compute_max_fun
     max_fun_7DBsbar = 0.;
 
     // Tagging performance distributions.
-    for (int i=0; i<1000; i++) {
-      etamistag_SSK_ran = 0.5*ran.Rndm();
+    for (int i=0; i<10000; i++) {
+      etamistag_SSK_ran = 0.3+ran.Rndm()*(0.5-0.3);
       fun_ran = P_eta_SSK(etamistag_SSK_ran);
       if (fun_ran > max_fun_etaSSK) {max_fun_etaSSK = fun_ran;}
-      etamistag_OS_ran = 0.5*ran.Rndm();
+      etamistag_OS_ran = 0.3+ran.Rndm()*(0.5-0.3);
       fun_ran = P_eta_OS(etamistag_OS_ran);
       if (fun_ran > max_fun_etaOS) {max_fun_etaOS = fun_ran;}
       }
@@ -3083,18 +3994,20 @@ void KpiKpiSpectrumNW::SetGenerator(Int_t wide_window_gen, Int_t compute_max_fun
     cout << "(Using a randomized sample of " << sample_size_7D << " 7D points to find the maximum of the Bs and Bs-bar PDFs).\n";
     for (int i=0; i<sample_size_7D; i++) {
       Randomize7D_fun_max();
-      fun_ran = P_deltat(t_err_ran)*fun_Bs(t_ran,t_err_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran)*accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran);
+      set_buffer_differential_vars(m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran,t_ran,t_err_ran,0,0,0.5,0.5);
+      fun_ran = P_deltat(t_err_ran)*fun_Bs()*accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran);
       if (fun_ran > max_fun_7DBs) {max_fun_7DBs = fun_ran;}
       Randomize7D_fun_max();
-      fun_ran = P_deltat(t_err_ran)*fun_Bsbar(t_ran,t_err_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran)*accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran);
+      set_buffer_differential_vars(m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran,t_ran,t_err_ran,0,0,0.5,0.5);
+      fun_ran = P_deltat(t_err_ran)*fun_Bsbar()*accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran);
       if (fun_ran > max_fun_7DBsbar) {max_fun_7DBsbar = fun_ran;}
       }
 
     // Providing the computed maxima with an extra safety range.
-    max_fun_etaSSK *= 1.05;
-    max_fun_etaOS *= 1.05;
-    max_fun_7DBs *= 1.05;
-    max_fun_7DBsbar *= 1.05;
+    max_fun_etaSSK *= 1.1;
+    max_fun_etaOS *= 1.1;
+    max_fun_7DBs *= 1.1;
+    max_fun_7DBsbar *= 1.1;
 
     cout << "max_P_eta_SSK = " << max_fun_etaSSK << "\n" << "max_P_eta_OS = " << max_fun_etaOS << "\n" << "max_P_7D_Bs = " << max_fun_7DBs << "\n" << "max_P_7D_Bsbar = " << max_fun_7DBsbar << "\n";
 
@@ -3103,10 +4016,22 @@ void KpiKpiSpectrumNW::SetGenerator(Int_t wide_window_gen, Int_t compute_max_fun
   else {
 
     // Relyable previously measured values.
-    max_fun_etaSSK = 0.456994;
-    max_fun_etaOS = 0.90067;
-    max_fun_7DBs = 0.0064832;
-    max_fun_7DBsbar = 0.0074316;
+
+    if (Wide_Window_Gen == 0) {
+      cout << "Using previously obtained values for the maxima of the Bs and Bs-bar PDFs in the narrow mKpi window.\n";
+      max_fun_etaSSK = 0.26227;
+      max_fun_etaOS = 0.958321;
+      max_fun_7DBs = 0.0330968;
+      max_fun_7DBsbar = 0.0342749;
+      }
+
+    else {
+      cout << "Using previously obtained values for the maxima of the Bs and Bs-bar PDFs in the wide mKpi window.\n";
+      max_fun_etaSSK = 0.262292;
+      max_fun_etaOS = 0.958321;
+      max_fun_7DBs = 0.00494785;
+      max_fun_7DBsbar = 0.00519231;
+      }
 
     }
 
@@ -3136,8 +4061,8 @@ void KpiKpiSpectrumNW::generateEvent(Int_t code)
   // Generation is performed in three steps:
   //    1. The event is first generated either as a Bs or a Bsbar.
   //    2. Mistag probabilities and tagging decisions are assigned to the event.
-  //    3. Decay variables, involving angles, invariant masses, decay time and
-  //       estimated decay time error are assigned to the event.
+  //    3. Decay variables (angles, invariant masses, decay time and
+  //       estimated decay time error) are assigned to the event.
 
   // Generation of a Bs or a Bsbar event.
   dec_Bs = ran.Rndm();
@@ -3225,12 +4150,13 @@ void KpiKpiSpectrumNW::generateEvent(Int_t code)
   else {max_fun = max_fun_7DBsbar;}
   while (event_accepted == 0) {
     Randomize7D(Wide_Window_Gen);
+    set_buffer_differential_vars(m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran,t_ran,t_err_ran,0,0,0.5,0.5);
     dec_accepted = max_fun*ran.Rndm();
     if (true_ID == 1) {
-      fun_ran = P_deltat(t_err_ran)*fun_Bs(t_ran,t_err_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran)*accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran);
+      fun_ran = P_deltat(t_err_ran)*fun_Bs()*accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran);
       }
     else {
-      fun_ran = P_deltat(t_err_ran)*fun_Bsbar(t_ran,t_err_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran)*accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran);
+      fun_ran = P_deltat(t_err_ran)*fun_Bsbar()*accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran);
       }
     if (fun_ran >= dec_accepted) {event_accepted = 1;}
     }
@@ -3259,7 +4185,10 @@ Double_t KpiKpiSpectrumNW::evaluate() const
 {
 
 	// Full fitter.
-	if (alt_fit == 0) {return num_fit();}
+	if (alt_fit == 0) {
+		if (acctype == 2) {return num_fit()/den_fit();}
+		else {return num_fit()/den_plot();}
+	}
 
 	// 1-D fits of the conditional variable distributions.
 	else if (alt_fit == 1) {return P_deltat(t_err);}

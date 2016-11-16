@@ -16,15 +16,15 @@ void SetSpecVars_EvtVars2012(RooPhysFit::RooDMassFitter& Mfit,
                              const char* parPrefix_nTuple);
 
 
-void SetSpecVars_EvtVars2011(RooPhysFit::RooDMassFitter& Mfit,
-                             const char* parPrefix_DataSet,
-                             const char* parPrefix_nTuple);
+//void SetSpecVars_EvtVars2011(RooPhysFit::RooDMassFitter& Mfit,
+//                             const char* parPrefix_DataSet,
+//                             const char* parPrefix_nTuple);
 
-void SetSpecVars_MCEvtVars2011(RooPhysFit::RooDMassFitter& Mfit,
-                               const char* parPrefix_DataSet,
-                               const char* parPrefix_nTuple);
 
 void SetSpecVars_StdDLLs2011(RooPhysFit::RooDMassFitter& Mfit,
+                             const char* parPrefix_DataSet,
+                             const char* parPrefix_nTuple);
+void SetSpecVars_StdDLLs2015(RooPhysFit::RooDMassFitter& Mfit,
                              const char* parPrefix_DataSet,
                              const char* parPrefix_nTuple);
 
@@ -32,9 +32,7 @@ void SetSpecVars_EvtVars(RooPhysFit::RooDMassFitter& Mfit,
                          const char* parPrefix_DataSet,
                          const char* parPrefix_nTuple);
 
-void SetSpecVars_MCEvtVars(RooPhysFit::RooDMassFitter& Mfit,
-                           const char* parPrefix_DataSet,
-                           const char* parPrefix_nTuple);
+
 
 void SetSpecVars_StdDLLs(RooPhysFit::RooDMassFitter& Mfit,
                          const char* parPrefix_DataSet,
@@ -43,8 +41,17 @@ void SetSpecVars_StdDLLs(RooPhysFit::RooDMassFitter& Mfit,
 void SetSpecVars_ANNVars(RooPhysFit::RooDMassFitter& Mfit,
                          const char* parPrefix_DataSet,
                          const char* parPrefix_nTuple);
+void SetSpecVars_ANNVars2012(RooPhysFit::RooDMassFitter& Mfit,
+                         const char* parPrefix_DataSet,
+                         const char* parPrefix_nTuple);
 
 void SetSpecVars_KinematicVars(RooPhysFit::RooDMassFitter& Mfit,
+                               const char* parPrefix_DataSet,
+                               const char* parPrefix_nTuple);
+void SetSpecVars_KinematicVars2015(RooPhysFit::RooDMassFitter& Mfit,
+                               const char* parPrefix_DataSet,
+                               const char* parPrefix_nTuple);
+void SetSpecVars_Dummy(RooPhysFit::RooDMassFitter& Mfit,
                                const char* parPrefix_DataSet,
                                const char* parPrefix_nTuple);
 
@@ -78,7 +85,7 @@ void SetSpecVars_ElectronVars(RooPhysFit::RooDMassFitter& Mfit,
 
 void SetSpecVars_MuonTisTosTagged(RooPhysFit::RooDMassFitter& Mfit,
                          const char* parPrefix_DataSet,
-                         const char* parPrefix_nTuple);
+				  const char* parPrefix_nTuple);
 
 void SetSpecVars_KPiMuonUNB(RooPhysFit::RooDMassFitter& Mfit,
                          const char* parPrefix_DataSet,

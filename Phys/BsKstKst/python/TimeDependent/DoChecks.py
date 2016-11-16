@@ -12,12 +12,13 @@ wide_window = 1
 # Data.
 data_file = 'AnalysisOutWithCuts_AllBranches.root'
 data_tree = 'AnalysisTree'
+MC_datatype = 2 # 0 for PhSp only, 1 for VV only, 2 for both
 evnum_limit = 0
 
 # Output.
 output_CorrAcc = 'AccCorrTable'
 rotated_table = 0
-plotbinnum = 6
+plotbinnum = 12
 apply_weights_for_binning = 0
 output_TimeAccCorr = 'TimeAccCorrPlot'
 cutbinnum = 5
@@ -31,20 +32,20 @@ output_TrigAcc = 'AccTriggerPlot'
 
 def CorrAcc():
 
-	data = loadDataAccCheck(data_file,data_tree,wide_window,evnum_limit)
+	data = loadDataAccCheck(data_file,data_tree,wide_window,MC_datatype,evnum_limit)
 	corr_table_2D(data,[mKp1,mKp2,cos1,cos2,phi,t],1,output_CorrAcc,rotated_table)
 	makeTimeAccCorrPlot(data,output_TimeAccCorr,plotbinnum,cutbinnum,apply_weights_for_binning,wide_window)
 
 
 def YearAcc():
 
-	data = loadDataAccCheck(data_file,data_tree,wide_window,evnum_limit)
+	data = loadDataAccCheck(data_file,data_tree,wide_window,MC_datatype,evnum_limit)
 	makeYearAccPlot(data,output_YearAcc,plotbinnum,apply_weights_for_binning,wide_window)
 
 
 def TrigAcc():
 
-	data = loadDataAccCheck(data_file,data_tree,wide_window,evnum_limit)
+	data = loadDataAccCheck(data_file,data_tree,wide_window,MC_datatype,evnum_limit)
 	makeTrigAccPlot(data,output_TrigAcc,plotbinnum,apply_weights_for_binning,wide_window)
 
 

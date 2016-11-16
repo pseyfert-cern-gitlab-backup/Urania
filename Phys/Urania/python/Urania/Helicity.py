@@ -127,18 +127,21 @@ def doKsPizeroMuMu(Jlist, transAmp = 1):
     AllTerms = {}
     out = 0
     helicities = [0]
-    for i in range(max(Jlist)):
+    #helicities = [0]
+    #jmax = max(Jlist)
+    #if jmax >= 1:
+    for i in range(max(Jlist)+1):
         helicities += [i,-i]
     helicities.sort()
-#    print helicities
+    print helicities
     for h in helicities:
- #       print h
+        print h
         AllTerms[h] = 0
         
         for i in Jlist:
             if i < abs(h): continue
             NewTerm =  doKsPizeroMMTerm(i,h) 
-  #          print i, NewTerm
+            print i, NewTerm
             AllTerms[h] += NewTerm #doKsPizeroMMTerm(i,h) 
     for h in helicities:
         if transAmp: AllTerms[h] = UseTransAmp(AllTerms[h] , Jlist)

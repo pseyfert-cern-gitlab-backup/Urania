@@ -7,7 +7,7 @@ from triggerclass import *
 from scipy import random as rnd
 import sys, os
 
-Nevt = 10000
+Nevt = 500000
 
 out = channelData(G.generate(int(Nevt)))
 round_vars = ["Kplus_ID"] ## Variables that you want 
@@ -28,4 +28,4 @@ for key in out[1].keys():
 
 #out.save(os.environ["HOME"] + "/vol5/BsJpsiPhi/fakeBkg/Bkg_sample_" + str(Nevt/1000)+ "_K_test", keytypes = keytypes)
 
-out.save(os.environ["HOME"] + "/Bkg_sample_2014_" + str(int(round(Nevt/1000)))+ "K", keytypes = keytypes)
+out.save(os.environ["HOME"] + "/Bkg_sample_2015_" + str(int(round(Nevt/1000)))+ "K", keytypes = keytypes)

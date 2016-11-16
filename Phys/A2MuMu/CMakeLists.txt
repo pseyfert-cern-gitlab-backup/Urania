@@ -1,7 +1,7 @@
 ################################################################################
 # Package: A2MuMu
 ################################################################################
-gaudi_subdir(A2MuMu v1r0)
+gaudi_subdir(A2MuMu v1r3)
 
 gaudi_depends_on_subdirs(Math/MCLimit
                          Math/SomeUtils

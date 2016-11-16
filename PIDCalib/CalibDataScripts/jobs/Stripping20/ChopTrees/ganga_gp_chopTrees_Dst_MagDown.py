@@ -1,5 +1,5 @@
 # set the stripping version
-stripVersion = "20"
+stripVersion = "21"
 
 # magnet 'Up' or 'Down'?
 magPol='Down'
@@ -28,7 +28,7 @@ platform=''
 jobname="ChopTrees"
 
 # the maximum number of input files to process per subjob
-filesPerJob=20
+filesPerJob=2
 
 # is this a test job?
 isTest=False

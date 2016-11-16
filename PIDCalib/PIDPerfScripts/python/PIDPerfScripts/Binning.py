@@ -261,11 +261,20 @@ for trType in GetPartTypes():
     AddBinScheme(trType, 'P', 'PerfPlots_%s'%(trType), 0, 100000)
     AddUniformBins(trType, 'P', 'PerfPlots_%s'%(trType), 20, 0, 100000)
 
+    AddBinScheme(trType, 'Tesla_P', 'PerfPlots_%s'%(trType), 0, 100000)
+    AddUniformBins(trType, 'Tesla_P', 'PerfPlots_%s'%(trType), 20, 0, 100000)
+
     AddBinScheme(trType, 'PT', 'PerfPlots_%s'%(trType), 0, 15000)
     AddUniformBins(trType, 'PT', 'PerfPlots_%s'%(trType), 20, 0, 15000)
 
+    AddBinScheme(trType, 'Tesla_PT', 'PerfPlots_%s'%(trType), 0, 15000)
+    AddUniformBins(trType, 'Tesla_PT', 'PerfPlots_%s'%(trType), 20, 0, 15000)
+
     AddBinScheme(trType, 'ETA', 'PerfPlots_%s'%(trType), 1.5, 5.0)
     AddUniformBins(trType, 'ETA', 'PerfPlots_%s'%(trType), 20, 1.5, 5.0)
+
+    AddBinScheme(trType, 'Tesla_ETA', 'PerfPlots_%s'%(trType), 1.5, 5.0)
+    AddUniformBins(trType, 'Tesla_ETA', 'PerfPlots_%s'%(trType), 20, 1.5, 5.0)
 
     AddBinScheme(trType, 'PHI', 'PerfPlots_%s'%(trType), -3.14159, 3.14159)
     AddUniformBins(trType, 'PHI', 'PerfPlots_%s'%(trType), 20, -3.14159, 3.14159)
@@ -283,7 +292,11 @@ for trType in GetPartTypes():
 
         AddBinScheme(trType, 'V2ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 0, 1)
         AddUniformBins(trType, 'V2ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 20, 0, 1)
-            
+        AddBinScheme(trType, 'V3ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 0, 1)
+        AddUniformBins(trType, 'V3ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 20, 0, 1)
+        AddBinScheme(trType, 'V4ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 0, 1)
+        AddUniformBins(trType, 'V4ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 20, 0, 1)            
+
         if realPart != "mu":
             AddBinScheme(trType, 'RICHThreshold_%s'%(realPart), 'PerfPlots_%s'%(trType), -2, 2)
             AddUniformBins(trType, 'RICHThreshold_%s'%(realPart), 'PerfPlots_%s'%(trType), 4, -2, 2)
@@ -329,6 +342,12 @@ for trType in GetPartTypes():
 
     AddBinScheme(trType, 'nSPDHits', 'PerfPlots_%s'%(trType), 0, 1000)
     AddUniformBins(trType, 'nSPDHits', 'PerfPlots_%s'%(trType), 20, 0, 1000)
+
+    AddBinScheme(trType, 'nRich1Hits', 'PerfPlots_%s'%(trType), 0, 10000)
+    AddUniformBins(trType, 'nRich1Hits', 'PerfPlots_%s'%(trType), 20, 0, 10000)
+
+    AddBinScheme(trType, 'nRich2Hits', 'PerfPlots_%s'%(trType), 0, 8000)
+    AddUniformBins(trType, 'nRich2Hits', 'PerfPlots_%s'%(trType), 20, 0, 8000)
 
 ### set the default binning schemes
 for trType in GetRICHPIDPartTypes():

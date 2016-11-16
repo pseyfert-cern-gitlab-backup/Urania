@@ -2,11 +2,11 @@
 import datetime
 from os import *
 today = datetime.datetime.now()
-PROJECT = "URANIA"
+PROJECT = "ERASMUS"
 from time import sleep
 
 def lower(s): return s.lower()
-PATH = environ["HOME"] + "/work/"+PROJECT+"/"+PROJECT+"_HEAD/"
+PATH = environ["HOME"] + "/vol5/"+PROJECT+"/"+PROJECT+"_HEAD/"
 def do(package, version):
     f = file(PATH + package +"/cmt/requirements")
     lines = f.readlines()

@@ -187,7 +187,7 @@ def runMDFitter( debug, sample, mode, sweight,
     plotSettings = PlotSettings("plotSettings","plotSettings", TString(dirPlot), extPlot , 100, True, False, True)
     plotSettings.Print("v")
 
-    mdt = Translator(myconfigfile,"MDSettings",False)
+    mdt = Translator(myconfigfile,"MDSettings",True)
 
     MDSettings = mdt.getConfig()
     MDSettings.Print("v")
@@ -204,17 +204,25 @@ def runMDFitter( debug, sample, mode, sweight,
             print signalNames[i]
             year = GeneralUtils.CheckDataYear(signalNames[i])
             workData = MassFitUtils.ObtainSignal(TString(myconfigfile["dataName"]), signalNames[i],
-                                                 MDSettings, decay, False, False, workData, False,
+                                                 MDSettings, decay, True, False, workData, False,
                                                  MDSettings.GetLum(year,"Down"), MDSettings.GetLum(year,"Up"), plotSettings, debug)
         GeneralUtils.SaveWorkspace(workData,saveNameTS, debug)
     #exit(0) 
     configNameTS = TString(configName)
     toys = False
 
-    var = GeneralUtils.GetObservable(workData, TString(varName), debug)
-    observables = RooArgSet() 
-    observables.add(var)
-    obs = [ var ] 
+    observables = getObservables(MDSettings, workData, toys, debug)
+    beautyMass = observables.find(MDSettings.GetMassBVarOutName().Data())
+    charmMass = observables.find(MDSettings.GetMassDVarOutName().Data())
+    bacPIDK = observables.find(MDSettings.GetPIDKVarOutName().Data())
+    obs = [beautyMass, charmMass, bacPIDK]
+    if varName == MDSettings.GetMassDVarOutName():
+        obs = [charmMass, beautyMass, bacPIDK]
+
+#    var = GeneralUtils.GetObservable(workData, TString(varName), debug)
+#    observables = RooArgSet() 
+#    observables.add(var)
+#    obs = [ var ] 
      
  ###------------------------------------------------------------------------------------------------------------------------------------###
     ###------------------------------------------------------------------------------------------------------------------------------###
@@ -231,7 +239,6 @@ def runMDFitter( debug, sample, mode, sweight,
         sampleTS = TString("both") 
     if merge == "year" or merge == "both":
         yearTS = TString("run1") 
-
     sam = RooCategory("sample","sample")
 
     sm = []
@@ -282,8 +289,8 @@ def runMDFitter( debug, sample, mode, sweight,
     for y in yy:
         lum = MDSettings.GetLumRatio(y)
         print lum[0],  lum[1] 
-        name = "lumRatio_"+y
-        lumRatio.append(WS(workInt,RooRealVar(name,name, lum[1])))
+        name = TString("lumRatio_")+TString(y)
+        lumRatio.append(WS(workInt,RooRealVar(name.Data(),name.Data(), lum[1])))
 
 
     workInt.Print("v")
@@ -317,7 +324,7 @@ def runMDFitter( debug, sample, mode, sweight,
 
     if varName == MDSettings.GetMassBVarOutName():
         keysSig = ["BsSignalShape", "fake", "fake"]
-    elif varName == MDSettings.GetMassBVarOutName():
+    elif varName == MDSettings.GetMassDVarOutName():
         keysSig = ["DsSignalShape", "fake", "fake"]
     else:
         keysSig= ["SignalShape", "fake", "fake"]

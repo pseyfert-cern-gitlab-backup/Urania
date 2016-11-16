@@ -1,0 +1,217 @@
+##########################################################################
+##########################################################################
+To set up the different tools needed for isolations and jet variables etc.
+##########################################################################
+##########################################################################
+
+These tools have only been used with x86_64-slc6-gcc48-opt so far,  before compiling, do LbLogin -c x86_64-slc6-gcc48-opt. 
+The 2015 stripping 20, stripping 21 and MC production was done with DaVinci v36r1p1, Phys/DecayTreeTuple v4r11 and jobs submitting via Ganga v600r44.
+For stripping 24 ntuples production was done with DaVinci v38r1p1, Phys/DecayTreeTuple v5r4
+
+Getpack Phys/DecayTreeTuple, the head of Phys/IncTopoVert and the head of Phys/DecayTreeTupleJets. 
+
+To do this, in your /cmtuser/ directory you need to:
+   setenvDaVinci v36r1p1
+
+Then in /cmtuser/DaVinci_v36r1p1/ you need to getpack the packages
+     getpack Phys/DecayTreeTuple v4r11
+     getpack Phys/DecayTreeTupleJets v1r3
+     getpack Phys/IncTopoVert head
+
+For a different DaVinci version, to know which version of DecayTreeTuple to getpack with a certain DV version:
+go to cmtuser/DaVinci_xyz/Phys/DaVinci/cmt (you need to getpack the DV first) and do:
+
+    cmt sh us | grep "DecayTreeTuple"
+
+To get all the tools working for the BsMuMu ntuples DecayTreeTuple needs some alterations.
+Add the files TupleToolMuonVariables.h, TupleToolMuonVariables.cpp, TupleToolBsMuMuZViso.h and TupleToolBsMuMuZViso.cpp to cmtuser/DaVinci_v36r1p1/Phys/DecayTreeTuple/src
+
+
+Also you need to add the following lines to requirements file in cmtuser/DaVinci_v36r1p1/Phys/DecayTreeTuple/
+
+ use  Python              v*  LCG_Interfaces
+ use  ROOT             v*      LCG_Interfaces -no_auto_imports
+ #============================================================================
+ # load TMVA and MLP libraries
+ #============================================================================
+ private
+ macro_append   ROOT_linkopts   " -lMLP -lTMVA -lGraf -lHist -lMatrix -lTreePlayer -lGpad -lGraf3d" \
+                WIN32   " libMLP.lib libTMVA.lib libGraf.lib libHist.lib libMatrix.lib libTreePlayer.lib libGpad.lib libGraf3d.lib"
+ end_private
+ #============================================================================
+
+to the requirements file of DecayTreeTuple package.
+
+
+Then in Phys/DecayTreeTuple/cmt, Phys/IncTopoVert/cmt and Phys/DecayTreeTupleJet/cmt do
+   cmt make
+
+
+The weights files 600_2500_4_30_0.75_1_1_BDT.weights.xml, 600_2500_4_30_0.75_1_4_BDT.weights.xml, 600_2500_4_30_0.75_1_8_BDT.weights.xml, 600_2500_4_30_0.75_1_9_BDT.weights.xml, TMVA_7Dec.weights.xml,  HflatBDTS_7Dec.root and ZVisoBDTG_BsMuMu.weights.xml, are needed to use TupleToolMuonVariables and TupleToolBsMuMuZViso.
+
+##########################################################################
+##########################################################################
+Job set up
+##########################################################################
+##########################################################################
+
+The 2015 stripping 20, stripping 21 and MC production was done with  Ganga v600r44.
+Options file is Bs2MuMu_ntuples.py
+
+Set up Ganga by
+  LbLogin -c x86_64-slc6-gcc48-opt
+  SetupProject Ganga v600r44
+
+
+To set up a job;
+j=Job()
+j.name = ''
+j.application = DaVinci( version = "v36r1p1")
+j.application.optsfile = '/var/clus/usera/hme28/cmtuser/DaVinci_v36r1p1/Bs2MuMu_ntuples.py'
+j.splitter = SplitByFiles (filesPerJob = 1 )
+j.outputfiles = [DiracFile ( namePattern = 'S21_mircoDST_ntuples.root' )] # name is the output name in the options file.
+j.inputsandbox = ['/var/clus/usera/hme28/cmtuser/DaVinci_v36r1p1/600_2500_4_30_0.75_1_1_BDT.weights.xml', '/var/clus/usera/hme28/cmtuser/DaVinci_v36r1p1/600_2500_4_30_0.75_1_4_BDT.weights.xml','/var/clus/usera/hme28/cmtuser/DaVinci_v36r1p1/600_2500_4_30_0.75_1_8_BDT.weights.xml','/var/clus/usera/hme28/cmtuser/DaVinci_v36r1p1/TMVA_7Dec.weights.xml','/var/clus/usera/hme28/cmtuser/DaVinci_v36r1p1/HflatBDTS_7Dec.root','/var/clus/usera/hme28/cmtuser/DaVinci_v36r1p1/ZVisoBDTG_BsMuMu.weights.xml']
+j.name = 'S21 Up Dimuon'
+
+Get the data via book keeping
+data = browseBK()
+
+Add data to the job 
+j.inputdata = data
+
+Print out of a job is
+
+Job (
+ comment = '' ,
+ outputdir = '/usera/hme28/gangadir/workspace/hme28/LocalXML/2283/output/' ,
+ id = 2283 ,
+ status = 'new' ,
+ do_auto_resubmit = False ,
+ name = 'S21 Up Dimuon' ,
+ inputdir = '/usera/hme28/gangadir/workspace/hme28/LocalXML/2283/input/' ,
+ outputsandbox = [] ,
+ inputfiles = [] ,
+ backend = Dirac (
+    status = None ,
+    actualCE = None ,
+    settings = {'CPUTime': 172800} ,
+    normCPUTime = None ,
+    diracOpts = '' ,
+    statusInfo = '' ,
+    id = None ,
+    inputSandboxLFNs = [] 
+    ) ,
+ subjobs = 'Registry Slice: jobs(2283).subjobs (0 objects)
+' ,
+ application = DaVinci (
+    is_prepared = None ,
+    extraopts = None ,
+    args = [-T] ,
+    package = 'Phys' ,
+    platform = 'x86_64-slc6-gcc48-opt' ,
+    version = 'v36r1p1' ,
+    setupProjectOptions = '' ,
+    masterpackage = None ,
+    user_release_area = '/usera/hme28/cmtuser' ,
+    optsfile = [File (
+ name = '/var/clus/usera/hme28/cmtuser/DaVinci_v36r1p1/Bs2MuMu_ntuples.py' ,
+ subdir = '.' 
+ )] 
+    ) ,
+ inputdata = LHCbDataset (
+    depth = 0 ,
+    persistency = None ,
+    files = [7309 Entries of type 'LogicalFile'] ,
+    XMLCatalogueSlice = File (
+       name = '' ,
+       subdir = '.' 
+       ) 
+    ) ,
+ metadata = {} ,
+ outputfiles = [DiracFile (
+ namePattern = 'S21_mircoDST_ntuples.root' ,
+ guid = '' ,
+ remoteDir = '' ,
+ localDir = None ,
+ lfn = '' ,
+ failureReason = '' ,
+ locations = [] ,
+ compressed = False 
+ )] ,
+ postprocessors = [] ,
+ info = JobInfo (
+    monitoring_links = [] ,
+    uuid = '366f0bff-f7e4-48cb-ac58-09df82ad0025' ,
+    submit_counter = 0 ,
+    monitor = None 
+    ) ,
+ splitter = SplitByFiles (
+    filesPerJob = 10 ,
+    maxFiles = None ,
+    bulksubmit = False ,
+    ignoremissing = False 
+    ) ,
+ inputsandbox = [7 Entries of type 'File'] ,
+ outputdata = None ,
+ time = JobTime (
+    timestamps = '
+         Time (UTC)   Status
+- - - - - - - - - - - - - - - - - - - - - 
+2016/03/17 17:18:55 - new
+' 
+    ) 
+ ) 
+
+Submit the job
+  j.submit
+or
+  queues.add(j.submit) # this allow the job to be submitted in the background and you an still work in ganga
+
+
+Once jobs have finished download output files to your gangadir
+j.backend.getOutputData()
+To get outputfile LFNs 
+j.backend.getOutputDataLFNs()
+
+
+##########################################################################
+##########################################################################
+To configure the options file
+##########################################################################
+##########################################################################
+Bs2MuMu_ntuples.py can make ntuples from MC or data and from stripping 20(r1), 21(r1) and stripping 24. The options that can be configured.
+
+#Set as 11, 12 or 15. Selects the datatype = 2012 or 2011 or 2015.
+  Collision = 12
+
+#Set as 20 for stripping 20 or 20r1, set as 21 for stripping 21 or 21r1, set as 24 for stripping 24. If running on stripping 21(r1) on microDST, Leptonic stream you need to use the microDSTs from the MDST.DST reprosessing and need to set MDST_DST_reprocessing = True, for other data or MC.
+  stripping = '20'
+  MDST_DST_reprocessing = False 
+
+#Set True if running on mircoDST
+  is_microDST = False
+#Get all isolations from RelatedInfos - this MIST be true if running on stripping 24 or on microDST. In stripping 24 the RelatedInfo variables are present in the Dimuon and Letponic streams. They are in stripping 21 as well but they are wrong in the stripping 21 Dimuon stream
+  isolations_from_RelatedInfos = False
+
+#This is to include variables needed for BDT isolation studies, this must be false if running on microDST.
+  include_track_block = True 
+
+#This is to include the charimonim and bottomuin resonances lines. There are Dimuon and Leptonic lines - the leptonic lines have a huge number of events
+  include_resonaces = False
+
+#Select whether running on MC or data
+  MC =  True
+  data = False
+
+#Use the grid
+   Usegrid = True
+
+#Number of events to run on, but if Usegrid = True then myEvents  = -1  later in the script
+  myEvents  = 2000
+
+
+#Make MC truth ntuples
+    doMatchedNtuples = True
+#Make Matched ntuples
+    doMCDecayTreeTuple= True
+

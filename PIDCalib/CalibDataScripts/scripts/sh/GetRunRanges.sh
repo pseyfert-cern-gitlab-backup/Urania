@@ -26,9 +26,9 @@ if [ $# -gt 0 ]; then
   CUTS=$1
   shift
 fi
-MAXENTRIES="2000000"
+MAXENTRIES="1000000"
 if [ $# -gt 0 ]; then
-  MAXENTRIES=$1
+#  MAXENTRIES=$1
   shift
 fi
 STEPFRAC="0.01"
@@ -85,10 +85,10 @@ fi
 #  Assign variables dependent on field orientation    #
 if [ $MAG_POL == Up ]
 then
-    DATA=${GANGAJOBSDIR}/${CALIBDATA_JIDS_UP}/*/output/PID_Modes.root
+    DATA=${GANGAJOBSDIR}/${CALIBDATA_JIDS_UP}/*/output/PIDCalib.root
 elif [ $MAG_POL == Down ]
 then
-    DATA=${GANGAJOBSDIR}/${CALIBDATA_JIDS_DOWN}/*/output/PID_Modes.root
+    DATA=${GANGAJOBSDIR}/${CALIBDATA_JIDS_DOWN}/*/output/PIDCalib.root
 else
     echo "Invalid magnet polarity. Expected 'Up' or 'Down', got $MAG_POL"
     exit 1

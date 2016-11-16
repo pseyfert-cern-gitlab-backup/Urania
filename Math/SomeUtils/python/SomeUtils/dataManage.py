@@ -108,9 +108,9 @@ def rms(datos):
      M = M*Ni
      RMS = 0.
      for entry in datos:
-         delta = entry*entry
-         RMS += delta
+         delta = entry-M
+         RMS += delta*delta
      RMS = RMS*Ni
-     RMS = RMS - M*M
+     RMS = RMS 
      RMS = sqrt(RMS)
      return M, RMS

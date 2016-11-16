@@ -1,7 +1,7 @@
 ################################################################################
 # Package: Urania
 ################################################################################
-gaudi_subdir(Urania v4r0)
+gaudi_subdir(Urania v5r0)
 
 find_package(ROOT)
 find_package(PythonLibs)

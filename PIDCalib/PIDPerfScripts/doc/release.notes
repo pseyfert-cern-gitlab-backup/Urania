@@ -1,14 +1,66 @@
 !-----------------------------------------------------------------------------
 ! Package     : PIDCalib/PIDPerfScripts
-! Responsible : Sneha Malde
+! Responsible : Sneha Malde && Wenbin Qian
 ! Purpose     : Scripts using PIDPerfTools to perform PID studies
 !-----------------------------------------------------------------------------
+!============================================== v10r3 2016-06-15 ==============================
+
+
+!============================================== v10r2 2016-06-04 ==============================
+! 2016-06-04
+  - Add V4ProbNN
+
+! 2016-04-25 - Vincenzo Battista
+ - In MakePIDCorrection.py:
+   >"TFile" replaced by "TFile.Open" to allow usage of xrootd (e.g. EOS)
+   >Case "_LOKI_ETA" included in addition to "_ETA" for pseudorapidity
+    branch name handling
+
+!============================================== v10r1 2016-03-23 ==============================
+! 2016-03-23
+  - Add commands and samples for 5 TeV
+
+!============================================== v10r0 2016-01-27 ==============================
+! 2016-01-27
+  - v9r6 didn't infact allow for S23 samples
+  - Things mostly work for Urania v4r0
+  - PIDtables are broken. Not crucial to anything. Reduction in output dumped to screen might be welcome.
+
+!============================================== v9r6 2016-01-16 ==============================
+! 2016-01-16
+  - v9r6 allows for S23r1 samples
+
+!============================================== v9r5p1 2015-12-15 ==============================
+! re-remove trailing slashes - Sneha
+
+!============================================== v9r5 2015-12-15 ==============================
+
+! 2015-12-15 - Sneha Malde
+  - Making v9r5 that allows for S21
+  - pklfiles for S21 updated/created
+
+
+! 2015-01-05 - Lucio Anderlini
+  - Hotfix: Fixed a bug writing a big tmp file in the user tmp. 
+    It is not obvious this scales properly, tests with larger samples needed.
+
+! 2015-09-22 - Lucio Anderlini
+  - Enabled OVERRIDECALIBDATASTORE env var to point to a file with a list of
+    files used as input of PIDCalib. It overrides Reco, Stripping and Polarity flag,
+    but it does not override run range, which is implemented as a cut.
+
+! 2015-09-17 - Vanya Belyaev
+ - fix minor cmake issued with variables
+   remove the  trailing slashes 
+
+! 2015-09-10 Sneha Malde
+  Update cmt requiremeent and CMakeLists and the python for the file name path.
+
 !============================================== v9r4 2015-08-07 ==============================
 
 ! 2015-08-07 Sneha Malde
 Make v9r4
      - commit corrected full EM samples
-
 
 !============================================== v9r3 2015-07-30 ==============================
 

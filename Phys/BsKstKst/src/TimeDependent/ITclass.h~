@@ -2,35 +2,18 @@ class ITclass {
 
   public:
 
-  Double_t ITpnos(Int_t year_opt, Int_t wide_window) {
-    if ((year_opt == 0) && (wide_window == 1)) {return 0.753747152768;}
-    else if ((year_opt == 0) && (wide_window == 0)) {return 0.753792314935;}
-    else if ((year_opt == 1) && (wide_window == 1)) {return 0.753771417994;}
-    else if ((year_opt == 1) && (wide_window == 0)) {return 0.753515318803;}
+  Double_t IT_cosh(Int_t year_opt, Int_t trig_opt, Int_t wide_window) {
+    if ((year_opt == 0) && (trig_opt == 0) && (wide_window == 0)) {return '+str(IT_cosh_accu_2011_L0TIS_narrow.getVal())+';}
+    else if ((year_opt == 0) && (trig_opt == 0) && (wide_window == 1)) {return '+str(IT_cosh_accu_2011_L0TIS_wide.getVal())+';}
+    else if ((year_opt == 0) && (trig_opt == 1) && (wide_window == 0)) {return '+str(IT_cosh_accu_2011_L0noTIS_narrow.getVal())+';}
+    else if ((year_opt == 0) && (trig_opt == 1) && (wide_window == 1)) {return '+str(IT_cosh_accu_2011_L0noTIS_wide.getVal())+';}
+    else if ((year_opt == 1) && (trig_opt == 0) && (wide_window == 0)) {return '+str(IT_cosh_accu_2012_L0TIS_narrow.getVal())+';}
+    else if ((year_opt == 1) && (trig_opt == 0) && (wide_window == 1)) {return '+str(IT_cosh_accu_2012_L0TIS_wide.getVal())+';}
+    else if ((year_opt == 1) && (trig_opt == 1) && (wide_window == 0)) {return '+str(IT_cosh_accu_2012_L0noTIS_narrow.getVal())+';}
+    else if ((year_opt == 1) && (trig_opt == 1) && (wide_window == 1)) {return '+str(IT_cosh_accu_2012_L0noTIS_wide.getVal())+';}
     return 0.;
     };
 
-  Double_t ITpos(Int_t year_opt, Int_t wide_window) {
-    if ((year_opt == 0) && (wide_window == 1)) {return -0.0754249444381;}
-    else if ((year_opt == 0) && (wide_window == 0)) {return -0.0746510254901;}
-    else if ((year_opt == 1) && (wide_window == 1)) {return -0.0757090769641;}
-    else if ((year_opt == 1) && (wide_window == 0)) {return -0.0729989311755;}
-    return 0.;
-    };
 
-  Double_t ITmnos(Int_t year_opt, Int_t wide_window) {
-    if ((year_opt == 0) && (wide_window == 1)) {return -7.00973978657e-05;}
-    else if ((year_opt == 0) && (wide_window == 0)) {return 0.00264813329636;}
-    else if ((year_opt == 1) && (wide_window == 1)) {return -0.00270288444701;}
-    else if ((year_opt == 1) && (wide_window == 0)) {return -0.0104953411826;}
-    return 0.;
-    };
-  Double_t ITmos(Int_t year_opt, Int_t wide_window) {
-    if ((year_opt == 0) && (wide_window == 1)) {return 0.00137064246819;}
-    else if ((year_opt == 0) && (wide_window == 0)) {return -0.0107887226412;}
-    else if ((year_opt == 1) && (wide_window == 1)) {return 0.00113167115675;}
-    else if ((year_opt == 1) && (wide_window == 0)) {return 0.000950373740938;}
-    return 0.;
-    };
 
 };

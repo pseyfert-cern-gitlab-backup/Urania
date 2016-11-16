@@ -349,3 +349,8 @@ for trType in ["e","Mu","Pi","K"]:
   AddBinScheme(trType, 'nTracks', '100binsspi', 0, 500)
   AddUniformBins(trType, 'nTracks', '100binsspi', 100, 0, 500)
 
+for trType in ["P"]:
+  AddBinScheme(trType, 'P', 'P_comp',5000,100000)
+  AddBinScheme(trType, 'ETA', 'P_comp',2,4.6)
+  AddUniformBins(trType,'P','P_comp',19,5000,100000)
+  AddUniformBins(trType,'ETA','P_comp',13,2,4.6)

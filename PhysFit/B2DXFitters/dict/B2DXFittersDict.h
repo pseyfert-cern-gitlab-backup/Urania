@@ -32,6 +32,9 @@
 #include "B2DXFitters/Bs2Dsh2011TDAnaModels.h"
 #include "B2DXFitters/Bs2DshDsHHHPi0Models.h"
 #include "B2DXFitters/Bs2DssthModels.h"
+#include "B2DXFitters/RooApollonios.h"
+#include "B2DXFitters/RooIpatia2.h"
+#include "B2DXFitters/RooJohnsonSU.h"
 
 #include "B2DXFitters/RooBinnedPdf.h"
 #include "B2DXFitters/RooAbsEffResModel.h"
@@ -62,6 +65,7 @@ template class std::pair<std::string,RooAbsData*>;
 #include "B2DXFitters/RooBinned1DQuinticBase.h"
 
 #include "B2DXFitters/DecRateCoeff.h"
+#include "B2DXFitters/DecRateCoeff_Bd.h"
 
 #include "B2DXFitters/RooAbsGaussModelEfficiency.h"
 #include "B2DXFitters/RooCubicSplineKnot.h"

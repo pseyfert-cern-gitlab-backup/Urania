@@ -3,7 +3,7 @@
 # Maintainer : Sneha Malde
 #============================================================================
 package           PIDPerfScripts
-version           v9r4
+version           v10r3
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -31,22 +31,18 @@ apply_pattern install_more_includes more=PIDPerfScripts
 #============================================================================
 # Define environmental variables used by the scripts
 #
-# NB. CALIBDATAURLPROTOCOL and CALIBDATAURLQUERY are optional variables
-# that set the URL protocol query. Typically, these are only needed for
-# certain remote filesystems such as CASTOR/EOS.
 #
-# For CERN access, CALIBDATAURLPROTOCOL should be set to 'root' (to use the
+# For CERN access, CALIBDATASTORE should be set to include 'root' (to use the
 # XROOTD protocol) and CALIBDATAURLQUERY should be set to 'svcClass=lhcbuser'
 # (to use the service class for grid user files)
-# In addition, the 'DATASTORE' variables should be prepended with
-# 'castorlhcb.cern.ch/'
 #
 #------------------------------------------------------------------------------
-# default for CERN access (S20r1, S20, MCTuneV2)
-set CALIBDATAURLPROTOCOL root
-set CALIBDATAURLQUERY 
-set CALIBDATASTORE eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/calib/lhcb/calib/pid/CalibData/
-set MUONCALIBDATASTORE eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/calib/lhcb/calib/pid/CalibData/
+# default for CERN access (S20r1, S20, S21,S22,S23)
+set CALIBDATAURLPROTOCOL root:
+set CALIBDATAEXTRA eoslhcb.cern.ch
+set CALIBDATASTORE eos/lhcb/grid/prod/lhcb/calib/lhcb/calib/pid/CalibData/
+
+
 
 #------------------------------------------------------------------------------
 #
@@ -56,12 +52,10 @@ set MUONCALIBDATASTORE eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/calib/lhcb/calib
 
 ### required for Oxford access (S20r1 and later)
 #set CALIBDATASTORE /data/lhcb/users/malde/October_2014_PID/CalibData/
-#set CALIBDATASTORE /data/lhcb/users/malde/CalibData/
-#set MUONCALIBDATASTORE /data/lhcb/users/malde/CalibData/
-##set MUONCALIBDATASTORE /data/lhcb/users/malde/CalibData
-##set CALIBDATASTORE /data/lhcb/users/malde/CalibData
-##set CALIBDATAURLPROTOCOL 
-##set CALIBDATAURLQUERY
+# use the above for S20/S0r1 and the below for anything else
+#set CALIBDATASTORE /data/lhcb/users/CalibData/
+#set CALIBDATAURLPROTOCOL 
+#set CALIBDATAEXTRA 
 
 
 #============================================================================

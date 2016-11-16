@@ -73,11 +73,11 @@ For a full list of arguments, do: 'python {0} -h'""".format(
 
     # add the optional arguments
     parser.add_argument('-p', '--partName', dest='partName',
-                        metavar='NAME', default='P',
+                        metavar='NAME', default='p',
                         help=("Sets the name of the proton particle "
                         "in the input nTuples (default: '%(default)s')."))
     parser.add_argument('-t', '--tupleName', dest='tupleName',
-                        metavar='NAME', default='CalibPID',
+                        metavar='NAME', default='DecayTree',
                         help=("Sets the name of the nTuple, exlc. the "
                               "directory (default: '%(default)s')."))
     parser.add_argument('-c', '--cuts', dest='cuts', metavar='CUTS',

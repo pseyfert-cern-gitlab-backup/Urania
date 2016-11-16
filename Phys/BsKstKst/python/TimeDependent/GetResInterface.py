@@ -3,38 +3,55 @@ from math import *
 import time
 import os
 from parameters import *
-gROOT.ProcessLine('.x ../src/lhcbStyle.C')
+gROOT.ProcessLine('.x ../../src/TimeDependent/lhcbStyle.C')
 
 
 # ################################################################
 # V A R I A B L E S
 # ################################################################
 
+m1_name_MC = "B_s0_DTF_KST1_M"
+m2_name_MC = "B_s0_DTF_KST2_M"
+cos1_name_MC = "B_s0_DTF_KST1_COSTHETA"
+cos2_name_MC = "B_s0_DTF_KST2_COSTHETA"
+phi_name_MC = "B_s0_DTF_B_s0_PHI"
 t_name_res = "B_s0_DTF_B_s0_TAU"
 ttrue_name_res = "B_s0_DTF_B_s0_TRUETAU"
 terr_name_res = "B_s0_DTF_B_s0_TAUERR"
 
 # Observables.
-difft = RooRealVar("difft","t_{rec}-t_{gen} (ps)",-0.2,0.2)
-deltat = RooRealVar("deltat","t_{err} (ps)",0.,0.08)
+difft = RooRealVar("difft","t_{rec}-t_{gen} (ps)",-0.12,0.12)
+deltat = RooRealVar("deltat","t_{err} (ps)",0.02,0.04)
 
 # Data.
-data_difft_2011 = RooDataSet("data_difft_2011","data_difft_2011",RooArgSet(difft))
-data_difft_2012 = RooDataSet("data_difft_2012","data_difft_2012",RooArgSet(difft))
-data_2011 = RooDataSet("data_2011","data_2011",RooArgSet(difft,deltat))
-data_2012 = RooDataSet("data_2012","data_2012",RooArgSet(difft,deltat))
+data_difft_2011_wide = RooDataSet("data_difft_2011_wide","data_difft_2011_wide",RooArgSet(difft))
+data_difft_2012_wide = RooDataSet("data_difft_2012_wide","data_difft_2012_wide",RooArgSet(difft))
+data_difft_2011_narrow = RooDataSet("data_difft_2011_narrow","data_difft_2011_narrow",RooArgSet(difft))
+data_difft_2012_narrow = RooDataSet("data_difft_2012_narrow","data_difft_2012_narrow",RooArgSet(difft))
+data_2011_wide = RooDataSet("data_2011_wide","data_2011_wide",RooArgSet(difft,deltat))
+data_2012_wide = RooDataSet("data_2012_wide","data_2012_wide",RooArgSet(difft,deltat))
+data_2011_narrow = RooDataSet("data_2011_narrow","data_2011_narrow",RooArgSet(difft,deltat))
+data_2012_narrow = RooDataSet("data_2012_narrow","data_2012_narrow",RooArgSet(difft,deltat))
 data_difft_sim_2011_list = []
 data_difft_sim_2012_list = []
 
 # 1D time resolution parametrization.
-sigma1_eff_2011 = RooRealVar("sigma1_eff_2011","sigma1_eff_2011",0.03,0.01,0.06)
-sigma2_eff_2011 = RooRealVar("sigma2_eff_2011","sigma2_eff_2011",0.06,0.04,0.2)
-f1_eff_2011 = RooRealVar("f1_eff_2011","f1_eff_2011",0.6,0.5,1.)
-sigma1_eff_2012 = RooRealVar("sigma1_eff_2012","sigma1_eff_2012",0.03,0.01,0.06)
-sigma2_eff_2012 = RooRealVar("sigma2_eff_2012","sigma2_eff_2012",0.06,0.04,0.2)
-f1_eff_2012 = RooRealVar("f1_eff_2012","f1_eff_2012",0.6,0.5,1.)
-sigma_eff_2011 = RooFormulaVar("sigma_eff_2011","sigma_eff_2011","sqrt(-2.*log(@0*exp(-17.69*17.69*@1*@1/2.)+(1.-@0)*exp(-17.69*17.69*@2*@2/2.)))/17.69",RooArgList(f1_eff_2011,sigma1_eff_2011,sigma2_eff_2011))
-sigma_eff_2012 = RooFormulaVar("sigma_eff_2012","sigma_eff_2012","sqrt(-2.*log(@0*exp(-17.69*17.69*@1*@1/2.)+(1.-@0)*exp(-17.69*17.69*@2*@2/2.)))/17.69",RooArgList(f1_eff_2012,sigma1_eff_2012,sigma2_eff_2012))
+sigma1_eff_2011_wide = RooRealVar("sigma1_eff_2011_wide","sigma1_eff_2011_wide",0.03,0.01,0.06)
+sigma2_eff_2011_wide = RooRealVar("sigma2_eff_2011_wide","sigma2_eff_2011_wide",0.06,0.04,0.2)
+f1_eff_2011_wide = RooRealVar("f1_eff_2011_wide","f1_eff_2011_wide",0.6,0.5,1.)
+sigma1_eff_2012_wide = RooRealVar("sigma1_eff_2012_wide","sigma1_eff_2012_wide",0.03,0.01,0.06)
+sigma2_eff_2012_wide = RooRealVar("sigma2_eff_2012_wide","sigma2_eff_2012_wide",0.06,0.04,0.2)
+f1_eff_2012_wide = RooRealVar("f1_eff_2012_wide","f1_eff_2012_wide",0.6,0.5,1.)
+sigma_eff_2011_wide = RooFormulaVar("sigma_eff_2011_wide","sigma_eff_2011_wide","sqrt(-2.*log(@0*exp(-17.69*17.69*@1*@1/2.)+(1.-@0)*exp(-17.69*17.69*@2*@2/2.)))/17.69",RooArgList(f1_eff_2011_wide,sigma1_eff_2011_wide,sigma2_eff_2011_wide))
+sigma_eff_2012_wide = RooFormulaVar("sigma_eff_2012_wide","sigma_eff_2012_wide","sqrt(-2.*log(@0*exp(-17.69*17.69*@1*@1/2.)+(1.-@0)*exp(-17.69*17.69*@2*@2/2.)))/17.69",RooArgList(f1_eff_2012_wide,sigma1_eff_2012_wide,sigma2_eff_2012_wide))
+sigma1_eff_2011_narrow = RooRealVar("sigma1_eff_2011_narrow","sigma1_eff_2011_narrow",0.03,0.01,0.06)
+sigma2_eff_2011_narrow = RooRealVar("sigma2_eff_2011_narrow","sigma2_eff_2011_narrow",0.06,0.04,0.2)
+f1_eff_2011_narrow = RooRealVar("f1_eff_2011_narrow","f1_eff_2011_narrow",0.6,0.5,1.)
+sigma1_eff_2012_narrow = RooRealVar("sigma1_eff_2012_narrow","sigma1_eff_2012_narrow",0.03,0.01,0.06)
+sigma2_eff_2012_narrow = RooRealVar("sigma2_eff_2012_narrow","sigma2_eff_2012_narrow",0.06,0.04,0.2)
+f1_eff_2012_narrow = RooRealVar("f1_eff_2012_narrow","f1_eff_2012_narrow",0.6,0.5,1.)
+sigma_eff_2011_narrow = RooFormulaVar("sigma_eff_2011_narrow","sigma_eff_2011_narrow","sqrt(-2.*log(@0*exp(-17.69*17.69*@1*@1/2.)+(1.-@0)*exp(-17.69*17.69*@2*@2/2.)))/17.69",RooArgList(f1_eff_2011_narrow,sigma1_eff_2011_narrow,sigma2_eff_2011_narrow))
+sigma_eff_2012_narrow = RooFormulaVar("sigma_eff_2012_narrow","sigma_eff_2012_narrow","sqrt(-2.*log(@0*exp(-17.69*17.69*@1*@1/2.)+(1.-@0)*exp(-17.69*17.69*@2*@2/2.)))/17.69",RooArgList(f1_eff_2012_narrow,sigma1_eff_2012_narrow,sigma2_eff_2012_narrow))
 
 # Simultaneous fit resolution parametrization.
 sigma1_sim_2011_list = []
@@ -43,78 +60,144 @@ sigma1_sim_2012_list = []
 sigma2_sim_2012_list = []
 
 # 2D time resolution parametrization.
-q0A_2011 = RooRealVar("q0A_2011","q0A_2011",0.,0.,0.01)
-q1A_2011 = RooRealVar("q1A_2011","q1A_2011",1.,0.8,1.2)
-q2A_2011 = RooRealVar("q2A_2011","q2A_2011",-25.,-32.,0.)
-q0B_2011 = RooRealVar("q0B_2011","q0B_2011",0.,0.,0.01)
-q1B_2011 = RooRealVar("q1B_2011","q1B_2011",0.,0.,0.5)
-q2B_2011 = RooRealVar("q2B_2011","q2B_2011",-11.,-20.,-6.)
-q0A_2012 = RooRealVar("q0A_2012","q0A_2012",0.,0.,0.01)
-q1A_2012 = RooRealVar("q1A_2012","q1A_2012",1.,0.8,1.2)
-q2A_2012 = RooRealVar("q2A_2012","q2A_2012",-25.,-32.,0.)
-q0B_2012 = RooRealVar("q0B_2012","q0B_2012",0.,0.,0.01)
-q1B_2012 = RooRealVar("q1B_2012","q1B_2012",0.,0.,0.5)
-q2B_2012 = RooRealVar("q2B_2012","q2B_2012",-11.,-20.,-6.)
-deltat_mean_2011 = RooRealVar("deltat_mean_2011","deltat_mean_2011",0.,0.08)
-deltat_mean_2012 = RooRealVar("deltat_mean_2012","deltat_mean_2012",0.,0.08)
-off_2011 = RooRealVar("off_2011","off_2011",0.,-0.1,0.1)
-off_2012 = RooRealVar("off_2012","off_2012",0.,-0.1,0.1)
-f1_2011 = RooRealVar("f1_2011","f1_2011",0.69,0.5,0.9)
-f1_2012 = RooRealVar("f1_2012","f1_2012",0.69,0.5,0.9)
-sigmaA_2011 = RooFormulaVar("sigmaA_2011","sigmaA_2011","@0+(@1+@2*(@3-@4))*@3",RooArgList(q0A_2011,q1A_2011,q2A_2011,deltat,deltat_mean_2011))
-sigmaB_2011 = RooFormulaVar("sigmaB_2011","sigmaB_2011","@0+(@1+@2*(@3-@4))*@3",RooArgList(q0B_2011,q1B_2011,q2B_2011,deltat,deltat_mean_2011))
-sigmaA_2012 = RooFormulaVar("sigmaA_2012","sigmaA_2012","@0+(@1+@2*(@3-@4))*@3",RooArgList(q0A_2012,q1A_2012,q2A_2012,deltat,deltat_mean_2012))
-sigmaB_2012 = RooFormulaVar("sigmaB_2012","sigmaB_2012","@0+(@1+@2*(@3-@4))*@3",RooArgList(q0B_2012,q1B_2012,q2B_2012,deltat,deltat_mean_2012))
-sigma1_2011 = RooFormulaVar("sigma1_2011","sigma1_2011","@0-sqrt(@1/(1.-@1))*@2",RooArgList(sigmaA_2011,f1_2011,sigmaB_2011))
-sigma2_2011 = RooFormulaVar("sigma2_2011","sigma2_2011","@0+sqrt((1.-@1)/@1)*@2",RooArgList(sigmaA_2011,f1_2011,sigmaB_2011))
-sigma1_2012 = RooFormulaVar("sigma1_2012","sigma1_2012","@0-sqrt(@1/(1.-@1))*@2",RooArgList(sigmaA_2012,f1_2012,sigmaB_2012))
-sigma2_2012 = RooFormulaVar("sigma2_2012","sigma2_2012","@0+sqrt((1.-@1)/@1)*@2",RooArgList(sigmaA_2012,f1_2012,sigmaB_2012))
+q0A_2011_wide = RooRealVar("q0A_2011_wide","q0A_2011_wide",0.,0.,0.01)
+q1A_2011_wide = RooRealVar("q1A_2011_wide","q1A_2011_wide",1.,0.4,1.6)
+q2A_2011_wide = RooRealVar("q2A_2011_wide","q2A_2011_wide",-25.,-32.,0.)
+q0B_2011_wide = RooRealVar("q0B_2011_wide","q0B_2011_wide",0.,0.,0.01)
+q1B_2011_wide = RooRealVar("q1B_2011_wide","q1B_2011_wide",0.,0.,0.5)
+q2B_2011_wide = RooRealVar("q2B_2011_wide","q2B_2011_wide",-11.,-20.,-6.)
+q0A_2012_wide = RooRealVar("q0A_2012_wide","q0A_2012_wide",0.,0.,0.01)
+q1A_2012_wide = RooRealVar("q1A_2012_wide","q1A_2012_wide",1.,0.4,1.6)
+q2A_2012_wide = RooRealVar("q2A_2012_wide","q2A_2012_wide",-25.,-32.,0.)
+q0B_2012_wide = RooRealVar("q0B_2012_wide","q0B_2012_wide",0.,0.,0.01)
+q1B_2012_wide = RooRealVar("q1B_2012_wide","q1B_2012_wide",0.,0.,0.5)
+q2B_2012_wide = RooRealVar("q2B_2012_wide","q2B_2012_wide",-11.,-20.,-6.)
+deltat_mean_2011_wide = RooRealVar("deltat_mean_2011_wide","deltat_mean_2011_wide",0.,0.08)
+deltat_mean_2012_wide = RooRealVar("deltat_mean_2012_wide","deltat_mean_2012_wide",0.,0.08)
+off_2011_wide = RooRealVar("off_2011_wide","off_2011_wide",0.,-0.1,0.1)
+off_2012_wide = RooRealVar("off_2012_wide","off_2012_wide",0.,-0.1,0.1)
+f1_2011_wide = RooRealVar("f1_2011_wide","f1_2011_wide",0.69,0.5,0.9)
+f1_2012_wide = RooRealVar("f1_2012_wide","f1_2012_wide",0.69,0.5,0.9)
+sigmaA_2011_wide = RooFormulaVar("sigmaA_2011_wide","sigmaA_2011_wide","@0+(@1+@2*(@3-@4))*@3",RooArgList(q0A_2011_wide,q1A_2011_wide,q2A_2011_wide,deltat,deltat_mean_2011_wide))
+sigmaB_2011_wide = RooFormulaVar("sigmaB_2011_wide","sigmaB_2011_wide","@0+(@1+@2*(@3-@4))*@3",RooArgList(q0B_2011_wide,q1B_2011_wide,q2B_2011_wide,deltat,deltat_mean_2011_wide))
+sigmaA_2012_wide = RooFormulaVar("sigmaA_2012_wide","sigmaA_2012_wide","@0+(@1+@2*(@3-@4))*@3",RooArgList(q0A_2012_wide,q1A_2012_wide,q2A_2012_wide,deltat,deltat_mean_2012_wide))
+sigmaB_2012_wide = RooFormulaVar("sigmaB_2012_wide","sigmaB_2012_wide","@0+(@1+@2*(@3-@4))*@3",RooArgList(q0B_2012_wide,q1B_2012_wide,q2B_2012_wide,deltat,deltat_mean_2012_wide))
+sigma1_2011_wide = RooFormulaVar("sigma1_2011_wide","sigma1_2011_wide","@0-sqrt(@1/(1.-@1))*@2",RooArgList(sigmaA_2011_wide,f1_2011_wide,sigmaB_2011_wide))
+sigma2_2011_wide = RooFormulaVar("sigma2_2011_wide","sigma2_2011_wide","@0+sqrt((1.-@1)/@1)*@2",RooArgList(sigmaA_2011_wide,f1_2011_wide,sigmaB_2011_wide))
+sigma1_2012_wide = RooFormulaVar("sigma1_2012_wide","sigma1_2012_wide","@0-sqrt(@1/(1.-@1))*@2",RooArgList(sigmaA_2012_wide,f1_2012_wide,sigmaB_2012_wide))
+sigma2_2012_wide = RooFormulaVar("sigma2_2012_wide","sigma2_2012_wide","@0+sqrt((1.-@1)/@1)*@2",RooArgList(sigmaA_2012_wide,f1_2012_wide,sigmaB_2012_wide))
+q0A_2011_narrow = RooRealVar("q0A_2011_narrow","q0A_2011_narrow",0.,0.,0.01)
+q1A_2011_narrow = RooRealVar("q1A_2011_narrow","q1A_2011_narrow",1.,0.8,1.2)
+q2A_2011_narrow = RooRealVar("q2A_2011_narrow","q2A_2011_narrow",-25.,-32.,0.)
+q0B_2011_narrow = RooRealVar("q0B_2011_narrow","q0B_2011_narrow",0.,0.,0.01)
+q1B_2011_narrow = RooRealVar("q1B_2011_narrow","q1B_2011_narrow",0.,0.,0.5)
+q2B_2011_narrow = RooRealVar("q2B_2011_narrow","q2B_2011_narrow",-11.,-20.,-6.)
+q0A_2012_narrow = RooRealVar("q0A_2012_narrow","q0A_2012_narrow",0.,0.,0.01)
+q1A_2012_narrow = RooRealVar("q1A_2012_narrow","q1A_2012_narrow",1.,0.8,1.2)
+q2A_2012_narrow = RooRealVar("q2A_2012_narrow","q2A_2012_narrow",-25.,-32.,0.)
+q0B_2012_narrow = RooRealVar("q0B_2012_narrow","q0B_2012_narrow",0.,0.,0.01)
+q1B_2012_narrow = RooRealVar("q1B_2012_narrow","q1B_2012_narrow",0.,0.,0.5)
+q2B_2012_narrow = RooRealVar("q2B_2012_narrow","q2B_2012_narrow",-11.,-20.,-6.)
+deltat_mean_2011_narrow = RooRealVar("deltat_mean_2011_narrow","deltat_mean_2011_narrow",0.,0.08)
+deltat_mean_2012_narrow = RooRealVar("deltat_mean_2012_narrow","deltat_mean_2012_narrow",0.,0.08)
+off_2011_narrow = RooRealVar("off_2011_narrow","off_2011_narrow",0.,-0.1,0.1)
+off_2012_narrow = RooRealVar("off_2012_narrow","off_2012_narrow",0.,-0.1,0.1)
+f1_2011_narrow = RooRealVar("f1_2011_narrow","f1_2011_narrow",0.69,0.,1.)
+f1_2012_narrow = RooRealVar("f1_2012_narrow","f1_2012_narrow",0.69,0.,1.)
+sigmaA_2011_narrow = RooFormulaVar("sigmaA_2011_narrow","sigmaA_2011_narrow","@0+(@1+@2*(@3-@4))*@3",RooArgList(q0A_2011_narrow,q1A_2011_narrow,q2A_2011_narrow,deltat,deltat_mean_2011_narrow))
+sigmaB_2011_narrow = RooFormulaVar("sigmaB_2011_narrow","sigmaB_2011_narrow","@0+(@1+@2*(@3-@4))*@3",RooArgList(q0B_2011_narrow,q1B_2011_narrow,q2B_2011_narrow,deltat,deltat_mean_2011_narrow))
+sigmaA_2012_narrow = RooFormulaVar("sigmaA_2012_narrow","sigmaA_2012_narrow","@0+(@1+@2*(@3-@4))*@3",RooArgList(q0A_2012_narrow,q1A_2012_narrow,q2A_2012_narrow,deltat,deltat_mean_2012_narrow))
+sigmaB_2012_narrow = RooFormulaVar("sigmaB_2012_narrow","sigmaB_2012_narrow","@0+(@1+@2*(@3-@4))*@3",RooArgList(q0B_2012_narrow,q1B_2012_narrow,q2B_2012_narrow,deltat,deltat_mean_2012_narrow))
+sigma1_2011_narrow = RooFormulaVar("sigma1_2011_narrow","sigma1_2011_narrow","@0-sqrt(@1/(1.-@1))*@2",RooArgList(sigmaA_2011_narrow,f1_2011_narrow,sigmaB_2011_narrow))
+sigma2_2011_narrow = RooFormulaVar("sigma2_2011_narrow","sigma2_2011_narrow","@0+sqrt((1.-@1)/@1)*@2",RooArgList(sigmaA_2011_narrow,f1_2011_narrow,sigmaB_2011_narrow))
+sigma1_2012_narrow = RooFormulaVar("sigma1_2012_narrow","sigma1_2012_narrow","@0-sqrt(@1/(1.-@1))*@2",RooArgList(sigmaA_2012_narrow,f1_2012_narrow,sigmaB_2012_narrow))
+sigma2_2012_narrow = RooFormulaVar("sigma2_2012_narrow","sigma2_2012_narrow","@0+sqrt((1.-@1)/@1)*@2",RooArgList(sigmaA_2012_narrow,f1_2012_narrow,sigmaB_2012_narrow))
 
 # Marginal PDF parametrization.
-gamma_2011_A = RooRealVar("gamma_2011_A","gamma_2011_A",1.40444e+01,10.,20.)
-beta_2011_A = RooRealVar("beta_2011_A","beta_2011_A",2.20383e-03,0.001,0.01)
-gamma_2011_B = RooRealVar("gamma_2011_B","gamma_2011_B",2.90042e+00,1.,10.)
-beta_2011_B = RooRealVar("beta_2011_B","beta_2011_B",1.14178e-02,0.005,0.02)
-gamma_2012_A = RooRealVar("gamma_2012_A","gamma_2012_A",1.43411e+01,10.,20.)
-beta_2012_A = RooRealVar("beta_2012_A","beta_2012_A",2.17901e-03,0.0005,0.01)
-gamma_2012_B = RooRealVar("gamma_2012_B","gamma_2012_B",3.32812e+00,1.,10.)
-beta_2012_B = RooRealVar("beta_2012_B","beta_2012_B",9.99999e-03,0.0005,0.012)
-f_marg_2011_A = RooRealVar("f_marg_2011_A","f_marg_2011_A",8.83992e-01,0.5,1.)
-f_marg_2012_A = RooRealVar("f_marg_2012_A","f_marg_2012_A",8.41554e-01,0.5,1.)
-gamma_2011_A.setConstant(1)
-beta_2011_A.setConstant(1)
-gamma_2012_A.setConstant(1)
-beta_2012_A.setConstant(1)
-gamma_2011_B.setConstant(1)
-beta_2011_B.setConstant(1)
-gamma_2012_B.setConstant(1)
-beta_2012_B.setConstant(1)
-f_marg_2011_A.setConstant(1)
-f_marg_2012_A.setConstant(1)
+gamma_2011_wide_A = RooRealVar("gamma_2011_wide_A","gamma_2011_wide_A",1.40444e+01,10.,20.)
+beta_2011_wide_A = RooRealVar("beta_2011_wide_A","beta_2011_wide_A",2.20383e-03,0.001,0.01)
+gamma_2011_wide_B = RooRealVar("gamma_2011_wide_B","gamma_2011_wide_B",2.90042e+00,1.,10.)
+beta_2011_wide_B = RooRealVar("beta_2011_wide_B","beta_2011_wide_B",1.14178e-02,0.0005,0.02)
+gamma_2012_wide_A = RooRealVar("gamma_2012_wide_A","gamma_2012_wide_A",1.43411e+01,10.,20.)
+beta_2012_wide_A = RooRealVar("beta_2012_wide_A","beta_2012_wide_A",2.17901e-03,0.0005,0.01)
+gamma_2012_wide_B = RooRealVar("gamma_2012_wide_B","gamma_2012_wide_B",3.32812e+00,1.,10.)
+beta_2012_wide_B = RooRealVar("beta_2012_wide_B","beta_2012_wide_B",9.99999e-03,0.0005,0.012)
+f_marg_2011_wide_A = RooRealVar("f_marg_2011_wide_A","f_marg_2011_wide_A",8.83992e-01,0.5,1.)
+f_marg_2012_wide_A = RooRealVar("f_marg_2012_wide_A","f_marg_2012_wide_A",8.41554e-01,0.5,1.)
+gamma_2011_wide_A.setConstant(1)
+beta_2011_wide_A.setConstant(1)
+gamma_2012_wide_A.setConstant(1)
+beta_2012_wide_A.setConstant(1)
+gamma_2011_wide_B.setConstant(1)
+beta_2011_wide_B.setConstant(1)
+gamma_2012_wide_B.setConstant(1)
+beta_2012_wide_B.setConstant(1)
+f_marg_2011_wide_A.setConstant(1)
+f_marg_2012_wide_A.setConstant(1)
+gamma_2011_narrow_A = RooRealVar("gamma_2011_narrow_A","gamma_2011_narrow_A",1.40444e+01,10.,20.)
+beta_2011_narrow_A = RooRealVar("beta_2011_narrow_A","beta_2011_narrow_A",2.20383e-03,0.001,0.01)
+gamma_2011_narrow_B = RooRealVar("gamma_2011_narrow_B","gamma_2011_narrow_B",2.90042e+00,1.,10.)
+beta_2011_narrow_B = RooRealVar("beta_2011_narrow_B","beta_2011_narrow_B",1.14178e-02,0.005,0.02)
+gamma_2012_narrow_A = RooRealVar("gamma_2012_narrow_A","gamma_2012_narrow_A",1.43411e+01,10.,20.)
+beta_2012_narrow_A = RooRealVar("beta_2012_narrow_A","beta_2012_narrow_A",2.17901e-03,0.0005,0.01)
+gamma_2012_narrow_B = RooRealVar("gamma_2012_narrow_B","gamma_2012_narrow_B",3.32812e+00,1.,10.)
+beta_2012_narrow_B = RooRealVar("beta_2012_narrow_B","beta_2012_narrow_B",9.99999e-03,0.0005,0.012)
+f_marg_2011_narrow_A = RooRealVar("f_marg_2011_narrow_A","f_marg_2011_narrow_A",8.83992e-01,0.5,1.)
+f_marg_2012_narrow_A = RooRealVar("f_marg_2012_narrow_A","f_marg_2012_narrow_A",8.41554e-01,0.5,1.)
+gamma_2011_narrow_A.setConstant(1)
+beta_2011_narrow_A.setConstant(1)
+gamma_2012_narrow_A.setConstant(1)
+beta_2012_narrow_A.setConstant(1)
+gamma_2011_narrow_B.setConstant(1)
+beta_2011_narrow_B.setConstant(1)
+gamma_2012_narrow_B.setConstant(1)
+beta_2012_narrow_B.setConstant(1)
+f_marg_2011_narrow_A.setConstant(1)
+f_marg_2012_narrow_A.setConstant(1)
 
 # Effective 1D PDF.
-gaus1_eff_2011 = RooGaussian("gaus1_eff_2011","gaus1_eff_2011",difft,off_2011,sigma1_eff_2011)
-gaus2_eff_2011 = RooGaussian("gaus2_eff_2011","gaus2_eff_2011",difft,off_2011,sigma2_eff_2011)
-gaus1_eff_2012 = RooGaussian("gaus1_eff_2012","gaus1_eff_2012",difft,off_2012,sigma1_eff_2012)
-gaus2_eff_2012 = RooGaussian("gaus2_eff_2012","gaus2_eff_2012",difft,off_2012,sigma2_eff_2012)
-res_eff_2011 = RooAddPdf("res_eff_2011","res_eff_2011",gaus1_eff_2011,gaus2_eff_2011,f1_eff_2011)
-res_eff_2012 = RooAddPdf("res_eff_2012","res_eff_2012",gaus1_eff_2012,gaus2_eff_2012,f1_eff_2012)
+gaus1_eff_2011_wide = RooGaussian("gaus1_eff_2011_wide","gaus1_eff_2011_wide",difft,off_2011_wide,sigma1_eff_2011_wide)
+gaus2_eff_2011_wide = RooGaussian("gaus2_eff_2011_wide","gaus2_eff_2011_wide",difft,off_2011_wide,sigma2_eff_2011_wide)
+gaus1_eff_2012_wide = RooGaussian("gaus1_eff_2012_wide","gaus1_eff_2012_wide",difft,off_2012_wide,sigma1_eff_2012_wide)
+gaus2_eff_2012_wide = RooGaussian("gaus2_eff_2012_wide","gaus2_eff_2012_wide",difft,off_2012_wide,sigma2_eff_2012_wide)
+res_eff_2011_wide = RooAddPdf("res_eff_2011_wide","res_eff_2011_wide",gaus1_eff_2011_wide,gaus2_eff_2011_wide,f1_eff_2011_wide)
+res_eff_2012_wide = RooAddPdf("res_eff_2012_wide","res_eff_2012_wide",gaus1_eff_2012_wide,gaus2_eff_2012_wide,f1_eff_2012_wide)
+gaus1_eff_2011_narrow = RooGaussian("gaus1_eff_2011_narrow","gaus1_eff_2011_narrow",difft,off_2011_narrow,sigma1_eff_2011_narrow)
+gaus2_eff_2011_narrow = RooGaussian("gaus2_eff_2011_narrow","gaus2_eff_2011_narrow",difft,off_2011_narrow,sigma2_eff_2011_narrow)
+gaus1_eff_2012_narrow = RooGaussian("gaus1_eff_2012_narrow","gaus1_eff_2012_narrow",difft,off_2012_narrow,sigma1_eff_2012_narrow)
+gaus2_eff_2012_narrow = RooGaussian("gaus2_eff_2012_narrow","gaus2_eff_2012_narrow",difft,off_2012_narrow,sigma2_eff_2012_narrow)
+res_eff_2011_narrow = RooAddPdf("res_eff_2011_narrow","res_eff_2011_narrow",gaus1_eff_2011_narrow,gaus2_eff_2011_narrow,f1_eff_2011_narrow)
+res_eff_2012_narrow = RooAddPdf("res_eff_2012_narrow","res_eff_2012_narrow",gaus1_eff_2012_narrow,gaus2_eff_2012_narrow,f1_eff_2012_narrow)
 
 # Full 2D PDF.
-marg_pdf_2011_A = RooGamma("marg_pdf_2011_A","marg_pdf_2011_A",deltat,gamma_2011_A,beta_2011_A,zero)
-marg_pdf_2012_A = RooGamma("marg_pdf_2012_A","marg_pdf_2012_A",deltat,gamma_2012_A,beta_2012_A,zero)
-marg_pdf_2011_B = RooGamma("marg_pdf_2011_B","marg_pdf_2011_B",deltat,gamma_2011_B,beta_2011_B,zero)
-marg_pdf_2012_B = RooGamma("marg_pdf_2012_B","marg_pdf_2012_B",deltat,gamma_2012_B,beta_2012_B,zero)
-marg_pdf_2011 = RooAddPdf("marg_pdf_2011","marg_pdf_2011",marg_pdf_2011_A,marg_pdf_2011_B,f_marg_2011_A)
-marg_pdf_2012 = RooAddPdf("marg_pdf_2012","marg_pdf_2012",marg_pdf_2012_A,marg_pdf_2012_B,f_marg_2012_A)
-gaus1_2011 = RooGaussian("gaus1_2011","gaus1_2011",difft,off_2011,sigma1_2011)
-gaus2_2011 = RooGaussian("gaus2_2011","gaus2_2011",difft,off_2011,sigma2_2011)
-gaus1_2012 = RooGaussian("gaus1_2012","gaus1_2012",difft,off_2012,sigma1_2012)
-gaus2_2012 = RooGaussian("gaus2_2012","gaus2_2012",difft,off_2012,sigma2_2012)
-res_2011 = RooAddPdf("res_2011","res_2011",gaus1_2011,gaus2_2011,f1_2011)
-res_2012 = RooAddPdf("res_2012","res_2012",gaus1_2012,gaus2_2012,f1_2012)
-full_pdf_2011 = RooProdPdf("full_pdf_2011","full_pdf_2011",RooArgSet(res_2011),RooFit.Conditional(RooArgSet(marg_pdf_2011),RooArgSet(deltat)))
-full_pdf_2012 = RooProdPdf("full_pdf_2012","full_pdf_2012",RooArgSet(res_2012),RooFit.Conditional(RooArgSet(marg_pdf_2012),RooArgSet(deltat)))
+marg_pdf_2011_wide_A = RooGamma("marg_pdf_2011_wide_A","marg_pdf_2011_wide_A",deltat,gamma_2011_wide_A,beta_2011_wide_A,zero)
+marg_pdf_2012_wide_A = RooGamma("marg_pdf_2012_wide_A","marg_pdf_2012_wide_A",deltat,gamma_2012_wide_A,beta_2012_wide_A,zero)
+marg_pdf_2011_wide_B = RooGamma("marg_pdf_2011_wide_B","marg_pdf_2011_wide_B",deltat,gamma_2011_wide_B,beta_2011_wide_B,zero)
+marg_pdf_2012_wide_B = RooGamma("marg_pdf_2012_wide_B","marg_pdf_2012_wide_B",deltat,gamma_2012_wide_B,beta_2012_wide_B,zero)
+marg_pdf_2011_wide = RooAddPdf("marg_pdf_2011_wide","marg_pdf_2011_wide",marg_pdf_2011_wide_A,marg_pdf_2011_wide_B,f_marg_2011_wide_A)
+marg_pdf_2012_wide = RooAddPdf("marg_pdf_2012_wide","marg_pdf_2012_wide",marg_pdf_2012_wide_A,marg_pdf_2012_wide_B,f_marg_2012_wide_A)
+gaus1_2011_wide = RooGaussian("gaus1_2011_wide","gaus1_2011_wide",difft,off_2011_wide,sigma1_2011_wide)
+gaus2_2011_wide = RooGaussian("gaus2_2011_wide","gaus2_2011_wide",difft,off_2011_wide,sigma2_2011_wide)
+gaus1_2012_wide = RooGaussian("gaus1_2012_wide","gaus1_2012_wide",difft,off_2012_wide,sigma1_2012_wide)
+gaus2_2012_wide = RooGaussian("gaus2_2012_wide","gaus2_2012_wide",difft,off_2012_wide,sigma2_2012_wide)
+res_2011_wide = RooAddPdf("res_2011_wide","res_2011_wide",gaus1_2011_wide,gaus2_2011_wide,f1_2011_wide)
+res_2012_wide = RooAddPdf("res_2012_wide","res_2012_wide",gaus1_2012_wide,gaus2_2012_wide,f1_2012_wide)
+full_pdf_2011_wide = RooProdPdf("full_pdf_2011_wide","full_pdf_2011_wide",RooArgSet(res_2011_wide),RooFit.Conditional(RooArgSet(marg_pdf_2011_wide),RooArgSet(deltat)))
+full_pdf_2012_wide = RooProdPdf("full_pdf_2012_wide","full_pdf_2012_wide",RooArgSet(res_2012_wide),RooFit.Conditional(RooArgSet(marg_pdf_2012_wide),RooArgSet(deltat)))
+marg_pdf_2011_narrow_A = RooGamma("marg_pdf_2011_narrow_A","marg_pdf_2011_narrow_A",deltat,gamma_2011_narrow_A,beta_2011_narrow_A,zero)
+marg_pdf_2012_narrow_A = RooGamma("marg_pdf_2012_narrow_A","marg_pdf_2012_narrow_A",deltat,gamma_2012_narrow_A,beta_2012_narrow_A,zero)
+marg_pdf_2011_narrow_B = RooGamma("marg_pdf_2011_narrow_B","marg_pdf_2011_narrow_B",deltat,gamma_2011_narrow_B,beta_2011_narrow_B,zero)
+marg_pdf_2012_narrow_B = RooGamma("marg_pdf_2012_narrow_B","marg_pdf_2012_narrow_B",deltat,gamma_2012_narrow_B,beta_2012_narrow_B,zero)
+marg_pdf_2011_narrow = RooAddPdf("marg_pdf_2011_narrow","marg_pdf_2011_narrow",marg_pdf_2011_narrow_A,marg_pdf_2011_narrow_B,f_marg_2011_narrow_A)
+marg_pdf_2012_narrow = RooAddPdf("marg_pdf_2012_narrow","marg_pdf_2012_narrow",marg_pdf_2012_narrow_A,marg_pdf_2012_narrow_B,f_marg_2012_narrow_A)
+gaus1_2011_narrow = RooGaussian("gaus1_2011_narrow","gaus1_2011_narrow",difft,off_2011_narrow,sigma1_2011_narrow)
+gaus2_2011_narrow = RooGaussian("gaus2_2011_narrow","gaus2_2011_narrow",difft,off_2011_narrow,sigma2_2011_narrow)
+gaus1_2012_narrow = RooGaussian("gaus1_2012_narrow","gaus1_2012_narrow",difft,off_2012_narrow,sigma1_2012_narrow)
+gaus2_2012_narrow = RooGaussian("gaus2_2012_narrow","gaus2_2012_narrow",difft,off_2012_narrow,sigma2_2012_narrow)
+res_2011_narrow = RooAddPdf("res_2011_narrow","res_2011_narrow",gaus1_2011_narrow,gaus2_2011_narrow,f1_2011_narrow)
+res_2012_narrow = RooAddPdf("res_2012_narrow","res_2012_narrow",gaus1_2012_narrow,gaus2_2012_narrow,f1_2012_narrow)
+full_pdf_2011_narrow = RooProdPdf("full_pdf_2011_narrow","full_pdf_2011_narrow",RooArgSet(res_2011_narrow),RooFit.Conditional(RooArgSet(marg_pdf_2011_narrow),RooArgSet(deltat)))
+full_pdf_2012_narrow = RooProdPdf("full_pdf_2012_narrow","full_pdf_2012_narrow",RooArgSet(res_2012_narrow),RooFit.Conditional(RooArgSet(marg_pdf_2012_narrow),RooArgSet(deltat)))
 
 
 # ################################################################
@@ -161,25 +244,75 @@ def CreateDatasets(bin_sim):
 	for i in data_2011_l: data_difft_sim_2011_list.append(i)
 	for i in data_2012_l: data_difft_sim_2012_list.append(i)
 
-def LoadData_1D(name_2011,name_2012):
+def MCsetcut(year_aux,set_aux):
+	if year_aux == 0:
+		if set_aux == 0: cut_aux = "itype==-73"
+		elif set_aux == 1: cut_aux = "itype==-70"
+		else: cut_aux = "(itype==-73 || itype==-70)"
+	else:
+		if set_aux == 0: cut_aux = "itype==-83"
+		elif set_aux == 1: cut_aux = "itype==-80"
+		else: cut_aux = "(itype==-83 || itype==-80)"
+	return cut_aux
 
-	print "Creating the dataset for 2011 ..."
-	f_2011 = TFile(NTUPLE_PATH + name_2011 + ".root")
-	t_2011 = f_2011.Get("DecayTree")
-	for i in t_2011:
-		if (eval("i."+ttrue_name_res) >= 0. and eval("i."+terr_name_res) >= 0.):
-			difft.setVal(eval("i."+t_name_res)-eval("i."+ttrue_name_res))
-			data_difft_2011.add(RooArgSet(difft))
-	print "Dataset created."
+def MCtruth(ev):
+	if abs(ev.B_s0_TRUEID) == 531:
+		if ev.Kplus_TRUEID == 321:
+			if ev.Kminus_TRUEID == -321:
+				if ev.Piplus_TRUEID == 211:
+					if ev.Piminus_TRUEID == -211: return 1
+	return 0
 
-	print "Creating the dataset for 2012 ..."
-	f_2012 = TFile(NTUPLE_PATH + name_2012 + ".root")
-	t_2012 = f_2012.Get("DecayTree")
-	for i in t_2012:
-		if (eval("i."+ttrue_name_res) >= 0. and eval("i."+terr_name_res) >= 0.):
+def LoadData_1D(data_file, data_tree, datatype, evnum_limit = 0):
+
+	# Information.
+	print 'Loading data file ' + data_file + ' ...'
+	if datatype == 0: print 'MC sample: PhSp.'
+	elif datatype == 1: print 'MC sample: VV.'
+	else: print 'MC sample: PhSp + VV.'
+	if (evnum_limit == 0): print 'All events selected.'
+	else: print 'Maximum of '+str(evnum_limit)+' events selected per data sample.'
+
+	# Input data.
+	file_in = TFile(NTUPLE_PATH + data_file)
+	tree_full = file_in.Get(data_tree)
+	file_out = TFile(NTUPLE_PATH + "trash.root","RECREATE")
+	tree_2011_wide = tree_full.CopyTree(t_name_res+">=0. && "+t_name_res+"<=12. && "+MCsetcut(0,datatype))
+	tree_2012_wide = tree_full.CopyTree(t_name_res+">=0. && "+t_name_res+"<=12. && "+MCsetcut(1,datatype))
+	tree_2011_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_res+">=0. && "+t_name_res+"<=12. && "+MCsetcut(0,datatype))
+	tree_2012_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_res+">=0. && "+t_name_res+"<=12. && "+MCsetcut(1,datatype))
+
+	ev_counter_total = 0
+	ev_counter = 0
+	for i in tree_2011_wide:
+		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i) and eval("i."+ttrue_name_res) >= 0. and eval("i."+terr_name_res) >= 0.:
 			difft.setVal(eval("i."+t_name_res)-eval("i."+ttrue_name_res))
-			data_difft_2012.add(RooArgSet(difft))
-	print "Dataset created."
+			data_difft_2011_wide.add(RooArgSet(difft))
+			ev_counter += 1
+			ev_counter_total += 1
+	ev_counter = 0
+	for i in tree_2012_wide:
+		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i) and eval("i."+ttrue_name_res) >= 0. and eval("i."+terr_name_res) >= 0.:
+			difft.setVal(eval("i."+t_name_res)-eval("i."+ttrue_name_res))
+			data_difft_2012_wide.add(RooArgSet(difft))
+			ev_counter += 1
+			ev_counter_total += 1
+	ev_counter = 0
+	for i in tree_2011_narrow:
+		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i) and eval("i."+ttrue_name_res) >= 0. and eval("i."+terr_name_res) >= 0.:
+			difft.setVal(eval("i."+t_name_res)-eval("i."+ttrue_name_res))
+			data_difft_2011_narrow.add(RooArgSet(difft))
+			ev_counter += 1
+			ev_counter_total += 1
+	ev_counter = 0
+	for i in tree_2012_narrow:
+		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i) and eval("i."+ttrue_name_res) >= 0. and eval("i."+terr_name_res) >= 0.:
+			difft.setVal(eval("i."+t_name_res)-eval("i."+ttrue_name_res))
+			data_difft_2012_narrow.add(RooArgSet(difft))
+			ev_counter += 1
+			ev_counter_total += 1
+
+	print str(ev_counter_total)+' events loaded.'
 
 	return
 
@@ -207,115 +340,202 @@ def LoadData_sim(name_2011,name_2012,binning_2011,binning_2012):
 
 	return
 
-def LoadData_2D(name_2011,name_2012):
+def LoadData_2D(data_file, data_tree, datatype, evnum_limit = 0):
 
-	print "Creating the dataset for 2011 ..."
-	f_2011 = TFile(NTUPLE_PATH + name_2011 + ".root")
-	t_2011 = f_2011.Get("DecayTree")
-	for i in t_2011:
-		if (eval("i."+ttrue_name_res) >= 0. and eval("i."+terr_name_res) >= 0.):
+	# Information.
+	print 'Loading data file ' + data_file + ' ...'
+	if datatype == 0: print 'MC sample: PhSp.'
+	elif datatype == 1: print 'MC sample: VV.'
+	else: print 'MC sample: PhSp + VV.'
+	if (evnum_limit == 0): print 'All events selected.'
+	else: print 'Maximum of '+str(evnum_limit)+' events selected per data sample.'
+
+	# Input data.
+	file_in = TFile(NTUPLE_PATH + data_file)
+	tree_full = file_in.Get(data_tree)
+	file_out = TFile(NTUPLE_PATH + "trash.root","RECREATE")
+	tree_2011_wide = tree_full.CopyTree(t_name_res+">=0. && "+t_name_res+"<=12. && "+MCsetcut(0,datatype))
+	tree_2012_wide = tree_full.CopyTree(t_name_res+">=0. && "+t_name_res+"<=12. && "+MCsetcut(1,datatype))
+	tree_2011_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_res+">=0. && "+t_name_res+"<=12. && "+MCsetcut(0,datatype))
+	tree_2012_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_res+">=0. && "+t_name_res+"<=12. && "+MCsetcut(1,datatype))
+
+	ev_counter_total = 0
+	ev_counter = 0
+	for i in tree_2011_wide:
+		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i) and eval("i."+ttrue_name_res) >= 0. and eval("i."+terr_name_res) >= 0.:
 			difft.setVal(eval("i."+t_name_res)-eval("i."+ttrue_name_res))
 			deltat.setVal(eval("i."+terr_name_res))
-			data_2011.add(RooArgSet(difft,deltat))
-	print "Dataset created."
-
-	print "Creating the dataset for 2012 ..."
-	f_2012 = TFile(NTUPLE_PATH + name_2012 + ".root")
-	t_2012 = f_2012.Get("DecayTree")
-	for i in t_2012:
-		if (eval("i."+ttrue_name_res) >= 0. and eval("i."+terr_name_res) >= 0.):
+			data_2011_wide.add(RooArgSet(difft,deltat))
+			ev_counter += 1
+			ev_counter_total += 1
+	ev_counter = 0
+	for i in tree_2012_wide:
+		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i) and eval("i."+ttrue_name_res) >= 0. and eval("i."+terr_name_res) >= 0.:
 			difft.setVal(eval("i."+t_name_res)-eval("i."+ttrue_name_res))
 			deltat.setVal(eval("i."+terr_name_res))
-			data_2012.add(RooArgSet(difft,deltat))
-	print "Dataset created."
+			data_2012_wide.add(RooArgSet(difft,deltat))
+			ev_counter += 1
+			ev_counter_total += 1
+	ev_counter = 0
+	for i in tree_2011_narrow:
+		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i) and eval("i."+ttrue_name_res) >= 0. and eval("i."+terr_name_res) >= 0.:
+			difft.setVal(eval("i."+t_name_res)-eval("i."+ttrue_name_res))
+			deltat.setVal(eval("i."+terr_name_res))
+			data_2011_narrow.add(RooArgSet(difft,deltat))
+			ev_counter += 1
+			ev_counter_total += 1
+	ev_counter = 0
+	for i in tree_2012_narrow:
+		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i) and eval("i."+ttrue_name_res) >= 0. and eval("i."+terr_name_res) >= 0.:
+			difft.setVal(eval("i."+t_name_res)-eval("i."+ttrue_name_res))
+			deltat.setVal(eval("i."+terr_name_res))
+			data_2012_narrow.add(RooArgSet(difft,deltat))
+			ev_counter += 1
+			ev_counter_total += 1
 
-	deltat_mean_2011.setVal(data_2011.mean(deltat))
-	deltat_mean_2011.setConstant(1)
-	deltat_mean_2012.setVal(data_2012.mean(deltat))
-	deltat_mean_2012.setConstant(1)
+	deltat_mean_2011_wide.setVal(data_2011_wide.mean(deltat))
+	deltat_mean_2011_wide.setConstant(1)
+	deltat_mean_2012_wide.setVal(data_2012_wide.mean(deltat))
+	deltat_mean_2012_wide.setConstant(1)
+	deltat_mean_2011_narrow.setVal(data_2011_narrow.mean(deltat))
+	deltat_mean_2011_narrow.setConstant(1)
+	deltat_mean_2012_narrow.setVal(data_2012_narrow.mean(deltat))
+	deltat_mean_2012_narrow.setConstant(1)
+
+	print str(ev_counter_total)+' events loaded.'
 
 	return
 
 def Fit1DPDF(offset):
 
 	if offset == 0:
-		off_2011.setConstant(1)
-		off_2012.setConstant(1)
+		off_2011_wide.setConstant(1)
+		off_2012_wide.setConstant(1)
+		off_2011_narrow.setConstant(1)
+		off_2012_narrow.setConstant(1)
 		print "\n*** INFO: Mean offset set to 0. ***"
 	elif offset == 1: print "\n*** INFO: Mean offset floated during fitting. ***"
 	else:
 		print "ERROR: wrong value for the mean offset parameter."
 		return
 
-	fit_2011 = res_eff_2011.fitTo(data_difft_2011,RooFit.Minos(1),RooFit.NumCPU(8),RooFit.Timer(kTRUE),RooFit.Save(kTRUE))
-	fit_2012 = res_eff_2012.fitTo(data_difft_2012,RooFit.Minos(1),RooFit.NumCPU(8),RooFit.Timer(kTRUE),RooFit.Save(kTRUE))
+	fit_2011_wide = res_eff_2011_wide.fitTo(data_difft_2011_wide,RooFit.NumCPU(8),RooFit.Minos(0),RooFit.Timer(kTRUE),RooFit.Save(kTRUE))
+	fit_2012_wide = res_eff_2012_wide.fitTo(data_difft_2012_wide,RooFit.NumCPU(8),RooFit.Minos(0),RooFit.Timer(kTRUE),RooFit.Save(kTRUE))
+	fit_2011_narrow = res_eff_2011_narrow.fitTo(data_difft_2011_narrow,RooFit.NumCPU(8),RooFit.Minos(0),RooFit.Timer(kTRUE),RooFit.Save(kTRUE))
+	fit_2012_narrow = res_eff_2012_narrow.fitTo(data_difft_2012_narrow,RooFit.NumCPU(8),RooFit.Minos(0),RooFit.Timer(kTRUE),RooFit.Save(kTRUE))
 
-	return fit_2011, fit_2012
+	return fit_2011_wide, fit_2012_wide, fit_2011_narrow, fit_2012_narrow
 
 def PrintTReseffPars():
 
-	trespars = "class TReseffclass {\n\n  public:\n\n  Double_t f1(Int_t year_opt) {\n    if (year_opt == 0) {return "+str(f1_eff_2011.getVal())+";}\n    else if (year_opt == 1) {return "+str(f1_eff_2012.getVal())+";}\n    return 0.;\n    };\n\n  Double_t sigma1(Int_t year_opt) {\n    if (year_opt == 0) {return "+str(sigma1_eff_2011.getVal())+";}\n    else if (year_opt == 1) {return "+str(sigma1_eff_2012.getVal())+";}\n    return 0.;\n    };\n\n  Double_t sigma2(Int_t year_opt) {\n    if (year_opt == 0) {return "+str(sigma2_eff_2011.getVal())+";}\n    else if (year_opt == 1) {return "+str(sigma2_eff_2012.getVal())+";}\n    return 0.;\n    };\n\n  Double_t off(Int_t year_opt) {\n    if (year_opt == 0) {return "+str(off_2011.getVal())+";}\n    else if (year_opt == 1) {return "+str(off_2012.getVal())+";}\n    return 0.;\n    };\n\n};"
+	trespars = "class TReseffclass {\n\n  public:\n\n  Double_t f1(Int_t year_opt, Int_t wide_window) {\n    if (year_opt == 0) {\n      if (wide_window == 0) {return "+str(f1_eff_2011_narrow.getVal())+";}\n      else {return "+str(f1_eff_2011_wide.getVal())+";}\n    }\n    else {\n      if (wide_window == 0) {return "+str(f1_eff_2012_narrow.getVal())+";}\n      else {return "+str(f1_eff_2012_wide.getVal())+";}\n    }\n  };\n\n  Double_t sigma1(Int_t year_opt, Int_t wide_window) {\n    if (year_opt == 0) {\n      if (wide_window == 0) {return "+str(sigma1_eff_2011_narrow.getVal())+";}\n      else {return "+str(sigma1_eff_2011_wide.getVal())+";}\n    }\n    else {\n      if (wide_window == 0) {return "+str(sigma1_eff_2012_narrow.getVal())+";}\n      else {return "+str(sigma1_eff_2012_wide.getVal())+";}\n    }\n  };\n\n  Double_t sigma2(Int_t year_opt, Int_t wide_window) {\n    if (year_opt == 0) {\n      if (wide_window == 0) {return "+str(sigma2_eff_2011_narrow.getVal())+";}\n      else {return "+str(sigma2_eff_2011_wide.getVal())+";}\n    }\n    else {\n      if (wide_window == 0) {return "+str(sigma2_eff_2012_narrow.getVal())+";}\n      else {return "+str(sigma2_eff_2012_wide.getVal())+";}\n    }\n  };\n\n  Double_t off(Int_t year_opt, Int_t wide_window) {\n    if (year_opt == 0) {\n      if (wide_window == 0) {return "+str(off_2011_narrow.getVal())+";}\n      else {return "+str(off_2011_wide.getVal())+";}\n    }\n    else {\n      if (wide_window == 0) {return "+str(off_2012_narrow.getVal())+";}\n      else {return "+str(off_2012_wide.getVal())+";}\n    }\n  };\n\n};"
 
-	fpar = open('../../src/TimeDependent/TReseffclass.h','w')
+	fpar = open('../../src/TimeDependent/TReseffclass2.h','w')
 	fpar.write(trespars)
 	fpar.close()
 
 def FitMargPDF():
 
-	gamma_2011_A.setConstant(0)
-	beta_2011_A.setConstant(0)
-	gamma_2012_A.setConstant(0)
-	beta_2012_A.setConstant(0)
-	gamma_2011_B.setConstant(0)
-	beta_2011_B.setConstant(0)
-	gamma_2012_B.setConstant(0)
-	beta_2012_B.setConstant(0)
-	f_marg_2011_A.setConstant(0)
-	f_marg_2012_A.setConstant(0)
+	gamma_2011_wide_A.setConstant(0)
+	beta_2011_wide_A.setConstant(0)
+	gamma_2012_wide_A.setConstant(0)
+	beta_2012_wide_A.setConstant(0)
+	gamma_2011_wide_B.setConstant(0)
+	beta_2011_wide_B.setConstant(0)
+	gamma_2012_wide_B.setConstant(0)
+	beta_2012_wide_B.setConstant(0)
+	f_marg_2011_wide_A.setConstant(0)
+	f_marg_2012_wide_A.setConstant(0)
+	gamma_2011_narrow_A.setConstant(0)
+	beta_2011_narrow_A.setConstant(0)
+	gamma_2012_narrow_A.setConstant(0)
+	beta_2012_narrow_A.setConstant(0)
+	gamma_2011_narrow_B.setConstant(0)
+	beta_2011_narrow_B.setConstant(0)
+	gamma_2012_narrow_B.setConstant(0)
+	beta_2012_narrow_B.setConstant(0)
+	f_marg_2011_narrow_A.setConstant(0)
+	f_marg_2012_narrow_A.setConstant(0)
 
-	marg_pdf_2011.fitTo(data_2011)
-	marg_pdf_2012.fitTo(data_2012)
+	marg_pdf_2011_wide.fitTo(data_2011_wide,RooFit.Minos(0),RooFit.NumCPU(8))
+	marg_pdf_2012_wide.fitTo(data_2012_wide,RooFit.Minos(0),RooFit.NumCPU(8))
+	marg_pdf_2011_narrow.fitTo(data_2011_narrow,RooFit.Minos(0),RooFit.NumCPU(8))
+	marg_pdf_2012_narrow.fitTo(data_2012_narrow,RooFit.Minos(0),RooFit.NumCPU(8))
 
-	gamma_2011_A.setConstant(1)
-	beta_2011_A.setConstant(1)
-	gamma_2012_A.setConstant(1)
-	beta_2012_A.setConstant(1)
-	gamma_2011_B.setConstant(1)
-	beta_2011_B.setConstant(1)
-	gamma_2012_B.setConstant(1)
-	beta_2012_B.setConstant(1)
-	f_marg_2011_A.setConstant(1)
-	f_marg_2012_A.setConstant(1)
+	gamma_2011_wide_A.setConstant(1)
+	beta_2011_wide_A.setConstant(1)
+	gamma_2012_wide_A.setConstant(1)
+	beta_2012_wide_A.setConstant(1)
+	gamma_2011_wide_B.setConstant(1)
+	beta_2011_wide_B.setConstant(1)
+	gamma_2012_wide_B.setConstant(1)
+	beta_2012_wide_B.setConstant(1)
+	f_marg_2011_wide_A.setConstant(1)
+	f_marg_2012_wide_A.setConstant(1)
+	gamma_2011_narrow_A.setConstant(1)
+	beta_2011_narrow_A.setConstant(1)
+	gamma_2012_narrow_A.setConstant(1)
+	beta_2012_narrow_A.setConstant(1)
+	gamma_2011_narrow_B.setConstant(1)
+	beta_2011_narrow_B.setConstant(1)
+	gamma_2012_narrow_B.setConstant(1)
+	beta_2012_narrow_B.setConstant(1)
+	f_marg_2011_narrow_A.setConstant(1)
+	f_marg_2012_narrow_A.setConstant(1)
 
 def Fit2DPDF(pol_order,q0_term,offset):
 
 	if pol_order == 0:
-		q1A_2011.setVal(0.)
-		q1B_2011.setVal(0.)
-		q1A_2012.setVal(0.)
-		q1B_2012.setVal(0.)
-		q2A_2011.setVal(0.)
-		q2B_2011.setVal(0.)
-		q2A_2012.setVal(0.)
-		q2B_2012.setVal(0.)
-		q1A_2011.setConstant(1)
-		q1B_2011.setConstant(1)
-		q1A_2012.setConstant(1)
-		q1B_2012.setConstant(1)
-		q2A_2011.setConstant(1)
-		q2B_2011.setConstant(1)
-		q2A_2012.setConstant(1)
-		q2B_2012.setConstant(1)
+		q1A_2011_wide.setVal(0.)
+		q1B_2011_wide.setVal(0.)
+		q1A_2012_wide.setVal(0.)
+		q1B_2012_wide.setVal(0.)
+		q2A_2011_wide.setVal(0.)
+		q2B_2011_wide.setVal(0.)
+		q2A_2012_wide.setVal(0.)
+		q2B_2012_wide.setVal(0.)
+		q1A_2011_narrow.setVal(0.)
+		q1B_2011_narrow.setVal(0.)
+		q1A_2012_narrow.setVal(0.)
+		q1B_2012_narrow.setVal(0.)
+		q2A_2011_narrow.setVal(0.)
+		q2B_2011_narrow.setVal(0.)
+		q2A_2012_narrow.setVal(0.)
+		q2B_2012_narrow.setVal(0.)
+		q1A_2011_wide.setConstant(1)
+		q1B_2011_wide.setConstant(1)
+		q1A_2012_wide.setConstant(1)
+		q1B_2012_wide.setConstant(1)
+		q2A_2011_wide.setConstant(1)
+		q2B_2011_wide.setConstant(1)
+		q2A_2012_wide.setConstant(1)
+		q2B_2012_wide.setConstant(1)
+		q1A_2011_narrow.setConstant(1)
+		q1B_2011_narrow.setConstant(1)
+		q1A_2012_narrow.setConstant(1)
+		q1B_2012_narrow.setConstant(1)
+		q2A_2011_narrow.setConstant(1)
+		q2B_2011_narrow.setConstant(1)
+		q2A_2012_narrow.setConstant(1)
+		q2B_2012_narrow.setConstant(1)
 		print "\n*** INFO: Constant parametrization for sigma_eff(t_error). ***"
 	elif pol_order == 1:
-		q2A_2011.setVal(0.)
-		q2B_2011.setVal(0.)
-		q2A_2012.setVal(0.)
-		q2B_2012.setVal(0.)
-		q2A_2011.setConstant(1)
-		q2B_2011.setConstant(1)
-		q2A_2012.setConstant(1)
-		q2B_2012.setConstant(1)
+		q2A_2011_wide.setVal(0.)
+		q2B_2011_wide.setVal(0.)
+		q2A_2012_wide.setVal(0.)
+		q2B_2012_wide.setVal(0.)
+		q2A_2011_narrow.setVal(0.)
+		q2B_2011_narrow.setVal(0.)
+		q2A_2012_narrow.setVal(0.)
+		q2B_2012_narrow.setVal(0.)
+		q2A_2011_wide.setConstant(1)
+		q2B_2011_wide.setConstant(1)
+		q2A_2012_wide.setConstant(1)
+		q2B_2012_wide.setConstant(1)
+		q2A_2011_narrow.setConstant(1)
+		q2B_2011_narrow.setConstant(1)
+		q2A_2012_narrow.setConstant(1)
+		q2B_2012_narrow.setConstant(1)
 		print "\n*** INFO: Linear parametrization for sigma_eff(t_error). ***"
 	elif pol_order == 2: print "\n*** INFO: Quadratic parametrization for sigma_eff(t_error). ***"
 	else:
@@ -323,14 +543,22 @@ def Fit2DPDF(pol_order,q0_term,offset):
 		return
 
 	if q0_term == 0:
-		q0A_2011.setVal(0.)
-		q0B_2011.setVal(0.)
-		q0A_2012.setVal(0.)
-		q0B_2012.setVal(0.)
-		q0A_2011.setConstant(1)
-		q0B_2011.setConstant(1)
-		q0A_2012.setConstant(1)
-		q0B_2012.setConstant(1)
+		q0A_2011_wide.setVal(0.)
+		q0B_2011_wide.setVal(0.)
+		q0A_2012_wide.setVal(0.)
+		q0B_2012_wide.setVal(0.)
+		q0A_2011_narrow.setVal(0.)
+		q0B_2011_narrow.setVal(0.)
+		q0A_2012_narrow.setVal(0.)
+		q0B_2012_narrow.setVal(0.)
+		q0A_2011_wide.setConstant(1)
+		q0B_2011_wide.setConstant(1)
+		q0A_2012_wide.setConstant(1)
+		q0B_2012_wide.setConstant(1)
+		q0A_2011_narrow.setConstant(1)
+		q0B_2011_narrow.setConstant(1)
+		q0A_2012_narrow.setConstant(1)
+		q0B_2012_narrow.setConstant(1)
 		print "\n*** INFO: Order-0 in the width parametrization set to 0. ***"
 	elif q0_term == 1: print "\n*** INFO: Order-0 in the width parametrization floated during fitting. ***"
 	else:
@@ -338,112 +566,194 @@ def Fit2DPDF(pol_order,q0_term,offset):
 		return
 
 	if offset == 0:
-		off_2011.setConstant(1)
-		off_2012.setConstant(1)
+		off_2011_wide.setConstant(1)
+		off_2012_wide.setConstant(1)
+		off_2011_narrow.setConstant(1)
+		off_2012_narrow.setConstant(1)
 		print "\n*** INFO: Mean offset set to 0. ***"
 	elif offset == 1: print "\n*** INFO: Mean offset floated during fitting. ***"
 	else:
 		print "ERROR: wrong value for the mean offset parameter."
 		return
 
-	fit_2011 = full_pdf_2011.fitTo(data_2011,RooFit.Minos(0),RooFit.NumCPU(8),RooFit.Timer(kTRUE),RooFit.Save(kTRUE))
-	fit_2012 = full_pdf_2012.fitTo(data_2012,RooFit.Minos(0),RooFit.NumCPU(8),RooFit.Timer(kTRUE),RooFit.Save(kTRUE))
+	fit_2011_wide = full_pdf_2011_wide.fitTo(data_2011_wide,RooFit.Minos(0),RooFit.NumCPU(8),RooFit.Timer(kTRUE),RooFit.Save(kTRUE))
+	fit_2012_wide = full_pdf_2012_wide.fitTo(data_2012_wide,RooFit.Minos(0),RooFit.NumCPU(8),RooFit.Timer(kTRUE),RooFit.Save(kTRUE))
+	fit_2011_narrow = full_pdf_2011_narrow.fitTo(data_2011_narrow,RooFit.Minos(0),RooFit.NumCPU(8),RooFit.Timer(kTRUE),RooFit.Save(kTRUE))
+	fit_2012_narrow = full_pdf_2012_narrow.fitTo(data_2012_narrow,RooFit.Minos(0),RooFit.NumCPU(8),RooFit.Timer(kTRUE),RooFit.Save(kTRUE))
 
-	return fit_2011, fit_2012
+	return fit_2011_wide, fit_2012_wide, fit_2011_narrow, fit_2012_narrow
 
 def PrintTResPars():
 
-	trespars = "class TResclass {\n\n  public:\n\n  Double_t f1(Int_t year_opt) {\n    if (year_opt == 0) {return "+str(f1_2011.getVal())+";}\n    else if (year_opt == 1) {return "+str(f1_2012.getVal())+";}\n    return 0.;\n    };\n\n  Double_t mean(Int_t year_opt) {\n    if (year_opt == 0) {return "+str(deltat_mean_2011.getVal())+";}\n    else if (year_opt == 1) {return "+str(deltat_mean_2012.getVal())+";}\n    return 0.;\n    };\n\n  Double_t q0A(Int_t year_opt) {\n    if (year_opt == 0) {return "+str(q0A_2011.getVal())+";}\n    else if (year_opt == 1) {return "+str(q0A_2012.getVal())+";}\n    return 0.;\n    };\n\n  Double_t q0B(Int_t year_opt) {\n    if (year_opt == 0) {return "+str(q0B_2011.getVal())+";}\n    else if (year_opt == 1) {return "+str(q0B_2012.getVal())+";}\n    return 0.;\n    };\n\n  Double_t q1A(Int_t year_opt) {\n    if (year_opt == 0) {return "+str(q1A_2011.getVal())+";}\n    else if (year_opt == 1) {return "+str(q1A_2012.getVal())+";}\n    return 0.;\n    };\n\n  Double_t q1B(Int_t year_opt) {\n    if (year_opt == 0) {return "+str(q1B_2011.getVal())+";}\n    else if (year_opt == 1) {return "+str(q1B_2012.getVal())+";}\n    return 0.;\n    };\n\n  Double_t q2A(Int_t year_opt) {\n    if (year_opt == 0) {return "+str(q2A_2011.getVal())+";}\n    else if (year_opt == 1) {return "+str(q2A_2012.getVal())+";}\n    return 0.;\n    };\n\n  Double_t q2B(Int_t year_opt) {\n    if (year_opt == 0) {return "+str(q2B_2011.getVal())+";}\n    else if (year_opt == 1) {return "+str(q2B_2012.getVal())+";}\n    return 0.;\n    };\n\n  Double_t off(Int_t year_opt) {\n    if (year_opt == 0) {return "+str(off_2011.getVal())+";}\n    else if (year_opt == 1) {return "+str(off_2012.getVal())+";}\n    return 0.;\n    };\n\n};"
+	trespars = "class TResclass {\n\n  public:\n\n  Double_t f1(Int_t year_opt, Int_t wide_window) {\n    if (year_opt == 0) {\n      if (wide_window == 0) {return "+str(f1_2011_narrow.getVal())+";}\n      else {return "+str(f1_2011_wide.getVal())+";}\n    }\n    else {\n      if (wide_window == 0) {return "+str(f1_2012_narrow.getVal())+";}\n      else {return "+str(f1_2012_wide.getVal())+";}\n    }\n  };\n\n  Double_t mean(Int_t year_opt, Int_t wide_window) {\n    if (year_opt == 0) {\n      if (wide_window == 0) {return "+str(deltat_mean_2011_narrow.getVal())+";}\n      else {return "+str(deltat_mean_2011_wide.getVal())+";}\n    }\n    else {\n      if (wide_window == 0) {return "+str(deltat_mean_2012_narrow.getVal())+";}\n      else {return "+str(deltat_mean_2012_wide.getVal())+";}\n    }\n  };\n\n  Double_t q0A(Int_t year_opt, Int_t wide_window) {\n    if (year_opt == 0) {\n      if (wide_window == 0) {return "+str(q0A_2011_narrow.getVal())+";}\n      else {return "+str(q0A_2011_wide.getVal())+";}\n    }\n    else {\n      if (wide_window == 0) {return "+str(q0A_2012_narrow.getVal())+";}\n      else {return "+str(q0A_2012_wide.getVal())+";}\n    }\n  };\n\n  Double_t q0B(Int_t year_opt, Int_t wide_window) {\n    if (year_opt == 0) {\n      if (wide_window == 0) {return "+str(q0B_2011_narrow.getVal())+";}\n      else {return "+str(q0B_2011_wide.getVal())+";}\n    }\n    else {\n      if (wide_window == 0) {return "+str(q0B_2012_narrow.getVal())+";}\n      else {return "+str(q0B_2012_wide.getVal())+";}\n    }\n  };\n\n  Double_t q1A(Int_t year_opt, Int_t wide_window) {\n    if (year_opt == 0) {\n      if (wide_window == 0) {return "+str(q1A_2011_narrow.getVal())+";}\n      else {return "+str(q1A_2011_wide.getVal())+";}\n    }\n    else {\n      if (wide_window == 0) {return "+str(q1A_2012_narrow.getVal())+";}\n      else {return "+str(q1A_2012_wide.getVal())+";}\n    }\n  };\n\n  Double_t q1B(Int_t year_opt, Int_t wide_window) {\n    if (year_opt == 0) {\n      if (wide_window == 0) {return "+str(q1B_2011_narrow.getVal())+";}\n      else {return "+str(q1B_2011_wide.getVal())+";}\n    }\n    else {\n      if (wide_window == 0) {return "+str(q1B_2012_narrow.getVal())+";}\n      else {return "+str(q1B_2012_wide.getVal())+";}\n    }\n  };\n\n  Double_t q2A(Int_t year_opt, Int_t wide_window) {\n    if (year_opt == 0) {\n      if (wide_window == 0) {return "+str(q2A_2011_narrow.getVal())+";}\n      else {return "+str(q2A_2011_wide.getVal())+";}\n    }\n    else {\n      if (wide_window == 0) {return "+str(q2A_2012_narrow.getVal())+";}\n      else {return "+str(q2A_2012_wide.getVal())+";}\n    }\n  };\n\n  Double_t q2B(Int_t year_opt, Int_t wide_window) {\n    if (year_opt == 0) {\n      if (wide_window == 0) {return "+str(q2B_2011_narrow.getVal())+";}\n      else {return "+str(q2B_2011_wide.getVal())+";}\n    }\n    else {\n      if (wide_window == 0) {return "+str(q2B_2012_narrow.getVal())+";}\n      else {return "+str(q2B_2012_wide.getVal())+";}\n    }\n  };\n\n  Double_t off(Int_t year_opt, Int_t wide_window) {\n    if (year_opt == 0) {\n      if (wide_window == 0) {return "+str(off_2011_narrow.getVal())+";}\n      else {return "+str(off_2011_wide.getVal())+";}\n    }\n    else {\n      if (wide_window == 0) {return "+str(off_2012_narrow.getVal())+";}\n      else {return "+str(off_2012_wide.getVal())+";}\n    }\n  };\n\n};"
 
-	fpar = open('../../src/TimeDependent/TResclass.h','w')
+	fpar = open('../../src/TimeDependent/TResclass2.h','w')
 	fpar.write(trespars)
 	fpar.close()
 
 def Make1DPlot(nbins_difft):
 
-	fdifft11 = difft.frame()
-	fdifft12 = difft.frame()
-	data_difft_2011.plotOn(fdifft11,RooFit.Binning(nbins_difft),RooFit.LineColor(kBlue))
-	res_eff_2011.plotOn(fdifft11,RooFit.LineColor(kRed))
-	data_difft_2012.plotOn(fdifft12,RooFit.Binning(nbins_difft),RooFit.LineColor(kBlue))
-	res_eff_2012.plotOn(fdifft12,RooFit.LineColor(kRed))
+	fdifft11wide = difft.frame()
+	fdifft12wide = difft.frame()
+	fdifft11narrow = difft.frame()
+	fdifft12narrow = difft.frame()
+	data_difft_2011_wide.plotOn(fdifft11wide,RooFit.Binning(nbins_difft),RooFit.LineColor(kBlue))
+	res_eff_2011_wide.plotOn(fdifft11wide,RooFit.LineColor(kRed))
+	data_difft_2012_wide.plotOn(fdifft12wide,RooFit.Binning(nbins_difft),RooFit.LineColor(kBlue))
+	res_eff_2012_wide.plotOn(fdifft12wide,RooFit.LineColor(kRed))
+	data_difft_2011_narrow.plotOn(fdifft11narrow,RooFit.Binning(nbins_difft),RooFit.LineColor(kBlue))
+	res_eff_2011_narrow.plotOn(fdifft11narrow,RooFit.LineColor(kRed))
+	data_difft_2012_narrow.plotOn(fdifft12narrow,RooFit.Binning(nbins_difft),RooFit.LineColor(kBlue))
+	res_eff_2012_narrow.plotOn(fdifft12narrow,RooFit.LineColor(kRed))
 
-	leg11 = TLegend(0.6,0.7,0.95,0.9)
-	leg11.SetFillColor(kWhite)
-	leg11.SetBorderSize(0)
-	leg11.SetHeader("2011 MC data")
-	leg11.AddEntry(fdifft11.findObject("h_data_difft_2011"),"Data","epl")
-	leg11.AddEntry(fdifft11.findObject("res_eff_2011_Norm[difft]"),"2-Gaussian fit","epl")
-	leg12 = TLegend(0.6,0.7,0.95,0.9)
-	leg12.SetFillColor(kWhite)
-	leg12.SetBorderSize(0)
-	leg12.SetHeader("2012 MC data")
-	leg12.AddEntry(fdifft12.findObject("h_data_difft_2012"),"Data","epl")
-	leg12.AddEntry(fdifft12.findObject("res_eff_2012_Norm[difft]"),"2-Gaussian fit","epl")
+	leg11wide = TLegend(0.6,0.7,0.95,0.9)
+	leg11wide.SetFillColor(kWhite)
+	leg11wide.SetBorderSize(0)
+	leg11wide.SetHeader("2011 MC data")
+	leg11wide.AddEntry(fdifft11wide.findObject("h_data_difft_2011_wide"),"Data","epl")
+	leg11wide.AddEntry(fdifft11wide.findObject("res_eff_2011_wide_Norm[difft]"),"2-Gaussian fit","epl")
+	leg12wide = TLegend(0.6,0.7,0.95,0.9)
+	leg12wide.SetFillColor(kWhite)
+	leg12wide.SetBorderSize(0)
+	leg12wide.SetHeader("2012 MC data")
+	leg12wide.AddEntry(fdifft12wide.findObject("h_data_difft_2012_wide"),"Data","epl")
+	leg12wide.AddEntry(fdifft12wide.findObject("res_eff_2012_wide_Norm[difft]"),"2-Gaussian fit","epl")
+	leg11narrow = TLegend(0.6,0.7,0.95,0.9)
+	leg11narrow.SetFillColor(kWhite)
+	leg11narrow.SetBorderSize(0)
+	leg11narrow.SetHeader("2011 MC data")
+	leg11narrow.AddEntry(fdifft11narrow.findObject("h_data_difft_2011_narrow"),"Data","epl")
+	leg11narrow.AddEntry(fdifft11narrow.findObject("res_eff_2011_narrow_Norm[difft]"),"2-Gaussian fit","epl")
+	leg12narrow = TLegend(0.6,0.7,0.95,0.9)
+	leg12narrow.SetFillColor(kWhite)
+	leg12narrow.SetBorderSize(0)
+	leg12narrow.SetHeader("2012 MC data")
+	leg12narrow.AddEntry(fdifft12narrow.findObject("h_data_difft_2012_narrow"),"Data","epl")
+	leg12narrow.AddEntry(fdifft12narrow.findObject("res_eff_2012_narrow_Norm[difft]"),"2-Gaussian fit","epl")
 
-	c1D = TCanvas("c1D","c1D",1400,600)
-	c1D.Divide(2)
-	c1D.cd(1)
-	fdifft11.Draw()
-	leg11.Draw()
-	c1D.cd(2)
-	fdifft12.Draw()
-	leg12.Draw()
-	c1D.Print("TimeRes1Dplot.root")
-	c1D.Print("TimeRes1Dplot.pdf")
+	c1Dwide = TCanvas("c1Dwide","c1Dwide",1400,600)
+	c1Dwide.Divide(2)
+	c1Dwide.cd(1)
+	fdifft11wide.Draw()
+	leg11wide.Draw()
+	c1Dwide.cd(2)
+	fdifft12wide.Draw()
+	leg12wide.Draw()
+	c1Dwide.Print("TimeRes1DplotWideWindow.root")
+	c1Dwide.Print("TimeRes1DplotWideWindow.pdf")
+	c1Dnarrow = TCanvas("c1Dnarrow","c1Dnarrow",1400,600)
+	c1Dnarrow.Divide(2)
+	c1Dnarrow.cd(1)
+	fdifft11narrow.Draw()
+	leg11narrow.Draw()
+	c1Dnarrow.cd(2)
+	fdifft12narrow.Draw()
+	leg12narrow.Draw()
+	c1Dnarrow.Print("TimeRes1DplotnarrowWindow.root")
+	c1Dnarrow.Print("TimeRes1DplotnarrowWindow.pdf")
 
-def printSigmaEff(fit_2011,fit_2012):
+def printSigmaEff(fit_2011_wide,fit_2012_wide,fit_2011_narrow,fit_2012_narrow):
 
 	print '********************************'
+	print 'Wide window'
+	print '********************************'
 	print 'Year 2011:'
-	print 'sigma_eff = %.2f' % (1000.*sigma_eff_2011.getVal())+' +- %.2f' % (1000.*sigma_eff_2011.getPropagatedError(fit_2011))+' fs'
+	print 'sigma_eff = %.2f' % (1000.*sigma_eff_2011_wide.getVal())+' +- %.2f' % (1000.*sigma_eff_2011_wide.getPropagatedError(fit_2011_wide))+' fs'
 	print '--------------------------------'
 	print 'Year 2012:'
-	print 'sigma_eff = %.2f' % (1000.*sigma_eff_2012.getVal())+' +- %.2f' % (1000.*sigma_eff_2012.getPropagatedError(fit_2012))+' fs'
+	print 'sigma_eff = %.2f' % (1000.*sigma_eff_2012_wide.getVal())+' +- %.2f' % (1000.*sigma_eff_2012_wide.getPropagatedError(fit_2012_wide))+' fs'
+	print '********************************'
+	print 'Narrow window'
+	print '********************************'
+	print 'Year 2011:'
+	print 'sigma_eff = %.2f' % (1000.*sigma_eff_2011_narrow.getVal())+' +- %.2f' % (1000.*sigma_eff_2011_narrow.getPropagatedError(fit_2011_narrow))+' fs'
+	print '--------------------------------'
+	print 'Year 2012:'
+	print 'sigma_eff = %.2f' % (1000.*sigma_eff_2012_narrow.getVal())+' +- %.2f' % (1000.*sigma_eff_2012_narrow.getPropagatedError(fit_2012_narrow))+' fs'
 	print '********************************'
 
 def Make2DPlot(nbins_difft,nbins_deltat):
 
-	h11data = data_2011.createHistogram(difft,deltat,nbins_difft,nbins_deltat)
-	h12data = data_2012.createHistogram(difft,deltat,nbins_difft,nbins_deltat)
-	h11pdf = full_pdf_2011.createHistogram("h_pdf_2011",difft,RooFit.Binning(nbins_difft),RooFit.YVar(deltat,RooFit.Binning(nbins_deltat)))
-	h12pdf = full_pdf_2012.createHistogram("h_pdf_2012",difft,RooFit.Binning(nbins_difft),RooFit.YVar(deltat,RooFit.Binning(nbins_deltat)))
-	h11pdf.SetLineColor(kRed)
-	h12pdf.SetLineColor(kRed)
-	h11data.GetXaxis().SetTitle("t_{rec}-t_{gen} (ps)")
-	h12data.GetXaxis().SetTitle("t_{rec}-t_{gen} (ps)")
-	h11data.GetYaxis().SetTitle("t_{err} (ps)")
-	h12data.GetYaxis().SetTitle("t_{err} (ps)")
+	h11widedata = data_2011_wide.createHistogram(difft,deltat,nbins_difft,nbins_deltat)
+	h12widedata = data_2012_wide.createHistogram(difft,deltat,nbins_difft,nbins_deltat)
+	h11widepdf = full_pdf_2011_wide.createHistogram("h_pdf_2011_wide",difft,RooFit.Binning(nbins_difft),RooFit.YVar(deltat,RooFit.Binning(nbins_deltat)))
+	h12widepdf = full_pdf_2012_wide.createHistogram("h_pdf_2012_wide",difft,RooFit.Binning(nbins_difft),RooFit.YVar(deltat,RooFit.Binning(nbins_deltat)))
+	h11widepdf.SetLineColor(kRed)
+	h12widepdf.SetLineColor(kRed)
+	h11widedata.GetXaxis().SetTitle("t_{rec}-t_{gen} (ps)")
+	h12widedata.GetXaxis().SetTitle("t_{rec}-t_{gen} (ps)")
+	h11widedata.GetYaxis().SetTitle("t_{err} (ps)")
+	h12widedata.GetYaxis().SetTitle("t_{err} (ps)")
+	h11narrowdata = data_2011_narrow.createHistogram(difft,deltat,nbins_difft,nbins_deltat)
+	h12narrowdata = data_2012_narrow.createHistogram(difft,deltat,nbins_difft,nbins_deltat)
+	h11narrowpdf = full_pdf_2011_narrow.createHistogram("h_pdf_2011_narrow",difft,RooFit.Binning(nbins_difft),RooFit.YVar(deltat,RooFit.Binning(nbins_deltat)))
+	h12narrowpdf = full_pdf_2012_narrow.createHistogram("h_pdf_2012_narrow",difft,RooFit.Binning(nbins_difft),RooFit.YVar(deltat,RooFit.Binning(nbins_deltat)))
+	h11narrowpdf.SetLineColor(kRed)
+	h12narrowpdf.SetLineColor(kRed)
+	h11narrowdata.GetXaxis().SetTitle("t_{rec}-t_{gen} (ps)")
+	h12narrowdata.GetXaxis().SetTitle("t_{rec}-t_{gen} (ps)")
+	h11narrowdata.GetYaxis().SetTitle("t_{err} (ps)")
+	h12narrowdata.GetYaxis().SetTitle("t_{err} (ps)")
 
-	fdifft11 = difft.frame()
-	fdifft12 = difft.frame()
-	data_2011.plotOn(fdifft11,RooFit.Binning(nbins_difft),RooFit.LineColor(kBlue))
-	full_pdf_2011.plotOn(fdifft11,RooFit.LineColor(kRed))
-	data_2012.plotOn(fdifft12,RooFit.Binning(nbins_difft),RooFit.LineColor(kBlue))
-	full_pdf_2012.plotOn(fdifft12,RooFit.LineColor(kRed))
+	fdifft11wide = difft.frame()
+	fdifft12wide = difft.frame()
+	data_2011_wide.plotOn(fdifft11wide,RooFit.Binning(nbins_difft),RooFit.LineColor(kBlue))
+	full_pdf_2011_wide.plotOn(fdifft11wide,RooFit.LineColor(kRed))
+	data_2012_wide.plotOn(fdifft12wide,RooFit.Binning(nbins_difft),RooFit.LineColor(kBlue))
+	full_pdf_2012_wide.plotOn(fdifft12wide,RooFit.LineColor(kRed))
+	fdifft11narrow = difft.frame()
+	fdifft12narrow = difft.frame()
+	data_2011_narrow.plotOn(fdifft11narrow,RooFit.Binning(nbins_difft),RooFit.LineColor(kBlue))
+	full_pdf_2011_narrow.plotOn(fdifft11narrow,RooFit.LineColor(kRed))
+	data_2012_narrow.plotOn(fdifft12narrow,RooFit.Binning(nbins_difft),RooFit.LineColor(kBlue))
+	full_pdf_2012_narrow.plotOn(fdifft12narrow,RooFit.LineColor(kRed))
 
-	fdeltat11 = deltat.frame()
-	fdeltat12 = deltat.frame()
-	data_2011.plotOn(fdeltat11,RooFit.Binning(nbins_deltat),RooFit.LineColor(kBlue))
-	full_pdf_2011.plotOn(fdeltat11,RooFit.LineColor(kRed))
-	data_2012.plotOn(fdeltat12,RooFit.Binning(nbins_deltat),RooFit.LineColor(kBlue))
-	full_pdf_2012.plotOn(fdeltat12,RooFit.LineColor(kRed))
+	fdeltat11wide = deltat.frame()
+	fdeltat12wide = deltat.frame()
+	data_2011_wide.plotOn(fdeltat11wide,RooFit.Binning(nbins_deltat),RooFit.LineColor(kBlue))
+	full_pdf_2011_wide.plotOn(fdeltat11wide,RooFit.LineColor(kRed))
+	data_2012_wide.plotOn(fdeltat12wide,RooFit.Binning(nbins_deltat),RooFit.LineColor(kBlue))
+	full_pdf_2012_wide.plotOn(fdeltat12wide,RooFit.LineColor(kRed))
+	fdeltat11narrow = deltat.frame()
+	fdeltat12narrow = deltat.frame()
+	data_2011_narrow.plotOn(fdeltat11narrow,RooFit.Binning(nbins_deltat),RooFit.LineColor(kBlue))
+	full_pdf_2011_narrow.plotOn(fdeltat11narrow,RooFit.LineColor(kRed))
+	data_2012_narrow.plotOn(fdeltat12narrow,RooFit.Binning(nbins_deltat),RooFit.LineColor(kBlue))
+	full_pdf_2012_narrow.plotOn(fdeltat12narrow,RooFit.LineColor(kRed))
 
-	c2D = TCanvas("c2D","c2D",1200,800)
-	c2D.Divide(3,2)
-	c2D.cd(1)
-	h11data.Draw("lego")
-	h11pdf.Draw("surfsame")
-	c2D.cd(2)
-	fdifft11.Draw()
-	c2D.cd(3)
-	fdeltat11.Draw()
-	c2D.cd(4)
-	h12data.Draw("lego")
-	h12pdf.Draw("surfsame")
-	c2D.cd(5)
-	fdifft12.Draw()
-	c2D.cd(6)
-	fdeltat12.Draw()
-	c2D.Print("TimeRes2Dplot.root")
-	c2D.Print("TimeRes2Dplot.pdf")
+	c2Dwide = TCanvas("c2Dwide","c2Dwide",1200,800)
+	c2Dwide.Divide(3,2)
+	c2Dwide.cd(1)
+	h11widedata.Draw("lego")
+	h11widepdf.Draw("surfsame")
+	c2Dwide.cd(2)
+	fdifft11wide.Draw()
+	c2Dwide.cd(3)
+	fdeltat11wide.Draw()
+	c2Dwide.cd(4)
+	h12widedata.Draw("lego")
+	h12widepdf.Draw("surfsame")
+	c2Dwide.cd(5)
+	fdifft12wide.Draw()
+	c2Dwide.cd(6)
+	fdeltat12wide.Draw()
+	c2Dwide.Print("TimeRes2DplotWideWindow.root")
+	c2Dwide.Print("TimeRes2DplotWideWindow.pdf")
+	c2Dnarrow = TCanvas("c2Dnarrow","c2Dnarrow",1200,800)
+	c2Dnarrow.Divide(3,2)
+	c2Dnarrow.cd(1)
+	h11narrowdata.Draw("lego")
+	h11narrowpdf.Draw("surfsame")
+	c2Dnarrow.cd(2)
+	fdifft11narrow.Draw()
+	c2Dnarrow.cd(3)
+	fdeltat11narrow.Draw()
+	c2Dnarrow.cd(4)
+	h12narrowdata.Draw("lego")
+	h12narrowpdf.Draw("surfsame")
+	c2Dnarrow.cd(5)
+	fdifft12narrow.Draw()
+	c2Dnarrow.cd(6)
+	fdeltat12narrow.Draw()
+	c2Dnarrow.Print("TimeRes2DplotNarrowWindow.root")
+	c2Dnarrow.Print("TimeRes2DplotNarrowWindow.pdf")

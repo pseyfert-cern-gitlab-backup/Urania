@@ -49,9 +49,10 @@
 #include "TF1.h"
 #include "RooMath.h"
 #include "NWclass.h"
+#include "Splineclass.h"
 #include "TAccclass.h"
-#include "ITclass.h"
 #include "accparclass.h"
+#include "genaccparclass.h"
 #include "TResclass.h"
 #include "TReseffclass.h"
 #include "RooAbsNumGenerator.h"
@@ -60,13 +61,35 @@
 #include "TRandom.h"
 
 NWclass NW; // Normalization weights
+Splineclass spl; // Time acceptance splines
 TAccclass TAcc; // Time acceptance histograms
-ITclass IT; // Accurate time integrals
 accparclass accpar; // Visualization acceptance parameters
+genaccparclass genaccpar; // Toy MC generation acceptance parameters
 TResclass TRes; // Time resolution parameters
 TReseffclass TReseff; // Effective time resolution parameters
 
-Double_t DCP_prod = 0.; // Production asymmetry
+Double_t DCP_prod[2]; // Production asymmetry
+
+// Parameters of the LASS parametrization for the mKpi propagators
+Double_t a_lass = 0.00195;
+Double_t r_lass = 0.00176;
+
+// Auxiliar variables
+Double_t spl_coef_array_1[2][2][5][4][4][4];
+Double_t spl_coef_array_2[2][2][5][4][4][4];
+Double_t spl_knot_vector[2][2][6];
+Double_t f1_eff[2];
+Double_t f2_eff[2];
+Double_t s1_eff[2];
+Double_t s2_eff[2];
+Double_t spl_knot_x1_vector[2][2][6];
+Double_t spl_knot_x2_vector[2][2][6];
+Double_t timefun_integral = 0; // Used in the computation of the histogram-like time integrals
+Double_t fjjphhpindexdict[3][3][5][5];
+Double_t ghhpindexdict[5][5];
+TComplex Nj1j2hdict[3][3][5];
+TComplex Ihj1j2j1pj2pdict[2][2][3][3][3][3];
+Double_t den_plot_var[2][2];
 
 // Variables used in event generation
 Double_t P_trueBs_const = 0.5; // Probability of generating a true Bs vs generating a true Bsbar
@@ -97,9 +120,24 @@ Double_t dec_OS_tagged; // OS tagged vs OS untagged random decision
 Double_t dec_right_tagged; // Right tagged vs wrong tagged random decision
 Double_t dec_accepted; // Accepted event vs rejected event random decision
 
-// Parameters of the LASS parametrization for the mKpi propagators
-Double_t a_lass = 0.00195;
-Double_t r_lass = 0.00176;
+// Buffer variables used to speed up the sumations
+TComplex Aj1j2h_temp[3][3][5];
+TComplex Abarj1j2h_temp[3][3][5];
+Double_t T_cosh_temp = 0.;
+Double_t T_sinh_temp = 0.;
+Double_t T_cos_temp = 0.;
+Double_t T_sin_temp = 0.;
+Double_t IT_cosh_temp = 0.;
+Double_t IT_sinh_temp = 0.;
+Double_t IT_cos_temp = 0.;
+Double_t IT_sin_temp = 0.;
+Double_t zeta_temp = 0.;
+Double_t DCP_tzero_temp = 0.;
+Double_t fi_cos1_temp[18];
+Double_t fi_cos2_temp[18];
+Double_t gi_temp[15];
+TComplex Mj1j2_temp[3][3];
+Double_t phasespace_temp = 0.;
 
 class KpiKpiSpectrumNW : public RooAbsPdf {
 public:
@@ -124,11 +162,11 @@ public:
 
   RooRealProxy wide_window ;
   RooRealProxy year_opt ;
+  RooRealProxy trig_opt ;
   RooRealProxy alt_fit ;
   RooRealProxy option ;
   RooRealProxy inftres ;
-  RooRealProxy flatacc ;
-  RooRealProxy nwacc ;
+  RooRealProxy acctype ;
   RooRealProxy A_j1 ;
   RooRealProxy A_j2 ;
   RooRealProxy A_h ;
@@ -406,12 +444,22 @@ public:
   Double_t IT_cos_resapprox_eff() const;
   Double_t IT_sin_resapprox_eff() const;
 
+  std::complex<Double_t> faddeeva_2args(Double_t x, std::complex<Double_t> z) const;
+  std::complex<Double_t> conv_exp(Double_t x, std::complex<Double_t> z) const;
+  std::complex<Double_t> Kn(std::complex<Double_t> z, Int_t n) const;
+  std::complex<Double_t> Mn_x(Double_t x, std::complex<Double_t> z, Int_t n) const;
+  std::complex<Double_t> Mn(Double_t x_1, Double_t x_2, std::complex<Double_t> z, Int_t n) const;
+  void set_buffer_differential_vars(Double_t m1var, Double_t m2var, Double_t cos1var, Double_t cos2var, Double_t phivar, Double_t tvar, Double_t terrvar, Int_t decisionSSKvar, Int_t decisionOSvar, Double_t etamistagSSKvar, Double_t etamistagOSvar) const;
+  void set_buffer_integral_vars() const;
+
   // Angular terms.
   Double_t fi(Double_t x, Int_t i) const;
   Double_t gi(Double_t x, Int_t i) const;
   Double_t fjjphhp(Double_t x, Int_t j, Int_t jp, Int_t h, Int_t hp) const;
+  Double_t fjjphhp_cos1(Int_t j, Int_t jp, Int_t h, Int_t hp) const;
+  Double_t fjjphhp_cos2(Int_t j, Int_t jp, Int_t h, Int_t hp) const;
   Double_t ghhp(Double_t x, Int_t h, Int_t hp) const;
-  TComplex Nj1j2h(Int_t j1, Int_t j2, Int_t h) const;
+  Double_t ghhp_phi(Int_t h, Int_t hp) const;
   TComplex Nj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
 
   // Invariant mass dependent terms.
@@ -426,6 +474,8 @@ public:
 
   // Parametric acceptance.
   Double_t accTime(Double_t tau) const;
+  Double_t accTimeParam(Double_t tau) const;
+  Double_t accTimeHisto(Double_t tau) const;
   Double_t accAng(Double_t x) const;
   Double_t accMass(Double_t m) const;
   TComplex ITj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
@@ -459,6 +509,7 @@ public:
   Double_t den_plot() const;
 
   // Integrals.
+  void setDenPlotVarVal() const;
   Int_t getAnalyticalIntegral (RooArgSet& allVars, RooArgSet& analVars, const char* rangeName=0 ) const;
   Double_t analyticalIntegral(Int_t code, const char* rangeName=0 ) const;
 
@@ -467,16 +518,19 @@ public:
   Double_t P_eta_SSK(Double_t eta) const;
   Double_t P_eta_OS(Double_t eta) const;
   Double_t P_deltat(Double_t tau_err) const;
-  Double_t comp_fun_Bs(Double_t tau, Double_t tau_err, Double_t ma, Double_t mb, Double_t cos1var, Double_t cos2var, Double_t phivar, Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
-  Double_t comp_fun_Bsbar(Double_t tau, Double_t tau_err, Double_t ma, Double_t mb, Double_t cos1var, Double_t cos2var, Double_t phivar, Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
-  Double_t fun_Bs(Double_t tau, Double_t tau_err, Double_t ma, Double_t mb, Double_t cos1var, Double_t cos2var, Double_t phivar) const;
-  Double_t fun_Bsbar(Double_t tau, Double_t tau_err, Double_t ma, Double_t mb, Double_t cos1var, Double_t cos2var, Double_t phivar) const;
+  TComplex TBsj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
+  TComplex TBsbarj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
+  Double_t comp_fun_Bs(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
+  Double_t comp_fun_Bsbar(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
+  Double_t fun_Bs() const;
+  Double_t fun_Bsbar() const;
+  TComplex ITBsj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t comp_int_Bs(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t int_Bs() const;
   Double_t P_trueBs() const;
   void Randomize7D(Int_t wide_window_gen) const;
   void Randomize7D_fun_max() const;
-  void SetGenerator(Int_t wide_window_gen, Int_t compute_max_fun=0, Int_t sample_size_7D=100000) const;
+  void SetGenerator(Int_t wide_window_gen, Int_t compute_max_fun=0, Int_t sample_size_7D=1000000) const;
   Int_t getGenerator(const RooArgSet& directVars, RooArgSet &generateVars, Bool_t staticInitOK=kTRUE) const;
   void generateEvent(Int_t code);
 
@@ -487,5 +541,5 @@ private:
 
   ClassDef(KpiKpiSpectrumNW,1)
 };
- 
+
 #endif

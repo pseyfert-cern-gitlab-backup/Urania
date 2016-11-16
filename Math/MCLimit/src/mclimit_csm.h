@@ -8,7 +8,7 @@
 // Class to run the TMinuit minimization of T. Devlin's chisquared
 // defined in CDF 3126, minimized over the nuisance parameters.
 
-// version dated Aug 2, 2011
+// version dated October 10, 2014
 // Author:  Tom Junk, Fermilab.  trj@fnal.gov
 
 #include <iostream>
@@ -18,6 +18,8 @@
 #include <TH1.h>
 #include <TH2.h>
 #include <TProfile.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 // include FastTH1.hh explicitly here so fewer files to distribute
 
@@ -1789,7 +1791,10 @@ class mclimit_csm
 // this one puts the posterior in a predefined histogram (if supplied), and optionally allows a dump
 // of the Markov Chain steps for the signals
 
-   void xsfit_2d_mcmc1(double *xs1, double *xs2, TH2F *xs2dposterior=0,  TString histoutfile="", bool dumpsfp=false);
+   void xsfit_2d_mcmc1(double *xs1, double *xs2, TH2F *xs2dposterior=0,  TString histoutfile="", bool dumpsfp=false,
+            bool forcedatatobeinteger=true);
+
+   void xsfit_2d_mcmc1_expect_asimov(double *xs1, double *xs2, TH2F *xs2dposterior=0,  TString histoutfile="", bool dumpsfp=false);
 
    // always assume the two signals are declared in the same order in all channels.
    // If more than two signals are present, the first one in  each channel is called signal 1,
@@ -2103,7 +2108,7 @@ csm_interpolate_histogram2(Hist* a, Double_t xa,
     {
       std::cout << "xb == xa in csm_interpolate_histogram2 " << xa << std::endl;
       std::cout << "fatal error -- exiting." << std::endl;
-      //exit(0);
+      exit(0);
     }
 
   // interpolate contents
@@ -2271,7 +2276,7 @@ csm_interpolate_histogram2_noerr(Hist* a, Double_t xa,
     {
       std::cout << "xb == xa in csm_interpolate_histogram2_noerr " << xa << std::endl;
       std::cout << "fatal error -- exiting." << std::endl;
-     // //exit(0);
+      exit(0);
     }
 
   // interpolate just the bin contents
@@ -2370,7 +2375,7 @@ csm_interpolate_histogram3(Hist* a, Double_t xa,
       else
 	{
 	  std::cout << "csm_interpolate_histogram: unknown interpolation style " << istyle << std::endl;
-	  //exit(0);
+	  exit(0);
 	}
 
       //std::cout << xa << " " << xb << " " << xc << std::endl;
@@ -2476,7 +2481,7 @@ csm_interpolate_histogram3(Hist* a, Double_t xa,
       else
 	{
 	  std::cout << "csm_interpolate_histogram: unknown interpolation style " << istyle << std::endl;
-	  //exit(0);
+	  exit(0);
 	}
 
       delete[] distxya;

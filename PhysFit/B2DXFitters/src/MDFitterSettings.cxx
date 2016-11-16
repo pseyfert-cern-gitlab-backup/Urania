@@ -13,6 +13,7 @@
 
 #include "B2DXFitters/MDFitterSettings.h" 
 #include "B2DXFitters/GeneralUtils.h"
+#include "B2DXFitters/HistPID1D.h"
 #include "TString.h"
 #include "RooRealVar.h"
 #include "RooArgSet.h"
@@ -29,11 +30,27 @@ MDFitterSettings::MDFitterSettings(const TString& name, const TString& title)
 {
   TNamed(name,title);
 
-  _PIDBach = 0;
-  _PIDChild = 0;
-  _PIDProton = 0;
-
   _weightDim = 0.0;
+  _massShift.first = 0;
+  _massShift.second = 0; 
+
+  _data = ""; 
+
+  _filePIDBacEff.first = "";
+  _filePIDBacEff.second = "";
+  _filePIDBacMisID.first = "";
+  _filePIDBacMisID.second = "";
+  _filePIDChildMisID.first = "";
+  _filePIDChildMisID.second = "";
+  _filePIDChildProtonMisID.first = "";
+  _filePIDChildProtonMisID.second = "";
+
+  _PIDBacEff.first = ""; _PIDBacEff.second = "";
+  _PIDBacMisID.first = ""; _PIDBacMisID.second = "";
+  _PIDChildMisID.first = ""; _PIDChildMisID.second = "";
+  _PIDChildProtonMisID.first = ""; _PIDChildProtonMisID.second = "";
+
+  _ratioDMC.first = ""; _ratioDMC.second = ""; 
 
   for(int i = 0; i< 2; i++ )
     {
@@ -137,10 +154,6 @@ MDFitterSettings::MDFitterSettings(const MDFitterSettings& other) :
   _bin = other._bin;
   _var = other._var;
 
-  _PIDBach   = other._PIDBach;
-  _PIDChild  = other._PIDChild;
-  _PIDProton = other._PIDProton;
-
   _lumRatio = other._lumRatio;
   _weightDim = other._weightDim;
   _calib   = other._calib;
@@ -177,6 +190,20 @@ MDFitterSettings::MDFitterSettings(const MDFitterSettings& other) :
   _p0 = other._p0;
   _p1 = other._p1;
   _av = other._av;
+
+  _ratioDMC = other._ratioDMC; 
+  _filePIDBacEff = other._filePIDBacEff;
+  _filePIDBacMisID = other._filePIDBacMisID;
+  _filePIDChildMisID = other._filePIDChildMisID;
+  _filePIDChildProtonMisID = other._filePIDChildProtonMisID;
+  
+  _PIDBacEff = other._PIDBacEff;
+  _PIDBacMisID = other._PIDBacMisID;
+  _PIDChildMisID = other._PIDChildMisID;
+  _PIDChildProtonMisID = other._PIDChildProtonMisID;
+
+  _massShift = other._massShift; 
+
 }
 
 MDFitterSettings::~MDFitterSettings() { }
@@ -229,7 +256,7 @@ std::ostream & operator<< (std::ostream &out, const MDFitterSettings &s)
       out<<"Tagging calibration:"<<std::endl;
       for( unsigned int i = 0; i < s._tagVarNames.size(); i++ )
         {
-          out<<"p0: "<<s._p0[i]<<", p1: "<<s._p1[i]<<", average: "<<s._av[i]<<std::endl;
+          out<<"\t "<<s._matchTag[i]<<": p0: "<<s._p0[i]<<", p1: "<<s._p1[i]<<", average: "<<s._av[i]<<" use: "<<s._useTag[i]<<std::endl;
         }
     }
 
@@ -280,19 +307,50 @@ std::ostream & operator<< (std::ostream &out, const MDFitterSettings &s)
       out<<"-------------------------------------------------------------------"<<std::endl;
       out<<"\t Mass templates will be weighted using following settings: "<<std::endl;
       out<<"-------------------------------------------------------------------"<<std::endl;
-  
-      out<<"PIDK bachelor: "<<s._PIDBach<<std::endl;
-      out<<"PIDK child: "<<s._PIDChild<<std::endl;
-      out<<"PIDK proton: "<<s._PIDProton<<std::endl;
-      if (s._weightMassTempVar.size() > 0 )
-	{
-	  out<<"Variables: ";
-	  for (unsigned int i = 0; i<s._weightMassTempVar.size(); i++)
-	    {
-	      out<<s._weightMassTempVar[i]<<" "; 
-	    }
-	  out<<std::endl;
-	}
+
+      out<<" Shift for "<<s._mVarOut<<" is: "<<s._massShift.first<<std::endl;
+      out<<" Shift for "<<s._mDVarOut<<" is: "<<s._massShift.second<<std::endl;
+      out<<" Bachelor Efficinecy: "<<std::endl;
+      out<<" \t file for 2011: "<<s._filePIDBacEff.first<<std::endl;
+      out<<" \t file for 2012: "<<s._filePIDBacEff.second<<std::endl;
+      out<<" \t name of histogram: "<<s._PIDBacEff.first<<std::endl;
+      out<<" \t variable weighted: "<<s._PIDBacEff.second<<std::endl;
+      out<<"-------------------------------------------------------------------"<<std::endl;
+      out<<" Bachelor MisID: "<<std::endl;
+      out<<" \t file for 2011: "<<s._filePIDBacMisID.first<<std::endl;
+      out<<" \t file for 2012: "<<s._filePIDBacMisID.second<<std::endl;
+      out<<" \t name of histogram: "<<s._PIDBacMisID.first<<std::endl;
+      out<<" \t variable weighted: "<<s._PIDBacMisID.second<<std::endl;
+      out<<"-------------------------------------------------------------------"<<std::endl;
+      out<<" Kaon/Pion MisID: "<<std::endl;
+      out<<" \t file for 2011: "<<s._filePIDChildMisID.first<<std::endl;
+      out<<" \t file for 2012: "<<s._filePIDChildMisID.second<<std::endl;
+      out<<" \t name of histogram: "<<s._PIDChildMisID.first<<std::endl;
+      out<<" \t variable weighted: "<<s._PIDChildMisID.second<<std::endl;
+      out<<"-------------------------------------------------------------------"<<std::endl;
+      out<<" Proton MisID: "<<std::endl;
+      out<<" \t file for 2011: "<<s._filePIDChildProtonMisID.first<<std::endl;
+      out<<" \t file for 2012: "<<s._filePIDChildProtonMisID.second<<std::endl;
+      out<<" \t name of histogram: "<<s._PIDChildProtonMisID.first<<std::endl;
+      out<<" \t variable weighted: "<<s._PIDChildProtonMisID.second<<std::endl;
+      out<<"-------------------------------------------------------------------"<<std::endl;
+      out<<"-------------------------------------------------------------------"<<std::endl;
+      out<<" Ratio data MC: "<<s._weightRatioDataMC<<std::endl;
+      out<<" \t label for 2011: "<<s._ratioDMC.first<<std::endl;
+      out<<" \t label for 2012: "<<s._ratioDMC.second<<std::endl; 
+      out<<"-------------------------------------------------------------------"<<std::endl;
+      //      out<<"PIDK bachelor: "<<s._PIDBach<<std::endl;
+      //out<<"PIDK child: "<<s._PIDChild<<std::endl;
+      //out<<"PIDK proton: "<<s._PIDProton<<std::endl;
+      //if (s._weightMassTempVar.size() > 0 )
+      //	{
+      //	  out<<"Variables: ";
+      //  for (unsigned int i = 0; i<s._weightMassTempVar.size(); i++)
+      //    {
+      //      out<<s._weightMassTempVar[i]<<" "; 
+      //    }
+      //  out<<std::endl;
+      //	}
       out<<"Prefix for Ds children: "<<s._prefixDsChild[0]<<" "<<s._prefixDsChild[1]<<" "<<s._prefixDsChild[2]<<std::endl;
     }
 
@@ -585,9 +643,40 @@ Bool_t MDFitterSettings::CheckVarName( TString name ) {
       if( _tagOmegaVarNames[i] == name) { check = true; }
     }
 
-  
   return check;
 }
+
+Bool_t MDFitterSettings::CheckVarOutName( TString name ) {
+
+Bool_t check = false;
+
+if( name == _mVarOut) { check = true; }
+if( name == _mDVarOut) { check = true;  }
+if( name == _tVarOut) { check = true; }
+if( name == _terrVarOut) { check = true; }
+if( name == _idVarOut) { check = true; }
+if( name == _PIDVarOut) { check = true; }
+if( name == _BDTGVarOut) { check = true; }
+if( name == _nTracksVarOut) { check = true; }
+if( name == _pVarOut) { check = true; }
+if( name == _ptVarOut) { check = true; }
+
+for(unsigned int i = 0; i<_addVarNames.size(); i++ )
+  {
+    if( _addVarNamesOut[i] == name) { check = true; }
+  }
+for(unsigned int i = 0; i<_tagVarNames.size(); i++ )
+  {
+    if( _tagVarNamesOut[i] == name) { check = true; }
+  }
+for(unsigned int i = 0; i<_tagOmegaVarNames.size(); i++ )
+  {
+    if( _tagOmegaVarNamesOut[i] == name) { check = true; }
+  }
+
+return check;
+}
+
 
 TString MDFitterSettings::GetVarOutName(TString var)
 {
@@ -634,20 +723,23 @@ TString MDFitterSettings::GetVarOutName(TString var)
 RooRealVar* MDFitterSettings::GetObs(TString varName, bool inName, bool log)
 {
   RooRealVar* Var = NULL;
+  Bool_t check = CheckVarOutName(varName);
+  if ( inName == true ) { check = CheckVarName(varName);}
 
-  if ( CheckVarName(varName) == true )
+  if ( check == true )
    { 
-      Double_t range0 = GetRangeDown(varName);
-      Double_t range1 = GetRangeUp(varName);
-      TString  varOutName = "";
-      if ( inName == false ) 
-	{
-	  varOutName = GetVarOutName(varName); 
-	}
-      else
-	{
-	  varOutName = varName; 
-	}
+     
+     Double_t range0 = GetRangeDown(varName);
+     Double_t range1 = GetRangeUp(varName);
+     TString  varOutName = "";
+     if ( inName == true ) 
+       {
+	 varOutName = GetVarOutName(varName); 
+       }
+     else
+       {
+	 varOutName = varName; 
+       }
       if ( range0 != 1234.456 && range1 != 1234.456)
 	{
 	  if( log == false )
@@ -715,6 +807,52 @@ std::vector <TString> MDFitterSettings::GetVarNames(Bool_t reg, Bool_t id, Bool_
     }
   return names;
 }
+
+std::vector <TString> MDFitterSettings::GetVarOutNames(Bool_t reg, Bool_t id, Bool_t add, Bool_t tag, Bool_t tagOmega)
+{
+  std::vector <TString> names;
+  if ( reg == true )
+    {
+
+      if ( _mVarOut != "") { names.push_back(_mVarOut);}
+      if ( _mDVarOut != "") { names.push_back(_mDVarOut);}
+      if ( _PIDVarOut != "") { names.push_back(_PIDVarOut);}
+      if ( _tVarOut != "") { names.push_back(_tVarOut);}
+      if ( _terrVarOut != "" ) { names.push_back(_terrVarOut);}
+      if ( _BDTGVarOut != "" ) { names.push_back(_BDTGVarOut);}
+      if ( _pVarOut != "" ) { names.push_back(_pVarOut);}
+      if ( _ptVarOut != "") { names.push_back(_ptVarOut);}
+      if ( _nTracksVarOut != "" ) { names.push_back(_nTracksVarOut);}
+    }
+  if ( id == true )
+    {
+      names.push_back(_idVarOut);
+    }
+
+  if (add == true )
+    {
+      for ( unsigned int i =0; i <_addVarNamesOut.size(); i++ )
+	{
+          names.push_back(_addVarNamesOut[i]);
+        }
+    }
+  if ( tag == true )
+    {
+      for ( unsigned int i =0; i <_tagVarNamesOut.size(); i++ )
+        {
+          names.push_back(_tagVarNamesOut[i]);
+        }
+    }
+  if ( tagOmega == true )
+    {
+      for ( unsigned int i =0; i <_tagOmegaVarNamesOut.size(); i++ )
+        {
+          names.push_back(_tagOmegaVarNamesOut[i]);
+        }
+    }
+  return names;
+}
+
 
 TString MDFitterSettings::GetDataCuts(TString& mode)
 {
@@ -1075,12 +1213,16 @@ RooArgSet* MDFitterSettings::GetObsSet(bool inName, bool regular, bool id, bool 
 {
   RooArgSet* obs = new RooArgSet();
   std::vector <RooRealVar*> obsReg;
-  std::vector <TString> tN = this->GetVarNames(true,false,false,false,false);
+  std::vector <TString> tN;
+  if ( inName == true ) { tN = this->GetVarNames(true,false,false,false,false); }
+  else { tN = this->GetVarOutNames(true,false,false,false,false); }
   if ( regular == true )
     {
       for(unsigned int i = 0; i < tN.size(); i++)
 	{
-	  if ( tN[i] == _nTracksVar || tN[i] == _pVar || tN[i] == _ptVar  )
+	  //std::cout<<"[INFO] tN: "<<tN[i]<<std::endl; 
+	  if ( tN[i] == _nTracksVar || tN[i] == _pVar || tN[i] == _ptVar 
+	       || tN[i] == _nTracksVarOut || tN[i] == _pVarOut || tN[i] == _ptVarOut)
 	    {
 	      obsReg.push_back(this->GetObs(tN[i],inName,true));
 	    }
@@ -1114,11 +1256,15 @@ RooArgSet* MDFitterSettings::GetObsSet(bool inName, bool regular, bool id, bool 
     {
       for(int i = 0; i<this->GetNumAddVar(); i++)
 	{
-	  addVar.push_back(this->GetObs(this->GetAddVarName(i),inName));
+	   
+	  TString name = "";
+	  if ( inName == true ) { name = _addVarNames[i]; }
+	  else { name = _addVarNamesOut[i]; } 
+	  addVar.push_back(this->GetObs(name,inName));
 	  obs->add(*addVar[i]); 
 	}
     }
-
+ 
   std::vector <RooCategory*> tagObs;
   if( tag == true && _tagVar == true )
     {
@@ -1143,13 +1289,17 @@ RooArgSet* MDFitterSettings::GetObsSet(bool inName, bool regular, bool id, bool 
 	  obs->add(*tagObs[i]); 
 	}                                                                                                                                                                         
     }
-
+  
   std::vector <RooRealVar*> tagOmegaObs;
   if ( tagomega == true && _tagOmegaVar == true )
     {
       for(int i = 0; i<this->GetNumTagOmegaVar(); i++)                                                                                                                            
-	{                                                                                                                                                                         
-	  tagOmegaObs.push_back(this->GetObs(this->GetTagOmegaVar(i),inName));                                                                                                   
+	{ 
+	  TString name = "";
+          if ( inName == true ) { name = this->GetTagOmegaVar(i); }
+          else { name = this->GetTagOmegaVarOutName(i); }
+	
+	  tagOmegaObs.push_back(this->GetObs(name,inName));                                                                                                   
 	  obs->add(*tagOmegaObs[i]);
 	}
     }
@@ -1340,4 +1490,249 @@ std::vector <Double_t> MDFitterSettings::GetLumRatio(TString check)
     }
   return lumRat; 
   
+}
+
+
+void MDFitterSettings::SetPIDProperties(TString key, TString file2011, TString file2012, TString var, TString histName)
+{
+  if ( key == "PIDBachEff") 
+    {
+      _filePIDBacEff.first = file2011;
+      _filePIDBacEff.second = file2012;
+      _PIDBacEff.first = histName;
+      _PIDBacEff.second = var; 
+    }
+  else if ( key == "PIDBachMisID") 
+    {
+      _filePIDBacMisID.first =file2011;
+      _filePIDBacMisID.second = file2012;
+      _PIDBacMisID.first = histName;
+      _PIDBacMisID.second= var;
+    }
+  else if ( key == "PIDChildKaonPionMisID") 
+    {
+      _filePIDChildMisID.first =file2011;
+      _filePIDChildMisID.second = file2012;
+      _PIDChildMisID.first = histName;
+      _PIDChildMisID.second= var;
+    }
+  else if ( key == "PIDChildProtonMisID") 
+    {
+      _filePIDChildProtonMisID.first =file2011;
+      _filePIDChildProtonMisID.second = file2012;
+      _PIDChildProtonMisID.first = histName;
+      _PIDChildProtonMisID.second= var;
+    }
+
+}
+
+
+TString MDFitterSettings::GetPIDFileName(TString key, TString year)
+{
+  if ( key == "PIDBachEff")
+    {
+      if ( year == "2011" ) { return _filePIDBacEff.first; }
+      else {  return _filePIDBacEff.second; }
+    }
+  else if ( key == "PIDBachMisID")
+    {
+      if ( year == "2011") {return  _filePIDBacMisID.first; }
+      else { return _filePIDBacMisID.second; }
+    }
+  else if ( key == "PIDChildKaonPionMisID" ) 
+    {
+      if ( year == "2011" ) { return _filePIDChildMisID.first; }
+      else { return _filePIDChildMisID.second; }
+    }
+  else if ( key == "PIDChildProtonMisID")
+    {
+      if ( year == "2011" ) { return _filePIDChildProtonMisID.first; }
+      else { return _filePIDChildProtonMisID.second; }
+    }
+  return ""; 
+}
+
+
+std::pair<TString,TString> MDFitterSettings::GetPIDHist(TString key)
+{
+  std::pair<TString,TString> n;
+ 
+  if ( key == "PIDBachEff"){ return _PIDBacEff;}
+  else if ( key == "PIDBachMisID"){ return _PIDBacMisID; }
+  else if ( key == "PIDChildKaonPionMisID" ) { return _PIDChildMisID; }
+  else if ( key == "PIDChildProtonMisID") { return  _PIDChildProtonMisID; }
+  return n;
+
+} 
+
+TString MDFitterSettings::GetPIDHistName(TString key)
+{
+  if ( key == "PIDBachEff"){ return _PIDBacEff.first;}
+  else if ( key == "PIDBachMisID"){ return _PIDBacMisID.first; }
+  else if ( key == "PIDChildKaonPionMisID" ) { return _PIDChildMisID.first; }
+  else if ( key == "PIDChildProtonMisID") { return  _PIDChildProtonMisID.first; }
+  return "";
+}
+
+TString MDFitterSettings::GetPIDHistVar(TString key)
+{
+  if ( key == "PIDBachEff"){ return _PIDBacEff.second;}
+  else if ( key == "PIDBachMisID"){ return _PIDBacMisID.second; }
+  else if ( key == "PIDChildKaonPionMisID" ) { return _PIDChildMisID.second; }
+  else if ( key == "PIDChildProtonMisID") { return  _PIDChildProtonMisID.second; }
+  return "";
+}
+
+HistPID1D MDFitterSettings::GetHistPID1D(TString key, TString year)
+{
+
+  TString fileName = GetPIDFileName(key,year);
+  TString fileName2 = GetPIDFileName(key,year); 
+  if ( fileName == "#PID" ) { fileName2 = "#PID2"; } 
+  if ( fileName == "#PID2m2" ) { fileName2 = "#PID2m22"; }
+ 
+  TString histName = GetPIDHistName(key);
+
+  if ( fileName == fileName2 )
+    {
+      std::cout<<"[INFO] Get histogram "<<histName<<" from file: "<<fileName<<std::endl; 
+      std::cout<<_data<<std::endl; 
+      HistPID1D hist(histName, histName, _data, fileName);
+      return hist; 
+    }
+  else
+    {
+      std::cout<<"[INFO] Get histogram "<<histName<<" from files: "<<fileName<<" and "<<fileName2<<std::endl;
+      std::cout<<_data<<std::endl;
+      HistPID1D hist(histName, histName, _data, fileName, fileName2);
+      return hist; 
+    }
+}
+
+
+
+void MDFitterSettings::SetLabelDataMC(TString label, TString year)
+{
+  if ( year == "2011") { _ratioDMC.first = label; }
+  else if ( year == "2012" ) { _ratioDMC.second = label; } 
+  else
+    {
+      std::cout<<"[ERROR] Label for DataMC difference not set! Please check year: "<<year<<std::endl; 
+    }
+}
+
+TString MDFitterSettings::GetLabelDataMC(TString year)
+{
+  TString l="";
+  if ( year == "2011") { return _ratioDMC.first; }
+  else if ( year == "2012" ) { return _ratioDMC.second; }
+  else
+    {
+      std::cout<<"[ERROR] Label for DataMC difference not found! Please check year: "<<year<<std::endl;
+    }
+  return l; 
+}
+
+
+void MDFitterSettings::CorrectTagging()
+{
+  Int_t size1 = _useTag.size();
+  Int_t size2 = this->GetNumTagVar();
+  if ( size1 != size2 )
+    {
+     for(int i =0; i<size2; i++)
+	{
+	  _useTag[i] = _useTag[i+size2]; 
+	}
+    }
+    
+}
+
+TString MDFitterSettings::CheckTagger(TString name)
+{
+  if (name.Contains("OS") ) { return "OS"; }
+  else if (name.Contains("SSK")) { return "SSK";}
+  else if (name.Contains("SSp")) { return "SSp";}
+  else if (name.Contains("SS")) { return "SS";} 
+  else { return "Unknown";} 
+}
+
+
+void MDFitterSettings::SetCalibration(TString match, Double_t p0, Double_t p1, Double_t av, Bool_t use)
+{
+  for ( int i = 0; i < this->GetNumTagVar(); i++ )
+    {
+      if ( _matchTag[i]  == match )
+	{
+	  _p0[i] = p0;
+	  _p1[i] = p1; 
+	  _av[i] = av;
+	  _useTag[i] = use; 
+	}
+    }
+
+  
+}
+
+Int_t MDFitterSettings::CheckNumUsedTag()
+{
+  Int_t num=0;
+  for (int i = 0; i < _useTag.size(); i ++ )
+    {
+      if ( _useTag[i] == 1) { num++; }
+    }
+  return num; 
+}
+
+Double_t MDFitterSettings::GetCalibp0(TString match)
+{
+  Double_t val =0.0;
+  for(int i = 0; i < this->GetNumTagVar(); i++)
+    {
+      if ( match == _matchTag[i] )
+	{
+          val = _p0[i]; 
+	}
+    }
+  return val; 
+}
+
+Double_t MDFitterSettings::GetCalibp1(TString match)
+{
+  Double_t val =0.0;
+  for(int i = 0; i < this->GetNumTagVar(); i++)
+    {
+      if ( match == _matchTag[i] )
+	{
+          val = _p1[i];
+        }
+    }
+  return val;
+}
+
+Double_t MDFitterSettings::GetCalibAv(TString match)
+{
+  Double_t val =0.0;
+  for(int i = 0; i < this->GetNumTagVar(); i++)
+    {
+      if ( match == _matchTag[i] )
+	{
+          val = _p0[i];
+        }
+    }
+  return val;
+}
+
+std::vector <TString> MDFitterSettings::CheckTaggerList()
+{
+  std::vector <TString> tagList; 
+  for(int i = 0; i < this->GetNumTagVar(); i++)
+    {
+      if ( _useTag[i] == true )
+        {
+          tagList.push_back(_matchTag[i]);
+        }
+    }
+  return tagList; 
+
 }

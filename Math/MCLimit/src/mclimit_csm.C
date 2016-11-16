@@ -1,3 +1,5 @@
+// special version that prints out the cross section when a limit is calculated.
+// to use to reduce cpu usage for computing p-values with fitted cross sections and limits at the same time
 /* This is a set of routines that works like mclimit.f but uses csm.c to compute
    the chisquared of the data histogram compared to a sum of models, each of which
    may (or may not) have sensitivities to nuisance parameters in their shapes,
@@ -89,9 +91,15 @@
 //    27 Jul 2011 Make an Asimov mcmc cross section fitter in 1d
 //     1 Aug 2011 fix the calls in s95aux so they all point to the gcls* routines (missed a few on 21 Apr 2008).
 //     2 Aug 2011 fix a hang in the 1D mcmc cross section fitter in the case that we have too few entries in the histogram
+//    29 May 2012 For 1D cross section fits using Markov Chains:  fit the posterior histograms locally to quadratic
+//                functions to get the best estimate of the peak.  Protects against bumpy posteriors
+//                Leave it as the bin with the highest posterior for 2D -- could think of fitting a 2D polynomial here too,
+//                but leave that for a visually-inspected fit with a better function (the posterior may have an odd shape in 2D).
+//    8 Jul 2014  Fix a rounding/floor bug in chisquared1
+//   10 Oct 2014  Add xsfit_2d_expect_asimov calculator
 
-#define MCLIMIT_CSM_VERSION_NUMBER 4.43
-#define MCLIMIT_CSM_VERSION_DATE "Aug 2, 2011"
+#define MCLIMIT_CSM_VERSION_NUMBER 4.46
+#define MCLIMIT_CSM_VERSION_DATE "October 10, 2014"
 
 // Author:  Tom Junk, Fermilab.  trj@fnal.gov
 //  With contributions from Joel Heinrich, Nils Krumnack, Tom Wright and Kevin Lannon
@@ -113,6 +121,7 @@
 #include "mclimit_csm.h"
 #include "TString.h"
 #include "TFile.h"
+#include "TF1.h"
 
 #ifndef __CINT__
 
@@ -2208,7 +2217,7 @@ void csm_model::nuisance_response(Int_t nparams,
                                   Double_t paramvalue[])
 {
   Int_t i,nchans;
-  Int_t ipar,icons,j,k,ifound;//jfound;
+  Int_t ipar,icons,j,k,ifound,jfound;
   Double_t *cinput;
 
   /*
@@ -2230,13 +2239,13 @@ void csm_model::nuisance_response(Int_t nparams,
     }
   for (icons=0;icons<(Int_t)npcm.size();icons++)
     {
-      //jfound = 0;
+      jfound = 0;
       for (ipar=0;ipar<nparams;ipar++)
 	{
 	  //cout << "Comparing: " << npcm[icons].pnameoutput << " with " << paramname[ipar] << endl;
           if (strcmp(npcm[icons].pnameoutput,paramname[ipar])==0)
 	    {
-	      //jfound = 1;
+	      jfound = 1;
 	      cinput = new Double_t[npcm[icons].ninput];
 	      for (j=0;j<(Int_t)npcm[icons].ninput;j++)
 	        {
@@ -2274,6 +2283,7 @@ void csm_model::nuisance_response(Int_t nparams,
   nchans = (Int_t) channame.size();
   for (i=0;i< nchans; i++)
     {
+      //cout << "performing nuisance response on " << channame[i] << endl;
       chanmodel[i]->nuisance_response(nparams,paramname,parloc);
     }
   delete[] parloc;
@@ -2379,6 +2389,7 @@ void csm_channel_model::nuisance_response(Int_t nparams,
 						(syserr[i].sysfrach-syserr[i].sysfracl)*paramvalue[j]/2.0 + 1.0));
 		}
 
+	      //cout << "Working on parameter name: " << paramname[j] << endl;
 	      if (paramvalue[j]>0)
 		{
 		  if (syserr[i].highshape != 0)
@@ -4681,7 +4692,7 @@ Double_t csm_channel_model::chisquared1(TH1 *dh)
   // number of template histograms
   nc = (Int_t) histotemplate.size();
 
-  Int_t lpoissflag[nc];  // local Poisson flag --if uncertainty is zero for a template in a bin
+  Int_t lpoissflag[nc];  // local Poisson flag -- if uncertainty is zero for a template in a bin
                          // reclassify it as no bin error
 
   // allocate rho1 and rho2 for all templates, even though we're only going to need
@@ -4703,9 +4714,14 @@ Double_t csm_channel_model::chisquared1(TH1 *dh)
       for (ibiny=0;ibiny<nbinsy;ibiny++)
         {
 	  if (nbinsy==1)
-	    { dtb = (Int_t) dh->GetBinContent(ibinx+1); }
+	    { 
+	      dtb = max(0, (Int_t) nearbyint(dh->GetBinContent(ibinx+1))); 
+	    }
 	  else
-	    { dtb = (Int_t) dh->GetBinContent(ibinx+1,ibiny+1); }
+	    { 
+	      dtb = max(0, (Int_t) nearbyint(dh->GetBinContent(ibinx+1,ibiny+1))); 	      
+	    }
+
           //cout << "In chi2calc: " << ibinx << " " << ibiny << " " << dtb << endl;
 
 	  // if we are told to pay attention to the error but it's zero, reclassify it locally
@@ -6465,7 +6481,7 @@ double mclimit_csm::bayeslimit_mcmc1_expect_asimov(double beta, PRIOR prior, TSt
 // just need to define testhyp -- the predictions used to set the simulated data, and
 // testhyp_pe -- the predictions used to compute the cross section
 
-// input arguments -- same as xsfit_mcmc1
+// input arguments -- same as xsfit_mcmc1 except you don't get to choose to force data to be an integer
 
 void mclimit_csm::xsfit_mcmc1_expect_asimov(double *xsfit, double *downerr, double *uperr, TH1F *xsfit1dposterior, 
                               TString histoutfile, bool dumpsfp)
@@ -6523,6 +6539,78 @@ void mclimit_csm::xsfit_mcmc1_expect_asimov(double *xsfit, double *downerr, doub
     }
 
   xsfit_mcmc1(xsfit,downerr,uperr,xsfit1dposterior,histoutfile,dumpsfp,false);
+
+  for (int i=0;i<nchans; i++) delete pdarray[i];
+  delete[] pdarray;
+  datahist.clear();
+  for (int i=0;i<ndhorig; i++) datahist.push_back(dhsave[i]);
+  return;
+}
+
+
+// Expected Asimov 2D cross section -- set the pseudodata to be the sum of the signals + backgrounds (not 
+// an integer anymore) and compute the 2D posterior and return the same values ans xsfit2d
+//  No need to define data histograms when computing asimov cross sections --
+// just need to define testhyp -- the predictions used to set the simulated data, and
+// testhyp_pe -- the predictions used to compute the cross section
+
+// input arguments -- same as xsfit_2d_mcmc1 except you don't get to choose to force data to be integer
+
+void mclimit_csm::xsfit_2d_mcmc1_expect_asimov(double *xs1, double *xs2, TH2F *xs2dposterior,  TString histoutfile, bool dumpsfp)
+{
+  int nchans = test_hypothesis->channame.size();
+  TH1** pdarray = new TH1*[nchans];     // data and pseudodata stay as TH1's
+  char *pdname;
+
+  // save the existing data histogram pointers (if any), and refill datahist with pointers to simulated data
+
+  vector<TH1*> dhsave;
+  int ndhorig = datahist.size();
+  for (int i=0; i<ndhorig; i++) dhsave.push_back(datahist[i]);
+  datahist.clear();
+
+  // Add up the test_hypothesis template predictions to make pseudodata
+  // replace existing data histograms with pseudodata and put them back when done.
+
+  for (int i=0;i<nchans; i++)
+    {
+      pdname = new char[strlen(test_hypothesis->channame[i])+strlen(" pseudodata ")];
+      strcpy(pdname,test_hypothesis->channame[i]);
+      strcat(pdname," pseudodata");
+      pdarray[i] = (TH1*) dhsave[i]->Clone(pdname);
+      delete pdname;
+      datahist.push_back(pdarray[i]);
+
+      datahist[i]->Reset();
+      int nbinsx = datahist[i]->GetNbinsX();
+      int nbinsy = datahist[i]->GetNbinsY();
+      csm_channel_model *cm = test_hypothesis->chanmodel[i];
+      int ntemplates = cm->histotemplate.size();
+      double dtmp;
+      for (int itpl=0;itpl<ntemplates;itpl++) 
+	{
+	  for (int ibinx=0;ibinx<nbinsx;ibinx++)
+	    {
+	      for (int ibiny=0;ibiny<nbinsy;ibiny++)
+		{
+		  if (nbinsy==1) 
+		    { 
+		      dtmp = datahist[i]->GetBinContent(ibinx+1);
+		      dtmp += cm->histotemplate[itpl]->GetBinContent(ibinx+1)*cm->sft[itpl];
+		      datahist[i]->SetBinContent(ibinx+1,dtmp);
+		    }
+		  else
+		    { 
+		      dtmp = datahist[i]->GetBinContent(ibinx+1,ibiny+1);
+		      dtmp += cm->histotemplate[itpl]->GetBinContent(ibinx+1,ibiny+1)*cm->sft[itpl];
+		      datahist[i]->SetBinContent(ibinx+1,ibiny+1,dtmp);
+		    }
+		}
+	    }
+	}
+    }
+
+  xsfit_2d_mcmc1(xs1,xs2,xs2dposterior,histoutfile,dumpsfp,false);
 
   for (int i=0;i<nchans; i++) delete pdarray[i];
   delete[] pdarray;
@@ -6647,9 +6735,9 @@ void mclimit_csm::xsfit_mcmc1(double *xsfit, double *downerr, double *uperr, TH1
   mcmc1(xsfit1d,0.95,flat,histoutfile,0,xsfit,downerr,uperr,dumpsfp,0,0,xsfit1dposterior,0,0,0,forcedatatobeinteger);
 }
 
-void mclimit_csm::xsfit_2d_mcmc1(double *xs1, double *xs2, TH2F *xs2dposterior, TString histoutfile, bool dumpsfp)
+void mclimit_csm::xsfit_2d_mcmc1(double *xs1, double *xs2, TH2F *xs2dposterior, TString histoutfile, bool dumpsfp, bool forcedatatobeinteger)
 {
-  mcmc1(xsfit2d,0.95,flat,histoutfile,0,xs1,0,0,dumpsfp,xs2,xs2dposterior);
+  mcmc1(xsfit2d,0.95,flat,histoutfile,0,xs1,0,0,dumpsfp,xs2,xs2dposterior,0,0,0,0,forcedatatobeinteger);
 }
 
 // draw pseudoexperiments from the fluctuated testhyp and find the cross section
@@ -6846,8 +6934,8 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
   // bin by bin errors (Poisson)
   double pnpvalues[nperrtot];
   double proposed_pnpvalues[nperrtot];
-  //double pnpresolutions[nperrtot];
-  //double pnpf1[nperrtot];
+  double pnpresolutions[nperrtot];
+  double pnpf1[nperrtot];
 
   double proposed_ssf=1.0;
   double proposed_ssf2=1.0;
@@ -7208,11 +7296,11 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
     }
 
   // for now let's set the resolutions of all bin by bin parameters to 1.0
-  //for (int i=0;i<nperrtot;i++)
-  //{
-  //  pnpf1[i] = 0.0;
-      //pnpresolutions[i] = 1.0;
-  //}
+  for (int i=0;i<nperrtot;i++)
+    {
+      pnpf1[i] = 0.0;
+      pnpresolutions[i] = 1.0;
+    }
 
   int iadcount=0;
   int iaccept_count=0;
@@ -7533,43 +7621,6 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
   int nssflist = ssflist.size();
   for (int i=0; i<nssflist; i++) local1dposterior->Fill(ssflist[i]);
 
-  if (phistflag) 
-    {
-      histfile = new TFile(histoutfile,"RECREATE");
-      if (histfile==0)
-	{
-	  cout << "Markov Chain output histogram file open failed " << histoutfile << endl;
-	  exit(0);
-	}
-      if (histfile->IsZombie())
-	{ 
-	  cout << "Markov Chain output histogram file open failed " << histoutfile << endl;
-	  exit(0);
-	}
-
-      histfile->cd();
-      int nnphist=nphist.size();
-      for (int i=0;i<nnphist; i++) nphist[i]->Write();
-      ssfhist.Write();
-      totcount->Write();
-
-      TH1F ssf2hist("mcmcssf2","Signal 2 Scale Factor",100,0,ssf2max);
-      if (action == xsfit2d)
-	{
-	  int nssf2list = ssf2list.size();
-	  for (int i=0; i<nssf2list; i++) ssf2hist.Fill(ssf2list[i]);
-	  ssf2hist.Write();
-	  local2dposterior->Write(); 
-	}
-      histfile->Close();
-    }
-
-  // free up memory used by allocated histograms
-  int nnphist=nphist.size();
-  for (int i=0; i<nnphist; i++) delete nphist[i];
-
-  TH1::AddDirectory(addStatus);
-
   // Use the list of signal points visited by the Markov Chain to compute a limit at CL=beta
 
   if ( action == limit1d && sflimit != 0 )
@@ -7594,11 +7645,12 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
       *sflimit = -2.0*log(lfa) + ssfavg;
     }
 
-  // look in 1D histogram for the cross section to fit -- be simplistic here and
-  // just use the maximum bin location and count bin contents.  Best fit -- use the
-  // bin center.  Min and max use the low edge and high edge of the bins
-  // Assume that the histogram is smooth enough so that the maximum value corresponds to the
-  // best fit and that we can just integrate it without smoothing or fitting.
+  // first pass -- use the bin with the maximum contents as the first guess of the best-fit
+  // cross section.  Use this as a seed for the 68% interval search.  Then go back and fit
+  // the histogram within half of the interval to a parabola to get a better estimate of the
+  // peak of the histogram.  Helps in the case of bumpy posteriors.  If the fit peaks at
+  // zero, report exactly zero, instead of the bin center for the lowest bin.  Adjust the
+  // up and down uncertainties.
 
   // Aug 2, 2011: Look beyond the current trial to the left or to the right for the biggest
   // bin content.  Always add not the largest bin content but the bin in the direction 
@@ -7606,12 +7658,15 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
   // if we have empty bins and does something sensible in the case of fluctuating histogram
   // entries.
 
-  if (action == xsfit1d)
+  // also compute a cross section and print it out when making limits
+
+  if (action == xsfit1d || action == limit1d)
     {
       int nbins = local1dposterior->GetNbinsX();
       double pint = local1dposterior->Integral();
       int imax = local1dposterior->GetMaximumBin();
-      if (xsfit) *xsfit = local1dposterior->GetBinCenter(imax);
+      double xsfitlocal = local1dposterior->GetBinCenter(imax);
+
       double psum = local1dposterior->GetBinContent(imax);
       double psumtrap = 0.0;
       int ilow = imax;
@@ -7650,19 +7705,96 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 	  psumtrap = psum - 0.5*(local1dposterior->GetBinContent(ilow)+local1dposterior->GetBinContent(ihigh));
 	}
       while (psumtrap<0.68*pint);
-      if (downerr) *downerr = *xsfit - local1dposterior->GetBinCenter(ilow);
-      if (uperr) *uperr =  local1dposterior->GetBinCenter(ihigh) - *xsfit;
+
+      double downlocal = xsfitlocal - local1dposterior->GetBinCenter(ilow);
+      double uplocal = local1dposterior->GetBinCenter(ihigh) - xsfitlocal;
+
+      // re-do the best-estimate of the cross section with a fit to the posterior
+      // select the fit range to include a positive range that includes at least three bins.
+      // The desired range is to be the central fit value +- about a half a sigma range
+
+      double dlwid = max(downlocal,uplocal);
+      double xlowfit = max(0,xsfitlocal - (dlwid/1.5));
+      double xhighfit = max(xlowfit+(local1dposterior->GetBinCenter(4)-local1dposterior->GetBinCenter(1)),xsfitlocal + dlwid/1.5);
+ 
+      //std::cout << "debug1: " << xsfitlocal << " " << downlocal << " " << uplocal << " " << xlowfit << " " << xhighfit << std::endl;
+      local1dposterior->Fit("pol2","Q","",xlowfit,xhighfit);
+      TF1 *myfunc = local1dposterior->GetFunction("pol2");
+      double afit = myfunc->GetParameter(2);
+      double bfit = myfunc->GetParameter(1);
+      //double cfit = myfunc->GetParameter(0);
+      double vfit = -1;
+      if (afit != 0) vfit = -bfit/(2.0*afit);
+      // the peak allowed is at zero if the peak of the parabola is at a negative cross section
+      // or if the parabola turns upwards
+      if (vfit < 0 || afit > 0) vfit = 0;
+
+      // shift the central fit value but keep the 68% CL interval the same
+      downlocal += (vfit-xsfitlocal);
+      uplocal += (xsfitlocal-vfit);
+      xsfitlocal = vfit;
+      // we may have put the best-fit cross section at zero which may be just outside
+      // of the range.
+      downlocal = max(0,downlocal);
+      uplocal = max(0,uplocal);
+
+      if (downerr) *downerr = downlocal;
+      if (uperr) *uperr = uplocal;
+      if (xsfit) *xsfit = xsfitlocal;
+
+      if (pxprintflag) std::cout << "limit xsf px: " << xsfitlocal << " " << downlocal << " " << uplocal << std::endl;
     }
 
   if (action == xsfit2d)
     {
-      int ixfit,iyfit,izfit;//,ibin;
-      local2dposterior->GetMaximumBin(ixfit,iyfit,izfit);
+      int ixfit,iyfit,izfit,ibin;
+      ibin = local2dposterior->GetMaximumBin(ixfit,iyfit,izfit);
       double xfit = local2dposterior->GetXaxis()->GetBinCenter(ixfit);
       double yfit = local2dposterior->GetYaxis()->GetBinCenter(iyfit);
       if (xsfit) {*xsfit = xfit;}
       if (xsfit2) {*xsfit2 = yfit;}
     }
+
+  // write out histograms and clean up -- move this to the end of the routine so we get to see the fit
+  // function for 1D cross section fits.
+
+  if (phistflag) 
+    {
+      histfile = new TFile(histoutfile,"RECREATE");
+      if (histfile==0)
+	{
+	  cout << "Markov Chain output histogram file open failed " << histoutfile << endl;
+	  exit(0);
+	}
+      if (histfile->IsZombie())
+	{ 
+	  cout << "Markov Chain output histogram file open failed " << histoutfile << endl;
+	  exit(0);
+	}
+
+      histfile->cd();
+      int nnphist=nphist.size();
+      for (int i=0;i<nnphist; i++) nphist[i]->Write();
+      ssfhist.Write();
+      totcount->Write();
+
+      TH1F ssf2hist("mcmcssf2","Signal 2 Scale Factor",100,0,ssf2max);
+      if (action == xsfit2d)
+	{
+	  int nssf2list = ssf2list.size();
+	  for (int i=0; i<nssf2list; i++) ssf2hist.Fill(ssf2list[i]);
+	  ssf2hist.Write();
+	  local2dposterior->Write(); 
+	}
+      histfile->Close();
+    }
+
+  // free up memory used by allocated histograms
+  int nnphist=nphist.size();
+  for (int i=0; i<nnphist; i++) delete nphist[i];
+
+  TH1::AddDirectory(addStatus);
+
 }
 
 //----------------------------------------------------------------
@@ -9593,7 +9725,7 @@ FastTH1 (const TH1& that)
   {
     nbins_[dim] = 1;
     mult_[dim] = 0;
-  }
+  };
 
   for (unsigned dim = 0; dim != dimension_; ++ dim)
   {
@@ -9609,7 +9741,7 @@ FastTH1 (const TH1& that)
     case 2:
       axis = that.GetZaxis();
       break;
-    }
+    };
     nbins_[dim] = axis->GetNbins();
     low_[dim] = axis->GetBinLowEdge (1);
     high_[dim] = axis->GetBinUpEdge (nbins_[dim]);
@@ -9617,7 +9749,7 @@ FastTH1 (const TH1& that)
     mult_[dim] = 1;
     for (unsigned dim2 = 0; dim2 != dim; ++ dim2)
       mult_[dim2] *= nbins_[dim];
-  }
+  };
 
   bin_contents_.reserve (nbins_[0] * nbins_[1] * nbins_[2]);
   bin_errors_.reserve (nbins_[0] * nbins_[1] * nbins_[2]);
@@ -9632,12 +9764,12 @@ FastTH1 (const TH1& that)
 	const float error = that.GetBinError (1 + binx, 1 + biny, 1 + binz);
 	assert (error >= 0 && "internal consistency error"); //spec
 	bin_errors_.push_back (error);
-      }
-    }
-  }
+      };
+    };
+  };
 
   test_invariant ();
-}
+};
 
 
 
@@ -9667,7 +9799,7 @@ make_TH1 (std::string name) const
 			    nbins_[1], low_[1], high_[1],
 			    nbins_[2], low_[2], high_[2]));
     break;
-  }
+  };
 
   assert (result.get() != NULL && "internal consistency error"); //spec
 
@@ -9683,15 +9815,15 @@ make_TH1 (std::string name) const
 	result->SetBinError (1 + binx, 1 + biny, 1 + binz, *error);
 	++ content;
 	++ error;
-      }
-    }
-  }
+      };
+    };
+  };
 
   assert (content == bin_contents_.end() && "internal consistency error"); //spec
   assert (error == bin_errors_.end() && "internal consistency error"); //spec
 
   assert (result.get() != NULL && "postcondition failed"); //spec
   return result.release();
-}
+};
 
 #endif

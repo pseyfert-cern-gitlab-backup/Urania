@@ -22,7 +22,7 @@ def CalcAveragePerfPlotsAndWriteToFile(TrackDict,
                                        ):
 
     for k, d in TrackDict.items():
-
+        #print "in calcaverage"
         Plots = GetPerfPlotList(MakePerfPlotsListPyth,
                                 StripVer,
                                 MagPolarity,
@@ -252,90 +252,6 @@ def PlotVarAndWriteToFile(
     del Plots
 
 
-
-
-
-
-def GetPerfPlotListOLD( PerfFunc,
-                     StripVer,
-                     MagPolarity,
-                     PartName,
-                     DLLCutList,
-                     TrackCuts,
-                     BinningScheme=None,
-                     runMin=None,
-                     runMax=None,
-                     verbose=True,
-                     allowMissingDataSets=False):
-
-    #======================================================================
-    # Declare default list of PID plots
-    #======================================================================
-    Plots = []
-
-    #======================================================================
-    # Loop over all calibration subsamples
-    #======================================================================
-    for DataSet in GetDataSets(StripVer, MagPolarity, PartName, TrackCuts,
-                               runMin, runMax, verbose, allowMissingDataSets):
-
-        #======================================================================
-        # Run Specific implementation of PerfCalculator
-        #======================================================================
-        Plots = PerfFunc(PartName, DataSet, DLLCutList, BinningScheme, Plots,
-                         verbose)
-
-        #======================================================================
-        # Delete DataSet
-        #======================================================================
-        DataSet.Delete()
-
-    #======================================================================
-    # Return list of plots
-    #======================================================================
-    return Plots
-
-
-def GetPerfResultListOLD(PerfFunc,
-                      StripVer,
-                      MagPolarity,
-                      PartName,
-                      DLLCutList,
-                      TrackCuts,
-                      runMin=None,
-                      runMax=None,
-                      verbose=True,
-                      allowMissingDataSets=False):
-
-
-    #======================================================================
-    # Declare default list of PID results
-    #======================================================================
-    PIDResults = []
-
-    #======================================================================
-    # Loop over all calibration subsamples
-    #======================================================================
-    for DataSet in GetDataSets(StripVer, MagPolarity, PartName, TrackCuts,
-                               runMin, runMax, verbose, allowMissingDataSets):
-
-        #======================================================================
-        # Run Specific implementation of PerfCalculator
-        #======================================================================
-        PerfFunc(DataSet, DLLCutList, PIDResults, verbose)
-        if verbose:
-            print PIDResults
-
-        #======================================================================
-        # Delete DataSet
-        #======================================================================
-        DataSet.Delete()
-
-    #======================================================================
-    # Return list PIDResults
-    #======================================================================
-    return PIDResults
-
 def GetPerfPlotList( PerfFunc,
                      StripVer,
                      MagPolarity,
@@ -350,11 +266,14 @@ def GetPerfPlotList( PerfFunc,
                      maxFiles=-1,
                      triggerList=[]):
 
+
+    #print " IN getperfplotlist"
     #**********************************************************************
     CheckStripVer(StripVer)
     CheckMagPol(MagPolarity)
     CheckPartType(PartName)
-
+    print BinningScheme.size()
+    print BinningScheme.at(0)
     #======================================================================
     # Create dictionary holding:
     # - Reconstruction version    ['RecoVer']
@@ -397,6 +316,9 @@ def GetPerfPlotList( PerfFunc,
             #======================================================================
             # Run Specific implementation of PerfCalculator
             #======================================================================
+    
+            print "printing the size again"
+            print BinningScheme.size()
             Plots = PerfFunc(PartName, DataSet, DLLCutList, BinningScheme, Plots,
                                 verbose=verbose)
             #======================================================================

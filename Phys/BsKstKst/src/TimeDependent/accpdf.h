@@ -23,9 +23,12 @@ public:
 	   RooAbsReal& _k2,
 	   RooAbsReal& _k3,
 	   RooAbsReal& _k4,
+	   RooAbsReal& _k5,
 	   RooAbsReal& _p1,
 	   RooAbsReal& _a_acc,
 	   RooAbsReal& _b_acc,
+	   RooAbsReal& _c_acc,
+	   RooAbsReal& _kpipair,
 	   RooAbsReal& _option);
   accpdf(const accpdf& other, const char* name=0) ;
   virtual TObject* clone(const char* newname) const { return new accpdf(*this,newname); }
@@ -41,9 +44,12 @@ public:
   RooRealProxy k2 ;
   RooRealProxy k3 ;
   RooRealProxy k4 ;
+  RooRealProxy k5 ;
   RooRealProxy p1 ;
   RooRealProxy a_acc ;
   RooRealProxy b_acc ;
+  RooRealProxy c_acc ;
+  RooRealProxy kpipair ;
   RooRealProxy option ;
   
   Double_t accCos(Double_t x) const;

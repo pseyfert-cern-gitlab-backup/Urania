@@ -107,7 +107,7 @@ sleep 3
 
 # merge the h+ and h- samples
 echo "Merging h+ and h- samples" 
-$CALIBAPPDIR/MergeCharges.exe "IncLc" "$OUT_DIR" "$PART_NAME" "$MAG_POL" \
+$CALIBAPPDIR/MergeCharges.exe "IncLc" "$OUT_DIR" "P" "$MAG_POL" \
     "$STRIP_VER" "$OUT_DIR" "$INDEX"
 EXITCODE=$?
 if [ $EXITCODE -ne 0 ]; then

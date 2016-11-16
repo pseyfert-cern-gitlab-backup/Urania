@@ -1,4 +1,5 @@
 from PIDPerfScripts.Definitions import *
+from PIDPerfScripts import OverrideCalibDataStore
 
 import itertools
 import pickle
@@ -111,6 +112,8 @@ def __FindFileIndex(run, runFirst, runLast):
 
 
 def GetMinMaxFileDictionary(DataDict, MagPolarity, runMin=None, runMax=None, maxFiles=-1 , verbose = True ):
+    overridden = OverrideCalibDataStore.GetDictIndex (runMin, runMax, maxFiles, verbose)
+    if overridden: return overridden
     #======================================================================
     # Determine file index ranges corresponding to RunMin and RunMax
     #======================================================================

@@ -4,7 +4,7 @@ from GetAccInterface import *
 
 
 # Inverse of the Phase Space model.
-invPSmodel = RooRealVar("invPSmodel","invPSmodel",0.,100000.)
+invgenmodel = RooRealVar("invgenmodel","invgenmodel",0.,100000.)
 
 # MC data identifiers.
 MCtype11 = -73
@@ -74,16 +74,20 @@ trigline12_cat.defineType("false",0)
 trigline12_cat.defineType("true",1)
 
 
-def loadDataAccCheck(data_file, data_tree, wide_window = 1, evnum_limit = 0, file_path = NTUPLE_PATH):
+def loadDataAccCheck(data_file, data_tree, wide_window, datatype, evnum_limit = 0, file_path = NTUPLE_PATH):
 
 	# Information.
 	print "\nNEW INPUT DATA FILE"
 	print 'Loading data file ' + data_file + ' ...'
+	if datatype == 0: print 'MC sample: PhSp.'
+	elif datatype == 1: print 'MC sample: VV.'
+	else: print 'MC sample: PhSp + VV.'
 	if (evnum_limit == 0): print 'All events selected.'
 	else: print str(evnum_limit)+' events selected.'
 
 	# PhSp generation model.
-	PDF_gen = MCGenPHSP("PDF_gen","PDF_gen",RooFit.RooConst(wide_window),mKp1,mKp2,t,RooFit.RooConst(1))
+	PDF_gen = MCGenComb("PDF_gen","PDF_gen",opt_genmodel,year_MC,RooFit.RooConst(wide_window),mKp1,mKp2,cos1,cos2,phi,t,RooFit.RooConst(1))
+	opt_genmodel.setVal(datatype)
 
 	# Input file.
 	file_in = TFile(file_path + data_file)
@@ -93,32 +97,40 @@ def loadDataAccCheck(data_file, data_tree, wide_window = 1, evnum_limit = 0, fil
 	file_out = TFile(file_path + "trash.root","recreate")
 	if wide_window: range_cut = tcheck_name+">=0. && "+tcheck_name+"<=12."
 	else: range_cut = "abs("+m1check_name+"-900.)<150. && abs("+m2check_name+"-900.)<150. && "+tcheck_name+">=0. && "+tcheck_name+"<=12."
-	MCdata1112_cut = " && (itype==" + str(MCtype11) + " || itype==" + str(MCtype12) + ")"
+	if datatype == 0: MCdata1112_cut = " && (itype==-73 || itype==-83)"
+	elif datatype == 1: MCdata1112_cut = " && (itype==-70 || itype==-80)"
+	else: MCdata1112_cut = " && (itype==-73 || itype==-83 || itype==-70 || itype==-80)"
 	tree2 = tree.CopyTree(range_cut + MCdata1112_cut)
 
 	# Construction of datasets.
-	if (wide_window): data_ = RooDataSet("data_","data_",RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,invPSmodel,year_cat))
-	else: data_ = RooDataSet("data_","data_",RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,invPSmodel,year_cat))
+	if (wide_window): data_ = RooDataSet("data_","data_",RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,invgenmodel,year_cat))
+	else: data_ = RooDataSet("data_","data_",RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,invgenmodel,year_cat))
 	more_cat_1 = RooDataSet("more_cat_1","more_cat_1",RooArgSet(trigline1_cat,trigline2_cat,trigline3_cat,trigline4_cat,trigline5_cat,trigline6_cat))
 	more_cat_2 = RooDataSet("more_cat_2","more_cat_2",RooArgSet(trigline7_cat,trigline8_cat,trigline9_cat,trigline10_cat,trigline11_cat,trigline12_cat))
 	ev_counter = 0
 	normalizer = 1./((1700.-750.)*(1700.-750.)*12.)
 	for i in tree2:
-		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))):
+		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			if (wide_window):
 				mKp1.setVal(eval("i."+m1check_name))
 				mKp2.setVal(eval("i."+m2check_name))
 			else:
 				mKp1_narrowwin.setVal(eval("i."+m1check_name))
 				mKp2_narrowwin.setVal(eval("i."+m2check_name))
+				mKp1.setVal(eval("i."+m1check_name))
+				mKp2.setVal(eval("i."+m2check_name))
 			cos1.setVal(eval("i."+cos1check_name))
 			cos2.setVal(eval("i."+cos2check_name))
 			phi.setVal(eval("i."+phicheck_name))
 			t.setVal(eval("i."+tcheck_name))
-			invPSmodel.setVal(normalizer/(PDF_gen.phasespace(eval("i."+m1check_name),eval("i."+m2check_name))*PDF_gen.timemodel(eval("i."+tcheck_name))))
-			if i.itype == MCtype11: year_cat.setIndex(0)
-			elif i.itype == MCtype12: year_cat.setIndex(1)
+			if i.itype in [-73,-70]:
+				year_cat.setIndex(0)
+				year_MC.setVal(0)
+			elif i.itype in [-83,-80]:
+				year_cat.setIndex(1)
+				year_MC.setVal(1)
 			else: print 'ERROR: the event does not correspond to the chosen data sample.'
+			invgenmodel.setVal(normalizer/PDF_gen.evaluate()/PDF_gen.timemodel(eval("i."+tcheck_name)))
 			trigline1_cat.setIndex(eval("i."+trigline1_name))
 			trigline2_cat.setIndex(eval("i."+trigline2_name))
 			trigline3_cat.setIndex(eval("i."+trigline3_name))
@@ -131,14 +143,14 @@ def loadDataAccCheck(data_file, data_tree, wide_window = 1, evnum_limit = 0, fil
 			trigline10_cat.setIndex(eval("i."+trigline10_name))
 			trigline11_cat.setIndex(eval("i."+trigline11_name))
 			trigline12_cat.setIndex(eval("i."+trigline12_name))
-			if (wide_window): data_.add(RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,invPSmodel,year_cat))
-			else: data_.add(RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,invPSmodel,year_cat))
+			if (wide_window): data_.add(RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,invgenmodel,year_cat))
+			else: data_.add(RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,invgenmodel,year_cat))
 			more_cat_1.add(RooArgSet(trigline1_cat,trigline2_cat,trigline3_cat,trigline4_cat,trigline5_cat,trigline6_cat))
 			more_cat_2.add(RooArgSet(trigline7_cat,trigline8_cat,trigline9_cat,trigline10_cat,trigline11_cat,trigline12_cat))
 			ev_counter += 1
 	data_.merge(more_cat_1)
 	data_.merge(more_cat_2)
-	data = RooDataSet("data","data",data_,data_.get(),"","invPSmodel")
+	data = RooDataSet("data","data",data_,data_.get(),"","invgenmodel")
 
 	print str(ev_counter) + ' events loaded.\n'
 
@@ -218,8 +230,8 @@ def corr_table_2D(data,listofvars,weighted,output_tag,rotated):
 
 def createSubSample(data,cutstring1,cutstring2,wide_window,name):
 
-	if wide_window: argset = RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,invPSmodel)
-	else: argset = RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,invPSmodel)
+	if wide_window: argset = RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,invgenmodel)
+	else: argset = RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,invgenmodel)
 	datacut_ = RooDataSet("datacut_","datacut_",argset)
 
 	norm = 1./data.sumEntries(cutstring1)
@@ -235,10 +247,10 @@ def createSubSample(data,cutstring1,cutstring2,wide_window,name):
 			cos2.setVal(data.get(i).getRealValue(cos2.GetName()))
 			phi.setVal(data.get(i).getRealValue(phi.GetName()))
 			t.setVal(data.get(i).getRealValue(t.GetName()))
-			invPSmodel.setVal(norm*data.weight())
+			invgenmodel.setVal(norm*data.weight())
 			datacut_.add(argset)
 
-	datacut = RooDataSet(name,name,datacut_,datacut_.get(),"","invPSmodel")
+	datacut = RooDataSet(name,name,datacut_,datacut_.get(),"","invgenmodel")
 
 	return datacut
 
@@ -419,7 +431,7 @@ def makeTrigAccPlot(data,output_TrigAcc,nbins,applyweights,wide_window):
 	binning_t = getRooBinning(t,bounds_t)
 	print 'Adaptive binning computed.'
 
-	data_tl1 = createSubSample(data,trigline1_name+" == 1 && "+trigline2_name+" == 0","(data.get(i).getCatIndex('"+trigline1_name+"') == 1 and data.get(i).getCatIndex('"+trigline2_name+"') == 0)",wide_window,"datatl1")
+	data_tl1 = createSubSample(data,trigline1_name+" == 1","data.get(i).getCatIndex('"+trigline1_name+"') == 1",wide_window,"datatl1")
 	data_tl2 = createSubSample(data,trigline1_name+" == 0 && "+trigline2_name+" == 1","(data.get(i).getCatIndex('"+trigline1_name+"') == 0 and data.get(i).getCatIndex('"+trigline2_name+"') == 1)",wide_window,"datatl2")
 	data_tl7 = createSubSample(data,trigline7_name+" == 1 && "+trigline8_name+" == 0 && "+trigline9_name+" == 0 && "+trigline10_name+" == 0 && "+trigline11_name+" == 0 && "+trigline12_name+" == 0","(data.get(i).getCatIndex('"+trigline7_name+"') == 1 and data.get(i).getCatIndex('"+trigline8_name+"') == 0 and data.get(i).getCatIndex('"+trigline9_name+"') == 0 and data.get(i).getCatIndex('"+trigline10_name+"') == 0 and data.get(i).getCatIndex('"+trigline11_name+"') == 0 and data.get(i).getCatIndex('"+trigline12_name+"') == 0)",wide_window,"datatl7")
 	data_tl8 = createSubSample(data,trigline7_name+" == 0 && "+trigline8_name+" == 1 && "+trigline9_name+" == 0 && "+trigline10_name+" == 0 && "+trigline11_name+" == 0 && "+trigline12_name+" == 0","(data.get(i).getCatIndex('"+trigline7_name+"') == 0 and data.get(i).getCatIndex('"+trigline8_name+"') == 1 and data.get(i).getCatIndex('"+trigline9_name+"') == 0 and data.get(i).getCatIndex('"+trigline10_name+"') == 0 and data.get(i).getCatIndex('"+trigline11_name+"') == 0 and data.get(i).getCatIndex('"+trigline12_name+"') == 0)",wide_window,"datatl8")
@@ -444,25 +456,12 @@ def makeTrigAccPlot(data,output_TrigAcc,nbins,applyweights,wide_window):
 	frame_t_Hlt2.GetYaxis().SetTitle("Efficiency (a.u.)")
 
 	c1 = TCanvas("c1","c1")
-	c1.Divide(2)
-	c1.cd(1)
 	frame_t_L0.Draw()
 	legL0_t = TLegend(0.7,0.2,0.9,0.6)
-	legL0_t.SetHeader("L0 Trigger lines (exclusive)")
-	legL0_t.AddEntry(trigline1_name,trigline1_name,"el")
-	legL0_t.AddEntry(trigline2_name,trigline2_name,"el")
+	legL0_t.SetHeader("L0 Trigger lines")
+	legL0_t.AddEntry(trigline1_name,"TIS","el")
+	legL0_t.AddEntry(trigline2_name,"TOS, not TIS","el")
 	legL0_t.Draw()
-	c1.cd(2)
-	frame_t_Hlt2.Draw()
-	legHlt2_t = TLegend(0.7,0.2,0.9,0.6)
-	legHlt2_t.SetHeader("Hlt2 Trigger lines (exclusive)")
-	legHlt2_t.AddEntry(trigline7_name,trigline7_name,"el")
-	legHlt2_t.AddEntry(trigline8_name,trigline8_name,"el")
-	legHlt2_t.AddEntry(trigline9_name,trigline9_name,"el")
-	legHlt2_t.AddEntry(trigline10_name,trigline10_name,"el")
-	legHlt2_t.AddEntry(trigline11_name,trigline11_name,"el")
-	legHlt2_t.AddEntry(trigline12_name,trigline12_name,"el")
-	legHlt2_t.Draw()
 	c1.Print(output_TrigAcc + '.root')
 	c1.Print(output_TrigAcc + '.pdf')
 

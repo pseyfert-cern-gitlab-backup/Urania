@@ -16,6 +16,9 @@
 TChain* GetData(const std::vector<std::string>& files,
                 const char* SubDir_TreeName);
 
+TChain* GetData(const std::vector<std::string>& files,
+                const char* SubDir_TreeName, TString cutstring);
+
 #endif // CALIBDATASCRIPTS_GETDATA_H
 
 

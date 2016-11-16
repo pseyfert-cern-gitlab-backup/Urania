@@ -13,6 +13,7 @@ import array
 import argparse
 import sys
 import os.path
+import numpy as np
 
 class ShowArgumentsParserMCreweight(argparse.ArgumentParser):
     def error(self, message):
@@ -80,6 +81,8 @@ if '__main__' == __name__:
     addGroup.add_argument("-id", "--trueID", dest="usetrueID", action="store_true",
                           default=False,
                           help="Use the TRUE_ID information of the corrected particles")
+                          
+    addGroup.add_argument("-corr", "--withCorrelation", dest="correlation", action="store_true", default=False, help="takes into account the correlation between pidvariables! It is slower.")
 
     addGroup.add_argument("-nE", "--runEvents", dest="runEvents",default=None,
 			  help="number of Events to run over")
@@ -105,7 +108,7 @@ if '__main__' == __name__:
     # Dictionaries for resampling
     #---------------------------------------------------------------------------
     #PID variale names matching for data file
-    pid_dict_data = {'PIDK':'PIDK','PIDp':'PIDp','PIDmu':'PIDmu','PIDpi':'PIDpi','PIDpK':'PIDpK','PIDe':'PIDe','ProbNNK':'ProbNNk','ProbNNp':'ProbNNp','ProbNNmu':'ProbNNmu','ProbNNpi':'ProbNNpi','ProbNNe':'ProbNNe','V3ProbNNK':'ProbNNk','V3ProbNNp':'ProbNNp','V3ProbNNmu':'ProbNNmu','V3ProbNNpi':'ProbNNpi','V3ProbNNe':'ProbNNe','V2ProbNNK':'ProbNNk','V2ProbNNp':'ProbNNp','V2ProbNNmu':'ProbNNmu','V2ProbNNpi':'ProbNNpi','V2ProbNNe':'ProbNNe'}
+    pid_dict_data = {'PIDK':'PIDK','PIDp':'PIDp','PIDmu':'PIDmu','PIDpi':'PIDpi','PIDpK':'PIDpK','PIDe':'PIDe','ProbNNK':'ProbNNk','ProbNNp':'ProbNNp','ProbNNmu':'ProbNNmu','ProbNNpi':'ProbNNpi','ProbNNe':'ProbNNe','V4ProbNNK':'ProbNNk','V4ProbNNp':'ProbNNp','V4ProbNNmu':'ProbNNmu','V4ProbNNpi':'ProbNNpi','V4ProbNNe':'ProbNNe','V3ProbNNK':'ProbNNk','V3ProbNNp':'ProbNNp','V3ProbNNmu':'ProbNNmu','V3ProbNNpi':'ProbNNpi','V3ProbNNe':'ProbNNe','V2ProbNNK':'ProbNNk','V2ProbNNp':'ProbNNp','V2ProbNNmu':'ProbNNmu','V2ProbNNpi':'ProbNNpi','V2ProbNNe':'ProbNNe'}
 
     #TrueID dictionary
     ID_dict = {11:'e',-11:'e',321:'K',-321:'K',211:'Pi',-211:'Pi',13:'Muplus',-13:'Muminus',2212:'P',-2212:'P'}
@@ -119,16 +122,16 @@ if '__main__' == __name__:
     # load files for correcting
     #---------------------------------------------------------------------------
     # load the MC file and corresponding TTree to correct
-    fileToCorrect = ROOT.TFile(opts.mcFile)
+    fileToCorrect = ROOT.TFile.Open(opts.mcFile)
     treeToCorrect = fileToCorrect.Get(opts.mcFilePathToTree)
 
     # load the data file and corresponding TTree to correct
     if(opts.dataFile!=None and opts.dataFilePathToTree!=None):
-        fileData = ROOT.TFile(opts.dataFile)
+        fileData = ROOT.TFile.Open(opts.dataFile)
         tree_data = fileData.Get(opts.dataFilePathToTree)
 
     # load the pid library file
-    fileLibrary = ROOT.TFile(opts.pidLibrary)
+    fileLibrary = ROOT.TFile.Open(opts.pidLibrary)
 
     #---------------------------------------------------------------------------
     # setup all the input arguments
@@ -196,9 +199,8 @@ if '__main__' == __name__:
             ZVarName, YVarName))
 
     debug = opts.debug
+    correlation = opts.correlation
 
-    #This is not needed!!!!!!! Change it
-    particle_list = particles
     #---------------------------------------------------------------------------
     # Print out conditions
     #---------------------------------------------------------------------------
@@ -211,7 +213,7 @@ if '__main__' == __name__:
         print "using ntracks from MC file"
     print "using trueID", opts.usetrueID
     print "using debug mode", debug
-    print "correcting Particles", particle_list
+    print "correcting Particles", particles
     print "PID variables to correct", pidVars
     print "maping particles to folders", YourPart_dict
     print "------------------------------------------------------------------"
@@ -261,52 +263,112 @@ if '__main__' == __name__:
             nummombins = totalhist.GetAxis(0).GetNbins()
             numetabins = totalhist.GetAxis(1).GetNbins()
             numntrbins = totalhist.GetAxis(2).GetNbins()
-
-            for pidvar in pidVars :
-                projdict = {}
+            if(correlation):
                 for i in range(0,nummombins+2) :
                     for j in range(0,numetabins+2) :
                         for k in range(0,numntrbins+2) :
                             hist_projPIDsName = "histo_PIDhisto_PID_proj_Pbin%d_ETAbin%d_nTracksbin%d" % (i,j,k)
                             hist_projPIDs = fileLibrary.Get(folder).Get(hist_projPIDsName)
                             index = "%d%d%d" % (i,j,k)
-                            upValue = hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-3).GetXmax()
-                            if(upValue==1.0):
-                                hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-3).SetRangeUser(0.0,upValue)
-                            else:
-                                hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-3).SetRangeUser(-upValue,upValue)
-                            projhist = hist_projPIDs.Projection( pidvars_to_axes[pidvar]-3 )
-                            projhist.SetName( particle+"_"+pidvar+"_"+str(index) )
-                            if(debug):
-                                print hist_projPIDsName
-                                print projhist
-                            projdict[index] = projhist
-                pidprojdict[pidvar] = projdict
+                            for pidvar in pidVars:
+                                upValue = hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-3).GetXmax()
+                                if(upValue==1.0):
+                                    hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-3).SetRangeUser(0.0,upValue)
+                                else:
+                                    hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-3).SetRangeUser(-upValue,upValue)
+                            pidprojdict[index] = hist_projPIDs
+            else:
+                for pidvar in pidVars :
+                    projdict = {}
+                    for i in range(0,nummombins+2) :
+                        for j in range(0,numetabins+2) :
+                            for k in range(0,numntrbins+2) :
+                                hist_projPIDsName = "histo_PIDhisto_PID_proj_Pbin%d_ETAbin%d_nTracksbin%d" % (i,j,k)
+                                hist_projPIDs = fileLibrary.Get(folder).Get(hist_projPIDsName)
+                                index = "%d%d%d" % (i,j,k)
+                                upValue = hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-3).GetXmax()
+                                if(upValue==1.0):
+                                    hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-3).SetRangeUser(0.0,upValue)
+                                else:
+                                    hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-3).SetRangeUser(-upValue,upValue)
+                                projhist = hist_projPIDs.Projection( pidvars_to_axes[pidvar]-3 )
+                                projhist.SetName( particle+"_"+pidvar+"_"+str(index) )
+                                if(debug):
+                                    print hist_projPIDsName
+                                    print projhist
+                                projdict[index] = projhist
+                    pidprojdict[pidvar] = projdict
 
         if(XVarName!='' and YVarName!='' and ZVarName==''):
             nummombins = totalhist.GetAxis(0).GetNbins()
             numetabins = totalhist.GetAxis(1).GetNbins()
-
-            for pidvar in pidVars :
-                projdict = {}
+            if(correlation):
                 for i in range(0,nummombins+2) :
                     for j in range(0,numetabins+2) :
                         hist_projPIDsName = "histo_PIDhisto_PID_proj_Pbin%d_ETAbin%d" % (i,j)
                         hist_projPIDs = fileLibrary.Get(folder).Get(hist_projPIDsName)
                         index = "%d%d" % (i,j)
-                        upValue = hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-2).GetXmax()
+                        for pidvar in pidVars:
+                            upValue = hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-2).GetXmax()
+                            if(upValue==1.0):
+                                hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-2).SetRangeUser(0.0,upValue)
+                            else:
+                                hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-2).SetRangeUser(-upValue,upValue)
+                        pidprojdict[index] = hist_projPIDs
+            else:
+                for pidvar in pidVars :
+                    projdict = {}
+                    for i in range(0,nummombins+2) :
+                        for j in range(0,numetabins+2) :
+                            hist_projPIDsName = "histo_PIDhisto_PID_proj_Pbin%d_ETAbin%d" % (i,j)
+                            hist_projPIDs = fileLibrary.Get(folder).Get(hist_projPIDsName)
+                            index = "%d%d" % (i,j)
+                            upValue = hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-2).GetXmax()
+                            if(upValue==1.0):
+                                hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-2).SetRangeUser(0.0,upValue)
+                            else:
+                                hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-2).SetRangeUser(-upValue,upValue)
+                            projhist = hist_projPIDs.Projection( pidvars_to_axes[pidvar]-2 )
+                            projhist.SetName( particle+"_"+pidvar+"_"+str(index) )
+                            if(debug):
+                                print hist_projPIDsName
+                                print projhist
+                            projdict[index] = projhist
+                    pidprojdict[pidvar] = projdict
 
-                        binUp = hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-2).FindFixBin(upValue-1)
-                        binDown = hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-2).FindFixBin(-upValue)
-                        hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-3).SetRange(binDown,binUp)
-                        projhist = hist_projPIDs.Projection( pidvars_to_axes[pidvar]-2 )
-                        projhist.SetName( particle+"_"+pidvar+"_"+str(index) )
-                        if(debug):
-                            print hist_projPIDsName
-                            print projhist
-                        projdict[index] = projhist
-                pidprojdict[pidvar] = projdict
-
+        if(XVarName!='' and YVarName=='' and ZVarName==''):
+            nummombins = totalhist.GetAxis(0).GetNbins()
+            if(correlation):
+                for i in range(0,nummombins+2) :
+                        hist_projPIDsName = "histo_PIDhisto_PID_proj_Pbin%d" % (i)
+                        hist_projPIDs = fileLibrary.Get(folder).Get(hist_projPIDsName)
+                        index = "%d" % (i)
+                        for pidvar in pidVars:
+                            upValue = hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-1).GetXmax()
+                            if(upValue==1.0):
+                                hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-1).SetRangeUser(0.0,upValue)
+                            else:
+                                hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-1).SetRangeUser(-upValue,upValue)
+                        pidprojdict[index] = hist_projPIDs
+            else:
+                for pidvar in pidVars :
+                    projdict = {}
+                    for i in range(0,nummombins+2) :
+                            hist_projPIDsName = "histo_PIDhisto_PID_proj_Pbin%d" % (i)
+                            hist_projPIDs = fileLibrary.Get(folder).Get(hist_projPIDsName)
+                            index = "%d" % (i)
+                            upValue = hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-1).GetXmax()
+                            if(upValue==1.0):
+                                hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-1).SetRangeUser(0.0,upValue)
+                            else:
+                                hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-1).SetRangeUser(-upValue,upValue)
+                            projhist = hist_projPIDs.Projection( pidvars_to_axes[pidvar]-1 )
+                            projhist.SetName( particle+"_"+pidvar+"_"+str(index) )
+                            if(debug):
+                                print hist_projPIDsName
+                                print projhist
+                            projdict[index] = projhist
+                    pidprojdict[pidvar] = projdict
         particleprojdict[particle] = pidprojdict
 
     #---------------------------------------------------------------------------
@@ -324,7 +386,7 @@ if '__main__' == __name__:
     calculateEta = False
     if(XVarName=='P' and YVarName=='ETA' and ZVarName=='nTracks'):
         #sets the branch addresses for each particle
-        for p in particle_list:
+        for p in particles:
             mom_branchName = p+"_P"
             mom_type = treeToCorrect.GetBranch(mom_branchName)
             mom_array_type = mom_type.GetTitle().replace(mom_branchName+"/","").lower()
@@ -344,15 +406,26 @@ if '__main__' == __name__:
                 treeToCorrect.SetBranchAddress(eta_branchName, eta )
                 eta_dict[p] = eta
                 #del eta
-            else :
-                calculateEta = True
-                momz_branchName = p+"_PZ"
-                momz_type = treeToCorrect.GetBranch(momz_branchName)
-                momz_array_type = momz_type.GetTitle().replace(momz_branchName+"/","").lower()
-                momz =  array.array(momz_array_type,[0])
-                treeToCorrect.SetBranchStatus(momz_branchName, 1 )
-                treeToCorrect.SetBranchAddress(momz_branchName, momz )
-                momz_dict[p] = momz
+            else:
+                b = treeToCorrect.GetBranch( p +"_"+"LOKI_ETA")
+                if b :
+                    eta_branchName = p+"_LOKI_ETA"
+                    eta_type = treeToCorrect.GetBranch(eta_branchName)
+                    eta_array_type = eta_type.GetTitle().replace(eta_branchName+"/","").lower()
+                    eta =  array.array(eta_array_type,[0])
+                    treeToCorrect.SetBranchStatus(eta_branchName, 1 )
+                    treeToCorrect.SetBranchAddress(eta_branchName, eta )
+                    eta_dict[p] = eta
+                    #del eta
+                else :
+                    calculateEta = True
+                    momz_branchName = p+"_PZ"
+                    momz_type = treeToCorrect.GetBranch(momz_branchName)
+                    momz_array_type = momz_type.GetTitle().replace(momz_branchName+"/","").lower()
+                    momz =  array.array(momz_array_type,[0])
+                    treeToCorrect.SetBranchStatus(momz_branchName, 1 )
+                    treeToCorrect.SetBranchAddress(momz_branchName, momz )
+                    momz_dict[p] = momz
                 #del momz
             if opts.usetrueID:
                 trueID_branchName = p+"_TRUEID"
@@ -386,7 +459,7 @@ if '__main__' == __name__:
 
     if(XVarName=='P' and YVarName=='ETA' and ZVarName==''):
         #sets the branch addresses for each particle
-        for p in particle_list:
+        for p in particles:
             mom_branchName = p+"_P"
             mom_type = treeToCorrect.GetBranch(mom_branchName)
             mom_array_type = mom_type.GetTitle().replace(mom_branchName+"/","").lower()
@@ -406,15 +479,26 @@ if '__main__' == __name__:
                 treeToCorrect.SetBranchAddress(eta_branchName, eta )
                 eta_dict[p] = eta
                 #del eta
-            else :
-                calculateEta = True
-                momz_branchName = p+"_PZ"
-                momz_type = treeToCorrect.GetBranch(momz_branchName)
-                momz_array_type = momz_type.GetTitle().replace(momz_branchName+"/","").lower()
-                momz =  array.array(momz_array_type,[0])
-                treeToCorrect.SetBranchStatus(momz_branchName, 1 )
-                treeToCorrect.SetBranchAddress(momz_branchName, momz )
-                momz_dict[p] = momz
+            else:
+                b = treeToCorrect.GetBranch( p +"_"+"LOKI_ETA")
+                if b :
+                    eta_branchName = p+"_LOKI_ETA"
+                    eta_type = treeToCorrect.GetBranch(eta_branchName)
+                    eta_array_type = eta_type.GetTitle().replace(eta_branchName+"/","").lower()
+                    eta =  array.array(eta_array_type,[0])
+                    treeToCorrect.SetBranchStatus(eta_branchName, 1 )
+                    treeToCorrect.SetBranchAddress(eta_branchName, eta )
+                    eta_dict[p] = eta
+                    #del eta
+                else :
+                    calculateEta = True
+                    momz_branchName = p+"_PZ"
+                    momz_type = treeToCorrect.GetBranch(momz_branchName)
+                    momz_array_type = momz_type.GetTitle().replace(momz_branchName+"/","").lower()
+                    momz =  array.array(momz_array_type,[0])
+                    treeToCorrect.SetBranchStatus(momz_branchName, 1 )
+                    treeToCorrect.SetBranchAddress(momz_branchName, momz )
+                    momz_dict[p] = momz
                 #del momz
             if opts.usetrueID:
                 trueID_branchName = p+"_TRUEID"
@@ -436,6 +520,39 @@ if '__main__' == __name__:
                 old_pid_var[t_pid] = tmp
                 #del tmp
             old_pid[p]=old_pid_var
+    if(XVarName=='P' and YVarName=='' and ZVarName==''):
+        #sets the branch addresses for each particle
+        for p in particles:
+            mom_branchName = p+"_P"
+            mom_type = treeToCorrect.GetBranch(mom_branchName)
+            mom_array_type = mom_type.GetTitle().replace(mom_branchName+"/","").lower()
+            mom =  array.array(mom_array_type,[0])
+            treeToCorrect.SetBranchStatus(mom_branchName, 1 )
+            treeToCorrect.SetBranchAddress(mom_branchName, mom )
+            mom_dict[p] = mom
+            #del mom
+            #eta calculation not standard
+            if opts.usetrueID:
+                trueID_branchName = p+"_TRUEID"
+                trueID_type = treeToCorrect.GetBranch(trueID_branchName)
+                trueID_array_type = trueID_type.GetTitle().replace(trueID_branchName+"/","").lower()
+                trueID =  array.array(trueID_array_type,[0])
+                treeToCorrect.SetBranchStatus(trueID_branchName, 1)
+                treeToCorrect.SetBranchAddress(trueID_branchName, trueID)
+                trueID_dict[p] = trueID
+                #del trueID
+            old_pid_var = {}
+            for t_pid in pidVars:
+                tmp_branchName = p+"_"+pid_dict_data[t_pid]
+                tmp_type = treeToCorrect.GetBranch(tmp_branchName)
+                tmp_array_type = tmp_type.GetTitle().replace(tmp_branchName+"/","").lower()
+                tmp =  array.array(tmp_array_type,[0])
+                treeToCorrect.SetBranchStatus(tmp_branchName,1)
+                treeToCorrect.SetBranchAddress(tmp_branchName,tmp)
+                old_pid_var[t_pid] = tmp
+                #del tmp
+            old_pid[p]=old_pid_var
+
 
     #---------------------------------------------------------------------------
     # Start to run over events of MC file
@@ -459,6 +576,9 @@ if '__main__' == __name__:
             tree_data.Draw("nTracks >> hist_ntracks",string_weight)
 
     random = ROOT.TRandom3()
+    
+    #will be set according to binning variable
+    nBinningVariable = 3
     #start loop
     for iE in xrange(nEntries):
         tmpResults_dict = {}
@@ -476,7 +596,7 @@ if '__main__' == __name__:
                 nTracks = ntracks_tree[0]
 
         #iterate over particles
-        for particle in particle_list:
+        for particle in particles:
 
             tmpParticleResults_dict = {} #dictionary of values for each PID branch
             if(XVarName=='P' and YVarName=='ETA' and ZVarName=='nTracks'):
@@ -490,13 +610,14 @@ if '__main__' == __name__:
                             pid_histos = part_hists_dict[true_particle]
                             #find correct bins
                             if(calculateEta):
-                                eta = 0.5*ROOT.TMath.Log((1+momz_dict[particle][0]/mom_dict[particle][0])/(1+momz_dict[particle][0]/mom_dict[particle][0]));
+                                eta = 0.5*ROOT.TMath.Log((1+momz_dict[particle][0]/mom_dict[particle][0])/(1-momz_dict[particle][0]/mom_dict[particle][0]));
                                 bin_ETA = pid_histos[2].FindFixBin(eta)
                             else:
                                 bin_ETA = pid_histos[2].FindFixBin(eta_dict[particle][0])
                 
                             bin_P = pid_histos[1].FindFixBin(mom_dict[particle][0])
                             bin_nTrack = pid_histos[3].FindFixBin(nTracks)
+                            pid_histos_index = "%d%d%d" % (bin_P,bin_ETA,bin_nTrack)
                         else:
                             pid_available = False
                             if(opts.debug):
@@ -510,16 +631,17 @@ if '__main__' == __name__:
                     pid_histos = part_hists_dict[particle]
                     #find correct bins
                     if(calculateEta):
-                        eta = 0.5*ROOT.TMath.Log((1+momz_dict[particle][0]/mom_dict[particle][0])/(1+momz_dict[particle][0]/mom_dict[particle][0]));
+                        eta = 0.5*ROOT.TMath.Log((1+momz_dict[particle][0]/mom_dict[particle][0])/(1-momz_dict[particle][0]/mom_dict[particle][0]));
                         bin_ETA = pid_histos[2].FindFixBin(eta)
                     else:
                         bin_ETA = pid_histos[2].FindFixBin(eta_dict[particle][0])
                             
                     bin_P = pid_histos[1].FindFixBin(mom_dict[particle][0])
                     bin_nTrack = pid_histos[3].FindFixBin(nTracks)
-                pid_histos_index = "%d%d%d" % (bin_P,bin_ETA,bin_nTrack)
+                    pid_histos_index = "%d%d%d" % (bin_P,bin_ETA,bin_nTrack)
 
             if(XVarName=='P' and YVarName=='ETA' and ZVarName==''):
+                nBinningVariable = 2
                 # load PID projections for given particle
                 pid_available = True
                 if(opts.usetrueID):
@@ -530,12 +652,13 @@ if '__main__' == __name__:
                             pid_histos = part_hists_dict[true_particle]
                             #find correct bins
                             if(calculateEta):
-                                eta = 0.5*ROOT.TMath.Log((1+momz_dict[particle][0]/mom_dict[particle][0])/(1+momz_dict[particle][0]/mom_dict[particle][0]));
+                                eta = 0.5*ROOT.TMath.Log((1+momz_dict[particle][0]/mom_dict[particle][0])/(1-momz_dict[particle][0]/mom_dict[particle][0]));
                                 bin_ETA = pid_histos[2].FindFixBin(eta)
                             else:
                                 bin_ETA = pid_histos[2].FindFixBin(eta_dict[particle][0])
                             
                             bin_P = pid_histos[1].FindFixBin(mom_dict[particle][0])
+                            pid_histos_index = "%d%d" % (bin_P,bin_ETA)
                         else:
                             pid_available = False
                             if(opts.debug):
@@ -549,38 +672,90 @@ if '__main__' == __name__:
                     pid_histos = part_hists_dict[particle]
                     #find correct bins
                     if(calculateEta):
-                        eta = 0.5*ROOT.TMath.Log((1+momz_dict[particle][0]/mom_dict[particle][0])/(1+momz_dict[particle][0]/mom_dict[particle][0]));
+                        eta = 0.5*ROOT.TMath.Log((1+momz_dict[particle][0]/mom_dict[particle][0])/(1-momz_dict[particle][0]/mom_dict[particle][0]));
                         bin_ETA = pid_histos[2].FindFixBin(eta)
                     else:
                         bin_ETA = pid_histos[2].FindFixBin(eta_dict[particle][0])
                     
                     bin_P = pid_histos[1].FindFixBin(mom_dict[particle][0])
-                pid_histos_index = "%d%d%d" % (bin_P,bin_ETA)
+                    pid_histos_index = "%d%d" % (bin_P,bin_ETA)
 
+            if(XVarName=='P' and YVarName=='' and ZVarName==''):
+                nBinningVariable = 1
+                # load PID projections for given particle
+                pid_available = True
+                if(opts.usetrueID):
+                    if(trueID_dict[particle][0] in ID_dict.keys()):
+                        true_particle = ID_dict[trueID_dict[particle][0]]
+                        if ((true_particle in particleprojdict.keys()) and (true_particle in part_hists_dict.keys())):
+                            pidprojection_particle = particleprojdict[true_particle]
+                            pid_histos = part_hists_dict[true_particle]
+                            bin_P = pid_histos[1].FindFixBin(mom_dict[particle][0])
+                            pid_histos_index = "%d" % (bin_P)
+                        else:
+                            pid_available = False
+                            if(opts.debug):
+                                print str(true_particle) + " no histograms available for this particle!"
+                    else:
+                        pid_available = False
+                        if(opts.debug):
+                            print str(trueID_dict[particle][0]) + " not in the ID dictionary!"
+                else:
+                    pidprojection_particle = particleprojdict[particle]
+                    pid_histos = part_hists_dict[particle]
+                    #find correct bins
+                    bin_P = pid_histos[1].FindFixBin(mom_dict[particle][0])
+                    pid_histos_index = "%d" % (bin_P)
+
+
+            old_pidvars = old_pid[particle]
 
             #iterate over PID variables requested
-            for pidvar in pidVars :
-                pidval = -1000
+            if not correlation:
+                for pidvar in pidVars :
+                    pidval = old_pidvars[pidvar][0]
+                    if(pid_available):
+                        pid_projection = pidprojection_particle[pidvar]
+                        projhisto = pid_projection[pid_histos_index]
+                        nBins = projhisto.GetNbinsX()
+                        projhisto.StatOverflows(ROOT.kFALSE)
+                        entries = projhisto.GetEffectiveEntries()
+                        if(entries==0):
+                           inte = 0
+                        else:
+                            inte = projhisto.ComputeIntegral()
+                        if(debug):
+                            print "number of bins in histogram", nBins, "integral", inte, "with", entries, "entries"
+                        if(inte>1E-5):
+                            pidval = projhisto.GetRandom()
+                    
+                    tmpParticleResults_dict[pidvar] = pidval
+                tmpResults_dict[particle] = tmpParticleResults_dict
+            else:
+                inte = 0
+                pidval = np.array([-1000 for i in xrange(len(pidVars))], dtype=np.double)
                 if(pid_available):
-                    pid_projection = pidprojection_particle[pidvar]
-                    projhisto = pid_projection[pid_histos_index]
-                    nBins = projhisto.GetNbinsX()
-                    projhisto.StatOverflows(ROOT.kFALSE)
-                    entries = projhisto.GetEffectiveEntries()
-                    if(entries==0):
-                       inte = 0
-                    else:
+                    projhisto = pidprojection_particle[pid_histos_index]
+                    nBins = projhisto.GetNbins()
+                    entries = projhisto.GetEntries()
+                    if(entries!=0 and nBins!=0):
                         inte = projhisto.ComputeIntegral()
                     if(debug):
                         print "number of bins in histogram", nBins, "integral", inte, "with", entries, "entries"
                     if(inte>1E-5):
-                        pidval = projhisto.GetRandom()
+                        projhisto.GetRandom(pidval)
+                for pidvar in pidVars:
+                    pidval0 = old_pidvars[pidvar][0]
+                    if(pid_available and inte>1E-5):
+                        axes_number = pidvars_to_axes[pidvar]-nBinningVariable
+                        pidval0 = pidval[axes_number]
+                    tmpParticleResults_dict[pidvar] = pidval0
+                tmpResults_dict[particle] = tmpParticleResults_dict
+                 
                     
-                tmpParticleResults_dict[pidvar] = pidval
-            tmpResults_dict[particle] = tmpParticleResults_dict
 
         #start filling TTree with corrected PIDs
-        for particle in particle_list:
+        for particle in particles:
             for pidvar in pidVars:
                 treeToCorrect.AddVar(tmpResults_dict[particle][pidvar],particle+"_"+pid_dict_data[pidvar]+"corr",res) 
         treeToCorrect.FillVars(res)
@@ -588,7 +763,7 @@ if '__main__' == __name__:
     # Write TTree
     #---------------------------------------------------------------------------
     treeToCorrect.SetBranchStatus("*",1)
-    fileN = ROOT.TFile(opts.mcFile.replace(".root","_PID-corrected_new.root"),"RECREATE")
+    fileN = ROOT.TFile.Open(opts.mcFile.replace(".root","_PID-corrected_new.root"),"RECREATE")
     treeN = treeToCorrect.CloneTree(saveEntries,'fast')
     treeN.AutoSave()
     del fileN

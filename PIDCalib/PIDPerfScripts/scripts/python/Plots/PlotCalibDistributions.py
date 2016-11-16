@@ -226,9 +226,9 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" DLLK
                 opts.binSchemeFile)
             raise IOError(msg)
     ROOT.gSystem.Load('libRooStats.so')
-    ROOT.gSystem.Load('libCintex.so')
-    cintex=ROOT.Cintex
-    cintex.Enable()
+#    ROOT.gSystem.Load('libCintex.so')
+#    cintex=ROOT.Cintex
+#    cintex.Enable()
     if opts.schemeName is None:
         schemeName = 'PerfPlots_{IDPart}'.format(
             IDPart=PartName)

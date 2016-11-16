@@ -36,8 +36,9 @@ from fiducial import *
 ## ta = fa.Get("T")
 ## tb = fb.Get("T")
 import cPickle
-epsTIS = cPickle.load(file(os.environ["HOME"] + "/vol5/ks/eps_TIS"))
-epsTOS = cPickle.load(file(os.environ["HOME"] + "/vol5/ks/eps_TOS"))
+import os
+epsTIS = cPickle.load(file(os.environ["KS2MUMUROOT"] + "/operators/eps_TIS"))
+epsTOS = cPickle.load(file(os.environ["KS2MUMUROOT"] + "/operators/eps_TOS"))
 #fmb = TFile("minbias.root")
 #tmb = fmb.Get("T")
 
@@ -459,9 +460,17 @@ def do_scan(filename, stop_95 = False):
 
 #do_scan(os.environ["HOME"] + "/vol5/ks/KSMM_" + TIS*"TIS"+TOS*"TOS"+SYST*"SYST" + str(st0))#, stop_95 = True)
 
-CL = DoCL(1.e-9 ,500, syst=1)
+CL = DoCL(1.e-9 ,500000, syst=1)
+#CL2 = DoCL(2.e-9 ,500, syst=1)
+
 #CL.run_pseudoexperiments()
 x0,x1,xm2,xm1,xmed,xp1,xp2 = afC('d',[0.]), afC('d',[0.]), afC('d',[0.]), afC('d',[0.]), afC('d',[0.]), afC('d',[0.]), afC('d',[0.])
-CL.bayes_heinrich_withexpect(0.9, x0,x1,500, xm2,xm1,xmed,xp1,xp2)
+#CL.bayes_heinrich_withexpect(0.9, x0,x1,500, xm2,xm1,xmed,xp1,xp2)
 
-print st0, xm1, xmed, xp1
+print x0, xm1, xmed, xp1
+f = TFile("2011_MarkovChainPosterior.root","recreate")
+caca = TH1F("posterior","posterior", 500,0,20)
+CL.xsfit_mcmc1(x0,xm1,xm2, caca)
+caca.Write()
+f.Close()
+

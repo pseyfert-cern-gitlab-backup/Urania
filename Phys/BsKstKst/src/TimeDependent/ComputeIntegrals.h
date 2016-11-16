@@ -24,11 +24,11 @@ public:
 
   RooRealProxy wide_window ;
   RooRealProxy year_opt ;
+  RooRealProxy trig_opt ;
   RooRealProxy gen ;
   RooRealProxy option ;
   RooRealProxy inftres ;
-  RooRealProxy flatacc ;
-  RooRealProxy nwacc ;
+  RooRealProxy acctype ;
   RooRealProxy A_j1 ;
   RooRealProxy A_j2 ;
   RooRealProxy A_h ;
@@ -163,6 +163,8 @@ public:
   Double_t phasespace(Double_t ma, Double_t mb) const;
   TComplex hj1j2j1pj2p(Double_t ma, Double_t mb, Int_t j1, Int_t j2, Int_t j1p, Int_t j2p) const;
   Double_t accTime(Double_t tau) const;
+  Double_t accTimeParam(Double_t tau) const;
+  Double_t accTimeHisto(Double_t tau) const;
   Double_t accAng(Double_t x) const;
   Double_t accMass(Double_t m) const;
 

@@ -2,6 +2,47 @@ package GaudiPolicy
 package manager: Marco Clemencic
 Commit Id: $Format:%H$
 
+============================= GaudiPolicy v15r8 ==============================
+
+! 2016-02-15 - commit 46a5bd4
+
+ - ignore special codes when parsing histograms summaries in tests
+
+   Comparing standard output to reference files, a regular expression is
+ used
+   to find histogram summaries, but it was failing when color output
+ was
+   enabled.
+    Fixes GAUDI-1177
+    See merge request !110
+============================= GaudiPolicy v15r7 ==============================
+
+! 2015-11-11 - commit 0a0032f
+
+ - Merge branch 'GAUDI-1130' into 'master'
+
+   fixes to support native build on Ubuntu 15.10
+    Fixes GAUDI-1130.
+    See merge request !70
+
+! 2015-11-02 - commit 57f356c
+
+ - Merge branch 'hive' into 'master'
+
+   Fixes GAUDI-978.
+
+   See merge request !65
+
+
+! 2015-10-16 - commit e614af5
+
+ - fixed GAUDI-1113: name 'locker' is not defined in merge_files.py
+
+   Re-added 'import locker' (where needed) to merge_files.py (removed by commit
+   13de2d61).
+
+   See merge request !54
+
 ============================= GaudiPolicy v15r6 ==============================
 
 ! 2015-10-09 - commit 1fa113a
@@ -58,6 +99,9 @@ Commit Id: $Format:%H$
    here is the fix proposed by Scott and implemented by Rolf.
 
    See merge request !21
+
+! 2015-02-27 - Marco Clemencic
+ - Ignore EventLoopMgr "Loop Finished" report in tests.
 
 ============================= GaudiPolicy v15r5 ==============================
 ! 2015-05-14 - Marco Clemencic
@@ -165,6 +209,11 @@ M       cmt/requirements
 ! 2014-06-19 - Marco Clemencic
  - Modified createProjVersHeader.py to handle more nicely special cases like the
    ATLAS "rel_1".
+
+! 2014-05-08 - Charles Leggett
+ - some special sauce for ATLAS
+
+#	modified:   GaudiPolicy/cmt/requirements
 
 ! 2014-06-10 - Charles Leggett
  - cmt: print warning message if client uses generate_rootmap pattern

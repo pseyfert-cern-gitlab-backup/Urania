@@ -1,5 +1,5 @@
 # set the stripping version
-stripVersion = "20"
+stripVersion = "21"
 
 # magnet 'Up' or 'Down'?
 magPol='Up'

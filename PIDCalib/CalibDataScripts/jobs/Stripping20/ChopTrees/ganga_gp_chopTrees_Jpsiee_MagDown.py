@@ -1,5 +1,5 @@
 # set the stripping version
-stripVersion = "20"
+stripVersion = "21"
 
 # magnet 'Up' or 'Down'?
 magPol='Down'
@@ -98,13 +98,13 @@ gangadir='%s/workspace/%s/%s' %(config['Configuration']['gangadir'],
 #gangadir='$DATADISK/gangadir_calib/workspace/powell/LocalXML'
 
 # use the PBS backend and set the CPU/walltime etc.
-#bck = PBS()
-#bck.extraopts = pbsopts
+bck = PBS()
+bck.extraopts = pbsopts
 #if isTest:
     #bck.queue = 'testing'
 
 # Uncomment to use the local backend
-bck = Local()
+#bck = Local()
 
 
 ##  configure the jobs

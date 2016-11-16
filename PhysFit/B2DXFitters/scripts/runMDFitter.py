@@ -99,6 +99,7 @@ ulimit -s $((   8 * 1024))
 exec $schedtool /usr/bin/time -v env python -O -- "$0" "$@"
 """
 __doc__ = """ real docstring """
+#"
 # -----------------------------------------------------------------------------
 # Load necessary libraries
 # -----------------------------------------------------------------------------
@@ -140,20 +141,22 @@ def getTotalBkgPDF(myconfigfile, beautyMass, charmMass, workspace, workInt, merg
         elif ( myconfigfile["Decay"] == "Bs2DsstK"):
             if ( mm in cdm ):
                 bkgPDF.append(WS(workInt,Bs2DssthModels.build_Bs2DsstK_BKG(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
-
+        elif ( myconfigfile["Decay"] == "Bd2DPi"):
+            if ( mm in cdm ):
+                bkgPDF.append(WS(workInt,Bd2DhModels.build_Bd2DPi_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
     return bkgPDF
     
 #------------------------------------------------------------------------------
 def runMDFitter( debug, sample, mode, sweight,  
                  fileNameAll, fileNameToys, workName, sweightName,
-                 configName, wider, merge, dim, fileDataName, year) :
+                 configName, wider, merge, dim, fileDataName, year, binned) :
 
     # Get the configuration file
     myconfigfilegrabber = __import__(configName,fromlist=['getconfig']).getconfig
     myconfigfile = myconfigfilegrabber()
     
     print "=========================================================="
-    print "PREPARING WORKSPACE IS RUNNING WITH THE FOLLOWING CONFIGURATION OPTIONS"
+    print "RUN MD FITTER IS RUNNING WITH THE FOLLOWING CONFIGURATION OPTIONS"
     for option in myconfigfile :
         if option == "constParams" :
             for param in myconfigfile[option] :
@@ -204,13 +207,14 @@ def runMDFitter( debug, sample, mode, sweight,
         workspaceToys.Print("v")
         workData = workspaceToys
         
-    
+
     observables = getObservables(MDSettings, workData, toys, debug)
     beautyMass = observables.find(MDSettings.GetMassBVarOutName().Data())
     charmMass = observables.find(MDSettings.GetMassDVarOutName().Data())
     bacPIDK = observables.find(MDSettings.GetPIDKVarOutName().Data())
     obs = [beautyMass, charmMass, bacPIDK]
-        
+
+    
  ###------------------------------------------------------------------------------------------------------------------------------------###
     ###------------------------------------------------------------------------------------------------------------------------------###
  ###------------------------------------------------------------------------------------------------------------------------------------###   
@@ -246,10 +250,11 @@ def runMDFitter( debug, sample, mode, sweight,
                               RooFit.Index(sam),
                               RooFit.Import(sm[0].Data(),data[0]))
     else:
-        combData =  GeneralUtils.GetDataSet(workData, observables, sam, datasetTS, sampleTS, modeTS, yearTS, merge, debug )
+        
+        combData =  GeneralUtils.GetDataSet(workData, observables, sam, datasetTS, sampleTS, modeTS, yearTS, TString(""), merge, debug )
         combData.Print("v")
 
-        sm = GeneralUtils.GetSampleModeYear(sampleTS, modeTS, yearTS, merge, debug )
+        sm = GeneralUtils.GetSampleModeYearHypo(sampleTS, modeTS, yearTS, TString(""), merge, debug )
         s = GeneralUtils.GetSample(sampleTS, debug)
         m = GeneralUtils.GetMode(modeTS,debug)
         y = GeneralUtils.GetYear(yearTS,debug)
@@ -258,7 +263,7 @@ def runMDFitter( debug, sample, mode, sweight,
     bound = sm.__len__()
     ranmode = m.__len__()*y.__len__()
     ransample = s.__len__()
-
+    
     
 
     #exit(0) 
@@ -414,7 +419,14 @@ def runMDFitter( debug, sample, mode, sweight,
     fitter.setObservables( observables )
 
     fitter.setModelPDF( totPDF )
-    fitter.setData(combData) 
+    if binned:
+        print "[INFO] Binned data does not work yet"
+        #beautyMass.setBins(250)
+        #charmMass.setBins(250)
+        #bacPIDK.setBins(250) 
+        #combData_binned = RooDataHist("combData_binned","combData_binned",observables,combData)
+
+    fitter.setData(combData)  
 
     plot_init   = options.initvars         and ( options.wsname != None )
     plot_fitted = ( not options.initvars ) and ( options.wsname != None )
@@ -426,7 +438,8 @@ def runMDFitter( debug, sample, mode, sweight,
     import sys
     import random
     
-    fitter.fit(True, RooFit.Extended(), RooFit.NumCPU(4)) #,  RooFit.Verbose(False),  RooFit.ExternalConstraints(constList)) #, RooFit.InitialHesse(True))
+    fitter.fit(True, RooFit.Extended(), RooFit.NumCPU(4)) #,  RooFit.Verbose(True)) #,  RooFit.ExternalConstraints(constList)) #, RooFit.InitialHesse(True))
+    #fitter.setData(combData)
     result = fitter.getFitResult()
     result.Print("v")
     floatpar = result.floatParsFinal()
@@ -503,6 +516,7 @@ parser.add_option( '-m', '--mode',
                    default = 'kkpi',
                    help = 'Mode: choose all, kkpi, kpipi, pipipi, nonres, kstk, phipi, 3modeskkpi'
                    )
+
 parser.add_option( '-w', '--sweight',
                    dest = 'sweight',
                    action = 'store_true',
@@ -557,6 +571,13 @@ parser.add_option( '--year',
                    default = "",
                    help = 'year of data taking can be: 2011, 2012, run1')
 
+parser.add_option( '--binned',
+                   dest = 'binned',
+                   default = False,
+                   action = 'store_true',
+                   help = 'binned data Set'
+                   )
+
 # -----------------------------------------------------------------------------
 
 if __name__ == '__main__' :
@@ -580,6 +601,6 @@ if __name__ == '__main__' :
     runMDFitter( options.debug,  options.pol, options.mode, options.sweight, 
                  options.fileNameAll, options.fileNameToys, options.workName,
                  options.sweightName, configName, options.wider, 
-                 options.merge, options.dim, options.fileData, options.year)
+                 options.merge, options.dim, options.fileData, options.year, options.binned)
 
 # -----------------------------------------------------------------------------

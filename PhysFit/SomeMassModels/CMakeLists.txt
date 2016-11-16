@@ -1,7 +1,7 @@
 ################################################################################
 # Package: SomeMassModels
 ################################################################################
-gaudi_subdir(SomeMassModels v2r3)
+gaudi_subdir(SomeMassModels v2r5)
 
 find_package(ROOT)
 

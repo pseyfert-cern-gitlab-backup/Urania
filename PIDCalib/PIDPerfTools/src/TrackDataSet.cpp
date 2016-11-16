@@ -8,6 +8,7 @@
 #include <boost/bind.hpp>
 #include <boost/algorithm/string/find.hpp>
 #include <boost/foreach.hpp>
+#include "RooErrorHandler.h"
 
 // local
 #include "PIDPerfTools/TrackDataSet.h"

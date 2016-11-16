@@ -1,5 +1,5 @@
 # set the stripping version
-stripVersion = "20"
+stripVersion = "21"
 
 # magnet 'Up' or 'Down'?
 magPol='Up'
@@ -14,10 +14,10 @@ magPol='Up'
 fileSuffix='lam0_p'
 
 # set the pbs options (e.g. CPU/walltime)
-pbsopts = "-l cput=1:59:00,walltime=4:00:00"
+pbsopts = "-l cput=11:00:00,walltime=2:00:00"
 
 # list of input directories (as a comma-separated list)
-treeList='Lam02PPi_LoPTuple,Lam02PPi_HiPTuple'
+treeList='Lam02PPi_LoPTuple,Lam02PPi_hiPTuple'
 
 # the platform to run on
 # if this is not set, it will default to the value of CMTCONFIG
@@ -28,7 +28,7 @@ platform=''
 jobname="ChopTrees"
 
 # the maximum number of input files to process per subjob
-filesPerJob=20
+filesPerJob=8
 
 # is this a test job?
 isTest=False

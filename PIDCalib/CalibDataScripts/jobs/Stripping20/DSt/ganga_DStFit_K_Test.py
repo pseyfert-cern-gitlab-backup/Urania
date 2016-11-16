@@ -92,14 +92,14 @@ jobIDs=[int(jid) for jid in jids_str.split()]
 #jobIDs=[7,9]
 
 # assume the user's ganga directory is the input directory
-#gangadir='%s/workspace/%s/%s' %(config['Configuration']['gangadir'],
-#                                config['Configuration']['user'],
-#                                config['Configuration']['repositorytype'])
+gangadir='%s/workspace/%s/%s' %(config['Configuration']['gangadir'],
+                                config['Configuration']['user'],
+                                config['Configuration']['repositorytype'])
 
 # uncomment to use a different input directory
 #gangadir='$DATADISK/gangadir_calib/workspace/powell/LocalXML'
 
-gangadir = '/data/lhcb/users/hunt/gangadir_calib/workspace/huntp/LocalXML'
+#gangadir = '/data/lhcb/users/hunt/gangadir_calib/workspace/huntp/LocalXML'
 
 # use the PBS backend and set the CPU/walltime etc.
 bck = PBS()
@@ -129,7 +129,7 @@ for jid in jobIDs:
         # run over ~10% of all events,
         # and only process one "chopped tree" (index 0)
         nChoppedTrees = 1
-        nSubJobs = 3
+        nSubJobs = 453
         subIDString = "{"+",".join([str(s) for s in range(nSubJobs)])+"}"
 
     # Make the lists of arguments used by the ArgSplitter

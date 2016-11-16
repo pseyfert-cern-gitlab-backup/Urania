@@ -498,6 +498,10 @@ int main(int argc, char *argv[])
   fun_vec.push_back(SetSpecVars_MuonVars);
   fun_vec.push_back(SetSpecVars_RICHVars);
   fun_vec.push_back(SetSpecVars_KPiMuonUNB);
+  fun_vec.push_back(SetSpecVars_Dummy);
+
+
+
   //---------------------------------------------------//
   // Fit -ve and +ve tracks 
   //---------------------------------------------------//
