@@ -287,8 +287,8 @@ for trType in GetPartTypes():
             realPart = "K"
         
         if realPart != "pi":
-            AddBinScheme(trType, 'DLL%s'%(realPart), 'PerfPlots_%s'%(trType), -100, 50)
-            AddUniformBins(trType, 'DLL%s'%(realPart), 'PerfPlots_%s'%(trType), 100, -100, 50)
+            AddBinScheme(trType, 'DLL%s'%(realPart), 'PerfPlots_%s'%(trType), -100, 100)
+            AddUniformBins(trType, 'DLL%s'%(realPart), 'PerfPlots_%s'%(trType), 100, -100, 100)
 
         AddBinScheme(trType, 'V2ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 0, 1)
         AddUniformBins(trType, 'V2ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 20, 0, 1)

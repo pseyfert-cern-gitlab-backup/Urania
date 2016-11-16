@@ -60,6 +60,12 @@ public:
   RooRealProxy Dp1half_tag_OS ;
   RooRealProxy etac_tag_SSK ;
   RooRealProxy etac_tag_OS ;
+  RooRealProxy deltatmean_tres_11 ;
+  RooRealProxy p0_tres_11 ;
+  RooRealProxy p1_tres_11 ;
+  RooRealProxy deltatmean_tres_12 ;
+  RooRealProxy p0_tres_12 ;
+  RooRealProxy p1_tres_12 ;
   RooRealProxy mv ;
   RooRealProxy ms ;
   RooRealProxy mt ;
@@ -156,9 +162,26 @@ public:
   Double_t fi(Double_t x, Int_t i) const;
   Double_t get_q(Double_t M, Double_t ma, Double_t mb) const;
   Double_t Blatt_Weisskopf2(Double_t q, Double_t q0, Int_t L) const;
-  TComplex Resonance(Double_t m, Double_t m_sister, Double_t m0, Double_t g0, Int_t J) const;
-  TComplex Lass(Double_t m, Double_t m_sister, Double_t m0, Double_t g0) const;
-  TComplex Mji(Double_t m, Double_t m_sister, Int_t ji) const;
+  Double_t FL_j1j2(Int_t j1, Int_t j2, Double_t ma, Double_t mb) const;
+  TComplex Resonance(Double_t m, Double_t m0, Double_t g0, Int_t J) const;
+  TComplex Lass(Double_t m, Double_t m0, Double_t g0) const;
+  TComplex Lass_chiral(Double_t m) const;
+  Double_t omega_Stheo(Double_t m) const;
+  Double_t omega_Ptheo(Double_t m) const;
+  Double_t cotdelta_Stheo(Double_t m) const;
+  Double_t cotdelta_Ptheo(Double_t m) const;
+  Double_t get_p1_Stheo(Double_t q) const;
+  Double_t get_p2_Stheo(Double_t q) const;
+  Double_t get_p1_Ptheo(Double_t q) const;
+  Double_t get_p2_Ptheo(Double_t q) const;
+  Double_t get_p3_Ptheo(Double_t q) const;
+  Double_t get_p1_Dtheo(Double_t q) const;
+  Double_t Theta_Keta(Double_t m) const;
+  Double_t Theta_Ketaprime(Double_t m) const;
+  TComplex Prop_Stheo(Double_t m) const;
+  TComplex Prop_Ptheo(Double_t m) const;
+  TComplex Prop_Dtheo(Double_t m) const;
+  TComplex Mji(Double_t m, Int_t ji) const;
   TComplex Mj1j2(Double_t ma, Double_t mb, Int_t j1, Int_t j2) const; 
   Double_t phasespace(Double_t ma, Double_t mb) const;
   TComplex hj1j2j1pj2p(Double_t ma, Double_t mb, Int_t j1, Int_t j2, Int_t j1p, Int_t j2p) const;
@@ -167,6 +190,8 @@ public:
   Double_t accTimeHisto(Double_t tau) const;
   Double_t accAng(Double_t x) const;
   Double_t accMass(Double_t m) const;
+  std::complex<Double_t> conv_exp(Double_t x, std::complex<Double_t> z) const;
+  void set_buffer_differential_vars(Double_t tvar, Double_t terrvar) const;
 
   Double_t evaluate() const ;
 

@@ -1,9 +1,3 @@
-from ROOT import *
-from math import *
-import time
-import sys
-import os
-import random
 from parameters import *
 gROOT.ProcessLine( "struct MyStructF{ Float_t afloat; };" )
 
@@ -37,15 +31,19 @@ def CompileLibsGRID():
 	gROOT.Reset()
 
 
-def information(datatype, Blinding = 1, NOCP = 0, NODIRCP = 0, SAMECP = 1, acc_type = 0, inf_t_res = 0, wide_window = 1, fix_wave_fractions = 0,\
-fix_dirCP_asyms = 0, fix_strong_phases = 0, fix_weak_phases = 0, fix_mixing_params = 0, fix_calib_params = 0, pw_alternative_model = 0):
+def information(FT_fit, datatype, Blinding = 1, NOCP = 0, NODIRCP = 0, SAMECP = 1, acc_type = 0, inf_t_res = 0, wide_window = 1, fix_re_amps = 0,\
+fix_dirCP_asyms = 0, fix_im_amps = 0, fix_weak_phases = 0, fix_mixing_params = 0, fix_calib_params = 0, pw_alternative_model = 0):
 
 	print "\n#####################################################################"
 	print " R E L E V A N T   I N F O R M A T I O N   A B O U T   T H E   F I T"
 	print "#####################################################################\n"
-	if (datatype == "real"): print " - Fit to REAL DATA corresponding to 2011 and 2012."
-	else: print " - Fit to MONTE CARLO DATA."
-	if (wide_window): print "   (WIDE WINDOW used in the Kpi invariant mass, from 750 to 1500 MeV.)\n"
+	if FT_fit:
+		if (datatype == "real"): print " - FLAVOUR TAGGED, TIME DEPENDENT fit to REAL DATA corresponding to 2011 and 2012."
+		else: print " - FLAVOUR TAGGED, TIME DEPENDENT fit to MONTE CARLO DATA."
+	else:
+		if (datatype == "real"): print " - FLAVOUR AVERAGED, TIME INTEGRATED fit to REAL DATA corresponding to 2011 and 2012."
+		else: print " - FLAVOUR AVERAGED, TIME INTEGRATED fit to MONTE CARLO DATA."
+	if (wide_window): print "   (WIDE WINDOW used in the Kpi invariant mass, from 750 to "+str(mHlimit)+" MeV.)\n"
 	else: print "   (NARROW WINDOW used in the Kpi invariant mass, of 150 MeV around the Kst nominal mass.)\n"
 	if NOCP: print " - CPV parameters NOT INCLUDED in the model.\n"
 	else:
@@ -65,9 +63,9 @@ fix_dirCP_asyms = 0, fix_strong_phases = 0, fix_weak_phases = 0, fix_mixing_para
 	if inf_t_res: print " - INFINITE TIME RESOLUTION assumed."
 	else: print " - FINITE TIME RESOLUTION included via gaussian convolutions."
 	if pw_alternative_model: print "\n WARNING: an alternative mass model for systematic uncertainty studies is beeing used."
-	if fix_wave_fractions: print "\n WARNING: wave fractions fixed."
+	if fix_re_amps: print "\n WARNING: wave fractions fixed."
 	if fix_dirCP_asyms: print "\n WARNING: direct CP violation asymmetries fixed."
-	if fix_strong_phases: print "\n WARNING: strong phases fixed."
+	if fix_im_amps: print "\n WARNING: strong phases fixed."
 	if fix_weak_phases: print "\n WARNING: weak phases fixed."
 	if fix_mixing_params: print "\n WARNING: Bs-Bsbar mixing parameters fixed."
 	if fix_calib_params: print "\n WARNING: calibration parameters fixed."
@@ -89,91 +87,97 @@ def component(j1,j2,h,j1p,j2p,hp):
 
 def setParamVals(wide_window):
 
-	if (wide_window == 0):
-		f_VV.setVal(0.342716287755)
-		f_SS.setVal(0.14802490239)
-		D_SVVS.setVal(0.266455913281)
-		fL_VV.setVal(0.262565108374)
-		xpar_VV.setVal(0.348638546428)
-		DCP.setVal(0.192058518052)
-		delta00.setVal(0.77600454957)
-		delta01.setVal(-1.59297252737)
-		delta10.setVal(2.04559453012)
-		delta11par.setVal(2.30444616424)
-		delta11perp.setVal(2.13826174934)
-		phis.setVal(0.442679418166)
-		delta_m_Bs.setVal(17.7444069773)
-		gamma_Bs.setVal(0.664393076101)
-		delta_gamma_Bs.setVal(0.0829276243453)
-		p0metac_SSK.setVal(0.00759247495529)
-		p0metac_OS.setVal(0.00614987235518)
-		Dp0half_SSK.setVal(-0.00823485845485)
-		Dp0half_OS.setVal(0.00699867062538)
-		p1_SSK.setVal(0.93786028506)
-		p1_OS.setVal(0.984781117038)
-		Dp1half_SSK.setVal(-0.0171300079695)
-		Dp1half_OS.setVal(0.0329770554618)
+	if wide_window==0:
+		reA00.setVal(0.469387049329)
+		reA01.setVal(0.770262423521)
+		reA10.setVal(-0.49727365242)
+		reA11par.setVal(-0.714002167092)
+		reA11perp.setVal(0.0170496675712)
+		DCP.setVal(0.)
+		imA00.setVal(1.03501671196)
+		imA01.setVal(-1.33979669686)
+		imA10.setVal(1.9676736824)
+		imA11par.setVal(0.712227541174)
+		imA11perp.setVal(-1.6659967474)
+		phis.setVal(0.)
+		delta_m_Bs.setVal(17.75388253)
+		gamma_Bs.setVal(0.663588331052)
+		delta_gamma_Bs.setVal(0.0828610208693)
+		p0metac_SSK.setVal(0.00696793171927)
+		p0metac_OS.setVal(0.00660002938691)
+		Dp0half_SSK.setVal(-0.00801117471297)
+		Dp0half_OS.setVal(0.00699081227676)
+		p1_SSK.setVal(0.914632555853)
+		p1_OS.setVal(0.983833924011)
+		Dp1half_SSK.setVal(-0.0186195609284)
+		Dp1half_OS.setVal(0.0331242816262)
+		tres_p0_2011.setVal(0.036)
+		tres_p1_2011.setVal(1.2)
+		tres_p0_2012.setVal(0.036)
+		tres_p1_2012.setVal(1.2)
 
 	else:
-		f_VV.setVal(0.129991402282)
-		f_Swave.setVal(0.779324755955)
-		f_SS.setVal(0.286977922698)
-		f_VTTV.setVal(0.518925757426)
-		f_TT.setVal(0.154758750653)
-		D_SVVS.setVal(0.169137667226)
-		D_VTTV.setVal(-0.0313476251179)
-		D_STTS.setVal(-0.222976597893)
-		fL_VV.setVal(0.161463977977)
-		xpar_VV.setVal(0.332565345953)
-		fL_VT.setVal(0.583350716198)
-		xpar_VT.setVal(0.347514178473)
-		fL_TV.setVal(0.830914271892)
-		xpar_TV.setVal(0.213283559181)
-		fL_TT.setVal(0.358720771261)
-		xpar1_TT.setVal(0.198398154027)
-		xperp1_TT.setVal(0.614130085675)
-		xpar2_TT.setVal(0.134294467118)
-		DCP.setVal(0.296805555859)
-		delta00.setVal(0.321531769474)
-		delta01.setVal(2.17143199051)
-		delta10.setVal(-1.31191429801)
-		delta02.setVal(-2.40981817497)
-		delta20.setVal(-2.95112344238)
-		delta11par.setVal(-2.12793970368)
-		delta11perp.setVal(1.66713272158)
-		delta120.setVal(2.32052712532)
-		delta12par.setVal(2.36842439785)
-		delta12perp.setVal(-1.54878149742)
-		delta210.setVal(-0.733868914478)
-		delta21par.setVal(0.995718780136)
-		delta21perp.setVal(1.27865056041)
-		delta220.setVal(0.182855426868)
-		delta22par.setVal(-4.71680417069)
-		delta22perp.setVal(-2.68659464005)
-		delta22par2.setVal(0.890419033669)
-		delta22perp2.setVal(-0.116511351867)
-		phis.setVal(0.155083183879)
-		delta_m_Bs.setVal(17.7718573039)
-		gamma_Bs.setVal(0.661303165428)
-		delta_gamma_Bs.setVal(0.0889776418563)
-		p0metac_SSK.setVal(0.00759528201497)
-		p0metac_OS.setVal(0.00791318514575)
-		Dp0half_SSK.setVal(-0.00805304996403)
-		Dp0half_OS.setVal(0.00701362120162)
-		p1_SSK.setVal(0.921571293016)
-		p1_OS.setVal(0.977411164304)
-		Dp1half_SSK.setVal(-0.0178515756611)
-		Dp1half_OS.setVal(0.032731542716)
+		reA00.setVal(1.20837784424)
+		reA01.setVal(0.994343738944)
+		reA10.setVal(-0.167628976054)
+		reA02.setVal(-0.284746217673)
+		reA20.setVal(0.268994566402)
+		reA11par.setVal(-0.471643538973)
+		reA11perp.setVal(-0.689891057671)
+		reA120.setVal(-1.03100329863)
+		reA12par.setVal(-0.067473568498)
+		reA12perp.setVal(0.389300581984)
+		reA210.setVal(0.225161557817)
+		reA21par.setVal(0.32611453282)
+		reA21perp.setVal(-0.0405474884492)
+		reA220.setVal(-0.147765542929)
+		reA22par.setVal(-0.28510295108)
+		reA22perp.setVal(0.0599832844543)
+		reA22par2.setVal(-0.0767770988075)
+		reA22perp2.setVal(-0.310444117574)
+		DCP.setVal(0.)
+		imA00.setVal(1.70155744871)
+		imA01.setVal(-2.28416916654)
+		imA10.setVal(2.07888901102)
+		imA02.setVal(0.0174904317885)
+		imA20.setVal(-0.746771664387)
+		imA11par.setVal(0.795346747792)
+		imA11perp.setVal(-1.31070661583)
+		imA120.setVal(-0.480893567612)
+		imA12par.setVal(-0.0504742754682)
+		imA12perp.setVal(0.565374121802)
+		imA210.setVal(0.771843544513)
+		imA21par.setVal(0.040428418413)
+		imA21perp.setVal(-0.589194393703)
+		imA220.setVal(0.242264964051)
+		imA22par.setVal(0.00660632272381)
+		imA22perp.setVal(0.31996514436)
+		imA22par2.setVal(-0.0227902779411)
+		imA22perp2.setVal(0.313619351301)
+		phis.setVal(0.)
+		delta_m_Bs.setVal(17.7520391154)
+		gamma_Bs.setVal(0.661422382588)
+		delta_gamma_Bs.setVal(0.0886861437521)
+		p0metac_SSK.setVal(0.00759617461011)
+		p0metac_OS.setVal(0.00700340355707)
+		Dp0half_SSK.setVal(-0.00790667805481)
+		Dp0half_OS.setVal(0.0070044760408)
+		p1_SSK.setVal(0.904604808171)
+		p1_OS.setVal(0.978975343408)
+		Dp1half_SSK.setVal(-0.0186670479518)
+		Dp1half_OS.setVal(0.0329151612641)
+		tres_p0_2011.setVal(0.036)
+		tres_p1_2011.setVal(1.2)
+		tres_p0_2012.setVal(0.036)
+		tres_p1_2012.setVal(1.2)
 
 
 def aux_PDF():
-	""" Used to compute some normalization integrals."""
-
 	for argument in options: options_list_aux.add(argument)
 	for argument in observables: observables_list_aux.add(argument)
-	for argument in wave_fractions: wave_fractions_list_aux.add(argument)
+	for argument in re_amps: re_amps_list_aux.add(argument)
 	for argument in dirCP_asyms: dirCP_asyms_list_aux.add(argument)
-	for argument in strong_phases: strong_phases_list_aux.add(argument)
+	for argument in im_amps: im_amps_list_aux.add(argument)
 	for argument in weak_phases: weak_phases_list_aux.add(argument)
 	for argument in mixing_params: mixing_params_list_aux.add(argument)
 	for argument in calib_params_aux: calib_params_list_aux.add(argument)
@@ -183,455 +187,455 @@ def aux_PDF():
 	for argument in ang_integrals: ang_integrals_list_aux.add(argument)
 	for argument in time_integrals: time_integrals_list_aux.add(argument)
 
-	auxiliar_PDF = KpiKpiSpectrumNW("auxiliar_PDF","auxiliar_PDF",options_list_aux,observables_list_aux,wave_fractions_list_aux,dirCP_asyms_list_aux,\
-strong_phases_list_aux,weak_phases_list_aux,mixing_params_list_aux,calib_params_list_aux,cond_distr_params_list_aux,sys_studies_list_aux,\
+	auxiliar_PDF = ROOT.KpiKpiSpectrumNW("auxiliar_PDF","auxiliar_PDF",options_list_aux,observables_list_aux,re_amps_list_aux,dirCP_asyms_list_aux,\
+im_amps_list_aux,weak_phases_list_aux,mixing_params_list_aux,calib_params_list_aux,cond_distr_params_list_aux,sys_studies_list_aux,\
 mass_integrals_list_aux,ang_integrals_list_aux,time_integrals_list_aux)
 
 	return auxiliar_PDF
 	
 
-def PDF_with_integrals(name,description,options_arglist,wide_window,data_file,observables_arglist,wave_fractions_arglist,dirCP_asyms_arglist,strong_phases_arglist,\
+def PDF_with_integrals(name,description,options_arglist,wide_window,data_file,observables_arglist,re_amps_arglist,dirCP_asyms_arglist,im_amps_arglist,\
 weak_phases_arglist,mixing_params_arglist,calib_params_arglist,sys_studies_arglist):
 
-	RooMsgService.instance().setGlobalKillBelow(RooFit.WARNING)
-	Integrator = ComputeIntegrals("Integrator","Integrator",options_arglist,observables_arglist,mixing_params_arglist,calib_params_arglist,mass_integrals_list)
+	ROOT.RooMsgService.instance().setGlobalKillBelow(ROOT.RooFit.WARNING)
+	Integrator = ROOT.ComputeIntegrals("Integrator","Integrator",options_arglist,observables_arglist,mixing_params_arglist,calib_params_arglist,mass_integrals_list)
 
 	# Calculation of the invariant mass integrals for normalization.
 	if wide_window:
 		option.setVal(100)
-		integral100 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral100 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Im00.setVal(integral100.getVal())
 		option.setVal(101)
-		integral101 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral101 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Im01.setVal(integral101.getVal())
 		option.setVal(110)
-		integral110 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral110 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Im10.setVal(integral110.getVal())
 		option.setVal(102)
-		integral102 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral102 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Im02.setVal(integral102.getVal())
 		option.setVal(120)
-		integral120 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral120 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Im20.setVal(integral120.getVal())
 		option.setVal(111)
-		integral111 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral111 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Im11.setVal(integral111.getVal())
 		option.setVal(112)
-		integral112 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral112 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Im12.setVal(integral112.getVal())
 		option.setVal(121)
-		integral121 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral121 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Im21.setVal(integral121.getVal())
 		option.setVal(122)
-		integral122 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral122 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Im22.setVal(integral122.getVal())
 	else:
 		option.setVal(100)
-		integral100 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral100 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Im00.setVal(integral100.getVal())
 		option.setVal(101)
-		integral101 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral101 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Im01.setVal(integral101.getVal())
 		option.setVal(110)
-		integral110 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral110 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Im10.setVal(integral110.getVal())
 		option.setVal(102)
-		integral102 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral102 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Im02.setVal(integral102.getVal())
 		option.setVal(120)
-		integral120 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral120 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Im20.setVal(integral120.getVal())
 		option.setVal(111)
-		integral111 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral111 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Im11.setVal(integral111.getVal())
 		option.setVal(112)
-		integral112 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral112 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Im12.setVal(integral112.getVal())
 		option.setVal(121)
-		integral121 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral121 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Im21.setVal(integral121.getVal())
 		option.setVal(122)
-		integral122 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral122 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Im22.setVal(integral122.getVal())
 
 	# Calculation of the angular integrals for visualization.
 	option.setVal(21)
-	integral21 = Integrator.createIntegral(RooArgSet(cos1))
+	integral21 = Integrator.createIntegral(ROOT.RooArgSet(cos1))
 	If1.setVal(integral21.getVal())
 	option.setVal(22)
-	integral22 = Integrator.createIntegral(RooArgSet(cos1))
+	integral22 = Integrator.createIntegral(ROOT.RooArgSet(cos1))
 	If2.setVal(integral22.getVal())
 	option.setVal(23)
-	integral23 = Integrator.createIntegral(RooArgSet(cos1))
+	integral23 = Integrator.createIntegral(ROOT.RooArgSet(cos1))
 	If3.setVal(integral23.getVal())
 	option.setVal(24)
-	integral24 = Integrator.createIntegral(RooArgSet(cos1))
+	integral24 = Integrator.createIntegral(ROOT.RooArgSet(cos1))
 	If4.setVal(integral24.getVal())
 	option.setVal(25)
-	integral25 = Integrator.createIntegral(RooArgSet(cos1))
+	integral25 = Integrator.createIntegral(ROOT.RooArgSet(cos1))
 	If5.setVal(integral25.getVal())
 	option.setVal(26)
-	integral26 = Integrator.createIntegral(RooArgSet(cos1))
+	integral26 = Integrator.createIntegral(ROOT.RooArgSet(cos1))
 	If6.setVal(integral26.getVal())
 	option.setVal(27)
-	integral27 = Integrator.createIntegral(RooArgSet(cos1))
+	integral27 = Integrator.createIntegral(ROOT.RooArgSet(cos1))
 	If7.setVal(integral27.getVal())
 	option.setVal(28)
-	integral28 = Integrator.createIntegral(RooArgSet(cos1))
+	integral28 = Integrator.createIntegral(ROOT.RooArgSet(cos1))
 	If8.setVal(integral28.getVal())
 	option.setVal(29)
-	integral29 = Integrator.createIntegral(RooArgSet(cos1))
+	integral29 = Integrator.createIntegral(ROOT.RooArgSet(cos1))
 	If9.setVal(integral29.getVal())
 	option.setVal(210)
-	integral210 = Integrator.createIntegral(RooArgSet(cos1))
+	integral210 = Integrator.createIntegral(ROOT.RooArgSet(cos1))
 	If10.setVal(integral210.getVal())
 	option.setVal(211)
-	integral211 = Integrator.createIntegral(RooArgSet(cos1))
+	integral211 = Integrator.createIntegral(ROOT.RooArgSet(cos1))
 	If11.setVal(integral211.getVal())
 	option.setVal(212)
-	integral212 = Integrator.createIntegral(RooArgSet(cos1))
+	integral212 = Integrator.createIntegral(ROOT.RooArgSet(cos1))
 	If12.setVal(integral212.getVal())
 	option.setVal(213)
-	integral213 = Integrator.createIntegral(RooArgSet(cos1))
+	integral213 = Integrator.createIntegral(ROOT.RooArgSet(cos1))
 	If13.setVal(integral213.getVal())
 	option.setVal(214)
-	integral214 = Integrator.createIntegral(RooArgSet(cos1))
+	integral214 = Integrator.createIntegral(ROOT.RooArgSet(cos1))
 	If14.setVal(integral214.getVal())
 	option.setVal(215)
-	integral215 = Integrator.createIntegral(RooArgSet(cos1))
+	integral215 = Integrator.createIntegral(ROOT.RooArgSet(cos1))
 	If15.setVal(integral215.getVal())
 	option.setVal(216)
-	integral216 = Integrator.createIntegral(RooArgSet(cos1))
+	integral216 = Integrator.createIntegral(ROOT.RooArgSet(cos1))
 	If16.setVal(integral216.getVal())
 	option.setVal(217)
-	integral217 = Integrator.createIntegral(RooArgSet(cos1))
+	integral217 = Integrator.createIntegral(ROOT.RooArgSet(cos1))
 	If17.setVal(integral217.getVal())
 	option.setVal(218)
-	integral218 = Integrator.createIntegral(RooArgSet(cos1))
+	integral218 = Integrator.createIntegral(ROOT.RooArgSet(cos1))
 	If18.setVal(integral218.getVal())
 
 	# Calculation of the invariant mass integrals for visualization.
 	if wide_window:
 		option.setVal(31)
-		integral31 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral31 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih1Re.setVal(integral31.getVal())
 		option.setVal(32)
-		integral32 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral32 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih2Re.setVal(integral32.getVal())
 		option.setVal(33)
-		integral33 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral33 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih3Re.setVal(integral33.getVal())
 		option.setVal(34)
-		integral34 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral34 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih4Re.setVal(integral34.getVal())
 		option.setVal(35)
-		integral35 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral35 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih5Re.setVal(integral35.getVal())
 		option.setVal(36)
-		integral36 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral36 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih6Re.setVal(integral36.getVal())
 		option.setVal(37)
-		integral37 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral37 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih7Re.setVal(integral37.getVal())
 		option.setVal(38)
-		integral38 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral38 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih8Re.setVal(integral38.getVal())
 		option.setVal(39)
-		integral39 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral39 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih9Re.setVal(integral39.getVal())
 		option.setVal(310)
-		integral310 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral310 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih10Re.setVal(integral310.getVal())
 		option.setVal(311)
-		integral311 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral311 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih11Re.setVal(integral311.getVal())
 		option.setVal(312)
-		integral312 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral312 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih12Re.setVal(integral312.getVal())
 		option.setVal(313)
-		integral313 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral313 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih13Re.setVal(integral313.getVal())
 		option.setVal(314)
-		integral314 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral314 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih14Re.setVal(integral314.getVal())
 		option.setVal(315)
-		integral315 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral315 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih15Re.setVal(integral315.getVal())
 		option.setVal(316)
-		integral316 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral316 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih16Re.setVal(integral316.getVal())
 		option.setVal(317)
-		integral317 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral317 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih17Re.setVal(integral317.getVal())
 		option.setVal(318)
-		integral318 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral318 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih18Re.setVal(integral318.getVal())
 		option.setVal(319)
-		integral319 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral319 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih19Re.setVal(integral319.getVal())
 		option.setVal(320)
-		integral320 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral320 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih20Re.setVal(integral320.getVal())
 		option.setVal(321)
-		integral321 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral321 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih21Re.setVal(integral321.getVal())
 		option.setVal(322)
-		integral322 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral322 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih22Re.setVal(integral322.getVal())
 		option.setVal(323)
-		integral323 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral323 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih23Re.setVal(integral323.getVal())
 		option.setVal(324)
-		integral324 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral324 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih24Re.setVal(integral324.getVal())
 		option.setVal(325)
-		integral325 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral325 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih25Re.setVal(integral325.getVal())
 		option.setVal(326)
-		integral326 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral326 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih26Re.setVal(integral326.getVal())
 		option.setVal(327)
-		integral327 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral327 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih27Re.setVal(integral327.getVal())
 		option.setVal(328)
-		integral328 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral328 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih28Re.setVal(integral328.getVal())
 		option.setVal(329)
-		integral329 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral329 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih29Re.setVal(integral329.getVal())
 		option.setVal(330)
-		integral330 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral330 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih30Re.setVal(integral330.getVal())
 		option.setVal(41)
-		integral41 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral41 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih1Im.setVal(integral41.getVal())
 		option.setVal(42)
-		integral42 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral42 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih2Im.setVal(integral42.getVal())
 		option.setVal(43)
-		integral43 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral43 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih3Im.setVal(integral43.getVal())
 		option.setVal(44)
-		integral44 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral44 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih4Im.setVal(integral44.getVal())
 		option.setVal(45)
-		integral45 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral45 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih5Im.setVal(integral45.getVal())
 		option.setVal(46)
-		integral46 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral46 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih6Im.setVal(integral46.getVal())
 		option.setVal(47)
-		integral47 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral47 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih7Im.setVal(integral47.getVal())
 		option.setVal(48)
-		integral48 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral48 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih8Im.setVal(integral48.getVal())
 		option.setVal(49)
-		integral49 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral49 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih9Im.setVal(integral49.getVal())
 		option.setVal(410)
-		integral410 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral410 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih10Im.setVal(integral410.getVal())
 		option.setVal(411)
-		integral411 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral411 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih11Im.setVal(integral411.getVal())
 		option.setVal(412)
-		integral412 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral412 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih12Im.setVal(integral412.getVal())
 		option.setVal(413)
-		integral413 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral413 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih13Im.setVal(integral413.getVal())
 		option.setVal(414)
-		integral414 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral414 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih14Im.setVal(integral414.getVal())
 		option.setVal(415)
-		integral415 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral415 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih15Im.setVal(integral415.getVal())
 		option.setVal(416)
-		integral416 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral416 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih16Im.setVal(integral416.getVal())
 		option.setVal(417)
-		integral417 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral417 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih17Im.setVal(integral417.getVal())
 		option.setVal(418)
-		integral418 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral418 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih18Im.setVal(integral418.getVal())
 		option.setVal(419)
-		integral419 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral419 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih19Im.setVal(integral419.getVal())
 		option.setVal(420)
-		integral420 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral420 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih20Im.setVal(integral420.getVal())
 		option.setVal(421)
-		integral421 = Integrator.createIntegral(RooArgSet(mKp1,mKp2))
+		integral421 = Integrator.createIntegral(ROOT.RooArgSet(mKp1,mKp2))
 		Ih21Im.setVal(integral421.getVal())
 	else:
 		option.setVal(31)
-		integral31 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral31 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih1Re.setVal(integral31.getVal())
 		option.setVal(32)
-		integral32 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral32 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih2Re.setVal(integral32.getVal())
 		option.setVal(33)
-		integral33 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral33 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih3Re.setVal(integral33.getVal())
 		option.setVal(34)
-		integral34 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral34 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih4Re.setVal(integral34.getVal())
 		option.setVal(35)
-		integral35 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral35 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih5Re.setVal(integral35.getVal())
 		option.setVal(36)
-		integral36 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral36 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih6Re.setVal(integral36.getVal())
 		option.setVal(37)
-		integral37 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral37 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih7Re.setVal(integral37.getVal())
 		option.setVal(38)
-		integral38 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral38 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih8Re.setVal(integral38.getVal())
 		option.setVal(39)
-		integral39 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral39 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih9Re.setVal(integral39.getVal())
 		option.setVal(310)
-		integral310 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral310 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih10Re.setVal(integral310.getVal())
 		option.setVal(311)
-		integral311 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral311 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih11Re.setVal(integral311.getVal())
 		option.setVal(312)
-		integral312 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral312 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih12Re.setVal(integral312.getVal())
 		option.setVal(313)
-		integral313 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral313 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih13Re.setVal(integral313.getVal())
 		option.setVal(314)
-		integral314 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral314 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih14Re.setVal(integral314.getVal())
 		option.setVal(315)
-		integral315 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral315 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih15Re.setVal(integral315.getVal())
 		option.setVal(316)
-		integral316 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral316 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih16Re.setVal(integral316.getVal())
 		option.setVal(317)
-		integral317 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral317 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih17Re.setVal(integral317.getVal())
 		option.setVal(318)
-		integral318 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral318 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih18Re.setVal(integral318.getVal())
 		option.setVal(319)
-		integral319 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral319 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih19Re.setVal(integral319.getVal())
 		option.setVal(320)
-		integral320 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral320 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih20Re.setVal(integral320.getVal())
 		option.setVal(321)
-		integral321 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral321 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih21Re.setVal(integral321.getVal())
 		option.setVal(322)
-		integral322 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral322 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih22Re.setVal(integral322.getVal())
 		option.setVal(323)
-		integral323 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral323 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih23Re.setVal(integral323.getVal())
 		option.setVal(324)
-		integral324 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral324 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih24Re.setVal(integral324.getVal())
 		option.setVal(325)
-		integral325 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral325 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih25Re.setVal(integral325.getVal())
 		option.setVal(326)
-		integral326 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral326 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih26Re.setVal(integral326.getVal())
 		option.setVal(327)
-		integral327 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral327 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih27Re.setVal(integral327.getVal())
 		option.setVal(328)
-		integral328 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral328 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih28Re.setVal(integral328.getVal())
 		option.setVal(329)
-		integral329 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral329 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih29Re.setVal(integral329.getVal())
 		option.setVal(330)
-		integral330 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral330 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih30Re.setVal(integral330.getVal())
 		option.setVal(41)
-		integral41 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral41 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih1Im.setVal(integral41.getVal())
 		option.setVal(42)
-		integral42 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral42 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih2Im.setVal(integral42.getVal())
 		option.setVal(43)
-		integral43 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral43 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih3Im.setVal(integral43.getVal())
 		option.setVal(44)
-		integral44 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral44 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih4Im.setVal(integral44.getVal())
 		option.setVal(45)
-		integral45 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral45 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih5Im.setVal(integral45.getVal())
 		option.setVal(46)
-		integral46 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral46 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih6Im.setVal(integral46.getVal())
 		option.setVal(47)
-		integral47 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral47 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih7Im.setVal(integral47.getVal())
 		option.setVal(48)
-		integral48 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral48 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih8Im.setVal(integral48.getVal())
 		option.setVal(49)
-		integral49 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral49 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih9Im.setVal(integral49.getVal())
 		option.setVal(410)
-		integral410 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral410 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih10Im.setVal(integral410.getVal())
 		option.setVal(411)
-		integral411 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral411 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih11Im.setVal(integral411.getVal())
 		option.setVal(412)
-		integral412 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral412 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih12Im.setVal(integral412.getVal())
 		option.setVal(413)
-		integral413 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral413 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih13Im.setVal(integral413.getVal())
 		option.setVal(414)
-		integral414 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral414 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih14Im.setVal(integral414.getVal())
 		option.setVal(415)
-		integral415 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral415 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih15Im.setVal(integral415.getVal())
 		option.setVal(416)
-		integral416 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral416 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih16Im.setVal(integral416.getVal())
 		option.setVal(417)
-		integral417 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral417 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih17Im.setVal(integral417.getVal())
 		option.setVal(418)
-		integral418 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral418 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih18Im.setVal(integral418.getVal())
 		option.setVal(419)
-		integral419 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral419 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih19Im.setVal(integral419.getVal())
 		option.setVal(420)
-		integral420 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral420 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih20Im.setVal(integral420.getVal())
 		option.setVal(421)
-		integral421 = Integrator.createIntegral(RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
+		integral421 = Integrator.createIntegral(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin))
 		Ih21Im.setVal(integral421.getVal())
 	
 	# Calculation of the time integrals for visualization.
 	option.setVal(91)
-	integral91 = Integrator.createIntegral(RooArgSet(t))
+	integral91 = Integrator.createIntegral(ROOT.RooArgSet(t))
 	IT_cosh.setVal(integral91.getVal())
 	option.setVal(92)
-	integral92 = Integrator.createIntegral(RooArgSet(t))
+	integral92 = Integrator.createIntegral(ROOT.RooArgSet(t))
 	IT_sinh.setVal(integral92.getVal())
 	option.setVal(93)
-	integral93 = Integrator.createIntegral(RooArgSet(t))
+	integral93 = Integrator.createIntegral(ROOT.RooArgSet(t))
 	IT_cos.setVal(integral93.getVal())
 	option.setVal(94)
-	integral94 = Integrator.createIntegral(RooArgSet(t))
+	integral94 = Integrator.createIntegral(ROOT.RooArgSet(t))
 	IT_sin.setVal(integral94.getVal())
 
 	# Backup of the integrals and normalization factors.
@@ -722,28 +726,28 @@ weak_phases_arglist,mixing_params_arglist,calib_params_arglist,sys_studies_argli
 	fintegrals.write(integrals)
 	fintegrals.close()
 
-	RooMsgService.instance().setGlobalKillBelow(RooFit.INFO)
+	ROOT.RooMsgService.instance().setGlobalKillBelow(ROOT.RooFit.INFO)
 	option.setVal(0)
 
 	# Construction of the PDF.
-	PDF = KpiKpiSpectrumNW(name,description,options_arglist,observables_arglist,wave_fractions_arglist,dirCP_asyms_arglist,strong_phases_arglist,weak_phases_arglist,mixing_params_arglist,\
+	PDF = ROOT.KpiKpiSpectrumNW(name,description,options_arglist,observables_arglist,re_amps_arglist,dirCP_asyms_arglist,im_amps_arglist,weak_phases_arglist,mixing_params_arglist,\
 calib_params_arglist,cond_distr_params_list,sys_studies_arglist,mass_integrals_list,ang_integrals_list,time_integrals_list)
 
 	return PDF
 
 
 def PDFs_with_integrals(name,description,options_11L0TIS_arglist,options_11L0noTIS_arglist,options_12L0TIS_arglist,options_12L0noTIS_arglist,wide_window,data_file,observables_arglist,\
-wave_fractions_arglist,dirCP_asyms_arglist,strong_phases_arglist,weak_phases_arglist,mixing_params_arglist,calib_params_arglist,sys_studies_arglist):
+re_amps_arglist,dirCP_asyms_arglist,im_amps_arglist,weak_phases_arglist,mixing_params_arglist,calib_params_arglist,sys_studies_arglist):
 
-	RooMsgService.instance().setGlobalKillBelow(RooFit.WARNING)
-	Integrator_11L0TIS = ComputeIntegrals("Integrator_11L0TIS","Integrator_11L0TIS",options_11L0TIS_arglist,observables_arglist,mixing_params_arglist,calib_params_arglist,mass_integrals_11L0TIS_list)
-	Integrator_11L0noTIS = ComputeIntegrals("Integrator_11L0noTIS","Integrator_11L0noTIS",options_11L0noTIS_arglist,observables_arglist,mixing_params_arglist,calib_params_arglist,mass_integrals_11L0noTIS_list)
-	Integrator_12L0TIS = ComputeIntegrals("Integrator_12L0TIS","Integrator_12L0TIS",options_12L0TIS_arglist,observables_arglist,mixing_params_arglist,calib_params_arglist,mass_integrals_12L0TIS_list)
-	Integrator_12L0noTIS = ComputeIntegrals("Integrator_12L0noTIS","Integrator_12L0noTIS",options_12L0noTIS_arglist,observables_arglist,mixing_params_arglist,calib_params_arglist,mass_integrals_12L0noTIS_list)
+	ROOT.RooMsgService.instance().setGlobalKillBelow(ROOT.RooFit.WARNING)
+	Integrator_11L0TIS = ROOT.ComputeIntegrals("Integrator_11L0TIS","Integrator_11L0TIS",options_11L0TIS_arglist,observables_arglist,mixing_params_arglist,calib_params_arglist,mass_integrals_11L0TIS_list)
+	Integrator_11L0noTIS = ROOT.ComputeIntegrals("Integrator_11L0noTIS","Integrator_11L0noTIS",options_11L0noTIS_arglist,observables_arglist,mixing_params_arglist,calib_params_arglist,mass_integrals_11L0noTIS_list)
+	Integrator_12L0TIS = ROOT.ComputeIntegrals("Integrator_12L0TIS","Integrator_12L0TIS",options_12L0TIS_arglist,observables_arglist,mixing_params_arglist,calib_params_arglist,mass_integrals_12L0TIS_list)
+	Integrator_12L0noTIS = ROOT.ComputeIntegrals("Integrator_12L0noTIS","Integrator_12L0noTIS",options_12L0noTIS_arglist,observables_arglist,mixing_params_arglist,calib_params_arglist,mass_integrals_12L0noTIS_list)
 
 	# Calculation of the invariant mass integrals for normalization.
-	if wide_window: mass_argset = RooArgSet(mKp1,mKp2)
-	else: mass_argset = RooArgSet(mKp1_narrowwin,mKp2_narrowwin)
+	if wide_window: mass_argset = ROOT.RooArgSet(mKp1,mKp2)
+	else: mass_argset = ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin)
 	option.setVal(100)
 	integral_11L0TIS_100 = Integrator_11L0TIS.createIntegral(mass_argset)
 	Im_11L0TIS_00.setVal(integral_11L0TIS_100.getVal())
@@ -855,220 +859,220 @@ wave_fractions_arglist,dirCP_asyms_arglist,strong_phases_arglist,weak_phases_arg
 
 	# Calculation of the angular integrals for visualization.
 	option.setVal(21)
-	integral_11L0TIS_21 = Integrator_11L0TIS.createIntegral(RooArgSet(cos1))
+	integral_11L0TIS_21 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0TIS_1.setVal(integral_11L0TIS_21.getVal())
 	option.setVal(22)
-	integral_11L0TIS_22 = Integrator_11L0TIS.createIntegral(RooArgSet(cos1))
+	integral_11L0TIS_22 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0TIS_2.setVal(integral_11L0TIS_22.getVal())
 	option.setVal(23)
-	integral_11L0TIS_23 = Integrator_11L0TIS.createIntegral(RooArgSet(cos1))
+	integral_11L0TIS_23 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0TIS_3.setVal(integral_11L0TIS_23.getVal())
 	option.setVal(24)
-	integral_11L0TIS_24 = Integrator_11L0TIS.createIntegral(RooArgSet(cos1))
+	integral_11L0TIS_24 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0TIS_4.setVal(integral_11L0TIS_24.getVal())
 	option.setVal(25)
-	integral_11L0TIS_25 = Integrator_11L0TIS.createIntegral(RooArgSet(cos1))
+	integral_11L0TIS_25 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0TIS_5.setVal(integral_11L0TIS_25.getVal())
 	option.setVal(26)
-	integral_11L0TIS_26 = Integrator_11L0TIS.createIntegral(RooArgSet(cos1))
+	integral_11L0TIS_26 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0TIS_6.setVal(integral_11L0TIS_26.getVal())
 	option.setVal(27)
-	integral_11L0TIS_27 = Integrator_11L0TIS.createIntegral(RooArgSet(cos1))
+	integral_11L0TIS_27 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0TIS_7.setVal(integral_11L0TIS_27.getVal())
 	option.setVal(28)
-	integral_11L0TIS_28 = Integrator_11L0TIS.createIntegral(RooArgSet(cos1))
+	integral_11L0TIS_28 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0TIS_8.setVal(integral_11L0TIS_28.getVal())
 	option.setVal(29)
-	integral_11L0TIS_29 = Integrator_11L0TIS.createIntegral(RooArgSet(cos1))
+	integral_11L0TIS_29 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0TIS_9.setVal(integral_11L0TIS_29.getVal())
 	option.setVal(210)
-	integral_11L0TIS_210 = Integrator_11L0TIS.createIntegral(RooArgSet(cos1))
+	integral_11L0TIS_210 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0TIS_10.setVal(integral_11L0TIS_210.getVal())
 	option.setVal(211)
-	integral_11L0TIS_211 = Integrator_11L0TIS.createIntegral(RooArgSet(cos1))
+	integral_11L0TIS_211 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0TIS_11.setVal(integral_11L0TIS_211.getVal())
 	option.setVal(212)
-	integral_11L0TIS_212 = Integrator_11L0TIS.createIntegral(RooArgSet(cos1))
+	integral_11L0TIS_212 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0TIS_12.setVal(integral_11L0TIS_212.getVal())
 	option.setVal(213)
-	integral_11L0TIS_213 = Integrator_11L0TIS.createIntegral(RooArgSet(cos1))
+	integral_11L0TIS_213 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0TIS_13.setVal(integral_11L0TIS_213.getVal())
 	option.setVal(214)
-	integral_11L0TIS_214 = Integrator_11L0TIS.createIntegral(RooArgSet(cos1))
+	integral_11L0TIS_214 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0TIS_14.setVal(integral_11L0TIS_214.getVal())
 	option.setVal(215)
-	integral_11L0TIS_215 = Integrator_11L0TIS.createIntegral(RooArgSet(cos1))
+	integral_11L0TIS_215 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0TIS_15.setVal(integral_11L0TIS_215.getVal())
 	option.setVal(216)
-	integral_11L0TIS_216 = Integrator_11L0TIS.createIntegral(RooArgSet(cos1))
+	integral_11L0TIS_216 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0TIS_16.setVal(integral_11L0TIS_216.getVal())
 	option.setVal(217)
-	integral_11L0TIS_217 = Integrator_11L0TIS.createIntegral(RooArgSet(cos1))
+	integral_11L0TIS_217 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0TIS_17.setVal(integral_11L0TIS_217.getVal())
 	option.setVal(218)
-	integral_11L0TIS_218 = Integrator_11L0TIS.createIntegral(RooArgSet(cos1))
+	integral_11L0TIS_218 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0TIS_18.setVal(integral_11L0TIS_218.getVal())
 	option.setVal(21)
-	integral_11L0noTIS_21 = Integrator_11L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_11L0noTIS_21 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0noTIS_1.setVal(integral_11L0noTIS_21.getVal())
 	option.setVal(22)
-	integral_11L0noTIS_22 = Integrator_11L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_11L0noTIS_22 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0noTIS_2.setVal(integral_11L0noTIS_22.getVal())
 	option.setVal(23)
-	integral_11L0noTIS_23 = Integrator_11L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_11L0noTIS_23 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0noTIS_3.setVal(integral_11L0noTIS_23.getVal())
 	option.setVal(24)
-	integral_11L0noTIS_24 = Integrator_11L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_11L0noTIS_24 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0noTIS_4.setVal(integral_11L0noTIS_24.getVal())
 	option.setVal(25)
-	integral_11L0noTIS_25 = Integrator_11L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_11L0noTIS_25 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0noTIS_5.setVal(integral_11L0noTIS_25.getVal())
 	option.setVal(26)
-	integral_11L0noTIS_26 = Integrator_11L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_11L0noTIS_26 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0noTIS_6.setVal(integral_11L0noTIS_26.getVal())
 	option.setVal(27)
-	integral_11L0noTIS_27 = Integrator_11L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_11L0noTIS_27 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0noTIS_7.setVal(integral_11L0noTIS_27.getVal())
 	option.setVal(28)
-	integral_11L0noTIS_28 = Integrator_11L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_11L0noTIS_28 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0noTIS_8.setVal(integral_11L0noTIS_28.getVal())
 	option.setVal(29)
-	integral_11L0noTIS_29 = Integrator_11L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_11L0noTIS_29 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0noTIS_9.setVal(integral_11L0noTIS_29.getVal())
 	option.setVal(210)
-	integral_11L0noTIS_210 = Integrator_11L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_11L0noTIS_210 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0noTIS_10.setVal(integral_11L0noTIS_210.getVal())
 	option.setVal(211)
-	integral_11L0noTIS_211 = Integrator_11L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_11L0noTIS_211 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0noTIS_11.setVal(integral_11L0noTIS_211.getVal())
 	option.setVal(212)
-	integral_11L0noTIS_212 = Integrator_11L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_11L0noTIS_212 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0noTIS_12.setVal(integral_11L0noTIS_212.getVal())
 	option.setVal(213)
-	integral_11L0noTIS_213 = Integrator_11L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_11L0noTIS_213 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0noTIS_13.setVal(integral_11L0noTIS_213.getVal())
 	option.setVal(214)
-	integral_11L0noTIS_214 = Integrator_11L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_11L0noTIS_214 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0noTIS_14.setVal(integral_11L0noTIS_214.getVal())
 	option.setVal(215)
-	integral_11L0noTIS_215 = Integrator_11L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_11L0noTIS_215 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0noTIS_15.setVal(integral_11L0noTIS_215.getVal())
 	option.setVal(216)
-	integral_11L0noTIS_216 = Integrator_11L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_11L0noTIS_216 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0noTIS_16.setVal(integral_11L0noTIS_216.getVal())
 	option.setVal(217)
-	integral_11L0noTIS_217 = Integrator_11L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_11L0noTIS_217 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0noTIS_17.setVal(integral_11L0noTIS_217.getVal())
 	option.setVal(218)
-	integral_11L0noTIS_218 = Integrator_11L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_11L0noTIS_218 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_11L0noTIS_18.setVal(integral_11L0noTIS_218.getVal())
 	option.setVal(21)
-	integral_12L0TIS_21 = Integrator_12L0TIS.createIntegral(RooArgSet(cos1))
+	integral_12L0TIS_21 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0TIS_1.setVal(integral_12L0TIS_21.getVal())
 	option.setVal(22)
-	integral_12L0TIS_22 = Integrator_12L0TIS.createIntegral(RooArgSet(cos1))
+	integral_12L0TIS_22 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0TIS_2.setVal(integral_12L0TIS_22.getVal())
 	option.setVal(23)
-	integral_12L0TIS_23 = Integrator_12L0TIS.createIntegral(RooArgSet(cos1))
+	integral_12L0TIS_23 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0TIS_3.setVal(integral_12L0TIS_23.getVal())
 	option.setVal(24)
-	integral_12L0TIS_24 = Integrator_12L0TIS.createIntegral(RooArgSet(cos1))
+	integral_12L0TIS_24 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0TIS_4.setVal(integral_12L0TIS_24.getVal())
 	option.setVal(25)
-	integral_12L0TIS_25 = Integrator_12L0TIS.createIntegral(RooArgSet(cos1))
+	integral_12L0TIS_25 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0TIS_5.setVal(integral_12L0TIS_25.getVal())
 	option.setVal(26)
-	integral_12L0TIS_26 = Integrator_12L0TIS.createIntegral(RooArgSet(cos1))
+	integral_12L0TIS_26 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0TIS_6.setVal(integral_12L0TIS_26.getVal())
 	option.setVal(27)
-	integral_12L0TIS_27 = Integrator_12L0TIS.createIntegral(RooArgSet(cos1))
+	integral_12L0TIS_27 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0TIS_7.setVal(integral_12L0TIS_27.getVal())
 	option.setVal(28)
-	integral_12L0TIS_28 = Integrator_12L0TIS.createIntegral(RooArgSet(cos1))
+	integral_12L0TIS_28 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0TIS_8.setVal(integral_12L0TIS_28.getVal())
 	option.setVal(29)
-	integral_12L0TIS_29 = Integrator_12L0TIS.createIntegral(RooArgSet(cos1))
+	integral_12L0TIS_29 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0TIS_9.setVal(integral_12L0TIS_29.getVal())
 	option.setVal(210)
-	integral_12L0TIS_210 = Integrator_12L0TIS.createIntegral(RooArgSet(cos1))
+	integral_12L0TIS_210 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0TIS_10.setVal(integral_12L0TIS_210.getVal())
 	option.setVal(211)
-	integral_12L0TIS_211 = Integrator_12L0TIS.createIntegral(RooArgSet(cos1))
+	integral_12L0TIS_211 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0TIS_11.setVal(integral_12L0TIS_211.getVal())
 	option.setVal(212)
-	integral_12L0TIS_212 = Integrator_12L0TIS.createIntegral(RooArgSet(cos1))
+	integral_12L0TIS_212 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0TIS_12.setVal(integral_12L0TIS_212.getVal())
 	option.setVal(213)
-	integral_12L0TIS_213 = Integrator_12L0TIS.createIntegral(RooArgSet(cos1))
+	integral_12L0TIS_213 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0TIS_13.setVal(integral_12L0TIS_213.getVal())
 	option.setVal(214)
-	integral_12L0TIS_214 = Integrator_12L0TIS.createIntegral(RooArgSet(cos1))
+	integral_12L0TIS_214 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0TIS_14.setVal(integral_12L0TIS_214.getVal())
 	option.setVal(215)
-	integral_12L0TIS_215 = Integrator_12L0TIS.createIntegral(RooArgSet(cos1))
+	integral_12L0TIS_215 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0TIS_15.setVal(integral_12L0TIS_215.getVal())
 	option.setVal(216)
-	integral_12L0TIS_216 = Integrator_12L0TIS.createIntegral(RooArgSet(cos1))
+	integral_12L0TIS_216 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0TIS_16.setVal(integral_12L0TIS_216.getVal())
 	option.setVal(217)
-	integral_12L0TIS_217 = Integrator_12L0TIS.createIntegral(RooArgSet(cos1))
+	integral_12L0TIS_217 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0TIS_17.setVal(integral_12L0TIS_217.getVal())
 	option.setVal(218)
-	integral_12L0TIS_218 = Integrator_12L0TIS.createIntegral(RooArgSet(cos1))
+	integral_12L0TIS_218 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0TIS_18.setVal(integral_12L0TIS_218.getVal())
 	option.setVal(21)
-	integral_12L0noTIS_21 = Integrator_12L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_12L0noTIS_21 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0noTIS_1.setVal(integral_12L0noTIS_21.getVal())
 	option.setVal(22)
-	integral_12L0noTIS_22 = Integrator_12L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_12L0noTIS_22 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0noTIS_2.setVal(integral_12L0noTIS_22.getVal())
 	option.setVal(23)
-	integral_12L0noTIS_23 = Integrator_12L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_12L0noTIS_23 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0noTIS_3.setVal(integral_12L0noTIS_23.getVal())
 	option.setVal(24)
-	integral_12L0noTIS_24 = Integrator_12L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_12L0noTIS_24 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0noTIS_4.setVal(integral_12L0noTIS_24.getVal())
 	option.setVal(25)
-	integral_12L0noTIS_25 = Integrator_12L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_12L0noTIS_25 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0noTIS_5.setVal(integral_12L0noTIS_25.getVal())
 	option.setVal(26)
-	integral_12L0noTIS_26 = Integrator_12L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_12L0noTIS_26 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0noTIS_6.setVal(integral_12L0noTIS_26.getVal())
 	option.setVal(27)
-	integral_12L0noTIS_27 = Integrator_12L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_12L0noTIS_27 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0noTIS_7.setVal(integral_12L0noTIS_27.getVal())
 	option.setVal(28)
-	integral_12L0noTIS_28 = Integrator_12L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_12L0noTIS_28 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0noTIS_8.setVal(integral_12L0noTIS_28.getVal())
 	option.setVal(29)
-	integral_12L0noTIS_29 = Integrator_12L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_12L0noTIS_29 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0noTIS_9.setVal(integral_12L0noTIS_29.getVal())
 	option.setVal(210)
-	integral_12L0noTIS_210 = Integrator_12L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_12L0noTIS_210 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0noTIS_10.setVal(integral_12L0noTIS_210.getVal())
 	option.setVal(211)
-	integral_12L0noTIS_211 = Integrator_12L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_12L0noTIS_211 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0noTIS_11.setVal(integral_12L0noTIS_211.getVal())
 	option.setVal(212)
-	integral_12L0noTIS_212 = Integrator_12L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_12L0noTIS_212 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0noTIS_12.setVal(integral_12L0noTIS_212.getVal())
 	option.setVal(213)
-	integral_12L0noTIS_213 = Integrator_12L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_12L0noTIS_213 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0noTIS_13.setVal(integral_12L0noTIS_213.getVal())
 	option.setVal(214)
-	integral_12L0noTIS_214 = Integrator_12L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_12L0noTIS_214 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0noTIS_14.setVal(integral_12L0noTIS_214.getVal())
 	option.setVal(215)
-	integral_12L0noTIS_215 = Integrator_12L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_12L0noTIS_215 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0noTIS_15.setVal(integral_12L0noTIS_215.getVal())
 	option.setVal(216)
-	integral_12L0noTIS_216 = Integrator_12L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_12L0noTIS_216 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0noTIS_16.setVal(integral_12L0noTIS_216.getVal())
 	option.setVal(217)
-	integral_12L0noTIS_217 = Integrator_12L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_12L0noTIS_217 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0noTIS_17.setVal(integral_12L0noTIS_217.getVal())
 	option.setVal(218)
-	integral_12L0noTIS_218 = Integrator_12L0noTIS.createIntegral(RooArgSet(cos1))
+	integral_12L0noTIS_218 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(cos1))
 	If_12L0noTIS_18.setVal(integral_12L0noTIS_218.getVal())
 
 	# Calculation of the invariant mass integrals for visualization.
@@ -1687,52 +1691,52 @@ wave_fractions_arglist,dirCP_asyms_arglist,strong_phases_arglist,weak_phases_arg
 
 	# Calculation of the time integrals for visualization.
 	option.setVal(91)
-	integral_11L0TIS_91 = Integrator_11L0TIS.createIntegral(RooArgSet(t))
+	integral_11L0TIS_91 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(t))
 	IT_11L0TIS_cosh.setVal(integral_11L0TIS_91.getVal())
 	option.setVal(92)
-	integral_11L0TIS_92 = Integrator_11L0TIS.createIntegral(RooArgSet(t))
+	integral_11L0TIS_92 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(t))
 	IT_11L0TIS_sinh.setVal(integral_11L0TIS_92.getVal())
 	option.setVal(93)
-	integral_11L0TIS_93 = Integrator_11L0TIS.createIntegral(RooArgSet(t))
+	integral_11L0TIS_93 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(t))
 	IT_11L0TIS_cos.setVal(integral_11L0TIS_93.getVal())
 	option.setVal(94)
-	integral_11L0TIS_94 = Integrator_11L0TIS.createIntegral(RooArgSet(t))
+	integral_11L0TIS_94 = Integrator_11L0TIS.createIntegral(ROOT.RooArgSet(t))
 	IT_11L0TIS_sin.setVal(integral_11L0TIS_94.getVal())
 	option.setVal(91)
-	integral_11L0noTIS_91 = Integrator_11L0noTIS.createIntegral(RooArgSet(t))
+	integral_11L0noTIS_91 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(t))
 	IT_11L0noTIS_cosh.setVal(integral_11L0noTIS_91.getVal())
 	option.setVal(92)
-	integral_11L0noTIS_92 = Integrator_11L0noTIS.createIntegral(RooArgSet(t))
+	integral_11L0noTIS_92 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(t))
 	IT_11L0noTIS_sinh.setVal(integral_11L0noTIS_92.getVal())
 	option.setVal(93)
-	integral_11L0noTIS_93 = Integrator_11L0noTIS.createIntegral(RooArgSet(t))
+	integral_11L0noTIS_93 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(t))
 	IT_11L0noTIS_cos.setVal(integral_11L0noTIS_93.getVal())
 	option.setVal(94)
-	integral_11L0noTIS_94 = Integrator_11L0noTIS.createIntegral(RooArgSet(t))
+	integral_11L0noTIS_94 = Integrator_11L0noTIS.createIntegral(ROOT.RooArgSet(t))
 	IT_11L0noTIS_sin.setVal(integral_11L0noTIS_94.getVal())
 	option.setVal(91)
-	integral_12L0TIS_91 = Integrator_12L0TIS.createIntegral(RooArgSet(t))
+	integral_12L0TIS_91 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(t))
 	IT_12L0TIS_cosh.setVal(integral_12L0TIS_91.getVal())
 	option.setVal(92)
-	integral_12L0TIS_92 = Integrator_12L0TIS.createIntegral(RooArgSet(t))
+	integral_12L0TIS_92 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(t))
 	IT_12L0TIS_sinh.setVal(integral_12L0TIS_92.getVal())
 	option.setVal(93)
-	integral_12L0TIS_93 = Integrator_12L0TIS.createIntegral(RooArgSet(t))
+	integral_12L0TIS_93 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(t))
 	IT_12L0TIS_cos.setVal(integral_12L0TIS_93.getVal())
 	option.setVal(94)
-	integral_12L0TIS_94 = Integrator_12L0TIS.createIntegral(RooArgSet(t))
+	integral_12L0TIS_94 = Integrator_12L0TIS.createIntegral(ROOT.RooArgSet(t))
 	IT_12L0TIS_sin.setVal(integral_12L0TIS_94.getVal())
 	option.setVal(91)
-	integral_12L0noTIS_91 = Integrator_12L0noTIS.createIntegral(RooArgSet(t))
+	integral_12L0noTIS_91 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(t))
 	IT_12L0noTIS_cosh.setVal(integral_12L0noTIS_91.getVal())
 	option.setVal(92)
-	integral_12L0noTIS_92 = Integrator_12L0noTIS.createIntegral(RooArgSet(t))
+	integral_12L0noTIS_92 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(t))
 	IT_12L0noTIS_sinh.setVal(integral_12L0noTIS_92.getVal())
 	option.setVal(93)
-	integral_12L0noTIS_93 = Integrator_12L0noTIS.createIntegral(RooArgSet(t))
+	integral_12L0noTIS_93 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(t))
 	IT_12L0noTIS_cos.setVal(integral_12L0noTIS_93.getVal())
 	option.setVal(94)
-	integral_12L0noTIS_94 = Integrator_12L0noTIS.createIntegral(RooArgSet(t))
+	integral_12L0noTIS_94 = Integrator_12L0noTIS.createIntegral(ROOT.RooArgSet(t))
 	IT_12L0noTIS_sin.setVal(integral_12L0noTIS_94.getVal())
 
 	# Backup of the integrals and normalization factors.
@@ -2072,21 +2076,21 @@ wave_fractions_arglist,dirCP_asyms_arglist,strong_phases_arglist,weak_phases_arg
 	fintegrals.write(integrals)
 	fintegrals.close()
 
-	RooMsgService.instance().setGlobalKillBelow(RooFit.INFO)
+	ROOT.RooMsgService.instance().setGlobalKillBelow(ROOT.RooFit.INFO)
 	option.setVal(0)
 
 	# Construction of the PDFs.
-	PDF_11L0TIS = KpiKpiSpectrumNW(name+'_11L0TIS',description+'_11L0TIS',options_11L0TIS_arglist,observables_arglist,wave_fractions_arglist,dirCP_asyms_arglist,\
-strong_phases_arglist,weak_phases_arglist,mixing_params_arglist,calib_params_arglist,cond_distr_params_list,sys_studies_arglist,mass_integrals_11L0TIS_list,\
+	PDF_11L0TIS = ROOT.KpiKpiSpectrumNW(name+'_11L0TIS',description+'_11L0TIS',options_11L0TIS_arglist,observables_arglist,re_amps_arglist,dirCP_asyms_arglist,\
+im_amps_arglist,weak_phases_arglist,mixing_params_arglist,calib_params_arglist,cond_distr_params_list,sys_studies_arglist,mass_integrals_11L0TIS_list,\
 ang_integrals_11L0TIS_list,time_integrals_11L0TIS_list)
-	PDF_11L0noTIS = KpiKpiSpectrumNW(name+'_11L0noTIS',description+'_11L0noTIS',options_11L0noTIS_arglist,observables_arglist,wave_fractions_arglist,dirCP_asyms_arglist,\
-strong_phases_arglist,weak_phases_arglist,mixing_params_arglist,calib_params_arglist,cond_distr_params_list,sys_studies_arglist,mass_integrals_11L0noTIS_list,\
+	PDF_11L0noTIS = ROOT.KpiKpiSpectrumNW(name+'_11L0noTIS',description+'_11L0noTIS',options_11L0noTIS_arglist,observables_arglist,re_amps_arglist,dirCP_asyms_arglist,\
+im_amps_arglist,weak_phases_arglist,mixing_params_arglist,calib_params_arglist,cond_distr_params_list,sys_studies_arglist,mass_integrals_11L0noTIS_list,\
 ang_integrals_11L0noTIS_list,time_integrals_11L0noTIS_list)
-	PDF_12L0TIS = KpiKpiSpectrumNW(name+'_12L0TIS',description+'_12L0TIS',options_12L0TIS_arglist,observables_arglist,wave_fractions_arglist,dirCP_asyms_arglist,\
-strong_phases_arglist,weak_phases_arglist,mixing_params_arglist,calib_params_arglist,cond_distr_params_list,sys_studies_arglist,mass_integrals_12L0TIS_list,\
+	PDF_12L0TIS = ROOT.KpiKpiSpectrumNW(name+'_12L0TIS',description+'_12L0TIS',options_12L0TIS_arglist,observables_arglist,re_amps_arglist,dirCP_asyms_arglist,\
+im_amps_arglist,weak_phases_arglist,mixing_params_arglist,calib_params_arglist,cond_distr_params_list,sys_studies_arglist,mass_integrals_12L0TIS_list,\
 ang_integrals_12L0TIS_list,time_integrals_12L0TIS_list)
-	PDF_12L0noTIS = KpiKpiSpectrumNW(name+'_12L0noTIS',description+'_12L0noTIS',options_12L0noTIS_arglist,observables_arglist,wave_fractions_arglist,dirCP_asyms_arglist,\
-strong_phases_arglist,weak_phases_arglist,mixing_params_arglist,calib_params_arglist,cond_distr_params_list,sys_studies_arglist,mass_integrals_12L0noTIS_list,\
+	PDF_12L0noTIS = ROOT.KpiKpiSpectrumNW(name+'_12L0noTIS',description+'_12L0noTIS',options_12L0noTIS_arglist,observables_arglist,re_amps_arglist,dirCP_asyms_arglist,\
+im_amps_arglist,weak_phases_arglist,mixing_params_arglist,calib_params_arglist,cond_distr_params_list,sys_studies_arglist,mass_integrals_12L0noTIS_list,\
 ang_integrals_12L0noTIS_list,time_integrals_12L0noTIS_list)
 
 	return PDF_11L0TIS, PDF_11L0noTIS, PDF_12L0TIS, PDF_12L0noTIS
@@ -2096,7 +2100,7 @@ def etacomb(q1var,eta1var,q2var,eta2var):
    p_Bsbar = (1.-0.5*q1var*(1.+q1var-2.*eta1var))*(1.-0.5*q2var*(1.+q2var-2.*eta2var))
    return min(p_Bs,p_Bsbar)/(p_Bs+p_Bsbar)
 
-def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, weighted, wide_window = 1, evnum_limit = 0, GRID = 0):
+def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, MC_type, TD_fit, weighted, wide_window = 1, extra_cuts = "", evnum_limit = 0, GRID = 0):
 
 	# Information.
 	print "\n#####################################################################"
@@ -2104,29 +2108,63 @@ def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, weight
 	print "#####################################################################\n"
 	if (evnum_limit == 0): print 'All events selected.'
 	else: print str(evnum_limit)+' events selected.'
-	if weighted: print 'Using sWeights.'
+	if weighted: print 'Using sWeights (only implemented for real data, not simulation).'
 	else: print 'Not using sWeights.'
 
 	# Input file.
+	m1_name = "B_s0_DTF_KST1_M"
+	m2_name = "B_s0_DTF_KST2_M"
+	cos1_name = "B_s0_DTF_B_s0_CosTheta1"
+	cos2_name = "B_s0_DTF_B_s0_CosTheta2"
+	phi_name = "B_s0_DTF_B_s0_PHI_TRY4"
+	t_name = "B_s0_DTF_TAU"
+	terror_name = "B_s0_DTF_TAUERR"
 	if (GRID == 1):
-		print 'Loading data from InvariantMassFitOut.dat'
-		tree = TTree("DecayTree","DecayTree")
-		tree.ReadFile("InvariantMassFitOut.dat",m1_name+":"+m2_name+":"+cos1_name+":"+cos2_name+":"+phi_name+":"+t_name+":"+terror_name+":"+dec_SSK_name+":"+dec_OS_name+":"+eta_SSK_name+":"+eta_OS_name+":itype:"+L0TISline_name+":"+L0TOSline_name+":"+mKpiKpi_name+":"+weight_name)
+		data_file = "AnalysisOutWSWeightsSelectedAllBranchesReduced.root"
+		data_tree = "AnalysisTree"
+		file_in = ROOT.TFile(data_file)
+		tree = file_in.Get(data_tree)
+		print 'Loading data from ' + data_file + ':' + data_tree
+		#print 'Loading data from InvariantMassFitOut.dat'
+		#tree = ROOT.TTree("DecayTree","DecayTree")
+		#tree.ReadFile("InvariantMassFitOut.dat",m1_name+":"+m2_name+":"+cos1_name+":"+cos2_name+":"+phi_name+":"+t_name+":"+terror_name+":"+dec_SSK_name+":"+dec_OS_name+":"+eta_SSK_name+":"+eta_OS_name+":itype:"+L0TISline_name+":"+L0TOSline_name+":"+mKpiKpi_name+":"+weight_name)
 	else:
 		if (datatype == "real"):
-			file_in = TFile(file_path + data_file)
+			file_in = ROOT.TFile(file_path + data_file)
 			tree = file_in.Get(data_tree)
 			print 'Loading data from ' + data_file + ':' + data_tree
 		elif (datatype == "MC"):
-			file_in = TFile(file_path + MC_file)
+			file_in = ROOT.TFile(file_path + MC_file)
 			tree = file_in.Get(MC_tree)
 			print 'Loading data from ' + MC_file + ':' + MC_tree
+			if (MC_type == 0):
+				print 'Simulation type: Toy MC'
+			elif (MC_type == 1):
+				print 'Simulation type: VV'
+				m1_name = "B_s0_DTF_KST1_TRUE_M"
+				m2_name = "B_s0_DTF_KST2_TRUE_M"
+				cos1_name = "B_s0_DTF_KST1_TRUE_COSTHETA"
+				cos2_name = "B_s0_DTF_KST2_TRUE_COSTHETA"
+				phi_name = "B_s0_DTF_B_s0_PHI_TRUE_TRY4"
+				t_name = "B_s0_DTF_TAU"
+				terror_name = "B_s0_DTF_TAUERR"
+
+	print 'M1 branch:',m1_name
+	print 'M2 branch:',m2_name
+	print 'cos1 branch:',cos1_name
+	print 'cos2 branch:',cos2_name
+	print 'phi branch:',phi_name
+	print 't branch:',t_name
+	print 'terr branch:',terror_name
 
 	# Tree with the selected events.
-	file_out = TFile(file_path + "trash.root","recreate")
-	if wide_window: range_cut = m1_name+"<=1500. && "+m2_name+"<=1500. && "+t_name+">=0. && "+t_name+"<=12. && "+eta_SSK_name+"<=0.5 && "+eta_OS_name+"<=0.5"
+	file_out = ROOT.TFile(file_path + "trash.root","recreate")
+	if wide_window: range_cut = m1_name+"<="+str(mHlimit)+" && "+m2_name+"<="+str(mHlimit)+" && "+t_name+">=0. && "+t_name+"<=12. && "+eta_SSK_name+"<=0.5 && "+eta_OS_name+"<=0.5"
 	else: range_cut = "abs("+m1_name+"-900.)<150. && abs("+m2_name+"-900.)<150. && "+t_name+">=0. && "+t_name+"<=12. && "+eta_SSK_name+"<=0.5 && "+eta_OS_name+"<=0.5"
-	tree2 = tree.CopyTree(range_cut)
+	if extra_cuts == "": tree2 = tree.CopyTree(range_cut)
+	else:
+		tree2 = tree.CopyTree(range_cut + " && " + extra_cuts)
+		print 'Additional cut string: "' + extra_cuts+ '"'
 
 	sumwtotal = 0.
 	if (datatype == "real") and weighted: sumw, sumw2 = [[0.,0.],[0.,0.]], [[0.,0.],[0.,0.]]
@@ -2158,6 +2196,7 @@ def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, weight
 	print ''
 
 	# Construction of sWeighted datasets.
+
 	tageff_SSK = 0.
 	tageff_OS = 0.
 	tageff_comb = 0.
@@ -2167,32 +2206,38 @@ def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, weight
 	norm_mean_eta_SSK = 0.
 	norm_mean_eta_OS = 0.
 	norm_mean_eta_comb = 0.
+	mean_deltat_2011 = 0.
+	mean_deltat_2012 = 0.
+	norm_mean_deltat_2011 = 0.
+	norm_mean_deltat_2012 = 0.
+
 	if (wide_window):
-		data_11L0TIS_ = RooDataSet("data_11L0TIS_","data_11L0TIS_",RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,weight_fit,weight_plot))
-		data_11L0noTIS_ = RooDataSet("data_11L0noTIS_","data_11L0noTIS_",RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,weight_fit,weight_plot))
-		data_12L0TIS_ = RooDataSet("data_12L0TIS_","data_12L0TIS_",RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,weight_fit,weight_plot))
-		data_12L0noTIS_ = RooDataSet("data_12L0noTIS_","data_12L0noTIS_",RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,weight_fit,weight_plot))
+		data_11L0TIS_ = ROOT.RooDataSet("data_11L0TIS_","data_11L0TIS_",ROOT.RooArgSet(mKp1,mKp2,cos1,cos2,phi,weight_fit,weight_plot))
+		data_11L0noTIS_ = ROOT.RooDataSet("data_11L0noTIS_","data_11L0noTIS_",ROOT.RooArgSet(mKp1,mKp2,cos1,cos2,phi,weight_fit,weight_plot))
+		data_12L0TIS_ = ROOT.RooDataSet("data_12L0TIS_","data_12L0TIS_",ROOT.RooArgSet(mKp1,mKp2,cos1,cos2,phi,weight_fit,weight_plot))
+		data_12L0noTIS_ = ROOT.RooDataSet("data_12L0noTIS_","data_12L0noTIS_",ROOT.RooArgSet(mKp1,mKp2,cos1,cos2,phi,weight_fit,weight_plot))
 	else:
-		data_11L0TIS_ = RooDataSet("data_11L0TIS_","data_11L0TIS_",RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,weight_fit,weight_plot))
-		data_11L0noTIS_ = RooDataSet("data_11L0noTIS_","data_11L0noTIS_",RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,weight_fit,weight_plot))
-		data_12L0TIS_ = RooDataSet("data_12L0TIS_","data_12L0TIS_",RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,weight_fit,weight_plot))
-		data_12L0noTIS_ = RooDataSet("data_12L0noTIS_","data_12L0noTIS_",RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,weight_fit,weight_plot))
-	more_real_11L0TIS = RooDataSet("more_real_11L0TIS","more_real_11L0TIS",RooArgSet(etamistag_SSK,etamistag_OS,terror))
-	more_real_11L0noTIS = RooDataSet("more_real_11L0noTIS","more_real_11L0noTIS",RooArgSet(etamistag_SSK,etamistag_OS,terror))
-	more_real_12L0TIS = RooDataSet("more_real_12L0TIS","more_real_12L0TIS",RooArgSet(etamistag_SSK,etamistag_OS,terror))
-	more_real_12L0noTIS = RooDataSet("more_real_12L0noTIS","more_real_12L0noTIS",RooArgSet(etamistag_SSK,etamistag_OS,terror))
-	more_cat_11L0TIS = RooDataSet("more_cat_11L0TIS","more_cat_11L0TIS",RooArgSet(decision_SSK,decision_OS))
-	more_cat_11L0noTIS = RooDataSet("more_cat_11L0noTIS","more_cat_11L0noTIS",RooArgSet(decision_SSK,decision_OS))
-	more_cat_12L0TIS = RooDataSet("more_cat_12L0TIS","more_cat_12L0TIS",RooArgSet(decision_SSK,decision_OS))
-	more_cat_12L0noTIS = RooDataSet("more_cat_12L0noTIS","more_cat_12L0noTIS",RooArgSet(decision_SSK,decision_OS))
-	hist_mistag_SSK = RooDataHist("hist_mistag_SSK","hist_mistag_SSK",RooArgSet(etamistag_SSK))
-	hist_mistag_OS = RooDataHist("hist_mistag_OS","hist_mistag_OS",RooArgSet(etamistag_OS))
-	hist_deltat = RooDataHist("hist_deltat","hist_deltat",RooArgSet(terror))
+		data_11L0TIS_ = ROOT.RooDataSet("data_11L0TIS_","data_11L0TIS_",ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
+		data_11L0noTIS_ = ROOT.RooDataSet("data_11L0noTIS_","data_11L0noTIS_",ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
+		data_12L0TIS_ = ROOT.RooDataSet("data_12L0TIS_","data_12L0TIS_",ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
+		data_12L0noTIS_ = ROOT.RooDataSet("data_12L0noTIS_","data_12L0noTIS_",ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
+	TD_extravars_float_11L0TIS = ROOT.RooDataSet("TD_extravars_float_11L0TIS","TD_extravars_float_11L0TIS",ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
+	TD_extravars_float_11L0noTIS = ROOT.RooDataSet("TD_extravars_float_11L0noTIS","TD_extravars_float_11L0noTIS",ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
+	TD_extravars_float_12L0TIS = ROOT.RooDataSet("TD_extravars_float_12L0TIS","TD_extravars_float_12L0TIS",ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
+	TD_extravars_float_12L0noTIS = ROOT.RooDataSet("TD_extravars_float_12L0noTIS","TD_extravars_float_12L0noTIS",ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
+	TD_extravars_int_11L0TIS = ROOT.RooDataSet("TD_extravars_int_11L0TIS","TD_extravars_int_11L0TIS",ROOT.RooArgSet(decision_SSK,decision_OS))
+	TD_extravars_int_11L0noTIS = ROOT.RooDataSet("TD_extravars_int_11L0noTIS","TD_extravars_int_11L0noTIS",ROOT.RooArgSet(decision_SSK,decision_OS))
+	TD_extravars_int_12L0TIS = ROOT.RooDataSet("TD_extravars_int_12L0TIS","TD_extravars_int_12L0TIS",ROOT.RooArgSet(decision_SSK,decision_OS))
+	TD_extravars_int_12L0noTIS = ROOT.RooDataSet("TD_extravars_int_12L0noTIS","TD_extravars_int_12L0noTIS",ROOT.RooArgSet(decision_SSK,decision_OS))
+	hist_mistag_SSK = ROOT.RooDataHist("hist_mistag_SSK","hist_mistag_SSK",ROOT.RooArgSet(etamistag_SSK))
+	hist_mistag_OS = ROOT.RooDataHist("hist_mistag_OS","hist_mistag_OS",ROOT.RooArgSet(etamistag_OS))
+	hist_deltat = ROOT.RooDataHist("hist_deltat","hist_deltat",ROOT.RooArgSet(terror))
 	ev_counter = 0
 	ev_counter_11L0TIS = 0
 	ev_counter_11L0noTIS = 0
 	ev_counter_12L0TIS = 0
 	ev_counter_12L0noTIS = 0
+
 	for i in tree2:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))):
 			if (datatype == "real") and weighted: weighttag = eval("i."+weight_name)
@@ -2229,133 +2274,198 @@ def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, weight
 
 			if (datatype == "real"):
 				if i.itype == 71:
+					mean_deltat_2011 += weighttag * eval("i."+terror_name)
+					norm_mean_deltat_2011 += weighttag
 					if eval("i."+L0TISline_name) == 1:
 						if weighted:
 							weight_fit.setVal(corrfactor[0][0]*eval("i."+weight_name))
 							weight_plot.setVal(eval("i."+weight_name))
-						if (wide_window): data_11L0TIS_.add(RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,weight_fit,weight_plot))
-						else: data_11L0TIS_.add(RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,weight_fit,weight_plot))
-						more_real_11L0TIS.add(RooArgSet(etamistag_SSK,etamistag_OS,terror))
-						more_cat_11L0TIS.add(RooArgSet(decision_SSK,decision_OS))
+						if (wide_window): data_11L0TIS_.add(ROOT.RooArgSet(mKp1,mKp2,cos1,cos2,phi,weight_fit,weight_plot))
+						else: data_11L0TIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
+						TD_extravars_float_11L0TIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
+						TD_extravars_int_11L0TIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
 						ev_counter_11L0TIS += 1
 					elif (eval("i."+L0TISline_name) == 0 and eval("i."+L0TOSline_name) == 1):
 						if weighted:
 							weight_fit.setVal(corrfactor[0][1]*eval("i."+weight_name))
 							weight_plot.setVal(eval("i."+weight_name))
-						if (wide_window): data_11L0noTIS_.add(RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,weight_fit,weight_plot))
-						else: data_11L0noTIS_.add(RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,weight_fit,weight_plot))
-						more_real_11L0noTIS.add(RooArgSet(etamistag_SSK,etamistag_OS,terror))
-						more_cat_11L0noTIS.add(RooArgSet(decision_SSK,decision_OS))
+						if (wide_window): data_11L0noTIS_.add(ROOT.RooArgSet(mKp1,mKp2,cos1,cos2,phi,weight_fit,weight_plot))
+						else: data_11L0noTIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
+						TD_extravars_float_11L0noTIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
+						TD_extravars_int_11L0noTIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
 						ev_counter_11L0noTIS += 1
 				elif i.itype == 81:
+					mean_deltat_2012 += weighttag * eval("i."+terror_name)
+					norm_mean_deltat_2012 += weighttag
 					if eval("i."+L0TISline_name) == 1:
 						if weighted:
 							weight_fit.setVal(corrfactor[1][0]*eval("i."+weight_name))
 							weight_plot.setVal(eval("i."+weight_name))
-						if (wide_window): data_12L0TIS_.add(RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,weight_fit,weight_plot))
-						else: data_12L0TIS_.add(RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,weight_fit,weight_plot))
-						more_real_12L0TIS.add(RooArgSet(etamistag_SSK,etamistag_OS,terror))
-						more_cat_12L0TIS.add(RooArgSet(decision_SSK,decision_OS))
+						if (wide_window): data_12L0TIS_.add(ROOT.RooArgSet(mKp1,mKp2,cos1,cos2,phi,weight_fit,weight_plot))
+						else: data_12L0TIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
+						TD_extravars_float_12L0TIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
+						TD_extravars_int_12L0TIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
 						ev_counter_12L0TIS += 1
 					elif (eval("i."+L0TISline_name) == 0 and eval("i."+L0TOSline_name) == 1):
 						if weighted:
 							weight_fit.setVal(corrfactor[1][1]*eval("i."+weight_name))
 							weight_plot.setVal(eval("i."+weight_name))
-						if (wide_window): data_12L0noTIS_.add(RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,weight_fit,weight_plot))
-						else: data_12L0noTIS_.add(RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,weight_fit,weight_plot))
-						more_real_12L0noTIS.add(RooArgSet(etamistag_SSK,etamistag_OS,terror))
-						more_cat_12L0noTIS.add(RooArgSet(decision_SSK,decision_OS))
+						if (wide_window): data_12L0noTIS_.add(ROOT.RooArgSet(mKp1,mKp2,cos1,cos2,phi,weight_fit,weight_plot))
+						else: data_12L0noTIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
+						TD_extravars_float_12L0noTIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
+						TD_extravars_int_12L0noTIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
 						ev_counter_12L0noTIS += 1
 
 			elif (datatype == "MC"):
-				rannum = random.Random().uniform(0,1)
-				if (rannum<=0.25):
-					if (wide_window): data_11L0TIS_.add(RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,weight_fit,weight_plot))
-					else: data_11L0TIS_.add(RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,weight_fit,weight_plot))
-					more_real_11L0TIS.add(RooArgSet(etamistag_SSK,etamistag_OS,terror))
-					more_cat_11L0TIS.add(RooArgSet(decision_SSK,decision_OS))
-					ev_counter_11L0TIS += 1
-				elif (rannum>0.25 and rannum<=0.5):
-					if (wide_window): data_11L0noTIS_.add(RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,weight_fit,weight_plot))
-					else: data_11L0noTIS_.add(RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,weight_fit,weight_plot))
-					more_real_11L0noTIS.add(RooArgSet(etamistag_SSK,etamistag_OS,terror))
-					more_cat_11L0noTIS.add(RooArgSet(decision_SSK,decision_OS))
-					ev_counter_11L0noTIS += 1
-				elif (rannum>0.5 and rannum<=0.75):
-					if (wide_window): data_12L0TIS_.add(RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,weight_fit,weight_plot))
-					else: data_12L0TIS_.add(RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,weight_fit,weight_plot))
-					more_real_12L0TIS.add(RooArgSet(etamistag_SSK,etamistag_OS,terror))
-					more_cat_12L0TIS.add(RooArgSet(decision_SSK,decision_OS))
-					ev_counter_12L0TIS += 1
-				else:
-					if (wide_window): data_12L0noTIS_.add(RooArgSet(mKp1,mKp2,cos1,cos2,phi,t,weight_fit,weight_plot))
-					else: data_12L0noTIS_.add(RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,t,weight_fit,weight_plot))
-					more_real_12L0noTIS.add(RooArgSet(etamistag_SSK,etamistag_OS,terror))
-					more_cat_12L0noTIS.add(RooArgSet(decision_SSK,decision_OS))
-					ev_counter_12L0noTIS += 1
+
+				if (MC_type == 0):
+					rannum = random.Random().uniform(0,1)
+					if (rannum<=0.25):
+						mean_deltat_2011 += weighttag * eval("i."+terror_name)
+						norm_mean_deltat_2011 += weighttag
+						if (wide_window): data_11L0TIS_.add(ROOT.RooArgSet(mKp1,mKp2,cos1,cos2,phi,weight_fit,weight_plot))
+						else: data_11L0TIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
+						TD_extravars_float_11L0TIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
+						TD_extravars_int_11L0TIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
+						ev_counter_11L0TIS += 1
+					elif (rannum>0.25 and rannum<=0.5):
+						mean_deltat_2011 += weighttag * eval("i."+terror_name)
+						norm_mean_deltat_2011 += weighttag
+						if (wide_window): data_11L0noTIS_.add(ROOT.RooArgSet(mKp1,mKp2,cos1,cos2,phi,weight_fit,weight_plot))
+						else: data_11L0noTIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
+						TD_extravars_float_11L0noTIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
+						TD_extravars_int_11L0noTIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
+						ev_counter_11L0noTIS += 1
+					elif (rannum>0.5 and rannum<=0.75):
+						mean_deltat_2012 += weighttag * eval("i."+terror_name)
+						norm_mean_deltat_2012 += weighttag
+						if (wide_window): data_12L0TIS_.add(ROOT.RooArgSet(mKp1,mKp2,cos1,cos2,phi,weight_fit,weight_plot))
+						else: data_12L0TIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
+						TD_extravars_float_12L0TIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
+						TD_extravars_int_12L0TIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
+						ev_counter_12L0TIS += 1
+					else:
+						mean_deltat_2012 += weighttag * eval("i."+terror_name)
+						norm_mean_deltat_2012 += weighttag
+						if (wide_window): data_12L0noTIS_.add(ROOT.RooArgSet(mKp1,mKp2,cos1,cos2,phi,weight_fit,weight_plot))
+						else: data_12L0noTIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
+						TD_extravars_float_12L0noTIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
+						TD_extravars_int_12L0noTIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
+						ev_counter_12L0noTIS += 1
+
+				elif (MC_type == 1):
+					if i.itype == -70:
+						mean_deltat_2011 += weighttag * eval("i."+terror_name)
+						norm_mean_deltat_2011 += weighttag
+						if eval("i."+L0TISline_name) == 1:
+							if (wide_window): data_11L0TIS_.add(ROOT.RooArgSet(mKp1,mKp2,cos1,cos2,phi,weight_fit,weight_plot))
+							else: data_11L0TIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
+							TD_extravars_float_11L0TIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
+							TD_extravars_int_11L0TIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
+							ev_counter_11L0TIS += 1
+						elif (eval("i."+L0TISline_name) == 0 and eval("i."+L0TOSline_name) == 1):
+							if (wide_window): data_11L0noTIS_.add(ROOT.RooArgSet(mKp1,mKp2,cos1,cos2,phi,weight_fit,weight_plot))
+							else: data_11L0noTIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
+							TD_extravars_float_11L0noTIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
+							TD_extravars_int_11L0noTIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
+							ev_counter_11L0noTIS += 1
+					elif i.itype == -80:
+						mean_deltat_2012 += weighttag * eval("i."+terror_name)
+						norm_mean_deltat_2012 += weighttag
+						if eval("i."+L0TISline_name) == 1:
+							if (wide_window): data_12L0TIS_.add(ROOT.RooArgSet(mKp1,mKp2,cos1,cos2,phi,weight_fit,weight_plot))
+							else: data_12L0TIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
+							TD_extravars_float_12L0TIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
+							TD_extravars_int_12L0TIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
+							ev_counter_12L0TIS += 1
+						elif (eval("i."+L0TISline_name) == 0 and eval("i."+L0TOSline_name) == 1):
+							if (wide_window): data_12L0noTIS_.add(ROOT.RooArgSet(mKp1,mKp2,cos1,cos2,phi,weight_fit,weight_plot))
+							else: data_12L0noTIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
+							TD_extravars_float_12L0noTIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
+							TD_extravars_int_12L0noTIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
+							ev_counter_12L0noTIS += 1
 
 			if (datatype == "real") and weighted:
-				if (etamistag_SSK.getVal() < 0.5): hist_mistag_SSK.add(RooArgSet(etamistag_SSK),eval("i."+weight_name))
-				if (etamistag_OS.getVal() < 0.5): hist_mistag_OS.add(RooArgSet(etamistag_OS),eval("i."+weight_name))
-				hist_deltat.add(RooArgSet(terror),eval("i."+weight_name))
+				if (etamistag_SSK.getVal() < 0.5): hist_mistag_SSK.add(ROOT.RooArgSet(etamistag_SSK),eval("i."+weight_name))
+				if (etamistag_OS.getVal() < 0.5): hist_mistag_OS.add(ROOT.RooArgSet(etamistag_OS),eval("i."+weight_name))
+				hist_deltat.add(ROOT.RooArgSet(terror),eval("i."+weight_name))
 			else:
-				if (etamistag_SSK.getVal() < 0.5): hist_mistag_SSK.add(RooArgSet(etamistag_SSK),1)
-				if (etamistag_OS.getVal() < 0.5): hist_mistag_OS.add(RooArgSet(etamistag_OS),1)
-				hist_deltat.add(RooArgSet(terror),1)
+				if (etamistag_SSK.getVal() < 0.5): hist_mistag_SSK.add(ROOT.RooArgSet(etamistag_SSK),1)
+				if (etamistag_OS.getVal() < 0.5): hist_mistag_OS.add(ROOT.RooArgSet(etamistag_OS),1)
+				hist_deltat.add(ROOT.RooArgSet(terror),1)
 			ev_counter += 1
-	data_11L0TIS_.merge(more_real_11L0TIS)
-	data_11L0noTIS_.merge(more_real_11L0noTIS)
-	data_12L0TIS_.merge(more_real_12L0TIS)
-	data_12L0noTIS_.merge(more_real_12L0noTIS)
-	data_11L0TIS_.merge(more_cat_11L0TIS)
-	data_11L0noTIS_.merge(more_cat_11L0noTIS)
-	data_12L0TIS_.merge(more_cat_12L0TIS)
-	data_12L0noTIS_.merge(more_cat_12L0noTIS)
-	mean_eta_SSK = mean_eta_SSK/norm_mean_eta_SSK
-	mean_eta_OS = mean_eta_OS/norm_mean_eta_OS
-	mean_eta_comb = mean_eta_comb/norm_mean_eta_comb
-	etac_SSK.setVal(mean_eta_SSK)
-	etac_OS.setVal(mean_eta_OS)
-	tagpow_SSK = tageff_SSK*(1.-2.*mean_eta_SSK)**2
-	tagpow_OS = tageff_OS*(1.-2.*mean_eta_OS)**2
-	tagpow_comb = tageff_comb*(1.-2.*mean_eta_comb)**2
-	tag_eff_SSK.setVal(tageff_SSK)
-	tag_eff_OS.setVal(tageff_OS)
 
-	print 'SSK tagger:'
-	print 'tagging efficiency = '+str(tageff_SSK)
-	print '<eta> = '+str(mean_eta_SSK)
-	print 'pre-calibration tagging power = '+str(tagpow_SSK)
-	print ''
-	print 'OS tagger:'
-	print 'tagging efficiency = '+str(tageff_OS)
-	print '<eta> = '+str(mean_eta_OS)
-	print 'pre-calibration tagging power = '+str(tagpow_OS)
-	print ''
-	print 'SSK + OS combination:'
-	print 'tagging efficiency = '+str(tageff_comb)
-	print 'pre-calibration tagging power = '+str(tagpow_comb)
-	print ''
+	if TD_fit:
+
+		data_11L0TIS_.merge(TD_extravars_float_11L0TIS)
+		data_11L0noTIS_.merge(TD_extravars_float_11L0noTIS)
+		data_12L0TIS_.merge(TD_extravars_float_12L0TIS)
+		data_12L0noTIS_.merge(TD_extravars_float_12L0noTIS)
+		data_11L0TIS_.merge(TD_extravars_int_11L0TIS)
+		data_11L0noTIS_.merge(TD_extravars_int_11L0noTIS)
+		data_12L0TIS_.merge(TD_extravars_int_12L0TIS)
+		data_12L0noTIS_.merge(TD_extravars_int_12L0noTIS)
+
+		for fas in [FullArgSetFitWide,FullArgSetPlotWide,FullArgSetFitNarrow,FullArgSetPlotNarrow]:
+			fas.add(t)
+			fas.add(terror)
+			fas.add(etamistag_SSK)
+			fas.add(etamistag_OS)
+			fas.add(decision_SSK)
+			fas.add(decision_OS)
+
+		mean_eta_SSK = mean_eta_SSK/norm_mean_eta_SSK
+		mean_eta_OS = mean_eta_OS/norm_mean_eta_OS
+		mean_eta_comb = mean_eta_comb/norm_mean_eta_comb
+		etac_SSK.setVal(mean_eta_SSK)
+		etac_OS.setVal(mean_eta_OS)
+		tagpow_SSK = tageff_SSK*(1.-2.*mean_eta_SSK)**2
+		tagpow_OS = tageff_OS*(1.-2.*mean_eta_OS)**2
+		tagpow_comb = tageff_comb*(1.-2.*mean_eta_comb)**2
+		tag_eff_SSK.setVal(tageff_SSK)
+		tag_eff_OS.setVal(tageff_OS)
+		mean_deltat_2011 = mean_deltat_2011/norm_mean_deltat_2011
+		mean_deltat_2012 = mean_deltat_2012/norm_mean_deltat_2012
+		tres_deltatmean_2011.setVal(mean_deltat_2011)
+		tres_deltatmean_2012.setVal(mean_deltat_2012)
+		print 'SSK tagger:'
+		print 'tagging efficiency = '+str(tageff_SSK)
+		print '<eta> = '+str(mean_eta_SSK)
+		print 'pre-calibration tagging power = '+str(tagpow_SSK)
+		print ''
+		print 'OS tagger:'
+		print 'tagging efficiency = '+str(tageff_OS)
+		print '<eta> = '+str(mean_eta_OS)
+		print 'pre-calibration tagging power = '+str(tagpow_OS)
+		print ''
+		print 'SSK + OS combination:'
+		print 'tagging efficiency = '+str(tageff_comb)
+		print 'pre-calibration tagging power = '+str(tagpow_comb)
+		print ''
+		print '<delta_t> (2011) = '+str(mean_deltat_2011)
+		print '<delta_t> (2012) = '+str(mean_deltat_2012)
+		print ''
+
 	print str(ev_counter) + ' events loaded.'
 	if (datatype == "real") and weighted: print 'Eff. yield categ. distribution: cat[2011,L0TIS] = '+str(int(corrfactor[0][0]*sumw[0][0]))+ ', cat[2011,L0noTIS] = '+str(int(corrfactor[0][1]*sumw[0][1]))+', cat[2012,L0TIS] = '+str(int(corrfactor[1][0]*sumw[1][0]))+ ', cat[2012,L0noTIS] = '+str(int(corrfactor[1][1]*sumw[1][1]))
 	else: print 'Yield categ. distribution: cat[2011,L0TIS] = '+str(ev_counter_11L0TIS)+ ', cat[2011,L0noTIS] = '+str(ev_counter_11L0noTIS)+', cat[2012,L0TIS] = '+str(ev_counter_12L0TIS)+ ', cat[2012,L0noTIS] = '+str(ev_counter_12L0noTIS)
 
-	data_full_ = RooDataSet("data_full_","data_full_",data_11L0TIS_.get(),RooFit.Index(yeartrigcat),RooFit.Import("2011_L0TIS",data_11L0TIS_),RooFit.Import("2011_L0noTIS",data_11L0noTIS_),\
-RooFit.Import("2012_L0TIS",data_12L0TIS_),RooFit.Import("2012_L0noTIS",data_12L0noTIS_))
+	data_full_ = ROOT.RooDataSet("data_full_","data_full_",data_11L0TIS_.get(),ROOT.RooFit.Index(yeartrigcat),ROOT.RooFit.Import("2011_L0TIS",data_11L0TIS_),ROOT.RooFit.Import("2011_L0noTIS",data_11L0noTIS_),\
+ROOT.RooFit.Import("2012_L0TIS",data_12L0TIS_),ROOT.RooFit.Import("2012_L0noTIS",data_12L0noTIS_))
 
 	if wide_window:
-		data_full_fit = RooDataSet("data_full_fit","data_full_fit",data_full_,FullArgSetFitWide,"",weight_name+"_fit")
-		data_full_plot = RooDataSet("data_full_plot","data_full_plot",data_full_,FullArgSetPlotWide,"",weight_name+"_plot")
+		data_full_fit = ROOT.RooDataSet("data_full_fit","data_full_fit",data_full_,FullArgSetFitWide,"",weight_name+"_fit")
+		data_full_plot = ROOT.RooDataSet("data_full_plot","data_full_plot",data_full_,FullArgSetPlotWide,"",weight_name+"_plot")
 	else:
-		data_full_fit = RooDataSet("data_full_fit","data_full_fit",data_full_,FullArgSetFitNarrow,"",weight_name+"_fit")
-		data_full_plot = RooDataSet("data_full_plot","data_full_plot",data_full_,FullArgSetPlotNarrow,"",weight_name+"_plot")
+		data_full_fit = ROOT.RooDataSet("data_full_fit","data_full_fit",data_full_,FullArgSetFitNarrow,"",weight_name+"_fit")
+		data_full_plot = ROOT.RooDataSet("data_full_plot","data_full_plot",data_full_,FullArgSetPlotNarrow,"",weight_name+"_plot")
 
 	file_out.Close()
 
 	return [data_full_fit,data_full_plot,data_11L0TIS_,data_11L0noTIS_,data_12L0TIS_,data_12L0noTIS_], hist_mistag_SSK, hist_mistag_OS, hist_deltat
 
 def createPDF(Blinding, NOCP, NODIRCP, SAMECP, acc_type, inf_t_res, wide_window, data_file,\
-fix_wave_fractions = 0, fix_dirCP_asyms = 0, fix_strong_phases = 0, fix_weak_phases = 0, fix_mixing_params = 0, fix_calib_params = 0,\
+fix_re_amps = 0, fix_dirCP_asyms = 0, fix_im_amps = 0, fix_weak_phases = 0, fix_mixing_params = 0, fix_calib_params = 0,\
 pw_alternative_model = 0,f_Kst1410_rel2_Kst892 = 0,delta_Kst1410_rel2_Kst892 = 0,f_Kst1680_rel2_Kst892 = 0,delta_Kst1680_rel2_Kst892 = 0):
 
 	# -----------------------------------------------------------
@@ -2422,8 +2532,8 @@ pw_alternative_model = 0,f_Kst1410_rel2_Kst892 = 0,delta_Kst1410_rel2_Kst892 = 0
 
 	# Configuration of the rest of the parameters.
 	for argument in options: options_list.add(argument)
-	for argument in wave_fractions: wave_fractions_list.add(argument)
-	for argument in strong_phases: strong_phases_list.add(argument)
+	for argument in re_amps: re_amps_list.add(argument)
+	for argument in im_amps: im_amps_list.add(argument)
 	for argument in mixing_params: mixing_params_list.add(argument)
 	for argument in calib_params: calib_params_list.add(argument)
 	for argument in cond_distr_params: cond_distr_params_list.add(argument)
@@ -2431,43 +2541,19 @@ pw_alternative_model = 0,f_Kst1410_rel2_Kst892 = 0,delta_Kst1410_rel2_Kst892 = 0
 
 	# If narrow window is used: removal of the unnecesary CP conserving parameters.
 	if (not wide_window):
-		f_Swave.setVal(1.)
-		f_Swave.setConstant(1)
-		f_VTTV.setConstant(1)
-		f_TT.setConstant(1)
-		D_VTTV.setConstant(1)
-		D_STTS.setConstant(1)
-		fL_VT.setConstant(1)
-		xpar_VT.setConstant(1)
-		fL_TV.setConstant(1)
-		xpar_TV.setConstant(1)
-		fL_TT.setConstant(1)
-		xpar1_TT.setConstant(1)
-		xperp1_TT.setConstant(1)
-		xpar2_TT.setConstant(1)
-		delta02.setConstant(1)
-		delta20.setConstant(1)
-		delta120.setConstant(1)
-		delta12par.setConstant(1)
-		delta12perp.setConstant(1)
-		delta210.setConstant(1)
-		delta21par.setConstant(1)
-		delta21perp.setConstant(1)
-		delta220.setConstant(1)
-		delta22par.setConstant(1)
-		delta22perp.setConstant(1)
-		delta22par2.setConstant(1)
-		delta22perp2.setConstant(1)
+		for param in [reA02,reA20,reA120,reA12par,reA12perp,reA210,reA21par,reA21perp,reA220,reA22par,reA22perp,reA22par2,reA22perp2,imA02,imA20,imA120,imA12par,imA12perp,imA210,imA21par,imA21perp,imA220,imA22par,imA22perp,imA22par2,imA22perp2]:
+			param.setVal(0)
+			param.setConstant(1)
 
 	# Printing out the list with the free physical parameters in the PDF.
 	parameters = []
 	print "\n#####################################################################"
 	print " F R E E   P H Y S I C A L   P A R A M E T E R S"
 	print "#####################################################################"
-	lenghts = [len(wave_fractions),len(dirCP_asyms),len(strong_phases),len(weak_phases),len(mixing_params),len(calib_params)]
-	lists = [wave_fractions_list,dirCP_asyms_list,strong_phases_list,weak_phases_list,mixing_params_list,calib_params_list]
-	lists_unblinded = [wave_fractions_list,dirCP_asyms_unblinded_list,strong_phases_list,weak_phases_unblinded_list,mixing_params_list,calib_params_list]
-	fixed_list = [fix_wave_fractions,fix_dirCP_asyms,fix_strong_phases,fix_weak_phases,fix_mixing_params,fix_calib_params]
+	lenghts = [len(re_amps),len(dirCP_asyms),len(im_amps),len(weak_phases),len(mixing_params),len(calib_params)]
+	lists = [re_amps_list,dirCP_asyms_list,im_amps_list,weak_phases_list,mixing_params_list,calib_params_list]
+	lists_unblinded = [re_amps_list,dirCP_asyms_unblinded_list,im_amps_list,weak_phases_unblinded_list,mixing_params_list,calib_params_list]
+	fixed_list = [fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params]
 	names = ["CP averaged wave fractions:\n","Direct CP asymmetries:\n","Strong phases:\n","Weak phases:\n","Bs-Bsbar mixing parameters:\n","Calibration parameters:\n"]
 	counter = 1
 	DCPcounter = -1
@@ -2505,15 +2591,28 @@ pw_alternative_model = 0,f_Kst1410_rel2_Kst892 = 0,delta_Kst1410_rel2_Kst892 = 0
 	# PDF CONSTRUCTION
 	# -----------------------------------------------------------
 
-	model = PDF_with_integrals("model","model",options_list,wide_window,data_file,observables_list,wave_fractions_list,dirCP_asyms_list,\
-strong_phases_list,weak_phases_list,mixing_params_list,calib_params_list,sys_studies_list)
+	model = PDF_with_integrals("model","model",options_list,wide_window,data_file,observables_list,re_amps_list,dirCP_asyms_list,\
+im_amps_list,weak_phases_list,mixing_params_list,calib_params_list,sys_studies_list)
 
 	return model, parameters
 
 
-def createSimPDF(Blinding, NOCP, NODIRCP, SAMECP, acc_type, inf_t_res, wide_window, data_file,\
-fix_wave_fractions = 0, fix_dirCP_asyms = 0, fix_strong_phases = 0, fix_weak_phases = 0, fix_mixing_params = 0, fix_calib_params = 0,\
+def createSimPDF(TD_fit, Blinding, NOCP, NODIRCP, SAMECP, acc_type, inf_t_res, wide_window, data_file,\
+fix_re_amps = 0, fix_dirCP_asyms = 0, fix_im_amps = 0, fix_weak_phases = 0, fix_mixing_params = 0, fix_calib_params = 0,\
 pw_alternative_model = 0,f_Kst1410_rel2_Kst892 = 0,delta_Kst1410_rel2_Kst892 = 0,f_Kst1680_rel2_Kst892 = 0,delta_Kst1680_rel2_Kst892 = 0):
+
+	# -----------------------------------------------------------
+	# CONFIGURATION OF THE PDF ACCORDING TO THE TYPE OF FIT
+	# -----------------------------------------------------------
+
+	if (not TD_fit):
+		alt_fit.setVal(4)
+		NOCP = 1
+		fix_mixing_params = 1
+		fix_calib_params = 1
+		imA11perp.setVal(0)
+		imA11perp.setConstant(1)
+		for obs in [t,terror,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS]: obs.setConstant(1)
 
 	# -----------------------------------------------------------
 	# SETUP OF THE PARAMETERS ENTERING THE PDF
@@ -2582,8 +2681,8 @@ pw_alternative_model = 0,f_Kst1410_rel2_Kst892 = 0,delta_Kst1410_rel2_Kst892 = 0
 	for argument in options_11L0noTIS: options_11L0noTIS_list.add(argument)
 	for argument in options_12L0TIS: options_12L0TIS_list.add(argument)
 	for argument in options_12L0noTIS: options_12L0noTIS_list.add(argument)
-	for argument in wave_fractions: wave_fractions_list.add(argument)
-	for argument in strong_phases: strong_phases_list.add(argument)
+	for argument in re_amps: re_amps_list.add(argument)
+	for argument in im_amps: im_amps_list.add(argument)
 	for argument in mixing_params: mixing_params_list.add(argument)
 	for argument in calib_params: calib_params_list.add(argument)
 	for argument in cond_distr_params: cond_distr_params_list.add(argument)
@@ -2591,43 +2690,19 @@ pw_alternative_model = 0,f_Kst1410_rel2_Kst892 = 0,delta_Kst1410_rel2_Kst892 = 0
 
 	# If narrow window is used: removal of the unnecesary CP conserving parameters.
 	if (not wide_window):
-		f_Swave.setVal(1.)
-		f_Swave.setConstant(1)
-		f_VTTV.setConstant(1)
-		f_TT.setConstant(1)
-		D_VTTV.setConstant(1)
-		D_STTS.setConstant(1)
-		fL_VT.setConstant(1)
-		xpar_VT.setConstant(1)
-		fL_TV.setConstant(1)
-		xpar_TV.setConstant(1)
-		fL_TT.setConstant(1)
-		xpar1_TT.setConstant(1)
-		xperp1_TT.setConstant(1)
-		xpar2_TT.setConstant(1)
-		delta02.setConstant(1)
-		delta20.setConstant(1)
-		delta120.setConstant(1)
-		delta12par.setConstant(1)
-		delta12perp.setConstant(1)
-		delta210.setConstant(1)
-		delta21par.setConstant(1)
-		delta21perp.setConstant(1)
-		delta220.setConstant(1)
-		delta22par.setConstant(1)
-		delta22perp.setConstant(1)
-		delta22par2.setConstant(1)
-		delta22perp2.setConstant(1)
+		for param in [reA02,reA20,reA120,reA12par,reA12perp,reA210,reA21par,reA21perp,reA220,reA22par,reA22perp,reA22par2,reA22perp2,imA02,imA20,imA120,imA12par,imA12perp,imA210,imA21par,imA21perp,imA220,imA22par,imA22perp,imA22par2,imA22perp2]:
+			param.setVal(0)
+			param.setConstant(1)
 
 	# Printing out the list with the free physical parameters in the PDF.
 	parameters = []
 	print "\n#####################################################################"
 	print " F R E E   P H Y S I C A L   P A R A M E T E R S"
 	print "#####################################################################"
-	lenghts = [len(wave_fractions),len(dirCP_asyms),len(strong_phases),len(weak_phases),len(mixing_params),len(calib_params)]
-	lists = [wave_fractions_list,dirCP_asyms_list,strong_phases_list,weak_phases_list,mixing_params_list,calib_params_list]
-	lists_unblinded = [wave_fractions_list,dirCP_asyms_unblinded_list,strong_phases_list,weak_phases_unblinded_list,mixing_params_list,calib_params_list]
-	fixed_list = [fix_wave_fractions,fix_dirCP_asyms,fix_strong_phases,fix_weak_phases,fix_mixing_params,fix_calib_params]
+	lenghts = [len(re_amps),len(dirCP_asyms),len(im_amps),len(weak_phases),len(mixing_params),len(calib_params)]
+	lists = [re_amps_list,dirCP_asyms_list,im_amps_list,weak_phases_list,mixing_params_list,calib_params_list]
+	lists_unblinded = [re_amps_list,dirCP_asyms_unblinded_list,im_amps_list,weak_phases_unblinded_list,mixing_params_list,calib_params_list]
+	fixed_list = [fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params]
 	names = ["CP averaged wave fractions:\n","Direct CP asymmetries:\n","Strong phases:\n","Weak phases:\n","Bs-Bsbar mixing parameters:\n","Calibration parameters:\n"]
 	counter = 1
 	DCPcounter = -1
@@ -2666,9 +2741,9 @@ pw_alternative_model = 0,f_Kst1410_rel2_Kst892 = 0,delta_Kst1410_rel2_Kst892 = 0
 	# -----------------------------------------------------------
 
 	model_11L0TIS,model_11L0noTIS,model_12L0TIS,model_12L0noTIS = PDFs_with_integrals("model","model",options_11L0TIS_list,options_11L0noTIS_list,options_12L0TIS_list,options_12L0noTIS_list,\
-wide_window,data_file,observables_list,wave_fractions_list,dirCP_asyms_list,strong_phases_list,weak_phases_list,mixing_params_list,calib_params_list,sys_studies_list)
+wide_window,data_file,observables_list,re_amps_list,dirCP_asyms_list,im_amps_list,weak_phases_list,mixing_params_list,calib_params_list,sys_studies_list)
 
-	model_full = RooSimultaneous("model_full","model_full",yeartrigcat)
+	model_full = ROOT.RooSimultaneous("model_full","model_full",yeartrigcat)
 	model_full.addPdf(model_11L0TIS,"2011_L0TIS")
 	model_full.addPdf(model_11L0noTIS,"2011_L0noTIS")
 	model_full.addPdf(model_12L0TIS,"2012_L0TIS")
@@ -2676,24 +2751,37 @@ wide_window,data_file,observables_list,wave_fractions_list,dirCP_asyms_list,stro
 
 	return [model_full,model_11L0TIS,model_11L0noTIS,model_12L0TIS,model_12L0noTIS], parameters
 
-def DoFit(model_,data_,num_CPU,minos_opt,strategy_option,fix_mixing,fix_calib):
+def DoFit(model_,data_,wide_window,TD_fit,num_CPU,minos_opt,strategy_option,fix_mixing,fix_calib):
 
    # Function to perform the fit.
 
-   if fix_mixing:
-      if fix_calib:
-         res = model_.fitTo(data_,RooFit.NumCPU(num_CPU),RooFit.Minos(minos_opt),RooFit.Strategy(strategy_option),RooFit.Timer(kTRUE),RooFit.SumW2Error(kTRUE),RooFit.Save(kTRUE))
-      else:
-         res = model_.fitTo(data_,RooFit.NumCPU(num_CPU),RooFit.Minos(minos_opt),RooFit.Strategy(strategy_option),RooFit.Timer(kTRUE),RooFit.SumW2Error(kTRUE),RooFit.Save(kTRUE),RooFit.ExternalConstraints(RooArgSet(ctrt_p0metac_SSK,ctrt_Dp0half_SSK,ctrt_p1_SSK,ctrt_Dp1half_SSK,ctrt_p0metac_OS,ctrt_Dp0half_OS,ctrt_p1_OS,ctrt_Dp1half_OS)))
+   if TD_fit:
 
-   else:
-      if fix_calib:
-         res = model_.fitTo(data_,RooFit.NumCPU(num_CPU),RooFit.Minos(minos_opt),RooFit.Strategy(strategy_option),RooFit.Timer(kTRUE),RooFit.SumW2Error(kTRUE),RooFit.Save(kTRUE),RooFit.ExternalConstraints(RooArgSet(ctrt_delta_m_Bs,ctrt_gamma_Bs,ctrt_delta_gamma_Bs)))
+      if fix_mixing:
+         if fix_calib: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE))
+         else:
+            ctrtargset = ROOT.RooArgSet(ctrt_p0metac_SSK_p1_SSK,ctrt_p0metac_OS_p1_OS,ctrt_Dp0half_SSK,ctrt_Dp1half_SSK,ctrt_Dp0half_OS,ctrt_Dp1half_OS)
+            if wide_window:
+               ctrtargset.add(ctrt_tres_p0_tres_p1_2011_wide)
+               ctrtargset.add(ctrt_tres_p0_tres_p1_2012_wide)
+            else:
+               ctrtargset.add(ctrt_tres_p0_tres_p1_2011_narrow)
+               ctrtargset.add(ctrt_tres_p0_tres_p1_2012_narrow)
+            res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ctrtargset))
+
       else:
-         ctrtargset = RooArgSet(ctrt_delta_m_Bs,ctrt_gamma_Bs,ctrt_delta_gamma_Bs,ctrt_p0metac_SSK,ctrt_Dp0half_SSK,ctrt_p1_SSK,ctrt_Dp1half_SSK,ctrt_p0metac_OS,ctrt_Dp0half_OS)
-         ctrtargset.add(ctrt_p1_OS)
-         ctrtargset.add(ctrt_Dp1half_OS)
-         res = model_.fitTo(data_,RooFit.NumCPU(num_CPU),RooFit.Minos(minos_opt),RooFit.Strategy(strategy_option),RooFit.Timer(kTRUE),RooFit.SumW2Error(kTRUE),RooFit.Save(kTRUE),RooFit.ExternalConstraints(ctrtargset))
+         if fix_calib: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ROOT.RooArgSet(ctrt_gamma_Bs_delta_gamma_Bs)))
+         else:
+            ctrtargset = ROOT.RooArgSet(ctrt_gamma_Bs_delta_gamma_Bs,ctrt_p0metac_SSK_p1_SSK,ctrt_p0metac_OS_p1_OS,ctrt_Dp0half_SSK,ctrt_Dp1half_SSK,ctrt_Dp0half_OS,ctrt_Dp1half_OS)
+            if wide_window:
+               ctrtargset.add(ctrt_tres_p0_tres_p1_2011_wide)
+               ctrtargset.add(ctrt_tres_p0_tres_p1_2012_wide)
+            else:
+               ctrtargset.add(ctrt_tres_p0_tres_p1_2011_narrow)
+               ctrtargset.add(ctrt_tres_p0_tres_p1_2012_narrow)
+            res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ctrtargset))
+
+   else: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE))
 
    return res
 
@@ -2788,22 +2876,21 @@ def stringline(name,listpar,blinded):
       else: return '$'+var[0]+'$ & %.4f'%var[1]+' & %.4f'%var[2]+' \\\\\n'
    else: return ''
 
+def stringline_prop(fitresult,par):
+   return '$'+par.GetTitle()+'$ & %.4f'%par.getVal()+' & %.4f'%par.getPropagatedError(fitresult)+' \\\\\n'
+
 def printresultoldformat(fitresult):
 
-   fparallel = RooFormulaVar("fparallel","fparallel","(1.-fL_VV)*xpar_VV",RooArgList(fL_VV,xpar_VV))
-   deltaperpplus = RooFormulaVar("deltaperpplus","deltaperpplus","delta11perp-deltaphaseplus_100",RooArgList(delta11perp,deltaphaseplus_100))
-   modSS2 = RooFormulaVar("modSS2","modSS2","(1.-f_VV)*f_Swave*f_SS",RooArgList(f_VV,f_Swave,f_SS))
-
    print '************************************'
-   print 'fL =',round(fL_VV.getVal(),3),'+-',round(fL_VV.getError(),3)
-   print 'fparallel =',round(fparallel.getVal(),3),'+-',round(fparallel.getPropagatedError(fitresult),3)
-   print '|As-|2 =',round(avsqmodminus_100.getVal(),3),'+-',round(avsqmodminus_100.getPropagatedError(fitresult),3)
-   print '|As+|2 =',round(avsqmodplus_100.getVal(),3),'+-',round(avsqmodplus_100.getPropagatedError(fitresult),3)
-   print '|Ass|2 =',round(modSS2.getVal(),3),'+-',round(modSS2.getPropagatedError(fitresult),3)
-   print 'deltaparallel =',round(delta11par.getVal(),2),'+-',round(delta11par.getError(),2)
-   print 'deltaperp-deltasplus =',round(deltaperpplus.getVal(),2),'+-',round(deltaperpplus.getPropagatedError(fitresult),2)
-   print 'deltasminus =',round(deltaphaseminus_100.getVal(),2),'+-',round(deltaphaseminus_100.getPropagatedError(fitresult),2)
-   print 'deltass =',round(delta00.getVal(),2),'+-',round(delta00.getError(),2)
+   print 'fL =',round(fL11.getVal(),3),'+-',round(fL11.getPropagatedError(fitresult),3)
+   print 'fparallel =',round(fpar11.getVal(),3),'+-',round(fpar11.getPropagatedError(fitresult),3)
+   print '|As-|2 =',round(sqmodAsminusnorm.getVal(),3),'+-',round(sqmodAsminusnorm.getPropagatedError(fitresult),3)
+   print '|As+|2 =',round(sqmodAsplusnorm.getVal(),3),'+-',round(sqmodAsplusnorm.getPropagatedError(fitresult),3)
+   print '|Ass|2 =',round(sqmodA00norm.getVal(),3),'+-',round(sqmodA00norm.getPropagatedError(fitresult),3)
+   print 'deltaparallel =',round(deltaA11par.getVal(),2),'+-',round(deltaA11par.getPropagatedError(fitresult),2)
+   print 'deltaperp-deltasplus =',round(deltaA11perpAsplus.getVal(),2),'+-',round(deltaA11perpAsplus.getPropagatedError(fitresult),2)
+   print 'deltasminus =',round(deltaAsminus.getVal(),2),'+-',round(deltaAsminus.getPropagatedError(fitresult),2)
+   print 'deltass =',round(deltaA00.getVal(),2),'+-',round(deltaA00.getPropagatedError(fitresult),2)
    print '************************************'
 
 def fitprint2LaTeX(filename,parameters,wide_window,noCP,blinded,mixing_params_fixed,calib_params_fixed):
@@ -2897,6 +2984,12 @@ def fitprint2LaTeX(filename,parameters,wide_window,noCP,blinded,mixing_params_fi
 		partext += stringline("Dp0half_OS",parameters,blinded)
 		partext += stringline("p1_OS",parameters,blinded)
 		partext += stringline("Dp1half_OS",parameters,blinded)
+		partext += '\\hline\n\\hline\n'
+		partext += '\\multicolumn{3}{|c|}{Time resolution}\\\\\n\\hline\n\\hline\n'
+		partext += stringline("tres_p0_2011",parameters,blinded)
+		partext += stringline("tres_p1_2011",parameters,blinded)
+		partext += stringline("tres_p0_2012",parameters,blinded)
+		partext += stringline("tres_p1_2012",parameters,blinded)
 		partext += '\\hline\n\\hline\n\\end{tabular}\n\\end{table}\n\n'
 	partext += '\\end{document}'
 	partext = partext.replace('#','\\')
@@ -2905,14 +2998,13 @@ def fitprint2LaTeX(filename,parameters,wide_window,noCP,blinded,mixing_params_fi
 	texfile = open(filename+'.tex','w')
 	texfile.write(partext)
 	texfile.close()
-	#os.system('pdflatex '+filename+'.tex')
 
 def CondVarStudy(fit_bool,model_,parameters_,data_,hist_mistag_SSK_,hist_mistag_OS_,hist_deltat_):
 
 	if fit_bool:
-		hist_mistag_SSK_.plotOn(frame_eta_SSK,RooFit.Binning(25))
-		hist_mistag_OS_.plotOn(frame_eta_OS,RooFit.Binning(25))
-		hist_deltat_.plotOn(frame_terr,RooFit.Binning(25))
+		hist_mistag_SSK_.plotOn(frame_eta_SSK,ROOT.RooFit.Binning(25))
+		hist_mistag_OS_.plotOn(frame_eta_OS,ROOT.RooFit.Binning(25))
+		hist_deltat_.plotOn(frame_terr,ROOT.RooFit.Binning(25))
 		for i in observables: i.setConstant(1)
 		for i in observables_narrowwin: i.setConstant(1)
 		for i in parameters_: i.setConstant(1)
@@ -2920,21 +3012,21 @@ def CondVarStudy(fit_bool,model_,parameters_,data_,hist_mistag_SSK_,hist_mistag_
 		# Fit of the t_err distribution.
 		for i in [gamma1_dt,beta1_dt,c_dt,gamma2_dt,beta2_dt]: i.setConstant(0)
 		alt_fit.setVal(1)
-		model_.fitTo(hist_deltat_,RooFit.SumW2Error(kTRUE))
+		model_.fitTo(hist_deltat_,ROOT.RooFit.SumW2Error(kTRUE))
 		model_.plotOn(frame_terr)
 		for i in [gamma1_dt,beta1_dt,c_dt,gamma2_dt,beta2_dt]: i.setConstant(1)
 
 		# Fit of the eta_SSK distribution.
 		for i in [mu1_SSK,sigma1_SSK,c_SSK,mu2_SSK,sigma2_SSK]: i.setConstant(0)
 		alt_fit.setVal(2)
-		model_.fitTo(hist_mistag_SSK_,RooFit.SumW2Error(kTRUE))
+		model_.fitTo(hist_mistag_SSK_,ROOT.RooFit.SumW2Error(kTRUE))
 		model_.plotOn(frame_eta_SSK)
 		for i in [mu1_SSK,sigma1_SSK,c_SSK,mu2_SSK,sigma2_SSK]: i.setConstant(1)
 
 		# Fit of the eta_OS distribution.
 		for i in [mu1_OS,sigma1_OS,c_OS,mu2_OS,sigma2_OS]: i.setConstant(0)
 		alt_fit.setVal(3)
-		model_.fitTo(hist_mistag_OS_,RooFit.SumW2Error(kTRUE))
+		model_.fitTo(hist_mistag_OS_,ROOT.RooFit.SumW2Error(kTRUE))
 		model_.plotOn(frame_eta_OS)
 		for i in [mu1_OS,sigma1_OS,c_OS,mu2_OS,sigma2_OS]: i.setConstant(1)
 
@@ -2944,7 +3036,7 @@ def CondVarStudy(fit_bool,model_,parameters_,data_,hist_mistag_SSK_,hist_mistag_
 		for i in parameters_: i.setConstant(0)
 
 		# Plot of the resulting distributions.
-		c_cond = TCanvas("c_cond","c_cond",1800,600)
+		c_cond = ROOT.TCanvas("c_cond","c_cond",1800,600)
 		c_cond.Divide(3)
 		c_cond.cd(1)
 		frame_eta_SSK.Draw()
@@ -2960,51 +3052,55 @@ def genTree(nevents,model,output_tag):
 	print 'Events generated.'
 	d_.write("tmp.dat")
 	gROOT.Reset()
-	fout = TFile(output_tag + "_" + str(nevents) + "ev.root","RECREATE")
-	tout = TTree("DecayTree","DecayTree")
+	fout = ROOT.TFile(output_tag + "_" + str(nevents) + "ev.root","RECREATE")
+	tout = ROOT.TTree("DecayTree","DecayTree")
 	tout.ReadFile("tmp.dat",m1_name+":"+m2_name+":"+cos1_name+":"+cos2_name+":"+phi_name+":"+t_name+":"+terror_name+":"+dec_SSK_name+":"+dec_OS_name+":"+eta_SSK_name+":"+eta_OS_name)
 	tout.Write()
 	fout.Close()
 	os.system("rm tmp.dat")
 
-def doToyMCStudy(nexp,neve,model,output_tag,job_id,GRID,num_CPU,minos_opt,strategy_option,fix_mixing,fix_calib):
+def doToyMCStudy(nexp,neve,model,output_tag,job_id,GRID,num_CPU,minos_opt,strategy_option,wide_window,fix_mixing,fix_calib):
 
-	RooRandom.randomGenerator().SetSeed(0)
+	ROOT.RooRandom.randomGenerator().SetSeed(0)
 
 	start = time.time()
 
-	pdf_arglist = RooArgList(model)
-	ctrtvar_argset = RooArgSet()
+	pdf_arglist = ROOT.RooArgList(model)
+	ctrtvar_argset = ROOT.RooArgSet()
 
 	if fix_mixing:
 		if fix_calib:
-			MCS = RooMCStudy(model,FullArgSet,RooFit.Silence(),RooFit.FitOptions(RooFit.NumCPU(num_CPU),RooFit.Minos(minos_opt),RooFit.Strategy(strategy_option),RooFit.Timer(kTRUE),RooFit.Save(kTRUE)))
+			MCS = ROOT.RooMCStudy(model,FullArgSet,ROOT.RooFit.Silence(),ROOT.RooFit.FitOptions(ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE)))
 			print 'Mixing and calibration parameters fixed during the toy studies.'
 		else:
-			map(lambda x:pdf_arglist.add(x),[ctrt_p0metac_SSK,ctrt_Dp0half_SSK,ctrt_p1_SSK,ctrt_Dp1half_SSK,ctrt_p0metac_OS,ctrt_Dp0half_OS,ctrt_p1_OS,ctrt_Dp1half_OS])
-			map(lambda x:ctrtvar_argset.add(x),[p0metac_SSK,Dp0half_SSK,p1_SSK,Dp1half_SSK,p0metac_OS,Dp0half_OS,p1_OS,Dp1half_OS])
-			model_constrained = RooProdPdf("model_constrained","model_constrained",pdf_arglist)
-			MCS = RooMCStudy(model_constrained,FullArgSet,RooFit.Constrain(ctrtvar_argset),RooFit.Silence(),RooFit.FitOptions(RooFit.NumCPU(num_CPU),RooFit.Minos(minos_opt),RooFit.Strategy(strategy_option),RooFit.Timer(kTRUE),RooFit.Save(kTRUE)))
+			map(lambda x:pdf_arglist.add(x),[ctrt_p0metac_SSK_p1_SSK,ctrt_p0metac_OS_p1_OS,ctrt_Dp0half_SSK,ctrt_Dp1half_SSK,ctrt_Dp0half_OS,ctrt_Dp1half_OS])
+			if wide_window: map(lambda x:pdf_arglist.add(x),[ctrt_tres_p0_tres_p1_2011_wide,ctrt_tres_p0_tres_p1_2012_wide])
+			else: map(lambda x:pdf_arglist.add(x),[ctrt_tres_p0_tres_p1_2011_narrow,ctrt_tres_p0_tres_p1_2012_narrow])
+			map(lambda x:ctrtvar_argset.add(x),[p0metac_SSK,Dp0half_SSK,p1_SSK,Dp1half_SSK,p0metac_OS,Dp0half_OS,p1_OS,Dp1half_OS,tres_p0_2011,tres_p1_2011,tres_p0_2012,tres_p1_2012])
+			model_constrained = ROOT.RooProdPdf("model_constrained","model_constrained",pdf_arglist)
+			MCS = ROOT.RooMCStudy(model_constrained,FullArgSet,ROOT.RooFit.Constrain(ctrtvar_argset),ROOT.RooFit.Silence(),ROOT.RooFit.FitOptions(ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE)))
 			print 'Mixing parameters fixed during the toy studies. Calibration parameters gaussian constrained.'
 
 	else:
 		if fix_calib:
-			map(lambda x:pdf_arglist.add(x),[ctrt_delta_m_Bs,ctrt_gamma_Bs,ctrt_delta_gamma_Bs])
-			map(lambda x:ctrtvar_argset.add(x),[delta_m_Bs,gamma_Bs,delta_gamma_Bs])
-			model_constrained = RooProdPdf("model_constrained","model_constrained",pdf_arglist)
-			MCS = RooMCStudy(model_constrained,FullArgSet,RooFit.Constrain(ctrtvar_argset),RooFit.Silence(),RooFit.FitOptions(RooFit.NumCPU(num_CPU),RooFit.Minos(minos_opt),RooFit.Strategy(strategy_option),RooFit.Timer(kTRUE),RooFit.Save(kTRUE)))
+			map(lambda x:pdf_arglist.add(x),[ctrt_gamma_Bs_delta_gamma_Bs])
+			map(lambda x:ctrtvar_argset.add(x),[gamma_Bs,delta_gamma_Bs])
+			model_constrained = ROOT.RooProdPdf("model_constrained","model_constrained",pdf_arglist)
+			MCS = ROOT.RooMCStudy(model_constrained,FullArgSet,ROOT.RooFit.Constrain(ctrtvar_argset),ROOT.RooFit.Silence(),ROOT.RooFit.FitOptions(ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE)))
 			print 'Calibration parameters fixed during the toy studies. Mixing parameters gaussian constrained.'
 		else:
-			map(lambda x:pdf_arglist.add(x),[ctrt_delta_m_Bs,ctrt_gamma_Bs,ctrt_delta_gamma_Bs,ctrt_p0metac_SSK,ctrt_Dp0half_SSK,ctrt_p1_SSK,ctrt_Dp1half_SSK,ctrt_p0metac_OS,ctrt_Dp0half_OS,ctrt_p1_OS,ctrt_Dp1half_OS])
-			map(lambda x:ctrtvar_argset.add(x),[delta_m_Bs,gamma_Bs,delta_gamma_Bs,p0metac_SSK,Dp0half_SSK,p1_SSK,Dp1half_SSK,p0metac_OS,Dp0half_OS,p1_OS,Dp1half_OS])
-			model_constrained = RooProdPdf("model_constrained","model_constrained",pdf_arglist)
-			MCS = RooMCStudy(model_constrained,FullArgSet,RooFit.Constrain(ctrtvar_argset),RooFit.Silence(),RooFit.FitOptions(RooFit.NumCPU(num_CPU),RooFit.Minos(minos_opt),RooFit.Strategy(strategy_option),RooFit.Timer(kTRUE),RooFit.Save(kTRUE)))
+			map(lambda x:pdf_arglist.add(x),[ctrt_gamma_Bs_delta_gamma_Bs,ctrt_p0metac_SSK_p1_SSK,ctrt_p0metac_OS_p1_OS,ctrt_Dp0half_SSK,ctrt_Dp1half_SSK,ctrt_Dp0half_OS,ctrt_Dp1half_OS])
+			if wide_window: map(lambda x:pdf_arglist.add(x),[ctrt_tres_p0_tres_p1_2011_wide,ctrt_tres_p0_tres_p1_2012_wide])
+			else: map(lambda x:pdf_arglist.add(x),[ctrt_tres_p0_tres_p1_2011_narrow,ctrt_tres_p0_tres_p1_2012_narrow])
+			map(lambda x:ctrtvar_argset.add(x),[gamma_Bs,delta_gamma_Bs,p0metac_SSK,Dp0half_SSK,p1_SSK,Dp1half_SSK,p0metac_OS,Dp0half_OS,p1_OS,Dp1half_OS,tres_p0_2011,tres_p1_2011,tres_p0_2012,tres_p1_2012])
+			model_constrained = ROOT.RooProdPdf("model_constrained","model_constrained",pdf_arglist)
+			MCS = ROOT.RooMCStudy(model_constrained,FullArgSet,ROOT.RooFit.Constrain(ctrtvar_argset),ROOT.RooFit.Silence(),ROOT.RooFit.FitOptions(ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE)))
 			print 'Mixing and calibration parameters gaussian constrained during the toy studies.'
 
 	MCS.generateAndFit(nexp,neve)
 
-	fout_MCS = TFile("MCS.root","RECREATE")
-	tout_MCS = TTree("tree","tree")
+	fout_MCS = ROOT.TFile("MCS.root","RECREATE")
+	tout_MCS = ROOT.TTree("tree","tree")
 
 	strl = [ "_init", "_valu", "_erro", "_errl", "_errh", "_pull" ]
 
@@ -3061,37 +3157,37 @@ def genprint2LaTeX(filename,parameters):
 	texfile.close()
 
 def printllprofile(parameter,nll):
-	frame = parameter.frame(RooFit.Title(parameter.GetName()))
-	nll.plotOn(frame,RooFit.PrintEvalErrors(0),RooFit.ShiftToZero(),RooFit.LineColor(kRed))
-	c = TCanvas("c_"+parameter.GetName(),"c_"+parameter.GetName())
+	frame = parameter.frame(ROOT.RooFit.Title(parameter.GetName()))
+	nll.plotOn(frame,ROOT.RooFit.PrintEvalErrors(0),ROOT.RooFit.ShiftToZero(),ROOT.RooFit.LineColor(kRed))
+	c = ROOT.TCanvas("c_"+parameter.GetName(),"c_"+parameter.GetName())
 	frame.Draw()
 	c.Print("plotllprofile_" + parameter.GetName() + ".pdf")
 
 def plot61Ddata(data, step, wide_window = 1, mbinning = 40, cosbinning = 40, phibinning = 40, tbinning = 40):
 
 	if wide_window:
-		data.plotOn(frame_m1,RooFit.Name("data_"+str(step)),RooFit.Binning(mbinning))
-		data.plotOn(frame_m2,RooFit.Name("data_"+str(step)),RooFit.Binning(mbinning))
+		data.plotOn(frame_m1,ROOT.RooFit.Name("data_"+str(step)),ROOT.RooFit.Binning(mbinning))
+		data.plotOn(frame_m2,ROOT.RooFit.Name("data_"+str(step)),ROOT.RooFit.Binning(mbinning))
 	else:
-		data.plotOn(frame_m1_narrowwin,RooFit.Name("data_"+str(step)),RooFit.Binning(mbinning))
-		data.plotOn(frame_m2_narrowwin,RooFit.Name("data_"+str(step)),RooFit.Binning(mbinning))
-	data.plotOn(frame_cos1,RooFit.Name("data_"+str(step)),RooFit.Binning(cosbinning))
-	data.plotOn(frame_cos2,RooFit.Name("data_"+str(step)),RooFit.Binning(cosbinning))
-	data.plotOn(frame_phi,RooFit.Name("data_"+str(step)),RooFit.Binning(phibinning))
-	data.plotOn(frame_t,RooFit.Name("data_"+str(step)),RooFit.Binning(tbinning))
+		data.plotOn(frame_m1_narrowwin,ROOT.RooFit.Name("data_"+str(step)),ROOT.RooFit.Binning(mbinning))
+		data.plotOn(frame_m2_narrowwin,ROOT.RooFit.Name("data_"+str(step)),ROOT.RooFit.Binning(mbinning))
+	data.plotOn(frame_cos1,ROOT.RooFit.Name("data_"+str(step)),ROOT.RooFit.Binning(cosbinning))
+	data.plotOn(frame_cos2,ROOT.RooFit.Name("data_"+str(step)),ROOT.RooFit.Binning(cosbinning))
+	data.plotOn(frame_phi,ROOT.RooFit.Name("data_"+str(step)),ROOT.RooFit.Binning(phibinning))
+	data.plotOn(frame_t,ROOT.RooFit.Name("data_"+str(step)),ROOT.RooFit.Binning(tbinning))
 
 def plot61Dmodel(model, normdata, wide_window = 1, color = kBlue):
 
 	if wide_window:
-		model.plotOn(frame_m1,RooFit.Name("model"),RooFit.ProjWData(RooArgSet(yeartrigcat),normdata),RooFit.DrawOption("c"),RooFit.LineColor(color))
-		model.plotOn(frame_m2,RooFit.Name("model"),RooFit.ProjWData(RooArgSet(yeartrigcat),normdata),RooFit.DrawOption("c"),RooFit.LineColor(color))
+		model.plotOn(frame_m1,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
+		model.plotOn(frame_m2,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
 	else:
-		model.plotOn(frame_m1_narrowwin,RooFit.Name("model"),RooFit.ProjWData(RooArgSet(yeartrigcat),normdata),RooFit.DrawOption("c"),RooFit.LineColor(color))
-		model.plotOn(frame_m2_narrowwin,RooFit.Name("model"),RooFit.ProjWData(RooArgSet(yeartrigcat),normdata),RooFit.DrawOption("c"),RooFit.LineColor(color))
-	model.plotOn(frame_cos1,RooFit.Name("model"),RooFit.ProjWData(RooArgSet(yeartrigcat),normdata),RooFit.DrawOption("c"),RooFit.LineColor(color))
-	model.plotOn(frame_cos2,RooFit.Name("model"),RooFit.ProjWData(RooArgSet(yeartrigcat),normdata),RooFit.DrawOption("c"),RooFit.LineColor(color))
-	model.plotOn(frame_phi,RooFit.Name("model"),RooFit.ProjWData(RooArgSet(yeartrigcat),normdata),RooFit.DrawOption("c"),RooFit.LineColor(color))
-	model.plotOn(frame_t,RooFit.Name("model"),RooFit.ProjWData(RooArgSet(yeartrigcat),normdata),RooFit.DrawOption("c"),RooFit.LineColor(color))
+		model.plotOn(frame_m1_narrowwin,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
+		model.plotOn(frame_m2_narrowwin,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
+	model.plotOn(frame_cos1,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
+	model.plotOn(frame_cos2,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
+	model.plotOn(frame_phi,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
+	model.plotOn(frame_t,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
 
 def plot61Dcomponent(model, normdata, wide_window, compname, linecolor, linestyle):
 
@@ -3102,15 +3198,15 @@ def plot61Dcomponent(model, normdata, wide_window, compname, linecolor, linestyl
 
 	component(compid,compid,compid,compid,compid,compid)
 	if wide_window:
-		model.plotOn(frame_m1,RooFit.Name("model_comp_"+compname),RooFit.ProjWData(RooArgSet(yeartrigcat),normdata),RooFit.DrawOption("c"),RooFit.LineColor(linecolor),RooFit.LineStyle(linestyle),RooFit.LineWidth(2))
-		model.plotOn(frame_m2,RooFit.Name("model_comp_"+compname),RooFit.ProjWData(RooArgSet(yeartrigcat),normdata),RooFit.DrawOption("c"),RooFit.LineColor(linecolor),RooFit.LineStyle(linestyle),RooFit.LineWidth(2))
+		model.plotOn(frame_m1,ROOT.RooFit.Name("model_comp_"+compname),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(linecolor),ROOT.RooFit.LineStyle(linestyle),ROOT.RooFit.LineWidth(2))
+		model.plotOn(frame_m2,ROOT.RooFit.Name("model_comp_"+compname),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(linecolor),ROOT.RooFit.LineStyle(linestyle),ROOT.RooFit.LineWidth(2))
 	else:
-		model.plotOn(frame_m1_narrowwin,RooFit.Name("model_comp_"+compname),RooFit.ProjWData(RooArgSet(yeartrigcat),normdata),RooFit.DrawOption("c"),RooFit.LineColor(linecolor),RooFit.LineStyle(linestyle),RooFit.LineWidth(2))
-		model.plotOn(frame_m2_narrowwin,RooFit.Name("model_comp_"+compname),RooFit.ProjWData(RooArgSet(yeartrigcat),normdata),RooFit.DrawOption("c"),RooFit.LineColor(linecolor),RooFit.LineStyle(linestyle),RooFit.LineWidth(2))
-	model.plotOn(frame_cos1,RooFit.Name("model_comp_"+compname),RooFit.ProjWData(RooArgSet(yeartrigcat),normdata),RooFit.DrawOption("c"),RooFit.LineColor(linecolor),RooFit.LineStyle(linestyle),RooFit.LineWidth(2))
-	model.plotOn(frame_cos2,RooFit.Name("model_comp_"+compname),RooFit.ProjWData(RooArgSet(yeartrigcat),normdata),RooFit.DrawOption("c"),RooFit.LineColor(linecolor),RooFit.LineStyle(linestyle),RooFit.LineWidth(2))
-	model.plotOn(frame_phi,RooFit.Name("model_comp_"+compname),RooFit.ProjWData(RooArgSet(yeartrigcat),normdata),RooFit.DrawOption("c"),RooFit.LineColor(linecolor),RooFit.LineStyle(linestyle),RooFit.LineWidth(2))
-	model.plotOn(frame_t,RooFit.Name("model_comp_"+compname),RooFit.ProjWData(RooArgSet(yeartrigcat),normdata),RooFit.DrawOption("c"),RooFit.LineColor(linecolor),RooFit.LineStyle(linestyle),RooFit.LineWidth(2))
+		model.plotOn(frame_m1_narrowwin,ROOT.RooFit.Name("model_comp_"+compname),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(linecolor),ROOT.RooFit.LineStyle(linestyle),ROOT.RooFit.LineWidth(2))
+		model.plotOn(frame_m2_narrowwin,ROOT.RooFit.Name("model_comp_"+compname),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(linecolor),ROOT.RooFit.LineStyle(linestyle),ROOT.RooFit.LineWidth(2))
+	model.plotOn(frame_cos1,ROOT.RooFit.Name("model_comp_"+compname),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(linecolor),ROOT.RooFit.LineStyle(linestyle),ROOT.RooFit.LineWidth(2))
+	model.plotOn(frame_cos2,ROOT.RooFit.Name("model_comp_"+compname),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(linecolor),ROOT.RooFit.LineStyle(linestyle),ROOT.RooFit.LineWidth(2))
+	model.plotOn(frame_phi,ROOT.RooFit.Name("model_comp_"+compname),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(linecolor),ROOT.RooFit.LineStyle(linestyle),ROOT.RooFit.LineWidth(2))
+	model.plotOn(frame_t,ROOT.RooFit.Name("model_comp_"+compname),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(linecolor),ROOT.RooFit.LineStyle(linestyle),ROOT.RooFit.LineWidth(2))
 	component(9,9,9,9,9,9)
 
 def create61Dcanvas(wide_window,leg61D):
@@ -3128,16 +3224,16 @@ def create61Dcanvas(wide_window,leg61D):
 		leg61D.AddEntry(frame_t.findObject("model_comp_ST"),"B_{s}^{0} #rightarrow (K^{+}#pi^{-})_{0}#bar{K}^{*}_{2}(1430)^{0}","l")
 		leg61D.AddEntry(frame_t.findObject("model_comp_TS"),"B_{s}^{0} #rightarrow K^{*}_{2}(1430)^{0}(K^{-}#pi^{+})_{0}","l")
 		leg61D.AddEntry(frame_t.findObject("model_comp_TT"),"B_{s}^{0} #rightarrow K^{*}_{2}(1430)^{0}#bar{K}^{*}_{2}(1430)^{0}","l")
-	c1 = TCanvas("c1","c1",1000,800)
+	c1 = ROOT.TCanvas("c1","c1",1000,800)
 	c1.Divide(2,3)
 	c1.cd(1)
 	if wide_window: frame_m1.Draw()
 	else: frame_m1_narrowwin.Draw()
-	c1.cd(1).SetLogy(1)
+	#c1.cd(1).SetLogy(1)
 	c1.cd(2)
 	if wide_window: frame_m2.Draw()
 	else: frame_m2_narrowwin.Draw()
-	c1.cd(2).SetLogy(1)
+	#c1.cd(2).SetLogy(1)
 	c1.cd(3)
 	frame_cos1.Draw()
 	c1.cd(4)
@@ -3147,8 +3243,274 @@ def create61Dcanvas(wide_window,leg61D):
 	c1.cd(6)
 	frame_t.Draw()
 	leg61D.Draw()
-	#for i in [c1.cd(1),c1.cd(2),c1.cd(3),c1.cd(4),c1.cd(5),c1.cd(6)]:
-	#	i.GetXaxis().SetTitleSize(0.2)
-	#	i.GetYaxis().SetTitleSize(0.2)
+
+	if wide_window:
+		printPlot(mKp1,frame_m1)
+		printPlot(mKp2,frame_m2)
+	else:
+		printPlot(mKp1_narrowwin,frame_m1_narrowwin)
+		printPlot(mKp2_narrowwin,frame_m2_narrowwin)
+	printPlot(cos1,frame_cos1)
+	printPlot(cos2,frame_cos2)
+	printPlot(phi,frame_phi)
+	printPlot(t,frame_t)
 
 	return c1
+
+def fitprint2LaTeX_ReAImA(filename,parameters,wide_window,noCP,blinded,mixing_params_fixed,calib_params_fixed):
+	partext = '\\documentclass[11pt,a4paper]{article}\n\\usepackage[left=2.5cm,top=2.5cm,right=2.5cm,bottom=2.5cm]{geometry}\n\n\\begin{document}\n\n\\begin{table}[h]\n\\centering\n\\begin{tabular}{|c|c|c|}\n\hline\nParameter & Value & Stat. uncertainty \\\\\n\\hline\n\\hline\n'
+	if (not noCP) or (not mixing_params_fixed): partext += '\\multicolumn{3}{|c|}{Common parameters}\\\\\n\\hline\n\\hline\n'
+	if not noCP:
+		partext += stringline("phis",parameters,blinded)
+		partext += stringline("DCP",parameters,blinded)
+	if not mixing_params_fixed:
+		partext += stringline("delta_m_Bs",parameters,blinded)
+		partext += stringline("gamma_Bs",parameters,blinded)
+		partext += stringline("delta_gamma_Bs",parameters,blinded)
+	if (not noCP) or (not mixing_params_fixed): partext += '\\hline\n\\hline\n'
+	partext += '\\multicolumn{3}{|c|}{$B_{s}^{0}\\to K^{*}(892)^{0}\\bar{K}^{*}(892)^{0}$ (VV)}\\\\\n\\hline\n\\hline\n'
+	partext += stringline("reA11par",parameters,blinded)
+	partext += stringline("imA11par",parameters,blinded)
+	partext += stringline("reA11perp",parameters,blinded)
+	partext += stringline("imA11perp",parameters,blinded)
+	partext += '\\hline\n\\hline\n'
+	partext += '\\multicolumn{3}{|c|}{Single $S-wave$ (SV and VS)}\\\\\n\\hline\n\\hline\n'
+	partext += stringline("reA01",parameters,blinded)
+	partext += stringline("imA01",parameters,blinded)
+	partext += stringline("reA10",parameters,blinded)
+	partext += stringline("imA10",parameters,blinded)
+	partext += '\\hline\n\\hline\n'
+	partext += '\\multicolumn{3}{|c|}{Double $S-wave$ (SS)}\\\\\n\\hline\n\\hline\n'
+	partext += stringline("reA00",parameters,blinded)
+	partext += stringline("imA00",parameters,blinded)
+	partext += '\\hline\n\\hline\n'
+	if wide_window:
+		partext += '\\multicolumn{3}{|c|}{Single $D-wave$ (VT and TV)}\\\\\n\\hline\n\\hline\n'
+		partext += stringline("reA120",parameters,blinded)
+		partext += stringline("imA120",parameters,blinded)
+		partext += stringline("reA12par",parameters,blinded)
+		partext += stringline("imA12par",parameters,blinded)
+		partext += stringline("reA12perp",parameters,blinded)
+		partext += stringline("imA12perp",parameters,blinded)
+		partext += stringline("reA210",parameters,blinded)
+		partext += stringline("imA210",parameters,blinded)
+		partext += stringline("reA21par",parameters,blinded)
+		partext += stringline("imA21par",parameters,blinded)
+		partext += stringline("reA21perp",parameters,blinded)
+		partext += stringline("imA21perp",parameters,blinded)
+		partext += '\\hline\n\\hline\n'
+		partext += '\\multicolumn{3}{|c|}{Double $D-wave$ (TT)}\\\\\n\\hline\n\\hline\n'
+		partext += stringline("reA220",parameters,blinded)
+		partext += stringline("imA220",parameters,blinded)
+		partext += stringline("reA22par",parameters,blinded)
+		partext += stringline("imA22par",parameters,blinded)
+		partext += stringline("reA22perp",parameters,blinded)
+		partext += stringline("imA22perp",parameters,blinded)
+		partext += stringline("reA22par2",parameters,blinded)
+		partext += stringline("imA22par2",parameters,blinded)
+		partext += stringline("reA22perp2",parameters,blinded)
+		partext += stringline("imA22perp2",parameters,blinded)
+		partext += '\\hline\n\\hline\n'
+		partext += '\\multicolumn{3}{|c|}{$Scalar-Tensor$ decays (ST and TS)}\\\\\n\\hline\n\\hline\n'
+		partext += stringline("reA02",parameters,blinded)
+		partext += stringline("imA02",parameters,blinded)
+		partext += stringline("reA20",parameters,blinded)
+		partext += stringline("imA20",parameters,blinded)
+		partext += '\\hline\n\\hline\n'
+	partext += '\\end{tabular}\n\\end{table}\n\n'
+	if not calib_params_fixed:
+		partext += '\\begin{table}[h]\n\\centering\n\\begin{tabular}{|c|c|c|}\n\hline\nParameter & Value & Stat. uncertainty \\\\\n\\hline\n\\hline\n'
+		partext += '\\multicolumn{3}{|c|}{SSK tagger}\\\\\n\\hline\n\\hline\n'
+		partext += stringline("p0metac_SSK",parameters,blinded)
+		partext += stringline("Dp0half_SSK",parameters,blinded)
+		partext += stringline("p1_SSK",parameters,blinded)
+		partext += stringline("Dp1half_SSK",parameters,blinded)
+		partext += '\\hline\n\\hline\n'
+		partext += '\\multicolumn{3}{|c|}{OS tagger}\\\\\n\\hline\n\\hline\n'
+		partext += stringline("p0metac_OS",parameters,blinded)
+		partext += stringline("Dp0half_OS",parameters,blinded)
+		partext += stringline("p1_OS",parameters,blinded)
+		partext += stringline("Dp1half_OS",parameters,blinded)
+		partext += '\\hline\n\\hline\n'
+		partext += '\\multicolumn{3}{|c|}{Time resolution}\\\\\n\\hline\n\\hline\n'
+		partext += stringline("tres_p0_2011",parameters,blinded)
+		partext += stringline("tres_p1_2011",parameters,blinded)
+		partext += stringline("tres_p0_2012",parameters,blinded)
+		partext += stringline("tres_p1_2012",parameters,blinded)
+		partext += '\\hline\n\\hline\n\\end{tabular}\n\\end{table}\n\n'
+	partext += '\\end{document}'
+	partext = partext.replace('#','\\')
+	partext = partext.replace('\\hline\n\\end{tabular}','\\end{tabular}')
+
+	texfile = open(filename+'_ReAImA.tex','w')
+	texfile.write(partext)
+	texfile.close()
+
+def fitprint2LaTeX_Polar(fitresult,filename,parameters,wide_window,noCP,blinded,mixing_params_fixed,calib_params_fixed):
+	partext = '\\documentclass[11pt,a4paper]{article}\n\\usepackage[left=2.5cm,top=2.5cm,right=2.5cm,bottom=2.5cm]{geometry}\n\n\\begin{document}\n\n\\begin{table}[h]\n\\centering\n\\begin{tabular}{|c|c|c|}\n\hline\nParameter & Value & Stat. uncertainty \\\\\n\\hline\n\\hline\n'
+	if (not noCP) or (not mixing_params_fixed): partext += '\\multicolumn{3}{|c|}{Common parameters}\\\\\n\\hline\n\\hline\n'
+	if not noCP:
+		partext += stringline("phis",parameters,blinded)
+		partext += stringline("DCP",parameters,blinded)
+	if not mixing_params_fixed:
+		partext += stringline("delta_m_Bs",parameters,blinded)
+		partext += stringline("gamma_Bs",parameters,blinded)
+		partext += stringline("delta_gamma_Bs",parameters,blinded)
+	if (not noCP) or (not mixing_params_fixed): partext += '\\hline\n\\hline\n'
+	partext += '\\multicolumn{3}{|c|}{$B_{s}^{0}\\to K^{*}(892)^{0}\\bar{K}^{*}(892)^{0}$ (VV)}\\\\\n\\hline\n\\hline\n'
+	partext += stringline_prop(fitresult,sqmodA11norm)
+	partext += stringline_prop(fitresult,fL11)
+	partext += stringline_prop(fitresult,fpar11)
+	partext += stringline_prop(fitresult,deltaA11par)
+	partext += stringline_prop(fitresult,deltaA11perp)
+	partext += '\\hline\n\\hline\n'
+	partext += '\\multicolumn{3}{|c|}{Single $S-wave$ (SV and VS)}\\\\\n\\hline\n\\hline\n'
+	partext += stringline_prop(fitresult,sqmodA01norm)
+	partext += stringline_prop(fitresult,sqmodA10norm)
+	partext += stringline_prop(fitresult,deltaA01)
+	partext += stringline_prop(fitresult,deltaA10)
+	partext += '\\hline\n\\hline\n'
+	partext += '\\multicolumn{3}{|c|}{Double $S-wave$ (SS)}\\\\\n\\hline\n\\hline\n'
+	partext += stringline_prop(fitresult,sqmodA00norm)
+	partext += stringline_prop(fitresult,deltaA00)
+	partext += '\\hline\n\\hline\n'
+	if wide_window:
+		partext += '\\multicolumn{3}{|c|}{Single $D-wave$ (VT and TV)}\\\\\n\\hline\n\\hline\n'
+		partext += stringline_prop(fitresult,sqmodA12norm)
+		partext += stringline_prop(fitresult,fL12)
+		partext += stringline_prop(fitresult,fpar12)
+		partext += stringline_prop(fitresult,sqmodA21norm)
+		partext += stringline_prop(fitresult,fL21)
+		partext += stringline_prop(fitresult,fpar21)
+		partext += stringline_prop(fitresult,deltaA120)
+		partext += stringline_prop(fitresult,deltaA12par)
+		partext += stringline_prop(fitresult,deltaA12perp)
+		partext += stringline_prop(fitresult,deltaA210)
+		partext += stringline_prop(fitresult,deltaA21par)
+		partext += stringline_prop(fitresult,deltaA21perp)
+		partext += '\\hline\n\\hline\n'
+		partext += '\\multicolumn{3}{|c|}{Double $D-wave$ (TT)}\\\\\n\\hline\n\\hline\n'
+		partext += stringline_prop(fitresult,sqmodA22norm)
+		partext += stringline_prop(fitresult,fL22)
+		partext += stringline_prop(fitresult,fpar22)
+		partext += stringline_prop(fitresult,fperp22)
+		partext += stringline_prop(fitresult,fpar222)
+		partext += stringline_prop(fitresult,deltaA220)
+		partext += stringline_prop(fitresult,deltaA22par)
+		partext += stringline_prop(fitresult,deltaA22perp)
+		partext += stringline_prop(fitresult,deltaA22par2)
+		partext += stringline_prop(fitresult,deltaA22perp2)
+		partext += '\\hline\n\\hline\n'
+		partext += '\\multicolumn{3}{|c|}{$Scalar-Tensor$ decays (ST and TS)}\\\\\n\\hline\n\\hline\n'
+		partext += stringline_prop(fitresult,sqmodA02norm)
+		partext += stringline_prop(fitresult,sqmodA20norm)
+		partext += stringline_prop(fitresult,deltaA02)
+		partext += stringline_prop(fitresult,deltaA20)
+		partext += '\\hline\n\\hline\n'
+	partext += '\\end{tabular}\n\\end{table}\n\n'
+	if not calib_params_fixed:
+		partext += '\\begin{table}[h]\n\\centering\n\\begin{tabular}{|c|c|c|}\n\hline\nParameter & Value & Stat. uncertainty \\\\\n\\hline\n\\hline\n'
+		partext += '\\multicolumn{3}{|c|}{SSK tagger}\\\\\n\\hline\n\\hline\n'
+		partext += stringline("p0metac_SSK",parameters,blinded)
+		partext += stringline("Dp0half_SSK",parameters,blinded)
+		partext += stringline("p1_SSK",parameters,blinded)
+		partext += stringline("Dp1half_SSK",parameters,blinded)
+		partext += '\\hline\n\\hline\n'
+		partext += '\\multicolumn{3}{|c|}{OS tagger}\\\\\n\\hline\n\\hline\n'
+		partext += stringline("p0metac_OS",parameters,blinded)
+		partext += stringline("Dp0half_OS",parameters,blinded)
+		partext += stringline("p1_OS",parameters,blinded)
+		partext += stringline("Dp1half_OS",parameters,blinded)
+		partext += '\\hline\n\\hline\n'
+		partext += '\\multicolumn{3}{|c|}{Time resolution}\\\\\n\\hline\n\\hline\n'
+		partext += stringline("tres_p0_2011",parameters,blinded)
+		partext += stringline("tres_p1_2011",parameters,blinded)
+		partext += stringline("tres_p0_2012",parameters,blinded)
+		partext += stringline("tres_p1_2012",parameters,blinded)
+		partext += '\\hline\n\\hline\n\\end{tabular}\n\\end{table}\n\n'
+	partext += '\\end{document}'
+	partext = partext.replace('#','\\')
+	partext = partext.replace('\\hline\n\\end{tabular}','\\end{tabular}')
+
+	texfile = open(filename+'_Polar.tex','w')
+	texfile.write(partext)
+	texfile.close()
+
+def fitprint2LaTeX_OldStyle(fitresult,filename):
+	partext = '\\documentclass[11pt,a4paper]{article}\n\\usepackage[left=2.5cm,top=2.5cm,right=2.5cm,bottom=2.5cm]{geometry}\n\n\\begin{document}\n\n\\begin{table}[h]\n\\centering\n\\begin{tabular}{|c|c|c|}\n\hline\nParameter & Value & Stat. uncertainty \\\\\n\\hline\n\\hline\n'
+	partext += stringline_prop(fitresult,fL11)
+	partext += stringline_prop(fitresult,fpar11)
+	partext += stringline_prop(fitresult,sqmodAsminusnorm)
+	partext += stringline_prop(fitresult,sqmodAsplusnorm)
+	partext += stringline_prop(fitresult,sqmodA00norm)
+	partext += stringline_prop(fitresult,deltaA11par)
+	partext += stringline_prop(fitresult,deltaA11perpAsplus)
+	partext += stringline_prop(fitresult,deltaAsminus)
+	partext += stringline_prop(fitresult,deltaA00)
+	partext += '\\hline\n\\hline\n'
+	partext += '\\end{tabular}\n\\end{table}\n\n'
+	partext += '\\end{document}'
+	partext = partext.replace('#','\\')
+	partext = partext.replace('\\hline\n\\end{tabular}','\\end{tabular}')
+
+	texfile = open(filename+'_OldStyle.tex','w')
+	texfile.write(partext)
+	texfile.close()
+
+def printPlot(var,fr):
+
+	def addLines():
+		xmin = var.getMin()
+		xmax = var.getMax()
+		midLine = ROOT.TLine(xmin,0.,xmax,0.)
+		uppLine = ROOT.TLine(xmin,2.,xmax,2.)
+		lowLine = ROOT.TLine(xmin,-2.,xmax,-2.)
+		uppLine.SetLineColor(kRed)
+		lowLine.SetLineColor(kRed)
+		lines = [uppLine, midLine, lowLine]
+		return lines
+
+	var_title = fr.GetXaxis().GetTitle()
+	ctemp = ROOT.TCanvas()
+	ctemp.Divide(1,2)
+	ctemp.cd(1)
+	ROOT.gPad.SetPad(0.,0.25,1.,1.)
+	ROOT.gPad.SetBottomMargin(0.025)
+	frame1 = fr.Clone()
+	frame1.SetTitle("")
+	frame1.Draw()
+	frame1.GetXaxis().SetTitle("")
+	frame1.GetXaxis().SetTitleSize(0.07)
+	frame1.GetYaxis().SetTitleSize(0.07)
+	frame1.GetXaxis().SetLabelSize(0.0)
+	frame1.GetYaxis().SetLabelSize(0.06)
+	ctemp.cd(2)
+	ROOT.gPad.SetPad(0.,0.,1.,0.25)
+	ROOT.gPad.SetTopMargin(0.025)
+	ROOT.gPad.SetBottomMargin(0.55)
+	frame2 = var.frame()
+	h1 = frame1.pullHist("data_0","model")
+	h1.SetFillColor(16)
+	frame2.addPlotable(h1,"E4")
+	frame2.GetXaxis().SetLabelSize(0.2)
+	frame2.GetYaxis().SetLabelSize(0.2)
+	frame2.GetYaxis().SetNdivisions(5)
+	frame2.SetTitle("")
+	frame2.GetXaxis().SetTitle(var_title)
+	frame2.GetXaxis().SetTitleSize(0.25)
+	frame2.GetXaxis().SetTitleOffset(0.9)
+	frame2.SetMaximum(6)
+	frame2.SetMinimum(-6)
+	frame2.Draw()
+	lines = addLines()
+	map(lambda x: x.Draw("same"), lines)
+	ctemp.Print('TDFitPlot_'+var.GetName()+'.root')
+	ctemp.Print('TDFitPlot_'+var.GetName()+'.pdf')
+
+def printCorrMatrix(res):
+
+	hcorr = res.correlationHist()
+	ctemp = ROOT.TCanvas()
+	hcorr.Draw("zcoltext")
+	ctemp.Print("FitCorrMatrix.root")
+	ctemp.Print("FitCorrMatrix.pdf")

@@ -171,10 +171,10 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
 
     if (len(opts.cuts)>0):
         if isinstance(opts.cuts,str):
-            if not CheckCuts(opts.cuts,TriggerList):
+            if not CheckCuts(opts.cuts,TriggerList,StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cuts))
         elif isinstance(opts.cuts,list):
-            if not CheckCuts(opts.cuts.join(" "),TriggerList):
+            if not CheckCuts(opts.cuts.join(" "),TriggerList,StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cuts))
 
     RunMin = opts.runMin
@@ -264,7 +264,7 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
         BinSchema.push_back(Z_Bin)
 
     for icut, cut in enumerate(DLLCuts):
-        if not CheckCuts(cut, TriggerList):
+        if not CheckCuts(cut, TriggerList,StripVersion):
             raise ValueError("Invalid PID cut %i: \"%s\""%(icut,cut))
 
     #======================================================================
@@ -351,7 +351,7 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
         fname = "%s/%s" %(opts.outputDir, fname)
 
     print "Saving performance histograms to %s" %fname
-    f_Out = ROOT.TFile.Open(fname, "UPDATE")
+    f_Out = ROOT.TFile.Open(fname, "RECREATE")
     if not f_Out:
         raise IOError("Failed to open file %s for writing" %fname)
 

@@ -1,5 +1,5 @@
 from ROOT import *
-f = TFile("/scratch19/Kspi0/kspi0mm_DTFMC12_Strip_GL_1.root")
+f = TFile("~/cmtuser/local_Ks2Pi0MuMu/kspi0mm_DTFMC12_Strip_march2016_GL_1_conf2_fitPlane_conf2.root")
 t = f.Get("T")
 kPaula = TColor.GetColor("#ff99cc")
 #f = TFile("bkgMini.root")
@@ -12,17 +12,20 @@ h = TH1F("A","A", 100, 400, 600)
 hb = TH1F("B","B", 100, 400, 600)
 hbVC = TH1F("BVC","BVC", 100, 400, 600)
 phantom = TH1F("phantom","phantom", 100, 400, 600)
-
+plist = range(7,15)
+h_phantom = {}
+for p in plist:
+    h_phantom[p] = TH1F(str(p),str(p), 100, 400, 600)
 href = TH1F("ref","ref", 100, 400, 600)
 hDTF = TH1F("DTF","DTF", 100, 400, 600)
 hDTFcl = TH1F("DTFcl","DTFcl", 100, 400, 600)
 hpi0 = TH1F("pi0", "pi0", 100, 100, 170)
 #BREAK
 for entry in t:
-    if entry.mo1 != 310 : continue
-    if entry.mo2 != 310 : continue
-    if entry.mc_g1_ez != entry.mc_gamma_ez and entry.mc_g1_ez != entry.mc_Gamma_ez: continue
-    if entry.mc_g2_ez != entry.mc_gamma_ez and entry.mc_g2_ez != entry.mc_Gamma_ez: continue
+    #if entry.mo1 != 310 : continue
+    #if entry.mo2 != 310 : continue
+    #if entry.mc_g1_ez != entry.mc_gamma_ez and entry.mc_g1_ez != entry.mc_Gamma_ez: continue
+    #if entry.mc_g2_ez != entry.mc_gamma_ez and entry.mc_g2_ez != entry.mc_Gamma_ez: continue
     
     #if not entry.mc_pi0_px: continue
     pmu1 = vector(entry.mu1p1, entry.mu1p2, entry.mu1p3)
@@ -58,10 +61,11 @@ for entry in t:
     p0_prime = vector(-pdmx_prime, -pdmy_prime, p0z_primeVC)
     MKsb = sqrt(IM2 ( pm_prime,  p0_prime, Mmumu, PDG.pi0.mass))# Mpizero))
     hbVC.Fill(MKsb)
-    
-    p0_prime = vector(-pdmx_prime, -pdmy_prime, 10000)
-    MKsb = sqrt(IM2 ( pm_prime,  p0_prime, Mmumu, PDG.pi0.mass))# Mpizero))
-    phantom.Fill(MKsb)
+
+    for mypz in plist:
+        p0_prime = vector(-pdmx_prime, -pdmy_prime, 1000*mypz)
+        MKsb = sqrt(IM2 ( pm_prime,  p0_prime, Mmumu, PDG.pi0.mass))# Mpizero))
+        h_phantom[p].Fill(MKsb)
     
     hDTF.Fill(entry.Ksmass_DTF)
     hDTFcl.Fill(entry.Ksmass_DTF_classic)

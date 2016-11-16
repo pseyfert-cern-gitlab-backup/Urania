@@ -14,7 +14,7 @@ magPol='Down'
 fileSuffix='dst_k_and_pi'
 
 # Set the pbs options (e.g. CPU/walltime)
-pbsopts = "-l cput=0:05:00,walltime=0:15:00"
+pbsopts = "-l cput=0:35:00,walltime=0:15:00"
 
 # Set the name of the directory in the input file(s) containing
 # the 'CalibPID' nTuple

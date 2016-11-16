@@ -8,21 +8,22 @@ from constrain_funcs import *
 from smartpyROOT import *
 from OurSites import *
 from scipy import random as rnd
-import ipa_dms as ipa_params
+import ipa_vc as ipa_params
 gROOT.ProcessLine(".L $URANIAROOT/src/RooIpatia2.cxx++")
 L = 50
 if len (sys.argv)>1:
     L = float(sys.argv[1])
 kPaula = TColor.GetColor("#ff99cc")
 mass_name = "M_VC"
-bdtname = "VCGLBDTG"
+bdtname = "VCGLBDT"
 
 ######  Prepare files
-tmm0, mainF =  getTuple("/scratch19/Kspi0/kspi0mm_DTFMC12_Strip_GL_2_fitPlane")
+tmm0, mainF =  getTuple("/scratch19/Kspi0/MC_FULL_GL_2")#""/scratch19/Kspi0/kspi0mm_DTFMC12_Strip_GL_2_fitPlane")
 
 mass = RooRealVar(mass_name,mass_name,420,580)
 Mass = mass
 samplename = "sample"
+bdtname = "DMGLBDTG"
 
 Binning = {}
 Binning[bdtname] = [.6,.7, .8, .9, 1.]
@@ -86,12 +87,17 @@ class Ks2Pi0MuMuModel:
         self.fb = RooRealVar("MuMu_f_"+i,"MuMu_f_" + i,0.5,0.,1.)
         if DOUBLE_EXPO: self.bkg = RooAddPdf("bkg MuMu model" + i, "bkg MuMu model" + i, self.bkg1,self.bkg2, self.fb)
         else: self.bkg = self.bkg1
-        self.ipa_s = RooRealVar("ipa_s" + i,"ipa_s" + i,ipa_params.sigma[i])# 10,100)
-        self.ipa_m = RooRealVar("ipa_m" + i,"ipa_m" + i,ipa_params.mean[i])
-        self.beta = RooRealVar("beta" + i,"beta" + i, ipa_params.beta[i])#
-        self.zeta = RooRealVar("zeta" + i,"zeta" + i,ipa_params.zeta[i])
-        self.ipa_l = RooRealVar("l" + i,"l" + i, ipa_params.landa[i])
-        self.Bs = RooIpatia2("Ipatia" + i,"Ipatia" + i,mass,self.ipa_l,self.zeta,self.beta,self.ipa_s,self.ipa_m,a,n,a2,n2)
+        self.ipa_s = RooRealVar("ipa_s" + i,"ipa_s" + i,ipa_params.sigma[i], 10,100)
+        self.ipa_m = RooRealVar("ipa_m" + i,"ipa_m" + i,ipa_params.mean[i],490,510)
+        self.beta = RooRealVar("beta" + i,"beta" + i, ipa_params.beta[i], -6e-02,6e-02)#
+        self.zeta = RooRealVar("zeta" + i,"zeta" + i,ipa_params.zeta[i], 0, 10)
+        self.ipa_l = RooRealVar("l" + i,"l" + i, ipa_params.landa[i], -3, 2)
+        self.a2 = RooRealVar("a2" +i, "a2" +i,100) ### Ponhendo os parametros da CB lonje, quedamonos so co core
+        self.a = RooRealVar("a1" +i,"a1" +i ,100) ### Ponhendo os parametros da CB lonje, quedamonos so co core
+        self.n = RooRealVar("n1","n1" +i,1.)#,0.5,10)
+        self.n2 = RooRealVar("n2"+i,"n2" +i,1.)
+
+        self.Bs = RooIpatia2("Ipatia" + i,"Ipatia" + i,mass,self.ipa_l,self.zeta,self.beta,self.ipa_s,self.ipa_m,self.a,self.n,self.a2,self.n2)
         self.model = RooAddPdf("mumu model " + i, "mumu model " + i, RooArgList(self.bkg,self.Bs), RooArgList(self.nbkg,self.nbs))
 
 
@@ -156,7 +162,7 @@ def plot(deitasets):
         fr[i].Draw()
     return c, fr
 
-#a = plot(datamm)
+a = plot(datamm)
 
 BREAK
 bkgs = {}

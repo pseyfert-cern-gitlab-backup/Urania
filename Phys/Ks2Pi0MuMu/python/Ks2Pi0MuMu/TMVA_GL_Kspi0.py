@@ -30,13 +30,12 @@
 #                                                                                #
 # for help type "python TMVAClassification.py --help"                            #
 # ------------------------------------------------------------------------------ #
-import TMVA_cut
-from OurSites import *
+import TMVA_cut_conf4 as TMVA_cut
 
 ##### IMPORTANT, MODIFY ME ##############################################################
 normalizationS = 1 # Signal normalization for the computation of the optimal GL value.
 normalizationB = 1 # Background normalization for the computation of the optimal GL value.
-outfname    = "TMVA_Kspi0mm.root" # Path where the output rootfile is going to be saved.
+outfname    = "TMVA_Kspi0mm_August.root" # Path where the output rootfile is going to be saved.
 variables = TMVA_cut.variables_BDT
 variablesx = TMVA_cut.variables_all
 #mu1pt, mu2pt
@@ -70,8 +69,8 @@ methods["FDA"] = ["FDA_GA","FDA_SA","FDA_MC","FDA_MT","FDA_GAMT","FDA_MCMT"]
 methods["MLP"] =["MLP","MLPBFGS"]
 methods["CFMlpANN"] = ["CFMlpANN"]
 methods["TMlpANN"] = ["TMlpANN"]
-#methods["BDT"] = ["BDT","BDTD","BDTG","BDTB"]
-methods["BDT"] = ["BDT", "BDTD", "BDTG"]
+methods["BDT"] = ["BDT","BDTD","BDTG","BDTB"]
+#methods["BDT"] = ["BDT", "BDTD", "BDTG"]
 methods["RuleFit"] = ["RuleFit"]
 methods["SVM"] = ["SVM"]
 #for x in methods.values(): mlist += x
@@ -80,6 +79,7 @@ mlist = methods["BDT"]   ### Here I redefine mlist to use only BDT's. To make a 
 #mlist += methods["Boost"]
 #mlist += methods["RuleFit"]
 #mlist += methods["SVM"]
+##mlist += methods["KNN"]
 
 print "=== TMVAClassification: use method(s)..."
 for m in mlist:
@@ -130,10 +130,10 @@ for i in range(len(variablesx)):
 
     # Get the signal and background trees for training (INPUT FILES)
 ##FILES
-signal_train, f1      = getTuple(MY_TUPLE_PATH + "kspi0mm_DTFMC12_Strip_GL_1_basic",thing = "T")
-signal_test, f2      = getTuple(MY_TUPLE_PATH + "kspi0mm_DTFMC12_Strip_GL_2_basic",thing = "T")
-bkg_train, f3      = getTuple(MY_TUPLE_PATH + "TIS_GL_1_basic", thing = "T")#getTuple("bkgMini", thing = "BenderKspi0mumuSignal/BenderKspi0mumuSignal")
-bkg_test, f4     = getTuple(MY_TUPLE_PATH + "TIS_GL_2_basic", thing = "T")#getTuple("bkgMini", thing = "BenderKspi0mumuSignal/BenderKspi0umuSignal")
+signal_train, f1      = getTuple("MC12_Strip_Sim09_GL_1",thing = "T") #to be changed
+signal_test, f2      = getTuple("MC12_Strip_Sim09_GL_2",thing = "T")
+bkg_train, f3      = getTuple("Data_FULL_GL_1", thing = "T")#getTuple("bkgMini", thing = "BenderKspi0mumuSignal/BenderKspi0mumuSignal")
+bkg_test, f4     = getTuple("Data_FULL_GL_2", thing = "T")#getTuple("bkgMini", thing = "BenderKspi0mumuSignal/BenderKspi0mumuSignal")
 
 signalWeight = 1.0
 bkgWeight = 1.0
@@ -306,7 +306,7 @@ Nb = len(b2)
 #REMOVE COMMENT AFTER TESTING GL = NewKarlen(s,b ,variables )
 GL = NewKarlen(s,b,variablesx)
 import cPickle
-cPickle.dump(GL,file("./GL_data_basic",'w'))
+cPickle.dump(GL,file("./GL_data",'w'))
 
 #GLK = NewKarlen(s,b , ["mu1iso5","mu2iso5","DOCA", "Blife_ps","Bip","lessIPSmu", "Bpt"] )
 #GLKb =GLK # NewKarlen(s,b , ["mu1iso5","mu2iso5","DOCA", "Blife_ps","Bip","lessIPSmu", "Bpt","Vchi2", "buggy_angle"] )
@@ -470,7 +470,7 @@ glGraph.SetLineColor(kBlack)
 glGraph.SetMarkerStyle(21)
 glGraph.SetMarkerSize(0.35)
 glGraph.Draw("P,same")
-myFile = TFile("./GL_BDT_basic.root","RECREATE")
+myFile = TFile("./GL_BDT_August.root","RECREATE")
 mLegend = TLegend(0.2,0.2,0.5,0.7)
 mLegend.SetFillStyle(0)
 d = {}
@@ -488,7 +488,7 @@ mLegend.AddEntry(gl,'GL')
 mLegend.Draw()
 cCanvas.Write()
 gl.Write("GL")
-cCanvas.Print("./GL_BDT_Kspi0.pdf")
+cCanvas.Print("./GL_BDT_Kspi0_August.pdf")
 
 ######## GL_OPTIMAL_CUT:
 

@@ -1,4 +1,4 @@
- 
+
 ########################################################################
 # Options for Bs->mumu ntuples 
 ########################################################################
@@ -16,35 +16,31 @@ from PhysSelPython.Wrappers import AutomaticData, DataOnDemand, Selection, Selec
 ########################################################################
 
 ##### Only needed if you run in local. These are used by tupletoolMuonVariables AND also the algo to make BDTS cut if you are making it
-weightFile     = "/var/clus/usera/hme28/cmtuser/DaVinci_v36r1p1/TMVA_7Dec.weights.xml"
-flatteningFile=  "/var/clus/usera/hme28/cmtuser/DaVinci_v36r1p1/HflatBDTS_7Dec.root"
-ZVisoWeightsFile = "/var/clus/usera/hme28/cmtuser/DaVinci_v36r1p1/ZVisoBDTG_BsMuMu.weights.xml"
-path_to_iso_BDT_weights = "/var/clus/usera/hme28/cmtuser/DaVinci_v36r1p1/"
+weightFile     = "/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r1p1/Phys/Bs2MuMu/options/TMVA_7Dec.weights.xml"
+flatteningFile=  "/eos/lhcb/wg/RD/BsMuMu/operators/weights/HflatBDTS_7Dec.root"
+ZVisoWeightsFile = "/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r1p1/Phys/Bs2MuMu/options/ZVisoBDTG_BsMuMu.weights.xml"
+path_to_iso_BDT_weights = "/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r1p1/Phys/Bs2MuMu/options/"
 
 #Outputfile name
-rootfilename = "S21_mircoDST_ntuples.root" 
+rootfilename = "BsMuMu_ntuples.root" 
 
 #Set as 11, 12 or 15. Selects the datatype = 2012 or 2011 or 2015.
 Collision = 12
 
 #Set as 20 for stripping 20 or 20r1, set as 21 for stripping 21 or 21r1, set as 24 for stripping 24. If running on stripping 21(r1) on microDST, Leptonic stream you need to use the mDSTs from the MDST.DST reprosessing and need to set MDST_DST_reprocessing = True
-stripping = '20'
+stripping = '21'
 MDST_DST_reprocessing = False # This should be true if running on S21(r1) Leptonic stream, false for everything else
 
-#Set True if running on mircoDST
-is_microDST = False
+#Set True if running on microDST
+is_microDST = True
 #Get all isolations from RelatedInfos - this MIST be true if running on stripping 24 or on microDST. In stripping 24 the RelatedInfo variables are present in the Dimuon and Letponic streams. They are in stripping 21 as well but they are wrong in the stripping 21 Dimuon stream
-isolations_from_RelatedInfos = False
+isolations_from_RelatedInfos = True
 
 #This is to include variables needed for BDT isolation studies this must be false if running on microDST.
-include_track_block = True 
+include_track_block = not is_microDST 
 
 #This is to include the charimonim and bottomuin resonances lines. There are Dimuon and Leptonic lines - the leptonic lines have a huge number of events
 include_resonaces = False
-
-#Select whether running on MC or data
-MC =  True
-data = False
 
 #Use the grid
 Usegrid = True
@@ -54,20 +50,8 @@ myEvents  = -1
 
 #Other options
 makeGP = False  # for Reco14 onwards
-muID = True 
+muID = False 
 cutBDTS = False
-
-
-if data:
-    doMatchedNtuples = False
-    doMCDecayTreeTuple = False
-
-
-if MC:
-    doMatchedNtuples = True
-    doMCDecayTreeTuple= True
-
-
 
 ########################################################################
 ###  Configuration ends but CHECK to the DV configuration at the end
@@ -85,7 +69,6 @@ if Usegrid:
     weightFile     = "TMVA_7Dec.weights.xml"
     flatteningFile =  "HflatBDTS_7Dec.root"
     ZVisoWeightsFile= "ZVisoBDTG_BsMuMu.weights.xml"
-
 
 B2HHInput  =      ""
 B2MuMuInput =     ""
@@ -111,14 +94,8 @@ LTUBBs2MuMuRelatedInfoInput =    ""
 LTUBB2KKRelatedInfoInput =    ""
 B2SSRelatedInfoInput =    ""
 
-
 if stripping == '20' :
-    if data:
-        prefix = "/Event/Dimuon/" ##OK only for DiMuon lines!
-
-    if MC:
-        prefix = "/Event/AllStreams/" #one container for all MC except low pt bbbar->MuMuX MC
-        #prefix = "/Event/Bs2MuMu.Strip/" ##for low pt bbbar->MuMuX MC 
+    prefix = "/Event/Dimuon/" ##OK only for DiMuon lines!
 
     ## --- default Stripping location
     B2HHInput =      prefix +"Phys/Bs2MuMuLinesNoMuIDLine/Particles"
@@ -128,42 +105,30 @@ if stripping == '20' :
     B2JpsiPhiInput = prefix +"Phys/Bs2MuMuLinesBs2JPsiPhiLine/Particles"
     B2SSInput =      prefix +"Phys/Bs2MuMuLinesSSLine/Particles"
     
-    if include_resonaces and data:
+    if include_resonaces:
         #Charmonium
         DiMuonJpsi2MuMuTOSInput = prefix +"Phys/FullDSTDiMuonJpsi2MuMuTOSLine/Particles"
         DiMuonPsi2MuMuTOSInput = prefix +"Phys/FullDSTDiMuonPsi2MuMuTOSLine/Particles"
         #Bottomonium:
         DiMuonHighMassInput  = prefix +"Phys/FullDSTDiMuonDiMuonHighMassLine/Particles"
 
-
-
-
-
 if  stripping == '21' :
-    if data:
-        prefix = "/Event/Dimuon/" ##OK only for DiMuon lines!
+    prefix = "/Event/Dimuon/" ##OK only for DiMuon lines!
 
-    if MC:
-        prefix = "/Event/AllStreams/" #one container for all MC! Only sim09 MC will be stripping 21
-    
-  
     ##Stripping locations on Dimuon dsts
     B2HHInput =      prefix +"Phys/Bs2MuMusNoMuIDLine/Particles"
     B2MuMuInput =    prefix +"Phys/Bs2MuMusWideMassLine/Particles"
-  
+    
     ##Locations for related Infos
     B2HHRelatedInfoInput =      prefix +"Phys/Bs2MuMusNoMuIDLine/"
     B2MuMuRelatedInfoInput =    prefix +"Phys/Bs2MuMusWideMassLine/"
 
-    if include_resonaces and data:
+    if include_resonaces:
         #Charmonium
         DiMuonJpsi2MuMuTOSInput = prefix +"Phys/FullDSTDiMuonJpsi2MuMuTOSLine/Particles"
         DiMuonPsi2MuMuTOSInput = prefix +"Phys/FullDSTDiMuonPsi2MuMuTOSLine/Particles"
         #Bottomonium:
         DiMuonHighMassInput  = prefix +"Phys/FullDSTDiMuonDiMuonHighMassLine/Particles"
-
-
-
 
 if is_microDST and stripping == '21':
     mdst_RootInTES = "/Event/Leptonic/"
@@ -190,15 +155,11 @@ if is_microDST and stripping == '21':
     LTUBB2KKRelatedInfoInput =  mdst_RootInTES+"Phys/Bs2MuMusBs2KKLTUBLine/"
     B2SSRelatedInfoInput =  mdst_RootInTES+"Phys/Bs2MuMusSSLine/"
     
-    if include_resonaces and data:
+    if include_resonaces:
         DiMuonIncInput =  'Phys/MicroDSTDiMuonDiMuonIncLine/Particles'
 
-
-
-if  stripping == '24' :
-    if data:
-        prefix = "/Event/Dimuon/" ##OK only for DiMuon lines!
- 
+if stripping in ['24' '26'] :
+    prefix = "/Event/Dimuon/" ##OK only for DiMuon lines!
   
     ##Stripping locations on Dimuon dsts
     B2HHInput =      prefix +"Phys/Bs2MuMuLinesNoMuIDLine/Particles"
@@ -210,16 +171,12 @@ if  stripping == '24' :
     B2MuMuRelatedInfoInput =    prefix +"Phys/Bs2MuMuLinesWideMassLine/"
     B2JpsiKRelatedInfoInput =  prefix +"Phys/Bs2MuMusBu2JPsiKSelJpsi/"
 
-    if include_resonaces and data:
+    if include_resonaces:
         #Charmonium
         DiMuonJpsi2MuMuTOSInput = prefix +"Phys/FullDSTDiMuonJpsi2MuMuTOSLine/Particles"
         DiMuonPsi2MuMuTOSInput = prefix +"Phys/FullDSTDiMuonPsi2MuMuTOSLine/Particles"
         #Bottomonium:
         DiMuonHighMassInput  = prefix +"Phys/FullDSTDiMuonDiMuonHighMassLine/Particles"
-
-
-
-
 
 if is_microDST and stripping == '24':
     mdst_RootInTES = "/Event/Leptonic/"
@@ -246,10 +203,8 @@ if is_microDST and stripping == '24':
     LTUBB2KKRelatedInfoInput =  mdst_RootInTES+"Phys/Bs2MuMuLinesBs2KKLTUBLine/"
     B2SSRelatedInfoInput =  mdst_RootInTES+"Phys/Bs2MuMuLinesSSLine/"
     
-      
-    if include_resonaces and data:
+    if include_resonaces:
         DiMuonIncInput =  'Phys/MicroDSTDiMuonDiMuonIncLine/Particles'
-
 
 ############################
 ### Configure the ntuple ###
@@ -270,17 +225,15 @@ myNTUPLE.ToolList +=  [  "TupleToolGeometry"
                          , "TupleToolTISTOS"
                          , "TupleToolTrackInfo"
                          , "TupleToolMuonPid"
-                          ,"LoKi::Hybrid::TupleTool/LoKiTool"
+                         # ,"LoKi::Hybrid::TupleTool/LoKiTool"
                          ,"LoKi::Hybrid::TupleTool/LoKi_All"
+                         ,"LoKi::Hybrid::EvtTupleTool/LoKiEvent"
                          #, "TupleToolTrackKink"
                          ]
-
-
 
 #############################################
 ### Configure the TupleToolMuonVariables  ###
 #############################################
-
 
 from Configurables import TupleToolMuonVariables
 myNTUPLE.ToolList+=["TupleToolMuonVariables"] 
@@ -291,15 +244,12 @@ myNTUPLE.TupleToolMuonVariables.BDTSRootFile = flatteningFile
 myNTUPLE.TupleToolMuonVariables.BDTSXMLFile  = weightFile
 
 #If you are running on microDST set this to True to compute only variables which are not isolations in this tool. Default is false. 
-myNTUPLE.TupleToolMuonVariables.is_microDST = False
-if is_microDST or isolations_from_RelatedInfos:
-    myNTUPLE.TupleToolMuonVariables.is_microDST = True
-
+myNTUPLE.TupleToolMuonVariables.is_microDST = is_microDST
 
 #These are the paths to the weights files used in the BDT isolation computations
-myNTUPLE.TupleToolMuonVariables.isoBDT_xmlFilePath =  "/var/clus/usera/hme28/cmtuser/DaVinci_v36r1p1/"
+myNTUPLE.TupleToolMuonVariables.isoBDT_xmlFilePath =  "/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r1p1/Phys/Bs2MuMu/options/"
 if Usegrid:
-    myNTUPLE.TupleToolMuonVariables.isoBDT_xmlFilePath =  "./" 
+    myNTUPLE.TupleToolMuonVariables.isoBDT_xmlFilePath =  "" 
 
 myNTUPLE.TupleToolMuonVariables.isoBDT1_xmlFile = "600_2500_4_30_0.75_1_1_BDT.weights.xml"
 myNTUPLE.TupleToolMuonVariables.isoBDT2_xmlFile = "600_2500_4_30_0.75_1_8_BDT.weights.xml"
@@ -314,12 +264,7 @@ if include_track_block:
     myNTUPLE.TupleToolMuonVariables.dumpVeloTracks =  True
     myNTUPLE.TupleToolMuonVariables.dumpUpstreamTracks =  True
     myNTUPLE.TupleToolMuonVariables.dumpFullInfo  =   True
-#Set True if running on MC but this should only have an impact on the dumpVeloTracks, dumpUpstreamTracks and dumpFullInfo. Default is false.
 myNTUPLE.TupleToolMuonVariables.isMC = False 
-if MC:
-    myNTUPLE.TupleToolMuonVariables.isMC = True
-
-
 
 #########################################################
 #Set up jet locations - these are in the RelatedInfos 
@@ -329,22 +274,9 @@ if not isolations_from_RelatedInfos:
     from CommonParticles.Utils import *
     from Configurables import TupleToolJetsForB
     
-    if MC:  
-        #These locations must be used is you are running on low pt bbbar->MuMuX MC 
-        #bsmm_locations = {"BsMuMu":"Bs2MuMu.Strip/Phys/Bs2MuMuLinesWideMassLine/Particles",
-        #                  "B2HH":"Bs2MuMu.Strip/Phys/Bs2MuMuLinesNoMuIDLine/Particles",
-        #                  "B2SS":"Bs2MuMu.Strip/Phys/Bs2MuMuLinesSSLine/Particles", }
-
-        bsmm_locations = {"BsMuMu":"AllStreams/Phys/Bs2MuMuLinesWideMassLine/Particles",
-                          "B2HH":"AllStreams/Phys/Bs2MuMuLinesNoMuIDLine/Particles",
-                          "B2SS":"AllStreams/Phys/Bs2MuMuLinesSSLine/Particles", }
-    if data :
-        bsmm_locations = {"BsMuMu":"Dimuon/Phys/Bs2MuMuLinesWideMassLine/Particles",
-                          "B2HH":"Dimuon/Phys/Bs2MuMuLinesNoMuIDLine/Particles",
-                          "B2SS":"Dimuon/Phys/Bs2MuMuLinesSSLine/Particles", }
-
-
-        
+    bsmm_locations = {"BsMuMu":"Dimuon/Phys/Bs2MuMuLinesWideMassLine/Particles",
+                      "B2HH":"Dimuon/Phys/Bs2MuMuLinesNoMuIDLine/Particles",
+                      "B2SS":"Dimuon/Phys/Bs2MuMuLinesSSLine/Particles", }
         
     # JET CONFIGURATION
     ## standard jetID                                                                        
@@ -383,7 +315,6 @@ if not isolations_from_RelatedInfos:
     for name in bsmm_locations:
         locs = create_stdjets(bsmm_locations[name],"StdJetsNoID"+name+"Ban", "StdJetsNoID"+name+"Bcand")
         jetlocations2[name]=locs[0];jetlocations3[name]=locs[1]
-        
         
     tupletooljets = {}
     for name in bsmm_locations:
@@ -480,242 +411,45 @@ if muID:
                          0.10, 0.22, 0.30, 0.52,
                          0.08, 0.20, 0.34, 0.52]
 
-    
 ## ---------- For storing some event variables   ---------##
-    
-LoKiEventTuple = LoKi__Hybrid__EvtTupleTool("LoKiEvent")
-LoKiEventTuple.Preambulo = [ 
-    "from LoKiTracks.decorators import *",
-    "from LoKiCore.functions import *"
-    ]
-LoKiEventTuple.VOID_Variables =  {
-    "nTTCls"   :  " CONTAINS('Raw/TT/Clusters') " , ## number of Clusters in TT 
-    "nVeloTraks_All"   :   " TrSOURCE('Rec/Track/Best' , TrVELO) >> TrSIZE " , ## number of Velo tracks
-    "nLongTrks"   :   " TrSOURCE('Rec/Track/Best', TrLONG) >> TrSIZE " , ## number of Long tracks
-    "nDownTrks"   :   " TrSOURCE('Rec/Track/Best', TrDOWNSTREAM) >> TrSIZE " , ## number of Down tracks
-    "nTTrks"      :   " TrSOURCE('Rec/Track/Best', TrTTRACK) >> TrSIZE ",  ## number of T tracks
-    }
+if not is_microDST:    
+  LoKiEventTuple = LoKi__Hybrid__EvtTupleTool("LoKiEvent")
+  LoKiEventTuple.Preambulo = [ 
+      "from LoKiTracks.decorators import *",
+      "from LoKiCore.functions import *"
+      ]
+  LoKiEventTuple.VOID_Variables =  {
+      "nTTCls"   :  " CONTAINS('Raw/TT/Clusters') " , ## number of Clusters in TT 
+      "nVeloTraks_All"   :   " TrSOURCE('Rec/Track/Best' , TrVELO) >> TrSIZE " , ## number of Velo tracks
+      "nLongTrks"   :   " TrSOURCE('Rec/Track/Best', TrLONG) >> TrSIZE " , ## number of Long tracks
+      "nDownTrks"   :   " TrSOURCE('Rec/Track/Best', TrDOWNSTREAM) >> TrSIZE " , ## number of Down tracks
+      "nTTrks"      :   " TrSOURCE('Rec/Track/Best', TrTTRACK) >> TrSIZE ",  ## number of T tracks
+      }
 
-myNTUPLE.addTool(LoKiEventTuple)
-
-#######################################################
-############## Do Matched ntuples  ################
-#######################################################
-from Configurables import NoPIDsParticleMaker,TrackSelector 
-from Configurables import CombineParticles,  FilterDesktop
-from Configurables import OfflineVertexFitter
-from Configurables import LoKi__VoidFilter as VoidFilter
-from Configurables import SubstitutePID, SubPIDMMFilter
-if doMatchedNtuples :
-
-    from Configurables import CheckPV
-    ##SelCheckPV  = Selection ("MatchPV",
-    ##                          Algorithm =  CheckPV('TwoPV', MinPVs=1),
-    ##                          RequiredSelections = [] )
-    ##seqCheckPV =  SelectionSequence('SeqPV', SelCheckPV )
-
-    _Preambulo = ["from LoKiPhysMC.decorators import *","from LoKiPhysMC.functions import mcMatch"]
-    _stdLooseMuons = DataOnDemand(Location = "Phys/StdLooseMuons/Particles")
-    _stdAllNoPIDsPions = DataOnDemand(Location = "Phys/StdAllNoPIDsPions/Particles")
-    _stdAllNoPIDsMuons = DataOnDemand(Location = "Phys/StdAllNoPIDsMuons/Particles")
-    _stdAllNoPIDsKaons = DataOnDemand(Location = "Phys/StdAllNoPIDsKaons/Particles")
-    _kaons = DataOnDemand(Location='Phys/StdNoPIDsKaons/Particles')
-    _stdLoosePions = DataOnDemand(Location = "Phys/StdLoosePions/Particles")
-    _stdLooseKaons = DataOnDemand(Location = "Phys/StdLooseKaons/Particles")
-
-   
-    MatchedJpsiComb =  CombineParticles("MatchedJpsiComb") ## makes a particle out of the two muons
-    MatchedJpsiComb.DecayDescriptor = "J/psi(1S) -> mu+ mu-"
-    MatchedJpsiComb.Preambulo = _Preambulo
-    MatchedJpsiComb.addTool( OfflineVertexFitter )
-    MatchedJpsiComb.ParticleCombiners.update( { "" : "OfflineVertexFitter"} )
-    MatchedJpsiComb.OfflineVertexFitter.useResonanceVertex = False
-    MatchedJpsiComb.ReFitPVs = True
-    MatchedJpsiComb.DaughtersCuts = { "mu+" : "mcMatch( '[mu+]cc' )"}
-    MatchedJpsiComb.MotherCut     =  "mcMatch('J/psi(1S) => mu+ mu-')" ##give error "configure me!" if not set
-
-    SelMJPsi  = Selection ("MatchJPsi",
-                           Algorithm = MatchedJpsiComb,
-                           RequiredSelections = [ _stdAllNoPIDsMuons ] )
-
-    #B2JpsiK
-    MatchedB2JpsiKComb = CombineParticles("MatchedB2JpsiKComb") 
-    MatchedB2JpsiKComb.Preambulo = _Preambulo
-    MatchedB2JpsiKComb.addTool( OfflineVertexFitter() )
-    MatchedB2JpsiKComb.VertexFitters.update( { "" : "OfflineVertexFitter"} )
-    MatchedB2JpsiKComb.OfflineVertexFitter.useResonanceVertex = False
-    MatchedB2JpsiKComb.ReFitPVs = True
-    MatchedB2JpsiKComb.DecayDescriptor = "[B+ -> J/psi(1S) K+]cc"; 
-    MatchedB2JpsiKComb.DaughtersCuts = { "K+" : "mcMatch( '[K+]cc' )"}
-    MatchedB2JpsiKComb.MotherCut = "mcMatch( '[B+ => J/psi(1S) K+]CC' )" 
-    ##see https://twiki.cern.ch/twiki/bin/view/LHCb/FAQ/LoKiNewDecayFinders for the syntax
-    SelMB2JpsiK = Selection("MatchB2JpsiK", 
-                            Algorithm = MatchedB2JpsiKComb,
-                            RequiredSelections=[SelMJPsi,_stdAllNoPIDsKaons])
-    ##put a filter in input, selecting only events from the BsMuMu stripping line
-    ##bsFilter = VoidFilter("Bs2MuMuInputFilter", Code = "CONTAINS('%s') > 0" % B2MuMuInput)
-    SeqMyMatchedBplus = SelectionSequence('SeqMyMatchedBplus', TopSelection  =  SelMB2JpsiK, EventPreSelector = [CheckPV('TwoPV', MinPVs=1)])####, EventPreSelector = [bsFilter])
-    ##build the sequence
-    SequenceMatchBplus = GaudiSequencer( "SequenceMatchBplus" )
-    SequenceMatchBplus.Members += [ SeqMyMatchedBplus.sequence() ]
-    DaVinci().UserAlgorithms += [ SequenceMatchBplus ]
-    
-    #Bs2MuMu
-    MatchedBsMuMuComb =  CombineParticles("MatchedBsMuMuComb") ## makes a particle out of the two muons
-    ## Note this the DecayDescriptor here is just the name given to the output candidates do NOT put cc!
-    ## otherwise you get double candidates 
-    MatchedBsMuMuComb.DecayDescriptor = "B_s0 -> mu+ mu-"
-    MatchedBsMuMuComb.Preambulo = _Preambulo
-    MatchedBsMuMuComb.addTool( OfflineVertexFitter )
-    MatchedBsMuMuComb.ParticleCombiners.update( { "" : "OfflineVertexFitter"} )
-    MatchedBsMuMuComb.OfflineVertexFitter.useResonanceVertex = False
-    MatchedBsMuMuComb.ReFitPVs = True
-    MatchedBsMuMuComb.DaughtersCuts = { "mu+" : "mcMatch( '[mu+]cc' )"}
-    MatchedBsMuMuComb.MotherCut     =  "mcMatch('[B_s0 => mu+ mu-]CC')" ##give error "configure me!" if not set
-
-  
-    SelMBs2MuMu = Selection("MatchBs2MuMu", 
-                            Algorithm = MatchedBsMuMuComb,
-                            RequiredSelections=[       _stdAllNoPIDsMuons   ])
-    SeqMyMatchedBsMuMu = SelectionSequence('SeqMyMatchedBsMuMu', TopSelection  =  SelMBs2MuMu, EventPreSelector = [CheckPV('TwoPV', MinPVs=1)])
-    SequenceMatchBsMuMu = GaudiSequencer( "SequenceMatchBsMuMu" )
-    SequenceMatchBsMuMu.Members += [ SeqMyMatchedBsMuMu.sequence() ]
-    DaVinci().UserAlgorithms += [ SequenceMatchBsMuMu ]
-
-
-    #Bds2MuMu
-    MatchedBdMuMuComb =  CombineParticles("MatchedBdMuMuComb") ## makes a particle out of the two muons
-    ## Note this the DecayDescriptor here is just the name given to the output candidates do NOT put cc!
-    ## otherwise you get double candidates 
-    MatchedBdMuMuComb.DecayDescriptor = "B0 -> mu+ mu-"
-    MatchedBdMuMuComb.Preambulo = _Preambulo
-    MatchedBdMuMuComb.addTool( OfflineVertexFitter )
-    MatchedBdMuMuComb.ParticleCombiners.update( { "" : "OfflineVertexFitter"} )
-    MatchedBdMuMuComb.OfflineVertexFitter.useResonanceVertex = False
-    MatchedBdMuMuComb.ReFitPVs = True
-    MatchedBdMuMuComb.DaughtersCuts = { "mu+" : "mcMatch( '[mu+]cc' )"}
-    MatchedBdMuMuComb.MotherCut     =  "mcMatch('[B0 => mu+ mu-]CC')" ##give error "configure me!" if not set
-
-  
-    SelMBd2MuMu = Selection("MatchBd2MuMu", 
-                            Algorithm = MatchedBdMuMuComb,
-                            RequiredSelections=[       _stdAllNoPIDsMuons   ])
-    SeqMyMatchedBdMuMu = SelectionSequence('SeqMyMatchedBdMuMu', TopSelection  =  SelMBd2MuMu,
-                                           EventPreSelector = [CheckPV('TwoPV', MinPVs=1)])
-    SequenceMatchBdMuMu = GaudiSequencer( "SequenceMatchBdMuMu" )
-    SequenceMatchBdMuMu.Members += [ SeqMyMatchedBdMuMu.sequence() ]
-    DaVinci().UserAlgorithms += [ SequenceMatchBdMuMu ]
-
-    #B2KPi
-    MatchedBdKPiComb =  CombineParticles("MatchedBdKPiComb",OutputLevel = INFO) ## makes a particle out of the two muons
-    MatchedBdKPiComb.DecayDescriptor = "B_s0 -> mu+ mu-"
-    MatchedBdKPiComb.Preambulo = _Preambulo
-    MatchedBdKPiComb.addTool( OfflineVertexFitter )
-    MatchedBdKPiComb.ParticleCombiners.update( { "" : "OfflineVertexFitter"} )
-    MatchedBdKPiComb.OfflineVertexFitter.useResonanceVertex = False
-    MatchedBdKPiComb.ReFitPVs = True
-    #    MatchedBdKPiComb.DaughtersCuts = {  "K+" : "mcMatch( '[K+]cc' )",
-    #                                       "pi-": "mcMatch( '[pi-]cc')"}
-    # FRA: here we might want to match only the "favoured sign" :  B0-> K+ pi-, and not the other, but it will not make any difference.
-    MatchedBdKPiComb.MotherCut     =  "(mcMatch('[B0 => K+ pi-]CC'))|(mcMatch('[B0 => K- pi+]CC'))" ##give error "configure me!" if not set
-    SelMBdKPi = Selection("MatchBdKPi", 
-                          Algorithm = MatchedBdKPiComb,
-                          RequiredSelections=[ _stdAllNoPIDsMuons ])
-    SeqMyMatchedBdKPi = SelectionSequence('SeqMyMatchedBdKPi', TopSelection  =  SelMBdKPi, EventPreSelector = [CheckPV('TwoPV', MinPVs=1)])
-    SequenceMatchBdKPi = GaudiSequencer( "SequenceMatchBdKPi" )
-    SequenceMatchBdKPi.Members += [ SeqMyMatchedBdKPi.sequence() ]
-    DaVinci().UserAlgorithms += [ SequenceMatchBdKPi ]
-
-    #B2JpsiPhi
-    MatchedphiComb =  CombineParticles("MatchedphiComb") ## makes a particle out of the two muons
-    MatchedphiComb.DecayDescriptor = "phi(1020) -> K+ K-"
-    MatchedphiComb.Preambulo = _Preambulo
-    MatchedphiComb.addTool( OfflineVertexFitter )
-    MatchedphiComb.ParticleCombiners.update( { "" : "OfflineVertexFitter"} )
-    MatchedphiComb.OfflineVertexFitter.useResonanceVertex = False
-    MatchedphiComb.ReFitPVs = True
-    MatchedphiComb.DaughtersCuts = { "K+" : "mcMatch( '[K+]cc' )"}
-    MatchedphiComb.MotherCut     =  "mcMatch('phi(1020) => K+ K-')" ##give error "configure me!" if not set
-    SelMphi  = Selection ("Matchphi",
-                          Algorithm = MatchedphiComb,
-                          RequiredSelections = [ _stdAllNoPIDsKaons ] )
-
-    MatchedBs2JpsiphiComb = CombineParticles("MatchedBs2JpsiphiComb") 
-    MatchedBs2JpsiphiComb.Preambulo = _Preambulo
-    MatchedBs2JpsiphiComb.addTool( OfflineVertexFitter() )
-    MatchedBs2JpsiphiComb.VertexFitters.update( { "" : "OfflineVertexFitter"} )
-    MatchedBs2JpsiphiComb.OfflineVertexFitter.useResonanceVertex = False
-    MatchedBs2JpsiphiComb.ReFitPVs = True
-    MatchedBs2JpsiphiComb.DecayDescriptor = "B_s0 -> J/psi(1S)  phi(1020)"; 
-    MatchedBs2JpsiphiComb.MotherCut = "mcMatch( '[B_s0 => J/psi(1S) phi(1020)]CC' )" 
-    SelMBs2Jpsiphi = Selection("MatchBs2Jpsiphi", 
-                               Algorithm = MatchedBs2JpsiphiComb,
-                               RequiredSelections=[SelMJPsi, SelMphi])
-    SeqMyMatchedBsJpsiphi = SelectionSequence('SeqMyMatchedBsJpsiphi', TopSelection  =  SelMBs2Jpsiphi, EventPreSelector = [CheckPV('TwoPV', MinPVs=1)])####, EventPreSelector = [bsFilter])
-    SequenceMatchBsJpsiphi = GaudiSequencer( "SequenceMatchBsJpsiphi" )
-    SequenceMatchBsJpsiphi.Members += [ SeqMyMatchedBsJpsiphi.sequence() ]
-    DaVinci().UserAlgorithms += [ SequenceMatchBsJpsiphi ]
-
-
-
-########################################################
-#Add in used for MC vaiables
-########################################################
-
-if MC:
-    
-    LoKiTuple = LoKi__Hybrid__TupleTool("LoKi_All")
-    LoKiTuple.Variables = {"BPVDIRA"   : "BPVDIRA"
-                         , "BPVVDCHI2" : "BPVVDCHI2"
-                         , "BPVIPCHI2" : "BPVIPCHI2()"
-                         , "BPVVDZ"    : "BPVVDZ"
-                         , "VFASPF"    : "VFASPF(VCHI2/VDOF)"
-                         , "DOCAMAX"   : "DOCAMAX"
-                         , "MINIPCHI2" : "MIPCHI2DV(PRIMARY)"
-                       }
-    myNTUPLE.addTool(LoKiTuple)
-
-
-    from Configurables import  TupleToolMCTruth
-    MCTruth = TupleToolMCTruth()
-    MCTruth.ToolList = [
-        "MCTupleToolKinematic" ,
-        "MCTupleToolHierarchy"
-        ]
-    myNTUPLE.addTool(MCTruth)
-    myNTUPLE.ToolList += [
-        "TupleToolMCTruth"
-        , "TupleToolMCBackgroundInfo"
-        #, "TupleToolGeneration"
-        ,"MCTupleToolPrimaries"
-        ]
+  myNTUPLE.addTool(LoKiEventTuple)
 
 #######################################################
 ############ Include Momentum Scaling  ################
 #######################################################
 
-if data:
-    if not Collision == 15: #momentum scaling is currently not avalible for 2015 data
+if not Collision == 15: #momentum scaling is currently not avalible for 2015 data
 
-        from Configurables import  TrackScaleState
-        from Configurables import CondDB
+    from Configurables import  TrackScaleState
+    #from Configurables import CondDB
 
-        scaler = TrackScaleState()
+    scaler = TrackScaleState()
         
-        if (is_microDST):
-            rootInTES = mdst_RootInTES
-            scaler = TrackScaleState('Scaler', RootInTES = rootInTES)
+    if (is_microDST):
+        rootInTES = mdst_RootInTES
+        scaler = TrackScaleState('Scaler', RootInTES = rootInTES)
 
-        if(Collision==11):
-            CondDB().UseLatestTags = ["2011"]
+    #if(Collision==11):
+    #    CondDB().UseLatestTags = ["2011"]
     
-        if(Collision==12):
-            CondDB().UseLatestTags = ["2012"]
+    #if(Collision==12):
+    #    CondDB().UseLatestTags = ["2012"]
     
-        DaVinci().UserAlgorithms +=[scaler]
-
-
-
+    DaVinci().UserAlgorithms +=[scaler]
 
 #########################################################################
 ########  DecayTreeFitter extra kinematic variables needed   ###########
@@ -793,8 +527,6 @@ LoKiVariablesSS.Variables = {
     ,"DTF_PZ" : "DTF_FUN(PZ, False, strings(['mu-',  'mu-'],['mu+',  'mu+'] ))"
    }
 
-
-
 ##########################################################################################
 ########  DecayTreeFitter extra kinematic variables needed With PV constraint  ###########
 ##########################################################################################
@@ -871,7 +603,6 @@ LoKiVariablesSSVFit.Variables = {
     ,"DTF_PZ" : "DTF_FUN(PZ, True, strings(['mu-',  'mu-'],['mu+',  'mu+'] ))"
    }
 
-
 ############################
 ###     Make    ntuples  ###
 ############################
@@ -892,7 +623,6 @@ B2HHTuple.B.addTool(LoKiVariablesMuMu)
 B2HHTuple.B.ToolList+=["LoKi::Hybrid::TupleTool/LoKiVariablesMuMuVFit"]
 B2HHTuple.B.addTool(LoKiVariablesMuMuVFit)
 
-
 B2HHTuple.B.ToolList+=["TupleToolDecayTreeFitter/Fit"]
 B2HHTuple.B.addTool(TupleToolDecayTreeFitter("Fit"))
 B2HHTuple.B.Fit.daughtersToConstrain = ["mu+", "mu-"]
@@ -908,9 +638,8 @@ B2HHTuple.B.VFit.UpdateDaughters = True
 B2HHTuple.B.VFit.constrainToOriginVertex = True
 B2HHTuple.B.VFit.Verbose = True
         
-
 if not isolations_from_RelatedInfos:
-  
+    #if Collision != 15:
     from Configurables import TupleToolBsMuMuZViso
     B2HHTuple.B.ToolList+=["TupleToolBsMuMuZViso"]
     B2HHTuple.B.addTool(TupleToolBsMuMuZViso)
@@ -918,7 +647,6 @@ if not isolations_from_RelatedInfos:
     
     B2HHTuple.B.ToolList += ["TupleToolJetsForB/B2HH"]
     B2HHTuple.B.addTool(tupletooljets["B2HH"])
-
 
 #Including isolation variables for MDST
 ##########################################################
@@ -947,7 +675,6 @@ if isolations_from_RelatedInfos:
         #ZV isolation
         ,'ZVISO'   : "RELINFO('"+B2HHRelatedInfoInput+"RelInfoZVisoBDT', 'ZVISO', -0.)"
 
-        
         #BDT Track isolations
         ,'1_TRKISOBDTFIRSTVALUE0' :  "RELINFO('"+B2HHRelatedInfoInput+"Muon1TrackIsoBDTInfo_0','TRKISOBDTFIRSTVALUE', -0.)"
         ,'1_TRKISOBDTFIRSTVALUE1' :  "RELINFO('"+B2HHRelatedInfoInput+"Muon1TrackIsoBDTInfo_1','TRKISOBDTFIRSTVALUE', -0.)"
@@ -980,8 +707,6 @@ if isolations_from_RelatedInfos:
         ,'2_TRKISOBDTTHIRDVALUE2' :  "RELINFO('"+B2HHRelatedInfoInput+"Muon2TrackIsoBDTInfo_2','TRKISOBDTTHIRDVALUE', -0.)"
         ,'2_TRKISOBDTTHIRDVALUE3' :  "RELINFO('"+B2HHRelatedInfoInput+"Muon2TrackIsoBDTInfo_3','TRKISOBDTTHIRDVALUE', -0.)"
         ,'2_TRKISOBDTTHIRDVALUE4' :  "RELINFO('"+B2HHRelatedInfoInput+"Muon2TrackIsoBDTInfo_4','TRKISOBDTTHIRDVALUE', -0.)"
-        
-        
         
         #jet varaibles
         ,'JETNOMU1PX' : "RELINFO('"+B2HHRelatedInfoInput+"RelatedInfoJets', 'JETNOMU1PX', -0.)"
@@ -1028,7 +753,6 @@ if isolations_from_RelatedInfos:
         ,'JETBNNTAG' : "RELINFO('"+B2HHRelatedInfoInput+"RelatedInfoJets', 'JETBNNTAG', -0.)"
         ,'JETBMNF' : "RELINFO('"+B2HHRelatedInfoInput+"RelatedInfoJets', 'JETBMNF', -0.)"
         
-        
         }
     
     B2HHTuple.B.addTool(LoKi_iso_HH)
@@ -1041,15 +765,12 @@ B2MuMuTuple = myNTUPLE.clone("B2MuMuTuple")
 B2MuMuTuple.Inputs = [B2MuMuInput]
 B2MuMuTuple.Decay = 'B_s0 -> ^mu+ ^mu-'
 
-
 B2MuMuTuple.Branches = { "B" :  "B_s0 -> mu+ mu-"}
-
 
 B2MuMuTuple.addTool(TupleToolDecay, name="B")
 
 B2MuMuTuple.B.ToolList+=["LoKi::Hybrid::TupleTool/LoKiVariablesMuMu"]
 B2MuMuTuple.B.addTool(LoKiVariablesMuMu)
-
 
 B2MuMuTuple.B.ToolList+=["LoKi::Hybrid::TupleTool/LoKiVariablesMuMuVFit"]
 B2MuMuTuple.B.addTool(LoKiVariablesMuMuVFit)
@@ -1069,10 +790,8 @@ B2MuMuTuple.B.VFit.UpdateDaughters = True
 B2MuMuTuple.B.VFit.constrainToOriginVertex  = True
 B2MuMuTuple.B.VFit.Verbose = True
 
-
-
 if not isolations_from_RelatedInfos:
-    
+    #if Collision != 15:
     from Configurables import TupleToolBsMuMuZViso
     B2MuMuTuple.B.ToolList+=["TupleToolBsMuMuZViso"]
     B2MuMuTuple.B.addTool(TupleToolBsMuMuZViso)
@@ -1098,7 +817,6 @@ if isolations_from_RelatedInfos:
         ,'BSMUMUPARTID' : "RELINFO('"+B2MuMuRelatedInfoInput+"BSMUMUVARIABLES', 'BSMUMUPARTID', -0.)"
         ,'BSMUMUTOPID' : "RELINFO('"+B2MuMuRelatedInfoInput+"BSMUMUVARIABLES', 'BSMUMUTOPID', -0.)"
         
-
         ,'iso_giampi' :"RELINFO('"+B2MuMuRelatedInfoInput+"Muon1iso' , 'BSMUMUTRACKPLUSISO', -0.)"
         ,'iso_new2' :"RELINFO('"+B2MuMuRelatedInfoInput+"Muon1iso' , 'BSMUMUTRACKPLUSISOTWO', -0.)"
         ,'BSMUMUTRACKID' :"RELINFO('"+B2MuMuRelatedInfoInput+"Muon1iso' , 'BSMUMUTRACKID', -0.)"
@@ -1112,7 +830,6 @@ if isolations_from_RelatedInfos:
         #ZV isolatio
         ,'ZVISO'   : "RELINFO('"+B2MuMuRelatedInfoInput+"RelInfoZVisoBDT', 'ZVISO', -0.)"
 
-        
         #BDT Track isolations
         ,'1_TRKISOBDTFIRSTVALUE0' :  "RELINFO('"+B2MuMuRelatedInfoInput+"Muon1TrackIsoBDTInfo_0','TRKISOBDTFIRSTVALUE', -0.)"
         ,'1_TRKISOBDTFIRSTVALUE1' :  "RELINFO('"+B2MuMuRelatedInfoInput+"Muon1TrackIsoBDTInfo_1','TRKISOBDTFIRSTVALUE', -0.)"
@@ -1145,7 +862,6 @@ if isolations_from_RelatedInfos:
         ,'2_TRKISOBDTTHIRDVALUE2' :  "RELINFO('"+B2MuMuRelatedInfoInput+"Muon2TrackIsoBDTInfo_2','TRKISOBDTTHIRDVALUE', -0.)"
         ,'2_TRKISOBDTTHIRDVALUE3' :  "RELINFO('"+B2MuMuRelatedInfoInput+"Muon2TrackIsoBDTInfo_3','TRKISOBDTTHIRDVALUE', -0.)"
         ,'2_TRKISOBDTTHIRDVALUE4' :  "RELINFO('"+B2MuMuRelatedInfoInput+"Muon2TrackIsoBDTInfo_4','TRKISOBDTTHIRDVALUE', -0.)"
-        
         
         #jet variables
         ,'JETNOMU1PX' : "RELINFO('"+B2MuMuRelatedInfoInput+"RelatedInfoJets', 'JETNOMU1PX', -0.)"
@@ -1197,7 +913,6 @@ if isolations_from_RelatedInfos:
     B2MuMuTuple.B.addTool(LoKi_iso_MuMu)
     B2MuMuTuple.B.ToolList+=["LoKi::Hybrid::TupleTool/LoKi_iso_MuMu"]
 
-
 #For JpsiK
 ################################################################
     
@@ -1209,13 +924,11 @@ B2JpsiKTuple.Branches = {
     "B" :  "^([B+ -> (J/psi(1S) -> mu+ mu-) K+ ]CC)"
     ,"J_psi_1S" :  "([B+ -> ^(J/psi(1S) -> mu+ mu-) K+ ]CC)"
     }
-    
 
 B2JpsiKTuple.addTool(TupleToolDecay, name="B")
 B2JpsiKTuple.addTool(TupleToolDecay, name="J_psi_1S")
 B2JpsiKTuple.B.ToolList+=["LoKi::Hybrid::TupleTool/LoKiVariablesJpsiK"]
 B2JpsiKTuple.B.addTool(LoKiVariablesJpsiK)
-
 
 B2JpsiKTuple.B.ToolList+=["LoKi::Hybrid::TupleTool/LoKiVariablesJpsiKVFit"]
 B2JpsiKTuple.B.addTool(LoKiVariablesJpsiKVFit)
@@ -1235,21 +948,16 @@ B2JpsiKTuple.B.VFit.UpdateDaughters = True
 B2JpsiKTuple.B.VFit.constrainToOriginVertex  = True
 B2JpsiKTuple.B.VFit.Verbose = True
 
-
-
 if not isolations_from_RelatedInfos:
-        from Configurables import TupleToolBsMuMuZViso
-        B2JpsiKTuple.J_psi_1S.ToolList+=["TupleToolBsMuMuZViso"]
-        B2JpsiKTuple.J_psi_1S.addTool(TupleToolBsMuMuZViso)
-        B2JpsiKTuple.J_psi_1S.TupleToolBsMuMuZViso.Weights_BDTG_ZViso = ZVisoWeightsFile
+    #if Collision != 15:
+    from Configurables import TupleToolBsMuMuZViso
+    B2JpsiKTuple.J_psi_1S.ToolList+=["TupleToolBsMuMuZViso"]
+    B2JpsiKTuple.J_psi_1S.addTool(TupleToolBsMuMuZViso)
+    B2JpsiKTuple.J_psi_1S.TupleToolBsMuMuZViso.Weights_BDTG_ZViso = ZVisoWeightsFile
 
-
-
-    
 #Including isolation variables for MDST
 ##########################################################
 if isolations_from_RelatedInfos:
-
 
     LoKi_iso_K =  LoKi__Hybrid__TupleTool( 'LoKi_iso_K')
     LoKi_iso_K.Variables = {
@@ -1263,7 +971,6 @@ if isolations_from_RelatedInfos:
         ,'BSMUMUOTHERBTRACKS' : "RELINFO('"+B2JpsiKRelatedInfoInput+"BSMUMUVARIABLES', 'BSMUMUOTHERBTRACKS', -0.)"
         ,'BSMUMUPARTID' : "RELINFO('"+B2JpsiKRelatedInfoInput+"BSMUMUVARIABLES', 'BSMUMUPARTID', -0.)"
         ,'BSMUMUTOPID' : "RELINFO('"+B2JpsiKRelatedInfoInput+"BSMUMUVARIABLES', 'BSMUMUTOPID', -0.)"
-        
         
         ,'iso_giampi' :"RELINFO('"+B2JpsiKRelatedInfoInput+"Muon1iso' , 'BSMUMUTRACKPLUSISO', -0.)"
         ,'iso_new2' :"RELINFO('"+B2JpsiKRelatedInfoInput+"Muon1iso' , 'BSMUMUTRACKPLUSISOTWO', -0.)"
@@ -1313,10 +1020,8 @@ if isolations_from_RelatedInfos:
         
         }
 
-
     B2JpsiKTuple.J_psi_1S.addTool(LoKi_iso_K)
     B2JpsiKTuple.J_psi_1S.ToolList+=["LoKi::Hybrid::TupleTool/LoKi_iso_K"]
-
 
 ################################################################
 #For Jpsi Phi
@@ -1325,7 +1030,6 @@ B2JpsiPhiTuple = myNTUPLE.clone("B2JpsiPhiTuple")
 B2JpsiPhiTuple.Inputs = [ B2JpsiPhiInput ]
 B2JpsiPhiTuple.Decay ="[B_s0 -> ^(J/psi(1S) -> ^mu+ ^mu-) ^(phi(1020) -> ^K+ ^K-)]CC"
     
-
 B2JpsiPhiTuple.Branches = {
     "B" :  "^([B_s0 -> (J/psi(1S) -> mu+ mu-) (phi(1020) -> K+ K-)]CC)"
     ,"J_psi_1S" :  "([B_s0 -> ^(J/psi(1S) -> mu+ mu-) (phi(1020) -> K+ K-)]CC)"
@@ -1337,7 +1041,6 @@ B2JpsiPhiTuple.addTool(TupleToolDecay, name="J_psi_1S")
 
 B2JpsiPhiTuple.B.ToolList+=["LoKi::Hybrid::TupleTool/LoKiVariablesJpsiPhi"]
 B2JpsiPhiTuple.B.addTool(LoKiVariablesJpsiPhi)
-
 
 B2JpsiPhiTuple.B.ToolList+=["LoKi::Hybrid::TupleTool/LoKiVariablesJpsiPhiVFit"]
 B2JpsiPhiTuple.B.addTool(LoKiVariablesJpsiPhiVFit)
@@ -1357,16 +1060,12 @@ B2JpsiPhiTuple.B.VFit.UpdateDaughters = True
 B2JpsiPhiTuple.B.VFit.constrainToOriginVertex  = True
 B2JpsiPhiTuple.B.VFit.Verbose = True
 
-
-
 if not isolations_from_RelatedInfos:  
-       
-        from Configurables import TupleToolBsMuMuZViso
-        B2JpsiPhiTuple.J_psi_1S.ToolList+=["TupleToolBsMuMuZViso"]
-        B2JpsiPhiTuple.J_psi_1S.addTool(TupleToolBsMuMuZViso)
-        B2JpsiPhiTuple.J_psi_1S.TupleToolBsMuMuZViso.Weights_BDTG_ZViso = ZVisoWeightsFile
-
-
+    #if Collision != 15:
+    from Configurables import TupleToolBsMuMuZViso
+    B2JpsiPhiTuple.J_psi_1S.ToolList+=["TupleToolBsMuMuZViso"]
+    B2JpsiPhiTuple.J_psi_1S.addTool(TupleToolBsMuMuZViso)
+    B2JpsiPhiTuple.J_psi_1S.TupleToolBsMuMuZViso.Weights_BDTG_ZViso = ZVisoWeightsFile
 
 #Including isolation variables for MDST
 ##########################################################
@@ -1385,7 +1084,6 @@ if  isolations_from_RelatedInfos:
         ,'BSMUMUPARTID' : "RELINFO('"+B2JpsiPhiRelatedInfoInput+"BSMUMUVARIABLES', 'BSMUMUPARTID', -0.)"
         ,'BSMUMUTOPID' : "RELINFO('"+B2JpsiPhiRelatedInfoInput+"BSMUMUVARIABLES', 'BSMUMUTOPID', -0.)"
         
-        
         ,'iso_giampi' :"RELINFO('"+B2JpsiPhiRelatedInfoInput+"Muon1iso' , 'BSMUMUTRACKPLUSISO', -0.)"
         ,'iso_new2' :"RELINFO('"+B2JpsiPhiRelatedInfoInput+"Muon1iso' , 'BSMUMUTRACKPLUSISOTWO', -0.)"
         ,'BSMUMUTRACKID' :"RELINFO('"+B2JpsiPhiRelatedInfoInput+"Muon1iso' , 'BSMUMUTRACKID', -0.)"
@@ -1398,7 +1096,6 @@ if  isolations_from_RelatedInfos:
 
         #ZV isolation
         ,'ZVISO'   : "RELINFO('"+B2JpsiPhiRelatedInfoInput+"RelInfoZVisoBDT', 'ZVISO', -0.)"
-
 
         #BDT track isolations
         ,'1_TRKISOBDTFIRSTVALUE0' :  "RELINFO('"+B2JpsiPhiRelatedInfoInput+"Muon1TrackIsoBDTInfo_0','TRKISOBDTFIRSTVALUE', -0.)"
@@ -1439,7 +1136,6 @@ if  isolations_from_RelatedInfos:
         
         }
 
-
     B2JpsiPhiTuple.J_psi_1S.addTool(LoKi_iso_Phi)
     B2JpsiPhiTuple.J_psi_1S.ToolList+=["LoKi::Hybrid::TupleTool/LoKi_iso_Phi"]
 
@@ -1457,14 +1153,11 @@ B2JpsiKstTuple.Branches = {
     #,"Kst" :  "([B0 -> (J/psi(1S) -> mu+ mu-) ^(K*(892)0 -> K+ pi-)]CC)"
     }
 
-
-
 B2JpsiKstTuple.addTool(TupleToolDecay, name="B") 
 B2JpsiKstTuple.addTool(TupleToolDecay, name="J_psi_1S")
 
 B2JpsiKstTuple.B.ToolList+=["LoKi::Hybrid::TupleTool/LoKiVariablesJpsiKst"]
 B2JpsiKstTuple.B.addTool(LoKiVariablesJpsiKst)
-
 
 B2JpsiKstTuple.B.ToolList+=["LoKi::Hybrid::TupleTool/LoKiVariablesJpsiKstVFit"]
 B2JpsiKstTuple.B.addTool(LoKiVariablesJpsiKstVFit)
@@ -1485,11 +1178,11 @@ B2JpsiKstTuple.B.VFit.constrainToOriginVertex  = True
 B2JpsiKstTuple.B.VFit.Verbose = True
 
 if not isolations_from_RelatedInfos:
-        from Configurables import TupleToolBsMuMuZViso
-        B2JpsiKstTuple.J_psi_1S.ToolList+=["TupleToolBsMuMuZViso"]
-        B2JpsiKstTuple.J_psi_1S.addTool(TupleToolBsMuMuZViso)
-        B2JpsiKstTuple.J_psi_1S.TupleToolBsMuMuZViso.Weights_BDTG_ZViso = ZVisoWeightsFile
-
+    #if Collision != 15:
+    from Configurables import TupleToolBsMuMuZViso
+    B2JpsiKstTuple.J_psi_1S.ToolList+=["TupleToolBsMuMuZViso"]
+    B2JpsiKstTuple.J_psi_1S.addTool(TupleToolBsMuMuZViso)
+    B2JpsiKstTuple.J_psi_1S.TupleToolBsMuMuZViso.Weights_BDTG_ZViso = ZVisoWeightsFile
 
 #Including isolation variables for MDST
 ##########################################################
@@ -1507,7 +1200,6 @@ if isolations_from_RelatedInfos:
         ,'BSMUMUPARTID' : "RELINFO('"+B2JpsiKstRelatedInfoInput+"BSMUMUVARIABLES', 'BSMUMUPARTID', -0.)"
         ,'BSMUMUTOPID' : "RELINFO('"+B2JpsiKstRelatedInfoInput+"BSMUMUVARIABLES', 'BSMUMUTOPID', -0.)"
         
-
         ,'iso_giampi' :"RELINFO('"+B2JpsiKstRelatedInfoInput+"Muon1iso' , 'BSMUMUTRACKPLUSISO', -0.)"
         ,'iso_new2' :"RELINFO('"+B2JpsiKstRelatedInfoInput+"Muon1iso' , 'BSMUMUTRACKPLUSISOTWO', -0.)"
         ,'BSMUMUTRACKID' :"RELINFO('"+B2JpsiKstRelatedInfoInput+"Muon1iso' , 'BSMUMUTRACKID', -0.)"
@@ -1519,7 +1211,6 @@ if isolations_from_RelatedInfos:
         ,'BSMUMUTRACKTOPID' :"RELINFO('"+B2JpsiKstRelatedInfoInput+"Muon2iso' , 'BSMUMUTRACKTOPID', -0.)"
         #ZV isolation
         ,'ZVISO'   : "RELINFO('"+B2JpsiKstRelatedInfoInput+"RelInfoZVisoBDT', 'ZVISO', -0.)"
-
 
         #BDT Track isolations
         ,'1_TRKISOBDTFIRSTVALUE0' :  "RELINFO('"+B2JpsiKstRelatedInfoInput+"Muon1TrackIsoBDTInfo_0','TRKISOBDTFIRSTVALUE', -0.)"
@@ -1556,7 +1247,6 @@ if isolations_from_RelatedInfos:
     
         }
 
-
     B2JpsiKstTuple.J_psi_1S.addTool(LoKi_iso_Kst)
     B2JpsiKstTuple.J_psi_1S.ToolList+=["LoKi::Hybrid::TupleTool/LoKi_iso_Kst"]
 
@@ -1573,10 +1263,8 @@ B2SSTuple.addTool(TupleToolDecay, name="B")
 B2SSTuple.B.ToolList+=["LoKi::Hybrid::TupleTool/LoKiVariablesSS"]
 B2SSTuple.B.addTool(LoKiVariablesSS)
 
-
 B2SSTuple.B.ToolList+=["LoKi::Hybrid::TupleTool/LoKiVariablesSSVFit"]
 B2SSTuple.B.addTool(LoKiVariablesSSVFit)
-
 
 B2SSTuple.B.ToolList+=["TupleToolDecayTreeFitter/Fit"]
 B2SSTuple.B.addTool(TupleToolDecayTreeFitter("Fit"))
@@ -1594,15 +1282,14 @@ B2SSTuple.B.VFit.constrainToOriginVertex = True
 B2SSTuple.B.VFit.Verbose = True
 
 if not isolations_from_RelatedInfos:
-        from Configurables import TupleToolBsMuMuZViso
-        B2SSTuple.B.ToolList+=["TupleToolBsMuMuZViso"]
-        B2SSTuple.B.addTool(TupleToolBsMuMuZViso)
-        B2SSTuple.B.TupleToolBsMuMuZViso.Weights_BDTG_ZViso = ZVisoWeightsFile
+    #if Collision != 15:
+    from Configurables import TupleToolBsMuMuZViso
+    B2SSTuple.B.ToolList+=["TupleToolBsMuMuZViso"]
+    B2SSTuple.B.addTool(TupleToolBsMuMuZViso)
+    B2SSTuple.B.TupleToolBsMuMuZViso.Weights_BDTG_ZViso = ZVisoWeightsFile
     
-        B2SSTuple.B.ToolList += ["TupleToolJetsForB/B2SS"]
-        B2SSTuple.B.addTool(tupletooljets["B2SS"])
-
-
+    B2SSTuple.B.ToolList += ["TupleToolJetsForB/B2SS"]
+    B2SSTuple.B.addTool(tupletooljets["B2SS"])
 
 #Including isolation variables for MDST
 ##########################################################
@@ -1620,7 +1307,6 @@ if isolations_from_RelatedInfos:
         ,'BSMUMUPARTID' : "RELINFO('"+B2SSRelatedInfoInput+"BSMUMUVARIABLES', 'BSMUMUPARTID', -0.)"
         ,'BSMUMUTOPID' : "RELINFO('"+B2SSRelatedInfoInput+"BSMUMUVARIABLES', 'BSMUMUTOPID', -0.)"
         
-        
         ,'iso_giampi' :"RELINFO('"+B2SSRelatedInfoInput+"Muon1iso' , 'BSMUMUTRACKPLUSISO', -0.)"
         ,'iso_new2' :"RELINFO('"+B2SSRelatedInfoInput+"Muon1iso' , 'BSMUMUTRACKPLUSISOTWO', -0.)"
         ,'BSMUMUTRACKID' :"RELINFO('"+B2SSRelatedInfoInput+"Muon1iso' , 'BSMUMUTRACKID', -0.)"
@@ -1633,7 +1319,6 @@ if isolations_from_RelatedInfos:
         #ZV isolations
         ,'ZVISO'   : "RELINFO('"+B2SSRelatedInfoInput+"RelInfoZVisoBDT', 'ZVISO', -0.)"
 
-        
         #BDT Track isolations
         ,'1_TRKISOBDTFIRSTVALUE0' :  "RELINFO('"+B2SSRelatedInfoInput+"Muon1TrackIsoBDTInfo_0','TRKISOBDTFIRSTVALUE', -0.)"
         ,'1_TRKISOBDTFIRSTVALUE1' :  "RELINFO('"+B2SSRelatedInfoInput+"Muon1TrackIsoBDTInfo_1','TRKISOBDTFIRSTVALUE', -0.)"
@@ -1666,8 +1351,6 @@ if isolations_from_RelatedInfos:
         ,'2_TRKISOBDTTHIRDVALUE2' :  "RELINFO('"+B2SSRelatedInfoInput+"Muon2TrackIsoBDTInfo_2','TRKISOBDTTHIRDVALUE', -0.)"
         ,'2_TRKISOBDTTHIRDVALUE3' :  "RELINFO('"+B2SSRelatedInfoInput+"Muon2TrackIsoBDTInfo_3','TRKISOBDTTHIRDVALUE', -0.)"
         ,'2_TRKISOBDTTHIRDVALUE4' :  "RELINFO('"+B2SSRelatedInfoInput+"Muon2TrackIsoBDTInfo_4','TRKISOBDTTHIRDVALUE', -0.)"
-        
-        
         
         #jet varaibles
         ,'JETNOMU1PX' : "RELINFO('"+B2SSRelatedInfoInput+"RelatedInfoJets', 'JETNOMU1PX', -0.)"
@@ -1714,18 +1397,14 @@ if isolations_from_RelatedInfos:
         ,'JETBNNTAG' : "RELINFO('"+B2SSRelatedInfoInput+"RelatedInfoJets', 'JETBNNTAG', -0.)"
         ,'JETBMNF' : "RELINFO('"+B2SSRelatedInfoInput+"RelatedInfoJets', 'JETBMNF', -0.)"
         
-        
         }
     
     B2SSTuple.B.addTool(LoKi_iso_SS)
     B2SSTuple.B.ToolList+=["LoKi::Hybrid::TupleTool/LoKi_iso_SS"]
 
-
 #####################################################################################
 #Include lifetime unbiased lines - no MC for these stripping lines
 #####################################################################################
-
-
 
 #Bs2MuMU lifetime unbiased line
 #######################################################
@@ -1739,10 +1418,8 @@ Bs2MuMuLTUBTuple.addTool(TupleToolDecay, name="B")
 Bs2MuMuLTUBTuple.B.ToolList+=["LoKi::Hybrid::TupleTool/LoKiVariablesMuMu"]
 Bs2MuMuLTUBTuple.B.addTool(LoKiVariablesMuMu)
 
-
 Bs2MuMuLTUBTuple.B.ToolList+=["LoKi::Hybrid::TupleTool/LoKiVariablesMuMuVFit"]
 Bs2MuMuLTUBTuple.B.addTool(LoKiVariablesMuMuVFit)
-
 
 Bs2MuMuLTUBTuple.B.ToolList+=["TupleToolDecayTreeFitter/Fit"]
 Bs2MuMuLTUBTuple.B.addTool(TupleToolDecayTreeFitter("Fit"))
@@ -1773,7 +1450,6 @@ if isolations_from_RelatedInfos:
             ,'BSMUMUPARTID' : "RELINFO('"+LTUBBs2MuMuRelatedInfoInput+"BSMUMUVARIABLES', 'BSMUMUPARTID', -0.)"
             ,'BSMUMUTOPID' : "RELINFO('"+LTUBBs2MuMuRelatedInfoInput+"BSMUMUVARIABLES', 'BSMUMUTOPID', -0.)"
             
-            
             ,'JETNOMU1PX' : "RELINFO('"+LTUBBs2MuMuRelatedInfoInput+"RelatedInfoJets', 'JETNOMU1PX', -0.)"
             ,'JETNOMU1PY' : "RELINFO('"+LTUBBs2MuMuRelatedInfoInput+"RelatedInfoJets', 'JETNOMU1PY', -0.)"
             ,'JETNOMU1PZ' : "RELINFO('"+LTUBBs2MuMuRelatedInfoInput+"RelatedInfoJets', 'JETNOMU1PZ', -0.)"
@@ -1788,7 +1464,7 @@ if isolations_from_RelatedInfos:
             ,'JETMU1PX' : "RELINFO('"+LTUBBs2MuMuRelatedInfoInput+"RelatedInfoJets', 'JETMU1PX', -0.)"
             ,'JETMU1PY' : "RELINFO('"+LTUBBs2MuMuRelatedInfoInput+"RelatedInfoJets', 'JETMU1PY', -0.)"
             ,'JETMU1PZ' : "RELINFO('"+LTUBBs2MuMuRelatedInfoInput+"RelatedInfoJets', 'JETMU1PZ', -0.)"
-            , 'JETNOMU2JETWIDTH': "RELINFO('"+LTUBBs2MuMuRelatedInfoInput+"RelatedInfoJets', 'JETNOMU2JETWIDTH', -0.)"
+            ,'JETNOMU2JETWIDTH': "RELINFO('"+LTUBBs2MuMuRelatedInfoInput+"RelatedInfoJets', 'JETNOMU2JETWIDTH', -0.)"
             ,'JETNOMU2JETWIDTH' : "RELINFO('"+LTUBBs2MuMuRelatedInfoInput+"RelatedInfoJets', 'JETNOMU2JETWIDTH', -0.)"
             ,'JETNOMU2NNTAG' : "RELINFO('"+LTUBBs2MuMuRelatedInfoInput+"RelatedInfoJets', 'JETNOMU2NNTAG', -0.)"
             ,'JETNOMU2MNF' : "RELINFO('"+LTUBBs2MuMuRelatedInfoInput+"RelatedInfoJets', 'JETNOMU2MNF', -0.)"
@@ -1862,14 +1538,10 @@ if isolations_from_RelatedInfos:
             ,'2_TRKISOBDTTHIRDVALUE3' :  "RELINFO('"+LTUBBs2MuMuRelatedInfoInput+"Muon2TrackIsoBDTInfo_3','TRKISOBDTTHIRDVALUE', -0.)"
             ,'2_TRKISOBDTTHIRDVALUE4' :  "RELINFO('"+LTUBBs2MuMuRelatedInfoInput+"Muon2TrackIsoBDTInfo_4','TRKISOBDTTHIRDVALUE', -0.)"
             
-            
             }
-        
-       
 
     Bs2MuMuLTUBTuple.B.addTool(LoKi_Iso_MuMu)
     Bs2MuMuLTUBTuple.B.ToolList+=["LoKi::Hybrid::TupleTool/LoKi_Iso_MuMu"]
-
 
 #Bs2KK lifetime unbiased line
 #######################################################
@@ -1882,10 +1554,8 @@ Bs2KKLTUBTuple.addTool(TupleToolDecay, name="B")
 Bs2KKLTUBTuple.B.ToolList+=["LoKi::Hybrid::TupleTool/LoKiVariablesKK"]
 Bs2KKLTUBTuple.B.addTool(LoKiVariablesKK)
 
-
 Bs2KKLTUBTuple.B.ToolList+=["LoKi::Hybrid::TupleTool/LoKiVariablesKKVFit"]
 Bs2KKLTUBTuple.B.addTool(LoKiVariablesKKVFit)
-
 
 Bs2KKLTUBTuple.B.ToolList+=["TupleToolDecayTreeFitter/Fit"]
 Bs2KKLTUBTuple.B.addTool(TupleToolDecayTreeFitter("Fit"))
@@ -1902,7 +1572,6 @@ Bs2KKLTUBTuple.B.VFit.UpdateDaughters = True
 Bs2KKLTUBTuple.B.VFit.constrainToOriginVertex = True
 Bs2KKLTUBTuple.B.VFit.Verbose = True
 
-
 if isolations_from_RelatedInfos:
 
     LoKi_Iso_KK =  LoKi__Hybrid__TupleTool('LoKi_Iso_KK')
@@ -1918,7 +1587,6 @@ if isolations_from_RelatedInfos:
         ,'BSMUMUPARTID' : "RELINFO('"+LTUBB2KKRelatedInfoInput+"BSMUMUVARIABLES', 'BSMUMUPARTID', -0.)"
         ,'BSMUMUTOPID' : "RELINFO('"+LTUBB2KKRelatedInfoInput+"BSMUMUVARIABLES', 'BSMUMUTOPID', -0.)"
         
-        
         ,'JETNOMU1PX' : "RELINFO('"+LTUBB2KKRelatedInfoInput+"RelatedInfoJets', 'JETNOMU1PX', -0.)"
         ,'JETNOMU1PY' : "RELINFO('"+LTUBB2KKRelatedInfoInput+"RelatedInfoJets', 'JETNOMU1PY', -0.)"
         ,'JETNOMU1PZ' : "RELINFO('"+LTUBB2KKRelatedInfoInput+"RelatedInfoJets', 'JETNOMU1PZ', -0.)"
@@ -1933,7 +1601,7 @@ if isolations_from_RelatedInfos:
         ,'JETMU1PX' : "RELINFO('"+LTUBB2KKRelatedInfoInput+"RelatedInfoJets', 'JETMU1PX', -0.)"
         ,'JETMU1PY' : "RELINFO('"+LTUBB2KKRelatedInfoInput+"RelatedInfoJets', 'JETMU1PY', -0.)"
         ,'JETMU1PZ' : "RELINFO('"+LTUBB2KKRelatedInfoInput+"RelatedInfoJets', 'JETMU1PZ', -0.)"
-        , 'JETNOMU2JETWIDTH': "RELINFO('"+LTUBB2KKRelatedInfoInput+"RelatedInfoJets', 'JETNOMU2JETWIDTH', -0.)"
+        ,'JETNOMU2JETWIDTH': "RELINFO('"+LTUBB2KKRelatedInfoInput+"RelatedInfoJets', 'JETNOMU2JETWIDTH', -0.)"
         ,'JETNOMU2JETWIDTH' : "RELINFO('"+LTUBB2KKRelatedInfoInput+"RelatedInfoJets', 'JETNOMU2JETWIDTH', -0.)"
         ,'JETNOMU2NNTAG' : "RELINFO('"+LTUBB2KKRelatedInfoInput+"RelatedInfoJets', 'JETNOMU2NNTAG', -0.)"
         ,'JETNOMU2MNF' : "RELINFO('"+LTUBB2KKRelatedInfoInput+"RelatedInfoJets', 'JETNOMU2MNF', -0.)"
@@ -1975,70 +1643,11 @@ if isolations_from_RelatedInfos:
         ,'BSMUMUTRACKID' :"RELINFO('"+LTUBB2KKRelatedInfoInput+"Muon2iso' , 'BSMUMUTRACKID', -0.)"
         ,'BSMUMUTRACKTOPID' :"RELINFO('"+LTUBB2KKRelatedInfoInput+"Muon2iso' , 'BSMUMUTRACKTOPID', -0.)"
         
-        
         }
     
     Bs2KKLTUBTuple.B.addTool(LoKi_Iso_KK)
     Bs2KKLTUBTuple.B.ToolList+=["LoKi::Hybrid::TupleTool/LoKi_Iso_KK"]
     
-#########################################################################################3
-#Include ntuples for MC
-if doMatchedNtuples:
-    MB2JpsiKTuple = myNTUPLE.clone("MB2JpsiKTuple")
-    MB2JpsiKTuple.Inputs = [ SelMB2JpsiK.outputLocation() ] 
-    MB2JpsiKTuple.Decay = "[B+ -> ^(J/psi(1S) -> ^mu+ ^mu-) ^K+ ]CC"
-
-    MBs2MuMuTuple = myNTUPLE.clone("MBs2MuMuTuple")
-    MBs2MuMuTuple.Inputs = [ SelMBs2MuMu.outputLocation() ] 
-    MBs2MuMuTuple.Decay =  "B_s0 -> ^mu+ ^mu-"
-
-    MBd2MuMuTuple = myNTUPLE.clone("MBd2MuMuTuple")
-    MBd2MuMuTuple.Inputs = [ SelMBd2MuMu.outputLocation() ] 
-    MBd2MuMuTuple.Decay =  "B0 -> ^mu+ ^mu-"
-
-    MBd2KPiTuple = myNTUPLE.clone("MBd2KPiTuple")
-    MBd2KPiTuple.Inputs = [ SelMBdKPi.outputLocation() ] 
-    MBd2KPiTuple.Decay =  "B_s0 -> ^mu+ ^mu-"
-
-    MBs2JpsiPhiTuple = myNTUPLE.clone("MBs2JpsiPhiTuple")
-    MBs2JpsiPhiTuple.Inputs = [ SelMBs2Jpsiphi.outputLocation() ] 
-    MBs2JpsiPhiTuple.Decay ="[B_s0 -> ^(J/psi(1S) -> ^mu+ ^mu-) ^(phi(1020) -> ^K+ ^K-)]CC"
-
-
-
-if doMCDecayTreeTuple:
-    
-    from Configurables import  MCDecayTreeTuple, MCTupleToolPID, MCTupleToolKinematic, MCTupleToolHierarchy, MCTupleToolReconstructed
-    mymctuple = MCDecayTreeTuple('mymctuple')
-    mymctuple.ToolList += [ "MCTupleToolKinematic"
-                            ,"MCTupleToolHierarchy"
-                            ,"MCTupleToolPID"
-                           , "MCTupleToolReconstructed"  ]
-    mymctuple.addTool(MCTupleToolKinematic)
-    mymctuple.MCTupleToolKinematic.Verbose=True
-    mymctuple.addTool(MCTupleToolReconstructed)
-    mymctuple.MCTupleToolReconstructed.Verbose=True
-
-    MCB2KPiTuple = mymctuple.clone( 'MCB2KPiTuple' )
-    MCB2KPiTuple.Decay =   '[B0 => ^K+ ^pi-]CC' 
-   
-
-    MCBs2MuMuTuple = mymctuple.clone( 'MCBs2MuMuTuple' )
-    MCBs2MuMuTuple.Decay =    '[B_s0 => ^mu+ ^mu-]CC' 
-  
-
-    MCBd2MuMuTuple = mymctuple.clone( 'MCBd2MuMuTuple' )
-    MCBd2MuMuTuple.Decay =    '[B0 => ^mu+ ^mu-]CC' 
- 
-
-    MCB2JpsiKTuple = mymctuple.clone( 'MCB2JpsiKTuple' )
-    MCB2JpsiKTuple.Decay =    "[B+ => ^(J/psi(1S) => ^mu+ ^mu-) ^K+ ]CC"
-  
-
-
-    MCB2JpsiPhiTuple = mymctuple.clone( 'MCB2JpsiPhiTuple' )
-    MCB2JpsiPhiTuple.Decay =   "[B_s0 => ^(J/psi(1S) => ^mu+ ^mu-) ^(phi(1020) => ^K+ ^K-)]CC" 
-   
 #############################
 #Format the the Jpsi Lines
 #############################
@@ -2061,7 +1670,6 @@ if include_resonaces:
                                   ,"LoKi::Hybrid::TupleTool/LoKi_All"
                                   ]
 
-
     myNTUPLE.addTool(TupleToolTISTOS)
     myNTUPLE.TupleToolTISTOS.VerboseL0 = True
     myNTUPLE.TupleToolTISTOS.VerboseHlt1 = True
@@ -2081,12 +1689,9 @@ if include_resonaces:
     
     Jpsi2MuMuTOSTuple.Branches = {"J_psi_1S" : "J/psi(1S) -> mu+ mu-"}
     
-    
     Jpsi2MuMuTOSTuple.addTool(TupleToolDecay, name="J_psi_1S")
     Jpsi2MuMuTOSTuple.J_psi_1S.ToolList+=["LoKi::Hybrid::TupleTool/LoKiVariablesMuMu"]
     Jpsi2MuMuTOSTuple.J_psi_1S.addTool(LoKiVariablesMuMu)
-    
-        
  
     Jpsi2MuMuTOSTuple.J_psi_1S.ToolList+=["TupleToolDecayTreeFitter/Fit"]
     Jpsi2MuMuTOSTuple.J_psi_1S.addTool(TupleToolDecayTreeFitter("Fit"))
@@ -2094,7 +1699,6 @@ if include_resonaces:
     Jpsi2MuMuTOSTuple.J_psi_1S.Fit.UpdateDaughters = True 
     Jpsi2MuMuTOSTuple.J_psi_1S.Fit.constrainToOriginVertex = False
     Jpsi2MuMuTOSTuple.J_psi_1S.Fit.Verbose = True
-
     
     #DiMuonPsi2MuMuTOSTuple
     ############################################################################################################
@@ -2103,15 +1707,11 @@ if include_resonaces:
     Psi2MuMuTOSTuple.Inputs = [ DiMuonPsi2MuMuTOSInput ]
     Psi2MuMuTOSTuple.Decay ="J/psi(1S) -> ^mu+ ^mu-"
     
-    Psi2MuMuTOSTuple.Branches = {"J_psi_1S" : "J/psi(1S) -> mu+ mu-"
-                                 
-                                 }
+    Psi2MuMuTOSTuple.Branches = {"J_psi_1S" : "J/psi(1S) -> mu+ mu-"}                            
     
     Psi2MuMuTOSTuple.addTool(TupleToolDecay, name="J_psi_1S")
     Psi2MuMuTOSTuple.J_psi_1S.ToolList+=["LoKi::Hybrid::TupleTool/LoKiVariablesMuMu"]
     Psi2MuMuTOSTuple.J_psi_1S.addTool(LoKiVariablesMuMu)
-    
-    
    
     Psi2MuMuTOSTuple.J_psi_1S.ToolList+=["TupleToolDecayTreeFitter/Fit"]
     Psi2MuMuTOSTuple.J_psi_1S.addTool(TupleToolDecayTreeFitter("Fit"))
@@ -2120,21 +1720,17 @@ if include_resonaces:
     Psi2MuMuTOSTuple.J_psi_1S.Fit.constrainToOriginVertex = False
     Psi2MuMuTOSTuple.J_psi_1S.Fit.Verbose = True
     
-
     #DiMuonHighMassInput 
     ############################################################################################################
     DiMuonHighMassTuple = myNTUPLE_Jpsi.clone("DiMuonHighMassTuple")
     DiMuonHighMassTuple.Inputs = [ DiMuonHighMassInput ]
     DiMuonHighMassTuple.Decay ="J/psi(1S) -> ^mu+ ^mu-"
     
-    DiMuonHighMassTuple.Branches = {"J_psi_1S" : "J/psi(1S) -> mu+ mu-"
-                                    
-            }
+    DiMuonHighMassTuple.Branches = {"J_psi_1S" : "J/psi(1S) -> mu+ mu-"}
     
     DiMuonHighMassTuple.addTool(TupleToolDecay, name="J_psi_1S")
     DiMuonHighMassTuple.J_psi_1S.ToolList+=["LoKi::Hybrid::TupleTool/LoKiVariablesMuMu"]
     DiMuonHighMassTuple.J_psi_1S.addTool(LoKiVariablesMuMu)
-    
  
     DiMuonHighMassTuple.J_psi_1S.ToolList+=["TupleToolDecayTreeFitter/Fit"]
     DiMuonHighMassTuple.J_psi_1S.addTool(TupleToolDecayTreeFitter("Fit"))
@@ -2143,9 +1739,6 @@ if include_resonaces:
     DiMuonHighMassTuple.J_psi_1S.Fit.constrainToOriginVertex = False
     DiMuonHighMassTuple.J_psi_1S.Fit.Verbose = True
     
-        
-  
-
     #Leptonic line
     ############################################################################################################
     DiMuonIncTuple = myNTUPLE_Jpsi.clone("DiMuonIncTuple")
@@ -2158,15 +1751,12 @@ if include_resonaces:
     DiMuonIncTuple.J_psi_1S.ToolList+=["LoKi::Hybrid::TupleTool/LoKiVariablesMuMu"]
     DiMuonIncTuple.J_psi_1S.addTool(LoKiVariablesMuMu)
     
-        
     DiMuonIncTuple.J_psi_1S.ToolList+=["TupleToolDecayTreeFitter/Fit"]
     DiMuonIncTuple.J_psi_1S.addTool(TupleToolDecayTreeFitter("Fit"))
     DiMuonIncTuple.J_psi_1S.Fit.daughtersToConstrain = ["mu+", "mu-"]
     DiMuonIncTuple.J_psi_1S.Fit.UpdateDaughters = True 
     DiMuonIncTuple.J_psi_1S.Fit.constrainToOriginVertex = False
     DiMuonIncTuple.J_psi_1S.Fit.Verbose = True
-
-
 
 ############################
 ###         BDTS cut     ###
@@ -2228,15 +1818,12 @@ if cutBDTS:
 #NodeKiller
 #########################
 
-
 if (is_microDST):
 
 # Kill DAQ, temporary fix
     from Configurables import EventNodeKiller
     eventNodeKiller = EventNodeKiller('DAQkiller')
     eventNodeKiller.Nodes = ['/Event/DAQ','/Event/pRec']
-
-
     
 ############################
 ###   DV configuration ####
@@ -2251,6 +1838,8 @@ DaVinci().EvtMax = myEvents
 DaVinci().SkipEvents = 0
 
 #Set collision type
+if(Collision==16):
+    DaVinci().DataType = "2016"
 if(Collision==15):
     DaVinci().DataType = "2015"
 if(Collision==12):
@@ -2258,12 +1847,8 @@ if(Collision==12):
 if(Collision==11):
     DaVinci().DataType = "2011"
 
-if data:
-    DaVinci().Simulation   = False
-    DaVinci().Lumi   = True
-if MC:
-    DaVinci().Simulation   = True
-    DaVinci().Lumi   = False
+DaVinci().Simulation   = False
+DaVinci().Lumi   = True
 
 if (is_microDST):
     DaVinci().UserAlgorithms += [eventNodeKiller]  
@@ -2276,7 +1861,7 @@ if makeGP:
         TrackModifier("prepare_tracks_2",Location=B2MuMuInput), 
         TrackAddNNGhostId()
         ]
-    if stripping == '24':
+    if stripping in ['24','26']:
         DaVinci().UserAlgorithms = +[ #mySequencer,
             TrackModifier("prepare_tracks_3",Location=B2JpsiKInput),
             TrackAddNNGhostId()
@@ -2289,7 +1874,6 @@ if makeGP:
             TrackAddNNGhostId()
             ]
 
-
 #Add ntuples to MoniSequence
 DaVinci().MoniSequence += [ B2HHTuple , B2MuMuTuple] # these are in everything
 
@@ -2299,7 +1883,7 @@ if stripping == '20':
 if is_microDST and stripping == '21':
     DaVinci().MoniSequence += [B2JpsiKTuple, B2JpsiKstTuple, B2JpsiPhiTuple,  Bs2MuMuLTUBTuple, Bs2KKLTUBTuple, B2SSTuple]
 
-if stripping == '24':
+if stripping in ['24','26']:
     DaVinci().MoniSequence += [B2JpsiKTuple]
 
 if stripping == '24' and is_microDST:
@@ -2311,28 +1895,12 @@ if include_resonaces:
     if not is_microDST:
         DaVinci().MoniSequence += [DiMuonHighMassTuple, Jpsi2MuMuTOSTuple, Psi2MuMuTOSTuple]
 
-#If it is MC
-if doMatchedNtuples:
-    DaVinci().MoniSequence += [ MBd2KPiTuple , MBs2MuMuTuple , MBd2MuMuTuple,   MB2JpsiKTuple,  MBs2JpsiPhiTuple]
-
-
-if doMCDecayTreeTuple:
-    DaVinci().MoniSequence += [ MCB2KPiTuple , MCBs2MuMuTuple , MCBd2MuMuTuple,  MCB2JpsiKTuple,  MCB2JpsiPhiTuple]
-
-
- 
 DaVinci().TupleFile = rootfilename
-
 
 if (is_microDST):
     DaVinci().InputType = "MDST"
 if not(is_microDST):
     DaVinci().InputType = "DST"
-
-
-
-
-
 
 ########################################################################
 # HLT
@@ -2344,5 +1912,3 @@ MessageSvc().Format = "% F%60W%S%7W%R%T %0W%M"
 MessageSvc().OutputLevel = INFO
 #MessageSvc().OutputLevel = VERBOSE
 ########################################################################
-
-

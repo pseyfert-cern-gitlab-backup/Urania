@@ -3,7 +3,7 @@
 # Maintainer : Sneha Malde
 #============================================================================
 package           PIDPerfScripts
-version           v10r3
+version           v10r7
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -42,7 +42,7 @@ set CALIBDATAURLPROTOCOL root:
 set CALIBDATAEXTRA eoslhcb.cern.ch
 set CALIBDATASTORE eos/lhcb/grid/prod/lhcb/calib/lhcb/calib/pid/CalibData/
 
-
+#set OVERRIDECALIBDATASTORE /home/qian/outputURLs15MD.dat 
 
 #------------------------------------------------------------------------------
 #

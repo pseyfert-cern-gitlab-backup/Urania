@@ -95,6 +95,7 @@ class ResidualPlot(object):
             padResid.cd()
             padHisto.SetLeftMargin(0.13)
             padHisto.SetBottomMargin(0.07)
+            self.upad=padHisto
             padResid.SetRightMargin(0.05)
             padResid.SetLeftMargin(0.13)
             # Axes

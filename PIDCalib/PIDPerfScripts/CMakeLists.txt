@@ -1,7 +1,7 @@
 ################################################################################
 # Package: PIDPerfScripts
 ################################################################################
-gaudi_subdir(PIDPerfScripts v10r3)
+gaudi_subdir(PIDPerfScripts v10r7)
 
 gaudi_depends_on_subdirs(PIDCalib/PIDPerfTools)
 
@@ -12,7 +12,8 @@ gaudi_install_python_modules()
 
 gaudi_env(SET CALIBDATAEXTRA       eoslhcb.cern.ch
 	  SET CALIBDATASTORE       eos/lhcb/grid/prod/lhcb/calib/lhcb/calib/pid/CalibData
-          SET CALIBDATAURLPROTOCOL root: )
+          SET CALIBDATAURLPROTOCOL root:) 
+#          SET OVERRIDECALIBDATASTORE /home/qian/outputURLs15MD.dat)
 
 
 

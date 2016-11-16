@@ -15,6 +15,65 @@
 #define UNUSED_ARGUMENT(x) (void)x
 const float pi = boost::math::constants::pi<float>();
 
+void SetSpecVars_EvtVars2011(RooPhysFit::RooDMassFitter& Mfit,
+                             const char* parPrefix_DataSet,
+                             const char* parPrefix_nTuple)
+{
+  //======================================
+  // Event Variables
+  //======================================
+  UNUSED_ARGUMENT(parPrefix_DataSet);
+  UNUSED_ARGUMENT(parPrefix_nTuple);
+
+  Mfit.AddSpectator("nTracks",                   // Name in DataSet
+                    0,                           // Min value
+                    1000,                        // Max value
+                    "nTracks",                   // Branch name
+                    "",                          // Units
+                    "No. Best Tracks in Event",  // Title
+                    "Event variables");          // NamedSet  
+
+  Mfit.AddSpectator("nSPDHits",
+                    0.,
+                    1000.,
+                    "nSPDHits",
+                    "",
+                    "Number of hits in the SPD",
+                    "Event variables");
+
+  Mfit.AddSpectator("runNumber",
+                    87660,
+                    104300,
+                    "runNumber",
+                    "",
+                    "Run Number",
+                    "Event variables");
+  Mfit.AddSpectator("nRich1Hits",
+                    0,
+                    10000,
+                    "nRich1Hits",
+                    "",
+                    "No. RICH1 Pixel Hits",
+                    "Event variables");
+  Mfit.AddSpectator("nRich2Hits",
+                    0,
+                    10000,
+                    "nRich2Hits",
+                    "",
+                    "No. RICH2 Pixel Hits",
+                    "Event variables");
+ Mfit.AddSpectator("nPVs",              // Name in DataSet
+                    0,                  // Min value
+                    20,                 // Max value
+                    "nPVs",              // Branch name
+                    "",                 // Units
+                    "No. PV in Event",  // Title
+                    "Event variables"); // NamedSet
+
+
+
+}
+
 void SetSpecVars_EvtVars(RooPhysFit::RooDMassFitter& Mfit,
                          const char* parPrefix_DataSet,
                          const char* parPrefix_nTuple)

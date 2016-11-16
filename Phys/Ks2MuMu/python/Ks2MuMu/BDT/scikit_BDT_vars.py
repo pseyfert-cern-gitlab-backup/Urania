@@ -1,0 +1,15 @@
+MAINVARS = [
+    'KS0_LV0',
+    'KS0_IPCHI2_OWNPV',
+    'KS0_DOCA',
+    'KS0_ENDVERTEX_CHI2',
+    'KS0_SmallestDeltaChi2OneTrack',
+    'MinMu_IPCHI2_OWNPV'
+    ]
+EXTRAVARS = [
+    'KS0_PT',
+    'KS0_ENDVERTEX_X',
+    'KS0_ENDVERTEX_Y',
+    'KS0_ENDVERTEX_Z'
+    ]
+BDTVARS = MAINVARS + EXTRAVARS

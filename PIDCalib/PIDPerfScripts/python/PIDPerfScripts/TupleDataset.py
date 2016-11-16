@@ -2,18 +2,7 @@ import ROOT
 from ROOT import (RooRealVar, RooDataSet, RooArgSet, TFile)
 from copy import copy
 import os
-
-###
-### MuPlusFromJpsi2MuMu;16  DecayTree
-### pminusFromL0;5  DecayTree
-### PiPlusFromTaggedD;4 DecayTree
-### MuMinusFromJpsi2MuMu;3  DecayTree
-### KMinusFromTaggedD;2 DecayTree
-### pplusFromL0;2 DecayTree
-### KPlusFromTaggedD;2  DecayTree
-### PiMinusFromTaggedD;2  DecayTree
-###
-
+import time
 
 class var:
   def __init__ (self, dsname, tuplename, range ):
@@ -45,41 +34,46 @@ class var:
     return self.tuplename.format ( particle = partName )
     
   
-
-
 vars_dataset = {
-        'Charge':           var('Charge',                      "{particle}_trackcharge"     , 'charge'      ),
+        'probe_Charge':           var('Charge',                      "{particle}_Charge"     , 'charge'      ),
         'nTracks':          var('nTracks',                     "nTracks"                    , 'nTracks'     ),
         'runNumber':        var('runNumber',                   "runNumber"                  , 'runnumber'   ),
-        'DLLK':             var('{particle}_CombDLLK',         "{particle}_Brunel_PIDK"     , 'dll'         ),
-        'DLLp':             var('{particle}_CombDLLp',         "{particle}_Brunel_PIDp"     , 'dll'         ),
-        'DLLe':             var('{particle}_CombDLLe',         "{particle}_Brunel_PIDe"     , 'dll'         ),
-        'DLLmu':            var('{particle}_CombDLLmu',        "{particle}_Brunel_PIDmu"    , 'dll'         ),
-##        'DLLpK':            var('My_DLLpK',                                                ,               ),
-        'V2ProbNNK':        var('{particle}_V2ProbNNK',        '{particle}_Brunel_V2ProbNNk'       , 'prob'        ),
-        'V2ProbNNpi':       var('{particle}_V2ProbNNpi',       '{particle}_Brunel_V2ProbNNpi'      , 'prob'        ),
-        'V2ProbNNp':        var('{particle}_V2ProbNNp',        '{particle}_Brunel_V2ProbNNp'       , 'prob'        ),
-        'V2ProbNNmu':       var('{particle}_V2ProbNNmu',       '{particle}_Brunel_V2ProbNNmu'      , 'prob'        ),
-        'V2ProbNNe':        var('{particle}_V2ProbNNe',        '{particle}_Brunel_V2ProbNNe'       , 'prob'        ),
-        'V2ProbNNghost':    var('{particle}_V2ProbNNghost',    '{particle}_Brunel_V2ProbNNghost'   , 'prob'        ),
-        'V3ProbNNK':        var('{particle}_V3ProbNNK',        '{particle}_Brunel_V3ProbNNk'       , 'prob'        ),
-        'V3ProbNNpi':       var('{particle}_V3ProbNNpi',       '{particle}_Brunel_V3ProbNNpi'      , 'prob'        ),
-        'V3ProbNNp':        var('{particle}_V3ProbNNp',        '{particle}_Brunel_V3ProbNNp'       , 'prob'        ),
-        'V3ProbNNmu':       var('{particle}_V3ProbNNmu',       '{particle}_Brunel_V3ProbNNmu'      , 'prob'        ),
-        'V3ProbNNe':        var('{particle}_V3ProbNNe',        '{particle}_Brunel_V3ProbNNe'       , 'prob'        ),
-        'V3ProbNNghost':    var('{particle}_V3ProbNNghost',    '{particle}_Brunel_V3ProbNNghost'   , 'prob'        ),
-        'V4ProbNNK':        var('{particle}_V4ProbNNK',        '{particle}_Brunel_V4ProbNNk'       , 'prob'        ),
-        'V4ProbNNpi':       var('{particle}_V4ProbNNpi',       '{particle}_Brunel_V4ProbNNpi'      , 'prob'        ),
-        'V4ProbNNp':        var('{particle}_V4ProbNNp',        '{particle}_Brunel_V4ProbNNp'       , 'prob'        ),
-        'V4ProbNNmu':       var('{particle}_V4ProbNNmu',       '{particle}_Brunel_V4ProbNNmu'      , 'prob'        ),
-        'V4ProbNNe':        var('{particle}_V4ProbNNe',        '{particle}_Brunel_V4ProbNNe'       , 'prob'        ),
-        'V4ProbNNghost':    var('{particle}_V4ProbNNghost',    '{particle}_Brunel_V4ProbNNghost'   , 'prob'        ),
+        'nPVs':        var('nPVs',                   "nPVs"                  , 'nPVs'   ),
+        'probe_PIDK':             var('{particle}_CombDLLK',         "{particle}_Brunel_PIDK"     , 'dll'         ),
+        'probe_PIDp':             var('{particle}_CombDLLp',         "{particle}_Brunel_PIDp"     , 'dll'         ),
+        'probe_PIDe':             var('{particle}_CombDLLe',         "{particle}_Brunel_PIDe"     , 'dll'         ),
+        'probe_PIDmu':            var('{particle}_CombDLLmu',        "{particle}_Brunel_PIDmu"    , 'dll'         ),
+        'probe_V2ProbNNK':        var('{particle}_V2ProbNNK',        '{particle}_MC12TuneV2_ProbNNk'       , 'prob'        ),
+        'probe_V2ProbNNpi':       var('{particle}_V2ProbNNpi',       '{particle}_MC12TuneV2_ProbNNpi'      , 'prob'        ),
+        'probe_V2ProbNNp':        var('{particle}_V2ProbNNp',        '{particle}_MC12TuneV2_ProbNNp'       , 'prob'        ),
+        'probe_V2ProbNNmu':       var('{particle}_V2ProbNNmu',       '{particle}_MC12TuneV2_ProbNNmu'      , 'prob'        ),
+        'probe_V2ProbNNe':        var('{particle}_V2ProbNNe',        '{particle}_MC12TuneV2_ProbNNe'       , 'prob'        ),
+        'probe_V2ProbNNghost':    var('{particle}_V2ProbNNghost',    '{particle}_MC12TuneV2_ProbNNghost'   , 'prob'        ),
+        'probe_V3ProbNNK':        var('{particle}_V3ProbNNK',        '{particle}_MC12TuneV3_ProbNNk'       , 'prob'        ),
+        'probe_V3ProbNNpi':       var('{particle}_V3ProbNNpi',       '{particle}_MC12TuneV3_ProbNNpi'      , 'prob'        ),
+        'probe_V3ProbNNp':        var('{particle}_V3ProbNNp',        '{particle}_MC12TuneV3_ProbNNp'       , 'prob'        ),
+        'probe_V3ProbNNmu':       var('{particle}_V3ProbNNmu',       '{particle}_MC12TuneV3_ProbNNmu'      , 'prob'        ),
+        'probe_V3ProbNNe':        var('{particle}_V3ProbNNe',        '{particle}_MC12TuneV3_ProbNNe'       , 'prob'        ),
+        'probe_V3ProbNNghost':    var('{particle}_V3ProbNNghost',    '{particle}_MC12TuneV3_ProbNNghost'   , 'prob'        ),
+        'probe_V4ProbNNK':        var('{particle}_V4ProbNNK',        '{particle}_MC12TuneV4_ProbNNk'       , 'prob'        ),
+        'probe_V4ProbNNpi':       var('{particle}_V4ProbNNpi',       '{particle}_MC12TuneV4_ProbNNpi'      , 'prob'        ),
+        'probe_V4ProbNNp':        var('{particle}_V4ProbNNp',        '{particle}_MC12TuneV4_ProbNNp'       , 'prob'        ),
+        'probe_V4ProbNNmu':       var('{particle}_V4ProbNNmu',       '{particle}_MC12TuneV4_ProbNNmu'      , 'prob'        ),
+        'probe_V4ProbNNe':        var('{particle}_V4ProbNNe',        '{particle}_MC12TuneV4_ProbNNe'       , 'prob'        ),
+        'probe_V4ProbNNghost':    var('{particle}_V4ProbNNghost',    '{particle}_MC12TuneV4_ProbNNghost'   , 'prob'        ),
+        'probe_V1ProbNNK':        var('{particle}_V1ProbNNK',        '{particle}_MC15TuneV1_ProbNNk'       , 'prob'        ),
+        'probe_V1ProbNNpi':       var('{particle}_V1ProbNNpi',       '{particle}_MC15TuneV1_ProbNNpi'      , 'prob'        ),
+        'probe_V1ProbNNp':        var('{particle}_V1ProbNNp',        '{particle}_MC15TuneV1_ProbNNp'       , 'prob'        ),
+        'probe_V1ProbNNmu':       var('{particle}_V1ProbNNmu',       '{particle}_MC15TuneV1_ProbNNmu'      , 'prob'        ),
+        'probe_V1ProbNNe':        var('{particle}_V1ProbNNe',        '{particle}_MC15TuneV1_ProbNNe'       , 'prob'        ),
+        'probe_V1ProbNNghost':    var('{particle}_V1ProbNNghost',    '{particle}_MC15TuneV1_ProbNNghost'   , 'prob'        ),
 #        'trackcharge':      var('{particle}_trackcharge',      '{particle}_trackcharge'     , 'charge'      ),
         'P':                var('{particle}_P',                '{particle}_Brunel_P'               , 'p'           ),
         'PT':               var('{particle}_PT',               '{particle}_Brunel_PT'              , 'pt'          ),
         'ETA':              var('{particle}_Eta',              '{particle}_Brunel_ETA'             , 'eta'         ),
         'PHI':              var('{particle}_Phi',              '{particle}_Brunel_PHI'             , 'phi'         ),
         'IsMuon':           var('{particle}_IsMuon',           '{particle}_Brunel_isMuon'          , 'bool'        ),
+        'IsMuonTight':           var('{particle}_IsMuonTight',           '{particle}_Brunel_isMuonTight'          , 'bool'        ),
         'InMuonAcc':        var('{particle}_InMuonAcc',        '{particle}_Brunel_InMuonAcc'       , 'bool'        ),
         'IsMuonLoose':      var('{particle}_IsMuonLoose',      '{particle}_Brunel_isMuonLoose'     , 'bool'        ),
         'nShared':          var('{particle}_nShared',          '{particle}_Brunel_NShared'         , 'nShared'     ),
@@ -96,7 +90,7 @@ vars_dataset = {
         #'HasBremAdded':     var('{particle}_HasBremAdded',                                 ,               ),
 #        'CaloRegion':       var('{particle}_CaloRegion',                                   ,               ),
         'nSPDHits':         var('nSPDHits',                    'nSPDhits'                   , 'nSpd'        ),
-        'Unbias_HLT1':      var('{particle}_Unbias_HLT1',      '{particle}_MuonUnbiased'    , 'bool'        ),
+        'Unbias_HLT1':      var('{particle}_Unbias_HLT1',      '{particle}_Brunel_MuonUnbiased'    , 'bool'        ),
         'Unbias_HLT12':     var('{particle}_Unbias_HLT12',     '{particle}_MuonUnbiased'    , 'bool'        ),
 #        'ProbeTIS':         var('{particle}_Probe_TIS',        '{particle}_Probe_TIS       ,               ),
 #        'TagTOS':           var('{particle}_Tag_TOS',                                      ,               ),
@@ -117,7 +111,7 @@ vars_dataset = {
         'tV3ProbNNmu':       var('{particle}_Tesla_V3ProbNNmu',       '{particle}_V3ProbNNmu'      , 'prob'        ),
         'tV3ProbNNe':        var('{particle}_Tesla_V3ProbNNe',        '{particle}_V3ProbNNe'       , 'prob'        ),
         'tV3ProbNNghost':    var('{particle}_Tesla_V3ProbNNghost',    '{particle}_V3ProbNNghost'   , 'prob'        ),
-#        'trackcharge':      var('{particle}_trackcharge',      '{particle}_trackcharge'     , 'charge'      ),
+        'trackcharge':      var('{particle}_trackcharge',      '{particle}_trackcharge'     , 'charge'      ),
         'tP':                var('{particle}_Tesla_P',                '{particle}_P'               , 'p'           ),
         'tPT':               var('{particle}_Tesla_PT',               '{particle}_PT'              , 'pt'          ),
         'tETA':              var('{particle}_Tesla_Eta',              '{particle}_ETA'             , 'eta'         ),
@@ -136,6 +130,8 @@ vars_dataset = {
         'tRICH2GasUsed':     var('{particle}_Tesla_RICH2GasUsed',     '{particle}_RICH2GasUsed'    , 'bool'        ),
         'tHasRich':          var('{particle}_Tesla_hasRich',          '{particle}_hasRich'         , 'bool'        ),
         'tHasCalo':          var('{particle}_Tesla_hasCalo',          '{particle}_hasCalo'         , 'bool'        ),
+        'nRich1Hits':          var('nRich1Hits',          'nRich1Hits'         , 'nRhit'        ),
+        'nRich2Hits':          var('nRich2Hits',          'nRich2Hits'         , 'nRhit'        ),
         'sweight':          var('nsig_sw',                     '{particle}_sWeight'         , [-10,10]      ),
     }
 
@@ -144,7 +140,21 @@ datasets = {
   'DSt_Pi' : ["DSt_PiMTuple", "DSt_PiPTuple"],
   'DSt_K'  : ["DSt_KPTuple", "DSt_KMTuple"],
   'Lam0_P' : ["Lam0_PTuple", "Lam0_PbarTuple", "Lam0_HPT_PTuple", "Lam0_HPT_PbarTuple", "Lam0_VHPT_PTuple", "Lam0_VHPT_PbarTuple"],
-  'Jpsi_Mu': ["Jpsi_MuPTuple", "Jpsi_MuMTuple"]
+  'Jpsi_Mu': ["Jpsi_MuPTuple", "Jpsi_MuMTuple"],
+  'P_LcfB' : ["LbLcMu_PTuple", "LbLcMu_PbarTuple"],
+  'Sigmac0_P': ["Sigmac0_PbarTuple","Sigmac0_PTuple"],
+  'DsPhi_K': ["DsPhi_KP_notagTuple","DsPhi_KM_notagTuple","DsPhi_KPTuple","DsPhi_KMTuple"],
+  'Sigmacpp_P': ["Sigmacpp_PbarTuple","Sigmacpp_PTuple"],
+  'DSt3Pi_Pi' : ["DSt3Pi_PiMTuple", "DSt3Pi_PiPTuple"],
+  'DSt3Pi_K'  : ["DSt3Pi_KPTuple", "DSt3Pi_KMTuple"],
+  'Phi_K': ["Phi_KMTuple","Phi_KPTuple"],
+  'Phi_Mu': ["Phi_MuMTuple","Phi_MuPTuple"],
+  'B_Jpsi_Mu': ["B_Jpsi_MuPTuple","B_Jpsi_MuMTuple"],
+  'Jpsi_P': ["Jpsi_PTuple","Jpsi_PbarTuple"],
+  'KS_Pi':  ["KS_PiPTuple","KS_PiMTuple"],
+  #'Jpsi_e': ["Jpsi_EPTuple","Jpsi_EMTuple"],
+  'B_Jpsi_P': ["B_Jpsi_PTuple","B_Jpsi_PbarTuple"],
+  'B_Jpsi_e': ["B_Jpsi_EPTuple","B_Jpsi_EMTuple"]
 }
 
 additionalVariables = {
@@ -160,7 +170,7 @@ def getDataSetFromTuple ( file, mother, part ):
   datasetname = mother + "_" + part
 
   if datasetname not in datasets:
-    print "Cannot configure dataset " + datasetname
+    print "Cannot configure dataset " + datasetname + ", not in Turbo stream"
     return RooDataSet()
 
   vars = copy(vars_dataset)
@@ -170,8 +180,10 @@ def getDataSetFromTuple ( file, mother, part ):
   list = ROOT.TList ()
   for dataset in datasets [ datasetname ]:
     list.Add ( file.Get ( dataset + "/DecayTree" ) )
+    print "Try to get tree: "+dataset
 
-  tmp = ROOT.TFile.Open ( "/tmp/" + os.getenv('USER') + "/tmpPidCalib.root" , "RECREATE")
+  tmp = ROOT.TFile.Open (  "/tmp/"+os.getenv('USER') + "/tmpPidCalib_"+datasetname+"{0}.root".format(time.time()) , "RECREATE")
+  print tmp.GetName()
   tree = ROOT.TTree.MergeTrees ( list )  
   if not tree:
     raise Exception ( "No data for dataset: " + datasetname )
@@ -189,6 +201,10 @@ def getDataSetFromTuple ( file, mother, part ):
     b.SetName ( varRoo.GetName() )
     roovars [ varRoo.GetName() ] = varRoo
     listOfVars.add ( varRoo )
+ 
+  print "before RooDataSet: ({0},{1})".format(time.time(),time.clock())
+
+  os.remove(tmp.GetName())
 
   return RooDataSet ( datasetname + "ds", 
                       "RooDataset automatically generated from TTree "+datasetname,
@@ -201,7 +217,7 @@ def getDataSetFromTuple ( file, mother, part ):
 if __name__ == "__main__":
   print "TESTING"
   ds = getDataSetFromTuple (
-    file=TFile.Open("/afs/cern.ch/work/l/landerli/afsgangadir/workspace/landerli/LocalXML/295/0/output/PIDCalib.root"), 
+    file=TFile.Open("tmp/"+os.getenv('USER')+"/PIDCalib.root"),
     mother="Lam0",
     part="P")
 

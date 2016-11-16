@@ -1,7 +1,7 @@
 ################################################################################
 # Package: UraniaSys
 ################################################################################
-gaudi_subdir(UraniaSys v5r0)
+gaudi_subdir(UraniaSys v6r0)
 
 gaudi_depends_on_subdirs(Math/MCLimit
 Math/SomeUtils 
@@ -21,6 +21,7 @@ PhysFit/B2DXFitters
 PhysFit/P2VV
 PhysFit/RooPhysFitter
 PhysFit/SomeMassModels
+PhysFit/V0hhFitter
 PIDCalib/CalibDataScripts
 PIDCalib/PIDPerfScripts
 PIDCalib/PIDPerfTools

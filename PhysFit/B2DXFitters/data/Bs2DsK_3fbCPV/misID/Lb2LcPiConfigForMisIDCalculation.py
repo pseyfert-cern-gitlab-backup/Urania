@@ -22,7 +22,7 @@ def getconfig() :
     configdict["dataName"]   = "../data/Bs2DsK_3fbCPV/misID/config_ExpectedEvents.txt"
     #settings for control plots                                                                                                                                                           
     configdict["ControlPlots"] = {}
-    configdict["ControlPlots"] = { "Directory": "PlotLb2LcPiNewPID", "Extension":"pdf"}
+    configdict["ControlPlots"] = { "Directory": "PlotLb2LcPiNewPID2012", "Extension":"pdf"}
 
     # basic variables                                                                                        
     configdict["BasicVariables"] = {}
@@ -35,7 +35,7 @@ def getconfig() :
     configdict["BasicVariables"]["nTracks"]       = { "Range" : [15.0,    1000.0  ], "InputName" : "nTracks"}
     configdict["BasicVariables"]["BeautyTimeErr"] = { "Range" : [0.01,    0.1     ], "InputName" : "lab0_LifetimeFit_ctauErr"}
     configdict["BasicVariables"]["BacCharge"]     = { "Range" : [-1000.0, 1000.0  ], "InputName" : "lab1_ID"}
-    configdict["BasicVariables"]["BDTG"]          = { "Range" : [0.0,     1.0     ], "InputName" : "BDTGResponse_2"}
+    configdict["BasicVariables"]["BDTG"]          = { "Range" : [0.1,     1.0     ], "InputName" : "BDTGResponse_3"}
 
     # additional cuts applied to data sets                                                                                    
     configdict["AdditionalCuts"] = {}

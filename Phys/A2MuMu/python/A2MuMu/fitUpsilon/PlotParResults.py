@@ -7,12 +7,14 @@ import simplejson as json
 fptbinsc = open('./logptBinsCentres.json','r')
 meanDict = json.load(fptbinsc)
 
-#nsamples = ['Y1MC2011', 'Y1MC2012']
-nsamples = ['Y1MC2011', 'Y1MC2012', 'Y2MC2011', 'Y2MC2012', 'Y3MC2011', 'Y3MC2012']
-#option = 'lfree'
-option = 'lfixed'
+nsamples = ['Y1MC2011', 'Y1MC2012']
+#nsamples = ['Y1MC2011', 'Y1MC2012', 'Y2MC2011', 'Y2MC2012', 'Y3MC2011', 'Y3MC2012']
+#option = 'lfreeSigma0free'
+option = 'lfreeSigma0freeNfree'
+#option = 'lfixed'
 #outfiletag = "Y1MC"
-outfiletag = "YnSpTMC"
+#outfiletag = "YnSpTMC"
+outfiletag = "YnMC_sigma0Study"
 
 
 
@@ -71,9 +73,9 @@ def setDrawOptions(tgraph, title, varname, color=1, style=1):
     tgraph.GetYaxis().SetTitle('parameter ' + varname)
     tgraph.GetXaxis().SetRangeUser(3.8, 4.6)
     if varname=='ipa_s':
-        tgraph.GetYaxis().SetRangeUser(40., 80.)
+        tgraph.GetYaxis().SetRangeUser(30., 80.)
     if varname=='sigma0':
-        tgraph.GetYaxis().SetRangeUser(15., 35.)
+        tgraph.GetYaxis().SetRangeUser(12., 43.)
     if varname=='l':
         tgraph.GetYaxis().SetRangeUser(-1.5, -0.8)
     if varname=='ipa_m':
@@ -101,7 +103,13 @@ for varname in val.keys():
             isFirst=0
         else:
             tgraph.Draw('P')
-        leg.AddEntry(tgraph, nsample, 'lep')
+        title=''
+        if 'Y1' in nsample: title='Y(1S) MC '
+        if 'Y2' in nsample: title='Y(2S) MC '
+        if 'Y3' in nsample: title='Y(3S) MC '
+        if '2011' in nsample: title = title + '2011'
+        if '2012' in nsample: title = title + '2012'
+        leg.AddEntry(tgraph, title, 'lep')
     leg.Draw();
     canv.Print('./PLOTPARS/Plot_'+ outfiletag+ "_"+ option +'_' +varname+'.pdf')
 

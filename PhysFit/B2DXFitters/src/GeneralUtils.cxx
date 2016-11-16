@@ -470,6 +470,13 @@ namespace GeneralUtils {
 
     file = TFile::Open(name[0].c_str());
     tree = (TTree*) file->Get(FileName[i+3].c_str());
+    
+    if ( debug == true){
+      std::cout<<"[INFO] file content:"<<std::endl;
+      file->ls();
+      std::cout<<"[INFO] tree to read "<<FileName[i+3].c_str()<<std::endl;
+    }
+    
     if  ( tree ==  NULL ) {
       std::cout<<" Cannot open file: "<<FileName[0]+FileName[i+1]<<std::endl;
       return NULL;
@@ -654,6 +661,12 @@ namespace GeneralUtils {
     name="canvas_"+samplemode;
     can = new TCanvas(name.Data(),name.Data());
     can->cd();
+    can->SetLeftMargin(0.15);
+    can->SetBottomMargin(0.15);
+    can->SetTopMargin(0.05);
+    can->SetRightMargin(0.05);
+
+
     frame = (RooPlot*)obs->frame();
     TString Title = ""; 
     TString varName = obs->GetName();
@@ -663,7 +676,13 @@ namespace GeneralUtils {
     frame->SetTitleFont(132);
     frame->GetXaxis()->SetLabelFont( 132 );
     frame->GetYaxis()->SetLabelFont( 132 );
-    
+    frame->GetXaxis()->SetLabelSize( 0.06 );
+    frame->GetYaxis()->SetLabelSize( 0.06 );
+    frame->GetXaxis()->SetTitleSize( 0.06 );
+    frame->GetYaxis()->SetTitleSize( 0.06 );
+    frame->GetYaxis()->SetTitleOffset( 1.10 );
+    if ( dataSet == NULL ) { frame->GetYaxis()->SetTitle(""); }
+
     TString label = CheckObservable(varName,debug);
     frame->GetXaxis()->SetTitle(label.Data());
     
@@ -678,8 +697,12 @@ namespace GeneralUtils {
     if ( varName.Contains("ID") == true && varName.Contains("PIDK") == false) { bin = 2; }
 
     if ( plotSet->GetLogStatus() == true ) { gStyle->SetOptLogy(1); }
-    if (dataSet != NULL && obs != NULL) {  dataSet->plotOn(frame, RooFit::MarkerColor(plotSet->GetColorData(0)), RooFit::Binning(bin));}
+    if (dataSet != NULL && obs != NULL) 
+    {  
+      dataSet->plotOn(frame, RooFit::MarkerColor(plotSet->GetColorData(0)), RooFit::Binning(bin));
+    }
     if (pdf != NULL ) { pdf->plotOn(frame, RooFit::LineColor(plotSet->GetColorPdf(0)), RooFit::LineStyle(plotSet->GetStylePdf(0)));}
+    if ( dataSet == NULL ) { frame->GetYaxis()->SetTitle(""); frame->GetYaxis()->SetTitleColor(kWhite);}
     frame->Draw();
 
     TString dir = plotSet->GetDir(); 
@@ -795,10 +818,13 @@ namespace GeneralUtils {
     name3 ="_"+sample;
     name2 =mode+name3;
     name="Cut_tree_"+name2;
+    if(debug == true) std::cout<<"[INFO] ==> GeneralUtils.TreeCut(...): creating temp tree "<<name.Data()<<std::endl;
     treetmp = new TTree(name.Data(),name.Data());
     name = "Trash/Cut_file_"+name2+".root";
+    if(debug == true) std::cout<<"[INFO] ==> GeneralUtils.TreeCut(...): creating temp file "<<name.Data()<<std::endl;
     tfiletmp = new TFile(name.Data(),"recreate");
     treetmp->SetDirectory(tfiletmp);
+    if(debug == true) std::cout<<"[INFO] ==> GeneralUtils.TreeCut(...): start to copy tree with selection "<<std::endl;
     treetmp = tree->CopyTree(cut);
     if( treetmp != NULL ){ 
       Double_t eff = (Double_t)treetmp->GetEntries()/tree->GetEntries()*100;
@@ -931,7 +957,8 @@ namespace GeneralUtils {
 
     TH1* hist = NULL;
     n = "hist_"+name;
-    hist = dataSet->createHistogram(n.Data(), *obs, RooFit::Binning(bin));
+    if(debug == true) std::cout<<"[INFO] ==> GeneralUtils::CreateHistPDFMC(...). Bins: "<<bin<<", Min: "<<obs->getMin()<<", Max: "<<obs->getMax()<<std::endl;
+    hist = dataSet->createHistogram(n.Data(), *obs, RooFit::Binning(bin)); 
     pdfH = CreateHistPDF(hist, obs, name, bin, debug);
 
     return pdfH;
@@ -1315,25 +1342,40 @@ namespace GeneralUtils {
     RooDataSet* combData = NULL;
     TString dataName = "combData";
     
-    std::vector <TString> s;
+    /*std::vector <TString> s;
     std::vector <TString> m;
     std::vector <TString> y;
     std::vector <TString> h;
 
-    s = GetSample(sample,debug);
+    s = GetSample(sample, "", debug);
     m = GetMode(mode, debug );
-    y = GetYear(year, debug );
-    h = GetHypo(hypo, debug);
-    sm = GetSampleModeYearHypo(sample, mode, year, hypo, "", debug);
+    y = GetDataYear(year, "", debug );
+    h = GetHypo(hypo, debug);*/
+
+    TString newmerge;
+
+    if (!merge.Contains("already")){ //usual case
+      sm = GetSampleModeYearHypo(sample, mode, year, hypo, "", debug);
+      newmerge = merge;
+    }    
+
+    else{ // if "alreadyyear/pol/both", the samples are "already" merged in the workspace
+      sm = GetSampleModeYearHypo(sample, mode, year, hypo, merge, debug);
+      newmerge = "";
+    }
     
     for (unsigned int i=0; i<sm.size(); i++ )
     {
+      if( debug )
+      {
+        std::cout<<"[INFO] ==> GetDataSet(...): start to collect datasets from workspace"<<std::endl;
+      }
       TString name = dat+sm[i];
       data.push_back(GetDataSet(work,name,debug));
       nEntries.push_back(data[i]->numEntries());
     }
 
-    if( merge != "" )
+    if( newmerge != "" )
     {
       std::vector <RooDataSet*> dataOut;
       std::vector <RooDataSet*> dataOutTmp;
@@ -1342,7 +1384,7 @@ namespace GeneralUtils {
         TString y3 = sm[i];
         TString y1 = sm[i];
         TString y2 = ""; 
-        if ( merge == "pol" || merge == "both") 
+        if ( newmerge == "pol" || newmerge == "both") 
 	      {
           y2 = y1.ReplaceAll("up","down");
 	      }
@@ -1351,7 +1393,7 @@ namespace GeneralUtils {
           y2 = y1.ReplaceAll("2011","2012");
 	      }
         // std::cout<<"y3: "<<y3<<" y1: "<<y1<<std::endl; 
-        if ( ( (merge == "pol" || merge == "both") && y3.Contains("down") == false) || ( merge == "year" && y3.Contains("2011")))
+        if ( ( (newmerge == "pol" || newmerge == "both") && y3.Contains("down") == false) || ( newmerge == "year" && y3.Contains("2011")))
 	      {
           for (unsigned int j=0; j<sm.size(); j++ )
           {
@@ -1362,7 +1404,7 @@ namespace GeneralUtils {
               if ( debug == true ) { std::cout<<"[INFO] Adding "<<data[i]->GetName()<<" "<<data[j]->GetName()
                                               <<" "<<data[i]->numEntries()<<std::endl; }
               TString nD = data[i]->GetName();
-              if ( merge == "pol" || merge == "both")
+              if ( newmerge == "pol" || newmerge == "both")
               {
                 nD.ReplaceAll("up","both");
               }
@@ -1378,7 +1420,7 @@ namespace GeneralUtils {
 	      }
       }
       
-      if ( merge == "both" )
+      if ( newmerge == "both" )
       {
         sm = GetSampleModeYearHypo(sample, mode, year, hypo, "pol", debug);
         for (unsigned int i=0; i<sm.size(); i++ )
@@ -1418,19 +1460,19 @@ namespace GeneralUtils {
         dataOut = dataOutTmp;
       }
 
-      sm = GetSampleModeYearHypo(sample, mode, year, hypo, merge, debug);
+      sm = GetSampleModeYearHypo(sample, mode, year, hypo, newmerge, debug);
       for (unsigned int i=0; i<sm.size(); i++ )
       {
         sam.defineType(sm[i].Data());
         if ( debug == true ) { std::cout<<"In dataOut name: "<<dataOut[i]->GetName()<<" with entries " << dataOut[i]->numEntries()<<std::endl;}
       }
-      //const RooArgSet* obs2 = dataOut[0]->get(); 
+      //const RooArgSet* obs2 = dataOut[0]->get();
       combData = new RooDataSet(dataName.Data(),dataName.Data(),*obs, RooFit::Index(sam), RooFit::Import(sm[0].Data(),*dataOut[0]));
       if ( debug == true )
       {
         std::cout<<"[INFO] Adding: "<<dataOut[0]->GetName()<<" to combData"<<std::endl;
       }
-      
+
       std::vector <RooDataSet*> combDataTmp;
       for( unsigned int i=1; i<sm.size(); i++ )
       {
@@ -1444,7 +1486,6 @@ namespace GeneralUtils {
         obs->Print(); 
         combDataTmp.push_back(new RooDataSet(dataNameComb2.Data(),dataNameComb2.Data(),*obs, RooFit::Index(sam), RooFit::Import(sm[i].Data(),*dataOut[i])));
         combData->append(*combDataTmp[i-1]);
-        
       }
     }
     else
@@ -1512,6 +1553,10 @@ namespace GeneralUtils {
     }
   */
 
+  //RooDataSet* GetDataSetToys(RooWorkspace* work, RooArgSet* obs, RooCategory& sam,
+  //			     TString &dat, TString & sample, TString& mode, TString& year, TString& hypo,
+  //			     TString merge, bool debug )
+
   std::vector <TString> GetSampleModeYearHypo(TString& sample, TString& mode, TString& year, TString& hypo, TString merge, bool debug )
   {
     std::vector <TString> smyh;
@@ -1520,15 +1565,40 @@ namespace GeneralUtils {
     std::vector <TString> y;
     std::vector <TString> h;
 
+    if (debug) std::cout<<"[INFO] ==> GeneralUtils::GetSampleModeYearHypo(...)" << std::endl;
+
     if (debug == true ){ std::cout<<"[INFO] Sample "<<sample<<". Mode "<<mode<<". Year "<<year<<". Hypo "<<hypo<<": Merge: "<<merge<<std::endl; }
     if ( (merge == "pol" || merge == "both") && sample != "both") { std::cout<<"[ERROR] Option --merge pol only possible for --pol both"<<std::endl; return smyh; }
     if ( (merge == "year" || merge == "both") && year != "run1") { std::cout<<"[ERROR] Option --merge year only possible for --year run1"<<std::endl; return smyh; }
 
+    TString newmerge;
 
-    s =  GetSample(sample,debug);
+    if (!merge.Contains("already")) //usual case
+    {  
+      s =  GetSample(sample, debug);
+      y =  GetYear(year, debug );
+      newmerge = merge;
+    }
+    else // if "alreadyyear/pol/both", the samples are "already" merged in the workspace (take names as they are)
+    {
+      newmerge = merge.ReplaceAll("already","");
+      
+      if(newmerge == "both")
+      {  
+        s =  GetSample(sample, "", debug);
+        y =  GetDataYear(year, "", debug);
+      }
+      else
+      {
+        std::cout << "[ERROR] ==> GeneralUtils::GetSampleModeYearHypo(...): sorry, " << merge << " case not handled (yet).";
+        exit(-1);
+      }
+      
+    }    
+
     m =  GetMode(mode, debug );
-    y =  GetYear(year, debug );
     h =  GetHypo(hypo, debug );
+    
 
     //    if ( y[0] == "")
     //  {
@@ -1536,7 +1606,7 @@ namespace GeneralUtils {
     //  }
     // else
     //  {
-    if ( merge == "" )
+    if ( newmerge == "" )
 	  {
 	    for(unsigned int i=0; i<m.size(); i++ )
       {
@@ -1546,15 +1616,21 @@ namespace GeneralUtils {
 		      {
             for(unsigned int l=0; l<h.size(); l++ )
             { 
-              if(h[l] != "") {smyh.push_back(s[j]+"_"+m[i]+"_"+y[k]+"_"+h[l]);}
-              else {smyh.push_back(s[j]+"_"+m[i]+"_"+y[k]);}
+              if(m[i] != ""){
+                if(h[l] != "") {smyh.push_back(s[j]+"_"+m[i]+"_"+y[k]+"_"+h[l]);}
+                else {smyh.push_back(s[j]+"_"+m[i]+"_"+y[k]);}
+              }
+              else{
+                if(h[l] != "") {smyh.push_back(s[j]+"_"+y[k]+"_"+h[l]);}
+                else {smyh.push_back(s[j]+"_"+y[k]);}  
+              }
               if ( debug == true ) { std::cout<<"[INFO] Sample mode year hypo: "<<smyh[smyh.size()-1]<<std::endl;}
             } 
 		      }
         }
       }
 	  }
-    else if ( merge == "pol") 
+    else if ( newmerge == "pol") 
     {
       TString s1 = "both";
       for (unsigned int i=0; i<m.size(); i++ )
@@ -1563,14 +1639,20 @@ namespace GeneralUtils {
         {
           for(unsigned int l=0; l<h.size(); l++ )
           {  
-            if(h[l] != "") {smyh.push_back(s1+"_"+m[i]+"_"+y[k]+"_"+h[l]);}
-            else {smyh.push_back(s1+"_"+m[i]+"_"+y[k]);}
+            if(m[i] != ""){
+              if(h[l] != "") {smyh.push_back(s1+"_"+m[i]+"_"+y[k]+"_"+h[l]);}
+              else {smyh.push_back(s1+"_"+m[i]+"_"+y[k]);}
+            }
+            else{
+              if(h[l] != "") {smyh.push_back(s1+"_"+y[k]+"_"+h[l]); }
+              else {smyh.push_back(s1+"_"+y[k]);} 
+            }
             if ( debug == true ) { std::cout<<"[INFO] Sample mode year hypo: "<<smyh[smyh.size()-1]<<std::endl;}
           }
         }
       }
     }
-    else if ( merge == "year" )
+    else if ( newmerge == "year" )
 	  {
 	    TString y1 = "run1"; 
 	    for (unsigned int i=0; i<m.size(); i++ )
@@ -1579,15 +1661,21 @@ namespace GeneralUtils {
         {
           for(unsigned int l=0; l<h.size(); l++ )
           {
-            if(h[l] != "") {smyh.push_back(s[j]+"_"+m[i]+"_"+y1+"_"+h[l]);}
-            else {smyh.push_back(s[j]+"_"+m[i]+"_"+y1);}
+            if(m[i] != ""){
+              if(h[l] != "") {smyh.push_back(s[j]+"_"+m[i]+"_"+y1+"_"+h[l]);}
+              else {smyh.push_back(s[j]+"_"+m[i]+"_"+y1);}
+            }
+            else{
+              if(h[l] != "") {smyh.push_back(s[j]+"_"+y1+"_"+h[l]);}
+              else{smyh.push_back(s[j]+"_"+y1);}  
+            }
             if ( debug == true ) { std::cout<<"[INFO] Sample mode year hypo: "<<smyh[smyh.size()-1]<<std::endl;}
           } 
         }
       }
 
 	  }
-    else if ( merge == "both" )
+    else if ( newmerge == "both" )
 	  {
 	    TString s1 = "both";
 	    TString y1 = "run1";
@@ -1595,8 +1683,14 @@ namespace GeneralUtils {
       {
         for(unsigned int l=0; l<h.size(); l++ )
         { 
-          if(h[l] != "") {smyh.push_back(s1+"_"+m[i]+"_"+y1+"_"+h[l]);}
-          else {smyh.push_back(s1+"_"+m[i]+"_"+y1);}
+          if(m[i] != ""){
+            if(h[l] != "") {smyh.push_back(s1+"_"+m[i]+"_"+y1+"_"+h[l]);}
+            else {smyh.push_back(s1+"_"+m[i]+"_"+y1);}
+          }
+          else{
+            if(h[l] != "") {smyh.push_back(s1+"_"+y1+"_"+h[l]);}
+            else{smyh.push_back(s1+"_"+y1);}
+          }
           if ( debug == true ) { std::cout<<"[INFO] Sample mode year hypo: "<<smyh[smyh.size()-1]<<std::endl;}
         }   
       }
@@ -1618,7 +1712,7 @@ namespace GeneralUtils {
   std::vector<TString> GetDataYear(TString check, TString merge, bool debug)
   {
     std::vector<TString> year;
-    if ( merge == "year" || merge == "both" )
+    if ( merge == "year" || merge == "both")
     {
       year.push_back("2011");
       year.push_back("2012");
@@ -1640,6 +1734,26 @@ namespace GeneralUtils {
     return s;
   }
 
+  std::vector <TString>  GetSample(TString sample, TString merge, bool debug )
+  {  
+    std::vector <TString> s; 
+    if ( merge == "pol" || merge == "both")
+    {
+      s.push_back("up"); 
+      s.push_back("down");
+      if (debug)
+      {
+        std::cout << "[INFO] ==> GeneralUtils::GetSample(...): sample up, down " << std::endl;
+      } 
+    }
+    else
+    { 
+      s.push_back(CheckPolarity(sample,debug));
+    }
+    return s;  
+  }
+    
+  
   std::vector <TString>  GetMode(TString& mode, bool debug )
   {
     std::vector <TString> m;
@@ -1652,9 +1766,23 @@ namespace GeneralUtils {
 
   std::vector <TString>  GetHypo(TString& hypo, bool debug )
   {
-    std::vector <TString> h;
+    /*std::vector <TString> h;
     if(hypo != ""){ h.push_back(hypo+TString("Hypo")); }
-    else{ h.push_back(TString("")); }
+    else{ h.push_back(TString("")); }*/
+    std::vector <TString> h;
+    if(hypo == ""){ h.push_back(""); }
+    else if(hypo.Contains("_"))
+    {
+      if(debug){std::cout<<"[INFO] GeneralUtils::GetHypo(..): Multiple hypothesys selected. Splitting string"<<std::endl;}
+      h = SplitString(hypo, "_");
+      for(unsigned int hyp=0; hyp<h.size(); ++hyp){
+        h[hyp] = h[hyp]+TString("Hypo");
+      }
+    }
+    else
+    {
+      h.push_back(hypo+TString("Hypo"));
+    }    
 
     return h;
   }  
@@ -1793,7 +1921,7 @@ namespace GeneralUtils {
     {
       polarity = "both";
     }
-    if ( debug == true) std::cout<<"[INFO] Sample: "<<polarity<<std::endl;
+    if ( debug == true) std::cout<<"[INFO] ==> GeneralUtils::CheckPolarity(...): "<<polarity<<std::endl;
     return polarity;
   }
 
@@ -1839,6 +1967,11 @@ namespace GeneralUtils {
     if (check.Contains("KKpi") == true  || check.Contains("KKPi") == true || check.Contains("kkpi") == true )
     {
       dmode = "kkpi";
+    }
+    else if ( (check.Contains("Kpi") == true || check.Contains("KPi") == true || check.Contains("kpi") == true) &&
+              ( check.Contains("Kpipi") == false && check.Contains("KPiPi") == false && check.Contains("kpipi") == false) )
+    {
+      dmode = "kpi";
     }
     else if ( check.Contains("Kpipi") == true || check.Contains("KPiPi") == true || check.Contains("kpipi") == true)
     {
@@ -1923,6 +2056,8 @@ namespace GeneralUtils {
     else if( check.find("Bs") != std::string::npos || check.find("bs") != std::string::npos) { Bs = "Bs"; }
     else if (( check.find("Bd") != std::string::npos || check.find("bd") != std::string::npos ) && check.find("ambda") == std::string::npos )
     { Bs="Bd"; }
+    else if ( check.find("Bu") != std::string::npos || check.find("bu") != std::string::npos)
+    { Bs="Bu"; } 
     else { Bs="Comb";}
 
     if (check.find("Lc") != std::string::npos ||
@@ -1930,23 +2065,38 @@ namespace GeneralUtils {
         check.find("Lambdac") != std::string::npos) { Ds = "Lc";}
     else if (check.find("Dsst") != std::string::npos || check.find("dsst") != std::string::npos)
     { Ds ="Dsst";}
-    else if (check.find("Dst") != std::string::npos || check.find("dst") != std::string::npos)
+    else if (check.find("Dst0") != std::string::npos || check.find("dst0") != std::string::npos)
+    {Ds = "Dst0";}
+    else if ( (check.find("Dst") != std::string::npos || check.find("dst") != std::string::npos) &&
+              (check.find("Dst0") == std::string::npos || check.find("dst0") == std::string::npos))
     {Ds = "Dst";}
     else if ( (check.find("Ds") != std::string::npos  || check.find("ds") != std::string::npos) && 
               (check.find("Dsst") == std::string::npos || check.find("dsst") == std::string::npos ) &&
-              (check.find("Dst") == std::string::npos || check.find("dst") == std::string::npos))
+              (check.find("Dst") == std::string::npos || check.find("dst") == std::string::npos) &&
+              (check.find("Dst0") == std::string::npos || check.find("dst0") == std::string::npos))
     { Ds = "Ds";}
+    else if ( check.find("D0") != std::string::npos  || check.find("d0") != std::string::npos )
+    { Ds = "D0";}
     else if (( check.find("D") != std::string::npos  || check.find("d") != std::string::npos )  &&
+             ( check.find("D0") == std::string::npos  || check.find("d0") == std::string::npos ) &&
              (check.find("Ds") == std::string::npos  || check.find("ds") == std::string::npos) && check.find("ambda") == std::string::npos) 
     {Ds = "D";}
     else { Ds ="bkg";}
 
-    if ( check.find("Pi") != std::string::npos || check.find("pi") != std::string::npos) { Bach = "Pi"; }
+    if ( check.find("PiPi") != std::string::npos || check.find("pipi") != std::string::npos) { Bach = "PiPi"; }
+    else if ( check.find("KPi") != std::string::npos || check.find("kpi") != std::string::npos) { Bach = "KPi"; }
+    else if ( ( check.find("Pi") != std::string::npos || check.find("pi") != std::string::npos) &&
+              ( check.find("PiPi") == std::string::npos || check.find("pipi") == std::string::npos) &&
+              ( check.find("KPi") == std::string::npos || check.find("kpi") == std::string::npos) )
+    { Bach = "Pi"; }
     else if( ( check.find("P") != std::string::npos || check.find("p") != std::string::npos ) && 
-             ( check.find("Pi") == std::string::npos || check.find("pi") == std::string::npos))
+             ( check.find("Pi") == std::string::npos || check.find("pi") == std::string::npos) &&
+             ( check.find("PiPi") == std::string::npos || check.find("pipi") == std::string::npos) &&
+             ( check.find("KPi") == std::string::npos || check.find("kpi") == std::string::npos))
     {Bach = "p";}
     else if( (check.find("K") != std::string::npos || check.find("k") != std::string::npos )&& 
-             (check.find("Kst") == std::string::npos || check.find("kst") == std::string::npos) )
+             (check.find("Kst") == std::string::npos || check.find("kst") == std::string::npos) &&
+             ( check.find("KPi") == std::string::npos || check.find("kpi") == std::string::npos))
     {Bach = "K";}
     else if( check.find("Kst") != std::string::npos || check.find("kst") != std::string::npos ) {Bach ="Kst";}
     else if( check.find("Rho") != std::string::npos || check.find("rho") != std::string::npos ) {Bach = "Rho";}
@@ -1972,7 +2122,7 @@ namespace GeneralUtils {
     TString hypo = "";
     TString Check = check;
     hypo = CheckHypo(Check, debug);
-    return hypo; 
+    return hypo;
   }
 
   TString CheckHypo(TString& check, bool debug)
@@ -1982,8 +2132,10 @@ namespace GeneralUtils {
     else if(check.Contains("DKHypo") || check.Contains("DkHypo")) { hypo = "Bd2DKHypo"; }
     else if(check.Contains("DsPiHypo") || check.Contains("DspiHypo")) { hypo = "Bs2DsPiHypo"; }
     else if(check.Contains("DsKHypo") || check.Contains("DskHypo")) { hypo = "Bs2DsKHypo"; }
-      
-    if ( debug == true) std::cout<<"[INFO] Sample: "<<hypo<<std::endl;
+    else if(check.Contains("D0PiHypo") || check.Contains("D0piHypo")){ hypo = "Bu2D0PiHypo";}    
+    else if(check.Contains("D0KHypo") || check.Contains("D0kHypo")) {hypo = "Bu2D0KHypo";}    
+
+    if ( debug == true) std::cout<<"[INFO] Hypo: "<<hypo<<std::endl;
     return hypo;
   }
   
@@ -2146,28 +2298,32 @@ namespace GeneralUtils {
   {
     TString label = "";
     if( check.Contains("lab0_MassFitConsD_M") == true || check.Contains("lab0_MM") == true  ||
-        (check.Contains("Bs") == true && check.Contains("Mass") == true) ) { label = "mass B_{(s)} [MeV/c^{2}]"; }
-    else if ( check.Contains("Ds_MM") == true || check.Contains("lab2_MM") == true ) { label = "mass D_{(s)} [MeV/c^{2}]";}
-    else if ( check.Contains("TAGDECISION") == true || check.Contains("DEC") == true ) 
+        (check.Contains("Bs") == true && check.Contains("Mass") == true) ||
+	check.Contains("BeautyMass") == true ) { label = "Beauty Meson invariant mass [MeV/c^{2}]"; }
+    else if ( check.Contains("Ds_MM") == true || check.Contains("lab2_MM") == true || check.Contains("CharmMass") == true ) { label = "Charm meson invariant mass [MeV/c^{2}]";}
+    else if ( check.Contains("TAGDECISION") == true || check.Contains("DEC") == true || check.Contains("TagDec") == true ) 
     { 
-      if ( check.Contains("SS_nnetKaon") == true )  { label = "tagging decision SS [1]"; }
-      else if ( check.Contains("TAGDECISION_OS") == true )  { label = "tagging decision OS [1]"; }
-      else { label = "tagging decision [1]"; }
+      if ( check.Contains("SS_nnetKaon") == true || check.Contains("TagDecSS") == true )  { label = "tagging decision SS"; }
+      else if ( check.Contains("TAGDECISION_OS") == true || check.Contains("TagDecSS") )  { label = "tagging decision OS"; }
+      else { label = "tagging decision"; }
     }
-    else if ( check.Contains("TAGOMEGA") == true || check.Contains("PROB") == true) 
+    else if ( check.Contains("TAGOMEGA") == true || check.Contains("PROB") == true || check.Contains("Mistag") == true ) 
     {
-      if ( check.Contains("SS_nnetKaon") == true )  { label = "#omega SS [1]"; }
-      else if( check.Contains("TAGOMEGA_OS") == true )  { label = "#omega OS [1]"; }
-      else { label = "#omega [1]"; }
+      if ( check.Contains("SS_nnetKaon") == true || check.Contains("MistagSS") == true )  { label = "#omega SS"; }
+      else if( check.Contains("TAGOMEGA_OS") == true || check.Contains("MistagOS") == true )  { label = "#omega OS"; }
+      else { label = "#omega"; }
     }
-    else if ( check.Contains("LifetimeFit_ctau") == true || check.Contains("TAU") == true ||  check.Contains("TRUETAU") == true ) 
+    else if ( check.Contains("BeautyTimeErr") == true ) {label = "#sigma_{t} [ps]"; }
+    else if ( check.Contains("LifetimeFit_ctau") == true || check.Contains("TAU") == true ||  
+	      check.Contains("TRUETAU") == true  || check.Contains("BeautyTime") == true ) 
     {label ="t [ps]"; }
-    else if ( check.Contains("ID") == true && check.Contains("PIDK") == false && 
+    else if ( check.Contains("BacCharge") == true || check.Contains("ID") == true && check.Contains("PIDK") == false && 
               ( check.Contains("lab1") == true || check.Contains("Bac") ==true) ) {label ="bachelor ID [1]"; }
-    else if ( check.Contains("PIDK") == true && ( check.Contains("lab1") == true || check.Contains("Bac") ==true) ) {label ="bachelor PIDK [1]"; }
-    else if ( check.Contains("_PT") == true ) {label ="log(p_{t}) [MeV/c]"; }
-    else if ( check.Contains("_P") == true && check.Contains("_PT") == false ) {label ="log(p) [MeV/c]"; }
-    else if ( check.Contains("nTracks") == true ) {label ="log(nTracks) [1]"; }
+    else if ( check.Contains("PIDK") == true && ( check.Contains("lab1") == true || check.Contains("Bac") ==true) ) {label ="bachelor log(|PIDK|)"; }
+    else if ( check.Contains("_PT") == true || check.Contains("BacPT") == true) {label ="log(p_{t}) [MeV/c]"; }
+    else if ( check.Contains("_P") == true && check.Contains("_PT") == false || check.Contains("BacP") == true) {label ="log(p) [MeV/c]"; }
+    else if ( check.Contains("nTracks") == true ) {label ="log(nTracks)"; }
+    else if ( check.Contains("BDTG") == true ) { label = "BDTG classifier"; }
     else { label = check; } 
     
     if ( debug == true) std::cout<<"[INFO] Observable label: "<<label<<std::endl;
@@ -2342,8 +2498,7 @@ namespace GeneralUtils {
     year = Year;
     return year;
   }
-
-
+  
   //==========================================================================                                                                                                                      
   // Get X label for plotting                                                                                                                                                                       
   //==========================================================================                                                                                                                      
@@ -2428,10 +2583,10 @@ namespace GeneralUtils {
           label = "#font[132]{m(#Lambda_{c}#kern[-0.3]{"+happymin+"}#kern[0.1]{#pi#lower[-0.95]{#scale[0.6]{+}}}) [MeV/#font[12]{c}^{2}]}";
         }
 	else
-  {
-    std::cout<<"[ERROR] Wrong charm decay: "<<decay<<std::endl;
-    return label;
-  }
+	  {
+	    std::cout<<"[ERROR] Wrong charm decay: "<<decay<<std::endl;
+	    return label;
+	  }
       }
       else if ( decay.Contains("DsstK") == true ) 
       {
@@ -2449,6 +2604,11 @@ namespace GeneralUtils {
       {
         label = "#font[132]{m(D#kern[-0.3]{"+happymin+"}#kern[0.1]{#pi#lower[-0.95]{#scale[0.6]{+}}}) [MeV/#font[12]{c}^{2}]}";
       }
+      else if ( decay.Contains("LcPi") == true )
+        {
+          label = "#font[132]{m(#Lambda_{c}#kern[-0.3]{"+happymin+"}#kern[0.1]{#pi#lower[-0.95]{#scale[0.6]{+}}}) [MeV/#font[12]{c}^{2}]}";
+        }
+
       else
       {
         std::cout<<"[ERROR] Wrong charm decay: "<<decay<<std::endl;

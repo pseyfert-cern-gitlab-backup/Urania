@@ -1,0 +1,10 @@
+!-----------------------------------------------------------------------------
+! Package     : Phys/B2CCtuples
+! Responsible : Olivier Leroy
+! Purpose     : 
+!-----------------------------------------------------------------------------
+
+
+! 2016-10-20 - Olivier Leroy
+ - I added B_s0_OS_Charm_DEC and B_s0_OS_Charm_PROB in sel1Candidate_Bs2JpsiPhi.C
+ - I fixed various type problems (flaot, Int, Short, Double)

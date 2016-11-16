@@ -126,6 +126,18 @@ ClassImp(ComputeIntegrals)
    coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
    etac_tag_OS = RooRealProxy("etac_tag_OS","etac_tag_OS",this,*coef_calib_params);
    coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   deltatmean_tres_11 = RooRealProxy("deltatmean_tres_11","deltatmean_tres_11",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   p0_tres_11 = RooRealProxy("p0_tres_11","p0_tres_11",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   p1_tres_11 = RooRealProxy("p1_tres_11","p1_tres_11",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   deltatmean_tres_12 = RooRealProxy("deltatmean_tres_12","deltatmean_tres_12",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   p0_tres_12 = RooRealProxy("p0_tres_12","p0_tres_12",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   p1_tres_12 = RooRealProxy("p1_tres_12","p1_tres_12",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
    mv = RooRealProxy("mv","mv",this,*coef_calib_params);
    coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
    ms = RooRealProxy("ms","ms",this,*coef_calib_params);
@@ -308,6 +320,12 @@ ClassImp(ComputeIntegrals)
    Dp1half_tag_OS("Dp1half_tag_OS",this,other.Dp1half_tag_OS),
    etac_tag_SSK("etac_tag_SSK",this,other.etac_tag_SSK),
    etac_tag_OS("etac_tag_OS",this,other.etac_tag_OS),
+   deltatmean_tres_11("deltatmean_tres_11",this,other.deltatmean_tres_11),
+   p0_tres_11("p0_tres_11",this,other.p0_tres_11),
+   p1_tres_11("p1_tres_11",this,other.p1_tres_11),
+   deltatmean_tres_12("deltatmean_tres_12",this,other.deltatmean_tres_12),
+   p0_tres_12("p0_tres_12",this,other.p0_tres_12),
+   p1_tres_12("p1_tres_12",this,other.p1_tres_12),
    mv("mv",this,other.mv),
    ms("ms",this,other.ms),
    mt("mt",this,other.mt),
@@ -383,8 +401,8 @@ ClassImp(ComputeIntegrals)
 Double_t ComputeIntegrals::sigma_tres_eff(Int_t g_i) const 
  { 
 
-   if (g_i == 1) {return TReseff.sigma1(year_opt);}
-   else if (g_i == 2) {return TReseff.sigma2(year_opt);}
+   if (g_i == 1) {return TReseff.sigma1(year_opt,wide_window);}
+   else if (g_i == 2) {return TReseff.sigma2(year_opt,wide_window);}
 
    return 0.;
 
@@ -395,7 +413,7 @@ Double_t ComputeIntegrals::sigma_tres_eff(Int_t g_i) const
 Double_t ComputeIntegrals::sigma_ref_eff() const 
  { 
 
-   Double_t sigma_val = TReseff.f1(year_opt)*sigma_tres_eff(1)+(1.-TReseff.f1(year_opt))*sigma_tres_eff(2);
+   Double_t sigma_val = TReseff.f1(year_opt,wide_window)*sigma_tres_eff(1)+(1.-TReseff.f1(year_opt,wide_window))*sigma_tres_eff(2);
 
    return sigma_val;
 
@@ -406,7 +424,7 @@ Double_t ComputeIntegrals::sigma_ref_eff() const
 Double_t ComputeIntegrals::x_tres_eff(Double_t tau, Int_t g_i) const
  { 
 
-   return 1./(sqrt(2.)*sigma_tres_eff(g_i))*(tau-TReseff.off(year_opt)-gamma_Bs_freq*sigma_tres_eff(g_i)*sigma_tres_eff(g_i));
+   return 1./(sqrt(2.)*sigma_tres_eff(g_i))*(tau-TReseff.off(year_opt,wide_window)-gamma_Bs_freq*sigma_tres_eff(g_i)*sigma_tres_eff(g_i));
 
  }
 
@@ -424,7 +442,7 @@ Double_t ComputeIntegrals::x0_tres_eff(Int_t g_i) const
 std::complex<Double_t> ComputeIntegrals::z_tres_eff(Double_t tau, Int_t g_i) const
  { 
 
-   std::complex<Double_t> z_hat(delta_m_freq*sigma_tres_eff(g_i)*sigma_tres_eff(g_i),-tau+TReseff.off(year_opt)+gamma_Bs_freq*sigma_tres_eff(g_i)*sigma_tres_eff(g_i));
+   std::complex<Double_t> z_hat(delta_m_freq*sigma_tres_eff(g_i)*sigma_tres_eff(g_i),-tau+TReseff.off(year_opt,wide_window)+gamma_Bs_freq*sigma_tres_eff(g_i)*sigma_tres_eff(g_i));
 
    return 1./(sqrt(2.)*sigma_tres_eff(g_i))*z_hat;
 
@@ -435,7 +453,7 @@ std::complex<Double_t> ComputeIntegrals::z_tres_eff(Double_t tau, Int_t g_i) con
 Double_t ComputeIntegrals::gaus_tres_eff(Double_t tau, Int_t g_i) const
  { 
 
-   return exp(-(tau-TReseff.off(year_opt))*(tau-TReseff.off(year_opt))/2./sigma_tres_eff(g_i)/sigma_tres_eff(g_i));
+   return exp(-(tau-TReseff.off(year_opt,wide_window))*(tau-TReseff.off(year_opt,wide_window))/2./sigma_tres_eff(g_i)/sigma_tres_eff(g_i));
 
  }
 
@@ -507,7 +525,7 @@ Double_t ComputeIntegrals::T_sin_ideal(Double_t tau) const
 Double_t ComputeIntegrals::T_cosh_resexact_eff(Double_t tau) const
  {
    
-   return 1./4.*(TReseff.f1(year_opt)*gaus_tres_eff(tau,1)*(exp((x_tres_eff(tau,1)+x0_tres_eff(1))*(x_tres_eff(tau,1)+x0_tres_eff(1)))*erfc(-x_tres_eff(tau,1)-x0_tres_eff(1))+exp((x_tres_eff(tau,1)-x0_tres_eff(1))*(x_tres_eff(tau,1)-x0_tres_eff(1)))*erfc(-x_tres_eff(tau,1)+x0_tres_eff(1)))+(1.-TReseff.f1(year_opt))*gaus_tres_eff(tau,2)*(exp((x_tres_eff(tau,2)+x0_tres_eff(2))*(x_tres_eff(tau,2)+x0_tres_eff(2)))*erfc(-x_tres_eff(tau,2)-x0_tres_eff(2))+exp((x_tres_eff(tau,2)-x0_tres_eff(2))*(x_tres_eff(tau,2)-x0_tres_eff(2)))*erfc(-x_tres_eff(tau,2)+x0_tres_eff(2))));
+   return 1./4.*(TReseff.f1(year_opt,wide_window)*gaus_tres_eff(tau,1)*(exp((x_tres_eff(tau,1)+x0_tres_eff(1))*(x_tres_eff(tau,1)+x0_tres_eff(1)))*erfc(-x_tres_eff(tau,1)-x0_tres_eff(1))+exp((x_tres_eff(tau,1)-x0_tres_eff(1))*(x_tres_eff(tau,1)-x0_tres_eff(1)))*erfc(-x_tres_eff(tau,1)+x0_tres_eff(1)))+(1.-TReseff.f1(year_opt,wide_window))*gaus_tres_eff(tau,2)*(exp((x_tres_eff(tau,2)+x0_tres_eff(2))*(x_tres_eff(tau,2)+x0_tres_eff(2)))*erfc(-x_tres_eff(tau,2)-x0_tres_eff(2))+exp((x_tres_eff(tau,2)-x0_tres_eff(2))*(x_tres_eff(tau,2)-x0_tres_eff(2)))*erfc(-x_tres_eff(tau,2)+x0_tres_eff(2))));
 
  }
 
@@ -516,7 +534,7 @@ Double_t ComputeIntegrals::T_cosh_resexact_eff(Double_t tau) const
 Double_t ComputeIntegrals::T_sinh_resexact_eff(Double_t tau) const
  {
    
-   return 1./4.*(TReseff.f1(year_opt)*gaus_tres_eff(tau,1)*(exp((x_tres_eff(tau,1)+x0_tres_eff(1))*(x_tres_eff(tau,1)+x0_tres_eff(1)))*erfc(-x_tres_eff(tau,1)-x0_tres_eff(1))-exp((x_tres_eff(tau,1)-x0_tres_eff(1))*(x_tres_eff(tau,1)-x0_tres_eff(1)))*erfc(-x_tres_eff(tau,1)+x0_tres_eff(1)))+(1.-TReseff.f1(year_opt))*gaus_tres_eff(tau,2)*(exp((x_tres_eff(tau,2)+x0_tres_eff(2))*(x_tres_eff(tau,2)+x0_tres_eff(2)))*erfc(-x_tres_eff(tau,2)-x0_tres_eff(2))-exp((x_tres_eff(tau,2)-x0_tres_eff(2))*(x_tres_eff(tau,2)-x0_tres_eff(2)))*erfc(-x_tres_eff(tau,2)+x0_tres_eff(2))));
+   return 1./4.*(TReseff.f1(year_opt,wide_window)*gaus_tres_eff(tau,1)*(exp((x_tres_eff(tau,1)+x0_tres_eff(1))*(x_tres_eff(tau,1)+x0_tres_eff(1)))*erfc(-x_tres_eff(tau,1)-x0_tres_eff(1))-exp((x_tres_eff(tau,1)-x0_tres_eff(1))*(x_tres_eff(tau,1)-x0_tres_eff(1)))*erfc(-x_tres_eff(tau,1)+x0_tres_eff(1)))+(1.-TReseff.f1(year_opt,wide_window))*gaus_tres_eff(tau,2)*(exp((x_tres_eff(tau,2)+x0_tres_eff(2))*(x_tres_eff(tau,2)+x0_tres_eff(2)))*erfc(-x_tres_eff(tau,2)-x0_tres_eff(2))-exp((x_tres_eff(tau,2)-x0_tres_eff(2))*(x_tres_eff(tau,2)-x0_tres_eff(2)))*erfc(-x_tres_eff(tau,2)+x0_tres_eff(2))));
 
  }
 
@@ -525,7 +543,7 @@ Double_t ComputeIntegrals::T_sinh_resexact_eff(Double_t tau) const
 Double_t ComputeIntegrals::T_cos_resexact_eff(Double_t tau) const
  {
    
-   return 1./2.*(TReseff.f1(year_opt)*gaus_tres_eff(tau,1)*Re_w(z_tres_eff(tau,1))+(1.-TReseff.f1(year_opt))*gaus_tres_eff(tau,2)*Re_w(z_tres_eff(tau,2)));
+   return 1./2.*(TReseff.f1(year_opt,wide_window)*gaus_tres_eff(tau,1)*Re_w(z_tres_eff(tau,1))+(1.-TReseff.f1(year_opt,wide_window))*gaus_tres_eff(tau,2)*Re_w(z_tres_eff(tau,2)));
 
  }
 
@@ -534,7 +552,7 @@ Double_t ComputeIntegrals::T_cos_resexact_eff(Double_t tau) const
 Double_t ComputeIntegrals::T_sin_resexact_eff(Double_t tau) const
  {
    
-   return 1./2.*(TReseff.f1(year_opt)*gaus_tres_eff(tau,1)*Im_w(z_tres_eff(tau,1))+(1.-TReseff.f1(year_opt))*gaus_tres_eff(tau,2)*Im_w(z_tres_eff(tau,2)));
+   return 1./2.*(TReseff.f1(year_opt,wide_window)*gaus_tres_eff(tau,1)*Im_w(z_tres_eff(tau,1))+(1.-TReseff.f1(year_opt,wide_window))*gaus_tres_eff(tau,2)*Im_w(z_tres_eff(tau,2)));
 
  }
 
@@ -543,7 +561,7 @@ Double_t ComputeIntegrals::T_sin_resexact_eff(Double_t tau) const
 Double_t ComputeIntegrals::T_cosh_resapprox_eff(Double_t tau) const
  {
    
-   return (TReseff.f1(year_opt)*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1)+1./8.*delta_gamma_freq*delta_gamma_freq*sigma_tres_eff(1)*sigma_tres_eff(1))*cosh(0.5*delta_gamma_freq*(tau-TReseff.off(year_opt))-0.5*gamma_Bs_freq*delta_gamma_freq*sigma_tres_eff(1)*sigma_tres_eff(1))+(1.-TReseff.f1(year_opt))*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2)+1./8.*delta_gamma_freq*delta_gamma_freq*sigma_tres_eff(2)*sigma_tres_eff(2))*cosh(0.5*delta_gamma_freq*(tau-TReseff.off(year_opt))-0.5*gamma_Bs_freq*delta_gamma_freq*sigma_tres_eff(2)*sigma_tres_eff(2)));
+   return (TReseff.f1(year_opt,wide_window)*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt,wide_window))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1)+1./8.*delta_gamma_freq*delta_gamma_freq*sigma_tres_eff(1)*sigma_tres_eff(1))*cosh(0.5*delta_gamma_freq*(tau-TReseff.off(year_opt,wide_window))-0.5*gamma_Bs_freq*delta_gamma_freq*sigma_tres_eff(1)*sigma_tres_eff(1))+(1.-TReseff.f1(year_opt,wide_window))*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt,wide_window))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2)+1./8.*delta_gamma_freq*delta_gamma_freq*sigma_tres_eff(2)*sigma_tres_eff(2))*cosh(0.5*delta_gamma_freq*(tau-TReseff.off(year_opt,wide_window))-0.5*gamma_Bs_freq*delta_gamma_freq*sigma_tres_eff(2)*sigma_tres_eff(2)));
 
  }
 
@@ -552,7 +570,7 @@ Double_t ComputeIntegrals::T_cosh_resapprox_eff(Double_t tau) const
 Double_t ComputeIntegrals::T_sinh_resapprox_eff(Double_t tau) const
  {
    
-   return (TReseff.f1(year_opt)*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1)+1./8.*delta_gamma_freq*delta_gamma_freq*sigma_tres_eff(1)*sigma_tres_eff(1))*sinh(0.5*delta_gamma_freq*(tau-TReseff.off(year_opt))-0.5*gamma_Bs_freq*delta_gamma_freq*sigma_tres_eff(1)*sigma_tres_eff(1))+(1.-TReseff.f1(year_opt))*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2)+1./8.*delta_gamma_freq*delta_gamma_freq*sigma_tres_eff(2)*sigma_tres_eff(2))*sinh(0.5*delta_gamma_freq*(tau-TReseff.off(year_opt))-0.5*gamma_Bs_freq*delta_gamma_freq*sigma_tres_eff(2)*sigma_tres_eff(2)));
+   return (TReseff.f1(year_opt,wide_window)*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt,wide_window))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1)+1./8.*delta_gamma_freq*delta_gamma_freq*sigma_tres_eff(1)*sigma_tres_eff(1))*sinh(0.5*delta_gamma_freq*(tau-TReseff.off(year_opt,wide_window))-0.5*gamma_Bs_freq*delta_gamma_freq*sigma_tres_eff(1)*sigma_tres_eff(1))+(1.-TReseff.f1(year_opt,wide_window))*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt,wide_window))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2)+1./8.*delta_gamma_freq*delta_gamma_freq*sigma_tres_eff(2)*sigma_tres_eff(2))*sinh(0.5*delta_gamma_freq*(tau-TReseff.off(year_opt,wide_window))-0.5*gamma_Bs_freq*delta_gamma_freq*sigma_tres_eff(2)*sigma_tres_eff(2)));
 
  }
 
@@ -561,7 +579,7 @@ Double_t ComputeIntegrals::T_sinh_resapprox_eff(Double_t tau) const
 Double_t ComputeIntegrals::T_cos_resapprox_eff(Double_t tau) const
  {
    
-   return (TReseff.f1(year_opt)*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1)-0.5*delta_m_freq*delta_m_freq*sigma_tres_eff(1)*sigma_tres_eff(1))*cos(delta_m_freq*(tau-TReseff.off(year_opt))-gamma_Bs_freq*delta_m_freq*sigma_tres_eff(1)*sigma_tres_eff(1))+(1.-TReseff.f1(year_opt))*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2)-0.5*delta_m_freq*delta_m_freq*sigma_tres_eff(2)*sigma_tres_eff(2))*cos(delta_m_freq*(tau-TReseff.off(year_opt))-gamma_Bs_freq*delta_m_freq*sigma_tres_eff(2)*sigma_tres_eff(2)));
+   return (TReseff.f1(year_opt,wide_window)*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt,wide_window))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1)-0.5*delta_m_freq*delta_m_freq*sigma_tres_eff(1)*sigma_tres_eff(1))*cos(delta_m_freq*(tau-TReseff.off(year_opt,wide_window))-gamma_Bs_freq*delta_m_freq*sigma_tres_eff(1)*sigma_tres_eff(1))+(1.-TReseff.f1(year_opt,wide_window))*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt,wide_window))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2)-0.5*delta_m_freq*delta_m_freq*sigma_tres_eff(2)*sigma_tres_eff(2))*cos(delta_m_freq*(tau-TReseff.off(year_opt,wide_window))-gamma_Bs_freq*delta_m_freq*sigma_tres_eff(2)*sigma_tres_eff(2)));
 
  }
 
@@ -570,7 +588,7 @@ Double_t ComputeIntegrals::T_cos_resapprox_eff(Double_t tau) const
 Double_t ComputeIntegrals::T_sin_resapprox_eff(Double_t tau) const
  {
    
-   return (TReseff.f1(year_opt)*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1)-0.5*delta_m_freq*delta_m_freq*sigma_tres_eff(1)*sigma_tres_eff(1))*sin(delta_m_freq*(tau-TReseff.off(year_opt))-gamma_Bs_freq*delta_m_freq*sigma_tres_eff(1)*sigma_tres_eff(1))+(1.-TReseff.f1(year_opt))*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2)-0.5*delta_m_freq*delta_m_freq*sigma_tres_eff(2)*sigma_tres_eff(2))*sin(delta_m_freq*(tau-TReseff.off(year_opt))-gamma_Bs_freq*delta_m_freq*sigma_tres_eff(2)*sigma_tres_eff(2)));
+   return (TReseff.f1(year_opt,wide_window)*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt,wide_window))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1)-0.5*delta_m_freq*delta_m_freq*sigma_tres_eff(1)*sigma_tres_eff(1))*sin(delta_m_freq*(tau-TReseff.off(year_opt,wide_window))-gamma_Bs_freq*delta_m_freq*sigma_tres_eff(1)*sigma_tres_eff(1))+(1.-TReseff.f1(year_opt,wide_window))*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt,wide_window))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2)-0.5*delta_m_freq*delta_m_freq*sigma_tres_eff(2)*sigma_tres_eff(2))*sin(delta_m_freq*(tau-TReseff.off(year_opt,wide_window))-gamma_Bs_freq*delta_m_freq*sigma_tres_eff(2)*sigma_tres_eff(2)));
 
  }
 
@@ -580,7 +598,7 @@ Double_t ComputeIntegrals::T_cosh_eff(Double_t tau) const
  {
    
    if (inftres == 1) {return T_cosh_ideal(tau);}
-   else if ((inftres == 0) && ((tau-TReseff.off(year_opt)) <= 20*sigma_ref_eff())) {return T_cosh_resexact_eff(tau);}
+   else if ((inftres == 0) && ((tau-TReseff.off(year_opt,wide_window)) <= 20*sigma_ref_eff())) {return T_cosh_resexact_eff(tau);}
    else {return T_cosh_resapprox_eff(tau);}
 
  }
@@ -591,7 +609,7 @@ Double_t ComputeIntegrals::T_sinh_eff(Double_t tau) const
  {
    
    if (inftres == 1) {return T_sinh_ideal(tau);}
-   else if ((inftres == 0) && ((tau-TReseff.off(year_opt)) <= 20*sigma_ref_eff())) {return T_sinh_resexact_eff(tau);}
+   else if ((inftres == 0) && ((tau-TReseff.off(year_opt,wide_window)) <= 20*sigma_ref_eff())) {return T_sinh_resexact_eff(tau);}
    else {return T_sinh_resapprox_eff(tau);}
 
  }
@@ -602,7 +620,7 @@ Double_t ComputeIntegrals::T_cos_eff(Double_t tau) const
  {
    
    if (inftres == 1) {return T_cos_ideal(tau);}
-   else if ((inftres == 0) && ((tau-TReseff.off(year_opt)) <= 20*sigma_ref_eff())) {return T_cos_resexact_eff(tau);}
+   else if ((inftres == 0) && ((tau-TReseff.off(year_opt,wide_window)) <= 20*sigma_ref_eff())) {return T_cos_resexact_eff(tau);}
    else {return T_cos_resapprox_eff(tau);}
 
  }
@@ -613,7 +631,7 @@ Double_t ComputeIntegrals::T_sin_eff(Double_t tau) const
  {
    
    if (inftres == 1) {return T_sin_ideal(tau);}
-   else if ((inftres == 0) && ((tau-TReseff.off(year_opt)) <= 20*sigma_ref_eff())) {return T_sin_resexact_eff(tau);}
+   else if ((inftres == 0) && ((tau-TReseff.off(year_opt,wide_window)) <= 20*sigma_ref_eff())) {return T_sin_resexact_eff(tau);}
    else {return T_sin_resapprox_eff(tau);}
 
  }
@@ -651,6 +669,7 @@ Double_t ComputeIntegrals::fi(Double_t x, Int_t i) const
  }
 
 // ---------------------------------------------------
+// Momentum of one of the two daughters in the rest frame of the mother.
 
 Double_t ComputeIntegrals::get_q(Double_t M, Double_t ma, Double_t mb) const 
  {
@@ -665,13 +684,14 @@ Double_t ComputeIntegrals::get_q(Double_t M, Double_t ma, Double_t mb) const
  }
 
 // ---------------------------------------------------
+// Blatt Weisskopf factor squared.
 
 Double_t ComputeIntegrals::Blatt_Weisskopf2(Double_t q, Double_t q0, Int_t L) const 
  {
 
    if (L<1.) {return 1.;}  
    Double_t d;
-   if (L == 1) {d = 3.e-03;}
+   if (L == 1) {d = 3.4e-03;}
    else if (L == 2) {d = 2.7e-03;}
    else {d = 3.e-03/L;}
    Double_t z = q*d*q*d;
@@ -684,85 +704,394 @@ Double_t ComputeIntegrals::Blatt_Weisskopf2(Double_t q, Double_t q0, Int_t L) co
  }
 
 // ---------------------------------------------------
+// Angular momentum barrier factor.
 
-TComplex ComputeIntegrals::Resonance(Double_t m, Double_t m_sister, Double_t m0, Double_t g0, Int_t J) const
+Double_t ComputeIntegrals::FL_j1j2(Int_t j1, Int_t j2, Double_t ma, Double_t mb) const 
  {
 
-   // Approximation of the lowest orbital angular momentum available.
-   Int_t L = 0;
-   if (J == 0) {L = 1;}
-   else if (J == 1) {L = 0;}
-   else if (J == 2) {L = 1;}
+   // Momenta definition.
+   Double_t p = get_q(MBs,ma,mb);
+   Double_t q_1 = get_q(ma,MPion,MKaon);
+   Double_t q_2 = get_q(mb,MPion,MKaon);
 
-   // Angular momentum barrier factor for the decay of the Kst.
-   Double_t q = get_q(m,MPion,MKaon);
+   // Normalization constants.
+   Double_t m0 = mv;
+   Double_t p0 = get_q(MBs,m0,m0);
    Double_t q0 = get_q(m0,MPion,MKaon);
-   if (q==0) return 0;
-   Double_t kst_decay = pow(q/m,J)*sqrt(Blatt_Weisskopf2(q,q0,J));
 
-   // Angular momentum barrier factor for the creation of the Kst.
-   Double_t p = get_q(MBs,m_sister,m);
-   Double_t p0 = get_q(MBs,m_sister,m0);
-   if (p==0) return 0;
-   Double_t kst_birth = pow(p/MBs,L)*sqrt(Blatt_Weisskopf2(p,p0,L));
+   // Decay of the Bs.
+   Int_t L = abs(j1-j2);
+   Double_t FL_Bs = pow(p/p0,L)*sqrt(Blatt_Weisskopf2(p,p0,L));
 
-   // Relativistic spin-J Breit Wigner amplitude.
-   Double_t gamma = g0*pow(q/q0,2*J+1)*m0/m*Blatt_Weisskopf2(q,q0,J);
-   TComplex denom(m0*m0-m*m,-m0*gamma);
-   TComplex num(m0*g0,0.);
-   TComplex BW = num/denom;
+   // Decay of the K+pi- pair.
+   Double_t FL_Kpi1 = pow((q_1/q0)/(ma/m0),j1)*sqrt(Blatt_Weisskopf2(q_1,q0,j1));
 
-   return BW * kst_birth * kst_decay;
+   // Decay of the K-pi+ pair.
+   Double_t FL_Kpi2 = pow((q_2/q0)/(mb/m0),j2)*sqrt(Blatt_Weisskopf2(q_2,q0,j2));
+
+   return FL_Bs*FL_Kpi1*FL_Kpi2;
 
  }
 
 // ---------------------------------------------------
+// Relativistic Breit-Wigner amplitude.
 
-TComplex ComputeIntegrals::Lass(Double_t m, Double_t m_sister, Double_t m0, Double_t g0) const 
+TComplex ComputeIntegrals::Resonance(Double_t m, Double_t m0, Double_t g0, Int_t J) const
+ {
+
+   // Angular momenta definition.
+   Double_t q = get_q(m,MPion,MKaon);
+   Double_t q0 = get_q(m0,MPion,MKaon);
+
+   // Running width.
+   Double_t gamma = g0*pow(q/q0,2*J+1)*(m0/m)*Blatt_Weisskopf2(q,q0,J);
+
+   // Amplitude.
+   TComplex num(m0*g0,0.);
+   TComplex denom(m0*m0-m*m,-m0*gamma);
+   TComplex BW = num/denom;
+
+   if (J == 1) {return BW*TComplex(1.,-1.5707963267948966,1);}
+   else if (J == 2) {return BW*TComplex(1.,-0.01011220614593752,1);}
+   return BW;
+
+ }
+
+// ---------------------------------------------------
+// Lass parametrization for the S wave.
+
+TComplex ComputeIntegrals::Lass(Double_t m, Double_t m0, Double_t g0) const 
  { 
 
    TComplex i(0,1);
    
    Double_t q = get_q(m,MPion,MKaon);
    Double_t q0 = get_q(m0,MPion,MKaon);
-   if (q==0) return 0;
-   Double_t p = get_q(MBs,m_sister,m);
-   Double_t p0 = get_q(MBs,m_sister,m0);
-   if (p==0) return 0;
 
    Double_t cotg_deltaB = 1./(a_lass*q)+0.5*r_lass*q;
    Double_t deltaB = atan(1./cotg_deltaB);
    TComplex expo(1.,2.*deltaB,1);
 
-   Double_t gamma = g0*q/q0*m0/m;
+   Double_t gamma = g0*(q/q0)*(m0/m);
    Double_t cotg_deltaR = (m0*m0-m*m)/(m0*gamma);
 
-   TComplex T = sqrt(Blatt_Weisskopf2(p,p0,1))*p*m/q*(1./(cotg_deltaB-i)+expo/(cotg_deltaR-i));
+   TComplex T = 1./(cotg_deltaB-i)+expo/(cotg_deltaR-i);
 
    return T;
 
  } 
 
 // ---------------------------------------------------
+// Alternative Lass parametrization for the S wave based on chiral perturbation theory.
 
-TComplex ComputeIntegrals::Mji(Double_t m, Double_t m_sister, Int_t ji) const 
+TComplex ComputeIntegrals::Lass_chiral(Double_t m) const 
+ { 
+
+   // Auxiliar variables.
+   TComplex i(0,1);
+   Double_t svar = m*m;
+   Double_t svar2 = svar*svar;
+   Double_t MPion2 = MPion*MPion;
+   Double_t MKaon2 = MKaon*MKaon;
+   Double_t Lambda = svar2-2*svar*(MPion2+MKaon2)+(MPion2-MKaon2)*(MPion2-MKaon2);
+   Double_t sqrtLambda = sqrt(Lambda);
+   Double_t F_lass2 = F_lass*F_lass;
+   Double_t F_lass4 = F_lass2*F_lass2;
+
+   // Amplitude for chiral contact term + single resonance.
+   Double_t L0fun = 1.+(MPion2+MKaon2)/(MPion2-MKaon2)*log(MPion/MKaon)-(MPion2-MKaon2)/svar*log(MPion/MKaon);
+   TComplex Lbarfun = L0fun-sqrtLambda/svar*log((svar-MPion2-MKaon2+sqrtLambda)/(2.*MPion*MKaon))+i*pi*sqrtLambda/svar;
+   TComplex Omegabar = -Lbarfun/(16.*pi*pi);
+   Double_t alphafun = 3./(2.*F_lass4)*pow(cd_lass*svar-(cd_lass-cm_lass)*(MPion2+MKaon2),2);
+   Double_t KernelC = (5.*svar/8.-(MPion2+MKaon2)/4.-3.*(MPion2-MKaon2)*(MPion2-MKaon2)/(8.*svar))/F_lass2;
+   Double_t Kernel = KernelC-alphafun/(svar-MR_lass*MR_lass);
+   TComplex T = Kernel/(1.+(C_lass+Omegabar)*Kernel);
+
+   return T;
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the S-wave propagator obtained from theory.
+
+Double_t ComputeIntegrals::omega_Stheo(Double_t m) const 
+ {
+
+   Double_t m_GeV = m/1000.;
+   Double_t svar_GeV = m_GeV*m_GeV;
+   Double_t Delta_Kpi = MKaon/1000.*MKaon/1000.-MPion/1000.*MPion/1000.;
+   Double_t y_s = pow((svar_GeV-Delta_Kpi)/(svar_GeV+Delta_Kpi),2);
+   Double_t y_s0 = pow((s0_Stheo-Delta_Kpi)/(s0_Stheo+Delta_Kpi),2);
+   return (sqrt(y_s)-alpha_Stheo*sqrt(y_s0-y_s))/(sqrt(y_s)+alpha_Stheo*sqrt(y_s0-y_s));
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the P-wave propagator obtained from theory.
+
+Double_t ComputeIntegrals::omega_Ptheo(Double_t m) const 
+ {
+
+   Double_t m_GeV = m/1000.;
+   Double_t svar_GeV = m_GeV*m_GeV;
+   Double_t Delta_Kpi = MKaon/1000.*MKaon/1000.-MPion/1000.*MPion/1000.;
+   Double_t y_s = pow((svar_GeV-Delta_Kpi)/(svar_GeV+Delta_Kpi),2);
+   Double_t y_s0 = pow((s0_Ptheo-Delta_Kpi)/(s0_Ptheo+Delta_Kpi),2);
+   return (sqrt(y_s)-alpha_Ptheo*sqrt(y_s0-y_s))/(sqrt(y_s)+alpha_Ptheo*sqrt(y_s0-y_s));
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the S-wave propagator obtained from theory.
+
+Double_t ComputeIntegrals::cotdelta_Stheo(Double_t m) const 
+ {
+
+   Double_t m_GeV = m/1000.;
+   Double_t svar_GeV = m_GeV*m_GeV;
+   Double_t q_Kpi_GeV = get_q(m,MKaon,MPion)/1000.;
+   Double_t omega_func = omega_Stheo(m);
+   return m_GeV/(2.*q_Kpi_GeV*(svar_GeV-sAdler_Stheo))*(B0_Stheo+B1_Stheo*omega_func);
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the P-wave propagator obtained from theory.
+
+Double_t ComputeIntegrals::cotdelta_Ptheo(Double_t m) const 
+ {
+
+   Double_t m_GeV = m/1000.;
+   Double_t svar_GeV = m_GeV*m_GeV;
+   Double_t q_Kpi_GeV = get_q(m,MKaon,MPion)/1000.;
+   Double_t omega_func = omega_Ptheo(m);
+   return m_GeV/(2.*q_Kpi_GeV*q_Kpi_GeV*q_Kpi_GeV)*(mr_Ptheo*mr_Ptheo-svar_GeV)*(B0_Ptheo+B1_Ptheo*omega_func+B2_Ptheo*omega_func*omega_func);
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the S-wave propagator obtained from theory.
+
+Double_t ComputeIntegrals::get_p1_Stheo(Double_t q) const 
+ {
+
+   return 1.+a_Stheo*q/1000.*q/1000.+b_Stheo*q/1000.*q/1000.*q/1000.*q/1000.;
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the S-wave propagator obtained from theory.
+
+Double_t ComputeIntegrals::get_p2_Stheo(Double_t q) const 
+ {
+
+   return 1.+c_Stheo*q/1000.*q/1000.;
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the P-wave propagator obtained from theory.
+
+Double_t ComputeIntegrals::get_p1_Ptheo(Double_t q) const 
+ {
+
+   return 1.+a1_Ptheo*q/1000.*q/1000.;
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the P-wave propagator obtained from theory.
+
+Double_t ComputeIntegrals::get_p2_Ptheo(Double_t q) const 
+ {
+
+   return 1.+a2_Ptheo*q/1000.*q/1000.;
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the P-wave propagator obtained from theory.
+
+Double_t ComputeIntegrals::get_p3_Ptheo(Double_t q) const 
+ {
+
+   return 1.+a3_Ptheo*q/1000.*q/1000.;
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the D-wave propagator obtained from theory.
+
+Double_t ComputeIntegrals::get_p1_Dtheo(Double_t q) const 
+ {
+
+   return 1.+a_Dtheo*q/1000.*q/1000.;
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the propagators obtained from theory.
+
+Double_t ComputeIntegrals::Theta_Keta(Double_t m) const 
+ {
+
+   if (m>=(MKaon+MEta)) {return 1.;}
+   return 0.;
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the propagators obtained from theory.
+
+Double_t ComputeIntegrals::Theta_Ketaprime(Double_t m) const 
+ {
+
+   if (m>=(MKaon+MEtaprime)) {return 1.;}
+   return 0.;
+
+ }
+
+// ---------------------------------------------------
+// S-wave propagator obtained from theory.
+
+TComplex ComputeIntegrals::Prop_Stheo(Double_t m) const 
+ { 
+
+   // Auxiliar quantities.
+   TComplex i(0,1);
+   Double_t m_GeV = m/1000.;
+   Double_t svar_GeV = m_GeV*m_GeV;
+   Double_t q_Kpi_GeV = get_q(m,MKaon,MPion)/1000.;
+   Double_t q_Keta_GeV = get_q(m,MKaon,MEta)/1000.;
+
+   // Kpi decay amplitude.
+   TComplex T;
+
+   // Parametrisation in the elastic region.
+   if (m<(MKaon+MEta)) {
+      T = 1./(cotdelta_Stheo(m)-i);
+   }
+
+   // Parametrisation in the inelastic region.
+   else {
+      TComplex S0b(1.,2.*q_Keta_GeV*(phi0_Stheo+phi1_Stheo*q_Keta_GeV*q_Keta_GeV),1);
+      Double_t q_Kpi_r1_GeV = get_q(sqrtsr1_Stheo*1000.,MKaon,MPion)/1000.;
+      Double_t q_Keta_r1_GeV = get_q(sqrtsr1_Stheo*1000.,MKaon,MEta)/1000.;
+      Double_t q_Kpi_r2_GeV = get_q(sqrtsr2_Stheo*1000.,MKaon,MPion)/1000.;
+      Double_t q_Keta_r2_GeV = get_q(sqrtsr2_Stheo*1000.,MKaon,MEta)/1000.;
+      Double_t q_Kpi_hat_GeV = get_q(MKaon+MEta,MKaon,MPion)/1000.;
+      Double_t beta_Stheo = 1./cotdelta_Stheo(MKaon+MEta);
+      Double_t P1_s = (sqrtsr1_Stheo*sqrtsr1_Stheo-svar_GeV)*beta_Stheo+e1_Stheo*G1_Stheo*(get_p1_Stheo(q_Kpi_GeV*1000.)*(q_Kpi_GeV-q_Kpi_hat_GeV))/(get_p1_Stheo(q_Kpi_r1_GeV*1000.)*(q_Kpi_r1_GeV-q_Kpi_hat_GeV));
+      Double_t Q1_s = (1.-e1_Stheo)*G1_Stheo*get_p1_Stheo(q_Kpi_GeV*1000.)/get_p1_Stheo(q_Kpi_r1_GeV*1000.)*q_Keta_GeV/q_Keta_r1_GeV*Theta_Keta(m);
+      Double_t P2_s = e2_Stheo*G2_Stheo*(get_p2_Stheo(q_Kpi_GeV*1000.)*(q_Kpi_GeV-q_Kpi_hat_GeV))/(get_p2_Stheo(q_Kpi_r2_GeV*1000.)*(q_Kpi_r2_GeV-q_Kpi_hat_GeV));
+      Double_t Q2_s = (1.-e2_Stheo)*G2_Stheo*get_p2_Stheo(q_Kpi_GeV*1000.)/get_p2_Stheo(q_Kpi_r2_GeV*1000.)*q_Keta_GeV/q_Keta_r2_GeV*Theta_Keta(m);
+      TComplex S1r = (sqrtsr1_Stheo*sqrtsr1_Stheo-svar_GeV+i*(P1_s-Q1_s))/(sqrtsr1_Stheo*sqrtsr1_Stheo-svar_GeV-i*(P1_s+Q1_s));
+      TComplex S2r = (sqrtsr2_Stheo*sqrtsr2_Stheo-svar_GeV+i*(P2_s-Q2_s))/(sqrtsr2_Stheo*sqrtsr2_Stheo-svar_GeV-i*(P2_s+Q2_s));
+      T = (S0b*S1r*S2r-1.)/(2.*i);
+   }
+
+   return T*TComplex(1.,-0.7095863518296103,1);
+
+ }
+
+// ---------------------------------------------------
+// P-wave propagator obtained from theory.
+
+TComplex ComputeIntegrals::Prop_Ptheo(Double_t m) const 
+ { 
+
+   // Auxiliar quantities.
+   TComplex i(0,1);
+   Double_t m_GeV = m/1000.;
+   Double_t svar_GeV = m_GeV*m_GeV;
+   Double_t q_Kpi_GeV = get_q(m,MKaon,MPion)/1000.;
+   Double_t q_Keta_GeV = get_q(m,MKaon,MEta)/1000.;
+
+   // Kpi decay amplitude.
+   TComplex T;
+
+   // Parametrisation in the elastic region.
+   if (m<(MKaon+MEta)) {
+      T = 1./(cotdelta_Ptheo(m)-i);
+   }
+
+   // Parametrisation in the inelastic region.
+   else {
+      Double_t q_Kpi_r1_GeV = get_q(sqrtsr1_Ptheo*1000.,MKaon,MPion)/1000.;
+      Double_t q_Keta_r1_GeV = get_q(sqrtsr1_Ptheo*1000.,MKaon,MEta)/1000.;
+      Double_t q_Kpi_r2_GeV = get_q(sqrtsr2_Ptheo*1000.,MKaon,MPion)/1000.;
+      Double_t q_Keta_r2_GeV = get_q(sqrtsr2_Ptheo*1000.,MKaon,MEta)/1000.;
+      Double_t q_Kpi_r3_GeV = get_q(sqrtsr3_Ptheo*1000.,MKaon,MPion)/1000.;
+      Double_t q_Keta_r3_GeV = get_q(sqrtsr3_Ptheo*1000.,MKaon,MEta)/1000.;
+      Double_t q_Kpi_hat_GeV = get_q(MKaon+MEta,MKaon,MPion)/1000.;
+      Double_t beta_Ptheo = 1./cotdelta_Ptheo(MKaon+MEta);
+      Double_t P1_s = (sqrtsr1_Ptheo*sqrtsr1_Ptheo-svar_GeV)*beta_Ptheo+e1_Ptheo*G1_Ptheo*(get_p1_Ptheo(q_Kpi_GeV*1000.)*q_Kpi_GeV*(q_Kpi_GeV*q_Kpi_GeV-q_Kpi_hat_GeV*q_Kpi_hat_GeV))/(get_p1_Ptheo(q_Kpi_r1_GeV*1000.)*q_Kpi_r1_GeV*(q_Kpi_r1_GeV*q_Kpi_r1_GeV-q_Kpi_hat_GeV*q_Kpi_hat_GeV));
+      Double_t P2_s = e2_Ptheo*G2_Ptheo*(get_p2_Ptheo(q_Kpi_GeV*1000.)*q_Kpi_GeV*(q_Kpi_GeV*q_Kpi_GeV-q_Kpi_hat_GeV*q_Kpi_hat_GeV))/(get_p2_Ptheo(q_Kpi_r2_GeV*1000.)*q_Kpi_r2_GeV*(q_Kpi_r2_GeV*q_Kpi_r2_GeV-q_Kpi_hat_GeV*q_Kpi_hat_GeV));
+      Double_t P3_s = e3_Ptheo*G3_Ptheo*(get_p3_Ptheo(q_Kpi_GeV*1000.)*q_Kpi_GeV*(q_Kpi_GeV*q_Kpi_GeV-q_Kpi_hat_GeV*q_Kpi_hat_GeV))/(get_p3_Ptheo(q_Kpi_r3_GeV*1000.)*q_Kpi_r3_GeV*(q_Kpi_r3_GeV*q_Kpi_r3_GeV-q_Kpi_hat_GeV*q_Kpi_hat_GeV));
+      Double_t Q1_s = 0.;
+      Double_t Q2_s = (1.-e2_Ptheo)*G2_Ptheo*get_p2_Ptheo(q_Kpi_GeV*1000.)/get_p2_Ptheo(q_Kpi_r2_GeV*1000.)*pow(q_Keta_GeV/q_Keta_r2_GeV,3)*Theta_Keta(m);
+      Double_t Q3_s = (1.-e3_Ptheo)*G3_Ptheo*get_p3_Ptheo(q_Kpi_GeV*1000.)/get_p3_Ptheo(q_Kpi_r3_GeV*1000.)*pow(q_Keta_GeV/q_Keta_r3_GeV,3)*Theta_Keta(m);
+      TComplex S1r = (sqrtsr1_Ptheo*sqrtsr1_Ptheo-svar_GeV+i*(P1_s-Q1_s))/(sqrtsr1_Ptheo*sqrtsr1_Ptheo-svar_GeV-i*(P1_s+Q1_s));
+      TComplex S2r = (sqrtsr2_Ptheo*sqrtsr2_Ptheo-svar_GeV+i*(P2_s-Q2_s))/(sqrtsr2_Ptheo*sqrtsr2_Ptheo-svar_GeV-i*(P2_s+Q2_s));
+      TComplex S3r = (sqrtsr3_Ptheo*sqrtsr3_Ptheo-svar_GeV+i*(P3_s-Q3_s))/(sqrtsr3_Ptheo*sqrtsr3_Ptheo-svar_GeV-i*(P3_s+Q3_s));
+      T = (S1r*S2r*S3r-1.)/(2.*i);
+
+   }
+
+   return T*TComplex(1.,-1.5745153880460114,1);
+
+ }
+
+// ---------------------------------------------------
+// D-wave propagator obtained from theory.
+
+TComplex ComputeIntegrals::Prop_Dtheo(Double_t m) const 
+ { 
+
+   TComplex i(0,1);
+   Double_t m_GeV = m/1000.;
+   Double_t svar_GeV = m_GeV*m_GeV;
+   Double_t q_Kpi_GeV = get_q(m,MKaon,MPion)/1000.;
+   Double_t q_Keta_GeV = get_q(m,MKaon,MEta)/1000.;
+   Double_t q_Ketaprime_GeV = get_q(m,MKaon,MEtaprime)/1000.;
+
+   // Kpi decay amplitude.
+   TComplex T;
+
+   // Parametrisation in the whole region.
+   TComplex S0b(1.,2.*(phi0_Dtheo*pow(q_Keta_GeV,5)*Theta_Keta(m)+phi1_Dtheo*pow(q_Ketaprime_GeV,5)*Theta_Ketaprime(m)),1);
+   Double_t q_Kpi_r1_GeV = get_q(sqrtsr1_Dtheo*1000.,MKaon,MPion)/1000.;
+   Double_t q_Keta_r1_GeV = get_q(sqrtsr1_Dtheo*1000.,MKaon,MEta)/1000.;
+   Double_t P1_s = e1_Dtheo*G1_Dtheo*get_p1_Dtheo(q_Kpi_GeV*1000.)/get_p1_Dtheo(q_Kpi_r1_GeV*1000.)*pow(q_Kpi_GeV/q_Kpi_r1_GeV,5);
+   Double_t Q1_s = (1.-e1_Dtheo)*G1_Dtheo*get_p1_Dtheo(q_Kpi_GeV*1000.)/get_p1_Dtheo(q_Kpi_r1_GeV*1000.)*pow(q_Keta_GeV/q_Keta_r1_GeV,5)*Theta_Keta(m);
+   TComplex S1r = (sqrtsr1_Dtheo*sqrtsr1_Dtheo-svar_GeV+i*(P1_s-Q1_s))/(sqrtsr1_Dtheo*sqrtsr1_Dtheo-svar_GeV-i*(P1_s+Q1_s));
+   T = (S0b*S1r-1.)/(2.*i);
+
+   return T*TComplex(1.,-0.0022258232266847374,1);
+
+ }
+
+// ---------------------------------------------------
+// Kpi mass amplitude.
+
+TComplex ComputeIntegrals::Mji(Double_t m, Int_t ji) const 
  {
 
    TComplex T;
 
    if (ji == 0)
 	{
-	T = Lass(m,m_sister,ms,gs)*TComplex(0.00021167233881101775,-0.6904181463662509,1);
+	T = Prop_Stheo(m);
 	}
 
-   else if (ji == 1.)
+   else if (ji == 1)
 	{
-	T = Resonance(m,m_sister,mv,gv,1)*TComplex(3.0782434270248222,1.5707963267948966-pi,1);
+	T = Resonance(m,mv,gv,1);
 	}
 
    else if (ji == 2)
 	{
-	T = Resonance(m,m_sister,mt,gt,2)*TComplex(112.27484112040055,3.1314804474438556-pi,1);
+	T = Resonance(m,mt,gt,2);
 	}
    
    return T;
@@ -770,33 +1099,35 @@ TComplex ComputeIntegrals::Mji(Double_t m, Double_t m_sister, Int_t ji) const
  }
 
 // ---------------------------------------------------
+// Invariant mass dependent factor for each wave.
  
 TComplex ComputeIntegrals::Mj1j2(Double_t ma, Double_t mb, Int_t j1, Int_t j2) const 
  { 
 
- if ((j1 == 0) and (j2 == 0)) {return Mji(ma,mb,0)*Mji(mb,ma,0)/sqrt(Im00);}
- else if ((j1 == 0) and (j2 == 1)) {return Mji(ma,mb,0)*Mji(mb,ma,1)/sqrt(Im01);}
- else if ((j1 == 1) and (j2 == 0)) {return Mji(ma,mb,1)*Mji(mb,ma,0)/sqrt(Im10);}
- else if ((j1 == 0) and (j2 == 2)) {return Mji(ma,mb,0)*Mji(mb,ma,2)/sqrt(Im02);}
- else if ((j1 == 2) and (j2 == 0)) {return Mji(ma,mb,2)*Mji(mb,ma,0)/sqrt(Im20);}
- else if ((j1 == 1) and (j2 == 1)) {return Mji(ma,mb,1)*Mji(mb,ma,1)/sqrt(Im11);}
- else if ((j1 == 1) and (j2 == 2)) {return Mji(ma,mb,1)*Mji(mb,ma,2)/sqrt(Im12);}
- else if ((j1 == 2) and (j2 == 1)) {return Mji(ma,mb,2)*Mji(mb,ma,1)/sqrt(Im21);}
- else if ((j1 == 2) and (j2 == 2)) {return Mji(ma,mb,2)*Mji(mb,ma,2)/sqrt(Im22);}
+ if ((j1 == 0) and (j2 == 0)) {return Mji(ma,0)*Mji(mb,0)*FL_j1j2(0,0,ma,mb)*(1./sqrt(Im00));}
+ else if ((j1 == 0) and (j2 == 1)) {return Mji(ma,0)*Mji(mb,1)*FL_j1j2(0,1,ma,mb)*(1./sqrt(Im01));}
+ else if ((j1 == 1) and (j2 == 0)) {return Mji(ma,1)*Mji(mb,0)*FL_j1j2(1,0,ma,mb)*(1./sqrt(Im10));}
+ else if ((j1 == 0) and (j2 == 2)) {return Mji(ma,0)*Mji(mb,2)*FL_j1j2(0,2,ma,mb)*(1./sqrt(Im02));}
+ else if ((j1 == 2) and (j2 == 0)) {return Mji(ma,2)*Mji(mb,0)*FL_j1j2(2,0,ma,mb)*(1./sqrt(Im20));}
+ else if ((j1 == 1) and (j2 == 1)) {return Mji(ma,1)*Mji(mb,1)*FL_j1j2(1,1,ma,mb)*(1./sqrt(Im11));}
+ else if ((j1 == 1) and (j2 == 2)) {return Mji(ma,1)*Mji(mb,2)*FL_j1j2(1,2,ma,mb)*(1./sqrt(Im12));}
+ else if ((j1 == 2) and (j2 == 1)) {return Mji(ma,2)*Mji(mb,1)*FL_j1j2(2,1,ma,mb)*(1./sqrt(Im21));}
+ else if ((j1 == 2) and (j2 == 2)) {return Mji(ma,2)*Mji(mb,2)*FL_j1j2(2,2,ma,mb)*(1./sqrt(Im22));}
 
- throw std::invalid_argument( "Invalid argument" );
+ throw std::invalid_argument( "Invalid argument #5" );
 
  }
 
 // ---------------------------------------------------
+// Phase space factor.
 
 Double_t ComputeIntegrals::phasespace(Double_t ma, Double_t mb) const 
  { 
  
-   Double_t Q1 = get_q(ma,MKaon,MPion);
-   Double_t Q2 = get_q(mb,MKaon,MPion);
-   Double_t QB = get_q(MBs,ma,mb);
-   Double_t phsp = Q1*Q2*QB*4.668198266871305e-09;
+   Double_t Q1 = get_q(ma,MKaon,MPion)/get_q(mv,MKaon,MPion);
+   Double_t Q2 = get_q(mb,MKaon,MPion)/get_q(mv,MKaon,MPion);
+   Double_t QB = get_q(MBs,ma,mb)/get_q(MBs,mv,mv);
+   Double_t phsp = Q1*Q2*QB;
 
    return phsp;
 
@@ -932,57 +1263,57 @@ Double_t ComputeIntegrals::accMass(Double_t m) const
         else if (option == 218) {return fi(cos1,18)*accAng(cos1);}
 
         // Integrals of the invariant mass dependent terms for plotting.
-        else if (option == 31) {return hj1j2j1pj2p(m1,m2,0,0,0,1).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 32) {return hj1j2j1pj2p(m1,m2,0,0,0,2).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 33) {return hj1j2j1pj2p(m1,m2,0,0,1,1).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 34) {return hj1j2j1pj2p(m1,m2,0,0,1,2).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 35) {return hj1j2j1pj2p(m1,m2,0,0,2,2).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 36) {return hj1j2j1pj2p(m1,m2,0,1,0,2).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 37) {return hj1j2j1pj2p(m1,m2,0,1,1,0).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 38) {return hj1j2j1pj2p(m1,m2,0,1,1,1).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 39) {return hj1j2j1pj2p(m1,m2,0,1,1,2).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 310) {return hj1j2j1pj2p(m1,m2,1,0,0,2).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 311) {return hj1j2j1pj2p(m1,m2,1,0,1,2).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 312) {return hj1j2j1pj2p(m1,m2,0,1,2,2).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 313) {return hj1j2j1pj2p(m1,m2,0,2,1,1).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 314) {return hj1j2j1pj2p(m1,m2,0,2,1,2).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 315) {return hj1j2j1pj2p(m1,m2,0,2,2,0).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 316) {return hj1j2j1pj2p(m1,m2,2,0,1,2).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 317) {return hj1j2j1pj2p(m1,m2,0,2,2,2).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 318) {return hj1j2j1pj2p(m1,m2,1,1,1,2).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 319) {return hj1j2j1pj2p(m1,m2,1,1,2,2).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 320) {return hj1j2j1pj2p(m1,m2,1,2,2,1).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 321) {return hj1j2j1pj2p(m1,m2,1,2,2,2).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 322) {return hj1j2j1pj2p(m1,m2,0,0,0,0).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 323) {return hj1j2j1pj2p(m1,m2,0,1,0,1).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 324) {return hj1j2j1pj2p(m1,m2,1,0,1,0).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 325) {return hj1j2j1pj2p(m1,m2,0,2,0,2).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 326) {return hj1j2j1pj2p(m1,m2,2,0,2,0).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 327) {return hj1j2j1pj2p(m1,m2,1,1,1,1).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 328) {return hj1j2j1pj2p(m1,m2,1,2,1,2).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 329) {return hj1j2j1pj2p(m1,m2,2,1,2,1).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 330) {return hj1j2j1pj2p(m1,m2,2,2,2,2).Re()*accMass(m1)*accMass(m2);}
-        else if (option == 41) {return hj1j2j1pj2p(m1,m2,0,0,0,1).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 42) {return hj1j2j1pj2p(m1,m2,0,0,0,2).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 43) {return hj1j2j1pj2p(m1,m2,0,0,1,1).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 44) {return hj1j2j1pj2p(m1,m2,0,0,1,2).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 45) {return hj1j2j1pj2p(m1,m2,0,0,2,2).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 46) {return hj1j2j1pj2p(m1,m2,0,1,0,2).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 47) {return hj1j2j1pj2p(m1,m2,0,1,1,0).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 48) {return hj1j2j1pj2p(m1,m2,0,1,1,1).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 49) {return hj1j2j1pj2p(m1,m2,0,1,1,2).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 410) {return hj1j2j1pj2p(m1,m2,1,0,0,2).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 411) {return hj1j2j1pj2p(m1,m2,1,0,1,2).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 412) {return hj1j2j1pj2p(m1,m2,0,1,2,2).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 413) {return hj1j2j1pj2p(m1,m2,0,2,1,1).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 414) {return hj1j2j1pj2p(m1,m2,0,2,1,2).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 415) {return hj1j2j1pj2p(m1,m2,0,2,2,0).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 416) {return hj1j2j1pj2p(m1,m2,2,0,1,2).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 417) {return hj1j2j1pj2p(m1,m2,0,2,2,2).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 418) {return hj1j2j1pj2p(m1,m2,1,1,1,2).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 419) {return hj1j2j1pj2p(m1,m2,1,1,2,2).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 420) {return hj1j2j1pj2p(m1,m2,1,2,2,1).Im()*accMass(m1)*accMass(m2);}
-        else if (option == 421) {return hj1j2j1pj2p(m1,m2,1,2,2,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 31) {return hj1j2j1pj2p(m1,m2,0,0,0,1).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 32) {return hj1j2j1pj2p(m1,m2,0,0,0,2).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 33) {return hj1j2j1pj2p(m1,m2,0,0,1,1).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 34) {return hj1j2j1pj2p(m1,m2,0,0,1,2).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 35) {return hj1j2j1pj2p(m1,m2,0,0,2,2).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 36) {return hj1j2j1pj2p(m1,m2,0,1,0,2).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 37) {return hj1j2j1pj2p(m1,m2,0,1,1,0).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 38) {return hj1j2j1pj2p(m1,m2,0,1,1,1).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 39) {return hj1j2j1pj2p(m1,m2,0,1,1,2).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 310) {return hj1j2j1pj2p(m1,m2,1,0,0,2).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 311) {return hj1j2j1pj2p(m1,m2,1,0,1,2).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 312) {return hj1j2j1pj2p(m1,m2,0,1,2,2).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 313) {return hj1j2j1pj2p(m1,m2,0,2,1,1).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 314) {return hj1j2j1pj2p(m1,m2,0,2,1,2).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 315) {return hj1j2j1pj2p(m1,m2,0,2,2,0).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 316) {return hj1j2j1pj2p(m1,m2,2,0,1,2).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 317) {return hj1j2j1pj2p(m1,m2,0,2,2,2).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 318) {return hj1j2j1pj2p(m1,m2,1,1,1,2).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 319) {return hj1j2j1pj2p(m1,m2,1,1,2,2).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 320) {return hj1j2j1pj2p(m1,m2,1,2,2,1).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 321) {return hj1j2j1pj2p(m1,m2,1,2,2,2).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 322) {return hj1j2j1pj2p(m1,m2,0,0,0,0).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 323) {return hj1j2j1pj2p(m1,m2,0,1,0,1).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 324) {return hj1j2j1pj2p(m1,m2,1,0,1,0).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 325) {return hj1j2j1pj2p(m1,m2,0,2,0,2).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 326) {return hj1j2j1pj2p(m1,m2,2,0,2,0).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 327) {return hj1j2j1pj2p(m1,m2,1,1,1,1).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 328) {return hj1j2j1pj2p(m1,m2,1,2,1,2).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 329) {return hj1j2j1pj2p(m1,m2,2,1,2,1).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 330) {return hj1j2j1pj2p(m1,m2,2,2,2,2).Re()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 41) {return hj1j2j1pj2p(m1,m2,0,0,0,1).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 42) {return hj1j2j1pj2p(m1,m2,0,0,0,2).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 43) {return hj1j2j1pj2p(m1,m2,0,0,1,1).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 44) {return hj1j2j1pj2p(m1,m2,0,0,1,2).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 45) {return hj1j2j1pj2p(m1,m2,0,0,2,2).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 46) {return hj1j2j1pj2p(m1,m2,0,1,0,2).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 47) {return hj1j2j1pj2p(m1,m2,0,1,1,0).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 48) {return hj1j2j1pj2p(m1,m2,0,1,1,1).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 49) {return hj1j2j1pj2p(m1,m2,0,1,1,2).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 410) {return hj1j2j1pj2p(m1,m2,1,0,0,2).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 411) {return hj1j2j1pj2p(m1,m2,1,0,1,2).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 412) {return hj1j2j1pj2p(m1,m2,0,1,2,2).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 413) {return hj1j2j1pj2p(m1,m2,0,2,1,1).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 414) {return hj1j2j1pj2p(m1,m2,0,2,1,2).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 415) {return hj1j2j1pj2p(m1,m2,0,2,2,0).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 416) {return hj1j2j1pj2p(m1,m2,2,0,1,2).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 417) {return hj1j2j1pj2p(m1,m2,0,2,2,2).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 418) {return hj1j2j1pj2p(m1,m2,1,1,1,2).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 419) {return hj1j2j1pj2p(m1,m2,1,1,2,2).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 420) {return hj1j2j1pj2p(m1,m2,1,2,2,1).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 421) {return hj1j2j1pj2p(m1,m2,1,2,2,2).Im()*Im00*accMass(m1)*accMass(m2);}
 
 	// Integrals of the time dependent terms for plotting.
 	else if (option == 91) {return T_cosh_eff(t)*accTime(t);}

@@ -35,24 +35,69 @@ namespace Bd2DhModels {
 					bool debug = true
 					);
 
+  RooAbsPdf* buildExponentialPlusConstantPDF( RooAbsReal& obs,
+                                              RooWorkspace* workInt,
+                                              TString samplemode,
+                                              TString typemode,
+                                              bool debug = true);
+
   RooAbsPdf* buildJohnsonSUPDF( RooAbsReal& obs,
                                 RooWorkspace* workInt,
                                 TString samplemode,
                                 TString typemode,
+                                bool shiftMean = false,
                                 bool debug = true);
+
+  RooAbsPdf* buildCrystalBallPlusExponentialPDF( RooAbsReal& obs,
+                                                 RooWorkspace* workInt,
+                                                 TString samplemode,
+                                                 TString typemode,
+                                                 bool shiftMean = false,
+                                                 bool debug = true);
+
+  RooAbsPdf* buildCrystalBallPlusGaussianPDF( RooAbsReal& obs,
+                                              RooWorkspace* workInt,
+                                              TString samplemode,
+                                              TString typemode,
+                                              bool shiftMean = false,
+                                              bool scaleWidths = false,
+                                              bool debug = true);
   
   RooAbsPdf* buildJohnsonSUPlusGaussianPDF( RooAbsReal& obs,
                                             RooWorkspace* workInt,
                                             TString samplemode,
                                             TString typemode,
+                                            bool sameMean = true,
+                                            bool shiftMean = false,
                                             bool debug = true);
+  
+  RooAbsPdf* buildJohnsonSUPlusGaussianPlusExponentialPDF( RooAbsReal& obs,
+                                                           RooWorkspace* workInt,
+                                                           TString samplemode,
+                                                           TString typemode,
+                                                           bool debug = true);
+  
   
   RooAbsPdf* buildJohnsonSUPlus2GaussianPDF( RooAbsReal& obs,
                                              RooWorkspace* workInt,
                                              TString samplemode,
                                              TString typemode,
-                                             bool sameMean,
-                                             bool debug);
+                                             bool sameMean = true,
+                                             bool debug = true);
+
+  RooAbsPdf* buildIpatiaPlusExponentialPDF(RooAbsReal& obs,
+                                           RooWorkspace* workInt,
+                                           TString samplemode,
+                                           TString typemode,
+                                           bool debug = true);
+  
+
+  RooAbsPdf* buildIpatiaGaussConvPDF(RooRealVar& obs,
+                                     RooWorkspace* workInt,
+                                     TString samplemode,
+                                     TString typemode,
+                                     bool shiftMean = false,
+                                     bool debug = true);
   
 } // end of namespace
 

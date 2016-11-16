@@ -1,44 +1,82 @@
 ## THIS IS JUST TO FILL THE HISTOS in BINS of PT and ETA
+##TO DO:
+## - change binning according to the trigger category
+
 from ROOT import *
 from array import array as afC
 from SomeUtils.alyabar import *
-from cuts import *
-#import histoTex as M
+from fiducial import *
 import KsmmMathCrap as K
 import cPickle
+from pdb import set_trace
 
-
+ptbins = afC('d', [0,1000000]) 
 # define PT and ETA BINS
-ptbins = afC('d', [0,1500,2000,2500,5000])
-ybins = afC('d' , [0, 5])
+#binning TOSTOS1TOS
+#ptbins = afC('d', [0,1623,1849,2074,2340,2705,100000])
+#binning TOSTOS2TOS
+#ptbins = afC('d', [0,1112,1236,1334,1438,1564,100000]) 
+#binning TISTISTOS
+#ptbins = afC('d', [0,742,873,1026,1225,1550,1000000])
+
+#binning TOSTOS1TOS
+#ybins = afC('d' , [0,2.76045328095,3.13072589356,3.52959311828,3.68156166192,3.87732214708, 50])  
+
+#binning TOSTOS2TOS                                                                                                                               
+#ybins = afC('d' , [0,3.23894299414,3.54760780322,3.70842344874,3.87077698432,4.08590687317, 50]) 
+
+#binning TISTISTOS 
+#ybins = afC('d' , [0,3.0099542258,3.37588593651, 3.58399877907, 3.76441038252,4.00754834566, 50])
+
+ybins = afC('d' , [0, 50])
 mK0 = 497.614
 
 
 # FILL a 2D histos, needs the tree and the cuts you want to apply
+def fillHistoGen(tree, cuts):
+    'Fill gen histograms with TTree.Draw'
+    histos = []
+    for name, _ in cuts:
+        histo = TH2F(name, name,len(ptbins)-1, ptbins, len(ybins)-1, ybins)
+        tree.Draw("(0.5*log((KS0_TRUEP_E+KS0_TRUEP_Z)/(KS0_TRUEP_E-KS0_TRUEP_Z))):KS0_TRUEPT>>%s" % name)
+        histos.append(histo)
+    #set_trace()
+    return histos
+
+
 def fillHisto(tree, cuts):
     histos = []
-    for name,_ in cuts:
-        histos.append(TH2F(name,name,len(ptbins)-1, ptbins, len(ybins)-1,ybins))
-
-    for idx, entry in enumerate(tree):
-        if (idx%1000) == 0:
-            print idx
-        if idx>8000:
-            return histos#, histos1D
-        p = vector(entry.muminus_PX + entry.muplus_PX,entry.muminus_PY + entry.muplus_PY, entry.muminus_PZ + entry.muplus_PZ)
-        pt = vtmod(p)
-        E = sqrt(mK0**2 + vmod(p)**2)
-        pz = p[2]
-        if pz <0 : continue
-        y = 0.5*log( (E+pz)/(E-pz))
-        
-        for name_and_cut, h in zip(cuts, histos):
-            _, cut = name_and_cut
-           
-            if cut(entry): 
-                h.Fill(pt, y)
-                      
+    for name,cut in cuts:
+        histo = TH2F(name, name,len(ptbins)-1, ptbins, len(ybins)-1, ybins)
+        tree.Draw("(0.5*log((KS0_PE+KS0_PZ)/(KS0_PE-KS0_PZ))):KS0_PT>>%s" % name,cut)
+        histos.append(histo)
     return histos
+
+
+#def fillHisto(tree, cuts):
+#    histos = []
+#    for name,_ in cuts:
+#        histos.append(TH2F(name,name,len(ptbins)-1, ptbins, len(ybins)-1,ybins))
+
+#    for idx, entry in enumerate(tree):
+#        if (idx%1000) == 0:
+#            print idx
+#        if idx>20000:
+#            return histos#, histos1D
+#        p = vector(entry.muplus_PX+entry.muminus_PX,entry.muplus_PY+entry.muminus_PY, entry.muplus_PZ+entry.muminus_PZ)
+#        pt = vtmod(p)
+#        E = sqrt(mK0**2 + vmod(p)**2)
+#        pz = p[2]
+#        if pz <0 : continue
+#        y = 0.5*log( (E+pz)/(E-pz))
+#        
+#        for name_and_cut, h in zip(cuts, histos):
+#            _, cut = name_and_cut
+#           
+#            if cut(entry): 
+#                h.Fill(pt, y)
+#                      
+#    return histos
 
 
 

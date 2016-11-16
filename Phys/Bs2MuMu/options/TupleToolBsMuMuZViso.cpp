@@ -107,7 +107,7 @@ DECLARE_TOOL_FACTORY(  TupleToolBsMuMuZViso );
 
 {
   declareInterface<IParticleTupleTool>(this);
-  declareInterface<IEventTupleTool>(this);
+  //declareInterface<IEventTupleTool>(this);
   declareProperty( "tracktype", m_tracktype = 3,
                    "Set the type of tracks which are considered inside the cone (default = 3)");
   

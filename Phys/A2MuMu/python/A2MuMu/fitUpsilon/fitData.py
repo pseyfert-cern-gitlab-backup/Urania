@@ -8,21 +8,17 @@ gROOT.ProcessLine(".x $LHCBSTYLEROOT/src/lhcbStyle.C")
 
 tupleName = "A1"
 basedir = "/scratch19/mborsato/TEMP/"
-inputTuple = "/scratch19/cvazquez/temp_A1_uBDT/implementedTMVA/RealData_2011_s21r1_Erasmus_v11r2_975pb_A1_MVA.root"
+#inputTuple = "/scratch19/cvazquez/temp_A1_uBDT/implementedTMVA/RealData_2011_s21r1_Erasmus_v11r2_975pb_A1_MVA.root"
+inputTuple = "/scratch19/mborsato/RealData_2011_s21r1_Erasmus_v11r2_975pb_A1_MVA.root"
 print 'input tuple : ', inputTuple
 
 outfileBaseName="./FIT_PLOTS/" + 'DATA2011'
 #massrange = {'min':5500, 'max':15000}
 massrange = {'min':8500, 'max':11000}
 
-fixParsFromFile = 0
-isMC = 1
 UNBINNED = 0
-EXTENDED = 0
-DOSPLOT = 0
 NBINS = 400
 PRESCALE = 1
-PLOTREBIN = 1
 
 CentralMass = {'Y1': 9479, 'Y2': 10050, 'Y3': 10355, 'A8': 8000, 'A10': 10000, 'A12': 12000}
 
@@ -80,6 +76,7 @@ Y1ipatia = RooIpatia2("Y1ipatia","Y1ipatia", mass, Y1l, zeta, beta, ipa_s, Y1ipa
 Y1sigma0= RooRealVar("Y1sigma0","Y1sigma0",estimateSigma0(CentralMass['Y1']))
 Y1mean0= RooRealVar("Y1mean0","Y1mean0",0)
 Y1res0 = RooGaussian("Y1reso0","Y1reso0",mass,Y1mean0,Y1sigma0)
+mass.setBins(1000,'cache')
 Y1ipa2 = RooFFTConvPdf("Y1ipa2","Y1ipa2",mass, Y1ipatia, Y1res0)
 nY1 = RooRealVar("nY1","nY1",0., 10.e7/float(PRESCALE))
 Y1sig = RooExtendPdf("Y1","Y1",Y1ipa2,nY1)

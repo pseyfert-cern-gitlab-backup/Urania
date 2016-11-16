@@ -8,6 +8,7 @@
 from PIDPerfScripts.StartScreen import *
 
 import ROOT
+from ROOT import *
 
 import array
 import argparse
@@ -84,6 +85,12 @@ if '__main__' == __name__:
                           
     addGroup.add_argument("-corr", "--withCorrelation", dest="correlation", action="store_true", default=False, help="takes into account the correlation between pidvariables! It is slower.")
 
+    addGroup.add_argument("-s", "--selection", dest="selection",default="",
+                          help="selection to apply on input tree before resampling (use input tree leaf names)")
+
+    addGroup.add_argument("-n", "--nickname", dest="nickname",default="",
+                          help="nickname to add to output ROOT file")
+
     addGroup.add_argument("-nE", "--runEvents", dest="runEvents",default=None,
 			  help="number of Events to run over")
 
@@ -112,6 +119,7 @@ if '__main__' == __name__:
 
     #TrueID dictionary
     ID_dict = {11:'e',-11:'e',321:'K',-321:'K',211:'Pi',-211:'Pi',13:'Muplus',-13:'Muminus',2212:'P',-2212:'P'}
+    
     #---------------------------------------------------------------------------
     # start time measurement
     #---------------------------------------------------------------------------
@@ -121,9 +129,25 @@ if '__main__' == __name__:
     #---------------------------------------------------------------------------
     # load files for correcting
     #---------------------------------------------------------------------------
+    print "Loading files"
     # load the MC file and corresponding TTree to correct
     fileToCorrect = ROOT.TFile.Open(opts.mcFile)
-    treeToCorrect = fileToCorrect.Get(opts.mcFilePathToTree)
+    treeToCorrect_temp = fileToCorrect.Get(opts.mcFilePathToTree)
+
+    # create new file
+    outname = opts.mcFile.replace(".root","_PID-corrected_new.root")
+    if opts.nickname != "":
+        outname = outname.replace("_PID-corrected_new.root","_PID-corrected_new_"+opts.nickname+".root")
+    fileN = ROOT.TFile.Open(outname,"RECREATE")
+    fileN.cd()
+
+    if opts.selection != "":
+        print "Apply following selection on input tree:"
+        print opts.selection
+        treeToCorrect = treeToCorrect_temp.CopyTree(opts.selection)
+    else:
+        print "No selection is applied"
+        treeToCorrect = treeToCorrect_temp
 
     # load the data file and corresponding TTree to correct
     if(opts.dataFile!=None and opts.dataFilePathToTree!=None):
@@ -136,6 +160,7 @@ if '__main__' == __name__:
     #---------------------------------------------------------------------------
     # setup all the input arguments
     #---------------------------------------------------------------------------
+    print "Setup input arguments"
     # set the particles to correct
     YourPart = opts.partName
 
@@ -199,6 +224,11 @@ if '__main__' == __name__:
             ZVarName, YVarName))
 
     debug = opts.debug
+    usetrueID = opts.usetrueID
+    runEvents = opts.runEvents
+    dataFile = opts.dataFile
+    dataFilePathToTree = opts.dataFilePathToTree
+    withWeight = opts.withWeight
     correlation = opts.correlation
 
     #---------------------------------------------------------------------------
@@ -211,7 +241,7 @@ if '__main__' == __name__:
         print "Data TTree " + opts.dataFilePathToTree + " in file " + opts.dataFile
     else:
         print "using ntracks from MC file"
-    print "using trueID", opts.usetrueID
+    print "using trueID", usetrueID
     print "using debug mode", debug
     print "correcting Particles", particles
     print "PID variables to correct", pidVars
@@ -222,6 +252,7 @@ if '__main__' == __name__:
     #---------------------------------------------------------------------------
     # load the resampling libraries
     #---------------------------------------------------------------------------
+    print "Load resampling libraries"
     part_hists_dict = {}  #contains the 1D histogramms for (P,ETA,nTracks) per p
     particleprojdict = {} #contains all PID projections per (p,PID)
     for particle,folder in YourPart_dict.iteritems():
@@ -244,7 +275,7 @@ if '__main__' == __name__:
         j = 0
         for axis in listOfAxes :
             for pidvar in pidVars :
-                if pidvar in axis.GetName().replace("DLL","PID") :
+                if pidvar == axis.GetName().replace("DLL","PID") :
                     pidvars_to_axes[pidvar] = j
             j+=1
 
@@ -253,7 +284,6 @@ if '__main__' == __name__:
             print "--------------------------------"
             print "map of pidvars to axes indices", pidvars_to_axes
             print "********************************"
-
         #-----------------------------------------------------------------------
         #load the projections
         #-----------------------------------------------------------------------
@@ -272,9 +302,10 @@ if '__main__' == __name__:
                             index = "%d%d%d" % (i,j,k)
                             for pidvar in pidVars:
                                 upValue = hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-3).GetXmax()
-                                if(upValue==1.0):
-                                    hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-3).SetRangeUser(0.0,upValue)
-                                else:
+                                # if(upValue==1.0):
+                                #     # hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-3).SetRangeUser(0.0,upValue)
+                                # else:
+                                if(upValue!=1.0):
                                     hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-3).SetRangeUser(-upValue,upValue)
                             pidprojdict[index] = hist_projPIDs
             else:
@@ -287,9 +318,10 @@ if '__main__' == __name__:
                                 hist_projPIDs = fileLibrary.Get(folder).Get(hist_projPIDsName)
                                 index = "%d%d%d" % (i,j,k)
                                 upValue = hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-3).GetXmax()
-                                if(upValue==1.0):
-                                    hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-3).SetRangeUser(0.0,upValue)
-                                else:
+                                # if(upValue==1.0):
+                                #     # hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-3).SetRangeUser(0.0,upValue)
+                                # else:
+                                if(upValue!=1.0):
                                     hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-3).SetRangeUser(-upValue,upValue)
                                 projhist = hist_projPIDs.Projection( pidvars_to_axes[pidvar]-3 )
                                 projhist.SetName( particle+"_"+pidvar+"_"+str(index) )
@@ -310,9 +342,9 @@ if '__main__' == __name__:
                         index = "%d%d" % (i,j)
                         for pidvar in pidVars:
                             upValue = hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-2).GetXmax()
-                            if(upValue==1.0):
-                                hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-2).SetRangeUser(0.0,upValue)
-                            else:
+                            if(upValue!=1.0):
+                            #     hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-2).SetRangeUser(0.0,upValue)
+                            # else:
                                 hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-2).SetRangeUser(-upValue,upValue)
                         pidprojdict[index] = hist_projPIDs
             else:
@@ -324,9 +356,9 @@ if '__main__' == __name__:
                             hist_projPIDs = fileLibrary.Get(folder).Get(hist_projPIDsName)
                             index = "%d%d" % (i,j)
                             upValue = hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-2).GetXmax()
-                            if(upValue==1.0):
-                                hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-2).SetRangeUser(0.0,upValue)
-                            else:
+                            if(upValue!=1.0):
+                            #     hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-2).SetRangeUser(0.0,upValue)
+                            # else:
                                 hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-2).SetRangeUser(-upValue,upValue)
                             projhist = hist_projPIDs.Projection( pidvars_to_axes[pidvar]-2 )
                             projhist.SetName( particle+"_"+pidvar+"_"+str(index) )
@@ -345,11 +377,12 @@ if '__main__' == __name__:
                         index = "%d" % (i)
                         for pidvar in pidVars:
                             upValue = hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-1).GetXmax()
-                            if(upValue==1.0):
-                                hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-1).SetRangeUser(0.0,upValue)
-                            else:
+                            if(upValue!=1.0):
+                            #     hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-1).SetRangeUser(0.0,upValue)
+                            # else:
                                 hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-1).SetRangeUser(-upValue,upValue)
                         pidprojdict[index] = hist_projPIDs
+                        
             else:
                 for pidvar in pidVars :
                     projdict = {}
@@ -358,9 +391,9 @@ if '__main__' == __name__:
                             hist_projPIDs = fileLibrary.Get(folder).Get(hist_projPIDsName)
                             index = "%d" % (i)
                             upValue = hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-1).GetXmax()
-                            if(upValue==1.0):
-                                hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-1).SetRangeUser(0.0,upValue)
-                            else:
+                            if(upValue!=1.0):
+                            #     hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-1).SetRangeUser(0.0,upValue)
+                            # else:
                                 hist_projPIDs.GetAxis(pidvars_to_axes[pidvar]-1).SetRangeUser(-upValue,upValue)
                             projhist = hist_projPIDs.Projection( pidvars_to_axes[pidvar]-1 )
                             projhist.SetName( particle+"_"+pidvar+"_"+str(index) )
@@ -370,10 +403,11 @@ if '__main__' == __name__:
                             projdict[index] = projhist
                     pidprojdict[pidvar] = projdict
         particleprojdict[particle] = pidprojdict
-
+        
     #---------------------------------------------------------------------------
-    # Load necessary branches and dissable the others
+    # Load necessary branches and disable the others
     #---------------------------------------------------------------------------
+    print "Load necessary branches and disable the others"
     #speed for iterating
     treeToCorrect.SetBranchStatus("*",0)
 
@@ -427,7 +461,7 @@ if '__main__' == __name__:
                     treeToCorrect.SetBranchAddress(momz_branchName, momz )
                     momz_dict[p] = momz
                 #del momz
-            if opts.usetrueID:
+            if usetrueID:
                 trueID_branchName = p+"_TRUEID"
                 trueID_type = treeToCorrect.GetBranch(trueID_branchName)
                 trueID_array_type = trueID_type.GetTitle().replace(trueID_branchName+"/","").lower()
@@ -500,7 +534,7 @@ if '__main__' == __name__:
                     treeToCorrect.SetBranchAddress(momz_branchName, momz )
                     momz_dict[p] = momz
                 #del momz
-            if opts.usetrueID:
+            if usetrueID:
                 trueID_branchName = p+"_TRUEID"
                 trueID_type = treeToCorrect.GetBranch(trueID_branchName)
                 trueID_array_type = trueID_type.GetTitle().replace(trueID_branchName+"/","").lower()
@@ -532,7 +566,7 @@ if '__main__' == __name__:
             mom_dict[p] = mom
             #del mom
             #eta calculation not standard
-            if opts.usetrueID:
+            if usetrueID:
                 trueID_branchName = p+"_TRUEID"
                 trueID_type = treeToCorrect.GetBranch(trueID_branchName)
                 trueID_array_type = trueID_type.GetTitle().replace(trueID_branchName+"/","").lower()
@@ -557,21 +591,22 @@ if '__main__' == __name__:
     #---------------------------------------------------------------------------
     # Start to run over events of MC file
     #---------------------------------------------------------------------------
+    print "Start loop over MC events"
     res = {}
     #Set maximum of events to run over
-    if(opts.runEvents==None):
+    if(runEvents==None):
       nEntries = treeToCorrect.GetEntries()
       saveEntries = -1
     else:
-      nEntries = int(opts.runEvents)
+      nEntries = int(runEvents)
       saveEntries = nEntries
 
     #if dataFile attached, load ntracks and ask for weight.
     if(XVarName=='P' and YVarName=='ETA' and ZVarName=='nTracks'):
-        if(opts.dataFile!=None and opts.dataFilePathToTree!=None):
+        if(dataFile!=None and dataFilePathToTree!=None):
             hist_ntracks = ROOT.TH1D("hist_ntracks","",10000,0,2000)
             string_weight = ""
-            if(opts.withWeight):
+            if(withWeight):
                 string_weight = "weight"
             tree_data.Draw("nTracks >> hist_ntracks",string_weight)
 
@@ -590,7 +625,7 @@ if '__main__' == __name__:
             print diff
         if(XVarName=='P' and YVarName=='ETA' and ZVarName=='nTracks'):
             #if dataFile attached get nTracks from loaded histogram, otherwise use nTracks from MC
-            if(opts.dataFile!=None and opts.dataFilePathToTree!=None):
+            if(dataFile!=None and dataFilePathToTree!=None):
                 nTracks = hist_ntracks.GetRandom();
             else:
                 nTracks = ntracks_tree[0]
@@ -602,7 +637,7 @@ if '__main__' == __name__:
             if(XVarName=='P' and YVarName=='ETA' and ZVarName=='nTracks'):
                 # load PID projections for given particle
                 pid_available = True
-                if(opts.usetrueID):
+                if(usetrueID):
                     if(trueID_dict[particle][0] in ID_dict.keys()):
                         true_particle = ID_dict[trueID_dict[particle][0]]
                         if ((true_particle in particleprojdict.keys()) and (true_particle in part_hists_dict.keys())):
@@ -620,11 +655,11 @@ if '__main__' == __name__:
                             pid_histos_index = "%d%d%d" % (bin_P,bin_ETA,bin_nTrack)
                         else:
                             pid_available = False
-                            if(opts.debug):
+                            if(debug):
                                 print str(true_particle) + " no histograms available for this particle!"
                     else:
                         pid_available = False
-                        if(opts.debug):
+                        if(debug):
                             print str(trueID_dict[particle][0]) + " not in the ID dictionary!"
                 else:
                     pidprojection_particle = particleprojdict[particle]
@@ -644,7 +679,7 @@ if '__main__' == __name__:
                 nBinningVariable = 2
                 # load PID projections for given particle
                 pid_available = True
-                if(opts.usetrueID):
+                if(usetrueID):
                     if(trueID_dict[particle][0] in ID_dict.keys()):
                         true_particle = ID_dict[trueID_dict[particle][0]]
                         if ((true_particle in particleprojdict.keys()) and (true_particle in part_hists_dict.keys())):
@@ -661,11 +696,11 @@ if '__main__' == __name__:
                             pid_histos_index = "%d%d" % (bin_P,bin_ETA)
                         else:
                             pid_available = False
-                            if(opts.debug):
+                            if(debug):
                                 print str(true_particle) + " no histograms available for this particle!"
                     else:
                         pid_available = False
-                        if(opts.debug):
+                        if(debug):
                             print str(trueID_dict[particle][0]) + " not in the ID dictionary!"
                 else:
                     pidprojection_particle = particleprojdict[particle]
@@ -684,7 +719,7 @@ if '__main__' == __name__:
                 nBinningVariable = 1
                 # load PID projections for given particle
                 pid_available = True
-                if(opts.usetrueID):
+                if(usetrueID):
                     if(trueID_dict[particle][0] in ID_dict.keys()):
                         true_particle = ID_dict[trueID_dict[particle][0]]
                         if ((true_particle in particleprojdict.keys()) and (true_particle in part_hists_dict.keys())):
@@ -694,11 +729,11 @@ if '__main__' == __name__:
                             pid_histos_index = "%d" % (bin_P)
                         else:
                             pid_available = False
-                            if(opts.debug):
+                            if(debug):
                                 print str(true_particle) + " no histograms available for this particle!"
                     else:
                         pid_available = False
-                        if(opts.debug):
+                        if(debug):
                             print str(trueID_dict[particle][0]) + " not in the ID dictionary!"
                 else:
                     pidprojection_particle = particleprojdict[particle]
@@ -721,13 +756,15 @@ if '__main__' == __name__:
                         projhisto.StatOverflows(ROOT.kFALSE)
                         entries = projhisto.GetEffectiveEntries()
                         if(entries==0):
-                           inte = 0
+                            inte = 0
                         else:
                             inte = projhisto.ComputeIntegral()
                         if(debug):
                             print "number of bins in histogram", nBins, "integral", inte, "with", entries, "entries"
                         if(inte>1E-5):
                             pidval = projhisto.GetRandom()
+                            if(pidval<0 and ("ProbNN" in pidvar)):
+                                pidval = -1000
                     
                     tmpParticleResults_dict[pidvar] = pidval
                 tmpResults_dict[particle] = tmpParticleResults_dict
@@ -736,6 +773,10 @@ if '__main__' == __name__:
                 pidval = np.array([-1000 for i in xrange(len(pidVars))], dtype=np.double)
                 if(pid_available):
                     projhisto = pidprojection_particle[pid_histos_index]
+                    for pidvar in pidVars:
+                        upValue = projhisto.GetAxis(pidvars_to_axes[pidvar]-3).GetXmax()
+                        if(upValue!=1.0):
+                            projhisto.GetAxis(pidvars_to_axes[pidvar]-3).SetRangeUser(-upValue,upValue)
                     nBins = projhisto.GetNbins()
                     entries = projhisto.GetEntries()
                     if(entries!=0 and nBins!=0):
@@ -749,6 +790,8 @@ if '__main__' == __name__:
                     if(pid_available and inte>1E-5):
                         axes_number = pidvars_to_axes[pidvar]-nBinningVariable
                         pidval0 = pidval[axes_number]
+                        if(pidval0<0  and ("ProbNN" in pidvar)):
+                            pidval0=-1000
                     tmpParticleResults_dict[pidvar] = pidval0
                 tmpResults_dict[particle] = tmpParticleResults_dict
                  
@@ -763,11 +806,14 @@ if '__main__' == __name__:
     # Write TTree
     #---------------------------------------------------------------------------
     treeToCorrect.SetBranchStatus("*",1)
-    fileN = ROOT.TFile.Open(opts.mcFile.replace(".root","_PID-corrected_new.root"),"RECREATE")
-    treeN = treeToCorrect.CloneTree(saveEntries,'fast')
-    treeN.AutoSave()
-    del fileN
+    fileN.cd()
+    #treeN = treeToCorrect.CloneTree(saveEntries,'fast')
+    #treeN.AutoSave()
+    #del fileN
+    treeToCorrect.Write("",TObject.kWriteDelete)
     print "Done, have a nice day!"
+    fileN.Flush()
+    fileN.Close()
 
     end = time.time()
     print time.asctime(time.localtime())

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os, sys
 import optparse
+#import TMVA_cut_conf4 as TMVA_cut
 import TMVA_cut
 
 from ROOT import *
@@ -15,8 +16,8 @@ from SomeUtils.NewKarlen import *
 from SomeUtils.someFunctions import *
 from SomeUtils.TMVAoperators import *
 
-from OurSites import *
-from OurSites import MY_TUPLE_PATH as MY_PATH
+#from OurSites import *
+#from OurSites import MY_TUPLE_PATH as MY_PATH
 
 AccessPackage("Bs2MuMu")
 
@@ -25,6 +26,8 @@ from triggerclass import *
 
 variables = TMVA_cut.variables_cont
 
+mycutSig = TMVA_cut.mycutSig_nopi0 
+mycutBkg = TMVA_cut.mycutBkg_nopi0 
 
 gROOT.ProcessLine(
 "struct MyStruct {\
@@ -39,55 +42,48 @@ gROOT.ProcessLine(
    Float_t     structM_VC;\
 };" );
 
-def split(filename, treename, data):
-    fullpath = MY_TUPLE_PATH + filename
+MY_TUPLE_PATH = "./"
+MY_PATH = "./"
+
+def split(filename, treename, sample, mc, tistos):
+    fullpath = filename
 
     f = TFile(fullpath, "update")
     t = f.Get(treename)
-    
+
     f1_name = fullpath.replace('.root', '_1.root')
     f2_name = fullpath.replace('.root', '_2.root')
+
+    if(int(sample)==0):
+        cuts = mycutBkg + "&& abs(mc1)==13 && abs(mc2)==13 && mo1==310 && mo2 == 310 && rmo1key==rmo2key"*int(float(mc)) + "&&KS_l0phys_tis && KS_l1phys_tis && KS_l2phys_tis"*int(float(tistos))
+    else:
+        cuts = mycutBkg + "&& abs(mc1)==13 && abs(mc2)==13 && mo1==310 && mo2 == 310 && rmo1key==rmo2key"*int(float(mc)) + "&&V0_l0phys_tis && V0_l1phys_tis && V0_l2phys_tis"*int(float(tistos))
     
     f1 = TFile(f1_name, "recreate")
-    t1 = t.CloneTree(0)
+    t1 = t.CopyTree("(evt%2) && " + cuts)#&&KS_l0phys_tis && KS_l1phys_tis && KS_l2phys_tis")
+    t1.Write()
+    f1.Close()
     
     f2 = TFile(f2_name, "recreate")
-    t2 = t.CloneTree(0)
-    
-    for entry in t:
-        if int(float(data)) == 0:
-            if entry.mo1 != 310 : continue
-            if entry.mo2 != 310 : continue
-            ## if not entry.mc_pi0_px : continue
-            ## if not entry.mc_Gamma_px : continue
-            ## if not entry.mc_gamma_px : continue
-            ##if entry.mc_gamma_pz < 0: continue
-            if(entry.mc_gamma_ez < 0): continue
-            if(entry.mc_Gamma_ez < 0): continue
-            ## if(entry.mc_g1_ez != entry.mc_gamma_ez and entry.mc_g1_ez != entry.mc_Gamma_ez): continue
-            ## if(entry.mc_g2_ez != entry.mc_gamma_ez and entry.mc_g2_ez != entry.mc_Gamma_ez): continue                                   
+    t2 = t.CopyTree("!(evt%2) && " + cuts)#&&KS_l0phys_tis && KS_l1phys_tis && KS_l2phys_tis")
+    t2.Write()
+    f2.Close()
 
-        rand = randint(0,1)
-        if rand == 0:
-            t1.Fill()
-        else:
-            t2.Fill()
-
-    #t.Write("",TObject.kOverwrite)
-    f1.Write()
-    f2.Write()
-
+    f.Close()
     f1.Close()
     f2.Close()
-    f.Close()
+
+#    angles_and_masses(f1_name, treename, sample)
+#    angles_and_masses(f2_name, treename, sample)
 
 def angles_and_masses(filename, treename, sample):
     SAMPLE = int(float(sample))
-    fullpath = MY_TUPLE_PATH + filename
-        
+    fullpath = filename
+
     f = TFile(fullpath, "update")
  
     t = f.Get(treename)
+    print "t=",t
 
     mystruct = MyStruct()
     
@@ -101,8 +97,11 @@ def angles_and_masses(filename, treename, sample):
     branch_M_V0 = t.Branch("M_V0", AddressOf(mystruct, "structM_V0"), "M_V0/F")
     branch_M_VC = t.Branch("M_VC", AddressOf(mystruct, "structM_VC"), "M_VC/F")
 
+    i=0
+    
     for entry in t:
-
+        i+=1
+        print i
         pmu1 = vector(entry.mu1p1, entry.mu1p2, entry.mu1p3)
         pmu2 = vector(entry.mu2p1, entry.mu2p2, entry.mu2p3)
          
@@ -185,15 +184,23 @@ def angles_and_masses(filename, treename, sample):
 
 def main():
     parser = optparse.OptionParser()
-    parser.add_option('-i', '--input', dest='input', help='input root file', default='./kspi0mm_DTFMC12_Strip_2.root')
-    parser.add_option('-t', '--tree', dest='tree', help='name of the ROOT tree inside the ROOT file', default='BenderKspi0mumuSignal')
+    parser.add_option('-i', '--input', dest='input', help='input root file', default='./Data_2016_PARTIAL.root')
+    parser.add_option('-t', '--tree', dest='tree', help='name of the ROOT tree inside the ROOT file', default='Ks2pizeromm_as_V0/Ks2pizeromm_as_V0')
     parser.add_option('-s', '--sample', dest="sample", help='input sample - 0 with pi0, 1 without pi0 (V0)', default=1)    
-    parser.add_option('-d', '--data', dest="data", help='input type - 0 for MC, 1 for data', default=0)    
+    parser.add_option('-m', '--mc', dest="mc", help='input type - 1 for MC, 0 for data', default=0)    
+    parser.add_option('-c', '--tistos', dest="tistos", help='tistos events - 0 without cut, 1 with cut', default=1)
     
     (options, args) = parser.parse_args()
+
+    tree_head, tree_sep, tree_tail = options.tree.partition("/")
     
-    angles_and_masses(options.input, options.tree, options.sample)    
-    split(options.input, options.tree, options.data)
+    angles_and_masses(options.input, options.tree, options.sample)
+    print "ANGLES DONE"
+    split(options.input, tree_head, options.sample, options.mc, options.tistos)
+    print "SPLITTING DONE"
+#angles_and_masses("K3pi_stp.root", "T", 0 )#, optio
+#angles_and_masses("/scratch19/Kspi0/Gorda_FULL_2.root", "BenderKspi0mumuSignal", 0 )#, optio
+#    angles_and_masses(options.input, options.tree, options.sample)
 
 if __name__ == "__main__":
     main() 

@@ -8,7 +8,7 @@ from triggerclass import *
 from Urania import PDG
 from numpy import roots,isreal,random
 
-f = TFile("~/w7folder/kspi0/Tuple_MC_Frankfurt.root")
+f = TFile("~/cmtuser/local_Ks2Pi0MuMu/Tuple_MC_Frankfurt.root")#~/w7folder/kspi0/Tuple_MC_Frankfurt.root")
 t = f.Get("T")
 
 hmcrec = TH2F("E_MC vs E_REC","E_MC vs E_REC",400,0,25000,400,0,25000)

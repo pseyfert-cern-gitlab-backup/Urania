@@ -68,11 +68,60 @@ genaccparclass genaccpar; // Toy MC generation acceptance parameters
 TResclass TRes; // Time resolution parameters
 TReseffclass TReseff; // Effective time resolution parameters
 
-Double_t DCP_prod[2]; // Production asymmetry
+Double_t DCP_prod; // Production asymmetry
 
-// Parameters of the LASS parametrization for the mKpi propagators
+// Parameters of the LASS parametrisation of the Kpi scalar propagator
 Double_t a_lass = 0.00195;
 Double_t r_lass = 0.00176;
+Double_t MR_lass = 1330.; // MeV/c2
+Double_t F_lass = 102.722; // MeV
+Double_t cd_lass = 35.2; // MeV
+Double_t cm_lass = 1.027; //MeV
+Double_t C_lass = -0.001; // (dimensionless)
+
+// Parameters of the elastic+inelastic phenomenological parametrisation of the Kpi propagators
+Double_t MEta = 547.; // MeV/c2
+Double_t MEtaprime = 957.78; // MeV/c2
+Double_t sAdler_Stheo = 0.236;
+Double_t B0_Stheo = 0.411;
+Double_t B1_Stheo = 0.162;
+Double_t alpha_Stheo = 1.15;
+Double_t s0_Stheo = 1.21;
+Double_t phi0_Stheo = -0.19;
+Double_t phi1_Stheo = 5.03;
+Double_t a_Stheo = -5.2;
+Double_t b_Stheo = 7.6;
+Double_t c_Stheo = -1.73;
+Double_t sqrtsr1_Stheo = 1.401;
+Double_t sqrtsr2_Stheo = 1.817;
+Double_t e1_Stheo = 1.;
+Double_t e2_Stheo = 0.184;
+Double_t G1_Stheo = 0.497;
+Double_t G2_Stheo = 0.28;
+Double_t B0_Ptheo = 0.97;
+Double_t B1_Ptheo = 0.55;
+Double_t B2_Ptheo = 0.75;
+Double_t mr_Ptheo = 0.8957;
+Double_t alpha_Ptheo = 1.15;
+Double_t s0_Ptheo = 1.21;
+Double_t a1_Ptheo = -1.76;
+Double_t a2_Ptheo = -2.33;
+Double_t a3_Ptheo = -1.41;
+Double_t sqrtsr1_Ptheo = 0.896;
+Double_t sqrtsr2_Ptheo = 1.347;
+Double_t sqrtsr3_Ptheo = 1.645;
+Double_t e1_Ptheo = 1.;
+Double_t e2_Ptheo = 0.055;
+Double_t e3_Ptheo = 0.306;
+Double_t G1_Ptheo = 0.044;
+Double_t G2_Ptheo = 0.231;
+Double_t G3_Ptheo = 0.306;
+Double_t phi0_Dtheo = 3.00;
+Double_t phi1_Dtheo = -9.3;
+Double_t sqrtsr1_Dtheo = 1.445;
+Double_t e1_Dtheo = 0.465;
+Double_t G1_Dtheo = 0.222;
+Double_t a_Dtheo = -0.72;
 
 // Auxiliar variables
 Double_t spl_coef_array_1[2][2][5][4][4][4];
@@ -127,6 +176,10 @@ Double_t T_cosh_temp = 0.;
 Double_t T_sinh_temp = 0.;
 Double_t T_cos_temp = 0.;
 Double_t T_sin_temp = 0.;
+Double_t IT_cosh_temp_deltat = 0.;
+Double_t IT_sinh_temp_deltat = 0.;
+Double_t IT_cos_temp_deltat = 0.;
+Double_t IT_sin_temp_deltat = 0.;
 Double_t IT_cosh_temp = 0.;
 Double_t IT_sinh_temp = 0.;
 Double_t IT_cos_temp = 0.;
@@ -145,9 +198,9 @@ public:
   KpiKpiSpectrumNW(const char *name, const char *title,
 	   const RooArgList& _options,
 	   const RooArgList& _observables,
-	   const RooArgList& _wave_fractions,
+	   const RooArgList& _re_amps,
 	   const RooArgList& _dirCP_asyms,
-	   const RooArgList& _strong_phases,
+	   const RooArgList& _im_amps,
 	   const RooArgList& _weak_phases,
 	   const RooArgList& _mixing_params,
 	   const RooArgList& _calib_params,
@@ -185,24 +238,25 @@ public:
   RooRealProxy phi ;
   RooRealProxy t ;
   RooRealProxy t_err ;
-  RooRealProxy f_VV ;
-  RooRealProxy f_Swave ;
-  RooRealProxy f_SS ;
-  RooRealProxy f_VTTV ;
-  RooRealProxy f_TT ;
-  RooRealProxy D_SVVS ;
-  RooRealProxy D_VTTV ;
-  RooRealProxy D_STTS ;
-  RooRealProxy fL_VV ;
-  RooRealProxy xpar_VV ;
-  RooRealProxy fL_VT ;
-  RooRealProxy xpar_VT ;
-  RooRealProxy fL_TV ;
-  RooRealProxy xpar_TV ;
-  RooRealProxy fL_TT ;
-  RooRealProxy xpar1_TT ;
-  RooRealProxy xperp1_TT ;
-  RooRealProxy xpar2_TT ;
+  RooRealProxy reA00 ;
+  RooRealProxy reA01 ;
+  RooRealProxy reA10 ;
+  RooRealProxy reA02 ;
+  RooRealProxy reA20 ;
+  RooRealProxy reA110 ;
+  RooRealProxy reA11par ;
+  RooRealProxy reA11perp ;
+  RooRealProxy reA120 ;
+  RooRealProxy reA12par ;
+  RooRealProxy reA12perp ;
+  RooRealProxy reA210 ;
+  RooRealProxy reA21par ;
+  RooRealProxy reA21perp ;
+  RooRealProxy reA220 ;
+  RooRealProxy reA22par ;
+  RooRealProxy reA22perp ;
+  RooRealProxy reA22par2 ;
+  RooRealProxy reA22perp2 ;
   RooRealProxy DCP_SS ;
   RooRealProxy DCP_SV ;
   RooRealProxy DCP_VS ;
@@ -212,24 +266,25 @@ public:
   RooRealProxy DCP_VT ;
   RooRealProxy DCP_TV ;
   RooRealProxy DCP_TT ;
-  RooRealProxy delta00 ;
-  RooRealProxy delta01 ;
-  RooRealProxy delta10 ;
-  RooRealProxy delta02 ;
-  RooRealProxy delta20 ;
-  RooRealProxy delta11par ;
-  RooRealProxy delta11perp ;
-  RooRealProxy delta120 ;
-  RooRealProxy delta12par ;
-  RooRealProxy delta12perp ;
-  RooRealProxy delta210 ;
-  RooRealProxy delta21par ;
-  RooRealProxy delta21perp ;
-  RooRealProxy delta220 ;
-  RooRealProxy delta22par ;
-  RooRealProxy delta22perp ;
-  RooRealProxy delta22par2 ;
-  RooRealProxy delta22perp2 ;
+  RooRealProxy imA00 ;
+  RooRealProxy imA01 ;
+  RooRealProxy imA10 ;
+  RooRealProxy imA02 ;
+  RooRealProxy imA20 ;
+  RooRealProxy imA110 ;
+  RooRealProxy imA11par ;
+  RooRealProxy imA11perp ;
+  RooRealProxy imA120 ;
+  RooRealProxy imA12par ;
+  RooRealProxy imA12perp ;
+  RooRealProxy imA210 ;
+  RooRealProxy imA21par ;
+  RooRealProxy imA21perp ;
+  RooRealProxy imA220 ;
+  RooRealProxy imA22par ;
+  RooRealProxy imA22perp ;
+  RooRealProxy imA22par2 ;
+  RooRealProxy imA22perp2 ;
   RooRealProxy phis ;
   RooRealProxy dphi_SS ;
   RooRealProxy dphi_SV ;
@@ -252,6 +307,12 @@ public:
   RooRealProxy Dp1half_tag_OS ;
   RooRealProxy etac_tag_SSK ;
   RooRealProxy etac_tag_OS ;
+  RooRealProxy deltatmean_tres_11 ;
+  RooRealProxy p0_tres_11 ;
+  RooRealProxy p1_tres_11 ;
+  RooRealProxy deltatmean_tres_12 ;
+  RooRealProxy p0_tres_12 ;
+  RooRealProxy p1_tres_12 ;
   RooRealProxy mv ;
   RooRealProxy ms ;
   RooRealProxy mt ;
@@ -365,9 +426,8 @@ public:
   RooRealProxy IT_sin ;
 
   // Physical terms.
-  Double_t wfj1j2(Int_t j1, Int_t j2) const;
-  Double_t pfj1j2h(Int_t j1, Int_t j2, Int_t h) const;
-  Double_t deltaj1j2h(Int_t j1, Int_t j2, Int_t h) const;
+  Double_t reAj1j2h(Int_t j1, Int_t j2, Int_t h) const;
+  Double_t imAj1j2h(Int_t j1, Int_t j2, Int_t h) const;
   Double_t DCPj1j2(Int_t j1, Int_t j2) const;
   Double_t dphij1j2(Int_t j1, Int_t j2) const;
   Double_t etah(Int_t h) const;
@@ -443,7 +503,6 @@ public:
   Double_t IT_sinh_resapprox_eff() const;
   Double_t IT_cos_resapprox_eff() const;
   Double_t IT_sin_resapprox_eff() const;
-
   std::complex<Double_t> faddeeva_2args(Double_t x, std::complex<Double_t> z) const;
   std::complex<Double_t> conv_exp(Double_t x, std::complex<Double_t> z) const;
   std::complex<Double_t> Kn(std::complex<Double_t> z, Int_t n) const;
@@ -451,6 +510,15 @@ public:
   std::complex<Double_t> Mn(Double_t x_1, Double_t x_2, std::complex<Double_t> z, Int_t n) const;
   void set_buffer_differential_vars(Double_t m1var, Double_t m2var, Double_t cos1var, Double_t cos2var, Double_t phivar, Double_t tvar, Double_t terrvar, Int_t decisionSSKvar, Int_t decisionOSvar, Double_t etamistagSSKvar, Double_t etamistagOSvar) const;
   void set_buffer_integral_vars() const;
+  Double_t T_cosh_spl(Double_t tau, Double_t tau_err) const;
+  Double_t T_sinh_spl(Double_t tau, Double_t tau_err) const;
+  Double_t T_cos_spl(Double_t tau, Double_t tau_err) const;
+  Double_t T_sin_spl(Double_t tau, Double_t tau_err) const;
+  Double_t IT_cosh_spl() const;
+  Double_t IT_sinh_spl() const;
+  Double_t IT_cos_spl() const;
+  Double_t IT_sin_spl() const;
+  TComplex IT_basicfit_j1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
 
   // Angular terms.
   Double_t fi(Double_t x, Int_t i) const;
@@ -465,9 +533,26 @@ public:
   // Invariant mass dependent terms.
   Double_t get_q(Double_t M, Double_t ma, Double_t mb) const;
   Double_t Blatt_Weisskopf2(Double_t q, Double_t q0, Int_t L) const;
-  TComplex Resonance(Double_t m, Double_t m_sister, Double_t m0, Double_t g0, Int_t J) const;
-  TComplex Lass(Double_t m, Double_t m_sister, Double_t m0, Double_t g0) const;
-  TComplex Mji(Double_t m, Double_t m_sister, Int_t ji) const;
+  Double_t FL_j1j2(Int_t j1, Int_t j2, Double_t ma, Double_t mb) const;
+  TComplex Resonance(Double_t m, Double_t m0, Double_t g0, Int_t J) const;
+  TComplex Lass(Double_t m, Double_t m0, Double_t g0) const;
+  TComplex Lass_chiral(Double_t m) const;
+  Double_t omega_Stheo(Double_t m) const;
+  Double_t omega_Ptheo(Double_t m) const;
+  Double_t cotdelta_Stheo(Double_t m) const;
+  Double_t cotdelta_Ptheo(Double_t m) const;
+  Double_t get_p1_Stheo(Double_t q) const;
+  Double_t get_p2_Stheo(Double_t q) const;
+  Double_t get_p1_Ptheo(Double_t q) const;
+  Double_t get_p2_Ptheo(Double_t q) const;
+  Double_t get_p3_Ptheo(Double_t q) const;
+  Double_t get_p1_Dtheo(Double_t q) const;
+  Double_t Theta_Keta(Double_t m) const;
+  Double_t Theta_Ketaprime(Double_t m) const;
+  TComplex Prop_Stheo(Double_t m) const;
+  TComplex Prop_Ptheo(Double_t m) const;
+  TComplex Prop_Dtheo(Double_t m) const;
+  TComplex Mji(Double_t m, Int_t ji) const;
   TComplex Mj1j2(Double_t ma, Double_t mb, Int_t j1, Int_t j2) const; 
   Double_t phasespace(Double_t ma, Double_t mb) const;
   TComplex hj1j2j1pj2p(Double_t ma, Double_t mb, Int_t j1, Int_t j2, Int_t j1p, Int_t j2p) const;
@@ -479,6 +564,7 @@ public:
   Double_t accAng(Double_t x) const;
   Double_t accMass(Double_t m) const;
   TComplex ITj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
+  TComplex ITj1j2hj1pj2php_deltat(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t Ifi(Int_t i) const;
   Double_t Igi(Int_t i) const;
   Double_t Ifjjphhp(Int_t j, Int_t jp, Int_t h, Int_t hp) const;
@@ -488,6 +574,8 @@ public:
   // PDF separated components.
   Double_t comp_num_fit(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t comp_den_fit(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
+  Double_t comp_num_basicfit(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
+  Double_t comp_den_basicfit(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t comp_num_plot_t(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t comp_num_plot_phi(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t comp_num_plot_cos1(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
@@ -496,11 +584,14 @@ public:
   Double_t comp_den_plot(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t getReCompVal(Double_t ma, Double_t mb, Double_t cos1ang, Double_t cos2ang, Double_t phiang, Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t getImCompVal(Double_t ma, Double_t mb, Double_t cos1ang, Double_t cos2ang, Double_t phiang, Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
+  Double_t NWpull(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp, Int_t part) const;
 
   // Complete PDF.
   void sumgenerator() const;
   Double_t num_fit() const;
   Double_t den_fit() const;
+  Double_t num_basicfit() const;
+  Double_t den_basicfit() const;
   Double_t num_plot_t() const;
   Double_t num_plot_phi() const;
   Double_t num_plot_cos1() const;

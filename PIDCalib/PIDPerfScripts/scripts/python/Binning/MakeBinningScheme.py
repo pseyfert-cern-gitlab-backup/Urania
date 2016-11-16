@@ -166,10 +166,10 @@ This script provides an example binning. It is not optimised for your analysis -
 
     if (len(opts.cuts)>0):
         if isinstance(opts.cuts,str):
-            if not CheckCuts(opts.cuts,TriggerList):
+            if not CheckCuts(opts.cuts,TriggerList,StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cuts))
         elif isinstance(opts.cuts,list):
-            if not CheckCuts(opts.cuts.join(" "),TriggerList):
+            if not CheckCuts(opts.cuts.join(" "),TriggerList,StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cuts))
 
     #CheckBinVarName(PlotVar)
@@ -273,7 +273,7 @@ This script provides an example binning. It is not optimised for your analysis -
     if Z_Bin is not None:
         BinSchema.push_back(Z_Bin)
 
-    if not CheckCuts(PIDCut, TriggerList):
+    if not CheckCuts(PIDCut, TriggerList,StripVersion):
         raise ValueError("Invalid PID cut: \"%s\""%(PIDCut))
 
     #======================================================================

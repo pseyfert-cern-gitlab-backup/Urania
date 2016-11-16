@@ -7,6 +7,7 @@ from parameters import *
 # ################################################################
 
 # Names of the variables in the ntuples.
+
 KpPx_name = 'B_s0_DTF_KST1_K_PX'
 KpPy_name = 'B_s0_DTF_KST1_K_PY'
 KpPz_name = 'B_s0_DTF_KST1_K_PZ'
@@ -19,6 +20,20 @@ PipPz_name = 'B_s0_DTF_KST2_PI_PZ'
 PimPx_name = 'B_s0_DTF_KST1_PI_PX'
 PimPy_name = 'B_s0_DTF_KST1_PI_PY'
 PimPz_name = 'B_s0_DTF_KST1_PI_PZ'
+
+KpPx_TRUE_name = 'Kplus_TRUEP_X'
+KpPy_TRUE_name = 'Kplus_TRUEP_Y'
+KpPz_TRUE_name = 'Kplus_TRUEP_Z'
+KmPx_TRUE_name = 'Kminus_TRUEP_X'
+KmPy_TRUE_name = 'Kminus_TRUEP_Y'
+KmPz_TRUE_name = 'Kminus_TRUEP_Z'
+PipPx_TRUE_name = 'Piplus_TRUEP_X'
+PipPy_TRUE_name = 'Piplus_TRUEP_Y'
+PipPz_TRUE_name = 'Piplus_TRUEP_Z'
+PimPx_TRUE_name = 'Piminus_TRUEP_X'
+PimPy_TRUE_name = 'Piminus_TRUEP_Y'
+PimPz_TRUE_name = 'Piminus_TRUEP_Z'
+
 ctau_name = 'B_s0_DTF_CTAU'
 truetau_name = 'B_s0_TRUETAU'
 ctauerr_name = 'B_s0_DTF_CTAUERR'
@@ -216,51 +231,34 @@ def get_Angles(kp,pim,km,pip):
         CosPhi = DProduct( PlaneP2, Vx)
         SenPhi = DProduct( PlaneP2, Vy)
     
-        #Calculate Phi
+        ## Calculate Phi
         Phi = atan2( SenPhi, CosPhi)
-        if Phi < 0.: Phi = 2.*pi + Phi
+        #Phi = pi - Phi
+        #if Phi < 0.: Phi = 2.*pi + Phi
     
-        return CosTheta1, CosTheta2, Phi-pi
+        return CosTheta1, CosTheta2, Phi
 
 
-def AddAngles(inputfilename,inputfileextradir,inputfileextradirname,outputfilename):
+def AddTrivialWeights(inputfilename,outputfilename):
 	
-	fcosin = TFile(NTUPLE_PATH + inputfilename + '.root')
-	if inputfileextradir: tcosin = fcosin.Get(inputfileextradirname).Get('DecayTree')
-	else: tcosin = fcosin.Get('DecayTree')
-	fcosout = TFile(NTUPLE_PATH + outputfilename + '.root','RECREATE')
+	fwin = TFile(NTUPLE_PATH + inputfilename + '.root')
+	twin = fwin.Get('DecayTree')
+	fwout = TFile(NTUPLE_PATH + outputfilename + '.root','RECREATE')
 	print "Copying the original tree ..."
-	tcosout = tcosin.CopyTree("")
+	twout = twin.CopyTree("")
 	print "Tree copied."
 
-	cos1 = MyStruct()
-	newBranchcos1 = tcosout.Branch('B_s0_DTF_KST1_COSTHETA', AddressOf(cos1,'afloat'), 'B_s0_DTF_KST1_COSTHETA/F')
-	cos2 = MyStruct()
-	newBranchcos2 = tcosout.Branch('B_s0_DTF_KST2_COSTHETA', AddressOf(cos2,'afloat'), 'B_s0_DTF_KST2_COSTHETA/F')
-	phi = MyStruct()
-	newBranchphi = tcosout.Branch('B_s0_DTF_B_s0_PHI', AddressOf(phi,'afloat'), 'B_s0_DTF_B_s0_PHI/F')
-	kp = TLorentzVector()
-	pim = TLorentzVector()
-	km = TLorentzVector()
-	pip = TLorentzVector()
+	weightvar = MyStruct()
+	newBranchweight = twout.Branch('weight', AddressOf(weightvar,'afloat'), 'weight/F')
 
 	print "Processing events ..."
-	for i in tcosout:
-		kp.SetXYZM(eval('i.'+KpPx_name),eval('i.'+KpPy_name),eval('i.'+KpPz_name),493.667)
-		pim.SetXYZM(eval('i.'+PimPx_name),eval('i.'+PimPy_name),eval('i.'+PimPz_name),139.570)
-		km.SetXYZM(eval('i.'+KmPx_name),eval('i.'+KmPy_name),eval('i.'+KmPz_name),493.667)
-		pip.SetXYZM(eval('i.'+PipPx_name),eval('i.'+PipPy_name),eval('i.'+PipPz_name),139.570)
-		angles = get_Angles(kp,pim,km,pip)
-		cos1.afloat = angles[0]
-		cos2.afloat = angles[1]
-		phi.afloat = angles[2]
-		newBranchcos1.Fill()
-		newBranchcos2.Fill()
-		newBranchphi.Fill()
+	for i in twout:
+		weightvar.afloat = 1.
+		newBranchweight.Fill()
 	print "All events processed."
 
-	tcosout.Write()
-	fcosout.Close()
+	twout.Write()
+	fwout.Close()
 
 
 def ns2ps(inputfilename,outputfilename):
@@ -295,6 +293,137 @@ def ns2ps(inputfilename,outputfilename):
 
 	ttout.Write()
 	ftout.Close()
+
+
+def AddAngles(inputfilename,inputfileextradir,inputfileextradirname,outputfilename):
+	
+	fcosin = TFile(NTUPLE_PATH + inputfilename + '.root')
+	if inputfileextradir: tcosin = fcosin.Get(inputfileextradirname).Get('DecayTree')
+	else: tcosin = fcosin.Get('AnalysisTree')
+	fcosout = TFile(NTUPLE_PATH + outputfilename + '.root','RECREATE')
+	print "Copying the original tree ..."
+	tcosout = tcosin.CopyTree("")
+	print "Tree copied."
+
+	#cos1 = MyStruct()
+	#newBranchcos1 = tcosout.Branch('B_s0_DTF_KST1_COSTHETA', AddressOf(cos1,'afloat'), 'B_s0_DTF_KST1_COSTHETA/F')
+	#cos2 = MyStruct()
+	#newBranchcos2 = tcosout.Branch('B_s0_DTF_KST2_COSTHETA', AddressOf(cos2,'afloat'), 'B_s0_DTF_KST2_COSTHETA/F')
+	#phi = MyStruct()
+	#newBranchphi = tcosout.Branch('B_s0_DTF_B_s0_PHI_CORR', AddressOf(phi,'afloat'), 'B_s0_DTF_B_s0_PHI/F')
+
+	#phi_OK = MyStruct()
+	#newBranchphi_OK = tcosout.Branch('B_s0_DTF_B_s0_PHI_OK', AddressOf(phi_OK,'afloat'), 'B_s0_DTF_B_s0_PHI_OK/F')
+
+	cos1 = MyStruct()
+	newBranchcos1 = tcosout.Branch('B_s0_DTF_KST1_COSTHETA', AddressOf(cos1,'afloat'), 'B_s0_DTF_KST1_COSTHETA/F')
+	cos2 = MyStruct()
+	newBranchcos2 = tcosout.Branch('B_s0_DTF_KST2_COSTHETA', AddressOf(cos2,'afloat'), 'B_s0_DTF_KST2_COSTHETA/F')
+
+	phi_TRY1 = MyStruct()
+	newBranchphi_TRY1 = tcosout.Branch('B_s0_DTF_B_s0_PHI_TRY1', AddressOf(phi_TRY1,'afloat'), 'B_s0_DTF_B_s0_PHI_TRY1/F')
+	phi_TRY2 = MyStruct()
+	newBranchphi_TRY2 = tcosout.Branch('B_s0_DTF_B_s0_PHI_TRY2', AddressOf(phi_TRY2,'afloat'), 'B_s0_DTF_B_s0_PHI_TRY2/F')
+	phi_TRY3 = MyStruct()
+	newBranchphi_TRY3 = tcosout.Branch('B_s0_DTF_B_s0_PHI_TRY3', AddressOf(phi_TRY3,'afloat'), 'B_s0_DTF_B_s0_PHI_TRY3/F')
+	phi_TRY4 = MyStruct()
+	newBranchphi_TRY4 = tcosout.Branch('B_s0_DTF_B_s0_PHI_TRY4', AddressOf(phi_TRY4,'afloat'), 'B_s0_DTF_B_s0_PHI_TRY4/F')
+
+	mKpi1_TRUE = MyStruct()
+	newBranchmKpi1_TRUE = tcosout.Branch('B_s0_DTF_KST1_TRUE_M', AddressOf(mKpi1_TRUE,'afloat'), 'B_s0_DTF_KST1_TRUE_M/F')
+	mKpi2_TRUE = MyStruct()
+	newBranchmKpi2_TRUE = tcosout.Branch('B_s0_DTF_KST2_TRUE_M', AddressOf(mKpi2_TRUE,'afloat'), 'B_s0_DTF_KST2_TRUE_M/F')
+
+	cos1_TRUE = MyStruct()
+	newBranchcos1_TRUE = tcosout.Branch('B_s0_DTF_KST1_TRUE_COSTHETA', AddressOf(cos1_TRUE,'afloat'), 'B_s0_DTF_KST1_TRUE_COSTHETA/F')
+	cos2_TRUE = MyStruct()
+	newBranchcos2_TRUE = tcosout.Branch('B_s0_DTF_KST2_TRUE_COSTHETA', AddressOf(cos2_TRUE,'afloat'), 'B_s0_DTF_KST2_TRUE_COSTHETA/F')
+
+	phi_TRUE_TRY1 = MyStruct()
+	newBranchphi_TRUE_TRY1 = tcosout.Branch('B_s0_DTF_B_s0_PHI_TRUE_TRY1', AddressOf(phi_TRUE_TRY1,'afloat'), 'B_s0_DTF_B_s0_PHI_TRUE_TRY1/F')
+	phi_TRUE_TRY2 = MyStruct()
+	newBranchphi_TRUE_TRY2 = tcosout.Branch('B_s0_DTF_B_s0_PHI_TRUE_TRY2', AddressOf(phi_TRUE_TRY2,'afloat'), 'B_s0_DTF_B_s0_PHI_TRUE_TRY2/F')
+	phi_TRUE_TRY3 = MyStruct()
+	newBranchphi_TRUE_TRY3 = tcosout.Branch('B_s0_DTF_B_s0_PHI_TRUE_TRY3', AddressOf(phi_TRUE_TRY3,'afloat'), 'B_s0_DTF_B_s0_PHI_TRUE_TRY3/F')
+	phi_TRUE_TRY4 = MyStruct()
+	newBranchphi_TRUE_TRY4 = tcosout.Branch('B_s0_DTF_B_s0_PHI_TRUE_TRY4', AddressOf(phi_TRUE_TRY4,'afloat'), 'B_s0_DTF_B_s0_PHI_TRUE_TRY4/F')
+
+	kp = TLorentzVector()
+	pim = TLorentzVector()
+	km = TLorentzVector()
+	pip = TLorentzVector()
+
+	kp_TRUE = TLorentzVector()
+	pim_TRUE = TLorentzVector()
+	km_TRUE = TLorentzVector()
+	pip_TRUE = TLorentzVector()
+
+	def corrrange(x):
+		if x<0: return x + 2.*pi
+		elif x>2.*pi: return x - 2.*pi
+		else: return x
+
+	print "Processing events ..."
+	for i in tcosout:
+
+		kp.SetXYZM(eval('i.'+KpPx_name),eval('i.'+KpPy_name),eval('i.'+KpPz_name),493.667)
+		pim.SetXYZM(eval('i.'+PimPx_name),eval('i.'+PimPy_name),eval('i.'+PimPz_name),139.570)
+		km.SetXYZM(eval('i.'+KmPx_name),eval('i.'+KmPy_name),eval('i.'+KmPz_name),493.667)
+		pip.SetXYZM(eval('i.'+PipPx_name),eval('i.'+PipPy_name),eval('i.'+PipPz_name),139.570)
+
+		kp_TRUE.SetXYZM(eval('i.'+KpPx_TRUE_name),eval('i.'+KpPy_TRUE_name),eval('i.'+KpPz_TRUE_name),493.667)
+		pim_TRUE.SetXYZM(eval('i.'+PimPx_TRUE_name),eval('i.'+PimPy_TRUE_name),eval('i.'+PimPz_TRUE_name),139.570)
+		km_TRUE.SetXYZM(eval('i.'+KmPx_TRUE_name),eval('i.'+KmPy_TRUE_name),eval('i.'+KmPz_TRUE_name),493.667)
+		pip_TRUE.SetXYZM(eval('i.'+PipPx_TRUE_name),eval('i.'+PipPy_TRUE_name),eval('i.'+PipPz_TRUE_name),139.570)
+
+		if i.itype<0:
+			angles_TRUE = get_Angles(kp_TRUE,pim_TRUE,km_TRUE,pip_TRUE)
+			cos1_TRUE.afloat = angles_TRUE[0]
+			cos2_TRUE.afloat = angles_TRUE[1]
+			mKpi1_TRUE.afloat = (kp_TRUE+pim_TRUE).M()
+			mKpi2_TRUE.afloat = (km_TRUE+pip_TRUE).M()
+			phi_TRUE_TRY1.afloat = corrrange(angles_TRUE[2])
+			phi_TRUE_TRY2.afloat = corrrange(-angles_TRUE[2])
+			phi_TRUE_TRY3.afloat = corrrange(angles_TRUE[2] + pi)
+			phi_TRUE_TRY4.afloat = corrrange(-angles_TRUE[2] + pi)
+		else:
+			cos1_TRUE.afloat = -10
+			cos2_TRUE.afloat = -10
+			mKpi1_TRUE.afloat = -10
+			mKpi2_TRUE.afloat = -10
+			phi_TRUE_TRY1.afloat = -10
+			phi_TRUE_TRY2.afloat = -10
+			phi_TRUE_TRY3.afloat = -10
+			phi_TRUE_TRY4.afloat = -10
+
+		angles = get_Angles(kp,pim,km,pip)
+		cos1.afloat = angles[0]
+		cos2.afloat = angles[1]
+		phi_TRY1.afloat = corrrange(angles[2])
+		phi_TRY2.afloat = corrrange(-angles[2])
+		phi_TRY3.afloat = corrrange(angles[2] + pi)
+		phi_TRY4.afloat = corrrange(-angles[2] + pi)
+
+		newBranchcos1.Fill()
+		newBranchcos2.Fill()
+		newBranchphi_TRY1.Fill()
+		newBranchphi_TRY2.Fill()
+		newBranchphi_TRY3.Fill()
+		newBranchphi_TRY4.Fill()
+
+		newBranchmKpi1_TRUE.Fill()
+		newBranchmKpi2_TRUE.Fill()
+		newBranchcos1_TRUE.Fill()
+		newBranchcos2_TRUE.Fill()
+		newBranchphi_TRUE_TRY1.Fill()
+		newBranchphi_TRUE_TRY2.Fill()
+		newBranchphi_TRUE_TRY3.Fill()
+		newBranchphi_TRUE_TRY4.Fill()
+
+	print "All events processed."
+
+	tcosout.Write()
+	fcosout.Close()
 
 
 def ApplyCuts(inputfilename,outputfilename):

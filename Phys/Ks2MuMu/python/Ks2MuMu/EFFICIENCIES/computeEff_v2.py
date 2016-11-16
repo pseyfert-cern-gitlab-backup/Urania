@@ -1,15 +1,18 @@
+##TO DO:
+## -change trigger category and output file name
+## - histoMBNoCut and histoData: add fiducial cuts  NOT FOR NOW
+## - for TISTISTOS : add trigger selection to histoData
 import ROOT
 from array import array as afC
 from SomeUtils.alyabar import *
-from cuts import *
-#import histoTex as M
+from fiducial import *
 import KsmmMathCrap as K
 import cPickle
 from fillHisto import *
 from itertools import *
 from pdb import set_trace
 
-
+tfile = ROOT.TFile.Open('Efficiencies_TOSTOS1TOS_NEW.root', 'recreate')
 TRIGG_CAT = 'TosTos1Tos' #'TosTos2Tos' and 'TisTisTos'
 
 MISID = 0
@@ -19,55 +22,57 @@ MISID = 0
 ##############################################################################
 
 #DATA FOR REWEIGH
-fData = ROOT.TFile.Open("/afs/cern.ch/work/j/jpriscia/KSMUMU/DATA/DATA_Kspipi_TosTos1Tos.root")   # Ks->pipi TISTISTIS or MB
+fData = ROOT.TFile.Open("/afs/cern.ch/work/j/jpriscia/KSMUMU/FIT/KsMB_Data2012_MVA_small.root")   # MB 
 
 #MC WITHOUT STRIPPING SELECTION
 
-fMuMuNoCut = ROOT.TFile.Open("root://eoslhcb.cern.ch//eos/lhcb/wg/RD/K0SMuMu/NEW/MC/Ksmumu_MC2012_NoStripping.root")  #KS->mumu MC no stripping
-fMBNoCut = ROOT.TFile.Open("root://eoslhcb.cern.ch//eos/lhcb/wg/RD/K0SMuMu/NEW/MC/MB08ac_MC2012_NoStripping.root")    # MB MC no stripping
+fMuMuNoCut = ROOT.TFile.Open("/afs/cern.ch/work/j/jpriscia/KSMUMU/FIT/KsMuMu_MC_RightAcceptance.root")  #KS->mumu MC no stripping
+fMBNoCut = ROOT.TFile.Open("/afs/cern.ch/work/j/jpriscia/KSMUMU/FIT/MB08ac_MC2012_mcMatch_MVA_SMALL.root")    # MB MC no stripping
+fMuMuGen = ROOT.TFile.Open("root://eoslhcb.cern.ch//eos/lhcb/wg/RD/K0SMuMu/NEW/MC/Ksmumu_LastMC2012_mcMatch.root") # this is in the right phase space!  
+fMBGen = ROOT.TFile.Open("root://eoslhcb.cern.ch//eos/lhcb/wg/RD/K0SMuMu/NEW/MC/MB08ac_MC2012_mcMatch.root") 
+#fmumu = ROOT.TFile.Open("/afs/cern.ch/work/j/jpriscia/KSMUMU/FIT/Ksmumu_StrippedMC2012_mcMatch_MVA_SMALL.root")  
+fmumu = ROOT.TFile.Open("/afs/cern.ch/work/j/jpriscia/KSMUMU/FIT/Ksmumu_StrippedMC2012_mcMatch_MVA_SMALL.root")
 
-#KSMUMU NEW IS STRIPPING FILTERED
-if TRIGG_CAT == 'TosTos1Tos':
-    fmumu = ROOT.TFile.Open("/afs/cern.ch/work/j/jpriscia/KSMUMU/MC/MC_KsmumuNEW_TosTos1Tos.root")      #Ks->mumu MC stripped with BDT binning
-    
-elif TRIGG_CAT == 'TosTos2Tos':
-    fmumu = ROOT.TFile.Open("/afs/cern.ch/work/j/jpriscia/KSMUMU/MC/MC_KsmumuNEW_XXX.root")             #Ks->mumu MC stripped with BDT binning  
-
-elif TRIGG_CAT == 'TisTisTos':
-    fmumu = ROOT.TFile.Open("/afs/cern.ch/work/j/jpriscia/KSMUMU/MC/MC_KsmumuNEW_XXX.root")             #Ks->mumu MC stripped with BDT binning  
-
-
-tMuMu = fmumu.Get("KsMuMuTuple/DecayTree")
-tMuMuNoCut = fMuMuNoCut.Get("KsmumumcMatch/DecayTree")
-tMBNoCut = fMBNoCut.Get("KspipimcMatch/DecayTree")
-tData = fData.Get("KsPiPiTuple/DecayTree")
+tMuMuGen = fMuMuGen.Get("MCtruthKsmumu/MCDecayTree")
+tMBGen = fMBGen.Get("MCtruthKspipi/MCDecayTree")
+tMuMuNoCut = fMuMuNoCut.Get("DecayTree")
+tMBNoCut = fMBNoCut.Get("DecayTree")
+tMuMu = fmumu.Get("DecayTree")
+tData = fData.Get("DecayTree")
 
 #make list of tuple string->cut
 def make_binned(name, cut):
     return [(name+'Bin%d' % (i+1), AND(cut, j)) for i, j in enumerate(bins)]
 
 
+
 #HISTOS (PT AND ETA BINS): NO CUTS -  STRIPPING 
-histoMuMuNoCut= fillHisto(tMuMuNoCut,[('hMuMuNoCutTot',noCuts)]+[('hMuMuNoCutStrip',strippingMuMu)])
+histoMuMuGen= fillHistoGen(tMuMuGen,[('hMuMuGen',noCut)])
+histoMuMuNoCut= fillHisto(tMuMuNoCut,[('hMuMuNoCutTot',noCut)]+[('hMuMuNoCutStrip',strippingMuMu)])
 print 'histoMuMuNoCut2D Filled'
 
 #HISTOS (PT AND ETA BINS): NO CUTS -  STRIPPING  - CUTSC (STRIPPING + GLOBAL_TRIGG: TO CORRECT THE WEIGHTS) 
-histoMBNoCut= fillHisto(tMBNoCut,[('hMBNoCutTot',noCuts)]+[('hMBNoCutStrip',strippingMB)])
+
+histoMBGen= fillHistoGen(tMBGen,[('hMBGen',noCut)])
+histoMBNoCut= fillHisto(tMBNoCut,[('hMBNoCutTot',noCut)]+[('hMBNoCutStrip',AND(strippingMB,fiducial))])
 print 'histoMBNoCut2D Filled'
 
 #HISTOS (PT AND ETA BINS):  STRIPPING - FIDUCIAL -TRIGGER - BDT 
 if TRIGG_CAT == 'TosTos1Tos':
-    histoMuMu = fillHisto(tMuMu,[('hMuMuStrip',strippingMuMu)]+[('hMuMuFid',fiducial)]+[('hMuMuTrig',AND(fiducial,tostos1tos))] +make_binned('hMuMuSel',AND(fiducial,tostos1tos)))
+   
+    histoMuMu = fillHisto(tMuMu,[('hMuMuStrip',strippingMuMu)]+[('hMuMuFid',AND(strippingMuMu,fiducial))]+[('hMuMuTrig',AND(strippingMuMu,fiducial,trigA))] +make_binned('hMuMuSel',AND(strippingMuMu,fiducial,trigA)))
+    histoData = fillHisto(tData,[('hDataTot',fiducial)])
     print 'histoMuMu filled'
 
 elif TRIGG_CAT == 'TosTos2Tos':
-    histoMuMu = fillHisto(tMuMu,[('hMuMuStrip',strippingMuMu)]+[('hMuMuFid',fiducial)]+[('hMuMuTrig',AND(fiducial,tostos2tos))]+make_binned('hMuMuSel',AND(fiducial,tostos2tos)))
+
+    histoMuMu = fillHisto(tMuMu,[('hMuMuStrip',strippingMuMu)]+[('hMuMuFid',AND(strippingMuMu,fiducial))]+[('hMuMuTrig',AND(strippingMuMu,fiducial,trigB))]+make_binned('hMuMuSel',AND(strippingMuMu,fiducial,trigB)))
+    histoData = fillHisto(tData,[('hDataTot',fiducial)])
 
 elif TRIGG_CAT == 'TisTisTos':
-    histoMuMu = fillHisto(tMuMu,[('hMuMuStrip',strippingMuMu)]+[('hMuMuFid',fiducial)]+ [('hMuMuTrig',AND(fiducial,tististos))]+make_binned('hMuMuSel',AND(fiducial,tististos)))
+    histoMuMu = fillHisto(tMuMu,[('hMuMuStrip',strippingMuMu)]+[('hMuMuFid',AND(strippingMuMu,fiducial))]+ [('hMuMuTrig',AND(strippingMuMu,fiducial,tosHLT2))]+make_binned('hMuMuSel',AND(strippingMuMu,fiducial,tosHLT2)))
+    histoData = fillHisto(tData,[('hDataTot',AND(fiducial,tistis))])
 
-# HISTO DATA FOR REWEIGH (= NO CUTS)
-histoData = fillHisto(tData,[('hDataTot',noCuts)])
 print 'histoData filled'
 
 #PUT ALL THE BDT BINS HISTOS IN A DICTIONARY (BIN from 1 to 9?)
@@ -97,13 +102,18 @@ for binId in binIds:
 
 
 #ADD ALL THE OTHER HISTOS TO THE DICT
+
 histoMuMuTrig = [i for i in histoMuMu if i.GetName().startswith('hMuMuTrig')]
 histoMuMuFid = [i for i in histoMuMu if i.GetName().startswith('hMuMuFid')]
 histoMuMuStrip = [i for i in histoMuMu if i.GetName().startswith('hMuMuStrip')]
+
 histoMuMuNoCutStrip = [i for i in histoMuMuNoCut if i.GetName().startswith('hMuMuNoCutStrip')]
 histoMBNoCutStrip = [i for i in histoMBNoCut if i.GetName().startswith('hMBNoCutStrip')]
 histoMuMuNoCutTot = [i for i in histoMuMuNoCut if i.GetName().startswith('hMuMuNoCutTot')]
 histoMBNoCutTot = [i for i in histoMBNoCut if i.GetName().startswith('hMBNoCutTot')]
+
+histoMuMuGen = [i for i in histoMuMuGen if i.GetName().startswith('hMuMuGen')]
+histoMBGen = [i for i in histoMBGen if i.GetName().startswith('hMBGen')]
 
 
 if len(histoMuMuFid) !=1  or  len(histoMuMuStrip) !=1  or len(histoMuMuNoCutStrip) !=1 or len(histoMBNoCutStrip) !=1 or len(histoMuMuNoCutTot) !=1  or len(histoMBNoCutTot) !=1:
@@ -115,6 +125,8 @@ hdict['Bin0']['hMuMuNoCutStrip'] = histoMuMuNoCutStrip[0]
 hdict['Bin0']['hMBNoCutStrip'] = histoMBNoCutStrip[0]
 hdict['Bin0']['hMuMuNoCutTot'] = histoMuMuNoCutTot [0]
 hdict['Bin0']['hMBNoCutTot'] = histoMBNoCutTot[0]
+hdict['Bin0']['hMuMuGen'] = histoMuMuGen[0]
+hdict['Bin0']['hMBGen'] = histoMBGen[0]
 
 for binId in hdict: 
     hdict[binId]['hMuMuTrig'] = histoMuMuTrig[0]
@@ -141,7 +153,10 @@ def doEffHistos(hdict):
         ('hMuMuFid', 'hMuMuStrip', 'effFidMuMu'),
         ('hMuMuNoCutStrip', 'hMuMuNoCutTot', 'effStripMuMu'),
         ('hMBNoCutStrip', 'hMBNoCutTot', 'effStripMB'),
+        ('hMuMuNoCutTot','hMuMuGen','effRecoMuMu'),
+        ('hMBNoCutTot','hMBGen','effRecoMB')
         ]:
+        print num, den, new
         h = K.hratio2(hdict['Bin0'][num],hdict['Bin0'][den],1)
         h.SetName(new+'Bin0')
         h.SetTitle(new+'Bin0')
@@ -152,7 +167,7 @@ def doEffHistos(hdict):
 hdict = doEffHistos(hdict)
 
 #SAVE EVERYTHING
-tfile = ROOT.TFile.Open('histosEfficiencies_v2.root', 'recreate')
+
 for key1, info in hdict.iteritems():
     d1 = tfile.mkdir(key1)
     for key2, histo in info.iteritems():
@@ -165,35 +180,24 @@ def doEfficiencies(hdict,histoData):
     
     for binID in hdict:
         #PRODUCT OF ALL THE EFFICIENCIES AND REWEIGHT (+ CORRECTION)
-        effBinMuMu = K.rec_product2(hdict['Bin0']['effTrigMuMu'],hdict[binID]['effBDTMuMu'],hdict['Bin0']['effFidMuMu'],hdict['Bin0']['effStripMuMu'])
-        norm = K.hratio2(effBinMuMu,hdict['Bin0']['effStripMB'],0)
-        normFin  = K.rec_product2(norm,histoData[0])
+        effBinMuMu = K.rec_product2(hdict['Bin0']['effTrigMuMu'],hdict[binID]['effBDTMuMu'],hdict['Bin0']['effFidMuMu'],hdict['Bin0']['effStripMuMu'],hdict['Bin0']['effRecoMuMu'])
+        
+        effMB = K.rec_product2(hdict['Bin0']['effStripMB'],hdict['Bin0']['effRecoMB'])
+        
+
+        ratio = K.hratio2(effBinMuMu,effMB,0)
+        ratioW  = K.rec_product2(ratio,histoData[0])
 
 
-        effTot, effTot_err = K.sumHisto(norm)
-        alpha, alpha_err = K.sumHisto(normFin)
+        effTot, effTot_err = K.sumHisto(ratio)
+        alpha, alpha_err = K.sumHisto(ratioW)
         
         print 'BIN ',binID
         print alpha,' \pm ' ,alpha_err
-        #print effTot,' \pm ' ,effTot_err
-
-
-
-    #for i in hdict:
-    #    for j in hdict[i]:
-    #        h = hdict[i][j].Clone()
-    #        print 'histo: ', h.GetName()
-    #        for pt in range(h.GetNbinsX()):
-    #            for eta in range(h.GetNbinsY()):
-    #                x = h.GetBinContent(pt+1,eta+1)
-    #                y = h.GetBinError(pt+1,eta+1)
-    #                print 'pt:  ', pt, '   eta:  ', eta, ' bin Content:  ', x, ' \pm ', y 
+        print effTot,' \pm ' ,effTot_err
 
 
     return 
 
 doEfficiencies(hdict,histoData)
 
-
-
-#same selection efficiency fot the TISTIS case too. but you have to dived then! (normalize to Kspipi MB & TISTIS)

@@ -1,21 +1,18 @@
 from ROOT import *
-from scipy import random as rnd
-f = TFile("/scratch19/kspi0mumu_ntupleMC12_Up_V0_2_GL.root")#"/scratch19/Kspi0/kspi0mm_DTFMC12_Strip_GL_1.root")
-t_ = f.Get("T")
-f2 = TFile("/tmp/deleteme" + str(rnd.random()), "recreate")
-t = t_.CopyTree("BDT>0.9 && BDT <1")
+f = TFile("/home3/veronika.chobanova/Kspi0/kspi0mumu_ntupleMC12_Up_V0_1_GL.root")
+t = f.Get("T")
 kPaula = TColor.GetColor("#ff99cc")
 #f = TFile("bkgMini.root")
 #t = f.Get("BenderKspi0mumuSignal/BenderKspi0mumuSignal")
 #BREAK
 from SomeUtils.alyabar import *
 from Urania import PDG
-fh = TFile("Masshistos.root", "recreate")
+fh = TFile("Masshistos_nopi0.root", "recreate")
 h = TH1F("A","A", 100, 400, 600)
 hb = TH1F("B","B", 100, 400, 600)
 hbVC = TH1F("BVC","BVC", 100, 400, 600)
 phantom = TH1F("phantom","phantom", 100, 400, 600)
-plist = [0.1*i for i in range(200)] + range(20,30)
+plist = range(5,9) + [8.1 + 0.1*i for i in range(19)] + range(10,16)
 plist.sort()
 h_phantom = {}
 for p in plist:
@@ -51,16 +48,18 @@ for entry in t:
         p0_prime = vector(-pdmx_prime, -pdmy_prime, 1000*mypz)
         MKsb = sqrt(IM2 ( pm_prime,  p0_prime, Mmumu, PDG.pi0.mass))# Mpizero))
         h_phantom[mypz].Fill(MKsb)
-    
-    #hDTF.Fill(entry.Ksmass_DTF)
-    #hDTFcl.Fill(entry.Ksmass_DTF_classic)
-g = TGraph()
+        if(mypz==8.9):
+            print "reached the chosen pz"
+            hbVC.Fill(MKsb)
+    ##hDTF.Fill(entry.Ksmass_DTF)
+    ##hDTFcl.Fill(entry.Ksmass_DTF_classic)
+
 c = TCanvas()
 h_phantom[plist[0]].Draw()
-i = 0
 for p in plist[1:]:
     h_phantom[p].SetLineColor(int(p*10))
-    g.SetPoint(i, p, h_phantom[p].GetRMS())
     print p, h_phantom[p].GetRMS()
     h_phantom[p].Draw("same")
-    i +=1 
+
+##Write missing: hwhatever.Write()
+hbVC.Write()

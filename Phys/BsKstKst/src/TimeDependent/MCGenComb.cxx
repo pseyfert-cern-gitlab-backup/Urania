@@ -141,6 +141,10 @@ Double_t Ih18Im_narrow = -0.438734749398;
 Double_t Ih19Im_narrow = 0.141928516262;
 Double_t Ih20Im_narrow = -4.54550999917e-17;
 Double_t Ih21Im_narrow = -0.440061356072;
+Double_t gamma_Bs_Gen = 0.6614; // value from PDG 2014
+Double_t delta_gamma_Bs_Gen = 0.091; // value from PDG 2014
+Double_t gammaL = gamma_Bs_Gen+0.5*delta_gamma_Bs_Gen;
+Double_t gammaH = gamma_Bs_Gen-0.5*delta_gamma_Bs_Gen;
 
 ClassImp(MCGenComb) 
 
@@ -268,7 +272,7 @@ TComplex MCGenComb::Abarj1j2h(Int_t j1, Int_t j2, Int_t h) const
 TComplex MCGenComb::AAj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const 
  {
 
-   return Aj1j2h(j1,j2,h)*TComplex::Conjugate(Aj1j2h(j1p,j2p,hp))+Abarj1j2h(j1,j2,h)*TComplex::Conjugate(Abarj1j2h(j1p,j2p,hp));
+   return (Aj1j2h(j1,j2,h)*TComplex::Conjugate(Aj1j2h(j1p,j2p,hp))+Abarj1j2h(j1,j2,h)*TComplex::Conjugate(Abarj1j2h(j1p,j2p,hp)))-0.5*delta_gamma_Bs_Gen/gamma_Bs_Gen*(Aj1j2h(j1,j2,h)*TComplex::Conjugate(Abarj1j2h(j1p,j2p,hp))+Abarj1j2h(j1,j2,h)*TComplex::Conjugate(Aj1j2h(j1p,j2p,hp)));
   
  }
 
@@ -299,7 +303,7 @@ Double_t MCGenComb::fi(Double_t x, Int_t i) const
    else if (i == 17) {f = x*(1.-x*x)*sqrt(1.-x*x);}
    else if (i == 18) {f = (1.-x*x)*(1.-x*x);}
 
-   else {throw std::invalid_argument( "Invalid argument" );}
+   else {throw std::invalid_argument( "Invalid argument 1" );}
 
    return f;
 
@@ -327,7 +331,7 @@ Double_t MCGenComb::gi(Double_t x, Int_t i) const
    else if (i == 14) {return sin(2.*x)*cos(2.*x);}
    else if (i == 15) {return sin(2.*x)*sin(2.*x);}
 
-   throw std::invalid_argument( "Invalid argument" );
+   throw std::invalid_argument( "Invalid argument 2" );
 
  }
 
@@ -410,7 +414,7 @@ Double_t MCGenComb::ghhp(Double_t x, Int_t h, Int_t hp) const
    else if ((h == 4) and (hp == 3)) {return gi(x,14);}
    else if ((h == 4) and (hp == 4)) {return gi(x,15);}
 
-   throw std::invalid_argument( "Invalid argument" );
+   throw std::invalid_argument( "Invalid argument 3" );
 
  }
 
@@ -481,7 +485,7 @@ Double_t MCGenComb::Ifi(Int_t i) const
    else if (i == 17) {return If17;}
    else if (i == 18) {return If18;}
 
-   throw std::invalid_argument( "Invalid argument" );
+   throw std::invalid_argument( "Invalid argument 4" );
 
  }
 
@@ -508,7 +512,7 @@ Double_t MCGenComb::Igi(Int_t i) const
    else if (i == 14) {return 0.;}
    else if (i == 15) {return 3.14159265358979323846264;}
 
-   throw std::invalid_argument( "Invalid argument" );
+   throw std::invalid_argument( "Invalid argument 5" );
 
  }
 
@@ -590,7 +594,7 @@ Double_t MCGenComb::Ighhp(Int_t h, Int_t hp) const
    else if ((h == 4) and (hp == 3)) {return Igi(14);}
    else if ((h == 4) and (hp == 4)) {return Igi(15);}
 
-   throw std::invalid_argument( "Invalid argument" );
+   throw std::invalid_argument( "Invalid argument 6" );
 
  }
 
@@ -617,7 +621,7 @@ Double_t MCGenComb::Blatt_Weisskopf2(Double_t q, Double_t q0, Int_t L) const
 
    if (L<1.) {return 1.;}  
    Double_t d;
-   if (L == 1) {d = 3.4e-03;}
+   if (L == 1) {d = 3.e-03;}
    else if (L == 2) {d = 2.7e-03;}
    else {d = 3.e-03/L;}
    Double_t z = q*d*q*d;
@@ -635,31 +639,17 @@ Double_t MCGenComb::Blatt_Weisskopf2(Double_t q, Double_t q0, Int_t L) const
 TComplex MCGenComb::Resonance(Double_t m, Double_t m_sister, Double_t m0, Double_t g0, Int_t J) const
  {
 
-   // Approximation of the lowest orbital angular momentum available.
-   Int_t L = 0;
-   if (J == 0) {L = 1;}
-   else if (J == 1) {L = 0;}
-   else if (J == 2) {L = 1;}
-
-   // Angular momentum barrier factor for the decay of the Kst.
-   Double_t q = get_q(m,139.57018,493.677);
-   Double_t q0 = get_q(m0,139.57018,493.677);
+   Double_t q = get_q(m,139.57018,493.67);
+   Double_t q0 = get_q(m0,139.57018,493.67);
    if (q==0) return 0;
-   Double_t kst_decay = pow(q/m,J)*sqrt(Blatt_Weisskopf2(q,q0,J));
 
-   // Angular momentum barrier factor for the creation of the Kst.
-   Double_t p = get_q(5366.3,m_sister,m);
-   Double_t p0 = get_q(5366.3,m_sister,m0);
-   if (p==0) return 0;
-   Double_t kst_birth = pow(p/5366.3,L)*sqrt(Blatt_Weisskopf2(p,p0,L));
+   Double_t gamma = g0*pow(q/q0,2*J+1)*(m0/m)*Blatt_Weisskopf2(q,q0,J);
 
-   // Relativistic spin-J Breit Wigner amplitude.
-   Double_t gamma = g0*pow(q/q0,2*J+1)*m0/m*Blatt_Weisskopf2(q,q0,J);
-   TComplex denom(m*m-m0*m0,-gamma*m0);
-   TComplex num(m0*g0,0.);
+   TComplex num(sqrt(m*gamma*m0*g0),0.);
+   TComplex denom(m0*m0-m*m,-m0*gamma);
    TComplex BW = num/denom;
 
-   if (m>=(139.57018+493.677) and m_sister>=(139.57018+493.677) and m<=(m0+15.*g0) and m_sister<=(m0+15.*g0)) {return BW * kst_birth * kst_decay * m;}
+   if (m>=(139.57018+493.67) and m_sister>=(139.57018+493.67) and m<=(m0+15.*g0) and m_sister<=(m0+15.*g0)) {return BW;}
    else {return 0.;}
 
  }
@@ -671,12 +661,12 @@ TComplex MCGenComb::Lass(Double_t m, Double_t m_sister, Double_t m0, Double_t g0
  { 
 
    TComplex i(0,1);
-   
-   Double_t q = get_q(m,139.57018,493.677);
-   Double_t q0 = get_q(m0,139.57018,493.677);
+
+   Double_t q = get_q(m,139.57018,493.67);
+   Double_t q0 = get_q(m0,139.57018,493.67);
    if (q==0) return 0;
-   Double_t p = get_q(5366.3,m_sister,m);
-   Double_t p0 = get_q(5366.3,m_sister,m0);
+   Double_t p = get_q(5366.77,m_sister,m);
+   Double_t p0 = get_q(5366.77,m_sister,m0);
    if (p==0) return 0;
 
    Double_t cotg_deltaB = 1./(0.00195*q)+0.5*0.00176*q;
@@ -705,7 +695,7 @@ TComplex MCGenComb::Mji(Double_t m, Double_t m_sister, Int_t ji) const
 	T = Lass(m,m_sister,1425.,270.);
 	}
 
-   else if (ji == 1.)
+   else if (ji == 1)
 	{
 	T = Resonance(m,m_sister,896,50.3,1);
 	}
@@ -725,29 +715,15 @@ TComplex MCGenComb::Mji(Double_t m, Double_t m_sister, Int_t ji) const
 TComplex MCGenComb::Mj1j2(Double_t ma, Double_t mb, Int_t j1, Int_t j2) const 
  { 
 
- if (wide_window) {
-  Im00 = 1.41999831713e+29;
-  Im01 = 4.2369835102e+19;
-  Im10 = 4.2369835102e+19;
-  Im02 = 1.10531948342e+19;
-  Im20 = 1.10531948342e+19;
-  Im11 = 8.867293411453865e+21;
-  Im12 = 3482047209.11;
-  Im21 = 3482047209.11;
-  Im22 = 858472924.517;
- }
-
- else {
-  Im00 = 9.82885938252e+27;
-  Im01 = 1.01498195843e+19;
-  Im10 = 1.01498195843e+19;
-  Im02 = 4.33970472902e+16;
-  Im20 = 4.33970472902e+16;
-  Im11 = 8.867293411453865e+21;
-  Im12 = 45100223.7833;
-  Im21 = 45100223.7833;
-  Im22 = 191599.043144;
- }
+ Im00 = 1.;
+ Im01 = 1.;
+ Im10 = 1.;
+ Im02 = 1.;
+ Im20 = 1.;
+ Im11 = 1.;
+ Im12 = 1.;
+ Im21 = 1.;
+ Im22 = 1.;
 
  if ((j1 == 0) and (j2 == 0)) {return Mji(ma,mb,0)*Mji(mb,ma,0)/sqrt(Im00);}
  else if ((j1 == 0) and (j2 == 1)) {return Mji(ma,mb,0)*Mji(mb,ma,1)/sqrt(Im01);}
@@ -759,7 +735,7 @@ TComplex MCGenComb::Mj1j2(Double_t ma, Double_t mb, Int_t j1, Int_t j2) const
  else if ((j1 == 2) and (j2 == 1)) {return Mji(ma,mb,2)*Mji(mb,ma,1)/sqrt(Im21);}
  else if ((j1 == 2) and (j2 == 2)) {return Mji(ma,mb,2)*Mji(mb,ma,2)/sqrt(Im22);}
 
- throw std::invalid_argument( "Invalid argument" );
+ throw std::invalid_argument( "Invalid argument 7" );
 
  }
 
@@ -769,12 +745,13 @@ TComplex MCGenComb::Mj1j2(Double_t ma, Double_t mb, Int_t j1, Int_t j2) const
 Double_t MCGenComb::phasespace(Double_t ma, Double_t mb) const 
  { 
  
-   Double_t Q1 = get_q(ma,493.677,139.57018);
-   Double_t Q2 = get_q(mb,493.677,139.57018);
-   Double_t QB = get_q(5366.3,ma,mb);
+   Double_t Q1 = get_q(ma,493.67,139.57018)/get_q(896,493.67,139.57018);
+   Double_t Q2 = get_q(mb,493.67,139.57018)/get_q(896,493.67,139.57018);
+   Double_t QB = get_q(5366.77,ma,mb)/get_q(5366.77,896,896);
    Double_t phsp = Q1*Q2*QB;
 
    if (ma<=2000. and mb<=2000.) {return phsp;}
+
    else {return 0.;}
 
  } 
@@ -785,7 +762,7 @@ Double_t MCGenComb::phasespace(Double_t ma, Double_t mb) const
 TComplex MCGenComb::hj1j2j1pj2p(Double_t ma, Double_t mb, Int_t j1, Int_t j2, Int_t j1p, Int_t j2p) const 
  { 
 
-   return Mj1j2(ma,mb,j1,j2)*TComplex::Conjugate(Mj1j2(ma,mb,j1p,j2p))*phasespace(ma,mb);
+   return Mj1j2(ma,mb,j1,j2)*TComplex::Conjugate(Mj1j2(ma,mb,j1p,j2p))*(get_q(5366.77,ma,896)/get_q(5366.77,896,896))*(get_q(5366.77,896,mb)/get_q(5366.77,896,896));
 
  }
 
@@ -841,7 +818,7 @@ TComplex MCGenComb::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p) const
       if ((j1 == 1) and (j2 == 1) and (j1p == 0) and (j2p == 2)) {return TComplex(Ih13Re_wide,-Ih13Im_wide);}
       if ((j1 == 1) and (j2 == 1) and (j1p == 1) and (j2p == 0)) {return TComplex(Ih8Re_wide,-Ih8Im_wide);}
 
-      if ((j1 == 1) and (j2 == 1) and (j1p == 1) and (j2p == 1)) {return TComplex(Ih27Re_wide,0.);}
+      if ((j1 == 1) and (j2 == 1) and (j1p == 1) and (j2p == 1)) {return TComplex(5805.992273500882,0.);}
       if ((j1 == 1) and (j2 == 1) and (j1p == 1) and (j2p == 2)) {return TComplex(Ih18Re_wide,Ih18Im_wide);}
       if ((j1 == 1) and (j2 == 1) and (j1p == 2) and (j2p == 0)) {return TComplex(Ih13Re_wide,-Ih13Im_wide);}
       if ((j1 == 1) and (j2 == 1) and (j1p == 2) and (j2p == 1)) {return TComplex(Ih18Re_wide,Ih18Im_wide);}
@@ -935,7 +912,7 @@ TComplex MCGenComb::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p) const
       if ((j1 == 1) and (j2 == 1) and (j1p == 0) and (j2p == 2)) {return TComplex(Ih13Re_narrow,-Ih13Im_narrow);}
       if ((j1 == 1) and (j2 == 1) and (j1p == 1) and (j2p == 0)) {return TComplex(Ih8Re_narrow,-Ih8Im_narrow);}
 
-      if ((j1 == 1) and (j2 == 1) and (j1p == 1) and (j2p == 1)) {return TComplex(Ih27Re_narrow,0.);}
+      if ((j1 == 1) and (j2 == 1) and (j1p == 1) and (j2p == 1)) {return TComplex(5805.992273500882,0.);}
       if ((j1 == 1) and (j2 == 1) and (j1p == 1) and (j2p == 2)) {return TComplex(Ih18Re_narrow,Ih18Im_narrow);}
       if ((j1 == 1) and (j2 == 1) and (j1p == 2) and (j2p == 0)) {return TComplex(Ih13Re_narrow,-Ih13Im_narrow);}
       if ((j1 == 1) and (j2 == 1) and (j1p == 2) and (j2p == 1)) {return TComplex(Ih18Re_narrow,Ih18Im_narrow);}
@@ -983,7 +960,7 @@ TComplex MCGenComb::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p) const
 
    }
 
-   throw std::invalid_argument( "Invalid argument" );
+   throw std::invalid_argument( "Invalid argument 8" );
 
  }
 
@@ -1013,38 +990,7 @@ Double_t MCGenComb::Imodel_comp_omega(Int_t j1, Int_t j2, Int_t h, Int_t j1p, In
 Double_t MCGenComb::model_omega() const 
  {
 
-   return model_comp_omega(0,0,0,0,0,0)+model_comp_omega(0,1,0,0,1,0)+model_comp_omega(0,2,0,0,2,0)+model_comp_omega(1,0,0,1,0,0)+model_comp_omega(1,1,0,1,1,0)+model_comp_omega(1,1,1,1,1,1)
-+model_comp_omega(1,1,2,1,1,2)+model_comp_omega(1,2,0,1,2,0)+model_comp_omega(1,2,1,1,2,1)+model_comp_omega(1,2,2,1,2,2)+model_comp_omega(2,0,0,2,0,0)+model_comp_omega(2,1,0,2,1,0)+model_comp_omega(2,1,1,2,1,1)
-+model_comp_omega(2,1,2,2,1,2)+model_comp_omega(2,2,0,2,2,0)+model_comp_omega(2,2,1,2,2,1)+model_comp_omega(2,2,2,2,2,2)+model_comp_omega(2,2,3,2,2,3)+model_comp_omega(2,2,4,2,2,4)+2.*model_comp_omega(0,1,0,0,0,0)
-+2.*model_comp_omega(0,1,0,1,0,0)+2.*model_comp_omega(0,1,0,2,0,0)+2.*model_comp_omega(0,2,0,0,0,0)+2.*model_comp_omega(0,2,0,0,1,0)+2.*model_comp_omega(0,2,0,1,0,0)+2.*model_comp_omega(0,2,0,1,1,0)
-+2.*model_comp_omega(0,2,0,2,0,0)+2.*model_comp_omega(0,2,0,2,1,0)+2.*model_comp_omega(1,0,0,0,0,0)+2.*model_comp_omega(1,1,0,0,0,0)+2.*model_comp_omega(1,1,0,0,1,0)+2.*model_comp_omega(1,1,0,1,0,0)
-+2.*model_comp_omega(1,1,0,2,0,0)+2.*model_comp_omega(1,1,1,0,0,0)+2.*model_comp_omega(1,1,1,0,1,0)+2.*model_comp_omega(1,1,1,0,2,0)+2.*model_comp_omega(1,1,1,1,0,0)+2.*model_comp_omega(1,1,1,1,1,0)
-+2.*model_comp_omega(1,1,1,1,2,0)+2.*model_comp_omega(1,1,1,2,0,0)+2.*model_comp_omega(1,1,1,2,1,0)+2.*model_comp_omega(1,1,1,2,2,0)+2.*model_comp_omega(1,1,2,0,0,0)+2.*model_comp_omega(1,1,2,0,1,0)
-+2.*model_comp_omega(1,1,2,0,2,0)+2.*model_comp_omega(1,1,2,1,0,0)+2.*model_comp_omega(1,1,2,1,1,0)+2.*model_comp_omega(1,1,2,1,1,1)+2.*model_comp_omega(1,1,2,1,2,0)+2.*model_comp_omega(1,1,2,1,2,1)
-+2.*model_comp_omega(1,1,2,2,0,0)+2.*model_comp_omega(1,1,2,2,1,0)+2.*model_comp_omega(1,1,2,2,1,1)+2.*model_comp_omega(1,1,2,2,2,0)+2.*model_comp_omega(1,1,2,2,2,1)+2.*model_comp_omega(1,2,0,0,0,0)
-+2.*model_comp_omega(1,2,0,0,1,0)+2.*model_comp_omega(1,2,0,0,2,0)+2.*model_comp_omega(1,2,0,1,0,0)+2.*model_comp_omega(1,2,0,1,1,0)+2.*model_comp_omega(1,2,0,2,0,0)+2.*model_comp_omega(1,2,0,2,1,0)
-+2.*model_comp_omega(1,2,1,0,0,0)+2.*model_comp_omega(1,2,1,0,1,0)+2.*model_comp_omega(1,2,1,0,2,0)+2.*model_comp_omega(1,2,1,1,0,0)+2.*model_comp_omega(1,2,1,1,1,0)+2.*model_comp_omega(1,2,1,1,1,1)
-+2.*model_comp_omega(1,2,1,1,2,0)+2.*model_comp_omega(1,2,1,2,0,0)+2.*model_comp_omega(1,2,1,2,1,0)+2.*model_comp_omega(1,2,1,2,1,1)+2.*model_comp_omega(1,2,1,2,2,0)+2.*model_comp_omega(1,2,2,0,0,0)
-+2.*model_comp_omega(1,2,2,0,1,0)+2.*model_comp_omega(1,2,2,0,2,0)+2.*model_comp_omega(1,2,2,1,0,0)+2.*model_comp_omega(1,2,2,1,1,0)+2.*model_comp_omega(1,2,2,1,1,1)+2.*model_comp_omega(1,2,2,1,1,2)
-+2.*model_comp_omega(1,2,2,1,2,0)+2.*model_comp_omega(1,2,2,1,2,1)+2.*model_comp_omega(1,2,2,2,0,0)+2.*model_comp_omega(1,2,2,2,1,0)+2.*model_comp_omega(1,2,2,2,1,1)+2.*model_comp_omega(1,2,2,2,1,2)
-+2.*model_comp_omega(1,2,2,2,2,0)+2.*model_comp_omega(1,2,2,2,2,1)+2.*model_comp_omega(2,0,0,0,0,0)+2.*model_comp_omega(2,0,0,1,0,0)+2.*model_comp_omega(2,1,0,0,0,0)+2.*model_comp_omega(2,1,0,0,1,0)
-+2.*model_comp_omega(2,1,0,1,0,0)+2.*model_comp_omega(2,1,0,1,1,0)+2.*model_comp_omega(2,1,0,2,0,0)+2.*model_comp_omega(2,1,1,0,0,0)+2.*model_comp_omega(2,1,1,0,1,0)+2.*model_comp_omega(2,1,1,0,2,0)
-+2.*model_comp_omega(2,1,1,1,0,0)+2.*model_comp_omega(2,1,1,1,1,0)+2.*model_comp_omega(2,1,1,1,1,1)+2.*model_comp_omega(2,1,1,1,2,0)+2.*model_comp_omega(2,1,1,2,0,0)+2.*model_comp_omega(2,1,1,2,1,0)
-+2.*model_comp_omega(2,1,1,2,2,0)+2.*model_comp_omega(2,1,2,0,0,0)+2.*model_comp_omega(2,1,2,0,1,0)+2.*model_comp_omega(2,1,2,0,2,0)+2.*model_comp_omega(2,1,2,1,0,0)+2.*model_comp_omega(2,1,2,1,1,0)
-+2.*model_comp_omega(2,1,2,1,1,1)+2.*model_comp_omega(2,1,2,1,1,2)+2.*model_comp_omega(2,1,2,1,2,0)+2.*model_comp_omega(2,1,2,1,2,1)+2.*model_comp_omega(2,1,2,2,0,0)+2.*model_comp_omega(2,1,2,2,1,0)
-+2.*model_comp_omega(2,1,2,2,1,1)+2.*model_comp_omega(2,1,2,2,2,0)+2.*model_comp_omega(2,1,2,2,2,1)+2.*model_comp_omega(2,2,0,0,0,0)+2.*model_comp_omega(2,2,0,0,1,0)+2.*model_comp_omega(2,2,0,0,2,0)
-+2.*model_comp_omega(2,2,0,1,0,0)+2.*model_comp_omega(2,2,0,1,1,0)+2.*model_comp_omega(2,2,0,1,2,0)+2.*model_comp_omega(2,2,0,2,0,0)+2.*model_comp_omega(2,2,0,2,1,0)+2.*model_comp_omega(2,2,1,0,0,0)
-+2.*model_comp_omega(2,2,1,0,1,0)+2.*model_comp_omega(2,2,1,0,2,0)+2.*model_comp_omega(2,2,1,1,0,0)+2.*model_comp_omega(2,2,1,1,1,0)+2.*model_comp_omega(2,2,1,1,1,1)+2.*model_comp_omega(2,2,1,1,2,0)
-+2.*model_comp_omega(2,2,1,1,2,1)+2.*model_comp_omega(2,2,1,2,0,0)+2.*model_comp_omega(2,2,1,2,1,0)+2.*model_comp_omega(2,2,1,2,1,1)+2.*model_comp_omega(2,2,1,2,2,0)+2.*model_comp_omega(2,2,2,0,0,0)
-+2.*model_comp_omega(2,2,2,0,1,0)+2.*model_comp_omega(2,2,2,0,2,0)+2.*model_comp_omega(2,2,2,1,0,0)+2.*model_comp_omega(2,2,2,1,1,0)+2.*model_comp_omega(2,2,2,1,1,1)+2.*model_comp_omega(2,2,2,1,1,2)
-+2.*model_comp_omega(2,2,2,1,2,0)+2.*model_comp_omega(2,2,2,1,2,1)+2.*model_comp_omega(2,2,2,1,2,2)+2.*model_comp_omega(2,2,2,2,0,0)+2.*model_comp_omega(2,2,2,2,1,0)+2.*model_comp_omega(2,2,2,2,1,1)
-+2.*model_comp_omega(2,2,2,2,1,2)+2.*model_comp_omega(2,2,2,2,2,0)+2.*model_comp_omega(2,2,2,2,2,1)+2.*model_comp_omega(2,2,3,0,0,0)+2.*model_comp_omega(2,2,3,0,1,0)+2.*model_comp_omega(2,2,3,0,2,0)
-+2.*model_comp_omega(2,2,3,1,0,0)+2.*model_comp_omega(2,2,3,1,1,0)+2.*model_comp_omega(2,2,3,1,1,1)+2.*model_comp_omega(2,2,3,1,1,2)+2.*model_comp_omega(2,2,3,1,2,0)+2.*model_comp_omega(2,2,3,1,2,1)
-+2.*model_comp_omega(2,2,3,1,2,2)+2.*model_comp_omega(2,2,3,2,0,0)+2.*model_comp_omega(2,2,3,2,1,0)+2.*model_comp_omega(2,2,3,2,1,1)+2.*model_comp_omega(2,2,3,2,1,2)+2.*model_comp_omega(2,2,3,2,2,0)
-+2.*model_comp_omega(2,2,3,2,2,1)+2.*model_comp_omega(2,2,3,2,2,2)+2.*model_comp_omega(2,2,4,0,0,0)+2.*model_comp_omega(2,2,4,0,1,0)+2.*model_comp_omega(2,2,4,0,2,0)+2.*model_comp_omega(2,2,4,1,0,0)
-+2.*model_comp_omega(2,2,4,1,1,0)+2.*model_comp_omega(2,2,4,1,1,1)+2.*model_comp_omega(2,2,4,1,1,2)+2.*model_comp_omega(2,2,4,1,2,0)+2.*model_comp_omega(2,2,4,1,2,1)+2.*model_comp_omega(2,2,4,1,2,2)
-+2.*model_comp_omega(2,2,4,2,0,0)+2.*model_comp_omega(2,2,4,2,1,0)+2.*model_comp_omega(2,2,4,2,1,1)+2.*model_comp_omega(2,2,4,2,1,2)+2.*model_comp_omega(2,2,4,2,2,0)+2.*model_comp_omega(2,2,4,2,2,1)
-+2.*model_comp_omega(2,2,4,2,2,2)+2.*model_comp_omega(2,2,4,2,2,3);
+   return 100./6.*(model_comp_omega(1,1,0,1,1,0)+model_comp_omega(1,1,1,1,1,1)+model_comp_omega(1,1,2,1,1,2)+2.*model_comp_omega(1,1,1,1,1,0)+2.*model_comp_omega(1,1,2,1,1,0)+2.*model_comp_omega(1,1,2,1,1,1));
 
  }
 
@@ -1054,20 +1000,7 @@ Double_t MCGenComb::model_omega() const
 Double_t MCGenComb::Imodel_omega() const 
  {
 
-   return Imodel_comp_omega(0,0,0,0,0,0)+Imodel_comp_omega(0,1,0,0,1,0)+Imodel_comp_omega(0,2,0,0,2,0)+Imodel_comp_omega(1,0,0,1,0,0)+Imodel_comp_omega(1,1,0,1,1,0)
-+Imodel_comp_omega(1,1,1,1,1,1)+Imodel_comp_omega(1,1,2,1,1,2)+Imodel_comp_omega(1,2,0,1,2,0)+Imodel_comp_omega(1,2,1,1,2,1)+Imodel_comp_omega(1,2,2,1,2,2)
-+Imodel_comp_omega(2,0,0,2,0,0)+Imodel_comp_omega(2,1,0,2,1,0)+Imodel_comp_omega(2,1,1,2,1,1)+Imodel_comp_omega(2,1,2,2,1,2)+Imodel_comp_omega(2,2,0,2,2,0)
-+Imodel_comp_omega(2,2,1,2,2,1)+Imodel_comp_omega(2,2,2,2,2,2)+Imodel_comp_omega(2,2,3,2,2,3)+Imodel_comp_omega(2,2,4,2,2,4)+2.*Imodel_comp_omega(0,1,0,0,0,0)
-+2.*Imodel_comp_omega(0,1,0,1,0,0)+2.*Imodel_comp_omega(0,1,0,2,0,0)+2.*Imodel_comp_omega(0,2,0,0,0,0)+2.*Imodel_comp_omega(0,2,0,0,1,0)+2.*Imodel_comp_omega(0,2,0,1,0,0)
-+2.*Imodel_comp_omega(0,2,0,1,1,0)+2.*Imodel_comp_omega(0,2,0,2,0,0)+2.*Imodel_comp_omega(0,2,0,2,1,0)+2.*Imodel_comp_omega(1,0,0,0,0,0)+2.*Imodel_comp_omega(1,1,0,0,0,0)
-+2.*Imodel_comp_omega(1,1,0,0,1,0)+2.*Imodel_comp_omega(1,1,0,1,0,0)+2.*Imodel_comp_omega(1,1,0,2,0,0)+2.*Imodel_comp_omega(1,2,0,0,0,0)+2.*Imodel_comp_omega(1,2,0,0,1,0)
-+2.*Imodel_comp_omega(1,2,0,0,2,0)+2.*Imodel_comp_omega(1,2,0,1,0,0)+2.*Imodel_comp_omega(1,2,0,1,1,0)+2.*Imodel_comp_omega(1,2,0,2,0,0)+2.*Imodel_comp_omega(1,2,0,2,1,0)
-+2.*Imodel_comp_omega(1,2,1,1,1,1)+2.*Imodel_comp_omega(1,2,1,2,1,1)+2.*Imodel_comp_omega(1,2,2,1,1,2)+2.*Imodel_comp_omega(1,2,2,2,1,2)+2.*Imodel_comp_omega(2,0,0,0,0,0)
-+2.*Imodel_comp_omega(2,0,0,1,0,0)+2.*Imodel_comp_omega(2,1,0,0,0,0)+2.*Imodel_comp_omega(2,1,0,0,1,0)+2.*Imodel_comp_omega(2,1,0,1,0,0)+2.*Imodel_comp_omega(2,1,0,1,1,0)
-+2.*Imodel_comp_omega(2,1,0,2,0,0)+2.*Imodel_comp_omega(2,1,1,1,1,1)+2.*Imodel_comp_omega(2,1,2,1,1,2)+2.*Imodel_comp_omega(2,2,0,0,0,0)+2.*Imodel_comp_omega(2,2,0,0,1,0)
-+2.*Imodel_comp_omega(2,2,0,0,2,0)+2.*Imodel_comp_omega(2,2,0,1,0,0)+2.*Imodel_comp_omega(2,2,0,1,1,0)+2.*Imodel_comp_omega(2,2,0,1,2,0)+2.*Imodel_comp_omega(2,2,0,2,0,0)
-+2.*Imodel_comp_omega(2,2,0,2,1,0)+2.*Imodel_comp_omega(2,2,1,1,1,1)+2.*Imodel_comp_omega(2,2,1,1,2,1)+2.*Imodel_comp_omega(2,2,1,2,1,1)+2.*Imodel_comp_omega(2,2,2,1,1,2)
-+2.*Imodel_comp_omega(2,2,2,1,2,2)+2.*Imodel_comp_omega(2,2,2,2,1,2);
+   return 100./6.*(Imodel_comp_omega(1,1,0,1,1,0)+Imodel_comp_omega(1,1,1,1,1,1)+Imodel_comp_omega(1,1,2,1,1,2));
 
  }
 
@@ -1075,32 +1008,45 @@ Double_t MCGenComb::Imodel_omega() const
 // Decay time dependence.
 
 Double_t MCGenComb::timemodel(Double_t tau) const 
- { 
+ {
 
-   return exp(-0.668*tau);
+   // Normalization factors.
+   Double_t norm_PhSp = 1./gammaL;
+   Double_t norm_VV = 1.18/gammaL+0.18/gammaH;
+
+   // Relative yields.
+   Double_t R_VV_to_PhSp_Ngen_2011 = 0.2425273669948235;
+   Double_t R_VV_to_PhSp_Ngen_2012 = 0.4895249199941268;
+   R_VV = norm_PhSp/norm_VV;
+   if (year == 0) {R_VV *= R_VV_to_PhSp_Ngen_2011;}
+   else {R_VV *= R_VV_to_PhSp_Ngen_2012;}
+
+   if (gen_model == 0) {return exp(-gammaL*tau)/norm_PhSp;}
+   else if (gen_model == 1) {return (1.18*exp(-gammaL*tau)+0.18*exp(-gammaH*tau))/norm_VV;}
+   else {return ((1.+1.18*R_VV)*exp(-gammaL*tau)+0.18*R_VV*exp(-gammaH*tau))/((1.+1.18*R_VV)/gammaL+0.18*R_VV/gammaH);}
 
  }
 
 // ---------------------------------------------------
 
 Double_t MCGenComb::evaluate() const 
- { 
+ {
 
-	// Normalization factors.
-	Double_t norm_PhSp = 3.0151470401889036e+16;
-	Double_t norm_VV = 2.7199999999984006;
+	// Normalization factors (in a generation mass window from threshold, M(K)+M(pi), to 2000 MeV/c2).
+	Double_t norm_PhSp = 140648555.41415584;
+	Double_t norm_VV = 249890.75981680135;
 
 	// Relative yields.
-	Double_t R_VV_to_PhSp_wide_2011 = 0.2425273669948235;
-	Double_t R_VV_to_PhSp_wide_2012 = 0.4895249199941268;
-	Double_t R_VV = norm_PhSp/norm_VV;
-	if (year == 0) {R_VV *= R_VV_to_PhSp_wide_2011;}
-	else {R_VV *= R_VV_to_PhSp_wide_2012;}
+	Double_t R_VV_to_PhSp_Ngen_2011 = 0.2425273669948235;
+	Double_t R_VV_to_PhSp_Ngen_2012 = 0.4895249199941268;
+	R_VV = norm_PhSp/norm_VV;
+	if (year == 0) {R_VV *= R_VV_to_PhSp_Ngen_2011;}
+	else {R_VV *= R_VV_to_PhSp_Ngen_2012;}
 
 	if (option == 1) {
 		if (gen_model == 0) {return phasespace(m1,m2);}
 		else if (gen_model == 1) {return model_omega();}
-		else {return phasespace(m1,m2)+R_VV*model_omega();}
+		else {return (phasespace(m1,m2)+R_VV*model_omega())/(1.+R_VV);}
 	}
 	else if (option == 2) {return timemodel(t);}
 

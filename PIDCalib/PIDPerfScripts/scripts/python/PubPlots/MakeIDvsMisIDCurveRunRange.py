@@ -121,27 +121,29 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
     MisIDPartName=opts.misIDPartName
     CheckPartType(MisIDPartName)
 
+    TriggerList=[]
+
     # set the PID variable
     PIDVar=opts.pidVar
     PIDVarNickname = PIDVar if opts.pidVarNickname is None else opts.pidVarNickname
     
-    if not CheckCuts(opts.pidVar):
+    if not CheckCuts(opts.pidVar,TriggerList,StripVersion):
         parser.error("Invalid pid variable %s" %str(opts.pidVar))
         
     if (len(opts.cutsPart)>0):
         if isinstance(opts.cutsPart,str):
-            if not CheckCuts(opts.cutsPart):
+            if not CheckCuts(opts.cutsPart,TriggerList,StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cutsPart))
         elif isinstance(opts.cutsPart,list):
-            if not CheckCuts(opts.cutsPart.join(" ")):
+            if not CheckCuts(opts.cutsPart.join(" "),TriggerList,StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cutsPart))
         
     if (len(opts.cutsMisPart)>0):
         if isinstance(opts.cutsMisPart,str):
-            if not CheckCuts(opts.cutsMisPart):
+            if not CheckCuts(opts.cutsMisPart,TriggerList,StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cutsMisPart))
         elif isinstance(opts.cutsMisPart,list):
-            if not CheckCuts(opts.cutsMisPart.join(" ")):
+            if not CheckCuts(opts.cutsMisPart.join(" "),TriggerList,StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cutsMisPart))
 
     # set the PID cut values

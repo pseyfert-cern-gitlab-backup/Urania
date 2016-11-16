@@ -120,17 +120,17 @@ e.g. python PlotRefDistributions.py "P_IncLc" "P" "PID_Modes.root" "IncLc2PKPiTu
 
     # set the plot variable
     PlotVar=opts.varName
-    if not CheckCuts(opts.varName,TriggerList):
+    if not CheckCuts(opts.varName,TriggerList,StripVersion):
         parser.error("Invalid variable %s" %str(opts.varName))
 
     refVarName = opts.refVarName if opts.refVarName else PlotVar
 
     if (len(opts.cuts)>0):
         if isinstance(opts.cuts,str):
-            if not CheckCuts(opts.cuts,TriggerList):
+            if not CheckCuts(opts.cuts,TriggerList,StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cuts))
         elif isinstance(opts.cuts,list):
-            if not CheckCuts(opts.cuts.join(" "),TriggerList):
+            if not CheckCuts(opts.cuts.join(" "),TriggerList,StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cuts))
 
     if opts.verbose:

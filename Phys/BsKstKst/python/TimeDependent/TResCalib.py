@@ -1,0 +1,34 @@
+import ROOT
+
+mu_tres_p0_2011_wide = ROOT.RooConstVar("mu_tres_p0_2011_wide","mu_tres_p0_2011_wide",0.0347321550575)
+mu_tres_p1_2011_wide = ROOT.RooConstVar("mu_tres_p1_2011_wide","mu_tres_p1_2011_wide",1.16265980247)
+muvector_tres_p0_tres_p1_2011_wide = ROOT.RooArgList(mu_tres_p0_2011_wide,mu_tres_p1_2011_wide)
+cov_tres_p0_tres_p1_2011_wide = ROOT.TMatrixDSym(2)
+cov_tres_p0_tres_p1_2011_wide[0][0] = 5.85320831382e-08
+cov_tres_p0_tres_p1_2011_wide[0][1] = 4.44520794455e-06
+cov_tres_p0_tres_p1_2011_wide[1][0] = 4.44520794455e-06
+cov_tres_p0_tres_p1_2011_wide[1][1] = 0.00246826194747
+mu_tres_p0_2012_wide = ROOT.RooConstVar("mu_tres_p0_2012_wide","mu_tres_p0_2012_wide",0.0365177895205)
+mu_tres_p1_2012_wide = ROOT.RooConstVar("mu_tres_p1_2012_wide","mu_tres_p1_2012_wide",1.27900661607)
+muvector_tres_p0_tres_p1_2012_wide = ROOT.RooArgList(mu_tres_p0_2012_wide,mu_tres_p1_2012_wide)
+cov_tres_p0_tres_p1_2012_wide = ROOT.TMatrixDSym(2)
+cov_tres_p0_tres_p1_2012_wide[0][0] = 6.25380727952e-08
+cov_tres_p0_tres_p1_2012_wide[0][1] = 5.00718126042e-06
+cov_tres_p0_tres_p1_2012_wide[1][0] = 5.00718126042e-06
+cov_tres_p0_tres_p1_2012_wide[1][1] = 0.00278714246286
+mu_tres_p0_2011_narrow = ROOT.RooConstVar("mu_tres_p0_2011_narrow","mu_tres_p0_2011_narrow",0.0351086512945)
+mu_tres_p1_2011_narrow = ROOT.RooConstVar("mu_tres_p1_2011_narrow","mu_tres_p1_2011_narrow",1.21363645175)
+muvector_tres_p0_tres_p1_2011_narrow = ROOT.RooArgList(mu_tres_p0_2011_narrow,mu_tres_p1_2011_narrow)
+cov_tres_p0_tres_p1_2011_narrow = ROOT.TMatrixDSym(2)
+cov_tres_p0_tres_p1_2011_narrow[0][0] = 1.12965421215e-07
+cov_tres_p0_tres_p1_2011_narrow[0][1] = 8.40475308468e-06
+cov_tres_p0_tres_p1_2011_narrow[1][0] = 8.40475308468e-06
+cov_tres_p0_tres_p1_2011_narrow[1][1] = 0.00401634089512
+mu_tres_p0_2012_narrow = ROOT.RooConstVar("mu_tres_p0_2012_narrow","mu_tres_p0_2012_narrow",0.0366357211104)
+mu_tres_p1_2012_narrow = ROOT.RooConstVar("mu_tres_p1_2012_narrow","mu_tres_p1_2012_narrow",1.21248406343)
+muvector_tres_p0_tres_p1_2012_narrow = ROOT.RooArgList(mu_tres_p0_2012_narrow,mu_tres_p1_2012_narrow)
+cov_tres_p0_tres_p1_2012_narrow = ROOT.TMatrixDSym(2)
+cov_tres_p0_tres_p1_2012_narrow[0][0] = 8.5608159912e-08
+cov_tres_p0_tres_p1_2012_narrow[0][1] = 6.67048313423e-06
+cov_tres_p0_tres_p1_2012_narrow[1][0] = 6.67048313423e-06
+cov_tres_p0_tres_p1_2012_narrow[1][1] = 0.00345400073364

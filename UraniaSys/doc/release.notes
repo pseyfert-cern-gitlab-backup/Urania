@@ -1,7 +1,14 @@
 <PRE>
 Package             : Urania
-Package Coordinator : Diego Martinez Santos
+Package Coordinator : Diego Martinez Santos, Carlos Vazquez Sierra
 Purpose             : LHCb physics repository
+
+! 2016-11-07 - Carlos Vazquez Sierra
+ - Make version v6r0, based on LCGCMT_86:
+   + Added one new package:
+      PhysFit/V0hhFitter
+
+!============================== v1r0-v5r0 14-06-2016 ==============================
 
 ! 2016-06-14 - Carlos Vazquez Sierra
  - Make version v5r0

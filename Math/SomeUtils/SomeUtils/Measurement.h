@@ -67,7 +67,7 @@ public:
   double relative_error() const { return total_error()/m_value;};
   double rel_error()const   {return relative_error();  };
   
-  
+  double get_min_error() const;
   
   double value(){ return m_value; }
   void set_value(double value){m_value = value; };
@@ -119,6 +119,7 @@ public:
   
   string str() const;
   string tex() const;
+  string stex() const;
  
   const char* getLaTeX() const;
   
@@ -161,6 +162,7 @@ protected:
 
   stringstream& _sstr(stringstream &s) const ;
   stringstream& _stex(stringstream &s) const ;
+  stringstream& _stex_sci(stringstream &s) const ;
 
 private:
   double m_value;

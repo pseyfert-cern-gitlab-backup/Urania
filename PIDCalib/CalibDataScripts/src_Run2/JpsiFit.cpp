@@ -98,7 +98,7 @@ void JpsiFit(TChain* ch,
   TString chargeCut = TString::Format("mup_TRACK_GHOSTPROB<0.5 && mum_TRACK_GHOSTPROB<0.5 && -1*(%s_ID/abs(%s_ID))=="+chrg,
     pName, pName);
   TString probeCut = TString::Format("%s_MuonProbe==1", pName);
-  TString muonUnBiasedCut = TString::Format("%s_MuonUnbiased==1", pName);
+  TString muonUnBiasedCut = TString::Format("%s_MuonUnbiasedHLT1==1", pName);
   TString tagCut = TString::Format("%s_MuonTag==1", otherPName);
   TString Cuts = TString::Format("(%s) && (%s) && (%s) && (%s)",
     chargeCut.Data(), probeCut.Data(), muonUnBiasedCut.Data(),

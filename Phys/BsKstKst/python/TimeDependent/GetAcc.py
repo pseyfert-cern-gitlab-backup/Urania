@@ -9,9 +9,6 @@
 #
 #********************************************************************
 
-from ROOT import *
-from math import *
-import sys
 from GetAccInterface import *
 
 
@@ -20,7 +17,7 @@ from GetAccInterface import *
 # ################################################################
 
 # Data used to obtain the acceptance.
-data_file = 'AnalysisOutWithCuts_AllBranches.root'
+data_file = 'AnalysisOutWSWeightsSelectedAllBranches.root'#'AnalysisOutWithCuts_AllBranches_PHIstudy.root'
 data_tree = 'AnalysisTree'
 MC_datatype = 2 # 0 for PhSp only, 1 for VV only, 2 for both
 evnum_limit = 0

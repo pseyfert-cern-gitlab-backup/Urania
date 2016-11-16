@@ -138,21 +138,6 @@ def PlotVarsAndReturn( PartName, PlotVars, StripVer, MagPolarity,
     CheckPartType(PartName)
 
     #======================================================================
-    # Create dictionary holding:
-    # - Reconstruction version    ['RecoVer']
-    # - np.array of:
-    #        - MagUp run limits   ['UpRuns']
-    #        - MagDown run limits ['DownRuns']
-    #======================================================================
-    DataDict = GetRunDictionary(StripVer, PartName)
-
-    #======================================================================
-    # Determine min and max file indicies
-    #======================================================================
-    IndexDict = GetMinMaxFileDictionary(DataDict, MagPolarity,
-                                        runMin, runMax, maxFiles)
-
-    #======================================================================
     # Append runNumber limits to TrackCuts
     #======================================================================
     if None not in (runMin, runMax):
@@ -171,14 +156,17 @@ def PlotVarsAndReturn( PartName, PlotVars, StripVer, MagPolarity,
     #======================================================================
     # Loop over all calibration files
     #======================================================================
+    files = GetFiles(StripVer,MagPolarity,PartName,runMin,runMax,maxFiles,verbose)
 
-    for i in xrange(IndexDict['minIndex'], IndexDict['maxIndex']+1):
-        DataSet = GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, i, verbose,
+    index = 0;
+    for file in files:
+        index+=1
+        DataSet = GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, file, verbose,
                             allowMissingDataSets, minEntries, triggerList)
         for PlotVar in PlotVars:
             BinSchema = GetBinScheme(PartName, PlotVar, schemeName)
             if DataSet is not None:
-                histname = "%s_%s_%d" %(PartName, PlotVar, i)
+                histname = "%s_%s_%d" %(PartName, PlotVar, index)
 
                 RawHist = ROOT.TH1D(histname, histname, BinSchema.numBins(), BinSchema.array())
                 VarList = ROOT.RooArgList(DataSet.Get_Param(BinSchema.GetName()))
@@ -275,21 +263,6 @@ def GetPerfPlotList( PerfFunc,
     print BinningScheme.size()
     print BinningScheme.at(0)
     #======================================================================
-    # Create dictionary holding:
-    # - Reconstruction version    ['RecoVer']
-    # - np.array of:
-    #        - MagUp run limits   ['UpRuns']
-    #        - MagDown run limits ['DownRuns']
-    #======================================================================
-    DataDict = GetRunDictionary(StripVer, PartName)
-
-    #======================================================================
-    # Determine min and max file indicies
-    #======================================================================
-    IndexDict = GetMinMaxFileDictionary(DataDict, MagPolarity,
-                                        runMin, runMax, maxFiles)
-
-    #======================================================================
     # Append runNumber limits to TrackCuts
     #======================================================================
     if None not in (runMin, runMax):
@@ -309,8 +282,9 @@ def GetPerfPlotList( PerfFunc,
     # Loop over all calibration subsamples
     #======================================================================
 
-    for i in xrange(IndexDict['minIndex'], IndexDict['maxIndex']+1):
-        DataSet = GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, i, verbose,
+    files = GetFiles(StripVer,MagPolarity,PartName,runMin,runMax,maxFiles,verbose)
+    for file in files:
+        DataSet = GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, file, verbose,
                              allowMissingDataSets, minEntries, triggerList)
         if DataSet is not None:
             #======================================================================
@@ -349,21 +323,6 @@ def GetPerfResultList(PerfFunc,
     CheckPartType(PartName)
 
     #======================================================================
-    # Create dictionary holding:
-    # - Reconstruction version    ['RecoVer']
-    # - np.array of:
-    #        - MagUp run limits   ['UpRuns']
-    #        - MagDown run limits ['DownRuns']
-    #======================================================================
-    DataDict = GetRunDictionary(StripVer, PartName)
-
-    #======================================================================
-    # Determine min and max file indicies
-    #======================================================================
-    IndexDict = GetMinMaxFileDictionary(DataDict, MagPolarity,
-                                        runMin, runMax, maxFiles)
-
-    #======================================================================
     # Append runNumber limits to TrackCuts
     #======================================================================
     if None not in (runMin, runMax):
@@ -385,9 +344,9 @@ def GetPerfResultList(PerfFunc,
     #======================================================================
   #  for DataSet in GetDataSets(StripVer, MagPolarity, PartName, TrackCuts,
   #                             runMin, runMax, verbose, allowMissingDataSets):
-
-    for i in xrange(IndexDict['minIndex'], IndexDict['maxIndex']+1):
-        DataSet = GetDataSet(StripVer,MagPolarity,PartName,TrackCuts,i,verbose,allowMissingDataSets, 1000, triggerList)
+    files = GetFiles(StripVer,MagPolarity,PartName,runMin,runMax,maxFiles,verbose)
+    for file in files:
+        DataSet = GetDataSet(StripVer,MagPolarity,PartName,TrackCuts,file,verbose,allowMissingDataSets, 1000, triggerList)
         if DataSet is not None:
 
         #======================================================================

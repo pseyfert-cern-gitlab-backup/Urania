@@ -1,0 +1,210 @@
+class KsPiPiMisid_TOS1_0:
+	NCombBkg = 1869.32152947
+	NSig = 7301.16004444
+	misid_m = 256.470910608
+	misid_n = 70.4673791037
+	slopeK = -0.0161022104512
+
+class KsPiPiMisid_TOS1_1:
+	NCombBkg = 762.969464807
+	NSig = 6261.25397955
+	misid_m = 200.021278529
+	misid_n = 94.4549271922
+	slopeK = -0.0163675279101
+
+class KsPiPiMisid_TOS1_2:
+	NCombBkg = 395.107986441
+	NSig = 5778.37207512
+	misid_m = 200.000193207
+	misid_n = 98.8242380471
+	slopeK = -0.0196218178548
+
+class KsPiPiMisid_TOS1_3:
+	NCombBkg = 173.584334217
+	NSig = 5067.86713191
+	misid_m = 204.719588442
+	misid_n = 99.9999277153
+	slopeK = -0.0155254062072
+
+class KsPiPiMisid_TOS1_4:
+	NCombBkg = 136.690596464
+	NSig = 5069.35328472
+	misid_m = 356.20745539
+	misid_n = 45.0642701583
+	slopeK = -0.0201363807601
+
+class KsPiPiMisid_TOS1_5:
+	NCombBkg = 142.810924519
+	NSig = 4594.93677715
+	misid_m = 230.776065467
+	misid_n = 99.9998974016
+	slopeK = -0.0333051777781
+
+class KsPiPiMisid_TOS1_6:
+	NCombBkg = 61.5188217884
+	NSig = 4428.05617566
+	misid_m = 218.213756451
+	misid_n = 99.9998076799
+	slopeK = -0.0215843400715
+
+class KsPiPiMisid_TOS1_7:
+	NCombBkg = 55.4065501755
+	NSig = 4150.67487038
+	misid_m = 227.881855859
+	misid_n = 99.9998058927
+	slopeK = -0.0310332373749
+
+class KsPiPiMisid_TOS1_8:
+	NCombBkg = 25.6029275904
+	NSig = 4080.69635767
+	misid_m = 231.368734321
+	misid_n = 99.99986739
+	slopeK = -0.00740218752239
+
+class KsPiPiMisid_TOS1_9:
+	NCombBkg = 7.11101417559
+	NSig = 4230.91658925
+	misid_m = 228.362046883
+	misid_n = 99.9994160271
+	slopeK = -1.48684679378e-05
+
+class KsPiPiMisid_TOS2_0:
+	NCombBkg = 268.027061392
+	NSig = 3191.87287638
+	misid_m = 200.000211138
+	misid_n = 85.4627336813
+	slopeK = -0.0165030048462
+
+class KsPiPiMisid_TOS2_1:
+	NCombBkg = 182.037540232
+	NSig = 3129.86472904
+	misid_m = 200.000000329
+	misid_n = 90.5620702913
+	slopeK = -0.0197527831184
+
+class KsPiPiMisid_TOS2_2:
+	NCombBkg = 139.684870607
+	NSig = 3194.20485525
+	misid_m = 200.000178037
+	misid_n = 95.9855264086
+	slopeK = -0.021322054305
+
+class KsPiPiMisid_TOS2_3:
+	NCombBkg = 81.5203552022
+	NSig = 2967.92917348
+	misid_m = 207.111062172
+	misid_n = 99.9993382508
+	slopeK = -0.0165414164055
+
+class KsPiPiMisid_TOS2_4:
+	NCombBkg = 43.3799850899
+	NSig = 2885.87879119
+	misid_m = 226.31064828
+	misid_n = 99.9999012558
+	slopeK = -0.00879522771685
+
+class KsPiPiMisid_TOS2_5:
+	NCombBkg = 37.0219529353
+	NSig = 2959.31115627
+	misid_m = 234.021335904
+	misid_n = 99.99992388
+	slopeK = -0.0271871548494
+
+class KsPiPiMisid_TOS2_6:
+	NCombBkg = 41.8388450265
+	NSig = 2767.35141786
+	misid_m = 253.912954225
+	misid_n = 99.9999972835
+	slopeK = -0.0268857010269
+
+class KsPiPiMisid_TOS2_7:
+	NCombBkg = 13.9993485393
+	NSig = 2672.77594408
+	misid_m = 260.689480774
+	misid_n = 99.9999406246
+	slopeK = -0.00739541255979
+
+class KsPiPiMisid_TOS2_8:
+	NCombBkg = 22.3548879421
+	NSig = 2036.29409445
+	misid_m = 419.978047194
+	misid_n = 24.0569217938
+	slopeK = -0.0999993152793
+
+class KsPiPiMisid_TOS2_9:
+	NCombBkg = 2.97403768279e-06
+	NSig = 2272.00656345
+	misid_m = 280.351903087
+	misid_n = 99.999697791
+	slopeK = -0.099999759943
+
+class KsPiPiMisid_TIS_0:
+	NCombBkg = 4.25957824568e-05
+	NSig = 2601.80213717
+	misid_m = 419.999999954
+	misid_n = 6.8205770179
+	slopeK = -0.0999954604099
+
+class KsPiPiMisid_TIS_1:
+	NCombBkg = 270.280463088
+	NSig = 2031.61841679
+	misid_m = 200.001211706
+	misid_n = 88.5226362278
+	slopeK = -0.0184802544764
+
+class KsPiPiMisid_TIS_2:
+	NCombBkg = 158.325173019
+	NSig = 1927.79567036
+	misid_m = 200.000074497
+	misid_n = 90.2246061059
+	slopeK = -0.0150929865956
+
+class KsPiPiMisid_TIS_3:
+	NCombBkg = 128.545103132
+	NSig = 1966.09680491
+	misid_m = 200.000285267
+	misid_n = 94.8612971581
+	slopeK = -0.0145105936357
+
+class KsPiPiMisid_TIS_4:
+	NCombBkg = 90.1614559674
+	NSig = 1656.56544315
+	misid_m = 208.362253222
+	misid_n = 99.9998315547
+	slopeK = -0.0221349345653
+
+class KsPiPiMisid_TIS_5:
+	NCombBkg = 81.5282876861
+	NSig = 1568.67534658
+	misid_m = 236.925303644
+	misid_n = 96.9380515437
+	slopeK = -0.0218723691562
+
+class KsPiPiMisid_TIS_6:
+	NCombBkg = 52.2621327812
+	NSig = 1506.07797883
+	misid_m = 235.402767978
+	misid_n = 99.9999998905
+	slopeK = -0.021044126058
+
+class KsPiPiMisid_TIS_7:
+	NCombBkg = 18.0561358263
+	NSig = 1448.91234869
+	misid_m = 412.981793787
+	misid_n = 25.0909848248
+	slopeK = -0.018662291932
+
+class KsPiPiMisid_TIS_8:
+	NCombBkg = 6.98705566696
+	NSig = 1353.45622129
+	misid_m = 397.554550289
+	misid_n = 34.1244477737
+	slopeK = -0.0174925758837
+
+class KsPiPiMisid_TIS_9:
+	NCombBkg = 2.79563302959
+	NSig = 1381.80478423
+	misid_m = 279.722039781
+	misid_n = 99.9999366875
+	slopeK = -0.033791184892
+

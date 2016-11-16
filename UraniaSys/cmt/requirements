@@ -1,9 +1,9 @@
 #===========================================================================
 # Created    : 2013-01-09
-# Maintainer : Diego Martinez Santos
+# Maintainer : Diego Martinez Santos, Carlos Vazquez Sierra
 #============================================================================
 package           UraniaSys
-version           v5r0
+version           v6r0
 #============================================================================
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -36,6 +36,7 @@ use  B2DXFitters		v3r1	PhysFit			# Manuel Schiller, Eduardo Rodrigues
 use  P2VV			v4r1	PhysFit			# Jeroen Van Leerdam, Roel Aaij
 use  SomeMassModels		v2r5	PhysFit			# Diego Martinez Santos
 use  RooPhysFitter              v3r1    PhysFit                 # Philip Hunt
+use  V0hhFitter                 v1r0    PhysFit                 # Rafael Silva Coutinho
 
 use CalibDataScripts            v5r3    PIDCalib                # Philip Hunt
 use PIDPerfScripts              v10r3   PIDCalib                # Philip Hunt

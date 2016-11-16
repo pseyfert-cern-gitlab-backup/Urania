@@ -6,58 +6,90 @@ from ROOT import RooDataSet , RooArgSet, RooBinning, TPaveText, RooPolynomial, R
 print "before processing the class"
 gROOT.ProcessLine(".x BifurcatedCB.cxx+")
 gROOT.ProcessLine(".x lhcbStyle.C+")
+gROOT.SetBatch()
 from ROOT import BifurcatedCB
 
+import argparse
+parser = argparse.ArgumentParser(description='fit')
+parser.add_argument('category', type=str, choices = ['TIS_', 'TOS1_', 'TOS2_'],
+                    help='Trigger category' )
+parser.add_argument('bin', type=int, choices=[0,1,2,3,4,5,6,7,8,9],
+                   help='Bins go from 1 to 9')
+args = parser.parse_args()
+#DEFINE THE CUTS AND INTERVALS
+
+import sys
+sys.path.append('/afs/cern.ch/user/m/mramospe/UraniaDev_HEAD/Phys/Ks2MuMu/python/Ks2MuMu')
+from fiducial import *
+cuts = BDTplusMuID_cuts(args.category)[args.bin][ 3: ]
+#cuts = 'muminus_isMuon==1 &&  muplus_isMuon==1  &&  muplus_muonIDPlusBDT>0 && muminus_muonIDPlusBDT>0'
+
+def plot_with_residuals(canvas, frame, roovar, nbins, r_min, r_max, r_blind_min, r_blind_max):
+     canvas.SetName("canvas")
+     canvas.Divide(1,2)
+     
+     canvas_1 = canvas.cd(1)
+     canvas_1.SetPad(0.01,0.28,0.99,0.99)
+     frame.Draw()
+     
+     canvas_2 = canvas.cd(2)
+     canvas_2.SetPad(0.01,0.01,0.99,0.23)
+     histo = frame.getHist('sidebandsData')     
+     xaxis = frame.GetXaxis()
+
+     nbins = histo.GetN()
+     xMin = xaxis.GetXmin()
+     xMax = xaxis.GetXmax()
+     res = ROOT.TH1F("residuals", "", nbins, xMin, xMax)
+     
+     prim = canvas_1.GetListOfPrimitives()
+
+     fst=[i for i in prim if i.GetName()=='sidebandsCurve'][0]
+     snd=[i for i in prim if i.GetName()=='sidebandsCurve'][1]
+     xbin = ROOT.Double(0.0)
+     val = ROOT.Double(0.0)
+     for idx in range (nbins):
+          histo.GetPoint(idx, xbin, val)
+          eup, edw = histo.GetErrorYhigh(idx), histo.GetErrorYlow(idx)
+          err = max(eup, edw)
+          if xbin<r_blind_min:
+               fcn = fst.Eval(xbin)
+          elif xbin>r_blind_max:
+               fcn = snd.Eval(xbin)
+          else:
+               fcn=0
+          if fcn-val>=0:
+               err = eup
+          else:
+               err = edw 
+          res.SetBinContent(idx+1,(fcn-val)/err)
+ 
+     res.SetMinimum(-5)
+     res.SetMaximum(+5)
+     res.SetNdivisions(0,"x")   # 510 for having x values also
+     res.SetNdivisions(504,"y")   # axis divisions was 510
+     res.SetXTitle(" ")
+     res.SetYTitle(" ")
+     res.SetTitle(" ")
+     res.SetLabelSize(0.15,"Y")
+     
+     res.Draw("P")
+     
+     line = ROOT.TLine(r_min,-3.,r_max,-3)
+     line.SetLineStyle(1)
+     line.SetLineColor(2)
+     line.SetLineWidth(1)
+     line.Draw()
+     line2 = ROOT.TLine(r_min,+3.,r_max,+3)
+     line2.SetLineStyle(1)
+     line2.SetLineColor(2)
+     line2.SetLineWidth(1)
+     line2.Draw()
+     return frame,res,line,line2
 
 
-#def plot_with_residuals(canvas, frame, roovar, nbins, r_min, r_max):
-#     canvas.SetName("canvas")
-#     canvas.Divide(1,2)
-#     
-#     canvas_1 = canvas.cd(1)
-#     canvas_1.SetPad(0.01,0.28,0.99,0.99)
-#     frame.Draw()
 
-#    canvas_2 = canvas.cd(2)
-#    canvas_2.SetPad(0.01,0.01,0.99,0.23)
-#    hpull = frame.pullHist()
-# 
-#    frame_pull = roovar.frame(
-#         ROOT.RooFit.Title(" "),
-#         ROOT.RooFit.Range(r_min,r_max),
-#         #ROOT.RooFit.Range("signal"),
-#         ROOT.RooFit.Bins(nbins)
-#         )
-#    frame_pull.addPlotable(hpull,"P")
-# 
-#    frame_pull.SetMinimum(-5)
-#    frame_pull.SetMaximum(+5)
-#    frame_pull.SetNdivisions(0,"x")   # 510 for having x values also
-#    frame_pull.SetNdivisions(504,"y")   # axis divisions was 510
-#    frame_pull.SetXTitle(" ")
-#    frame_pull.SetYTitle(" ")
-#    frame_pull.SetTitle(" ")
-#    frame_pull.SetLabelSize(0.15,"Y")
-# 
-#    frame_pull.Draw()
-# 
-#    line = ROOT.TLine(r_min,-3.,r_max,-3)
-#    line.SetLineStyle(1)
-#    line.SetLineColor(2)
-#    line.SetLineWidth(1)
-#    line.Draw()
-#    line2 = ROOT.TLine(r_min,+3.,r_max,+3)
-#    line2.SetLineStyle(1)
-#    line2.SetLineColor(2)
-#    line2.SetLineWidth(1)
-#    line2.Draw()
-# 
-
-
-
-#DEFINE CUTS
-cuts = 'muminus_isMuon==1 &&  muplus_isMuon==1 && Bin==2 && muplus_muonIDPlusBDT>0.1 && muminus_muonIDPlusBDT>0.1'
-
+#DEFINE RANGES
 m1=465
 m2=490
 m3=510
@@ -68,8 +100,12 @@ eopt= "BifurCB"
 bkg = "cheb"
 
 #INPUT FILE
-f1=TFile("/afs/cern.ch/work/j/jpriscia/KSMUMU/DATA/DATA_Ksmumu_TosTos1Tos.root","READ")
-t0=f1.Get("KsMuMuTuple/DecayTree")
+#f1=TFile("/afs/cern.ch/work/j/jpriscia/Ks0mumu_Data2012_Splitted_Res20_MuPtCutOff2500_TisTisTos_MVA_TEST.root","READ")
+#f1=TFile("/afs/cern.ch/user/j/jpriscia/eos/lhcb/wg/RD/K0SMuMu/NEW/DIEGO/Ks0mumu_Data2012_Splitted_Res20_MuPtCutOff2500_TisTisTos_MVA.root","READ")
+#f1=TFile("/afs/cern.ch/user/j/jpriscia/eos/lhcb/wg/RD/K0SMuMu/NEW/DIEGO/Ks0mumu_Data2012_Splitted_Res20_MuPtCutOff2500_TosTos1Tos_MVA.root","READ")
+f1=TFile("../prof_mm" + args.category + str(args.bin) + '.root',"READ")
+#f1=TFile("/afs/cern.ch/user/j/jpriscia/eos/lhcb/wg/RD/K0SMuMu/NEW/DIEGO/Ks0mumu_Data2012_Splitted_Res20_MuPtCutOff2500_TosTos2Tos_MVA.root","READ")
+t0=f1.Get("DecayTree")
 
 useless_file=TFile("useless_file.root","RECREATE")
 t=None 
@@ -90,12 +126,13 @@ kMass.setRange("right", m3,m4)
 ######################SIGNAL########################
 
 if eopt=="BifurCB":
-     mK = RooRealVar("mK","mK",460,420,590)
-     sigmaK = RooRealVar("sigmaK","sigmaK",5,1,10)
-     alphaLK = RooRealVar("alphaLK","alphaLK",1.81,0.01,3)
-     nLK = RooRealVar("nLK","nLK",2,0.01,50)
-     alphaRK = RooRealVar("alphaRK","alphaRK",-1.49,-9,-0.5)
-     nRK = RooRealVar("nRK","nRK",2,0.01,50)
+     #mK = RooRealVar("mK","mK",461,440,490)
+     mK = RooRealVar("mK","mK", 460, 455, 465)
+     sigmaK = RooRealVar("sigmaK","sigmaK", 0.9, 0.7, 1.1)
+     #alphaLK = RooRealVar("alphaLK","alphaLK",1.81,0.01,3)
+     #nLK = RooRealVar("nLK","nLK",2,0.01,50)
+     alphaRK = RooRealVar("alphaRK","alphaRK",-0.3, -0.4, -0.2) #-1.2
+     nRK = RooRealVar("nRK","nRK", 38, 5., 48)
      signalK = RooCBShape("signalK","signalK",kMass,mK,sigmaK,alphaRK,nRK)
 
 
@@ -142,12 +179,12 @@ elif eopt=="lorentz":
 else: print 'signal not defined'
 
 if bkg=='expo': 
-     slopeK =  RooRealVar("slopeK", "slopeK",   -0.000002,-0.05,-0.0000001)
+     slopeK =  RooRealVar("slopeK", "slopeK",   -0.000002,-0.05,-0.0000000001)
      ChebK = RooExponential("ChebK", "ChebK", kMass,slopeK)
   
 
 elif bkg=='cheb': 
-     slopeK = RooRealVar("slopeK", "slopeK", 0.5,-0.1, 0.8)
+     slopeK = RooRealVar("slopeK", "slopeK", -1e-5, -1.e-4, 0.)
      ChebK = RooChebychev("ChebK", "ChebK", kMass, RooArgList(slopeK))
   
 else: print 'bkg not defined'
@@ -157,14 +194,14 @@ else: print 'bkg not defined'
 #events and PDF
 
 
-NSig = RooRealVar ("NSig","NSig",700,0,10000)
-NCombBkg = RooRealVar("NCombBkg","NCombBkg",0.00000000001,0,100)
+NSig = RooRealVar ("NSig","NSig",3700,0,100000)
+NCombBkg = RooRealVar("NCombBkg","NCombBkg",200,0,100000)
 
 model = RooAddPdf("model","model",RooArgList(signalK,ChebK),RooArgList(NSig,NCombBkg))
 
 data = RooDataSet("data","data", t, RooArgSet(kMass))
-#rf =  model.fitTo(data,RooFit.Range("left,right"),RooFit.Extended(),RooFit.Save())
-rf =  model.fitTo(data,RooFit.Extended(),RooFit.Save())
+rf =  model.fitTo(data,RooFit.Range("left,right"),RooFit.Extended(),RooFit.Save())
+#rf =  model.fitTo(data,RooFit.Extended(),RooFit.Save())
 #plotting
 
 kFrame = kMass.frame()
@@ -173,15 +210,17 @@ data.plotOn(kFrame,RooFit.CutRange("left,right"),RooFit.Name("sidebandsData"),Ro
 model.plotOn(kFrame,RooFit.Components("signalK"),RooFit.LineStyle(9),RooFit.LineWidth(2),RooFit.LineColor(2), RooFit.Range("left,right"),RooFit.NormRange("left,right"))
 model.plotOn(kFrame,RooFit.Components("ChebK"),RooFit.LineStyle(9),RooFit.LineWidth(2), RooFit.LineColor(4), RooFit.Range("left,right"),RooFit.NormRange("left,right"))
 model.plotOn(kFrame,RooFit.Name("sigReg"),RooFit.Range("signal"),RooFit.NormRange("left,right"), RooFit.LineColor(3))
-#model.plotOn(kFrame,RooFit.Range("left,right"),RooFit.Name("sidebandsCurve"),RooFit.NormRange("left,right"))
+model.plotOn(kFrame,RooFit.Range("left,right"),RooFit.Name("sidebandsCurve"),RooFit.NormRange("left,right"))
 #model.plotOn(kFrame,RooFit.NormRange("left,right"),RooFit.Name("sidebandsCurve"))
 model.plotOn(kFrame,RooFit.Name("prova"))
 
+
+
 kCanvas = TCanvas("kCanvas", "kCanvas", 800,600)
-#plot_with_residuals(kCanvas, kFrame, kMass,135 ,465,600)
-sigplot = ResidualPlot("Ks->pipi CB",kFrame)
-sigplot.addResidual("sidebandsData","prova",465,600)
-sigplot.plot(yLogScale=False, residualBand=False)
+pippo = plot_with_residuals(kCanvas, kFrame, kMass,135 ,465,600,490,510)
+#sigplot = ResidualPlot("Ks->pipi CB",kFrame)
+#sigplot.addResidual("sidebandsData","prova",465,600)
+#sigplot.plot(yLogScale=False, residualBand=False)
 #kFrame.Draw()
 
 
@@ -198,3 +237,15 @@ full_int = model.createIntegral(argset,RooFit.NormSet(argset), RooFit.Range("sig
 print " events_from_fit  = ",  xtra_int.getVal()* n/full_int.getVal() 
 print " err_events_from_fit  = ",  xtra_int.getVal()* dn/full_int.getVal()
 print "number of events in signal region: ", "THAT IS BLIND !!!!!!"#tSig.GetEntries()
+
+ofile = open( 'KsMuMuResults.py', 'at+' )
+ofile.write( 'class KsPiPiMisid_' + args.category + str(args.bin) + ':\n' )
+for i in xrange(len(pars)):
+     var = pars.at(i)
+     ofile.write( '\t' + var.GetName() + ' = ' + str(var.getVal()) + '\n' )
+ofile.write('\n')
+ofile.close()
+#raw_input('Press enter to continue')
+ofile = TFile( 'OutputPlots.root', 'UPDATE' )
+kCanvas.Write(args.category + str(args.bin))
+ofile.Close()

@@ -11,18 +11,17 @@ gROOT.ProcessLine('.x ../../src/TimeDependent/SplineTAcc.cxx++')
 gROOT.ProcessLine('.x ../../src/TimeDependent/lhcbStyle.C')
 gROOT.Reset()
 
-
 # ################################################################
 # V A R I A B L E S
 # ################################################################
 
 # Names of the variables in the ntuples.
-m1_name_MC = "B_s0_DTF_KST1_M"
-m2_name_MC = "B_s0_DTF_KST2_M"
-cos1_name_MC = "B_s0_DTF_KST1_COSTHETA"
-cos2_name_MC = "B_s0_DTF_KST2_COSTHETA"
-phi_name_MC = "B_s0_DTF_B_s0_PHI"
-t_name_MC = "B_s0_DTF_B_s0_TAU"
+m1_name_MC = "B_s0_DTF_KST1_TRUE_M"
+m2_name_MC = "B_s0_DTF_KST2_TRUE_M"
+cos1_name_MC = "B_s0_DTF_KST1_TRUE_COSTHETA"
+cos2_name_MC = "B_s0_DTF_KST2_TRUE_COSTHETA"
+phi_name_MC = "B_s0_DTF_B_s0_PHI_TRUE_TRY3"
+t_name_MC = "B_s0_DTF_TAU"
 
 # Observables.
 mKp1_MC = RooRealVar(m1_name_MC,"M(K^{+}#pi^{-}) ", 750., 1500.,"MeV/c^{2}")
@@ -31,7 +30,7 @@ mKp1_narrow_MC = RooRealVar(m1_name_MC,"M(K^{+}#pi^{-}) ",900.-150.,900.+150.,"M
 mKp2_narrow_MC = RooRealVar(m2_name_MC,"M(K^{-}#pi^{+}) ",900.-150.,900.+150.,"MeV/c^{2}")
 cos1_MC = RooRealVar(cos1_name_MC,"cos(#theta_{1})", -1., 1.,"")
 cos2_MC = RooRealVar(cos2_name_MC,"cos(#theta_{2})", -1., 1.,"")
-phi_MC = RooRealVar(phi_name_MC,"#varphi",-pi,pi,"rad")
+phi_MC = RooRealVar(phi_name_MC,"#varphi",0,2.*pi,"rad")
 t_MC = RooRealVar(t_name_MC,"t_{true}",0.,12.,"ps")
 
 # K+pi-/K-pi+ mass and costheta simultaneous fit categories.
@@ -127,69 +126,117 @@ t3_narrow = RooRealVar("t3_narrow","t3_narrow",0.)
 t4_narrow = RooRealVar("t4_narrow","t4_narrow",0.)
 t5_narrow = RooRealVar("t5_narrow","t5_narrow",0.)
 spl_c0_2011_L0TIS_wide = RooRealVar("spl_c0_2011_L0TIS_wide","spl_c0_2011_L0TIS_wide",0.)
-spl_c1_2011_L0TIS_wide = RooRealVar("spl_c1_2011_L0TIS_wide","spl_c1_2011_L0TIS_wide",-8.04292e-04,-1.,1.)
-spl_c2_2011_L0TIS_wide = RooRealVar("spl_c2_2011_L0TIS_wide","spl_c2_2011_L0TIS_wide",1.54376e+00,0.,5.)
-spl_c3_2011_L0TIS_wide = RooRealVar("spl_c3_2011_L0TIS_wide","spl_c3_2011_L0TIS_wide",1.83198e+00,0.,5.)
-spl_c4_2011_L0TIS_wide = RooRealVar("spl_c4_2011_L0TIS_wide","spl_c4_2011_L0TIS_wide",1.99918e+00,0.,5.)
-spl_c5_2011_L0TIS_wide = RooRealVar("spl_c5_2011_L0TIS_wide","spl_c5_2011_L0TIS_wide",1.56178e+00,0.,5.)
-spl_c6_2011_L0TIS_wide = RooRealVar("spl_c6_2011_L0TIS_wide","spl_c6_2011_L0TIS_wide",2.00961e+00,0.,5.)
+spl_c1_2011_L0TIS_wide = RooRealVar("spl_c1_2011_L0TIS_wide","spl_c1_2011_L0TIS_wide",-3.49380e-04,-1.,1.)
+spl_c2_2011_L0TIS_wide = RooRealVar("spl_c2_2011_L0TIS_wide","spl_c2_2011_L0TIS_wide",6.67553e-01,0.,5.)
+spl_c3_2011_L0TIS_wide = RooRealVar("spl_c3_2011_L0TIS_wide","spl_c3_2011_L0TIS_wide",8.03584e-01,0.,5.)
+spl_c4_2011_L0TIS_wide = RooRealVar("spl_c4_2011_L0TIS_wide","spl_c4_2011_L0TIS_wide",9.21575e-01,0.,5.)
+spl_c5_2011_L0TIS_wide = RooRealVar("spl_c5_2011_L0TIS_wide","spl_c5_2011_L0TIS_wide",1.07080e+00,0.,5.)
+spl_c6_2011_L0TIS_wide = RooRealVar("spl_c6_2011_L0TIS_wide","spl_c6_2011_L0TIS_wide",1.03064e+00,0.,5.)
 spl_c7_2011_L0TIS_wide = RooRealVar("spl_c7_2011_L0TIS_wide","spl_c7_2011_L0TIS_wide",1.)
 spl_c0_2012_L0TIS_wide = RooRealVar("spl_c0_2012_L0TIS_wide","spl_c0_2012_L0TIS_wide",0.)
-spl_c1_2012_L0TIS_wide = RooRealVar("spl_c1_2012_L0TIS_wide","spl_c1_2012_L0TIS_wide",-8.04292e-04,-1.,1.)
-spl_c2_2012_L0TIS_wide = RooRealVar("spl_c2_2012_L0TIS_wide","spl_c2_2012_L0TIS_wide",1.54376e+00,0.,5.)
-spl_c3_2012_L0TIS_wide = RooRealVar("spl_c3_2012_L0TIS_wide","spl_c3_2012_L0TIS_wide",1.83198e+00,0.,5.)
-spl_c4_2012_L0TIS_wide = RooRealVar("spl_c4_2012_L0TIS_wide","spl_c4_2012_L0TIS_wide",1.99918e+00,0.,5.)
-spl_c5_2012_L0TIS_wide = RooRealVar("spl_c5_2012_L0TIS_wide","spl_c5_2012_L0TIS_wide",1.56178e+00,0.,5.)
-spl_c6_2012_L0TIS_wide = RooRealVar("spl_c6_2012_L0TIS_wide","spl_c6_2012_L0TIS_wide",2.00961e+00,0.,5.)
+spl_c1_2012_L0TIS_wide = RooRealVar("spl_c1_2012_L0TIS_wide","spl_c1_2012_L0TIS_wide",-3.49380e-04,-1.,1.)
+spl_c2_2012_L0TIS_wide = RooRealVar("spl_c2_2012_L0TIS_wide","spl_c2_2012_L0TIS_wide",6.67553e-01,0.,5.)
+spl_c3_2012_L0TIS_wide = RooRealVar("spl_c3_2012_L0TIS_wide","spl_c3_2012_L0TIS_wide",8.03584e-01,0.,5.)
+spl_c4_2012_L0TIS_wide = RooRealVar("spl_c4_2012_L0TIS_wide","spl_c4_2012_L0TIS_wide",9.21575e-01,0.,5.)
+spl_c5_2012_L0TIS_wide = RooRealVar("spl_c5_2012_L0TIS_wide","spl_c5_2012_L0TIS_wide",1.07080e+00,0.,5.)
+spl_c6_2012_L0TIS_wide = RooRealVar("spl_c6_2012_L0TIS_wide","spl_c6_2012_L0TIS_wide",1.03064e+00,0.,5.)
 spl_c7_2012_L0TIS_wide = RooRealVar("spl_c7_2012_L0TIS_wide","spl_c7_2012_L0TIS_wide",1.)
 spl_c0_2011_L0noTIS_wide = RooRealVar("spl_c0_2011_L0noTIS_wide","spl_c0_2011_L0noTIS_wide",0.)
-spl_c1_2011_L0noTIS_wide = RooRealVar("spl_c1_2011_L0noTIS_wide","spl_c1_2011_L0noTIS_wide",-7.27954e-04,-1.,1.)
-spl_c2_2011_L0noTIS_wide = RooRealVar("spl_c2_2011_L0noTIS_wide","spl_c2_2011_L0noTIS_wide",1.39946e+00,0.,5.)
-spl_c3_2011_L0noTIS_wide = RooRealVar("spl_c3_2011_L0noTIS_wide","spl_c3_2011_L0noTIS_wide",1.50541e+00,0.,5.)
-spl_c4_2011_L0noTIS_wide = RooRealVar("spl_c4_2011_L0noTIS_wide","spl_c4_2011_L0noTIS_wide",1.71193e+00,0.,5.)
-spl_c5_2011_L0noTIS_wide = RooRealVar("spl_c5_2011_L0noTIS_wide","spl_c5_2011_L0noTIS_wide",1.74520e+00,0.,5.)
-spl_c6_2011_L0noTIS_wide = RooRealVar("spl_c6_2011_L0noTIS_wide","spl_c6_2011_L0noTIS_wide",1.63529e+00,0.,5.)
+spl_c1_2011_L0noTIS_wide = RooRealVar("spl_c1_2011_L0noTIS_wide","spl_c1_2011_L0noTIS_wide",-3.49380e-04,-1.,1.)
+spl_c2_2011_L0noTIS_wide = RooRealVar("spl_c2_2011_L0noTIS_wide","spl_c2_2011_L0noTIS_wide",6.67553e-01,0.,5.)
+spl_c3_2011_L0noTIS_wide = RooRealVar("spl_c3_2011_L0noTIS_wide","spl_c3_2011_L0noTIS_wide",8.03584e-01,0.,5.)
+spl_c4_2011_L0noTIS_wide = RooRealVar("spl_c4_2011_L0noTIS_wide","spl_c4_2011_L0noTIS_wide",9.21575e-01,0.,5.)
+spl_c5_2011_L0noTIS_wide = RooRealVar("spl_c5_2011_L0noTIS_wide","spl_c5_2011_L0noTIS_wide",1.07080e+00,0.,5.)
+spl_c6_2011_L0noTIS_wide = RooRealVar("spl_c6_2011_L0noTIS_wide","spl_c6_2011_L0noTIS_wide",1.03064e+00,0.,5.)
 spl_c7_2011_L0noTIS_wide = RooRealVar("spl_c7_2011_L0noTIS_wide","spl_c7_2011_L0noTIS_wide",1.)
 spl_c0_2012_L0noTIS_wide = RooRealVar("spl_c0_2012_L0noTIS_wide","spl_c0_2012_L0noTIS_wide",0.)
-spl_c1_2012_L0noTIS_wide = RooRealVar("spl_c1_2012_L0noTIS_wide","spl_c1_2012_L0noTIS_wide",-8.04292e-04,-1.,1.)
-spl_c2_2012_L0noTIS_wide = RooRealVar("spl_c2_2012_L0noTIS_wide","spl_c2_2012_L0noTIS_wide",1.54376e+00,0.,5.)
-spl_c3_2012_L0noTIS_wide = RooRealVar("spl_c3_2012_L0noTIS_wide","spl_c3_2012_L0noTIS_wide",1.83198e+00,0.,5.)
-spl_c4_2012_L0noTIS_wide = RooRealVar("spl_c4_2012_L0noTIS_wide","spl_c4_2012_L0noTIS_wide",1.99918e+00,0.,5.)
-spl_c5_2012_L0noTIS_wide = RooRealVar("spl_c5_2012_L0noTIS_wide","spl_c5_2012_L0noTIS_wide",1.56178e+00,0.,5.)
-spl_c6_2012_L0noTIS_wide = RooRealVar("spl_c6_2012_L0noTIS_wide","spl_c6_2012_L0noTIS_wide",2.00961e+00,0.,5.)
+spl_c1_2012_L0noTIS_wide = RooRealVar("spl_c1_2012_L0noTIS_wide","spl_c1_2012_L0noTIS_wide",-3.49380e-04,-1.,1.)
+spl_c2_2012_L0noTIS_wide = RooRealVar("spl_c2_2012_L0noTIS_wide","spl_c2_2012_L0noTIS_wide",6.67553e-01,0.,5.)
+spl_c3_2012_L0noTIS_wide = RooRealVar("spl_c3_2012_L0noTIS_wide","spl_c3_2012_L0noTIS_wide",8.03584e-01,0.,5.)
+spl_c4_2012_L0noTIS_wide = RooRealVar("spl_c4_2012_L0noTIS_wide","spl_c4_2012_L0noTIS_wide",9.21575e-01,0.,5.)
+spl_c5_2012_L0noTIS_wide = RooRealVar("spl_c5_2012_L0noTIS_wide","spl_c5_2012_L0noTIS_wide",1.07080e+00,0.,5.)
+spl_c6_2012_L0noTIS_wide = RooRealVar("spl_c6_2012_L0noTIS_wide","spl_c6_2012_L0noTIS_wide",1.03064e+00,0.,5.)
 spl_c7_2012_L0noTIS_wide = RooRealVar("spl_c7_2012_L0noTIS_wide","spl_c7_2012_L0noTIS_wide",1.)
 spl_c0_2011_L0TIS_narrow = RooRealVar("spl_c0_2011_L0TIS_narrow","spl_c0_2011_L0TIS_narrow",0.)
-spl_c1_2011_L0TIS_narrow = RooRealVar("spl_c1_2011_L0TIS_narrow","spl_c1_2011_L0TIS_narrow",-8.04292e-04,-1.,1.)
-spl_c2_2011_L0TIS_narrow = RooRealVar("spl_c2_2011_L0TIS_narrow","spl_c2_2011_L0TIS_narrow",1.54376e+00,0.,5.)
-spl_c3_2011_L0TIS_narrow = RooRealVar("spl_c3_2011_L0TIS_narrow","spl_c3_2011_L0TIS_narrow",1.83198e+00,0.,5.)
-spl_c4_2011_L0TIS_narrow = RooRealVar("spl_c4_2011_L0TIS_narrow","spl_c4_2011_L0TIS_narrow",1.99918e+00,0.,5.)
-spl_c5_2011_L0TIS_narrow = RooRealVar("spl_c5_2011_L0TIS_narrow","spl_c5_2011_L0TIS_narrow",1.56178e+00,0.,5.)
-spl_c6_2011_L0TIS_narrow = RooRealVar("spl_c6_2011_L0TIS_narrow","spl_c6_2011_L0TIS_narrow",2.00961e+00,0.,5.)
+spl_c1_2011_L0TIS_narrow = RooRealVar("spl_c1_2011_L0TIS_narrow","spl_c1_2011_L0TIS_narrow",-3.49380e-04,-1.,1.)
+spl_c2_2011_L0TIS_narrow = RooRealVar("spl_c2_2011_L0TIS_narrow","spl_c2_2011_L0TIS_narrow",6.67553e-01,0.,5.)
+spl_c3_2011_L0TIS_narrow = RooRealVar("spl_c3_2011_L0TIS_narrow","spl_c3_2011_L0TIS_narrow",8.03584e-01,0.,5.)
+spl_c4_2011_L0TIS_narrow = RooRealVar("spl_c4_2011_L0TIS_narrow","spl_c4_2011_L0TIS_narrow",9.21575e-01,0.,5.)
+spl_c5_2011_L0TIS_narrow = RooRealVar("spl_c5_2011_L0TIS_narrow","spl_c5_2011_L0TIS_narrow",1.07080e+00,0.,5.)
+spl_c6_2011_L0TIS_narrow = RooRealVar("spl_c6_2011_L0TIS_narrow","spl_c6_2011_L0TIS_narrow",1.03064e+00,0.,5.)
 spl_c7_2011_L0TIS_narrow = RooRealVar("spl_c7_2011_L0TIS_narrow","spl_c7_2011_L0TIS_narrow",1.)
 spl_c0_2012_L0TIS_narrow = RooRealVar("spl_c0_2012_L0TIS_narrow","spl_c0_2012_L0TIS_narrow",0.)
-spl_c1_2012_L0TIS_narrow = RooRealVar("spl_c1_2012_L0TIS_narrow","spl_c1_2012_L0TIS_narrow",-8.04292e-04,-1.,1.)
-spl_c2_2012_L0TIS_narrow = RooRealVar("spl_c2_2012_L0TIS_narrow","spl_c2_2012_L0TIS_narrow",1.54376e+00,0.,5.)
-spl_c3_2012_L0TIS_narrow = RooRealVar("spl_c3_2012_L0TIS_narrow","spl_c3_2012_L0TIS_narrow",1.83198e+00,0.,5.)
-spl_c4_2012_L0TIS_narrow = RooRealVar("spl_c4_2012_L0TIS_narrow","spl_c4_2012_L0TIS_narrow",1.99918e+00,0.,5.)
-spl_c5_2012_L0TIS_narrow = RooRealVar("spl_c5_2012_L0TIS_narrow","spl_c5_2012_L0TIS_narrow",1.56178e+00,0.,5.)
-spl_c6_2012_L0TIS_narrow = RooRealVar("spl_c6_2012_L0TIS_narrow","spl_c6_2012_L0TIS_narrow",2.00961e+00,0.,5.)
+spl_c1_2012_L0TIS_narrow = RooRealVar("spl_c1_2012_L0TIS_narrow","spl_c1_2012_L0TIS_narrow",-3.49380e-04,-0.03,0.)
+spl_c2_2012_L0TIS_narrow = RooRealVar("spl_c2_2012_L0TIS_narrow","spl_c2_2012_L0TIS_narrow",6.67553e-01,0.3,1.)
+spl_c3_2012_L0TIS_narrow = RooRealVar("spl_c3_2012_L0TIS_narrow","spl_c3_2012_L0TIS_narrow",8.03584e-01,0.3,1.2)
+spl_c4_2012_L0TIS_narrow = RooRealVar("spl_c4_2012_L0TIS_narrow","spl_c4_2012_L0TIS_narrow",9.21575e-01,0.3,1.2)
+spl_c5_2012_L0TIS_narrow = RooRealVar("spl_c5_2012_L0TIS_narrow","spl_c5_2012_L0TIS_narrow",1.07080e+00,0.3,1.6)
+spl_c6_2012_L0TIS_narrow = RooRealVar("spl_c6_2012_L0TIS_narrow","spl_c6_2012_L0TIS_narrow",1.03064e+00,0.3,1.4)
 spl_c7_2012_L0TIS_narrow = RooRealVar("spl_c7_2012_L0TIS_narrow","spl_c7_2012_L0TIS_narrow",1.)
 spl_c0_2011_L0noTIS_narrow = RooRealVar("spl_c0_2011_L0noTIS_narrow","spl_c0_2011_L0noTIS_narrow",0.)
-spl_c1_2011_L0noTIS_narrow = RooRealVar("spl_c1_2011_L0noTIS_narrow","spl_c1_2011_L0noTIS_narrow",-8.04292e-04,-1.,1.)
-spl_c2_2011_L0noTIS_narrow = RooRealVar("spl_c2_2011_L0noTIS_narrow","spl_c2_2011_L0noTIS_narrow",1.54376e+00,0.,5.)
-spl_c3_2011_L0noTIS_narrow = RooRealVar("spl_c3_2011_L0noTIS_narrow","spl_c3_2011_L0noTIS_narrow",1.83198e+00,0.,5.)
-spl_c4_2011_L0noTIS_narrow = RooRealVar("spl_c4_2011_L0noTIS_narrow","spl_c4_2011_L0noTIS_narrow",1.99918e+00,0.,5.)
-spl_c5_2011_L0noTIS_narrow = RooRealVar("spl_c5_2011_L0noTIS_narrow","spl_c5_2011_L0noTIS_narrow",1.56178e+00,0.,5.)
-spl_c6_2011_L0noTIS_narrow = RooRealVar("spl_c6_2011_L0noTIS_narrow","spl_c6_2011_L0noTIS_narrow",2.00961e+00,0.,5.)
+spl_c1_2011_L0noTIS_narrow = RooRealVar("spl_c1_2011_L0noTIS_narrow","spl_c1_2011_L0noTIS_narrow",-3.49380e-04,-1.,1.)
+spl_c2_2011_L0noTIS_narrow = RooRealVar("spl_c2_2011_L0noTIS_narrow","spl_c2_2011_L0noTIS_narrow",6.67553e-01,0.,5.)
+spl_c3_2011_L0noTIS_narrow = RooRealVar("spl_c3_2011_L0noTIS_narrow","spl_c3_2011_L0noTIS_narrow",8.03584e-01,0.,5.)
+spl_c4_2011_L0noTIS_narrow = RooRealVar("spl_c4_2011_L0noTIS_narrow","spl_c4_2011_L0noTIS_narrow",9.21575e-01,0.,5.)
+spl_c5_2011_L0noTIS_narrow = RooRealVar("spl_c5_2011_L0noTIS_narrow","spl_c5_2011_L0noTIS_narrow",1.07080e+00,0.,5.)
+spl_c6_2011_L0noTIS_narrow = RooRealVar("spl_c6_2011_L0noTIS_narrow","spl_c6_2011_L0noTIS_narrow",1.03064e+00,0.,5.)
 spl_c7_2011_L0noTIS_narrow = RooRealVar("spl_c7_2011_L0noTIS_narrow","spl_c7_2011_L0noTIS_narrow",1.)
 spl_c0_2012_L0noTIS_narrow = RooRealVar("spl_c0_2012_L0noTIS_narrow","spl_c0_2012_L0noTIS_narrow",0.)
-spl_c1_2012_L0noTIS_narrow = RooRealVar("spl_c1_2012_L0noTIS_narrow","spl_c1_2012_L0noTIS_narrow",-8.04292e-04,-1.,1.)
-spl_c2_2012_L0noTIS_narrow = RooRealVar("spl_c2_2012_L0noTIS_narrow","spl_c2_2012_L0noTIS_narrow",1.54376e+00,0.,5.)
-spl_c3_2012_L0noTIS_narrow = RooRealVar("spl_c3_2012_L0noTIS_narrow","spl_c3_2012_L0noTIS_narrow",1.83198e+00,0.,5.)
-spl_c4_2012_L0noTIS_narrow = RooRealVar("spl_c4_2012_L0noTIS_narrow","spl_c4_2012_L0noTIS_narrow",1.99918e+00,0.,5.)
-spl_c5_2012_L0noTIS_narrow = RooRealVar("spl_c5_2012_L0noTIS_narrow","spl_c5_2012_L0noTIS_narrow",1.56178e+00,0.,5.)
-spl_c6_2012_L0noTIS_narrow = RooRealVar("spl_c6_2012_L0noTIS_narrow","spl_c6_2012_L0noTIS_narrow",2.00961e+00,0.,5.)
+spl_c1_2012_L0noTIS_narrow = RooRealVar("spl_c1_2012_L0noTIS_narrow","spl_c1_2012_L0noTIS_narrow",-3.49380e-04,-1.,1.)
+spl_c2_2012_L0noTIS_narrow = RooRealVar("spl_c2_2012_L0noTIS_narrow","spl_c2_2012_L0noTIS_narrow",6.67553e-01,0.,5.)
+spl_c3_2012_L0noTIS_narrow = RooRealVar("spl_c3_2012_L0noTIS_narrow","spl_c3_2012_L0noTIS_narrow",8.03584e-01,0.,5.)
+spl_c4_2012_L0noTIS_narrow = RooRealVar("spl_c4_2012_L0noTIS_narrow","spl_c4_2012_L0noTIS_narrow",9.21575e-01,0.,5.)
+spl_c5_2012_L0noTIS_narrow = RooRealVar("spl_c5_2012_L0noTIS_narrow","spl_c5_2012_L0noTIS_narrow",1.07080e+00,0.,5.)
+spl_c6_2012_L0noTIS_narrow = RooRealVar("spl_c6_2012_L0noTIS_narrow","spl_c6_2012_L0noTIS_narrow",1.03064e+00,0.,5.)
 spl_c7_2012_L0noTIS_narrow = RooRealVar("spl_c7_2012_L0noTIS_narrow","spl_c7_2012_L0noTIS_narrow",1.)
+spl_c1_2011_L0TIS_wide.setVal(-0.000346500081793)
+spl_c2_2011_L0TIS_wide.setVal(0.663641761549)
+spl_c3_2011_L0TIS_wide.setVal(0.800293371078)
+spl_c4_2011_L0TIS_wide.setVal(0.918443605693)
+spl_c5_2011_L0TIS_wide.setVal(1.06751119558)
+spl_c6_2011_L0TIS_wide.setVal(1.02520056608)
+spl_c1_2012_L0TIS_wide.setVal(-0.000329837712314)
+spl_c2_2012_L0TIS_wide.setVal(0.649682819447)
+spl_c3_2012_L0TIS_wide.setVal(0.852093555092)
+spl_c4_2012_L0TIS_wide.setVal(0.952882340502)
+spl_c5_2012_L0TIS_wide.setVal(1.02535533445)
+spl_c6_2012_L0TIS_wide.setVal(1.22878996902)
+spl_c1_2011_L0noTIS_wide.setVal(0.000358535527077)
+spl_c2_2011_L0noTIS_wide.setVal(0.492189640268)
+spl_c3_2011_L0noTIS_wide.setVal(0.571081398071)
+spl_c4_2011_L0noTIS_wide.setVal(0.551751202364)
+spl_c5_2011_L0noTIS_wide.setVal(0.907763661142)
+spl_c6_2011_L0noTIS_wide.setVal(0.402994769379)
+spl_c1_2012_L0noTIS_wide.setVal(-0.00045029812766)
+spl_c2_2012_L0noTIS_wide.setVal(0.894445981257)
+spl_c3_2012_L0noTIS_wide.setVal(1.06690654836)
+spl_c4_2012_L0noTIS_wide.setVal(1.06760029166)
+spl_c5_2012_L0noTIS_wide.setVal(1.33629353315)
+spl_c6_2012_L0noTIS_wide.setVal(1.22777139179)
+spl_c1_2011_L0TIS_narrow.setVal(-0.000318837664848)
+spl_c2_2011_L0TIS_narrow.setVal(0.609040261698)
+spl_c3_2011_L0TIS_narrow.setVal(0.741638050365)
+spl_c4_2011_L0TIS_narrow.setVal(0.813655246631)
+spl_c5_2011_L0TIS_narrow.setVal(0.933604576484)
+spl_c6_2011_L0TIS_narrow.setVal(0.975153746974)
+spl_c1_2012_L0TIS_narrow.setVal(-0.0065303460582)
+spl_c2_2012_L0TIS_narrow.setVal(0.793626274956)
+spl_c3_2012_L0TIS_narrow.setVal(1.15385175824)
+spl_c4_2012_L0TIS_narrow.setVal(1.16699533503)
+spl_c5_2012_L0TIS_narrow.setVal(1.48436549855)
+spl_c6_2012_L0TIS_narrow.setVal(1.32438835078)
+spl_c1_2011_L0noTIS_narrow.setVal(-0.000450977800583)
+spl_c2_2011_L0noTIS_narrow.setVal(0.867710727448)
+spl_c3_2011_L0noTIS_narrow.setVal(0.796698128777)
+spl_c4_2011_L0noTIS_narrow.setVal(1.08263091709)
+spl_c5_2011_L0noTIS_narrow.setVal(0.838156968425)
+spl_c6_2011_L0noTIS_narrow.setVal(1.59821220746)
+spl_c1_2012_L0noTIS_narrow.setVal(-0.000593354876309)
+spl_c2_2012_L0noTIS_narrow.setVal(1.14781938071)
+spl_c3_2012_L0noTIS_narrow.setVal(1.29450234649)
+spl_c4_2012_L0noTIS_narrow.setVal(1.47498307221)
+spl_c5_2012_L0noTIS_narrow.setVal(1.25314569326)
+spl_c6_2012_L0noTIS_narrow.setVal(1.87211739549)
 
 # Parameters of the effective acceptance used in toy MC generation.
 k1_gen_wide = RooRealVar("k1_gen_wide","k1_gen_wide",-0.407189518759,-1.,1.)
@@ -610,8 +657,8 @@ def CreatePhysPDF():
 
 	acctype.setVal(0)
 	for argument in options: options_list_aux.add(argument)
-	for argument in observables: observables_list_aux.add(argument)
-	for argument in observables_narrowwin: observables_list_narrowwin_aux.add(argument)
+	for argument in [decision_SSK,decision_OS,etamistag_SSK,etamistag_OS,mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,t_MC,terror]: observables_list_aux.add(argument)
+	for argument in [decision_SSK,decision_OS,etamistag_SSK,etamistag_OS,mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,t_MC,terror]: observables_list_narrowwin_aux.add(argument)
 	for argument in wave_fractions: wave_fractions_list_aux.add(argument)
 	for argument in dirCP_asyms: dirCP_asyms_list_aux.add(argument)
 	for argument in strong_phases: strong_phases_list_aux.add(argument)
@@ -694,7 +741,26 @@ calib_params_list_aux,cond_distr_params_list_aux,sys_studies_list_aux,mass_integ
 	PDF_phys_narrow = KpiKpiSpectrumNW("PDF_phys_narrow","PDF_phys_narrow",options_list_aux,observables_list_narrowwin_aux,wave_fractions_list_aux,dirCP_asyms_list_aux,strong_phases_list_aux,weak_phases_list_aux,mixing_params_list_aux,\
 calib_params_list_aux,cond_distr_params_list_aux,sys_studies_list_aux,mass_integrals_list_narrowwin_aux,ang_integrals_list_aux,time_integrals_list_aux)
 
+	print Im00.getVal(), Im11.getVal()
+	print Im00_narrowwin.getVal(), Im11_narrowwin.getVal()
+
 	return PDF_phys_wide, PDF_phys_narrow
+
+
+f2DPIDkaon = TFile(NTUPLE_PATH + "PerfHists_K_Strip20_MagUp_BSKPIKPI_KAON_P_ETA.root")
+h2DPIDkaon = f2DPIDkaon.Get("K_DLLK>2. && (V2ProbNNK*(1.-V2ProbNNpi)>0.3)_All")
+f2DPIDpion = TFile(NTUPLE_PATH + "PerfHists_Pi_Strip20_MagUp_BSKPIKPI_PION_P_ETA.root")
+h2DPIDpion = f2DPIDpion.Get("Pi_DLLK<0._All")
+
+def dataMCcorrweight(entry):
+
+	#wPIDkaon1 = h2DPIDkaon.GetBinContent(h2DPIDkaon.FindBin(entry.Kplus_P,entry.Kplus_ETA))
+	#wPIDkaon2 = h2DPIDkaon.GetBinContent(h2DPIDkaon.FindBin(entry.Kminus_P,entry.Kminus_ETA))
+	#wPIDpion1 = h2DPIDpion.GetBinContent(h2DPIDpion.FindBin(entry.Piplus_P,entry.Piplus_ETA))
+	#wPIDpion2 = h2DPIDpion.GetBinContent(h2DPIDpion.FindBin(entry.Piminus_P,entry.Piminus_ETA))
+
+	#return wPIDkaon1*wPIDkaon2*wPIDpion1*wPIDpion2
+	return 1.;
 
 
 def LoadDataVis(data_file, data_tree, datatype, evnum_limit = 0):
@@ -747,10 +813,10 @@ def LoadDataVis(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2011_L0TIS_wide:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			setvarvals(i)
-			MCweight1.setVal(invN_2011_L0TIS_wide/PDF_gen.evaluate())
-			MCweight2.setVal(invN_2011_L0TIS_wide/PDF_gen.evaluate())
-			MCweight3.setVal(invN_2011_L0TIS_wide/PDF_gen.evaluate())
-			MCweight4.setVal(invN_2011_L0TIS_wide/PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight1.setVal(invN_2011_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight2.setVal(invN_2011_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight3.setVal(invN_2011_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight4.setVal(invN_2011_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data1_kpi1_2011_L0TIS_wide_.add(RooArgSet(mKp1_MC,MCweight1))
 			data1_kpi2_2011_L0TIS_wide_.add(RooArgSet(mKp2_MC,MCweight1))
 			data2_kpi1_2011_L0TIS_wide_.add(RooArgSet(cos1_MC,MCweight2))
@@ -763,10 +829,10 @@ def LoadDataVis(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2012_L0TIS_wide:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			setvarvals(i)
-			MCweight1.setVal(invN_2012_L0TIS_wide/PDF_gen.evaluate())
-			MCweight2.setVal(invN_2012_L0TIS_wide/PDF_gen.evaluate())
-			MCweight3.setVal(invN_2012_L0TIS_wide/PDF_gen.evaluate())
-			MCweight4.setVal(invN_2012_L0TIS_wide/PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight1.setVal(invN_2012_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight2.setVal(invN_2012_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight3.setVal(invN_2012_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight4.setVal(invN_2012_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data1_kpi1_2012_L0TIS_wide_.add(RooArgSet(mKp1_MC,MCweight1))
 			data1_kpi2_2012_L0TIS_wide_.add(RooArgSet(mKp2_MC,MCweight1))
 			data2_kpi1_2012_L0TIS_wide_.add(RooArgSet(cos1_MC,MCweight2))
@@ -782,10 +848,10 @@ def LoadDataVis(data_file, data_tree, datatype, evnum_limit = 0):
 			mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
 			mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
 			setvarvals(i)
-			MCweight1.setVal(invN_2011_L0TIS_narrow/PDF_gen.evaluate())
-			MCweight2.setVal(invN_2011_L0TIS_narrow/PDF_gen.evaluate())
-			MCweight3.setVal(invN_2011_L0TIS_narrow/PDF_gen.evaluate())
-			MCweight4.setVal(invN_2011_L0TIS_narrow/PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight1.setVal(invN_2011_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight2.setVal(invN_2011_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight3.setVal(invN_2011_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight4.setVal(invN_2011_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data1_kpi1_2011_L0TIS_narrow_.add(RooArgSet(mKp1_narrow_MC,MCweight1))
 			data1_kpi2_2011_L0TIS_narrow_.add(RooArgSet(mKp2_narrow_MC,MCweight1))
 			data2_kpi1_2011_L0TIS_narrow_.add(RooArgSet(cos1_MC,MCweight2))
@@ -800,10 +866,10 @@ def LoadDataVis(data_file, data_tree, datatype, evnum_limit = 0):
 			mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
 			mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
 			setvarvals(i)
-			MCweight1.setVal(invN_2012_L0TIS_narrow/PDF_gen.evaluate())
-			MCweight2.setVal(invN_2012_L0TIS_narrow/PDF_gen.evaluate())
-			MCweight3.setVal(invN_2012_L0TIS_narrow/PDF_gen.evaluate())
-			MCweight4.setVal(invN_2012_L0TIS_narrow/PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight1.setVal(invN_2012_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight2.setVal(invN_2012_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight3.setVal(invN_2012_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight4.setVal(invN_2012_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data1_kpi1_2012_L0TIS_narrow_.add(RooArgSet(mKp1_narrow_MC,MCweight1))
 			data1_kpi2_2012_L0TIS_narrow_.add(RooArgSet(mKp2_narrow_MC,MCweight1))
 			data2_kpi1_2012_L0TIS_narrow_.add(RooArgSet(cos1_MC,MCweight2))
@@ -817,10 +883,10 @@ def LoadDataVis(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2011_L0noTIS_wide:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			setvarvals(i)
-			MCweight1.setVal(invN_2011_L0noTIS_wide/PDF_gen.evaluate())
-			MCweight2.setVal(invN_2011_L0noTIS_wide/PDF_gen.evaluate())
-			MCweight3.setVal(invN_2011_L0noTIS_wide/PDF_gen.evaluate())
-			MCweight4.setVal(invN_2011_L0noTIS_wide/PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight1.setVal(invN_2011_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight2.setVal(invN_2011_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight3.setVal(invN_2011_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight4.setVal(invN_2011_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data1_kpi1_2011_L0noTIS_wide_.add(RooArgSet(mKp1_MC,MCweight1))
 			data1_kpi2_2011_L0noTIS_wide_.add(RooArgSet(mKp2_MC,MCweight1))
 			data2_kpi1_2011_L0noTIS_wide_.add(RooArgSet(cos1_MC,MCweight2))
@@ -833,10 +899,10 @@ def LoadDataVis(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2012_L0noTIS_wide:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			setvarvals(i)
-			MCweight1.setVal(invN_2012_L0noTIS_wide/PDF_gen.evaluate())
-			MCweight2.setVal(invN_2012_L0noTIS_wide/PDF_gen.evaluate())
-			MCweight3.setVal(invN_2012_L0noTIS_wide/PDF_gen.evaluate())
-			MCweight4.setVal(invN_2012_L0noTIS_wide/PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight1.setVal(invN_2012_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight2.setVal(invN_2012_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight3.setVal(invN_2012_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight4.setVal(invN_2012_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data1_kpi1_2012_L0noTIS_wide_.add(RooArgSet(mKp1_MC,MCweight1))
 			data1_kpi2_2012_L0noTIS_wide_.add(RooArgSet(mKp2_MC,MCweight1))
 			data2_kpi1_2012_L0noTIS_wide_.add(RooArgSet(cos1_MC,MCweight2))
@@ -852,10 +918,10 @@ def LoadDataVis(data_file, data_tree, datatype, evnum_limit = 0):
 			mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
 			mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
 			setvarvals(i)
-			MCweight1.setVal(invN_2011_L0noTIS_narrow/PDF_gen.evaluate())
-			MCweight2.setVal(invN_2011_L0noTIS_narrow/PDF_gen.evaluate())
-			MCweight3.setVal(invN_2011_L0noTIS_narrow/PDF_gen.evaluate())
-			MCweight4.setVal(invN_2011_L0noTIS_narrow/PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight1.setVal(invN_2011_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight2.setVal(invN_2011_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight3.setVal(invN_2011_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight4.setVal(invN_2011_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data1_kpi1_2011_L0noTIS_narrow_.add(RooArgSet(mKp1_narrow_MC,MCweight1))
 			data1_kpi2_2011_L0noTIS_narrow_.add(RooArgSet(mKp2_narrow_MC,MCweight1))
 			data2_kpi1_2011_L0noTIS_narrow_.add(RooArgSet(cos1_MC,MCweight2))
@@ -870,10 +936,10 @@ def LoadDataVis(data_file, data_tree, datatype, evnum_limit = 0):
 			mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
 			mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
 			setvarvals(i)
-			MCweight1.setVal(invN_2012_L0noTIS_narrow/PDF_gen.evaluate())
-			MCweight2.setVal(invN_2012_L0noTIS_narrow/PDF_gen.evaluate())
-			MCweight3.setVal(invN_2012_L0noTIS_narrow/PDF_gen.evaluate())
-			MCweight4.setVal(invN_2012_L0noTIS_narrow/PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight1.setVal(invN_2012_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight2.setVal(invN_2012_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight3.setVal(invN_2012_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight4.setVal(invN_2012_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data1_kpi1_2012_L0noTIS_narrow_.add(RooArgSet(mKp1_narrow_MC,MCweight1))
 			data1_kpi2_2012_L0noTIS_narrow_.add(RooArgSet(mKp2_narrow_MC,MCweight1))
 			data2_kpi1_2012_L0noTIS_narrow_.add(RooArgSet(cos1_MC,MCweight2))
@@ -1014,9 +1080,9 @@ def LoadDataGen2012(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_wide:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			setvarvals(i)
-			MCweight1.setVal(invN_wide/PDF_gen.evaluate())
-			MCweight2.setVal(invN_wide/PDF_gen.evaluate())
-			MCweight4.setVal(invN_wide/PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight1.setVal(invN_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight2.setVal(invN_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight4.setVal(invN_wide*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data1_kpi1_gen_wide_.add(RooArgSet(mKp1_MC,MCweight1))
 			data1_kpi2_gen_wide_.add(RooArgSet(mKp2_MC,MCweight1))
 			data2_kpi1_gen_wide_.add(RooArgSet(cos1_MC,MCweight2))
@@ -1028,9 +1094,9 @@ def LoadDataGen2012(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_narrow:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			setvarvals(i)
-			MCweight1.setVal(invN_narrow/PDF_gen.evaluate())
-			MCweight2.setVal(invN_narrow/PDF_gen.evaluate())
-			MCweight4.setVal(invN_narrow/PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight1.setVal(invN_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight2.setVal(invN_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+			MCweight4.setVal(invN_narrow*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data1_kpi1_gen_narrow_.add(RooArgSet(mKp1_narrow_MC,MCweight1))
 			data1_kpi2_gen_narrow_.add(RooArgSet(mKp2_narrow_MC,MCweight1))
 			data2_kpi1_gen_narrow_.add(RooArgSet(cos1_MC,MCweight2))
@@ -1655,6 +1721,15 @@ def LoadDataNW(data_file, data_tree, datatype, evnum_limit = 0):
 	tree_2011_L0noTIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,1,datatype))
 	tree_2012_L0noTIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,1,datatype))
 
+	invN_2011_L0TIS_wide = 1.#/tree_2011_L0TIS_wide.GetEntries()
+	invN_2012_L0TIS_wide = 1.#/tree_2012_L0TIS_wide.GetEntries()
+	invN_2011_L0TIS_narrow = 1.#/tree_2011_L0TIS_narrow.GetEntries()
+	invN_2012_L0TIS_narrow = 1.#/tree_2012_L0TIS_narrow.GetEntries()
+	invN_2011_L0noTIS_wide = 1.#/tree_2011_L0noTIS_wide.GetEntries()
+	invN_2012_L0noTIS_wide = 1.#/tree_2012_L0noTIS_wide.GetEntries()
+	invN_2011_L0noTIS_narrow = 1.#/tree_2011_L0noTIS_narrow.GetEntries()
+	invN_2012_L0noTIS_narrow = 1.#/tree_2012_L0noTIS_narrow.GetEntries()
+
 	PDF_gen = CreateGenPDF()
 
 	data0_2011_L0TIS_wide = RooDataSet("data0_2011_L0TIS_wide","data0_2011_L0TIS_wide",RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
@@ -1681,7 +1756,7 @@ def LoadDataNW(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2011_L0TIS_wide:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			setvarvals(i)
-			MCweight0.setVal(1./PDF_gen.evaluate())
+			MCweight0.setVal(invN_2011_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
 			data0_2011_L0TIS_wide.add(RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
 			ev_counter += 1
 	year_MC.setVal(1)
@@ -1689,7 +1764,7 @@ def LoadDataNW(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2012_L0TIS_wide:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			setvarvals(i)
-			MCweight0.setVal(1./PDF_gen.evaluate())
+			MCweight0.setVal(invN_2012_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
 			data0_2012_L0TIS_wide.add(RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
 			ev_counter += 1
 	wide_window_MC.setVal(0)
@@ -1700,7 +1775,7 @@ def LoadDataNW(data_file, data_tree, datatype, evnum_limit = 0):
 			mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
 			mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
 			setvarvals(i)
-			MCweight0.setVal(1./PDF_gen.evaluate())
+			MCweight0.setVal(invN_2011_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
 			data0_2011_L0TIS_narrow.add(RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
 			ev_counter += 1
 	year_MC.setVal(1)
@@ -1710,7 +1785,7 @@ def LoadDataNW(data_file, data_tree, datatype, evnum_limit = 0):
 			mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
 			mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
 			setvarvals(i)
-			MCweight0.setVal(1./PDF_gen.evaluate())
+			MCweight0.setVal(invN_2012_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
 			data0_2012_L0TIS_narrow.add(RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
 			ev_counter += 1
 	wide_window_MC.setVal(1)
@@ -1719,7 +1794,7 @@ def LoadDataNW(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2011_L0noTIS_wide:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			setvarvals(i)
-			MCweight0.setVal(1./PDF_gen.evaluate())
+			MCweight0.setVal(invN_2011_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
 			data0_2011_L0noTIS_wide.add(RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
 			ev_counter += 1
 	year_MC.setVal(1)
@@ -1727,7 +1802,7 @@ def LoadDataNW(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2012_L0noTIS_wide:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			setvarvals(i)
-			MCweight0.setVal(1./PDF_gen.evaluate())
+			MCweight0.setVal(invN_2012_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
 			data0_2012_L0noTIS_wide.add(RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
 			ev_counter += 1
 	wide_window_MC.setVal(0)
@@ -1738,7 +1813,7 @@ def LoadDataNW(data_file, data_tree, datatype, evnum_limit = 0):
 			mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
 			mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
 			setvarvals(i)
-			MCweight0.setVal(1./PDF_gen.evaluate())
+			MCweight0.setVal(invN_2011_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
 			data0_2011_L0noTIS_narrow.add(RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
 			ev_counter += 1
 	year_MC.setVal(1)
@@ -1748,7 +1823,7 @@ def LoadDataNW(data_file, data_tree, datatype, evnum_limit = 0):
 			mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
 			mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
 			setvarvals(i)
-			MCweight0.setVal(1./PDF_gen.evaluate())
+			MCweight0.setVal(invN_2012_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
 			data0_2012_L0noTIS_narrow.add(RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
 			ev_counter += 1
 
@@ -1921,43 +1996,59 @@ def ComputeNW(comp_cov_matrix,PDF_phys_wide,PDF_phys_narrow,data0_2011_L0TIS_wid
 
 	# Determination of the NW, their covariance matrix and their uncertainties from the sums above.
 
+	print 'norm[0][0][0][0] =',sumi[0][0][0][0]
+	print 'norm[0][1][0][0] =',sumi[0][1][0][0]
+	print 'norm[1][0][0][0] =',sumi[1][0][0][0]
+	print 'norm[1][1][0][0] =',sumi[1][1][0][0]
+	print 'norm[0][0][1][0] =',sumi[0][0][1][0]
+	print 'norm[0][1][1][0] =',sumi[0][1][1][0]
+	print 'norm[1][0][1][0] =',sumi[1][0][1][0]
+	print 'norm[1][1][1][0] =',sumi[1][1][1][0]
+	normNW_0000 = sumi[0][0][0][0]
+	normNW_0100 = sumi[0][1][0][0]
+	normNW_1000 = sumi[1][0][0][0]
+	normNW_1100 = sumi[1][1][0][0]
+	normNW_0010 = sumi[0][0][1][0]
+	normNW_0110 = sumi[0][1][1][0]
+	normNW_1010 = sumi[1][0][1][0]
+	normNW_1110 = sumi[1][1][1][0]
 	for i in range(380):
-		NWi[0][0][0][i] = sumi[0][0][0][i]/sumi[0][0][0][0]
-		NWi[0][1][0][i] = sumi[0][1][0][i]/sumi[0][1][0][0]
-		NWi[1][0][0][i] = sumi[1][0][0][i]/sumi[1][0][0][0]
-		NWi[1][1][0][i] = sumi[1][1][0][i]/sumi[1][1][0][0]
-		NWi[0][0][1][i] = sumi[0][0][1][i]/sumi[0][0][1][0]
-		NWi[0][1][1][i] = sumi[0][1][1][i]/sumi[0][1][1][0]
-		NWi[1][0][1][i] = sumi[1][0][1][i]/sumi[1][0][1][0]
-		NWi[1][1][1][i] = sumi[1][1][1][i]/sumi[1][1][1][0]
-		eNWi[0][0][0][i] = sqrt(sumij[0][0][0][i][i]-sumi[0][0][0][i]*sumi[0][0][0][i]/N_11_L0TIS_narrow)/sumi[0][0][0][0]
-		eNWi[0][1][0][i] = sqrt(sumij[0][1][0][i][i]-sumi[0][1][0][i]*sumi[0][1][0][i]/N_11_L0TIS_wide)/sumi[0][1][0][0]
-		eNWi[1][0][0][i] = sqrt(sumij[1][0][0][i][i]-sumi[1][0][0][i]*sumi[1][0][0][i]/N_12_L0TIS_narrow)/sumi[1][0][0][0]
-		eNWi[1][1][0][i] = sqrt(sumij[1][1][0][i][i]-sumi[1][1][0][i]*sumi[1][1][0][i]/N_12_L0TIS_wide)/sumi[1][1][0][0]
-		eNWi[0][0][1][i] = sqrt(sumij[0][0][1][i][i]-sumi[0][0][1][i]*sumi[0][0][1][i]/N_11_L0noTIS_narrow)/sumi[0][0][1][0]
-		eNWi[0][1][1][i] = sqrt(sumij[0][1][1][i][i]-sumi[0][1][1][i]*sumi[0][1][1][i]/N_11_L0noTIS_wide)/sumi[0][1][1][0]
-		eNWi[1][0][1][i] = sqrt(sumij[1][0][1][i][i]-sumi[1][0][1][i]*sumi[1][0][1][i]/N_12_L0noTIS_narrow)/sumi[1][0][1][0]
-		eNWi[1][1][1][i] = sqrt(sumij[1][1][1][i][i]-sumi[1][1][1][i]*sumi[1][1][1][i]/N_12_L0noTIS_wide)/sumi[1][1][1][0]
+		NWi[0][0][0][i] = sumi[0][0][0][i]/normNW_0000
+		NWi[0][1][0][i] = sumi[0][1][0][i]/normNW_0100
+		NWi[1][0][0][i] = sumi[1][0][0][i]/normNW_1000
+		NWi[1][1][0][i] = sumi[1][1][0][i]/normNW_1100
+		NWi[0][0][1][i] = sumi[0][0][1][i]/normNW_0010
+		NWi[0][1][1][i] = sumi[0][1][1][i]/normNW_0110
+		NWi[1][0][1][i] = sumi[1][0][1][i]/normNW_1010
+		NWi[1][1][1][i] = sumi[1][1][1][i]/normNW_1110
+		eNWi[0][0][0][i] = sqrt(sumij[0][0][0][i][i]-sumi[0][0][0][i]*sumi[0][0][0][i]/N_11_L0TIS_narrow)/normNW_0000
+		eNWi[0][1][0][i] = sqrt(sumij[0][1][0][i][i]-sumi[0][1][0][i]*sumi[0][1][0][i]/N_11_L0TIS_wide)/normNW_0100
+		eNWi[1][0][0][i] = sqrt(sumij[1][0][0][i][i]-sumi[1][0][0][i]*sumi[1][0][0][i]/N_12_L0TIS_narrow)/normNW_1000
+		eNWi[1][1][0][i] = sqrt(sumij[1][1][0][i][i]-sumi[1][1][0][i]*sumi[1][1][0][i]/N_12_L0TIS_wide)/normNW_1100
+		eNWi[0][0][1][i] = sqrt(sumij[0][0][1][i][i]-sumi[0][0][1][i]*sumi[0][0][1][i]/N_11_L0noTIS_narrow)/normNW_0010
+		eNWi[0][1][1][i] = sqrt(sumij[0][1][1][i][i]-sumi[0][1][1][i]*sumi[0][1][1][i]/N_11_L0noTIS_wide)/normNW_0110
+		eNWi[1][0][1][i] = sqrt(sumij[1][0][1][i][i]-sumi[1][0][1][i]*sumi[1][0][1][i]/N_12_L0noTIS_narrow)/normNW_1010
+		eNWi[1][1][1][i] = sqrt(sumij[1][1][1][i][i]-sumi[1][1][1][i]*sumi[1][1][1][i]/N_12_L0noTIS_wide)/normNW_1110
 		if comp_cov_matrix:
 			for j in range(380):
 				if j<=i:
-					covij[0][0][0][i][j] = (sumij[0][0][0][i][j]-sumi[0][0][0][i]*sumi[0][0][0][j]/N_11_L0TIS_narrow)/sumi[0][0][0][0]/sumi[0][0][0][0]
-					covij[0][1][0][i][j] = (sumij[0][1][0][i][j]-sumi[0][1][0][i]*sumi[0][1][0][j]/N_11_L0TIS_wide)/sumi[0][1][0][0]/sumi[0][1][0][0]
-					covij[1][0][0][i][j] = (sumij[1][0][0][i][j]-sumi[1][0][0][i]*sumi[1][0][0][j]/N_12_L0TIS_narrow)/sumi[1][0][0][0]/sumi[1][0][0][0]
-					covij[1][1][0][i][j] = (sumij[1][1][0][i][j]-sumi[1][1][0][i]*sumi[1][1][0][j]/N_12_L0TIS_wide)/sumi[1][1][0][0]/sumi[1][1][0][0]
-					covij[0][0][1][i][j] = (sumij[0][0][1][i][j]-sumi[0][0][1][i]*sumi[0][0][1][j]/N_11_L0noTIS_narrow)/sumi[0][0][1][0]/sumi[0][0][1][0]
-					covij[0][1][1][i][j] = (sumij[0][1][1][i][j]-sumi[0][1][1][i]*sumi[0][1][1][j]/N_11_L0noTIS_wide)/sumi[0][1][1][0]/sumi[0][1][1][0]
-					covij[1][0][1][i][j] = (sumij[1][0][1][i][j]-sumi[1][0][1][i]*sumi[1][0][1][j]/N_12_L0noTIS_narrow)/sumi[1][0][1][0]/sumi[1][0][1][0]
-					covij[1][1][1][i][j] = (sumij[1][1][1][i][j]-sumi[1][1][1][i]*sumi[1][1][1][j]/N_12_L0noTIS_wide)/sumi[1][1][1][0]/sumi[1][1][1][0]
+					covij[0][0][0][i][j] = (sumij[0][0][0][i][j]-sumi[0][0][0][i]*sumi[0][0][0][j]/N_11_L0TIS_narrow)/normNW_0000/normNW_0000
+					covij[0][1][0][i][j] = (sumij[0][1][0][i][j]-sumi[0][1][0][i]*sumi[0][1][0][j]/N_11_L0TIS_wide)/normNW_0100/normNW_0100
+					covij[1][0][0][i][j] = (sumij[1][0][0][i][j]-sumi[1][0][0][i]*sumi[1][0][0][j]/N_12_L0TIS_narrow)/normNW_1000/normNW_1000
+					covij[1][1][0][i][j] = (sumij[1][1][0][i][j]-sumi[1][1][0][i]*sumi[1][1][0][j]/N_12_L0TIS_wide)/normNW_1100/normNW_1100
+					covij[0][0][1][i][j] = (sumij[0][0][1][i][j]-sumi[0][0][1][i]*sumi[0][0][1][j]/N_11_L0noTIS_narrow)/normNW_0010/normNW_0010
+					covij[0][1][1][i][j] = (sumij[0][1][1][i][j]-sumi[0][1][1][i]*sumi[0][1][1][j]/N_11_L0noTIS_wide)/normNW_0110/normNW_0110
+					covij[1][0][1][i][j] = (sumij[1][0][1][i][j]-sumi[1][0][1][i]*sumi[1][0][1][j]/N_12_L0noTIS_narrow)/normNW_1010/normNW_1010
+					covij[1][1][1][i][j] = (sumij[1][1][1][i][j]-sumi[1][1][1][i]*sumi[1][1][1][j]/N_12_L0noTIS_wide)/normNW_1110/normNW_1110
 				else:
-					covij[0][0][0][i][j] = (sumij[0][0][0][j][i]-sumi[0][0][0][j]*sumi[0][0][0][i]/N_11_L0TIS_narrow)/sumi[0][0][0][0]/sumi[0][0][0][0]
-					covij[0][1][0][i][j] = (sumij[0][1][0][j][i]-sumi[0][1][0][j]*sumi[0][1][0][i]/N_11_L0TIS_wide)/sumi[0][1][0][0]/sumi[0][1][0][0]
-					covij[1][0][0][i][j] = (sumij[1][0][0][j][i]-sumi[1][0][0][j]*sumi[1][0][0][i]/N_12_L0TIS_narrow)/sumi[1][0][0][0]/sumi[1][0][0][0]
-					covij[1][1][0][i][j] = (sumij[1][1][0][j][i]-sumi[1][1][0][j]*sumi[1][1][0][i]/N_12_L0TIS_wide)/sumi[1][1][0][0]/sumi[1][1][0][0]
-					covij[0][0][1][i][j] = (sumij[0][0][1][j][i]-sumi[0][0][1][j]*sumi[0][0][1][i]/N_11_L0noTIS_narrow)/sumi[0][0][1][0]/sumi[0][0][1][0]
-					covij[0][1][1][i][j] = (sumij[0][1][1][j][i]-sumi[0][1][1][j]*sumi[0][1][1][i]/N_11_L0noTIS_wide)/sumi[0][1][1][0]/sumi[0][1][1][0]
-					covij[1][0][1][i][j] = (sumij[1][0][1][j][i]-sumi[1][0][1][j]*sumi[1][0][1][i]/N_12_L0noTIS_narrow)/sumi[1][0][1][0]/sumi[1][0][1][0]
-					covij[1][1][1][i][j] = (sumij[1][1][1][j][i]-sumi[1][1][1][j]*sumi[1][1][1][i]/N_12_L0noTIS_wide)/sumi[1][1][1][0]/sumi[1][1][1][0]
+					covij[0][0][0][i][j] = (sumij[0][0][0][j][i]-sumi[0][0][0][j]*sumi[0][0][0][i]/N_11_L0TIS_narrow)/normNW_0000/normNW_0000
+					covij[0][1][0][i][j] = (sumij[0][1][0][j][i]-sumi[0][1][0][j]*sumi[0][1][0][i]/N_11_L0TIS_wide)/normNW_0100/normNW_0100
+					covij[1][0][0][i][j] = (sumij[1][0][0][j][i]-sumi[1][0][0][j]*sumi[1][0][0][i]/N_12_L0TIS_narrow)/normNW_1000/normNW_1000
+					covij[1][1][0][i][j] = (sumij[1][1][0][j][i]-sumi[1][1][0][j]*sumi[1][1][0][i]/N_12_L0TIS_wide)/normNW_1100/normNW_1100
+					covij[0][0][1][i][j] = (sumij[0][0][1][j][i]-sumi[0][0][1][j]*sumi[0][0][1][i]/N_11_L0noTIS_narrow)/normNW_0010/normNW_0010
+					covij[0][1][1][i][j] = (sumij[0][1][1][j][i]-sumi[0][1][1][j]*sumi[0][1][1][i]/N_11_L0noTIS_wide)/normNW_0110/normNW_0110
+					covij[1][0][1][i][j] = (sumij[1][0][1][j][i]-sumi[1][0][1][j]*sumi[1][0][1][i]/N_12_L0noTIS_narrow)/normNW_1010/normNW_1010
+					covij[1][1][1][i][j] = (sumij[1][1][1][j][i]-sumi[1][1][1][j]*sumi[1][1][1][i]/N_12_L0noTIS_wide)/normNW_1110/normNW_1110
 
 	end = time.time()
 	print 'Events analized in',(end - start)/60.,'min.'
@@ -2141,7 +2232,7 @@ def PrintNW():
 		NWclass += ','
 		if i%20==0: NWclass += '\n'
 		NWclass += str(eNWi[1][1][1][i])
-	NWclass += '}}}};\n\nclass NWclass {\n\n  public:\n\n  Double_t comp(Int_t year_opt,Int_t trig_opt,Int_t wide_window,Int_t j1,Int_t j2,Int_t h,Int_t j1p,Int_t j2p,Int_t hp,Int_t part) {\n    return comp_matrix[year_opt][trig_opt][wide_window][redindexcpp(j1,j2,h,j1p,j2p,hp,part)];\n    };\n\n  Double_t comp_err(Int_t year_opt,Int_t trig_opt,Int_t wide_window,Int_t j1,Int_t j2,Int_t h,Int_t j1p,Int_t j2p,Int_t hp,Int_t part) {\n    return comp_err_matrix[year_opt][trig_opt][wide_window][redindexcpp(j1,j2,h,j1p,j2p,hp,part)];\n    };\n\n};'
+	NWclass += '}}}};\n\nclass NWclass {\n\n  public:\n\n  Double_t comp(Int_t year_opt,Int_t trig_opt,Int_t wide_window,Int_t j1,Int_t j2,Int_t h,Int_t j1p,Int_t j2p,Int_t hp,Int_t part) {\n    return comp_matrix[year_opt][wide_window][trig_opt][redindexcpp(j1,j2,h,j1p,j2p,hp,part)];\n    };\n\n  Double_t comp_err(Int_t year_opt,Int_t trig_opt,Int_t wide_window,Int_t j1,Int_t j2,Int_t h,Int_t j1p,Int_t j2p,Int_t hp,Int_t part) {\n    return comp_err_matrix[year_opt][wide_window][trig_opt][redindexcpp(j1,j2,h,j1p,j2p,hp,part)];\n    };\n\n};'
 
 	fNWcxx = open('../../src/TimeDependent/NWclass.h','w')
 	fNWcxx.write(NWclass)
@@ -2171,6 +2262,15 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 	tree_2011_L0noTIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,1,datatype))
 	tree_2012_L0noTIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,1,datatype))
 
+	invN_2011_L0TIS_wide = 1./tree_2011_L0TIS_wide.GetEntries()
+	invN_2012_L0TIS_wide = 1./tree_2012_L0TIS_wide.GetEntries()
+	invN_2011_L0TIS_narrow = 1./tree_2011_L0TIS_narrow.GetEntries()
+	invN_2012_L0TIS_narrow = 1./tree_2012_L0TIS_narrow.GetEntries()
+	invN_2011_L0noTIS_wide = 1./tree_2011_L0noTIS_wide.GetEntries()
+	invN_2012_L0noTIS_wide = 1./tree_2012_L0noTIS_wide.GetEntries()
+	invN_2011_L0noTIS_narrow = 1./tree_2011_L0noTIS_narrow.GetEntries()
+	invN_2012_L0noTIS_narrow = 1./tree_2012_L0noTIS_narrow.GetEntries()
+
 	PDF_gen = CreateGenPDF()
 
 	opt_genmodel.setVal(datatype)
@@ -2181,7 +2281,7 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2011_L0TIS_wide:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			t_MC.setVal(eval("i."+t_name_MC))
-			MCweight4.setVal(1./PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight4.setVal(invN_2011_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data4_2011_L0TIS_wide_.add(RooArgSet(t_MC,MCweight4))
 			ev_counter += 1
 	year_MC.setVal(1)
@@ -2189,7 +2289,7 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2012_L0TIS_wide:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			t_MC.setVal(eval("i."+t_name_MC))
-			MCweight4.setVal(1./PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight4.setVal(invN_2012_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data4_2012_L0TIS_wide_.add(RooArgSet(t_MC,MCweight4))
 			ev_counter += 1
 	wide_window_MC.setVal(0)
@@ -2198,7 +2298,7 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2011_L0TIS_narrow:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			t_MC.setVal(eval("i."+t_name_MC))
-			MCweight4.setVal(1./PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight4.setVal(invN_2011_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data4_2011_L0TIS_narrow_.add(RooArgSet(t_MC,MCweight4))
 			ev_counter += 1
 	year_MC.setVal(1)
@@ -2206,7 +2306,7 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2012_L0TIS_narrow:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			t_MC.setVal(eval("i."+t_name_MC))
-			MCweight4.setVal(1./PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight4.setVal(invN_2012_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data4_2012_L0TIS_narrow_.add(RooArgSet(t_MC,MCweight4))
 			ev_counter += 1
 	wide_window_MC.setVal(1)
@@ -2215,7 +2315,7 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2011_L0noTIS_wide:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			t_MC.setVal(eval("i."+t_name_MC))
-			MCweight4.setVal(1./PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight4.setVal(invN_2011_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data4_2011_L0noTIS_wide_.add(RooArgSet(t_MC,MCweight4))
 			ev_counter += 1
 	year_MC.setVal(1)
@@ -2223,7 +2323,7 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2012_L0noTIS_wide:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			t_MC.setVal(eval("i."+t_name_MC))
-			MCweight4.setVal(1./PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight4.setVal(invN_2012_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data4_2012_L0noTIS_wide_.add(RooArgSet(t_MC,MCweight4))
 			ev_counter += 1
 	wide_window_MC.setVal(0)
@@ -2232,7 +2332,7 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2011_L0noTIS_narrow:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			t_MC.setVal(eval("i."+t_name_MC))
-			MCweight4.setVal(1./PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight4.setVal(invN_2011_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data4_2011_L0noTIS_narrow_.add(RooArgSet(t_MC,MCweight4))
 			ev_counter += 1
 	year_MC.setVal(1)
@@ -2240,7 +2340,7 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2012_L0noTIS_narrow:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			t_MC.setVal(eval("i."+t_name_MC))
-			MCweight4.setVal(1./PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight4.setVal(invN_2012_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data4_2012_L0noTIS_narrow_.add(RooArgSet(t_MC,MCweight4))
 			ev_counter += 1
 
@@ -2262,25 +2362,25 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 
 def adaptiveBinning(var,nbins,applyweights,data):
 
-	histo_aux = TH1F("histo_aux","histo_aux",200,var.getMin(),var.getMax())
+	nhistobins = 2000
+	histo_aux = TH1F("histo_aux","histo_aux",nhistobins,var.getMin(),var.getMax())
 	for i in range(data.numEntries()):
 		x = data.get(i).getRealValue(var.GetName())
 		w = data.weight()
 		if applyweights: histo_aux.Fill(x,w)
 		else: histo_aux.Fill(x)
-	histo_aux.Smooth()
 	bincontent = histo_aux.Integral()/float(nbins)
 	cumulative = 0
-	for i in range(200):
+	for i in range(nhistobins):
 		cumulative += histo_aux.GetBinContent(i+1)
 		Ni = cumulative
 		while Ni>bincontent: Ni -= bincontent
 		histo_aux.SetBinContent(i+1,Ni)
-	histo_aux.SetBinContent(200,bincontent)
+	histo_aux.SetBinContent(nhistobins,bincontent)
 
 	binningscheme = [var.getMin()]
-	for i in range(199):
-		if histo_aux.GetBinContent(i+1)>histo_aux.GetBinContent(i+2): binningscheme.append(histo_aux.GetBinCenter(i+1))
+	for i in range(nhistobins-1):
+		if (histo_aux.GetBinContent(i+1)>histo_aux.GetBinContent(i+2)) and (len(binningscheme)<nbins): binningscheme.append(histo_aux.GetBinCenter(i+1))
 	binningscheme.append(var.getMax())
 
 	return binningscheme
@@ -2367,28 +2467,28 @@ spl_c0_2012_L0noTIS_narrow,spl_c1_2012_L0noTIS_narrow,spl_c2_2012_L0noTIS_narrow
 	spl_pdf_2012_L0noTIS_narrow.fitTo(data_2012_L0noTIS_narrow_weighted,RooFit.NumCPU(6),RooFit.Strategy(1),RooFit.Minos(0))
 
 	spl_frame_t_2011_L0TIS_wide = t_MC.frame()
-	data_2011_L0TIS_wide_weighted.plotOn(spl_frame_t_2011_L0TIS_wide,RooFit.Binning(30),RooFit.MarkerSize(0.5))
+	data_2011_L0TIS_wide_weighted.plotOn(spl_frame_t_2011_L0TIS_wide,RooFit.Binning(20),RooFit.MarkerSize(0.5))
 	spl_pdf_2011_L0TIS_wide.plotOn(spl_frame_t_2011_L0TIS_wide,RooFit.LineColor(kRed))
 	spl_frame_t_2012_L0TIS_wide = t_MC.frame()
-	data_2012_L0TIS_wide_weighted.plotOn(spl_frame_t_2012_L0TIS_wide,RooFit.Binning(30),RooFit.MarkerSize(0.5))
+	data_2012_L0TIS_wide_weighted.plotOn(spl_frame_t_2012_L0TIS_wide,RooFit.Binning(20),RooFit.MarkerSize(0.5))
 	spl_pdf_2012_L0TIS_wide.plotOn(spl_frame_t_2012_L0TIS_wide,RooFit.LineColor(kRed))
 	spl_frame_t_2011_L0noTIS_wide = t_MC.frame()
-	data_2011_L0noTIS_wide_weighted.plotOn(spl_frame_t_2011_L0noTIS_wide,RooFit.Binning(30),RooFit.MarkerSize(0.5))
+	data_2011_L0noTIS_wide_weighted.plotOn(spl_frame_t_2011_L0noTIS_wide,RooFit.Binning(20),RooFit.MarkerSize(0.5))
 	spl_pdf_2011_L0noTIS_wide.plotOn(spl_frame_t_2011_L0noTIS_wide,RooFit.LineColor(kRed))
 	spl_frame_t_2012_L0noTIS_wide = t_MC.frame()
-	data_2012_L0noTIS_wide_weighted.plotOn(spl_frame_t_2012_L0noTIS_wide,RooFit.Binning(30),RooFit.MarkerSize(0.5))
+	data_2012_L0noTIS_wide_weighted.plotOn(spl_frame_t_2012_L0noTIS_wide,RooFit.Binning(20),RooFit.MarkerSize(0.5))
 	spl_pdf_2012_L0noTIS_wide.plotOn(spl_frame_t_2012_L0noTIS_wide,RooFit.LineColor(kRed))
 	spl_frame_t_2011_L0TIS_narrow = t_MC.frame()
-	data_2011_L0TIS_narrow_weighted.plotOn(spl_frame_t_2011_L0TIS_narrow,RooFit.Binning(30),RooFit.MarkerSize(0.5))
+	data_2011_L0TIS_narrow_weighted.plotOn(spl_frame_t_2011_L0TIS_narrow,RooFit.Binning(12),RooFit.MarkerSize(0.5))
 	spl_pdf_2011_L0TIS_narrow.plotOn(spl_frame_t_2011_L0TIS_narrow,RooFit.LineColor(kRed))
 	spl_frame_t_2012_L0TIS_narrow = t_MC.frame()
-	data_2012_L0TIS_narrow_weighted.plotOn(spl_frame_t_2012_L0TIS_narrow,RooFit.Binning(30),RooFit.MarkerSize(0.5))
+	data_2012_L0TIS_narrow_weighted.plotOn(spl_frame_t_2012_L0TIS_narrow,RooFit.Binning(12),RooFit.MarkerSize(0.5))
 	spl_pdf_2012_L0TIS_narrow.plotOn(spl_frame_t_2012_L0TIS_narrow,RooFit.LineColor(kRed))
 	spl_frame_t_2011_L0noTIS_narrow = t_MC.frame()
-	data_2011_L0noTIS_narrow_weighted.plotOn(spl_frame_t_2011_L0noTIS_narrow,RooFit.Binning(30),RooFit.MarkerSize(0.5))
+	data_2011_L0noTIS_narrow_weighted.plotOn(spl_frame_t_2011_L0noTIS_narrow,RooFit.Binning(12),RooFit.MarkerSize(0.5))
 	spl_pdf_2011_L0noTIS_narrow.plotOn(spl_frame_t_2011_L0noTIS_narrow,RooFit.LineColor(kRed))
 	spl_frame_t_2012_L0noTIS_narrow = t_MC.frame()
-	data_2012_L0noTIS_narrow_weighted.plotOn(spl_frame_t_2012_L0noTIS_narrow,RooFit.Binning(30),RooFit.MarkerSize(0.5))
+	data_2012_L0noTIS_narrow_weighted.plotOn(spl_frame_t_2012_L0noTIS_narrow,RooFit.Binning(12),RooFit.MarkerSize(0.5))
 	spl_pdf_2012_L0noTIS_narrow.plotOn(spl_frame_t_2012_L0noTIS_narrow,RooFit.LineColor(kRed))
 
 	label_cat = TText()
@@ -2477,6 +2577,25 @@ spl_c0_2012_L0noTIS_narrow,spl_c1_2012_L0noTIS_narrow,spl_c2_2012_L0noTIS_narrow
 	fsplh = open('../../src/TimeDependent/Splineclass.h','w')
 	fsplh.write(splclasstext)
 	fsplh.close()
+
+	splcoefflist = [spl_c1_2011_L0TIS_wide,spl_c2_2011_L0TIS_wide,spl_c3_2011_L0TIS_wide,spl_c4_2011_L0TIS_wide,spl_c5_2011_L0TIS_wide,spl_c6_2011_L0TIS_wide,spl_c1_2012_L0TIS_wide,spl_c2_2012_L0TIS_wide,spl_c3_2012_L0TIS_wide,spl_c4_2012_L0TIS_wide,spl_c5_2012_L0TIS_wide,spl_c6_2012_L0TIS_wide,spl_c1_2011_L0noTIS_wide,spl_c2_2011_L0noTIS_wide,spl_c3_2011_L0noTIS_wide,spl_c4_2011_L0noTIS_wide,spl_c5_2011_L0noTIS_wide,spl_c6_2011_L0noTIS_wide,spl_c1_2012_L0noTIS_wide,spl_c2_2012_L0noTIS_wide,spl_c3_2012_L0noTIS_wide,spl_c4_2012_L0noTIS_wide,spl_c5_2012_L0noTIS_wide,spl_c6_2012_L0noTIS_wide,spl_c1_2011_L0TIS_narrow,spl_c2_2011_L0TIS_narrow,spl_c3_2011_L0TIS_narrow,spl_c4_2011_L0TIS_narrow,spl_c5_2011_L0TIS_narrow,spl_c6_2011_L0TIS_narrow,spl_c1_2012_L0TIS_narrow,spl_c2_2012_L0TIS_narrow,spl_c3_2012_L0TIS_narrow,spl_c4_2012_L0TIS_narrow,spl_c5_2012_L0TIS_narrow,spl_c6_2012_L0TIS_narrow,spl_c1_2011_L0noTIS_narrow,spl_c2_2011_L0noTIS_narrow,spl_c3_2011_L0noTIS_narrow,spl_c4_2011_L0noTIS_narrow,spl_c5_2011_L0noTIS_narrow,spl_c6_2011_L0noTIS_narrow,spl_c1_2012_L0noTIS_narrow,spl_c2_2012_L0noTIS_narrow,spl_c3_2012_L0noTIS_narrow,spl_c4_2012_L0noTIS_narrow,spl_c5_2012_L0noTIS_narrow,spl_c6_2012_L0noTIS_narrow]
+	for i in splcoefflist: print i.GetName()+'.setVal('+str(i.getVal())+')'
+
+	spl_c_list_2011_L0TIS_wide = [spl_c1_2011_L0TIS_wide,spl_c2_2011_L0TIS_wide,spl_c3_2011_L0TIS_wide,spl_c4_2011_L0TIS_wide,spl_c5_2011_L0TIS_wide,spl_c6_2011_L0TIS_wide]
+	spl_c_list_2012_L0TIS_wide = [spl_c1_2012_L0TIS_wide,spl_c2_2012_L0TIS_wide,spl_c3_2012_L0TIS_wide,spl_c4_2012_L0TIS_wide,spl_c5_2012_L0TIS_wide,spl_c6_2012_L0TIS_wide]
+	spl_c_list_2011_L0noTIS_wide = [spl_c1_2011_L0noTIS_wide,spl_c2_2011_L0noTIS_wide,spl_c3_2011_L0noTIS_wide,spl_c4_2011_L0noTIS_wide,spl_c5_2011_L0noTIS_wide,spl_c6_2011_L0noTIS_wide]
+	spl_c_list_2012_L0noTIS_wide = [spl_c1_2012_L0noTIS_wide,spl_c2_2012_L0noTIS_wide,spl_c3_2012_L0noTIS_wide,spl_c4_2012_L0noTIS_wide,spl_c5_2012_L0noTIS_wide,spl_c6_2012_L0noTIS_wide]
+	spl_c_list_2011_L0TIS_narrow = [spl_c1_2011_L0TIS_narrow,spl_c2_2011_L0TIS_narrow,spl_c3_2011_L0TIS_narrow,spl_c4_2011_L0TIS_narrow,spl_c5_2011_L0TIS_narrow,spl_c6_2011_L0TIS_narrow]
+	spl_c_list_2012_L0TIS_narrow = [spl_c1_2012_L0TIS_narrow,spl_c2_2012_L0TIS_narrow,spl_c3_2012_L0TIS_narrow,spl_c4_2012_L0TIS_narrow,spl_c5_2012_L0TIS_narrow,spl_c6_2012_L0TIS_narrow]
+	spl_c_list_2011_L0noTIS_narrow = [spl_c1_2011_L0noTIS_narrow,spl_c2_2011_L0noTIS_narrow,spl_c3_2011_L0noTIS_narrow,spl_c4_2011_L0noTIS_narrow,spl_c5_2011_L0noTIS_narrow,spl_c6_2011_L0noTIS_narrow]
+	spl_c_list_2012_L0noTIS_narrow = [spl_c1_2012_L0noTIS_narrow,spl_c2_2012_L0noTIS_narrow,spl_c3_2012_L0noTIS_narrow,spl_c4_2012_L0noTIS_narrow,spl_c5_2012_L0noTIS_narrow,spl_c6_2012_L0noTIS_narrow]
+	spl_c_list_wide = [spl_c_list_2011_L0TIS_wide,spl_c_list_2011_L0noTIS_wide,spl_c_list_2012_L0TIS_wide,spl_c_list_2012_L0noTIS_wide]
+	spl_c_list_narrow = [spl_c_list_2011_L0TIS_narrow,spl_c_list_2011_L0noTIS_narrow,spl_c_list_2012_L0TIS_narrow,spl_c_list_2012_L0noTIS_narrow]
+
+	print 'Wide window coeffs.:'
+	for i in range(6): print '$c_{'+str(i+1)+'}$ & $'+str(round(spl_c_list_wide[0][i].getVal(),3))+'\pm'+str(round(spl_c_list_wide[0][i].getError(),3))+'$ & $'+str(round(spl_c_list_wide[1][i].getVal(),3))+'\pm'+str(round(spl_c_list_wide[1][i].getError(),3))+'$ & $'+str(round(spl_c_list_wide[2][i].getVal(),3))+'\pm'+str(round(spl_c_list_wide[2][i].getError(),3))+'$ & $'+str(round(spl_c_list_wide[3][i].getVal(),3))+'\pm'+str(round(spl_c_list_wide[3][i].getError(),3))+'$ \\\\'
+	print 'Narrow window coeffs.:'
+	for i in range(6): print '$c_{'+str(i+1)+'}$ & $'+str(round(spl_c_list_narrow[0][i].getVal(),3))+'\pm'+str(round(spl_c_list_narrow[0][i].getError(),3))+'$ & $'+str(round(spl_c_list_narrow[1][i].getVal(),3))+'\pm'+str(round(spl_c_list_narrow[1][i].getError(),3))+'$ & $'+str(round(spl_c_list_narrow[2][i].getVal(),3))+'\pm'+str(round(spl_c_list_narrow[2][i].getError(),3))+'$ & $'+str(round(spl_c_list_narrow[3][i].getVal(),3))+'\pm'+str(round(spl_c_list_narrow[3][i].getError(),3))+'$ \\\\'
 
 
 def createTimeAccHistos(binbounds,data11_L0TIS_wide,data12_L0TIS_wide,data11_L0TIS_narrow,data12_L0TIS_narrow,data11_L0noTIS_wide,data12_L0noTIS_wide,data11_L0noTIS_narrow,data12_L0noTIS_narrow):
@@ -2914,9 +3033,9 @@ data2_kpi1_gen_wide,data2_kpi2_gen_wide,data1_kpi1_gen_narrow,data1_kpi2_gen_nar
 	model_acc_kpi1_gen_narrow.plotOn(frame_cos1_MC_gen_narrow,RooFit.DrawOption("c"),RooFit.LineColor(kBlue))
 	model_acc_kpi2_gen_narrow.plotOn(frame_cos2_MC_gen_narrow,RooFit.DrawOption("c"),RooFit.LineColor(kBlue))
 
-	data4_gen_wide.plotOn(frame_t_MC_gen_wide,RooFit.Binning(30),RooFit.MarkerSize(0.5))
+	data4_gen_wide.plotOn(frame_t_MC_gen_wide,RooFit.Binning(20),RooFit.MarkerSize(0.5))
 	spl_pdf_gen_wide.plotOn(frame_t_MC_gen_wide,RooFit.LineColor(kBlue))
-	data4_gen_narrow.plotOn(frame_t_MC_gen_narrow,RooFit.Binning(30),RooFit.MarkerSize(0.5))
+	data4_gen_narrow.plotOn(frame_t_MC_gen_narrow,RooFit.Binning(12),RooFit.MarkerSize(0.5))
 	spl_pdf_gen_narrow.plotOn(frame_t_MC_gen_narrow,RooFit.LineColor(kBlue))
 
 	label_cat = TText()

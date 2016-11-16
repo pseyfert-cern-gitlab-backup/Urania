@@ -80,9 +80,9 @@ ClassImp(KpiKpiSpectrumNW)
  KpiKpiSpectrumNW::KpiKpiSpectrumNW(const char *name, const char *title,
 			const RooArgList& _options,
 			const RooArgList& _observables,
-			const RooArgList& _wave_fractions,
+			const RooArgList& _re_amps,
 			const RooArgList& _dirCP_asyms,
-			const RooArgList& _strong_phases,
+			const RooArgList& _im_amps,
 			const RooArgList& _weak_phases,
 			const RooArgList& _mixing_params,
 			const RooArgList& _calib_params,
@@ -98,12 +98,12 @@ ClassImp(KpiKpiSpectrumNW)
    RooAbsReal* coef_real_observables ;
    RooAbsCategory* coef_int_observables ;
    TIterator* observables_iter = _observables.createIterator() ;
-   RooAbsReal* coef_wave_fractions ;
-   TIterator* wave_fractions_iter = _wave_fractions.createIterator() ;
+   RooAbsReal* coef_re_amps ;
+   TIterator* re_amps_iter = _re_amps.createIterator() ;
    RooAbsReal* coef_dirCP_asyms ;
    TIterator* dirCP_asyms_iter = _dirCP_asyms.createIterator() ;
-   RooAbsReal* coef_strong_phases ;
-   TIterator* strong_phases_iter = _strong_phases.createIterator() ;
+   RooAbsReal* coef_im_amps ;
+   TIterator* im_amps_iter = _im_amps.createIterator() ;
    RooAbsReal* coef_weak_phases ;
    TIterator* weak_phases_iter = _weak_phases.createIterator() ;
    RooAbsReal* coef_mixing_params ;
@@ -175,43 +175,45 @@ ClassImp(KpiKpiSpectrumNW)
    coef_real_observables=(RooAbsReal*)observables_iter->Next();
    t_err = RooRealProxy("t_err","t_err",this,*coef_real_observables);
 
-   // CP averaged wave fractions.
-   coef_wave_fractions=(RooAbsReal*)wave_fractions_iter->Next();
-   f_VV = RooRealProxy("f_VV","f_VV",this,*coef_wave_fractions);
-   coef_wave_fractions=(RooAbsReal*)wave_fractions_iter->Next();
-   f_Swave = RooRealProxy("f_Swave","f_Swave",this,*coef_wave_fractions);
-   coef_wave_fractions=(RooAbsReal*)wave_fractions_iter->Next();
-   f_SS = RooRealProxy("f_SS","f_SS",this,*coef_wave_fractions);
-   coef_wave_fractions=(RooAbsReal*)wave_fractions_iter->Next();
-   f_VTTV = RooRealProxy("f_VTTV","f_VTTV",this,*coef_wave_fractions);
-   coef_wave_fractions=(RooAbsReal*)wave_fractions_iter->Next();
-   f_TT = RooRealProxy("f_TT","f_TT",this,*coef_wave_fractions);
-   coef_wave_fractions=(RooAbsReal*)wave_fractions_iter->Next();
-   D_SVVS = RooRealProxy("D_SVVS","D_SVVS",this,*coef_wave_fractions);
-   coef_wave_fractions=(RooAbsReal*)wave_fractions_iter->Next();
-   D_VTTV = RooRealProxy("D_VTTV","D_VTTV",this,*coef_wave_fractions);
-   coef_wave_fractions=(RooAbsReal*)wave_fractions_iter->Next();
-   D_STTS = RooRealProxy("D_STTS","D_STTS",this,*coef_wave_fractions);
-   coef_wave_fractions=(RooAbsReal*)wave_fractions_iter->Next();
-   fL_VV = RooRealProxy("fL_VV","fL_VV",this,*coef_wave_fractions);
-   coef_wave_fractions=(RooAbsReal*)wave_fractions_iter->Next();
-   xpar_VV = RooRealProxy("xpar_VV","xpar_VV",this,*coef_wave_fractions);
-   coef_wave_fractions=(RooAbsReal*)wave_fractions_iter->Next();
-   fL_VT = RooRealProxy("fL_VT","fL_VT",this,*coef_wave_fractions);
-   coef_wave_fractions=(RooAbsReal*)wave_fractions_iter->Next();
-   xpar_VT = RooRealProxy("xpar_VT","xpar_VT",this,*coef_wave_fractions);
-   coef_wave_fractions=(RooAbsReal*)wave_fractions_iter->Next();
-   fL_TV = RooRealProxy("fL_TV","fL_TV",this,*coef_wave_fractions);
-   coef_wave_fractions=(RooAbsReal*)wave_fractions_iter->Next();
-   xpar_TV = RooRealProxy("xpar_TV","xpar_TV",this,*coef_wave_fractions);
-   coef_wave_fractions=(RooAbsReal*)wave_fractions_iter->Next();
-   fL_TT = RooRealProxy("fL_TT","fL_TT",this,*coef_wave_fractions);
-   coef_wave_fractions=(RooAbsReal*)wave_fractions_iter->Next();
-   xpar1_TT = RooRealProxy("xpar1_TT","xpar1_TT",this,*coef_wave_fractions);
-   coef_wave_fractions=(RooAbsReal*)wave_fractions_iter->Next();
-   xperp1_TT = RooRealProxy("xperp1_TT","xperp1_TT",this,*coef_wave_fractions);
-   coef_wave_fractions=(RooAbsReal*)wave_fractions_iter->Next();
-   xpar2_TT = RooRealProxy("xpar2_TT","xpar2_TT",this,*coef_wave_fractions);
+   // Real part of the amplitudes.
+   coef_re_amps=(RooAbsReal*)re_amps_iter->Next();
+   reA00 = RooRealProxy("reA00","reA00",this,*coef_re_amps);
+   coef_re_amps=(RooAbsReal*)re_amps_iter->Next();
+   reA01 = RooRealProxy("reA01","reA01",this,*coef_re_amps);
+   coef_re_amps=(RooAbsReal*)re_amps_iter->Next();
+   reA10 = RooRealProxy("reA10","reA10",this,*coef_re_amps);
+   coef_re_amps=(RooAbsReal*)re_amps_iter->Next();
+   reA02 = RooRealProxy("reA02","reA02",this,*coef_re_amps);
+   coef_re_amps=(RooAbsReal*)re_amps_iter->Next();
+   reA20 = RooRealProxy("reA20","reA20",this,*coef_re_amps);
+   coef_re_amps=(RooAbsReal*)re_amps_iter->Next();
+   reA110 = RooRealProxy("reA110","reA110",this,*coef_re_amps);
+   coef_re_amps=(RooAbsReal*)re_amps_iter->Next();
+   reA11par = RooRealProxy("reA11par","reA11par",this,*coef_re_amps);
+   coef_re_amps=(RooAbsReal*)re_amps_iter->Next();
+   reA11perp = RooRealProxy("reA11perp","reA11perp",this,*coef_re_amps);
+   coef_re_amps=(RooAbsReal*)re_amps_iter->Next();
+   reA120 = RooRealProxy("reA120","reA120",this,*coef_re_amps);
+   coef_re_amps=(RooAbsReal*)re_amps_iter->Next();
+   reA12par = RooRealProxy("reA12par","reA12par",this,*coef_re_amps);
+   coef_re_amps=(RooAbsReal*)re_amps_iter->Next();
+   reA12perp = RooRealProxy("reA12perp","reA12perp",this,*coef_re_amps);
+   coef_re_amps=(RooAbsReal*)re_amps_iter->Next();
+   reA210 = RooRealProxy("reA210","reA210",this,*coef_re_amps);
+   coef_re_amps=(RooAbsReal*)re_amps_iter->Next();
+   reA21par = RooRealProxy("reA21par","reA21par",this,*coef_re_amps);
+   coef_re_amps=(RooAbsReal*)re_amps_iter->Next();
+   reA21perp = RooRealProxy("reA21perp","reA21perp",this,*coef_re_amps);
+   coef_re_amps=(RooAbsReal*)re_amps_iter->Next();
+   reA220 = RooRealProxy("reA220","reA220",this,*coef_re_amps);
+   coef_re_amps=(RooAbsReal*)re_amps_iter->Next();
+   reA22par = RooRealProxy("reA22par","reA22par",this,*coef_re_amps);
+   coef_re_amps=(RooAbsReal*)re_amps_iter->Next();
+   reA22perp = RooRealProxy("reA22perp","reA22perp",this,*coef_re_amps);
+   coef_re_amps=(RooAbsReal*)re_amps_iter->Next();
+   reA22par2 = RooRealProxy("reA22par2","reA22par2",this,*coef_re_amps);
+   coef_re_amps=(RooAbsReal*)re_amps_iter->Next();
+   reA22perp2 = RooRealProxy("reA22perp2","reA22perp2",this,*coef_re_amps);
 
    // Direct CP violation asymmetries.
    coef_dirCP_asyms=(RooAbsReal*)dirCP_asyms_iter->Next();
@@ -233,43 +235,45 @@ ClassImp(KpiKpiSpectrumNW)
    coef_dirCP_asyms=(RooAbsReal*)dirCP_asyms_iter->Next();
    DCP_TT = RooRealProxy("DCP_TT","DCP_TT",this,*coef_dirCP_asyms);
 
-   // Strong phases.
-   coef_strong_phases=(RooAbsReal*)strong_phases_iter->Next();
-   delta00 = RooRealProxy("delta00","delta00",this,*coef_strong_phases);
-   coef_strong_phases=(RooAbsReal*)strong_phases_iter->Next();
-   delta01 = RooRealProxy("delta01","delta01",this,*coef_strong_phases);
-   coef_strong_phases=(RooAbsReal*)strong_phases_iter->Next();
-   delta10 = RooRealProxy("delta10","delta10",this,*coef_strong_phases);
-   coef_strong_phases=(RooAbsReal*)strong_phases_iter->Next();
-   delta02 = RooRealProxy("delta02","delta02",this,*coef_strong_phases);
-   coef_strong_phases=(RooAbsReal*)strong_phases_iter->Next();
-   delta20 = RooRealProxy("delta20","delta20",this,*coef_strong_phases);
-   coef_strong_phases=(RooAbsReal*)strong_phases_iter->Next();
-   delta11par = RooRealProxy("delta11par","delta11par",this,*coef_strong_phases);
-   coef_strong_phases=(RooAbsReal*)strong_phases_iter->Next();
-   delta11perp = RooRealProxy("delta11perp","delta11perp",this,*coef_strong_phases);
-   coef_strong_phases=(RooAbsReal*)strong_phases_iter->Next();
-   delta120 = RooRealProxy("delta120","delta120",this,*coef_strong_phases);
-   coef_strong_phases=(RooAbsReal*)strong_phases_iter->Next();
-   delta12par = RooRealProxy("delta12par","delta12par",this,*coef_strong_phases);
-   coef_strong_phases=(RooAbsReal*)strong_phases_iter->Next();
-   delta12perp = RooRealProxy("delta12perp","delta12perp",this,*coef_strong_phases);
-   coef_strong_phases=(RooAbsReal*)strong_phases_iter->Next();
-   delta210 = RooRealProxy("delta210","delta210",this,*coef_strong_phases);
-   coef_strong_phases=(RooAbsReal*)strong_phases_iter->Next();
-   delta21par = RooRealProxy("delta21par","delta21par",this,*coef_strong_phases);
-   coef_strong_phases=(RooAbsReal*)strong_phases_iter->Next();
-   delta21perp = RooRealProxy("delta21perp","delta21perp",this,*coef_strong_phases);
-   coef_strong_phases=(RooAbsReal*)strong_phases_iter->Next();
-   delta220 = RooRealProxy("delta220","delta220",this,*coef_strong_phases);
-   coef_strong_phases=(RooAbsReal*)strong_phases_iter->Next();
-   delta22par = RooRealProxy("delta22par","delta22par",this,*coef_strong_phases);
-   coef_strong_phases=(RooAbsReal*)strong_phases_iter->Next();
-   delta22perp = RooRealProxy("delta22perp","delta22perp",this,*coef_strong_phases);
-   coef_strong_phases=(RooAbsReal*)strong_phases_iter->Next();
-   delta22par2 = RooRealProxy("delta22par2","delta22par2",this,*coef_strong_phases);
-   coef_strong_phases=(RooAbsReal*)strong_phases_iter->Next();
-   delta22perp2 = RooRealProxy("delta22perp2","delta22perp2",this,*coef_strong_phases);
+   // Imaginary part of the amplitudes.
+   coef_im_amps=(RooAbsReal*)im_amps_iter->Next();
+   imA00 = RooRealProxy("imA00","imA00",this,*coef_im_amps);
+   coef_im_amps=(RooAbsReal*)im_amps_iter->Next();
+   imA01 = RooRealProxy("imA01","imA01",this,*coef_im_amps);
+   coef_im_amps=(RooAbsReal*)im_amps_iter->Next();
+   imA10 = RooRealProxy("imA10","imA10",this,*coef_im_amps);
+   coef_im_amps=(RooAbsReal*)im_amps_iter->Next();
+   imA02 = RooRealProxy("imA02","imA02",this,*coef_im_amps);
+   coef_im_amps=(RooAbsReal*)im_amps_iter->Next();
+   imA20 = RooRealProxy("imA20","imA20",this,*coef_im_amps);
+   coef_im_amps=(RooAbsReal*)im_amps_iter->Next();
+   imA110 = RooRealProxy("imA110","imA110",this,*coef_im_amps);
+   coef_im_amps=(RooAbsReal*)im_amps_iter->Next();
+   imA11par = RooRealProxy("imA11par","imA11par",this,*coef_im_amps);
+   coef_im_amps=(RooAbsReal*)im_amps_iter->Next();
+   imA11perp = RooRealProxy("imA11perp","imA11perp",this,*coef_im_amps);
+   coef_im_amps=(RooAbsReal*)im_amps_iter->Next();
+   imA120 = RooRealProxy("imA120","imA120",this,*coef_im_amps);
+   coef_im_amps=(RooAbsReal*)im_amps_iter->Next();
+   imA12par = RooRealProxy("imA12par","imA12par",this,*coef_im_amps);
+   coef_im_amps=(RooAbsReal*)im_amps_iter->Next();
+   imA12perp = RooRealProxy("imA12perp","imA12perp",this,*coef_im_amps);
+   coef_im_amps=(RooAbsReal*)im_amps_iter->Next();
+   imA210 = RooRealProxy("imA210","imA210",this,*coef_im_amps);
+   coef_im_amps=(RooAbsReal*)im_amps_iter->Next();
+   imA21par = RooRealProxy("imA21par","imA21par",this,*coef_im_amps);
+   coef_im_amps=(RooAbsReal*)im_amps_iter->Next();
+   imA21perp = RooRealProxy("imA21perp","imA21perp",this,*coef_im_amps);
+   coef_im_amps=(RooAbsReal*)im_amps_iter->Next();
+   imA220 = RooRealProxy("imA220","imA220",this,*coef_im_amps);
+   coef_im_amps=(RooAbsReal*)im_amps_iter->Next();
+   imA22par = RooRealProxy("imA22par","imA22par",this,*coef_im_amps);
+   coef_im_amps=(RooAbsReal*)im_amps_iter->Next();
+   imA22perp = RooRealProxy("imA22perp","imA22perp",this,*coef_im_amps);
+   coef_im_amps=(RooAbsReal*)im_amps_iter->Next();
+   imA22par2 = RooRealProxy("imA22par2","imA22par2",this,*coef_im_amps);
+   coef_im_amps=(RooAbsReal*)im_amps_iter->Next();
+   imA22perp2 = RooRealProxy("imA22perp2","imA22perp2",this,*coef_im_amps);
 
    // Weak phases.
    coef_weak_phases=(RooAbsReal*)weak_phases_iter->Next();
@@ -320,6 +324,18 @@ ClassImp(KpiKpiSpectrumNW)
    etac_tag_SSK = RooRealProxy("etac_tag_SSK","etac_tag_SSK",this,*coef_calib_params);
    coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
    etac_tag_OS = RooRealProxy("etac_tag_OS","etac_tag_OS",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   deltatmean_tres_11 = RooRealProxy("deltatmean_tres_11","deltatmean_tres_11",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   p0_tres_11 = RooRealProxy("p0_tres_11","p0_tres_11",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   p1_tres_11 = RooRealProxy("p1_tres_11","p1_tres_11",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   deltatmean_tres_12 = RooRealProxy("deltatmean_tres_12","deltatmean_tres_12",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   p0_tres_12 = RooRealProxy("p0_tres_12","p0_tres_12",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   p1_tres_12 = RooRealProxy("p1_tres_12","p1_tres_12",this,*coef_calib_params);
    coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
    mv = RooRealProxy("mv","mv",this,*coef_calib_params);
    coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
@@ -556,71 +572,69 @@ ClassImp(KpiKpiSpectrumNW)
    IT_sin = RooRealProxy("IT_sin","IT_sin",this,*coef_time_integrals);
 
    if (acctype == 0) {
-      f1_eff[(int) year_opt] = TReseff.f1(year_opt);
-      f2_eff[(int) year_opt] = 1.-TReseff.f1(year_opt);
-      s1_eff[(int) year_opt] = TReseff.sigma1(year_opt);
-      s2_eff[(int) year_opt] = TReseff.sigma2(year_opt);
+      f1_eff[(int) year_opt] = TReseff.f1(year_opt,wide_window);
+      f2_eff[(int) year_opt] = 1.-TReseff.f1(year_opt,wide_window);
+      s1_eff[(int) year_opt] = TReseff.sigma1(year_opt,wide_window);
+      s2_eff[(int) year_opt] = TReseff.sigma2(year_opt,wide_window);
    }
    else if (acctype == 1 or acctype == 2) {
-      f1_eff[(int) year_opt] = TReseff.f1(year_opt);
-      f2_eff[(int) year_opt] = 1.-TReseff.f1(year_opt);
-      s1_eff[(int) year_opt] = TReseff.sigma1(year_opt);
-      s2_eff[(int) year_opt] = TReseff.sigma2(year_opt);
+      f1_eff[(int) year_opt] = TReseff.f1(year_opt,wide_window);
+      f2_eff[(int) year_opt] = 1.-TReseff.f1(year_opt,wide_window);
+      s1_eff[(int) year_opt] = TReseff.sigma1(year_opt,wide_window);
+      s2_eff[(int) year_opt] = TReseff.sigma2(year_opt,wide_window);
       for (int i=0; i<6; ++i) {spl_knot_vector[(int) year_opt][(int) trig_opt][i] = spl.knot(wide_window,i);}
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s2_eff[(int) year_opt]);
       for (int ibin=0; ibin<5; ++ibin) {
          for (int k=0; k<4; ++k) {
             for (int i=0; i<(k+1); ++i) {
                for (int j=0; j<(i+1); ++j) {
-                  spl_coef_array_1[(int) year_opt][(int) trig_opt][ibin][k][i][j] = spl.coef(year_opt,trig_opt,wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s1_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(year_opt),k-i);
-                  spl_coef_array_2[(int) year_opt][(int) trig_opt][ibin][k][i][j] = spl.coef(year_opt,trig_opt,wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s2_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(year_opt),k-i);
+                  spl_coef_array_1[(int) year_opt][(int) trig_opt][ibin][k][i][j] = spl.coef(year_opt,trig_opt,wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s1_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(year_opt,wide_window),k-i);
+                  spl_coef_array_2[(int) year_opt][(int) trig_opt][ibin][k][i][j] = spl.coef(year_opt,trig_opt,wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s2_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(year_opt,wide_window),k-i);
                }
             }
          }
       }
    }
    else if (acctype == 3) {
-      f1_eff[(int) year_opt] = TReseff.f1(1);
-      f2_eff[(int) year_opt] = 1.-TReseff.f1(1);
-      s1_eff[(int) year_opt] = TReseff.sigma1(1);
-      s2_eff[(int) year_opt] = TReseff.sigma2(1);
+      f1_eff[(int) year_opt] = TReseff.f1(1,1);
+      f2_eff[(int) year_opt] = 1.-TReseff.f1(1,1);
+      s1_eff[(int) year_opt] = TReseff.sigma1(1,1);
+      s2_eff[(int) year_opt] = TReseff.sigma2(1,1);
       for (int i=0; i<6; ++i) {spl_knot_vector[(int) year_opt][(int) trig_opt][i] = genaccpar.knot_gen(wide_window,i);}
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(1,1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(1,1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(1,1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(1,1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(1,1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(1,1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(1,1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(1,1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(1,1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(1,1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(1,1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(1,1))/(sqrt(2.)*s2_eff[(int) year_opt]);
       for (int ibin=0; ibin<5; ++ibin) {
          for (int k=0; k<4; ++k) {
             for (int i=0; i<(k+1); ++i) {
                for (int j=0; j<(i+1); ++j) {
-                  spl_coef_array_1[(int) year_opt][(int) trig_opt][ibin][k][i][j] = genaccpar.coef_gen(wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s1_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(1),k-i);
-                  spl_coef_array_2[(int) year_opt][(int) trig_opt][ibin][k][i][j] = genaccpar.coef_gen(wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s2_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(1),k-i);
+                  spl_coef_array_1[(int) year_opt][(int) trig_opt][ibin][k][i][j] = genaccpar.coef_gen(wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s1_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(1,1),k-i);
+                  spl_coef_array_2[(int) year_opt][(int) trig_opt][ibin][k][i][j] = genaccpar.coef_gen(wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s2_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(1,1),k-i);
                }
             }
          }
       }
    }
-   DCP_prod[0] = -0.0101;
-   DCP_prod[1] = -0.0072;
    fjjphhpindexdict[0][0][0][0] = 1;
    fjjphhpindexdict[0][1][0][0] = 2;
    fjjphhpindexdict[0][1][0][1] = 3;
@@ -827,6 +841,8 @@ ClassImp(KpiKpiSpectrumNW)
    Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][2][0] = TComplex(Ih17Re,-Ih17Im);
    Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][2][1] = TComplex(Ih21Re,-Ih21Im);
    Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][2][2] = TComplex(Ih30Re,0.);
+   if (wide_window == 0) {DCP_prod = -0.0101;}
+   else {DCP_prod = -0.0072;}
 
  }
 
@@ -859,24 +875,25 @@ ClassImp(KpiKpiSpectrumNW)
    phi("phi",this,other.phi),
    t("t",this,other.t),
    t_err("t_err",this,other.t_err),
-   f_VV("f_VV",this,other.f_VV),
-   f_Swave("f_Swave",this,other.f_Swave),
-   f_SS("f_SS",this,other.f_SS),
-   f_VTTV("f_VTTV",this,other.f_VTTV),
-   f_TT("f_TT",this,other.f_TT),
-   D_SVVS("D_SVVS",this,other.D_SVVS),
-   D_VTTV("D_VTTV",this,other.D_VTTV),
-   D_STTS("D_STTS",this,other.D_STTS),
-   fL_VV("fL_VV",this,other.fL_VV),
-   xpar_VV("xpar_VV",this,other.xpar_VV),
-   fL_VT("fL_VT",this,other.fL_VT),
-   xpar_VT("xpar_VT",this,other.xpar_VT),
-   fL_TV("fL_TV",this,other.fL_TV),
-   xpar_TV("xpar_TV",this,other.xpar_TV),
-   fL_TT("fL_TT",this,other.fL_TT),
-   xpar1_TT("xpar1_TT",this,other.xpar1_TT),
-   xperp1_TT("xperp1_TT",this,other.xperp1_TT),
-   xpar2_TT("xpar2_TT",this,other.xpar2_TT),
+   reA00("reA00",this,other.reA00),
+   reA01("reA01",this,other.reA01),
+   reA10("reA10",this,other.reA10),
+   reA02("reA02",this,other.reA02),
+   reA20("reA20",this,other.reA20),
+   reA110("reA110",this,other.reA110),
+   reA11par("reA11par",this,other.reA11par),
+   reA11perp("reA11perp",this,other.reA11perp),
+   reA120("reA120",this,other.reA120),
+   reA12par("reA12par",this,other.reA12par),
+   reA12perp("reA12perp",this,other.reA12perp),
+   reA210("reA210",this,other.reA210),
+   reA21par("reA21par",this,other.reA21par),
+   reA21perp("reA21perp",this,other.reA21perp),
+   reA220("reA220",this,other.reA220),
+   reA22par("reA22par",this,other.reA22par),
+   reA22perp("reA22perp",this,other.reA22perp),
+   reA22par2("reA22par2",this,other.reA22par2),
+   reA22perp2("reA22perp2",this,other.reA22perp2),
    DCP_SS("DCP_SS",this,other.DCP_SS),
    DCP_SV("DCP_SV",this,other.DCP_SV),
    DCP_VS("DCP_VS",this,other.DCP_VS),
@@ -886,24 +903,25 @@ ClassImp(KpiKpiSpectrumNW)
    DCP_VT("DCP_VT",this,other.DCP_VT),
    DCP_TV("DCP_TV",this,other.DCP_TV),
    DCP_TT("DCP_TT",this,other.DCP_TT),
-   delta00("delta00",this,other.delta00),
-   delta01("delta01",this,other.delta01),
-   delta10("delta10",this,other.delta10),
-   delta02("delta02",this,other.delta02),
-   delta20("delta20",this,other.delta20),
-   delta11par("delta11par",this,other.delta11par),
-   delta11perp("delta11perp",this,other.delta11perp),
-   delta120("delta120",this,other.delta120),
-   delta12par("delta12par",this,other.delta12par),
-   delta12perp("delta12perp",this,other.delta12perp),
-   delta210("delta210",this,other.delta210),
-   delta21par("delta21par",this,other.delta21par),
-   delta21perp("delta21perp",this,other.delta21perp),
-   delta220("delta220",this,other.delta220),
-   delta22par("delta22par",this,other.delta22par),
-   delta22perp("delta22perp",this,other.delta22perp),
-   delta22par2("delta22par2",this,other.delta22par2),
-   delta22perp2("delta22perp2",this,other.delta22perp2),
+   imA00("imA00",this,other.imA00),
+   imA01("imA01",this,other.imA01),
+   imA10("imA10",this,other.imA10),
+   imA02("imA02",this,other.imA02),
+   imA20("imA20",this,other.imA20),
+   imA110("imA110",this,other.imA110),
+   imA11par("imA11par",this,other.imA11par),
+   imA11perp("imA11perp",this,other.imA11perp),
+   imA120("imA120",this,other.imA120),
+   imA12par("imA12par",this,other.imA12par),
+   imA12perp("imA12perp",this,other.imA12perp),
+   imA210("imA210",this,other.imA210),
+   imA21par("imA21par",this,other.imA21par),
+   imA21perp("imA21perp",this,other.imA21perp),
+   imA220("imA220",this,other.imA220),
+   imA22par("imA22par",this,other.imA22par),
+   imA22perp("imA22perp",this,other.imA22perp),
+   imA22par2("imA22par2",this,other.imA22par2),
+   imA22perp2("imA22perp2",this,other.imA22perp2),
    phis("phis",this,other.phis),
    dphi_SS("dphi_SS",this,other.dphi_SS),
    dphi_SV("dphi_SV",this,other.dphi_SV),
@@ -926,6 +944,12 @@ ClassImp(KpiKpiSpectrumNW)
    Dp1half_tag_OS("Dp1half_tag_OS",this,other.Dp1half_tag_OS),
    etac_tag_SSK("etac_tag_SSK",this,other.etac_tag_SSK),
    etac_tag_OS("etac_tag_OS",this,other.etac_tag_OS),
+   deltatmean_tres_11("deltatmean_tres_11",this,other.deltatmean_tres_11),
+   p0_tres_11("p0_tres_11",this,other.p0_tres_11),
+   p1_tres_11("p1_tres_11",this,other.p1_tres_11),
+   deltatmean_tres_12("deltatmean_tres_12",this,other.deltatmean_tres_12),
+   p0_tres_12("p0_tres_12",this,other.p0_tres_12),
+   p1_tres_12("p1_tres_12",this,other.p1_tres_12),
    mv("mv",this,other.mv),
    ms("ms",this,other.ms),
    mt("mt",this,other.mt),
@@ -1039,71 +1063,69 @@ ClassImp(KpiKpiSpectrumNW)
    IT_sin("IT_sin",this,other.IT_sin)
  {
    if (acctype == 0) {
-      f1_eff[(int) year_opt] = TReseff.f1(year_opt);
-      f2_eff[(int) year_opt] = 1.-TReseff.f1(year_opt);
-      s1_eff[(int) year_opt] = TReseff.sigma1(year_opt);
-      s2_eff[(int) year_opt] = TReseff.sigma2(year_opt);
+      f1_eff[(int) year_opt] = TReseff.f1(year_opt,wide_window);
+      f2_eff[(int) year_opt] = 1.-TReseff.f1(year_opt,wide_window);
+      s1_eff[(int) year_opt] = TReseff.sigma1(year_opt,wide_window);
+      s2_eff[(int) year_opt] = TReseff.sigma2(year_opt,wide_window);
    }
    else if (acctype == 1 or acctype == 2) {
-      f1_eff[(int) year_opt] = TReseff.f1(year_opt);
-      f2_eff[(int) year_opt] = 1.-TReseff.f1(year_opt);
-      s1_eff[(int) year_opt] = TReseff.sigma1(year_opt);
-      s2_eff[(int) year_opt] = TReseff.sigma2(year_opt);
+      f1_eff[(int) year_opt] = TReseff.f1(year_opt,wide_window);
+      f2_eff[(int) year_opt] = 1.-TReseff.f1(year_opt,wide_window);
+      s1_eff[(int) year_opt] = TReseff.sigma1(year_opt,wide_window);
+      s2_eff[(int) year_opt] = TReseff.sigma2(year_opt,wide_window);
       for (int i=0; i<6; ++i) {spl_knot_vector[(int) year_opt][(int) trig_opt][i] = spl.knot(wide_window,i);}
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(year_opt))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(year_opt))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(year_opt,wide_window))/(sqrt(2.)*s2_eff[(int) year_opt]);
       for (int ibin=0; ibin<5; ++ibin) {
          for (int k=0; k<4; ++k) {
             for (int i=0; i<(k+1); ++i) {
                for (int j=0; j<(i+1); ++j) {
-                  spl_coef_array_1[(int) year_opt][(int) trig_opt][ibin][k][i][j] = spl.coef(year_opt,trig_opt,wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s1_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(year_opt),k-i);
-                  spl_coef_array_2[(int) year_opt][(int) trig_opt][ibin][k][i][j] = spl.coef(year_opt,trig_opt,wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s2_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(year_opt),k-i);
+                  spl_coef_array_1[(int) year_opt][(int) trig_opt][ibin][k][i][j] = spl.coef(year_opt,trig_opt,wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s1_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(year_opt,wide_window),k-i);
+                  spl_coef_array_2[(int) year_opt][(int) trig_opt][ibin][k][i][j] = spl.coef(year_opt,trig_opt,wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s2_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(year_opt,wide_window),k-i);
                }
             }
          }
       }
    }
    else if (acctype == 3) {
-      f1_eff[(int) year_opt] = TReseff.f1(1);
-      f2_eff[(int) year_opt] = 1.-TReseff.f1(1);
-      s1_eff[(int) year_opt] = TReseff.sigma1(1);
-      s2_eff[(int) year_opt] = TReseff.sigma2(1);
+      f1_eff[(int) year_opt] = TReseff.f1(1,1);
+      f2_eff[(int) year_opt] = 1.-TReseff.f1(1,1);
+      s1_eff[(int) year_opt] = TReseff.sigma1(1,1);
+      s2_eff[(int) year_opt] = TReseff.sigma2(1,1);
       for (int i=0; i<6; ++i) {spl_knot_vector[(int) year_opt][(int) trig_opt][i] = genaccpar.knot_gen(wide_window,i);}
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
-      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(1,1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(1,1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(1,1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(1,1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(1,1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x1_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(1,1))/(sqrt(2.)*s1_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][0] = (spl_knot_vector[(int) year_opt][(int) trig_opt][0]-TReseff.off(1,1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][1] = (spl_knot_vector[(int) year_opt][(int) trig_opt][1]-TReseff.off(1,1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][2] = (spl_knot_vector[(int) year_opt][(int) trig_opt][2]-TReseff.off(1,1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][3] = (spl_knot_vector[(int) year_opt][(int) trig_opt][3]-TReseff.off(1,1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][4] = (spl_knot_vector[(int) year_opt][(int) trig_opt][4]-TReseff.off(1,1))/(sqrt(2.)*s2_eff[(int) year_opt]);
+      spl_knot_x2_vector[(int) year_opt][(int) trig_opt][5] = (spl_knot_vector[(int) year_opt][(int) trig_opt][5]-TReseff.off(1,1))/(sqrt(2.)*s2_eff[(int) year_opt]);
       for (int ibin=0; ibin<5; ++ibin) {
          for (int k=0; k<4; ++k) {
             for (int i=0; i<(k+1); ++i) {
                for (int j=0; j<(i+1); ++j) {
-                  spl_coef_array_1[(int) year_opt][(int) trig_opt][ibin][k][i][j] = genaccpar.coef_gen(wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s1_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(1),k-i);
-                  spl_coef_array_2[(int) year_opt][(int) trig_opt][ibin][k][i][j] = genaccpar.coef_gen(wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s2_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(1),k-i);
+                  spl_coef_array_1[(int) year_opt][(int) trig_opt][ibin][k][i][j] = genaccpar.coef_gen(wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s1_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(1,1),k-i);
+                  spl_coef_array_2[(int) year_opt][(int) trig_opt][ibin][k][i][j] = genaccpar.coef_gen(wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s2_eff[(int) year_opt]/sqrt(2.),i+1)*pow(TReseff.off(1,1),k-i);
                }
             }
          }
       }
    }
-   DCP_prod[0] = -0.0101;
-   DCP_prod[1] = -0.0072;
    fjjphhpindexdict[0][0][0][0] = 1;
    fjjphhpindexdict[0][1][0][0] = 2;
    fjjphhpindexdict[0][1][0][1] = 3;
@@ -1310,6 +1332,8 @@ ClassImp(KpiKpiSpectrumNW)
    Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][2][0] = TComplex(Ih17Re,-Ih17Im);
    Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][2][1] = TComplex(Ih21Re,-Ih21Im);
    Ihj1j2j1pj2pdict[(int) year_opt][(int) trig_opt][2][2][2][2] = TComplex(Ih30Re,0.);
+   if (wide_window == 0) {DCP_prod = -0.0101;}
+   else {DCP_prod = -0.0072;}
 
  } 
 
@@ -1319,124 +1343,102 @@ ClassImp(KpiKpiSpectrumNW)
 // ######################################################################################################
 
 // ---------------------------------------------------
-// CP averaged wave fractions corresponding to j1j2 states.
+// Real part of the amplitudes.
 
-Double_t KpiKpiSpectrumNW::wfj1j2(Int_t j1, Int_t j2) const
+Double_t KpiKpiSpectrumNW::reAj1j2h(Int_t j1, Int_t j2, Int_t h) const
  {
 
    switch(j1) {
    case 0 :
       switch(j2) {
-      case 0 : return (1.-f_VV)*f_Swave*f_SS;
-      case 1 : return (1.-f_VV)*f_Swave*(1.-f_SS)*0.5*(1.+D_SVVS);
-      case 2 : return (1.-f_VV)*(1.-f_Swave)*(1.-f_VTTV)*(1.-f_TT)*0.5*(1.+D_STTS);
+      case 0 : return reA00;
+      case 1 : return reA01;
+      case 2 : return reA02;
       }
    case 1 :
       switch(j2) {
-      case 0 : return (1.-f_VV)*f_Swave*(1.-f_SS)*0.5*(1.-D_SVVS);
-      case 1 : return f_VV;
-      case 2 : return (1.-f_VV)*(1.-f_Swave)*f_VTTV*0.5*(1.+D_VTTV);
-      }
-   case 2 :
-      switch(j2) {
-      case 0 : return (1.-f_VV)*(1.-f_Swave)*(1.-f_VTTV)*(1.-f_TT)*0.5*(1.-D_STTS);
-      case 1 : return (1.-f_VV)*(1.-f_Swave)*f_VTTV*0.5*(1.-D_VTTV);
-      case 2 : return (1.-f_VV)*(1.-f_Swave)*(1.-f_VTTV)*f_TT;
-      }
-   }
-   return 0;
-
- }
-
-// ---------------------------------------------------
-// CP averaged polarization fractions corresponding to h_j1j2 states.
-
-Double_t KpiKpiSpectrumNW::pfj1j2h(Int_t j1, Int_t j2, Int_t h) const
- {
-
-   switch(j1) {
-   case 1 :
-      switch(j2) {
+      case 0 : return reA10;
       case 1 :
          switch(h) {
-         case 0 : return fL_VV;
-         case 1 : return (1.-fL_VV)*xpar_VV;
-         case 2 : return (1.-fL_VV)*(1.-xpar_VV);
+         case 0 : return reA110;
+         case 1 : return reA11par;
+         case 2 : return reA11perp;
          }
       case 2 :
          switch(h) {
-         case 0 : return fL_VT;
-         case 1 : return (1.-fL_VT)*xpar_VT;
-         case 2 : return (1.-fL_VT)*(1.-xpar_VT);
+         case 0 : return reA120;
+         case 1 : return reA12par;
+         case 2 : return reA12perp;      
          }
       }
    case 2 :
       switch(j2) {
+      case 0 : return reA20;
       case 1 :
          switch(h) {
-         case 0 : return fL_TV;
-         case 1 : return (1.-fL_TV)*xpar_TV;
-         case 2 : return (1.-fL_TV)*(1.-xpar_TV);
+         case 0 : return reA210;
+         case 1 : return reA21par;
+         case 2 : return reA21perp;
          }
       case 2 :
          switch(h) {
-         case 0 : return fL_TT;
-         case 1 : return (1.-fL_TT)*xpar1_TT;
-         case 2 : return (1.-fL_TT)*(1.-xpar1_TT)*xperp1_TT;
-         case 3 : return (1.-fL_TT)*(1.-xpar1_TT)*(1.-xperp1_TT)*xpar2_TT;
-         case 4 : return (1.-fL_TT)*(1.-xpar1_TT)*(1.-xperp1_TT)*(1.-xpar2_TT);
+         case 0 : return reA220;
+         case 1 : return reA22par;
+         case 2 : return reA22perp;
+         case 3 : return reA22par2;
+         case 4 : return reA22perp2;
          }
       }
    }
-   return 1.;
+   return 0.;
 
  }
 
 // ---------------------------------------------------
-// Amplitude strong phases.
+// Imaginary part of the amplitudes.
 
-Double_t KpiKpiSpectrumNW::deltaj1j2h(Int_t j1, Int_t j2, Int_t h) const
+Double_t KpiKpiSpectrumNW::imAj1j2h(Int_t j1, Int_t j2, Int_t h) const
  {
 
    switch(j1) {
    case 0 :
       switch(j2) {
-      case 0 : return delta00;
-      case 1 : return delta01;
-      case 2 : return delta02;
+      case 0 : return imA00;
+      case 1 : return imA01;
+      case 2 : return imA02;
       }
    case 1 :
       switch(j2) {
-      case 0 : return delta10;
+      case 0 : return imA10;
       case 1 :
          switch(h) {
-         case 0 : return 0.;
-         case 1 : return delta11par;
-         case 2 : return delta11perp;
+         case 0 : return imA110;
+         case 1 : return imA11par;
+         case 2 : return imA11perp;
          }
       case 2 :
          switch(h) {
-         case 0 : return delta120;
-         case 1 : return delta12par;
-         case 2 : return delta12perp;      
+         case 0 : return imA120;
+         case 1 : return imA12par;
+         case 2 : return imA12perp;      
          }
       }
    case 2 :
       switch(j2) {
-      case 0 : return delta20;
+      case 0 : return imA20;
       case 1 :
          switch(h) {
-         case 0 : return delta210;
-         case 1 : return delta21par;
-         case 2 : return delta21perp;
+         case 0 : return imA210;
+         case 1 : return imA21par;
+         case 2 : return imA21perp;
          }
       case 2 :
          switch(h) {
-         case 0 : return delta220;
-         case 1 : return delta22par;
-         case 2 : return delta22perp;
-         case 3 : return delta22par2;
-         case 4 : return delta22perp2;
+         case 0 : return imA220;
+         case 1 : return imA22par;
+         case 2 : return imA22perp;
+         case 3 : return imA22par2;
+         case 4 : return imA22perp2;
          }
       }
    }
@@ -1480,7 +1482,7 @@ Double_t KpiKpiSpectrumNW::DCPj1j2(Int_t j1, Int_t j2) const
 Double_t KpiKpiSpectrumNW::dphij1j2(Int_t j1, Int_t j2) const
  {
 
-   switch(j1) {
+   /*switch(j1) {
    case 0 :
       switch(j2) {
       case 0 : return dphi_SS;
@@ -1501,7 +1503,7 @@ Double_t KpiKpiSpectrumNW::dphij1j2(Int_t j1, Int_t j2) const
       case 1 : return dphi_TV;
       case 2 : return dphi_TT;
       }
-   }
+   }*/
    return 0;
 
  }
@@ -1533,7 +1535,7 @@ Double_t KpiKpiSpectrumNW::etaj1j2h(Int_t j1, Int_t j2, Int_t h) const
 TComplex KpiKpiSpectrumNW::Aj1j2h(Int_t j1, Int_t j2, Int_t h) const
  {
 
-   return TComplex(sqrt(wfj1j2(j1,j2)*pfj1j2h(j1,j2,h)*(1.+DCPj1j2(j1,j2))),deltaj1j2h(j1,j2,h)+0.5*(phis+dphij1j2(j1,j2)),1);
+   return TComplex(reAj1j2h(j1,j2,h),imAj1j2h(j1,j2,h))*TComplex(sqrt(1.+DCPj1j2(j1,j2)),0.5*(phis+dphij1j2(j1,j2)),1);
 
  }
 
@@ -1543,7 +1545,7 @@ TComplex KpiKpiSpectrumNW::Aj1j2h(Int_t j1, Int_t j2, Int_t h) const
 TComplex KpiKpiSpectrumNW::Abarj1j2h(Int_t j1, Int_t j2, Int_t h) const
  {
 
-   return etaj1j2h(j2,j1,h)*TComplex(sqrt(wfj1j2(j2,j1)*pfj1j2h(j2,j1,h)*(1.-DCPj1j2(j2,j1))),deltaj1j2h(j2,j1,h)-0.5*(phis+dphij1j2(j2,j1)),1);
+   return etaj1j2h(j2,j1,h)*TComplex(reAj1j2h(j2,j1,h),imAj1j2h(j2,j1,h))*TComplex(sqrt(1.-DCPj1j2(j2,j1)),-0.5*(phis+dphij1j2(j2,j1)),1);
 
  }
 
@@ -1657,7 +1659,7 @@ Double_t KpiKpiSpectrumNW::P_Bsbar(Int_t q1, Int_t q2, Double_t eta1, Double_t e
 Double_t KpiKpiSpectrumNW::zeta(Int_t q1, Int_t q2, Double_t eta1, Double_t eta2) const
  {
 
-   return 0.5*((1.+DCP_prod[int(wide_window)])*P_Bs(q1,q2,eta1,eta2)+(1.-DCP_prod[int(wide_window)])*P_Bsbar(q1,q2,eta1,eta2));
+   return 0.5*((1.+DCP_prod)*P_Bs(q1,q2,eta1,eta2)+(1.-DCP_prod)*P_Bsbar(q1,q2,eta1,eta2));
 
  }
 
@@ -1667,7 +1669,7 @@ Double_t KpiKpiSpectrumNW::zeta(Int_t q1, Int_t q2, Double_t eta1, Double_t eta2
 Double_t KpiKpiSpectrumNW::DCP_tzero(Int_t q1, Int_t q2, Double_t eta1, Double_t eta2) const
  {
 
-   return 0.5/zeta(q1,q2,eta1,eta2)*((1.+DCP_prod[int(wide_window)])*P_Bs(q1,q2,eta1,eta2)-(1.-DCP_prod[int(wide_window)])*P_Bsbar(q1,q2,eta1,eta2));
+   return 0.5/zeta(q1,q2,eta1,eta2)*((1.+DCP_prod)*P_Bs(q1,q2,eta1,eta2)-(1.-DCP_prod)*P_Bsbar(q1,q2,eta1,eta2));
 
  }
 
@@ -1704,8 +1706,8 @@ Double_t KpiKpiSpectrumNW::sigma_ref(Double_t tau_err) const
 Double_t KpiKpiSpectrumNW::sigma_tres_eff(Int_t g_i) const 
  { 
 
-   if (g_i == 1) {return TReseff.sigma1(year_opt);}
-   else if (g_i == 2) {return TReseff.sigma2(year_opt);}
+   if (g_i == 1) {return TReseff.sigma1(year_opt,wide_window);}
+   else if (g_i == 2) {return TReseff.sigma2(year_opt,wide_window);}
 
    return 0.;
 
@@ -1717,7 +1719,7 @@ Double_t KpiKpiSpectrumNW::sigma_tres_eff(Int_t g_i) const
 Double_t KpiKpiSpectrumNW::sigma_ref_eff() const 
  { 
 
-   return TReseff.f1(year_opt)*sigma_tres_eff(1)+(1.-TReseff.f1(year_opt))*sigma_tres_eff(2);
+   return TReseff.f1(year_opt,wide_window)*sigma_tres_eff(1)+(1.-TReseff.f1(year_opt,wide_window))*sigma_tres_eff(2);
 
  }
 
@@ -1767,7 +1769,7 @@ Double_t KpiKpiSpectrumNW::gaus_tres(Double_t tau, Double_t tau_err, Int_t g_i) 
 Double_t KpiKpiSpectrumNW::x_tres_eff(Double_t tau, Int_t g_i) const
  { 
 
-   return 1./(sqrt(2.)*sigma_tres_eff(g_i))*(tau-TReseff.off(year_opt)-gamma_Bs_freq*sigma_tres_eff(g_i)*sigma_tres_eff(g_i));
+   return 1./(sqrt(2.)*sigma_tres_eff(g_i))*(tau-TReseff.off(year_opt,wide_window)-gamma_Bs_freq*sigma_tres_eff(g_i)*sigma_tres_eff(g_i));
 
  }
 
@@ -1787,7 +1789,7 @@ Double_t KpiKpiSpectrumNW::x0_tres_eff(Int_t g_i) const
 std::complex<Double_t> KpiKpiSpectrumNW::z_tres_eff(Double_t tau, Int_t g_i) const
  {
 
-   return 1./(sqrt(2.)*sigma_tres_eff(g_i))*std::complex<Double_t>(delta_m_freq*sigma_tres_eff(g_i)*sigma_tres_eff(g_i),-tau+TReseff.off(year_opt)+gamma_Bs_freq*sigma_tres_eff(g_i)*sigma_tres_eff(g_i));
+   return 1./(sqrt(2.)*sigma_tres_eff(g_i))*std::complex<Double_t>(delta_m_freq*sigma_tres_eff(g_i)*sigma_tres_eff(g_i),-tau+TReseff.off(year_opt,wide_window)+gamma_Bs_freq*sigma_tres_eff(g_i)*sigma_tres_eff(g_i));
 
  }
 
@@ -1797,7 +1799,7 @@ std::complex<Double_t> KpiKpiSpectrumNW::z_tres_eff(Double_t tau, Int_t g_i) con
 Double_t KpiKpiSpectrumNW::gaus_tres_eff(Double_t tau, Int_t g_i) const
  { 
 
-   return exp(-(tau-TReseff.off(year_opt))*(tau-TReseff.off(year_opt))/2./sigma_tres_eff(g_i)/sigma_tres_eff(g_i));
+   return exp(-(tau-TReseff.off(year_opt,wide_window))*(tau-TReseff.off(year_opt,wide_window))/2./sigma_tres_eff(g_i)/sigma_tres_eff(g_i));
 
  }
 
@@ -2005,7 +2007,7 @@ Double_t KpiKpiSpectrumNW::T_sin(Double_t tau, Double_t tau_err) const
 Double_t KpiKpiSpectrumNW::T_cosh_resexact_eff(Double_t tau) const
  {
    
-   return 1./4.*(TReseff.f1(year_opt)*gaus_tres_eff(tau,1)*(exp((x_tres_eff(tau,1)+x0_tres_eff(1))*(x_tres_eff(tau,1)+x0_tres_eff(1)))*erfc(-x_tres_eff(tau,1)-x0_tres_eff(1))+exp((x_tres_eff(tau,1)-x0_tres_eff(1))*(x_tres_eff(tau,1)-x0_tres_eff(1)))*erfc(-x_tres_eff(tau,1)+x0_tres_eff(1)))+(1.-TReseff.f1(year_opt))*gaus_tres_eff(tau,2)*(exp((x_tres_eff(tau,2)+x0_tres_eff(2))*(x_tres_eff(tau,2)+x0_tres_eff(2)))*erfc(-x_tres_eff(tau,2)-x0_tres_eff(2))+exp((x_tres_eff(tau,2)-x0_tres_eff(2))*(x_tres_eff(tau,2)-x0_tres_eff(2)))*erfc(-x_tres_eff(tau,2)+x0_tres_eff(2))));
+   return 1./4.*(TReseff.f1(year_opt,wide_window)*gaus_tres_eff(tau,1)*(exp((x_tres_eff(tau,1)+x0_tres_eff(1))*(x_tres_eff(tau,1)+x0_tres_eff(1)))*erfc(-x_tres_eff(tau,1)-x0_tres_eff(1))+exp((x_tres_eff(tau,1)-x0_tres_eff(1))*(x_tres_eff(tau,1)-x0_tres_eff(1)))*erfc(-x_tres_eff(tau,1)+x0_tres_eff(1)))+(1.-TReseff.f1(year_opt,wide_window))*gaus_tres_eff(tau,2)*(exp((x_tres_eff(tau,2)+x0_tres_eff(2))*(x_tres_eff(tau,2)+x0_tres_eff(2)))*erfc(-x_tres_eff(tau,2)-x0_tres_eff(2))+exp((x_tres_eff(tau,2)-x0_tres_eff(2))*(x_tres_eff(tau,2)-x0_tres_eff(2)))*erfc(-x_tres_eff(tau,2)+x0_tres_eff(2))));
 
  }
 
@@ -2015,7 +2017,7 @@ Double_t KpiKpiSpectrumNW::T_cosh_resexact_eff(Double_t tau) const
 Double_t KpiKpiSpectrumNW::T_sinh_resexact_eff(Double_t tau) const
  {
    
-   return 1./4.*(TReseff.f1(year_opt)*gaus_tres_eff(tau,1)*(exp((x_tres_eff(tau,1)+x0_tres_eff(1))*(x_tres_eff(tau,1)+x0_tres_eff(1)))*erfc(-x_tres_eff(tau,1)-x0_tres_eff(1))-exp((x_tres_eff(tau,1)-x0_tres_eff(1))*(x_tres_eff(tau,1)-x0_tres_eff(1)))*erfc(-x_tres_eff(tau,1)+x0_tres_eff(1)))+(1.-TReseff.f1(year_opt))*gaus_tres_eff(tau,2)*(exp((x_tres_eff(tau,2)+x0_tres_eff(2))*(x_tres_eff(tau,2)+x0_tres_eff(2)))*erfc(-x_tres_eff(tau,2)-x0_tres_eff(2))-exp((x_tres_eff(tau,2)-x0_tres_eff(2))*(x_tres_eff(tau,2)-x0_tres_eff(2)))*erfc(-x_tres_eff(tau,2)+x0_tres_eff(2))));
+   return 1./4.*(TReseff.f1(year_opt,wide_window)*gaus_tres_eff(tau,1)*(exp((x_tres_eff(tau,1)+x0_tres_eff(1))*(x_tres_eff(tau,1)+x0_tres_eff(1)))*erfc(-x_tres_eff(tau,1)-x0_tres_eff(1))-exp((x_tres_eff(tau,1)-x0_tres_eff(1))*(x_tres_eff(tau,1)-x0_tres_eff(1)))*erfc(-x_tres_eff(tau,1)+x0_tres_eff(1)))+(1.-TReseff.f1(year_opt,wide_window))*gaus_tres_eff(tau,2)*(exp((x_tres_eff(tau,2)+x0_tres_eff(2))*(x_tres_eff(tau,2)+x0_tres_eff(2)))*erfc(-x_tres_eff(tau,2)-x0_tres_eff(2))-exp((x_tres_eff(tau,2)-x0_tres_eff(2))*(x_tres_eff(tau,2)-x0_tres_eff(2)))*erfc(-x_tres_eff(tau,2)+x0_tres_eff(2))));
 
  }
 
@@ -2025,7 +2027,7 @@ Double_t KpiKpiSpectrumNW::T_sinh_resexact_eff(Double_t tau) const
 Double_t KpiKpiSpectrumNW::T_cos_resexact_eff(Double_t tau) const
  {
    
-   return 1./2.*(TReseff.f1(year_opt)*gaus_tres_eff(tau,1)*Re_w(z_tres_eff(tau,1))+(1.-TReseff.f1(year_opt))*gaus_tres_eff(tau,2)*Re_w(z_tres_eff(tau,2)));
+   return 1./2.*(TReseff.f1(year_opt,wide_window)*gaus_tres_eff(tau,1)*Re_w(z_tres_eff(tau,1))+(1.-TReseff.f1(year_opt,wide_window))*gaus_tres_eff(tau,2)*Re_w(z_tres_eff(tau,2)));
 
  }
 
@@ -2035,7 +2037,7 @@ Double_t KpiKpiSpectrumNW::T_cos_resexact_eff(Double_t tau) const
 Double_t KpiKpiSpectrumNW::T_sin_resexact_eff(Double_t tau) const
  {
    
-   return 1./2.*(TReseff.f1(year_opt)*gaus_tres_eff(tau,1)*Im_w(z_tres_eff(tau,1))+(1.-TReseff.f1(year_opt))*gaus_tres_eff(tau,2)*Im_w(z_tres_eff(tau,2)));
+   return 1./2.*(TReseff.f1(year_opt,wide_window)*gaus_tres_eff(tau,1)*Im_w(z_tres_eff(tau,1))+(1.-TReseff.f1(year_opt,wide_window))*gaus_tres_eff(tau,2)*Im_w(z_tres_eff(tau,2)));
 
  }
 
@@ -2045,7 +2047,7 @@ Double_t KpiKpiSpectrumNW::T_sin_resexact_eff(Double_t tau) const
 Double_t KpiKpiSpectrumNW::T_cosh_resapprox_eff(Double_t tau) const
  {
    
-   return (TReseff.f1(year_opt)*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1)+1./8.*delta_gamma_freq*delta_gamma_freq*sigma_tres_eff(1)*sigma_tres_eff(1))*cosh(0.5*delta_gamma_freq*(tau-TReseff.off(year_opt))-0.5*gamma_Bs_freq*delta_gamma_freq*sigma_tres_eff(1)*sigma_tres_eff(1))+(1.-TReseff.f1(year_opt))*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2)+1./8.*delta_gamma_freq*delta_gamma_freq*sigma_tres_eff(2)*sigma_tres_eff(2))*cosh(0.5*delta_gamma_freq*(tau-TReseff.off(year_opt))-0.5*gamma_Bs_freq*delta_gamma_freq*sigma_tres_eff(2)*sigma_tres_eff(2)));
+   return (TReseff.f1(year_opt,wide_window)*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt,wide_window))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1)+1./8.*delta_gamma_freq*delta_gamma_freq*sigma_tres_eff(1)*sigma_tres_eff(1))*cosh(0.5*delta_gamma_freq*(tau-TReseff.off(year_opt,wide_window))-0.5*gamma_Bs_freq*delta_gamma_freq*sigma_tres_eff(1)*sigma_tres_eff(1))+(1.-TReseff.f1(year_opt,wide_window))*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt,wide_window))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2)+1./8.*delta_gamma_freq*delta_gamma_freq*sigma_tres_eff(2)*sigma_tres_eff(2))*cosh(0.5*delta_gamma_freq*(tau-TReseff.off(year_opt,wide_window))-0.5*gamma_Bs_freq*delta_gamma_freq*sigma_tres_eff(2)*sigma_tres_eff(2)));
 
  }
 
@@ -2055,7 +2057,7 @@ Double_t KpiKpiSpectrumNW::T_cosh_resapprox_eff(Double_t tau) const
 Double_t KpiKpiSpectrumNW::T_sinh_resapprox_eff(Double_t tau) const
  {
    
-   return (TReseff.f1(year_opt)*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1)+1./8.*delta_gamma_freq*delta_gamma_freq*sigma_tres_eff(1)*sigma_tres_eff(1))*sinh(0.5*delta_gamma_freq*(tau-TReseff.off(year_opt))-0.5*gamma_Bs_freq*delta_gamma_freq*sigma_tres_eff(1)*sigma_tres_eff(1))+(1.-TReseff.f1(year_opt))*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2)+1./8.*delta_gamma_freq*delta_gamma_freq*sigma_tres_eff(2)*sigma_tres_eff(2))*sinh(0.5*delta_gamma_freq*(tau-TReseff.off(year_opt))-0.5*gamma_Bs_freq*delta_gamma_freq*sigma_tres_eff(2)*sigma_tres_eff(2)));
+   return (TReseff.f1(year_opt,wide_window)*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt,wide_window))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1)+1./8.*delta_gamma_freq*delta_gamma_freq*sigma_tres_eff(1)*sigma_tres_eff(1))*sinh(0.5*delta_gamma_freq*(tau-TReseff.off(year_opt,wide_window))-0.5*gamma_Bs_freq*delta_gamma_freq*sigma_tres_eff(1)*sigma_tres_eff(1))+(1.-TReseff.f1(year_opt,wide_window))*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt,wide_window))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2)+1./8.*delta_gamma_freq*delta_gamma_freq*sigma_tres_eff(2)*sigma_tres_eff(2))*sinh(0.5*delta_gamma_freq*(tau-TReseff.off(year_opt,wide_window))-0.5*gamma_Bs_freq*delta_gamma_freq*sigma_tres_eff(2)*sigma_tres_eff(2)));
 
  }
 
@@ -2065,7 +2067,7 @@ Double_t KpiKpiSpectrumNW::T_sinh_resapprox_eff(Double_t tau) const
 Double_t KpiKpiSpectrumNW::T_cos_resapprox_eff(Double_t tau) const
  {
    
-   return (TReseff.f1(year_opt)*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1)-0.5*delta_m_freq*delta_m_freq*sigma_tres_eff(1)*sigma_tres_eff(1))*cos(delta_m_freq*(tau-TReseff.off(year_opt))-gamma_Bs_freq*delta_m_freq*sigma_tres_eff(1)*sigma_tres_eff(1))+(1.-TReseff.f1(year_opt))*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2)-0.5*delta_m_freq*delta_m_freq*sigma_tres_eff(2)*sigma_tres_eff(2))*cos(delta_m_freq*(tau-TReseff.off(year_opt))-gamma_Bs_freq*delta_m_freq*sigma_tres_eff(2)*sigma_tres_eff(2)));
+   return (TReseff.f1(year_opt,wide_window)*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt,wide_window))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1)-0.5*delta_m_freq*delta_m_freq*sigma_tres_eff(1)*sigma_tres_eff(1))*cos(delta_m_freq*(tau-TReseff.off(year_opt,wide_window))-gamma_Bs_freq*delta_m_freq*sigma_tres_eff(1)*sigma_tres_eff(1))+(1.-TReseff.f1(year_opt,wide_window))*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt,wide_window))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2)-0.5*delta_m_freq*delta_m_freq*sigma_tres_eff(2)*sigma_tres_eff(2))*cos(delta_m_freq*(tau-TReseff.off(year_opt,wide_window))-gamma_Bs_freq*delta_m_freq*sigma_tres_eff(2)*sigma_tres_eff(2)));
 
  }
 
@@ -2075,7 +2077,7 @@ Double_t KpiKpiSpectrumNW::T_cos_resapprox_eff(Double_t tau) const
 Double_t KpiKpiSpectrumNW::T_sin_resapprox_eff(Double_t tau) const
  {
    
-   return (TReseff.f1(year_opt)*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1)-0.5*delta_m_freq*delta_m_freq*sigma_tres_eff(1)*sigma_tres_eff(1))*sin(delta_m_freq*(tau-TReseff.off(year_opt))-gamma_Bs_freq*delta_m_freq*sigma_tres_eff(1)*sigma_tres_eff(1))+(1.-TReseff.f1(year_opt))*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2)-0.5*delta_m_freq*delta_m_freq*sigma_tres_eff(2)*sigma_tres_eff(2))*sin(delta_m_freq*(tau-TReseff.off(year_opt))-gamma_Bs_freq*delta_m_freq*sigma_tres_eff(2)*sigma_tres_eff(2)));
+   return (TReseff.f1(year_opt,wide_window)*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt,wide_window))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1)-0.5*delta_m_freq*delta_m_freq*sigma_tres_eff(1)*sigma_tres_eff(1))*sin(delta_m_freq*(tau-TReseff.off(year_opt,wide_window))-gamma_Bs_freq*delta_m_freq*sigma_tres_eff(1)*sigma_tres_eff(1))+(1.-TReseff.f1(year_opt,wide_window))*exp(-gamma_Bs_freq*(tau-TReseff.off(year_opt,wide_window))+0.5*gamma_Bs_freq*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2)-0.5*delta_m_freq*delta_m_freq*sigma_tres_eff(2)*sigma_tres_eff(2))*sin(delta_m_freq*(tau-TReseff.off(year_opt,wide_window))-gamma_Bs_freq*delta_m_freq*sigma_tres_eff(2)*sigma_tres_eff(2)));
 
  }
 
@@ -2086,7 +2088,7 @@ Double_t KpiKpiSpectrumNW::T_cosh_eff(Double_t tau) const
  {
    
    if (inftres == 1) {return T_cosh_ideal(tau);}
-   else if ((inftres == 0) && ((tau-TReseff.off(year_opt)) <= 10*sigma_ref_eff())) {return T_cosh_resexact_eff(tau);}
+   else if ((inftres == 0) && ((tau-TReseff.off(year_opt,wide_window)) <= 10*sigma_ref_eff())) {return T_cosh_resexact_eff(tau);}
    else {return T_cosh_resapprox_eff(tau);}
 
  }
@@ -2098,7 +2100,7 @@ Double_t KpiKpiSpectrumNW::T_sinh_eff(Double_t tau) const
  {
    
    if (inftres == 1) {return T_sinh_ideal(tau);}
-   else if ((inftres == 0) && ((tau-TReseff.off(year_opt)) <= 10*sigma_ref_eff())) {return T_sinh_resexact_eff(tau);}
+   else if ((inftres == 0) && ((tau-TReseff.off(year_opt,wide_window)) <= 10*sigma_ref_eff())) {return T_sinh_resexact_eff(tau);}
    else {return T_sinh_resapprox_eff(tau);}
 
  }
@@ -2110,7 +2112,7 @@ Double_t KpiKpiSpectrumNW::T_cos_eff(Double_t tau) const
  {
    
    if (inftres == 1) {return T_cos_ideal(tau);}
-   else if ((inftres == 0) && ((tau-TReseff.off(year_opt)) <= 10*sigma_ref_eff())) {return T_cos_resexact_eff(tau);}
+   else if ((inftres == 0) && ((tau-TReseff.off(year_opt,wide_window)) <= 10*sigma_ref_eff())) {return T_cos_resexact_eff(tau);}
    else {return T_cos_resapprox_eff(tau);}
 
  }
@@ -2122,7 +2124,7 @@ Double_t KpiKpiSpectrumNW::T_sin_eff(Double_t tau) const
  {
    
    if (inftres == 1) {return T_sin_ideal(tau);}
-   else if ((inftres == 0) && ((tau-TReseff.off(year_opt)) <= 10*sigma_ref_eff())) {return T_sin_resexact_eff(tau);}
+   else if ((inftres == 0) && ((tau-TReseff.off(year_opt,wide_window)) <= 10*sigma_ref_eff())) {return T_sin_resexact_eff(tau);}
    else {return T_sin_resapprox_eff(tau);}
 
  }
@@ -2143,7 +2145,7 @@ TComplex KpiKpiSpectrumNW::Tj1j2hj1pj2php(Double_t tau, Double_t tau_err, Int_t 
 TComplex KpiKpiSpectrumNW::Teffj1j2hj1pj2php(Double_t tau, Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const
  {
 
-   return (T_cosh_eff(tau)*M_Average(j1,j2,h,j1p,j2p,hp)-T_sinh_eff(tau)*M_DeltaGamma(j1,j2,h,j1p,j2p,hp))+DCP_prod[int(wide_window)]*(T_cos_eff(tau)*M_DirCP(j1,j2,h,j1p,j2p,hp)+T_sin_eff(tau)*M_MixCP(j1,j2,h,j1p,j2p,hp));
+   return (T_cosh_eff(tau)*M_Average(j1,j2,h,j1p,j2p,hp)-T_sinh_eff(tau)*M_DeltaGamma(j1,j2,h,j1p,j2p,hp))+DCP_prod*(T_cos_eff(tau)*M_DirCP(j1,j2,h,j1p,j2p,hp)+T_sin_eff(tau)*M_MixCP(j1,j2,h,j1p,j2p,hp));
 
  }
 
@@ -2153,7 +2155,7 @@ TComplex KpiKpiSpectrumNW::Teffj1j2hj1pj2php(Double_t tau, Int_t j1, Int_t j2, I
 Double_t KpiKpiSpectrumNW::IT_cosh_resapprox_eff_bin(Double_t tau1, Double_t tau2) const
  {
    
-   return ((0.5*delta_gamma_freq*TReseff.f1(year_opt)*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + 0.5*TReseff.off(year_opt) - 0.5*tau1)) - 0.5*delta_gamma_freq*TReseff.f1(year_opt)*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt) - 0.5*tau1)) + 0.5*delta_gamma_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt) - 0.5*tau1)) - 1.0*TReseff.f1(year_opt)*gamma_Bs_freq*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + 0.5*TReseff.off(year_opt) - 0.5*tau1)) + 1.0*TReseff.f1(year_opt)*gamma_Bs_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt) - 0.5*tau1)) - 1.0*gamma_Bs_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt) - 0.5*tau1)))*exp(gamma_Bs_freq*(TReseff.off(year_opt) - tau1)) - (0.5*delta_gamma_freq*TReseff.f1(year_opt)*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + 0.5*TReseff.off(year_opt) - 0.5*tau2)) - 0.5*delta_gamma_freq*TReseff.f1(year_opt)*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt) - 0.5*tau2)) + 0.5*delta_gamma_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt) - 0.5*tau2)) - 1.0*TReseff.f1(year_opt)*gamma_Bs_freq*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + 0.5*TReseff.off(year_opt) - 0.5*tau2)) + 1.0*TReseff.f1(year_opt)*gamma_Bs_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt) - 0.5*tau2)) - 1.0*gamma_Bs_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt) - 0.5*tau2)))*exp(gamma_Bs_freq*(TReseff.off(year_opt) - tau2)))/((0.5*delta_gamma_freq - gamma_Bs_freq)*(0.5*delta_gamma_freq + gamma_Bs_freq));
+   return ((0.5*delta_gamma_freq*TReseff.f1(year_opt,wide_window)*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau1)) - 0.5*delta_gamma_freq*TReseff.f1(year_opt,wide_window)*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau1)) + 0.5*delta_gamma_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau1)) - 1.0*TReseff.f1(year_opt,wide_window)*gamma_Bs_freq*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau1)) + 1.0*TReseff.f1(year_opt,wide_window)*gamma_Bs_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau1)) - 1.0*gamma_Bs_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau1)))*exp(gamma_Bs_freq*(TReseff.off(year_opt,wide_window) - tau1)) - (0.5*delta_gamma_freq*TReseff.f1(year_opt,wide_window)*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau2)) - 0.5*delta_gamma_freq*TReseff.f1(year_opt,wide_window)*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau2)) + 0.5*delta_gamma_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau2)) - 1.0*TReseff.f1(year_opt,wide_window)*gamma_Bs_freq*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau2)) + 1.0*TReseff.f1(year_opt,wide_window)*gamma_Bs_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau2)) - 1.0*gamma_Bs_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau2)))*exp(gamma_Bs_freq*(TReseff.off(year_opt,wide_window) - tau2)))/((0.5*delta_gamma_freq - gamma_Bs_freq)*(0.5*delta_gamma_freq + gamma_Bs_freq));
 
  }
 
@@ -2163,7 +2165,7 @@ Double_t KpiKpiSpectrumNW::IT_cosh_resapprox_eff_bin(Double_t tau1, Double_t tau
 Double_t KpiKpiSpectrumNW::IT_sinh_resapprox_eff_bin(Double_t tau1, Double_t tau2) const
  {
    
-   return -((0.5*delta_gamma_freq*TReseff.f1(year_opt)*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + 0.5*TReseff.off(year_opt) - 0.5*tau1)) - 0.5*delta_gamma_freq*TReseff.f1(year_opt)*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt) - 0.5*tau1)) + 0.5*delta_gamma_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt) - 0.5*tau1)) - 1.0*TReseff.f1(year_opt)*gamma_Bs_freq*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + 0.5*TReseff.off(year_opt) - 0.5*tau1)) + 1.0*TReseff.f1(year_opt)*gamma_Bs_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt) - 0.5*tau1)) - 1.0*gamma_Bs_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt) - 0.5*tau1)))*exp(gamma_Bs_freq*(TReseff.off(year_opt) - tau1)) - (0.5*delta_gamma_freq*TReseff.f1(year_opt)*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + 0.5*TReseff.off(year_opt) - 0.5*tau2)) - 0.5*delta_gamma_freq*TReseff.f1(year_opt)*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt) - 0.5*tau2)) + 0.5*delta_gamma_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt) - 0.5*tau2)) - 1.0*TReseff.f1(year_opt)*gamma_Bs_freq*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + 0.5*TReseff.off(year_opt) - 0.5*tau2)) + 1.0*TReseff.f1(year_opt)*gamma_Bs_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt) - 0.5*tau2)) - 1.0*gamma_Bs_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt) - 0.5*tau2)))*exp(gamma_Bs_freq*(TReseff.off(year_opt) - tau2)))/((0.5*delta_gamma_freq - gamma_Bs_freq)*(0.5*delta_gamma_freq + gamma_Bs_freq));
+   return -((0.5*delta_gamma_freq*TReseff.f1(year_opt,wide_window)*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau1)) - 0.5*delta_gamma_freq*TReseff.f1(year_opt,wide_window)*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau1)) + 0.5*delta_gamma_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau1)) - 1.0*TReseff.f1(year_opt,wide_window)*gamma_Bs_freq*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau1)) + 1.0*TReseff.f1(year_opt,wide_window)*gamma_Bs_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau1)) - 1.0*gamma_Bs_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau1)))*exp(gamma_Bs_freq*(TReseff.off(year_opt,wide_window) - tau1)) - (0.5*delta_gamma_freq*TReseff.f1(year_opt,wide_window)*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau2)) - 0.5*delta_gamma_freq*TReseff.f1(year_opt,wide_window)*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau2)) + 0.5*delta_gamma_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*cosh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau2)) - 1.0*TReseff.f1(year_opt,wide_window)*gamma_Bs_freq*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau2)) + 1.0*TReseff.f1(year_opt,wide_window)*gamma_Bs_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau2)) - 1.0*gamma_Bs_freq*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.125*delta_gamma_freq*delta_gamma_freq + 0.5*gamma_Bs_freq*gamma_Bs_freq))*sinh(delta_gamma_freq*(0.5*gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + 0.5*TReseff.off(year_opt,wide_window) - 0.5*tau2)))*exp(gamma_Bs_freq*(TReseff.off(year_opt,wide_window) - tau2)))/((0.5*delta_gamma_freq - gamma_Bs_freq)*(0.5*delta_gamma_freq + gamma_Bs_freq));
 
  }
 
@@ -2173,7 +2175,7 @@ Double_t KpiKpiSpectrumNW::IT_sinh_resapprox_eff_bin(Double_t tau1, Double_t tau
 Double_t KpiKpiSpectrumNW::IT_cos_resapprox_eff_bin(Double_t tau1, Double_t tau2) const
  {
    
-   return ((-TReseff.f1(year_opt)*(delta_m_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + TReseff.off(year_opt) - tau1)) + gamma_Bs_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + TReseff.off(year_opt) - tau1)))*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)) + 1.0*(delta_m_freq*TReseff.f1(year_opt)*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt) - tau1)) - delta_m_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt) - tau1)) + TReseff.f1(year_opt)*gamma_Bs_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt) - tau1)) - gamma_Bs_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt) - tau1)))*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)))*exp(gamma_Bs_freq*(TReseff.off(year_opt) - tau1) - sigma_tres_eff(1)*sigma_tres_eff(1)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq) - sigma_tres_eff(2)*sigma_tres_eff(2)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)) + (TReseff.f1(year_opt)*(delta_m_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + TReseff.off(year_opt) - tau2)) + gamma_Bs_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + TReseff.off(year_opt) - tau2)))*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)) + 1.0*(-delta_m_freq*TReseff.f1(year_opt)*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt) - tau2)) + delta_m_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt) - tau2)) - TReseff.f1(year_opt)*gamma_Bs_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt) - tau2)) + gamma_Bs_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt) - tau2)))*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)))*exp(gamma_Bs_freq*(TReseff.off(year_opt) - tau2) - sigma_tres_eff(1)*sigma_tres_eff(1)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq) - sigma_tres_eff(2)*sigma_tres_eff(2)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)))/(-delta_m_freq*delta_m_freq - gamma_Bs_freq*gamma_Bs_freq);
+   return ((-TReseff.f1(year_opt,wide_window)*(delta_m_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + TReseff.off(year_opt,wide_window) - tau1)) + gamma_Bs_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + TReseff.off(year_opt,wide_window) - tau1)))*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)) + 1.0*(delta_m_freq*TReseff.f1(year_opt,wide_window)*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt,wide_window) - tau1)) - delta_m_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt,wide_window) - tau1)) + TReseff.f1(year_opt,wide_window)*gamma_Bs_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt,wide_window) - tau1)) - gamma_Bs_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt,wide_window) - tau1)))*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)))*exp(gamma_Bs_freq*(TReseff.off(year_opt,wide_window) - tau1) - sigma_tres_eff(1)*sigma_tres_eff(1)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq) - sigma_tres_eff(2)*sigma_tres_eff(2)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)) + (TReseff.f1(year_opt,wide_window)*(delta_m_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + TReseff.off(year_opt,wide_window) - tau2)) + gamma_Bs_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + TReseff.off(year_opt,wide_window) - tau2)))*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)) + 1.0*(-delta_m_freq*TReseff.f1(year_opt,wide_window)*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt,wide_window) - tau2)) + delta_m_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt,wide_window) - tau2)) - TReseff.f1(year_opt,wide_window)*gamma_Bs_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt,wide_window) - tau2)) + gamma_Bs_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt,wide_window) - tau2)))*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)))*exp(gamma_Bs_freq*(TReseff.off(year_opt,wide_window) - tau2) - sigma_tres_eff(1)*sigma_tres_eff(1)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq) - sigma_tres_eff(2)*sigma_tres_eff(2)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)))/(-delta_m_freq*delta_m_freq - gamma_Bs_freq*gamma_Bs_freq);
 
  }
 
@@ -2183,7 +2185,7 @@ Double_t KpiKpiSpectrumNW::IT_cos_resapprox_eff_bin(Double_t tau1, Double_t tau2
 Double_t KpiKpiSpectrumNW::IT_sin_resapprox_eff_bin(Double_t tau1, Double_t tau2) const
  {
    
-   return ((-TReseff.f1(year_opt)*(delta_m_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + TReseff.off(year_opt) - tau1)) - gamma_Bs_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + TReseff.off(year_opt) - tau1)))*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)) + 1.0*(delta_m_freq*TReseff.f1(year_opt)*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt) - tau1)) - delta_m_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt) - tau1)) - TReseff.f1(year_opt)*gamma_Bs_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt) - tau1)) + gamma_Bs_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt) - tau1)))*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)))*exp(gamma_Bs_freq*(TReseff.off(year_opt) - tau1) - sigma_tres_eff(1)*sigma_tres_eff(1)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq) - sigma_tres_eff(2)*sigma_tres_eff(2)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)) + (TReseff.f1(year_opt)*(delta_m_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + TReseff.off(year_opt) - tau2)) - gamma_Bs_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + TReseff.off(year_opt) - tau2)))*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)) + 1.0*(-delta_m_freq*TReseff.f1(year_opt)*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt) - tau2)) + delta_m_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt) - tau2)) + TReseff.f1(year_opt)*gamma_Bs_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt) - tau2)) - gamma_Bs_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt) - tau2)))*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)))*exp(gamma_Bs_freq*(TReseff.off(year_opt) - tau2) - sigma_tres_eff(1)*sigma_tres_eff(1)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq) - sigma_tres_eff(2)*sigma_tres_eff(2)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)))/(-delta_m_freq*delta_m_freq - gamma_Bs_freq*gamma_Bs_freq);
+   return ((-TReseff.f1(year_opt,wide_window)*(delta_m_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + TReseff.off(year_opt,wide_window) - tau1)) - gamma_Bs_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + TReseff.off(year_opt,wide_window) - tau1)))*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)) + 1.0*(delta_m_freq*TReseff.f1(year_opt,wide_window)*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt,wide_window) - tau1)) - delta_m_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt,wide_window) - tau1)) - TReseff.f1(year_opt,wide_window)*gamma_Bs_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt,wide_window) - tau1)) + gamma_Bs_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt,wide_window) - tau1)))*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)))*exp(gamma_Bs_freq*(TReseff.off(year_opt,wide_window) - tau1) - sigma_tres_eff(1)*sigma_tres_eff(1)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq) - sigma_tres_eff(2)*sigma_tres_eff(2)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)) + (TReseff.f1(year_opt,wide_window)*(delta_m_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + TReseff.off(year_opt,wide_window) - tau2)) - gamma_Bs_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(1)*sigma_tres_eff(1) + TReseff.off(year_opt,wide_window) - tau2)))*exp(sigma_tres_eff(2)*sigma_tres_eff(2)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)) + 1.0*(-delta_m_freq*TReseff.f1(year_opt,wide_window)*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt,wide_window) - tau2)) + delta_m_freq*cos(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt,wide_window) - tau2)) + TReseff.f1(year_opt,wide_window)*gamma_Bs_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt,wide_window) - tau2)) - gamma_Bs_freq*sin(delta_m_freq*(gamma_Bs_freq*sigma_tres_eff(2)*sigma_tres_eff(2) + TReseff.off(year_opt,wide_window) - tau2)))*exp(sigma_tres_eff(1)*sigma_tres_eff(1)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)))*exp(gamma_Bs_freq*(TReseff.off(year_opt,wide_window) - tau2) - sigma_tres_eff(1)*sigma_tres_eff(1)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq) - sigma_tres_eff(2)*sigma_tres_eff(2)*(0.5*delta_m_freq*delta_m_freq - 0.5*gamma_Bs_freq*gamma_Bs_freq)))/(-delta_m_freq*delta_m_freq - gamma_Bs_freq*gamma_Bs_freq);
 
  }
 
@@ -2263,6 +2265,9 @@ std::complex<Double_t> KpiKpiSpectrumNW::conv_exp(Double_t x, std::complex<Doubl
    }
 
  }
+
+
+
 
 // ---------------------------------------------------
 // 
@@ -2356,20 +2361,33 @@ void KpiKpiSpectrumNW::set_buffer_differential_vars(Double_t m1var, Double_t m2v
    Double_t f1,f2,s1,s2,x1,x2;
 
    if (acctype == 3) {
-      f1 = TRes.f1(1);
-      f2 = 1.-f1;
-      s1 = (TRes.q0A(1)+(TRes.q1A(1)+TRes.q2A(1)*(terrvar-TRes.mean(1)))*terrvar)-sqrt(TRes.f1(1)/(1.-TRes.f1(1)))*(TRes.q0B(1)+(TRes.q1B(1)+TRes.q2B(1)*(terrvar-TRes.mean(1)))*terrvar);
-      s2 = (TRes.q0A(1)+(TRes.q1A(1)+TRes.q2A(1)*(terrvar-TRes.mean(1)))*terrvar)+sqrt((1.-TRes.f1(1))/TRes.f1(1))*(TRes.q0B(1)+(TRes.q1B(1)+TRes.q2B(1)*(terrvar-TRes.mean(1)))*terrvar);
-      x1 = (tvar-TRes.off(1))/(sqrt(2.)*s1);
-      x2 = (tvar-TRes.off(1))/(sqrt(2.)*s2);
+      f1 = 1.;
+      f2 = 0.;
+      s1 = p0_tres_12+p1_tres_12*(terrvar-deltatmean_tres_12);
+      s2 = 1.;
+      x1 = tvar/(sqrt(2.)*s1);
+      x2 = tvar/(sqrt(2.)*s2);
+      //f1 = TRes.f1(1);
+      //f2 = 1.-f1;
+      //s1 = (TRes.q0A(1)+(TRes.q1A(1)+TRes.q2A(1)*(terrvar-TRes.mean(1)))*terrvar)-sqrt(TRes.f1(1)/(1.-TRes.f1(1)))*(TRes.q0B(1)+(TRes.q1B(1)+TRes.q2B(1)*(terrvar-TRes.mean(1)))*terrvar);
+      //s2 = (TRes.q0A(1)+(TRes.q1A(1)+TRes.q2A(1)*(terrvar-TRes.mean(1)))*terrvar)+sqrt((1.-TRes.f1(1))/TRes.f1(1))*(TRes.q0B(1)+(TRes.q1B(1)+TRes.q2B(1)*(terrvar-TRes.mean(1)))*terrvar);
+      //x1 = (tvar-TRes.off(1))/(sqrt(2.)*s1);
+      //x2 = (tvar-TRes.off(1))/(sqrt(2.)*s2);
    }
    else {
-      f1 = TRes.f1(year_opt);
-      f2 = 1.-f1;
-      s1 = sigma_tres(terrvar,1);
-      s2 = sigma_tres(terrvar,2);
-      x1 = (tvar-TRes.off(year_opt))/(sqrt(2.)*s1);
-      x2 = (tvar-TRes.off(year_opt))/(sqrt(2.)*s2);
+      f1 = 1.;
+      f2 = 0.;
+      if (year_opt == 0) {s1 = p0_tres_11+p1_tres_11*(terrvar-deltatmean_tres_11);}
+      else {s1 = p0_tres_12+p1_tres_12*(terrvar-deltatmean_tres_12);}
+      s2 = 1.;
+      x1 = tvar/(sqrt(2.)*s1);
+      x2 = tvar/(sqrt(2.)*s2);
+      //f1 = TRes.f1(year_opt);
+      //f2 = 1.-f1;
+      //s1 = sigma_tres(terrvar,1);
+      //s2 = sigma_tres(terrvar,2);
+      //x1 = (tvar-TRes.off(year_opt))/(sqrt(2.)*s1);
+      //x2 = (tvar-TRes.off(year_opt))/(sqrt(2.)*s2);
    }
 
    std::complex<Double_t> z1_hyper_plus = s1/sqrt(2.)*std::complex<Double_t>(gamma_Bs_freq-0.5*delta_gamma_freq,0.);
@@ -2474,12 +2492,12 @@ void KpiKpiSpectrumNW::set_buffer_integral_vars() const
    std::complex<Double_t> integral_conv_exp_trigo_2 = std::complex<Double_t>(0.,0.);
 
    if (acctype == 0) {
-      integral_conv_exp_hyper_plus_1 += (s1_eff[(int) year_opt]/sqrt(2.)*Mn((0.-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]),(12.-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]),z1_hyper_plus,0)*Kn(z1_hyper_plus,0)).real();
-      integral_conv_exp_hyper_plus_2 += (s2_eff[(int) year_opt]/sqrt(2.)*Mn((0.-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]),(12.-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]),z2_hyper_plus,0)*Kn(z2_hyper_plus,0)).real();
-      integral_conv_exp_hyper_minus_1 += (s1_eff[(int) year_opt]/sqrt(2.)*Mn((0.-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]),(12.-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]),z1_hyper_minus,0)*Kn(z1_hyper_minus,0)).real();
-      integral_conv_exp_hyper_minus_2 += (s2_eff[(int) year_opt]/sqrt(2.)*Mn((0.-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]),(12.-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]),z2_hyper_minus,0)*Kn(z2_hyper_minus,0)).real();
-      integral_conv_exp_trigo_1 += s1_eff[(int) year_opt]/sqrt(2.)*Mn((0.-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]),(12.-TReseff.off(1))/(sqrt(2.)*s1_eff[(int) year_opt]),z1_trigo,0)*Kn(z1_trigo,0);
-      integral_conv_exp_trigo_2 += s2_eff[(int) year_opt]/sqrt(2.)*Mn((0.-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]),(12.-TReseff.off(1))/(sqrt(2.)*s2_eff[(int) year_opt]),z2_trigo,0)*Kn(z2_trigo,0);
+      integral_conv_exp_hyper_plus_1 += (s1_eff[(int) year_opt]/sqrt(2.)*Mn((0.-TReseff.off(1,1))/(sqrt(2.)*s1_eff[(int) year_opt]),(12.-TReseff.off(1,1))/(sqrt(2.)*s1_eff[(int) year_opt]),z1_hyper_plus,0)*Kn(z1_hyper_plus,0)).real();
+      integral_conv_exp_hyper_plus_2 += (s2_eff[(int) year_opt]/sqrt(2.)*Mn((0.-TReseff.off(1,1))/(sqrt(2.)*s2_eff[(int) year_opt]),(12.-TReseff.off(1,1))/(sqrt(2.)*s2_eff[(int) year_opt]),z2_hyper_plus,0)*Kn(z2_hyper_plus,0)).real();
+      integral_conv_exp_hyper_minus_1 += (s1_eff[(int) year_opt]/sqrt(2.)*Mn((0.-TReseff.off(1,1))/(sqrt(2.)*s1_eff[(int) year_opt]),(12.-TReseff.off(1,1))/(sqrt(2.)*s1_eff[(int) year_opt]),z1_hyper_minus,0)*Kn(z1_hyper_minus,0)).real();
+      integral_conv_exp_hyper_minus_2 += (s2_eff[(int) year_opt]/sqrt(2.)*Mn((0.-TReseff.off(1,1))/(sqrt(2.)*s2_eff[(int) year_opt]),(12.-TReseff.off(1,1))/(sqrt(2.)*s2_eff[(int) year_opt]),z2_hyper_minus,0)*Kn(z2_hyper_minus,0)).real();
+      integral_conv_exp_trigo_1 += s1_eff[(int) year_opt]/sqrt(2.)*Mn((0.-TReseff.off(1,1))/(sqrt(2.)*s1_eff[(int) year_opt]),(12.-TReseff.off(1,1))/(sqrt(2.)*s1_eff[(int) year_opt]),z1_trigo,0)*Kn(z1_trigo,0);
+      integral_conv_exp_trigo_2 += s2_eff[(int) year_opt]/sqrt(2.)*Mn((0.-TReseff.off(1,1))/(sqrt(2.)*s2_eff[(int) year_opt]),(12.-TReseff.off(1,1))/(sqrt(2.)*s2_eff[(int) year_opt]),z2_trigo,0)*Kn(z2_trigo,0);
    }
    else {
       for (int ibin=0; ibin<5; ++ibin) {
@@ -2506,6 +2524,184 @@ void KpiKpiSpectrumNW::set_buffer_integral_vars() const
    IT_sinh_temp = 0.5*(integral_conv_exp_hyper_plus - integral_conv_exp_hyper_minus);
    IT_cos_temp = integral_conv_exp_trigo.real();
    IT_sin_temp = integral_conv_exp_trigo.imag();
+
+   Double_t s1_deltat;
+
+   if (acctype == 3) {
+      s1_deltat = p0_tres_12+p1_tres_12*(t_err-deltatmean_tres_12);
+   }
+   else {
+      if (year_opt == 0) {s1_deltat = p0_tres_11+p1_tres_11*(t_err-deltatmean_tres_11);}
+      else {s1_deltat = p0_tres_12+p1_tres_12*(t_err-deltatmean_tres_12);}
+   }
+
+   std::complex<Double_t> z1_hyper_plus_deltat = s1_deltat/sqrt(2.)*std::complex<Double_t>(gamma_Bs_freq-0.5*delta_gamma_freq,0.);
+   std::complex<Double_t> z1_hyper_minus_deltat = s1_deltat/sqrt(2.)*std::complex<Double_t>(gamma_Bs_freq+0.5*delta_gamma_freq,0.);
+   std::complex<Double_t> z1_trigo_deltat = s1_deltat/sqrt(2.)*std::complex<Double_t>(gamma_Bs_freq,-delta_m_freq);
+
+   Double_t spl_knot_x1_vector_deltat[6];
+   Double_t spl_coef_array_deltat[5][4][4][4];
+
+   if (acctype == 1 or acctype == 2) {
+      spl_knot_x1_vector_deltat[0] = spl_knot_vector[(int) year_opt][(int) trig_opt][0]/(sqrt(2.)*s1_deltat);
+      spl_knot_x1_vector_deltat[1] = spl_knot_vector[(int) year_opt][(int) trig_opt][1]/(sqrt(2.)*s1_deltat);
+      spl_knot_x1_vector_deltat[2] = spl_knot_vector[(int) year_opt][(int) trig_opt][2]/(sqrt(2.)*s1_deltat);
+      spl_knot_x1_vector_deltat[3] = spl_knot_vector[(int) year_opt][(int) trig_opt][3]/(sqrt(2.)*s1_deltat);
+      spl_knot_x1_vector_deltat[4] = spl_knot_vector[(int) year_opt][(int) trig_opt][4]/(sqrt(2.)*s1_deltat);
+      spl_knot_x1_vector_deltat[5] = spl_knot_vector[(int) year_opt][(int) trig_opt][5]/(sqrt(2.)*s1_deltat);
+      for (int ibin=0; ibin<5; ++ibin) {
+         for (int k=0; k<4; ++k) {
+            for (int i=0; i<(k+1); ++i) {
+               for (int j=0; j<(i+1); ++j) {
+                  spl_coef_array_deltat[ibin][k][i][j] = spl.coef(year_opt,trig_opt,wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s1_deltat/sqrt(2.),i+1)*pow(0.,k-i);
+               }
+            }
+         }
+      }
+   }
+   else if (acctype == 3) {
+      spl_knot_x1_vector_deltat[0] = spl_knot_vector[(int) year_opt][(int) trig_opt][0]/(sqrt(2.)*s1_deltat);
+      spl_knot_x1_vector_deltat[1] = spl_knot_vector[(int) year_opt][(int) trig_opt][1]/(sqrt(2.)*s1_deltat);
+      spl_knot_x1_vector_deltat[2] = spl_knot_vector[(int) year_opt][(int) trig_opt][2]/(sqrt(2.)*s1_deltat);
+      spl_knot_x1_vector_deltat[3] = spl_knot_vector[(int) year_opt][(int) trig_opt][3]/(sqrt(2.)*s1_deltat);
+      spl_knot_x1_vector_deltat[4] = spl_knot_vector[(int) year_opt][(int) trig_opt][4]/(sqrt(2.)*s1_deltat);
+      spl_knot_x1_vector_deltat[5] = spl_knot_vector[(int) year_opt][(int) trig_opt][5]/(sqrt(2.)*s1_deltat);
+      for (int ibin=0; ibin<5; ++ibin) {
+         for (int k=0; k<4; ++k) {
+            for (int i=0; i<(k+1); ++i) {
+               for (int j=0; j<(i+1); ++j) {
+                  spl_coef_array_deltat[ibin][k][i][j] = genaccpar.coef_gen(wide_window,ibin,k)*TMath::Factorial(k)/TMath::Factorial(k-i)/TMath::Factorial(i-j)/TMath::Factorial(j)*pow(s1_deltat/sqrt(2.),i+1)*pow(0.,k-i);
+               }
+            }
+         }
+      }
+   }
+
+   Double_t integral_conv_exp_hyper_plus_deltat = 0;
+   Double_t integral_conv_exp_hyper_minus_deltat = 0;
+   std::complex<Double_t> integral_conv_exp_trigo_deltat = std::complex<Double_t>(0.,0.);
+
+   if (acctype == 0) {
+      integral_conv_exp_hyper_plus_deltat += (s1_deltat/sqrt(2.)*Mn(0.,12./(sqrt(2.)*s1_deltat),z1_hyper_plus_deltat,0)*Kn(z1_hyper_plus_deltat,0)).real();
+      integral_conv_exp_hyper_minus_deltat += (s1_deltat/sqrt(2.)*Mn(0.,12./(sqrt(2.)*s1_deltat),z1_hyper_minus_deltat,0)*Kn(z1_hyper_minus_deltat,0)).real();
+      integral_conv_exp_trigo_deltat += s1_deltat/sqrt(2.)*Mn(0.,12./(sqrt(2.)*s1_deltat),z1_trigo_deltat,0)*Kn(z1_trigo_deltat,0);
+   }
+   else {
+      for (int ibin=0; ibin<5; ++ibin) {
+         for (int k=0; k<4; ++k) {
+            for (int i=0; i<(k+1); ++i) {
+               for (int j=0; j<(i+1); ++j) {
+                  integral_conv_exp_hyper_plus_deltat += (spl_coef_array_deltat[ibin][k][i][j]*Mn(spl_knot_x1_vector_deltat[ibin],spl_knot_x1_vector_deltat[ibin+1],z1_hyper_plus_deltat,i-j)*Kn(z1_hyper_plus_deltat,j)).real();
+                  integral_conv_exp_hyper_minus_deltat += (spl_coef_array_deltat[ibin][k][i][j]*Mn(spl_knot_x1_vector_deltat[ibin],spl_knot_x1_vector_deltat[ibin+1],z1_hyper_minus_deltat,i-j)*Kn(z1_hyper_minus_deltat,j)).real();
+                  integral_conv_exp_trigo_deltat += spl_coef_array_deltat[ibin][k][i][j]*Mn(spl_knot_x1_vector_deltat[ibin],spl_knot_x1_vector_deltat[ibin+1],z1_trigo_deltat,i-j)*Kn(z1_trigo_deltat,j);
+               }
+            }
+         }
+      }
+   }
+
+   IT_cosh_temp_deltat = 0.5*(integral_conv_exp_hyper_plus_deltat + integral_conv_exp_hyper_minus_deltat);
+   IT_sinh_temp_deltat = 0.5*(integral_conv_exp_hyper_plus_deltat - integral_conv_exp_hyper_minus_deltat);
+   IT_cos_temp_deltat = integral_conv_exp_trigo_deltat.real();
+   IT_sin_temp_deltat = integral_conv_exp_trigo_deltat.imag();
+
+ }
+
+// ---------------------------------------------------
+// cosh time dependent term, spline version (without acceptance).
+
+Double_t KpiKpiSpectrumNW::T_cosh_spl(Double_t tau, Double_t tau_err) const
+ {
+   
+   set_buffer_differential_vars(895,895,0,0,0,tau,tau_err,0,0,0.5,0.5);
+   return T_cosh_temp;
+
+ }
+
+// ---------------------------------------------------
+// sinh time dependent term, spline version (without acceptance).
+
+Double_t KpiKpiSpectrumNW::T_sinh_spl(Double_t tau, Double_t tau_err) const
+ {
+   
+   set_buffer_differential_vars(895,895,0,0,0,tau,tau_err,0,0,0.5,0.5);
+   return T_sinh_temp;
+
+ }
+
+// ---------------------------------------------------
+// cos time dependent term, spline version (without acceptance).
+
+Double_t KpiKpiSpectrumNW::T_cos_spl(Double_t tau, Double_t tau_err) const
+ {
+   
+   set_buffer_differential_vars(895,895,0,0,0,tau,tau_err,0,0,0.5,0.5);
+   return T_cos_temp;
+
+ }
+
+// ---------------------------------------------------
+// sin time dependent term, spline version (without acceptance).
+
+Double_t KpiKpiSpectrumNW::T_sin_spl(Double_t tau, Double_t tau_err) const
+ {
+   
+   set_buffer_differential_vars(895,895,0,0,0,tau,tau_err,0,0,0.5,0.5);
+   return T_sin_temp;
+
+ }
+
+// ---------------------------------------------------
+// Integral of the cosh time dependent term, spline version.
+
+Double_t KpiKpiSpectrumNW::IT_cosh_spl() const
+ {
+   
+   set_buffer_integral_vars();
+   return IT_cosh_temp_deltat;
+
+ }
+
+// ---------------------------------------------------
+// Integral of the sinh time dependent term, spline version.
+
+Double_t KpiKpiSpectrumNW::IT_sinh_spl() const
+ {
+   
+   set_buffer_integral_vars();
+   return IT_sinh_temp_deltat;
+
+ }
+
+// ---------------------------------------------------
+// Integral of the cos time dependent term, spline version.
+
+Double_t KpiKpiSpectrumNW::IT_cos_spl() const
+ {
+   
+   set_buffer_integral_vars();
+   return IT_cos_temp_deltat;
+
+ }
+
+// ---------------------------------------------------
+// Integral of the sin time dependent term, spline version.
+
+Double_t KpiKpiSpectrumNW::IT_sin_spl() const
+ {
+   
+   set_buffer_integral_vars();
+   return IT_sin_temp_deltat;
+
+ }
+
+// ---------------------------------------------------
+// Integrals of the time dependent functions, assuming SM conditions and ideal time acceptance and resolution, to be used in a basic time integrated, flavour averaged, amplitude fit.
+
+TComplex KpiKpiSpectrumNW::IT_basicfit_j1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const
+ {
+
+   return M_Average(j1,j2,h,j1p,j2p,hp)-0.5*delta_gamma_freq/gamma_Bs_freq*M_DeltaGamma(j1,j2,h,j1p,j2p,hp);
 
  }
 
@@ -2659,7 +2855,7 @@ Double_t KpiKpiSpectrumNW::Blatt_Weisskopf2(Double_t q, Double_t q0, Int_t L) co
 
    if (L<1.) {return 1.;}  
    Double_t d;
-   if (L == 1) {d = 3.e-03;}
+   if (L == 1) {d = 3.4e-03;}
    else if (L == 2) {d = 2.7e-03;}
    else {d = 3.e-03/L;}
    Double_t z = q*d*q*d;
@@ -2672,90 +2868,396 @@ Double_t KpiKpiSpectrumNW::Blatt_Weisskopf2(Double_t q, Double_t q0, Int_t L) co
  }
 
 // ---------------------------------------------------
-// Isobaric amplitude for a resonance of mass m0, width g0 and spin J.
+// Angular momentum barrier factor.
 
-TComplex KpiKpiSpectrumNW::Resonance(Double_t m, Double_t m_sister, Double_t m0, Double_t g0, Int_t J) const
+Double_t KpiKpiSpectrumNW::FL_j1j2(Int_t j1, Int_t j2, Double_t ma, Double_t mb) const 
  {
 
-   // Approximation of the lowest orbital angular momentum available.
-   Int_t L = 0;
-   if (J == 0) {L = 1;}
-   else if (J == 1) {L = 0;}
-   else if (J == 2) {L = 1;}
+   // Momenta definition.
+   Double_t p = get_q(MBs,ma,mb);
+   Double_t q_1 = get_q(ma,MPion,MKaon);
+   Double_t q_2 = get_q(mb,MPion,MKaon);
 
-   // Angular momentum barrier factor for the decay of the Kst.
+   // Normalization constants.
+   Double_t m0 = mv;
+   Double_t p0 = get_q(MBs,m0,m0);
+   Double_t q0 = get_q(m0,MPion,MKaon);
+
+   // Decay of the Bs.
+   Int_t L = abs(j1-j2);
+   Double_t FL_Bs = pow(p/p0,L)*sqrt(Blatt_Weisskopf2(p,p0,L));
+
+   // Decay of the K+pi- pair.
+   Double_t FL_Kpi1 = pow((q_1/q0)/(ma/m0),j1)*sqrt(Blatt_Weisskopf2(q_1,q0,j1));
+
+   // Decay of the K-pi+ pair.
+   Double_t FL_Kpi2 = pow((q_2/q0)/(mb/m0),j2)*sqrt(Blatt_Weisskopf2(q_2,q0,j2));
+
+   return FL_Bs*FL_Kpi1*FL_Kpi2;
+
+ }
+
+// ---------------------------------------------------
+// Relativistic Breit-Wigner amplitude.
+
+TComplex KpiKpiSpectrumNW::Resonance(Double_t m, Double_t m0, Double_t g0, Int_t J) const
+ {
+
+   // Angular momenta definition.
    Double_t q = get_q(m,MPion,MKaon);
    Double_t q0 = get_q(m0,MPion,MKaon);
-   if (q==0) return 0;
-   Double_t kst_decay = pow(q/m,J)*sqrt(Blatt_Weisskopf2(q,q0,J));
 
-   // Angular momentum barrier factor for the creation of the Kst.
-   Double_t p = get_q(MBs,m_sister,m);
-   Double_t p0 = get_q(MBs,m_sister,m0);
-   if (p==0) return 0;
-   Double_t kst_birth = pow(p/MBs,L)*sqrt(Blatt_Weisskopf2(p,p0,L));
+   // Running width.
+   Double_t gamma = g0*pow(q/q0,2*J+1)*(m0/m)*Blatt_Weisskopf2(q,q0,J);
 
-   // Relativistic spin-J Breit Wigner amplitude.
-   Double_t gamma = g0*pow(q/q0,2*J+1)*m0/m*Blatt_Weisskopf2(q,q0,J);
-   TComplex denom(m0*m0-m*m,-m0*gamma);
+   // Amplitude.
    TComplex num(m0*g0,0.);
+   TComplex denom(m0*m0-m*m,-m0*gamma);
    TComplex BW = num/denom;
 
-   return BW * kst_birth * kst_decay;
+   if (J == 1) {return BW*TComplex(1.,-1.5707963267948966,1);}
+   else if (J == 2) {return BW*TComplex(1.,-0.01011220614593752,1);}
+   return BW;
 
  }
 
 // ---------------------------------------------------
 // Lass parametrization for the S wave.
 
-TComplex KpiKpiSpectrumNW::Lass(Double_t m, Double_t m_sister, Double_t m0, Double_t g0) const 
+TComplex KpiKpiSpectrumNW::Lass(Double_t m, Double_t m0, Double_t g0) const 
  { 
 
    TComplex i(0,1);
    
    Double_t q = get_q(m,MPion,MKaon);
    Double_t q0 = get_q(m0,MPion,MKaon);
-   if (q==0) return 0;
-   Double_t p = get_q(MBs,m_sister,m);
-   Double_t p0 = get_q(MBs,m_sister,m0);
-   if (p==0) return 0;
 
    Double_t cotg_deltaB = 1./(a_lass*q)+0.5*r_lass*q;
    Double_t deltaB = atan(1./cotg_deltaB);
    TComplex expo(1.,2.*deltaB,1);
 
-   Double_t gamma = g0*q/q0*m0/m;
+   Double_t gamma = g0*(q/q0)*(m0/m);
    Double_t cotg_deltaR = (m0*m0-m*m)/(m0*gamma);
 
-   TComplex T = sqrt(Blatt_Weisskopf2(p,p0,1))*p*m/q*(1./(cotg_deltaB-i)+expo/(cotg_deltaR-i));
+   TComplex T = 1./(cotg_deltaB-i)+expo/(cotg_deltaR-i);
 
    return T;
 
  } 
 
 // ---------------------------------------------------
-// Invariant mass amplitude for each wave.
+// Alternative Lass parametrization for the S wave based on chiral perturbation theory.
 
-TComplex KpiKpiSpectrumNW::Mji(Double_t m, Double_t m_sister, Int_t ji) const 
+TComplex KpiKpiSpectrumNW::Lass_chiral(Double_t m) const 
+ { 
+
+   // Auxiliar variables.
+   TComplex i(0,1);
+   Double_t svar = m*m;
+   Double_t svar2 = svar*svar;
+   Double_t MPion2 = MPion*MPion;
+   Double_t MKaon2 = MKaon*MKaon;
+   Double_t Lambda = svar2-2*svar*(MPion2+MKaon2)+(MPion2-MKaon2)*(MPion2-MKaon2);
+   Double_t sqrtLambda = sqrt(Lambda);
+   Double_t F_lass2 = F_lass*F_lass;
+   Double_t F_lass4 = F_lass2*F_lass2;
+
+   // Amplitude for chiral contact term + single resonance.
+   Double_t L0fun = 1.+(MPion2+MKaon2)/(MPion2-MKaon2)*log(MPion/MKaon)-(MPion2-MKaon2)/svar*log(MPion/MKaon);
+   TComplex Lbarfun = L0fun-sqrtLambda/svar*log((svar-MPion2-MKaon2+sqrtLambda)/(2.*MPion*MKaon))+i*pi*sqrtLambda/svar;
+   TComplex Omegabar = -Lbarfun/(16.*pi*pi);
+   Double_t alphafun = 3./(2.*F_lass4)*pow(cd_lass*svar-(cd_lass-cm_lass)*(MPion2+MKaon2),2);
+   Double_t KernelC = (5.*svar/8.-(MPion2+MKaon2)/4.-3.*(MPion2-MKaon2)*(MPion2-MKaon2)/(8.*svar))/F_lass2;
+   Double_t Kernel = KernelC-alphafun/(svar-MR_lass*MR_lass);
+   TComplex T = Kernel/(1.+(C_lass+Omegabar)*Kernel);
+
+   return T;
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the S-wave propagator obtained from theory.
+
+Double_t KpiKpiSpectrumNW::omega_Stheo(Double_t m) const 
+ {
+
+   Double_t m_GeV = m/1000.;
+   Double_t svar_GeV = m_GeV*m_GeV;
+   Double_t Delta_Kpi = MKaon/1000.*MKaon/1000.-MPion/1000.*MPion/1000.;
+   Double_t y_s = pow((svar_GeV-Delta_Kpi)/(svar_GeV+Delta_Kpi),2);
+   Double_t y_s0 = pow((s0_Stheo-Delta_Kpi)/(s0_Stheo+Delta_Kpi),2);
+   return (sqrt(y_s)-alpha_Stheo*sqrt(y_s0-y_s))/(sqrt(y_s)+alpha_Stheo*sqrt(y_s0-y_s));
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the P-wave propagator obtained from theory.
+
+Double_t KpiKpiSpectrumNW::omega_Ptheo(Double_t m) const 
+ {
+
+   Double_t m_GeV = m/1000.;
+   Double_t svar_GeV = m_GeV*m_GeV;
+   Double_t Delta_Kpi = MKaon/1000.*MKaon/1000.-MPion/1000.*MPion/1000.;
+   Double_t y_s = pow((svar_GeV-Delta_Kpi)/(svar_GeV+Delta_Kpi),2);
+   Double_t y_s0 = pow((s0_Ptheo-Delta_Kpi)/(s0_Ptheo+Delta_Kpi),2);
+   return (sqrt(y_s)-alpha_Ptheo*sqrt(y_s0-y_s))/(sqrt(y_s)+alpha_Ptheo*sqrt(y_s0-y_s));
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the S-wave propagator obtained from theory.
+
+Double_t KpiKpiSpectrumNW::cotdelta_Stheo(Double_t m) const 
+ {
+
+   Double_t m_GeV = m/1000.;
+   Double_t svar_GeV = m_GeV*m_GeV;
+   Double_t q_Kpi_GeV = get_q(m,MKaon,MPion)/1000.;
+   Double_t omega_func = omega_Stheo(m);
+   return m_GeV/(2.*q_Kpi_GeV*(svar_GeV-sAdler_Stheo))*(B0_Stheo+B1_Stheo*omega_func);
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the P-wave propagator obtained from theory.
+
+Double_t KpiKpiSpectrumNW::cotdelta_Ptheo(Double_t m) const 
+ {
+
+   Double_t m_GeV = m/1000.;
+   Double_t svar_GeV = m_GeV*m_GeV;
+   Double_t q_Kpi_GeV = get_q(m,MKaon,MPion)/1000.;
+   Double_t omega_func = omega_Ptheo(m);
+   return m_GeV/(2.*q_Kpi_GeV*q_Kpi_GeV*q_Kpi_GeV)*(mr_Ptheo*mr_Ptheo-svar_GeV)*(B0_Ptheo+B1_Ptheo*omega_func+B2_Ptheo*omega_func*omega_func);
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the S-wave propagator obtained from theory.
+
+Double_t KpiKpiSpectrumNW::get_p1_Stheo(Double_t q) const 
+ {
+
+   return 1.+a_Stheo*q/1000.*q/1000.+b_Stheo*q/1000.*q/1000.*q/1000.*q/1000.;
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the S-wave propagator obtained from theory.
+
+Double_t KpiKpiSpectrumNW::get_p2_Stheo(Double_t q) const 
+ {
+
+   return 1.+c_Stheo*q/1000.*q/1000.;
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the P-wave propagator obtained from theory.
+
+Double_t KpiKpiSpectrumNW::get_p1_Ptheo(Double_t q) const 
+ {
+
+   return 1.+a1_Ptheo*q/1000.*q/1000.;
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the P-wave propagator obtained from theory.
+
+Double_t KpiKpiSpectrumNW::get_p2_Ptheo(Double_t q) const 
+ {
+
+   return 1.+a2_Ptheo*q/1000.*q/1000.;
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the P-wave propagator obtained from theory.
+
+Double_t KpiKpiSpectrumNW::get_p3_Ptheo(Double_t q) const 
+ {
+
+   return 1.+a3_Ptheo*q/1000.*q/1000.;
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the D-wave propagator obtained from theory.
+
+Double_t KpiKpiSpectrumNW::get_p1_Dtheo(Double_t q) const 
+ {
+
+   return 1.+a_Dtheo*q/1000.*q/1000.;
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the propagators obtained from theory.
+
+Double_t KpiKpiSpectrumNW::Theta_Keta(Double_t m) const 
+ {
+
+   if (m>=(MKaon+MEta)) {return 1.;}
+   return 0.;
+
+ }
+
+// ---------------------------------------------------
+// Auxiliar function used in the propagators obtained from theory.
+
+Double_t KpiKpiSpectrumNW::Theta_Ketaprime(Double_t m) const 
+ {
+
+   if (m>=(MKaon+MEtaprime)) {return 1.;}
+   return 0.;
+
+ }
+
+// ---------------------------------------------------
+// S-wave propagator obtained from theory.
+
+TComplex KpiKpiSpectrumNW::Prop_Stheo(Double_t m) const 
+ { 
+
+   // Auxiliar quantities.
+   TComplex i(0,1);
+   Double_t m_GeV = m/1000.;
+   Double_t svar_GeV = m_GeV*m_GeV;
+   Double_t q_Kpi_GeV = get_q(m,MKaon,MPion)/1000.;
+   Double_t q_Keta_GeV = get_q(m,MKaon,MEta)/1000.;
+
+   // Kpi decay amplitude.
+   TComplex T;
+
+   // Parametrisation in the elastic region.
+   if (m<(MKaon+MEta)) {
+      T = 1./(cotdelta_Stheo(m)-i);
+   }
+
+   // Parametrisation in the inelastic region.
+   else {
+      TComplex S0b(1.,2.*q_Keta_GeV*(phi0_Stheo+phi1_Stheo*q_Keta_GeV*q_Keta_GeV),1);
+      Double_t q_Kpi_r1_GeV = get_q(sqrtsr1_Stheo*1000.,MKaon,MPion)/1000.;
+      Double_t q_Keta_r1_GeV = get_q(sqrtsr1_Stheo*1000.,MKaon,MEta)/1000.;
+      Double_t q_Kpi_r2_GeV = get_q(sqrtsr2_Stheo*1000.,MKaon,MPion)/1000.;
+      Double_t q_Keta_r2_GeV = get_q(sqrtsr2_Stheo*1000.,MKaon,MEta)/1000.;
+      Double_t q_Kpi_hat_GeV = get_q(MKaon+MEta,MKaon,MPion)/1000.;
+      Double_t beta_Stheo = 1./cotdelta_Stheo(MKaon+MEta);
+      Double_t P1_s = (sqrtsr1_Stheo*sqrtsr1_Stheo-svar_GeV)*beta_Stheo+e1_Stheo*G1_Stheo*(get_p1_Stheo(q_Kpi_GeV*1000.)*(q_Kpi_GeV-q_Kpi_hat_GeV))/(get_p1_Stheo(q_Kpi_r1_GeV*1000.)*(q_Kpi_r1_GeV-q_Kpi_hat_GeV));
+      Double_t Q1_s = (1.-e1_Stheo)*G1_Stheo*get_p1_Stheo(q_Kpi_GeV*1000.)/get_p1_Stheo(q_Kpi_r1_GeV*1000.)*q_Keta_GeV/q_Keta_r1_GeV*Theta_Keta(m);
+      Double_t P2_s = e2_Stheo*G2_Stheo*(get_p2_Stheo(q_Kpi_GeV*1000.)*(q_Kpi_GeV-q_Kpi_hat_GeV))/(get_p2_Stheo(q_Kpi_r2_GeV*1000.)*(q_Kpi_r2_GeV-q_Kpi_hat_GeV));
+      Double_t Q2_s = (1.-e2_Stheo)*G2_Stheo*get_p2_Stheo(q_Kpi_GeV*1000.)/get_p2_Stheo(q_Kpi_r2_GeV*1000.)*q_Keta_GeV/q_Keta_r2_GeV*Theta_Keta(m);
+      TComplex S1r = (sqrtsr1_Stheo*sqrtsr1_Stheo-svar_GeV+i*(P1_s-Q1_s))/(sqrtsr1_Stheo*sqrtsr1_Stheo-svar_GeV-i*(P1_s+Q1_s));
+      TComplex S2r = (sqrtsr2_Stheo*sqrtsr2_Stheo-svar_GeV+i*(P2_s-Q2_s))/(sqrtsr2_Stheo*sqrtsr2_Stheo-svar_GeV-i*(P2_s+Q2_s));
+      T = (S0b*S1r*S2r-1.)/(2.*i);
+   }
+
+   return T*TComplex(1.,-0.7095863518296103,1);
+
+ }
+
+// ---------------------------------------------------
+// P-wave propagator obtained from theory.
+
+TComplex KpiKpiSpectrumNW::Prop_Ptheo(Double_t m) const 
+ { 
+
+   // Auxiliar quantities.
+   TComplex i(0,1);
+   Double_t m_GeV = m/1000.;
+   Double_t svar_GeV = m_GeV*m_GeV;
+   Double_t q_Kpi_GeV = get_q(m,MKaon,MPion)/1000.;
+   Double_t q_Keta_GeV = get_q(m,MKaon,MEta)/1000.;
+
+   // Kpi decay amplitude.
+   TComplex T;
+
+   // Parametrisation in the elastic region.
+   if (m<(MKaon+MEta)) {
+      T = 1./(cotdelta_Ptheo(m)-i);
+   }
+
+   // Parametrisation in the inelastic region.
+   else {
+      Double_t q_Kpi_r1_GeV = get_q(sqrtsr1_Ptheo*1000.,MKaon,MPion)/1000.;
+      Double_t q_Keta_r1_GeV = get_q(sqrtsr1_Ptheo*1000.,MKaon,MEta)/1000.;
+      Double_t q_Kpi_r2_GeV = get_q(sqrtsr2_Ptheo*1000.,MKaon,MPion)/1000.;
+      Double_t q_Keta_r2_GeV = get_q(sqrtsr2_Ptheo*1000.,MKaon,MEta)/1000.;
+      Double_t q_Kpi_r3_GeV = get_q(sqrtsr3_Ptheo*1000.,MKaon,MPion)/1000.;
+      Double_t q_Keta_r3_GeV = get_q(sqrtsr3_Ptheo*1000.,MKaon,MEta)/1000.;
+      Double_t q_Kpi_hat_GeV = get_q(MKaon+MEta,MKaon,MPion)/1000.;
+      Double_t beta_Ptheo = 1./cotdelta_Ptheo(MKaon+MEta);
+      Double_t P1_s = (sqrtsr1_Ptheo*sqrtsr1_Ptheo-svar_GeV)*beta_Ptheo+e1_Ptheo*G1_Ptheo*(get_p1_Ptheo(q_Kpi_GeV*1000.)*q_Kpi_GeV*(q_Kpi_GeV*q_Kpi_GeV-q_Kpi_hat_GeV*q_Kpi_hat_GeV))/(get_p1_Ptheo(q_Kpi_r1_GeV*1000.)*q_Kpi_r1_GeV*(q_Kpi_r1_GeV*q_Kpi_r1_GeV-q_Kpi_hat_GeV*q_Kpi_hat_GeV));
+      Double_t P2_s = e2_Ptheo*G2_Ptheo*(get_p2_Ptheo(q_Kpi_GeV*1000.)*q_Kpi_GeV*(q_Kpi_GeV*q_Kpi_GeV-q_Kpi_hat_GeV*q_Kpi_hat_GeV))/(get_p2_Ptheo(q_Kpi_r2_GeV*1000.)*q_Kpi_r2_GeV*(q_Kpi_r2_GeV*q_Kpi_r2_GeV-q_Kpi_hat_GeV*q_Kpi_hat_GeV));
+      Double_t P3_s = e3_Ptheo*G3_Ptheo*(get_p3_Ptheo(q_Kpi_GeV*1000.)*q_Kpi_GeV*(q_Kpi_GeV*q_Kpi_GeV-q_Kpi_hat_GeV*q_Kpi_hat_GeV))/(get_p3_Ptheo(q_Kpi_r3_GeV*1000.)*q_Kpi_r3_GeV*(q_Kpi_r3_GeV*q_Kpi_r3_GeV-q_Kpi_hat_GeV*q_Kpi_hat_GeV));
+      Double_t Q1_s = 0.;
+      Double_t Q2_s = (1.-e2_Ptheo)*G2_Ptheo*get_p2_Ptheo(q_Kpi_GeV*1000.)/get_p2_Ptheo(q_Kpi_r2_GeV*1000.)*pow(q_Keta_GeV/q_Keta_r2_GeV,3)*Theta_Keta(m);
+      Double_t Q3_s = (1.-e3_Ptheo)*G3_Ptheo*get_p3_Ptheo(q_Kpi_GeV*1000.)/get_p3_Ptheo(q_Kpi_r3_GeV*1000.)*pow(q_Keta_GeV/q_Keta_r3_GeV,3)*Theta_Keta(m);
+      TComplex S1r = (sqrtsr1_Ptheo*sqrtsr1_Ptheo-svar_GeV+i*(P1_s-Q1_s))/(sqrtsr1_Ptheo*sqrtsr1_Ptheo-svar_GeV-i*(P1_s+Q1_s));
+      TComplex S2r = (sqrtsr2_Ptheo*sqrtsr2_Ptheo-svar_GeV+i*(P2_s-Q2_s))/(sqrtsr2_Ptheo*sqrtsr2_Ptheo-svar_GeV-i*(P2_s+Q2_s));
+      TComplex S3r = (sqrtsr3_Ptheo*sqrtsr3_Ptheo-svar_GeV+i*(P3_s-Q3_s))/(sqrtsr3_Ptheo*sqrtsr3_Ptheo-svar_GeV-i*(P3_s+Q3_s));
+      T = (S1r*S2r*S3r-1.)/(2.*i);
+
+   }
+
+   return T*TComplex(1.,-1.5745153880460114,1);
+
+ }
+
+// ---------------------------------------------------
+// D-wave propagator obtained from theory.
+
+TComplex KpiKpiSpectrumNW::Prop_Dtheo(Double_t m) const 
+ { 
+
+   TComplex i(0,1);
+   Double_t m_GeV = m/1000.;
+   Double_t svar_GeV = m_GeV*m_GeV;
+   Double_t q_Kpi_GeV = get_q(m,MKaon,MPion)/1000.;
+   Double_t q_Keta_GeV = get_q(m,MKaon,MEta)/1000.;
+   Double_t q_Ketaprime_GeV = get_q(m,MKaon,MEtaprime)/1000.;
+
+   // Kpi decay amplitude.
+   TComplex T;
+
+   // Parametrisation in the whole region.
+   TComplex S0b(1.,2.*(phi0_Dtheo*pow(q_Keta_GeV,5)*Theta_Keta(m)+phi1_Dtheo*pow(q_Ketaprime_GeV,5)*Theta_Ketaprime(m)),1);
+   Double_t q_Kpi_r1_GeV = get_q(sqrtsr1_Dtheo*1000.,MKaon,MPion)/1000.;
+   Double_t q_Keta_r1_GeV = get_q(sqrtsr1_Dtheo*1000.,MKaon,MEta)/1000.;
+   Double_t P1_s = e1_Dtheo*G1_Dtheo*get_p1_Dtheo(q_Kpi_GeV*1000.)/get_p1_Dtheo(q_Kpi_r1_GeV*1000.)*pow(q_Kpi_GeV/q_Kpi_r1_GeV,5);
+   Double_t Q1_s = (1.-e1_Dtheo)*G1_Dtheo*get_p1_Dtheo(q_Kpi_GeV*1000.)/get_p1_Dtheo(q_Kpi_r1_GeV*1000.)*pow(q_Keta_GeV/q_Keta_r1_GeV,5)*Theta_Keta(m);
+   TComplex S1r = (sqrtsr1_Dtheo*sqrtsr1_Dtheo-svar_GeV+i*(P1_s-Q1_s))/(sqrtsr1_Dtheo*sqrtsr1_Dtheo-svar_GeV-i*(P1_s+Q1_s));
+   T = (S0b*S1r-1.)/(2.*i);
+
+   return T*TComplex(1.,-0.0022258232266847374,1);
+
+ }
+
+// ---------------------------------------------------
+// Kpi mass amplitude.
+
+TComplex KpiKpiSpectrumNW::Mji(Double_t m, Int_t ji) const 
  {
 
    TComplex T;
 
    if (ji == 0)
 	{
-	T = Lass(m,m_sister,ms,gs)*TComplex(0.00021167233881101775,-0.6904181463662509,1);
+	T = Prop_Stheo(m);
 	}
 
-   else if (ji == 1.)
+   else if (ji == 1)
 	{
-	if (pw_mass_altmodel == 0) {T = Resonance(m,m_sister,mv,gv,1)*TComplex(3.0782434270248222,1.5707963267948966-pi,1);}
-	else if (pw_mass_altmodel == 1) {T = Resonance(m,m_sister,mv,gv,1) + TComplex(sqrt(f_1410_rel2_892),delta_1410_rel2_892,1)*Resonance(m,m_sister,MKst_1_1410,GKst_1_1410,1) + TComplex(sqrt(f_1680_rel2_892),delta_1680_rel2_892,1)*Resonance(m,m_sister,MKst_1_1680,GKst_1_1680,1);}
+	if (pw_mass_altmodel == 0) {T = Resonance(m,mv,gv,1);}
+	else if (pw_mass_altmodel == 1) {T = Resonance(m,mv,gv,1) + TComplex(sqrt(f_1410_rel2_892),delta_1410_rel2_892,1)*Resonance(m,MKst_1_1410,GKst_1_1410,1) + TComplex(sqrt(f_1680_rel2_892),delta_1680_rel2_892,1)*Resonance(m,MKst_1_1680,GKst_1_1680,1);}
 	else {throw std::invalid_argument( "Invalid argument #4" );}
 	}
 
    else if (ji == 2)
 	{
-	T = Resonance(m,m_sister,mt,gt,2)*TComplex(112.27484112040055,3.1314804474438556-pi,1);
+	T = Resonance(m,mt,gt,2);
 	}
    
    return T;
@@ -2763,20 +3265,22 @@ TComplex KpiKpiSpectrumNW::Mji(Double_t m, Double_t m_sister, Int_t ji) const
  }
 
 // ---------------------------------------------------
-// Invariant mass dependent factor for each amplitude.
+// Invariant mass dependent factor for each wave.
  
 TComplex KpiKpiSpectrumNW::Mj1j2(Double_t ma, Double_t mb, Int_t j1, Int_t j2) const 
  { 
 
- if ((j1 == 0) and (j2 == 0)) {return Mji(ma,mb,0)*Mji(mb,ma,0)/sqrt(Im00);}
- else if ((j1 == 0) and (j2 == 1)) {return Mji(ma,mb,0)*Mji(mb,ma,1)/sqrt(Im01);}
- else if ((j1 == 1) and (j2 == 0)) {return Mji(ma,mb,1)*Mji(mb,ma,0)/sqrt(Im10);}
- else if ((j1 == 0) and (j2 == 2)) {return Mji(ma,mb,0)*Mji(mb,ma,2)/sqrt(Im02);}
- else if ((j1 == 2) and (j2 == 0)) {return Mji(ma,mb,2)*Mji(mb,ma,0)/sqrt(Im20);}
- else if ((j1 == 1) and (j2 == 1)) {return Mji(ma,mb,1)*Mji(mb,ma,1)/sqrt(Im11);}
- else if ((j1 == 1) and (j2 == 2)) {return Mji(ma,mb,1)*Mji(mb,ma,2)/sqrt(Im12);}
- else if ((j1 == 2) and (j2 == 1)) {return Mji(ma,mb,2)*Mji(mb,ma,1)/sqrt(Im21);}
- else if ((j1 == 2) and (j2 == 2)) {return Mji(ma,mb,2)*Mji(mb,ma,2)/sqrt(Im22);}
+ Double_t scale_factor = sqrt(Im00);
+
+ if ((j1 == 0) and (j2 == 0)) {return Mji(ma,0)*Mji(mb,0)*FL_j1j2(0,0,ma,mb)*(scale_factor/sqrt(Im00));}
+ else if ((j1 == 0) and (j2 == 1)) {return Mji(ma,0)*Mji(mb,1)*FL_j1j2(0,1,ma,mb)*(scale_factor/sqrt(Im01));}
+ else if ((j1 == 1) and (j2 == 0)) {return Mji(ma,1)*Mji(mb,0)*FL_j1j2(1,0,ma,mb)*(scale_factor/sqrt(Im10));}
+ else if ((j1 == 0) and (j2 == 2)) {return Mji(ma,0)*Mji(mb,2)*FL_j1j2(0,2,ma,mb)*(scale_factor/sqrt(Im02));}
+ else if ((j1 == 2) and (j2 == 0)) {return Mji(ma,2)*Mji(mb,0)*FL_j1j2(2,0,ma,mb)*(scale_factor/sqrt(Im20));}
+ else if ((j1 == 1) and (j2 == 1)) {return Mji(ma,1)*Mji(mb,1)*FL_j1j2(1,1,ma,mb)*(scale_factor/sqrt(Im11));}
+ else if ((j1 == 1) and (j2 == 2)) {return Mji(ma,1)*Mji(mb,2)*FL_j1j2(1,2,ma,mb)*(scale_factor/sqrt(Im12));}
+ else if ((j1 == 2) and (j2 == 1)) {return Mji(ma,2)*Mji(mb,1)*FL_j1j2(2,1,ma,mb)*(scale_factor/sqrt(Im21));}
+ else if ((j1 == 2) and (j2 == 2)) {return Mji(ma,2)*Mji(mb,2)*FL_j1j2(2,2,ma,mb)*(scale_factor/sqrt(Im22));}
 
  throw std::invalid_argument( "Invalid argument #5" );
 
@@ -2788,10 +3292,10 @@ TComplex KpiKpiSpectrumNW::Mj1j2(Double_t ma, Double_t mb, Int_t j1, Int_t j2) c
 Double_t KpiKpiSpectrumNW::phasespace(Double_t ma, Double_t mb) const 
  { 
  
-   Double_t Q1 = get_q(ma,MKaon,MPion);
-   Double_t Q2 = get_q(mb,MKaon,MPion);
-   Double_t QB = get_q(MBs,ma,mb);
-   Double_t phsp = Q1*Q2*QB*4.668198266871305e-09;
+   Double_t Q1 = get_q(ma,MKaon,MPion)/get_q(mv,MKaon,MPion);
+   Double_t Q2 = get_q(mb,MKaon,MPion)/get_q(mv,MKaon,MPion);
+   Double_t QB = get_q(MBs,ma,mb)/get_q(MBs,mv,mv);
+   Double_t phsp = Q1*Q2*QB;
 
    return phsp;
 
@@ -2901,12 +3405,22 @@ Double_t KpiKpiSpectrumNW::accMass(Double_t m) const
  }
 
 // ---------------------------------------------------
-// Integrals of the time dependent functions, effective resolution, without tagging, parametric acceptance.
+// Integrals of the time dependent functions, effective resolution, without tagging.
 
 TComplex KpiKpiSpectrumNW::ITj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const
  {
 
-   return (IT_cosh_temp*M_Average(j1,j2,h,j1p,j2p,hp)-IT_sinh_temp*M_DeltaGamma(j1,j2,h,j1p,j2p,hp))+DCP_prod[int(wide_window)]*(IT_cos_temp*M_DirCP(j1,j2,h,j1p,j2p,hp)+IT_sin_temp*M_MixCP(j1,j2,h,j1p,j2p,hp));
+   return (IT_cosh_temp*M_Average(j1,j2,h,j1p,j2p,hp)-IT_sinh_temp*M_DeltaGamma(j1,j2,h,j1p,j2p,hp))+DCP_prod*(IT_cos_temp*M_DirCP(j1,j2,h,j1p,j2p,hp)+IT_sin_temp*M_MixCP(j1,j2,h,j1p,j2p,hp));
+
+ }
+
+// ---------------------------------------------------
+// Integrals of the time dependent functions, per event resolution, without tagging.
+
+TComplex KpiKpiSpectrumNW::ITj1j2hj1pj2php_deltat(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const
+ {
+
+   return (IT_cosh_temp_deltat*M_Average(j1,j2,h,j1p,j2p,hp)-IT_sinh_temp_deltat*M_DeltaGamma(j1,j2,h,j1p,j2p,hp))+DCP_prod*(IT_cos_temp_deltat*M_DirCP(j1,j2,h,j1p,j2p,hp)+IT_sin_temp_deltat*M_MixCP(j1,j2,h,j1p,j2p,hp));
 
  }
 
@@ -2958,6 +3472,7 @@ Double_t KpiKpiSpectrumNW::Igi(Int_t i) const
    else if (i == 10) {return 0.;}
    else if (i == 11) {return 0.;}
    else if (i == 12) {return 0.;}
+
    else if (i == 13) {return pi;}
    else if (i == 14) {return 0.;}
    else if (i == 15) {return pi;}
@@ -3013,7 +3528,24 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
 
  Double_t KpiKpiSpectrumNW::comp_den_fit(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const 
  { 
-   return (ITj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*TComplex(NW.comp(year_opt,trig_opt,wide_window,j1,j2,h,j1p,j2p,hp,0),NW.comp(year_opt,trig_opt,wide_window,j1,j2,h,j1p,j2p,hp,1))).Re();
+   return (ITj1j2hj1pj2php_deltat(j1,j2,h,j1p,j2p,hp)*TComplex(NW.comp(year_opt,trig_opt,wide_window,j1,j2,h,j1p,j2p,hp,0),NW.comp(year_opt,trig_opt,wide_window,j1,j2,h,j1p,j2p,hp,1))).Re();
+ }
+
+// ---------------------------------------------------
+// Components of the PDF used for a basic time integrated, flavour averaged, amplitude fit.
+
+ Double_t KpiKpiSpectrumNW::comp_num_basicfit(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const 
+ {
+   return (IT_basicfit_j1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*hj1j2j1pj2p(m1,m2,j1,j2,j1p,j2p)).Re()*ghhp_phi(h,hp)*fjjphhp_cos1(j1,j1p,h,hp)*fjjphhp_cos2(j2,j2p,h,hp);
+ }
+
+// ---------------------------------------------------
+// Components of the PDF normalization integral used for a basic time integrated, flavour averaged, amplitude fit.
+
+ Double_t KpiKpiSpectrumNW::comp_den_basicfit(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const 
+ { 
+   if (acctype == 2) {return (IT_basicfit_j1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*TComplex(NW.comp(year_opt,trig_opt,wide_window,j1,j2,h,j1p,j2p,hp,0),NW.comp(year_opt,trig_opt,wide_window,j1,j2,h,j1p,j2p,hp,1))).Re();}
+   else {return (IT_basicfit_j1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*Ihj1j2j1pj2p(j1,j2,j1p,j2p)).Re()*Ighhp(h,hp)*Ifjjphhp(j1,j1p,h,hp)*Ifjjphhp(j2,j2p,h,hp);}
  }
 
 // ---------------------------------------------------
@@ -3068,7 +3600,7 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
 // Real part of the components of the m1, m2, cos1, cos2 and phi funtion without the time dependent term.
 
  Double_t KpiKpiSpectrumNW::getReCompVal(Double_t ma, Double_t mb, Double_t cos1ang, Double_t cos2ang, Double_t phiang, Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const 
- { 
+ {
    set_buffer_differential_vars(ma,mb,cos1ang,cos2ang,phiang,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
    return (Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*hj1j2j1pj2p(ma,mb,j1,j2,j1p,j2p)).Re()*ghhp_phi(h,hp)*fjjphhp_cos1(j1,j1p,h,hp)*fjjphhp_cos2(j2,j2p,h,hp);
  }
@@ -3077,9 +3609,27 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
 // Imaginary part of the components of the m1, m2, cos1, cos2 and phi funtion without the time dependent term.
 
  Double_t KpiKpiSpectrumNW::getImCompVal(Double_t ma, Double_t mb, Double_t cos1ang, Double_t cos2ang, Double_t phiang, Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const 
- { 
+ {
    set_buffer_differential_vars(ma,mb,cos1ang,cos2ang,phiang,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
    return (Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*hj1j2j1pj2p(ma,mb,j1,j2,j1p,j2p)).Im()*ghhp_phi(h,hp)*fjjphhp_cos1(j1,j1p,h,hp)*fjjphhp_cos2(j2,j2p,h,hp);
+ }
+
+// ---------------------------------------------------
+// Function used to compare the NWs with the integrals obtained from the factorised acceptance used for plotting.
+
+ Double_t KpiKpiSpectrumNW::NWpull(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp, Int_t part) const 
+ { 
+
+   Double_t NWi = NW.comp(year_opt,trig_opt,wide_window,j1,j2,h,j1p,j2p,hp,part);
+   Double_t NWi_err = NW.comp_err(year_opt,trig_opt,wide_window,j1,j2,h,j1p,j2p,hp,part);
+   Double_t normInteg = (Nj1j2hj1pj2php(0,0,0,0,0,0)*Ihj1j2j1pj2p(0,0,0,0)).Re()*Ighhp(0,0)*Ifjjphhp(0,0,0,0)*Ifjjphhp(0,0,0,0);
+   Double_t Integi;
+   if (part == 0) {Integi = (Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*Ihj1j2j1pj2p(j1,j2,j1p,j2p)).Re()*Ighhp(h,hp)*Ifjjphhp(j1,j1p,h,hp)*Ifjjphhp(j2,j2p,h,hp)/normInteg;}
+   else {Integi = (Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*Ihj1j2j1pj2p(j1,j2,j1p,j2p)).Im()*Ighhp(h,hp)*Ifjjphhp(j1,j1p,h,hp)*Ifjjphhp(j2,j2p,h,hp)/normInteg;}
+
+   if (NWi_err == 0) {return 0.;}
+   return (NWi-Integi)/NWi_err;
+
  }
 
 // ######################################################################################################
@@ -3135,6 +3685,7 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
 +2.*comp_num_fit(2,1,1,2,2,0)+2.*comp_num_fit(2,1,2,0,0,0)+2.*comp_num_fit(2,1,2,0,1,0)+2.*comp_num_fit(2,1,2,0,2,0)+2.*comp_num_fit(2,1,2,1,0,0)+2.*comp_num_fit(2,1,2,1,1,0)
 +2.*comp_num_fit(2,1,2,1,1,1)+2.*comp_num_fit(2,1,2,1,1,2)+2.*comp_num_fit(2,1,2,1,2,0)+2.*comp_num_fit(2,1,2,1,2,1)+2.*comp_num_fit(2,1,2,2,0,0)+2.*comp_num_fit(2,1,2,2,1,0)
 +2.*comp_num_fit(2,1,2,2,1,1)+2.*comp_num_fit(2,1,2,2,2,0)+2.*comp_num_fit(2,1,2,2,2,1)+2.*comp_num_fit(2,2,0,0,0,0)+2.*comp_num_fit(2,2,0,0,1,0)+2.*comp_num_fit(2,2,0,0,2,0)
+
 +2.*comp_num_fit(2,2,0,1,0,0)+2.*comp_num_fit(2,2,0,1,1,0)+2.*comp_num_fit(2,2,0,1,2,0)+2.*comp_num_fit(2,2,0,2,0,0)+2.*comp_num_fit(2,2,0,2,1,0)+2.*comp_num_fit(2,2,1,0,0,0)
 +2.*comp_num_fit(2,2,1,0,1,0)+2.*comp_num_fit(2,2,1,0,2,0)+2.*comp_num_fit(2,2,1,1,0,0)+2.*comp_num_fit(2,2,1,1,1,0)+2.*comp_num_fit(2,2,1,1,1,1)+2.*comp_num_fit(2,2,1,1,2,0)
 +2.*comp_num_fit(2,2,1,1,2,1)+2.*comp_num_fit(2,2,1,2,0,0)+2.*comp_num_fit(2,2,1,2,1,0)+2.*comp_num_fit(2,2,1,2,1,1)+2.*comp_num_fit(2,2,1,2,2,0)+2.*comp_num_fit(2,2,2,0,0,0)
@@ -3190,6 +3741,92 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
 +2.*comp_den_fit(2,2,4,1,1,0)+2.*comp_den_fit(2,2,4,1,1,1)+2.*comp_den_fit(2,2,4,1,1,2)+2.*comp_den_fit(2,2,4,1,2,0)+2.*comp_den_fit(2,2,4,1,2,1)+2.*comp_den_fit(2,2,4,1,2,2)
 +2.*comp_den_fit(2,2,4,2,0,0)+2.*comp_den_fit(2,2,4,2,1,0)+2.*comp_den_fit(2,2,4,2,1,1)+2.*comp_den_fit(2,2,4,2,1,2)+2.*comp_den_fit(2,2,4,2,2,0)+2.*comp_den_fit(2,2,4,2,2,1)
 +2.*comp_den_fit(2,2,4,2,2,2)+2.*comp_den_fit(2,2,4,2,2,3);
+
+ }
+
+// ---------------------------------------------------
+// PDF used for a basic time integrated, flavour averaged, amplitude fit.
+
+ Double_t KpiKpiSpectrumNW::num_basicfit() const 
+ {
+
+   set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
+
+   return comp_num_basicfit(0,0,0,0,0,0)+comp_num_basicfit(0,1,0,0,1,0)+comp_num_basicfit(0,2,0,0,2,0)+comp_num_basicfit(1,0,0,1,0,0)+comp_num_basicfit(1,1,0,1,1,0)+comp_num_basicfit(1,1,1,1,1,1)
++comp_num_basicfit(1,1,2,1,1,2)+comp_num_basicfit(1,2,0,1,2,0)+comp_num_basicfit(1,2,1,1,2,1)+comp_num_basicfit(1,2,2,1,2,2)+comp_num_basicfit(2,0,0,2,0,0)+comp_num_basicfit(2,1,0,2,1,0)+comp_num_basicfit(2,1,1,2,1,1)
++comp_num_basicfit(2,1,2,2,1,2)+comp_num_basicfit(2,2,0,2,2,0)+comp_num_basicfit(2,2,1,2,2,1)+comp_num_basicfit(2,2,2,2,2,2)+comp_num_basicfit(2,2,3,2,2,3)+comp_num_basicfit(2,2,4,2,2,4)+2.*comp_num_basicfit(0,1,0,0,0,0)
++2.*comp_num_basicfit(0,1,0,1,0,0)+2.*comp_num_basicfit(0,1,0,2,0,0)+2.*comp_num_basicfit(0,2,0,0,0,0)+2.*comp_num_basicfit(0,2,0,0,1,0)+2.*comp_num_basicfit(0,2,0,1,0,0)+2.*comp_num_basicfit(0,2,0,1,1,0)
++2.*comp_num_basicfit(0,2,0,2,0,0)+2.*comp_num_basicfit(0,2,0,2,1,0)+2.*comp_num_basicfit(1,0,0,0,0,0)+2.*comp_num_basicfit(1,1,0,0,0,0)+2.*comp_num_basicfit(1,1,0,0,1,0)+2.*comp_num_basicfit(1,1,0,1,0,0)
++2.*comp_num_basicfit(1,1,0,2,0,0)+2.*comp_num_basicfit(1,1,1,0,0,0)+2.*comp_num_basicfit(1,1,1,0,1,0)+2.*comp_num_basicfit(1,1,1,0,2,0)+2.*comp_num_basicfit(1,1,1,1,0,0)+2.*comp_num_basicfit(1,1,1,1,1,0)
++2.*comp_num_basicfit(1,1,1,1,2,0)+2.*comp_num_basicfit(1,1,1,2,0,0)+2.*comp_num_basicfit(1,1,1,2,1,0)+2.*comp_num_basicfit(1,1,1,2,2,0)+2.*comp_num_basicfit(1,1,2,0,0,0)+2.*comp_num_basicfit(1,1,2,0,1,0)
++2.*comp_num_basicfit(1,1,2,0,2,0)+2.*comp_num_basicfit(1,1,2,1,0,0)+2.*comp_num_basicfit(1,1,2,1,1,0)+2.*comp_num_basicfit(1,1,2,1,1,1)+2.*comp_num_basicfit(1,1,2,1,2,0)+2.*comp_num_basicfit(1,1,2,1,2,1)
++2.*comp_num_basicfit(1,1,2,2,0,0)+2.*comp_num_basicfit(1,1,2,2,1,0)+2.*comp_num_basicfit(1,1,2,2,1,1)+2.*comp_num_basicfit(1,1,2,2,2,0)+2.*comp_num_basicfit(1,1,2,2,2,1)+2.*comp_num_basicfit(1,2,0,0,0,0)
++2.*comp_num_basicfit(1,2,0,0,1,0)+2.*comp_num_basicfit(1,2,0,0,2,0)+2.*comp_num_basicfit(1,2,0,1,0,0)+2.*comp_num_basicfit(1,2,0,1,1,0)+2.*comp_num_basicfit(1,2,0,2,0,0)+2.*comp_num_basicfit(1,2,0,2,1,0)
++2.*comp_num_basicfit(1,2,1,0,0,0)+2.*comp_num_basicfit(1,2,1,0,1,0)+2.*comp_num_basicfit(1,2,1,0,2,0)+2.*comp_num_basicfit(1,2,1,1,0,0)+2.*comp_num_basicfit(1,2,1,1,1,0)+2.*comp_num_basicfit(1,2,1,1,1,1)
++2.*comp_num_basicfit(1,2,1,1,2,0)+2.*comp_num_basicfit(1,2,1,2,0,0)+2.*comp_num_basicfit(1,2,1,2,1,0)+2.*comp_num_basicfit(1,2,1,2,1,1)+2.*comp_num_basicfit(1,2,1,2,2,0)+2.*comp_num_basicfit(1,2,2,0,0,0)
++2.*comp_num_basicfit(1,2,2,0,1,0)+2.*comp_num_basicfit(1,2,2,0,2,0)+2.*comp_num_basicfit(1,2,2,1,0,0)+2.*comp_num_basicfit(1,2,2,1,1,0)+2.*comp_num_basicfit(1,2,2,1,1,1)+2.*comp_num_basicfit(1,2,2,1,1,2)
++2.*comp_num_basicfit(1,2,2,1,2,0)+2.*comp_num_basicfit(1,2,2,1,2,1)+2.*comp_num_basicfit(1,2,2,2,0,0)+2.*comp_num_basicfit(1,2,2,2,1,0)+2.*comp_num_basicfit(1,2,2,2,1,1)+2.*comp_num_basicfit(1,2,2,2,1,2)
++2.*comp_num_basicfit(1,2,2,2,2,0)+2.*comp_num_basicfit(1,2,2,2,2,1)+2.*comp_num_basicfit(2,0,0,0,0,0)+2.*comp_num_basicfit(2,0,0,1,0,0)+2.*comp_num_basicfit(2,1,0,0,0,0)+2.*comp_num_basicfit(2,1,0,0,1,0)
++2.*comp_num_basicfit(2,1,0,1,0,0)+2.*comp_num_basicfit(2,1,0,1,1,0)+2.*comp_num_basicfit(2,1,0,2,0,0)+2.*comp_num_basicfit(2,1,1,0,0,0)+2.*comp_num_basicfit(2,1,1,0,1,0)+2.*comp_num_basicfit(2,1,1,0,2,0)
++2.*comp_num_basicfit(2,1,1,1,0,0)+2.*comp_num_basicfit(2,1,1,1,1,0)+2.*comp_num_basicfit(2,1,1,1,1,1)+2.*comp_num_basicfit(2,1,1,1,2,0)+2.*comp_num_basicfit(2,1,1,2,0,0)+2.*comp_num_basicfit(2,1,1,2,1,0)
++2.*comp_num_basicfit(2,1,1,2,2,0)+2.*comp_num_basicfit(2,1,2,0,0,0)+2.*comp_num_basicfit(2,1,2,0,1,0)+2.*comp_num_basicfit(2,1,2,0,2,0)+2.*comp_num_basicfit(2,1,2,1,0,0)+2.*comp_num_basicfit(2,1,2,1,1,0)
++2.*comp_num_basicfit(2,1,2,1,1,1)+2.*comp_num_basicfit(2,1,2,1,1,2)+2.*comp_num_basicfit(2,1,2,1,2,0)+2.*comp_num_basicfit(2,1,2,1,2,1)+2.*comp_num_basicfit(2,1,2,2,0,0)+2.*comp_num_basicfit(2,1,2,2,1,0)
++2.*comp_num_basicfit(2,1,2,2,1,1)+2.*comp_num_basicfit(2,1,2,2,2,0)+2.*comp_num_basicfit(2,1,2,2,2,1)+2.*comp_num_basicfit(2,2,0,0,0,0)+2.*comp_num_basicfit(2,2,0,0,1,0)+2.*comp_num_basicfit(2,2,0,0,2,0)
++2.*comp_num_basicfit(2,2,0,1,0,0)+2.*comp_num_basicfit(2,2,0,1,1,0)+2.*comp_num_basicfit(2,2,0,1,2,0)+2.*comp_num_basicfit(2,2,0,2,0,0)+2.*comp_num_basicfit(2,2,0,2,1,0)+2.*comp_num_basicfit(2,2,1,0,0,0)
++2.*comp_num_basicfit(2,2,1,0,1,0)+2.*comp_num_basicfit(2,2,1,0,2,0)+2.*comp_num_basicfit(2,2,1,1,0,0)+2.*comp_num_basicfit(2,2,1,1,1,0)+2.*comp_num_basicfit(2,2,1,1,1,1)+2.*comp_num_basicfit(2,2,1,1,2,0)
++2.*comp_num_basicfit(2,2,1,1,2,1)+2.*comp_num_basicfit(2,2,1,2,0,0)+2.*comp_num_basicfit(2,2,1,2,1,0)+2.*comp_num_basicfit(2,2,1,2,1,1)+2.*comp_num_basicfit(2,2,1,2,2,0)+2.*comp_num_basicfit(2,2,2,0,0,0)
++2.*comp_num_basicfit(2,2,2,0,1,0)+2.*comp_num_basicfit(2,2,2,0,2,0)+2.*comp_num_basicfit(2,2,2,1,0,0)+2.*comp_num_basicfit(2,2,2,1,1,0)+2.*comp_num_basicfit(2,2,2,1,1,1)+2.*comp_num_basicfit(2,2,2,1,1,2)
++2.*comp_num_basicfit(2,2,2,1,2,0)+2.*comp_num_basicfit(2,2,2,1,2,1)+2.*comp_num_basicfit(2,2,2,1,2,2)+2.*comp_num_basicfit(2,2,2,2,0,0)+2.*comp_num_basicfit(2,2,2,2,1,0)+2.*comp_num_basicfit(2,2,2,2,1,1)
++2.*comp_num_basicfit(2,2,2,2,1,2)+2.*comp_num_basicfit(2,2,2,2,2,0)+2.*comp_num_basicfit(2,2,2,2,2,1)+2.*comp_num_basicfit(2,2,3,0,0,0)+2.*comp_num_basicfit(2,2,3,0,1,0)+2.*comp_num_basicfit(2,2,3,0,2,0)
++2.*comp_num_basicfit(2,2,3,1,0,0)+2.*comp_num_basicfit(2,2,3,1,1,0)+2.*comp_num_basicfit(2,2,3,1,1,1)+2.*comp_num_basicfit(2,2,3,1,1,2)+2.*comp_num_basicfit(2,2,3,1,2,0)+2.*comp_num_basicfit(2,2,3,1,2,1)
++2.*comp_num_basicfit(2,2,3,1,2,2)+2.*comp_num_basicfit(2,2,3,2,0,0)+2.*comp_num_basicfit(2,2,3,2,1,0)+2.*comp_num_basicfit(2,2,3,2,1,1)+2.*comp_num_basicfit(2,2,3,2,1,2)+2.*comp_num_basicfit(2,2,3,2,2,0)
++2.*comp_num_basicfit(2,2,3,2,2,1)+2.*comp_num_basicfit(2,2,3,2,2,2)+2.*comp_num_basicfit(2,2,4,0,0,0)+2.*comp_num_basicfit(2,2,4,0,1,0)+2.*comp_num_basicfit(2,2,4,0,2,0)+2.*comp_num_basicfit(2,2,4,1,0,0)
++2.*comp_num_basicfit(2,2,4,1,1,0)+2.*comp_num_basicfit(2,2,4,1,1,1)+2.*comp_num_basicfit(2,2,4,1,1,2)+2.*comp_num_basicfit(2,2,4,1,2,0)+2.*comp_num_basicfit(2,2,4,1,2,1)+2.*comp_num_basicfit(2,2,4,1,2,2)
++2.*comp_num_basicfit(2,2,4,2,0,0)+2.*comp_num_basicfit(2,2,4,2,1,0)+2.*comp_num_basicfit(2,2,4,2,1,1)+2.*comp_num_basicfit(2,2,4,2,1,2)+2.*comp_num_basicfit(2,2,4,2,2,0)+2.*comp_num_basicfit(2,2,4,2,2,1)
++2.*comp_num_basicfit(2,2,4,2,2,2)+2.*comp_num_basicfit(2,2,4,2,2,3);
+
+ }
+
+// ---------------------------------------------------
+// PDF normalization integral used for a basic time integrated, flavour averaged, amplitude fit.
+
+ Double_t KpiKpiSpectrumNW::den_basicfit() const 
+ {
+
+   set_buffer_integral_vars();
+
+   return comp_den_basicfit(0,0,0,0,0,0)+comp_den_basicfit(0,1,0,0,1,0)+comp_den_basicfit(0,2,0,0,2,0)+comp_den_basicfit(1,0,0,1,0,0)+comp_den_basicfit(1,1,0,1,1,0)+comp_den_basicfit(1,1,1,1,1,1)
++comp_den_basicfit(1,1,2,1,1,2)+comp_den_basicfit(1,2,0,1,2,0)+comp_den_basicfit(1,2,1,1,2,1)+comp_den_basicfit(1,2,2,1,2,2)+comp_den_basicfit(2,0,0,2,0,0)+comp_den_basicfit(2,1,0,2,1,0)+comp_den_basicfit(2,1,1,2,1,1)
++comp_den_basicfit(2,1,2,2,1,2)+comp_den_basicfit(2,2,0,2,2,0)+comp_den_basicfit(2,2,1,2,2,1)+comp_den_basicfit(2,2,2,2,2,2)+comp_den_basicfit(2,2,3,2,2,3)+comp_den_basicfit(2,2,4,2,2,4)+2.*comp_den_basicfit(0,1,0,0,0,0)
++2.*comp_den_basicfit(0,1,0,1,0,0)+2.*comp_den_basicfit(0,1,0,2,0,0)+2.*comp_den_basicfit(0,2,0,0,0,0)+2.*comp_den_basicfit(0,2,0,0,1,0)+2.*comp_den_basicfit(0,2,0,1,0,0)+2.*comp_den_basicfit(0,2,0,1,1,0)
++2.*comp_den_basicfit(0,2,0,2,0,0)+2.*comp_den_basicfit(0,2,0,2,1,0)+2.*comp_den_basicfit(1,0,0,0,0,0)+2.*comp_den_basicfit(1,1,0,0,0,0)+2.*comp_den_basicfit(1,1,0,0,1,0)+2.*comp_den_basicfit(1,1,0,1,0,0)
++2.*comp_den_basicfit(1,1,0,2,0,0)+2.*comp_den_basicfit(1,1,1,0,0,0)+2.*comp_den_basicfit(1,1,1,0,1,0)+2.*comp_den_basicfit(1,1,1,0,2,0)+2.*comp_den_basicfit(1,1,1,1,0,0)+2.*comp_den_basicfit(1,1,1,1,1,0)
++2.*comp_den_basicfit(1,1,1,1,2,0)+2.*comp_den_basicfit(1,1,1,2,0,0)+2.*comp_den_basicfit(1,1,1,2,1,0)+2.*comp_den_basicfit(1,1,1,2,2,0)+2.*comp_den_basicfit(1,1,2,0,0,0)+2.*comp_den_basicfit(1,1,2,0,1,0)
++2.*comp_den_basicfit(1,1,2,0,2,0)+2.*comp_den_basicfit(1,1,2,1,0,0)+2.*comp_den_basicfit(1,1,2,1,1,0)+2.*comp_den_basicfit(1,1,2,1,1,1)+2.*comp_den_basicfit(1,1,2,1,2,0)+2.*comp_den_basicfit(1,1,2,1,2,1)
++2.*comp_den_basicfit(1,1,2,2,0,0)+2.*comp_den_basicfit(1,1,2,2,1,0)+2.*comp_den_basicfit(1,1,2,2,1,1)+2.*comp_den_basicfit(1,1,2,2,2,0)+2.*comp_den_basicfit(1,1,2,2,2,1)+2.*comp_den_basicfit(1,2,0,0,0,0)
++2.*comp_den_basicfit(1,2,0,0,1,0)+2.*comp_den_basicfit(1,2,0,0,2,0)+2.*comp_den_basicfit(1,2,0,1,0,0)+2.*comp_den_basicfit(1,2,0,1,1,0)+2.*comp_den_basicfit(1,2,0,2,0,0)+2.*comp_den_basicfit(1,2,0,2,1,0)
++2.*comp_den_basicfit(1,2,1,0,0,0)+2.*comp_den_basicfit(1,2,1,0,1,0)+2.*comp_den_basicfit(1,2,1,0,2,0)+2.*comp_den_basicfit(1,2,1,1,0,0)+2.*comp_den_basicfit(1,2,1,1,1,0)+2.*comp_den_basicfit(1,2,1,1,1,1)
++2.*comp_den_basicfit(1,2,1,1,2,0)+2.*comp_den_basicfit(1,2,1,2,0,0)+2.*comp_den_basicfit(1,2,1,2,1,0)+2.*comp_den_basicfit(1,2,1,2,1,1)+2.*comp_den_basicfit(1,2,1,2,2,0)+2.*comp_den_basicfit(1,2,2,0,0,0)
++2.*comp_den_basicfit(1,2,2,0,1,0)+2.*comp_den_basicfit(1,2,2,0,2,0)+2.*comp_den_basicfit(1,2,2,1,0,0)+2.*comp_den_basicfit(1,2,2,1,1,0)+2.*comp_den_basicfit(1,2,2,1,1,1)+2.*comp_den_basicfit(1,2,2,1,1,2)
++2.*comp_den_basicfit(1,2,2,1,2,0)+2.*comp_den_basicfit(1,2,2,1,2,1)+2.*comp_den_basicfit(1,2,2,2,0,0)+2.*comp_den_basicfit(1,2,2,2,1,0)+2.*comp_den_basicfit(1,2,2,2,1,1)+2.*comp_den_basicfit(1,2,2,2,1,2)
++2.*comp_den_basicfit(1,2,2,2,2,0)+2.*comp_den_basicfit(1,2,2,2,2,1)+2.*comp_den_basicfit(2,0,0,0,0,0)+2.*comp_den_basicfit(2,0,0,1,0,0)+2.*comp_den_basicfit(2,1,0,0,0,0)+2.*comp_den_basicfit(2,1,0,0,1,0)
++2.*comp_den_basicfit(2,1,0,1,0,0)+2.*comp_den_basicfit(2,1,0,1,1,0)+2.*comp_den_basicfit(2,1,0,2,0,0)+2.*comp_den_basicfit(2,1,1,0,0,0)+2.*comp_den_basicfit(2,1,1,0,1,0)+2.*comp_den_basicfit(2,1,1,0,2,0)
++2.*comp_den_basicfit(2,1,1,1,0,0)+2.*comp_den_basicfit(2,1,1,1,1,0)+2.*comp_den_basicfit(2,1,1,1,1,1)+2.*comp_den_basicfit(2,1,1,1,2,0)+2.*comp_den_basicfit(2,1,1,2,0,0)+2.*comp_den_basicfit(2,1,1,2,1,0)
++2.*comp_den_basicfit(2,1,1,2,2,0)+2.*comp_den_basicfit(2,1,2,0,0,0)+2.*comp_den_basicfit(2,1,2,0,1,0)+2.*comp_den_basicfit(2,1,2,0,2,0)+2.*comp_den_basicfit(2,1,2,1,0,0)+2.*comp_den_basicfit(2,1,2,1,1,0)
++2.*comp_den_basicfit(2,1,2,1,1,1)+2.*comp_den_basicfit(2,1,2,1,1,2)+2.*comp_den_basicfit(2,1,2,1,2,0)+2.*comp_den_basicfit(2,1,2,1,2,1)+2.*comp_den_basicfit(2,1,2,2,0,0)+2.*comp_den_basicfit(2,1,2,2,1,0)
++2.*comp_den_basicfit(2,1,2,2,1,1)+2.*comp_den_basicfit(2,1,2,2,2,0)+2.*comp_den_basicfit(2,1,2,2,2,1)+2.*comp_den_basicfit(2,2,0,0,0,0)+2.*comp_den_basicfit(2,2,0,0,1,0)+2.*comp_den_basicfit(2,2,0,0,2,0)
++2.*comp_den_basicfit(2,2,0,1,0,0)+2.*comp_den_basicfit(2,2,0,1,1,0)+2.*comp_den_basicfit(2,2,0,1,2,0)+2.*comp_den_basicfit(2,2,0,2,0,0)+2.*comp_den_basicfit(2,2,0,2,1,0)+2.*comp_den_basicfit(2,2,1,0,0,0)
++2.*comp_den_basicfit(2,2,1,0,1,0)+2.*comp_den_basicfit(2,2,1,0,2,0)+2.*comp_den_basicfit(2,2,1,1,0,0)+2.*comp_den_basicfit(2,2,1,1,1,0)+2.*comp_den_basicfit(2,2,1,1,1,1)+2.*comp_den_basicfit(2,2,1,1,2,0)
++2.*comp_den_basicfit(2,2,1,1,2,1)+2.*comp_den_basicfit(2,2,1,2,0,0)+2.*comp_den_basicfit(2,2,1,2,1,0)+2.*comp_den_basicfit(2,2,1,2,1,1)+2.*comp_den_basicfit(2,2,1,2,2,0)+2.*comp_den_basicfit(2,2,2,0,0,0)
++2.*comp_den_basicfit(2,2,2,0,1,0)+2.*comp_den_basicfit(2,2,2,0,2,0)+2.*comp_den_basicfit(2,2,2,1,0,0)+2.*comp_den_basicfit(2,2,2,1,1,0)+2.*comp_den_basicfit(2,2,2,1,1,1)+2.*comp_den_basicfit(2,2,2,1,1,2)
++2.*comp_den_basicfit(2,2,2,1,2,0)+2.*comp_den_basicfit(2,2,2,1,2,1)+2.*comp_den_basicfit(2,2,2,1,2,2)+2.*comp_den_basicfit(2,2,2,2,0,0)+2.*comp_den_basicfit(2,2,2,2,1,0)+2.*comp_den_basicfit(2,2,2,2,1,1)
++2.*comp_den_basicfit(2,2,2,2,1,2)+2.*comp_den_basicfit(2,2,2,2,2,0)+2.*comp_den_basicfit(2,2,2,2,2,1)+2.*comp_den_basicfit(2,2,3,0,0,0)+2.*comp_den_basicfit(2,2,3,0,1,0)+2.*comp_den_basicfit(2,2,3,0,2,0)
++2.*comp_den_basicfit(2,2,3,1,0,0)+2.*comp_den_basicfit(2,2,3,1,1,0)+2.*comp_den_basicfit(2,2,3,1,1,1)+2.*comp_den_basicfit(2,2,3,1,1,2)+2.*comp_den_basicfit(2,2,3,1,2,0)+2.*comp_den_basicfit(2,2,3,1,2,1)
++2.*comp_den_basicfit(2,2,3,1,2,2)+2.*comp_den_basicfit(2,2,3,2,0,0)+2.*comp_den_basicfit(2,2,3,2,1,0)+2.*comp_den_basicfit(2,2,3,2,1,1)+2.*comp_den_basicfit(2,2,3,2,1,2)+2.*comp_den_basicfit(2,2,3,2,2,0)
++2.*comp_den_basicfit(2,2,3,2,2,1)+2.*comp_den_basicfit(2,2,3,2,2,2)+2.*comp_den_basicfit(2,2,4,0,0,0)+2.*comp_den_basicfit(2,2,4,0,1,0)+2.*comp_den_basicfit(2,2,4,0,2,0)+2.*comp_den_basicfit(2,2,4,1,0,0)
++2.*comp_den_basicfit(2,2,4,1,1,0)+2.*comp_den_basicfit(2,2,4,1,1,1)+2.*comp_den_basicfit(2,2,4,1,1,2)+2.*comp_den_basicfit(2,2,4,1,2,0)+2.*comp_den_basicfit(2,2,4,1,2,1)+2.*comp_den_basicfit(2,2,4,1,2,2)
++2.*comp_den_basicfit(2,2,4,2,0,0)+2.*comp_den_basicfit(2,2,4,2,1,0)+2.*comp_den_basicfit(2,2,4,2,1,1)+2.*comp_den_basicfit(2,2,4,2,1,2)+2.*comp_den_basicfit(2,2,4,2,2,0)+2.*comp_den_basicfit(2,2,4,2,2,1)
++2.*comp_den_basicfit(2,2,4,2,2,2)+2.*comp_den_basicfit(2,2,4,2,2,3);
 
  }
 
@@ -3264,6 +3901,7 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
 +2.*comp_num_plot_phi(1,1,2,0,2,0)+2.*comp_num_plot_phi(1,1,2,1,0,0)+2.*comp_num_plot_phi(1,1,2,1,1,0)+2.*comp_num_plot_phi(1,1,2,1,1,1)+2.*comp_num_plot_phi(1,1,2,1,2,0)+2.*comp_num_plot_phi(1,1,2,1,2,1)
 +2.*comp_num_plot_phi(1,1,2,2,0,0)+2.*comp_num_plot_phi(1,1,2,2,1,0)+2.*comp_num_plot_phi(1,1,2,2,1,1)+2.*comp_num_plot_phi(1,1,2,2,2,0)+2.*comp_num_plot_phi(1,1,2,2,2,1)+2.*comp_num_plot_phi(1,2,0,0,0,0)
 +2.*comp_num_plot_phi(1,2,0,0,1,0)+2.*comp_num_plot_phi(1,2,0,0,2,0)+2.*comp_num_plot_phi(1,2,0,1,0,0)+2.*comp_num_plot_phi(1,2,0,1,1,0)+2.*comp_num_plot_phi(1,2,0,2,0,0)+2.*comp_num_plot_phi(1,2,0,2,1,0)
+
 +2.*comp_num_plot_phi(1,2,1,0,0,0)+2.*comp_num_plot_phi(1,2,1,0,1,0)+2.*comp_num_plot_phi(1,2,1,0,2,0)+2.*comp_num_plot_phi(1,2,1,1,0,0)+2.*comp_num_plot_phi(1,2,1,1,1,0)+2.*comp_num_plot_phi(1,2,1,1,1,1)
 +2.*comp_num_plot_phi(1,2,1,1,2,0)+2.*comp_num_plot_phi(1,2,1,2,0,0)+2.*comp_num_plot_phi(1,2,1,2,1,0)+2.*comp_num_plot_phi(1,2,1,2,1,1)+2.*comp_num_plot_phi(1,2,1,2,2,0)+2.*comp_num_plot_phi(1,2,2,0,0,0)
 +2.*comp_num_plot_phi(1,2,2,0,1,0)+2.*comp_num_plot_phi(1,2,2,0,2,0)+2.*comp_num_plot_phi(1,2,2,1,0,0)+2.*comp_num_plot_phi(1,2,2,1,1,0)+2.*comp_num_plot_phi(1,2,2,1,1,1)+2.*comp_num_plot_phi(1,2,2,1,1,2)
@@ -3397,6 +4035,9 @@ Int_t KpiKpiSpectrumNW::getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& ana
    if ( matchArgs(allVars,analVars,m1,m2,cos1,phi) && matchArgs(allVars,analVars,t,decision_SSK,decision_OS) && matchArgs(allVars,analVars,etamistag_SSK,etamistag_OS,t_err) ) return 5; // Plot on cos2.
    if ( matchArgs(allVars,analVars,cos1,cos2,phi,t) && matchArgs(allVars,analVars,decision_SSK,decision_OS) && matchArgs(allVars,analVars,etamistag_SSK,etamistag_OS,t_err) ) return 6; // Plot on m1 and m2.
 
+   // Normalization integral for a basic time integrated, flavour averaged, amplitude fit.
+   if ( matchArgs(allVars,analVars,m1,m2) && matchArgs(allVars,analVars,cos1,cos2,phi) ) return 7;
+
    return 0;
 
 }
@@ -3407,7 +4048,7 @@ Double_t KpiKpiSpectrumNW::analyticalIntegral(Int_t code, const char* rangeName 
 {
 
    // Normalization integral for fitting.
-   if (code == 1) {return 1.;}
+   if ((code == 1) or (code == 7)) {return 1.;}
 
    // Integrals for plotting, full model.
    else if (code == 2 and ((A_j1 == 9) or (A_j2 == 9) or (A_h == 9) or (A_j1p == 9) or (A_j2p == 9) or (A_hp == 9))) {return num_plot_t()/den_plot_var[(int) year_opt][(int) trig_opt];}
@@ -3536,6 +4177,7 @@ Double_t KpiKpiSpectrumNW::analyticalIntegral(Int_t code, const char* rangeName 
       return comp_num_plot_phi(0,2,0,0,2,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 4 and (A_j1 == 14) and (A_j2 == 14) and (A_h == 14) and (A_j1p == 14) and (A_j2p == 14) and (A_hp == 14)) {
+
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
       set_buffer_integral_vars();
       return comp_num_plot_cos1(0,2,0,0,2,0)/den_plot_var[(int) year_opt][(int) trig_opt];
@@ -3828,6 +4470,7 @@ TComplex KpiKpiSpectrumNW::TBsbarj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_
 +2.*comp_fun_Bsbar(1,2,1,0,0,0)+2.*comp_fun_Bsbar(1,2,1,0,1,0)+2.*comp_fun_Bsbar(1,2,1,0,2,0)+2.*comp_fun_Bsbar(1,2,1,1,0,0)+2.*comp_fun_Bsbar(1,2,1,1,1,0)+2.*comp_fun_Bsbar(1,2,1,1,1,1)
 +2.*comp_fun_Bsbar(1,2,1,1,2,0)+2.*comp_fun_Bsbar(1,2,1,2,0,0)+2.*comp_fun_Bsbar(1,2,1,2,1,0)+2.*comp_fun_Bsbar(1,2,1,2,1,1)+2.*comp_fun_Bsbar(1,2,1,2,2,0)+2.*comp_fun_Bsbar(1,2,2,0,0,0)
 +2.*comp_fun_Bsbar(1,2,2,0,1,0)+2.*comp_fun_Bsbar(1,2,2,0,2,0)+2.*comp_fun_Bsbar(1,2,2,1,0,0)+2.*comp_fun_Bsbar(1,2,2,1,1,0)+2.*comp_fun_Bsbar(1,2,2,1,1,1)+2.*comp_fun_Bsbar(1,2,2,1,1,2)
+
 +2.*comp_fun_Bsbar(1,2,2,1,2,0)+2.*comp_fun_Bsbar(1,2,2,1,2,1)+2.*comp_fun_Bsbar(1,2,2,2,0,0)+2.*comp_fun_Bsbar(1,2,2,2,1,0)+2.*comp_fun_Bsbar(1,2,2,2,1,1)+2.*comp_fun_Bsbar(1,2,2,2,1,2)
 +2.*comp_fun_Bsbar(1,2,2,2,2,0)+2.*comp_fun_Bsbar(1,2,2,2,2,1)+2.*comp_fun_Bsbar(2,0,0,0,0,0)+2.*comp_fun_Bsbar(2,0,0,1,0,0)+2.*comp_fun_Bsbar(2,1,0,0,0,0)+2.*comp_fun_Bsbar(2,1,0,0,1,0)
 +2.*comp_fun_Bsbar(2,1,0,1,0,0)+2.*comp_fun_Bsbar(2,1,0,1,1,0)+2.*comp_fun_Bsbar(2,1,0,2,0,0)+2.*comp_fun_Bsbar(2,1,1,0,0,0)+2.*comp_fun_Bsbar(2,1,1,0,1,0)+2.*comp_fun_Bsbar(2,1,1,0,2,0)
@@ -3899,9 +4542,9 @@ Double_t KpiKpiSpectrumNW::P_trueBs() const
 
   set_buffer_integral_vars();
 
-  cout << "P(Bs_true) = " << 0.5*(1.+DCP_prod[int(wide_window)])*int_Bs()/den_plot() << endl;
+  cout << "P(Bs_true) = " << 0.5*(1.+DCP_prod)*int_Bs()/den_plot() << endl;
 
-  return 0.5*(1.+DCP_prod[int(wide_window)])*int_Bs()/den_plot();
+  return 0.5*(1.+DCP_prod)*int_Bs()/den_plot();
 
 }
 
@@ -4186,7 +4829,14 @@ Double_t KpiKpiSpectrumNW::evaluate() const
 
 	// Full fitter.
 	if (alt_fit == 0) {
-		if (acctype == 2) {return num_fit()/den_fit();}
+		if (acctype == 2) {
+			Double_t den_fit_temp = den_fit();
+			if (den_fit_temp != 0) {return num_fit()/den_fit_temp;}
+			else {
+				cout << "INFO: PDF normalization is 0. Returning 0 in the PDF evaluation." << endl;
+				return 0.;
+			}
+		}
 		else {return num_fit()/den_plot();}
 	}
 
@@ -4194,6 +4844,9 @@ Double_t KpiKpiSpectrumNW::evaluate() const
 	else if (alt_fit == 1) {return P_deltat(t_err);}
 	else if (alt_fit == 2) {return P_eta_SSK(etamistag_SSK);}
 	else if (alt_fit == 3) {return P_eta_OS(etamistag_OS);}
+
+	// Basic time integrated, flavour averaged, amplitude fit.
+	else if (alt_fit == 4) {return num_basicfit()/den_basicfit();}
 
 	else {return 0.;}
 

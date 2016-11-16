@@ -7,6 +7,7 @@ from parameters import *
 # ################################################################
 
 # Names of the variables in the ntuples.
+
 KpPx_name = 'B_s0_DTF_KST1_K_PX'
 KpPy_name = 'B_s0_DTF_KST1_K_PY'
 KpPz_name = 'B_s0_DTF_KST1_K_PZ'
@@ -19,6 +20,25 @@ PipPz_name = 'B_s0_DTF_KST2_PI_PZ'
 PimPx_name = 'B_s0_DTF_KST1_PI_PX'
 PimPy_name = 'B_s0_DTF_KST1_PI_PY'
 PimPz_name = 'B_s0_DTF_KST1_PI_PZ'
+
+KpP_name = 'B_s0_DTF_KST1_K_P'
+KmP_name = 'B_s0_DTF_KST2_K_P'
+PipP_name = 'B_s0_DTF_KST2_PI_P'
+PimP_name = 'B_s0_DTF_KST1_PI_P'
+
+KpPx_TRUE_name = 'Kplus_TRUEP_X'
+KpPy_TRUE_name = 'Kplus_TRUEP_Y'
+KpPz_TRUE_name = 'Kplus_TRUEP_Z'
+KmPx_TRUE_name = 'Kminus_TRUEP_X'
+KmPy_TRUE_name = 'Kminus_TRUEP_Y'
+KmPz_TRUE_name = 'Kminus_TRUEP_Z'
+PipPx_TRUE_name = 'Piplus_TRUEP_X'
+PipPy_TRUE_name = 'Piplus_TRUEP_Y'
+PipPz_TRUE_name = 'Piplus_TRUEP_Z'
+PimPx_TRUE_name = 'Piminus_TRUEP_X'
+PimPy_TRUE_name = 'Piminus_TRUEP_Y'
+PimPz_TRUE_name = 'Piminus_TRUEP_Z'
+
 ctau_name = 'B_s0_DTF_CTAU'
 truetau_name = 'B_s0_TRUETAU'
 ctauerr_name = 'B_s0_DTF_CTAUERR'
@@ -27,11 +47,21 @@ ctauerr_name = 'B_s0_DTF_CTAUERR'
 # F U N C T I O N S
 # ################################################################
 
+def deltap(p):
+	x = p/1000.
+	return p*0.01*(0.43309584679004054 + 0.006136502016572859*x - 0.0000215311159170714*x*x + 3.306945947698e-8*x*x*x)
+
 gROOT.ProcessLine(\
 	"struct MyStruct{\
 	Float_t afloat;\
 	};")
 from ROOT import MyStruct
+
+gROOT.ProcessLine(\
+	"struct MyStruct2{\
+	Int_t aint;\
+	};")
+from ROOT import MyStruct2
 
 #Function to multiply an array by a number (NProduct = Number Product)
 def NProduct(alpha, Vect):
@@ -216,11 +246,12 @@ def get_Angles(kp,pim,km,pip):
         CosPhi = DProduct( PlaneP2, Vx)
         SenPhi = DProduct( PlaneP2, Vy)
     
-        #Calculate Phi
+        ## Calculate Phi
         Phi = atan2( SenPhi, CosPhi)
-        if Phi < 0.: Phi = 2.*pi + Phi
+        #Phi = pi - Phi
+        #if Phi < 0.: Phi = 2.*pi + Phi
     
-        return CosTheta1, CosTheta2, Phi-pi
+        return CosTheta1, CosTheta2, Phi
 
 
 def AddTrivialWeights(inputfilename,outputfilename):
@@ -245,34 +276,137 @@ def AddTrivialWeights(inputfilename,outputfilename):
 	fwout.Close()
 
 
-def ns2ps(inputfilename,outputfilename):
+def rhoKst_PIDcuts(inputfilename,outputfilename):
 
 	ftin = TFile(NTUPLE_PATH+inputfilename+'.root')
-	ttin = ftin.Get('DecayTree')
+	ttin = ftin.Get('AnalysisTree')
 	ftout = TFile(NTUPLE_PATH+outputfilename+'.root','RECREATE')
 	print "Copying the original tree ..."
 	ttout = ttin.CopyTree("")
 	print "Tree copied."
 
-	t = MyStruct()
-	newBrancht = ttout.Branch('B_s0_DTF_B_s0_TAU', AddressOf(t,'afloat'), 'B_s0_DTF_B_s0_TAU/F')
-	ttrue = MyStruct()
-	newBranchttrue = ttout.Branch('B_s0_DTF_B_s0_TRUETAU', AddressOf(ttrue,'afloat'), 'B_s0_DTF_B_s0_TRUETAU/F')
-	terr = MyStruct()
-	newBranchterr = ttout.Branch('B_s0_DTF_B_s0_TAUERR', AddressOf(terr,'afloat'), 'B_s0_DTF_B_s0_TAUERR/F')
-	w = MyStruct()
-	newBranchw = ttout.Branch('weight', AddressOf(w,'afloat'), 'weight/F')
+	passpid_rhoKst = MyStruct2()
+	newBranch_passpid_rhoKst = ttout.Branch('passpid_rhoKst', AddressOf(passpid_rhoKst,'aint'), 'passpid_rhoKst/I')
+	Mrho_rhoKst = MyStruct()
+	newBranch_Mrho_rhoKst = ttout.Branch('Mrho_rhoKst', AddressOf(Mrho_rhoKst,'afloat'), 'Mrho_rhoKst/F')
+	MKst_rhoKst = MyStruct()
+	newBranch_MKst_rhoKst = ttout.Branch('MKst_rhoKst', AddressOf(MKst_rhoKst,'afloat'), 'MKst_rhoKst/F')
+	MB_rhoKst = MyStruct()
+	newBranch_MB_rhoKst = ttout.Branch('MB_rhoKst', AddressOf(MB_rhoKst,'afloat'), 'MB_rhoKst/F')
+	Kcharge_rhoKst = MyStruct2()
+	newBranch_Kcharge_rhoKst = ttout.Branch('Kcharge_rhoKst', AddressOf(Kcharge_rhoKst,'aint'), 'Kcharge_rhoKst/I')
+	is_rhoKst = MyStruct2()
+	newBranch_is_rhoKst = ttout.Branch('is_rhoKst', AddressOf(is_rhoKst,'aint'), 'is_rhoKst/I')
+
+	k = TLorentzVector()
+	pi = TLorentzVector()
+	pi1 = TLorentzVector()
+	pi2 = TLorentzVector()
 
 	print "Processing events ..."
 	for i in ttout:
-		t.afloat = eval('i.'+ctau_name)/0.299792458
-		ttrue.afloat = eval('i.'+truetau_name)*1000.
-		terr.afloat = eval('i.'+ctauerr_name)/0.299792458
-		w.afloat = 1.
-		newBrancht.Fill()
-		newBranchttrue.Fill()
-		newBranchterr.Fill()
-		newBranchw.Fill()
+
+		passpid_rhoKst.aint = 0
+		Mrho_rhoKst.afloat = -1.
+		MKst_rhoKst.afloat = -1.
+		MB_rhoKst.afloat = -1.
+		Kcharge_rhoKst.aint = 0
+		is_rhoKst.aint = 0
+
+		pid_selected = 0
+		if i.itype>0:
+			kaon_probnnk = max(i.Kplus_ProbNNk,i.Kminus_ProbNNk,i.Piplus_ProbNNk,i.Piminus_ProbNNk)
+			if kaon_probnnk>0.2:
+				if i.Kplus_ProbNNk==kaon_probnnk and kaon_probnnk*(1.-i.Kplus_ProbNNpi)>0.3:
+					if i.Piminus_ProbNNpi>0.2 and i.Kminus_ProbNNpi>0.2 and i.Piplus_ProbNNpi>0.2:
+						if i.Piminus_ProbNNpi*(1.-i.Piminus_ProbNNk)>0.3 and i.Kminus_ProbNNpi*(1.-i.Kminus_ProbNNk)>0.3 and i.Piplus_ProbNNpi*(1.-i.Piplus_ProbNNk)>0.3:
+							pid_selected = 1
+							k.SetXYZM(i.Kplus_PX,i.Kplus_PY,i.Kplus_PZ,493.667)
+							pi.SetXYZM(i.Piminus_PX,i.Piminus_PY,i.Piminus_PZ,139.570)
+							pi1.SetXYZM(i.Piplus_PX,i.Piplus_PY,i.Piplus_PZ,139.570)
+							pi2.SetXYZM(i.Kminus_PX,i.Kminus_PY,i.Kminus_PZ,139.570)
+							Kcharge_rhoKst.aint = 1
+				elif i.Piminus_ProbNNk==kaon_probnnk and kaon_probnnk*(1.-i.Piminus_ProbNNpi)>0.3:
+					if i.Kplus_ProbNNpi>0.2 and i.Kminus_ProbNNpi>0.2 and i.Piplus_ProbNNpi>0.2:
+						if i.Kplus_ProbNNpi*(1.-i.Kplus_ProbNNk)>0.3 and i.Kminus_ProbNNpi*(1.-i.Kminus_ProbNNk)>0.3 and i.Piplus_ProbNNpi*(1.-i.Piplus_ProbNNk)>0.3:
+							pid_selected = 1
+							k.SetXYZM(i.Piminus_PX,i.Piminus_PY,i.Piminus_PZ,493.667)
+							pi.SetXYZM(i.Kplus_PX,i.Kplus_PY,i.Kplus_PZ,139.570)
+							pi1.SetXYZM(i.Kminus_PX,i.Kminus_PY,i.Kminus_PZ,139.570)
+							pi2.SetXYZM(i.Piplus_PX,i.Piplus_PY,i.Piplus_PZ,139.570)
+							Kcharge_rhoKst.aint = -1
+				elif i.Kminus_ProbNNk==kaon_probnnk and kaon_probnnk*(1.-i.Kminus_ProbNNpi)>0.3:
+					if i.Kplus_ProbNNpi>0.2 and i.Piminus_ProbNNpi>0.2 and i.Piplus_ProbNNpi>0.2:
+						if i.Kplus_ProbNNpi*(1.-i.Kplus_ProbNNk)>0.3 and i.Piminus_ProbNNpi*(1.-i.Piminus_ProbNNk)>0.3 and i.Piplus_ProbNNpi*(1.-i.Piplus_ProbNNk)>0.3:
+							pid_selected = 1
+							k.SetXYZM(i.Kminus_PX,i.Kminus_PY,i.Kminus_PZ,493.667)
+							pi.SetXYZM(i.Piplus_PX,i.Piplus_PY,i.Piplus_PZ,139.570)
+							pi1.SetXYZM(i.Piminus_PX,i.Piminus_PY,i.Piminus_PZ,139.570)
+							pi2.SetXYZM(i.Kplus_PX,i.Kplus_PY,i.Kplus_PZ,139.570)
+							Kcharge_rhoKst.aint = -1
+				elif i.Piplus_ProbNNk==kaon_probnnk and kaon_probnnk*(1.-i.Piplus_ProbNNpi)>0.3:
+					if i.Kplus_ProbNNpi>0.2 and i.Piminus_ProbNNpi>0.2 and i.Kminus_ProbNNpi>0.2:
+						if i.Kplus_ProbNNpi*(1.-i.Kplus_ProbNNk)>0.3 and i.Piminus_ProbNNpi*(1.-i.Piminus_ProbNNk)>0.3 and i.Kminus_ProbNNpi*(1.-i.Kminus_ProbNNk)>0.3:
+							pid_selected = 1
+							k.SetXYZM(i.Piplus_PX,i.Piplus_PY,i.Piplus_PZ,493.667)
+							pi.SetXYZM(i.Kminus_PX,i.Kminus_PY,i.Kminus_PZ,139.570)
+							pi1.SetXYZM(i.Kplus_PX,i.Kplus_PY,i.Kplus_PZ,139.570)
+							pi2.SetXYZM(i.Piminus_PX,i.Piminus_PY,i.Piminus_PZ,139.570)
+							Kcharge_rhoKst.aint = 1
+
+		else:
+			kaon_probnnk = max(i.Kplus_V3ProbNNk_corr,i.Kminus_V3ProbNNk_corr,i.Piplus_V3ProbNNk_corr,i.Piminus_V3ProbNNk_corr)
+			if kaon_probnnk>0.2:
+				if i.Kplus_V3ProbNNk_corr==kaon_probnnk and kaon_probnnk*(1.-i.Kplus_V3ProbNNpi_corr)>0.3:
+					if i.Piminus_V3ProbNNpi_corr>0.2 and i.Kminus_V3ProbNNpi_corr>0.2 and i.Piplus_V3ProbNNpi_corr>0.2:
+						if i.Piminus_V3ProbNNpi_corr*(1.-i.Piminus_V3ProbNNk_corr)>0.3 and i.Kminus_V3ProbNNpi_corr*(1.-i.Kminus_V3ProbNNk_corr)>0.3 and i.Piplus_V3ProbNNpi_corr*(1.-i.Piplus_V3ProbNNk_corr)>0.3:
+							pid_selected = 1
+							k.SetXYZM(i.Kplus_PX,i.Kplus_PY,i.Kplus_PZ,493.667)
+							pi.SetXYZM(i.Piminus_PX,i.Piminus_PY,i.Piminus_PZ,139.570)
+							pi1.SetXYZM(i.Piplus_PX,i.Piplus_PY,i.Piplus_PZ,139.570)
+							pi2.SetXYZM(i.Kminus_PX,i.Kminus_PY,i.Kminus_PZ,139.570)
+							Kcharge_rhoKst.aint = 1
+				elif i.Piminus_V3ProbNNk_corr==kaon_probnnk and kaon_probnnk*(1.-i.Piminus_V3ProbNNpi_corr)>0.3:
+					if i.Kplus_V3ProbNNpi_corr>0.2 and i.Kminus_V3ProbNNpi_corr>0.2 and i.Piplus_V3ProbNNpi_corr>0.2:
+						if i.Kplus_V3ProbNNpi_corr*(1.-i.Kplus_V3ProbNNk_corr)>0.3 and i.Kminus_V3ProbNNpi_corr*(1.-i.Kminus_V3ProbNNk_corr)>0.3 and i.Piplus_V3ProbNNpi_corr*(1.-i.Piplus_V3ProbNNk_corr)>0.3:
+							pid_selected = 1
+							k.SetXYZM(i.Piminus_PX,i.Piminus_PY,i.Piminus_PZ,493.667)
+							pi.SetXYZM(i.Kplus_PX,i.Kplus_PY,i.Kplus_PZ,139.570)
+							pi1.SetXYZM(i.Kminus_PX,i.Kminus_PY,i.Kminus_PZ,139.570)
+							pi2.SetXYZM(i.Piplus_PX,i.Piplus_PY,i.Piplus_PZ,139.570)
+							Kcharge_rhoKst.aint = -1
+				elif i.Kminus_V3ProbNNk_corr==kaon_probnnk and kaon_probnnk*(1.-i.Kminus_V3ProbNNpi_corr)>0.3:
+					if i.Kplus_V3ProbNNpi_corr>0.2 and i.Piminus_V3ProbNNpi_corr>0.2 and i.Piplus_V3ProbNNpi_corr>0.2:
+						if i.Kplus_V3ProbNNpi_corr*(1.-i.Kplus_V3ProbNNk_corr)>0.3 and i.Piminus_V3ProbNNpi_corr*(1.-i.Piminus_V3ProbNNk_corr)>0.3 and i.Piplus_V3ProbNNpi_corr*(1.-i.Piplus_V3ProbNNk_corr)>0.3:
+							pid_selected = 1
+							k.SetXYZM(i.Kminus_PX,i.Kminus_PY,i.Kminus_PZ,493.667)
+							pi.SetXYZM(i.Piplus_PX,i.Piplus_PY,i.Piplus_PZ,139.570)
+							pi1.SetXYZM(i.Piminus_PX,i.Piminus_PY,i.Piminus_PZ,139.570)
+							pi2.SetXYZM(i.Kplus_PX,i.Kplus_PY,i.Kplus_PZ,139.570)
+							Kcharge_rhoKst.aint = -1
+				elif i.Piplus_V3ProbNNk_corr==kaon_probnnk and kaon_probnnk*(1.-i.Piplus_V3ProbNNpi_corr)>0.3:
+					if i.Kplus_V3ProbNNpi_corr>0.2 and i.Piminus_V3ProbNNpi_corr>0.2 and i.Kminus_V3ProbNNpi_corr>0.2:
+						if i.Kplus_V3ProbNNpi_corr*(1.-i.Kplus_V3ProbNNk_corr)>0.3 and i.Piminus_V3ProbNNpi_corr*(1.-i.Piminus_V3ProbNNk_corr)>0.3 and i.Kminus_V3ProbNNpi_corr*(1.-i.Kminus_V3ProbNNk_corr)>0.3:
+							pid_selected = 1
+							k.SetXYZM(i.Piplus_PX,i.Piplus_PY,i.Piplus_PZ,493.667)
+							pi.SetXYZM(i.Kminus_PX,i.Kminus_PY,i.Kminus_PZ,139.570)
+							pi1.SetXYZM(i.Kplus_PX,i.Kplus_PY,i.Kplus_PZ,139.570)
+							pi2.SetXYZM(i.Piminus_PX,i.Piminus_PY,i.Piminus_PZ,139.570)
+							Kcharge_rhoKst.aint = 1
+
+		if pid_selected:
+			passpid_rhoKst.aint = 1
+			Mrho_rhoKst.afloat = (pi1+pi2).M()
+			MKst_rhoKst.afloat = (k+pi).M()
+			MB_rhoKst.afloat = (k+pi+pi1+pi2).M()
+			if abs(MB_rhoKst.afloat-5280.)<30.: is_rhoKst.aint = 1
+
+		newBranch_passpid_rhoKst.Fill()
+		newBranch_Mrho_rhoKst.Fill()
+		newBranch_MKst_rhoKst.Fill()
+		newBranch_MB_rhoKst.Fill()
+		newBranch_Kcharge_rhoKst.Fill()
+		newBranch_is_rhoKst.Fill()
 	print "All events processed."
 
 	ttout.Write()
@@ -282,41 +416,190 @@ def ns2ps(inputfilename,outputfilename):
 def AddAngles(inputfilename,inputfileextradir,inputfileextradirname,outputfilename):
 	
 	fcosin = TFile(NTUPLE_PATH + inputfilename + '.root')
-	if inputfileextradir: tcosin = fcosin.Get(inputfileextradirname).Get('DecayTree')
-	else: tcosin = fcosin.Get('DecayTree')
+	if inputfileextradir: tcosin = fcosin.Get(inputfileextradirname).Get('AnalysisTree')
+	else: tcosin = fcosin.Get('AnalysisTree')
 	fcosout = TFile(NTUPLE_PATH + outputfilename + '.root','RECREATE')
 	print "Copying the original tree ..."
-	tcosout = tcosin.CopyTree("")
+	tcosout = tcosin.CopyTree("pass_bdt && pass_pid && pass_rhokst==0 && pass_multcand")
 	print "Tree copied."
+
+	#cos1 = MyStruct()
+	#newBranchcos1 = tcosout.Branch('B_s0_DTF_KST1_COSTHETA', AddressOf(cos1,'afloat'), 'B_s0_DTF_KST1_COSTHETA/F')
+	#cos2 = MyStruct()
+	#newBranchcos2 = tcosout.Branch('B_s0_DTF_KST2_COSTHETA', AddressOf(cos2,'afloat'), 'B_s0_DTF_KST2_COSTHETA/F')
+	#phi = MyStruct()
+	#newBranchphi = tcosout.Branch('B_s0_DTF_B_s0_PHI_CORR', AddressOf(phi,'afloat'), 'B_s0_DTF_B_s0_PHI/F')
+
+	#phi_OK = MyStruct()
+	#newBranchphi_OK = tcosout.Branch('B_s0_DTF_B_s0_PHI_OK', AddressOf(phi_OK,'afloat'), 'B_s0_DTF_B_s0_PHI_OK/F')
 
 	cos1 = MyStruct()
 	newBranchcos1 = tcosout.Branch('B_s0_DTF_KST1_COSTHETA', AddressOf(cos1,'afloat'), 'B_s0_DTF_KST1_COSTHETA/F')
 	cos2 = MyStruct()
 	newBranchcos2 = tcosout.Branch('B_s0_DTF_KST2_COSTHETA', AddressOf(cos2,'afloat'), 'B_s0_DTF_KST2_COSTHETA/F')
-	phi = MyStruct()
-	newBranchphi = tcosout.Branch('B_s0_DTF_B_s0_PHI', AddressOf(phi,'afloat'), 'B_s0_DTF_B_s0_PHI/F')
+
+	phi_TRY1 = MyStruct()
+	newBranchphi_TRY1 = tcosout.Branch('B_s0_DTF_B_s0_PHI_TRY1', AddressOf(phi_TRY1,'afloat'), 'B_s0_DTF_B_s0_PHI_TRY1/F')
+	phi_TRY2 = MyStruct()
+	newBranchphi_TRY2 = tcosout.Branch('B_s0_DTF_B_s0_PHI_TRY2', AddressOf(phi_TRY2,'afloat'), 'B_s0_DTF_B_s0_PHI_TRY2/F')
+	phi_TRY3 = MyStruct()
+	newBranchphi_TRY3 = tcosout.Branch('B_s0_DTF_B_s0_PHI_TRY3', AddressOf(phi_TRY3,'afloat'), 'B_s0_DTF_B_s0_PHI_TRY3/F')
+	phi_TRY4 = MyStruct()
+	newBranchphi_TRY4 = tcosout.Branch('B_s0_DTF_B_s0_PHI_TRY4', AddressOf(phi_TRY4,'afloat'), 'B_s0_DTF_B_s0_PHI_TRY4/F')
+
+	mKpi1_TRUE = MyStruct()
+	newBranchmKpi1_TRUE = tcosout.Branch('B_s0_DTF_KST1_TRUE_M', AddressOf(mKpi1_TRUE,'afloat'), 'B_s0_DTF_KST1_TRUE_M/F')
+	mKpi2_TRUE = MyStruct()
+	newBranchmKpi2_TRUE = tcosout.Branch('B_s0_DTF_KST2_TRUE_M', AddressOf(mKpi2_TRUE,'afloat'), 'B_s0_DTF_KST2_TRUE_M/F')
+
+	cos1_TRUE = MyStruct()
+	newBranchcos1_TRUE = tcosout.Branch('B_s0_DTF_KST1_TRUE_COSTHETA', AddressOf(cos1_TRUE,'afloat'), 'B_s0_DTF_KST1_TRUE_COSTHETA/F')
+	cos2_TRUE = MyStruct()
+	newBranchcos2_TRUE = tcosout.Branch('B_s0_DTF_KST2_TRUE_COSTHETA', AddressOf(cos2_TRUE,'afloat'), 'B_s0_DTF_KST2_TRUE_COSTHETA/F')
+
+	phi_TRUE_TRY1 = MyStruct()
+	newBranchphi_TRUE_TRY1 = tcosout.Branch('B_s0_DTF_B_s0_PHI_TRUE_TRY1', AddressOf(phi_TRUE_TRY1,'afloat'), 'B_s0_DTF_B_s0_PHI_TRUE_TRY1/F')
+	phi_TRUE_TRY2 = MyStruct()
+	newBranchphi_TRUE_TRY2 = tcosout.Branch('B_s0_DTF_B_s0_PHI_TRUE_TRY2', AddressOf(phi_TRUE_TRY2,'afloat'), 'B_s0_DTF_B_s0_PHI_TRUE_TRY2/F')
+	phi_TRUE_TRY3 = MyStruct()
+	newBranchphi_TRUE_TRY3 = tcosout.Branch('B_s0_DTF_B_s0_PHI_TRUE_TRY3', AddressOf(phi_TRUE_TRY3,'afloat'), 'B_s0_DTF_B_s0_PHI_TRUE_TRY3/F')
+	phi_TRUE_TRY4 = MyStruct()
+	newBranchphi_TRUE_TRY4 = tcosout.Branch('B_s0_DTF_B_s0_PHI_TRUE_TRY4', AddressOf(phi_TRUE_TRY4,'afloat'), 'B_s0_DTF_B_s0_PHI_TRUE_TRY4/F')
+
 	kp = TLorentzVector()
 	pim = TLorentzVector()
 	km = TLorentzVector()
 	pip = TLorentzVector()
 
+	kp_TRUE = TLorentzVector()
+	pim_TRUE = TLorentzVector()
+	km_TRUE = TLorentzVector()
+	pip_TRUE = TLorentzVector()
+
+	def corrrange(x):
+		if x<0: return x + 2.*pi
+		elif x>2.*pi: return x - 2.*pi
+		else: return x
+
 	print "Processing events ..."
 	for i in tcosout:
+
 		kp.SetXYZM(eval('i.'+KpPx_name),eval('i.'+KpPy_name),eval('i.'+KpPz_name),493.667)
 		pim.SetXYZM(eval('i.'+PimPx_name),eval('i.'+PimPy_name),eval('i.'+PimPz_name),139.570)
 		km.SetXYZM(eval('i.'+KmPx_name),eval('i.'+KmPy_name),eval('i.'+KmPz_name),493.667)
 		pip.SetXYZM(eval('i.'+PipPx_name),eval('i.'+PipPy_name),eval('i.'+PipPz_name),139.570)
+
+		kp_TRUE.SetXYZM(eval('i.'+KpPx_TRUE_name),eval('i.'+KpPy_TRUE_name),eval('i.'+KpPz_TRUE_name),493.667)
+		pim_TRUE.SetXYZM(eval('i.'+PimPx_TRUE_name),eval('i.'+PimPy_TRUE_name),eval('i.'+PimPz_TRUE_name),139.570)
+		km_TRUE.SetXYZM(eval('i.'+KmPx_TRUE_name),eval('i.'+KmPy_TRUE_name),eval('i.'+KmPz_TRUE_name),493.667)
+		pip_TRUE.SetXYZM(eval('i.'+PipPx_TRUE_name),eval('i.'+PipPy_TRUE_name),eval('i.'+PipPz_TRUE_name),139.570)
+
+		if i.itype<0:
+			angles_TRUE = get_Angles(kp_TRUE,pim_TRUE,km_TRUE,pip_TRUE)
+			cos1_TRUE.afloat = angles_TRUE[0]
+			cos2_TRUE.afloat = angles_TRUE[1]
+			mKpi1_TRUE.afloat = (kp_TRUE+pim_TRUE).M()
+			mKpi2_TRUE.afloat = (km_TRUE+pip_TRUE).M()
+			phi_TRUE_TRY1.afloat = corrrange(angles_TRUE[2])
+			phi_TRUE_TRY2.afloat = corrrange(-angles_TRUE[2])
+			phi_TRUE_TRY3.afloat = corrrange(angles_TRUE[2] + pi)
+			phi_TRUE_TRY4.afloat = corrrange(-angles_TRUE[2] + pi)
+		else:
+			cos1_TRUE.afloat = -10
+			cos2_TRUE.afloat = -10
+			mKpi1_TRUE.afloat = -10
+			mKpi2_TRUE.afloat = -10
+			phi_TRUE_TRY1.afloat = -10
+			phi_TRUE_TRY2.afloat = -10
+			phi_TRUE_TRY3.afloat = -10
+			phi_TRUE_TRY4.afloat = -10
+
 		angles = get_Angles(kp,pim,km,pip)
 		cos1.afloat = angles[0]
 		cos2.afloat = angles[1]
-		phi.afloat = angles[2]
+		phi_TRY1.afloat = corrrange(angles[2])
+		phi_TRY2.afloat = corrrange(-angles[2])
+		phi_TRY3.afloat = corrrange(angles[2] + pi)
+		phi_TRY4.afloat = corrrange(-angles[2] + pi)
+
 		newBranchcos1.Fill()
 		newBranchcos2.Fill()
-		newBranchphi.Fill()
+		newBranchphi_TRY1.Fill()
+		newBranchphi_TRY2.Fill()
+		newBranchphi_TRY3.Fill()
+		newBranchphi_TRY4.Fill()
+
+		newBranchmKpi1_TRUE.Fill()
+		newBranchmKpi2_TRUE.Fill()
+		newBranchcos1_TRUE.Fill()
+		newBranchcos2_TRUE.Fill()
+		newBranchphi_TRUE_TRY1.Fill()
+		newBranchphi_TRUE_TRY2.Fill()
+		newBranchphi_TRUE_TRY3.Fill()
+		newBranchphi_TRUE_TRY4.Fill()
+
 	print "All events processed."
 
 	tcosout.Write()
 	fcosout.Close()
+
+
+def ApplyPSmearing(inputfilename):
+	
+	fin = TFile(NTUPLE_PATH + inputfilename + '.root')
+	tinn = fin.Get('AnalysisTree')
+	fout = TFile(NTUPLE_PATH + inputfilename + '_wSmearing.root','RECREATE')
+	print "Copying the original tree ..."
+	tout = tinn.CopyTree("")
+	print "Tree copied."
+
+	trecowsmear = MyStruct()
+	newBranchtrecowsmear = tout.Branch('B_s0_DTF_TAU_WSMEAR', AddressOf(trecowsmear,'afloat'), 'B_s0_DTF_TAU_WSMEAR/F')
+
+	kp = TLorentzVector()
+	pim = TLorentzVector()
+	km = TLorentzVector()
+	pip = TLorentzVector()
+	kp_smear = TLorentzVector()
+	pim_smear = TLorentzVector()
+	km_smear = TLorentzVector()
+	pip_smear = TLorentzVector()
+
+	ran = TRandom()
+
+	print "Processing events ..."
+	for i in tout:
+
+		kp.SetXYZM(eval('i.'+KpPx_name),eval('i.'+KpPy_name),eval('i.'+KpPz_name),493.667)
+		pim.SetXYZM(eval('i.'+PimPx_name),eval('i.'+PimPy_name),eval('i.'+PimPz_name),139.570)
+		km.SetXYZM(eval('i.'+KmPx_name),eval('i.'+KmPy_name),eval('i.'+KmPz_name),493.667)
+		pip.SetXYZM(eval('i.'+PipPx_name),eval('i.'+PipPy_name),eval('i.'+PipPz_name),139.570)
+
+		p1 = kp.P()
+		p2 = pim.P()
+		p3 = km.P()
+		p4 = pip.P()
+
+		f1 = (p1+ran.Gaus(0,1)*deltap(p1))/p1
+		f2 = (p2+ran.Gaus(0,1)*deltap(p2))/p2
+		f3 = (p3+ran.Gaus(0,1)*deltap(p3))/p3
+		f4 = (p4+ran.Gaus(0,1)*deltap(p4))/p4
+
+		kp_smear.SetXYZM(f1*eval('i.'+KpPx_name),f1*eval('i.'+KpPy_name),f1*eval('i.'+KpPz_name),493.667)
+		pim_smear.SetXYZM(f2*eval('i.'+PimPx_name),f2*eval('i.'+PimPy_name),f2*eval('i.'+PimPz_name),139.570)
+		km_smear.SetXYZM(f3*eval('i.'+KmPx_name),f3*eval('i.'+KmPy_name),f3*eval('i.'+KmPz_name),493.667)
+		pip_smear.SetXYZM(f4*eval('i.'+PipPx_name),f4*eval('i.'+PipPy_name),f4*eval('i.'+PipPz_name),139.570)
+
+		pcomb = kp+pim+km+pip
+		pcomb_smear = kp_smear+pim_smear+km_smear+pip_smear
+
+		trecowsmear.afloat = i.B_s0_DTF_TAU*pcomb.P()/pcomb_smear.P()*pcomb_smear.M()/pcomb.M()
+		newBranchtrecowsmear.Fill()
+
+	print "All events processed."
+
+	tout.Write()
+	fout.Close()
 
 
 def ApplyCuts(inputfilename,outputfilename):

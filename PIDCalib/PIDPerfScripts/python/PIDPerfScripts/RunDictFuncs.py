@@ -44,12 +44,22 @@ def GetRunDictionary(StripVer, PartName="K" , verbose = True ):#, IsMuonUnBiased
     #======================================================================
     # Dictionary of Dictionaires for StripVersion -> {UpRuns, DownRuns}
     #======================================================================
+    stv = StripVer
+
+    if StripVer == '21_MCTuneV4':
+       stv = '21'  
+    if StripVer == '21r1_MCTuneV4':    
+       stv = '21r1'       
+    if StripVer == '23_MCTuneV1':
+       stv = '23'
+ 
+
     UpRunLims   = pickle.load( open( os.path.expandvars(
         '$PIDPERFSCRIPTSROOT/pklfiles/Stripping{strp}/up_runLimits_{suf}.pkl'.format(
-        strp=StripVer, suf=pklfileSuffix)), 'rb' ) )
+        strp=stv, suf=pklfileSuffix)), 'rb' ) )
     DownRunLims = pickle.load( open( os.path.expandvars(
         '$PIDPERFSCRIPTSROOT/pklfiles/Stripping{strp}/down_runLimits_{suf}.pkl'.format(
-        strp=StripVer, suf=pklfileSuffix)), 'rb' ) )
+        strp=stv, suf=pklfileSuffix)), 'rb' ) )
 
     StripDict = {'StripVer'   : StripVer,
                  'RecoVer'    : GetRecoVer(StripVer),

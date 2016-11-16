@@ -1,23 +1,24 @@
 from ROOT import *
 print RooFit
+S_RANGE = 3.
 
 def createConst(m,s1, name, signed = 0):
     if s1 :
         if not signed:
-            x = RooRealVar(name,name, m, m-10*s1,m+10*s1)
+            x = RooRealVar(name,name, m, m-S_RANGE*s1,m+S_RANGE*s1)
             _mean = RooRealVar(name+"_mean",name+"_mean", m)
             _mean.setConstant(True)
             _sigma = RooRealVar(name+"_sigma",name+"_sigma", s1)
             _sigma.setConstant(True)
         if signed == 1:
-            x = RooRealVar(name,name, m, max(0, m-10*s1),m+10*s1)
-            _mean = RooRealVar(name+"_mean",name+"_mean", m,max(0, m-10*s1),m+10*s1)
+            x = RooRealVar(name,name, m, max(0, m-S_RANGE*s1),m+S_RANGE*s1)
+            _mean = RooRealVar(name+"_mean",name+"_mean", m,max(0, m-S_RANGE*s1),m+S_RANGE*s1)
             _mean.setConstant(True)
             _sigma = RooRealVar(name+"_sigma",name+"_sigma", s1)
             _sigma.setConstant(True)
         if signed == -1 :
-            x = RooRealVar(name,name, m, m-10*s1,min( m+10*s1,0.))
-            _mean = RooRealVar(name+"_mean",name+"_mean", m, m-10*s1,min( m+10*s1,0.))
+            x = RooRealVar(name,name, m, m-S_RANGE*s1,min( m+S_RANGE*s1,0.))
+            _mean = RooRealVar(name+"_mean",name+"_mean", m, m-S_RANGE*s1,min( m+S_RANGE*s1,0.))
             _mean.setConstant(True)
             _sigma = RooRealVar(name+"_sigma",name+"_sigma", s1)
             _sigma.setConstant(True)
@@ -32,8 +33,8 @@ def createConst(m,s1, name, signed = 0):
     return x,_mean,_sigma,  x_cons
 
 def createStableConst(m,s1, name, signed = 0):
-    mymax = m+10*s1
-    mymin = m-10*s1
+    mymax = m+S_RANGE*s1
+    mymin = m-S_RANGE*s1
     if abs(mymax) > 2e3*s1 :
         mymax = mymax*0.999
 
@@ -49,10 +50,10 @@ def createBifurConst(m,s1,s2, name, signed = 0):
     if s1 == 0 :return createConst(m,s2,name)
     s1 = abs(s1)
     s2 = abs(s2)
-    if not signed: x = RooRealVar(name,name, m, m-10*s1,m+10*s2)
-    if signed == 1:  x = RooRealVar(name,name, m, max(0, m-10*s1),m+10*s2)
-    if signed == -1 :  x = RooRealVar(name,name, m, m-10*s1,min( m+10*s2,0.))
-    #x = RooRealVar(name,name, m,m-5*s1,m+5*s2)
+    if not signed: x = RooRealVar(name,name, m, m-S_RANGE*s1,m+S_RANGE*s2)
+    if signed == 1:  x = RooRealVar(name,name, m, max(0, m-S_RANGE*s1),m+S_RANGE*s2)
+    if signed == -1 :  x = RooRealVar(name,name, m, m-S_RANGE*s1,min( m+S_RANGE*s2,0.))
+    #x = RooRealVar(name,name, m,m-S_RANGE*s1,m+S_RANGE*s2)
     x_cons = RooBifurGauss(name + "_const",name + "_const",x,RooFit.RooConst(m),RooFit.RooConst(s1),RooFit.RooConst(s2))
     return x, x_cons
 

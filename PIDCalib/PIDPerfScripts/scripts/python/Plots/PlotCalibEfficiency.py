@@ -147,14 +147,14 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
 
     # set the plot variable
     PlotVar=opts.varName
-    if not CheckCuts(opts.varName,TriggerList):
+    if not CheckCuts(opts.varName,TriggerList,StripVersion):
         parser.error("Invalid variable %s" %str(opts.varName))
     if (len(opts.cuts)>0):
         if isinstance(opts.cuts,str):
-            if not CheckCuts(opts.cuts,TriggerList):
+            if not CheckCuts(opts.cuts,TriggerList,StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cuts))
         elif isinstance(opts.cuts,list,TriggerList):
-            if not CheckCuts(opts.cuts.join(" ")):
+            if not CheckCuts(opts.cuts.join(" "),TriggerList,StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cuts))
 
     #CheckBinVarName(PlotVar)
@@ -210,7 +210,7 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
 
 
     for icut, cut in enumerate(PIDCuts):
-        if not CheckCuts(cut, TriggerList):
+        if not CheckCuts(cut, TriggerList,StripVersion):
             raise ValueError("Invalid PID cut %i: \"%s\""%(icut,cut))
 
     if opts.verbose:

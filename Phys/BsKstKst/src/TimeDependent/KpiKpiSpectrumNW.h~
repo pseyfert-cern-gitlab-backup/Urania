@@ -252,6 +252,10 @@ public:
   RooRealProxy Dp1half_tag_OS ;
   RooRealProxy etac_tag_SSK ;
   RooRealProxy etac_tag_OS ;
+  RooRealProxy p0_tres_11 ;
+  RooRealProxy p1_tres_11 ;
+  RooRealProxy p0_tres_12 ;
+  RooRealProxy p1_tres_12 ;
   RooRealProxy mv ;
   RooRealProxy ms ;
   RooRealProxy mt ;
@@ -443,7 +447,6 @@ public:
   Double_t IT_sinh_resapprox_eff() const;
   Double_t IT_cos_resapprox_eff() const;
   Double_t IT_sin_resapprox_eff() const;
-
   std::complex<Double_t> faddeeva_2args(Double_t x, std::complex<Double_t> z) const;
   std::complex<Double_t> conv_exp(Double_t x, std::complex<Double_t> z) const;
   std::complex<Double_t> Kn(std::complex<Double_t> z, Int_t n) const;
@@ -451,6 +454,15 @@ public:
   std::complex<Double_t> Mn(Double_t x_1, Double_t x_2, std::complex<Double_t> z, Int_t n) const;
   void set_buffer_differential_vars(Double_t m1var, Double_t m2var, Double_t cos1var, Double_t cos2var, Double_t phivar, Double_t tvar, Double_t terrvar, Int_t decisionSSKvar, Int_t decisionOSvar, Double_t etamistagSSKvar, Double_t etamistagOSvar) const;
   void set_buffer_integral_vars() const;
+  Double_t T_cosh_spl(Double_t tau, Double_t tau_err) const;
+  Double_t T_sinh_spl(Double_t tau, Double_t tau_err) const;
+  Double_t T_cos_spl(Double_t tau, Double_t tau_err) const;
+  Double_t T_sin_spl(Double_t tau, Double_t tau_err) const;
+  Double_t IT_cosh_spl() const;
+  Double_t IT_sinh_spl() const;
+  Double_t IT_cos_spl() const;
+  Double_t IT_sin_spl() const;
+  TComplex IT_basicfit_j1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
 
   // Angular terms.
   Double_t fi(Double_t x, Int_t i) const;
@@ -488,6 +500,8 @@ public:
   // PDF separated components.
   Double_t comp_num_fit(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t comp_den_fit(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
+  Double_t comp_num_basicfit(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
+  Double_t comp_den_basicfit(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t comp_num_plot_t(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t comp_num_plot_phi(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t comp_num_plot_cos1(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
@@ -496,11 +510,14 @@ public:
   Double_t comp_den_plot(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t getReCompVal(Double_t ma, Double_t mb, Double_t cos1ang, Double_t cos2ang, Double_t phiang, Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t getImCompVal(Double_t ma, Double_t mb, Double_t cos1ang, Double_t cos2ang, Double_t phiang, Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
+  void compareNW(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
 
   // Complete PDF.
   void sumgenerator() const;
   Double_t num_fit() const;
   Double_t den_fit() const;
+  Double_t num_basicfit() const;
+  Double_t den_basicfit() const;
   Double_t num_plot_t() const;
   Double_t num_plot_phi() const;
   Double_t num_plot_cos1() const;

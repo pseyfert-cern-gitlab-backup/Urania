@@ -7,7 +7,8 @@ import glob
 
 local_path = '/data/lhcb/users/'
 lfn_path   = '/lhcb/calib/pid'
-prefixes = ('Lam0_P','DSt_K','DSt_Pi','Jpsi_Mu')
+prefixes = ('DSt_Pi',)
+#prefixes = ('Lam0_P','DSt_K','DSt_Pi','Jpsi_Mu','Jpsi_e','IncLc_P','LcfB_P','TotLc_P')
 ## script will only work if in the above line the prefix with the most files goes first.
 # other prefixes are 'Jpsi_Mu', 'Lam0_P' etc
 # it is important that it is checked that all the files were uploaded sucessfully

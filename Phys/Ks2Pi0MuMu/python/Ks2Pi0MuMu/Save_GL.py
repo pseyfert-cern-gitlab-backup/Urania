@@ -1,18 +1,8 @@
 #!/usr/bin/env python
+#import TMVA_cut_conf4 as TMVA_cut
 import TMVA_cut
 from ROOT import *
-import os, sys
-#variables = ["DOCA", "mu1ips", "mu2ips", "Phi", "cTh1", "K_dec_angle", "KSips", "LF_time", "KS_pt", "pi0mass", "Alpha", "Xi", "KIP", "mu1_probNNmu", "mu2_probNNmu"]
-SAMPLE = int(float(sys.argv[1]))
-if SAMPLE == 1:
-    variables = TMVA_cut.variables_cont_nopi0
-    sig_cut = TMVA_cut.mycutSig_nopi0
-    bkg_cut = TMVA_cut.mycutBkg_nopi0
-else:
-    variables = TMVA_cut.variables_cont
-    sig_cut = TMVA_cut.mycutSig
-    bkg_cut = TMVA_cut.mycutBkg
-    
+variables = TMVA_cut.variables_cont
 from Urania import *
 AccessPackage("Bs2MuMu")
 import time   # time accounting
@@ -22,53 +12,97 @@ from triggerclass import *
 from SomeUtils.NewKarlen import *
 from SomeUtils.someFunctions import *
 from math import sqrt
-from OurSites import MY_TUPLE_PATH
-import cPickle
 
-f1_name = MY_TUPLE_PATH + "kspi0mumu_ntupleMC12_Up_V0_1"
-f2_name = MY_TUPLE_PATH + "kspi0mumu_ntupleMC12_Up_V0_2"
-f3_name = MY_TUPLE_PATH + "kspi0mumu_ntupleData15_TIS_1"
-f4_name = MY_TUPLE_PATH + "kspi0mumu_ntupleData15_TIS_2"
+REMOVEMULT = 0
+#mylabels =  []#["evt","M_VC", "evtNum","runNum", "KS_l0phys_tis", "KS_l1phys_tis","KS_l2phys_tis"] + variables + TMVA_cut_ml.variables_other
 
-signal_train, f1      = getTuple(f1_name,thing = "Ks2pizeromm_as_V0")
-signal_test, f2      = getTuple(f2_name,thing = "Ks2pizeromm_as_V0")
-bkg_train, f3      = getTuple(f3_name, thing = "Ks2pizeromm_as_V0")
-bkg_test, f4     = getTuple(f4_name, thing = "Ks2pizeromm_as_V0")
+#signal_train, f1      = getTuple("/scratch19/Kspi0/MC_FULL_1")#,thing = "BenderKspi0mumuSignal") ##to be changed
+#signal_test, f2      = getTuple("/scratch19/Kspi0/MC_FULL_2")#,thing = "BenderKspi0mumuSignal")
+#bkg_train, f3      = getTuple("/scratch19/Kspi0/TIS_FULL_1")#, thing = "BenderKspi0mumuSignal") 
+#bkg_test, f4     = getTuple("/scratch19/Kspi0/TIS_FULL_2")#, thing = "BenderKspi0mumuSignal")
 
-f_ = TFile("/tmp/dummy.root", "recreate")
-t2 = signal_train.CopyTree(sig_cut)
-
-s = channelData(fromRootToListDic(t2))#, labels = ["evt","B0_MM"] + variablesx))
+signal_train, f1      = getTuple("./MC15_Sim09_PARTIAL_1",thing = "Ks2pizeromm_as_V0") ##to be changed
+signal_test, f2       = getTuple("./MC15_Sim09_PARTIAL_2",thing = "Ks2pizeromm_as_V0")
+bkg_train, f3         = getTuple("./Data_2016_PARTIAL_1", thing = "Ks2pizeromm_as_V0") 
+bkg_test, f4          = getTuple("./Data_2016_PARTIAL_2", thing = "Ks2pizeromm_as_V0")
+#BREAK
+def remove_duplicates(ch):
+    d  = {}
+    l = []
+    out = []
+    for entry in ch:
+        run, evt = entry["runNum"], entry["evtNum"]
+        if run not in d.keys(): d[run]= []#, []
+        if evt not in d[run]:
+            d[run].append(evt)
+            out.append(entry)
+    out = channelData(out)
+    N0 = len(ch)
+    print "Kept ", len(out)*1./len(ch)
+    ch.agrupateInEvents()
+    print "Expected was ", len(ch)*1./N0
+    return out
+        #else:
+         #   d2[run].append(evt)
+    #for entry in t:
+     #   run, evt = entry.runNum, entry.evtNum
+     #   if evt in d2[run]:
+      #      l.append([run, evt, entry.evt, getattr(entry,"Bmass")])
+    #l.sort()
+    #for x in l: print x
+        
+            
+#    return d, d2,l
+f_ = TFile("./dummy.root", "recreate")
+t2 = bkg_train.CopyTree(TMVA_cut.mycutBkg)
+b = channelData(fromRootToListDic(t2))##,labels = mylabels))# labels = ["evt","B0_MM"] + variablesx))
+if REMOVEMULT: b = remove_duplicates(b)
 f_.Close()
-f_ = TFile("/tmp/dummy.root", "recreate")
-t2 = bkg_train.CopyTree(bkg_cut)
-
-b = channelData(fromRootToListDic(t2))#, labels = ["evt","B0_MM"] + variablesx))
-f_.Close()
-f_ = TFile("/tmp/dummy.root", "recreate")
-t2 = signal_test.CopyTree(sig_cut)
-
-s2 = channelData(fromRootToListDic(t2))#, labels = ["evt","B0_MM"] + variablesx))
-f_.Close()
-f_ = TFile("/tmp/dummy.root", "recreate")
-t2 = bkg_test.CopyTree(bkg_cut)
-
-b2 = channelData(fromRootToListDic(t2))#, labels = ["evt","B0_MM"] + variablesx))
+f_ = TFile("./dummy.root", "recreate")
+t2 = signal_train.CopyTree(TMVA_cut.mycutSig)
+s = channelData(fromRootToListDic(t2))#, labels = mylabels))
+if REMOVEMULT: s = remove_duplicates(s)
 f_.Close()
 
+f_ = TFile("./dummy.root", "recreate")
+t2 = signal_test.CopyTree(TMVA_cut.mycutSig)
+
+s2 = channelData(fromRootToListDic(t2))#,labels = mylabels))# labels = ["evt","B0_MM"] + variablesx))
+if REMOVEMULT: s2 = remove_duplicates(s2)
+f_.Close()
+f_ = TFile("./dummy.root", "recreate")
+t2 = bkg_test.CopyTree(TMVA_cut.mycutBkg)
+
+b2 = channelData(fromRootToListDic(t2))#,labels = mylabels))# labels = ["evt","B0_MM"] + variablesx))
+if REMOVEMULT: b2 = remove_duplicates(b2)
+f_.Close()
+
+Ns = len(s2)
+Nb = len(b2)
+tis = trigger()
+#tis.addCut("V0_l0phys_tis>0")
+#tis.addCut("V0_l1phys_tis>0")
+#tis.addCut("V0_l2phys_tis>0")
 GL = NewKarlen(s,b,variables )
-if SAMPLE == 1:
-    cPickle.dump(GL,file("./GL_data_nopi0",'w'))
-else:
-    cPickle.dump(GL,file("./GL_data",'w'))
+print "after training the GL"
+import cPickle
+cPickle.dump(GL,file("./GL_data",'w'))
 
 GL(b,"GLmva")
-GL(s,"GLmva")
+print "after first GL"
+b.save("Data16_PARTIAL_GL_1")
+GL(s, "GLmva")
+print "after second GL"
+s.save("MC15_Sim09_PARTIAL_GL_1") ##to be changed
+#b2 = tis(b2)
+#b2.desagrupate()
 
 GL(b2,"GLmva")
-GL(s2,"GLmva")
+b2.save("Data16_PARTIAL_GL_2")
+print "after third GL"
+GL(s2, "GLmva")
+s2.save("MC15_Sim09_PARTIAL_GL_2")
 
-s.save(f1_name+"_GL") ##to be changed
-b.save(f3_name+"_GL")
-s2.save(f2_name+"_GL")
-b2.save(f4_name+"_GL")
+#print "after fourth GL"
+#print "before saving"
+

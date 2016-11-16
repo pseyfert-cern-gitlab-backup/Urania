@@ -222,30 +222,33 @@ TTree* sel1CandidateBs2JpsiPhi(TTree* inputTree, TTree* outputTree, int pol, int
    newtree->SetBranchAddress("Kminus_P", &p4 );
 
 
-   Int_t B_s0_OS_Muon_DEC = 0;
-   Int_t B_s0_OS_Electron_DEC = 0;
-   Int_t B_s0_OS_Kaon_DEC = 0;
-   Int_t B_s0_OS_nnetKaon_DEC = 0;
-   Int_t B_s0_VtxCharge_DEC = 0;
+   Short_t B_s0_OS_Muon_DEC = 0;
+   Short_t B_s0_OS_Electron_DEC = 0;
+   Short_t B_s0_OS_Kaon_DEC = 0;
+   Short_t B_s0_OS_nnetKaon_DEC = 0;
+   Short_t B_s0_VtxCharge_DEC = 0;
+   Short_t B_s0_OS_Charm_DEC = 0;
    Int_t B_s0_TAGDECISION_OS = 0;
 
-   Double_t B_s0_OS_Muon_PROB = 0;
-   Double_t B_s0_OS_Electron_PROB = 0;
-   Double_t B_s0_OS_Kaon_PROB = 0;
-   Double_t B_s0_OS_nnetKaon_PROB = 0;
-   Double_t B_s0_VtxCharge_PROB = 0;
+   Float_t B_s0_OS_Muon_PROB = 0;
+   Float_t B_s0_OS_Electron_PROB = 0;
+   Float_t B_s0_OS_Kaon_PROB = 0;
+   Float_t B_s0_OS_nnetKaon_PROB = 0;
+   Float_t B_s0_VtxCharge_PROB = 0;
+   Float_t B_s0_OS_Charm_PROB = 0;
    Double_t B_s0_TAGOMEGA_OS = 0;
 
-   Int_t B_s0_SS_Kaon_DEC = 0;
-   Int_t B_s0_SS_nnetKaon_DEC = 0;
-   Double_t B_s0_SS_Kaon_PROB = 0;
-   Double_t B_s0_SS_nnetKaon_PROB = 0;
+   Short_t B_s0_SS_Kaon_DEC = 0;
+   Short_t B_s0_SS_nnetKaon_DEC = 0;
+   Float_t B_s0_SS_Kaon_PROB = 0;
+   Float_t B_s0_SS_nnetKaon_PROB = 0;
 
    newtree->SetBranchAddress("B_s0_OS_Muon_DEC",    &B_s0_OS_Muon_DEC);
    newtree->SetBranchAddress("B_s0_OS_Electron_DEC",    &B_s0_OS_Electron_DEC);
    newtree->SetBranchAddress("B_s0_OS_Kaon_DEC",    &B_s0_OS_Kaon_DEC);
    newtree->SetBranchAddress("B_s0_OS_nnetKaon_DEC",    &B_s0_OS_nnetKaon_DEC);
    newtree->SetBranchAddress("B_s0_VtxCharge_DEC",    &B_s0_VtxCharge_DEC);
+   newtree->SetBranchAddress("B_s0_OS_Charm_DEC",    &B_s0_OS_Charm_DEC);
    newtree->SetBranchAddress("B_s0_TAGDECISION_OS", &B_s0_TAGDECISION_OS);
 
    newtree->SetBranchAddress("B_s0_OS_Muon_PROB",    &B_s0_OS_Muon_PROB);
@@ -253,6 +256,7 @@ TTree* sel1CandidateBs2JpsiPhi(TTree* inputTree, TTree* outputTree, int pol, int
    newtree->SetBranchAddress("B_s0_OS_Kaon_PROB",    &B_s0_OS_Kaon_PROB);
    newtree->SetBranchAddress("B_s0_OS_nnetKaon_PROB",    &B_s0_OS_nnetKaon_PROB);
    newtree->SetBranchAddress("B_s0_VtxCharge_PROB",    &B_s0_VtxCharge_PROB);
+   newtree->SetBranchAddress("B_s0_OS_Charm_PROB",    &B_s0_OS_Charm_PROB);
    newtree->SetBranchAddress("B_s0_TAGOMEGA_OS",    &B_s0_TAGOMEGA_OS);
 
    newtree->SetBranchAddress("B_s0_SS_Kaon_DEC",    &B_s0_SS_Kaon_DEC);
@@ -266,10 +270,10 @@ TTree* sel1CandidateBs2JpsiPhi(TTree* inputTree, TTree* outputTree, int pol, int
    Int_t B_s0_TAGDECISION_OS_wCBK_calib = 0;
    Double_t B_s0_TAGOMEGA_OS_wCBK_calib = 0;
 
-   Int_t B_s0_SS_Kaon_DEC_calib = 0;
-   Int_t B_s0_SS_nnetKaon_DEC_calib = 0;
+   Short_t B_s0_SS_Kaon_DEC_calib = 0;
+   Short_t B_s0_SS_nnetKaon_DEC_calib = 0;
    Double_t B_s0_SS_Kaon_PROB_calib = 0;
-   Double_t B_s0_SS_nnetKaon_PROB_calib = 0;
+   Float_t B_s0_SS_nnetKaon_PROB_calib = 0;
 
    TBranch* bB_s0_TAGDECISION_OS_wNNK_calib = newtree->Branch("B_s0_TAGDECISION_OS_wNNK_calib", &B_s0_TAGDECISION_OS_wNNK_calib,"B_s0_TAGDECISION_OS_wNNK_calib/I");  
    TBranch* bB_s0_TAGOMEGA_OS_wNNK_calib    = newtree->Branch("B_s0_TAGOMEGA_OS_wNNK_calib",    &B_s0_TAGOMEGA_OS_wNNK_calib,   "B_s0_TAGOMEGA_OS_wNNK_calib/D");
@@ -315,17 +319,19 @@ TTree* sel1CandidateBs2JpsiPhi(TTree* inputTree, TTree* outputTree, int pol, int
       //==========================================================================================================
 
       // Get original tagging decision and mistag from the DTT 
-      Double_t osw[4];
-      Int_t osdec[4];
+      Float_t osw[5];
+      Short_t osdec[5];
       osw[0] =  B_s0_OS_Muon_PROB; 
       osw[1] =  B_s0_OS_Electron_PROB; 
       osw[2] =  B_s0_OS_nnetKaon_PROB; 
       osw[3] =  B_s0_VtxCharge_PROB; 
+      osw[4] =  B_s0_OS_Charm_PROB; 
 
       osdec[0] =  B_s0_OS_Muon_DEC; 
       osdec[1] =  B_s0_OS_Electron_DEC; 
       osdec[2] =  B_s0_OS_nnetKaon_DEC; 
       osdec[3] =  B_s0_VtxCharge_DEC; 
+      osdec[4] =  B_s0_OS_Charm_DEC; 
 
       //Recompute the OS decision and mistag, with B_s0_OS_nnetKaon instead of B_s0_OS_Kaon 
       Double_t tagdecision=0;
@@ -337,7 +343,7 @@ TTree* sel1CandidateBs2JpsiPhi(TTree* inputTree, TTree* outputTree, int pol, int
       Double_t pn = 0; 
 
       // Multiply probabilities of each OS taggers: 
-      for( int i = 0; i != 4; ++i ) 
+      for( int i = 0; i != 5; ++i ) 
       	{ 
 	  mtag = osdec[i];
       	  if(!mtag) continue;

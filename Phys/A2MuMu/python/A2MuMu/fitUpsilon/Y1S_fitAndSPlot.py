@@ -6,24 +6,20 @@ import OurSites
 gROOT.SetBatch()
 
 
-#tupleName = "A1/A1"
-tupleName = "A1"
+#tupleName = "T"
+tupleName = "A1/A1"
 #tupleName = "Upsilon/Upsilon"
 inputTuples = {
-        'DATA2011': OurSites.MY_TUPLE_PATH + "RealData_2011_s21r1_Erasmus_v10r3_976pb.root",
-        'DATA2012': OurSites.MY_TUPLE_PATH + "RealData_2012_s21_Erasmus_v10r3_1991pb.root",
-        'Y1MC2011': OurSites.MY_TUPLE_PATH + "Upsilon_1S_MC_2011.root",
-        'Y1MC2012': OurSites.MY_TUPLE_PATH + "Upsilon_1S_MC_2012.root",
-        'Y2MC2011': OurSites.MY_TUPLE_PATH + "Upsilon_2S_MC_2011.root",
-        'Y2MC2012': OurSites.MY_TUPLE_PATH + "Upsilon_2S_MC_2012.root",
-        'Y3MC2011': OurSites.MY_TUPLE_PATH + "Upsilon_3S_MC_2011.root",
-        'Y3MC2012': OurSites.MY_TUPLE_PATH + "Upsilon_3S_MC_2012.root",
-        'A8MC2011': OurSites.MY_TUPLE_PATH + "A1MuMu_MC_2011_mumu8GeV_rwY1S.root",
-        'A8MC2012': OurSites.MY_TUPLE_PATH + "A1MuMu_MC_2012_mumu8GeV_rwY1S.root",
-        'A10MC2011': OurSites.MY_TUPLE_PATH + "A1MuMu_MC_2011_mumu10GeV_rwY1S.root",
-        'A10MC2012': OurSites.MY_TUPLE_PATH + "A1MuMu_MC_2012_mumu10GeV_rwY1S.root",
-        'A12MC2011': OurSites.MY_TUPLE_PATH + "A1MuMu_MC_2011_mumu12GeV_rwY1S.root",
-        'A12MC2012': OurSites.MY_TUPLE_PATH + "A1MuMu_MC_2012_mumu12GeV_rwY1S.root",
+        'DATA2011': OurSites.MY_TUPLE_PATH + "RealData_2011_s21r1_Erasmus_v11r2_975pb.root",
+        'DATA2012': OurSites.MY_TUPLE_PATH + "RealData_2012_s21_Erasmus_v11r2_1990pb.root",
+        #'6GeV': "/scratch19/mborsato/ToyA1_6.0GeV.root",
+        #'7GeV': "/scratch19/mborsato/ToyA1_7.0GeV.root",
+        #'8GeV': "/scratch19/mborsato/ToyA1_8.0GeV.root",
+        #'9GeV': "/scratch19/mborsato/ToyA1_9.0GeV.root",
+        #'10GeV': "/scratch19/mborsato/ToyA1_10.0GeV.root",
+        #'11GeV': "/scratch19/mborsato/ToyA1_11.0GeV.root",
+        #'12GeV': "/scratch19/mborsato/ToyA1_12.0GeV.root",
+        #'13GeV': "/scratch19/mborsato/ToyA1_13.0GeV.root",
         }
 momrange = {"min": sys.argv[1], "max": sys.argv[2]} ## read momentum range in log10
 resultfname = sys.argv[3]
@@ -32,9 +28,9 @@ option = sys.argv[5]
 
 outfileBaseName="./FIT_PLOTS/" + sample + '_' + option
 
-fixParsFromFile = 1
-if "Allpt" in option:
-    fixParsFromFile = 0
+#fixParsFromFile = 1
+#if "Allpt" in option:
+    #fixParsFromFile = 0
 
 
 for samplename in inputTuples.keys():
@@ -43,10 +39,10 @@ for samplename in inputTuples.keys():
         print "Adding tuple {0}".format(samplename)
         ChosenSample = samplename
 
-isMC = 1
+isMC = 0
 UNBINNED = 1
-EXTENDED = 0
-DOSPLOT = 0
+EXTENDED = 1
+DOSPLOT = 1
 #NBINS = 560 #whole sample
 NBINS = 160 #MC 10 pT bins
 PRESCALE = 1
@@ -56,7 +52,8 @@ CentralMass = {'Y1': 9468, 'Y2': 10023, 'Y3': 10355, 'A8': 8000, 'A10': 10000, '
 
 for particle in CentralMass.keys():
        if particle in sample: massrange = {'min': CentralMass[particle]-1068, 'max': CentralMass[particle]+282}
-#else:    massrange = {"min": 8400, "max":9750} ##mass range for data to minimize contribution of Y2S #FIXME the lower bound should be the same, but probably the bkgr model should be different
+if 'DATA' in sample:
+       massrange = {"min": 8400, "max":9750} ##mass range for data to minimize contribution of Y2S #FIXME the lower bound should be the same, but probably the bkgr model should be different
 
 mvar = "Bmass"
 selectPartOfTheDataSample = '!(evtNum%{0})'.format(PRESCALE)
@@ -75,6 +72,9 @@ tag = "_prescale{0}_momrange{1}_{2}".format(PRESCALE,momrange["min"], momrange["
 
 outfileName = outfileBaseName + tag + ".root"
 f = TFile(outfileName, "recreate")
+print '/////////////////////////////////'
+print 'Created root file in ', outfileName
+print '/////////////////////////////////'
 
 t2 = TChain(tupleName)
 t2.Add(inputTuple)
@@ -82,19 +82,14 @@ t2.Add(inputTuple)
 print 'copying tree with cut ', cut
 t = t2.CopyTree(cut)
 print 'before cut : ', t2.GetEntries(), ", after cut : ", t.GetEntries()
+totEntries = t.GetEntries()
 
 mass = RooRealVar(mvar,mvar,massrange["min"],massrange["max"])
-Y1Sweight = RooRealVar('wEtaPtAsY1S','wEtaPtAsY1S',0.,100.)#FIXME
-if UNBINNED:
-       data = RooDataSet("data", "data", t, RooArgSet(mass, Y1Sweight),"", 'wEtaPtAsY1S')#FIXME
-       print "t entries", t.GetEntries()
-       print "data entries", data.numEntries()
-else:
-       histo = TH1F('h'+mvar,'h'+ mvar,NBINS,massrange["min"], massrange["max"])
-       for entry in t:
-              var = getattr(entry, mvar)
-              histo.Fill(var)
-       rooHist = RooDataHist('h'+mvar, 'h'+mvar, RooArgList(mass), histo)
+#Y1Sweight = RooRealVar('wEtaPtAsY1S','wEtaPtAsY1S',0.,100.)#FIXME
+#data = RooDataSet("data", "data", t, RooArgSet(mass, Y1Sweight),"", 'wEtaPtAsY1S')#FIXME
+data = RooDataSet("data", "data", t, RooArgSet(mass))
+print "t entries", t.GetEntries()
+print "data entries", data.numEntries()
 
 
 
@@ -104,20 +99,22 @@ gROOT.ProcessLine(".L $URANIAROOT/src/RooIpatia2.cxx+")
 ipa_s = RooRealVar("ipa_s","ipa_s", 59., 10.,200.)
 for particle in CentralMass.keys():
        if particle in sample: ipa_m = RooRealVar("ipa_m","ipa_m",CentralMass[particle], CentralMass[particle]-60,CentralMass[particle]+60)
-beta = RooRealVar("beta","beta",0.,-0.1, 0.1)
+if isMC==0: ipa_m = RooRealVar("ipa_m","ipa_m",CentralMass['Y1'], CentralMass['Y1']-100,CentralMass['Y1']+100)
+#beta = RooRealVar("beta","beta",-1.7e-3, -2.5e-2, -0.1e-3)
+beta = RooRealVar("beta","beta",-1.7e-3)
 zeta = RooRealVar("zeta","zeta",2.5e-4)
-l = RooRealVar("l","l",-1.25,-6,-1.)
+l = RooRealVar("l","l",-1.3,-6,-1.)
 #a = RooRealVar("a","a",1.58,1.0,10.0)
-a = RooRealVar("a","a",1.4)
-n = RooRealVar("n","n",1.,0.1,50) #leaving just n parameter of left tail free
+a = RooRealVar("a","a",1.6)
+n = RooRealVar("n","n",1.,0.1,30) #leaving just n parameter of left tail free
 n2 = RooRealVar("n2","n2",0) ## remove right tail
 a2 = RooRealVar("a2","a2",100.)
 ipatia = RooIpatia2("ipatia","ipatia",mass,l,zeta,beta,ipa_s,ipa_m,a,n,a2,n2)
-sigma0= RooRealVar("sigma0","sigma0",25, 15, 40)
+sigma0= RooRealVar("sigma0","sigma0",30, 20, 70)
 mean0= RooRealVar("mean0","mean0",0)
+mass.setBins(3000,'cache')
 res0 = RooGaussian("reso0","reso0",mass,mean0,sigma0)
 ipa2 = RooFFTConvPdf("ipa2","ipa2",mass, ipatia,res0)
-sigPDF = ipa2
 
 # non convoluted Ipathia:
 #a = RooRealVar("a","a",1.58,1.3,1.9)
@@ -128,6 +125,11 @@ sigPDF = ipa2
 #sigPDF = ipatia
 
 
+
+
+
+
+"""
 if fixParsFromFile:
     import simplejson as json
     def importResultFile(tag):
@@ -157,55 +159,52 @@ if fixParsFromFile:
         variablesToBeFixed = {'a':a, 'a2':a2, 'n':n, 'n2':n2, 'zeta':zeta, 'beta':beta, 'ipa_m':ipa_m, 'sigma0':sigma0}
     if 'lfixed' in option:
         variablesToBeFixed = {'a':a, 'a2':a2, 'n':n, 'n2':n2, 'l':l, 'zeta':zeta, 'beta':beta, 'ipa_m':ipa_m, 'sigma0':sigma0}
+    if "lfreeSigma0free" in option:
+        variablesToBeFixed = {'a':a, 'a2':a2, 'n':n, 'n2':n2, 'zeta':zeta, 'beta':beta, 'ipa_m':ipa_m}
+    if "lfreeSigma0freeNfree" in option:
+        variablesToBeFixed = {'a':a, 'a2':a2, 'n2':n2, 'zeta':zeta, 'beta':beta, 'ipa_m':ipa_m}
 
     for vname, variable in variablesToBeFixed.items():
         variable.setVal(val[vname])
         variable.setConstant()
 
-#FIXME I fix only l by hand since it is totally correlated with ipa_s
-if 'Allpt' in option:
-    l.setConstant()
+"""
 
-if EXTENDED:
-    nY1 = RooRealVar("nY1","nY1",0, 2.e6/float(PRESCALE))
-    Y1sig = RooExtendPdf("Y1","Y1",sigPDF,nY1)
-else:
-    Y1sig = sigPDF
 
-if isMC:
-       model = Y1sig
-else:
-       indx = RooRealVar("indx", "indx", 0.,-1.,1.)
-       bkg = RooExponential("bkg","bkg", mass,indx)
-       if EXTENDED:
-           nbkg = RooRealVar("nbkg","nbkg",0, 1.e6/float(PRESCALE))
-           bkgpdf = RooExtendPdf("bkg","bkg",bkg,nbkg)
-       else:
-           bkgpdf = bkg
-       model = RooAddPdf("model","model",RooArgList(Y1sig, bkgpdf))
+
+
+indx = RooRealVar("indx", "indx", 0.,-1.,1.)
+bkg = RooExponential("bkg","bkg", mass,indx)
+bfrac = RooRealVar("bfrac", "bfrac", 0.05,0.,1.)
+model = RooAddPdf("model","model",ipa2, bkg, bfrac )
+
+
+
 
 
 ### fitting
-fr = mass.frame()
-if UNBINNED:
-       data.plotOn(fr, RooFit.Binning(NBINS), RooFit.LineWidth(1), RooFit.MarkerSize(0.2))
-else:
-       rooHist.plotOn(fr, RooFit.Binning(NBINS), RooFit.LineWidth(1), RooFit.MarkerSize(0.2))
+
+
+model.fitTo(data,RooFit.Extended(kFALSE), RooFit.Minos(0), RooFit.Offset(kTRUE))#FIXME
+
+
 
 if EXTENDED:
-        model.fitTo(data,RooFit.Extended(kTRUE), RooFit.Minos(1), RooFit.Offset(kTRUE), RooFit.SumW2Error(kTRUE))#FIXME
-else:
-        model.fitTo(data,RooFit.Extended(kFALSE), RooFit.Minos(1), RooFit.Offset(kTRUE), RooFit.SumW2Error(kTRUE))#FIXME
+       nbkg = RooRealVar("nbkg","nbkg",0, totEntries/2)
+       nsig = RooRealVar("nsig","nsig",0, totEntries)
+       bkgpdf = RooExtendPdf("bkg","bkg",bkg,nbkg)
+       sigpdf = RooExtendPdf("sig","sig",ipa2,nsig)
+       modelExt = RooAddPdf("modelExt","modelExt", RooArgList(sigpdf, bkgpdf) )
+       params = [a2, a, n, n2, ipa_s, ipa_m, beta, zeta, l, indx, sigma0]
+       for param in params:
+              param.setConstant()
+       modelExt.fitTo(data,RooFit.Extended(kTRUE), RooFit.Minos(0), RooFit.Offset(kTRUE))#FIXME
+
+
 
 ### splot of data
 if DOSPLOT and EXTENDED and not isMC:
-       ### fix all parameters before splotting
-       params = [a2, a, n, n2, ipa_s, ipa_m, beta, zeta, l, indx]
-       for param in params:
-              param.setConstant()
-
-
-       sData = RooStats.SPlot("sData","an SPlot", data, model, RooArgList(nY1, nbkg))
+       sData = RooStats.SPlot("sData","an SPlot", data, modelExt, RooArgList(nsig, nbkg))
        print "created sWeights"
        gROOT.ProcessLine(\
               "struct MyStruct{\
@@ -216,16 +215,14 @@ if DOSPLOT and EXTENDED and not isMC:
        sWBranch = t.Branch("sW_Y1", AddressOf(sWValue, 'sWFloat'), "sW_Y1/F")
        print "created sweight branch"
 
-
-
        for i in range(t.GetEntries()):
-              sWValue.sWFloat = sData.GetSWeight(i,"nY1")
+              sWValue.sWFloat = sData.GetSWeight(i,"nsig")
               sWBranch.Fill()
        print "sWeight branch added"
-       newcanv = TCanvas()
-       sWh = TH1F()
-       t.Draw("sW_Y1>>sWh")
-       sWh.Print("sWeight.pdf")
+       #newcanv = TCanvas()
+       #sWh = TH1F()
+       #t.Draw("sW_Y1>>sWh")
+       #sWh.Print("sWeight.pdf")
        t.Write("",TObject.kOverwrite)
        print "sWeights tuple written"
        f.Write()
@@ -238,7 +235,10 @@ if DOSPLOT and EXTENDED and not isMC:
 print "...now plotting"
 plotnamebase = outfileBaseName + tag
 
-model.plotOn(fr)
+
+fr = mass.frame()
+data.plotOn(fr, RooFit.Binning(NBINS), RooFit.LineWidth(1), RooFit.MarkerSize(0.2))
+modelExt.plotOn(fr)
 canvas = TCanvas()
 fr.Draw()
 canvas.Print(plotnamebase + ".pdf")
@@ -274,6 +274,7 @@ if not isMC: print "indx : ", momrange["min"], momrange["max"], indx.getVal(), i
 print "chi2 = ", fr.chiSquare()
 
 
+"""
 import os.path
 import simplejson as json
 if os.path.exists(resultfname):
@@ -304,4 +305,4 @@ resultfile2.write(json.dumps(results))
 resultfile2.close()
 
 shell('rm {0}'.format(outfileName))
-
+"""

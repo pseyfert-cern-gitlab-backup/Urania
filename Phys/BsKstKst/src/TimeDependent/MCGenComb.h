@@ -10,6 +10,8 @@
 #include "TF1.h"
 #include "RooMath.h"
 
+Double_t R_VV;
+
 class MCGenComb : public RooAbsPdf {
 public:
   MCGenComb() {} ; 

@@ -6,6 +6,7 @@
 #include "SomeUtils/Measurement.h"
 #include <iostream>
 #include <sstream>
+#include <cstdlib>
 #include <cmath>
 
 using namespace std;
@@ -348,11 +349,124 @@ stringstream& Measurement::_stex(stringstream &out) const
   }    
   return out;
 }
+
 string Measurement::tex() const
 {
   stringstream ss;
   return _stex(ss).str();
 }
+
+
+
+double Measurement::get_min_error() const 
+{
+  if(m_scheme == 0) return m_errors[0];
+  else if(m_scheme == 1) return min(m_errors[0], m_errors[1]);
+  else if(m_scheme == 2) return min(m_errors[0], m_errors[2]);
+  else if(m_scheme == 3) return min(min(m_errors[0], m_errors[1]),min(m_errors[2], m_errors[3]));
+  else return m_errors[0]; // This should not happen. 
+}
+
+
+stringstream& Measurement::_stex_sci(stringstream &out) const
+ {
+   // Convert value to scientific notation for latex
+   // Get exponent and argument for the value 
+   int exp = (int) log10(m_value);
+   double arg = m_value / pow(10, exp);
+   
+   // Get one digit before the dot 
+   if(arg<1){
+     arg *= 10;
+     exp -= 1;
+   }
+   // Get the minimum of the uncertainties
+   double error = get_min_error();
+   // Get number of significant digits from uncertainty 
+   int prec = 1 - log10( error / pow(10, exp) );
+   // If uncertainty is larger than value, set precision to 2 just in case 
+   int old_precision = out.precision();
+
+   if(prec<0) prec = 2;
+
+   out.precision(prec);
+   
+   if(m_scheme == 0){
+     
+     // double arg_err = m_errors[0] / pow(10, exp);
+     // int prec=  1-(int)log10(arg_err);
+     
+     // If exponent is larger than 2 use powers of ten 
+     if(abs(exp)>2)
+     {
+       out <<  fixed << "$(" <<  arg <<  " \\pm " 
+           << m_errors[0] / pow(10, exp)  << ")\\times 10^{"<< exp << "}$";
+     }else{
+       // If exponent is smaller than 2 use plain form 
+       prec = prec-exp; // significant after point 
+       // add to precision in case its too small after exp subtraction
+       if(prec<2) prec++;
+       out.precision(prec);
+       out <<  fixed << "$" <<  m_value  <<  " \\pm " << m_errors[0] << "$";
+    
+     }
+   }else if(m_scheme == 1){
+     if(abs(exp)>2)   out <<  fixed << "$" <<  arg <<  "^{+" 
+                          << m_errors[0] / pow(10, exp) << "}_{-"  <<  m_errors[1] / pow(10, exp)  
+                          << "\\times 10^{"<< exp << "}$" ;
+     else {
+       prec = prec-exp; // significant after point 
+       // add to precision in case its too small after exp subtraction
+       if(prec<2) prec++;
+       out.precision(prec);
+       out <<  fixed << "$" <<  m_value  
+           <<  "^{+" << m_errors[0] << "}_{-" << m_errors[1] << "}$";
+     }
+   }else if(m_scheme == 2){
+     if(abs(exp)>2) out <<  fixed << "$(" <<  arg <<  " \\pm " 
+                        << m_errors[0] / pow(10, exp) <<  " \\pm " 
+                        << m_errors[2] / pow(10, exp)  << ")\\times 10^{"<< exp << "}$" ;
+     else     {
+       prec = prec-exp; // significant after point 
+       // add to precision in case its too small after exp subtraction
+       if(prec<2) prec++;
+       out.precision(prec);
+       out <<  fixed << "$" <<  m_value  
+           <<  " \\pm " << m_errors[0] << "} \\pm " << m_errors[2] << "$";
+       
+     }
+   }else if(m_scheme == 3){
+     if(abs(exp)>2)   out <<  fixed << "$" <<  arg <<  "^{+" 
+                          << m_errors[0] / pow(10, exp) << "}_{-"  <<  m_errors[1] / pow(10, exp)  
+                          << "}^{+" << m_errors[2] / pow(10, exp) << "}_{-"  <<  m_errors[3] / pow(10, exp)  
+                          << "\\times 10^{"<< exp << "}$" ;
+     else {
+       prec = prec-exp; // significant after point 
+       // add to precision in case its too small after exp subtraction
+       if(prec<2) prec++;
+       out.precision(prec);
+       out <<  fixed << "$" <<  m_value  
+           << "^{+" << m_errors[0]  << "}_{-"  <<  m_errors[1]
+           << "}^{+" << m_errors[2] << "}_{-"  <<  m_errors[3] << "}$";
+     }
+     
+   }else{
+     cerr << " Something bad with error scheme..." << m_scheme << endl;
+     out.precision(old_precision); // Restore precision;
+     out << m_value << " + " << m_errors[0] << " - " << m_errors[1] 
+         << " + " << m_errors[2] << " - " << m_errors[3];  
+   }    
+   out.precision(old_precision); // Restore precision;
+   return out;
+ }
+
+
+string Measurement::stex() const
+{
+  stringstream ss;
+  return _stex_sci(ss).str();
+}
+
 
 
 //=============================================================================
@@ -520,6 +634,23 @@ double Measurement::total_error() const
 const char* Measurement::getLaTeX() const {
   return tex().c_str();
 }
+///> function to print latex number, like: a^{+x}_{-y} or a\pm b
+/*char* Measurement::getLaTeX(){
+  char* latex = new char[100];
+  if(m_scheme == 0){
+      sprintf(latex,"$%.3e \\pm %.3e$",m_value,m_errors[0]);
+    }else if(m_scheme == 1){
+      sprintf(latex,"$%.3e^{+%.3e}_{-%.3e}$",m_value,m_errors[0],m_errors[1]);
+    }else if(m_scheme == 2){
+      sprintf(latex,"$%.3e \\pm %.3e (\\text{stat}) \\pm %.3e (\\text{sys})$",m_value,m_errors[0],m_errors[1]);
+    }else if(m_scheme == 3){
+      sprintf(latex,"$%.3e^{%.3e}_{%.3e} (\\text{stat})^{%.3e}_{%.3e} (\\text{sys})$",
+              m_value,m_errors[0],m_errors[1],m_errors[2],m_errors[3]);
+    }else{
+      cerr << " Something bad with error scheme..." << m_scheme << endl;
+    }    
+    return latex;
+    };*/
 
 
 Measurement Measurement::average(Measurement b) const

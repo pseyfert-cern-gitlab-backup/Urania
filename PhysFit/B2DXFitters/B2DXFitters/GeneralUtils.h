@@ -273,10 +273,11 @@ namespace GeneralUtils {
   std::vector <TString> GetSampleModeYearHypo(TString& sample, TString& mode, TString& year, TString& hypo, TString merge, bool debug = false);
   //std::vector <TString> GetSampleMode(TString& sample, TString& mode, TString merge, bool debug );
   std::vector <TString>  GetSample(TString& sample, bool debug = false);
+  std::vector <TString> GetSample(TString sample, TString merge, bool debug = false);
   std::vector <TString>  GetMode(TString& mode, bool debug = false);
   std::vector <TString>  GetHypo(TString& hypo, bool debug = false);
   std::vector <TString>  GetYear(TString& year, bool debug = false);
-  std::vector<TString> GetDataYear(TString check, TString merge, bool debug = false);
+  std::vector <TString> GetDataYear(TString check, TString merge, bool debug = false);
   //std::vector <Int_t> GetEntriesCombData(RooWorkspace* work, 
   //                                       TString &dat, TString & sample, TString& mode,
   //                                       TString merge, bool debug );
@@ -341,6 +342,7 @@ namespace GeneralUtils {
   // Get Ds mode in capital letters                                                                                                                                               
   //==========================================================================           
   TString GetModeCapital(TString& check, bool debug = false);
+  TString GetModeLower(TString& check, bool debug = false);
 
   //=========================================================================       
   // Check BDTG bin                                              
@@ -385,7 +387,7 @@ namespace GeneralUtils {
   //==========================================================================
   RooArgList* GetCoeffFromBinning(RooBinning* binning, RooRealVar* time, bool debug = false);
 
-
+  std::vector <TString> SplitString(TString string, TString pattern);
   std::vector <TString> GetList(TString name, TString name2 = "", TString name3 = "");
   std::vector <TString> AddToList(std::vector <TString> list, TString name);
 

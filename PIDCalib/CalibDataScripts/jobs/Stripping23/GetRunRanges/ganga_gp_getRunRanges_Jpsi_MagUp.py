@@ -14,7 +14,7 @@ magPol='Up'
 fileSuffix='jpsi_mu'
 
 # Set the pbs options (e.g. CPU/walltime)
-pbsopts = "-l cput=0:05:00,walltime=0:15:00"
+pbsopts = "-l cput=0:35:00,walltime=0:15:00"
 
 # Set the name of the directory in the input file(s) containing
 # the 'CalibPID' nTuple
@@ -24,7 +24,7 @@ tupleDir = "JpsiFromBNoPIDNoMipTuple"
 #
 # N.B. The run-range splitting is determined after application of
 # the selection cuts
-partCuts='{0}_MuonUnbiased==1&&{0}_MuonProbe==1&&{1}_MuonTag==1'
+partCuts='{0}_MuonUnbiasedHLT1==1&&{0}_MuonProbe==1&&{1}_MuonTag==1'
 cuts='({0}) || ({1})'.format( partCuts.format('mum', 'mup'),
                               partCuts.format('mup', 'mum') )
 

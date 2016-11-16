@@ -314,6 +314,88 @@ void SetSpecVars_ANNVars(RooPhysFit::RooDMassFitter& Mfit,
   //======================================
   // Track PID Variables - ANN Probs
   //======================================
+  Mfit.AddSpectator(TString::Format("%s_V1ProbNNK", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_Brunel_V1ProbNNk", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN prob. Kv1",   
+                    "Track variables");
+  
+  Mfit.AddSpectator(TString::Format("%s_V1ProbNNpi", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_Brunel_V1ProbNNpi", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. #piv1", 
+                    "Track variables");
+
+  Mfit.AddSpectator(TString::Format("%s_V1ProbNNp", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_Brunel_V1ProbNNp", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. pv1", 
+                    "Track variables");
+                    
+  Mfit.AddSpectator(TString::Format("%s_V1ProbNNmu", parPrefix_DataSet).Data(),
+                    -3, 
+                    3.,
+                    TString::Format("%s_Brunel_V1ProbNNmu", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. #muv1",
+                    "Track variables");
+                    
+  Mfit.AddSpectator(TString::Format("%s_V1ProbNNe", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_Brunel_V1ProbNNe", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. ev1","Track variables");
+
+
+  Mfit.AddSpectator(TString::Format("%s_Tesla_V1ProbNNK", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,   
+                    TString::Format("%s_V1ProbNNk", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN prob. Kv1",
+                    "Track variables");   
+                    
+  Mfit.AddSpectator(TString::Format("%s_Tesla_V1ProbNNpi", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,   
+                    TString::Format("%s_V1ProbNNpi", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. #piv1",
+                    "Track variables");   
+                    
+  Mfit.AddSpectator(TString::Format("%s_Tesla_V1ProbNNp", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_V1ProbNNp", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. pv1",
+                    "Track variables");   
+  
+  Mfit.AddSpectator(TString::Format("%s_Tesla_V1ProbNNmu", parPrefix_DataSet).Data(),
+                    -3,
+                    3., 
+                    TString::Format("%s_V1ProbNNmu", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. #muv1",
+                    "Track variables");
+                    
+  Mfit.AddSpectator(TString::Format("%s_Tesla_V1ProbNNe", parPrefix_DataSet).Data(),
+                    -3.,
+                    3., 
+                    TString::Format("%s_V1ProbNNe", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. ev1","Track variables");
+
+
+
+/*
   Mfit.AddSpectator(TString::Format("%s_V2ProbNNK", parPrefix_DataSet).Data(), 
                     -3.,
                     3., 
@@ -355,6 +437,50 @@ void SetSpecVars_ANNVars(RooPhysFit::RooDMassFitter& Mfit,
                     "Track variables");
 
 
+
+
+  Mfit.AddSpectator(TString::Format("%s_Tesla_V2ProbNNK", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_V2ProbNNk", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN prob. Kv2",
+                    "Track variables");
+                    
+  Mfit.AddSpectator(TString::Format("%s_Tesla_V2ProbNNpi", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_V2ProbNNpi", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. #piv2",
+                    "Track variables");
+                    
+  Mfit.AddSpectator(TString::Format("%s_Tesla_V2ProbNNp", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_V2ProbNNp", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. pv2",
+                    "Track variables");
+                    
+  Mfit.AddSpectator(TString::Format("%s_Tesla_V2ProbNNmu", parPrefix_DataSet).Data(),
+                    -3,
+                    3.,
+                    TString::Format("%s_V2ProbNNmu", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. #muv2",
+                    "Track variables");
+                    
+  Mfit.AddSpectator(TString::Format("%s_Tesla_V2ProbNNe", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_V2ProbNNe", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. ev2","Track variables");
+
+
+
+
  Mfit.AddSpectator(TString::Format("%s_V3ProbNNK", parPrefix_DataSet).Data(), 
                     -3.,
                     3., 
@@ -394,6 +520,142 @@ void SetSpecVars_ANNVars(RooPhysFit::RooDMassFitter& Mfit,
                     "",
                     "ANN Prob. ev3",
                     "Track variables");
+
+
+   Mfit.AddSpectator(TString::Format("%s_Tesla_V3ProbNNK", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_V3ProbNNk", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN prob. Kv3",
+                    "Track variables");
+                    
+  Mfit.AddSpectator(TString::Format("%s_Tesla_V3ProbNNpi", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_V3ProbNNpi", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. #piv3",
+                    "Track variables");
+                    
+  Mfit.AddSpectator(TString::Format("%s_Tesla_V3ProbNNp", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_V3ProbNNp", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. pv3",
+                    "Track variables");
+                    
+  Mfit.AddSpectator(TString::Format("%s_Tesla_V3ProbNNmu", parPrefix_DataSet).Data(),
+                    -3,
+                    3.,
+                    TString::Format("%s_V3ProbNNmu", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. #muv3",
+                    "Track variables");
+                    
+  Mfit.AddSpectator(TString::Format("%s_Tesla_V3ProbNNe", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_V3ProbNNe", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. ev3","Track variables");
+
+*/
+
+
+   Mfit.AddSpectator(TString::Format("%s_V4ProbNNK", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_Brunel_V4ProbNNk", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN prob. Kv4",   
+                    "Track variables");
+  
+  Mfit.AddSpectator(TString::Format("%s_V4ProbNNpi", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_Brunel_V4ProbNNpi", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. #piv4", 
+                    "Track variables");
+
+  Mfit.AddSpectator(TString::Format("%s_V4ProbNNp", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_Brunel_V4ProbNNp", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. pv4", 
+                    "Track variables");
+                    
+  Mfit.AddSpectator(TString::Format("%s_V4ProbNNmu", parPrefix_DataSet).Data(),
+                    -3, 
+                    3.,
+                    TString::Format("%s_Brunel_V4ProbNNmu", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. #muv4",
+                    "Track variables");
+                    
+  Mfit.AddSpectator(TString::Format("%s_V4ProbNNe", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_Brunel_V4ProbNNe", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. ev4", "Track variables");
+
+
+ Mfit.AddSpectator(TString::Format("%s_Tesla_V4ProbNNK", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_V4ProbNNk", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN prob. Kv4",
+                    "Track variables");
+                    
+  Mfit.AddSpectator(TString::Format("%s_Tesla_V4ProbNNpi", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_V4ProbNNpi", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. #piv4",
+                    "Track variables");
+                    
+  Mfit.AddSpectator(TString::Format("%s_Tesla_V4ProbNNp", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_V4ProbNNp", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. pv4",
+                    "Track variables");
+                    
+  Mfit.AddSpectator(TString::Format("%s_Tesla_V4ProbNNmu", parPrefix_DataSet).Data(),
+                    -3,
+                    3.,
+                    TString::Format("%s_V4ProbNNmu", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. #muv4",
+                    "Track variables");
+                    
+  Mfit.AddSpectator(TString::Format("%s_Tesla_V4ProbNNe", parPrefix_DataSet).Data(),
+                    -3.,
+                    3.,
+                    TString::Format("%s_V4ProbNNe", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. ev4","Track variables");
+
+
+
+
+Mfit.AddSpectator(TString::Format("%s_V1ProbNNghost", parPrefix_DataSet).Data()\
+,
+                    -3.,
+                    3.,
+                    TString::Format("%s_Brunel_V1ProbNNghost", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. ghostv1",
+                    "Track variables");
+
+/*
 Mfit.AddSpectator(TString::Format("%s_V2ProbNNghost", parPrefix_DataSet).Data()\
 ,
                     -3.,
@@ -409,6 +671,52 @@ Mfit.AddSpectator(TString::Format("%s_V3ProbNNghost", parPrefix_DataSet).Data()\
                     TString::Format("%s_Brunel_V3ProbNNghost", parPrefix_nTuple).Data(),
                     "",
                     "ANN Prob. ghostv3",
+                    "Track variables");
+*/
+Mfit.AddSpectator(TString::Format("%s_V4ProbNNghost", parPrefix_DataSet).Data()\
+,
+                    -3.,
+                    3.,
+                    TString::Format("%s_Brunel_V4ProbNNghost", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. ghostv4",
+                    "Track variables");
+
+
+Mfit.AddSpectator(TString::Format("%s_Tesla_V1ProbNNghost", parPrefix_DataSet).Data()\
+,
+                    -3.,
+                    3.,
+                    TString::Format("%s_V1ProbNNghost", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. ghostv1",
+                    "Track variables");
+  
+/*                       
+Mfit.AddSpectator(TString::Format("%s_Tesla_V2ProbNNghost", parPrefix_DataSet).Data()\
+,
+                    -3.,
+                    3.,
+                    TString::Format("%s_V2ProbNNghost", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. ghostv2",
+                    "Track variables");
+Mfit.AddSpectator(TString::Format("%s_Tesla_V3ProbNNghost", parPrefix_DataSet).Data()\
+,
+                    -3.,
+                    3.,
+                    TString::Format("%s_V3ProbNNghost", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. ghostv3",
+                    "Track variables");
+*/
+Mfit.AddSpectator(TString::Format("%s_Tesla_V4ProbNNghost", parPrefix_DataSet).Data()\
+,
+                    -3.,
+                    3.,
+                    TString::Format("%s_V4ProbNNghost", parPrefix_nTuple).Data(),
+                    "",
+                    "ANN Prob. ghostv4",
                     "Track variables");
 
 }
@@ -738,14 +1046,14 @@ const char* opar;
  Mfit.AddSpectator(TString::Format("%s_Probe_TIS", parPrefix_DataSet).Data(),
                     -1.,
                     2.,
-		   TString::Format("%s_MuonUnbiased", parPrefix_nTuple).Data()," ",
+		   TString::Format("%s_MuonUnbiasedHLT1", parPrefix_nTuple).Data()," ",
                     "Probe tracks satistfies the TIS criteria",
                     "Track variables");
 
  Mfit.AddSpectator(TString::Format("%s_Tag_TOS", parPrefix_DataSet).Data(),
                    -1.,
                     2.,
- 		   TString::Format("%s_Tag_TOS", opar)," ",
+ 		   TString::Format("%s_MuonTOS", opar)," ",
                     "Tag track (ie the other one) satistfied the TOS criteria",
                     "Track variables");
 }
@@ -818,7 +1126,7 @@ void SetSpecVars_KPiMuonUNB(RooPhysFit::RooDMassFitter& Mfit,
  Mfit.AddSpectator(TString::Format("%s_Unbias_HLT1", parPrefix_DataSet).Data(),
                     -1.,
                     2.,
-		   TString::Format("%s_MuonUnbiased", parPrefix_nTuple).Data()," ",
+		   TString::Format("%s_MuonUnbiasedHLT1", parPrefix_nTuple).Data()," ",
                     "Track satistfies the TIS at HLT1 ",
                     "Track variables");
 
@@ -840,10 +1148,10 @@ void SetSpecVars_PMuonUNB(RooPhysFit::RooDMassFitter& Mfit,
   // Muon TIS TOS Tagged variables on protons                                           
   //======================================                                      
 
- Mfit.AddSpectator(TString::Format("%s_Unbias_HLT12", parPrefix_DataSet).Data(),
+ Mfit.AddSpectator(TString::Format("%s_Unbias_HLT1", parPrefix_DataSet).Data(),
                     -1.,
                     2.,
-		   TString::Format("%s_MuonUnbiased", parPrefix_nTuple).Data()," ",
+		   TString::Format("%s_MuonUnbiasedHLT1", parPrefix_nTuple).Data()," ",
                     "Probe tracks satistfies the TIS criteria",
                     "Track variables");
 

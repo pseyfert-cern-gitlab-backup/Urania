@@ -14,7 +14,7 @@ magPol='Up'
 fileSuffix='dst_k_and_pi'
 
 # set the pbs options (e.g. CPU/walltime)
-pbsopts = "-l cput=1:59:00,walltime=3:00:00"
+pbsopts = "-l cput=8:59:00,walltime=8:00:00"
 
 # track name (e.g. K, Pi)
 trackName="K"

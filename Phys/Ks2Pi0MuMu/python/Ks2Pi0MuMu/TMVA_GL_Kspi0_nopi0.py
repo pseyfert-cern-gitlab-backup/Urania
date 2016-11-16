@@ -93,10 +93,10 @@ for i in range(len(variablesx)):
     factory.AddSpectator(variablesx[i], "Spectator " + str(i), "units")
 
     # Get the signal and background trees for training (INPUT FILES)
-signal_train, f1 = getTuple(MY_TUPLE_PATH+"kspi0mumu_ntupleMC12_Up_V0_1_GL",thing = "T")
-signal_test, f2  = getTuple(MY_TUPLE_PATH+"kspi0mumu_ntupleMC12_Up_V0_2_GL",thing = "T")
-bkg_train, f3    = getTuple(MY_TUPLE_PATH+"kspi0mumu_ntupleData15_TIS_1_GL", thing = "T")
-bkg_test, f4     = getTuple(MY_TUPLE_PATH+"kspi0mumu_ntupleData15_TIS_2_GL", thing = "T")
+signal_train, f1 = getTuple("./MC15_Sim09_PARTIAL_GL_1",thing = "T")
+signal_test, f2  = getTuple("./MC15_Sim09_PARTIAL_GL_2",thing = "T")
+bkg_train, f3    = getTuple("./Data16_PARTIAL_GL_1", thing = "T")
+bkg_test, f4     = getTuple("./Data16_PARTIAL_GL_2", thing = "T")
 
 signalWeight = 1.0
 bkgWeight = 1.0

@@ -79,7 +79,7 @@ void JpsieeFit(TChain* ch,
   for(itr=fun_vec.begin(); itr!=fun_vec.end(); ++itr)
   {
     std::cout<<"Adding Spectator Vars"<<std::endl;
-    (*itr)(*massFitter, "e", pName);
+    (*itr)(*massFitter, "e", otherPName);
   }
 
   //==================================================//
@@ -97,19 +97,26 @@ void JpsieeFit(TChain* ch,
     exit(EXIT_FAILURE);
   }
 
-  TString chargeCut = TString::Format("Jpsi_BPVLTCHI2>250 && -1*(%s_ID/abs(%s_ID))=="+chrg,
-    pName, pName);
-  TString probeCut = TString::Format("%s_ElectronProbe==1", pName);
+  TString chargeCut = "B_ENDVERTEX_CHI2<9 && Jpsi_BPVLTCHI2>250";
+//  TString probeCut = TString::Format("%s_ElectronProbe==1", pName);
   //TString tisCut = TString::Format("%s_ElectronUnbiased==1", pName);
-  TString tagCut = TString::Format("%s_ElectronTag==1", otherPName);
-  TString bremCut = TString::Format("%s_HasBremAdded==%i", pName, bremAdded);
+  TString tagCut1 = TString::Format("%s_ElectronTag==1 && %s_HasBremAdded==%i && -1*(%s_ID/abs(%s_ID))=="+chrg,otherPName,pName,bremAdded,pName,pName); 
+  TString tagCut2 = TString::Format("%s_ElectronTag==1 && %s_HasBremAdded==%i && -1*(%s_ID/abs(%s_ID))=="+chrg,pName,otherPName,bremAdded,otherPName,otherPName);
+ // TString bremCut = TString::Format("%s_HasBremAdded==%i", pName, bremAdded);
   //TString Cuts = TString::Format("(%s) && (%s) && (%s) && (%s) && (%s)",
   //chargeCut.Data(), probeCut.Data(), tisCut.Data(),
   //tagCut.Data(), bremCut.Data());
 
-TString Cuts = TString::Format(" (%s) && (%s) && (%s) && (%s)",
-  chargeCut.Data(), probeCut.Data(), 
-  tagCut.Data(), bremCut.Data());
+//TString Cuts = TString::Format(" (%s) && ((%s) || (%s))",
+//  chargeCut.Data(), tagCut1.Data(), 
+//  tagCut2.Data());
+
+//TString Cuts = TString::Format(" (%s) && (%s) ",
+//  chargeCut.Data(), tagCut1.Data());
+
+//also change  in the above lines when adding spect_var: pName to otherPName
+TString Cuts = TString::Format(" (%s) && (%s) ",
+  chargeCut.Data(), tagCut2.Data());   
 
   massFitter->MakeDMassDataSet(ch,
                                "Jpsi_M",

@@ -20,12 +20,12 @@ from SetupDataInterface import *
 # ################################################################
 
 # Options for the addition of new branches to the ntuple.
-cos_input_file_name = 'Bs2Kst0Kst0_wide_Real2011_magUp_Job1531'
-cos_input_file_extradir = 1 # 1 if an extra directory exists in the file containing the 'DecayTree', 0 if not.
+cos_input_file_name = 'AnalysisOutWSWeightsSelected'
+cos_input_file_extradir = 0 # 1 if an extra directory exists in the file containing the 'DecayTree', 0 if not.
 cos_input_file_extradir_name = 'Bs2Kst0Kst0'
-cos_output_file_name = 'Bs2Kst0Kst0_wide_Real2011_magUp_Job1531_WithCosines'
-tps_input_file_name = 'Bs2Kst0Kst0_wide_Real2011_magUp_Job1531_WithCosines'
-tps_output_file_name = 'Bs2Kst0Kst0_wide_Real2011_magUp_Job1531_WithCosines_TAU'
+cos_output_file_name = 'AnalysisOutWSWeightsSelectedAllBranches'
+tps_input_file_name = 'Bs2Kst0Kst0_wide_MC2012_magnetUp_Job1528_WithCosines'
+tps_output_file_name = 'Bs2Kst0Kst0_wide_MC2012_magnetUp_Job1528_WithCosines_TAU'
 
 # Options for the candidate selection.
 Selection_input_file_name = 'Bs2KpiKpi_PhaseSpace_MC2012_WithCosines_TAUinps'
@@ -43,7 +43,7 @@ def AddBranches():
 cos_input_file_extradir_name,cos_output_file_name)
 
 	# Add t and t_error.
-	ns2ps(tps_input_file_name,tps_output_file_name)
+	#ns2ps(tps_input_file_name,tps_output_file_name)
 	
 
 # ################################################################

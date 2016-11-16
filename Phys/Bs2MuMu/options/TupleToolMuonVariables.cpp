@@ -80,7 +80,7 @@ TupleToolMuonVariables::TupleToolMuonVariables( const std::string& type,
   //  declareProperty("ghost_cut"   , m_ghost_cut  = 0.3 ); // 
   //  declareProperty("trchi2_cut"   , m_trchi2_cut  = 3.0 ); // 
   declareProperty("isMC", m_isMC = false); 
-  declareProperty("is_microDST",m_is_microDST = false);
+  declareProperty("is_microDST",m_is_microDST = true);
 
   declareProperty("dumpFullInfo", m_dumpFullInfo = false); 
   declareProperty( "IP2MCPAssociatorType", m_p2mcAssocType =  "DaVinciSmartAssociator");
@@ -234,18 +234,14 @@ StatusCode TupleToolMuonVariables::initialize() {
 StatusCode TupleToolMuonVariables::fill( const LHCb::Particle *, const LHCb::Particle *part,
                                           const std::string &  	head, Tuples::Tuple &  	tuple	) {
 
-
   const std::string prefix=fullName(head);
   if ( msgLevel(MSG::DEBUG) ) debug() << "==> Fill" << endmsg;
-  
 
-  if ( abs(part->particleID().pid()) ==13 
-       || abs( part->particleID().pid() )  == 11 )  // only for muons/electrons
+  if ( abs(part->particleID().pid()) ==13 || abs( part->particleID().pid() )  == 11 )  // only for muons/electrons
     {  
       StatusCode scTrackInfo = fillTrackHitInfo(part, prefix, tuple);
       if(!scTrackInfo) return scTrackInfo;
     }
-   
   
   StatusCode scEta = fillEta(part, prefix, tuple);
   if(!scEta) return scEta;
@@ -255,61 +251,47 @@ StatusCode TupleToolMuonVariables::fill( const LHCb::Particle *, const LHCb::Par
   int countDaughters =0; bool checkDau=true;
   JpsiInDau = false ; 
   
-  for( SmartRefVector< LHCb::Particle >::const_iterator idau = Bdaughters.begin() ; 
-       idau != Bdaughters.end() ; ++idau){
-    if (NULL == (*idau)->proto() )
-      {
-	checkDau =false;
-	debug()<<"daughter no "<<countDaughters<<"  is NULL!! "<<endreq;
-	if( abs ((*idau)->particleID().pid() ) == 443) { 
-	  JpsiInDau = true; 
-	  myJpsi = (*idau);
-	}
-      }
-    else if (  abs((*idau)->particleID().pid()) == 13 
-               || abs((*idau)->particleID().pid() )  == 11 ) countDaughters++;  
+  for( SmartRefVector< LHCb::Particle >::const_iterator idau = Bdaughters.begin(); idau != Bdaughters.end() ; ++idau){
+    if (NULL == (*idau)->proto() ){
+	    checkDau =false;
+	    debug()<<"daughter no "<<countDaughters<<"  is NULL!! "<<endreq;
+	    if( abs ((*idau)->particleID().pid() ) == 443) { 
+	      JpsiInDau = true; 
+	      myJpsi = (*idau);
+	    }
+    }
+    else if (  abs((*idau)->particleID().pid()) == 13 || abs((*idau)->particleID().pid() )  == 11 ) countDaughters++;  
     // has muon or electron as a daughter
-    
   } //smartRef
  
-  
   if(JpsiInDau) {
     StatusCode fillJpsi = fillFakeVtx(part, myJpsi, prefix, tuple);
     StatusCode fillJC = ConstrMass(part, prefix, tuple);
     if(!fillJC || !fillJpsi) return StatusCode::FAILURE;
   }
   
-
   // Doca b/w the muon tracks is needed for the 2 body and for the jpsi]
   //If fullDST
-  if(! m_is_microDST){
-    if  (checkDau && countDaughters ==2 ) {
-
-      
+  if(!m_is_microDST){
+    if (checkDau && countDaughters ==2 ) {
       StatusCode fillIsolation_custom = fillIsolation(part, prefix, tuple); //if no DTF stops in fillIso, after C before D
       if (!fillIsolation_custom) return fillIsolation_custom;
       
       StatusCode scfillIso= CDFIsolation_2( part, part->daughtersVector().at(0), 
 					    part->daughtersVector().at(1), prefix, tuple); 
       if (!scfillIso) return scfillIso;
-      
-    
     }
-   
   }
   //if microDST
   // Doca b/w the muon tracks is needed for the 2 body and for the jpsi
 
-
-  if  (checkDau && countDaughters ==2 ) {
+  if(checkDau && countDaughters ==2 ) {
     StatusCode scfillDoca=fillDoca(part, prefix, tuple);
     if (!scfillDoca) return scfillDoca;
-    
      
     StatusCode scfillCosNK = fillCosNK(part, prefix, tuple);
     if(!scfillCosNK) return scfillCosNK;
   }
-    
 
   //   ====   BDTS for all B decays ==== ///
   if ( abs(part->particleID().pid()) >500 ) {
@@ -319,86 +301,70 @@ StatusCode TupleToolMuonVariables::fill( const LHCb::Particle *, const LHCb::Par
     bdts = fillLoKiTau(part, prefix, tuple );
     if(!bdts) return bdts;
   }
-
   
   // ---------------------------------------------//
   // === Fill these only for B-> 2 body decays ===//
   // ---------------------------------------------//
   
-
-    //If fullDST
-    if(! m_is_microDST){
-
-      if  (checkDau && countDaughters ==2 && abs(part->particleID().pid()) >500 ) // if the particle is a B meson
-	{
+  //If fullDST
+  if(! m_is_microDST){
+    if(checkDau && countDaughters ==2 && abs(part->particleID().pid()) >500 ){ // if the particle is a B meson
+	    StatusCode fillIsolation_custom = fillIsolation(part, prefix, tuple);
+	    if (!fillIsolation_custom) return fillIsolation_custom;
 	  
-	  StatusCode fillIsolation_custom = fillIsolation(part, prefix, tuple);
-	  if (!fillIsolation_custom) return fillIsolation_custom;
+	    //Dump the track isolation input variables. - This is for IsoBDT which is also in the RelatedInfos
+	    dumpIsoVariables(part, tuple);
 	  
-	  //Dump the track isolation input variables. - This is for IsoBDT which is also in the RelatedInfos
-	  dumpIsoVariables(part, tuple);
+	    //MR: Dump the isoBDT (it needs 4 BDT weight files) - This is for IsoBDT which is also in the RelatedInfos
+	    fillTrackIsoBDT(part,prefix,tuple);
 	  
-	  //MR: Dump the isoBDT (it needs 4 BDT weight files) - This is for IsoBDT which is also in the RelatedInfos
-	  fillTrackIsoBDT(part,prefix,tuple);
+	    StatusCode scfillIso= CDFIsolation( part, part->daughtersVector().at(0), part->daughtersVector().at(1), prefix, tuple); 
+	    if (!scfillIso) return scfillIso;
 	  
-	  StatusCode scfillIso= CDFIsolation( part, part->daughtersVector().at(0), 
-					      part->daughtersVector().at(1), prefix, tuple); 
-	  if (!scfillIso) return scfillIso;
+	    scfillIso= CDFIsolation_2( part, part->daughtersVector().at(0), part->daughtersVector().at(1), prefix, tuple); 
+	    if (!scfillIso) return scfillIso;
 	  
-	  scfillIso= CDFIsolation_2( part, part->daughtersVector().at(0), 
-				     part->daughtersVector().at(1), prefix, tuple); 
-	  if (!scfillIso) return scfillIso;
+	    //       StatusCode scfillYuri = CDFIsolation_Yuri( part, 
+	    //part->daughtersVector().at(0), part->daughtersVector().at(1), prefix, tuple); 
+	    //       if (!scfillYuri) return scfillYuri;
 	  
-	  //       StatusCode scfillYuri = CDFIsolation_Yuri( part, 
-	  //part->daughtersVector().at(0), part->daughtersVector().at(1), prefix, tuple); 
-	  //       if (!scfillYuri) return scfillYuri;
-	  
-	  //       StatusCode scfillAtlas = ATLASIsolation( part, prefix, tuple ) ;
-	  //       if(!scfillAtlas) return scfillAtlas;
+	    //       StatusCode scfillAtlas = ATLASIsolation( part, prefix, tuple ) ;
+	    //       if(!scfillAtlas) return scfillAtlas;
           
-	  StatusCode fillOtherB = OtherB(part, part->daughtersVector().at(0), 
-					 part->daughtersVector().at(1), prefix, tuple);
-	  if(! fillOtherB) return fillOtherB;
-	  
-	  
-	}
-    }
-  
-    //If microDST
+	    StatusCode fillOtherB = OtherB(part, part->daughtersVector().at(0), part->daughtersVector().at(1), prefix, tuple);
+	    if(! fillOtherB) return fillOtherB;
+	  }
+  } //If microDST
    
 
-      if  (checkDau && countDaughters ==2 && abs(part->particleID().pid()) >500 ) // if the particle is a B meson
-	{
-	  
+  if(checkDau && countDaughters ==2 && abs(part->particleID().pid()) >500 ){ // if the particle is a B meson
 	  
 	  StatusCode scfillCosNK = fillCosNK(part, prefix, tuple);
 	  if(!scfillCosNK) return scfillCosNK;
 	}
     
-  
-
-      //if(! m_is_microDST){
-      if ( abs(part->particleID().pid()) >500 && m_dumpFullInfo ) {
-	if (m_isMC) init_muonsMCDecayTree(part);//used to determine the non-iso/iso property of LT, US and Velo tracks
+  //if(! m_is_microDST){
+  if ( abs(part->particleID().pid()) >500 && m_dumpFullInfo ) {
+	  if (m_isMC) init_muonsMCDecayTree(part);//used to determine the non-iso/iso property of LT, US and Velo tracks
      
-	//Dump LT tracks info  
-	StatusCode fillTrack = fillTrackInfo( tuple ); 
-	if (!fillTrack) return fillTrack;
+	  //Dump LT tracks info  
+	  StatusCode fillTrack = fillTrackInfo( tuple ); 
+	  if (!fillTrack) return fillTrack;
 	
-	//MR: Dump primary vertices info
-	fillPVList(tuple);
-	fillPVrefitList(part,tuple);
+	  //MR: Dump primary vertices info
+	  fillPVList(tuple);
+	  fillPVrefitList(part,tuple);
 	
-	//MR: Dump B pos and mom covariance matrix
-	fillBposmomCov(part,prefix,tuple);
+	  //MR: Dump B pos and mom covariance matrix
+	  fillBposmomCov(part,prefix,tuple);
 	
-	//MR: Dump Velo tracks info
-	if (m_dumpVeloTracks) fillVeloTracksInfo(tuple);
+	  //MR: Dump Velo tracks info
+	  if (m_dumpVeloTracks) fillVeloTracksInfo(tuple);
 	
-	//MR: Dump Upstream tracks info
-	if (m_dumpUpstreamTracks) fillUpstreamTracksInfo(tuple);
+	  //MR: Dump Upstream tracks info
+	  if (m_dumpUpstreamTracks) fillUpstreamTracksInfo(tuple);
 	
-      }  
+  }  
    
 	if(m_isMC){
 	  //MR: Dump MCGEN block with truth info of b quark decay trees
@@ -406,19 +372,14 @@ StatusCode TupleToolMuonVariables::fill( const LHCb::Particle *, const LHCb::Par
 	  if (!fillMCDecay) return fillMCDecay;
 	}
    
-	//}
-
-   
-   if(m_isMC){
-     StatusCode fillMC = fillMCTruth(part, prefix, tuple);
-     return fillMC; 
-   }
-   
+  if(m_isMC){
+    StatusCode fillMC = fillMCTruth(part, prefix, tuple);
+    return fillMC; 
+  }
  
   else return StatusCode::SUCCESS;
   
 }
-
 
 //=============================================================================
 //  Fill Eta
@@ -433,8 +394,6 @@ StatusCode TupleToolMuonVariables::fillEta(const LHCb::Particle *part,
   if(test) return StatusCode::SUCCESS;
   else return StatusCode::FAILURE;
 }
-
-
 
 //=============================================================================
 // Track info, for muons only
@@ -485,7 +444,7 @@ StatusCode TupleToolMuonVariables::fillTrackInfo(Tuples::Tuple& tuple ){
   const LHCb::MCParticle* MCp = NULL;
   const LHCb::MCParticle* ancestor =NULL;
   
-  const int NMaxEVBpart = 500;
+  const int NMaxEVBpart = 900;
   
   //Here's where I get my hands on the LHCbs particles
   LHCb::Particles*  parts = get<LHCb::Particles>(m_ParticlePath);
@@ -525,11 +484,8 @@ StatusCode TupleToolMuonVariables::fillTrackInfo(Tuples::Tuple& tuple ){
   std::vector<double> trkPV_pz, trkPV_gho;
   std::vector<int> trkPV_num;
   trkPVassociator(trkPV_pz,trkPV_gho,trkPV_num,"long");
-
   
-  vector<bool> MC_match, MC_par_hasMother, 
-    MC_mot_hasMother, MC_gra_hasMother,
-    MC_mogra_hasMother;
+  vector<bool> MC_match, MC_par_hasMother, MC_mot_hasMother, MC_gra_hasMother, MC_mogra_hasMother;
   
   vector<double> MC_origin_id, MC_ori_vtx_y, MC_ori_vtx_z, MC_ori_vtx_x;
   vector<int> MC_ori_type;
@@ -676,194 +632,196 @@ StatusCode TupleToolMuonVariables::fillTrackInfo(Tuples::Tuple& tuple ){
     //MC truth info
     if (m_isMC){
       if (!MCp) {
-	debug()<<" Didn't find MCP "<<endmsg;
-	MC_ori_vtx_x.push_back(-9999);
-	MC_ori_vtx_y.push_back(-9999);
-	MC_ori_vtx_z.push_back(-9999);
-	MC_ori_type.push_back(-9999);
-	MC_par_trueID.push_back(-9999);
-	MC_par_isnoniso_mup.push_back(-9999);
-	MC_par_isnoniso_mum.push_back(-9999);
-	MC_par_px.push_back(-9999);
-	MC_par_py.push_back(-9999);
-	MC_par_pz.push_back(-9999);
-	MC_par_M.push_back(-9999);
-	MC_par_E.push_back(-9999);
-	MC_origin_id.push_back(-9999);
+	      debug()<<" Didn't find MCP "<<endmsg;
+	      MC_ori_vtx_x.push_back(-9999);
+	      MC_ori_vtx_y.push_back(-9999);
+	      MC_ori_vtx_z.push_back(-9999);
+	      MC_ori_type.push_back(-9999);
+	      MC_par_trueID.push_back(-9999);
+	      MC_par_isnoniso_mup.push_back(-9999);
+	      MC_par_isnoniso_mum.push_back(-9999);
+	      MC_par_px.push_back(-9999);
+	      MC_par_py.push_back(-9999);
+	      MC_par_pz.push_back(-9999);
+	      MC_par_M.push_back(-9999);
+	      MC_par_E.push_back(-9999);
+	      MC_origin_id.push_back(-9999);
       }      
       else {
-	matched = kTRUE;
-	std::vector<int> key_vec;
-	key_vec.push_back(MCp->key());
-	get_decayTree(MCp,key_vec);
+	      matched = kTRUE;
+	      std::vector<int> key_vec;
+	      key_vec.push_back(MCp->key());
+	      get_decayTree(MCp,key_vec);
 	
-	//MC particle info.
-	//Origin vtx      
-	MC_ori_vtx_x.push_back(MCp->originVertex()->position().x());
-	MC_ori_vtx_y.push_back(MCp->originVertex()->position().y());
-	MC_ori_vtx_z.push_back(MCp->originVertex()->position().z());
-	MC_ori_type.push_back(MCp->originVertex()->type());
+	      //MC particle info.
+	      //Origin vtx      
+	      MC_ori_vtx_x.push_back(MCp->originVertex()->position().x());
+	      MC_ori_vtx_y.push_back(MCp->originVertex()->position().y());
+	      MC_ori_vtx_z.push_back(MCp->originVertex()->position().z());
+	      MC_ori_type.push_back(MCp->originVertex()->type());
 	
-	MC_par_trueID.push_back(MCp->particleID().pid());
-	MC_par_isnoniso_mup.push_back(isNonIso(MCp,"mu+"));
-	MC_par_isnoniso_mum.push_back(isNonIso(MCp,"mu-"));
-	MC_par_px.push_back(MCp->momentum().Px());
-	MC_par_py.push_back(MCp->momentum().Py());
-	MC_par_pz.push_back(MCp->momentum().Pz());
-	MC_par_M.push_back(MCp->momentum().M());
-	MC_par_E.push_back(MCp->momentum().E());
+	      MC_par_trueID.push_back(MCp->particleID().pid());
+	      MC_par_isnoniso_mup.push_back(isNonIso(MCp,"mu+"));
+      	MC_par_isnoniso_mum.push_back(isNonIso(MCp,"mu-"));
+      	MC_par_px.push_back(MCp->momentum().Px());
+      	MC_par_py.push_back(MCp->momentum().Py());
+      	MC_par_pz.push_back(MCp->momentum().Pz());
+      	MC_par_M.push_back(MCp->momentum().M());
+      	MC_par_E.push_back(MCp->momentum().E());
 	
-	m_typeOrigin =  MCp->originVertex()->type();
+      	m_typeOrigin =  MCp->originVertex()->type();
 	
-	//Ancestor info
-	ancestor = originof(MCp) ;
-	MC_origin_id.push_back(ancestor->particleID().pid());
-	debug()<<" Filled ancestor PID "<<endreq;      
+      	//Ancestor info
+      	ancestor = originof(MCp) ;
+      	MC_origin_id.push_back(ancestor->particleID().pid());
+      	debug()<<" Filled ancestor PID "<<endreq;      
 	
-	//Number of end vertices: not tupled for now
-	SmartRefVector< LHCb::MCVertex >::const_iterator iVtx;
-	if (0==MCp->endVertices().size())
-	  {
-	    debug() << " vertex failed " << endreq;
-	    m_endVertices  = -100;
-	  }
-	else 
-	  {
-	    m_endVertices = MCp->endVertices().size();
-	  }
+      	//Number of end vertices: not tupled for now
+      	SmartRefVector< LHCb::MCVertex >::const_iterator iVtx;
+      	if(0==MCp->endVertices().size()) {
+	        debug() << " vertex failed " << endreq;
+	        m_endVertices  = -100;
+	      }
+	      else {
+	        m_endVertices = MCp->endVertices().size();
+	      }
 	
-	//MC mother info
-	const LHCb::MCParticle* mother = MCp->mother();
-	if(mother) {
-	  hasMother = kTRUE;
-	  MC_par_hasMother.push_back(kTRUE);
-	  MC_mot_ori_vtx_x.push_back(mother->originVertex()->position().x());
-	  MC_mot_ori_vtx_y.push_back(mother->originVertex()->position().y());
-	  MC_mot_ori_vtx_z.push_back(mother->originVertex()->position().z());
+	      //MC mother info
+	      const LHCb::MCParticle* mother = MCp->mother();
+	      if(mother) {
+	        hasMother = kTRUE;
+      	  MC_par_hasMother.push_back(kTRUE);
+      	  MC_mot_ori_vtx_x.push_back(mother->originVertex()->position().x());
+      	  MC_mot_ori_vtx_y.push_back(mother->originVertex()->position().y());
+      	  MC_mot_ori_vtx_z.push_back(mother->originVertex()->position().z());
 	  
-	  MC_mot_trueID.push_back(mother->particleID().pid());
-	  MC_mot_px.push_back(mother->momentum().Px());
-	  MC_mot_py.push_back(mother->momentum().Py());
-	  MC_mot_pz.push_back(mother->momentum().Pz());
-	  MC_mot_M.push_back(mother->momentum().M());
-	  MC_mot_E.push_back(mother->momentum().E());
+      	  MC_mot_trueID.push_back(mother->particleID().pid());
+      	  MC_mot_px.push_back(mother->momentum().Px());
+      	  MC_mot_py.push_back(mother->momentum().Py());
+      	  MC_mot_pz.push_back(mother->momentum().Pz());
+      	  MC_mot_M.push_back(mother->momentum().M());
+      	  MC_mot_E.push_back(mother->momentum().E());
 	  
-	  //MC grandmother info
-	  const LHCb::MCParticle* granny = mother->mother();
+      	  //MC grandmother info
+      	  const LHCb::MCParticle* granny = mother->mother();
 	  
-	  if(granny) {
-	    hasGranny = kTRUE;
-	    MC_mot_hasMother.push_back(kTRUE);
+      	  if(granny) {
+      	    hasGranny = kTRUE;
+      	    MC_mot_hasMother.push_back(kTRUE);
 	    
-	    MC_gra_ori_vtx_x.push_back(granny->originVertex()->position().x());
-	    MC_gra_ori_vtx_y.push_back(granny->originVertex()->position().y());
-	    MC_gra_ori_vtx_z.push_back(granny->originVertex()->position().z());
+	          MC_gra_ori_vtx_x.push_back(granny->originVertex()->position().x());
+      	    MC_gra_ori_vtx_y.push_back(granny->originVertex()->position().y());
+      	    MC_gra_ori_vtx_z.push_back(granny->originVertex()->position().z());
 	    
-	    MC_gra_trueID.push_back(granny->particleID().pid());
-	    MC_gra_px.push_back(granny->momentum().Px());
-	    MC_gra_py.push_back(granny->momentum().Py());
-	    MC_gra_pz.push_back(granny->momentum().Pz());
-	    MC_gra_M.push_back(granny->momentum().M());
-	    MC_gra_E.push_back(granny->momentum().E());
+      	    MC_gra_trueID.push_back(granny->particleID().pid());
+      	    MC_gra_px.push_back(granny->momentum().Px());
+      	    MC_gra_py.push_back(granny->momentum().Py());
+	          MC_gra_pz.push_back(granny->momentum().Pz());
+      	    MC_gra_M.push_back(granny->momentum().M());
+      	    MC_gra_E.push_back(granny->momentum().E());
 	    
-	    //MC mother of grandmother info
-	    const LHCb::MCParticle* motgranny = granny->mother();
+      	    //MC mother of grandmother info
+      	    const LHCb::MCParticle* motgranny = granny->mother();
 	    
-	    if(motgranny) {
-	      hasMotGranny = kTRUE;
-	      MC_gra_hasMother.push_back(kTRUE);
-	      MC_mogra_ori_vtx_x.push_back(motgranny->originVertex()->position().x());
-	      MC_mogra_ori_vtx_y.push_back(motgranny->originVertex()->position().y());
-	      MC_mogra_ori_vtx_z.push_back(motgranny->originVertex()->position().z());
+      	    if(motgranny) {
+	            hasMotGranny = kTRUE;
+      	      MC_gra_hasMother.push_back(kTRUE);
+      	      MC_mogra_ori_vtx_x.push_back(motgranny->originVertex()->position().x());
+      	      MC_mogra_ori_vtx_y.push_back(motgranny->originVertex()->position().y());
+      	      MC_mogra_ori_vtx_z.push_back(motgranny->originVertex()->position().z());
 	      
-	      MC_mogra_trueID.push_back(motgranny->particleID().pid());
-	      MC_mogra_px.push_back(motgranny->momentum().Px());
-	      MC_mogra_py.push_back(motgranny->momentum().Py());
-	      MC_mogra_pz.push_back(motgranny->momentum().Pz());
-	      MC_mogra_M.push_back(motgranny->momentum().M());
-	      MC_mogra_E.push_back(motgranny->momentum().E());
+      	      MC_mogra_trueID.push_back(motgranny->particleID().pid());
+      	      MC_mogra_px.push_back(motgranny->momentum().Px());
+	            MC_mogra_py.push_back(motgranny->momentum().Py());
+      	      MC_mogra_pz.push_back(motgranny->momentum().Pz());
+	            MC_mogra_M.push_back(motgranny->momentum().M());
+      	      MC_mogra_E.push_back(motgranny->momentum().E());
 	      
-	      //MC grandmother of grandmother info
-	      const LHCb::MCParticle* gragranny = motgranny->mother();
+	            //MC grandmother of grandmother info
+      	      const LHCb::MCParticle* gragranny = motgranny->mother();
 	      
-	      if(gragranny) {
-		hasGraGranny = kTRUE;
-		MC_mogra_hasMother.push_back(kTRUE);
-		MC_grgra_ori_vtx_x.push_back(gragranny->originVertex()->position().x());
-		MC_grgra_ori_vtx_y.push_back(gragranny->originVertex()->position().y());
-		MC_grgra_ori_vtx_z.push_back(gragranny->originVertex()->position().z());
+      	      if(gragranny) {
+            		hasGraGranny = kTRUE;
+		            MC_mogra_hasMother.push_back(kTRUE);
+            		MC_grgra_ori_vtx_x.push_back(gragranny->originVertex()->position().x());
+            		MC_grgra_ori_vtx_y.push_back(gragranny->originVertex()->position().y());
+            		MC_grgra_ori_vtx_z.push_back(gragranny->originVertex()->position().z());
 		
-		MC_grgra_trueID.push_back(gragranny->particleID().pid());
-		MC_grgra_px.push_back(gragranny->momentum().Px());
-		MC_grgra_py.push_back(gragranny->momentum().Py());
-		MC_grgra_pz.push_back(gragranny->momentum().Pz());
-		MC_grgra_M.push_back(gragranny->momentum().M());
-		MC_grgra_E.push_back(gragranny->momentum().E());
-	      } else {
-		hasGraGranny = kFALSE;
-	      } //Granny of granny
-	    } else {
-	      hasMotGranny = kFALSE;
-	    } //Mother of granny
-	  } else {
-	    hasGranny = kFALSE;
-	  } //Granny
-	} else {
-	  hasMother = kFALSE;
-	} //Mother
+            		MC_grgra_trueID.push_back(gragranny->particleID().pid());
+            		MC_grgra_px.push_back(gragranny->momentum().Px());
+            		MC_grgra_py.push_back(gragranny->momentum().Py());
+            		MC_grgra_pz.push_back(gragranny->momentum().Pz());
+            		MC_grgra_M.push_back(gragranny->momentum().M());
+            		MC_grgra_E.push_back(gragranny->momentum().E());
+	            } 
+              else {
+		            hasGraGranny = kFALSE;
+	            } //Granny of granny
+	          } 
+            else {
+	            hasMotGranny = kFALSE;
+	          } //Mother of granny
+	        } 
+          else {
+	          hasGranny = kFALSE;
+	        } //Granny
+	      } 
+        else {
+	        hasMother = kFALSE;
+	      } //Mother
       }// i.e. we have an MCp
       if(!hasMother) {      
-	MC_par_hasMother.push_back(kFALSE);
-	MC_mot_ori_vtx_x.push_back(-9999);
-	MC_mot_ori_vtx_y.push_back(-9999);
-	MC_mot_ori_vtx_z.push_back(-9999);
+  	    MC_par_hasMother.push_back(kFALSE);
+      	MC_mot_ori_vtx_x.push_back(-9999);
+	      MC_mot_ori_vtx_y.push_back(-9999);
+	      MC_mot_ori_vtx_z.push_back(-9999);
 	
-	MC_mot_trueID.push_back(-9999);
-	MC_mot_px.push_back(-9999);
-	MC_mot_py.push_back(-9999);
-	MC_mot_pz.push_back(-9999);
-	MC_mot_M.push_back(-9999);
-	MC_mot_E.push_back(-9999);
+      	MC_mot_trueID.push_back(-9999);
+      	MC_mot_px.push_back(-9999);
+      	MC_mot_py.push_back(-9999);
+      	MC_mot_pz.push_back(-9999);
+      	MC_mot_M.push_back(-9999);
+      	MC_mot_E.push_back(-9999);
       }
       if(!hasGranny) {
-	MC_mot_hasMother.push_back(kFALSE);
-	MC_gra_ori_vtx_x.push_back(-9999);
-	MC_gra_ori_vtx_y.push_back(-9999);
-	MC_gra_ori_vtx_z.push_back(-9999);
+      	MC_mot_hasMother.push_back(kFALSE);
+      	MC_gra_ori_vtx_x.push_back(-9999);
+      	MC_gra_ori_vtx_y.push_back(-9999);
+      	MC_gra_ori_vtx_z.push_back(-9999);
 	
-	MC_gra_trueID.push_back(-9999);
-	MC_gra_px.push_back(-9999);
-	MC_gra_py.push_back(-9999);
-	MC_gra_pz.push_back(-9999);
-	MC_gra_M.push_back(-9999);
-	MC_gra_E.push_back(-9999);
+      	MC_gra_trueID.push_back(-9999);
+      	MC_gra_px.push_back(-9999);
+      	MC_gra_py.push_back(-9999);
+      	MC_gra_pz.push_back(-9999);
+      	MC_gra_M.push_back(-9999);
+      	MC_gra_E.push_back(-9999);
       }
       if(!hasMotGranny) {
-	MC_gra_hasMother.push_back(kFALSE);
-	MC_mogra_ori_vtx_x.push_back(-9999);
-	MC_mogra_ori_vtx_y.push_back(-9999);
-	MC_mogra_ori_vtx_z.push_back(-9999);
+      	MC_gra_hasMother.push_back(kFALSE);
+      	MC_mogra_ori_vtx_x.push_back(-9999);
+      	MC_mogra_ori_vtx_y.push_back(-9999);
+      	MC_mogra_ori_vtx_z.push_back(-9999);
 	
-	MC_mogra_trueID.push_back(-9999);
-	MC_mogra_px.push_back(-9999);
-	MC_mogra_py.push_back(-9999);
-	MC_mogra_pz.push_back(-9999);
-	MC_mogra_M.push_back(-9999);
-	MC_mogra_E.push_back(-9999);
+      	MC_mogra_trueID.push_back(-9999);
+      	MC_mogra_px.push_back(-9999);
+      	MC_mogra_py.push_back(-9999);
+      	MC_mogra_pz.push_back(-9999);
+      	MC_mogra_M.push_back(-9999);
+      	MC_mogra_E.push_back(-9999);
       }
       
       if(!hasGraGranny) {
-	MC_mogra_hasMother.push_back(kFALSE);
-	MC_grgra_ori_vtx_x.push_back(-9999);
-	MC_grgra_ori_vtx_y.push_back(-9999);
-	MC_grgra_ori_vtx_z.push_back(-9999);
+      	MC_mogra_hasMother.push_back(kFALSE);
+      	MC_grgra_ori_vtx_x.push_back(-9999);
+      	MC_grgra_ori_vtx_y.push_back(-9999);
+      	MC_grgra_ori_vtx_z.push_back(-9999);
 	
-	MC_grgra_trueID.push_back(-9999);
-	MC_grgra_px.push_back(-9999);
-	MC_grgra_py.push_back(-9999);
-	MC_grgra_pz.push_back(-9999);
-	MC_grgra_M.push_back(-9999);
-	MC_grgra_E.push_back(-9999);
+      	MC_grgra_trueID.push_back(-9999);
+      	MC_grgra_px.push_back(-9999);
+      	MC_grgra_py.push_back(-9999);
+      	MC_grgra_pz.push_back(-9999);
+      	MC_grgra_M.push_back(-9999);
+      	MC_grgra_E.push_back(-9999);
       }
       MC_match.push_back(matched);
     }//end m_isMC cond
@@ -916,10 +874,10 @@ StatusCode TupleToolMuonVariables::fillTrackInfo(Tuples::Tuple& tuple ){
   test &= tuple->farray( "EVB_par_typ", par_typ.begin(), par_typ.end(), "pbIdx", NMaxEVBpart );
   test &= tuple->farray( "EVB_par_gho", par_gho.begin(), par_gho.end(), "pbIdx", NMaxEVBpart );
   test &= tuple->farray( "EVB_par_chi", par_chi.begin(), par_chi.end(), "pbIdx", NMaxEVBpart );
-  test &= tuple->farray( "EVB_par_clo", par_clo.begin(), par_clo.end(), "pbIdx", NMaxEVBpart );
+//  test &= tuple->farray( "EVB_par_clo", par_clo.begin(), par_clo.end(), "pbIdx", NMaxEVBpart );
   test &= tuple->farray( "EVB_par_ip", par_ip.begin(), par_ip.end(), "pbIdx", NMaxEVBpart );
   test &= tuple->farray( "EVB_par_ips", par_ips.begin(), par_ips.end(), "pbIdx", NMaxEVBpart );
-  test &= tuple->farray( "EVB_par_hlt", par_hlt.begin(), par_hlt.end(), "pbIdx", NMaxEVBpart );
+//  test &= tuple->farray( "EVB_par_hlt", par_hlt.begin(), par_hlt.end(), "pbIdx", NMaxEVBpart );
   
   test &= tuple->farray( "EVB_par_slope_covxx", par_slope_covxx.begin(), par_slope_covxx.end(), "pbIdx", NMaxEVBpart );
   test &= tuple->farray( "EVB_par_slope_covyy", par_slope_covyy.begin(), par_slope_covyy.end(), "pbIdx", NMaxEVBpart );
@@ -930,14 +888,14 @@ StatusCode TupleToolMuonVariables::fillTrackInfo(Tuples::Tuple& tuple ){
   test &= tuple->farray( "EVB_par_NNpi", par_NNpi.begin(), par_NNpi.end(), "pbIdx", NMaxEVBpart );
   test &= tuple->farray( "EVB_par_NNk", par_NNk.begin(), par_NNk.end(), "pbIdx", NMaxEVBpart );
   test &= tuple->farray( "EVB_par_NNp", par_NNp.begin(), par_NNp.end(), "pbIdx", NMaxEVBpart );
-  test &= tuple->farray( "EVB_par_NNghost", par_NNghost.begin(), par_NNghost.end(), "pbIdx", NMaxEVBpart );
-  test &= tuple->farray( "EVB_par_DLLe", par_DLLe.begin(), par_DLLe.end(), "pbIdx", NMaxEVBpart );
-  test &= tuple->farray( "EVB_par_DLLmu", par_DLLmu.begin(), par_DLLmu.end(), "pbIdx", NMaxEVBpart );
-  test &= tuple->farray( "EVB_par_DLLk", par_DLLk.begin(), par_DLLk.end(), "pbIdx", NMaxEVBpart );
-  test &= tuple->farray( "EVB_par_DLLp", par_DLLp.begin(), par_DLLp.end(), "pbIdx", NMaxEVBpart );
+//  test &= tuple->farray( "EVB_par_NNghost", par_NNghost.begin(), par_NNghost.end(), "pbIdx", NMaxEVBpart );
+//  test &= tuple->farray( "EVB_par_DLLe", par_DLLe.begin(), par_DLLe.end(), "pbIdx", NMaxEVBpart );
+//  test &= tuple->farray( "EVB_par_DLLmu", par_DLLmu.begin(), par_DLLmu.end(), "pbIdx", NMaxEVBpart );
+//  test &= tuple->farray( "EVB_par_DLLk", par_DLLk.begin(), par_DLLk.end(), "pbIdx", NMaxEVBpart );
+//  test &= tuple->farray( "EVB_par_DLLp", par_DLLp.begin(), par_DLLp.end(), "pbIdx", NMaxEVBpart );
   test &= tuple->farray( "EVB_par_isMuon", par_isMuon.begin(), par_isMuon.end(), "pbIdx", NMaxEVBpart );
-  test &= tuple->farray( "EVB_par_PVind", par_PVind.begin(), par_PVind.end(), "pbIdx", NMaxEVBpart );
 
+  test &= tuple->farray( "EVB_par_PVind", par_PVind.begin(), par_PVind.end(), "pbIdx", NMaxEVBpart );  
   
   if (m_isMC){
     //MC truth info
@@ -1025,7 +983,6 @@ StatusCode TupleToolMuonVariables::fillLoKiTau(const LHCb::Particle *part,
 					       const std::string prefix,
 					       Tuples::Tuple& tuple ){
   
-
   double light_cte = 1/0.299792458;
   const LoKi::Types::Fun CTAU = LoKi::Cuts::CTAU(  m_dva->bestVertex(part) );
   double temp_tau  = CTAU (part);
@@ -1035,7 +992,6 @@ StatusCode TupleToolMuonVariables::fillLoKiTau(const LHCb::Particle *part,
   if(test) return StatusCode::SUCCESS;
   else return StatusCode::FAILURE;
 }
-
 
 //=============================================================================
 // Store the BDTS from Cosme
@@ -1092,8 +1048,6 @@ StatusCode TupleToolMuonVariables::fillBDTS(const LHCb::Particle *part,
   test &= tuple->column (prefix+"_BDTS_BIP", m_values[4] );
   test &= tuple->column (prefix+"_BDTS_MuonMINIP", m_values[5] );
   
-
-  
   // ------- evaluate and store the BDTS, from Francesco -----------
   double BDTout_BDTS = m_reader_BDTS->EvaluateMVA(m_methodName);
   
@@ -1106,7 +1060,6 @@ StatusCode TupleToolMuonVariables::fillBDTS(const LHCb::Particle *part,
   debug () << " BDTS: Evaluating the BDTS flat " << endreq;
   double BDTout_BDTS_flat = m_h_cumul_BDTS->GetBinContent(bin);
   
-  
   debug()<<"The BDTS is "<<BDTout_BDTS_flat<<endreq;
   debug () << " BDTS: filling ntuple " << endreq;
 
@@ -1117,7 +1070,6 @@ StatusCode TupleToolMuonVariables::fillBDTS(const LHCb::Particle *part,
   
 }
 
-
 //=============================================================================
 // Other B quantities 
 // From /afs/cern.ch/user/s/serranoj/public/Bs2MuMu/Bs2MuMuAnalysis.cpp
@@ -1126,7 +1078,6 @@ StatusCode TupleToolMuonVariables::fillBDTS(const LHCb::Particle *part,
 StatusCode TupleToolMuonVariables::OtherB(const LHCb::Particle *part, 
                                           const LHCb::Particle *vdau1, const LHCb::Particle *vdau2,
                                           const std::string prefix, Tuples::Tuple& tuple ){
- 
   
   const LHCb::VertexBase* goodPV = m_dva->bestVertex(part);
   
@@ -1167,7 +1118,6 @@ StatusCode TupleToolMuonVariables::OtherB(const LHCb::Particle *part,
     
   }// ipp 
   
-
   if ( otherBtracks>0 )
     {
       //double otherB_boost_angle=0.;
@@ -1226,8 +1176,6 @@ StatusCode TupleToolMuonVariables::OtherB(const LHCb::Particle *part,
   
 } 
   
-
-
 //=============================================================================
 // Jpsi vertex distanct chi2 wrt the PV which minimizes the B IPchi2
 //=============================================================================
@@ -1300,7 +1248,6 @@ StatusCode TupleToolMuonVariables::fillFakeVtx(const LHCb::Particle *part,
   
 }
 
-
 //-------------------------------------------------------------------------
 // isolation variables
 //-------------------------------------------------------------------------
@@ -1334,9 +1281,6 @@ StatusCode TupleToolMuonVariables::fillIsolation(const LHCb::Particle *part,
   if(idx != 2 )  {
     return StatusCode::SUCCESS;
   }
-  
-
-
 
   double pt_track;
   double pt_part;
@@ -1425,10 +1369,7 @@ StatusCode TupleToolMuonVariables::fillIsolation(const LHCb::Particle *part,
       if(flag_p && m_doca_tr<0.2 && ZZ>0 && ZZ<30 && fc <0.4 
          && fc >-1000 && pt_track>2.) m_count_mup++; //_f++;
     
-      
-      
     }//loop tracks
-    
     
   }//loop part
   
@@ -1513,8 +1454,6 @@ StatusCode TupleToolMuonVariables::fillIsolation(const LHCb::Particle *part,
 
 }//fillIsolation(part)
 
-
-
 //=============================================================================
 // method to calculate Giampi's isolation
 //=============================================================================
@@ -1522,7 +1461,6 @@ StatusCode TupleToolMuonVariables::fillIsolation(const LHCb::Particle *part,
 std::vector<int>  TupleToolMuonVariables::getIso(const LHCb::Particle* B, int isotype, bool cutOnTracks){
  
   const LHCb::VertexBase *PV = m_dva->bestVertex(B);
-
 
   /// Fatima, this will be the BPV of the jpsi in some cases!
   const LHCb::VertexBase *SV = B->endVertex();
@@ -1538,16 +1476,12 @@ std::vector<int>  TupleToolMuonVariables::getIso(const LHCb::Particle* B, int is
   
   StatusCode sc = StatusCode::SUCCESS;
  
-  
   LHCb::Particles* allparts = getIfExists<LHCb::Particles>(m_ParticlePath);
   
   if (!allparts) {
-    std::cout << " Failed to get particles container "
-	      <<  m_ParticlePath << std::endl;
-    
+    std::cout << " Failed to get particles container " <<  m_ParticlePath << std::endl;
     return iso;
   }
-
   
   Gaudi::XYZPoint PosPV = PV->position();
   Gaudi::XYZPoint PosSV = SV->position();
@@ -3072,7 +3006,7 @@ StatusCode TupleToolMuonVariables::fillBposmomCov(const LHCb::Particle* B, std::
 
 void  TupleToolMuonVariables::dumpIsoVariables(const LHCb::Particle* B, Tuples::Tuple& tuple ){
 
-  const int NMaxIsopart = 500;
+  const int NMaxIsopart = 900;
 
   //If B has not 2 daughters, exit
   const LHCb::Particle::ConstVector parts = B->daughtersVector();
@@ -3274,36 +3208,36 @@ void  TupleToolMuonVariables::dumpIsoVariables(const LHCb::Particle* B, Tuples::
     }//end loop on all tracks
   }//end i<2 for loop (loop on the 2 muons)
 
-  tuple->farray( "IsoST_trk_typ", trk_typ.begin(), trk_typ.end(), "IsoSTIdx", NMaxIsopart );
-  tuple->farray( "IsoST_trk_chi", trk_chi.begin(), trk_chi.end(), "IsoSTIdx", NMaxIsopart );
-  tuple->farray( "IsoST_trk_chg", trk_chg.begin(), trk_chg.end(), "IsoSTIdx", NMaxIsopart );
-  tuple->farray( "IsoST_trk_pt", trk_pt.begin(), trk_pt.end(), "IsoSTIdx", NMaxIsopart );
-  tuple->farray( "IsoST_trk_gho", trk_gho.begin(), trk_gho.end(), "IsoSTIdx", NMaxIsopart );
-  tuple->farray( "IsoST_trk_clo", trk_clo.begin(), trk_clo.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_trk_typ", trk_typ.begin(), trk_typ.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_trk_chi", trk_chi.begin(), trk_chi.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_trk_chg", trk_chg.begin(), trk_chg.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_trk_pt", trk_pt.begin(), trk_pt.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_trk_gho", trk_gho.begin(), trk_gho.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_trk_clo", trk_clo.begin(), trk_clo.end(), "IsoSTIdx", NMaxIsopart );
   tuple->farray( "IsoST_trk_ips", trk_ips.begin(), trk_ips.end(), "IsoSTIdx", NMaxIsopart );
-  tuple->farray( "IsoST_trk_hlt", trk_hlt.begin(), trk_hlt.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_trk_hlt", trk_hlt.begin(), trk_hlt.end(), "IsoSTIdx", NMaxIsopart );
 
-  tuple->farray( "IsoST_fim_angle", fim_angle.begin(), fim_angle.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_fim_angle", fim_angle.begin(), fim_angle.end(), "IsoSTIdx", NMaxIsopart );
   tuple->farray( "IsoST_fim_fc", fim_fc.begin(), fim_fc.end(), "IsoSTIdx", NMaxIsopart );
-  tuple->farray( "IsoST_fim_doca", fim_doca.begin(), fim_doca.end(), "IsoSTIdx", NMaxIsopart );
-  tuple->farray( "IsoST_fim_doca2", fim_doca2.begin(), fim_doca2.end(), "IsoSTIdx", NMaxIsopart );
-  tuple->farray( "IsoST_fim_docachi2", fim_docachi2.begin(), fim_docachi2.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_fim_doca", fim_doca.begin(), fim_doca.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_fim_doca2", fim_doca2.begin(), fim_doca2.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_fim_docachi2", fim_docachi2.begin(), fim_docachi2.end(), "IsoSTIdx", NMaxIsopart );
   tuple->farray( "IsoST_fim_svdis", fim_svdis.begin(), fim_svdis.end(), "IsoSTIdx", NMaxIsopart );
   tuple->farray( "IsoST_fim_pvdis", fim_pvdis.begin(), fim_pvdis.end(), "IsoSTIdx", NMaxIsopart );
-  tuple->farray( "IsoST_fim_vtxx", fim_vtx_x.begin(), fim_vtx_x.end(), "IsoSTIdx", NMaxIsopart );
-  tuple->farray( "IsoST_fim_vtxy", fim_vtx_y.begin(), fim_vtx_y.end(), "IsoSTIdx", NMaxIsopart );
-  tuple->farray( "IsoST_fim_vtxz", fim_vtx_z.begin(), fim_vtx_z.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_fim_vtxx", fim_vtx_x.begin(), fim_vtx_x.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_fim_vtxy", fim_vtx_y.begin(), fim_vtx_y.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_fim_vtxz", fim_vtx_z.begin(), fim_vtx_z.end(), "IsoSTIdx", NMaxIsopart );
 
-  tuple->farray( "IsoST_sem_angle", sem_angle.begin(), sem_angle.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_sem_angle", sem_angle.begin(), sem_angle.end(), "IsoSTIdx", NMaxIsopart );
   tuple->farray( "IsoST_sem_fc", sem_fc.begin(), sem_fc.end(), "IsoSTIdx", NMaxIsopart );
-  tuple->farray( "IsoST_sem_doca", sem_doca.begin(), sem_doca.end(), "IsoSTIdx", NMaxIsopart );
-  tuple->farray( "IsoST_sem_doca2", sem_doca2.begin(), sem_doca2.end(), "IsoSTIdx", NMaxIsopart );
-  tuple->farray( "IsoST_sem_docachi2", sem_docachi2.begin(), sem_docachi2.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_sem_doca", sem_doca.begin(), sem_doca.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_sem_doca2", sem_doca2.begin(), sem_doca2.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_sem_docachi2", sem_docachi2.begin(), sem_docachi2.end(), "IsoSTIdx", NMaxIsopart );
   tuple->farray( "IsoST_sem_svdis", sem_svdis.begin(), sem_svdis.end(), "IsoSTIdx", NMaxIsopart );
   tuple->farray( "IsoST_sem_pvdis", sem_pvdis.begin(), sem_pvdis.end(), "IsoSTIdx", NMaxIsopart );
-  tuple->farray( "IsoST_sem_vtxx", sem_vtx_x.begin(), sem_vtx_x.end(), "IsoSTIdx", NMaxIsopart );
-  tuple->farray( "IsoST_sem_vtxy", sem_vtx_y.begin(), sem_vtx_y.end(), "IsoSTIdx", NMaxIsopart );
-  tuple->farray( "IsoST_sem_vtxz", sem_vtx_z.begin(), sem_vtx_z.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_sem_vtxx", sem_vtx_x.begin(), sem_vtx_x.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_sem_vtxy", sem_vtx_y.begin(), sem_vtx_y.end(), "IsoSTIdx", NMaxIsopart );
+//  tuple->farray( "IsoST_sem_vtxz", sem_vtx_z.begin(), sem_vtx_z.end(), "IsoSTIdx", NMaxIsopart );
 
   return;
 
@@ -3332,18 +3266,19 @@ StatusCode TupleToolMuonVariables::fillVeloTracksInfo(Tuples::Tuple& tuple){
 
   LHCb::Tracks* tracks = get<LHCb::Tracks>(LHCb::TrackLocation::Default);
   typedef std::vector<const LHCb::Track*> TrackContainer ;
-  int VEL_maxnum=500;
+  int VEL_maxnum=900;
 
   //clear the MC truth vectors and get the track->MC table
-  ClearTruthMatchedVectors();
-  LHCb::Track2MC2D* table2d  = get<LHCb::Track2MC2D>(LHCb::Track2MCLocation::Default);
+  if(m_isMC) ClearTruthMatchedVectors();
+  LHCb::Track2MC2D* table2d;
+  if(m_isMC) table2d = get<LHCb::Track2MC2D>(LHCb::Track2MCLocation::Default);
 
   for( LHCb::Tracks::const_iterator it = tracks->begin() ; it != tracks->end(); ++it) {
     const Track* track=(*it);
     if (track->type()!=1 && track->type()!=2) continue;//skip tracks != Velo or VeloR
 
     //fill the MC truth vectors 
-    fillTruthMatchedInfo(track,table2d);
+    if(m_isMC) fillTruthMatchedInfo(track,table2d);
     
     Gaudi::XYZPoint track_pos;
     Gaudi::XYZVector track_mom;
@@ -3505,8 +3440,9 @@ StatusCode TupleToolMuonVariables::fillUpstreamTracksInfo(Tuples::Tuple& tuple){
   int US_maxnum=250;
 
   //clear the MC truth vectors and get the track->MC table
-  ClearTruthMatchedVectors();
-  LHCb::Track2MC2D* table2d  = get<LHCb::Track2MC2D>(LHCb::Track2MCLocation::Default);
+  if(m_isMC) ClearTruthMatchedVectors();
+  LHCb::Track2MC2D* table2d;
+  if(m_isMC) table2d = get<LHCb::Track2MC2D>(LHCb::Track2MCLocation::Default);
 
   for ( ProtoParticles::iterator iProto = protos->begin();
         iProto != protos->end(); ++iProto ){
@@ -3514,7 +3450,7 @@ StatusCode TupleToolMuonVariables::fillUpstreamTracksInfo(Tuples::Tuple& tuple){
     if (track->type()!=4) continue;//skip tracks != Upstream
     
     //fill the MC truth vectors 
-    fillTruthMatchedInfo(track,table2d);
+    if(m_isMC) fillTruthMatchedInfo(track,table2d);
     
     Gaudi::XYZPoint track_pos;
     Gaudi::XYZVector track_mom;

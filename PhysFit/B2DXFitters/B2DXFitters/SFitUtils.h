@@ -56,7 +56,6 @@ namespace SFitUtils {
                                      bool toys = false,
                                      bool applykfactor = false,
                                      bool sWeightsCorr = false,
-                                     bool singletagger = false,
                                      bool        debug = false
                                      );
   
@@ -64,6 +63,15 @@ namespace SFitUtils {
   // Create Mistag templates
   //===========================================================================
   RooArgList* CreateMistagTemplates(RooDataSet* data, MDFitterSettings* mdSet, 
+				    Int_t bins,
+				    bool save = false, bool debug=false);
+
+
+  
+  //===========================================================================
+  // Create Mistag templates for different taggers
+  //===========================================================================
+  RooArgList* CreateDifferentMistagTemplates(RooDataSet* data, MDFitterSettings* mdSet,
 				    Int_t bins,
 				    bool save = false, bool debug=false);
   

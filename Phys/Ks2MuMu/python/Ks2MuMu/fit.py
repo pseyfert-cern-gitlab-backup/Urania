@@ -1,201 +1,460 @@
 from Urania import *
 AccessPackage("Bs2MuMu")
-from ROOT import *
+import ROOT as rt
+from ROOT import RooFit as rf
 import TheTable
 from constrain_funcs import *
 from fiducial import *
 from bisect import *
 import priormcmc1 as PRIOR
 from Urania import PDG
+from collections import OrderedDict
+import sys
+sys.path.append('./FIT_2012')
 
-gROOT.ProcessLine(".L $URANIAROOT/src/RooIpatia2.cxx++")
-gROOT.ProcessLine(".L $URANIAROOT/src/RooAmorosoPdf.cxx++")
-gROOT.ProcessLine(".L $SOMEMASSMODELSROOT/src/RooPowerLaw.cxx++")
+# Loads the lhcb style for the plots 
+rt.gROOT.ProcessLine( '.x lhcbStyle.C' )
 
+# Loads the functions used in the fit
+rt.gROOT.ProcessLine('.L $URANIAROOT/src/RooIpatia2.cxx++')
+rt.gROOT.ProcessLine('.L $URANIAROOT/src/RooAmorosoPdf.cxx++')
+rt.gROOT.ProcessLine('.L $SOMEMASSMODELSROOT/src/RooPowerLaw.cxx++')
+#rt.gROOT.ProcessLine(".x BifurcatedCB.cxx+")
+#from ROOT import BifurcatedCB
+
+#-----------------------------------------------------------------------------
 COMBINE_2011 = 1
-BLIND = 1
+BLIND = 0
 POWER_LAW = 1 ### if set to zero it will use an exponential for the misid bkg
+BR_MINOS = 1
+PROFILE = BR_MINOS*0
+TOYSTUDY = 0
+MAKEPLOTS = 0
+#-----------------------------------------------------------------------------
 
+#-----------------------------------------------------------------------------
+# Range for the dimuon mass
+#MASS_MIN  = 465.
+MASS_MIN  = 470.
+BLIND_MIN = 492.
+BLIND_MAX = 504.
+MASS_MAX  = 600.
+#-----------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 if not BLIND:
-    print ""
-    print ""
-    print ""
-    print "0o0   0o0    0o0   0o0   0o0  0o0  0o0  0o0"
-    print " ALARM!, ALARM!, YOU ARE UNBLINDING!!!"
-    print "0o0   0o0    0o0   0o0   0o0  0o0  0o0  0o0"
-    print ""
-    print ""
-    print ""
+    print ''
+    print ''
+    print ''
+    print '0o0   0o0    0o0   0o0   0o0  0o0  0o0  0o0'
+    print ' ALARM!, ALARM!, YOU ARE UNBLINDING!!!'
+    print '0o0   0o0    0o0   0o0   0o0  0o0  0o0  0o0'
+    print ''
+    print ''
+    print ''
+#-----------------------------------------------------------------------------
 
-TUPLE_PATH = "/scratch18/diego/Ksmm/"
+# Path to the input files
+TUPLE_PATH = '~/eos/lhcb/wg/RD/K0SMuMu/NEW/DATA/'
 
-massname = "KS0_MM"
-samplename = "sample"
-bdtname = "BDTb025de4nt1000M1"#BDTflat_BDT9_BDTScut05"
+# Defines the bins for each category. This list determines the bins that
+# will be fitted.
+categories = [ 'TIS_', 'TOS1_', 'TOS2_' ]
+BINNING = OrderedDict(
+    #[('TOS1_', range(3,10))]
+    #[('TOS2_', range(3,10))]
+    #[('TIS_' , range(3,10))]
+    [('TOS1_', range(3,10)),
+    ('TOS2_', range(3,10)),
+    ('TIS_' , range(3,10))]
+    )
 
-Binning = {}
-Binning["TIS_"] =  binTIS[bisect(binTIS,0.32):]
-Binning["TOS1_"] =  binTOS1[bisect(binTOS1,0.2):]
-Binning["TOS2_"] =  binTOS2[bisect(binTOS2,0.3):]
+# Fitting variable and ranges
+Mass = rt.RooRealVar('KS0_MM', 'KS0_MM', MASS_MIN, MASS_MAX)
+category =  rt.RooCategory('sample',  'sample')
+Mass.setRange('all', Mass.getMin(), Mass.getMax() )
+Mass.setRange('lsb', Mass.getMin(), BLIND_MIN     )
+Mass.setRange('rsb', BLIND_MAX    , Mass.getMax() )
 
+for key, kbin in BINNING.iteritems():
+    for i in kbin:
+        category.defineType(key + str(i))
 
-Mass = RooRealVar(massname,massname,465,600)
-mass = Mass
-cat =  RooCategory(samplename, samplename)
-mass.setRange("lsb", mass.getMin(), PDG.K0.mass-5)
-mass.setRange("rsb", PDG.K0.mass+5, mass.getMax() )
+#-----------------------------------------------------------------------------
+# Creates the subsamples to perform the fit faster
+CREATE_FILES = False
+if CREATE_FILES:
+    f = rt.TFile(TUPLE_PATH + 'Ksmumu_Data2012_MVA.root')
+    t = f.Get('DecayTree')
+    BDTplusMuID = {}
+    for key in categories:
+        BDTplusMuID[key] = BDTplusMuID_cuts(key)
+    print '-- Fiducial cuts:', SEL
+    print '-- BDT and MuID cuts:', BDTplusMuID
 
-
-
-for key in Binning.keys():
-    for i in range(len(Binning[key])-1): cat.defineType(key + str(i))
-
-######  Prepare files
-f, t = {}, {}
-f["TIS_"] = TFile(TUPLE_PATH +"Ks0mumu_Data2012_Splitted_Res20_MuPtCutOff2500_TisTisTos_MVA.root")
-t["TIS_"] = f["TIS_"].Get("KS0mumu")
-f["TOS1_"] = TFile(TUPLE_PATH + "Ks0mumu_Data2012_Splitted_Res20_MuPtCutOff2500_TosTos1Tos_MVA.root")
-t["TOS1_"] = f["TOS1_"].Get("KS0mumu")
-f["TOS2_"] = TFile(TUPLE_PATH + "Ks0mumu_Data2012_Splitted_Res20_MuPtCutOff2500_TosTos2Tos_MVA.root")
-t["TOS2_"] = f["TOS2_"].Get("KS0mumu")
-
-
-#TFile("/afs/cern.ch/user/d/diegoms/public/top_secret/unblind_bsmumu_1fb_2.root")
-BDT = {}
-for key in Binning.keys(): BDT[key] = BDT_cuts(bdtname, Binning[key])
-#fiducial =  "(1>0)"
-print "fiducial cuts:", SEL
-
-############################################ Bs --> mm
-fmm, tmm, datamm, catdatamm = {},{},{}, {}
-for key in Binning.keys():
-    for i in range(len(Binning[key])-1):
+fmm, tmm, datamm, catdatamm = {}, {}, {}, {}
+tempfile = rt.TFile( 'tempfile.root', 'RECREATE' )
+for key, kbin in BINNING.iteritems():
+    if CREATE_FILES:
+        print '--- COPYING TREE FOR %s' %key
+        tempfile.cd()
+        temptree = t.CopyTree( SEL[key] )
+    for i in kbin:
         ix = key + str(i)
-        fmm[ix] = TFile(TUPLE_PATH + "prof_mm"+ix+".root","recreate")
-        tmm[ix] = t[key].CopyTree(SEL[key] + BDT[key][i])
-        neim = tmm[ix].GetName()
-        tmm[ix].Write()
-        fmm[ix].Close()
-        fmm[ix] = TFile(TUPLE_PATH + "prof_mm"+ix+".root")
-        tmm[ix] = fmm[ix].Get(neim)
-        datamm[ix] = RooDataSet("datamm"+ix,"datamm"+ix,tmm[ix],RooArgSet(Mass))
-        catdatamm[ix] = RooDataSet("catdatamm"+ix,"catdatamm"+ix,RooArgSet(Mass),RooFit.Index(cat), RooFit.Import(ix, datamm[ix]))
+        if CREATE_FILES:
+            print '--- CREATING FILE FOR %s' %ix
+            fmm[ix] = rt.TFile('./prof_mm' + ix + '.root', 'recreate')
+            tmm[ix] = temptree.CopyTree(BDTplusMuID[key][i][3:])
+            tmm[ix].Write()
+            fmm[ix].Close()
+        
+        fmm[ix] = rt.TFile('./prof_mm' + ix + '.root')
+        tmm[ix] = fmm[ix].Get('DecayTree')
+        datamm[ix] = rt.RooDataSet('datamm' + ix, 'datamm' + ix, tmm[ix], rt.RooArgSet(Mass))
+        catdatamm[ix] = rt.RooDataSet('catdatamm' + ix, 'catdatamm' + ix, rt.RooArgSet(Mass), rf.Index(category), rf.Import(ix, datamm[ix]))
+if CREATE_FILES:
+    import os
+    os.system('rm tempfile.root')
+#-----------------------------------------------------------------------------
 
-BR = RooRealVar("BR","BR", 1,-1,10)
-prior = RooAmorosoPdf("PRIOR", "PRIOR" ,BR, PRIOR.offset, PRIOR.theta, PRIOR.alpha, PRIOR.beta)
+#-----------------------------------------------------------------------------
+# Blinds the branching fraction if required. The random blinding factor is
+# stored in UnBlindBr, so do not look at it ;).
+BR_ = rt.RooRealVar('BR', 'BR', 6, 0., 20)
+if BLIND:
+    #BR = rt.RooUnblindPrecision("BR_UNB", "BR_UNB", TheTable.Blinding, 1.e-8, 1.e-8, BR_)
+    ublindfct = rt.gRandom.Uniform( BR_.getVal(), 1000 )
+    UnBlindBr = rt.RooConstVar( 'BR_UNBFCT', 'BR_UNBFCT', ublindfct )
+    BR        = rt.RooFormulaVar( 'BR_UNB', 'BR_UNB', 'BR*BR_UNBFCT', rt.RooArgList( BR_, UnBlindBr ) )
+else:
+    BR = BR_
+prior = rt.RooAmorosoPdf('PRIOR', 'PRIOR' , BR_, PRIOR.offset, PRIOR.theta, PRIOR.alpha, PRIOR.beta)
 
-v = vars()
-### Create constraints. Example
-summaryConstraints = RooArgSet()
+# Defines the constraints for the fit
+summaryConstraints = rt.RooArgSet()
+
+# Calculates the common factor
+from math import sqrt
+ComFctrSig = {}
+mismierdas = {}
+for key, kbin in BINNING.iteritems():
+    mean = 0
+    for i in kbin:
+        ix = key + str( i )
+        mean += TheTable.s_alpha_corr[ix]*1./TheTable.alpha[ix]
+    mean /= float(len(kbin))
+    sigma = sqrt(mean**2 + TheTable.SigShapeSyst**2)
+    mismierdas [key] = sigma
+    ComFctrSig[ key ] = createConst( 1, sigma, 'ComFctr' + key )
+    #ComFctrSig[ key ] [0].setConstant(rt.kTRUE)
+    summaryConstraints.add( ComFctrSig[ key ][-1])
+    #ComFctrSig[ key ] = const
+
 Ipa_m_const = {}
 Alpha_const = {}
-
-for key in Binning.keys():
-    for i in range(len(Binning[key])-1):
+Alpha = {}
+for key, kbin in BINNING.iteritems():
+    for i in kbin:
         ix = key + str(i)
-        Alpha_const[key + str(i)] = createConst(TheTable.alpha[ix],TheTable.s_alpha[ix], "alphaconst"+ix)
-        summaryConstraints.add(Alpha_const[key + str(i)][-1])
- ##         Ipa_m_const[key + str(i)] = createBifurConst(TheTable.sigmaKMuNu1,TheTable.sigmaKMuNu1ErrMinus,TheTable.sigmaKMuNu1ErrPlus, "sigmaKMuNu1")
+        
+        alpha = TheTable.alpha[ix]*1e09
+        s_alpha = TheTable.s_alpha_uncorr[ix]*1e09
+        
+        Alpha_const[ix] = createConst(alpha, s_alpha, 'alphaconst' + ix)
+        summaryConstraints.add(Alpha_const[ix][-1])
+        #Alpha_const[ix] = const
+        
+        Alpha[ix] = rt.RooFormulaVar( 'alpha' + ix, 'alpha' + ix, 'ComFctr' + key + '*alphaconst' + ix, rt.RooArgList( ComFctrSig[key][0], Alpha_const[ix][0] ) )
 
-if COMBINE_2011: summaryConstraints.add(prior)
+        # Ipa_m_const[key + str(i)] = createBifurConst(TheTable.sigmaKMuNu1, TheTable.sigmaKMuNu1ErrMinus, TheTable.sigmaKMuNu1ErrPlus, 'sigmaKMuNu1')
+#BREAK
+if COMBINE_2011:
+    summaryConstraints.add(prior)
 
+###########################################################################################
+# FIT MODEL
 class KsMuMuModel:
 
     def __init__(self, name ):
         self.i = name
         i = self.i
-        self.alpha = Alpha_const[i][0]
+        self.alpha = Alpha[i]
+
+        self.nbs  = rt.RooFormulaVar('NKs' + i, 'NKs' + i, BR.GetName()+ '/(alpha' + i +")", rt.RooArgList(self.alpha, BR))
+        self.nbkg = rt.RooRealVar('MuMuBkg' + i, 'MuMuBkg' + i, tmm[i].GetEntries(), 0, max(2*tmm[i].GetEntries(), 20))
+
+        #self.k  = rt.RooRealVar('MuMu_k_' + i, 'MuMu_k_' + i, -7e-04, -.1, .1)
+        #self.dk = rt.RooRealVar('MuMu_dk_' + i, 'MuMu_dk_' + i, -7e-04, -1, 0)#1e-02)
+        #self.kb = rt.RooFormulaVar('MuMu_kb_' + i, 'MuMu_kb_' + i, 'MuMu_k_' + i + ' + MuMu_dk_' + i, rt.RooArgList(self.k, self.dk))
         
-        self.nbs = RooFormulaVar("NKs" + i ,"NKs" + i, "BR/alphaconst"+i, RooArgList(self.alpha,v["BR"]))    
-        self.nbkg = RooRealVar("MuMuBkg"+i,"MuMuBkg"+i, tmm[i].GetEntries(), 0,max(2*tmm[i].GetEntries(),20))
+        #self.bkg1 = rt.RooExponential('bkg1_MuMu_model' + i, 'bkg1_MuMu_model' + i, Mass, self.k)
+        #self.bkg2 = rt.RooExponential('bkg2_MuMu_model' + i, 'bkg2_MuMu_model' + i, Mass, self.kb)
+
+        misidPars = __import__( 'KsMuMuResults' )
+        misidPars = getattr(misidPars, 'KsPiPiMisid_' + i)
+
+        #self.misid_ap = rt.RooRealVar('misid_' +  i + 'a', 'misid_' +  i + 'a', -2, -100, -0.1)
         
-        self.k = RooRealVar("MuMu_k_"+i,"MuMu_k_" + i, -7e-04, -.1,.1)
-        self.dk = RooRealVar("MuMu_dk_"+i,"MuMu_dk_" + i,-7e-04, -1,0)#1e-02)
-        self.kb = RooFormulaVar("MuMu_kb_"+i,"MuMu_kb_" + i,"MuMu_k_"+i + " + MuMu_dk_" + i, RooArgList(self.k,self.dk))
-       
-        self.bkg1 = RooExponential("bkg1 MuMu model" + i , "bkg1 MuMu model" + i, Mass,self.k)
-        self.bkg2 = RooExponential("bkg2 MuMu model" + i , "bkg2 MuMu model" + i, Mass,self.kb)
-
-        self.misid_a = RooRealVar("misid "+ i + "a","misid "+ i + "a",-1, -100,-0.1)
-        self.misid_n = RooRealVar("misid "+ i + "n","misid "+ i + "n",3, 1.5, 100)
-        #self.misid_s = RooRealVar("misid "+ i + "s","misid "+ i + "s",3,1,10)
-        self.misid_m = RooRealVar("misid "+ i + "m","misid "+ i + "m",410,350,420)
-        self.misid = RooPowerLaw("misid " + i,"misid " + i,mass, self.misid_m, self.misid_n)
-        self.f_misid = RooRealVar("Nmisid "+ i ,"Nmisid "+ i ,0.8,0.2,1)
-        #self.bkg = RooAddPdf("AllBkg"+i,"AllBkg"+i, self.misid,self.bkg1,self.f_misid)
-        if POWER_LAW: self.bkg = RooAddPdf("bkg MuMu model" + i, "bkg MuMu model" + i, self.misid,self.bkg1, self.f_misid)
-        else: self.bkg = RooAddPdf("bkg MuMu model" + i, "bkg MuMu model" + i, self.bkg2,self.bkg1, self.f_misid)
-        self.ipa_s = RooRealVar("ipa_s" + i,"ipa_s" + i, TheTable.sigma[i])#,1,20)
-        self.ipa_m = RooRealVar("ipa_m" + i,"ipa_m" + i,TheTable.mean[i])#,490,50)
-        self.beta = RooRealVar("beta" + i,"beta" + i, TheTable.beta[i])#,-1e-03,1e-03)#
-        self.zeta = RooRealVar("zeta" + i,"zeta" + i,TheTable.zeta[i])#1e-03, 0, 5)
-        self.ipa_l = RooRealVar("l" + i,"l" + i, TheTable.landa[i])#, 0, 3)
-        self.ipa_a1 = RooRealVar("a1"+i,"a1"+i,TheTable.a1[i])
-        self.ipa_a2 = RooRealVar("a2"+i,"a2"+i,100)
-        self.ipa_n1 = RooRealVar("n1"+i,"n1"+i,TheTable.n1[i])
-        self.ipa_n2 = RooRealVar("n2"+i,"n2"+i,1)
+        self.misid_n = rt.RooRealVar('misid_' +  i + 'n', 'misid_' +  i + 'n', 10, 1, 120)#100, 80, 200
+        #self.misid_s = rt.RooRealVar('misid_' +  i + 's', 'misid_' +  i + 's', 3, 1, 10)
+        self.misid_m = rt.RooRealVar('misid_' +  i + 'm', 'misid_' +  i + 'm', 320, 200, 469)#100, 500#misidPars.misid_m
+        fix_m = ("TIS_3" in name) or ("TIS_4" in name)# or ("TIS_9" in name)
+        self.misid_m.setConstant(fix_m)
+        self.misid = rt.RooPowerLaw('misid_' + i, 'misid_' + i, Mass, self.misid_m, self.misid_n)
         
-        self.Ks = RooIpatia2("Ipatia" + i,"Ipatia" + i,mass,self.ipa_l,self.zeta,self.beta,self.ipa_s,self.ipa_m,self.ipa_a1,self.ipa_n1,self.ipa_a2,self.ipa_n2)
-        self.model = RooAddPdf("mumu model " + i, "mumu model " + i, RooArgList(self.bkg,self.Ks), RooArgList(self.nbkg,self.nbs))
+        #self.bkg = rt.RooAddPdf('AllBkg' + i, 'AllBkg' + i, self.misid, self.bkg1, self.f_misid)
+        
+        self.k = rt.RooRealVar( 'MuMu_dk_' + i, 'MuMu_dk_' + i, -1e-2, -.1, .1 )# -0.2 (BLIND) # -0.05 (UNBLIND)
+        self.bkg1 = rt.RooExponential("bkg1_MuMu_model" + i, "bkg1_MuMu_model" + i, Mass, self.k)
+        '''
+        self.misid_alphaRK = rt.RooRealVar( 'misid_' + i + 'alphaRK', 'misid' + i + 'alphaRK', misidPars.alphaRK , -0.8, -0.1 )
+        self.misid_nRK     = rt.RooRealVar( 'misid_' + i + 'nRK', 'misid' + i + 'nRK', misidPars.nRK , 5., 300. )
+        self.misid_sigmaK  = rt.RooRealVar( 'misid_' + i + 'sigmaK', 'misid' + i + 'sigmaK', misidPars.sigmaK , 0.7, 1.1 )
+        self.misid_mK      = rt.RooRealVar( 'misid_' + i + 'mK', 'misid_' + i + 'mK', misidPars.mK )#, 455., 470. )
+        args = [Mass, self.misid_mK, self.misid_sigmaK, self.misid_alphaRK, self.misid_nRK]
+        self.misid = rt.RooCBShape( 'misid_' + i, 'misid_' + i, *args )
+        '''
 
+        f_misid = misidPars.NSig*1./( misidPars.NCombBkg + misidPars.NSig )
+        self.f_misid = rt.RooRealVar('f_misid_' + i, 'f_misid_' + i, f_misid, 0.5, 1)#0.9 f_misid
+        if name == "TOS2_9":
+            self.f_misid.setVal(1)
+            self.f_misid.setConstant(rt.kTRUE)
+        if POWER_LAW:
+            self.bkg = rt.RooAddPdf('bkg MuMu_model' + i, 'bkg MuMu_model' + i, self.misid, self.bkg1, self.f_misid)
+        else:
+            self.bkg = rt.RooAddPdf('bkg MuMu_model' + i, 'bkg MuMu_model' + i, self.bkg2, self.bkg1, self.f_misid)
+        
+        ipaPars = __import__( 'KsMuMuPeakPars' )
+        ipaPars = getattr( ipaPars, 'KsMuMuIpaPars_' + i )
 
+        self.ipa_s   = rt.RooRealVar('ipa_s' + i, 'ipa_s' + i, ipaPars.ipa_s)#, 1, 20)
+        self.ipa_m   = rt.RooRealVar('ipa_m' + i, 'ipa_m' + i, ipaPars.ipa_m)#, 490, 50)
+        self.beta    = rt.RooRealVar('beta' + i, 'beta' + i, ipaPars.beta)#, -1e-03, 1e-03)#
+        self.zeta    = rt.RooRealVar('zeta' + i, 'zeta' + i, ipaPars.zeta)#1e-03, 0, 5)
+        self.ipa_l   = rt.RooRealVar('l' + i, 'l' + i, ipaPars.l)#, 0, 3)
+        self.ipa_a1  = rt.RooRealVar('a1' + i, 'a1' + i, ipaPars.a)
+        self.ipa_a2  = rt.RooRealVar('a2' + i, 'a2' + i, ipaPars.a2)
+        self.ipa_n1  = rt.RooRealVar('n1' + i, 'n1' + i, ipaPars.n)
+        self.ipa_n2  = rt.RooRealVar('n2' + i, 'n2' + i, ipaPars.n2)
+        '''
+        self.ipa_s   = rt.RooRealVar('ipa_s' + i, 'ipa_s' + i, TheTable.sigma[i])#, 1, 20)
+        self.ipa_m   = rt.RooRealVar('ipa_m' + i, 'ipa_m' + i, TheTable.mean[i])#, 490, 50)
+        self.beta    = rt.RooRealVar('beta' + i, 'beta' + i, TheTable.beta[i])#, -1e-03, 1e-03)#
+        self.zeta    = rt.RooRealVar('zeta' + i, 'zeta' + i, TheTable.zeta[i])#1e-03, 0, 5)
+        self.ipa_l   = rt.RooRealVar('l' + i, 'l' + i, TheTable.landa[i])#, 0, 3)
+        self.ipa_a1  = rt.RooRealVar('a1' + i, 'a1' + i, TheTable.a1[i])
+        self.ipa_a2  = rt.RooRealVar('a2' + i, 'a2' + i, 100)
+        self.ipa_n1  = rt.RooRealVar('n1' + i, 'n1' + i, TheTable.n1[i])
+        self.ipa_n2  = rt.RooRealVar('n2' + i, 'n2' + i, 1)
+        '''
+        
+        self.Ks = rt.RooIpatia2('Ipatia' + i, 'Ipatia' + i, Mass, self.ipa_l, self.zeta, self.beta, self.ipa_s, self.ipa_m, self.ipa_a1, self.ipa_n1, self.ipa_a2, self.ipa_n2)
+        self.model = rt.RooAddPdf('mumu model ' + i, 'mumu model ' + i, rt.RooArgList(self.bkg, self.Ks), rt.RooArgList(self.nbkg, self.nbs))
 
-       
+###########################################################################################
 
-####################################################
-
-
+# Creates the main model
 mm = {}
-fiter = RooSimultaneous("fitter", "fitter", cat)
-for key in Binning.keys():
-    for i in range(len(Binning[key])-1):
+mainModel = rt.RooSimultaneous('MainModel', 'MainModel', category)
+for key, kbin in BINNING.iteritems():
+    for i in kbin:
         name = key + str(i)
         mm[name] = KsMuMuModel(name)
-        fiter.addPdf(mm[name].model,name)
+        mainModel.addPdf(mm[name].model, name)
+
+# Creates the samples for each of the different categories (joinning all the datasets from each bin)
+def defineData( cat ):
+    ibin = BINNING[ cat ][ 0 ]
+    data = catdatamm[ cat + str(ibin) ].Clone()
+    for ibin in BINNING[ cat ][ 1: ]:
+        data.append(catdatamm[ cat + str( ibin ) ])
+    data.SetNameTitle(cat + 'data', cat + 'data')
+    return data
+    
+DATA = {}
+for kw in BINNING:
+    DATA[kw] = defineData(kw)
+
+# Merges the samples of the different trigger categories into one
+alldata = DATA.items()[0][1].Clone()
+for kw, el in DATA.items()[1:]:
+    alldata.append(el)
+DATA['ALL'] = alldata
+
+#-----------------------------------------------------------------------------
+# Stores the initial values in the fit
+pars = mainModel.getParameters( DATA['ALL'] )
+it  = pars.createIterator()
+var = it.Next()
+initialValues = {}
+while var:
+    initialValues[ var.GetName() ] = var.getVal()
+    var = it.Next()
+
+#-----------------------------------------------------------------------------
+# Fits to the whole sample
+print '*************************************** MAIN FIT STARTS HERE ***************************************'
+fitOpts = [rf.Minos(rt.kFALSE), rf.ExternalConstraints(summaryConstraints),
+           rf.Offset(True), rf.Save(True) , rf.NumCPU(12)]#, rf.Strategy(2))
+fitResults = mainModel.fitTo(DATA['ALL'], *fitOpts)
+fitResults.Print()
+print '*************************************** MAIN FIT ENDS HERE ***************************************'
+nll = mainModel.createNLL(DATA['ALL'], rf.ExternalConstraints(summaryConstraints), rf.NumCPU(12))
+
+if BR_MINOS:
+    print '********************************** CALCULATING MINOS FOR BR **************************************'
+    myminuit = rt.RooMinuit(nll)
+    myminuit.minos(rt.RooArgSet(BR_))
+if PROFILE:
+    rt.gROOT.SetBatch()
+    print '*** CREATING PROFILE ***'
+    pl = nll.createProfile(rt.RooArgSet(BR_))
+    fr = BR_.frame( rf.Bins( 200 ), rf.Title( '' ) )
+    pl.plotOn(fr, rf.ShiftToZero())
+    profile = rt.TCanvas( 'Profile', 'Profile' )
+    fr.Draw()
+    f = rt.TFile( 'BRprofile.root', 'RECREATE' )
+    profile.Write()
+    fr.Write( 'ProfileFrame' )
+    f.Close()
+#-----------------------------------------------------------------------------
 
 
+#-----------------------------------------------------------------------------
+# Function to remove the points inside the specified range (just for the data,
+# for the PDFs the < Range > cmd can be used.
+def removeDataOutOf( curve, roovar, ranges ):
+    ranges = ranges.split(',')
+    xval, yval = rt.Double( 0. ), rt.Double( 0. )
+    values = []
+    for rng in ranges:
+        binptr = roovar.getBinningPtr( rng )
+        values.append( (binptr.lowBound(), binptr.highBound() ) )
+    points2Del = []
+    for ip in xrange( curve.GetN() ):
+        curve.GetPoint( ip, xval, yval )
+        if not any( xval >= vmin and xval < vmax for vmin, vmax in values ):
+            points2Del.append( ip )
+    points2Del.reverse()
+    for ip in points2Del:
+        curve.RemovePoint( ip )
 
-TISdata = catdatamm["TIS_0"].Clone()
-TOS1data = catdatamm["TOS1_0"].Clone()
-TOS2data = catdatamm["TOS2_0"].Clone()
-for i in range(1,len(Binning["TIS_"])-1): TISdata.append(catdatamm["TIS_"+ str(i)])
-for i in range(1,len(Binning["TOS1_"])-1): TOS1data.append(catdatamm["TOS1_"+ str(i)])
-for i in range(1,len(Binning["TOS2_"])-1): TOS2data.append(catdatamm["TOS2_"+ str(i)])
+#-----------------------------------------------------------------------------
+# Function that generates ntoys samples using the bkg model, fitting the whole
+# PDF to them, and extracting a profile for each one
+def makeToyMCstudy( results, ntoys, nevts = 10000 ):
+    rt.gROOT.SetBatch()
+    data  = DATA['ALL']
+    name = 'ToyMCstudy_' + str(ntoys) + 'toys_' + str(nevts) + 'nevts.root'
+    ofile = rt.TFile( name, 'RECREATE' )
+    for it in xrange( ntoys ):
+        print '*** GENERATING TOY <', it , '> ***'
+        rndmpars = results.randomizePars()
+        fitpars  = mainModel.getParameters( data )
+        ''' Sets the values of the parameters to those of the random sampling '''
+        for i in xrange( len( fitpars ) ):
+            el = rndmpars.at( i )
+            if el:
+                name = el.GetName()
+                fitpars[ name ].setVal( el.getVal() )
+        BR_.setVal(0.)
+        fitpars.Write( 'Parameters_' + str(it) )
+        print '-- Generating data'
+        data = mainModel.generate( rt.RooArgSet( Mass, category ), nevts )
+        ''' Sets the values of the parameters to those previous to the main fit '''
+        print '-- Setting intial values'
+        for kw, el in initialValues.iteritems():
+            fitpars[ kw ].setVal( el )
+        parlst = initialValues.keys()
+        parlst.sort()
+        for kw in parlst:
+            print ' - ', kw, ' => ', fitpars[ kw ].getVal()
+        mainModel.fitTo( data, *fitOpts )
 
-        
-allData = TISdata.Clone()
-allData.append(TOS1data)
-allData.append(TOS2data)
+        ''' Creates the profile for the branching fraction '''
+        nll = mainModel.createNLL(data, *fitOpts)
+        myminuit = rt.RooMinuit(nll)
+        myminuit.minos(rt.RooArgSet(BR_))
+        pl = nll.createProfile(rt.RooArgSet(BR_))
+        fr = BR_.frame( rf.Bins( 200 ), rf.Title( '' ) )
+        pl.plotOn(fr, rf.ShiftToZero())
+        name = 'Profile_' + str(it)
+        #profile = rt.TCanvas( name, name )
+        #fr.Draw()
+        #profile.Write()
+        fr.Write( 'ProfileFrame_' + str(it) )
+    ofile.Close()
 
-fiter.fitTo(allData, RooFit.ExternalConstraints(RooArgSet(summaryConstraints)), RooFit.Offset(kTRUE))#,RooFit.Strategy(2))
+if TOYSTUDY:
+    makeToyMCstudy( fitResults, 20, 90000 )
 
+#-----------------------------------------------------------------------------
+# Function to make the plot for a given bin (example: 'TIS_0')
 fr = {}
-resid_hists = {}
-pull_hists = {}
 def plot(ix, binning = 100):
-    fr[ix] = Mass.frame()
-    datamm[ix].plotOn(fr[ix], RooFit.Binning(binning),RooFit.CutRange("lsb,rsb"))
-    mm[ix].model.plotOn(fr[ix], RooFit.Components("misid "+ix),RooFit.LineColor(kGreen),RooFit.LineStyle(7))
-    mm[ix].model.plotOn(fr[ix], RooFit.Components("bkg1 MuMu model "+ix),RooFit.LineStyle(kDotted))
-    mm[ix].model.plotOn(fr[ix], RooFit.Components("Ipatia"+ ix),RooFit.LineColor(TColor.GetColor("#ff99cc")),RooFit.Range("lsb,rsb"))
-    mm[ix].model.plotOn(fr[ix], RooFit.Range("lsb,rsb"))#
 
-    c = TCanvas()
-    c.Divide(1,3)
-    c.cd(1)
+    if BLIND:
+        rng = 'lsb,rsb'
+    else:
+        rng = 'all'
+
+    c = rt.TCanvas( ix, ix )
+    c.Divide(1, 2)
+    fr[ix] = Mass.frame( rf.Title( '' ) )
+    datamm[ix].plotOn(fr[ix], rf.Binning(binning), rf.Name( 'DATA' ) )
+    
+    for r in rng.split(','):
+        plotOpts = [rf.Range( r ), rf.NormRange( rng ), rf.LineWidth(2)]
+        mainPdf  = mm[ix].model
+        mainPdf.plotOn(fr[ix], rf.Components('bkg1_MuMu_model' + ix), rf.LineColor( rt.kOrange ), rf.LineStyle(rt.kDotted), *plotOpts)
+        mainPdf.plotOn(fr[ix], rf.Components('misid_' + ix), rf.LineColor(rt.kGreen), rf.LineStyle(7), *plotOpts)
+        mainPdf.plotOn(fr[ix], rf.Components('Ipatia' +  ix), rf.LineColor(rt.TColor.GetColor('#ff99cc')), *plotOpts)
+        mainPdf.plotOn(fr[ix], rf.Name( 'MainModel' ), *plotOpts)
+
+    # One must do it after drawing all the PDFs
+    removeDataOutOf( fr[ix].getHist( 'DATA' ), Mass, rng )
+
+    myPad1 = c.cd(1)
+    c.SetLogy();
+    myPad1.SetPad( 0, 0.2, 1, 1 )
     fr[ix].Draw()
-    c.cd(2)
-    fr[ix + "_resid"] = Mass.frame()
-    resid_hists[ix] = fr[ix].residHist()
-    fr[ix + "_resid"].addPlotable(resid_hists[ix],"P")
-    fr[ix + "_resid"].Draw()
-    c.cd(3)
-    fr[ix + "_pull"] = Mass.frame()
-    pull_hists[ix] = fr[ix].pullHist()
-    fr[ix + "_pull"].addPlotable(pull_hists[ix],"P")
+    
+    # Gets the pull plots
+    from plotFunctions import makePullPlot
+    pull   = makePullPlot(Mass, datamm[ix], binning, mainPdf, rng.split(',') )
+    myPad2 = c.cd(2)
+    myPad2.SetPad( 0, 0, 1, 0.2 )
 
-    fr[ix + "_pull"].Draw()
+    pull.GetXaxis().SetLabelSize(0.15)
+    pull.GetYaxis().SetLabelSize(0.15)
+    pull.GetYaxis().SetNdivisions(504)
+    pull.SetMinimum( -5 )
+    pull.SetMaximum( +5 )
+    pull.GetXaxis().SetRangeUser( MASS_MIN, MASS_MAX )
+    botline = rt.TLine( MASS_MIN, -3., MASS_MAX, -3. )
+    midline = rt.TLine( MASS_MIN,  0., MASS_MAX,  0. )
+    topline = rt.TLine( MASS_MIN, +3., MASS_MAX, +3. )
+    pull.Draw()
+    for i, line in enumerate([ botline, midline, topline ]):
+        line.SetLineColor( rt.kRed )
+        if i != 1:
+            line.SetLineStyle( rt.kDotted )
+        line.Draw('SAME')
+    
+    c.Update()
+
+    fr[ix + '_pull']   = pull
+    fr[ix + '_lines' ] = [botline, midline, topline]
+
     return c
 
-
- 
+if MAKEPLOTS:
+    #rt.gROOT.SetBatch()
+    strkws = [ str( kw ) for kw in BINNING ]
+    oplots = rt.TFile.Open( 'FitPlots_' + ''.join( strkws )[:-1] + '.root', 'RECREATE' )
+    for kw, bins in BINNING.iteritems():
+        for i in bins:
+            c = plot( kw + str( i ) )
+            c.Write()
+print 'End of script!'

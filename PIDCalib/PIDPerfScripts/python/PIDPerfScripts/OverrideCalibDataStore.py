@@ -16,7 +16,7 @@ def _warningMessage ():
 
 
 def _defineFileList ():
-  _warningMessage()
+#  _warningMessage()
   _OCDSvars._fileList = []
   f = file ( _getEnvVar () )
   if not f:
@@ -43,6 +43,17 @@ def _getEnvVar ():
 def _isEnvVarDefined ():
   return _getEnvVar() != None and _getEnvVar() != ""
 
+def GetDictFiles ( runMin, runMax, maxFiles , verbose ):
+  if not _isEnvVarDefined() : return []
+
+  if maxFiles == None or maxFiles < 0:
+     maxFiles = 100000
+
+  maxIndex = len(_getFileList())
+  if maxIndex == None or int(maxIndex) > int(maxFiles):
+     maxIndex = maxFiles
+
+  return _getFileList()[:int(maxIndex)]
 
 def GetDictIndex ( runMin, runMax, maxFiles , verbose ):
   if not _isEnvVarDefined() : return None

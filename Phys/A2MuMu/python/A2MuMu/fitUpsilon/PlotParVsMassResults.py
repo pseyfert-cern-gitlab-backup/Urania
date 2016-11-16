@@ -1,7 +1,7 @@
 from ROOT import *
 import math
 gROOT.ProcessLine(".x $LHCBSTYLEROOT/src/lhcbStyle.C")
-gROOT.SetBatch()
+#gROOT.SetBatch()
 import simplejson as json
 
 from PlotPerEvMassErr_DY import *
@@ -11,7 +11,9 @@ massbins = np.linspace(5,14,9)
 percentage = 0.01
 DYgraph = PlotDYMassErr(massbins, percentage)
 
-nsamples = ['Y1MC2011', 'Y1MC2012','Y2MC2011', 'Y2MC2012', 'Y3MC2011', 'Y3MC2012', 'A8MC2011', 'A8MC2012', 'A10MC2011', 'A10MC2012', 'A12MC2011', 'A12MC2012']
+#nsamples = ['Y1MC2011', 'Y1MC2012','Y2MC2011', 'Y2MC2012', 'Y3MC2011', 'Y3MC2012', 'A8MC2011', 'A8MC2012', 'A10MC2011', 'A10MC2012', 'A12MC2011', 'A12MC2012']
+#nsamples = ['Y1MC2011','Y2MC2011', 'Y3MC2011', 'A8MC2011', 'A10MC2011','A12MC2011', ]
+nsamples = ['Y1MC2012','Y2MC2012', 'Y3MC2012', 'A8MC2012', 'A10MC2012','A12MC2012', ]
 #nsamples = ['Y1MC2011', 'Y1MC2012','Y2MC2011', 'Y3MC2011', 'Y3MC2012']
 option = 'Allpt'
 outfiletag = "YnSMC"
@@ -83,6 +85,7 @@ def setDrawOptions(tgraph, title, varname, color=1):
     if varname=='beta':
         tgraph.GetYaxis().SetRangeUser(-0.01, 0.)
 
+"""
 canv = TCanvas()
 for varname in val.keys():
     isFirst=1
@@ -101,7 +104,7 @@ for varname in val.keys():
     leg.Draw();
     #canv.BuildLegend()
     canv.Print('./PLOTPARS/Plot_'+ outfiletag+ "_"+ option +'_' +varname+'.pdf')
-
+"""
 varname='sigma0'
 leg = TLegend(0.2,0.7,0.4,0.9);
 DYgraph.GetXaxis().SetTitle('m(#mu#mu) MeV/c^{2}')
@@ -113,8 +116,9 @@ for nsample in samples.keys():
         if "A" in nsample: ncolor=4
         setDrawOptions(tgraph, nsample, varname, ncolor)
         tgraph.Draw('P')
-        leg.AddEntry(tgraph, nsample + ' fitted #sigma_{0} parameter', 'lep')
-leg.AddEntry(DYgraph, 'Drell Yann per-ev mass err rampup', 'p')
+leg.AddEntry(gexp[('Y1MC2012',varname)], '#Upsilon(nS) fitted #sigma_{0}', 'lep')
+leg.AddEntry(gexp[('A10MC2012',varname)], 'A_{1}^{0} fitted #sigma_{0}', 'lep')
+leg.AddEntry(DYgraph, 'DY per-ev mass err rampup', 'p')
 leg.Draw();
 #canv.BuildLegend()
 canv.Print('./PLOTPARS/Plot_'+ outfiletag+ "_"+ option +'_' +varname+'_withDY.pdf')
