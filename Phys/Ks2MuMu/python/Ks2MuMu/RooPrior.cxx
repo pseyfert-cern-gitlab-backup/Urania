@@ -35,6 +35,10 @@ ClassImp(RooPrior)
  Double_t RooPrior::evaluate() const 
  { 
    // ENTER EXPRESSION IN TERMS OF VARIABLE ARGUMENTS HERE 
+   if (BR > 15.) 
+   {
+     return 0.0;
+       }
    return 1.765692e-6*pow(BR, 5) - 9.6156e-5*pow(BR, 4) + 0.001929392*pow(BR, 3) - 0.01661805*pow(BR, 2) + 0.042747*BR + 0.113387 ; 
  } 
 
@@ -61,6 +65,11 @@ if ( code == 1)
 {
   Double_t BR_min = BR.min(rangeName);
   Double_t BR_max = BR.max(rangeName);
+  if (BR_max > 15) 
+              {
+                BR_max = 15;
+              }
+  
   
 Double_t Integral = 2.94282e-7*pow(BR_max, 6) - 1.92312e-5*pow(BR_max, 5) + 0.000482348*pow(BR_max, 4) - 0.00553935*pow(BR_max, 3) + 0.0213735*pow(BR_max, 2) + 0.113387*BR_max - 2.94282e-7*pow(BR_min, 6) + 1.92312e-5*pow(BR_min, 5) - 0.000482348*pow(BR_min, 4) + 0.00553935*pow(BR_min, 3) - 0.0213735*pow(BR_min, 2) - 0.113387*BR_min;
 return Integral;

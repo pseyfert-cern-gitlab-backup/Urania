@@ -1,3 +1,4 @@
+#from ROOT import *
 from Urania import *
 AccessPackage("Bs2MuMu")
 import ROOT as rt
@@ -12,7 +13,7 @@ from collections import OrderedDict
 import sys
 sys.path.append('./FIT_2012')
 
-rt.gROOT.SetBatch()
+#rt.gROOT.SetBatch()
 
 # Loads the lhcb style for the plots 
 rt.gROOT.ProcessLine( '.x lhcbStyle.C' )
@@ -21,6 +22,7 @@ rt.gROOT.ProcessLine( '.x lhcbStyle.C' )
 rt.gROOT.ProcessLine('.L $URANIAROOT/src/RooIpatia2.cxx++')
 rt.gROOT.ProcessLine('.L $URANIAROOT/src/RooAmorosoPdf.cxx++')
 rt.gROOT.ProcessLine('.L $SOMEMASSMODELSROOT/src/RooPowerLaw.cxx++')
+rt.gROOT.ProcessLine('.L ./RooPrior.cxx++')
 #rt.gROOT.ProcessLine(".x BifurcatedCB.cxx+")
 #from ROOT import BifurcatedCB
 
@@ -124,7 +126,7 @@ if CREATE_FILES:
 #-----------------------------------------------------------------------------
 # Blinds the branching fraction if required. The random blinding factor is
 # stored in UnBlindBr, so do not look at it ;).
-BR_ = rt.RooRealVar('BR', 'BR', 0., 0., 30)
+BR_ = rt.RooRealVar('BR', 'BR', 0., 0., 15.)
 if BLIND:
     #BR = rt.RooUnblindPrecision("BR_UNB", "BR_UNB", TheTable.Blinding, 1.e-8, 1.e-8, BR_)
     ublindfct = rt.gRandom.Uniform( BR_.getVal(), 1000 )
@@ -132,8 +134,16 @@ if BLIND:
     BR        = rt.RooFormulaVar( 'BR_UNB', 'BR_UNB', 'BR*BR_UNBFCT', rt.RooArgList( BR_, UnBlindBr ) )
 else:
     BR = BR_
-prior = rt.RooAmorosoPdf('PRIOR', 'PRIOR' , BR_, PRIOR.offset, PRIOR.theta, PRIOR.alpha, PRIOR.beta)
+#prior = rt.RooAmorosoPdf('PRIOR', 'PRIOR' , BR_, PRIOR.offset, PRIOR.theta, PRIOR.alpha, PRIOR.beta)
 
+prior = rt.RooPrior('PRIOR', 'PRIOR' , BR_)#, PRIOR.offset, PRIOR.theta, PRIOR.alpha, PRIOR.beta)
+
+#fr = BR_.frame()
+#prior.plotOn(fr)
+#prior2.plotOn(fr)
+#fr.Draw()
+
+#BREAK
 # Defines the constraints for the fit
 summaryConstraints = rt.RooArgSet()
 
