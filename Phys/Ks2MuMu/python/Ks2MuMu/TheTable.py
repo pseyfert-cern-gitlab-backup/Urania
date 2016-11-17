@@ -5,7 +5,11 @@ alpha, s_alpha_corr, s_alpha_uncorr = {}, {}, {}
 from math import *
 
 #------ SIGNAL MASS SHAPE SYSTEMATIC -------
-SigShapeSyst = 0.8/100
+TrackingSyst  = 0.4/100
+SelectionSyst = { 'TOS1_': 3.3/100, 'TOS2_': 3.9/100, 'TIS_': 1.1/100 }
+TriggerSyst   = { 'TOS1_': 8.0/100, 'TOS2_': 11./100, 'TIS_': 0.0/100 }
+KspectrumSyst = 3.3/100
+SigShapeSyst  = 0.8/100
 
 #------ NORMALIZATION FACTOR WITHOUT MUONID -------
 TOS1_N=[2.4570792821606955e-09, 2.5338737331325255e-09, 2.585346538271901e-09, 2.6013884196273637e-09, 2.4745814219662998e-09, 2.551905102240505e-09, 2.489363355520967e-09, 2.5987193472443914e-09, 2.5665132922359007e-09, 2.551388506819281e-09]

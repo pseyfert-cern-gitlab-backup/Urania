@@ -11,7 +11,7 @@ f["TOS1_"] = TFile(TUPLE_PATH + "Ks0mumu_Data2012_Splitted_Res20_MuPtCutOff2500_
 t["TOS1_"] = f["TOS1_"].Get("KS0mumu")
 f["TOS2_"] = TFile(TUPLE_PATH + "Ks0mumu_Data2012_Splitted_Res20_MuPtCutOff2500_TosTos2Tos_MVA.root")
 t["TOS2_"] = f["TOS2_"].Get("KS0mumu")
-f2 = TFile("/scratch18/crap.root", "recreate")
+f2 = TFile("./crap.root", "recreate")
 ts2 = ts.CopyTree(fSEL["TIS_"])
 from SomeUtils.NewKarlen import *
 l = []
@@ -33,9 +33,9 @@ ufv = UniFunc(l)
 binTOS2 = [ufv.inverse(0.1*i) for i in range(11)]
 
 bdtname = {}
-bdtname["TIS_"] = "TisTisTos_BDTb025de4nt1000M1"
-bdtname["TOS1_"] =  "TosTos1Tos_BDTb025de4nt1000M1"
-bdtname["TOS2_"] = "TosTos2Tos_BDTb025de4nt1000M1"
+bdtname["TIS_"] = "BDTb025de4nt1000M1_TisTisTos"
+bdtname["TOS1_"] =  "BDTb025de4nt1000M1_TosTos1Tos"
+bdtname["TOS2_"] = "BDTb025de4nt1000M1_TosTos2Tos"
 ######  Prepare files
 from bisect import *
 Binning = {}
@@ -58,3 +58,6 @@ def diagnose(key):
     for i in range(len(bins)-1):
         print i, t2.GetEntries(bdt +">"+str(bins[i]) + aa + bdt +"<" + str(bins[i+1]))
         
+diagnose('TIS_')
+diagnose('TOS1_')
+diagnose('TOS2_')

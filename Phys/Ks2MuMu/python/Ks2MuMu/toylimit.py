@@ -73,7 +73,7 @@ if COMBINE_2011:
     summaryConstraints.add(prior)
 
 # Number of events for each generation
-NEVTS = 10000
+NEVTS = 90000
 
 import convresults
 initialValues = { kw: getattr( convresults, kw ) for kw in dir(convresults) if not kw.startswith( '__' ) }
@@ -141,7 +141,7 @@ DATA = mainModel.generate( rt.RooArgSet( Mass, category ), NEVTS )
 def makeToyMCstudy( results, ntoys, nevts = 10000 ):
     rt.gROOT.SetBatch()
     data = DATA
-    ofile = rt.TFile( 'ToyMCstudy10k.root', 'RECREATE' )
+    ofile = rt.TFile( 'ToyMCstudy90k.root', 'RECREATE' )
     for it in xrange( ntoys ):
         print '*** GENERATING TOY <', it , '> ***'
         rndmpars = results.randomizePars()
@@ -186,4 +186,4 @@ fitOpts = [rf.Minos(rt.kFALSE), rf.ExternalConstraints(summaryConstraints),
 fitResults = mainModel.fitTo( DATA, *fitOpts )
 
 print '*** START TO GENERATE TOYS ***'
-makeToyMCstudy( fitResults, 10, NEVTS )
+makeToyMCstudy( fitResults, 20, NEVTS )

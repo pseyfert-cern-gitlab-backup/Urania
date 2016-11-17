@@ -12,6 +12,8 @@ from collections import OrderedDict
 import sys
 sys.path.append('./FIT_2012')
 
+rt.gROOT.SetBatch()
+
 # Loads the lhcb style for the plots 
 rt.gROOT.ProcessLine( '.x lhcbStyle.C' )
 
@@ -23,11 +25,13 @@ rt.gROOT.ProcessLine('.L $SOMEMASSMODELSROOT/src/RooPowerLaw.cxx++')
 #from ROOT import BifurcatedCB
 
 #-----------------------------------------------------------------------------
-COMBINE_2011 = 1
+COMBINE_2011 = 0
 BLIND = 0
 POWER_LAW = 1 ### if set to zero it will use an exponential for the misid bkg
+EXPO = 1 ### if set to zero it will use a polynomial for the comb bkg
+FIXEXPOVALS = 0
 BR_MINOS = 1
-PROFILE = BR_MINOS*0
+PROFILE = BR_MINOS*1
 TOYSTUDY = 0
 MAKEPLOTS = 0
 #-----------------------------------------------------------------------------
@@ -70,7 +74,7 @@ BINNING = OrderedDict(
     )
 
 # Fitting variable and ranges
-Mass = rt.RooRealVar('KS0_MM', 'KS0_MM', MASS_MIN, MASS_MAX)
+Mass = rt.RooRealVar('KS0_MM', 'm_{#mu^{+}#mu^{-}}', MASS_MIN, MASS_MAX, 'MeV/c^{2}')
 category =  rt.RooCategory('sample',  'sample')
 Mass.setRange('all', Mass.getMin(), Mass.getMax() )
 Mass.setRange('lsb', Mass.getMin(), BLIND_MIN     )
@@ -120,7 +124,7 @@ if CREATE_FILES:
 #-----------------------------------------------------------------------------
 # Blinds the branching fraction if required. The random blinding factor is
 # stored in UnBlindBr, so do not look at it ;).
-BR_ = rt.RooRealVar('BR', 'BR', 6, 0., 20)
+BR_ = rt.RooRealVar('BR', 'BR', 0., 0., 30)
 if BLIND:
     #BR = rt.RooUnblindPrecision("BR_UNB", "BR_UNB", TheTable.Blinding, 1.e-8, 1.e-8, BR_)
     ublindfct = rt.gRandom.Uniform( BR_.getVal(), 1000 )
@@ -143,7 +147,15 @@ for key, kbin in BINNING.iteritems():
         ix = key + str( i )
         mean += TheTable.s_alpha_corr[ix]*1./TheTable.alpha[ix]
     mean /= float(len(kbin))
-    sigma = sqrt(mean**2 + TheTable.SigShapeSyst**2)
+
+    # All the systematics are added in quadrature
+    tracksyst = TheTable.TrackingSyst**2
+    selsyst   = TheTable.SelectionSyst[ key ]**2
+    trigsyst  = TheTable.TriggerSyst[ key ]**2
+    kspecsyst = TheTable.KspectrumSyst**2
+    sigshape  = TheTable.SigShapeSyst**2
+
+    sigma = sqrt( mean**2 + tracksyst + selsyst + trigsyst + kspecsyst + sigshape )
     mismierdas [key] = sigma
     ComFctrSig[ key ] = createConst( 1, sigma, 'ComFctr' + key )
     #ComFctrSig[ key ] [0].setConstant(rt.kTRUE)
@@ -195,17 +207,27 @@ class KsMuMuModel:
 
         #self.misid_ap = rt.RooRealVar('misid_' +  i + 'a', 'misid_' +  i + 'a', -2, -100, -0.1)
         
-        self.misid_n = rt.RooRealVar('misid_' +  i + 'n', 'misid_' +  i + 'n', 10, 1, 120)#100, 80, 200
+        self.misid_n = rt.RooRealVar('misid_' +  i + 'n', 'misid_' +  i + 'n', 10, 1, 120)# 10, 1, 120
         #self.misid_s = rt.RooRealVar('misid_' +  i + 's', 'misid_' +  i + 's', 3, 1, 10)
-        self.misid_m = rt.RooRealVar('misid_' +  i + 'm', 'misid_' +  i + 'm', 320, 200, 469)#100, 500#misidPars.misid_m
-        fix_m = ("TIS_3" in name) or ("TIS_4" in name)# or ("TIS_9" in name)
+        self.misid_m = rt.RooRealVar('misid_' +  i + 'm', 'misid_' +  i + 'm', 320, 200, 469)#320, 200, 469
+        fix_m = 0#("TIS_3" in name) or ("TIS_4" in name)# or ("TIS_9" in name)
         self.misid_m.setConstant(fix_m)
         self.misid = rt.RooPowerLaw('misid_' + i, 'misid_' + i, Mass, self.misid_m, self.misid_n)
         
         #self.bkg = rt.RooAddPdf('AllBkg' + i, 'AllBkg' + i, self.misid, self.bkg1, self.f_misid)
         
-        self.k = rt.RooRealVar( 'MuMu_dk_' + i, 'MuMu_dk_' + i, -1e-2, -.1, .1 )# -0.2 (BLIND) # -0.05 (UNBLIND)
-        self.bkg1 = rt.RooExponential("bkg1_MuMu_model" + i, "bkg1_MuMu_model" + i, Mass, self.k)
+        if EXPO:
+            self.k = rt.RooRealVar( 'MuMu_dk_' + i, 'MuMu_dk_' + i, -1e-2, -.1, .1 )#-1e-2, -.1, .1
+            self.bkg1 = rt.RooExponential("bkg1_MuMu_model" + i, "bkg1_MuMu_model" + i, Mass, self.k)
+            if FIXEXPOVALS:
+                import fitPars
+                self.k.setVal( getattr( fitPars, i ) )
+                self.k.setConstant( 1 )
+        else:
+            self.bkg1_m1 = rt.RooRealVar( 'Cbkg_m1_' + i, 'Cbkg_m1_' + i, -0.9, -4, 0 )
+            self.bkg1_m2 = rt.RooRealVar( 'Cbkg_m2_' + i, 'Cbkg_m2_' + i, 0.16, 0, 4 )
+            #self.bkg1 = rt.RooPolynomial( 'bkg1_MuMu_model' + i, 'bkg1_MuMu_model' + i, Mass, rt.RooArgList( self.bkg1_m ) )
+            self.bkg1 = rt.RooChebychev( 'bkg1_MuMu_model' + i, 'bkg1_MuMu_model' + i, Mass, rt.RooArgList( self.bkg1_m1, self.bkg1_m2 ) )
         '''
         self.misid_alphaRK = rt.RooRealVar( 'misid_' + i + 'alphaRK', 'misid' + i + 'alphaRK', misidPars.alphaRK , -0.8, -0.1 )
         self.misid_nRK     = rt.RooRealVar( 'misid_' + i + 'nRK', 'misid' + i + 'nRK', misidPars.nRK , 5., 300. )
@@ -216,7 +238,7 @@ class KsMuMuModel:
         '''
 
         f_misid = misidPars.NSig*1./( misidPars.NCombBkg + misidPars.NSig )
-        self.f_misid = rt.RooRealVar('f_misid_' + i, 'f_misid_' + i, f_misid, 0.5, 1)#0.9 f_misid
+        self.f_misid = rt.RooRealVar('f_misid_' + i, 'f_misid_' + i, f_misid, 0.5, 1)#f_misid, 0.5, 1
         if name == "TOS2_9":
             self.f_misid.setVal(1)
             self.f_misid.setConstant(rt.kTRUE)
@@ -314,7 +336,7 @@ if PROFILE:
     pl.plotOn(fr, rf.ShiftToZero())
     profile = rt.TCanvas( 'Profile', 'Profile' )
     fr.Draw()
-    f = rt.TFile( 'BRprofile.root', 'RECREATE' )
+    f = rt.TFile( 'BRprofile_' + ''.join(BINNING.keys())[:-1] + '.root', 'RECREATE' )
     profile.Write()
     fr.Write( 'ProfileFrame' )
     f.Close()

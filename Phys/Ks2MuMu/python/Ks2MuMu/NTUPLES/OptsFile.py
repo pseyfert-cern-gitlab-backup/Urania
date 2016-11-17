@@ -122,6 +122,10 @@ def configureTuple():
                                          Ptcle_M : "(MIPCHI2DV(PRIMARY)> 100.)&(TRCHI2DOF < 5 ) & (PT > 0 * MeV )" }
             KsCombPart.CombinationCut = "(ADAMASS('KS0')<100*MeV) & (AMAXDOCA('')<0.3*mm)"
             KsCombPart.MotherCut = "((BPVDIRA>0) & ((BPVVDSIGN*M/P) > 0.1*89.53*2.9979e-01) & (MIPDV(PRIMARY)<0.4*mm) & (M>400) & (M<600) & (PT > 0 * MeV))"
+            KsCombPart.ReFitPVs  = False
+            KsCombPart.MotherCut += " & (mcMatch('" + decayDesc.replace('->','=>') + "'))"
+            for ptcle in (Ptcle_P, Ptcle_M):
+                KsCombPart.DaughtersCuts[ ptcle ] += ' & (mcMatch("' + ptcle + '"))'
         else:
             # Some non-effect cuts
             KsCombPart.DaughtersCuts = { Ptcle_P: 'PT > 0',
@@ -177,6 +181,7 @@ def configureTuple():
         # Only the events with at least one primary vertex are being taken
         from Configurables import LoKi__VoidFilter
         vf = LoKi__VoidFilter( 'AtLeastOnePV', Code = "CONTAINS('Rec/Vertex/Primary')>0" )
+        print 'I AM REQUIRING:', requiredSel
         KsSel = Selection('KsSel', Algorithm = KsCombPart, RequiredSelections = requiredSel)
         KsSelSeq = SelectionSequence('KsSelSeq', TopSelection = KsSel, EventPreSelector = [vf] )
         KsmumuTuple.Inputs = [KsSelSeq.outputLocation()]

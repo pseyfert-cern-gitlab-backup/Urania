@@ -45,15 +45,23 @@ def makePullPlot( roovar, dataSet, nbins, pdf, limits = False ):
             # The error is set according to its position respect to the expectation from the pdf
             eup, edw = pullHist.GetErrorYhigh( ib ), pullHist.GetErrorYlow( ib )
             dist = float(vbin - fcn)
+
+            err = pullHist.GetErrorY( ib )
+            '''
             if dist >= 0:
                 err = edw
             else:
                 err = eup
-        
-            pullHist.SetPoint( ib, xbin, dist/err )
-            pullHist.SetPointEYhigh( ib, 1. )
-            pullHist.SetPointEYlow( ib, 1. )
-        
+                '''
+            if dist >= 0:
+                pullHist.SetPoint( ib, xbin, dist/edw )
+                pullHist.SetPointEYhigh( ib, eup/edw )
+                pullHist.SetPointEYlow( ib, 1. )
+            else:
+                pullHist.SetPoint( ib, xbin, dist/eup )
+                pullHist.SetPointEYhigh( ib, 1. )
+                pullHist.SetPointEYlow( ib, edw/eup )
+
             errList.append( max( err, eup, edw ) )
             distList.append( dist )
         else:
