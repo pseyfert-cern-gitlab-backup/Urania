@@ -2888,10 +2888,10 @@ Double_t KpiKpiSpectrumNW::FL_j1j2(Int_t j1, Int_t j2, Double_t ma, Double_t mb)
    Double_t FL_Bs = pow(p/p0,L)*sqrt(Blatt_Weisskopf2(p,p0,L));
 
    // Decay of the K+pi- pair.
-   Double_t FL_Kpi1 = pow((q_1/q0)/(ma/m0),j1)*sqrt(Blatt_Weisskopf2(q_1,q0,j1));
+   Double_t FL_Kpi1 = pow((q_1/q0),j1)*sqrt(Blatt_Weisskopf2(q_1,q0,j1));
 
    // Decay of the K-pi+ pair.
-   Double_t FL_Kpi2 = pow((q_2/q0)/(mb/m0),j2)*sqrt(Blatt_Weisskopf2(q_2,q0,j2));
+   Double_t FL_Kpi2 = pow((q_2/q0),j2)*sqrt(Blatt_Weisskopf2(q_2,q0,j2));
 
    return FL_Bs*FL_Kpi1*FL_Kpi2;
 
