@@ -291,7 +291,7 @@ expected.SetPoint(280,14.05,0.02277);
 
 expected.Draw("AL")
 
-graph = TGraph()
+observed = TGraph()
 
 observed.SetLineWidth(3);
 observed.SetMarkerStyle(20);
