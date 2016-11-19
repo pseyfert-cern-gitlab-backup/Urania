@@ -15,7 +15,7 @@ class TupleJob:
   def __init__(self
                ,  platform         = "x86_64-slc6-gcc48-opt"
                ,  davinciVersion   = "v38r0"
-               ,  year             = "2012"
+               ,  year             = "2015"
                ,  stripVersion     = "24"
                ,  suffix           = "" 
                ,  magPol           = "MagUp"
@@ -203,7 +203,7 @@ class TupleMaker:
                  ,  simulation     = False
                  ,  bkkQuery       = '/LHCb/Collision16/Beam6500GeV-VeloClosed-MagDown/Real Data/Reco16/Stripping26/90000000/SEMILEPTONIC.DST'
                  ,  bkkFlag        = "All"
-                 ,  stream         = "Semileptonic"
+                 ,  stream         = "SEMILEPTONIC"
                  ,  backend        = Dirac()
       )
 
@@ -216,7 +216,7 @@ class TupleMaker:
                  ,  simulation     = False
                  ,  bkkQuery       = '/LHCb/Collision16/Beam6500GeV-VeloClosed-MagUp/Real Data/Reco16/Stripping26/90000000/SEMILEPTONIC.DST'
                  ,  bkkFlag        = "All"
-                 ,  stream         = "Semileptonic"
+                 ,  stream         = "SEMILEPTONIC"
                  ,  backend        = Dirac()
       )
 
@@ -230,7 +230,7 @@ class TupleMaker:
                  ,  simulation     = False
                  ,  bkkQuery       = '/LHCb/Collision15/Beam6500GeV-VeloClosed-MagDown/Real Data/Reco15a/Stripping24/90000000/SEMILEPTONIC.DST'
                  ,  bkkFlag        = "All"
-                 ,  stream         = "Semileptonic"
+                 ,  stream         = "SEMILEPTONIC"
                  ,  backend        = Dirac()
       )
 
@@ -243,7 +243,7 @@ class TupleMaker:
                  ,  simulation     = False
                  ,  bkkQuery       = '/LHCb/Collision15/Beam6500GeV-VeloClosed-MagUp/Real Data/Reco15a/Stripping24/90000000/SEMILEPTONIC.DST'
                  ,  bkkFlag        = "All"
-                 ,  stream         = "Semileptonic"
+                 ,  stream         = "SEMILEPTONIC"
                  ,  backend        = Dirac()
       )
 
@@ -260,7 +260,60 @@ class TupleMaker:
                  ,  stream        = "Turbo"
                  ,  backend       = Dirac()
       )
-                  
+       
+  MCSigUp09DsMuNu = TupleJob(
+                    year          = "2015"
+                 ,  stripVersion  = "24"
+                 ,  magPol        = "MagUp"
+                 ,  suffix        = "Signal_DsMuNu"
+                 ,  filesPerJob   = 20
+                 ,  simulation    = True
+                 ,  bkkQuery      = '/MC/2015/Beam6500GeV-2015-MagUp-Nu1.6-25ns-Pythia8/Sim09a/Trig0x411400a2/Reco15a/Turbo02/Stripping24NoPrescalingFlagged/13774000/ALLSTREAMS.DST'
+                 ,  bkkFlag       = "All"
+                 ,  stream        = "AllStreams"
+                 ,  backend       = Dirac()
+      )
+
+  MCSigDown09DsMuNu = TupleJob(
+                    year          = "2015"
+                 ,  stripVersion  = "24"
+                 ,  magPol        = "MagDown"
+                 ,  suffix        = "Signal_DsMuNu"
+                 ,  filesPerJob   = 20
+                 ,  simulation    = True
+                 ,  bkkQuery      = '/MC/2015/Beam6500GeV-2015-MagDown-Nu1.6-25ns-Pythia8/Sim09a/Trig0x411400a2/Reco15a/Turbo02/Stripping24NoPrescalingFlagged/13774000/ALLSTREAMS.DST'
+                 ,  bkkFlag       = "All"
+                 ,  stream        = "AllStreams"
+                 ,  backend       = Dirac()
+      )
+
+  MCSigUp09DsTauNu = TupleJob(
+                    year          = "2015"
+                 ,  stripVersion  = "24"
+                 ,  magPol        = "MagUp"
+                 ,  suffix        = "Signal_DsTauNu"
+                 ,  filesPerJob   = 20
+                 ,  simulation    = True
+                 ,  bkkQuery      = '/MC/2015/Beam6500GeV-2015-MagUp-Nu1.6-25ns-Pythia8/Sim09a/Trig0x411400a2/Reco15a/Turbo02/Stripping24NoPrescalingFlagged/13774060/ALLSTREAMS.DST'
+                 ,  bkkFlag       = "All"
+                 ,  stream        = "AllStreams"                 
+                 ,  backend       = Dirac()
+      )
+
+  MCSigDown09DsTauNu = TupleJob(
+                    year          = "2015"
+                 ,  stripVersion  = "24"
+                 ,  magPol        = "MagDown"
+                 ,  suffix        = "Signal_DsTauNu"
+                 ,  filesPerJob   = 20
+                 ,  simulation    = True
+                 ,  bkkQuery      = '/MC/2015/Beam6500GeV-2015-MagDown-Nu1.6-25ns-Pythia8/Sim09a/Trig0x411400a2/Reco15a/Turbo02/Stripping24NoPrescalingFlagged/13774060/ALLSTREAMS.DST'
+                 ,  bkkFlag       = "All"
+                 ,  stream        = "AllStreams"
+                 ,  backend       = Dirac()
+      )
+
+
   MCSigUp08h = TupleJob(
                     year          = "2012"
                  ,  stripVersion  = "20r0p3"
