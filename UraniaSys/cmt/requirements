@@ -31,12 +31,13 @@ use  BsKstKst                  	v5r1    Phys                    # Paula Alvarez,
 use  Ks2MuMu			v1r1	Phys			# Xabier Cid Vidal, Diego Martinez Santos
 use  Ks2Pi0MuMu			v1r1	Phys			# Veronika Chobanova, Diego Martinez Santos
 use  Lambdab2Jpsippi            v3r7    Phys                    # Patrick Koppenburg
+use  BsDsMuNuForRDS             v1r0    Phys                    # Ricardo Vazquez Gomez (new package)
 
 use  B2DXFitters		v3r1	PhysFit			# Manuel Schiller, Eduardo Rodrigues
 use  P2VV			v4r1	PhysFit			# Jeroen Van Leerdam, Roel Aaij
 use  SomeMassModels		v2r5	PhysFit			# Diego Martinez Santos
 use  RooPhysFitter              v3r1    PhysFit                 # Philip Hunt
-use  V0hhFitter                 v1r0    PhysFit                 # Rafael Silva Coutinho
+use  V0hhFitter                 v1r0    PhysFit                 # Rafael Silva Coutinho (new package)
 
 use CalibDataScripts            v5r3    PIDCalib                # Philip Hunt
 use PIDPerfScripts              v10r3   PIDCalib                # Philip Hunt

@@ -17,6 +17,7 @@ Phys/Ks2MuMu
 Phys/Ks2Pi0MuMu
 Phys/Lambdab2Jpsippi
 Phys/Urania
+Phys/BsDsMuNuForRDS
 PhysFit/B2DXFitters
 PhysFit/P2VV
 PhysFit/RooPhysFitter
