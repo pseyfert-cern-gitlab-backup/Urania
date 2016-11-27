@@ -62,7 +62,7 @@ seqB2JpsiX    = GaudiSequencer('seqB2JpsiX')
 Bsdecaydcr    = "B_s0 -> ^(J/psi(1S) -> ^mu+ ^mu-) ^(phi(1020) -> ^K+ ^K-)"
 
 #### phi(1020) -> K+ K-
-KaonList  = DataOnDemand(Location = "/Event/Dimuon/Phys/StdAllLooseKaons/Particles")
+KaonList  = DataOnDemand(Location = "Phys/StdAllLooseKaons/Particles")
 Phi2KK    = CombineParticles(DecayDescriptors = ["phi(1020) -> K+ K-"],
                              DaughtersCuts = {},
                              #CombinationCut = "in_range(1008,AM,1050)",
