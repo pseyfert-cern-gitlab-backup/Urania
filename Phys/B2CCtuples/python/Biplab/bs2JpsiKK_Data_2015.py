@@ -14,7 +14,7 @@ from Configurables import FilterDesktop
 from Configurables import SubstitutePID # only for J/psi(1S)
 from Configurables import TupleToolGeometry, TupleToolTrackInfo
 
-from PhysSelPython.Wrappers import Selection, SelectionSequence, DataOnDemand
+from PhysSelPython.Wrappers import Selection, SelectionSequence, AutomaticData
 
 from Configurables import GaudiSequencer, PrintMCTree
 
@@ -27,13 +27,16 @@ evtmax         = -1
 magpos         = "MD"  # don't need this for Data
 ##################################################################
 
-#Kaons    =  DataOnDemand(Location = "/Event/Dimuon/Phys/StdAllNoPIDsKaons/Particles")
-Kaons    =  DataOnDemand(Location = "/Event/Dimuon/Phys/StdAllLooseKaons/Particles")
+
+#Kaons    =  AutomaticData("/Event/Dimuon/Phys/StdAllLooseKaons/Particles")
+#Kaons    =  AutomaticData("Phys/StdAllLooseKaons/Particles")
+Kaons    =  AutomaticData("Phys/StdAllNoPIDsKaons/Particles")
+#Kaons    =  AutomaticData(Location = "/Event/Dimuon/Phys/StdAllLooseKaons/Particles")
 
 if isMC:
-        Jpsi_loc =  DataOnDemand(Location = "/Event/AllStreams/Phys/FullDSTDiMuonJpsi2MuMuDetachedLine/Particles")
+        Jpsi_loc =  AutomaticData("/Event/AllStreams/Phys/FullDSTDiMuonJpsi2MuMuDetachedLine/Particles")
 else:
-        Jpsi_loc =  DataOnDemand(Location = "/Event/Dimuon/Phys/FullDSTDiMuonJpsi2MuMuDetachedLine/Particles")
+        Jpsi_loc =  AutomaticData("/Event/Dimuon/Phys/FullDSTDiMuonJpsi2MuMuDetachedLine/Particles")
 
 ###################################################################
  
@@ -41,11 +44,12 @@ else:
 comb_KK                 = CombineParticles("KK")
 comb_KK.DecayDescriptor = "phi(1020) -> K+ K-"
 comb_KK.DaughtersCuts   = { 
-                               "K+"  : "(TRCHI2DOF < 5.0) & (TRGHP < 0.6) & (HASRICH) & (PIDK>-25)",
-                               "K-"  : "(TRCHI2DOF < 5.0) & (TRGHP < 0.6) & (HASRICH) & (PIDK>-25)"
+                               "K+"  : "(TRCHI2DOF < 5.0) & (TRGHP < 0.6) & (HASRICH) & (PIDK>-10)",
+                               "K-"  : "(TRCHI2DOF < 5.0) & (TRGHP < 0.6) & (HASRICH) & (PIDK>-10)"
                           }
-comb_KK.CombinationCut  = "(AM < 2200.*MeV)"
-comb_KK.MotherCut       = "(PT > 500.*MeV) & (VFASPF(VCHI2PDOF) < 25)"
+# mostly like the Phi in StrippingBetaSBs2JpsiPhiDetached
+comb_KK.CombinationCut  = "(AM < 2200.*MeV) & (ADOCACHI2CUT(30, ''))"
+comb_KK.MotherCut       = "(PT > 500.*MeV) & (VFASPF(VCHI2) < 25)"
 sel_KK = Selection("sel_KK",
                    Algorithm=comb_KK,
                    RequiredSelections=[Kaons]
@@ -56,10 +60,8 @@ combB.DecayDescriptor = "B_s0 -> J/psi(1S) phi(1020)"
 combB.DaughtersCuts   = { "J/psi(1S)": "ALL",
                           "phi(1020)": "ALL"
                         }
-combB.CombinationCut  =   "in_range(4850,AM,6500)"
-combB.MotherCut       =   "(in_range(4950,mBs,6000)) & (dtf_prob > 10E-8) & (mKK < 1900)"
-# add f2(1525) filter
-#combB.MotherCut       =   "(in_range(4950,mBs,6000)) & (dtf_prob > 10E-8) & in_range(1425,mKK,1625)"
+combB.CombinationCut  =   "in_range(4650,AM,7000)"
+combB.MotherCut       =   "(in_range(4950,mBs,6000)) & (dtf_prob > 10E-7) & (mKK < 1900)"
 combB.ReFitPVs = True
 combB.Preambulo = [
                           "dtf_prob = DTF_PROB(True , 'J/psi(1S)')",
@@ -178,8 +180,8 @@ BTuple.ToolList += [
                     ,"TupleToolTagging"
                     ,"TupleToolRecoStats"
                     ,"TupleToolTrackIsolation"
-                    ,"TupleToolTrackPosition"
-                    ,"TupleToolDira"
+#                    ,"TupleToolTrackPosition"
+#                    ,"TupleToolDira"
                      ,"TupleToolVtxIsoln"
                     ,"TupleToolANNPID"
                     ]
@@ -313,6 +315,7 @@ subDTFpKMuMuKmJpsi = TupleToolDecayTreeFitter( "SubpKMuMuKmJpsi" ,
                                    constrainToOriginVertex=True
                                   )
 BTuple.bMom.addTool(subDTFpKMuMuKmJpsi)
+
 
 
 # Matt Needham(?)'s momentum scale calibration for data
