@@ -67,7 +67,7 @@ extra_cuts = ""#"abs(B_s0_MM-5366.)<30."#"abs(B_s0_MM-5366.)<25. && bdtoutput>0.
 evnum_limit = 0
 
 # Fit options.
-num_CPU = 16
+num_CPU = 20
 activ_minos = 0
 fit_strategy = 1
 
@@ -147,9 +147,9 @@ inf_t_res,wide_window,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fi
 	setParamVals(wide_window)
 
 	# Uncomment below for VV only fit, when in narrow window.
-	#for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
-	#	par.setVal(0.)
-	#	par.setConstant(1)
+	for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
+		par.setVal(0.)
+		par.setConstant(1)
 
 	model, params = createSimPDF(TD_fit,Blinding,No_CP_Switch,No_dirCP_Switch,Same_CP_Switch,acc_type,\
 inf_t_res,wide_window,data_file,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params,\
