@@ -4,7 +4,7 @@ from DecayTreeTuple.Configuration import addBranches
 
 from Configurables import CombineParticles, TrackScaleState
 from Configurables import TupleToolTrigger, BackgroundCategory
-from Configurables import LoKi__Hybrid__TupleTool, TupleToolTISTOS, TupleToolMCTruth
+from Configurables import LoKi__Hybrid__TupleTool, TupleToolP2VV, TupleToolTISTOS, TupleToolMCTruth
 from Configurables import TupleToolTrackPosition
 from Configurables import TupleToolTagging
 
@@ -14,7 +14,7 @@ from Configurables import FilterDesktop
 from Configurables import SubstitutePID # only for J/psi(1S)
 from Configurables import TupleToolGeometry, TupleToolTrackInfo
 
-from PhysSelPython.Wrappers import Selection, SelectionSequence, AutomaticData
+from PhysSelPython.Wrappers import Selection, SelectionSequence, DataOnDemand
 
 from Configurables import GaudiSequencer, PrintMCTree
 
@@ -28,24 +28,22 @@ magpos         = "MD"  # don't need this for Data
 ##################################################################
 
 
-#Kaons    =  AutomaticData("/Event/Dimuon/Phys/StdAllLooseKaons/Particles")
-#Kaons    =  AutomaticData("Phys/StdAllLooseKaons/Particles")
-Kaons    =  AutomaticData("Phys/StdAllNoPIDsKaons/Particles")
-#Kaons    =  AutomaticData(Location = "/Event/Dimuon/Phys/StdAllLooseKaons/Particles")
+Kaons    =  DataOnDemand(Location = "Phys/StdAllLooseKaons/Particles")
 
 if isMC:
-        Jpsi_loc =  AutomaticData("/Event/AllStreams/Phys/FullDSTDiMuonJpsi2MuMuDetachedLine/Particles")
+        Jpsi_loc =  DataOnDemand(Location = "/Event/AllStreams/Phys/FullDSTDiMuonJpsi2MuMuDetachedLine/Particles")
 else:
-        Jpsi_loc =  AutomaticData("/Event/Dimuon/Phys/FullDSTDiMuonJpsi2MuMuDetachedLine/Particles")
+        Jpsi_loc =  DataOnDemand(Location = "/Event/Dimuon/Phys/FullDSTDiMuonJpsi2MuMuDetachedLine/Particles")
+        #Jpsi_loc =  DataOnDemand(Location = "Phys/StdMassConstrainedJpsi2MuMu/Particles")
 
 ###################################################################
  
-# mostly StdLoosePhi2KK  + Phi2KKForBetaSBetaS except the PID cut
+# mostly StdLoosePhi2KK  + Phi2KKForBetaSBetaS
 comb_KK                 = CombineParticles("KK")
 comb_KK.DecayDescriptor = "phi(1020) -> K+ K-"
 comb_KK.DaughtersCuts   = { 
-                               "K+"  : "(TRCHI2DOF < 5.0) & (TRGHP < 0.6) & (HASRICH) & (PIDK>-10)",
-                               "K-"  : "(TRCHI2DOF < 5.0) & (TRGHP < 0.6) & (HASRICH) & (PIDK>-10)"
+                               "K+"  : "(TRCHI2DOF < 5.0) & (TRGHP < 0.6) & (HASRICH) & (PIDK>0) & (PT > 250.*MeV)",
+                               "K-"  : "(TRCHI2DOF < 5.0) & (TRGHP < 0.6) & (HASRICH) & (PIDK>0) & (PT > 250.*MeV)"
                           }
 # mostly like the Phi in StrippingBetaSBs2JpsiPhiDetached
 comb_KK.CombinationCut  = "(AM < 2200.*MeV) & (ADOCACHI2CUT(30, ''))"
@@ -57,23 +55,28 @@ sel_KK = Selection("sel_KK",
 
 combB                 = CombineParticles("B_s0")
 combB.DecayDescriptor = "B_s0 -> J/psi(1S) phi(1020)"
-combB.DaughtersCuts   = { "J/psi(1S)": "ALL",
+# place some loose cuts as in StdMassConstrainedJpsi2MuMu before doing a DTF fit
+combB.DaughtersCuts   = { "J/psi(1S)": "(VFASPF(VCHI2) < 16.) & (MFIT)",
                           "phi(1020)": "ALL"
                         }
-combB.CombinationCut  =   "in_range(4650,AM,7000)"
-combB.MotherCut       =   "(in_range(4950,mBs,6000)) & (dtf_prob > 10E-7) & (mKK < 1900)"
-combB.ReFitPVs = True
-combB.Preambulo = [
+combB.CombinationCut  =   "in_range(4850,AM,6000)"
+# some simple cuts before DTF, a la StrippingBetaSBs2JpsiPhiDetached
+combB.MotherCut       =   "(in_range(5000,M,5800)) & (VFASPF(VCHI2PDOF) < 25)"
+sel_B_init = Selection("sel_B_init",
+                   Algorithm=combB,
+                   RequiredSelections=[Jpsi_loc,sel_KK]
+                 )
+
+# now apply DTF and +/- 200 MeV around Bs mass
+sel_Bs_filter = FilterDesktop("sel_Bs_filter", Code = "(in_range(5167,mBs,5567)) & (dtf_prob > 10E-8) & (mKK < 3000)") 
+sel_Bs_filter.Preambulo = [
                           "dtf_prob = DTF_PROB(True , 'J/psi(1S)')",
                           "mBs      = DTF_FUN(M, True , 'J/psi(1S)')",
                           "mKK      = DTF_FUN(CHILD(2, M),  True, 'J/psi(1S)')"
                   ]
 
-sel_B = Selection("sel_B",
-                   Algorithm=combB,
-                   RequiredSelections=[Jpsi_loc,sel_KK]
-                 )
-
+sel_B = Selection("sel_B", Algorithm = sel_Bs_filter, RequiredSelections = [sel_B_init])
+sel_B.ReFitPVs = True
 seq_B = SelectionSequence("seq_B", TopSelection=sel_B)
 
 #######################################################################
@@ -116,6 +119,18 @@ hlt2_lines = [ 'Hlt2Topo2BodyDecision'
              , 'Hlt2DiMuonDetachedJPsiDecision']
 
 trigs = l0_lines + hlt1_lines + hlt2_lines
+
+#########################################################################
+
+l0_lines_liming   = ['L0PhysicsDecision', 'L0PhotonDecision', 'L0ElectronDecision', 'L0MuonHighDecision', 'L0HadronDecision']
+
+hlt1_lines_liming = ['Hlt1MBNoBiasDecision', 'Hlt1SingleMuonNoIPDecision', 'Hlt1DiProtonDecision', 'Hlt1MBMicroBiasVeloDecision', 'Hlt1MBMicroBiasTStationDecision', 'Hlt1TrackPhotonDecision', 'Hlt1DiProtonLowMultDecision']
+
+hlt2_lines_liming = ['Hlt2DiMuonDecision',  'Hlt2DiMuonJPsiDecision', 'Hlt2MuonFromHLT1Decision', 'Hlt2TopoMu4BodyBBDTDecision', 'Hlt2Topo3BodySimpleDecision', 'Hlt2SingleElectronTFLowPtDecision', 'Hlt2Topo4BodySimpleDecision', 'Hlt2DiMuonNoPVDecision', 'Hlt2IncPhiSidebandsDecision', 'Hlt2DiMuonZDecision','Hlt2Topo4BodyBBDTDecision', 'Hlt2TopoMu2BodyBBDTDecision', 'Hlt2DiMuonBDecision', 'Hlt2DiElectronBDecision', 'Hlt2DiMuonJPsiHighPTDecision', 'Hlt2DiMuonLowMassDecision', 'Hlt2SingleElectronTFHighPtDecision', 'Hlt2B2HHLTUnbiasedDecision', 'Hlt2DiElectronHighMassDecision', 'Hlt2Topo3BodyBBDTDecision', 'Hlt2IncPhiDecision', 'Hlt2DiMuonDY2Decision', 'Hlt2DiMuonDecision', 'Hlt2Topo2BodySimpleDecision', 'Hlt2TopoE4BodyBBDTDecision', 'Hlt2DiMuonDY4Decision', 'Hlt2TriMuonTauDecision', 'Hlt2TriMuonDetachedDecision', 'Hlt2TopoE2BodyBBDTDecision', 'Hlt2DiMuonDY3Decision', 'Hlt2TopoE3BodyBBDTDecision', 'Hlt2DiMuonJPsiDecision', 'Hlt2DiMuonDY1Decision', 'Hlt2DiMuonPsi2SDecision', 'Hlt2Topo2BodyBBDTDecision','Hlt2TopoMu3BodyBBDTDecision']
+
+trigs_liming     = l0_lines_liming + hlt1_lines_liming + hlt2_lines_liming
+# do we need this?
+#trigs += trigs_liming
 
 ###################################################
 # Use the CondDB to get the right database tags for data
@@ -174,18 +189,17 @@ BTuple.ToolList += [
                     ,"TupleToolTrigger"
                     ,"TupleToolPid"
                     ,"TupleToolKinematic"
-#                    ,"TupleToolPropertime"
+                    ,"TupleToolPropertime"
                     ,"TupleToolPrimaries"
                     ,"TupleToolEventInfo"
                     ,"TupleToolTagging"
                     ,"TupleToolRecoStats"
                     ,"TupleToolTrackIsolation"
-#                    ,"TupleToolTrackPosition"
+                    ,"TupleToolTrackPosition"
 #                    ,"TupleToolDira"
                      ,"TupleToolVtxIsoln"
-                    ,"TupleToolANNPID"
+#                    ,"TupleToolANNPID" Run2 default tuning is in ProbNN already
                     ]
-
 
 if isMC: BTuple.ToolList += [ "TupleToolMCTruth", "TupleToolMCBackgroundInfo"]
 
@@ -199,9 +213,35 @@ LoKiVariables = LoKi__Hybrid__TupleTool('LoKiVariables')
 LoKiVariables.Variables = {
         "ETA"        : "ETA"
          }
-
 BTuple.addTool(LoKiVariables , name = 'LoKiVariables' )
 BTuple.ToolList   += [ 'LoKi::Hybrid::TupleTool/LoKiVariables']
+
+
+# From JpsiPhi tupling 
+LoKi_SpecificToB           = LoKi__Hybrid__TupleTool('LoKi_SpecificToB')
+LoKi_SpecificToB.Variables =  { 
+         "JpsiPhiMass"          : "WM('J/psi(1S)','phi(1020)')",
+         "Y"                    : "Y",
+         "LV01"                 : "LV01",
+         "LV02"                 : "LV02",
+         "LOKI_FDCHI2"          : "BPVVDCHI2",
+         "LOKI_FDS"             : "BPVDLS",
+         "LOKI_DIRA"            : "BPVDIRA",
+         "LOKI_DTF_CTAU"        : "DTF_CTAU( 0, True )",
+         "LOKI_DTF_CTAUS"       : "DTF_CTAUSIGNIFICANCE( 0, True )",
+         "LOKI_DTF_CHI2NDOF"    : "DTF_CHI2NDOF( True )",
+         "LOKI_DTF_CTAUERR"     : "DTF_CTAUERR( 0, True )",
+         "LOKI_MASS_JpsiConstr" : "DTF_FUN ( M , True , 'J/psi(1S)' )" ,
+         "LOKI_DTF_VCHI2NDOF"   : "DTF_FUN ( VFASPF(VCHI2/VDOF) , True )"}
+BTuple.addTool(TupleToolDecay, name = "bMom")
+BTuple.bMom.ToolList += ["LoKi::Hybrid::TupleTool/LoKi_SpecificToB"]
+BTuple.bMom.addTool(LoKi_SpecificToB)
+
+TupleToolP2VV_Bs = TupleToolP2VV('TupleToolP2VV_Bs')
+TupleToolP2VV_Bs.Calculator  = 'Bs2JpsiPhiAngleCalculator'
+TupleToolP2VV_Bs.OutputLevel = 6
+BTuple.bMom.addTool(TupleToolP2VV_Bs)
+BTuple.bMom.ToolList       += ["TupleToolP2VV/TupleToolP2VV_Bs"]
 
 #TupleToolTagging
 BTuple.addTool(TupleToolTagging, name = "TupleToolTagging")

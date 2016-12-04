@@ -7,9 +7,9 @@ def make_options(name,opts,data):
         name             = "%s" %name,
         application      = APP,
         inputdata        = data,
-        splitter         = SplitByFiles(filesPerJob = 20, maxFiles = 100),
+        splitter         = SplitByFiles(filesPerJob = 3, maxFiles = 12),
         outputfiles      = [DiracFile("DTT.root")],
-        do_auto_resubmit = True,
+        do_auto_resubmit = False,
         backend          = Dirac()
         )
     print data
@@ -27,12 +27,13 @@ data_2015_MU = BKQuery(path="/LHCb/Collision15/Beam6500GeV-VeloClosed-MagUp/Real
 data_2015_MD = BKQuery(path="/LHCb/Collision15/Beam6500GeV-VeloClosed-MagDown/Real Data/Reco15a/Stripping24/90000000/DIMUON.DST", dqflag=['OK']).getDataset()
 data_2016_MU = BKQuery(path="/LHCb/Collision16/Beam6500GeV-VeloClosed-MagUp/Real Data/Reco16/Stripping26/90000000/DIMUON.DST", dqflag=['OK']).getDataset()
 data_2016_MD = BKQuery(path="/LHCb/Collision16/Beam6500GeV-VeloClosed-MagDown/Real Data/Reco16/Stripping26/90000000/DIMUON.DST", dqflag=['OK']).getDataset()
+'''
 #data_2015_MU_L = BKQuery(path="/LHCb/Collision15/Beam6500GeV-VeloClosed-MagUp/Real Data/Reco15a/Stripping24/90000000/LEPTONIC.MDST", dqflag=['OK']).getDataset()
+'''
 data_2015_MD_L = BKQuery(path="/LHCb/Collision15/Beam6500GeV-VeloClosed-MagDown/Real Data/Reco15a/Stripping24/90000000/LEPTONIC.MDST", dqflag=['OK']).getDataset()
 data_2016_MU_L = BKQuery(path="/LHCb/Collision16/Beam6500GeV-VeloClosed-MagUp/Real Data/Reco16/Stripping26/90000000/LEPTONIC.MDST", dqflag=['OK']).getDataset()
 data_2016_MD_L = BKQuery(path="/LHCb/Collision16/Beam6500GeV-VeloClosed-MagDown/Real Data/Reco16/Stripping26/90000000/LEPTONIC.MDST", dqflag=['OK']).getDataset()
 '''
-
 
 #make_options("1UD_bs2JpsiKK",["/afs/cern.ch/user/b/bdey/cmtuser/bs2JpsiKK/bs2JpsiKK_Data_2011_LooseJpsi.py"],data_2011_MU)
 #make_options("2UD_bs2JpsiKK",["/afs/cern.ch/user/b/bdey/cmtuser/bs2JpsiKK/bs2JpsiKK_Data_2012_LooseJpsi.py"],data_2012_MU)
@@ -40,11 +41,12 @@ data_2016_MD_L = BKQuery(path="/LHCb/Collision16/Beam6500GeV-VeloClosed-MagDown/
 #make_options("2DD_bs2JpsiKK",["/afs/cern.ch/user/b/bdey/cmtuser/bs2JpsiKK/bs2JpsiKK_Data_2012_LooseJpsi.py"],data_2012_MD)
 
 #make_options("5UD_bs2JpsiKK_Carlos",["/afs/cern.ch/user/b/bdey/cmtuser/bs2JpsiKK/Bs2JpsiPhi_MAKER_RealData_Run2.py"],data_2015_MU)
-make_options("5UD_bs2JpsiKK_JPhi",["/afs/cern.ch/user/b/bdey/cmtuser/bs2JpsiKK/bs2JpsiKK_Data_2015_JPhi.py"],data_2015_MU)
-make_options("5UD_bs2JpsiKK",["/afs/cern.ch/user/b/bdey/cmtuser/bs2JpsiKK/bs2JpsiKK_Data_2015.py"],data_2015_MU)
-#make_options("5UD_bs2JpsiKK_B2XMuMu_LokiDTF",["/afs/cern.ch/user/b/bdey/cmtuser/bs2JpsiKK/bs2JpsiKK_Data_2015_B2XMuMu.py"],data_2015_MU_L)
+make_options("5UD_bs2JpsiKK_JPhi",["bs2JpsiKK_Data_2015_JPhi.py"],data_2015_MU)
+make_options("5UD_bs2JpsiKK",["bs2JpsiKK_Data_2015.py"],data_2015_MU)
+#make_options("5UD_bs2JpsiKK_MCJpsi_BetaSWideBs",["/afs/cern.ch/user/b/bdey/cmtuser/bs2JpsiKK/bs2JpsiKK_Data_2015_MCJpsi.py"],data_2015_MU)
+#make_options("5UD_bs2JpsiKK_B2XMuMu",["/afs/cern.ch/user/b/bdey/cmtuser/bs2JpsiKK/bs2JpsiKK_Data_2015_B2XMuMu.py"],data_2015_MU_L)
+#make_options("5UD_bs2JpsiKK_B2XMuMu_DTF",["/afs/cern.ch/user/b/bdey/cmtuser/bs2JpsiKK/bs2JpsiKK_Data_2015_B2XMuMu_DTF.py"],data_2015_MU_L)
 #make_options("6UD_bs2JpsiKK",["/afs/cern.ch/user/b/bdey/cmtuser/bs2JpsiKK/bs2JpsiKK_Data_2016_LooseJpsi.py"],data_2016_MU)
 #make_options("5DD_bs2JpsiKK",["/afs/cern.ch/user/b/bdey/cmtuser/bs2JpsiKK/bs2JpsiKK_Data_2015_LooseJpsi.py"],data_2015_MD)
 #make_options("6DD_bs2JpsiKK",["/afs/cern.ch/user/b/bdey/cmtuser/bs2JpsiKK/bs2JpsiKK_Data_2016_LooseJpsi.py"],data_2016_MD)
-
 
