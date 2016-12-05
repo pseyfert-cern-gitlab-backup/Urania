@@ -34,7 +34,7 @@ else:
         loc      = "/Event/Dimuon/Phys/BetaSBs2JpsiPhiDetachedLine/Particles"
 ###################################################################
  
-bs_filter = FilterDesktop("bs_filter", Code = "(in_range(5150,mBs,5550)) & (dtf_prob > 10E-8)")
+bs_filter = FilterDesktop("bs_filter", Code = "(in_range(5160,mBs,5540)) & (dtf_prob > 10E-6) & (MINTREE('K+'==ABSID, PROBNNk) > 0.1)")
 bs_filter.Preambulo = [
                           "dtf_prob = DTF_PROB(True, 'J/psi(1S)')",
                           "mBs      = DTF_FUN(M, True, 'J/psi(1S)')"

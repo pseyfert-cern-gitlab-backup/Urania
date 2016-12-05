@@ -47,7 +47,7 @@ comb_KK.DaughtersCuts   = {
                           }
 # mostly like the Phi in StrippingBetaSBs2JpsiPhiDetached
 comb_KK.CombinationCut  = "(AM < 2200.*MeV) & (ADOCACHI2CUT(30, ''))"
-comb_KK.MotherCut       = "(PT > 500.*MeV) & (VFASPF(VCHI2) < 25)"
+comb_KK.MotherCut       = "(PT > 500.*MeV) & (VFASPF(VCHI2) < 25)  & (MINTREE('K+'==ABSID, PROBNNk) > 0.15)"
 sel_KK = Selection("sel_KK",
                    Algorithm=comb_KK,
                    RequiredSelections=[Kaons]
@@ -68,7 +68,7 @@ sel_B_init = Selection("sel_B_init",
                  )
 
 # now apply DTF and +/- 200 MeV around Bs mass
-sel_Bs_filter = FilterDesktop("sel_Bs_filter", Code = "(in_range(5167,mBs,5567)) & (dtf_prob > 10E-8) & (mKK < 3000)") 
+sel_Bs_filter = FilterDesktop("sel_Bs_filter", Code = "(in_range(5167,mBs,5567)) & (dtf_prob > 10E-6) & (mKK < 3000)") 
 sel_Bs_filter.Preambulo = [
                           "dtf_prob = DTF_PROB(True , 'J/psi(1S)')",
                           "mBs      = DTF_FUN(M, True , 'J/psi(1S)')",
