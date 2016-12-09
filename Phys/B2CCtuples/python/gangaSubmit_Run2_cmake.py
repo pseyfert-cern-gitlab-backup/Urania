@@ -47,4 +47,4 @@ if isTurbo:
 keys = [ 'MagnetDown_2015', 'MagnetUp_2015' ]
 #keys = [ 'MagnetDown_2016', 'MagnetUp_2016' ]
 
-for key in keys: create_job(key, maker_path, input_paths[key], 1, NumberOfFiles)
+for key in keys: create_job(key, maker_path, input_paths[key], 10, NumberOfFiles)

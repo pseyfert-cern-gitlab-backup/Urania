@@ -17,7 +17,7 @@ DstConf().Turbo=True
 
 dataType   = '2016'
 isMC       = False
-tupleName  = 'DTT.root'
+tupleName  = 'DTT-Turbo.root'
 inputType  = "MDST" 
 
 
@@ -221,8 +221,8 @@ BsTupleStrip.B_s0.ToolList                                 += ["TupleToolTISTOS"
 
 ##### Main body
 
-from GaudiConf import IOHelper
-IOHelper().inputFiles(['~/eos/lhcb/grid/prod/lhcb/validation/Collision16/LEPTONS.MDST/00053721/0000/00053721_00000219_1.leptons.mdst'], clear=True)
+#from GaudiConf import IOHelper
+#IOHelper().inputFiles(['root://eoslhcb.cern.ch/eos/lhcb/grid/prod/lhcb/validation/Collision16/LEPTONS.MDST/00053721/0000/00053721_00000219_1.leptons.mdst'], clear=True)
 
 from Configurables import TrackScaleState
 scaler = TrackScaleState('TrackScaleState')
@@ -236,7 +236,7 @@ seqB2JpsiX.ShortCircuit   = False
 
 evtTuple                  = EventTuple()
 evtTuple.ToolList        += ["TupleToolEventInfo", "TupleToolTrigger"]
-DaVinci().EvtMax          = 3000
+DaVinci().EvtMax          = -1
 DaVinci().SkipEvents      = -1
 DaVinci().DataType        = dataType
 DaVinci().InputType       = inputType      
