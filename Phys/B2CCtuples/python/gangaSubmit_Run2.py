@@ -36,14 +36,14 @@ input_paths = { 'MagnetDown_2015': '/LHCb/Collision15/Beam6500GeV-VeloClosed-Mag
 
 
 if isTurbo:
-   input_paths = { 'MagnetDown_2015'  : '/LHCb/Collision15/Beam6500GeV-VeloClosed-MagDown/Real Data/Turbo03/94000000/LEPTONS.MDST'
-                   , 'MagnetUp_2015'  : '/LHCb/Collision15/Beam6500GeV-VeloClosed-MagUp/Real Data/Turbo03/94000000/LEPTONS.MDST'
+   input_paths = { 'MagnetDown_2015'  : '/LHCb/Collision15/Beam6500GeV-VeloClosed-MagDown/Real Data/Turbo02/94000000/TURBO.MDST'
+                   , 'MagnetUp_2015'  : '/LHCb/Collision15/Beam6500GeV-VeloClosed-MagUp/Real Data/Turbo02/94000000/TURBO.MDST'
                    , 'MagnetDown_2016': '/LHCb/Collision16/Beam6500GeV-VeloClosed-MagDown/Real Data/Turbo03/94000000/LEPTONS.MDST'
                    , 'MagnetUp_2016'  : '/LHCb/Collision16/Beam6500GeV-VeloClosed-MagUp/Real Data/Turbo03/94000000/LEPTONS.MDST' }
 
 
 
-keys = [ 'MagnetDown_2015', 'MagnetUp_2015' ]
-#keys = [ 'MagnetDown_2016', 'MagnetUp_2016' ]
+#keys = [ 'MagnetDown_2015', 'MagnetUp_2015' ]
+keys = [ 'MagnetDown_2016', 'MagnetUp_2016' ]
 
 for key in keys: create_job(key, maker_path, input_paths[key], 10, NumberOfFiles)
