@@ -20,7 +20,7 @@ use  SomeUtils			v5r1	Math			# Diego Martinez Santos
 
 use  Urania			v5r0	Phys			# Diego Martinez Santos
 use  A2MuMu			v1r3	Phys			# Carlos Vazquez Sierra, Diego Martinez Santos, Martino Borsato
-use  B2CCtuples			v2r1	Phys			# Olivier Leroy
+use  B2CCtuples			v2r1	Phys			# Carlos Vazquez Sierra
 use  Bs2JpsiKs                  v5r5    Phys                    # Patrick Koppenburg
 
 use  Bs2JpsiPhiParams		v2r1	Phys			# Greig Cowan
@@ -45,9 +45,6 @@ use PIDPerfTools                v7r1    PIDCalib                # Philip Hunt
 
 use  LHCbStyle			v2r7	RootTools		# Rolf Oldeman, Niels Tuning
 use  SimpleTools	  	v2r0	RootTools           	# Conor Fitzpatrick
-
-#use  MoreSimpleTools	  	v2r0	RootTools           	# Rob Lambert
-#use GammaPi0SeparationCalib v1r0 Phys        # Albert Puig
 
 apply_pattern container_package
 
