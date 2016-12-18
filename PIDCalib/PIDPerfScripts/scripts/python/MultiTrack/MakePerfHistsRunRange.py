@@ -35,8 +35,8 @@ In this case, a performance histogram will be produced for each PID cut.
 
 For a full list of arguments, do: 'python {0} -h'
 
-e.g. Run 1: python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
-    \"[DLLK > 0.0, DLLK > 4.0 && DLLp < 0.0]\"
+e.g. Run 1: python {0} \"20\" \"MagUp\" \"K\" \\
+    \"[DLLK > 0.0, DLLK > 4.0 && DLLp < 0.0]\" -c \"runNumber>=114205 && runNumber<=114287\"
     
 e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
     \"[DLLK > 0.0, DLLK > 4.0 && DLLp < 0.0]\" -c \"runNumber>=114205 && runNumber<=114287\"
