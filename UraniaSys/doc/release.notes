@@ -8,6 +8,9 @@ Purpose             : LHCb physics repository
    + Added two new packages:
       PhysFit/V0hhFitter
       Phys/BsDsMuNuForRDS
+   + Updates on the following packages:
+      PIDCalib/PIDPerfScripts v11r0
+      PIDCalib/PIDPerfTools   v8r0
 
 !============================== v1r0-v5r0 14-06-2016 ==============================
 
