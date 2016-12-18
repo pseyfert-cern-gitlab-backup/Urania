@@ -207,7 +207,7 @@ void GenericDataSet::SetTrackVars( const VectorOfStringPairs& VarAliases )
   BOOST_FOREACH(alias, VarAliases) {
     SetTrackVar(alias.second, alias.first);
   }
-  SetTrackVar_DLLpK();
+  //SetTrackVar_DLLpK();
   
 }
 
@@ -227,7 +227,7 @@ void GenericDataSet::SetTrackVar( const std::string& InputName,
   }
   else
   {
-    cout<<"WARNING: "<<InputName<<" is not in DataSet"<<endl;
+    //cout<<"WARNING: "<<InputName<<" is not in DataSet"<<endl;
 //     RooErrorHandler::softAbort();
   }
 
@@ -236,34 +236,34 @@ void GenericDataSet::SetTrackVar( const std::string& InputName,
 //=============================================================================
 // Define track variable DLLpK and add to the DataSet
 //=============================================================================
-void GenericDataSet::SetTrackVar_DLLpK()
-{
-  // Get parameter list and pointer to parameter with name 'InputName'
-  const RooArgSet* vars = this->get();
-
-  RooRealVar* DLLp = (RooRealVar*)this->Get_Param("DLLp");
-  RooRealVar* DLLK = (RooRealVar*)this->Get_Param("DLLK");
-  
-  if ( not DLLp or not DLLK ) {
-    if ( not DLLp ) cout<<"WARNING: DLLp is not in DataSet"<<endl;
-    if ( not DLLK ) cout<<"WARNING: DLLK is not in DataSet"<<endl;
-    cout<<"WARNING: Not creating My_DLLpK"<<endl;
-    return;
-  }
-
-  RooFormulaVar DLLpK("My_DLLpK",
-                      "DLL(p - K)",
-                      "@0 - @1",
-                      RooArgSet(*DLLp,*DLLK));
-
-  if(!vars->find("My_DLLpK"))
-  {
-    this->addColumn(DLLpK);
-  }
-
-  m_ParamMap.insert( make_pair(std::string("DLLpK"),
-                               (RooRealVar*)vars->find("My_DLLpK")) );
-}
+// void GenericDataSet::SetTrackVar_DLLpK()
+// {
+//   // Get parameter list and pointer to parameter with name 'InputName'
+//   const RooArgSet* vars = this->get();
+// 
+//   RooRealVar* DLLp = (RooRealVar*)this->Get_Param("DLLp");
+//   RooRealVar* DLLK = (RooRealVar*)this->Get_Param("DLLK");
+//   
+//   if ( not DLLp or not DLLK ) {
+//     if ( not DLLp ) cout<<"WARNING: DLLp is not in DataSet"<<endl;
+//     if ( not DLLK ) cout<<"WARNING: DLLK is not in DataSet"<<endl;
+//     cout<<"WARNING: Not creating My_DLLpK"<<endl;
+//     return;
+//   }
+// 
+//   RooFormulaVar DLLpK("My_DLLpK",
+//                       "DLL(p - K)",
+//                       "@0 - @1",
+//                       RooArgSet(*DLLp,*DLLK));
+// 
+//   if(!vars->find("My_DLLpK"))
+//   {
+//     this->addColumn(DLLpK);
+//   }
+// 
+//   m_ParamMap.insert( make_pair(std::string("DLLpK"),
+//                                (RooRealVar*)vars->find("My_DLLpK")) );
+// }
 
 //=============================================================================
 // Append method for GenericDataSet

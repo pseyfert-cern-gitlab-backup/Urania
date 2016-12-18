@@ -2,12 +2,21 @@ import ROOT
 import sys
 import warnings
 import time
+import os
+from os import path
 from PIDPerfScripts.Definitions import *
 from PIDPerfScripts.Exceptions import *
 from PIDPerfScripts.RunDictFuncs import *
 from PIDPerfScripts.TupleDataset import *
 from  PIDPerfScripts import OverrideCalibDataStore
 from DIRAC.Resources.Storage.StorageElement     import StorageElement
+#Added BKK functionality for retrieving Run 2 WGP nTuples
+from DIRAC.Core.Base import Script
+Script.parseCommandLine( ignoreErrors = True )
+
+import DIRAC
+from LHCbDIRAC.BookkeepingSystem.Client.BookkeepingClient   import BookkeepingClient
+from DIRAC.DataManagementSystem.Client.DataManager import DataManager
 
 def GetDataSetNameDictionary(PartName):
     #======================================================================
@@ -24,7 +33,7 @@ def GetDataSetNameDictionary(PartName):
 
 
 def GetDataSets(StripVer, MagPolarity, PartName, TrackCuts, runMin=None, runMax=None,
-                verbose=False, allowMissingDataSets=False, minEntries=0, maxFiles=-1, triggerList=[]):
+                verbose=False, allowMissingDataSets=False, minEntries=0, maxFiles=-1):
 
     CheckStripVer(StripVer)
     if None not in (runMin, runMax):
@@ -33,31 +42,36 @@ def GetDataSets(StripVer, MagPolarity, PartName, TrackCuts, runMin=None, runMax=
         TrackCuts+='runNumber>='+runMin+' && runNumber<='+runMax
     if verbose:
         print 'Track Cuts: ', TrackCuts
-    
+
     if verbose:
-       print "Attemptng to get URLS: ({0},{1}) ".format(time.time(),time.clock())  
-    files = GetFiles(StripVer,MagPolarity,PartName,runMin,runMax,maxFiles,verbose)  
- 
+       print "Attemptng to get URLS: ({0},{1}) ".format(time.time(),time.clock())
+    files = GetFiles(StripVer,MagPolarity,PartName,runMin,runMax,maxFiles,verbose)
+
     if verbose:
        print "Obtain URLS: ({0},{1}) ".format(time.time(),time.clock())
     DataSets = []
 
     for file in files:
         DataSet = GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,file, verbose,
-                             allowMissingDataSets, minEntries, triggerList)
+                             allowMissingDataSets, minEntries)
         if DataSet is not None:
             DataSets.append(DataSet)
     return DataSets
 
-def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,file, verbose=False,
-               allowMissingDataSets=False, minEntries=0, triggerList=[]):
+def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,PIDCutString,XVarName,YVarName,ZVarName,file, verbose=False,
+               allowMissingDataSets=False, minEntries=0):
+               
+    #If Run I data has been requested and MC12TuneV4 or MC15TuneV1 ProbNN cut used, return error
+    if 'Turbo' not in StripVer:
+    	if 'MC12TuneV4' in PIDCutString or 'MC15TuneV1' in PIDCutString:
+    		raise RooWorkspaceError("Cannot use MC12TuneV4 or MC15TuneV1 ProbNN for Run 1 data. Please use MC12TuneV2 or MC12TuneV3")
 
     RecoVer = GetRecoVer(StripVer)
- 
+
     if verbose:
       print "Attempting to open file {0} for reading: ({1},{2})".format(file,time.time(),time.clock())
-         
- 
+
+
     f = ROOT.TFile.Open(file)
 
     if not f:
@@ -73,20 +87,23 @@ def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,file, verbose=False,
       print "Attempting to get workspace {0}".format(wsname)
     ws = f.Get(wsname)
 
-    ## Lucio Anderlini -- May 26, 2015
-    ## The following code tries to load the dataset directly from the nTuple
-    ## in case the RooWorkspace is not available.
+    #In the case of Run II data, read the WGP nTuple and convert to RooDataSet
     CheckPartType(PartName)
-    PartType = GetRealPartType(PartName)        
+    PartType = GetRealPartType(PartName)
     DataSetNameDict = GetDataSetNameDictionary(PartName)
-   
+
     if verbose: print "Attempting to create dataset: ({0},{1})".format(time.time(),time.clock())
     if ws:
       Data = ws.data('data')
     else:
-      Data = getDataSetFromTuple ( file      = f
-                                  , mother   = DataSetNameDict['MotherName']
-                                  , part     = PartType
+      Data = getDataSetFromTuple ( file       = file
+                                  , mother    = DataSetNameDict['MotherName']
+                                  , part      = PartType
+                                  , trackcuts = TrackCuts
+                                  , pidcuts   = PIDCutString
+                                  , xvar      = XVarName
+                                  , yvar      = YVarName
+                                  , zvar      = ZVarName
             )
       print "Automatic conversion from TTree to RooDataSet"
 #        raise TFileError("Failed to retrieve workspace {wsname} from file {fname}".format(
@@ -99,64 +116,8 @@ def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,file, verbose=False,
 
     #Data.Print("v")
 
-    #TODO: check for memory leaks here
-    if len(triggerList) > 0:
-      if verbose:
-        print "Loading trigger decisions."
-      TriggerDataSet = ws.data("trigger")
-      if not TriggerDataSet:
-        print "Error loading trigger dataset"
-        sys.exit(1)
-      #TriggerDataSet.Print()
-      TriggerPrefix = PartType + "_"
-      LenTriggerPrefix = len(TriggerPrefix)
-
-      reducedTriggerVarSet = ROOT.RooArgSet()
-      triggerVarList = ROOT.RooArgList()
-      for triggerName in triggerList:
-        var = ws.obj(TriggerPrefix+triggerName)
-        if not var:
-          availbleTriggers = []
-          dsVars = TriggerDataSet.get()
-          it = dsVars.createIterator()
-          while True:
-            v = it.Next()
-            if not v: break
-            availbleTriggers.append(v.GetName()[LenTriggerPrefix:])
-          availbleTriggers.sort()
-          raise ValueError( "Trigger %s not availble in trigger dataset. Availble triggers are %s"%( triggerName, availbleTriggers.__repr__() ) )
-        reducedTriggerVarSet.add(var)
-        #triggerVarList.add(var)
-
-      if verbose:
-        print "Removing unneeded trigger decisions."
-      MiniTriggerDataSet = getattr(TriggerDataSet,"reduce")(reducedTriggerVarSet)
-      #MiniTriggerDataSet.Print("v")
-
-      dsVars = MiniTriggerDataSet.get()
-      it = dsVars.createIterator()
-      formulae = []
-      while True:
-        v = it.Next()
-        if not v: break
-        var_name = v.GetName()
-        formulaVarList = ROOT.RooArgList()
-        formulaVarList.add(v)
-
-        formulae.append( ROOT.RooFormulaVar( var_name+"_Dec", PartType+" "+var_name[LenTriggerPrefix:]+" Decision", "int((int(%s)&1)/1)"%(var_name), formulaVarList) )
-        formulae.append( ROOT.RooFormulaVar( var_name+"_TIS", PartType+" "+var_name[LenTriggerPrefix:]+" TIS", "int((int(%s)&2)/2)"%(var_name), formulaVarList) )
-        formulae.append( ROOT.RooFormulaVar( var_name+"_TOS", PartType+" "+var_name[LenTriggerPrefix:]+" TOS", "int((int(%s)&4)/4)"%(var_name), formulaVarList) )
-
-      for formula in formulae:
-        triggerVarList.add(formula)
-
-      if verbose:
-        print "Unpacking trigger decisions."
-      MiniTriggerDataSet.addColumns(triggerVarList)
-      Data.merge(MiniTriggerDataSet)
-
     if verbose:
-      print "Applying any cuts the dataset."
+      print "Applying any cuts to the dataset."
 
     #======================================================================
     # Declare Instance of RICHTrackDataSet for Calibration tracks
@@ -174,16 +135,11 @@ def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,file, verbose=False,
         dsType = 'GenericDataSet'
 
         VariableVector = ROOT.std.vector(ROOT.std.pair("string,string"))()
-
         for VarName, DataSetVarName in DataSetVariables().iteritems():
-          VariableAlias = ROOT.std.pair("string,string")(VarName, DataSetVarName.format(particle=PartType))
+          #VariableAlias = ROOT.std.pair("string,string")(VarName, DataSetVarName.format(particle=PartType))
+          VariableAlias = ROOT.std.pair("string,string")(VarName, DataSetVarName.dsname.format(particle=PartType))
           VariableVector.push_back(VariableAlias)
 
-        for triggerName in triggerList:
-          LenTriggerPrefix = len(PartType)+1
-          for suffix in ["","_Dec","_TIS","_TOS"]:
-            VariableAlias = ROOT.std.pair("string,string")(triggerName+suffix, PartType+"_"+triggerName+suffix)
-            VariableVector.push_back(VariableAlias)
 
         DataSet = ROOT.GenericDataSet('Calib_Data'
                                        , Data
@@ -192,55 +148,10 @@ def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,file, verbose=False,
                                        , TrackCuts
                                        , 'nsig_sw'
                                        )
-        #print "DataSet internal store is:", str(DataSet.store())
-        #dsType = 'PIDTrackDataSet'
-        #DataSet = ROOT.PIDTrackDataSet('Calib_Data'
-                                       #, ''
-                                       #, Data
-                                       #, Data.get()
-                                       #, PartType+'_P'
-                                       #, PartType+'_PT'
-                                       #, PartType+'_Eta'
-                                       #, 'nTracks'
-                                       #, 'nSPDHits'
-                                       #, PartType+'_CombDLLK'
-                                       #, PartType+'_CombDLLp'
-                                       #, PartType+'_CombDLLe'
-                                       #, PartType+'_CombDLLmu'
-                                       #, PartType+'_IsMuon'
-                                       #, PartType+'_IsMuonLoose'
-                                       #, PartType+'_nShared'
-                                       #, PartType+'_HasBremAdded'
-                                       #, PartType+'_CaloRegion'
-                                       #, PartType+'_ProbNNK'
-                                       #, PartType+'_ProbNNpi'
-                                       #, PartType+'_ProbNNp'
-                                       #, PartType+'_ProbNNmu'
-                                       #, PartType+'_ProbNNe'
-                                       #, TrackCuts
-                                       #, 'nsig_sw'
-                                       #)
 
     else:
-        print 'use an earlier version of PIDPerfTools'
-        #dsType = 'RICHTrackDataSet'
-        #DataSet = ROOT.RICHTrackDataSet('Calib_Data'
-        #                                , ''
-        #                                , Data
-        #                                , Data.get()
-        #                                , PartType+'_P'
-        #                                , PartType+'_PT'
-        #                                , PartType+'_Eta'
-        #                                , 'nTracks'
-        #                                , 'nSPDHits'
-        #                                , PartType+'_CombDLLK'
-        #                                , PartType+'_CombDLLp'
-        #                                , PartType+'_V2ProbNNK'
-        #                                , PartType+'_V2ProbNNpi'
-        #                                , PartType+'_V2ProbNNp'
-        #                                , TrackCuts
-        #                                , 'nsig_sw'
-        #                                )
+        print 'Reco Version < 14! Please use an earlier version of PIDPerfTools.'
+
 
     if ws:
       ws.Delete()
@@ -286,116 +197,128 @@ def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,file, verbose=False,
 
     return DataSet
 
+##############################################
+### RUN II FILE ACCESS WITH THIS FUNCTION ####
+##############################################
+	
+def GetWGPFiles(StripVer,MagPolarity,verbose=False):
+    rm = DataManager()
+    bkClient = BookkeepingClient()
+    bkDict = {} 
+    args = Script.getPositionalArgs()
+    bkDict[ 'ConfigName' ] = 'LHCb'
+    bkDict[ 'EventTypeId' ] = '95100000'
+    bkDict['FileType'] = 'PIDCALIB.ROOT'
+    bkDict['DataTakingConditions'] = 'Beam6500GeV-VeloClosed-'+MagPolarity
+    year = StripVer.replace('Turbo','')
+    bkDict[ 'ConfigVersion' ] = 'Collision'+year
+    
+    reco = ''
+    turbo = ''
+    version = ''
+    ############
+    ### 2015 ###
+    ############
+    if year == '15':
+    	reco = '15a'
+    	turbo = '02'
+    	version = '4r1'
+    ############
+    ### 2016 ###
+    ############
+    elif year == '16':
+    	reco = '16'
+    	turbo = '02a'
+    	version = '4r1'
+    bkDict[ 'ProcessingPass' ] = '/Real Data/Reco'+reco+'/Turbo'+turbo+'/PIDCalibTuples'+version+'/PIDMerge01'
+
+    file = bkClient.getFilesWithGivenDataSets(bkDict)
+    files  = file['Value'] 
+    print "There are " + str(len(files)) + " WGP nTuples in this dataset"
+    #print files
+    #print "============================================="
+    newFileList = []
+    for fileName in files:
+        newFileList += [fileName.replace ( '/lhcb/LHCb/', "root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/" )]
+        #print " ".join(newFileList)  
+	
+    return newFileList
+
+
+#############################################
+### RUN I FILE ACCESS WITH THIS FUNCTION ####
+#############################################
+
 def GetFiles(StripVer,MagPolarity,PartName,runMin=None,runMax=None,maxFiles = -1,verbose=False):
+    #files = OverrideCalibDataStore.GetDictFiles(runMin,runMax,maxFiles,verbose)
+    #if len(files) > 0:
+    #   print "Using files from:" + os.getenv('OVERRIDECALIBDATASTORE')
+    #   return files
+       
+    #else:
+    #======================================================================
+    # Create dictionary holding:
+    # - Reconstruction version    ['RecoVer']
+    # - np.array of:
+    #        - MagUp run limits   ['UpRuns']
+    #        - MagDown run limits ['DownRuns']
+    #======================================================================
+    files = []
+    
     CheckStripVer(StripVer)
-    files = OverrideCalibDataStore.GetDictFiles(runMin,runMax,maxFiles,verbose)
-    if len(files) > 0: 
-       print "Using files from:" + os.getenv('OVERRIDECALIBDATASTORE')
-       return files
+    
+    CheckPartType(PartName)
+    DataDict = GetRunDictionary(StripVer, PartName , verbose )
+    
+    #======================================================================
+    # Determine min and max file indicies
+    #======================================================================
+    CheckMagPol(MagPolarity)
+    IndexDict = GetMinMaxFileDictionary(DataDict, MagPolarity,
+                                        runMin, runMax, maxFiles , verbose )
+    
+    from os import getenv
+    
+    RecoVer = GetRecoVer(StripVer)
+    
+    stv = StripVer
+    if StripVer == '21_MCTuneV4':
+        stv = '21'
+    if StripVer == '21r1_MCTuneV4':
+        stv = '21r1'
+    if StripVer == '23_MCTuneV1':
+        stv = '23'
+                
+                
+    DataSetNameDict = GetDataSetNameDictionary(PartName)
+                
+    fname_protocol = ""
+    fname_query = ""
+    fname_extra = ""
+                
+    CalibDataProtocol=os.getenv("CALIBDATAURLPROTOCOL")
+    CalibDataExtra=os.getenv("CALIBDATAEXTRA")
 
-    if CheckIsTurbo(StripVer):        
-        from LHCbDIRAC.Interfaces.API.DiracLHCb import DiracLHCb
-        time.sleep(5)
-        dirac = DiracLHCb()
-
-        CheckMagPol(MagPolarity) 
-     
-        query = GetTurboPath(StripVer,MagPolarity)
-        print query
-        lfns = dirac.bkQueryPath ( query )
-        if 'Value' not in lfns.keys(): print "Value not in lfns.keys()"
-        if 'LFNs' not in lfns['Value'].keys(): "LFNs not in lfns['Value'].keys()"
-        if maxFiles > 0: lfns = lfns['Value']['LFNs'].keys()[:int(maxFiles)]
-        else: lfns = lfns['Value']['LFNs'].keys()
- 
-        replicas = dirac.getAllReplicas ( lfns ) ['Value']['Successful']
-        replica_failed = dirac.getAllReplicas ( lfns ) ['Value']['Failed']
- 
-        if len(replica_failed) == 0: print "obtain replicas for all files successfully"        
-
-        for lfn_fail in replica_failed:
-            print lfn_failed
-
-        replicaDict = {}
-
-        for lfn in replicas:
-            for site in replicas[lfn].keys():
-                pfn = replicas[lfn][site]
-                if site not in replicaDict: replicaDict[site] = []
-
-                replicaDict[site] += [ lfn ]
-                break  ## max 1 replica per lfn to avoid double counting
-
-        for site in replicaDict:
-             urls = dirac.getAccessURL ( replicaDict[site], site )
-             urls = StorageElement ( site ).getURL( replicaDict[site], "root" )#("root", "xroot")) 
-             urls = urls['Value']['Successful'].values()
-             if len(urls) and "root:" not in urls[0]:
-                  urls = StorageElement ( site ).getURL( replicaDict[site] )#("root", "xroot")) 
-                  urls = urls['Value']['Successful'].values()
-             files += urls
-             print files[-1]     
-        return files
-    else:
-        #======================================================================
-        # Create dictionary holding:
-        # - Reconstruction version    ['RecoVer']
-        # - np.array of:
-        #        - MagUp run limits   ['UpRuns']
-        #        - MagDown run limits ['DownRuns']
-        #======================================================================
-        CheckPartType(PartName)
-        DataDict = GetRunDictionary(StripVer, PartName , verbose )
-
-        #======================================================================
-        # Determine min and max file indicies
-        #======================================================================
-        CheckMagPol(MagPolarity)
-        IndexDict = GetMinMaxFileDictionary(DataDict, MagPolarity,
-                                            runMin, runMax, maxFiles , verbose )
-
-        from os import getenv
-        
-        RecoVer = GetRecoVer(StripVer)
-
-        stv = StripVer
-        if StripVer == '21_MCTuneV4':
-           stv = '21'
-        if StripVer == '21r1_MCTuneV4':
-           stv = '21r1'
-        if StripVer == '23_MCTuneV1':
-           stv = '23'
+    # set the URL protocol (if applicable)
+    if CalibDataProtocol is not None and CalibDataProtocol!="":
+        fname_protocol = "{0}".format(CalibDataProtocol)
 
 
-        DataSetNameDict = GetDataSetNameDictionary(PartName)
+    if CalibDataExtra is not None and CalibDataExtra!="":
+        fname_extra = "{0}".format(CalibDataExtra)
 
-        fname_protocol = ""
-        fname_query = ""
-        fname_extra = ""
+    vname_head = "CALIBDATASTORE"
+    fname_head = os.getenv(vname_head)
+    if fname_head is None:
+        raise GetEnvError("Cannot retrieve dataset, environmental variable %s has not been set." %vname_head)
 
-        CalibDataProtocol=os.getenv("CALIBDATAURLPROTOCOL")
-        CalibDataExtra=os.getenv("CALIBDATAEXTRA")
-
-        # set the URL protocol (if applicable)
-        if CalibDataProtocol is not None and CalibDataProtocol!="":
-            fname_protocol = "{0}".format(CalibDataProtocol)
-
-
-        if CalibDataExtra is not None and CalibDataExtra!="":
-            fname_extra = "{0}".format(CalibDataExtra)
-
-        vname_head = "CALIBDATASTORE"
-        fname_head = os.getenv(vname_head)
-        if fname_head is None:
-            raise GetEnvError("Cannot retrieve dataset, environmental variable %s has not been set." %vname_head)
-
-        PartType = GetRealPartType(PartName)
-        for i in xrange(IndexDict['minIndex'], IndexDict['maxIndex']+1):
-            fname = ("{prtcol}//{extra}//{topdir}/Reco{reco}_DATA/{pol}/"
-                     "{mother}_{part}_{pol}_Strip{strp}_{idx}.root").format(
-                prtcol=fname_protocol, extra=fname_extra,topdir=fname_head, reco=RecoVer,
-                pol=MagPolarity, mother=DataSetNameDict['MotherName'],
-                part=PartType, strp=stv, idx=i)
-            files += [fname];
-            print files[-1]  
-        return files
+    PartType = GetRealPartType(PartName)
+    for i in xrange(IndexDict['minIndex'], IndexDict['maxIndex']+1):
+        fname = ("{prtcol}//{extra}//{topdir}/Reco{reco}_DATA/{pol}/"
+                 "{mother}_{part}_{pol}_Strip{strp}_{idx}.root").format(
+            prtcol=fname_protocol, extra=fname_extra,topdir=fname_head, reco=RecoVer,
+            pol=MagPolarity, mother=DataSetNameDict['MotherName'],
+            part=PartType, strp=stv, idx=i)
+        files += [fname];
+        print files[-1]
+    return files

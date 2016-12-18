@@ -157,10 +157,10 @@ def MakePerfPlotsListPyth(PartName, DataSet, DLLCutList, BinningScheme,
             pidTable = ROOT.PIDTable(RatioHist, BinSchema1, BinSchema2)
         elif BinningScheme.size() > 0:
             pidTable = ROOT.PIDTable(RatioHist, BinSchema1)
-        print "pidTable made"    
+        #print "pidTable made"    
         #pidTable.PrintTable(sys.stdout, False)
         #sys.stdout.flush()
-        print "but not printed the table"
+        #print "but not printed the table"
         PlotsByCut.append([[RatioHist,TotalHist,PassedHist]])
 
     NewPlots = map(add, Plots, PlotsByCut) if Plots else PlotsByCut

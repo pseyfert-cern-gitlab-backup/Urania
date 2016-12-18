@@ -1,9 +1,9 @@
 #============================================================================
 # Created    : 2010-10-07
-# Maintainer : Sneha Malde
+# Maintainer : Donal Hill
 #============================================================================
 package           PIDPerfScripts
-version           v10r7
+version           v11r0
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -41,8 +41,6 @@ apply_pattern install_more_includes more=PIDPerfScripts
 set CALIBDATAURLPROTOCOL root:
 set CALIBDATAEXTRA eoslhcb.cern.ch
 set CALIBDATASTORE eos/lhcb/grid/prod/lhcb/calib/lhcb/calib/pid/CalibData/
-
-#set OVERRIDECALIBDATASTORE /home/qian/outputURLs15MD.dat 
 
 #------------------------------------------------------------------------------
 #
