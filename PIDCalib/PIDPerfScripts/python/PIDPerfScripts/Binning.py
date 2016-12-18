@@ -261,20 +261,20 @@ for trType in GetPartTypes():
     AddBinScheme(trType, 'P', 'PerfPlots_%s'%(trType), 0, 100000)
     AddUniformBins(trType, 'P', 'PerfPlots_%s'%(trType), 20, 0, 100000)
 
-    AddBinScheme(trType, 'Tesla_P', 'PerfPlots_%s'%(trType), 0, 100000)
-    AddUniformBins(trType, 'Tesla_P', 'PerfPlots_%s'%(trType), 20, 0, 100000)
+    AddBinScheme(trType, 'Brunel_P', 'PerfPlots_%s'%(trType), 0, 100000)
+    AddUniformBins(trType, 'Brunel_P', 'PerfPlots_%s'%(trType), 20, 0, 100000)
 
     AddBinScheme(trType, 'PT', 'PerfPlots_%s'%(trType), 0, 15000)
     AddUniformBins(trType, 'PT', 'PerfPlots_%s'%(trType), 20, 0, 15000)
 
-    AddBinScheme(trType, 'Tesla_PT', 'PerfPlots_%s'%(trType), 0, 15000)
-    AddUniformBins(trType, 'Tesla_PT', 'PerfPlots_%s'%(trType), 20, 0, 15000)
+    AddBinScheme(trType, 'Brunel_PT', 'PerfPlots_%s'%(trType), 0, 15000)
+    AddUniformBins(trType, 'Brunel_PT', 'PerfPlots_%s'%(trType), 20, 0, 15000)
 
     AddBinScheme(trType, 'ETA', 'PerfPlots_%s'%(trType), 1.5, 5.0)
     AddUniformBins(trType, 'ETA', 'PerfPlots_%s'%(trType), 20, 1.5, 5.0)
 
-    AddBinScheme(trType, 'Tesla_ETA', 'PerfPlots_%s'%(trType), 1.5, 5.0)
-    AddUniformBins(trType, 'Tesla_ETA', 'PerfPlots_%s'%(trType), 20, 1.5, 5.0)
+    AddBinScheme(trType, 'Brunel_ETA', 'PerfPlots_%s'%(trType), 1.5, 5.0)
+    AddUniformBins(trType, 'Brunel_ETA', 'PerfPlots_%s'%(trType), 20, 1.5, 5.0)
 
     AddBinScheme(trType, 'PHI', 'PerfPlots_%s'%(trType), -3.14159, 3.14159)
     AddUniformBins(trType, 'PHI', 'PerfPlots_%s'%(trType), 20, -3.14159, 3.14159)
@@ -289,13 +289,19 @@ for trType in GetPartTypes():
         if realPart != "pi":
             AddBinScheme(trType, 'DLL%s'%(realPart), 'PerfPlots_%s'%(trType), -100, 100)
             AddUniformBins(trType, 'DLL%s'%(realPart), 'PerfPlots_%s'%(trType), 100, -100, 100)
-
-        AddBinScheme(trType, 'V2ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 0, 1)
-        AddUniformBins(trType, 'V2ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 20, 0, 1)
-        AddBinScheme(trType, 'V3ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 0, 1)
-        AddUniformBins(trType, 'V3ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 20, 0, 1)
-        AddBinScheme(trType, 'V4ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 0, 1)
-        AddUniformBins(trType, 'V4ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 20, 0, 1)            
+            
+        
+        AddBinScheme(trType, 'MC12TuneV2_ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 0, 1)
+        AddUniformBins(trType, 'MC12TuneV2_ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 20, 0, 1)
+        
+        AddBinScheme(trType, 'MC12TuneV3_ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 0, 1)
+        AddUniformBins(trType, 'MC12TuneV3_ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 20, 0, 1)
+        
+        AddBinScheme(trType, 'MC12TuneV4_ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 0, 1)
+        AddUniformBins(trType, 'MC12TuneV4_ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 20, 0, 1)  
+        
+        AddBinScheme(trType, 'MC15TuneV1_ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 0, 1)
+        AddUniformBins(trType, 'MC15TuneV1_ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 20, 0, 1)
 
         if realPart != "mu":
             AddBinScheme(trType, 'RICHThreshold_%s'%(realPart), 'PerfPlots_%s'%(trType), -2, 2)
@@ -331,11 +337,11 @@ for trType in GetPartTypes():
     AddBinScheme(trType, 'HasCalo', 'PerfPlots_%s'%(trType), 0, 2)
     AddUniformBins(trType, 'HasCalo', 'PerfPlots_%s'%(trType), 2, 0, 2)
 
-    AddBinScheme(trType, 'HasBremAdded', 'PerfPlots_%s'%(trType), 0, 2)
-    AddUniformBins(trType, 'HasBremAdded', 'PerfPlots_%s'%(trType), 2, 0, 2)
+    #AddBinScheme(trType, 'HasBremAdded', 'PerfPlots_%s'%(trType), 0, 2)
+    #AddUniformBins(trType, 'HasBremAdded', 'PerfPlots_%s'%(trType), 2, 0, 2)
 
-    AddBinScheme(trType, 'CaloRegion', 'PerfPlots_%s'%(trType), 2, 5)
-    AddUniformBins(trType, 'CaloRegion', 'PerfPlots_%s'%(trType), 3, 2, 5)
+    #AddBinScheme(trType, 'CaloRegion', 'PerfPlots_%s'%(trType), 2, 5)
+    #AddUniformBins(trType, 'CaloRegion', 'PerfPlots_%s'%(trType), 3, 2, 5)
 
     AddBinScheme(trType, 'nTracks', 'PerfPlots_%s'%(trType), 0, 500)
     AddUniformBins(trType, 'nTracks', 'PerfPlots_%s'%(trType), 20, 0, 500)

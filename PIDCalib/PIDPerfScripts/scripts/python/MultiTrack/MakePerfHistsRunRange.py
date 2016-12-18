@@ -26,7 +26,7 @@ if '__main__' == __name__:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         prog=os.path.basename(sys.argv[0]),
         description=("""Make performance histograms for a given:
-        a) stripping version <stripVersion> (e.g. \"20\")
+        a) Sample version <sampleVersion> (e.g. \"20\" for Run 1 Stripping 20, \"Turbo16\" for Run 2 WGP)
         b) magnet polarity  <magPol> (\"MagUp\" or \"MagDown\")
         c) particle type <partName> (\"K\", \"P\", \"Pi\", \"e\" or \"Mu"\ or \"P_IncLc\")
         d) PID cut, <pidCut>
@@ -35,14 +35,17 @@ In this case, a performance histogram will be produced for each PID cut.
 
 For a full list of arguments, do: 'python {0} -h'
 
-e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
+e.g. Run 1: python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
     \"[DLLK > 0.0, DLLK > 4.0 && DLLp < 0.0]\"
+    
+e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
+    \"[DLLK > 0.0, DLLK > 4.0 && DLLp < 0.0]\" -c \"runNumber>=114205 && runNumber<=114287\"
 
  """).format(os.path.basename(sys.argv[0])),)
 
     ## add the positional arguments
-    parser.add_argument('stripVersion', metavar='<stripVersion>',
-                        help="Sets the stripping version")
+    parser.add_argument('sampleVersion', metavar='<sampleVersion>',
+                        help="Sets the stripping version for Run I data, or the Turbo WGP production version for Run II")
     parser.add_argument('magPol', metavar='<magPol>',
                         help="Sets the magnet polarity")
     parser.add_argument('partName', metavar='<partName>',
@@ -51,12 +54,12 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
                         help="Sets the PID cut(s)")
 
     ## add the optional arguments
-    parser.add_argument('-x', '--minRun', dest="runMin", metavar="NUM",
-                        help="Sets the minimum run number to process (if applicable)")
-    parser.add_argument('-y', '--maxRun', dest="runMax", metavar="NUM",
-                        help="Sets the maximum run number to process (if applicable)")
-    parser.add_argument('-f', '--maxFiles', dest="maxFiles", metavar="NUM",
-                        help="Sets the maximum number of calibration files to run over")
+    #parser.add_argument('-x', '--minRun', dest="minRun", metavar="NUM",
+    #                    help="Sets the minimum run number to process (if applicable, Run 1 only)")
+    #parser.add_argument('-y', '--maxRun', dest="maxRun", metavar="NUM",
+    #                    help="Sets the maximum run number to process (if applicable, Run 1 only)")
+    #parser.add_argument('-f', '--maxFiles', dest="maxFiles", metavar="NUM",
+    #                    help="Sets the maximum number of calibration files to run over")
     parser.add_argument('-c', '--cuts', dest='cuts', metavar='CUTS', default='',
                         help=("Sets the list of cuts to apply to the calibration "
                              "sample(s) prior to determine the PID efficiencies "
@@ -138,11 +141,11 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
     MagPolarity = None
     PartName = None
     DLLCuts = []
-    RunMin = None
-    RunMax = None
+    #RunMin = None
+    #RunMax = None
 
-    # set the stripping version
-    StripVersion=opts.stripVersion
+    # set the sample version (stripping version in Run I, and Turbo version in Run II. Internally called StripVersion)
+    StripVersion=opts.sampleVersion
     CheckStripVer(StripVersion)
 
     # set the magnet polarity
@@ -155,7 +158,7 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
 
     # set the PID cuts
     DLLCuts = opts.pidCut
-
+    
     if DLLCuts.startswith("["):
         if not DLLCuts.endswith("]"):
             parser.error("Invalid DLL cut string %s" %DLLCuts)
@@ -167,50 +170,56 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
     else:
         DLLCuts = (DLLCuts,)
 
-    TriggerList = []
-
     if (len(opts.cuts)>0):
         if isinstance(opts.cuts,str):
-            if not CheckCuts(opts.cuts,TriggerList,StripVersion):
+            if not CheckCuts(opts.cuts,StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cuts))
         elif isinstance(opts.cuts,list):
-            if not CheckCuts(opts.cuts.join(" "),TriggerList,StripVersion):
+            if not CheckCuts(opts.cuts.join(" "),StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cuts))
 
-    RunMin = opts.runMin
-    RunMax = opts.runMax
-    MaxFiles = opts.maxFiles
+    #RunMin = opts.minRun
+    #RunMax = opts.maxRun
+    #MaxFiles = opts.maxFiles
+    
+    #If running on Run 2 data, do not allow run range to be set
+    #if 'Turbo' in StripVersion and RunMin is not None:
+    #	parser.error("Cannot set run range for Run 2 data. Please set the run range within a cut using -c option.")
+    
+    #if 'Turbo' in StripVersion and RunMax is not None:
+    #	parser.error("Cannot set run range for Run 2 data. Please set the run range within a cut using -c option.")
+    
 
-    if RunMin is not None:
-        try:
-            int(RunMin)
-        except ValueError:
-            parser.error(
-                "Argument to --minRun ('%s') is not an integer'." %RunMin)
+    #if RunMin is not None:
+    #    try:
+    #        int(RunMin)
+    #    except ValueError:
+    #        parser.error(
+    #            "Argument to --minRun ('%s') is not an integer'." %RunMin)
 
-        if RunMax is None:
-            parser.error(
-                "Min run was specified as %s, but no max run was given." %RunMin)
+    #    if RunMax is None:
+    #        parser.error(
+    #            "Min run was specified as %s, but no max run was given." %RunMin)
 
-    if RunMax is not None:
-        try:
-            int(RunMax)
-        except ValueError:
-            parser.error(
-                "Argument to --maxRun ('%s') is not an integer'." %RunMax)
-        if RunMin is None:
-            parser.error(
-                "Max run was specified as %s, but no min run was given." %RunMax)
+    #if RunMax is not None:
+    #    try:
+    #        int(RunMax)
+    #    except ValueError:
+    #        parser.error(
+    #            "Argument to --maxRun ('%s') is not an integer'." %RunMax)
+    #    if RunMin is None:
+    #        parser.error(
+    #            "Max run was specified as %s, but no min run was given." %RunMax)
 
-    if MaxFiles is not None:
-        try:
-            int(MaxFiles)
-        except ValueError:
-            parser.error(
-                "Argument to --maxFiles ('%s') is not an integer'." %MaxFiles)
-        if MaxFiles is None:
-            parser.error(
-                "Max files was specified as %s, but no min run was given." %MaxFiles)
+    #if MaxFiles is not None:
+    #    try:
+    #        int(MaxFiles)
+    #    except ValueError:
+    #        parser.error(
+    #            "Argument to --maxFiles ('%s') is not an integer'." %MaxFiles)
+    #    if MaxFiles is None:
+    #        parser.error(
+    #            "Max files was specified as %s, but no min run was given." %MaxFiles)
 
     XVarName = opts.xVarName
     if XVarName=='':
@@ -264,7 +273,7 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
         BinSchema.push_back(Z_Bin)
 
     for icut, cut in enumerate(DLLCuts):
-        if not CheckCuts(cut, TriggerList,StripVersion):
+        if not CheckCuts(cut,StripVersion):
             raise ValueError("Invalid PID cut %i: \"%s\""%(icut,cut))
 
     #======================================================================
@@ -314,20 +323,22 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
 
     #======================================================================
     # Final list of plots
-    #======================================================================
+    #======================================================================   
+        
     Plots = GetPerfPlotList(MakePerfPlotsList if opts.oldAveraging else MakePerfPlotsListPyth,
                             StripVersion,
                             MagPolarity,
                             PartName,
                             DLLCuts,
                             opts.cuts,
+                            opts.pidCut,    #Added by Donal, use to filter the variables loaded 
+                            XVarName,
+                            YVarName,
+                            ZVarName,
                             BinSchema,
-                            RunMin,
-                            RunMax,
                             opts.verbose,
-                            opts.allowMissing,
-                            MaxFiles,
-                            TriggerList)
+                            opts.allowMissing)
+                            
 
     #======================================================================
     # Make Weighted Average
@@ -344,9 +355,15 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
         fnameSuffix+='_{0}'.format(SchemeName)
     for vname in BinVarNames:
       fnameSuffix+='_{0}'.format(vname)
-    fname = "PerfHists_{part}_Strip{strp}_{pol}{suf}.root".format(
-        part=PartName, strp=StripVersion, pol=MagPolarity,
-        suf=fnameSuffix)
+    if 'Turbo' not in StripVersion:
+    	fname = "PerfHists_{part}_Strip{strp}_{pol}{suf}.root".format(
+        	part=PartName, strp=StripVersion, pol=MagPolarity,
+        	suf=fnameSuffix)
+    elif 'Turbo' in StripVersion:
+    	fname = "PerfHists_{part}_{strp}_{pol}{suf}.root".format(
+        	part=PartName, strp=StripVersion, pol=MagPolarity,
+        	suf=fnameSuffix)
+    
     if opts.outputDir is not None:
         fname = "%s/%s" %(opts.outputDir, fname)
 
