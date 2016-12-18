@@ -1,7 +1,7 @@
 ################################################################################
 # Package: PIDPerfTools
 ################################################################################
-gaudi_subdir(PIDPerfTools v7r1)
+gaudi_subdir(PIDPerfTools v8r0)
 
 find_package(Boost COMPONENTS regex)
 find_package(ROOT COMPONENTS Core RIO
