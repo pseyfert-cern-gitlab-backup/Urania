@@ -1,7 +1,7 @@
 ################################################################################
 # Package: PIDPerfScripts
 ################################################################################
-gaudi_subdir(PIDPerfScripts v10r7)
+gaudi_subdir(PIDPerfScripts v11r0)
 
 gaudi_depends_on_subdirs(PIDCalib/PIDPerfTools)
 
