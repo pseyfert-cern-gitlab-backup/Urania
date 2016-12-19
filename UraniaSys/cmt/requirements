@@ -14,7 +14,7 @@ branches          cmt doc
 #    Maintainers marked with [] have permissions to accept merge requests.
 #============================================================================
 
-use  GaudiPolicy		v15r8
+use  GaudiPolicy		v28r1
 use  MCLimit			v2r2	Math			# [Diego Martinez Santos]
 use  SomeUtils			v5r2	Math			# [Diego Martinez Santos]
 
