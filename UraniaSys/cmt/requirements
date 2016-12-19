@@ -23,27 +23,27 @@ use  A2MuMu			v1r3	Phys			# Carlos Vazquez Sierra, Diego Martinez Santos, Martin
 use  B2CCtuples			v2r1	Phys			# Carlos Vazquez Sierra
 use  Bs2JpsiKs                  v5r5    Phys                    # Patrick Koppenburg
 
-use  Bs2JpsiPhiParams		v2r1	Phys			# Greig Cowan
-use  Bs2MuMu			v3r1	Phys			# Diego Martinez Santos
-use  Bs2MuMuParams		v3r1	Phys			# Diego Martinez Santos, Marc-Olivier Bettler, Matheiu Perrin-Terrin
-use  BsJPsiKst                  v3r6   	Phys                    # Paula Alvarez, Diego Martinez Santos
-use  BsKstKst                  	v5r1    Phys                    # Paula Alvarez, Juan Saborido
-use  Ks2MuMu			v1r1	Phys			# Xabier Cid Vidal, Diego Martinez Santos
+use  Bs2JpsiPhiParams		v2r1	Phys			# Diego Martinez Santos
+use  Bs2MuMu			v3r1	Phys			# Flavio Archilli
+use  Bs2MuMuParams		v3r1	Phys			# Flavio Archilli
+use  BsJPsiKst                  v3r6   	Phys                    # Carlos Vazquez Sierra, Diego Martinez Santos
+use  BsKstKst                  	v5r1    Phys                    # Julian Garcia Pardinas, Juan Saborido
+use  Ks2MuMu			v1r1	Phys			# Miguel Ramos Pernas, Jessica Prisciandaro
 use  Ks2Pi0MuMu			v1r1	Phys			# Veronika Chobanova, Diego Martinez Santos
 use  Lambdab2Jpsippi            v3r7    Phys                    # Patrick Koppenburg
-use  BsDsMuNuForRDS             v1r0    Phys                    # Ricardo Vazquez Gomez (new package)
+use  BsDsMuNuForRDS             v1r0    Phys                    # Ricardo Vazquez Gomez
 
-use  B2DXFitters		v3r1	PhysFit			# Manuel Schiller, Eduardo Rodrigues
-use  P2VV			v4r1	PhysFit			# Jeroen Van Leerdam, Roel Aaij
+use  B2DXFitters		v3r1	PhysFit			# Not known yet
+use  P2VV			v4r1	PhysFit			# Sean Benson, Katya Govorkova
 use  SomeMassModels		v2r5	PhysFit			# Diego Martinez Santos
-use  RooPhysFitter              v3r1    PhysFit                 # Philip Hunt
-use  V0hhFitter                 v1r0    PhysFit                 # Rafael Silva Coutinho (new package)
+use  RooPhysFitter              v3r1    PhysFit                 # Consider removing it for the next release
+use  V0hhFitter                 v1r0    PhysFit                 # Rafael Silva Coutinho
 
-use CalibDataScripts            v5r3    PIDCalib                # Philip Hunt
-use PIDPerfScripts              v11r0   PIDCalib                # Philip Hunt
-use PIDPerfTools                v8r0    PIDCalib                # Philip Hunt
+use CalibDataScripts            v5r3    PIDCalib                # Donal Hill
+use PIDPerfScripts              v11r0   PIDCalib                # Donal Hill
+use PIDPerfTools                v8r0    PIDCalib                # Donal Hill
 
-use  LHCbStyle			v2r7	RootTools		# Rolf Oldeman, Niels Tuning
+use  LHCbStyle			v2r7	RootTools		# Michael Schmelling, David Ward (EB chair)
 use  SimpleTools	  	v2r0	RootTools           	# Conor Fitzpatrick
 
 apply_pattern container_package
