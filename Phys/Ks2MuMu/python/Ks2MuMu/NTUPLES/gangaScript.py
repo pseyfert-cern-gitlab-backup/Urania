@@ -39,7 +39,7 @@ Application.version = 'v36r4p1'
 
 #########################################################
 ### Defines the option file and the MuID BDT weights file
-Application.optsfile = ['/home3/miguel.ramos/cmtuser/Urania_HEAD/Phys/Ks2MuMu/python/Ks2MuMu/NTUPLES/OptsFile.py']
+Application.optsfile = ['./OptsFile.py']
 
 Inputfiles = [LocalFile('/home3/miguel.ramos/cmtuser/DaVinci_v36r4p1/Phys/Ks2MuMuTuples/tmva/BDTontop/MuonTMVA_BDTv3.weights.xml')]
 

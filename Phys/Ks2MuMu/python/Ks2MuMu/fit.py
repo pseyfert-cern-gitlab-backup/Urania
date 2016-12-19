@@ -13,7 +13,7 @@ from collections import OrderedDict
 import sys
 sys.path.append('./FIT_2012')
 
-#rt.gROOT.SetBatch()
+rt.gROOT.SetBatch()
 
 # Loads the lhcb style for the plots 
 rt.gROOT.ProcessLine( '.x lhcbStyle.C' )
@@ -27,13 +27,13 @@ rt.gROOT.ProcessLine('.L ./RooPrior.cxx++')
 #from ROOT import BifurcatedCB
 
 #-----------------------------------------------------------------------------
-COMBINE_2011 = 0
+COMBINE_2011 = 1
 BLIND = 0
 POWER_LAW = 1 ### if set to zero it will use an exponential for the misid bkg
 EXPO = 1 ### if set to zero it will use a polynomial for the comb bkg
 FIXEXPOVALS = 0
 BR_MINOS = 1
-PROFILE = BR_MINOS*1
+PROFILE = BR_MINOS*0
 TOYSTUDY = 0
 MAKEPLOTS = 0
 #-----------------------------------------------------------------------------
@@ -65,14 +65,12 @@ TUPLE_PATH = '~/eos/lhcb/wg/RD/K0SMuMu/NEW/DATA/'
 
 # Defines the bins for each category. This list determines the bins that
 # will be fitted.
-categories = [ 'TIS_', 'TOS1_', 'TOS2_' ]
+categories = [ 'TOS1_', 'TOS2_' ]
 BINNING = OrderedDict(
     #[('TOS1_', range(3,10))]
     #[('TOS2_', range(3,10))]
-    #[('TIS_' , range(3,10))]
-    [('TOS1_', range(3,10)),
-    ('TOS2_', range(3,10)),
-    ('TIS_' , range(3,10))]
+    [('TOS1_', range(0,10)),
+     ('TOS2_', range(0, 10))]
     )
 
 # Fitting variable and ranges
@@ -126,12 +124,12 @@ if CREATE_FILES:
 #-----------------------------------------------------------------------------
 # Blinds the branching fraction if required. The random blinding factor is
 # stored in UnBlindBr, so do not look at it ;).
-BR_ = rt.RooRealVar('BR', 'BR', 0., 0., 15.)
+BR_ = rt.RooRealVar('BR', 'BR', 5., 0., 10.)# 0., 0., 7. => this converges
 if BLIND:
-    #BR = rt.RooUnblindPrecision("BR_UNB", "BR_UNB", TheTable.Blinding, 1.e-8, 1.e-8, BR_)
-    ublindfct = rt.gRandom.Uniform( BR_.getVal(), 1000 )
-    UnBlindBr = rt.RooConstVar( 'BR_UNBFCT', 'BR_UNBFCT', ublindfct )
-    BR        = rt.RooFormulaVar( 'BR_UNB', 'BR_UNB', 'BR*BR_UNBFCT', rt.RooArgList( BR_, UnBlindBr ) )
+    BR = rt.RooUnblindPrecision("BR_UNB", "BR_UNB", TheTable.Blinding, 0.5, 2., BR_)
+    #ublindfct = rt.gRandom.Uniform( BR_.getVal(), 1000 )
+    #UnBlindBr = rt.RooConstVar( 'BR_UNBFCT', 'BR_UNBFCT', ublindfct )
+    #BR        = rt.RooFormulaVar( 'BR_UNB', 'BR_UNB', 'BR*BR_UNBFCT', rt.RooArgList( BR_, UnBlindBr ) )
 else:
     BR = BR_
 #prior = rt.RooAmorosoPdf('PRIOR', 'PRIOR' , BR_, PRIOR.offset, PRIOR.theta, PRIOR.alpha, PRIOR.beta)
@@ -163,9 +161,10 @@ for key, kbin in BINNING.iteritems():
     selsyst   = TheTable.SelectionSyst[ key ]**2
     trigsyst  = TheTable.TriggerSyst[ key ]**2
     kspecsyst = TheTable.KspectrumSyst**2
+    muidsyst  = TheTable.MuIDSyst[ key ]**2
     sigshape  = TheTable.SigShapeSyst**2
 
-    sigma = sqrt( mean**2 + tracksyst + selsyst + trigsyst + kspecsyst + sigshape )
+    sigma = sqrt( mean**2 + tracksyst + selsyst + trigsyst + kspecsyst + muidsyst + sigshape )
     mismierdas [key] = sigma
     ComFctrSig[ key ] = createConst( 1, sigma, 'ComFctr' + key )
     #ComFctrSig[ key ] [0].setConstant(rt.kTRUE)
@@ -202,11 +201,14 @@ class KsMuMuModel:
         i = self.i
         self.alpha = Alpha[i]
 
+        # OPTIONS IMPORTED FROM A HELPER
+        import fithelp
+        nbkg = getattr(fithelp, 'MuMuBkg' + i)
         self.nbs  = rt.RooFormulaVar('NKs' + i, 'NKs' + i, BR.GetName()+ '/(alpha' + i +")", rt.RooArgList(self.alpha, BR))
-        self.nbkg = rt.RooRealVar('MuMuBkg' + i, 'MuMuBkg' + i, tmm[i].GetEntries(), 0, max(2*tmm[i].GetEntries(), 20))
+        self.nbkg = rt.RooRealVar('MuMuBkg' + i, 'MuMuBkg' + i, nbkg, 0, max(2*tmm[i].GetEntries(), 20))
 
         #self.k  = rt.RooRealVar('MuMu_k_' + i, 'MuMu_k_' + i, -7e-04, -.1, .1)
-        #self.dk = rt.RooRealVar('MuMu_dk_' + i, 'MuMu_dk_' + i, -7e-04, -1, 0)#1e-02)
+        #self.dk = rt.RooRealVar('MuMu_dk_' + i, 'MuMu_dk_' + i, -7e-04, -100, 0)#1e-02)
         #self.kb = rt.RooFormulaVar('MuMu_kb_' + i, 'MuMu_kb_' + i, 'MuMu_k_' + i + ' + MuMu_dk_' + i, rt.RooArgList(self.k, self.dk))
         
         #self.bkg1 = rt.RooExponential('bkg1_MuMu_model' + i, 'bkg1_MuMu_model' + i, Mass, self.k)
@@ -216,18 +218,24 @@ class KsMuMuModel:
         misidPars = getattr(misidPars, 'KsPiPiMisid_' + i)
 
         #self.misid_ap = rt.RooRealVar('misid_' +  i + 'a', 'misid_' +  i + 'a', -2, -100, -0.1)
-        
-        self.misid_n = rt.RooRealVar('misid_' +  i + 'n', 'misid_' +  i + 'n', 10, 1, 120)# 10, 1, 120
+
+        # OPTIONS IMPORTED FROM A HELPER
+        f_misid = getattr(fithelp, 'f_misid_' + i)
+        misid_m = getattr(fithelp, 'misid_' + i + 'm')
+        misid_n = getattr(fithelp, 'misid_' + i + 'n')
+
+        self.misid_n = rt.RooRealVar('misid_' +  i + 'n', 'misid_' +  i + 'n', misid_n, misid_n - 1, misid_n + 100)# 10, 1, 120 # misid_n - 2
         #self.misid_s = rt.RooRealVar('misid_' +  i + 's', 'misid_' +  i + 's', 3, 1, 10)
-        self.misid_m = rt.RooRealVar('misid_' +  i + 'm', 'misid_' +  i + 'm', 320, 200, 469)#320, 200, 469
-        fix_m = 0#("TIS_3" in name) or ("TIS_4" in name)# or ("TIS_9" in name)
-        self.misid_m.setConstant(fix_m)
+        self.misid_m = rt.RooRealVar('misid_' +  i + 'm', 'misid_' +  i + 'm', misid_m, misid_m - 10, misid_m + 30)#320, 200, 469
+        #fix_m = 0#("TIS_3" in name) or ("TIS_4" in name)# or ("TIS_9" in name)
+        #self.misid_m.setConstant(fix_m)
         self.misid = rt.RooPowerLaw('misid_' + i, 'misid_' + i, Mass, self.misid_m, self.misid_n)
         
         #self.bkg = rt.RooAddPdf('AllBkg' + i, 'AllBkg' + i, self.misid, self.bkg1, self.f_misid)
         
         if EXPO:
-            self.k = rt.RooRealVar( 'MuMu_dk_' + i, 'MuMu_dk_' + i, -1e-2, -.1, .1 )#-1e-2, -.1, .1
+            dk = getattr(fithelp, 'MuMu_dk_' + i)
+            self.k = rt.RooRealVar( 'MuMu_dk_' + i, 'MuMu_dk_' + i, dk, 1.2*dk, 0. )#-1e-2, -.1, .1
             self.bkg1 = rt.RooExponential("bkg1_MuMu_model" + i, "bkg1_MuMu_model" + i, Mass, self.k)
             if FIXEXPOVALS:
                 import fitPars
@@ -247,11 +255,8 @@ class KsMuMuModel:
         self.misid = rt.RooCBShape( 'misid_' + i, 'misid_' + i, *args )
         '''
 
-        f_misid = misidPars.NSig*1./( misidPars.NCombBkg + misidPars.NSig )
-        self.f_misid = rt.RooRealVar('f_misid_' + i, 'f_misid_' + i, f_misid, 0.5, 1)#f_misid, 0.5, 1
-        if name == "TOS2_9":
-            self.f_misid.setVal(1)
-            self.f_misid.setConstant(rt.kTRUE)
+        #f_misid = misidPars.NSig*1./( misidPars.NCombBkg + misidPars.NSig )
+        self.f_misid = rt.RooRealVar('f_misid_' + i, 'f_misid_' + i, f_misid, f_misid - 0.2, 1)#f_misid, 0.5, 1
         if POWER_LAW:
             self.bkg = rt.RooAddPdf('bkg MuMu_model' + i, 'bkg MuMu_model' + i, self.misid, self.bkg1, self.f_misid)
         else:
@@ -321,7 +326,9 @@ it  = pars.createIterator()
 var = it.Next()
 initialValues = {}
 while var:
-    initialValues[ var.GetName() ] = var.getVal()
+    if var.GetName() != 'dummyBlindState':
+        print '--- Getting:', var.GetName()
+        initialValues[ var.GetName() ] = var.getVal()
     var = it.Next()
 
 #-----------------------------------------------------------------------------
