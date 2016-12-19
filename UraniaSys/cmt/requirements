@@ -27,8 +27,8 @@ use  Bs2JpsiPhiParams		v2r1	Phys			# [Diego Martinez Santos]
 use  Bs2MuMu			v3r1	Phys			# [Flavio Archilli]
 use  Bs2MuMuParams		v3r1	Phys			# [Flavio Archilli]
 use  BsJPsiKst                  v3r6   	Phys                    # [Carlos Vazquez Sierra], [Diego Martinez Santos]
-use  BsKstKst                  	v5r1    Phys                    # [Julian Garcia Pardinas], Juan Saborido
-use  Ks2MuMu			v1r1	Phys			# [Miguel Ramos Pernas], [Jessica Prisciandaro]
+use  BsKstKst                  	v5r1    Phys                    # [Julian Garcia Pardinas], Juan Saborido Silva
+use  Ks2MuMu			v1r1	Phys			# [Miguel Ramos Pernas], Jessica Prisciandaro
 use  Ks2Pi0MuMu			v1r1	Phys			# [Diego Martinez Santos], [Veronika Chobanova]
 use  Lambdab2Jpsippi            v3r7    Phys                    # [Patrick Koppenburg]
 use  BsDsMuNuForRDS             v1r0    Phys                    # [Ricardo Vazquez Gomez]
