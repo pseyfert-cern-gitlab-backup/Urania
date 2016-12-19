@@ -1,7 +1,0 @@
-sameMissID	true
-Bd2KSKpi	false
-SingleCB	false
-mixed		false
-twoWidths	false
-shiftMeans	false
-lambdaB		false

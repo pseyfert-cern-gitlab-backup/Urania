@@ -22,7 +22,6 @@ PhysFit/B2DXFitters
 PhysFit/P2VV
 PhysFit/RooPhysFitter
 PhysFit/SomeMassModels
-PhysFit/V0hhFitter
 PIDCalib/CalibDataScripts
 PIDCalib/PIDPerfScripts
 PIDCalib/PIDPerfTools
