@@ -66,7 +66,7 @@ def configureTuple():
         stripLine  = 'KS02MuMuLine'
     else:
         Ptcle      = 'pi'
-        if SIMULATION:
+        if SIMULATION or 'MB' in MODE:
             inputPtcls = StdNoPIDsPions
         if 'MB' in MODE:
             stripLine = 'MBNoBias'
@@ -105,32 +105,34 @@ def configureTuple():
     # Cuts to be performed together with the stripping
     from Configurables import CombineParticles
     KsCombPart = CombineParticles('KsCombPart', DecayDescriptor = decayDesc)
+    KsCombPart.ReFitPVs  = False
     
+    dc = {}
+    cc = False
+
     if 'mcMatch' in MODE:
         KsCombPart.Preambulo = [ 'from LoKiPhysMC.decorators import *',
                                  'from LoKiPhysMC.functions import mcMatch' ]
-        dc = {}
         for ptcle in ( Ptcle_P, Ptcle_M ):
             dc[ ptcle ] = 'mcMatch("' + ptcle + '")'
-        KsCombPart.DaughtersCuts = dc
-        KsCombPart.MotherCut = "mcMatch('" + decayDesc.replace('->','=>') + "')"
-        KsCombPart.ReFitPVs  = False
+        mc = "mcMatch('" + decayDesc.replace('->','=>') + "')"
     else:
-        # This is a copy of the KS02MuMuNoMuID line without prescales
-        if 'MB' in MODE:
-            KsCombPart.DaughtersCuts = { Ptcle_P : "(MIPCHI2DV(PRIMARY)> 100.)&(TRCHI2DOF < 5 ) & (PT > 0 * MeV )",
-                                         Ptcle_M : "(MIPCHI2DV(PRIMARY)> 100.)&(TRCHI2DOF < 5 ) & (PT > 0 * MeV )" }
-            KsCombPart.CombinationCut = "(ADAMASS('KS0')<100*MeV) & (AMAXDOCA('')<0.3*mm)"
-            KsCombPart.MotherCut = "((BPVDIRA>0) & ((BPVVDSIGN*M/P) > 0.1*89.53*2.9979e-01) & (MIPDV(PRIMARY)<0.4*mm) & (M>400) & (M<600) & (PT > 0 * MeV))"
-            KsCombPart.ReFitPVs  = False
-            KsCombPart.MotherCut += " & (mcMatch('" + decayDesc.replace('->','=>') + "'))"
-            for ptcle in (Ptcle_P, Ptcle_M):
-                KsCombPart.DaughtersCuts[ ptcle ] += ' & (mcMatch("' + ptcle + '"))'
-        else:
-            # Some non-effect cuts
-            KsCombPart.DaughtersCuts = { Ptcle_P: 'PT > 0',
-                                         Ptcle_M: 'PT > 0' }
-            KsCombPart.MotherCut = 'PT > 0'
+        dc = { Ptcle_P: '(PT > 0)', Ptcle_M: '(PT > 0)' }
+        mc = '(PT > 0)'
+        
+    # This is a copy of the KS02MuMuNoMuID line without prescales
+    if 'MB' in MODE and STRIPSEL:
+        for d in dc:
+            dc[d] += " & (MIPCHI2DV(PRIMARY)> 100.)&(TRCHI2DOF < 5 ) & (PT > 0 * MeV )"
+        cc  = "(ADAMASS('KS0')<100*MeV) & (AMAXDOCA('')<0.3*mm)"
+        mc += " & ((BPVDIRA>0) & ((BPVVDSIGN*M/P) > 0.1*89.53*2.9979e-01) & (MIPDV(PRIMARY)<0.4*mm)"\
+            " & (M>400) & (M<600) & (PT > 0 * MeV))"
+    
+    # Set the cuts
+    KsCombPart.DaughtersCuts = dc
+    KsCombPart.MotherCut     = mc
+    if cc:
+        KsCombPart.CombinationCut = cc
 
     # Definition of the stripping requirements
     if SIMULATION:
@@ -181,7 +183,6 @@ def configureTuple():
         # Only the events with at least one primary vertex are being taken
         from Configurables import LoKi__VoidFilter
         vf = LoKi__VoidFilter( 'AtLeastOnePV', Code = "CONTAINS('Rec/Vertex/Primary')>0" )
-        print 'I AM REQUIRING:', requiredSel
         KsSel = Selection('KsSel', Algorithm = KsCombPart, RequiredSelections = requiredSel)
         KsSelSeq = SelectionSequence('KsSelSeq', TopSelection = KsSel, EventPreSelector = [vf] )
         KsmumuTuple.Inputs = [KsSelSeq.outputLocation()]
@@ -210,6 +211,13 @@ def configureTuple():
         'ADAMASS'     : "ADMASS('KS0')",
         'AMAXDOCA'    : "PFUNA(AMAXDOCA(''))",
         'LV0'         : "LV0(1)"
+        }
+
+    # Extra trigger definitions for MB check
+    KsmumuTuple.addTupleTool('LoKi::Hybrid::EvtTupleTool/HltVariables')
+    KsmumuTuple.HltVariables.HLT_Variables = {
+        "Hlt1PhysAlt1": "switch(HLT_PASS_RE('Hlt1(?!ODIN)(?!L0)(?!Lumi)(?!Tell1)(?!MB)(?!NZS)(?!Velo)(?!BeamGas)(?!Incident)(?!CharmCalibration).*Decision'), 1, 0)",
+        "Hlt1PhysAlt2": "switch(HLT_PASS_RE('Hlt1(?!ODIN)(?!L0)(?!Lumi)(?!Tell1)(?!MB)(?!NZS)(?!Velo)(?!BeamGas)(?!Incident).*Decision & Hlt1.*(?!Calibration)(?!NoBias).*Decision'), 1, 0)"
         }
 
     from Configurables import TupleToolEventInfo
@@ -286,6 +294,8 @@ def configureTuple():
             , 'Hlt2CharmHadD2KS0H_D2KS0DDPiDecision'
             , 'Hlt2CharmHadD2KS0H_D2KS0KDecision'
             , 'Hlt2CharmHadD2KS0H_D2KS0PiDecision'
+            # To test the MB
+            , 'Hlt1CharmCalibrationNoBiasDecision'
             ])
 
     from Configurables import TupleToolTrigger
