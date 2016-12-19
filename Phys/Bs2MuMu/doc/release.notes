@@ -1,0 +1,10 @@
+!-----------------------------------------------------------------------------
+! Package     : Phys/Bs2MuMu
+! Responsible : Flavio Archilli
+! Purpose     : Mathematical tools and algorithms for Bs2MuMu analysis.
+!-----------------------------------------------------------------------------
+
+! 2016-12-19 - Carlos Vazquez Sierra
+  - First release after migration to gitlab. Information about commits on SVN are lost.
+    To be sure, just make version v3r2.
+

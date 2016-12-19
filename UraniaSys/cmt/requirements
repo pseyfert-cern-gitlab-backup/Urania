@@ -15,35 +15,34 @@ branches          cmt doc
 #============================================================================
 
 use  GaudiPolicy		v15r8
-use  MCLimit			v2r1	Math			# [Diego Martinez Santos]
-use  SomeUtils			v5r1	Math			# [Diego Martinez Santos]
+use  MCLimit			v2r2	Math			# [Diego Martinez Santos]
+use  SomeUtils			v5r2	Math			# [Diego Martinez Santos]
 
-use  Urania			v5r0	Phys			# [Diego Martinez Santos]
-use  A2MuMu			v1r3	Phys			# [Carlos Vazquez Sierra], [Diego Martinez Santos], Martino Borsato
-use  B2CCtuples			v2r1	Phys			# [Carlos Vazquez Sierra]
-use  Bs2JpsiKs                  v5r5    Phys                    # [Patrick Koppenburg]
+use  Urania			v6r0	Phys			# [Diego Martinez Santos]
+use  A2MuMu			v1r4	Phys			# [Carlos Vazquez Sierra], [Diego Martinez Santos], Martino Borsato
+use  B2CCtuples			v3r0	Phys			# [Carlos Vazquez Sierra], Olivier Leroy
+use  Bs2JpsiKs                  v5r6    Phys                    # [Patrick Koppenburg]
+use  Bs2JpsiPhiParams		v2r2	Phys			# [Diego Martinez Santos]
+use  Bs2MuMu			v3r2	Phys			# [Flavio Archilli]
+use  Bs2MuMuParams		v3r2	Phys			# [Flavio Archilli]
+use  BsJPsiKst                  v3r7   	Phys                    # [Carlos Vazquez Sierra], [Diego Martinez Santos]
+use  BsKstKst                  	v5r2    Phys                    # [Julian Garcia Pardinas], Juan Saborido Silva
+use  Ks2MuMu			v1r2	Phys			# [Miguel Ramos Pernas], [Jessica Prisciandaro]
+use  Ks2Pi0MuMu			v1r2	Phys			# [Diego Martinez Santos], [Veronika Chobanova]
+use  Lambdab2Jpsippi            v3r8    Phys                    # [Patrick Koppenburg]
+use  BsDsMuNuForRDS             v1r1    Phys                    # [Ricardo Vazquez Gomez]
 
-use  Bs2JpsiPhiParams		v2r1	Phys			# [Diego Martinez Santos]
-use  Bs2MuMu			v3r1	Phys			# [Flavio Archilli]
-use  Bs2MuMuParams		v3r1	Phys			# [Flavio Archilli]
-use  BsJPsiKst                  v3r6   	Phys                    # [Carlos Vazquez Sierra], [Diego Martinez Santos]
-use  BsKstKst                  	v5r1    Phys                    # [Julian Garcia Pardinas], Juan Saborido Silva
-use  Ks2MuMu			v1r1	Phys			# [Miguel Ramos Pernas], [Jessica Prisciandaro]
-use  Ks2Pi0MuMu			v1r1	Phys			# [Diego Martinez Santos], [Veronika Chobanova]
-use  Lambdab2Jpsippi            v3r7    Phys                    # [Patrick Koppenburg]
-use  BsDsMuNuForRDS             v1r0    Phys                    # [Ricardo Vazquez Gomez]
-
-use  B2DXFitters		v3r1	PhysFit			# [Agnieszka Dziurda], [Manuel Schiller]
-use  P2VV			v4r1	PhysFit			# [Sean Benson], [Katya Govorkova]
-use  SomeMassModels		v2r5	PhysFit			# [Diego Martinez Santos]
-use  RooPhysFitter              v3r1    PhysFit                 # Consider removing it for the next release?
+use  B2DXFitters		v3r2	PhysFit			# [Agnieszka Dziurda], [Manuel Schiller]
+use  P2VV			v4r2	PhysFit			# [Sean Benson], [Katya Govorkova]
+use  SomeMassModels		v2r6	PhysFit			# [Diego Martinez Santos]
+use  RooPhysFitter              v3r2    PhysFit                 # [Donal Hill]
 use  V0hhFitter                 v1r0    PhysFit                 # [Rafael Silva Coutinho]
 
-use CalibDataScripts            v5r3    PIDCalib                # [Donal Hill]
+use CalibDataScripts            v5r4    PIDCalib                # [Donal Hill]
 use PIDPerfScripts              v11r0   PIDCalib                # [Donal Hill]
 use PIDPerfTools                v8r0    PIDCalib                # [Donal Hill]
 
-use  LHCbStyle			v2r7	RootTools		# Michael Schmelling, David Ward (EB chair)
+use  LHCbStyle			v2r8	RootTools		# Michael Schmelling, David Ward (EB chair)
 use  SimpleTools	  	v2r0	RootTools           	# Conor Fitzpatrick
 
 apply_pattern container_package

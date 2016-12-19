@@ -1,9 +1,9 @@
 #============================================================================
 # Created    : 2011-05-10
-# Maintainer : Andrew Powell (Originally written by Philip Hunt)
+# Maintainer : Donal Hill
 #============================================================================
 package           RooPhysFitter
-version           v3r1
+version           v3r2
 
 #============================================================================
 # Structure, i.e. directories to process. 

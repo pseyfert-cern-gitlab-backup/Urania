@@ -8,5 +8,8 @@
 !               by Matthew M Reid.
 !-----------------------------------------------------------------------------
 
+! 2016-12-19 - Carlos Vazquez Sierra
+  - Temporary removing this package from the release (v6r0).
+
 ! 2014-08-06 - Rafael Coutinho
  - Created the package.

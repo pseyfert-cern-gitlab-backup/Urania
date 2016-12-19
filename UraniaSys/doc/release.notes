@@ -6,11 +6,13 @@ Purpose             : LHCb physics repository
 ! 2016-12-16 - Carlos Vazquez Sierra
  - Make version v6r0, based on LCGCMT_87:
    + Added two new packages:
-      PhysFit/V0hhFitter
-      Phys/BsDsMuNuForRDS
-   + Updates on the following packages:
+      PhysFit/V0hhFitter v1r0 (not included in Urania v6r0)
+      Phys/BsDsMuNuForRDS v1r1
+   + Major updates on the following packages:
       PIDCalib/PIDPerfScripts v11r0
       PIDCalib/PIDPerfTools   v8r0
+      Phys/B2CCtuples         v3r0
+   + Rest of packages have been re-tagged (+r1)
 
 !============================== v1r0-v5r0 14-06-2016 ==============================
 

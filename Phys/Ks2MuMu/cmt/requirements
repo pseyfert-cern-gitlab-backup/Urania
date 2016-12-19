@@ -1,9 +1,9 @@
 #============================================================================
 # Created    : 2015-01-09
-# Maintainer : X. Cid, D. Martinez Santos,...
+# Maintainer : Miguel Ramos Pernas, Jessica Prisciandaro
 #============================================================================
 package           Ks2MuMu 
-version           v1r1
+version           v1r2
 
 #============================================================================
 # Structure, i.e. directories to process. 

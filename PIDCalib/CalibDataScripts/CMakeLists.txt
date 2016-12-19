@@ -1,7 +1,7 @@
 ################################################################################
 # Package: CalibDataScripts
 ################################################################################
-gaudi_subdir(CalibDataScripts v5r3)
+gaudi_subdir(CalibDataScripts v5r4)
 
 gaudi_depends_on_subdirs(PhysFit/RooPhysFitter)
 

@@ -1,8 +1,13 @@
 !-----------------------------------------------------------------------------
 ! Package     : PIDCalib/CalibDataScripts
-! Responsible : Sneha Malde
+! Responsible : Donal Hill
 ! Purpose     : Scripts to generate PID Calibration samples
 !-----------------------------------------------------------------------------
+
+! 2016-12-19 - Carlos Vazquez Sierra
+  - First release after migration to gitlab. Information about commits on SVN are lost.
+    To be sure, just make version v5r4.
+
 !============================================== v5r3 2016-6-14 ==============================
 ! 2016-6-14 Carlos Vazquez Sierra
 	 Make version v5r3

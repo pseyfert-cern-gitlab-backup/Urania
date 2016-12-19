@@ -1,9 +1,9 @@
 #============================================================================
 # Created    : 2015-01-09
-# Maintainer : V. Chobanova, D. Martinez Santos,...
+# Maintainer : V. Chobanova, D. Martinez Santos
 #============================================================================
 package           Ks2Pi0MuMu 
-version           v1r1
+version           v1r2
 
 #============================================================================
 # Structure, i.e. directories to process. 

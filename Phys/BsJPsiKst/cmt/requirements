@@ -1,9 +1,9 @@
 #============================================================================
 # Created    : 2010-02-03
-# Maintainer : Diego Martinez Santos, Paula Alvarez Cartelle
+# Maintainer : Diego Martinez Santos, Carlos Vazquez Sierra
 #============================================================================
-package           
-version           v3r6
+package           BsJPsiKst 
+version           v3r7
 
 #============================================================================
 # Structure, i.e. directories to process. 
