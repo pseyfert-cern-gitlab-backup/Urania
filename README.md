@@ -1,4 +1,4 @@
-Urania is, together with Erasmus, the high-level physics analysis software repository for the LHCb experiment. 
+Urania is, together with Erasmus, the high-level physics analysis software repository for the LHCb experiment. The project is based on heptools.
 
 Urania is just a collection of packages used by various working groups.
 
