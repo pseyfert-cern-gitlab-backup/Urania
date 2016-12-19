@@ -34,7 +34,7 @@ use  Lambdab2Jpsippi            v3r7    Phys                    # [Patrick Koppe
 use  BsDsMuNuForRDS             v1r0    Phys                    # [Ricardo Vazquez Gomez]
 
 use  B2DXFitters		v3r1	PhysFit			# Not known yet
-use  P2VV			v4r1	PhysFit			# [Sean Benson], [Katya Govorkova]
+use  P2VV			v4r1	PhysFit			# [Sean Benson], [Katya Govorkova] (to be confirmed)
 use  SomeMassModels		v2r5	PhysFit			# [Diego Martinez Santos]
 use  RooPhysFitter              v3r1    PhysFit                 # Consider removing it for the next release
 use  V0hhFitter                 v1r0    PhysFit                 # [Rafael Silva Coutinho]
