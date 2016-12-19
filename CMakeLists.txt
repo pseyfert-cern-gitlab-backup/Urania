@@ -6,7 +6,7 @@ find_package(GaudiProject)
 #---------------------------------------------------------------
 
 # GaudiPolicy is needed only for CMT.
-set_property(DIRECTORY PROPERTY GAUDI_IGNORE_SUBDIRS GaudiPolicy)
+#set_property(DIRECTORY PROPERTY GAUDI_IGNORE_SUBDIRS GaudiPolicy)
 
 # Declare project name and version
 gaudi_project(Urania v6r0)
