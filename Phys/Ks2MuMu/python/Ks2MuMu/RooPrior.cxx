@@ -73,5 +73,7 @@ if ( code == 1)
   
 Double_t Integral = 2.94282e-7*pow(BR_max, 6) - 1.92312e-5*pow(BR_max, 5) + 0.000482348*pow(BR_max, 4) - 0.00553935*pow(BR_max, 3) + 0.0213735*pow(BR_max, 2) + 0.113387*BR_max - 2.94282e-7*pow(BR_min, 6) + 1.92312e-5*pow(BR_min, 5) - 0.000482348*pow(BR_min, 4) + 0.00553935*pow(BR_min, 3) - 0.0213735*pow(BR_min, 2) - 0.113387*BR_min;
 return Integral;
-}
+ }
+ else
+   return 0;
 }
