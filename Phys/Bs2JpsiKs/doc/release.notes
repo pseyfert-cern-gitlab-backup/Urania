@@ -3,6 +3,11 @@
 ! Responsible : Patrick Koppenburg
 ! Purpose     : BsJpsiKs analysis
 !-----------------------------------------------------------------------------
+
+! 2016-12-19 - Carlos Vazquez Sierra
+  - First release after migration to gitlab. Information about commits on SVN are lost.
+    To be sure, just make version v5r6.
+
 !============================================== v5r5 2014-10-17 ==============================
 ! 2014-10-17 Diego Martinez Santos
 	 Make version v5r5

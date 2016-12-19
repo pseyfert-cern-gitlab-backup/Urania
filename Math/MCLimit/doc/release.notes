@@ -1,0 +1,10 @@
+!-----------------------------------------------------------------------------
+! Package     : Math/MCLimit
+! Responsible : Diego Martinez Santos
+! Purpose     : Mathematical tools and algorithms for MC limits.
+!-----------------------------------------------------------------------------
+
+! 2016-12-19 - Carlos Vazquez Sierra
+  - First release after migration to gitlab. Information about commits on SVN are lost.
+    To be sure, just make version v2r2.
+

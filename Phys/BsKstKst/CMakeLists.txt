@@ -1,7 +1,7 @@
 ################################################################################
 # Package: BsKstKst
 ################################################################################
-gaudi_subdir(BsKstKst v5r1)
+gaudi_subdir(BsKstKst v5r2)
 
 gaudi_depends_on_subdirs(Math/MCLimit
                          Math/SomeUtils

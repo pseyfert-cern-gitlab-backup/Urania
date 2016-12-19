@@ -1,7 +1,7 @@
 ################################################################################
 # Package: BsJPsiKst
 ################################################################################
-gaudi_subdir(BsJPsiKst v3r6)
+gaudi_subdir(BsJPsiKst v3r7)
 
 gaudi_depends_on_subdirs(Math/SomeUtils
                          PhysFit/SomeMassModels)

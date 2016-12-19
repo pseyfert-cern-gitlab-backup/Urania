@@ -20,9 +20,8 @@ use  SomeUtils			v5r1	Math			# [Diego Martinez Santos]
 
 use  Urania			v5r0	Phys			# [Diego Martinez Santos]
 use  A2MuMu			v1r3	Phys			# [Carlos Vazquez Sierra], [Diego Martinez Santos], Martino Borsato
-use  B2CCtuples			v2r1	Phys			# [Carlos Vazquez Sierra]
+use  B2CCtuples			v2r1	Phys			# [Carlos Vazquez Sierra], Olivier Leroy
 use  Bs2JpsiKs                  v5r5    Phys                    # [Patrick Koppenburg]
-
 use  Bs2JpsiPhiParams		v2r1	Phys			# [Diego Martinez Santos]
 use  Bs2MuMu			v3r1	Phys			# [Flavio Archilli]
 use  Bs2MuMuParams		v3r1	Phys			# [Flavio Archilli]
@@ -36,7 +35,7 @@ use  BsDsMuNuForRDS             v1r0    Phys                    # [Ricardo Vazqu
 use  B2DXFitters		v3r1	PhysFit			# [Agnieszka Dziurda], [Manuel Schiller]
 use  P2VV			v4r1	PhysFit			# [Sean Benson], [Katya Govorkova]
 use  SomeMassModels		v2r5	PhysFit			# [Diego Martinez Santos]
-use  RooPhysFitter              v3r1    PhysFit                 # Consider removing it for the next release?
+use  RooPhysFitter              v3r1    PhysFit                 # [Donal Hill]
 use  V0hhFitter                 v1r0    PhysFit                 # [Rafael Silva Coutinho]
 
 use CalibDataScripts            v5r3    PIDCalib                # [Donal Hill]

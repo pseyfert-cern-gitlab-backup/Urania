@@ -1,9 +1,9 @@
 #============================================================================
 # Created    : 2012-01-22
-# Maintainer : 
+# Maintainer : Diego Martinez Santos
 #============================================================================
 package           Bs2MuMuJpsiPhiParams
-version           v2r1
+version           v2r2
 
 #============================================================================
 # Structure, i.e. directories to process. 

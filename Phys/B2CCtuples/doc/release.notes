@@ -1,9 +1,12 @@
 !-----------------------------------------------------------------------------
 ! Package     : Phys/B2CCtuples
-! Responsible : Olivier Leroy
-! Purpose     : 
+! Responsible : Carlos Vazquez Sierra, Olivier Leroy
+! Purpose     : Tools for generating ntuples (B2CC WG)
 !-----------------------------------------------------------------------------
 
+! 2016-12-19 - Carlos Vazquez Sierra
+  - First release after migration to gitlab. Information about commits on SVN are lost.
+    To be sure, just make version v3r0.
 
 ! 2016-10-20 - Olivier Leroy
  - I added B_s0_OS_Charm_DEC and B_s0_OS_Charm_PROB in sel1Candidate_Bs2JpsiPhi.C

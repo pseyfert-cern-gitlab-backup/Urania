@@ -1,9 +1,9 @@
 #============================================================================
 # Created    : 2013-04-17
-# Maintainer : Jeroen van Leerdam
+# Maintainer : Sean Benson, Katya Govorkova
 #============================================================================
 package  P2VV
-version           v4r1
+version           v4r2
 
 #============================================================================
 # Structure, i.e. directories to process.

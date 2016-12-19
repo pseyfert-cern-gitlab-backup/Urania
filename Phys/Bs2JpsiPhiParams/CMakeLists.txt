@@ -1,7 +1,7 @@
 ################################################################################
 # Package: Bs2JpsiPhiParams
 ################################################################################
-gaudi_subdir(Bs2JpsiPhiParams v2r1)
+gaudi_subdir(Bs2JpsiPhiParams v2r2)
 
 gaudi_install_python_modules()
 

@@ -1,9 +1,9 @@
 #============================================================================
 # Created    : 2013-09-03
-# Maintainer : TBC
+# Maintainer : Carlos Vazquez Sierra, Diego Martinez Santos, Martino Borsato
 #============================================================================
 package           A2MuMu
-version           v1r3
+version           v1r4
 
 #============================================================================
 # Structure, i.e. directories to process. 

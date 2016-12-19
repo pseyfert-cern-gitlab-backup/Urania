@@ -3,7 +3,7 @@
 # Maintainer : Rafael Coutinho and Daniel O'Hanlon 
 #============================================================================
 package           V0hhFitter
-version           v1r1
+version           v1r0
 
 #============================================================================
 # Structure

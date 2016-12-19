@@ -1,7 +1,7 @@
 ################################################################################
 # Package: RooPhysFitter
 ################################################################################
-gaudi_subdir(RooPhysFitter v3r1)
+gaudi_subdir(RooPhysFitter v3r2)
 
 find_package(Boost)
 find_package(ROOT COMPONENTS Core Tree RIO Hist TreePlayer Graf Graf3d

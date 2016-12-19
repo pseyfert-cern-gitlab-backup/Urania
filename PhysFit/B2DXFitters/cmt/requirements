@@ -1,9 +1,9 @@
 #============================================================================
 # Created    : 2011-05-23
-# Maintainer : Eduardo Rodrigues
+# Maintainer : Agnieszka Dziurda, Manuel Schiller
 #============================================================================
 package  B2DXFitters
-version           v3r1
+version           v3r2
 
 #============================================================================
 # Structure, i.e. directories to process.
