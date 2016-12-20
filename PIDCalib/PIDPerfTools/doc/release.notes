@@ -4,6 +4,9 @@
 ! Purpose     : Classes for performing PID based studies
 !-----------------------------------------------------------------------------
 
+! 2016-12-20 - Donal Hill
+  - Updated CMakeLists.txt in PIDPerfTools in order to compile under CMake.
+  
 ! 2016-12-18 - Carlos Vazquez Sierra
   - Make version v8r0 for Urania v6r0.
 
