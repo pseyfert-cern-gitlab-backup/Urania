@@ -9,5 +9,5 @@ find_package(GaudiProject)
 #set_property(DIRECTORY PROPERTY GAUDI_IGNORE_SUBDIRS GaudiPolicy)
 
 # Declare project name and version
-gaudi_project(Urania v6r0)
+gaudi_project(Urania v5r1)
 
