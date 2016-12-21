@@ -1,0 +1,11 @@
+*.root
+*.pyc
+*.log
+*.pdf
+*.png
+*.jpg
+*.eps
+*~
+*.so
+*.d
+*.pcm
