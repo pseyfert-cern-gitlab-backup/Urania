@@ -28,12 +28,12 @@ rt.gROOT.ProcessLine('.L ./RooPrior.cxx++')
 
 #-----------------------------------------------------------------------------
 COMBINE_2011 = 1
-BLIND = 0
+BLIND = 1
 POWER_LAW = 1 ### if set to zero it will use an exponential for the misid bkg
 EXPO = 1 ### if set to zero it will use a polynomial for the comb bkg
 FIXEXPOVALS = 0
-BR_MINOS = 1
-PROFILE = BR_MINOS*0
+BR_MINOS = 0
+PROFILE = 1
 TOYSTUDY = 0
 MAKEPLOTS = 0
 #-----------------------------------------------------------------------------
@@ -224,9 +224,12 @@ class KsMuMuModel:
         misid_m = getattr(fithelp, 'misid_' + i + 'm')
         misid_n = getattr(fithelp, 'misid_' + i + 'n')
 
-        self.misid_n = rt.RooRealVar('misid_' +  i + 'n', 'misid_' +  i + 'n', misid_n, misid_n - 1, misid_n + 100)# 10, 1, 120 # misid_n - 2
+        self.misid_n = rt.RooRealVar('misid_' +  i + 'n', 'misid_' +  i + 'n', misid_n, 0.6*misid_n, 120)# 10, 1, 120 # misid_n - 2
         #self.misid_s = rt.RooRealVar('misid_' +  i + 's', 'misid_' +  i + 's', 3, 1, 10)
-        self.misid_m = rt.RooRealVar('misid_' +  i + 'm', 'misid_' +  i + 'm', misid_m, misid_m - 10, misid_m + 30)#320, 200, 469
+        times_misid_m = 1.5
+        if times_misid_m*misid_m >= MASS_MIN:
+            times_misid_m = (MASS_MIN - 1.)/misid_m
+        self.misid_m = rt.RooRealVar('misid_' +  i + 'm', 'misid_' +  i + 'm', misid_m, 0.6*misid_m, times_misid_m*misid_m)#320, 200, 469
         #fix_m = 0#("TIS_3" in name) or ("TIS_4" in name)# or ("TIS_9" in name)
         #self.misid_m.setConstant(fix_m)
         self.misid = rt.RooPowerLaw('misid_' + i, 'misid_' + i, Mass, self.misid_m, self.misid_n)
@@ -235,7 +238,7 @@ class KsMuMuModel:
         
         if EXPO:
             dk = getattr(fithelp, 'MuMu_dk_' + i)
-            self.k = rt.RooRealVar( 'MuMu_dk_' + i, 'MuMu_dk_' + i, dk, 1.2*dk, 0. )#-1e-2, -.1, .1
+            self.k = rt.RooRealVar( 'MuMu_dk_' + i, 'MuMu_dk_' + i, dk, 1.5*dk, 0. )#-1e-2, -.1, .1
             self.bkg1 = rt.RooExponential("bkg1_MuMu_model" + i, "bkg1_MuMu_model" + i, Mass, self.k)
             if FIXEXPOVALS:
                 import fitPars
@@ -256,7 +259,7 @@ class KsMuMuModel:
         '''
 
         #f_misid = misidPars.NSig*1./( misidPars.NCombBkg + misidPars.NSig )
-        self.f_misid = rt.RooRealVar('f_misid_' + i, 'f_misid_' + i, f_misid, f_misid - 0.2, 1)#f_misid, 0.5, 1
+        self.f_misid = rt.RooRealVar('f_misid_' + i, 'f_misid_' + i, f_misid, 0.9*f_misid, 1)#f_misid, 0.5, 1
         if POWER_LAW:
             self.bkg = rt.RooAddPdf('bkg MuMu_model' + i, 'bkg MuMu_model' + i, self.misid, self.bkg1, self.f_misid)
         else:

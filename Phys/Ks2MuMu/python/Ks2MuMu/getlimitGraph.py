@@ -3,12 +3,13 @@
 from ROOT import *
 from copy import deepcopy
 from math import exp
-from numpy import array
+from numpy import array, interp
 
 gROOT.ProcessLine( '.x lhcbStyle.C' )
 
 CATEGORIES = [
-    'TOS1', 
+    'TOS1_TOS2', 
+#    'TOS1',
 #    'TOS2',
 #    'TIS',
 #    'TOS1_TOS2_TIS'
@@ -48,15 +49,13 @@ def MakeLimitPlot( curve ):
 
     return graph, gcum
 
-def GetXfromY( yv, graph ):
+def GetXfromY( graph, *args ):
     xvals, yvals = GetGraphVals( graph )
-    x = Double( 0 )
-    y = Double( 0 )
-    i = 0
-    while yv > yvals[ i ]:
-        i += 1
-    graph.GetPoint( i, x, y )
-    return x
+    import numpy
+    xvals = numpy.array(xvals)
+    yvals = numpy.array(yvals)
+    res   = numpy.interp(args, yvals, xvals)
+    return res
 
 def RemovePointsBefore( val, graph ):
     x  = Double( 0 )
@@ -82,10 +81,20 @@ def RemovePointsAfter( val, graph ):
     for i in ip:
         graph.RemovePoint( i )
 
+def addPoint( graph, x, y, at_start = False ):
+    if at_start:
+        xvals, yvals = GetGraphVals( graph )
+        xvals = [x] + xvals
+        yvals = [y] + yvals
+        for i, (x, y) in enumerate(zip(xvals, yvals)):
+            graph.SetPoint( i, x, y )
+    else:
+        graph.SetPoint( graph.GetN(), x, y )
+
 #gStyle.SetOptStat(0)
 gROOT.ProcessLine( '.x lhcbStyle.C' )
 MINBR   = 0#0
-MAXBR   = 6#30
+MAXBR   = 4#30
 MINPROB = 0.8
 MAXPROB = 1.#1.05
 
@@ -120,11 +129,12 @@ def makePlots( cat ):
     hcum.GetXaxis().SetTitleOffset( 1. )
     hcum.Draw()
 
-    x95 = GetXfromY( 0.95, hcum )
-    x90 = GetXfromY( 0.90, hcum )
+    x95, x90 = GetXfromY( hcum, 0.95, 0.9 )
 
     hcumfill90 = hcum.Clone()
     RemovePointsAfter( x90, hcumfill90 )
+    addPoint( hcumfill90, x90, 0.9 )
+    addPoint( hcumfill90, x90, 0 )
     hcumfill90.SetPoint( hcumfill90.GetN(), x90, 0 )
     hcumfill90.SetFillColor(kViolet)
     hcumfill90.SetFillStyle(3001)
@@ -133,7 +143,9 @@ def makePlots( cat ):
     hcumfill95 = hcum.Clone()
     RemovePointsAfter( x95, hcumfill95 )
     RemovePointsBefore( x90, hcumfill95 )
-    hcumfill95.SetPoint( 0, x90, 0 )
+    addPoint( hcumfill95, x95, 0.95 )
+    addPoint( hcumfill95, x90, 0.90, at_start = True )
+    addPoint( hcumfill95, x90, 0, at_start = True )
     hcumfill95.SetPoint( hcumfill95.GetN(), x95, 0 )
     hcumfill95.SetFillStyle(3001)
     hcumfill95.SetFillColor(kAzure)
@@ -148,6 +160,7 @@ def makePlots( cat ):
         line.SetLineStyle(kDotted)
         line.SetLineWidth( 2 )
         line.Draw('SAME')
+    lines = line95_h, line90_h, line95_v, line90_v
 
     if cat in ( 'TIS', 'TOS2' ):
         text = TPaveText( 0.2, 0.8, 0.5, 0.9, 'NDC' )
@@ -161,14 +174,14 @@ def makePlots( cat ):
     c.Update()
     #canvas.Draw()
 
-    print '-- Limit at 95 %% CL:', x95
-    print '-- Limit at 90 %% CL:', x90
+    print '-- Limit at 95 % CL:', x95
+    print '-- Limit at 90 % CL:', x90
 
     c.Print( c.GetName() + '.pdf' )
     c.Print( c.GetName() + '.png' )
     c.Print( c.GetName() + '.C' )
 
-    return c, hcumfill95, hcumfill90, hcum
+    return c, hcumfill95, hcumfill90, hcum, lines, text
 
 dic = {}
 for c in CATEGORIES:
