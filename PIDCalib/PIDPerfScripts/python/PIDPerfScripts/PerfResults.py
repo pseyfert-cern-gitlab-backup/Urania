@@ -241,9 +241,9 @@ def GetPerfPlotList( PerfFunc,
                      DLLCutList,
                      TrackCuts,
                      PIDCutString,
-                     XVarName,
-                     YVarName,
-                     ZVarName,
+                     xBin,
+                     yBin,
+                     zBin,
                      BinningScheme=None,
                      #runMin=None,
                      #runMax=None,
@@ -286,7 +286,7 @@ def GetPerfPlotList( PerfFunc,
     	files = GetWGPFiles(StripVer,MagPolarity,verbose)
     for file in files:
     	#Now pass in all of the variables used, in order to filter them from the WGP nTuple
-        DataSet = GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, PIDCutString, XVarName, YVarName, ZVarName, file, verbose,
+        DataSet = GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, PIDCutString, xBin, yBin, zBin, file, verbose,
                              allowMissingDataSets, minEntries)
         if DataSet is not None:
             #======================================================================

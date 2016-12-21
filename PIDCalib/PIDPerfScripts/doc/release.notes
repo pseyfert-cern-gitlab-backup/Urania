@@ -4,6 +4,9 @@
 ! Purpose     : Scripts using PIDPerfTools to perform PID studies
 !-----------------------------------------------------------------------------
 
+! 2016-12-21 - Donal Hill
+	- Fixed bug with command line input parsing.
+
 ! 2016-12-18 - Carlos Vazquez Sierra
   - Make version v11r0 for Urania v6r0.
 

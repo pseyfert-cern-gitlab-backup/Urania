@@ -21,14 +21,14 @@ class ShowArgumentsParser(argparse.ArgumentParser):
 if '__main__' == __name__:
     start()
     print ""
-
+    
     parser = ShowArgumentsParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         prog=os.path.basename(sys.argv[0]),
         description=("""Make performance histograms for a given:
         a) Sample version <sampleVersion> (e.g. \"20\" for Run 1 Stripping 20, \"Turbo16\" for Run 2 WGP)
         b) magnet polarity  <magPol> (\"MagUp\" or \"MagDown\")
-        c) particle type <partName> (\"K\", \"P\", \"Pi\", \"e\" or \"Mu"\ or \"P_IncLc\")
+        c) particle type <partName> (\"K\", \"P\", \"Pi\", \"e\" or \"Mu\")
         d) PID cut, <pidCut>
 Multiple PID cuts can be specified if necessary, e.g. \"[DLLK > 0.0, DLLK > 4.0]\".
 In this case, a performance histogram will be produced for each PID cut.
@@ -52,7 +52,7 @@ e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
                         help="Sets the particle type")
     parser.add_argument('pidCut', metavar='<pidCut>',
                         help="Sets the PID cut(s)")
-
+    
     ## add the optional arguments
     #parser.add_argument('-x', '--minRun', dest="minRun", metavar="NUM",
     #                    help="Sets the minimum run number to process (if applicable, Run 1 only)")
@@ -61,47 +61,51 @@ e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
     #parser.add_argument('-f', '--maxFiles', dest="maxFiles", metavar="NUM",
     #                    help="Sets the maximum number of calibration files to run over")
     parser.add_argument('-c', '--cuts', dest='cuts', metavar='CUTS', default='',
-                        help=("Sets the list of cuts to apply to the calibration "
-                             "sample(s) prior to determine the PID efficiencies "
-                             "(default: (default)s). "
-                             "NB. It is up to the user to ensure that their reference "
-                             "sample has the same cuts applied."
-                             ))
-    parser.add_argument("-o", "--outputDir", dest="outputDir", metavar="DIR",
+                        help="Sets the list of cuts to apply to the calibration "
+                        "sample(s) prior to determine the PID efficiencies "
+                        "(default: %(default)s). "
+                        "NB. It is up to the user to ensure that their reference "
+                        "sample has the same cuts applied."
+                        )
+    
+    parser.add_argument('-o', '--outputDir', dest='outputDir', metavar='DIR',
                         help="Save the performance histograms to directory DIR "
-                        "(default: current directory)")
-
+                        "(default: current directory)"
+                        )
+    
     binGroup = parser.add_argument_group("binning options")
-    binGroup.add_argument("-X", "--xVarName", dest="xVarName", metavar="NAME",
-                          default="P",
+    binGroup.add_argument('-X', '--xVarName', dest='xVarName', metavar='NAME', default='P',
                           help="Sets the NAME of the 1st (x) bin variable "
-                          "(default: %(default)s)")
-    binGroup.add_argument("-Y", "--yVarName", dest="yVarName", metavar="NAME",
-                          default="ETA",
+                          "(default: %(default)s)"
+                          )
+    binGroup.add_argument('-Y', '--yVarName', dest='yVarName', metavar='NAME',
+                          default='ETA',
                           help="Sets the NAME of the 2nd (y) bin variable "
                           "(default: %(default)s). "
                           "If 1D binning is required, then this option should "
-                          "be set to an empty string")
-    binGroup.add_argument("-Z", "--zVarName", dest="zVarName", metavar="NAME",
-                          default="nTracks",
+                          "be set to an empty string"
+                          )
+    binGroup.add_argument('-Z', '--zVarName', dest='zVarName', metavar='NAME',
+                          default='nTracks',
                           help="Sets the NAME of the 3rd (z) bin variable "
                           "(default: %(default)s). "
                           "If 2D binning is required, then this option should "
-                          "be set to an empty string")
+                          "be set to an empty string"
+                          )
     binGroup.add_argument("-s", "--schemeName", dest="schemeName", metavar="NAME",
                           default=None,
                           help="Sets the NAME of the binning scheme, "
                           "as defined in the module 'PIDPerfScripts.binning'. "
                           "If this option is not set, the default "
                           "binning scheme is used.")
-
+    
     binGroup.add_argument("-b", "--binSchemeFile", dest="binSchemeFile",
                           metavar="NAME", default=None,
                           help="Sets the NAME of the python file containing "
                           "user-defined binning schema. Without this option, "
                           "the script will only look for binning schema in "
                           "the 'PIDPerfScripts.binning' module")
-
+    
     addGroup = parser.add_argument_group("further options")
     addGroup.add_argument("-q", "--quiet", dest="verbose", action="store_false",
                           default=True,
@@ -110,8 +114,8 @@ e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
                           action="store_false", default=True,
                           help="Disables the printing of performance tables "
                           "(they will still be written to a TFile)")
-
-
+    
+    
     addGroup.add_argument("-l", "--latexTables", dest="latexTables",
                           action="store_true", default=False,
                           help="print LaTeX-format tables (rather than ASCII)")
@@ -129,13 +133,12 @@ e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
                           help="Allow missing calibration subsamples. "
                           "N.B. You should only use this option if requested to "
                           "do so by the PIDCalib authors")
-
+   
     opts = parser.parse_args()
 
+
     from PIDPerfScripts.Definitions import *
-    from PIDPerfScripts.DataFuncs import *
-    from PIDPerfScripts.PerfResults import *
-    from PIDPerfScripts.PerfCalcFuncs import *
+
 
     StripVersion = None
     MagPolarity = None
@@ -158,6 +161,7 @@ e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
 
     # set the PID cuts
     DLLCuts = opts.pidCut
+
     
     if DLLCuts.startswith("["):
         if not DLLCuts.endswith("]"):
@@ -220,7 +224,7 @@ e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
     #    if MaxFiles is None:
     #        parser.error(
     #            "Max files was specified as %s, but no min run was given." %MaxFiles)
-
+   
     XVarName = opts.xVarName
     if XVarName=='':
         parser.error("Argument to --xBinVarName is an empty string.")
@@ -323,7 +327,11 @@ e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
 
     #======================================================================
     # Final list of plots
-    #======================================================================   
+    #=====================================================================
+
+    from PIDPerfScripts.DataFuncs import *
+    from PIDPerfScripts.PerfResults import *
+    from PIDPerfScripts.PerfCalcFuncs import *
         
     Plots = GetPerfPlotList(MakePerfPlotsList if opts.oldAveraging else MakePerfPlotsListPyth,
                             StripVersion,
@@ -332,9 +340,9 @@ e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
                             DLLCuts,
                             opts.cuts,
                             opts.pidCut,    #Added by Donal, use to filter the variables loaded 
-                            XVarName,
-                            YVarName,
-                            ZVarName,
+                            opts.xVarName,
+                            opts.yVarName,
+                            opts.zVarName,
                             BinSchema,
                             opts.verbose,
                             opts.allowMissing)

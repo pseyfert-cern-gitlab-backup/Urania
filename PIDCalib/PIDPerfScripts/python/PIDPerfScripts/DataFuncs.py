@@ -12,7 +12,7 @@ from  PIDPerfScripts import OverrideCalibDataStore
 from DIRAC.Resources.Storage.StorageElement     import StorageElement
 #Added BKK functionality for retrieving Run 2 WGP nTuples
 from DIRAC.Core.Base import Script
-Script.parseCommandLine( ignoreErrors = True )
+Script.initialize()
 
 import DIRAC
 from LHCbDIRAC.BookkeepingSystem.Client.BookkeepingClient   import BookkeepingClient
@@ -58,7 +58,7 @@ def GetDataSets(StripVer, MagPolarity, PartName, TrackCuts, runMin=None, runMax=
             DataSets.append(DataSet)
     return DataSets
 
-def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,PIDCutString,XVarName,YVarName,ZVarName,file, verbose=False,
+def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,PIDCutString,xBin,yBin,zBin,file, verbose=False,
                allowMissingDataSets=False, minEntries=0):
                
     #If Run I data has been requested and MC12TuneV4 or MC15TuneV1 ProbNN cut used, return error
@@ -101,9 +101,9 @@ def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,PIDCutString,XVarName,YV
                                   , part      = PartType
                                   , trackcuts = TrackCuts
                                   , pidcuts   = PIDCutString
-                                  , xvar      = XVarName
-                                  , yvar      = YVarName
-                                  , zvar      = ZVarName
+                                  , xvar      = xBin
+                                  , yvar      = yBin
+                                  , zvar      = zBin
             )
       print "Automatic conversion from TTree to RooDataSet"
 #        raise TFileError("Failed to retrieve workspace {wsname} from file {fname}".format(
@@ -205,7 +205,9 @@ def GetWGPFiles(StripVer,MagPolarity,verbose=False):
     rm = DataManager()
     bkClient = BookkeepingClient()
     bkDict = {} 
-    args = Script.getPositionalArgs()
+    #args = Script.getPositionalArgs()
+    #print args
+    
     bkDict[ 'ConfigName' ] = 'LHCb'
     bkDict[ 'EventTypeId' ] = '95100000'
     bkDict['FileType'] = 'PIDCALIB.ROOT'
@@ -231,8 +233,10 @@ def GetWGPFiles(StripVer,MagPolarity,verbose=False):
     	turbo = '02a'
     	version = '4r1'
     bkDict[ 'ProcessingPass' ] = '/Real Data/Reco'+reco+'/Turbo'+turbo+'/PIDCalibTuples'+version+'/PIDMerge01'
-
+    
     file = bkClient.getFilesWithGivenDataSets(bkDict)
+	#file = bkClient.getVisibleFilesWithMetadata(bkDict)
+    #print file
     files  = file['Value'] 
     print "There are " + str(len(files)) + " WGP nTuples in this dataset"
     #print files
