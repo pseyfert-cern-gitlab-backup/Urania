@@ -28,7 +28,7 @@ rt.gROOT.ProcessLine('.L ./RooPrior.cxx++')
 
 #-----------------------------------------------------------------------------
 COMBINE_2011 = 1
-BLIND = 1
+BLIND = 0
 POWER_LAW = 1 ### if set to zero it will use an exponential for the misid bkg
 EXPO = 1 ### if set to zero it will use a polynomial for the comb bkg
 FIXEXPOVALS = 0
