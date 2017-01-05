@@ -54,12 +54,12 @@ e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
                         help="Sets the PID cut(s)")
     
     ## add the optional arguments
-    #parser.add_argument('-x', '--minRun', dest="minRun", metavar="NUM",
-    #                    help="Sets the minimum run number to process (if applicable, Run 1 only)")
-    #parser.add_argument('-y', '--maxRun', dest="maxRun", metavar="NUM",
-    #                    help="Sets the maximum run number to process (if applicable, Run 1 only)")
-    #parser.add_argument('-f', '--maxFiles', dest="maxFiles", metavar="NUM",
-    #                    help="Sets the maximum number of calibration files to run over")
+    parser.add_argument('-x', '--minRun', dest="minRun", metavar="NUM",
+                        help="Sets the minimum run number to process (if applicable, Run 1 only)")
+    parser.add_argument('-y', '--maxRun', dest="maxRun", metavar="NUM",
+                        help="Sets the maximum run number to process (if applicable, Run 1 only)")
+    parser.add_argument('-f', '--maxFiles', dest="maxFiles", metavar="NUM",
+                        help="Sets the maximum number of calibration files to run over")
     parser.add_argument('-c', '--cuts', dest='cuts', metavar='CUTS', default='',
                         help="Sets the list of cuts to apply to the calibration "
                         "sample(s) prior to determine the PID efficiencies "
@@ -144,8 +144,8 @@ e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
     MagPolarity = None
     PartName = None
     DLLCuts = []
-    #RunMin = None
-    #RunMax = None
+    RunMin = None
+    RunMax = None
 
     # set the sample version (stripping version in Run I, and Turbo version in Run II. Internally called StripVersion)
     StripVersion=opts.sampleVersion
@@ -182,9 +182,9 @@ e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
             if not CheckCuts(opts.cuts.join(" "),StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cuts))
 
-    #RunMin = opts.minRun
-    #RunMax = opts.maxRun
-    #MaxFiles = opts.maxFiles
+    RunMin = opts.minRun
+    RunMax = opts.maxRun
+    MaxFiles = opts.maxFiles
     
     #If running on Run 2 data, do not allow run range to be set
     #if 'Turbo' in StripVersion and RunMin is not None:
@@ -194,36 +194,36 @@ e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
     #	parser.error("Cannot set run range for Run 2 data. Please set the run range within a cut using -c option.")
     
 
-    #if RunMin is not None:
-    #    try:
-    #        int(RunMin)
-    #    except ValueError:
-    #        parser.error(
-    #            "Argument to --minRun ('%s') is not an integer'." %RunMin)
+    if RunMin is not None:
+        try:
+            int(RunMin)
+        except ValueError:
+            parser.error(
+                "Argument to --minRun ('%s') is not an integer'." %RunMin)
 
-    #    if RunMax is None:
-    #        parser.error(
-    #            "Min run was specified as %s, but no max run was given." %RunMin)
+        if RunMax is None:
+            parser.error(
+                "Min run was specified as %s, but no max run was given." %RunMin)
 
-    #if RunMax is not None:
-    #    try:
-    #        int(RunMax)
-    #    except ValueError:
-    #        parser.error(
-    #            "Argument to --maxRun ('%s') is not an integer'." %RunMax)
-    #    if RunMin is None:
-    #        parser.error(
-    #            "Max run was specified as %s, but no min run was given." %RunMax)
+    if RunMax is not None:
+        try:
+            int(RunMax)
+        except ValueError:
+            parser.error(
+                "Argument to --maxRun ('%s') is not an integer'." %RunMax)
+        if RunMin is None:
+            parser.error(
+                "Max run was specified as %s, but no min run was given." %RunMax)
 
-    #if MaxFiles is not None:
-    #    try:
-    #        int(MaxFiles)
-    #    except ValueError:
-    #        parser.error(
-    #            "Argument to --maxFiles ('%s') is not an integer'." %MaxFiles)
-    #    if MaxFiles is None:
-    #        parser.error(
-    #            "Max files was specified as %s, but no min run was given." %MaxFiles)
+    if MaxFiles is not None:
+        try:
+            int(MaxFiles)
+        except ValueError:
+            parser.error(
+                "Argument to --maxFiles ('%s') is not an integer'." %MaxFiles)
+        if MaxFiles is None:
+            parser.error(
+                "Max files was specified as %s, but no min run was given." %MaxFiles)
    
     XVarName = opts.xVarName
     if XVarName=='':
@@ -344,6 +344,8 @@ e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
                             opts.yVarName,
                             opts.zVarName,
                             BinSchema,
+                            RunMin,
+                            RunMax,
                             opts.verbose,
                             opts.allowMissing)
                             
