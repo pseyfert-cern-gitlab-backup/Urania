@@ -32,10 +32,10 @@ BLIND = 0
 POWER_LAW = 1 ### if set to zero it will use an exponential for the misid bkg
 EXPO = 1 ### if set to zero it will use a polynomial for the comb bkg
 FIXEXPOVALS = 0
-BR_MINOS = 0
-PROFILE = 1
+BR_MINOS = 1
+PROFILE = 0
 TOYSTUDY = 0
-MAKEPLOTS = 0
+MAKEPLOTS = 1
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
@@ -224,7 +224,7 @@ class KsMuMuModel:
         misid_m = getattr(fithelp, 'misid_' + i + 'm')
         misid_n = getattr(fithelp, 'misid_' + i + 'n')
 
-        self.misid_n = rt.RooRealVar('misid_' +  i + 'n', 'misid_' +  i + 'n', misid_n, 0.6*misid_n, 120)# 10, 1, 120 # misid_n - 2
+        self.misid_n = rt.RooRealVar('misid_' +  i + 'n', 'misid_' +  i + 'n', 0.94*misid_n, 0.6*misid_n, 120)# 10, 1, 120 # misid_n - 2
         #self.misid_s = rt.RooRealVar('misid_' +  i + 's', 'misid_' +  i + 's', 3, 1, 10)
         times_misid_m = 1.5
         if times_misid_m*misid_m >= MASS_MIN:
@@ -238,7 +238,7 @@ class KsMuMuModel:
         
         if EXPO:
             dk = getattr(fithelp, 'MuMu_dk_' + i)
-            self.k = rt.RooRealVar( 'MuMu_dk_' + i, 'MuMu_dk_' + i, dk, 1.5*dk, 0. )#-1e-2, -.1, .1
+            self.k = rt.RooRealVar( 'MuMu_dk_' + i, 'MuMu_dk_' + i, dk, 2.*dk, 0. )#-1e-2, -.1, .1
             self.bkg1 = rt.RooExponential("bkg1_MuMu_model" + i, "bkg1_MuMu_model" + i, Mass, self.k)
             if FIXEXPOVALS:
                 import fitPars
@@ -259,7 +259,7 @@ class KsMuMuModel:
         '''
 
         #f_misid = misidPars.NSig*1./( misidPars.NCombBkg + misidPars.NSig )
-        self.f_misid = rt.RooRealVar('f_misid_' + i, 'f_misid_' + i, f_misid, 0.9*f_misid, 1)#f_misid, 0.5, 1
+        self.f_misid = rt.RooRealVar('f_misid_' + i, 'f_misid_' + i, f_misid, 0.88*f_misid, 1)#f_misid, 0.5, 1
         if POWER_LAW:
             self.bkg = rt.RooAddPdf('bkg MuMu_model' + i, 'bkg MuMu_model' + i, self.misid, self.bkg1, self.f_misid)
         else:
@@ -342,7 +342,7 @@ fitOpts = [rf.Minos(rt.kFALSE), rf.ExternalConstraints(summaryConstraints),
 fitResults = mainModel.fitTo(DATA['ALL'], *fitOpts)
 fitResults.Print()
 print '*************************************** MAIN FIT ENDS HERE ***************************************'
-nll = mainModel.createNLL(DATA['ALL'], rf.ExternalConstraints(summaryConstraints), rf.NumCPU(12))
+nll = mainModel.createNLL(DATA['ALL'], rf.Offset(True), rf.ExternalConstraints(summaryConstraints), rf.NumCPU(12))
 
 if BR_MINOS:
     print '********************************** CALCULATING MINOS FOR BR **************************************'
