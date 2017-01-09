@@ -207,7 +207,7 @@ vars_dataset = {
 
 datasets = {
   'DSt_Pi' : ["DSt_PiMTuple", "DSt_PiPTuple"],
-  'DSt_K'  : ["DSt_KPTuple", "DSt_KMTuple"],
+  'DSt_K'  : ["DSt_KMTuple", "DSt_KPTuple"],
   'Lam0_P' : ["Lam0_PTuple", "Lam0_PbarTuple", "Lam0_HPT_PTuple", "Lam0_HPT_PbarTuple", "Lam0_VHPT_PTuple", "Lam0_VHPT_PbarTuple"],
   'Jpsi_Mu': ["Jpsi_MuPTuple", "Jpsi_MuMTuple"],
   'P_LcfB' : ["LbLcMu_PTuple", "LbLcMu_PbarTuple"],
@@ -315,13 +315,20 @@ def getDataSetFromTuple ( file, mother, part, trackcuts, pidcuts, xvar, yvar, zv
   tmp = ROOT.TFile.Open (  "/tmp/"+os.getenv('USER') + "/tmpPidCalib_"+datasetname+"{0}.root".format(time.time()) , "RECREATE")
   #print tmp.GetName()
 
-  tree = ROOT.TChain ()
+  #Total TChain
+  tree = ROOT.TChain("tree")
+  #Make a TChain for each nTuple, then rename all of them to the same name, then add them all together
   for dataset in datasets [ datasetname ]:
-  	tree.Add(file+"/"+dataset+"/DecayTree")
+    tree_sub = ROOT.TChain()
+    tree_sub.Add(file+"/"+dataset+"/DecayTree")
+    print tree_sub.GetEntries()
+    #Rename it, and add it to total tree
+    tree_sub.SetName("tree")
+    tree.Add(tree_sub)
   if not tree:
     raise Exception ( "No data for dataset: " + datasetname )
 
-
+  print tree.GetEntries()
   tree.SetBranchStatus("*",0)
 
   for varid in vars:
@@ -351,6 +358,7 @@ def getDataSetFromTuple ( file, mother, part, trackcuts, pidcuts, xvar, yvar, zv
     if keep == True:
       b.SetStatus(1)
       b.SetName ( varRoo.GetName() )
+      varRoo.setRange(-1e400,1e400)
       roovars [ varRoo.GetName() ] = varRoo
       listOfVars.add ( varRoo )
     if not b:
