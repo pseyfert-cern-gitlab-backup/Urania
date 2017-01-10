@@ -106,6 +106,7 @@ def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,PIDCutString,xBin,yBin,z
                                   , zvar      = zBin
             )
       print "Automatic conversion from TTree to RooDataSet"
+      
 #        raise TFileError("Failed to retrieve workspace {wsname} from file {fname}".format(
 #            wsname=DataSetNameDict['WorkspaceName'], fname=fname))
 
@@ -114,7 +115,7 @@ def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,PIDCutString,xBin,yBin,z
     if verbose:
       print "Retrieved data: ({0},{1})".format(time.time(),time.clock())
 
-    #Data.Print("v")
+    Data.Print("v")
 
     if verbose:
       print "Applying any cuts to the dataset."
