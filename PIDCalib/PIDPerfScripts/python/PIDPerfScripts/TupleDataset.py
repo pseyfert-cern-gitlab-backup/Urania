@@ -40,7 +40,7 @@ vars_dataset = {
   'Brunel_MC12TuneV2_ProbNNpi':                  var('{particle}_Brunel_MC12TuneV2_ProbNNpi',        '{particle}_Brunel_MC12TuneV2_ProbNNpi',        'var'),        
   'MC12TuneV2_ProbNNK':             var('{particle}_V2ProbNNK',        '{particle}_MC12TuneV2_ProbNNk',        'var'), #Uppercase K in PIDCalib, lowercase in WGP nTuple 
   'Brunel_MC12TuneV2_ProbNNK':                   var('{particle}_Brunel_MC12TuneV2_ProbNNk',        '{particle}_Brunel_MC12TuneV2_ProbNNk',        'var'),        
-  'MC12TuneV2_ProbNNp':             var('{particle}_V2_ProbNNp',        '{particle}_MC12TuneV2_ProbNNp',        'var'),
+  'MC12TuneV2_ProbNNp':             var('{particle}_V2ProbNNp',        '{particle}_MC12TuneV2_ProbNNp',        'var'),
   'Brunel_MC12TuneV2_ProbNNp':                   var('{particle}_Brunel_MC12TuneV2_ProbNNp',        '{particle}_Brunel_MC12TuneV2_ProbNNp',        'var'),        
   'MC12TuneV2_ProbNNghost':         var('{particle}_V2ProbNNghost',        '{particle}_MC12TuneV2_ProbNNghost',        'var'),
   'Brunel_MC12TuneV2_ProbNNghost':               var('{particle}_Brunel_MC12TuneV2_ProbNNghost',        '{particle}_Brunel_MC12TuneV2_ProbNNghost',        'var'),        
