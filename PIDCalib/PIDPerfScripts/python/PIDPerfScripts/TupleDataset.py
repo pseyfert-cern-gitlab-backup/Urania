@@ -207,7 +207,7 @@ vars_dataset = {
 
 datasets = {
   'DSt_Pi' : ["DSt_PiMTuple", "DSt_PiPTuple"],
-  'DSt_K'  : ["DSt_KMTuple", "DSt_KPTuple"],
+  'DSt_K'  : ["DSt_KPTuple", "DSt_KMTuple"],
   'Lam0_P' : ["Lam0_PTuple", "Lam0_PbarTuple", "Lam0_HPT_PTuple", "Lam0_HPT_PbarTuple", "Lam0_VHPT_PTuple", "Lam0_VHPT_PbarTuple"],
   'Jpsi_Mu': ["Jpsi_MuPTuple", "Jpsi_MuMTuple"],
   'P_LcfB' : ["LbLcMu_PTuple", "LbLcMu_PbarTuple"],
@@ -298,9 +298,7 @@ additionalVariables = {
 
 def getDataSetFromTuple ( file, mother, part, trackcuts, pidcuts, xvar, yvar, zvar):
 
-  roovars = {}
-  listOfVars = RooArgSet()
-
+  
   datasetname = mother + "_" + part
 
   if datasetname not in datasets:
@@ -313,67 +311,74 @@ def getDataSetFromTuple ( file, mother, part, trackcuts, pidcuts, xvar, yvar, zv
     
 
   tmp = ROOT.TFile.Open (  "/tmp/"+os.getenv('USER') + "/tmpPidCalib_"+datasetname+"{0}.root".format(time.time()) , "RECREATE")
-  #print tmp.GetName()
 
-  #Total TChain
-  tree = ROOT.TChain("tree")
-  #Make a TChain for each nTuple, then rename all of them to the same name, then add them all together
-  for dataset in datasets [ datasetname ]:
-    tree_sub = ROOT.TChain()
-    tree_sub.Add(file+"/"+dataset+"/DecayTree")
-    print tree_sub.GetEntries()
-    #Rename it, and add it to total tree
-    tree_sub.SetName("tree")
-    tree.Add(tree_sub)
-  if not tree:
-    raise Exception ( "No data for dataset: " + datasetname )
 
-  print tree.GetEntries()
-  tree.SetBranchStatus("*",0)
-
-  for varid in vars:
-    myvar = vars [ varid  ]
-    varRoo  = myvar.getRooRealVar ( part )
-    varname = myvar.getBranchName ( "probe" )
-    b = tree.GetBranch ( varname )
-    keep = False
-    if varid == xvar:
-      print "Variable " + varid + " is X binning variable. Adding to RooDataSet."
-      keep = True
-    elif varid == yvar:
-      print "Variable " + varid + " is Y binning variable. Adding to RooDataSet."
-      keep = True
-    elif varid == zvar:
-      print "Variable " + varid + " is Z binning variable. Adding to RooDataSet."
-      keep = True
-    elif varid == "sweight":
-      print "Variable " + varid + " is sWeight. Adding to RooDataSet."
-      keep = True
-    elif varid in trackcuts:
-      print "Variable " + varid + " is in track cuts. Adding to RooDataSet."
-      keep = True
-    elif varid in pidcuts:
-      print "Variable " + varid + " is in PID cuts. Adding to RooDataSet."
-      keep = True
-    if keep == True:
-      b.SetStatus(1)
-      b.SetName ( varRoo.GetName() )
-      varRoo.setRange(-1e400,1e400)
-      roovars [ varRoo.GetName() ] = varRoo
-      listOfVars.add ( varRoo )
-    if not b:
-      print "Cannot load branch " + varname + " from TTree: " + datasetname
-      continue
-
+  data_total = ROOT.RooDataSet()
   print "Converting WGP nTuple to RooDataSet: ({0},{1})".format(time.time(),time.clock())
+  
+  i = 0
+  for dataset in datasets [ datasetname ]:
+  
+    roovars = {}
+    listOfVars = RooArgSet()
+  	
+    tree = ROOT.TChain()
+    tree.Add(file+"/"+dataset+"/DecayTree")
+    if not tree:
+      raise Exception ( "No data for dataset: " + datasetname )
+  	
+    tree.SetBranchStatus("*",0)
+  	
+    for varid in vars:
+      myvar = vars [ varid  ]
+      varRoo  = myvar.getRooRealVar ( part )
+      varname = myvar.getBranchName ( "probe" )
+      b = tree.GetBranch ( varname )
+      keep = False
+      if varid == xvar:
+        print "Variable " + varid + " is X binning variable. Adding to RooDataSet."
+        keep = True
+      elif varid == yvar:
+        print "Variable " + varid + " is Y binning variable. Adding to RooDataSet."
+        keep = True
+      elif varid == zvar:
+        print "Variable " + varid + " is Z binning variable. Adding to RooDataSet."
+        keep = True
+      elif varid == "sweight":
+        print "Variable " + varid + " is sWeight. Adding to RooDataSet."
+        keep = True
+      elif varid in trackcuts:
+        print "Variable " + varid + " is in track cuts. Adding to RooDataSet."
+        keep = True
+      elif varid in pidcuts:
+        print "Variable " + varid + " is in PID cuts. Adding to RooDataSet."
+        keep = True
+      if keep == True:
+        b.SetStatus(1)
+        b.SetName ( varRoo.GetName() )
+        roovars [ varRoo.GetName() ] = varRoo
+        listOfVars.add ( varRoo )
+      if not b:
+        print "Cannot load branch " + varname + " from TTree: " + datasetname
+        continue
+          
+    data = RooDataSet("data","data",tree.CloneTree(),listOfVars)
+    
+    if i==0:
+    	print "Initialising RooDataSet with data from tuple " + dataset 
+    	data_total = data
+    else:
+    	print "Appending additional data from tuple " + dataset
+    	data_total.append(data)
+    i+=1
 
   os.remove(tmp.GetName())
+  data_total.SetName(datasetname+"ds")
+  data_total.SetTitle("RooDataset automatically generated from TTree "+datasetname)
 
-  return RooDataSet ( datasetname + "ds",
-                      "RooDataset automatically generated from TTree "+datasetname,
-                      tree.CloneTree(), listOfVars
-                    )
-
+  return data_total
+ 
+  
 if __name__ == "__main__":
   print "TESTING"
   ds = getDataSetFromTuple (
