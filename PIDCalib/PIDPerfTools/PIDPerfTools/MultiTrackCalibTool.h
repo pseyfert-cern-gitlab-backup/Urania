@@ -38,6 +38,8 @@ public:
   void SetTrackEtaVarName(const std::string& NameInTree);
 
   void SetNTracksVarName(const std::string& NameInTree);
+  
+  void SetNSPDHitsVarName(const std::string& NameInTree);
 
   void SetSWeightVarName(const std::string& NameInTree);
 
@@ -121,6 +123,7 @@ private:
   std::vector<std::pair<std::string, std::string> > m_BinningParam;
 
   unsigned int m_indexNTracks;
+  unsigned int m_indexNSPDHits;
   unsigned int m_BinningDimensions;
 
   Bool_t m_BinningVectorSorted;

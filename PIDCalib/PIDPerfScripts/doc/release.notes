@@ -3,6 +3,9 @@
 ! Responsible : Donal Hill
 ! Purpose     : Scripts using PIDPerfTools to perform PID studies
 !-----------------------------------------------------------------------------
+! 2017-1-11 - Donal Hill
+	- Fixed bug in PerformMultiTrackCalib.py which prevented Run 2 performance histograms to be loaded.
+
 ! 2017-1-10 - Donal Hill
 	- Fixed bug in TupleDataset.py which was causing e.g. only the DSt_KPTuple to be loaded and ignoring the DSt_KMTuple.
 

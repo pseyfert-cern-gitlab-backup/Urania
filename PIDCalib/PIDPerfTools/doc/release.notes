@@ -3,6 +3,9 @@
 ! Responsible : Donal Hill
 ! Purpose     : Classes for performing PID based studies
 !-----------------------------------------------------------------------------
+! 2017-1-11 - Donal Hill
+	- Updated MultiTrackCalibTool to allow Run 2 histograms to be analysed
+	- Added functionality for nSPDHits as a binning variable
 
 ! 2016-12-20 - Donal Hill
   - Updated CMakeLists.txt in PIDPerfTools in order to compile under CMake.
