@@ -112,6 +112,7 @@ vars_dataset = {
   'Brunel_MuonMuLL':                             var('{particle}_Brunel_MuonMuLL',        '{particle}_Brunel_MuonMuLL',        'var'),              
   'MuonUnbiased':                   var('{particle}_MuonUnbiased',        '{particle}_MuonUnbiased',        'var'),        
   'Brunel_MuonUnbiased':                         var('{particle}_Brunel_MuonUnbiased',        '{particle}_Brunel_MuonUnbiased',        'var'),        
+  'Unbias_HLT1':                   var('{particle}_Unbias_HLT1',        '{particle}_Unbias_HLT1',        'var'),        
   'P':                              var('{particle}_P',        '{particle}_P',        'var'),          
   'Brunel_P':                                    var('{particle}_Brunel_P',        '{particle}_Brunel_P',        'var'),         
   'PHI':                            var('{particle}_Phi',        '{particle}_PHI',        'var'),             
