@@ -23,7 +23,7 @@ kspipimb_2011  = fkspipimb_2011.Get('Kspipi')
 #ppmbcuts_2011 = fiducial_2011.selection
 pipicuts_2011    = fiducial_2011.fiducial
 mumuselcuts_2011 = fiducial_2011.fiducial + ' && mu1ismu && mu2ismu'
-mumucuts_2011    = mumuselcuts_2011 + ' && ' + fiducial_2011.xtos
+mumucuts_2011    = mumuselcuts_2011 + ' && ' + fiducial_2011.tos
 
 npipi_strip_mb    = kspipimb_2011.GetEntries(pipicuts_2011)
 eff_pipi_strip_mc = kspipi_2011.GetEntries(pipicuts_2011)*1./kspipimc_2011.GetEntries()
