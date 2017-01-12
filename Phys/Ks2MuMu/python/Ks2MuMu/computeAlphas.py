@@ -46,12 +46,12 @@ gen_eff_cut_mumu_2012 = 0.27
 smb_2012              = 3.39e-7
 
 path_2012       = '/eos/lhcb/wg/RD/K0SMuMu/NEW/'
-#fkspipimb_2012  = TFile(path_2012 + 'DATA/KsMB_Data2012_MVA.root')
 #fkspipi_2012    = TFile(path_2012 + 'MC/Kspipi_MC2012_mcMatch_MVA.root')
 #fkspipimc_2012  = TFile(path_2012 + 'MC/Kspipi_MC2012_mcMatch.root')
-#fksmumu_2012    = TFile(path_2012 + 'MC/Ksmumu_MC2012_mcMatch_MVA.root')
-#fksmumumc_2012  = TFile(path_2012 + 'MC/Ksmumu_MC2012_mcMatch.root')
-#fksmumustr_2012 = TFile(path_2012 + 'MC/Ksmumu_StrippedMC2012_mcMatch_MVA.root')
+fksmumu_2012    = TFile(path_2012 + 'MC/Ksmumu_MC2012_mcMatch_MVA.root')
+fksmumumc_2012  = TFile(path_2012 + 'MC/Ksmumu_MC2012_mcMatch.root')
+fkspipimb_2012  = TFile(path_2012 + 'DATA/KsMB_Data2012_MVA.root')
+fksmumustr_2012 = TFile(path_2012 + 'MC/Ksmumu_StrippedMC2012_mcMatch_MVA.root')
 #kspipi_2012     = fkspipi_2012.Get('DecayTree')
 #kspipimc_2012   = fkspipimc_2012.Get('MCtruthKspipi/MCDecayTree')
 ksmumu_2012     = fksmumu_2012.Get('DecayTree')
