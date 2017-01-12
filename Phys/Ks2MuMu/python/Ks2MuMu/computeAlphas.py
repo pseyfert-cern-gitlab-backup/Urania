@@ -64,6 +64,7 @@ sel_eff_2012 = gen_eff_cut_mumu_2012*ksmumu_2012.GetEntries('StrippingKS02MuMuLi
                                                             fiducial.fullsel)*1./ksmumumc_2012.GetEntries()
 
 eff_trigger_2012 = ksmumustr_2012.GetEntries(fiducial.SEL['TOS1_']  + " && StrippingKS02MuMuLineDecision")*1./ksmumustr_2012.GetEntries(fiducial.fullsel + " && StrippingKS02MuMuLineDecision")
+eff_trigger_kaon = ksmumustr_2012.GetEntries(fiducial.SEL['TOS1_'] + " && !(" + fiducial.tististos  + ") && StrippingKS02MuMuLineDecision")*1./ksmumustr_2012.GetEntries(fiducial.fullsel + " && StrippingKS02MuMuLineDecision")
 
 trigger_gain = eff_trigger_2012/eff_trigger_2011
 
@@ -72,5 +73,9 @@ alpha_2012 = alpha_2011*sel_eff_2011/(trigger_gain*lumi_gain*sel_eff_2012)
 print '--- Alpha 2012 extrapolated:', alpha_2012
 print '--- Expected:', 7e-11
 print '--- Trigger efficiency 2011:', eff_trigger_2011
+print '--- Trigger efficiency KAON:', eff_trigger_kaon
 print '--- Trigger efficiency 2012:', eff_trigger_2012
 print '--- Trigger gain:', trigger_gain
+print '--- Selection efficiency 2011:', sel_eff_2011
+print '--- Selection efficiency 2012:', sel_eff_2012
+print '--- Number of Ks->pipi MB 2012:', npipi_strip_mb
