@@ -36,7 +36,7 @@ use  B2DXFitters		v3r2	PhysFit			# [Agnieszka Dziurda], [Manuel Schiller]
 use  P2VV			v4r2	PhysFit			# [Sean Benson], [Katya Govorkova]
 use  SomeMassModels		v2r6	PhysFit			# [Diego Martinez Santos]
 use  RooPhysFitter              v3r2    PhysFit                 # [Donal Hill]
-use  V0hhFitter                 v1r0    PhysFit                 # [Rafael Silva Coutinho]
+#use  V0hhFitter                 v1r0    PhysFit                 # [Rafael Silva Coutinho]
 
 use CalibDataScripts            v5r4    PIDCalib                # [Donal Hill]
 use PIDPerfScripts              v11r0   PIDCalib                # [Donal Hill]
