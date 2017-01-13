@@ -269,6 +269,9 @@ e.g. python {0} \"20\" \"MagUp\" \"$HOME/MyAnalysis/MySignalSample.root\" \"Sign
 
         elif vname_calib=="nTracks":
             CalibTool.SetNTracksVarName(vname_ref)
+            
+        elif vname_calib=="nSPDHits":
+            CalibTool.SetNSPDHitsVarName(vname_ref)
 
         else:
             CalibTool.SetTrackPtVarName(vname_ref)
@@ -295,9 +298,12 @@ e.g. python {0} \"20\" \"MagUp\" \"$HOME/MyAnalysis/MySignalSample.root\" \"Sign
         for vname in (XVarName, YVarName, ZVarName):
             if vname=='': continue
             fnameSuffix+='_{0}'.format(vname)
-
-        fname = "PerfHists_{part}_Strip{strp}_{pol}{suf}.root".format(
-            part=trackType, strp=StripVersion, pol=MagPolarity, suf=fnameSuffix)
+        if 'Turbo' not in StripVersion:
+        	fname = "PerfHists_{part}_Strip{strp}_{pol}{suf}.root".format(
+            	part=trackType, strp=StripVersion, pol=MagPolarity, suf=fnameSuffix)
+        elif 'Turbo' in StripVersion:
+        	fname = "PerfHists_{part}_{strp}_{pol}{suf}.root".format(
+            	part=trackType, strp=StripVersion, pol=MagPolarity, suf=fnameSuffix)
         if opts.inputDir is not None:
             fname = "%s/%s" %(opts.inputDir, fname)
 
@@ -339,7 +345,7 @@ e.g. python {0} \"20\" \"MagUp\" \"$HOME/MyAnalysis/MySignalSample.root\" \"Sign
     #===========================================================================
     # Calculate the per track event efficiencies
     #===========================================================================
-    print "Calculating per track even efficiencies"
+    print "Calculating per track event efficiencies"
     CalibTool.Calculate()
 
     #===========================================================================

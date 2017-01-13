@@ -36,6 +36,7 @@ MultiTrackCalibTool::MultiTrackCalibTool(std::string Name,
     m_verbose(verbose),
     m_printFreq(printFreq),
     m_indexNTracks(0),
+    m_indexNSPDHits(0),
     m_BinningDimensions(0),
     m_BinningVectorSorted(0),
     m_KinVarBranchesSet(0),
@@ -54,11 +55,11 @@ MultiTrackCalibTool::MultiTrackCalibTool(std::string Name,
     m_IDVar_suffix("")
 {
   // Set PIDPerfTools
-  m_PerfParamMap["Track Momentum [MeV/c]"] = "P";
-  m_PerfParamMap["Transverse Momentum [MeV/c]"] = "PT";
-  m_PerfParamMap["Psuedo Rapidity"] = "ETA";
-  m_PerfParamMap["No. Best Tracks in Event"] = "nTRACKS";
-
+  //m_PerfParamMap["Track Momentum [MeV/c]"] = "P";
+  //m_PerfParamMap["Transverse Momentum [MeV/c]"] = "PT";
+  //m_PerfParamMap["Psuedo Rapidity"] = "ETA";
+  //m_PerfParamMap["No. Best Tracks in Event"] = "nTRACKS";
+  
   this->SetOutputFile(OutputFileName, mode);
   m_OutputFile->cd();
 
@@ -217,6 +218,16 @@ void MultiTrackCalibTool::SetNTracksVarName(const std::string& NameInTree)
 }
 
 //=============================================================================
+// Declare nSPDHits variable name in reference tree
+//=============================================================================
+void MultiTrackCalibTool::SetNSPDHitsVarName(const std::string& NameInTree)
+{
+  m_BinningParam.push_back( make_pair("nSPDHITS",NameInTree) );
+
+  m_BinningVectorSorted = false;
+}
+
+//=============================================================================
 // Declare sWeights variable name in reference tree
 //=============================================================================
 void MultiTrackCalibTool::SetSWeightVarName(const std::string& NameInTree)
@@ -272,11 +283,15 @@ void MultiTrackCalibTool::ReOrderBinningVector()
 
   //Declare iterator for m_TrackEffMap
   std::map<std::string, TH1*>::iterator itr_begin = m_TrackEffMap.begin();
+  
+  std::vector<size_t> order;
+  std::vector<std::pair<std::string,std::string> >::iterator itr;
 
   // Simple case of a 1-dimensional binning (no ordering necessary)
   if(m_BinningDimensions == 1)
   {
-    if(m_PerfParamMap.find(itr_begin->second->GetXaxis()->GetTitle()) != m_PerfParamMap.end()) {
+  	m_BinningVectorSorted = true;
+    /*if(m_PerfParamMap.find(itr_begin->second->GetXaxis()->GetTitle()) != m_PerfParamMap.end()) {
       m_BinningVectorSorted = true;
       return;
     }
@@ -284,13 +299,13 @@ void MultiTrackCalibTool::ReOrderBinningVector()
     {
       cout << "**ERROR** : Got invalid X bin type." << endl;
       exit(EXIT_FAILURE);
-    }
+    }*/
   }
 
   // Complicated case of > 1-dimensional binning (ordering necessary)
   else if (m_BinningDimensions > 1)
   {
-    std::vector<size_t> order;
+    /*std::vector<size_t> order;
     std::vector<std::pair<std::string,std::string> >::iterator itr;
 
     // Test x-Dimension
@@ -309,10 +324,10 @@ void MultiTrackCalibTool::ReOrderBinningVector()
           continue;
         }
       }
-    }
+    }*/
 
     // Test y-Dimension
-    if (m_PerfParamMap.find(itr_begin->second->GetYaxis()->GetTitle()) == m_PerfParamMap.end()) {
+    /*if (m_PerfParamMap.find(itr_begin->second->GetYaxis()->GetTitle()) == m_PerfParamMap.end()) {
       cout << "**ERROR** : Got invalid Y bin type." << endl;
       exit(EXIT_FAILURE);
     }
@@ -327,9 +342,9 @@ void MultiTrackCalibTool::ReOrderBinningVector()
           continue;
         }
       }
-    }
+    }*/
 
-    if (m_BinningDimensions > 2)
+    /*if (m_BinningDimensions > 2)
     {
       // Test z-Dimension
       if (m_PerfParamMap.find(itr_begin->second->GetZaxis()->GetTitle()) == m_PerfParamMap.end()) {
@@ -348,7 +363,7 @@ void MultiTrackCalibTool::ReOrderBinningVector()
           }
         }
       }
-    }
+    }*/
 
     cout<<"Before ReOrdering..."<<endl;
     for(itr=m_BinningParam.begin(); itr!=m_BinningParam.end(); ++itr)
@@ -366,10 +381,14 @@ void MultiTrackCalibTool::ReOrderBinningVector()
       if (itr->first == "nTRACKS") {
         m_indexNTracks = index_;
       }
+      if (itr->first == "nSPDHITS") {
+        m_indexNSPDHits = index_;
+      }
       cout<<itr->first<<'\t'<<itr->second<<endl;
       index_++;
     }
     cout<<" Index nTracks = "<< m_indexNTracks <<endl;
+    cout<<" Index nSPDHits = "<< m_indexNSPDHits <<endl;
   }
 
   m_BinningVectorSorted = true;
@@ -418,11 +437,14 @@ void MultiTrackCalibTool::SetTrackKinVarBranchAddressInInputTree()
     for(itr_binVar=m_BinningParam.begin(); itr_binVar!=m_BinningParam.end(); ++itr_binVar)
     {
       // Construct variable name
-      std::string var_string = (itr_binVar->first=="nTRACKS") ?
+      std::string var_string = (itr_binVar->first=="nTRACKS" || itr_binVar->first=="nSPDHITS") ?
         itr_binVar->second : itr_trk->first+"_"+itr_binVar->second;
 
       if ((itr_trk!=m_TrackEffMap.begin())&&(itr_binVar->first=="nTRACKS")){
          itr_trkVar->second.push_back(m_TrackVars.begin()->second.at(m_indexNTracks));
+      }
+      if ((itr_trk!=m_TrackEffMap.begin())&&(itr_binVar->first=="nSPDHITS")){
+         itr_trkVar->second.push_back(m_TrackVars.begin()->second.at(m_indexNSPDHits));
       }
       else {
         // Dynamically assign appropriate type to void pointer
@@ -721,7 +743,8 @@ void MultiTrackCalibTool::DeleteHeapMemVars()
     {
 
       if ( (itr_trk!=m_TrackVars.begin())&&
-          (m_BinningParam.at(distance(itr_trk->second.begin(),itr_v)).first=="nTRACKS") )
+          (m_BinningParam.at(distance(itr_trk->second.begin(),itr_v)).first=="nTRACKS" || 
+           m_BinningParam.at(distance(itr_trk->second.begin(),itr_v)).first=="nSPDHITS") )
       {
          continue;
       }
@@ -1193,7 +1216,10 @@ std::string MultiTrackCalibTool::GetKinVarBranchName(std::string trkName,
                                                      std::string binVarIntName,
                                                      std::string binVarName)
 {
-  std::string ret = (binVarIntName!="nTRACKS") ? trkName+"_"+binVarName : binVarName;
+  std::string ret = "";
+  if(binVarIntName!="nTRACKS") ret = binVarName;
+  else if(binVarIntName!="nSPDHITS") ret = binVarName;
+  else ret = trkName+"_"+binVarName;
 
   return ret;
 }
