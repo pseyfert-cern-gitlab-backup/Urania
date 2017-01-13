@@ -24,3 +24,7 @@ gaudi_add_library(PIDPerfToolsLib
                   PUBLIC_HEADERS PIDPerfTools
                   INCLUDE_DIRS Boost ROOT
                   LINK_LIBRARIES Boost ROOT)
+
+# ensure that genreflex is not called twice (in parallel builds)
+add_dependencies(PIDPerfToolsLib PIDPerfToolsGen)
+
