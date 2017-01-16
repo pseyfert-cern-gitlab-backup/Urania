@@ -27,15 +27,15 @@ rt.gROOT.ProcessLine('.L ./RooPrior.cxx++')
 #from ROOT import BifurcatedCB
 
 #-----------------------------------------------------------------------------
-COMBINE_2011 = 1
-BLIND = 0
-POWER_LAW = 1 ### if set to zero it will use an exponential for the misid bkg
-EXPO = 1 ### if set to zero it will use a polynomial for the comb bkg
-FIXEXPOVALS = 0
-BR_MINOS = 1
-PROFILE = 0
-TOYSTUDY = 0
-MAKEPLOTS = 1
+COMBINE_2011 = 1 ### Combine with the result from 2011
+BLIND        = 0 ### Global status of the fit
+POWER_LAW    = 1 ### if set to zero it will use an exponential for the misid bkg
+EXPO         = 1 ### if set to zero it will use a polynomial for the comb bkg
+FIXEXPOVALS  = 0 ### Fix exponential values to study the bkg syst
+BR_MINOS     = 1 ### Get the asymmetric errors using minos
+PROFILE      = 1 ### Get the profile
+TOYSTUDY     = 0 ### Do the TOY MC study
+MAKEPLOTS    = 1 ### Create and save the mass fit plots
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
@@ -124,7 +124,7 @@ if CREATE_FILES:
 #-----------------------------------------------------------------------------
 # Blinds the branching fraction if required. The random blinding factor is
 # stored in UnBlindBr, so do not look at it ;).
-BR_ = rt.RooRealVar('BR', 'BR', 5., 0., 10.)# 0., 0., 7. => this converges
+BR_ = rt.RooRealVar('BR', 'BR', 7., 0., 10.)# 0., 0., 7. => this converges
 if BLIND:
     BR = rt.RooUnblindPrecision("BR_UNB", "BR_UNB", TheTable.Blinding, 0.5, 2., BR_)
     #ublindfct = rt.gRandom.Uniform( BR_.getVal(), 1000 )
@@ -238,17 +238,21 @@ class KsMuMuModel:
         
         if EXPO:
             dk = getattr(fithelp, 'MuMu_dk_' + i)
-            self.k = rt.RooRealVar( 'MuMu_dk_' + i, 'MuMu_dk_' + i, dk, 2.*dk, 0. )#-1e-2, -.1, .1
+            self.k = rt.RooRealVar( 'MuMu_dk_' + i, 'MuMu_dk_' + i, dk, 1.5*dk, 0. )#-1e-2, -.1, .1
             self.bkg1 = rt.RooExponential("bkg1_MuMu_model" + i, "bkg1_MuMu_model" + i, Mass, self.k)
             if FIXEXPOVALS:
                 import fitPars
-                self.k.setVal( getattr( fitPars, i ) )
+                self.k.setVal( getattr( fitPars, 'MuMu_dk_' + i ) )
                 self.k.setConstant( 1 )
         else:
-            self.bkg1_m1 = rt.RooRealVar( 'Cbkg_m1_' + i, 'Cbkg_m1_' + i, -0.9, -4, 0 )
-            self.bkg1_m2 = rt.RooRealVar( 'Cbkg_m2_' + i, 'Cbkg_m2_' + i, 0.16, 0, 4 )
-            #self.bkg1 = rt.RooPolynomial( 'bkg1_MuMu_model' + i, 'bkg1_MuMu_model' + i, Mass, rt.RooArgList( self.bkg1_m ) )
+            self.bkg1_m1 = rt.RooRealVar( 'Cbkg_m1_' + i, 'Cbkg_m1_' + i, -0.01, -20, 0 )
+            self.bkg1_m2 = rt.RooRealVar( 'Cbkg_m2_' + i, 'Cbkg_m2_' + i, 0.01, 0, 20 )
             self.bkg1 = rt.RooChebychev( 'bkg1_MuMu_model' + i, 'bkg1_MuMu_model' + i, Mass, rt.RooArgList( self.bkg1_m1, self.bkg1_m2 ) )
+            '''
+            self.bkg1_m1 = rt.RooRealVar('Cbkg_m1_' + i, 'Cbkg_m1_' + i, 0)
+            self.bkg1_m2 = rt.RooRealVar('Cbkg_m2_' + i, 'Cbkg_m2_' + i, -8e-8, -1e-7, 0)
+            self.bkg1 = rt.RooPolynomial('bkg1_MuMu_model' + i, 'bkg1_MuMu_model' + i, Mass, rt.RooArgList(self.bkg1_m1, self.bkg1_m2))
+            '''
         '''
         self.misid_alphaRK = rt.RooRealVar( 'misid_' + i + 'alphaRK', 'misid' + i + 'alphaRK', misidPars.alphaRK , -0.8, -0.1 )
         self.misid_nRK     = rt.RooRealVar( 'misid_' + i + 'nRK', 'misid' + i + 'nRK', misidPars.nRK , 5., 300. )
@@ -356,7 +360,12 @@ if PROFILE:
     pl.plotOn(fr, rf.ShiftToZero())
     profile = rt.TCanvas( 'Profile', 'Profile' )
     fr.Draw()
-    f = rt.TFile( 'BRprofile_' + ''.join(BINNING.keys())[:-1] + '.root', 'RECREATE' )
+    if FIXEXPOVALS:
+        f = rt.TFile( 'BRprofile_BkgSyst_FixExpo_' + ''.join(BINNING.keys())[:-1] + '.root', 'RECREATE' )
+    elif EXPO:
+        f = rt.TFile( 'BRprofile_' + ''.join(BINNING.keys())[:-1] + '.root', 'RECREATE' )
+    else:
+        f = rt.TFile( 'BRprofile_BkgSyst_' + ''.join(BINNING.keys())[:-1] + '.root', 'RECREATE' )
     profile.Write()
     fr.Write( 'ProfileFrame' )
     f.Close()
@@ -449,10 +458,10 @@ def plot(ix, binning = 100):
     for r in rng.split(','):
         plotOpts = [rf.Range( r ), rf.NormRange( rng ), rf.LineWidth(2)]
         mainPdf  = mm[ix].model
-        mainPdf.plotOn(fr[ix], rf.Components('bkg1_MuMu_model' + ix), rf.LineColor( rt.kOrange ), rf.LineStyle(rt.kDotted), *plotOpts)
-        mainPdf.plotOn(fr[ix], rf.Components('misid_' + ix), rf.LineColor(rt.kGreen), rf.LineStyle(7), *plotOpts)
+        mainPdf.plotOn(fr[ix], rf.Components('bkg1_MuMu_model' + ix), rf.LineColor( rt.kRed ), rf.LineStyle(rt.kDotted), *plotOpts)
+        mainPdf.plotOn(fr[ix], rf.Components('misid_' + ix), rf.LineColor(rt.kGreen + 2), rf.LineStyle(7), *plotOpts)
         mainPdf.plotOn(fr[ix], rf.Components('Ipatia' +  ix), rf.LineColor(rt.TColor.GetColor('#ff99cc')), *plotOpts)
-        mainPdf.plotOn(fr[ix], rf.Name( 'MainModel' ), *plotOpts)
+        mainPdf.plotOn(fr[ix], rf.Name( 'MainModel' ), rf.LineColor(rt.kBlue), *plotOpts)
 
     # One must do it after drawing all the PDFs
     removeDataOutOf( fr[ix].getHist( 'DATA' ), Mass, rng )
@@ -494,9 +503,17 @@ def plot(ix, binning = 100):
 if MAKEPLOTS:
     #rt.gROOT.SetBatch()
     strkws = [ str( kw ) for kw in BINNING ]
-    oplots = rt.TFile.Open( 'FitPlots_' + ''.join( strkws )[:-1] + '.root', 'RECREATE' )
+    if FIXEXPOVALS:
+        oplots = rt.TFile.Open( 'FitPlots_BkgSyst_FixExpo_' + ''.join( strkws )[:-1] + '.root', 'RECREATE' )
+    elif EXPO:
+        oplots = rt.TFile.Open( 'FitPlots_' + ''.join( strkws )[:-1] + '.root', 'RECREATE' )
+    else:
+        oplots = rt.TFile.Open( 'FitPlots_BkgSyst_' + ''.join( strkws )[:-1] + '.root', 'RECREATE' )
     for kw, bins in BINNING.iteritems():
         for i in bins:
             c = plot( kw + str( i ) )
             c.Write()
 print 'End of script!'
+
+#-- Limit at 95 % CL: 1.01224293745
+#-- Limit at 90 % CL: 0.801961330842
