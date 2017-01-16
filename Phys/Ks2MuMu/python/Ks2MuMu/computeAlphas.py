@@ -43,7 +43,8 @@ sel_eff_2011 = gen_eff_cut_mumu_2011*ksmumu_2011.GetEntries(mumuselcuts_2011)*1.
 import fiducial
 
 gen_eff_cut_mumu_2012 = 0.27
-smb_2012              = 3.39e-7
+#smb_2012              = 3.39e-7 ### Using DEC
+smb_2012              = 9.38e-8 ### Using TIS
 
 path_2012       = '/eos/lhcb/wg/RD/K0SMuMu/NEW/'
 #fkspipi_2012    = TFile(path_2012 + 'MC/Kspipi_MC2012_mcMatch_MVA.root')
