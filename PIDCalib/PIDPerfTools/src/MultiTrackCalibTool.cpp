@@ -167,6 +167,7 @@ std::string MultiTrackCalibTool::getBranchType(TTree* tt, const TString& brName)
     cout << "No TTree specified" << endl;
     exit(EXIT_FAILURE);
   }
+ 
   TBranch* br = tt->GetBranch(brName.Data());
   if (!br) {
     cout << "Failed to retrieve branch " << brName
@@ -1217,11 +1218,11 @@ std::string MultiTrackCalibTool::GetKinVarBranchName(std::string trkName,
                                                      std::string binVarName)
 {
   std::string ret = "";
-  if(binVarIntName!="nTRACKS") ret = binVarName;
-  else if(binVarIntName!="nSPDHITS") ret = binVarName;
-  else ret = trkName+"_"+binVarName;
+  if(binVarIntName!="nTRACKS" && binVarIntName!="nSPDHITS") ret = trkName+"_"+binVarName; 
+  else ret = binVarName;
 
   return ret;
+  
 }
 
 
