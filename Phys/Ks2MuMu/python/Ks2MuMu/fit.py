@@ -1,4 +1,3 @@
-#from ROOT import *
 from Urania import *
 AccessPackage("Bs2MuMu")
 import ROOT as rt
@@ -13,8 +12,6 @@ from collections import OrderedDict
 import sys
 sys.path.append('./FIT_2012')
 
-rt.gROOT.SetBatch()
-
 # Loads the lhcb style for the plots 
 rt.gROOT.ProcessLine( '.x lhcbStyle.C' )
 
@@ -23,8 +20,6 @@ rt.gROOT.ProcessLine('.L $URANIAROOT/src/RooIpatia2.cxx++')
 rt.gROOT.ProcessLine('.L $URANIAROOT/src/RooAmorosoPdf.cxx++')
 rt.gROOT.ProcessLine('.L $SOMEMASSMODELSROOT/src/RooPowerLaw.cxx++')
 rt.gROOT.ProcessLine('.L ./RooPrior.cxx++')
-#rt.gROOT.ProcessLine(".x BifurcatedCB.cxx+")
-#from ROOT import BifurcatedCB
 
 #-----------------------------------------------------------------------------
 COMBINE_2011 = 1 ### Combine with the result from 2011
@@ -34,7 +29,6 @@ EXPO         = 1 ### if set to zero it will use a polynomial for the comb bkg
 FIXEXPOVALS  = 0 ### Fix exponential values to study the bkg syst
 BR_MINOS     = 1 ### Get the asymmetric errors using minos
 PROFILE      = 1 ### Get the profile
-TOYSTUDY     = 0 ### Do the TOY MC study
 MAKEPLOTS    = 1 ### Create and save the mass fit plots
 #-----------------------------------------------------------------------------
 
@@ -67,10 +61,10 @@ TUPLE_PATH = '~/eos/lhcb/wg/RD/K0SMuMu/NEW/DATA/'
 # will be fitted.
 categories = [ 'TOS1_', 'TOS2_' ]
 BINNING = OrderedDict(
-    #[('TOS1_', range(3,10))]
-    #[('TOS2_', range(3,10))]
-    [('TOS1_', range(0,10)),
-     ('TOS2_', range(0, 10))]
+    #[('TOS1_', range(0,7))]
+    #[('TOS2_', range(0,7))]
+    [('TOS1_', range(9, 10)),
+     ('TOS2_', range(9, 10))]
     )
 
 # Fitting variable and ranges
@@ -127,11 +121,9 @@ if CREATE_FILES:
 BR_ = rt.RooRealVar('BR', 'BR', 7., 0., 10.)# 0., 0., 7. => this converges
 if BLIND:
     BR = rt.RooUnblindPrecision("BR_UNB", "BR_UNB", TheTable.Blinding, 0.5, 2., BR_)
-    #ublindfct = rt.gRandom.Uniform( BR_.getVal(), 1000 )
-    #UnBlindBr = rt.RooConstVar( 'BR_UNBFCT', 'BR_UNBFCT', ublindfct )
-    #BR        = rt.RooFormulaVar( 'BR_UNB', 'BR_UNB', 'BR*BR_UNBFCT', rt.RooArgList( BR_, UnBlindBr ) )
 else:
     BR = BR_
+
 #prior = rt.RooAmorosoPdf('PRIOR', 'PRIOR' , BR_, PRIOR.offset, PRIOR.theta, PRIOR.alpha, PRIOR.beta)
 
 prior = rt.RooPrior('PRIOR', 'PRIOR' , BR_)#, PRIOR.offset, PRIOR.theta, PRIOR.alpha, PRIOR.beta)
@@ -148,7 +140,7 @@ summaryConstraints = rt.RooArgSet()
 # Calculates the common factor
 from math import sqrt
 ComFctrSig = {}
-mismierdas = {}
+sigma_lst = {}
 for key, kbin in BINNING.iteritems():
     mean = 0
     for i in kbin:
@@ -163,9 +155,10 @@ for key, kbin in BINNING.iteritems():
     kspecsyst = TheTable.KspectrumSyst**2
     muidsyst  = TheTable.MuIDSyst[ key ]**2
     sigshape  = TheTable.SigShapeSyst**2
+    bkgsyst   = 0.0816721052282803**2
 
-    sigma = sqrt( mean**2 + tracksyst + selsyst + trigsyst + kspecsyst + muidsyst + sigshape )
-    mismierdas [key] = sigma
+    sigma = sqrt( mean**2 + tracksyst + selsyst + trigsyst + kspecsyst + muidsyst + sigshape + bkgsyst )
+    sigma_lst[key] = sigma
     ComFctrSig[ key ] = createConst( 1, sigma, 'ComFctr' + key )
     #ComFctrSig[ key ] [0].setConstant(rt.kTRUE)
     summaryConstraints.add( ComFctrSig[ key ][-1])
@@ -201,40 +194,26 @@ class KsMuMuModel:
         i = self.i
         self.alpha = Alpha[i]
 
-        # OPTIONS IMPORTED FROM A HELPER
+        # START VALUES IMPORTED FROM A HELPER MODULE
         import fithelp
         nbkg = getattr(fithelp, 'MuMuBkg' + i)
         self.nbs  = rt.RooFormulaVar('NKs' + i, 'NKs' + i, BR.GetName()+ '/(alpha' + i +")", rt.RooArgList(self.alpha, BR))
         self.nbkg = rt.RooRealVar('MuMuBkg' + i, 'MuMuBkg' + i, nbkg, 0, max(2*tmm[i].GetEntries(), 20))
-
-        #self.k  = rt.RooRealVar('MuMu_k_' + i, 'MuMu_k_' + i, -7e-04, -.1, .1)
-        #self.dk = rt.RooRealVar('MuMu_dk_' + i, 'MuMu_dk_' + i, -7e-04, -100, 0)#1e-02)
-        #self.kb = rt.RooFormulaVar('MuMu_kb_' + i, 'MuMu_kb_' + i, 'MuMu_k_' + i + ' + MuMu_dk_' + i, rt.RooArgList(self.k, self.dk))
         
-        #self.bkg1 = rt.RooExponential('bkg1_MuMu_model' + i, 'bkg1_MuMu_model' + i, Mass, self.k)
-        #self.bkg2 = rt.RooExponential('bkg2_MuMu_model' + i, 'bkg2_MuMu_model' + i, Mass, self.kb)
-
         misidPars = __import__( 'KsMuMuResults' )
         misidPars = getattr(misidPars, 'KsPiPiMisid_' + i)
 
-        #self.misid_ap = rt.RooRealVar('misid_' +  i + 'a', 'misid_' +  i + 'a', -2, -100, -0.1)
-
-        # OPTIONS IMPORTED FROM A HELPER
+        # START VALUES IMPORTED FROM A HELPER MODULE
         f_misid = getattr(fithelp, 'f_misid_' + i)
         misid_m = getattr(fithelp, 'misid_' + i + 'm')
         misid_n = getattr(fithelp, 'misid_' + i + 'n')
 
         self.misid_n = rt.RooRealVar('misid_' +  i + 'n', 'misid_' +  i + 'n', 0.94*misid_n, 0.6*misid_n, 120)# 10, 1, 120 # misid_n - 2
-        #self.misid_s = rt.RooRealVar('misid_' +  i + 's', 'misid_' +  i + 's', 3, 1, 10)
         times_misid_m = 1.5
         if times_misid_m*misid_m >= MASS_MIN:
             times_misid_m = (MASS_MIN - 1.)/misid_m
         self.misid_m = rt.RooRealVar('misid_' +  i + 'm', 'misid_' +  i + 'm', misid_m, 0.6*misid_m, times_misid_m*misid_m)#320, 200, 469
-        #fix_m = 0#("TIS_3" in name) or ("TIS_4" in name)# or ("TIS_9" in name)
-        #self.misid_m.setConstant(fix_m)
         self.misid = rt.RooPowerLaw('misid_' + i, 'misid_' + i, Mass, self.misid_m, self.misid_n)
-        
-        #self.bkg = rt.RooAddPdf('AllBkg' + i, 'AllBkg' + i, self.misid, self.bkg1, self.f_misid)
         
         if EXPO:
             dk = getattr(fithelp, 'MuMu_dk_' + i)
@@ -245,23 +224,10 @@ class KsMuMuModel:
                 self.k.setVal( getattr( fitPars, 'MuMu_dk_' + i ) )
                 self.k.setConstant( 1 )
         else:
-            self.bkg1_m1 = rt.RooRealVar( 'Cbkg_m1_' + i, 'Cbkg_m1_' + i, -0.01, -20, 0 )
-            self.bkg1_m2 = rt.RooRealVar( 'Cbkg_m2_' + i, 'Cbkg_m2_' + i, 0.01, 0, 20 )
+            self.bkg1_m1 = rt.RooRealVar( 'Cbkg_m1_' + i, 'Cbkg_m1_' + i, -0.1, -10, 0 )
+            self.bkg1_m2 = rt.RooRealVar( 'Cbkg_m2_' + i, 'Cbkg_m2_' + i, 0.1, 0, 10 )
             self.bkg1 = rt.RooChebychev( 'bkg1_MuMu_model' + i, 'bkg1_MuMu_model' + i, Mass, rt.RooArgList( self.bkg1_m1, self.bkg1_m2 ) )
-            '''
-            self.bkg1_m1 = rt.RooRealVar('Cbkg_m1_' + i, 'Cbkg_m1_' + i, 0)
-            self.bkg1_m2 = rt.RooRealVar('Cbkg_m2_' + i, 'Cbkg_m2_' + i, -8e-8, -1e-7, 0)
-            self.bkg1 = rt.RooPolynomial('bkg1_MuMu_model' + i, 'bkg1_MuMu_model' + i, Mass, rt.RooArgList(self.bkg1_m1, self.bkg1_m2))
-            '''
-        '''
-        self.misid_alphaRK = rt.RooRealVar( 'misid_' + i + 'alphaRK', 'misid' + i + 'alphaRK', misidPars.alphaRK , -0.8, -0.1 )
-        self.misid_nRK     = rt.RooRealVar( 'misid_' + i + 'nRK', 'misid' + i + 'nRK', misidPars.nRK , 5., 300. )
-        self.misid_sigmaK  = rt.RooRealVar( 'misid_' + i + 'sigmaK', 'misid' + i + 'sigmaK', misidPars.sigmaK , 0.7, 1.1 )
-        self.misid_mK      = rt.RooRealVar( 'misid_' + i + 'mK', 'misid_' + i + 'mK', misidPars.mK )#, 455., 470. )
-        args = [Mass, self.misid_mK, self.misid_sigmaK, self.misid_alphaRK, self.misid_nRK]
-        self.misid = rt.RooCBShape( 'misid_' + i, 'misid_' + i, *args )
-        '''
-
+        
         #f_misid = misidPars.NSig*1./( misidPars.NCombBkg + misidPars.NSig )
         self.f_misid = rt.RooRealVar('f_misid_' + i, 'f_misid_' + i, f_misid, 0.88*f_misid, 1)#f_misid, 0.5, 1
         if POWER_LAW:
@@ -274,24 +240,13 @@ class KsMuMuModel:
 
         self.ipa_s   = rt.RooRealVar('ipa_s' + i, 'ipa_s' + i, ipaPars.ipa_s)#, 1, 20)
         self.ipa_m   = rt.RooRealVar('ipa_m' + i, 'ipa_m' + i, ipaPars.ipa_m)#, 490, 50)
-        self.beta    = rt.RooRealVar('beta' + i, 'beta' + i, ipaPars.beta)#, -1e-03, 1e-03)#
+        self.beta    = rt.RooRealVar('beta' + i, 'beta' + i, ipaPars.beta)#, -1e-03, 1e-03)
         self.zeta    = rt.RooRealVar('zeta' + i, 'zeta' + i, ipaPars.zeta)#1e-03, 0, 5)
         self.ipa_l   = rt.RooRealVar('l' + i, 'l' + i, ipaPars.l)#, 0, 3)
         self.ipa_a1  = rt.RooRealVar('a1' + i, 'a1' + i, ipaPars.a)
         self.ipa_a2  = rt.RooRealVar('a2' + i, 'a2' + i, ipaPars.a2)
         self.ipa_n1  = rt.RooRealVar('n1' + i, 'n1' + i, ipaPars.n)
         self.ipa_n2  = rt.RooRealVar('n2' + i, 'n2' + i, ipaPars.n2)
-        '''
-        self.ipa_s   = rt.RooRealVar('ipa_s' + i, 'ipa_s' + i, TheTable.sigma[i])#, 1, 20)
-        self.ipa_m   = rt.RooRealVar('ipa_m' + i, 'ipa_m' + i, TheTable.mean[i])#, 490, 50)
-        self.beta    = rt.RooRealVar('beta' + i, 'beta' + i, TheTable.beta[i])#, -1e-03, 1e-03)#
-        self.zeta    = rt.RooRealVar('zeta' + i, 'zeta' + i, TheTable.zeta[i])#1e-03, 0, 5)
-        self.ipa_l   = rt.RooRealVar('l' + i, 'l' + i, TheTable.landa[i])#, 0, 3)
-        self.ipa_a1  = rt.RooRealVar('a1' + i, 'a1' + i, TheTable.a1[i])
-        self.ipa_a2  = rt.RooRealVar('a2' + i, 'a2' + i, 100)
-        self.ipa_n1  = rt.RooRealVar('n1' + i, 'n1' + i, TheTable.n1[i])
-        self.ipa_n2  = rt.RooRealVar('n2' + i, 'n2' + i, 1)
-        '''
         
         self.Ks = rt.RooIpatia2('Ipatia' + i, 'Ipatia' + i, Mass, self.ipa_l, self.zeta, self.beta, self.ipa_s, self.ipa_m, self.ipa_a1, self.ipa_n1, self.ipa_a2, self.ipa_n2)
         self.model = rt.RooAddPdf('mumu model ' + i, 'mumu model ' + i, rt.RooArgList(self.bkg, self.Ks), rt.RooArgList(self.nbkg, self.nbs))
@@ -327,22 +282,10 @@ for kw, el in DATA.items()[1:]:
 DATA['ALL'] = alldata
 
 #-----------------------------------------------------------------------------
-# Stores the initial values in the fit
-pars = mainModel.getParameters( DATA['ALL'] )
-it  = pars.createIterator()
-var = it.Next()
-initialValues = {}
-while var:
-    if var.GetName() != 'dummyBlindState':
-        print '--- Getting:', var.GetName()
-        initialValues[ var.GetName() ] = var.getVal()
-    var = it.Next()
-
-#-----------------------------------------------------------------------------
 # Fits to the whole sample
 print '*************************************** MAIN FIT STARTS HERE ***************************************'
 fitOpts = [rf.Minos(rt.kFALSE), rf.ExternalConstraints(summaryConstraints),
-           rf.Offset(True), rf.Save(True) , rf.NumCPU(12)]#, rf.Strategy(2))
+           rf.Offset(True), rf.Save(True) , rf.NumCPU(12)]
 fitResults = mainModel.fitTo(DATA['ALL'], *fitOpts)
 fitResults.Print()
 print '*************************************** MAIN FIT ENDS HERE ***************************************'
@@ -352,6 +295,7 @@ if BR_MINOS:
     print '********************************** CALCULATING MINOS FOR BR **************************************'
     myminuit = rt.RooMinuit(nll)
     myminuit.minos(rt.RooArgSet(BR_))
+
 if PROFILE:
     rt.gROOT.SetBatch()
     print '*** CREATING PROFILE ***'
@@ -390,55 +334,6 @@ def removeDataOutOf( curve, roovar, ranges ):
     points2Del.reverse()
     for ip in points2Del:
         curve.RemovePoint( ip )
-
-#-----------------------------------------------------------------------------
-# Function that generates ntoys samples using the bkg model, fitting the whole
-# PDF to them, and extracting a profile for each one
-def makeToyMCstudy( results, ntoys, nevts = 10000 ):
-    rt.gROOT.SetBatch()
-    data  = DATA['ALL']
-    name = 'ToyMCstudy_' + str(ntoys) + 'toys_' + str(nevts) + 'nevts.root'
-    ofile = rt.TFile( name, 'RECREATE' )
-    for it in xrange( ntoys ):
-        print '*** GENERATING TOY <', it , '> ***'
-        rndmpars = results.randomizePars()
-        fitpars  = mainModel.getParameters( data )
-        ''' Sets the values of the parameters to those of the random sampling '''
-        for i in xrange( len( fitpars ) ):
-            el = rndmpars.at( i )
-            if el:
-                name = el.GetName()
-                fitpars[ name ].setVal( el.getVal() )
-        BR_.setVal(0.)
-        fitpars.Write( 'Parameters_' + str(it) )
-        print '-- Generating data'
-        data = mainModel.generate( rt.RooArgSet( Mass, category ), nevts )
-        ''' Sets the values of the parameters to those previous to the main fit '''
-        print '-- Setting intial values'
-        for kw, el in initialValues.iteritems():
-            fitpars[ kw ].setVal( el )
-        parlst = initialValues.keys()
-        parlst.sort()
-        for kw in parlst:
-            print ' - ', kw, ' => ', fitpars[ kw ].getVal()
-        mainModel.fitTo( data, *fitOpts )
-
-        ''' Creates the profile for the branching fraction '''
-        nll = mainModel.createNLL(data, *fitOpts)
-        myminuit = rt.RooMinuit(nll)
-        myminuit.minos(rt.RooArgSet(BR_))
-        pl = nll.createProfile(rt.RooArgSet(BR_))
-        fr = BR_.frame( rf.Bins( 200 ), rf.Title( '' ) )
-        pl.plotOn(fr, rf.ShiftToZero())
-        name = 'Profile_' + str(it)
-        #profile = rt.TCanvas( name, name )
-        #fr.Draw()
-        #profile.Write()
-        fr.Write( 'ProfileFrame_' + str(it) )
-    ofile.Close()
-
-if TOYSTUDY:
-    makeToyMCstudy( fitResults, 20, 90000 )
 
 #-----------------------------------------------------------------------------
 # Function to make the plot for a given bin (example: 'TIS_0')
@@ -501,7 +396,7 @@ def plot(ix, binning = 100):
     return c
 
 if MAKEPLOTS:
-    #rt.gROOT.SetBatch()
+    rt.gROOT.SetBatch()
     strkws = [ str( kw ) for kw in BINNING ]
     if FIXEXPOVALS:
         oplots = rt.TFile.Open( 'FitPlots_BkgSyst_FixExpo_' + ''.join( strkws )[:-1] + '.root', 'RECREATE' )
@@ -514,6 +409,3 @@ if MAKEPLOTS:
             c = plot( kw + str( i ) )
             c.Write()
 print 'End of script!'
-
-#-- Limit at 95 % CL: 1.01224293745
-#-- Limit at 90 % CL: 0.801961330842
