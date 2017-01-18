@@ -30,43 +30,43 @@ public:
    RooMultiEffResModel(const char *name, const char *title,
                        std::vector<MultiHistEntry*> entries);
    RooMultiEffResModel(const RooMultiEffResModel& other, const char* name=0);
-   virtual RooMultiEffResModel* clone(const char* newname) const { return new RooMultiEffResModel(*this,newname); }
+   RooMultiEffResModel* clone(const char* newname) const override { return new RooMultiEffResModel(*this,newname); }
    virtual ~RooMultiEffResModel();
-  
-   virtual Int_t basisCode(const char* name) const;
-   virtual Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* rangeName=0) const;
-   virtual Double_t analyticalIntegral(Int_t code, const char* rangeName) const;
-   virtual Bool_t forceAnalyticalInt(const RooAbsArg& /*dep*/) const;
 
-   virtual RooAbsGenContext* modelGenContext
+   Int_t basisCode(const char* name) const override;
+   Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* rangeName=0) const override;
+   Double_t analyticalIntegral(Int_t code, const char* rangeName) const override;
+   Bool_t forceAnalyticalInt(const RooAbsArg& /*dep*/) const override;
+
+   RooAbsGenContext* modelGenContext
    (const RooAbsAnaConvPdf& convPdf, const RooArgSet &vars, const RooDataSet *prototype,
-    const RooArgSet* auxProto, Bool_t verbose) const;
+    const RooArgSet* auxProto, Bool_t verbose) const override;
 
-   virtual Int_t getGenerator(const RooArgSet& directVars, RooArgSet &generateVars,
-                              Bool_t staticInitOK=kTRUE) const;
-   virtual void initGenerator(Int_t code);
-   virtual void generateEvent(Int_t code);
+   Int_t getGenerator(const RooArgSet& directVars, RooArgSet &generateVars,
+                      Bool_t staticInitOK=kTRUE) const override;
+   void initGenerator(Int_t code) override;
+   void generateEvent(Int_t code) override;
 
-   virtual const RooAbsReal* efficiency() const;
+   const RooAbsReal* efficiency() const override;
    virtual std::vector<const RooAbsReal*> efficiencies() const;
 
    const std::map<Int_t, MultiHistEntry*>& getEntries() const
    {
       return _entries;
    }
-   
+
    const RooSuperCategory* getSuper() const
    {
       return _super;
    }
 
    // return pointer to observables because genreflex dictionaries can't handle value
-   virtual RooArgSet* observables() const;
+   RooArgSet* observables() const override;
 
 protected:
 
-   virtual Double_t evaluate() const;
-   virtual RooMultiEffResModel* convolution(RooFormulaVar* inBasis, RooAbsArg* owner) const;
+   Double_t evaluate() const override;
+   RooMultiEffResModel* convolution(RooFormulaVar* inBasis, RooAbsArg* owner) const override;
 
 private:
 
@@ -94,7 +94,7 @@ private:
 
       virtual Double_t getVal(const Int_t index) const;
 
-      virtual RooArgList containedArgs(Action);
+      RooArgList containedArgs(Action) override;
 
    private:
       // Payload

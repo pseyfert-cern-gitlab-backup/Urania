@@ -19,7 +19,7 @@
 
 class RooAbsReal;
 class RooArgList;
- 
+
 class RooConvertPolAmp : public RooAbsReal
 {
 
@@ -61,7 +61,7 @@ public:
   };
 
   // default constructor
-  RooConvertPolAmp(); 
+  RooConvertPolAmp();
 
   // constructor
   RooConvertPolAmp(const char *name, const char *title, EvalType type,
@@ -69,8 +69,8 @@ public:
 
   // copy constructor
   RooConvertPolAmp(const RooConvertPolAmp& other, const char* name = 0);
-  virtual TObject* clone(const char* name) const
-  { 
+  TObject* clone(const char* name) const override
+  {
     return new RooConvertPolAmp(*this, name);
   }
 
@@ -79,17 +79,17 @@ public:
   RooArgList arguments() const {return RooArgList(_args, "arguments");}
   EvalType type() const {return _type;}
 
-  void printArgs(std::ostream& os) const ;
+  void printArgs(std::ostream& os) const override;
 
 protected:
   const EvalType _type;
   RooListProxy _args;
   mutable Double_t* _vals; //!
 
-  Double_t evaluate() const;
+  Double_t evaluate() const override;
 
 private:
   ClassDef(RooConvertPolAmp, 1)
 };
- 
+
 #endif

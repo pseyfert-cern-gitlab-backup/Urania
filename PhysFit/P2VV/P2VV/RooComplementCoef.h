@@ -18,12 +18,12 @@
 
 class RooAbsReal;
 class RooArgList;
- 
+
 class RooComplementCoef : public RooAbsReal
 {
 
 public:
-  RooComplementCoef() {}; 
+  RooComplementCoef() {};
 
   // constructor
   RooComplementCoef(const char *name, const char *title,
@@ -31,8 +31,8 @@ public:
 
   // copy constructor
   RooComplementCoef(const RooComplementCoef& other, const char* name = 0);
-  virtual TObject* clone(const char* name) const
-  { 
+  TObject* clone(const char* name) const override
+  {
     return new RooComplementCoef(*this, name);
   }
 
@@ -40,15 +40,15 @@ public:
 
   RooArgList coefficients() const {return RooArgList(_coefs, "coefficients");}
 
-  void printArgs(std::ostream& os) const;
+  void printArgs(std::ostream& os) const override;
 
 protected:
   RooListProxy _coefs;
 
-  Double_t evaluate() const;
+  Double_t evaluate() const override;
 
 private:
   ClassDef(RooComplementCoef, 1)
 };
- 
+
 #endif

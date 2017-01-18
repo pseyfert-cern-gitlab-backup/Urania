@@ -75,14 +75,14 @@ class RooKResModel : public RooResolutionModel
 		RooAbsRealLValue& kfactor_var,
 		const RooArgSet& substTargets,
 		const RooArgSet& evalInterpVars = RooArgSet());
-	
+
 	/** @brief copy constructor
 	 *
 	 * @param other	instance to copy
 	 * @param name	name of the new instance
 	 */
 	RooKResModel(const RooKResModel& other, const char* name=0);
-	
+
 	/// destructor
 	virtual ~RooKResModel();
 
@@ -92,15 +92,15 @@ class RooKResModel : public RooResolutionModel
 	 *
 	 * @returns cloned object
 	 */
-	virtual TObject* clone(const char* newname) const;
-	
+	TObject* clone(const char* newname) const override;
+
 	/** @brief return basis code associated to string
 	 *
 	 * @param name	string describing which basis to returns
 	 *
 	 * @returns basis code (0 if unsuccessful)
 	 */
-	virtual Int_t basisCode(const char* name) const;
+	Int_t basisCode(const char* name) const override;
 
 	/** @brief check for availability of analytical integral
 	 *
@@ -111,9 +111,9 @@ class RooKResModel : public RooResolutionModel
 	 *
 	 * @returns code for analytical integration (0 if unsupported)
 	 */
-	virtual Int_t getAnalyticalIntegral(RooArgSet& allVars,
+	Int_t getAnalyticalIntegral(RooArgSet& allVars,
 		RooArgSet& analVars,
-		const char* rangeName=0) const;
+		const char* rangeName=0) const override;
 	/** @brief perform analytical integral
 	 *
 	 * @param code		integration code returned by
@@ -122,8 +122,8 @@ class RooKResModel : public RooResolutionModel
 	 *
 	 * @returns value of integral
 	 */
-	virtual Double_t analyticalIntegral(Int_t code,
-		const char* rangeName) const;
+	Double_t analyticalIntegral(Int_t code,
+		const char* rangeName) const override;
 
 	/** @brief inform RooFit which variables must be integrated analytically
 	 *
@@ -131,7 +131,7 @@ class RooKResModel : public RooResolutionModel
 	 *
 	 * @returns true if integration must be done analytically
 	 */
-	virtual Bool_t forceAnalyticalInt(const RooAbsArg& dep) const;
+	Bool_t forceAnalyticalInt(const RooAbsArg& dep) const override;
 
 	/** @brief create generator context
 	 *
@@ -144,17 +144,17 @@ class RooKResModel : public RooResolutionModel
 	 *
 	 * @returns generator context
 	 */
-	virtual RooAbsGenContext* modelGenContext(
+	RooAbsGenContext* modelGenContext(
 		const RooAbsAnaConvPdf& convPdf, const RooArgSet &vars,
 		const RooDataSet *prototype = 0,
-		const RooArgSet* auxProto = 0, Bool_t verbose= kFALSE) const;
+		const RooArgSet* auxProto = 0, Bool_t verbose= kFALSE) const override;
 	/** @brief check if direct generation is safe
 	 *
 	 * @param arg	variable to generate
 	 *
 	 * @returns true if arg is safe to generate directly
 	 */
-	virtual Bool_t isDirectGenSafe(const RooAbsArg& arg) const;
+	Bool_t isDirectGenSafe(const RooAbsArg& arg) const override;
 
 	/** @brief announce capability to generate directly
 	 *
@@ -165,8 +165,8 @@ class RooKResModel : public RooResolutionModel
 	 * @returns code > 0 if direct generation is supported over a
 	 *          subset of variables
 	 */
-	virtual Int_t getGenerator(const RooArgSet& directVars,
-		RooArgSet &generateVars, Bool_t staticInitOK) const;
+	Int_t getGenerator(const RooArgSet& directVars,
+		RooArgSet &generateVars, Bool_t staticInitOK) const override;
 
 	/** @brief direct generation of a single event
 	 *
@@ -176,7 +176,7 @@ class RooKResModel : public RooResolutionModel
 	 * implementation which should never get called (and will abort the
 	 * program); RooAbsAnaConvPdf will prefer modelGenContext
 	 */
-	virtual void generateEvent(Int_t code);
+	void generateEvent(Int_t code) override;
 
 	/// return underlying resolution model
 	const RooResolutionModel& resmodel() const;
@@ -190,7 +190,7 @@ class RooKResModel : public RooResolutionModel
 	 *
 	 * @returns current value
 	 */
-	virtual Double_t evaluate() const;
+	Double_t evaluate() const override;
 
 	/** @brief return object which convolves a basis function with the
 	 * resolution model.
@@ -200,8 +200,8 @@ class RooKResModel : public RooResolutionModel
 	 *
 	 * @returns object which can be used to evaluate the convolution
 	 */
-	virtual RooKResModel* convolution(RooFormulaVar* inBasis,
-		RooAbsArg* owner) const;
+	RooKResModel* convolution(RooFormulaVar* inBasis,
+		RooAbsArg* owner) const override;
 
     private:
 	/** @brief class to do all the actual (hard) work
@@ -258,7 +258,7 @@ class RooKResModel : public RooResolutionModel
 		 * caches when shape changes occur (e.g RooCustomizer is used
 		 * on a RooKResModel)
 		 */
-		virtual RooArgList containedArgs(RooAbsCacheElement::Action);
+		RooArgList containedArgs(RooAbsCacheElement::Action) override;
 		/** @brief return value
 		 *
 		 * @param nset	variables over which to normalise

@@ -483,16 +483,16 @@ class DecRateCoeff : public RooAbsReal
 	 * @param newname	name for the copy of other
 	 * @returns		pointer to copy of this object
 	 */
-	virtual TObject* clone(const char* newname) const;
+	TObject* clone(const char* newname) const override;
 
 	/// destructor
 	virtual ~DecRateCoeff();
 
 	/// get value of function
-	virtual Double_t getValV(const RooArgSet* nset) const;
+	Double_t getValV(const RooArgSet* nset) const override;
 
 	/// force all integrals to be treated analytically
-	virtual Bool_t forceAnalyticalInt(const RooAbsArg& dep) const;
+	Bool_t forceAnalyticalInt(const RooAbsArg& dep) const override;
 
 	/** @brief anounce analytical integrals
 	 *
@@ -505,9 +505,9 @@ class DecRateCoeff : public RooAbsReal
 	 * normalise the coefficient. The coefficient is normalised over the
 	 * current normalisation set.
 	 */
-	virtual Int_t getAnalyticalIntegral(
+	Int_t getAnalyticalIntegral(
 		RooArgSet& allVars, RooArgSet& anaIntVars,
-		const char* rangeName = 0) const;
+		const char* rangeName = 0) const override;
 
 	/** @brief perform analytical integrals
 	 *
@@ -519,8 +519,8 @@ class DecRateCoeff : public RooAbsReal
 	 * normalise the coefficient. The coefficient is normalised over the
 	 * current normalisation set.
 	 */
-	virtual Double_t analyticalIntegral(
-		Int_t code, const char* rangeName = 0) const;
+	Double_t analyticalIntegral(
+		Int_t code, const char* rangeName = 0) const override;
 
 	/** @brief anounce analytical integrals
 	 *
@@ -533,10 +533,10 @@ class DecRateCoeff : public RooAbsReal
 	 * Note: since this is not a proper PDF, it uses the default range to
 	 * normalise the coefficient.
 	 */
-	virtual Int_t getAnalyticalIntegralWN(
+	Int_t getAnalyticalIntegralWN(
 		RooArgSet& allVars, RooArgSet& anaIntVars,
-		const RooArgSet* nset = 0, const char* rangeName = 0) const;
-	
+		const RooArgSet* nset = 0, const char* rangeName = 0) const override;
+
 	/** @brief perform analytical integrals
 	 *
 	 * @param code		code for integral to be performed
@@ -547,14 +547,14 @@ class DecRateCoeff : public RooAbsReal
 	 * Note: since this is not a proper PDF, it uses the default range to
 	 * normalise the coefficient.
 	 */
-	virtual Double_t analyticalIntegralWN(
+	Double_t analyticalIntegralWN(
 		Int_t code, const RooArgSet* nset = 0,
-		const char* rangeName = 0) const;
+		const char* rangeName = 0) const override;
 
     protected:
 	/// return value of coefficient
-	Double_t evaluate() const;
-	
+	Double_t evaluate() const override;
+
 	/// return (integral) cache element
 	CacheElemPair getCache(
 		const RooArgSet& iset, const RooArgSet* nset = 0,
@@ -613,7 +613,7 @@ class DecRateCoeff : public RooAbsReal
 	 *
 	 * this routine factors out common functionality needed in the
 	 * constructors
-	 * 
+	 *
 	 * @param tageffs	tagging efficiencies (|qt| = 1, ...)
 	 * @param atageffs	tagging efficiency asymmetries
 	 * @param etas		mistags (for B, also for Bbar if etabars empty)
@@ -670,17 +670,17 @@ class DecRateCoeff : public RooAbsReal
 
 		/// destructor
 		virtual ~CacheElem();
-		
+
 		/// return list of contained RooFit variables
-		virtual RooArgList containedArgs(Action);
-		
+		RooArgList containedArgs(Action) override;
+
 		/// return value of cache element
 		double eval(const double alphapp, const double alphapm,
 			const double alphamp, const double alphamm) const;
 
 		/// print what the CacheElem contains for debugging (stdout)
 		void print() const;
-	
+
 	    protected:
 		/// set up binned evaluation of integral of eta product
 		void setupBinnedProductIntegral(
@@ -698,10 +698,10 @@ class DecRateCoeff : public RooAbsReal
 
 		/// return integral over mistag pdf times mistag (tagged events)
 		double etaintprodpdf(const int qt) const;
-		
+
 		/// return value of qf pdf
 		double qfpdf(const int qf) const;
-		
+
 		/// return value of (q_t, eta) pdf
 		double qtetapdf(const int qf, const int qt,
 			const double alphapp, const double alphapm,
@@ -733,7 +733,7 @@ class DecRateCoeff : public RooAbsReal
 		// for binned eta pdfs, we sum up our P(eta) * eta_c(eta)
 		// product integrals ourselves; we need a couple of extra
 		// members for that
-		
+
 		/// name of the working range
 		std::vector<std::string> m_workRangeNames;
 		/// two RooRealProxyVars so we can move the range over eta
@@ -747,7 +747,7 @@ class DecRateCoeff : public RooAbsReal
 
 		/// maximal value of qt
 		const unsigned m_qtmax;
-		
+
 		/// flags
 		enum Flags {
 		    None = 0,

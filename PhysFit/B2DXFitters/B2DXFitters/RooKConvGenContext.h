@@ -42,18 +42,18 @@ class RooKConvGenContext : public RooAbsGenContext
 		const RooArgSet* auxProto=0, Bool_t _verbose= kFALSE);
         virtual ~RooKConvGenContext();
 
-        virtual void setProtoDataOrder(Int_t* lut);
+        void setProtoDataOrder(Int_t* lut) override;
 
-        virtual void attach(const RooArgSet& params);
+        void attach(const RooArgSet& params) override;
 
-        virtual void printMultiline(std::ostream& os,
-		Int_t content, Bool_t verbose=kFALSE, TString indent="") const;
+        void printMultiline(std::ostream& os,
+		Int_t content, Bool_t verbose=kFALSE, TString indent="") const override;
 
 
     protected:
 
-        virtual void initGenerator(const RooArgSet& theEvent);
-        virtual void generateEvent(RooArgSet& theEvent, Int_t remaining);
+        void initGenerator(const RooArgSet& theEvent) override;
+        void generateEvent(RooArgSet& theEvent, Int_t remaining) override;
 
         RooKConvGenContext(const RooKConvGenContext& other);
 

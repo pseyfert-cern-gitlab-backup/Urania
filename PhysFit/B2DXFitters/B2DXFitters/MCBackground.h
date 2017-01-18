@@ -1,10 +1,10 @@
-/*****************************************************************************                                                                                                                
- * Project: RooFit                                                           *                                                                                                                
- *                                                                           *                                                                                                                
- * Description: class contains MC background properties                      *                                                                                                                
- *                                                                           *                                                                                                                
- * author: Agnieszka Dziurda  * agnieszka.dziurda@cern.ch                    *                                                                                                                
- *                                                                           *                                                                                                                
+/*****************************************************************************
+ * Project: RooFit                                                           *
+ *                                                                           *
+ * Description: class contains MC background properties                      *
+ *                                                                           *
+ * author: Agnieszka Dziurda  * agnieszka.dziurda@cern.ch                    *
+ *                                                                           *
  *****************************************************************************/
 
 #ifndef MCBACKGROUND
@@ -36,9 +36,9 @@ public:
   virtual ~MCBackground();
 
   friend std::ostream & operator<< (std::ostream &out, const MCBackground &s);
-  virtual void Print(Option_t * /*option*/ = "") const { std::cout<<*this<<std::endl;}
+  void Print(Option_t * /*option*/ = "") const override { std::cout<<*this<<std::endl;}
 
-  TString CheckMode(); 
+  TString CheckMode();
   TString GetMode() { return _mode; }
   TString GetFileName() { return _fileName; }
   TString GetTreeName() { return _treeName; }
@@ -50,15 +50,15 @@ public:
   TString GetSampleMode() { TString samplemode = _mode + "_" + _pol; return samplemode; }
   TString GetYear() { return _year; }
   TString GetHypo() { return _hypo; }
-  TString GetSampleModeYearHypo() 
-  { 
-    TString smyh; 
+  TString GetSampleModeYearHypo()
+  {
+    TString smyh;
     if ( _year != "" ) { smyh =  _mode + "_" + _pol+ "_" + _year; }
     else { smyh = _mode + "_" + _pol; }
 
     if( _hypo != "" ) { smyh.Append("_"+_hypo); }
-    return smyh; 
-  } 
+    return smyh;
+  }
 
   void SetMode(TString mode ) { _mode = mode; }
   void SetFileName(TString fileName ) { _fileName = fileName; }
@@ -83,15 +83,15 @@ public:
 
 protected:
 
-  TString _mode; 
+  TString _mode;
   TString _fileName;
   TString _treeName;
   TTree* _tree;
-  TFile* _file; 
+  TFile* _file;
   Double_t _rho;
-  TString _opt; 
+  TString _opt;
   TString _pol;
-  TString _year; 
+  TString _year;
   TString _hypo;
 
 private:

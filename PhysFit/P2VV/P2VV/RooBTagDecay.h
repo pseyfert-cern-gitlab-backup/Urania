@@ -103,31 +103,31 @@ public:
 
   RooBTagDecay(const RooBTagDecay& other, const char* name = 0);
 
-  virtual TObject* clone(const char* newname) const 
-  { 
+  TObject* clone(const char* newname) const override
+  {
     return new RooBTagDecay(*this, newname);
   }
 
   virtual ~RooBTagDecay();
 
-  virtual Double_t coefficient(Int_t basisIndex) const;
+  Double_t coefficient(Int_t basisIndex) const override;
   Double_t tagCatCoef() const;
   Double_t tagCatCoef(Int_t& cat0, Int_t&cat1) const;
-  RooArgSet* coefVars(Int_t coefIdx) const;
+  RooArgSet* coefVars(Int_t coefIdx) const override;
   RooResolutionModel& resolutionModel() const {return (RooResolutionModel&)_model.arg();}  // TODO: move this method to RooAbsAnaConvPdf
 
   const char *pruneRangeName(const char* rangeName, const RooArgSet& vars) const;
   Int_t getCoefAnalyticalIntegral(Int_t coef, RooArgSet& allVars,
-      RooArgSet& analVars, const char* rangeName = 0) const;
+      RooArgSet& analVars, const char* rangeName = 0) const override;
   Double_t coefAnalyticalIntegral(Int_t coef, Int_t code,
-      const char* rangeName = 0) const;
+      const char* rangeName = 0) const override;
 
   void setMaxVal(const Double_t val);
-  Int_t getMaxVal(const RooArgSet& vars) const;
-  Double_t maxVal(Int_t code) const;
+  Int_t getMaxVal(const RooArgSet& vars) const override;
+  Double_t maxVal(Int_t code) const override;
   Int_t getGenerator(const RooArgSet& directVars, RooArgSet &generateVars,
-      Bool_t staticInitOK = kTRUE) const;
-  void generateEvent(Int_t code);
+      Bool_t staticInitOK = kTRUE) const override;
+  void generateEvent(Int_t code) override;
 
   Int_t getTagCatPosition(Int_t tagCatIndex, Bool_t tag1 = kFALSE) const;
   Int_t getTagCatIndex(Int_t tagCatPosition, Bool_t tag1 = kFALSE) const;
@@ -138,7 +138,7 @@ public:
   RooArgList* avgCOdds(Int_t tagCat0 = 0) const;
   RooArgList* tagCatCoefs(Int_t tagCat0 = 0) const;
 
-  Bool_t changeModel(const RooResolutionModel& newModel)
+  Bool_t changeModel(const RooResolutionModel& newModel) override
   {
     // TODO: remove this function and make RooAbsAnaConvPdf::changeModel(const RooResolutionModel& newModel) public
     return RooAbsAnaConvPdf::changeModel(newModel);
@@ -216,7 +216,7 @@ protected:
   Int_t        _iTag0Val;
   Int_t        _iTag1Val;
   Int_t        _fTagVal;
-  Bool_t       _checkVars; 
+  Bool_t       _checkVars;
   Double_t     _maxVal;
 
 private:

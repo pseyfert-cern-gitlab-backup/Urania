@@ -66,14 +66,14 @@ class RooSimultaneousResModel : public RooResolutionModel
 	 */
 	RooSimultaneousResModel(const char *name, const char *title,
 		RooAbsCategoryLValue& cat, const RooArgList& resmodels);
-	
+
 	/** @brief copy constructor
 	 *
 	 * @param other	instance to copy
 	 * @param name	name of the new instance
 	 */
 	RooSimultaneousResModel(const RooSimultaneousResModel& other, const char* name=0);
-	
+
 	/// destructor
 	virtual ~RooSimultaneousResModel();
 
@@ -83,15 +83,15 @@ class RooSimultaneousResModel : public RooResolutionModel
 	 *
 	 * @returns cloned object
 	 */
-	virtual TObject* clone(const char* newname) const;
-	
+	TObject* clone(const char* newname) const override;
+
 	/** @brief return basis code associated to string
 	 *
 	 * @param name	string describing which basis to returns
 	 *
 	 * @returns basis code (0 if unsuccessful)
 	 */
-	virtual Int_t basisCode(const char* name) const;
+	Int_t basisCode(const char* name) const override;
 
 	/** @brief check for availability of analytical integral
 	 *
@@ -102,9 +102,9 @@ class RooSimultaneousResModel : public RooResolutionModel
 	 *
 	 * @returns code for analytical integration (0 if unsupported)
 	 */
-	virtual Int_t getAnalyticalIntegral(RooArgSet& allVars,
+	Int_t getAnalyticalIntegral(RooArgSet& allVars,
 		RooArgSet& analVars,
-		const char* rangeName=0) const;
+		const char* rangeName=0) const override;
 
 	/** @brief perform analytical integral
 	 *
@@ -114,8 +114,8 @@ class RooSimultaneousResModel : public RooResolutionModel
 	 *
 	 * @returns value of integral
 	 */
-	virtual Double_t analyticalIntegral(Int_t code,
-		const char* rangeName) const;
+	Double_t analyticalIntegral(Int_t code,
+		const char* rangeName) const override;
 
 	/** @brief inform RooFit which variables must be integrated analytically
 	 *
@@ -123,7 +123,7 @@ class RooSimultaneousResModel : public RooResolutionModel
 	 *
 	 * @returns true if integration must be done analytically
 	 */
-	virtual Bool_t forceAnalyticalInt(const RooAbsArg& dep) const;
+	Bool_t forceAnalyticalInt(const RooAbsArg& dep) const override;
 
 	// virtual Int_t getGenerator(const RooArgSet& directVars,
 	// 			     RooArgSet &generateVars,
@@ -142,7 +142,7 @@ class RooSimultaneousResModel : public RooResolutionModel
 	 *
 	 * @returns current value
 	 */
-	virtual Double_t evaluate() const;
+	Double_t evaluate() const override;
 
 	/** @brief return object which convolves a basis function with the
 	 * resolution model.
@@ -152,8 +152,8 @@ class RooSimultaneousResModel : public RooResolutionModel
 	 *
 	 * @returns object which can be used to evaluate the convolution
 	 */
-	virtual RooSimultaneousResModel* convolution(RooFormulaVar* inBasis,
-		RooAbsArg* owner) const;
+	RooSimultaneousResModel* convolution(RooFormulaVar* inBasis,
+		RooAbsArg* owner) const override;
 
     private:
 	/** @brief class to do all the actual (hard) work
@@ -186,7 +186,7 @@ class RooSimultaneousResModel : public RooResolutionModel
 		 * caches when shape changes occur (e.g RooCustomizer is used
 		 * on a RooSimultaneousResModel)
 		 */
-		virtual RooArgList containedArgs(RooAbsCacheElement::Action);
+		RooArgList containedArgs(RooAbsCacheElement::Action) override;
 
 		/** @brief return value
 		 *
@@ -224,7 +224,7 @@ class RooSimultaneousResModel : public RooResolutionModel
 		const std::map<Int_t, RooResolutionModel*>& map);
 
 	/// category
-	RooCategoryProxy m_cat;	
+	RooCategoryProxy m_cat;
 	/// resolution models
 	RooListProxy m_resmodels;
 	/// cache manager

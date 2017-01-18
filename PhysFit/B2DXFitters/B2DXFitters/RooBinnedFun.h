@@ -34,20 +34,20 @@ public:
   ~RooBinnedFun() ;
 
   RooBinnedFun(const RooBinnedFun& other, const char* name = 0);
-  RooBinnedFun* clone(const char* newname) const { return new RooBinnedFun(*this, newname); }
+  RooBinnedFun* clone(const char* newname) const override { return new RooBinnedFun(*this, newname); }
 
-  Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* rangeName) const;
-  Double_t analyticalIntegral(Int_t code, const char* rangeName) const;
+  Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* rangeName) const override;
+  Double_t analyticalIntegral(Int_t code, const char* rangeName) const override;
 
-  Int_t getMaxVal(const RooArgSet& vars) const;
-  Double_t maxVal(Int_t code) const;
+  Int_t getMaxVal(const RooArgSet& vars) const override;
+  Double_t maxVal(Int_t code) const override;
 
-  std::list<Double_t>* binBoundaries(RooAbsRealLValue& obs, Double_t xlo, Double_t xhi) const;
+  std::list<Double_t>* binBoundaries(RooAbsRealLValue& obs, Double_t xlo, Double_t xhi) const override;
 
   // for use as RooAbsGaussModelEfficiency...
   std::complex<double> productAnalyticalIntegral(Double_t umin, Double_t umax
                                                 ,Double_t scale, Double_t offset
-                                                ,const std::complex<double>& z) const;
+                                                ,const std::complex<double>& z) const override;
 
   const RooArgList& coefficients() const { return _coefList; }
 
@@ -59,7 +59,7 @@ private:
   RooListProxy _coefList ;
   std::vector<double> _u;
 
-  Double_t evaluate() const;
+  Double_t evaluate() const override;
   ClassDef(RooBinnedFun,1) // piecewise constant function
 };
 
