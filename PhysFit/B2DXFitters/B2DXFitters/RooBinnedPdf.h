@@ -69,17 +69,17 @@ public:
 
   RooBinnedPdf(const RooBinnedPdf& other, const char* name = 0);
 
-  virtual TObject* clone(const char* newname) const 
-  { 
+  TObject* clone(const char* newname) const override
+  {
     return new RooBinnedPdf(*this, newname);
   }
 
   virtual ~RooBinnedPdf();
 
-  virtual std::list<Double_t>* binBoundaries
-  (RooAbsRealLValue& obs, Double_t xlo, Double_t xhi) const;
+  std::list<Double_t>* binBoundaries
+  (RooAbsRealLValue& obs, Double_t xlo, Double_t xhi) const override;
   std::list<Double_t>* plotSamplingHint
-  (RooAbsRealLValue& obs, Double_t xlo, Double_t xhi) const;
+  (RooAbsRealLValue& obs, Double_t xlo, Double_t xhi) const override;
 
   RooArgList* baseVariables();
 
@@ -97,18 +97,18 @@ public:
   void   setIgnoreFirstBin(Bool_t ignFirstBin = kTRUE)
   { _ignoreFirstBin = ignFirstBin; }
 
-  virtual Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars,
-      const char* rangeName = 0) const;
-  virtual Double_t analyticalIntegral(Int_t code,
-      const char* rangeName = 0) const;
+  Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars,
+      const char* rangeName = 0) const override;
+  Double_t analyticalIntegral(Int_t code,
+      const char* rangeName = 0) const override;
 
-  virtual Int_t getMaxVal(const RooArgSet& vars) const;
-  virtual Double_t maxVal(Int_t code) const;
+  Int_t getMaxVal(const RooArgSet& vars) const override;
+  Double_t maxVal(Int_t code) const override;
 
-  Double_t getValV(const RooArgSet* nset) const;
+  Double_t getValV(const RooArgSet* nset) const override;
 
 protected:
-  virtual Double_t evaluate() const;
+  Double_t evaluate() const override;
 
 private:
   Int_t createBaseCats(const RooArgList& baseVars,
@@ -116,7 +116,7 @@ private:
   Int_t initCoefs(const TObjArray& coefLists, Bool_t factorize = kTRUE);
 
   void reset();
-   
+
   const RooAbsRealLValue& function() {
     return dynamic_cast<const RooAbsRealLValue&>(_function.arg());
   }
@@ -144,7 +144,7 @@ private:
   Bool_t _continuousBase;
   Bool_t _forceUnitIntegral;
   Bool_t _binIntegralCoefs;
-  Bool_t _ignoreFirstBin; 
+  Bool_t _ignoreFirstBin;
 
   /// integral cache
   mutable RooObjCacheManager m_cacheMgr; //! transient member
@@ -160,7 +160,7 @@ private:
 	  /// destructor
 	  virtual ~CacheElem();
 	  /// return list of contained RooFit variables
-	  virtual RooArgList containedArgs(Action);
+	  RooArgList containedArgs(Action) override;
 	  /// return function at bin centres
 	  RooAbsReal& function() const;
 	  /// return mapping from parent's base var to our copy

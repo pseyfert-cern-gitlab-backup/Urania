@@ -19,10 +19,10 @@
 #include "RooRealProxy.h"
 
 class RooAbsReal;
- 
+
 class RooIpatia2 : public RooAbsPdf {
 public:
-  RooIpatia2() {} ; 
+  RooIpatia2() {} ;
   RooIpatia2(const char *name, const char *title,
 	      RooAbsReal& _x,
 	      RooAbsReal& _l,
@@ -35,7 +35,7 @@ public:
 	      RooAbsReal& _a2,
 	      RooAbsReal& _n2);
   RooIpatia2(const RooIpatia2& other, const char* name=0) ;
-  virtual TObject* clone(const char* newname) const { return new RooIpatia2(*this,newname); }
+  TObject* clone(const char* newname) const override { return new RooIpatia2(*this,newname); }
   inline virtual ~RooIpatia2() { }
 
 protected:
@@ -50,12 +50,12 @@ protected:
   RooRealProxy n ;
   RooRealProxy a2 ;
   RooRealProxy n2 ;
-  
-  Double_t evaluate() const ;
+
+  Double_t evaluate() const override;
 
 private:
 
   ClassDef(RooIpatia2,1) // Your description goes here...
 };
- 
+
 #endif

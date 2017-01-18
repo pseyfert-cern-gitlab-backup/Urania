@@ -9,15 +9,15 @@ class RooAbsReal;
 
 class RooCruijff : public RooAbsPdf {
 public:
-  RooCruijff(const char *name, const char *title, 
+  RooCruijff(const char *name, const char *title,
 	     RooAbsReal& _x,
-	     RooAbsReal& _m0, 
+	     RooAbsReal& _m0,
 	     RooAbsReal& _sigmaL, RooAbsReal& _sigmaR,
 	     RooAbsReal& _alphaL, RooAbsReal& _alphaR);
-  
+
   RooCruijff(const RooCruijff& other, const char* name = 0);
 
-  virtual TObject* clone(const char* newname) const { 
+  TObject* clone(const char* newname) const override {
     return new RooCruijff(*this,newname); }
 
   inline virtual ~RooCruijff() { }
@@ -30,7 +30,7 @@ protected:
   RooRealProxy alphaL;
   RooRealProxy alphaR;
 
-  Double_t evaluate() const;
+  Double_t evaluate() const override;
 
 private:
   ClassDef(RooCruijff,0)

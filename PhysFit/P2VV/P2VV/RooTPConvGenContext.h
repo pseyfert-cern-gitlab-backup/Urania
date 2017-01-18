@@ -24,7 +24,7 @@ public:
 
 protected:
 
-   virtual void generateEvent(RooArgSet &theEvent, Int_t remaining);
+   void generateEvent(RooArgSet &theEvent, Int_t remaining) override;
 
    RooTPConvGenContext(const RooTPConvGenContext& other) ;
 

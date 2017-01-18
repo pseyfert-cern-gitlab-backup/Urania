@@ -33,18 +33,18 @@ public:
 
   RooBoxPdf(const RooBoxPdf& other, const char* name = 0);
 
-  virtual TObject* clone(const char* newname) const 
-  { 
+  TObject* clone(const char* newname) const override
+  {
     return new RooBoxPdf(*this, newname);
   }
 
-  inline virtual ~RooBoxPdf() {};
+  inline ~RooBoxPdf() {};
 
-  Double_t evaluate() const;
+  Double_t evaluate() const override;
 
   Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars,
-     const char* rangeName) const;
-  Double_t analyticalIntegral(Int_t code, const char* rangeName) const;
+     const char* rangeName) const override;
+  Double_t analyticalIntegral(Int_t code, const char* rangeName) const override;
 
 protected:
   RooRealProxy _var;

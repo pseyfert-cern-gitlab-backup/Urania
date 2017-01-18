@@ -42,7 +42,7 @@ public:
 
   // copy constructor
   RooMassDependence(const RooMassDependence& other, const char* name = 0);
-  virtual TObject* clone(const char* name) const
+  TObject* clone(const char* name) const override
   {
     return new RooMassDependence(*this, name);
   }
@@ -80,7 +80,7 @@ protected:
   const static Int_t _numImplFuncs = 3;
   const static Int_t _numImplPSFacs = 2;
 
-  Double_t evaluate() const;
+  Double_t evaluate() const override;
 
   void initialize(const RooArgList* pars1, const RooArgList* pars2,
       const RooArgList* psPars = 0);

@@ -1,9 +1,9 @@
-/*****************************************************************************                                                                                                          
- * Project: RooFit                                                           *                                                                                                          
- *                                                                           *                                                                                                          
- * Description: class contains settings for MDFitter                         *                                                                                                          
- *                                                                           *                                                                                                          
- * author: Agnieszka Dziurda  * agnieszka.dziurda@cern.ch                    *                                                                                                           *                                                                           *                                                                                                          
+/*****************************************************************************
+ * Project: RooFit                                                           *
+ *                                                                           *
+ * Description: class contains settings for MDFitter                         *
+ *                                                                           *
+ * author: Agnieszka Dziurda  * agnieszka.dziurda@cern.ch                    *                                                                                                           *                                                                           *
  *****************************************************************************/
 
 #ifndef PIDCALIBRATIONSAMPLE
@@ -15,7 +15,7 @@
 #include "RooRealVar.h"
 #include "RooArgSet.h"
 #include "TFile.h"
-#include "RooWorkspace.h" 
+#include "RooWorkspace.h"
 #include "GeneralUtils.h"
 #include "PlotSettings.h"
 
@@ -40,33 +40,33 @@ class PIDCalibrationSample : public TNamed {
   virtual ~PIDCalibrationSample();
 
   friend std::ostream & operator<< (std::ostream &out, const PIDCalibrationSample &s);
-  virtual void Print(Option_t * /*option*/ = "") const { std::cout<<*this<<std::endl;}
+  void Print(Option_t * /*option*/ = "") const override { std::cout<<*this<<std::endl;}
 
-  void SetFile(TString  file, bool debug = false) 
-  { 
+  void SetFile(TString  file, bool debug = false)
+  {
     TFile* filetmp = TFile::Open(file.Data());
     if ( debug == true ) { std::cout<<"[INFO] File: "<<file<<" opened sucessfully."<<std::endl; }
-    _file = filetmp; 
+    _file = filetmp;
     _fileName = file;
-    TString label = this->GetLabel();  
+    TString label = this->GetLabel();
     if (debug == true ) { std::cout<<"[INFO] File set to: "<<label<<std::endl;   }
   }
- 
+
   void LoadWorkspace(TString workName, bool debug = false)
   {
-    _work = (RooWorkspace*)_file->Get(workName.Data()); 
-    _workName = workName; 
-     
+    _work = (RooWorkspace*)_file->Get(workName.Data());
+    _workName = workName;
+
     if ( _work == NULL ) { std::cout<<"[ERROR] Workspace: "<<_workName<<" does not exist in this file. "<<std::endl; _file->ls(); }
     {
-      if ( debug == true ) 
-	{ 
-	  std::cout<<"[INFO] Workspace "<<_workName<<" opened sucessfully."<<std::endl; 
+      if ( debug == true )
+	{
+	  std::cout<<"[INFO] Workspace "<<_workName<<" opened sucessfully."<<std::endl;
 	}
     }
-    
+
   }
-  
+
   void LoadWorkspace(bool debug = false)
   {
     _work = (RooWorkspace*)_file->Get(_workName.Data());
@@ -83,7 +83,7 @@ class PIDCalibrationSample : public TNamed {
 
   void LoadData(TString dataName, bool debug = false )
   {
-    _data = (RooDataSet*)_work->data(dataName.Data()); 
+    _data = (RooDataSet*)_work->data(dataName.Data());
     _dataName = dataName;
     if ( _data == NULL ) { std::cout<<"[ERROR] Data sample: "<<_dataName<<" does not exist in this workspace."<<std::endl; _work->Print(); }
     else
@@ -109,11 +109,11 @@ class PIDCalibrationSample : public TNamed {
   }
 
   void SetWorkName(TString name) { _workName = name; }
-  void SetPolarity(TString pol) { _polarity = pol; } 
+  void SetPolarity(TString pol) { _polarity = pol; }
   void SetStripping(TString strip) { _stripping = strip;}
   void SetSampleType(TString sample) { _sample = sample; }
   void SetYear(TString year) { _year = year; }
-  void SetDataName(TString dataName) { _dataName = dataName; } 
+  void SetDataName(TString dataName) { _dataName = dataName; }
   void SetType(TString type) { _type = type; }
   void SetPIDName(TString name) { _PIDName = name; }
   void SetVar1Name(TString name) { _var1Name = name; }
@@ -128,10 +128,10 @@ class PIDCalibrationSample : public TNamed {
   RooDataSet* GetData() { return _data; }
 
   TString GetFileName() {   return _fileName; }
-  TString GetWorkName() {   return _workName; } 
-  TString GetDataName() {   return _dataName; } 
-  TString GetPolarity() { return _polarity; } 
-  TString GetType() { return _type; } 
+  TString GetWorkName() {   return _workName; }
+  TString GetDataName() {   return _dataName; }
+  TString GetPolarity() { return _polarity; }
+  TString GetType() { return _type; }
   TString GetLabel()
   {
     TString label = _sample + "_" + _stripping + "_" + _year + "_" + _polarity;
@@ -141,24 +141,24 @@ class PIDCalibrationSample : public TNamed {
   TString CheckPrefix()
   {
     TString prefix = "";
-    if ( _sample == "Kaon" ) { prefix = "K";} 
+    if ( _sample == "Kaon" ) { prefix = "K";}
     else if ( _sample == "Pion") { prefix = "Pi"; }
     else if ( _sample == "Proton" ) { prefix = "P"; }
     else if ( _sample == "Combinatorial") { prefix = "Combo";}
     return prefix;
   }
-  
+
   TString GetVar1Name(){ return _var1Name; }
-  TString GetVar2Name(){ return _var2Name; }  
-  TString GetWeightName(){ return _weightName; } 
-  TString GetPIDName(){ return _PIDName; }  
-  void ObtainVar1Name(TString check, bool debug); 
-  void ObtainVar2Name(TString check, bool debug); 
-  void ObtainPIDVarName(bool debug); 
-  
-  RooDataSet* PrepareDataSet(RooRealVar* Var1, RooRealVar* Var2, RooRealVar* Var3 = NULL, 
+  TString GetVar2Name(){ return _var2Name; }
+  TString GetWeightName(){ return _weightName; }
+  TString GetPIDName(){ return _PIDName; }
+  void ObtainVar1Name(TString check, bool debug);
+  void ObtainVar2Name(TString check, bool debug);
+  void ObtainPIDVarName(bool debug);
+
+  RooDataSet* PrepareDataSet(RooRealVar* Var1, RooRealVar* Var2, RooRealVar* Var3 = NULL,
 			     PlotSettings* plotSet = NULL, bool debug = false);
-  
+
   TString CheckPIDVarName()
   {
     TString PIDName = "";
@@ -169,29 +169,29 @@ class PIDCalibrationSample : public TNamed {
       }
     else
       {
-	PIDName = _PIDName; 
+	PIDName = _PIDName;
       }
-    return PIDName; 
+    return PIDName;
   }
-  
+
 
 protected:
-  
+
   TFile*  _file;
   RooWorkspace* _work;
-  RooDataSet* _data; 
+  RooDataSet* _data;
   TString _polarity;
   TString _stripping;
   TString _sample;
   TString _year;
   TString _fileName;
   TString _workName;
-  TString _dataName; 
-  TString _type; 
-  TString _PIDName; 
+  TString _dataName;
+  TString _type;
+  TString _PIDName;
   TString _weightName;
   TString _var1Name;
-  TString _var2Name; 
+  TString _var2Name;
 
  private:
   ClassDef(PIDCalibrationSample, 1);

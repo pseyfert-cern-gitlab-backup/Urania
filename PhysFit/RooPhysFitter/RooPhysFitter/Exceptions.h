@@ -16,7 +16,7 @@
 // forward declarations
 
 /** @class Exceptions Exceptions.h DstarD0ForXSecRooFitter/Exceptions.h
- *  
+ *
  *
  *  @author Philip Hunt (LHCB)
  *  @date   2011-04-08
@@ -30,12 +30,12 @@ namespace RooPhysFit
                              const TFile& f,
                              const std::string& name) throw();
     virtual ~TDirectoryError() throw();
-    virtual const char* what() const throw();
-    
+    const char* what() const throw() override;
+
   private:
     std::string m_fullMsg;
   };
-  
+
   /** Exception when using importClassCode method of RooWorkspace
       'type' should be the class type you are tying to import the code for,
       or the search pattern.
@@ -47,7 +47,7 @@ namespace RooPhysFit
                                  const RooWorkspace& ws,
                                  const std::string& type="*") throw();
     virtual ~WSImportCodeFailure() throw();
-    virtual const char* what() const throw();
+    const char* what() const throw() override;
   private:
     std::string m_fullMsg;
   };
@@ -86,7 +86,7 @@ namespace RooPhysFit
                              const RooWorkspace& ws,
                              const RooAbsData& data) throw();
     virtual ~WSImportFailure() throw();
-    virtual const char* what() const throw();
+    const char* what() const throw() override;
 
   private:
     std::string m_fullMsg;
@@ -100,7 +100,7 @@ namespace RooPhysFit
                                 const std::string& name,
                                 const std::string& type) throw();
     virtual ~WSRetrievalFailure() throw();
-    virtual const char* what() const throw();
+    const char* what() const throw() override;
 
   private:
     std::string m_fullMsg;
@@ -117,20 +117,20 @@ namespace RooPhysFit
                        const char* fname,
                        const char* opts) throw();
     virtual ~IOFailure() throw();
-    virtual const char* what() const throw();
+    const char* what() const throw() override;
 
   private:
     std::string m_fullMsg;
   };
-  
+
   class GeneralException : public std::exception
   {
   public:
     explicit GeneralException(const std::string& func,
                               const std::string& msg) throw();
     virtual ~GeneralException() throw();
-    virtual const char* what() const throw();
-    
+    const char* what() const throw() override;
+
   private:
     std::string m_fullMsg;
   };

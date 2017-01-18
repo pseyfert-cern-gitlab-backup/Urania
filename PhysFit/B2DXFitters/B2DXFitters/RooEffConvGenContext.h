@@ -24,11 +24,11 @@ public:
                         const RooArgSet* auxProto=0, Bool_t _verbose= kFALSE);
    virtual ~RooEffConvGenContext();
 
-   virtual void attach(const RooArgSet& params);
+   void attach(const RooArgSet& params) override;
 
 protected:
 
-   virtual void generateEvent(RooArgSet &theEvent, Int_t remaining);
+   void generateEvent(RooArgSet &theEvent, Int_t remaining) override;
 
    RooEffConvGenContext(const RooEffConvGenContext& other) ;
 

@@ -43,17 +43,17 @@ public:
 
   virtual ~RooCombEffConstraint();
 
-  virtual TObject* clone(const char* newname) const
+  TObject* clone(const char* newname) const override
   {
     return new RooCombEffConstraint(*this, newname);
   }
-  
-  virtual Bool_t forceAnalyticalInt(const RooAbsArg& /*dep*/) const;
-  virtual Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars,
-      const char* rangeName=0) const;
-  virtual Double_t analyticalIntegral(Int_t code, const char* rangeName=0) const;
 
-  virtual Double_t getLogVal(const RooArgSet* nset = 0) const;
+  Bool_t forceAnalyticalInt(const RooAbsArg& /*dep*/) const override;
+  Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars,
+      const char* rangeName=0) const override;
+  Double_t analyticalIntegral(Int_t code, const char* rangeName=0) const override;
+
+  Double_t getLogVal(const RooArgSet* nset = 0) const override;
 
   virtual Int_t strategy() const {return _strat;}
 
@@ -62,11 +62,11 @@ public:
   virtual const RooArgList& eps1B() const {return _eps1B;}
   virtual const RooArgList& eps2A() const {return _eps2A;}
   virtual const RooArgList& eps2B() const {return _eps2B;}
-  
+
 protected:
-   
-  virtual Double_t evaluate() const;
-   
+
+  Double_t evaluate() const override;
+
 private:
 
   inline Double_t nuNorm(const Double_t nu, const Double_t sumW,
