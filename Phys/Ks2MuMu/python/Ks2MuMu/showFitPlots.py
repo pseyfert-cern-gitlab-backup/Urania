@@ -1,8 +1,8 @@
 from ROOT import *
 from math import sqrt
 
-#f = TFile('FitPlots_TOS1_TOS2.root')
-f = TFile('FitPlots_BkgSyst_TOS1_TOS2.root')
+f = TFile('FitPlots_TOS1_TOS2.root')
+#f = TFile('FitPlots_BkgSyst_TOS1_TOS2.root')
 #f = TFile('FitPlots_BkgSyst_FixExpo_TOS1_TOS2.root')
 key_lst = f.GetListOfKeys()
 nkeys = len(key_lst)

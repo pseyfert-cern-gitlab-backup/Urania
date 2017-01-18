@@ -22,14 +22,14 @@ rt.gROOT.ProcessLine('.L $SOMEMASSMODELSROOT/src/RooPowerLaw.cxx++')
 rt.gROOT.ProcessLine('.L ./RooPrior.cxx++')
 
 #-----------------------------------------------------------------------------
-COMBINE_2011 = 1 ### Combine with the result from 2011
-BLIND        = 0 ### Global status of the fit
-POWER_LAW    = 1 ### if set to zero it will use an exponential for the misid bkg
-EXPO         = 1 ### if set to zero it will use a polynomial for the comb bkg
-FIXEXPOVALS  = 0 ### Fix exponential values to study the bkg syst
-BR_MINOS     = 1 ### Get the asymmetric errors using minos
-PROFILE      = 1 ### Get the profile
-MAKEPLOTS    = 1 ### Create and save the mass fit plots
+COMBINE_2011 = 1 ### 1 - Combine with the result from 2011
+BLIND        = 0 ### 0 - Global status of the fit
+POWER_LAW    = 1 ### 1 - if set to zero it will use an exponential for the misid bkg
+EXPO         = 1 ### 1 - if set to zero it will use a polynomial for the comb bkg
+FIXEXPOVALS  = 0 ### 0 - Fix exponential values to study the bkg syst
+BR_MINOS     = 1 ### 1 - Get the asymmetric errors using minos
+PROFILE      = 1 ### 1 - Get the profile
+MAKEPLOTS    = 1 ### 1 - Create and save the mass fit plots
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
