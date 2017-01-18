@@ -15,6 +15,8 @@ reflex_generate_dictionary(P2VV
                            dict/P2VVDict.h dict/P2VVDict.xml
                            SPLIT_CLASSDEF)
 
+include_directories(SYSTEM ${ROOT_INCLUDE_DIRS})
+
 gaudi_add_library(P2VVLib
                   src/*.cxx
                   P2VVDict_classdef.cpp

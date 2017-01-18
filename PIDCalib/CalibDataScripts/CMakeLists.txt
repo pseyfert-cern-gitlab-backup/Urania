@@ -16,6 +16,8 @@ if(NOT heptools_version STRLESS 68)
 endif()
 
 if(GAUDI_BUILD_TESTS)
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS})
+
   gaudi_add_executable(TestCheckFitResults
                        src/CheckFitResults.cpp
                        src/TestCheckFitResults.cpp
