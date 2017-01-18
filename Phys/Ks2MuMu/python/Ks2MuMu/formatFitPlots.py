@@ -8,10 +8,10 @@ gStyle.SetTextSize(0.06)
 gROOT.SetBatch()
 
 CATEGORIES = OrderedDict( [
-        ( 'TOS1', range( 3, 10 ) ),
-        ( 'TOS2', range( 3, 10 ) ),
-        ( 'TIS' , range( 3, 10 ) ),
-        ( 'TOS1_TOS2_TIS', range( 3, 10 ) )
+        #( 'TOS1', range( 3, 10 ) ),
+        #( 'TOS2', range( 3, 10 ) ),
+        #( 'TIS' , range( 3, 10 ) ),
+        ( 'TOS1_TOS2', range( 0, 10 ) )
         ] )
 
 gStyle.SetOptTitle(0)
@@ -19,7 +19,7 @@ gStyle.SetOptTitle(0)
 def makePlots( cat, bins ):
     print '-- Category:', cat
     ifile  = TFile( 'FitPlots_' + cat + '.root' )
-    if cat == 'TOS1_TOS2_TIS':
+    if cat == 'TOS1_TOS2':
         folder = 'ALL'
     else:
         folder = cat
@@ -44,6 +44,7 @@ def formatPlots( ifile, cat, bins, folder ):
 
         c.cd(1)
         tp = TPaveText( 0.6, 0.8, 0.9, 0.9, 'NDC' )
+        #tp.AddText( c.GetName() )
         tp.AddText( 'LHCb Preliminary' )
         
         tp.SetFillColor( kWhite )

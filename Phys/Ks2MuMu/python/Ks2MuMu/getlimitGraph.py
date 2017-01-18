@@ -101,8 +101,10 @@ MAXPROB = 1.#1.05
 def makePlots( cat ):
 
     print ' === Category:', cat, '==='
-
+    
     f = TFile( 'BRprofile_' + cat + '.root' )
+    #f = TFile( 'BRprofile_BkgSyst_' + cat + '.root' )
+    #f = TFile( 'BRprofile_BkgSyst_FixExpo_' + cat + '.root' )
     canvas = f.Get( 'Profile' )
     names = ['nll_MainModel_TIS_data_with_constr_Profile[BR]_Norm[BR]',
              'nll_MainModel_TOS1_data_with_constr_Profile[BR]_Norm[BR]',
@@ -177,12 +179,24 @@ def makePlots( cat ):
     print '-- Limit at 95 % CL:', x95
     print '-- Limit at 90 % CL:', x90
 
+    '''
     c.Print( c.GetName() + '.pdf' )
     c.Print( c.GetName() + '.png' )
     c.Print( c.GetName() + '.C' )
+    '''
 
     return c, hcumfill95, hcumfill90, hcum, lines, text
 
 dic = {}
 for c in CATEGORIES:
     dic[c] = makePlots( c )
+
+# Before fixing the bkg
+#-- Limit at 95 % CL: 1.01224293745
+#-- Limit at 90 % CL: 0.801961330842
+# With a fix bkg
+#-- Limit at 95 % CL: 0.929570925746
+#-- Limit at 90 % CL: 0.736793568356
+# After including bkg syst from fixing bkg
+#-- Limit at 95 % CL: 1.02693511533
+#-- Limit at 90 % CL: 0.812523509376
