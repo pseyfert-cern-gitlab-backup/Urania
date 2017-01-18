@@ -16,6 +16,8 @@ reflex_generate_dictionary(B2DXFitters
                            SPLIT_CLASSDEF)
 
 add_definitions(-UNDEBUG)
+include_directories(SYSTEM ${ROOT_INCLUDE_DIRS})
+
 gaudi_add_library(B2DXFittersLib
                   src/*.cxx
                   B2DXFittersDict_classdef.cpp

@@ -16,6 +16,8 @@ reflex_generate_dictionary(RooPhysFitter
                            dict/RooPhysFitterDict.h dict/RooPhysFitterDict.xml
                            SPLIT_CLASSDEF)
 
+include_directories(SYSTEM ${ROOT_INCLUDE_DIRS})
+
 gaudi_add_library(RooPhysFitterLib
                   src/*.cpp
                   RooPhysFitterDict_classdef.cpp
