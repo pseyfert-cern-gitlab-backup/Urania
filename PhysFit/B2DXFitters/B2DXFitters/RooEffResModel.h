@@ -31,30 +31,30 @@ class RooEffResModel : public RooResolutionModel, public RooAbsEffResModel {
 	RooEffResModel(const char *name, const char *title,
 		RooResolutionModel& model, RooAbsReal& eff);
 	RooEffResModel(const RooEffResModel& other, const char* name = 0);
-	virtual RooEffResModel* clone(const char* newname) const;
+	RooEffResModel* clone(const char* newname) const override;
 	virtual ~RooEffResModel();
 
-	virtual Int_t basisCode(const char* name) const;
-	virtual Int_t getAnalyticalIntegral(
+	Int_t basisCode(const char* name) const override;
+	Int_t getAnalyticalIntegral(
 		RooArgSet& allVars, RooArgSet& analVars,
-		const char* rangeName=0) const;
-	virtual Double_t analyticalIntegral(
-		Int_t code, const char* rangeName) const;
-	virtual Bool_t forceAnalyticalInt(const RooAbsArg& dep) const;
+		const char* rangeName=0) const override;
+	Double_t analyticalIntegral(
+		Int_t code, const char* rangeName) const override;
+	Bool_t forceAnalyticalInt(const RooAbsArg& dep) const override;
 
-	virtual Int_t getGenerator(
+	Int_t getGenerator(
 		const RooArgSet& directVars, RooArgSet &generateVars,
-		Bool_t staticInitOK = kTRUE) const;
-	virtual void initGenerator(Int_t code);
-	virtual void generateEvent(Int_t code);
+		Bool_t staticInitOK = kTRUE) const override;
+	void initGenerator(Int_t code) override;
+	void generateEvent(Int_t code) override;
 
-	virtual RooAbsGenContext* modelGenContext(
+	RooAbsGenContext* modelGenContext(
 		const RooAbsAnaConvPdf& convPdf, const RooArgSet &vars,
 		const RooDataSet *prototype = 0, const RooArgSet* auxProto = 0,
-		Bool_t verbose= kFALSE) const;
+		Bool_t verbose= kFALSE) const override;
 
 	/// Return pointer to pdf in product
-	virtual RooAbsReal* efficiency() const;
+	RooAbsReal* efficiency() const override;
 
 	/// Return pointer to pdf in product
 	virtual std::vector<RooAbsReal*> efficiencies() const;
@@ -62,12 +62,12 @@ class RooEffResModel : public RooResolutionModel, public RooAbsEffResModel {
 	virtual RooResolutionModel& model() const;
 
 	/// Return pointer to pdf in product
-	virtual RooArgSet* observables() const;
+	RooArgSet* observables() const override;
 
     protected:
-	virtual Double_t evaluate() const;
-	virtual RooEffResModel* convolution(
-		RooFormulaVar* inBasis, RooAbsArg* owner) const;
+	Double_t evaluate() const override;
+	RooEffResModel* convolution(
+		RooFormulaVar* inBasis, RooAbsArg* owner) const override;
 
     private:
 	class CacheElem : public RooAbsCacheElement
@@ -77,7 +77,7 @@ class RooEffResModel : public RooResolutionModel, public RooAbsEffResModel {
 			const TNamed *rangeName);
 		virtual ~CacheElem();
 
-		virtual RooArgList containedArgs(Action);
+		RooArgList containedArgs(Action) override;
 		Double_t getVal(const RooArgSet* nset = 0) const;
 
 	    private:

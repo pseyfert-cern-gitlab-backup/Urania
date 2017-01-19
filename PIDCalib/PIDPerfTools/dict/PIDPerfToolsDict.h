@@ -1,14 +1,21 @@
-// $Id: $
-#ifndef DICT_PIDPERFTOOLSDICT_H 
+#ifndef DICT_PIDPERFTOOLSDICT_H
 #define DICT_PIDPERFTOOLSDICT_H 1
 // Include files
 
 /** @file PIDPerfToolsDict.h dict/PIDPerfToolsDict.h
- *  
+ *
  *
  *  @author Andrew POWELL
  *  @date   2010-10-08
  */
+
+#if defined(__clang__) || defined(__CLING__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winconsistent-missing-override"
+#elif defined(__GNUC__) && __GNUC__ >= 5
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsuggest-override"
+#endif
 
 #include "PIDPerfTools/TrackDataSet.h"
 //#include "PIDPerfTools/EvtTrackDataSet.h"
@@ -30,7 +37,7 @@
 
 namespace
 {
-  struct _Instantiations 
+  struct _Instantiations
   {
     PerfCalculator<TrackDataSet>                    a;
     //    PerfCalculator<EvtTrackDataSet>                 b;
@@ -53,5 +60,11 @@ namespace
     std::vector<std::pair<std::string, std::string> > s;
   };
 }
+
+#if defined(__clang__) || defined(__CLING__)
+#pragma clang diagnostic pop
+#elif defined(__GNUC__) && __GNUC__ >= 5
+#pragma GCC diagnostic pop
+#endif
 
 #endif // DICT_PIDPERFTOOLSDICT_H

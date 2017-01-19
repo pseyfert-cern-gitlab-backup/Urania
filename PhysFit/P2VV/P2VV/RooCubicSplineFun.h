@@ -50,18 +50,18 @@ public:
   ~RooCubicSplineFun() ;
 
   RooCubicSplineFun(const RooCubicSplineFun& other, const char* name = 0);
-  TObject* clone(const char* newname) const { return new RooCubicSplineFun(*this, newname); }
+  TObject* clone(const char* newname) const override { return new RooCubicSplineFun(*this, newname); }
 
-  Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* rangeName) const;
-  Double_t analyticalIntegral(Int_t code, const char* rangeName) const;
+  Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* rangeName) const override;
+  Double_t analyticalIntegral(Int_t code, const char* rangeName) const override;
 
-  Int_t getMaxVal(const RooArgSet& vars) const;
-  Double_t maxVal(Int_t code) const;
+  Int_t getMaxVal(const RooArgSet& vars) const override;
+  Double_t maxVal(Int_t code) const override;
 
   // for use as RooAbsGaussModelEfficiency...
   std::complex<double> productAnalyticalIntegral(Double_t umin, Double_t umax
                                                 ,Double_t scale, Double_t offset
-                                                ,const std::complex<double>& z) const;
+                                                ,const std::complex<double>& z) const override;
 
   unsigned knotSize() const { return _aux.size(); }
   double u(int i) const { return _aux.u(i); }
@@ -77,7 +77,7 @@ private:
   void init(const char* name, const std::vector<double>& heights,
             const std::vector<double>& errors, double smooth, bool constCoeffs);
 
-  Double_t evaluate() const;
+  Double_t evaluate() const override;
   //
   // for use in RooGaussEfficiencyModel...
   std::complex<double> gaussIntegralE(bool left, const RooGaussModelAcceptance::M_n<4U>& dM,

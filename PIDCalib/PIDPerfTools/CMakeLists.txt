@@ -10,6 +10,8 @@ find_package(ROOT COMPONENTS Core RIO
 # override the genreflex call to wrap it in the right environment
 #set(ROOT_genreflex_CMD ${env_cmd} --xml ${env_xml} ${ROOT_genreflex_CMD})
 
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS})
+
 gaudi_add_dictionary(PIDPerfTools
 		     dict/PIDPerfToolsDict.h
                      dict/PIDPerfToolsDict.xml

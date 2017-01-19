@@ -435,7 +435,7 @@ copy_TH1 (const TH1& that, const std::string& name)
 
   assert (result.get() != NULL && "postcondition failed"); //spec
   return result.release();
-};
+}
 
 
 
@@ -450,7 +450,7 @@ copy_TH1 (const TH1& that, const std::string& name)
 
   assert (result.get() != NULL && "postcondition failed"); //spec
   return result.release();
-};
+}
 
 
 
@@ -463,7 +463,7 @@ copy_TH1 (const FastTH1& that, const std::string& name)
 
   assert (result.get() != NULL && "postcondition failed"); //spec
   return result.release();
-};
+}
 
 
 
@@ -478,7 +478,7 @@ copy_TH1 (const FastTH1& that, const std::string& name)
 
   assert (result.get() != NULL && "postcondition failed"); //spec
   return result.release ();
-};
+}
 
 
 
@@ -487,7 +487,7 @@ copy_TH1_content (TH1& a, const TH1& b)
 {
   a.Reset ();
   a.Add (&b, 1);
-};
+}
 
 
 
@@ -495,7 +495,7 @@ template<> inline void
 copy_TH1_content (FastTH1& a, const FastTH1& b)
 {
   a.set_content (b);
-};
+}
 
 
 
@@ -505,7 +505,7 @@ test_invariant () const
 #ifndef NDEBUG
   assert (!(slow_ && fast_) && "invariant violated"); //spec
 #endif
-};
+}
 
 
 
@@ -514,7 +514,7 @@ TH1Input (TH1 *list)
   : slow_ (list), fast_ (NULL)
 {
   test_invariant ();
-};
+}
 
 
 
@@ -523,7 +523,7 @@ TH1Input (FastTH1 *list)
   : slow_ (NULL), fast_ (list)
 {
   test_invariant ();
-};
+}
 
 
 
@@ -541,7 +541,7 @@ copy_TH1 () const
     result.reset (::copy_TH1<Hist> (*fast_));
 
   return result.release();
-};
+}
 #endif
 
 
@@ -552,7 +552,7 @@ test_invariant () const
 #ifndef NDEBUG
   assert (!(slow_ && fast_) && "invariant violated"); //spec
 #endif
-};
+}
 
 
 
@@ -561,7 +561,7 @@ TH1InputList (TH1 **list)
   : slow_ (list), fast_ (NULL)
 {
   test_invariant ();
-};
+}
 
 
 
@@ -570,7 +570,7 @@ TH1InputList (FastTH1 **list)
   : slow_ (NULL), fast_ (list)
 {
   test_invariant ();
-};
+}
 
 
 
@@ -585,7 +585,7 @@ has (unsigned index) const
   if (fast_)
     result = fast_[index];
   return result;
-};
+}
 
 
 
@@ -601,7 +601,7 @@ copy_TH1 (unsigned index) const
   if (fast_ && fast_[index])
     result.reset (::copy_TH1<Hist> (*fast_[index]));
   return result.release ();
-};
+}
 #endif
 
 
@@ -631,7 +631,7 @@ test_invariant () const
     assert (*error >= 0 && "invariant violated"); //spec
   };
 #endif
-};
+}
 
 
 
@@ -651,7 +651,7 @@ set_content (const FastTH1& that)
 #ifdef NK_MCLIMIT_FAST_TH1_DEBUG
   test_invariant ();
 #endif
-};
+}
 
 
 
@@ -664,7 +664,7 @@ GetName () const
 
   assert (result != NULL && "postcondition failed");
   return result;
-};
+}
 
 
 
@@ -678,7 +678,7 @@ SetName (const char *name)
 
   test_invariant ();
   assert (std::string (name) == this->GetName() && "postcondition failed"); //spec
-};
+}
 
 
 
@@ -691,7 +691,7 @@ GetTitle () const
 
   assert (result != NULL && "postcondition failed");
   return result;
-};
+}
 
 
 
@@ -705,7 +705,7 @@ SetTitle (const char *title)
 
   test_invariant ();
   assert (std::string (title) == this->GetTitle() && "postcondition failed"); //spec
-};
+}
 
 
 
@@ -717,7 +717,7 @@ GetDimension () const
 #endif
 
   return dimension_;
-};
+}
 
 
 
@@ -729,7 +729,7 @@ GetNbinsX () const
 #endif
 
   return nbins_[0];
-};
+}
 
 
 
@@ -741,7 +741,7 @@ GetNbinsY () const
 #endif
 
   return nbins_[1];
-};
+}
 
 
 
@@ -753,7 +753,7 @@ GetNbinsZ () const
 #endif
 
   return nbins_[2];
-};
+}
 
 
 
@@ -767,7 +767,7 @@ GetBinContent (unsigned binx) const
 #endif
 
   return bin_contents_[binx-1];
-};
+}
 
 
 
@@ -781,7 +781,7 @@ GetBinError (unsigned binx) const
 #endif
 
   return bin_errors_[binx-1];
-};
+}
 
 
 
@@ -796,7 +796,7 @@ GetBinContent (unsigned binx, unsigned biny) const
 #endif
 
   return bin_contents_[(binx-1) * mult_[0] + (biny-1) * mult_[1]];
-};
+}
 
 
 
@@ -811,7 +811,7 @@ GetBinError (unsigned binx, unsigned biny) const
 #endif
 
   return bin_errors_[(binx-1) * mult_[0] + (biny-1) * mult_[1]];
-};
+}
 
 
 
@@ -829,7 +829,7 @@ SetBinContent (unsigned binx, value_type content)
 #ifdef NK_MCLIMIT_FAST_TH1_DEBUG
   test_invariant ();
 #endif
-};
+}
 
 
 
@@ -848,7 +848,7 @@ SetBinError (unsigned binx, value_type error)
 #ifdef NK_MCLIMIT_FAST_TH1_DEBUG
   test_invariant ();
 #endif
-};
+}
 
 
 
@@ -867,7 +867,7 @@ SetBinContent (unsigned binx, unsigned biny, value_type content)
 #ifdef NK_MCLIMIT_FAST_TH1_DEBUG
   test_invariant ();
 #endif
-};
+}
 
 
 
@@ -887,7 +887,7 @@ SetBinError (unsigned binx, unsigned biny, value_type error)
 #ifdef NK_MCLIMIT_FAST_TH1_DEBUG
   test_invariant ();
 #endif
-};
+}
 
 
 
@@ -903,7 +903,7 @@ Integral () const
        content != bin_contents_.end(); ++ content)
     result += *content;
   return result;
-};
+}
 
 #endif
 
@@ -913,9 +913,9 @@ Integral () const
 //typedef TH1 TH1Type;
 typedef FastTH1 TH1Type;
 
-namespace NK { namespace McLimit { class ExpExpected; }; };
-namespace NK { namespace McLimit { class ExpMcLimit; }; };
-namespace NK { namespace McLimit { class ExpMcLimit2; }; };
+namespace NK { namespace McLimit { class ExpExpected; } }
+namespace NK { namespace McLimit { class ExpMcLimit; } }
+namespace NK { namespace McLimit { class ExpMcLimit2; } }
 
 // for the map below -- from the SGI example for a map
 
@@ -1061,7 +1061,7 @@ class csm_channel_model
    void add_template( const TH1Input&,      //template histogram
 	   	      Double_t,   //scale factor to multiply template by to compare w/ data
                       Int_t,      // number of nuisance parameters (Gaussian of unit width)
-                      char *[],   // nuisance parameter names 
+                      char *[],   // nuisance parameter names
                       Double_t *, // fractional uncertainty on sf due to each nuisance parameter -- low side
                       Double_t *, // fractional uncertainty on sf due to each nuisance parameter -- high side
                       const TH1InputList&,    // array of low histogram shapes, one for each nuisance param
@@ -1078,7 +1078,7 @@ class csm_channel_model
                                   //  In an ensemble model, the bin contents are treated
                                   // as Poisson means and the values are fluctuated according to Poisson statistics.
                                   // These random components are then used with their scale factors as components
-                                  // of another Poisson mean for generating pseudodata. 
+                                  // of another Poisson mean for generating pseudodata.
                                   // In the model used to fit to the data, these values are treated as integer
                                   // measurements from subsidiary experiments.
                       Int_t);     // Scale flag -- set to 1 if you want this template to be scaled in the s95
@@ -1161,7 +1161,7 @@ class csm_model
    void add_template( TH1 *,      //template histogram
 	   	      Double_t,   //scale factor to multiply template by to compare w/ data
                       Int_t,      // number of nuisance parameters (Gaussian of unit width)
-                      char *[],   // nuisance parameter names 
+                      char *[],   // nuisance parameter names
                       Double_t *, // fractional uncertainty on sf due to each nuisance parameter -- low side
                       Double_t *, // fractional uncertainty on sf due to each nuisance parameter -- high side
                       TH1 *[],    // array of low histogram shapes, one for each nuisance param
@@ -1173,7 +1173,7 @@ class csm_model
                                   // it is a test model.  In an ensemble model, the bin contents are treated
                                   // as Poisson means and the values are fluctuated according to Poisson statistics.
                                   // These random components are then used with their scale factors as components
-                                  // of another Poisson mean for generating pseudodata. 
+                                  // of another Poisson mean for generating pseudodata.
                                   // In the model used to fit to the data, these values are treated as integer
                                   // measurements from subsidiary experiments.
                       Int_t,      // Scale flag -- set to 1 if you want this template to be scaled in the s95
@@ -1181,7 +1181,7 @@ class csm_model
                                   // signal histograms, and 0 for background histograms.
                       char *);    // Channel name
 
-   void set_interpolation_style(char *,INTERPSTYLE);  //  sets the interpolation style 
+   void set_interpolation_style(char *,INTERPSTYLE);  //  sets the interpolation style
             //  for a particlar channel -- first arg: channel name
             // of channel -- second arg:  interpolation style:  CSM_INTERP_HORIZONTAL or CSM_INTERP_VERTICAL
 
@@ -1286,15 +1286,15 @@ class csm
                                               // value model provided.
         void setminuitmaxcalls(Int_t);  // Maximum number of function calls MINUIT is allowed to do per minimization
                                         // default: 500
-        Int_t getminuitmaxcalls(); 
+        Int_t getminuitmaxcalls();
         void setminosmaxcalls(Int_t);  // Maximum number of function calls MINOS is allowed to do per parameter
                                         // default: 500
-        Int_t getminosmaxcalls(); 
+        Int_t getminosmaxcalls();
         void setminuitstepsize(Double_t);  // Initial step size for MINUIT fit parameters default: 0.1
-        Double_t getminuitstepsize(); 
-        void setminosflag(bool);   // true: call MINOS. Best to have printing set too if 
-                                   // you're going to run MINOS.  False:  Do not call MINOS (default) 
-        bool getminosflag(); 
+        Double_t getminuitstepsize();
+        void setminosflag(bool);   // true: call MINOS. Best to have printing set too if
+                                   // you're going to run MINOS.  False:  Do not call MINOS (default)
+        bool getminosflag();
 	void setprintflag(bool);  // true:  let MINUIT print stuff out;  FALSE -- turn off MINUIT printing (default)
 	bool getprintflag();
 
@@ -1329,7 +1329,7 @@ template<class Hist> void csm_interpolate_histogram_noerr(Hist*,Double_t,Hist*,D
 template<class Hist> void
 csm_interpolate_histogram2(Hist* central, Double_t paramcentral,
                                 Hist* varied, Double_t paramvaried,
-                                Hist* startshape, 
+                                Hist* startshape,
                                 Hist* outshape,
                                 Double_t param,
                                 INTERPSTYLE istyle);
@@ -1340,7 +1340,7 @@ csm_interpolate_histogram2(Hist* central, Double_t paramcentral,
 template<class Hist> void
 csm_interpolate_histogram2_noerr(Hist* central, Double_t paramcentral,
                                 Hist* varied, Double_t paramvaried,
-                                Hist* startshape, 
+                                Hist* startshape,
                                 Hist* outshape,
                                 Double_t param,
                                 INTERPSTYLE istyle);
@@ -1350,7 +1350,7 @@ csm_interpolate_histogram2_noerr(Hist* central, Double_t paramcentral,
 template<class Hist> void
 csm_interpolate_histogram3(Hist* central, Double_t paramcentral,
 			   Hist* varied, Double_t paramvaried,
-			   Hist* startshape, 
+			   Hist* startshape,
 			   Hist* outshape,
 			   Double_t param,
 			   INTERPSTYLE istyle);
@@ -1358,7 +1358,7 @@ csm_interpolate_histogram3(Hist* central, Double_t paramcentral,
 void csm_pvmc(Int_t nb, Double_t *dist1, Double_t *dist2, Double_t *dist3, Double_t *distn,
 	      Double_t par1, Double_t par2, Double_t parn);
 
-void csm_pvmc2d(Int_t nx, Int_t ny, Double_t *xydist1, 
+void csm_pvmc2d(Int_t nx, Int_t ny, Double_t *xydist1,
                 Double_t *xydist2, Double_t *xydist3, Double_t *xydistn,
                 Double_t par1, Double_t par2, Double_t parn);
 
@@ -1400,7 +1400,7 @@ class mclimit_csm
    void set_test_hypothesis(csm_model *);
    void set_null_hypothesis_pe(csm_model *);
    void set_test_hypothesis_pe(csm_model *);
-   void set_npe(Int_t);      // sets the number of pseudoexperiments to do.  
+   void set_npe(Int_t);      // sets the number of pseudoexperiments to do.
                              // The default is set in the constructor to 10000
                              // This variable is also the number of systematic samples for the bayes_heinrich*
                              // routines, and it is also the chain length for the *mcmc1* routines.  Apologies for the
@@ -1426,9 +1426,9 @@ class mclimit_csm
    Int_t getminosmaxcalls();
    void setminuitstepsize(Double_t);  // initial step size for MINUIT parameters (default=0.1)
    Double_t getminuitstepsize();
-   void setminosflag(bool);   // true: call MINOS. Best to have printing set too if 
-                              // you're going to run MINOS.  False:  Do not call MINOS (default) 
-   bool getminosflag(); 
+   void setminosflag(bool);   // true: call MINOS. Best to have printing set too if
+                              // you're going to run MINOS.  False:  Do not call MINOS (default)
+   bool getminosflag();
    void setprintflag(bool);  // true:  let MINUIT print stuff out;  FALSE -- turn off MINUIT printing (default)
    bool getprintflag();
    void setpxprintflag(bool);    // print out pseudoexperiment results
@@ -1468,7 +1468,7 @@ class mclimit_csm
    Double_t tssmed(); // median test statistic in null hyp pseudoexperiments
    Double_t tssp1();  // 1 sigma upper edge
    Double_t tssp2();  // 2 sigma upper edge
- 
+
    Double_t clsexpbm2(); // Expected cls in null hypothesis -- 2 sigma low edge
    Double_t clsexpbm1(); // Expected cls in null hypothesis -- 2 sigma low edge
    Double_t clsexpbmed(); // Expected cls in null hypothesis -- median
@@ -1503,8 +1503,8 @@ class mclimit_csm
    Double_t clsexpsmed(); // Expected cls in test hypothesis -- median
    Double_t clsexpsp1(); // Expected cls in test hypothesis -- 1 sigma upper edge
    Double_t clsexpsp2(); // Expected cls in test hypothesis -- 2 sigma upper edge
- 
-   // these accessors below use the CLs definition of CLb which includes the 
+
+   // these accessors below use the CLs definition of CLb which includes the
    // probability of observing exactly the data outcome
    // (subtracting it from 1 makes 1-CLb computed with these routines omit the
    // probability of observing exactly the data outcome)  Not to be used
@@ -1533,7 +1533,7 @@ class mclimit_csm
    Double_t omclbexpsp1w(); // Expected clb in test hypothesis -- 1 sigma upper edge
    Double_t omclbexpsp2w(); // Expected clb in test hypothesis -- 2 sigma upper edge
 
-   // these accessors below use the CLs definition of CLb which includes the 
+   // these accessors below use the CLs definition of CLb which includes the
    // probability of observing exactly the data outcome
    // (subtracting it from 1 makes 1-CLb computed with these routines omit the
    // probability of observing exactly the data outcome)
@@ -1607,15 +1607,15 @@ class mclimit_csm
                              // (you define the binning).  First histo: test hypothesis, second histo:
                              // null hypothesis
 
-   void plotlnsb(TH1 *mcb_hist, TH1 *mcs_hist, TH1 *data_hist); // make a summed plot of ln(1+s/b) given the 
-                             // input histogram pointers.  They are filled in with summed MC 
+   void plotlnsb(TH1 *mcb_hist, TH1 *mcs_hist, TH1 *data_hist); // make a summed plot of ln(1+s/b) given the
+                             // input histogram pointers.  They are filled in with summed MC
                              // and data (they are reset first).
 
    //------------------------------------------------------------------------------------------
    // Bayesian Calculations with Scattershot integration of nuisance parameters (drawn from their priors)
 
    // To do this, call Joel Heinrich's (CDF 7587) genlimit
-   // Bayesian limit calculator.  First arg:  credibility level:  e.g., 0.95.  Second arg, 
+   // Bayesian limit calculator.  First arg:  credibility level:  e.g., 0.95.  Second arg,
    //scale factor on signal to produce the limit.  Third arg, uncertainty on the limit scale factor.
    //as with the s95 routines above, this assumes that the signal adds incoherently to the
    //background.  Requires set_test_hypothesis_pe to be called first in order to make the
@@ -1643,7 +1643,7 @@ class mclimit_csm
    // if requested.  You can get a plot of the posterior PDF by specifying the range
    // over which it is to be evaluated and the point sample density  -- These are initialized
    // to zero by the constructor.  Just specify the beginning and the end of the interval and
-   // the step size, and the bayes_posterior vector will be filled in when bayes_heinrich and 
+   // the step size, and the bayes_posterior vector will be filled in when bayes_heinrich and
    // bayes_heinrich_withexpect are called.  bayes_interval_end > bayes_interval_begin and
    // bayes_inteval_step > 0 for bayes_posterior to be filled in.
 
@@ -1678,8 +1678,8 @@ class mclimit_csm
 				      Int_t npx,
                                       Double_t* falsex);  // checks the false exclusion rate (coverage)
 
-// accessor methods (rather cobbled onto a method of getting access to a 
-// value which is global to mclimit_csm.C, since the Bayesian routines are 
+// accessor methods (rather cobbled onto a method of getting access to a
+// value which is global to mclimit_csm.C, since the Bayesian routines are
 // written in C and not C++, this value wasn't put in a nicer place.
 
 // dlcsn is an exponential factor on the posterior.  If you want the sum of the likelihoods,
@@ -1708,7 +1708,7 @@ class mclimit_csm
    // draw pseudoexperiments from the fluctuated testhyp and find the cross section
    // from each one using testhyp_pe  Get expected values.
 
-   void bh_xsfit_expect(Int_t npx, Double_t *xsfitavg, Double_t *m2s, 
+   void bh_xsfit_expect(Int_t npx, Double_t *xsfitavg, Double_t *m2s,
      Double_t *m1s, Double_t *med, Double_t *p1s, Double_t *p2s);
 
    // scan over two signals and print out the marginalized posterior for later analysis
@@ -1740,8 +1740,8 @@ class mclimit_csm
 //------------------------------------------------------------------------------------------
 // Markov Chain routines to do Bayesian calcualations -- limits, cross sections, and best fit plots
 
-// settable parameters 
-// the number of burnin links in the chain.  
+// settable parameters
+// the number of burnin links in the chain.
 
    void set_mcmc1_burnin_length(int nburnin=500) {nmcmc1burnin = nburnin;};
    int get_mcmc1_burnin_length() {return nmcmc1burnin;};
@@ -1777,15 +1777,15 @@ class mclimit_csm
 // Otherwise (null pointers passed in or the default taken),
 // internal histograms are created with a default binning.  The 1D posterior histogram for the
 // expected cross section calculator is there just to determine the binning -- it is filled with only the
-// last pseudoexperiment's posterior upon return of the call. 
+// last pseudoexperiment's posterior upon return of the call.
 
-   void xsfit_mcmc1(double *xsfit, double *downerr, double *uperr, TH1F *xs1dposterior=0, 
+   void xsfit_mcmc1(double *xsfit, double *downerr, double *uperr, TH1F *xs1dposterior=0,
                     TString histoutfile="", bool dumpsfp=false, bool forcedatatobeinteger=true);
 
-   void xsfit_mcmc1_expect(Int_t npx, Double_t *xsfitavg, Double_t *m2s, 
+   void xsfit_mcmc1_expect(Int_t npx, Double_t *xsfitavg, Double_t *m2s,
                            Double_t *m1s, Double_t *med, Double_t *p1s, Double_t *p2s, TH1F *xs1dposterior=0);
 
-   void xsfit_mcmc1_expect_asimov(double *xsfit, double *downerr, double *uperr, TH1F *xsfit1dposterior=0, 
+   void xsfit_mcmc1_expect_asimov(double *xsfit, double *downerr, double *uperr, TH1F *xsfit1dposterior=0,
 				     TString histoutfile="", bool dumpsfp=false);
 
 // this one puts the posterior in a predefined histogram (if supplied), and optionally allows a dump
@@ -1800,7 +1800,7 @@ class mclimit_csm
    // If more than two signals are present, the first one in  each channel is called signal 1,
    // and the sum of all others is called signal 2
    // The main use of this routine is to print out cross section fit values for further analysis
-   // to think about -- saving each pseudoexperiment's signal posterior?  
+   // to think about -- saving each pseudoexperiment's signal posterior?
    // Agruments -- npx number of pseudoexperiments to simulate and fit the cross section on.
    // Pseudoexeperiments are drawn from test_hypothesis and fit to test_hypothesis_pe (as for all the other
    // cross section fits.)
@@ -1816,8 +1816,8 @@ class mclimit_csm
     double bayeslimit_mcmc1(double beta=0.95, PRIOR prior=corr, TString histoutfile="", bool forcedatatobeinteger=true,
 			    bool dumpsfp=false);
 
-    void bayeslimit_mcmc1_expect(double beta, PRIOR prior, int npx, 
-				 double *sm2, double *sm1, double *smed, 
+    void bayeslimit_mcmc1_expect(double beta, PRIOR prior, int npx,
+				 double *sm2, double *sm1, double *smed,
 				 double *sp1, double *sp2);
 
     double bayeslimit_mcmc1_expect_asimov(double beta=0.95, PRIOR prior=corr, TString histoutfile="");
@@ -1843,25 +1843,25 @@ class mclimit_csm
     // Uses testhyp_pe because the signal histogram needs to be filled with signal, and all systematics
     // must be estimated.
 
-    void bgfitplot_mcmc1(TH1F *bgfit, TH1F *sighist, TH1F *datahist); 
+    void bgfitplot_mcmc1(TH1F *bgfit, TH1F *sighist, TH1F *datahist);
 
     // The main Markov Chain routine -- provides functionality for the different things we want to
     // compute -- cros sections, limits, and fit plots
 
-   void mcmc1(MCMC1ACTION action=limit1d, 
-	      double beta=0.95, 
-	      PRIOR prior=corr, 
-	      TString histoutfile="", 
+   void mcmc1(MCMC1ACTION action=limit1d,
+	      double beta=0.95,
+	      PRIOR prior=corr,
+	      TString histoutfile="",
 	      double *sflimit=0,
-              double *xsfit=0, 
-	      double *downerr=0, 
-	      double *uperr=0, 
+              double *xsfit=0,
+	      double *downerr=0,
+	      double *uperr=0,
 	      bool dumpsfp=false,
 	      double *xsfit2=0,
 	      TH2F *xs2dposterior=0,
 	      TH1F *xs1dposterior=0,
-	      TProfile *bgfit=0, 
-	      TH1F *shp=0, 
+	      TProfile *bgfit=0,
+	      TH1F *shp=0,
 	      TH1F *dhp=0,
 	      bool forcedatatobeinteger=true);
 
@@ -2025,7 +2025,7 @@ void gausslaguerre(double x[],double lw[],int n,double alpha);
 // csm_interpolate_histogram interpolates the bin contents and errors
 
 template<class Hist> inline void
-csm_interpolate_histogram(Hist* a, Double_t xa, 
+csm_interpolate_histogram(Hist* a, Double_t xa,
 			  Hist* b, Double_t xb,
 			  Hist* c, Double_t xc,
 			  INTERPSTYLE istyle)
@@ -2036,7 +2036,7 @@ csm_interpolate_histogram(Hist* a, Double_t xa,
 // csm_interpolate_histogram_noerr interpolates just the bin contents but not the errors
 
 template<class Hist> void
-csm_interpolate_histogram_noerr(Hist* a, Double_t xa, 
+csm_interpolate_histogram_noerr(Hist* a, Double_t xa,
 				Hist* b, Double_t xb,
 				Hist* c, Double_t xc,
 				INTERPSTYLE istyle)
@@ -2044,7 +2044,7 @@ csm_interpolate_histogram_noerr(Hist* a, Double_t xa,
   csm_interpolate_histogram2_noerr(a,xa,b,xb,a,c,xc,istyle);
 }
 
-// interpolate 1D histograms and 2D histograms 
+// interpolate 1D histograms and 2D histograms
 // histo a corresponds to parameter xa, histo b corresponds to xb.
 // xc is input, and histogram c is the interpolated output
 // d is the histogram to apply the shift given by a and b to, for compounded interpolations.
@@ -2062,7 +2062,7 @@ csm_interpolate_histogram_noerr(Hist* a, Double_t xa,
 // speedup 9 Dec 2007 -- avoid cloning TH1's as this is slow
 
 template<class Hist> inline void
-csm_interpolate_histogram2(Hist* a, Double_t xa, 
+csm_interpolate_histogram2(Hist* a, Double_t xa,
 			   Hist* b, Double_t xb,
 			   Hist* d,
 			   Hist* c, Double_t xc,
@@ -2232,7 +2232,7 @@ csm_interpolate_histogram2(Hist* a, Double_t xa,
 }
 
 template<class Hist> void
-csm_interpolate_histogram2_noerr(Hist* a, Double_t xa, 
+csm_interpolate_histogram2_noerr(Hist* a, Double_t xa,
 				 Hist* b, Double_t xb,
 				 Hist* d,
 				 Hist* c, Double_t xc,
@@ -2287,7 +2287,7 @@ csm_interpolate_histogram2_noerr(Hist* a, Double_t xa,
 
 
 template<class Hist> inline void
-csm_interpolate_histogram3(Hist* a, Double_t xa, 
+csm_interpolate_histogram3(Hist* a, Double_t xa,
 			   Hist* b, Double_t xb,
 			   Hist* d,
 			   Hist* c, Double_t xc,
@@ -2307,17 +2307,17 @@ csm_interpolate_histogram3(Hist* a, Double_t xa,
   Int_t nbinsyd = d->GetNbinsY();
 
   if (a->Integral()<=0 || b->Integral()<=0)
-    { 
+    {
       for (i=1;i<=nbinsc;i++)
 	{
 	   for (j=1;j<=nbinsyc;j++)
 	     { c->SetBinContent(i,j,0);
 	     }
-	} 
+	}
       //c->Reset();
       return;
     }
-    
+
   if (nbinsya == 1)
     {
       Double_t *dista = new Double_t[nbinsa];
@@ -2353,7 +2353,7 @@ csm_interpolate_histogram3(Hist* a, Double_t xa,
 	     {
                c->SetBinContent(i+1,distc[i]*hnormc/hnormci);
 	     }
-	   else 
+	   else
 	     {
 	       c->SetBinContent(i+1,0);
 	     }
@@ -2364,7 +2364,7 @@ csm_interpolate_histogram3(Hist* a, Double_t xa,
 	  for (i=0;i<nbinsa;i++)
 	    {
 	      gbc = distd[i] + ((xc-xa)/(xb-xa))*(distb[i]-dista[i]);
-	      if (gbc < 0) 
+	      if (gbc < 0)
 		{
 		  gbc = 0;
 		}

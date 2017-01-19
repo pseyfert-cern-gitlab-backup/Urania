@@ -72,7 +72,7 @@
 //     7 Dec 2009 Line up with Wade Fisher's prescriptions for priors
 //    30 Apr 2010 Add standalone adaptive Markov chain code, systsumplot, and improve the memory efficiency of
 //                bh_xsfit and simplify code of bh_xsfit_expect
-//    10 May 2010 Regulate Wade's exponential prior 
+//    10 May 2010 Regulate Wade's exponential prior
 //                and add a lookup table for which systematic sources are associated with which names
 //    11 May 2010 Use find instead of [] so the map doesn't add extra null vectors for names not
 //                on the list (speedup issue only)
@@ -241,7 +241,7 @@ mclimit_csm::~mclimit_csm()
   for (i=0; i<(Int_t) datahist.size(); i++)
     {
       delete datahist[i];
-      delete[] dhname[i]; 
+      delete[] dhname[i];
     }
 }
 
@@ -349,7 +349,7 @@ void mclimit_csm::set_datahist(TH1 *h, char *cname)
     }
   /* if the name isn't already in the list, add it to the vector of names and
      make a blank model for it too.  Put the new name in it sorted place, sorted
-     by increasing sort order of the name strings.  If the name is on the 
+     by increasing sort order of the name strings.  If the name is on the
      list, replace the existing data histogram with a clone of the one supplied. */
 
   if (ifound == -1)
@@ -437,7 +437,7 @@ Double_t mclimit_csm::ts()
 {
   Int_t i;
 
-  if (recalctsflag) 
+  if (recalctsflag)
     {
       // copy the data histogram pointers into a flat array
       // for the chisquare calculator.
@@ -466,11 +466,11 @@ Double_t mclimit_csm::tsbm2()
       return(0);
     }
   i = (Int_t) nearbyint(nmc*MCLIMIT_CSM_MCLM2S);
-  if (i<0) 
+  if (i<0)
     { i=0; }
-  if (i>nmc-1) 
+  if (i>nmc-1)
     {i=nmc-1;}
- 
+
   return(tsb[itsb[i]]);
 }
 
@@ -486,11 +486,11 @@ Double_t mclimit_csm::tsbm1()
       return(0);
     }
   i = (Int_t) nearbyint(nmc*MCLIMIT_CSM_MCLM1S);
-  if (i<0) 
+  if (i<0)
     { i=0; }
-  if (i>nmc-1) 
+  if (i>nmc-1)
     {i=nmc-1;}
- 
+
   return(tsb[itsb[i]]);
 }
 
@@ -506,11 +506,11 @@ Double_t mclimit_csm::tsbmed()
       return(0);
     }
   i = (Int_t) nearbyint(nmc*MCLIMIT_CSM_MCLMED);
-  if (i<0) 
+  if (i<0)
     { i=0; }
-  if (i>nmc-1) 
+  if (i>nmc-1)
     {i=nmc-1;}
- 
+
   return(tsb[itsb[i]]);
 }
 
@@ -526,11 +526,11 @@ Double_t mclimit_csm::tsbp1()
       return(0);
     }
   i = (Int_t) nearbyint(nmc*MCLIMIT_CSM_MCLP1S);
-  if (i<0) 
+  if (i<0)
     { i=0; }
-  if (i>nmc-1) 
+  if (i>nmc-1)
     {i=nmc-1;}
- 
+
   return(tsb[itsb[i]]);
 }
 
@@ -546,11 +546,11 @@ Double_t mclimit_csm::tsbp2()
       return(0);
     }
   i = (Int_t) nearbyint(nmc*MCLIMIT_CSM_MCLP2S);
-  if (i<0) 
+  if (i<0)
     { i=0; }
-  if (i>nmc-1) 
+  if (i>nmc-1)
     {i=nmc-1;}
- 
+
   return(tsb[itsb[i]]);
 }
 
@@ -566,11 +566,11 @@ Double_t mclimit_csm::tssm2()
       return(0);
     }
   i = (Int_t) nearbyint(nmc*MCLIMIT_CSM_MCLM2S);
-  if (i<0) 
+  if (i<0)
     { i=0; }
-  if (i>nmc-1) 
+  if (i>nmc-1)
     {i=nmc-1;}
- 
+
   return(tss[itss[i]]);
 }
 
@@ -586,11 +586,11 @@ Double_t mclimit_csm::tssm1()
       return(0);
     }
   i = (Int_t) nearbyint(nmc*MCLIMIT_CSM_MCLM1S);
-  if (i<0) 
+  if (i<0)
     { i=0; }
-  if (i>nmc-1) 
+  if (i>nmc-1)
     {i=nmc-1;}
- 
+
   return(tss[itss[i]]);
 }
 
@@ -606,11 +606,11 @@ Double_t mclimit_csm::tssmed()
       return(0);
     }
   i = (Int_t) nearbyint(nmc*MCLIMIT_CSM_MCLMED);
-  if (i<0) 
+  if (i<0)
     { i=0; }
-  if (i>nmc-1) 
+  if (i>nmc-1)
     {i=nmc-1;}
- 
+
   return(tss[itss[i]]);
 }
 
@@ -626,11 +626,11 @@ Double_t mclimit_csm::tssp1()
       return(0);
     }
   i = (Int_t) nearbyint(nmc*MCLIMIT_CSM_MCLP1S);
-  if (i<0) 
+  if (i<0)
     { i=0; }
-  if (i>nmc-1) 
+  if (i>nmc-1)
     {i=nmc-1;}
- 
+
   return(tss[itss[i]]);
 }
 
@@ -646,11 +646,11 @@ Double_t mclimit_csm::tssp2()
       return(0);
     }
   i = (Int_t) nearbyint(nmc*MCLIMIT_CSM_MCLP2S);
-  if (i<0) 
+  if (i<0)
     { i=0; }
-  if (i>nmc-1) 
+  if (i>nmc-1)
     {i=nmc-1;}
- 
+
   return(tss[itss[i]]);
 }
 
@@ -679,7 +679,7 @@ Double_t mclimit_csm::clsbaux(Double_t tsaux)
   for (i=0;i<nmc;i++)
     {
       if (tss[itss[i]] < tsaux)
-	{ 
+	{
 	  clsbloc = ((Double_t) (i+1))/((Double_t) nmc);
 	}
       else break;
@@ -703,7 +703,7 @@ Double_t mclimit_csm::clsbauxw(Double_t tsaux)
   for (i=0;i<nmc;i++)
     {
       if (tsb[itsb[i]] >= tsaux)
-	{ 
+	{
           clsbloc += wtsb[itsb[i]];
 	}
     }
@@ -727,7 +727,7 @@ Double_t mclimit_csm::clbaux(Double_t tsaux)
   for (i=0;i<nmc;i++)
     {
       if (tsb[itsb[i]] < tsaux)
-	{ 
+	{
 	  clbloc = ((Double_t) (i+1))/((Double_t) nmc);
 	}
       else break;
@@ -754,7 +754,7 @@ Double_t mclimit_csm::omclbaux(Double_t tsaux)
   for (i=0;i<nmc;i++)
     {
       if (tsb[itsb[i]] <= tsaux)
-	{ 
+	{
 	  omclbloc = ((Double_t) (i+1))/((Double_t) nmc);
 	}
       else break;
@@ -782,7 +782,7 @@ Double_t mclimit_csm::omclbauxw(Double_t tsaux)
   for (i=0;i<nmc;i++)
     {
       if (tss[itss[i]] <= tsaux)
-	{ 
+	{
           omclbloc += wtss[itss[i]];
 	}
     }
@@ -1519,7 +1519,7 @@ Double_t mclimit_csm::s95aux(Int_t itype)
   sf = 1.0;
   cll = 0.0;
   cla = 0.0;
-  clh = 0.0; 
+  clh = 0.0;
   foundit = 0;
 
   for (j=0;j<32;j++)
@@ -1533,13 +1533,13 @@ Double_t mclimit_csm::s95aux(Int_t itype)
 	  test_hypothesis_pe = scaledsignalpe;
 	  run_pseudoexperiments();
 	  recalctsflag = 1;
-	  if (itype == MCLIMIT_CSM_CLS) cltest = cls(); 
+	  if (itype == MCLIMIT_CSM_CLS) cltest = cls();
 	  else if (itype == MCLIMIT_CSM_CLSM2) cltest = gclsexpbm2();
 	  else if (itype == MCLIMIT_CSM_CLSM1) cltest = gclsexpbm1();
 	  else if (itype == MCLIMIT_CSM_CLSMED) cltest = gclsexpbmed();
 	  else if (itype == MCLIMIT_CSM_CLSP1) cltest = gclsexpbp1();
 	  else if (itype == MCLIMIT_CSM_CLSP2) cltest = gclsexpbp2();
-	  else if (itype == MCLIMIT_CSM_CLSB) cltest = clsb(); 
+	  else if (itype == MCLIMIT_CSM_CLSB) cltest = clsb();
 	  else if (itype == MCLIMIT_CSM_CLSBM2) cltest = clsbexpbm2();
 	  else if (itype == MCLIMIT_CSM_CLSBM1) cltest = clsbexpbm1();
 	  else if (itype == MCLIMIT_CSM_CLSBMED) cltest = clsbexpbmed();
@@ -1594,7 +1594,7 @@ Double_t mclimit_csm::s95aux(Int_t itype)
   //cout << "done with seek loop " << sf << endl;
   sf = sfh;
   if (foundit == 0)
-    { 
+    {
       cout << "mclimit_csm::s95** could not find s95 within 2**32 of original guess" << endl;
       sf = 0;
     }
@@ -1801,14 +1801,14 @@ Double_t mclimit_csm::lumipaux(Int_t itype)
   sf = 1.0;
   cll = 0.0;
   cla = 0.0;
-  clh = 0.0; 
+  clh = 0.0;
   foundit = 0;
 
   testhypsave = test_hypothesis;
   nullhypsave = null_hypothesis;
   testhyppesave = test_hypothesis_pe;
   nullhyppesave = null_hypothesis_pe;
-  
+
   for (j=0;j<32;j++)
     {
       if (foundit == 0)
@@ -1884,7 +1884,7 @@ Double_t mclimit_csm::lumipaux(Int_t itype)
 
   sf = sfl;
   if (foundit == 0)
-    { 
+    {
       cout << "mclimit_csm::lumipaux** could not find s95 within 2**32 of original guess" << endl;
       sf = 0;
     }
@@ -1989,7 +1989,7 @@ Double_t mclimit_csm::lumipaux(Int_t itype)
       sf = lf_sf;
 
     }
-   
+
   test_hypothesis = testhypsave;
   null_hypothesis = nullhypsave;
   test_hypothesis_pe = testhyppesave;
@@ -2005,7 +2005,7 @@ void mclimit_csm::tshists(TH1* testhypts, TH1* nullhypts)
   testhypts->Reset();
   nullhypts->Reset();
   for (i=0;i<nmc;i++)
-    { 
+    {
       testhypts->Fill(tss[i]);
       nullhypts->Fill(tsb[i]);
     }
@@ -2057,8 +2057,8 @@ void mclimit_csm::plotlnsb(TH1 *mcb_hist, TH1 *mcs_hist, TH1 *data_hist)
 		  else
 		    { b += gbc; }
 		}
-	      if (b>0 && s>= 0) 
-		{ 
+	      if (b>0 && s>= 0)
+		{
 		  sbln = log(1.0+s/b);
 		  mcs_hist->Fill(sbln,s);
 		  mcb_hist->Fill(sbln,b);
@@ -2260,8 +2260,8 @@ void csm_model::nuisance_response(Int_t nparams,
 		    }
 	          if (ifound == 0)
 		    {
-		      cout << "Didn't find parameter name: " << 
-			npcm[icons].pnameinput[j] << 
+		      cout << "Didn't find parameter name: " <<
+			npcm[icons].pnameinput[j] <<
 			" in the list of nuisance parameters" << endl;
 		      exit(0);
 		    }
@@ -2272,9 +2272,9 @@ void csm_model::nuisance_response(Int_t nparams,
 	}
       // Not a disaster if we didn't find a parameter on the list.  Sometimes we
       // only fit for a subset of parameters and they aren't on the list.
-      //  if (jfound == 0) 
+      //  if (jfound == 0)
       //	{
-      //  cout << "Constraint equation found for nuisance parameter not on our list: " 
+      //  cout << "Constraint equation found for nuisance parameter not on our list: "
       //       << npcm[icons].pnameoutput << endl;
       //  exit(0);
       //  }
@@ -2304,7 +2304,7 @@ void csm_model::undo_nuisance_response()
 /*----------------------------------------------------------------------------*/
 
 // Create a fluctuated channel model -- input a list of nuisance parameter names
-// and values, and return a pointer to a new channel model which has 
+// and values, and return a pointer to a new channel model which has
 // responded to those nuisance parameters.  Be sure to delete it when done.
 // todo -- make sure that the shape errors accumulate.  Suggestion of John
 // Zhou: average all shape error interpolations.  --  Better compounded interpolations
@@ -2384,7 +2384,7 @@ void csm_channel_model::nuisance_response(Int_t nparams,
 		}
 	      else
 		{
-		  sft_varied[itpl] *= max(1E-8,( 
+		  sft_varied[itpl] *= max(1E-8,(
 						(syserr[i].sysfrach+syserr[i].sysfracl)*paramvalue[j]*paramvalue[j]/2.0 +
 						(syserr[i].sysfrach-syserr[i].sysfracl)*paramvalue[j]/2.0 + 1.0));
 		}
@@ -2503,7 +2503,7 @@ Int_t csm_channel_model::checkneg()
 
 /*----------------------------------------------------------------------------*/
 // collect all nuisance parameter names and upper and lower bounds for this model
-// Where the bounds come from -- do not allow extrapolation on histogram shapes.  
+// Where the bounds come from -- do not allow extrapolation on histogram shapes.
 // (all histogram extrapolation should be done and verified by the user)
 // Also do not allow any contribution to signal or background to go negative.
 
@@ -2522,11 +2522,11 @@ void csm_model::list_nparams(vector<char *> *npn, vector<Double_t> *nplb, vector
       cm = chanmodel[i];
       for (j=0;j<(Int_t) cm->syserr.size();j++)
 	{
-	  //cout << "sys error item channel: " << i << 
+	  //cout << "sys error item channel: " << i <<
           //" error index: " << j << " " << cm->syserr[j].sysname << " " <<
-	  //(cm->syserr[j].highshape != 0) << " " <<  
+	  //(cm->syserr[j].highshape != 0) << " " <<
           //(cm->syserr[j].lowshape != 0) << " " <<
-          //cm->syserr[j].xsiglow << " " << cm->syserr[j].xsighigh << endl;  
+          //cm->syserr[j].xsiglow << " " << cm->syserr[j].xsighigh << endl;
 
           // question -- do we need to consider nuisance parameter variations beyond 20 sigma?
           // probably not if we only need 5-sigma discovery significance.
@@ -2573,11 +2573,11 @@ void csm_model::list_nparams(vector<char *> *npn, vector<Double_t> *nplb, vector
 		{
 		  disc = b*b - 4.0*a*c;
 		  if (disc > 0)
-		    { 
+		    {
 		      xp = (-b + sqrt(disc))/(2.0*a);
 		      xm = (-b - sqrt(disc))/(2.0*a);
 		      xht = max(xp,xm);
-		      xlt = min(xp,xm); 
+		      xlt = min(xp,xm);
 		      // we know that a nuisance parameter value of 0 has a non-negative prediction,
 		      // but the choice of which of these two solutions to a quadratic to take depends
 		      // on which side of zero they are on.
@@ -2585,7 +2585,7 @@ void csm_model::list_nparams(vector<char *> *npn, vector<Double_t> *nplb, vector
 			{
 			  nplb_tmp = max(nplb_tmp,xht);
 			}
-		      else if (xlt > 0) 
+		      else if (xlt > 0)
 			{
 			  nphb_tmp = min(nphb_tmp,xlt);
 			}
@@ -2613,7 +2613,7 @@ void csm_model::list_nparams(vector<char *> *npn, vector<Double_t> *nplb, vector
 	  else
 	    {
 	      (*nplb)[ifound] = max((*nplb)[ifound],nplb_tmp);
-	      (*nphb)[ifound] = min((*nphb)[ifound],nphb_tmp); 
+	      (*nphb)[ifound] = min((*nphb)[ifound],nphb_tmp);
 	      //cout << "sysname: " << cm->syserr[j].sysname << " reassigned ranges: " << nplb_tmp << " " << nphb_tmp <<  " " <<
 	      // (*nplb)[ifound] << " " << (*nphb)[ifound] << endl;
 	    }
@@ -2630,7 +2630,7 @@ void csm_model::list_nparams(vector<char *> *npn, vector<Double_t> *nplb, vector
 	  if (strcmp(npbname[k],(*npn)[j])==0)
 	    {
 	      (*nplb)[j] = max((*nplb)[j],npblow[k]);
-	      (*nphb)[j] = min((*nphb)[j],npbhigh[k]); 
+	      (*nphb)[j] = min((*nphb)[j],npbhigh[k]);
 	    }
 	}
     }
@@ -2656,7 +2656,7 @@ void csm_model::varysyst()
 
   for (i=0;i<(Int_t)npnp.size();i++)
     {
-      do 
+      do
 	{
           xval = gRandom->Gaus(0,1);
           //cout << i << " " << nplb[i] << " " << xval << " " << nphb[i] << endl;
@@ -2674,14 +2674,14 @@ void csm_model::print_nuisance_params()
   cout << "Nuisance parameter listing: " << endl;
   for (int i=0;i<(int) npnp.size();i++)
     {
-      cout << i << " " << npnp[i] << " " << npvalp[i] << endl; 
+      cout << i << " " << npnp[i] << " " << npvalp[i] << endl;
     }
 }
 
 /*----------------------------------------------------------------------------*/
 
 /* Generate a single pseudoexperiment from a model -- fluctuate all nuisance parameters
-   with their uncertainties -- the pseudodata histograms are in the same order as 
+   with their uncertainties -- the pseudodata histograms are in the same order as
    the channels in the model description, with the same binning assumed.  The psuedodata
    histograms should be allocated in the calling routine.  That way the histograms don't
    have to be continually created and destroyed for each pseudoexperiment but can be
@@ -2698,7 +2698,7 @@ void csm_model::single_pseudoexperiment(TH1 *pseudodata[])
   // call nuisance_response with random nuisance parameters
 
   varysyst();
- 
+
   // generate random pseudodata.  Randomly fluctuate the Poisson subsidiary
   // experiments (a "systematic effect") to figure out what the proper mean
   // is for the main experiment.
@@ -2708,7 +2708,7 @@ void csm_model::single_pseudoexperiment(TH1 *pseudodata[])
     {
       cm = chanmodel[ichan];
       nbinsx = cm->histotemplate[0]->GetNbinsX();
-      nbinsy = cm->histotemplate[0]->GetNbinsY(); 
+      nbinsy = cm->histotemplate[0]->GetNbinsY();
       for (ibinx=0;ibinx<nbinsx;ibinx++)
 	{
 	  for (ibiny=0;ibiny<nbinsy;ibiny++)
@@ -2718,14 +2718,14 @@ void csm_model::single_pseudoexperiment(TH1 *pseudodata[])
               for (itpl=0;itpl<ntemplates;itpl++)
 	        {
 	          ht = cm->histotemplate_varied[itpl];
-		  if (nbinsy == 1) 
+		  if (nbinsy == 1)
 		    { r = ht->GetBinContent(ibinx+1); }
 		  else
 		    { r = ht->GetBinContent(ibinx+1,ibiny+1); }
 	          if (cm->poissflag[itpl] == CSM_POISSON_BINERR)
 		    { r = gRandom->Poisson(r); }
 		  else if (cm->poissflag[itpl] == CSM_GAUSSIAN_BINERR)
-		    { 
+		    {
 		      double histerr,edraw;
 		      if (nbinsy==1)
 		        { histerr = ht->GetBinError(ibinx+1);}
@@ -2823,7 +2823,7 @@ Double_t mclimit_csm::weightratio(csm_model *nmodel, csm_model *dmodel, TH1 *his
 	}
     }
   // about the limit of exponentials
-  if (wr>680.) 
+  if (wr>680.)
     { wr = 680.; }
   wr = exp(wr);
   return(wr);
@@ -2877,7 +2877,7 @@ Double_t csm::chisquared()
 
   if (npns > 0)
     {
-      
+
       TMinuit *mnp = new TMinuit(npns+1);
 
       mnp->SetFCN(csm_minuit_fcn);
@@ -2888,8 +2888,8 @@ Double_t csm::chisquared()
           mnp->mnexcm("SET NOW",arglist,1,ierflag);
 	}
 
-      arglist[0] = 2; 
-      mnp->mnexcm("SET STRATEGY", arglist, 1, ierflag);	
+      arglist[0] = 2;
+      mnp->mnexcm("SET STRATEGY", arglist, 1, ierflag);
       mnp->mnexcm("SET NOG",arglist,1,ierflag);  // no gradiants required of FCN
 
 
@@ -2922,7 +2922,7 @@ Double_t csm::chisquared()
         }
 
       arglist[0] = 1;
-      mnp->mnexcm("SET ERR", arglist ,1,ierflag); 
+      mnp->mnexcm("SET ERR", arglist ,1,ierflag);
       ierflag = 0;
       arglist[0] = minuitmaxcalls;  // here's where maxcalls makes a difference
       arglist[1] = 1.;
@@ -2933,7 +2933,7 @@ Double_t csm::chisquared()
       mnp->mnexcm("MINI", arglist ,2,ierflag);
       mnp->mnexcm("IMPROVE", arglist ,2,ierflag);
 
-      if (minosflag) 
+      if (minosflag)
 	{
           arglist[0] = minosmaxcalls;
           mnp->mnexcm("MINOS",arglist,1,ierflag);
@@ -2958,13 +2958,13 @@ Double_t csm::chisquared()
       if (nfitcov != npns)
 	{
 	  if (fitcov != 0)
-	    { 
+	    {
 	      delete[] fitcov;
 	    }
 	  nfitcov = 0;
 	}
       if (nfitcov == 0)
-        { 
+        {
 	  fitcov = new Double_t[npns*npns];
 	  nfitcov = npns;
 	}
@@ -2988,7 +2988,7 @@ Double_t csm::chisquared()
       csm_minuit_fcn(i,0,cresult,0,0);
     }
   if (cresult < 0)
-    { 
+    {
       //cout << "chisquared less than zero: " << cresult << " setting it to zero" << endl;
       cresult = 0;
     }
@@ -3042,10 +3042,10 @@ csm_model::~csm_model()
 /*----------------------------------------------------------------------------*/
 
 void csm_model::add_template(TH1 *template_hist, //Poisson or non-Poisson histogram
-			     Double_t sf,        //scale factor to multiply template by to compare w/ data 
+			     Double_t sf,        //scale factor to multiply template by to compare w/ data
 			     //(e.g., (data_lum/MC_lum) for a MC Poisson histogram
 			     Int_t nnp,          // number of nuisance parameters (Gaussian of unit width)
-			     char* npname[],     // nuisance parameter names 
+			     char* npname[],     // nuisance parameter names
 			     Double_t *nps_low,  // fractional uncertainty on sf due to each nuisance parameter -- low side
 			     Double_t *nps_high, // fractional uncertainty on sf due to each nuisance parameter -- high side
 			     // typically nps_low and nps_high are input with opposite signs -- if opposite
@@ -3135,7 +3135,7 @@ void csm_model::add_npcons(Int_t nparin,char **parin, char *parout, Double_t (*f
       strcpy(s,parin[i]);
       if (strcmp(s,parout)==0)
 	{
-	  cout << "Constraint function for nuisance parameter: " << s 
+	  cout << "Constraint function for nuisance parameter: " << s
                << " depends on nuisance parameter " << s << endl;
 	  exit(0);
 	}
@@ -3159,7 +3159,7 @@ csm_model* csm_model::Clone()
   for (i=0;i < (Int_t) channame.size(); i++)
     {
       mclone->add_chanmodel(chanmodel[i],channame[i]);
-    } 
+    }
   for (i=0;i < (Int_t) npcm.size(); i++)
     {
       mclone->add_npcons(npcm[i].ninput,npcm[i].pnameinput,npcm[i].pnameoutput,npcm[i].f);
@@ -3322,7 +3322,7 @@ Int_t csm_model::lookup_add_channame(char *cname)
 {
   Int_t i,ifound,j,jfound;
   char *s;
-  csm_channel_model *cm; 
+  csm_channel_model *cm;
   vector<char*>::iterator cni;
   vector<csm_channel_model*>::iterator cmi;
 
@@ -3464,7 +3464,7 @@ void mclimit_csm::printsbd()
 	      cout << "DumpSBD: " << nsig << " " << nbkg << " " << nobs << endl;
 	    }
 	}
-    }  
+    }
 }
 
 
@@ -3490,7 +3490,7 @@ void csm_model::print()
   cout << "-------------------" << endl;
   for (i=0;i<(Int_t) npbname.size(); i++)
     {
-      cout << "NP Bounds.  Name, lowbound highbound: " << npbname[i] << " " << npblow[i] << " " << npbhigh[i] << endl; 
+      cout << "NP Bounds.  Name, lowbound highbound: " << npbname[i] << " " << npblow[i] << " " << npbhigh[i] << endl;
     }
 }
 
@@ -3529,7 +3529,7 @@ void csm_channel_model::print()
       cout << "  Scaled Integral: " << histotemplate[i]->Integral()*sft[i] << endl;
       cout << "  Scaled Integral with all syst: " << histotemplate_varied[i]->Integral()*sft_varied[i] << endl;
       cout << "  Template bbeta: " << (histotemplate_varied[i]->Integral()*sft_varied[i])/(histotemplate[i]->Integral()*sft[i]) << endl;
-      if (scaleflag[i]) 
+      if (scaleflag[i])
 	{
 	  ssum += histotemplate[i]->Integral()*sft[i];
 	  ssumv += histotemplate_varied[i]->Integral()*sft_varied[i];
@@ -3558,7 +3558,7 @@ void csm_channel_model::print()
 	      if (syserr[j].highshape != 0)
 		{
 		  hsi = syserr[j].highshape->Integral();
-		  cout << "  Up shape error provided sigma: " << syserr[j].xsighigh << 
+		  cout << "  Up shape error provided sigma: " << syserr[j].xsighigh <<
 		    " integral: " << hsi << endl;
 		  fracerr = (hsi-central_integral)/central_integral;
 		  cout << "    Fractional error due to the shape: " << fracerr << endl;
@@ -3569,7 +3569,7 @@ void csm_channel_model::print()
 	      if (syserr[j].lowshape != 0)
 		{
 		  hsl = syserr[j].lowshape->Integral();
-		  cout << "  Down shape error provided sigma: " << syserr[j].xsiglow << 
+		  cout << "  Down shape error provided sigma: " << syserr[j].xsiglow <<
 		    " integral: " << hsl << endl;
 
 		  fracerr = (hsl-central_integral)/central_integral;
@@ -3601,10 +3601,10 @@ void csm_channel_model::print()
 
 void csm_channel_model::add_template
 (const TH1Input& template_hist, //Poisson or non-Poisson histogram
- Double_t sf,        //scale factor to multiply template by to compare w/ data 
+ Double_t sf,        //scale factor to multiply template by to compare w/ data
  //(e.g., (data_lum/MC_lum) for a MC Poisson histogram
  Int_t nnp,          // number of nuisance parameters (Gaussian of unit width)
- char* npname[],     // nuisance parameter names 
+ char* npname[],     // nuisance parameter names
  Double_t *nps_low,  // fractional uncertainty on sf due to each nuisance parameter -- low side
  Double_t *nps_high, // fractional uncertainty on sf due to each nuisance parameter -- high side
  // typically nps_low and nps_high are input with opposite signs -- if opposite
@@ -4195,7 +4195,7 @@ void csm::set_htofit(TH1 *h, char *cname)
     }
   /* if the name isn't already in the list, add it to the vector of names and
      make a blank model for it too.  Put the new name in it sorted place, sorted
-     by increasing sort order of the name strings.  If the name is on the 
+     by increasing sort order of the name strings.  If the name is on the
      list, replace the existing data histogram with a clone of the one supplied. */
 
   if (ifound == -1)
@@ -4232,7 +4232,7 @@ csm_model* csm::getbestmodel()
   Int_t i;
 
   // make a local array of pointers to nuisance parameter names
-  
+
   char **fpnameloc = new char *[fitparamname.size()];
   for (i=0;i<(Int_t) fitparamname.size();i++)
     {
@@ -4327,7 +4327,7 @@ void csm_minuit_fcn(Int_t &npar, Double_t */*gin*/, Double_t &f, Double_t *par, 
   Int_t i;
 
   //adjust the model according to the nuisance paramters
-  
+
   char **fpnameloc = new char *[npfitname.size()];
   for (i=0;i<(Int_t) npfitname.size();i++)
     {
@@ -4349,7 +4349,7 @@ void csm_minuit_fcn(Int_t &npar, Double_t */*gin*/, Double_t &f, Double_t *par, 
 
   // Gaussian constraints for variables which are constrained.
 
-  for (i=0;i<npar;i++) 
+  for (i=0;i<npar;i++)
     {
       if (constrainedfitparam[i] != 0)
         {
@@ -4388,11 +4388,11 @@ void csm_channel_model::plotwithdata(TH1* dh)
     }
 
   TList *hlist = hs->GetHists();
-  TObjLink *lnk = hlist->LastLink();          
+  TObjLink *lnk = hlist->LastLink();
   while (lnk)
     {  slegend->AddEntry(lnk->GetObject(),lnk->GetObject()->GetName(),"F");
-    lnk = lnk->Prev();                       
-    }     
+    lnk = lnk->Prev();
+    }
   // make sure the plot is big enough to fit the data, the model stack,
   // and the data error bars with a little room to spare
   stackmax = hs->GetMaximum();
@@ -4472,7 +4472,7 @@ void csm_channel_model::candcheck(TH1 *dh)
 	      if (scaleflag[ic])
 		{
 		  hcs[ibinx][ibiny] += sft_varied[ic]*histotemplate_varied[ic]->GetBinContent(ibinx+1,ibiny+1);
-		  if (hcs[ibinx][ibiny] < 0) 
+		  if (hcs[ibinx][ibiny] < 0)
 		    {
 		      cout << "Negative signal expectation (" << ibinx+1 << "," << ibiny+1 << "):" << hcs[ibinx][ibiny] << endl;
 		    }
@@ -4480,7 +4480,7 @@ void csm_channel_model::candcheck(TH1 *dh)
 	      else
 		{
 		  hcb[ibinx][ibiny] += sft_varied[ic]*histotemplate_varied[ic]->GetBinContent(ibinx+1,ibiny+1);
-		  if (hcb[ibinx][ibiny] < 0) 
+		  if (hcb[ibinx][ibiny] < 0)
 		    {
 		      cout << "Negative background expectation (" << ibinx+1 << "," << ibiny+1 << "):" << hcb[ibinx][ibiny] << endl;
 		    }
@@ -4500,7 +4500,7 @@ void csm_channel_model::candcheck(TH1 *dh)
 	  dsum += dc;
 	  if (hcs[ibinx][ibiny]>0 && hcb[ibinx][ibiny]<=0)
 	    {
-	      cout << "Null background with expected signal: (" << ibinx+1 << "," << ibiny+1 
+	      cout << "Null background with expected signal: (" << ibinx+1 << "," << ibiny+1
                    << ") Cands: " << dc << " Signal: " << hcs[ibinx][ibiny] << endl;
 	    }
 	  else
@@ -4509,14 +4509,14 @@ void csm_channel_model::candcheck(TH1 *dh)
 		{
 		  if (hcs[ibinx][ibiny]<=0 && hcb[ibinx][ibiny]<=0)
 		    {
-		      cout << "Null background with observed candidate(s): (" << ibinx+1 << "," << ibiny+1 
+		      cout << "Null background with observed candidate(s): (" << ibinx+1 << "," << ibiny+1
 			   << ") Cands: " << dc << " Signal: " << hcs[ibinx][ibiny] << endl;
 		    }
 		  Double_t sbratio = hcs[ibinx][ibiny]/hcb[ibinx][ibiny];
 		  sumsb += dc*sbratio;
 		  if (sbratio>0.3)
 		    {
-		      cout << "High s/b candidate(s): (" << ibinx+1 << "," << ibiny+1 << ") cands: " << dc << " s/b: " << sbratio << 
+		      cout << "High s/b candidate(s): (" << ibinx+1 << "," << ibiny+1 << ") cands: " << dc << " s/b: " << sbratio <<
 			" s: " << hcs[ibinx][ibiny] << " b: " << hcb[ibinx][ibiny] << endl;
 		    }
 		}
@@ -4587,7 +4587,7 @@ void csm_model::plotwithdata(char* cname, TH1* dh)
 	}
     }
 }
- 
+
 /*------------------------------------------------------------------------*/
 
 // check candidates
@@ -4603,13 +4603,13 @@ void csm_model::candcheck(char* cname, TH1* dh)
 	}
     }
 }
- 
+
 /*------------------------------------------------------------------------*/
 
 double csm_model::kstest(char* cname, TH1* dh)
 {
   Int_t i;
-  double ksresult=0; 
+  double ksresult=0;
   for (i=0;i<(Int_t)channame.size();i++)
     {
       if (strcmp(cname,channame[i])==0)
@@ -4619,7 +4619,7 @@ double csm_model::kstest(char* cname, TH1* dh)
     }
   return(ksresult);
 }
- 
+
 /*------------------------------------------------------------------------*/
 
 double csm_model::kstest_px(char* cname, TH1* dh)
@@ -4635,13 +4635,13 @@ double csm_model::kstest_px(char* cname, TH1* dh)
     }
   return(ksresult);
 }
- 
+
 /*------------------------------------------------------------------------*/
 
 /* chisquared1 evaluates a chisquared function in the style of T. Devlin's CDF 3126, eq's 9 and 10
    The signal is a sum of signal contributions and the background is a sum of
-   background contributions.  This chisquared function is meant to be minimized 
-   with respect to the free nuisance parameters 
+   background contributions.  This chisquared function is meant to be minimized
+   with respect to the free nuisance parameters
 
    This version does one 1D or 2D histogram at a time.
 
@@ -4663,7 +4663,7 @@ double csm_model::kstest_px(char* cname, TH1* dh)
 
 
    input: TH1 *dh -- data histogram to compare the channel's model against
-            
+
    output:  chi squared, the function value.
 
    Update 5 July 2006 -- Reading Barlow and Beeston about bins with zero MC prediction in one
@@ -4674,7 +4674,7 @@ double csm_model::kstest_px(char* cname, TH1* dh)
    CSM_GAUSSIAN_BINERR (new feature) as if they were Poisson (i.e., no different terms in
    the likelihood function -- they're probably Poisson underneath anyhow, but more often, they
    are a complicated mixture of MC or data events with different weights, and all treatments
-   of them are approximations).  
+   of them are approximations).
 
 */
 
@@ -4714,12 +4714,12 @@ Double_t csm_channel_model::chisquared1(TH1 *dh)
       for (ibiny=0;ibiny<nbinsy;ibiny++)
         {
 	  if (nbinsy==1)
-	    { 
-	      dtb = max(0, (Int_t) nearbyint(dh->GetBinContent(ibinx+1))); 
+	    {
+	      dtb = max(0, (Int_t) nearbyint(dh->GetBinContent(ibinx+1)));
 	    }
 	  else
-	    { 
-	      dtb = max(0, (Int_t) nearbyint(dh->GetBinContent(ibinx+1,ibiny+1))); 	      
+	    {
+	      dtb = max(0, (Int_t) nearbyint(dh->GetBinContent(ibinx+1,ibiny+1)));
 	    }
 
           //cout << "In chi2calc: " << ibinx << " " << ibiny << " " << dtb << endl;
@@ -4732,14 +4732,14 @@ Double_t csm_channel_model::chisquared1(TH1 *dh)
 	      sfgp[ic] = 1.0;
 	      lpoissflag[ic] = poissflag[ic];
 	      if (nbinsy == 1)
-	        { 
-		  gbc = histotemplate_varied[ic]->GetBinContent(ibinx+1); 
-		  gbe = histotemplate_varied[ic]->GetBinError(ibinx+1); 
+	        {
+		  gbc = histotemplate_varied[ic]->GetBinContent(ibinx+1);
+		  gbe = histotemplate_varied[ic]->GetBinError(ibinx+1);
 		}
 	      else
 	        {
-		  gbc = histotemplate_varied[ic]->GetBinContent(ibinx+1,ibiny+1); 
-		  gbe = histotemplate_varied[ic]->GetBinError(ibinx+1,ibiny+1); 
+		  gbc = histotemplate_varied[ic]->GetBinContent(ibinx+1,ibiny+1);
+		  gbe = histotemplate_varied[ic]->GetBinError(ibinx+1,ibiny+1);
 		}
 	      if (poissflag[ic] == CSM_GAUSSIAN_BINERR && gbe == 0)
 		{ lpoissflag[ic] = CSM_NOBINERR; }
@@ -4763,7 +4763,7 @@ Double_t csm_channel_model::chisquared1(TH1 *dh)
 	          csum += gbc*sft_varied[ic];
 	        }
 	    }
-	  if (csum < 0) 
+	  if (csum < 0)
 	    { chi2 += 1E10; }
 
 	  /* solve for the rho's in each bin for each source of Poisson-estimated model rate
@@ -4774,8 +4774,8 @@ Double_t csm_channel_model::chisquared1(TH1 *dh)
 	  int haszero = 0;
           int im1=-1;
           double xm1=0;
-          for (ic=0;ic<nc;ic++) 
-	    { 
+          for (ic=0;ic<nc;ic++)
+	    {
 	      rho1[ic] = 0;
   	      rho2[ic] = 0;
 	      if (lpoissflag[ic] == CSM_POISSON_BINERR)
@@ -4787,12 +4787,12 @@ Double_t csm_channel_model::chisquared1(TH1 *dh)
 		  rho2[ic] = gbc*sft_varied[ic];
 		  rho1[ic] = rho2[ic];
 		  if (gbc == 0 || sft_varied[ic] == 0)
-		    { 
+		    {
 		      haszero = 1;
 		      zlist[ic] = 1;
 		      if (sft_varied[ic]>xm1)
-			{ 
-			  xm1 = sft_varied[ic]; 
+			{
+			  xm1 = sft_varied[ic];
 			  im1 = ic;
 			}
 		    }
@@ -4809,13 +4809,13 @@ Double_t csm_channel_model::chisquared1(TH1 *dh)
 
           for (iter=0;iter<CSM_MAXITER;iter++)
 	    {
-              for (ic=0;ic<nc;ic++) 
-                { 
+              for (ic=0;ic<nc;ic++)
+                {
 		  if (lpoissflag[ic] == CSM_POISSON_BINERR)
 		    {
 		      rho1[ic] = rho2[ic];
 		      if (zlist[ic] == 1)
-			{ 
+			{
 			  rho1[ic] = 0;
 			}
 		    }
@@ -4853,9 +4853,9 @@ Double_t csm_channel_model::chisquared1(TH1 *dh)
 	          if (lpoissflag[ic] == CSM_POISSON_BINERR)
 	            {
 	              if (fabs(rho1[ic]) < PREC1)
-		        { 
+		        {
 		          if (fabs(rho2[ic]-rho1[ic]) > PREC1)
-		            { 
+		            {
                               iprec = 1;
 		              break;
 		            }
@@ -4937,9 +4937,9 @@ Double_t csm_channel_model::chisquared1(TH1 *dh)
 		  if (c2cont > 0.0)
 		    //  if (ibinx == 9 && ibiny == 4)
 		    {
-		      cout << "in chi2calc: " << ibinx << " " << ibiny << " " << ic << " " << 
+		      cout << "in chi2calc: " << ibinx << " " << ibiny << " " << ic << " " <<
 			rho2[ic] << " " << sft_varied[ic] << " " << nsubs << " " << c2cont;
-		      if (c2cont>0.01) 
+		      if (c2cont>0.01)
 			{
 			  cout << "*" << endl;
 			}
@@ -4987,7 +4987,7 @@ Double_t csm_channel_model::chisquared1(TH1 *dh)
 			{ nsubs = sfgp[ic]*histotemplate_varied[ic]->GetBinContent(ibinx+1,ibiny+1); }
 
 		      /*
-			cout << "in chi2calc: " << ibinx << " " << ibiny << " " << ic << " " << 
+			cout << "in chi2calc: " << ibinx << " " << ibiny << " " << ic << " " <<
 			rho1[ic] << " " << sft_varied[ic] << " " << nsubs << " " sfgp[ic] << endl;
 		      */
 		      chi2b += (rho1[ic]*sfgp[ic]/sft_varied[ic] - nsubs);
@@ -5030,7 +5030,7 @@ Double_t csm_model::chisquared1(TH1 **dh)
 }
 
 /*------------------------------------------------------------------------*/
-//  Set the interpolation style for a particular channel.  Two methods    
+//  Set the interpolation style for a particular channel.  Two methods
 //  one for channel models, and one if you just have a pointer to a csm_model
 /*------------------------------------------------------------------------*/
 
@@ -5097,7 +5097,7 @@ void csm_pvmc(Int_t nb, Double_t *dist1, Double_t *dist2, Double_t *dist3, Doubl
 
   // parameter weights
 
-  if (par2 != par1) 
+  if (par2 != par1)
     {
       wta = 1. - (parn-par1)/(par2-par1);
       wtb = 1. + (parn-par2)/(par2-par1);
@@ -5112,7 +5112,7 @@ void csm_pvmc(Int_t nb, Double_t *dist1, Double_t *dist2, Double_t *dist3, Doubl
 
   //  if ( (parn>par1 && parn>par2) || (parn<par1 && parn<par2) )
   //  {
-  //    cout << "CSM_PVMC: Histogram Extrapolation: " << parn << 
+  //    cout << "CSM_PVMC: Histogram Extrapolation: " << parn <<
   //            " is not between " << par1 << " and " << par2 << endl;
   //  }
 
@@ -5130,7 +5130,7 @@ void csm_pvmc(Int_t nb, Double_t *dist1, Double_t *dist2, Double_t *dist3, Doubl
   for (i=0;i<nb;i++)
     {
       if (dist1[i] < 0)
-	{ 
+	{
 	  cout << "Negative bin entry found in dist1 in csm_pvmc" << endl;
 	  cout << i << " " << dist1[i] << endl;
 	  exit(0);
@@ -5146,7 +5146,7 @@ void csm_pvmc(Int_t nb, Double_t *dist1, Double_t *dist2, Double_t *dist3, Doubl
   for (i=0;i<nb;i++)
     {
       if (dist1[i] > 0)
-	{ 
+	{
 	  if (ifirst==1)
 	    {
 	      ifirst = 0;
@@ -5163,7 +5163,7 @@ void csm_pvmc(Int_t nb, Double_t *dist1, Double_t *dist2, Double_t *dist3, Doubl
   for (i=0;i<nb;i++)
     {
       if (dist2[i] < 0)
-	{ 
+	{
 	  cout << "Negative bin entry found in dist2 in csm_pvmc" << endl;
 	  cout << i << " " << dist2[i] << endl;
 	  exit(0);
@@ -5195,7 +5195,7 @@ void csm_pvmc(Int_t nb, Double_t *dist1, Double_t *dist2, Double_t *dist3, Doubl
   for (i=0;i<nb;i++)
     {
       if (dist3[i] < 0)
-	{ 
+	{
 	  cout << "Negative bin entry found in dist3 in csm_pvmc" << endl;
 	  cout << i << " " << dist3[i] << endl;
 	  exit(0);
@@ -5502,12 +5502,12 @@ void csm_pvmc(Int_t nb, Double_t *dist1, Double_t *dist2, Double_t *dist3, Doubl
 		  ydi[k2] = ydis[i-1] + ( (Double_t) k2  - xdis[i-1] )*
 		    (ydis[i]-ydis[i-1])/(xdis[i]-xdis[i-1]);
 #ifdef DEBUGPVMC
-		  cout << "filling bins: " << i << " " << k1 << " " << k2 << " " << ydi[k2] << endl; 
+		  cout << "filling bins: " << i << " " << k1 << " " << k2 << " " << ydi[k2] << endl;
 #endif
 
 		}
 	      k2last = k2;
-	    } 
+	    }
 	  if ( (Double_t) k2 > xdis[i] ) break;
 	}
       k1 = k2last;
@@ -5525,7 +5525,7 @@ void csm_pvmc(Int_t nb, Double_t *dist1, Double_t *dist2, Double_t *dist3, Doubl
   for (i=0;i<(nb);i++)
     {
       distn[i] = ydi[i+1] - ydi[i];
-      if (distn[i]<0) 
+      if (distn[i]<0)
 	{
 	  distn[i] = 0;
 	  //cout << "negative element in interpolated histo: " << i << " " << distn[i] << endl;
@@ -5537,7 +5537,7 @@ void csm_pvmc(Int_t nb, Double_t *dist1, Double_t *dist2, Double_t *dist3, Doubl
 /*------------------------------------------------------------------------*/
 
 
-/*  
+/*
     Re-coded version of d_pvmorph_2d from Alex Read.  C version from Tom Junk
     Added feature of compounding shape variations as systematic errors.
     February 2007
@@ -5575,7 +5575,7 @@ void csm_pvmc(Int_t nb, Double_t *dist1, Double_t *dist2, Double_t *dist3, Doubl
 
 //#define DEBUGPVMC2D
 
-void csm_pvmc2d(Int_t nx, Int_t ny, Double_t *xydist1, 
+void csm_pvmc2d(Int_t nx, Int_t ny, Double_t *xydist1,
                 Double_t *xydist2, Double_t *xydist3, Double_t *xydistn,
                 Double_t par1, Double_t par2, Double_t parn)
 {
@@ -5590,7 +5590,7 @@ void csm_pvmc2d(Int_t nx, Int_t ny, Double_t *xydist1,
   csm_yproj(nx,ny,xydist2,ydist2);
   csm_yproj(nx,ny,xydist3,ydist3);
 
-  // Interpolate the y-projections 
+  // Interpolate the y-projections
 
   csm_pvmc(ny,ydist1,ydist2,ydist3,ydistn,par1,par2,parn);
 
@@ -5660,7 +5660,7 @@ void csm_yproj(Int_t nx, Int_t ny, Double_t *xydist, Double_t *ydist)
 	{
           ydist[i] += xydist[j+nx*i];
 	}
-      total += ydist[i]; 
+      total += ydist[i];
     }
 
   if (total>0)
@@ -5680,7 +5680,7 @@ void csm_yproj(Int_t nx, Int_t ny, Double_t *xydist, Double_t *ydist)
   of the interpolated scatterplot on the y-axis. This routine determines
   which bins of <ydist1> and <ydist2> and <ydist3>
   contribute and by what amount to
-  each bin of <ydistn>. This information is used in csm_pvmc2d to 
+  each bin of <ydistn>. This information is used in csm_pvmc2d to
   determine the input distributions in the x-direction of each
   y-bin: these are then interpolated and accumulated in the interpolated
   2d distribution.
@@ -5702,7 +5702,7 @@ void csm_ycont(Int_t ny, Double_t *ydist1, Double_t *ydist2,
   Int_t i;
 
   // Make arrays to describe the straight-line approximations
-  // to the four cumulative distributions, y1,y2,y3,yn 
+  // to the four cumulative distributions, y1,y2,y3,yn
   // Make sure to start out with a point at 0
 
   yn[0] = 0;
@@ -5718,7 +5718,7 @@ void csm_ycont(Int_t ny, Double_t *ydist1, Double_t *ydist2,
     {
       cout << "getting alpha1: " << i << " " << y[i] << " " << yn[i] << endl;
     }
-  Int_t j; 
+  Int_t j;
   for (i=0;i<ny;i++)
     {
       for (j=0;j<ny;j++)
@@ -5726,7 +5726,7 @@ void csm_ycont(Int_t ny, Double_t *ydist1, Double_t *ydist2,
 	  cout << i << " " << j << " " << alpha1[i+ny*j] << endl;
 	}
     }
-  
+
 #endif
 
   y[0] = 0;
@@ -5762,7 +5762,7 @@ void csm_ycontaux(Int_t ny, Double_t *y, Double_t *yn,
 	    {
 	      // first case -- contributing bin entirely contained
 	      // within the interpolated output bin.
-	      if (y[j]>=yn[i] && y[j]<yn[i+1] && 
+	      if (y[j]>=yn[i] && y[j]<yn[i+1] &&
 		  y[j+1]>=yn[i] && y[j+1]<yn[i+1])
 		{
 		  alpha[j+ny*i] = 1;
@@ -5789,10 +5789,10 @@ void csm_ycontaux(Int_t ny, Double_t *y, Double_t *yn,
 		}
 	      // non-overlapping case -- do nothing.
 	      // save some time if we're beyond the edge
-	      if (y[j]>yn[i+1]) break; 
+	      if (y[j]>yn[i+1]) break;
 	    }
 	}
-    } 
+    }
 }
 
 // Integrate and normalize a vector -- pretty much the same as
@@ -5899,7 +5899,7 @@ void mclimit_csm::bayes_heinrich_withexpect(Double_t beta,
 	      ibin++;
 	    }
 	}
-    }  
+    }
 
   // The prior ensemble is constructed in the same way mclimit_csm does pseudoexperiments
 
@@ -5929,7 +5929,7 @@ void mclimit_csm::bayes_heinrich_withexpect(Double_t beta,
 		      if (cm->poissflag[itpl] == CSM_POISSON_BINERR)
 			{ r = gRandom->Poisson(r); }
 		      else if (cm->poissflag[itpl] == CSM_GAUSSIAN_BINERR)
-			{ 
+			{
 			  double histerr,edraw;
 			  if (nbinsy==1)
 			    { histerr = ht->GetBinError(j+1);}
@@ -6051,13 +6051,13 @@ void mclimit_csm::bayes_heinrich_withexpect(Double_t beta,
 		  ibin++;
                 }
             }
-        } 
+        }
     }
   TMath::Sort(npx,nobstotlist,nobsindex,kTRUE);
 
   if (nglmax < nobstotlist[nobsindex[0]]/2 + 1)
     {
-      nglmax = nobstotlist[nobsindex[0]]/2 + 1; 
+      nglmax = nobstotlist[nobsindex[0]]/2 + 1;
       delete[] xgl;
       delete[] lwgl;
       xgl = new double[nglmax];
@@ -6072,7 +6072,7 @@ void mclimit_csm::bayes_heinrich_withexpect(Double_t beta,
 	{
           if (ipx>0)
 	    { if (nobstotlist[nobsindex[ipx]] != nobstotlist[nobsindex[ipx-1]])
-	      { 
+	      {
 	        ngl = 0;
 	      }
 	    }
@@ -6123,35 +6123,35 @@ void mclimit_csm::bayes_heinrich_withexpect(Double_t beta,
     }
   std::sort(cslist.begin(),cslist.end());
   i =  (Int_t) nearbyint(npx*MCLIMIT_CSM_MCLM2S);
-  if (i<0) 
+  if (i<0)
     { i=0; }
   if (i>npx-1)
     { i=npx-1; }
   *sm2 = cslist[i];
 
   i =  (Int_t) nearbyint(npx*MCLIMIT_CSM_MCLM1S);
-  if (i<0) 
+  if (i<0)
     { i=0; }
   if (i>npx-1)
     { i=npx-1; }
   *sm1 = cslist[i];
 
   i =  (Int_t) nearbyint(npx*MCLIMIT_CSM_MCLMED);
-  if (i<0) 
+  if (i<0)
     { i=0; }
   if (i>npx-1)
     { i=npx-1; }
   *smed = cslist[i];
 
   i =  (Int_t) nearbyint(npx*MCLIMIT_CSM_MCLP1S);
-  if (i<0) 
+  if (i<0)
     { i=0; }
   if (i>npx-1)
     { i=npx-1; }
   *sp1 = cslist[i];
 
   i =  (Int_t) nearbyint(npx*MCLIMIT_CSM_MCLP2S);
-  if (i<0) 
+  if (i<0)
     { i=0; }
   if (i>npx-1)
     { i=npx-1; }
@@ -6237,7 +6237,7 @@ void mclimit_csm::bayes_heinrich(Double_t beta,
 	      ibin++;
 	    }
 	}
-    }  
+    }
 
   // The prior ensemble is constructed in the same way mclimit_csm does pseudoexperiments
 
@@ -6267,7 +6267,7 @@ void mclimit_csm::bayes_heinrich(Double_t beta,
 		      if (cm->poissflag[itpl] == CSM_POISSON_BINERR)
 			{ r = gRandom->Poisson(r); }
 		      else if (cm->poissflag[itpl] == CSM_GAUSSIAN_BINERR)
-			{ 
+			{
 			  double histerr,edraw;
 			  if (nbinsy==1)
 			    { histerr = ht->GetBinError(j+1);}
@@ -6355,8 +6355,8 @@ void mclimit_csm::bayes_heinrich(Double_t beta,
 // run pseudoexperiments based on null_hypothesis_pe and call
 // bayeslimit_mcmc1 for each one
 
-void mclimit_csm::bayeslimit_mcmc1_expect(double beta, PRIOR prior, int npx, 
-					  double *sm2, double *sm1, double *smed, 
+void mclimit_csm::bayeslimit_mcmc1_expect(double beta, PRIOR prior, int npx,
+					  double *sm2, double *sm1, double *smed,
 					  double *sp1, double *sp2)
 {
   vector<double> clist;
@@ -6382,12 +6382,12 @@ void mclimit_csm::bayeslimit_mcmc1_expect(double beta, PRIOR prior, int npx,
     {
       null_hypothesis_pe->single_pseudoexperiment(pdarray);
       double slimit = bayeslimit_mcmc1(beta, prior);
-      if (pxprintflag) cout << "bayespx: " << slimit << endl; 
+      if (pxprintflag) cout << "bayespx: " << slimit << endl;
       clist.push_back(slimit);
     }
 
   std::sort(clist.begin(),clist.end());
-  int i =  max(0, min(npx-1, (int) nearbyint(npx*MCLIMIT_CSM_MCLM2S))); 
+  int i =  max(0, min(npx-1, (int) nearbyint(npx*MCLIMIT_CSM_MCLM2S)));
   *sm2 = clist[i];
   i =  max(0, min(npx-1, (int) nearbyint(npx*MCLIMIT_CSM_MCLM1S)));
   *sm1 = clist[i];
@@ -6404,7 +6404,7 @@ void mclimit_csm::bayeslimit_mcmc1_expect(double beta, PRIOR prior, int npx,
   delete[] dhsavearray;
 }
 
-// Expected Asimov 1D limits -- set the pseudodata to be the sum of the backgrounds (not 
+// Expected Asimov 1D limits -- set the pseudodata to be the sum of the backgrounds (not
 // an integer anymore) and compute an observed limit.  Found to correspond closely to the
 // median expected limit.  No need to define data histograms when computing asimov limits --
 // just need to define nullhyp_pe -- the predictions used to set the simulated data, and
@@ -6441,20 +6441,20 @@ double mclimit_csm::bayeslimit_mcmc1_expect_asimov(double beta, PRIOR prior, TSt
       csm_channel_model *cm = null_hypothesis_pe->chanmodel[i];
       int ntemplates = cm->histotemplate.size();
       double dtmp;
-      for (int itpl=0;itpl<ntemplates;itpl++) 
+      for (int itpl=0;itpl<ntemplates;itpl++)
 	{
 	  for (int ibinx=0;ibinx<nbinsx;ibinx++)
 	    {
 	      for (int ibiny=0;ibiny<nbinsy;ibiny++)
 		{
-		  if (nbinsy==1) 
-		    { 
+		  if (nbinsy==1)
+		    {
 		      dtmp = datahist[i]->GetBinContent(ibinx+1);
 		      dtmp += cm->histotemplate[itpl]->GetBinContent(ibinx+1)*cm->sft[itpl];
 		      datahist[i]->SetBinContent(ibinx+1,dtmp);
 		    }
 		  else
-		    { 
+		    {
 		      dtmp = datahist[i]->GetBinContent(ibinx+1,ibiny+1);
 		      dtmp += cm->histotemplate[itpl]->GetBinContent(ibinx+1,ibiny+1)*cm->sft[itpl];
 		      datahist[i]->SetBinContent(ibinx+1,ibiny+1,dtmp);
@@ -6475,7 +6475,7 @@ double mclimit_csm::bayeslimit_mcmc1_expect_asimov(double beta, PRIOR prior, TSt
 
 
 
-// Expected Asimov 1D cross section -- set the pseudodata to be the sum of the signals + backgrounds (not 
+// Expected Asimov 1D cross section -- set the pseudodata to be the sum of the signals + backgrounds (not
 // an integer anymore) and compute an observed cross section and uncertainty.
 //  No need to define data histograms when computing asimov cross sections --
 // just need to define testhyp -- the predictions used to set the simulated data, and
@@ -6483,7 +6483,7 @@ double mclimit_csm::bayeslimit_mcmc1_expect_asimov(double beta, PRIOR prior, TSt
 
 // input arguments -- same as xsfit_mcmc1 except you don't get to choose to force data to be an integer
 
-void mclimit_csm::xsfit_mcmc1_expect_asimov(double *xsfit, double *downerr, double *uperr, TH1F *xsfit1dposterior, 
+void mclimit_csm::xsfit_mcmc1_expect_asimov(double *xsfit, double *downerr, double *uperr, TH1F *xsfit1dposterior,
                               TString histoutfile, bool dumpsfp)
 {
   int nchans = test_hypothesis->channame.size();
@@ -6515,20 +6515,20 @@ void mclimit_csm::xsfit_mcmc1_expect_asimov(double *xsfit, double *downerr, doub
       csm_channel_model *cm = test_hypothesis->chanmodel[i];
       int ntemplates = cm->histotemplate.size();
       double dtmp;
-      for (int itpl=0;itpl<ntemplates;itpl++) 
+      for (int itpl=0;itpl<ntemplates;itpl++)
 	{
 	  for (int ibinx=0;ibinx<nbinsx;ibinx++)
 	    {
 	      for (int ibiny=0;ibiny<nbinsy;ibiny++)
 		{
-		  if (nbinsy==1) 
-		    { 
+		  if (nbinsy==1)
+		    {
 		      dtmp = datahist[i]->GetBinContent(ibinx+1);
 		      dtmp += cm->histotemplate[itpl]->GetBinContent(ibinx+1)*cm->sft[itpl];
 		      datahist[i]->SetBinContent(ibinx+1,dtmp);
 		    }
 		  else
-		    { 
+		    {
 		      dtmp = datahist[i]->GetBinContent(ibinx+1,ibiny+1);
 		      dtmp += cm->histotemplate[itpl]->GetBinContent(ibinx+1,ibiny+1)*cm->sft[itpl];
 		      datahist[i]->SetBinContent(ibinx+1,ibiny+1,dtmp);
@@ -6548,7 +6548,7 @@ void mclimit_csm::xsfit_mcmc1_expect_asimov(double *xsfit, double *downerr, doub
 }
 
 
-// Expected Asimov 2D cross section -- set the pseudodata to be the sum of the signals + backgrounds (not 
+// Expected Asimov 2D cross section -- set the pseudodata to be the sum of the signals + backgrounds (not
 // an integer anymore) and compute the 2D posterior and return the same values ans xsfit2d
 //  No need to define data histograms when computing asimov cross sections --
 // just need to define testhyp -- the predictions used to set the simulated data, and
@@ -6587,20 +6587,20 @@ void mclimit_csm::xsfit_2d_mcmc1_expect_asimov(double *xs1, double *xs2, TH2F *x
       csm_channel_model *cm = test_hypothesis->chanmodel[i];
       int ntemplates = cm->histotemplate.size();
       double dtmp;
-      for (int itpl=0;itpl<ntemplates;itpl++) 
+      for (int itpl=0;itpl<ntemplates;itpl++)
 	{
 	  for (int ibinx=0;ibinx<nbinsx;ibinx++)
 	    {
 	      for (int ibiny=0;ibiny<nbinsy;ibiny++)
 		{
-		  if (nbinsy==1) 
-		    { 
+		  if (nbinsy==1)
+		    {
 		      dtmp = datahist[i]->GetBinContent(ibinx+1);
 		      dtmp += cm->histotemplate[itpl]->GetBinContent(ibinx+1)*cm->sft[itpl];
 		      datahist[i]->SetBinContent(ibinx+1,dtmp);
 		    }
 		  else
-		    { 
+		    {
 		      dtmp = datahist[i]->GetBinContent(ibinx+1,ibiny+1);
 		      dtmp += cm->histotemplate[itpl]->GetBinContent(ibinx+1,ibiny+1)*cm->sft[itpl];
 		      datahist[i]->SetBinContent(ibinx+1,ibiny+1,dtmp);
@@ -6625,7 +6625,7 @@ void mclimit_csm::xsfit_2d_mcmc1_expect_asimov(double *xs1, double *xs2, TH2F *x
 //  Uses testhyp_pe as the model to test
 //-------------------------------------------------------------------------
 // 1D limits: all arguments are optional
-// Beta is the credibility level desired for the limits -- the default is 0.95. 
+// Beta is the credibility level desired for the limits -- the default is 0.95.
 // prior is Joel and Luc's correlated prior "corr" or a flat prior "flat".  Default: "corr"
 // and the histoutfile name is for posterior histograms of the signal scale factor and each nuisance parameter
 // rearrange code April 5, 2011.  Limit and cross section code all calls the same routine, for less
@@ -6639,7 +6639,7 @@ double mclimit_csm::bayeslimit_mcmc1(double beta, PRIOR prior, TString histoutfi
   double sflimit;
 
   // put in the defaults for the call to mcmc1 as we need to change forcedatatobeinteger
-  
+
   mcmc1(limit1d,beta,prior,histoutfile,&sflimit,
 	0,0,0,dumpsfp,0,0,0,0,0,0,forcedatatobeinteger);
 
@@ -6647,7 +6647,7 @@ double mclimit_csm::bayeslimit_mcmc1(double beta, PRIOR prior, TString histoutfi
 }
 
 // compute the average L and take -2ln of it -- an alternative to fitting. Use testhyp_pe.  Arguments are optional.
- 
+
 double mclimit_csm::minustwolnLavg_mcmc1(TString histoutfile, PRIOR prior)
 {
   double avg2lnL;
@@ -6729,7 +6729,7 @@ double mclimit_csm::nullpe_testpe_pseudoexperiment(int ipx)
    return(c2val);
 }
 
-void mclimit_csm::xsfit_mcmc1(double *xsfit, double *downerr, double *uperr, TH1F *xsfit1dposterior, 
+void mclimit_csm::xsfit_mcmc1(double *xsfit, double *downerr, double *uperr, TH1F *xsfit1dposterior,
                               TString histoutfile, bool dumpsfp, bool forcedatatobeinteger)
 {
   mcmc1(xsfit1d,0.95,flat,histoutfile,0,xsfit,downerr,uperr,dumpsfp,0,0,xsfit1dposterior,0,0,0,forcedatatobeinteger);
@@ -6744,7 +6744,7 @@ void mclimit_csm::xsfit_2d_mcmc1(double *xs1, double *xs2, TH2F *xs2dposterior, 
 // from each one using testhyp_pe  Get expected values.  Print out each pseudoexperiment's fit values
 // and uncertainties if requested.
 
-void mclimit_csm::xsfit_mcmc1_expect(Int_t npx, Double_t *xsfitavg, Double_t *m2s, 
+void mclimit_csm::xsfit_mcmc1_expect(Int_t npx, Double_t *xsfitavg, Double_t *m2s,
                                      Double_t *m1s, Double_t *med, Double_t *p1s, Double_t *p2s, TH1F *xs1dposterior)
 {
   vector<double> xslist;
@@ -6780,13 +6780,13 @@ void mclimit_csm::xsfit_mcmc1_expect(Int_t npx, Double_t *xsfitavg, Double_t *m2
       xslist.push_back(xsfit);
       *xsfitavg += xsfit;
     }
-  if (xslist.size()>0) 
+  if (xslist.size()>0)
     {
       *xsfitavg /= xslist.size();
     }
 
   std::sort(xslist.begin(),xslist.end());
-  int i =  max(0, min(npx-1, (int) nearbyint(npx*MCLIMIT_CSM_MCLM2S))); 
+  int i =  max(0, min(npx-1, (int) nearbyint(npx*MCLIMIT_CSM_MCLM2S)));
   *m2s = xslist[i];
   i =  max(0, min(npx-1, (int) nearbyint(npx*MCLIMIT_CSM_MCLM1S)));
   *m1s = xslist[i];
@@ -6834,8 +6834,8 @@ void mclimit_csm::xsfit_2d_mcmc1_expect(int npx, TH2F *xs2dposterior)
       cout << "Two-Dimensional Maximum Posterior px: " << sf1fit << " " << sf2fit << endl;
     }
 
-  for (i=0;i<nchans; i++) 
-    { 
+  for (i=0;i<nchans; i++)
+    {
       datahist[i] = dhsavearray[i];
       delete pdarray[i];
     }
@@ -6850,7 +6850,7 @@ void mclimit_csm::xsfit_2d_mcmc1_expect(int npx, TH2F *xs2dposterior)
 // background fit histogram are the posterior uncertainties on the best-fit background predictions.
 // The uncertainties are not meaningful for the sighist and datahist.  Suggestion:  When plotting
 // the background-subtracted fit, plot sqrt(bg) on the data-bg points, and show the bg systematics
-// and the signal total on the same plot.  See Fig. 1 of Phys.Rev.Lett. 104 (2010) 061802 
+// and the signal total on the same plot.  See Fig. 1 of Phys.Rev.Lett. 104 (2010) 061802
 // http://arxiv.org/abs/arXiv:1001.4162 for an example.
 
 // This routine makes a uniformly-binned TProfile version of the bgfit histogram, and assumes
@@ -6942,17 +6942,17 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 
   int nnpce = 0;
 
-  for (int i=0;i<nnptot;i++) 
-    { 
-      npvalues[i] = 0; 
+  for (int i=0;i<nnptot;i++)
+    {
+      npvalues[i] = 0;
       npunconstrained[i] = false;
       if (strstr(npnames[i],"UNCONSTRAINED") != 0) npunconstrained[i] = true;
       int npce = test_hypothesis_pe->npcm.size();
       npconsflag[i] = false;
       for (int j=0;j<npce;j++)
-	{ if (strcmp(npnames[i],test_hypothesis_pe->npcm[j].pnameoutput)==0) 
-	  {  
-	    npconsflag[i] = true; 
+	{ if (strcmp(npnames[i],test_hypothesis_pe->npcm[j].pnameoutput)==0)
+	  {
+	    npconsflag[i] = true;
 	    nnpce++;
 	  }
 	}
@@ -7007,14 +7007,14 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 	}
       totcount = new TH1D("totcount","totcount",3,-0.5,2.5);
     }
-    
+
   double llf = 0;
 
   // first-time through initialization
   // first time through use default nuisance parameter values, and a signal scale factor of 1.0, except when
   // doing a background-only fit.
 
-  test_hypothesis_pe->undo_nuisance_response();  
+  test_hypothesis_pe->undo_nuisance_response();
   if (action == bgfitplot) { ssf=0; ssf2=0; }
   llf = bayesmcmcllf(test_hypothesis_pe,nnptot,npvalues,npunconstrained,npconsflag,
 		     nperrtot,pnpvalues,ssf,ssf,prior,forcedatatobeinteger);
@@ -7060,8 +7060,8 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 		  if (b>0)
 		    {
 		      ibin = 1;  // collect s=0 bins into s/b bin 1.
-		      if (s>0) 
-			{ 
+		      if (s>0)
+			{
 			  double sbln = log10(s/b);
 			  ibin = dhp->FindBin(sbln);
 			  ibin = max(1,min(dhp->GetNbinsX(),ibin));  // do not use underflow or overflow bins.
@@ -7077,7 +7077,7 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 
   // at the default values of the nuisance parameters, explore along the signal scale factor axis
   // so we can set the signal scale appropriately.
-  // do a scan over six orders of magnitude, in 80 steps.  
+  // do a scan over six orders of magnitude, in 80 steps.
   // do the signal scale factor separately -- need at least one for all cases, and a second one
   // for the 2D cross section fit.   Variable names are used twice, so declare them within their own blocks
   // just to be safe.  Skip the signal scaling if we are doing a background fit.
@@ -7096,7 +7096,7 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 	  if (action == xsfit2d) esf2 = 1.0;  // do second scale factor separately below
 	  double llftest = bayesmcmcllf(test_hypothesis_pe,nnptot,npvalues,npunconstrained,npconsflag,
 					nperrtot,pnpvalues,esf,esf2,prior,forcedatatobeinteger);
-	  if (isf == -40 || llftest > lmx) 
+	  if (isf == -40 || llftest > lmx)
 	    {
 	      imx = isf;
 	      lmx = llftest;
@@ -7149,7 +7149,7 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 	  double esf = 1;
 	  double llftest = bayesmcmcllf(test_hypothesis_pe,nnptot,npvalues,npunconstrained,npconsflag,
 					nperrtot,pnpvalues,esf,esf2,prior,forcedatatobeinteger);
-	  if (isf == -40 || llftest > lmx) 
+	  if (isf == -40 || llftest > lmx)
 	    {
 	      imx = isf;
 	      lmx = llftest;
@@ -7201,7 +7201,7 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 	  vmin += dv/100.0;
 	  vmax -= dv/100.0;
 
-	  for (double v=vmin; v<vmax; v += dv)  
+	  for (double v=vmin; v<vmax; v += dv)
 	    // three highest points
 	    {
 	      if (v>nplb[i] && v<nphb[i])
@@ -7224,7 +7224,7 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 			{
 			  if (llft[k1]<llft[imin]) imin=k1;
 			}
-		      if (llft1>llft[imin]) 
+		      if (llft1>llft[imin])
 			{
 			  llft[imin] = llft1;
 			  slf[imin] = v;
@@ -7307,7 +7307,7 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 
   for (int isample=0; isample<nmc_req; isample++)
     {
-      if (action == bgfitplot) 
+      if (action == bgfitplot)
 	{ for (int ibin=0;ibin<nbinslnsb;ibin++) bgfa[ibin] = 0; }
 
       // the Metropolis-Hastings proposal function -- Gaussians for the nuisance parameters,
@@ -7319,7 +7319,7 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 	{
 	  if (!npconsflag[i])
 	    {
-	      do 
+	      do
 		{
 		  proposed_npvalues[i] = npvalues[i] + gRandom->Gaus(0,1)*npresolutions[i]/stotdim;
 		  //cout << "proposed npvalue: " << proposed_npvalues[i] << endl;
@@ -7339,7 +7339,7 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
       // predictions from going negative
 
       // We also use this work to compute background sums for the bg fit plot
- 
+
       int inp = 0;
       int igbin = 0;
       double proposed_bbcorr = 0;
@@ -7355,21 +7355,21 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 		  double b=0;
 		  int ntemplates = cm->histotemplate.size();
 		  for (int itpl = 0; itpl < ntemplates; itpl++)
-		    { 
-		      if (cm->poissflag[itpl] != 0) 
+		    {
+		      if (cm->poissflag[itpl] != 0)
 			{
 			  double rtmp = 0;
 			  double dr=0;
 			  if (nbinsy == 1) rtmp = cm->histotemplate_varied[itpl]->GetBinContent(j+1);
 			  else  rtmp = cm->histotemplate_varied[itpl]->GetBinContent(j+1,k+1);
 
-			  if (cm->poissflag[itpl] == CSM_POISSON_BINERR) 
+			  if (cm->poissflag[itpl] == CSM_POISSON_BINERR)
 			    {
 			      if (nbinsy == 1) dr = cm->histotemplate_varied[itpl]->GetBinContent(j+1);
 			      else dr = cm->histotemplate_varied[itpl]->GetBinContent(j+1,k+1);
 			      if (dr>0) dr = sqrt(dr);
 			    }
-			  if (cm->poissflag[itpl] == CSM_GAUSSIAN_BINERR) 
+			  if (cm->poissflag[itpl] == CSM_GAUSSIAN_BINERR)
 			    {
 			      if (nbinsy == 1) dr = cm->histotemplate_varied[itpl]->GetBinError(j+1);
 			      else dr = cm->histotemplate_varied[itpl]->GetBinError(j+1,k+1);
@@ -7381,13 +7381,13 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 			      rte = rtmp + dr*proposed_pnpvalues[inp];
 			      if (rte>=0) break;
 			    }
-			  if (rte<0) 
-			    { 
+			  if (rte<0)
+			    {
 			      if (dr>0) proposed_pnpvalues[inp] = -rtmp/dr + 1E-6; // zero but push a tiny amount so we don't
 			      // stop in the llf function
 			      else proposed_pnpvalues[inp]=0;
-			    } 
-			  if (dr>0) proposed_bbcorr -= log( 0.5*(1.0 + erf(rtmp/((dr/stotdimp)*sqrt(2.0)))));  
+			    }
+			  if (dr>0) proposed_bbcorr -= log( 0.5*(1.0 + erf(rtmp/((dr/stotdimp)*sqrt(2.0)))));
 			  inp++;
 			  if (cm->scaleflag[itpl] == 0) b += rte*cm->sft_varied[itpl];
 			}
@@ -7452,7 +7452,7 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 	{
 	  if (!npunconstrained[i] && !npconsflag[i])
 	    {
-	      proposed_llf -= log( 0.5*( erf((nphb[i]-proposed_npvalues[i])/(sqrt(2.0)/(stotdim/npresolutions[i]))) - 
+	      proposed_llf -= log( 0.5*( erf((nphb[i]-proposed_npvalues[i])/(sqrt(2.0)/(stotdim/npresolutions[i]))) -
 					 erf((nplb[i]-proposed_npvalues[i])/(sqrt(2.0)/(stotdim/npresolutions[i]))) ) );
 	    }
 	}
@@ -7468,7 +7468,7 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 	  pratio = exp(dllf);
 	}
       double ur = gRandom->Uniform(1.0);
-      if (ur < pratio || isample == 0)  // always accept the first one just to baseline llf 
+      if (ur < pratio || isample == 0)  // always accept the first one just to baseline llf
 	{
 	  itest = 1;
 	  ssf = proposed_ssf;
@@ -7486,8 +7486,8 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 		  bgfit->Fill(bgfit->GetXaxis()->GetBinCenter(i),bgfa[i]);
 		}
 	    }
-	  if (totcount) 
-	    { 
+	  if (totcount)
+	    {
 	      totcount->Fill(1);
 	      if (itest==1) totcount->Fill(2);
 	    }
@@ -7523,7 +7523,7 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 	  if (iadcount >= accept_interval)
 	    {
 	      double acceptrate = ((double) iaccept_count)/((double) iadcount);
-	      if (acceptrate>accept_high) 
+	      if (acceptrate>accept_high)
 		{
 		  stotdim /= dimscale;
 		  stotdims /= dimscale;
@@ -7580,7 +7580,7 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
   double ssf1max=0;
   double ssf2min=0;
   double ssf2max=0;
-  if (action == xsfit1d || action == limit1d) 
+  if (action == xsfit1d || action == limit1d)
     {
       std::sort(ssflist.begin(),ssflist.end());
       ssf1max = ssflist.back();
@@ -7590,8 +7590,8 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
     {
       int nssf1list = ssflist.size();
       for (int i=0;i<nssf1list;i++)
-	{ 
-	  ssf1max = max(ssf1max,ssflist[i]); 
+	{
+	  ssf1max = max(ssf1max,ssflist[i]);
 	  if (i==0) ssf1min = ssflist[i];
 	  else ssf1min = min(ssf1min,ssflist[i]);
 	}
@@ -7601,7 +7601,7 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
       ssf2min = 0;
     }
   if (ssf1max <= ssf1min) ssf1max = 1+ssf1min;  // just to have a nontrivial 2d histogram
-  if (ssf2max <= ssf2min) ssf2max = 1+ssf2min; 
+  if (ssf2max <= ssf2min) ssf2max = 1+ssf2min;
   TH2F local2dposteriorh("mcmc1_2dpost","mcmc1_2dpost",50,0,ssf1max,50,0,ssf2max);
   TH2F *local2dposterior = &local2dposteriorh;
   if (action == xsfit2d)
@@ -7624,7 +7624,7 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
   // Use the list of signal points visited by the Markov Chain to compute a limit at CL=beta
 
   if ( action == limit1d && sflimit != 0 )
-    { 
+    {
       // find the beta quantile of ssflist (already sorted)
       int idx = (int) nearbyint(beta*ssflist.size());
       idx = min(ssflist.size()-1,max(0,idx));
@@ -7653,7 +7653,7 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
   // up and down uncertainties.
 
   // Aug 2, 2011: Look beyond the current trial to the left or to the right for the biggest
-  // bin content.  Always add not the largest bin content but the bin in the direction 
+  // bin content.  Always add not the largest bin content but the bin in the direction
   // that moves towards the largest bin content.  This protects against a hang that happens
   // if we have empty bins and does something sensible in the case of fluctuating histogram
   // entries.
@@ -7684,9 +7684,9 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 	    { mhigh = max(mhigh,local1dposterior->GetBinContent(j)); }
 
 	  if (mlow>mhigh)
-	    { 
+	    {
 	      ilow --;
-	      ibest = ilow; 
+	      ibest = ilow;
 	    }
 	  else
 	    {
@@ -7696,8 +7696,8 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 	  //std::cout << "mcmc1: " << " " << ilow << " " << ihigh << " " << ibest << " " << mlow << " " << mhigh << " " << psum << endl;
 	  double pbest = 0;
 	  if (ibest>0 && ibest <= nbins) pbest = local1dposterior->GetBinContent(ibest);
-	  else 
-	    { 
+	  else
+	    {
 	      std::cout << "In mcmc1 1D cross section fit:  inconsistency -- cannot sum 68 percent of the total histogram integral" << std::endl;
 	      exit(0);
 	    }
@@ -7716,7 +7716,7 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
       double dlwid = max(downlocal,uplocal);
       double xlowfit = max(0,xsfitlocal - (dlwid/1.5));
       double xhighfit = max(xlowfit+(local1dposterior->GetBinCenter(4)-local1dposterior->GetBinCenter(1)),xsfitlocal + dlwid/1.5);
- 
+
       //std::cout << "debug1: " << xsfitlocal << " " << downlocal << " " << uplocal << " " << xlowfit << " " << xhighfit << std::endl;
       local1dposterior->Fit("pol2","Q","",xlowfit,xhighfit);
       TF1 *myfunc = local1dposterior->GetFunction("pol2");
@@ -7758,7 +7758,7 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
   // write out histograms and clean up -- move this to the end of the routine so we get to see the fit
   // function for 1D cross section fits.
 
-  if (phistflag) 
+  if (phistflag)
     {
       histfile = new TFile(histoutfile,"RECREATE");
       if (histfile==0)
@@ -7767,7 +7767,7 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 	  exit(0);
 	}
       if (histfile->IsZombie())
-	{ 
+	{
 	  cout << "Markov Chain output histogram file open failed " << histoutfile << endl;
 	  exit(0);
 	}
@@ -7784,7 +7784,7 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 	  int nssf2list = ssf2list.size();
 	  for (int i=0; i<nssf2list; i++) ssf2hist.Fill(ssf2list[i]);
 	  ssf2hist.Write();
-	  local2dposterior->Write(); 
+	  local2dposterior->Write();
 	}
       histfile->Close();
     }
@@ -7806,9 +7806,9 @@ void mclimit_csm::mcmc1(MCMC1ACTION action, double beta, PRIOR prior, TString hi
 // The third and subsequent signal templates will be given ssf2 as the scale factor.  For 1D fits and
 // limits, set ssf and ssf2 equal to each other.
 
-double mclimit_csm::bayesmcmcllf(csm_model *model, int nnptot, double *npvalues, 
+double mclimit_csm::bayesmcmcllf(csm_model *model, int nnptot, double *npvalues,
                                  bool *npunconstrained, bool *npconsflag,
-                                 int nperrtot, double *pnpvalues, double ssf, 
+                                 int nperrtot, double *pnpvalues, double ssf,
                                  double ssf2, PRIOR prior, bool forcedatatobeinteger)
 {
   csm_channel_model *cm;
@@ -7845,7 +7845,7 @@ double mclimit_csm::bayesmcmcllf(csm_model *model, int nnptot, double *npvalues,
 	      int sigind = 0; // signal index for purposes of deciding which scale factor to use
 	      int ntemplates = cm->histotemplate.size();
               for (int itpl = 0; itpl < ntemplates; itpl++)
-	        { 
+	        {
 		  double rtmp = 0;
 	          double dr=0;
 		  if (nbinsy==1) rtmp = cm->histotemplate_varied[itpl]->GetBinContent(j+1)*cm->sft_varied[itpl];
@@ -7853,31 +7853,31 @@ double mclimit_csm::bayesmcmcllf(csm_model *model, int nnptot, double *npvalues,
 		  //if (rtmp<0) cm->histotemplate_varied[itpl]->Print("all");
 		  //if (rtmp<0) cm->histotemplate[itpl]->Print("all");
 
-                  if (cm->poissflag[itpl] == CSM_POISSON_BINERR) 
+                  if (cm->poissflag[itpl] == CSM_POISSON_BINERR)
 	            {
 		      if (nbinsy==1) dr = cm->histotemplate_varied[itpl]->GetBinContent(j+1);
 		      else dr = cm->histotemplate_varied[itpl]->GetBinContent(j+1,k+1);
 		      if (dr>0) dr = sqrt(dr)*cm->sft_varied[itpl];
 		    }
-                  if (cm->poissflag[itpl] == CSM_GAUSSIAN_BINERR) 
+                  if (cm->poissflag[itpl] == CSM_GAUSSIAN_BINERR)
 	            {
 		      if (nbinsy==1) dr = cm->histotemplate_varied[itpl]->GetBinError(j+1)*cm->sft_varied[itpl];
 		      else dr = cm->histotemplate_varied[itpl]->GetBinError(j+1,k+1)*cm->sft_varied[itpl];
 		    }
 		  double rte = rtmp;
 		  if (cm->poissflag[itpl] != 0)
-		    { 
+		    {
 		      rte += dr*pnpvalues[inp];
 		      inp++;
 		    }
-		  if (rte < 0) 
-		    { 
+		  if (rte < 0)
+		    {
 		      rte = 0; // truncate bin by bin errors by template at zero
 		      cout << "calling routine of bayesmcmcllf gives a poisson parameter resulting in a negative prediction" << endl;
 		      exit(0); // should never happen.
 		    }
-		  if (cm->scaleflag[itpl] != 0) 
-                    { 
+		  if (cm->scaleflag[itpl] != 0)
+                    {
 		      stot += rte;  // accumulate the unscaled signal and use that for the correlated prior
 		      rte *= (sigind == 0) ? ssf : ssf2;
 		      sigind++;
@@ -7886,14 +7886,14 @@ double mclimit_csm::bayesmcmcllf(csm_model *model, int nnptot, double *npvalues,
 	        } // end loop on template
 	      double nobs = 0;
 	      if (nbinsy==1)
-		{ 
+		{
 		  if (forcedatatobeinteger) nobs = nearbyint(datahist[i]->GetBinContent(j+1));
 		  else nobs = datahist[i]->GetBinContent(j+1);
 		}
 	      else
-		{ 
-		  if (forcedatatobeinteger) nobs = nearbyint(datahist[i]->GetBinContent(j+1,k+1)); 
-		  else nobs = datahist[i]->GetBinContent(j+1,k+1); 
+		{
+		  if (forcedatatobeinteger) nobs = nearbyint(datahist[i]->GetBinContent(j+1,k+1));
+		  else nobs = datahist[i]->GetBinContent(j+1,k+1);
 		}
 
 	      if (r<1E-10) r=1e-10; // protect against zero expectation
@@ -7906,7 +7906,7 @@ double mclimit_csm::bayesmcmcllf(csm_model *model, int nnptot, double *npvalues,
   assert(prior==flat || prior==corr);
   if (prior == corr)
     {
-      if (stot > 0.0) 
+      if (stot > 0.0)
         { llf += log(stot); }
       else
 	{ llf = -1.0E40; } // to exponentiate to zero.
@@ -7935,8 +7935,8 @@ void mclimit_csm::systsumplot(char *channame, int nsamples, TH1 **ehm2, TH1 **eh
 
   for (i=0;i<nchans;i++)
     {
-      if (strcmp(channame,test_hypothesis_pe->channame[i])==0) 
-        { 
+      if (strcmp(channame,test_hypothesis_pe->channame[i])==0)
+        {
 	  ichan=i;
           cm = test_hypothesis_pe->chanmodel[ichan];
           nbinsx = cm->histotemplate[0]->GetNbinsX();
@@ -7984,14 +7984,14 @@ void mclimit_csm::systsumplot(char *channame, int nsamples, TH1 **ehm2, TH1 **eh
 	      for (int itpl=0;itpl<ntemplates;itpl++)
 		{
 		  ht = cm->histotemplate_varied[itpl];
-		  if (nbinsy==1) 
+		  if (nbinsy==1)
 		    { r = ht->GetBinContent(i+1); }
 		  else
 		    { r = ht->GetBinContent(i+1,j+1); }
 		  if (cm->poissflag[itpl] == CSM_POISSON_BINERR)
 		    { r = gRandom->Poisson(r); }
 		  else if (cm->poissflag[itpl] == CSM_GAUSSIAN_BINERR)
-		    { 
+		    {
 		      double histerr,edraw;
 		      if (nbinsy==1)
 			{ histerr = ht->GetBinError(i+1);}
@@ -8072,7 +8072,7 @@ void mclimit_csm::bh_xsfit(Double_t *xsfit, Double_t *downerr, Double_t *uperr)
   if (bayes_interval_step < 0 || (bayes_interval_end-bayes_interval_begin)<0 )
     {
       cout << "bh_xsfit: invalid integration region or step." << endl;
-      cout << "bh_xsfit:  begin: " << bayes_interval_begin << " end: " << bayes_interval_end 
+      cout << "bh_xsfit:  begin: " << bayes_interval_begin << " end: " << bayes_interval_end
            << " step: " << bayes_interval_step << endl;
       cout << "Not doing cross section fit." << endl;
     }
@@ -8113,7 +8113,7 @@ void mclimit_csm::bh_xsfit(Double_t *xsfit, Double_t *downerr, Double_t *uperr)
 	      ibin++;
 	    }
 	}
-    }  
+    }
 
   // The prior ensemble is constructed in the same way mclimit_csm does pseudoexperiments
 
@@ -8145,7 +8145,7 @@ void mclimit_csm::bh_xsfit(Double_t *xsfit, Double_t *downerr, Double_t *uperr)
 		      if (cm->poissflag[itpl] == CSM_POISSON_BINERR)
 			{ r = gRandom->Poisson(r); }
 		      else if (cm->poissflag[itpl] == CSM_GAUSSIAN_BINERR)
-			{ 
+			{
 			  double histerr,edraw;
 			  if (nbinsy==1)
 			    { histerr = ht->GetBinError(j+1);}
@@ -8167,7 +8167,7 @@ void mclimit_csm::bh_xsfit(Double_t *xsfit, Double_t *downerr, Double_t *uperr)
 		}
 	    }
 	}
-    
+
       nens = 1;
       if (ipx == 0)
 	{
@@ -8200,8 +8200,8 @@ void mclimit_csm::bh_xsfit(Double_t *xsfit, Double_t *downerr, Double_t *uperr)
     {
       double p = bayes_posterior[itmp];
       if (p>lmax)
-	{ 
-	  lmax=p; 
+	{
+	  lmax=p;
 	  imax = itmp;
 	  *xsfit = b;
 	}
@@ -8229,7 +8229,7 @@ void mclimit_csm::bh_xsfit(Double_t *xsfit, Double_t *downerr, Double_t *uperr)
   int ihigh=imax;
   double psum = bayes_posterior[imax];
   double psumtrap = 0.0;
-  do 
+  do
     {
       int ibest = ilow;
       double bpbest = 0.0;
@@ -8247,7 +8247,7 @@ void mclimit_csm::bh_xsfit(Double_t *xsfit, Double_t *downerr, Double_t *uperr)
 	    }
 	}
       psum += bpbest;
-      if (ibest == ilow-1) 
+      if (ibest == ilow-1)
 	{ ilow --; }
       else
 	{ ihigh ++; }
@@ -8298,7 +8298,7 @@ Double_t mclimit_csm::quickbint(Double_t beta)
 // and give distributions of fitted values.   Use bh_xsfit above to get the cross section in each one
 // in order to save memory and make the code more maintainable.
 
-void mclimit_csm::bh_xsfit_expect(Int_t npx, Double_t *xsfitavg, Double_t *m2s, 
+void mclimit_csm::bh_xsfit_expect(Int_t npx, Double_t *xsfitavg, Double_t *m2s,
 				  Double_t *m1s, Double_t *med, Double_t *p1s, Double_t *p2s)
 {
   int i,ipx,nchans;
@@ -8339,13 +8339,13 @@ void mclimit_csm::bh_xsfit_expect(Int_t npx, Double_t *xsfitavg, Double_t *m2s,
       xslist.push_back(xsfit);
       *xsfitavg += xsfit;
     }
-  if (xslist.size()>0) 
+  if (xslist.size()>0)
     {
       *xsfitavg /= xslist.size();
     }
 
   std::sort(xslist.begin(),xslist.end());
-  i =  max(0, min(npx-1, (int) nearbyint(npx*MCLIMIT_CSM_MCLM2S))); 
+  i =  max(0, min(npx-1, (int) nearbyint(npx*MCLIMIT_CSM_MCLM2S)));
   *m2s = xslist[i];
   i =  max(0, min(npx-1, (int) nearbyint(npx*MCLIMIT_CSM_MCLM1S)));
   *m1s = xslist[i];
@@ -8378,7 +8378,7 @@ void mclimit_csm::bh_xsfit_expect(Int_t npx, Double_t *xsfitavg, Double_t *m2s,
 
 void mclimit_csm::bh_2d_scan(Double_t s1low, Double_t s1high, Double_t ds1,
 			     Double_t s2low, Double_t s2high, Double_t ds2,
-			     // arguments from here are given defaults in mclimit_csm.h 
+			     // arguments from here are given defaults in mclimit_csm.h
                              // for backwards compatibility
 			     Double_t *s1fit, Double_t *s2fit,
                              Int_t pflag2d, Double_t *s1test, Double_t *s2test,
@@ -8438,7 +8438,7 @@ void mclimit_csm::bh_2d_scan(Double_t s1low, Double_t s1high, Double_t ds1,
 	      ibin++;
 	    }
 	}
-    }  
+    }
 
   // The prior ensemble is constructed in the same way mclimit_csm does pseudoexperiments
   // but split up the first and subsequent signals.
@@ -8471,7 +8471,7 @@ void mclimit_csm::bh_2d_scan(Double_t s1low, Double_t s1high, Double_t ds1,
 		      if (cm->poissflag[itpl] == CSM_POISSON_BINERR)
 			{ r = gRandom->Poisson(r); }
 		      else if (cm->poissflag[itpl] == CSM_GAUSSIAN_BINERR)
-			{ 
+			{
 			  double histerr,edraw;
 			  if (nbinsy==1)
 			    { histerr = ht->GetBinError(j+1);}
@@ -8484,9 +8484,9 @@ void mclimit_csm::bh_2d_scan(Double_t s1low, Double_t s1high, Double_t ds1,
 			}
 		      r *= cm->sft_varied[itpl];
 		      if (cm->scaleflag[itpl] != 0)
-			{ 
+			{
 			  if (isc == 0)
-			    { 
+			    {
 			      ens[iens].e1 += r;
 			      isc++;
 			    }
@@ -8551,7 +8551,7 @@ void mclimit_csm::bh_2d_scan(Double_t s1low, Double_t s1high, Double_t ds1,
 
   double psum = 0;
   int itot = postv.size();
- 
+
   for (i=0;i<itot;i++) psum += postv[i];
   if (psum > 0)
     {
@@ -8595,8 +8595,8 @@ void mclimit_csm::bh_2d_scan(Double_t s1low, Double_t s1high, Double_t ds1,
   if (pflag2d)
     {
       for (i=0;i<itot;i++)
-	{	   
-	  cout << "bh_2d_scan: " << xsig1v[i] << " " << xsig2v[i] << " " 
+	{
+	  cout << "bh_2d_scan: " << xsig1v[i] << " " << xsig2v[i] << " "
 	       << postv[i] << " " << postint[i] << endl;
 	}
     }
@@ -8622,7 +8622,7 @@ void mclimit_csm::bh_2d_scan(Double_t s1low, Double_t s1high, Double_t ds1,
 // Modified April 2, 2009 -- call the bh_2d_scan routine instead, after a memory optimization.  Same
 // functionality as before.
 
-void mclimit_csm::bh_2d_scan_expect(Int_t npx, Double_t s1true, Double_t s2true, 
+void mclimit_csm::bh_2d_scan_expect(Int_t npx, Double_t s1true, Double_t s2true,
                                     Double_t s1low, Double_t s1high, Double_t ds1,
 				    Double_t s2low, Double_t s2high, Double_t ds2)
 {
@@ -8757,7 +8757,7 @@ void mclimit_csm::bayes_heinrich_coverage_check(Double_t beta,
 	      ibin++;
 	    }
 	}
-    }  
+    }
 
   // The prior ensemble is constructed in the same way mclimit_csm does pseudoexperiments
 
@@ -8787,7 +8787,7 @@ void mclimit_csm::bayes_heinrich_coverage_check(Double_t beta,
 		      if (cm->poissflag[itpl] == CSM_POISSON_BINERR)
 			{ r = gRandom->Poisson(r); }
 		      else if (cm->poissflag[itpl] == CSM_GAUSSIAN_BINERR)
-			{ 
+			{
 			  double histerr,edraw;
 			  if (nbinsy==1)
 			    { histerr = ht->GetBinError(j+1);}
@@ -8825,7 +8825,7 @@ void mclimit_csm::bayes_heinrich_coverage_check(Double_t beta,
   // do not compute sflimit here -- input it instead as an adjustable parameter
 
   //  *sflimit = (Double_t) cslimit(beta,nbinstot,nens,nobs,ens,&ngl,xgl,lwgl,prior,unc);
-  
+
   // Run signal+background pseudoexperiments at the observed limit, and see what
   // the distribution of limits we get out is.  Limits are computed using the
   // same Bayesian ensemble with the unscaled test_hypothesis_pe and so the
@@ -8871,13 +8871,13 @@ void mclimit_csm::bayes_heinrich_coverage_check(Double_t beta,
 		  ibin++;
                 }
             }
-        } 
+        }
     }
   TMath::Sort(npx,nobstotlist,nobsindex,kTRUE);
 
   if (nglmax < nobstotlist[nobsindex[0]]/2 + 1)
     {
-      nglmax = nobstotlist[nobsindex[0]]/2 + 1; 
+      nglmax = nobstotlist[nobsindex[0]]/2 + 1;
       delete[] xgl;
       delete[] lwgl;
       xgl = new double[nglmax];
@@ -8889,7 +8889,7 @@ void mclimit_csm::bayes_heinrich_coverage_check(Double_t beta,
     {
       if (ipx>0)
 	{ if (nobstotlist[nobsindex[ipx]] != nobstotlist[nobsindex[ipx-1]])
-	  { 
+	  {
 	    ngl = 0;
 	  }
 	}
@@ -9102,7 +9102,7 @@ double csint(double xlo,int nchan,int nens,const int nobs[],const EB* ens,
   }
   if(*ngl<=0)
     gausslaguerre(xgl,lwgl,*ngl=1+ntot/2,0.0);
-  
+
   for(i=0;i<nens;++i) {
     const double t = csint0(xlo,logscale,nchan,nobs,p,*ngl,xgl,lwgl,prior);
     sum += t;
@@ -9186,7 +9186,7 @@ void csint2cut(double xlo1,double xlo2,double xhi,
   }
   if(*ngl<=0)
     gausslaguerre(xgl,lwgl,*ngl=1+ntot/2,0.0);
-  
+
   for(i=0;i<nens;++i) {
     double t1=0, t2=0;
     csint02cut(xlo1,xlo2,xhi,logscale,nchan,nobs,p,*ngl,xgl,lwgl,
@@ -9205,7 +9205,7 @@ void csint2cut(double xlo1,double xlo2,double xhi,
     sum21 *= rnens;
     sum2 *= rnens;
     sum22 *= rnens;
-    sump *= rnens; 
+    sump *= rnens;
     if(nens>1) {
       const double rn1 = 1.0/(nens-1);
       *v11 = (sum21-sum1*sum1)*rn1;
@@ -9306,7 +9306,7 @@ double cslimit(double beta,int nchan,int nens,const int nobs[],const EB* ens,
 	       PRIOR prior,double* uncertainty) {
   const double eps=1.0e-6;
 
-  
+
   /*
     cout << "nchan: " << nchan << endl;
     cout << " nens: " << nens << endl;
@@ -9459,7 +9459,7 @@ void gameansigma(double *mean,double *sigma,
     sum += s;
     sum2 += s*s;
   }
-  
+
   *mean = sum/nens;
   *sigma = sqrt(vsum/nens + sum2/nens - (*mean)*(*mean));
   return;
@@ -9510,7 +9510,7 @@ void gausslaguerre(double x[],double lw[],int n,double alpha){
   const double shift = 1<<nshift, rshift=1/shift;
   int i;
   double z=0;
-  
+
   for(i=0;i<n;++i) {
     int j=0, k=2, nscale=0;
     double dz=0.0, p1=0, p2=0;
@@ -9553,7 +9553,7 @@ void gausslaguerre(double x[],double lw[],int n,double alpha){
     x[i]=z;
     lw[i] = log(z/(p2*p2)) - 2*nshift*nscale*M_LN2 ;
   }
-  
+
   {
     double t = 0.0;
     for(i=n-1;i>=0;--i)
@@ -9601,7 +9601,7 @@ void csint2(double xlo1,double xlo2,
   }
   if(*ngl<=0)
     gausslaguerre(xgl,lwgl,*ngl=1+ntot/2,0.0);
-  
+
   for(i=0;i<nens;++i) {
     double t1=0, t2=0;
     csint02(xlo1,xlo2,logscale,nchan,nobs,p,*ngl,xgl,lwgl,prior,&t1,&t2);
@@ -9619,7 +9619,7 @@ void csint2(double xlo1,double xlo2,
     sum21 *= rnens;
     sum2 *= rnens;
     sum22 *= rnens;
-    sump *= rnens; 
+    sump *= rnens;
     if(nens>1) {
       const double rn1 = 1.0/(nens-1);
       *v11 = (sum21-sum1*sum1)*rn1;
@@ -9769,7 +9769,7 @@ FastTH1 (const TH1& that)
   };
 
   test_invariant ();
-};
+}
 
 
 
@@ -9824,6 +9824,6 @@ make_TH1 (std::string name) const
 
   assert (result.get() != NULL && "postcondition failed"); //spec
   return result.release();
-};
+}
 
 #endif

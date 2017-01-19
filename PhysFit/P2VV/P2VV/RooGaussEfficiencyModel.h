@@ -37,28 +37,28 @@ public:
   RooGaussEfficiencyModel(const RooGaussEfficiencyModel& other, const char* name=0);
   virtual ~RooGaussEfficiencyModel();
 
-  virtual TObject* clone(const char* newname) const { return new RooGaussEfficiencyModel(*this,newname) ; }
+  TObject* clone(const char* newname) const override { return new RooGaussEfficiencyModel(*this,newname) ; }
 
-  virtual Int_t basisCode(const char* name) const ;
-  virtual Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* rangeName=0) const ;
-  virtual Double_t analyticalIntegral(Int_t code, const char* rangeName) const ;
+  Int_t basisCode(const char* name) const override;
+  Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* rangeName=0) const override;
+  Double_t analyticalIntegral(Int_t code, const char* rangeName) const override;
 
   // TODO: move this one to the mixin-interface
-  virtual RooAbsGenContext* modelGenContext(const RooAbsAnaConvPdf& convPdf, const RooArgSet &vars,
-                                             const RooDataSet *prototype=0, const RooArgSet* auxProto=0,
-                                             Bool_t verbose= kFALSE) const;
-  Bool_t isDirectGenSafe(const RooAbsArg& arg) const;
-  Int_t getGenerator(const RooArgSet& directVars, RooArgSet &generateVars, Bool_t staticInitOK) const;
-  void generateEvent(Int_t code);
+  RooAbsGenContext* modelGenContext(const RooAbsAnaConvPdf& convPdf, const RooArgSet &vars,
+                                     const RooDataSet *prototype=0, const RooArgSet* auxProto=0,
+                                     Bool_t verbose= kFALSE) const override;
+  Bool_t isDirectGenSafe(const RooAbsArg& arg) const override;
+  Int_t getGenerator(const RooArgSet& directVars, RooArgSet &generateVars, Bool_t staticInitOK) const override;
+  void generateEvent(Int_t code) override;
 
   void advertiseFlatScaleFactorIntegral(Bool_t flag) { _flatSFInt = flag ; }
 
-  virtual const RooAbsReal* efficiency() const;
-  virtual RooArgSet* observables() const;
+  const RooAbsReal* efficiency() const override;
+  RooArgSet* observables() const override;
 
 private:
 
-  virtual Double_t evaluate() const ;
+  Double_t evaluate() const override;
 
   std::complex<double> evalInt(Double_t xmin, Double_t xmax,
                                Double_t scale, Double_t offset,

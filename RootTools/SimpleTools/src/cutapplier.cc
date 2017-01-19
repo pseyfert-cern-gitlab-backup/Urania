@@ -1,8 +1,8 @@
 /* cutapplier: Part of the simpletools package
  * (c) Conor Fitzpatrick, 2008
  *
- * If you find this program useful in whole or in part 
- * please cite this paper: 
+ * If you find this program useful in whole or in part
+ * please cite this paper:
  *
  * Feel free to send bugreports, feature requests, patches etc to:
  * conor.fitzpatrick@cern.ch
@@ -34,8 +34,8 @@ int main(int argc, char *argv[]) {
 
 
 	TFile *in(0);
-	TString inname = argv[1];   
-	TString tpath = argv[2];   
+	TString inname = argv[1];
+	TString tpath = argv[2];
 	//	TString tname = argv[3];
 	TString cname = argv[3];
 	TFile *sout(0);
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 	Double_t acceptedm = 0, rejectedm = 0, totalm = 0;
 	Double_t acceptedp = 0, rejectedp = 0, totalp = 0;
 	Double_t daccepted = 0, drejected = 0, dtotal = 0;
-	Double_t eff = 0, rej = 0; 
+	Double_t eff = 0, rej = 0;
 	//Double_t effp = 0, rejp = 0;
 	//Double_t effm = 0, rejm = 0;
 	Double_t deff = 0, drej = 0;
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
 	cout << "Error opening the specified ntuple- is the path you specified correct?" << endl;
 	exit(1);
 	}
-	tpath.Resize(tpath.First(slash)); 
+	tpath.Resize(tpath.First(slash));
 	total = (Double_t)inTree->GetEntries();
 	if(total>10){
 		dtotal = sqrt((Double_t)total);
@@ -77,13 +77,13 @@ int main(int argc, char *argv[]) {
 		totalm = cl95m[(UInt_t)total];
 		totalp = cl95p[(UInt_t)total];
 		clerrs = true;
-		cout << "WARNING: Total events in input ntuple < 10. Using 95\% confidence limits" << endl;
+		cout << "WARNING: Total events in input ntuple < 10. Using 95% confidence limits" << endl;
 	}
 
 	sout = new TFile(soutname,"RECREATE");
 	sout->mkdir(tpath);
 	sout->cd(tpath);	
-	cout << "applying cut..." << endl; sw.Start();	 
+	cout << "applying cut..." << endl; sw.Start();	
 	TTree *soutTree = inTree->CopyTree(cname);
 	accepted = (Double_t)soutTree->GetEntries();
 
@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
 		acceptedp =  cl95p[(UInt_t)accepted];
 		if(clerrs == false){
 			clerrs = true;
-			cout << "WARNING: Total accepted events < 10. Using 95\% confidence limits" << endl;
+			cout << "WARNING: Total accepted events < 10. Using 95% confidence limits" << endl;
 		}
 	}
 
@@ -112,7 +112,7 @@ int main(int argc, char *argv[]) {
 		rejectedp =  cl95p[(UInt_t)rejected];
 		if(clerrs == false){
 			clerrs = true;
-			cout << "WARNING: Total rejected events < 10. Using 95\% confidence limits" << endl;
+			cout << "WARNING: Total rejected events < 10. Using 95% confidence limits" << endl;
 		}
 	}	
 
@@ -154,18 +154,18 @@ int main(int argc, char *argv[]) {
 		if(total>10){
 			cout << "total:    	" << total    << "	+/-	" << dtotal <<	endl;
 		}else{
-			cout << "total:	(" << total <<")	"<< totalm << "	< 95\%CL <	"<< totalp <<  endl;
+			cout << "total:	(" << total <<")	"<< totalm << "	< 95%CL <	"<< totalp <<  endl;
 		}
 		if(accepted>10){
 			cout << "accepted:	" << accepted << "	+/-	" << daccepted << endl;
 
 		}else{
-			cout << "accepted:	(" << accepted <<")	"<< acceptedm << "	< 95\%CL <	"<< acceptedp <<  endl;
+			cout << "accepted:	(" << accepted <<")	"<< acceptedm << "	< 95%CL <	"<< acceptedp <<  endl;
 		}
 		if(rejected>10){
 			cout << "rejected:	" << rejected << "	+/-	" << drejected << endl;
 		}else{
-			cout << "rejected:      (" << rejected <<")     "<< rejectedm << "      < 95\%CL <      "<< rejectedp <<  endl;
+			cout << "rejected:      (" << rejected <<")     "<< rejectedm << "      < 95%CL <      "<< rejectedp <<  endl;
 		}
 		cout << "efficiency:	" << eff      << "	+/-	" << deff << endl;	
 		cout << "reject. rate: 	" << rej      << "	+/-	" << drej << endl;
