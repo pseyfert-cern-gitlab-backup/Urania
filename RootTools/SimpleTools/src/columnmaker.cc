@@ -1,8 +1,8 @@
 /* columnmaker: Part of the simpletools package
  * (c) Conor Fitzpatrick, 2008
  *
- * If you find this program useful in whole or in part 
- * please cite this paper: 
+ * If you find this program useful in whole or in part
+ * please cite this paper:
  *
  * Feel free to send bugreports, feature requests, patches etc to:
  * conor.fitzpatrick@cern.ch
@@ -32,8 +32,8 @@ int main(int argc, char *argv[]) {
 	}
 
 	TFile *in(0);
-	TString inname = argv[1];   
-	TString tpath = argv[2];   
+	TString inname = argv[1];
+	TString tpath = argv[2];
 	TString fname = argv[3];
 	TString cname = argv[4];
 	TFile *sout(0);
@@ -56,18 +56,18 @@ int main(int argc, char *argv[]) {
 
 
 	TString slash = "/";
-	tpath.Resize(tpath.First(slash)); 
+	tpath.Resize(tpath.First(slash));
 
 	sout = new TFile(soutname,"RECREATE");
 	sout->mkdir(tpath);
 	sout->cd(tpath);	
-	cout << "copying ntuple" << endl; sw.Start();	 
+	cout << "copying ntuple" << endl; sw.Start();	
 
 	TTree *soutTree = inTree->CloneTree(-1);
 	Float_t val =0.0;
 	TBranch *formbranch = soutTree->Branch(cname, &val, cname);
 	TTreeFormula *formula = new TTreeFormula("formula",fname,soutTree);
-	cout << "creating new column" << endl; sw.Start();	 
+	cout << "creating new column" << endl; sw.Start();	
 	int k=0;
 	int pc =0;
 	for(UInt_t l=0; l<total; l++){
@@ -77,10 +77,10 @@ int main(int argc, char *argv[]) {
 		pc = ((100*l)/total);
 		if(pc == k+10){
 			k = pc;
-			cout << pc << "\% complete\r" << flush;
+			cout << pc << "% complete\r" << flush;
 		}
 	}
-	cout << "100" << "\% complete\r" << endl;
+	cout << "100" << "% complete\r" << endl;
 	soutTree->Write();	
 	sout->Write();
 	sw.Stop();

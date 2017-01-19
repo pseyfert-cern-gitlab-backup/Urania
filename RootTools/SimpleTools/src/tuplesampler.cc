@@ -1,8 +1,8 @@
 /* tuplesampler: Part of the simpletools package
  * (c) Conor Fitzpatrick, 2008
  *
- * If you find this program useful in whole or in part 
- * please cite this paper: 
+ * If you find this program useful in whole or in part
+ * please cite this paper:
  *
  * Feel free to send bugreports, feature requests, patches etc to:
  * conor.fitzpatrick@cern.ch
@@ -32,8 +32,8 @@ int main(int argc, char *argv[]) {
 	}
 
 	TFile *in;
-	TString inname = argv[1];   
-	TString tpath = argv[2];   
+	TString inname = argv[1];
+	TString tpath = argv[2];
 	Double_t ratio = atof(argv[3]);
 	TFile *sout1(0);
 	TFile *sout2(0);
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 
 	cout << "getting tree " << tpath << endl;
 	TTree* inTree = (TTree*)in->Get(tpath);
-	tpath.Resize(tpath.First(slash)); 
+	tpath.Resize(tpath.First(slash));
 	UInt_t total =  inTree->GetEntries();
 
 	sout1 = new TFile(soutname1,"RECREATE");
@@ -82,10 +82,10 @@ int main(int argc, char *argv[]) {
 		pc = ((100*i)/total);
 		if(pc == k+10){
 			k = pc;
-			cout << pc << "\% complete\r" << flush;
+			cout << pc << "% complete\r" << flush;
 		}
 	}
-	cout << "100" << "\% complete\r" << endl;
+	cout << "100" << "% complete\r" << endl;
 	UInt_t out1 =  soutTree1->GetEntries();
 	UInt_t out2 =  soutTree2->GetEntries();
 
