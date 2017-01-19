@@ -22,7 +22,7 @@ namespace RooCubicSplineKnot_aux {
 }
 
 void RooCubicSplineKnot::smooth(std::vector<double>& y, const std::vector<double>& dy, double lambda) const {
-// implementation as described in D.S.G. Pollock, Smoothing Splines" 
+// implementation as described in D.S.G. Pollock, Smoothing Splines"
 // see http://r.789695.n4.nabble.com/file/n905996/SPLINES.PDF
     using namespace std;
     int n = y.size();
@@ -129,7 +129,7 @@ void RooCubicSplineKnot::fillPQRS() const {
 }
 
 double RooCubicSplineKnot::evaluate(double x, const RooArgList& b) const {
-    using RooCubicSplineKnot_aux::get; 
+    using RooCubicSplineKnot_aux::get;
     int i = index(x); // location in knot vector: index of last knot less than x...
     assert(-1<=i && i<=size());
     // we're a 'natural' spline. If beyond first/last knot, Extrapolate using the derivative at the first (last) knot
@@ -175,7 +175,7 @@ int RooCubicSplineKnot::index(double uu) const
     if (uu>_u.back()) return size();
     std::vector<double>::const_iterator i = --std::upper_bound(_u.begin(),_u.end()-1,uu);
     return std::distance(_u.begin(),i);
-};
+}
 
 // S matrix for i-th interval
 RooCubicSplineKnot::S_jk RooCubicSplineKnot::S_jk_sum(int i, const RooArgList& b) const
@@ -214,7 +214,7 @@ RooCubicSplineKnot::S_edge::S_edge(const S_edge& other, double offset) :
 RooCubicSplineKnot::S_edge RooCubicSplineKnot::S_jk_edge(bool left, const RooArgList& b) const {
        using RooCubicSplineKnot_aux::get;
        if (left) {
-         // efficiency = return evaluate(u(0),b) - d(x,0)*r(0)*(get(b,0,0)-get(b,0,1)); 
+         // efficiency = return evaluate(u(0),b) - d(x,0)*r(0)*(get(b,0,0)-get(b,0,1));
          double alpha = -r(0)*(get(b,0,0)-get(b,0,1));
          double beta = evaluate(u(0),b)-alpha*u(0);
          return S_edge( alpha, beta );
@@ -233,9 +233,9 @@ namespace {
         assert(0<=lo);
           a*=gamma;b*=gamma;c*=gamma;
           lo*=gamma;hi*=gamma;
-          double result = -a*b*c       *(TMath::Gamma(1,hi) - TMath::Gamma(1,lo))*TMath::Gamma(1) 
-                        + (b*c+a*c+a*b)*(TMath::Gamma(2,hi) - TMath::Gamma(2,lo))*TMath::Gamma(2) 
-                        - (a+b+c)      *(TMath::Gamma(3,hi) - TMath::Gamma(3,lo))*TMath::Gamma(3) 
+          double result = -a*b*c       *(TMath::Gamma(1,hi) - TMath::Gamma(1,lo))*TMath::Gamma(1)
+                        + (b*c+a*c+a*b)*(TMath::Gamma(2,hi) - TMath::Gamma(2,lo))*TMath::Gamma(2)
+                        - (a+b+c)      *(TMath::Gamma(3,hi) - TMath::Gamma(3,lo))*TMath::Gamma(3)
                         +               (TMath::Gamma(4,hi) - TMath::Gamma(4,lo))*TMath::Gamma(4);
 
           return result / TMath::Power(gamma,4);
@@ -305,13 +305,13 @@ double  RooCubicSplineKnot::expIntegral(const TH1* hist, double gamma, TVectorD&
         // compute contributions beyond the first and last knot...
         if (lo < _u.front()) {
                 // b-spline 0:  1 - d(x,0)*r(0)  // d(x,0) = x - u(0)
-                // b-spline 1:    + d(x,0)*r(0) 
+                // b-spline 1:    + d(x,0)*r(0)
                 matrix(0, 0) += eIn( lo,hi, 1., -r(0), u(0) )/Norm;
                 matrix(1, 0) += eIn( lo,hi, 0., +r(0), u(0) )/Norm;
 
         }
         if (hi > _u.back()) {
-                //                                           c + alpha  *    (x - x0) 
+                //                                           c + alpha  *    (x - x0)
                 matrix(nknots  , nbins-1) += eIn( lo, hi, 0., -r(nknots-2), u(nknots-1) )/Norm;
                 matrix(nknots+1, nbins-1) += eIn( lo, hi, 1., +r(nknots-2), u(nknots-1) )/Norm;
 
@@ -322,24 +322,24 @@ double  RooCubicSplineKnot::expIntegral(const TH1* hist, double gamma, TVectorD&
 #endif
 
         // this bit is by construction fully contained between the first and last knot
-        for (int j=0;j<nknots-1;++j) { 
+        for (int j=0;j<nknots-1;++j) {
             double l = std::max(lo,u(j));
             double hh = std::min(hi,u(j+1));
             if (l>=hh) continue;
             // in thhe knot interval [ u(j),  u(j+1) ], thhe splines j..j+3 contribute...
             matrix(j  ,i) += (-eI(l,hh, u(j+1),u(j+1),u(j+1), gamma)/P(j) ) / Norm;
-            matrix(j+1,i) += ( eI(l,hh, u(j-2),u(j+1),u(j+1), gamma)/P(j) 
-                              +eI(l,hh, u(j-1),u(j+1),u(j+2), gamma)/Q(j) 
+            matrix(j+1,i) += ( eI(l,hh, u(j-2),u(j+1),u(j+1), gamma)/P(j)
+                              +eI(l,hh, u(j-1),u(j+1),u(j+2), gamma)/Q(j)
                               +eI(l,hh, u(j  ),u(j+2),u(j+2), gamma)/R(j) ) / Norm;
-            matrix(j+2,i) += (-eI(l,hh, u(j-1),u(j-1),u(j+1), gamma)/Q(j) 
-                              -eI(l,hh, u(j-1),u(j  ),u(j+2), gamma)/R(j) 
-                              -eI(l,hh, u(j  ),u(j  ),u(j+3), gamma)/S(j) ) / Norm; 
-            matrix(j+3,i) += ( eI(l,hh, u(j  ),u(j  ),u(j  ), gamma)/S(j) ) / Norm; 
+            matrix(j+2,i) += (-eI(l,hh, u(j-1),u(j-1),u(j+1), gamma)/Q(j)
+                              -eI(l,hh, u(j-1),u(j  ),u(j+2), gamma)/R(j)
+                              -eI(l,hh, u(j  ),u(j  ),u(j+3), gamma)/S(j) ) / Norm;
+            matrix(j+3,i) += ( eI(l,hh, u(j  ),u(j  ),u(j  ), gamma)/S(j) ) / Norm;
         }
 
     }
 
-    TMatrixDSym DD(nsplines); 
+    TMatrixDSym DD(nsplines);
     for (int i=0;i<nsplines;++i) for (int j=0;j<=i;++j) {
         DD(i,j) = 0;
         for (int k=0;k<nbins;++k) DD(i,j) += matrix(i,k)*matrix(j,k)/(DY(k)*DY(k));
@@ -353,7 +353,7 @@ double  RooCubicSplineKnot::expIntegral(const TH1* hist, double gamma, TVectorD&
     bool ok;
     coefficients.ResizeTo(nsplines);
     coefficients = solver.Solve(Y,ok);
-    if (!ok) { 
+    if (!ok) {
         std::cout << "WARNING: bad linear system solution... " << std::endl;
         return -1;
     }
