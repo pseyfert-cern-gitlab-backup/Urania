@@ -334,7 +334,8 @@ def getDataSetFromTuple ( file, mother, part, trackcuts, pidcuts, xvar, yvar, zv
       myvar = vars [ varid  ]
       varRoo  = myvar.getRooRealVar ( part )
       varname = myvar.getBranchName ( "probe" )
-      b = tree.GetBranch ( varname )
+      if varid != "Unbias_HLT1":
+        b = tree.GetBranch ( varname )
       keep = False
       if varid == xvar:
         print "Variable " + varid + " is X binning variable. Adding to RooDataSet."
