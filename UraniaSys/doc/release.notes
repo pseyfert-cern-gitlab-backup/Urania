@@ -3,6 +3,10 @@ Package             : Urania
 Package Coordinator : Diego Martinez Santos, Carlos Vazquez Sierra
 Purpose             : LHCb physics repository
 
+! 2017-01-19 - Carlos Vazquez Sierra
+ - Version prepared for release (v6r0):
+   + Fixes on warnings and updates on PIDCalib packages.
+
 ! 2016-12-20 - Carlos Vazquez Sierra
  - Make version v6r0 (v5r1), based on LCGCMT_87 (LCGCMT_84):
    + Added two new packages:
