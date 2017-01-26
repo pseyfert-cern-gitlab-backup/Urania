@@ -124,7 +124,8 @@ def CalcAveragePerfPlotsAndReturn(TrackDict,
 
 
 def PlotVarsAndReturn( PartName, PlotVars, StripVer, MagPolarity,
-                      runMin, runMax, TrackCuts="", verbose=True,
+                      runMin, runMax, PIDCutString,
+                      xBin, yBin, zBin, TrackCuts="", verbose=True,
                       allowMissingDataSets=False, schemeName=None,
                       maxFiles=-1
                       ):
@@ -152,13 +153,20 @@ def PlotVarsAndReturn( PartName, PlotVars, StripVer, MagPolarity,
     #======================================================================
     # Loop over all calibration files
     #======================================================================
-    files = GetFiles(StripVer,MagPolarity,PartName,runMin,runMax,maxFiles,verbose)
+    #files = GetFiles(StripVer,MagPolarity,PartName,runMin,runMax,maxFiles,verbose)
+    
+    if "Turbo" not in StripVer:
+    	files = GetFiles(StripVer,MagPolarity,PartName,runMin,runMax,maxFiles,verbose)
+    elif "Turbo" in StripVer:
+    	files = GetWGPFiles(StripVer,MagPolarity,verbose)
 
     index = 0;
     for file in files:
         index+=1
-        DataSet = GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, file, verbose,
-                            allowMissingDataSets, minEntries)
+        #DataSet = GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, file, verbose,
+        #                    allowMissingDataSets, minEntries)
+        DataSet = GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, PIDCutString, xBin, yBin, zBin, file, verbose,
+                             allowMissingDataSets, minEntries)
         for PlotVar in PlotVars:
             BinSchema = GetBinScheme(PartName, PlotVar, schemeName)
             if DataSet is not None:
@@ -192,8 +200,9 @@ def PlotVarAndWriteToFile(
                             PlotVar,
                             StripVer,
                             MagPolarity,
-                            runMin,
-                            runMax,
+                            PIDCutString,
+                            runMin=None,
+                            runMax=None,
                             TrackCuts="",
                             outputDir=None,
                             verbose=True,
@@ -201,10 +210,13 @@ def PlotVarAndWriteToFile(
                             schemeName=None,
                             maxFiles=-1
                           ):
-
+    xBin=""
+    yBin=""
+    zBin=""
     Plots = PlotVarsAndReturn( PartName, [PlotVar], StripVer, MagPolarity,
-                                runMin, runMax, TrackCuts, verbose,
-                                allowMissingDataSets,schemeName, maxFiles
+                               runMin, runMax, PIDCutString,
+                               xBin, yBin, zBin, TrackCuts, verbose,
+                               allowMissingDataSets,schemeName, maxFiles
                               )
 
     #======================================================================
