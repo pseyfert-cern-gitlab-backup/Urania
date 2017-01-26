@@ -22,7 +22,7 @@ if __name__=='__main__':
         prog=os.path.basename(sys.argv[0]),
         description=("""Plot the distribution of a variable from the PID Calib datasets, e.g. """
         """momentum, for a given:
-        a) Stripping version <stripVersion> (e.g. \"20\")
+        a) Sample version <sampleVersion> (e.g. \"20\" for Run 1 Stripping 20, \"Turbo16\" for Run 2 2016)
         b) magnet polarity  <magPol> (\"MagUp\" or \"MagDown\")
         c) particle type <partName> (\"K\", \"P\", \"Pi\", \"e\" or \"Mu\")
         d) Variable to plot <variable>
@@ -33,8 +33,8 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" DLLK
         )
 
     ## add the positional arguments
-    parser.add_argument('stripVersion', metavar='<stripVersion>',
-                        help="Sets the stripping version")
+    parser.add_argument('sampleVersion', metavar='<sampleVersion>',
+                        help="Sets the sample version")
     parser.add_argument('magPol', metavar='<magPol>',
                         help="Sets the magnet polarity")
     parser.add_argument('partName', metavar='<partName>',
@@ -84,10 +84,10 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" DLLK
                           "N.B. You should only use this option if requested to "
                           "do so by the PIDCalib authors")
 
-    addGroup.add_argument("-L", "--loadTriggers", dest="triggerList",
-                          metavar="TRIGGERS", action="append", default=[],
-                          help="A comma seperated list of triggers to load, into "
-                          "the data set. Can be specified multiple times.")
+    #addGroup.add_argument("-L", "--loadTriggers", dest="triggerList",
+    #                      metavar="TRIGGERS", action="append", default=[],
+    #                      help="A comma seperated list of triggers to load, into "
+    #                      "the data set. Can be specified multiple times.")
 
     opts = parser.parse_args()
 
@@ -107,7 +107,7 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" DLLK
     RunMax = None
 
     # set the stripping version
-    StripVersion=opts.stripVersion
+    StripVersion=opts.sampleVersion
     CheckStripVer(StripVersion)
 
     # set the magnet polarity
@@ -118,14 +118,14 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" DLLK
     PartName=opts.partName
     CheckPartType(PartName)
 
-    TriggerList = []
-    if (len(opts.triggerList)>0):
-        if isinstance(opts.triggerList,str):
-            TriggerList = [opts.triggerList]
-        elif isinstance(opts.triggerList,list):
-            TriggerList = opts.triggerList
-        if opts.verbose:
-            print "Triggers to load:", TriggerList
+    #TriggerList = []
+    #if (len(opts.triggerList)>0):
+    #    if isinstance(opts.triggerList,str):
+    #        TriggerList = [opts.triggerList]
+    #    elif isinstance(opts.triggerList,list):
+    #        TriggerList = opts.triggerList
+    #    if opts.verbose:
+    #        print "Triggers to load:", TriggerList
 
     # set the misID particle name
     #MisIDPartName=opts.misIDPartName
@@ -133,15 +133,18 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" DLLK
 
     # set the plot variable
     PlotVar=opts.varName
-    if not CheckCuts(opts.varName,TriggerList,StripVersion):
+    #if not CheckCuts(opts.varName,TriggerList,StripVersion):
+    if not CheckCuts(opts.varName,StripVersion):
         parser.error("Invalid variable %s" %str(opts.varName))
 
     if (len(opts.cuts)>0):
         if isinstance(opts.cuts,str):
-            if not CheckCuts(opts.cuts,TriggerList,StripVersion):
+            #if not CheckCuts(opts.cuts,TriggerList,StripVersion):
+            if not CheckCuts(opts.cuts,StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cuts))
         elif isinstance(opts.cuts,list):
-            if not CheckCuts(opts.cuts.join(" "),TriggerList,StripVersion):
+            #if not CheckCuts(opts.cuts.join(" "),TriggerList,StripVersion):
+            if not CheckCuts(opts.cuts.join(" "),StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cuts))
 
     #CheckBinVarName(PlotVar)
@@ -259,6 +262,7 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" DLLK
                           PlotVar,
                           StripVersion,
                           MagPolarity,
+                          opts.varName,
                           RunMin,
                           RunMax,
                           opts.cuts,
@@ -266,7 +270,6 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" DLLK
                           opts.verbose,
                           opts.allowMissing,
                           schemeName,
-                          MaxFiles,
-                          TriggerList
+                          MaxFiles
                           )
 
