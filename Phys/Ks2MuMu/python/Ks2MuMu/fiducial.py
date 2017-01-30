@@ -20,6 +20,13 @@ fullsel = selection + aa + armenteros + aa + gec
 minsel = selection + aa + gec
 
 # ----------------------------------------------------------------
+# Stripping
+dcv = ['%s_PT>250', '%s_IPCHI2_OWNPV>100', '%s_TRACK_CHI2NDOF<5']
+mc  = 'abs(KS0_M - 500)<100 && KS0_AMAXDOCA<0.3 && ((KS0_ENDVERTEX_Z - KS0_OWNPV_Z)*KS0_M/KS0_P)>0.1*89.53*2.9979e-01 && KS0_IP_OWNPV<0.4 && KS0_M>400 && KS0_M<600'
+dc  = ' && '.join([el%d for el in dcv for d in ('muplus', 'muminus')])
+stripping = '(' + mc + aa + dc + ')'
+
+# ----------------------------------------------------------------
 # Names for the BDT and the MuID
 bdtname = {}
 bdtname['TIS_'] = 'BDTb025de4nt1000M1_TisTisTos'
