@@ -213,32 +213,59 @@ def GetWGPFiles(StripVer,MagPolarity,verbose=False):
     bkDict[ 'EventTypeId' ] = '95100000'
     bkDict['FileType'] = 'PIDCALIB.ROOT'
     bkDict['DataTakingConditions'] = 'Beam6500GeV-VeloClosed-'+MagPolarity
-    year = StripVer.replace('Turbo','')
-    bkDict[ 'ConfigVersion' ] = 'Collision'+year
+    #Proton-Proton collision data
+    if StripVer=="Turbo15" or StripVer=="Turbo16":
+    	year = StripVer.replace('Turbo','')
+    	bkDict[ 'ConfigVersion' ] = 'Collision'+year
+    elif StripVer=="pATurbo15" or StripVer=="pATurbo16":
+        year = StripVer.replace('pATurbo','')
+    	bkDict[ 'ConfigVersion' ] = 'Protonion'+year
+    elif StripVer=="ApTurbo15" or StripVer=="ApTurbo16":
+    	year = StripVer.replace('ApTurbo','')
+    	bkDict[ 'ConfigVersion' ] = 'Ionproton'+year
     
     reco = ''
     turbo = ''
     version = ''
-    ############
-    ### 2015 ###
-    ############
-    if year == '15':
-    	reco = '15a'
-    	turbo = '02'
-    	version = '4r1'
-    ############
-    ### 2016 ###
-    ############
-    elif year == '16':
-    	reco = '16'
-    	turbo = '02a'
-    	version = '4r1'
+    if StripVer=="Turbo15" or StripVer=="Turbo16":
+    	############
+    	### 2015 ###
+    	############
+    	if year == '15':
+    		reco = '15a'
+    		turbo = '02'
+    		version = '4r1'
+    	############
+    	### 2016 ###
+    	############
+    	elif year == '16':
+    		reco = '16'
+    		turbo = '02a'
+    		version = '4r1'
+    	
+    elif StripVer=="pATurbo15" or StripVer=="pATurbo16" or StripVer=="ApTurbo15" or StripVer=="ApTurbo16":	
+    	############
+    	### 2015 ###
+    	############
+    	if year == '15':
+    		reco = '15pLead'
+    		turbo = '03pLead'
+    		version = '5r0'
+    	############
+    	### 2016 ###
+    	############
+    	elif year == '16':
+    		reco = '16pLead'
+    		turbo = '03pLead'
+    		version = '5r0'
+
     bkDict[ 'ProcessingPass' ] = '/Real Data/Reco'+reco+'/Turbo'+turbo+'/PIDCalibTuples'+version+'/PIDMerge01'
     
     file = bkClient.getFilesWithGivenDataSets(bkDict)
 	#file = bkClient.getVisibleFilesWithMetadata(bkDict)
     #print file
     files  = file['Value'] 
+    
     print "There are " + str(len(files)) + " WGP nTuples in this dataset"
     #print files
     #print "============================================="

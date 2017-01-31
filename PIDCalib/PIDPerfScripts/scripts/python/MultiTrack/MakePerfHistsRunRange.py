@@ -150,7 +150,7 @@ e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
     # set the sample version (stripping version in Run I, and Turbo version in Run II. Internally called StripVersion)
     StripVersion=opts.sampleVersion
     CheckStripVer(StripVersion)
-
+    
     # set the magnet polarity
     MagPolarity=opts.magPol
     CheckMagPol(MagPolarity)
@@ -158,6 +158,11 @@ e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
     # set the particle name
     PartName=opts.partName
     CheckPartType(PartName)
+    
+    #Additional sample check for pA/Ap samples
+    if 'pA' in StripVersion or 'Ap' in StripVersion:
+    	CheckStripVerPartNameMagPol(StripVersion,PartName,MagPolarity)
+    
 
     # set the PID cuts
     DLLCuts = opts.pidCut
