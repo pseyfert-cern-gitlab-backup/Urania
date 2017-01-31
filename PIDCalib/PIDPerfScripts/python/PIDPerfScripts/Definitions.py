@@ -280,12 +280,12 @@ def CheckMagPol(MagPol):
 
 def CheckStripVer(StripVer):
     ValidStripVers=("13b", "15", "17", "20", "20r1", "20_MCTuneV2","23_MCTuneV1","26",
-         "20r1_MCTuneV2","20_MCTunev3", "21r1","21","22", "23Val","23","5TeV","21_MCTuneV4","21r1_MCTuneV4","Turbo15","Turbo16")
+         "20r1_MCTuneV2","20_MCTunev3", "21r1","21","22", "23Val","23","5TeV","21_MCTuneV4","21r1_MCTuneV4","Turbo15","Turbo16","pATurbo15","ApTurbo15","pATurbo16","ApTurbo16")
     if StripVer=='23':
        msg=("""
             Attention: Stripping 23 is now replaced by Stripping 23_MCTuneV1. Please specify 23_MCTuneV1 as sample version.""")
        raise TypeError(msg)
-    if StripVer=='23_MCTuneV1' or StripVer=='26' or StripVer=='Turbo15' or StripVer=='Turbo16':
+    if StripVer=='23_MCTuneV1' or StripVer=='26' or StripVer=='Turbo15' or StripVer=='Turbo16' or StripVer=='pATurbo15' or StripVer=='ApTurbo15' or StripVer=='pATurbo16' or StripVer=='ApTurbo16':
        print "***************************************************************************************************************************"
        print "INFO : ProbNN versions MC12TuneV2 and MC12TuneV3 should not be used for Run 2 data - advise to use MC12TuneV4 or MC15TuneV1" 
        print "***************************************************************************************************************************"
@@ -293,6 +293,17 @@ def CheckStripVer(StripVer):
         msg=("Invalid stripping version '{0}'. "
              "Allowed versions are {1}").format(StripVer, str(ValidStripVers))
         raise TypeError(msg)
+
+def CheckStripVerPartNameMagPol(StripVer,PartName,MagPol):
+    Valid_pA_Ap_PartNames = ["K","P","Pi","Mu"]
+    if 'pA' in StripVer or 'Ap' in StripVer:
+    	if 'Up' in MagPol:
+    		msg=("MagUp data does not exist in the pA/Ap dataset. Please select MagDown and run again.")
+    		raise TypeError(msg)
+    	if PartName not in Valid_pA_Ap_PartNames:
+            msg=("Invalid choice of sample for pA/Ap data. Please use one of the following: K, Pi, Mu, P")
+            raise TypeError(msg)
+
 
 def CheckVarName(VarName):
     ValidVarNames=GetVarNames()
@@ -303,16 +314,16 @@ def CheckVarName(VarName):
 
 
 def CheckIsTurbo(StripVer):
-    ValidTurboNames=("Turbo15",)
+    ValidTurboNames=("Turbo15","Turbo16","pATurbo15","ApTurbo15","pATurbo16","ApTurbo16")
     if StripVer not in ValidTurboNames: 
         return False
     return True
 
-def GetTurboPath(StripVer,MagPol):
-    CheckStripVer(StripVer)
-    CheckMagPol(MagPol)    
-    if StripVer=='Turbo15':
-        if MagPol=='MagDown':
-           return "/LHCb/Collision15/Beam6500GeV-VeloClosed-MagDown/Real Data/Reco15a/Turbo02/PIDCalibTuples2r1/95100000/PIDCALIB.ROOT"
-        if MagPol=='MagUp':
-           return "/LHCb/Collision15/Beam6500GeV-VeloClosed-MagUp/Real Data/Reco15a/Turbo02/PIDCalibTuples2r1/95100000/PIDCALIB.ROOT"
+#def GetTurboPath(StripVer,MagPol):
+#    CheckStripVer(StripVer)
+#    CheckMagPol(MagPol)    
+#    if StripVer=='Turbo15':
+#        if MagPol=='MagDown':
+#           return "/LHCb/Collision15/Beam6500GeV-VeloClosed-MagDown/Real Data/Reco15a/Turbo02/PIDCalibTuples2r1/95100000/PIDCALIB.ROOT"
+#        if MagPol=='MagUp':
+#           return "/LHCb/Collision15/Beam6500GeV-VeloClosed-MagUp/Real Data/Reco15a/Turbo02/PIDCalibTuples2r1/95100000/PIDCALIB.ROOT"

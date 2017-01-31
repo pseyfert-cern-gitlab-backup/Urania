@@ -3,6 +3,9 @@
 ! Responsible : Donal Hill
 ! Purpose     : Classes for performing PID based studies
 !-----------------------------------------------------------------------------
+! 2017-1-31 - Donal Hill
+	- Updated MultiTrackCalibTool to enable nVeloClusters to be used
+
 ! 2017-1-11 - Donal Hill
 	- Updated MultiTrackCalibTool to allow Run 2 histograms to be analysed
 	- Added functionality for nSPDHits as a binning variable
