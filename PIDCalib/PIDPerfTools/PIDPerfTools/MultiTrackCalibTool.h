@@ -40,6 +40,8 @@ public:
   void SetNTracksVarName(const std::string& NameInTree);
   
   void SetNSPDHitsVarName(const std::string& NameInTree);
+  
+  void SetNVeloClustersVarName(const std::string& NameInTree);
 
   void SetSWeightVarName(const std::string& NameInTree);
 
@@ -124,6 +126,7 @@ private:
 
   unsigned int m_indexNTracks;
   unsigned int m_indexNSPDHits;
+  unsigned int m_indexNVeloClusters;
   unsigned int m_BinningDimensions;
 
   Bool_t m_BinningVectorSorted;

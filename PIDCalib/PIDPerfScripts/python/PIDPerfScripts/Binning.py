@@ -116,6 +116,9 @@ for trType in GetRICHPIDPartTypes()+GetMuonPIDPartTypes():
 
     AddBinScheme(trType, 'nSPDHits', 'highres', 0, 500)
     AddUniformBins(trType, 'nSPDHits', 'highres', 500, 0, 500)
+    
+    AddBinScheme(trType, 'nVeloClusters', 'highres', 0, 10000)
+    AddUniformBins(trType, 'nVeloClusters', 'highres', 500, 0, 10000)
 
 
 
@@ -138,10 +141,13 @@ for trType in GetRICHPIDPartTypes() :
     AddBinBoundary(trType, 'nTracks', 'DLLKpi', 200)
     AddBinBoundary(trType, 'nTracks', 'DLLKpi', 300)
 
-# nSPDHits
+	# nSPDHits
 
     AddBinScheme(trType, 'nSPDHits','DLLKpi',0,1000)
     AddUniformBins(trType, 'nSPDHits', 'DLLKpi', 5,0,1000)
+    
+    AddBinScheme(trType, 'nVeloClusters','DLLKpi',0,10000)
+    AddUniformBins(trType, 'nVeloClusters', 'DLLKpi', 5,0,10000)
 
 
 
@@ -348,6 +354,9 @@ for trType in GetPartTypes():
 
     AddBinScheme(trType, 'nSPDHits', 'PerfPlots_%s'%(trType), 0, 1000)
     AddUniformBins(trType, 'nSPDHits', 'PerfPlots_%s'%(trType), 20, 0, 1000)
+    
+    AddBinScheme(trType, 'nVeloClusters', 'PerfPlots_%s'%(trType), 0, 10000)
+    AddUniformBins(trType, 'nVeloClusters', 'PerfPlots_%s'%(trType), 20, 0, 10000)
 
     AddBinScheme(trType, 'nRich1Hits', 'PerfPlots_%s'%(trType), 0, 10000)
     AddUniformBins(trType, 'nRich1Hits', 'PerfPlots_%s'%(trType), 20, 0, 10000)
@@ -361,6 +370,7 @@ for trType in GetRICHPIDPartTypes():
     SetDefaultBinScheme(trType, 'ETA', 'DLLKpi')
     SetDefaultBinScheme(trType, 'nTracks', 'DLLKpi')
     SetDefaultBinScheme(trType, 'nSPDHits', 'DLLKpi')
+    SetDefaultBinScheme(trType, 'nVeloClusters', 'DLLKpi')
 
 for trType in GetMuonPIDPartTypes():
     SetDefaultBinScheme(trType, 'P', 'DLLKpi_MuonUnBiased')
