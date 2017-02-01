@@ -3,7 +3,7 @@
 # Maintainer : Diego Martinez Santos, Carlos Vazquez Sierra
 #============================================================================
 package           UraniaSys
-version           v6r0
+version           v6r1
 #============================================================================
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -32,15 +32,15 @@ use  Ks2Pi0MuMu			v1r2	Phys			# [Diego Martinez Santos], [Veronika Chobanova]
 use  Lambdab2Jpsippi            v3r8    Phys                    # [Patrick Koppenburg]
 use  BsDsMuNuForRDS             v1r1    Phys                    # [Ricardo Vazquez Gomez]
 
-use  B2DXFitters		v3r2	PhysFit			# [Agnieszka Dziurda], [Manuel Schiller]
+use  B2DXFitters		v3r3	PhysFit			# [Agnieszka Dziurda], [Manuel Schiller]
 use  P2VV			v4r2	PhysFit			# [Sean Benson], [Katya Govorkova]
 use  SomeMassModels		v2r6	PhysFit			# [Diego Martinez Santos]
 use  RooPhysFitter              v3r2    PhysFit                 # [Donal Hill]
 use  V0hhFitter                 v1r0    PhysFit                 # [Rafael Silva Coutinho]
 
 use CalibDataScripts            v5r4    PIDCalib                # [Donal Hill]
-use PIDPerfScripts              v11r0   PIDCalib                # [Donal Hill]
-use PIDPerfTools                v8r0    PIDCalib                # [Donal Hill]
+use PIDPerfScripts              v11r1   PIDCalib                # [Donal Hill]
+use PIDPerfTools                v8r1    PIDCalib                # [Donal Hill]
 
 use  LHCbStyle			v2r8	RootTools		# Michael Schmelling, David Ward (EB chair)
 use  SimpleTools	  	v2r0	RootTools           	# Conor Fitzpatrick

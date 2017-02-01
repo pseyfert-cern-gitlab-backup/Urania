@@ -3,6 +3,10 @@
 ! Responsible : Donal Hill
 ! Purpose     : Scripts using PIDPerfTools to perform PID studies
 !-----------------------------------------------------------------------------
+
+! 2017-02-01 - Carlos Vazquez Sierra
+ - Make version v11r1 for release.
+
 ! 2017-1-31 - Donal Hill
 	- Updated PIDCalib to use pA and Ap Run 2 calibration data.
 	- Added nVeloClusters variable.
