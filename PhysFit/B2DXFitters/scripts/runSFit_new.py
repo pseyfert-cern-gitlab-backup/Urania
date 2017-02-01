@@ -109,13 +109,11 @@ __doc__ = """ real docstring """
 # -----------------------------------------------------------------------------
 # Load necessary libraries
 # -----------------------------------------------------------------------------
-import B2DXFitters
 import ROOT
-from B2DXFitters import *
 from ROOT import *
+import B2DXFitters
+from B2DXFitters import *
 
-from ROOT import RooFit
-from ROOT import DecRateCoeff_Bd
 from optparse import OptionParser
 from math     import pi, log
 from  os.path import exists
