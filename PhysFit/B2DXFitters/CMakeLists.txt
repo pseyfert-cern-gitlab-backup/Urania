@@ -14,7 +14,7 @@ find_package(ROOT COMPONENTS Core RooFitCore RooStats RooFit Hist Tree RIO Matri
 #                           dict/B2DXFittersDict.h dict/B2DXFittersDict.xml
 #                           SPLIT_CLASSDEF)
 #add_definitions(-UNDEBUG)
-#include_directories(SYSTEM ${ROOT_INCLUDE_DIRS})
+include_directories(SYSTEM ${ROOT_INCLUDE_DIRS})
 
 gaudi_add_dictionary(B2DXFitters
                      dict/B2DXFittersDict.h
