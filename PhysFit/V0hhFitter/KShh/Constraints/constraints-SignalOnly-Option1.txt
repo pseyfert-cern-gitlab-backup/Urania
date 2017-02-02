@@ -1,4 +1,0 @@
-facBs		true
-kSig(LL)   	0.01
-kSig(Bs)   	0.01
-kSig(Mode) 	0.01
