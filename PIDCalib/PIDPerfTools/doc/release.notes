@@ -3,6 +3,12 @@
 ! Responsible : Donal Hill
 ! Purpose     : Classes for performing PID based studies
 !-----------------------------------------------------------------------------
+
+! 2017-02-02 - Carlos Vazquez Sierra
+ - Make version v8r1 for release.
+ 
+!============================================ v8r0 2016-02-02 ==============================
+ 
 ! 2017-2-2 - Donal Hill
 	- Fixed bug in MultiTrackCalibTool that segfaulted when running on > 1 track.
 
