@@ -7,6 +7,8 @@
 #include "TBranch.h"
 #include "TLeaf.h"
 #include "TList.h"
+#include <stdio.h>
+#include <string.h>
 
 // Boost
 #include "boost/lexical_cast.hpp"
@@ -460,10 +462,10 @@ void MultiTrackCalibTool::SetTrackKinVarBranchAddressInInputTree()
       if ((itr_trk!=m_TrackEffMap.begin())&&(itr_binVar->first=="nTRACKS")){
          itr_trkVar->second.push_back(m_TrackVars.begin()->second.at(m_indexNTracks));
       }
-      if ((itr_trk!=m_TrackEffMap.begin())&&(itr_binVar->first=="nSPDHITS")){
+      else if ((itr_trk!=m_TrackEffMap.begin())&&(itr_binVar->first=="nSPDHITS")){
          itr_trkVar->second.push_back(m_TrackVars.begin()->second.at(m_indexNSPDHits));
       }
-      if ((itr_trk!=m_TrackEffMap.begin())&&(itr_binVar->first=="nVeloClusters")){
+      else if ((itr_trk!=m_TrackEffMap.begin())&&(itr_binVar->first=="nVeloClusters")){
          itr_trkVar->second.push_back(m_TrackVars.begin()->second.at(m_indexNVeloClusters));
       }
       else {
@@ -747,15 +749,14 @@ void MultiTrackCalibTool::DeleteHeapMemVars()
   std::map<std::string, std::vector<void*> >::iterator itr_trk;
   for(itr_trk=m_TrackVars.begin(); itr_trk!=m_TrackVars.end(); ++itr_trk)
   {
-    /*
-    std::vector<void*>::iterator itr_v;
+    
+    /*std::vector<void*>::iterator itr_v;
     for(itr_v=itr_trk->second.begin(); itr_v!=itr_trk->second.end(); ++itr_v)
     {
       // use global operate delete on a void pointer
        ::operator delete(*itr_v);
-    }
+    }*/
     itr_trk->second.clear();
-    */
 
     // Loop over all kinematic variables
     std::vector<void*>::iterator itr_v;
@@ -867,6 +868,7 @@ void MultiTrackCalibTool::Loop()
           std::string zvarname = this->GetKinVarBranchName(trkname,
                                                            m_BinningParam.at(2).first,
                                                            m_BinningParam.at(2).second);
+    	  
           Double_t zvar = CastVoidPointerToDouble(itr_trk->second.at(2),
                                                   m_InputRefTree,
                                                   zvarname);
@@ -1086,18 +1088,22 @@ void MultiTrackCalibTool::SetRefDataInPerfHistLimits()
           exit(EXIT_FAILURE);
         }
 
-        if(cuts!="")
-          cuts += " && ";
-
-        cuts +=
-          boost::lexical_cast<std::string>(RangeMin)
-          + " <= "
-          + var_string
-          + " && "
-          + boost::lexical_cast<std::string>(RangeMax)
-          + " > "
-          + var_string;
-
+    
+		//Check if the variable cut has already been added (don't append if it has)
+		std::string::size_type pos = cuts.find(var_string);
+		if(pos == std::string::npos){
+		
+			if(cuts!="") cuts += " && ";
+        	cuts +=
+          	boost::lexical_cast<std::string>(RangeMin)
+          	+ " <= "
+          	+ var_string
+          	+ " && "
+          	+ boost::lexical_cast<std::string>(RangeMax)
+          	+ " > "
+          	+ var_string;
+		}
+		
       }// Loop over binning parameters
 
   }// Loop over all tracks

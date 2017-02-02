@@ -321,6 +321,7 @@ e.g. python {0} \"20\" \"MagUp\" \"$HOME/MyAnalysis/MySignalSample.root\" \"Sign
         # need to add particle name to DLL cut apparently
         histname="%s_%s_All" %(trackType, DLLCut)
         PerfHist=f_Perf.Get(histname)
+        
         if not PerfHist:
             msg="Failed to retrieve histogram {hname} from file {fname}".format(
                 hname=histname, fname=f_Perf.GetName())
