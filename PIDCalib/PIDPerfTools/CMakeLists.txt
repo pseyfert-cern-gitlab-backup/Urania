@@ -6,6 +6,8 @@ gaudi_subdir(PIDPerfTools v8r1)
 find_package(Boost COMPONENTS regex)
 find_package(ROOT COMPONENTS Core RIO RooFitCore RooFit RooStats Hist Gpad Graf Tree)
 
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS})
+
 gaudi_add_dictionary(PIDPerfTools
                      dict/PIDPerfToolsDict.h
                      dict/PIDPerfToolsDict.xml
