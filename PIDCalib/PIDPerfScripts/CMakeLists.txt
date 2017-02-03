@@ -7,6 +7,7 @@ gaudi_depends_on_subdirs(PIDCalib/PIDPerfTools)
 
 find_package(Boost)
 find_package(ROOT)
+find_package(Xrootd)
 
 gaudi_install_python_modules()
 
