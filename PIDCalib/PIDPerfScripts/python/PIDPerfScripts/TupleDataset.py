@@ -213,7 +213,7 @@ datasets = {
   'DSt_K'  : ["DSt_KPTuple", "DSt_KMTuple"],
   'Lam0_P' : ["Lam0_PTuple", "Lam0_PbarTuple", "Lam0_HPT_PTuple", "Lam0_HPT_PbarTuple", "Lam0_VHPT_PTuple", "Lam0_VHPT_PbarTuple"],
   'Jpsi_Mu': ["Jpsi_MuPTuple", "Jpsi_MuMTuple"],
-  'P_LcfB' : ["LbLcMu_PTuple", "LbLcMu_PbarTuple"],
+  'LcfB_P' : ["LbLcMu_PTuple", "LbLcMu_PbarTuple"],
   'Sigmac0_P': ["Sigmac0_PbarTuple","Sigmac0_PTuple"],
   'DsPhi_K': ["DsPhi_KP_notagTuple","DsPhi_KM_notagTuple","DsPhi_KPTuple","DsPhi_KMTuple"],
   'Sigmacpp_P': ["Sigmacpp_PbarTuple","Sigmacpp_PTuple"],
