@@ -87,7 +87,7 @@ def GetMotherName(PartName):
         return 'DsPhi'
     elif PartName == 'K_Phi':                           
         return 'Phi' 
-    elif PartName == 'K_KS':
+    elif PartName == 'K_KS' or PartName == 'Pi_KS':
         return 'KS'
     elif PartName == 'P':
         return 'Lam0'
