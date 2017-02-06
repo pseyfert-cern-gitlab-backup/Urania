@@ -146,7 +146,7 @@ def getCPparameters(decay,myconfigfile):
         argLf = myconfigfile["StrongPhase"]-myconfigfile["WeakPhase"]
         argLbarfbar = myconfigfile["StrongPhase"]+myconfigfile["WeakPhase"]
         modLf = myconfigfile["ModLf"]
-        ACPobs = cpobservables.AsymmetryObservables(argLf,argLbarfbar,modLf)
+        ACPobs = cpobservables.AsymmetryObservables(argLf,argLbarfbar,modLf,True)
         ACPobs.printtable()
         Cf    = ACPobs.Cf()
         Sf    = ACPobs.Sf()

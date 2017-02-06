@@ -11,9 +11,9 @@ def getconfig() :
     configdict["DeltaMs"]       = 17.757   # in ps^{-1}
     configdict["TagEffSig"]     = 0.403
     configdict["TagOmegaSig"]   = 0.391
-    configdict["StrongPhase"]   = 20. / 180. * pi
-    configdict["WeakPhase"]     = 70./180.*pi
-    configdict["ModLf"]         = 0.372
+    configdict["StrongPhase"]   = 10. / 180. * pi
+    configdict["WeakPhase"]     = 71.121/180.*pi
+    configdict["ModLf"]         = 0.37
     configdict["CPlimit"]       = {"upper":4.0, "lower":-4.0} 
 
     configdict["TaggingCalibration"] = {}
