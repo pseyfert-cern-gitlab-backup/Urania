@@ -14,12 +14,6 @@ def getconfig() :
     configdict["CharmModes"] = {"KPiPi"} 
     # year of data taking
     configdict["YearOfDataTaking"] = {"2012"} 
-    # stripping (necessary in case of PIDK shapes)
-    #configdict["Stripping"] = {"2011":"21r1","2012":"21"}
-    # integrated luminosity in each year of data taking (necessary in case of PIDK shapes) 
-    #configdict["IntegratedLuminosity"] = {"2012": {"Down": 0.59, "Up": 0.44}}
-    #configdict["LumRatio"] = {"2012" :
-                              #configdict["IntegratedLuminosity"]["2012"]["Up"] / ( configdict["IntegratedLuminosity"]["2012"]["Up"] + configdict["IntegratedLuminosity"]["2012"]["Down"] ) }
     # file name with paths to MC/data samples
     configdict["dataName"]   = "/afs/cern.ch/user/v/vibattis/cmtuser/Urania_v5r0/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/config_Bd2DPi.txt"
         
@@ -62,23 +56,71 @@ def getconfig() :
                                                       "Name"                   : "BacCharge",
                                                       "InputName"              : "lab1_ID"}
 
-    configdict["BasicVariables"]["TagDecOS"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                      "Name"                   : "TagDecOS",
-                                                      "InputName"              : "lab0_TAGDECISION_OS"}
+    configdict["BasicVariables"]["TagDecOSComb"]      = { "Range"                  : [-1.0,    1.0     ],
+                                                          "Name"                   : "TagDecOSComb",
+                                                          "InputName"              : "obsTagOS"}
 
-    configdict["BasicVariables"]["TagDecSS"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                      "Name"                   : "TagDecSS",
-                                                      "InputName"              : "lab0_SS_PionBDT_DEC"} 
+    configdict["BasicVariables"]["TagDecOSCharm"]      = { "Range"                  : [-1.0,    1.0     ],
+                                                           "Name"                   : "TagDecOSCharm",
+                                                           "InputName"              : "obsTagOSCharm"}
 
-    configdict["BasicVariables"]["MistagOS"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                      "Name"                   : "MistagOS",
-                                                      "InputName"              : "lab0_TAGOMEGA_OS"}
+    configdict["BasicVariables"]["TagDecOSKaon"]      = { "Range"                  : [-1.0,    1.0     ],
+                                                          "Name"                   : "TagDecOSKaon",
+                                                          "InputName"              : "obsTagOSKaon"}
 
-    configdict["BasicVariables"]["MistagSS"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                      "Name"                   : "MistagSS",
-                                                      "InputName"              : "lab0_SS_PionBDT_PROB"}
+    configdict["BasicVariables"]["TagDecOSElectron"]      = { "Range"                  : [-1.0,    1.0     ],
+                                                              "Name"                   : "TagDecOSElectron",
+                                                              "InputName"              : "obsTagOSElectron"}
+
+    configdict["BasicVariables"]["TagDecOSMuon"]      = { "Range"                  : [-1.0,    1.0     ],
+                                                          "Name"                   : "TagDecOSMuon",
+                                                          "InputName"              : "obsTagOSMuon"}
+
+    configdict["BasicVariables"]["TagDecVtxCharge"]      = { "Range"                  : [-1.0,    1.0     ],
+                                                             "Name"                   : "TagDecVtxCharge",
+                                                             "InputName"              : "obsTagVtxQ"}
+
+    configdict["BasicVariables"]["TagDecSSPionBDT"]      = { "Range"                  : [-1.0,    1.0     ],
+                                                             "Name"                   : "TagDecSSPionBDT",
+                                                             "InputName"              : "obsTagSSPionBDT"}
     
-    configdict["BasicVariables"]["BDTG"]           = { "Range"                  : [-1, 1],
+    configdict["BasicVariables"]["TagDecSSProton"]      = { "Range"                  : [-1.0,    1.0     ],
+                                                            "Name"                   : "TagDecSSProton",
+                                                            "InputName"              : "obsTagSSProton"}
+
+    configdict["BasicVariables"]["MistagOSComb"]      = { "Range"                  : [ 0.0,    0.5     ],
+                                                          "Name"                   : "MistagOSComb",
+                                                          "InputName"              : "obsEtaOS"}
+
+    configdict["BasicVariables"]["MistagOSCharm"]      = { "Range"                  : [ 0.0,    0.5     ],
+                                                           "Name"                   : "MistagOSCharm",
+                                                           "InputName"              : "obsEtaOSCharm"}
+
+    configdict["BasicVariables"]["MistagOSKaon"]      = { "Range"                  : [ 0.0,    0.5     ],
+                                                          "Name"                   : "MistagOSKaon",
+                                                          "InputName"              : "obsEtaOSKaon"}
+
+    configdict["BasicVariables"]["MistagOSElectron"]      = { "Range"                  : [ 0.0,    0.5     ],
+                                                              "Name"                   : "MistagOSElectron",
+                                                              "InputName"              : "obsEtaOSElectron"}
+
+    configdict["BasicVariables"]["MistagOSMuon"]      = { "Range"                  : [ 0.0,    0.5     ],
+                                                          "Name"                   : "MistagOSMuon",
+                                                          "InputName"              : "obsEtaOSMuon"}
+
+    configdict["BasicVariables"]["MistagVtxCharge"]      = { "Range"                  : [ 0.0,    0.5     ],
+                                                             "Name"                   : "MistagVtxCharge",
+                                                             "InputName"              : "obsEtaVtxQ"}
+    
+    configdict["BasicVariables"]["MistagSSPionBDT"]      = { "Range"                  : [ 0.0,    0.5     ],
+                                                             "Name"                   : "MistagSSPionBDT",
+                                                             "InputName"              : "obsEtaSSPionBDT"}
+
+    configdict["BasicVariables"]["MistagSSProton"]      = { "Range"                  : [ 0.0,    0.5     ],
+                                                            "Name"                   : "MistagSSProton",
+                                                            "InputName"              : "obsEtaSSProton"}
+    
+    configdict["BasicVariables"]["BDTG"]           = { "Range"                  : [0.0, 1],
                                                        "Name"                   : "BDTG",
                                                        "InputName"              : "BDT_classifier"}
 
@@ -105,33 +147,9 @@ def getconfig() :
                                                       "Name"                   : "nPV",
                                                       "InputName"              : "nPV"}
 
-    # Combinatorial
-    configdict["CreateCombinatorial"] = {}
-    configdict["CreateCombinatorial"]["BeautyMass"] = { "All"   : { "Cut": "lab0_FitDaughtersConst_M_flat>5500.0" },
-                                                        "KPiPi" : { "Cut": "lab0_FitDaughtersConst_M_flat>5500.0" }
-                                                        }
-    configdict["CreateCombinatorial"]["CharmMass"] = { "All"   : { "Cut": "lab0_FitDaughtersConst_M_flat>5500.0" },
-                                                       "KPiPi" : { "Cut": "lab0_FitDaughtersConst_M_flat>5500.0" }
-                                                       }
-
     # PIDK bin
     configdict["AdditionalCuts"] = {}
     configdict["AdditionalCuts"]["All"] = {"Data": "lab1_PIDK<5.0", "MC": "lab1_PIDKcorr<5.0&&lab0_BKGCAT<60"}
-
-    # tagging calibration
-    #configdict["TaggingCalibration"] = {}
-    #configdict["TaggingCalibration"]["OS"]    = {"p0"   : 0.365517, "p1"   : 0.950216, "average"   : 0.371147,
-    #                                             "p0Bar": 0.376730, "p1Bar": 1.048155, "averageBar": 0.371147}
-    #configdict["TaggingCalibration"]["SS"]    = {"p0"   : 0.424801, "p1"   : 1.004340, "average"   : 0.414892,
-    #                                             "p0Bar": 0.404896, "p1Bar": 0.995879, "averageBar": 0.414892}
-    #configdict["TaggingCalibration"]["OS+SS"] = {"p0"   : 0.338781, "p1"   : 0.971845, "average"   : 0.338493,
-    #                                             "p0Bar": 0.338363, "p1Bar": 1.027861, "averageBar": 0.338493}
-    
-
-    # PrefixID
-    configdict["DsChildrenPrefix"] = { "Child1"   : "lab3",
-                                       "Child2"   : "lab4",
-                                       "Child3"   : "lab5"}
 
     
     return configdict

@@ -133,7 +133,7 @@ def setConstantIfSoConfigured(var,myconfigfile) :
         print "[INFO]   ",var.Print()
 
 # ------------------------------------------------------------------------------
-def getCPparameters(ws, myconfigfile, UniformBlinding, HFAG):
+def getCPparameters(ws, myconfigfile, UniformBlinding):
 
     if "ModLf" in myconfigfile["ACP"]["Signal"].keys():
 
@@ -143,8 +143,7 @@ def getCPparameters(ws, myconfigfile, UniformBlinding, HFAG):
 
             ACPobs = cpobservables.AsymmetryObservables(myconfigfile["ACP"]["Signal"]["ArgLf"][0],
                                                         myconfigfile["ACP"]["Signal"]["ArgLbarfbar"][0],
-                                                        myconfigfile["ACP"]["Signal"]["ModLf"][0],
-                                                        HFAG)
+                                                        myconfigfile["ACP"]["Signal"]["ModLf"][0])
 
         elif "StrongPhase" and "WeakPhase" in myconfigfile["ACP"]["Signal"].keys():
 
@@ -152,8 +151,7 @@ def getCPparameters(ws, myconfigfile, UniformBlinding, HFAG):
             ArgLbarfbar = myconfigfile["ACP"]["Signal"]["StrongPhase"][0]+myconfigfile["ACP"]["Signal"]["WeakPhase"][0]
             ACPobs = cpobservables.AsymmetryObservables(ArgLf,
                                                         ArgLbarfbar,
-                                                        myconfigfile["ACP"]["Signal"]["ModLf"][0],
-                                                        HFAG)
+                                                        myconfigfile["ACP"]["Signal"]["ModLf"][0])
 
         ACPobs.printtable()
         Cf = ACPobs.Cf()
@@ -206,28 +204,17 @@ def getCPparameters(ws, myconfigfile, UniformBlinding, HFAG):
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 def runSFit(debug, wsname,
-            pereventmistag, tagfromdata, noftcalib, truetag, truetime, pereventterr,
-            toys, pathName, fileNamePull, treeName, outputdir,
+            pereventmistag, tagfromdata, noftcalib, pereventterr,
+            toys, pathName2011, pathName2012, fileNamePull, treeName, outputdir,
             MC, workMC,
             configName, scan,
             binned, plotsWeights, noweight,
-            sample, mode, year, hypo, merge, unblind, randomise, superimpose,
-            seed, preselection, UniformBlinding, HFAG, extended, fitresultFileName):
+            mode, hypo, unblind, randomise, superimpose,
+            seed, preselection, OSsel, SSsel,
+            UniformBlinding, extended, fitresultFileName):
 
     if MC and not noweight:
         print "ERROR: cannot use sWeighted MC sample (for now)"
-        exit(-1)
-
-    if truetag and not MC:
-        print "ERROR: cannot use true tagging on non-MC!"
-        exit(-1)
-
-    if truetime and not MC:
-        print "ERROR: cannot use true time on non-MC!"
-        exit(-1)
-
-    if truetag and pereventmistag:
-        print "ERROR: cannot use true tagging and pereventmistag (mistag is fixed to zero!)"
         exit(-1)
 
     # Get the configuration file
@@ -287,11 +274,17 @@ def runSFit(debug, wsname,
         workspace = []
         workspaceW = []
 
-        workspace.append(SFitUtils.ReadDataFromSWeights(TString(pathName), TString(treeName), MDSettings,
-                                                        TString(sample), TString(mode), TString(year), TString(hypo), merge,
+        workspace.append(SFitUtils.ReadDataFromSWeights(TString(pathName2011), TString(treeName), MDSettings,
+                                                        TString("both"), TString(mode), TString("2011"), TString(hypo), "pol",
                                                         False, toys, False, False, debug))
-        workspaceW.append(SFitUtils.ReadDataFromSWeights(TString(pathName), TString(treeName), MDSettings,
-                                                         TString(sample), TString(mode), TString(year), TString(hypo), merge,
+        workspace.append(SFitUtils.ReadDataFromSWeights(TString(pathName2012), TString(treeName), MDSettings,
+                                                        TString("both"), TString(mode), TString("2012"), TString(hypo), "pol",
+                                                        False, toys, False, False, debug))
+        workspaceW.append(SFitUtils.ReadDataFromSWeights(TString(pathName2011), TString(treeName), MDSettings,
+                                                         TString("both"), TString(mode), TString("2011"), TString(hypo), "pol",
+                                                         True, toys, False, True, debug))
+        workspaceW.append(SFitUtils.ReadDataFromSWeights(TString(pathName2012), TString(treeName), MDSettings,
+                                                         TString("both"), TString(mode), TString("2012"), TString(hypo), "pol",
                                                          True, toys, False, True, debug))
 
         print ""
@@ -303,39 +296,61 @@ def runSFit(debug, wsname,
         nameData = TString("dataSet_time")
         nameDataWA = TString("dataSet_time_weighted")
 
+        data2011_temp = GeneralUtils.GetDataSet(workspace[0], nameData, debug)
+        data2011_temp.SetName(data2011_temp.GetName()+"_2011")
+        dataWA2011_temp = GeneralUtils.GetDataSet(workspaceW[0], nameDataWA, debug)
+        dataWA2011_temp.SetName(dataWA2011_temp.GetName()+"_2011")
+        data2012_temp = GeneralUtils.GetDataSet(workspace[1], nameData, debug)
+        data2012_temp.SetName(data2012_temp.GetName()+"_2012")
+        dataWA2012_temp = GeneralUtils.GetDataSet(workspaceW[1], nameDataWA, debug)
+        dataWA2012_temp.SetName(dataWA2012_temp.GetName()+"_2012")
+        
+        data2011_temp.SetName(dataWA2011_temp.GetName() + "_temp")
+        dataWA2011_temp.SetName(data2011_temp.GetName())
+        data2011_temp.SetName(dataWA2011_temp.GetName())
+        
+        data2012_temp.SetName(dataWA2012_temp.GetName() + "_temp")
+        dataWA2012_temp.SetName(data2012_temp.GetName())
+        data2012_temp.SetName(dataWA2012_temp.GetName())
+
+        presel = ""
         if preselection != "":
-            data_temp = GeneralUtils.GetDataSet(workspace[0], nameData, debug)
-            dataWA_temp = GeneralUtils.GetDataSet(workspaceW[0], nameDataWA, debug)
-
-            data_temp.SetName(nameDataWA.Data() + "_temp")
-            dataWA_temp.SetName(nameData.Data())
-            data_temp.SetName(nameDataWA.Data())
-
             print "Applying following preselection to reduce dataset:"
             print preselection
+            presel = "&&"+preselection
 
-            # The unweighted set can be weighted after the cut because sWeights appears in the obs list. The weighted
-            # set is unweighted after the cut instead. That's why dataWA is obtained from data and vice-versa (and that's
-            # why the names given above are swapped ;-)
-            dataWA = WS(ws, RooDataSet(data_temp.GetName(), dataWA_temp.GetTitle(), data_temp, data_temp.get(), preselection, "sWeights"))
-            data = WS(ws, RooDataSet(dataWA_temp.GetName(), data_temp.GetTitle(), dataWA_temp, dataWA_temp.get(), preselection))
+        # The unweighted set can be weighted after the cut because sWeights appears in the obs list. The weighted
+        # set is unweighted after the cut instead. That's why dataWA is obtained from data and vice-versa (and that's
+        # why the names given above are swapped ;-)
+        dataWA2011OS = WS(ws, RooDataSet(data2011_temp.GetName()+"OS", dataWA2011_temp.GetTitle()+"OS", data2011_temp, data2011_temp.get(), OSsel+presel, "sWeights"))
+        dataWA2011SS = WS(ws, RooDataSet(data2011_temp.GetName()+"SS", dataWA2011_temp.GetTitle()+"SS", data2011_temp, data2011_temp.get(), SSsel+presel, "sWeights"))
 
-            print "Entries (unweighted set):"
-            print "...before cut: " + str(data_temp.numEntries()) + ", sum of weights " + str(data_temp.sumEntries())
-            print "...after cut: " + str(data.numEntries()) + ", sum of weights " + str(data.sumEntries())
-            print "Entries (weighted set):"
-            print "...before cut: " + str(dataWA_temp.numEntries()) + ", sum of weights " + str(dataWA_temp.sumEntries())
-            print "...after cut: " + str(dataWA.numEntries()) + ", sum of weights " + str(dataWA.sumEntries())
-        else:
-            print "No additional preselection"
-            data = WS(ws, GeneralUtils.GetDataSet(workspace[0], nameData, debug))
-            dataWA = WS(ws, GeneralUtils.GetDataSet(workspaceW[0], nameDataWA, debug))
+        data2011OS = WS(ws, RooDataSet(dataWA2011_temp.GetName()+"OS", data2011_temp.GetTitle()+"OS", dataWA2011_temp, dataWA2011_temp.get(), OSsel+presel))
+        data2011SS = WS(ws, RooDataSet(dataWA2011_temp.GetName()+"SS", data2011_temp.GetTitle()+"SS", dataWA2011_temp, dataWA2011_temp.get(), SSsel+presel))
 
-        data.Print("v")
-        dataWA.Print("v")
-        data.Print()
-        dataWA.Print()
+        dataWA2012OS = WS(ws, RooDataSet(data2012_temp.GetName()+"OS", dataWA2012_temp.GetTitle()+"OS", data2012_temp, data2012_temp.get(), OSsel+presel, "sWeights"))
+        dataWA2012SS = WS(ws, RooDataSet(data2012_temp.GetName()+"SS", dataWA2012_temp.GetTitle()+"SS", data2012_temp, data2012_temp.get(), SSsel+presel, "sWeights"))
 
+        data2012OS = WS(ws, RooDataSet(dataWA2012_temp.GetName()+"OS", data2012_temp.GetTitle()+"OS", dataWA2012_temp, dataWA2012_temp.get(), OSsel+presel))
+        data2012SS = WS(ws, RooDataSet(dataWA2012_temp.GetName()+"SS", data2012_temp.GetTitle()+"SS", dataWA2012_temp, dataWA2012_temp.get(), SSsel+presel))
+
+        print "Entries (unweighted set):"
+        print "...2011 OS: " + str(data2011OS.numEntries()) + ", sum of weights " + str(data2011OS.sumEntries())
+        print "...2011 SS: " + str(data2011SS.numEntries()) + ", sum of weights " + str(data2011SS.sumEntries())
+        print "...2012 OS: " + str(data2012OS.numEntries()) + ", sum of weights " + str(data2012OS.sumEntries())
+        print "...2012 SS: " + str(data2012SS.numEntries()) + ", sum of weights " + str(data2012SS.sumEntries())
+        print "Entries (weighted set):"
+        print "...2011 OS: " + str(dataWA2011OS.numEntries()) + ", sum of weights " + str(dataWA2011OS.sumEntries())
+        print "...2011 SS: " + str(dataWA2011SS.numEntries()) + ", sum of weights " + str(dataWA2011SS.sumEntries())
+        print "...2012 OS: " + str(dataWA2012OS.numEntries()) + ", sum of weights " + str(dataWA2012OS.sumEntries())
+        print "...2012 SS: " + str(dataWA2012SS.numEntries()) + ", sum of weights " + str(dataWA2012SS.sumEntries())
+
+        dataWA2011OS.Print("v")
+        dataWA2011SS.Print("v")
+        dataWA2012OS.Print("v")
+        dataWA2012SS.Print("v")
+        
+    '''
     else:
 
         print ""
@@ -370,8 +385,8 @@ def runSFit(debug, wsname,
         sam = WS(ws, RooCategory("sample","sample"))
 
         from B2DXFitters.mdfitutils import getObservables  as getObservables
-        observ = getObservables(MDSettings, workspaceMC, False, debug)
-        data_temp = GeneralUtils.GetDataSet(workspaceMC, observ, sam, datasetTS, sampleTS, modeTS, yearTS, hypoTS, merge, debug )
+        observables = getObservables(MDSettings, workspaceMC, False, debug)
+        data_temp = GeneralUtils.GetDataSet(workspaceMC, observables, sam, datasetTS, sampleTS, modeTS, yearTS, hypoTS, merge, debug )
         if preselection != "":
             print "Applying following preselection to reduce dataset:"
             print preselection
@@ -387,24 +402,17 @@ def runSFit(debug, wsname,
         dataWA = data
         print "Dataset entries:"
         print data.sumEntries()
+    '''
 
-    if MC or noweight:
-        obs = data.get()
-    else:
-        obs = dataWA.get()
-
-    if not truetime:
-        time = WS(ws, obs.find(MDSettings.GetTimeVarOutName().Data()))
-    else:
-        time = WS(ws, obs.find("True"+MDSettings.GetTimeVarOutName().Data()))
-
+    obs = dataWA2011OS.get() #of course we assume that all samples have the same observables!!!
+    time = WS(ws, obs.find(MDSettings.GetTimeVarOutName().Data()))
     if pereventterr:
         terr = WS(ws, obs.find(MDSettings.GetTerrVarOutName().Data()))
     else:
         terr = None
     id = WS(ws, obs.find(MDSettings.GetIDVarOutName().Data()))
     observables = RooArgSet(time,id)
-
+    
     #canvw = TCanvas("canvw")
     #framew = time.frame()
     #dataWA.plotOn(framew)
@@ -427,14 +435,10 @@ def runSFit(debug, wsname,
 
     tag = []
     mistag = []
-    if not truetag:
-        for t in range(0,MDSettings.GetNumTagVar()):
-            tag.append( WS(ws, obs.find(MDSettings.GetTagVarOutName(t).Data())) )
-            mistag.append( WS(ws, obs.find(MDSettings.GetTagOmegaVarOutName(t).Data())) )
-            #mistag[t].setRange(0.0,0.5)
-    else:
-        tag.append( WS(ws, obs.find("TagDecTrue" ) ) )
-        mistag.append( WS(ws, zero) )
+    for t in range(0,MDSettings.GetNumTagVar()):
+        tag.append( WS(ws, obs.find(MDSettings.GetTagVarOutName(t).Data())) )
+        mistag.append( WS(ws, obs.find(MDSettings.GetTagOmegaVarOutName(t).Data())) )
+        #mistag[t].setRange(0.0,0.5)
 
     if plotsWeights:
         name = TString("sfit")
@@ -465,20 +469,45 @@ def runSFit(debug, wsname,
 
     if myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"] != None:
         myconfigfile["AcceptanceFunction"] = myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["Type"]
-        acc, accnorm = buildSplineAcceptance(ws, time, 'Acceptance',
-                                             myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["KnotPositions"],
-                                             myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["KnotCoefficients"],
-                                             False if myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["Float"] == False else True,
-                                             debug)
+        acc2011OS, accnorm2011OS = buildSplineAcceptance(ws, time, 'acc2011OS',
+                                                         myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["KnotPositions"],
+                                                         myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["KnotCoefficients"],
+                                                         False if myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["Float"] == False else True,
+                                                         debug)
+        acc2011SS, accnorm2011SS = buildSplineAcceptance(ws, time, 'acc2011SS',
+                                                         myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["KnotPositions"],
+                                                         myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["KnotCoefficients"],
+                                                         False if myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["Float"] == False else True,
+                                                         debug)
+        acc2012OS, accnorm2012OS = buildSplineAcceptance(ws, time, 'acc2012OS',
+                                                         myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["KnotPositions"],
+                                                         myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["KnotCoefficients"],
+                                                         False if myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["Float"] == False else True,
+                                                         debug)
+        acc2012SS, accnorm2011OS = buildSplineAcceptance(ws, time, 'acc2012SS',
+                                                         myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["KnotPositions"],
+                                                         myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["KnotCoefficients"],
+                                                         False if myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["Float"] == False else True,
+                                                         debug)
+        
         if debug:
-            print "Acceptance function:"
-            acc.Print("v")
+            print "Acceptance functions:"
+            acc2011OS.Print("v")
+            acc2011SS.Print("v")
+            acc2012OS.Print("v")
+            acc2012SS.Print("v")
 
     else:
         print "[INFO] Using flat acceptance (no acceptance)"
         myconfigfile["AcceptanceFunction"] = None
-        acc = None
-        accnorm = None
+        acc2011OS = None
+        acc2011SS = None
+        acc2012OS = None
+        acc2012SS = None
+        accnorm2011OS = None
+        accnorm2011SS = None
+        accnorm2012OS = None
+        accnorm2012SS = None
 
     if myconfigfile["ResolutionAcceptance"]["Signal"]["Resolution"] == None:
         if debug:
@@ -487,7 +516,10 @@ def runSFit(debug, wsname,
             print "WARNING: the usage of RooTruthModel is highly discouraged! Use at your own risk!"
             print "If you want to emulate a perfect resolution, a very narrow gaussian is recommended instead."
             print ""
-        resmodel = None
+        resmodel2011OS = None
+        resmodel2011SS = None
+        resmodel2012OS = None
+        resmodel2012SS = None
     elif "Type" in myconfigfile["ResolutionAcceptance"]["Signal"]["Resolution"].keys():
         if myconfigfile["ResolutionAcceptance"]["Signal"]["Resolution"]["Type"] == "AverageModel":
             print "[INFO] Using mean resolution"
@@ -534,10 +566,16 @@ def runSFit(debug, wsname,
             print "ERROR: resolution type "+myconfigfile["ResolutionAcceptance"]["Signal"]["Resolution"]["Type"]+" not supported."
             exit(-1)
 
-    resmodel, acc = getResolutionModel(ws, myconfigfile, time, terr, acc)
+    resmodel2011OS, acc2011OS = getResolutionModel(ws, myconfigfile, time, terr, acc2011OS)
+    resmodel2011SS, acc2011SS = getResolutionModel(ws, myconfigfile, time, terr, acc2011SS)
+    resmodel2012OS, acc2012OS = getResolutionModel(ws, myconfigfile, time, terr, acc2012OS)
+    resmodel2012SS, acc2012SS = getResolutionModel(ws, myconfigfile, time, terr, acc2012SS)
     if debug:
-        print "Resolution model:"
-        resmodel.Print("v")
+        print "Resolution models:"
+        resmodel2011OS.Print("v")
+        resmodel2011SS.Print("v")
+        resmodel2012OS.Print("v")
+        resmodel2012SS.Print("v")
 
     print ""
     print "=========================================================="
@@ -545,8 +583,13 @@ def runSFit(debug, wsname,
     print "=========================================================="
     print ""
 
-    mistagcalib = []
+    mistagcalib2011OS = []
+    mistagcalib2011SS = []
+    mistagcalib2012OS = []
+    mistagcalib2012SS = []
+    
     mistagpdfparams = {}
+
     mistagpdf = []
 
     # Build mistag pdfs on the fly if required (at least one tagger wants it)
@@ -555,185 +598,233 @@ def runSFit(debug, wsname,
             nametag = "OS"
             if "SS" in MDSettings.GetTagVarOutName(t).Data():
                 nametag = "SS"
-            if "Type" in myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"].keys():
-                if myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["Type"] == "BuildTemplate":
-                    print "[INFO] Building mistag templates directly from data"
-                    mistagpdflist = WS(ws, SFitUtils.CreateDifferentMistagTemplates(dataWA, MDSettings, 50, True, debug) )
-                    break
+            if myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["Type"] == "BuildTemplate":
+                print "[INFO] Building mistag templates directly from data"
+                mistagpdflist = SFitUtils.CreateDifferentMistagTemplates(dataWA, MDSettings, 50, True, debug)
+                break
     else:
         mistagpdf = None
 
     #Build all tagging stuff
-    if truetag:
-        thiscalib = []
-        nametag = "true"
-        thiscalib.append( WS(ws, RooRealVar('p0_'+nametag,
-                                            'p_{0}'+nametag,
-                                            0.0)) )
-        thiscalib.append( WS(ws, RooRealVar('p1_'+nametag,
-                                            'p_{1}'+nametag,
-                                            1.0)) )
-        thiscalib.append( WS(ws, RooRealVar('deltap0_'+nametag,
-                                            '#Delta p_{0}'+nametag,
-                                            0.0)) )
-        thiscalib.append( WS(ws, RooRealVar('deltap1_'+nametag,
-                                            '#Delta p_{1}'+nametag,
-                                            0.0)) )
-        thiscalib.append( WS(ws, RooRealVar('avgeta_'+nametag,
-                                            '<#eta>'+nametag,
-                                            0.0 )) )
-        thiscalib.append( WS(ws, RooRealVar('tageff_'+nametag,
-                                            '#varepsilon_{tag}'+nametag,
-                                            1.0)) )
-        thiscalib.append( WS(ws, RooRealVar('tagasymm_'+nametag,
-                                            'a_{tag}'+nametag,
-                                            0.0)) )
-        mistagcalib.append( thiscalib )
+    for t in range(0,MDSettings.GetNumTagVar()):
+        nametag = "OS"
+        if "SS" in MDSettings.GetTagVarOutName(t).Data():
+            nametag = "SS"
+        print "[INFO] Creating calibration parameters for "+nametag+" tagger"
 
-    else:
+        etamean = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["avgeta"])
+        tageff2011OS = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tageff"])#[1.0] if nametag == "OS" else [0.0]
+        tageff2011SS = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tageff"])
+        tageff2012OS = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tageff"])#[1.0] if nametag == "OS" else [0.0]
+        tageff2012SS = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tageff"])
 
-        for t in range(0,MDSettings.GetNumTagVar()):
-            nametag = "OS"
-            if "SS" in MDSettings.GetTagVarOutName(t).Data():
-                nametag = "SS"
-            print "[INFO] Creating calibration parameters for "+nametag+" tagger"
+        '''
+        if tagfromdata:
+            print "[INFO] Computing <eta> and tagging efficiency directly from dataset. Overwriting values in configfile"
+            if noweight:
+                etamean[0] = data.mean(obs.find(MDSettings.GetTagOmegaVarOutName(t).Data()), MDSettings.GetTagVarOutName(t).Data()+"!=0")
+                etasigma = data.sigma(obs.find(MDSettings.GetTagOmegaVarOutName(t).Data()), MDSettings.GetTagVarOutName(t).Data()+"!=0")
+                numdata = RooDataSet("numdata"+str(t), "numdata", data, data.get(), MDSettings.GetTagVarOutName(t).Data()+"!=0")
+                num = float( numdata.numEntries() )
+                den = float( data.numEntries() )
+                import uncertainties, math
+                from uncertainties import ufloat
+                tagefferr = ufloat(num, math.sqrt(num)) / ufloat(den, math.sqrt(den))
+                tagefferr = tagefferr.std_dev
+            else:
+                etamean[0] = dataWA.mean(obs.find(MDSettings.GetTagOmegaVarOutName(t).Data()), MDSettings.GetTagVarOutName(t).Data()+"!=0")
+                etasigma = dataWA.sigma(obs.find(MDSettings.GetTagOmegaVarOutName(t).Data()), MDSettings.GetTagVarOutName(t).Data()+"!=0")
+                numdata = RooDataSet("numdata"+str(t), "numdata", data, data.get(), MDSettings.GetTagVarOutName(t).Data()+"!=0", "sWeights")
+                num = numdata.sumEntries()
+                den = dataWA.sumEntries()
+                import uncertainties, math
+                from uncertainties import ufloat
+                tagefferr = ufloat(num, math.sqrt(num)) / ufloat(den, math.sqrt(den))
+                tagefferr = tagefferr.std_dev
+            del numdata
+            tageff[0] = float( num / den )
+            print "[INFO] New <eta>: "+str( etamean[0] )+" +- "+str( etasigma )
+            print "[INFO] Config file <eta>: "+str( myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["avgeta"][0] )
+            print "[INFO] New tagging efficiency: "+str( tageff[0] )+" +- "+str( tagefferr )
+            print "[INFO] Config file tagging efficiency: "+str( myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tageff"][0] )
+        '''
 
-            etamean = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["avgeta"])
-            tageff = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tageff"])
+        p0 = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["p0"])
+        p1 = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["p1"])
+        deltap0 = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["deltap0"])
+        deltap1 = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["deltap1"])
 
-            if tagfromdata:
-                print "[INFO] Computing <eta> and tagging efficiency directly from dataset. Overwriting values in configfile"
-                if noweight:
-                    etamean[0] = data.mean(obs.find(MDSettings.GetTagOmegaVarOutName(t).Data()), MDSettings.GetTagVarOutName(t).Data()+"!=0")
-                    etasigma = data.sigma(obs.find(MDSettings.GetTagOmegaVarOutName(t).Data()), MDSettings.GetTagVarOutName(t).Data()+"!=0")
-                    numdata = RooDataSet("numdata"+str(t), "numdata", data, data.get(), MDSettings.GetTagVarOutName(t).Data()+"!=0")
-                    num = float( numdata.numEntries() )
-                    den = float( data.numEntries() )
-                    import uncertainties, math
-                    from uncertainties import ufloat
-                    tagefferr = ufloat(num, math.sqrt(num)) / ufloat(den, math.sqrt(den))
-                    tagefferr = tagefferr.std_dev
+        if noftcalib:
+            print "[INFO] Using uncalibrated tagger: p0=<eta>, p1=1, deltap0=deltap1=0"
+            p0[0] = etamean[0]
+            p1[0] = 1.0
+            deltap0[0] = 0.0
+            deltap1[0] = 0.0
+
+        thiscalib2011OS = []
+        thiscalib2011OS.append( WS(ws, RooRealVar('p0_'+nametag,
+                                                  'p_{0}'+nametag,
+                                                  *p0)) )
+        thiscalib2011OS.append( WS(ws, RooRealVar('p1_'+nametag,
+                                                  'p_{1}'+nametag,
+                                                  *p1)) )
+        thiscalib2011OS.append( WS(ws, RooRealVar('deltap0_'+nametag,
+                                                  '#Delta p_{0}'+nametag,
+                                                  *deltap0)) )
+        thiscalib2011OS.append( WS(ws, RooRealVar('deltap1_'+nametag,
+                                                  '#Delta p_{1}'+nametag,
+                                                  *deltap1)) )
+        thiscalib2011OS.append( WS(ws, RooRealVar('avgeta_'+nametag,
+                                                  '<#eta>'+nametag,
+                                                  *etamean )) )
+        thiscalib2011OS.append( WS(ws, RooRealVar('tageff2011OS_'+nametag,
+                                                  '#varepsilon_{tag}^{2011OS}'+nametag,
+                                                  *tageff2011OS)) )
+        thiscalib2011OS.append( WS(ws, RooRealVar('tagasymm_'+nametag,
+                                                  'a_{tag}'+nametag,
+                                                  *myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tagasymm"])) )
+        
+        thiscalib2011SS = []
+        thiscalib2011SS.append( WS(ws, RooRealVar('p0_'+nametag,
+                                                  'p_{0}'+nametag,
+                                                  *p0)) )
+        thiscalib2011SS.append( WS(ws, RooRealVar('p1_'+nametag,
+                                                  'p_{1}'+nametag,
+                                                  *p1)) )
+        thiscalib2011SS.append( WS(ws, RooRealVar('deltap0_'+nametag,
+                                                  '#Delta p_{0}'+nametag,
+                                                  *deltap0)) )
+        thiscalib2011SS.append( WS(ws, RooRealVar('deltap1_'+nametag,
+                                                  '#Delta p_{1}'+nametag,
+                                                  *deltap1)) )
+        thiscalib2011SS.append( WS(ws, RooRealVar('avgeta_'+nametag,
+                                                  '<#eta>'+nametag,
+                                                  *etamean )) )
+        thiscalib2011SS.append( WS(ws, RooRealVar('tageff2011SS_'+nametag,
+                                                  '#varepsilon_{tag}^{2011SS}'+nametag,
+                                                  *tageff2011SS)) )
+        thiscalib2011SS.append( WS(ws, RooRealVar('tagasymm_'+nametag,
+                                                  'a_{tag}'+nametag,
+                                                  *myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tagasymm"])) )
+
+        thiscalib2012OS = []
+        thiscalib2012OS.append( WS(ws, RooRealVar('p0_'+nametag,
+                                                  'p_{0}'+nametag,
+                                                  *p0)) )
+        thiscalib2012OS.append( WS(ws, RooRealVar('p1_'+nametag,
+                                                  'p_{1}'+nametag,
+                                                  *p1)) )
+        thiscalib2012OS.append( WS(ws, RooRealVar('deltap0_'+nametag,
+                                                  '#Delta p_{0}'+nametag,
+                                                  *deltap0)) )
+        thiscalib2012OS.append( WS(ws, RooRealVar('deltap1_'+nametag,
+                                                  '#Delta p_{1}'+nametag,
+                                                  *deltap1)) )
+        thiscalib2012OS.append( WS(ws, RooRealVar('avgeta_'+nametag,
+                                                  '<#eta>'+nametag,
+                                                  *etamean )) )
+        thiscalib2012OS.append( WS(ws, RooRealVar('tageff2012OS_'+nametag,
+                                                  '#varepsilon_{tag}^{2012OS}'+nametag,
+                                                  *tageff2012OS)) )
+        thiscalib2012OS.append( WS(ws, RooRealVar('tagasymm_'+nametag,
+                                                  'a_{tag}'+nametag,
+                                                  *myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tagasymm"])) )
+
+        thiscalib2012SS = []
+        thiscalib2012SS.append( WS(ws, RooRealVar('p0_'+nametag,
+                                                  'p_{0}'+nametag,
+                                                  *p0)) )
+        thiscalib2012SS.append( WS(ws, RooRealVar('p1_'+nametag,
+                                                  'p_{1}'+nametag,
+                                                  *p1)) )
+        thiscalib2012SS.append( WS(ws, RooRealVar('deltap0_'+nametag,
+                                                  '#Delta p_{0}'+nametag,
+                                                  *deltap0)) )
+        thiscalib2012SS.append( WS(ws, RooRealVar('deltap1_'+nametag,
+                                                  '#Delta p_{1}'+nametag,
+                                                  *deltap1)) )
+        thiscalib2012SS.append( WS(ws, RooRealVar('avgeta_'+nametag,
+                                                  '<#eta>'+nametag,
+                                                  *etamean )) )
+        thiscalib2012SS.append( WS(ws, RooRealVar('tageff2012SS_'+nametag,
+                                                  '#varepsilon_{tag}^{2012SS}'+nametag,
+                                                  *tageff2012SS)) )
+        thiscalib2012SS.append( WS(ws, RooRealVar('tagasymm_'+nametag,
+                                                  'a_{tag}'+nametag,
+                                                  *myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tagasymm"])) )
+        
+        #for par in thiscalib:
+        #    setConstantIfSoConfigured(ws.obj(par.GetName()),myconfigfile)
+
+        mistagcalib2011OS.append( thiscalib2011OS )
+        mistagcalib2011SS.append( thiscalib2011SS )
+        mistagcalib2012OS.append( thiscalib2012OS )
+        mistagcalib2012SS.append( thiscalib2012SS )
+
+        if pereventmistag:
+
+            print "[INFO] Using per-event mistag for "+nametag+" tagger"
+
+            observables.add( tag[t] )
+            observables.add( mistag[t] )
+
+            if "Type" in myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"].keys():
+                if myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["Type"] == "Mock":
+                    print "[INFO] Building mock mistag PDF for "+nametag+" tagger"
+                    mistagpdfparams[nametag] = {}
+                    mistagpdfparams[nametag]["eta0"] = WS(ws, RooRealVar("eta0_"+nametag,
+                                                                         "eta0_"+nametag,
+                                                                         *myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["eta0"]))
+                    mistagpdfparams[nametag]["etaavg"] = WS(ws, RooRealVar("etaavg_"+nametag,
+                                                                           "etaavg_"+nametag,
+                                                                           *myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["etaavg"]))
+                    mistagpdfparams[nametag]["f"] = WS(ws, RooRealVar("f_"+nametag,
+                                                                  "f_"+nametag,
+                                                                      *myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["f"]))
+                    mistagpdf.append( WS(ws, MistagDistribution("MistagPDF_"+nametag,
+                                                                "MistagPDF_"+nametag,
+                                                                mistag[t],
+                                                                mistagpdfparams[nametag]["eta0"],
+                                                                mistagpdfparams[nametag]["etaavg"],
+                                                                mistagpdfparams[nametag]["f"])))
+
+                elif myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["Type"] == "Gaussian":
+                    print "[INFO] Building gaussian mistag PDF for "+nametag+" tagger"
+                    mistagpdfparams[nametag] = {}
+                    mistagpdfparams[nametag]["mean"] = WS(ws, RooRealVar("mean_"+nametag,
+                                                                         "mean_"+nametag,
+                                                                         myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["mean"]))
+                    mistagpdfparams[nametag]["sigma"] = WS(ws, RooRealVar("sigma_"+nametag,
+                                                                          "sigma_"+nametag,
+                                                                          myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["sigma"]))
+                    mistagpdf.append( WS(ws, RooGaussian("MistagPDF_"+nametag,
+                                                         "MistagPDF_"+nametag,
+                                                         mistag[t],
+                                                         mistagpdfparams[nametag]["mean"],
+                                                         mistagpdfparams[nametag]["sigma"])))
+
+                elif myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["Type"] == "FromWorkspace":
+                    print "[INFO] Taking mistag PDF for "+nametag+" tagger from workspace"
+                    mistagWork = GeneralUtils.LoadWorkspace(TString(myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["File"]),
+                                                            TString(myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["Workspace"]), debug)
+                    mistagpdf.append( WS(ws, Bs2Dsh2011TDAnaModels.GetRooHistPdfFromWorkspace(mistagWork,
+                                                                                              TString(myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["Name"]), debug) ) )
+
+                elif myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["Type"] == "BuildTemplate":
+                    print "[INFO] Build mistag template on the fly as histogram PDF"
+                    mistagpdf.append( mistagpdflist[t] )
+
+
                 else:
-                    etamean[0] = dataWA.mean(obs.find(MDSettings.GetTagOmegaVarOutName(t).Data()), MDSettings.GetTagVarOutName(t).Data()+"!=0")
-                    etasigma = dataWA.sigma(obs.find(MDSettings.GetTagOmegaVarOutName(t).Data()), MDSettings.GetTagVarOutName(t).Data()+"!=0")
-                    numdata = RooDataSet("numdata"+str(t), "numdata", data, data.get(), MDSettings.GetTagVarOutName(t).Data()+"!=0", "sWeights")
-                    num = numdata.sumEntries()
-                    den = dataWA.sumEntries()
-                    import uncertainties, math
-                    from uncertainties import ufloat
-                    tagefferr = ufloat(num, math.sqrt(num)) / ufloat(den, math.sqrt(den))
-                    tagefferr = tagefferr.std_dev
-                del numdata
-                tageff[0] = float( num / den )
-                print "[INFO] New <eta>: "+str( etamean[0] )+" +- "+str( etasigma )
-                print "[INFO] Config file <eta>: "+str( myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["avgeta"][0] )
-                print "[INFO] New tagging efficiency: "+str( tageff[0] )+" +- "+str( tagefferr )
-                print "[INFO] Config file tagging efficiency: "+str( myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tageff"][0] )
-
-            p0 = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["p0"])
-            p1 = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["p1"])
-            deltap0 = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["deltap0"])
-            deltap1 = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["deltap1"])
-
-            if noftcalib:
-                print "[INFO] Using uncalibrated tagger: p0=<eta>, p1=1, deltap0=deltap1=0"
-                p0[0] = etamean[0]
-                p1[0] = 1.0
-                deltap0[0] = 0.0
-                deltap1[0] = 0.0
-
-            thiscalib = []
-            thiscalib.append( WS(ws, RooRealVar('p0_'+nametag,
-                                                'p_{0}'+nametag,
-                                                *p0)) )
-            thiscalib.append( WS(ws, RooRealVar('p1_'+nametag,
-                                                'p_{1}'+nametag,
-                                                *p1)) )
-            thiscalib.append( WS(ws, RooRealVar('deltap0_'+nametag,
-                                                '#Delta p_{0}'+nametag,
-                                                *deltap0)) )
-            thiscalib.append( WS(ws, RooRealVar('deltap1_'+nametag,
-                                                '#Delta p_{1}'+nametag,
-                                                *deltap1)) )
-            thiscalib.append( WS(ws, RooRealVar('avgeta_'+nametag,
-                                                '<#eta>'+nametag,
-                                                *etamean )) )
-            thiscalib.append( WS(ws, RooRealVar('tageff_'+nametag,
-                                                '#varepsilon_{tag}'+nametag,
-                                                *tageff)) )
-            thiscalib.append( WS(ws, RooRealVar('tagasymm_'+nametag,
-                                                'a_{tag}'+nametag,
-                                                *myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tagasymm"])) )
-
-            #for par in thiscalib:
-            #    setConstantIfSoConfigured(ws.obj(par.GetName()),myconfigfile)
-
-            mistagcalib.append( thiscalib )
-
-            if pereventmistag:
-
-                print "[INFO] Using per-event mistag for "+nametag+" tagger"
-                
-                observables.add( tag[t] )
-                observables.add( mistag[t] )
-
-                if "Type" in myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"].keys():
-                    if myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["Type"] == "Mock":
-                        print "[INFO] Building mock mistag PDF for "+nametag+" tagger"
-                        mistagpdfparams[nametag] = {}
-                        mistagpdfparams[nametag]["eta0"] = WS(ws, RooRealVar("eta0_"+nametag,
-                                                                             "eta0_"+nametag,
-                                                                             *myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["eta0"]))
-                        mistagpdfparams[nametag]["etaavg"] = WS(ws, RooRealVar("etaavg_"+nametag,
-                                                                               "etaavg_"+nametag,
-                                                                               *myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["etaavg"]))
-                        mistagpdfparams[nametag]["f"] = WS(ws, RooRealVar("f_"+nametag,
-                                                                          "f_"+nametag,
-                                                                          *myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["f"]))
-                        mistagpdf.append( WS(ws, MistagDistribution("MistagPDF_"+nametag,
-                                                                    "MistagPDF_"+nametag,
-                                                                    mistag[t],
-                                                                    mistagpdfparams[nametag]["eta0"],
-                                                                    mistagpdfparams[nametag]["etaavg"],
-                                                                    mistagpdfparams[nametag]["f"])))
-                        
-                    elif myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["Type"] == "Gaussian":
-                        print "[INFO] Building gaussian mistag PDF for "+nametag+" tagger"
-                        mistagpdfparams[nametag] = {}
-                        mistagpdfparams[nametag]["mean"] = WS(ws, RooRealVar("mean_"+nametag,
-                                                                             "mean_"+nametag,
-                                                                             myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["mean"]))
-                        mistagpdfparams[nametag]["sigma"] = WS(ws, RooRealVar("sigma_"+nametag,
-                                                                              "sigma_"+nametag,
-                                                                              myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["sigma"]))
-                        mistagpdf.append( WS(ws, RooGaussian("MistagPDF_"+nametag,
-                                                             "MistagPDF_"+nametag,
-                                                             mistag[t],
-                                                             mistagpdfparams[nametag]["mean"],
-                                                             mistagpdfparams[nametag]["sigma"])))
-                        
-                    elif myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["Type"] == "FromWorkspace":
-                        print "[INFO] Taking mistag PDF for "+nametag+" tagger from workspace"
-                        mistagWork = GeneralUtils.LoadWorkspace(TString(myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["File"]),
-                                                                TString(myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["Workspace"]), debug)
-                        mistagpdf.append( WS(ws, Bs2Dsh2011TDAnaModels.GetRooHistPdfFromWorkspace(mistagWork,
-                                                                                                  TString(myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["Name"]), debug) ) )
-                        
-                    elif myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["Type"] == "BuildTemplate":
-                        print "[INFO] Build mistag template on the fly as histogram PDF"
-                        mistagpdf.append( mistagpdflist[t] )
-
-
-                    else:
-                        print "ERROR: mistag pdf type "+myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["Type"]+" not supported."
-                        exit(-1)
-
-                else:
-                    print "ERROR: error in mistag PDF building. Please check your config file."
+                    print "ERROR: mistag pdf type "+myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["Type"]+" not supported."
                     exit(-1)
 
             else:
-                mistagpdf = None
+                print "ERROR: error in mistag PDF building. Please check your config file."
+                exit(-1)
+
+        else:
+            mistagpdf = None
 
     print ""
     print "=========================================================="
@@ -741,7 +832,7 @@ def runSFit(debug, wsname,
     print "=========================================================="
     print ""
 
-    C, S, D, Sbar, Dbar = getCPparameters(ws, myconfigfile, UniformBlinding, HFAG)
+    C, S, D, Sbar, Dbar = getCPparameters(ws, myconfigfile, UniformBlinding)
 
     print ""
     print "=========================================================="
@@ -820,26 +911,98 @@ def runSFit(debug, wsname,
 
     print ""
     print "=========================================================="
-    print "Build total time PDF"
+    print "Build total time PDF for each sample"
     print "=========================================================="
     print ""
 
-    totPDF_temp = buildBDecayTimePdf(
-        myconfigfile, 'time_signal', ws,
-        time, terr, tag, id, mistag, mistagcalib,
+    totPDF_2011OS = buildBDecayTimePdf(
+        myconfigfile, 'time_signal2011OS', ws,
+        time, terr, tag, id, mistag, mistagcalib2011OS,
         gamma, deltaGamma, deltaM,
         C, D, Dbar, S, Sbar,
-        resmodel, acc,
+        resmodel2011OS, acc2011OS,
         terrpdf, mistagpdf,
-        aProd, aDet, HFAG)
+        aProd, aDet)
+    totPDF_2011SS = buildBDecayTimePdf(
+        myconfigfile, 'time_signal2011SS', ws,
+        time, terr, tag, id, mistag, mistagcalib2011SS,
+        gamma, deltaGamma, deltaM,
+        C, D, Dbar, S, Sbar,
+        resmodel2011SS, acc2011SS,
+        terrpdf, mistagpdf,
+        aProd, aDet)
+    totPDF_2012OS = buildBDecayTimePdf(
+        myconfigfile, 'time_signal2012OS', ws,
+        time, terr, tag, id, mistag, mistagcalib2012OS,
+        gamma, deltaGamma, deltaM,
+        C, D, Dbar, S, Sbar,
+        resmodel2012OS, acc2012OS,
+        terrpdf, mistagpdf,
+        aProd, aDet)
+    totPDF_2012SS = buildBDecayTimePdf(
+        myconfigfile, 'time_signal2012SS', ws,
+        time, terr, tag, id, mistag, mistagcalib2012SS,
+        gamma, deltaGamma, deltaM,
+        C, D, Dbar, S, Sbar,
+        resmodel2012SS, acc2012SS,
+        terrpdf, mistagpdf,
+        aProd, aDet)
 
+    '''
     if extended:
         print "[INFO] Performing extended maximum likelihood fit"
         Nsgn = WS(ws, RooRealVar("Nsgn", "N_{sgn}", 500000, 0, 1e+09))
         totPDF = WS(ws, RooExtendPdf(totPDF_temp.GetName()+"_ext", totPDF_temp.GetTitle()+" extended", totPDF_temp, Nsgn))
     else:
         totPDF = totPDF_temp
+    '''
 
+    print ""
+    print "=========================================================="
+    print "Create total, combined dataset"
+    print "=========================================================="
+    print ""
+    
+    sample = RooCategory("sample", "sample")
+    sample.defineType("2011OS")
+    sample.defineType("2011SS")
+    sample.defineType("2012OS")
+    sample.defineType("2012SS")
+    sample = WS(ws, sample)
+    
+    data = WS(ws, RooDataSet( nameData.Data(),
+                              nameData.Data(),
+                              observables,
+                              RooFit.Index(sample),
+                              RooFit.Import("2011OS",data2011OS),
+                              RooFit.Import("2011SS",data2011SS),
+                              RooFit.Import("2012OS",data2012OS),
+                              RooFit.Import("2012SS",data2012SS)
+                              ) )
+    
+    dataWA = WS(ws, RooDataSet( nameDataWA.Data(),
+                                     nameDataWA.Data(),
+                                     observables,
+                                     RooFit.Index(sample),
+                                     RooFit.Import("2011OS",dataWA2011OS),
+                                     RooFit.Import("2011SS",dataWA2011SS),
+                                     RooFit.Import("2012OS",dataWA2012OS),
+                                     RooFit.Import("2012SS",dataWA2012SS)
+                                     ) )
+    
+    print ""
+    print "=========================================================="
+    print "Build total simultaneous PDF"
+    print "=========================================================="
+    print ""
+    
+    totPDF = RooSimultaneous("time_signal", "time_signal", sample)
+    totPDF.addPdf(totPDF_2011OS, "2011OS")
+    totPDF.addPdf(totPDF_2011SS, "2011SS")
+    totPDF.addPdf(totPDF_2012OS, "2012OS")
+    totPDF.addPdf(totPDF_2012SS, "2012SS")
+    totPDF = WS(ws, totPDF)
+    
     #Fix "internal" time pdf parameters (if required)
     from B2DXFitters.utils import setConstantIfSoConfigured as fixParams
     fixParams(myconfigfile, totPDF)
@@ -847,6 +1010,7 @@ def runSFit(debug, wsname,
     #Temporary workaround
     #ws.obj('Sfbar').setConstant(False)
 
+    '''
     if randomise:
 
         print ""
@@ -858,6 +1022,9 @@ def runSFit(debug, wsname,
         #Randomise initial guess of the parameters according to a uniform distributions
         from B2DXFitters.utils import randomiseParameters as ranPar
         ranPar(myconfigfile, totPDF, int(seed), debug, genValDict)
+    '''
+
+    
 
     if scan:
 
@@ -902,12 +1069,14 @@ def runSFit(debug, wsname,
     # sigyeld = RooRealVar("sigyield", "sigyield", 500000, 1000, 10000000)
     # pdfextend = RooExtendPdf("pdfExtend", "pdfExtend", totPDF, sigyeld)
 
+    '''
     if binned:
         print "[INFO] RooDataSet is binned"
         time.setBins(250)
         terr.setBins(20)
         dataWA_binned = RooDataHist("dataWA_binned", "dataWA_binned", observables, dataWA)
         data_binned = RooDataHist("data_binned", "data_binned", observables, data)
+    '''
 
     if not superimpose:
 
@@ -1113,21 +1282,6 @@ parser.add_option( '--noftcalib',
                    action = 'store_true',
                    help = 'Use uncalibrated taggers'
                    )
-
-parser.add_option( '--truetag',
-                   dest = 'truetag',
-                   default = False,
-                   action = 'store_true',
-                   help = 'Use true tagging decision (MC only!)'
-                   )
-
-parser.add_option( '--truetime',
-                   dest = 'truetime',
-                   default = False,
-                   action = 'store_true',
-                   help = 'Use true decay time (MC only!)'
-                   )
-
 parser.add_option( '--pereventterr',
                    dest = 'pereventterr',
                    default = False,
@@ -1151,10 +1305,15 @@ parser.add_option( '--workMC',
                    default = 'workspace',
                    help = 'name of the workspace containing MC sample'
                    )
-parser.add_option( '--fileName',
-                   dest = 'fileName',
+parser.add_option( '--fileName2011',
+                   dest = 'fileName2011',
                    default = '/afs/cern.ch/work/a/adudziak/public/sWeights/sWeights_BsDsPi_all_both.root',
-                   help = 'name of the inputfile'
+                   help = 'name of the 2011 inputfile'
+                   )
+parser.add_option( '--fileName2012',
+                   dest = 'fileName2012',
+                   default = '/afs/cern.ch/work/a/adudziak/public/sWeights/sWeights_BsDsPi_all_both.root',
+                   help = 'name of the 2012 inputfile'
                    )
 parser.add_option( '--fileNamePull',
                    dest = 'fileNamePull',
@@ -1208,7 +1367,7 @@ parser.add_option( '-m', '--mode',
                    )
 parser.add_option( '--merge',
                    dest = 'merge',
-                   default = "",
+                   default = "both",
                    help = 'for merging magnet polarities use: --merge pol, for merging years of data taking use: --merge year, for merging both use: --merge both'
                    )
 parser.add_option( '--binned',
@@ -1257,18 +1416,21 @@ parser.add_option( '--preselection',
                    default = "",
                    help = 'additional preselection to apply on dataset'
                    )
+parser.add_option( '--OSsel',
+                   dest = 'OSsel',
+                   default = "",
+                   help = 'OS tag category selection'
+                   )
+parser.add_option( '--SSsel',
+                   dest = 'SSsel',
+                   default = "",
+                   help = 'SS tag category selection'
+                   )
 parser.add_option( '--UniformBlinding',
                    dest = 'UniformBlinding',
                    default = False,
                    action='store_true',
                    help = 'the RooUnblindUniform is used for S and Sbar'
-                   )
-
-parser.add_option( '--HFAG',
-                   dest = 'HFAG',
-                   default = False,
-                   action='store_true',
-                   help = 'Use HFAG convention for CP coefficients'
                    )
 
 # -----------------------------------------------------------------------------
@@ -1307,11 +1469,10 @@ if __name__ == '__main__' :
              options.pereventmistag,
              options.tagfromdata,
              options.noftcalib,
-             options.truetag,
-             options.truetime,
              options.pereventterr,
              options.toys,
-             options.fileName,
+             options.fileName2011,
+             options.fileName2012,
              options.fileNamePull,
              options.treeName,
              options.outputdir,
@@ -1323,18 +1484,16 @@ if __name__ == '__main__' :
              options.binned,
              options.plotsWeights,
              options.noweight,
-             options.pol,
              options.mode,
-             options.year,
              options.hypo,
-             options.merge,
              options.unblind,
              options.randomise,
              options.superimpose,
              options.seed,
              options.preselection,
+             options.OSsel,
+             options.SSsel,
              options.UniformBlinding,
-             options.HFAG,
              options.extended,
              options.fileNameFitresult)
 
