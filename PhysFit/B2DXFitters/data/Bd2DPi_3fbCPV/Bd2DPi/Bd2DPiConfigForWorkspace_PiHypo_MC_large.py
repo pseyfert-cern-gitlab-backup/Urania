@@ -10,12 +10,12 @@ def getconfig() :
     # considered decay mode
     configdict["Decay"] = "Bd2DPi"
     # PIDK for bachelor
-    configdict["BachelorHypo"] = "Bd2DK"
+    configdict["BachelorHypo"] = "Bd2DPi"
     configdict["CharmModes"] = {"KPiPi"} 
     # year of data taking
-    configdict["YearOfDataTaking"] = {"2012"} 
+    configdict["YearOfDataTaking"] = {"2011","2012"} 
     # file name with paths to MC/data samples
-    configdict["dataName"]   = "/afs/cern.ch/user/v/vibattis/cmtuser/Urania_v5r0/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/config_Bd2DPi.txt"
+    configdict["dataName"]   = "/afs/cern.ch/user/v/vibattis/cmtuser/Urania_v5r0/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/config_Bd2DPi_MC_large.txt"
         
     # basic variables
     configdict["BasicVariables"] = {}
@@ -23,22 +23,10 @@ def getconfig() :
                                                       "Name"                   : "BeautyMass",
                                                       "InputName"              : "lab0_FitDaughtersConst_M_flat"}
 
-    configdict["BasicVariables"]["CharmMass"]     = { "Range"                  : [1830,    1904    ],
-                                                      "Name"                   : "CharmMass",
-                                                      "InputName"              : "lab0_FitwithoutConst_Dplus_M_flat"}
-
     configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.2,     15.0    ],
                                                       "Bins"                   : 40,
                                                       "Name"                   : "BeautyTime",
                                                       "InputName"              : "lab0_FitDaughtersPVConst_ctau_flat"}
-    
-    configdict["BasicVariables"]["BacP"]          = { "Range"                  : [2000.0,  650000.0],
-                                                      "Name"                   : "BacP",
-                                                      "InputName"              : "lab0_FitDaughtersConst_P0_P_flat"}
-
-    configdict["BasicVariables"]["BacPT"]         = { "Range"                  : [400.0,   45000.0 ],
-                                                      "Name"                   : "BacPT",
-                                                      "InputName"              : "lab0_FitDaughtersConst_P0_PT_flat"}
 
     configdict["BasicVariables"]["BacPIDK"]       = { "Range"                  : [-999.0,    999.0     ],
                                                       "Name"                   : "BacPIDK",
@@ -48,24 +36,36 @@ def getconfig() :
                                                       "Name"                   : "nTracks",
                                                       "InputName"              : "nTracks"}
 
-    configdict["BasicVariables"]["BeautyTimeErr"] = { "Range"                  : [0.01,    0.1     ],
-                                                      "Name"                   : "BeautyTimeErr",
-                                                      "InputName"              : "lab0_FitDaughtersPVConst_ctauErr_flat"}
-
     configdict["BasicVariables"]["BacCharge"]     = { "Range"                  : [-1000.0, 1000.0  ],
                                                       "Name"                   : "BacCharge",
-                                                      "InputName"              : "lab1_ID"}
+                                                      "InputName"              : "lab1_TRUEID"}
 
+    configdict["BasicVariables"]["TagDecTrue"]      = { "Range"                  : [-1.0,    1.0     ],
+                                                        "Name"                   : "TagDecTrue",
+                                                        "InputName"              : "TrueTag"}
+
+    configdict["BasicVariables"]["TagDecOS"]      = { "Range"                  : [-1.0,    1.0     ],
+                                                      "Name"                   : "TagDecOS",
+                                                      "InputName"              : "TagDecOS"}
+
+    configdict["BasicVariables"]["TagDecSS"]      = { "Range"                  : [-1.0,    1.0     ],
+                                                      "Name"                   : "TagDecSS",
+                                                      "InputName"              : "TagDecSS"}
+
+    configdict["BasicVariables"]["MistagOS"]      = { "Range"                  : [ 0.0,    0.5     ],
+                                                      "Name"                   : "MistagOS",
+                                                      "InputName"              : "MistagOS"}
+
+    configdict["BasicVariables"]["MistagSS"]      = { "Range"                  : [ 0.0,    0.5     ],
+                                                      "Name"                   : "MistagSS",
+                                                      "InputName"              : "MistagSS"}
+    
     configdict["BasicVariables"]["BDTG"]           = { "Range"                  : [0.0, 1],
                                                        "Name"                   : "BDTG",
                                                        "InputName"              : "BDT_classifier"}
 
     #Additional variables not foreseen before
     configdict["AdditionalVariables"] = {}
-    
-    configdict["AdditionalVariables"]["BeautyPhi"]      = { "Range"                  : [ -10.,    10.     ],
-                                                            "Name"                   : "BeautyPhi",
-                                                            "InputName"              : "lab0_LOKI_PHI"}
     
     configdict["AdditionalVariables"]["BeautyEta"]      = { "Range"                  : [ 1.5,    10.0     ],
                                                             "Name"                   : "BeautyEta",
@@ -85,6 +85,7 @@ def getconfig() :
 
     # PIDK bin
     configdict["AdditionalCuts"] = {}
-    configdict["AdditionalCuts"]["All"] = {"Data": "lab1_PIDK>5.0", "MC": "lab1_PIDKcorr>5.0&&lab0_BKGCAT<60"}
+    configdict["AdditionalCuts"]["All"] = {"MC": "lab1_PIDKcorr<5.0&&lab0_BKGCAT==0"}
+
     
     return configdict

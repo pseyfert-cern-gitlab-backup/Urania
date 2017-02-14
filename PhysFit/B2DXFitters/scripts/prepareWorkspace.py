@@ -181,6 +181,8 @@ def getMCNames(myconfig):
     decay2 = TString(decay)
     if decay2.Contains("Ds"):
         dsmode = "KKPi"
+    elif decay2.Contains("D0"):
+        dsmode = "KPi"
     elif decay2.Contains("D"):
         dsmode = "KPiPi"
 

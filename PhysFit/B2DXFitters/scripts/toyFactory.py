@@ -443,7 +443,7 @@ def BuildAsymmetries(workspaceIn, myconfigfile, debug):
     return asymmDict
 
 #-----------------------------------------------------------------------------
-def BuildTotalPDF(workspaceIn, myconfigfile, obsDict, ACPDict, tagDict, resAccDict, asymmDict, workTemplate, debug):
+def BuildTotalPDF(workspaceIn, myconfigfile, obsDict, ACPDict, tagDict, resAccDict, asymmDict, workTemplate, HFAG, debug):
 
     pdf = None
     pdfDict = {}
@@ -491,6 +491,7 @@ def BuildTotalPDF(workspaceIn, myconfigfile, obsDict, ACPDict, tagDict, resAccDi
                                                                                                 tagDict,
                                                                                                 resAccDict,
                                                                                                 asymmDict,
+                                                                                                HFAG,
                                                                                                 debug))
                         elif obs in ["BeautyMass", "CharmMass", "BacPIDK", "TrueID"]:
 
@@ -521,7 +522,7 @@ def BuildTotalPDF(workspaceIn, myconfigfile, obsDict, ACPDict, tagDict, resAccDi
             "Events"   : yieldCount}
 
 #-----------------------------------------------------------------------------
-def BuildACPDict(workspaceIn, myconfigfile, debug):
+def BuildACPDict(workspaceIn, myconfigfile, HFAG, debug):
 
     ACPDict = {}
 
@@ -536,7 +537,8 @@ def BuildACPDict(workspaceIn, myconfigfile, debug):
 
             ACPobs = cpobservables.AsymmetryObservables(myconfigfile["ACP"][comp]["ArgLf"][0],
                                                         myconfigfile["ACP"][comp]["ArgLbarfbar"][0],
-                                                        myconfigfile["ACP"][comp]["ModLf"][0])
+                                                        myconfigfile["ACP"][comp]["ModLf"][0],
+                                                        HFAG)
             ACPobs.printtable()
 
             ACPDict[comp]["C"] = WS(workspaceIn, RooRealVar("C_"+comp, "C_"+comp, ACPobs.Cf()))
@@ -574,7 +576,7 @@ def BuildACPDict(workspaceIn, myconfigfile, debug):
     return ACPDict
 
 #-----------------------------------------------------------------------------
-def BuildTimePDF(workspaceIn, myconfigfile, hypo, year, comp, mode, obsDict, ACPDict, tagDict, resAccDict, asymmDict, debug):
+def BuildTimePDF(workspaceIn, myconfigfile, hypo, year, comp, mode, obsDict, ACPDict, tagDict, resAccDict, asymmDict, HFAG, debug):
 
     pdf = workspaceIn.pdf("TimePDF_"+comp)
 
@@ -637,7 +639,7 @@ def BuildTimePDF(workspaceIn, myconfigfile, hypo, year, comp, mode, obsDict, ACP
             C, D, Dbar, S, Sbar,
             resmodel, acc,
             terrpdf, mistagpdf,
-            aprod, adet)
+            aprod, adet, HFAG)
 
     return WS(workspaceIn, pdf)
 
@@ -1246,6 +1248,7 @@ def toyFactory(configName,
                treeOut,
                treefileOut,
                saveTree,
+               HFAG,
                debug):
 
     # Safe settings for numerical integration (if needed)
@@ -1336,7 +1339,7 @@ def toyFactory(configName,
         print "=========================================================="
         print ""
 
-        ACPDict = BuildACPDict(workspaceIn, myconfigfile, debug)
+        ACPDict = BuildACPDict(workspaceIn, myconfigfile, HFAG, debug)
 
     print ""
     print "=========================================================="
@@ -1351,7 +1354,7 @@ def toyFactory(configName,
         workTemplate = filePDF.Get(myconfigfile["WorkspaceToRead"]["Workspace"])
         if debug:
             workTemplate.Print("v")
-    pdfDict = BuildTotalPDF(workspaceIn, myconfigfile, obsDict, ACPDict, tagDict, resAccDict, asymmDict, workTemplate, debug)
+    pdfDict = BuildTotalPDF(workspaceIn, myconfigfile, obsDict, ACPDict, tagDict, resAccDict, asymmDict, workTemplate, HFAG, debug)
     if "WorkspaceToRead" in myconfigfile.keys():
         filePDF.Close()
 
@@ -1507,6 +1510,13 @@ parser.add_option( '--treefileOut',
                    help = 'output tree file name'
                    )
 
+parser.add_option( '--HFAG',
+                   action = 'store_true',
+                   dest = 'HFAG',
+                   default = False,
+                   help = 'use HFAG convention for CP coefficients'
+                   )
+
 parser.add_option( '-d', '--debug',
                    action = 'store_true',
                    dest = 'debug',
@@ -1543,4 +1553,5 @@ if __name__ == '__main__' :
                options.treeOut,
                options.treefileOut,
                options.saveTree,
+               options.HFAG,
                options.debug)
