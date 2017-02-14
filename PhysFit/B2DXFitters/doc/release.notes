@@ -4,6 +4,20 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
+! 2017-02-14 - Ulrich Eitschberger
+ - DecayRateCoeff_Bd in HFAG convention + corresponding DsK scripts
+
+! 2017-02-08 - Vincenzo Battista
+ - Update runSFit_Bd.py, toyFactory.py and timepdfutils_Bd.py with the
+   new HFAG convention used in DecRateCoeff_Bd
+ - Include new RooCubicSplinePdf (derived from RooCubicSplineFun) which inherits
+   from RooAbsPdf and thus allows to perform "standalone" fits to the acceptance
+   (with RooCubicSplineFun is only possible to bake the acceptance into a time
+    PDF model)
+ - Include "BacCharge" by default in the list of observables when the MC workspace
+   is built (MassFitUtils.cxx)
+ - New Bd->DPi config files, plus updates of older config files.
+
 ! 2017-02-01 - Carlos Vazquez Sierra
  - Make version v3r3 for release.
  

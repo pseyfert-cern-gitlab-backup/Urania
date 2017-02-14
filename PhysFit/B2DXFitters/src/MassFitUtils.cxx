@@ -78,7 +78,7 @@ using namespace GeneralUtils;
 namespace MassFitUtils {
 
   void InitializeRealObs(TString tB, std::vector <Double_t> &varD, std::vector <Int_t> &varI, std::vector <Float_t> &varF, std::vector<Short_t> &varS,
-			 Bool_t debug)
+                         Bool_t debug)
   {
     tB = tB;
     varD.push_back(0.0);  varI.push_back(0); varF.push_back(0.0); varS.push_back(0);  
@@ -134,7 +134,7 @@ namespace MassFitUtils {
   }
 
 
-Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
+  Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
                         TString tN, TString tB,
                         Double_t &varD, Int_t &varI, Float_t &varF, Short_t &varS)
   {
@@ -144,7 +144,16 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
     {
       if ( tN == mdSet->GetIDVarOutName() )
       {
-        if ( val > 0 ) { obsCat->setIndex(1); } else {obsCat->setIndex(-1); }
+        if ( val > 0 ) 
+        { 
+          obsCat->setIndex(1);
+          //cout << "MassFitUtils::SetValCatObs()=> Category " << tN << " set to +1" << std::endl;
+        } 
+        else 
+        {
+          obsCat->setIndex(-1);
+          //cout << "MassFitUtils::SetValCatObs()=> Category " << tN << " set to -1" << std::endl;     
+        }
       }
       else 
       {
@@ -158,13 +167,14 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
   }
 
   void SetBranchAddress(TTree* tr, TString tB, TString tN,
-			Double_t &varD, Int_t &varI, Float_t &varF, Short_t &varS, 
-			Bool_t debug)
+                        Double_t &varD, Int_t &varI, Float_t &varF, Short_t &varS, 
+                        Bool_t debug)
   {
     if ( tB == "Double_t") {  tr->SetBranchAddress(tN.Data(),    &varD); }
     else if( tB == "Int_t" ) { tr->SetBranchAddress(tN.Data(),    &varI); }
     else if( tB == "Float_t" ) { tr->SetBranchAddress(tN.Data(),    &varF); }
     else if( tB == "Short_t" ) { tr->SetBranchAddress(tN.Data(),    &varS); }
+    else std::cout << "MassFitUtils::SetBranchAddress() => WARNING: branch " << tN.Data() << " of type " << tB << " not set!" << std::endl;
     if ( debug  ) { } 
   }
 
@@ -314,9 +324,9 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
       for (Long64_t jentry=0; jentry<treetmp->GetEntries(); jentry++) {
         treetmp->GetEntry(jentry);
 
-	Double_t pT(0), p(0);
-	Double_t pl(0), eta(0);
-	Double_t val(0);
+        Double_t pT(0), p(0);
+        Double_t pl(0), eta(0);
+        Double_t val(0);
 
         for(unsigned k = 0; k < tN.size(); k++)
         {
@@ -341,12 +351,12 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
           if ( cat == true ) { SetValCatObs(mdSet, obs, name , tB[k], varD[k], varI[k], varF[k], varS[k]); }
           else{ val = SetValRealObs(mdSet, obs, name, tB[k], varD[k], varI[k], varF[k], varS[k], mode); }
 
-	  if ( tN[k] == mdSet->GetMomVar() ) { p = val; }
+          if ( tN[k] == mdSet->GetMomVar() ) { p = val; }
           if ( tN[k] == mdSet->GetTrMomVar() ) { pT = val; }
 
         }
 
-	pl = sqrt(exp(p)*exp(p) - exp(pT)*exp(pT));
+        pl = sqrt(exp(p)*exp(p) - exp(pT)*exp(pT));
         eta = 0.5 * log((exp(p) + pl) / (exp(p) - pl));
         Eta->setVal(eta); 
 
@@ -463,7 +473,7 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
             SaveDataSet(dataSet[i], var, s, mode, plotSet, debug);
           }
         }
-	SaveDataSet(dataSet[i], Eta, s, mode, plotSet, debug);
+        SaveDataSet(dataSet[i], Eta, s, mode, plotSet, debug);
       }
       
       work->import(*dataSet[i]);
@@ -1191,10 +1201,10 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
   //{
   //  TString nameHistBach = "";
 
-    //if ( hypo.Contains("Bd")) {  nameHistBach = Form("MyKaonMisID_%d;1",mdSet->GetPIDBach()); }
-    //else { nameHistBach = Form("MyPionMisID_%d;1", mdSet->GetPIDBach()); }
-    //if( mdSet->GetPIDBach() == -5) {nameHistBach = "MyPionMisID_Minus5";}
-    //if( mdSet->GetPIDBach() > 10 ) {nameHistBach = "MyPionMisID_10";}
+  //if ( hypo.Contains("Bd")) {  nameHistBach = Form("MyKaonMisID_%d;1",mdSet->GetPIDBach()); }
+  //else { nameHistBach = Form("MyPionMisID_%d;1", mdSet->GetPIDBach()); }
+  //if( mdSet->GetPIDBach() == -5) {nameHistBach = "MyPionMisID_Minus5";}
+  //if( mdSet->GetPIDBach() > 10 ) {nameHistBach = "MyPionMisID_10";}
     
   // if ( debug == true ) { std::cout<<"[INFO] Bachelor PID histogram: "<< nameHistBach<<std::endl; } 
 
@@ -1208,8 +1218,8 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
   // {
   //  TString nameHistChild = "";
 
-    //    if ( hypo.Contains("Bd")) { nameHistChild = Form("MyKaonMisID_%d;1",mdSet->GetPIDChild()); }
-    //else { nameHistChild = Form("MyPionMisID_%d;1", mdSet->GetPIDChild()); }
+  //    if ( hypo.Contains("Bd")) { nameHistChild = Form("MyKaonMisID_%d;1",mdSet->GetPIDChild()); }
+  //else { nameHistChild = Form("MyPionMisID_%d;1", mdSet->GetPIDChild()); }
 
   //  if ( debug == true ) { std::cout<<"[INFO] Ds child PID histogram: "<< nameHistChild<<std::endl; }
 
@@ -1223,8 +1233,8 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
   //{
   //TString nameHistProton = "";
 
-    //if ( hypo.Contains("Bd") == true) { nameHistProton = Form("MyProtonMisID_p%d;1",mdSet->GetPIDProton());}
-    // else {  nameHistProton = "MyProtonMisID_pKm5_KPi5"; }
+  //if ( hypo.Contains("Bd") == true) { nameHistProton = Form("MyProtonMisID_p%d;1",mdSet->GetPIDProton());}
+  // else {  nameHistProton = "MyProtonMisID_pKm5_KPi5"; }
     
   // if ( debug == true ) { std::cout<<"[INFO] Proton PID histogram: "<< nameHistProton<<std::endl; }
     
@@ -1238,8 +1248,8 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
   // {
   //  TString nameHistEff = "";
 
-    //if ( hypo.Contains("Pi")) { nameHistEff = Form("MyPionEff_%d;1",mdSet->GetPIDBach()); }
-    //else { nameHistEff = Form("MyKaonEff_%d;1", mdSet->GetPIDBach()); }
+  //if ( hypo.Contains("Pi")) { nameHistEff = Form("MyPionEff_%d;1",mdSet->GetPIDBach()); }
+  //else { nameHistEff = Form("MyKaonEff_%d;1", mdSet->GetPIDBach()); }
 
   // if ( debug == true ) { std::cout<<"[INFO] Bachelor PID eff histogram: "<< nameHistEff<<std::endl; }
 
@@ -1407,9 +1417,9 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
       MCBkg[i-1]->Print("v"); 
       yy = MCBkg[0]->GetYear();
       if ( MCBkg[i-1]->GetMode().Contains("Dsp") || MCBkg[i-1]->GetMode().Contains("Dsstp") )
-	{
-	  checkBacProton = true; 
-	}
+      {
+        checkBacProton = true; 
+      }
     }
     
     HistPID2D hBach;
@@ -1428,13 +1438,13 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
       if ( checkBacProton ) { hBachProton = mdSet->GetHistPID2D("PIDBachProtonMisID",yy); }
 
       if ( debug == true )
-	{
-	  std::cout<<hBach<<std::endl;
-	  if ( checkBacProton ) { std::cout<<hBachProton<<std::endl; } 
-	  std::cout<<hChild<<std::endl;
-	  std::cout<<hBachEff<<std::endl;
-	  std::cout<<hProton<<std::endl;
-	}
+      {
+        std::cout<<hBach<<std::endl;
+        if ( checkBacProton ) { std::cout<<hBachProton<<std::endl; } 
+        std::cout<<hChild<<std::endl;
+        std::cout<<hBachEff<<std::endl;
+        std::cout<<hProton<<std::endl;
+      }
     }
     
     HistPID2D hRDM;
@@ -1443,9 +1453,9 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
       hRDM = mdSet->GetHistPID2D("RatioDataMC",yy);
 
       if ( debug == true )
-        {
-	  std::cout<<hRDM<<std::endl;
-        }
+      {
+        std::cout<<hRDM<<std::endl;
+      }
     }
     
     // Read sample (means down or up)  from path //
@@ -1501,13 +1511,13 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
       if ( mdSet->CheckMassWeighting()==true || mdSet->CheckDataMCWeighting() == true)
       {
         
-	tNW = mdSet->GetPIDHistVar(mdSet->CheckMassWeighting(), mdSet->CheckDataMCWeighting(), debug); 
+        tNW = mdSet->GetPIDHistVar(mdSet->CheckMassWeighting(), mdSet->CheckDataMCWeighting(), debug); 
 	
         for(unsigned int k = 0; k<tNW.size(); k++ )
         {
-	  if ( debug == true ) { std::cout<<"[INFO] Read variables for weighting: "<<tNW[k]; } 
+          if ( debug == true ) { std::cout<<"[INFO] Read variables for weighting: "<<tNW[k]; } 
           tBW.push_back(treetmp->GetLeaf(tNW[k].Data())->GetTypeName()); 
-	  if ( debug == true ) { std::cout<<" with type: "<<tBW[k]<<std::endl; }
+          if ( debug == true ) { std::cout<<" with type: "<<tBW[k]<<std::endl; }
           InitializeRealObs(tBW[k], varDW, varIW, varFW, varSW, debug);
         }
         for(unsigned int k =0; k<tNW.size(); k++ )
@@ -1565,16 +1575,16 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
         
         Double_t pidk(0);
         Double_t val(0); 
-	Double_t pl(0), eta(0);
+        Double_t pl(0), eta(0);
 
-	std::vector <TString> basicName;
-	std::vector <Double_t> basicVal; 
+        std::vector <TString> basicName;
+        std::vector <Double_t> basicVal; 
 
-	basicName.push_back(mdSet->GetMomVar());
-	basicName.push_back(mdSet->GetTrMomVar());
-	basicName.push_back(mdSet->GetTracksVar()); 
+        basicName.push_back(mdSet->GetMomVar());
+        basicName.push_back(mdSet->GetTrMomVar());
+        basicName.push_back(mdSet->GetTracksVar()); 
 	
-	basicVal.push_back(-99999.0); basicVal.push_back(-99999.0); basicVal.push_back(-999999.0); 
+        basicVal.push_back(-99999.0); basicVal.push_back(-99999.0); basicVal.push_back(-999999.0); 
 
         for(unsigned k = 0; k < tN.size(); k++)
         {
@@ -1610,40 +1620,40 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
         }
         
 
-	pl = sqrt(exp(basicVal[0])*exp(basicVal[0]) - exp(basicVal[1])*exp(basicVal[1]));
+        pl = sqrt(exp(basicVal[0])*exp(basicVal[0]) - exp(basicVal[1])*exp(basicVal[1]));
         eta = 0.5 * log((exp(basicVal[0]) + pl) / (exp(basicVal[0]) - pl));
         Eta->setVal(eta);
 
-	std::vector <Double_t> pRV;
+        std::vector <Double_t> pRV;
         if ( mdSet->CheckDataMCWeighting() == true || mdSet->CheckMassWeighting() == true)
         {
-	  for(unsigned k = 0; k < tNW.size(); k++)
-	    {
-	      pRV.push_back(GetValue( tBW[k], varDW[k], varIW[k], varFW[k], varSW[k] )); 
-	    }
-	}
+          for(unsigned k = 0; k < tNW.size(); k++)
+          {
+            pRV.push_back(GetValue( tBW[k], varDW[k], varIW[k], varFW[k], varSW[k] )); 
+          }
+        }
 	
-	if ( mdSet->CheckDataMCWeighting() == true )
-	  {
-	    std::pair<Double_t,Double_t> valRDM = hRDM.GetValues(mdSet->GetPIDHistVar("RatioDataMC",0), mdSet->GetPIDHistVar("RatioDataMC",1), 
-								 basicName, basicVal, tNW, pRV);
-	    wRW = hRDM.GetWeight(log(valRDM.first), log(valRDM.second), smp); 
-	  }
+        if ( mdSet->CheckDataMCWeighting() == true )
+        {
+          std::pair<Double_t,Double_t> valRDM = hRDM.GetValues(mdSet->GetPIDHistVar("RatioDataMC",0), mdSet->GetPIDHistVar("RatioDataMC",1), 
+                                                               basicName, basicVal, tNW, pRV);
+          wRW = hRDM.GetWeight(log(valRDM.first), log(valRDM.second), smp); 
+        }
         
         if ( mdSet->CheckMassWeighting() == true )
         {
-	  Double_t wBE =  hBachEff.GetValues(mdSet->GetPIDHistVar("PIDBachEff",0), mdSet->GetPIDHistVar("PIDBachEff",1), basicName, basicVal, tNW, pRV, smp);
-	  Double_t wBMisID = hBach.GetValues(mdSet->GetPIDHistVar("PIDBachMisID",0), mdSet->GetPIDHistVar("PIDBachMisID",1), basicName, basicVal, tNW, pRV, smp);
-	  Double_t wChKPiMisID = hChild.GetValues(mdSet->GetPIDHistVar("PIDChildKaonPionMisID",0), mdSet->GetPIDHistVar("PIDChildKaonPionMisID",1),
-						  basicName, basicVal, tNW, pRV, smp);
-	  Double_t wChPMisID = hProton.GetValues(mdSet->GetPIDHistVar("PIDChildProtonMisID",0), mdSet->GetPIDHistVar("PIDChildProtonMisID",1),
-						 basicName, basicVal, tNW, pRV, smp);
-	  Double_t wBPMisID(0.0);
-	  if ( checkBacProton )
-	    {
-	      wBPMisID = hBachProton.GetValues(mdSet->GetPIDHistVar("PIDBachProtonMisID",0), mdSet->GetPIDHistVar("PIDBachProtonMisID",1), 
-					       basicName, basicVal, tNW, pRV, smp);
-	    }
+          Double_t wBE =  hBachEff.GetValues(mdSet->GetPIDHistVar("PIDBachEff",0), mdSet->GetPIDHistVar("PIDBachEff",1), basicName, basicVal, tNW, pRV, smp);
+          Double_t wBMisID = hBach.GetValues(mdSet->GetPIDHistVar("PIDBachMisID",0), mdSet->GetPIDHistVar("PIDBachMisID",1), basicName, basicVal, tNW, pRV, smp);
+          Double_t wChKPiMisID = hChild.GetValues(mdSet->GetPIDHistVar("PIDChildKaonPionMisID",0), mdSet->GetPIDHistVar("PIDChildKaonPionMisID",1),
+                                                  basicName, basicVal, tNW, pRV, smp);
+          Double_t wChPMisID = hProton.GetValues(mdSet->GetPIDHistVar("PIDChildProtonMisID",0), mdSet->GetPIDHistVar("PIDChildProtonMisID",1),
+                                                 basicName, basicVal, tNW, pRV, smp);
+          Double_t wBPMisID(0.0);
+          if ( checkBacProton )
+          {
+            wBPMisID = hBachProton.GetValues(mdSet->GetPIDHistVar("PIDBachProtonMisID",0), mdSet->GetPIDHistVar("PIDBachProtonMisID",1), 
+                                             basicName, basicVal, tNW, pRV, smp);
+          }
           // Please note that Ds and D mass hypo all applied in NTuple so no need to change mass hypo //
           if (hypo.Contains("K"))  // PartReco for BsDsK 
           {
@@ -1653,7 +1663,7 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
               else if ( md.Contains("Lc") == true ) { wMC = wChPMisID*wBE; }
               else{ wMC = wBE; }
             }
-	    else if ( md.Contains("Dsp") == true || md.Contains("Dsstp") ) { wMC = wBPMisID; }
+            else if ( md.Contains("Dsp") == true || md.Contains("Dsstp") ) { wMC = wBPMisID; }
             else   // mode with {Pi,Rho,p}, bachelor has to be reweighted //  
             {
               if ( md.Contains("Bd") == true ) { wMC = wChKPiMisID*wBMisID; }
@@ -1681,7 +1691,7 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
         
         if (  mdSet->CheckDataMCWeighting() == true ||  mdSet->CheckMassWeighting() == true )
         {
-	  //std::cout<<wMC<<" "<<wRW<<std::endl; 
+          //std::cout<<wMC<<" "<<wRW<<std::endl; 
           weight->setVal(wMC*wRW*globalWeight*nentriesMC[i]);
         }
         
@@ -1697,25 +1707,25 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
           
           ag_shifted_counter++;
           
-	  /*
-          if (hypo.Contains("Pi"))
-          {
+          /*
+            if (hypo.Contains("Pi"))
+            {
             // if ( pidk > mdSet->GetPIDBach())
             //  {
             if( mdSet->CheckDataMCWeighting() == true ||  mdSet->CheckMassWeighting() == true )  
-	      { dataSetMCtmp[i]->add(*obs,wMC*wRW*globalWeight,0); }
+            { dataSetMCtmp[i]->add(*obs,wMC*wRW*globalWeight,0); }
             else { dataSetMCtmp[i]->add(*obs); }
             //  }
-          }
-          else if ( hypo.Contains("K") == true )
-          {
+            }
+            else if ( hypo.Contains("K") == true )
+            {
             //if ( pidk > log(mdSet->GetPIDBach()))
             //  {
             if( mdSet->CheckDataMCWeighting() == true ||  mdSet->CheckMassWeighting() == true )  
-	      { dataSetMCtmp[i]->add(*obs,wMC*wRW*globalWeight,0); }
+            { dataSetMCtmp[i]->add(*obs,wMC*wRW*globalWeight,0); }
             else { dataSetMCtmp[i]->add(*obs); }
             //  }
-	    }*/
+            }*/
         }
         
       }
@@ -1746,28 +1756,28 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
         TString corrName = "corr_"+nm;
         GetCorrHist(dataSetMC[i], dataSetMCtmp[i], obs, obsName, corrName, plotSet, debug );
 
-	for (unsigned int k = 0; k<tN.size(); k++ )
+        for (unsigned int k = 0; k<tN.size(); k++ )
+        {
+          Bool_t cat = false;
+          if ( tN[k] == mdSet->GetIDVar() ) { cat = true; }
+          if(  mdSet->CheckTagVar() == true )
           {
-            Bool_t cat = false;
-            if ( tN[k] == mdSet->GetIDVar() ) { cat = true; }
-            if(  mdSet->CheckTagVar() == true )
+            for(int m = 0; m<mdSet->GetNumTagVar(); m++)
+            {
+              if ( tN[k] ==  mdSet->GetTagVar(m) )
               {
-                for(int m = 0; m<mdSet->GetNumTagVar(); m++)
-                  {
-                    if ( tN[k] ==  mdSet->GetTagVar(m) )
-                      {
-			cat = true;
-			break;
-                      }
-                  }
+                cat = true;
+                break;
               }
-            if ( cat == false )
-              {
-                TString name = mdSet->GetVarOutName(tN[k]);
-		RooRealVar* var = (RooRealVar*)obs->find(name.Data());
-                SaveDataSet(dataSetMC[i], var, nm, md, plotSet, debug);
-              }
+            }
           }
+          if ( cat == false )
+          {
+            TString name = mdSet->GetVarOutName(tN[k]);
+            RooRealVar* var = (RooRealVar*)obs->find(name.Data());
+            SaveDataSet(dataSetMC[i], var, nm, md, plotSet, debug);
+          }
+        }
         RooRealVar* var = (RooRealVar*)obs->find("BacEta");
         SaveDataSet(dataSetMC[i], var, nm, md, plotSet, debug);
 
@@ -2626,7 +2636,8 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
     obs->add(*Eta);
     obs->Print("v");
 
-    std::vector <TString> tN = mdSet->GetVarNames(true,false,false,true,true);
+    //std::vector <TString> tN = mdSet->GetVarNames(true,false,false,true,true);
+    std::vector <TString> tN = mdSet->GetVarNames(true,true,false,true,true);
     for(unsigned int i = 0; i<tN.size(); i++ )
     {
       std::cout<<"tN: "<<tN[i]<<std::endl;
@@ -2666,21 +2677,21 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
 
     HistPID2D heff;
     if (  mdSet->CheckMassWeighting() == true || reweight == true)
-      {
-        heff = mdSet->GetHistPID2D("PIDBachEff",yy);
-	std::cout<<heff<<std::endl;
-      }
+    {
+      heff = mdSet->GetHistPID2D("PIDBachEff",yy);
+      std::cout<<heff<<std::endl;
+    }
 
     HistPID2D hRDM;
     if (mdSet->CheckDataMCWeighting() == true )
-      {
-	hRDM = mdSet->GetHistPID2D("RatioDataMC",yy);
+    {
+      hRDM = mdSet->GetHistPID2D("RatioDataMC",yy);
 
-	if ( debug == true )
-	  {
-	    std::cout<<hRDM<<std::endl;
-	  }
+      if ( debug == true )
+      {
+        std::cout<<hRDM<<std::endl;
       }
+    }
 
        
     if ( debug == true) std::cout<<"mode: "<<mode<<std::endl;
@@ -2717,23 +2728,23 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
       std::vector <TString> tNW;
       std::vector <Double_t> varDW; std::vector <Int_t> varIW; std::vector <Float_t> varFW; std::vector <Short_t> varSW;
       if ( mdSet->CheckMassWeighting()==true || mdSet->CheckDataMCWeighting() == true)
-	{
+      {
 
-	  tNW = mdSet->GetPIDHistVar(mdSet->CheckMassWeighting(), mdSet->CheckDataMCWeighting(), debug);
+        tNW = mdSet->GetPIDHistVar(mdSet->CheckMassWeighting(), mdSet->CheckDataMCWeighting(), debug);
 
-	  for(unsigned int k = 0; k<tNW.size(); k++ )
-	    {
-	      if ( debug == true ) { std::cout<<"[INFO] Read variables for weighting: "<<tNW[k]; }
-	      tBW.push_back(treetmp->GetLeaf(tNW[k].Data())->GetTypeName());
-	      if ( debug == true ) { std::cout<<" with type: "<<tBW[k]<<std::endl; }
-	      InitializeRealObs(tBW[k], varDW, varIW, varFW, varSW, debug);
-	    }
-	  for(unsigned int k =0; k<tNW.size(); k++ )
-	    {
-	      SetBranchAddress(treetmp, tBW[k], tNW[k], varDW[k], varIW[k], varFW[k], varSW[k], debug);
-	    }
+        for(unsigned int k = 0; k<tNW.size(); k++ )
+        {
+          if ( debug == true ) { std::cout<<"[INFO] Read variables for weighting: "<<tNW[k]; }
+          tBW.push_back(treetmp->GetLeaf(tNW[k].Data())->GetTypeName());
+          if ( debug == true ) { std::cout<<" with type: "<<tBW[k]<<std::endl; }
+          InitializeRealObs(tBW[k], varDW, varIW, varFW, varSW, debug);
+        }
+        for(unsigned int k =0; k<tNW.size(); k++ )
+        {
+          SetBranchAddress(treetmp, tBW[k], tNW[k], varDW[k], varIW[k], varFW[k], varSW[k], debug);
+        }
 
-	}
+      }
 
 
 
@@ -2766,14 +2777,14 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
 
         Double_t pidk(0);
         Double_t val(0);
-	Double_t pl(0), eta(0);
+        Double_t pl(0), eta(0);
 
-	std::vector <TString> basicName;
-	std::vector <Double_t> basicVal;
+        std::vector <TString> basicName;
+        std::vector <Double_t> basicVal;
 
-	basicName.push_back(mdSet->GetMomVar());
+        basicName.push_back(mdSet->GetMomVar());
         basicName.push_back(mdSet->GetTrMomVar());
-	basicName.push_back(mdSet->GetTracksVar());
+        basicName.push_back(mdSet->GetTracksVar());
 
         basicVal.push_back(-99999.0); basicVal.push_back(-99999.0); basicVal.push_back(-999999.0);
 
@@ -2796,37 +2807,37 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
           if ( cat == true ) { val = SetValCatObs(mdSet, obs, name , tB[k], varD[k], varI[k], varF[k], varS[k]); }
           else{ val = SetValRealObs(mdSet, obs, name, tB[k], varD[k], varI[k], varF[k], varS[k], mode); }
 	  
-	  if ( tN[k] == mdSet->GetMomVar() ) { basicVal[0] = val; }
+          if ( tN[k] == mdSet->GetMomVar() ) { basicVal[0] = val; }
           if ( tN[k] == mdSet->GetTrMomVar() ) { basicVal[1] = val; }
           if ( tN[k] == mdSet->GetTracksVar() ) { basicVal[2] = val; }
           if ( tN[k] == mdSet->GetPIDKVar() ) { pidk = val; }
         }
 
-	pl = sqrt(exp(basicVal[0])*exp(basicVal[0]) - exp(basicVal[1])*exp(basicVal[1]));
+        pl = sqrt(exp(basicVal[0])*exp(basicVal[0]) - exp(basicVal[1])*exp(basicVal[1]));
         eta = 0.5 * log((exp(basicVal[0]) + pl) / (exp(basicVal[0]) - pl));
 
         Eta->setVal(eta);
 
-	std::vector <Double_t> pRV;
-	if ( mdSet->CheckDataMCWeighting() == true || mdSet->CheckMassWeighting() == true)
-	  {
-	    for(unsigned k = 0; k < tNW.size(); k++)
-	      {
-		pRV.push_back(GetValue( tBW[k], varDW[k], varIW[k], varFW[k], varSW[k] ));
-	      }
-	  }
+        std::vector <Double_t> pRV;
+        if ( mdSet->CheckDataMCWeighting() == true || mdSet->CheckMassWeighting() == true)
+        {
+          for(unsigned k = 0; k < tNW.size(); k++)
+          {
+            pRV.push_back(GetValue( tBW[k], varDW[k], varIW[k], varFW[k], varSW[k] ));
+          }
+        }
 
         if ( mdSet->CheckDataMCWeighting() == true )
-          {
-	    std::pair<Double_t,Double_t> valRDM = hRDM.GetValues(mdSet->GetPIDHistVar("RatioDataMC",0), mdSet->GetPIDHistVar("RatioDataMC",1),
-                                                                 basicName, basicVal, tNW, pRV);
-            wRW = hRDM.GetWeight(log(valRDM.first), log(valRDM.second), smp[i]);
-          }
+        {
+          std::pair<Double_t,Double_t> valRDM = hRDM.GetValues(mdSet->GetPIDHistVar("RatioDataMC",0), mdSet->GetPIDHistVar("RatioDataMC",1),
+                                                               basicName, basicVal, tNW, pRV);
+          wRW = hRDM.GetWeight(log(valRDM.first), log(valRDM.second), smp[i]);
+        }
 
         if ( mdSet->CheckMassWeighting() == true )
-	  {
-	    wE =  heff.GetValues(mdSet->GetPIDHistVar("PIDBachEff",0), mdSet->GetPIDHistVar("PIDBachEff",1), basicName, basicVal, tNW, pRV, smp[i]);
-	  }
+        {
+          wE =  heff.GetValues(mdSet->GetPIDHistVar("PIDBachEff",0), mdSet->GetPIDHistVar("PIDBachEff",1), basicName, basicVal, tNW, pRV, smp[i]);
+        }
 
         if (  mdSet->CheckDataMCWeighting() == true ||  mdSet->CheckMassWeighting() == true || reweight == true)
         {
@@ -2876,11 +2887,26 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
       TString s = smp[i]+"_"+md[i]+h[i];
 
       std::vector <TString> obsName;
-      obsName.push_back(mdSet->GetMassBVarOutName());
-      obsName.push_back(mdSet->GetMassDVarOutName());
-      obsName.push_back(mdSet->GetPIDKVarOutName());
-      obsName.push_back(mdSet->GetTimeVarOutName());
-      obsName.push_back(mdSet->GetTerrVarOutName());
+      if(mdSet->GetMassBVarOutName() != "")
+      {
+        obsName.push_back(mdSet->GetMassBVarOutName());
+      }
+      if(mdSet->GetMassDVarOutName() != "")
+      {
+        obsName.push_back(mdSet->GetMassDVarOutName());
+      }
+      if(mdSet->GetPIDKVarOutName() != "")
+      {
+        obsName.push_back(mdSet->GetPIDKVarOutName());
+      }
+      if(mdSet->GetTimeVarOutName() != "")
+      {
+        obsName.push_back(mdSet->GetTimeVarOutName());
+      }
+      if(mdSet->GetTerrVarOutName() != "")
+      {
+        obsName.push_back(mdSet->GetTerrVarOutName());
+      }
       if(mdSet->GetBDTGVarOutName() != "")
       {
         obsName.push_back(mdSet->GetBDTGVarOutName());
@@ -3236,17 +3262,17 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
     TString DsCh3Prefix = mdSet->GetChildPrefix(2);
 
     if(hypo.first == "Bd2DPi")
-      {
-	Own_ch = Form("%s_M < 200 && %s_M < 200 && %s_M > 200",DsCh3Prefix.Data(), DsCh2Prefix.Data(), DsCh1Prefix.Data());
-      }
+    {
+      Own_ch = Form("%s_M < 200 && %s_M < 200 && %s_M > 200",DsCh3Prefix.Data(), DsCh2Prefix.Data(), DsCh1Prefix.Data());
+    }
     else if ( hypo.first =="Lb2LcPi")
-      {
-	Own_ch = Form("%s_M < 200 && %s_M > 200 && %s_P > 5000",DsCh3Prefix.Data(), DsCh2Prefix.Data(), DsCh1Prefix.Data());
-      }
+    {
+      Own_ch = Form("%s_M < 200 && %s_M > 200 && %s_P > 5000",DsCh3Prefix.Data(), DsCh2Prefix.Data(), DsCh1Prefix.Data());
+    }
     else if ( hypo.first.Contains("DsPi") || hypo.first.Contains("DsstPi") || hypo.first.Contains("DsstK") || hypo.first.Contains("DsK"))
-      {
-        Own_ch = GetDsHypoCutSig(mdSet, hypo.second, debug);
-      }
+    {
+      Own_ch = GetDsHypoCutSig(mdSet, hypo.second, debug);
+    }
 
     if ( hypo.first.Contains("Pi") ) { Own_bac = Form("%s_M < 200",BachPrefix.Data()); }
     else if ( hypo.first.Contains("K") ) { Own_bac= Form("%s_M > 200",BachPrefix.Data()); }
@@ -3271,21 +3297,21 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
     else if ( hypo.first.Contains("K") ) { Own_bac= Form("%s_M > 200",BachPrefix.Data()); }
     
     if ( own.first == "Lb2LcPi" )
+    {
+      if ( hypo.second.Contains("kkpi") == true || hypo.second.Contains("nonres") == true ||
+           hypo.second.Contains("kstk") == true || hypo.second.Contains("phipi") == true || hypo.second.Contains("hhhpi0") == true)
       {
-	if ( hypo.second.Contains("kkpi") == true || hypo.second.Contains("nonres") == true ||
-	     hypo.second.Contains("kstk") == true || hypo.second.Contains("phipi") == true || hypo.second.Contains("hhhpi0") == true)
-	  {
-	    Own_ch = Form("%s_M < 200 && %s_M > 200 && %s_P > 5000",DsCh3Prefix.Data(), DsCh2Prefix.Data(), DsCh1Prefix.Data());
-	  }
-	else if (hypo.second.Contains("kpipi") == true )
-	  {
-	    Own_ch = Form("%s_M < 200 && %s_M < 200 && %s_P > 500",DsCh3Prefix.Data(), DsCh2Prefix.Data(), DsCh1Prefix.Data());
-	  }
+        Own_ch = Form("%s_M < 200 && %s_M > 200 && %s_P > 5000",DsCh3Prefix.Data(), DsCh2Prefix.Data(), DsCh1Prefix.Data());
       }
+      else if (hypo.second.Contains("kpipi") == true )
+      {
+        Own_ch = Form("%s_M < 200 && %s_M < 200 && %s_P > 500",DsCh3Prefix.Data(), DsCh2Prefix.Data(), DsCh1Prefix.Data());
+      }
+    }
     else
-      {
-	Own_ch = GetDsHypoCutSig(mdSet, hypo.second, debug);
-      }
+    {
+      Own_ch = GetDsHypoCutSig(mdSet, hypo.second, debug);
+    }
     //if ( debug ) { std::cout<<"[INFO] Mode under "<<hypo.first<<", "<<hypo.second<<" hypothesis with cuts: "<<Own_bac&&Own_ch<<std::endl; }
     return Own_bac&&Own_ch;
   }
@@ -3520,21 +3546,21 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
             w5 = h[1]->GetWeight(lab3_P2*wRW,smpHypo[i]);
           }
           
-	  if ( w5 < 0.0 ) { w5 = 0.0; }
+          if ( w5 < 0.0 ) { w5 = 0.0; }
           if ( w4 < 0.0 ) { w4 = 0.0; }
 
           Double_t w51 = 1.0; 
           if ( nameOwn.first.Contains("LcPi") ) { w51 = hpeff1->GetWeight(lab3_P2*wRW,smpHypo[i]); }
           
           Double_t y = 0.0;
-	  if ( w51 > 0.01 ) {
+          if ( w51 > 0.01 ) {
 
             y = w4*w5/w51;
             if ( y < 1.0 )
-              {
-                nE_RDM[i] = nE_RDM[i]+wRW;
-                nE_lab45[i] = nE_lab45[i]+y;
-              }
+            {
+              nE_RDM[i] = nE_RDM[i]+wRW;
+              nE_lab45[i] = nE_lab45[i]+y;
+            }
           }
           else {
             y = 0.0;
@@ -3600,194 +3626,194 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
       nE_lab1MisID[i] = 0.0;
 
       if ( nameOwn.first.Contains("LcPi") || nameOwn.first.Contains("Bd2DPi"))
-	{
-          for (Long64_t jentry=0; jentry< n_events_Hypo[i]; jentry++)
-            {
-              ttmp2[i]->GetEntry(jentry);
+      {
+        for (Long64_t jentry=0; jentry< n_events_Hypo[i]; jentry++)
+        {
+          ttmp2[i]->GetEntry(jentry);
 
-              Double_t wRW = hRDM->GetWeight(log(lab1_PT2),log(nTrack2), smpHypo[i]);
-              Double_t weff0 = heff0->GetWeight(lab1_P2*wRW,smpHypo[i]);
-              Double_t weff10 = heff5->GetWeight(lab1_P2*wRW,smpHypo[i]);
-              Double_t wmisID5 = hmisID5->GetWeight(lab1_P2*wRW,smpHypo[i]);
+          Double_t wRW = hRDM->GetWeight(log(lab1_PT2),log(nTrack2), smpHypo[i]);
+          Double_t weff0 = heff0->GetWeight(lab1_P2*wRW,smpHypo[i]);
+          Double_t weff10 = heff5->GetWeight(lab1_P2*wRW,smpHypo[i]);
+          Double_t wmisID5 = hmisID5->GetWeight(lab1_P2*wRW,smpHypo[i]);
 
-              Double_t y=0;
-              if ( weff0 != 0 && weff10 !=0) { y = (weff10/weff0);}
+          Double_t y=0;
+          if ( weff0 != 0 && weff10 !=0) { y = (weff10/weff0);}
 
-              Double_t y2=0;
-              if ( weff0 != 0 && wmisID5 !=0) { y2 = (wmisID5/weff0);}
+          Double_t y2=0;
+          if ( weff0 != 0 && wmisID5 !=0) { y2 = (wmisID5/weff0);}
                
 
-              nE_lab1[i] = nE_lab1[i]+y;
-              nE_lab1MisID[i] = nE_lab1MisID[i]+y2;  
-
-            }
-          std::cout<<"----------------------------------------------------------------"<<std::endl;                                   
-          std::cout<<"[INFO] For: "<<nameOwn.first<<" "<<nameOwn.second<<" sample "<<smpOwn[i]<<std::endl;                            
-          std::cout<<"[INFO]     under hypothesis"<<nameHypo.first<<" "<<nameHypo.second<<std::endl;
-          std::cout<<"[INFO] eff1: "<<nE_lab1[i]<<" procent: "<<nE_lab1[i]/n_events_Hypo[i]*100<<"%"<<std::endl;
-          std::cout<<"[INFO] misID1: "<<nE_lab1MisID[i]<<" procent: "<<nE_lab1MisID[i]/n_events_Hypo[i]*100<<"%"<<std::endl;
-          std::cout<<"[INFO] All_misID: "<<all_misID/n_events_Hypo[i]*100<<"%"<<std::endl;
-          std::cout<<"[INFO] All_misID2: "<<all_misID*nE_lab1MisID[i]/n_events_Hypo[i]*100<<"%"<<std::endl;
-          std::cout<<"----------------------------------------------------------------"<<std::endl;
+          nE_lab1[i] = nE_lab1[i]+y;
+          nE_lab1MisID[i] = nE_lab1MisID[i]+y2;  
 
         }
+        std::cout<<"----------------------------------------------------------------"<<std::endl;                                   
+        std::cout<<"[INFO] For: "<<nameOwn.first<<" "<<nameOwn.second<<" sample "<<smpOwn[i]<<std::endl;                            
+        std::cout<<"[INFO]     under hypothesis"<<nameHypo.first<<" "<<nameHypo.second<<std::endl;
+        std::cout<<"[INFO] eff1: "<<nE_lab1[i]<<" procent: "<<nE_lab1[i]/n_events_Hypo[i]*100<<"%"<<std::endl;
+        std::cout<<"[INFO] misID1: "<<nE_lab1MisID[i]<<" procent: "<<nE_lab1MisID[i]/n_events_Hypo[i]*100<<"%"<<std::endl;
+        std::cout<<"[INFO] All_misID: "<<all_misID/n_events_Hypo[i]*100<<"%"<<std::endl;
+        std::cout<<"[INFO] All_misID2: "<<all_misID*nE_lab1MisID[i]/n_events_Hypo[i]*100<<"%"<<std::endl;
+        std::cout<<"----------------------------------------------------------------"<<std::endl;
+
+      }
 
       
     }
-      /*    
-      //Constant variable: branching fractions//
-      //B(Bs->DsPi)//
-      Float_t B_Bs_DsPi   = 3.2e-3;
-      Float_t B_Bs_DsPi_u = 0.4e-3;
-      //B(B->DPi)//
-      Float_t B_Bd_DPi    = 2.68e-3;
-      Float_t B_Bd_DPi_u  = 0.13e-3;
-      //B(Lb->LcPi)//
-      Float_t B_Lb_LcPi   = 5.7e-3;
-      Float_t B_Lb_LcPi_u = 3.2e-3;  
-      //B(Bs->DsK)//
-      Float_t B_Bs_DsK   = 2.90e-4;
-      Float_t B_Bs_DsK_u = 0.60e-4;
-      //B(Lb->Dsp)//
-      //Float_t B_Lb_Dsp   = 2e-6;
-      //B(D->DK)//
-      Float_t B_Bd_DK    = 1.94e-4;
-      Float_t B_Bd_DK_u  = 0.21e-4;
+    /*    
+    //Constant variable: branching fractions//
+    //B(Bs->DsPi)//
+    Float_t B_Bs_DsPi   = 3.2e-3;
+    Float_t B_Bs_DsPi_u = 0.4e-3;
+    //B(B->DPi)//
+    Float_t B_Bd_DPi    = 2.68e-3;
+    Float_t B_Bd_DPi_u  = 0.13e-3;
+    //B(Lb->LcPi)//
+    Float_t B_Lb_LcPi   = 5.7e-3;
+    Float_t B_Lb_LcPi_u = 3.2e-3;  
+    //B(Bs->DsK)//
+    Float_t B_Bs_DsK   = 2.90e-4;
+    Float_t B_Bs_DsK_u = 0.60e-4;
+    //B(Lb->Dsp)//
+    //Float_t B_Lb_Dsp   = 2e-6;
+    //B(D->DK)//
+    Float_t B_Bd_DK    = 1.94e-4;
+    Float_t B_Bd_DK_u  = 0.21e-4;
       
-      //B(D->KPiPi)//
-      Float_t B_D_KPiPi   = 9.13e-2;
-      Float_t B_D_KPiPi_u = 0.19e-2;
-      //B(Ds->KKPi)//
-      Float_t B_Ds_KKPi   = 5.49e-2;
-      Float_t B_Ds_KKPi_u = 0.27e-2;
-      //B(Ds->PiPiPi)//
-      Float_t B_Ds_PiPiPi   = 0.0110;
-      Float_t B_Ds_PiPiPi_u = 0.0006;
-      //B(Ds->KPiPi)//
-      Float_t B_Ds_KPiPi   = 6.9e-3;
-      Float_t B_Ds_KPiPi_u = 0.5e-3;
-      //B(Lc->pKPi)//
-      Float_t B_Lc_pKPi   = 6.84e-2;
-      Float_t B_Lc_pKPi_u = 0.24e-2;
-      
-      
-      //fragmentation factor//
-      Float_t fsfd = 0.259;
-      Float_t fsfd_u = 0.015;
-      Float_t flfd = 0.4;
-      Float_t flfd_u = 0.0;
-      
-      Float_t B_1=0;
-      Float_t B_2=0;
-      Float_t B_u_1=0;
-      Float_t B_u_2=0;
-      
-      Float_t B_3=0;
-      Float_t B_4=0;
-      Float_t B_u_3=0;
-      Float_t B_u_4=0;
-      Float_t frag =0;
-      Float_t frag_u = 0;
-      
-      //set correct branching fration//
-      if (mode == "BdDPi")
-      {
-      B_1 = B_Bd_DPi; B_u_1 = B_Bd_DPi_u;
-      B_2 = B_Bs_DsPi; B_u_2 = B_Bs_DsPi_u;
-      B_3 = B_D_KPiPi; B_u_3 = B_D_KPiPi_u;
-      if (mode2 == "kkpi")
-      {
-      B_4 = B_Ds_KKPi; B_u_4 = B_Ds_KKPi_u;
-      }
-      else if (mode2 == "kpipi")
-      {
-      B_4 = B_Ds_KPiPi; B_u_4 = B_Ds_KPiPi_u;
-      }
-      }
-      else if (mode == "LbLcPi")
-      {
-      B_1 = B_Lb_LcPi; B_u_1 = B_Lb_LcPi_u;
-      B_2 = B_Bs_DsPi; B_u_2 = B_Bs_DsPi_u;
-      B_3 = B_Lc_pKPi; B_u_3 = B_Lc_pKPi_u;
-      B_4 = B_Ds_KKPi; B_u_4 = B_Ds_KKPi_u;
-      frag = flfd;     frag_u = flfd_u;
-      }
-      else if( mode == "BsDsPi")
-      {
-      B_1 = B_Bs_DsPi; B_u_1 = B_Bs_DsPi_u;
-      B_2 = B_Bs_DsK; B_u_2 = B_Bs_DsK_u;
-      if ( mode2 == "kkpi") {B_3 = B_Ds_KKPi; B_u_3 = B_Ds_KKPi_u;} 
-      else if (mode2 == "kpipi") {  B_3 = B_Ds_KPiPi; B_u_3 = B_Ds_KPiPi_u;}
-      else if (mode2 == "pipipi") { B_3 = B_Ds_PiPiPi; B_u_3 = B_Ds_PiPiPi_u;} 
-      frag = fsfd; frag_u = fsfd_u;   
-      }
-      else if( mode == "BsDsK")
-      {
-      B_1 = B_Bs_DsK; B_u_1 = B_Bs_DsK_u;
-      B_2 = B_Bs_DsPi; B_u_2 = B_Bs_DsPi_u;
-      if ( mode2 == "kkpi") {B_3 = B_Ds_KKPi; B_u_3 = B_Ds_KKPi_u;}
-      else if (mode2 == "kpipi") {  B_3 = B_Ds_KPiPi; B_u_3 = B_Ds_KPiPi_u;}
-      else if (mode2 == "pipipi") { B_3 = B_Ds_PiPiPi; B_u_3 = B_Ds_PiPiPi_u;}
-      frag = fsfd; frag_u = fsfd_u;
-      }
-      else if( mode =="BDK")
-      {
-      B_1 = B_Bd_DK; B_u_1 = B_Bd_DK_u;
-      B_2 = B_Bd_DPi; B_u_2 = B_Bd_DPi_u;
-      }
+    //B(D->KPiPi)//
+    Float_t B_D_KPiPi   = 9.13e-2;
+    Float_t B_D_KPiPi_u = 0.19e-2;
+    //B(Ds->KKPi)//
+    Float_t B_Ds_KKPi   = 5.49e-2;
+    Float_t B_Ds_KKPi_u = 0.27e-2;
+    //B(Ds->PiPiPi)//
+    Float_t B_Ds_PiPiPi   = 0.0110;
+    Float_t B_Ds_PiPiPi_u = 0.0006;
+    //B(Ds->KPiPi)//
+    Float_t B_Ds_KPiPi   = 6.9e-3;
+    Float_t B_Ds_KPiPi_u = 0.5e-3;
+    //B(Lc->pKPi)//
+    Float_t B_Lc_pKPi   = 6.84e-2;
+    Float_t B_Lc_pKPi_u = 0.24e-2;
       
       
-      //ratio of branching fractions for B mesons//
-      Float_t rB_B     = B_1/B_2;  // branching fraction 1 / branching fraction 2 
-      Float_t rB_B_u   = rB_B*std::sqrt(std::pow(B_u_1/B_1,2)+std::pow(B_u_2/B_2,2)); //uncertainty of branching ratios
-      Float_t rB_B2=0;
-      Float_t rB_B2_u=0;
+    //fragmentation factor//
+    Float_t fsfd = 0.259;
+    Float_t fsfd_u = 0.015;
+    Float_t flfd = 0.4;
+    Float_t flfd_u = 0.0;
       
-      if( mode == "LbLcPi" || mode == "BsDsPi" || mode == "BsDsK")
-      {
-      rB_B2     = B_1/B_Bd_DPi*frag; // branchig fraction LbLcPi with respoect to DPi 
-      rB_B2_u   = rB_B2*std::sqrt(std::pow(B_u_1/B_1,2) + std::pow(B_Bd_DPi_u/B_Bd_DPi,2) + std::pow(frag_u/frag,2)); // uncertainty
-      }
-      Double_t fake = rB_B2_u;
+    Float_t B_1=0;
+    Float_t B_2=0;
+    Float_t B_u_1=0;
+    Float_t B_u_2=0;
       
-      //ratio of branching fractions for D mesons//
-      Float_t rB_D=0; 
-      Float_t rB_D_u=0;
-      if ( mode != "BsDsPi" && mode != "BDK" && mode != "BsDsK") // for charm meson misID 
-      {
-      rB_D = B_3/B_4; 
-      rB_D_u = rB_D*std::sqrt(std::pow(B_u_3/B_3,2)+std::pow(B_u_4/B_4,2)); //uncertainty
-      }
-      Float_t rB_D2=0; 
-      Float_t rB_D2_u=0;
-      if( mode == "LbLcPi" || mode =="BsDsPi" || mode == "BsDsK" ) // branching fraction B(Lc->pKPi) with respect to B(D->KPiPi);   
-      {
-      rB_D2 = B_3/B_D_KPiPi;
-      rB_D2_u   = rB_D2*std::sqrt( std::pow(B_u_3/B_3,2) + std::pow(B_D_KPiPi_u/B_D_KPiPi,2) ); // uncertainty 
-      }
-      fake = rB_D2_u;
-      if ( fake > 2.0 ) {}
+    Float_t B_3=0;
+    Float_t B_4=0;
+    Float_t B_u_3=0;
+    Float_t B_u_4=0;
+    Float_t frag =0;
+    Float_t frag_u = 0;
       
-      //Ratio N events : N(own)/N(hypo), applied fragmentation factor if necessary //
-      Float_t rN=0;
-      Float_t rN_u=0;
-      Float_t rNBd=0;
-      Float_t rNBd_u=0;
-      if ( mode == "BdDPi") // number of expected DPi/DsPi events  
-      {
-      rN = rB_B*rB_D/fsfd;
-      rN_u = rN*std::sqrt(std::pow(rB_B_u/rB_B,2) + std::pow(rB_D_u/rB_D,2) + std::pow(fsfd_u/fsfd,2));  // uncertainty
-      }
-      else if (mode == "LbLcPi" || mode == "BsDsPi" || mode == "BsDsK") // number of expected LcPi/DsPi and LcPi/DPi events 
-      {
-      rN = rB_B*rB_D;
-      rN_u = rN*std::sqrt( std::pow(rB_B_u/rB_B,2) + std::pow(rB_D_u/rB_D,2)); // uncertainty
-      rNBd = B_1/B_Bd_DPi*frag*B_3/B_D_KPiPi;
-      rNBd_u = rNBd*std::sqrt( std::pow(B_u_1/B_1,2) + + std::pow(B_Bd_DPi_u/B_Bd_DPi,2)+ std::pow(B_u_3/B_3,2) + std::pow(B_D_KPiPi_u/B_D_KPiPi,2) ) ; // uncertainty
-      }
-      //    else if (mode == "BsDsPi" || mode == "BDK" || mode ==  "BsDsK") // number of N(own)/N(hypo) for bachelor misID
-      //  {
-      //	rN =rB_B; rN_u = rB_B_u;
+    //set correct branching fration//
+    if (mode == "BdDPi")
+    {
+    B_1 = B_Bd_DPi; B_u_1 = B_Bd_DPi_u;
+    B_2 = B_Bs_DsPi; B_u_2 = B_Bs_DsPi_u;
+    B_3 = B_D_KPiPi; B_u_3 = B_D_KPiPi_u;
+    if (mode2 == "kkpi")
+    {
+    B_4 = B_Ds_KKPi; B_u_4 = B_Ds_KKPi_u;
+    }
+    else if (mode2 == "kpipi")
+    {
+    B_4 = B_Ds_KPiPi; B_u_4 = B_Ds_KPiPi_u;
+    }
+    }
+    else if (mode == "LbLcPi")
+    {
+    B_1 = B_Lb_LcPi; B_u_1 = B_Lb_LcPi_u;
+    B_2 = B_Bs_DsPi; B_u_2 = B_Bs_DsPi_u;
+    B_3 = B_Lc_pKPi; B_u_3 = B_Lc_pKPi_u;
+    B_4 = B_Ds_KKPi; B_u_4 = B_Ds_KKPi_u;
+    frag = flfd;     frag_u = flfd_u;
+    }
+    else if( mode == "BsDsPi")
+    {
+    B_1 = B_Bs_DsPi; B_u_1 = B_Bs_DsPi_u;
+    B_2 = B_Bs_DsK; B_u_2 = B_Bs_DsK_u;
+    if ( mode2 == "kkpi") {B_3 = B_Ds_KKPi; B_u_3 = B_Ds_KKPi_u;} 
+    else if (mode2 == "kpipi") {  B_3 = B_Ds_KPiPi; B_u_3 = B_Ds_KPiPi_u;}
+    else if (mode2 == "pipipi") { B_3 = B_Ds_PiPiPi; B_u_3 = B_Ds_PiPiPi_u;} 
+    frag = fsfd; frag_u = fsfd_u;   
+    }
+    else if( mode == "BsDsK")
+    {
+    B_1 = B_Bs_DsK; B_u_1 = B_Bs_DsK_u;
+    B_2 = B_Bs_DsPi; B_u_2 = B_Bs_DsPi_u;
+    if ( mode2 == "kkpi") {B_3 = B_Ds_KKPi; B_u_3 = B_Ds_KKPi_u;}
+    else if (mode2 == "kpipi") {  B_3 = B_Ds_KPiPi; B_u_3 = B_Ds_KPiPi_u;}
+    else if (mode2 == "pipipi") { B_3 = B_Ds_PiPiPi; B_u_3 = B_Ds_PiPiPi_u;}
+    frag = fsfd; frag_u = fsfd_u;
+    }
+    else if( mode =="BDK")
+    {
+    B_1 = B_Bd_DK; B_u_1 = B_Bd_DK_u;
+    B_2 = B_Bd_DPi; B_u_2 = B_Bd_DPi_u;
+    }
+      
+      
+    //ratio of branching fractions for B mesons//
+    Float_t rB_B     = B_1/B_2;  // branching fraction 1 / branching fraction 2 
+    Float_t rB_B_u   = rB_B*std::sqrt(std::pow(B_u_1/B_1,2)+std::pow(B_u_2/B_2,2)); //uncertainty of branching ratios
+    Float_t rB_B2=0;
+    Float_t rB_B2_u=0;
+      
+    if( mode == "LbLcPi" || mode == "BsDsPi" || mode == "BsDsK")
+    {
+    rB_B2     = B_1/B_Bd_DPi*frag; // branchig fraction LbLcPi with respoect to DPi 
+    rB_B2_u   = rB_B2*std::sqrt(std::pow(B_u_1/B_1,2) + std::pow(B_Bd_DPi_u/B_Bd_DPi,2) + std::pow(frag_u/frag,2)); // uncertainty
+    }
+    Double_t fake = rB_B2_u;
+      
+    //ratio of branching fractions for D mesons//
+    Float_t rB_D=0; 
+    Float_t rB_D_u=0;
+    if ( mode != "BsDsPi" && mode != "BDK" && mode != "BsDsK") // for charm meson misID 
+    {
+    rB_D = B_3/B_4; 
+    rB_D_u = rB_D*std::sqrt(std::pow(B_u_3/B_3,2)+std::pow(B_u_4/B_4,2)); //uncertainty
+    }
+    Float_t rB_D2=0; 
+    Float_t rB_D2_u=0;
+    if( mode == "LbLcPi" || mode =="BsDsPi" || mode == "BsDsK" ) // branching fraction B(Lc->pKPi) with respect to B(D->KPiPi);   
+    {
+    rB_D2 = B_3/B_D_KPiPi;
+    rB_D2_u   = rB_D2*std::sqrt( std::pow(B_u_3/B_3,2) + std::pow(B_D_KPiPi_u/B_D_KPiPi,2) ); // uncertainty 
+    }
+    fake = rB_D2_u;
+    if ( fake > 2.0 ) {}
+      
+    //Ratio N events : N(own)/N(hypo), applied fragmentation factor if necessary //
+    Float_t rN=0;
+    Float_t rN_u=0;
+    Float_t rNBd=0;
+    Float_t rNBd_u=0;
+    if ( mode == "BdDPi") // number of expected DPi/DsPi events  
+    {
+    rN = rB_B*rB_D/fsfd;
+    rN_u = rN*std::sqrt(std::pow(rB_B_u/rB_B,2) + std::pow(rB_D_u/rB_D,2) + std::pow(fsfd_u/fsfd,2));  // uncertainty
+    }
+    else if (mode == "LbLcPi" || mode == "BsDsPi" || mode == "BsDsK") // number of expected LcPi/DsPi and LcPi/DPi events 
+    {
+    rN = rB_B*rB_D;
+    rN_u = rN*std::sqrt( std::pow(rB_B_u/rB_B,2) + std::pow(rB_D_u/rB_D,2)); // uncertainty
+    rNBd = B_1/B_Bd_DPi*frag*B_3/B_D_KPiPi;
+    rNBd_u = rNBd*std::sqrt( std::pow(B_u_1/B_1,2) + + std::pow(B_Bd_DPi_u/B_Bd_DPi,2)+ std::pow(B_u_3/B_3,2) + std::pow(B_D_KPiPi_u/B_D_KPiPi,2) ) ; // uncertainty
+    }
+    //    else if (mode == "BsDsPi" || mode == "BDK" || mode ==  "BsDsK") // number of N(own)/N(hypo) for bachelor misID
+    //  {
+    //	rN =rB_B; rN_u = rB_B_u;
     //  }
     
     
@@ -3803,21 +3829,21 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
     std::cout<<"B("<<nameHypo<<")/B("<<nameMeson<<")=("<<rB_B<<" +/- "<<rB_B_u<<")"<<std::endl;
     if ( mode != "BsDsPi" && mode != "BDK")
     {
-      std::cout<<"------------ Branching fractions for charm mesons ------------"<<std::endl;
-      std::cout<<"B("<<nameDHypo<<")=("<<B_3<<" +/- "<<B_u_3<<")"<<std::endl;
-      std::cout<<"B("<<nameDMeson<<")=("<<B_4<<" +/- "<<B_u_4<<")"<<std::endl;
-      std::cout<<"B("<<nameDHypo<<")/B("<<nameDMeson<<")=("<<rB_D<<" +/- "<<rB_D_u<<")"<<std::endl;
-      std::cout<<"------------------ Fragmentation factor ------------------"<<std::endl;
-      std::cout<<"fsfd = ("<<fsfd<<" +/- "<<fsfd_u<<")"<<std::endl;
-      std::cout<<"--------------- Ratio of number of events ----------------"<<std::endl;
-      std::cout<<"N("<<nameHypo<<")/N("<<nameMeson<<") = B("<<nameHypo<<")/B("<<nameMeson;
-      if ( mode == "BdDPi"){
-        std::cout<<")*B("<<nameDHypo<<")/B("<<nameDMeson<<")/(fs/fd)="<<std::endl;
-      }
-      else {
-        std::cout<<")*B("<<nameDHypo<<")/B("<<nameDMeson<<")="<<std::endl;
-      }
-      std::cout<<"("<<rN<<" +/- "<<rN_u<<")"<<std::endl;
+    std::cout<<"------------ Branching fractions for charm mesons ------------"<<std::endl;
+    std::cout<<"B("<<nameDHypo<<")=("<<B_3<<" +/- "<<B_u_3<<")"<<std::endl;
+    std::cout<<"B("<<nameDMeson<<")=("<<B_4<<" +/- "<<B_u_4<<")"<<std::endl;
+    std::cout<<"B("<<nameDHypo<<")/B("<<nameDMeson<<")=("<<rB_D<<" +/- "<<rB_D_u<<")"<<std::endl;
+    std::cout<<"------------------ Fragmentation factor ------------------"<<std::endl;
+    std::cout<<"fsfd = ("<<fsfd<<" +/- "<<fsfd_u<<")"<<std::endl;
+    std::cout<<"--------------- Ratio of number of events ----------------"<<std::endl;
+    std::cout<<"N("<<nameHypo<<")/N("<<nameMeson<<") = B("<<nameHypo<<")/B("<<nameMeson;
+    if ( mode == "BdDPi"){
+    std::cout<<")*B("<<nameDHypo<<")/B("<<nameDMeson<<")/(fs/fd)="<<std::endl;
+    }
+    else {
+    std::cout<<")*B("<<nameDHypo<<")/B("<<nameDMeson<<")="<<std::endl;
+    }
+    std::cout<<"("<<rN<<" +/- "<<rN_u<<")"<<std::endl;
     }
     std::cout<<std::endl;
     std::cout<<"==================== Selection ==========================="<<std::endl;
@@ -3832,109 +3858,109 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
     //Obtaining misID//
     if ( mode != "BsDsPi" && mode != "BDK" && mode != "BsDsK") //obtain misID in case where change charm meson hypo 
     {
-      std::cout<<"---------------------- Histograms ------------------------"<<std::endl;
-      std::cout<<"The histogram: "<<h_hist2D_1_name<<" is multiplied by "<<h_hist2D_2_name<<std::endl;
-      //std::cout<<"The histogram: "<<h_lab5_name<<" is multiplied by "<<h_2[0]->GetName()<<std::endl;
-      std::cout<<"The histogram: "<<h_lab1_name<<" is multiplied by "<<heff10_name<<" and divided by "<<heff0_name<<std::endl;
+    std::cout<<"---------------------- Histograms ------------------------"<<std::endl;
+    std::cout<<"The histogram: "<<h_hist2D_1_name<<" is multiplied by "<<h_hist2D_2_name<<std::endl;
+    //std::cout<<"The histogram: "<<h_lab5_name<<" is multiplied by "<<h_2[0]->GetName()<<std::endl;
+    std::cout<<"The histogram: "<<h_lab1_name<<" is multiplied by "<<heff10_name<<" and divided by "<<heff0_name<<std::endl;
 
-      std::cout<<"--------------- Calculations for histograms ---------------"<<std::endl;
-      std::cout<<"===> calculations for lab4 "<<std::endl;
-      std::cout<<"nE_lab45 = sum of "<<h_hist2D_1_name<<"*"<<h_hist2D_2_name<<std::endl;
-      std::cout<<"DOWN: "<<nE_lab45[0]<<" UP: "<<nE_lab45[1]<<std::endl;
-      std::cout<<"nE_lab45*ratio/NOE_cut ="<<std::endl;
+    std::cout<<"--------------- Calculations for histograms ---------------"<<std::endl;
+    std::cout<<"===> calculations for lab4 "<<std::endl;
+    std::cout<<"nE_lab45 = sum of "<<h_hist2D_1_name<<"*"<<h_hist2D_2_name<<std::endl;
+    std::cout<<"DOWN: "<<nE_lab45[0]<<" UP: "<<nE_lab45[1]<<std::endl;
+    std::cout<<"nE_lab45*ratio/NOE_cut ="<<std::endl;
       
-      Float_t misID_1, misID_2; //misID
-      if ( mode != "LbLcPi" )
-      {
-      misID_1 = nE_lab45[0]*ratio[0]/n_events_Hypo[0]; 
-      misID_2 = nE_lab45[1]*ratio[1]/n_events_Hypo[1]; 
-      }
-      else
-      {
-      misID_1 = nE_lab45[0]/n_events_Hypo[0]; 
-      misID_2 = nE_lab45[1]/n_events_Hypo[1]; 
-      }
-      Float_t misID_av, misID_u;
-      misID_av = (misID_1+misID_2)/2;
-      misID_u =  std::sqrt((std::pow(misID_1-misID_av,2)+std::pow(misID_2-misID_av,2))/2)*1.41; //uncertainty
+    Float_t misID_1, misID_2; //misID
+    if ( mode != "LbLcPi" )
+    {
+    misID_1 = nE_lab45[0]*ratio[0]/n_events_Hypo[0]; 
+    misID_2 = nE_lab45[1]*ratio[1]/n_events_Hypo[1]; 
+    }
+    else
+    {
+    misID_1 = nE_lab45[0]/n_events_Hypo[0]; 
+    misID_2 = nE_lab45[1]/n_events_Hypo[1]; 
+    }
+    Float_t misID_av, misID_u;
+    misID_av = (misID_1+misID_2)/2;
+    misID_u =  std::sqrt((std::pow(misID_1-misID_av,2)+std::pow(misID_2-misID_av,2))/2)*1.41; //uncertainty
       
-      std::cout<<"DOWN: "<<misID_1<<" UP: "<<misID_2<<std::endl;
-      std::cout<<"= ("<<misID_av*100<<" +/- "<<misID_u*100<<")%"<<std::endl;
-      std::cout<<std::endl;
-      std::cout<<"===> Expected misID yield: "<<nameHypo<<","<<nameDHypo<<std::endl;
-      std::cout<<"First method: "<<std::endl;
-      }
-      /*
-      Float_t misIDEff_1, misIDEff_2; //misID/Eff
-      misIDEff_1 = misID_1*nE_lab1_Eff1[0]/n_events_Hypo[0];
-      misIDEff_2 = misID_2*nE_lab1_Eff1[1]/n_events_Hypo[1];
+    std::cout<<"DOWN: "<<misID_1<<" UP: "<<misID_2<<std::endl;
+    std::cout<<"= ("<<misID_av*100<<" +/- "<<misID_u*100<<")%"<<std::endl;
+    std::cout<<std::endl;
+    std::cout<<"===> Expected misID yield: "<<nameHypo<<","<<nameDHypo<<std::endl;
+    std::cout<<"First method: "<<std::endl;
+    }
+    /*
+    Float_t misIDEff_1, misIDEff_2; //misID/Eff
+    misIDEff_1 = misID_1*nE_lab1_Eff1[0]/n_events_Hypo[0];
+    misIDEff_2 = misID_2*nE_lab1_Eff1[1]/n_events_Hypo[1];
       
-      Float_t misIDEff_av, misIDEff_u;
-      misIDEff_av = (misIDEff_1+misIDEff_2)/2;
-      misIDEff_u =  std::sqrt((std::pow(misIDEff_1-misIDEff_av,2)+std::pow(misIDEff_2-misIDEff_av,2))/2)*1.41; //uncertainty
-      */
-      /*	
-          Float_t fitted_BdDPi_1(0.0), fitted_BdDPi_1_u(0.0),  fitted_BdDPi_2(0.0), fitted_BdDPi_2_u(0.0); //fitted BDPi under its own hypo
+    Float_t misIDEff_av, misIDEff_u;
+    misIDEff_av = (misIDEff_1+misIDEff_2)/2;
+    misIDEff_u =  std::sqrt((std::pow(misIDEff_1-misIDEff_av,2)+std::pow(misIDEff_2-misIDEff_av,2))/2)*1.41; //uncertainty
+    */
+    /*	
+        Float_t fitted_BdDPi_1(0.0), fitted_BdDPi_1_u(0.0),  fitted_BdDPi_2(0.0), fitted_BdDPi_2_u(0.0); //fitted BDPi under its own hypo
           
-          if ( mode != "LbLcPi" )
-          { 
-          if ( BDTG_down == 0.3 )
-          {
-          if ( BDTG_up == 1.0)
-          {
-          if ( mode2 == "kkpi" ) { corr = 1.325365; } 
-          else if ( mode2 == "kpipi") { corr = 1.163431;} 
-          else if ( mode2 == "pipipi") { corr = 1.181686; }
+        if ( mode != "LbLcPi" )
+        { 
+        if ( BDTG_down == 0.3 )
+        {
+        if ( BDTG_up == 1.0)
+        {
+        if ( mode2 == "kkpi" ) { corr = 1.325365; } 
+        else if ( mode2 == "kpipi") { corr = 1.163431;} 
+        else if ( mode2 == "pipipi") { corr = 1.181686; }
           
-          fitted_BdDPi_1   = 1.0964e+05*corr; //138330;
-          fitted_BdDPi_1_u = 357*corr; //427;
-          fitted_BdDPi_2   = 1.0964e+05*corr; //138330;
-          fitted_BdDPi_2_u = 357*corr; //427;
-          }
-          else
-          {
-          if ( mode2 == "kkpi" ) { corr = 1.374069; }
-          else if ( mode2 == "kpipi") { corr = 1.166546;}
-          else if ( mode2 == "pipipi") { corr = 1.182656; }
+        fitted_BdDPi_1   = 1.0964e+05*corr; //138330;
+        fitted_BdDPi_1_u = 357*corr; //427;
+        fitted_BdDPi_2   = 1.0964e+05*corr; //138330;
+        fitted_BdDPi_2_u = 357*corr; //427;
+        }
+        else
+        {
+        if ( mode2 == "kkpi" ) { corr = 1.374069; }
+        else if ( mode2 == "kpipi") { corr = 1.166546;}
+        else if ( mode2 == "pipipi") { corr = 1.182656; }
           
-          fitted_BdDPi_1   = 18366*corr; //23407;
-          fitted_BdDPi_1_u = 167*corr; //206;
-          fitted_BdDPi_2   = 18366*corr; //23407;
-          fitted_BdDPi_2_u = 167*corr; //206;
-          }
-          }
-          else if( BDTG_down == 0.5  && BDTG_up == 1.0)
-          {
-          if ( mode2 == "kkpi" ) { corr = 1.321063; }
-          else if ( mode2 == "kpipi") { corr = 1.163413;}
-          else if ( mode2 == "pipipi") { corr = 1.181004; }
+        fitted_BdDPi_1   = 18366*corr; //23407;
+        fitted_BdDPi_1_u = 167*corr; //206;
+        fitted_BdDPi_2   = 18366*corr; //23407;
+        fitted_BdDPi_2_u = 167*corr; //206;
+        }
+        }
+        else if( BDTG_down == 0.5  && BDTG_up == 1.0)
+        {
+        if ( mode2 == "kkpi" ) { corr = 1.321063; }
+        else if ( mode2 == "kpipi") { corr = 1.163413;}
+        else if ( mode2 == "pipipi") { corr = 1.181004; }
           
-          fitted_BdDPi_1   = 103260*corr; //131290;
-          fitted_BdDPi_1_u = 385*corr;
-          fitted_BdDPi_2   = 103260*corr; //131290;
-          fitted_BdDPi_2_u = 385*corr; //441;
-          }
-          else if( BDTG_down == 0.7 && BDTG_up == 0.9)
-          {
-          if ( mode2 == "kkpi" ) { corr = 1.317133; }
-          else if ( mode2 == "kpipi") { corr = 1.152342;}
-          else if ( mode2 == "pipipi") { corr = 1.175217; }
+        fitted_BdDPi_1   = 103260*corr; //131290;
+        fitted_BdDPi_1_u = 385*corr;
+        fitted_BdDPi_2   = 103260*corr; //131290;
+        fitted_BdDPi_2_u = 385*corr; //441;
+        }
+        else if( BDTG_down == 0.7 && BDTG_up == 0.9)
+        {
+        if ( mode2 == "kkpi" ) { corr = 1.317133; }
+        else if ( mode2 == "kpipi") { corr = 1.152342;}
+        else if ( mode2 == "pipipi") { corr = 1.175217; }
           
-          fitted_BdDPi_1   = 40271*corr; //51409;
-          fitted_BdDPi_1_u = 271*corr; //289;
-          fitted_BdDPi_2   = 40271*corr;
-          fitted_BdDPi_2_u = 271*corr; //289;
-          }
-          else if( BDTG_down == 0.9 && BDTG_up == 1.0)
-          {
-          if ( mode2 == "kkpi" ) { corr = 1.313953; }
-          else if ( mode2 == "kpipi") { corr = 1.175892;}
-          else if ( mode2 == "pipipi") { corr = 1.19494; }
+        fitted_BdDPi_1   = 40271*corr; //51409;
+        fitted_BdDPi_1_u = 271*corr; //289;
+        fitted_BdDPi_2   = 40271*corr;
+        fitted_BdDPi_2_u = 271*corr; //289;
+        }
+        else if( BDTG_down == 0.9 && BDTG_up == 1.0)
+        {
+        if ( mode2 == "kkpi" ) { corr = 1.313953; }
+        else if ( mode2 == "kpipi") { corr = 1.175892;}
+        else if ( mode2 == "pipipi") { corr = 1.19494; }
           
-          fitted_BdDPi_1   = 50565*corr; //64008;
-          fitted_BdDPi_1_u = 235*corr; //274;
-          fitted_BdDPi_2   = 50565*corr; //64008;
-          fitted_BdDPi_2_u = 235*corr; //274;
+        fitted_BdDPi_1   = 50565*corr; //64008;
+        fitted_BdDPi_1_u = 235*corr; //274;
+        fitted_BdDPi_2   = 50565*corr; //64008;
+        fitted_BdDPi_2_u = 235*corr; //274;
 	      }
         }
         else
@@ -3965,304 +3991,304 @@ Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
         std::cout<<"DOWN: ("<<fitted_BdDPi_1<<" +/- "<<fitted_BdDPi_1_u<<")"<<std::endl;
         std::cout<<"UP: ("<<fitted_BdDPi_2<<" +/- "<<fitted_BdDPi_2_u<<")"<<std::endl;
         }
-      */
-      //std::cout<<"===> Number of expected events = fitted yield multiplied by expected misID"<<std::endl;
+    */
+    //std::cout<<"===> Number of expected events = fitted yield multiplied by expected misID"<<std::endl;
+    /*
+      Float_t N_ev_1=0;
+      Float_t N_ev_1_u=0; 
+      Float_t N_ev_2=0; 
+      Float_t N_ev_2_u=0;
+      N_ev_1 = fitted_BdDPi_1*misID_av; // number of misID events 
+      N_ev_1_u = N_ev_1*std::sqrt(std::pow(misID_u/misID_av,2) + std::pow(fitted_BdDPi_1_u/fitted_BdDPi_1,2)); //uncertainty
+      N_ev_2 = fitted_BdDPi_2*misID_av; // number of misID events
+      N_ev_2_u = N_ev_2*std::sqrt( std::pow(misID_u/misID_av,2) + std::pow(fitted_BdDPi_2_u/fitted_BdDPi_2,2)); //uncertainty
+      std::cout<<"----------------------------------------------------"<<std::endl;
+      std::cout<<"DOWN: ("<<N_ev_1<<" +/- "<<N_ev_1_u<<")"<<std::endl;
+      std::cout<<"UP: ("<<N_ev_2<<" +/- "<<N_ev_2_u<<")"<<std::endl;
+      std::cout<<"----------------------------------------------------"<<std::endl;
       /*
-        Float_t N_ev_1=0;
-        Float_t N_ev_1_u=0; 
-        Float_t N_ev_2=0; 
-        Float_t N_ev_2_u=0;
-        N_ev_1 = fitted_BdDPi_1*misID_av; // number of misID events 
-        N_ev_1_u = N_ev_1*std::sqrt(std::pow(misID_u/misID_av,2) + std::pow(fitted_BdDPi_1_u/fitted_BdDPi_1,2)); //uncertainty
-        N_ev_2 = fitted_BdDPi_2*misID_av; // number of misID events
-        N_ev_2_u = N_ev_2*std::sqrt( std::pow(misID_u/misID_av,2) + std::pow(fitted_BdDPi_2_u/fitted_BdDPi_2,2)); //uncertainty
+      std::cout<<std::endl;
+      std::cout<<"Second method (using branching ratios): "<<std::endl;
+      std::cout<<"===> misID*N("<<nameHypo<<")/N("<<nameMeson<<") ="<<std::endl;
+        
+      Float_t N2_ev_1=0;
+      Float_t N2_ev_1_u=0;
+      N2_ev_1 = rN*misID_av; 
+      N2_ev_1_u = N2_ev_1*std::sqrt( std::pow(misID_u/misID_av,2) + std::pow(rN_u/rN,2));
+      std::cout<<"("<<N2_ev_1<<" +/- "<<N2_ev_1_u<<")"<<std::endl;
+    */
+    /*
+      Float_t fitted_BsDsPi_1=0; 
+      Float_t fitted_BsDsPi_1_u=0; 
+      Float_t fitted_BsDsPi_2=0; 
+      Float_t fitted_BsDsPi_2_u=0;
+        
+      if( mode2 == "kkpi")
+      {
+      // BDTG> 0.3
+      //  fitted_BsDsPi_1   = 1.3690e4;
+      //  fitted_BsDsPi_1_u = 1.33e2;
+      //  fitted_BsDsPi_2   = 9.6268e3;
+      //  fitted_BsDsPi_2_u = 1.10e2;
+      fitted_BsDsPi_1   = 1.3002e4;
+      fitted_BsDsPi_1_u = 1.29e2;
+      fitted_BsDsPi_2   = 9.1756e3;
+      fitted_BsDsPi_2_u = 1.08e2;
+        
+      }
+      else if (mode2 == "kpipi")
+      {
+      fitted_BsDsPi_1   = 1.0579e3;
+      fitted_BsDsPi_1_u = 3.52e1;
+      fitted_BsDsPi_2   = 7.2634e2;
+      fitted_BsDsPi_2_u = 2.90e1;
+      }
+      /*
+      std::cout<<"===> Fitted yield to real data "<<nameMeson<<","<<nameDMeson<<std::endl;
+      std::cout<<"DOWN: ("<<fitted_BsDsPi_1<<" +/- "<<fitted_BsDsPi_1_u<<")"<<std::endl;
+      std::cout<<"UP: ("<<fitted_BsDsPi_2<<" +/- "<<fitted_BsDsPi_2_u<<")"<<std::endl;
+        
+      std::cout<<"===> Number of expected events = fitted yield multiplied by expected misID"<<std::endl;
+      Float_t N3_ev_1=0;
+      Float_t N3_ev_1_u=0;
+      Float_t N3_ev_2=0;
+      Float_t N3_ev_2_u=0;
+        
+      N3_ev_1 = fitted_BsDsPi_1*N2_ev_1;
+      N3_ev_1_u = N3_ev_1*std::sqrt( std::pow(N2_ev_1_u/N2_ev_1,2) + std::pow(fitted_BsDsPi_1_u/fitted_BsDsPi_1,2)); //uncertainty
+	
+      N3_ev_2 = fitted_BsDsPi_2*N2_ev_1;
+      N3_ev_2_u = N3_ev_1*std::sqrt( std::pow(N2_ev_1_u/N2_ev_1,2) + std::pow(fitted_BsDsPi_2_u/fitted_BsDsPi_2,2)); //uncertainty
+      std::cout<<"----------------------------------------------------"<<std::endl;
+      std::cout<<"DOWN: ("<<N3_ev_1<<" +/- "<<N3_ev_1_u<<")"<<std::endl;
+      std::cout<<"UP: ("<<N3_ev_2<<" +/- "<<N3_ev_2_u<<")"<<std::endl;
+      std::cout<<"----------------------------------------------------"<<std::endl;
+    */
+    /*	std::cout<<std::endl;
+        std::cout<<"===> calculations for lab1 "<<std::endl;
+        std::cout<<"nE_lab1_Eff1 = sum of "<<h_lab1_name<<"*"<<heff10_name<<"/"<<heff0_name<<std::endl;
+        std::cout<<"DOWN: "<<nE_lab1[0]<<" UP: "<<nE_lab1[1]<<std::endl;
+        //std::cout<<"nE_lab1_Eff1 = sum of "<<h_lab1_name<<"*"<<heff10_name<<std::endl;
+        //std::cout<<"DOWN: "<<nE_lab1_Eff1[0]<<" UP: "<<nE_lab1_Eff2[1]<<std::endl;
+        std::cout<<"nE_lab1*NOE_cut ="<<std::endl;
+
+        Float_t misID_lab1_1, misID_lab1_2;
+        misID_lab1_1 = nE_lab1[0]/n_events_Hypo[0]; //*nE_lab1_Eff2[0]/n_events_Hypo[0];
+        misID_lab1_2 = nE_lab1[1]/n_events_Hypo[1]; //*nE_lab1_Eff2[0]/n_events_Hypo[0];;
+          
+        std::cout<<"DOWN: "<<misID_lab1_1<<" UP: "<<misID_lab1_2<<std::endl;
+          
+        Float_t misID_lab1_av, misID_lab1_u;
+        misID_lab1_av = (misID_lab1_1+misID_lab1_2)/2;
+        misID_lab1_u = std::sqrt((std::pow(misID_lab1_1-misID_lab1_av,2)+std::pow(misID_lab1_2-misID_lab1_av,2))/2)*1.414214;
+          
+        std::cout<<"= ("<<misID_lab1_av*100<<" +/- "<<misID_lab1_u*100<<")%"<<std::endl;
+          
+        std::cout<<std::endl;
+        std::cout<<"===> misID for K mode"<<std::endl;
+        std::cout<<"result_K = result*nE_lab1/NOE_cut"<<std::endl;
+          
+        Float_t misID_lab1_all, misID_lab1_all_u;
+        misID_lab1_all = misID_lab1_av*misID_av;
+        misID_lab1_all_u = misID_lab1_all*std::sqrt( std::pow(misID_lab1_u/misID_lab1_av,2)  +  std::pow(misID_u/misID_av,2));
+          
+        std::cout<<"= ("<<misID_lab1_all*100<<" +/- "<<misID_lab1_all_u*100<<")%"<<std::endl;
+          
+        std::cout<<"===> Number of expected events for K mode"<<std::endl;
+        std::cout<<"First method: "<<std::endl;
+        std::cout<<"N_events_K = result_K*fitted_yield_BdPi/15"<<std::endl;
+          
+        Float_t NK_ev_1, NK_ev_1_u, NK_ev_2, NK_ev_2_u;
+        NK_ev_1 = fitted_BdDPi_1*misID_lab1_all/15;
+        NK_ev_1_u = NK_ev_1*std::sqrt( std::pow(misID_lab1_all_u/misID_lab1_all,2) + std::pow(fitted_BdDPi_1_u/fitted_BdDPi_1,2));
+        NK_ev_2 = fitted_BdDPi_2*misID_lab1_all/15;
+        NK_ev_2_u = NK_ev_2*std::sqrt( std::pow(misID_lab1_all_u/misID_lab1_all,2) + std::pow(fitted_BdDPi_2_u/fitted_BdDPi_2,2));
+          
+        std::cout<<"----------------------------------------------------"<<std::endl;
+        std::cout<<"DOWN: ("<<NK_ev_1<<" +/- "<<NK_ev_1_u<<")"<<std::endl;
+        std::cout<<"UP: ("<<NK_ev_2<<" +/- "<<NK_ev_2_u<<")"<<std::endl;
+        std::cout<<"----------------------------------------------------"<<std::endl;
+          
+        //---- DPi under DsK ---//
+        Float_t misID_lab1_m1, misID_lab1_m2;
+        misID_lab1_m1 = nE_lab1MisID[0]/n_events_Hypo[0]; //*nE_lab1_Eff2[0]/n_events_Hypo[0];                                                          
+        misID_lab1_m2 = nE_lab1MisID[1]/n_events_Hypo[1]; //*nE_lab1_Eff2[0]/n_events_Hypo[0];;  
+        std::cout<<"DOWN: "<<misID_lab1_m1<<" UP: "<<misID_lab1_m2<<std::endl;
+          
+        Float_t misID_lab1_mav, misID_lab1_mu;
+        misID_lab1_mav = (misID_lab1_m1+misID_lab1_m2)/2;
+        misID_lab1_mu = std::sqrt((std::pow(misID_lab1_m1-misID_lab1_mav,2)+std::pow(misID_lab1_m2-misID_lab1_mav,2))/2)*1.414214;
+          
+        std::cout<<"= ("<<misID_lab1_mav*100<<" +/- "<<misID_lab1_mu*100<<")%"<<std::endl;
+          
+        std::cout<<std::endl;
+        std::cout<<"===> misID for K mode"<<std::endl;
+        std::cout<<"result_K_misID = result*nE_lab1MisID/NOE_cut"<<std::endl;
+          
+        Float_t misID_lab1_mall, misID_lab1_mall_u;
+        misID_lab1_mall = misID_lab1_mav*misID_av;
+        misID_lab1_mall_u = misID_lab1_mall*std::sqrt( std::pow(misID_lab1_mu/misID_lab1_mav,2)  +  std::pow(misID_u/misID_av,2));
+          
+        std::cout<<"= ("<<misID_lab1_mall*100<<" +/- "<<misID_lab1_mall_u*100<<")%"<<std::endl;
+          
+        std::cout<<"===> Number of expected events for K mode"<<std::endl;
+        std::cout<<"First method: "<<std::endl;
+        std::cout<<"N_events_K_misID = result_K_misID*fitted_yield_BdPi"<<std::endl;
+          
+        Float_t NK_mev_1, NK_mev_1_u, NK_mev_2, NK_mev_2_u;
+        NK_mev_1 = fitted_BdDPi_1*misID_lab1_mall;
+        NK_mev_1_u = NK_mev_1*std::sqrt( std::pow(misID_lab1_mall_u/misID_lab1_mall,2) + std::pow(fitted_BdDPi_1_u/fitted_BdDPi_1,2));
+        NK_mev_2 = fitted_BdDPi_2*misID_lab1_mall;
+        NK_mev_2_u = NK_mev_2*std::sqrt( std::pow(misID_lab1_mall_u/misID_lab1_mall,2) + std::pow(fitted_BdDPi_2_u/fitted_BdDPi_2,2));
+          
+        std::cout<<"----------------------------------------------------"<<std::endl;
+        std::cout<<"DOWN: ("<<NK_mev_1<<" +/- "<<NK_mev_1_u<<")"<<std::endl;
+        std::cout<<"UP: ("<<NK_mev_2<<" +/- "<<NK_mev_2_u<<")"<<std::endl;
+        std::cout<<"----------------------------------------------------"<<std::endl;
+          
+        std::cout<<std::endl;
+        std::cout<<"Second method: "<<std::endl;
+        std::cout<<"===> result_K*N("<<nameHypo<<")/N("<<nameMeson<<")/15 ="<<std::endl;
+          
+        Float_t NK2_ev_1, NK2_ev_1_u;
+        NK2_ev_1 = rN*misID_lab1_all/15;
+        NK2_ev_1_u = NK2_ev_1*std::sqrt(std::pow(misID_lab1_all_u/misID_lab1_all,2) + std::pow(rN_u/rN,2));
+        std::cout<<"("<<NK2_ev_1<<" +/- "<<NK2_ev_1_u<<")"<<std::endl;
+          
+        std::cout<<"===> Number of expected events = fitted yield multiplied by expected misID(=result_K)"<<std::endl;
+          
+        Float_t NK3_ev_1, NK3_ev_1_u, NK3_ev_2, NK3_ev_2_u;
+        NK3_ev_1 = fitted_BsDsPi_1*NK2_ev_1;
+        NK3_ev_1_u = NK3_ev_1*std::sqrt(std::pow(NK2_ev_1_u/NK2_ev_1,2) + std::pow(fitted_BsDsPi_1_u/fitted_BsDsPi_1,2));
+          
+        NK3_ev_2 = fitted_BsDsPi_2*NK2_ev_1;
+        NK3_ev_2_u = NK3_ev_1*std::sqrt( std::pow(NK2_ev_1_u/NK2_ev_1,2) + std::pow(fitted_BsDsPi_2_u/fitted_BsDsPi_2,2));
+          
+        std::cout<<"----------------------------------------------------"<<std::endl;
+        std::cout<<"DOWN: ("<<NK3_ev_1<<" +/- "<<NK3_ev_1_u<<")"<<std::endl;
+        std::cout<<"UP: ("<<NK3_ev_2<<" +/- "<<NK3_ev_2_u<<")"<<std::endl;
+        std::cout<<"----------------------------------------------------"<<std::endl;
+          
+        }
+        else // misID for bachelor
+        {
+          
+        std::cout<<"===> misID ="<<std::endl;
+          
+        Float_t misID_lab1_av, misID_lab1_u, misID_lab1_1, misID_lab1_2; //misID
+        misID_lab1_1 = nE_lab1[0]*ratio[0]/n_events_Hypo[0];
+        misID_lab1_2 = nE_lab1[1]*ratio[1]/n_events_Hypo[1];
+        misID_lab1_av = (misID_lab1_1+misID_lab1_2)/2;
+        misID_lab1_u = std::sqrt((std::pow(misID_lab1_1-misID_lab1_av,2) + std::pow(misID_lab1_2-misID_lab1_av,2))/2)*1.414214;
+        std::cout<<"("<<misID_lab1_av*100<<" +/- "<<misID_lab1_u*100<<")%"<<std::endl;
+          
+        Float_t fitted_BdDPi_1=0; 
+        Float_t fitted_BdDPi_1_u=0;  
+        Float_t fitted_BdDPi_2=0; 
+        Float_t fitted_BdDPi_2_u=0;
+          
+        if ( BDTG_down == 0.3 )
+        {
+        if ( BDTG_up == 1.0)
+        {
+        if ( mode2 == "kkpi" ) { corr = 1.325365; }
+        else if ( mode2 == "kpipi") { corr = 1.163431;}
+        else if ( mode2 == "pipipi") { corr = 1.181686; }
+          
+        fitted_BdDPi_1   = 1.0964e+05*corr; //138330;
+        fitted_BdDPi_1_u = 357*corr; //427;
+        fitted_BdDPi_2   = 1.0964e+05*corr; //138330;
+        fitted_BdDPi_2_u = 357*corr; //427;
+        }
+        else
+        {
+        if ( mode2 == "kkpi" ) { corr = 1.374069; }
+        else if ( mode2 == "kpipi") { corr = 1.166546;}
+        else if ( mode2 == "pipipi") { corr = 1.182656; }
+          
+        fitted_BdDPi_1   = 18366*corr; //23407;
+        fitted_BdDPi_1_u = 167*corr; //206;
+        fitted_BdDPi_2   = 18366*corr; //23407;
+        fitted_BdDPi_2_u = 167*corr; //206;
+        }
+        }
+        else if( BDTG_down == 0.5  && BDTG_up == 1.0)
+        {
+        if ( mode2 == "kkpi" ) { corr = 1.321063; }
+        else if ( mode2 == "kpipi") { corr = 1.163413;}
+        else if ( mode2 == "pipipi") { corr = 1.181004; }
+          
+        fitted_BdDPi_1   = 103260*corr; //131290;
+        fitted_BdDPi_1_u = 385*corr;
+        fitted_BdDPi_2   = 103260*corr; //131290;
+        fitted_BdDPi_2_u = 385*corr; //441;
+        }
+        else if( BDTG_down == 0.7 && BDTG_up == 0.9)
+        {
+        if ( mode2 == "kkpi" ) { corr = 1.317133; }
+        else if ( mode2 == "kpipi") { corr = 1.152342;}
+        else if ( mode2 == "pipipi") { corr = 1.175217; }
+          
+        fitted_BdDPi_1   = 40271*corr; //51409;
+        fitted_BdDPi_1_u = 271*corr; //289;
+        fitted_BdDPi_2   = 40271*corr;
+        fitted_BdDPi_2_u = 271*corr; //289;
+        }
+        else if( BDTG_down == 0.9 && BDTG_up == 1.0)
+        {
+        if ( mode2 == "kkpi" ) { corr = 1.313953; }
+        else if ( mode2 == "kpipi") { corr = 1.175892;}
+        else if ( mode2 == "pipipi") { corr = 1.19494; }
+          
+        fitted_BdDPi_1   = 50565*corr; //64008;
+        fitted_BdDPi_1_u = 235*corr; //274;
+        fitted_BdDPi_2   = 50565*corr; //64008;
+        fitted_BdDPi_2_u = 235*corr; //274;
+        }
+          
+        std::cout<<"===> Fitted yield to real data Bd->DPi, D->KPiPi"<<std::endl;
+        std::cout<<"DOWN: ("<<fitted_BdDPi_1<<" +/- "<<fitted_BdDPi_1_u<<")"<<std::endl;
+        std::cout<<"UP: ("<<fitted_BdDPi_2<<" +/- "<<fitted_BdDPi_2_u<<")"<<std::endl;
+          
+        if ( mode == "BsDsPi" || mode == "BsDsK")
+        {
+        Float_t temp, temp_u;
+        temp = fitted_BdDPi_1*rNBd;
+        temp_u = temp*std::sqrt(std::pow(fitted_BdDPi_1_u/fitted_BdDPi_1,2) + std::pow(rNBd_u/rNBd,2)); //uncertainty
+        fitted_BdDPi_1 = temp;
+        fitted_BdDPi_1_u = temp_u;
+        temp = fitted_BdDPi_2*rNBd;
+        temp_u = temp*std::sqrt(std::pow(fitted_BdDPi_2_u/fitted_BdDPi_2,2)  + std::pow(rNBd_u/rNBd,2)); //uncertainty
+        fitted_BdDPi_2 = temp;
+        fitted_BdDPi_2_u = temp_u;
+        std::cout<<"===> Fitted yield to real data Bd->DPi, D->KPiPi scaled by N("<<nameHypo<<")/N(Bd->DPi)"<<std::endl;
+        std::cout<<"N("<<nameHypo<<")/N(Bd->DPi)= B("<<nameHypo<<")/B(Bd->DPi)*B("<<nameDHypo<<")/N(D->KPiPi)*fragfrac"<<std::endl;
+        std::cout<<"("<<rNBd<<" +/- "<<rNBd_u<<")"<<std::endl;
+        std::cout<<"DOWN: ("<<fitted_BdDPi_1<<" +/- "<<fitted_BdDPi_1_u<<")"<<std::endl;
+        std::cout<<"UP: ("<<fitted_BdDPi_2<<" +/- "<<fitted_BdDPi_2_u<<")"<<std::endl;
+        }
+          
+        std::cout<<"===> Number of expected events = fitted yield multiplied by expected misID"<<std::endl;
+        Float_t N_ev_1, N_ev_1_u, N_ev_2, N_ev_2_u;
+        if (mode == "BDK")
+        {
+        N_ev_1 = fitted_BdDPi_1*misID_lab1_av*rN;
+        N_ev_1_u = N_ev_1*std::sqrt(std::pow(misID_lab1_u/misID_lab1_av,2) + std::pow(fitted_BdDPi_1_u/fitted_BdDPi_1,2) + std::pow(rN_u/rN,2));
+        N_ev_2 = fitted_BdDPi_2*misID_lab1_av*rN;
+        N_ev_2_u = N_ev_2*std::sqrt(std::pow(misID_lab1_u/misID_lab1_av,2) + std::pow(fitted_BdDPi_2_u/fitted_BdDPi_2,2) +  std::pow(rN_u/rN,2));
+        }
+        else
+        {
+        N_ev_1 = fitted_BdDPi_1*misID_lab1_av;
+        N_ev_1_u = N_ev_1*std::sqrt(std::pow(misID_lab1_u/misID_lab1_av,2) + std::pow(fitted_BdDPi_1_u/fitted_BdDPi_1,2));
+        N_ev_2 = fitted_BdDPi_2*misID_lab1_av;
+        N_ev_2_u = N_ev_2*std::sqrt(std::pow(misID_lab1_u/misID_lab1_av,2) + std::pow(fitted_BdDPi_2_u/fitted_BdDPi_2,2));
+        }
         std::cout<<"----------------------------------------------------"<<std::endl;
         std::cout<<"DOWN: ("<<N_ev_1<<" +/- "<<N_ev_1_u<<")"<<std::endl;
         std::cout<<"UP: ("<<N_ev_2<<" +/- "<<N_ev_2_u<<")"<<std::endl;
         std::cout<<"----------------------------------------------------"<<std::endl;
-        /*
-        std::cout<<std::endl;
-        std::cout<<"Second method (using branching ratios): "<<std::endl;
-        std::cout<<"===> misID*N("<<nameHypo<<")/N("<<nameMeson<<") ="<<std::endl;
-        
-        Float_t N2_ev_1=0;
-        Float_t N2_ev_1_u=0;
-        N2_ev_1 = rN*misID_av; 
-        N2_ev_1_u = N2_ev_1*std::sqrt( std::pow(misID_u/misID_av,2) + std::pow(rN_u/rN,2));
-        std::cout<<"("<<N2_ev_1<<" +/- "<<N2_ev_1_u<<")"<<std::endl;
-      */
-      /*
-        Float_t fitted_BsDsPi_1=0; 
-        Float_t fitted_BsDsPi_1_u=0; 
-        Float_t fitted_BsDsPi_2=0; 
-        Float_t fitted_BsDsPi_2_u=0;
-        
-        if( mode2 == "kkpi")
-        {
-        // BDTG> 0.3
-        //  fitted_BsDsPi_1   = 1.3690e4;
-        //  fitted_BsDsPi_1_u = 1.33e2;
-        //  fitted_BsDsPi_2   = 9.6268e3;
-        //  fitted_BsDsPi_2_u = 1.10e2;
-        fitted_BsDsPi_1   = 1.3002e4;
-        fitted_BsDsPi_1_u = 1.29e2;
-        fitted_BsDsPi_2   = 9.1756e3;
-        fitted_BsDsPi_2_u = 1.08e2;
-        
-        }
-        else if (mode2 == "kpipi")
-        {
-        fitted_BsDsPi_1   = 1.0579e3;
-        fitted_BsDsPi_1_u = 3.52e1;
-        fitted_BsDsPi_2   = 7.2634e2;
-        fitted_BsDsPi_2_u = 2.90e1;
-        }
-        /*
-        std::cout<<"===> Fitted yield to real data "<<nameMeson<<","<<nameDMeson<<std::endl;
-        std::cout<<"DOWN: ("<<fitted_BsDsPi_1<<" +/- "<<fitted_BsDsPi_1_u<<")"<<std::endl;
-        std::cout<<"UP: ("<<fitted_BsDsPi_2<<" +/- "<<fitted_BsDsPi_2_u<<")"<<std::endl;
-        
-        std::cout<<"===> Number of expected events = fitted yield multiplied by expected misID"<<std::endl;
-        Float_t N3_ev_1=0;
-        Float_t N3_ev_1_u=0;
-        Float_t N3_ev_2=0;
-        Float_t N3_ev_2_u=0;
-        
-        N3_ev_1 = fitted_BsDsPi_1*N2_ev_1;
-        N3_ev_1_u = N3_ev_1*std::sqrt( std::pow(N2_ev_1_u/N2_ev_1,2) + std::pow(fitted_BsDsPi_1_u/fitted_BsDsPi_1,2)); //uncertainty
-	
-        N3_ev_2 = fitted_BsDsPi_2*N2_ev_1;
-        N3_ev_2_u = N3_ev_1*std::sqrt( std::pow(N2_ev_1_u/N2_ev_1,2) + std::pow(fitted_BsDsPi_2_u/fitted_BsDsPi_2,2)); //uncertainty
-        std::cout<<"----------------------------------------------------"<<std::endl;
-        std::cout<<"DOWN: ("<<N3_ev_1<<" +/- "<<N3_ev_1_u<<")"<<std::endl;
-        std::cout<<"UP: ("<<N3_ev_2<<" +/- "<<N3_ev_2_u<<")"<<std::endl;
-        std::cout<<"----------------------------------------------------"<<std::endl;
-      */
-      /*	std::cout<<std::endl;
-          std::cout<<"===> calculations for lab1 "<<std::endl;
-          std::cout<<"nE_lab1_Eff1 = sum of "<<h_lab1_name<<"*"<<heff10_name<<"/"<<heff0_name<<std::endl;
-          std::cout<<"DOWN: "<<nE_lab1[0]<<" UP: "<<nE_lab1[1]<<std::endl;
-          //std::cout<<"nE_lab1_Eff1 = sum of "<<h_lab1_name<<"*"<<heff10_name<<std::endl;
-          //std::cout<<"DOWN: "<<nE_lab1_Eff1[0]<<" UP: "<<nE_lab1_Eff2[1]<<std::endl;
-          std::cout<<"nE_lab1*NOE_cut ="<<std::endl;
-
-          Float_t misID_lab1_1, misID_lab1_2;
-          misID_lab1_1 = nE_lab1[0]/n_events_Hypo[0]; //*nE_lab1_Eff2[0]/n_events_Hypo[0];
-          misID_lab1_2 = nE_lab1[1]/n_events_Hypo[1]; //*nE_lab1_Eff2[0]/n_events_Hypo[0];;
-          
-          std::cout<<"DOWN: "<<misID_lab1_1<<" UP: "<<misID_lab1_2<<std::endl;
-          
-          Float_t misID_lab1_av, misID_lab1_u;
-          misID_lab1_av = (misID_lab1_1+misID_lab1_2)/2;
-          misID_lab1_u = std::sqrt((std::pow(misID_lab1_1-misID_lab1_av,2)+std::pow(misID_lab1_2-misID_lab1_av,2))/2)*1.414214;
-          
-          std::cout<<"= ("<<misID_lab1_av*100<<" +/- "<<misID_lab1_u*100<<")%"<<std::endl;
-          
-          std::cout<<std::endl;
-          std::cout<<"===> misID for K mode"<<std::endl;
-          std::cout<<"result_K = result*nE_lab1/NOE_cut"<<std::endl;
-          
-          Float_t misID_lab1_all, misID_lab1_all_u;
-          misID_lab1_all = misID_lab1_av*misID_av;
-          misID_lab1_all_u = misID_lab1_all*std::sqrt( std::pow(misID_lab1_u/misID_lab1_av,2)  +  std::pow(misID_u/misID_av,2));
-          
-          std::cout<<"= ("<<misID_lab1_all*100<<" +/- "<<misID_lab1_all_u*100<<")%"<<std::endl;
-          
-          std::cout<<"===> Number of expected events for K mode"<<std::endl;
-          std::cout<<"First method: "<<std::endl;
-          std::cout<<"N_events_K = result_K*fitted_yield_BdPi/15"<<std::endl;
-          
-          Float_t NK_ev_1, NK_ev_1_u, NK_ev_2, NK_ev_2_u;
-          NK_ev_1 = fitted_BdDPi_1*misID_lab1_all/15;
-          NK_ev_1_u = NK_ev_1*std::sqrt( std::pow(misID_lab1_all_u/misID_lab1_all,2) + std::pow(fitted_BdDPi_1_u/fitted_BdDPi_1,2));
-          NK_ev_2 = fitted_BdDPi_2*misID_lab1_all/15;
-          NK_ev_2_u = NK_ev_2*std::sqrt( std::pow(misID_lab1_all_u/misID_lab1_all,2) + std::pow(fitted_BdDPi_2_u/fitted_BdDPi_2,2));
-          
-          std::cout<<"----------------------------------------------------"<<std::endl;
-          std::cout<<"DOWN: ("<<NK_ev_1<<" +/- "<<NK_ev_1_u<<")"<<std::endl;
-          std::cout<<"UP: ("<<NK_ev_2<<" +/- "<<NK_ev_2_u<<")"<<std::endl;
-          std::cout<<"----------------------------------------------------"<<std::endl;
-          
-          //---- DPi under DsK ---//
-          Float_t misID_lab1_m1, misID_lab1_m2;
-          misID_lab1_m1 = nE_lab1MisID[0]/n_events_Hypo[0]; //*nE_lab1_Eff2[0]/n_events_Hypo[0];                                                          
-          misID_lab1_m2 = nE_lab1MisID[1]/n_events_Hypo[1]; //*nE_lab1_Eff2[0]/n_events_Hypo[0];;  
-          std::cout<<"DOWN: "<<misID_lab1_m1<<" UP: "<<misID_lab1_m2<<std::endl;
-          
-          Float_t misID_lab1_mav, misID_lab1_mu;
-          misID_lab1_mav = (misID_lab1_m1+misID_lab1_m2)/2;
-          misID_lab1_mu = std::sqrt((std::pow(misID_lab1_m1-misID_lab1_mav,2)+std::pow(misID_lab1_m2-misID_lab1_mav,2))/2)*1.414214;
-          
-          std::cout<<"= ("<<misID_lab1_mav*100<<" +/- "<<misID_lab1_mu*100<<")%"<<std::endl;
-          
-          std::cout<<std::endl;
-          std::cout<<"===> misID for K mode"<<std::endl;
-          std::cout<<"result_K_misID = result*nE_lab1MisID/NOE_cut"<<std::endl;
-          
-          Float_t misID_lab1_mall, misID_lab1_mall_u;
-          misID_lab1_mall = misID_lab1_mav*misID_av;
-          misID_lab1_mall_u = misID_lab1_mall*std::sqrt( std::pow(misID_lab1_mu/misID_lab1_mav,2)  +  std::pow(misID_u/misID_av,2));
-          
-          std::cout<<"= ("<<misID_lab1_mall*100<<" +/- "<<misID_lab1_mall_u*100<<")%"<<std::endl;
-          
-          std::cout<<"===> Number of expected events for K mode"<<std::endl;
-          std::cout<<"First method: "<<std::endl;
-          std::cout<<"N_events_K_misID = result_K_misID*fitted_yield_BdPi"<<std::endl;
-          
-          Float_t NK_mev_1, NK_mev_1_u, NK_mev_2, NK_mev_2_u;
-          NK_mev_1 = fitted_BdDPi_1*misID_lab1_mall;
-          NK_mev_1_u = NK_mev_1*std::sqrt( std::pow(misID_lab1_mall_u/misID_lab1_mall,2) + std::pow(fitted_BdDPi_1_u/fitted_BdDPi_1,2));
-          NK_mev_2 = fitted_BdDPi_2*misID_lab1_mall;
-          NK_mev_2_u = NK_mev_2*std::sqrt( std::pow(misID_lab1_mall_u/misID_lab1_mall,2) + std::pow(fitted_BdDPi_2_u/fitted_BdDPi_2,2));
-          
-          std::cout<<"----------------------------------------------------"<<std::endl;
-          std::cout<<"DOWN: ("<<NK_mev_1<<" +/- "<<NK_mev_1_u<<")"<<std::endl;
-          std::cout<<"UP: ("<<NK_mev_2<<" +/- "<<NK_mev_2_u<<")"<<std::endl;
-          std::cout<<"----------------------------------------------------"<<std::endl;
-          
-          std::cout<<std::endl;
-          std::cout<<"Second method: "<<std::endl;
-          std::cout<<"===> result_K*N("<<nameHypo<<")/N("<<nameMeson<<")/15 ="<<std::endl;
-          
-          Float_t NK2_ev_1, NK2_ev_1_u;
-          NK2_ev_1 = rN*misID_lab1_all/15;
-          NK2_ev_1_u = NK2_ev_1*std::sqrt(std::pow(misID_lab1_all_u/misID_lab1_all,2) + std::pow(rN_u/rN,2));
-          std::cout<<"("<<NK2_ev_1<<" +/- "<<NK2_ev_1_u<<")"<<std::endl;
-          
-          std::cout<<"===> Number of expected events = fitted yield multiplied by expected misID(=result_K)"<<std::endl;
-          
-          Float_t NK3_ev_1, NK3_ev_1_u, NK3_ev_2, NK3_ev_2_u;
-          NK3_ev_1 = fitted_BsDsPi_1*NK2_ev_1;
-          NK3_ev_1_u = NK3_ev_1*std::sqrt(std::pow(NK2_ev_1_u/NK2_ev_1,2) + std::pow(fitted_BsDsPi_1_u/fitted_BsDsPi_1,2));
-          
-          NK3_ev_2 = fitted_BsDsPi_2*NK2_ev_1;
-          NK3_ev_2_u = NK3_ev_1*std::sqrt( std::pow(NK2_ev_1_u/NK2_ev_1,2) + std::pow(fitted_BsDsPi_2_u/fitted_BsDsPi_2,2));
-          
-          std::cout<<"----------------------------------------------------"<<std::endl;
-          std::cout<<"DOWN: ("<<NK3_ev_1<<" +/- "<<NK3_ev_1_u<<")"<<std::endl;
-          std::cout<<"UP: ("<<NK3_ev_2<<" +/- "<<NK3_ev_2_u<<")"<<std::endl;
-          std::cout<<"----------------------------------------------------"<<std::endl;
-          
-          }
-          else // misID for bachelor
-          {
-          
-          std::cout<<"===> misID ="<<std::endl;
-          
-          Float_t misID_lab1_av, misID_lab1_u, misID_lab1_1, misID_lab1_2; //misID
-          misID_lab1_1 = nE_lab1[0]*ratio[0]/n_events_Hypo[0];
-          misID_lab1_2 = nE_lab1[1]*ratio[1]/n_events_Hypo[1];
-          misID_lab1_av = (misID_lab1_1+misID_lab1_2)/2;
-          misID_lab1_u = std::sqrt((std::pow(misID_lab1_1-misID_lab1_av,2) + std::pow(misID_lab1_2-misID_lab1_av,2))/2)*1.414214;
-          std::cout<<"("<<misID_lab1_av*100<<" +/- "<<misID_lab1_u*100<<")%"<<std::endl;
-          
-          Float_t fitted_BdDPi_1=0; 
-          Float_t fitted_BdDPi_1_u=0;  
-          Float_t fitted_BdDPi_2=0; 
-          Float_t fitted_BdDPi_2_u=0;
-          
-          if ( BDTG_down == 0.3 )
-          {
-          if ( BDTG_up == 1.0)
-          {
-          if ( mode2 == "kkpi" ) { corr = 1.325365; }
-          else if ( mode2 == "kpipi") { corr = 1.163431;}
-          else if ( mode2 == "pipipi") { corr = 1.181686; }
-          
-          fitted_BdDPi_1   = 1.0964e+05*corr; //138330;
-          fitted_BdDPi_1_u = 357*corr; //427;
-          fitted_BdDPi_2   = 1.0964e+05*corr; //138330;
-          fitted_BdDPi_2_u = 357*corr; //427;
-          }
-          else
-          {
-          if ( mode2 == "kkpi" ) { corr = 1.374069; }
-          else if ( mode2 == "kpipi") { corr = 1.166546;}
-          else if ( mode2 == "pipipi") { corr = 1.182656; }
-          
-          fitted_BdDPi_1   = 18366*corr; //23407;
-          fitted_BdDPi_1_u = 167*corr; //206;
-          fitted_BdDPi_2   = 18366*corr; //23407;
-          fitted_BdDPi_2_u = 167*corr; //206;
-          }
-          }
-          else if( BDTG_down == 0.5  && BDTG_up == 1.0)
-          {
-          if ( mode2 == "kkpi" ) { corr = 1.321063; }
-          else if ( mode2 == "kpipi") { corr = 1.163413;}
-          else if ( mode2 == "pipipi") { corr = 1.181004; }
-          
-          fitted_BdDPi_1   = 103260*corr; //131290;
-          fitted_BdDPi_1_u = 385*corr;
-          fitted_BdDPi_2   = 103260*corr; //131290;
-          fitted_BdDPi_2_u = 385*corr; //441;
-          }
-          else if( BDTG_down == 0.7 && BDTG_up == 0.9)
-          {
-          if ( mode2 == "kkpi" ) { corr = 1.317133; }
-          else if ( mode2 == "kpipi") { corr = 1.152342;}
-          else if ( mode2 == "pipipi") { corr = 1.175217; }
-          
-          fitted_BdDPi_1   = 40271*corr; //51409;
-          fitted_BdDPi_1_u = 271*corr; //289;
-          fitted_BdDPi_2   = 40271*corr;
-          fitted_BdDPi_2_u = 271*corr; //289;
-          }
-          else if( BDTG_down == 0.9 && BDTG_up == 1.0)
-          {
-          if ( mode2 == "kkpi" ) { corr = 1.313953; }
-          else if ( mode2 == "kpipi") { corr = 1.175892;}
-          else if ( mode2 == "pipipi") { corr = 1.19494; }
-          
-          fitted_BdDPi_1   = 50565*corr; //64008;
-          fitted_BdDPi_1_u = 235*corr; //274;
-          fitted_BdDPi_2   = 50565*corr; //64008;
-          fitted_BdDPi_2_u = 235*corr; //274;
-          }
-          
-          std::cout<<"===> Fitted yield to real data Bd->DPi, D->KPiPi"<<std::endl;
-          std::cout<<"DOWN: ("<<fitted_BdDPi_1<<" +/- "<<fitted_BdDPi_1_u<<")"<<std::endl;
-          std::cout<<"UP: ("<<fitted_BdDPi_2<<" +/- "<<fitted_BdDPi_2_u<<")"<<std::endl;
-          
-          if ( mode == "BsDsPi" || mode == "BsDsK")
-          {
-          Float_t temp, temp_u;
-          temp = fitted_BdDPi_1*rNBd;
-          temp_u = temp*std::sqrt(std::pow(fitted_BdDPi_1_u/fitted_BdDPi_1,2) + std::pow(rNBd_u/rNBd,2)); //uncertainty
-          fitted_BdDPi_1 = temp;
-          fitted_BdDPi_1_u = temp_u;
-          temp = fitted_BdDPi_2*rNBd;
-          temp_u = temp*std::sqrt(std::pow(fitted_BdDPi_2_u/fitted_BdDPi_2,2)  + std::pow(rNBd_u/rNBd,2)); //uncertainty
-          fitted_BdDPi_2 = temp;
-          fitted_BdDPi_2_u = temp_u;
-          std::cout<<"===> Fitted yield to real data Bd->DPi, D->KPiPi scaled by N("<<nameHypo<<")/N(Bd->DPi)"<<std::endl;
-          std::cout<<"N("<<nameHypo<<")/N(Bd->DPi)= B("<<nameHypo<<")/B(Bd->DPi)*B("<<nameDHypo<<")/N(D->KPiPi)*fragfrac"<<std::endl;
-          std::cout<<"("<<rNBd<<" +/- "<<rNBd_u<<")"<<std::endl;
-          std::cout<<"DOWN: ("<<fitted_BdDPi_1<<" +/- "<<fitted_BdDPi_1_u<<")"<<std::endl;
-          std::cout<<"UP: ("<<fitted_BdDPi_2<<" +/- "<<fitted_BdDPi_2_u<<")"<<std::endl;
-          }
-          
-          std::cout<<"===> Number of expected events = fitted yield multiplied by expected misID"<<std::endl;
-          Float_t N_ev_1, N_ev_1_u, N_ev_2, N_ev_2_u;
-          if (mode == "BDK")
-          {
-          N_ev_1 = fitted_BdDPi_1*misID_lab1_av*rN;
-          N_ev_1_u = N_ev_1*std::sqrt(std::pow(misID_lab1_u/misID_lab1_av,2) + std::pow(fitted_BdDPi_1_u/fitted_BdDPi_1,2) + std::pow(rN_u/rN,2));
-          N_ev_2 = fitted_BdDPi_2*misID_lab1_av*rN;
-          N_ev_2_u = N_ev_2*std::sqrt(std::pow(misID_lab1_u/misID_lab1_av,2) + std::pow(fitted_BdDPi_2_u/fitted_BdDPi_2,2) +  std::pow(rN_u/rN,2));
-          }
-          else
-          {
-          N_ev_1 = fitted_BdDPi_1*misID_lab1_av;
-          N_ev_1_u = N_ev_1*std::sqrt(std::pow(misID_lab1_u/misID_lab1_av,2) + std::pow(fitted_BdDPi_1_u/fitted_BdDPi_1,2));
-          N_ev_2 = fitted_BdDPi_2*misID_lab1_av;
-          N_ev_2_u = N_ev_2*std::sqrt(std::pow(misID_lab1_u/misID_lab1_av,2) + std::pow(fitted_BdDPi_2_u/fitted_BdDPi_2,2));
-          }
-          std::cout<<"----------------------------------------------------"<<std::endl;
-          std::cout<<"DOWN: ("<<N_ev_1<<" +/- "<<N_ev_1_u<<")"<<std::endl;
-          std::cout<<"UP: ("<<N_ev_2<<" +/- "<<N_ev_2_u<<")"<<std::endl;
-          std::cout<<"----------------------------------------------------"<<std::endl;
-          }*/
+        }*/
   }
     
  

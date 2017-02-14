@@ -146,7 +146,7 @@ def getCPparameters(decay,myconfigfile):
         argLf = myconfigfile["StrongPhase"]-myconfigfile["WeakPhase"]
         argLbarfbar = myconfigfile["StrongPhase"]+myconfigfile["WeakPhase"]
         modLf = myconfigfile["ModLf"]
-        ACPobs = cpobservables.AsymmetryObservables(argLf,argLbarfbar,modLf)
+        ACPobs = cpobservables.AsymmetryObservables(argLf,argLbarfbar,modLf,True)
         ACPobs.printtable()
         Cf    = ACPobs.Cf()
         Sf    = ACPobs.Sf()
@@ -169,13 +169,14 @@ def getCPparameters(decay,myconfigfile):
     sigC = RooRealVar('C_%s'%(decay.Data()), 'C coeff.', Cf, limit[0], limit[1])
     sigS = RooRealVar('S_%s'%(decay.Data()), 'S coeff.', Sf, limit[0], limit[1])
     sigD = RooRealVar('D_%s'%(decay.Data()), 'D coeff.', Df, limit[0], limit[1])
-    sigCbar = RooRealVar('Cbar_%s'%(decay.Data()), 'Cbar coeff.', Cf, limit[0], limit[1])
+    sigCbar = RooFormulaVar('Cbar_%s'%(decay.Data()),'Cbar coeff.', "-1*@0",RooArgList(sigC))
+#    sigCbar = RooRealVar('Cbar_%s'%(decay.Data()), 'Cbar coeff.', Cf, limit[0], limit[1])
     sigSbar = RooRealVar('Sbar_%s'%(decay.Data()), 'Sbar coeff.', Sfbar, limit[0], limit[1])
     sigDbar = RooRealVar('Dbar_%s'%(decay.Data()), 'Dbar coeff.', Dfbar, limit[0], limit[1])
     setConstantIfSoConfigured(sigC,myconfigfile)
     setConstantIfSoConfigured(sigS,myconfigfile)
     setConstantIfSoConfigured(sigD,myconfigfile)
-    setConstantIfSoConfigured(sigCbar,myconfigfile)
+#    setConstantIfSoConfigured(sigCbar,myconfigfile)
     setConstantIfSoConfigured(sigSbar,myconfigfile)
     setConstantIfSoConfigured(sigDbar,myconfigfile)
     
@@ -719,7 +720,7 @@ def runSFit(debug, wsname,
 
     cosh = DecRateCoeff_Bd('signal_cosh', 'signal_cosh', DecRateCoeff_Bd.kCosh, id, one1, one2, *otherargs)
     sinh = DecRateCoeff_Bd('signal_sinh', 'signal_sinh', DecRateCoeff_Bd.kSinh, id, D, Dbar, *otherargs)
-    cos =  DecRateCoeff_Bd('signal_cos' , 'signal_cos' , DecRateCoeff_Bd.kCos,  id, C, C, *otherargs)
+    cos =  DecRateCoeff_Bd('signal_cos' , 'signal_cos' , DecRateCoeff_Bd.kCos,  id, C, Cbar, *otherargs)
     sin =  DecRateCoeff_Bd('signal_sin' , 'signal_sin' , DecRateCoeff_Bd.kSin,  id, S, Sbar, *otherargs)
 
 

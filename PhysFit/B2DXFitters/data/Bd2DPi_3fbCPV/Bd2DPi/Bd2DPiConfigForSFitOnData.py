@@ -115,7 +115,7 @@ def getconfig() :
     configdict["ACP"]["Signal"] = { "Gamma"                : [1.0 / 1.520, 0.1, 2.0], #Inverse lifetime from HFAG (http://www.slac.stanford.edu/xorg/hfag/osc/summer_2016/)
                                     "DeltaGamma"           : [0.0], # nominal
                                     #"DeltaGamma"           : [0.007], #for systematics. HFAG: DG/G=-0.002+/-0.010 -> DG=-0.001+/-0.007
-                                    "DeltaM"               : [0.5050, 0.01, 2.0],  # Global average from HFAG (http://www.slac.stanford.edu/xorg/hfag/osc/summer_2016/)
+                                    "DeltaM"               : [0.5050],# 0.01, 2.0],  # Global average from HFAG (http://www.slac.stanford.edu/xorg/hfag/osc/summer_2016/)
                                     #"ArgLf"                : [ArgqOverp_d + ArgAbarf_d - ArgAf_d],
                                     #"ArgLbarfbar"          : [ArgpOverq_d + ArgAfbar_d - ArgAbarfbar_d],
                                     #"ModLf"                : [ModAbarf_d/ModAf_d],
@@ -144,7 +144,8 @@ def getconfig() :
                                                      "KnotPositions" : [ 0.5, 1.0, 1.5, 2.0, 3.0, 12.0 ], #nominal
                                                      #"KnotPositions" : [0.5, 0.8, 1.2, 1.5, 2.0, 3.0, 12.0], #for systematics   
                                                      "KnotCoefficients" : [0.3889, 0.5754, 0.8515, 1.0649, 1.2373, 1.4149]}, #nominal
-                                                     #"KnotCoefficients" : [0.3889, 0.45, 0.5754, 0.8515, 1.0649, 1.2373, 1.4149]}, #for systematics
+                                                     #"KnotCoefficients" : [0.340748, 0.524558, 0.853267, 1.07198, 1.23477, 1.36127]}, #fitted in global fit
+                                                    #"KnotCoefficients" : [0.3889, 0.45, 0.5754, 0.8515, 1.0649, 1.2373, 1.4149]}, #for systematics
                                                     "Resolution":
                                                     {"Type": "AverageModel",
                                                      "Parameters": { 'sigmas': [ 0.05491 ], 'fractions': [] }, #0.05491 +- 0.00038
@@ -161,7 +162,9 @@ def getconfig() :
     configdict["ProductionAsymmetry"]["Signal"] = {}
     configdict["DetectionAsymmetry"]["Signal"] = {}
     configdict["ProductionAsymmetry"]["Signal"] = [-0.0124, -3.0, 3.0]
-    configdict["DetectionAsymmetry"]["Signal"] = [0.0086, -1.0, 1.0]
+    #configdict["ProductionAsymmetry"]["Signal"] = [-0.00630492] #fitted in global fit
+    configdict["DetectionAsymmetry"]["Signal"] = [0.0086, -3.0, 3.0]
+    #configdict["DetectionAsymmetry"]["Signal"] = [0.00871196] #fitted in global fit
 
     ############################################
     # Define taggers and their calibration
@@ -171,12 +174,12 @@ def getconfig() :
     configdict["Taggers"]["Signal"] = {}
     configdict["Taggers"]["Signal"] = {"OS" :
                                        {"Calibration":  #from EPM on Bu->D0Pi data
-                                        {"p0"       : [0.3737056],# 0.0, 1.0],
-                                         "p1"       : [1.028621],# 0.5, 1.5],
-                                         "deltap0"  : [0.011819],# -1.0, 1.0],
-                                         "deltap1"  : [0.043134],# -1.0, 1.0],
-                                         "avgeta"   : [0.347742], #<eta> on spline-corrected Bu->D0Pi
-                                         "tageff"   : [0.371, 0.1, 0.9],
+                                        {"p0"       : [0.3775],# 0.0, 1.0],
+                                         "p1"       : [1.028],# 0.5, 1.5],
+                                         "deltap0"  : [0.0111],# -1.0, 1.0],
+                                         "deltap1"  : [0.022],# -1.0, 1.0],
+                                         "avgeta"   : [0.349980], #<eta> on spline-corrected Bu->D0Pi
+                                         "tageff"   : [0.371, 0.0, 1.0],
                                          "tagasymm" : [0.0]
                                          },
                                         "MistagPDF" :
@@ -189,7 +192,7 @@ def getconfig() :
                                          "deltap0"  : [0.00062332],# -1.0, 1.0],
                                          "deltap1"  : [0.0066248],# -1.0, 1.0],
                                          "avgeta"   : [0.435], #<eta> on Bd->J/psiK*
-                                         "tageff"   : [0.816, 0.01, 0.99],
+                                         "tageff"   : [0.816, 0.0, 1.0],
                                          "tagasymm" : [0.0]
                                          },
                                         "MistagPDF" :
@@ -209,6 +212,9 @@ def getconfig() :
     configdict["constParams"].append('.*scalefactor')
     configdict["constParams"].append('resmodel00_sigma')
 
+    #configdict["constParams"].append('Sf')
+    #configdict["constParams"].append('Sfbar')
+
     ############################################
     # Build gaussian constraints
     # See B2DXFitters/GaussianConstraintBuilder.py for documentation
@@ -218,7 +224,7 @@ def getconfig() :
     # Constraint on resolution
     #configdict["gaussCons"]["resmodel00_sigma"] = 0.00038
     # Constraint on DeltaM
-    configdict["gaussCons"]["deltaM"] = math.sqrt(0.0021*0.0021 + 0.0010*0.0010)
+    #configdict["gaussCons"]["deltaM"] = math.sqrt(0.0021*0.0021 + 0.0010*0.0010)
     # Constraint on Gamma (error on gamma = rel. error on lifetime * gamma)
     configdict["gaussCons"]["Gamma"] = (0.004/1.520) * (1.0/1.520)
     # Multivariate constraint for production and detection asymmetries

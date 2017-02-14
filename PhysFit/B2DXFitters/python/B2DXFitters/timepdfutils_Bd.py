@@ -212,6 +212,7 @@ def buildBDecayTimePdf(
     mistagpdf = None,                   # pdf for per event mistag
     aprod = None,                       # production asymmetry
     adet = None,                        # detection asymmetry
+    HFAG = False,                       # use HFAG convention (Cf = -Cfbar) 
     ):
     """
     build a B decay time pdf
@@ -241,6 +242,7 @@ def buildBDecayTimePdf(
     mistagpdf       -- per event mistag distribution(s) (or None for average)
     aprod           -- production asymmetry (None for zero asymmetry)
     adet            -- detection asymmetry (None for zero asymmetry)
+    HFAG            -- using HFAG convention. Cfbar = -Cf coefficient is built
 
     returns:
     --------
@@ -272,7 +274,7 @@ def buildBDecayTimePdf(
     """
     # Look in LHCb-INT-2011-051 for the conventions used
     from ROOT import ( RooConstVar, RooProduct, RooTruthModel, RooGaussModel,
-        Inverse, RooBDecay, RooProdPdf, RooArgSet, DecRateCoeff_Bd,
+        Inverse, RooBDecay, RooProdPdf, RooArgSet, RooFormulaVar, DecRateCoeff_Bd,
         RooArgList )
     
     if config['Debug']:
@@ -297,6 +299,7 @@ def buildBDecayTimePdf(
                 'mistagpdf': mistagpdf,
                 'aprod': aprod,
                 'adet': adet,
+                'HFAG': HFAG,
                 }
         print 'buildBDecayTimePdf('
         for kw in kwargs:
@@ -361,8 +364,15 @@ def buildBDecayTimePdf(
                                   DecRateCoeff_Bd.kCosh, qf, one, one, *otherargs))
     sinh = WS(ws, DecRateCoeff_Bd('%s_sinh' % name, '%s_sinh' % name,
                                   DecRateCoeff_Bd.kSinh, qf, D, Dbar, *otherargs))
-    cos = WS(ws, DecRateCoeff_Bd('%s_cos' % name, '%s_cos' % name,
-                                 DecRateCoeff_Bd.kCos, qf, C, C, *otherargs))
+    if not HFAG:
+        cos = WS(ws, DecRateCoeff_Bd('%s_cos' % name, '%s_cos' % name,
+                                     DecRateCoeff_Bd.kCos, qf, C, C, *otherargs))
+    else:
+        print "timepdfutils_Bd.buildBDecayTimePdf(..)=> Using HFAG convention (Cfbar = -Cf)"
+        list = WS(ws, RooArgList(C))
+        Cbar = WS(ws, RooFormulaVar(C.GetName()+"bar", "C_{#bar f}", "-1*@0", list))
+        cos = WS(ws, DecRateCoeff_Bd('%s_cos' % name, '%s_cos' % name,
+                                     DecRateCoeff_Bd.kCos, qf, C, Cbar, *otherargs))
     sin = WS(ws, DecRateCoeff_Bd('%s_sin' % name, '%s_sin' % name,
                                  DecRateCoeff_Bd.kSin, qf, S, Sbar, *otherargs))
     # build (raw) time pdf
