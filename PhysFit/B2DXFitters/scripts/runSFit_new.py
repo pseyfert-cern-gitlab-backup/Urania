@@ -176,7 +176,7 @@ def getCPparameters(decay,myconfigfile):
     setConstantIfSoConfigured(sigC,myconfigfile)
     setConstantIfSoConfigured(sigS,myconfigfile)
     setConstantIfSoConfigured(sigD,myconfigfile)
-    setConstantIfSoConfigured(sigCbar,myconfigfile)
+#    setConstantIfSoConfigured(sigCbar,myconfigfile)
     setConstantIfSoConfigured(sigSbar,myconfigfile)
     setConstantIfSoConfigured(sigDbar,myconfigfile)
     
