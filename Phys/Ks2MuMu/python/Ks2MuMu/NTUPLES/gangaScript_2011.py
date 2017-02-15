@@ -46,7 +46,7 @@ Inputfiles = [LocalFile('/home3/miguel.ramos/cmtuser/DaVinci_v36r4p1/Phys/Ks2MuM
 
 #########################################################
 ### DSTs and tag definition for each mode
-bookmark = { 'dataKspipi' : '/LHCb/Collision11/Beam3500GeV-VeloClosed-MagDown/Real Data/Reco14/Stripping20r1/90000000/DIMUON.DST',
+bookmark = { 'dataKspipi' : '/LHCb/Collision11/Beam3500GeV-VeloClosed-MagDown/Real Data/Reco14/Stripping20r1p3/90000000/DIMUON.DST',
              'dataMB'     : '/LHCb/Collision11/Beam3500GeV-VeloClosed-MagDown/Real Data/Reco14/Stripping20r1/90000000/MINIBIAS.DST',
              'MCMB08a'    : '/MC/2011/Beam3500GeV-2011-MagDown-Nu2-Pythia8/Sim08a/Digi13/Trig0x40760037/Reco14a/Stripping20r1NoPrescalingFlagged/30000000/ALLSTREAMS.DST',
              'MCMB08c'    : '/MC/2011/Beam3500GeV-2011-MagDown-Nu2-Pythia8/Sim08c/Digi13/Trig0x40760037/Reco14a/Stripping20r1NoPrescalingFlagged/30000000/ALLSTREAMS.DST'
