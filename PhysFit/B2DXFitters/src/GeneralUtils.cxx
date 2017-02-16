@@ -1468,6 +1468,12 @@ namespace GeneralUtils {
       }
       //const RooArgSet* obs2 = dataOut[0]->get();
       combData = new RooDataSet(dataName.Data(),dataName.Data(),*obs, RooFit::Index(sam), RooFit::Import(sm[0].Data(),*dataOut[0]));
+      if (combData->numEntries() == 0)
+      {
+        combData == NULL;
+        const RooArgSet* obs2 = dataOut[0]->get();
+        combData = new RooDataSet(dataName.Data(),dataName.Data(),*obs2, RooFit::Index(sam), RooFit::Import(sm[0].Data(),*dataOut[0]));
+      }
       if ( debug == true )
       {
         std::cout<<"[INFO] Adding: "<<dataOut[0]->GetName()<<" to combData"<<std::endl;
@@ -1476,7 +1482,7 @@ namespace GeneralUtils {
       std::vector <RooDataSet*> combDataTmp;
       for( unsigned int i=1; i<sm.size(); i++ )
       {
-        //std::cout<<"sm: "<<sm[i]<<std::endl; 
+        std::cout<<"sm: "<<sm[i]<<std::endl; 
         TString dataNameComb2 = Form("combData%d",i);
         TString nD = dataOut[i]->GetName();
         if ( debug == true ) 
