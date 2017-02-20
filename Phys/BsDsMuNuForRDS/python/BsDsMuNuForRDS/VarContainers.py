@@ -181,3 +181,9 @@ Ds_PT= z(1, dtype=float)
 Bs_0_BDTS_DOCA= z(1, dtype=float)
 Bs_0_FDCHI2_TOPPV= z(1, dtype=float)
 Ds_MM= z(1, dtype=float)
+
+# Stuff for sWeights
+N_LsigR_sw = z(1, dtype=float)
+L_N_LsigR  = z(1, dtype=float)
+N_LbkgR_sw = z(1, dtype=float)
+L_N_LbkgR  = z(1, dtype=float)
