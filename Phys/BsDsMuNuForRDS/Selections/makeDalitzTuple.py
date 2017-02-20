@@ -6,6 +6,7 @@ from BsDsMuNuForRDS.BranchSetters import assignDalitzInputBranches, assignDalitz
 from ROOT import TLorentzVector, TFile, TTree, gROOT, gStyle, gDirectory
 import sys, os
 gROOT.SetBatch()
+
 ###################################################################
 # Parse command line args and error check.
 ###################################################################
@@ -21,6 +22,7 @@ if dataTag not in configurationDict.keys():
     for dataTag in configurationDict.keys():
         print '----', dataTag
     sys.exit()    
+
 ###################################################################
 # Configuration
 ###################################################################

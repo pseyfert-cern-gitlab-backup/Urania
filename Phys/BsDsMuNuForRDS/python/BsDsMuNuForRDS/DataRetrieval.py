@@ -3,7 +3,7 @@
 ## lxplus and the LNF cluster. Contains some dictionaries to hold data values
 ## and functions to automatically retrieve them.
 ################################################################################
-import os, sys
+import os, sys, errno
 from ROOT import TFile, TTree, TChain
 import BsDsMuNuForRDS.Configuration as Configuration
 
@@ -23,13 +23,13 @@ dalitzDirectoryEOS        = '/eos/lhcb/wg/semileptonic/Bs2DsX/DalitzTrees/'
 # or at the LNF cluster.
 # First the temporary location for the Dalitz trees.
 localDalitzDirectoryDict = {
-    'lxplus' : '/afs/cern.ch/work/s/sogilvy/Bs2DsX/DalitzTrees/'
-    ,'lnf'   : ''
+    'lxplus' : '/tmp/RDs/'
+    ,'lnf'   : '/tmp/RDs'
     }
 # Now the temporary location for the processed trees.
 localPostSelectionDirectoryDict = {
-    'lxplus' : '/afs/cern.ch/work/s/sogilvy/Bs2DsX/ProcessedTrees/'
-    ,'lnf'   : ''
+    'lxplus' : '/tmp/RDs/'
+    ,'lnf'   : '/tmp/RDs'
     }
 
 # The EOS protocol to use.
@@ -51,6 +51,18 @@ def getHostKey():
         return 'lnf'
     else:
         sys.exit('DataRetrieval ERROR: host name not recognised.')
+
+
+def checkTempDirExists(path='/tmp/RDs/'):
+    '''
+    Function to check the requested path, the temp afs dir by default,
+    exists. If it does we ignore this and carry on with the execution.
+    '''
+    try:
+        os.makedirs(path)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
 
 ######################################################
 # Getting directories.
@@ -86,7 +98,9 @@ def getLocalDalitzDirectory():
     '''
     Returns the directory on the local filesystem where
     the Dalitz tuples are created and stored.
+    Checks the tmp dir exists and if not makes it on the fly.
     '''
+    checkTempDirExists()
     hostKey = getHostKey()
     return localDalitzDirectoryDict[hostKey]
 
@@ -94,7 +108,9 @@ def getLocalPostSelectionDirectory():
     '''
     Returns the directory on the local filesystem where
     the postSelection ntuples are temporarily stored.
+    Checks the tmp dir exists and if not makes it on the fly.
     '''
+    checkTempDirExists()
     hostKey = getHostKey()
     return localPostSelectionDirectoryDict[hostKey]
 
