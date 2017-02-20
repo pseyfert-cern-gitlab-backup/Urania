@@ -3,6 +3,8 @@
 ! Responsible : Donal Hill
 ! Purpose     : Scripts using PIDPerfTools to perform PID studies
 !-----------------------------------------------------------------------------
+! 2017-02-20 - Donal Hill
+ - Removed "notag" tuple access for DsPhi samples.
 
 ! 2017-02-03 - Elena Graverini
  - Added find_package(Xrootd) to CMakeLists.txt, to have the xrootd libraries loaded from cvmfs at runtime.

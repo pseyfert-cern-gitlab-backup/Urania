@@ -215,7 +215,7 @@ datasets = {
   'Jpsi_Mu': ["Jpsi_MuPTuple", "Jpsi_MuMTuple"],
   'LcfB_P' : ["LbLcMu_PTuple", "LbLcMu_PbarTuple"],
   'Sigmac0_P': ["Sigmac0_PbarTuple","Sigmac0_PTuple"],
-  'DsPhi_K': ["DsPhi_KP_notagTuple","DsPhi_KM_notagTuple","DsPhi_KPTuple","DsPhi_KMTuple"],
+  'DsPhi_K': ["DsPhi_KPTuple","DsPhi_KMTuple"],
   'Sigmacpp_P': ["Sigmacpp_PbarTuple","Sigmacpp_PTuple"],
   'DSt3Pi_Pi' : ["DSt3Pi_PiMTuple", "DSt3Pi_PiPTuple"],
   'DSt3Pi_K'  : ["DSt3Pi_KPTuple", "DSt3Pi_KMTuple"],
