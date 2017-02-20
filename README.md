@@ -11,6 +11,8 @@ In any case, there are two important rules you must remember:
 1. <b>Never clone the whole project for development purposes.</b> Please follow the instructions above.
 2. <b>Always checkout the packages from the master branch.</b> If not, when asking for a Merge Request (MR), incompatibilities will appear and thus the MR will be closed. 
 
+Apart from project maintainers, also certain package maintainers are allowed to accept and revert MR. These people are marked with [] on the [requirements](https://gitlab.cern.ch/lhcb/Urania/blob/master/UraniaSys/cmt/requirements) file.
+
 ## Mailing list
 For issues, questions and problems; please send an e-mail to:
 
