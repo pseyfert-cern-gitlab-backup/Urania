@@ -1,248 +1,59 @@
 from BsDsMuNuForRDS.DataRetrieval import *
+from BsDsMuNuForRDS.Constants     import *
+from BsDsMuNuForRDS.VarContainers import *
+from BsDsMuNuForRDS.Configuration import configurationDict
+from BsDsMuNuForRDS.BranchSetters import assignDalitzInputBranches, assignDalitzOutputBranches
 from ROOT import TLorentzVector, TFile, TTree, gROOT, gStyle, gDirectory
 import sys, os
 gROOT.SetBatch()
-gROOT.ProcessLine('.x ~/lhcbStyle.C')
-
-tupleType = 'data'
-dataTag  = sys.argv[1] #'BdDstDs'
-polarity = sys.argv[2] #'MagDown'
-
-# Resonance masses in GeV/c2 from the PDG.
-M_phi   = 1019.461
-M_Kstar = 895.5
-
-# Final state particle masses.
-M_K  = 493.677
-M_pi = 139.570
-M_p  = 938.272
-M_mu = 105.658
+###################################################################
+# Parse command line args and error check.
+###################################################################
+if len(sys.argv) != 2:
+    print '-- ERROR: specify dataTag as command line argument.'
+    print '--        DataTag not recognised. Valid tags are:'
+    for dataTag in configurationDict.keys():
+        print '---- ', dataTag
+    sys.exit()
+dataTag  = sys.argv[1]
+if dataTag not in configurationDict.keys():
+    print '-- ERROR: dataTag not recognised. Valid tags are:'
+    for dataTag in configurationDict.keys():
+        print '----', dataTag
+    sys.exit()    
+###################################################################
+# Configuration
+###################################################################
+# Ignore the MCMATCH, fake and SS lines?
+ignoreFakes = False
 
 # Make the new file.
-outFileName = getDalitzFileName(dataTag, polarity)
+outFileName = getLocalDalitzFileName(dataTag)
+print '-- INFO: making new file:'
+print '----', outFileName
 fOut = TFile(outFileName, "recreate")
 
 # Loop over the tuples.
-for tName in dataDict[dataTag]['tNames']:
+for tName in configurationDict[dataTag]['tNames']:
+
+    if ignoreFakes:
+        if tName != 'B2DsMuNuTuple/DecayTree': continue
 
     # Get the chain with the package functions.
-    c = getChainWithTupleName(dataTag, polarity, tName)
+    c = getChainWithTupleName(dataTag, tName)
 
     # Make the TDirectory.
     dirName  = tName.split('/')[0]
     tNameEnd = tName.split('/')[1]
-
     theDir = fOut.mkdir(dirName)
     theDir.cd()
     
     # Make the new tuple.
     tOut = TTree('DecayTree', 'DecayTree') #c.CloneTree(0)
 
-    #####################################################################################
-    # Now make branches for all the Ds daughter kinematics.
-    #####################################################################################
-    from numpy import zeros as z
-    SSK_Px = z(1, dtype=float)
-    SSK_Py = z(1, dtype=float)
-    SSK_Pz = z(1, dtype=float)
-    SSK_Pe = z(1, dtype=float)
-    SSK_P  = z(1, dtype=float)
-    
-    OSK_Px = z(1, dtype=float)
-    OSK_Py = z(1, dtype=float)
-    OSK_Pz = z(1, dtype=float)
-    OSK_Pe = z(1, dtype=float)
-    OSK_P  = z(1, dtype=float)
-    
-    pi_Px = z(1, dtype=float)
-    pi_Py = z(1, dtype=float)
-    pi_Pz = z(1, dtype=float)
-    pi_Pe = z(1, dtype=float)
-    pi_P  = z(1, dtype=float)
-    
-    pi_isMuon = z(1, dtype=int)
-    OSK_isMuon = z(1, dtype=int)
-    SSK_isMuon = z(1, dtype=int)
-    
-    mu_Px = z(1, dtype=float)
-    mu_Py = z(1, dtype=float)
-    mu_Pz = z(1, dtype=float)
-    mu_Pe = z(1, dtype=float)
-    mu_P  = z(1, dtype=float)
-    
-    Ds_M = z(1, dtype=float)
-    
-    OSK_PIDK = z(1, dtype=float)
-    OSK_PIDp = z(1, dtype=float)
-    SSK_PIDK = z(1, dtype=float)
-    SSK_PIDp = z(1, dtype=float)
-    pi_PIDK = z(1, dtype=float)
-    pi_PIDp = z(1, dtype=float)
-    
-    OSK_ProbNNK = z(1, dtype=float)
-    OSK_ProbNNp = z(1, dtype=float)
-    SSK_ProbNNK = z(1, dtype=float)
-    SSK_ProbNNp = z(1, dtype=float)
-    pi_ProbNNK  = z(1, dtype=float)
-    
-    OSK_IPChi2 = z(1, dtype=float)
-    SSK_IPChi2 = z(1, dtype=float)
-    pi_IPChi2 = z(1, dtype=float)
-    
-    branchDict = {
-        'sim'   : '%s_P%s' #'%s_TRUEP_%s'
-        ,'data' : '%s_P%s'
-        }
-    b = branchDict[tupleType]
-
-    #####################################################################################
-    # Now the kaon assignments, this varies with the dataTag.
-    #####################################################################################
-    #if dataTag == 'RDS_FromTauMu':
-    c.SetBranchAddress(b %('Kmi', 'X'), OSK_Px)
-    c.SetBranchAddress(b %('Kmi', 'Y'), OSK_Py)
-    c.SetBranchAddress(b %('Kmi', 'Z'), OSK_Pz)
-    c.SetBranchAddress(b %('Kmi', 'E'), OSK_Pe)
-    c.SetBranchAddress(b %('Kmi', ''),  OSK_P)
-    
-    c.SetBranchAddress(b %('Kpl', 'X'), SSK_Px)
-    c.SetBranchAddress(b %('Kpl', 'Y'), SSK_Py)
-    c.SetBranchAddress(b %('Kpl', 'Z'), SSK_Pz)
-    c.SetBranchAddress(b %('Kpl', 'E'), SSK_Pe)
-    c.SetBranchAddress(b %('Kpl', ''),  SSK_P)
-    
-    c.SetBranchAddress('Kmi_isMuon', OSK_isMuon)
-    c.SetBranchAddress('Kpl_isMuon', SSK_isMuon)
-    
-    c.SetBranchAddress('Kpl_ProbNNk', SSK_ProbNNK)
-    c.SetBranchAddress('Kpl_ProbNNp', SSK_ProbNNp)
-    c.SetBranchAddress('Kmi_ProbNNk', OSK_ProbNNK)
-    c.SetBranchAddress('Kmi_ProbNNp', OSK_ProbNNp)
-    
-    c.SetBranchAddress('Kmi_PIDK'   , OSK_PIDK)
-    c.SetBranchAddress('Kmi_PIDp'   , OSK_PIDp)
-    c.SetBranchAddress('Kpl_PIDK'   , SSK_PIDK)
-    c.SetBranchAddress('Kpl_PIDp'   , SSK_PIDp)
-    #else:
-    #    c.SetBranchAddress(b %('Kpl', 'X'), OSK_Px)
-    #    c.SetBranchAddress(b %('Kpl', 'Y'), OSK_Py)
-    #    c.SetBranchAddress(b %('Kpl', 'Z'), OSK_Pz)
-    #    c.SetBranchAddress(b %('Kpl', 'E'), OSK_Pe)
-    #    c.SetBranchAddress(b %('Kpl', ''),  OSK_P)
-    # 
-    #    c.SetBranchAddress(b %('Kmi', 'X'), SSK_Px)
-    #    c.SetBranchAddress(b %('Kmi', 'Y'), SSK_Py)
-    #    c.SetBranchAddress(b %('Kmi', 'Z'), SSK_Pz)
-    #    c.SetBranchAddress(b %('Kmi', 'E'), SSK_Pe)
-    #    c.SetBranchAddress(b %('Kmi', ''),  SSK_P)
-
-    #    c.SetBranchAddress('Kmi_isMuon', SSK_isMuon)
-    #    c.SetBranchAddress('Kpl_isMuon', OSK_isMuon)
-
-    #    c.SetBranchAddress('Kpl_ProbNNk', OSK_ProbNNK)
-    #    c.SetBranchAddress('Kpl_ProbNNp', OSK_ProbNNp)
-    #    c.SetBranchAddress('Kmi_ProbNNk', SSK_ProbNNK)
-    #    c.SetBranchAddress('Kmi_ProbNNp', SSK_ProbNNp)
-        
-    #    c.SetBranchAddress('Kmi_PIDK'   , SSK_PIDK)
-    #    c.SetBranchAddress('Kmi_PIDp'   , SSK_PIDp)
-    #    c.SetBranchAddress('Kpl_PIDK'   , OSK_PIDK)
-    #    c.SetBranchAddress('Kpl_PIDp'   , OSK_PIDp)
-
-    # Now the pions.
-    c.SetBranchAddress(b %('pi', 'X'), pi_Px)
-    c.SetBranchAddress(b %('pi', 'Y'), pi_Py)
-    c.SetBranchAddress(b %('pi', 'Z'), pi_Pz)
-    c.SetBranchAddress(b %('pi', 'E'), pi_Pe)
-    c.SetBranchAddress(b %('pi', ''),  pi_P)
-    c.SetBranchAddress('pi_isMuon', pi_isMuon)
-    c.SetBranchAddress('pi_ProbNNk', pi_ProbNNK)
-    
-    # Now the muons.
-    c.SetBranchAddress(b %('mu', 'X'), mu_Px)
-    c.SetBranchAddress(b %('mu', 'Y'), mu_Py)
-    c.SetBranchAddress(b %('mu', 'Z'), mu_Pz)
-    c.SetBranchAddress(b %('mu', 'E'), mu_Pe)
-    c.SetBranchAddress(b %('mu', ''),  mu_P)
-
-    # Now the Ds mass.
-    c.SetBranchAddress('Ds_M', Ds_M)
-    
-    #####################################################################################
-    # Now make the containers for the new variables.
-    #####################################################################################
-    M_SSKpi = z(1, dtype=float)
-    M_OSKpi = z(1, dtype=float)
-    M_KK    = z(1, dtype=float)
-    M_Ds    = z(1, dtype=float)
-    resFlag = z(1, dtype=int)
-    
-    Beta_OSK  = z(1, dtype=float)
-    Beta_SSK  = z(1, dtype=float)
-    Beta_pi   = z(1, dtype=float)
-    
-    WM_Lc_SSKasproton = z(1, dtype=float)
-    WM_Dp_SSKaspi     = z(1, dtype=float)
-
-    WM_Dst_FullReco         = z(1, dtype=float)
-    WM_Dst_SSKaspi_fromDz   = z(1, dtype=float)
-    WM_Dst_OSKaspi_fromDz   = z(1, dtype=float)
-    WM_Dst_SSKaspi_fromDst  = z(1, dtype=float)
-    WM_Dst_OSKaspi_fromDst  = z(1, dtype=float)
-    
-    WM_Jpsi_piasmu  = z(1, dtype=float)
-    WM_Jpsi_SSKasmu = z(1, dtype=float)
-    WM_Jpsi_OSKasmu = z(1, dtype=float)
-    
-    WM_Kstar_SSKaspi  = z(1, dtype=float)
-    WM_Kstar_OSKaspi  = z(1, dtype=float)
-    
-    WM_phi_piasK    = z(1, dtype=float)
-    WM_KS_OSKaspi   = z(1, dtype=float)
-    
-    tOut.Branch("M_SSKpi", M_SSKpi, "M_SSKpi/D")
-    tOut.Branch("M_OSKpi", M_OSKpi, "M_OSKpi/D")
-    tOut.Branch("M_KK",    M_KK,    "M_KK/D")
-    tOut.Branch("Ds_M",    Ds_M,    "Ds_M/D")
-    tOut.Branch("resFlag", resFlag, "resFlag/I")
-    
-    tOut.Branch("Beta_OSK", Beta_OSK, "Beta_OSK/D")
-    tOut.Branch("Beta_SSK", Beta_SSK, "Beta_SSK/D")
-    tOut.Branch("Beta_pi",  Beta_pi,  "Beta_pi/D")
-    
-    tOut.Branch("WM_Lc_SSKasproton", WM_Lc_SSKasproton, "WM_Lc_SSKasproton/D")
-    tOut.Branch("WM_Dp_SSKaspi",     WM_Dp_SSKaspi,     "WM_Dp_SSKaspi/D")
-
-    tOut.Branch("WM_Dst_FullReco",        WM_Dst_FullReco,        "WM_Dst_FullReco/D")
-    tOut.Branch("WM_Dst_SSKaspi_fromDz",  WM_Dst_SSKaspi_fromDz,  "WM_Dst_SSKaspi_fromDz/D")
-    tOut.Branch("WM_Dst_SSKaspi_fromDst", WM_Dst_SSKaspi_fromDst, "WM_Dst_SSKaspi_fromDst/D")
-    
-    tOut.Branch('WM_Jpsi_piasmu',  WM_Jpsi_piasmu, 'WM_Jpsi_piasmu/D')
-    tOut.Branch('WM_Jpsi_SSKasmu', WM_Jpsi_SSKasmu,'WM_Jpsi_SSKasmu/D')
-    
-    tOut.Branch("WM_Kstar_SSKaspi", WM_Kstar_SSKaspi, "WM_Kstar_SSKaspi/D")
-    tOut.Branch("WM_Kstar_OSKaspi", WM_Kstar_OSKaspi, "WM_Kstar_OSKaspi/D")
-    
-    tOut.Branch("WM_phi_piasK", WM_phi_piasK, "WM_phi_piasK/D")
-    tOut.Branch("WM_KS_OSKaspi", WM_KS_OSKaspi, "WM_KS_OSKaspi/D")
-
-    # Now the PID entries we need to tune the selection.
-    tOut.Branch('SSK_PIDK', SSK_PIDK, 'SSK_PIDK/D')
-    tOut.Branch('SSK_PIDp', SSK_PIDp, 'SSK_PIDp/D')
-    tOut.Branch('OSK_PIDK', OSK_PIDK, 'OSK_PIDK/D')
-    tOut.Branch('OSK_PIDp', OSK_PIDp, 'OSK_PIDp/D')
-    tOut.Branch('pi_PIDK', pi_PIDK, 'pi_PIDK/D')
-    tOut.Branch('pi_PIDp', pi_PIDp, 'pi_PIDp/D')
-
-    tOut.Branch('pi_isMuon', pi_isMuon, 'pi_isMuon/I')
-    tOut.Branch('OSK_isMuon', OSK_isMuon, 'OSK_isMuon/I')
-    tOut.Branch('SSK_isMuon', SSK_isMuon, 'SSK_isMuon/I')
-
-    tOut.Branch('SSK_ProbNNk', SSK_ProbNNK, 'SSK_ProbNNk/D')
-    tOut.Branch('SSK_ProbNNp', SSK_ProbNNp, 'SSK_ProbNNp/D')
-    tOut.Branch('OSK_ProbNNk', OSK_ProbNNK, 'OSK_ProbNNk/D')
-    tOut.Branch('OSK_ProbNNp', OSK_ProbNNp, 'OSK_ProbNNp/D')
-    tOut.Branch('SSK_ProbNNp', SSK_ProbNNp, 'SSK_ProbNNp/D')
+    # Assign all the input and output branch addresses.
+    assignDalitzInputBranches(c)
+    assignDalitzOutputBranches(tOut)
 
     #####################################################################################
     # Now loop over the events and plot the Dalitz variables.
@@ -251,10 +62,11 @@ for tName in dataDict[dataTag]['tNames']:
     numPassedCounter = 0
 
     # Make a filter for the preselection.
-    from BsDsMuNuForRDS.Selections import preselectionCut
-    if 'MC' in dataTag: preselectionCut = '1'
+    from BsDsMuNuForRDS.Selections import getCutStringNoDsVetoes
+    preselectionCut = getCutStringNoDsVetoes(dataTag, tName)
     c.Draw('>>eList', preselectionCut)
     eList = gDirectory.Get('eList')
+    print '-- INFO: number of events passing preselection:', eList.GetN()
 
     for i in xrange(numToProcess):
 
@@ -374,3 +186,9 @@ for tName in dataDict[dataTag]['tNames']:
 
 # Now close the file.    
 fOut.Close()
+
+# Now copy to eos.
+eoscommand = '/afs/cern.ch/project/eos/installation/0.3.15/bin/eos.select cp'
+finalName = getEOSDalitzFileName(dataTag)
+os.system('%s %s %s' %(eoscommand, outFileName, finalName))
+print '-- Copied file to eos.'

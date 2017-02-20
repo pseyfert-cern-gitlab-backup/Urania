@@ -5,115 +5,35 @@
 ################################################################################
 import os, sys
 from ROOT import TFile, TTree, TChain
+import BsDsMuNuForRDS.Configuration as Configuration
 
 ################################################################################
 ## DATA
 ################################################################################
-# Master file directory locations.
-masterDirDict = {
-    'lxplus' : '/eos/lhcb/user/r/rvazquez/RDS/'
-    ,'lnf'   : '/data/Shared/TupleProd_Dec15/'
-    }
+# Some EOS locations first.
+# This is the directory where the package will read the unprocessed trees.
+preSelectionDirectoryEOS  = '/eos/lhcb/wg/semileptonic/Bs2DsX/UnprocessedTrees/'
+# And the corresponding location where they'll be stored when processed.
+postSelectionDirectoryEOS = '/eos/lhcb/wg/semileptonic/Bs2DsX/ProcessedTrees/'
+# Directory for the trees containing the Dalitz variables.
+dalitzDirectoryEOS        = '/eos/lhcb/wg/semileptonic/Bs2DsX/DalitzTrees/'
 
-# Home directory for the processed ntuples on eos.
-finalDirDict = {
-    'lxplus' : '/eos/lhcb/user/s/sogilvy/RDs/WithVetoes/'
+# Now some locations for where ROOT files are created.
+# They must be local, so these depend on if we're running on lxplus
+# or at the LNF cluster.
+# First the temporary location for the Dalitz trees.
+localDalitzDirectoryDict = {
+    'lxplus' : '/afs/cern.ch/work/s/sogilvy/Bs2DsX/DalitzTrees/'
+    ,'lnf'   : ''
+    }
+# Now the temporary location for the processed trees.
+localPostSelectionDirectoryDict = {
+    'lxplus' : '/afs/cern.ch/work/s/sogilvy/Bs2DsX/ProcessedTrees/'
     ,'lnf'   : ''
     }
 
-# Directory for the Dalitz variables processed from Ricci's
-# master files.
-dalitzDirDict = {
-    'lxplus' : '/afs/cern.ch/work/s/sogilvy/RDs/'
-    ,'lnf'   : ''
-    }
-
-# Temporary post Ds veto locations, for local processing
-# and immediately before being copied to the final dir
-# on eos.
-temporaryDirDict = {
-    'lxplus' : '/afs/cern.ch/work/s/sogilvy/RDs/WithVetoes/'
-    ,'lnf'   : ''
-    }
-
-# Data protocol. Use eos for lxplus.
-protocolDict = {
-    'lxplus' : 'root://eoslhcb.cern.ch//'
-    ,'lnf'   : ''
-    }
-
-# A dict containing lists of all files to be added for each type of data and polarity.
-# Also contains the tuple names for each file type to be cycled over.
-dataDict = {
-
-    'MC_Signal'   : { 'tNames'      : [ 'MB2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuSSTuple/DecayTree' ]
-                       ,'MagUp'      : [ 'TupleRDS_MCSignalUp_allNeutrals_iso.root' ]
-                       ,'MagDown'    : [ 'TupleRDS_MCSignalDown_allNeutrals_iso.root']
-                       ,'MagUpOut'   : 'TupleRDS_MCSignalUp_allNeutrals_iso.root'
-                       ,'MagDownOut' : 'TupleRDS_MCSignalDown_allNeutrals_iso.root'
-                       }
-    
-    ,'MC_InclDs'   : { 'tNames'      : [ 'MB2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuSSTuple/DecayTree' ]
-                       ,'MagUp'      : [ 'TupleRDS_InclDsUp_allNeutrals_iso.root' ]
-                       ,'MagDown'    : [ 'TupleRDS_InclDsDown_allNeutrals_iso.root' ]
-                       ,'MagUpOut'   :  'TupleRDS_InclDsUp_allNeutrals_iso.root' 
-                       ,'MagDownOut' :  'TupleRDS_InclDsDown_allNeutrals_iso.root'
-                       }
-
-    ,'MC_LbLcDs'   : { 'tNames'      : [ 'MB2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuSSTuple/DecayTree' ]
-                       ,'MagUp'      : [ 'TupleRDS_LbLcDs_Up_iso.root' ]
-                       ,'MagDown'    : [ 'TupleRDS_LbLcDs_Down_iso.root' ]
-                       ,'MagUpOut'   :  'TupleRDS_LbLcDs_Up_iso.root'
-                       ,'MagDownOut' :  'TupleRDS_LbLcDs_Down_iso.root'
-                       }
-
-    ,'MC_BdDstDs'  : { 'tNames'      : [ 'MB2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuSSTuple/DecayTree' ]
-                       ,'MagUp'      : [ 'TupleRDS_BdDstDs_Up_iso.root' ]
-                       ,'MagDown'    : [ 'TupleRDS_BdDstDs_Down_iso.root' ]
-                       ,'MagUpOut'   :  'TupleRDS_BdDstDs_Up_iso.root'
-                       ,'MagDownOut' :  'TupleRDS_BdDstDs_Down_iso.root'
-                       }
-
-    ,'MC_BsDsDs'   : { 'tNames'      : [ 'MB2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuSSTuple/DecayTree' ]
-                       ,'MagUp'      : [ 'TupleRDS_BsDsDs_Up_iso.root' ]
-                       ,'MagDown'    : [ 'TupleRDS_BsDsDs_Down_iso.root' ]
-                       ,'MagUpOut'   :  'TupleRDS_BsDsDs_Up_iso.root'
-                       ,'MagDownOut' :  'TupleRDS_BsDsDs_Down_iso.root'
-                       }
-
-    ,'MC_BuD0Ds'   : { 'tNames'      : [ 'MB2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuSSTuple/DecayTree' ]
-                       ,'MagUp'      : [ 'TupleRDS_BuD0Ds_Up_iso.root' ]
-                       ,'MagDown'    : [ 'TupleRDS_BuD0Ds_Down_iso.root' ]
-                       ,'MagUpOut'   :  'TupleRDS_BuD0Ds_Up_iso.root'
-                       ,'MagDownOut' :  'TupleRDS_BuD0Ds_Down_iso.root'
-                       }
-    
-    ,'Data'        : { 'tNames'      : ['B2DsMuNuTuple/DecayTree'
-                                        ,'B2DsMuNuTupleFake/DecayTree'
-                                        ,'B2DsMuNuSSTuple/DecayTree'
-                                        ,'B2DsMuNuSSTupleFake/DecayTree']
-                       ,'MagUp'      : ['TupleRDS_DataUp_1_allNeutrals_iso.root'
-                                        ,'TupleRDS_DataUp_2_allNeutrals_iso.root']
-                       ,'MagDown'    : ['TupleRDS_DataDown_1_allNeutrals_iso.root'
-                                        ,'TupleRDS_DataDown_2_allNeutrals_iso.root']
-                       ,'MagUpOut'   : 'TupleRDS_DataUp_allNeutrals_iso.root'
-                       ,'MagDownOut' : 'TupleRDS_DataDown_allNeutrals_iso.root'
-                       }
-    
-    }
-
+# The EOS protocol to use.
+EOSProtocol = 'root://eoslhcb.cern.ch//'
 
 ################################################################################
 ## FUNCS - these act on the data objects to retrieve and make files.
@@ -132,145 +52,187 @@ def getHostKey():
     else:
         sys.exit('DataRetrieval ERROR: host name not recognised.')
 
-def getProtocol():
-    '''
-    Returns the appropriate protocol to open the TFile.
-    '''
-    hostKey = getHostKey()
-    return protocolDict[hostKey]
-
 ######################################################
 # Getting directories.
 ######################################################
-def getMasterDirectory():
+def getEOSPreSelectionDirectory(dataTag='MC09_Mu'):
     '''
-    Returns the appropriate directory containing the data
-    from the master directory (Ricci ntuples from DaVinci).
+    Returns the directory on EOS containing the ntuples
+    before any selection is applied.
+    Assumes the default shared repository, but this
+    can be overwritten by the entry "inputDir" in
+    the configurationDict.
     '''
-    hostKey = getHostKey()
-    return masterDirDict[hostKey]
+    if 'inputDir' in Configuration.configurationDict[dataTag].keys():
+        return Configuration.configurationDict[dataTag]['inputDir']
+    else:
+        return preSelectionDirectoryEOS
 
-def getDalitzDirectory():
+def getEOSDalitzDirectory():
     '''
-    Returns the directory where the Dalitz tuples
+    Returns the directory on EOS where the Dalitz tuples
     are stored.
     '''
-    hostKey = getHostKey()
-    return dalitzDirDict[hostKey]
+    return dalitzDirectoryEOS
     
-def getFinalDirectory():
+def getEOSPostSelectionDirectory():
     '''
-    Returns the appropriate directory containing the data
-    after full selection and after all branches are added.
+    Returns the directory on EOS containing the data
+    after full selection, with the extra info added.
     '''
-    hostKey = getHostKey()
-    return finalDirDict[hostKey]
+    return postSelectionDirectoryEOS
 
-def getTemporaryDirectory():
+def getLocalDalitzDirectory():
     '''
-    Returns the appropriate directory containing the data
-    after full selection on my local space, which should
-    immediately be copied to eos and then deleted.
+    Returns the directory on the local filesystem where
+    the Dalitz tuples are created and stored.
     '''
     hostKey = getHostKey()
-    return temporaryDirDict[hostKey]
+    return localDalitzDirectoryDict[hostKey]
+
+def getLocalPostSelectionDirectory():
+    '''
+    Returns the directory on the local filesystem where
+    the postSelection ntuples are temporarily stored.
+    '''
+    hostKey = getHostKey()
+    return localPostSelectionDirectoryDict[hostKey]
 
 ######################################################
 # Building filenames automatically.
 ######################################################
-def getOutputFileName(dataTag, polarity, verbose=True):
+def getOutputFileName(dataTag, verbose=True):
     '''
     Function to get the output name for the filtered
     ntuples. ONLY GETS THE END FILE NAME! Not the dir!
     Needs combined with other functions to return the full name.
     '''
-    outName = dataDict[dataTag]['%s%s' %(polarity, 'Out')]
+    outName = Configuration.configurationDict[dataTag]['outputFile']
     if verbose:
         print '-- DataRetrieval.getOutputFileName: function returns:'
         print '--', outName
     return outName
 
-def getDalitzFileName(dataTag, polarity, verbose=True):
+def getDalitzFileName(dataTag, verbose=True):
     '''
-    Get the full Dalitz filename.
+    Get the  Dalitz filename.
+    Again, just the filename itself and not the path.
     '''
-    baseName = getDalitzDirectory()
-    endName  = getOutputFileName(dataTag, polarity, verbose)
+    dalitzName = 'DalitzTuple_%s.root' %dataTag
+    if verbose:
+        print '-- DataRetrieval.getDalitzFileName: function returns:'
+        print '--', dalitzName
+    return dalitzName
+
+def getLocalDalitzFileName(dataTag, verbose=True):
+    '''
+    Get the full local filesystem filename for the
+    Dalitz ntuple.
+    '''
+    baseName = getLocalDalitzDirectory()
+    endName  = getDalitzFileName(dataTag, verbose)
     fullName = '%s%s' %(baseName, endName)
-    if verbose: print '-- dalitzName says:', fullName
+    if verbose:
+        print '-- DataRetrieval.getLocalDalitzFileName: function returns:'
+        print '--', fullName
     return fullName
 
-def getTemporaryFileName(dataTag, polarity, verbose=True):
+def getLocalPostSelectionFileName(dataTag, verbose=True):
     '''
-    Get the full temporary filename.
+    Get the full local filesystem filename for the
+    postselection ntuple.
     '''
-    baseName = getTemporaryDirectory()
-    endName  = getOutputFileName(dataTag, polarity, verbose)
+    baseName = getLocalPostSelectionDirectory()
+    endName  = getOutputFileName(dataTag, verbose)
     fullName = '%s%s' %(baseName, endName)
-    if verbose: print '-- tempName says:', fullName
+    if verbose:
+        print '-- DataRetrieval.getLocalPostSelectionFileName: function returns:'
+        print '--', fullName
     return fullName
 
-def getFinalFileName(dataTag, polarity, verbose=True):
+def getEOSDalitzFileName(dataTag, verbose=True):
     '''
-    Get the full master filename.
+    Get the full EOS filename for the
+    Dalitz ntuple.
+    This does not include the EOS protocol.
     '''
-    baseName = getFinalDirectory()
-    endName  = getOutputFileName(dataTag, polarity, verbose)
+    baseName = getEOSDalitzDirectory()
+    endName  = getDalitzFileName(dataTag, verbose)
     fullName = '%s%s' %(baseName, endName)
-    if verbose: print '-- finalName says:', fullName
+    if verbose:
+        print '-- DataRetrieval.getEOSDalitzFileName: function returns:'
+        print '--', fullName
+    return fullName
+
+def getEOSPostSelectionFileName(dataTag, verbose=True):
+    '''
+    Get the full EOS filename for the
+    postselection ntuple.
+    This does not include the EOS protocol.
+    '''
+    baseName = getEOSPostSelectionDirectory()
+    endName  = getOutputFileName(dataTag, verbose)
+    fullName = '%s%s' %(baseName, endName)
+    if verbose:
+        print '-- DataRetrieval.getEOSPostSelectionFileName: function returns:'
+        print '--', fullName
     return fullName
 
 ######################################################
 # Now the functions to return TChain objects.
 ######################################################
-def getListOfFiles(dataTag, polarity, verbose=False):
+def getListOfFiles(dataTag, verbose=True):
     '''
     Get the full list of file names to add to the TChain.
     These will be formatted with the protocol and the correct
     full pathname.
     '''
     # First get the list of file names within the home directory.
-    inList = dataDict[dataTag][polarity]
+    inList = Configuration.configurationDict[dataTag]['inputFiles']
     
     # Now get the data directory and the protocol.
-    dataDir = getMasterDirectory()
-    protocol = getProtocol()
+    dataDir = getEOSPreSelectionDirectory(dataTag)
     
     # Now populate a list of full names to be passed to the ROOT classes.
     outList = []
+    if verbose: print '-- DataRetrieval.getListOfFiles adding file to list:'
     for endName in inList:
-        toAdd = '%s%s%s' %(protocol, dataDir, endName)
-        if verbose: print '-- DataRetrieval: Adding file to list:'+'\n--- ' + toAdd
+        toAdd = '%s%s%s' %(EOSProtocol, dataDir, endName)
+        if verbose: print '---- ' + toAdd
         outList.append(toAdd)
     return outList
 
-def getChainWithTupleName(dataTag, polarity, tupleName="B2DsMuNuTuple/DecayTree", verbose=True):
+def getChainWithTupleName(dataTag, tupleName="B2DsMuNuTuple/DecayTree", verbose=True):
     '''
-    Get a chain for the relevant datatype.
+    Get a TChain for the relevant datatype.
     '''
     # First get the tuple name and make the chain.
     tName = tupleName
     if verbose:
-        #print '*'*50
-        print '-- DataRetrieval: making chain with name:', tName
+        print '-- DataRetrieval.getChainWithTupleName making chain with name:'
+        print '----', tName
     c = TChain(tName)
     
     # Now get the list of files and add them.
-    fList = getListOfFiles(dataTag, polarity, verbose)
+    fList = getListOfFiles(dataTag, verbose)
     for fName in fList:
         c.Add(fName)
-    if verbose: print '-- DataRetrieval: Retrieved TChain with %i entries.\n' %c.GetEntries()    
+    if verbose: print '-- DataRetrieval.getChainWithTupleName retrieved TChain with %i entries.\n' %c.GetEntries()    
     return c
 
-def getProcessedChain(dataTag, polarity, tName="B2DsMuNuTuple/DecayTree", verbose=True):
+def getEOSDalitzFile(dataTag, verbose=True):
+    '''
+    Get the EOS Dalitz File from EOS, formatted with the remote root
+    eos protocol.
+    '''
+    fName = getEOSDalitzFileName(dataTag, verbose=True)
+    return EOSProtocol + fName
+    
+def getProcessedChain(dataTag, tName="B2DsMuNuTuple/DecayTree", verbose=True):
     '''
     Get the fully processed ntuples from my mass storage.
     Takes the following required positional command line arguments:
         dataTag  - what kind of data do you want?
-                 - valid keys: "data", "MC_Signal", "MC_InclDs",
-                               "MC_LbLcDs", MC_BdDstDs", MC_BsDsDs", MC_BuD0Ds"
-                 - where data is real data.
-        polarity - one of either MagUp or MagDown.
     And takes the following optional arguments:
         tName - the specified tuple within the file to get. This defaults
               - to "B2DsMuNuTuple/DecayTree". 
@@ -279,27 +241,25 @@ def getProcessedChain(dataTag, polarity, tName="B2DsMuNuTuple/DecayTree", verbos
                   - B2DsMuNuTupleFake/DecayTree
                   - B2DsMuNuSSTuple/DecayTree
                   - B2DsMuNuSSTupleFake/DecayTree
-        verbose - taken as a fourth argument can be true or false. Defaults to true to actually
-                - show you what you are getting.
     '''
-    theDir = finalDirDict[getHostKey()]
+    # Get the name without protocol then add it.
+    nameNoProtocol = getEOSPostSelectionFileName(dataTag, verbose=True)
+    # If the default tuple isn't in the configurationDict for that key,
+    # use the fake muon as default instead.
+    if 'B2DsMuNuTuple/DecayTree' not in Configuration.configurationDict[dataTag]['tNames']:
+        tName = 'B2DsMuNuTupleFake/DecayTree'
     if verbose: print tName
-    if tName not in dataDict[dataTag]['tNames']:
-        sys.exit('DataRetrieval ERROR: tuple name not recognised.')
+    if tName not in Configuration.configurationDict[dataTag]['tNames']:
+        sys.exit('DataRetrieval.getProcessedChain ERROR: tuple name not recognised.')
 
     c = TChain(tName)
-    fName ='%s%s%s' %(getProtocol(),
-                      finalDirDict[getHostKey()],
-                      getOutputFileName(dataTag, polarity))
+    fName = '%s%s' %(EOSProtocol, nameNoProtocol)
     if verbose:
-        print '-- DataRetrieval: Adding file to chain:'
-        print '--- %s' %fName
+        print '-- DataRetrieval.getProcessedChain: Adding file to chain:'
+        print '---- %s' %fName
     c.Add(fName)
-    if verbose: print 'Retrieved TChain with %i entries.\n' %c.GetEntries()
+    if verbose: print '-- Retrieved TChain with %i entries.\n' %c.GetEntries()
     return c
 
 if __name__ == '__main__':
-    getListOfFiles('Data', 'MagDown')
-    getChainWithTupleName('Data', 'MagDown')
-    getTemporaryFileName('Data', 'MagDown')
-    getFinalFileName('MC_Signal', 'MagDown')
+    pass
