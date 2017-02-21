@@ -4,6 +4,12 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
+! 2017-02-21 - Vincenzo Battista
+ - Introduce "BootstrapMC.py", "Batch/Batch_runBootstrapMC.sh" and
+   "Bash/runBootstrapMC.sh" to create toy samples by bootstrapping the
+   MC. The required input is a dataset created by the prepareWorkspace.py
+   script. 
+
 ! 2017-02-14 - Ulrich Eitschberger
  - DecayRateCoeff_Bd in HFAG convention + corresponding DsK scripts
 
