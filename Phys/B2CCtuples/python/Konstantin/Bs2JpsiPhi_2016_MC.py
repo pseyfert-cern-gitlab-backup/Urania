@@ -218,6 +218,56 @@ tuple_B2jpsiphi.B.ConstBJpsiNoPV.UpdateDaughters = True
 tuple_B2jpsiphi.B.ConstBJpsiNoPV.constrainToOriginVertex = False
 tuple_B2jpsiphi.B.ConstBJpsiNoPV.daughtersToConstrain = ["B_s0", "J/psi(1S)"]
 
+### Backgrounds
+# B -> KplusPiMuMu
+tuple_B2jpsiphi.B.ToolList +=  ["TupleToolDecayTreeFitter/B2KpPiJpsi"]
+B2KpPiJpsi = TupleToolDecayTreeFitter("B2KpPiJpsi",
+                                      Verbose=True,
+                                      Substitutions = {
+                                          'Beauty -> Meson (phi(1020) -> ^K+ X-)': 'pi+'
+                                      },
+                                      daughtersToConstrain = [ "J/psi(1S)" ],
+                                      constrainToOriginVertex = True
+                                      )
+tuple_B2jpsiphi.B.addTool(B2KpPiJpsi)
+
+# B -> KminusPiMuMu
+tuple_B2jpsiphi.B.ToolList +=  ["TupleToolDecayTreeFitter/B2KmPiJpsi"]
+B2KmPiJpsi = TupleToolDecayTreeFitter("B2KmPiJpsi",
+                                      Verbose=True,
+                                      Substitutions = {
+                                          'Beauty -> Meson (phi(1020) -> X+ ^K-)': 'pi-'
+                                      },
+                                      daughtersToConstrain = [ "J/psi(1S)" ],
+                                      constrainToOriginVertex = True
+                                      )
+tuple_B2jpsiphi.B.addTool(B2KmPiJpsi)
+
+# Lb -> pKMuMu (Kplus)
+tuple_B2jpsiphi.B.ToolList +=  ["TupleToolDecayTreeFitter/pKMuMuKplus"]
+pKMuMuKplus = TupleToolDecayTreeFitter("pKMuMuKplus" ,
+                                       Verbose=True ,
+                                       Substitutions = {
+                                           'Beauty -> Meson (phi(1020) -> ^K+ X-)': 'p+'
+                                       },
+                                       daughtersToConstrain = [ "J/psi(1S)" ],
+                                       constrainToOriginVertex = True
+                                       )
+tuple_B2jpsiphi.B.addTool(pKMuMuKplus)
+
+# Lb -> pKMuMu (Kminus)
+tuple_B2jpsiphi.B.ToolList +=  ["TupleToolDecayTreeFitter/pKMuMuKminus"]
+pKMuMuKminus = TupleToolDecayTreeFitter("pKMuMuKminus",
+                                        Verbose = True,
+                                        Substitutions = {
+                                            'Beauty -> Meson (phi(1020) -> X+ ^K-)': 'p~-'
+                                        },
+                                        daughtersToConstrain = [ "J/psi(1S)" ],
+                                        constrainToOriginVertex = True
+                                        )
+tuple_B2jpsiphi.B.addTool(pKMuMuKminus)
+
+### TISTOS
 tuple_B2jpsiphi.B.ToolList += [ "TupleToolTISTOS" ]
 tuple_B2jpsiphi.B.addTool(TupleToolTISTOS, name = "TupleToolTISTOS" )
 tuple_B2jpsiphi.B.TupleToolTISTOS.Verbose = True
@@ -268,6 +318,10 @@ MCTruth.ToolList = [
 
 tuple_B2jpsiphi.addTool(MCTruth)
 
+## Force update of CondDB to use proper momentum scaling
+from Configurables import CondDB
+CondDB(LatestGlobalTagByDataType = '2016')
+
 ## primary vertex selection
 from Configurables import CheckPV
 checkpv = CheckPV()
@@ -281,19 +335,18 @@ smear = TrackSmearState('TrackSmearState')
 # from GaudiConf import IOHelper
 # # Use the local input data
 # IOHelper().inputFiles([
-#     './00052191_00006939_1.dimuon.dst'
+#     './00058167_00000095_3.AllStreams.dst'
 # ], clear=True)
-
 
 ########################################################################
 from Configurables import DaVinci
-DaVinci().UserAlgorithms = [checkpv, smear, rd_SEQ.sequence()]       # two trees, for reco and gene information
-DaVinci().DataType = "2016"
-DaVinci().EvtMax = -1                      # Number of events
-DaVinci().InputType = 'DST'
-DaVinci().PrintFreq = 1000
-DaVinci().SkipEvents = 0                       # Events to skip
-DaVinci().HistogramFile = "DVHistos.root"      # Histogram file
-DaVinci().TupleFile = "BsJpsiPhi.root"             # Ntuple
-DaVinci().Simulation   = True
-DaVinci().Lumi = False
+DaVinci().UserAlgorithms = [checkpv, smear, rd_SEQ.sequence()]  # two trees, for reco and gene information
+DaVinci().DataType       = "2016"
+DaVinci().EvtMax         = -1                                   # Number of events
+DaVinci().InputType      = 'DST'
+DaVinci().PrintFreq      = 1000
+DaVinci().SkipEvents     = 0                                    # Events to skip
+DaVinci().HistogramFile  = "DVHistos.root"                      # Histogram file
+DaVinci().TupleFile      = "BsJpsiPhi.root"                     # Ntuple
+DaVinci().Simulation     = True
+DaVinci().Lumi           = False
