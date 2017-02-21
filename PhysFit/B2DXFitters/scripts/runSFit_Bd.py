@@ -207,7 +207,7 @@ def getCPparameters(ws, myconfigfile, UniformBlinding, HFAG):
 #------------------------------------------------------------------------------
 def runSFit(debug, wsname,
             pereventmistag, tagfromdata, noftcalib, truetag, truetime, pereventterr,
-            toys, pathName, fileNamePull, treeName, outputdir,
+            toys, pathName, fileNamePull, treeName, outputdir, inputdata,
             MC, workMC,
             configName, scan,
             binned, plotsWeights, noweight,
@@ -371,7 +371,11 @@ def runSFit(debug, wsname,
 
         from B2DXFitters.mdfitutils import getObservables  as getObservables
         observ = getObservables(MDSettings, workspaceMC, False, debug)
-        data_temp = GeneralUtils.GetDataSet(workspaceMC, observ, sam, datasetTS, sampleTS, modeTS, yearTS, hypoTS, merge, debug )
+        if inputdata == "":
+            data_temp = GeneralUtils.GetDataSet(workspaceMC, observ, sam, datasetTS, sampleTS, modeTS, yearTS, hypoTS, merge, debug )
+        else:
+            #Input name for RooDataset overwrites everything
+            data_temp = workspaceMC.data(inputdata)
         if preselection != "":
             print "Applying following preselection to reduce dataset:"
             print preselection
@@ -1028,7 +1032,7 @@ def runSFit(debug, wsname,
         PlotResultMatrix(myfitresult, "covariance", outputdir+"sFit_CovarianceMatrix.pdf")
         PlotResultMatrix(myfitresult, "correlation", outputdir+"sFit_CorrelationMatrix.pdf")
 
-        if toys:
+        if toys or MC:
 
             if myfitresult.status() != 0:
                 print "ERROR: fit quality is bad. Not saving pull tree."
@@ -1171,6 +1175,11 @@ parser.add_option( '--treeName',
                    default = 'merged',
                    help = 'name of the workspace'
                    )
+parser.add_option( '--inputdata',
+                   dest = 'inputdata',
+                   default = "",
+                   help = 'name of the input MC RooDataset. Leave empty to build name from sample, mode, year etc...'
+                   )
 parser.add_option( '--scan',
                    dest = 'scan',
                    default = False,
@@ -1203,12 +1212,12 @@ parser.add_option( '-p', '--pol','--polarity',
 parser.add_option( '-m', '--mode',
                    dest = 'mode',
                    metavar = 'MODE',
-                   default = 'kkpi',
+                   default = 'kpipi',
                    help = 'Mode: choose all, kkpi, kpipi, pipipi, nonres, kstk, phipi, 3modeskkpi'
                    )
 parser.add_option( '--merge',
                    dest = 'merge',
-                   default = "",
+                   default = "both",
                    help = 'for merging magnet polarities use: --merge pol, for merging years of data taking use: --merge year, for merging both use: --merge both'
                    )
 parser.add_option( '--binned',
@@ -1242,11 +1251,11 @@ parser.add_option( '--seed',
                    )
 parser.add_option( '--year',
                    dest = 'year',
-                   default = "",
+                   default = "runI",
                    help = 'year of data taking can be: 2011, 2012, run1')
 parser.add_option( '--hypo',
                    dest = 'hypo',
-                   default = "",
+                   default = "Bd2DPi",
                    help = 'bachelor mass hypothesys (leave empty if not used)')
 parser.add_option( '--outputdir',
                    dest = 'outputdir',
@@ -1276,9 +1285,9 @@ parser.add_option( '--HFAG',
 if __name__ == '__main__' :
     (options, args) = parser.parse_args()
 
-    if len(args) > 0 :
-        parser.print_help()
-        exit(-1)
+    #if len(args) > 0 :
+    #    parser.print_help()
+    #    exit(-1)
 
     print "=========================================================="
     print "FITTER IS RUNNING WITH THE FOLLOWING CONFIGURATION OPTIONS"
@@ -1315,6 +1324,7 @@ if __name__ == '__main__' :
              options.fileNamePull,
              options.treeName,
              options.outputdir,
+             options.inputdata,
              options.MC,
              options.workMC,
              configName,

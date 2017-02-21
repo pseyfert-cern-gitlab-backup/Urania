@@ -40,7 +40,7 @@ export output="/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/MCBootstrap/${nic
 #Pathname to dump outputfiles (eos recommendend)
 export eosoutput="/eos/lhcb/wg/b2oc/TD_DPi_3fb/MCBootstrap/${nickname}/Generator/"
 #Number of candidates to store in the tuple
-export maxcand="543896"
+export maxcand="800000"
 #Path where scripts are located
 export bashscriptpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/scripts/Bash/"
 export pyscriptpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/scripts/"

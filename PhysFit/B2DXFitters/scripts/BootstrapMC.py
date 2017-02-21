@@ -250,7 +250,7 @@ def BootstrapMC(configName,
 
     OutputData = WS(ws, RooDataSet(dataName,
                                    InputData.GetTitle(),
-                                   observ) )
+                                   InputData.get()) )
 
     indexGen = TRandom3(int(seed))
 
@@ -293,7 +293,7 @@ def BootstrapMC(configName,
     print "========================================="
     print ""
     
-    getattr(OutputWorkspace, 'import')(observ)
+    getattr(OutputWorkspace, 'import')(OutputData.get())
     getattr(OutputWorkspace, 'import')(OutputData)
     OutputWorkspace.Print("v")
     OutputWorkspace.writeToFile(outputFile)

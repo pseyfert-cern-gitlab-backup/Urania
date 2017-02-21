@@ -129,17 +129,19 @@ plotModel =  True
 
 #------------------------------------------------------------------------------
 def plotDataSet(dataset, frame, bin) :
-    dataset.plotOn(frame,RooFit.Binning(bin),RooFit.DataError(RooAbsData.SumW2),
+    dataset.plotOn(frame,RooFit.Binning(bin),
+                   RooFit.DataError(RooAbsData.SumW2),
                    RooFit.Name("dataSetCut"))
 
 #------------------------------------------------------------------------------
-def plotFitModel(model, frame, wksp, myconfigfile, log, debug) :
+def plotFitModel(model, frame, wksp, myconfigfile, log, sample, debug) :
     if debug :
         model.Print('t')
         frame.Print('v')
 
     fr = model.plotOn(frame,
-                      RooFit.LineColor(kBlue+3),RooFit.Name("FullPdf"))
+                      RooFit.LineColor(kBlue+3),
+                      RooFit.Name("FullPdf"))
 
     if "Acceptance" in myconfigfile.keys():
         var = []
@@ -163,7 +165,7 @@ def plotFitModel(model, frame, wksp, myconfigfile, log, debug) :
         print "[INFO] Number of knots: "+str(numKnots)
         for i in range(0,numKnots+1):
             if i!=6:
-                varName = "Acceptance_SplineAccCoeff%d"%(int(i))
+                varName = "acc"+sample+"_SplineAccCoeff%d"%(int(i))
                 var.append(wksp.obj(varName))
                 print "[INFO] Load %s with value %0.3lf"%(var[i].GetName(),var[i].getValV())
             else:
@@ -172,7 +174,7 @@ def plotFitModel(model, frame, wksp, myconfigfile, log, debug) :
                             
             tacc_list.add(var[i])
 
-        varName = "Acceptance_SplineAccCoeff%d"%(int(numKnots+1))
+        varName = "acc"+sample+"_SplineAccCoeff%d"%(int(numKnots+1))
         var.append(wksp.obj(varName))
         print "[INFO] Load %s with value %0.3lf"%(var[numKnots+1].GetName(),var[numKnots+1].getValV())
         tacc_list.add(var[numKnots+1])
@@ -195,7 +197,7 @@ def plotFitModel(model, frame, wksp, myconfigfile, log, debug) :
         rel = 200
     else:
         #rel = 1000
-        rel = 2000
+        rel = 200
         
     fr = spl.plotOn(frame, RooFit.LineColor(kRed),  RooFit.Normalization(rel, RooAbsReal.Relative),RooFit.Name("sPline"))
     fr = model.plotOn(frame,
@@ -304,6 +306,13 @@ parser.add_option( '--plotLabel',
                    help = 'Plot label'
                    )
 
+parser.add_option( '--sample',
+                   dest = 'sample',
+                   metavar = 'SAMPLE',
+                   default = '2011OS',
+                   help = 'category to plot'
+                   )
+
 parser.add_option( '--configName',
                     dest = 'configName',
                     default = 'Bs2DsPiConfigForNominalDMSFit')
@@ -396,6 +405,7 @@ if __name__ == '__main__' :
     leg = options.legend
     v = options.var
     varTS = TString(v)
+    sample = options.sample
 
     config = options.configName
     last = config.rfind("/")
@@ -447,7 +457,8 @@ if __name__ == '__main__' :
     modelPDF = w.obj(options.pdfToPlot) 
     if modelPDF:
         print modelPDF.GetName()
-    dataset  = w.data(options.dataSetToPlot) 
+    dataset_temp  = w.data(options.dataSetToPlot)
+    dataset = dataset_temp.reduce( "sample==sample::"+sample ) 
     if dataset:
         print dataset.GetName()
 
@@ -456,30 +467,39 @@ if __name__ == '__main__' :
         exit(1)
 
     
-    canvas = TCanvas("canvas", "canvas", 1200, 1000)
-    canvas.cd()
+    canvas = TCanvas("canvas", "canvas", 2000, 1200)
+    pad1 = canvas.GetPad(0)
+    pad1.SetPad(.03, .03, 1.0, 1.0)
+    pad1.cd()
+    pad1.SetBorderMode(0)
+    pad1.SetBorderSize(-1)
+    pad1.SetFillStyle(0)
+    pad1.SetTickx(0);
+    pad1.SetBottomMargin(0.30)
+    pad1.SetLeftMargin(0.17)
+    pad1.SetTopMargin(0.05)
+    pad1.SetRightMargin(0.05)
+    pad1.Draw()
+    pad1.cd()
 
     time = w.var(varTS.Data())
     frame_t = time.frame()
     frame_t.SetTitle('')
-    frame_p = time.frame(RooFit.Title("pull_frame"))
  
-    frame_t.GetXaxis().SetLabelSize( 0.06 )
-    frame_t.GetYaxis().SetLabelSize( 0.06 )
+    frame_t.GetXaxis().SetLabelSize( 0.055 )
+    frame_t.GetYaxis().SetLabelSize( 0.048 )
     frame_t.GetXaxis().SetLabelFont( 132 )
     frame_t.GetYaxis().SetLabelFont( 132 )
-    frame_t.GetXaxis().SetLabelOffset( 0.006 )
-    frame_t.GetYaxis().SetLabelOffset( 0.006 )
-    frame_t.GetXaxis().SetLabelColor( kWhite)
+    frame_t.GetXaxis().SetLabelOffset( 0.009 )
+    frame_t.GetYaxis().SetLabelOffset( 0.007 )
     
     frame_t.GetXaxis().SetTitleSize( 0.06 )
     frame_t.GetYaxis().SetTitleSize( 0.06 )
     frame_t.GetYaxis().SetNdivisions(512)
     
-    frame_t.GetXaxis().SetTitleOffset( 1.00 )
-    frame_t.GetYaxis().SetTitleOffset( 0.85 )
+    frame_t.GetXaxis().SetTitleOffset( 1.0 )
+    frame_t.GetYaxis().SetTitleOffset( 1.9 )
     unit = "ps"
-    #frame_t.GetXaxis().SetTitle('#font[132]{#tau (B_{s} #rightarrow D_{s} #pi) [ps]}')
     frame_t.GetYaxis().SetTitle((TString.Format("#font[132]{Candidates / ( " +
                                                     "{0:0.2f}".format(time.getBinWidth(1))+" "+
                                                     unit+")}") ).Data())
@@ -495,14 +515,15 @@ if __name__ == '__main__' :
     print '##### modelPDF is'
     print modelPDF
     if plotModel :
-        plotFitModel(modelPDF, frame_t, w, myconfigfile, log, options.debug)
+        plotFitModel(modelPDF, frame_t, w, myconfigfile, log, sample, options.debug)
 
-    doPulls = plotData and plotModel
+    #doPulls = plotData and plotModel
 
     if log:
         gStyle.SetOptLogy(1)
         frame_t.GetYaxis().SetTitleOffset( 1.10 )
         frame_t.GetYaxis().SetRangeUser(1.5,frame_t.GetMaximum()*1.5)
+        pad1.SetLogy()
 
     #legend = TLegend( 0.57, 0.68, 0.80, 0.90 )
     legend = TLegend( 0.52, 0.70, 0.75, 0.90 )
@@ -531,159 +552,21 @@ if __name__ == '__main__' :
     #descTS = TString(getDescription(myconfigfile["Decay"]))
     decay = TString(myconfigfile["Decay"])
     descTS = TString(getDescription(myconfigfile["Decay"]))
+    frame_t.GetXaxis().SetTitle('#font[132]{Decay time #it{t} [ps]}')
     l1 = TLine()
     l1 = TLine()
     l1.SetLineColor(kBlue+3)
     l1.SetLineWidth(4)
-    legend.AddEntry(l1, descTS.Data(), "L")
+    legend.AddEntry(l1, "Fit", "L")
     l2 = TLine()
     l2.SetLineColor(kRed)
     l2.SetLineWidth(4)
-    legend.AddEntry(l2, "Acceptance", "L")
+    legend.AddEntry(l2, "Efficiency", "L")
     
-    #pad1 = TPad("upperPad", "upperPad", .050, .22, 1.0, 1.0)
-    pad1 = TPad("upperPad", "upperPad", .005, .05, 1.0, 1.0)
-    pad1.SetBorderMode(0)
-    pad1.SetBorderSize(-1)
-    pad1.SetFillStyle(0)
-    pad1.SetTickx(0);
-    pad1.SetBottomMargin(0.30)
-    pad1.SetLeftMargin(0.17)
-    pad1.SetTopMargin(0.05)
-    pad1.SetRightMargin(0.05)
-    pad1.Draw()
-    pad1.cd()
                
     frame_t.Draw()
     if leg:
         legend.Draw("same")
-    
-    pad1.Update()
-    
-    canvas.cd()
-    #pad2 = TPad("lowerPad", "lowerPad", .050, .005, 1.0, .3275)
-    canvas.cd()
-    pad2 = TPad("lowerPad", "lowerPad", .005, .005, 1.0, .37)
-    pad2.SetBorderMode(0)
-    pad2.SetBorderSize(-1)
-    pad2.SetFillStyle(0)
-    pad2.SetBottomMargin(0.35)
-    pad2.SetBottomMargin(0.40)
-    pad2.SetLeftMargin(0.17)
-    pad2.SetRightMargin(0.05)
-
-    pad2.SetTickx(0);
-    pad2.Draw()
-    pad2.SetLogy(0)
-    pad2.cd()
-    
-    gStyle.SetOptLogy(0)
-
-    
-
-    #frame_p = time.frame(RooFit.Title("pull_frame"))
-    frame_p.Print("v")
-    frame_p.SetTitle("")
-    frame_p.GetYaxis().SetTitle("")
-    frame_p.GetYaxis().SetTitleSize(0.09)
-    frame_p.GetYaxis().SetTitleOffset(0.26)
-    frame_p.GetYaxis().SetTitleFont(132)
-    frame_p.GetYaxis().SetNdivisions(106)
-    frame_p.GetYaxis().SetLabelSize(0.20)
-    frame_p.GetYaxis().SetLabelOffset(0.006)
-    frame_p.GetXaxis().SetTitleSize(0.20)
-    frame_p.GetXaxis().SetTitleFont(132)
-    frame_p.GetXaxis().SetTitleOffset(0.85)
-    frame_p.GetXaxis().SetNdivisions(5)
-    frame_p.GetYaxis().SetNdivisions(5)
-    frame_p.GetXaxis().SetLabelSize(0.20)
-    frame_p.GetXaxis().SetLabelFont( 132 )
-    frame_p.GetYaxis().SetLabelFont( 132 )
-    frame_p.GetYaxis().SetRangeUser(-5.0, 5.0)
-    frame_p.GetXaxis().SetTitle('#font[132]{#tau('+descTS.Data()+') [ps]}')
-
-    if doPulls:
-    
-        pullHist = frame_t.pullHist()
-        pullHist.SetName("pullHist")
-        pullHist.SetMaximum(3.5)
-        pullHist.SetMinimum(-3.5)
-        pullHist.setYAxisLimits(-5.0, 5.0)
-
-        frame_p.addPlotable(pullHist,"P")
-
-        axisX = pullHist.GetXaxis()
-        axisY = pullHist.GetYaxis()
-        
-        axisX.Set(100, timeDown, timeUp )
-        axisX.SetTitle('#font[132]{#tau('+descTS.Data()+') [ps]}')   
-        axisX.SetTitleSize(0.150)
-        axisX.SetTitleFont(132)
-        axisX.SetLabelSize(0.150)
-        axisX.SetLabelFont(132)
-        maxX = axisX.GetXmax()
-        minX = axisX.GetXmin()  
-        
-        max = axisY.GetXmax()
-        min = axisY.GetXmin()
-        axisY.SetLabelSize(0.150)
-        axisY.SetLabelFont(132)
-        axisY.SetNdivisions(5)        
-
-        max = 5.0
-        min = -5.0
-        axisY.SetRangeUser(min, max)
-        
-        range = max-min
-        zero = max/range
-        print "max: %s, min: %s, range: %s, zero:%s"%(max,min,range,zero)
-        print "maxX: %s, minX: %s"%(maxX,minX)
-        
-        graph = TGraph(2)
-        graph.SetMaximum(max)
-        graph.SetMinimum(min)
-        graph.SetName("graph1")
-        graph.SetTitle("")
-        graph.SetPoint(1,timeDown,0)
-        graph.SetPoint(2,timeUp,0)
-        
-        graph2 = TGraph(2)
-        graph2.SetMaximum(max)
-        graph2.SetMinimum(min)
-        graph2.SetName("graph2")
-        graph2.SetTitle("")
-        graph2.SetPoint(1,timeDown,-3)
-        graph2.SetPoint(2,timeUp,-3)
-        graph2.SetLineColor(kRed)
-        
-        graph3 = TGraph(2)
-        graph3.SetMaximum(max)
-        graph3.SetMinimum(min)
-        graph3.SetName("graph3")
-        graph3.SetTitle("")
-        graph3.SetPoint(1,timeDown,3)
-        graph3.SetPoint(2,timeUp,3)
-        graph3.SetLineColor(kRed)
-        
-        pullHist.SetTitle("");
-        pullHist.Draw("AP")
-        pullHist.GetYaxis().SetRangeUser(min, max)
-        graph.Draw("L SAME")
-        graph2.Draw("L SAME")
-        graph3.Draw("L SAME")
-
-    frame_p.Draw()
-
-    pad2.Update()
-    canvas.Update()
-
-
-    if doPulls:
-        chi2 = frame_t.chiSquare() 
-        chi22 = frame_t.chiSquare(1)
-        
-        print "chi2: %f"%(chi2)
-        print "chi22: %f"%(chi22)
     
     #sufixTS = TString(sfx)
     if sufixTS != "":
@@ -694,11 +577,11 @@ if __name__ == '__main__' :
     if log:
         head = head+TString("log_")
     
-    nameCanPdf = outTS+head+decay+sufixTS+TString(".pdf")
-    nameCanPng = outTS+head+decay+sufixTS+TString(".png")
-    nameCanRoot = outTS+head+decay+sufixTS+TString(".root")
-    nameCanC = outTS+head+decay+sufixTS+TString(".C")
-    nameCanEps = outTS+head+decay+sufixTS+TString(".eps")
+    nameCanPdf = outTS+head+decay+sufixTS+TString(sample)+TString(".pdf")
+    nameCanPng = outTS+head+decay+sufixTS+TString(sample)+TString(".png")
+    nameCanRoot = outTS+head+decay+sufixTS+TString(sample)+TString(".root")
+    nameCanC = outTS+head+decay+sufixTS+TString(sample)+TString(".C")
+    nameCanEps = outTS+head+decay+sufixTS+TString(sample)+TString(".eps")
 
 
     canvas.Print(nameCanPdf.Data())
@@ -707,5 +590,130 @@ if __name__ == '__main__' :
     canvas.Print(nameCanC.Data())
     canvas.Print(nameCanEps.Data())
 
+    #Do also plots by splitting in final states
+    qf = w.obj("BacCharge")
+    time = w.var("BeautyTime")
+    time.setBins(75)
+    time.SetTitle("t [ps]")
+
+    splitCat = { "ChargeTagDecSplits" : { "titles" : ["d=1",
+                                                      "d=-1",
+                                                      "D^{-}#pi^{+}",
+                                                      "D^{+}#pi^{-}",
+                                                      "D^{-}#pi^{+}, d=1",
+                                                      "D^{+}#pi^{-}, d=1",
+                                                      "D^{-}#pi^{+}, d=-1",
+                                                      "D^{+}#pi^{-}, d=-1"],
+                                          "cuts" : ["TagDecOS==1",
+                                                    "TagDecOS==-1",
+                                                    "BacCharge==1",
+                                                    "BacCharge==-1",
+                                                    "BacCharge==+1 && (TagDecOS==1 || TagDecSS==1)",
+                                                    "BacCharge==-1 && (TagDecOS==1 || TagDecSS==1)",
+                                                    "BacCharge==+1 && (TagDecOS==-1 || TagDecSS==-1)",
+                                                    "BacCharge==-1 && (TagDecOS==-1 || TagDecSS==-1)"]
+                                          }
+                 }
+    
+                 
+    for tag in splitCat.iterkeys():
+
+        frameUList = []
+        for title in range(0, splitCat[tag]["titles"].__len__()):
+            frameUList.append( time.frame(ROOT.RooFit.Title(splitCat[tag]["titles"][title] )) )
+            frameUList[title].SetTitle(splitCat[tag]["titles"][title])
+            frameUList[title].GetXaxis().SetLabelSize( 0.06 )
+            frameUList[title].GetYaxis().SetLabelSize( 0.08 )
+            frameUList[title].GetXaxis().SetLabelFont( 132 )
+            frameUList[title].GetYaxis().SetLabelFont( 132 )
+            frameUList[title].GetXaxis().SetLabelOffset( 0.006 )
+            frameUList[title].GetYaxis().SetLabelOffset( 0.004 )
+            frameUList[title].GetXaxis().SetLabelColor( kWhite)
+            frameUList[title].GetXaxis().SetTitleColor( kWhite)
+            frameUList[title].GetXaxis().SetTitleSize( 0.06 )
+            frameUList[title].GetYaxis().SetTitleSize( 0.08 )
+            frameUList[title].GetYaxis().SetNdivisions(512)
+            frameUList[title].GetXaxis().SetTitleOffset( 1.1 )
+            frameUList[title].GetYaxis().SetTitleOffset( 1.1 )
+
+        frameBList = []
+        for title in range(0, splitCat[tag]["titles"].__len__()):
+            frameBList.append( time.frame() )
+            frameBList[title].SetTitle("")
+            frameBList[title].GetYaxis().SetTitle("")
+            frameBList[title].GetYaxis().SetTitleSize(0.09)
+            frameBList[title].GetYaxis().SetTitleOffset(0.26)
+            frameBList[title].GetYaxis().SetTitleFont(132)
+            frameBList[title].GetYaxis().SetNdivisions(106)
+            frameBList[title].GetYaxis().SetLabelSize(0.20)
+            frameBList[title].GetYaxis().SetLabelOffset(0.006)
+            frameBList[title].GetXaxis().SetTitleSize(0.25)
+            frameBList[title].GetXaxis().SetTitleFont(132)
+            frameBList[title].GetXaxis().SetTitleOffset(0.60)
+            frameBList[title].GetXaxis().SetNdivisions(5)
+            frameBList[title].GetYaxis().SetNdivisions(5)
+            frameBList[title].GetXaxis().SetLabelSize(0.25)
+            frameBList[title].GetXaxis().SetLabelFont( 132 )
+            frameBList[title].GetYaxis().SetLabelFont( 132 )
+            frameBList[title].GetYaxis().SetRangeUser(-5.0, 5.0)
+            frameBList[title].GetXaxis().SetTitle('#font[132]{#tau(B_{d}#rightarrow D#pi) [ps]}')
+            
+        dataList = []
+        for cut in range(0, splitCat[tag]["cuts"].__len__()):
+            dataList.append( dataset.reduce(splitCat[tag]["cuts"][cut]) )
+
+        frm=0
+        for data in dataList:
+            data.plotOn(frameUList[frm], ROOT.RooFit.MarkerSize(0.1))
+            frm = frm+1
+
+        frm=0
+        for data in dataList:
+            modelPDF.plotOn(frameUList[frm], ROOT.RooFit.ProjWData(data), ROOT.RooFit.LineWidth(1))
+            frm = frm+1
+
+        canvSplit = TCanvas("canv"+tag)
+        canvSplit.Divide(2,4)
+        padUList = []
+        padBList = []
+        pullHistList = []
+        for pad in range(1,9):
+            canvSplit.cd(pad)
+
+            padUList.append( TPad("upperPad", "upperPad", .005, .15, 1.0, 1.0) )
+            padUList[pad-1].SetBorderMode(0)
+            padUList[pad-1].SetBorderSize(-1)
+            padUList[pad-1].SetFillStyle(0)
+            padUList[pad-1].SetTickx(0);
+            padUList[pad-1].SetBottomMargin(0.34)
+            padUList[pad-1].SetLeftMargin(0.07)
+            padUList[pad-1].SetTopMargin(0.05)
+            padUList[pad-1].SetRightMargin(0.05)
+            padUList[pad-1].Draw()
+            padUList[pad-1].cd()
+            frameUList[pad-1].Draw()
+
+            pullHistList.append( frameUList[pad-1].pullHist() )
+            pullHistList[pad-1].SetMaximum(3.5)
+            pullHistList[pad-1].SetMinimum(-3.5)
+            pullHistList[pad-1].setYAxisLimits(-5.0, 5.0)
+            pullHistList[pad-1].SetMarkerSize(0.05)
+            frameBList[pad-1].addPlotable(pullHistList[pad-1],"P")
+            
+            canvSplit.cd(pad)
+            
+            padBList.append( TPad("lowerPad", "lowerPad", .005, .07, 1.0, .45) )
+            padBList[pad-1].SetBorderMode(0)
+            padBList[pad-1].SetFillStyle(0)
+            padBList[pad-1].SetBottomMargin(0.50)
+            padBList[pad-1].SetLeftMargin(0.07)
+            padBList[pad-1].SetRightMargin(0.05)
+            padBList[pad-1].SetTickx(0)
+            padBList[pad-1].SetLogy(0)
+            padBList[pad-1].Draw()
+            padBList[pad-1].cd()
+            frameBList[pad-1].Draw()
+            
+        canvSplit.SaveAs(outTS.Data()+"chargeSplit_"+tag+"_"+sample+".pdf")
 
 #------------------------------------------------------------------------------
