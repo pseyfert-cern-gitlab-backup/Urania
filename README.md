@@ -23,7 +23,7 @@ For issues, questions and problems; please send an e-mail to:
 ## About 
 
 Urania (Ancient Greek: Οὐρανία, Ourania; meaning "heavenly" or "of heaven"), also spelt Ourania, was, in Greek mythology, the muse of astronomy and a daughter of Zeus by Mnemosyne and also a great granddaughter of Uranus ([+info](https://en.wikipedia.org/wiki/Urania)). 
-<b>How to pronounce correctly Urania?</b> Click [here](https://www.youtube.com/watch?v=H7iD_22t_So).
+<b>How to correctly pronounce Urania?</b> Click [here](https://www.youtube.com/watch?v=H7iD_22t_So).
 
 
 
