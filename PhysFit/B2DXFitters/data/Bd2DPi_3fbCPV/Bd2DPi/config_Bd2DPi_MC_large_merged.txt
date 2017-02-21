@@ -1,0 +1,6 @@
+#Signal Bd2DPi KPiPi RunI Bd2DPiHypo
+root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/MC/
+MCfiltered_Bd2DPi_Bd2DPiHypo_both_RunI_S21_afterSelection_PID-corrected_new_OSandSSTagsCombined.root
+Bd2Dpi
+###
+
