@@ -4,6 +4,10 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
+! 2017-02-22 - Agnieszka Dziurda
+ - Fixing MDFit after cmt -> cmake, svn -> git transition. MDFit should work well now. 
+ - adding new configuration files for fs/fd measurement 
+
 ! 2017-02-14 - Ulrich Eitschberger
  - DecayRateCoeff_Bd in HFAG convention + corresponding DsK scripts
 
