@@ -103,7 +103,8 @@ __doc__ = """ real docstring """
 # -----------------------------------------------------------------------------
 # Load necessary libraries
 # -----------------------------------------------------------------------------
-from B2DXFitters import *
+#from B2DXFitters import *
+#from B2DXFitters import GeneralUtils 
 from B2DXFitters.WS import WS as WS
 from ROOT import * 
 from ROOT import RooFit
@@ -223,6 +224,7 @@ def runMDFitter( debug, sample, mode, sweight,
     modeTS = TString(mode)
     sampleTS = TString(sample)
     yearTS = TString(year)
+    
     datasetTS = TString("dataSet")+decayTS+t 
     if merge == "pol" or merge == "both":
         sampleTS = TString("both") 

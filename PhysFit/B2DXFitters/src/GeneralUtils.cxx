@@ -2696,6 +2696,12 @@ namespace GeneralUtils {
     return list; 
   }
 
+  std::vector < std::vector <TString> >  GetList2D(std::vector <TString> list)
+  {
+    std::vector< std::vector < TString > > matrix;
+    //matrix.push_back(list); 
+    return matrix; 
+  }
   
   std::vector < std::vector <TString> > GetList2D(TString name, TString name2)
   {
@@ -2716,6 +2722,14 @@ namespace GeneralUtils {
     matrix.push_back(myvector);
     return matrix; 
     
+  }
+
+  void printList(std::vector <TString> list)
+  {
+    for (unsigned int j = 0; j < list.size(); j ++ )
+      {
+	std::cout<<"element: "<<j<<" : "<<list[j]<<std::endl;
+      }
   }
 
   void printList2D(std::vector < std::vector <TString> > matrix)

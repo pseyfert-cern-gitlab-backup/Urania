@@ -212,7 +212,22 @@ namespace Bs2Dsh2011TDAnaModels {
 			      std::vector <TString> pidk,
 			      Int_t dim,
 			      bool debug);
-  
+
+  RooAbsPdf* build_SigOrCombo(RooAbsReal& mass,
+                              RooAbsReal& massDs,
+                              RooAbsReal& pidVar,
+                              RooWorkspace* work,
+                              RooWorkspace* workInt,
+                              TString samplemode,
+                              TString typemode,
+                              TString merge,
+                              TString decay,
+                              std::vector <TString> types,
+                              std::vector <TString> pdfN, 
+			      std::vector <TString> pdfK,
+                              std::vector <TString> pidk,
+                              Int_t dim,
+                              bool debug);
 
   RooAbsPdf* mergePdf(RooAbsPdf* pdf1, RooAbsPdf* pdf2, TString merge, TString lum,RooWorkspace* workInt, bool debug = false);
   RooRealVar* tryVar(TString name, RooWorkspace* workInt, bool debug);
