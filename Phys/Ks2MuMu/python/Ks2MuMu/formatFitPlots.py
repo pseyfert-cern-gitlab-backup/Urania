@@ -43,13 +43,13 @@ def formatPlots( ifile, cat, bins, folder ):
             l.Draw()
 
         c.cd(1)
-        tp = TPaveText( 0.6, 0.8, 0.9, 0.9, 'NDC' )
+        #tp = TPaveText( 0.6, 0.8, 0.9, 0.9, 'NDC' )
         #tp.AddText( c.GetName() )
-        tp.AddText( 'LHCb Preliminary' )
+        #tp.AddText( 'LHCb Preliminary' )
         
-        tp.SetFillColor( kWhite )
-        tp.SetBorderSize( 0 )
-        tp.Draw()
+        #tp.SetFillColor( kWhite )
+        #tp.SetBorderSize( 0 )
+        #tp.Draw()
         
         c.Draw()
         c.cd(1).SetLogy()

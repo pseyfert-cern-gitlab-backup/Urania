@@ -220,7 +220,7 @@ def configureTuple():
         }
 
     # Extra trigger definitions for MB check
-    if 'MB' in MODE:
+    if 'MB' in MODE and not SIMULATION:
         KsmumuTuple.addTupleTool('LoKi::Hybrid::EvtTupleTool/HltVariables')
         KsmumuTuple.HltVariables.HLT_Variables = {
             "Hlt1PhysAlt1": "switch(HLT_PASS_RE('Hlt1(?!ODIN)(?!L0)(?!Lumi)(?!Tell1)(?!MB)(?!NZS)(?!Velo)(?!BeamGas)(?!Incident)(?!CharmCalibration).*Decision'), 1, 0)",

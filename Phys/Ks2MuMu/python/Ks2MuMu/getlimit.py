@@ -9,7 +9,7 @@ import math
 
 # Minimum and maximum values for the CL and the BR
 MINBR   = 0#0
-MAXBR   = 10#4
+MAXBR   = 3#10
 MINPROB = 0.8
 MAXPROB = 1.#1.05
 
@@ -125,7 +125,59 @@ def addPoint( graph, x, y, at_start = False ):
     else:
         graph.SetPoint( graph.GetN(), x, y )
 
-def limitMCMC( workspace, poi, nuis_pars, results ):
+def buildMC( workspace, poi, nuis_pars, constraints ):
+    '''
+    Build the model configuration
+    '''
+    constraints = RooArgList(constraints)
+    prior = RooProdPdf('Prior', 'Prior', constraints)
+    mc = rst.ModelConfig(workspace)
+    mc.SetName('ModelConfiguration')
+    mc.SetPdf(workspace.pdf('MainModel'))
+    mc.SetObservables(poi)
+    mc.SetParametersOfInterest(poi)
+    mc.SetNuisanceParameters(nuis_pars)
+    mc.SetPriorPdf(prior)
+    return mc
+
+def limitBayesCalc( data, workspace, poi, nuis_par, constraints ):
+    '''
+    Get the limit using the bayesian calculator of ROOT
+
+    It seems there is a limit for the function dimension. It has to be between 2 and 15:
+    
+    https://root.cern.ch/phpBB3/viewtopic.php?t=17344
+    
+    So it does not work for more than 15 nuisance parameters
+    '''
+    mc = buildMC(workspace, poi, nuis_par, constraints)
+    bc = rst.BayesianCalculator(data, mc)
+    for cl in (95, 90):
+        bc.SetConfidenceLevel(float(cl)/100)
+        interval = bc.GetInterval()
+        low, up = interval.LowerLimit(), interval.UpperLimit()
+        print '---', cl, '% CL limit: [', low, up, ']'
+
+def limitProfileCalc( data, workspace, poi, nuis_par, constraints ):
+    '''
+    Use the Root way to calculate the limit from the CL
+    '''
+    par = poi.find('BR')
+    mc  = buildMC(workspace, poi, nuis_par, constraints)
+    plc = rst.ProfileLikelihoodCalculator(data, mc)
+    plc.SetTestSize(0.05)
+    for cl in (95, 90):
+        plc.SetConfidenceLevel(float(cl)/100)
+        interval = plc.GetInterval()
+        check = interval.CheckParameters(poi)
+        if not check:
+            print '*** ERROR: PARAMETERS OF INTEREST NOT SET ***'
+            return
+        par = workspace.arg('BR')
+        low, up = interval.LowerLimit(par), interval.UpperLimit(par)
+        print '---', cl, '% CL limit: [', low, up, ']'
+
+def limitMCMC( workspace, poi, nuis_pars, results, constraints ):
     '''
     Get the limit using the MCMC bayesian method
     '''
@@ -133,12 +185,9 @@ def limitMCMC( workspace, poi, nuis_pars, results ):
     print '--- Starting to calculate MCMC limit'
 
     data = workspace.data('ALL')
+    par = poi.find('BR')
 
-    mc = rst.ModelConfig()
-    mc.SetWorkspace(workspace)
-    mc.SetPdf(workspace.pdf('MainModel'))
-    mc.SetParametersOfInterest(RooArgSet(poi))
-    mc.SetNuisanceParameters(nuis_pars)
+    mc = buildMC(workspace, poi, nuis_pars, constraints)
 
     print '--- Configuration done'
 
@@ -179,29 +228,29 @@ def limitMCMC( workspace, poi, nuis_pars, results ):
         nuis = it.Next()
         while nuis:
             c_nuis.cd(ipad)
-            plot.DrawChainScatter(poi, nuis)
+            plot.DrawChainScatter(par, nuis)
             ipad += 1
             nuis = it.Next()
 
         for c in (c_int, c_nuis):
             c.Write()
 
-        print '--- ' + scl + ' % CL limits: [', interval.LowerLimit(), interval.UpperLimit(), ' ]'
+        low, up = interval.LowerLimit(par), interval.UpperLimit(par)
+        print '---' + scl + '% CL limit: [', low, up, ']'
 
-
-def limitNLL( nll, var, nbins = 200, cname = 'Profile' ):
+def limitNLL( nll, poi, nbins = 200, cname = 'Profile' ):
     '''
     Get the limit using the -logL profile of < var >
     '''
 
     print '--- Start to get limit from NLL'
-
+    var = poi.first()
     pl = nll.createProfile(RooArgSet(var))
-    fr = var.frame( rf.Bins( nbins ), rf.Title( '' ) )
-    pl.plotOn(fr, rf.ShiftToZero())
+    fr = var.frame( rf.Bins( nbins ), rf.Title(''), rf.Name(cname + 'Frame') )
+    pl.plotOn(fr, rf.ShiftToZero(), rf.Name('Profile'))
     c_pl = TCanvas( cname, cname )
     fr.Draw()
-    fr.Write( cname + 'Frame' )
+    fr.Write()
     c_pl.Write()
 
     print '\n--- Creating histogram'
@@ -216,7 +265,8 @@ def limitNLL( nll, var, nbins = 200, cname = 'Profile' ):
     
     whole = cosmetics(hcum, 'ALL')
     c_cum = whole[0]
-    c_cum.SetNameTitle( cname + '_Cum', cname + '_Cum' )
+    c_cum.SetName( cname + '_Cum' )
+    c_cum.SetTitle( cname + '_Cum' )
     hcum.Draw()
     c_cum.Write()
 
@@ -279,21 +329,21 @@ def cosmetics( hcum, cat ):
         text = TPaveText( 0.2, 0.8, 0.5, 0.9, 'NDC' )
     else:
         text = TPaveText( 0.6, 0.7, 0.9, 0.8, 'NDC' )
-    text.SetFillColor( kWhite )
-    text.SetBorderSize( 0 )
-    text.AddText( 'LHCb Preliminary' )
-    text.Draw()
+    #text.SetFillColor( kWhite )
+    #text.SetBorderSize( 0 )
+    #text.AddText( 'LHCb Preliminary' )
+    #text.Draw()
 
     c.Update()
 
     print '-- Limit at 95 % CL:', x95
     print '-- Limit at 90 % CL:', x90
     
-    '''
+    
     c.Print( c.GetName() + '.pdf' )
     c.Print( c.GetName() + '.png' )
     c.Print( c.GetName() + '.C' )
-    '''
+    
 
     return c, hcumfill95, hcumfill90, hcum, lines, text
 

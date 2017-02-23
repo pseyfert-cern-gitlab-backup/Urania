@@ -11,6 +11,7 @@ from Urania import PDG
 from collections import OrderedDict
 import sys
 sys.path.append('./FIT_2012')
+rt.RooWorkspace.Import = getattr(rt.RooWorkspace, 'import') ### RooFit method < import > is not allowed in python
 
 # Loads the lhcb style for the plots 
 rt.gROOT.ProcessLine( '.x lhcbStyle.C' )
@@ -21,6 +22,14 @@ rt.gROOT.ProcessLine('.L $URANIAROOT/src/RooAmorosoPdf.cxx++')
 rt.gROOT.ProcessLine('.L $SOMEMASSMODELSROOT/src/RooPowerLaw.cxx++')
 rt.gROOT.ProcessLine('.L ./RooPrior.cxx++')
 
+# Enum for the profile
+class ProfileType:
+    NoProfile = 0 ### No profile is calculated
+    BayesCalc = 1 ### Use BayesianCalculator
+    MCMC      = 2 ### Use the MCMC method
+    NLL       = 3 ### Use the -logL profile directly
+    NLLcalc   = 4 ### Use the -logL calculator of ROOT
+
 #-----------------------------------------------------------------------------
 COMBINE_2011 = 1 ### 1 - Combine with the result from 2011
 BLIND        = 0 ### 0 - Global status of the fit
@@ -28,8 +37,10 @@ POWER_LAW    = 1 ### 1 - if set to zero it will use an exponential for the misid
 EXPO         = 1 ### 1 - if set to zero it will use a polynomial for the comb bkg
 FIXEXPOVALS  = 0 ### 0 - Fix exponential values to study the bkg syst
 BR_MINOS     = 1 ### 1 - Get the asymmetric errors using minos
-PROFILE      = 1 ### 1 - Get the profile
 MAKEPLOTS    = 1 ### 1 - Create and save the mass fit plots
+### ProfileType.NLL - Get the profile
+PROFILE = ProfileType.NLL
+#PROFILE = ProfileType.NoProfile
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
@@ -61,10 +72,10 @@ TUPLE_PATH = '~/eos/lhcb/wg/RD/K0SMuMu/NEW/DATA/'
 # will be fitted.
 categories = [ 'TOS1_', 'TOS2_' ]
 BINNING = OrderedDict(
-    #[('TOS1_', range(0,7))]
-    #[('TOS2_', range(0,7))]
-    [('TOS1_', range(9, 10)),
-     ('TOS2_', range(9, 10))]
+    #[('TOS1_', range(0,2))]
+    # ('TOS2_', range(0,2))]
+    [('TOS1_', range(0, 10)),
+     ('TOS2_', range(0, 10))]
     )
 
 # Fitting variable and ranges
@@ -118,11 +129,12 @@ if CREATE_FILES:
 #-----------------------------------------------------------------------------
 # Blinds the branching fraction if required. The random blinding factor is
 # stored in UnBlindBr, so do not look at it ;).
-BR_ = rt.RooRealVar('BR', 'BR', 7., 0., 10.)# 0., 0., 7. => this converges
+BR_ = rt.RooRealVar('BR', 'BR', 0., 0., 7.)# 0., 0., 7. => this converges 7., 0., 10.
 if BLIND:
     BR = rt.RooUnblindPrecision("BR_UNB", "BR_UNB", TheTable.Blinding, 0.5, 2., BR_)
 else:
     BR = BR_
+parOfInt = rt.RooArgSet(BR_)
 
 #prior = rt.RooAmorosoPdf('PRIOR', 'PRIOR' , BR_, PRIOR.offset, PRIOR.theta, PRIOR.alpha, PRIOR.beta)
 
@@ -135,7 +147,13 @@ prior = rt.RooPrior('PRIOR', 'PRIOR' , BR_)#, PRIOR.offset, PRIOR.theta, PRIOR.a
 
 #BREAK
 # Defines the constraints for the fit
-summaryConstraints = rt.RooArgSet()
+summaryConstraints  = rt.RooArgSet()
+# Nuisance parameters (all the RooRealVar objects but the BR)
+nuisance_parameters = rt.RooArgSet()
+# RooFormulaVar objects
+formula_parameters  = rt.RooArgSet()
+# Constant parameters
+constant_parameters = rt.RooArgSet()
 
 # Calculates the common factor
 from math import sqrt
@@ -155,14 +173,21 @@ for key, kbin in BINNING.iteritems():
     kspecsyst = TheTable.KspectrumSyst**2
     muidsyst  = TheTable.MuIDSyst[ key ]**2
     sigshape  = TheTable.SigShapeSyst**2
-    bkgsyst   = 0.0816721052282803**2
 
-    sigma = sqrt( mean**2 + tracksyst + selsyst + trigsyst + kspecsyst + muidsyst + sigshape + bkgsyst )
+    sigma = sqrt( mean**2 + tracksyst + selsyst + trigsyst + kspecsyst + muidsyst + sigshape )
     sigma_lst[key] = sigma
     ComFctrSig[ key ] = createConst( 1, sigma, 'ComFctr' + key )
     #ComFctrSig[ key ] [0].setConstant(rt.kTRUE)
     summaryConstraints.add( ComFctrSig[ key ][-1])
     #ComFctrSig[ key ] = const
+
+    # Add to nuis. par.
+    for el in ComFctrSig[ key ][:-1]:
+        nuisance_parameters.add(el)
+
+    # Add constant parameters
+    for el in ComFctrSig[key][1:-1]:
+        constant_parameters.add(el)
 
 Ipa_m_const = {}
 Alpha_const = {}
@@ -181,6 +206,18 @@ for key, kbin in BINNING.iteritems():
         Alpha[ix] = rt.RooFormulaVar( 'alpha' + ix, 'alpha' + ix, 'ComFctr' + key + '*alphaconst' + ix, rt.RooArgList( ComFctrSig[key][0], Alpha_const[ix][0] ) )
 
         # Ipa_m_const[key + str(i)] = createBifurConst(TheTable.sigmaKMuNu1, TheTable.sigmaKMuNu1ErrMinus, TheTable.sigmaKMuNu1ErrPlus, 'sigmaKMuNu1')
+
+        # Add to nuis. par.
+        for el in Alpha_const[ix][:-1]:
+            nuisance_parameters.add(el)
+
+        # Add the other parameters
+        formula_parameters.add(Alpha[ix])
+
+        # Add constant parameters
+        for el in Alpha_const[ix][1:-1]:
+            constant_parameters.add(el)
+        
 #BREAK
 if COMBINE_2011:
     summaryConstraints.add(prior)
@@ -197,44 +234,86 @@ class KsMuMuModel:
         # START VALUES IMPORTED FROM A HELPER MODULE
         import fithelp
         nbkg = getattr(fithelp, 'MuMuBkg' + i)
-        self.nbs  = rt.RooFormulaVar('NKs' + i, 'NKs' + i, BR.GetName()+ '/(alpha' + i +")", rt.RooArgList(self.alpha, BR))
-        self.nbkg = rt.RooRealVar('MuMuBkg' + i, 'MuMuBkg' + i, nbkg, 0, max(2*tmm[i].GetEntries(), 20))
+
+        # YIELDS
+        self.nbs  = rt.RooFormulaVar('NKs' + i, 'NKs' + i, BR.GetName()+ '/(alpha' + i +")",
+                                     rt.RooArgList(self.alpha, BR))
+        self.nbkg = rt.RooRealVar('MuMuBkg' + i, 'MuMuBkg' + i, nbkg,
+                                  0, max(2*tmm[i].GetEntries(), 20))
+
+        # Append the number of background events as a nuis. par.
+        nuisance_parameters.add(self.nbkg)
+
+        # Append RooFormulaVar
+        formula_parameters.add(self.nbs)
         
+        # MISID
         misidPars = __import__( 'KsMuMuResults' )
         misidPars = getattr(misidPars, 'KsPiPiMisid_' + i)
 
-        # START VALUES IMPORTED FROM A HELPER MODULE
         f_misid = getattr(fithelp, 'f_misid_' + i)
         misid_m = getattr(fithelp, 'misid_' + i + 'm')
         misid_n = getattr(fithelp, 'misid_' + i + 'n')
 
-        self.misid_n = rt.RooRealVar('misid_' +  i + 'n', 'misid_' +  i + 'n', 0.94*misid_n, 0.6*misid_n, 120)# 10, 1, 120 # misid_n - 2
+        self.misid_n = rt.RooRealVar('misid_' +  i + 'n', 'misid_' +  i + 'n',
+                                     0.94*misid_n, 0.55*misid_n, 120)# 10, 1, 120 # misid_n - 2 #0.94misid_n, 0.6*misid_n, 120
         times_misid_m = 1.5
         if times_misid_m*misid_m >= MASS_MIN:
             times_misid_m = (MASS_MIN - 1.)/misid_m
-        self.misid_m = rt.RooRealVar('misid_' +  i + 'm', 'misid_' +  i + 'm', misid_m, 0.6*misid_m, times_misid_m*misid_m)#320, 200, 469
+        self.misid_m = rt.RooRealVar('misid_' +  i + 'm', 'misid_' +  i + 'm',
+                                     misid_m, 0.6*misid_m, times_misid_m*misid_m)#320, 200, 469
+
+        # pdf
         self.misid = rt.RooPowerLaw('misid_' + i, 'misid_' + i, Mass, self.misid_m, self.misid_n)
+
+        # Add misid nuis. pars.
+        for el in (self.misid_n, self.misid_m):
+            nuisance_parameters.add(el)
         
+        # COMB. BKG.
         if EXPO:
             dk = getattr(fithelp, 'MuMu_dk_' + i)
             self.k = rt.RooRealVar( 'MuMu_dk_' + i, 'MuMu_dk_' + i, dk, 1.5*dk, 0. )#-1e-2, -.1, .1
-            self.bkg1 = rt.RooExponential("bkg1_MuMu_model" + i, "bkg1_MuMu_model" + i, Mass, self.k)
+            
             if FIXEXPOVALS:
                 import fitPars
                 self.k.setVal( getattr( fitPars, 'MuMu_dk_' + i ) )
                 self.k.setConstant( 1 )
+
+            # pdf
+            self.bkg1 = rt.RooExponential("bkg1_MuMu_model" + i, "bkg1_MuMu_model" + i, Mass, self.k)
+
+            # Add bkg. nuis. par.
+            nuisance_parameters.add(self.k)
         else:
             self.bkg1_m1 = rt.RooRealVar( 'Cbkg_m1_' + i, 'Cbkg_m1_' + i, -0.1, -10, 0 )
             self.bkg1_m2 = rt.RooRealVar( 'Cbkg_m2_' + i, 'Cbkg_m2_' + i, 0.1, 0, 10 )
-            self.bkg1 = rt.RooChebychev( 'bkg1_MuMu_model' + i, 'bkg1_MuMu_model' + i, Mass, rt.RooArgList( self.bkg1_m1, self.bkg1_m2 ) )
+
+            # pdf
+            self.bkg1 = rt.RooChebychev( 'bkg1_MuMu_model' + i, 'bkg1_MuMu_model' + i,
+                                         Mass, rt.RooArgList( self.bkg1_m1, self.bkg1_m2 ) )
+            
+            # Add bkg. nuis. par.
+            for el in (self.bkg1_m1, self.bkg1_m2):
+                nuisance_parameters.add(el)
         
+        # MISID/BKG YIELD
         #f_misid = misidPars.NSig*1./( misidPars.NCombBkg + misidPars.NSig )
-        self.f_misid = rt.RooRealVar('f_misid_' + i, 'f_misid_' + i, f_misid, 0.88*f_misid, 1)#f_misid, 0.5, 1
+        self.f_misid = rt.RooRealVar('f_misid_' + i, 'f_misid_' + i,
+                                     f_misid, 0.88*f_misid, 1)#f_misid, 0.5, 1
+
+        # Add the fraction of misid as a nuis. par.
+        nuisance_parameters.add(self.f_misid)
+
+        # BACKGROUND
         if POWER_LAW:
-            self.bkg = rt.RooAddPdf('bkg MuMu_model' + i, 'bkg MuMu_model' + i, self.misid, self.bkg1, self.f_misid)
+            self.bkg = rt.RooAddPdf('bkg_MuMu_model' + i, 'bkg_MuMu_model' + i,
+                                    self.misid, self.bkg1, self.f_misid)
         else:
-            self.bkg = rt.RooAddPdf('bkg MuMu_model' + i, 'bkg MuMu_model' + i, self.bkg2, self.bkg1, self.f_misid)
+            self.bkg = rt.RooAddPdf('bkg_MuMu_model' + i, 'bkg_MuMu_model' + i,
+                                    self.bkg2, self.bkg1, self.f_misid)
         
+        # SIGNAL
         ipaPars = __import__( 'KsMuMuPeakPars' )
         ipaPars = getattr( ipaPars, 'KsMuMuIpaPars_' + i )
 
@@ -247,9 +326,28 @@ class KsMuMuModel:
         self.ipa_a2  = rt.RooRealVar('a2' + i, 'a2' + i, ipaPars.a2)
         self.ipa_n1  = rt.RooRealVar('n1' + i, 'n1' + i, ipaPars.n)
         self.ipa_n2  = rt.RooRealVar('n2' + i, 'n2' + i, ipaPars.n2)
-        
-        self.Ks = rt.RooIpatia2('Ipatia' + i, 'Ipatia' + i, Mass, self.ipa_l, self.zeta, self.beta, self.ipa_s, self.ipa_m, self.ipa_a1, self.ipa_n1, self.ipa_a2, self.ipa_n2)
-        self.model = rt.RooAddPdf('mumu model ' + i, 'mumu model ' + i, rt.RooArgList(self.bkg, self.Ks), rt.RooArgList(self.nbkg, self.nbs))
+
+        # pdf
+        self.Ks = rt.RooIpatia2('Ipatia' + i, 'Ipatia' + i, Mass,
+                                self.ipa_l, self.zeta, self.beta,
+                                self.ipa_s, self.ipa_m,
+                                self.ipa_a1, self.ipa_n1, self.ipa_a2, self.ipa_n2)
+
+        ipa_pars = (self.ipa_s, self.ipa_m, self.beta, self.zeta, self.ipa_l,
+                    self.ipa_a1, self.ipa_a2, self.ipa_n1, self.ipa_n2)
+
+        # Add nuis. pars. from Ipatia function
+        for el in ipa_pars:
+            nuisance_parameters.add(el)
+
+        # Add constant parameters
+        for el in ipa_pars:
+            constant_parameters.add(el)
+
+        # MODEL FOR THE BIN < i >
+        self.model = rt.RooAddPdf('mumu_model_' + i, 'mumu_model_' + i,
+                                  rt.RooArgList(self.bkg, self.Ks),
+                                  rt.RooArgList(self.nbkg, self.nbs))
 
 ###########################################################################################
 
@@ -279,39 +377,69 @@ for kw in BINNING:
 alldata = DATA.items()[0][1].Clone()
 for kw, el in DATA.items()[1:]:
     alldata.append(el)
+alldata.SetName('ALL')
 DATA['ALL'] = alldata
 
 #-----------------------------------------------------------------------------
 # Fits to the whole sample
-print '*************************************** MAIN FIT STARTS HERE ***************************************'
+print '*** MAIN FIT STARTS HERE ***'
 fitOpts = [rf.Minos(rt.kFALSE), rf.ExternalConstraints(summaryConstraints),
            rf.Offset(True), rf.Save(True) , rf.NumCPU(12)]
 fitResults = mainModel.fitTo(DATA['ALL'], *fitOpts)
 fitResults.Print()
-print '*************************************** MAIN FIT ENDS HERE ***************************************'
-nll = mainModel.createNLL(DATA['ALL'], rf.Offset(True), rf.ExternalConstraints(summaryConstraints), rf.NumCPU(12))
+print '*** MAIN FIT ENDS HERE ***'
+nll = mainModel.createNLL(DATA['ALL'],
+                          rf.Offset(True), rf.ExternalConstraints(summaryConstraints), rf.NumCPU(12))
 
+# Build the workspace
+workspace = rt.RooWorkspace('Workspace')
+workspace.Import(DATA['ALL'])
+workspace.Import(mainModel)
+workspace.defineSet("NuisPars", nuisance_parameters, True)
+workspace.defineSet("ParsOfInt", parOfInt, True)
+workspace.defineSet("Formulas", formula_parameters, True)
+workspace.defineSet("Constants", constant_parameters, True)
+
+# Apply minos to the BR if specified
 if BR_MINOS:
-    print '********************************** CALCULATING MINOS FOR BR **************************************'
+    print '*** CALCULATING MINOS FOR BR ***'
     myminuit = rt.RooMinuit(nll)
     myminuit.minos(rt.RooArgSet(BR_))
+    fitResults = myminuit.save()
 
-if PROFILE:
+# Calculate the profile if specified:
+# 0 - No calculation
+# 1 - Limit using MCMCCalculator
+# 2 - Limit using the NLL
+if PROFILE != ProfileType.NoProfile:
     rt.gROOT.SetBatch()
     print '*** CREATING PROFILE ***'
-    pl = nll.createProfile(rt.RooArgSet(BR_))
-    fr = BR_.frame( rf.Bins( 200 ), rf.Title( '' ) )
-    pl.plotOn(fr, rf.ShiftToZero())
-    profile = rt.TCanvas( 'Profile', 'Profile' )
-    fr.Draw()
     if FIXEXPOVALS:
-        f = rt.TFile( 'BRprofile_BkgSyst_FixExpo_' + ''.join(BINNING.keys())[:-1] + '.root', 'RECREATE' )
+        f = rt.TFile('BRprofile_BkgSyst_FixExpo_' + ''.join(BINNING.keys())[:-1] + '.root', 'RECREATE')
     elif EXPO:
-        f = rt.TFile( 'BRprofile_' + ''.join(BINNING.keys())[:-1] + '.root', 'RECREATE' )
+        if COMBINE_2011:
+            name = 'BRprofile_' + ''.join(BINNING.keys())[:-1] + '.root'
+        else:
+            name = 'BRprofile_No2011_' + ''.join(BINNING.keys())[:-1] + '.root'
+        f = rt.TFile(name, 'RECREATE')
     else:
-        f = rt.TFile( 'BRprofile_BkgSyst_' + ''.join(BINNING.keys())[:-1] + '.root', 'RECREATE' )
-    profile.Write()
-    fr.Write( 'ProfileFrame' )
+        f = rt.TFile('BRprofile_BkgSyst_' + ''.join(BINNING.keys())[:-1] + '.root', 'RECREATE')
+
+    import getlimit
+    if PROFILE == ProfileType.BayesCalc:
+        out_limit = getlimit.limitBayesCalc(DATA['ALL'], workspace, parOfInt, nuisance_parameters,
+                                            summaryConstraints)
+    elif PROFILE == ProfileType.MCMC:
+        out_limit = getlimit.limitMCMC(workspace, parOfInt, nuisance_parameters,
+                                       fitResults, summaryConstraints)
+    elif PROFILE == ProfileType.NLL:
+        out_limit = getlimit.limitNLL(nll, parOfInt)
+    elif PROFILE == ProfileType.NLLcalc:
+        out_limit = getlimit.limitProfileCalc( DATA['ALL'], workspace, parOfInt, nuisance_parameters,
+                                               summaryConstraints )
+    else:
+        print '*** UNKNOWN PROFILE TYPE', PROFILE, '=> skipping ***'
+
     f.Close()
 #-----------------------------------------------------------------------------
 

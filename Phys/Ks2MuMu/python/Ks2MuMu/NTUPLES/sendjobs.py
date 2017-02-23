@@ -1,12 +1,13 @@
 # This file executes gangaScript.py for a given mode, polarity, stripping
 # selection and mcMatch requirements
 
-#modes = ['MCMB08a', 'MCMB08c']
-modes = ['dataMB']
+modes = ['MCMB08a', 'MCMB08c']
+#modes = ['MCMB08c']
+#modes = ['dataKsmumu']
 polarities = ['Up', 'Down']
 
-STRIPSEL = True
-MCMATCH  = False
+STRIPSEL = False
+MCMATCH  = True
 
 print '*** Stripping selection set to: %s ***' % str(STRIPSEL)
 print '*** mcMatch requirement set to: %s ***' % str(MCMATCH)
