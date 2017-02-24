@@ -314,10 +314,6 @@ MCTruth.ToolList = [
 
 tuple_B2jpsiphi.addTool(MCTruth)
 
-## Force update of CondDB to use proper momentum scaling
-from Configurables import CondDB
-CondDB(LatestGlobalTagByDataType = '2016')
-
 ## primary vertex selection
 from Configurables import CheckPV
 checkpv = CheckPV()
@@ -346,3 +342,5 @@ DaVinci().HistogramFile  = "DVHistos.root"                      # Histogram file
 DaVinci().TupleFile      = "BdJpsiKstar.root"                   # Ntuple
 DaVinci().Simulation     = True
 DaVinci().Lumi           = False
+DaVinci().CondDBtag      = "sim-20161124-2-vc-md100"            # Sim09b
+DaVinci().DDDBtag        = "dddb-20150724"                      # Sim09b
