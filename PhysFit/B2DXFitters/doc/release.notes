@@ -4,6 +4,9 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
+! 2017-02-27 - Alessandro Bertolin
+ - update of Bs2DsstK/PiConfigForMCSplineFit.py for latest version of fitSplineAcc.py
+
 ! 2017-02-22 - Agnieszka Dziurda
  - Fixing MDFit after cmt -> cmake, svn -> git transition. MDFit should work well now. 
  - adding new configuration files for fs/fd measurement 
