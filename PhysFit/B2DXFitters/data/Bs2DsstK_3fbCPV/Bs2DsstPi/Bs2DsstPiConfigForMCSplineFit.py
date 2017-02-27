@@ -6,19 +6,31 @@ def getconfig() :
     from math import pi
 
     # PHYSICAL PARAMETERS
-    configdict["Gammas"]        =  0.661   # in ps^{-1}
-    configdict["DeltaGammas"]   =  -0.105
-    configdict["DeltaMs"]       = 17.768   # in ps^{-1}
-    configdict["TagEffSig"]     = 0.403
-    configdict["TagOmegaSig"]   = 0.391
-    configdict["StrongPhase"]   = 20. / 180. * pi
-    configdict["WeakPhase"]     = 70./180.*pi
-    configdict["ModLf"]         = 0.372
+    configdict["Tau_H"] = 1.661000 #1.660999991
+    configdict["Tau_L"] = 1.405000 #1.404999988
+    configdict["Gamma_H"] = 1.0/configdict["Tau_H"]
+    configdict["Gamma_L"] = 1.0/configdict["Tau_L"]
+    configdict["Gammas"]  = (configdict["Gamma_H"] + configdict["Gamma_L"])/2.0
+    configdict["Tau"] = 1.52231245
+    configdict["DeltaGammas"] =  (configdict["Gamma_H"] - configdict["Gamma_L"])
+
+
+    configdict["DeltaMs"]       = 0.0   # in ps^{-1}                                                                                                                                   
+    configdict["cos"] = 0.0
+    configdict["sin"] = 0.0
+    configdict["sinh"] = 0.0
+
+    configdict["Bins"] = 1000
+
     configdict["CPlimit"]       = {"upper":4.0, "lower":-4.0} 
 
-    configdict["Acceptance"] = { "knots":  [0.50,       1.0,        1.5,        2.0,        3.0,        10.0],
-                                 "values": [4.5579e-01, 7.0310e-01, 8.7709e-01, 1.1351e+00, 1.0e+00, 1.0e+00] }
+    #configdict["Acceptance"] = { "knots":  [0.50,       1.0,        1.5,        2.0,        3.0,        10.0],
+    #                             "values": [4.5579e-01, 7.0310e-01, 8.7709e-01, 1.1351e+00, 1.0e+00, 1.0e+00] }
 
+    configdict["Acceptance"] = { "knots":  [0.50, 1.0,   1.5,   2.0,   3.0, 8.0],
+                                 "values": [0.41, 0.603, 0.803, 0.93, 0.98, 1.0] }
+
+    configdict["Resolution"] = {"scaleFactor":1.201}
 
     configdict["constParams"] = []
 
