@@ -207,7 +207,7 @@ def getCPparameters(ws, myconfigfile, UniformBlinding, HFAG):
 #------------------------------------------------------------------------------
 def runSFit(debug, wsname,
             pereventmistag, tagfromdata, noftcalib, truetag, truetime, pereventterr,
-            toys, pathName, fileNamePull, treeName, outputdir, inputdata,
+            toys, sampleConstr, pathName, fileNamePull, treeName, outputdir, inputdata,
             MC, workMC,
             configName, scan,
             binned, plotsWeights, noweight,
@@ -392,15 +392,22 @@ def runSFit(debug, wsname,
         print "Dataset entries:"
         print data.sumEntries()
 
+
+    if not truetime:
+        timename = MDSettings.GetTimeVarOutName().Data()
+    else:
+        timename = "True"+MDSettings.GetTimeVarOutName().Data()
+
+    data.get().find(timename).setRange(MDSettings.GetTimeRangeDown(), MDSettings.GetTimeRangeUp())
+
     if MC or noweight:
         obs = data.get()
     else:
         obs = dataWA.get()
 
-    if not truetime:
-        time = WS(ws, obs.find(MDSettings.GetTimeVarOutName().Data()))
-    else:
-        time = WS(ws, obs.find("True"+MDSettings.GetTimeVarOutName().Data()))
+    time = obs.find(timename)
+    time.setRange(MDSettings.GetTimeRangeDown(), MDSettings.GetTimeRangeUp())
+    time = WS(ws, time)
 
     if pereventterr:
         terr = WS(ws, obs.find(MDSettings.GetTerrVarOutName().Data()))
@@ -771,7 +778,7 @@ def runSFit(debug, wsname,
         print "=========================================================="
         print ""
 
-        if toys:
+        if toys or sampleConstr:
             #Sample mean of gaussian constraint
             for parname in myconfigfile["gaussCons"].iterkeys():
                 if type(myconfigfile["gaussCons"][parname]) != list:
@@ -1144,6 +1151,12 @@ parser.add_option( '-t','--toys',
                    default = False,
                    help = 'are we working with toys?'
                    )
+parser.add_option( '--sampleConstr',
+                   dest = 'sampleConstr',
+                   action = 'store_true',
+                   default = False,
+                   help = 'resample mean of gaussian constrains (on by default on toys)'
+                   )
 parser.add_option( '--MC',
                    dest = 'MC',
                    action = 'store_true',
@@ -1320,6 +1333,7 @@ if __name__ == '__main__' :
              options.truetime,
              options.pereventterr,
              options.toys,
+             options.sampleConstr,
              options.fileName,
              options.fileNamePull,
              options.treeName,

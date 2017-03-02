@@ -222,7 +222,7 @@ def BootstrapMC(configName,
         InputData = RooDataSet(data_temp.GetName(), data_temp.GetTitle(), data_temp, data_temp.get(), preselection)
         print "Entries:"
         print "...before cut: " + str(data_temp.sumEntries())
-        print "...after cut: " + str(data.sumEntries())
+        print "...after cut: " + str(InputData.sumEntries())
     else:
         print "No additional preselection"
         InputData = data_temp
@@ -231,6 +231,8 @@ def BootstrapMC(configName,
     InputData.SetName( dataName+"_input" )
     InputData = WS(ws, InputData)
     nCand = InputData.numEntries()
+    print "Reduced dataset:"
+    InputData.Print("v")
     print "Dataset entries:"
     print nCand
 
@@ -250,6 +252,7 @@ def BootstrapMC(configName,
 
     OutputData = WS(ws, RooDataSet(dataName,
                                    InputData.GetTitle(),
+                                   #observ
                                    InputData.get()) )
 
     indexGen = TRandom3(int(seed))
@@ -298,8 +301,8 @@ def BootstrapMC(configName,
     OutputWorkspace.Print("v")
     OutputWorkspace.writeToFile(outputFile)
 
-    #tree = OutputData.tree()
-    #tree.SaveAs("TheTestTree.root")
+    tree = OutputData.tree()
+    tree.SaveAs("TheTestTree.root")
     
 #-----------------------------------------------------------------------------
 

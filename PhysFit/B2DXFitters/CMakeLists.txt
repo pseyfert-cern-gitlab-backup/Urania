@@ -6,6 +6,8 @@ gaudi_subdir(B2DXFitters v3r3)
 find_package(RELAX)
 find_package(ROOT COMPONENTS Core RooFitCore RooStats RooFit Hist Tree RIO Matrix MathCore MathMore Physics Gpad Graf)
 
+find_package(Boost COMPONENTS container)             
+
 # override the genreflex call to wrap it in the right environment
 #set(ROOT_genreflex_CMD ${env_cmd} --xml ${env_xml} ${ROOT_genreflex_CMD})
 
@@ -19,8 +21,8 @@ include_directories(SYSTEM ${ROOT_INCLUDE_DIRS})
 gaudi_add_dictionary(B2DXFitters
                      dict/B2DXFittersDict.h
                      dict/B2DXFittersDict.xml
-                     INCLUDE_DIRS ROOT
-                     LINK_LIBRARIES ROOT
+                     INCLUDE_DIRS ROOT Boost
+                     LINK_LIBRARIES ROOT Boost
                      OPTIONS "-U__MINGW32__"
                      SPLIT_CLASSDEF)
 
@@ -28,8 +30,8 @@ gaudi_add_library(B2DXFittersLib
                   src/*.cxx
                   B2DXFittersDict_classdef.cpp
                   PUBLIC_HEADERS B2DXFitters
-                  INCLUDE_DIRS ROOT
-                  LINK_LIBRARIES ROOT)
+                  INCLUDE_DIRS ROOT Boost
+                  LINK_LIBRARIES ROOT Boost)
 set_property(TARGET B2DXFittersLib PROPERTY COMPILE_FLAGS -g)
 
 # ensure that genreflex is not called twice (in parallel builds)

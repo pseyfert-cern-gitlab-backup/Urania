@@ -28,11 +28,11 @@ export queue="1nh"
 export mlimit="500000"
 #Nickname
 #Choose a meaningful name
-export nickname="Bd2DPiMCFilteredS21RunIBoth"
+export nickname="Bd2DPiMCFilteredS21RunIBothTaggedOnlyShortTime"
 #Configuration file
 export config="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/Bd2DPiConfigForBootstrapMC.py"
 #Input file
-export inputfile="/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Workspace/Nominal/work_dpi_mc_large.root"
+export inputfile="/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Workspace/Nominal/work_dpi_mc_large_shorttime.root"
 #Input workspace
 export inputworkspace="workspace"
 #Temporary pathname to dump results
@@ -40,7 +40,7 @@ export output="/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/MCBootstrap/${nic
 #Pathname to dump outputfiles (eos recommendend)
 export eosoutput="/eos/lhcb/wg/b2oc/TD_DPi_3fb/MCBootstrap/${nickname}/Generator/"
 #Number of candidates to store in the tuple
-export maxcand="800000"
+export maxcand="600000"
 #Path where scripts are located
 export bashscriptpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/scripts/Bash/"
 export pyscriptpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/scripts/"

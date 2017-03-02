@@ -10,7 +10,7 @@ def getconfig() :
                                                       "Name"                   : "BeautyMass",
                                                       "InputName"              : "lab0_FitDaughtersConst_M_flat"}
     
-    configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.2,     15.0    ],
+    configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.4,     12.0    ],
                                                       "Bins"                   : 40,
                                                       "Name"                   : "BeautyTime",
                                                       "InputName"              : "lab0_FitDaughtersPVConst_ctau_flat"\
@@ -46,7 +46,7 @@ def getconfig() :
     
     configdict["BasicVariables"]["TagDecSS"]      = { "Range"                  : [-1.0,    1.0     ],
                                                       "Name"                   : "TagDecSS",
-                                                      "InputName"              : "TagDecSS"}
+                                                      "InputName"              : "obsTagSS_PionInvBoost_ProtonInvBoost"}
 
     configdict["BasicVariables"]["TagDecSSPionBDT"]      = { "Range"                  : [-1.0,    1.0     ],
                                                              "Name"                   : "TagDecSSPionBDT",
@@ -102,6 +102,18 @@ def getconfig() :
     configdict["AdditionalVariables"]["nPV"]      = { "Range"                  : [ 0.0,    10     ],
                                                       "Name"                   : "nPV",
                                                       "InputName"              : "nPV"}
+
+    configdict["AdditionalVariables"]["Hlt2Topo2BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
+                                                                                "Name"                   : "Hlt2Topo2BodyBBDTDecision_TOS",
+                                                                                "InputName"              : "lab0_Hlt2Topo2BodyBBDTDecision_TOS"}
+
+    configdict["AdditionalVariables"]["Hlt2Topo3BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
+                                                                                "Name"                   : "Hlt2Topo3BodyBBDTDecision_TOS",
+                                                                                "InputName"              : "lab0_Hlt2Topo3BodyBBDTDecision_TOS"}
+
+    configdict["AdditionalVariables"]["Hlt2Topo4BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
+                                                                                "Name"                   : "Hlt2Topo4BodyBBDTDecision_TOS",
+                                                                                "InputName"              : "lab0_Hlt2Topo4BodyBBDTDecision_TOS"}
     
     return configdict
                         
