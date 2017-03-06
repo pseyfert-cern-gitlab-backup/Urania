@@ -1884,7 +1884,7 @@ namespace Bs2Dsh2011TDAnaModels {
     Double_t ev = numEvts->getValV();
     if ( ev != 0.0 )
     {
-      list->add(*pdf, true);
+      list->add(*pdf);
       if (debug == true )
       {
         std::cout<<"[INFO] "<<pdf->GetName()<<" added to pdf list with inital number of events:"<<ev<<std::endl; 
@@ -1904,7 +1904,7 @@ namespace Bs2Dsh2011TDAnaModels {
   {
     if ( ev != 0.0 )
     {
-      list->add(*pdf, true);
+      list->add(*pdf);
       if (debug == true )
       {
         std::cout<<"[INFO] "<<pdf->GetName()<<" added to pdf list with inital number of events:"<<ev<<std::endl;
