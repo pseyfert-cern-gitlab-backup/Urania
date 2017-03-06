@@ -395,6 +395,8 @@ namespace GeneralUtils {
   std::vector < std::vector <TString> > GetList2D(std::vector <TString> list1);
 
   std::vector < std::vector <TString> > AddToList2D(std::vector < std::vector <TString> > matrix, TString name,TString name2);
+  std::vector < std::vector <TString> >  ConvertLists(std::vector <TString> pdfN, std::vector <TString> pdfK); 
+
   void printList(std::vector <TString>  list);
   void printList2D(std::vector < std::vector <TString> > matrix);
   

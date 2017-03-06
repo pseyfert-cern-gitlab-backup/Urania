@@ -2714,6 +2714,26 @@ namespace GeneralUtils {
     return matrix; 
   }
 
+  std::vector < std::vector <TString> >  ConvertLists(std::vector <TString> pdfN, std::vector <TString> pdfK)
+  {
+    std::vector < std::vector <TString> > matrix;
+    if ( pdfN.size () != pdfK.size() )
+      {
+	std::cout<<"[ERROR] Converting into matrix not possible. Vectors have different sizes."<<std::endl; 
+      }
+    for (unsigned int g = 0; g<pdfN.size(); g++ )
+      {
+	std::vector<TString> myvector;
+	myvector.push_back(pdfN[g]);
+	myvector.push_back(pdfK[g]);
+	matrix.push_back(myvector);
+      }
+
+    return matrix; 
+
+  }
+
+
   std::vector < std::vector <TString> > AddToList2D(std::vector < std::vector <TString> > matrix, TString name,TString name2)
   {
     std::vector<TString> myvector;

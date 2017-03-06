@@ -1578,9 +1578,15 @@ namespace Bs2Dsh2011TDAnaModels {
     if (debug == true)
     {
       cout<<endl;
-      if( pdf_totBkg != NULL ){ cout<<" ------------- CREATED TOTAL BACKGROUND PDF: SUCCESFULL------------"<<endl; }
+      if( pdf_totBkg != NULL )
+	{ 
+	  cout<<" ------------- CREATED TOTAL BACKGROUND PDF: SUCCESFULL------------"<<endl; 
+	  std::cout<<"Name: "<<pdf_totBkg->GetName(); 
+	  pdf_totBkg->Print("v"); 
+	}
       else { cout<<" ---------- CREATED TOTAL BACKGROUND PDF: FAILED ----------------"<<endl;}
     }
+
     return pdf_totBkg;
     
   }
@@ -1878,7 +1884,7 @@ namespace Bs2Dsh2011TDAnaModels {
     Double_t ev = numEvts->getValV();
     if ( ev != 0.0 )
     {
-      list->add(*pdf);
+      list->add(*pdf, true);
       if (debug == true )
       {
         std::cout<<"[INFO] "<<pdf->GetName()<<" added to pdf list with inital number of events:"<<ev<<std::endl; 
@@ -1898,7 +1904,7 @@ namespace Bs2Dsh2011TDAnaModels {
   {
     if ( ev != 0.0 )
     {
-      list->add(*pdf);
+      list->add(*pdf, true);
       if (debug == true )
       {
         std::cout<<"[INFO] "<<pdf->GetName()<<" added to pdf list with inital number of events:"<<ev<<std::endl;
@@ -2064,9 +2070,9 @@ namespace Bs2Dsh2011TDAnaModels {
                               bool debug)
   {
 
-    std::vector <std::vector <TString> > pdfNames; 
-    pdfNames.push_back(pdfN);
-    pdfNames.push_back(pdfK); 
+    std::vector <std::vector <TString> > pdfNames = ConvertLists(pdfN,pdfK); 
+    if (debug ){ printList2D(pdfNames); }
+
     RooAbsPdf* pdf = build_SigOrCombo(mass, massDs, pidVar, work, workInt, samplemode, typemode, merge, decay, types, pdfNames, pidk, dim, debug);
     return pdf; 
     
@@ -2421,6 +2427,8 @@ namespace Bs2Dsh2011TDAnaModels {
     TString t = "_";
 
     int pdfID = -1.0; 
+
+
     for (unsigned int g = 0; g<pdfNames.size(); g++ )
     {
       if(h!="")
