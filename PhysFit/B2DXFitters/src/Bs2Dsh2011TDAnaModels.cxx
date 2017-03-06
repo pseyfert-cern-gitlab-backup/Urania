@@ -1578,9 +1578,15 @@ namespace Bs2Dsh2011TDAnaModels {
     if (debug == true)
     {
       cout<<endl;
-      if( pdf_totBkg != NULL ){ cout<<" ------------- CREATED TOTAL BACKGROUND PDF: SUCCESFULL------------"<<endl; }
+      if( pdf_totBkg != NULL )
+	{ 
+	  cout<<" ------------- CREATED TOTAL BACKGROUND PDF: SUCCESFULL------------"<<endl; 
+	  std::cout<<"Name: "<<pdf_totBkg->GetName(); 
+	  pdf_totBkg->Print("v"); 
+	}
       else { cout<<" ---------- CREATED TOTAL BACKGROUND PDF: FAILED ----------------"<<endl;}
     }
+
     return pdf_totBkg;
     
   }
@@ -2064,9 +2070,9 @@ namespace Bs2Dsh2011TDAnaModels {
                               bool debug)
   {
 
-    std::vector <std::vector <TString> > pdfNames; 
-    pdfNames.push_back(pdfN);
-    pdfNames.push_back(pdfK); 
+    std::vector <std::vector <TString> > pdfNames = ConvertLists(pdfN,pdfK); 
+    if (debug ){ printList2D(pdfNames); }
+
     RooAbsPdf* pdf = build_SigOrCombo(mass, massDs, pidVar, work, workInt, samplemode, typemode, merge, decay, types, pdfNames, pidk, dim, debug);
     return pdf; 
     
@@ -2421,6 +2427,8 @@ namespace Bs2Dsh2011TDAnaModels {
     TString t = "_";
 
     int pdfID = -1.0; 
+
+
     for (unsigned int g = 0; g<pdfNames.size(); g++ )
     {
       if(h!="")

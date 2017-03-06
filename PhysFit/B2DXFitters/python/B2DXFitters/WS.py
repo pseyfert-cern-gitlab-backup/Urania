@@ -30,7 +30,7 @@ def WS(ws, obj, opts = []):
             wsobj = ws.set(name)
         else:
             if wsobj.Class() != obj.Class():
-                raise TypeError()
+                raise TypeError()    
     else:
         if None == wsobj:
             ws.__getattribute__('import')(obj, name)

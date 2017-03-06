@@ -128,23 +128,28 @@ def getTotalBkgPDF(myconfigfile, beautyMass, charmMass, workspace, workInt, merg
     
     bkgPDF = [] 
     cdm = ["NonRes","PhiPi","KstK","KPiPi","PiPiPi","KKPi"]
+    ot = [True] 
     for i in range(0,bound):
         mm = GeneralUtils.GetModeCapital(sm[i],debug)
         if ( myconfigfile["Decay"] == "Bs2DsPi"):
             if ( mm in cdm ):
-                bkgPDF.append(WS(workInt,Bs2Dsh2011TDAnaModels.build_Bs2DsPi_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                bkgPDF.append(Bs2Dsh2011TDAnaModels.build_Bs2DsPi_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug ))
         elif ( myconfigfile["Decay"] == "Bs2DsK"):
             if ( mm in cdm ):
-                bkgPDF.append(WS(workInt,Bs2Dsh2011TDAnaModels.build_Bs2DsK_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                #bkgPDF.append(WS(workInt,Bs2Dsh2011TDAnaModels.build_Bs2DsK_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                bkgPDF.append(Bs2Dsh2011TDAnaModels.build_Bs2DsK_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug ))
         elif ( myconfigfile["Decay"] == "Bs2DsstPi"):
             if ( mm in cdm ):
-                bkgPDF.append(WS(workInt,Bs2DssthModels.build_Bs2DsstPi_BKG(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                #bkgPDF.append(WS(workInt,Bs2DssthModels.build_Bs2DsstPi_BKG(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                bkgPDF.append(Bs2DssthModels.build_Bs2DsstPi_BKG(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug ))
         elif ( myconfigfile["Decay"] == "Bs2DsstK"):
             if ( mm in cdm ):
-                bkgPDF.append(WS(workInt,Bs2DssthModels.build_Bs2DsstK_BKG(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                #bkgPDF.append(WS(workInt,Bs2DssthModels.build_Bs2DsstK_BKG(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                bkgPDF.append(Bs2DssthModels.build_Bs2DsstK_BKG(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug ))
         elif ( myconfigfile["Decay"] == "Bd2DPi"):
             if ( mm in cdm ):
-                bkgPDF.append(WS(workInt,Bd2DhModels.build_Bd2DPi_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                #bkgPDF.append(WS(workInt,Bd2DhModels.build_Bd2DPi_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                bkgPDF.append(Bd2DhModels.build_Bd2DPi_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug ))
     return bkgPDF
     
 #------------------------------------------------------------------------------
@@ -352,7 +357,7 @@ def runMDFitter( debug, sample, mode, sweight,
     if combo:
         combEPDF, workInt = getSigOrCombPDF(myconfigfile,keysComb,TString("CombBkg"),
                                             workspace[0],workInt,sm,merge,bound,dim,obs, debug)
-    
+
     workInt = setBs2DsXParameters(myconfigfile, workInt, sm, merge,bound, beautyMass,debug)
     
     ###------------------------------------------------------------------------------------------------------------------------------------###     
@@ -399,8 +404,7 @@ def runMDFitter( debug, sample, mode, sweight,
     ###------------------------------------------------------------------------------------------------------------------------------------### 
           ###---------------------------------   Create the total PDF in Bs mass, Ds mass, PIDK --------------------------------------###  
     ###------------------------------------------------------------------------------------------------------------------------------------###  
-    #exit(0)    
-    
+        
     N_Bkg_Tot = []
     listPDF = [] 
     totPDFp = []

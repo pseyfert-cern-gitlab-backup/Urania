@@ -351,14 +351,12 @@ def getSigOrCombPDF(myconfigfile,keys, typemode, work, workInt,sm, merge, bound,
         pdfN = GeneralUtils.GetList(TString("pdf_names"))
         pdfK = GeneralUtils.GetList(TString("pdf_keys"))
         
-        #pdfNames = GeneralUtils.GetList2D(TString("pdf_names"), TString("pdf_keys"))
-        
         if dim > 0:
             pdfN, pdfK = getPDFNameFromConfig(myconfigfile, keys[0], prefix1, pdfN, pdfK )
         if dim > 1:
             pdfN, pdfK = getPDFNameFromConfig(myconfigfile, keys[1], prefix2, pdfN, pdfK )
         if dim > 2:
-            pdfNm, pdfK = getPDFNameFromConfig(myconfigfile, keys[2], prefix3, pdfN, pdfK )
+            pdfN, pdfK = getPDFNameFromConfig(myconfigfile, keys[2], prefix3, pdfN, pdfK )
 
         if debug:    
             GeneralUtils.printList(pdfN)
@@ -367,7 +365,12 @@ def getSigOrCombPDF(myconfigfile,keys, typemode, work, workInt,sm, merge, bound,
 
         EPDF = Bs2Dsh2011TDAnaModels.build_SigOrCombo(beautyMass,charmMass, bacPIDK, work, workInt, sm[i], TString(typemode), 
                                                       merge, decay, types, pdfN, pdfK, pidkNames, dim, debug)
-        combEPDF.append(WS(workInt,EPDF))
+    
+        t = TString(keys[0])
+        if (t.Contains("Signal")):
+            combEPDF.append(WS(workInt,EPDF))
+        else:
+            combEPDF.append(EPDF)
 
     return combEPDF, workInt
 

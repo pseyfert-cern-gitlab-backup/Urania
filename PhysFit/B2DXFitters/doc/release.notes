@@ -4,6 +4,12 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
+! 2017-03-08 - Agnieszka Dziurda
+ - further fixes in MDFit:
+   - RooWorkspace is not anymore our friend, some bypass done, more clever solution
+     will come later
+   - fix bug in 2 lists -> matrix conversion 
+
 ! 2017-02-27 - Alessandro Bertolin
  - update of Bs2DsstK/PiConfigForMCSplineFit.py for latest version of fitSplineAcc.py
 
