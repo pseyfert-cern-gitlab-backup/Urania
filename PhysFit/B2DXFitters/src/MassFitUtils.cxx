@@ -1203,68 +1203,6 @@ namespace MassFitUtils {
 
   }
 
-  //===========================================================================
-  // Get name of PID hist for bachelor  - background MC
-  //===========================================================================
-  //  TString GetHistNameBachPIDBkgMC(MDFitterSettings* mdSet, TString hypo, bool debug )
-  //{
-  //  TString nameHistBach = "";
-
-  //if ( hypo.Contains("Bd")) {  nameHistBach = Form("MyKaonMisID_%d;1",mdSet->GetPIDBach()); }
-  //else { nameHistBach = Form("MyPionMisID_%d;1", mdSet->GetPIDBach()); }
-  //if( mdSet->GetPIDBach() == -5) {nameHistBach = "MyPionMisID_Minus5";}
-  //if( mdSet->GetPIDBach() > 10 ) {nameHistBach = "MyPionMisID_10";}
-    
-  // if ( debug == true ) { std::cout<<"[INFO] Bachelor PID histogram: "<< nameHistBach<<std::endl; } 
-
-  // return nameHistBach;
-  //}
-
-  //===========================================================================
-  // Get name of PID hist for Ds child -  background MC
-  //===========================================================================
-  //TString GetHistNameChildPIDBkgMC(MDFitterSettings* mdSet, TString hypo, bool debug)
-  // {
-  //  TString nameHistChild = "";
-
-  //    if ( hypo.Contains("Bd")) { nameHistChild = Form("MyKaonMisID_%d;1",mdSet->GetPIDChild()); }
-  //else { nameHistChild = Form("MyPionMisID_%d;1", mdSet->GetPIDChild()); }
-
-  //  if ( debug == true ) { std::cout<<"[INFO] Ds child PID histogram: "<< nameHistChild<<std::endl; }
-
-  //  return nameHistChild;
-  // }
-
-  //===========================================================================
-  // Get name of PID hist for proton veto - background MC
-  //===========================================================================
-  //TString GetHistNameProtonPIDBkgMC(MDFitterSettings* mdSet, TString hypo, bool debug)
-  //{
-  //TString nameHistProton = "";
-
-  //if ( hypo.Contains("Bd") == true) { nameHistProton = Form("MyProtonMisID_p%d;1",mdSet->GetPIDProton());}
-  // else {  nameHistProton = "MyProtonMisID_pKm5_KPi5"; }
-    
-  // if ( debug == true ) { std::cout<<"[INFO] Proton PID histogram: "<< nameHistProton<<std::endl; }
-    
-  // return nameHistProton;
-  // }
-
-  //===========================================================================
-  // Get name of PID hist for bachelor eff -  background MC
-  //===========================================================================
-  //TString GetHistNameBachPIDEffBkgMC(MDFitterSettings* mdSet, TString hypo, bool debug)
-  // {
-  //  TString nameHistEff = "";
-
-  //if ( hypo.Contains("Pi")) { nameHistEff = Form("MyPionEff_%d;1",mdSet->GetPIDBach()); }
-  //else { nameHistEff = Form("MyKaonEff_%d;1", mdSet->GetPIDBach()); }
-
-  // if ( debug == true ) { std::cout<<"[INFO] Bachelor PID eff histogram: "<< nameHistEff<<std::endl; }
-
-  // return nameHistEff;
-  //}
-
   //===========================================================================                                                                     
   // Get correlation factor between observables                                                                                                           
   //=========================================================================== 
@@ -1418,17 +1356,13 @@ namespace MassFitUtils {
     // Read MC File // 
     TString yy =""; 
     std::vector <MCBackground*> MCBkg; 
-    Bool_t checkBacProton = false;
+
     Int_t numBkg = CheckNumberOfBackgrounds(filesDir,sig, debug);  
     for(int i = 1; i<numBkg+1; i++ )
     {
       MCBkg.push_back(new MCBackground(Form("MCBkg%d",i),"MCBackground",filesDir,sig,i));
       MCBkg[i-1]->Print("v"); 
       yy = MCBkg[0]->GetYear();
-      if ( MCBkg[i-1]->GetMode().Contains("Dsp") || MCBkg[i-1]->GetMode().Contains("Dsstp") )
-      {
-        checkBacProton = true; 
-      }
     }
     
     HistPID2D hBach;
@@ -1440,22 +1374,21 @@ namespace MassFitUtils {
 
     if ( mdSet->CheckMassWeighting() == true)
     {
-      hBach =  mdSet->GetHistPID2D("PIDBachMisID",yy);
-      hChild =  mdSet->GetHistPID2D("PIDChildKaonPionMisID",yy);
-      hBachEff =  mdSet->GetHistPID2D("PIDBachEff",yy);
-      hProton =  mdSet->GetHistPID2D("PIDChildProtonMisID",yy);
-      if ( checkBacProton ) { hBachProton = mdSet->GetHistPID2D("PIDBachProtonMisID",yy); }
-
+      
+      if ( mdSet->CheckHistPID("PIDBachMisID",yy) ) {          hBach =  mdSet->GetHistPID2D("PIDBachMisID",yy); } 
+      if ( mdSet->CheckHistPID("PIDChildKaonPionMisID",yy) ) { hChild =  mdSet->GetHistPID2D("PIDChildKaonPionMisID",yy); }
+      if ( mdSet->CheckHistPID("PIDBachEff",yy) ) {            hBachEff =  mdSet->GetHistPID2D("PIDBachEff",yy); }
+      if ( mdSet->CheckHistPID("PIDChildProtonMisID",yy) ) {   hProton =  mdSet->GetHistPID2D("PIDChildProtonMisID",yy); }
+      if ( mdSet->CheckHistPID("PIDBachProtonMisID",yy) ) {    hBachProton = mdSet->GetHistPID2D("PIDBachProtonMisID",yy); }
       if ( debug == true )
       {
-        std::cout<<hBach<<std::endl;
-        if ( checkBacProton ) { std::cout<<hBachProton<<std::endl; } 
-        std::cout<<hChild<<std::endl;
-        std::cout<<hBachEff<<std::endl;
-        std::cout<<hProton<<std::endl;
+        if ( mdSet->CheckHistPID("PIDBachMisID",yy) )          { std::cout<<hBach<<std::endl; }
+        if ( mdSet->CheckHistPID("PIDBachProtonMisID",yy) )    { std::cout<<hBachProton<<std::endl; } 
+        if ( mdSet->CheckHistPID("PIDChildKaonPionMisID",yy) ) { std::cout<<hChild<<std::endl;}
+        if ( mdSet->CheckHistPID("PIDBachEff",yy) )            { std::cout<<hBachEff<<std::endl; }
+        if ( mdSet->CheckHistPID("PIDChildProtonMisID",yy) )   { std::cout<<hProton<<std::endl; }
       }
-    }
-    
+    } 
     HistPID2D hRDM;
     if (mdSet->CheckDataMCWeighting() == true )
     {
@@ -1651,18 +1584,22 @@ namespace MassFitUtils {
         
         if ( mdSet->CheckMassWeighting() == true )
         {
-          Double_t wBE =  hBachEff.GetValues(mdSet->GetPIDHistVar("PIDBachEff",0), mdSet->GetPIDHistVar("PIDBachEff",1), basicName, basicVal, tNW, pRV, smp);
-          Double_t wBMisID = hBach.GetValues(mdSet->GetPIDHistVar("PIDBachMisID",0), mdSet->GetPIDHistVar("PIDBachMisID",1), basicName, basicVal, tNW, pRV, smp);
-          Double_t wChKPiMisID = hChild.GetValues(mdSet->GetPIDHistVar("PIDChildKaonPionMisID",0), mdSet->GetPIDHistVar("PIDChildKaonPionMisID",1),
-                                                  basicName, basicVal, tNW, pRV, smp);
-          Double_t wChPMisID = hProton.GetValues(mdSet->GetPIDHistVar("PIDChildProtonMisID",0), mdSet->GetPIDHistVar("PIDChildProtonMisID",1),
-                                                 basicName, basicVal, tNW, pRV, smp);
-          Double_t wBPMisID(0.0);
-          if ( checkBacProton )
-          {
-            wBPMisID = hBachProton.GetValues(mdSet->GetPIDHistVar("PIDBachProtonMisID",0), mdSet->GetPIDHistVar("PIDBachProtonMisID",1), 
-                                             basicName, basicVal, tNW, pRV, smp);
-          }
+	  Double_t wBE(1.0), wBMisID(1.0), wChKPiMisID(1.0), wBPMisID(1.0), wChPMisID(1.0); 
+
+	  if ( mdSet->CheckHistPID("PIDBachMisID",yy) ) 
+	    {  wBMisID = hBach.GetValues(mdSet->GetPIDHistVar("PIDBachMisID",0), mdSet->GetPIDHistVar("PIDBachMisID",1), basicName, basicVal, tNW, pRV, smp); }
+	  if ( mdSet->CheckHistPID("PIDChildKaonPionMisID",yy) ) 
+	    {  wChKPiMisID = hChild.GetValues(mdSet->GetPIDHistVar("PIDChildKaonPionMisID",0), mdSet->GetPIDHistVar("PIDChildKaonPionMisID",1),
+					      basicName, basicVal, tNW, pRV, smp); }
+	  if ( mdSet->CheckHistPID("PIDBachEff",yy) ) 
+	    { wBE =  hBachEff.GetValues(mdSet->GetPIDHistVar("PIDBachEff",0), mdSet->GetPIDHistVar("PIDBachEff",1), basicName, basicVal, tNW, pRV, smp); }
+	  if ( mdSet->CheckHistPID("PIDChildProtonMisID",yy) ) 
+	    { wChPMisID = hProton.GetValues(mdSet->GetPIDHistVar("PIDChildProtonMisID",0), mdSet->GetPIDHistVar("PIDChildProtonMisID",1),
+					    basicName, basicVal, tNW, pRV, smp); } 
+	  if ( mdSet->CheckHistPID("PIDBachProtonMisID",yy) ) 
+	    { wBPMisID = hBachProton.GetValues(mdSet->GetPIDHistVar("PIDBachProtonMisID",0), mdSet->GetPIDHistVar("PIDBachProtonMisID",1),
+					       basicName, basicVal, tNW, pRV, smp); } 
+
           // Please note that Ds and D mass hypo all applied in NTuple so no need to change mass hypo //
           if (hypo.Contains("K"))  // PartReco for BsDsK 
           {
@@ -1750,11 +1687,12 @@ namespace MassFitUtils {
       if ( correlations == true )
       { 
         std::vector <TString> obsName;
-        obsName.push_back(mdSet->GetMassBVarOutName());
-        obsName.push_back(mdSet->GetMassDVarOutName());
-        obsName.push_back(mdSet->GetPIDKVarOutName()); 
-        obsName.push_back(mdSet->GetTimeVarOutName());
-        obsName.push_back(mdSet->GetTerrVarOutName());
+
+        if ( mdSet->GetMassBVarOutName() != "" ) { obsName.push_back(mdSet->GetMassBVarOutName()); }
+        if ( mdSet->GetMassDVarOutName() != "" ) { obsName.push_back(mdSet->GetMassDVarOutName()); }
+        if ( mdSet->GetPIDKVarOutName() != "" ) { obsName.push_back(mdSet->GetPIDKVarOutName()); }  
+        if ( mdSet->GetTimeVarOutName() != "") { obsName.push_back(mdSet->GetTimeVarOutName()); }
+	if ( mdSet->GetTerrVarOutName() != "") { obsName.push_back(mdSet->GetTerrVarOutName()); }
         if(  mdSet->CheckTagOmegaVar() == true )                                                                                                       
         {                                                                                                                                         
           for(int k = 0; k<mdSet->GetNumTagOmegaVar(); k++)                                                                                          
@@ -2687,8 +2625,11 @@ namespace MassFitUtils {
     HistPID2D heff;
     if (  mdSet->CheckMassWeighting() == true || reweight == true)
     {
-      heff = mdSet->GetHistPID2D("PIDBachEff",yy);
-      std::cout<<heff<<std::endl;
+      if ( mdSet->CheckHistPID("PIDBachEff",yy) ) 
+	{
+	  heff = mdSet->GetHistPID2D("PIDBachEff",yy);
+	  std::cout<<heff<<std::endl;
+	}
     }
 
     HistPID2D hRDM;
@@ -2843,10 +2784,13 @@ namespace MassFitUtils {
           wRW = hRDM.GetWeight(log(valRDM.first), log(valRDM.second), smp[i]);
         }
 
-        if ( mdSet->CheckMassWeighting() == true )
+        if ( mdSet->CheckMassWeighting() == true || reweight  == true )
         {
-          wE =  heff.GetValues(mdSet->GetPIDHistVar("PIDBachEff",0), mdSet->GetPIDHistVar("PIDBachEff",1), basicName, basicVal, tNW, pRV, smp[i]);
-        }
+	  if ( mdSet->CheckHistPID("PIDBachEff",yy) )
+	    {
+	      wE =  heff.GetValues(mdSet->GetPIDHistVar("PIDBachEff",0), mdSet->GetPIDHistVar("PIDBachEff",1), basicName, basicVal, tNW, pRV, smp[i]);
+	    }
+	}
 
         if (  mdSet->CheckDataMCWeighting() == true ||  mdSet->CheckMassWeighting() == true || reweight == true)
         {

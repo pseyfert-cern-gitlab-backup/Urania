@@ -1714,6 +1714,13 @@ std::pair <TString, TString> MDFitterSettings::GetPIDHistVar(TString key)
   return n;
 }
 
+Bool_t MDFitterSettings::CheckHistPID(TString key, TString year)
+{
+  TString fileName = GetPIDFileName(key,year);
+  if ( fileName == "") { return false; }
+  return true; 
+}
+
 
 HistPID1D MDFitterSettings::GetHistPID1D(TString key, TString year)
 {

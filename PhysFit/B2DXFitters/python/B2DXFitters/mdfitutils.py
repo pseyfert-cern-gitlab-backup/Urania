@@ -261,7 +261,7 @@ def readVariables(myconfigfile,label, prefix, workInt, sm, merge, bound, debug):
 
     return workInt 
 
-def getPDFNameFromConfig(myconfigfile, key, var, pdfcontainer):
+def getPDFNameFromConfig(myconfigfile, key, var, pdfN, pdfK):
 
     t = TString("_") 
     names = [] 
@@ -293,9 +293,10 @@ def getPDFNameFromConfig(myconfigfile, key, var, pdfcontainer):
                             continue
                         else:
                             names.append(name)
-                        pdfcontainer = GeneralUtils.AddToList2D(pdfcontainer, namepdf, name)
+                        pdfN = GeneralUtils.AddToList(pdfN, namepdf) 
+                        pdfK = GeneralUtils.AddToList(pdfK, name)
 
-    return pdfcontainer 
+    return pdfN, pdfK  
 
 def getType(myconfigfile, key):
     if myconfigfile.has_key(key):
@@ -346,20 +347,30 @@ def getSigOrCombPDF(myconfigfile,keys, typemode, work, workInt,sm, merge, bound,
     
     combEPDF = []
     for i in range(0,bound):
-        pdfNames = GeneralUtils.GetList2D(TString("pdf_names"), TString("pdf_keys"));
+        print "I Am here"
+        pdfN = GeneralUtils.GetList(TString("pdf_names"))
+        pdfK = GeneralUtils.GetList(TString("pdf_keys"))
         
         if dim > 0:
-            pdfNames = getPDFNameFromConfig(myconfigfile, keys[0], prefix1, pdfNames )
+            pdfN, pdfK = getPDFNameFromConfig(myconfigfile, keys[0], prefix1, pdfN, pdfK )
         if dim > 1:
-            pdfNames = getPDFNameFromConfig(myconfigfile, keys[1], prefix2, pdfNames )
+            pdfN, pdfK = getPDFNameFromConfig(myconfigfile, keys[1], prefix2, pdfN, pdfK )
         if dim > 2:
-            pdfNames = getPDFNameFromConfig(myconfigfile, keys[2], prefix3, pdfNames )
+            pdfN, pdfK = getPDFNameFromConfig(myconfigfile, keys[2], prefix3, pdfN, pdfK )
 
         if debug:    
-            GeneralUtils.printList2D(pdfNames)
+            GeneralUtils.printList(pdfN)
+            GeneralUtils.printList(pdfK)
+             
+
         EPDF = Bs2Dsh2011TDAnaModels.build_SigOrCombo(beautyMass,charmMass, bacPIDK, work, workInt, sm[i], TString(typemode), 
-                                                      merge, decay, types, pdfNames, pidkNames, dim, debug)
-        combEPDF.append(WS(workInt,EPDF))
+                                                      merge, decay, types, pdfN, pdfK, pidkNames, dim, debug)
+    
+        t = TString(keys[0])
+        if (t.Contains("Signal")):
+            combEPDF.append(WS(workInt,EPDF))
+        else:
+            combEPDF.append(EPDF)
 
     return combEPDF, workInt
 

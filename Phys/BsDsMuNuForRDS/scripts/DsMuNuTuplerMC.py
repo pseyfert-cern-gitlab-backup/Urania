@@ -18,8 +18,8 @@ from StandardParticles import StdLoosePi02gg, StdLooseResolvedPi0, StdLooseMerge
 ########################################################################
 
 #### Only needed if you run in local. These are used by TupleToolMuonIsolation AND also the algo to make BDTS cut if you are making it
-weightFile     = "/afs/cern.ch/user/s/sogilvy/cmtuser/DaVinci_v38r0/Phys/BsDsMuNuForRDS/utils/TMVA_7Dec.weights.xml"
-flatteningFile=  "/afs/cern.ch/user/s/sogilvy/cmtuser/DaVinci_v38r0/Phys/BsDsMuNuForRDS/utils/HflatBDTS_7Dec.root"
+weightFile     = "/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r0/Phys/BsDsMuNuForRDS/utils/TMVA_7Dec.weights.xml"
+flatteningFile=  "/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r0/Phys/BsDsMuNuForRDS/utils/HflatBDTS_7Dec.root"
 isoBDT1File    = "/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r0/Phys/BsDsMuNuForRDS/BDTfiles/600_2500_4_30_0.75_1_1_BDT.weights.xml"
 isoBDT2File    = "/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r0/Phys/BsDsMuNuForRDS/BDTfiles/600_2500_4_30_0.75_1_8_BDT.weights.xml"
 isoBDT3File    = "/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r0/Phys/BsDsMuNuForRDS/BDTfiles/600_2500_4_30_0.75_1_9_BDT.weights.xml"
@@ -27,16 +27,18 @@ isoBDT4File    = "/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r0/Phys/BsDsMu
 
 rootfilename = "TupleRDS.root" ## output file name
 Usegrid = False
-myEvents = -1
+myEvents = 100
 
-doStripping = True ## run the stripping over the events
-doMatchedNtuples = True ## does the MC mathching for all the decays
+doStripping = False ## run the stripping over the events
+doMatchedNtuples = False ## does the MC mathching for all the decays
+doMatchedDsst = False
+doSoftSelection = True
 
 ############################
 ###   DV configuration ####
 ############################
-detectorDB = "head-20120413"
-conditionDB = "sim-20120727-vc-mu100"
+detectorDB = "dddb-20150724"
+conditionDB = "sim-20160606-vc-md100"
 
 ########################################################################
 ###  Configuration ends but CHECK to the DV configuration at the end
@@ -54,8 +56,11 @@ if Usegrid:
     isoBDT3File    = "600_2500_4_30_0.75_1_9_BDT.weights.xml"
     isoBDT4File    = "600_2500_4_30_0.75_1_4_BDT.weights.xml"
 
-B2DMuNuInput     = "/Event/Phys/b2DsMuXB2DMuForTauMuLine/Particles"
-B2DMuNuInputFake = "/Event/Semileptonic/Phys/B2DMuNuX_Ds_FakeMuon/Particles"
+B2DMuNuInput =     "/Event/AllStreams/Phys/b2DsMuXB2DMuForTauMuLine/Particles"
+B2DMuNuInputFake = "/Event/AllStreams/Phys/b2DsMuXFakeB2DMuForTauMuLine/Particles"
+
+#B2DMuNuInput     = "/Event/Phys/b2DsMuXB2DMuForTauMuLine/Particles"
+#B2DMuNuInputFake = "/Event/Semileptonic/Phys/B2DMuNuX_Ds_FakeMuon/Particles"
 
 ## Check the number of PVs
 from Configurables import CheckPV
@@ -98,6 +103,38 @@ if doStripping:
 
 print 'The locations to read (for the ntuple) are', B2DMuNuInput
 
+## do a soft selection to eliminate all the cuts at the stripping level
+if doSoftSelection:
+  from StandardParticles import StdAllLooseMuons, StdLoosePions, StdLooseKaons
+
+  kaons = Selection("KaonsForDs", Algorithm = FilterDesktop("kaonFilter", Code = "(MIPCHI2DV(PRIMARY)>0)"), RequiredSelections = [StdLooseKaons])
+  pions = Selection("PionsForDs", Algorithm = FilterDesktop("pionFilter", Code = "(MIPCHI2DV(PRIMARY)>0)"), RequiredSelections = [StdLoosePions])
+  muons = Selection("MuonsForDs", Algorithm = FilterDesktop("muonFilter", Code = "(MIPCHI2DV(PRIMARY)>0)"), RequiredSelections = [StdAllLooseMuons])
+  _daughCut = '(PT > 200)' 
+  _combCut = ('(AM > 1850) & (AM < 2100)')
+  _momCuts = ('(M < 6000)')
+  _makeDs = CombineParticles("DsMaker",
+                             DecayDescriptor = "[D_s+ -> K+ K- pi+]cc",
+                             DaughtersCuts = {"K+" : _daughCut, "pi+" : _daughCut },
+                             CombinationCut = _combCut,
+                             MotherCut = _momCuts
+                            )
+  myDs = Selection("myDs",
+                   Algorithm = _makeDs,
+                   RequiredSelections = [pions, kaons]
+                   )
+  _makeBs = CombineParticles("BsMaker",
+                             DecayDescriptor = "[B_s0 -> D_s+ mu-]cc",
+                             MotherCut = _momCuts 
+                            )
+  BsSel = Selection("myBs", Algorithm = _makeBs, RequiredSelections = [myDs,muons])
+  BsSeq = SelectionSequence("BsDsMuNuDummySeq", TopSelection = BsSel)
+  
+  B2DMuNuInput = BsSeq.outputLocation()
+  mySequencer.Members += [BsSeq.sequence()]
+
+print 'The locations to read (for the ntuple) are', B2DMuNuInput
+
 ############################
 ### Configure the ntuple ###
 ############################
@@ -109,7 +146,6 @@ myNTUPLE.ToolList = [ "TupleToolGeometry"
                     , "TupleToolKinematic"
                     , "TupleToolEventInfo"
                     , "TupleToolPid"
-                    #, "TupleToolPropertime"
                     , "TupleToolRecoStats"
                     , "TupleToolTrigger"
                     , "TupleToolVtxIsoln"
@@ -144,29 +180,15 @@ myNTUPLE.TupleToolMuonIsolation.OutputLevel = ERROR
 ########################################################
 
 L0Triggers = ["L0MuonDecision", "L0DiMuonDecision", "L0HadronDecision"]
-##            ['Muon',               'DiMuon',               '  Hadron',     'Electron',  'Photon','PhotonHi','ElectronHi']
 
 Hlt1Triggers = [  "Hlt1SingleMuonNoIPDecision", "Hlt1SingleMuonHighPTDecision", "Hlt1TrackAllL0Decision", "Hlt1TrackMuonDecision"
                   ,"Hlt1TrackAllL0.*Decision"]
 
 Hlt2Triggers = [
-    ## muon lines
-    "Hlt2XcMuXForTauB2XcMuDecision", "Hlt2XcMuXForTauB2XcFakeMuDecision" 
-#    "Hlt2DiMuonDecision",  "Hlt2DiMuonLowMassDecision",
-#    "Hlt2DiMuonJPsiDecision",  "Hlt2DiMuonJPsiHighPTDecision",  "Hlt2DiMuonPsi2SDecision",
-#    "Hlt2DiMuonDetachedDecision",  "Hlt2DiMuonDetachedJPsiDecision", "Hlt2DiMuonDetachedHeavyDecision", "Hlt2TriMuonTauDecision",
-    ## hadron/Topo lines
-#    "Hlt2B2HHDecision",
-#    "Hlt2DiMuonBDecision",  "Hlt2DiMuonZDecision",
+    "Hlt2XcMuXForTauB2XcMuDecision", "Hlt2XcMuXForTauB2XcFakeMuDecision", 
     "Hlt2TopoMu2BodyBBDTDecision", "Hlt2TopoMu3BodyBBDTDecision", "Hlt2TopoMu4BodyBBDTDecision",
     "Hlt2Topo2BodyBBDTDecision",   "Hlt2Topo3BodyBBDTDecision",   "Hlt2Topo4BodyBBDTDecision",
     "Hlt2Topo2BodySimpleDecision", "Hlt2Topo3BodySimpleDecision", "Hlt2Topo4BodySimpleDecision",
-    ##others
-#    "Hlt2PassThroughDecision",
-#    "Hlt2TransparentDecision",
-#    "Hlt2IncPhiDecision",
-    ## inclusive decisions
-#    "Hlt2DiMuonDY.*Decision","Hlt2TopoE.*Decision", "Hlt2Topo.*Decision",  "Hlt2Charm.*Decision", "Hlt2DiElectron.*Decision", "Hlt2.*GammaDecision"
     ]
 
 triggerListF = L0Triggers + Hlt1Triggers + Hlt2Triggers
@@ -202,6 +224,58 @@ myNTUPLE.TupleToolMCTruth.MCTupleToolKinematic.StoreKineticInfo = True
 myNTUPLE.TupleToolMCTruth.MCTupleToolKinematic.StoreVertexInfo = True
 myNTUPLE.TupleToolMCTruth.MCTupleToolKinematic.StorePropertimeInfo = True
 myNTUPLE.TupleToolMCTruth.MCTupleToolKinematic.OutputLevel = INFO
+
+if doMatchedDsst :
+    _Preambulo = ["from LoKiPhysMC.decorators import *","from LoKiPhysMC.functions import mcMatch"]
+
+    ## Dictionary of daughters for the CombineParticles.
+    cheatDaug = {
+          "K+"   : "(mcMatch('[D_s+ --> K- K+ pi+]CC'))"
+          ,"pi+" : "(mcMatch('[D_s+ --> K- ^K+ pi+]CC'))"
+          }
+
+    cheatMother = "(mcMatch('[D_s+ --> K- K+ pi+]CC'))"
+
+    MatchedDsPlus = CombineParticles(
+       "MatchedDsComb"
+       , Preambulo = _Preambulo
+       , DecayDescriptor = "[D_s+ -> K- K+ pi+]cc"
+       , Inputs = [ "Phys/StdAllNoPIDsPions/Particles", "Phys/StdAllNoPIDsKaons/Particles" ]
+       , DaughtersCuts = cheatDaug
+       , CombinationCut = "AALL"
+       , MotherCut = cheatMother
+    )
+
+    cheatReDaug = {
+          "gamma" : "(mcMatch('[D*_s+ --> D_s+ gamma]CC'))"
+          }
+    cheatReMother = "(mcMatch('[D*_s+ --> D_s+ gamma]CC'))"
+    MatchedDsst = CombineParticles(
+        "MatchedDsstComb"
+        , Preambulo = _Preambulo
+        , DecayDescriptor = "[D*_s+ -> D_s+ gamma]cc"
+        , Inputs = ["Phys/MatchedDsComb", "Phys/StdAllVeryLoosePhotons"]
+        , DaughtersCuts = cheatReDaug
+        , CombinationCut = "AALL"
+        , MotherCut = cheatReMother
+    )
+
+    # Now we make the Bs candidate with a second instance of CombineParticles.
+    cheatBsMuMother = "(mcMatch('[B_s~0 --> D*_s+ mu- ... ]CC'))"
+    cheatBsMuDaug   = { "mu-" : "(mcMatch('[B_s~0 --> D*_s+ ^mu- ... ]CC'))" }
+    MatchedBsMu = CombineParticles(
+        "MatchedBsDsstMuNuComb"
+        , Preambulo = _Preambulo
+        , DecayDescriptor = "[B_s~0 -> D*_s+ mu-]cc"
+        , Inputs = [ "Phys/StdAllNoPIDsMuons/Particles", 'Phys/MatchedDsstComb' ]
+        , DaughtersCuts = cheatBsMuDaug
+        , CombinationCut = "AALL"
+        , MotherCut = cheatBsMuMother
+        )
+
+    Seq = GaudiSequencer( 'SeqMatchedBsDsstMuNuComb' )
+    Seq.Members = [ MatchedDsPlus, MatchedDsst, MatchedBsMu ]
+    mySequencer.Members += [ Seq ]
 
 if doMatchedNtuples :
     _Preambulo = ["from LoKiPhysMC.decorators import *","from LoKiPhysMC.functions import mcMatch"]
@@ -250,13 +324,23 @@ from DecayTreeTuple.Configuration import *
 ## for signal line ##
 B2DMuNuTuple = myNTUPLE.clone("B2DsMuNuTuple")
 B2DMuNuTuple.Inputs = [B2DMuNuInput]
-B2DMuNuTuple.Decay = "[B- -> ^(D_s+ -> ^K- ^K+ ^pi+) ^mu-]CC"
-B2DMuNuTuple.Branches = {"Bs_0"  : "[B- ->  (D_s+ -> K- K+ pi+)  mu-]CC",
-                         "Ds"    : "[B- -> ^(D_s+ -> K- K+ pi+)  mu-]CC",
-                         "Kpl"   : "[B- ->  (D_s+ -> K- ^K+ pi+)  mu-]CC",
-                         "Kmi"   : "[B- ->  (D_s+ -> ^K- K+ pi+)  mu-]CC",
-                         "pi"    : "[B- ->  (D_s+ -> K- K+ ^pi+)  mu-]CC",
-                         "mu"    : "[B- ->  (D_s+ -> K- K+ pi+) ^mu-]CC"}
+if doSoftSelection:
+  B2DMuNuTuple.Decay = "[B_s0 -> ^(D_s+ -> ^K- ^K+ ^pi+) ^mu-]CC"
+  B2DMuNuTuple.Branches = {"Bs_0"  : "[B_s0 ->  (D_s+ -> K- K+ pi+)  mu-]CC",
+                           "Ds"    : "[B_s0 -> ^(D_s+ -> K- K+ pi+)  mu-]CC",
+                           "Kpl"   : "[B_s0 ->  (D_s+ -> K- ^K+ pi+)  mu-]CC",
+                           "Kmi"   : "[B_s0 ->  (D_s+ -> ^K- K+ pi+)  mu-]CC",
+                           "pi"    : "[B_s0 ->  (D_s+ -> K- K+ ^pi+)  mu-]CC",
+                           "mu"    : "[B_s0 ->  (D_s+ -> K- K+ pi+) ^mu-]CC"}
+else:
+  B2DMuNuTuple.Decay = "[B- -> ^(D_s+ -> ^K- ^K+ ^pi+) ^mu-]CC"
+  B2DMuNuTuple.Branches = {"Bs_0"  : "[B- ->  (D_s+ -> K- K+ pi+)  mu-]CC",
+                           "Ds"    : "[B- -> ^(D_s+ -> K- K+ pi+)  mu-]CC",
+                           "Kpl"   : "[B- ->  (D_s+ -> K- ^K+ pi+)  mu-]CC",
+                           "Kmi"   : "[B- ->  (D_s+ -> ^K- K+ pi+)  mu-]CC",
+                           "pi"    : "[B- ->  (D_s+ -> K- K+ ^pi+)  mu-]CC",
+                           "mu"    : "[B- ->  (D_s+ -> K- K+ pi+) ^mu-]CC"}
+
 
 B2DMuNuTuple.addTool(TupleToolDecay("B"))
 B2DMuNuTuple.B.InheritTools = True
@@ -270,6 +354,7 @@ EWconeDs.MaxConeRadius = 0.6
 EWconeDs.ExtraParticlesLocation = "StdAllLoosePions"
 EWconeDs.ExtraPi0sLocation = "StdLoosePi02gg"
 EWconeDs.ExtraPhotonsLocation = "StdVeryLooseAllPhotons"
+EWconeDs.isMC = True
 
 B2DMuNuTuple.addTool(TupleToolDecay("mu"))
 B2DMuNuTuple.mu.InheritTools = True
@@ -302,6 +387,7 @@ EWconeDsSS.MaxConeRadius = 0.6
 EWconeDsSS.ExtraParticlesLocation = "StdAllLoosePions"
 EWconeDsSS.ExtraPi0sLocation = "StdLoosePi02gg"
 EWconeDsSS.ExtraPhotonsLocation = "StdVeryLooseAllPhotons"
+EWconeDsSS.isMC = True
 
 B2DMuNuTupleSS.addTool(TupleToolDecay("mu"))
 B2DMuNuTupleSS.mu.InheritTools = True
@@ -334,6 +420,7 @@ EWconeDsFake.MaxConeRadius = 0.6
 EWconeDsFake.ExtraParticlesLocation = "StdAllLoosePions"
 EWconeDsFake.ExtraPi0sLocation = "StdLoosePi02gg"
 EWconeDsFake.ExtraPhotonsLocation = "StdVeryLooseAllPhotons"
+EWconeDsFake.isMC = True
 
 B2DMuNuTupleFake.addTool(TupleToolDecay("mu"))
 B2DMuNuTupleFake.mu.InheritTools = True
@@ -366,6 +453,7 @@ EWconeDsFakeSS.MaxConeRadius = 0.6
 EWconeDsFakeSS.ExtraParticlesLocation = "StdAllLoosePions"
 EWconeDsFakeSS.ExtraPi0sLocation = "StdLoosePi02gg"
 EWconeDsFakeSS.ExtraPhotonsLocation = "StdVeryLooseAllPhotons"
+EWconeDsFakeSS.isMC = True
 
 B2DMuNuTupleFakeSS.addTool(TupleToolDecay("mu"))
 B2DMuNuTupleFakeSS.mu.InheritTools = True
@@ -379,10 +467,28 @@ EWconeMuFakeSS.ExtraParticlesLocation = "StdAllLoosePions"
 ### Do MCMatch ###
 ##################
 
+if doMatchedDsst:
+    MBsDsstMuNuTuple = myNTUPLE.clone("MB2DsstMuNuTuple")
+    MBsDsstMuNuTuple.Inputs = [ "Phys/MatchedBsDsstMuNuComb" ]
+    MBsDsstMuNuTuple.Decay = "[B_s0 -> ^(D*_s- -> (D_s- -> ^K- ^K+ ^pi-) gamma) ^mu+]CC"
+    MBsDsstMuNuTuple.Branches = {"Bs_0"  : "[B_s0 -> (D*_s- -> (D_s- -> K- K+ pi-) gamma)  mu+]CC",
+                              "Dsst"  : "[B_s0 -> ^(D*_s- -> (D_s- -> K- K+ pi-) gamma) mu+]CC",
+                              "Ds"    : "[B_s0 -> (D*_s- -> ^(D_s- -> K- K+ pi-) gamma) mu+]CC",
+                              "Kpl"   : "[B_s0 -> (D*_s- -> (D_s- -> K- ^K+ pi-) gamma) mu+]CC",
+                              "Kmi"   : "[B_s0 -> (D*_s- -> (D_s- -> ^K- K+ pi-) gamma) mu+]CC",
+                              "pi"    : "[B_s0 -> (D*_s- -> (D_s- -> K- K+ ^pi-) gamma) mu+]CC",
+                              "mu"    : "[B_s0 -> (D*_s- -> (D_s- -> K- K+ pi-) gamma) ^mu+]CC",
+                              "gamma" : "[B_s0 -> (D*_s- -> (D_s- -> K- K+ pi-) ^gamma) mu+]CC"
+    }
+
+    MBsDsstMuNuTuple.addTool(TupleToolDecay("B"))
+    MBsDsstMuNuTuple.B.InheritTools = True
+    mySequencer.Members += [MBsDsstMuNuTuple]
+
 if doMatchedNtuples:
     MBsDMuNuTuple = myNTUPLE.clone("MB2DsMuNuTuple")
     MBsDMuNuTuple.Inputs = [ "Phys/MatchedBsDMuNuComb" ] 
-    MBsDMuNuTuple.Decay = "[B_s0 -> ^(D_s- -> ^K- ^K+ ^pi-) ^mu+]CC" 
+    MBsDMuNuTuple.Decay = "[B_s0 => ^(D_s- => ^K- ^K+ ^pi-) ^mu+]CC" 
     MBsDMuNuTuple.Branches = {"Bs_0"  : "[B_s0 ->  (D_s- -> K- K+ pi-)  mu+]CC",
                               "Ds"    : "[B_s0 -> ^(D_s- -> K- K+ pi-)  mu+]CC",
                               "Kpl"   : "[B_s0 ->  (D_s- -> K- ^K+ pi-)  mu+]CC",
@@ -396,16 +502,21 @@ if doMatchedNtuples:
 #######################
 ### DaVinci options ###
 #######################
-
 DaVinci().EvtMax = myEvents  
 DaVinci().SkipEvents = 0
-DaVinci().DataType = "2012"
-DaVinci().Simulation   = True
-DaVinci().Lumi   = False
+DaVinci().DataType = "2015"
+DaVinci().Simulation = True
+DaVinci().Lumi = False
+DaVinci().PrintFreq = 1
 DaVinci().UserAlgorithms = [ mySequencer ]
-DaVinci().MoniSequence += [B2DMuNuTuple, B2DMuNuTupleSS, B2DMuNuTupleFake, B2DMuNuTupleFakeSS]
+if doSoftSelection:
+  DaVinci().MoniSequence = [B2DMuNuTuple]
+else:
+  DaVinci().MoniSequence = [B2DMuNuTuple, B2DMuNuTupleSS, B2DMuNuTupleFake, B2DMuNuTupleFakeSS]
 if doMatchedNtuples:
-    DaVinci().MoniSequence += [ MBsDMuNuTuple ]
+  DaVinci().MoniSequence += [ MBsDMuNuTuple ]
+if doMatchedDsst:
+  DaVinci().MoniSequence += [ MBsDsstMuNuTuple ]
 
 DaVinci().TupleFile = rootfilename
 DaVinci().DDDBtag   = detectorDB 
@@ -417,8 +528,7 @@ DaVinci().InputType = "DST"
 if not(Usegrid):
     from GaudiConf import IOHelper
     DaVinci().Input = [
-        #"DATAFILE='PFN:/afs/cern.ch/user/r/rvazquez/work/dsts/MC_RDS/00025691_00000002_1.allstreams.dst',TYP='POOL_ROOTTREE' OPT='READ'" ##sig
-        "DATAFILE='PFN:/afs/cern.ch/user/r/rvazquez/work/public/00051263_00000005_2.dst',TYP='POOL_ROOTTREE' OPT='READ'"
+        "DATAFILE='PFN:/afs/cern.ch/user/r/rvazquez/work/dsts/MC_RDS/00051834_00000136_3.AllStreams.dst'"
         ] 
 MessageSvc().Format = "% F%60W%S%7W%R%T %0W%M"
 MessageSvc().OutputLevel = INFO

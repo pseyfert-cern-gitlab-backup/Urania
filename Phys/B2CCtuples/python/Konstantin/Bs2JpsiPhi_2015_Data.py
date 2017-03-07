@@ -309,7 +309,7 @@ tuple_B2jpsiphi.B.ToolList          += ["TupleToolP2VV/TupleToolP2VV_Bs"]
 
 ## Force update of CondDB to use proper momentum scaling
 from Configurables import CondDB
-CondDB(LatestGlobalTagByDataType = '2016')
+CondDB(LatestGlobalTagByDataType = '2015')
 
 ## primary vertex selection
 from Configurables import CheckPV
@@ -324,13 +324,13 @@ smear = TrackScaleState('TrackScaleState')
 # from GaudiConf import IOHelper
 # # Use the local input data
 # IOHelper().inputFiles([
-#     './00054259_00004760_1.dimuon.dst'
+#     './00049575_00003740_1.dimuon.dst'
 # ], clear=True)
 
 ########################################################################
 from Configurables import DaVinci
 DaVinci().UserAlgorithms = [checkpv, smear, rd_SEQ.sequence()]  # two trees, for reco and gene information
-DaVinci().DataType       = "2016"
+DaVinci().DataType       = "2015"
 DaVinci().EvtMax         = -1                                   # Number of events
 DaVinci().InputType      = 'DST'
 DaVinci().PrintFreq      = 1000

@@ -512,6 +512,7 @@ public:
   std::pair <TString, TString> GetPIDHistVar(TString key);
   HistPID1D GetHistPID1D(TString key,  TString year);
   HistPID2D GetHistPID2D(TString key, TString year);
+  Bool_t CheckHistPID(TString key, TString year);
 
   void SetConfigFile(TString config) { _data = config; }
   TString GetConfigFile() { return _data; }

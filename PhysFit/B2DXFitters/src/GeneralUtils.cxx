@@ -2702,6 +2702,12 @@ namespace GeneralUtils {
     return list; 
   }
 
+  std::vector < std::vector <TString> >  GetList2D(std::vector <TString> list)
+  {
+    std::vector< std::vector < TString > > matrix;
+    //matrix.push_back(list); 
+    return matrix; 
+  }
   
   std::vector < std::vector <TString> > GetList2D(TString name, TString name2)
   {
@@ -2714,6 +2720,26 @@ namespace GeneralUtils {
     return matrix; 
   }
 
+  std::vector < std::vector <TString> >  ConvertLists(std::vector <TString> pdfN, std::vector <TString> pdfK)
+  {
+    std::vector < std::vector <TString> > matrix;
+    if ( pdfN.size () != pdfK.size() )
+      {
+	std::cout<<"[ERROR] Converting into matrix not possible. Vectors have different sizes."<<std::endl; 
+      }
+    for (unsigned int g = 0; g<pdfN.size(); g++ )
+      {
+	std::vector<TString> myvector;
+	myvector.push_back(pdfN[g]);
+	myvector.push_back(pdfK[g]);
+	matrix.push_back(myvector);
+      }
+
+    return matrix; 
+
+  }
+
+
   std::vector < std::vector <TString> > AddToList2D(std::vector < std::vector <TString> > matrix, TString name,TString name2)
   {
     std::vector<TString> myvector;
@@ -2722,6 +2748,14 @@ namespace GeneralUtils {
     matrix.push_back(myvector);
     return matrix; 
     
+  }
+
+  void printList(std::vector <TString> list)
+  {
+    for (unsigned int j = 0; j < list.size(); j ++ )
+      {
+	std::cout<<"element: "<<j<<" : "<<list[j]<<std::endl;
+      }
   }
 
   void printList2D(std::vector < std::vector <TString> > matrix)

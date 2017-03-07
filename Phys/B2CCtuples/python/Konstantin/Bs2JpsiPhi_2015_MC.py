@@ -6,7 +6,7 @@ from Configurables import GaudiSequencer, CombineParticles, OfflineVertexFitter,
 from Configurables import DecayTreeTuple, EventTuple, TupleToolTrigger, TupleToolTISTOS, FilterDesktop
 from Configurables import BackgroundCategory, TupleToolDecay, TupleToolVtxIsoln, TupleToolPid, EventCountHisto, TupleToolRecoStats
 from Configurables import LoKi__Hybrid__TupleTool, TupleToolVeto, TupleToolTrackPosition, TupleToolTrackInfo
-from Configurables import TupleToolTagging, TupleToolL0Data, TupleToolL0Calo, TupleToolP2VV
+from Configurables import TupleToolTagging, TupleToolL0Data, TupleToolL0Calo, TupleToolP2VV, TupleToolMCTruth, TupleToolMCBackgroundInfo
 
 l0_lines = [ 'L0MuonDecision'
            , 'L0DiMuonDecision'
@@ -48,7 +48,7 @@ hlt2_lines = [ 'Hlt2Topo2BodyDecision'
 
 mtl = l0_lines + hlt1_lines + hlt2_lines
 
-location  = '/Event/Dimuon/Phys/BetaSBs2JpsiPhiDetachedLine/Particles'
+location  = '/Event/AllStreams/Phys/BetaSBs2JpsiPhiDetachedLine/Particles'
 from PhysSelPython.Wrappers import AutomaticData
 b2jpsiphi_selection = AutomaticData( location )
 
@@ -67,6 +67,8 @@ tl = ["TupleToolTrigger"
      ,"TupleToolL0Calo"
      ,"TupleToolL0Data"
      ,"TupleToolTISTOS"
+     ,"TupleToolMCTruth"
+     ,"TupleToolMCBackgroundInfo"
      ]
 
 from GaudiConfUtils.ConfigurableGenerators import DecayTreeTuple as TUPLE
@@ -307,9 +309,14 @@ TupleToolP2VV_BsDetached.OutputLevel = 6
 tuple_B2jpsiphi.B.addTool(TupleToolP2VV_BsDetached)
 tuple_B2jpsiphi.B.ToolList          += ["TupleToolP2VV/TupleToolP2VV_Bs"]
 
-## Force update of CondDB to use proper momentum scaling
-from Configurables import CondDB
-CondDB(LatestGlobalTagByDataType = '2016')
+MCTruth = TupleToolMCTruth()
+MCTruth.ToolList = [
+    "MCTupleToolKinematic",
+    "MCTupleToolHierarchy",
+    "MCTupleToolPID"
+]
+
+tuple_B2jpsiphi.addTool(MCTruth)
 
 ## primary vertex selection
 from Configurables import CheckPV
@@ -318,24 +325,26 @@ checkpv = CheckPV()
 from PhysSelPython.Wrappers import SelectionSequence
 rd_SEQ = SelectionSequence('DATA', rd_selection)
 
-from Configurables import TrackScaleState
-smear = TrackScaleState('TrackScaleState')
+from Configurables import TrackSmearState
+smear = TrackSmearState('TrackSmearState')
 
 # from GaudiConf import IOHelper
 # # Use the local input data
 # IOHelper().inputFiles([
-#     './00054259_00004760_1.dimuon.dst'
+#     './00052191_00006939_1.dimuon.dst'
 # ], clear=True)
 
 ########################################################################
 from Configurables import DaVinci
 DaVinci().UserAlgorithms = [checkpv, smear, rd_SEQ.sequence()]  # two trees, for reco and gene information
-DaVinci().DataType       = "2016"
+DaVinci().DataType       = "2015"
 DaVinci().EvtMax         = -1                                   # Number of events
 DaVinci().InputType      = 'DST'
 DaVinci().PrintFreq      = 1000
 DaVinci().SkipEvents     = 0                                    # Events to skip
 DaVinci().HistogramFile  = "DVHistos.root"                      # Histogram file
 DaVinci().TupleFile      = "BsJpsiPhi.root"                     # Ntuple
-DaVinci().Simulation     = False
-DaVinci().Lumi           = True
+DaVinci().Simulation     = True
+DaVinci().Lumi           = False
+DaVinci().CondDBtag      = "sim-20161124-2-vc-md100"            # Update when available
+DaVinci().DDDBtag        = "dddb-20150724"                      # Update when available
