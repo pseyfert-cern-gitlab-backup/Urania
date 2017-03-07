@@ -15,6 +15,10 @@ Apart from project maintainers, also certain package maintainers are allowed to 
 
 If you are a package developer and you think you should be granted these permissions as well, please send an email to the mailing list below.
 
+### Tips and tricks
+
+* <b>Solving merge conflicts</b>: please have a look to the [Git4LHCb twiki](https://twiki.cern.ch/twiki/bin/view/LHCb/Git4LHCb#Merge_conflict_in_gitlab) (cloning the whole repository for this task is acceptable).
+
 ## Mailing list
 For issues, questions and problems; please send an e-mail to:
 
