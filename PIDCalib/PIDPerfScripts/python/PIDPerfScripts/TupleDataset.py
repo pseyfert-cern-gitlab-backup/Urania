@@ -3,6 +3,7 @@ from ROOT import (RooRealVar, RooDataSet, RooArgSet, TFile)
 from copy import copy
 import os
 import time
+import tempfile
 
 class var:
   def __init__ (self, dsname, tuplename, range ):
@@ -312,8 +313,11 @@ def getDataSetFromTuple ( file, mother, part, trackcuts, pidcuts, xvar, yvar, zv
   if datasetname in additionalVariables:
     vars.update ( additionalVariables[datasetname] )
     
-
-  tmp = ROOT.TFile.Open (  "/tmp/"+os.getenv('USER') + "/tmpPidCalib_"+datasetname+"{0}.root".format(time.time()) , "RECREATE")
+  tempdir = tempfile.mkdtemp()
+  print "Creating temporary directory: "+tempdir
+  tmp = ROOT.TFile.Open(tempdir+"/tmpPidCalib_"+datasetname+".root","RECREATE")
+  #tmp = ROOT.TFile.Open (  "/tmp/"+os.getenv('USER') + "/tmpPidCalib_"+datasetname+"{0}.root".format(time.time()) , "RECREATE")
+  
 
 
   data_total = ROOT.RooDataSet()
@@ -377,6 +381,7 @@ def getDataSetFromTuple ( file, mother, part, trackcuts, pidcuts, xvar, yvar, zv
     i+=1
 
   os.remove(tmp.GetName())
+  os.rmdir
   data_total.SetName(datasetname+"ds")
   data_total.SetTitle("RooDataset automatically generated from TTree "+datasetname)
 
