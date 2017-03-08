@@ -1,23 +1,16 @@
-from ROOT import *
-
 def getconfig() :
 
-    configdict = {}
-    
+    import math
     from math import pi
-    from math import log
-    
-    # considered decay mode
+
+    configdict = {}
+
     configdict["Decay"] = "Bd2DPi"
-    # PIDK for bachelor
-    configdict["BachelorHypo"] = "Bd2DPi"
-    configdict["CharmModes"] = {"KPiPi"} 
-    # year of data taking
-    configdict["YearOfDataTaking"] = {"2011","2012"} 
-    # file name with paths to MC/data samples
-    configdict["dataName"]   = "/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/config_Bd2DPi_MC_large.txt"
-        
-    # basic variables
+
+    ############################################
+    # Define all basic variables
+    ############################################
+
     configdict["BasicVariables"] = {}
     configdict["BasicVariables"]["BeautyMass"]    = { "Range"                  : [5090,    6000    ],
                                                       "Name"                   : "BeautyMass",
@@ -28,7 +21,11 @@ def getconfig() :
                                                       "Name"                   : "BeautyTime",
                                                       "InputName"              : "lab0_FitDaughtersPVConst_ctau_flat"}
 
-    configdict["BasicVariables"]["BacPIDK"]       = { "Range"                  : [-999.0,    999.0     ],
+    configdict["BasicVariables"]["BacP"]          = { "Range"                  : [2000.0,  650000.0],
+                                                      "Name"                   : "BacP",
+                                                      "InputName"              : "lab0_FitDaughtersConst_P0_P_flat"}
+
+    configdict["BasicVariables"]["BacPIDK"]       = { "Range"                  : [-999.0, 999.0     ],
                                                       "Name"                   : "BacPIDK",
                                                       "InputName"              : "lab1_PIDKcorr"}
 
@@ -58,7 +55,7 @@ def getconfig() :
 
     configdict["BasicVariables"]["TagDecSS"]      = { "Range"                  : [-1.0,    1.0     ],
                                                       "Name"                   : "TagDecSS",
-                                                      "InputName"              : "obsTagSS_PionInvBoost_ProtonInvBoost"}
+                                                      "InputName"              : "TagDecSS"}
 
     configdict["BasicVariables"]["TagDecSSPionBDT"]      = { "Range"                  : [-1.0,    1.0     ],
                                                              "Name"                   : "TagDecSSPionBDT",
@@ -67,42 +64,42 @@ def getconfig() :
     configdict["BasicVariables"]["TagDecSSProton"]      = { "Range"                  : [-1.0,    1.0     ],
                                                             "Name"                   : "TagDecSSProton",
                                                             "InputName"              : "obsTagSSProton_InvBoost"}
-    
-    configdict["BasicVariables"]["MistagOS"]      = { "Range"                  : [ 0.0,    0.5     ],
+
+    configdict["BasicVariables"]["MistagOS"]      = { "Range"                  : [0.0,    0.5     ],
                                                       "Name"                   : "MistagOS",
                                                       "InputName"              : "MistagOS"}
 
-    configdict["BasicVariables"]["MistagOSCharm"]      = { "Range"                  : [ 0.0,    0.5     ],
+    configdict["BasicVariables"]["MistagOSCharm"]      = { "Range"                  : [0.0,    0.5     ],
                                                            "Name"                   : "MistagOSCharm",
                                                            "InputName"              : "obsEtaOSCharm"}
 
-    configdict["BasicVariables"]["MistagOSComb"]      = { "Range"                  : [ 0.0,    0.5     ],
+    configdict["BasicVariables"]["MistagOSComb"]      = { "Range"                  : [0.0,    0.5     ],
                                                           "Name"                   : "MistagOSComb",
                                                           "InputName"              : "obsEtaOS"}
 
-    configdict["BasicVariables"]["MistagSS"]      = { "Range"                  : [ 0.0,    0.5     ],
+    configdict["BasicVariables"]["MistagSS"]      = { "Range"                  : [0.0,    0.5     ],
                                                       "Name"                   : "MistagSS",
-                                                      "InputName"              : "obsEtaSS_PionInvBoost_ProtonInvBoost"}
+                                                      "InputName"              : "MistagSS"}
 
-    configdict["BasicVariables"]["MistagSSPionBDT"]      = { "Range"                  : [ 0.0,    0.5     ],
+    configdict["BasicVariables"]["MistagSSPionBDT"]      = { "Range"                  : [0.0,    0.5     ],
                                                              "Name"                   : "MistagSSPionBDT",
                                                              "InputName"              : "obsEtaSSPionBDT_InvBoost"}
 
-    configdict["BasicVariables"]["MistagSSProton"]      = { "Range"                  : [ 0.0,    0.5     ],
+    configdict["BasicVariables"]["MistagSSProton"]      = { "Range"                  : [0.0,    0.5     ],
                                                             "Name"                   : "MistagSSProton",
                                                             "InputName"              : "obsEtaSSProton_InvBoost"}
-    
+
     configdict["BasicVariables"]["BDTG"]           = { "Range"                  : [0.0, 1],
                                                        "Name"                   : "BDTG",
                                                        "InputName"              : "BDT_classifier"}
 
     #Additional variables not foreseen before
     configdict["AdditionalVariables"] = {}
-    
+
     configdict["AdditionalVariables"]["BeautyEta"]      = { "Range"                  : [ 1.5,    10.0     ],
                                                             "Name"                   : "BeautyEta",
                                                             "InputName"              : "lab0_LOKI_ETA"}
-    
+
     configdict["AdditionalVariables"]["BeautyPT"]      = { "Range"                  : [ 0.0,    100000     ],
                                                            "Name"                   : "BeautyPT",
                                                            "InputName"              : "lab0_PT"}
@@ -110,7 +107,7 @@ def getconfig() :
     configdict["AdditionalVariables"]["BeautyP"]      = { "Range"                  : [ 0.0,    3000000     ],
                                                           "Name"                   : "BeautyP",
                                                           "InputName"              : "lab0_P"}
-    
+
     configdict["AdditionalVariables"]["nPV"]      = { "Range"                  : [ 0.0,    10     ],
                                                       "Name"                   : "nPV",
                                                       "InputName"              : "nPV"}
@@ -127,9 +124,101 @@ def getconfig() :
                                                                                 "Name"                   : "Hlt2Topo4BodyBBDTDecision_TOS",
                                                                                 "InputName"              : "lab0_Hlt2Topo4BodyBBDTDecision_TOS"}
 
-    # PIDK bin
-    configdict["AdditionalCuts"] = {}
-    configdict["AdditionalCuts"]["All"] = {"MC": "lab1_PIDKcorr<5.0&&lab0_BKGCAT==0"}
 
+    ############################################
+    # Define all CPV and decay rate parameters
+    ############################################
+
+    #Parameters from https://svnweb.cern.ch/trac/lhcb/browser/DBASE/tags/Gen/DecFiles/v27r42/dkfiles/Bd_D-pi+,Kpipi=CPVDDalitz,DecProdCut.dec)
+    ModqOverp_d     =  1
+    ArgqOverp_d     =  -0.746
+    ModpOverq_d     =  1
+    ArgpOverq_d     =  0.746
+    ModAf_d         =  0.0849
+    ArgAf_d         =  0.002278
+    ModAbarf_d      =  0.00137
+    ArgAbarf_d      =  -1.128958
+    ModAfbar_d      =  0.00137
+    ArgAfbar_d      =  1.3145
+    ModAbarfbar_d   =  0.0849
+    ArgAbarfbar_d   =  0.002278
+
+    configdict["ACP"] = {}
+    configdict["ACP"]["Signal"] = { "Gamma"                : [ 1.0/1.519068],# 0.0, 2.0],
+                                    "DeltaGamma"           : [0.0],
+                                    "DeltaM"               : [0.510],# 0.01, 2.0],
+                                    #"ArgLf"                : [ArgqOverp_d + ArgAbarf_d - ArgAf_d],
+                                    #"ArgLbarfbar"          : [ArgpOverq_d + ArgAfbar_d - ArgAbarfbar_d],
+                                    #"ModLf"                : [ModAbarf_d/ModAf_d],
+                                    "S"                   : [-0.031],
+                                    "Sbar"                : [-0.029],
+                                    "D"                   : [0.0],
+                                    "Dbar"                : [0.0],
+                                    "C"                   : [1.0],
+                                    "ParameteriseIntegral" : True,
+                                    "CPlimit"              : {"upper":1.0, "lower":-1.0},
+                                    "NBinsAcceptance"      : 0} #keep at zero if using spline acceptance!
+
+    ############################################
+    # Define resolution and acceptance models
+    ############################################
+
+    configdict["ResolutionAcceptance"] = {}
+    configdict["ResolutionAcceptance"]["Signal"] = {}
+    configdict["ResolutionAcceptance"]["Signal"] = {"TimeErrorPDF": None,
+                                                    "Acceptance":
+                                                    {"Type": "Spline",
+                                                     "Float": True, 
+                                                     "KnotPositions" : [0.5, 1.0, 1.5, 2.0, 2.3, 2.6, 3.0, 4.0, 10.0],
+                                                     "KnotCoefficients" : [0.194251, 0.33608, 0.611385, 0.865662, 0.999956, 1.06792, 1.1141, 1.15014, 1.20672]},
+                                                    "Resolution":
+                                                    {"Type": "AverageModel",
+                                                     "Parameters": { 'sigmas': [ 0.042845 ], 'fractions': [] },
+                                                     "Bias": [0.0],
+                                                     "ScaleFactor": [1.0]}
+                                                    }
+
+    ############################################
+    # Define asymmetries
+    ############################################
+
+    configdict["ProductionAsymmetry"] = {}
+    configdict["DetectionAsymmetry"] = {}
+    configdict["ProductionAsymmetry"]["Signal"] = {}
+    configdict["DetectionAsymmetry"]["Signal"] = {}
+    configdict["ProductionAsymmetry"]["Signal"] = [-0.0124, -3.0, 3.0]
+    configdict["DetectionAsymmetry"]["Signal"] = [0.0086, -3.0, 3.0]
+
+    ############################################
+    # Choose parameters to fix
+    ############################################
+
+    configdict["constParams"] = []
+    configdict["constParams"].append('Cf')
+    configdict["constParams"].append('Cfbar')
+    configdict["constParams"].append('Df')
+    configdict["constParams"].append('Dfbar')
+    configdict["constParams"].append('.*scalefactor')
+    configdict["constParams"].append('resmodel00_sigma')
+
+    ############################################
+    # Choose initial free parameters to randomise
+    ############################################
+
+    configdict["randomiseParams"] = {}
+    configdict["randomiseParams"] = {'Sf'                          : {'min': -0.08, 'max': -0.001},
+                                     'Sfbar'                       : {'min': -0.08, 'max': -0.001}
+                                     }
+
+    ############################################
+    # Build gaussian constraints
+    # See B2DXFitters/GaussianConstraintBuilder.py for documentation
+    ############################################
     
+    #configdict["gaussCons"] = {}
+    # Constraint on DeltaM
+    #configdict["gaussCons"]["deltaM"] = math.sqrt(0.0021*0.0021 + 0.0010*0.0010)
+    # Constraint on Gamma (error on gamma = rel. error on lifetime * gamma)
+    #configdict["gaussCons"]["Gamma"] = (0.004/1.520) * (1.0/1.520)
+
     return configdict

@@ -1,87 +1,87 @@
 #Bd2DPi KPiPi 2011 Bd2DPiHypo
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/data/
-Data2011_Bd2DPi_Bd2DPiHypo_magDown_S21_afterSelection.root
-Data2011_Bd2DPi_Bd2DPiHypo_magUp_S21_afterSelection.root
+Data2011_Bd2DPi_Bd2DPiHypo_magDown_S21_afterSelection_SSin_BDT00.root
+Data2011_Bd2DPi_Bd2DPiHypo_magUp_S21_afterSelection_SSin_BDT00.root
 Bd2Dpi
 Bd2Dpi
 
 #Bd2DPi KPiPi 2011 Bd2DKHypo
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/data/
-Data2011_Bd2DPi_Bd2DKHypo_magDown_S21_afterSelection.root
-Data2011_Bd2DPi_Bd2DKHypo_magUp_S21_afterSelection.root
-Bd2Dpi
-Bd2Dpi
+Data2011_Bd2DPi_Bd2DKHypo_magDown_S21_afterSelection_BDT00.root
+Data2011_Bd2DPi_Bd2DKHypo_magUp_S21_afterSelection_BDT00.root
+Bd2DK
+Bd2DK
 
 #Bd2DPi KPiPi 2012 Bd2DPiHypo
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/data/
-Data2012_Bd2DPi_Bd2DPiHypo_magDown_S21_afterSelection.root
-Data2012_Bd2DPi_Bd2DPiHypo_magUp_S21_afterSelection.root
+Data2012_Bd2DPi_Bd2DPiHypo_magDown_S21_afterSelection_SSin_BDT00.root
+Data2012_Bd2DPi_Bd2DPiHypo_magUp_S21_afterSelection_SSin_BDT00.root
 Bd2Dpi
 Bd2Dpi
 
 #Bd2DPi KPiPi 2012 Bd2DKHypo
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/data/
-Data2012_Bd2DPi_Bd2DKHypo_magDown_S21_afterSelection.root
-Data2012_Bd2DPi_Bd2DKHypo_magUp_S21_afterSelection.root
-Bd2Dpi
-Bd2Dpi
+Data2012_Bd2DPi_Bd2DKHypo_magDown_S21_afterSelection_BDT00.root
+Data2012_Bd2DPi_Bd2DKHypo_magUp_S21_afterSelection_BDT00.root
+Bd2DK
+Bd2DK
 
 #Bd2DPi Combinatorial KPiPi 2011 Bd2DPiHypo
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/data/
-Data2011_Bd2DPi_Bd2DPiHypo_magDown_S21_afterSelection.root
-Data2011_Bd2DPi_Bd2DPiHypo_magUp_S21_afterSelection.root
+Data2011_Bd2DPi_Bd2DPiHypo_magDown_S21_afterSelection_SSin_BDT00.root
+Data2011_Bd2DPi_Bd2DPiHypo_magUp_S21_afterSelection_SSin_BDT00.root
 Bd2Dpi
 Bd2Dpi
 
 #Bd2DPi Combinatorial KPiPi 2011 Bd2DKHypo
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/data/
-Data2011_Bd2DPi_Bd2DKHypo_magDown_S21_afterSelection.root
-Data2011_Bd2DPi_Bd2DKHypo_magUp_S21_afterSelection.root
-Bd2Dpi
-Bd2Dpi
+Data2011_Bd2DPi_Bd2DKHypo_magDown_S21_afterSelection_BDT00.root
+Data2011_Bd2DPi_Bd2DKHypo_magUp_S21_afterSelection_BDT00.root
+Bd2DK
+Bd2DK
 
 #Bd2DPi Combinatorial KPiPi 2012 Bd2DPiHypo
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/data/
-Data2012_Bd2DPi_Bd2DPiHypo_magDown_S21_afterSelection.root
-Data2012_Bd2DPi_Bd2DPiHypo_magUp_S21_afterSelection.root
+Data2012_Bd2DPi_Bd2DPiHypo_magDown_S21_afterSelection_SSin_BDT00.root
+Data2012_Bd2DPi_Bd2DPiHypo_magUp_S21_afterSelection_SSin_BDT00.root
 Bd2Dpi
 Bd2Dpi
 
 #Bd2DPi Combinatorial KPiPi 2012 Bd2DKHypo
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/data/
-Data2012_Bd2DPi_Bd2DKHypo_magDown_S21_afterSelection.root
-Data2012_Bd2DPi_Bd2DKHypo_magUp_S21_afterSelection.root
-Bd2Dpi
-Bd2Dpi
+Data2012_Bd2DPi_Bd2DKHypo_magDown_S21_afterSelection_BDT00.root
+Data2012_Bd2DPi_Bd2DKHypo_magUp_S21_afterSelection_BDT00.root
+Bd2DK
+Bd2DK
 
 #Signal Bd2DPi KPiPi 2011 Bd2DPiHypo
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/MC/
-MC_Bd2DPi_Bd2DPiHypo_magDown_S21_afterSelection_PID-corrected_new.root
-MC_Bd2DPi_Bd2DPiHypo_magUp_S21_afterSelection_PID-corrected_new.root
+MCfiltered_Bd2DPi_Bd2DPiHypo_magDown_2011_S21_afterSelection_PID-corrected_new.root
+MCfiltered_Bd2DPi_Bd2DPiHypo_magUp_2011_S21_afterSelection_PID-corrected_new.root
 Bd2Dpi
 Bd2Dpi
 ###
 
 #Signal Bd2DPi KPiPi 2012 Bd2DPiHypo
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/MC/
-MC_Bd2DPi_Bd2DPiHypo_magDown_S21_afterSelection_PID-corrected_new.root
-MC_Bd2DPi_Bd2DPiHypo_magUp_S21_afterSelection_PID-corrected_new.root
+MCfiltered_Bd2DPi_Bd2DPiHypo_magDown_2012_S21_afterSelection_PID-corrected_new.root
+MCfiltered_Bd2DPi_Bd2DPiHypo_magUp_2012_S21_afterSelection_PID-corrected_new.root
 Bd2Dpi
 Bd2Dpi
 ###
 
 #Signal Bd2DPi KPiPi 2011 Bd2DKHypo
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/MC/
-MC_Bd2DPi_Bd2DKHypo_magDown_S21_afterSelection_PID-corrected_new.root
-MC_Bd2DPi_Bd2DKHypo_magUp_S21_afterSelection_PID-corrected_new.root
+MCfiltered_Bd2DPi_Bd2DKHypo_magDown_2011_S21_afterSelection_PID-corrected_new.root
+MCfiltered_Bd2DPi_Bd2DKHypo_magUp_2011_S21_afterSelection_PID-corrected_new.root
 Bd2DK
 Bd2DK
 ###
 
 #Signal Bd2DPi KPiPi 2012 Bd2DKHypo
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/MC/
-MC_Bd2DPi_Bd2DKHypo_magDown_S21_afterSelection_PID-corrected_new.root
-MC_Bd2DPi_Bd2DKHypo_magUp_S21_afterSelection_PID-corrected_new.root
+MCfiltered_Bd2DPi_Bd2DKHypo_magDown_2012_S21_afterSelection_PID-corrected_new.root
+MCfiltered_Bd2DPi_Bd2DKHypo_magUp_2012_S21_afterSelection_PID-corrected_new.root
 Bd2DK
 Bd2DK
 ###

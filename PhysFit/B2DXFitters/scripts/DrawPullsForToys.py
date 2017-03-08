@@ -108,7 +108,7 @@ gStyle.SetOptFit(1011)
 # Common input stuff and options
 massfitdescr=''
 timefitdescr=''
-nickname='SgnAndBkgTwoTaggersProdAsymm001AccMeanResTimeFrom02ps'
+nickname='Bd2DPiMCFilteredS21RunIBothTaggedOnlyShortTime'
 debugplots = False
 
 #Uncomment this for mass fit
@@ -118,11 +118,17 @@ debugplots = False
 #selection = 'CovQual == 3 && MINUITStatus == 0 && edm!=0 && edm<0.1'
 
 #Uncomment this for time fit
-massfitdescr="FullMDFit"
-timefitdescr='SSbarFloating'
-inputfile = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Toys/'+nickname+'/TimeFit/PullTreeTimeFit_'+nickname+'_'+timefitdescr+'_'+massfitdescr+'.root'
-outputdir = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Toys/'+nickname+'/TimePulls/'
-selection = 'MINUITStatus == 0 && edm!=0 && Sf_err < 0.03 && Sfbar_err < 0.03'
+#massfitdescr="FullMDFit"
+#timefitdescr='SSbarFloating'
+#inputfile = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Toys/'+nickname+'/TimeFit/PullTreeTimeFit_'+nickname+'_'+timefitdescr+'_'+massfitdescr+'.root'
+#outputdir = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Toys/'+nickname+'/TimePulls/'
+#selection = 'MINUITStatus == 0 && edm!=0 && Sf_err < 0.03 && Sfbar_err < 0.03'
+
+#Uncomment this for Bootstrap MC
+timefitdescr='SSbarAccAsymmFloatDMGammaConstrTrueTag'
+inputfile = '/eos/lhcb/wg/b2oc/TD_DPi_3fb/MCBootstrap/'+nickname+'/TimeFit/'+timefitdescr+'/PullTreeTimeFit_'+nickname+'_'+timefitdescr+'.root'
+outputdir = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/MCBootstrap/'+nickname+'/TimePulls/'
+selection = 'MINUITStatus == 0 && edm!=0'
 
 #Leave as it is
 inputFile = TFile.Open(inputfile,"READ")
@@ -183,9 +189,9 @@ for name in GenList:
 
 # Fill the histograms
 for obs in range(0, int(nObs)):
-    selection_string=selection+"&&"+"TMath::Abs(("+FitList[obs]+"-"+GenList[obs]+")"+"/"+ErrList[obs]+")<10"
-    if "Sf" in ErrList[obs]:
-        selection_string = selection_string + "&&"+ErrList[obs]+"<0.1"
+    selection_string=selection+"&&"+"TMath::Abs(("+FitList[obs]+"-"+GenList[obs]+")"+"/"+ErrList[obs]+")<1000"
+    #if "Sf" in ErrList[obs]:
+    #    selection_string = selection_string + "&&"+ErrList[obs]+"<0.1"
     print "Selection:"
     print selection_string
 

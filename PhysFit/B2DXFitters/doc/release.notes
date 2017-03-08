@@ -10,12 +10,24 @@
      will come later
    - fix bug in 2 lists -> matrix conversion 
 
+! 2017-03-02 - Vincenzo Battista
+ - Various config file updates
+ - Add handling for Bool_t variables in MassFitUtils (e.g. trigger decisions). 
+   This requires some boost libraries (added in CMakeLists.txt) since
+   std::vector<Bool_t> is deprecated.
+
 ! 2017-02-27 - Alessandro Bertolin
  - update of Bs2DsstK/PiConfigForMCSplineFit.py for latest version of fitSplineAcc.py
 
 ! 2017-02-22 - Agnieszka Dziurda
  - Fixing MDFit after cmt -> cmake, svn -> git transition. MDFit should work well now. 
  - adding new configuration files for fs/fd measurement 
+
+! 2017-02-21 - Vincenzo Battista
+ - Introduce "BootstrapMC.py", "Batch/Batch_runBootstrapMC.sh" and
+   "Bash/runBootstrapMC.sh" to create toy samples by bootstrapping the
+   MC. The required input is a dataset created by the prepareWorkspace.py
+   script. 
 
 ! 2017-02-14 - Ulrich Eitschberger
  - DecayRateCoeff_Bd in HFAG convention + corresponding DsK scripts

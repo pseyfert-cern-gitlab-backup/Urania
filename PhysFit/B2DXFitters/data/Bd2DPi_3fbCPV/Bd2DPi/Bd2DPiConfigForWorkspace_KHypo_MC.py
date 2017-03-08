@@ -15,7 +15,7 @@ def getconfig() :
     # year of data taking
     configdict["YearOfDataTaking"] = {"2012"} 
     # file name with paths to MC/data samples
-    configdict["dataName"]   = "/afs/cern.ch/user/v/vibattis/cmtuser/Urania_v5r0/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/config_Bd2DPi.txt"
+    configdict["dataName"]   = "/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/config_Bd2DPi.txt"
         
     # basic variables
     configdict["BasicVariables"] = {}
@@ -82,6 +82,18 @@ def getconfig() :
     configdict["AdditionalVariables"]["nPV"]      = { "Range"                  : [ 0.0,    10     ],
                                                       "Name"                   : "nPV",
                                                       "InputName"              : "nPV"}
+
+    configdict["AdditionalVariables"]["Hlt2Topo2BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
+                                                                                "Name"                   : "Hlt2Topo2BodyBBDTDecision_TOS",
+                                                                                "InputName"              : "lab0_Hlt2Topo2BodyBBDTDecision_TOS"}
+
+    configdict["AdditionalVariables"]["Hlt2Topo3BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
+                                                                                "Name"                   : "Hlt2Topo3BodyBBDTDecision_TOS",
+                                                                                "InputName"              : "lab0_Hlt2Topo3BodyBBDTDecision_TOS"}
+
+    configdict["AdditionalVariables"]["Hlt2Topo4BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
+                                                                                "Name"                   : "Hlt2Topo4BodyBBDTDecision_TOS",
+                                                                                "InputName"              : "lab0_Hlt2Topo4BodyBBDTDecision_TOS"}
 
     # PIDK bin
     configdict["AdditionalCuts"] = {}

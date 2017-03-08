@@ -207,7 +207,7 @@ def getCPparameters(ws, myconfigfile, UniformBlinding, HFAG):
 #------------------------------------------------------------------------------
 def runSFit(debug, wsname,
             pereventmistag, tagfromdata, noftcalib, truetag, truetime, pereventterr,
-            toys, pathName, fileNamePull, treeName, outputdir,
+            toys, sampleConstr, pathName, fileNamePull, treeName, outputdir, inputdata,
             MC, workMC,
             configName, scan,
             binned, plotsWeights, noweight,
@@ -371,7 +371,11 @@ def runSFit(debug, wsname,
 
         from B2DXFitters.mdfitutils import getObservables  as getObservables
         observ = getObservables(MDSettings, workspaceMC, False, debug)
-        data_temp = GeneralUtils.GetDataSet(workspaceMC, observ, sam, datasetTS, sampleTS, modeTS, yearTS, hypoTS, merge, debug )
+        if inputdata == "":
+            data_temp = GeneralUtils.GetDataSet(workspaceMC, observ, sam, datasetTS, sampleTS, modeTS, yearTS, hypoTS, merge, debug )
+        else:
+            #Input name for RooDataset overwrites everything
+            data_temp = workspaceMC.data(inputdata)
         if preselection != "":
             print "Applying following preselection to reduce dataset:"
             print preselection
@@ -388,15 +392,22 @@ def runSFit(debug, wsname,
         print "Dataset entries:"
         print data.sumEntries()
 
+
+    if not truetime:
+        timename = MDSettings.GetTimeVarOutName().Data()
+    else:
+        timename = "True"+MDSettings.GetTimeVarOutName().Data()
+
+    data.get().find(timename).setRange(MDSettings.GetTimeRangeDown(), MDSettings.GetTimeRangeUp())
+
     if MC or noweight:
         obs = data.get()
     else:
         obs = dataWA.get()
 
-    if not truetime:
-        time = WS(ws, obs.find(MDSettings.GetTimeVarOutName().Data()))
-    else:
-        time = WS(ws, obs.find("True"+MDSettings.GetTimeVarOutName().Data()))
+    time = obs.find(timename)
+    time.setRange(MDSettings.GetTimeRangeDown(), MDSettings.GetTimeRangeUp())
+    time = WS(ws, time)
 
     if pereventterr:
         terr = WS(ws, obs.find(MDSettings.GetTerrVarOutName().Data()))
@@ -767,7 +778,7 @@ def runSFit(debug, wsname,
         print "=========================================================="
         print ""
 
-        if toys:
+        if toys or sampleConstr:
             #Sample mean of gaussian constraint
             for parname in myconfigfile["gaussCons"].iterkeys():
                 if type(myconfigfile["gaussCons"][parname]) != list:
@@ -1028,7 +1039,7 @@ def runSFit(debug, wsname,
         PlotResultMatrix(myfitresult, "covariance", outputdir+"sFit_CovarianceMatrix.pdf")
         PlotResultMatrix(myfitresult, "correlation", outputdir+"sFit_CorrelationMatrix.pdf")
 
-        if toys:
+        if toys or MC:
 
             if myfitresult.status() != 0:
                 print "ERROR: fit quality is bad. Not saving pull tree."
@@ -1140,6 +1151,12 @@ parser.add_option( '-t','--toys',
                    default = False,
                    help = 'are we working with toys?'
                    )
+parser.add_option( '--sampleConstr',
+                   dest = 'sampleConstr',
+                   action = 'store_true',
+                   default = False,
+                   help = 'resample mean of gaussian constrains (on by default on toys)'
+                   )
 parser.add_option( '--MC',
                    dest = 'MC',
                    action = 'store_true',
@@ -1170,6 +1187,11 @@ parser.add_option( '--treeName',
                    dest = 'treeName',
                    default = 'merged',
                    help = 'name of the workspace'
+                   )
+parser.add_option( '--inputdata',
+                   dest = 'inputdata',
+                   default = "",
+                   help = 'name of the input MC RooDataset. Leave empty to build name from sample, mode, year etc...'
                    )
 parser.add_option( '--scan',
                    dest = 'scan',
@@ -1203,12 +1225,12 @@ parser.add_option( '-p', '--pol','--polarity',
 parser.add_option( '-m', '--mode',
                    dest = 'mode',
                    metavar = 'MODE',
-                   default = 'kkpi',
+                   default = 'kpipi',
                    help = 'Mode: choose all, kkpi, kpipi, pipipi, nonres, kstk, phipi, 3modeskkpi'
                    )
 parser.add_option( '--merge',
                    dest = 'merge',
-                   default = "",
+                   default = "both",
                    help = 'for merging magnet polarities use: --merge pol, for merging years of data taking use: --merge year, for merging both use: --merge both'
                    )
 parser.add_option( '--binned',
@@ -1242,11 +1264,11 @@ parser.add_option( '--seed',
                    )
 parser.add_option( '--year',
                    dest = 'year',
-                   default = "",
+                   default = "runI",
                    help = 'year of data taking can be: 2011, 2012, run1')
 parser.add_option( '--hypo',
                    dest = 'hypo',
-                   default = "",
+                   default = "Bd2DPi",
                    help = 'bachelor mass hypothesys (leave empty if not used)')
 parser.add_option( '--outputdir',
                    dest = 'outputdir',
@@ -1276,9 +1298,9 @@ parser.add_option( '--HFAG',
 if __name__ == '__main__' :
     (options, args) = parser.parse_args()
 
-    if len(args) > 0 :
-        parser.print_help()
-        exit(-1)
+    #if len(args) > 0 :
+    #    parser.print_help()
+    #    exit(-1)
 
     print "=========================================================="
     print "FITTER IS RUNNING WITH THE FOLLOWING CONFIGURATION OPTIONS"
@@ -1311,10 +1333,12 @@ if __name__ == '__main__' :
              options.truetime,
              options.pereventterr,
              options.toys,
+             options.sampleConstr,
              options.fileName,
              options.fileNamePull,
              options.treeName,
              options.outputdir,
+             options.inputdata,
              options.MC,
              options.workMC,
              configName,

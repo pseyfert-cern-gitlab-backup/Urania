@@ -27,6 +27,7 @@ gStyle.SetOptStat(0)
 #----------------------------------------------
 #----------------------------------------------
 def FitAcceptance(configfile,
+                  preselection,
                   inputfile,
                   inputtree,
                   outputplotdir,
@@ -100,6 +101,7 @@ def FitAcceptance(configfile,
                       "Decay time #tau [ps]",
                       myconfigfile["Time"]["Range"][0],
                       myconfigfile["Time"]["Range"][1])
+    time.setBins(myconfigfile["Time"]["Bins"])
     argset = RooArgSet(time)
 
     print ""
@@ -124,7 +126,7 @@ def FitAcceptance(configfile,
     print ""
     print "===================="
     print "Build dataset with preselection:"
-    print myconfigfile["Preselection"]
+    print preselection
     print "and weight:"
     print myconfigfile["Weight"]
     print "===================="
@@ -135,7 +137,7 @@ def FitAcceptance(configfile,
                            "data_temp",
                            inputTree,
                            argset,
-                           myconfigfile["Preselection"])
+                           preselection)
     print "Dataset entries: "+str(data_temp.numEntries())
 
     print ""
@@ -377,6 +379,11 @@ parser.add_option("--configName",
                   type="string",
                   help="configuration file [default: %default].",
                   default="MyConfigFile.py")
+parser.add_option("--preselection",
+                  dest="preselection",
+                  type="string",
+                  help="preselection string [default: %default].",
+                  default="")
 parser.add_option("--inputfile",
                   dest="inputfile",
                   type="string",
@@ -417,6 +424,7 @@ if __name__ == '__main__' :
     sys.path.append(directory)
     
     FitAcceptance(configfile,
+                  options.preselection,
                   options.inputfile,
                   options.inputtree,
                   options.outputplotdir,
