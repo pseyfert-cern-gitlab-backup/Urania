@@ -1,5 +1,5 @@
 import ROOT, os, sys, time, random
-from ROOT import gROOT, kBlue, kRed, kOrange, kGreen, kMagenta, kWhite, kTRUE, kFALSE
+from ROOT import gROOT, kBlue, kRed, kOrange, kGreen, kMagenta, kWhite, kGray, kTRUE, kFALSE
 from math import pi, sqrt
 from array import array
 from TResCalib import *
@@ -32,7 +32,7 @@ blindCat = ROOT.RooCategory("blindCat","blindCat")
 blindCat.defineType("unblind",0)
 blindCat.defineType("blind",1)
 blindCat.setConstant(1)
-blinding_scale = 0.02
+blinding_scale = 0.2
 
 
 # ################################################################
@@ -80,7 +80,7 @@ mKp1_narrowwin = ROOT.RooRealVar(m1_name,"M(K^{+}#pi^{-}) ",900.-150.,900.+150.,
 mKp2_narrowwin = ROOT.RooRealVar(m2_name,"M(K^{-}#pi^{+}) ",900.-150.,900.+150.,"MeV/c^{2}")
 cos1 = ROOT.RooRealVar(cos1_name,"cos(#theta_{1})", -1., 1.,"")
 cos2 = ROOT.RooRealVar(cos2_name,"cos(#theta_{2})", -1., 1.,"")
-phi = ROOT.RooRealVar(phi_name,"#varphi",0,2.*pi,"rad")
+phi = ROOT.RooRealVar(phi_name,"#varphi",0.,2.*pi,"rad")
 t = ROOT.RooRealVar(t_name,"t",0.,12.,"ps")
 terror = ROOT.RooRealVar(terror_name,"#delta t",0.,0.1,"ps")
 decision_SSK = ROOT.RooCategory(dec_SSK_name,"q^{SSK}")
@@ -100,25 +100,25 @@ FullArgSet.add(etamistag_SSK)
 FullArgSet.add(etamistag_OS)
 
 # Real part of the amplitudes.
-reA00 = ROOT.RooRealVar("reA00","Re(A^{SS})",0.,-5.,5.)
-reA01 = ROOT.RooRealVar("reA01","Re(A^{SV})",0.,-5.,5.)
-reA10 = ROOT.RooRealVar("reA10","Re(A^{VS})",0.,-5.,5.)
-reA02 = ROOT.RooRealVar("reA02","Re(A^{ST})",0.,-5.,5.)
-reA20 = ROOT.RooRealVar("reA20","Re(A^{TS})",0.,-5.,5.)
+reA00 = ROOT.RooRealVar("reA00","Re(A^{SS})",0.,-10.,10.)
+reA01 = ROOT.RooRealVar("reA01","Re(A^{SV})",0.,-10.,10.)
+reA10 = ROOT.RooRealVar("reA10","Re(A^{VS})",0.,-10.,10.)
+reA02 = ROOT.RooRealVar("reA02","Re(A^{ST})",0.,-10.,10.)
+reA20 = ROOT.RooRealVar("reA20","Re(A^{TS})",0.,-10.,10.)
 reA110 = ROOT.RooRealVar("reA110","Re(A^{VV}_{L})",1.) # Fixed.
-reA11par = ROOT.RooRealVar("reA11par","Re(A^{VV}_{#parallel})",0.,-5.,5.)
-reA11perp = ROOT.RooRealVar("reA11perp","Re(A^{VV}_{#perp})",0.,-5.,5.)
-reA120 = ROOT.RooRealVar("reA120","Re(A^{VT}_{L})",0.,-5.,5.)
-reA12par = ROOT.RooRealVar("reA12par","Re(A^{VT}_{#parallel})",0.,-5.,5.)
-reA12perp = ROOT.RooRealVar("reA12perp","Re(A^{VT}_{#perp})",0.,-5.,5.)
-reA210 = ROOT.RooRealVar("reA210","Re(A^{TV}_{L})",0.,-5.,5.)
-reA21par = ROOT.RooRealVar("reA21par","Re(A^{TV}_{#parallel})",0.,-5.,5.)
-reA21perp = ROOT.RooRealVar("reA21perp","Re(A^{TV}_{#perp})",0.,-5.,5.)
-reA220 = ROOT.RooRealVar("reA220","Re(A^{TT}_{L})",0.,-5.,5.)
-reA22par = ROOT.RooRealVar("reA22par","Re(A^{TT}_{#parallel1})",0.,-5.,5.)
-reA22perp = ROOT.RooRealVar("reA22perp","Re(A^{TT}_{#perp1})",0.,-5.,5.)
-reA22par2 = ROOT.RooRealVar("reA22par2","Re(A^{TT}_{#parallel2})",0.,-5.,5.)
-reA22perp2 = ROOT.RooRealVar("reA22perp2","Re(A^{TT}_{#perp2})",0.,-5.,5.)
+reA11par = ROOT.RooRealVar("reA11par","Re(A^{VV}_{#parallel})",0.,-10.,10.)
+reA11perp = ROOT.RooRealVar("reA11perp","Re(A^{VV}_{#perp})",0.,-10.,10.)
+reA120 = ROOT.RooRealVar("reA120","Re(A^{VT}_{L})",0.,-10.,10.)
+reA12par = ROOT.RooRealVar("reA12par","Re(A^{VT}_{#parallel})",0.,-10.,10.)
+reA12perp = ROOT.RooRealVar("reA12perp","Re(A^{VT}_{#perp})",0.,-10.,10.)
+reA210 = ROOT.RooRealVar("reA210","Re(A^{TV}_{L})",0.,-10.,10.)
+reA21par = ROOT.RooRealVar("reA21par","Re(A^{TV}_{#parallel})",0.,-10.,10.)
+reA21perp = ROOT.RooRealVar("reA21perp","Re(A^{TV}_{#perp})",0.,-10.,10.)
+reA220 = ROOT.RooRealVar("reA220","Re(A^{TT}_{L})",0.,-10.,10.)
+reA22par = ROOT.RooRealVar("reA22par","Re(A^{TT}_{#parallel1})",0.,-10.,10.)
+reA22perp = ROOT.RooRealVar("reA22perp","Re(A^{TT}_{#perp1})",0.,-10.,10.)
+reA22par2 = ROOT.RooRealVar("reA22par2","Re(A^{TT}_{#parallel2})",0.,-10.,10.)
+reA22perp2 = ROOT.RooRealVar("reA22perp2","Re(A^{TT}_{#perp2})",0.,-10.,10.)
 
 # Direct CP violation asymmetries.
 DCP = ROOT.RooRealVar("DCP","#Delta^{CP}",0.,-1.,1.)
@@ -143,25 +143,25 @@ DCP_TV_withBlinding = ROOT.RooUnblindPrecision("DCP_TV_withBlinding","#Delta^{CP
 DCP_TT_withBlinding = ROOT.RooUnblindPrecision("DCP_TT_withBlinding","#Delta^{CP}_{TT}","DCP_TT_Blind",0.,blinding_scale,DCP_TT,blindCat)
 
 # Imaginary part of the amplitudes.
-imA00 = ROOT.RooRealVar("imA00","Im(A^{SS})",0.,-5.,5.)
-imA01 = ROOT.RooRealVar("imA01","Im(A^{SV})",0.,-5.,5.)
-imA10 = ROOT.RooRealVar("imA10","Im(A^{VS})",0.,-5.,5.)
-imA02 = ROOT.RooRealVar("imA02","Im(A^{ST})",0.,-5.,5.)
-imA20 = ROOT.RooRealVar("imA20","Im(A^{TS})",0.,-5.,5.)
+imA00 = ROOT.RooRealVar("imA00","Im(A^{SS})",0.,-10.,10.)
+imA01 = ROOT.RooRealVar("imA01","Im(A^{SV})",0.,-10.,10.)
+imA10 = ROOT.RooRealVar("imA10","Im(A^{VS})",0.,-10.,10.)
+imA02 = ROOT.RooRealVar("imA02","Im(A^{ST})",0.,-10.,10.)
+imA20 = ROOT.RooRealVar("imA20","Im(A^{TS})",0.,-10.,10.)
 imA110 = ROOT.RooRealVar("imA110","Im(A^{VV}_{L})",0.) # Fixed.
-imA11par = ROOT.RooRealVar("imA11par","Im(A^{VV}_{#parallel})",0.,-5.,5.)
-imA11perp = ROOT.RooRealVar("imA11perp","Im(A^{VV}_{#perp})",0.,-5.,5.)
-imA120 = ROOT.RooRealVar("imA120","Im(A^{VT}_{L})",0.,-5.,5.)
-imA12par = ROOT.RooRealVar("imA12par","Im(A^{VT}_{#parallel})",0.,-5.,5.)
-imA12perp = ROOT.RooRealVar("imA12perp","Im(A^{VT}_{#perp})",0.,-5.,5.)
-imA210 = ROOT.RooRealVar("imA210","Im(A^{TV}_{L})",0.,-5.,5.)
-imA21par = ROOT.RooRealVar("imA21par","Im(A^{TV}_{#parallel})",0.,-5.,5.)
-imA21perp = ROOT.RooRealVar("imA21perp","Im(A^{TV}_{#perp})",0.,-5.,5.)
-imA220 = ROOT.RooRealVar("imA220","Im(A^{TT}_{L})",0.,-5.,5.)
-imA22par = ROOT.RooRealVar("imA22par","Im(A^{TT}_{#parallel1})",0.,-5.,5.)
-imA22perp = ROOT.RooRealVar("imA22perp","Im(A^{TT}_{#perp1})",0.,-5.,5.)
-imA22par2 = ROOT.RooRealVar("imA22par2","Im(A^{TT}_{#parallel2})",0.,-5.,5.)
-imA22perp2 = ROOT.RooRealVar("imA22perp2","Im(A^{TT}_{#perp2})",0.,-5.,5.)
+imA11par = ROOT.RooRealVar("imA11par","Im(A^{VV}_{#parallel})",0.,-10.,10.)
+imA11perp = ROOT.RooRealVar("imA11perp","Im(A^{VV}_{#perp})",0.,-10.,10.)
+imA120 = ROOT.RooRealVar("imA120","Im(A^{VT}_{L})",0.,-10.,10.)
+imA12par = ROOT.RooRealVar("imA12par","Im(A^{VT}_{#parallel})",0.,-10.,10.)
+imA12perp = ROOT.RooRealVar("imA12perp","Im(A^{VT}_{#perp})",0.,-10.,10.)
+imA210 = ROOT.RooRealVar("imA210","Im(A^{TV}_{L})",0.,-10.,10.)
+imA21par = ROOT.RooRealVar("imA21par","Im(A^{TV}_{#parallel})",0.,-10.,10.)
+imA21perp = ROOT.RooRealVar("imA21perp","Im(A^{TV}_{#perp})",0.,-10.,10.)
+imA220 = ROOT.RooRealVar("imA220","Im(A^{TT}_{L})",0.,-10.,10.)
+imA22par = ROOT.RooRealVar("imA22par","Im(A^{TT}_{#parallel1})",0.,-10.,10.)
+imA22perp = ROOT.RooRealVar("imA22perp","Im(A^{TT}_{#perp1})",0.,-10.,10.)
+imA22par2 = ROOT.RooRealVar("imA22par2","Im(A^{TT}_{#parallel2})",0.,-10.,10.)
+imA22perp2 = ROOT.RooRealVar("imA22perp2","Im(A^{TT}_{#perp2})",0.,-10.,10.)
 
 # Weak phases.
 phis = ROOT.RooRealVar("phis","#phi_{s}",0.,-2.*pi,2*pi)
@@ -267,7 +267,7 @@ deltaAsminus = ROOT.RooFormulaVar("deltaAsminus","#delta^{S-}","atan2(imAsminus,
 deltaA11perpAsplus = ROOT.RooFormulaVar("deltaA11perpAsplus","#delta^{VV}_{#perp}-#delta^{S+}","deltaA11perp-deltaAsplus",ROOT.RooArgList(deltaA11perp,deltaAsplus))
 
 # Mixing parameters.
-delta_m_Bs = ROOT.RooRealVar("delta_m_Bs","#Delta m_{B_{s}^{0}}",17.7575,16.5,18.5)
+delta_m_Bs = ROOT.RooRealVar("delta_m_Bs","#Delta m_{B_{s}^{0}}",17.7575,16.5,20.)
 gamma_Bs = ROOT.RooRealVar("gamma_Bs","#Gamma_{B_{s}^{0}}",0.6628,0.6428,0.6828)
 delta_gamma_Bs = ROOT.RooRealVar("delta_gamma_Bs","#Delta #Gamma_{B_{s}^{0}}",0.0838,0.04,0.13)
 
@@ -303,12 +303,12 @@ tres_p1_2011 = ROOT.RooRealVar("tres_p1_2011","p_{1}^{#sigma_{t}}",1.2,0.8,1.6)
 tres_deltatmean_2012 = ROOT.RooRealVar("tres_deltatmean_2012","#langle #delta_{t} #rangle",0.029)
 tres_p0_2012 = ROOT.RooRealVar("tres_p0_2012","p_{0}^{#sigma_{t}}",0.036,0.03,0.06)
 tres_p1_2012 = ROOT.RooRealVar("tres_p1_2012","p_{1}^{#sigma_{t}}",1.2,0.8,1.6)
-mS = ROOT.RooRealVar("mS","mS",1425.)
-gammaS = ROOT.RooRealVar("gammaS","gammaS",270.)
-mV = ROOT.RooRealVar("mV","mV",895.81)
-gammaV = ROOT.RooRealVar("gammaV","gammaV",47.4)
-mT = ROOT.RooRealVar("mT","mT",1432.4)
-gammaT = ROOT.RooRealVar("gammaT","gammaT",109.)
+mS = ROOT.RooRealVar("mS","mS",1.46297e+03)
+gammaS = ROOT.RooRealVar("gammaS","gammaS",3.48114e+02)
+mV = ROOT.RooRealVar("mV","mV",8.95867e+02)
+gammaV = ROOT.RooRealVar("gammaV","gammaV",4.81482e+01)
+mT = ROOT.RooRealVar("mT","mT",1.43279e+03)
+gammaT = ROOT.RooRealVar("gammaT","gammaT",1.09932e+02)
 res_mass = ROOT.RooRealVar("res_mass","res_mass",0.)
 
 # Gaussian constraints of the calibration parameters.

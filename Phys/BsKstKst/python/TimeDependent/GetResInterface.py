@@ -437,10 +437,10 @@ def Fit1DPDF(offset):
 		print "ERROR: wrong value for the mean offset parameter."
 		return
 
-	fit_2011_wide = res_eff_2011_wide.fitTo(data_difft_2011_wide,ROOT.RooFit.NumCPU(8),ROOT.RooFit.Minos(0),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE))
-	fit_2012_wide = res_eff_2012_wide.fitTo(data_difft_2012_wide,ROOT.RooFit.NumCPU(8),ROOT.RooFit.Minos(0),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE))
-	fit_2011_narrow = res_eff_2011_narrow.fitTo(data_difft_2011_narrow,ROOT.RooFit.NumCPU(8),ROOT.RooFit.Minos(0),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE))
-	fit_2012_narrow = res_eff_2012_narrow.fitTo(data_difft_2012_narrow,ROOT.RooFit.NumCPU(8),ROOT.RooFit.Minos(0),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE))
+	fit_2011_wide = res_eff_2011_wide.fitTo(data_difft_2011_wide,ROOT.RooFit.NumCPU(8),ROOT.RooFit.Minos(1),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE))
+	fit_2012_wide = res_eff_2012_wide.fitTo(data_difft_2012_wide,ROOT.RooFit.NumCPU(8),ROOT.RooFit.Minos(1),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE))
+	fit_2011_narrow = res_eff_2011_narrow.fitTo(data_difft_2011_narrow,ROOT.RooFit.NumCPU(8),ROOT.RooFit.Minos(1),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE))
+	fit_2012_narrow = res_eff_2012_narrow.fitTo(data_difft_2012_narrow,ROOT.RooFit.NumCPU(8),ROOT.RooFit.Minos(1),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE))
 
 	return fit_2011_wide, fit_2012_wide, fit_2011_narrow, fit_2012_narrow
 
@@ -475,10 +475,10 @@ def FitMargPDF():
 	f_marg_2011_narrow_A.setConstant(0)
 	f_marg_2012_narrow_A.setConstant(0)
 
-	marg_pdf_2011_wide.fitTo(data_2011_wide,ROOT.RooFit.Minos(0),ROOT.RooFit.NumCPU(8))
-	marg_pdf_2012_wide.fitTo(data_2012_wide,ROOT.RooFit.Minos(0),ROOT.RooFit.NumCPU(8))
-	marg_pdf_2011_narrow.fitTo(data_2011_narrow,ROOT.RooFit.Minos(0),ROOT.RooFit.NumCPU(8))
-	marg_pdf_2012_narrow.fitTo(data_2012_narrow,ROOT.RooFit.Minos(0),ROOT.RooFit.NumCPU(8))
+	marg_pdf_2011_wide.fitTo(data_2011_wide,ROOT.RooFit.Minos(1),ROOT.RooFit.NumCPU(8))
+	marg_pdf_2012_wide.fitTo(data_2012_wide,ROOT.RooFit.Minos(1),ROOT.RooFit.NumCPU(8))
+	marg_pdf_2011_narrow.fitTo(data_2011_narrow,ROOT.RooFit.Minos(1),ROOT.RooFit.NumCPU(8))
+	marg_pdf_2012_narrow.fitTo(data_2012_narrow,ROOT.RooFit.Minos(1),ROOT.RooFit.NumCPU(8))
 
 	gamma_2011_wide_A.setConstant(1)
 	beta_2011_wide_A.setConstant(1)
@@ -594,10 +594,10 @@ def Fit2DPDF(pol_order,q0_term,offset):
 		print "ERROR: wrong value for the mean offset parameter."
 		return
 
-	fit_2011_wide = full_pdf_2011_wide.fitTo(data_2011_wide,ROOT.RooFit.Minos(0),ROOT.RooFit.NumCPU(8),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE))
-	fit_2012_wide = full_pdf_2012_wide.fitTo(data_2012_wide,ROOT.RooFit.Minos(0),ROOT.RooFit.NumCPU(8),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE))
-	fit_2011_narrow = full_pdf_2011_narrow.fitTo(data_2011_narrow,ROOT.RooFit.Minos(0),ROOT.RooFit.NumCPU(8),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE))
-	fit_2012_narrow = full_pdf_2012_narrow.fitTo(data_2012_narrow,ROOT.RooFit.Minos(0),ROOT.RooFit.NumCPU(8),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE))
+	fit_2011_wide = full_pdf_2011_wide.fitTo(data_2011_wide,ROOT.RooFit.Minos(1),ROOT.RooFit.NumCPU(8),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE))
+	fit_2012_wide = full_pdf_2012_wide.fitTo(data_2012_wide,ROOT.RooFit.Minos(1),ROOT.RooFit.NumCPU(8),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE))
+	fit_2011_narrow = full_pdf_2011_narrow.fitTo(data_2011_narrow,ROOT.RooFit.Minos(1),ROOT.RooFit.NumCPU(8),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE))
+	fit_2012_narrow = full_pdf_2012_narrow.fitTo(data_2012_narrow,ROOT.RooFit.Minos(1),ROOT.RooFit.NumCPU(8),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.Save(kTRUE))
 
 	return fit_2011_wide, fit_2012_wide, fit_2011_narrow, fit_2012_narrow
 

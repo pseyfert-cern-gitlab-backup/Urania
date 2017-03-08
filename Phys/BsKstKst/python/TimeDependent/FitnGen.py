@@ -55,27 +55,27 @@ f_Kst1680_rel2_Kst892 = 0.2
 delta_Kst1680_rel2_Kst892 = 0.
 
 # Data used in the fit.
-data_file = 'AnalysisOutWSWeightsSelectedAllBranchesReduced.root'#'AnalysisOutWSWeightsSelected_PHIstudy.root'
+data_file = 'AnalysisOutWSWeightsSelectedAllBranchesNew.root'#'AnalysisOutWSWeightsSelected_PHIstudy.root'
 data_tree = 'AnalysisTree'
-MC_file = 'AnalysisOutWSWeightsSelectedAllBranchesReduced.root'#'AnalysisOutWithCuts_AllBranches_PHIstudy.root'
+MC_file = 'AnalysisOutWSWeightsSelectedAllBranchesCP.root'#'AnalysisOutWithCuts_AllBranches_PHIstudy.root'
 MC_tree = 'AnalysisTree'
 MC_type = 1 # 0 for Toy MC / 1 for VV.
 data_type = "real" # "real" for real data from 2011 and 2012 / "MC" for Monte Carlo simulation.
 sweighted = 1
-extra_cuts = ""#"abs(B_s0_MM-5366.)<30."#"abs(B_s0_MM-5366.)<25. && bdtoutput>0.05 && Kplus_ProbNNk>0.5 && Kminus_ProbNNk>0.5 && Kplus_ProbNNpi<0.5 && Kminus_ProbNNpi<0.5"
+extra_cuts = ""#"((B_s0_MM>5325.) && (B_s0_MM<5425.))"#"((B_s0_MM<5325.) || (B_s0_MM>5425.))"#"abs(B_s0_MM-5366.)<30."#"abs(B_s0_MM-5366.)<25. && bdtoutput>0.05 && Kplus_ProbNNk>0.5 && Kminus_ProbNNk>0.5 && Kplus_ProbNNpi<0.5 && Kminus_ProbNNpi<0.5"
 
 evnum_limit = 0
 
 # Fit options.
-num_CPU = 20
-activ_minos = 0
+num_CPU = 30
+activ_minos = 1
 fit_strategy = 1
 
 # Plotting options.
-m_binning = 30
-cos_binning = 12
-phi_binning = 12
-t_binning = 30
+m_binning = 50
+cos_binning = 50
+phi_binning = 50
+t_binning = 12
 
 # Generation options.
 nexperiments = 5
@@ -122,7 +122,7 @@ pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_r
 
 	# Print out of the measured parameters.
 	printresultoldformat(result)
-	for i in params: print i.GetName()+'.setVal('+str(i.getVal())+')'
+	for i in params: print '\t\t'+i.GetName()+'.setVal('+str(i.getVal())+')'
 	fitprint2LaTeX_ReAImA('FitParams',params,wide_window,No_CP_Switch,Blinding,fix_mixing_params,fix_calib_params)
 	fitprint2LaTeX_Polar(result,'FitParams',params,wide_window,No_CP_Switch,Blinding,fix_mixing_params,fix_calib_params)
 	fitprint2LaTeX_OldStyle(result,'FitParams')
@@ -147,9 +147,9 @@ inf_t_res,wide_window,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fi
 	setParamVals(wide_window)
 
 	# Uncomment below for VV only fit, when in narrow window.
-	for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
-		par.setVal(0.)
-		par.setConstant(1)
+	#for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
+	#	par.setVal(0.)
+	#	par.setConstant(1)
 
 	model, params = createSimPDF(TD_fit,Blinding,No_CP_Switch,No_dirCP_Switch,Same_CP_Switch,acc_type,\
 inf_t_res,wide_window,data_file,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params,\
@@ -160,7 +160,7 @@ pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_r
 
 	# Print out of the measured parameters.
 	printresultoldformat(result)
-	for i in params: print i.GetName()+'.setVal('+str(i.getVal())+')'
+	for i in params: print '\t\t'+i.GetName()+'.setVal('+str(i.getVal())+')'
 	fitprint2LaTeX_ReAImA('FitParams',params,wide_window,No_CP_Switch,Blinding,fix_mixing_params,fix_calib_params)
 	fitprint2LaTeX_Polar(result,'FitParams',params,wide_window,No_CP_Switch,Blinding,fix_mixing_params,fix_calib_params)
 	fitprint2LaTeX_OldStyle(result,'FitParams')
@@ -179,7 +179,7 @@ pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_r
 		plot61Dcomponent(model[0], data[0], wide_window, 'TS', kGreen+3, 2)
 		plot61Dcomponent(model[0], data[0], wide_window, 'VT', kMagenta+1, 1)
 		plot61Dcomponent(model[0], data[0], wide_window, 'TV', kMagenta+1, 2)
-		plot61Dcomponent(model[0], data[0], wide_window, 'TT', kBlue-6, 1)
+		plot61Dcomponent(model[0], data[0], wide_window, 'TT', kBlue, 1)
 	plot61Ddata(data[0], 1, wide_window, m_binning, cos_binning, phi_binning, t_binning) # Overlaying the data points.
 	leg61D = ROOT.TLegend(0.5,0.3,0.9,0.9)
 	c1 = create61Dcanvas(wide_window,leg61D) # Drawing the plots in a canvas.
@@ -204,6 +204,11 @@ inf_t_res,wide_window,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fi
 	# Construction of the model.
 	setParamVals(wide_window)
 
+	# Uncomment below for VV only fit, when in narrow window.
+	#for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
+	#	par.setVal(0.)
+	#	par.setConstant(1)
+
 	model, params = createSimPDF(TD_fit,Blinding,No_CP_Switch,No_dirCP_Switch,Same_CP_Switch,acc_type,\
 inf_t_res,wide_window,data_file,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params,\
 pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_rel2_Kst892,delta_Kst1680_rel2_Kst892)
@@ -221,7 +226,7 @@ pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_r
 		plot61Dcomponent(model[0], data[0], wide_window, 'TS', kGreen+3, 2)
 		plot61Dcomponent(model[0], data[0], wide_window, 'VT', kMagenta+1, 1)
 		plot61Dcomponent(model[0], data[0], wide_window, 'TV', kMagenta+1, 2)
-		plot61Dcomponent(model[0], data[0], wide_window, 'TT', kBlue-6, 1)
+		plot61Dcomponent(model[0], data[0], wide_window, 'TT', kBlue, 1)
 	plot61Ddata(data[0], 1, wide_window, m_binning, cos_binning, phi_binning, t_binning) # Overlaying the data points.
 	leg61D = ROOT.TLegend(0.5,0.3,0.9,0.9)
 	c1 = create61Dcanvas(wide_window,leg61D) # Drawing the plots in a canvas.
@@ -302,8 +307,32 @@ def profiles():
 	# Construction of the model.
 	setParamVals(wide_window)
 
-	f_VV.setVal(1.)
-	for par in [f_VV,f_SS,D_SVVS,delta00,delta01,delta10]: par.setConstant(1)
+	# Uncomment below for VV only fit, when in narrow window.
+	for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
+		par.setVal(0.)
+		par.setConstant(1)
+
+	reA11par.setVal(0.361588708941)
+	reA11perp.setVal(0.417514383661)
+	DCP.setVal(-0.0835590231938)
+	imA11par.setVal(0.206000296711)
+	imA11perp.setVal(0.0984402152347)
+	phis.setVal(0.0353055481394)
+	delta_m_Bs.setVal(18.1465034716)
+	gamma_Bs.setVal(0.6828)
+	delta_gamma_Bs.setVal(0.04)
+	p0metac_SSK.setVal(0.033)
+	p0metac_OS.setVal(0.04)
+	Dp0half_SSK.setVal(-0.015)
+	Dp0half_OS.setVal(0.0)
+	p1_SSK.setVal(0.975296256357)
+	p1_OS.setVal(0.8)
+	Dp1half_SSK.setVal(0.093)
+	Dp1half_OS.setVal(0.1)
+	tres_p0_2011.setVal(0.06)
+	tres_p1_2011.setVal(1.44914792183)
+	tres_p0_2012.setVal(0.06)
+	tres_p1_2012.setVal(1.33110527471)
 
 	model, params = createSimPDF(TD_fit,Blinding,No_CP_Switch,No_dirCP_Switch,Same_CP_Switch,acc_type,\
 inf_t_res,wide_window,data_file,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params,\
@@ -311,7 +340,7 @@ pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_r
 	
 	# Plot of the likelihood profile.
 	nll = ROOT.RooNLLVar("nll","nll",model[0],data[0],ROOT.RooFit.NumCPU(num_CPU))
-	for par in [phis]:#params:
+	for par in params:
 		print 'Plotting likelyhood profile for '+par.GetName()+' ...'
 		printllprofile(par,nll)
 		print 'Likelyhood profile plotted.'

@@ -12,12 +12,14 @@ gROOT.Reset()
 # ################################################################
 
 # Names of the variables in the ntuples.
-m1_name_MC = "B_s0_DTF_KST1_TRUE_M"
-m2_name_MC = "B_s0_DTF_KST2_TRUE_M"
-cos1_name_MC = "B_s0_DTF_KST1_TRUE_COSTHETA"
-cos2_name_MC = "B_s0_DTF_KST2_TRUE_COSTHETA"
-phi_name_MC = "B_s0_DTF_B_s0_PHI_TRUE_TRY4"
+m1_name_MC = "B_s0_DTF_KST1_M"
+m2_name_MC = "B_s0_DTF_KST2_M"
+cos1_name_MC = "B_s0_DTF_KST1_COSTHETA"
+cos2_name_MC = "B_s0_DTF_KST2_COSTHETA"
+phi_name_MC = "B_s0_DTF_B_s0_PHI_TRY4"
 t_name_MC = "B_s0_DTF_TAU"
+
+br_list = ["itype","B_s0_L0Global_TIS","B_s0_L0HadronDecision_TOS",m1_name_MC,m2_name_MC,cos1_name_MC,cos2_name_MC,phi_name_MC,t_name_MC,"B_s0_TRUEID","Kplus_TRUEID","Piminus_TRUEID","Kminus_TRUEID","Piplus_TRUEID"]
 
 # Observables.
 mKp1_MC = ROOT.RooRealVar(m1_name_MC,"M(K^{+}#pi^{-}) ", 750., mHlimit,"MeV/c^{2}")
@@ -764,6 +766,8 @@ def LoadDataVis(data_file, data_tree, datatype, evnum_limit = 0):
 	# Input data.
 	file_in = ROOT.TFile(NTUPLE_PATH + data_file)
 	tree_full = file_in.Get(data_tree)
+	tree_full.SetBranchStatus("*",0)
+	for br in br_list: tree_full.SetBranchStatus(br,1)
 	file_out = ROOT.TFile(NTUPLE_PATH + "trash.root","RECREATE")
 	tree_2011_L0TIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,0,datatype))
 	tree_2012_L0TIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,0,datatype))
@@ -1042,6 +1046,8 @@ def LoadDataGen2012(data_file, data_tree, datatype, evnum_limit = 0):
 	# Input data.
 	file_in = ROOT.TFile(NTUPLE_PATH + data_file)
 	tree_full = file_in.Get(data_tree)
+	tree_full.SetBranchStatus("*",0)
+	for br in br_list: tree_full.SetBranchStatus(br,1)
 	file_out = ROOT.TFile(NTUPLE_PATH + "trash.root","RECREATE")
 	tree_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MC2012settype(datatype))
 	tree_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MC2012settype(datatype))
@@ -1694,6 +1700,8 @@ def LoadDataNW(data_file, data_tree, datatype, evnum_limit = 0):
 	# Input data.
 	file_in = ROOT.TFile(NTUPLE_PATH + data_file)
 	tree_full = file_in.Get(data_tree)
+	tree_full.SetBranchStatus("*",0)
+	for br in br_list: tree_full.SetBranchStatus(br,1)
 	file_out = ROOT.TFile(NTUPLE_PATH + "trash.root","RECREATE")
 	tree_2011_L0TIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,0,datatype))
 	tree_2012_L0TIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,0,datatype))
@@ -2235,6 +2243,8 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 	# Input data.
 	file_in = ROOT.TFile(NTUPLE_PATH + data_file)
 	tree_full = file_in.Get(data_tree)
+	tree_full.SetBranchStatus("*",0)
+	for br in br_list: tree_full.SetBranchStatus(br,1)
 	file_out = ROOT.TFile(NTUPLE_PATH + "trash.root","RECREATE")
 	tree_2011_L0TIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,0,datatype))
 	tree_2012_L0TIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,0,datatype))
@@ -2440,14 +2450,14 @@ spl_c0_2011_L0noTIS_narrow,spl_c1_2011_L0noTIS_narrow,spl_c2_2011_L0noTIS_narrow
 	spl_pdf_2012_L0noTIS_narrow = ROOT.SplineTAcc("spl_pdf_2012_L0noTIS_narrow","spl_pdf_2012_L0noTIS_narrow",t_MC,t0_narrow,t1_narrow,t2_narrow,t3_narrow,t4_narrow,t5_narrow,\
 spl_c0_2012_L0noTIS_narrow,spl_c1_2012_L0noTIS_narrow,spl_c2_2012_L0noTIS_narrow,spl_c3_2012_L0noTIS_narrow,spl_c4_2012_L0noTIS_narrow,spl_c5_2012_L0noTIS_narrow,spl_c6_2012_L0noTIS_narrow,spl_c7_2012_L0noTIS_narrow)
 
-	spl_pdf_2011_L0TIS_wide.fitTo(data_2011_L0TIS_wide_weighted,ROOT.RooFit.NumCPU(6),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(0))
-	spl_pdf_2012_L0TIS_wide.fitTo(data_2012_L0TIS_wide_weighted,ROOT.RooFit.NumCPU(6),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(0))
-	spl_pdf_2011_L0noTIS_wide.fitTo(data_2011_L0noTIS_wide_weighted,ROOT.RooFit.NumCPU(6),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(0))
-	spl_pdf_2012_L0noTIS_wide.fitTo(data_2012_L0noTIS_wide_weighted,ROOT.RooFit.NumCPU(6),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(0))
-	spl_pdf_2011_L0TIS_narrow.fitTo(data_2011_L0TIS_narrow_weighted,ROOT.RooFit.NumCPU(6),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(0))
-	spl_pdf_2012_L0TIS_narrow.fitTo(data_2012_L0TIS_narrow_weighted,ROOT.RooFit.NumCPU(6),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(0))
-	spl_pdf_2011_L0noTIS_narrow.fitTo(data_2011_L0noTIS_narrow_weighted,ROOT.RooFit.NumCPU(6),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(0))
-	spl_pdf_2012_L0noTIS_narrow.fitTo(data_2012_L0noTIS_narrow_weighted,ROOT.RooFit.NumCPU(6),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(0))
+	spl_pdf_2011_L0TIS_wide.fitTo(data_2011_L0TIS_wide_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(1))
+	spl_pdf_2012_L0TIS_wide.fitTo(data_2012_L0TIS_wide_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(1))
+	spl_pdf_2011_L0noTIS_wide.fitTo(data_2011_L0noTIS_wide_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(1))
+	spl_pdf_2012_L0noTIS_wide.fitTo(data_2012_L0noTIS_wide_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(1))
+	spl_pdf_2011_L0TIS_narrow.fitTo(data_2011_L0TIS_narrow_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(1))
+	spl_pdf_2012_L0TIS_narrow.fitTo(data_2012_L0TIS_narrow_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(1))
+	spl_pdf_2011_L0noTIS_narrow.fitTo(data_2011_L0noTIS_narrow_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(1))
+	spl_pdf_2012_L0noTIS_narrow.fitTo(data_2012_L0noTIS_narrow_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(1))
 
 	spl_frame_t_2011_L0TIS_wide = t_MC.frame()
 	data_2011_L0TIS_wide_weighted.plotOn(spl_frame_t_2011_L0TIS_wide,ROOT.RooFit.Binning(20),ROOT.RooFit.MarkerSize(0.5))
