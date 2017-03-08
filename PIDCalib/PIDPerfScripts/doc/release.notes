@@ -3,6 +3,10 @@
 ! Responsible : Donal Hill
 ! Purpose     : Scripts using PIDPerfTools to perform PID studies
 !-----------------------------------------------------------------------------
+! 2017-03-08 - Donal Hill
+	- Added tempdir to TupleDataset.py to create and delete temporary file correctly
+	- Should avoid issue reported by Thomas Ruf
+
 ! 2017-02-20 - Donal Hill
  - Removed "notag" tuple access for DsPhi samples.
 
