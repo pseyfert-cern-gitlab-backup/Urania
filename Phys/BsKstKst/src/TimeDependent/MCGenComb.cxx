@@ -241,6 +241,8 @@ TComplex MCGenComb::Aj1j2h(Int_t j1, Int_t j2, Int_t h) const
 Double_t MCGenComb::etah(Int_t h) const
  {
 
+   return 1.;
+
    if ((h == 2) or (h == 4)) {return -1.;}
    else {return 1.;}
 
@@ -1010,7 +1012,7 @@ Double_t MCGenComb::Imodel_omega() const
 Double_t MCGenComb::timemodel(Double_t tau) const 
  {
 
-   // Normalization factors.
+   /*// Normalization factors.
    Double_t norm_PhSp = 1./gammaL;
    Double_t norm_VV = 1.18/gammaL+0.18/gammaH;
 
@@ -1023,7 +1025,9 @@ Double_t MCGenComb::timemodel(Double_t tau) const
 
    if (gen_model == 0) {return exp(-gammaL*tau)/norm_PhSp;}
    else if (gen_model == 1) {return (1.18*exp(-gammaL*tau)+0.18*exp(-gammaH*tau))/norm_VV;}
-   else {return ((1.+1.18*R_VV)*exp(-gammaL*tau)+0.18*R_VV*exp(-gammaH*tau))/((1.+1.18*R_VV)/gammaL+0.18*R_VV/gammaH);}
+   else {return ((1.+1.18*R_VV)*exp(-gammaL*tau)+0.18*R_VV*exp(-gammaH*tau))/((1.+1.18*R_VV)/gammaL+0.18*R_VV/gammaH);}*/
+
+   return exp(-0.668*tau);
 
  }
 

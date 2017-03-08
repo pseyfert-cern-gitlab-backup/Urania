@@ -20,10 +20,10 @@ from SetupDataInterface import *
 # ################################################################
 
 # Options for the addition of new branches to the ntuple.
-cos_input_file_name = 'AnalysisOutWSWeights'
-cos_input_file_extradir = 0 # 1 if an extra directory exists in the file containing the 'DecayTree', 0 if not.
-cos_input_file_extradir_name = 'Bs2Kst0Kst0'
-cos_output_file_name = 'AnalysisOutWSWeightsSelectedAllBranches'
+cos_input_file_name = 'PhSpMCGenLevel'
+cos_input_file_extradir = 1 # 1 if an extra directory exists in the file containing the 'DecayTree', 0 if not.
+cos_input_file_extradir_name = 'MCDecayTreeTuple'
+cos_output_file_name = 'PhSpMCGenLevel_AllBranches'
 tps_input_file_name = 'Bs2Kst0Kst0_wide_MC2012_magnetUp_Job1528_WithCosines'
 tps_output_file_name = 'Bs2Kst0Kst0_wide_MC2012_magnetUp_Job1528_WithCosines_TAU'
 

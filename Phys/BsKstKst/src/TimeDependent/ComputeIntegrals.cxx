@@ -690,10 +690,7 @@ Double_t ComputeIntegrals::Blatt_Weisskopf2(Double_t q, Double_t q0, Int_t L) co
  {
 
    if (L<1.) {return 1.;}  
-   Double_t d;
-   if (L == 1) {d = 3.4e-03;}
-   else if (L == 2) {d = 2.7e-03;}
-   else {d = 3.e-03/L;}
+   Double_t d = 1.6e-03;
    Double_t z = q*d*q*d;
    Double_t z0 = q0*d*q0*d;
    if (L==1) {return (1+z0)/(1+z);}
@@ -752,7 +749,7 @@ TComplex ComputeIntegrals::Resonance(Double_t m, Double_t m0, Double_t g0, Int_t
    TComplex BW = num/denom;
 
    if (J == 1) {return BW*TComplex(1.,-1.5707963267948966,1);}
-   else if (J == 2) {return BW*TComplex(1.,-0.01011220614593752,1);}
+   else if (J == 2) {return BW*TComplex(1.,-0.006008360479292941,1);}
    return BW;
 
  }
@@ -777,7 +774,7 @@ TComplex ComputeIntegrals::Lass(Double_t m, Double_t m0, Double_t g0) const
 
    TComplex T = 1./(cotg_deltaB-i)+expo/(cotg_deltaR-i);
 
-   return T;
+   return T*TComplex(1.,-0.9141811350146497,1);
 
  } 
 
@@ -990,7 +987,11 @@ TComplex ComputeIntegrals::Prop_Stheo(Double_t m) const
       T = (S0b*S1r*S2r-1.)/(2.*i);
    }
 
-   return T*TComplex(1.,-0.7095863518296103,1);
+   // Polynomical correction to convert from scattering to decay mass amplitudes.
+   Double_t xm = (m-1175.)/425.;
+   Double_t modulus = sqrt(1.+c1_pol_Stheo*xm+c2_pol_Stheo*(2.*xm*xm-1.)+c3_pol_Stheo*(4.*xm*xm*xm-3.*xm)+c4_pol_Stheo*(8.*xm*xm*xm*xm-8.*xm*xm+1.));
+
+   return TComplex(modulus,T.Theta()-0.7095863518296103,1);
 
  }
 

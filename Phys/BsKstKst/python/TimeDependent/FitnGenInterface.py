@@ -1,4 +1,5 @@
 from parameters import *
+import numpy as np
 gROOT.ProcessLine( "struct MyStructF{ Float_t afloat; };" )
 
 
@@ -88,70 +89,88 @@ def component(j1,j2,h,j1p,j2p,hp):
 def setParamVals(wide_window):
 
 	if wide_window==0:
-		reA00.setVal(0.774625129264)
-		reA01.setVal(-0.166827143325)
-		reA10.setVal(-0.77183919961)
-		reA11par.setVal(-0.723615794153)
-		reA11perp.setVal(0.0732974663876)
-		DCP.setVal(0.)
-		imA00.setVal(0.574694812846)
-		imA01.setVal(-2.2206943188)
-		imA10.setVal(1.79214891469)
-		imA11par.setVal(0.945499355264)
-		imA11perp.setVal(1.8061926308)
-		phis.setVal(0.)
-		delta_m_Bs.setVal(17.5838084477)
-		gamma_Bs.setVal(0.664585459024)
-		delta_gamma_Bs.setVal(0.084420771063)
-		p0metac_SSK.setVal(0.00646933707932)
-		p0metac_OS.setVal(0.00593719993519)
-		Dp0half_SSK.setVal(-0.00806091731595)
-		Dp0half_OS.setVal(0.00699381420608)
-		p1_SSK.setVal(0.926975331267)
-		p1_OS.setVal(0.984350792944)
-		Dp1half_SSK.setVal(-0.0175154799424)
-		Dp1half_OS.setVal(0.0329602824903)
-		tres_p0_2011.setVal(0.0351065851331)
-		tres_p1_2011.setVal(1.2134295727)
-		tres_p0_2012.setVal(0.0366298105354)
-		tres_p1_2012.setVal(1.21159923875)
+		reA00.setVal(1.29007341082)
+		reA01.setVal(-1.87854380674)
+		reA10.setVal(-0.992938276849)
+		reA11par.setVal(0.063831606051)
+		reA11perp.setVal(0.786840192771)
+		DCP.setVal(0.355722172481)
+		imA00.setVal(0.43969803565)
+		imA01.setVal(-2.34095642653)
+		imA10.setVal(1.90181610003)
+		imA11par.setVal(1.41300652377)
+		imA11perp.setVal(1.68832477683)
+		phis.setVal(0.678475976397)
+		delta_m_Bs.setVal(17.4829574872)
+		gamma_Bs.setVal(0.664664513628)
+		delta_gamma_Bs.setVal(0.083491490492)
+		p0metac_SSK.setVal(0.00784644105496)
+		p0metac_OS.setVal(0.00655990020835)
+		Dp0half_SSK.setVal(-0.00804368116649)
+		Dp0half_OS.setVal(0.00699089841261)
+		p1_SSK.setVal(0.921282690908)
+		p1_OS.setVal(0.981752750269)
+		Dp1half_SSK.setVal(-0.017436403727)
+		Dp1half_OS.setVal(0.0329924209628)
+		tres_p0_2011.setVal(0.0352481891629)
+		tres_p1_2011.setVal(1.20041957125)
+		tres_p0_2012.setVal(0.0366354840638)
+		tres_p1_2012.setVal(1.2237742558)
 
 	else:
-		reA00.setVal(2.2323643965)
-		reA01.setVal(-0.89723853875)
-		reA10.setVal(0.338807150307)
-		reA02.setVal(-0.288544671618)
-		reA20.setVal(-0.356609297464)
-		reA11par.setVal(-0.42365395954)
-		reA11perp.setVal(1.91885176502)
-		reA120.setVal(-0.724670037627)
-		reA12par.setVal(-0.635380978133)
-		reA12perp.setVal(-0.465629586519)
-		reA210.setVal(1.63456175255)
-		reA21par.setVal(0.157336739241)
-		reA21perp.setVal(0.875787584426)
-		reA220.setVal(0.238799025338)
-		reA22par.setVal(-0.334034299887)
-		reA22perp.setVal(-0.55670306622)
-		reA22par2.setVal(0.0797573581947)
-		reA22perp2.setVal(-0.0340525722178)
-		imA00.setVal(1.31876400487)
-		imA01.setVal(-2.37746485511)
-		imA10.setVal(3.87483466622)
-		imA02.setVal(-1.04272414126)
-		imA20.setVal(0.424402510783)
-		imA11par.setVal(1.30519268573)
-		imA120.setVal(-0.752359027282)
-		imA12par.setVal(-0.130943149738)
-		imA12perp.setVal(-0.485469742408)
-		imA210.setVal(-0.195238190235)
-		imA21par.setVal(-0.0442835282462)
-		imA21perp.setVal(0.123663025453)
-		imA220.setVal(0.307021510965)
-		imA22par.setVal(0.156733544325)
-		imA22perp.setVal(0.0540608060466)
-		imA22par2.setVal(-0.055996257409)
-		imA22perp2.setVal(-0.178058020569)
+		reA00.setVal(3.279814479)
+		reA01.setVal(-2.6176522391)
+		reA10.setVal(0.147466107599)
+		reA02.setVal(-0.636476243833)
+		reA20.setVal(0.246859288228)
+		reA11par.setVal(0.252416733859)
+		reA11perp.setVal(1.0089222079)
+		reA120.setVal(-1.69898432131)
+		reA12par.setVal(-0.215693022134)
+		reA12perp.setVal(0.489904963306)
+		reA210.setVal(0.419134476361)
+		reA21par.setVal(0.63892619994)
+		reA21perp.setVal(0.341700429601)
+		reA220.setVal(0.161296045626)
+		reA22par.setVal(-0.168004843758)
+		reA22perp.setVal(0.117863258539)
+		reA22par2.setVal(-0.181278175163)
+		reA22perp2.setVal(-0.0683734051044)
+		DCP.setVal(0.501642367977)
+		imA00.setVal(0.748146069203)
+		imA01.setVal(-4.05376293671)
+		imA10.setVal(1.61370148714)
+		imA02.setVal(-0.0359248911058)
+		imA20.setVal(-1.43099642557)
+		imA11par.setVal(1.27647114416)
+		imA11perp.setVal(1.10036357995)
+		imA120.setVal(-1.07085888685)
+		imA12par.setVal(-0.22919438048)
+		imA12perp.setVal(0.661528070938)
+		imA210.setVal(0.652422598987)
+		imA21par.setVal(-0.0068824348726)
+		imA21perp.setVal(0.521709512694)
+		imA220.setVal(0.13843662266)
+		imA22par.setVal(0.364063750642)
+		imA22perp.setVal(0.0766849638545)
+		imA22par2.setVal(0.239998996635)
+		imA22perp2.setVal(-0.104776523288)
+		phis.setVal(0.320132002983)
+		delta_m_Bs.setVal(17.6950274425)
+		gamma_Bs.setVal(0.665065880019)
+		delta_gamma_Bs.setVal(0.0846756442638)
+		p0metac_SSK.setVal(0.00874410917097)
+		p0metac_OS.setVal(0.00763208770164)
+		Dp0half_SSK.setVal(-0.00805413994769)
+		Dp0half_OS.setVal(0.00698912191257)
+		p1_SSK.setVal(0.901699267944)
+		p1_OS.setVal(0.98530935587)
+		Dp1half_SSK.setVal(-0.0152101331233)
+		Dp1half_OS.setVal(0.0328765618876)
+		tres_p0_2011.setVal(0.0347714735011)
+		tres_p1_2011.setVal(1.1537247122)
+		tres_p0_2012.setVal(0.036508878311)
+		tres_p1_2012.setVal(1.26990450906)
 
 
 def aux_PDF():
@@ -2111,25 +2130,31 @@ def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, MC_typ
 		#tree = ROOT.TTree("DecayTree","DecayTree")
 		#tree.ReadFile("InvariantMassFitOut.dat",m1_name+":"+m2_name+":"+cos1_name+":"+cos2_name+":"+phi_name+":"+t_name+":"+terror_name+":"+dec_SSK_name+":"+dec_OS_name+":"+eta_SSK_name+":"+eta_OS_name+":itype:"+L0TISline_name+":"+L0TOSline_name+":"+mKpiKpi_name+":"+weight_name)
 	else:
+		br_list = [m1_name,m2_name,cos1_name,cos2_name,phi_name,t_name,terror_name,dec_SSK_name,dec_OS_name,eta_SSK_name,eta_OS_name,L0TISline_name,L0TOSline_name,"itype"]
 		if (datatype == "real"):
+			br_list.append("sweight")
 			file_in = ROOT.TFile(file_path + data_file)
 			tree = file_in.Get(data_tree)
+			tree.SetBranchStatus("*",0)
+			for br in br_list: tree.SetBranchStatus(br,1)
 			print 'Loading data from ' + data_file + ':' + data_tree
 		elif (datatype == "MC"):
 			file_in = ROOT.TFile(file_path + MC_file)
 			tree = file_in.Get(MC_tree)
+			tree.SetBranchStatus("*",0)
+			for br in br_list: tree.SetBranchStatus(br,1)
 			print 'Loading data from ' + MC_file + ':' + MC_tree
 			if (MC_type == 0):
 				print 'Simulation type: Toy MC'
 			elif (MC_type == 1):
 				print 'Simulation type: VV'
-				m1_name = "B_s0_DTF_KST1_TRUE_M"
-				m2_name = "B_s0_DTF_KST2_TRUE_M"
-				cos1_name = "B_s0_DTF_KST1_TRUE_COSTHETA"
-				cos2_name = "B_s0_DTF_KST2_TRUE_COSTHETA"
-				phi_name = "B_s0_DTF_B_s0_PHI_TRUE_TRY4"
-				t_name = "B_s0_DTF_TAU"
-				terror_name = "B_s0_DTF_TAUERR"
+			#	m1_name = "B_s0_DTF_KST1_TRUE_M"
+			#	m2_name = "B_s0_DTF_KST2_TRUE_M"
+			#	cos1_name = "B_s0_DTF_KST1_TRUE_COSTHETA"
+			#	cos2_name = "B_s0_DTF_KST2_TRUE_COSTHETA"
+			#	phi_name = "B_s0_DTF_B_s0_PHI_TRY4_TRUE_TRY4"
+			#	t_name = "B_s0_DTF_TAU"
+			#	terror_name = "B_s0_DTF_TAUERR"
 
 	print 'M1 branch:',m1_name
 	print 'M2 branch:',m2_name
@@ -2740,7 +2765,7 @@ def DoFit(model_,data_,wide_window,TD_fit,num_CPU,minos_opt,strategy_option,fix_
    if TD_fit:
 
       if fix_mixing:
-         if fix_calib: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE))
+         if fix_calib: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.PrintLevel(0))
          else:
             ctrtargset = ROOT.RooArgSet(ctrt_p0metac_SSK_p1_SSK,ctrt_p0metac_OS_p1_OS,ctrt_Dp0half_SSK,ctrt_Dp1half_SSK,ctrt_Dp0half_OS,ctrt_Dp1half_OS)
             if wide_window:
@@ -2749,10 +2774,10 @@ def DoFit(model_,data_,wide_window,TD_fit,num_CPU,minos_opt,strategy_option,fix_
             else:
                ctrtargset.add(ctrt_tres_p0_tres_p1_2011_narrow)
                ctrtargset.add(ctrt_tres_p0_tres_p1_2012_narrow)
-            res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ctrtargset))
+            res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ctrtargset),ROOT.RooFit.PrintLevel(0))
 
       else:
-         if fix_calib: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ROOT.RooArgSet(ctrt_gamma_Bs_delta_gamma_Bs)))
+         if fix_calib: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ROOT.RooArgSet(ctrt_gamma_Bs_delta_gamma_Bs)),ROOT.RooFit.PrintLevel(0))
          else:
             ctrtargset = ROOT.RooArgSet(ctrt_gamma_Bs_delta_gamma_Bs,ctrt_p0metac_SSK_p1_SSK,ctrt_p0metac_OS_p1_OS,ctrt_Dp0half_SSK,ctrt_Dp1half_SSK,ctrt_Dp0half_OS,ctrt_Dp1half_OS)
             if wide_window:
@@ -2761,9 +2786,9 @@ def DoFit(model_,data_,wide_window,TD_fit,num_CPU,minos_opt,strategy_option,fix_
             else:
                ctrtargset.add(ctrt_tres_p0_tres_p1_2011_narrow)
                ctrtargset.add(ctrt_tres_p0_tres_p1_2012_narrow)
-            res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ctrtargset))
+            res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ctrtargset),ROOT.RooFit.PrintLevel(0))
 
-   else: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE))
+   else: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.PrintLevel(0))
 
    return res
 
@@ -2817,7 +2842,11 @@ def PDFfun(PDF_,method_,m1_,m2_,cos1_,cos2_,phi_,t_,dt_,q1_,q2_,eta1_,eta2_):
 
    return res
 
-def errorscan(PDF_,method_,n,nt,t0,tlimit):
+def errorscan(PDF_,method_):
+   n = 5
+   nt = 5
+   t0 = 0
+   tlimit = 12
    errors_nan = 0
    errors_neg = 0
    error_list = []
@@ -2834,7 +2863,7 @@ def errorscan(PDF_,method_,n,nt,t0,tlimit):
                            for i_q2 in range(-1,2):
                               for i_eta1 in range(n+1):
                                  for i_eta2 in range(n+1):
-                                    if isnan(PDFfun(PDF_,method_,750.+float(i_m1)/n*(1050.-750.),750.+float(i_m2)/n*(1050.-750.),-1.+float(i_cos1)/n*2.,-1.+float(i_cos2)/n*2.,-3.141593+float(i_phi)/n*2.*3.141593,t0+float(i_t)/nt*(tlimit-t0),float(i_dt)/n*0.08,i_q1,i_q2,float(i_eta1)/n*0.5,float(i_eta2)/n*0.5)):
+                                    if np.isnan(PDFfun(PDF_,method_,750.+float(i_m1)/n*(1050.-750.),750.+float(i_m2)/n*(1050.-750.),-1.+float(i_cos1)/n*2.,-1.+float(i_cos2)/n*2.,float(i_phi)/n*2.*3.141593,t0+float(i_t)/nt*(tlimit-t0),float(i_dt)/n*0.08,i_q1,i_q2,float(i_eta1)/n*0.5,float(i_eta2)/n*0.5)):
                                        errors_nan += 1
                                        error_list.append([750.+float(i_m1)/n*(1050.-750.),750.+float(i_m2)/n*(1050.-750.),-1.+float(i_cos1)/n*2.,-1.+float(i_cos2)/n*2.,-3.141593+float(i_phi)/n*2.*3.141593,t0+float(i_t)/nt*(tlimit-t0),float(i_dt)/n*0.08,i_q1,i_q2,float(i_eta1)/n*0.5,float(i_eta2)/n*0.5])
                                     elif (PDFfun(PDF_,method_,750.+float(i_m1)/n*(1050.-750.),750.+float(i_m2)/n*(1050.-750.),-1.+float(i_cos1)/n*2.,-1.+float(i_cos2)/n*2.,-3.141593+float(i_phi)/n*2.*3.141593,t0+float(i_t)/nt*(tlimit-t0),float(i_dt)/n*0.08,i_q1,i_q2,float(i_eta1)/n*0.5,float(i_eta2)/n*0.5) < 0.):
@@ -3143,7 +3172,7 @@ def printllprofile(parameter,nll):
 	nll.plotOn(frame,ROOT.RooFit.PrintEvalErrors(0),ROOT.RooFit.ShiftToZero(),ROOT.RooFit.LineColor(kRed))
 	c = ROOT.TCanvas("c_"+parameter.GetName(),"c_"+parameter.GetName())
 	frame.Draw()
-	c.Print("plotllprofile_" + parameter.GetName() + ".pdf")
+	c.Print("plotllprofile_" + parameter.GetName() + ".root")
 
 def plot61Ddata(data, step, wide_window = 1, mbinning = 40, cosbinning = 40, phibinning = 40, tbinning = 40):
 
@@ -3158,18 +3187,18 @@ def plot61Ddata(data, step, wide_window = 1, mbinning = 40, cosbinning = 40, phi
 	data.plotOn(frame_phi,ROOT.RooFit.Name("data_"+str(step)),ROOT.RooFit.Binning(phibinning))
 	data.plotOn(frame_t,ROOT.RooFit.Name("data_"+str(step)),ROOT.RooFit.Binning(tbinning))
 
-def plot61Dmodel(model, normdata, wide_window = 1, color = kBlue):
+def plot61Dmodel(model, normdata, wide_window = 1, color = kGray+2):
 
 	if wide_window:
-		model.plotOn(frame_m1,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
-		model.plotOn(frame_m2,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
+		model.plotOn(frame_m1,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color),ROOT.RooFit.LineWidth(4))
+		model.plotOn(frame_m2,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color),ROOT.RooFit.LineWidth(4))
 	else:
-		model.plotOn(frame_m1_narrowwin,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
-		model.plotOn(frame_m2_narrowwin,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
-	model.plotOn(frame_cos1,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
-	model.plotOn(frame_cos2,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
-	model.plotOn(frame_phi,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
-	model.plotOn(frame_t,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
+		model.plotOn(frame_m1_narrowwin,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color),ROOT.RooFit.LineWidth(4))
+		model.plotOn(frame_m2_narrowwin,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color),ROOT.RooFit.LineWidth(4))
+	model.plotOn(frame_cos1,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color),ROOT.RooFit.LineWidth(4))
+	model.plotOn(frame_cos2,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color),ROOT.RooFit.LineWidth(4))
+	model.plotOn(frame_phi,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color),ROOT.RooFit.LineWidth(4))
+	model.plotOn(frame_t,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color),ROOT.RooFit.LineWidth(4))
 
 def plot61Dcomponent(model, normdata, wide_window, compname, linecolor, linestyle):
 

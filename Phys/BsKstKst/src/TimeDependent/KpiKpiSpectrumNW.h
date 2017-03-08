@@ -71,15 +71,19 @@ TReseffclass TReseff; // Effective time resolution parameters
 Double_t DCP_prod; // Production asymmetry
 
 // Parameters of the LASS parametrisation of the Kpi scalar propagator
-Double_t a_lass = 0.00195;
-Double_t r_lass = 0.00176;
+Double_t a_lass = 3.89834e-03;//0.00195;
+Double_t r_lass = 3.20087e-03;//0.00176;
 Double_t MR_lass = 1330.; // MeV/c2
 Double_t F_lass = 102.722; // MeV
 Double_t cd_lass = 35.2; // MeV
 Double_t cm_lass = 1.027; //MeV
 Double_t C_lass = -0.001; // (dimensionless)
 
-// Parameters of the elastic+inelastic phenomenological parametrisation of the Kpi propagators
+// Parameters of the elastic+inelastic phenomenological parameterisation of the Kpi mass amplitudes
+Double_t c1_pol_Stheo = -5.05015e-01;
+Double_t c2_pol_Stheo = -2.59249e-01;
+Double_t c3_pol_Stheo = -2.77261e-02;
+Double_t c4_pol_Stheo = 0.;
 Double_t MEta = 547.; // MeV/c2
 Double_t MEtaprime = 957.78; // MeV/c2
 Double_t sAdler_Stheo = 0.236;
