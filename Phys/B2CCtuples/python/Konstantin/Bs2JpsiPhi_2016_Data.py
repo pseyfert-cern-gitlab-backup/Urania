@@ -53,21 +53,23 @@ from PhysSelPython.Wrappers import AutomaticData
 b2jpsiphi_selection = AutomaticData( location )
 
 tl = ["TupleToolTrigger"
-     ,"TupleToolGeometry"
-     ,"TupleToolKinematic"
-     ,"TupleToolPropertime"
-     ,"TupleToolPrimaries"
-     ,"TupleToolEventInfo"
-     ,"TupleToolTrackInfo"
-     ,"TupleToolTagging"
-     ,"TupleToolPid"
+      ,"TupleToolGeometry"
+      ,"TupleToolKinematic"
+      ,"TupleToolPropertime"
+      ,"TupleToolPrimaries"
+      ,"TupleToolEventInfo"
+      ,"TupleToolTrackInfo"
+      ,"TupleToolTagging"
+      ,"TupleToolPid"
      ,"TupleToolANNPID"
-     ,"TupleToolRecoStats"
-     ,"TupleToolTrackPosition"
-     ,"TupleToolL0Calo"
-     ,"TupleToolL0Data"
-     ,"TupleToolTISTOS"
-     ]
+      ,"TupleToolRecoStats"
+      ,"TupleToolTrackPosition"
+      ,"TupleToolL0Calo"
+      ,"TupleToolL0Data"
+      ,"TupleToolTISTOS"
+      ,"TupleToolMCTruth"
+      ,"TupleToolMCBackgroundInfo"
+      ]
 
 from GaudiConfUtils.ConfigurableGenerators import DecayTreeTuple as TUPLE
 from PhysSelPython.Wrappers                import SimpleSelection
@@ -202,19 +204,19 @@ tuple_B2jpsiphi.B.ConstJpsiNoPV.UpdateDaughters = True
 tuple_B2jpsiphi.B.ConstJpsiNoPV.constrainToOriginVertex = False
 tuple_B2jpsiphi.B.ConstJpsiNoPV.daughtersToConstrain = ["J/psi(1S)"]
 
-tuple_B2jpsiphi.B.ToolList += ["TupleToolDecayTreeFitter/ConstBJpsi"]
-tuple_B2jpsiphi.B.addTool(TupleToolDecayTreeFitter("ConstBJpsi"))
-tuple_B2jpsiphi.B.ConstBJpsi.Verbose = True
-tuple_B2jpsiphi.B.ConstBJpsi.UpdateDaughters = True
-tuple_B2jpsiphi.B.ConstBJpsi.constrainToOriginVertex = True
-tuple_B2jpsiphi.B.ConstBJpsi.daughtersToConstrain = ["B_s0", "J/psi(1S)"]
+#tuple_B2jpsiphi.B.ToolList += ["TupleToolDecayTreeFitter/ConstBJpsi"]
+#tuple_B2jpsiphi.B.addTool(TupleToolDecayTreeFitter("ConstBJpsi"))
+#tuple_B2jpsiphi.B.ConstBJpsi.Verbose = True
+#tuple_B2jpsiphi.B.ConstBJpsi.UpdateDaughters = True
+#tuple_B2jpsiphi.B.ConstBJpsi.constrainToOriginVertex = True
+#tuple_B2jpsiphi.B.ConstBJpsi.daughtersToConstrain = ["B_s0", "J/psi(1S)"]
 
-tuple_B2jpsiphi.B.ToolList += ["TupleToolDecayTreeFitter/ConstBJpsiNoPV"]
-tuple_B2jpsiphi.B.addTool(TupleToolDecayTreeFitter("ConstBJpsiNoPV"))
-tuple_B2jpsiphi.B.ConstBJpsiNoPV.Verbose = True
-tuple_B2jpsiphi.B.ConstBJpsiNoPV.UpdateDaughters = True
-tuple_B2jpsiphi.B.ConstBJpsiNoPV.constrainToOriginVertex = False
-tuple_B2jpsiphi.B.ConstBJpsiNoPV.daughtersToConstrain = ["B_s0", "J/psi(1S)"]
+#tuple_B2jpsiphi.B.ToolList += ["TupleToolDecayTreeFitter/ConstBJpsiNoPV"]
+#tuple_B2jpsiphi.B.addTool(TupleToolDecayTreeFitter("ConstBJpsiNoPV"))
+#tuple_B2jpsiphi.B.ConstBJpsiNoPV.Verbose = True
+#tuple_B2jpsiphi.B.ConstBJpsiNoPV.UpdateDaughters = True
+#tuple_B2jpsiphi.B.ConstBJpsiNoPV.constrainToOriginVertex = False
+#tuple_B2jpsiphi.B.ConstBJpsiNoPV.daughtersToConstrain = ["B_s0", "J/psi(1S)"]
 
 tuple_B2jpsiphi.B.ToolList += [ "TupleToolTISTOS" ]
 tuple_B2jpsiphi.B.addTool(TupleToolTISTOS, name = "TupleToolTISTOS" )
@@ -233,6 +235,84 @@ tuple_B2jpsiphi.B.ToolList += [ "TupleToolTagging" ]
 tuple_B2jpsiphi.B.addTool(TupleToolTagging, name = "TupleToolTagging" )
 tuple_B2jpsiphi.B.TupleToolTagging.Verbose = True
 tuple_B2jpsiphi.B.TupleToolTagging.StoreTaggersInfo = True
+
+
+
+### Backgrounds
+# B -> KplusPiMuMu
+tuple_B2jpsiphi.B.ToolList +=  ["TupleToolDecayTreeFitter/B2KpPiJpsi"]
+B2KpPiJpsi = TupleToolDecayTreeFitter("B2KpPiJpsi",
+                                      Verbose=True,
+                                      Substitutions = {
+                                          'Beauty -> Meson (phi(1020) -> ^K+ X-)': 'pi+'
+                                      },
+                                      daughtersToConstrain = [ "J/psi(1S)" ],
+                                      constrainToOriginVertex = True
+                                      )
+tuple_B2jpsiphi.B.addTool(B2KpPiJpsi)
+
+# B -> KminusPiMuMu
+tuple_B2jpsiphi.B.ToolList +=  ["TupleToolDecayTreeFitter/B2KmPiJpsi"]
+B2KmPiJpsi = TupleToolDecayTreeFitter("B2KmPiJpsi",
+                                      Verbose=True,
+                                      Substitutions = {
+                                          'Beauty -> Meson (phi(1020) -> X+ ^K-)': 'pi-'
+                                      },
+                                      daughtersToConstrain = [ "J/psi(1S)" ],
+                                      constrainToOriginVertex = True
+                                      )
+tuple_B2jpsiphi.B.addTool(B2KmPiJpsi)
+
+# Lb -> pKMuMu (Kplus)
+tuple_B2jpsiphi.B.ToolList +=  ["TupleToolDecayTreeFitter/pKMuMuKplus"]
+pKMuMuKplus = TupleToolDecayTreeFitter("pKMuMuKplus" ,
+                                       Verbose=True ,
+                                       Substitutions = {
+                                           'Beauty -> Meson (phi(1020) -> ^K+ X-)': 'p+'
+                                       },
+                                       daughtersToConstrain = [ "J/psi(1S)" ],
+                                       constrainToOriginVertex = True
+                                       )
+tuple_B2jpsiphi.B.addTool(pKMuMuKplus)
+
+
+### Backgrounds
+# B -> KplusPiMuMu
+tuple_B2jpsiphi.B.ToolList +=  ["TupleToolDecayTreeFitter/B2KpPiJpsi"]
+B2KpPiJpsi = TupleToolDecayTreeFitter("B2KpPiJpsi",
+                                      Verbose=True,
+                                      Substitutions = {
+                                          'Beauty -> Meson (phi(1020) -> ^K+ X-)': 'pi+'
+                                      },
+                                      daughtersToConstrain = [ "J/psi(1S)" ],
+                                      constrainToOriginVertex = True
+                                      )
+tuple_B2jpsiphi.B.addTool(B2KpPiJpsi)
+
+# B -> KminusPiMuMu
+tuple_B2jpsiphi.B.ToolList +=  ["TupleToolDecayTreeFitter/B2KmPiJpsi"]
+B2KmPiJpsi = TupleToolDecayTreeFitter("B2KmPiJpsi",
+                                      Verbose=True,
+                                      Substitutions = {
+                                          'Beauty -> Meson (phi(1020) -> X+ ^K-)': 'pi-'
+                                      },
+                                      daughtersToConstrain = [ "J/psi(1S)" ],
+                                      constrainToOriginVertex = True
+                                      )
+tuple_B2jpsiphi.B.addTool(B2KmPiJpsi)
+
+# Lb -> pKMuMu (Kplus)
+tuple_B2jpsiphi.B.ToolList +=  ["TupleToolDecayTreeFitter/pKMuMuKplus"]
+pKMuMuKplus = TupleToolDecayTreeFitter("pKMuMuKplus" ,
+                                       Verbose=True ,
+                                       Substitutions = {
+                                           'Beauty -> Meson (phi(1020) -> ^K+ X-)': 'p+'
+                                       },
+                                       daughtersToConstrain = [ "J/psi(1S)" ],
+                                       constrainToOriginVertex = True
+                                       )
+tuple_B2jpsiphi.B.addTool(pKMuMuKplus)
+
 
 # event tuple
 from Configurables import LoKi__Hybrid__EvtTupleTool
@@ -277,12 +357,8 @@ smear = TrackScaleState('TrackScaleState')
 ########################################################################
 from Configurables import DaVinci
 DaVinci().UserAlgorithms = [checkpv, smear, rd_SEQ.sequence()]       # two trees, for reco and gene information
-DaVinci().DataType = "2016"
-DaVinci().EvtMax = -1                      # Number of events
-DaVinci().InputType = 'DST'
 DaVinci().PrintFreq = 1000
 DaVinci().SkipEvents = 0                       # Events to skip
 DaVinci().HistogramFile = "DVHistos.root"      # Histogram file
 DaVinci().TupleFile = "BsJpsiPhi.root"             # Ntuple
-DaVinci().Simulation   = False
-DaVinci().Lumi = True
+

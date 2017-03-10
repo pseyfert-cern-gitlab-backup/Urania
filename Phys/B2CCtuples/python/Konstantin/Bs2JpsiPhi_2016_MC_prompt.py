@@ -8,7 +8,7 @@ from Configurables import BackgroundCategory, TupleToolDecay, TupleToolVtxIsoln,
 from Configurables import LoKi__Hybrid__TupleTool, TupleToolVeto, TupleToolTrackPosition, TupleToolTrackInfo
 from Configurables import TupleToolTagging, TupleToolL0Data, TupleToolL0Calo, TupleToolP2VV, TupleToolMCTruth, TupleToolMCBackgroundInfo
 
-use_pv = False
+pv_use = True
 
 l0_lines = [ 'L0MuonDecision'
            , 'L0DiMuonDecision'
@@ -50,14 +50,15 @@ hlt2_lines = [ 'Hlt2Topo2BodyDecision'
 
 mtl = l0_lines + hlt1_lines + hlt2_lines
 
-location  = '/Event/AllStreams/Phys/BetaSBs2JpsiPhiDetachedLine/Particles'
+location  = '/Event/AllStreams/Phys/BetaSBs2JpsiPhiPrescaledLine/Particles'
+#location  = '/Event/AllStreams/Phys/BetaSBs2JpsiPhiDetachedLine/Particles'
 from PhysSelPython.Wrappers import AutomaticData
 b2jpsiphi_selection = AutomaticData( location )
 
 tl = ["TupleToolTrigger"
      ,"TupleToolGeometry"
      ,"TupleToolKinematic"
-     ,"TupleToolPropertime"
+#     ,"TupleToolPropertime"
      ,"TupleToolPrimaries"
      ,"TupleToolEventInfo"
      ,"TupleToolTrackInfo"
@@ -343,10 +344,17 @@ smear = TrackSmearState('TrackSmearState')
 from Configurables import DaVinci
 if pv_use:
     DaVinci().UserAlgorithms = [checkpv, smear, rd_SEQ.sequence()]  # two trees, for reco and gene information
-else
+else:
     DaVinci().UserAlgorithms = [smear, rd_SEQ.sequence()]       # two trees, for reco and gene information
+DaVinci().DataType       = "2016"
+DaVinci().EvtMax         = -1                                   # Number of events
+#DaVinci().InputType      = 'DST'
 DaVinci().PrintFreq      = 1000
 DaVinci().SkipEvents     = 0                                    # Events to skip
 DaVinci().HistogramFile  = "DVHistos.root"                      # Histogram file
 DaVinci().TupleFile      = "BsJpsiPhi.root"                     # Ntuple
+DaVinci().Simulation     = True
+DaVinci().Lumi           = False
 
+#DaVinci().CondDBtag      = "sim-20161124-2-vc-md100"            # Sim09b
+DaVinci().DDDBtag        = "dddb-20150724"                      # Sim09b
