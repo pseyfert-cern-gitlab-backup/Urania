@@ -1514,8 +1514,6 @@ Double_t KpiKpiSpectrumNW::dphij1j2(Int_t j1, Int_t j2) const
 Double_t KpiKpiSpectrumNW::etah(Int_t h) const
  {
 
-   return 1.;
-
    if ((h == 2) or (h == 4)) {return -1.;}
    else {return 1.;}
 
