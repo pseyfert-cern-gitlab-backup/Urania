@@ -3,6 +3,7 @@
 ################################################################################
 gaudi_subdir(Espresso v0r6p2)
 
+find_package(RELAX)
 find_package(Boost COMPONENTS filesystem serialization)
 find_package(Xrootd)
 find_package(ROOT REQUIRED Core RooFitCore RooFit Matrix Physics MathCore MathMore RIO Gpad Hist Tree TreePlayer TMVA Postscript ASImage HistPainter XrdUtils NetxNG)
