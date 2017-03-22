@@ -2,7 +2,7 @@
 #include "RooMath.h"
 #include "TMath.h"
 
-RooAbsGaussModelEfficiency::~RooAbsGaussModelEfficiency()  {}
+RooAbsGaussModelEfficiency::~RooAbsGaussModelEfficiency()  {};
 
 namespace {
     static const Double_t rootpi(sqrt(TMath::Pi())) ;

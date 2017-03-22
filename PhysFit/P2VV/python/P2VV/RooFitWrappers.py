@@ -633,7 +633,7 @@ class P2VVAngleBasis (RooObject) :
         # build RooP2VVAngleBasis
         from P2VV.Load import P2VVLibrary
         spec = 'RooP2VVAngleBasis::%s(%s,%s,%s,%s%d,%d,%d,%d,%f)'\
-               % ( ( name, ) + tuple( angles[ang].GetName() for ang in ( 'cpsi', 'ctheta', 'phi' ) )\
+                % ( ( name, ) + tuple( angles[ang].GetName() for ang in list(angles.keys()) )\
                  + ( coef.GetName() + ',' if coef else '', ) + tuple(inds) + ( fixCoef, ) )
         self._declare(spec)
         self._init( name, 'RooP2VVAngleBasis' )

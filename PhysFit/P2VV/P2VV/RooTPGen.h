@@ -27,20 +27,20 @@ public:
 
    // Constructors, assignment etc
    inline RooTPGen() { }
-   RooTPGen(const char *name, const char *title, RooArgList& tps,
+   RooTPGen(const char *name, const char *title, RooArgList& tps, 
             const Roo1DTable& nPV, RooAbsReal& z, RooAbsPdf& zPDF);
    RooTPGen(const RooTPGen& other, const char* name=0);
-   TObject* clone(const char* newname) const override { return new RooTPGen(*this, newname); }
+   virtual TObject* clone(const char* newname) const { return new RooTPGen(*this, newname); }
    virtual ~RooTPGen();
 
-   RooAbsGenContext* genContext(const RooArgSet &vars, const RooDataSet *prototype=0,
-                                const RooArgSet* auxProto=0, Bool_t verbose= kFALSE) const override;
+   virtual RooAbsGenContext* genContext(const RooArgSet &vars, const RooDataSet *prototype=0, 
+                                        const RooArgSet* auxProto=0, Bool_t verbose= kFALSE) const ;
 
-   Int_t getGenerator(const RooArgSet& directVars, RooArgSet &generateVars, Bool_t staticInitOK=kTRUE) const override;
-   void initGenerator(Int_t /*code*/) override;
-   void generateEvent(Int_t code) override;
+   virtual Int_t getGenerator(const RooArgSet& directVars, RooArgSet &generateVars, Bool_t staticInitOK=kTRUE) const;
+   virtual void initGenerator(Int_t /*code*/);
+   virtual void generateEvent(Int_t code);
 
-
+  
    double distance() const { return _mean.getVal(); }
    void setDistance(const double d) { _mean.setVal(d); }
 
@@ -52,7 +52,7 @@ public:
 
 protected:
 
-   Double_t evaluate() const override;
+   virtual Double_t evaluate() const;
 
    RooListProxy _tps;
    Roo1DTable   _nPV;
@@ -70,7 +70,7 @@ protected:
    double       _max;
    bool         _debug;
 
-   ClassDef(RooTPGen,1) // General decay function p.d.f
+   ClassDef(RooTPGen,1) // General decay function p.d.f 
 };
 
 #endif

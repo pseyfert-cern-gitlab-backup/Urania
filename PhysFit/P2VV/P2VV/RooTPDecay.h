@@ -25,21 +25,21 @@ public:
 
    // Constructors, assignment etc
    inline RooTPDecay() { }
-   RooTPDecay(const char *name, const char *title, RooRealVar& t,
+   RooTPDecay(const char *name, const char *title, RooRealVar& t, 
               RooAbsReal& tau, const RooResolutionModel& model,
               DecayType type, const char* normRange);
    RooTPDecay(const RooTPDecay& other, const char* name=0);
-   TObject* clone(const char* newname) const override { return new RooTPDecay(*this, newname); }
+   virtual TObject* clone(const char* newname) const { return new RooTPDecay(*this, newname); }
    virtual ~RooTPDecay();
 
-   RooAbsGenContext* genContext(const RooArgSet &vars, const RooDataSet *prototype=0,
-                                const RooArgSet* auxProto=0, Bool_t verbose= kFALSE) const override;
-
+   virtual RooAbsGenContext* genContext(const RooArgSet &vars, const RooDataSet *prototype=0, 
+                                        const RooArgSet* auxProto=0, Bool_t verbose= kFALSE) const ;
+  
 protected:
 
    RooListProxy _tps;
 
-   ClassDef(RooTPDecay,1) // General decay function p.d.f
+   ClassDef(RooTPDecay,1) // General decay function p.d.f 
 };
 
 #endif

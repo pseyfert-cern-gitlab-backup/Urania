@@ -17,12 +17,12 @@
 #include "RooRealProxy.h"
 
 class RooAbsReal;
-
+ 
 class RooTransAngle : public RooAbsReal
 {
 
 public:
-  RooTransAngle() {};
+  RooTransAngle() {}; 
 
   // constructor for cos(psi)
   RooTransAngle(const char *name, const char *title, RooAbsReal& cthetaK);
@@ -33,8 +33,8 @@ public:
 
   // copy constructor
   RooTransAngle(const RooTransAngle& other, const char* name = 0);
-  TObject* clone(const char* name) const override
-  {
+  virtual TObject* clone(const char* name) const
+  { 
     return new RooTransAngle(*this, name);
   }
 
@@ -52,11 +52,11 @@ protected:
   RooRealProxy _cthetaK;
   RooRealProxy _cthetal;
   RooRealProxy _phi;
-
-  Double_t evaluate() const override;
+  
+  Double_t evaluate() const;
 
 private:
   ClassDef(RooTransAngle, 1)
 };
-
+ 
 #endif

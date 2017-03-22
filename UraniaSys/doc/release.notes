@@ -13,6 +13,7 @@ Purpose             : LHCb physics repository
    + Phys/BsKstKst (v5r3)
    + Phys/B2CCtuples (v3r1)
    + Phys/A2MuMu (v1r5)
+   + PhysFit/P2VV (v4r3, fetched from lhcb-b2cc/P2VV)
 
 !============================== v6r1 01-02-2017 ==============================
 

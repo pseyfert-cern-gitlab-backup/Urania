@@ -4,6 +4,11 @@
 ! Purpose     : keeping Tristan's crazy RooFit stuff.
 !-----------------------------------------------------------------------------
 
+! 2017-03-22 - Carlos Vazquez Sierra
+ - Make version v4r3. Fetched from lhcb-b2cc/P2VV.
+
+!============================================== v4r2 2016-12-19 ==============================
+
 ! 2016-12-19 - Carlos Vazquez Sierra
   - First release after migration to gitlab. Information about commits on SVN are lost.
     To be sure, just make version v4r2.

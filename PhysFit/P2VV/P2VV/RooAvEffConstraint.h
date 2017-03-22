@@ -1,7 +1,7 @@
 /*****************************************************************************
  * Projects: RooFit, P2VV                                                    *
  *                                                                           *
- * Author: Roel Aaij, roel.aaij@nikhef.nl                                    *
+ * Author: Roel Aaij, roel.aaij@nikhef.nl                                    * 
  *****************************************************************************/
 
 #ifndef ROOAVEFFCONSTRAINT
@@ -25,31 +25,31 @@ public:
 
    RooAvEffConstraint();
 
-   RooAvEffConstraint(const char *name, const char *title,
+   RooAvEffConstraint(const char *name, const char *title, 
                       RooAbsPdf& pdf, RooEffResModel& model,
                       RooRealVar& mean, RooRealVar& sigma);
    RooAvEffConstraint(const RooAvEffConstraint& other, const char* name=0) ;
 
-   TObject* clone(const char* newname) const override
+   virtual TObject* clone(const char* newname) const
    {
       return new RooAvEffConstraint(*this,newname);
    }
+   
+   virtual Bool_t forceAnalyticalInt(const RooAbsArg& /*dep*/) const;
 
-   Bool_t forceAnalyticalInt(const RooAbsArg& /*dep*/) const override;
-
-   Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* rangeName=0) const override;
-   Double_t analyticalIntegral(Int_t code, const char* rangeName=0) const override;
+   virtual Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* rangeName=0) const ;
+   virtual Double_t analyticalIntegral(Int_t code, const char* rangeName=0) const ;
 
    virtual const RooAbsReal* efficiency() const;
 
    virtual void setPdf(RooAbsPdf& pdf);
 
-   ~RooAvEffConstraint();
+   virtual ~RooAvEffConstraint();
 
 protected:
-
-   Double_t evaluate() const override;
-
+   
+   Double_t evaluate() const;
+   
 private:
 
    void initialize();
@@ -61,7 +61,7 @@ private:
    RooListProxy* _efficiencies; //!
    RooRealProxy _model;
    RooRealProxy* _pdf;
-
+   
    ClassDef(RooAvEffConstraint, 1) // Your description goes here...
 };
 

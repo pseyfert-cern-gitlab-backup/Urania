@@ -102,8 +102,8 @@ public:
   RooArgSet* intSet() const {return new RooArgSet(_intSet);}
   RooArgSet* normSet() const {return new RooArgSet(_normSet);}
 
-  Double_t evaluate() const override {return _basisFunc.getVal() / _pdfInt->getVal();}
-  RooArgSet* getObservables(const RooArgSet* set) const override
+  Double_t evaluate() const {return _basisFunc.getVal() / _pdfInt->getVal();}
+  virtual RooArgSet* getObservables(const RooArgSet* set) const
   {
     return _pdf.getObservables(set);
   }

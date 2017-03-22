@@ -702,6 +702,241 @@ def JpsiphiBTagDecay( Name, time, tag, lifetimeParams, sigtres, tagging, basisCo
                      )
 
 
+class GeneralCoefficients ( BDecayBasisCoefficients ) :
+# class for determining the TD coefficients in the most general case.
+
+    def __init__( self, Name, AngFuncs, Amplitudes, CPParams, keyDict, singleCP,ampNames) :
+        from P2VV.RooFitWrappers import ConstVar,Product
+        from P2VV.RooFitWrappers import ConstVar, RealVar, FormulaVar
+        from ROOT import RooRealVar
+        
+        if singleCP:
+            phii_in = CPParams[Name+'phiCPRel_0']
+            constant = ConstVar( Name = 'constant' , Value = 1.0 )
+            self.phis = self._parseArg('single_phis',{}, Formula = '@1 * @0', Arguments = [ phii_in, constant ], ObjectType = 'FormulaVar' )
+        else:
+            for key in ampNames:
+                #lambdai = CPParams[Name+'rhoCP_%s' % key[ 1 : ]]
+                #CPParams[Name+'Inv_rhoCP_%s' % key[1:]] = self._parseArg(Name+'Inv_rhoCP_%s' % key[1:], {}, Formula = '1.0/@0', Arguments = [ lambdai ], ObjectType = 'FormulaVar' )
+                if "0" not in key:
+                    phi = CPParams[Name+'phiCPRel_%s' % key[ 1 : ]]
+                    CPParams[Name+'phiCPRelNonShifted_%s' % key[1:]] = self._parseArg(Name+'phiCPRelNonShifted_%s' % key[1:], {}, Formula = '@1 + @0', Arguments = [ phi, CPParams[Name+'phiCPRel_0']], ObjectType = 'FormulaVar' )
+
+        def orthog(key0,Amplitudes,CPParams,angTerm,eta1,Coef,singleCP):
+            assert Coef in ( 'cos', 'sin', 'sinh', 'cosh' )
+
+            # Get the amplitude
+            ai = Amplitudes[Name+key0]
+            # mag2
+            aisq = ai.Mag2
+            # lambda
+            lambdai = CPParams[Name+'rhoCP_%s' % key0[ 1 : ]]
+            # weak phase
+            phii = CPParams[Name+'phiCPRel_%s' % key0[ 1 : ]]
+
+            # If single CP, give the 0 polarisation
+            if singleCP:
+                lambdai = CPParams[Name+'rhoCP_0']
+                phii = self.phis
+            elif "0" not in key0:
+                phii = CPParams[Name+'phiCPRelNonShifted_%s' % key0[ 1 : ]]
+
+            norm = self._parseArg(Name+'_NormOrthog_%s_%s' % (Coef,key0),{}, Formula = '0.5*@0*(1.0+@1*@1)', Arguments = [ aisq, lambdai ], ObjectType = 'FormulaVar' )
+            
+            if Coef=='cosh':
+                return self._parseArg( Name+'_OrthogTot_cosh_%s' % (key0), {}, Arguments = [norm,angTerm], ObjectType = 'Product' )
+            elif Coef=='sinh':
+                sinhForm = self._parseArg(Name+'_Orthog_sinh_%s' % (key0),{}, Formula = '-2.0 * @0 * @1 * cos(@2) / (1.0+@1*@1)'
+                        , Arguments = [ eta1, lambdai, phii ], ObjectType = 'FormulaVar' )
+                return self._parseArg( Name+'_OrthogTot_sinh_%s' % (key0), {}, Arguments = [norm,sinhForm,angTerm], ObjectType = 'Product' )
+            elif Coef=='cos':
+                cosForm = self._parseArg(Name+'_Orthog_cos_%s' % (key0),{}, Formula = '(1.0-@0*@0)/(1.0+@0*@0)'
+                        , Arguments = [ lambdai], ObjectType = 'FormulaVar' )
+                return self._parseArg( Name+'_OrthogTot_cos_%s' % (key0), {}, Arguments = [norm,cosForm,angTerm], ObjectType = 'Product' )
+            elif Coef=='sin':
+                sinForm = self._parseArg(Name+'_Orthog_sin_%s' % (key0),{}, Formula = '2.0 * @0 * @1 * sin(@2) / (1.0+@1*@1)'
+                        , Arguments = [ eta1, lambdai, phii ], ObjectType = 'FormulaVar' )
+                return self._parseArg( Name+'_OrthogTot_sin_%s' % (key0), {}, Arguments = [norm,sinForm,angTerm], ObjectType = 'Product' )
+
+            print 20 * "*"
+            print "Misconfiguration in orthogonal definitions"
+            print 20 * "*"
+            return
+        
+        def imaginary(key0,key1,Amplitudes,CPParams,angTerm,eta1,eta2,Coef,singleCP):
+            assert Coef in ( 'cos', 'sin', 'sinh', 'cosh' )
+
+            # Get the amplitude
+            ai = Amplitudes[Name+key0]
+            aj = Amplitudes[Name+key1]
+            # mag2
+            aisq = ai.Mag2
+            ajsq = aj.Mag2
+            # phase
+            delta_i = ai.Phase
+            delta_j = aj.Phase
+            # lambda
+            lambdai = CPParams[Name+'rhoCP_%s' % key0[ 1 : ] ]
+            lambdaj = CPParams[Name+'rhoCP_%s' % key1[ 1 : ] ]
+            # weak phase
+            phii = CPParams[Name+'phiCPRel_%s' % key0[ 1 : ] ]
+            phij = CPParams[Name+'phiCPRel_%s' % key1[ 1 : ] ]
+            
+            # If single CP, give the 0 polarisation
+            if singleCP:
+                lambdai = CPParams[Name+'rhoCP_0']
+                phii = self.phis
+            elif "0" not in key0:
+                phii = CPParams[Name+'phiCPRelNonShifted_%s' % key0[ 1 : ]]
+            elif "0" not in key1:
+                phij = CPParams[Name+'phiCPRelNonShifted_%s' % key1[ 1 : ]]
+
+            # note minus sign or not depending on whether its there
+            norm = self._parseArg(Name+'_NormIm_%s_%s_%s' % (Coef,key0,key1),{}, Formula = '0.5*sqrt(@0)*sqrt(@1)', Arguments = [ aisq, ajsq ], ObjectType = 'FormulaVar' )
+
+            if Coef=='cosh':
+                if singleCP:
+                    coshForm = self._parseArg(Name+'_Im_cosh_%s_%s' % (key0,key1),{}, Formula = 'sin(@0 - @1) + @2*@3*@4*@4*sin(@0 - @1)'
+                            , Arguments = [ delta_i, delta_j, eta1, eta2, lambdai], ObjectType = 'FormulaVar' )
+                else:
+                    coshForm = self._parseArg(Name+'_Im_cosh_%s_%s' % (key0,key1),{}, Formula = 'sin(@0 - @1) + @4*@5*@6*@7*sin(@0 - @1 - @2 + @3)'
+                            , Arguments = [ delta_i, delta_j, phii, phij, eta1, eta2, lambdai, lambdaj], ObjectType = 'FormulaVar' )
+                #coshForm.Print()
+                return self._parseArg( Name+'_ImTot_cosh_%s_%s' % (key0,key1), {}, Arguments = [norm,coshForm,angTerm], ObjectType = 'Product' )
+            elif Coef=='sinh':
+                if singleCP:
+                    sinhForm = self._parseArg(Name+'_Im_sinh_%s_%s' % (key0,key1),{}, Formula = '-1.0 * @3 * @5 * sin(@0 - @1 - @2) - 1.0 * @4 * @5 * sin(@0 - @1 + @2)'
+                            , Arguments = [ delta_i, delta_j, phii, eta1, eta2, lambdai], ObjectType = 'FormulaVar' )
+                else:
+                    sinhForm = self._parseArg(Name+'_Im_sinh_%s_%s' % (key0,key1),{}, Formula = '-1.0 * @4 * @6 * sin(@0 - @1 - @2) - @5 * @7 * sin(@0 - @1 + @3)'
+                            , Arguments = [ delta_i, delta_j, phii, phij, eta1, eta2, lambdai, lambdaj], ObjectType = 'FormulaVar' )
+                #sinhForm.Print()
+                return self._parseArg( Name+'_ImTot_sinh_%s_%s' % (key0,key1), {}, Arguments = [norm,sinhForm,angTerm], ObjectType = 'Product' )
+            elif Coef=='cos':
+                if singleCP:
+                    cosForm = self._parseArg(Name+'_Im_cos_%s_%s' % (key0,key1),{}, Formula = 'sin(@0 - @1) - @2*@3*@4*@4*sin(@0 - @1)'
+                            , Arguments = [ delta_i, delta_j, eta1, eta2, lambdai], ObjectType = 'FormulaVar' )
+                else:
+                    cosForm = self._parseArg(Name+'_Im_cos_%s_%s' % (key0,key1),{}, Formula = 'sin(@0 - @1) - @4*@5*@6*@7*sin(@0 - @1 - @2 + @3)'
+                            , Arguments = [ delta_i, delta_j, phii, phij, eta1, eta2, lambdai, lambdaj], ObjectType = 'FormulaVar' )
+                #cosForm.Print()
+                return self._parseArg( Name+'_ImTot_cos_%s_%s' % (key0,key1), {}, Arguments = [norm,cosForm,angTerm], ObjectType = 'Product' )
+            elif Coef=='sin':
+                if singleCP:
+                    sinForm = self._parseArg(Name+'_Im_sin_%s_%s' % (key0,key1),{}, Formula = '1.0 * @3 * @5 * cos(@0 - @1 - @2) - 1.0 * @4 * @5 * cos(@0 - @1 + @2)'
+                            , Arguments = [ delta_i, delta_j, phii, eta1, eta2, lambdai], ObjectType = 'FormulaVar' )
+                else:
+                    sinForm = self._parseArg(Name+'_Im_sin_%s_%s' % (key0,key1),{}, Formula = '@4 * @6 * cos(@0 - @1 - @2) - @5 * @7 * cos(@0 - @1 + @3)'
+                            , Arguments = [ delta_i, delta_j, phii, phij, eta1, eta2, lambdai, lambdaj], ObjectType = 'FormulaVar' )
+                #sinForm.Print()
+                return self._parseArg( Name+'_ImTot_sin_%s_%s' % (key0,key1), {}, Arguments = [norm,sinForm,angTerm], ObjectType = 'Product' )
+
+            print 20 * "*"
+            print "Misconfiguration in imaginary definitions"
+            print 20 * "*"
+            return
+        
+        def real(key0,key1,Amplitudes,CPParams,angTerm,eta1,eta2,Coef,singleCP):
+            assert Coef in ( 'cos', 'sin', 'sinh', 'cosh' )
+
+            # Get the amplitude
+            ai = Amplitudes[Name+key0]
+            aj = Amplitudes[Name+key1]
+            # mag2
+            aisq = ai.Mag2
+            ajsq = aj.Mag2
+            # phase
+            delta_i = ai.Phase
+            delta_j = aj.Phase
+            # lambda
+            lambdai = CPParams[Name+'rhoCP_%s' % key0[ 1 : ] ]
+            lambdaj = CPParams[Name+'rhoCP_%s' % key1[ 1 : ] ]
+            # weak phase
+            phii = CPParams[Name+'phiCPRel_%s' % key0[ 1 : ] ]
+            phij = CPParams[Name+'phiCPRel_%s' % key1[ 1 : ] ]
+            
+            # If single CP, give the 0 polarisation
+            if singleCP:
+                lambdai = CPParams[Name+'rhoCP_0']
+                phii = self.phis
+            elif "0" not in key0:
+                phii = CPParams[Name+'phiCPRelNonShifted_%s' % key0[ 1 : ]]
+            elif "0" not in key1:
+                phij = CPParams[Name+'phiCPRelNonShifted_%s' % key1[ 1 : ]]
+
+            norm = self._parseArg(Name+'_NormRe_%s_%s_%s' % (Coef,key0,key1),{}, Formula = '0.5*sqrt(@0)*sqrt(@1)', Arguments = [ aisq, ajsq ], ObjectType = 'FormulaVar' )
+
+            if Coef=='cosh':
+                if singleCP:
+                    coshForm = self._parseArg(Name+'_Re_cosh_%s_%s' % (key0,key1),{}, Formula = 'cos(@0 - @1) + @2*@3*@4*@4*cos(@0 - @1)'
+                            , Arguments = [ delta_i, delta_j, eta1, eta2, lambdai], ObjectType = 'FormulaVar' )
+                else:
+                    coshForm = self._parseArg(Name+'_Re_cosh_%s_%s' % (key0,key1),{}, Formula = 'cos(@0 - @1) + @4*@5*@6*@7*cos(@0 - @1 - @2 + @3)'
+                            , Arguments = [ delta_i, delta_j, phii, phij, eta1, eta2, lambdai, lambdaj], ObjectType = 'FormulaVar' )
+                #coshForm.Print()
+                return self._parseArg( Name+'_ReTot_cosh_%s_%s' % (key0,key1), {}, Arguments = [norm,coshForm,angTerm], ObjectType = 'Product' )
+            elif Coef=='sinh':
+                if singleCP:
+                    sinhForm = self._parseArg(Name+'_Re_sinh_%s_%s' % (key0,key1),{}, Formula = '-1.0 * @3 * @5 * cos(@0 - @1 - @2) - @4 * @5 * cos(@0 - @1 + @2)'
+                            , Arguments = [ delta_i, delta_j, phii, eta1, eta2, lambdai], ObjectType = 'FormulaVar' )
+                else:
+                    sinhForm = self._parseArg(Name+'_Re_sinh_%s_%s' % (key0,key1),{}, Formula = '-1.0 * @4 * @6 * cos(@0 - @1 - @2) - @5 * @7 * cos(@0 - @1 + @3)'
+                            , Arguments = [ delta_i, delta_j, phii, phij, eta1, eta2, lambdai, lambdaj], ObjectType = 'FormulaVar' )
+                #sinhForm.Print()
+                return self._parseArg( Name+'_ReTot_sinh_%s_%s' % (key0,key1), {}, Arguments = [norm,sinhForm,angTerm], ObjectType = 'Product' )
+            elif Coef=='cos':
+                if singleCP:
+                    cosForm = self._parseArg(Name+'_Re_cos_%s_%s' % (key0,key1),{}, Formula = 'cos(@0 - @1) - @2*@3*@4*@4*cos(@0 - @1)'
+                            , Arguments = [ delta_i, delta_j, eta1, eta2, lambdai], ObjectType = 'FormulaVar' )
+                else:
+                    cosForm = self._parseArg(Name+'_Re_cos_%s_%s' % (key0,key1),{}, Formula = 'cos(@0 - @1) - @4*@5*@6*@7*cos(@0 - @1 - @2 + @3)'
+                            , Arguments = [ delta_i, delta_j, phii, phij, eta1, eta2, lambdai, lambdaj], ObjectType = 'FormulaVar' )
+                #cosForm.Print()
+                return self._parseArg( Name+'_ReTot_cos_%s_%s' % (key0,key1), {}, Arguments = [norm,cosForm,angTerm], ObjectType = 'Product' )
+            elif Coef=='sin':
+                if singleCP:
+                    sinForm = self._parseArg(Name+'_Re_sin_%s_%s' % (key0,key1),{}, Formula = '-1.0 * @3 * @5 * sin(@0 - @1 - @2) + @4 * @5 * sin(@0 - @1 + @2)'
+                            , Arguments = [ delta_i, delta_j, phii, eta1, eta2, lambdai], ObjectType = 'FormulaVar' )
+                else:
+                    sinForm = self._parseArg(Name+'_Re_sin_%s_%s' % (key0,key1),{}, Formula = '-1.0 * @4 * @6 * sin(@0 - @1 - @2) + @5 * @7 * sin(@0 - @1 + @3)'
+                            , Arguments = [ delta_i, delta_j, phii, phij, eta1, eta2, lambdai, lambdaj], ObjectType = 'FormulaVar' )
+                #sinForm.Print()
+                return self._parseArg( Name+'_ReTot_sin_%s_%s' % (key0,key1), {}, Arguments = [norm,sinForm,angTerm], ObjectType = 'Product' )
+
+            print 20 * "*"
+            print "Misconfiguration in real definitions"
+            print 20 * "*"
+            return
+        
+        # initialize
+        terms={}
+        for Coef in ['cosh','sinh','sin','cos']:
+            terms[Coef]=[]
+        
+        for key in keyDict:
+            amp1 = Amplitudes[Name+key[0]]
+            amp2 = Amplitudes[Name+key[1]]
+            eta1 = ConstVar( Name = Name+'_eta_'+key[0],   Value =  amp1.CP )
+            eta2 = ConstVar( Name = Name+'_eta_'+key[1],   Value =  amp2.CP )
+            angTerm = AngFuncs[key]
+            
+            for Coef in ['cosh','sinh','sin','cos']:
+                if amp1.Phase.GetName()==amp2.Phase.GetName():
+                    # Return PDF for orthogonal case
+                    terms[Coef].append(orthog(key[0],Amplitudes,CPParams,angTerm,eta1,Coef,singleCP))
+                elif key[0]=="Aperp" or key[1]=="Aperp":
+                    # Return imaginary interference term
+                    terms[Coef].append(imaginary(key[0],key[1],Amplitudes,CPParams,angTerm,eta1,eta2,Coef,singleCP))
+                else:
+                    # Return real interference term
+                    terms[Coef].append(real(key[0],key[1],Amplitudes,CPParams,angTerm,eta1,eta2,Coef,singleCP))
+        
+        combine = lambda name, args : self._parseArg( name, { }, Arguments = args, ObjectType = 'Addition' )
+
+        args_Combine={}
+        for Coef in ['cosh','sinh','sin','cos']:
+            args_Combine[Coef] = combine(Name + "_" + Coef, terms[Coef])
+        BDecayBasisCoefficients.__init__( self, **args_Combine )
 
 
 class TimePdf( _util_parse_mixin ) :

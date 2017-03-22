@@ -1,7 +1,7 @@
 /*****************************************************************************
  * Projects: RooFit, P2VV                                                    *
  *                                                                           *
- * Author: Roel Aaij, roel.aaij@nikhef.nl                                    *
+ * Author: Roel Aaij, roel.aaij@nikhef.nl                                    * 
  *****************************************************************************/
 
 #ifndef ROOEFFCONSTRAINT
@@ -28,26 +28,26 @@ public:
 
    RooEffConstraint(const RooEffConstraint& other, const char* name=0);
 
-   TObject* clone(const char* newname) const override
+   virtual TObject* clone(const char* newname) const
    {
       return new RooEffConstraint(*this,newname);
    }
+   
+   virtual Bool_t forceAnalyticalInt(const RooAbsArg& /*dep*/) const;
+   virtual Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* rangeName=0) const ;
+   virtual Double_t analyticalIntegral(Int_t code, const char* rangeName=0) const ;
 
-   Bool_t forceAnalyticalInt(const RooAbsArg& /*dep*/) const override;
-   Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* rangeName=0) const override;
-   Double_t analyticalIntegral(Int_t code, const char* rangeName=0) const override;
-
-   Double_t getLogVal(const RooArgSet* nset = 0) const override;
+   virtual Double_t getLogVal(const RooArgSet* nset = 0) const;
 
    virtual const RooArgList& epsA() const { return _eps_a; }
    virtual const RooArgList& epsB() const { return _eps_b; }
-
+   
    virtual ~RooEffConstraint();
 
 protected:
-
-   Double_t evaluate() const override;
-
+   
+   virtual Double_t evaluate() const;
+   
 private:
 
    inline Double_t fraction(const double f, std::vector<double>& v, const int i) const;

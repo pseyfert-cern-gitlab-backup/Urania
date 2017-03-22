@@ -67,17 +67,17 @@ public:
 
   RooBinnedPdf(const RooBinnedPdf& other, const char* name = 0);
 
-  TObject* clone(const char* newname) const override
-  {
+  virtual TObject* clone(const char* newname) const 
+  { 
     return new RooBinnedPdf(*this, newname);
   }
 
   virtual ~RooBinnedPdf();
 
-  std::list<Double_t>* binBoundaries
-  (RooAbsRealLValue& obs, Double_t xlo, Double_t xhi) const override;
+  virtual std::list<Double_t>* binBoundaries
+  (RooAbsRealLValue& obs, Double_t xlo, Double_t xhi) const;
   std::list<Double_t>* plotSamplingHint
-  (RooAbsRealLValue& obs, Double_t xlo, Double_t xhi) const override;
+  (RooAbsRealLValue& obs, Double_t xlo, Double_t xhi) const;
 
   RooArgList* baseVariables();
 
@@ -101,16 +101,16 @@ public:
     _ignoreFirstBin = ignoreFirstBin;
   }
 
-  Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars,
-      const char* rangeName = 0) const override;
-  Double_t analyticalIntegral(Int_t code,
-      const char* rangeName = 0) const override;
+  virtual Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars,
+      const char* rangeName = 0) const;
+  virtual Double_t analyticalIntegral(Int_t code,
+      const char* rangeName = 0) const;
 
-  Int_t getMaxVal(const RooArgSet& vars) const override;
-  Double_t maxVal(Int_t code) const override;
+  virtual Int_t getMaxVal(const RooArgSet& vars) const;
+  virtual Double_t maxVal(Int_t code) const;
 
 protected:
-  Double_t evaluate() const override;
+  virtual Double_t evaluate() const;
 
 private:
   Int_t createBaseCats(const RooArgList& baseVars,
@@ -118,7 +118,7 @@ private:
   Int_t initCoefs(const TObjArray& coefLists, Bool_t factorize = kTRUE);
 
   void reset();
-
+   
   const RooAbsRealLValue& function() {
     return dynamic_cast<const RooAbsRealLValue&>(_function.arg());
   }

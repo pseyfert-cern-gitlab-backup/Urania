@@ -1,5 +1,5 @@
 // $Id: $
-#ifndef ROOEFFRESADDMODEL_H
+#ifndef ROOEFFRESADDMODEL_H 
 #define ROOEFFRESADDMODEL_H 1
 
 // Include files
@@ -8,13 +8,13 @@
 #include <P2VV/RooAbsEffResModel.h>
 
 /** @class RooEffResAddModel RooEffResAddModel.h P2VV/RooEffResAddModel.h
- *
+ *  
  *
  *  @author Roel Aaij
  *  @date   2013-05-11
  */
 class RooEffResAddModel : public RooAddModel, public RooAbsEffResModel {
-public:
+public: 
    /// Standard constructor
    RooEffResAddModel();
    RooEffResAddModel(const char *name, const char *title, const RooArgList& modelList,
@@ -22,32 +22,32 @@ public:
    /// Copy constructor
    RooEffResAddModel(const RooEffResAddModel& other, const char* newName = 0);
    RooEffResAddModel(const RooAddModel& other, const char* newName = 0);
-
+   
    /// Destructor
    virtual ~RooEffResAddModel( );
 
    /// Virtual constructor
-   TObject* clone(const char* name) const override {
+   virtual TObject* clone(const char* name) const {
       return new RooEffResAddModel(*this, name);
    }
 
-   RooAbsGenContext* modelGenContext(const RooAbsAnaConvPdf& convPdf, const RooArgSet &vars,
-                                     const RooDataSet *prototype=0, const RooArgSet* auxProto=0,
-                                     Bool_t verbose= kFALSE) const override;
+   virtual RooAbsGenContext* modelGenContext(const RooAbsAnaConvPdf& convPdf, const RooArgSet &vars,
+                                             const RooDataSet *prototype=0, const RooArgSet* auxProto=0,
+                                             Bool_t verbose= kFALSE) const;
 
-   /**
+   /** 
     * Get a RooArgSet of all observables, caller takes ownership.
     * (pointer because genreflex dictionaries can't handle value)
-    *
+    * 
     * @return RooArgSet of observables
     */
-   RooArgSet* observables() const override;
+   virtual RooArgSet* observables() const;
 
-   const RooAbsReal* efficiency() const override;
+   virtual const RooAbsReal* efficiency() const;
 
 protected:
 
-   RooResolutionModel* convolution(RooFormulaVar* inBasis, RooAbsArg* owner) const override;
+   RooResolutionModel* convolution(RooFormulaVar* inBasis, RooAbsArg* owner) const;
 
 private:
 

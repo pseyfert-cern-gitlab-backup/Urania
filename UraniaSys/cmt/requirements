@@ -33,7 +33,7 @@ use  Lambdab2Jpsippi            v3r8    Phys                    # [Patrick Koppe
 use  BsDsMuNuForRDS             v1r2    Phys                    # [Ricardo Vazquez Gomez]
 
 use  B2DXFitters		v3r4	PhysFit			# [Agnieszka Dziurda], [Manuel Schiller]
-use  P2VV			v4r2	PhysFit			# [Sean Benson], [Katya Govorkova]
+use  P2VV			v4r3	PhysFit			# [Sean Benson], [Katya Govorkova]
 use  SomeMassModels		v2r6	PhysFit			# [Diego Martinez Santos]
 use  RooPhysFitter              v3r2    PhysFit                 # [Donal Hill]
 

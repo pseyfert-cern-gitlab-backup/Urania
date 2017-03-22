@@ -45,8 +45,8 @@ public:
 
   RooCorrectedWeight(const RooCorrectedWeight& other, const char* name = 0);
 
-  TObject* clone(const char* newname) const override
-  {
+  virtual TObject* clone(const char* newname) const 
+  { 
     return new RooCorrectedWeight(*this, newname);
   }
 
@@ -54,7 +54,7 @@ public:
 
   inline Double_t getVal(const RooArgSet* set = 0)  const {return evaluate();}
   inline Double_t getVal(const RooArgSet& set)      const {return evaluate();}
-  inline Double_t getValV(const RooArgSet* set = 0) const override {return evaluate();}
+  inline Double_t getValV(const RooArgSet* set = 0) const {return evaluate();}
 
   Int_t position() const;
   Double_t correctionFactor() const {return _corrFactors.at(position());}
@@ -70,7 +70,7 @@ private:
 
   mutable std::map<Int_t, Int_t> _positionMap; //!
 
-  Double_t evaluate() const override;
+  Double_t evaluate() const;
 
   ClassDef(RooCorrectedWeight, 1) // corrects event weights (-ln(L)) for background dilution
 };
