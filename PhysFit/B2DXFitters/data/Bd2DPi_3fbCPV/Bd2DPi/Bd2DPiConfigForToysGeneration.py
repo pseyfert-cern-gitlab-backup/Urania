@@ -9,12 +9,12 @@ def getconfig() :
     ############################################################
 
     configdict["Observables"] = {}
-    configdict["Observables"] = {"BeautyMass":    {"Type"  : "RooRealVar",
-                                                   "Title" : "B mass (MeV/c^2)",
-                                                   "Range" : [5090, 6000]},
+    configdict["Observables"] = {#"BeautyMass":    {"Type"  : "RooRealVar",
+                                 #                  "Title" : "B mass (MeV/c^2)",
+                                 #                  "Range" : [5090, 6000]},
                                  "BeautyTime":    {"Type" : "RooRealVar",
                                                    "Title" : "B decay time (ps)",
-                                                   "Range" : [0.4, 15.0]},
+                                                   "Range" : [0.4, 12.0]},
                                  #"BeautyTimeErr": {"Type" : "RooRealVar",
                                  #                  "Title" : "B decay time error (ps)",
                                  #                  "Range" : [0.01, 0.1]},
@@ -22,25 +22,25 @@ def getconfig() :
                                                    "Title" : "Bachelor charge",
                                                    "Categories": { "h+" : +1,
                                                                    "h-" : -1}},
-                                 "MistagOS":      {"Type" : "RooRealVar",
-                                                   "Title" : "#eta_{OS}",
-                                                   "Range" : [0.0,0.5]},
-                                 "MistagSS":      {"Type" : "RooRealVar",
-                                                   "Title" : "#eta_{SS}",
-                                                   "Range" : [0.0,0.5]},
-                                 "TrueID":        {"Type" : "RooRealVar",
-                                                   "Title" : "True component ID",
-                                                   "Range" : [0.0,1500.0]},
+                                 #"MistagOS":      {"Type" : "RooRealVar",
+                                 #                  "Title" : "#eta_{OS}",
+                                 #                  "Range" : [0.0, 0.5]},
+                                 #"MistagSS":      {"Type" : "RooRealVar",
+                                 #                  "Title" : "#eta_{SS}",
+                                 #                  "Range" : [0.0,0.5]},
+                                 #"TrueID":        {"Type" : "RooRealVar",
+                                 #                  "Title" : "True component ID",
+                                 #                  "Range" : [0.0,1500.0]},
                                  "TagDecOS":      {"Type"  : "RooCategory",
                                                    "Title" : "q_{t}^{OS}",
                                                    "Categories": { "B+"       : +1,
-                                                                   "Untagged" : 0,
-                                                                   "B-"       : -1}},
-                                 "TagDecSS":      {"Type"  : "RooCategory",
-                                                   "Title" : "q_{t}^{SS}",
-                                                   "Categories": { "B+"       : +1,
-                                                                   "Untagged" : 0,
-                                                                   "B-"       : -1}}
+                                                                   #"Untagged" : 0,
+                                                                   "B-"       : -1}}#,
+                                 #"TagDecSS":      {"Type"  : "RooCategory",
+                                 #                  "Title" : "q_{t}^{SS}",
+                                 #                  "Categories": { "B+"       : +1,
+                                 #                                  "Untagged" : 0,
+                                 #                                  "B-"       : -1}}
                                  }
 
     ############################################################
@@ -82,8 +82,8 @@ def getconfig() :
     ############################################################
 
     configdict["Components"] = {}
-    configdict["Components"] = {"Signal"        : {"Bd2DPi": {"2011" : {"KPiPi": [5.2848e+05*fracRun1] },
-                                                              "2012" : {"KPiPi": [5.2848e+05*(1-fracRun1)] }} }}#,
+    configdict["Components"] = {"Signal"        : {"Bd2DPi": {"2011" : {"KPiPi": [1213052.0*fracRun1] },
+                                                              "2012" : {"KPiPi": [1213052.0*(1-fracRun1)] }} }}#,
     '''
                                                    "Bd2DK" : {"2011" : {"KPiPi": [((1-eff_Bd2DPi_DPi)/eff_Bd2DPi_DPi)*5.2848e+05*fracRun1] },
                                                               "2012" : {"KPiPi": [((1-eff_Bd2DPi_DPi)/eff_Bd2DPi_DPi)*5.2848e+05*(1-fracRun1)] }}},
@@ -263,41 +263,41 @@ def getconfig() :
     configdict["Taggers"] = {}
     for comp in configdict["Components"].iterkeys():
         configdict["Taggers"][comp] = {}
-        configdict["Taggers"][comp] = {"OS" : #From Bu, stat and syst combined
+        configdict["Taggers"][comp] = {"OS" :
                                        {"Calibration":
-                                        {"p0"       : [0.3737056],
-                                         "p1"       : [1.028621],
-                                         "deltap0"  : [0.011819],
-                                         "deltap1"  : [0.043134],
-                                         "avgeta"   : [0.347742], #<eta> on spline-corrected Bu->D0Pi
-                                         "tageff"   : [0.371], # the correct value here is 0.371
-                                         "tagasymm" : [0.0]
+                                        {"p0"       : [0.0],#[0.3737056],
+                                         "p1"       : [1.0],#[1.028621],
+                                         "deltap0"  : [0.0],#[0.011819],
+                                         "deltap1"  : [0.0],#[0.043134],
+                                         "avgeta"   : [0.0],#[0.347742], #<eta> on spline-corrected Bu->D0Pi
+                                         "tageff"   : [1.0],#[0.371], # the correct value here is 0.371
+                                         "tagasymm" : [0.0]#[0.0]
                                          },
-                                        "MistagPDF" :
-                                        {"Type"       : "FromWorkspace",
-                                         "File"       : "root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/MistagTemplates/templates_mistag.root",
-                                         "Workspace"  : "workspace",
-                                         "Name"       : "sigMistagPdf_2"
-                                         }
-                                        },
-                                       "SS": #From JpsiKst, stat and syst combined
-                                       {"Calibration":
-                                        {"p0"       : [0.4424049],
-                                         "p1"       : [0.81302],
-                                         "deltap0"  : [0.00062332],
-                                         "deltap1"  : [0.0066248],
-                                         "avgeta"   : [0.435], #<eta> on Bd->J/psiK*
-                                         "tageff"   : [0.816], # the correct value here is 0.816
-                                         "tagasymm" : [0.0]
-                                         },
-                                        "MistagPDF" :
-                                        {"Type"       : "FromWorkspace",
-                                         "File"       : "root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/MistagTemplates/templates_mistag.root",
-                                         "Workspace"  : "workspace",
-                                         "Name"       : "sigMistagPdf_1"
-                                         }
-                                        }
-                                       }
+                                        "MistagPDF" : None
+                                        #{"Type"       : "FromWorkspace",
+                                        # "File"       : "root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/MistagTemplates/templates_mistag.root",
+                                        # "Workspace"  : "workspace",
+                                        # "Name"       : "sigMistagPdf_2"
+                                        # }
+                                        }}#,
+                                       #"SS": #From JpsiKst, stat and syst combined
+                                       #{"Calibration":
+                                       # {"p0"       : [0.4424049],
+                                       #  "p1"       : [0.81302],
+                                       #  "deltap0"  : [0.00062332],
+                                       #  "deltap1"  : [0.0066248],
+                                       #  "avgeta"   : [0.435], #<eta> on Bd->J/psiK*
+                                       #  "tageff"   : [0.816], # the correct value here is 0.816
+                                       #  "tagasymm" : [0.0]
+                                       #  },
+                                       # "MistagPDF" :
+                                       # {"Type"       : "FromWorkspace",
+                                       #  "File"       : "root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/MistagTemplates/templates_mistag.root",
+                                       #  "Workspace"  : "workspace",
+                                       #  "Name"       : "sigMistagPdf_1"
+                                       #  }
+                                       # }
+                                       #}
 
     ############################################################
     #Time resolution and acceptance (there is a single dict because
@@ -312,11 +312,13 @@ def getconfig() :
         configdict["ResolutionAcceptance"][comp] = {"TimeErrorPDF": None,
                                                     "Acceptance":  #From ANA note v2
                                                     {"Type": "Spline",
-                                                     "KnotPositions" : [ 0.5, 1.0, 1.5, 2.0, 3.0, 12.0 ],
-                                                     "KnotCoefficients" : [ 0.3889, 0.5754, 0.8515, 1.0649, 1.2373, 1.4149]},
+                                                     "KnotPositions" : [0.5, 1.0, 1.5, 2.0, 2.3, 2.6, 3.0, 4.0, 10.0],
+                                                     "KnotCoefficients" : [1.9440e-01, 3.3275e-01, 6.1444e-01, 8.6628e-01, 9.9600e-01, 1.0745e+00, 1.1083e+00, 1.1565e+00, 1.1946e+00]},
+                                                    #"KnotCoefficients" : [0.194251, 0.33608, 0.611385, 0.865662, 0.999956, 1.06792, 1.1141, 1.15014, 1.20672]},
                                                     "Resolution": #From ANA note v2
                                                     {"Type": "AverageModel",
-                                                     "Parameters": { 'sigmas': [ 0.05491 ], 'fractions': [] },
+                                                     "Parameters": { 'sigmas': [ 0.042845 ], 'fractions': [] },
+                                                     #"Parameters": { 'sigmas': [ 0.05491 ], 'fractions': [] },
                                                      "Bias": [0.0],
                                                      "ScaleFactor": [1.0]}
                                                     }
@@ -329,8 +331,8 @@ def getconfig() :
     configdict["DetectionAsymmetry"] = {}
     configdict["ProductionAsymmetry"]["Signal"] = {}
     configdict["DetectionAsymmetry"]["Signal"] = {}
-    configdict["ProductionAsymmetry"]["Signal"] = [-0.0124] #from ANA note v2
-    configdict["DetectionAsymmetry"]["Signal"] = [0.0086] #from arXiv:1408.0275v2 (OPPOSITE SIGN!!!)
+    configdict["ProductionAsymmetry"]["Signal"] = [6.4126e-03]#[-0.0124] #from ANA note v2
+    configdict["DetectionAsymmetry"]["Signal"] = [4.2975e-03]#[0.0086] #from arXiv:1408.0275v2 (OPPOSITE SIGN!!!)
     for comp in configdict["Components"].iterkeys():
         if comp != "Signal":
             #We don't really care about background
@@ -360,17 +362,17 @@ def getconfig() :
     ArgAbarfbar_d   =  0.002278
 
     #Signal (use more convenient interface with ArgLf_d, ArgLbarfbar_d and ModLf_d)
-    configdict["ACP"]["Signal"] = { "Gamma"                : [1.0 / 1.520], #Inverse lifetime from HFAG (http://www.slac.stanford.edu/xorg/hfag/osc/summer_2016/)
+    configdict["ACP"]["Signal"] = { "Gamma"                : [6.5835e-01],#[1.0/1.519068],#[1.0 / 1.520], #Inverse lifetime from HFAG (http://www.slac.stanford.edu/xorg/hfag/osc/summer_2016/)
                                     "DeltaGamma"           : [0.0],
-                                    "DeltaM"               : [0.5050], #semileptonic measurement HFAG (http://www.slac.stanford.edu/xorg/hfag/osc/summer_2016/)
+                                    "DeltaM"               : [5.1037e-01],#[0.510],#[0.5050], #semileptonic measurement HFAG (http://www.slac.stanford.edu/xorg/hfag/osc/summer_2016/)
                                     #"ArgLf"                : [ArgqOverp_d + ArgAbarf_d - ArgAf_d],
                                     #"ArgLbarfbar"          : [ArgpOverq_d + ArgAfbar_d - ArgAbarfbar_d],
                                     #"ModLf"                : [ModAbarf_d/ModAf_d],
-                                    "C"                    : [1.0], #we neglect r^2 terms
-                                    "S"                    : [-0.031], #from decfile
-                                    "Sbar"                 : [0.029], #from decfile
-                                    "D"                    : [0], #from DeltaGamma=0
-                                    "Dbar"                 : [0], #from DeltaGamma=0
+                                    "C"                    : [9.9948e-01],#[1.0] #we neglect r^2 terms
+                                    "S"                    : [-3.1510e-02],#[-0.031], #from decfile
+                                    "Sbar"                 : [-2.8770e-02],#[-0.029], #from decfile
+                                    "D"                    : [9.7332e-03],#[0.0] #from DeltaGamma=0
+                                    "Dbar"                 : [1.5111e-02],#[0.0] #from DeltaGamma=0
                                     "ParameteriseIntegral" : True,
                                     "NBinsAcceptance"      : 0} #keep at zero if using spline acceptance!
 

@@ -12,6 +12,8 @@
 ! 2017-03-22 - Vincenzo Battista
  - Replace boost::container::vector<Bool_t> with std::vector<SmartBool>, where
    SmartBool is a wrapper around bool. This fixes some bad compilation warnings.
+ - Improve MC bootstrapping and add configurable asymmetry plotter
+ - Many updates of config files for Bd->DPi
 
 ! 2017-03-08 - Agnieszka Dziurda
  - further fixes in MDFit:

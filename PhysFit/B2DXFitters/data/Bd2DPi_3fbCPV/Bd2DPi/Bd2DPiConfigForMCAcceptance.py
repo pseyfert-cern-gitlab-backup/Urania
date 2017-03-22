@@ -3,7 +3,8 @@ def getconfig() :
     configdict = {}
 
     configdict["Time"] = { "Name": "obsTime",
-                           "Range": [0.4, 15.0]
+                           "Range": [0.4, 12.0],
+                           "Bins": 60
                            }
 
     # "Observables" has to contain the variables used in the "preselection" string, if any! 
@@ -16,13 +17,12 @@ def getconfig() :
 
     configdict["Weight"] = "TMath::Exp(obsTime/1.519068)"
 
-    #Knots from DsK
-    configdict["Acceptance"] = {"Knots": [ 0.5, 1.0, 1.5, 2.0, 3.0, 12.0 ],
-                                "Coefficients": [0.3889, 0.5754, 0.8515, 1.0649, 1.2373, 1.4149]}
-
     #New knots
-    #configdict["Acceptance"] = {"Knots": [ 0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 6.5, 12.0 ],
-    #                            "Coefficients" : [0.3889, 0.5754, 0.8515, 1.0649, 1.2373, 1.3, 1.35, 1.4149] }
+    #configdict["Acceptance"] = {"Knots": [ 0.5, 1.0, 1.5, 2.0, 2.25, 2.5, 2.75, 3.0, 3.5, 5.0, 10.0 ],
+    #                            "Coefficients" : [0.3889, 0.8, 0.9, 0.9, 0.9, 1.0, 1.0, 1.0, 1.1, 1.2, 1.1] }
+
+    configdict["Acceptance"] = {"Knots": [ 0.5, 1.0, 1.5, 2.0, 2.3, 2.6, 3.0, 4.0, 10.0 ],
+                                "Coefficients" : [0.3889, 0.8, 0.9, 0.9, 0.9, 1.0, 1.0, 1.0, 1.1] }
 
     configdict["LHCbText"] = { "X": 0.75, "Y": 0.45}
 

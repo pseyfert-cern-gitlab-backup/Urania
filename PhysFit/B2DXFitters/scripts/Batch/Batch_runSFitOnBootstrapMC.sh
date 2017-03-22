@@ -31,7 +31,7 @@ export mlimit="100000"
 export nickname="Bd2DPiMCFilteredS21RunIBothTaggedOnlyShortTime"
 #Tag to describe time fit configuration
 #Choose a meaningful name (e.g. SSbarFloating etc...) 
-export timefitdescr="SSbarAccAsymmFloatTrueTag"
+export timefitdescr="SSbarAccAsymmFloatDMGammaConstrTrueTagNominalC"
 #Name of workspace
 export workspace="workspace"
 #Name of dataset

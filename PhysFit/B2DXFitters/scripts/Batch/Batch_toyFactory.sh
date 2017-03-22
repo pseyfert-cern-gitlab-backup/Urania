@@ -28,17 +28,17 @@ export queue="1nh"
 export mlimit="75000"
 #Nickname for the current configuration
 #Choose a meaningful name (e.g. SgnAndBkgMeanResSplineAcc2TaggersNoAsymm etc...)
-export nickname="SimpleSgnAndBkgTwoTaggersProdDetAsymmAccMeanResTimeFrom04psHiRes"
+export nickname="FromMCFitSgnOnlyTrueTagProdDetAsymmAccMeanResTime04to12"
 #Configuration file
-export config="/afs/cern.ch/user/c/cofitzpa/cmtuser/Urania_v5r0/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/Bd2DPiConfigForToysGenerationHiRes.py"
+export config="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/Bd2DPiConfigForToysGeneration.py"
 #Temporary pathname to dump results
-export output="/afs/cern.ch/work/c/cofitzpa/public/B2DX/Bd2DPi/Toys/${nickname}/Generator/"
+export output="/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Toys/${nickname}/Generator/"
 #Pathname to dump outputfiles (eos recommendend)
-#export eosoutput="/eos/lhcb/wg/b2oc/TD_DPi_3fb/Toys/${nickname}/Generator/"
-export eosoutput="/eos/lhcb/user/c/cofitzpa/TD_DPi_3fb/Toys/${nickname}/Generator/"
+export eosoutput="/eos/lhcb/wg/b2oc/TD_DPi_3fb/Toys/${nickname}/Generator/"
 #Path where scripts are located
-export bashscriptpath="/afs/cern.ch/user/c/cofitzpa/cmtuser/Urania_v5r0/PhysFit/B2DXFitters/scripts/Bash/"
-export pyscriptpath="/afs/cern.ch/user/c/cofitzpa/cmtuser/Urania_v5r0/PhysFit/B2DXFitters/scripts/"
+export bashscriptpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/scripts/Bash/"
+export pyscriptpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/scripts/"
+export runpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/"
 
 #Clear directories
 rm -rf $output
@@ -65,12 +65,12 @@ while (( $stop <= $fullstop )); do
     echo "...submitting job ${job} with starting seed ${seed}"
 
     #Submit jobs
-    bsub -q $queue -M $mlimit -e ${output}ERROR -o ${output}OUTPUT -n 1,4 -R "span[hosts=-1]" -J ${jobname}_${seed} source ${bashscriptpath}toyFactory.sh $seed $stop $output $eosoutput $nickname $config $pyscriptpath
+    bsub -q $queue -M $mlimit -e ${output}ERROR -o ${output}OUTPUT -n 1,4 -R "span[hosts=-1]" -J ${jobname}_${seed} source ${bashscriptpath}toyFactory.sh $seed $stop $output $eosoutput $nickname $config $pyscriptpath $runpath
    
-    #source ${bashscriptpath}toyFactory.sh $seed $stop $output $eosoutput $nickname $config $pyscriptpath
+    #source ${bashscriptpath}toyFactory.sh $seed $stop $output $eosoutput $nickname $config $pyscriptpath $runpath
 
     #Sleep to avoid afs overload and buffer space consumption (not sure this is the best trick)
-    if [[ "$(($job % 50))" -eq 0 ]]; then
+    if [[ "$(($job % 100))" -eq 0 ]]; then
 	echo "Sleeping..."
 	sleep 30
     fi

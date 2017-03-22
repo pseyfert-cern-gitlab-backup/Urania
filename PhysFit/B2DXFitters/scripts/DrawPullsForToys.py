@@ -108,27 +108,27 @@ gStyle.SetOptFit(1011)
 # Common input stuff and options
 massfitdescr=''
 timefitdescr=''
-nickname='Bd2DPiMCFilteredS21RunIBothTaggedOnlyShortTime'
-debugplots = False
+nickname='FromMCFitSgnOnlyTrueTagProdDetAsymmAccMeanResTime04to12'
+debugplots = True
 
 #Uncomment this for mass fit
 #massfitdescr='FitB_FullMDFit'
 #inputfile = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Toys/'+nickname+'/'+'MDFit/PullTree'+massfitdescr+'_'+nickname+'.root'
 #outputdir = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Toys/'+nickname+'/MassPullsB/'
-#selection = 'CovQual == 3 && MINUITStatus == 0 && edm!=0 && edm<0.1'
+#selection = 'CovQual == 3 && MINUITStatus == 0 && edm!=0'
 
 #Uncomment this for time fit
-#massfitdescr="FullMDFit"
-#timefitdescr='SSbarFloating'
-#inputfile = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Toys/'+nickname+'/TimeFit/PullTreeTimeFit_'+nickname+'_'+timefitdescr+'_'+massfitdescr+'.root'
-#outputdir = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Toys/'+nickname+'/TimePulls/'
-#selection = 'MINUITStatus == 0 && edm!=0 && Sf_err < 0.03 && Sfbar_err < 0.03'
+massfitdescr="NoMDFit"
+timefitdescr='SSbarAccAsymmFloatDMGammaConstrTrueTag'
+inputfile = '/eos/lhcb/wg/b2oc/TD_DPi_3fb/Toys/'+nickname+'/TimeFit/'+timefitdescr+'/PullTreeTimeFit_'+nickname+'_'+timefitdescr+'_'+massfitdescr+'.root'
+outputdir = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Toys/'+nickname+'/TimePulls/'
+selection = 'MINUITStatus == 0 && edm!=0'
 
 #Uncomment this for Bootstrap MC
-timefitdescr='SSbarAccAsymmFloatDMGammaConstrTrueTag'
-inputfile = '/eos/lhcb/wg/b2oc/TD_DPi_3fb/MCBootstrap/'+nickname+'/TimeFit/'+timefitdescr+'/PullTreeTimeFit_'+nickname+'_'+timefitdescr+'.root'
-outputdir = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/MCBootstrap/'+nickname+'/TimePulls/'
-selection = 'MINUITStatus == 0 && edm!=0'
+#timefitdescr='SSbarAccAsymmFloatDMGammaConstrTrueTag'
+#inputfile = '/eos/lhcb/wg/b2oc/TD_DPi_3fb/MCBootstrap/'+nickname+'/TimeFit/'+timefitdescr+'/PullTreeTimeFit_'+nickname+'_'+timefitdescr+'.root'
+#outputdir = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/MCBootstrap/'+nickname+'/TimePulls/'
+#selection = 'MINUITStatus == 0 && edm!=0'
 
 #Leave as it is
 inputFile = TFile.Open(inputfile,"READ")
@@ -149,7 +149,7 @@ else:
 
 print "Plot label: "+plotlabel
 
-os.system( "rm -r "+outputdir ) #be careful...
+#os.system( "rm -r "+outputdir ) #be careful...
 os.system( "mkdir -p "+outputdir )
 
 # -----------------------------------------------------------------------------
@@ -240,13 +240,13 @@ for obs in range(0, int(nObs)):
     pullcanvas = TCanvas("pullcanvas"+str(obs),"pullcanvas",1500,500)
     pullcanvas.Divide(3,1)
     pullcanvas.cd(1)
-    fitted.Fit("gaus")
+    fitted.Fit("gaus","LM")
     fitted.Draw("PE")
     pullcanvas.cd(2)
-    errf.Fit("gaus")
+    errf.Fit("gaus","LM")
     errf.Draw("PE")
     pullcanvas.cd(3)
-    pull.Fit("gaus")
+    pull.Fit("gaus","LM")
     pull.Draw("PE")
     makeprintout(pullcanvas,outputdir+"1DPullPlot_"+NameList[obs]+"_"+plotlabel)
 

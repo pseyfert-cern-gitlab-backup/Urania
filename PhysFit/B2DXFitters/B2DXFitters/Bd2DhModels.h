@@ -62,6 +62,14 @@ namespace Bd2DhModels {
                                               bool shiftMean = false,
                                               bool scaleWidths = false,
                                               bool debug = true);
+
+  RooAbsPdf* buildCrystalBallPlusJohnsonSUPDF( RooAbsReal& obs,
+                                               RooWorkspace* workInt,
+                                               TString samplemode,
+                                               TString typemode,
+                                               bool shiftMean = false,
+                                               bool scaleWidths = false,
+                                               bool debug = true);
   
   RooAbsPdf* buildJohnsonSUPlusGaussianPDF( RooAbsReal& obs,
                                             RooWorkspace* workInt,
@@ -90,13 +98,30 @@ namespace Bd2DhModels {
                                            TString samplemode,
                                            TString typemode,
                                            bool debug = true);
-  
+
+  RooAbsPdf* buildIpatiaPlusGaussianPDF(RooAbsReal& obs,
+                                        RooWorkspace* workInt,
+                                        TString samplemode,
+                                        TString typemode,
+                                        bool shiftMean = false,
+                                        bool scaleTails = false,
+                                        bool debug = true);
+
+  RooAbsPdf* buildIpatiaPlusJohnsonSUPDF(RooAbsReal& obs,
+                                         RooWorkspace* workInt,
+                                         TString samplemode,
+                                         TString typemode,
+                                         bool shiftMean = false,
+                                         bool scaleTails = false,
+                                         bool debug = true);
 
   RooAbsPdf* buildIpatiaGaussConvPDF(RooRealVar& obs,
                                      RooWorkspace* workInt,
                                      TString samplemode,
                                      TString typemode,
                                      bool shiftMean = false,
+                                     bool scaleTails = false,
+                                     bool fft = true,
                                      bool debug = true);
   
 } // end of namespace
