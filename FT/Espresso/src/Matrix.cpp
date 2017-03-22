@@ -24,7 +24,7 @@ namespace Espresso
   // Constructor
   Matrix::Matrix(std::size_t _n, std::size_t _m)
     : n(_n),
-      m(_n),
+      m(_m),
       v(gsl_matrix_calloc(n,m)),
       _isSubmatrix(false),
       softwrap(false)

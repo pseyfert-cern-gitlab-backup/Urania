@@ -377,8 +377,8 @@ namespace Espresso
   }
 
   Vector GenericScoreVector(const TaggingResult::TagTable& table, std::function<double(bool,double)> metric) {
-
-    int num = table[0].dpi.size();
+    
+    unsigned int num = table[0].dpi.size();
     Vector score(num);
 
     for (const auto& it : table) {
@@ -518,7 +518,6 @@ namespace Espresso
 
   double UngroupedCressieReadTest(const TaggingResult& tag, bool PValue, bool selfCalibrated) {
     auto cressie_read = [] (bool c, double p) {
-      double den = p*(1-p);
       if (c)
         return 9.0/5.0*(pow(p,-2.0/3.0)-1);
       else
