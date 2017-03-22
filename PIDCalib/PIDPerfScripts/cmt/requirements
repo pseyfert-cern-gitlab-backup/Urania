@@ -3,7 +3,7 @@
 # Maintainer : Donal Hill
 #============================================================================
 package           PIDPerfScripts
-version           v11r1
+version           v11r2
 
 #============================================================================
 # Structure, i.e. directories to process. 

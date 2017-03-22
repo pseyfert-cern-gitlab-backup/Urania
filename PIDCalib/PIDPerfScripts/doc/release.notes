@@ -3,6 +3,12 @@
 ! Responsible : Donal Hill
 ! Purpose     : Scripts using PIDPerfTools to perform PID studies
 !-----------------------------------------------------------------------------
+
+! 2017-03-22 - Carlos Vazquez Sierra
+  + Make version v11r2.
+
+!============================================== v11r1 2017-03-08 ==============================
+
 ! 2017-03-08 - Donal Hill
 	- Added tempdir to TupleDataset.py to create and delete temporary file correctly
 	- Should avoid issue reported by Thomas Ruf

@@ -1,7 +1,7 @@
 ################################################################################
 # Package: B2CCtuples
 ################################################################################
-gaudi_subdir(B2CCtuples v3r0)
+gaudi_subdir(B2CCtuples v3r1)
 
 gaudi_depends_on_subdirs(Math/SomeUtils)
 
