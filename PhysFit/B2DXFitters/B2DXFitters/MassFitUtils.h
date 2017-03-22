@@ -19,7 +19,7 @@
 #include <vector>
 
 //Boost includes
-#include <boost/container/vector.hpp>
+//#include <boost/container/vector.hpp>
 
 // ROOT and RooFit includes
 #include "TFile.h"
@@ -43,25 +43,42 @@
 
 namespace MassFitUtils {
 
+  class SmartBool
+  {
+  public:
+    SmartBool();
+    SmartBool(Bool_t sb): _sb(sb) {};
+    void setSB(Bool_t sb) 
+    { 
+      _sb = sb; 
+    }
+    bool& getSB() 
+    {
+      return _sb; 
+    }
+  private:
+    Bool_t _sb;
+  };
+ 
   void InitializeRealObs(TString tB,
-                         std::vector <Double_t> &varD, 
-                         std::vector <Int_t> &varI, 
-                         std::vector <Float_t> &varF, 
+                         std::vector <Double_t> &varD,
+                         std::vector <Int_t> &varI,
+                         std::vector <Float_t> &varF,
                          std::vector <Short_t> &varS,
-                         boost::container::vector <Bool_t> &varB,
-                         Bool_t debug); 
-  Double_t GetValue( TString tB, Double_t &varD, Int_t &varI, Float_t &varF, Short_t &varS, Bool_t &varB ); 
+                         std::vector <SmartBool> &varB,
+                         Bool_t debug);
+  Double_t GetValue( TString tB, Double_t &varD, Int_t &varI, Float_t &varF, Short_t &varS, SmartBool &varB ); 
   Double_t SetValRealObs(MDFitterSettings* mdSet, RooArgSet* obsVar,
                          TString tN, TString tB,
-                         Double_t &varD, Int_t &varI, Float_t &varF, Short_t &varS, Bool_t &varB,
+                         Double_t &varD, Int_t &varI, Float_t &varF, Short_t &varS, SmartBool &varB,
                          TString mode, Double_t shift=0.0);
   
   Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obsVar,
                         TString tN, TString tB,
-                        Double_t &varD, Int_t &varI, Float_t &varF, Short_t &varS, Bool_t &varB);
+                        Double_t &varD, Int_t &varI, Float_t &varF, Short_t &varS, SmartBool &varB);
   
   void SetBranchAddress(TTree* tr, TString tB, TString tN,
-                        Double_t &varD, Int_t &varI, Float_t &varF, Short_t &varS, Bool_t &varB,
+                        Double_t &varD, Int_t &varI, Float_t &varF, Short_t &varS, SmartBool &varB,
                         Bool_t debug = false);
 
   //===========================================================================

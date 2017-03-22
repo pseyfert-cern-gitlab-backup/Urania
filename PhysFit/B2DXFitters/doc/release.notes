@@ -4,6 +4,10 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
+! 2017-03-22 - Vincenzo Battista
+ - Replace boost::container::vector<Bool_t> with std::vector<SmartBool>, where
+   SmartBool is a wrapper around bool. This fixes some bad compilation warnings.
+
 ! 2017-03-08 - Agnieszka Dziurda
  - further fixes in MDFit:
    - RooWorkspace is not anymore our friend, some bypass done, more clever solution

@@ -16,7 +16,7 @@
 #include <stdexcept>
 
 //Boost includes
-#include <boost/container/vector.hpp>
+//#include <boost/container/vector.hpp>
 
 //#include "B2DXFitters/icc_fpclass_workaround.h"
 
@@ -80,22 +80,30 @@ using namespace GeneralUtils;
 
 namespace MassFitUtils {
 
-  void InitializeRealObs(TString tB, std::vector <Double_t> &varD, std::vector <Int_t> &varI, std::vector <Float_t> &varF, std::vector<Short_t> &varS, boost::container::vector<Bool_t> &varB,
+  void InitializeRealObs(TString tB, std::vector <Double_t> &varD, std::vector <Int_t> &varI, std::vector <Float_t> &varF, std::vector<Short_t> &varS, std::vector<SmartBool> &varB,
                          Bool_t debug)
   {
     tB = tB;
-    varD.push_back(0.0);  varI.push_back(0); varF.push_back(0.0); varS.push_back(0); varB.push_back(false);
-    if ( debug == true ){} 
+    
+    varD.push_back(0.0);
+    varI.push_back(0);
+    varF.push_back(0.0);
+    varS.push_back(0);
+    varB.push_back(SmartBool(false));
+    
+    if ( debug == true )
+    {
+    }
   }
 
-  Double_t GetValue( TString tB, Double_t &varD, Int_t &varI, Float_t &varF, Short_t &varS, Bool_t &varB)
+  Double_t GetValue( TString tB, Double_t &varD, Int_t &varI, Float_t &varF, Short_t &varS, SmartBool &varB)
   {
     Double_t val = 0;
     if ( tB == "Double_t") { val = varD; }
     else if( tB == "Int_t" ) { val = varI;  }
     else if( tB == "Float_t" ) { val = varF; }
     else if( tB == "Short_t" ) { val = varS; } 
-    else if( tB == "Bool_t" ) { val = varB; }
+    else if( tB == "Bool_t" ) { val = varB.getSB(); }
 
     return val; 
 
@@ -103,7 +111,7 @@ namespace MassFitUtils {
 
   Double_t SetValRealObs(MDFitterSettings* mdSet, RooArgSet* obs,
                          TString tN, TString tB,
-                         Double_t &varD, Int_t &varI, Float_t &varF, Short_t &varS, Bool_t &varB, 
+                         Double_t &varD, Int_t &varI, Float_t &varF, Short_t &varS, SmartBool &varB, 
                          TString mode, Double_t shift)
   {
     RooRealVar* obsVar = (RooRealVar*)obs->find(tN.Data()); 
@@ -139,7 +147,7 @@ namespace MassFitUtils {
 
   Double_t SetValCatObs(MDFitterSettings* mdSet, RooArgSet* obs,
                         TString tN, TString tB,
-                        Double_t &varD, Int_t &varI, Float_t &varF, Short_t &varS, Bool_t &varB)
+                        Double_t &varD, Int_t &varI, Float_t &varF, Short_t &varS, SmartBool &varB)
   {
     RooCategory* obsCat = (RooCategory*)obs->find(tN.Data());  
     Double_t val = GetValue(tB, varD, varI, varF, varS, varB);
@@ -170,14 +178,14 @@ namespace MassFitUtils {
   }
 
   void SetBranchAddress(TTree* tr, TString tB, TString tN,
-                        Double_t &varD, Int_t &varI, Float_t &varF, Short_t &varS, Bool_t &varB, 
+                        Double_t &varD, Int_t &varI, Float_t &varF, Short_t &varS, SmartBool &varB, 
                         Bool_t debug)
   {
     if ( tB == "Double_t") {  tr->SetBranchAddress(tN.Data(),    &varD); }
     else if( tB == "Int_t" ) { tr->SetBranchAddress(tN.Data(),    &varI); }
     else if( tB == "Float_t" ) { tr->SetBranchAddress(tN.Data(),    &varF); }
     else if( tB == "Short_t" ) { tr->SetBranchAddress(tN.Data(),    &varS); }
-    else if( tB == "Bool_t" ) { tr->SetBranchAddress(tN.Data(),    &varB); }
+    else if( tB == "Bool_t" ) { tr->SetBranchAddress(tN.Data(),    &varB.getSB()); }
     else std::cout << "MassFitUtils::SetBranchAddress() => WARNING: branch " << tN.Data() << " of type " << tB << " not set!" << std::endl;
     if ( debug  ) { } 
   }
@@ -305,7 +313,7 @@ namespace MassFitUtils {
       treetmp = TreeCut(tree[i],All_cut,smp[i],mode, debug);
       
       std::vector <TString> tB; 		
-      std::vector <Double_t> varD; std::vector <Int_t> varI; std::vector <Float_t> varF; std::vector <Short_t> varS; boost::container::vector <Bool_t> varB;
+      std::vector <Double_t> varD; std::vector <Int_t> varI; std::vector <Float_t> varF; std::vector <Short_t> varS; std::vector <SmartBool> varB;
       for(unsigned int i = 0; i<tN.size(); i++ )
       {
         std::cout<<tN[i]; 
@@ -1434,7 +1442,7 @@ namespace MassFitUtils {
       treetmp = TreeCut(treeMC, MCCut, smp, md, debug);  // create new tree after applied all cuts //
       
       std::vector <TString> tB;
-      std::vector <Double_t> varD; std::vector <Int_t> varI; std::vector <Float_t> varF; std::vector <Short_t> varS; boost::container::vector <Bool_t> varB;
+      std::vector <Double_t> varD; std::vector <Int_t> varI; std::vector <Float_t> varF; std::vector <Short_t> varS; std::vector <SmartBool> varB;
       for(unsigned int k = 0; k<tN.size(); k++ )
       {
         if ( tN[k] != "" ){ tB.push_back(treetmp->GetLeaf(tN[k].Data())->GetTypeName()); }
@@ -1449,7 +1457,7 @@ namespace MassFitUtils {
       
       std::vector <TString> tBW;
       std::vector <TString> tNW;
-      std::vector <Double_t> varDW; std::vector <Int_t> varIW; std::vector <Float_t> varFW; std::vector <Short_t> varSW; boost::container::vector <Bool_t> varBW;
+      std::vector <Double_t> varDW; std::vector <Int_t> varIW; std::vector <Float_t> varFW; std::vector <Short_t> varSW; std::vector <SmartBool> varBW;
       if ( mdSet->CheckMassWeighting()==true || mdSet->CheckDataMCWeighting() == true)
       {
         
@@ -2661,7 +2669,7 @@ namespace MassFitUtils {
       Int_t nentriesMC = treetmp->GetEntries();
       
       std::vector <TString> tB;
-      std::vector <Double_t> varD; std::vector <Int_t> varI; std::vector <Float_t> varF; std::vector <Short_t> varS; boost::container::vector <Bool_t> varB;
+      std::vector <Double_t> varD; std::vector <Int_t> varI; std::vector <Float_t> varF; std::vector <Short_t> varS; std::vector <SmartBool> varB;
       for(unsigned int k = 0; k<tN.size(); k++ )
       {
         if ( tN[k] != "" ){ tB.push_back(treetmp->GetLeaf(tN[k].Data())->GetTypeName()); }
@@ -2676,7 +2684,7 @@ namespace MassFitUtils {
 
       std::vector <TString> tBW;
       std::vector <TString> tNW;
-      std::vector <Double_t> varDW; std::vector <Int_t> varIW; std::vector <Float_t> varFW; std::vector <Short_t> varSW; boost::container::vector <Bool_t> varBW;
+      std::vector <Double_t> varDW; std::vector <Int_t> varIW; std::vector <Float_t> varFW; std::vector <Short_t> varSW; std::vector <SmartBool> varBW;
       if ( mdSet->CheckMassWeighting()==true || mdSet->CheckDataMCWeighting() == true)
       {
 
