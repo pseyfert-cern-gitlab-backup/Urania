@@ -1,0 +1,70 @@
+cmake_minimum_required (VERSION 3.0)
+
+project (Espresso)
+set (Espresso_VERSION_MAJOR 1)
+set (Espresso_VERSION_MINOR 0)
+set( CMAKE_VERBOSE_MAKEFILE on )
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+MESSAGE("CMake system is " ${CMAKE_SYSTEM})
+MESSAGE("CMake project directory is " ${PROJECT_SOURCE_DIR})
+MESSAGE("CMake binary dir is " ${CMAKE_BINARY_DIR})
+
+set(LXPLUSHACK $ENV{LXPLUSHACK})
+
+set(Boost_NO_BOOST_CMAKE ON)
+set(Boost_USE_STATIC_LIBS       OFF)
+set(Boost_USE_MULTITHREADED     OFF)
+set(Boost_USE_STATIC_RUNTIME    OFF)
+if (LXPLUSHACK)
+   set(Boost_INCLUDE_DIRS $ENV{LXPLUS_BOOST_DIRS})
+   set(Boost_LIBRARIES $ENV{LXPLUS_BOOST_LIB_1} $ENV{LXPLUS_BOOST_LIB_2})
+   link_directories($ENV{LXPLUS_BOOST_LINK})
+   set(Boost_FOUND ON)
+else ()
+   find_package(Boost COMPONENTS filesystem serialization)
+endif()
+MESSAGE("--   Boost include directories are " ${Boost_INCLUDE_DIRS})
+MESSAGE("--   Boost libraries are " ${Boost_LIBRARIES})
+
+
+find_package(GSL)
+if (GSL_FOUND)
+   MESSAGE("--   GSL include directories are " ${GSL_INCLUDE_DIRS})
+endif()
+
+list(APPEND rootlibs Core Matrix Physics MathCore MathMore RIO Gpad Hist Tree TreePlayer TMVA Postscript ASImage HistPainter
+	    RooFitCore RooStats RooFit)
+option(XROOTD "Compile with xrootd support for load remote ROOT files" ON)
+if(XROOTD)
+   list(APPEND rootlibs XrdUtils)
+   list(APPEND rootlibs NetxNG)
+endif()
+find_package(ROOT REQUIRED ${rootlibs})
+if (ROOT_FOUND)
+   MESSAGE("--   ROOT include directories are " ${ROOT_INCLUDE_DIRS})
+endif()
+
+if (CMAKE_COMPILER_IS_GNUCXX)
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -pedantic")
+else()
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -stdlib=libc++ -pedantic")
+endif()
+
+file(GLOB EspressoSrcFiles
+	  "src/*.cpp"
+)
+file(GLOB EspressoHeaderDir
+	  "Espresso"
+)
+add_library (Espresso SHARED ${EspressoSrcFiles})
+target_include_directories (Espresso PUBLIC ${EspressoHeaderDir})
+target_include_directories (Espresso PRIVATE ${Boost_INCLUDE_DIRS})
+target_include_directories (Espresso PRIVATE ${GSL_INCLUDE_DIRS})
+target_include_directories (Espresso PRIVATE ${ROOT_INCLUDE_DIRS})
+target_link_libraries (Espresso ${Boost_LIBRARIES})
+target_link_libraries (Espresso ${GSL_LIBRARIES})
+target_link_libraries (Espresso ${ROOT_LIBRARIES})
