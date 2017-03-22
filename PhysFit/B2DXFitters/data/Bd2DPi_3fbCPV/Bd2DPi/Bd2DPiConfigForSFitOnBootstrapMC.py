@@ -144,17 +144,17 @@ def getconfig() :
     ArgAbarfbar_d   =  0.002278
 
     configdict["ACP"] = {}
-    configdict["ACP"]["Signal"] = { "Gamma"                : [ 1.0/1.519068],# 0.0, 2.0],
+    configdict["ACP"]["Signal"] = { "Gamma"                : [ 1.0/1.519068, 0.0, 2.0],
                                     "DeltaGamma"           : [0.0],
-                                    "DeltaM"               : [0.510],# 0.01, 2.0],
-                                    #"ArgLf"                : [ArgqOverp_d + ArgAbarf_d - ArgAf_d],
-                                    #"ArgLbarfbar"          : [ArgpOverq_d + ArgAfbar_d - ArgAbarfbar_d],
-                                    #"ModLf"                : [ModAbarf_d/ModAf_d],
-                                    "S"                   : [-0.031],
-                                    "Sbar"                : [-0.029],
-                                    "D"                   : [0.0],
-                                    "Dbar"                : [0.0],
-                                    "C"                   : [1.0],
+                                    "DeltaM"               : [0.510, 0.01, 2.0],
+                                    "ArgLf"                : [ArgqOverp_d + ArgAbarf_d - ArgAf_d],
+                                    "ArgLbarfbar"          : [ArgpOverq_d + ArgAfbar_d - ArgAbarfbar_d],
+                                    "ModLf"                : [ModAbarf_d/ModAf_d],
+                                    #"S"                   : [-0.031],
+                                    #"Sbar"                : [-0.029],
+                                    #"D"                   : [0.0],
+                                    #"Dbar"                : [0.0],
+                                    #"C"                   : [1.0],
                                     "ParameteriseIntegral" : True,
                                     "CPlimit"              : {"upper":1.0, "lower":-1.0},
                                     "NBinsAcceptance"      : 0} #keep at zero if using spline acceptance!
@@ -186,8 +186,8 @@ def getconfig() :
     configdict["DetectionAsymmetry"] = {}
     configdict["ProductionAsymmetry"]["Signal"] = {}
     configdict["DetectionAsymmetry"]["Signal"] = {}
-    configdict["ProductionAsymmetry"]["Signal"] = [-0.0124, -3.0, 3.0]
-    configdict["DetectionAsymmetry"]["Signal"] = [0.0086, -3.0, 3.0]
+    configdict["ProductionAsymmetry"]["Signal"] = [6.4126e-03, -3.0, 3.0]
+    configdict["DetectionAsymmetry"]["Signal"] = [4.2975e-03, -3.0, 3.0]
 
     ############################################
     # Choose parameters to fix
@@ -205,20 +205,20 @@ def getconfig() :
     # Choose initial free parameters to randomise
     ############################################
 
-    configdict["randomiseParams"] = {}
-    configdict["randomiseParams"] = {'Sf'                          : {'min': -0.08, 'max': -0.001},
-                                     'Sfbar'                       : {'min': -0.08, 'max': -0.001}
-                                     }
+    #configdict["randomiseParams"] = {}
+    #configdict["randomiseParams"] = {'Sf'                          : {'min': -0.08, 'max': -0.001},
+    #                                 'Sfbar'                       : {'min': -0.08, 'max': -0.001}
+    #                                 }
 
     ############################################
     # Build gaussian constraints
     # See B2DXFitters/GaussianConstraintBuilder.py for documentation
     ############################################
     
-    #configdict["gaussCons"] = {}
+    configdict["gaussCons"] = {}
     # Constraint on DeltaM
-    #configdict["gaussCons"]["deltaM"] = math.sqrt(0.0021*0.0021 + 0.0010*0.0010)
+    configdict["gaussCons"]["deltaM"] = math.sqrt(0.0021*0.0021 + 0.0010*0.0010)
     # Constraint on Gamma (error on gamma = rel. error on lifetime * gamma)
-    #configdict["gaussCons"]["Gamma"] = (0.004/1.520) * (1.0/1.520)
+    configdict["gaussCons"]["Gamma"] = (0.004/1.520) * (1.0/1.520)
 
     return configdict

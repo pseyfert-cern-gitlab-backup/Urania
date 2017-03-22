@@ -10,7 +10,7 @@ def getconfig() :
                                                       "Name"                   : "BeautyMass",
                                                       "InputName"              : "lab0_FitDaughtersConst_M_flat"}
     
-    configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.4,     12.0    ],
+    configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.4,     15.0    ],
                                                       "Bins"                   : 40,
                                                       "Name"                   : "BeautyTime",
                                                       "InputName"              : "lab0_FitDaughtersPVConst_ctau_flat"\
@@ -114,6 +114,15 @@ def getconfig() :
     configdict["AdditionalVariables"]["Hlt2Topo4BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
                                                                                 "Name"                   : "Hlt2Topo4BodyBBDTDecision_TOS",
                                                                                 "InputName"              : "lab0_Hlt2Topo4BodyBBDTDecision_TOS"}
+
+    configdict['modifyAsymm'] = { 'CabibboFavoured' : { 'Category1'   : 'TagDecTrue_idx==1 && BacCharge_idx==1',
+                                                        'Category2'   : 'TagDecTrue_idx==-1 && BacCharge_idx==-1',
+                                                        'Target'      : 0.0},
+                                  'CabibboSuppressed' : { 'Category1'    : 'TagDecTrue_idx==1 && BacCharge_idx==-1',
+                                                          'Category2'    : 'TagDecTrue_idx==-1 && BacCharge_idx==1',
+                                                          'Target'       : 0.0}
+                                  }
+
     
     return configdict
                         

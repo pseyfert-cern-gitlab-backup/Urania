@@ -16,7 +16,7 @@ def getconfig() :
                                                       "Name"                   : "BeautyMass",
                                                       "InputName"              : "lab0_FitDaughtersConst_M_flat"}
 
-    configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.4,     15.0    ],
+    configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.4,     12.0    ],
                                                       "Bins"                   : 40,
                                                       "Name"                   : "BeautyTime",
                                                       "InputName"              : "lab0_FitDaughtersPVConst_ctau_flat"}
@@ -80,6 +80,18 @@ def getconfig() :
                                                       "Name"                   : "nPV",
                                                       "InputName"              : "nPV"}
 
+    configdict["AdditionalVariables"]["Hlt2Topo2BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
+                                                                                "Name"                   : "Hlt2Topo2BodyBBDTDecision_TOS",
+                                                                                "InputName"              : "lab0_Hlt2Topo2BodyBBDTDecision_TOS"}
+
+    configdict["AdditionalVariables"]["Hlt2Topo3BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
+                                                                                "Name"                   : "Hlt2Topo3BodyBBDTDecision_TOS",
+                                                                                "InputName"              : "lab0_Hlt2Topo3BodyBBDTDecision_TOS"}
+
+    configdict["AdditionalVariables"]["Hlt2Topo4BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
+                                                                                "Name"                   : "Hlt2Topo4BodyBBDTDecision_TOS",
+                                                                                "InputName"              : "lab0_Hlt2Topo4BodyBBDTDecision_TOS"}
+
 
     ############################################
     # Define all CPV and decay rate parameters
@@ -103,14 +115,14 @@ def getconfig() :
     configdict["ACP"]["Signal"] = { "Gamma"                : [ 1.0/1.519068, 0.0, 2.0],
                                     "DeltaGamma"           : [0.0],
                                     "DeltaM"               : [0.510, 0.01, 2.0],
-                                    #"ArgLf"                : [ArgqOverp_d + ArgAbarf_d - ArgAf_d],
-                                    #"ArgLbarfbar"          : [ArgpOverq_d + ArgAfbar_d - ArgAbarfbar_d],
-                                    #"ModLf"                : [ModAbarf_d/ModAf_d],
-                                    "S"                   : [-0.031],
-                                    "Sbar"                : [-0.029],
-                                    "D"                   : [0.0],
-                                    "Dbar"                : [0.0],
-                                    "C"                   : [1.0],
+                                    "ArgLf"                : [ArgqOverp_d + ArgAbarf_d - ArgAf_d],
+                                    "ArgLbarfbar"          : [ArgpOverq_d + ArgAfbar_d - ArgAbarfbar_d],
+                                    "ModLf"                : [ModAbarf_d/ModAf_d],
+                                    #"S"                   : [-0.031],
+                                    #"Sbar"                : [-0.029],
+                                    #"D"                   : [0.0],
+                                    #"Dbar"                : [0.0],
+                                    #"C"                   : [1.0],
                                     "ParameteriseIntegral" : True,
                                     "CPlimit"              : {"upper":1.0, "lower":-1.0},
                                     "NBinsAcceptance"      : 0} #keep at zero if using spline acceptance!
@@ -124,11 +136,9 @@ def getconfig() :
     configdict["ResolutionAcceptance"]["Signal"] = {"TimeErrorPDF": None,
                                                     "Acceptance":
                                                     {"Type": "Spline",
-                                                     "Float": True,
-                                                     #"KnotPositions" : [ 0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 6.5, 12.0 ],
-                                                     #"KnotCoefficients" : [0.3889, 0.5754, 0.8515, 1.0649, 1.2373, 1.3, 1.35, 1.4149]}, 
-                                                     "KnotPositions" : [ 0.5, 1.0, 1.5, 2.0, 3.0, 12.0 ],   
-                                                     "KnotCoefficients" : [0.3889, 0.5754, 0.8515, 1.0649, 1.2373, 1.4149]},
+                                                     "Float": True, 
+                                                     "KnotPositions" : [0.5, 1.0, 1.5, 2.0, 2.3, 2.6, 3.0, 4.0, 10.0],   
+                                                     "KnotCoefficients" : [0.194251, 0.33608, 0.611385, 0.865662, 0.999956, 1.06792, 1.1141, 1.15014, 1.20672]},
                                                     "Resolution":
                                                     {"Type": "AverageModel",
                                                      "Parameters": { 'sigmas': [ 0.042845 ], 'fractions': [] },

@@ -137,6 +137,8 @@ import copy
 
 gROOT.SetBatch()
 
+zero = RooConstVar('zero', 'zero', 0.0 )
+
 #------------------------------------------------------------
 def BuildObservables(workspaceIn, myconfigfile, debug):
 
@@ -191,7 +193,8 @@ def BuildTagging(workspaceIn, myconfigfile, obsDict, debug):
         #Loop over taggers (OS, SS)
         for tagger in myconfigfile["Taggers"][comp].iterkeys():
 
-            if "Mistag"+tagger in obsDict.keys() and "TagDec"+tagger in obsDict.keys():
+            #if "Mistag"+tagger in obsDict.keys() and "TagDec"+tagger in obsDict.keys():
+            if "TagDec"+tagger in obsDict.keys():
 
                 #Create calibration parameters (p0, p1, dp0, dp1, <eta>, tageff, atageff)
                 caliblist = []
@@ -603,9 +606,13 @@ def BuildTimePDF(workspaceIn, myconfigfile, hypo, year, comp, mode, obsDict, ACP
         qt = []
         mistagobs = []
         for tagger in myconfigfile["Taggers"][comp].iterkeys():
-            if "Mistag"+tagger in obsDict.keys() and "TagDec"+tagger in obsDict.keys():
-                mistagobs.append( obsDict["Mistag"+tagger] )
+            #if "Mistag"+tagger in obsDict.keys() and "TagDec"+tagger in obsDict.keys():
+            if "TagDec"+tagger in obsDict.keys():
                 qt.append( obsDict["TagDec"+tagger] )
+            if "Mistag"+tagger in obsDict.keys():
+                mistagobs.append( obsDict["Mistag"+tagger] )
+            else:
+                mistagobs.append( zero )
 
         #Retrieve time error PDF, resolution and acceptance
         terrpdf = resAccDict[comp]["TimeErrorPDF"]
@@ -621,7 +628,7 @@ def BuildTimePDF(workspaceIn, myconfigfile, hypo, year, comp, mode, obsDict, ACP
 
         #Build a config dict that buildBDecayTimePdf can understand
         config = {}
-        config["Context"] = "GEN"
+        config["Context"] = "FIT"#"GEN"
         config["Debug"] = True if debug else False
         config["ParameteriseIntegral"] = myconfigfile["ACP"][comp]["ParameteriseIntegral"]
         config["UseProtoData"] = True #this is really recommended to speed-up generation
@@ -1024,6 +1031,15 @@ def GenerateToys(workspaceIn, myconfigfile, observables, pdfDict, protoData, see
                                 genset.add( observables.find("TagDecOS") )
                             if "TagDecSS" in myconfigfile["Observables"].keys():
                                 genset.add( observables.find("TagDecSS") )
+
+                            #import numpy
+                            #from numpy import arange
+                            #observables.find("BacCharge").setIndex(-1)
+                            #observables.find("TagDecOS").setIndex(-1)
+                            #for t in numpy.arange(observables.find("BeautyTime").getMin(), observables.find("BeautyTime").getMax(), 0.001):
+                            #    observables.find("BeautyTime").setVal(t)
+                            #    print "PDF("+str(t)+") = "+str(pdf[hypo][year][mode][comp][obs].getVal())
+
                             #If we have proto data use it, otherwise only draw number of events to generate from Poisson distribution
                             if None != protoData:
                                 if debug:

@@ -218,11 +218,11 @@ def runSFit(debug, wsname,
         print "ERROR: cannot use sWeighted MC sample (for now)"
         exit(-1)
 
-    if truetag and not MC:
-        print "ERROR: cannot use true tagging on non-MC!"
+    if truetag and not (MC or toys):
+        print "ERROR: cannot use true tagging on real data!"
         exit(-1)
 
-    if truetime and not MC:
+    if truetime and not (MC or toys):
         print "ERROR: cannot use true time on non-MC!"
         exit(-1)
 
@@ -444,8 +444,13 @@ def runSFit(debug, wsname,
             mistag.append( WS(ws, obs.find(MDSettings.GetTagOmegaVarOutName(t).Data())) )
             #mistag[t].setRange(0.0,0.5)
     else:
-        tag.append( WS(ws, obs.find("TagDecTrue" ) ) )
-        mistag.append( WS(ws, zero) )
+        if obs.find("TagDecTrue" ) != None:
+            tag.append( WS(ws, obs.find("TagDecTrue" ) ) )
+            mistag.append( WS(ws, zero) )
+        else:
+            for t in range(0,MDSettings.GetNumTagVar()):
+                tag.append( WS(ws, obs.find(MDSettings.GetTagVarOutName(t).Data())) )
+                mistag.append( WS(ws, zero) )
 
     if plotsWeights:
         name = TString("sfit")
@@ -905,7 +910,7 @@ def runSFit(debug, wsname,
 
     print ""
     print "=========================================================="
-    print "Perfom maximum likelihood fit"
+    print "Perform maximum likelihood fit"
     print "=========================================================="
     print ""
 
@@ -935,6 +940,10 @@ def runSFit(debug, wsname,
                             RooFit.Optimize(True),
                             RooFit.Hesse(True),
                             RooFit.Extended(False),
+                            #RooFit.PrintLevel(3),
+                            #RooFit.Warnings(True),
+                            #RooFit.Verbose(True),
+                            #RooFit.PrintEvalErrors(1)]
                             RooFit.PrintLevel(1),
                             RooFit.Warnings(False),
                             RooFit.PrintEvalErrors(-1)]
@@ -1082,6 +1091,15 @@ def runSFit(debug, wsname,
         print ""
     workout.writeToFile(wsname)
 
+    #import numpy
+    #from numpy import arange
+    #id.setIndex(-1)
+    #tag[0].setIndex(-1)
+    #observables.setCatIndex("BacCharge",-1)
+    #observables.setRealValue("TagDecTrue",-1)
+    #for t in numpy.arange(0.4, 12.0, 0.001):
+    #    time.setVal(t)
+    #    print "PDF("+str(t)+") = "+str(totPDF.getVal())
 
 #------------------------------------------------------------------------------
 _usage = '%prog [options]'

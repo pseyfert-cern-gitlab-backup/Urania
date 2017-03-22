@@ -23,7 +23,7 @@ def getconfig() :
                                                       "Name"                   : "BeautyMass",
                                                       "InputName"              : "lab0_FitDaughtersConst_M_flat"}
 
-    configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.4,     12.0    ],
+    configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.4,     15.0    ],
                                                       "Bins"                   : 40,
                                                       "Name"                   : "BeautyTime",
                                                       "InputName"              : "lab0_FitDaughtersPVConst_ctau_flat"}

@@ -28,7 +28,7 @@ export queue="1nh"
 export mlimit="500000"
 #Nickname
 #Choose a meaningful name
-export nickname="Bd2DPiMCFilteredS21RunIBothTaggedOnlyShortTime"
+export nickname="Bd2DPiMCFilteredS21RunIBothTaggedOnlyShortTimeNoProdDetCPAsymmAfter"
 #Configuration file
 export config="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/Bd2DPiConfigForBootstrapMC.py"
 #Input file
@@ -72,9 +72,9 @@ while (( $stop <= $fullstop )); do
     echo "...submitting job ${job} with starting seed ${seed}"
 
     #Submit jobs
-    bsub -q $queue -M $mlimit -e ${output}ERROR -o ${output}OUTPUT -n 1,2 -R "span[hosts=-1]" -J ${jobname}_${seed} source ${bashscriptpath}runBootstrapMC.sh $seed $stop $runpath $inputfile $inputworkspace $output $eosoutput $nickname $config $pyscriptpath $maxcand
+    #bsub -q $queue -M $mlimit -e ${output}ERROR -o ${output}OUTPUT -n 1,2 -R "span[hosts=-1]" -J ${jobname}_${seed} source ${bashscriptpath}runBootstrapMC.sh $seed $stop $runpath $inputfile $inputworkspace $output $eosoutput $nickname $config $pyscriptpath $maxcand
 
-    #source ${bashscriptpath}runBootstrapMC.sh $seed $stop $runpath $inputfile $inputworkspace $output $eosoutput $nickname $config $pyscriptpath $maxcand
+    source ${bashscriptpath}runBootstrapMC.sh $seed $stop $runpath $inputfile $inputworkspace $output $eosoutput $nickname $config $pyscriptpath $maxcand
 
     #Sleep to avoid afs overload and buffer space consumption (not sure this is the best trick)
     if [[ "$(($job % 100))" -eq 0 ]]; then
