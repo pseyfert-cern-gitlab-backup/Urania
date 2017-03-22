@@ -1,7 +1,7 @@
 ################################################################################
 # Package: P2VV
 ################################################################################
-gaudi_subdir(P2VV v4r2)
+gaudi_subdir(P2VV v4r3)
 
 find_package(ROOT COMPONENTS Core
                              Tree RooFitCore RooFit

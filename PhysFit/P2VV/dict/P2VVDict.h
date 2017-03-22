@@ -1,13 +1,5 @@
-#ifndef DICT_P2VVDICT_H
+#ifndef DICT_P2VVDICT_H 
 #define DICT_P2VVDICT_H 1
-
-#if defined(__clang__) || defined(__CLING__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Winconsistent-missing-override"
-#elif defined(__GNUC__) && __GNUC__ >= 5
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wsuggest-override"
-#endif
 
 #include "TMatrixTSym.h"
 
@@ -91,11 +83,4 @@ struct Instantiations {
    std::pair<std::string, RooDataSet*> _i24;
 
 };
-
-#if defined(__clang__) || defined(__CLING__)
-#pragma clang diagnostic pop
-#elif defined(__GNUC__) && __GNUC__ >= 5
-#pragma GCC diagnostic pop
-#endif
-
 #endif // DICT_P2VVDICT_H

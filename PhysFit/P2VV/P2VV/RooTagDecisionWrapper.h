@@ -30,8 +30,8 @@ public:
   RooTagDecisionWrapper(const RooTagDecisionWrapper& other,
       const char* name = 0);
 
-  TObject* clone(const char* newname) const override
-  {
+  virtual TObject* clone(const char* newname) const 
+  { 
     return new RooTagDecisionWrapper(*this, newname);
   }
 
@@ -40,7 +40,7 @@ public:
 private:
   const RooCategoryProxy _tagDecision;
 
-  RooCatType evaluate() const override;
+  virtual RooCatType evaluate() const;
 
   ClassDef(RooTagDecisionWrapper, 1) // wrapper for a "tag decision" flavour tagging category
 };

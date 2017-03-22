@@ -3,7 +3,7 @@
  * Package: RooFitModels                                                     *
  *    File: $Id: RooRelBreitWignerPdf.rdl,v 1.1 2006/04/08 21:59:57 bevan Exp $
  * Authors:                                                                  *
- * Katherine George - University of Liverpool                                *
+ * Katherine George - University of Liverpool                                * 
  * Adrian Bevan QMUL (ported from RptBaseTools to Roo - 2009)               *
  *****************************************************************************/
 #ifndef AFIT_RELBREITWIGNERPDF
@@ -21,11 +21,11 @@ public:
 	          RooAbsReal& _x, RooAbsReal& _mean, RooAbsReal& _width, RooAbsReal& spin, RooAbsReal& radius,
               RooAbsReal& massa, RooAbsReal& massb);
   RooRelBreitWigner(const RooRelBreitWigner& other, const char* name=0) ;
-  TObject* clone(const char* newname) const override { return new RooRelBreitWigner(*this,newname); }
-  ~RooRelBreitWigner() { }
+  virtual TObject* clone(const char* newname) const { return new RooRelBreitWigner(*this,newname); }
+  virtual ~RooRelBreitWigner() { }
 
 protected:
-  Double_t evaluate() const override;
+  Double_t evaluate() const ;
 
 private:
   Double_t gamma() const;

@@ -4,6 +4,11 @@
 ! Purpose     : Tools for generating ntuples (B2CC WG)
 !-----------------------------------------------------------------------------
 
+! 2017-03-22 - Carlos Vazquez Sierra
+  - Make version v3r1.
+
+!============================================== v3r0 2017-02-21 ==============================
+
 ! 2017-02-21 - Konstantin Gizdov
   - Added DaVinci scripts to generate Run II nTuples for Bs2JpsiPhi and
     Bd2JpsiKstar

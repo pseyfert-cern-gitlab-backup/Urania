@@ -4,6 +4,11 @@
 ! Purpose     : Classes for performing PID based studies
 !-----------------------------------------------------------------------------
 
+! 2017-03-22 - Carlos Vazquez Sierra
+ - Make version v8r2 for release.
+
+!============================================= v8r1 2017-02-02 ==============================
+
 ! 2017-02-02 - Carlos Vazquez Sierra
  - Make version v8r1 for release.
  

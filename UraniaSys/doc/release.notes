@@ -3,11 +3,27 @@ Package             : Urania
 Package Coordinator : Diego Martinez Santos, Carlos Vazquez Sierra
 Purpose             : LHCb physics repository
 
+! 2017-03-22 - Carlos Vazquez Sierra
+ - Make version v6r2, same dependencies as v6r1 but including:
+   + FT/Espresso (v0r6p2, new package)
+   + PIDCalib/PIDPerfScripts (v11r2)
+   + PIDCalib/PIDPerfTools (v8r2)
+   + PhysFit/B2DXFitters (v3r4)
+   + Phys/BsDsMuNuForRDS (v1r2)
+   + Phys/BsKstKst (v5r3)
+   + Phys/B2CCtuples (v3r1)
+   + Phys/A2MuMu (v1r5)
+   + PhysFit/P2VV (v4r3, fetched from lhcb-b2cc/P2VV)
+
+!============================== v6r1 01-02-2017 ==============================
+
 ! 2017-02-01 - Carlos Vazquez Sierra
  - Make version v6r1, same dependencies as v6r0 but including functional updates on:
    + PIDCalib/PIDPerfScripts (v11r1)
    + PIDCalib/PIDPerfTools (v8r1)
    + PhysFit/B2DXFitters (v3r3)
+
+!============================== v6r0 19-01-2017 ==============================
 
 ! 2017-01-19 - Carlos Vazquez Sierra
  - Version prepared for release (v6r0):

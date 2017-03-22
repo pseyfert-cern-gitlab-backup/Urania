@@ -1,0 +1,12 @@
+# Instructions for maintainers
+# Carlos Vazquez Sierra (Mar, 2017)
+
+1. Fetch PhysFit/P2VV from lhcb-b2cc/P2VV:
+   + Replace CMakeLists.txt, cmt/requirements and doc/release.notes,
+   + Update versions.
+
+2. Fetch FT/Espresso from lhcb-ft/Espresso:
+   + Replace CMakeLists.txt (make it Gaudi-friendly),
+   + Add a doc folder with release.notes,
+   + Update versions.
+

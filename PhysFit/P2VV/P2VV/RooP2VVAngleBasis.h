@@ -38,7 +38,7 @@ public:
       Int_t i, Int_t j, Int_t l, Int_t m, Double_t c = 1.);
   RooP2VVAngleBasis(const RooP2VVAngleBasis& other, const char* name = 0);
 
-  TObject* clone(const char* newname) const override
+  virtual TObject* clone(const char* newname) const
   {
     return new RooP2VVAngleBasis(*this, newname);
   }
@@ -61,7 +61,7 @@ public:
       RooAbsReal& coef, Bool_t doReset = kTRUE);
   Bool_t createProduct(const RooP2VVAngleBasis& func, RooAbsReal& coef,
       Bool_t doReset = kTRUE)
-  {
+  { 
     return createProduct(func.i(), func.j(), func.l(), func.m(), func.c(),
         coef, doReset);
   }
@@ -74,7 +74,7 @@ public:
 
   void removeProduct();
 
-  void printArgs(std::ostream& os) const override;
+  void printArgs(std::ostream& os) const;
 
 protected:
   RooRealProxy _cpsi;

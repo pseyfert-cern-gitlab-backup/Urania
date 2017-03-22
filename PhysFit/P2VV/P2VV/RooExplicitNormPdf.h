@@ -52,8 +52,8 @@ public:
 
   RooExplicitNormPdf(const RooExplicitNormPdf& other, const char* name = 0);
 
-  TObject* clone(const char* newname) const override
-  {
+  virtual TObject* clone(const char* newname) const 
+  { 
     return new RooExplicitNormPdf(*this, newname);
   }
 
@@ -94,7 +94,7 @@ protected:
   TString _intRangeFunc;
   TString _intRangeNorm;
 
-  Double_t evaluate() const override;
+  Double_t evaluate() const;
   void initVariables(const RooArgSet* obsSet, const RooArgSet* intObsSet);
 
 private:

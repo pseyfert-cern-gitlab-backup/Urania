@@ -27,8 +27,8 @@ public:
 
 protected:
 
-   void initGenerator(const RooArgSet& theEvent) override;
-   void generateEvent(RooArgSet &theEvent, Int_t remaining) override;
+   virtual void initGenerator(const RooArgSet& theEvent) ;
+   virtual void generateEvent(RooArgSet &theEvent, Int_t remaining);
 
    RooEffConvGenContext(const RooEffConvGenContext& other) ;
 

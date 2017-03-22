@@ -13,7 +13,7 @@ ROOTCONFIG = root-config
 PYTHONCONFIG = python-config
 COMMONFLAGS = -Wall -O2 -pipe -ggdb -fPIC -DPIC
 COMPILECXXFLAGS := $(CPPFLAGS) $(COMMONFLAGS) $(shell $(ROOTCONFIG) --cflags) -I$(INCDIR) -I. 
-LINKFLAGS  := $(LDFLAGS) $(shell $(ROOTCONFIG) --libs) -lRooFit -lFoam -lMinuit -lRooFitCore -lMathCore -lMathMore
+LINKFLAGS  := $(LDFLAGS) $(shell $(ROOTCONFIG) --libs) -lRooFit -lFoam -lMinuit -lRooFitCore -lMathCore -lMathMore -lboost_python -lCling
 ## Reflex dictionary testing flags:
 ## LDFLAGS  := $(shell $(ROOTCONFIG) --libs) -lRooFit -lFoam -lMinuit -lRooFitCore -lMathCore -lMathMore -lReflex -lCintex
 
@@ -49,7 +49,7 @@ vpath %.o   $(BUILDDIR)
 
 .PHONY: all clean profiler dict-clean
 
-all: $(DEPDIR) $(LIBDIR) $(BUILDDIR) .deps $(LIBDIR)/libP2VV.so $(LIBDIR)/dilution.so
+all: $(DEPDIR) $(LIBDIR) $(BUILDDIR) .deps $(LIBDIR)/libP2VVDict.so $(LIBDIR)/dilution.so $(LIBDIR)/libP2VVFoam.so $(LIBDIR)/libP2VVFoam.rootmap
 
 profiler: $(LIBDIR)/profiler.so
 
@@ -73,7 +73,7 @@ $(BUILDDIR)/P2VV_dict.cxx: $(wildcard $(INCDIR)/P2VV/*.h) $(DICTDIR)/P2VV_dict.h
 	rootcint -f $@ -c -I$(INCDIR) -I$(DICTDIR) $(DICTDIR)/P2VV_dict.h $(DICTDIR)/P2VV_LinkDef.h
 ##	genreflex $(DICTDIR)/P2VV_dict.h -o $@ -s $(DICTDIR)/P2VV_dict.xml --gccxmlopt="-I${ROOTSYS}/include -I$(INCDIR)"
 
-$(LIBDIR)/libP2VV.so: $(OBJECTS) $(BUILDDIR)/P2VV_dict.o
+$(LIBDIR)/libP2VVDict.so: $(OBJECTS) $(BUILDDIR)/P2VV_dict.o
 	$(LD) $(LINKFLAGS) -shared -o $@ $^
 
 $(BINDINGSDIR)/profiler.c: $(SRCDIR)/profiler.pyx
@@ -85,11 +85,16 @@ $(LIBDIR)/profiler.so: $(BUILDDIR)/profiler.o
 $(LIBDIR)/dilution.so: $(DILUTION_OBJECTS)
 	$(LD) $(PYTHON_LDFLAGS) -shared -o $@ $^
 
+$(LIBDIR)/libP2VVFoam.so: $(BINDINGSDIR)/P2VVFoam.cxx 
+	$(CXX) -rdynamic -Wl,--no-undefined $(COMPILECXXFLAGS) $(PYTHON_CFLAGS) -I${ROOTSYS}/include -I$(INCDIR) $(LINKFLAGS) $(PYTHON_LDFLAGS) $(BINDINGSDIR)/P2VVFoam.cxx -shared -o $@ 
+$(LIBDIR)/libP2VVFoam.rootmap: $(INCDIR)/P2VV/P2VVFoam.h 
+	genreflex $(INCDIR)/P2VV/P2VVFoam.h --rootmap=$(LIBDIR)/libP2VVFoam.rootmap --rootmap-lib=libP2VVFoam.so 
+
 clean:
-	-rm -rf $(LIBDIR)/*.so $(DILUTION_OBJECTS) $(OBJECTS) $(BUILDDIR)/P2VV_dict.* *.pyc *.bak *.aux $(BUILDDIR)/* texput.log
+	-rm -rf $(LIBDIR)/*.rootmap $(LIBDIR)/*.so $(DILUTION_OBJECTS) $(OBJECTS) $(BUILDDIR)/P2VV_dict.* *.pyc *.bak *.aux $(BUILDDIR)/* texput.log
 
 dict-clean:
-	-rm -rf $(LIBDIR)/*.so $(BUILDDIR)/P2VV_dict.o $(BUILDDIR)/P2VV_dict.* 
+	-rm -rf $(LIBDIR)/*.rootmap $(LIBDIR)/*.so $(BUILDDIR)/P2VV_dict.o $(BUILDDIR)/P2VV_dict.* 
 
 $(DEPDIR) $(LIBDIR) $(BUILDDIR):
 	@if [ ! -d $@ ]; then mkdir $@; fi

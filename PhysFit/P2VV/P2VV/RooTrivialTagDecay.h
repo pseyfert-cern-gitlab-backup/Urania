@@ -33,23 +33,23 @@ public:
   inline RooTrivialTagDecay() { }
   RooTrivialTagDecay(const char *name, const char *title, RooRealVar& t, RooAbsCategory& tag,
 			RooAbsReal& tau, RooAbsReal& dgamma, RooAbsReal& dm, RooAbsReal& tageff,
-			RooAbsReal& fcosh, RooAbsReal& fsinh,
-            RooAbsReal& fcos, RooAbsReal& fsin,
+			RooAbsReal& fcosh, RooAbsReal& fsinh, 
+            RooAbsReal& fcos, RooAbsReal& fsin, 
 			const RooResolutionModel& model,
 			DecayType type);
   RooTrivialTagDecay(const RooTrivialTagDecay& other, const char* name=0);
-  TObject* clone(const char* newname) const override;
+  virtual TObject* clone(const char* newname) const ;
   virtual ~RooTrivialTagDecay();
 
-  Double_t coefficient(Int_t basisIndex) const override;
-  RooArgSet* coefVars(Int_t coefIdx) const override;
+  virtual Double_t coefficient(Int_t basisIndex) const;
+  RooArgSet* coefVars(Int_t coefIdx) const ;
 
-  Int_t getCoefAnalyticalIntegral(Int_t coef, RooArgSet& allVars, RooArgSet& analVars, const char* rangeName=0) const override;
-  Double_t coefAnalyticalIntegral(Int_t coef, Int_t code, const char* rangeName=0) const override;
+  Int_t getCoefAnalyticalIntegral(Int_t coef, RooArgSet& allVars, RooArgSet& analVars, const char* rangeName=0) const ;
+  Double_t coefAnalyticalIntegral(Int_t coef, Int_t code, const char* rangeName=0) const ;
 
-  Int_t getGenerator(const RooArgSet& directVars, RooArgSet &generateVars, Bool_t staticInitOK=kTRUE) const override;
-  void generateEvent(Int_t code) override;
-  Bool_t isDirectGenSafe(const RooAbsArg& arg) const override;
+  Int_t getGenerator(const RooArgSet& directVars, RooArgSet &generateVars, Bool_t staticInitOK=kTRUE) const;
+  void generateEvent(Int_t code);
+  Bool_t isDirectGenSafe(const RooAbsArg& arg) const ;
 
 private:
   const RooRealProxy* proxy(Int_t basisIndex) const {
@@ -64,8 +64,8 @@ private:
   RooCategoryProxy _tag;
   RooRealProxy _tau;
   RooRealProxy _dgamma;
-  RooRealProxy _dm;
-  RooRealProxy _tageff;
+  RooRealProxy _dm;	
+  RooRealProxy _tageff;	
   RooRealProxy _fcosh;
   RooRealProxy _fsinh;
   RooRealProxy _fcos;

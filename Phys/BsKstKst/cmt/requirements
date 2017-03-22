@@ -3,7 +3,7 @@
 # Maintainer : Julian Garcia Pardinas, Juan Saborido Silva
 #============================================================================
 package           BsKstKst 
-version           v5r2
+version           v5r3
 
 #============================================================================
 # Structure, i.e. directories to process. 

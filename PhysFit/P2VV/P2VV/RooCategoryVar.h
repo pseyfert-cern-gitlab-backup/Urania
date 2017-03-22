@@ -20,18 +20,18 @@
 
 class RooAbsReal;
 class RooAbsCategory;
-
+ 
 class RooCategoryVar : public RooAbsReal
 {
 public:
-  RooCategoryVar() {};
+  RooCategoryVar() {}; 
 
   RooCategoryVar(const char *name, const char *title,
       RooAbsCategory& category, const RooArgList& variables);
 
   RooCategoryVar(const RooCategoryVar& other, const char* name = 0);
-  RooCategoryVar* clone(const char* name) const override
-  {
+  virtual RooCategoryVar* clone(const char* name) const
+  { 
     return new RooCategoryVar(*this, name);
   }
 
@@ -45,12 +45,12 @@ protected:
   RooListProxy     _vars;
 
   mutable std::map<Int_t,Int_t> _varIndices; //!
-
-  Double_t evaluate() const override;
+  
+  Double_t evaluate() const;
   void initVarsMap() const;
 
 private:
   ClassDef(RooCategoryVar, 1)
 };
-
+ 
 #endif

@@ -18,12 +18,12 @@
 #include "RooRealProxy.h"
 
 class RooAbsReal;
-
+ 
 class RooCalibratedDilution : public RooAbsReal
 {
 
 public:
-  RooCalibratedDilution() {};
+  RooCalibratedDilution() {}; 
 
   // dilution without calibration parameters
   RooCalibratedDilution(const char *name, const char *title,
@@ -46,8 +46,8 @@ public:
   // copy constructor
   RooCalibratedDilution(const RooCalibratedDilution& other,
       const char* name = 0);
-  TObject* clone(const char* name) const override
-  {
+  virtual TObject* clone(const char* name) const
+  { 
     return new RooCalibratedDilution(*this, name);
   }
 
@@ -68,11 +68,11 @@ protected:
   RooRealProxy _P1;
   RooRealProxy _AP0;
   RooRealProxy _AP1;
-
-  Double_t evaluate() const override;
+  
+  Double_t evaluate() const;
 
 private:
   ClassDef(RooCalibratedDilution, 1)
 };
-
+ 
 #endif

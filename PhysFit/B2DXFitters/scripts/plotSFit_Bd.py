@@ -162,7 +162,7 @@ def plotFitModel(model, frame, wksp, myconfigfile, log, debug) :
         numKnots = myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["KnotPositions"].__len__()
         print "[INFO] Number of knots: "+str(numKnots)
         for i in range(0,numKnots+1):
-            if i!=6:
+            if i!=9:
                 varName = "Acceptance_SplineAccCoeff%d"%(int(i))
                 var.append(wksp.obj(varName))
                 print "[INFO] Load %s with value %0.3lf"%(var[i].GetName(),var[i].getValV())
