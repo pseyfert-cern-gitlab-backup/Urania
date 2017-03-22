@@ -21,6 +21,7 @@ gaudi_add_dictionary(Espresso
 
 gaudi_add_library(EspressoLib
                   src/*.cpp
+                  EspressoDict_classdef.cpp
                   PUBLIC_HEADERS Espresso
                   INCLUDE_DIRS Boost ROOT GSL
                   LINK_LIBRARIES Boost ROOT GSL)
