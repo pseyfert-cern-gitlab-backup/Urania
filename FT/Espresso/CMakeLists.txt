@@ -28,4 +28,7 @@ gaudi_add_library(EspressoLib
 
 add_dependencies(EspressoLib EspressoGen)
 
+set_property(TARGET EspressoLib PROPERTY COMPILE_FLAGS -g)
+target_link_libraries(EspressoDict -Wl,--no-as-needed EspressoLib -Wl,--as-needed)
+
 gaudi_install_python_modules()
