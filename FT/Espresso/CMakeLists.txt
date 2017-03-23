@@ -27,3 +27,5 @@ gaudi_add_library(EspressoLib
                   LINK_LIBRARIES Boost ROOT GSL)
 
 add_dependencies(EspressoLib EspressoGen)
+
+gaudi_install_python_modules()
