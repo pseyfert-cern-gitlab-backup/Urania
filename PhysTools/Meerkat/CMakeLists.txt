@@ -21,5 +21,4 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/MeerkatCint.cc
 
 install(FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Meerkat_rdict.pcm DESTINATION lib OPTIONAL)
 
-#gaudi_install_python_modules()
-
+gaudi_install_python_modules()
