@@ -1,0 +1,130 @@
+!-----------------------------------------------------------------------------
+! Package     : PhysTools/Meerkat
+! Responsible : Anton Poluektov
+! Purpose     : Multidimensional kernel density estimation package.
+!-----------------------------------------------------------------------------
+
+! 2017-03-22 - Carlos Vazquez Sierra
+ - Make version v1r3 for release:
+   + https://gitlab.cern.ch/poluekt/Meerkat/tree/master
+
+================== Version 1.2.0 ===================
+
+2017-02-03, Anton Poluektov 
+  - Introduce verbosity levels. 
+    Use Logger::selLogLevel(lvl) to set verbosity level. In C++: 
+      #include "Logger.hh"
+      Logger::setLogLevel(lvl)
+    In python: 
+      from ROOT import Logger
+      Logger.setLogLevel(lvl)
+    Log levels are: 
+      -1 - DEBUG
+       0 - INFO (default)
+       1 - WARNING
+       2 - ERROR
+       3 - No messages
+
+2016-11-30, Anton Poluektov 
+  - Add two new density classes
+    * HistogramDensity: 1D, 2D or 3D density represented by a ROOT THxF histogram
+    * TransposedFactorisedDensity: same as FactorisedDensity for two components, but 
+      where the dimensions of the 2nd component can be "between" the dimensions of the 1st, 
+      e.g.  F(x,y,z) = f1(x,z)*f2(y)
+
+2016-10-08, Anton Poluektov 
+  - Improve stability of variable transformation (catch NaN)
+
+2016-09-21, Anton Poluektov 
+  * Add transform() method to AbsDensity: transformation of variables 
+    from one distribution to another. 
+
+2016-01-27, Anton Poluektov 
+  * Fixed bug in AdaptiveKernelDensity with calculation of 
+    normalisation in multiple dimensions. 
+  * Introduce optional cutoff parameter in BinnedDensity 
+    to cut off spurious narrow bins with very large values 
+
+2015-11-16, Anton Poluektov 
+  * new example script, python/FourBodyPhaseSpace.py
+
+2015-10-09, Anton Poluektov 
+  * Modify Makefile to compile with ROOT6. 
+    To run with PyROOT, ROOT_INCLUDE_PATH variable has to be set 
+    to point to Meerkat/inc/ directory. 
+
+2015-10-08, Olli Lupton
+  * Add a couple of 'std::' to get RooMeerkatPdf to
+    compile on OS X.
+
+2015-08-21, Anton Poluektov 
+  * Add IntersectionPhaseSpace class
+  * Add SumDensity and DivideDensity classes
+
+2015-07-05, Anton Poluektov 
+  * Add ExtendedDalitzPhaseSpace, 3D phase space 
+    where the Dalitz plot is defined for the range 
+    of masses of the mother "particle". 
+
+2015-04-01, Anton Poluektov 
+  * Add RooMeerkatPdf, RooFit PDF class which takes 
+    any AbsDensity as an input. Analytical integration
+    is not (yet) provided
+
+    As a result, Meerkat now depends on RooFit
+    and requires loading libRooFit in e.g. python interface
+    (this can be done by importing e.g. RooRealArg before 
+    loading Meerkat library, see python examples)
+
+2015-02-23, Anton Poluektov 
+  * Add ProductDensity class (product of two or more 
+    densities over the same phase space)
+
+2015-02-17, Anton Poluektov 
+  * Fix bug in reading/writing the binned distributions 
+    in ROOT format (branch type mismatch). 
+
+================== Version 1.1.0 ===================
+
+2015-01-18, Anton Poluektov 
+  * Small change of interface for BinnedKernelDensity and 
+    AdaptiveKernelDensity: swap the order of optional 
+    toyEvents and maxEvents arguments in constructors. 
+
+2015-01-16, Anton Poluektov 
+  * Add PyROOT examples in python/
+
+2015-01-10, Anton Poluektov 
+  * Fix bug in the 2D polynomial PDF implementation 
+    (which used to loose the highest-power parameters). 
+
+2014-12-31, Anton Poluektov 
+  * Add support of ROOT files to store binned maps. 
+    ROOT or text file format is chosen depending 
+    on the file name extension. 
+
+2014-12-18, Anton Poluektov 
+  * Add ROOT CINT bindings and examples with 
+    CINT and PyROOT
+
+2014-12-02, Anton Poluektov 
+  * Add PolynomialDensity, PDF that can be fitted 
+    to a data distribution (using unbinned ML fit)
+
+================== Version 1.0.1 ===================
+
+2014-10-22, Anton Poluektov 
+  * Fix the bug in AdaptiveKernelDensity which results 
+    in wrong normalisation of the kernel (dependent on width)
+
+2014-10-15, Anton Poluektov 
+  * Normalise BinnedKernelDensity and AdaptiveKernelDensity 
+    to always have average PDF value equal to 1. 
+
+2014-10-13, Anton Poluektov 
+  * Add constructors for weighted NTuples
+
+=================== Version 1.0 ====================
+
+2014-10-10, Anton Poluektov
+  * Initial release of the Meerkat package

@@ -27,6 +27,7 @@ PIDCalib/PIDPerfScripts
 PIDCalib/PIDPerfTools
 RootTools/LHCbStyle
 RootTools/SimpleTools
-FT/Espresso)
+FT/Espresso
+PhysTools/Meerkat)
 
 gaudi_env(SET GAUDI_home .)

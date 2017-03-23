@@ -10,3 +10,7 @@
    + Add a doc folder with release.notes,
    + Update versions.
 
+3. Fetch PhysTools/Meerkat from poluekt/Meerkat:
+   + Replace CMakeLists.txt (make it Gaudi-friendly),
+   + Update release.notes and versions.
+

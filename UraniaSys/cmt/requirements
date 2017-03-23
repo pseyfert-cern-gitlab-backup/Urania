@@ -45,6 +45,7 @@ use  LHCbStyle			v2r8	RootTools		# Michael Schmelling, David Ward (EB chair)
 use  SimpleTools	  	v2r0	RootTools           	# Conor Fitzpatrick
 
 use  Espresso                   v0r6p2  FT                      # [Jack Wimberley]
+#use  Meerkat                    v1r3    PhysTools               # [Anton Poluektov] - Meerkat does not have CMT support.
 
 apply_pattern container_package
 
