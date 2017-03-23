@@ -91,10 +91,10 @@ def getconfig() :
     configdict["CreateCombinatorial"]["BacPIDK"]["All"]       = {"Cut":"FBs_DeltaM_M>5100.&&FBs_DeltaM_M<6000.&&FDs_M>1950.&&FDs_M<1990.&&FDs_FDCHI2_ORIVX>2.&&FDelta_M>195.&&FDelta_M<205.&&FBs_Veto==0.&&FBDT_Var>0.01&&FBac_P>1000.&&FBac_P<650000.&&FBac_Ptr>500.&&FBac_Ptr<45000.",
                                                               "Rho":1.25, "Mirror":"Left"}
 
-    configdict["WeightingMassTemplates"] = { "RatioDataMC":{"FileLabel":{"2011":"#RatioDataMC 2011 PNTr","2012":"#RatioDataMC 2012 PNTr"},
-                                                            "Var":["FBac_P","FnTracks"],"HistName":"histRatio"},
-                                             "Shift":{ "BeautyMass": 3.3, "CharmMass": 2.8} }
-    # configdict["WeightingMassTemplates"] = { "Shift":{ "BeautyMass": 3.3, "CharmMass": 2.8} }
+    # configdict["WeightingMassTemplates"] = { "RatioDataMC":{"FileLabel":{"2011":"#RatioDataMC 2011 PNTr","2012":"#RatioDataMC 2012 PNTr"},
+    #                                                         "Var":["FBac_P","FnTracks"],"HistName":"histRatio"},
+    #                                          "Shift":{ "BeautyMass": 3.3, "CharmMass": 2.8} }
+    configdict["WeightingMassTemplates"] = { "Shift":{ "BeautyMass": 3.3, "CharmMass": 2.8} }
     #configdict["WeightingMassTemplates"]={"PIDBachEff":      {"FileLabel":{"2011":"#PIDK Pion 2011","2012":"#PIDK Pion 2012"},
     #                                                          "Var":["nTracks","lab1_P"],"HistName":"MyPionEff_0_mu2"},
     #                                      "PIDBachMisID":    {"FileLabel":{"2011":"#PIDK Kaon 2011","2012":"#PIDK Kaon 2012"},
@@ -109,8 +109,10 @@ def getconfig() :
     # configdict["WeightingMassTemplates"] = { }
 
     #weighting for PID templates
-    # configdict["ObtainPIDTemplates"] = { "Variables":["BacPT","nTracks"], "Bins":[20,20] }
-    configdict["ObtainPIDTemplates"] = { "Variables":["BacPT","nTracks"], "Bins":[30,30] }
+    # --MCPID, --MC, --SignalPID, --Signal
+    configdict["ObtainPIDTemplates"] = { "Variables":["BacP","nTracks"], "Bins":[30,30] }
+    # --CombPID
+    # configdict["ObtainPIDTemplates"] = { "Variables":["BacPT","nTracks"], "Bins":[30,30] }
 
     #PID Calibration samples for PID shapes
     configdict["Calibrations"] = {}
