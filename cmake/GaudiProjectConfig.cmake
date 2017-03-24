@@ -2444,17 +2444,7 @@ endfunction()
 function(gaudi_install_headers)
   set(has_local_headers FALSE)
   foreach(hdr_dir ${ARGN})
-    install(DIRECTORY ${hdr_dir}
-            DESTINATION include
-            FILES_MATCHING
-              PATTERN "*.h"
-              PATTERN "*.icpp"
-              PATTERN "*.hpp"
-              PATTERN "*.hxx"
-              PATTERN "*.icc"
-              PATTERN "*.inl"
-              PATTERN "CVS" EXCLUDE
-              PATTERN ".svn" EXCLUDE)
+    install(DIRECTORY ${hdr_dir} DESTINATION include)
     if(NOT IS_ABSOLUTE ${hdr_dir})
       set(has_local_headers TRUE)
     endif()
