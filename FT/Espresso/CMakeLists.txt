@@ -25,6 +25,11 @@ gaudi_add_library(EspressoLib
                   PUBLIC_HEADERS Espresso
                   INCLUDE_DIRS Boost ROOT GSL
                   LINK_LIBRARIES Boost ROOT GSL)
+set_property(TARGET EspressoLib PROPERTY COMPILE_FLAGS -g)
 
 add_dependencies(EspressoLib EspressoGen)
 install(DIRECTORY Espresso DESTINATION include)
+
+target_link_libraries(EspressoDict -Wl,--no-as-needed EspressoLib -Wl,--as-needed)
+
+gaudi_install_python_modules()
