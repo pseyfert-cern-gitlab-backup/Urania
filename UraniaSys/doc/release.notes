@@ -3,6 +3,13 @@ Package             : Urania
 Package Coordinator : Diego Martinez Santos, Carlos Vazquez Sierra
 Purpose             : LHCb physics repository
 
+! 2017-03-24 - Carlos Vazquez Sierra
+ - Make version v6r2p1, same dependencies as v6r2, but:
+   + cmake folder updated to Gaudi/cmake v28r2.
+   + Fixed problem with GaudiProjectConfig.cmake to allow to install .hh headers from FT/Espresso.
+   + Added a python wrapper for RooGLMFunction (FT/Espresso).
+   + Minor updates: PhysFit/B2DXFitters (v3r4p1).
+
 ! 2017-03-22 - Carlos Vazquez Sierra
  - Make version v6r2, same dependencies as v6r1 but including:
    + FT/Espresso (v0r6p2, new package)

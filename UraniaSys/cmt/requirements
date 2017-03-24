@@ -3,7 +3,7 @@
 # Maintainer : Diego Martinez Santos, Carlos Vazquez Sierra
 #============================================================================
 package           UraniaSys
-version           v6r2
+version           v6r2p1
 #============================================================================
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -14,7 +14,7 @@ branches          cmt doc
 #    Maintainers marked with [] have permissions to accept merge requests.
 #============================================================================
 
-#use  GaudiPolicy		v28r1
+#use  GaudiPolicy		v28r2
 use  MCLimit			v2r2	Math			# [Diego Martinez Santos]
 use  SomeUtils			v5r2	Math			# [Diego Martinez Santos]
 
@@ -32,7 +32,7 @@ use  Ks2Pi0MuMu			v1r2	Phys			# [Diego Martinez Santos], [Veronika Chobanova]
 use  Lambdab2Jpsippi            v3r8    Phys                    # [Patrick Koppenburg]
 use  BsDsMuNuForRDS             v1r2    Phys                    # [Ricardo Vazquez Gomez]
 
-use  B2DXFitters		v3r4	PhysFit			# [Agnieszka Dziurda], [Manuel Schiller]
+use  B2DXFitters		v3r4p1	PhysFit			# [Agnieszka Dziurda], [Manuel Schiller]
 use  P2VV			v4r3	PhysFit			# [Sean Benson], [Katya Govorkova]
 use  SomeMassModels		v2r6	PhysFit			# [Diego Martinez Santos]
 use  RooPhysFitter              v3r2    PhysFit                 # [Donal Hill]
