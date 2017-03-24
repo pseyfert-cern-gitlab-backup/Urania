@@ -4,6 +4,10 @@
 ! Purpose     : Mathematical tools and algorithms for BsKstKst analysis.
 !-----------------------------------------------------------------------------
 
+! 2017-03-24 - Carlos Vazquez Sierra
+  + Solve a bug in Phys/BsKstKst/python/TimeDependent/CheckNWs.py
+  + Keep same release tag for Urania v6r2p1.
+
 ! 2017-03-22 - Carlos Vazquez Sierra
   + Make version v5r3.
 
