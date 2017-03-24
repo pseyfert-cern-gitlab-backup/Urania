@@ -19,17 +19,16 @@ from ROOT.Espresso import RooGLMFunction
 class GLMBuilder:
 
     def __init__( self, name, title, eta, calName, calFileName ):
-        glm = RooGLMFunction.createRooGLMCalibration(name,
-                                                     title,
-                                                     eta,
-                                                     calName,
-                                                     calFileName)
-
+        glm = ROOT.Espresso.createRooGLMCalibration(name,
+                                                    title,
+                                                    eta,
+                                                    calName,
+                                                    calFileName)
         self.glmlist = glm
-
+    
     def glm_calibration( self ):
         return self.glmlist
-
+    
     def coefficients( self ):
         return self.glmlist[0]
 
