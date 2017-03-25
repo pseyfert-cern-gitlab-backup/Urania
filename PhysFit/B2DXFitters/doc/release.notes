@@ -4,11 +4,6 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
-! 2017-03-23 - Alessandro Bertolin
- - Minor update of Bs2DsstPi/Bs2DsstPiConfigForNominalMassFit.py (a few comments added)
- - Update of Bs2DsstK/Bs2DsstKConfigForNominalMassFit.py (among which a few files paths and 
-   one variable name change previously corrected for Bs2DsstPi/Bs2DsstPiConfigForNominalMassFit.py)
-
 ! 2017-03-22 - Carlos Vazquez Sierra
  - Make version v3r4 for release.
 
