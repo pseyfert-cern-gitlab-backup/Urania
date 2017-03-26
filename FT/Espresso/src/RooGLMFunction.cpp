@@ -53,7 +53,7 @@ Double_t RooGLMFunction::evaluate() const
     ++k;
   }
 
-  RooFIter deltacoeffIter = m_coeffListProxy.fwdIterator();
+  RooFIter deltacoeffIter = m_deltacoeffListProxy.fwdIterator();
   RooAbsReal* deltacoeff;
   std::size_t dk = 0;
   while ((deltacoeff = (RooAbsReal*)deltacoeffIter.next())) {
