@@ -16,30 +16,31 @@ from ROOT import RooFit
 
 from ROOT.Espresso import RooGLMFunction
 
-class GLMBuilder:
+class OldGLMBuilder:
 
     def __init__( self, name, title, eta, calName, calFileName ):
-        glm = ROOT.Espresso.createRooGLMCalibration(name,
+        coeffs, delta_coeffs, matrix, b_mis, bbar_mis = ROOT.Espresso.createRooGLMCalibration(name,
                                                     title,
                                                     eta,
                                                     calName,
                                                     calFileName)
         self.glmlist = glm
     
-    def glm_calibration( self ):
-        return self.glmlist
+    #def glm_calibration( self ):
+    #    return self.glmlist
     
     def coefficients( self ):
-        return self.glmlist[0]
+        return coeffs
 
     def delta_coefficients( self ):
-        return self.glmlist[1]
+        return delta_coeffs
 
     def covariance_matrix( self ):
-        return self.glmlist[2]
+        return matrix
 
     def b_mistag( self ):
-        return self.glmlist[3]
+        return b_mis
 
     def bbar_mistag( self ):
-        return self.glmlist[4]
+        return bbar_mis
+

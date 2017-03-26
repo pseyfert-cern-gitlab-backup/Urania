@@ -3,12 +3,9 @@
 
 // Include files
 
-#include <tuple>
-
 #include "RooAbsReal.h"
 #include "RooRealProxy.h"
 #include "RooListProxy.h"
-#include "RooMultiVarGaussian.h"
 
 #include "GLMCalibration.hh"
 #include "GLMCalibrationFunction.hh"
@@ -58,12 +55,6 @@ namespace Espresso
     
   };
   
-  /// Static multi-object constructor
-  std::tuple<RooArgList,RooArgList,RooMultiVarGaussian,
-	     RooGLMFunction,RooGLMFunction> createRooGLMCalibration(const char *name, const char *title,
-								    RooAbsReal& _eta,
-								    std::string _calName,
-								    std::string _calFileName) ;
 }
 
 BOOST_CLASS_EXPORT_KEY(Espresso::RooGLMFunction)

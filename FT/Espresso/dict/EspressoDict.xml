@@ -5,4 +5,5 @@
 
 <lcgdict>
   <class name="Espresso::RooGLMFunction" />
+  <class name="Espresso::GLMBuilder" />
 </lcgdict>
