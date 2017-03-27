@@ -68,7 +68,7 @@ evnum_limit = 0
 
 # Fit options.
 num_CPU = 30
-activ_minos = 1
+activ_minos = 0
 fit_strategy = 1
 
 # Plotting options.
@@ -129,6 +129,34 @@ pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_r
 	printCorrMatrix(result)
 
 	return result
+
+def CUDAfit():
+
+	# Compile and load the C++ libraries.
+	ForceCompileLibs()
+
+	# Summary of the model options.
+	information(TD_fit,data_type,Blinding,No_CP_Switch,No_dirCP_Switch,Same_CP_Switch,acc_type,\
+inf_t_res,wide_window,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params,pw_alternative_model)
+
+	# Data importation.
+	data, hist_mistag_SSK, hist_mistag_OS, hist_deltat = loadData(NTUPLE_PATH,data_type,data_file,data_tree,MC_file,MC_tree,MC_type,TD_fit,sweighted,wide_window,extra_cuts,evnum_limit,use_GRID)
+
+	# Construction of the model.
+	setParamVals(wide_window)
+
+	# Uncomment below for VV only fit, when in narrow window.
+	#for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
+	#	par.setVal(0.)
+	#	par.setConstant(1)
+
+	model, params = createSimPDF(TD_fit,Blinding,No_CP_Switch,No_dirCP_Switch,Same_CP_Switch,acc_type,\
+inf_t_res,wide_window,data_file,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params,\
+pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_rel2_Kst892,delta_Kst1680_rel2_Kst892)
+
+	# Performance of the fit.
+	DoCUDAFit(data,params,Blinding,wide_window,activ_minos)
+
 
 def fitnplot():
 
@@ -352,6 +380,7 @@ pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_r
 
 if (len(sys.argv) > 1):
 	if (sys.argv[1] == "fit"): fit()
+	elif (sys.argv[1] == "cudafit"): CUDAfit()
 	elif (sys.argv[1] == "fitnplot"): fitnplot()
 	elif (sys.argv[1] == "plot"): plot()
 	elif (sys.argv[1] == "gen"): gen(str(sys.argv[2]))

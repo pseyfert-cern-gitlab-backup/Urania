@@ -89,88 +89,88 @@ def component(j1,j2,h,j1p,j2p,hp):
 def setParamVals(wide_window):
 
 	if wide_window==0:
-		reA00.setVal(1.29007341082)
-		reA01.setVal(-1.87854380674)
-		reA10.setVal(-0.992938276849)
-		reA11par.setVal(0.063831606051)
-		reA11perp.setVal(0.786840192771)
-		DCP.setVal(0.355722172481)
-		imA00.setVal(0.43969803565)
-		imA01.setVal(-2.34095642653)
-		imA10.setVal(1.90181610003)
-		imA11par.setVal(1.41300652377)
-		imA11perp.setVal(1.68832477683)
-		phis.setVal(0.678475976397)
-		delta_m_Bs.setVal(17.4829574872)
-		gamma_Bs.setVal(0.664664513628)
-		delta_gamma_Bs.setVal(0.083491490492)
-		p0metac_SSK.setVal(0.00784644105496)
-		p0metac_OS.setVal(0.00655990020835)
-		Dp0half_SSK.setVal(-0.00804368116649)
-		Dp0half_OS.setVal(0.00699089841261)
-		p1_SSK.setVal(0.921282690908)
-		p1_OS.setVal(0.981752750269)
-		Dp1half_SSK.setVal(-0.017436403727)
-		Dp1half_OS.setVal(0.0329924209628)
-		tres_p0_2011.setVal(0.0352481891629)
-		tres_p1_2011.setVal(1.20041957125)
-		tres_p0_2012.setVal(0.0366354840638)
-		tres_p1_2012.setVal(1.2237742558)
+		reA00.setVal(0.948035475251)
+		reA01.setVal(-0.314315978756)
+		reA10.setVal(-0.778294337834)
+		reA11par.setVal(-0.783911135408)
+		reA11perp.setVal(0.170293724286)
+		DCP.setVal(0.706388181652)
+		imA00.setVal(0.732707072522)
+		imA01.setVal(-2.57774523924)
+		imA10.setVal(2.03274753464)
+		imA11par.setVal(1.0267025163)
+		imA11perp.setVal(1.82225543352)
+		phis.setVal(0.67001762068)
+		delta_m_Bs.setVal(17.5557491521)
+		gamma_Bs.setVal(0.664654789433)
+		delta_gamma_Bs.setVal(0.084870732614)
+		p0metac_SSK.setVal(0.00632801805922)
+		p0metac_OS.setVal(0.00619328051357)
+		Dp0half_SSK.setVal(-0.00804306928992)
+		Dp0half_OS.setVal(0.00699388150788)
+		p1_SSK.setVal(0.93112759178)
+		p1_OS.setVal(0.985455523057)
+		Dp1half_SSK.setVal(-0.0174459170893)
+		Dp1half_OS.setVal(0.0329575579336)
+		tres_p0_2011.setVal(0.0352418847066)
+		tres_p1_2011.setVal(1.19923624748)
+		tres_p0_2012.setVal(0.036622634167)
+		tres_p1_2012.setVal(1.2209471473)
 
 	else:
-		reA00.setVal(3.279814479)
-		reA01.setVal(-2.6176522391)
-		reA10.setVal(0.147466107599)
-		reA02.setVal(-0.636476243833)
-		reA20.setVal(0.246859288228)
-		reA11par.setVal(0.252416733859)
-		reA11perp.setVal(1.0089222079)
-		reA120.setVal(-1.69898432131)
-		reA12par.setVal(-0.215693022134)
-		reA12perp.setVal(0.489904963306)
-		reA210.setVal(0.419134476361)
-		reA21par.setVal(0.63892619994)
-		reA21perp.setVal(0.341700429601)
-		reA220.setVal(0.161296045626)
-		reA22par.setVal(-0.168004843758)
-		reA22perp.setVal(0.117863258539)
-		reA22par2.setVal(-0.181278175163)
-		reA22perp2.setVal(-0.0683734051044)
-		DCP.setVal(0.501642367977)
-		imA00.setVal(0.748146069203)
-		imA01.setVal(-4.05376293671)
-		imA10.setVal(1.61370148714)
-		imA02.setVal(-0.0359248911058)
-		imA20.setVal(-1.43099642557)
-		imA11par.setVal(1.27647114416)
-		imA11perp.setVal(1.10036357995)
-		imA120.setVal(-1.07085888685)
-		imA12par.setVal(-0.22919438048)
-		imA12perp.setVal(0.661528070938)
-		imA210.setVal(0.652422598987)
-		imA21par.setVal(-0.0068824348726)
-		imA21perp.setVal(0.521709512694)
-		imA220.setVal(0.13843662266)
-		imA22par.setVal(0.364063750642)
-		imA22perp.setVal(0.0766849638545)
-		imA22par2.setVal(0.239998996635)
-		imA22perp2.setVal(-0.104776523288)
-		phis.setVal(0.320132002983)
-		delta_m_Bs.setVal(17.6950274425)
-		gamma_Bs.setVal(0.665065880019)
-		delta_gamma_Bs.setVal(0.0846756442638)
-		p0metac_SSK.setVal(0.00874410917097)
-		p0metac_OS.setVal(0.00763208770164)
-		Dp0half_SSK.setVal(-0.00805413994769)
-		Dp0half_OS.setVal(0.00698912191257)
-		p1_SSK.setVal(0.901699267944)
-		p1_OS.setVal(0.98530935587)
-		Dp1half_SSK.setVal(-0.0152101331233)
-		Dp1half_OS.setVal(0.0328765618876)
-		tres_p0_2011.setVal(0.0347714735011)
-		tres_p1_2011.setVal(1.1537247122)
-		tres_p0_2012.setVal(0.036508878311)
-		tres_p1_2012.setVal(1.26990450906)
+		reA00.setVal(3.38842114149)
+		reA01.setVal(-1.93707358958)
+		reA10.setVal(0.0342553960296)
+		reA02.setVal(-0.820527434199)
+		reA20.setVal(0.70875639827)
+		reA11par.setVal(-0.476883875182)
+		reA11perp.setVal(-0.124718784747)
+		reA120.setVal(-2.13367084213)
+		reA12par.setVal(-0.260573224205)
+		reA12perp.setVal(-0.765162721244)
+		reA210.setVal(0.0054841921138)
+		reA21par.setVal(0.670100699014)
+		reA21perp.setVal(0.56379029488)
+		reA220.setVal(0.0151505956066)
+		reA22par.setVal(-0.169186939061)
+		reA22perp.setVal(-0.106650566513)
+		reA22par2.setVal(0.128867120937)
+		reA22perp2.setVal(0.466902738996)
+		DCP.setVal(0.765408173025)
+		imA00.setVal(1.80117829395)
+		imA01.setVal(-4.4902151074)
+		imA10.setVal(3.21451400697)
+		imA02.setVal(-0.122640762335)
+		imA20.setVal(-1.20308169682)
+		imA11par.setVal(1.32766016864)
+		imA11perp.setVal(1.9430737717)
+		imA120.setVal(-0.639566993264)
+		imA12par.setVal(-0.0776288627858)
+		imA12perp.setVal(0.519368921318)
+		imA210.setVal(1.13754821916)
+		imA21par.setVal(0.272573368286)
+		imA21perp.setVal(-0.537213380319)
+		imA220.setVal(0.286195017411)
+		imA22par.setVal(0.407567828214)
+		imA22perp.setVal(0.596402555408)
+		imA22par2.setVal(-0.0605734270819)
+		imA22perp2.setVal(-0.219977142452)
+		phis.setVal(0.517982781414)
+		delta_m_Bs.setVal(17.5995863034)
+		gamma_Bs.setVal(0.665137326189)
+		delta_gamma_Bs.setVal(0.0859093660383)
+		p0metac_SSK.setVal(0.00723332942824)
+		p0metac_OS.setVal(0.00782106378268)
+		Dp0half_SSK.setVal(-0.00805203923046)
+		Dp0half_OS.setVal(0.00699281804935)
+		p1_SSK.setVal(0.934182785419)
+		p1_OS.setVal(0.993444150977)
+		Dp1half_SSK.setVal(-0.0151971718685)
+		Dp1half_OS.setVal(0.0328143328682)
+		tres_p0_2011.setVal(0.0347692187944)
+		tres_p1_2011.setVal(1.15420129155)
+		tres_p0_2012.setVal(0.036500876167)
+		tres_p1_2012.setVal(1.26828768162)
 
 
 def aux_PDF():
@@ -2791,6 +2791,222 @@ def DoFit(model_,data_,wide_window,TD_fit,num_CPU,minos_opt,strategy_option,fix_
    else: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.PrintLevel(0))
 
    return res
+
+
+def converted_parameter(param,blinding,scale):
+   from ModelBricks import Parameter, Free
+   paramname = param.GetName()
+   if ('phi' in paramname or 'DCP' in paramname) and blinding:
+      blstring = np.random.uniform(-scale,scale)
+      blinding_strings[paramname] = blstring
+      return eval(('Free("'+paramname+'_cu",'+str(param.getVal())+'+'+str(blstring)+', limits = ('+str(param.getMin())+'+'+str(blstring)+','+str(param.getMax())+'+'+str(blstring)+'))').replace('+-','-'))
+   return eval('Free("'+paramname+'_cu",'+str(param.getVal())+', limits = ('+str(param.getMin())+','+str(param.getMax())+'))')
+
+
+def create_param_list(arglistname,numparams = 0):
+   arglist = eval(arglistname)
+   numparlimit = len(arglist)
+   if numparams != 0: numparlimit = numparams
+   exec('x = np.ones('+str(numparlimit)+').astype(np.float64)')
+   for iarg in range(numparlimit):
+      if arglist.at(iarg).isConstant(): exec('x['+str(iarg)+'] = '+str(arglist.at(iarg).getVal()))
+   return x
+
+def param_list_updates(arglistname,paramnames,args_ = 0,N_ = {},blinding = 0):
+   arglist = eval(arglistname)
+   updates = []
+   for iarg in range(len(arglist)):
+      if arglist.at(iarg).isConstant() == 0:
+         argname = arglist.at(iarg).GetName()
+         isCPV = 0
+         if '_withBlinding' in argname:
+            argname = argname.replace('_withBlinding','')
+            isCPV = 1
+         if argname in paramnames:
+            if blinding and isCPV: updates.append([iarg,eval(('np.float64(args_[N_["'+argname+'_cu"]])-'+str(blinding_strings[argname])).replace('--','+'))])
+            else: updates.append([iarg,eval('np.float64(args_[N_["'+argname+'_cu"]])')])
+   return updates
+
+def param_list_updates_check(arglistname,paramnames,blinding = 0):
+   arglist = eval(arglistname)
+   updates = []
+   for iarg in range(len(arglist)):
+      if arglist.at(iarg).isConstant() == 0:
+         argname = arglist.at(iarg).GetName()
+         isCPV = 0
+         if '_withBlinding' in argname:
+            argname = argname.replace('_withBlinding','')
+            isCPV = 1
+         if argname in paramnames:
+            if blinding and isCPV: updates.append([iarg,eval((argname+'.getVal()-'+str(blinding_strings[argname])).replace('--','+'))])
+            else: updates.append([iarg,eval(argname+'.getVal()')])
+   return updates
+
+def create_data_arrays(data_list):
+   int_var_name_list = ['decision_SSK','decision_OS']
+   double_var_name_list = ['etamistag_SSK','etamistag_OS','mKp1','mKp2','cos1','cos2','phi','t','terror','weight_fit']
+   listofarrays = []
+   for i in range(4):
+      data_sample = data_list[2+i]
+      sample_size = data_sample.numEntries()
+      listofarrays.append(eval('np.ones(('+str(sample_size)+',12)).astype(np.float64)'))
+      for ev in range(sample_size):
+         for ivar in range(2): listofarrays[i][ev][ivar] = eval(str(data_sample.get(ev).getCatIndex(eval(int_var_name_list[ivar]+'.GetName()'))))
+         for ivar in range(10): listofarrays[i][ev][2+ivar] = eval(str(data_sample.get(ev).getRealValue(eval(double_var_name_list[ivar]+'.GetName()'))))
+   return listofarrays
+
+
+def DoCUDAFit(data_,params_,blinding_,wide_window_,minos_):
+
+   print "\n#####################################################################"
+   print " P R E P A R I N G   C U D A   F R A M E W O R K"
+   print "#####################################################################\n"
+
+   import pycuda.autoinit
+   import pycuda.cumath
+   import pycuda.driver as cudriver
+   from pycuda.compiler import SourceModule
+   import pycuda.gpuarray as gpuarray
+   from iminuit import Minuit
+   from ModelBricks import Parameter, Free, Cat, ParamBox
+   from tools import plt
+   from timeit import default_timer as timer
+
+   BLOCK_SIZE = 252
+   THR = 1e06
+   paramnames = []
+   for par in params_: paramnames.append(par.GetName())
+
+   def getGrid(thiscat, BLOCK_SIZE):
+      Nbunch = thiscat.Nevts *1. / BLOCK_SIZE
+      print "thiscat.Nevts, Nbuch = ", thiscat.Nevts, Nbunch
+      if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
+      else : Nbunch = int(Nbunch)
+      return  (Nbunch,1,1)
+
+   print '\nTranslating parameters ...'
+   Params = []
+   np.random.seed(1)
+   for par in params_:
+      Params.append(converted_parameter(par,blinding_,blinding_scale))
+
+   print '\nCompiling CUDA PDF ...'
+   mod = SourceModule( file("../../src/TimeDependent/Bs2KpiKpiTDPDF.cu","r").read())
+   CUDA_pdf_initializer = mod.get_function("initialize")
+   CUDA_pdf = mod.get_function("evaluate")
+
+   print '\nConverting datasets ...'
+   data_arraylist = create_data_arrays(data_)
+
+   print '\nCreating categories ...'
+   cat_name_list = ['11L0TIS','11L0noTIS','12L0TIS','12L0noTIS']
+   options_arraylist = []
+   options_arraylist.append(create_param_list('options_11L0TIS_list'))
+   options_arraylist.append(create_param_list('options_11L0noTIS_list'))
+   options_arraylist.append(create_param_list('options_12L0TIS_list'))
+   options_arraylist.append(create_param_list('options_12L0noTIS_list'))
+   cats = []
+   for i in range(4):
+      thiscat = Cat(cat_name_list[i], data_arraylist[i], getN = True)
+      thiscat.model_options = gpuarray.to_gpu(options_arraylist[i])
+      thiscat.block = (BLOCK_SIZE,1,1)
+      thiscat.grid = getGrid(thiscat, BLOCK_SIZE)
+      cats.append(thiscat)
+
+   def my_getSumLL_large(cat): return gpuarray.sum(getattr(cat,"Probs"))
+   def my_getSumLL_short(cat): return np.sum(getattr(cat,"Probs").get())
+   def mySum1(thing): return np.float64(sum(thing))
+   def mySum2(thing): return np.float64(sum(thing).get())
+
+   def ctrt_fun_1(x,mu,sigma):
+      return -(x-mu)*(x-mu)/(2.*sigma*sigma)
+
+   def ctrt_fun_2(x_a,x_b,mu_a,mu_b,sigma_a,sigma_b,rho):
+      return -1./(2.*(1-rho*rho))*((x_a-mu_a)*(x_a-mu_a)/sigma_a/sigma_a-2.*rho*(x_a-mu_a)*(x_b-mu_b)/sigma_a/sigma_b+(x_b-mu_b)*(x_b-mu_b)/sigma_b/sigma_b)
+
+   check = np.ones(3).astype(np.float64)
+
+   class CUDAModel(ParamBox):
+
+      def __init__(self, pars, cats):
+         ParamBox.__init__(self, pars, cats)
+         sizes = []
+         for k in cats: sizes.append(k.Nevts)
+         if max(sizes) > THR:
+            self.getSumLL = my_getSumLL_large
+            self.mySum = mySum2
+         else:
+            self.getSumLL = my_getSumLL_short
+            self.mySum = mySum1
+         self.pdf = CUDA_pdf
+         self.re_amps_list_cu = create_param_list("re_amps_list")
+         self.dirCP_asyms_list_cu = create_param_list("dirCP_asyms_list")
+         self.im_amps_list_cu = create_param_list("im_amps_list")
+         self.weak_phases_list_cu = create_param_list("weak_phases_list")
+         self.mixing_params_list_cu = create_param_list("mixing_params_list")
+         self.calib_params_list_cu = create_param_list("calib_params_list")
+         self.mass_integrals_list_cu = create_param_list('mass_integrals_11L0TIS_list',numparams = 9)
+         CUDA_pdf_initializer(block = (1,1,1))
+
+      def check_PDF(self):
+         for [idx,ival] in param_list_updates_check("re_amps_list",paramnames,blinding = blinding_): self.re_amps_list_cu[idx] = ival
+         for [idx,ival] in param_list_updates_check("dirCP_asyms_list",paramnames,blinding = blinding_): self.dirCP_asyms_list_cu[idx] = ival
+         for [idx,ival] in param_list_updates_check("im_amps_list",paramnames,blinding = blinding_): self.im_amps_list_cu[idx] = ival
+         for [idx,ival] in param_list_updates_check("weak_phases_list",paramnames,blinding = blinding_): self.weak_phases_list_cu[idx] = ival
+         for [idx,ival] in param_list_updates_check("mixing_params_list",paramnames,blinding = blinding_): self.mixing_params_list_cu[idx] = ival
+         for [idx,ival] in param_list_updates_check("calib_params_list",paramnames,blinding = blinding_): self.calib_params_list_cu[idx] = ival
+         cat = self.cats[1]
+         print cat.data[0]
+         print ''
+         self.pdf(cat.data,cat.Probs,cudriver.Out(check),cat.model_options,gpuarray.to_gpu(self.re_amps_list_cu),gpuarray.to_gpu(self.dirCP_asyms_list_cu),gpuarray.to_gpu(self.im_amps_list_cu),gpuarray.to_gpu(self.weak_phases_list_cu),gpuarray.to_gpu(self.mixing_params_list_cu),gpuarray.to_gpu(self.calib_params_list_cu),gpuarray.to_gpu(self.mass_integrals_list_cu),cat.Nevts,block = cat.block,grid = cat.grid)
+         print check[0],check[1],check[2]
+         print ''
+
+      def __call__(self,*args):
+         chi2 = np.float64(0.)
+         N = self.dc
+         for [idx,ival] in param_list_updates("re_amps_list",paramnames,args_ = args,N_ = N,blinding = blinding_): self.re_amps_list_cu[idx] = ival
+         for [idx,ival] in param_list_updates("dirCP_asyms_list",paramnames,args_ = args,N_ = N,blinding = blinding_): self.dirCP_asyms_list_cu[idx] = ival
+         for [idx,ival] in param_list_updates("im_amps_list",paramnames,args_ = args,N_ = N,blinding = blinding_): self.im_amps_list_cu[idx] = ival
+         for [idx,ival] in param_list_updates("weak_phases_list",paramnames,args_ = args,N_ = N,blinding = blinding_): self.weak_phases_list_cu[idx] = ival
+         for [idx,ival] in param_list_updates("mixing_params_list",paramnames,args_ = args,N_ = N,blinding = blinding_): self.mixing_params_list_cu[idx] = ival
+         for [idx,ival] in param_list_updates("calib_params_list",paramnames,args_ = args,N_ = N,blinding = blinding_): self.calib_params_list_cu[idx] = ival
+         for cat in self.cats:
+            self.pdf(cat.data,cat.Probs,cudriver.Out(check),cat.model_options,gpuarray.to_gpu(self.re_amps_list_cu),gpuarray.to_gpu(self.dirCP_asyms_list_cu),gpuarray.to_gpu(self.im_amps_list_cu),gpuarray.to_gpu(self.weak_phases_list_cu),gpuarray.to_gpu(self.mixing_params_list_cu),gpuarray.to_gpu(self.calib_params_list_cu),gpuarray.to_gpu(self.mass_integrals_list_cu),cat.Nevts,block = cat.block,grid = cat.grid)
+            #nan = np.nan
+            #for pr in getattr(cat,"Probs"):
+               #if eval(str(pr)) == nan: print check[0],check[1],check[2]
+         LL = map(self.getSumLL, self.cats)
+         LLsum = self.mySum(LL)
+         LLsum += ctrt_fun_1(np.float64(args[N["Dp0half_SSK_cu"]]),-0.0079,0.0014)
+         LLsum += ctrt_fun_1(np.float64(args[N["Dp1half_SSK_cu"]]),-0.022,0.023)
+         LLsum += ctrt_fun_1(np.float64(args[N["Dp0half_OS_cu"]]),0.007,0.0006)
+         LLsum += ctrt_fun_1(np.float64(args[N["Dp1half_OS_cu"]]),0.033,0.006)
+         LLsum += ctrt_fun_2(np.float64(args[N["gamma_Bs_cu"]]),np.float64(args[N["delta_gamma_Bs_cu"]]),0.6643,0.083,0.0020,0.006,-0.217)
+         LLsum += ctrt_fun_2(np.float64(args[N["p0metac_SSK_cu"]]),np.float64(args[N["p1_SSK_cu"]]),0.0067,0.925,0.0052,0.085,0.)
+         LLsum += ctrt_fun_2(np.float64(args[N["p0metac_OS_cu"]]),np.float64(args[N["p1_OS_cu"]]),0.0062,0.982,0.0044,0.035,0.14)
+         if wide_window_:
+            LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2011_cu"]]),np.float64(args[N["tres_p1_2011_cu"]]),0.0347684584237,1.15385576866,0.000243952773379,0.0495706722963,0.37497)
+            LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2012_cu"]]),np.float64(args[N["tres_p1_2012_cu"]]),0.0365026605725,1.26918356746,0.000250855432766,0.0528387031703,0.38357)
+         else:
+            LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2011_cu"]]),np.float64(args[N["tres_p1_2011_cu"]]),0.0352455552308,1.19983857817,0.000337800233389,0.0618110188611,0.39061)
+            LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2012_cu"]]),np.float64(args[N["tres_p1_2012_cu"]]),0.0366294040913,1.22214099483,0.000296200532078,0.059802993325,0.39251)
+
+         return -2*LLsum
+
+   start = timer()
+
+   print '\nConstructing fitting framework ...'
+   manager = CUDAModel(Params, cats)
+   manager.createFit()
+   #manager.check_PDF()
+
+   manager.fit.migrad()
+   manager.fit.hesse()
+   if minos_: manager.fit.minos()
+
+   print 'INFO:',int((timer() - start)/60),'min needed to do the fit.'
+
 
 def PDFfun(PDF_,method_,m1_,m2_,cos1_,cos2_,phi_,t_,dt_,q1_,q2_,eta1_,eta2_):
 
