@@ -25,7 +25,7 @@ def printSomeVals(calib, eta):
 if __name__ == '__main__':
 
     #Create calibration
-    eta = RooRealVar("eta","#eta",0.1,0.5) #WARNING: logit(eta) = log(1-eta)-log(eta) not defined at eta=0...
+    eta = RooRealVar("eta","#eta",0.04,0.5) #WARNING: logit(eta) = log(1-eta)-log(eta) not defined at eta=0...
     calName = "OS_Combination_Calibration"
     calFileName = "OS_Combination_Calibration_NSpline_LogitLink.xml"
     glm = ROOT.Espresso.GLMBuilder("OS","OS",eta,calName,calFileName)
