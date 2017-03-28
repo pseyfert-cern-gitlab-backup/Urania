@@ -142,7 +142,7 @@ def mcreweight_dslisttothsparse(StripVersion, MagPolarity, RunMin, RunMax, verbo
                 cutds.IsA().Destructor(cutds) #free memory from cut dataset
             else:
                 mcreweight_datasettothsparse(ds,Part,hs,varnames,weight,h1d_list)
-        ds.Delete() #needed to free memory
+        	ds.Delete() #needed to free memory
     
 
     #making projections

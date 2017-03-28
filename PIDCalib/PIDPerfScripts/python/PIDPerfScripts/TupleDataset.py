@@ -331,8 +331,14 @@ def getDataSetFromTuple ( file, mother, part, trackcuts, pidcuts, xvar, yvar, zv
   	
     tree = ROOT.TChain()
     tree.Add(file+"/"+dataset+"/DecayTree")
-    if not tree:
-      raise Exception ( "No data for dataset: " + datasetname )
+    
+    #Check if the tree has any entries in it
+    if tree.GetEntries() == 0:
+    	return None
+    	#raise Exception ( "No data for dataset: " + datasetname )
+    	
+    #if not tree:
+    #  raise Exception ( "No data for dataset: " + datasetname )
   	
     tree.SetBranchStatus("*",0)
   	

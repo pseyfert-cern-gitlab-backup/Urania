@@ -8,6 +8,9 @@
   + Make version v11r2.
 
 !============================================== v11r1 2017-03-08 ==============================
+! 2017-03-28 - Donal Hill
+	- Added a catch in data loading functions to skip over a file if an nTuple with 0 entries is found.
+	- Bug spotted when loading electron calibration samples, which can be very low stats.
 
 ! 2017-03-08 - Donal Hill
 	- Added tempdir to TupleDataset.py to create and delete temporary file correctly
