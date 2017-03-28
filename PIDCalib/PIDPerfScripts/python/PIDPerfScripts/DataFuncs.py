@@ -59,7 +59,7 @@ def GetDataSets(StripVer, MagPolarity, PartName, TrackCuts, runMin=None, runMax=
     return DataSets
 
 def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,PIDCutString,xBin,yBin,zBin,file, verbose=False,
-               allowMissingDataSets=False, minEntries=0):
+               allowMissingDataSets=False, minEntries=1):
                
     #If Run I data has been requested and MC12TuneV4 or MC15TuneV1 ProbNN cut used, return error
     if 'Turbo' not in StripVer:
@@ -106,15 +106,17 @@ def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,PIDCutString,xBin,yBin,z
                                   , zvar      = zBin
             )
       print "Automatic conversion from TTree to RooDataSet"
-      
+    if Data is None:
+		print "No entires in RooDataSet - skipping this input file"
+		return None
+		
 #        raise TFileError("Failed to retrieve workspace {wsname} from file {fname}".format(
 #            wsname=DataSetNameDict['WorkspaceName'], fname=fname))
-
     if not Data:
         raise RooWorkspaceError("RooDataSet not found in workspace %s" %wsname)
     if verbose:
       print "Retrieved data: ({0},{1})".format(time.time(),time.clock())
-
+	
     Data.Print("v")
 
     if verbose:
