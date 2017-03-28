@@ -4,6 +4,19 @@
 <!--- Created : 2017-03-22 -->
 
 <lcgdict>
-  <class name="Espresso::RooGLMFunction" />
   <class name="Espresso::GLMBuilder" />
+  <class name="Espresso::RooGLMFunction" />
+  <class name="Espresso::Calibration" />
+  <class name="Espresso::GLMCalibration" />
+  <class name="Espresso::CalibrationFunction" />
+  <class name="Espresso::GLMCalibrationFunction" />
+  <class name="Espresso::GLMModel" />
+  <class name="Espresso::GLMNSpline" />
+  <class name="Espresso::GLMBSpline" />
+  <class name="Espresso::GLMPolynomial" />
+  <class name="Espresso::Vector" />
+  <class name="Espresso::Matrix" />
+  <class name="gsl_block_struct" />
+  <class name="gsl_vector" />
+  <class name="gsl_matrix" />
 </lcgdict>

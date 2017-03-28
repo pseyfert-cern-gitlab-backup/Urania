@@ -30,7 +30,7 @@ namespace Espresso {
   public:
 
     /// Standard constructor
-    GLMPolynomial(unsigned int _degree)
+    GLMPolynomial(unsigned int _degree=0)
       : degree(_degree),
         basis(degree+1,degree+1)
     {

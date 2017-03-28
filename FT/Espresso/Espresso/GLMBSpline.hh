@@ -34,6 +34,18 @@ namespace Espresso {
   class GLMBSpline : public GLMModel {
   public:
 
+    /// Empty constructor
+    GLMBSpline()
+      : nodes(),
+        size(0),
+        tau(),
+        b1(),
+        b2(),
+        b3(),
+        b4()
+    {
+    }
+
     /// Standard constructor
     GLMBSpline(const std::vector<double>& _nodes)
       : nodes(_nodes),
