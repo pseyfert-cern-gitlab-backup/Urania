@@ -33,6 +33,7 @@ blindCat.defineType("unblind",0)
 blindCat.defineType("blind",1)
 blindCat.setConstant(1)
 blinding_scale = 0.2
+blinding_strings = {}
 
 
 # ################################################################
