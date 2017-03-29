@@ -6,7 +6,6 @@
 #include "Espresso/GLMNSpline.hh"
 #include "Espresso/GLMBSpline.hh"
 #include "Espresso/GLMPolynomial.hh"
-#include <gsl/gsl_vector.h>
-#include <gsl/gsl_matrix.h>
+#include "Espresso/GSLWrappers.hh"
 
 #endif // DICT_ESPRESSO_ESPRESSODICT_H

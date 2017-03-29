@@ -21,6 +21,8 @@
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/nvp.hpp>
 
+#include "GSLWrappers.hh"
+
 namespace Espresso {
 
   class Matrix;
@@ -173,7 +175,7 @@ namespace Espresso {
     template<class Archive>
     void serialize(Archive& ar, const unsigned int version) {
       ar & BOOST_SERIALIZATION_NVP(n);
-      if (Archive::is_loading::value) v = gsl_vector_calloc(n);
+      if (Archive::is_loading::value) v = reinterpret_cast<epm_gsl_vector*>(gsl_vector_calloc(n));
       ar & boost::serialization::make_nvp("vector_size",v->size);
       ar & boost::serialization::make_nvp("vector_data",boost::serialization::make_array(v->data,v->size));
       ar & BOOST_SERIALIZATION_NVP(softwrap);
@@ -181,7 +183,7 @@ namespace Espresso {
 
   private:
     std::size_t n;
-    gsl_vector* v;
+    epm_gsl_vector* v;
     bool softwrap;
   };
 }

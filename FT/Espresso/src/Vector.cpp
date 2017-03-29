@@ -14,7 +14,7 @@ namespace Espresso
   // Constructor
   Vector::Vector(std::size_t _n)
     : n(_n),
-      v(gsl_vector_calloc(n)),
+      v(reinterpret_cast<epm_gsl_vector*>(gsl_vector_calloc(n))),
       softwrap(false)
   {
     Reset();
@@ -23,10 +23,10 @@ namespace Espresso
   // Copy constructor
   Vector::Vector(const Vector& rhs)
     : n(rhs.n),
-      v(gsl_vector_alloc(rhs.v->size)),
+      v(reinterpret_cast<epm_gsl_vector*>(gsl_vector_alloc(rhs.v->size))),
       softwrap(false)
   {
-    gsl_vector_memcpy(v,rhs.v);
+    gsl_vector_memcpy(reinterpret_cast<gsl_vector*>(v),reinterpret_cast<gsl_vector*>(rhs.v));
   }
 
   // Constructor from std::vector
@@ -40,7 +40,7 @@ namespace Espresso
   // Private constructor
   Vector::Vector(gsl_vector* _v, bool sw)
     : n(_v->size),
-      v(_v),
+      v(reinterpret_cast<epm_gsl_vector*>(_v)),
       softwrap(sw)
   {
   }
@@ -55,7 +55,7 @@ namespace Espresso
     std::size_t ntemp = first.n;
     first.n = second.n;
     second.n = ntemp;
-    gsl_vector* temp = first.v;
+    epm_gsl_vector* temp = first.v;
     first.v = second.v;
     second.v = temp;
     bool btemp = first.softwrap;
@@ -66,7 +66,7 @@ namespace Espresso
   // Destructor
   Vector::~Vector() {
     if (not softwrap) {
-      gsl_vector_free(v);
+      gsl_vector_free(reinterpret_cast<gsl_vector*>(v));
     }
   }
 
@@ -99,35 +99,35 @@ namespace Espresso
   }
 
   double Vector::Get(std::size_t k) const {
-    return gsl_vector_get(v,k);
+    return gsl_vector_get(reinterpret_cast<gsl_vector*>(v),k);
   }
 
   void Vector::Set(std::size_t k, double z) {
-    gsl_vector_set(v,k,z);
+    gsl_vector_set(reinterpret_cast<gsl_vector*>(v),k,z);
   }
 
   // DEPRECATE!
   double Vector::operator() (std::size_t k) const {
-    return *gsl_vector_const_ptr(v,k);
+    return *gsl_vector_const_ptr(reinterpret_cast<gsl_vector*>(v),k);
   }
 
   // DEPRECATE!
   double& Vector::operator() (std::size_t k) {
-    return *gsl_vector_ptr(v,k);
+    return *gsl_vector_ptr(reinterpret_cast<gsl_vector*>(v),k);
   }
 
   double Vector::operator[] (std::size_t k) const {
-    return *gsl_vector_const_ptr(v,k);
+    return *gsl_vector_const_ptr(reinterpret_cast<gsl_vector*>(v),k);
   }
 
   double& Vector::operator[] (std::size_t k) {
-    return *gsl_vector_ptr(v,k);
+    return *gsl_vector_ptr(reinterpret_cast<gsl_vector*>(v),k);
   }
 
   // Arithmetic
   Vector& Vector::operator+= (const Vector& rhs) {
-    const gsl_vector* u = rhs.v;
-    gsl_vector_add(v, u);
+    const gsl_vector* u = reinterpret_cast<gsl_vector*>(rhs.v);
+    gsl_vector_add(reinterpret_cast<gsl_vector*>(v), u);
     return *this;
   }
   Vector operator+ (Vector lhs, const Vector& rhs) {
@@ -135,8 +135,8 @@ namespace Espresso
   }
 
   Vector& Vector::operator-= (const Vector& rhs) {
-    const gsl_vector* u = rhs.v;
-    gsl_vector_sub(v, u);
+    const gsl_vector* u = reinterpret_cast<gsl_vector*>(rhs.v);
+    gsl_vector_sub(reinterpret_cast<gsl_vector*>(v), u);
     return *this;
   }
   Vector operator- (Vector lhs, const Vector& rhs) {
@@ -144,7 +144,7 @@ namespace Espresso
   }
 
   Vector& Vector::operator*= (const double& rhs) {
-    gsl_vector_scale(v,rhs);
+    gsl_vector_scale(reinterpret_cast<gsl_vector*>(v),rhs);
     return *this;
   }
   Vector operator* (Vector lhs, const double& rhs) {
@@ -155,7 +155,7 @@ namespace Espresso
   }
 
   Vector& Vector::operator/= (const double& rhs) {
-    gsl_vector_scale(v,1.0/rhs);
+    gsl_vector_scale(reinterpret_cast<gsl_vector*>(v),1.0/rhs);
     return *this;
   }
   Vector operator/ (Vector lhs, const double& rhs) {
@@ -164,9 +164,9 @@ namespace Espresso
 
   Vector& Vector::operator*= (const Matrix& lhs) {
     gsl_vector* vnew = gsl_vector_calloc(v->size);
-    gsl_blas_dgemv(CblasNoTrans, 1.0, lhs.v, v, 0.0, vnew);
-    gsl_vector_free(v);
-    this->v = vnew;
+    gsl_blas_dgemv(CblasNoTrans, 1.0, reinterpret_cast<gsl_matrix*>(lhs.v), reinterpret_cast<gsl_vector*>(v), 0.0, vnew);
+    gsl_vector_free(reinterpret_cast<gsl_vector*>(v));
+    this->v = reinterpret_cast<epm_gsl_vector*>(vnew);
     return *this;
   }
   Vector operator* (Vector lhs, const Matrix& rhs) {
@@ -179,21 +179,21 @@ namespace Espresso
   double operator* (const Vector& lhs, const Vector& rhs)
   {
     double result;
-    gsl_blas_ddot(lhs.v,rhs.v,&result);
+    gsl_blas_ddot(reinterpret_cast<gsl_vector*>(lhs.v),reinterpret_cast<gsl_vector*>(rhs.v),&result);
     return result;
   }
 
   // Special
   void Vector::Reset() {
-    gsl_vector_set_zero(v);
+    gsl_vector_set_zero(reinterpret_cast<gsl_vector*>(v));
   }
 
   void Vector::Reset(double z) {
-    gsl_vector_set_all(v,z);
+    gsl_vector_set_all(reinterpret_cast<gsl_vector*>(v),z);
   }
 
   void Vector::SetBasis(std::size_t k) {
-    gsl_vector_set_basis(v,k);
+    gsl_vector_set_basis(reinterpret_cast<gsl_vector*>(v),k);
   }
 
 }

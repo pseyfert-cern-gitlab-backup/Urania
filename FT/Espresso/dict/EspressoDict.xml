@@ -16,7 +16,13 @@
   <class name="Espresso::GLMPolynomial" />
   <class name="Espresso::Vector" />
   <class name="Espresso::Matrix" />
-  <class name="gsl_block_struct" />
-  <class name="gsl_vector" />
-  <class name="gsl_matrix" />
+  <class name="epm_gsl_block">
+    <field name="data" transient = "true" />
+  </class>
+  <class name="epm_gsl_vector">
+    <field name="data" transient = "true" />
+  </class>
+  <class name="epm_gsl_matrix">
+    <field name="data" transient = "true" />
+  </class>
 </lcgdict>
