@@ -43,14 +43,20 @@ std::tuple<RooArgList,RooArgList,RooMultiVarGaussian,
     assert(0);
   for (std::size_t k=0; k<m_numCoeffs; ++k)
   {
+    double cerr = 10*m_cal.GetError(k);
     RooRealVar* coeff = new RooRealVar( ("p_"+boost::lexical_cast<std::string>(k)+"_"+boost::lexical_cast<std::string>(name)).c_str(),
                                         ("p_{"+boost::lexical_cast<std::string>(k)+"}"+boost::lexical_cast<std::string>(title)).c_str(),
-                                        coeffs[k],-100.0,100.0);
+                                        coeffs[k],coeffs[k]-cerr,coeffs[k]+cerr);
     m_coeffList.add( *coeff );
     m_allcoeffList.add( *coeff );
+  }
+  
+  for (std::size_t k=0; k<m_numCoeffs; ++k)
+  {
+    double dcerr = 10*m_cal.GetDeltaError(k);
     RooRealVar* dcoeff = new RooRealVar( ("dp_"+boost::lexical_cast<std::string>(k)+"_"+boost::lexical_cast<std::string>(name)).c_str(),
                                          ("#Delta p_{"+boost::lexical_cast<std::string>(k)+"}"+boost::lexical_cast<std::string>(title)).c_str(),
-                                         deltacoeffs[k],-100.0,100.0);
+                                         deltacoeffs[k],deltacoeffs[k]-dcerr,deltacoeffs[k]+dcerr);
     m_deltacoeffList.add( *dcoeff );
     m_allcoeffList.add( *dcoeff );
   }
