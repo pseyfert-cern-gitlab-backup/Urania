@@ -4,6 +4,11 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
+! 2017-04-04 - Vincenzo Battista
+ - Add possibility to define calibrated mistag omega in range [0,0.5]
+   instead of [0,1]. FT/Espresso and PhysFit/B2DXFitters updated 
+   at the same time.
+
 ! 2017-03-28 - Vincenzo Battista
  - First trivial tutorials for the usage of Espresso in B2DXFitters
 
