@@ -20,8 +20,11 @@ namespace Espresso
     enum class LinkType {
       Mistag,   ///< in basis &eta;
       Logit,    ///< in basis log(1-&eta;) - log(&eta;)
+      RLogit,    ///< in basis log(1-2&eta;) - log(2&eta;)
       Probit,   ///< in basis &radic;2 erf<sup>-1</sup>(1-2&eta;)
-      Cauchit    ///< in basis -cot(&pi;(1-&eta;))
+      RProbit,    ///< in basis &radic;2 erf<sup>-1</sup>(1-4&eta;)
+      Cauchit,    ///< in basis -cot(&pi;(1-&eta;))
+      RCauchit    ///< in basis -cot(&pi;(1-2&eta;))
     };
     constexpr Regression::LinkType DefaultLinkType = Regression::LinkType::Mistag;
     

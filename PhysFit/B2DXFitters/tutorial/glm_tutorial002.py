@@ -229,7 +229,7 @@ def buildTimePdf(config):
                                    "glm",
                                    eta,
                                    "OS_Combination_Calibration",
-                                   "OS_Combination_Calibration_NSpline_LogitLink.xml")
+                                   "OS_Combination_Calibration_NSpline_RLogitLink.xml")
 
     # get calibrated mistag
     omega = WS(ws, glm.b_mistag())

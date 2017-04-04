@@ -19,15 +19,15 @@ def printSomeVals(calib, eta):
     print "eta=0.4 => omega = "+str(calib.getVal())
     eta.setVal(0.45)
     print "eta=0.45 => omega = "+str(calib.getVal())
-    eta.setVal(0.5)
-    print "eta=0.5 => omega = "+str(calib.getVal())
+    eta.setVal(0.499)
+    print "eta=0.499 => omega = "+str(calib.getVal())
 
 if __name__ == '__main__':
 
     #Create calibration
-    eta = RooRealVar("eta","#eta",0.04,0.5) #WARNING: logit(eta) = log(1-eta)-log(eta) not defined at eta=0...
+    eta = RooRealVar("eta","#eta",0.04,0.5)
     calName = "OS_Combination_Calibration"
-    calFileName = "OS_Combination_Calibration_NSpline_LogitLink.xml"
+    calFileName = "OS_Combination_Calibration_NSpline_RLogitLink.xml"
     glm = ROOT.Espresso.GLMBuilder("OS","OS",eta,calName,calFileName)
     coeffs = glm.coefficients()
     deltacoeffs = glm.delta_coefficients()

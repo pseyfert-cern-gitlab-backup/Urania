@@ -229,7 +229,7 @@ def buildTimePdf(config):
                                    "glm",
                                    eta,
                                    "OS_Combination_Calibration",
-                                   "OS_Combination_Calibration_NSpline_LogitLink.xml")
+                                   "OS_Combination_Calibration_NSpline_RLogitLink.xml")
 
     # fix calibration coefficients
     for i in range(0, glm.coefficients().getSize()):

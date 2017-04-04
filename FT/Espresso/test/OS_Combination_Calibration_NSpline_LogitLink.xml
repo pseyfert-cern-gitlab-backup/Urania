@@ -4,170 +4,135 @@
 <OS_Combination_Calibration class_id="4" tracking_level="1" version="0" object_id="_0">
 	<TypicalCalibration class_id="6" tracking_level="0" version="0">
 		<Calibration class_id="7" tracking_level="0" version="0"></Calibration>
-		<numParams>6</numParams>
+		<numParams>5</numParams>
 		<coeffs class_id="8" tracking_level="0" version="0">
-			<n>6</n>
-			<vector_size>6</vector_size>
+			<n>5</n>
+			<vector_size>5</vector_size>
 			<vector_data>
-				<item>-1.40461973027001086e-01</item>
-				<item>-2.54367218694484531e-01</item>
-				<item>-3.19945929692464701e-02</item>
-				<item>-4.72707037606421832e+00</item>
-				<item>-1.18026009709300634e+01</item>
-				<item>1.83111657719671728e+00</item>
+				<item>-1.40458385527992696e-01</item>
+				<item>-2.54321166931382958e-01</item>
+				<item>-2.94883870090045554e-02</item>
+				<item>-4.75022612670421829e+00</item>
+				<item>-9.92412752856023772e+00</item>
 			</vector_data>
 			<softwrap>0</softwrap>
 		</coeffs>
 		<delta_coeffs>
-			<n>6</n>
-			<vector_size>6</vector_size>
+			<n>5</n>
+			<vector_size>5</vector_size>
 			<vector_data>
-				<item>-5.27586527361151164e-02</item>
-				<item>-2.28197832671805240e-02</item>
-				<item>1.06327085133470528e-01</item>
-				<item>-1.00546905487414384e+00</item>
-				<item>-7.46230110442416161e-01</item>
-				<item>-1.43812700097270985e+00</item>
+				<item>-5.27435435369657812e-02</item>
+				<item>-2.29449850823736992e-02</item>
+				<item>1.17919330572671233e-01</item>
+				<item>-9.37721547811120715e-01</item>
+				<item>-4.93181286510471661e-01</item>
 			</vector_data>
 			<softwrap>0</softwrap>
 		</delta_coeffs>
 		<covariance class_id="9" tracking_level="0" version="0">
-			<n>6</n>
-			<m>6</m>
-			<matrix_numrows>6</matrix_numrows>
-			<matrix_numcols>6</matrix_numcols>
-			<matrix_numrows_store>6</matrix_numrows_store>
+			<n>5</n>
+			<m>5</m>
+			<matrix_numrows>5</matrix_numrows>
+			<matrix_numcols>5</matrix_numcols>
+			<matrix_numrows_store>5</matrix_numrows_store>
 			<matrix_data>
-				<item>5.50121821822161254e-05</item>
-				<item>-8.69057181640433594e-06</item>
-				<item>-4.94062515748526376e-06</item>
-				<item>-4.07543252751978050e-05</item>
-				<item>-5.02867828394879709e-06</item>
-				<item>5.94298268643899831e-05</item>
-				<item>-8.69057181640433086e-06</item>
-				<item>2.25924409239480317e-04</item>
-				<item>-1.12293961884286147e-04</item>
-				<item>-4.24766144855372413e-04</item>
-				<item>-2.02802222607189643e-03</item>
-				<item>-1.77519561087644993e-03</item>
-				<item>-4.94062515748527985e-06</item>
-				<item>-1.12293961884286160e-04</item>
-				<item>1.16667558677472391e-03</item>
-				<item>-9.82774835065404993e-03</item>
-				<item>-2.76457359284527221e-02</item>
-				<item>-3.29053411874533769e-02</item>
-				<item>-4.07543252751984013e-05</item>
-				<item>-4.24766144855374527e-04</item>
-				<item>-9.82774835065405340e-03</item>
-				<item>1.27097149281087951e+00</item>
-				<item>-1.01792665651357495e+00</item>
-				<item>-9.92889071569610371e-01</item>
-				<item>-5.02867828397795959e-06</item>
-				<item>-2.02802222607181707e-03</item>
-				<item>-2.76457359284526978e-02</item>
-				<item>-1.01792665651357672e+00</item>
-				<item>4.64216591405441150e+01</item>
-				<item>-4.74052410072794927e+00</item>
-				<item>5.94298268644491195e-05</item>
-				<item>-1.77519561087645101e-03</item>
-				<item>-3.29053411874534602e-02</item>
-				<item>-9.92889071569610482e-01</item>
-				<item>-4.74052410072796260e+00</item>
-				<item>5.16597315894347844e+01</item>
+				<item>5.50114906242642844e-05</item>
+				<item>-8.68388498813113442e-06</item>
+				<item>-5.37791413713247059e-06</item>
+				<item>-4.48087490801833821e-05</item>
+				<item>-3.44082175069172893e-05</item>
+				<item>-8.68388498813113611e-06</item>
+				<item>2.25831112331357717e-04</item>
+				<item>-1.25767031255948829e-04</item>
+				<item>-5.26930609302488019e-04</item>
+				<item>-1.94374293601393068e-03</item>
+				<item>-5.37791413713247059e-06</item>
+				<item>-1.25767031255948801e-04</item>
+				<item>1.44094711717610902e-03</item>
+				<item>-1.13267996148530576e-02</item>
+				<item>-2.83901770013688624e-02</item>
+				<item>-4.48087490801834566e-05</item>
+				<item>-5.26930609302487369e-04</item>
+				<item>-1.13267996148530472e-02</item>
+				<item>1.33695635499030563e+00</item>
+				<item>-8.68001316242577370e-01</item>
+				<item>-3.44082175069172961e-05</item>
+				<item>-1.94374293601393177e-03</item>
+				<item>-2.83901770013689145e-02</item>
+				<item>-8.68001316242576371e-01</item>
+				<item>2.38002206805483887e+01</item>
 			</matrix_data>
 			<_isSubmatrix>0</_isSubmatrix>
 			<softwrap>0</softwrap>
 		</covariance>
 		<delta_covariance>
-			<n>6</n>
-			<m>6</m>
-			<matrix_numrows>6</matrix_numrows>
-			<matrix_numcols>6</matrix_numcols>
-			<matrix_numrows_store>6</matrix_numrows_store>
+			<n>5</n>
+			<m>5</m>
+			<matrix_numrows>5</matrix_numrows>
+			<matrix_numcols>5</matrix_numcols>
+			<matrix_numrows_store>5</matrix_numrows_store>
 			<matrix_data>
-				<item>2.20048728728864420e-04</item>
-				<item>-3.47622872656173370e-05</item>
-				<item>-1.97625006299410516e-05</item>
-				<item>-1.63017301100791491e-04</item>
-				<item>-2.01147131357936366e-05</item>
-				<item>2.37719307457559959e-04</item>
-				<item>-3.47622872656175403e-05</item>
-				<item>9.03697636957920725e-04</item>
-				<item>-4.49175847537144153e-04</item>
-				<item>-1.69906457942148965e-03</item>
-				<item>-8.11208890428757878e-03</item>
-				<item>-7.10078244350581967e-03</item>
-				<item>-1.97625006299431760e-05</item>
-				<item>-4.49175847537144370e-04</item>
-				<item>4.66670234709889303e-03</item>
-				<item>-3.93109934026162067e-02</item>
-				<item>-1.10582943713810986e-01</item>
-				<item>-1.31621364749813369e-01</item>
-				<item>-1.63017301100867792e-04</item>
-				<item>-1.69906457942148011e-03</item>
-				<item>-3.93109934026162067e-02</item>
-				<item>5.08388597124352160e+00</item>
-				<item>-4.07170662605430245e+00</item>
-				<item>-3.97155628627844415e+00</item>
-				<item>-2.01147131360691764e-05</item>
-				<item>-8.11208890428756144e-03</item>
-				<item>-1.10582943713810916e-01</item>
-				<item>-4.07170662605430511e+00</item>
-				<item>1.85686636562176346e+02</item>
-				<item>-1.89620964029117864e+01</item>
-				<item>2.37719307457495748e-04</item>
-				<item>-7.10078244350583268e-03</item>
-				<item>-1.31621364749813063e-01</item>
-				<item>-3.97155628627844370e+00</item>
-				<item>-1.89620964029117829e+01</item>
-				<item>2.06638926357739138e+02</item>
+				<item>2.20045962497057083e-04</item>
+				<item>-3.47355399525245444e-05</item>
+				<item>-2.15116565485298925e-05</item>
+				<item>-1.79234996320733799e-04</item>
+				<item>-1.37632870027668995e-04</item>
+				<item>-3.47355399525245309e-05</item>
+				<item>9.03324449325430866e-04</item>
+				<item>-5.03068125023795314e-04</item>
+				<item>-2.10772243720995078e-03</item>
+				<item>-7.77497174405570972e-03</item>
+				<item>-2.15116565485298925e-05</item>
+				<item>-5.03068125023795206e-04</item>
+				<item>5.76378846870443263e-03</item>
+				<item>-4.53071984594121818e-02</item>
+				<item>-1.13560708005475450e-01</item>
+				<item>-1.79234996320734152e-04</item>
+				<item>-2.10772243720995381e-03</item>
+				<item>-4.53071984594121541e-02</item>
+				<item>5.34782541996122074e+00</item>
+				<item>-3.47200526497031081e+00</item>
+				<item>-1.37632870027671001e-04</item>
+				<item>-7.77497174405570625e-03</item>
+				<item>-1.13560708005475408e-01</item>
+				<item>-3.47200526497030904e+00</item>
+				<item>9.52008827221935547e+01</item>
 			</matrix_data>
 			<_isSubmatrix>0</_isSubmatrix>
 			<softwrap>0</softwrap>
 		</delta_covariance>
 		<cross_covariance>
-			<n>6</n>
-			<m>6</m>
-			<matrix_numrows>6</matrix_numrows>
-			<matrix_numcols>6</matrix_numcols>
-			<matrix_numrows_store>6</matrix_numrows_store>
+			<n>5</n>
+			<m>5</m>
+			<matrix_numrows>5</matrix_numrows>
+			<matrix_numcols>5</matrix_numcols>
+			<matrix_numrows_store>5</matrix_numrows_store>
 			<matrix_data>
-				<item>-1.51070355392805998e-06</item>
-				<item>-2.07032614085248346e-06</item>
-				<item>1.85512190696040077e-06</item>
-				<item>-1.92453013688640982e-05</item>
-				<item>4.13463150303625159e-04</item>
-				<item>-4.41631189612613317e-04</item>
-				<item>-2.07032614085217514e-06</item>
-				<item>-1.05373235550579098e-05</item>
-				<item>-6.24462435413230013e-06</item>
-				<item>3.48330238562519667e-04</item>
-				<item>-6.07099001623615138e-04</item>
-				<item>1.07468462104634501e-03</item>
-				<item>1.85512190696667708e-06</item>
-				<item>-6.24462435413257711e-06</item>
-				<item>-4.59215563338363578e-06</item>
-				<item>1.16764160753240445e-03</item>
-				<item>1.09914983112197259e-02</item>
-				<item>1.05853902446103043e-02</item>
-				<item>-1.92453013686902294e-05</item>
-				<item>3.48330238562505790e-04</item>
-				<item>1.16764160753225180e-03</item>
-				<item>3.97009000112980015e-02</item>
-				<item>7.14114089851563966e-02</item>
-				<item>3.94395467017408907e-01</item>
-				<item>4.13463150313363300e-04</item>
-				<item>-6.07099001625357017e-04</item>
-				<item>1.09914983112227808e-02</item>
-				<item>7.14114089851818068e-02</item>
-				<item>6.73725088448855258e-01</item>
-				<item>1.09499800617538701e+00</item>
-				<item>-4.41631189631685518e-04</item>
-				<item>1.07468462104902580e-03</item>
-				<item>1.05853902446164747e-02</item>
-				<item>3.94395467017451651e-01</item>
-				<item>1.09499800617464782e+00</item>
-				<item>3.98203923646641922e-01</item>
+				<item>-1.50985493045744621e-06</item>
+				<item>-2.08871215239178751e-06</item>
+				<item>1.78497401455109745e-06</item>
+				<item>-2.37370709920710101e-05</item>
+				<item>2.06176345454568325e-04</item>
+				<item>-2.08871215239178497e-06</item>
+				<item>-1.04673103920601818e-05</item>
+				<item>-6.01619244386264790e-06</item>
+				<item>3.82285382542906101e-04</item>
+				<item>-5.28112260388346696e-05</item>
+				<item>1.78497401455113875e-06</item>
+				<item>-6.01619244386302313e-06</item>
+				<item>8.37592460888346557e-06</item>
+				<item>1.53274769057044013e-03</item>
+				<item>1.04293095091237790e-02</item>
+				<item>-2.37370709920694990e-05</item>
+				<item>3.82285382542902794e-04</item>
+				<item>1.53274769057055722e-03</item>
+				<item>4.72776031286254936e-02</item>
+				<item>1.14662637394768979e-01</item>
+				<item>2.06176345454523710e-04</item>
+				<item>-5.28112260387518094e-05</item>
+				<item>1.04293095091200806e-02</item>
+				<item>1.14662637394758016e-01</item>
+				<item>5.16232046094855956e-01</item>
 			</matrix_data>
 			<_isSubmatrix>0</_isSubmatrix>
 			<softwrap>0</softwrap>
@@ -178,36 +143,33 @@
 		<glm class_id="11" tracking_level="0" version="0">
 			<tx class_id="1" tracking_level="1" version="0" object_id="_2">
 				<nodes>
-					<count>6</count>
+					<count>5</count>
 					<item_version>0</item_version>
 					<item>2.62260437011718750e-06</item>
-					<item>2.21196987103334020e-01</item>
-					<item>4.17176949928203089e-01</item>
-					<item>6.64449480871248443e-01</item>
-					<item>1.05839808500796861e+00</item>
+					<item>2.67484228424771486e-01</item>
+					<item>5.32029302770085311e-01</item>
+					<item>9.27357940982568518e-01</item>
 					<item>4.55235853563839399e+00</item>
 				</nodes>
 				<GLMModel class_id="13" tracking_level="0" version="0"></GLMModel>
 				<nodes>
-					<count>6</count>
+					<count>5</count>
 					<item_version>0</item_version>
 					<item>2.62260437011718750e-06</item>
-					<item>2.21196987103334020e-01</item>
-					<item>4.17176949928203089e-01</item>
-					<item>6.64449480871248443e-01</item>
-					<item>1.05839808500796861e+00</item>
+					<item>2.67484228424771486e-01</item>
+					<item>5.32029302770085311e-01</item>
+					<item>9.27357940982568518e-01</item>
 					<item>4.55235853563839399e+00</item>
 				</nodes>
-				<size>6</size>
+				<size>5</size>
 				<basis>
-					<n>6</n>
-					<m>6</m>
-					<matrix_numrows>6</matrix_numrows>
-					<matrix_numcols>6</matrix_numcols>
-					<matrix_numrows_store>6</matrix_numrows_store>
+					<n>5</n>
+					<m>5</m>
+					<matrix_numrows>5</matrix_numrows>
+					<matrix_numcols>5</matrix_numcols>
+					<matrix_numrows_store>5</matrix_numrows_store>
 					<matrix_data>
 						<item>1.00000000000000000e+00</item>
-						<item>0.00000000000000000e+00</item>
 						<item>0.00000000000000000e+00</item>
 						<item>0.00000000000000000e+00</item>
 						<item>0.00000000000000000e+00</item>
@@ -217,30 +179,20 @@
 						<item>0.00000000000000000e+00</item>
 						<item>0.00000000000000000e+00</item>
 						<item>0.00000000000000000e+00</item>
-						<item>0.00000000000000000e+00</item>
-						<item>2.17381108018204511e-01</item>
-						<item>-6.21387708237277514e-01</item>
+						<item>2.02529541635106392e-01</item>
+						<item>-5.86683543507173555e-01</item>
 						<item>1.00000000000000000e+00</item>
 						<item>0.00000000000000000e+00</item>
 						<item>0.00000000000000000e+00</item>
-						<item>0.00000000000000000e+00</item>
-						<item>-1.40203438490982529e-02</item>
-						<item>7.37342734171926861e-02</item>
-						<item>-7.86833942971653655e-01</item>
+						<item>-1.39417680602480481e-02</item>
+						<item>7.35545287828532762e-02</item>
+						<item>-7.10038248921861515e-01</item>
 						<item>1.00000000000000000e+00</item>
 						<item>0.00000000000000000e+00</item>
-						<item>0.00000000000000000e+00</item>
-						<item>3.02552907965012623e-03</item>
-						<item>-2.83202721745424157e-02</item>
-						<item>7.25715808706631438e-01</item>
-						<item>-1.66779481299076648e+00</item>
-						<item>1.00000000000000000e+00</item>
-						<item>0.00000000000000000e+00</item>
-						<item>-1.36122206236739839e-03</item>
-						<item>1.87987171060745861e-02</item>
-						<item>-7.60189486861534092e-01</item>
-						<item>2.36435633182058691e+00</item>
-						<item>-2.45005539918151038e+00</item>
+						<item>3.33837274798184230e-03</item>
+						<item>-2.90802734204490265e-02</item>
+						<item>5.84774157030368391e-01</item>
+						<item>-1.39799240907568723e+00</item>
 						<item>1.00000000000000000e+00</item>
 					</matrix_data>
 					<_isSubmatrix>0</_isSubmatrix>
@@ -248,7 +200,7 @@
 				</basis>
 			</tx>
 		</glm>
-		<length>6</length>
+		<length>5</length>
 		<L>1</L>
 	</func>
 </OS_Combination_Calibration>
