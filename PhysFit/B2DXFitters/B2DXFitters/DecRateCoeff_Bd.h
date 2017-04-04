@@ -31,6 +31,39 @@ public:
   DecRateCoeff_Bd() { }
 
   DecRateCoeff_Bd(const std::string& name,
+                  const std::string& title,
+                  CoeffType   _coeff_type_,
+                  RooAbsCategory& _finalstate_,
+                  RooAbsReal& _cp_coeff_,
+                  RooAbsReal& _cp_coeff_bar_,
+                  RooAbsCategory& _tag_os_,
+                  RooAbsReal& _omegab_os_,
+                  RooAbsReal& _omegabbar_os_,
+                  RooAbsReal& _tageff_os_,
+                  RooAbsReal& _tageff_asym_os_,
+                  RooAbsCategory& _tag_ss_,
+                  RooAbsReal& _omegab_ss_,
+                  RooAbsReal& _omegabbar_ss_,
+                  RooAbsReal& _tageff_ss_,
+                  RooAbsReal& _tageff_asym_ss_,
+                  RooAbsReal& _production_asym_,
+                  RooAbsReal& _detection_asym_);
+  
+  DecRateCoeff_Bd(const std::string& name,
+                  const std::string& title,
+                  CoeffType   _coeff_type_,
+                  RooAbsCategory& _finalstate_,
+                  RooAbsReal& _cp_coeff_,
+                  RooAbsReal& _cp_coeff_bar_,
+                  RooAbsCategory& _tag_os_,
+                  RooAbsReal& _omegab_os_,
+                  RooAbsReal& _omegabbar_os_,
+                  RooAbsReal& _tageff_os_,
+                  RooAbsReal& _tageff_asym_os_,
+                  RooAbsReal& _production_asym_,
+                  RooAbsReal& _detection_asym_);
+
+  DecRateCoeff_Bd(const std::string& name,
                const std::string& title,
                CoeffType   _coeff_type_,
                RooAbsCategory& _finalstate_,
@@ -91,6 +124,8 @@ protected:
   RooCategoryProxy finalstate_;
 
   RooCategoryProxy tag_os_ ;
+  RooRealProxy omegab_os_;
+  RooRealProxy omegabbar_os_;
   RooRealProxy eta_os_ ;
   RooRealProxy avg_eta_os_ ;
   RooRealProxy p0_os_ ;
@@ -101,6 +136,8 @@ protected:
   RooRealProxy tageff_asym_os_;
 
   RooCategoryProxy tag_ss_ ;
+  RooRealProxy omegab_ss_;
+  RooRealProxy omegabbar_ss_;
   RooRealProxy eta_ss_ ;
   RooRealProxy avg_eta_ss_ ;
   RooRealProxy p0_ss_ ;
@@ -114,10 +151,13 @@ protected:
   RooRealProxy detection_asym_ ;
 
   Bool_t onetagger_;
+  Bool_t glmmodel_;
 
   Double_t evaluate() const override;
 
 private:
+
+  std::pair<double, double> calibrate(double omegab, double omegabbar) const ;
 
   std::pair<double, double> calibrate(double eta, double avg_eta, double p0, double p1, double delta_p0, double delta_p1) const ;
 
@@ -126,6 +166,8 @@ private:
                     CoeffType coeff_type,
                     int    finalstate,
                     int    tag_os,
+                    double omegab_os,
+                    double omegabbar_os,
                     double eta_os,
                     double avg_eta_os,
                     double p0_os,
@@ -135,6 +177,8 @@ private:
                     double tageff_os,
                     double tageff_asym_os,
                     int    tag_ss,
+                    double omegab_ss,
+                    double omegabbar_ss,
                     double eta_ss,
                     double avg_eta_ss,
                     double p0_ss,

@@ -8,6 +8,7 @@
  - Add possibility to define calibrated mistag omega in range [0,0.5]
    instead of [0,1]. FT/Espresso and PhysFit/B2DXFitters updated 
    at the same time.
+ - First attempt to use GLM models inside DecRateCoeff_Bd
 
 ! 2017-03-28 - Vincenzo Battista
  - First trivial tutorials for the usage of Espresso in B2DXFitters
