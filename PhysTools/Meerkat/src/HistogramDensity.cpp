@@ -3,11 +3,11 @@
 
 #include "TH1.h"
 
-#include "AbsPhaseSpace.hh"
-#include "AbsDensity.hh"
-#include "HistogramDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
+#include "Meerkat/AbsDensity.hh"
+#include "Meerkat/HistogramDensity.hh"
 
-#include "Logger.hh"
+#include "Meerkat/Logger.hh"
 
 HistogramDensity::HistogramDensity(const char* pdfName, AbsPhaseSpace* thePhaseSpace, TH1* hist) : AbsDensity(pdfName) {
 

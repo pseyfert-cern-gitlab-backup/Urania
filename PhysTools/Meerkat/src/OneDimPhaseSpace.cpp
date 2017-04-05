@@ -1,4 +1,3 @@
-#include "OneDimPhaseSpace.hh"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -10,7 +9,8 @@
 // fall into the phase space
 #define TOLERANCE 1e-30
 
-#include "Logger.hh"
+#include "Meerkat/OneDimPhaseSpace.hh"
+#include "Meerkat/Logger.hh"
 
 OneDimPhaseSpace::OneDimPhaseSpace(const char* phspName, 
                                    Double_t lower, 

@@ -1,11 +1,11 @@
 #ifndef ONEDIM_PHASE_SPACE
 #define ONEDIM_PHASE_SPACE
 
-#include "AbsPhaseSpace.hh"
-
 #include "TMath.h"
 
 #include <vector>
+
+#include "Meerkat/AbsPhaseSpace.hh"
 
 /// Class which describes one-dimensional flat phase space
 /// (i.e. the finite range in one variable)

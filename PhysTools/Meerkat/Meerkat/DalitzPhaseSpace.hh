@@ -1,45 +1,42 @@
-#ifndef EXTENDED_DALITZ_PHASE_SPACE 
-#define EXTENDED_DALITZ_PHASE_SPACE
-
-#include "AbsPhaseSpace.hh"
+#ifndef DALITZ_PHASE_SPACE 
+#define DALITZ_PHASE_SPACE
 
 #include "TMath.h"
 
 #include <vector>
 
-/// Class that describes the extended Dalitz phase space: 
-/// the 3D phase space where the first variable gives the 
-/// range of the mother particle masses, and the two other
-/// variables are a usual Dalitz plot phase space. 
+#include "Meerkat/AbsPhaseSpace.hh"
 
-class ExtendedDalitzPhaseSpace : public AbsPhaseSpace {
+/// Class that describes the Dalitz phase space: the phase space of a particle 
+/// decaying to three other particles. This is a two-dimensional phase space 
+/// defined by the squared invariant masses of the two pairs of final state particles. 
+
+class DalitzPhaseSpace : public AbsPhaseSpace {
 
   public: 
 
     //! Constructor
     /*! 
       \param [in] phaseSpaceName name of the phase space
-      \param [in] mDmin minimum mass of the mother particle
-      \param [in] mDmax maximum mass of the mother particle
+      \param [in] mD mass of the mother particle
       \param [in] mA mass of the 1st daughter
       \param [in] mB mass of the 2nd daughter
       \param [in] mC mass of the 3rd daughter
     */ 
-    ExtendedDalitzPhaseSpace(const char* phaseSpaceName, 
-                     Double_t mDmin, 
-                     Double_t mDmax, 
+    DalitzPhaseSpace(const char* phaseSpaceName, 
+                     Double_t mD, 
                      Double_t mA, 
                      Double_t mB, 
                      Double_t mC); 
 
     //! Destructor
-    virtual ~ExtendedDalitzPhaseSpace(); 
+    virtual ~DalitzPhaseSpace(); 
     
     //! Get dimensionality of the phase space. Always equals to two. 
     /*! 
       \return 2 :) 
     */ 
-    UInt_t dimensionality() { return 3; }
+    UInt_t dimensionality() { return 2; }
 
     //! Check if the point is within the phase space limits
     /*! 
@@ -82,11 +79,8 @@ class ExtendedDalitzPhaseSpace : public AbsPhaseSpace {
     //! Mass of the particle C
     Double_t m_c;
 
-    //! Minimum mass of the mother particle
-    Double_t m_d_min;
-
-    //! Maximum mass of the mother particle
-    Double_t m_d_max;
+    //! Mass of the mother particle
+    Double_t m_d;
 
     //! Squared mass of the particle A
     Double_t m_a2;
@@ -97,9 +91,12 @@ class ExtendedDalitzPhaseSpace : public AbsPhaseSpace {
     //! Squared mass of the particle C
     Double_t m_c2;
 
-    //! Sum of squared masses of daughter particles
-    Double_t m_SqSum;
+    //! Squared mass of the mother particle
+    Double_t m_d2;
 
+    //! Sum of squared masses of daughter and mother particles
+    Double_t m_SqSum;
+    
     //! Lower limit of AB invariant mass values
     Double_t m_MinAB;
 

@@ -4,11 +4,11 @@
 
 #include "TMath.h"
 
-#include "AbsPhaseSpace.hh"
-#include "AbsDensity.hh"
-#include "SumDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
+#include "Meerkat/AbsDensity.hh"
+#include "Meerkat/SumDensity.hh"
 
-#include "Logger.hh"
+#include "Meerkat/Logger.hh"
 
 SumDensity::SumDensity(const char* pdfName, 
                        AbsPhaseSpace* thePhaseSpace, 

@@ -5,11 +5,11 @@
 #include "TMath.h"
 #include "TRandom3.h"
 
-#include "AbsPhaseSpace.hh"
-#include "AbsDensity.hh"
-#include "KernelDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
+#include "Meerkat/AbsDensity.hh"
+#include "Meerkat/KernelDensity.hh"
 
-#include "Logger.hh"
+#include "Meerkat/Logger.hh"
 
 KernelDensity::KernelDensity(const char* pdfname, 
                   AbsPhaseSpace* thephaseSpace, 

@@ -3,11 +3,11 @@
 
 #include "TFormula.h"
 
-#include "AbsPhaseSpace.hh"
-#include "AbsDensity.hh"
-#include "FormulaDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
+#include "Meerkat/AbsDensity.hh"
+#include "Meerkat/FormulaDensity.hh"
 
-#include "Logger.hh"
+#include "Meerkat/Logger.hh"
 
 FormulaDensity::FormulaDensity(const char* pdfName, AbsPhaseSpace* thePhaseSpace, const char* formula) : AbsDensity(pdfName) {
 

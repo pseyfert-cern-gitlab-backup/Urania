@@ -9,11 +9,11 @@
 #include "TRandom3.h"
 #include "TString.h"
 
-#include "AbsPhaseSpace.hh"
-#include "AbsDensity.hh"
-#include "AdaptiveKernelDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
+#include "Meerkat/AbsDensity.hh"
+#include "Meerkat/AdaptiveKernelDensity.hh"
 
-#include "Logger.hh"
+#include "Meerkat/Logger.hh"
 
 #define MAX_VECTOR_SIZE 20000000
 

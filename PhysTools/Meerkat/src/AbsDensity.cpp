@@ -6,10 +6,10 @@
 #include "TH2F.h"
 #include "TNtuple.h"
 
-#include "AbsPhaseSpace.hh"
-#include "AbsDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
+#include "Meerkat/AbsDensity.hh"
 
-#include "Logger.hh"
+#include "Meerkat/Logger.hh"
 
 AbsDensity::AbsDensity(const char* pdfName) {
   m_maxTries = 100000;

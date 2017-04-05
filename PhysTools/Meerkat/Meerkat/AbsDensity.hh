@@ -1,8 +1,6 @@
 #ifndef ABS_DENSITY
 #define ABS_DENSITY
 
-#include "AbsPhaseSpace.hh"
-
 #include "TMath.h"
 #include "TH1F.h"
 #include "TH2F.h"
@@ -10,6 +8,8 @@
 #include "TRandom3.h"
 
 #include <vector>
+
+#include "Meerkat/AbsPhaseSpace.hh"
 
 /// Abstract class which defines probability density interface
 

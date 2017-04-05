@@ -1,12 +1,12 @@
 #ifndef SUM_DENSITY
 #define SUM_DENSITY
 
-#include "AbsDensity.hh"
-#include "AbsPhaseSpace.hh"
-
 #include "TMath.h"
 
 #include <vector>
+
+#include "Meerkat/AbsDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
 
 /// Class that describes the sum density: the sum of two or more densities in the same phase spaces with optional weights
 

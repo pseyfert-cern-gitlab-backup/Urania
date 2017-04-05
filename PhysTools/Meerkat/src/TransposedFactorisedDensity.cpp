@@ -4,11 +4,11 @@
 
 #include "TMath.h"
 
-#include "AbsPhaseSpace.hh"
-#include "AbsDensity.hh"
-#include "TransposedFactorisedDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
+#include "Meerkat/AbsDensity.hh"
+#include "Meerkat/TransposedFactorisedDensity.hh"
 
-#include "Logger.hh"
+#include "Meerkat/Logger.hh"
 
 TransposedFactorisedDensity::TransposedFactorisedDensity(const char* pdfName, 
                          AbsPhaseSpace* thePhaseSpace,

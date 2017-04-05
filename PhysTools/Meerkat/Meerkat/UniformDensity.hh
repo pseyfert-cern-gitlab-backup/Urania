@@ -1,10 +1,10 @@
 #ifndef UNIFORM_DENSITY
 #define UNIFORM_DENSITY
 
-#include "AbsDensity.hh"
-#include "AbsPhaseSpace.hh"
-
 #include <vector>
+
+#include "Meerkat/AbsDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
 
 /// Class that describes the uniform density over any phase space
 

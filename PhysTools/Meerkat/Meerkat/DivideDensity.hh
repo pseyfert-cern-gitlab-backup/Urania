@@ -1,12 +1,12 @@
 #ifndef DIVIDE_DENSITY
 #define DIVIDE_DENSITY
 
-#include "AbsDensity.hh"
-#include "AbsPhaseSpace.hh"
-
 #include "TMath.h"
 
 #include <vector>
+
+#include "Meerkat/AbsDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
 
 /// Class that describes the "divide" density: the ratio of two densities in the same phase spaces
 

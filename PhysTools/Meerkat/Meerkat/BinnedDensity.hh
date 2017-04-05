@@ -1,11 +1,11 @@
 #ifndef BINNED_DENSITY
 #define BINNED_DENSITY
 
-#include "AbsDensity.hh"
-
 #include "TMath.h"
 
 #include <vector>
+
+#include "Meerkat/AbsDensity.hh"
 
 /// A class that describes the PDF which is a multilinear interpolation 
 /// on the binned grid. 
