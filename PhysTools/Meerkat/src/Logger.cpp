@@ -1,7 +1,8 @@
-#include "Logger.hh"
 #include <time.h>
 #include <stdarg.h>
 #include <stdio.h>
+
+#include "Meerkat/Logger.hh"
 
 static int last_timer; 
 static int log_level = 0;

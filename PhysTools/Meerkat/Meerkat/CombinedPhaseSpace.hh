@@ -1,11 +1,11 @@
 #ifndef COMBINED_PHASE_SPACE 
 #define COMBINED_PHASE_SPACE
 
-#include "AbsPhaseSpace.hh"
-
 #include "TMath.h"
 
 #include <vector>
+
+#include "Meerkat/AbsPhaseSpace.hh"
 
 /// Class that defines the phase space which is a combination (direct product) of several 
 /// phase spaces. The dimensionality of the resulting phase space is a sum of dimensionalities 

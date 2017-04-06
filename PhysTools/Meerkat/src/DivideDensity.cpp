@@ -4,11 +4,11 @@
 
 #include "TMath.h"
 
-#include "AbsPhaseSpace.hh"
-#include "AbsDensity.hh"
-#include "DivideDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
+#include "Meerkat/AbsDensity.hh"
+#include "Meerkat/DivideDensity.hh"
 
-#include "Logger.hh"
+#include "Meerkat/Logger.hh"
 
 DivideDensity::DivideDensity(const char* pdfName,
                          AbsPhaseSpace* thePhaseSpace,

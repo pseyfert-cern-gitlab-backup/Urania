@@ -8,11 +8,11 @@
 #include "TTree.h"
 #include "TRandom3.h"
 
-#include "AbsPhaseSpace.hh"
-#include "AbsDensity.hh"
-#include "BinnedKernelDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
+#include "Meerkat/AbsDensity.hh"
+#include "Meerkat/BinnedKernelDensity.hh"
 
-#include "Logger.hh"
+#include "Meerkat/Logger.hh"
 
 BinnedKernelDensity::BinnedKernelDensity(const char* pdfName, 
                              AbsPhaseSpace* thePhaseSpace, 

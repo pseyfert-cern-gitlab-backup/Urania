@@ -4,9 +4,9 @@
 
 #include "TMath.h"
 
-#include "DalitzPhaseSpace.hh"
+#include "Meerkat/DalitzPhaseSpace.hh"
 
-#include "Logger.hh"
+#include "Meerkat/Logger.hh"
 
 DalitzPhaseSpace::DalitzPhaseSpace(const char* phspName, 
                                    Double_t md, 

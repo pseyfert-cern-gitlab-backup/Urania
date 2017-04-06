@@ -1,31 +1,41 @@
-#ifndef HISTOGRAM_DENSITY
-#define HISTOGRAM_DENSITY
+#ifndef FORMULA_DENSITY
+#define FORMULA_DENSITY
 
-#include "AbsDensity.hh"
-#include "AbsPhaseSpace.hh"
-
-#include "TH1.h"
+#include "TFormula.h"
 
 #include <vector>
 
-/// Class that describes the density defined by ROOT Histogram
+#include "Meerkat/AbsDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
+
+/// Class that describes the density defined by ROOT formula
 /// The phase space dimensionality must not exceed four
 
-class HistogramDensity : public AbsDensity {
+class FormulaDensity : public AbsDensity {
 
   public:
+
+    //! Constructor 
+    /*!
+        \param [in] pdfName PDF name
+        \param [in] thePhaseSpace phase space definition
+        \param [in] formula ROOT formula string
+    */
+    FormulaDensity(const char* pdfName, 
+                   AbsPhaseSpace* thePhaseSpace, 
+                   const char* formula);
 
     //! Constructor
     /*!
         \param [in] pdfName PDF name
         \param [in] thePhaseSpace phase space definition
-        \param [in] Histogram ROOT THistogram object
+        \param [in] formula ROOT TFormula object
     */
-    HistogramDensity(const char* pdfName, 
+    FormulaDensity(const char* pdfName, 
                    AbsPhaseSpace* thePhaseSpace, 
-                   TH1* Histogram);
+                   TFormula* formula);
 
-    virtual ~HistogramDensity(); 
+    virtual ~FormulaDensity(); 
 
     //! Calculate PDF value at the given point
     /*! 
@@ -45,9 +55,9 @@ class HistogramDensity : public AbsDensity {
     //! Reference to phase space
     AbsPhaseSpace* m_phaseSpace; 
 
-    //! ROOT Histogram
-    TH1* m_hist;
-
+    //! ROOT formula
+    TFormula* m_formula; 
+    
     //! Cached dimensionality of the phase space
     UInt_t m_dim; 
 }; 

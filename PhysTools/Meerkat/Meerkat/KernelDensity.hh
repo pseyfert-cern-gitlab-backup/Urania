@@ -1,15 +1,15 @@
 #ifndef KERNEL_DENSITY
 #define KERNEL_DENSITY
 
-#include "AbsDensity.hh"
-#include "AbsPhaseSpace.hh"
-
 #include "TMath.h"
 #include "TTree.h"
 #include "TString.h"
 #include "TRandom3.h"
 
 #include <vector>
+
+#include "Meerkat/AbsDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
 
 typedef std::vector<Double_t> TPhspVector; 
 typedef std::vector<TPhspVector> TCell; 

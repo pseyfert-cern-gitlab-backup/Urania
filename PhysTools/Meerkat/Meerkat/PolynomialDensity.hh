@@ -1,11 +1,11 @@
 #ifndef POLYNOMIAL_DENSITY
 #define POLYNOMIAL_DENSITY
 
-#include "AbsDensity.hh"
-#include "AbsPhaseSpace.hh"
-#include "OneDimPhaseSpace.hh"
-
 #include <vector>
+
+#include "Meerkat/AbsDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
+#include "Meerkat/OneDimPhaseSpace.hh"
 
 /// Class that describes the polynomial density
 /// which can be fitted to the data sample from NTuple

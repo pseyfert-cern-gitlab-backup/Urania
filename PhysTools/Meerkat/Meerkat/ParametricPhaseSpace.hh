@@ -1,12 +1,12 @@
 #ifndef PARAMETRIC_PHASE_SPACE
 #define PARAMETRIC_PHASE_SPACE
 
-#include "AbsPhaseSpace.hh"
-
 #include "TMath.h"
 #include "TFormula.h"
 
 #include <vector>
+
+#include "Meerkat/AbsPhaseSpace.hh"
 
 /// Class which describes the parametric phase space
 /// It adds one dimension on top of another phase space

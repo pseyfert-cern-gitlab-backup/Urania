@@ -1,30 +1,30 @@
-#ifndef PRODUCT_DENSITY
-#define PRODUCT_DENSITY
-
-#include "AbsDensity.hh"
-#include "AbsPhaseSpace.hh"
+#ifndef FACTORISED_DENSITY
+#define FACTORISED_DENSITY
 
 #include "TMath.h"
 
 #include <vector>
 
-/// Class that describes the product density: the product of two or more densities in the same phase spaces
+#include "Meerkat/AbsDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
 
-class ProductDensity : public AbsDensity {
+/// Class that describes the factorised density: the product of densities in two or more component phase spaces.
+
+class FactorisedDensity : public AbsDensity {
 
   public: 
   
-    //! Constructor of Product density of an arbitrary number of density components
+    //! Constructor of factorised density of an arbitrary number of density components
     /*! 
       \param [in] pdfName PDF name
       \param [in] thePhaseSpace phase space. Dimensionality of the phase space should be equal to the sum of dimensionalities of all density components. 
       \param [in] densityComponents vector of density components. 
     */ 
-    ProductDensity(const char* pdfName, 
+    FactorisedDensity(const char* pdfName, 
                       AbsPhaseSpace* thePhaseSpace, 
                       std::vector<AbsDensity*> &densityComponents);
 
-    //! Constructor of Product density of up to four density components
+    //! Constructor of factorised density of up to four density components
     /*! 
       \param [in] pdfName PDF name
       \param [in] thePhaseSpace phase space. Dimensionality of the phase space should be equal to the sum of dimensionalities of all density components. 
@@ -33,7 +33,7 @@ class ProductDensity : public AbsDensity {
       \param [in] d3 3rd density component. 
       \param [in] d4 4th density component. 
     */ 
-    ProductDensity(const char* pdfName, 
+    FactorisedDensity(const char* pdfName, 
                       AbsPhaseSpace* thePhaseSpace, 
                       AbsDensity* d1, 
                       AbsDensity* d2, 
@@ -41,7 +41,7 @@ class ProductDensity : public AbsDensity {
                       AbsDensity* d4 = 0);
 
     //! Destructor
-    virtual ~ProductDensity(); 
+    virtual ~FactorisedDensity(); 
 
     //! Calculate PDF value at the given point
     /*! 

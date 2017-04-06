@@ -1,4 +1,3 @@
-#include "ParametricPhaseSpace.hh"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -7,7 +6,8 @@
 #include "TMath.h"
 #include "TFormula.h"
 
-#include "Logger.hh"
+#include "Meerkat/ParametricPhaseSpace.hh"
+#include "Meerkat/Logger.hh"
 
 ParametricPhaseSpace::ParametricPhaseSpace(const char* phspName, 
                                            AbsPhaseSpace* phsp, 

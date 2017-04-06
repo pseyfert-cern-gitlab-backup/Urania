@@ -1,11 +1,11 @@
 #ifndef INTERSECTION_PHASE_SPACE 
 #define INTERSECTION_PHASE_SPACE
 
-#include "AbsPhaseSpace.hh"
-
 #include "TMath.h"
 
 #include <vector>
+
+#include "Meerkat/AbsPhaseSpace.hh"
 
 /// Class that defines the phase space that is the intersection of several
 /// phase spaces. The dimensionality of the phase space should be equal to 

@@ -1,12 +1,12 @@
 #ifndef TRANSPOSED_FACTORISED_DENSITY
 #define TRANSPOSED_FACTORISED_DENSITY
 
-#include "AbsDensity.hh"
-#include "AbsPhaseSpace.hh"
-
 #include "TMath.h"
 
 #include <vector>
+
+#include "Meerkat/AbsDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
 
 /// Class that describes the "transposed" factorised density: the product of densities of two components
 /// where the variables of 2nd component can be placed at an arbitrary position in the 1st component
