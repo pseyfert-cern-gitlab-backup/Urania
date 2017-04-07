@@ -82,7 +82,7 @@ DecRateCoeff_Bd::DecRateCoeff_Bd(const std::string& name,
   detection_asym_("detection_asym_","detection_asym_",this,_detection_asym_),
   onetagger_(true),
   glmmodel_(true)
-{ 
+{
 }
 
 DecRateCoeff_Bd::DecRateCoeff_Bd(const std::string& name,
@@ -117,6 +117,8 @@ DecRateCoeff_Bd::DecRateCoeff_Bd(const std::string& name,
   coeff_type_(_coeff_type_),
   finalstate_("finalstate_","finalstate_",this,_finalstate_),
   tag_os_("tag_os_","tag_os_",this,_tag_os_),
+  omegab_os_("omegab_os_","omegab_os_",this,_eta_os_),
+  omegabbar_os_("omegabbar_os_","omegabbar_os_",this,_eta_os_),
   eta_os_("eta_os_","eta_os_",this,_eta_os_),
   avg_eta_os_("avg_eta_os_","avg_eta_os_",this,_avg_eta_os_),
   p0_os_("p0_os_","p0_os_",this,_p0_os_),
@@ -126,6 +128,8 @@ DecRateCoeff_Bd::DecRateCoeff_Bd(const std::string& name,
   tageff_os_("tageff_os_","tageff_os_",this,_tageff_os_),
   tageff_asym_os_("tageff_asym_os_","tageff_asym_os_",this,_tageff_asym_os_),
   tag_ss_("tag_ss_","tag_ss_",this,_tag_ss_),
+  omegab_ss_("omegab_ss_","omegab_ss_",this,_eta_ss_),
+  omegabbar_ss_("omegabbar_ss_","omegabbar_ss_",this,_eta_ss_),
   eta_ss_("eta_ss_","eta_ss_",this,_eta_ss_),
   avg_eta_ss_("avg_eta_ss_","avg_eta_ss_",this,_avg_eta_ss_),
   p0_ss_("p0_ss_","p0_ss_",this,_p0_ss_),
@@ -196,6 +200,8 @@ DecRateCoeff_Bd::DecRateCoeff_Bd(const DecRateCoeff_Bd& other, const char* name)
   coeff_type_(other.coeff_type_),
   finalstate_("finalstate_",this,other.finalstate_),
   tag_os_("tag_os_",this,other.tag_os_),
+  omegab_os_("omegab_os_",this,other.omegab_os_),
+  omegabbar_os_("omegabbar_os_",this,other.omegabbar_os_),
   eta_os_("eta_os_",this,other.eta_os_),
   avg_eta_os_("avg_eta_os_",this,other.avg_eta_os_),
   p0_os_("p0_os_",this,other.p0_os_),
@@ -205,6 +211,8 @@ DecRateCoeff_Bd::DecRateCoeff_Bd(const DecRateCoeff_Bd& other, const char* name)
   tageff_os_("tageff_os_",this,other.tageff_os_),
   tageff_asym_os_("tageff_asym_os_",this,other.tageff_asym_os_),
   tag_ss_("tag_ss_",this,other.tag_ss_),
+  omegab_ss_("omegab_ss_",this,other.omegab_ss_),
+  omegabbar_ss_("omegabbar_ss_",this,other.omegabbar_ss_),
   eta_ss_("eta_ss_",this,other.eta_ss_),
   avg_eta_ss_("avg_eta_ss_",this,other.avg_eta_ss_),
   p0_ss_("p0_ss_",this,other.p0_ss_),
@@ -464,7 +472,7 @@ std::pair<double, double> DecRateCoeff_Bd::calibrate(double omegab, double omega
   // if calibrated average eta is larger or equal 0.5 return 0.5
   if (eta_cal_b >= 0.5) eta_cal_b    = 0.5;
   if (eta_cal_bbar >= 0.5) eta_cal_bbar    = 0.5;
-  
+
   // if calibrated eta is smaller than 0 return 0
   if (eta_cal_b < 0.0)    eta_cal_b = 0;
   if (eta_cal_bbar < 0.0) eta_cal_bbar = 0;
@@ -544,7 +552,7 @@ Double_t DecRateCoeff_Bd::evaluate(double cp_coeff,
 {
   // calibrate single tagger
   double eta_os_b, eta_os_bbar, eta_ss_b, eta_ss_bbar;
-  
+
   if(glmmodel_)
   {
     std::pair<double, double> calibrated_mistag_os = calibrate(omegab_os, omegabbar_os);
@@ -556,15 +564,15 @@ Double_t DecRateCoeff_Bd::evaluate(double cp_coeff,
     eta_ss_bbar = calibrated_mistag_ss.second;
   }
   else
-  { 
+  {
     std::pair<double, double> calibrated_mistag_os = calibrate(eta_os, avg_eta_os, p0_os, p1_os, delta_p0_os, delta_p1_os);
     std::pair<double, double> calibrated_mistag_ss = calibrate(eta_ss, avg_eta_ss, p0_ss, p1_ss, delta_p0_ss, delta_p1_ss);
-    
+
     eta_os_b    = calibrated_mistag_os.first;
     eta_os_bbar = calibrated_mistag_os.second;
     eta_ss_b    = calibrated_mistag_ss.first;
     eta_ss_bbar = calibrated_mistag_ss.second;
-  }  
+  }
 
   if(onetagger_) {
     if(coeff_type == kCos){
