@@ -9,20 +9,66 @@
   <class name="Espresso::Calibration" />
   <class name="Espresso::GLMCalibration" />
   <class name="Espresso::CalibrationFunction" />
-  <class name="Espresso::GLMCalibrationFunction" />
+  <class name="Espresso::GLMCalibrationFunction">
+    <field name = "etac" transient = "true"/>
+    <field name = "offsetc" transient = "true"/>
+    <field name = "basisc" transient = "true"/>
+  </class>
   <class name="Espresso::GLMModel" />
   <class name="Espresso::GLMNSpline" />
-  <class name="Espresso::GLMBSpline" />
+  <class name="Espresso::GLMBSpline">
+    <field name = "tau" transient = "true"/>
+    <field name = "b1" transient = "true"/>
+    <field name = "b2" transient = "true"/>
+    <field name = "b3" transient = "true"/>
+    <field name = "b4" transient = "true"/>
+  </class>
   <class name="Espresso::GLMPolynomial" />
   <class name="Espresso::Vector" />
   <class name="Espresso::Matrix" />
-  <class name="epm_gsl_block">
-    <field name="data" transient = "true" />
+  <class name="espresso_block">
+    <field name = "data" transient = "true"/>
   </class>
-  <class name="epm_gsl_vector">
-    <field name="data" transient = "true" />
-  </class>
-  <class name="epm_gsl_matrix">
-    <field name="data" transient = "true" />
-  </class>
+  <class name="espresso_vector_io" />
+  <class name="espresso_vector_substruct" />
+  <class name="espresso_vector" />
+  <class name="espresso_matrix_io" />
+  <class name="espresso_matrix_substruct" />
+  <class name="espresso_matrix" />
+  <ioread version="[1-100]"
+	  sourceClass="espresso_vector"
+	  source="size_t size; double* data;"
+	  targetClass="espresso_vector"
+	  target="block"
+	  >
+    <![CDATA[{
+    std::cout << "REFLEX: LOADING VECTOR" << std::endl;
+    std::cout << onfile.size << std::endl;
+    std::cout << onfile.data << std::endl;
+    block = new espresso_block();
+    block->size = onfile.size;
+    block->data = onfile.data;
+    std::cout << block << std::endl;
+    std::cout << block->size << std::endl;
+    std::cout << block->data << std::endl;
+    }]]>
+  </ioread>
+  <ioread version="[1-100]"
+	  sourceClass="espresso_matrix"
+	  source="size_t size; double* data;"
+	  targetClass="espresso_matrix"
+	  target="block"
+	  >
+    <![CDATA[{
+    std::cout << "REFLEX: LOADING MATRIX" << std::endl;
+    std::cout << onfile.size << std::endl;
+    std::cout << onfile.data << std::endl;
+    block = new espresso_block();
+    block->size = onfile.size;
+    block->data = onfile.data;
+    std::cout << block << std::endl;
+    std::cout << block->size << std::endl;
+    std::cout << block->data << std::endl;
+    }]]>
+  </ioread>
 </lcgdict>

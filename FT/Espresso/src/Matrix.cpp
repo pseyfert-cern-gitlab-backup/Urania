@@ -10,7 +10,9 @@
 #include <cassert>
 
 #include <gsl/gsl_blas.h>
-#include "gsl/gsl_linalg.h"
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_linalg.h>
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : Matrix
@@ -21,14 +23,18 @@
 namespace Espresso
 {
 
+  unsigned int Matrix::copy_count = 0;
+  
   // Constructor
   Matrix::Matrix(std::size_t _n, std::size_t _m)
     : n(_n),
       m(_m),
-      v(reinterpret_cast<epm_gsl_matrix*>(gsl_matrix_calloc(n,m))),
-      _isSubmatrix(false),
+      v(espresso_matrix_calloc(n,m)),
       softwrap(false)
   {
+    //std::cout << "CONSTRUCTING MATRIX #" << copy_count << std::endl;
+    this->num = copy_count;
+    ++copy_count;
     Reset();
   }
 
@@ -36,26 +42,27 @@ namespace Espresso
   Matrix::Matrix(const Matrix& rhs)
     : n(rhs.n),
       m(rhs.m),
-      v(reinterpret_cast<epm_gsl_matrix*>(gsl_matrix_calloc(rhs.v->size1,rhs.v->size2))),
-      _isSubmatrix(false),
+      v(espresso_matrix_calloc(rhs.v->size1,rhs.v->size2)),
       softwrap(false)
   {
-    gsl_matrix_memcpy(reinterpret_cast<gsl_matrix*>(v),reinterpret_cast<gsl_matrix*>(rhs.v));
+    //std::cout << "CONSTRUCTING MATRIX #" << copy_count << std::endl;
+    this->num = copy_count;
+    ++copy_count;
+    gsl_matrix_memcpy(GSL(v),GSL(rhs.v));
   }
 
-  // Private constructor
-  Matrix::Matrix(gsl_matrix* _v, bool sw)
+  // Private constructor for softwrap
+  Matrix::Matrix(gsl_matrix* _v)
     : n(_v->size1),
       m(_v->size2),
-      v(reinterpret_cast<epm_gsl_matrix*>(_v)),
-      _isSubmatrix(false),
-      softwrap(sw)
+      v(DeGSL(_v)), // potentially a problem!
+      softwrap(true)
   {
   }
 
   // Making a soft-wrap matrix
   Matrix Matrix::SoftWrap(gsl_matrix* _v) {
-    return Matrix(_v,true);
+    return Matrix(_v);
   }
 
   // Swap operator
@@ -66,21 +73,20 @@ namespace Espresso
     std::size_t mtemp = first.m;
     first.m = second.m;
     second.m = mtemp;
-    epm_gsl_matrix* temp = first.v;
+    espresso_matrix* temp = first.v;
     first.v = second.v;
     second.v = temp;
-    bool btemp = first._isSubmatrix;
-    first._isSubmatrix = second._isSubmatrix;
-    second._isSubmatrix = btemp;
-    btemp = first.softwrap;
+    bool btemp = first.softwrap;
     first.softwrap = second.softwrap;
     second.softwrap = btemp;
   }
 
   // Destructor
   Matrix::~Matrix() {
-    if (not (_isSubmatrix or softwrap)) {
-      gsl_matrix_free(reinterpret_cast<gsl_matrix*>(v));
+    //std::cout << "DESTROYING MATRIX #" << num << std::endl;
+    //std::cout << *this << std::endl;
+    if (not softwrap) {
+      espresso_matrix_free(v);
     }
   }
 
@@ -117,8 +123,8 @@ namespace Espresso
   // Arithmetic operators
   //=============================================================================
   Matrix& Matrix::operator+= (const Matrix& rhs) {
-    const gsl_matrix* u = reinterpret_cast<gsl_matrix*>(rhs.v);
-    gsl_matrix_add(reinterpret_cast<gsl_matrix*>(v), u);
+    const gsl_matrix* u = GSL(rhs.v);
+    gsl_matrix_add(GSL(v), u);
     return *this;
   }
   Matrix operator+ (Matrix lhs, const Matrix& rhs) {
@@ -126,8 +132,8 @@ namespace Espresso
   }
 
   Matrix& Matrix::operator-= (const Matrix& rhs) {
-    const gsl_matrix* u = reinterpret_cast<gsl_matrix*>(rhs.v);
-    gsl_matrix_sub(reinterpret_cast<gsl_matrix*>(v), u);
+    const gsl_matrix* u = GSL(rhs.v);
+    gsl_matrix_sub(GSL(v), u);
     return *this;
   }
   Matrix operator- (Matrix lhs, const Matrix& rhs) {
@@ -135,12 +141,10 @@ namespace Espresso
   }
 
   Matrix& Matrix::operator*= (const Matrix& rhs) {
-    gsl_matrix* mnew = gsl_matrix_calloc(v->size1,v->size2);
-    gsl_blas_dgemm(CblasNoTrans,CblasNoTrans, 1.0,
-                   reinterpret_cast<gsl_matrix*>(v),
-                   reinterpret_cast<gsl_matrix*>(rhs.v), 0.0, mnew);
-    gsl_matrix_free(reinterpret_cast<gsl_matrix*>(v));
-    this->v = reinterpret_cast<epm_gsl_matrix*>(mnew);
+    espresso_matrix* mnew = espresso_matrix_calloc(v->size1,v->size2);
+    gsl_blas_dgemm(CblasNoTrans,CblasNoTrans, 1.0, GSL(v), GSL(rhs.v), 0.0, GSL(mnew));
+    espresso_matrix_free(v);
+    this->v = mnew;
     return *this;
   }
   Matrix operator* (Matrix lhs, const Matrix& rhs) {
@@ -148,7 +152,7 @@ namespace Espresso
   }
 
   Matrix& Matrix::operator*= (const double& rhs) {
-    gsl_matrix_scale(reinterpret_cast<gsl_matrix*>(v),rhs);
+    gsl_matrix_scale(GSL(v),rhs);
     return *this;
   }
   Matrix operator* (Matrix lhs, const double& rhs) {
@@ -159,7 +163,7 @@ namespace Espresso
   }
 
   Matrix& Matrix::operator/= (const double& rhs) {
-    gsl_matrix_scale(reinterpret_cast<gsl_matrix*>(v),1.0/rhs);
+    gsl_matrix_scale(GSL(v),1.0/rhs);
     return *this;
   }
   Matrix operator/ (Matrix lhs, const double& rhs) {
@@ -168,33 +172,25 @@ namespace Espresso
 
   void Matrix::Transpose() {
     assert(size1() == size2());
-    gsl_matrix_transpose(reinterpret_cast<gsl_matrix*>(v));
-  }
-
-  Matrix Matrix::Submatrix(int k1, int k2, int n1, int n2) {
-    gsl_matrix_view view = gsl_matrix_submatrix(reinterpret_cast<gsl_matrix*>(v), k1, k2, n1, n2);
-    gsl_matrix* newv = &view.matrix;
-    Matrix sub(newv);
-    sub._isSubmatrix = true;
-    return sub;
+    gsl_matrix_transpose(GSL(v));
   }
 
   // Access
 
   double Matrix::Get(std::size_t i, std::size_t j) {
-    return gsl_matrix_get(reinterpret_cast<gsl_matrix*>(v),i,j);
+    return gsl_matrix_get(GSL(v),i,j);
   }
 
   void Matrix::Set(std::size_t i, std::size_t j, double z) {
-    gsl_matrix_set(reinterpret_cast<gsl_matrix*>(v),i,j,z);
+    gsl_matrix_set(GSL(v),i,j,z);
   }
 
   double Matrix::operator() (std::size_t i, std::size_t j) const {
-    return *gsl_matrix_const_ptr(reinterpret_cast<gsl_matrix*>(v),i,j);
+    return *gsl_matrix_const_ptr(GSL(v),i,j);
   }
 
   double& Matrix::operator() (std::size_t i, std::size_t j) {
-    return *gsl_matrix_ptr(reinterpret_cast<gsl_matrix*>(v),i,j);
+    return *gsl_matrix_ptr(GSL(v),i,j);
   }
 
   // Determinant
@@ -203,7 +199,7 @@ namespace Espresso
     std::size_t s = size1();
     assert (size2() == s);
     gsl_matrix* lu = gsl_matrix_calloc(s,s);
-    gsl_matrix_memcpy(lu,reinterpret_cast<gsl_matrix*>(v));
+    gsl_matrix_memcpy(lu,GSL(v));
     gsl_permutation* p = gsl_permutation_alloc(s);
     gsl_permutation_init(p);
     int signum;
@@ -219,10 +215,12 @@ namespace Espresso
     gsl_permutation* p = gsl_permutation_alloc(s);
     gsl_permutation_init(p);
     int signum;
-    gsl_linalg_LU_decomp(reinterpret_cast<gsl_matrix*>(v),p,&signum);
+    gsl_linalg_LU_decomp(GSL(v),p,&signum);
     gsl_matrix* inverse = gsl_matrix_calloc(s,s);
-    gsl_linalg_LU_invert(reinterpret_cast<gsl_matrix*>(v),p,inverse);
-    gsl_matrix_memcpy(reinterpret_cast<gsl_matrix*>(v),inverse);
+    gsl_linalg_LU_invert(GSL(v),p,inverse);
+    gsl_matrix_memcpy(GSL(v),inverse);
+    gsl_permutation_free(p);
+    gsl_matrix_free(inverse);
   }
 
   void Matrix::Cholesky(bool verbose) {
@@ -244,7 +242,7 @@ namespace Espresso
     assert(size2() == length);
 
     // IS THIS POSITIVE DEFINITE?
-    bool posdef = gsl_matrix_ispos(reinterpret_cast<gsl_matrix*>(v));
+    bool posdef = gsl_matrix_ispos(GSL(v));
 
     // HACK: ALWAYS USE GMW81
     posdef = false;
@@ -253,7 +251,7 @@ namespace Espresso
     if (posdef) {
       if (verbose)
         std::cout << "MATRIX IS POSITIVE DEFINITE; USING GSL CHOLESKY DECOMPOSITION" << std::endl;
-      gsl_linalg_cholesky_decomp(reinterpret_cast<gsl_matrix*>(v));
+      gsl_linalg_cholesky_decomp(GSL(v));
       for (unsigned int row = 0; row < length; row++)
         for (unsigned int col = row+1; col < length; col++)
           (*this)(row,col) = 0.0;
@@ -438,15 +436,7 @@ namespace Espresso
     }
 
     unitlower *= sqrtDiagonal;
-    if (not _isSubmatrix) {
-      *this = unitlower;
-    } else {
-      for (unsigned int row = 0; row < length; row++) {
-        for (unsigned int col = 0; col < length; col++) {
-          (*this)(row,col) = unitlower(row,col);
-        }
-      }
-    }
+    *this = unitlower;
 
     if (verbose) {
       std::cout << "AFTER DECOMPOSITION:" << std::endl;
@@ -459,31 +449,31 @@ namespace Espresso
     std::size_t s = size1();
     assert (size2() == s);
     gsl_matrix* lu = gsl_matrix_calloc(s,s);
-    gsl_matrix_memcpy(lu,reinterpret_cast<gsl_matrix*>(v));
+    gsl_matrix_memcpy(lu,GSL(v));
     gsl_permutation* p = gsl_permutation_alloc(s);
     gsl_permutation_init(p);
     int signum;
     gsl_linalg_LU_decomp(lu,p,&signum);
-    const gsl_vector *b = reinterpret_cast<gsl_vector*>(rhs.v);
-    gsl_vector *x = gsl_vector_calloc(s);
-    gsl_linalg_LU_solve(lu,p,b,x);
+    const gsl_vector *b = GSL(rhs.v);
+    Vector x(s);
+    gsl_linalg_LU_solve(lu,p,b,GSL(x.v));
     gsl_matrix_free(lu);
     gsl_permutation_free(p);
-    return Vector(x);
+    return x;
   }
 
 
   // Special
   void Matrix::Reset() {
-    gsl_matrix_set_zero(reinterpret_cast<gsl_matrix*>(v));
+    gsl_matrix_set_zero(GSL(v));
   }
 
   void Matrix::Reset(double z) {
-    gsl_matrix_set_all(reinterpret_cast<gsl_matrix*>(v),z);
+    gsl_matrix_set_all(GSL(v),z);
   }
 
   void Matrix::SetIdentity() {
-    gsl_matrix_set_identity(reinterpret_cast<gsl_matrix*>(v));
+    gsl_matrix_set_identity(GSL(v));
   }
 
 }

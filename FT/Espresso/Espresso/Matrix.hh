@@ -14,7 +14,6 @@
 // Include files
 #include <cstddef>
 #include <iostream>
-#include <gsl/gsl_matrix.h>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/nvp.hpp>
@@ -33,6 +32,7 @@ namespace Espresso {
     friend class Vector;
 
   public:
+    static unsigned int copy_count;
 
     /**
      * @brief Standard constructor
@@ -66,20 +66,6 @@ namespace Espresso {
 
     /// Returns number of columns of matrix
     std::size_t size2() const;
-
-    /**
-     * @brief Creates a submatrix from a given matrix
-     * @details This is implemented through gsl_matrix_submatrix,
-     * which means it contains a pointer to another matrix -- potentially dangerous!
-     * This could be improved by borrowing a technique from std::shard_ptr:
-     * keeping the gsl_matrix* in memory until all pointerss via submatrices are done.
-     * This would require converting submatrix pointer into original gsl_matrix -- is this possible?
-     * @param[in] k1 Upper left row where submatrix begins
-     * @param[in] k2 Upper left column where submatrix begins
-     * @param[in] n1 Number of rows in submatrix
-     * @param[in] n2 Number of columns in submatrix
-     */
-    Matrix Submatrix(int k1, int k2, int n1, int n2);
 
     // Access operations
 
@@ -193,32 +179,52 @@ namespace Espresso {
     
   private:
     /**
-     * @brief Constructor from gsl_matrix
+     * @brief Softwrap constructor from gsl_matrix
      * @param[in] _v Raw pointer to gsl_matrix
-     * @param[sw] If true, the Matrix is a "soft wrap" that does not own the pointer
      */
-    Matrix(gsl_matrix* _v, bool sw = false);
+    Matrix(gsl_matrix* _v);
 
     friend class boost::serialization::access;
     template<class Archive>
     void serialize(Archive& ar, const unsigned int version) {
+      std::cout << __LINE__ << std::endl;
+      static int numLoaded = 0;
+      static int numSaved = 0;
+      if (Archive::is_loading::value) {
+        std::cout << "DESERIALIZING MATRIX #" << numSaved<< std::endl;
+        ++numLoaded;
+      } else {
+        std::cout << "SERIALIZING MATRIX #" << numSaved<< std::endl;
+        ++numSaved;
+      }
+
+      std::cout << v->reflex_size << std::endl;
+      std::cout << v->size1 << std::endl;
+      std::cout << v->size2 << std::endl;
+      std::cout << (void*)v->data << std::endl;
+      std::cout << softwrap << std::endl;
       ar & BOOST_SERIALIZATION_NVP(n);
       ar & BOOST_SERIALIZATION_NVP(m);
-      if (Archive::is_loading::value) v = reinterpret_cast<epm_gsl_matrix*>(gsl_matrix_calloc(n,m));
+      if (Archive::is_loading::value) v = espresso_matrix_calloc(n,m);
       ar & boost::serialization::make_nvp("matrix_numrows",v->size1);
       ar & boost::serialization::make_nvp("matrix_numcols",v->size2);
       ar & boost::serialization::make_nvp("matrix_numrows_store",v->tda);
       ar & boost::serialization::make_nvp("matrix_data",boost::serialization::make_array(v->data,(v->size1-1)*v->tda+v->size2));
-      ar & BOOST_SERIALIZATION_NVP(_isSubmatrix);
+      // eliminated serialization of isSubmatrix; might cause problems
       ar & BOOST_SERIALIZATION_NVP(softwrap);
+      std::cout << v->reflex_size << std::endl;
+      std::cout << v->size1 << std::endl;
+      std::cout << v->size2 << std::endl;
+      std::cout << (void*)v->data << std::endl;
+      std::cout << softwrap << std::endl;
     }
 
   private:
     std::size_t n;
     std::size_t m;
-    epm_gsl_matrix* v;
-    bool _isSubmatrix;
+    espresso_matrix* v;
     bool softwrap;
+    unsigned int num;
   };
 }
 
@@ -227,6 +233,10 @@ namespace boost {
 
     template<class Archive>
     inline void save_construct_data(Archive& ar, const Espresso::Matrix* v, const unsigned int version) {
+      std::cout << __LINE__ << std::endl;
+      static int num = 0;
+      std::cout << "save_construct_data #" << num << std::endl;
+      ++num;
       std::size_t n = v->size1();
       std::size_t m = v->size2();
       ar << boost::serialization::make_nvp("matrix_construct_numrows",n);
@@ -235,6 +245,10 @@ namespace boost {
 
     template<class Archive>
     inline void load_construct_data(Archive& ar, Espresso::Matrix* v, const unsigned int version) {
+      std::cout << __LINE__ << std::endl;
+      static int num = 0;
+      std::cout << "save_construct_data #" << num << std::endl;
+      ++num;
       std::size_t n,m;
       ar >> boost::serialization::make_nvp("matrix_construct_numrows",n);
       ar >> boost::serialization::make_nvp("matrix_construct_numcols",m);

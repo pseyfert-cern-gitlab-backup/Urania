@@ -78,7 +78,7 @@ GLMCalibration GLMCalibration::Deserialize(std::string name, std::ifstream& ifs)
     Espresso::GLMCalibration cal;
     std::string name = "blank";
     ia >> boost::serialization::make_nvp(name.c_str(),cal);
-    return cal;
+    return std::move(cal);
   } catch (boost::archive::archive_exception ex) {
     throw DeserializationException();
   }

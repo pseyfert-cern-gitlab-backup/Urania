@@ -134,3 +134,14 @@ if __name__ == '__main__':
     f.Draw()
     c.SaveAs("testRooGLMFunctionAfter.png","png")
     
+    ws = RooWorkspace("ws")
+    opts = []
+    ws.__getattribute__('import')(eta,*opts)
+    ws.__getattribute__('import')(coeffs,*opts)
+    ws.__getattribute__('import')(deltacoeffs,*opts)
+    ws.__getattribute__('import')(constraint,*opts)
+    ws.__getattribute__('import')(eta_b,*opts)
+    #ws.__getattribute__('import')(eta_bbar,*opts)
+    ws.writeToFile("ws.root",True)
+
+    

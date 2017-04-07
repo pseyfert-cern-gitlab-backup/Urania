@@ -16,7 +16,6 @@
 #include <cstddef>
 #include <iostream>
 #include <vector>
-#include <gsl/gsl_vector.h>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/nvp.hpp>
@@ -36,6 +35,7 @@ namespace Espresso {
     friend class Matrix;
 
   public:
+    static unsigned int copy_count;
 
     /**
      * @brief Standard constructor
@@ -165,17 +165,16 @@ namespace Espresso {
 
   private:    
     /**
-     * @brief Constructor from gsl_vector
+     * @brief Softwrap constructor from gsl_vector
      * @param[in] _v Raw pointer to gsl_vector
-     * @param[sw] If true, the Vector is a "soft wrap" that does not own the pointer
      */
-    Vector(gsl_vector* _v, bool sw = false);
+    Vector(gsl_vector* _v);
 
     friend class boost::serialization::access;
     template<class Archive>
     void serialize(Archive& ar, const unsigned int version) {
       ar & BOOST_SERIALIZATION_NVP(n);
-      if (Archive::is_loading::value) v = reinterpret_cast<epm_gsl_vector*>(gsl_vector_calloc(n));
+      if (Archive::is_loading::value) v = espresso_vector_calloc(n);
       ar & boost::serialization::make_nvp("vector_size",v->size);
       ar & boost::serialization::make_nvp("vector_data",boost::serialization::make_array(v->data,v->size));
       ar & BOOST_SERIALIZATION_NVP(softwrap);
@@ -183,8 +182,9 @@ namespace Espresso {
 
   private:
     std::size_t n;
-    epm_gsl_vector* v;
+    espresso_vector* v;
     bool softwrap;
+    unsigned int num;
   };
 }
 

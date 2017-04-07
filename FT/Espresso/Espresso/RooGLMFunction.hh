@@ -32,6 +32,9 @@ namespace Espresso
 		   const RooArgList& _coeffList,
 		   const RooArgList& _deltacoeffList) ;
     RooGLMFunction(const RooGLMFunction& other, const char* name=0) ;
+    
+    std::unique_ptr<GLMCalibrationFunction> function() const { return m_calfun->clone(); }
+    
     virtual TObject* clone(const char* newname
 			   ) const { return new RooGLMFunction(*this,newname);  }
     virtual ~RooGLMFunction() { }; ///< Destructor

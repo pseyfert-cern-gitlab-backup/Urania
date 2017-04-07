@@ -62,7 +62,6 @@
 				<item>1.39698681478554153e-02</item>
 				<item>6.31532659613183833e-01</item>
 			</matrix_data>
-			<_isSubmatrix>0</_isSubmatrix>
 			<softwrap>0</softwrap>
 		</covariance>
 		<delta_covariance>
@@ -98,7 +97,6 @@
 				<item>5.58794725914216403e-02</item>
 				<item>2.52613063845273489e+00</item>
 			</matrix_data>
-			<_isSubmatrix>0</_isSubmatrix>
 			<softwrap>0</softwrap>
 		</delta_covariance>
 		<cross_covariance>
@@ -134,7 +132,6 @@
 				<item>9.96973845671525992e-03</item>
 				<item>1.04791770253023747e-01</item>
 			</matrix_data>
-			<_isSubmatrix>0</_isSubmatrix>
 			<softwrap>0</softwrap>
 		</cross_covariance>
 	</TypicalCalibration>
@@ -195,7 +192,6 @@
 						<item>-7.39853511280790466e-01</item>
 						<item>1.00000000000000000e+00</item>
 					</matrix_data>
-					<_isSubmatrix>0</_isSubmatrix>
 					<softwrap>0</softwrap>
 				</basis>
 			</tx>
