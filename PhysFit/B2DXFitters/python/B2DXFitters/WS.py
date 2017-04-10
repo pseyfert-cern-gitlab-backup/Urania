@@ -10,7 +10,7 @@
 from ROOT import RooFit
 
 def WS(ws, obj, opts = [RooFit.RecycleConflictNodes(), RooFit.Silence()]):
-#def WS(ws, obj, opts = []):
+# def WS(ws, obj, opts = []):
     """ "swallow" object into a workspace, returns swallowed object """
     name = obj.GetName()
     wsobj = ws.obj(name)
@@ -30,7 +30,7 @@ def WS(ws, obj, opts = [RooFit.RecycleConflictNodes(), RooFit.Silence()]):
             wsobj = ws.set(name)
         else:
             if wsobj.Class() != obj.Class():
-                raise TypeError()    
+                raise TypeError()
     else:
         if None == wsobj:
             ws.__getattribute__('import')(obj, name)
