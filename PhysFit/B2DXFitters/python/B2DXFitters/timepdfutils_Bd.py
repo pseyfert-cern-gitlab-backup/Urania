@@ -105,7 +105,7 @@ def parameteriseResModelIntegrals(config, ws, timeerrpdf, timeerr, timeresmodel)
     'NBinsProperTimeErr':
         number of bins in which to tabulate resolution model integral, so
         evaluation can be sped up by interpolating from the table
-    
+
     This will speed up fits considerably for per-event decay time error, since
     you don't have to normalise the time pdf for every event (because the
     decay time error changes every event, O(1k) or more), but you only have to
@@ -161,7 +161,7 @@ def buildConditionalPdf(config, name, ws, time, timeerr, qt, qf, mistagobs,
     comp_conditional_observables = RooArgSet(time, qf)
     for tag in qt:
         comp_conditional_observables.add(tag)
-    
+
     comp_conditional_dimensions = RooArgSet()
 
     if None != timeerrpdf:
@@ -187,7 +187,7 @@ def buildConditionalPdf(config, name, ws, time, timeerr, qt, qf, mistagobs,
         comp_conditional_dimensions.Print("v")
         print "timepdfutils_Bd.buildConditionalPdf(..)=> Conditional observables:"
         comp_conditional_observables.Print("v")
-        
+
     timepdf = WS(ws, RooProdPdf('%s_TimeTimeerrPdf' % name,
                                 '%s (time,timeerr) pdf' % name, comp_conditional_dimensions,
                                 RooFit.Conditional(RooArgSet(timepdf), comp_conditional_observables)))
@@ -212,7 +212,7 @@ def buildBDecayTimePdf(
     mistagpdf = None,                   # pdf for per event mistag
     aprod = None,                       # production asymmetry
     adet = None,                        # detection asymmetry
-    HFAG = False,                       # use HFAG convention (Cf = -Cfbar) 
+    HFAG = False,                       # use HFAG convention (Cf = -Cfbar)
     ):
     """
     build a B decay time pdf
@@ -276,7 +276,7 @@ def buildBDecayTimePdf(
     from ROOT import ( RooConstVar, RooProduct, RooTruthModel, RooGaussModel,
         Inverse, RooBDecay, RooProdPdf, RooArgSet, RooFormulaVar, DecRateCoeff_Bd,
         RooArgList )
-    
+
     if config['Debug']:
         print 72 * '#'
         kwargs = {
@@ -356,7 +356,7 @@ def buildBDecayTimePdf(
         print otherargs
         print "timepdfutils_Bd.buildBDecayTimePdf(..)=> Number of arguments:"
         print otherargs.__len__()
-    
+
     # build coefficients to go into RooBDecay
     if config['Debug']:
         print "timepdfutils_Bd.buildBDecayTimePdf(..)=> Defining CP coefficients"
@@ -369,12 +369,13 @@ def buildBDecayTimePdf(
                                      DecRateCoeff_Bd.kCos, qf, C, C, *otherargs))
     else:
         print "timepdfutils_Bd.buildBDecayTimePdf(..)=> Using HFAG convention (Cfbar = -Cf)"
-        list = WS(ws, RooArgList(C))
+        list = WS(ws, RooArgList(C, "Clist"))  # list needs to be name to be not mixed up with other existing lists in the workspace
         Cbar = WS(ws, RooFormulaVar(C.GetName()+"bar", "C_{#bar f}", "-1*@0", list))
         cos = WS(ws, DecRateCoeff_Bd('%s_cos' % name, '%s_cos' % name,
                                      DecRateCoeff_Bd.kCos, qf, C, Cbar, *otherargs))
     sin = WS(ws, DecRateCoeff_Bd('%s_sin' % name, '%s_sin' % name,
                                  DecRateCoeff_Bd.kSin, qf, S, Sbar, *otherargs))
+
     # build (raw) time pdf
     if config['Debug']:
         print "timepdfutils_Bd.buildBDecayTimePdf(..)=> Building time pdf"
@@ -387,7 +388,7 @@ def buildBDecayTimePdf(
 
     retVal = buildConditionalPdf(config, name, ws, time, timeerr, qt, qf,
             mistagobs, retVal, timeerrpdf, mistagpdf)
-    
+
     # if we do not bin the acceptance, we apply it here
     retVal = applyUnbinnedAcceptance(config, name, ws, retVal, acceptance)
 

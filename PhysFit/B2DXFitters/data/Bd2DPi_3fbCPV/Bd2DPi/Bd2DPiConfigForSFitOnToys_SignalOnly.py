@@ -39,11 +39,11 @@ def getconfig():
     # this name + "_idx" is used in the inputtree/dataset - so no flexibility in the beginning of the name as "TagDec" is used when checking for
     # tagging variables in general at the beginning
 
-    configdict["BasicVariables"]["MistagOS"]      = {"Range": [0.0, 0.4619],  # 0.4619
+    configdict["BasicVariables"]["MistagOS"]      = {"Range": [0.0, 0.5],  # 0.4619
                                                      "Name": "MistagOS",
                                                      "InputName": "MistagOS"}
 
-    configdict["BasicVariables"]["MistagSS"]      = {"Range": [0.0, 0.492],  # 0.492
+    configdict["BasicVariables"]["MistagSS"]      = {"Range": [0.0, 0.5],  # 0.492
                                                      "Name": "MistagSS",
                                                      "InputName": "MistagSS"}
 

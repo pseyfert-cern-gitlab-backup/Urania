@@ -211,7 +211,7 @@ def runSFit(debug, wsname,
             configName, scan,
             binned, plotsWeights, noweight,
             sample, mode, year, hypo, merge, unblind, randomise, superimpose,
-            seed, preselection, UniformBlinding, HFAG, extended, fitresultFileName):
+            seed, preselection, UniformBlinding, HFAG, extended, fitresultFileName, NumCPU):
 
     if MC and not noweight:
         print "ERROR: cannot use sWeighted MC sample (for now)"
@@ -936,7 +936,7 @@ def runSFit(debug, wsname,
         if toys or MC or unblind:  # Unblind yourself
             MinosArgset = RooArgSet(S, Sbar)
             fitOpts_temp = [RooFit.Save(1),
-                            RooFit.NumCPU(1),  # we should make this configurable
+                            RooFit.NumCPU(NumCPU),
                             RooFit.Offset(True),
                             RooFit.Strategy(2),
                             RooFit.Minimizer("Minuit2", "migrad"),
@@ -1329,6 +1329,12 @@ parser.add_option('--HFAG',
                   action='store_true',
                   help = 'Use HFAG convention for CP coefficients'
                   )
+parser.add_option('--NCPU',
+                  dest = 'NumCPU',
+                  default = 1,
+                  type ="int",
+                  help = 'Number of CPU cores used in the fit'
+                  )
 
 # -----------------------------------------------------------------------------
 
@@ -1396,6 +1402,7 @@ if __name__ == '__main__':
             options.UniformBlinding,
             options.HFAG,
             options.extended,
-            options.fileNameFitresult)
+            options.fileNameFitresult,
+            options.NumCPU)
 
 # -----------------------------------------------------------------------------
