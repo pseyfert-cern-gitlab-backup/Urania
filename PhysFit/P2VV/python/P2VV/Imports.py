@@ -219,14 +219,41 @@ parValues4KKBins = {  'A0Mag2'          : (  5.2136e-01, 6.12e-03, -1. )
 
 # trigger selection strings
 triggerSelStrings = dict(  noSelection    = ''
+			, SigmaSel_Bd2JpsieeKst_Jpsi = 'mdau1<5000. && sigmam>0. && sigmam<250. && mass<6000. && mass>4600'\
+						   ' && mass_std<6000. && mass_std>4600. && sigmam_std>0. && sigmam_std<250. '\
+					           ' && sigmadau1>0. && sigmadau1<180. && sigmamdau2>0. && sigmamdau2<10.'
+			 , SigmaSel_Bs2JpsieePhi_BDT3 = 'BDT_response>0.3 && sigmam>0. && sigmam<250. && mass<6000. && mass>4600'\
+						   ' && mass_std<6000. && mass_std>4600. && sigmam_std>0. && sigmam_std<250. '\
+						   ' && sigmadau1>0. && sigmadau1<180. && sigmamdau2>0. && sigmamdau2<10.'\
+						   ' && Kplus_pidK > 0 && Kminus_pidK > 0 && Kminus_track_chi2ndof<4 && Kplus_track_chi2ndof<4 && Kminus_PT > 200. && Kplus_PT > 200.'\
+						   ' && Kminus_P > 3000. && Kplus_P > 3000. && Kplus_track_ghostprob < 0.5 && Kminus_track_ghostprob < 0.5'
+			 , SigmaSel_Bd2JpsieeKst = 'BDTBd_response>0.15 && sigmam>0. && sigmam<250. && mass<6000. && mass>4600'\
+						   ' && mass_std<6000. && mass_std>4600. && sigmam_std>0. && sigmam_std<250. '\
+					           ' && sigmadau1>0. && sigmadau1<180. && sigmamdau2>0. && sigmamdau2<10.'
+			 , SigmaSel_Bd2JpsieeKst_BDT3 = 'BDTBd_response>0.3 && sigmam>0. && sigmam<250. && mass<6000. && mass>4600'\
+						   ' && mass_std<6000. && mass_std>4600. && sigmam_std>0. && sigmam_std<250. '\
+					           ' && sigmadau1>0. && sigmadau1<180. && sigmamdau2>0. && sigmamdau2<10.'\
+						   ' && Kplus_pidK > 0 && Kminus_pidK < 5 && Kminus_track_chi2ndof<4 && Kplus_track_chi2ndof<4 && Kminus_PT > 200. && Kplus_PT > 200.'\
+						   ' && Kminus_P > 3000. && Kplus_P > 3000. && Kplus_track_ghostprob < 0.5 && Kminus_track_ghostprob < 0.5'
+			 , SigmaSel_Bd2JpsieeKst_WithoutMassCut = 'BDTBd_response>0.2 && sigmam>0. && sigmam<250. && sigmam_std>0. && sigmam_std<250. '\
+					           ' && sigmadau1>0. && sigmadau1<180. && sigmamdau2>0. && sigmamdau2<10.'
+			 , SigmaSelMC = 'sigmam>0. && sigmam<250. && mass<6000. && mass>4600 && bkgcat<60'
+			 , SigmaSel = 'sigmam>0. && sigmam<250. && mass<6000. && mass>4600'
+			 , SigmaSel_strong5550 = 'sigmam>0. && sigmam<250. && mass<5550. && mass>5200'
+			 , SigmaSel_strong6000 = 'sigmam>0. && sigmam<250. && mass<6000. && mass>5200'
                          , HLT1Unbiased   = 'hlt1_unbiased_dec==1 && hlt2_biased==1'
                          , HLT1ExclBiased = 'hlt1_excl_biased_dec==1 && hlt2_biased==1'
                          , paper2012      = '(hlt1_excl_biased_dec==1 || hlt1_unbiased_dec==1) && hlt2_biased==1'
+                         , paper2012_ee   = '(hlt1_biased==1 || l0_unbiased==1) && hlt2_biased==1'
                          , timeEffFit     = '(hlt1_excl_biased_dec==1 || hlt1_unbiased_dec==1) && (hlt2_biased==1 || hlt2_unbiased==1)'
                         )
 
 # cut selection strings
 cutSelStrings = dict(  noSelection = ''
+		     , TimeSel = 'time>0.3 && time<14. && sigmat<0.12'	
+		     , TimeSel_Bd2JpsieeKst_Jpsi = 'time<14. && sigmat<0.12 && sigmat>0.'	
+		     , TimeSel_CosThetae = 'time>0.3 && time<14. && sigmat<0.12 && fabs(helcosthetaL)>0.70 && fabs(helcosthetaL)<1.00'#&& fabs(helcosthetaL)>0.25 && fabs(helcosthetaL)<0.70' #&& fabs(helcosthetaL)<0.25'	
+		     , TimeSel_BspT = 'time>0.3 && time<14. && sigmat<0.12 && B_Pt>11800.'	
                      , nominal2011 = 'sel == 1 && sel_cleantail == 1'\
                                      ' && time>0.3 && time<14. && sigmat<0.12'\
                                      ' && mass>5200. && mass<5550. && abs(mdau1-3090.)<60. && abs(mdau2-1020.)<30.'\

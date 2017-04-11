@@ -1,0 +1,16 @@
+# First Build
+SetupProject --build-env -c x86_64-slc6-gcc48-opt Urania v2r4
+git init
+git lb-use Urania
+git lb-checkout Urania/v2r4 Phys/Urania
+git lb-checkout Urania/v2r4 PhysFit/P2VV
+cmt br make
+
+# Run
+SetupProject -c x86_64-slc6-gcc48-opt Urania v2r4
+
+# Changes
+SetupProject --build-env -c x86_64-slc6-gcc48-opt Urania v2r4
+cmt br make
+
+
