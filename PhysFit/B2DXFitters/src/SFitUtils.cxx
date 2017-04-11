@@ -513,7 +513,7 @@ namespace SFitUtils {
     }
 
     std::cout<<"tagEff1: "<<tagEff[0]/dataSet->sumEntries()<<" = "<<tagEff[0]<<" / "<<dataSet->sumEntries()<<std::endl;
-    std::cout<<"tagEff2: "<<tagEff[1]/dataSet->sumEntries()<<" = "<<tagEff[0]<<" / "<<dataSet->sumEntries()<<std::endl;
+    std::cout<<"tagEff2: "<<tagEff[1]/dataSet->sumEntries()<<" = "<<tagEff[1]<<" / "<<dataSet->sumEntries()<<std::endl;
     /*if ( toys == false)
     {
       RooArgList* tagList= new RooArgList();
@@ -657,7 +657,7 @@ namespace SFitUtils {
 
     if (debug == true) { std::cout<<"[INFO] Number of taggers "<<tagNum<<std::endl;}
 
-      
+
     for (int i=0; i<2; ++i)
     {
       if (mdSet->CheckUseTag(i) == true){
@@ -673,7 +673,7 @@ namespace SFitUtils {
 
     RooDataSet* sliceData[numOfTemp];
     RooHistPdf* mistagPDF[numOfTemp];
-      
+
     for(int i =1; i<numOfTemp+1; i++)
     {
       //fix crash, if tagger #1 from MD Fit is disabled
