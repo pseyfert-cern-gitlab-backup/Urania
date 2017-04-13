@@ -141,16 +141,43 @@ class DoubleGauss_Signal_Mass ( MassPdf ) :
         self._check_extraneous_kw( kwargs )
 
 
+class Gauss_Mass ( MassPdf ) :
+    def __init__(self, mass, **kwargs ) :
+        namePF = self.getNamePrefix(kwargs)
+        name = kwargs.pop('Name', 'gauss_m')
+        mean = kwargs.pop('Mean', 4700.)
+        mean_min = kwargs.pop('Min', 4600.)
+        mean_max = kwargs.pop('Max', 6000.)
+        self._parseArg( '%s_mean' % name,  kwargs, Title = 'B Mass', Unit = 'MeV/c^2'
+                       , Value = mean, Error = 0.05, MinMax = ( mean_min, mean_max ) )
+        self._parseArg( '%s_sigma' % name, kwargs, Title = 'B Mass resolution', Unit = 'MeV/c^2'
+                       , Value = 7.2,   Error = 0.04, MinMax = ( 0.1, 300. ) )
+
+        from ROOT import RooGaussian as Gauss
+        from P2VV.RooFitWrappers import Pdf
+        MassPdf.__init__(  self
+                         , pdf = Pdf(  Name = name
+                                     , Type = Gauss
+                                     , Parameters = ( mass,
+                                         getattr( self, '_%s_mean' % name ),
+                                         getattr( self, '_%s_sigma' % name ) )
+                                    )
+                        )
+        self._check_extraneous_kw( kwargs )
+
+
 class DoubleGauss_Mass ( MassPdf ) :
     def __init__( self, mass, **kwargs ) :
         namePF = self.getNamePrefix(kwargs)
         name = kwargs.pop('Name', 'double_gauss_m')
-        mean = kwargs.pop('Mean', 4700)
+        mean = kwargs.pop('Mean', 4700.)
+        mean_min = kwargs.pop('Min', 4600.)
+        mean_max = kwargs.pop('Max', 6000.)
         self._transWidthPars = kwargs.pop( 'TransformWidthPars', ( ) )
         self._paramAvSig = kwargs.pop('AvSigParameterisation', False)
         assert(not (self._transWidthPars and self._paramAvSig))
 
-        self._parseArg( "%s_mean" % name, kwargs, Title = 'B Mass', Unit = 'MeV/c^2', Value = mean, Error = 0.05, MinMax = ( 4600., 6000. ) )
+        self._parseArg( "%s_mean" % name, kwargs, Title = 'B Mass', Unit = 'MeV/c^2', Value = mean, Error = 0.05, MinMax = ( mean_min, mean_max ) )
 
         if self._transWidthPars :
             # transform width parameters
@@ -196,6 +223,45 @@ class DoubleGauss_Mass ( MassPdf ) :
                 )
         MassPdf.__init__( self, pdf = SumPdf( Name = name, PDFs = ( g1, g2 )
                                              , Yields = { g1.GetName() : getattr( self, '_%s_frac' % name ) }
+                                            )
+                        )
+        self._check_extraneous_kw( kwargs )
+
+
+class Voigtian_Gauss_Mass ( MassPdf ) :
+    def __init__( self, mass, **kwargs ) :
+        namePF = self.getNamePrefix(kwargs)
+        name = kwargs.pop('Name', 'voigtian_gauss_m')
+        mean = kwargs.pop('Mean', 5300.)
+        mean_min = kwargs.pop('Min', 4600.)
+        mean_max = kwargs.pop('Max', 6000.)
+        self._parseArg( "%s_mean" % name, kwargs, Title = 'B Mass', Unit = 'MeV/c^2', Value = mean, Error = 0.05, MinMax = ( mean_min, mean_max ) )
+        self._parseArg( '%s_frac' % name, kwargs, Title = 'B mass fraction first Gaussian', Value = 0.8, Error = 0.03
+                , MinMax = ( 0., 1. ) )
+        self._parseArg( '%s_width' % name, kwargs, Title = 'B Mass width of Voigtian component', Unit = 'MeV/c^2', Value = 6.3, Error = 0.1
+                , MinMax = ( 1.0, 150. ) )
+        self._parseArg( '%s_sigma_1' % name, kwargs, Title = 'B Mass resolution 1', Unit = 'MeV/c^2', Value = 6.3, Error = 0.1
+                , MinMax = ( 1.0, 150. ) )
+        self._parseArg( '%s_sigma_2' % name , kwargs, Title = 'B Mass resolution 2', Unit = 'MeV/c^2', Value = 14.5, Error = 0.8
+                , MinMax = ( 2.0, 300. ) )
+
+        from ROOT import RooGaussian as Gaussian
+        from ROOT import RooVoigtian as Voigtian
+        from P2VV.RooFitWrappers import Pdf, SumPdf
+        v1 = Pdf(  Name = '%s_%s_1' % (namePF, name)
+                 , Type = Voigtian
+                 , Parameters = ( mass,
+                     getattr( self, '_%s_mean' % name ),
+                     getattr( self, '_%s_width' % name ),
+                     getattr( self, '_%s_sigma_1' % name )
+                     )
+                )
+        g1 = Pdf(  Name = '%s_%s_2' % (namePF, name)
+                 , Type = Gaussian
+                 , Parameters = ( mass, getattr( self, '_%s_mean' % name ), getattr( self, '_%s_sigma_2' % name ) )
+                )
+        MassPdf.__init__( self, pdf = SumPdf( Name = name, PDFs = ( v1, g1 )
+                                             , Yields = { v1.GetName() : getattr( self, '_%s_frac' % name ) }
                                             )
                         )
         self._check_extraneous_kw( kwargs )
@@ -354,7 +420,9 @@ class DoubleCB_Mass ( MassPdf ) :
         namePF = self.getNamePrefix(kwargs)
         name = kwargs.pop('Name', 'double_cb_m')
         mean = kwargs.pop('Mean', 4700)
-        self._parseArg( '%s_mean' % name, kwargs, Title = 'B Mass', Unit = 'MeV/c^2', Value = mean, Error = 0.05, MinMax = ( 4600., 6000. ) )
+        mean_min = kwargs.pop('Min', 4600.)
+        mean_max = kwargs.pop('Max', 6000.)
+        self._parseArg( '%s_mean' % name, kwargs, Title = 'B Mass', Unit = 'MeV/c^2', Value = mean, Error = 0.05, MinMax = ( mean_min, mean_max ) )
         self._parseArg( '%s_sigma_1' % name, kwargs, Title = 'B Mass resolution 1', Unit = 'MeV/c^2', Value = 80., Error = 0.1
                        , MinMax = ( 0.1, 160. ) )
         self._parseArg( '%s_sigma_sf' % name, kwargs, Title = 'B Mass resolution 2:1 scale factor', Value = 50., Error = 0.1
@@ -395,6 +463,62 @@ class DoubleCB_Mass ( MassPdf ) :
         self._check_extraneous_kw( kwargs )
 
 
+class DoubleCB_Gauss_Mass ( MassPdf ) :
+    def __init__(self, mass, **kwargs ) :
+        namePF = self.getNamePrefix(kwargs)
+        name = kwargs.pop('Name', 'double_cb_gauss_m')
+        mean = kwargs.pop('Mean', 4700)
+        mean_min = kwargs.pop('Min', 4600.)
+        mean_max = kwargs.pop('Max', 6000.)
+        self._parseArg( '%s_mean' % name, kwargs, Title = 'B Mass', Unit = 'MeV/c^2', Value = mean, Error = 0.05, MinMax = ( mean_min, mean_max ) )
+        self._parseArg( '%s_sigma_1' % name, kwargs, Title = 'B Mass resolution 1', Unit = 'MeV/c^2', Value = 80., Error = 0.1
+                       , MinMax = ( 0.1, 160. ) )
+        self._parseArg( '%s_sigma_sf' % name, kwargs, Title = 'B Mass resolution 2:1 scale factor', Value = 50., Error = 0.1
+                       , MinMax = ( 0.1, 60. ) )
+        self._parseArg( '%s_alpha_1' % name, kwargs, Title = 'B Mass tail parameter 1', Value = 1., Error = 2., MinMax = ( 0.1, 10. ) )
+        self._parseArg( '%s_alpha_sf' % name, kwargs, Title = 'B Mass tail parameter 2:1 scale factor', Value = 0.6, ObjectType = 'ConstVar' )
+        self._parseArg( '%s_n_1' % name, kwargs, Title = 'B Mass tail order 1', Value = 1., ObjectType = 'ConstVar' )
+        self._parseArg( '%s_n_2' % name, kwargs, Title = 'B Mass tail order 2', Value = 1., ObjectType = 'ConstVar' )
+        self._parseArg( '%s_frac' % name, kwargs, Title = 'B mass fraction first CB', Value = 0.7, Error = 0.03, MinMax = ( 0., 1. ) )
+        self._parseArg( '%s_frac2' % name, kwargs, Title = 'B mass fraction second CB', Value = 0.2, Error = 0.03, MinMax = ( 0., 1. ) )
+        self._parseArg( '%s_sigma_3' % name, kwargs, Title = 'B Mass resolution - tail', Unit = 'MeV/c^2', Value = 80., Error = 0.1
+                       , MinMax = ( 0.1, 250. ) )
+
+        from ROOT import RooCBShape as CrystalBall
+        from ROOT import RooGaussian as Gaussian
+        from P2VV.RooFitWrappers import Pdf, SumPdf
+        CB1 = Pdf(  Name ='%s_%s_1' % (namePF, name)
+                  , Type = CrystalBall
+                  , Parameters = ( mass, getattr(self, '_%s_mean' %name),
+                                   getattr(self, '_%s_sigma_1' % name),
+                                   getattr(self, '_%s_alpha_1' % name),
+                                   getattr(self, '_%s_n_1' % name ))
+                 )
+        CB2 = Pdf( Name = '%s_%s_2' % (namePF, name)
+                  , Type = CrystalBall
+                  , Parameters = (  mass, getattr(self, '_%s_mean' % name)
+                                  , self._parseArg( '_%s_sigma_2' % name, kwargs, Formula = '@0*@1'
+                                                   , Arguments = (
+                                                       getattr(self, '_%s_sigma_sf' % name),
+                                                       getattr(self, '_%s_sigma_1' % name)
+                                                       ), ObjectType = 'FormulaVar' )
+                                  , self._parseArg( '_%s_alpha_2' % name, kwargs, Formula = '@0*@1'
+                                                   , Arguments = (
+                                                       getattr(self, '_%s_alpha_sf' % name),
+                                                       getattr(self, '_%s_alpha_1' % name)
+                                                       ), ObjectType = 'FormulaVar' )
+                                  , getattr(self, '_%s_n_2' % name)
+                                 )
+                 )
+        G1 = Pdf(  Name = '%s_%s_3' % (namePF, name)
+                 , Type = Gaussian
+                 , Parameters = ( mass, getattr( self, '_%s_mean' % name ), getattr( self, '_%s_sigma_3' % name ) )
+                )
+        MassPdf.__init__( self, pdf = SumPdf( Name = name, PDFs = ( CB1, CB2, G1 )
+                         , Yields = { CB1.GetName() : getattr(self, '_%s_frac' % name), CB2.GetName() : getattr(self, '_%s_frac2' % name) } ) )
+        self._check_extraneous_kw( kwargs )
+
+
 class Ipatia2_Signal_Mass ( MassPdf ) :
     def __init__( self, mass, **kwargs ) :
         self._parseArg( 'm_sig_mean', kwargs, Title = 'B Mass', Unit = 'MeV/c^2', Value = 5368.254, Error = 0.05
@@ -426,6 +550,108 @@ class Ipatia2_Signal_Mass ( MassPdf ) :
                                                      , self._m_sig_alpha_2, self._m_sig_n_2 )
                                     )
                         )
+        self._check_extraneous_kw( kwargs )
+
+
+class Ipatia2_Mass ( MassPdf ) :
+    def __init__( self, mass, **kwargs ) :
+        namePF = self.getNamePrefix(kwargs)
+        name = kwargs.pop('Name', 'ipatia2_m')
+        mean = kwargs.pop('Mean', 5300.)
+        mean_min = kwargs.pop('Min', 4600.)
+        mean_max = kwargs.pop('Max', 6000.)
+        self._parseArg( '%s_mean' % name, kwargs, Title = 'B Mass', Unit = 'MeV/c^2', Value = mean, Error = 0.05
+                       , MinMax = ( mean_min, mean_max ), Constant = False )
+        self._parseArg( '%s_sigma' % name, kwargs, Title = 'B Mass resolution', Unit = 'MeV/c^2', Value = 9.678, Error = 0.1
+                       , MinMax = ( 0.1, 40. ), Constant = False )
+        self._parseArg( '%s_lambda' % name, kwargs, Title = 'B Mass resolution lambda', Value = -2.5, Error = 0.1, MinMax = ( -10., 10. )
+                       , Constant = True )
+        self._parseArg( '%s_zeta' % name, kwargs, Title = 'B Mass resolution zeta', Value = 0.46, Error = 0.2, MinMax = ( -10., 10. )
+                       , Constant = True )
+        self._parseArg( '%s_beta' % name, kwargs, Title = 'B Mass resolution beta', Value = 0., ObjectType = 'ConstVar' )
+        self._parseArg( '%s_alpha_1' % name, kwargs, Title = 'B Mass tail parameter 1', Value = 1.754, Error = 1., MinMax = ( 0.01, 10. )
+                       , Constant = True )
+        self._parseArg( '%s_alpha_2' % name, kwargs, Title = 'B Mass tail parameter 2', Value = 1.548, Error = 1., MinMax = ( 0.01, 10. )
+                       , Constant = True )
+        self._parseArg( '%s_n_1' % name, kwargs, Title = 'B Mass tail order 1', Value = 1.80, Error = 0.5, MinMax = ( 0., 10. )
+                       , Constant = True )
+        self._parseArg( '%s_n_2' % name, kwargs, Title = 'B Mass tail order 2', Value = 1.70, Error = 0.5, MinMax = ( 0., 10. )
+                       , Constant = True )
+
+        from P2VV.Load import P2VVLibrary
+        from ROOT import RooIpatia2 as Ipatia2
+        from P2VV.RooFitWrappers import Pdf
+        MassPdf.__init__(  self
+                         , pdf = Pdf(  Name = name
+                                     , Type = Ipatia2
+                                     , Parameters = ( mass,
+                                         getattr(self, '_%s_lambda' % name),
+                                         getattr(self, '_%s_zeta' % name),
+                                         getattr(self, '_%s_beta' % name),
+                                         getattr(self, '_%s_sigma' % name),
+                                         getattr(self, '_%s_mean' % name),
+                                         getattr(self, '_%s_alpha_1' % name),
+                                         getattr(self, '_%s_n_1' % name),
+                                         getattr(self, '_%s_alpha_2' % name),
+                                         getattr(self, '_%s_n_2' % name)
+                                         )
+                                    )
+                        )
+        self._check_extraneous_kw( kwargs )
+
+
+class Ipatia2_Gauss_Mass ( MassPdf ) :
+    def __init__( self, mass, **kwargs ) :
+        namePF = self.getNamePrefix(kwargs)
+        name = kwargs.pop('Name', 'ipatia2_m')
+        mean = kwargs.pop('Mean', 5300.)
+        mean_min = kwargs.pop('Min', 4600.)
+        mean_max = kwargs.pop('Max', 6000.)
+        self._parseArg( '%s_mean' % name, kwargs, Title = 'B Mass', Unit = 'MeV/c^2', Value = mean, Error = 0.05
+                       , MinMax = ( mean_min, mean_max ), Constant = False )
+        self._parseArg( '%s_sigma' % name, kwargs, Title = 'B Mass resolution', Unit = 'MeV/c^2', Value = 9.678, Error = 0.1
+                       , MinMax = ( 0.1, 40. ), Constant = False )
+        self._parseArg( '%s_lambda' % name, kwargs, Title = 'B Mass resolution lambda', Value = -2.5, Error = 0.1, MinMax = ( -10., 10. )
+                       , Constant = True )
+        self._parseArg( '%s_zeta' % name, kwargs, Title = 'B Mass resolution zeta', Value = 0.46, Error = 0.2, MinMax = ( -10., 10. )
+                       , Constant = True )
+        self._parseArg( '%s_beta' % name, kwargs, Title = 'B Mass resolution beta', Value = 0., ObjectType = 'ConstVar' )
+        self._parseArg( '%s_alpha_1' % name, kwargs, Title = 'B Mass tail parameter 1', Value = 1.754, Error = 1., MinMax = ( 0.01, 10. )
+                       , Constant = True )
+        self._parseArg( '%s_alpha_2' % name, kwargs, Title = 'B Mass tail parameter 2', Value = 1.548, Error = 1., MinMax = ( 0.01, 10. )
+                       , Constant = True )
+        self._parseArg( '%s_n_1' % name, kwargs, Title = 'B Mass tail order 1', Value = 1.80, Error = 0.5, MinMax = ( 0., 10. )
+                       , Constant = True )
+        self._parseArg( '%s_n_2' % name, kwargs, Title = 'B Mass tail order 2', Value = 1.70, Error = 0.5, MinMax = ( 0., 10. )
+                       , Constant = True )
+        self._parseArg( '%s_frac' % name, kwargs, Title = 'B mass fraction Ipatia', Value = 0.7, Error = 0.03, MinMax = ( 0., 1. ) )
+        self._parseArg( '%s_sigma_2' % name, kwargs, Title = 'B Mass resolution - tail', Unit = 'MeV/c^2', Value = 80., Error = 0.1
+                       , MinMax = ( 0.1, 250. ) )
+
+        from P2VV.Load import P2VVLibrary
+        from ROOT import RooIpatia2 as Ipatia2
+        from ROOT import RooGaussian as Gaussian
+        from P2VV.RooFitWrappers import Pdf, SumPdf
+        IP1 = Pdf(  Name ='%s_%s_1' % (namePF, name)
+                , Type = Ipatia2
+                , Parameters = ( mass,
+                    getattr(self, '_%s_lambda' % name),
+                    getattr(self, '_%s_zeta' % name),
+                    getattr(self, '_%s_beta' % name),
+                    getattr(self, '_%s_sigma' % name),
+                    getattr(self, '_%s_mean' % name),
+                    getattr(self, '_%s_alpha_1' % name),
+                    getattr(self, '_%s_n_1' % name),
+                    getattr(self, '_%s_alpha_2' % name),
+                    getattr(self, '_%s_n_2' % name)
+                    )
+                )
+        G1 = Pdf(  Name = '%s_%s_2' % (namePF, name)
+                 , Type = Gaussian
+                 , Parameters = ( mass, getattr( self, '_%s_mean' % name ), getattr( self, '_%s_sigma_2' % name ) )
+                )
+        MassPdf.__init__( self, pdf = SumPdf( Name = name, PDFs = ( IP1, G1 )
+                         , Yields = { IP1.GetName() : getattr(self, '_%s_frac' % name) } ) )
         self._check_extraneous_kw( kwargs )
 
 
