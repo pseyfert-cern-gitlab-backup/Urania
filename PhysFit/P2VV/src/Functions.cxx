@@ -7,6 +7,7 @@
 #include <set>
 #include <vector>
 #include <list>
+#include <cstdint>
 
 // ROOT
 #include <TH1.h>
@@ -396,6 +397,8 @@ RooDataSet* TreeToRooDataSet(TTree& tree, const RooArgSet& observables,
   std::map<TString,Double_t*> doubleMap;
   std::map<TString,Float_t*> floatMap;
   std::map<TString,Int_t*> intMap;
+  std::map<TString,ULong64_t*> ulongMap;
+  std::map<TString,UInt_t*> uintMap;
   RooAbsArg* arg = 0;
   RooLinkedListIter obsSetIter = obsSet.iterator();
   while ((arg = static_cast<RooAbsArg*>(obsSetIter.Next())) != 0) {
@@ -482,18 +485,32 @@ RooDataSet* TreeToRooDataSet(TTree& tree, const RooArgSet& observables,
         setAdd = tree.SetBranchAddress(real->GetName(), brAdd);
         if (setAdd == 0) floatMap[TString(real->GetName())] = brAdd;
         else delete brAdd;
-      } else if (brType == "Double_t") {
+     } else if (brType == "Double_t") {
         // Double_t branch
         Double_t* brAdd = new Double_t(0.);
         setAdd = tree.SetBranchAddress(real->GetName(), brAdd);
         if (setAdd == 0) doubleMap[TString(real->GetName())] = brAdd;
         else delete brAdd;
+      } else if (brType == "ULong64_t") {
+        // ULong64_t branch
+        ULong64_t* brAdd = new ULong64_t(0.);
+        setAdd = tree.SetBranchAddress(real->GetName(), brAdd);
+        if (setAdd == 0) ulongMap[TString(real->GetName())] = brAdd;
+        else delete brAdd;
+      } else { //if (brType == "UInt_t") {
+        // UInt_t branch
+        UInt_t* brAdd = new UInt_t(0.);
+        setAdd = tree.SetBranchAddress(real->GetName(), brAdd);
+        if (setAdd == 0) uintMap[TString(real->GetName())] = brAdd;
+        else delete brAdd;
       }
 
+
       // check if branch address was set
-      if (setAdd != 0 || (brType != "Float_t" && brType != "Double_t")) {
+      if (setAdd != 0 || (brType != "Float_t" && brType != "ULong64_t" && brType != "Double_t" && brType != "UInt_t")) {
+//      if (setAdd != 0 || (brType != "Float_t" && brType != "Double_t" && brType != "UInt_t")) {
         cout << "P2VV - WARNING: TreeToRooDataSet(): branch \""
-          << real->GetName() << "\" is not of type Double_t or Float_t"
+          << real->GetName() << "\" is not of type Double_t or Float_t or ULong64_t or UInt_t"
           << endl;
         obsSet.remove(*arg);
         continue;
@@ -606,7 +623,19 @@ RooDataSet* TreeToRooDataSet(TTree& tree, const RooArgSet& observables,
           std::map<TString,Float_t*>::iterator
               fIt(floatMap.find(arg->GetName()));
           if (fIt != floatMap.end()) real->setVal(*fIt->second);
-          else real->setVal(*doubleMap[arg->GetName()]);
+//          else real->setVal(*doubleMap[arg->GetName()]);
+          std::map<TString,Double_t*>::iterator
+              fIt1(doubleMap.find(arg->GetName()));
+          if (fIt1 != doubleMap.end()) real->setVal(*fIt1->second);
+//          else real->setVal(*ulongMap[arg->GetName()]);
+//          else real->setVal(*uintMap[arg->GetName()]);
+          std::map<TString,ULong64_t*>::iterator
+              fIt2(ulongMap.find(arg->GetName()));
+          if (fIt2 != ulongMap.end()) real->setVal(*fIt2->second);
+          std::map<TString,UInt_t*>::iterator
+              fIt3(uintMap.find(arg->GetName()));
+          if (fIt3 != uintMap.end()) real->setVal(*fIt3->second);
+//          else real->setVal(*uintMap[arg->GetName()]);
         } else {
           RooCategory* cat = dynamic_cast<RooCategory*>(arg);
           cat->setIndex(*intMap[arg->GetName()]);
@@ -630,6 +659,12 @@ RooDataSet* TreeToRooDataSet(TTree& tree, const RooArgSet& observables,
     delete it->second;
   for (std::map<TString,Int_t*>::iterator it = intMap.begin();
       it != intMap.end(); ++it)
+    delete it->second;
+  for (std::map<TString,ULong64_t*>::iterator it = ulongMap.begin();
+      it != ulongMap.end(); ++it)
+    delete it->second;
+  for (std::map<TString,UInt_t*>::iterator it = uintMap.begin();
+      it != uintMap.end(); ++it)
     delete it->second;
 
   // delete dummy observables set
