@@ -134,9 +134,12 @@ def mcreweight_dslisttothsparse(StripVersion, MagPolarity, RunMin, RunMax, verbo
     for file in files:
     	
     	#ds = GetDataSet(StripVersion, MagPolarity, Part, 'runNumber>='+str(RunMin)+' && runNumber<='+str(RunMax), i, verbose, allowMissing)
-        ds = GetDataSet(StripVersion, MagPolarity, Part, 'runNumber>='+str(RunMin)+' && runNumber<='+str(RunMax), opts.pidVars, opts.xVarName, opts.yVarName, opts.zVarName, file, verbose, allowMissing)
+        #ds = GetDataSet(StripVersion, MagPolarity, Part, 'runNumber>='+str(RunMin)+' && runNumber<='+str(RunMax), opts.pidVars, opts.xVarName, opts.yVarName, opts.zVarName, file, verbose, allowMissing)
+        ds = GetDataSet(StripVersion, MagPolarity, Part, cuts, opts.pidVars, opts.xVarName, opts.yVarName, opts.zVarName, file, verbose, allowMissing)
+    
         if ds is not None:
             if cuts!="":
+            	print "Cuts are the following : " + cuts
                 cutds=ds.reduce(cuts)
                 mcreweight_datasettothsparse(cutds,Part,hs,varnames,weight,h1d_list)
                 cutds.IsA().Destructor(cutds) #free memory from cut dataset
@@ -438,7 +441,7 @@ or \"P_MuonUnBiased\"."""
     	elif "Turbo" in StripVersion:
     		files = GetWGPFiles(StripVersion,MagPolarity,opts.verbose)
     
-        _tmpDataSet = GetDataSet(StripVersion, MagPolarity, Part, "", opts.pidVars, opts.xVarName, opts.yVarName, opts.zVarName, files[0], opts.verbose, opts.allowMissing)
+        _tmpDataSet = GetDataSet(StripVersion, MagPolarity, Part,"", opts.pidVars, opts.xVarName, opts.yVarName, opts.zVarName, files[0], opts.verbose, opts.allowMissing)
          
         #dsl=GetDataSets(StripVersion, MagPolarity, Part, "", RunMin, RunMax,opts.verbose,opts.allowMissing)
 
