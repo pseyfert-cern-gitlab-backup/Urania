@@ -7,11 +7,11 @@
 #  true and estimated distributions. 
 
 import os, sys
-os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + "../inc/"
+os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + "../"
 
 from ROOT import gSystem, gStyle, RooRealVar
 
-gSystem.Load("../lib/libMeerkat.so")
+gSystem.Load("../../../build.x86_64-slc6-gcc49-opt/lib/libMeerkatLib.so")
 
 from ROOT import OneDimPhaseSpace, UniformDensity, BinnedKernelDensity
 from ROOT import TFile, TNtuple, TCanvas, TH1F
