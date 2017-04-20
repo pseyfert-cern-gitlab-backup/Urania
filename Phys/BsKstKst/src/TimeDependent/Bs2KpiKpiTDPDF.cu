@@ -1,6 +1,10 @@
 #include <math.h>
+#include <stdio.h>
 #include <pycuda-complex.hpp>
+#include<curand.h>
+#include<curand_kernel.h>
 
+extern "C" {
 
 // ##########################################
 // Global variables
@@ -47,7 +51,6 @@ __device__ double ghhpindexdict[5][5];
 __device__ double reNj1j2hdict[3][3][5];
 __device__ double imNj1j2hdict[3][3][5];
 __device__ double spl_knot_vector[2][2][6];
-//__device__ int pdfcompdict[190][7];
 
 __device__ pycuda::complex<double> Nj1j2hdict(int j1, int j2, int h) {
 
@@ -207,8 +210,6 @@ __global__ void initialize() {
    imNj1j2hdict[2][2][2] = pycuda::imag(pycuda::complex<double>(0.,15./(4.*sqrt(pi))));
    imNj1j2hdict[2][2][3] = pycuda::imag(pycuda::complex<double>(15./(16.*sqrt(pi)),0.));
    imNj1j2hdict[2][2][4] = pycuda::imag(pycuda::complex<double>(0.,15./(16.*sqrt(pi))));
-
-   //pdfcompdict = {{1,0,0,0,0,0,0},{2,0,1,0,0,0,0},{1,0,1,0,0,1,0},{2,0,1,0,1,0,0},{2,0,1,0,2,0,0},{2,0,2,0,0,0,0},{2,0,2,0,0,1,0},{1,0,2,0,0,2,0},{2,0,2,0,1,0,0},{2,0,2,0,1,1,0},{2,0,2,0,2,0,0},{2,0,2,0,2,1,0},{2,1,0,0,0,0,0},{1,1,0,0,1,0,0},{2,1,1,0,0,0,0},{2,1,1,0,0,1,0},{2,1,1,0,1,0,0},{1,1,1,0,1,1,0},{2,1,1,0,2,0,0},{2,1,1,1,0,0,0},{2,1,1,1,0,1,0},{2,1,1,1,0,2,0},{2,1,1,1,1,0,0},{2,1,1,1,1,1,0},{1,1,1,1,1,1,1},{2,1,1,1,1,2,0},{2,1,1,1,2,0,0},{2,1,1,1,2,1,0},{2,1,1,1,2,2,0},{2,1,1,2,0,0,0},{2,1,1,2,0,1,0},{2,1,1,2,0,2,0},{2,1,1,2,1,0,0},{2,1,1,2,1,1,0},{2,1,1,2,1,1,1},{1,1,1,2,1,1,2},{2,1,1,2,1,2,0},{2,1,1,2,1,2,1},{2,1,1,2,2,0,0},{2,1,1,2,2,1,0},{2,1,1,2,2,1,1},{2,1,1,2,2,2,0},{2,1,1,2,2,2,1},{2,1,2,0,0,0,0},{2,1,2,0,0,1,0},{2,1,2,0,0,2,0},{2,1,2,0,1,0,0},{2,1,2,0,1,1,0},{1,1,2,0,1,2,0},{2,1,2,0,2,0,0},{2,1,2,0,2,1,0},{2,1,2,1,0,0,0},{2,1,2,1,0,1,0},{2,1,2,1,0,2,0},{2,1,2,1,1,0,0},{2,1,2,1,1,1,0},{2,1,2,1,1,1,1},{2,1,2,1,1,2,0},{1,1,2,1,1,2,1},{2,1,2,1,2,0,0},{2,1,2,1,2,1,0},{2,1,2,1,2,1,1},{2,1,2,1,2,2,0},{2,1,2,2,0,0,0},{2,1,2,2,0,1,0},{2,1,2,2,0,2,0},{2,1,2,2,1,0,0},{2,1,2,2,1,1,0},{2,1,2,2,1,1,1},{2,1,2,2,1,1,2},{2,1,2,2,1,2,0},{2,1,2,2,1,2,1},{1,1,2,2,1,2,2},{2,1,2,2,2,0,0},{2,1,2,2,2,1,0},{2,1,2,2,2,1,1},{2,1,2,2,2,1,2},{2,1,2,2,2,2,0},{2,1,2,2,2,2,1},{2,2,0,0,0,0,0},{2,2,0,0,1,0,0},{1,2,0,0,2,0,0},{2,2,1,0,0,0,0},{2,2,1,0,0,1,0},{2,2,1,0,1,0,0},{2,2,1,0,1,1,0},{2,2,1,0,2,0,0},{1,2,1,0,2,1,0},{2,2,1,1,0,0,0},{2,2,1,1,0,1,0},{2,2,1,1,0,2,0},{2,2,1,1,1,0,0},{2,2,1,1,1,1,0},{2,2,1,1,1,1,1},{2,2,1,1,1,2,0},{2,2,1,1,2,0,0},{2,2,1,1,2,1,0},{1,2,1,1,2,1,1},{2,2,1,1,2,2,0},{2,2,1,2,0,0,0},{2,2,1,2,0,1,0},{2,2,1,2,0,2,0},{2,2,1,2,1,0,0},{2,2,1,2,1,1,0},{2,2,1,2,1,1,1},{2,2,1,2,1,1,2},{2,2,1,2,1,2,0},{2,2,1,2,1,2,1},{2,2,1,2,2,0,0},{2,2,1,2,2,1,0},{2,2,1,2,2,1,1},{1,2,1,2,2,1,2},{2,2,1,2,2,2,0},{2,2,1,2,2,2,1},{2,2,2,0,0,0,0},{2,2,2,0,0,1,0},{2,2,2,0,0,2,0},{2,2,2,0,1,0,0},{2,2,2,0,1,1,0},{2,2,2,0,1,2,0},{2,2,2,0,2,0,0},{2,2,2,0,2,1,0},{1,2,2,0,2,2,0},{2,2,2,1,0,0,0},{2,2,2,1,0,1,0},{2,2,2,1,0,2,0},{2,2,2,1,1,0,0},{2,2,2,1,1,1,0},{2,2,2,1,1,1,1},{2,2,2,1,1,2,0},{2,2,2,1,1,2,1},{2,2,2,1,2,0,0},{2,2,2,1,2,1,0},{2,2,2,1,2,1,1},{2,2,2,1,2,2,0},{1,2,2,1,2,2,1},{2,2,2,2,0,0,0},{2,2,2,2,0,1,0},{2,2,2,2,0,2,0},{2,2,2,2,1,0,0},{2,2,2,2,1,1,0},{2,2,2,2,1,1,1},{2,2,2,2,1,1,2},{2,2,2,2,1,2,0},{2,2,2,2,1,2,1},{2,2,2,2,1,2,2},{2,2,2,2,2,0,0},{2,2,2,2,2,1,0},{2,2,2,2,2,1,1},{2,2,2,2,2,1,2},{2,2,2,2,2,2,0},{2,2,2,2,2,2,1},{1,2,2,2,2,2,2},{2,2,2,3,0,0,0},{2,2,2,3,0,1,0},{2,2,2,3,0,2,0},{2,2,2,3,1,0,0},{2,2,2,3,1,1,0},{2,2,2,3,1,1,1},{2,2,2,3,1,1,2},{2,2,2,3,1,2,0},{2,2,2,3,1,2,1},{2,2,2,3,1,2,2},{2,2,2,3,2,0,0},{2,2,2,3,2,1,0},{2,2,2,3,2,1,1},{2,2,2,3,2,1,2},{2,2,2,3,2,2,0},{2,2,2,3,2,2,1},{2,2,2,3,2,2,2},{1,2,2,3,2,2,3},{2,2,2,4,0,0,0},{2,2,2,4,0,1,0},{2,2,2,4,0,2,0},{2,2,2,4,1,0,0},{2,2,2,4,1,1,0},{2,2,2,4,1,1,1},{2,2,2,4,1,1,2},{2,2,2,4,1,2,0},{2,2,2,4,1,2,1},{2,2,2,4,1,2,2},{2,2,2,4,2,0,0},{2,2,2,4,2,1,0},{2,2,2,4,2,1,1},{2,2,2,4,2,1,2},{2,2,2,4,2,2,0},{2,2,2,4,2,2,1},{2,2,2,4,2,2,2},{2,2,2,4,2,2,3},{1,2,2,4,2,2,4}};
 
  }
 
@@ -537,68 +538,9 @@ __device__ double spline_coef(int year_opt,int trig_opt,int wide_window,int ibin
 
 
 // ##########################################
-// Toy MC generation variables
-
-__device__ double knots_gen_wide[6] = {0.0,0.9,1.3,1.9,3.0,12.0};
-__device__ double knots_gen_narrow[6] = {0.0,0.9,1.3,1.9,3.0,12.0};
-
-__device__ double a_gen_wide[5][4] = {{0.0,-0.00138436998913,2.5481847953,-1.45909728079},
-{-1.6653800648,5.54988251268,-3.61988951878,0.82537468739},
-{-0.289336418837,2.37439717584,-1.17720849044,0.199046218586},
-{0.993185871959,0.349361979846,-0.111400492548,0.0120623593064},
-{1.32606052325,0.0164873285591,-0.000442275452223,-0.000266331481965}};
-
-__device__ double a_gen_narrow[5][4] = {{0.0,0.00101382530285,4.89487359849,-2.83048035352},
-{-3.54249846114,11.8093420291,-8.22549107238,2.02891396902},
-{1.06333885612,1.18048668157,-0.0494484973637,-0.0675072040589},
-{-0.421082535913,3.52430993215,-1.28303968188,0.148912301997},
-{3.78015377185,-0.67692637561,0.117372420705,-0.006689042735}};
-
-__device__ double k1_gen(int wide_window) {
-   if (wide_window) {return -0.40631262195;}
-   else {return -0.505556252411;}
- }
-
-__device__ double k2_gen(int wide_window) {
-   if (wide_window) {return -0.39861379722;}
-   else {return -0.404368705592;}
- }
-
-__device__ double k3_gen(int wide_window) {
-   if (wide_window) {return -0.0363987194893;}
-   else {return -0.0483750503137;}
- }
-
-__device__ double k4_gen(int wide_window) {
-   if (wide_window) {return -0.0644151228873;}
-   else {return -0.0175772310185;}
- }
-
-__device__ double k5_gen(int wide_window) {
-   if (wide_window) {return 0.0270906873059;}
-   else {return 0.0389936024545;}
- }
-
-__device__ double p1_gen(int wide_window) {
-   if (wide_window) {return -0.000100573256821;}
-   else {return 4.35273527839e-05;}
- }
-
-__device__ double knot_gen(int wide_window,int i) {
-   if (wide_window == 0) {return knots_gen_narrow[i];}
-   else {return knots_gen_wide[i];}
- }
-
-__device__ double coef_gen(int wide_window,int ibin,int deg) {
-   if (wide_window == 0) {return a_gen_narrow[ibin][deg];}
-   else {return a_gen_wide[ibin][deg];}
- }
-
-
-// ##########################################
 // Buffer variables
 
-__device__ const int max_N_events = 20000;
+__device__ const int max_N_events = 100000;
 
 __device__ int wide_window;
 __device__ int year_opt[4];
@@ -738,6 +680,75 @@ __device__ double Im11;
 __device__ double Im12;
 __device__ double Im21;
 __device__ double Im22;
+__device__ double Ih1Re;
+__device__ double Ih2Re;
+__device__ double Ih3Re;
+__device__ double Ih4Re;
+__device__ double Ih5Re;
+__device__ double Ih6Re;
+__device__ double Ih7Re;
+__device__ double Ih8Re;
+__device__ double Ih9Re;
+__device__ double Ih10Re;
+__device__ double Ih11Re;
+__device__ double Ih12Re;
+__device__ double Ih13Re;
+__device__ double Ih14Re;
+__device__ double Ih15Re;
+__device__ double Ih16Re;
+__device__ double Ih17Re;
+__device__ double Ih18Re;
+__device__ double Ih19Re;
+__device__ double Ih20Re;
+__device__ double Ih21Re;
+__device__ double Ih22Re;
+__device__ double Ih23Re;
+__device__ double Ih24Re;
+__device__ double Ih25Re;
+__device__ double Ih26Re;
+__device__ double Ih27Re;
+__device__ double Ih28Re;
+__device__ double Ih29Re;
+__device__ double Ih30Re;
+__device__ double Ih1Im;
+__device__ double Ih2Im;
+__device__ double Ih3Im;
+__device__ double Ih4Im;
+__device__ double Ih5Im;
+__device__ double Ih6Im;
+__device__ double Ih7Im;
+__device__ double Ih8Im;
+__device__ double Ih9Im;
+__device__ double Ih10Im;
+__device__ double Ih11Im;
+__device__ double Ih12Im;
+__device__ double Ih13Im;
+__device__ double Ih14Im;
+__device__ double Ih15Im;
+__device__ double Ih16Im;
+__device__ double Ih17Im;
+__device__ double Ih18Im;
+__device__ double Ih19Im;
+__device__ double Ih20Im;
+__device__ double Ih21Im;
+__device__ double If1;
+__device__ double If2;
+__device__ double If3;
+__device__ double If4;
+__device__ double If5;
+__device__ double If6;
+__device__ double If7;
+__device__ double If8;
+__device__ double If9;
+__device__ double If10;
+__device__ double If11;
+__device__ double If12;
+__device__ double If13;
+__device__ double If14;
+__device__ double If15;
+__device__ double If16;
+__device__ double If17;
+__device__ double If18;
 
 __device__ double reAj1j2h_temp[3][3][5];
 __device__ double imAj1j2h_temp[3][3][5];
@@ -772,12 +783,108 @@ __device__ double gi_temp[15][4][max_N_events];
 __device__ double reMj1j2_temp[3][3][4][max_N_events];
 __device__ double imMj1j2_temp[3][3][4][max_N_events];
 __device__ double phasespace_temp[4][max_N_events];
+__device__ double reIhj1j2j1pj2pdict[3][3][3][3];
+__device__ double imIhj1j2j1pj2pdict[3][3][3][3];
 
 __device__ pycuda::complex<double> Mj1j2_temp(int j1, int j2, int icat, int iev) {
 
    return pycuda::complex<double>(reMj1j2_temp[j1][j2][icat][iev],imMj1j2_temp[j1][j2][icat][iev]);
 
  }
+
+__device__ pycuda::complex<double> Ihj1j2j1pj2p(int j1, int j2, int j1p, int j2p) {
+
+   return pycuda::complex<double>(reIhj1j2j1pj2pdict[j1][j2][j1p][j2p],imIhj1j2j1pj2pdict[j1][j2][j1p][j2p]);
+
+ }
+
+// ##########################################
+// Toy MC generation variables
+
+__device__ double knots_gen_wide[6] = {0.0,0.9,1.3,1.9,3.0,12.0};
+__device__ double knots_gen_narrow[6] = {0.0,0.9,1.3,1.9,3.0,12.0};
+
+__device__ double a_gen_wide[5][4] = {{0.0,-0.00138436998913,2.5481847953,-1.45909728079},
+{-1.6653800648,5.54988251268,-3.61988951878,0.82537468739},
+{-0.289336418837,2.37439717584,-1.17720849044,0.199046218586},
+{0.993185871959,0.349361979846,-0.111400492548,0.0120623593064},
+{1.32606052325,0.0164873285591,-0.000442275452223,-0.000266331481965}};
+
+__device__ double a_gen_narrow[5][4] = {{0.0,0.00101382530285,4.89487359849,-2.83048035352},
+{-3.54249846114,11.8093420291,-8.22549107238,2.02891396902},
+{1.06333885612,1.18048668157,-0.0494484973637,-0.0675072040589},
+{-0.421082535913,3.52430993215,-1.28303968188,0.148912301997},
+{3.78015377185,-0.67692637561,0.117372420705,-0.006689042735}};
+
+__device__ double k1_gen(int wide_window) {
+   if (wide_window) {return -0.40631262195;}
+   else {return -0.505556252411;}
+ }
+
+__device__ double k2_gen(int wide_window) {
+   if (wide_window) {return -0.39861379722;}
+   else {return -0.404368705592;}
+ }
+
+__device__ double k3_gen(int wide_window) {
+   if (wide_window) {return -0.0363987194893;}
+   else {return -0.0483750503137;}
+ }
+
+__device__ double k4_gen(int wide_window) {
+   if (wide_window) {return -0.0644151228873;}
+   else {return -0.0175772310185;}
+ }
+
+__device__ double k5_gen(int wide_window) {
+   if (wide_window) {return 0.0270906873059;}
+   else {return 0.0389936024545;}
+ }
+
+__device__ double p1_gen(int wide_window) {
+   if (wide_window) {return -0.000100573256821;}
+   else {return 4.35273527839e-05;}
+ }
+
+__device__ double knot_gen(int wide_window,int i) {
+   if (wide_window == 0) {return knots_gen_narrow[i];}
+   else {return knots_gen_wide[i];}
+ }
+
+__device__ double coef_gen(int wide_window,int ibin,int deg) {
+   if (wide_window == 0) {return a_gen_narrow[ibin][deg];}
+   else {return a_gen_wide[ibin][deg];}
+ }
+
+__device__ double accGenTime(double tau) { 
+
+   int tau_bin;
+   if (tau < knot_gen(wide_window,1)) {tau_bin = 0;}
+   else if ((tau >= knot_gen(wide_window,1)) and (tau < knot_gen(wide_window,2))) {tau_bin = 1;}
+   else if ((tau >= knot_gen(wide_window,2)) and (tau < knot_gen(wide_window,3))) {tau_bin = 2;}
+   else if ((tau >= knot_gen(wide_window,3)) and (tau < knot_gen(wide_window,4))) {tau_bin = 3;}
+   else {tau_bin = 4;}
+
+   return coef_gen(wide_window,tau_bin,0)+tau*coef_gen(wide_window,tau_bin,1)+tau*tau*coef_gen(wide_window,tau_bin,2)+tau*tau*tau*coef_gen(wide_window,tau_bin,3);
+
+ }
+
+__device__ double accGenAng(double x) { 
+
+   return 1.+k1_gen(wide_window)*x+k2_gen(wide_window)*(2.*x*x-1.)+k3_gen(wide_window)*(4.*x*x*x-3.*x)+k4_gen(wide_window)*(8.*x*x*x*x-8.*x*x+1.)+k5_gen(wide_window)*(16.*x*x*x*x*x-20.*x*x*x+5.*x);
+
+ }
+
+__device__ double accGenMass(double m) { 
+   
+   return 1. + p1_gen(wide_window)*m;
+
+ }
+
+__device__ double accGen(double tau, double ma, double mb, double cos1var, double cos2var, double phivar) {
+   return accGenTime(tau)*accGenMass(ma)*accGenMass(mb)*accGenAng(cos1var)*accGenAng(cos2var);
+ }
+
 
 // ##########################################
 // Physical terms
@@ -1918,7 +2025,7 @@ __global__ void evaluate(double *data, double *out, double *check, double *optio
    double num_fit_temp = num_fit(cat_index,row);
    double den_fit_temp = den_fit(cat_index,row);
 
-   if (num_fit_temp/den_fit_temp<=0) {out[row] = -1000.;}
+   if (num_fit_temp/den_fit_temp<=0) {out[row] = -10000000000;}
    else {out[row] = ev_weight*(log(num_fit_temp/den_fit_temp));}
 
    check[0] = num_fit_temp;
@@ -1926,3 +2033,918 @@ __global__ void evaluate(double *data, double *out, double *check, double *optio
    check[2] = ev_weight*(log(num_fit_temp/den_fit_temp));
 
  }
+
+
+// ##########################################
+// Event generator
+
+__device__ double Ifi(int i) {
+
+   if (i == 1) {return If1;}
+   else if (i == 2) {return If2;}
+   else if (i == 3) {return If3;}
+   else if (i == 4) {return If4;}
+   else if (i == 5) {return If5;}
+   else if (i == 6) {return If6;}
+   else if (i == 7) {return If7;}
+   else if (i == 8) {return If8;}
+   else if (i == 9) {return If9;}
+   else if (i == 10) {return If10;}
+   else if (i == 11) {return If11;}
+   else if (i == 12) {return If12;}
+   else if (i == 13) {return If13;}
+   else if (i == 14) {return If14;}
+   else if (i == 15) {return If15;}
+   else if (i == 16) {return If16;}
+   else if (i == 17) {return If17;}
+   else if (i == 18) {return If18;}
+
+   return 0.;
+
+ }
+
+__device__ double Igi(int i) {
+
+   if (i == 1) {return 2.*pi;}
+   else if (i == 2) {return 0.;}
+   else if (i == 3) {return 0.;}
+   else if (i == 4) {return pi;}
+   else if (i == 5) {return 0;}
+   else if (i == 6) {return pi;}
+   else if (i == 7) {return 0.;}
+   else if (i == 8) {return 0.;}
+   else if (i == 9) {return 0.;}
+   else if (i == 10) {return 0.;}
+   else if (i == 11) {return 0.;}
+   else if (i == 12) {return 0.;}
+   else if (i == 13) {return pi;}
+   else if (i == 14) {return 0.;}
+   else if (i == 15) {return pi;}
+
+   return 0.;
+
+ }
+
+__device__ double Ifjjphhp(int j, int jp, int h, int hp) {
+
+   return Ifi(fjjphhpindexdict[j][jp][h][hp]);
+
+ }
+
+__device__ double Ighhp(int h, int hp) {
+
+   return Igi(ghhpindexdict[h][hp]);
+
+ }
+
+__device__ double Gaus(double x, double mean, double sigma, bool norm = 0) {
+   if (sigma == 0) return 1.e30;
+   double arg = (x-mean)/sigma;
+   double res = exp(-0.5*arg*arg);
+   if (!norm) return res;
+   return res/(2.50662827463100024*sigma);
+ }
+
+__device__ double ran_gamma(curandState localState, double a, double b) {
+
+   if (a < 1){
+      double u = curand_uniform_double(&localState);
+      return ran_gamma (localState, 1.0 + a, b) * pow (u, 1.0 / a);
+   }
+
+   {
+      double x, v, u;
+      double d = a - 1.0 / 3.0;
+      double c = (1.0 / 3.0) / sqrt (d);
+
+      while (1){
+         do{
+            x = curand_normal_double(&localState);
+            v = 1.0 + c * x;
+         }
+         while (v <= 0);
+         v = v * v * v;
+         u = curand_uniform_double(&localState);
+         if (u < 1 - 0.0331 * x * x * x * x)
+            break;
+         if (log (u) < 0.5 * x * x + d * (1 - v + log (v)))
+            break;
+      }
+      return b * d * v;
+   }
+
+ }
+
+__device__ double ran_P_deltat(curandState localState) {
+
+   double result;
+   while (1) {
+      result = ran_gamma(localState,gamma1_dt,beta1_dt);
+      if (result>=0. and result<=0.1) {break;}
+   }
+   return result;
+
+ }
+
+__device__ double P_eta_SSK(double eta) {
+   if (eta < 0.5) {return c_SSK*Gaus(eta,mu1_SSK,sigma1_SSK)+(1.-c_SSK)*Gaus(eta,mu2_SSK,sigma2_SSK);}
+   else {return 0.;}
+ }
+
+__device__ double P_eta_OS(double eta) {
+   if (eta < 0.5) {return c_OS*Gaus(eta,mu1_OS,sigma1_OS)+(1.-c_OS)*Gaus(eta,mu2_OS,sigma2_OS);}
+   else {return 0.;}
+ }
+
+__global__ void get_max_P_eta_SSK(double *out) {
+
+   double funmax = 0;
+   double etavar;
+   double funvar;
+   for (int i=0; i<10000; i++) {
+      etavar = i/20000.;
+      funvar = P_eta_SSK(etavar);
+      if (funvar > funmax) {funmax = funvar;}
+   }
+   out[0] = 1.1*funmax;
+   return;
+
+ }
+
+__global__ void get_max_P_eta_OS(double *out) {
+
+   double funmax = 0;
+   double etavar;
+   double funvar;
+   for (int i=0; i<10000; i++) {
+      etavar = i/20000.;
+      funvar = P_eta_OS(etavar);
+      if (funvar > funmax) {funmax = funvar;}
+   }
+   out[0] = 1.1*funmax;
+   return;
+
+ }
+
+__device__ pycuda::complex<double> TBsj1j2hj1pj2php(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) {
+
+   return T_cosh_temp[0][iev]*M_Average(j1,j2,h,j1p,j2p,hp)-T_sinh_temp[0][iev]*M_DeltaGamma(j1,j2,h,j1p,j2p,hp)+T_cos_temp[0][iev]*M_DirCP(j1,j2,h,j1p,j2p,hp)+T_sin_temp[0][iev]*M_MixCP(j1,j2,h,j1p,j2p,hp);
+
+ }
+
+__device__ pycuda::complex<double> TBsbarj1j2hj1pj2php(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) {
+
+   return T_cosh_temp[0][iev]*M_Average(j1,j2,h,j1p,j2p,hp)-T_sinh_temp[0][iev]*M_DeltaGamma(j1,j2,h,j1p,j2p,hp)-T_cos_temp[0][iev]*M_DirCP(j1,j2,h,j1p,j2p,hp)-T_sin_temp[0][iev]*M_MixCP(j1,j2,h,j1p,j2p,hp);
+
+ }
+
+__device__ double comp_fun_Bs(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) {
+
+   return pycuda::real(TBsj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp,iev)*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*hj1j2j1pj2p(j1,j2,j1p,j2p,0,iev))*ghhp_phi(h,hp,0,iev)*fjjphhp_cos1(j1,j1p,h,hp,0,iev)*fjjphhp_cos2(j2,j2p,h,hp,0,iev);
+
+ }
+
+__device__ double comp_fun_Bsbar(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) {
+
+   return pycuda::real(TBsbarj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp,iev)*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*hj1j2j1pj2p(j1,j2,j1p,j2p,0,iev))*ghhp_phi(h,hp,0,iev)*fjjphhp_cos1(j1,j1p,h,hp,0,iev)*fjjphhp_cos2(j2,j2p,h,hp,0,iev);
+
+ }
+
+__device__ double fun_Bs(int iev) {
+
+   return comp_fun_Bs(0,0,0,0,0,0,iev)+comp_fun_Bs(0,1,0,0,1,0,iev)+comp_fun_Bs(0,2,0,0,2,0,iev)+comp_fun_Bs(1,0,0,1,0,0,iev)+comp_fun_Bs(1,1,0,1,1,0,iev)+comp_fun_Bs(1,1,1,1,1,1,iev)
++comp_fun_Bs(1,1,2,1,1,2,iev)+comp_fun_Bs(1,2,0,1,2,0,iev)+comp_fun_Bs(1,2,1,1,2,1,iev)+comp_fun_Bs(1,2,2,1,2,2,iev)+comp_fun_Bs(2,0,0,2,0,0,iev)+comp_fun_Bs(2,1,0,2,1,0,iev)+comp_fun_Bs(2,1,1,2,1,1,iev)
++comp_fun_Bs(2,1,2,2,1,2,iev)+comp_fun_Bs(2,2,0,2,2,0,iev)+comp_fun_Bs(2,2,1,2,2,1,iev)+comp_fun_Bs(2,2,2,2,2,2,iev)+comp_fun_Bs(2,2,3,2,2,3,iev)+comp_fun_Bs(2,2,4,2,2,4,iev)+2.*comp_fun_Bs(0,1,0,0,0,0,iev)
++2.*comp_fun_Bs(0,1,0,1,0,0,iev)+2.*comp_fun_Bs(0,1,0,2,0,0,iev)+2.*comp_fun_Bs(0,2,0,0,0,0,iev)+2.*comp_fun_Bs(0,2,0,0,1,0,iev)+2.*comp_fun_Bs(0,2,0,1,0,0,iev)+2.*comp_fun_Bs(0,2,0,1,1,0,iev)
++2.*comp_fun_Bs(0,2,0,2,0,0,iev)+2.*comp_fun_Bs(0,2,0,2,1,0,iev)+2.*comp_fun_Bs(1,0,0,0,0,0,iev)+2.*comp_fun_Bs(1,1,0,0,0,0,iev)+2.*comp_fun_Bs(1,1,0,0,1,0,iev)+2.*comp_fun_Bs(1,1,0,1,0,0,iev)
++2.*comp_fun_Bs(1,1,0,2,0,0,iev)+2.*comp_fun_Bs(1,1,1,0,0,0,iev)+2.*comp_fun_Bs(1,1,1,0,1,0,iev)+2.*comp_fun_Bs(1,1,1,0,2,0,iev)+2.*comp_fun_Bs(1,1,1,1,0,0,iev)+2.*comp_fun_Bs(1,1,1,1,1,0,iev)
++2.*comp_fun_Bs(1,1,1,1,2,0,iev)+2.*comp_fun_Bs(1,1,1,2,0,0,iev)+2.*comp_fun_Bs(1,1,1,2,1,0,iev)+2.*comp_fun_Bs(1,1,1,2,2,0,iev)+2.*comp_fun_Bs(1,1,2,0,0,0,iev)+2.*comp_fun_Bs(1,1,2,0,1,0,iev)
++2.*comp_fun_Bs(1,1,2,0,2,0,iev)+2.*comp_fun_Bs(1,1,2,1,0,0,iev)+2.*comp_fun_Bs(1,1,2,1,1,0,iev)+2.*comp_fun_Bs(1,1,2,1,1,1,iev)+2.*comp_fun_Bs(1,1,2,1,2,0,iev)+2.*comp_fun_Bs(1,1,2,1,2,1,iev)
++2.*comp_fun_Bs(1,1,2,2,0,0,iev)+2.*comp_fun_Bs(1,1,2,2,1,0,iev)+2.*comp_fun_Bs(1,1,2,2,1,1,iev)+2.*comp_fun_Bs(1,1,2,2,2,0,iev)+2.*comp_fun_Bs(1,1,2,2,2,1,iev)+2.*comp_fun_Bs(1,2,0,0,0,0,iev)
++2.*comp_fun_Bs(1,2,0,0,1,0,iev)+2.*comp_fun_Bs(1,2,0,0,2,0,iev)+2.*comp_fun_Bs(1,2,0,1,0,0,iev)+2.*comp_fun_Bs(1,2,0,1,1,0,iev)+2.*comp_fun_Bs(1,2,0,2,0,0,iev)+2.*comp_fun_Bs(1,2,0,2,1,0,iev)
++2.*comp_fun_Bs(1,2,1,0,0,0,iev)+2.*comp_fun_Bs(1,2,1,0,1,0,iev)+2.*comp_fun_Bs(1,2,1,0,2,0,iev)+2.*comp_fun_Bs(1,2,1,1,0,0,iev)+2.*comp_fun_Bs(1,2,1,1,1,0,iev)+2.*comp_fun_Bs(1,2,1,1,1,1,iev)
++2.*comp_fun_Bs(1,2,1,1,2,0,iev)+2.*comp_fun_Bs(1,2,1,2,0,0,iev)+2.*comp_fun_Bs(1,2,1,2,1,0,iev)+2.*comp_fun_Bs(1,2,1,2,1,1,iev)+2.*comp_fun_Bs(1,2,1,2,2,0,iev)+2.*comp_fun_Bs(1,2,2,0,0,0,iev)
++2.*comp_fun_Bs(1,2,2,0,1,0,iev)+2.*comp_fun_Bs(1,2,2,0,2,0,iev)+2.*comp_fun_Bs(1,2,2,1,0,0,iev)+2.*comp_fun_Bs(1,2,2,1,1,0,iev)+2.*comp_fun_Bs(1,2,2,1,1,1,iev)+2.*comp_fun_Bs(1,2,2,1,1,2,iev)
++2.*comp_fun_Bs(1,2,2,1,2,0,iev)+2.*comp_fun_Bs(1,2,2,1,2,1,iev)+2.*comp_fun_Bs(1,2,2,2,0,0,iev)+2.*comp_fun_Bs(1,2,2,2,1,0,iev)+2.*comp_fun_Bs(1,2,2,2,1,1,iev)+2.*comp_fun_Bs(1,2,2,2,1,2,iev)
++2.*comp_fun_Bs(1,2,2,2,2,0,iev)+2.*comp_fun_Bs(1,2,2,2,2,1,iev)+2.*comp_fun_Bs(2,0,0,0,0,0,iev)+2.*comp_fun_Bs(2,0,0,1,0,0,iev)+2.*comp_fun_Bs(2,1,0,0,0,0,iev)+2.*comp_fun_Bs(2,1,0,0,1,0,iev)
++2.*comp_fun_Bs(2,1,0,1,0,0,iev)+2.*comp_fun_Bs(2,1,0,1,1,0,iev)+2.*comp_fun_Bs(2,1,0,2,0,0,iev)+2.*comp_fun_Bs(2,1,1,0,0,0,iev)+2.*comp_fun_Bs(2,1,1,0,1,0,iev)+2.*comp_fun_Bs(2,1,1,0,2,0,iev)
++2.*comp_fun_Bs(2,1,1,1,0,0,iev)+2.*comp_fun_Bs(2,1,1,1,1,0,iev)+2.*comp_fun_Bs(2,1,1,1,1,1,iev)+2.*comp_fun_Bs(2,1,1,1,2,0,iev)+2.*comp_fun_Bs(2,1,1,2,0,0,iev)+2.*comp_fun_Bs(2,1,1,2,1,0,iev)
++2.*comp_fun_Bs(2,1,1,2,2,0,iev)+2.*comp_fun_Bs(2,1,2,0,0,0,iev)+2.*comp_fun_Bs(2,1,2,0,1,0,iev)+2.*comp_fun_Bs(2,1,2,0,2,0,iev)+2.*comp_fun_Bs(2,1,2,1,0,0,iev)+2.*comp_fun_Bs(2,1,2,1,1,0,iev)
++2.*comp_fun_Bs(2,1,2,1,1,1,iev)+2.*comp_fun_Bs(2,1,2,1,1,2,iev)+2.*comp_fun_Bs(2,1,2,1,2,0,iev)+2.*comp_fun_Bs(2,1,2,1,2,1,iev)+2.*comp_fun_Bs(2,1,2,2,0,0,iev)+2.*comp_fun_Bs(2,1,2,2,1,0,iev)
++2.*comp_fun_Bs(2,1,2,2,1,1,iev)+2.*comp_fun_Bs(2,1,2,2,2,0,iev)+2.*comp_fun_Bs(2,1,2,2,2,1,iev)+2.*comp_fun_Bs(2,2,0,0,0,0,iev)+2.*comp_fun_Bs(2,2,0,0,1,0,iev)+2.*comp_fun_Bs(2,2,0,0,2,0,iev)
++2.*comp_fun_Bs(2,2,0,1,0,0,iev)+2.*comp_fun_Bs(2,2,0,1,1,0,iev)+2.*comp_fun_Bs(2,2,0,1,2,0,iev)+2.*comp_fun_Bs(2,2,0,2,0,0,iev)+2.*comp_fun_Bs(2,2,0,2,1,0,iev)+2.*comp_fun_Bs(2,2,1,0,0,0,iev)
++2.*comp_fun_Bs(2,2,1,0,1,0,iev)+2.*comp_fun_Bs(2,2,1,0,2,0,iev)+2.*comp_fun_Bs(2,2,1,1,0,0,iev)+2.*comp_fun_Bs(2,2,1,1,1,0,iev)+2.*comp_fun_Bs(2,2,1,1,1,1,iev)+2.*comp_fun_Bs(2,2,1,1,2,0,iev)
++2.*comp_fun_Bs(2,2,1,1,2,1,iev)+2.*comp_fun_Bs(2,2,1,2,0,0,iev)+2.*comp_fun_Bs(2,2,1,2,1,0,iev)+2.*comp_fun_Bs(2,2,1,2,1,1,iev)+2.*comp_fun_Bs(2,2,1,2,2,0,iev)+2.*comp_fun_Bs(2,2,2,0,0,0,iev)
++2.*comp_fun_Bs(2,2,2,0,1,0,iev)+2.*comp_fun_Bs(2,2,2,0,2,0,iev)+2.*comp_fun_Bs(2,2,2,1,0,0,iev)+2.*comp_fun_Bs(2,2,2,1,1,0,iev)+2.*comp_fun_Bs(2,2,2,1,1,1,iev)+2.*comp_fun_Bs(2,2,2,1,1,2,iev)
++2.*comp_fun_Bs(2,2,2,1,2,0,iev)+2.*comp_fun_Bs(2,2,2,1,2,1,iev)+2.*comp_fun_Bs(2,2,2,1,2,2,iev)+2.*comp_fun_Bs(2,2,2,2,0,0,iev)+2.*comp_fun_Bs(2,2,2,2,1,0,iev)+2.*comp_fun_Bs(2,2,2,2,1,1,iev)
++2.*comp_fun_Bs(2,2,2,2,1,2,iev)+2.*comp_fun_Bs(2,2,2,2,2,0,iev)+2.*comp_fun_Bs(2,2,2,2,2,1,iev)+2.*comp_fun_Bs(2,2,3,0,0,0,iev)+2.*comp_fun_Bs(2,2,3,0,1,0,iev)+2.*comp_fun_Bs(2,2,3,0,2,0,iev)
++2.*comp_fun_Bs(2,2,3,1,0,0,iev)+2.*comp_fun_Bs(2,2,3,1,1,0,iev)+2.*comp_fun_Bs(2,2,3,1,1,1,iev)+2.*comp_fun_Bs(2,2,3,1,1,2,iev)+2.*comp_fun_Bs(2,2,3,1,2,0,iev)+2.*comp_fun_Bs(2,2,3,1,2,1,iev)
++2.*comp_fun_Bs(2,2,3,1,2,2,iev)+2.*comp_fun_Bs(2,2,3,2,0,0,iev)+2.*comp_fun_Bs(2,2,3,2,1,0,iev)+2.*comp_fun_Bs(2,2,3,2,1,1,iev)+2.*comp_fun_Bs(2,2,3,2,1,2,iev)+2.*comp_fun_Bs(2,2,3,2,2,0,iev)
++2.*comp_fun_Bs(2,2,3,2,2,1,iev)+2.*comp_fun_Bs(2,2,3,2,2,2,iev)+2.*comp_fun_Bs(2,2,4,0,0,0,iev)+2.*comp_fun_Bs(2,2,4,0,1,0,iev)+2.*comp_fun_Bs(2,2,4,0,2,0,iev)+2.*comp_fun_Bs(2,2,4,1,0,0,iev)
++2.*comp_fun_Bs(2,2,4,1,1,0,iev)+2.*comp_fun_Bs(2,2,4,1,1,1,iev)+2.*comp_fun_Bs(2,2,4,1,1,2,iev)+2.*comp_fun_Bs(2,2,4,1,2,0,iev)+2.*comp_fun_Bs(2,2,4,1,2,1,iev)+2.*comp_fun_Bs(2,2,4,1,2,2,iev)
++2.*comp_fun_Bs(2,2,4,2,0,0,iev)+2.*comp_fun_Bs(2,2,4,2,1,0,iev)+2.*comp_fun_Bs(2,2,4,2,1,1,iev)+2.*comp_fun_Bs(2,2,4,2,1,2,iev)+2.*comp_fun_Bs(2,2,4,2,2,0,iev)+2.*comp_fun_Bs(2,2,4,2,2,1,iev)
++2.*comp_fun_Bs(2,2,4,2,2,2,iev)+2.*comp_fun_Bs(2,2,4,2,2,3,iev);
+
+ }
+
+__device__ double fun_Bsbar(int iev) {
+
+   return comp_fun_Bsbar(0,0,0,0,0,0,iev)+comp_fun_Bsbar(0,1,0,0,1,0,iev)+comp_fun_Bsbar(0,2,0,0,2,0,iev)+comp_fun_Bsbar(1,0,0,1,0,0,iev)+comp_fun_Bsbar(1,1,0,1,1,0,iev)+comp_fun_Bsbar(1,1,1,1,1,1,iev)
++comp_fun_Bsbar(1,1,2,1,1,2,iev)+comp_fun_Bsbar(1,2,0,1,2,0,iev)+comp_fun_Bsbar(1,2,1,1,2,1,iev)+comp_fun_Bsbar(1,2,2,1,2,2,iev)+comp_fun_Bsbar(2,0,0,2,0,0,iev)+comp_fun_Bsbar(2,1,0,2,1,0,iev)+comp_fun_Bsbar(2,1,1,2,1,1,iev)
++comp_fun_Bsbar(2,1,2,2,1,2,iev)+comp_fun_Bsbar(2,2,0,2,2,0,iev)+comp_fun_Bsbar(2,2,1,2,2,1,iev)+comp_fun_Bsbar(2,2,2,2,2,2,iev)+comp_fun_Bsbar(2,2,3,2,2,3,iev)+comp_fun_Bsbar(2,2,4,2,2,4,iev)+2.*comp_fun_Bsbar(0,1,0,0,0,0,iev)
++2.*comp_fun_Bsbar(0,1,0,1,0,0,iev)+2.*comp_fun_Bsbar(0,1,0,2,0,0,iev)+2.*comp_fun_Bsbar(0,2,0,0,0,0,iev)+2.*comp_fun_Bsbar(0,2,0,0,1,0,iev)+2.*comp_fun_Bsbar(0,2,0,1,0,0,iev)+2.*comp_fun_Bsbar(0,2,0,1,1,0,iev)
++2.*comp_fun_Bsbar(0,2,0,2,0,0,iev)+2.*comp_fun_Bsbar(0,2,0,2,1,0,iev)+2.*comp_fun_Bsbar(1,0,0,0,0,0,iev)+2.*comp_fun_Bsbar(1,1,0,0,0,0,iev)+2.*comp_fun_Bsbar(1,1,0,0,1,0,iev)+2.*comp_fun_Bsbar(1,1,0,1,0,0,iev)
++2.*comp_fun_Bsbar(1,1,0,2,0,0,iev)+2.*comp_fun_Bsbar(1,1,1,0,0,0,iev)+2.*comp_fun_Bsbar(1,1,1,0,1,0,iev)+2.*comp_fun_Bsbar(1,1,1,0,2,0,iev)+2.*comp_fun_Bsbar(1,1,1,1,0,0,iev)+2.*comp_fun_Bsbar(1,1,1,1,1,0,iev)
++2.*comp_fun_Bsbar(1,1,1,1,2,0,iev)+2.*comp_fun_Bsbar(1,1,1,2,0,0,iev)+2.*comp_fun_Bsbar(1,1,1,2,1,0,iev)+2.*comp_fun_Bsbar(1,1,1,2,2,0,iev)+2.*comp_fun_Bsbar(1,1,2,0,0,0,iev)+2.*comp_fun_Bsbar(1,1,2,0,1,0,iev)
++2.*comp_fun_Bsbar(1,1,2,0,2,0,iev)+2.*comp_fun_Bsbar(1,1,2,1,0,0,iev)+2.*comp_fun_Bsbar(1,1,2,1,1,0,iev)+2.*comp_fun_Bsbar(1,1,2,1,1,1,iev)+2.*comp_fun_Bsbar(1,1,2,1,2,0,iev)+2.*comp_fun_Bsbar(1,1,2,1,2,1,iev)
++2.*comp_fun_Bsbar(1,1,2,2,0,0,iev)+2.*comp_fun_Bsbar(1,1,2,2,1,0,iev)+2.*comp_fun_Bsbar(1,1,2,2,1,1,iev)+2.*comp_fun_Bsbar(1,1,2,2,2,0,iev)+2.*comp_fun_Bsbar(1,1,2,2,2,1,iev)+2.*comp_fun_Bsbar(1,2,0,0,0,0,iev)
++2.*comp_fun_Bsbar(1,2,0,0,1,0,iev)+2.*comp_fun_Bsbar(1,2,0,0,2,0,iev)+2.*comp_fun_Bsbar(1,2,0,1,0,0,iev)+2.*comp_fun_Bsbar(1,2,0,1,1,0,iev)+2.*comp_fun_Bsbar(1,2,0,2,0,0,iev)+2.*comp_fun_Bsbar(1,2,0,2,1,0,iev)
++2.*comp_fun_Bsbar(1,2,1,0,0,0,iev)+2.*comp_fun_Bsbar(1,2,1,0,1,0,iev)+2.*comp_fun_Bsbar(1,2,1,0,2,0,iev)+2.*comp_fun_Bsbar(1,2,1,1,0,0,iev)+2.*comp_fun_Bsbar(1,2,1,1,1,0,iev)+2.*comp_fun_Bsbar(1,2,1,1,1,1,iev)
++2.*comp_fun_Bsbar(1,2,1,1,2,0,iev)+2.*comp_fun_Bsbar(1,2,1,2,0,0,iev)+2.*comp_fun_Bsbar(1,2,1,2,1,0,iev)+2.*comp_fun_Bsbar(1,2,1,2,1,1,iev)+2.*comp_fun_Bsbar(1,2,1,2,2,0,iev)+2.*comp_fun_Bsbar(1,2,2,0,0,0,iev)
++2.*comp_fun_Bsbar(1,2,2,0,1,0,iev)+2.*comp_fun_Bsbar(1,2,2,0,2,0,iev)+2.*comp_fun_Bsbar(1,2,2,1,0,0,iev)+2.*comp_fun_Bsbar(1,2,2,1,1,0,iev)+2.*comp_fun_Bsbar(1,2,2,1,1,1,iev)+2.*comp_fun_Bsbar(1,2,2,1,1,2,iev)
++2.*comp_fun_Bsbar(1,2,2,1,2,0,iev)+2.*comp_fun_Bsbar(1,2,2,1,2,1,iev)+2.*comp_fun_Bsbar(1,2,2,2,0,0,iev)+2.*comp_fun_Bsbar(1,2,2,2,1,0,iev)+2.*comp_fun_Bsbar(1,2,2,2,1,1,iev)+2.*comp_fun_Bsbar(1,2,2,2,1,2,iev)
++2.*comp_fun_Bsbar(1,2,2,2,2,0,iev)+2.*comp_fun_Bsbar(1,2,2,2,2,1,iev)+2.*comp_fun_Bsbar(2,0,0,0,0,0,iev)+2.*comp_fun_Bsbar(2,0,0,1,0,0,iev)+2.*comp_fun_Bsbar(2,1,0,0,0,0,iev)+2.*comp_fun_Bsbar(2,1,0,0,1,0,iev)
++2.*comp_fun_Bsbar(2,1,0,1,0,0,iev)+2.*comp_fun_Bsbar(2,1,0,1,1,0,iev)+2.*comp_fun_Bsbar(2,1,0,2,0,0,iev)+2.*comp_fun_Bsbar(2,1,1,0,0,0,iev)+2.*comp_fun_Bsbar(2,1,1,0,1,0,iev)+2.*comp_fun_Bsbar(2,1,1,0,2,0,iev)
++2.*comp_fun_Bsbar(2,1,1,1,0,0,iev)+2.*comp_fun_Bsbar(2,1,1,1,1,0,iev)+2.*comp_fun_Bsbar(2,1,1,1,1,1,iev)+2.*comp_fun_Bsbar(2,1,1,1,2,0,iev)+2.*comp_fun_Bsbar(2,1,1,2,0,0,iev)+2.*comp_fun_Bsbar(2,1,1,2,1,0,iev)
++2.*comp_fun_Bsbar(2,1,1,2,2,0,iev)+2.*comp_fun_Bsbar(2,1,2,0,0,0,iev)+2.*comp_fun_Bsbar(2,1,2,0,1,0,iev)+2.*comp_fun_Bsbar(2,1,2,0,2,0,iev)+2.*comp_fun_Bsbar(2,1,2,1,0,0,iev)+2.*comp_fun_Bsbar(2,1,2,1,1,0,iev)
++2.*comp_fun_Bsbar(2,1,2,1,1,1,iev)+2.*comp_fun_Bsbar(2,1,2,1,1,2,iev)+2.*comp_fun_Bsbar(2,1,2,1,2,0,iev)+2.*comp_fun_Bsbar(2,1,2,1,2,1,iev)+2.*comp_fun_Bsbar(2,1,2,2,0,0,iev)+2.*comp_fun_Bsbar(2,1,2,2,1,0,iev)
++2.*comp_fun_Bsbar(2,1,2,2,1,1,iev)+2.*comp_fun_Bsbar(2,1,2,2,2,0,iev)+2.*comp_fun_Bsbar(2,1,2,2,2,1,iev)+2.*comp_fun_Bsbar(2,2,0,0,0,0,iev)+2.*comp_fun_Bsbar(2,2,0,0,1,0,iev)+2.*comp_fun_Bsbar(2,2,0,0,2,0,iev)
++2.*comp_fun_Bsbar(2,2,0,1,0,0,iev)+2.*comp_fun_Bsbar(2,2,0,1,1,0,iev)+2.*comp_fun_Bsbar(2,2,0,1,2,0,iev)+2.*comp_fun_Bsbar(2,2,0,2,0,0,iev)+2.*comp_fun_Bsbar(2,2,0,2,1,0,iev)+2.*comp_fun_Bsbar(2,2,1,0,0,0,iev)
++2.*comp_fun_Bsbar(2,2,1,0,1,0,iev)+2.*comp_fun_Bsbar(2,2,1,0,2,0,iev)+2.*comp_fun_Bsbar(2,2,1,1,0,0,iev)+2.*comp_fun_Bsbar(2,2,1,1,1,0,iev)+2.*comp_fun_Bsbar(2,2,1,1,1,1,iev)+2.*comp_fun_Bsbar(2,2,1,1,2,0,iev)
++2.*comp_fun_Bsbar(2,2,1,1,2,1,iev)+2.*comp_fun_Bsbar(2,2,1,2,0,0,iev)+2.*comp_fun_Bsbar(2,2,1,2,1,0,iev)+2.*comp_fun_Bsbar(2,2,1,2,1,1,iev)+2.*comp_fun_Bsbar(2,2,1,2,2,0,iev)+2.*comp_fun_Bsbar(2,2,2,0,0,0,iev)
++2.*comp_fun_Bsbar(2,2,2,0,1,0,iev)+2.*comp_fun_Bsbar(2,2,2,0,2,0,iev)+2.*comp_fun_Bsbar(2,2,2,1,0,0,iev)+2.*comp_fun_Bsbar(2,2,2,1,1,0,iev)+2.*comp_fun_Bsbar(2,2,2,1,1,1,iev)+2.*comp_fun_Bsbar(2,2,2,1,1,2,iev)
++2.*comp_fun_Bsbar(2,2,2,1,2,0,iev)+2.*comp_fun_Bsbar(2,2,2,1,2,1,iev)+2.*comp_fun_Bsbar(2,2,2,1,2,2,iev)+2.*comp_fun_Bsbar(2,2,2,2,0,0,iev)+2.*comp_fun_Bsbar(2,2,2,2,1,0,iev)+2.*comp_fun_Bsbar(2,2,2,2,1,1,iev)
++2.*comp_fun_Bsbar(2,2,2,2,1,2,iev)+2.*comp_fun_Bsbar(2,2,2,2,2,0,iev)+2.*comp_fun_Bsbar(2,2,2,2,2,1,iev)+2.*comp_fun_Bsbar(2,2,3,0,0,0,iev)+2.*comp_fun_Bsbar(2,2,3,0,1,0,iev)+2.*comp_fun_Bsbar(2,2,3,0,2,0,iev)
++2.*comp_fun_Bsbar(2,2,3,1,0,0,iev)+2.*comp_fun_Bsbar(2,2,3,1,1,0,iev)+2.*comp_fun_Bsbar(2,2,3,1,1,1,iev)+2.*comp_fun_Bsbar(2,2,3,1,1,2,iev)+2.*comp_fun_Bsbar(2,2,3,1,2,0,iev)+2.*comp_fun_Bsbar(2,2,3,1,2,1,iev)
++2.*comp_fun_Bsbar(2,2,3,1,2,2,iev)+2.*comp_fun_Bsbar(2,2,3,2,0,0,iev)+2.*comp_fun_Bsbar(2,2,3,2,1,0,iev)+2.*comp_fun_Bsbar(2,2,3,2,1,1,iev)+2.*comp_fun_Bsbar(2,2,3,2,1,2,iev)+2.*comp_fun_Bsbar(2,2,3,2,2,0,iev)
++2.*comp_fun_Bsbar(2,2,3,2,2,1,iev)+2.*comp_fun_Bsbar(2,2,3,2,2,2,iev)+2.*comp_fun_Bsbar(2,2,4,0,0,0,iev)+2.*comp_fun_Bsbar(2,2,4,0,1,0,iev)+2.*comp_fun_Bsbar(2,2,4,0,2,0,iev)+2.*comp_fun_Bsbar(2,2,4,1,0,0,iev)
++2.*comp_fun_Bsbar(2,2,4,1,1,0,iev)+2.*comp_fun_Bsbar(2,2,4,1,1,1,iev)+2.*comp_fun_Bsbar(2,2,4,1,1,2,iev)+2.*comp_fun_Bsbar(2,2,4,1,2,0,iev)+2.*comp_fun_Bsbar(2,2,4,1,2,1,iev)+2.*comp_fun_Bsbar(2,2,4,1,2,2,iev)
++2.*comp_fun_Bsbar(2,2,4,2,0,0,iev)+2.*comp_fun_Bsbar(2,2,4,2,1,0,iev)+2.*comp_fun_Bsbar(2,2,4,2,1,1,iev)+2.*comp_fun_Bsbar(2,2,4,2,1,2,iev)+2.*comp_fun_Bsbar(2,2,4,2,2,0,iev)+2.*comp_fun_Bsbar(2,2,4,2,2,1,iev)
++2.*comp_fun_Bsbar(2,2,4,2,2,2,iev)+2.*comp_fun_Bsbar(2,2,4,2,2,3,iev);
+
+ }
+
+__device__ pycuda::complex<double> ITBsj1j2hj1pj2php(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) {
+
+   return IT_cosh_temp_deltat[0][iev]*M_Average(j1,j2,h,j1p,j2p,hp)-IT_sinh_temp_deltat[0][iev]*M_DeltaGamma(j1,j2,h,j1p,j2p,hp)+IT_cos_temp_deltat[0][iev]*M_DirCP(j1,j2,h,j1p,j2p,hp)+IT_sin_temp_deltat[0][iev]*M_MixCP(j1,j2,h,j1p,j2p,hp);
+
+ }
+
+__device__ double comp_int_Bs(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) { 
+   return pycuda::real(ITBsj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp,iev)*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*Ihj1j2j1pj2p(j1,j2,j1p,j2p))*Ighhp(h,hp)*Ifjjphhp(j1,j1p,h,hp)*Ifjjphhp(j2,j2p,h,hp);
+ }
+
+__device__ double int_Bs(int iev) {
+
+   return comp_int_Bs(0,0,0,0,0,0,iev)+comp_int_Bs(0,1,0,0,1,0,iev)+comp_int_Bs(0,2,0,0,2,0,iev)+comp_int_Bs(1,0,0,1,0,0,iev)+comp_int_Bs(1,1,0,1,1,0,iev)
++comp_int_Bs(1,1,1,1,1,1,iev)+comp_int_Bs(1,1,2,1,1,2,iev)+comp_int_Bs(1,2,0,1,2,0,iev)+comp_int_Bs(1,2,1,1,2,1,iev)+comp_int_Bs(1,2,2,1,2,2,iev)
++comp_int_Bs(2,0,0,2,0,0,iev)+comp_int_Bs(2,1,0,2,1,0,iev)+comp_int_Bs(2,1,1,2,1,1,iev)+comp_int_Bs(2,1,2,2,1,2,iev)+comp_int_Bs(2,2,0,2,2,0,iev)
++comp_int_Bs(2,2,1,2,2,1,iev)+comp_int_Bs(2,2,2,2,2,2,iev)+comp_int_Bs(2,2,3,2,2,3,iev)+comp_int_Bs(2,2,4,2,2,4,iev)+2.*comp_int_Bs(0,1,0,0,0,0,iev)
++2.*comp_int_Bs(0,1,0,1,0,0,iev)+2.*comp_int_Bs(0,1,0,2,0,0,iev)+2.*comp_int_Bs(0,2,0,0,0,0,iev)+2.*comp_int_Bs(0,2,0,0,1,0,iev)+2.*comp_int_Bs(0,2,0,1,0,0,iev)
++2.*comp_int_Bs(0,2,0,1,1,0,iev)+2.*comp_int_Bs(0,2,0,2,0,0,iev)+2.*comp_int_Bs(0,2,0,2,1,0,iev)+2.*comp_int_Bs(1,0,0,0,0,0,iev)+2.*comp_int_Bs(1,1,0,0,0,0,iev)
++2.*comp_int_Bs(1,1,0,0,1,0,iev)+2.*comp_int_Bs(1,1,0,1,0,0,iev)+2.*comp_int_Bs(1,1,0,2,0,0,iev)+2.*comp_int_Bs(1,2,0,0,0,0,iev)+2.*comp_int_Bs(1,2,0,0,1,0,iev)
++2.*comp_int_Bs(1,2,0,0,2,0,iev)+2.*comp_int_Bs(1,2,0,1,0,0,iev)+2.*comp_int_Bs(1,2,0,1,1,0,iev)+2.*comp_int_Bs(1,2,0,2,0,0,iev)+2.*comp_int_Bs(1,2,0,2,1,0,iev)
++2.*comp_int_Bs(1,2,1,1,1,1,iev)+2.*comp_int_Bs(1,2,1,2,1,1,iev)+2.*comp_int_Bs(1,2,2,1,1,2,iev)+2.*comp_int_Bs(1,2,2,2,1,2,iev)+2.*comp_int_Bs(2,0,0,0,0,0,iev)
++2.*comp_int_Bs(2,0,0,1,0,0,iev)+2.*comp_int_Bs(2,1,0,0,0,0,iev)+2.*comp_int_Bs(2,1,0,0,1,0,iev)+2.*comp_int_Bs(2,1,0,1,0,0,iev)+2.*comp_int_Bs(2,1,0,1,1,0,iev)
++2.*comp_int_Bs(2,1,0,2,0,0,iev)+2.*comp_int_Bs(2,1,1,1,1,1,iev)+2.*comp_int_Bs(2,1,2,1,1,2,iev)+2.*comp_int_Bs(2,2,0,0,0,0,iev)+2.*comp_int_Bs(2,2,0,0,1,0,iev)
++2.*comp_int_Bs(2,2,0,0,2,0,iev)+2.*comp_int_Bs(2,2,0,1,0,0,iev)+2.*comp_int_Bs(2,2,0,1,1,0,iev)+2.*comp_int_Bs(2,2,0,1,2,0,iev)+2.*comp_int_Bs(2,2,0,2,0,0,iev)
++2.*comp_int_Bs(2,2,0,2,1,0,iev)+2.*comp_int_Bs(2,2,1,1,1,1,iev)+2.*comp_int_Bs(2,2,1,1,2,1,iev)+2.*comp_int_Bs(2,2,1,2,1,1,iev)+2.*comp_int_Bs(2,2,2,1,1,2,iev)
++2.*comp_int_Bs(2,2,2,1,2,2,iev)+2.*comp_int_Bs(2,2,2,2,1,2,iev);
+
+ }
+
+__device__ pycuda::complex<double> ITBsbarj1j2hj1pj2php(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) {
+
+   return IT_cosh_temp_deltat[0][iev]*M_Average(j1,j2,h,j1p,j2p,hp)-IT_sinh_temp_deltat[0][iev]*M_DeltaGamma(j1,j2,h,j1p,j2p,hp)-IT_cos_temp_deltat[0][iev]*M_DirCP(j1,j2,h,j1p,j2p,hp)-IT_sin_temp_deltat[0][iev]*M_MixCP(j1,j2,h,j1p,j2p,hp);
+
+ }
+
+__device__ double comp_int_Bsbar(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) { 
+   return pycuda::real(ITBsbarj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp,iev)*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*Ihj1j2j1pj2p(j1,j2,j1p,j2p))*Ighhp(h,hp)*Ifjjphhp(j1,j1p,h,hp)*Ifjjphhp(j2,j2p,h,hp);
+ }
+
+__device__ double int_Bsbar(int iev) {
+
+   return comp_int_Bsbar(0,0,0,0,0,0,iev)+comp_int_Bsbar(0,1,0,0,1,0,iev)+comp_int_Bsbar(0,2,0,0,2,0,iev)+comp_int_Bsbar(1,0,0,1,0,0,iev)+comp_int_Bsbar(1,1,0,1,1,0,iev)
++comp_int_Bsbar(1,1,1,1,1,1,iev)+comp_int_Bsbar(1,1,2,1,1,2,iev)+comp_int_Bsbar(1,2,0,1,2,0,iev)+comp_int_Bsbar(1,2,1,1,2,1,iev)+comp_int_Bsbar(1,2,2,1,2,2,iev)
++comp_int_Bsbar(2,0,0,2,0,0,iev)+comp_int_Bsbar(2,1,0,2,1,0,iev)+comp_int_Bsbar(2,1,1,2,1,1,iev)+comp_int_Bsbar(2,1,2,2,1,2,iev)+comp_int_Bsbar(2,2,0,2,2,0,iev)
++comp_int_Bsbar(2,2,1,2,2,1,iev)+comp_int_Bsbar(2,2,2,2,2,2,iev)+comp_int_Bsbar(2,2,3,2,2,3,iev)+comp_int_Bsbar(2,2,4,2,2,4,iev)+2.*comp_int_Bsbar(0,1,0,0,0,0,iev)
++2.*comp_int_Bsbar(0,1,0,1,0,0,iev)+2.*comp_int_Bsbar(0,1,0,2,0,0,iev)+2.*comp_int_Bsbar(0,2,0,0,0,0,iev)+2.*comp_int_Bsbar(0,2,0,0,1,0,iev)+2.*comp_int_Bsbar(0,2,0,1,0,0,iev)
++2.*comp_int_Bsbar(0,2,0,1,1,0,iev)+2.*comp_int_Bsbar(0,2,0,2,0,0,iev)+2.*comp_int_Bsbar(0,2,0,2,1,0,iev)+2.*comp_int_Bsbar(1,0,0,0,0,0,iev)+2.*comp_int_Bsbar(1,1,0,0,0,0,iev)
++2.*comp_int_Bsbar(1,1,0,0,1,0,iev)+2.*comp_int_Bsbar(1,1,0,1,0,0,iev)+2.*comp_int_Bsbar(1,1,0,2,0,0,iev)+2.*comp_int_Bsbar(1,2,0,0,0,0,iev)+2.*comp_int_Bsbar(1,2,0,0,1,0,iev)
++2.*comp_int_Bsbar(1,2,0,0,2,0,iev)+2.*comp_int_Bsbar(1,2,0,1,0,0,iev)+2.*comp_int_Bsbar(1,2,0,1,1,0,iev)+2.*comp_int_Bsbar(1,2,0,2,0,0,iev)+2.*comp_int_Bsbar(1,2,0,2,1,0,iev)
++2.*comp_int_Bsbar(1,2,1,1,1,1,iev)+2.*comp_int_Bsbar(1,2,1,2,1,1,iev)+2.*comp_int_Bsbar(1,2,2,1,1,2,iev)+2.*comp_int_Bsbar(1,2,2,2,1,2,iev)+2.*comp_int_Bsbar(2,0,0,0,0,0,iev)
++2.*comp_int_Bsbar(2,0,0,1,0,0,iev)+2.*comp_int_Bsbar(2,1,0,0,0,0,iev)+2.*comp_int_Bsbar(2,1,0,0,1,0,iev)+2.*comp_int_Bsbar(2,1,0,1,0,0,iev)+2.*comp_int_Bsbar(2,1,0,1,1,0,iev)
++2.*comp_int_Bsbar(2,1,0,2,0,0,iev)+2.*comp_int_Bsbar(2,1,1,1,1,1,iev)+2.*comp_int_Bsbar(2,1,2,1,1,2,iev)+2.*comp_int_Bsbar(2,2,0,0,0,0,iev)+2.*comp_int_Bsbar(2,2,0,0,1,0,iev)
++2.*comp_int_Bsbar(2,2,0,0,2,0,iev)+2.*comp_int_Bsbar(2,2,0,1,0,0,iev)+2.*comp_int_Bsbar(2,2,0,1,1,0,iev)+2.*comp_int_Bsbar(2,2,0,1,2,0,iev)+2.*comp_int_Bsbar(2,2,0,2,0,0,iev)
++2.*comp_int_Bsbar(2,2,0,2,1,0,iev)+2.*comp_int_Bsbar(2,2,1,1,1,1,iev)+2.*comp_int_Bsbar(2,2,1,1,2,1,iev)+2.*comp_int_Bsbar(2,2,1,2,1,1,iev)+2.*comp_int_Bsbar(2,2,2,1,1,2,iev)
++2.*comp_int_Bsbar(2,2,2,1,2,2,iev)+2.*comp_int_Bsbar(2,2,2,2,1,2,iev);
+
+ }
+
+__global__ void set_generator(double *options, double *re_amps, double *dirCP_asyms, double *im_amps, double *weak_phases, double *mixing_params, double *calib_params, double *cond_distr_params, double *mass_integrals, double *ang_integrals) {
+
+   set_buffer_options(options,0);
+   set_buffer_amplitudes(re_amps,dirCP_asyms,im_amps,weak_phases,mixing_params,calib_params);
+
+   tag_eff_SSK = cond_distr_params[0];
+   mu1_SSK = cond_distr_params[1];
+   sigma1_SSK = cond_distr_params[2];
+   c_SSK = cond_distr_params[3];
+   mu2_SSK = cond_distr_params[4];
+   sigma2_SSK = cond_distr_params[5];
+   tag_eff_OS = cond_distr_params[6];
+   mu1_OS = cond_distr_params[7];
+   sigma1_OS = cond_distr_params[8];
+   c_OS = cond_distr_params[9];
+   mu2_OS = cond_distr_params[10];
+   sigma2_OS = cond_distr_params[11];
+   gamma1_dt = cond_distr_params[12];
+   beta1_dt = cond_distr_params[13];
+   c_dt = cond_distr_params[14];
+   gamma2_dt = cond_distr_params[15];
+   beta2_dt = cond_distr_params[16];
+
+   Im00 = mass_integrals[0];
+   Im01 = mass_integrals[1];
+   Im10 = mass_integrals[2];
+   Im02 = mass_integrals[3];
+   Im20 = mass_integrals[4];
+   Im11 = mass_integrals[5];
+   Im12 = mass_integrals[6];
+   Im21 = mass_integrals[7];
+   Im22 = mass_integrals[8];
+
+   Ih1Re = mass_integrals[9];
+   Ih2Re = mass_integrals[10];
+   Ih3Re = mass_integrals[11];
+   Ih4Re = mass_integrals[12];
+   Ih5Re = mass_integrals[13];
+   Ih6Re = mass_integrals[14];
+   Ih7Re = mass_integrals[15];
+   Ih8Re = mass_integrals[16];
+   Ih9Re = mass_integrals[17];
+   Ih10Re = mass_integrals[18];
+   Ih11Re = mass_integrals[19];
+   Ih12Re = mass_integrals[20];
+   Ih13Re = mass_integrals[21];
+   Ih14Re = mass_integrals[22];
+   Ih15Re = mass_integrals[23];
+   Ih16Re = mass_integrals[24];
+   Ih17Re = mass_integrals[25];
+   Ih18Re = mass_integrals[26];
+   Ih19Re = mass_integrals[27];
+   Ih20Re = mass_integrals[28];
+   Ih21Re = mass_integrals[29];
+   Ih22Re = mass_integrals[30];
+   Ih23Re = mass_integrals[31];
+   Ih24Re = mass_integrals[32];
+   Ih25Re = mass_integrals[33];
+   Ih26Re = mass_integrals[34];
+   Ih27Re = mass_integrals[35];
+   Ih28Re = mass_integrals[36];
+   Ih29Re = mass_integrals[37];
+   Ih30Re = mass_integrals[38];
+
+   Ih1Im = mass_integrals[39];
+   Ih2Im = mass_integrals[40];
+   Ih3Im = mass_integrals[41];
+   Ih4Im = mass_integrals[42];
+   Ih5Im = mass_integrals[43];
+   Ih6Im = mass_integrals[44];
+   Ih7Im = mass_integrals[45];
+   Ih8Im = mass_integrals[46];
+   Ih9Im = mass_integrals[47];
+   Ih10Im = mass_integrals[48];
+   Ih11Im = mass_integrals[49];
+   Ih12Im = mass_integrals[50];
+   Ih13Im = mass_integrals[51];
+   Ih14Im = mass_integrals[52];
+   Ih15Im = mass_integrals[53];
+   Ih16Im = mass_integrals[54];
+   Ih17Im = mass_integrals[55];
+   Ih18Im = mass_integrals[56];
+   Ih19Im = mass_integrals[57];
+   Ih20Im = mass_integrals[58];
+   Ih21Im = mass_integrals[59];
+
+   If1 = ang_integrals[0];
+   If2 = ang_integrals[1];
+   If3 = ang_integrals[2];
+   If4 = ang_integrals[3];
+   If5 = ang_integrals[4];
+   If6 = ang_integrals[5];
+   If7 = ang_integrals[6];
+   If8 = ang_integrals[7];
+   If9 = ang_integrals[8];
+   If10 = ang_integrals[9];
+   If11 = ang_integrals[10];
+   If12 = ang_integrals[11];
+   If13 = ang_integrals[12];
+   If14 = ang_integrals[13];
+   If15 = ang_integrals[14];
+   If16 = ang_integrals[15];
+   If17 = ang_integrals[16];
+   If18 = ang_integrals[17];
+
+   reIhj1j2j1pj2pdict[0][0][0][0] = pycuda::real(pycuda::complex<double>(Ih22Re,0.));
+   reIhj1j2j1pj2pdict[0][0][0][1] = pycuda::real(pycuda::complex<double>(Ih1Re,Ih1Im));
+   reIhj1j2j1pj2pdict[0][0][0][2] = pycuda::real(pycuda::complex<double>(Ih2Re,Ih2Im));
+   reIhj1j2j1pj2pdict[0][0][1][0] = pycuda::real(pycuda::complex<double>(Ih1Re,Ih1Im));
+   reIhj1j2j1pj2pdict[0][0][1][1] = pycuda::real(pycuda::complex<double>(Ih3Re,Ih3Im));
+   reIhj1j2j1pj2pdict[0][0][1][2] = pycuda::real(pycuda::complex<double>(Ih4Re,Ih4Im));
+   reIhj1j2j1pj2pdict[0][0][2][0] = pycuda::real(pycuda::complex<double>(Ih2Re,Ih2Im));
+   reIhj1j2j1pj2pdict[0][0][2][1] = pycuda::real(pycuda::complex<double>(Ih4Re,Ih4Im));
+   reIhj1j2j1pj2pdict[0][0][2][2] = pycuda::real(pycuda::complex<double>(Ih5Re,Ih5Im));
+   reIhj1j2j1pj2pdict[0][1][0][0] = pycuda::real(pycuda::complex<double>(Ih1Re,-Ih1Im));
+   reIhj1j2j1pj2pdict[0][1][0][1] = pycuda::real(pycuda::complex<double>(Ih23Re,0.));
+   reIhj1j2j1pj2pdict[0][1][0][2] = pycuda::real(pycuda::complex<double>(Ih6Re,Ih6Im));
+   reIhj1j2j1pj2pdict[0][1][1][0] = pycuda::real(pycuda::complex<double>(Ih7Re,Ih7Im));
+   reIhj1j2j1pj2pdict[0][1][1][1] = pycuda::real(pycuda::complex<double>(Ih8Re,Ih8Im));
+   reIhj1j2j1pj2pdict[0][1][1][2] = pycuda::real(pycuda::complex<double>(Ih9Re,Ih9Im));
+   reIhj1j2j1pj2pdict[0][1][2][0] = pycuda::real(pycuda::complex<double>(Ih10Re,Ih10Im));
+   reIhj1j2j1pj2pdict[0][1][2][1] = pycuda::real(pycuda::complex<double>(Ih11Re,Ih11Im));
+   reIhj1j2j1pj2pdict[0][1][2][2] = pycuda::real(pycuda::complex<double>(Ih12Re,Ih12Im));
+   reIhj1j2j1pj2pdict[0][2][0][0] = pycuda::real(pycuda::complex<double>(Ih2Re,-Ih2Im));
+   reIhj1j2j1pj2pdict[0][2][0][1] = pycuda::real(pycuda::complex<double>(Ih6Re,-Ih6Im));
+   reIhj1j2j1pj2pdict[0][2][0][2] = pycuda::real(pycuda::complex<double>(Ih25Re,0.));
+   reIhj1j2j1pj2pdict[0][2][1][0] = pycuda::real(pycuda::complex<double>(Ih10Re,-Ih10Im));
+   reIhj1j2j1pj2pdict[0][2][1][1] = pycuda::real(pycuda::complex<double>(Ih13Re,Ih13Im));
+   reIhj1j2j1pj2pdict[0][2][1][2] = pycuda::real(pycuda::complex<double>(Ih14Re,Ih14Im));
+   reIhj1j2j1pj2pdict[0][2][2][0] = pycuda::real(pycuda::complex<double>(Ih15Re,Ih15Im));
+   reIhj1j2j1pj2pdict[0][2][2][1] = pycuda::real(pycuda::complex<double>(Ih16Re,Ih16Im));
+   reIhj1j2j1pj2pdict[0][2][2][2] = pycuda::real(pycuda::complex<double>(Ih17Re,Ih17Im));
+   reIhj1j2j1pj2pdict[1][0][0][0] = pycuda::real(pycuda::complex<double>(Ih1Re,-Ih1Im));
+   reIhj1j2j1pj2pdict[1][0][0][1] = pycuda::real(pycuda::complex<double>(Ih7Re,Ih7Im));
+   reIhj1j2j1pj2pdict[1][0][0][2] = pycuda::real(pycuda::complex<double>(Ih10Re,Ih10Im));
+   reIhj1j2j1pj2pdict[1][0][1][0] = pycuda::real(pycuda::complex<double>(Ih24Re,0.));
+   reIhj1j2j1pj2pdict[1][0][1][1] = pycuda::real(pycuda::complex<double>(Ih8Re,Ih8Im));
+   reIhj1j2j1pj2pdict[1][0][1][2] = pycuda::real(pycuda::complex<double>(Ih11Re,Ih11Im));
+   reIhj1j2j1pj2pdict[1][0][2][0] = pycuda::real(pycuda::complex<double>(Ih6Re,Ih6Im));
+   reIhj1j2j1pj2pdict[1][0][2][1] = pycuda::real(pycuda::complex<double>(Ih9Re,Ih9Im));
+   reIhj1j2j1pj2pdict[1][0][2][2] = pycuda::real(pycuda::complex<double>(Ih12Re,Ih12Im));
+   reIhj1j2j1pj2pdict[1][1][0][0] = pycuda::real(pycuda::complex<double>(Ih3Re,-Ih3Im));
+   reIhj1j2j1pj2pdict[1][1][0][1] = pycuda::real(pycuda::complex<double>(Ih8Re,-Ih8Im));
+   reIhj1j2j1pj2pdict[1][1][0][2] = pycuda::real(pycuda::complex<double>(Ih13Re,-Ih13Im));
+   reIhj1j2j1pj2pdict[1][1][1][0] = pycuda::real(pycuda::complex<double>(Ih8Re,-Ih8Im));
+   reIhj1j2j1pj2pdict[1][1][1][1] = pycuda::real(pycuda::complex<double>(Ih27Re,0.));
+   reIhj1j2j1pj2pdict[1][1][1][2] = pycuda::real(pycuda::complex<double>(Ih18Re,Ih18Im));
+   reIhj1j2j1pj2pdict[1][1][2][0] = pycuda::real(pycuda::complex<double>(Ih13Re,-Ih13Im));
+   reIhj1j2j1pj2pdict[1][1][2][1] = pycuda::real(pycuda::complex<double>(Ih18Re,Ih18Im));
+   reIhj1j2j1pj2pdict[1][1][2][2] = pycuda::real(pycuda::complex<double>(Ih19Re,Ih19Im));
+   reIhj1j2j1pj2pdict[1][2][0][0] = pycuda::real(pycuda::complex<double>(Ih4Re,-Ih4Im));
+   reIhj1j2j1pj2pdict[1][2][0][1] = pycuda::real(pycuda::complex<double>(Ih9Re,-Ih9Im));
+   reIhj1j2j1pj2pdict[1][2][0][2] = pycuda::real(pycuda::complex<double>(Ih14Re,-Ih14Im));
+   reIhj1j2j1pj2pdict[1][2][1][0] = pycuda::real(pycuda::complex<double>(Ih11Re,-Ih11Im));
+   reIhj1j2j1pj2pdict[1][2][1][1] = pycuda::real(pycuda::complex<double>(Ih18Re,-Ih18Im));
+   reIhj1j2j1pj2pdict[1][2][1][2] = pycuda::real(pycuda::complex<double>(Ih28Re,0.));
+   reIhj1j2j1pj2pdict[1][2][2][0] = pycuda::real(pycuda::complex<double>(Ih16Re,-Ih16Im));
+   reIhj1j2j1pj2pdict[1][2][2][1] = pycuda::real(pycuda::complex<double>(Ih20Re,Ih20Im));
+   reIhj1j2j1pj2pdict[1][2][2][2] = pycuda::real(pycuda::complex<double>(Ih21Re,Ih21Im));
+   reIhj1j2j1pj2pdict[2][0][0][0] = pycuda::real(pycuda::complex<double>(Ih2Re,-Ih2Im));
+   reIhj1j2j1pj2pdict[2][0][0][1] = pycuda::real(pycuda::complex<double>(Ih10Re,-Ih10Im));
+   reIhj1j2j1pj2pdict[2][0][0][2] = pycuda::real(pycuda::complex<double>(Ih15Re,Ih15Im));
+   reIhj1j2j1pj2pdict[2][0][1][0] = pycuda::real(pycuda::complex<double>(Ih6Re,-Ih6Im));
+   reIhj1j2j1pj2pdict[2][0][1][1] = pycuda::real(pycuda::complex<double>(Ih13Re,Ih13Im));
+   reIhj1j2j1pj2pdict[2][0][1][2] = pycuda::real(pycuda::complex<double>(Ih16Re,Ih16Im));
+   reIhj1j2j1pj2pdict[2][0][2][0] = pycuda::real(pycuda::complex<double>(Ih26Re,0.));
+   reIhj1j2j1pj2pdict[2][0][2][1] = pycuda::real(pycuda::complex<double>(Ih14Re,Ih14Im));
+   reIhj1j2j1pj2pdict[2][0][2][2] = pycuda::real(pycuda::complex<double>(Ih17Re,Ih17Im));
+   reIhj1j2j1pj2pdict[2][1][0][0] = pycuda::real(pycuda::complex<double>(Ih4Re,-Ih4Im));
+   reIhj1j2j1pj2pdict[2][1][0][1] = pycuda::real(pycuda::complex<double>(Ih11Re,-Ih11Im));
+   reIhj1j2j1pj2pdict[2][1][0][2] = pycuda::real(pycuda::complex<double>(Ih16Re,-Ih16Im));
+   reIhj1j2j1pj2pdict[2][1][1][0] = pycuda::real(pycuda::complex<double>(Ih9Re,-Ih9Im));
+   reIhj1j2j1pj2pdict[2][1][1][1] = pycuda::real(pycuda::complex<double>(Ih18Re,-Ih18Im));
+   reIhj1j2j1pj2pdict[2][1][1][2] = pycuda::real(pycuda::complex<double>(Ih20Re,Ih20Im));
+   reIhj1j2j1pj2pdict[2][1][2][0] = pycuda::real(pycuda::complex<double>(Ih14Re,-Ih14Im));
+   reIhj1j2j1pj2pdict[2][1][2][1] = pycuda::real(pycuda::complex<double>(Ih29Re,0.));
+   reIhj1j2j1pj2pdict[2][1][2][2] = pycuda::real(pycuda::complex<double>(Ih21Re,Ih21Im));
+   reIhj1j2j1pj2pdict[2][2][0][0] = pycuda::real(pycuda::complex<double>(Ih5Re,-Ih5Im));
+   reIhj1j2j1pj2pdict[2][2][0][1] = pycuda::real(pycuda::complex<double>(Ih12Re,-Ih12Im));
+   reIhj1j2j1pj2pdict[2][2][0][2] = pycuda::real(pycuda::complex<double>(Ih17Re,-Ih17Im));
+   reIhj1j2j1pj2pdict[2][2][1][0] = pycuda::real(pycuda::complex<double>(Ih12Re,-Ih12Im));
+   reIhj1j2j1pj2pdict[2][2][1][1] = pycuda::real(pycuda::complex<double>(Ih19Re,-Ih19Im));
+   reIhj1j2j1pj2pdict[2][2][1][2] = pycuda::real(pycuda::complex<double>(Ih21Re,-Ih21Im));
+   reIhj1j2j1pj2pdict[2][2][2][0] = pycuda::real(pycuda::complex<double>(Ih17Re,-Ih17Im));
+   reIhj1j2j1pj2pdict[2][2][2][1] = pycuda::real(pycuda::complex<double>(Ih21Re,-Ih21Im));
+   reIhj1j2j1pj2pdict[2][2][2][2] = pycuda::real(pycuda::complex<double>(Ih30Re,0.));
+   imIhj1j2j1pj2pdict[0][0][0][0] = pycuda::imag(pycuda::complex<double>(Ih22Re,0.));
+   imIhj1j2j1pj2pdict[0][0][0][1] = pycuda::imag(pycuda::complex<double>(Ih1Re,Ih1Im));
+   imIhj1j2j1pj2pdict[0][0][0][2] = pycuda::imag(pycuda::complex<double>(Ih2Re,Ih2Im));
+   imIhj1j2j1pj2pdict[0][0][1][0] = pycuda::imag(pycuda::complex<double>(Ih1Re,Ih1Im));
+   imIhj1j2j1pj2pdict[0][0][1][1] = pycuda::imag(pycuda::complex<double>(Ih3Re,Ih3Im));
+   imIhj1j2j1pj2pdict[0][0][1][2] = pycuda::imag(pycuda::complex<double>(Ih4Re,Ih4Im));
+   imIhj1j2j1pj2pdict[0][0][2][0] = pycuda::imag(pycuda::complex<double>(Ih2Re,Ih2Im));
+   imIhj1j2j1pj2pdict[0][0][2][1] = pycuda::imag(pycuda::complex<double>(Ih4Re,Ih4Im));
+   imIhj1j2j1pj2pdict[0][0][2][2] = pycuda::imag(pycuda::complex<double>(Ih5Re,Ih5Im));
+   imIhj1j2j1pj2pdict[0][1][0][0] = pycuda::imag(pycuda::complex<double>(Ih1Re,-Ih1Im));
+   imIhj1j2j1pj2pdict[0][1][0][1] = pycuda::imag(pycuda::complex<double>(Ih23Re,0.));
+   imIhj1j2j1pj2pdict[0][1][0][2] = pycuda::imag(pycuda::complex<double>(Ih6Re,Ih6Im));
+   imIhj1j2j1pj2pdict[0][1][1][0] = pycuda::imag(pycuda::complex<double>(Ih7Re,Ih7Im));
+   imIhj1j2j1pj2pdict[0][1][1][1] = pycuda::imag(pycuda::complex<double>(Ih8Re,Ih8Im));
+   imIhj1j2j1pj2pdict[0][1][1][2] = pycuda::imag(pycuda::complex<double>(Ih9Re,Ih9Im));
+   imIhj1j2j1pj2pdict[0][1][2][0] = pycuda::imag(pycuda::complex<double>(Ih10Re,Ih10Im));
+   imIhj1j2j1pj2pdict[0][1][2][1] = pycuda::imag(pycuda::complex<double>(Ih11Re,Ih11Im));
+   imIhj1j2j1pj2pdict[0][1][2][2] = pycuda::imag(pycuda::complex<double>(Ih12Re,Ih12Im));
+   imIhj1j2j1pj2pdict[0][2][0][0] = pycuda::imag(pycuda::complex<double>(Ih2Re,-Ih2Im));
+   imIhj1j2j1pj2pdict[0][2][0][1] = pycuda::imag(pycuda::complex<double>(Ih6Re,-Ih6Im));
+   imIhj1j2j1pj2pdict[0][2][0][2] = pycuda::imag(pycuda::complex<double>(Ih25Re,0.));
+   imIhj1j2j1pj2pdict[0][2][1][0] = pycuda::imag(pycuda::complex<double>(Ih10Re,-Ih10Im));
+   imIhj1j2j1pj2pdict[0][2][1][1] = pycuda::imag(pycuda::complex<double>(Ih13Re,Ih13Im));
+   imIhj1j2j1pj2pdict[0][2][1][2] = pycuda::imag(pycuda::complex<double>(Ih14Re,Ih14Im));
+   imIhj1j2j1pj2pdict[0][2][2][0] = pycuda::imag(pycuda::complex<double>(Ih15Re,Ih15Im));
+   imIhj1j2j1pj2pdict[0][2][2][1] = pycuda::imag(pycuda::complex<double>(Ih16Re,Ih16Im));
+   imIhj1j2j1pj2pdict[0][2][2][2] = pycuda::imag(pycuda::complex<double>(Ih17Re,Ih17Im));
+   imIhj1j2j1pj2pdict[1][0][0][0] = pycuda::imag(pycuda::complex<double>(Ih1Re,-Ih1Im));
+   imIhj1j2j1pj2pdict[1][0][0][1] = pycuda::imag(pycuda::complex<double>(Ih7Re,Ih7Im));
+   imIhj1j2j1pj2pdict[1][0][0][2] = pycuda::imag(pycuda::complex<double>(Ih10Re,Ih10Im));
+   imIhj1j2j1pj2pdict[1][0][1][0] = pycuda::imag(pycuda::complex<double>(Ih24Re,0.));
+   imIhj1j2j1pj2pdict[1][0][1][1] = pycuda::imag(pycuda::complex<double>(Ih8Re,Ih8Im));
+   imIhj1j2j1pj2pdict[1][0][1][2] = pycuda::imag(pycuda::complex<double>(Ih11Re,Ih11Im));
+   imIhj1j2j1pj2pdict[1][0][2][0] = pycuda::imag(pycuda::complex<double>(Ih6Re,Ih6Im));
+   imIhj1j2j1pj2pdict[1][0][2][1] = pycuda::imag(pycuda::complex<double>(Ih9Re,Ih9Im));
+   imIhj1j2j1pj2pdict[1][0][2][2] = pycuda::imag(pycuda::complex<double>(Ih12Re,Ih12Im));
+   imIhj1j2j1pj2pdict[1][1][0][0] = pycuda::imag(pycuda::complex<double>(Ih3Re,-Ih3Im));
+   imIhj1j2j1pj2pdict[1][1][0][1] = pycuda::imag(pycuda::complex<double>(Ih8Re,-Ih8Im));
+   imIhj1j2j1pj2pdict[1][1][0][2] = pycuda::imag(pycuda::complex<double>(Ih13Re,-Ih13Im));
+   imIhj1j2j1pj2pdict[1][1][1][0] = pycuda::imag(pycuda::complex<double>(Ih8Re,-Ih8Im));
+   imIhj1j2j1pj2pdict[1][1][1][1] = pycuda::imag(pycuda::complex<double>(Ih27Re,0.));
+   imIhj1j2j1pj2pdict[1][1][1][2] = pycuda::imag(pycuda::complex<double>(Ih18Re,Ih18Im));
+   imIhj1j2j1pj2pdict[1][1][2][0] = pycuda::imag(pycuda::complex<double>(Ih13Re,-Ih13Im));
+   imIhj1j2j1pj2pdict[1][1][2][1] = pycuda::imag(pycuda::complex<double>(Ih18Re,Ih18Im));
+   imIhj1j2j1pj2pdict[1][1][2][2] = pycuda::imag(pycuda::complex<double>(Ih19Re,Ih19Im));
+   imIhj1j2j1pj2pdict[1][2][0][0] = pycuda::imag(pycuda::complex<double>(Ih4Re,-Ih4Im));
+   imIhj1j2j1pj2pdict[1][2][0][1] = pycuda::imag(pycuda::complex<double>(Ih9Re,-Ih9Im));
+   imIhj1j2j1pj2pdict[1][2][0][2] = pycuda::imag(pycuda::complex<double>(Ih14Re,-Ih14Im));
+   imIhj1j2j1pj2pdict[1][2][1][0] = pycuda::imag(pycuda::complex<double>(Ih11Re,-Ih11Im));
+   imIhj1j2j1pj2pdict[1][2][1][1] = pycuda::imag(pycuda::complex<double>(Ih18Re,-Ih18Im));
+   imIhj1j2j1pj2pdict[1][2][1][2] = pycuda::imag(pycuda::complex<double>(Ih28Re,0.));
+   imIhj1j2j1pj2pdict[1][2][2][0] = pycuda::imag(pycuda::complex<double>(Ih16Re,-Ih16Im));
+   imIhj1j2j1pj2pdict[1][2][2][1] = pycuda::imag(pycuda::complex<double>(Ih20Re,Ih20Im));
+   imIhj1j2j1pj2pdict[1][2][2][2] = pycuda::imag(pycuda::complex<double>(Ih21Re,Ih21Im));
+   imIhj1j2j1pj2pdict[2][0][0][0] = pycuda::imag(pycuda::complex<double>(Ih2Re,-Ih2Im));
+   imIhj1j2j1pj2pdict[2][0][0][1] = pycuda::imag(pycuda::complex<double>(Ih10Re,-Ih10Im));
+   imIhj1j2j1pj2pdict[2][0][0][2] = pycuda::imag(pycuda::complex<double>(Ih15Re,Ih15Im));
+   imIhj1j2j1pj2pdict[2][0][1][0] = pycuda::imag(pycuda::complex<double>(Ih6Re,-Ih6Im));
+   imIhj1j2j1pj2pdict[2][0][1][1] = pycuda::imag(pycuda::complex<double>(Ih13Re,Ih13Im));
+   imIhj1j2j1pj2pdict[2][0][1][2] = pycuda::imag(pycuda::complex<double>(Ih16Re,Ih16Im));
+   imIhj1j2j1pj2pdict[2][0][2][0] = pycuda::imag(pycuda::complex<double>(Ih26Re,0.));
+   imIhj1j2j1pj2pdict[2][0][2][1] = pycuda::imag(pycuda::complex<double>(Ih14Re,Ih14Im));
+   imIhj1j2j1pj2pdict[2][0][2][2] = pycuda::imag(pycuda::complex<double>(Ih17Re,Ih17Im));
+   imIhj1j2j1pj2pdict[2][1][0][0] = pycuda::imag(pycuda::complex<double>(Ih4Re,-Ih4Im));
+   imIhj1j2j1pj2pdict[2][1][0][1] = pycuda::imag(pycuda::complex<double>(Ih11Re,-Ih11Im));
+   imIhj1j2j1pj2pdict[2][1][0][2] = pycuda::imag(pycuda::complex<double>(Ih16Re,-Ih16Im));
+   imIhj1j2j1pj2pdict[2][1][1][0] = pycuda::imag(pycuda::complex<double>(Ih9Re,-Ih9Im));
+   imIhj1j2j1pj2pdict[2][1][1][1] = pycuda::imag(pycuda::complex<double>(Ih18Re,-Ih18Im));
+   imIhj1j2j1pj2pdict[2][1][1][2] = pycuda::imag(pycuda::complex<double>(Ih20Re,Ih20Im));
+   imIhj1j2j1pj2pdict[2][1][2][0] = pycuda::imag(pycuda::complex<double>(Ih14Re,-Ih14Im));
+   imIhj1j2j1pj2pdict[2][1][2][1] = pycuda::imag(pycuda::complex<double>(Ih29Re,0.));
+   imIhj1j2j1pj2pdict[2][1][2][2] = pycuda::imag(pycuda::complex<double>(Ih21Re,Ih21Im));
+   imIhj1j2j1pj2pdict[2][2][0][0] = pycuda::imag(pycuda::complex<double>(Ih5Re,-Ih5Im));
+   imIhj1j2j1pj2pdict[2][2][0][1] = pycuda::imag(pycuda::complex<double>(Ih12Re,-Ih12Im));
+   imIhj1j2j1pj2pdict[2][2][0][2] = pycuda::imag(pycuda::complex<double>(Ih17Re,-Ih17Im));
+   imIhj1j2j1pj2pdict[2][2][1][0] = pycuda::imag(pycuda::complex<double>(Ih12Re,-Ih12Im));
+   imIhj1j2j1pj2pdict[2][2][1][1] = pycuda::imag(pycuda::complex<double>(Ih19Re,-Ih19Im));
+   imIhj1j2j1pj2pdict[2][2][1][2] = pycuda::imag(pycuda::complex<double>(Ih21Re,-Ih21Im));
+   imIhj1j2j1pj2pdict[2][2][2][0] = pycuda::imag(pycuda::complex<double>(Ih17Re,-Ih17Im));
+   imIhj1j2j1pj2pdict[2][2][2][1] = pycuda::imag(pycuda::complex<double>(Ih21Re,-Ih21Im));
+   imIhj1j2j1pj2pdict[2][2][2][2] = pycuda::imag(pycuda::complex<double>(Ih30Re,0.));
+
+ }
+
+__device__ void set_buffer_differential_terms_gen(int iev) {
+
+   double f1,f2,s1,s2,x1,x2;
+
+   if (acctype == 3) {
+      f1 = 1.;
+      f2 = 0.;
+      s1 = p0_tres_12+p1_tres_12*(t_err[0][iev]-deltatmean_tres_12);
+      s2 = 1.;
+      x1 = t[0][iev]/(sqrt(2.)*s1);
+      x2 = t[0][iev]/(sqrt(2.)*s2);
+   }
+   else {
+      f1 = 1.;
+      f2 = 0.;
+      if (year_opt == 0) {s1 = p0_tres_11+p1_tres_11*(t_err[0][iev]-deltatmean_tres_11);}
+      else {s1 = p0_tres_12+p1_tres_12*(t_err[0][iev]-deltatmean_tres_12);}
+      s2 = 1.;
+      x1 = t[0][iev]/(sqrt(2.)*s1);
+      x2 = t[0][iev]/(sqrt(2.)*s2);
+   }
+
+   pycuda::complex<double> z1_hyper_plus = s1/sqrt(2.)*pycuda::complex<double>(gamma_Bs_freq-0.5*delta_gamma_freq,0.);
+   pycuda::complex<double> z2_hyper_plus = s2/sqrt(2.)*pycuda::complex<double>(gamma_Bs_freq-0.5*delta_gamma_freq,0.);
+   pycuda::complex<double> z1_hyper_minus = s1/sqrt(2.)*pycuda::complex<double>(gamma_Bs_freq+0.5*delta_gamma_freq,0.);
+   pycuda::complex<double> z2_hyper_minus = s2/sqrt(2.)*pycuda::complex<double>(gamma_Bs_freq+0.5*delta_gamma_freq,0.);
+   pycuda::complex<double> z1_trigo = s1/sqrt(2.)*pycuda::complex<double>(gamma_Bs_freq,-delta_m_freq);
+   pycuda::complex<double> z2_trigo = s2/sqrt(2.)*pycuda::complex<double>(gamma_Bs_freq,-delta_m_freq);
+
+   double conv_exp_hyper_plus = pycuda::real(f1*conv_exp(x1,z1_hyper_plus)+f2*conv_exp(x2,z2_hyper_plus));
+   double conv_exp_hyper_minus = pycuda::real(f1*conv_exp(x1,z1_hyper_minus)+f2*conv_exp(x2,z2_hyper_minus));
+   pycuda::complex<double> conv_exp_trigo = f1*conv_exp(x1,z1_trigo)+f2*conv_exp(x2,z2_trigo);
+
+   T_cosh_temp[0][iev] = 0.5*(conv_exp_hyper_plus + conv_exp_hyper_minus);
+   T_sinh_temp[0][iev] = 0.5*(conv_exp_hyper_plus - conv_exp_hyper_minus);
+   T_cos_temp[0][iev] = pycuda::real(conv_exp_trigo);
+   T_sin_temp[0][iev] = pycuda::imag(conv_exp_trigo);
+
+   zeta_temp[0][iev] = zeta(decision_SSK[0][iev],decision_OS[0][iev],etamistag_SSK[0][iev],etamistag_OS[0][iev]);
+   DCP_tzero_temp[0][iev] = DCP_tzero(decision_SSK[0][iev],decision_OS[0][iev],etamistag_SSK[0][iev],etamistag_OS[0][iev]);
+
+   for (int i=0; i<18; ++i) {fi_cos1_temp[i][0][iev] = fi(cos1[0][iev],i+1);}
+   for (int i=0; i<18; ++i) {fi_cos2_temp[i][0][iev] = fi(cos2[0][iev],i+1);}
+   for (int i=0; i<15; ++i) {gi_temp[i][0][iev] = gi(phi[0][iev],i+1);}
+
+   for (int j1=0; j1<3; ++j1) {
+      for (int j2=0; j2<3; ++j2) {
+         pycuda::complex<double> M_temp = Mj1j2(m1[0][iev],m2[0][iev],j1,j2);
+         reMj1j2_temp[j1][j2][0][iev] = pycuda::real(M_temp);
+         imMj1j2_temp[j1][j2][0][iev] = pycuda::imag(M_temp);
+      }
+   }
+
+   phasespace_temp[0][iev] = phasespace(m1[0][iev],m2[0][iev]);
+
+ }
+
+__global__ void evaluate_Bs(double m1_ran, double m2_ran, double cos1_ran, double cos2_ran, double phi_ran, double t_ran, double t_err_ran, double *mixing_params, double *calib_params, double *out) {
+
+   decision_SSK[0][0] = 0;
+   decision_OS[0][0] = 0;
+   etamistag_SSK[0][0] = 0.5;
+   etamistag_OS[0][0] = 0.5;
+   m1[0][0] = m1_ran;
+   m2[0][0] = m2_ran;
+   cos1[0][0] = cos1_ran;
+   cos2[0][0] = cos2_ran;
+   phi[0][0] = phi_ran;
+   t[0][0] = t_ran;
+   t_err[0][0] = t_err_ran;
+
+   gamma_Bs_freq = mixing_params[1];
+   delta_gamma_freq = mixing_params[2];
+   p0metac_tag_SSK = calib_params[0];
+   p0metac_tag_OS = calib_params[1];
+   Dp0half_tag_SSK = calib_params[2];
+   Dp0half_tag_OS = calib_params[3];
+   p1_tag_SSK = calib_params[4];
+   p1_tag_OS = calib_params[5];
+   Dp1half_tag_SSK = calib_params[6];
+   Dp1half_tag_OS = calib_params[7];
+   p0_tres_11 = calib_params[11];
+   p1_tres_11 = calib_params[12];
+   p0_tres_12 = calib_params[14];
+   p1_tres_12 = calib_params[15];
+
+   set_buffer_differential_terms_gen(0);
+   set_buffer_integral_terms(0,0);
+
+   double num_temp = accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran)*fun_Bs(0);
+   double den_temp = int_Bs(0);
+
+   if (num_temp/den_temp<=0) {out[0] = -10000000000;}
+   else {out[0] = log(num_temp/den_temp);}
+
+ }
+
+__global__ void evaluate_Bsbar(double m1_ran, double m2_ran, double cos1_ran, double cos2_ran, double phi_ran, double t_ran, double t_err_ran, double *mixing_params, double *calib_params, double *out) {
+
+   decision_SSK[0][0] = 0;
+   decision_OS[0][0] = 0;
+   etamistag_SSK[0][0] = 0.5;
+   etamistag_OS[0][0] = 0.5;
+   m1[0][0] = m1_ran;
+   m2[0][0] = m2_ran;
+   cos1[0][0] = cos1_ran;
+   cos2[0][0] = cos2_ran;
+   phi[0][0] = phi_ran;
+   t[0][0] = t_ran;
+   t_err[0][0] = t_err_ran;
+
+   gamma_Bs_freq = mixing_params[1];
+   delta_gamma_freq = mixing_params[2];
+   p0metac_tag_SSK = calib_params[0];
+   p0metac_tag_OS = calib_params[1];
+   Dp0half_tag_SSK = calib_params[2];
+   Dp0half_tag_OS = calib_params[3];
+   p1_tag_SSK = calib_params[4];
+   p1_tag_OS = calib_params[5];
+   Dp1half_tag_SSK = calib_params[6];
+   Dp1half_tag_OS = calib_params[7];
+   p0_tres_11 = calib_params[11];
+   p1_tres_11 = calib_params[12];
+   p0_tres_12 = calib_params[14];
+   p1_tres_12 = calib_params[15];
+
+   set_buffer_differential_terms_gen(0);
+   set_buffer_integral_terms(0,0);
+
+   double num_temp = accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran)*fun_Bsbar(0);
+   double den_temp = int_Bsbar(0);
+
+   if (num_temp/den_temp<=0) {out[0] = -10000000000;}
+   else {out[0] = log(num_temp/den_temp);}
+
+ }
+
+__global__ void generateEvent(double *gendata, double max_fun_eta_SSK, double max_fun_eta_OS, double max_fun_6DBs, double max_fun_6DBsbar, int Nevt) {
+
+   int row = threadIdx.x + blockDim.x * blockIdx.x;
+   if (row >= Nevt) { return;}
+
+   curandState state;
+   curand_init((unsigned long long)clock(), row, 0, &state);
+   double max_fun;
+   double fun_ran;
+   double dec_accepted;
+
+   // Generation is performed in four steps:
+   //      1. The per event decay time error is determined.
+   //      2. A flavour, Bs or Bsbar, is assigned to the event.
+   //      3. Tagging decisions and mistag probabilities are obtained.
+   //      4. Decay variables (angles, invariant masses and decay time) are determined.
+
+   // Determination of the per event decay time error.
+   t_err[0][row] = ran_P_deltat(state);
+
+   // Determination of the flavour of the B hadron.
+   set_buffer_integral_terms(0,row);
+   double yield_Bs = (1.+DCP_prod)*int_Bs(row);
+   double yield_Bsbar = (1.-DCP_prod)*int_Bsbar(row);
+   double P_trueBs = yield_Bs/(yield_Bs+yield_Bsbar);
+   int true_ID;
+   double dec_flavour = curand_uniform(&state);
+   if (dec_flavour < P_trueBs) {true_ID = 1;} // Bs flavour.
+   else {true_ID = -1;} // Bsbar flavour.
+
+   double dec_right_tagged;
+   double prob_right_tagged;
+
+   // Determination of the SSK mistag probability.
+   double dec_SSK_tagged = curand_uniform(&state);
+   if (dec_SSK_tagged < tag_eff_SSK) {
+      // If the event is tagged, the accept-reject method is used to generate eta.
+      double etamistag_SSK_ran;
+      max_fun = max_fun_eta_SSK;
+      while (1) {
+         etamistag_SSK_ran = 0.5*curand_uniform(&state);
+         fun_ran = P_eta_SSK(etamistag_SSK_ran);
+         dec_accepted = max_fun*curand_uniform(&state);
+         if (fun_ran > dec_accepted) {break;}
+         }
+      etamistag_SSK[0][row] = etamistag_SSK_ran;
+      }
+   else {
+      // If the event is not tagged, eta is set to 0.5.
+      etamistag_SSK[0][row] = 0.5;
+      }
+
+   // Determination of the SSK tagging decision.
+   if (etamistag_SSK[0][row] < 0.5) {
+      dec_right_tagged = curand_uniform(&state);
+      if (true_ID == 1) {
+         prob_right_tagged = 1.-omega_SSK(etamistag_SSK[0][row]);
+         if (dec_right_tagged < prob_right_tagged) {decision_SSK[0][row] = 1;} // Right tagged Bs.
+         else {decision_SSK[0][row] = -1;} // Wrong tagged Bs.
+      }
+      else {
+         prob_right_tagged = 1.-omegabar_SSK(etamistag_SSK[0][row]);
+         if (dec_right_tagged < prob_right_tagged) {decision_SSK[0][row] = -1;} // Right tagged Bsbar.
+         else {decision_SSK[0][row] = 1;} // Wrong tagged Bsbar.
+      }
+   }
+   else {decision_SSK[0][row] = 0;}
+
+   // Determination of the OS mistag probability.
+   double dec_OS_tagged = curand_uniform(&state);
+   if (dec_OS_tagged < tag_eff_OS) {
+      // If the event is tagged, the accept-reject method is used to generate eta.
+      double etamistag_OS_ran;
+      max_fun = max_fun_eta_OS;
+      while (1) {
+         etamistag_OS_ran = 0.5*curand_uniform(&state);
+         fun_ran = P_eta_OS(etamistag_OS_ran);
+         dec_accepted = max_fun*curand_uniform(&state);
+         if (fun_ran > dec_accepted) {break;}
+         }
+      etamistag_OS[0][row] = etamistag_OS_ran;
+      }
+   else {
+      // If the event is not tagged, eta is set to 0.5.
+      etamistag_OS[0][row] = 0.5;
+      }
+
+   // Determination of the OS tagging decision.
+   if (etamistag_OS[0][row] < 0.5) {
+      dec_right_tagged = curand_uniform(&state);
+      if (true_ID == 1) {
+         prob_right_tagged = 1.-omega_OS(etamistag_OS[0][row]);
+         if (dec_right_tagged < prob_right_tagged) {decision_OS[0][row] = 1;} // Right tagged Bs.
+         else {decision_OS[0][row] = -1;} // Wrong tagged Bs.
+      }
+      else {
+         prob_right_tagged = 1.-omegabar_OS(etamistag_OS[0][row]);
+         if (dec_right_tagged < prob_right_tagged) {decision_OS[0][row] = -1;} // Right tagged Bsbar.
+         else {decision_OS[0][row] = 1;} // Wrong tagged Bsbar.
+      }
+   }
+   else {decision_OS[0][row] = 0;}
+
+   // Determination of the decay observables, using the accept-reject method in 6-D, taking t_err as a conditional variable.
+   if (true_ID == 1) {max_fun = max_fun_6DBs;}
+   else {max_fun = max_fun_6DBsbar;}
+   while (1) {
+      if (wide_window == 1) {
+         m1[0][row] = 750.+curand_uniform(&state)*(1600.-750.);
+         m2[0][row] = 750.+curand_uniform(&state)*(1600.-750.);
+      }
+      else {
+         m1[0][row] = 750.+curand_uniform(&state)*(1050.-750.);
+         m2[0][row] = 750.+curand_uniform(&state)*(1050.-750.);
+      }
+      cos1[0][row] = -1.+curand_uniform(&state)*2.;
+      cos2[0][row] = -1.+curand_uniform(&state)*2.;
+      phi[0][row] = curand_uniform(&state)*2.*pi;
+      t[0][row] = curand_uniform(&state)*12.;
+      set_buffer_differential_terms_gen(row);
+      dec_accepted = max_fun*curand_uniform(&state);
+      if (true_ID == 1) {fun_ran = accGen(t[0][row],m1[0][row],m2[0][row],cos1[0][row],cos2[0][row],phi[0][row])*fun_Bs(row)/int_Bs(row);}
+      else {fun_ran = accGen(t[0][row],m1[0][row],m2[0][row],cos1[0][row],cos2[0][row],phi[0][row])*fun_Bsbar(row)/int_Bsbar(row);}
+      if (fun_ran > dec_accepted) {break;}
+   }
+
+   int i0 = row*12;
+   gendata[0 + i0] = (double) decision_SSK[0][row];
+   gendata[1 + i0] = (double) decision_OS[0][row];
+   gendata[2 + i0] = etamistag_SSK[0][row];
+   gendata[3 + i0] = etamistag_OS[0][row];
+   gendata[4 + i0] = m1[0][row];
+   gendata[5 + i0] = m2[0][row];
+   gendata[6 + i0] = cos1[0][row];
+   gendata[7 + i0] = cos2[0][row];
+   gendata[8 + i0] = phi[0][row];
+   gendata[9 + i0] = t[0][row];
+   gendata[10 + i0] = t_err[0][row];
+   gendata[11 + i0] = 1.;
+
+   return;
+
+ }
+
+__device__ double comp_den_fit_toy(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) { 
+   return pycuda::real(ITj1j2hj1pj2php_deltat(j1,j2,h,j1p,j2p,hp,0,iev)*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*Ihj1j2j1pj2p(j1,j2,j1p,j2p))*Ighhp(h,hp)*Ifjjphhp(j1,j1p,h,hp)*Ifjjphhp(j2,j2p,h,hp);
+ }
+
+__device__ double den_fit_toy(int iev) {
+
+   return comp_den_fit_toy(0,0,0,0,0,0,iev)+comp_den_fit_toy(0,1,0,0,1,0,iev)+comp_den_fit_toy(0,2,0,0,2,0,iev)+comp_den_fit_toy(1,0,0,1,0,0,iev)+comp_den_fit_toy(1,1,0,1,1,0,iev)
++comp_den_fit_toy(1,1,1,1,1,1,iev)+comp_den_fit_toy(1,1,2,1,1,2,iev)+comp_den_fit_toy(1,2,0,1,2,0,iev)+comp_den_fit_toy(1,2,1,1,2,1,iev)+comp_den_fit_toy(1,2,2,1,2,2,iev)
++comp_den_fit_toy(2,0,0,2,0,0,iev)+comp_den_fit_toy(2,1,0,2,1,0,iev)+comp_den_fit_toy(2,1,1,2,1,1,iev)+comp_den_fit_toy(2,1,2,2,1,2,iev)+comp_den_fit_toy(2,2,0,2,2,0,iev)
++comp_den_fit_toy(2,2,1,2,2,1,iev)+comp_den_fit_toy(2,2,2,2,2,2,iev)+comp_den_fit_toy(2,2,3,2,2,3,iev)+comp_den_fit_toy(2,2,4,2,2,4,iev)+2.*comp_den_fit_toy(0,1,0,0,0,0,iev)
++2.*comp_den_fit_toy(0,1,0,1,0,0,iev)+2.*comp_den_fit_toy(0,1,0,2,0,0,iev)+2.*comp_den_fit_toy(0,2,0,0,0,0,iev)+2.*comp_den_fit_toy(0,2,0,0,1,0,iev)+2.*comp_den_fit_toy(0,2,0,1,0,0,iev)
++2.*comp_den_fit_toy(0,2,0,1,1,0,iev)+2.*comp_den_fit_toy(0,2,0,2,0,0,iev)+2.*comp_den_fit_toy(0,2,0,2,1,0,iev)+2.*comp_den_fit_toy(1,0,0,0,0,0,iev)+2.*comp_den_fit_toy(1,1,0,0,0,0,iev)
++2.*comp_den_fit_toy(1,1,0,0,1,0,iev)+2.*comp_den_fit_toy(1,1,0,1,0,0,iev)+2.*comp_den_fit_toy(1,1,0,2,0,0,iev)+2.*comp_den_fit_toy(1,2,0,0,0,0,iev)+2.*comp_den_fit_toy(1,2,0,0,1,0,iev)
++2.*comp_den_fit_toy(1,2,0,0,2,0,iev)+2.*comp_den_fit_toy(1,2,0,1,0,0,iev)+2.*comp_den_fit_toy(1,2,0,1,1,0,iev)+2.*comp_den_fit_toy(1,2,0,2,0,0,iev)+2.*comp_den_fit_toy(1,2,0,2,1,0,iev)
++2.*comp_den_fit_toy(1,2,1,1,1,1,iev)+2.*comp_den_fit_toy(1,2,1,2,1,1,iev)+2.*comp_den_fit_toy(1,2,2,1,1,2,iev)+2.*comp_den_fit_toy(1,2,2,2,1,2,iev)+2.*comp_den_fit_toy(2,0,0,0,0,0,iev)
++2.*comp_den_fit_toy(2,0,0,1,0,0,iev)+2.*comp_den_fit_toy(2,1,0,0,0,0,iev)+2.*comp_den_fit_toy(2,1,0,0,1,0,iev)+2.*comp_den_fit_toy(2,1,0,1,0,0,iev)+2.*comp_den_fit_toy(2,1,0,1,1,0,iev)
++2.*comp_den_fit_toy(2,1,0,2,0,0,iev)+2.*comp_den_fit_toy(2,1,1,1,1,1,iev)+2.*comp_den_fit_toy(2,1,2,1,1,2,iev)+2.*comp_den_fit_toy(2,2,0,0,0,0,iev)+2.*comp_den_fit_toy(2,2,0,0,1,0,iev)
++2.*comp_den_fit_toy(2,2,0,0,2,0,iev)+2.*comp_den_fit_toy(2,2,0,1,0,0,iev)+2.*comp_den_fit_toy(2,2,0,1,1,0,iev)+2.*comp_den_fit_toy(2,2,0,1,2,0,iev)+2.*comp_den_fit_toy(2,2,0,2,0,0,iev)
++2.*comp_den_fit_toy(2,2,0,2,1,0,iev)+2.*comp_den_fit_toy(2,2,1,1,1,1,iev)+2.*comp_den_fit_toy(2,2,1,1,2,1,iev)+2.*comp_den_fit_toy(2,2,1,2,1,1,iev)+2.*comp_den_fit_toy(2,2,2,1,1,2,iev)
++2.*comp_den_fit_toy(2,2,2,1,2,2,iev)+2.*comp_den_fit_toy(2,2,2,2,1,2,iev);
+
+ }
+
+__global__ void evaluate_toy(double *data, double *out, double *re_amps, double *dirCP_asyms, double *im_amps, double *weak_phases, double *mixing_params, double *calib_params, int Nevt) {
+
+   int row = threadIdx.x + blockDim.x * blockIdx.x;
+   if (row >= Nevt) { return;}
+
+   set_buffer_amplitudes(re_amps,dirCP_asyms,im_amps,weak_phases,mixing_params,calib_params);
+
+   int i0 = row*12;
+   decision_SSK[0][row] = (int) data[0 + i0];
+   decision_OS[0][row] = (int) data[1 + i0];
+   etamistag_SSK[0][row] = data[2 + i0];
+   etamistag_OS[0][row] = data[3 + i0];
+   m1[0][row] = data[4 + i0];
+   m2[0][row] = data[5 + i0];
+   cos1[0][row] = data[6 + i0];
+   cos2[0][row] = data[7 + i0];
+   phi[0][row] = data[8 + i0];
+   t[0][row] = data[9 + i0];
+   t_err[0][row] = data[10 + i0];
+
+   set_buffer_differential_terms_gen(row);
+   set_buffer_integral_terms(0,row);
+
+   double num_fit_temp = num_fit(0,row);
+   double den_fit_temp = den_fit_toy(row);
+
+   if (num_fit_temp/den_fit_temp<=0) {out[row] = -10000000000;}
+   else {out[row] = log(num_fit_temp/den_fit_temp);}
+
+ }
+
+}
