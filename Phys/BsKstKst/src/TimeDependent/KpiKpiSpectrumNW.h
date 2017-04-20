@@ -145,16 +145,16 @@ TComplex Ihj1j2j1pj2pdict[2][2][3][3][3][3];
 Double_t den_plot_var[2][2];
 
 // Variables used in event generation
-Double_t P_trueBs_const = 0.5; // Probability of generating a true Bs vs generating a true Bsbar
 Double_t prob_right_tagged; // Probability of correctly tagging an event
 Int_t true_ID; // True Bs vs true Bsbar identifier
 Int_t event_accepted; // Accepted vs rejected event.
 Int_t N_accepted; // Number of accepted events
 Int_t Wide_Window_Gen; // mKpi window size option
+Double_t max_fun_deltat; // Maximum of the deltat PDF
 Double_t max_fun_etaSSK; // Maximum of the etamistag_SSK PDF
 Double_t max_fun_etaOS; // Maximum of the etamistag_OS PDF
-Double_t max_fun_7DBs; // Maximum of the 7-D PDF for a true Bs
-Double_t max_fun_7DBsbar; // Maximum of the 7-D PDF for a true Bsbar
+Double_t max_fun_6DBs; // Maximum of the 6-D PDF for a true Bs
+Double_t max_fun_6DBsbar; // Maximum of the 6-D PDF for a true Bsbar
 Double_t max_fun; // Maximum of the PDF
 TRandom ran; // Generic random number
 Double_t etamistag_SSK_ran; // Randomized etamistag_SSK
@@ -167,7 +167,7 @@ Double_t phi_ran; // Randomized phi
 Double_t t_ran; // Randomized t
 Double_t t_err_ran; // Randomized t_err
 Double_t fun_ran; // PDF for the randomized observables
-Double_t dec_Bs; // True Bs vs true Bsbar random decision
+Double_t dec_flavour; // True Bs vs true Bsbar random decision
 Double_t dec_SSK_tagged; // SSK tagged vs SSK untagged random decision
 Double_t dec_OS_tagged; // OS tagged vs OS untagged random decision
 Double_t dec_right_tagged; // Right tagged vs wrong tagged random decision
@@ -513,7 +513,7 @@ public:
   std::complex<Double_t> Mn_x(Double_t x, std::complex<Double_t> z, Int_t n) const;
   std::complex<Double_t> Mn(Double_t x_1, Double_t x_2, std::complex<Double_t> z, Int_t n) const;
   void set_buffer_differential_vars(Double_t m1var, Double_t m2var, Double_t cos1var, Double_t cos2var, Double_t phivar, Double_t tvar, Double_t terrvar, Int_t decisionSSKvar, Int_t decisionOSvar, Double_t etamistagSSKvar, Double_t etamistagOSvar) const;
-  void set_buffer_integral_vars() const;
+  void set_buffer_integral_vars(Double_t terrvar) const;
   Double_t T_cosh_spl(Double_t tau, Double_t tau_err) const;
   Double_t T_sinh_spl(Double_t tau, Double_t tau_err) const;
   Double_t T_cos_spl(Double_t tau, Double_t tau_err) const;
@@ -610,9 +610,9 @@ public:
 
   // Event generation.
   Double_t accGen(Double_t tau, Double_t ma, Double_t mb, Double_t cos1var, Double_t cos2var, Double_t phivar) const;
+  Double_t P_deltat(Double_t tau_err) const;
   Double_t P_eta_SSK(Double_t eta) const;
   Double_t P_eta_OS(Double_t eta) const;
-  Double_t P_deltat(Double_t tau_err) const;
   TComplex TBsj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   TComplex TBsbarj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t comp_fun_Bs(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
@@ -622,8 +622,11 @@ public:
   TComplex ITBsj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t comp_int_Bs(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t int_Bs() const;
+  TComplex ITBsbarj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
+  Double_t comp_int_Bsbar(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
+  Double_t int_Bsbar() const;
   Double_t P_trueBs() const;
-  void Randomize7D(Int_t wide_window_gen) const;
+  void Randomize6D(Int_t wide_window_gen) const;
   void Randomize7D_fun_max() const;
   void SetGenerator(Int_t wide_window_gen, Int_t compute_max_fun=0, Int_t sample_size_7D=1000000) const;
   Int_t getGenerator(const RooArgSet& directVars, RooArgSet &generateVars, Bool_t staticInitOK=kTRUE) const;

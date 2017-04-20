@@ -1,5 +1,7 @@
 from parameters import *
 import numpy as np
+from math import exp
+
 gROOT.ProcessLine( "struct MyStructF{ Float_t afloat; };" )
 
 
@@ -2322,6 +2324,10 @@ def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, MC_typ
 						TD_extravars_float_12L0noTIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
 						TD_extravars_int_12L0noTIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
 						ev_counter_12L0noTIS += 1
+				if i.itype>0:
+					if (etamistag_SSK.getVal() < 0.5): hist_mistag_SSK.add(ROOT.RooArgSet(etamistag_SSK),weight_fit.getVal())
+					if (etamistag_OS.getVal() < 0.5): hist_mistag_OS.add(ROOT.RooArgSet(etamistag_OS),weight_fit.getVal())
+					hist_deltat.add(ROOT.RooArgSet(terror),weight_fit.getVal())
 
 			elif (datatype == "MC"):
 
@@ -2392,14 +2398,6 @@ def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, MC_typ
 							TD_extravars_int_12L0noTIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
 							ev_counter_12L0noTIS += 1
 
-			if (datatype == "real") and weighted:
-				if (etamistag_SSK.getVal() < 0.5): hist_mistag_SSK.add(ROOT.RooArgSet(etamistag_SSK),eval("i."+weight_name))
-				if (etamistag_OS.getVal() < 0.5): hist_mistag_OS.add(ROOT.RooArgSet(etamistag_OS),eval("i."+weight_name))
-				hist_deltat.add(ROOT.RooArgSet(terror),eval("i."+weight_name))
-			else:
-				if (etamistag_SSK.getVal() < 0.5): hist_mistag_SSK.add(ROOT.RooArgSet(etamistag_SSK),1)
-				if (etamistag_OS.getVal() < 0.5): hist_mistag_OS.add(ROOT.RooArgSet(etamistag_OS),1)
-				hist_deltat.add(ROOT.RooArgSet(terror),1)
 			ev_counter += 1
 
 	if TD_fit:
@@ -2765,7 +2763,7 @@ def DoFit(model_,data_,wide_window,TD_fit,num_CPU,minos_opt,strategy_option,fix_
    if TD_fit:
 
       if fix_mixing:
-         if fix_calib: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.PrintLevel(0))
+         if fix_calib: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kFALSE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.PrintLevel(0))
          else:
             ctrtargset = ROOT.RooArgSet(ctrt_p0metac_SSK_p1_SSK,ctrt_p0metac_OS_p1_OS,ctrt_Dp0half_SSK,ctrt_Dp1half_SSK,ctrt_Dp0half_OS,ctrt_Dp1half_OS)
             if wide_window:
@@ -2774,10 +2772,10 @@ def DoFit(model_,data_,wide_window,TD_fit,num_CPU,minos_opt,strategy_option,fix_
             else:
                ctrtargset.add(ctrt_tres_p0_tres_p1_2011_narrow)
                ctrtargset.add(ctrt_tres_p0_tres_p1_2012_narrow)
-            res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ctrtargset),ROOT.RooFit.PrintLevel(0))
+            res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kFALSE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ctrtargset),ROOT.RooFit.PrintLevel(0))
 
       else:
-         if fix_calib: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ROOT.RooArgSet(ctrt_gamma_Bs_delta_gamma_Bs)),ROOT.RooFit.PrintLevel(0))
+         if fix_calib: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kFALSE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ROOT.RooArgSet(ctrt_gamma_Bs_delta_gamma_Bs)),ROOT.RooFit.PrintLevel(0))
          else:
             ctrtargset = ROOT.RooArgSet(ctrt_gamma_Bs_delta_gamma_Bs,ctrt_p0metac_SSK_p1_SSK,ctrt_p0metac_OS_p1_OS,ctrt_Dp0half_SSK,ctrt_Dp1half_SSK,ctrt_Dp0half_OS,ctrt_Dp1half_OS)
             if wide_window:
@@ -2786,9 +2784,9 @@ def DoFit(model_,data_,wide_window,TD_fit,num_CPU,minos_opt,strategy_option,fix_
             else:
                ctrtargset.add(ctrt_tres_p0_tres_p1_2011_narrow)
                ctrtargset.add(ctrt_tres_p0_tres_p1_2012_narrow)
-            res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ctrtargset),ROOT.RooFit.PrintLevel(0))
+            res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kFALSE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ctrtargset),ROOT.RooFit.PrintLevel(0))
 
-   else: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.PrintLevel(0))
+   else: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kFALSE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.PrintLevel(0))
 
    return res
 
@@ -2799,8 +2797,8 @@ def converted_parameter(param,blinding,scale):
    if ('phi' in paramname or 'DCP' in paramname) and blinding:
       blstring = np.random.uniform(-scale,scale)
       blinding_strings[paramname] = blstring
-      return eval(('Free("'+paramname+'_cu",'+str(param.getVal())+'+'+str(blstring)+', limits = ('+str(param.getMin())+'+'+str(blstring)+','+str(param.getMax())+'+'+str(blstring)+'))').replace('+-','-'))
-   return eval('Free("'+paramname+'_cu",'+str(param.getVal())+', limits = ('+str(param.getMin())+','+str(param.getMax())+'))')
+      return eval(('Parameter("'+paramname+'_cu",'+str(param.getVal())+'+'+str(blstring)+', limits = ('+str(param.getMin())+'+'+str(blstring)+','+str(param.getMax())+'+'+str(blstring)+'), constant = False, dtype = np.float64)').replace('+-','-'))
+   return eval('Parameter("'+paramname+'_cu",'+str(param.getVal())+', limits = ('+str(param.getMin())+','+str(param.getMax())+'), constant = False, dtype = np.float64)')
 
 
 def create_param_list(arglistname,numparams = 0):
@@ -2808,8 +2806,7 @@ def create_param_list(arglistname,numparams = 0):
    numparlimit = len(arglist)
    if numparams != 0: numparlimit = numparams
    exec('x = np.ones('+str(numparlimit)+').astype(np.float64)')
-   for iarg in range(numparlimit):
-      if arglist.at(iarg).isConstant(): exec('x['+str(iarg)+'] = '+str(arglist.at(iarg).getVal()))
+   for iarg in range(numparlimit): exec('x['+str(iarg)+'] = '+str(arglist.at(iarg).getVal()))
    return x
 
 def param_list_updates(arglistname,paramnames,args_ = 0,N_ = {},blinding = 0):
@@ -2865,10 +2862,9 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,minos_):
    import pycuda.autoinit
    import pycuda.cumath
    import pycuda.driver as cudriver
-   from pycuda.compiler import SourceModule
    import pycuda.gpuarray as gpuarray
    from iminuit import Minuit
-   from ModelBricks import Parameter, Free, Cat, ParamBox
+   from ModelBricks import Parameter, Free, Cat, ParamBox, cuRead
    from tools import plt
    from timeit import default_timer as timer
 
@@ -2879,7 +2875,7 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,minos_):
 
    def getGrid(thiscat, BLOCK_SIZE):
       Nbunch = thiscat.Nevts *1. / BLOCK_SIZE
-      print "thiscat.Nevts, Nbuch = ", thiscat.Nevts, Nbunch
+      print "thiscat.Nevts, Nbunch = ", thiscat.Nevts, Nbunch
       if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
       else : Nbunch = int(Nbunch)
       return  (Nbunch,1,1)
@@ -2891,7 +2887,7 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,minos_):
       Params.append(converted_parameter(par,blinding_,blinding_scale))
 
    print '\nCompiling CUDA PDF ...'
-   mod = SourceModule( file("../../src/TimeDependent/Bs2KpiKpiTDPDF.cu","r").read())
+   mod = cuRead("../../src/TimeDependent/Bs2KpiKpiTDPDF.cu", no_extern_c = True)
    CUDA_pdf_initializer = mod.get_function("initialize")
    CUDA_pdf = mod.get_function("evaluate")
 
@@ -3006,6 +3002,349 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,minos_):
    if minos_: manager.fit.minos()
 
    print 'INFO:',int((timer() - start)/60),'min needed to do the fit.'
+
+
+def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag):
+
+   print "\n#####################################################################"
+   print " P R E P A R I N G   C U D A   F R A M E W O R K"
+   print "#####################################################################\n"
+
+   import pycuda.autoinit
+   import pycuda.cumath
+   import pycuda.driver as cudriver
+   import pycuda.gpuarray as gpuarray
+   from iminuit import Minuit
+   from ModelBricks import Parameter, Free, Cat, ParamBox, cuRead
+   from tools import plt
+   from timeit import default_timer as timer
+
+   ROOT.RooRandom.randomGenerator().SetSeed(0)
+
+   for par in params_:
+      if "DCP" in par.GetName(): par.setVal(0.)
+      elif "phis" in par.GetName(): par.setVal(0.)
+
+   BLOCK_SIZE = 252
+   THR = 1e06
+   paramnames = []
+   for par in params_: paramnames.append(par.GetName())
+
+   def getGrid(thiscat, BLOCK_SIZE):
+      Nbunch = thiscat.Nevts *1. / BLOCK_SIZE
+      print "thiscat.Nevts, Nbunch = ", thiscat.Nevts, Nbunch
+      if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
+      else : Nbunch = int(Nbunch)
+      return  (Nbunch,1,1)
+
+   cats = []
+   gen_data = np.ones((N_events,12)).astype(np.float64)
+   thiscat = Cat("gen_cat", gen_data, getN = True)
+   thiscat.block = (BLOCK_SIZE,1,1)
+   thiscat.grid = getGrid(thiscat, BLOCK_SIZE)
+   cats.append(thiscat)
+
+   print '\nTranslating parameters ...'
+   Params = []
+   for par in params_:
+      Params.append(converted_parameter(par,0,blinding_scale))
+   if wide_window_:
+      Params.append(Parameter("m1_cu",896, limits=(750,1600), constant = False, dtype = np.float64))
+      Params.append(Parameter("m2_cu",896, limits=(750,1600), constant = False, dtype = np.float64))
+   else:
+      Params.append(Parameter("m1_cu",896, limits=(750,1050), constant = False, dtype = np.float64))
+      Params.append(Parameter("m2_cu",896, limits=(750,1050), constant = False, dtype = np.float64))
+   Params.append(Parameter("cos1_cu",0, limits=(-1,1), constant = False, dtype = np.float64))
+   Params.append(Parameter("cos2_cu",0, limits=(-1,1), constant = False, dtype = np.float64))
+   Params.append(Parameter("phi_cu",0, limits=(0,2*pi), constant = False, dtype = np.float64))
+   Params.append(Parameter("t_cu",1, limits=(0,12), constant = False, dtype = np.float64))
+   Params.append(Parameter("terror_cu",0.04, limits=(0,0.1), constant = False, dtype = np.float64))
+   par_phys_names = []
+   for par in paramnames: par_phys_names.append(par + "_cu")
+   par_var_names = ["m1_cu","m2_cu","cos1_cu","cos2_cu","phi_cu","t_cu","terror_cu"]
+   par_phys_init_vals = {}
+   for par in paramnames: par_phys_init_vals[par + "_cu"] = eval(par+'.getVal()')
+   par_ctrt_names = ["gamma_Bs_cu","delta_gamma_Bs_cu","tres_p0_2012_cu","tres_p1_2012_cu"]
+   par_ctrt_init_vals = {}
+
+   print '\nCompiling CUDA PDF ...'
+   mod = cuRead("../../src/TimeDependent/Bs2KpiKpiTDPDF.cu", no_extern_c = True)
+   CUDA_initialize = mod.get_function("initialize")
+   CUDA_set_generator = mod.get_function("set_generator")
+   CUDA_max_P_eta_SSK = mod.get_function("get_max_P_eta_SSK")
+   CUDA_max_P_eta_OS = mod.get_function("get_max_P_eta_OS")
+   CUDA_evaluate_Bs = mod.get_function("evaluate_Bs")
+   CUDA_evaluate_Bsbar = mod.get_function("evaluate_Bsbar")
+   CUDA_generate = mod.get_function("generateEvent")
+   CUDA_evaluate_toy = mod.get_function("evaluate_toy")
+
+   def my_getSumLL_large(cat): return gpuarray.sum(getattr(cat,"Probs"))
+   def my_getSumLL_short(cat): return np.sum(getattr(cat,"Probs").get())
+   def mySum1(thing): return np.float64(sum(thing))
+   def mySum2(thing): return np.float64(sum(thing).get())
+
+   def ctrt_fun_1(x,mu,sigma):
+      return -(x-mu)*(x-mu)/(2.*sigma*sigma)
+
+   def ctrt_fun_2(x_a,x_b,mu_a,mu_b,sigma_a,sigma_b,rho):
+      return -1./(2.*(1-rho*rho))*((x_a-mu_a)*(x_a-mu_a)/sigma_a/sigma_a-2.*rho*(x_a-mu_a)*(x_b-mu_b)/sigma_a/sigma_b+(x_b-mu_b)*(x_b-mu_b)/sigma_b/sigma_b)
+
+   check = np.ones(3).astype(np.float64)
+
+   class CUDAModel(ParamBox):
+
+      def __init__(self, pars, cats):
+
+         ParamBox.__init__(self, pars, cats)
+         sizes = []
+         for k in cats: sizes.append(k.Nevts)
+         if max(sizes) > THR:
+            self.getSumLL = my_getSumLL_large
+            self.mySum = mySum2
+         else:
+            self.getSumLL = my_getSumLL_short
+            self.mySum = mySum1
+         self.gen_step = 0
+
+         self.max_eta_SSK_pdf = np.ones(1).astype(np.float64)
+         self.max_eta_OS_pdf = np.ones(1).astype(np.float64)
+         self.get_max_SSK_eta_distr = CUDA_max_P_eta_SSK
+         self.get_max_OS_eta_distr = CUDA_max_P_eta_OS
+
+         self.max_Bs_ll = gpuarray.to_gpu(np.ones(1).astype(np.float64))
+         self.max_Bsbar_ll = gpuarray.to_gpu(np.ones(1).astype(np.float64))
+         self.max_Bs_pdf = 0
+         self.max_Bsbar_pdf = 0
+
+         self.pdf_Bs = CUDA_evaluate_Bs
+         self.pdf_Bsbar = CUDA_evaluate_Bsbar
+         self.ev_gen = CUDA_generate
+         self.pdf_toy = CUDA_evaluate_toy
+
+         self.options_list_cu = create_param_list("options_list")
+         self.re_amps_list_cu = create_param_list("re_amps_list")
+         self.dirCP_asyms_list_cu = create_param_list("dirCP_asyms_list")
+         self.im_amps_list_cu = create_param_list("im_amps_list")
+         self.weak_phases_list_cu = create_param_list("weak_phases_list")
+         self.mixing_params_list_cu = create_param_list("mixing_params_list")
+         self.calib_params_list_cu = create_param_list("calib_params_list")
+         self.cond_distr_params_list_cu = create_param_list("cond_distr_params_list")
+         self.mass_integrals_list_cu = create_param_list("mass_integrals_list")
+         self.ang_integrals_list_cu = create_param_list("ang_integrals_list")
+
+         self.re_amps_list_cu_gen = create_param_list("re_amps_list")
+         self.dirCP_asyms_list_cu_gen = create_param_list("dirCP_asyms_list")
+         self.im_amps_list_cu_gen = create_param_list("im_amps_list")
+         self.weak_phases_list_cu_gen = create_param_list("weak_phases_list")
+         self.mixing_params_list_cu_gen = create_param_list("mixing_params_list")
+         self.calib_params_list_cu_gen = create_param_list("calib_params_list")
+
+         self.lock_to_init(["tres_p0_2011_cu","tres_p1_2011_cu"])
+
+         CUDA_initialize(block = (1,1,1))
+         CUDA_set_generator(gpuarray.to_gpu(self.options_list_cu),gpuarray.to_gpu(self.re_amps_list_cu_gen),gpuarray.to_gpu(self.dirCP_asyms_list_cu_gen),gpuarray.to_gpu(self.im_amps_list_cu_gen),gpuarray.to_gpu(self.weak_phases_list_cu_gen),gpuarray.to_gpu(self.mixing_params_list_cu_gen),gpuarray.to_gpu(self.calib_params_list_cu_gen),gpuarray.to_gpu(self.cond_distr_params_list_cu),gpuarray.to_gpu(self.mass_integrals_list_cu),gpuarray.to_gpu(self.ang_integrals_list_cu),block = (1,1,1))
+
+      def createFit(self):
+         config = {}
+         for par in self.params: config.update(par.getSettings())
+         self.fit = Minuit(self, errordef=1, **config)
+
+      def set_gen_step(self,num):
+
+         for par in par_phys_names: self.Params[par].setVal(par_phys_init_vals[par])
+         self.gen_step = num
+
+         if self.gen_step in [0,1]:
+            self.freeThese(par_var_names)
+            self.lock_to_init(par_phys_names)
+            self.freeThese(par_ctrt_names)
+
+         if self.gen_step == 2:
+
+            if self.max_Bs_pdf == 0: self.max_Bs_pdf = 1.2*exp(self.max_Bs_ll[0].get())
+            if self.max_Bsbar_pdf == 0: self.max_Bsbar_pdf = 1.2*exp(self.max_Bsbar_ll[0].get())
+            if self.max_eta_SSK_pdf[0] == 1: self.get_max_SSK_eta_distr(cudriver.Out(self.max_eta_SSK_pdf),block = (1,1,1))
+            if self.max_eta_OS_pdf[0] == 1: self.get_max_OS_eta_distr(cudriver.Out(self.max_eta_OS_pdf),block = (1,1,1))
+
+            d_temp = ctrt_gamma_Bs_delta_gamma_Bs.generate(ROOT.RooArgSet(gamma_Bs,delta_gamma_Bs),1).get(0)
+            self.mixing_params_list_cu_gen[1] = d_temp.getRealValue("gamma_Bs")
+            self.mixing_params_list_cu_gen[2] = d_temp.getRealValue("delta_gamma_Bs")
+            self.calib_params_list_cu_gen[2] = ctrt_Dp0half_SSK.generate(ROOT.RooArgSet(Dp0half_SSK),1).get(0).getRealValue("Dp0half_SSK")
+            self.calib_params_list_cu_gen[3] = ctrt_Dp0half_OS.generate(ROOT.RooArgSet(Dp0half_OS),1).get(0).getRealValue("Dp0half_OS")
+            self.calib_params_list_cu_gen[6] = ctrt_Dp1half_SSK.generate(ROOT.RooArgSet(Dp1half_SSK),1).get(0).getRealValue("Dp1half_SSK")
+            self.calib_params_list_cu_gen[7] = ctrt_Dp1half_OS.generate(ROOT.RooArgSet(Dp1half_OS),1).get(0).getRealValue("Dp1half_OS")
+            d_temp = ctrt_p0metac_SSK_p1_SSK.generate(ROOT.RooArgSet(p0metac_SSK,p1_SSK),1).get(0)
+            self.calib_params_list_cu_gen[0] = d_temp.getRealValue("p0metac_SSK")
+            self.calib_params_list_cu_gen[4] = d_temp.getRealValue("p1_SSK")
+            d_temp = ctrt_p0metac_OS_p1_OS.generate(ROOT.RooArgSet(p0metac_OS,p1_OS),1).get(0)
+            self.calib_params_list_cu_gen[1] = d_temp.getRealValue("p0metac_OS")
+            self.calib_params_list_cu_gen[5] = d_temp.getRealValue("p1_OS")
+            if wide_window_: d_temp = ctrt_tres_p0_tres_p1_2012_wide.generate(ROOT.RooArgSet(tres_p0_2012,tres_p1_2012),1).get(0)
+            else: d_temp = ctrt_tres_p0_tres_p1_2012_narrow.generate(ROOT.RooArgSet(tres_p0_2012,tres_p1_2012),1).get(0)
+            self.calib_params_list_cu_gen[14] = d_temp.getRealValue("tres_p0_2012")
+            self.calib_params_list_cu_gen[15] = d_temp.getRealValue("tres_p1_2012")
+
+            par_ctrt_init_vals["gamma_Bs_cu"] = self.mixing_params_list_cu_gen[1]
+            par_ctrt_init_vals["delta_gamma_Bs_cu"] = self.mixing_params_list_cu_gen[2]
+            par_ctrt_init_vals["Dp0half_SSK_cu"] = self.calib_params_list_cu_gen[2]
+            par_ctrt_init_vals["Dp0half_OS_cu"] = self.calib_params_list_cu_gen[3]
+            par_ctrt_init_vals["Dp1half_SSK_cu"] = self.calib_params_list_cu_gen[6]
+            par_ctrt_init_vals["Dp1half_OS_cu"] = self.calib_params_list_cu_gen[7]
+            par_ctrt_init_vals["p0metac_SSK_cu"] = self.calib_params_list_cu_gen[0]
+            par_ctrt_init_vals["p1_SSK_cu"] = self.calib_params_list_cu_gen[4]
+            par_ctrt_init_vals["p0metac_OS_cu"] = self.calib_params_list_cu_gen[1]
+            par_ctrt_init_vals["p1_OS_cu"] = self.calib_params_list_cu_gen[5]
+            par_ctrt_init_vals["tres_p0_2012_cu"] = self.calib_params_list_cu_gen[14]
+            par_ctrt_init_vals["tres_p1_2012_cu"] = self.calib_params_list_cu_gen[15]
+
+            CUDA_set_generator(gpuarray.to_gpu(self.options_list_cu),gpuarray.to_gpu(self.re_amps_list_cu_gen),gpuarray.to_gpu(self.dirCP_asyms_list_cu_gen),gpuarray.to_gpu(self.im_amps_list_cu_gen),gpuarray.to_gpu(self.weak_phases_list_cu_gen),gpuarray.to_gpu(self.mixing_params_list_cu_gen),gpuarray.to_gpu(self.calib_params_list_cu_gen),gpuarray.to_gpu(self.cond_distr_params_list_cu),gpuarray.to_gpu(self.mass_integrals_list_cu),gpuarray.to_gpu(self.ang_integrals_list_cu),block = (1,1,1))
+
+         if self.gen_step == 3:
+            self.freeThese(par_phys_names)
+            self.lock_to_init(par_var_names)
+            self.lock_to_init(["tres_p0_2011_cu","tres_p1_2011_cu"])
+
+      def generate(self):
+         cat = self.cats[0]
+         self.ev_gen(cat.data,np.float64(self.max_eta_SSK_pdf[0]),np.float64(self.max_eta_OS_pdf[0]),np.float64(self.max_Bs_pdf),np.float64(self.max_Bsbar_pdf),np.int32(cat.Nevts),block = cat.block,grid = cat.grid)
+
+      def __call__(self,*args):
+
+         chi2 = np.float64(0.)
+         N = self.dc
+
+         if self.gen_step == 0:
+            m1_ran = np.float64(args[N["m1_cu"]])
+            m2_ran = np.float64(args[N["m2_cu"]])
+            cos1_ran = np.float64(args[N["cos1_cu"]])
+            cos2_ran = np.float64(args[N["cos2_cu"]])
+            phi_ran = np.float64(args[N["phi_cu"]])
+            t_ran = np.float64(args[N["t_cu"]])
+            terror_ran = np.float64(args[N["terror_cu"]])
+            for [idx,ival] in param_list_updates("mixing_params_list",paramnames,args_ = args,N_ = N,blinding = 0): self.mixing_params_list_cu[idx] = ival
+            for [idx,ival] in param_list_updates("calib_params_list",paramnames,args_ = args,N_ = N,blinding = 0): self.calib_params_list_cu[idx] = ival
+            self.pdf_Bs(m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran,t_ran,terror_ran,gpuarray.to_gpu(self.mixing_params_list_cu),gpuarray.to_gpu(self.calib_params_list_cu),self.max_Bs_ll,block = (1,1,1))
+            return -2*self.max_Bs_ll[0].get()
+
+         elif self.gen_step == 1:
+            m1_ran = np.float64(args[N["m1_cu"]])
+            m2_ran = np.float64(args[N["m2_cu"]])
+            cos1_ran = np.float64(args[N["cos1_cu"]])
+            cos2_ran = np.float64(args[N["cos2_cu"]])
+            phi_ran = np.float64(args[N["phi_cu"]])
+            t_ran = np.float64(args[N["t_cu"]])
+            terror_ran = np.float64(args[N["terror_cu"]])
+            for [idx,ival] in param_list_updates("mixing_params_list",paramnames,args_ = args,N_ = N,blinding = 0): self.mixing_params_list_cu[idx] = ival
+            for [idx,ival] in param_list_updates("calib_params_list",paramnames,args_ = args,N_ = N,blinding = 0): self.calib_params_list_cu[idx] = ival
+            self.pdf_Bsbar(m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran,t_ran,terror_ran,gpuarray.to_gpu(self.mixing_params_list_cu),gpuarray.to_gpu(self.calib_params_list_cu),self.max_Bsbar_ll,block = (1,1,1))
+            return -2*self.max_Bsbar_ll[0].get()
+
+         elif self.gen_step == 3:
+            for [idx,ival] in param_list_updates("re_amps_list",paramnames,args_ = args,N_ = N,blinding = 0): self.re_amps_list_cu[idx] = ival
+            for [idx,ival] in param_list_updates("dirCP_asyms_list",paramnames,args_ = args,N_ = N,blinding = 0): self.dirCP_asyms_list_cu[idx] = ival
+            for [idx,ival] in param_list_updates("im_amps_list",paramnames,args_ = args,N_ = N,blinding = 0): self.im_amps_list_cu[idx] = ival
+            for [idx,ival] in param_list_updates("weak_phases_list",paramnames,args_ = args,N_ = N,blinding = 0): self.weak_phases_list_cu[idx] = ival
+            for [idx,ival] in param_list_updates("mixing_params_list",paramnames,args_ = args,N_ = N,blinding = 0): self.mixing_params_list_cu[idx] = ival
+            for [idx,ival] in param_list_updates("calib_params_list",paramnames,args_ = args,N_ = N,blinding = 0): self.calib_params_list_cu[idx] = ival
+            for cat in self.cats:
+               self.pdf_toy(cat.data,cat.Probs,gpuarray.to_gpu(self.re_amps_list_cu),gpuarray.to_gpu(self.dirCP_asyms_list_cu),gpuarray.to_gpu(self.im_amps_list_cu),gpuarray.to_gpu(self.weak_phases_list_cu),gpuarray.to_gpu(self.mixing_params_list_cu),gpuarray.to_gpu(self.calib_params_list_cu),cat.Nevts,block = cat.block,grid = cat.grid)
+            LL = map(self.getSumLL, self.cats)
+            LLsum = self.mySum(LL)
+            LLsum += ctrt_fun_1(np.float64(args[N["Dp0half_SSK_cu"]]),-0.0079,0.0014)
+            LLsum += ctrt_fun_1(np.float64(args[N["Dp1half_SSK_cu"]]),-0.022,0.023)
+            LLsum += ctrt_fun_1(np.float64(args[N["Dp0half_OS_cu"]]),0.007,0.0006)
+            LLsum += ctrt_fun_1(np.float64(args[N["Dp1half_OS_cu"]]),0.033,0.006)
+            LLsum += ctrt_fun_2(np.float64(args[N["gamma_Bs_cu"]]),np.float64(args[N["delta_gamma_Bs_cu"]]),0.6643,0.083,0.0020,0.006,-0.217)
+            LLsum += ctrt_fun_2(np.float64(args[N["p0metac_SSK_cu"]]),np.float64(args[N["p1_SSK_cu"]]),0.0067,0.925,0.0052,0.085,0.)
+            LLsum += ctrt_fun_2(np.float64(args[N["p0metac_OS_cu"]]),np.float64(args[N["p1_OS_cu"]]),0.0062,0.982,0.0044,0.035,0.14)
+            if wide_window_:
+               LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2012_cu"]]),np.float64(args[N["tres_p1_2012_cu"]]),0.0365026605725,1.26918356746,0.000250855432766,0.0528387031703,0.38357)
+            else:
+               LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2012_cu"]]),np.float64(args[N["tres_p1_2012_cu"]]),0.0366294040913,1.22214099483,0.000296200532078,0.059802993325,0.39251)
+            return -2*LLsum
+
+   manager = CUDAModel(Params, cats)
+
+   print '\nComputing Bs pdf maximum ...'
+   manager.set_gen_step(0)
+   manager.createFit()
+   manager.fit.print_level = 0
+   manager.fit.migrad()
+
+   print 'Computing Bsbar pdf maximum ...\n'
+   manager.set_gen_step(1)
+   manager.createFit()
+   manager.fit.print_level = 0
+   manager.fit.migrad()
+
+   fpulls_dat = open('pulls_'+output_tag+'.dat','w')
+   fpulls_dat.close()
+
+   N_submitted = 0
+   N_successful = 0
+
+   start = timer()
+
+   while N_successful < N_exps:
+
+      iexp = N_successful+1
+
+      print 'MCS INFO ---> Generating sample #'+str(iexp)
+      manager.set_gen_step(2)
+      manager.createFit()
+      manager.generate()
+      #s = ""
+      #for ev in range(N_events):
+      #   for v in range(12): s += str(1*manager.cats[0].data[ev][v]) + " "
+      #   s += "\n"
+      #fdata = open('tmp.dat','w')
+      #fdata.write(s)
+      #fdata.close()
+      #gROOT.Reset()
+      #fout = ROOT.TFile("tmp.root","RECREATE")
+      #tout = ROOT.TTree("DecayTree","DecayTree")
+      #tout.ReadFile("tmp.dat",dec_SSK_name+":"+dec_OS_name+":"+eta_SSK_name+":"+eta_OS_name+":"+m1_name+":"+m2_name+":"+cos1_name+":"+cos2_name+":"+phi_name+":"+t_name+":#"+terror_name+":weight")
+      #tout.Write()
+      #fout.Close()
+      #os.system("rm tmp.dat")
+
+      print 'MCS INFO ---> Fitting sample #'+str(iexp)
+      manager.set_gen_step(3)
+      manager.createFit()
+      manager.fit.print_level = 0
+      manager.fit.migrad()
+
+      N_submitted += 1
+      if 1:#manager.fit.get_fmin().is_valid:
+         manager.fit.hesse()
+         N_successful += 1
+         pull_string = ''
+         for ipar in range(len(paramnames)):
+            par_name = paramnames[ipar]+'_cu'
+            if par_name not in ['tres_p0_2011_cu','tres_p1_2011_cu']:
+               x_par = manager.fit.values[par_name]
+               if par_name in par_ctrt_init_vals.keys(): x0_par = par_ctrt_init_vals[par_name]
+               else: x0_par = par_phys_init_vals[par_name]
+               sigma_par = manager.fit.errors[par_name]
+               pull_par = (x_par-x0_par)/sigma_par
+               pull_string += str(pull_par)+' '
+         fpulls_dat = open('pulls_'+output_tag+'.dat','a')
+         fpulls_dat.write(pull_string+'\n')
+         fpulls_dat.close()
+      else: print 'WARNING: Fit failed. Repeating the experiment.'
+
+   print 'INFO:',int((timer() - start)/60),'min needed to do the experiments.'
+   print 'Fraction of valid fits:',float(N_successful)/float(N_submitted)
+
+   gROOT.Reset()
+   fout = ROOT.TFile("pulls_"+output_tag+".root","RECREATE")
+   tout = ROOT.TTree("Pulls","Pulls")
+   s = paramnames[0]+'_pull'
+   for i in range(1,len(paramnames)):
+      if paramnames[i] not in ['tres_p0_2011','tres_p1_2011']: s += ':'+paramnames[i]+'_pull'
+   tout.ReadFile("pulls_"+output_tag+".dat",s)
+   tout.Write()
+   fout.Close()
 
 
 def PDFfun(PDF_,method_,m1_,m2_,cos1_,cos2_,phi_,t_,dt_,q1_,q2_,eta1_,eta2_):
@@ -3237,23 +3576,23 @@ def CondVarStudy(fit_bool,model_,parameters_,data_,hist_mistag_SSK_,hist_mistag_
 		for i in parameters_: i.setConstant(1)
 
 		# Fit of the t_err distribution.
-		for i in [gamma1_dt,beta1_dt,c_dt,gamma2_dt,beta2_dt]: i.setConstant(0)
+		for i in [gamma1_dt,beta1_dt]: i.setConstant(0)
 		alt_fit.setVal(1)
-		model_.fitTo(hist_deltat_,ROOT.RooFit.SumW2Error(kTRUE))
+		model_.fitTo(hist_deltat_,ROOT.RooFit.Minos(1))
 		model_.plotOn(frame_terr)
-		for i in [gamma1_dt,beta1_dt,c_dt,gamma2_dt,beta2_dt]: i.setConstant(1)
+		for i in [gamma1_dt,beta1_dt]: i.setConstant(1)
 
 		# Fit of the eta_SSK distribution.
 		for i in [mu1_SSK,sigma1_SSK,c_SSK,mu2_SSK,sigma2_SSK]: i.setConstant(0)
 		alt_fit.setVal(2)
-		model_.fitTo(hist_mistag_SSK_,ROOT.RooFit.SumW2Error(kTRUE))
+		model_.fitTo(hist_mistag_SSK_,ROOT.RooFit.Minos(1))
 		model_.plotOn(frame_eta_SSK)
 		for i in [mu1_SSK,sigma1_SSK,c_SSK,mu2_SSK,sigma2_SSK]: i.setConstant(1)
 
 		# Fit of the eta_OS distribution.
 		for i in [mu1_OS,sigma1_OS,c_OS,mu2_OS,sigma2_OS]: i.setConstant(0)
 		alt_fit.setVal(3)
-		model_.fitTo(hist_mistag_OS_,ROOT.RooFit.SumW2Error(kTRUE))
+		model_.fitTo(hist_mistag_OS_,ROOT.RooFit.Minos(1))
 		model_.plotOn(frame_eta_OS)
 		for i in [mu1_OS,sigma1_OS,c_OS,mu2_OS,sigma2_OS]: i.setConstant(1)
 
