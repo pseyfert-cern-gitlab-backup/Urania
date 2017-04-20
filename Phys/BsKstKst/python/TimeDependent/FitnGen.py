@@ -21,7 +21,7 @@ TD_fit = 1
 # 1 -> flavour tagged, time dependent, amplitude fit
 
 # Wide Window.
-wide_window = 1
+wide_window = 0
 
 # Acceptance description.
 acc_type = 2
@@ -34,7 +34,7 @@ acc_type = 2
 inf_t_res = 0 # 1 for ideal model / 0 for gaussian like resolution
 
 # CP violation in the model.
-Blinding = 1
+Blinding = 0
 No_CP_Switch = 0
 No_dirCP_Switch = 0
 Same_CP_Switch = 1
@@ -67,7 +67,7 @@ extra_cuts = ""#"((B_s0_MM>5325.) && (B_s0_MM<5425.))"#"((B_s0_MM<5325.) || (B_s
 evnum_limit = 0
 
 # Fit options.
-num_CPU = 30
+num_CPU = 20
 activ_minos = 0
 fit_strategy = 1
 
@@ -78,14 +78,14 @@ phi_binning = 50
 t_binning = 12
 
 # Generation options.
-nexperiments = 5
-nevents = 1700
+nexperiments = 100
+nevents = 40000
 njobs = 1
 use_GRID = 0
-exp_output_tag = "NarrowWindow"
+exp_output_tag = "WideWindow"
 fit_CondVarDistr = 0
-recompute_maxima = 0
-maxima_computation_num_points = 1E7
+recompute_maxima = 1
+maxima_computation_num_points = 1E5
 
 
 # ################################################################
@@ -319,6 +319,53 @@ def MCSManyExp():
 	# Configure and submit the jobs to Ganga.
 	MCSGrid(nexperiments,nevents,njobs,exp_output_tag,use_GRID)
 
+def CUDAMCS(output_tag):
+
+	# Compile and load the C++ libraries.
+	ForceCompileLibs()
+
+	# Data importation.
+	data, hist_mistag_SSK, hist_mistag_OS, hist_deltat = loadData(NTUPLE_PATH,data_type,data_file,data_tree,MC_file,MC_tree,MC_type,TD_fit,sweighted,wide_window,extra_cuts,evnum_limit,use_GRID)
+
+	# Construction of the model.
+	setParamVals(wide_window)
+
+	reA11par.setVal(-0.621524863748)
+	reA11perp.setVal(-0.424808013097)
+	DCP.setVal(-0.0675981117764)
+	imA11par.setVal(0.0467700758986)
+	imA11perp.setVal(0.0344245287434)
+	phis.setVal(-0.767318216566)
+	delta_m_Bs.setVal(17.7805446306)
+	gamma_Bs.setVal(0.669814702625)
+	delta_gamma_Bs.setVal(0.0871116924828)
+	p0metac_SSK.setVal(0.00160837062225)
+	p0metac_OS.setVal(0.00565978676724)
+	Dp0half_SSK.setVal(-0.00789203047486)
+	Dp0half_OS.setVal(0.00694464169539)
+	p1_SSK.setVal(1.03913365443)
+	p1_OS.setVal(0.986666213431)
+	Dp1half_SSK.setVal(-0.0342745897277)
+	Dp1half_OS.setVal(0.0325448615578)
+	tres_p0_2011.setVal(0.0352214753202)
+	tres_p1_2011.setVal(1.19831598402)
+	tres_p0_2012.setVal(0.0366210029664)
+	tres_p1_2012.setVal(1.22045492979)
+
+	# Uncomment below for VV only fit, when in narrow window.
+	for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
+		par.setVal(0.)
+		par.setConstant(1)
+
+	model, params = createPDF(Blinding,No_CP_Switch,No_dirCP_Switch,Same_CP_Switch,3,\
+inf_t_res,wide_window,data_file,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params,\
+pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_rel2_Kst892,delta_Kst1680_rel2_Kst892)
+
+	# Fit of the conditional variable profiles.
+	CondVarStudy(fit_CondVarDistr,model,params,data,hist_mistag_SSK,hist_mistag_OS,hist_deltat)
+
+	DoCUDAToy(nexperiments,nevents,params,wide_window,output_tag)
+
 
 # ################################################################
 # L O G   L I K E L I H O O D   S C A N
@@ -386,4 +433,5 @@ if (len(sys.argv) > 1):
 	elif (sys.argv[1] == "gen"): gen(str(sys.argv[2]))
 	elif (sys.argv[1] == "mcsjob"): MCSJob(sys.argv[2],int(sys.argv[3]),int(sys.argv[4]),sys.argv[5],int(sys.argv[6]))
 	elif (sys.argv[1] == "mcs"): MCSManyExp()
+	elif (sys.argv[1] == "cudamcs"): CUDAMCS(str(sys.argv[2]))
 	elif (sys.argv[1] == "profiles"): profiles()

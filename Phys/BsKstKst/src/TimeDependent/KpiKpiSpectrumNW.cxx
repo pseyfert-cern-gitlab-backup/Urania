@@ -2431,7 +2431,7 @@ void KpiKpiSpectrumNW::set_buffer_differential_vars(Double_t m1var, Double_t m2v
 // ---------------------------------------------------
 // 
 
-void KpiKpiSpectrumNW::set_buffer_integral_vars() const 
+void KpiKpiSpectrumNW::set_buffer_integral_vars(Double_t terrvar) const 
  {
 
    // Physical terms.
@@ -2528,11 +2528,11 @@ void KpiKpiSpectrumNW::set_buffer_integral_vars() const
    Double_t s1_deltat;
 
    if (acctype == 3) {
-      s1_deltat = p0_tres_12+p1_tres_12*(t_err-deltatmean_tres_12);
+      s1_deltat = p0_tres_12+p1_tres_12*(terrvar-deltatmean_tres_12);
    }
    else {
-      if (year_opt == 0) {s1_deltat = p0_tres_11+p1_tres_11*(t_err-deltatmean_tres_11);}
-      else {s1_deltat = p0_tres_12+p1_tres_12*(t_err-deltatmean_tres_12);}
+      if (year_opt == 0) {s1_deltat = p0_tres_11+p1_tres_11*(terrvar-deltatmean_tres_11);}
+      else {s1_deltat = p0_tres_12+p1_tres_12*(terrvar-deltatmean_tres_12);}
    }
 
    std::complex<Double_t> z1_hyper_plus_deltat = s1_deltat/sqrt(2.)*std::complex<Double_t>(gamma_Bs_freq-0.5*delta_gamma_freq,0.);
@@ -2657,7 +2657,7 @@ Double_t KpiKpiSpectrumNW::T_sin_spl(Double_t tau, Double_t tau_err) const
 Double_t KpiKpiSpectrumNW::IT_cosh_spl() const
  {
    
-   set_buffer_integral_vars();
+   set_buffer_integral_vars(t_err);
    return IT_cosh_temp_deltat;
 
  }
@@ -2668,7 +2668,7 @@ Double_t KpiKpiSpectrumNW::IT_cosh_spl() const
 Double_t KpiKpiSpectrumNW::IT_sinh_spl() const
  {
    
-   set_buffer_integral_vars();
+   set_buffer_integral_vars(t_err);
    return IT_sinh_temp_deltat;
 
  }
@@ -2679,7 +2679,7 @@ Double_t KpiKpiSpectrumNW::IT_sinh_spl() const
 Double_t KpiKpiSpectrumNW::IT_cos_spl() const
  {
    
-   set_buffer_integral_vars();
+   set_buffer_integral_vars(t_err);
    return IT_cos_temp_deltat;
 
  }
@@ -2690,7 +2690,7 @@ Double_t KpiKpiSpectrumNW::IT_cos_spl() const
 Double_t KpiKpiSpectrumNW::IT_sin_spl() const
  {
    
-   set_buffer_integral_vars();
+   set_buffer_integral_vars(t_err);
    return IT_sin_temp_deltat;
 
  }
@@ -3708,7 +3708,7 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
  Double_t KpiKpiSpectrumNW::den_fit() const 
  {
 
-   set_buffer_integral_vars();
+   set_buffer_integral_vars(t_err);
 
    return comp_den_fit(0,0,0,0,0,0)+comp_den_fit(0,1,0,0,1,0)+comp_den_fit(0,2,0,0,2,0)+comp_den_fit(1,0,0,1,0,0)+comp_den_fit(1,1,0,1,1,0)+comp_den_fit(1,1,1,1,1,1)
 +comp_den_fit(1,1,2,1,1,2)+comp_den_fit(1,2,0,1,2,0)+comp_den_fit(1,2,1,1,2,1)+comp_den_fit(1,2,2,1,2,2)+comp_den_fit(2,0,0,2,0,0)+comp_den_fit(2,1,0,2,1,0)+comp_den_fit(2,1,1,2,1,1)
@@ -3794,7 +3794,7 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
  Double_t KpiKpiSpectrumNW::den_basicfit() const 
  {
 
-   set_buffer_integral_vars();
+   set_buffer_integral_vars(t_err);
 
    return comp_den_basicfit(0,0,0,0,0,0)+comp_den_basicfit(0,1,0,0,1,0)+comp_den_basicfit(0,2,0,0,2,0)+comp_den_basicfit(1,0,0,1,0,0)+comp_den_basicfit(1,1,0,1,1,0)+comp_den_basicfit(1,1,1,1,1,1)
 +comp_den_basicfit(1,1,2,1,1,2)+comp_den_basicfit(1,2,0,1,2,0)+comp_den_basicfit(1,2,1,1,2,1)+comp_den_basicfit(1,2,2,1,2,2)+comp_den_basicfit(2,0,0,2,0,0)+comp_den_basicfit(2,1,0,2,1,0)+comp_den_basicfit(2,1,1,2,1,1)
@@ -3838,7 +3838,7 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
  {
 
    set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-   set_buffer_integral_vars();
+   set_buffer_integral_vars(t_err);
 
    return comp_den_plot(0,0,0,0,0,0)+comp_den_plot(0,1,0,0,1,0)+comp_den_plot(0,2,0,0,2,0)+comp_den_plot(1,0,0,1,0,0)+comp_den_plot(1,1,0,1,1,0)
 +comp_den_plot(1,1,1,1,1,1)+comp_den_plot(1,1,2,1,1,2)+comp_den_plot(1,2,0,1,2,0)+comp_den_plot(1,2,1,1,2,1)+comp_den_plot(1,2,2,1,2,2)
@@ -3864,7 +3864,7 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
  {
 
    set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-   set_buffer_integral_vars();
+   set_buffer_integral_vars(t_err);
 
    return comp_num_plot_t(0,0,0,0,0,0)+comp_num_plot_t(0,1,0,0,1,0)+comp_num_plot_t(0,2,0,0,2,0)+comp_num_plot_t(1,0,0,1,0,0)+comp_num_plot_t(1,1,0,1,1,0)
 +comp_num_plot_t(1,1,1,1,1,1)+comp_num_plot_t(1,1,2,1,1,2)+comp_num_plot_t(1,2,0,1,2,0)+comp_num_plot_t(1,2,1,1,2,1)+comp_num_plot_t(1,2,2,1,2,2)
@@ -3890,7 +3890,7 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
  {
 
    set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-   set_buffer_integral_vars();
+   set_buffer_integral_vars(t_err);
 
    return comp_num_plot_phi(0,0,0,0,0,0)+comp_num_plot_phi(0,1,0,0,1,0)+comp_num_plot_phi(0,2,0,0,2,0)+comp_num_plot_phi(1,0,0,1,0,0)+comp_num_plot_phi(1,1,0,1,1,0)+comp_num_plot_phi(1,1,1,1,1,1)
 +comp_num_plot_phi(1,1,2,1,1,2)+comp_num_plot_phi(1,2,0,1,2,0)+comp_num_plot_phi(1,2,1,1,2,1)+comp_num_plot_phi(1,2,2,1,2,2)+comp_num_plot_phi(2,0,0,2,0,0)+comp_num_plot_phi(2,1,0,2,1,0)+comp_num_plot_phi(2,1,1,2,1,1)
@@ -3935,7 +3935,7 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
  {
 
    set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-   set_buffer_integral_vars();
+   set_buffer_integral_vars(t_err);
 
    return comp_num_plot_cos1(0,0,0,0,0,0)+comp_num_plot_cos1(0,1,0,0,1,0)+comp_num_plot_cos1(0,2,0,0,2,0)+comp_num_plot_cos1(1,0,0,1,0,0)+comp_num_plot_cos1(1,1,0,1,1,0)
 +comp_num_plot_cos1(1,1,1,1,1,1)+comp_num_plot_cos1(1,1,2,1,1,2)+comp_num_plot_cos1(1,2,0,1,2,0)+comp_num_plot_cos1(1,2,1,1,2,1)+comp_num_plot_cos1(1,2,2,1,2,2)
@@ -3961,7 +3961,7 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
  {
 
    set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-   set_buffer_integral_vars();
+   set_buffer_integral_vars(t_err);
 
    return comp_num_plot_cos2(0,0,0,0,0,0)+comp_num_plot_cos2(0,1,0,0,1,0)+comp_num_plot_cos2(0,2,0,0,2,0)+comp_num_plot_cos2(1,0,0,1,0,0)+comp_num_plot_cos2(1,1,0,1,1,0)
 +comp_num_plot_cos2(1,1,1,1,1,1)+comp_num_plot_cos2(1,1,2,1,1,2)+comp_num_plot_cos2(1,2,0,1,2,0)+comp_num_plot_cos2(1,2,1,1,2,1)+comp_num_plot_cos2(1,2,2,1,2,2)
@@ -3987,7 +3987,7 @@ TComplex KpiKpiSpectrumNW::Ihj1j2j1pj2p(Int_t j1, Int_t j2, Int_t j1p, Int_t j2p
  {
 
    set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-   set_buffer_integral_vars();
+   set_buffer_integral_vars(t_err);
 
    return comp_num_plot_m(0,0,0,0,0,0)+comp_num_plot_m(0,1,0,0,1,0)+comp_num_plot_m(0,2,0,0,2,0)+comp_num_plot_m(1,0,0,1,0,0)+comp_num_plot_m(1,1,0,1,1,0)
 +comp_num_plot_m(1,1,1,1,1,1)+comp_num_plot_m(1,1,2,1,1,2)+comp_num_plot_m(1,2,0,1,2,0)+comp_num_plot_m(1,2,1,1,2,1)+comp_num_plot_m(1,2,2,1,2,2)
@@ -4061,271 +4061,271 @@ Double_t KpiKpiSpectrumNW::analyticalIntegral(Int_t code, const char* rangeName 
    // Integrals for plotting, VV component.
    else if (code == 2 and ((A_j1 == 10) or (A_j2 == 10) or (A_h == 10) or (A_j1p == 10) or (A_j2p == 10) or (A_hp == 10))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_t(1,1,0,1,1,0)+comp_num_plot_t(1,1,1,1,1,1)+comp_num_plot_t(1,1,2,1,1,2))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 3 and ((A_j1 == 10) or (A_j2 == 10) or (A_h == 10) or (A_j1p == 10) or (A_j2p == 10) or (A_hp == 10))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_phi(1,1,0,1,1,0)+comp_num_plot_phi(1,1,1,1,1,1)+comp_num_plot_phi(1,1,2,1,1,2)+2.*comp_num_plot_phi(1,1,1,1,1,0)+2.*comp_num_plot_phi(1,1,2,1,1,0)+2.*comp_num_plot_phi(1,1,2,1,1,1))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 4 and ((A_j1 == 10) or (A_j2 == 10) or (A_h == 10) or (A_j1p == 10) or (A_j2p == 10) or (A_hp == 10))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_cos1(1,1,0,1,1,0)+comp_num_plot_cos1(1,1,1,1,1,1)+comp_num_plot_cos1(1,1,2,1,1,2))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 5 and ((A_j1 == 10) or (A_j2 == 10) or (A_h == 10) or (A_j1p == 10) or (A_j2p == 10) or (A_hp == 10))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_cos2(1,1,0,1,1,0)+comp_num_plot_cos2(1,1,1,1,1,1)+comp_num_plot_cos2(1,1,2,1,1,2))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 6 and ((A_j1 == 10) or (A_j2 == 10) or (A_h == 10) or (A_j1p == 10) or (A_j2p == 10) or (A_hp == 10))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_m(1,1,0,1,1,0)+comp_num_plot_m(1,1,1,1,1,1)+comp_num_plot_m(1,1,2,1,1,2))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
 
    // Integrals for plotting, SS component.
    else if (code == 2 and (A_j1 == 11) and (A_j2 == 11) and (A_h == 11) and (A_j1p == 11) and (A_j2p == 11) and (A_hp == 11)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_t(0,0,0,0,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 3 and (A_j1 == 11) and (A_j2 == 11) and (A_h == 11) and (A_j1p == 11) and (A_j2p == 11) and (A_hp == 11)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_phi(0,0,0,0,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 4 and (A_j1 == 11) and (A_j2 == 11) and (A_h == 11) and (A_j1p == 11) and (A_j2p == 11) and (A_hp == 11)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_cos1(0,0,0,0,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 5 and (A_j1 == 11) and (A_j2 == 11) and (A_h == 11) and (A_j1p == 11) and (A_j2p == 11) and (A_hp == 11)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_cos2(0,0,0,0,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 6 and (A_j1 == 11) and (A_j2 == 11) and (A_h == 11) and (A_j1p == 11) and (A_j2p == 11) and (A_hp == 11)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_m(0,0,0,0,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
 
    // Integrals for plotting, SV component.
    else if (code == 2 and (A_j1 == 12) and (A_j2 == 12) and (A_h == 12) and (A_j1p == 12) and (A_j2p == 12) and (A_hp == 12)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_t(0,1,0,0,1,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 3 and (A_j1 == 12) and (A_j2 == 12) and (A_h == 12) and (A_j1p == 12) and (A_j2p == 12) and (A_hp == 12)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_phi(0,1,0,0,1,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 4 and (A_j1 == 12) and (A_j2 == 12) and (A_h == 12) and (A_j1p == 12) and (A_j2p == 12) and (A_hp == 12)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_cos1(0,1,0,0,1,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 5 and (A_j1 == 12) and (A_j2 == 12) and (A_h == 12) and (A_j1p == 12) and (A_j2p == 12) and (A_hp == 12)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_cos2(0,1,0,0,1,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 6 and (A_j1 == 12) and (A_j2 == 12) and (A_h == 12) and (A_j1p == 12) and (A_j2p == 12) and (A_hp == 12)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_m(0,1,0,0,1,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
 
    // Integrals for plotting, VS component.
    else if (code == 2 and (A_j1 == 13) and (A_j2 == 13) and (A_h == 13) and (A_j1p == 13) and (A_j2p == 13) and (A_hp == 13)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_t(1,0,0,1,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 3 and (A_j1 == 13) and (A_j2 == 13) and (A_h == 13) and (A_j1p == 13) and (A_j2p == 13) and (A_hp == 13)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_phi(1,0,0,1,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 4 and (A_j1 == 13) and (A_j2 == 13) and (A_h == 13) and (A_j1p == 13) and (A_j2p == 13) and (A_hp == 13)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_cos1(1,0,0,1,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 5 and (A_j1 == 13) and (A_j2 == 13) and (A_h == 13) and (A_j1p == 13) and (A_j2p == 13) and (A_hp == 13)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_cos2(1,0,0,1,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 6 and (A_j1 == 13) and (A_j2 == 13) and (A_h == 13) and (A_j1p == 13) and (A_j2p == 13) and (A_hp == 13)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_m(1,0,0,1,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
 
    // Integrals for plotting, ST component.
    else if (code == 2 and (A_j1 == 14) and (A_j2 == 14) and (A_h == 14) and (A_j1p == 14) and (A_j2p == 14) and (A_hp == 14)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_t(0,2,0,0,2,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 3 and (A_j1 == 14) and (A_j2 == 14) and (A_h == 14) and (A_j1p == 14) and (A_j2p == 14) and (A_hp == 14)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_phi(0,2,0,0,2,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 4 and (A_j1 == 14) and (A_j2 == 14) and (A_h == 14) and (A_j1p == 14) and (A_j2p == 14) and (A_hp == 14)) {
 
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_cos1(0,2,0,0,2,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 5 and (A_j1 == 14) and (A_j2 == 14) and (A_h == 14) and (A_j1p == 14) and (A_j2p == 14) and (A_hp == 14)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_cos2(0,2,0,0,2,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 6 and (A_j1 == 14) and (A_j2 == 14) and (A_h == 14) and (A_j1p == 14) and (A_j2p == 14) and (A_hp == 14)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_m(0,2,0,0,2,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
 
    // Integrals for plotting, TS component.
    else if (code == 2 and (A_j1 == 15) and (A_j2 == 15) and (A_h == 15) and (A_j1p == 15) and (A_j2p == 15) and (A_hp == 15)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_t(2,0,0,2,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 3 and (A_j1 == 15) and (A_j2 == 15) and (A_h == 15) and (A_j1p == 15) and (A_j2p == 15) and (A_hp == 15)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_phi(2,0,0,2,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 4 and (A_j1 == 15) and (A_j2 == 15) and (A_h == 15) and (A_j1p == 15) and (A_j2p == 15) and (A_hp == 15)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_cos1(2,0,0,2,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 5 and (A_j1 == 15) and (A_j2 == 15) and (A_h == 15) and (A_j1p == 15) and (A_j2p == 15) and (A_hp == 15)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_cos2(2,0,0,2,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 6 and (A_j1 == 15) and (A_j2 == 15) and (A_h == 15) and (A_j1p == 15) and (A_j2p == 15) and (A_hp == 15)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_m(2,0,0,2,0,0)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
 
    // Integrals for plotting, VT component.
    else if (code == 2 and ((A_j1 == 16) or (A_j2 == 16) or (A_h == 16) or (A_j1p == 16) or (A_j2p == 16) or (A_hp == 16))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_t(1,2,0,1,2,0)+comp_num_plot_t(1,2,1,1,2,1)+comp_num_plot_t(1,2,2,1,2,2))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 3 and ((A_j1 == 16) or (A_j2 == 16) or (A_h == 16) or (A_j1p == 16) or (A_j2p == 16) or (A_hp == 16))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_phi(1,2,0,1,2,0)+comp_num_plot_phi(1,2,1,1,2,1)+comp_num_plot_phi(1,2,2,1,2,2)+2.*comp_num_plot_phi(1,2,1,1,2,0)+2.*comp_num_plot_phi(1,2,2,1,2,0)+2.*comp_num_plot_phi(1,2,2,1,2,1))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 4 and ((A_j1 == 16) or (A_j2 == 16) or (A_h == 16) or (A_j1p == 16) or (A_j2p == 16) or (A_hp == 16))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_cos1(1,2,0,1,2,0)+comp_num_plot_cos1(1,2,1,1,2,1)+comp_num_plot_cos1(1,2,2,1,2,2))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 5 and ((A_j1 == 16) or (A_j2 == 16) or (A_h == 16) or (A_j1p == 16) or (A_j2p == 16) or (A_hp == 16))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_cos2(1,2,0,1,2,0)+comp_num_plot_cos2(1,2,1,1,2,1)+comp_num_plot_cos2(1,2,2,1,2,2))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 6 and ((A_j1 == 16) or (A_j2 == 16) or (A_h == 16) or (A_j1p == 16) or (A_j2p == 16) or (A_hp == 16))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_m(1,2,0,1,2,0)+comp_num_plot_m(1,2,1,1,2,1)+comp_num_plot_m(1,2,2,1,2,2))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
 
    // Integrals for plotting, TV component.
    else if (code == 2 and ((A_j1 == 17) or (A_j2 == 17) or (A_h == 17) or (A_j1p == 17) or (A_j2p == 17) or (A_hp == 17))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_t(2,1,0,2,1,0)+comp_num_plot_t(2,1,1,2,1,1)+comp_num_plot_t(2,1,2,2,1,2))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 3 and ((A_j1 == 17) or (A_j2 == 17) or (A_h == 17) or (A_j1p == 17) or (A_j2p == 17) or (A_hp == 17))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_phi(2,1,0,2,1,0)+comp_num_plot_phi(2,1,1,2,1,1)+comp_num_plot_phi(2,1,2,2,1,2)+2.*comp_num_plot_phi(2,1,1,2,1,0)+2.*comp_num_plot_phi(2,1,2,2,1,0)+2.*comp_num_plot_phi(2,1,2,2,1,1))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 4 and ((A_j1 == 17) or (A_j2 == 17) or (A_h == 17) or (A_j1p == 17) or (A_j2p == 17) or (A_hp == 17))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_cos1(2,1,0,2,1,0)+comp_num_plot_cos1(2,1,1,2,1,1)+comp_num_plot_cos1(2,1,2,2,1,2))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 5 and ((A_j1 == 17) or (A_j2 == 17) or (A_h == 17) or (A_j1p == 17) or (A_j2p == 17) or (A_hp == 17))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_cos2(2,1,0,2,1,0)+comp_num_plot_cos2(2,1,1,2,1,1)+comp_num_plot_cos2(2,1,2,2,1,2))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 6 and ((A_j1 == 17) or (A_j2 == 17) or (A_h == 17) or (A_j1p == 17) or (A_j2p == 17) or (A_hp == 17))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_m(2,1,0,2,1,0)+comp_num_plot_m(2,1,1,2,1,1)+comp_num_plot_m(2,1,2,2,1,2))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
 
    // Integrals for plotting, TT component.
    else if (code == 2 and ((A_j1 == 18) or (A_j2 == 18) or (A_h == 18) or (A_j1p == 18) or (A_j2p == 18) or (A_hp == 18))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_t(2,2,0,2,2,0)+comp_num_plot_t(2,2,1,2,2,1)+comp_num_plot_t(2,2,2,2,2,2)+comp_num_plot_t(2,2,3,2,2,3)+comp_num_plot_t(2,2,4,2,2,4))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 3 and ((A_j1 == 18) or (A_j2 == 18) or (A_h == 18) or (A_j1p == 18) or (A_j2p == 18) or (A_hp == 18))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_phi(2,2,0,2,2,0)+comp_num_plot_phi(2,2,1,2,2,1)+comp_num_plot_phi(2,2,2,2,2,2)+comp_num_plot_phi(2,2,3,2,2,3)+comp_num_plot_phi(2,2,4,2,2,4)+2.*comp_num_plot_phi(2,2,0,2,2,1)+2.*comp_num_plot_phi(2,2,0,2,2,2)+2.*comp_num_plot_phi(2,2,0,2,2,3)+2.*comp_num_plot_phi(2,2,0,2,2,4)+2.*comp_num_plot_phi(2,2,1,2,2,2)+2.*comp_num_plot_phi(2,2,1,2,2,3)+2.*comp_num_plot_phi(2,2,1,2,2,4)+2.*comp_num_plot_phi(2,2,2,2,2,3)+2.*comp_num_plot_phi(2,2,2,2,2,4)+2.*comp_num_plot_phi(2,2,3,2,2,4))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 4 and ((A_j1 == 18) or (A_j2 == 18) or (A_h == 18) or (A_j1p == 18) or (A_j2p == 18) or (A_hp == 18))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_cos1(2,2,0,2,2,0)+comp_num_plot_cos1(2,2,1,2,2,1)+comp_num_plot_cos1(2,2,2,2,2,2)+comp_num_plot_cos1(2,2,3,2,2,3)+comp_num_plot_cos1(2,2,4,2,2,4))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 5 and ((A_j1 == 18) or (A_j2 == 18) or (A_h == 18) or (A_j1p == 18) or (A_j2p == 18) or (A_hp == 18))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_cos2(2,2,0,2,2,0)+comp_num_plot_cos2(2,2,1,2,2,1)+comp_num_plot_cos2(2,2,2,2,2,2)+comp_num_plot_cos2(2,2,3,2,2,3)+comp_num_plot_cos2(2,2,4,2,2,4))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 6 and ((A_j1 == 18) or (A_j2 == 18) or (A_h == 18) or (A_j1p == 18) or (A_j2p == 18) or (A_hp == 18))) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return (comp_num_plot_m(2,2,0,2,2,0)+comp_num_plot_m(2,2,1,2,2,1)+comp_num_plot_m(2,2,2,2,2,2)+comp_num_plot_m(2,2,3,2,2,3)+comp_num_plot_m(2,2,4,2,2,4))/den_plot_var[(int) year_opt][(int) trig_opt];
    }
 
    // Integrals for plotting, j1j2hj1pj2php component.
    else if (code == 2 and (A_j1 < 9) and (A_j2 < 9) and (A_h < 9) and (A_j1p < 9) and (A_j2p < 9) and (A_hp < 9)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_t(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 3 and (A_j1 < 9) and (A_j2 < 9) and (A_h < 9) and (A_j1p < 9) and (A_j2p < 9) and (A_hp < 9)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_phi(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 4 and (A_j1 < 9) and (A_j2 < 9) and (A_h < 9) and (A_j1p < 9) and (A_j2p < 9) and (A_hp < 9)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_cos1(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 5 and (A_j1 < 9) and (A_j2 < 9) and (A_h < 9) and (A_j1p < 9) and (A_j2p < 9) and (A_hp < 9)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_cos2(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
    else if (code == 6 and (A_j1 < 9) and (A_j2 < 9) and (A_h < 9) and (A_j1p < 9) and (A_j2p < 9) and (A_hp < 9)) {
       set_buffer_differential_vars(m1,m2,cos1,cos2,phi,t,t_err,decision_SSK,decision_OS,etamistag_SSK,etamistag_OS);
-      set_buffer_integral_vars();
+      set_buffer_integral_vars(t_err);
       return comp_num_plot_m(A_j1,A_j2,A_h,A_j1p,A_j2p,A_hp)/den_plot_var[(int) year_opt][(int) trig_opt];
    }
 
@@ -4346,6 +4346,14 @@ Double_t KpiKpiSpectrumNW::analyticalIntegral(Int_t code, const char* rangeName 
  }
 
 // ---------------------------------------------------
+// Decay time error spectrum.
+
+ Double_t KpiKpiSpectrumNW::P_deltat(Double_t tau_err) const 
+ { 
+   return TMath::GammaDist(tau_err,gamma1_dt,0.,beta1_dt)+c_dt*TMath::GammaDist(tau_err,gamma2_dt,0.,beta2_dt);
+ }
+
+// ---------------------------------------------------
 // SSK mistag probability spectrum.
 
  Double_t KpiKpiSpectrumNW::P_eta_SSK(Double_t eta) const 
@@ -4361,14 +4369,6 @@ Double_t KpiKpiSpectrumNW::analyticalIntegral(Int_t code, const char* rangeName 
  {
    if (eta < 0.5) {return c_OS*TMath::Gaus(eta,mu1_OS,sigma1_OS)+(1.-c_OS)*TMath::Gaus(eta,mu2_OS,sigma2_OS);}
    else {return 0.;}
- }
-
-// ---------------------------------------------------
-// Decay time error spectrum.
-
- Double_t KpiKpiSpectrumNW::P_deltat(Double_t tau_err) const 
- { 
-   return TMath::GammaDist(tau_err,gamma1_dt,0.,beta1_dt)+c_dt*TMath::GammaDist(tau_err,gamma2_dt,0.,beta2_dt);
  }
 
 // ---------------------------------------------------
@@ -4471,7 +4471,6 @@ TComplex KpiKpiSpectrumNW::TBsbarj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_
 +2.*comp_fun_Bsbar(1,2,1,0,0,0)+2.*comp_fun_Bsbar(1,2,1,0,1,0)+2.*comp_fun_Bsbar(1,2,1,0,2,0)+2.*comp_fun_Bsbar(1,2,1,1,0,0)+2.*comp_fun_Bsbar(1,2,1,1,1,0)+2.*comp_fun_Bsbar(1,2,1,1,1,1)
 +2.*comp_fun_Bsbar(1,2,1,1,2,0)+2.*comp_fun_Bsbar(1,2,1,2,0,0)+2.*comp_fun_Bsbar(1,2,1,2,1,0)+2.*comp_fun_Bsbar(1,2,1,2,1,1)+2.*comp_fun_Bsbar(1,2,1,2,2,0)+2.*comp_fun_Bsbar(1,2,2,0,0,0)
 +2.*comp_fun_Bsbar(1,2,2,0,1,0)+2.*comp_fun_Bsbar(1,2,2,0,2,0)+2.*comp_fun_Bsbar(1,2,2,1,0,0)+2.*comp_fun_Bsbar(1,2,2,1,1,0)+2.*comp_fun_Bsbar(1,2,2,1,1,1)+2.*comp_fun_Bsbar(1,2,2,1,1,2)
-
 +2.*comp_fun_Bsbar(1,2,2,1,2,0)+2.*comp_fun_Bsbar(1,2,2,1,2,1)+2.*comp_fun_Bsbar(1,2,2,2,0,0)+2.*comp_fun_Bsbar(1,2,2,2,1,0)+2.*comp_fun_Bsbar(1,2,2,2,1,1)+2.*comp_fun_Bsbar(1,2,2,2,1,2)
 +2.*comp_fun_Bsbar(1,2,2,2,2,0)+2.*comp_fun_Bsbar(1,2,2,2,2,1)+2.*comp_fun_Bsbar(2,0,0,0,0,0)+2.*comp_fun_Bsbar(2,0,0,1,0,0)+2.*comp_fun_Bsbar(2,1,0,0,0,0)+2.*comp_fun_Bsbar(2,1,0,0,1,0)
 +2.*comp_fun_Bsbar(2,1,0,1,0,0)+2.*comp_fun_Bsbar(2,1,0,1,1,0)+2.*comp_fun_Bsbar(2,1,0,2,0,0)+2.*comp_fun_Bsbar(2,1,1,0,0,0)+2.*comp_fun_Bsbar(2,1,1,0,1,0)+2.*comp_fun_Bsbar(2,1,1,0,2,0)
@@ -4495,12 +4494,12 @@ TComplex KpiKpiSpectrumNW::TBsbarj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_
  }
 
 // ---------------------------------------------------
-// Integral of the Bs time dependent function, effective resolution.
+// Integral of the Bs time dependent function.
 
 TComplex KpiKpiSpectrumNW::ITBsj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const
  {
 
-   return IT_cosh_temp*M_Average(j1,j2,h,j1p,j2p,hp)-IT_sinh_temp*M_DeltaGamma(j1,j2,h,j1p,j2p,hp)+IT_cos_temp*M_DirCP(j1,j2,h,j1p,j2p,hp)+IT_sin_temp*M_MixCP(j1,j2,h,j1p,j2p,hp);
+   return IT_cosh_temp_deltat*M_Average(j1,j2,h,j1p,j2p,hp)-IT_sinh_temp_deltat*M_DeltaGamma(j1,j2,h,j1p,j2p,hp)+IT_cos_temp_deltat*M_DirCP(j1,j2,h,j1p,j2p,hp)+IT_sin_temp_deltat*M_MixCP(j1,j2,h,j1p,j2p,hp);
 
  }
 
@@ -4536,28 +4535,69 @@ TComplex KpiKpiSpectrumNW::ITBsj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t 
  }
 
 // ---------------------------------------------------
-// True Bs (vs true Bsbar) probability.
+// Integral of the Bsbar time dependent function.
+
+TComplex KpiKpiSpectrumNW::ITBsbarj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const
+ {
+
+   return IT_cosh_temp_deltat*M_Average(j1,j2,h,j1p,j2p,hp)-IT_sinh_temp_deltat*M_DeltaGamma(j1,j2,h,j1p,j2p,hp)-IT_cos_temp_deltat*M_DirCP(j1,j2,h,j1p,j2p,hp)-IT_sin_temp_deltat*M_MixCP(j1,j2,h,j1p,j2p,hp);
+
+ }
+
+// ---------------------------------------------------
+// Components of the Bsbar decay rate integral.
+
+ Double_t KpiKpiSpectrumNW::comp_int_Bsbar(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const 
+ { 
+   return (ITBsbarj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*Ihj1j2j1pj2p(j1,j2,j1p,j2p)).Re()*Ighhp(h,hp)*Ifjjphhp(j1,j1p,h,hp)*Ifjjphhp(j2,j2p,h,hp);
+ }
+
+// ---------------------------------------------------
+// Bsbar decay rate integral.
+
+ Double_t KpiKpiSpectrumNW::int_Bsbar() const 
+ {
+
+   return comp_int_Bsbar(0,0,0,0,0,0)+comp_int_Bsbar(0,1,0,0,1,0)+comp_int_Bsbar(0,2,0,0,2,0)+comp_int_Bsbar(1,0,0,1,0,0)+comp_int_Bsbar(1,1,0,1,1,0)
++comp_int_Bsbar(1,1,1,1,1,1)+comp_int_Bsbar(1,1,2,1,1,2)+comp_int_Bsbar(1,2,0,1,2,0)+comp_int_Bsbar(1,2,1,1,2,1)+comp_int_Bsbar(1,2,2,1,2,2)
++comp_int_Bsbar(2,0,0,2,0,0)+comp_int_Bsbar(2,1,0,2,1,0)+comp_int_Bsbar(2,1,1,2,1,1)+comp_int_Bsbar(2,1,2,2,1,2)+comp_int_Bsbar(2,2,0,2,2,0)
++comp_int_Bsbar(2,2,1,2,2,1)+comp_int_Bsbar(2,2,2,2,2,2)+comp_int_Bsbar(2,2,3,2,2,3)+comp_int_Bsbar(2,2,4,2,2,4)+2.*comp_int_Bsbar(0,1,0,0,0,0)
++2.*comp_int_Bsbar(0,1,0,1,0,0)+2.*comp_int_Bsbar(0,1,0,2,0,0)+2.*comp_int_Bsbar(0,2,0,0,0,0)+2.*comp_int_Bsbar(0,2,0,0,1,0)+2.*comp_int_Bsbar(0,2,0,1,0,0)
++2.*comp_int_Bsbar(0,2,0,1,1,0)+2.*comp_int_Bsbar(0,2,0,2,0,0)+2.*comp_int_Bsbar(0,2,0,2,1,0)+2.*comp_int_Bsbar(1,0,0,0,0,0)+2.*comp_int_Bsbar(1,1,0,0,0,0)
++2.*comp_int_Bsbar(1,1,0,0,1,0)+2.*comp_int_Bsbar(1,1,0,1,0,0)+2.*comp_int_Bsbar(1,1,0,2,0,0)+2.*comp_int_Bsbar(1,2,0,0,0,0)+2.*comp_int_Bsbar(1,2,0,0,1,0)
++2.*comp_int_Bsbar(1,2,0,0,2,0)+2.*comp_int_Bsbar(1,2,0,1,0,0)+2.*comp_int_Bsbar(1,2,0,1,1,0)+2.*comp_int_Bsbar(1,2,0,2,0,0)+2.*comp_int_Bsbar(1,2,0,2,1,0)
++2.*comp_int_Bsbar(1,2,1,1,1,1)+2.*comp_int_Bsbar(1,2,1,2,1,1)+2.*comp_int_Bsbar(1,2,2,1,1,2)+2.*comp_int_Bsbar(1,2,2,2,1,2)+2.*comp_int_Bsbar(2,0,0,0,0,0)
++2.*comp_int_Bsbar(2,0,0,1,0,0)+2.*comp_int_Bsbar(2,1,0,0,0,0)+2.*comp_int_Bsbar(2,1,0,0,1,0)+2.*comp_int_Bsbar(2,1,0,1,0,0)+2.*comp_int_Bsbar(2,1,0,1,1,0)
++2.*comp_int_Bsbar(2,1,0,2,0,0)+2.*comp_int_Bsbar(2,1,1,1,1,1)+2.*comp_int_Bsbar(2,1,2,1,1,2)+2.*comp_int_Bsbar(2,2,0,0,0,0)+2.*comp_int_Bsbar(2,2,0,0,1,0)
++2.*comp_int_Bsbar(2,2,0,0,2,0)+2.*comp_int_Bsbar(2,2,0,1,0,0)+2.*comp_int_Bsbar(2,2,0,1,1,0)+2.*comp_int_Bsbar(2,2,0,1,2,0)+2.*comp_int_Bsbar(2,2,0,2,0,0)
++2.*comp_int_Bsbar(2,2,0,2,1,0)+2.*comp_int_Bsbar(2,2,1,1,1,1)+2.*comp_int_Bsbar(2,2,1,1,2,1)+2.*comp_int_Bsbar(2,2,1,2,1,1)+2.*comp_int_Bsbar(2,2,2,1,1,2)
++2.*comp_int_Bsbar(2,2,2,1,2,2)+2.*comp_int_Bsbar(2,2,2,2,1,2);
+
+ }
+
+// ---------------------------------------------------
+// Probability of Bs flavour.
 
 Double_t KpiKpiSpectrumNW::P_trueBs() const
 {
 
-  set_buffer_integral_vars();
 
-  cout << "P(Bs_true) = " << 0.5*(1.+DCP_prod)*int_Bs()/den_plot() << endl;
+  Double_t yield_Bs = (1.+DCP_prod)*int_Bs();
+  Double_t yield_Bsbar = (1.-DCP_prod)*int_Bsbar();
 
-  return 0.5*(1.+DCP_prod)*int_Bs()/den_plot();
+  return yield_Bs/(yield_Bs+yield_Bsbar);
 
 }
 
 // ---------------------------------------------------
-// Randomization of the auxiliar m1, m2, cos1, cos2, phi, t and t_err variables.
+// Randomization of the auxiliar m1, m2, cos1, cos2, phi and t variables.
 
- void KpiKpiSpectrumNW::Randomize7D(Int_t wide_window_gen) const 
+ void KpiKpiSpectrumNW::Randomize6D(Int_t wide_window_gen) const 
  {
 
    if (wide_window_gen == 1) {
-      m1_ran = 750.+ran.Rndm()*(1500.-750.);
-      m2_ran = 750.+ran.Rndm()*(1500.-750.);
+      m1_ran = 750.+ran.Rndm()*(1600.-750.);
+      m2_ran = 750.+ran.Rndm()*(1600.-750.);
       }
    else {
       m1_ran = 750.+ran.Rndm()*(1050.-750.);
@@ -4565,9 +4605,8 @@ Double_t KpiKpiSpectrumNW::P_trueBs() const
       }
    cos1_ran = -1.+ran.Rndm()*2.;
    cos2_ran = -1.+ran.Rndm()*2.;
-   phi_ran = -pi+ran.Rndm()*2.*pi;
+   phi_ran = ran.Rndm()*2.*pi;
    t_ran = ran.Rndm()*12.;
-   t_err_ran = ran.Rndm()*0.1;
 
    return;
 
@@ -4584,9 +4623,9 @@ Double_t KpiKpiSpectrumNW::P_trueBs() const
    m2_ran = 850.+ran.Rndm()*(950.-850.);
    cos1_ran = -1.+ran.Rndm()*2.;
    cos2_ran = -1.+ran.Rndm()*2.;
-   phi_ran = -pi+ran.Rndm()*2.*pi;
+   phi_ran = ran.Rndm()*2.*pi;
    t_ran = ran.Rndm()*3.;
-   t_err_ran = 0.01+ran.Rndm()*(0.04-0.01);
+   t_err_ran = ran.Rndm()*0.1;
 
    return;
 
@@ -4605,26 +4644,31 @@ void KpiKpiSpectrumNW::SetGenerator(Int_t wide_window_gen, Int_t compute_max_fun
   ran.SetSeed(0);
 
   // Variable inicialization.
-  dec_Bs = 0.;
+  dec_flavour = 0.;
   dec_SSK_tagged = 0.;
   dec_OS_tagged = 0.;
   dec_accepted = 0.;
   N_accepted = 0;
-
-  // Computation of the true Bs (vs true Bsbar) probability.
-  P_trueBs_const = P_trueBs();
 
   // Computation of the maximum value for the considered distributions, if requested.
   if (compute_max_fun == 1) {
 
     cout << "Computing p.d.f.'s maxima.\n";
 
+    max_fun_deltat = 0.;
     max_fun_etaSSK = 0.;
     max_fun_etaOS = 0.;
-    max_fun_7DBs = 0.;
-    max_fun_7DBsbar = 0.;
+    max_fun_6DBs = 0.;
+    max_fun_6DBsbar = 0.;
 
-    // Tagging performance distributions.
+    // Decay time error distribution.
+    for (int i=0; i<10000; i++) {
+      t_err_ran = 0.01+ran.Rndm()*(0.04-0.01);
+      fun_ran = P_deltat(t_err_ran);
+      if (fun_ran > max_fun_deltat) {max_fun_deltat = fun_ran;}
+      }
+
+    // Mistag probability distributions.
     for (int i=0; i<10000; i++) {
       etamistag_SSK_ran = 0.3+ran.Rndm()*(0.5-0.3);
       fun_ran = P_eta_SSK(etamistag_SSK_ran);
@@ -4634,47 +4678,50 @@ void KpiKpiSpectrumNW::SetGenerator(Int_t wide_window_gen, Int_t compute_max_fun
       if (fun_ran > max_fun_etaOS) {max_fun_etaOS = fun_ran;}
       }
 
-    // Decay observable distributions.
+    // Decay variable distributions.
     cout << "(Using a randomized sample of " << sample_size_7D << " 7D points to find the maximum of the Bs and Bs-bar PDFs).\n";
     for (int i=0; i<sample_size_7D; i++) {
       Randomize7D_fun_max();
       set_buffer_differential_vars(m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran,t_ran,t_err_ran,0,0,0.5,0.5);
-      fun_ran = P_deltat(t_err_ran)*fun_Bs()*accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran);
-      if (fun_ran > max_fun_7DBs) {max_fun_7DBs = fun_ran;}
+      set_buffer_integral_vars(t_err_ran);
+      fun_ran = fun_Bs()*accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran)/int_Bs();
+      if (fun_ran > max_fun_6DBs) {max_fun_6DBs = fun_ran;}
       Randomize7D_fun_max();
       set_buffer_differential_vars(m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran,t_ran,t_err_ran,0,0,0.5,0.5);
-      fun_ran = P_deltat(t_err_ran)*fun_Bsbar()*accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran);
-      if (fun_ran > max_fun_7DBsbar) {max_fun_7DBsbar = fun_ran;}
+      set_buffer_integral_vars(t_err_ran);
+      fun_ran = fun_Bsbar()*accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran)/int_Bsbar();
+      if (fun_ran > max_fun_6DBsbar) {max_fun_6DBsbar = fun_ran;}
       }
 
     // Providing the computed maxima with an extra safety range.
-    max_fun_etaSSK *= 1.1;
-    max_fun_etaOS *= 1.1;
-    max_fun_7DBs *= 1.1;
-    max_fun_7DBsbar *= 1.1;
+    max_fun_deltat *= 1.2;
+    max_fun_etaSSK *= 1.2;
+    max_fun_etaOS *= 1.2;
+    max_fun_6DBs *= 1.2;
+    max_fun_6DBsbar *= 1.2;
 
-    cout << "max_P_eta_SSK = " << max_fun_etaSSK << "\n" << "max_P_eta_OS = " << max_fun_etaOS << "\n" << "max_P_7D_Bs = " << max_fun_7DBs << "\n" << "max_P_7D_Bsbar = " << max_fun_7DBsbar << "\n";
+    cout << "max_fun_deltat = " << max_fun_deltat << "\n" << "max_fun_etaSSK = " << max_fun_etaSSK << "\n" << "max_fun_etaOS = " << max_fun_etaOS << "\n" << "max_fun_6DBs = " << max_fun_6DBs << "\n" << "max_fun_6DBsbar = " << max_fun_6DBsbar << "\n";
 
     }
 
   else {
 
-    // Relyable previously measured values.
-
     if (Wide_Window_Gen == 0) {
-      cout << "Using previously obtained values for the maxima of the Bs and Bs-bar PDFs in the narrow mKpi window.\n";
-      max_fun_etaSSK = 0.26227;
-      max_fun_etaOS = 0.958321;
-      max_fun_7DBs = 0.0330968;
-      max_fun_7DBsbar = 0.0342749;
+      cout << "Using previously obtained values for the maxima of the PDFs in the narrow mKpi window.\n";
+      max_fun_deltat = 68.8064;
+      max_fun_etaSSK = 0.276388;
+      max_fun_etaOS = 1.03582;
+      max_fun_6DBs = 202.432;
+      max_fun_6DBsbar = 194.987;
       }
 
     else {
-      cout << "Using previously obtained values for the maxima of the Bs and Bs-bar PDFs in the wide mKpi window.\n";
-      max_fun_etaSSK = 0.262292;
-      max_fun_etaOS = 0.958321;
-      max_fun_7DBs = 0.00494785;
-      max_fun_7DBsbar = 0.00519231;
+      cout << "Using previously obtained values for the maxima of the PDFs in the wide mKpi window.\n";
+      max_fun_deltat = 68.8064;
+      max_fun_etaSSK = 0.276483;
+      max_fun_etaOS = 1.03582;
+      max_fun_6DBs = 760.726;
+      max_fun_6DBsbar = 790.697;
       }
 
     }
@@ -4702,20 +4749,31 @@ void KpiKpiSpectrumNW::generateEvent(Int_t code)
 
   assert(code==1);
 
-  // Generation is performed in three steps:
-  //    1. The event is first generated either as a Bs or a Bsbar.
-  //    2. Mistag probabilities and tagging decisions are assigned to the event.
-  //    3. Decay variables (angles, invariant masses, decay time and
-  //       estimated decay time error) are assigned to the event.
+  // Generation is performed in four steps:
+  //    1. The per event decay time error is determined.
+  //    2. A flavour, Bs or Bsbar, is assigned to the event.
+  //    3. Tagging decisions and mistag probabilities are obtained.
+  //    4. Decay variables (angles, invariant masses and decay time) are determined.
+
+  // Determination of the per event decay time error.
+  event_accepted = 0;
+  max_fun = max_fun_deltat;
+  while (event_accepted == 0) {
+    t_err_ran = ran.Rndm()*0.1;
+    fun_ran = P_deltat(t_err_ran);
+    dec_accepted = max_fun*ran.Rndm();
+    if (fun_ran > dec_accepted) {event_accepted = 1;}
+  }
+  t_err = t_err_ran;
 
   // Generation of a Bs or a Bsbar event.
-  dec_Bs = ran.Rndm();
-  if (dec_Bs <= P_trueBs_const) {true_ID = 1;} // Bs-like event.
+  dec_flavour = ran.Rndm();
+  if (dec_flavour < P_trueBs()) {true_ID = 1;} // Bs-like event.
   else {true_ID = -1;} // Bsbar-like event.
 
   // Determination of the SSK mistag probability.
   dec_SSK_tagged = ran.Rndm();
-  if (dec_SSK_tagged <= tag_eff_SSK) {
+  if (dec_SSK_tagged < tag_eff_SSK) {
     // If the event is tagged, the accept-reject method is used to generate eta.
     event_accepted = 0;
     max_fun = max_fun_etaSSK;
@@ -4723,7 +4781,7 @@ void KpiKpiSpectrumNW::generateEvent(Int_t code)
       etamistag_SSK_ran = 0.5*ran.Rndm();
       fun_ran = P_eta_SSK(etamistag_SSK_ran);
       dec_accepted = max_fun*ran.Rndm();
-      if (fun_ran >= dec_accepted) {event_accepted = 1;}
+      if (fun_ran > dec_accepted) {event_accepted = 1;}
       }
     etamistag_SSK = etamistag_SSK_ran;
     }
@@ -4737,12 +4795,12 @@ void KpiKpiSpectrumNW::generateEvent(Int_t code)
     dec_right_tagged = ran.Rndm();
     if (true_ID == 1) {
       prob_right_tagged = 1.-omega_SSK(etamistag_SSK);
-      if (dec_right_tagged <= prob_right_tagged) {decision_SSK = 1;} // Right tagged Bs.
+      if (dec_right_tagged < prob_right_tagged) {decision_SSK = 1;} // Right tagged Bs.
       else {decision_SSK = -1;} // Wrong tagged Bs.
       }
     else {
       prob_right_tagged = 1.-omegabar_SSK(etamistag_SSK);
-      if (dec_right_tagged <= prob_right_tagged) {decision_SSK = -1;} // Right tagged Bsbar.
+      if (dec_right_tagged < prob_right_tagged) {decision_SSK = -1;} // Right tagged Bsbar.
       else {decision_SSK = 1;} // Wrong tagged Bsbar.
       }
     }
@@ -4752,7 +4810,7 @@ void KpiKpiSpectrumNW::generateEvent(Int_t code)
 
   // Determination of the OS mistag probability.
   dec_OS_tagged = ran.Rndm();
-  if (dec_OS_tagged <= tag_eff_OS) {
+  if (dec_OS_tagged < tag_eff_OS) {
     // If the event is tagged, the accept-reject method is used to generate eta.
     event_accepted = 0;
     max_fun = max_fun_etaOS;
@@ -4760,7 +4818,7 @@ void KpiKpiSpectrumNW::generateEvent(Int_t code)
       etamistag_OS_ran = 0.5*ran.Rndm();
       fun_ran = P_eta_OS(etamistag_OS_ran);
       dec_accepted = max_fun*ran.Rndm();
-      if (fun_ran >= dec_accepted) {event_accepted = 1;}
+      if (fun_ran > dec_accepted) {event_accepted = 1;}
       }
     etamistag_OS = etamistag_OS_ran;
     }
@@ -4774,12 +4832,12 @@ void KpiKpiSpectrumNW::generateEvent(Int_t code)
     dec_right_tagged = ran.Rndm();
     if (true_ID == 1) {
       prob_right_tagged = 1.-omega_OS(etamistag_OS);
-      if (dec_right_tagged <= prob_right_tagged) {decision_OS = 1;} // Right tagged Bs.
+      if (dec_right_tagged < prob_right_tagged) {decision_OS = 1;} // Right tagged Bs.
       else {decision_OS = -1;} // Wrong tagged Bs.
       }
     else {
       prob_right_tagged = 1.-omegabar_OS(etamistag_OS);
-      if (dec_right_tagged <= prob_right_tagged) {decision_OS = -1;} // Right tagged Bsbar.
+      if (dec_right_tagged < prob_right_tagged) {decision_OS = -1;} // Right tagged Bsbar.
       else {decision_OS = 1;} // Wrong tagged Bsbar.
       }
     }
@@ -4787,22 +4845,22 @@ void KpiKpiSpectrumNW::generateEvent(Int_t code)
     decision_OS = 0;
     }
 
-  // Determination of the event decay observables, using the accept-reject method in 7-D.
-  // Acceptance effects are taken into account and the parametrized t_err distribution is used.
+  // Determination of the decay observables, using the accept-reject method in 6-D, taking t_err as a conditional variable.
   event_accepted = 0;
-  if (true_ID == 1) {max_fun = max_fun_7DBs;}
-  else {max_fun = max_fun_7DBsbar;}
+  if (true_ID == 1) {max_fun = max_fun_6DBs;}
+  else {max_fun = max_fun_6DBsbar;}
   while (event_accepted == 0) {
-    Randomize7D(Wide_Window_Gen);
-    set_buffer_differential_vars(m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran,t_ran,t_err_ran,0,0,0.5,0.5);
+    Randomize6D(Wide_Window_Gen);
+    set_buffer_differential_vars(m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran,t_ran,t_err,0,0,0.5,0.5);
+    set_buffer_integral_vars(t_err);
     dec_accepted = max_fun*ran.Rndm();
     if (true_ID == 1) {
-      fun_ran = P_deltat(t_err_ran)*fun_Bs()*accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran);
+      fun_ran = fun_Bs()*accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran)/int_Bs();
       }
     else {
-      fun_ran = P_deltat(t_err_ran)*fun_Bsbar()*accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran);
+      fun_ran = fun_Bsbar()*accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran)/int_Bsbar();
       }
-    if (fun_ran >= dec_accepted) {event_accepted = 1;}
+    if (fun_ran > dec_accepted) {event_accepted = 1;}
     }
   m1 = m1_ran;
   m2 = m2_ran;
@@ -4810,10 +4868,9 @@ void KpiKpiSpectrumNW::generateEvent(Int_t code)
   cos2 = cos2_ran;
   phi = phi_ran;
   t = t_ran;
-  t_err = t_err_ran;
 
   N_accepted += 1;
-  if (N_accepted%10 == 0) {cout << N_accepted << " events generated\n";}
+  if (N_accepted%100 == 0) {cout << N_accepted << " events generated\n";}
 
   return;
 

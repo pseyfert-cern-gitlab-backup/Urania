@@ -19,8 +19,8 @@ elif '/Users/jugarcia/' in currentpath:
 	print "\nINFO: Local environment loaded."
 elif '/home3/' in currentpath:
 	NTUPLE_PATH = "/scratch27/julian.garcia/Bs2KpiKpi/fast_ntuples/"
-	PYTHON_PATH = '/home3/julian.garcia/cmtuser/Bs2KpiKpi/python/TimeDependent/'
-	SOURCE_PATH = '/home3/julian.garcia/cmtuser/Bs2KpiKpi/src/TimeDependent/'
+	PYTHON_PATH = '/home3/julian.garcia/UraniaDev_v6r2/Phys/BsKstKst/python/TimeDependent/'
+	SOURCE_PATH = '/home3/julian.garcia/UraniaDev_v6r2/Phys/BsKstKst/src/TimeDependent/'
 	print "\nINFO: USC node environment loaded."
 else:
 	NTUPLE_PATH = ""
@@ -165,7 +165,7 @@ imA22par2 = ROOT.RooRealVar("imA22par2","Im(A^{TT}_{#parallel2})",0.,-10.,10.)
 imA22perp2 = ROOT.RooRealVar("imA22perp2","Im(A^{TT}_{#perp2})",0.,-10.,10.)
 
 # Weak phases.
-phis = ROOT.RooRealVar("phis","#phi_{s}",0.,-2.*pi,2*pi)
+phis = ROOT.RooRealVar("phis","#phi_{s}",0.,-pi,pi)
 dphi_SS = ROOT.RooRealVar("dphi_SS","#Delta#phi_{SS}",0.,-2.*pi,2*pi)
 dphi_SV = ROOT.RooRealVar("dphi_SV","#Delta#phi_{SV}",0.,-2.*pi,2*pi)
 dphi_VS = ROOT.RooRealVar("dphi_VS","#Delta#phi_{VS}",0.,-2.*pi,2*pi)
@@ -270,7 +270,7 @@ deltaA11perpAsplus = ROOT.RooFormulaVar("deltaA11perpAsplus","#delta^{VV}_{#perp
 # Mixing parameters.
 delta_m_Bs = ROOT.RooRealVar("delta_m_Bs","#Delta m_{B_{s}^{0}}",17.7575,16.5,20.)
 gamma_Bs = ROOT.RooRealVar("gamma_Bs","#Gamma_{B_{s}^{0}}",0.6628,0.6428,0.6828)
-delta_gamma_Bs = ROOT.RooRealVar("delta_gamma_Bs","#Delta #Gamma_{B_{s}^{0}}",0.0838,0.04,0.13)
+delta_gamma_Bs = ROOT.RooRealVar("delta_gamma_Bs","#Delta #Gamma_{B_{s}^{0}}",0.09,0.06,0.12)
 
 # Gaussian constraints of the mixing parameters.
 parvector_gamma_Bs_delta_gamma_Bs = ROOT.RooArgList(gamma_Bs,delta_gamma_Bs)
@@ -355,22 +355,22 @@ ctrt_tres_p0_tres_p1_2012_narrow = ROOT.RooMultiVarGaussian("ctrt_tres_p0_tres_p
 
 # Parameters of the conditional variable spectra.
 tag_eff_SSK = ROOT.RooRealVar("tag_eff_SSK","tag_eff_SSK",0.6334)
-mu1_SSK = ROOT.RooRealVar("mu1_SSK","mu1_SSK",6.99783e-01,0.,1.)
-sigma1_SSK = ROOT.RooRealVar("sigma1_SSK","sigma1_SSK",1.18366e-01,0.01,1.)
-c_SSK = ROOT.RooRealVar("c_SSK","c_SSK",9.90855e-01,0.5,1.)
-mu2_SSK = ROOT.RooRealVar("mu2_SSK","mu2_SSK",2.82927e-01,0.,1.)
-sigma2_SSK = ROOT.RooRealVar("sigma2_SSK","sigma2_SSK",5.88599e-02,0.01,1.)
+mu1_SSK = ROOT.RooRealVar("mu1_SSK","mu1_SSK",6.99783e-01,0.3,0.9)
+sigma1_SSK = ROOT.RooRealVar("sigma1_SSK","sigma1_SSK",1.16940e-01,0.05,0.5)
+c_SSK = ROOT.RooRealVar("c_SSK","c_SSK",9.91397e-01,0.8,1.)
+mu2_SSK = ROOT.RooRealVar("mu2_SSK","mu2_SSK",2.92211e-01,0.1,0.5)
+sigma2_SSK = ROOT.RooRealVar("sigma2_SSK","sigma2_SSK",5.92591e-02,0.01,0.1)
 tag_eff_OS = ROOT.RooRealVar("tag_eff_OS","tag_eff_OS",0.3783)
-mu1_OS = ROOT.RooRealVar("mu1_OS","mu1_OS",4.28262e-01,0.2,0.6)
-sigma1_OS = ROOT.RooRealVar("sigma1_OS","sigma1_OS",9.37763e-02,0.01,0.2)
-c_OS = ROOT.RooRealVar("c_OS","c_OS",8.71059e-01,0.5,1.)
-mu2_OS = ROOT.RooRealVar("mu2_OS","mu2_OS",2.09147e-01,0.1,0.3)
-sigma2_OS = ROOT.RooRealVar("sigma2_OS","sigma2_OS",5.93503e-02,0.01,0.1)
-gamma1_dt = ROOT.RooRealVar("gamma1_dt","gamma1_dt",1.30656e+01,10,20)
-beta1_dt = ROOT.RooRealVar("beta1_dt","beta1_dt",2.89139e-03,0.0001,0.01)
-c_dt = ROOT.RooRealVar("c_dt","c_dt",9.99996e+00,0.01,12)
-gamma2_dt = ROOT.RooRealVar("gamma2_dt","gamma2_dt",1.47627e+01,1,50)
-beta2_dt = ROOT.RooRealVar("beta2_dt","beta2_dt",1.85669e-03,0.001,0.1)
+mu1_OS = ROOT.RooRealVar("mu1_OS","mu1_OS",4.26408e-01,0.2,0.6)
+sigma1_OS = ROOT.RooRealVar("sigma1_OS","sigma1_OS",1.05074e-01,0.01,0.2)
+c_OS = ROOT.RooRealVar("c_OS","c_OS",8.63185e-01,0.5,1.)
+mu2_OS = ROOT.RooRealVar("mu2_OS","mu2_OS",1.88977e-01,0.1,0.3)
+sigma2_OS = ROOT.RooRealVar("sigma2_OS","sigma2_OS",4.69965e-02,0.01,0.1)
+gamma1_dt = ROOT.RooRealVar("gamma1_dt","gamma1_dt",1.50471e+01,10,20)
+beta1_dt = ROOT.RooRealVar("beta1_dt","beta1_dt",1.84541e-03,0.0001,0.01)
+c_dt = ROOT.RooRealVar("c_dt","c_dt",0.)#20,15,25)
+gamma2_dt = ROOT.RooRealVar("gamma2_dt","gamma2_dt",1.)#1.47627e+01,10,20)
+beta2_dt = ROOT.RooRealVar("beta2_dt","beta2_dt",1.)#1.85669e-03,0.0001,0.01)
 
 mu1_SSK.setConstant(1)
 sigma1_SSK.setConstant(1)
