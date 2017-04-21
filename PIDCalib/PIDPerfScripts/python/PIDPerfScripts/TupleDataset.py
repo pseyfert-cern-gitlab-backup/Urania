@@ -201,7 +201,7 @@ vars_dataset = {
   'nPVs':            			  var('nPVs',        'nPVs',        'var'),               
   'nRich1Hits':            		  var('nRich1Hits',        'nRich1Hits',        'var'),             
   'nRich2Hits':            		  var('nRich2Hits',        'nRich2Hits',        'var'),             
-  'nSPDHits':            		  var('nSPDhits',        'nSPDhits',        'var'),  #### PIDCalib is nSPDHits, WGP nTuple is nSPDhits          
+  'nSPDHits':            		  var('nSPDHits',        'nSPDhits',        'var'),  #### PIDCalib is nSPDHits, WGP nTuple is nSPDhits          
   'nTracks':            		  var('nTracks',        'nTracks',        'var'),         
   'nVeloClusters':                var('nVeloClusters',    'nVeloClusters',    'var'),
   'nVeloClusters_Brunel':         var('nVeloClusters_Brunel',    'nVeloClusters_Brunel',    'var'),
