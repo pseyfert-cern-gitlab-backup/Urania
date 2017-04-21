@@ -8,11 +8,11 @@
 #  true and estimated distributions. 
 
 import os, sys
-os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + "../inc/"
+os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + os.environ["MEERKATROOT"]
 
 from ROOT import gSystem, gStyle, RooRealVar
 
-gSystem.Load("../lib/libMeerkat.so")
+gSystem.Load("libMeerkatLib.so")
 
 from ROOT import OneDimPhaseSpace, BinnedKernelDensity
 from ROOT import TFile, TNtuple, TCanvas, TH1F, TText, TRandom3
@@ -65,7 +65,7 @@ canvas = TCanvas("canvas", "WeightedTuple", 400, 400)
 uniform_hist.Draw() 
 kernel_hist.Scale( uniform_hist.GetSumOfWeights() / kernel_hist.GetSumOfWeights() ) 
 kernel_hist.SetLineColor(2) 
-kernel_hist.Draw("same") 
+kernel_hist.Draw("hist same l") 
 
 canvas.Print("WeightedTuple.png") 
 

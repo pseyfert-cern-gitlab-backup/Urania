@@ -4,11 +4,11 @@
 #  and use PolynomialDensity class to fit it. 
 
 import os, sys
-os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + "../inc/"
+os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + os.environ["MEERKATROOT"]
 
 from ROOT import gSystem, gStyle, RooRealVar
 
-gSystem.Load("../lib/libMeerkat.so")
+gSystem.Load("libMeerkatLib.so")
 
 from ROOT import OneDimPhaseSpace, ParametricPhaseSpace, FormulaDensity, PolynomialDensity
 from ROOT import TFile, TNtuple, TCanvas, TH2F, TText
@@ -36,7 +36,7 @@ poly.project(poly_hist)
 poly_hist.Write()
 
 gStyle.SetOptStat(0)
-  
+
 canvas = TCanvas("canvas", "TwoDimPolyPdf", 400, 400) 
 poly_hist.Draw("zcol") 
 

@@ -40,7 +40,7 @@ SOFLAGS  = -m64 -dynamiclib -single_module -undefined dynamic_lookup
 endif
 
 # --- Internal configuration ----------------------------------
-INCDIR=../inc
+INCDIR=$(MEERKATROOT)
 DEPDIR=$(WORKDIR)/dependencies
 OBJDIR=$(WORKDIR)/objects
 

@@ -11,10 +11,12 @@
 # those distributions. If not, the full 5D kernel density correction 
 # can be done, but not attempted here (yet?). 
 
+import os
+os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + os.environ["MEERKATROOT"]
 
 from ROOT import gSystem, gStyle, gROOT, RooRealVar
 
-gSystem.Load("../lib/libMeerkat.so")
+gSystem.Load("libMeerkatLib.so")
 
 from ROOT import OneDimPhaseSpace, ParametricPhaseSpace, CombinedPhaseSpace
 from ROOT import BinnedKernelDensity, PolynomialDensity
@@ -165,20 +167,20 @@ thk_data.Draw()
 thk_hist.Scale( thk_data.GetSumOfWeights() / thk_hist.GetSumOfWeights() )
 thk_hist.SetLineColor(2)
 thk_hist.SetMinimum(0.)
-thk_hist.Draw("same")
+thk_hist.Draw("hist same l")
 
 canvas.cd(5)
 thpi_data.SetMinimum(0.)
 thpi_data.Draw()
 thpi_hist.Scale( thpi_data.GetSumOfWeights() / thpi_hist.GetSumOfWeights() )
 thpi_hist.SetLineColor(2)
-thpi_hist.Draw("same")
+thpi_hist.Draw("hist same l")
 
 canvas.cd(6)
 phi_data.SetMinimum(0.)
 phi_data.Draw()
 phi_hist.Scale( phi_data.GetSumOfWeights() / phi_hist.GetSumOfWeights() )
 phi_hist.SetLineColor(2)
-phi_hist.Draw("same")
+phi_hist.Draw("hist same l")
 
 canvas.Print("FourBodyPhaseSpace.png")

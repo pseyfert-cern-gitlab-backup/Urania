@@ -1,11 +1,11 @@
 #  An example of using histogram density class. 
 
 import os, sys
-os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + "../inc/"
+os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + os.environ["MEERKATROOT"]
 
 from ROOT import gSystem, gStyle, RooRealVar
 
-gSystem.Load("../lib/libMeerkat.so")
+gSystem.Load("libMeerkatLib.so")
 
 from ROOT import DalitzPhaseSpace, BinnedKernelDensity, FactorisedDensity, FormulaDensity, HistogramDensity
 from ROOT import BinnedDensity, AdaptiveKernelDensity, PolynomialDensity
@@ -93,13 +93,13 @@ canvas.cd(3)
 hist_kpi.Scale( true_kpi.GetSumOfWeights() / hist_kpi.GetSumOfWeights() )
 true_kpi.Draw()
 hist_kpi.SetLineColor(2)
-hist_kpi.Draw("same")
+hist_kpi.Draw("hist same l")
 
 canvas.cd(4)
 hist_pipi.Scale( true_pipi.GetSumOfWeights() / hist_pipi.GetSumOfWeights() )
 true_pipi.Draw()
 hist_pipi.SetLineColor(2)
-hist_pipi.Draw("same")
+hist_pipi.Draw("hist same l")
 
 canvas.Print("Histogram2DPdf.png")
 

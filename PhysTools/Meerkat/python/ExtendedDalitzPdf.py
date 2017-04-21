@@ -4,21 +4,21 @@
 #  estimation to estimate efficiency shape. 
 
 import os, sys
-os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + "../inc/"
+os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + os.environ["MEERKATROOT"]
 
 from ROOT import gSystem, gStyle, RooRealVar
 
-gSystem.Load("../lib/libMeerkat.so")
+gSystem.Load("libMeerkatLib.so")
 
 from ROOT import ExtendedDalitzPhaseSpace, BinnedKernelDensity, FactorisedDensity, FormulaDensity
 from ROOT import TFile, TNtuple, TCanvas, TH1F, TH2F, TText
 
 # Define masses of initial ("d") and final state particles ("a,b,c") for the Dalitz phase space. 
-md1 = 1.     # D0
-md2 = 2.     # D0
-ma = 0.497   # K
-mb = 0.139   # Pi
-mc = 0.139   # Pi
+md1 = 1.     # M(D0)min
+md2 = 2.     # M(D0)max
+ma = 0.497   # M(K)
+mb = 0.139   # M(Pi)
+mc = 0.139   # M(Pi)
 
 # Define Dalitz phase space for D0->KsPiPi decay
 # The phase space is defined in x=m^2(ab), y=m^2(ac) variables
@@ -27,7 +27,7 @@ phsp = ExtendedDalitzPhaseSpace("PhspDalitz", md1, md2, ma, mb, mc)
 # Create a true PDF over this phase space, a function in x, y and z
 truepdf = FormulaDensity("TruePDF", phsp, "sqrt(1.-0.1*(y-1.3)^4)*(1.+2.*exp(-z))")
 
-outfile = TFile.Open("DalitzPdf.root", "RECREATE")
+outfile = TFile.Open("ExtendedDalitzPdf.root", "RECREATE")
 ntuple = TNtuple("ntuple", "2D NTuple", "m:x:y")
 
 # Generate 50000 toys according to the "true" PDF
@@ -67,7 +67,7 @@ kernel_pipi = TH1F("kernel_pipi", "M^{2}(#pi#pi) slice", 100, phsp.lowerLimit(2)
 # Coordinates in the phase space where we will create the 1D slices.
 from ROOT import std, Double
 v = std.vector(Double)(3)
-v[0] = 1.9;
+v[0] = 1.8;
 v[1] = 1.0;
 v[2] = 0.3;
 
@@ -132,13 +132,13 @@ canvas.cd(5)
 kernel_kpi.Scale( true_kpi.GetSumOfWeights() / kernel_kpi.GetSumOfWeights() )
 true_kpi.Draw()
 kernel_kpi.SetLineColor(2)
-kernel_kpi.Draw("same")
+kernel_kpi.Draw("hist same l")
 
 canvas.cd(6)
 kernel_pipi.Scale( true_pipi.GetSumOfWeights() / kernel_pipi.GetSumOfWeights() )
 true_pipi.Draw()
 kernel_pipi.SetLineColor(2)
-kernel_pipi.Draw("same")
+kernel_pipi.Draw("hist same l")
 
 canvas.Print("ExtendedDalitzPdf.png")
 canvas.Update()

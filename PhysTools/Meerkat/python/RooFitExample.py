@@ -5,13 +5,13 @@
 # The order of imports is a bit convoluted
 # First you need to import usual RooFit stuff
 import os, sys
-os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + "../inc/"
+os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + os.environ["MEERKATROOT"]
 
 from ROOT import gSystem, gStyle
 from ROOT import RooRealVar, RooGaussian, RooChebychev, RooAddPdf, RooArgList, RooArgSet, RooFit
 
 # then load Meerkat library
-gSystem.Load("../lib/libMeerkat.so")
+gSystem.Load("libMeerkatLib.so")
 
 # and then Meerkat-specific stuff, including RooMeerkatPdf
 from ROOT import OneDimPhaseSpace, UniformDensity, BinnedKernelDensity, FormulaDensity
@@ -61,7 +61,7 @@ sig = RooGaussian("gauss","gaussian PDF",x,mean,sigma) ;
 
 # Background
 a0 = RooRealVar("a0","a0",0.5,0.,1.)
-a1 = RooRealVar("a1","a1",-0.2,0.,1.)
+a1 = RooRealVar("a1","a1",-0.2,-0.5,1.)
 bkg = RooChebychev("bkg","Background",x,RooArgList(a0,a1))
 
 bkgfrac = RooRealVar("bkgfrac","fraction of background",0.5,0.,1.)
