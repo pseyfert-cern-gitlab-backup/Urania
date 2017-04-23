@@ -13,8 +13,8 @@ gaudi_install_python_modules()
 
 gaudi_env(SET CALIBDATAEXTRA       eoslhcb.cern.ch
 	  SET CALIBDATASTORE       eos/lhcb/grid/prod/lhcb/calib/lhcb/calib/pid/CalibData
-          SET CALIBDATAURLPROTOCOL root:) 
-#          SET OVERRIDECALIBDATASTORE /home/qian/outputURLs15MD.dat)
+          SET CALIBDATAURLPROTOCOL root:
+          SET OVERRIDECALIBDATASTORE /afs/cern.ch/user/d/dhill/Lb2LcMuNu_April17_PIDCalib/UraniaDev_v6r2p1/PIDCalib/PIDPerfScripts/Lb2LcMuNu_Test_Files/files.dat)
 
 
 
