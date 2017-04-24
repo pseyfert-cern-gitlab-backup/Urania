@@ -59,6 +59,7 @@ for trType in ["P_IncLc","P", "K", "P_LcfB"]:
 
 
 # example binning scheme using Tesla variables for K/pi/p
+'''
 for trType in GetRICHPIDPartTypes() :
     # momentum
     AddBinScheme(trType, 'Tesla_P', 'DummyTesla', 3000, 100000)
@@ -80,7 +81,7 @@ for trType in GetRICHPIDPartTypes() :
 
     AddBinScheme(trType, 'nSPDHits','DummyTesla',0,1000)
     AddUniformBins(trType, 'nSPDHits', 'DummyTesla', 5,0,1000)
-
+'''
 
 for trType in ["Pi","K"]:
     # momentum
@@ -96,3 +97,29 @@ for trType in ["Pi","K"]:
 #    AddBinBoundary(trType, 'nTracks', 'Broad', 300)
     AddUniformBins(trType, 'nTracks', 'Broad', 4, 0,500)
 
+
+
+# muonID upgrade studies
+for trType in ["Mu"]:
+    # Xs2
+    AddBinScheme(trType, 'Xs2', 'mu_upgrade', -5000, 5000)
+    AddBinBoundary(trType, 'Xs2', 'mu_upgrade', -2450)
+    AddBinBoundary(trType, 'Xs2', 'mu_upgrade', -1230)
+    AddBinBoundary(trType, 'Xs2', 'mu_upgrade', -610)
+    AddBinBoundary(trType, 'Xs2', 'mu_upgrade', 0)
+    AddBinBoundary(trType, 'Xs2', 'mu_upgrade', 610)
+    AddBinBoundary(trType, 'Xs2', 'mu_upgrade', 1230)
+    AddBinBoundary(trType, 'Xs2', 'mu_upgrade', 2450)
+
+    # Ys2
+    AddBinScheme(trType, 'Ys2', 'mu_upgrade', -4000, 4000)
+    AddBinBoundary(trType, 'Ys2', 'mu_upgrade', -1960)
+    AddBinBoundary(trType, 'Ys2', 'mu_upgrade', -980)
+    AddBinBoundary(trType, 'Ys2', 'mu_upgrade', -490)
+    AddBinBoundary(trType, 'Ys2', 'mu_upgrade', 0)
+    AddBinBoundary(trType, 'Ys2', 'mu_upgrade', 490)
+    AddBinBoundary(trType, 'Ys2', 'mu_upgrade', 980)
+    AddBinBoundary(trType, 'Ys2', 'mu_upgrade', 1960)
+
+
+                

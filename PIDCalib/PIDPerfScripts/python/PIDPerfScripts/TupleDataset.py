@@ -205,7 +205,9 @@ vars_dataset = {
   'nTracks':            		  var('nTracks',        'nTracks',        'var'),         
   'nVeloClusters':                var('nVeloClusters',    'nVeloClusters',    'var'),
   'nVeloClusters_Brunel':         var('nVeloClusters_Brunel',    'nVeloClusters_Brunel',    'var'),
-  'sweight':            		  var('nsig_sw', '{particle}_sWeight',        'var')
+  'sweight':            		  var('nsig_sw', '{particle}_sWeight',        'var'),
+  'Xs2':                var('{particle}_Xs2',    '{particle}_Xs2',    'var'),
+  'Ys2':                var('{particle}_Ys2',    '{particle}_Ys2',    'var')
   }
 
 

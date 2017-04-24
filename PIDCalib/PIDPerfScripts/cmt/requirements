@@ -42,7 +42,9 @@ set CALIBDATAURLPROTOCOL root:
 set CALIBDATAEXTRA eoslhcb.cern.ch
 set CALIBDATASTORE eos/lhcb/grid/prod/lhcb/calib/lhcb/calib/pid/CalibData/
 
-set OVERRIDECALIBDATASTORE /afs/cern.ch/user/d/dhill/Lb2LcMuNu_April17_PIDCalib/UraniaDev_v6r2p1/PIDCalib/PIDPerfScripts/Lb2LcMuNu_Test_Files/files.dat
+#set OVERRIDECALIBDATASTORE /afs/cern.ch/user/d/dhill/Lb2LcMuNu_April17_PIDCalib/UraniaDev_v6r2p1/PIDCalib/PIDPerfScripts/Lb2LcMuNu_Test_Files/files.dat
+set OVERRIDECALIBDATASTORE /afs/cern.ch/user/m/mfontana/cmtuser/UraniaDev_v6r2p1/files.dat
+
 #------------------------------------------------------------------------------
 #
 ###------------------------------------------------------------------------------
