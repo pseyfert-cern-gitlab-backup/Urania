@@ -4,6 +4,9 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
+! 2017-04-28 - Vincenzo Battista
+ - First implementation for run2 data handling in B2DXFitters
+
 ! 2017-03-24 - Carlos Vazquez Sierra
  - Make version v3r4p1 for release.
 
