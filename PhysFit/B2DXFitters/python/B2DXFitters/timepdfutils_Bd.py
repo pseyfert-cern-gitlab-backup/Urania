@@ -13,6 +13,9 @@ import ROOT
 from ROOT import RooFit
 from B2DXFitters.WS import WS
 
+import Espresso
+from Espresso import *
+
 # apply the acceptance to the time pdf (binned, i.e. apply to resolution model)
 def applyBinnedAcceptance(config, ws, time, timeresmodel, acceptance):
     """
@@ -213,6 +216,7 @@ def buildBDecayTimePdf(
     aprod = None,                       # production asymmetry
     adet = None,                        # detection asymmetry
     HFAG = False,                       # use HFAG convention (Cf = -Cfbar)
+    GLM = None,                         # dictionary with xml files
     ):
     """
     build a B decay time pdf
@@ -243,6 +247,7 @@ def buildBDecayTimePdf(
     aprod           -- production asymmetry (None for zero asymmetry)
     adet            -- detection asymmetry (None for zero asymmetry)
     HFAG            -- using HFAG convention. Cfbar = -Cf coefficient is built
+    GLM             -- using alternative GLM models, i.e. giving calibrated mistags to the DecRateCoeffs - dictionary with xml files
 
     returns:
     --------
@@ -300,6 +305,7 @@ def buildBDecayTimePdf(
                 'aprod': aprod,
                 'adet': adet,
                 'HFAG': HFAG,
+                'GLM': GLM,
                 }
         print 'buildBDecayTimePdf('
         for kw in kwargs:
@@ -340,9 +346,23 @@ def buildBDecayTimePdf(
     otherargs = []
     for mitem in range(0,mistagobs.__len__()):
         otherargs += [ qt[mitem] ]
-        otherargs += [ mistagobs[mitem] ]
-        for citem in mistagcalib[mitem]:
-            otherargs += [ citem ]
+        if GLM[mitem] is not None:
+            glm = ROOT.Espresso.GLMBuilder(GLM[mitem].rsplit('.')[0].rsplit('/')[-1],
+                                           GLM[mitem].rsplit('.')[0].rsplit('/')[-1],
+                                           mistagobs[mitem],
+                                           GLM[mitem].rsplit('.')[0].rsplit('/')[-1],
+                                           GLM[mitem])
+            omega_b = glm.b_mistag()
+            otherargs += [omega_b]
+            omega_bbar = glm.bbar_mistag()
+            otherargs += [omega_bbar]
+            for citem in mistagcalib[mitem]:
+                if citem.GetName()[:7] == "tageff_" or citem.GetName()[:7] == "tagasym":
+                    otherargs += [citem]
+        else:
+            otherargs += [ mistagobs[mitem] ]
+            for citem in mistagcalib[mitem]:
+                otherargs += [ citem ]
 
     # asymmetries
     if config['Debug']:

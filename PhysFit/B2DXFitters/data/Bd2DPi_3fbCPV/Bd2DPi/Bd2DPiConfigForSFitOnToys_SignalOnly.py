@@ -117,21 +117,48 @@ def getconfig():
     configdict["DetectionAsymmetry"]["Signal"] = {}
     configdict["ProductionAsymmetry"]["Signal"] = [-0.0124, -1.0, 1.0]  # from ANA note v2
     configdict["DetectionAsymmetry"]["Signal"] = [0.0086, -1.0, 1.0]  # from arXiv:1408.0275v2 (OPPOSITE SIGN!!!)
-    configdict["DetectionAsymmetry"]["Signal"] = [0.0, -1.5, 1.5]  # sin2beta
+    # configdict["DetectionAsymmetry"]["Signal"] = [0.0, -1.5, 1.5]  # sin2beta
 
     ############################################
     # Define taggers and their calibration
     ############################################
 
+    # configdict["Taggers"] = {}
+    # configdict["Taggers"]["Signal"] = {}
+    # configdict["Taggers"]["Signal"] = {"OS":  # From Bu, stat and syst combined
+    #                                    {"Calibration":
+    #                                     {"p0": [0.3737056, 0.01, 0.8],
+    #                                      "p1": [1.028621, 0.3, 1.5],
+    #                                      "deltap0": [0.11819, -0.15, 0.3],  # 0.011819
+    #                                      "deltap1": [0.143134, -0.15, 0.3],  # 0.043134
+    #                                      "avgeta": [0.347742],  # this is the mean of the RooHistPDF used in generation
+    #                                      "tageff": [0.371, 0.01, 0.99],  # float in the fit
+    #                                      "tagasymm": [0.0]
+    #                                      },
+    #                                     "MistagPDF":
+    #                                     {"Type": "BuildTemplate"}
+    #                                     },
+    #                                    "SS":  # From JpsiKst, stat and syst combined
+    #                                    {"Calibration":
+    #                                     {"p0": [0.4424049, 0.01, 0.8],
+    #                                      "p1": [0.81302, 0.3, 1.5],
+    #                                      "deltap0": [0.162332, -0.15, 0.15],  # 0.00062332
+    #                                      "deltap1": [-0.1066248, -0.15, 0.15],  # 0.0066248
+    #                                      "avgeta": [0.435],  # this is the mean of the RooHistPDF used in generation
+    #                                      "tageff": [0.816, 0.01, 0.99],  # float in the fit
+    #                                      "tagasymm": [0.0]
+    #                                      },
+    #                                     "MistagPDF":
+    #                                     {"Type": "BuildTemplate"}
+    #                                     }
+    #                                    }
+
     configdict["Taggers"] = {}
     configdict["Taggers"]["Signal"] = {}
     configdict["Taggers"]["Signal"] = {"OS":  # From Bu, stat and syst combined
                                        {"Calibration":
-                                        {"p0": [0.3737056, 0.01, 0.8],
-                                         "p1": [1.028621, 0.3, 1.5],
-                                         "deltap0": [0.11819, -0.15, 0.3],  # 0.011819
-                                         "deltap1": [0.143134, -0.15, 0.3],  # 0.043134
-                                         "avgeta": [0.347742],  # this is the mean of the RooHistPDF used in generation
+                                        {"Type": "GLM",
+                                         "XML": ["/home/abirnkraut/tank/EspressoPerformanceMonitor/SS_BSpline_Logit_cal/OS_nnetKaon_Calibration.xml"],
                                          "tageff": [0.371, 0.01, 0.99],  # float in the fit
                                          "tagasymm": [0.0]
                                          },
@@ -140,11 +167,8 @@ def getconfig():
                                         },
                                        "SS":  # From JpsiKst, stat and syst combined
                                        {"Calibration":
-                                        {"p0": [0.4424049, 0.01, 0.8],
-                                         "p1": [0.81302, 0.3, 1.5],
-                                         "deltap0": [0.162332, -0.15, 0.15],  # 0.00062332
-                                         "deltap1": [-0.1066248, -0.15, 0.15],  # 0.0066248
-                                         "avgeta": [0.435],  # this is the mean of the RooHistPDF used in generation
+                                        {"Type": "GLM",
+                                         "XML": ["/home/abirnkraut/tank/EspressoPerformanceMonitor/SS_BSpline_Logit_cal/OS_nnetKaon_Calibration.xml"],
                                          "tageff": [0.816, 0.01, 0.99],  # float in the fit
                                          "tagasymm": [0.0]
                                          },

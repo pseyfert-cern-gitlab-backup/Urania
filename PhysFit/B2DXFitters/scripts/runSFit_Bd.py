@@ -108,6 +108,9 @@ import ROOT
 from B2DXFitters import *
 from ROOT import *
 
+import Espresso
+from Espresso import *
+
 from ROOT import RooFit
 from optparse import OptionParser
 from math import pi, log
@@ -211,7 +214,7 @@ def runSFit(debug, wsname,
             configName, scan,
             binned, plotsWeights, noweight,
             sample, mode, year, hypo, merge, unblind, randomise, superimpose,
-            seed, preselection, UniformBlinding, HFAG, extended, fitresultFileName, NumCPU):
+            seed, preselection, UniformBlinding, HFAG, extended, fitresultFileName, NumCPU, GLM):
 
     if MC and not noweight:
         print "ERROR: cannot use sWeighted MC sample (for now)"
@@ -567,6 +570,7 @@ def runSFit(debug, wsname,
     print ""
 
     mistagcalib = []
+    GLM = []
     mistagpdfparams = {}
     mistagpdf = []
 
@@ -610,6 +614,7 @@ def runSFit(debug, wsname,
                                            'a_{tag}' + nametag,
                                            0.0)))
         mistagcalib.append(thiscalib)
+        GLM.append(None)
 
     else:
 
@@ -619,77 +624,109 @@ def runSFit(debug, wsname,
                 nametag = "SS"
             print "[INFO] Creating calibration parameters for " + nametag + " tagger"
 
-            etamean = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["avgeta"])
-            tageff = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tageff"])
+            if myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["Type"] == "Linear":
 
-            if tagfromdata:
-                print "[INFO] Computing <eta> and tagging efficiency directly from dataset. Overwriting values in configfile"
-                if noweight:
-                    etamean[0] = data.mean(obs.find(MDSettings.GetTagOmegaVarOutName(t).Data()), MDSettings.GetTagVarOutName(t).Data() + "!=0")
-                    etasigma = data.sigma(obs.find(MDSettings.GetTagOmegaVarOutName(t).Data()), MDSettings.GetTagVarOutName(t).Data() + "!=0")
-                    numdata = RooDataSet("numdata" + str(t), "numdata", data, data.get(), MDSettings.GetTagVarOutName(t).Data() + "!=0")
-                    num = float(numdata.numEntries())
-                    den = float(data.numEntries())
-                    import uncertainties, math
-                    from uncertainties import ufloat
-                    tagefferr = ufloat(num, math.sqrt(num)) / ufloat(den, math.sqrt(den))
-                    tagefferr = tagefferr.std_dev
-                else:
-                    etamean[0] = dataWA.mean(obs.find(MDSettings.GetTagOmegaVarOutName(t).Data()), MDSettings.GetTagVarOutName(t).Data() + "!=0")
-                    etasigma = dataWA.sigma(obs.find(MDSettings.GetTagOmegaVarOutName(t).Data()), MDSettings.GetTagVarOutName(t).Data() + "!=0")
-                    numdata = RooDataSet("numdata" + str(t), "numdata", data, data.get(), MDSettings.GetTagVarOutName(t).Data() + "!=0", "sWeights")
-                    num = numdata.sumEntries()
-                    den = dataWA.sumEntries()
-                    import uncertainties, math
-                    from uncertainties import ufloat
-                    tagefferr = ufloat(num, math.sqrt(num)) / ufloat(den, math.sqrt(den))
-                    tagefferr = tagefferr.std_dev
-                del numdata
-                tageff[0] = float(num / den)
-                print "[INFO] New <eta>: " + str(etamean[0]) + " +- " + str(etasigma)
-                print "[INFO] Config file <eta>: " + str(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["avgeta"][0])
-                print "[INFO] New tagging efficiency: " + str(tageff[0]) + " +- " + str(tagefferr)
-                print "[INFO] Config file tagging efficiency: " + str(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tageff"][0])
+                etamean = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["avgeta"])
+                tageff = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tageff"])
 
-            p0 = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["p0"])
-            p1 = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["p1"])
-            deltap0 = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["deltap0"])
-            deltap1 = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["deltap1"])
+                if tagfromdata:
+                    print "[INFO] Computing <eta> and tagging efficiency directly from dataset. Overwriting values in configfile"
+                    if noweight:
+                        etamean[0] = data.mean(obs.find(MDSettings.GetTagOmegaVarOutName(t).Data()), MDSettings.GetTagVarOutName(t).Data() + "!=0")
+                        etasigma = data.sigma(obs.find(MDSettings.GetTagOmegaVarOutName(t).Data()), MDSettings.GetTagVarOutName(t).Data() + "!=0")
+                        numdata = RooDataSet("numdata" + str(t), "numdata", data, data.get(), MDSettings.GetTagVarOutName(t).Data() + "!=0")
+                        num = float(numdata.numEntries())
+                        den = float(data.numEntries())
+                        import uncertainties, math
+                        from uncertainties import ufloat
+                        tagefferr = ufloat(num, math.sqrt(num)) / ufloat(den, math.sqrt(den))
+                        tagefferr = tagefferr.std_dev
+                    else:
+                        etamean[0] = dataWA.mean(obs.find(MDSettings.GetTagOmegaVarOutName(t).Data()), MDSettings.GetTagVarOutName(t).Data() + "!=0")
+                        etasigma = dataWA.sigma(obs.find(MDSettings.GetTagOmegaVarOutName(t).Data()), MDSettings.GetTagVarOutName(t).Data() + "!=0")
+                        numdata = RooDataSet("numdata" + str(t), "numdata", data, data.get(), MDSettings.GetTagVarOutName(t).Data() + "!=0", "sWeights")
+                        num = numdata.sumEntries()
+                        den = dataWA.sumEntries()
+                        import uncertainties, math
+                        from uncertainties import ufloat
+                        tagefferr = ufloat(num, math.sqrt(num)) / ufloat(den, math.sqrt(den))
+                        tagefferr = tagefferr.std_dev
+                    del numdata
+                    tageff[0] = float(num / den)
+                    print "[INFO] New <eta>: " + str(etamean[0]) + " +- " + str(etasigma)
+                    print "[INFO] Config file <eta>: " + str(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["avgeta"][0])
+                    print "[INFO] New tagging efficiency: " + str(tageff[0]) + " +- " + str(tagefferr)
+                    print "[INFO] Config file tagging efficiency: " + str(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tageff"][0])
 
-            if noftcalib:
-                print "[INFO] Using uncalibrated tagger: p0=<eta>, p1=1, deltap0=deltap1=0"
-                p0[0] = etamean[0]
-                p1[0] = 1.0
-                deltap0[0] = 0.0
-                deltap1[0] = 0.0
+                p0 = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["p0"])
+                p1 = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["p1"])
+                deltap0 = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["deltap0"])
+                deltap1 = copy.deepcopy(myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["deltap1"])
 
-            thiscalib = []
-            thiscalib.append(WS(ws, RooRealVar('p0_' + nametag,
-                                               'p_{0}' + nametag,
-                                               *p0)))
-            thiscalib.append(WS(ws, RooRealVar('p1_' + nametag,
-                                               'p_{1}' + nametag,
-                                               *p1)))
-            thiscalib.append(WS(ws, RooRealVar('deltap0_' + nametag,
-                                               '#Delta p_{0}' + nametag,
-                                               *deltap0)))
-            thiscalib.append(WS(ws, RooRealVar('deltap1_' + nametag,
-                                               '#Delta p_{1}' + nametag,
-                                               *deltap1)))
-            thiscalib.append(WS(ws, RooRealVar('avgeta_' + nametag,
-                                               '<#eta>' + nametag,
-                                               *etamean)))
-            thiscalib.append(WS(ws, RooRealVar('tageff_' + nametag,
-                                               '#varepsilon_{tag}' + nametag,
-                                               *tageff)))
-            thiscalib.append(WS(ws, RooRealVar('tagasymm_' + nametag,
-                                               'a_{tag}' + nametag,
-                                               *myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tagasymm"])))
+                # glm = ROOT.Espresso.GLMBuilder("name",
+                #                                "name",
+                #                                obs.find(MDSettings.GetTagOmegaVarOutName(t).Data()),
+                #                                "OS_nnetKaon_Calibration",
+                #                                "/home/abirnkraut/tank/EspressoPerformanceMonitor/SS_BSpline_Logit_cal/OS_nnetKaon_Calibration.xml")
 
-            # for par in thiscalib:
-            # setConstantIfSoConfigured(ws.obj(par.GetName()),myconfigfile)
+                # coeffs = glm.coefficients()
+                # delta_coeffs = glm.delta_coefficients()
+                # print "Coefficiets"
+                # print coeffs
+                # print "Delta Coefficients"
+                # print delta_coeffs
 
-            mistagcalib.append(thiscalib)
+                if noftcalib:
+                    print "[INFO] Using uncalibrated tagger: p0=<eta>, p1=1, deltap0=deltap1=0"
+                    p0[0] = etamean[0]
+                    p1[0] = 1.0
+                    deltap0[0] = 0.0
+                    deltap1[0] = 0.0
+
+                thiscalib = []
+                thiscalib.append(WS(ws, RooRealVar('p0_' + nametag,
+                                                   'p_{0}' + nametag,
+                                                   *p0)))
+                thiscalib.append(WS(ws, RooRealVar('p1_' + nametag,
+                                                   'p_{1}' + nametag,
+                                                   *p1)))
+                thiscalib.append(WS(ws, RooRealVar('deltap0_' + nametag,
+                                                   '#Delta p_{0}' + nametag,
+                                                   *deltap0)))
+                thiscalib.append(WS(ws, RooRealVar('deltap1_' + nametag,
+                                                   '#Delta p_{1}' + nametag,
+                                                   *deltap1)))
+                thiscalib.append(WS(ws, RooRealVar('avgeta_' + nametag,
+                                                   '<#eta>' + nametag,
+                                                   *etamean)))
+                thiscalib.append(WS(ws, RooRealVar('tageff_' + nametag,
+                                                   '#varepsilon_{tag}' + nametag,
+                                                   *tageff)))
+                thiscalib.append(WS(ws, RooRealVar('tagasymm_' + nametag,
+                                                   'a_{tag}' + nametag,
+                                                   *myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tagasymm"])))
+
+                # for par in thiscalib:
+                # setConstantIfSoConfigured(ws.obj(par.GetName()),myconfigfile)
+
+                mistagcalib.append(thiscalib)
+                GLM.append(None)
+
+            elif myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["Type"] == "GLM":
+                print "Here the GLM model should be implemented"
+                thiscalib = []
+
+                thiscalib.append(WS(ws, RooRealVar('tageff_' + nametag,
+                                                   '#varepsilon_{tag}' + nametag,
+                                                   *myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tageff"])))
+                thiscalib.append(WS(ws, RooRealVar('tagasymm_' + nametag,
+                                                   'a_{tag}' + nametag,
+                                                   *myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["tagasymm"])))
+                mistagcalib.append(thiscalib)
+                GLM.append(*myconfigfile["Taggers"]["Signal"][nametag]["Calibration"]["XML"])
+
+            else:
+                print "ERROR: Unknown option for FT calibration type . Please check your config file."
 
             if pereventmistag:
 
@@ -846,6 +883,9 @@ def runSFit(debug, wsname,
     print "=========================================================="
     print ""
 
+    print mistag
+    print mistagcalib
+
     totPDF_temp = buildBDecayTimePdf(
         myconfigfile, 'time_signal', ws,
         time, terr, tag, id, mistag, mistagcalib,
@@ -853,7 +893,7 @@ def runSFit(debug, wsname,
         C, D, Dbar, S, Sbar,
         resmodel, acc,
         terrpdf, mistagpdf,
-        aProd, aDet, HFAG)
+        aProd, aDet, HFAG, GLM)
 
     if extended:
         print "[INFO] Performing extended maximum likelihood fit"
@@ -867,7 +907,7 @@ def runSFit(debug, wsname,
     fixParams(myconfigfile, totPDF)
 
     # Temporary workaround
-    # ws.obj('Sfbar').setConstant(False)
+    ws.obj('Sfbar').setConstant(False)
 
     if randomise:
 
@@ -1335,6 +1375,12 @@ parser.add_option('--NCPU',
                   type ="int",
                   help = 'Number of CPU cores used in the fit'
                   )
+parser.add_option('--GLM',
+                  dest = 'GLM',
+                  default = False,
+                  action='store_true',
+                  help = 'Use a GLM model defined in the config file'
+                  )
 
 # -----------------------------------------------------------------------------
 
@@ -1403,6 +1449,7 @@ if __name__ == '__main__':
             options.HFAG,
             options.extended,
             options.fileNameFitresult,
-            options.NumCPU)
+            options.NumCPU,
+            options.GLM)
 
 # -----------------------------------------------------------------------------
