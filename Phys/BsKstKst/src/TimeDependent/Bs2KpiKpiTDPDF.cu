@@ -42,6 +42,37 @@ __device__ double e2_Stheo = 0.184;
 __device__ double G1_Stheo = 0.497;
 __device__ double G2_Stheo = 0.28;
 
+__device__ double s_Kpi_palano = (139.57018*139.57018+493.667*493.667)/1000./1000.;
+__device__ double s_A_palano = 0.87753*(139.57018*139.57018+493.667*493.667)/1000./1000.;
+__device__ double s_a_palano = 1.7991;
+__device__ double g_1_a_palano = 0.3139;
+__device__ double g_2_a_palano = -0.00775;
+__device__ double s_b_palano = 8.3627;
+__device__ double g_1_b_palano = 1.1804;
+__device__ double g_2_b_palano = -0.22335;
+__device__ double C_11_0_palano = -0.1553;
+__device__ double C_11_1_palano = 0.0909;
+__device__ double C_11_2_palano = 0.8618;
+__device__ double C_11_3_palano = 0.0629;
+__device__ double C_12_0_palano = 0.0738;
+__device__ double C_12_1_palano = 0.3866;
+__device__ double C_12_2_palano = 1.2195;
+__device__ double C_12_3_palano = 0.8390;
+__device__ double C_22_0_palano = -0.0036;
+__device__ double C_22_1_palano = 0.2590;
+__device__ double C_22_2_palano = 1.6950;
+__device__ double C_22_3_palano = 2.2300;
+__device__ double A_1_0_palano = 1.;
+__device__ double A_1_1_palano = -7.07172467436;
+__device__ double A_1_2_palano = 4.34784254354;
+__device__ double A_1_3_palano = -3.4044610049;
+__device__ double A_1_4_palano = -0.0935031564737;
+__device__ double A_2_0_palano = -7.01196566782;
+__device__ double A_2_1_palano = -1.37175534595;
+__device__ double A_2_2_palano = -7.97420327456;
+__device__ double A_2_3_palano = 1.89304254061;
+__device__ double A_2_4_palano = -5.18470699036;
+
 
 // ##########################################
 // Auxiliar elements
@@ -567,6 +598,9 @@ __device__ double cos2[4][max_N_events];
 __device__ double phi[4][max_N_events];
 __device__ double t[4][max_N_events];
 __device__ double t_err[4][max_N_events];
+__device__ double max_fun[max_N_events];
+__device__ double fun_ran[max_N_events];
+__device__ double dec_accepted[max_N_events];
 __device__ double reA00;
 __device__ double reA01;
 __device__ double reA10;
@@ -1479,6 +1513,41 @@ __device__ pycuda::complex<double> Prop_Stheo(double m) {
 
  }
 
+__device__ pycuda::complex<double> Prop_S_Palano(double m) {
+
+   pycuda::complex<double> i(0.,1.);
+   double m_GeV = m/1000.;
+   double svar_GeV = m_GeV*m_GeV;
+   double q_Kpi_GeV = get_q(m,MKaon,MPion)/1000.;
+   double q_Keta_GeV = get_q(m,MKaon,MEta)/1000.;
+
+   double rho_1 = 2.*q_Kpi_GeV/m_GeV;
+   double rho_2 = 2.*q_Keta_GeV/m_GeV;
+
+   double sbot_GeV = 0.36;
+   double stop_GeV = 5.832;
+   double X = (2.*svar_GeV-(stop_GeV+sbot_GeV))/(stop_GeV-sbot_GeV);
+
+   double K11 = (svar_GeV-s_A_palano)/s_Kpi_palano*(g_1_a_palano*g_1_a_palano/(svar_GeV-s_a_palano)+g_1_b_palano*g_1_b_palano/(svar_GeV-s_b_palano)+C_11_0_palano+C_11_1_palano*X+C_11_2_palano*X*X+C_11_3_palano*X*X*X);
+   double K12 = (svar_GeV-s_A_palano)/s_Kpi_palano*(g_1_a_palano*g_2_a_palano/(svar_GeV-s_a_palano)+g_1_b_palano*g_2_b_palano/(svar_GeV-s_b_palano)+C_12_0_palano+C_12_1_palano*X+C_12_2_palano*X*X+C_12_3_palano*X*X*X);
+   double K22 = (svar_GeV-s_A_palano)/s_Kpi_palano*(g_2_a_palano*g_2_a_palano/(svar_GeV-s_a_palano)+g_2_b_palano*g_2_b_palano/(svar_GeV-s_b_palano)+C_22_0_palano+C_22_1_palano*X+C_22_2_palano*X*X+C_22_3_palano*X*X*X);
+
+   double detK = K11*K22-K12*K12;
+   pycuda::complex<double> Delta(1.-rho_1*rho_2*detK,-rho_1*K11-rho_2*K22);
+
+   pycuda::complex<double> T11_hat = s_Kpi_palano/(svar_GeV-s_A_palano)*(K11-rho_2*detK)/Delta;
+   pycuda::complex<double> T12_hat = s_Kpi_palano/(svar_GeV-s_A_palano)*K12/Delta;
+
+   double xm = (m-1175.)/425.;
+   double alpha_1_s = A_1_0_palano+A_1_1_palano*xm+A_1_2_palano*(2.*xm*xm-1.)+A_1_3_palano*(4.*xm*xm*xm-3.*xm)+A_1_4_palano*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
+   double alpha_2_s = A_2_0_palano+A_2_1_palano*xm+A_2_2_palano*(2.*xm*xm-1.)+A_2_3_palano*(4.*xm*xm*xm-3.*xm)+A_2_4_palano*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
+
+   pycuda::complex<double> T = alpha_1_s*T11_hat+alpha_2_s*T12_hat;
+
+   return T*exp(-i*0.0758670);
+
+ }
+
 __device__ pycuda::complex<double> Mji(double m, int ji) {
 
    pycuda::complex<double> T;
@@ -2186,165 +2255,11 @@ __global__ void get_max_P_eta_OS(double *out) {
 
  }
 
-__device__ pycuda::complex<double> TBsj1j2hj1pj2php(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) {
-
-   return T_cosh_temp[0][iev]*M_Average(j1,j2,h,j1p,j2p,hp)-T_sinh_temp[0][iev]*M_DeltaGamma(j1,j2,h,j1p,j2p,hp)+T_cos_temp[0][iev]*M_DirCP(j1,j2,h,j1p,j2p,hp)+T_sin_temp[0][iev]*M_MixCP(j1,j2,h,j1p,j2p,hp);
-
- }
-
-__device__ pycuda::complex<double> TBsbarj1j2hj1pj2php(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) {
-
-   return T_cosh_temp[0][iev]*M_Average(j1,j2,h,j1p,j2p,hp)-T_sinh_temp[0][iev]*M_DeltaGamma(j1,j2,h,j1p,j2p,hp)-T_cos_temp[0][iev]*M_DirCP(j1,j2,h,j1p,j2p,hp)-T_sin_temp[0][iev]*M_MixCP(j1,j2,h,j1p,j2p,hp);
-
- }
-
-__device__ double comp_fun_Bs(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) {
-
-   return pycuda::real(TBsj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp,iev)*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*hj1j2j1pj2p(j1,j2,j1p,j2p,0,iev))*ghhp_phi(h,hp,0,iev)*fjjphhp_cos1(j1,j1p,h,hp,0,iev)*fjjphhp_cos2(j2,j2p,h,hp,0,iev);
-
- }
-
-__device__ double comp_fun_Bsbar(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) {
-
-   return pycuda::real(TBsbarj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp,iev)*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*hj1j2j1pj2p(j1,j2,j1p,j2p,0,iev))*ghhp_phi(h,hp,0,iev)*fjjphhp_cos1(j1,j1p,h,hp,0,iev)*fjjphhp_cos2(j2,j2p,h,hp,0,iev);
-
- }
-
-__device__ double fun_Bs(int iev) {
-
-   return comp_fun_Bs(0,0,0,0,0,0,iev)+comp_fun_Bs(0,1,0,0,1,0,iev)+comp_fun_Bs(0,2,0,0,2,0,iev)+comp_fun_Bs(1,0,0,1,0,0,iev)+comp_fun_Bs(1,1,0,1,1,0,iev)+comp_fun_Bs(1,1,1,1,1,1,iev)
-+comp_fun_Bs(1,1,2,1,1,2,iev)+comp_fun_Bs(1,2,0,1,2,0,iev)+comp_fun_Bs(1,2,1,1,2,1,iev)+comp_fun_Bs(1,2,2,1,2,2,iev)+comp_fun_Bs(2,0,0,2,0,0,iev)+comp_fun_Bs(2,1,0,2,1,0,iev)+comp_fun_Bs(2,1,1,2,1,1,iev)
-+comp_fun_Bs(2,1,2,2,1,2,iev)+comp_fun_Bs(2,2,0,2,2,0,iev)+comp_fun_Bs(2,2,1,2,2,1,iev)+comp_fun_Bs(2,2,2,2,2,2,iev)+comp_fun_Bs(2,2,3,2,2,3,iev)+comp_fun_Bs(2,2,4,2,2,4,iev)+2.*comp_fun_Bs(0,1,0,0,0,0,iev)
-+2.*comp_fun_Bs(0,1,0,1,0,0,iev)+2.*comp_fun_Bs(0,1,0,2,0,0,iev)+2.*comp_fun_Bs(0,2,0,0,0,0,iev)+2.*comp_fun_Bs(0,2,0,0,1,0,iev)+2.*comp_fun_Bs(0,2,0,1,0,0,iev)+2.*comp_fun_Bs(0,2,0,1,1,0,iev)
-+2.*comp_fun_Bs(0,2,0,2,0,0,iev)+2.*comp_fun_Bs(0,2,0,2,1,0,iev)+2.*comp_fun_Bs(1,0,0,0,0,0,iev)+2.*comp_fun_Bs(1,1,0,0,0,0,iev)+2.*comp_fun_Bs(1,1,0,0,1,0,iev)+2.*comp_fun_Bs(1,1,0,1,0,0,iev)
-+2.*comp_fun_Bs(1,1,0,2,0,0,iev)+2.*comp_fun_Bs(1,1,1,0,0,0,iev)+2.*comp_fun_Bs(1,1,1,0,1,0,iev)+2.*comp_fun_Bs(1,1,1,0,2,0,iev)+2.*comp_fun_Bs(1,1,1,1,0,0,iev)+2.*comp_fun_Bs(1,1,1,1,1,0,iev)
-+2.*comp_fun_Bs(1,1,1,1,2,0,iev)+2.*comp_fun_Bs(1,1,1,2,0,0,iev)+2.*comp_fun_Bs(1,1,1,2,1,0,iev)+2.*comp_fun_Bs(1,1,1,2,2,0,iev)+2.*comp_fun_Bs(1,1,2,0,0,0,iev)+2.*comp_fun_Bs(1,1,2,0,1,0,iev)
-+2.*comp_fun_Bs(1,1,2,0,2,0,iev)+2.*comp_fun_Bs(1,1,2,1,0,0,iev)+2.*comp_fun_Bs(1,1,2,1,1,0,iev)+2.*comp_fun_Bs(1,1,2,1,1,1,iev)+2.*comp_fun_Bs(1,1,2,1,2,0,iev)+2.*comp_fun_Bs(1,1,2,1,2,1,iev)
-+2.*comp_fun_Bs(1,1,2,2,0,0,iev)+2.*comp_fun_Bs(1,1,2,2,1,0,iev)+2.*comp_fun_Bs(1,1,2,2,1,1,iev)+2.*comp_fun_Bs(1,1,2,2,2,0,iev)+2.*comp_fun_Bs(1,1,2,2,2,1,iev)+2.*comp_fun_Bs(1,2,0,0,0,0,iev)
-+2.*comp_fun_Bs(1,2,0,0,1,0,iev)+2.*comp_fun_Bs(1,2,0,0,2,0,iev)+2.*comp_fun_Bs(1,2,0,1,0,0,iev)+2.*comp_fun_Bs(1,2,0,1,1,0,iev)+2.*comp_fun_Bs(1,2,0,2,0,0,iev)+2.*comp_fun_Bs(1,2,0,2,1,0,iev)
-+2.*comp_fun_Bs(1,2,1,0,0,0,iev)+2.*comp_fun_Bs(1,2,1,0,1,0,iev)+2.*comp_fun_Bs(1,2,1,0,2,0,iev)+2.*comp_fun_Bs(1,2,1,1,0,0,iev)+2.*comp_fun_Bs(1,2,1,1,1,0,iev)+2.*comp_fun_Bs(1,2,1,1,1,1,iev)
-+2.*comp_fun_Bs(1,2,1,1,2,0,iev)+2.*comp_fun_Bs(1,2,1,2,0,0,iev)+2.*comp_fun_Bs(1,2,1,2,1,0,iev)+2.*comp_fun_Bs(1,2,1,2,1,1,iev)+2.*comp_fun_Bs(1,2,1,2,2,0,iev)+2.*comp_fun_Bs(1,2,2,0,0,0,iev)
-+2.*comp_fun_Bs(1,2,2,0,1,0,iev)+2.*comp_fun_Bs(1,2,2,0,2,0,iev)+2.*comp_fun_Bs(1,2,2,1,0,0,iev)+2.*comp_fun_Bs(1,2,2,1,1,0,iev)+2.*comp_fun_Bs(1,2,2,1,1,1,iev)+2.*comp_fun_Bs(1,2,2,1,1,2,iev)
-+2.*comp_fun_Bs(1,2,2,1,2,0,iev)+2.*comp_fun_Bs(1,2,2,1,2,1,iev)+2.*comp_fun_Bs(1,2,2,2,0,0,iev)+2.*comp_fun_Bs(1,2,2,2,1,0,iev)+2.*comp_fun_Bs(1,2,2,2,1,1,iev)+2.*comp_fun_Bs(1,2,2,2,1,2,iev)
-+2.*comp_fun_Bs(1,2,2,2,2,0,iev)+2.*comp_fun_Bs(1,2,2,2,2,1,iev)+2.*comp_fun_Bs(2,0,0,0,0,0,iev)+2.*comp_fun_Bs(2,0,0,1,0,0,iev)+2.*comp_fun_Bs(2,1,0,0,0,0,iev)+2.*comp_fun_Bs(2,1,0,0,1,0,iev)
-+2.*comp_fun_Bs(2,1,0,1,0,0,iev)+2.*comp_fun_Bs(2,1,0,1,1,0,iev)+2.*comp_fun_Bs(2,1,0,2,0,0,iev)+2.*comp_fun_Bs(2,1,1,0,0,0,iev)+2.*comp_fun_Bs(2,1,1,0,1,0,iev)+2.*comp_fun_Bs(2,1,1,0,2,0,iev)
-+2.*comp_fun_Bs(2,1,1,1,0,0,iev)+2.*comp_fun_Bs(2,1,1,1,1,0,iev)+2.*comp_fun_Bs(2,1,1,1,1,1,iev)+2.*comp_fun_Bs(2,1,1,1,2,0,iev)+2.*comp_fun_Bs(2,1,1,2,0,0,iev)+2.*comp_fun_Bs(2,1,1,2,1,0,iev)
-+2.*comp_fun_Bs(2,1,1,2,2,0,iev)+2.*comp_fun_Bs(2,1,2,0,0,0,iev)+2.*comp_fun_Bs(2,1,2,0,1,0,iev)+2.*comp_fun_Bs(2,1,2,0,2,0,iev)+2.*comp_fun_Bs(2,1,2,1,0,0,iev)+2.*comp_fun_Bs(2,1,2,1,1,0,iev)
-+2.*comp_fun_Bs(2,1,2,1,1,1,iev)+2.*comp_fun_Bs(2,1,2,1,1,2,iev)+2.*comp_fun_Bs(2,1,2,1,2,0,iev)+2.*comp_fun_Bs(2,1,2,1,2,1,iev)+2.*comp_fun_Bs(2,1,2,2,0,0,iev)+2.*comp_fun_Bs(2,1,2,2,1,0,iev)
-+2.*comp_fun_Bs(2,1,2,2,1,1,iev)+2.*comp_fun_Bs(2,1,2,2,2,0,iev)+2.*comp_fun_Bs(2,1,2,2,2,1,iev)+2.*comp_fun_Bs(2,2,0,0,0,0,iev)+2.*comp_fun_Bs(2,2,0,0,1,0,iev)+2.*comp_fun_Bs(2,2,0,0,2,0,iev)
-+2.*comp_fun_Bs(2,2,0,1,0,0,iev)+2.*comp_fun_Bs(2,2,0,1,1,0,iev)+2.*comp_fun_Bs(2,2,0,1,2,0,iev)+2.*comp_fun_Bs(2,2,0,2,0,0,iev)+2.*comp_fun_Bs(2,2,0,2,1,0,iev)+2.*comp_fun_Bs(2,2,1,0,0,0,iev)
-+2.*comp_fun_Bs(2,2,1,0,1,0,iev)+2.*comp_fun_Bs(2,2,1,0,2,0,iev)+2.*comp_fun_Bs(2,2,1,1,0,0,iev)+2.*comp_fun_Bs(2,2,1,1,1,0,iev)+2.*comp_fun_Bs(2,2,1,1,1,1,iev)+2.*comp_fun_Bs(2,2,1,1,2,0,iev)
-+2.*comp_fun_Bs(2,2,1,1,2,1,iev)+2.*comp_fun_Bs(2,2,1,2,0,0,iev)+2.*comp_fun_Bs(2,2,1,2,1,0,iev)+2.*comp_fun_Bs(2,2,1,2,1,1,iev)+2.*comp_fun_Bs(2,2,1,2,2,0,iev)+2.*comp_fun_Bs(2,2,2,0,0,0,iev)
-+2.*comp_fun_Bs(2,2,2,0,1,0,iev)+2.*comp_fun_Bs(2,2,2,0,2,0,iev)+2.*comp_fun_Bs(2,2,2,1,0,0,iev)+2.*comp_fun_Bs(2,2,2,1,1,0,iev)+2.*comp_fun_Bs(2,2,2,1,1,1,iev)+2.*comp_fun_Bs(2,2,2,1,1,2,iev)
-+2.*comp_fun_Bs(2,2,2,1,2,0,iev)+2.*comp_fun_Bs(2,2,2,1,2,1,iev)+2.*comp_fun_Bs(2,2,2,1,2,2,iev)+2.*comp_fun_Bs(2,2,2,2,0,0,iev)+2.*comp_fun_Bs(2,2,2,2,1,0,iev)+2.*comp_fun_Bs(2,2,2,2,1,1,iev)
-+2.*comp_fun_Bs(2,2,2,2,1,2,iev)+2.*comp_fun_Bs(2,2,2,2,2,0,iev)+2.*comp_fun_Bs(2,2,2,2,2,1,iev)+2.*comp_fun_Bs(2,2,3,0,0,0,iev)+2.*comp_fun_Bs(2,2,3,0,1,0,iev)+2.*comp_fun_Bs(2,2,3,0,2,0,iev)
-+2.*comp_fun_Bs(2,2,3,1,0,0,iev)+2.*comp_fun_Bs(2,2,3,1,1,0,iev)+2.*comp_fun_Bs(2,2,3,1,1,1,iev)+2.*comp_fun_Bs(2,2,3,1,1,2,iev)+2.*comp_fun_Bs(2,2,3,1,2,0,iev)+2.*comp_fun_Bs(2,2,3,1,2,1,iev)
-+2.*comp_fun_Bs(2,2,3,1,2,2,iev)+2.*comp_fun_Bs(2,2,3,2,0,0,iev)+2.*comp_fun_Bs(2,2,3,2,1,0,iev)+2.*comp_fun_Bs(2,2,3,2,1,1,iev)+2.*comp_fun_Bs(2,2,3,2,1,2,iev)+2.*comp_fun_Bs(2,2,3,2,2,0,iev)
-+2.*comp_fun_Bs(2,2,3,2,2,1,iev)+2.*comp_fun_Bs(2,2,3,2,2,2,iev)+2.*comp_fun_Bs(2,2,4,0,0,0,iev)+2.*comp_fun_Bs(2,2,4,0,1,0,iev)+2.*comp_fun_Bs(2,2,4,0,2,0,iev)+2.*comp_fun_Bs(2,2,4,1,0,0,iev)
-+2.*comp_fun_Bs(2,2,4,1,1,0,iev)+2.*comp_fun_Bs(2,2,4,1,1,1,iev)+2.*comp_fun_Bs(2,2,4,1,1,2,iev)+2.*comp_fun_Bs(2,2,4,1,2,0,iev)+2.*comp_fun_Bs(2,2,4,1,2,1,iev)+2.*comp_fun_Bs(2,2,4,1,2,2,iev)
-+2.*comp_fun_Bs(2,2,4,2,0,0,iev)+2.*comp_fun_Bs(2,2,4,2,1,0,iev)+2.*comp_fun_Bs(2,2,4,2,1,1,iev)+2.*comp_fun_Bs(2,2,4,2,1,2,iev)+2.*comp_fun_Bs(2,2,4,2,2,0,iev)+2.*comp_fun_Bs(2,2,4,2,2,1,iev)
-+2.*comp_fun_Bs(2,2,4,2,2,2,iev)+2.*comp_fun_Bs(2,2,4,2,2,3,iev);
-
- }
-
-__device__ double fun_Bsbar(int iev) {
-
-   return comp_fun_Bsbar(0,0,0,0,0,0,iev)+comp_fun_Bsbar(0,1,0,0,1,0,iev)+comp_fun_Bsbar(0,2,0,0,2,0,iev)+comp_fun_Bsbar(1,0,0,1,0,0,iev)+comp_fun_Bsbar(1,1,0,1,1,0,iev)+comp_fun_Bsbar(1,1,1,1,1,1,iev)
-+comp_fun_Bsbar(1,1,2,1,1,2,iev)+comp_fun_Bsbar(1,2,0,1,2,0,iev)+comp_fun_Bsbar(1,2,1,1,2,1,iev)+comp_fun_Bsbar(1,2,2,1,2,2,iev)+comp_fun_Bsbar(2,0,0,2,0,0,iev)+comp_fun_Bsbar(2,1,0,2,1,0,iev)+comp_fun_Bsbar(2,1,1,2,1,1,iev)
-+comp_fun_Bsbar(2,1,2,2,1,2,iev)+comp_fun_Bsbar(2,2,0,2,2,0,iev)+comp_fun_Bsbar(2,2,1,2,2,1,iev)+comp_fun_Bsbar(2,2,2,2,2,2,iev)+comp_fun_Bsbar(2,2,3,2,2,3,iev)+comp_fun_Bsbar(2,2,4,2,2,4,iev)+2.*comp_fun_Bsbar(0,1,0,0,0,0,iev)
-+2.*comp_fun_Bsbar(0,1,0,1,0,0,iev)+2.*comp_fun_Bsbar(0,1,0,2,0,0,iev)+2.*comp_fun_Bsbar(0,2,0,0,0,0,iev)+2.*comp_fun_Bsbar(0,2,0,0,1,0,iev)+2.*comp_fun_Bsbar(0,2,0,1,0,0,iev)+2.*comp_fun_Bsbar(0,2,0,1,1,0,iev)
-+2.*comp_fun_Bsbar(0,2,0,2,0,0,iev)+2.*comp_fun_Bsbar(0,2,0,2,1,0,iev)+2.*comp_fun_Bsbar(1,0,0,0,0,0,iev)+2.*comp_fun_Bsbar(1,1,0,0,0,0,iev)+2.*comp_fun_Bsbar(1,1,0,0,1,0,iev)+2.*comp_fun_Bsbar(1,1,0,1,0,0,iev)
-+2.*comp_fun_Bsbar(1,1,0,2,0,0,iev)+2.*comp_fun_Bsbar(1,1,1,0,0,0,iev)+2.*comp_fun_Bsbar(1,1,1,0,1,0,iev)+2.*comp_fun_Bsbar(1,1,1,0,2,0,iev)+2.*comp_fun_Bsbar(1,1,1,1,0,0,iev)+2.*comp_fun_Bsbar(1,1,1,1,1,0,iev)
-+2.*comp_fun_Bsbar(1,1,1,1,2,0,iev)+2.*comp_fun_Bsbar(1,1,1,2,0,0,iev)+2.*comp_fun_Bsbar(1,1,1,2,1,0,iev)+2.*comp_fun_Bsbar(1,1,1,2,2,0,iev)+2.*comp_fun_Bsbar(1,1,2,0,0,0,iev)+2.*comp_fun_Bsbar(1,1,2,0,1,0,iev)
-+2.*comp_fun_Bsbar(1,1,2,0,2,0,iev)+2.*comp_fun_Bsbar(1,1,2,1,0,0,iev)+2.*comp_fun_Bsbar(1,1,2,1,1,0,iev)+2.*comp_fun_Bsbar(1,1,2,1,1,1,iev)+2.*comp_fun_Bsbar(1,1,2,1,2,0,iev)+2.*comp_fun_Bsbar(1,1,2,1,2,1,iev)
-+2.*comp_fun_Bsbar(1,1,2,2,0,0,iev)+2.*comp_fun_Bsbar(1,1,2,2,1,0,iev)+2.*comp_fun_Bsbar(1,1,2,2,1,1,iev)+2.*comp_fun_Bsbar(1,1,2,2,2,0,iev)+2.*comp_fun_Bsbar(1,1,2,2,2,1,iev)+2.*comp_fun_Bsbar(1,2,0,0,0,0,iev)
-+2.*comp_fun_Bsbar(1,2,0,0,1,0,iev)+2.*comp_fun_Bsbar(1,2,0,0,2,0,iev)+2.*comp_fun_Bsbar(1,2,0,1,0,0,iev)+2.*comp_fun_Bsbar(1,2,0,1,1,0,iev)+2.*comp_fun_Bsbar(1,2,0,2,0,0,iev)+2.*comp_fun_Bsbar(1,2,0,2,1,0,iev)
-+2.*comp_fun_Bsbar(1,2,1,0,0,0,iev)+2.*comp_fun_Bsbar(1,2,1,0,1,0,iev)+2.*comp_fun_Bsbar(1,2,1,0,2,0,iev)+2.*comp_fun_Bsbar(1,2,1,1,0,0,iev)+2.*comp_fun_Bsbar(1,2,1,1,1,0,iev)+2.*comp_fun_Bsbar(1,2,1,1,1,1,iev)
-+2.*comp_fun_Bsbar(1,2,1,1,2,0,iev)+2.*comp_fun_Bsbar(1,2,1,2,0,0,iev)+2.*comp_fun_Bsbar(1,2,1,2,1,0,iev)+2.*comp_fun_Bsbar(1,2,1,2,1,1,iev)+2.*comp_fun_Bsbar(1,2,1,2,2,0,iev)+2.*comp_fun_Bsbar(1,2,2,0,0,0,iev)
-+2.*comp_fun_Bsbar(1,2,2,0,1,0,iev)+2.*comp_fun_Bsbar(1,2,2,0,2,0,iev)+2.*comp_fun_Bsbar(1,2,2,1,0,0,iev)+2.*comp_fun_Bsbar(1,2,2,1,1,0,iev)+2.*comp_fun_Bsbar(1,2,2,1,1,1,iev)+2.*comp_fun_Bsbar(1,2,2,1,1,2,iev)
-+2.*comp_fun_Bsbar(1,2,2,1,2,0,iev)+2.*comp_fun_Bsbar(1,2,2,1,2,1,iev)+2.*comp_fun_Bsbar(1,2,2,2,0,0,iev)+2.*comp_fun_Bsbar(1,2,2,2,1,0,iev)+2.*comp_fun_Bsbar(1,2,2,2,1,1,iev)+2.*comp_fun_Bsbar(1,2,2,2,1,2,iev)
-+2.*comp_fun_Bsbar(1,2,2,2,2,0,iev)+2.*comp_fun_Bsbar(1,2,2,2,2,1,iev)+2.*comp_fun_Bsbar(2,0,0,0,0,0,iev)+2.*comp_fun_Bsbar(2,0,0,1,0,0,iev)+2.*comp_fun_Bsbar(2,1,0,0,0,0,iev)+2.*comp_fun_Bsbar(2,1,0,0,1,0,iev)
-+2.*comp_fun_Bsbar(2,1,0,1,0,0,iev)+2.*comp_fun_Bsbar(2,1,0,1,1,0,iev)+2.*comp_fun_Bsbar(2,1,0,2,0,0,iev)+2.*comp_fun_Bsbar(2,1,1,0,0,0,iev)+2.*comp_fun_Bsbar(2,1,1,0,1,0,iev)+2.*comp_fun_Bsbar(2,1,1,0,2,0,iev)
-+2.*comp_fun_Bsbar(2,1,1,1,0,0,iev)+2.*comp_fun_Bsbar(2,1,1,1,1,0,iev)+2.*comp_fun_Bsbar(2,1,1,1,1,1,iev)+2.*comp_fun_Bsbar(2,1,1,1,2,0,iev)+2.*comp_fun_Bsbar(2,1,1,2,0,0,iev)+2.*comp_fun_Bsbar(2,1,1,2,1,0,iev)
-+2.*comp_fun_Bsbar(2,1,1,2,2,0,iev)+2.*comp_fun_Bsbar(2,1,2,0,0,0,iev)+2.*comp_fun_Bsbar(2,1,2,0,1,0,iev)+2.*comp_fun_Bsbar(2,1,2,0,2,0,iev)+2.*comp_fun_Bsbar(2,1,2,1,0,0,iev)+2.*comp_fun_Bsbar(2,1,2,1,1,0,iev)
-+2.*comp_fun_Bsbar(2,1,2,1,1,1,iev)+2.*comp_fun_Bsbar(2,1,2,1,1,2,iev)+2.*comp_fun_Bsbar(2,1,2,1,2,0,iev)+2.*comp_fun_Bsbar(2,1,2,1,2,1,iev)+2.*comp_fun_Bsbar(2,1,2,2,0,0,iev)+2.*comp_fun_Bsbar(2,1,2,2,1,0,iev)
-+2.*comp_fun_Bsbar(2,1,2,2,1,1,iev)+2.*comp_fun_Bsbar(2,1,2,2,2,0,iev)+2.*comp_fun_Bsbar(2,1,2,2,2,1,iev)+2.*comp_fun_Bsbar(2,2,0,0,0,0,iev)+2.*comp_fun_Bsbar(2,2,0,0,1,0,iev)+2.*comp_fun_Bsbar(2,2,0,0,2,0,iev)
-+2.*comp_fun_Bsbar(2,2,0,1,0,0,iev)+2.*comp_fun_Bsbar(2,2,0,1,1,0,iev)+2.*comp_fun_Bsbar(2,2,0,1,2,0,iev)+2.*comp_fun_Bsbar(2,2,0,2,0,0,iev)+2.*comp_fun_Bsbar(2,2,0,2,1,0,iev)+2.*comp_fun_Bsbar(2,2,1,0,0,0,iev)
-+2.*comp_fun_Bsbar(2,2,1,0,1,0,iev)+2.*comp_fun_Bsbar(2,2,1,0,2,0,iev)+2.*comp_fun_Bsbar(2,2,1,1,0,0,iev)+2.*comp_fun_Bsbar(2,2,1,1,1,0,iev)+2.*comp_fun_Bsbar(2,2,1,1,1,1,iev)+2.*comp_fun_Bsbar(2,2,1,1,2,0,iev)
-+2.*comp_fun_Bsbar(2,2,1,1,2,1,iev)+2.*comp_fun_Bsbar(2,2,1,2,0,0,iev)+2.*comp_fun_Bsbar(2,2,1,2,1,0,iev)+2.*comp_fun_Bsbar(2,2,1,2,1,1,iev)+2.*comp_fun_Bsbar(2,2,1,2,2,0,iev)+2.*comp_fun_Bsbar(2,2,2,0,0,0,iev)
-+2.*comp_fun_Bsbar(2,2,2,0,1,0,iev)+2.*comp_fun_Bsbar(2,2,2,0,2,0,iev)+2.*comp_fun_Bsbar(2,2,2,1,0,0,iev)+2.*comp_fun_Bsbar(2,2,2,1,1,0,iev)+2.*comp_fun_Bsbar(2,2,2,1,1,1,iev)+2.*comp_fun_Bsbar(2,2,2,1,1,2,iev)
-+2.*comp_fun_Bsbar(2,2,2,1,2,0,iev)+2.*comp_fun_Bsbar(2,2,2,1,2,1,iev)+2.*comp_fun_Bsbar(2,2,2,1,2,2,iev)+2.*comp_fun_Bsbar(2,2,2,2,0,0,iev)+2.*comp_fun_Bsbar(2,2,2,2,1,0,iev)+2.*comp_fun_Bsbar(2,2,2,2,1,1,iev)
-+2.*comp_fun_Bsbar(2,2,2,2,1,2,iev)+2.*comp_fun_Bsbar(2,2,2,2,2,0,iev)+2.*comp_fun_Bsbar(2,2,2,2,2,1,iev)+2.*comp_fun_Bsbar(2,2,3,0,0,0,iev)+2.*comp_fun_Bsbar(2,2,3,0,1,0,iev)+2.*comp_fun_Bsbar(2,2,3,0,2,0,iev)
-+2.*comp_fun_Bsbar(2,2,3,1,0,0,iev)+2.*comp_fun_Bsbar(2,2,3,1,1,0,iev)+2.*comp_fun_Bsbar(2,2,3,1,1,1,iev)+2.*comp_fun_Bsbar(2,2,3,1,1,2,iev)+2.*comp_fun_Bsbar(2,2,3,1,2,0,iev)+2.*comp_fun_Bsbar(2,2,3,1,2,1,iev)
-+2.*comp_fun_Bsbar(2,2,3,1,2,2,iev)+2.*comp_fun_Bsbar(2,2,3,2,0,0,iev)+2.*comp_fun_Bsbar(2,2,3,2,1,0,iev)+2.*comp_fun_Bsbar(2,2,3,2,1,1,iev)+2.*comp_fun_Bsbar(2,2,3,2,1,2,iev)+2.*comp_fun_Bsbar(2,2,3,2,2,0,iev)
-+2.*comp_fun_Bsbar(2,2,3,2,2,1,iev)+2.*comp_fun_Bsbar(2,2,3,2,2,2,iev)+2.*comp_fun_Bsbar(2,2,4,0,0,0,iev)+2.*comp_fun_Bsbar(2,2,4,0,1,0,iev)+2.*comp_fun_Bsbar(2,2,4,0,2,0,iev)+2.*comp_fun_Bsbar(2,2,4,1,0,0,iev)
-+2.*comp_fun_Bsbar(2,2,4,1,1,0,iev)+2.*comp_fun_Bsbar(2,2,4,1,1,1,iev)+2.*comp_fun_Bsbar(2,2,4,1,1,2,iev)+2.*comp_fun_Bsbar(2,2,4,1,2,0,iev)+2.*comp_fun_Bsbar(2,2,4,1,2,1,iev)+2.*comp_fun_Bsbar(2,2,4,1,2,2,iev)
-+2.*comp_fun_Bsbar(2,2,4,2,0,0,iev)+2.*comp_fun_Bsbar(2,2,4,2,1,0,iev)+2.*comp_fun_Bsbar(2,2,4,2,1,1,iev)+2.*comp_fun_Bsbar(2,2,4,2,1,2,iev)+2.*comp_fun_Bsbar(2,2,4,2,2,0,iev)+2.*comp_fun_Bsbar(2,2,4,2,2,1,iev)
-+2.*comp_fun_Bsbar(2,2,4,2,2,2,iev)+2.*comp_fun_Bsbar(2,2,4,2,2,3,iev);
-
- }
-
-__device__ pycuda::complex<double> ITBsj1j2hj1pj2php(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) {
-
-   return IT_cosh_temp_deltat[0][iev]*M_Average(j1,j2,h,j1p,j2p,hp)-IT_sinh_temp_deltat[0][iev]*M_DeltaGamma(j1,j2,h,j1p,j2p,hp)+IT_cos_temp_deltat[0][iev]*M_DirCP(j1,j2,h,j1p,j2p,hp)+IT_sin_temp_deltat[0][iev]*M_MixCP(j1,j2,h,j1p,j2p,hp);
-
- }
-
-__device__ double comp_int_Bs(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) { 
-   return pycuda::real(ITBsj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp,iev)*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*Ihj1j2j1pj2p(j1,j2,j1p,j2p))*Ighhp(h,hp)*Ifjjphhp(j1,j1p,h,hp)*Ifjjphhp(j2,j2p,h,hp);
- }
-
-__device__ double int_Bs(int iev) {
-
-   return comp_int_Bs(0,0,0,0,0,0,iev)+comp_int_Bs(0,1,0,0,1,0,iev)+comp_int_Bs(0,2,0,0,2,0,iev)+comp_int_Bs(1,0,0,1,0,0,iev)+comp_int_Bs(1,1,0,1,1,0,iev)
-+comp_int_Bs(1,1,1,1,1,1,iev)+comp_int_Bs(1,1,2,1,1,2,iev)+comp_int_Bs(1,2,0,1,2,0,iev)+comp_int_Bs(1,2,1,1,2,1,iev)+comp_int_Bs(1,2,2,1,2,2,iev)
-+comp_int_Bs(2,0,0,2,0,0,iev)+comp_int_Bs(2,1,0,2,1,0,iev)+comp_int_Bs(2,1,1,2,1,1,iev)+comp_int_Bs(2,1,2,2,1,2,iev)+comp_int_Bs(2,2,0,2,2,0,iev)
-+comp_int_Bs(2,2,1,2,2,1,iev)+comp_int_Bs(2,2,2,2,2,2,iev)+comp_int_Bs(2,2,3,2,2,3,iev)+comp_int_Bs(2,2,4,2,2,4,iev)+2.*comp_int_Bs(0,1,0,0,0,0,iev)
-+2.*comp_int_Bs(0,1,0,1,0,0,iev)+2.*comp_int_Bs(0,1,0,2,0,0,iev)+2.*comp_int_Bs(0,2,0,0,0,0,iev)+2.*comp_int_Bs(0,2,0,0,1,0,iev)+2.*comp_int_Bs(0,2,0,1,0,0,iev)
-+2.*comp_int_Bs(0,2,0,1,1,0,iev)+2.*comp_int_Bs(0,2,0,2,0,0,iev)+2.*comp_int_Bs(0,2,0,2,1,0,iev)+2.*comp_int_Bs(1,0,0,0,0,0,iev)+2.*comp_int_Bs(1,1,0,0,0,0,iev)
-+2.*comp_int_Bs(1,1,0,0,1,0,iev)+2.*comp_int_Bs(1,1,0,1,0,0,iev)+2.*comp_int_Bs(1,1,0,2,0,0,iev)+2.*comp_int_Bs(1,2,0,0,0,0,iev)+2.*comp_int_Bs(1,2,0,0,1,0,iev)
-+2.*comp_int_Bs(1,2,0,0,2,0,iev)+2.*comp_int_Bs(1,2,0,1,0,0,iev)+2.*comp_int_Bs(1,2,0,1,1,0,iev)+2.*comp_int_Bs(1,2,0,2,0,0,iev)+2.*comp_int_Bs(1,2,0,2,1,0,iev)
-+2.*comp_int_Bs(1,2,1,1,1,1,iev)+2.*comp_int_Bs(1,2,1,2,1,1,iev)+2.*comp_int_Bs(1,2,2,1,1,2,iev)+2.*comp_int_Bs(1,2,2,2,1,2,iev)+2.*comp_int_Bs(2,0,0,0,0,0,iev)
-+2.*comp_int_Bs(2,0,0,1,0,0,iev)+2.*comp_int_Bs(2,1,0,0,0,0,iev)+2.*comp_int_Bs(2,1,0,0,1,0,iev)+2.*comp_int_Bs(2,1,0,1,0,0,iev)+2.*comp_int_Bs(2,1,0,1,1,0,iev)
-+2.*comp_int_Bs(2,1,0,2,0,0,iev)+2.*comp_int_Bs(2,1,1,1,1,1,iev)+2.*comp_int_Bs(2,1,2,1,1,2,iev)+2.*comp_int_Bs(2,2,0,0,0,0,iev)+2.*comp_int_Bs(2,2,0,0,1,0,iev)
-+2.*comp_int_Bs(2,2,0,0,2,0,iev)+2.*comp_int_Bs(2,2,0,1,0,0,iev)+2.*comp_int_Bs(2,2,0,1,1,0,iev)+2.*comp_int_Bs(2,2,0,1,2,0,iev)+2.*comp_int_Bs(2,2,0,2,0,0,iev)
-+2.*comp_int_Bs(2,2,0,2,1,0,iev)+2.*comp_int_Bs(2,2,1,1,1,1,iev)+2.*comp_int_Bs(2,2,1,1,2,1,iev)+2.*comp_int_Bs(2,2,1,2,1,1,iev)+2.*comp_int_Bs(2,2,2,1,1,2,iev)
-+2.*comp_int_Bs(2,2,2,1,2,2,iev)+2.*comp_int_Bs(2,2,2,2,1,2,iev);
-
- }
-
-__device__ pycuda::complex<double> ITBsbarj1j2hj1pj2php(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) {
-
-   return IT_cosh_temp_deltat[0][iev]*M_Average(j1,j2,h,j1p,j2p,hp)-IT_sinh_temp_deltat[0][iev]*M_DeltaGamma(j1,j2,h,j1p,j2p,hp)-IT_cos_temp_deltat[0][iev]*M_DirCP(j1,j2,h,j1p,j2p,hp)-IT_sin_temp_deltat[0][iev]*M_MixCP(j1,j2,h,j1p,j2p,hp);
-
- }
-
-__device__ double comp_int_Bsbar(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) { 
-   return pycuda::real(ITBsbarj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp,iev)*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*Ihj1j2j1pj2p(j1,j2,j1p,j2p))*Ighhp(h,hp)*Ifjjphhp(j1,j1p,h,hp)*Ifjjphhp(j2,j2p,h,hp);
- }
-
-__device__ double int_Bsbar(int iev) {
-
-   return comp_int_Bsbar(0,0,0,0,0,0,iev)+comp_int_Bsbar(0,1,0,0,1,0,iev)+comp_int_Bsbar(0,2,0,0,2,0,iev)+comp_int_Bsbar(1,0,0,1,0,0,iev)+comp_int_Bsbar(1,1,0,1,1,0,iev)
-+comp_int_Bsbar(1,1,1,1,1,1,iev)+comp_int_Bsbar(1,1,2,1,1,2,iev)+comp_int_Bsbar(1,2,0,1,2,0,iev)+comp_int_Bsbar(1,2,1,1,2,1,iev)+comp_int_Bsbar(1,2,2,1,2,2,iev)
-+comp_int_Bsbar(2,0,0,2,0,0,iev)+comp_int_Bsbar(2,1,0,2,1,0,iev)+comp_int_Bsbar(2,1,1,2,1,1,iev)+comp_int_Bsbar(2,1,2,2,1,2,iev)+comp_int_Bsbar(2,2,0,2,2,0,iev)
-+comp_int_Bsbar(2,2,1,2,2,1,iev)+comp_int_Bsbar(2,2,2,2,2,2,iev)+comp_int_Bsbar(2,2,3,2,2,3,iev)+comp_int_Bsbar(2,2,4,2,2,4,iev)+2.*comp_int_Bsbar(0,1,0,0,0,0,iev)
-+2.*comp_int_Bsbar(0,1,0,1,0,0,iev)+2.*comp_int_Bsbar(0,1,0,2,0,0,iev)+2.*comp_int_Bsbar(0,2,0,0,0,0,iev)+2.*comp_int_Bsbar(0,2,0,0,1,0,iev)+2.*comp_int_Bsbar(0,2,0,1,0,0,iev)
-+2.*comp_int_Bsbar(0,2,0,1,1,0,iev)+2.*comp_int_Bsbar(0,2,0,2,0,0,iev)+2.*comp_int_Bsbar(0,2,0,2,1,0,iev)+2.*comp_int_Bsbar(1,0,0,0,0,0,iev)+2.*comp_int_Bsbar(1,1,0,0,0,0,iev)
-+2.*comp_int_Bsbar(1,1,0,0,1,0,iev)+2.*comp_int_Bsbar(1,1,0,1,0,0,iev)+2.*comp_int_Bsbar(1,1,0,2,0,0,iev)+2.*comp_int_Bsbar(1,2,0,0,0,0,iev)+2.*comp_int_Bsbar(1,2,0,0,1,0,iev)
-+2.*comp_int_Bsbar(1,2,0,0,2,0,iev)+2.*comp_int_Bsbar(1,2,0,1,0,0,iev)+2.*comp_int_Bsbar(1,2,0,1,1,0,iev)+2.*comp_int_Bsbar(1,2,0,2,0,0,iev)+2.*comp_int_Bsbar(1,2,0,2,1,0,iev)
-+2.*comp_int_Bsbar(1,2,1,1,1,1,iev)+2.*comp_int_Bsbar(1,2,1,2,1,1,iev)+2.*comp_int_Bsbar(1,2,2,1,1,2,iev)+2.*comp_int_Bsbar(1,2,2,2,1,2,iev)+2.*comp_int_Bsbar(2,0,0,0,0,0,iev)
-+2.*comp_int_Bsbar(2,0,0,1,0,0,iev)+2.*comp_int_Bsbar(2,1,0,0,0,0,iev)+2.*comp_int_Bsbar(2,1,0,0,1,0,iev)+2.*comp_int_Bsbar(2,1,0,1,0,0,iev)+2.*comp_int_Bsbar(2,1,0,1,1,0,iev)
-+2.*comp_int_Bsbar(2,1,0,2,0,0,iev)+2.*comp_int_Bsbar(2,1,1,1,1,1,iev)+2.*comp_int_Bsbar(2,1,2,1,1,2,iev)+2.*comp_int_Bsbar(2,2,0,0,0,0,iev)+2.*comp_int_Bsbar(2,2,0,0,1,0,iev)
-+2.*comp_int_Bsbar(2,2,0,0,2,0,iev)+2.*comp_int_Bsbar(2,2,0,1,0,0,iev)+2.*comp_int_Bsbar(2,2,0,1,1,0,iev)+2.*comp_int_Bsbar(2,2,0,1,2,0,iev)+2.*comp_int_Bsbar(2,2,0,2,0,0,iev)
-+2.*comp_int_Bsbar(2,2,0,2,1,0,iev)+2.*comp_int_Bsbar(2,2,1,1,1,1,iev)+2.*comp_int_Bsbar(2,2,1,1,2,1,iev)+2.*comp_int_Bsbar(2,2,1,2,1,1,iev)+2.*comp_int_Bsbar(2,2,2,1,1,2,iev)
-+2.*comp_int_Bsbar(2,2,2,1,2,2,iev)+2.*comp_int_Bsbar(2,2,2,2,1,2,iev);
-
- }
-
 __global__ void set_generator(double *options, double *re_amps, double *dirCP_asyms, double *im_amps, double *weak_phases, double *mixing_params, double *calib_params, double *cond_distr_params, double *mass_integrals, double *ang_integrals) {
 
    set_buffer_options(options,0);
+   year_opt[0] = 0;
+   trig_opt[0] = 0;
    set_buffer_amplitudes(re_amps,dirCP_asyms,im_amps,weak_phases,mixing_params,calib_params);
 
    tag_eff_SSK = cond_distr_params[0];
@@ -2669,12 +2584,31 @@ __device__ void set_buffer_differential_terms_gen(int iev) {
 
  }
 
-__global__ void evaluate_Bs(double m1_ran, double m2_ran, double cos1_ran, double cos2_ran, double phi_ran, double t_ran, double t_err_ran, double *mixing_params, double *calib_params, double *out) {
+__device__ double comp_den_toy(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) { 
+   return pycuda::real(ITj1j2hj1pj2php_deltat(j1,j2,h,j1p,j2p,hp,0,iev)*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*Ihj1j2j1pj2p(j1,j2,j1p,j2p))*Ighhp(h,hp)*Ifjjphhp(j1,j1p,h,hp)*Ifjjphhp(j2,j2p,h,hp);
+ }
 
-   decision_SSK[0][0] = 0;
-   decision_OS[0][0] = 0;
-   etamistag_SSK[0][0] = 0.5;
-   etamistag_OS[0][0] = 0.5;
+__device__ double den_toy(int iev) {
+
+   return comp_den_toy(0,0,0,0,0,0,iev)+comp_den_toy(0,1,0,0,1,0,iev)+comp_den_toy(0,2,0,0,2,0,iev)+comp_den_toy(1,0,0,1,0,0,iev)+comp_den_toy(1,1,0,1,1,0,iev)
++comp_den_toy(1,1,1,1,1,1,iev)+comp_den_toy(1,1,2,1,1,2,iev)+comp_den_toy(1,2,0,1,2,0,iev)+comp_den_toy(1,2,1,1,2,1,iev)+comp_den_toy(1,2,2,1,2,2,iev)
++comp_den_toy(2,0,0,2,0,0,iev)+comp_den_toy(2,1,0,2,1,0,iev)+comp_den_toy(2,1,1,2,1,1,iev)+comp_den_toy(2,1,2,2,1,2,iev)+comp_den_toy(2,2,0,2,2,0,iev)
++comp_den_toy(2,2,1,2,2,1,iev)+comp_den_toy(2,2,2,2,2,2,iev)+comp_den_toy(2,2,3,2,2,3,iev)+comp_den_toy(2,2,4,2,2,4,iev)+2.*comp_den_toy(0,1,0,0,0,0,iev)
++2.*comp_den_toy(0,1,0,1,0,0,iev)+2.*comp_den_toy(0,1,0,2,0,0,iev)+2.*comp_den_toy(0,2,0,0,0,0,iev)+2.*comp_den_toy(0,2,0,0,1,0,iev)+2.*comp_den_toy(0,2,0,1,0,0,iev)
++2.*comp_den_toy(0,2,0,1,1,0,iev)+2.*comp_den_toy(0,2,0,2,0,0,iev)+2.*comp_den_toy(0,2,0,2,1,0,iev)+2.*comp_den_toy(1,0,0,0,0,0,iev)+2.*comp_den_toy(1,1,0,0,0,0,iev)
++2.*comp_den_toy(1,1,0,0,1,0,iev)+2.*comp_den_toy(1,1,0,1,0,0,iev)+2.*comp_den_toy(1,1,0,2,0,0,iev)+2.*comp_den_toy(1,2,0,0,0,0,iev)+2.*comp_den_toy(1,2,0,0,1,0,iev)
++2.*comp_den_toy(1,2,0,0,2,0,iev)+2.*comp_den_toy(1,2,0,1,0,0,iev)+2.*comp_den_toy(1,2,0,1,1,0,iev)+2.*comp_den_toy(1,2,0,2,0,0,iev)+2.*comp_den_toy(1,2,0,2,1,0,iev)
++2.*comp_den_toy(1,2,1,1,1,1,iev)+2.*comp_den_toy(1,2,1,2,1,1,iev)+2.*comp_den_toy(1,2,2,1,1,2,iev)+2.*comp_den_toy(1,2,2,2,1,2,iev)+2.*comp_den_toy(2,0,0,0,0,0,iev)
++2.*comp_den_toy(2,0,0,1,0,0,iev)+2.*comp_den_toy(2,1,0,0,0,0,iev)+2.*comp_den_toy(2,1,0,0,1,0,iev)+2.*comp_den_toy(2,1,0,1,0,0,iev)+2.*comp_den_toy(2,1,0,1,1,0,iev)
++2.*comp_den_toy(2,1,0,2,0,0,iev)+2.*comp_den_toy(2,1,1,1,1,1,iev)+2.*comp_den_toy(2,1,2,1,1,2,iev)+2.*comp_den_toy(2,2,0,0,0,0,iev)+2.*comp_den_toy(2,2,0,0,1,0,iev)
++2.*comp_den_toy(2,2,0,0,2,0,iev)+2.*comp_den_toy(2,2,0,1,0,0,iev)+2.*comp_den_toy(2,2,0,1,1,0,iev)+2.*comp_den_toy(2,2,0,1,2,0,iev)+2.*comp_den_toy(2,2,0,2,0,0,iev)
++2.*comp_den_toy(2,2,0,2,1,0,iev)+2.*comp_den_toy(2,2,1,1,1,1,iev)+2.*comp_den_toy(2,2,1,1,2,1,iev)+2.*comp_den_toy(2,2,1,2,1,1,iev)+2.*comp_den_toy(2,2,2,1,1,2,iev)
++2.*comp_den_toy(2,2,2,1,2,2,iev)+2.*comp_den_toy(2,2,2,2,1,2,iev);
+
+ }
+
+__global__ void evaluate_CondPDF(double m1_ran, double m2_ran, double cos1_ran, double cos2_ran, double phi_ran, double t_ran, double t_err_ran, int q_SSK_ran, int q_OS_ran, double eta_SSK_ran, double eta_OS_ran, double *mixing_params, double *calib_params, double *out) {
+
    m1[0][0] = m1_ran;
    m2[0][0] = m2_ran;
    cos1[0][0] = cos1_ran;
@@ -2682,6 +2616,10 @@ __global__ void evaluate_Bs(double m1_ran, double m2_ran, double cos1_ran, doubl
    phi[0][0] = phi_ran;
    t[0][0] = t_ran;
    t_err[0][0] = t_err_ran;
+   decision_SSK[0][0] = q_SSK_ran;
+   decision_OS[0][0] = q_OS_ran;
+   etamistag_SSK[0][0] = eta_SSK_ran;
+   etamistag_OS[0][0] = eta_OS_ran;
 
    gamma_Bs_freq = mixing_params[1];
    delta_gamma_freq = mixing_params[2];
@@ -2693,168 +2631,67 @@ __global__ void evaluate_Bs(double m1_ran, double m2_ran, double cos1_ran, doubl
    p1_tag_OS = calib_params[5];
    Dp1half_tag_SSK = calib_params[6];
    Dp1half_tag_OS = calib_params[7];
-   p0_tres_11 = calib_params[11];
-   p1_tres_11 = calib_params[12];
    p0_tres_12 = calib_params[14];
    p1_tres_12 = calib_params[15];
 
    set_buffer_differential_terms_gen(0);
    set_buffer_integral_terms(0,0);
 
-   double num_temp = accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran)*fun_Bs(0);
-   double den_temp = int_Bs(0);
+   double num_temp = num_fit(0,0)*accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran);
+   double den_temp = den_toy(0);
 
-   if (num_temp/den_temp<=0) {out[0] = -10000000000;}
+   if (num_temp/den_temp<=0) {out[0] = -1.e20;}
    else {out[0] = log(num_temp/den_temp);}
 
  }
 
-__global__ void evaluate_Bsbar(double m1_ran, double m2_ran, double cos1_ran, double cos2_ran, double phi_ran, double t_ran, double t_err_ran, double *mixing_params, double *calib_params, double *out) {
-
-   decision_SSK[0][0] = 0;
-   decision_OS[0][0] = 0;
-   etamistag_SSK[0][0] = 0.5;
-   etamistag_OS[0][0] = 0.5;
-   m1[0][0] = m1_ran;
-   m2[0][0] = m2_ran;
-   cos1[0][0] = cos1_ran;
-   cos2[0][0] = cos2_ran;
-   phi[0][0] = phi_ran;
-   t[0][0] = t_ran;
-   t_err[0][0] = t_err_ran;
-
-   gamma_Bs_freq = mixing_params[1];
-   delta_gamma_freq = mixing_params[2];
-   p0metac_tag_SSK = calib_params[0];
-   p0metac_tag_OS = calib_params[1];
-   Dp0half_tag_SSK = calib_params[2];
-   Dp0half_tag_OS = calib_params[3];
-   p1_tag_SSK = calib_params[4];
-   p1_tag_OS = calib_params[5];
-   Dp1half_tag_SSK = calib_params[6];
-   Dp1half_tag_OS = calib_params[7];
-   p0_tres_11 = calib_params[11];
-   p1_tres_11 = calib_params[12];
-   p0_tres_12 = calib_params[14];
-   p1_tres_12 = calib_params[15];
-
-   set_buffer_differential_terms_gen(0);
-   set_buffer_integral_terms(0,0);
-
-   double num_temp = accGen(t_ran,m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran)*fun_Bsbar(0);
-   double den_temp = int_Bsbar(0);
-
-   if (num_temp/den_temp<=0) {out[0] = -10000000000;}
-   else {out[0] = log(num_temp/den_temp);}
-
- }
-
-__global__ void generateEvent(double *gendata, double max_fun_eta_SSK, double max_fun_eta_OS, double max_fun_6DBs, double max_fun_6DBsbar, int Nevt) {
+__global__ void generateEvent(double *gendata, double max_fun_eta_SSK, double max_fun_eta_OS, double max_fun_cond, int Nevt) {
 
    int row = threadIdx.x + blockDim.x * blockIdx.x;
    if (row >= Nevt) { return;}
 
    curandState state;
    curand_init((unsigned long long)clock(), row, 0, &state);
-   double max_fun;
-   double fun_ran;
-   double dec_accepted;
-
-   // Generation is performed in four steps:
-   //      1. The per event decay time error is determined.
-   //      2. A flavour, Bs or Bsbar, is assigned to the event.
-   //      3. Tagging decisions and mistag probabilities are obtained.
-   //      4. Decay variables (angles, invariant masses and decay time) are determined.
 
    // Determination of the per event decay time error.
    t_err[0][row] = ran_P_deltat(state);
 
-   // Determination of the flavour of the B hadron.
-   set_buffer_integral_terms(0,row);
-   double yield_Bs = (1.+DCP_prod)*int_Bs(row);
-   double yield_Bsbar = (1.-DCP_prod)*int_Bsbar(row);
-   double P_trueBs = yield_Bs/(yield_Bs+yield_Bsbar);
-   int true_ID;
-   double dec_flavour = curand_uniform(&state);
-   if (dec_flavour < P_trueBs) {true_ID = 1;} // Bs flavour.
-   else {true_ID = -1;} // Bsbar flavour.
-
-   double dec_right_tagged;
-   double prob_right_tagged;
-
    // Determination of the SSK mistag probability.
    double dec_SSK_tagged = curand_uniform(&state);
    if (dec_SSK_tagged < tag_eff_SSK) {
-      // If the event is tagged, the accept-reject method is used to generate eta.
       double etamistag_SSK_ran;
-      max_fun = max_fun_eta_SSK;
+      max_fun[row] = max_fun_eta_SSK;
       while (1) {
          etamistag_SSK_ran = 0.5*curand_uniform(&state);
-         fun_ran = P_eta_SSK(etamistag_SSK_ran);
-         dec_accepted = max_fun*curand_uniform(&state);
-         if (fun_ran > dec_accepted) {break;}
+         fun_ran[row] = P_eta_SSK(etamistag_SSK_ran);
+         dec_accepted[row] = max_fun[row]*curand_uniform(&state);
+         if (fun_ran[row] > dec_accepted[row]) {break;}
          }
       etamistag_SSK[0][row] = etamistag_SSK_ran;
       }
    else {
-      // If the event is not tagged, eta is set to 0.5.
       etamistag_SSK[0][row] = 0.5;
       }
-
-   // Determination of the SSK tagging decision.
-   if (etamistag_SSK[0][row] < 0.5) {
-      dec_right_tagged = curand_uniform(&state);
-      if (true_ID == 1) {
-         prob_right_tagged = 1.-omega_SSK(etamistag_SSK[0][row]);
-         if (dec_right_tagged < prob_right_tagged) {decision_SSK[0][row] = 1;} // Right tagged Bs.
-         else {decision_SSK[0][row] = -1;} // Wrong tagged Bs.
-      }
-      else {
-         prob_right_tagged = 1.-omegabar_SSK(etamistag_SSK[0][row]);
-         if (dec_right_tagged < prob_right_tagged) {decision_SSK[0][row] = -1;} // Right tagged Bsbar.
-         else {decision_SSK[0][row] = 1;} // Wrong tagged Bsbar.
-      }
-   }
-   else {decision_SSK[0][row] = 0;}
 
    // Determination of the OS mistag probability.
    double dec_OS_tagged = curand_uniform(&state);
    if (dec_OS_tagged < tag_eff_OS) {
-      // If the event is tagged, the accept-reject method is used to generate eta.
       double etamistag_OS_ran;
-      max_fun = max_fun_eta_OS;
+      max_fun[row] = max_fun_eta_OS;
       while (1) {
          etamistag_OS_ran = 0.5*curand_uniform(&state);
-         fun_ran = P_eta_OS(etamistag_OS_ran);
-         dec_accepted = max_fun*curand_uniform(&state);
-         if (fun_ran > dec_accepted) {break;}
+         fun_ran[row] = P_eta_OS(etamistag_OS_ran);
+         dec_accepted[row] = max_fun[row]*curand_uniform(&state);
+         if (fun_ran[row] > dec_accepted[row]) {break;}
          }
       etamistag_OS[0][row] = etamistag_OS_ran;
       }
    else {
-      // If the event is not tagged, eta is set to 0.5.
       etamistag_OS[0][row] = 0.5;
       }
 
-   // Determination of the OS tagging decision.
-   if (etamistag_OS[0][row] < 0.5) {
-      dec_right_tagged = curand_uniform(&state);
-      if (true_ID == 1) {
-         prob_right_tagged = 1.-omega_OS(etamistag_OS[0][row]);
-         if (dec_right_tagged < prob_right_tagged) {decision_OS[0][row] = 1;} // Right tagged Bs.
-         else {decision_OS[0][row] = -1;} // Wrong tagged Bs.
-      }
-      else {
-         prob_right_tagged = 1.-omegabar_OS(etamistag_OS[0][row]);
-         if (dec_right_tagged < prob_right_tagged) {decision_OS[0][row] = -1;} // Right tagged Bsbar.
-         else {decision_OS[0][row] = 1;} // Wrong tagged Bsbar.
-      }
-   }
-   else {decision_OS[0][row] = 0;}
-
-   // Determination of the decay observables, using the accept-reject method in 6-D, taking t_err as a conditional variable.
-   if (true_ID == 1) {max_fun = max_fun_6DBs;}
-   else {max_fun = max_fun_6DBsbar;}
+   // Determination of the decay observables.
+   max_fun[row] = max_fun_cond;
    while (1) {
       if (wide_window == 1) {
          m1[0][row] = 750.+curand_uniform(&state)*(1600.-750.);
@@ -2868,11 +2705,24 @@ __global__ void generateEvent(double *gendata, double max_fun_eta_SSK, double ma
       cos2[0][row] = -1.+curand_uniform(&state)*2.;
       phi[0][row] = curand_uniform(&state)*2.*pi;
       t[0][row] = curand_uniform(&state)*12.;
+      if (etamistag_SSK[0][row] == 0.5) {decision_SSK[0][row] = 0;}
+      else {
+         double d_SSK = curand_uniform(&state);
+         if (d_SSK <= 0.5) {decision_SSK[0][row] = -1;}
+         else {decision_SSK[0][row] = 1;}
+      }
+      if (etamistag_OS[0][row] == 0.5) {decision_OS[0][row] = 0;}
+      else {
+         double d_OS = curand_uniform(&state);
+         if (d_OS <= 0.5) {decision_OS[0][row] = -1;}
+         else {decision_OS[0][row] = 1;}
+      }
       set_buffer_differential_terms_gen(row);
-      dec_accepted = max_fun*curand_uniform(&state);
-      if (true_ID == 1) {fun_ran = accGen(t[0][row],m1[0][row],m2[0][row],cos1[0][row],cos2[0][row],phi[0][row])*fun_Bs(row)/int_Bs(row);}
-      else {fun_ran = accGen(t[0][row],m1[0][row],m2[0][row],cos1[0][row],cos2[0][row],phi[0][row])*fun_Bsbar(row)/int_Bsbar(row);}
-      if (fun_ran > dec_accepted) {break;}
+      set_buffer_integral_terms(0,row);
+      dec_accepted[row] = curand_uniform(&state);
+      fun_ran[row] = num_fit(0,row)/den_toy(row)*accGen(t[0][row],m1[0][row],m2[0][row],cos1[0][row],cos2[0][row],phi[0][row])/max_fun[row];
+      if (fun_ran[row] > dec_accepted[row]) {break;}
+
    }
 
    int i0 = row*12;
@@ -2890,29 +2740,6 @@ __global__ void generateEvent(double *gendata, double max_fun_eta_SSK, double ma
    gendata[11 + i0] = 1.;
 
    return;
-
- }
-
-__device__ double comp_den_fit_toy(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) { 
-   return pycuda::real(ITj1j2hj1pj2php_deltat(j1,j2,h,j1p,j2p,hp,0,iev)*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*Ihj1j2j1pj2p(j1,j2,j1p,j2p))*Ighhp(h,hp)*Ifjjphhp(j1,j1p,h,hp)*Ifjjphhp(j2,j2p,h,hp);
- }
-
-__device__ double den_fit_toy(int iev) {
-
-   return comp_den_fit_toy(0,0,0,0,0,0,iev)+comp_den_fit_toy(0,1,0,0,1,0,iev)+comp_den_fit_toy(0,2,0,0,2,0,iev)+comp_den_fit_toy(1,0,0,1,0,0,iev)+comp_den_fit_toy(1,1,0,1,1,0,iev)
-+comp_den_fit_toy(1,1,1,1,1,1,iev)+comp_den_fit_toy(1,1,2,1,1,2,iev)+comp_den_fit_toy(1,2,0,1,2,0,iev)+comp_den_fit_toy(1,2,1,1,2,1,iev)+comp_den_fit_toy(1,2,2,1,2,2,iev)
-+comp_den_fit_toy(2,0,0,2,0,0,iev)+comp_den_fit_toy(2,1,0,2,1,0,iev)+comp_den_fit_toy(2,1,1,2,1,1,iev)+comp_den_fit_toy(2,1,2,2,1,2,iev)+comp_den_fit_toy(2,2,0,2,2,0,iev)
-+comp_den_fit_toy(2,2,1,2,2,1,iev)+comp_den_fit_toy(2,2,2,2,2,2,iev)+comp_den_fit_toy(2,2,3,2,2,3,iev)+comp_den_fit_toy(2,2,4,2,2,4,iev)+2.*comp_den_fit_toy(0,1,0,0,0,0,iev)
-+2.*comp_den_fit_toy(0,1,0,1,0,0,iev)+2.*comp_den_fit_toy(0,1,0,2,0,0,iev)+2.*comp_den_fit_toy(0,2,0,0,0,0,iev)+2.*comp_den_fit_toy(0,2,0,0,1,0,iev)+2.*comp_den_fit_toy(0,2,0,1,0,0,iev)
-+2.*comp_den_fit_toy(0,2,0,1,1,0,iev)+2.*comp_den_fit_toy(0,2,0,2,0,0,iev)+2.*comp_den_fit_toy(0,2,0,2,1,0,iev)+2.*comp_den_fit_toy(1,0,0,0,0,0,iev)+2.*comp_den_fit_toy(1,1,0,0,0,0,iev)
-+2.*comp_den_fit_toy(1,1,0,0,1,0,iev)+2.*comp_den_fit_toy(1,1,0,1,0,0,iev)+2.*comp_den_fit_toy(1,1,0,2,0,0,iev)+2.*comp_den_fit_toy(1,2,0,0,0,0,iev)+2.*comp_den_fit_toy(1,2,0,0,1,0,iev)
-+2.*comp_den_fit_toy(1,2,0,0,2,0,iev)+2.*comp_den_fit_toy(1,2,0,1,0,0,iev)+2.*comp_den_fit_toy(1,2,0,1,1,0,iev)+2.*comp_den_fit_toy(1,2,0,2,0,0,iev)+2.*comp_den_fit_toy(1,2,0,2,1,0,iev)
-+2.*comp_den_fit_toy(1,2,1,1,1,1,iev)+2.*comp_den_fit_toy(1,2,1,2,1,1,iev)+2.*comp_den_fit_toy(1,2,2,1,1,2,iev)+2.*comp_den_fit_toy(1,2,2,2,1,2,iev)+2.*comp_den_fit_toy(2,0,0,0,0,0,iev)
-+2.*comp_den_fit_toy(2,0,0,1,0,0,iev)+2.*comp_den_fit_toy(2,1,0,0,0,0,iev)+2.*comp_den_fit_toy(2,1,0,0,1,0,iev)+2.*comp_den_fit_toy(2,1,0,1,0,0,iev)+2.*comp_den_fit_toy(2,1,0,1,1,0,iev)
-+2.*comp_den_fit_toy(2,1,0,2,0,0,iev)+2.*comp_den_fit_toy(2,1,1,1,1,1,iev)+2.*comp_den_fit_toy(2,1,2,1,1,2,iev)+2.*comp_den_fit_toy(2,2,0,0,0,0,iev)+2.*comp_den_fit_toy(2,2,0,0,1,0,iev)
-+2.*comp_den_fit_toy(2,2,0,0,2,0,iev)+2.*comp_den_fit_toy(2,2,0,1,0,0,iev)+2.*comp_den_fit_toy(2,2,0,1,1,0,iev)+2.*comp_den_fit_toy(2,2,0,1,2,0,iev)+2.*comp_den_fit_toy(2,2,0,2,0,0,iev)
-+2.*comp_den_fit_toy(2,2,0,2,1,0,iev)+2.*comp_den_fit_toy(2,2,1,1,1,1,iev)+2.*comp_den_fit_toy(2,2,1,1,2,1,iev)+2.*comp_den_fit_toy(2,2,1,2,1,1,iev)+2.*comp_den_fit_toy(2,2,2,1,1,2,iev)
-+2.*comp_den_fit_toy(2,2,2,1,2,2,iev)+2.*comp_den_fit_toy(2,2,2,2,1,2,iev);
 
  }
 
@@ -2940,7 +2767,7 @@ __global__ void evaluate_toy(double *data, double *out, double *re_amps, double 
    set_buffer_integral_terms(0,row);
 
    double num_fit_temp = num_fit(0,row);
-   double den_fit_temp = den_fit_toy(row);
+   double den_fit_temp = den_toy(row);
 
    if (num_fit_temp/den_fit_temp<=0) {out[row] = -10000000000;}
    else {out[row] = log(num_fit_temp/den_fit_temp);}
