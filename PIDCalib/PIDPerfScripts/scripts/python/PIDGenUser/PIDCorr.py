@@ -1,6 +1,6 @@
 import argparse, sys, os
 
-sys.path.append("../PIDGenExpert/")
+sys.path.append(os.environ["PIDPERFSCRIPTSROOT"] + "/scripts/python/PIDGenExpert/")
 os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + os.environ["MEERKATROOT"]
 
 from ROOT import gROOT, TNtuple, TFile, TH1F, TH2F, TCanvas, TMath, TRandom3, gStyle, gSystem, RooRealVar
@@ -53,8 +53,8 @@ conf = args.c
 dataset = args.d
 variant = args.v
 
-import run1.Config as Config
-import run1.ConfigMC as ConfigMC
+import Run1.Config as Config
+import Run1.ConfigMC as ConfigMC
 
 if not infilename : 
   print "Usage: PIDCorr.py [options]"
