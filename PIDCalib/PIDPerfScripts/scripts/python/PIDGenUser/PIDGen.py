@@ -1,6 +1,6 @@
 import argparse, sys, os
 
-sys.path.append("../PIDGenExpert/")
+sys.path.append(os.environ["PIDPERFSCRIPTSROOT"] + "/scripts/python/PIDGenExpert/")
 os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + os.environ["MEERKATROOT"]
 
 from ROOT import gROOT, TNtuple, TFile, TH1F, TH2F, TCanvas, TMath, TRandom3, gStyle, gSystem, RooRealVar
@@ -173,7 +173,7 @@ for i in tree :
   point[3] = eval(ntracks_code) 
 
   h.Reset() 
-  kde.slice(point, 0, h, False) 
+  kde.slice(point, 0, h) 
 
   if h.Integral() > 0 : 
     x = h.GetRandom()
