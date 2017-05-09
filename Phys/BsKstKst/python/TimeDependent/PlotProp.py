@@ -15,9 +15,8 @@ for i in range(1,1001): xl.append(750.+i*(1600.-750.)/1000.)
 ymod2l = []
 yargl = []
 for i in xl:
-   ymod2l.append(model[1].Prop_Stheo(i).Rho2())
-   xm = (i-750.)/850.
-   yargl.append(sqrt(1.-0.349*xm-0.270*xm*xm-0.066*xm*xm*xm-0.160*xm*xm*xm*xm))
+   ymod2l.append(model[1].Prop_S_Palano(i).Rho2())
+   yargl.append(model[1].Prop_S_Palano(i).Theta())
 
 from array import array
 
@@ -30,9 +29,12 @@ garg = TGraph(len(x),x,yarg)
 gmod2.SetLineColor(kBlue)
 garg.SetLineColor(kRed)
 
-c = TCanvas("c","c",1000,800)
+c = TCanvas("c","c",1000,400)
+c.Divide(2)
+c.cd(1)
 gmod2.Draw("al")
-garg.Draw("sl")
+c.cd(2)
+garg.Draw("al")
 
 c.Print("Prop_mod2_arg.root")
 c.Print("Prop_mod2_arg.pdf")

@@ -181,6 +181,7 @@ public:
   TComplex Prop_Stheo(Double_t m) const;
   TComplex Prop_Ptheo(Double_t m) const;
   TComplex Prop_Dtheo(Double_t m) const;
+  TComplex Prop_S_Palano(Double_t m) const;
   TComplex Mji(Double_t m, Int_t ji) const;
   TComplex Mj1j2(Double_t ma, Double_t mb, Int_t j1, Int_t j2) const; 
   Double_t phasespace(Double_t ma, Double_t mb) const;

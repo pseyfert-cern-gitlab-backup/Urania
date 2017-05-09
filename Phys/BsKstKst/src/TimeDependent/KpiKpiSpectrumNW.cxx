@@ -64,15 +64,6 @@
 #include "RooNumGenConfig.h"
 #include <assert.h>
 
-#define pi TMath::Pi()
-#define MPion 139.57018
-#define MKaon 493.667
-#define MKst_1_1410 1414.
-#define GKst_1_1410 232.
-#define MKst_1_1680 1717.
-#define GKst_1_1680 322.
-#define MBs 5366.77
-
 ClassImp(KpiKpiSpectrumNW) 
 
 // ---------------------------------------------------
@@ -3233,6 +3224,45 @@ TComplex KpiKpiSpectrumNW::Prop_Dtheo(Double_t m) const
    T = (S0b*S1r-1.)/(2.*i);
 
    return T*TComplex(1.,-0.0022258232266847374,1);
+
+ }
+
+// ---------------------------------------------------
+// Palano scalar Kpi mass amplitude.
+
+TComplex KpiKpiSpectrumNW::Prop_S_Palano(Double_t m) const 
+ { 
+
+   TComplex i(0,1);
+   Double_t m_GeV = m/1000.;
+   Double_t svar_GeV = m_GeV*m_GeV;
+   Double_t q_Kpi_GeV = get_q(m,MKaon,MPion)/1000.;
+   Double_t q_Keta_GeV = get_q(m,MKaon,MEta)/1000.;
+
+   Double_t rho_1 = 2.*q_Kpi_GeV/m_GeV;
+   Double_t rho_2 = 2.*q_Keta_GeV/m_GeV;
+
+   Double_t sbot_GeV = 0.36;
+   Double_t stop_GeV = 5.832;
+   Double_t X = (2.*svar_GeV-(stop_GeV+sbot_GeV))/(stop_GeV-sbot_GeV);
+
+   Double_t K11 = (svar_GeV-s_A_palano)/s_Kpi_palano*(g_1_a_palano*g_1_a_palano/(svar_GeV-s_a_palano)+g_1_b_palano*g_1_b_palano/(svar_GeV-s_b_palano)+C_11_0_palano+C_11_1_palano*X+C_11_2_palano*X*X+C_11_3_palano*X*X*X);
+   Double_t K12 = (svar_GeV-s_A_palano)/s_Kpi_palano*(g_1_a_palano*g_2_a_palano/(svar_GeV-s_a_palano)+g_1_b_palano*g_2_b_palano/(svar_GeV-s_b_palano)+C_12_0_palano+C_12_1_palano*X+C_12_2_palano*X*X+C_12_3_palano*X*X*X);
+   Double_t K22 = (svar_GeV-s_A_palano)/s_Kpi_palano*(g_2_a_palano*g_2_a_palano/(svar_GeV-s_a_palano)+g_2_b_palano*g_2_b_palano/(svar_GeV-s_b_palano)+C_22_0_palano+C_22_1_palano*X+C_22_2_palano*X*X+C_22_3_palano*X*X*X);
+
+   Double_t detK = K11*K22-K12*K12;
+   TComplex Delta(1.-rho_1*rho_2*detK,-rho_1*K11-rho_2*K22);
+
+   TComplex T11_hat = s_Kpi_palano/(svar_GeV-s_A_palano)*(K11-rho_2*detK)/Delta;
+   TComplex T12_hat = s_Kpi_palano/(svar_GeV-s_A_palano)*K12/Delta;
+
+   Double_t xm = (m-1175.)/425.;
+   Double_t alpha_1_s = A_1_0_palano+A_1_1_palano*xm+A_1_2_palano*(2.*xm*xm-1.)+A_1_3_palano*(4.*xm*xm*xm-3.*xm)+A_1_4_palano*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
+   Double_t alpha_2_s = A_2_0_palano+A_2_1_palano*xm+A_2_2_palano*(2.*xm*xm-1.)+A_2_3_palano*(4.*xm*xm*xm-3.*xm)+A_2_4_palano*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
+
+   TComplex T = alpha_1_s*T11_hat+alpha_2_s*T12_hat;
+
+   return T*TComplex(1.,-0.0758670,1);
 
  }
 

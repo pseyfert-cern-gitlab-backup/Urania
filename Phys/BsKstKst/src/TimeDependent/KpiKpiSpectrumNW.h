@@ -60,6 +60,15 @@
 #include "RooArgSet.h"
 #include "TRandom.h"
 
+#define pi TMath::Pi()
+#define MPion 139.57018
+#define MKaon 493.667
+#define MKst_1_1410 1414.
+#define GKst_1_1410 232.
+#define MKst_1_1680 1717.
+#define GKst_1_1680 322.
+#define MBs 5366.77
+
 NWclass NW; // Normalization weights
 Splineclass spl; // Time acceptance splines
 TAccclass TAcc; // Time acceptance histograms
@@ -126,6 +135,38 @@ Double_t sqrtsr1_Dtheo = 1.445;
 Double_t e1_Dtheo = 0.465;
 Double_t G1_Dtheo = 0.222;
 Double_t a_Dtheo = -0.72;
+
+// Parameters of the Palano scalar Kpi mass amplitude
+Double_t s_Kpi_palano = (MPion*MPion+MKaon*MKaon)/1000./1000.;
+Double_t s_A_palano = 0.87753*s_Kpi_palano;
+Double_t s_a_palano = 1.7991;
+Double_t g_1_a_palano = 0.3139;
+Double_t g_2_a_palano = -0.00775;
+Double_t s_b_palano = 8.3627;
+Double_t g_1_b_palano = 1.1804;
+Double_t g_2_b_palano = -0.22335;
+Double_t C_11_0_palano = -0.1553;
+Double_t C_11_1_palano = 0.0909;
+Double_t C_11_2_palano = 0.8618;
+Double_t C_11_3_palano = 0.0629;
+Double_t C_12_0_palano = 0.0738;
+Double_t C_12_1_palano = 0.3866;
+Double_t C_12_2_palano = 1.2195;
+Double_t C_12_3_palano = 0.8390;
+Double_t C_22_0_palano = -0.0036;
+Double_t C_22_1_palano = 0.2590;
+Double_t C_22_2_palano = 1.6950;
+Double_t C_22_3_palano = 2.2300;
+Double_t A_1_0_palano = 1.;
+Double_t A_1_1_palano = -7.07172467436;
+Double_t A_1_2_palano = 4.34784254354;
+Double_t A_1_3_palano = -3.4044610049;
+Double_t A_1_4_palano = -0.0935031564737;
+Double_t A_2_0_palano = -7.01196566782;
+Double_t A_2_1_palano = -1.37175534595;
+Double_t A_2_2_palano = -7.97420327456;
+Double_t A_2_3_palano = 1.89304254061;
+Double_t A_2_4_palano = -5.18470699036;
 
 // Auxiliar variables
 Double_t spl_coef_array_1[2][2][5][4][4][4];
@@ -556,6 +597,7 @@ public:
   TComplex Prop_Stheo(Double_t m) const;
   TComplex Prop_Ptheo(Double_t m) const;
   TComplex Prop_Dtheo(Double_t m) const;
+  TComplex Prop_S_Palano(Double_t m) const;
   TComplex Mji(Double_t m, Int_t ji) const;
   TComplex Mj1j2(Double_t ma, Double_t mb, Int_t j1, Int_t j2) const; 
   Double_t phasespace(Double_t ma, Double_t mb) const;
