@@ -43,10 +43,10 @@ More details about the approach can be found here:
 
 ## Contents of the package
 
-PIDGen.py - Python script for PID resampling.
-PIDCorr.py - Python script for PID variable transformation.
-Examples/Lb2Lcpi/Lb2Lcpi_pidgen.py - Example PID resampling script for Lb->Lcpi MC sample
-Examples/Lb2Lcpi/Lb2Lcpi_pidcorr.py - Example script for PID variable transformation for Lb->Lcpi MC sample
+  * PIDGen.py - Python script for PID resampling.
+  * PIDCorr.py - Python script for PID variable transformation.
+  * Examples/Lb2Lcpi/Lb2Lcpi_pidgen.py - Example PID resampling script for Lb->Lcpi MC sample
+  * Examples/Lb2Lcpi/Lb2Lcpi_pidcorr.py - Example script for PID variable transformation for Lb->Lcpi MC sample
 
 Note that the scripts use data stored in CERN EOS, and assume that it's 
 accessible at root://eoslhcb.cern.ch/ server. The location can be modified
