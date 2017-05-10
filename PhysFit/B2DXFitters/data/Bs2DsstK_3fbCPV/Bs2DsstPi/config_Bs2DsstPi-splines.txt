@@ -1,0 +1,92 @@
+
+#Signal Bs2DsstPi NonRes 2012
+/afs/cern.ch/work/a/abertoli/public/DsstrPi/bdt-s21/
+Filter-s21filtered_Bs2DsstPi_Signal_dw.root
+Filter-s21filtered_Bs2DsstPi_Signal_up.root
+tuple
+tuple
+###
+
+#Signal Bs2DsstPi PhiPi 2012
+/afs/cern.ch/work/a/abertoli/public/DsstrPi/bdt-s21/
+Filter-s21filtered_Bs2DsstPi_Signal_dw.root
+Filter-s21filtered_Bs2DsstPi_Signal_up.root
+tuple
+tuple
+###
+
+#Signal Bs2DsstPi KstK 2012
+/afs/cern.ch/work/a/abertoli/public/DsstrPi/bdt-s21/
+Filter-s21filtered_Bs2DsstPi_Signal_dw.root
+Filter-s21filtered_Bs2DsstPi_Signal_up.root
+tuple
+tuple
+###
+
+#Signal Bs2DsstPi KPiPi 2012
+/afs/cern.ch/work/a/abertoli/public/DsstrPi/bdt-s21/
+Filter-s21filtered_Bs2DsstPi-K2Pi_Signal_dw.root
+Filter-s21filtered_Bs2DsstPi-K2Pi_Signal_up.root
+tuple
+tuple
+###
+
+#Signal Bs2DsstPi PiPiPi 2012
+/afs/cern.ch/work/a/abertoli/public/DsstrPi/bdt-s21/
+Filter-s21filtered_Bs2DsstPi-3Pi_Signal_dw.root
+Filter-s21filtered_Bs2DsstPi-3Pi_Signal_up.root
+tuple
+tuple
+###
+
+#Signal Bs2DsstPi NonRes 2011
+/afs/cern.ch/work/a/abertoli/public/DsstrPi/bdt-s21/
+Filter11-s21filtered_Bs2DsstPi_Signal_dw.root
+Filter11-s21filtered_Bs2DsstPi_Signal_up.root
+tuple
+tuple
+###
+
+#Signal Bs2DsstPi PhiPi 2011
+/afs/cern.ch/work/a/abertoli/public/DsstrPi/bdt-s21/
+Filter11-s21filtered_Bs2DsstPi_Signal_dw.root
+Filter11-s21filtered_Bs2DsstPi_Signal_up.root
+tuple
+tuple
+###
+
+#Signal Bs2DsstPi KstK 2011
+/afs/cern.ch/work/a/abertoli/public/DsstrPi/bdt-s21/
+Filter11-s21filtered_Bs2DsstPi_Signal_dw.root
+Filter11-s21filtered_Bs2DsstPi_Signal_up.root
+tuple
+tuple
+###
+
+#Signal Bs2DsstPi KPiPi 2011
+/afs/cern.ch/work/a/abertoli/public/DsstrPi/bdt-s21/
+Filter11-s21filtered_Bs2DsstPi-K2Pi_Signal_dw.root
+Filter11-s21filtered_Bs2DsstPi-K2Pi_Signal_up.root
+tuple
+tuple
+###
+
+#Signal Bs2DsstPi PiPiPi 2011
+/afs/cern.ch/work/a/abertoli/public/DsstrPi/bdt-s21/
+Filter11-s21filtered_Bs2DsstPi-3Pi_Signal_dw.root
+Filter11-s21filtered_Bs2DsstPi-3Pi_Signal_up.root
+tuple
+tuple
+###
+
+#RatioDataMC 2011 PNTr
+/afs/cern.ch/work/s/sgallori/public/forAgnieszka/dataMC_weights/p_nTracks/
+weights_DPi_2011_dw.root
+weights_DPi_2011_up.root
+###
+
+#RatioDataMC 2012 PNTr
+/afs/cern.ch/work/s/sgallori/public/forAgnieszka/dataMC_weights/p_nTracks/
+weights_DPi_2012_dw.root
+weights_DPi_2012_up.root
+###
