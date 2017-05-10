@@ -96,7 +96,8 @@ $ cd {your_place}
 $ python Lb2Lcpi_pidcorr.py
 ```
 
-Only run 1 PID configurations are available for the moment. 
+The result of PIDCorr is dependent on the version of MC used to generate your signal! 
+Only **Sim08 Run 1** PID configurations are available for the moment. 
 The complete list of PID configurations available can be obtained 
 by running PIDCorr.py without arguments:
 
