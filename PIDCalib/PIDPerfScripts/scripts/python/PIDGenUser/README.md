@@ -43,16 +43,10 @@ More details about the approach can be found here:
 
 ## Contents of the package
 
-PIDGen.py        - Python script for PID resampling using the 
-                          calibrated PDFs stored on EOS
-
-PIDCorr.py       - Python script for PID variable transformation
-
-pid_resample.sh  - Example PID resampling script
-
-pid_transform.sh - Example script for PID variable transformation
-
-xib2lchh.py      - Another example script (Python) for variable transformation
+PIDGen.py - Python script for PID resampling.
+PIDCorr.py - Python script for PID variable transformation.
+Examples/Lb2Lcpi/Lb2Lcpi_pidgen.py - Example PID resampling script for Lb->Lcpi MC sample
+Examples/Lb2Lcpi/Lb2Lcpi_pidcorr.py - Example script for PID variable transformation for Lb->Lcpi MC sample
 
 Note that the scripts use data stored in CERN EOS, and assume that it's 
 accessible at root://eoslhcb.cern.ch/ server. The location can be modified
@@ -66,13 +60,46 @@ See separate README files in the PIDGenExpert directory
 ## Using PIDGen with the MC samples
 
 Generation of PID response is performed by one of the two scripts, PIDGen.py or PIDCorr.py
-The scripts require many parameters (MC data location, variable names, 
-location of the calibrated PID response etc. ). The sample shell scripts 
-are provided, user/pid_resample.sh and user/pid_transform.py, which 
-the user can modify to actually run the PID generation. 
+The scripts require many parameters (MC data location, variable names, location of the calibrated PID response etc.). 
+The sample python scripts are provided, 
+Examples/Lb2Lcpi/Lb2Lcpi_{pidgen, pidcorr}, which the user can modify to 
+actually run the PID generation for their own MC sample.
 
-The complete list of PID configurations available in Run 1 and Run 2 can be 
-obtained by running PIDGen.py without arguments: 
+### Running PID resampling (PIDGen)
+
+To run PIDGen resampling, you need to setup Urania nightly, copy the example 
+script to a directory with write access (the output ntuple will be created there) 
+and run it:
 ```bash
-> python PIDGen.py
+$ lb-run --nightly-cvmfs --nightly lhcb-prerelease Urania/master bash
+$ cp $PIDPERFSCRIPTSROOT/scripts/python/PIDGenUser/Examples/Lb2Lcpi/Lb2Lcpi_pidgen.py {your_place}
+$ cd {your_place}
+$ python Lb2Lcpi_pidgen.py
+```
+
+The complete list of PID configurations available in Run 1 and Run 2 can be obtained by running PIDGen.py without arguments:
+```bash
+$ python $PIDPERFSCRIPTSROOT/scripts/python/PIDGenUser/PIDGen.py
+```
+
+Note that Run 1 and Run 2 PID configurations have different names!
+
+### Running PID variable transformation (PIDCorr)
+
+To run PIDCorr variable transformation, you need to setup Urania nightly, 
+copy the example script to a directory with write access 
+(the output ntuple will be created there) and run it:
+```bash
+$ lb-run --nightly-cvmfs --nightly lhcb-prerelease Urania/master bash
+$ cp $PIDPERFSCRIPTSROOT/scripts/python/PIDGenUser/Examples/Lb2Lcpi/Lb2Lcpi_pidcorr.py {your_place}
+$ cd {your_place}
+$ python Lb2Lcpi_pidcorr.py
+```
+
+Only run 1 PID configurations are available for the moment. 
+The complete list of PID configurations available can be obtained 
+by running PIDCorr.py without arguments:
+
+```bash
+$ python $PIDPERFSCRIPTSROOT/scripts/python/PIDGenUser/PIDGen.py
 ```
