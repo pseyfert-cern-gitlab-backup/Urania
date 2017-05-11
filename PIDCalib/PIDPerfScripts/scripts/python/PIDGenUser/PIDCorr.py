@@ -1,38 +1,40 @@
-import argparse, sys, os
+import argparse, sys, os, math
 
 sys.path.append(os.environ["PIDPERFSCRIPTSROOT"] + "/scripts/python/PIDGenExpert/")
 os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + os.environ["MEERKATROOT"]
 
-from ROOT import gROOT, TNtuple, TFile, TH1F, TH2F, TCanvas, TMath, TRandom3, gStyle, gSystem, RooRealVar
+from ROOT import gROOT, TNtuple, TFile, TH1F, TH2F, TCanvas, TMath, gStyle, gSystem, RooRealVar
 
 gSystem.Load("libMeerkatLib.so")
 
 from ROOT import OneDimPhaseSpace, CombinedPhaseSpace, BinnedDensity, Logger
 
 parser = argparse.ArgumentParser(description='PIDGen')
-parser.add_argument('-i', type=str, default = None, 
+parser.add_argument('-i', '--input', type=str, default = None, 
                     help='Input file name')
-parser.add_argument('-t', type=str, default = "tree", 
+parser.add_argument('-t', '--tree', type=str, default = "tree", 
                     help='Input tree name')
-parser.add_argument('-o', type=str, default = "output.root", 
+parser.add_argument('-o', '--output', type=str, default = "output.root", 
                     help='Output file name')
-parser.add_argument('-p', type=str, default = "PID_gen", 
-                    help='PID variable')
-parser.add_argument('-s', type=str, default = "PID", 
+parser.add_argument('-p', '--pidvar', type=str, default = "PID_gen", 
+                    help='Corrected PID variable')
+parser.add_argument('-s', '--simpidvar', type=str, default = "PID", 
                     help='Simulated PID variable')
-parser.add_argument('-m', type=str, default = "Pt", 
+parser.add_argument('-m', '--ptvar', type=str, default = "Pt", 
                     help='Pt variable')
-parser.add_argument('-e', type=str, default = "Eta", 
+parser.add_argument('-q', '--pvar', type=str, default = "P", 
+                    help='P variable')
+parser.add_argument('-e', '--etavar', type=str, default = None, 
                     help='Eta variable')
-parser.add_argument('-n', type=str, default = "nTracks", 
+parser.add_argument('-n', '--ntrvar', type=str, default = "nTracks", 
                     help='Ntracks variable')
-parser.add_argument('-l', type=str, default = None, 
+parser.add_argument('-l', '--lowerpid', type=str, default = None, 
                     help='Lower PID value to generate')
-parser.add_argument('-c', type=str, default = "p_V3ProbNNp", 
+parser.add_argument('-c', '--config', type=str, default = "p_V3ProbNNp", 
                     help='PID response to sample')
-parser.add_argument('-d', type=str, default = "MagDown_2011", 
+parser.add_argument('-d', '--dataset', type=str, default = "MagDown_2011", 
                     help='Dataset')
-parser.add_argument('-v', type=str, default = "default", 
+parser.add_argument('-v', '--var', type=str, default = "default", 
                     help='Variation (default, syst_N, stat_N etc.)')
 
 parser.print_help()
@@ -40,18 +42,19 @@ args = parser.parse_args()
 
 print args
 
-infilename = args.i
-intree = args.t
-outfilename = args.o
-pidvar = args.p
-ptvar = args.m
-etavar = args.e
-ntrvar = args.n
-minpid = args.l
-oldpidvar = args.s
-conf = args.c
-dataset = args.d
-variant = args.v
+infilename = args.input
+intree = args.tree
+outfilename = args.output
+pidvar = args.pidvar
+ptvar = args.ptvar
+pvar = args.pvar
+etavar = args.etavar
+ntrvar = args.ntrvar
+minpid = args.lowerpid
+oldpidvar = args.simpidvar
+conf = args.config
+dataset = args.dataset
+variant = args.var
 
 import Run1.Config as Config
 import Run1.ConfigMC as ConfigMC
@@ -139,10 +142,14 @@ print transform_backward
 
 var_code = compile("i.%s" % oldpidvar, '<string>', 'eval')
 pid_code = compile(transform_backward, '<string>', 'eval')
-pt_code = compile("log(i.%s)" % ptvar, '<string>', 'eval')
-eta_code = compile("i.%s" % etavar, '<string>', 'eval')
-ntracks_code = compile("log(float(i.%s))" % ntrvar, '<string>', 'eval')
 oldpid_code = compile(transform_forward, '<string>', 'eval')
+log_pt_code = compile("log(i.%s)" % ptvar, '<string>', 'eval')
+if etavar == None : 
+  p_code = compile("i.%s" % pvar, '<string>', 'eval')
+  pt_code = compile("i.%s" % ptvar, '<string>', 'eval')
+else : 
+  eta_code = compile("i.%s" % etavar, '<string>', 'eval')
+log_ntracks_code = compile("log(float(i.%s))" % ntrvar, '<string>', 'eval')
 
 Logger.setLogLevel(1)
 
@@ -150,9 +157,12 @@ n = 0
 for i in tree : 
   point = std.vector(Double)(4) 
   point[0] = (pidmin + pidmax)/2.
-  point[1] = eval(pt_code)
-  point[2] = eval(eta_code)
-  point[3] = eval(ntracks_code) 
+  point[1] = eval(log_pt_code)
+  point[3] = eval(log_ntracks_code) 
+  if etavar == None : 
+    point[2] = -math.log( math.tan( math.asin( eval(pt_code)/eval(p_code) )/2. ) )
+  else : 
+    point[2] = eval(eta_code)
 
 #  print point[0], point[1], point[2], point[3]
 
@@ -162,13 +172,15 @@ for i in tree :
   simkde.slice(point, 0, hsim) 
 
   x = eval(var_code)
-  oldpid = eval(oldpid_code)
-  if oldpid<pidmin or oldpid>pidmax : 
-    x = oldpid
-  else : 
-    x = datakde.transform(hsim, hdata, oldpid)
-
-  s.newpid = eval(pid_code)
+  if transform_forward == "x" or x>=0 : 
+    oldpid = eval(oldpid_code)
+    if oldpid<pidmin or oldpid>pidmax : 
+      x = oldpid
+    else : 
+      x = datakde.transform(hsim, hdata, oldpid)
+    s.newpid = eval(pid_code)
+  else : # The case for ProbNN<0, just leave as it is
+    s.newpid = x
 
   newtree.Fill() 
 

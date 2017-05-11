@@ -14,6 +14,7 @@ input_tree = "lb2lch_filt"
 # e.g. if the ntuple contains "pion_PT", it should be just "PT"
 ptvar = "pt"
 etavar = "eta"
+##pvar = "p"      # Could use P variable instead of eta
 ntrvar = "nTracks"  # This should correspond to the number of "Best tracks", not "Long tracks"!
 
 # Dictionary of tracks with their PID variables, in the form {branch name}:{pidvars}
@@ -78,6 +79,7 @@ for input_file, output_file, dataset in files :
 #      command = "python ../../PIDCorr.py"
       command += " -m %s_%s" % (track, ptvar)
       command += " -e %s_%s" % (track, etavar)
+##      command += " -q %s_%s" % (track, pvar)   # Could also use P variable instead of eta
       command += " -n %s" % ntrvar
       command += " -t %s" % treename
       command += " -p %s_%s_corr" % (track, var)

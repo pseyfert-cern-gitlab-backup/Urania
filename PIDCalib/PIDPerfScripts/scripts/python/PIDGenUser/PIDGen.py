@@ -1,4 +1,4 @@
-import argparse, sys, os
+import argparse, sys, os, math
 
 sys.path.append(os.environ["PIDPERFSCRIPTSROOT"] + "/scripts/python/PIDGenExpert/")
 os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + os.environ["MEERKATROOT"]
@@ -13,49 +13,55 @@ import Run1.Config as ConfigRun1
 import Run2.Config as ConfigRun2
 
 parser = argparse.ArgumentParser(description='PIDGen')
-parser.add_argument('-i', type=str, default = None, 
+parser.add_argument('-i', '--input',   type=str, default = None, 
                     help='Input file name')
-parser.add_argument('-t', type=str, default = "tree", 
+parser.add_argument('-t', '--tree',    type=str, default = "tree", 
                     help='Input tree name')
-parser.add_argument('-o', type=str, default = "output.root", 
+parser.add_argument('-o', '--output',  type=str, default = "output.root", 
                     help='Output file name')
-parser.add_argument('-p', type=str, default = "PID_gen", 
+parser.add_argument('-p', '--pidvar',  type=str, default = "PID_gen", 
                     help='PID variable')
-parser.add_argument('-m', type=str, default = "Pt", 
+parser.add_argument('-m', '--ptvar',   type=str, default = "Pt", 
                     help='Pt variable')
-parser.add_argument('-e', type=str, default = "Eta", 
-                    help='Eta variable')
-parser.add_argument('-n', type=str, default = "nTracks", 
+parser.add_argument('-q', '--pvar',    type=str, default = "P", 
+                    help='P variable')
+parser.add_argument('-e', '--etavar',  type=str, default = None, 
+                    help='Eta variable (if None, calculated from P and Pt)')
+parser.add_argument('-n', '--ntrvar',  type=str, default = "nTracks", 
                     help='Ntracks variable')
-parser.add_argument('-l', type=str, default = None, 
+parser.add_argument('-l', '--lowerpid', type=str, default = None, 
                     help='Lower PID value to generate')
-parser.add_argument('-c', type=str, default = "p_V3ProbNNp", 
+parser.add_argument('-c', '--config',  type=str, default = "p_V3ProbNNp", 
                     help='PID response to sample')
-parser.add_argument('-d', type=str, default = "MagDown_2011", 
+parser.add_argument('-d', '--dataset', type=str, default = "MagDown_2011", 
                     help='Dataset (polarity_year)')
-parser.add_argument('-v', type=str, default = "default", 
+parser.add_argument('-v', '--var',     type=str, default = "default", 
                     help='Variation (default, syst_N, stat_N etc.)')
+parser.add_argument('-s', '--seed',   type=str, default = None, 
+                    help='Initial random seed')
 
 parser.print_help()
 args = parser.parse_args()
 
 print args
 
-infilename = args.i
-intree = args.t
-outfilename = args.o
-pidvar = args.p
-ptvar = args.m
-etavar = args.e
-ntrvar = args.n
-minpid = args.l
-config = args.c
-dataset = args.d
-variant = args.v
+infilename = args.input
+intree = args.tree
+outfilename = args.output
+pidvar = args.pidvar
+ptvar = args.ptvar
+pvar  = args.pvar
+etavar = args.etavar
+ntrvar = args.ntrvar
+minpid = args.lowerpid
+config = args.config
+dataset = args.dataset
+variant = args.var
+seed = args.seed
 
 if not infilename : 
   print "Usage: PIDGen.py [options]"
-  print "  For the usage example, look at pid_resample.sh file"
+#  print "  For the usage example, look at pid_resample.sh file"
   print "  Available PID configs are: "
   print "    For Run1 : "
   for i in sorted(ConfigRun1.configs.keys()) : 
@@ -152,15 +158,21 @@ infile.cd()
 
 h = TH1F("h", "h", 100, minpid, pidmax) 
 rnd = TRandom3()
+if seed != None : 
+  rnd.SetSeed(int(seed))
 
 from ROOT import std, Double
 from math import log
 
 #x_code = compile("i.%s" % pidvar, '<string>', 'eval')
 pid_code = compile(transform_backward, '<string>', 'eval')
-pt_code = compile("log(i.%s)" % ptvar, '<string>', 'eval')
-eta_code = compile("i.%s" % etavar, '<string>', 'eval')
-ntracks_code = compile("log(float(i.%s))" % ntrvar, '<string>', 'eval')
+log_pt_code = compile("log(i.%s)" % ptvar, '<string>', 'eval')
+if etavar == None : 
+  p_code = compile("i.%s" % pvar, '<string>', 'eval')
+  pt_code = compile("i.%s" % ptvar, '<string>', 'eval')
+else : 
+  eta_code = compile("i.%s" % etavar, '<string>', 'eval')
+log_ntracks_code = compile("log(float(i.%s))" % ntrvar, '<string>', 'eval')
 
 Logger.setLogLevel(1)
 
@@ -168,9 +180,12 @@ n = 0
 for i in tree : 
   point = std.vector(Double)(4) 
   point[0] = (pidmin + pidmax)/2.
-  point[1] = eval(pt_code)
-  point[2] = eval(eta_code)
-  point[3] = eval(ntracks_code) 
+  point[1] = eval(log_pt_code)
+  point[3] = eval(log_ntracks_code) 
+  if etavar == None : 
+    point[2] = -math.log( math.tan( math.asin( eval(pt_code)/eval(p_code) )/2. ) )
+  else : 
+    point[2] = eval(eta_code)
 
   h.Reset() 
   kde.slice(point, 0, h) 

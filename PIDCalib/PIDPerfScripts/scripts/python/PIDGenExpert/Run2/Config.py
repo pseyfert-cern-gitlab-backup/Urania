@@ -156,6 +156,19 @@ configs = {
     'controlstat'   : 5000000, 
     'nbootstrap'    : 5
   },
+  "pi_CombDLLp_Brunel" : {
+    "sample"        :  "pi_DSt_Brunel", 
+    "var"           :  "probe_Brunel_PIDp", 
+    "bins"          :  100, 
+    "gamma"         :  1., 
+    'scale_default' :  0.1, 
+    'scale_syst'    :  0.15, 
+    'scale_pid'     :  1.0, 
+    'limits'        : (-150., 70),
+    'toystat'       : 10000000, 
+    'controlstat'   : 5000000, 
+    'nbootstrap'    : 5
+  },
   "p_CombDLLp_Brunel" : {
     "sample"        : "p_Lam0_Brunel", 
     "var"           : "probe_Brunel_PIDp", 
