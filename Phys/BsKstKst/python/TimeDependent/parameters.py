@@ -32,7 +32,7 @@ blindCat = ROOT.RooCategory("blindCat","blindCat")
 blindCat.defineType("unblind",0)
 blindCat.defineType("blind",1)
 blindCat.setConstant(1)
-blinding_scale = 0.2
+blinding_scale = 20
 blinding_strings = {}
 
 
@@ -306,15 +306,15 @@ tres_p0_2012 = ROOT.RooRealVar("tres_p0_2012","p_{0}^{#sigma_{t}}",0.036,0.03,0.
 tres_p1_2012 = ROOT.RooRealVar("tres_p1_2012","p_{1}^{#sigma_{t}}",1.2,0.8,1.6)
 mS = ROOT.RooRealVar("mS","mS",1.46297e+03)
 gammaS = ROOT.RooRealVar("gammaS","gammaS",3.48114e+02)
-mV = ROOT.RooRealVar("mV","mV",8.95867e+02)
-gammaV = ROOT.RooRealVar("gammaV","gammaV",4.81482e+01)
-mT = ROOT.RooRealVar("mT","mT",1.43279e+03)
-gammaT = ROOT.RooRealVar("gammaT","gammaT",1.09932e+02)
+mV = ROOT.RooRealVar("mV","mV",895.81)
+gammaV = ROOT.RooRealVar("gammaV","gammaV",47.4)
+mT = ROOT.RooRealVar("mT","mT",1432.4)
+gammaT = ROOT.RooRealVar("gammaT","gammaT",109.)
 res_mass = ROOT.RooRealVar("res_mass","res_mass",0.)
 
 # Gaussian constraints of the calibration parameters.
 parvector_p0metac_SSK_p1_SSK = ROOT.RooArgList(p0metac_SSK,p1_SSK)
-mu_p0metac_SSK = ROOT.RooConstVar("mu_p0metac_SSK","mu_p0metac_SSK",0.0067)
+mu_p0metac_SSK = ROOT.RooConstVar("mu_p0metac_SSK","mu_p0metac_SSK",0.0070)
 mu_p1_SSK = ROOT.RooConstVar("mu_p1_SSK","mu_p1_SSK",0.925)
 muvector_p0metac_SSK_p1_SSK = ROOT.RooArgList(mu_p0metac_SSK,mu_p1_SSK)
 err_p0metac_SSK = 0.0052
@@ -341,8 +341,8 @@ cov_p0metac_OS_p1_OS[1][0] = cov_p0metac_OS_p1_OS[0][1]
 cov_p0metac_OS_p1_OS[1][1] = err_p1_OS*err_p1_OS
 ctrt_p0metac_OS_p1_OS = ROOT.RooMultiVarGaussian("ctrt_p0metac_OS_p1_OS","ctrt_p0metac_OS_p1_OS",parvector_p0metac_OS_p1_OS,muvector_p0metac_OS_p1_OS,cov_p0metac_OS_p1_OS)
 
-ctrt_Dp0half_SSK = ROOT.RooGaussian("ctrt_Dp0half_SSK","ctrt_Dp0half_SSK",Dp0half_SSK,ROOT.RooFit.RooConst(-0.0079),ROOT.RooFit.RooConst(0.0014))
-ctrt_Dp1half_SSK = ROOT.RooGaussian("ctrt_Dp1half_SSK","ctrt_Dp1half_SSK",Dp1half_SSK,ROOT.RooFit.RooConst(-0.022),ROOT.RooFit.RooConst(0.023))
+ctrt_Dp0half_SSK = ROOT.RooGaussian("ctrt_Dp0half_SSK","ctrt_Dp0half_SSK",Dp0half_SSK,ROOT.RooFit.RooConst(-0.0082),ROOT.RooFit.RooConst(0.0019))
+ctrt_Dp1half_SSK = ROOT.RooGaussian("ctrt_Dp1half_SSK","ctrt_Dp1half_SSK",Dp1half_SSK,ROOT.RooFit.RooConst(-0.016),ROOT.RooFit.RooConst(0.026))
 ctrt_Dp0half_OS = ROOT.RooGaussian("ctrt_Dp0half_OS","ctrt_Dp0half_OS",Dp0half_OS,ROOT.RooFit.RooConst(0.007),ROOT.RooFit.RooConst(0.0006))
 ctrt_Dp1half_OS = ROOT.RooGaussian("ctrt_Dp1half_OS","ctrt_Dp1half_OS",Dp1half_OS,ROOT.RooFit.RooConst(0.033),ROOT.RooFit.RooConst(0.006))
 

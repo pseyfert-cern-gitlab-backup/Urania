@@ -21,7 +21,7 @@ TD_fit = 1
 # 1 -> flavour tagged, time dependent, amplitude fit
 
 # Wide Window.
-wide_window = 0
+wide_window = 1
 
 # Acceptance description.
 acc_type = 2
@@ -55,7 +55,7 @@ f_Kst1680_rel2_Kst892 = 0.2
 delta_Kst1680_rel2_Kst892 = 0.
 
 # Data used in the fit.
-data_file = 'AnalysisOutWSWeightsSelectedAllBranchesNew.root'#'AnalysisOutWSWeightsSelected_PHIstudy.root'
+data_file = 'AnalysisOutWSWeightsSelectedAllBranchesUpdated.root'#'AnalysisOutWSWeightsSelected_PHIstudy.root'
 data_tree = 'AnalysisTree'
 MC_file = 'AnalysisOutWSWeightsSelectedAllBranchesCP.root'#'AnalysisOutWithCuts_AllBranches_PHIstudy.root'
 MC_tree = 'AnalysisTree'
@@ -78,8 +78,8 @@ phi_binning = 50
 t_binning = 12
 
 # Generation options.
-nexperiments = 100
-nevents = 40000
+nexperiments = 1000
+nevents = 6220
 njobs = 1
 use_GRID = 0
 exp_output_tag = "WideWindow"
@@ -109,9 +109,9 @@ inf_t_res,wide_window,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fi
 	setParamVals(wide_window)
 
 	# Uncomment below for VV only fit, when in narrow window.
-	#for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
-	#	par.setVal(0.)
-	#	par.setConstant(1)
+	for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
+		par.setVal(0.)
+		par.setConstant(1)
 
 	model, params = createSimPDF(TD_fit,Blinding,No_CP_Switch,No_dirCP_Switch,Same_CP_Switch,acc_type,\
 inf_t_res,wide_window,data_file,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params,\
@@ -156,7 +156,6 @@ pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_r
 
 	# Performance of the fit.
 	DoCUDAFit(data,params,Blinding,wide_window,activ_minos)
-
 
 def fitnplot():
 
@@ -330,7 +329,7 @@ def CUDAMCS(output_tag):
 	# Construction of the model.
 	setParamVals(wide_window)
 
-	reA11par.setVal(-0.621524863748)
+	"""reA11par.setVal(-0.621524863748)
 	reA11perp.setVal(-0.424808013097)
 	DCP.setVal(-0.0675981117764)
 	imA11par.setVal(0.0467700758986)
@@ -350,12 +349,12 @@ def CUDAMCS(output_tag):
 	tres_p0_2011.setVal(0.0352214753202)
 	tres_p1_2011.setVal(1.19831598402)
 	tres_p0_2012.setVal(0.0366210029664)
-	tres_p1_2012.setVal(1.22045492979)
+	tres_p1_2012.setVal(1.22045492979)"""
 
 	# Uncomment below for VV only fit, when in narrow window.
-	for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
-		par.setVal(0.)
-		par.setConstant(1)
+	#for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
+	#	par.setVal(0.)
+	#	par.setConstant(1)
 
 	model, params = createPDF(Blinding,No_CP_Switch,No_dirCP_Switch,Same_CP_Switch,3,\
 inf_t_res,wide_window,data_file,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params,\
