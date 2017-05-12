@@ -403,7 +403,14 @@ namespace GeneralUtils {
         if(line == sig.Data() ){
           while( line != "###" ){
             getline (myfile,line);
-            if( line != "###"){ FileName.push_back(line.c_str());}
+            if( line != "###")
+            { 
+              FileName.push_back(line.c_str());
+              if(debug)
+              {
+                std::cout<<"[DEBUG] ==> GeneralUtils::ReadOneName(...). " << line.c_str() << " added to FileName"<<std::endl;
+              } 
+            }
           }
         }
       }
@@ -464,7 +471,13 @@ namespace GeneralUtils {
     TFile* file = NULL;
     TTree* tree = NULL;
 
-   
+    if(debug)
+    {
+      std::cout<<"[DEBUG] i+1 "<<i+1<<std::endl;
+      std::cout<<"[DEBUG] FileName[0] "<<FileName[0]<<std::endl;
+      std::cout<<"[DEBUG] FileName[i+1] "<<FileName[i+1]<<std::endl;
+    }
+
     name[0] = FileName[0]+FileName[i+1];
     if ( debug == true) std::cout<<"[INFO] file to open "<<name[0]<<std::endl; 
 
