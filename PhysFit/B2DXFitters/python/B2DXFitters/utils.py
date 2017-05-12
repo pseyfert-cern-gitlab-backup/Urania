@@ -44,6 +44,7 @@ def setConstantIfSoConfigured(config, obj, recache = None):
         # set desired RooRealVar-derived objects to const
         for rexp in recache:
             if recache[rexp].match(obj.GetName()):
+                #print "[INFO] fixing "+str( obj.GetName() )
                 obj.setConstant(True)
                 break
     elif obj.InheritsFrom(RooConstVar.Class()):
@@ -301,10 +302,11 @@ def TreeLeavesToPy(type):
             
         return typecode
 
-def BuildMultivarGaussFromCorrMat(ws, name, paramnamelist, errors, correlation, regularise = True):
+def BuildMultivarGaussFromCorrMat(ws, name, paramnamelist, errorsOrCovariance, correlation = None, regularise = True):
     """
     Build multivariate gaussian starting from errors and correlation matrix.
     If regularize=True, a correction is applied if the matrix is nearly singular.
+    If correlation = None, it is assumed that the covariance matrix is given directly
     Returns both Gaussian and RooArgSet with parameters
     """
 
@@ -324,29 +326,56 @@ def BuildMultivarGaussFromCorrMat(ws, name, paramnamelist, errors, correlation, 
                                    param.getVal())))
     n = len(paramnamelist)
     cov = TMatrixDSym(n)
-    if len(errors) != n:
-        raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Error list length does not match that of parameter name list')
-    for i in xrange(0, n):
-        if errors[i] <= 0.:
-            raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Errors must be positive')
-        cov[i][i] = errors[i] * errors[i]
-    correl = correlation
-    for i in xrange(0, n):
-        if abs(correl[i][i] - 1.) > 1e-15:
-            raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Correlation matrix has invalid element on diagonal')
-        for j in xrange(0, i):
-            # symmetrise by force
-            el = 0.5 * (correl[i][j] + correl[j][i])
-            # check if we're too far off
-            if ((abs(el) < 1e-15 and abs(correl[i][j]-correl[j][i]) > 1e-15) or
-                (abs(el) >= 1e-15 and abs(correl[i][j]-correl[j][i]) / el > 1e-15)):
-                raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Correlation matrix not even approximately symmetric')
-            if abs(el) > 1.:
-                raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Off-diagonal elements too large to form valid correlation')
-            # convert to covariance
-            el = el * sqrt(cov[i][i] * cov[j][j])
-            cov[i][j] = el
-            cov[j][i] = el # ROOT's insanity requires this
+    if None == correlation:
+        # covariance matrix given directly - copy over and verify
+        mat = errorsOrCovariance
+        if len(mat) != n:
+            raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Covariance matrix dimension does not match that of parameter name list')
+        for i in xrange(0, n):
+            cov[i][i] = mat[i][i]
+            if cov[i][i] <= 0.:
+                raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Errors must be positive')
+            for j in xrange(0, i):
+                # symmetrise by force
+                el = 0.5 * (mat[i][j] + mat[j][i])
+                # check if we're too far off
+                if ((abs(el) < 1e-15 and abs(mat[i][j]-mat[j][i]) > 1e-15) or
+                    (abs(el) >= 1e-15 and abs(mat[i][j]-mat[j][i]) / el > 1e-15)):
+                    raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Covariance matrix not even approximately symmetric')
+                cov[i][j] = el
+                cov[j][i] = el # ROOT's insanity requires this
+        # check for valid values of correlation
+        for i in xrange(0, n):
+            for j in xrange(0, i):
+                if abs(cov[i][j] / sqrt(cov[i][i] * cov[j][j])) > 1.0:
+                    raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Off-diagonal elements too large to form valid correlation')
+
+    else:
+        # have errors and correlation matrix
+        errors = errorsOrCovariance
+        if len(errors) != n:
+            raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Error list length does not match that of parameter name list')
+        for i in xrange(0, n):
+            if errors[i] <= 0.:
+                raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Errors must be positive')
+            cov[i][i] = errors[i] * errors[i]
+        correl = correlation
+        for i in xrange(0, n):
+            if abs(correl[i][i] - 1.) > 1e-15:
+                raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Correlation matrix has invalid element on diagonal')
+            for j in xrange(0, i):
+                # symmetrise by force
+                el = 0.5 * (correl[i][j] + correl[j][i])
+                # check if we're too far off
+                if ((abs(el) < 1e-15 and abs(correl[i][j]-correl[j][i]) > 1e-15) or
+                    (abs(el) >= 1e-15 and abs(correl[i][j]-correl[j][i]) / el > 1e-15)):
+                    raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Correlation matrix not even approximately symmetric')
+                if abs(el) > 1.:
+                    raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Off-diagonal elements too large to form valid correlation')
+                # convert to covariance
+                el = el * sqrt(cov[i][i] * cov[j][j])
+                cov[i][j] = el
+                cov[j][i] = el # ROOT's insanity requires this
     # verify we can invert covariance matrix with Cholesky decomposition
     # (this will catch negative and zero Eigenvalues)
     isposdef = False

@@ -369,7 +369,7 @@ def buildBDecayTimePdf(
                                      DecRateCoeff_Bd.kCos, qf, C, C, *otherargs))
     else:
         print "timepdfutils_Bd.buildBDecayTimePdf(..)=> Using HFAG convention (Cfbar = -Cf)"
-        list = WS(ws, RooArgList(C))
+        list = WS(ws, RooArgList(C, "Clist")) # list needs to be name to be not mixed up with other existing lists in the workspace
         Cbar = WS(ws, RooFormulaVar(C.GetName()+"bar", "C_{#bar f}", "-1*@0", list))
         cos = WS(ws, DecRateCoeff_Bd('%s_cos' % name, '%s_cos' % name,
                                      DecRateCoeff_Bd.kCos, qf, C, Cbar, *otherargs))

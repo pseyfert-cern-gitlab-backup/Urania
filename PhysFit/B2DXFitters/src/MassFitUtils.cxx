@@ -123,7 +123,8 @@ namespace MassFitUtils {
 
     if ( tN != "" )
     {
-      if ( tN == mdSet->GetTimeVarOutName() || tN == mdSet->GetTerrVarOutName() )
+      if ( (tN == mdSet->GetTimeVarOutName() || tN == mdSet->GetTerrVarOutName()) && 
+           (mdSet->GetTimeVar().Contains("ctau")==true || mdSet->GetTimeVar().Contains("CTAU")==true) )
       {
         val = val/corr; 
       }
@@ -2591,8 +2592,7 @@ namespace MassFitUtils {
     obs->add(*Eta);
     obs->Print("v");
 
-    //std::vector <TString> tN = mdSet->GetVarNames(true,false,false,true,true);
-    std::vector <TString> tN = mdSet->GetVarNames(true,true,false,true,true);
+    std::vector <TString> tN = mdSet->GetVarNames(true,true,true,true,true);
     for(unsigned int i = 0; i<tN.size(); i++ )
     {
       std::cout<<"tN: "<<tN[i]<<std::endl;
