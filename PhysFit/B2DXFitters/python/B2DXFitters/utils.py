@@ -44,6 +44,7 @@ def setConstantIfSoConfigured(config, obj, recache = None):
         # set desired RooRealVar-derived objects to const
         for rexp in recache:
             if recache[rexp].match(obj.GetName()):
+                #print "[INFO] fixing "+str( obj.GetName() )
                 obj.setConstant(True)
                 break
     elif obj.InheritsFrom(RooConstVar.Class()):
@@ -301,10 +302,11 @@ def TreeLeavesToPy(type):
             
         return typecode
 
-def BuildMultivarGaussFromCorrMat(ws, name, paramnamelist, errors, correlation, regularise = True):
+def BuildMultivarGaussFromCorrMat(ws, name, paramnamelist, errorsOrCovariance, correlation = None, regularise = True):
     """
     Build multivariate gaussian starting from errors and correlation matrix.
     If regularize=True, a correction is applied if the matrix is nearly singular.
+    If correlation = None, it is assumed that the covariance matrix is given directly
     Returns both Gaussian and RooArgSet with parameters
     """
 
@@ -324,29 +326,56 @@ def BuildMultivarGaussFromCorrMat(ws, name, paramnamelist, errors, correlation, 
                                    param.getVal())))
     n = len(paramnamelist)
     cov = TMatrixDSym(n)
-    if len(errors) != n:
-        raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Error list length does not match that of parameter name list')
-    for i in xrange(0, n):
-        if errors[i] <= 0.:
-            raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Errors must be positive')
-        cov[i][i] = errors[i] * errors[i]
-    correl = correlation
-    for i in xrange(0, n):
-        if abs(correl[i][i] - 1.) > 1e-15:
-            raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Correlation matrix has invalid element on diagonal')
-        for j in xrange(0, i):
-            # symmetrise by force
-            el = 0.5 * (correl[i][j] + correl[j][i])
-            # check if we're too far off
-            if ((abs(el) < 1e-15 and abs(correl[i][j]-correl[j][i]) > 1e-15) or
-                (abs(el) >= 1e-15 and abs(correl[i][j]-correl[j][i]) / el > 1e-15)):
-                raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Correlation matrix not even approximately symmetric')
-            if abs(el) > 1.:
-                raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Off-diagonal elements too large to form valid correlation')
-            # convert to covariance
-            el = el * sqrt(cov[i][i] * cov[j][j])
-            cov[i][j] = el
-            cov[j][i] = el # ROOT's insanity requires this
+    if None == correlation:
+        # covariance matrix given directly - copy over and verify
+        mat = errorsOrCovariance
+        if len(mat) != n:
+            raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Covariance matrix dimension does not match that of parameter name list')
+        for i in xrange(0, n):
+            cov[i][i] = mat[i][i]
+            if cov[i][i] <= 0.:
+                raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Errors must be positive')
+            for j in xrange(0, i):
+                # symmetrise by force
+                el = 0.5 * (mat[i][j] + mat[j][i])
+                # check if we're too far off
+                if ((abs(el) < 1e-15 and abs(mat[i][j]-mat[j][i]) > 1e-15) or
+                    (abs(el) >= 1e-15 and abs(mat[i][j]-mat[j][i]) / el > 1e-15)):
+                    raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Covariance matrix not even approximately symmetric')
+                cov[i][j] = el
+                cov[j][i] = el # ROOT's insanity requires this
+        # check for valid values of correlation
+        for i in xrange(0, n):
+            for j in xrange(0, i):
+                if abs(cov[i][j] / sqrt(cov[i][i] * cov[j][j])) > 1.0:
+                    raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Off-diagonal elements too large to form valid correlation')
+
+    else:
+        # have errors and correlation matrix
+        errors = errorsOrCovariance
+        if len(errors) != n:
+            raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Error list length does not match that of parameter name list')
+        for i in xrange(0, n):
+            if errors[i] <= 0.:
+                raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Errors must be positive')
+            cov[i][i] = errors[i] * errors[i]
+        correl = correlation
+        for i in xrange(0, n):
+            if abs(correl[i][i] - 1.) > 1e-15:
+                raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Correlation matrix has invalid element on diagonal')
+            for j in xrange(0, i):
+                # symmetrise by force
+                el = 0.5 * (correl[i][j] + correl[j][i])
+                # check if we're too far off
+                if ((abs(el) < 1e-15 and abs(correl[i][j]-correl[j][i]) > 1e-15) or
+                    (abs(el) >= 1e-15 and abs(correl[i][j]-correl[j][i]) / el > 1e-15)):
+                    raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Correlation matrix not even approximately symmetric')
+                if abs(el) > 1.:
+                    raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Off-diagonal elements too large to form valid correlation')
+                # convert to covariance
+                el = el * sqrt(cov[i][i] * cov[j][j])
+                cov[i][j] = el
+                cov[j][i] = el # ROOT's insanity requires this
     # verify we can invert covariance matrix with Cholesky decomposition
     # (this will catch negative and zero Eigenvalues)
     isposdef = False
@@ -391,3 +420,221 @@ def BuildMultivarGaussFromCorrMat(ws, name, paramnamelist, errors, correlation, 
         parset.add( params[p] )
     # all done
     return mvg, parset
+
+
+def EqualiseCategories(ws, data, configfile, name, debug = True):
+    """
+    Set the number of events for each category to the same number
+    (by default, the less populated category).
+    The config file needs to contains a dictionary 'equalCat' with
+    a structure like the one in the following example:
+
+    @code
+    configdict['equalCat'] = { 'B2f'        :  'BacCharge==1 && TagDecTrue==1',
+                               'Bbar2f'     :  'BacCharge==1 && TagDecTrue==-1',
+                               'B2fbar'     :  'BacCharge==-1 && TagDecTrue==1',
+                               'Bbar2fbar'  :  'BacCharge==-1 && TagDecTrue==-1'
+                               }
+    @endcode
+    """
+
+    import ROOT
+    from ROOT import (TTree, RooDataSet, RooFit)
+    import B2DXFitters
+    from B2DXFitters.WS import WS as WS
+    import math
+
+    if debug:
+        print "utils.EqualiseCategories(...)=> Equalising categories with different number of entries in input sample"
+
+    yields = {}
+    min = float("inf")
+    for cat in configfile['equalCat'].iterkeys():
+        yields[cat] = {}
+        yields[cat]["Entries"] = {}
+        yields[cat]["Entries"] = data.tree().GetEntries( configfile['equalCat'][cat] )
+        yields[cat]["Cut"] = configfile['equalCat'][cat].replace("_idx","")
+        if debug:
+            print "utils.EqualiseCategories(...)=> Category "+str(cat)+": "+str(yields[cat])
+        if yields[cat]["Entries"] < min:
+            min = yields[cat]["Entries"]
+            mincat = cat
+
+    if debug:
+        print "utils.EqualiseCategories(...)=> Smallest categories: "+mincat+", entries "+str(min)
+
+    dataList = []
+    for cat in configfile['equalCat'].iterkeys():
+        if cat == mincat:
+            dataList.append( data.reduce(RooFit.Cut(yields[cat]["Cut"]),
+                                         RooFit.Name(name+"_"+cat) ) )
+        else:
+            dataTemp = data.reduce(RooFit.Cut(yields[cat]["Cut"]),
+                                   RooFit.Name(name+"_"+cat+"_temp") )
+            dataList.append( dataTemp.reduce(RooFit.Name(name+"_"+cat),
+                                             RooFit.EventRange(0,min)) )
+
+    for d in range(1, dataList.__len__()):
+        dataList[0].append( dataList[d] )
+
+    OutputData = dataList[0]
+    OutputData.SetName( name )
+
+    if debug:
+        print "utils.EqualiseCategories(...)=> Output dataset:"
+        OutputData.Print("v")
+
+    return WS(ws, OutputData)
+
+def ModifyAsymmetry(ws, data, configfile, name, tolerance = 1e-09, debug = True):
+    """
+    Tune asymmetries between pairs of categories in input data.
+    The config file needs to contains a dictionary 'modifyAsymm' with
+    a structure like the one in the following example:
+
+    @code
+    configdict['modifyAsymm'] = { 'CabibboFavoured' : { 'Category1'   : 'TagDecTrue_idx==1 && BacCharge_idx==1',
+                                                        'Category2'   : 'TagDecTrue_idx==-1 && BacCharge_idx==-1',
+                                                        'Target'      : 0.0},
+    'CabibboSuppressed' : { 'Category1'    : 'TagDecTrue_idx==1 && BacCharge_idx==-1',
+                            'Category2'    : 'TagDecTrue_idx==-1 && BacCharge_idx==1',
+                            'Target'       : 0.0}
+    }
+    @endcode
+
+    The asymmetry is defined as asymm=(ncat1-ncat2)/(ncat1+ncat2)
+    Take care of signs when defining the target asymmetries!!!
+
+    The tolerance is the maximum allowed discrepancies between target and obtained
+    asymmetries. The function iterates until the required tolerance is reached.
+    The tolerance might be violated because of rounding effects when converting
+    integer number of events into float asymmetries, but this case should
+    be rare.
+
+    WARNING: all the Categories across all the dictionary should be mutually
+    exclusive. The functions aborts if overlapping events are found.
+
+    If you want to compute your asymmetry, the following package may help:
+    @code
+    git clone ssh://git@gitlab.cern.ch:7999/vibattis/BDecayRates.git
+    @endcode
+    """
+
+    import ROOT
+    from ROOT import (TTree, RooDataSet, RooFit)
+    import B2DXFitters
+    from B2DXFitters.WS import WS as WS
+    import math
+
+    if debug:
+        print "utils.ModifyAsymmetry(...)=> Modifying asymmetries in input sample"
+
+    overlap=""
+    count = 0
+    for asymm in configfile["modifyAsymm"].iterkeys():
+        for cut in configfile["modifyAsymm"][asymm].iterkeys():
+            if "Category" in cut:
+                if count == 0:
+                    overlap = overlap + "("+configfile["modifyAsymm"][asymm][cut]+")"
+                else:
+                    overlap = overlap + " && " + "("+configfile["modifyAsymm"][asymm][cut]+")"
+                count = count + 1
+                
+    if data.tree().GetEntries(overlap) > 0:
+        print "utils.ModifyAsymmetry(...)=> ERROR: categories have shared events. Please check your 'modifyAsymm' dictionary"
+        if debug:
+            print "utils.ModifyAsymmetry(...)=> The current 'overlap' selection is :"+overlap 
+        exit(-1)
+
+    InputDataList = {}
+    OutputDataList = []
+    
+    for asymm in configfile["modifyAsymm"].iterkeys():
+
+        InputDataList[asymm] = {}
+        InputDataList[asymm] = [data]
+        done = False
+        iter = 0
+
+        while not done:
+            
+            if debug:
+                print "utils.ModifyAsymmetry(...)=> Modifying "+asymm+", iteration "+str(iter)+", data "+str(InputDataList[asymm][-1].GetName())
+            
+            cat1 = configfile["modifyAsymm"][asymm]["Category1"]
+            cat2 = configfile["modifyAsymm"][asymm]["Category2"]
+            
+            ccat1 = cat1.replace("_idx","")
+            ccat2 = cat2.replace("_idx","")
+            
+            nCat1 = InputDataList[asymm][-1].tree().GetEntries(cat1)
+            nCat2 = InputDataList[asymm][-1].tree().GetEntries(cat2)
+            thisAsymm = (float(nCat1) - float(nCat2)) / (float(nCat1) + float(nCat2))
+            targetAsymm = configfile["modifyAsymm"][asymm]["Target"]
+
+            if debug:
+                print "utils.ModifyAsymmetry(...)=> Category 1: "+ccat1+", entries: "+str(nCat1)
+                print "utils.ModifyAsymmetry(...)=> Category 2: "+ccat2+", entries: "+str(nCat2)
+                print "utils.ModifyAsymmetry(...)=> Current asymmetry: "+str(thisAsymm)
+                print "utils.ModifyAsymmetry(...)=> Target asymmetry: "+str(targetAsymm)
+
+            if thisAsymm > targetAsymm:
+                #Reduce nCat1
+                targetData = InputDataList[asymm][-1].reduce(RooFit.Cut(ccat2),
+                                                             RooFit.Name("target_"+asymm+str(iter)))
+                reducedData_temp = InputDataList[asymm][-1].reduce(RooFit.Cut(ccat1),
+                                                                   RooFit.Name("target_"+asymm+"_temp"+str(iter)))
+                reducedData = reducedData_temp.reduce(RooFit.Name("target_"+asymm+str(iter)),
+                                                      RooFit.EventRange(0, int(float(nCat2)*(1.0+targetAsymm)/(1.0-targetAsymm)) ) )
+                newAsymm = (float(reducedData.numEntries())-float(targetData.numEntries()))/(float(reducedData.numEntries())+float(targetData.numEntries()))
+                if debug:
+                    print "utils.ModifyAsymmetry(...)=> New Category 1 entries: "+str(reducedData.numEntries())
+                    print "utils.ModifyAsymmetry(...)=> New Category 2 entries: "+str(targetData.numEntries())
+                    print "utils.ModifyAsymmetry(...)=> New asymmetry: "+str(newAsymm)
+
+            elif thisAsymm < targetAsymm:
+                #Reduce nCat2
+                targetData = InputDataList[asymm][-1].reduce(RooFit.Cut(ccat1),
+                                                             RooFit.Name("target_"+asymm+str(iter)))
+                reducedData_temp = InputDataList[asymm][-1].reduce(RooFit.Cut(ccat2),
+                                                                   RooFit.Name("target_"+asymm+"_temp"+str(iter)))
+                reducedData = reducedData_temp.reduce(RooFit.Name("target_"+asymm+str(iter)),
+                                                      RooFit.EventRange(0, int(float(nCat1)*(1.0-targetAsymm)/(1.0+targetAsymm)) ) )
+                newAsymm = (float(targetData.numEntries())-float(reducedData.numEntries()))/(float(targetData.numEntries())+float(reducedData.numEntries()))
+                if debug:
+                    print "utils.ModifyAsymmetry(...)=> New Category 1 entries: "+str(targetData.numEntries())
+                    print "utils.ModifyAsymmetry(...)=> New Category 2 entries: "+str(reducedData.numEntries())
+                    print "utils.ModifyAsymmetry(...)=> New asymmetry: "+str(newAsymm)
+
+            else:
+                if debug:
+                    print "utils.ModifyAsymmetry(...)=> Target asymmetry == asymmetry in data for "+asymm+". Nothing to do."
+                newAsymm = targetAsymm
+                continue
+
+            targetData.append(reducedData)
+            targetData.SetName(name+"_"+asymm+"_fixed_"+str(iter))
+            InputDataList[asymm].append(targetData)
+            
+            if math.fabs(newAsymm - configfile["modifyAsymm"][asymm]["Target"]) <= tolerance:
+                done = True
+
+            if debug:
+                print "utils.ModifyAsymmetry(...)=> Total entries after asymmetry correction(s) at iteration "+str(iter)+": "+str(InputDataList[asymm][-1].numEntries())
+
+            iter = iter + 1
+
+        OutputDataList.append( InputDataList[asymm][-1] )
+        OutputDataList[-1].SetName( name+"_"+asymm )
+
+    OutputData = OutputDataList[0]
+    for od in range(1,OutputDataList.__len__()):
+        OutputData.append( OutputDataList[od] )
+
+    OutputData.SetName(name)
+
+    if debug:
+        print "utils.ModifyAsymmetry(...)=> New dataset after asymmetry correction(s):"
+        OutputData.Print("v")
+
+    return WS(ws, OutputData)

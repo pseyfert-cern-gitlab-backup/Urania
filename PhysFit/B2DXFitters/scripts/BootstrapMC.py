@@ -143,6 +143,8 @@ def BootstrapMC(configName,
                 preselection,
                 maxcand,
                 randIndex,
+                modifyAsymmBefore,
+                modifyAsymmAfter,
                 debug):
 
     myconfigfilegrabber = __import__(configName,fromlist=['getconfig']).getconfig
@@ -191,6 +193,14 @@ def BootstrapMC(configName,
 
     print ""
     print "========================================="
+    print "Create output file"
+    print str(outputFile)
+    print "========================================="
+    
+    OutputFile = TFile.Open(outputFile,"RECREATE")
+
+    print ""
+    print "========================================="
     print "Get dataset from:"
     print str(inputWorkspace)
     print "========================================="
@@ -219,28 +229,32 @@ def BootstrapMC(configName,
     if preselection != "":
         print "Applying following preselection to reduce dataset:"
         print preselection
-        InputData = RooDataSet(data_temp.GetName(), data_temp.GetTitle(), data_temp, data_temp.get(), preselection)
+        InputData_temp = RooDataSet(data_temp.GetName(), data_temp.GetTitle(), data_temp, data_temp.get(), preselection)
         print "Entries:"
         print "...before cut: " + str(data_temp.sumEntries())
-        print "...after cut: " + str(InputData.sumEntries())
+        print "...after cut: " + str(InputData_temp.sumEntries())
     else:
         print "No additional preselection"
-        InputData = data_temp
+        InputData_temp = data_temp
 
-    dataName = InputData.GetName()
-    InputData.SetName( dataName+"_input" )
-    InputData = WS(ws, InputData)
-    nCand = InputData.numEntries()
+    dataName = InputData_temp.GetName()
+    InputData_temp.SetName( dataName+"_input" )
     print "Reduced dataset:"
-    InputData.Print("v")
-    print "Dataset entries:"
-    print nCand
+    InputData_temp.Print("v")
+    InputData_temp = WS(ws, InputData_temp)
 
+    if modifyAsymmBefore:
+        from B2DXFitters.utils import ModifyAsymmetry as ModifyAsymmetry
+        InputData = ModifyAsymmetry(ws, InputData_temp, myconfigfile, dataName+"_input_asymmCorrected")
+    else:
+        InputData = WS(ws, InputData_temp)
+
+    nCand = InputData.numEntries()
     if int(maxcand) > 0:
         max = int(maxcand)
     else:
-        max = ncand
-
+        max = nCand
+        
     print ""
     print "========================================="
     print "Start bootstrapping of"
@@ -250,10 +264,9 @@ def BootstrapMC(configName,
     print "========================================="
     print ""
 
-    OutputData = WS(ws, RooDataSet(dataName,
-                                   InputData.GetTitle(),
-                                   #observ
-                                   InputData.get()) )
+    OutputData_temp = WS(ws, RooDataSet(dataName,
+                                        InputData.GetTitle(),
+                                        InputData.get()) )
 
     indexGen = TRandom3(int(seed))
 
@@ -270,22 +283,30 @@ def BootstrapMC(configName,
 
         randCand = int( indexGen.Integer( int(nCand) ) )
         theCand = InputData.get( randCand )
-        OutputData.add( theCand )
+        OutputData_temp.add( theCand )
 
         if randIndex:
             randIdxSet.find("randIdx").setVal( randCand )
             randIdxData.add( randIdxSet )
 
-
     if randIndex:
-        OutputData.merge( randIdxData )
-        OutputData.SetTitle(dataName)
+        OutputData_temp.merge( randIdxData )
+        OutputData_temp.SetTitle(dataName)
         
     print "Bootstrapping done!"
     print "New dataset entries:"
-    print OutputData.numEntries()
+    print OutputData_temp.numEntries()
     print "New dataset:"
-    OutputData.Print("v")
+    OutputData_temp.Print("v")
+
+    if modifyAsymmAfter:
+        from B2DXFitters.utils import ModifyAsymmetry as ModifyAsymmetry
+        OutputData_temp.SetName(OutputData_temp.GetName()+"_temp")
+        OutputData = ModifyAsymmetry(ws, OutputData_temp, myconfigfile, dataName)
+    else:
+        OutputData = OutputData_temp
+
+    OutputData.SetName(dataName)
 
     print ""
     print "========================================="
@@ -301,8 +322,8 @@ def BootstrapMC(configName,
     OutputWorkspace.Print("v")
     OutputWorkspace.writeToFile(outputFile)
 
-    tree = OutputData.tree()
-    tree.SaveAs("TheTestTree.root")
+    #tree = OutputData.tree()
+    #tree.SaveAs("TheTestTree.root")
     
 #-----------------------------------------------------------------------------
 
@@ -386,6 +407,18 @@ parser.add_option( '--randIndex',
                    default = False,
                    help = 'store all random cand numbers used in bootstrapping'
                    )
+parser.add_option( '--modifyAsymmBefore',
+                   action = 'store_true',
+                   dest = 'modifyAsymmBefore',
+                   default = False,
+                   help = 'modify asymmetries between pairs of selected categories before bootstrapping'
+                   )
+parser.add_option( '--modifyAsymmAfter',
+                   action = 'store_true',
+                   dest = 'modifyAsymmAfter',
+                   default = False,
+                   help = 'modify asymmetries between pairs of selected categories after bootstrapping'
+                   )
 parser.add_option( '-d', '--debug',
                    action = 'store_true',
                    dest = 'debug',
@@ -427,6 +460,8 @@ if __name__ == '__main__' :
                 options.preselection,
                 options.maxcand,
                 options.randIndex,
+                options.modifyAsymmBefore,
+                options.modifyAsymmAfter,
                 options.debug)
 
 # -----------------------------------------------------------------------------

@@ -108,26 +108,27 @@ gStyle.SetOptFit(1011)
 # Common input stuff and options
 massfitdescr=''
 timefitdescr=''
-nickname='Bd2DPiMCFilteredS21RunIBothTaggedOnlyShortTime'
-debugplots = False
+nickname='Bd2DPiMCFilteredS21RunIBothTaggedOnlyShortTimeOSPreCalib'
+#nickname='FromMCFitSgnOnlyTrueTagProdDetAsymmAccMeanResTime04to12'
+corrplots = True
 
 #Uncomment this for mass fit
 #massfitdescr='FitB_FullMDFit'
 #inputfile = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Toys/'+nickname+'/'+'MDFit/PullTree'+massfitdescr+'_'+nickname+'.root'
-#outputdir = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Toys/'+nickname+'/MassPullsB/'
-#selection = 'CovQual == 3 && MINUITStatus == 0 && edm!=0 && edm<0.1'
+#outputdir = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Toys/'+nickname+'/MassPullsB/'+massfitdescr+'/'
+#selection = 'CovQual == 3 && MINUITStatus == 0 && edm!=0'
 
 #Uncomment this for time fit
-#massfitdescr="FullMDFit"
-#timefitdescr='SSbarFloating'
-#inputfile = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Toys/'+nickname+'/TimeFit/PullTreeTimeFit_'+nickname+'_'+timefitdescr+'_'+massfitdescr+'.root'
-#outputdir = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Toys/'+nickname+'/TimePulls/'
-#selection = 'MINUITStatus == 0 && edm!=0 && Sf_err < 0.03 && Sfbar_err < 0.03'
+#massfitdescr="NoMDFit"
+#timefitdescr='SSbarAccAsymmFloatDMGammaConstrTrueTag'
+#inputfile = '/eos/lhcb/wg/b2oc/TD_DPi_3fb/Toys/'+nickname+'/TimeFit/'+timefitdescr+'/PullTreeTimeFit_'+nickname+'_'+timefitdescr+'_'+massfitdescr+'.root'
+#outputdir = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Toys/'+nickname+'/TimePulls/'+timefitdescr+'/'
+#selection = 'MINUITStatus == 0 && edm!=0'
 
 #Uncomment this for Bootstrap MC
-timefitdescr='SSbarAccAsymmFloatDMGammaConstrTrueTag'
+timefitdescr='SSbarAccAsymmFloatGammaConstrOSTaggingOnly'
 inputfile = '/eos/lhcb/wg/b2oc/TD_DPi_3fb/MCBootstrap/'+nickname+'/TimeFit/'+timefitdescr+'/PullTreeTimeFit_'+nickname+'_'+timefitdescr+'.root'
-outputdir = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/MCBootstrap/'+nickname+'/TimePulls/'
+outputdir = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/MCBootstrap/'+nickname+'/TimePulls/'+timefitdescr+'/'
 selection = 'MINUITStatus == 0 && edm!=0'
 
 #Leave as it is
@@ -189,9 +190,7 @@ for name in GenList:
 
 # Fill the histograms
 for obs in range(0, int(nObs)):
-    selection_string=selection+"&&"+"TMath::Abs(("+FitList[obs]+"-"+GenList[obs]+")"+"/"+ErrList[obs]+")<1000"
-    #if "Sf" in ErrList[obs]:
-    #    selection_string = selection_string + "&&"+ErrList[obs]+"<0.1"
+    selection_string=selection#+"&&"+"TMath::Abs(("+FitList[obs]+"-"+GenList[obs]+")"+"/"+ErrList[obs]+")<1000"
     print "Selection:"
     print selection_string
 
@@ -217,21 +216,6 @@ for obs in range(0, int(nObs)):
     pull = gDirectory.Get("pull"+str(obs))
     pull.SetTitle("")
     pull.GetXaxis().SetTitle("Fitted Pull")
-
-    if debugplots:
-
-        PullTree.Draw(FitList[obs]+":"+ErrList[obs]+">>fitVSerr"+str(obs),selection_string,"goff")
-        fitVSerr = gDirectory.Get("fitVSerr"+str(obs))
-        fitVSerr.SetTitle("")
-        fitVSerr.GetXaxis().SetTitle("Fitted Error")
-        fitVSerr.GetYaxis().SetTitle("Fitted Value")
-        
-        PullTree.Draw("("+FitList[obs]+"-"+GenList[obs]+")"+"/"+ErrList[obs]+":"+ErrList[obs]+">>pullVSerr"+str(obs),selection_string,"goff")
-        pullVSerr = gDirectory.Get("pullVSerr"+str(obs))
-        pullVSerr.SetTitle("")
-        pullVSerr.GetXaxis().SetTitle("Fitted Error")
-        pullVSerr.GetYaxis().SetTitle("Fitted Pull")
-        pullVSerr.GetYaxis().SetRangeUser(-5.0,5.0)
         
     gStyle.SetStatX(0.95)
     gStyle.SetStatY(0.95)
@@ -240,26 +224,41 @@ for obs in range(0, int(nObs)):
     pullcanvas = TCanvas("pullcanvas"+str(obs),"pullcanvas",1500,500)
     pullcanvas.Divide(3,1)
     pullcanvas.cd(1)
-    fitted.Fit("gaus")
+    fitted.Fit("gaus","LM")
     fitted.Draw("PE")
     pullcanvas.cd(2)
-    errf.Fit("gaus")
+    errf.Fit("gaus","LM")
     errf.Draw("PE")
     pullcanvas.cd(3)
-    pull.Fit("gaus")
+    pull.Fit("gaus","LM")
     pull.Draw("PE")
     makeprintout(pullcanvas,outputdir+"1DPullPlot_"+NameList[obs]+"_"+plotlabel)
 
-    if debugplots:
-    
-        pullcanvas2 = TCanvas("pullcanvas2"+str(obs),"pullcanvas2",1500,500)
-        pullcanvas2.Divide(2,1)
-        pullcanvas2.cd(1)
-        fitVSerr.Draw("CONTZ")
-        pullcanvas2.cd(2)
-        pullVSerr.Draw("CONTZ")
-        makeprintout(pullcanvas2,outputdir+"2DPullPlot_"+NameList[obs]+"_"+plotlabel)
-        
+if corrplots:
+    #Now plots all 2D correlation plots between pairs of fitted variables
+    AllList = FitList + ErrList
+
+    for obs1 in range(0, AllList.__len__()):
+
+        if obs1 == AllList.__len__()-1:
+            break
+
+        for obs2 in range(obs1+1, AllList.__len__()):
+            selection_string=selection
+            print "Selection:"
+            print selection_string
+
+            print "Plotting "+AllList[obs1]+" vs "+AllList[obs2]
+            PullTree.Draw(AllList[obs1]+":"+AllList[obs2]+">>corr"+str(obs1)+str(obs2),selection_string,"goff")
+            corrplot = gDirectory.Get("corr"+str(obs1)+str(obs2))
+            corrplot.SetTitle("Correlation = "+str( "{0:.3f}".format( corrplot.GetCorrelationFactor() ) ) )
+            corrplot.GetXaxis().SetTitle(AllList[obs2])
+            corrplot.GetYaxis().SetTitle(AllList[obs1])
+
+            pullcanvas = TCanvas("pullcanvas"+str(obs),"pullcanvas")
+            pullcanvas.cd()
+            corrplot.Draw("CONTZ")
+            makeprintout(pullcanvas,outputdir+"CorrPlot_"+AllList[obs1]+"_vs_"+AllList[obs2]+"_"+plotlabel)
 
 ntoys = ufloat(PullTree.GetEntries(), sqrt(PullTree.GetEntries()))
 nfailed = ufloat(PullTree.GetEntries("!("+selection+")"), sqrt(PullTree.GetEntries("!("+selection+")")))
