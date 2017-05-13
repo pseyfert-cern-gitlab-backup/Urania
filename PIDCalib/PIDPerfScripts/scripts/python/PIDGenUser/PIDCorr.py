@@ -61,10 +61,11 @@ import Run1.ConfigMC as ConfigMC
 
 if not infilename : 
   print "Usage: PIDCorr.py [options]"
-  print "  For the usage example, look at pid_transform.sh file"
+#  print "  For the usage example, look at pid_transform.sh file"
   print "  Available PID configs are: "
   for i in sorted(Config.configs.keys()) : 
-    print "    ", i
+    if i in ConfigMC.configs.keys() : 
+      print "    ", i
   quit()
 
 
