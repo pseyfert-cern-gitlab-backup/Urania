@@ -127,11 +127,11 @@ def plotComparison(calibfile, controlfile, outfilename, var = 'ProbNNp', nbins =
     h1.Scale(h2.GetSumOfWeights() / h1.GetSumOfWeights() )
     h1.SetLineColor(2)
     h1.GetXaxis().SetTitle(var + "'")
-    h1.Draw("")
+    h1.Draw("l hist")
     h2.SetLineColor(4)
     h2.SetLineWidth(1)
     h2.SetMarkerSize(0.5)
-    h2.Draw("esame")
+    h2.Draw("e same")
 #    h1.Draw("same")
     t.DrawText(0.05, 0.9*h1.GetMaximum(), binnames[n-1])
 

@@ -36,6 +36,8 @@ parser.add_argument('-d', '--dataset', type=str, default = "MagDown_2011",
                     help='Dataset')
 parser.add_argument('-v', '--var', type=str, default = "default", 
                     help='Variation (default, syst_N, stat_N etc.)')
+parser.add_argument('-S', '--simversion', type=str, default = "sim08", 
+                    help='Simulation version (sim08 or sim09 for run 1)')
 
 parser.print_help()
 args = parser.parse_args()
@@ -55,26 +57,37 @@ oldpidvar = args.simpidvar
 conf = args.config
 dataset = args.dataset
 variant = args.var
+simversion = args.simversion
 
 import Run1.Config as Config
-import Run1.ConfigMC as ConfigMC
+import Run1.ConfigMC as ConfigMCSim08
+import Run1.ConfigMCSim09 as ConfigMCSim09
 
 if not infilename : 
   print "Usage: PIDCorr.py [options]"
 #  print "  For the usage example, look at pid_transform.sh file"
-  print "  Available PID configs are: "
+  print "  Available PID configs for sim08 are: "
   for i in sorted(Config.configs.keys()) : 
-    if i in ConfigMC.configs.keys() : 
+    if i in ConfigMCSim08.configs.keys() : 
+      print "    ", i
+  print "  Available PID configs for sim09 are: "
+  for i in sorted(Config.configs.keys()) : 
+    if i in ConfigMCSim09.configs.keys() : 
       print "    ", i
   quit()
 
+if simversion == "sim08" : ConfigMC = ConfigMCSim08
+elif simversion == "sim09" : ConfigMC = ConfigMCSim09
+else : 
+  print "Simulation version %s unknown" % simversion
+  quit()
 
 if variant == "default" : variant = "distrib"  # to do: change this name in CreatePIDPdf
 
 datapdf = Config.eosrootdir + "/" + conf + "/" + dataset + "_" + variant + ".root"
 simpdf = ConfigMC.eosrootdir + "/" + conf + "/" + dataset + "_" + variant + ".root"
 
-transform_forward = Config.configs[conf]["transform_forward"]
+transform_forward  = Config.configs[conf]["transform_forward"]
 transform_backward = Config.configs[conf]["transform_backward"]
 
 from math import sqrt

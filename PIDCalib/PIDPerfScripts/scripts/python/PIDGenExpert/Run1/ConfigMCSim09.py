@@ -1,41 +1,67 @@
-eosdir = "/eos/lhcb/wg/PID/PIDGen/MC/Run1Sim08"
+eosdir = "/eos/lhcb/wg/PID/PIDGen/MC/Run1Sim09"
 eosrootdir = "root://eoslhcb.cern.ch/" + eosdir
 
 tmpdir = "/tmp/poluekt/"
 
 samples = {
-  "K" : {
-    'datasets' : {
-      'MagDown_2012' : "tuple_dstar_mc12_magdown.root", 
-      'MagUp_2012' : "tuple_dstar_mc12_magup.root", 
-      'MagDown_2011' : "tuple_dstar_mc11_magdown.root", 
-      'MagUp_2011' : "tuple_dstar_mc11_magup.root", 
-    }, 
-    'dir'     : "dstar", 
-    'tree'    : "dstar", 
-    'pt'      : "dk_PT", 
-    'eta'     : "dk_ETA", 
-    'ntracks' : "nTracks", 
-  }, 
+#  "K" : {
+#    'datasets' : {
+#      'MagDown_2012' : "tuple_dstar_mc12_magdown.root", 
+#      'MagUp_2012' : "tuple_dstar_mc12_magup.root", 
+#      'MagDown_2011' : "tuple_dstar_mc11_magdown.root", 
+#      'MagUp_2011' : "tuple_dstar_mc11_magup.root", 
+#    }, 
+#    'dir'     : "dstar", 
+#    'tree'    : "dstar", 
+#    'pt'      : "dk_PT", 
+#    'eta'     : "dk_ETA", 
+#    'ntracks' : "nTracks", 
+#  }, 
+#  "pi" : {
+#    'datasets' : {
+#      'MagDown_2012' : "tuple_dstar_mc12_magdown.root", 
+#      'MagUp_2012' : "tuple_dstar_mc12_magup.root", 
+#      'MagDown_2011' : "tuple_dstar_mc11_magdown.root", 
+#      'MagUp_2011' : "tuple_dstar_mc11_magup.root", 
+#    }, 
+#    'dir'     : "dstar", 
+#    'tree'    : "dstar", 
+#    'pt'      : "dpi_PT", 
+#    'eta'     : "dpi_ETA", 
+#    'ntracks' : "nTracks", 
+#  }, 
   "pi" : {
     'datasets' : {
-      'MagDown_2012' : "tuple_dstar_mc12_magdown.root", 
-      'MagUp_2012' : "tuple_dstar_mc12_magup.root", 
-      'MagDown_2011' : "tuple_dstar_mc11_magdown.root", 
-      'MagUp_2011' : "tuple_dstar_mc11_magup.root", 
+      'MagDown_2012' : "tuple_lcmu_mc12_sim09_magdown.root", 
+      'MagUp_2012' : "tuple_lcmu_mc12_sim09_magup.root", 
+      'MagDown_2011' : "tuple_lcmu_mc11_sim09_magdown.root", 
+      'MagUp_2011' : "tuple_lcmu_mc11_sim09_magup.root", 
     }, 
-    'dir'     : "dstar", 
-    'tree'    : "dstar", 
-    'pt'      : "dpi_PT", 
-    'eta'     : "dpi_ETA", 
+    'dir'     : "lc", 
+    'tree'    : "nt", 
+    'pt'      : "pi_PT", 
+    'eta'     : "pi_ETA", 
+    'ntracks' : "nTracks", 
+  }, 
+  "K" : {
+    'datasets' : {
+      'MagDown_2012' : "tuple_lcmu_mc12_sim09_magdown.root", 
+      'MagUp_2012' : "tuple_lcmu_mc12_sim09_magup.root", 
+      'MagDown_2011' : "tuple_lcmu_mc11_sim09_magdown.root", 
+      'MagUp_2011' : "tuple_lcmu_mc11_sim09_magup.root", 
+    }, 
+    'dir'     : "lc", 
+    'tree'    : "nt", 
+    'pt'      : "k_PT", 
+    'eta'     : "k_ETA", 
     'ntracks' : "nTracks", 
   }, 
   "p" : {
     'datasets' : {
-      'MagDown_2012' : "tuple_lcmu_mc12_magdown.root", 
-      'MagUp_2012' : "tuple_lcmu_mc12_magup.root", 
-      'MagDown_2011' : "tuple_lcmu_mc11_magdown.root", 
-      'MagUp_2011' : "tuple_lcmu_mc11_magup.root", 
+      'MagDown_2012' : "tuple_lcmu_mc12_sim09_magdown.root", 
+      'MagUp_2012' : "tuple_lcmu_mc12_sim09_magup.root", 
+      'MagDown_2011' : "tuple_lcmu_mc11_sim09_magdown.root", 
+      'MagUp_2011' : "tuple_lcmu_mc11_sim09_magup.root", 
     }, 
     'dir'     : "lc", 
     'tree'    : "nt", 
@@ -62,7 +88,7 @@ samples = {
 configs = {
   "K_CombDLLK" : {
     "sample" : "K", 
-    "var" : "dk_PIDK", 
+    "var" : "k_PIDK", 
     "transform_forward"  : "x", 
     "transform_backward" : "x", 
     "bins" : 30, 
@@ -76,7 +102,7 @@ configs = {
   }, 
   "K_V2ProbNNK" : {
     "sample" : "K", 
-    "var" : "dk_V2ProbNNK", 
+    "var" : "k_V2ProbNNK", 
     "bins" : 30, 
     "transform_forward"  : "1.-(1.-x)**0.15", 
     "transform_backward" : "(1.-(1.-x)**(1./0.15))", 
@@ -89,7 +115,7 @@ configs = {
   }, 
   "K_V2ProbNNpi" : {
     "sample" : "K", 
-    "var" : "dk_V2ProbNNpi", 
+    "var" : "k_V2ProbNNpi", 
     "bins" : 30, 
     "transform_forward"  : "x**0.2", 
     "transform_backward" : "x**(1./0.2)", 
@@ -102,7 +128,7 @@ configs = {
   }, 
   "K_V3ProbNNK" : {
     "sample" : "K", 
-    "var" : "dk_V3ProbNNK", 
+    "var" : "k_V3ProbNNK", 
     "bins" : 30, 
     "transform_forward"  : "1.-(1.-x)**0.15", 
     "transform_backward" : "(1.-(1.-x)**(1./0.15))", 
@@ -115,7 +141,7 @@ configs = {
   }, 
   "K_V3ProbNNpi" : {
     "sample" : "K", 
-    "var" : "dk_V3ProbNNpi", 
+    "var" : "k_V3ProbNNpi", 
     "bins" : 30, 
     "transform_forward"  : "x**0.2", 
     "transform_backward" : "x**(1./0.2)", 
@@ -128,7 +154,7 @@ configs = {
   }, 
   "K_V3ProbNNp" : {
     "sample" : "K", 
-    "var" : "dk_V3ProbNNp", 
+    "var" : "k_V3ProbNNp", 
     "bins" : 30, 
     "transform_forward"  : "x**0.15", 
     "transform_backward" : "x**(1./0.15)", 
@@ -142,7 +168,7 @@ configs = {
 
   "pi_CombDLLK" : {
     "sample" : "pi", 
-    "var" : "dpi_PIDK", 
+    "var" : "pi_PIDK", 
     "transform_forward"  : "x", 
     "transform_backward" : "x", 
     "bins" : 30, 
@@ -156,7 +182,7 @@ configs = {
   }, 
   "pi_V2ProbNNpi" : {
     "sample" : "pi", 
-    "var" : "dpi_V2ProbNNpi", 
+    "var" : "pi_V2ProbNNpi", 
     "bins" : 30, 
     "transform_forward"  : "1.-(1.-x)**0.3", 
     "transform_backward" : "(1.-(1.-x)**(1./0.3))", 
@@ -169,7 +195,7 @@ configs = {
   }, 
   "pi_V2ProbNNK" : {
     "sample" : "pi", 
-    "var" : "dpi_V2ProbNNK", 
+    "var" : "pi_V2ProbNNK", 
     "bins" : 30, 
     "transform_forward"  : "x**0.15", 
     "transform_backward" : "x**(1./0.15)", 
@@ -182,7 +208,7 @@ configs = {
   }, 
   "pi_V3ProbNNpi" : {
     "sample" : "pi", 
-    "var" : "dpi_V3ProbNNpi", 
+    "var" : "pi_V3ProbNNpi", 
     "bins" : 30, 
     "transform_forward"  : "1.-(1.-x)**0.3", 
     "transform_backward" : "(1.-(1.-x)**(1./0.3))", 
@@ -195,7 +221,7 @@ configs = {
   }, 
   "pi_V3ProbNNK" : {
     "sample" : "pi", 
-    "var" : "dpi_V3ProbNNK", 
+    "var" : "pi_V3ProbNNK", 
     "bins" : 30, 
     "transform_forward"  : "x**0.15", 
     "transform_backward" : "x**(1./0.15)", 
@@ -208,7 +234,7 @@ configs = {
   }, 
   "pi_V3ProbNNp" : {
     "sample" : "pi", 
-    "var" : "dpi_V3ProbNNp", 
+    "var" : "pi_V3ProbNNp", 
     "bins" : 30, 
     "transform_forward"  : "x**0.15", 
     "transform_backward" : "x**(1./0.15)", 
@@ -302,7 +328,7 @@ configs = {
   }, 
   "K_CombDLLp" : {
     "sample" : "K", 
-    "var" : "dk_PIDp", 
+    "var" : "k_PIDp", 
     "transform_forward"  : "x", 
     "transform_backward" : "x", 
     "bins" : 30, 
@@ -316,7 +342,7 @@ configs = {
   }, 
   "pi_CombDLLp" : {
     "sample" : "pi", 
-    "var" : "dpi_PIDp", 
+    "var" : "pi_PIDp", 
     "transform_forward"  : "x", 
     "transform_backward" : "x", 
     "bins" : 30, 
@@ -357,7 +383,7 @@ configs = {
   }, 
   "pi_V2ProbNNp" : {
     "sample" : "pi", 
-    "var" : "dpi_V2ProbNNp", 
+    "var" : "pi_V2ProbNNp", 
     "bins" : 30, 
     "transform_forward"  : "x**0.15", 
     "transform_backward" : "x**(1./0.15)", 
@@ -370,7 +396,7 @@ configs = {
   }, 
   "K_V2ProbNNp" : {
     "sample" : "K", 
-    "var" : "dk_V2ProbNNp", 
+    "var" : "k_V2ProbNNp", 
     "bins" : 30, 
     "transform_forward"  : "x**0.15", 
     "transform_backward" : "x**(1./0.15)", 
@@ -381,31 +407,31 @@ configs = {
     'controlstat' : 500000, 
     'nbootstrap' : 0
   }, 
-  "e_CombDLLe" : {
-    "sample" : "e", 
-    "var" : "CombDLLe", 
-    "transform_forward"  : "x", 
-    "transform_backward" : "x", 
-    "bins" : 30, 
-    "limits" : (-20., 20.), 
-    'scale_default' : 2.0, 
-    'scale_syst' : 2.5, 
-    'scale_pid' : 2.0, 
-    'toystat' : 300000, 
-    'controlstat' : 300000, 
-    'nbootstrap' : 0
-  }, 
-  "e_V3ProbNNe" : {
-    "sample" : "e",
-    "var" : "V3ProbNNe",
-    "bins" : 30,
-    "transform_forward"  : "1.-(1.-x)**0.25",
-    "transform_backward" : "(1.-(1.-x)**(1./0.25))",
-    'scale_default' : 1.5,
-    'scale_syst' : 2.0,
-    'scale_pid' : 2.0,
-    'toystat' : 300000,
-    'controlstat' : 300000,
-    'nbootstrap' : 0
-  },
+#  "e_CombDLLe" : {
+#    "sample" : "e", 
+#    "var" : "CombDLLe", 
+#    "transform_forward"  : "x", 
+#    "transform_backward" : "x", 
+#    "bins" : 30, 
+#    "limits" : (-20., 20.), 
+#    'scale_default' : 2.0, 
+#    'scale_syst' : 2.5, 
+#    'scale_pid' : 2.0, 
+#    'toystat' : 300000, 
+#    'controlstat' : 300000, 
+#    'nbootstrap' : 0
+#  }, 
+#  "e_V3ProbNNe" : {
+#    "sample" : "e",
+#    "var" : "V3ProbNNe",
+#    "bins" : 30,
+#    "transform_forward"  : "1.-(1.-x)**0.25",
+#    "transform_backward" : "(1.-(1.-x)**(1./0.25))",
+#    'scale_default' : 1.5,
+#    'scale_syst' : 2.0,
+#    'scale_pid' : 2.0,
+#    'toystat' : 300000,
+#    'controlstat' : 300000,
+#    'nbootstrap' : 0
+#  },
 }

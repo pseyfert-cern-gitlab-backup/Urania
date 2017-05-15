@@ -7,7 +7,8 @@ PDFs (for systematic and stat. error evaluation)
 
 cwd = os.getcwd()
 
-from ConfigMC import *
+import ConfigMC as ConfigMCSim08
+import ConfigMCSim09 as ConfigMCSim09
 
 def signal_handler(signal, frame):
     print 'Exiting'
@@ -15,12 +16,16 @@ def signal_handler(signal, frame):
 
 signal.signal(signal.SIGINT, signal_handler)
 
-if len(sys.argv)>1 : 
-  config = sys.argv[1]
+if len(sys.argv)>2 : 
+  simversion = sys.argv[1]
+  configname = sys.argv[2]
 else : 
-  print "Usage: CreatePIDPdf [config] [option1:option2:...]"
-  print "  configs are: "
-  for i in sorted(configs.keys()) : 
+  print "Usage: python CreatePIDPdf_MC.py [sim08/sim09] [config] [option1:option2:...]"
+  print "  configs for Sim08 are: "
+  for i in sorted(ConfigMCSim08.configs.keys()) : 
+    print "    ", i
+  print "  configs for Sim09 are: "
+  for i in sorted(ConfigMCSim09.configs.keys()) : 
     print "    ", i
   print "  options are: "
   print "     dry - Dry run (do not submit jobs, just print command lines)"
@@ -28,25 +33,34 @@ else :
   sys.exit(0)
 
 opt = ""
-if len(sys.argv)>2 : 
-  opt = sys.argv[2]
+if len(sys.argv)>3 : 
+  opt = sys.argv[3]
 
-scale_default = configs[config]['scale_default']
-scale_syst = configs[config]['scale_syst']
-scale_pid = configs[config]['scale_pid']
-var = config
-toystat = configs[config]['toystat']
-controlstat = configs[config]['controlstat']
-nbootstrap = configs[config]['nbootstrap']
-sample = configs[config]['sample']
+if simversion == "sim08" : Config = ConfigMCSim08
+elif simversion == "sim09" : Config = ConfigMCSim09
+else : 
+  print "Simulation version %s unknown" % simversion
+  sys.exit(0)
 
-file_list = samples[sample]['datasets'].keys()
+config = Config.configs[configname]
+scale_default = config['scale_default']
+scale_syst = config['scale_syst']
+scale_pid = config['scale_pid']
+var = configname
+toystat = config['toystat']
+controlstat = config['controlstat']
+nbootstrap = config['nbootstrap']
+sample = config['sample']
+eosrootdir = Config.eosrootdir
+eosdir = Config.eosdir
+
+file_list = Config.samples[sample]['datasets'].keys()
 
 limits = None
-if 'limits' in configs[config] : 
-  limits = configs[config]['limits']
+if 'limits' in config : 
+  limits = config['limits']
 
-scr = "bsub -q 1nd lb-run Urania/v6r0 %s/PIDPdf.sh %s/PIDPdf.py" % (cwd, cwd)
+scr = "bsub -q 1nd lb-run --nightly-cvmfs --nightly lhcb-prerelease Urania/master python %s/PIDPdf.py" % (cwd)
 #scr = "python PIDPdf.py"
 
 # Electron sample needs additional option
@@ -62,13 +76,13 @@ if "continue" in opt.split(":") :
   print ready_list
 
 
-outdir = eosrootdir + "/" + config + "/"
+outdir = eosrootdir + "/" + configname + "/"
 #os.system("mkdir -p %s/control/" % outdir)
-os.system("/afs/cern.ch/project/eos/installation/0.3.15/bin/eos.select mkdir -p %s/%s/control/" % (eosdir, config))
+os.system("/afs/cern.ch/project/eos/installation/0.3.15/bin/eos.select mkdir -p %s/%s/control/" % (eosdir, configname))
 
 for filename in file_list : 
 
-  infile = config + "/" + filename + ".root"
+  infile = configname + "/" + filename + ".root"
 
   nominalfile = filename + "_distrib.root"
   controlfile = "control/" + filename + "_control.root"

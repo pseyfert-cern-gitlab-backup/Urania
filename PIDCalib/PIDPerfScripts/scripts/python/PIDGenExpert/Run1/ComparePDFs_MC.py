@@ -1,26 +1,41 @@
 import os, sys
 from PlotPIDComparison import plotComparison
 
-from ConfigMC import *
+import ConfigMC as ConfigMCSim08
+import ConfigMCSim09 as ConfigMCSim09
 
 config = None
-if len(sys.argv)>1 : 
-  config = sys.argv[1]
+if len(sys.argv)>2 : 
+  simversion = sys.argv[1]
+  configname = sys.argv[2]
 else : 
-  print "Usage: ComparePDFs.py [config]"
-  print "  configs are: "
-  for i in sorted(configs.keys()) : 
+  print "Usage: ComparePDFs.py [sim08/sim09] [config]"
+  print "  configs for sim08 are: "
+  for i in sorted(ConfigMCSim08.configs.keys()) : 
+    print "    ", i
+  print "  configs for sim09 are: "
+  for i in sorted(ConfigMCSim09.configs.keys()) : 
     print "    ", i
   sys.exit(0)
 
-var = config
-bins = configs[config]["bins"]
+if simversion == "sim08" : Config = ConfigMCSim08
+elif simversion == "sim09" : Config = ConfigMCSim09
+else : 
+  print "Simulation version %s unknown" % simversion
+  sys.exit(0)
+
+eosdir = Config.eosdir
+eosrootdir = Config.eosrootdir
+
+var = configname
+config = Config.configs[configname]
+bins = config["bins"]
 syst = 1
 stat = 10
-if 'syst' in configs[config] : syst = configs[config]['syst']
-if 'stat' in configs[config] : stat = configs[config]['stat']
+if 'syst' in config : syst = config['syst']
+if 'stat' in config : stat = config['stat']
 limits = None
-if 'limits' in configs[config] : limits = configs[config]['limits']
+if 'limits' in config : limits = config['limits']
 
 polarity = [ "MagDown", "MagUp" ]
 year = [ 2011, 2012 ]
@@ -31,7 +46,7 @@ year = [ 2011, 2012 ]
 syst = None
 stat = None
 
-outdir = eosrootdir + "/" + config
+outdir = eosrootdir + "/" + configname
 
 filelist = []
 

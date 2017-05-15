@@ -2,7 +2,8 @@ import os, sys
 from ROOT import TFile, TNtuple, gDirectory, gROOT
 from math import sqrt, log
 
-from ConfigMC import *
+import ConfigMC as ConfigMCSim08
+import ConfigMCSim09 as ConfigMCSim09
 
 def convert_single_file(infile, indir, f2, nt2, treename, pidvar, ptvar, etavar, ntracksvar, transform) :
   match_code = None
@@ -35,13 +36,17 @@ def convert_single_file(infile, indir, f2, nt2, treename, pidvar, ptvar, etavar,
       nt2.Fill(pid, pt, eta, ntracks, 1., 1.)
   f1.Close()
 
-if len(sys.argv)>1 : 
+if len(sys.argv)>2 : 
   # config name, e.g. "p_ProbNNp"
-  configname = sys.argv[1]
+  simversion = sys.argv[1]
+  configname = sys.argv[2]
 else : 
-  print "Usage: MakeTuples [config] [option1:option2:...] [dataset1:dataset2:]"
-  print "  configs are: "
-  for i in sorted(configs.keys()) : 
+  print "Usage: MakeTuples [sim08/sim09] [config] [option1:option2:...] [dataset1:dataset2:]"
+  print "  configs for sim08 are: "
+  for i in sorted(ConfigMCSim08.configs.keys()) : 
+    print "    ", i
+  print "  configs for sim09 are: "
+  for i in sorted(ConfigMCSim09.configs.keys()) : 
     print "    ", i
   print "  options are: "
   print "    test - run for just a single PIDCalib file rather than whole dataset"
@@ -50,15 +55,23 @@ else :
   print "    or leave empty to process all available datasets"
   sys.exit(0)
 
-config = configs[configname]
+if simversion == "sim08" : Config = ConfigMCSim08
+elif simversion == "sim09" : Config = ConfigMCSim09
+else : 
+  print "Simulation version %s unknown" % simversion
+  sys.exit(0)
+
+config = Config.configs[configname]
 # sample name, e.g. "p" for proton
 samplename = config['sample']
-sample = samples[samplename]
+sample = Config.samples[samplename]
 datasets = sample['datasets']
 dslist = datasets.keys()
+eosdir = Config.eosdir
+eosrootdir = Config.eosrootdir
 options = ""
-if len(sys.argv)>2 : options = sys.argv[2].split(":")
-if len(sys.argv)>3 : dslist = sys.argv[3].split(":")
+if len(sys.argv)>3 : options = sys.argv[3].split(":")
+if len(sys.argv)>4 : dslist = sys.argv[4].split(":")
 
 # resampled variable name
 var = configname
@@ -73,7 +86,6 @@ indir = sample['dir']
 transform = config['transform_forward']
 
 os.system("/afs/cern.ch/project/eos/installation/0.3.15/bin/eos.select mkdir -p %s/%s" % (eosdir, configname))
-#os.system("mkdir -p %s/%s/" % (datadir, var))
 
 # Create dictionary with the lists of PIDCalib datasets for each year and magnet polarity
 dsdict = {}
