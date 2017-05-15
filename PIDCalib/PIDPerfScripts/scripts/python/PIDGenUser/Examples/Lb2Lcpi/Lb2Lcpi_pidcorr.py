@@ -10,6 +10,8 @@ files = [
 # Could also include ROOT directory, e.g. "Dir/Ntuple"
 input_tree = "lb2lch_filt"
 
+simversion = "sim08"
+
 # Postfixes of the Pt, Eta and Ntracks variables (ntuple variable name w/o branch name)
 # e.g. if the ntuple contains "pion_PT", it should be just "PT"
 ptvar = "pt"
@@ -88,6 +90,7 @@ for input_file, output_file, dataset in files :
       command += " -d %s" % dataset
       command += " -i %s" % tmpinfile
       command += " -o %s" % tmpoutfile
+      command += " -S %s" % simversion
 
       treename = output_tree
       tmpinfile = tmpoutfile
