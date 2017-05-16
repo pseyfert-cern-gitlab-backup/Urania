@@ -20,10 +20,10 @@ extern "C" {
 
 __device__ double DCP_prod;
 
-__device__ double c1_pol_Stheo = -5.05015e-01;
-__device__ double c2_pol_Stheo = -2.59249e-01;
-__device__ double c3_pol_Stheo = -2.77261e-02;
-__device__ double c4_pol_Stheo = 0.;
+__device__ double c1_pol_Stheo = -0.434195680041;
+__device__ double c2_pol_Stheo = -0.295297590317;
+__device__ double c3_pol_Stheo = -0.0434834197181;
+__device__ double c4_pol_Stheo = -0.0423685127109;
 __device__ double MEta = 547.;
 __device__ double sAdler_Stheo = 0.236;
 __device__ double B0_Stheo = 0.411;
@@ -63,15 +63,15 @@ __device__ double C_22_1_palano = 0.2590;
 __device__ double C_22_2_palano = 1.6950;
 __device__ double C_22_3_palano = 2.2300;
 __device__ double A_1_0_palano = 1.;
-__device__ double A_1_1_palano = -7.07172467436;
-__device__ double A_1_2_palano = 4.34784254354;
-__device__ double A_1_3_palano = -3.4044610049;
-__device__ double A_1_4_palano = -0.0935031564737;
-__device__ double A_2_0_palano = -7.01196566782;
-__device__ double A_2_1_palano = -1.37175534595;
-__device__ double A_2_2_palano = -7.97420327456;
-__device__ double A_2_3_palano = 1.89304254061;
-__device__ double A_2_4_palano = -5.18470699036;
+__device__ double A_1_1_palano = 0.00491636810678;
+__device__ double A_1_2_palano = 2.12489529189;
+__device__ double A_1_3_palano = 0.56004179484;
+__device__ double A_1_4_palano = 0.;
+__device__ double A_2_0_palano = -4.20943829183;
+__device__ double A_2_1_palano = -1.2110147687;
+__device__ double A_2_2_palano = 2.28474898994;
+__device__ double A_2_3_palano = 5.93332582489;
+__device__ double A_2_4_palano = 0.;
 
 
 // ##########################################
@@ -916,7 +916,7 @@ __device__ double accGenMass(double m) {
  }
 
 __device__ double accGen(double tau, double ma, double mb, double cos1var, double cos2var, double phivar) {
-   return accGenTime(tau)*accGenMass(ma)*accGenMass(mb)*accGenAng(cos1var)*accGenAng(cos2var);
+   return 1.;
  }
 
 
@@ -1538,13 +1538,38 @@ __device__ pycuda::complex<double> Prop_S_Palano(double m) {
    pycuda::complex<double> T11_hat = s_Kpi_palano/(svar_GeV-s_A_palano)*(K11-rho_2*detK)/Delta;
    pycuda::complex<double> T12_hat = s_Kpi_palano/(svar_GeV-s_A_palano)*K12/Delta;
 
-   double xm = (m-1175.)/425.;
+   double xm = X;//(m-1175.)/425.;
    double alpha_1_s = A_1_0_palano+A_1_1_palano*xm+A_1_2_palano*(2.*xm*xm-1.)+A_1_3_palano*(4.*xm*xm*xm-3.*xm)+A_1_4_palano*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
    double alpha_2_s = A_2_0_palano+A_2_1_palano*xm+A_2_2_palano*(2.*xm*xm-1.)+A_2_3_palano*(4.*xm*xm*xm-3.*xm)+A_2_4_palano*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
 
    pycuda::complex<double> T = alpha_1_s*T11_hat+alpha_2_s*T12_hat;
 
-   return T*exp(-i*0.0758670);
+   return T*exp(i*3.06573);
+
+ }
+
+__device__ pycuda::complex<double> Prop_Lass(double m) { 
+
+   pycuda::complex<double> i(0,1);
+
+   double a_lass_ = 1./1.90008028533e-05;
+   double r_lass_ = 0.00226389513951;
+   double m0_ = 1381.85448767;
+   double g0_ = 186.040053232;
+
+   double q = get_q(m,MPion,MKaon);
+   double q0 = get_q(m0_,MPion,MKaon);
+
+   double cotg_deltaB = 1./(a_lass_*q)+0.5*r_lass_*q;
+   double deltaB = atan(1./cotg_deltaB);
+   pycuda::complex<double> expo = exp(i*2.*deltaB);
+
+   double gamma = g0_*(q/q0)*(m0_/m);
+   double cotg_deltaR = (m0_*m0_-m*m)/(m0_*gamma);
+
+   pycuda::complex<double> T = 1./(cotg_deltaB-i)+expo/(cotg_deltaR-i);
+
+   return T*exp(-i*1.42642);
 
  }
 
@@ -1554,7 +1579,7 @@ __device__ pycuda::complex<double> Mji(double m, int ji) {
 
    if (ji == 0)
 	{
-	T = Prop_Stheo(m);
+	T = Prop_Lass(m);
 	}
 
    else if (ji == 1)

@@ -91,88 +91,84 @@ def component(j1,j2,h,j1p,j2p,hp):
 def setParamVals(wide_window):
 
 	if wide_window==0:
-		reA00.setVal(0.948035475251)
-		reA01.setVal(-0.314315978756)
-		reA10.setVal(-0.778294337834)
-		reA11par.setVal(-0.783911135408)
-		reA11perp.setVal(0.170293724286)
-		DCP.setVal(0.706388181652)
-		imA00.setVal(0.732707072522)
-		imA01.setVal(-2.57774523924)
-		imA10.setVal(2.03274753464)
-		imA11par.setVal(1.0267025163)
-		imA11perp.setVal(1.82225543352)
-		phis.setVal(0.67001762068)
-		delta_m_Bs.setVal(17.5557491521)
-		gamma_Bs.setVal(0.664654789433)
-		delta_gamma_Bs.setVal(0.084870732614)
-		p0metac_SSK.setVal(0.00632801805922)
-		p0metac_OS.setVal(0.00619328051357)
-		Dp0half_SSK.setVal(-0.00804306928992)
-		Dp0half_OS.setVal(0.00699388150788)
-		p1_SSK.setVal(0.93112759178)
-		p1_OS.setVal(0.985455523057)
-		Dp1half_SSK.setVal(-0.0174459170893)
-		Dp1half_OS.setVal(0.0329575579336)
-		tres_p0_2011.setVal(0.0352418847066)
-		tres_p1_2011.setVal(1.19923624748)
-		tres_p0_2012.setVal(0.036622634167)
-		tres_p1_2012.setVal(1.2209471473)
+		reA00.setVal(0.97163994981)
+		reA01.setVal(-0.307779453311)
+		reA10.setVal(-0.825779978734)
+		reA11par.setVal(-0.806142954203)
+		reA11perp.setVal(0.13028597937)
+		imA00.setVal(0.78498772682)
+		imA01.setVal(-2.63286888731)
+		imA10.setVal(2.07320622707)
+		imA11par.setVal(1.03541700344)
+		imA11perp.setVal(1.850718779)
+		delta_m_Bs.setVal(17.5551050692)
+		gamma_Bs.setVal(0.664714683125)
+		delta_gamma_Bs.setVal(0.0849436415988)
+		p0metac_SSK.setVal(0.00635590157063)
+		p0metac_OS.setVal(0.00623255021164)
+		Dp0half_SSK.setVal(-0.00804081446555)
+		Dp0half_OS.setVal(0.00699331466117)
+		p1_SSK.setVal(0.931921848337)
+		p1_OS.setVal(0.985639376943)
+		Dp1half_SSK.setVal(-0.0173054641083)
+		Dp1half_OS.setVal(0.032943401124)
+		tres_p0_2011.setVal(0.0352456006781)
+		tres_p1_2011.setVal(1.19984781615)
+		tres_p0_2012.setVal(0.0365982765612)
+		tres_p1_2012.setVal(1.21774637388)
 
 	else:
-		reA00.setVal(3.38992541223)
-		reA01.setVal(-1.93778474274)
-		reA10.setVal(0.0393935075086)
-		reA02.setVal(-0.824276568039)
-		reA20.setVal(0.711449490773)
-		reA11par.setVal(-0.475974644898)
-		reA11perp.setVal(-0.13147967003)
-		reA120.setVal(-2.13562135697)
-		reA12par.setVal(-0.261505245007)
-		reA12perp.setVal(-0.76751758913)
-		reA210.setVal(0.00472664891672)
-		reA21par.setVal(0.669672601036)
-		reA21perp.setVal(0.566282039309)
-		reA220.setVal(0.0155493281519)
-		reA22par.setVal(-0.168873224391)
-		reA22perp.setVal(-0.110935645557)
-		reA22par2.setVal(0.129065723345)
-		reA22perp2.setVal(0.468637754788)
-		DCP.setVal(0.511543857526)
-		imA00.setVal(1.79862234882)
-		imA01.setVal(-4.49341992372)
-		imA10.setVal(3.21035422237)
-		imA02.setVal(-0.126969198327)
-		imA20.setVal(-1.19874144054)
-		imA11par.setVal(1.32803549687)
-		imA11perp.setVal(1.94268970726)
-		imA120.setVal(-0.6442464873)
-		imA12par.setVal(-0.0767834520882)
-		imA12perp.setVal(0.516407282795)
-		imA210.setVal(1.13169458422)
-		imA21par.setVal(0.273260847267)
-		imA21perp.setVal(-0.534212473874)
-		imA220.setVal(0.286138922488)
-		imA22par.setVal(0.407805735543)
-		imA22perp.setVal(0.595580814108)
-		imA22par2.setVal(-0.0607650912831)
-		imA22perp2.setVal(-0.216718515802)
-		phis.setVal(0.41663705609)
-		delta_m_Bs.setVal(17.6007282591)
-		gamma_Bs.setVal(0.665141063975)
-		delta_gamma_Bs.setVal(0.0858916708466)
-		p0metac_SSK.setVal(0.00723460868976)
-		p0metac_OS.setVal(0.00781941624845)
-		Dp0half_SSK.setVal(-0.00805206018402)
-		Dp0half_OS.setVal(0.0069928282419)
-		p1_SSK.setVal(0.934161923136)
-		p1_OS.setVal(0.993443904536)
-		Dp1half_SSK.setVal(-0.0151953769893)
-		Dp1half_OS.setVal(0.0328143938181)
-		tres_p0_2011.setVal(0.0347691760717)
-		tres_p1_2011.setVal(1.15418084809)
-		tres_p0_2012.setVal(0.0365008223169)
-		tres_p1_2012.setVal(1.26828176096)
+		reA00.setVal(0.263213091699)
+		reA01.setVal(1.07653830679)
+		reA10.setVal(-1.49625609054)
+		reA02.setVal(1.26904336768)
+		reA20.setVal(-0.974895358627)
+		reA11par.setVal(-0.601174018752)
+		reA11perp.setVal(-0.465295943202)
+		reA120.setVal(0.602027386833)
+		reA12par.setVal(-0.271829808593)
+		reA12perp.setVal(0.0989766761271)
+		reA210.setVal(2.10776223128)
+		reA21par.setVal(0.539024552709)
+		reA21perp.setVal(0.236222658219)
+		reA220.setVal(0.00981334657903)
+		reA22par.setVal(-0.381578372735)
+		reA22perp.setVal(-0.146879290127)
+		reA22par2.setVal(-0.234269594676)
+		reA22perp2.setVal(-0.49213232522)
+		imA00.setVal(2.05661861783)
+		imA01.setVal(-2.54827686531)
+		imA10.setVal(1.74387412348)
+		imA02.setVal(0.167910477061)
+		imA20.setVal(0.356617983551)
+		imA11par.setVal(0.647365397275)
+		imA11perp.setVal(1.15908031842)
+		imA120.setVal(0.818587824167)
+		imA12par.setVal(-0.568102894404)
+		imA12perp.setVal(-0.981310365381)
+		imA210.setVal(-0.196363957019)
+		imA21par.setVal(0.0565340027071)
+		imA21perp.setVal(0.101936877575)
+		imA220.setVal(0.363806432797)
+		imA22par.setVal(0.145121203089)
+		imA22perp.setVal(-0.376583167345)
+		imA22par2.setVal(-0.506870743142)
+		imA22perp2.setVal(0.00272493632338)
+		delta_m_Bs.setVal(17.564750247)
+		gamma_Bs.setVal(0.666081049602)
+		delta_gamma_Bs.setVal(0.0835709599753)
+		p0metac_SSK.setVal(0.00819184747504)
+		p0metac_OS.setVal(0.00873392093879)
+		Dp0half_SSK.setVal(-0.00803923202808)
+		Dp0half_OS.setVal(0.00699395305975)
+		p1_SSK.setVal(0.924624591241)
+		p1_OS.setVal(0.98702060421)
+		Dp1half_SSK.setVal(-0.0152298955895)
+		Dp1half_OS.setVal(0.0328165865918)
+		tres_p0_2011.setVal(0.0347684184156)
+		tres_p1_2011.setVal(1.1538488585)
+		tres_p0_2012.setVal(0.0364542070585)
+		tres_p1_2012.setVal(1.25984512077)
 
 
 def aux_PDF():
@@ -2874,7 +2870,8 @@ max_strong_params = ['reA00', 'reA01', 'reA10', 'reA02', 'reA20', 'reA11par', 'r
 par_name_dict = {'reA22perp': 'Re(A^{TT}_{#perp1})', 'reA22par2': 'Re(A^{TT}_{#parallel2})', 'delta_210': '#delta^{TV}_{0}', 'tres_p1_2012': 'p_{1}^{#sigma_{t}}(2012)', 'tres_p1_2011': 'p_{1}^{#sigma_{t}}(2011)', 'delta_00': '#delta^{SS}', 'reA10': 'Re(A^{VS})', 'p0metac_OS': 'p_{0}^{OS}-<#eta^{OS}>', 'reA220': 'Re(A^{TT}_{L})', 'reA20': 'Re(A^{TS})', 'delta_10': '#delta^{VS}', 'imA21par': 'Im(A^{TV}_{#parallel})', 'reA11par': 'Re(A^{VV}_{#parallel})', 'delta_11par': '#delta^{VV}_{#parallel}', 'DCP': '#Delta^{CP}', 'imA22perp2': 'Im(A^{TT}_{#perp2})', 'delta_12par': '#delta^{VT}_{#parallel}', 'delta_01': '#delta^{SV}', 'imA22par': 'Im(A^{TT}_{#parallel1})', 'delta_02': '#delta^{ST}', 'reA22par': 'Re(A^{TT}_{#parallel1})', 'p1_SSK': 'p_{1}^{SSK}', 'delta_22perp': '#delta^{TT}_{#perp1}', 'reA21par': 'Re(A^{TV}_{#parallel})', 'delta_21par': '#delta^{TV}_{#parallel}', 'Dp1half_SSK': '1/2 #Delta p_{1}^{SSK}', 'delta_11perp': '#delta^{VV}_{#perp}', 'f_perp2_22': 'f_{#perp2}^{TT}', 'imA210': 'Im(A^{TV}_{L})', 'tres_p0_2011': 'p_{0}^{#sigma_{t}}(2011)', 'reA120': 'Re(A^{VT}_{L})', 'imA21perp': 'Im(A^{TV}_{#perp})', 'tres_p0_2012': 'p_{0}^{#sigma_{t}}(2012)', 'delta_22perp2': '#delta^{TT}_{#perp2}', 'reA22perp2': 'Re(A^{TT}_{#perp2})', 'imA10': 'Im(A^{VS})', 'delta_21perp': '#delta^{TV}_{#perp}', 'p1_OS': 'p_{1}^{OS}', 'delta_22par2': '#delta^{TT}_{#parallel2}', 'f_22': 'f_{TT}', 'f_21': 'f_{TV}', 'f_20': 'f_{TS}', 'f_L_22': 'f_L^{TT}', 'f_par_22': 'f_{#parallel1}^{TT}', 'f_par_21': 'f_{#parallel}^{TV}', 'f_L_21': 'f_L^{TV}', 'imA12perp': 'Im(A^{VT}_{#perp})', 'delta_12perp': '#delta^{VT}_{#perp}', 'imA220': 'Im(A^{TT}_{L})', 'delta_m_Bs': '#Delta m_{B_{s}^{0}}', 'reA12par': 'Re(A^{VT}_{#parallel})', 'f_par2_22': 'f_{#parallel2}^{TT}', 'Dp1half_OS': '1/2 #Delta p_{1}^{OS}', 'f_12': 'f_{VT}', 'f_10': 'f_{VS}', 'f_11': 'f_{VV}', 'imA02': 'Im(A^{ST})', 'imA00': 'Im(A^{SS})', 'imA01': 'Im(A^{SV})', 'f_par_12': 'f_{#parallel}^{VT}', 'f_par_11': 'f_{#parallel}^{VV}', 'reA01': 'Re(A^{SV})', 'Dp0half_OS': '1/2 #Delta p_{0}^{OS}', 'reA11perp': 'Re(A^{VV}_{#perp})', 'imA120': 'Im(A^{VT}_{L})', 'f_01': 'f_{SV}', 'f_00': 'f_{SS}', 'f_02': 'f_{ST}', 'gamma_Bs': '#Gamma_{B_{s}^{0}}', 'f_perp_22': 'f_{#perp1}^{TT}', 'f_perp_21': 'f_{#perp}^{TV}', 'p0metac_SSK': 'p_{0}^{SSK}-<#eta^{SSK}>', 'imA22perp': 'Im(A^{TT}_{#perp1})', 'delta_22par': '#delta^{TT}_{#parallel1}', 'imA22par2': 'Im(A^{TT}_{#parallel2})', 'reA210': 'Re(A^{TV}_{L})', 'imA20': 'Im(A^{TS})', 'imA11perp': 'Im(A^{VV}_{#perp})', 'f_L_12': 'f_L^{VT}', 'f_L_11': 'f_L^{VV}', 'f_perp_12': 'f_{#perp}^{VT}', 'f_perp_11': 'f_{#perp}^{VV}', 'delta_120': '#delta^{VT}_{0}', 'delta_220': '#delta^{TT}_{0}', 'reA21perp': 'Re(A^{TV}_{#perp})', 'imA11par': 'Im(A^{VV}_{#parallel})', 'reA12perp': 'Re(A^{VT}_{#perp})', 'Dp0half_SSK': '1/2 #Delta p_{0}^{SSK}', 'reA00': 'Re(A^{SS})', 'reA02': 'Re(A^{ST})', 'delta_gamma_Bs': '#Delta #Gamma_{B_{s}^{0}}', 'delta_20': '#delta^{TS}', 'imA12par': 'Im(A^{VT}_{#parallel})', 'phis': '#phi_{s}'}
 
 def stringline_CUDA(parname,upardict):
-   if type(upardict[parname]) == type(0.): return ''
+   if parname not in upardict.keys(): return ''
+   elif type(upardict[parname]) == type(0.): return ''
    else: return '$'+par_name_dict[parname]+'$ & $'+'{:L}'.format(upardict[parname])+'$ \\\\\n'
 
 def fitprint2LaTeX_CUDA(upardict,wide_window):
@@ -3026,7 +3023,7 @@ def fitprint2LaTeX_CUDA(upardict,wide_window):
 	texfile.write(partext)
 	texfile.close()
 
-def DoCUDAFit(data_,params_,blinding_,wide_window_,minos_):
+def DoCUDAFit(data_,params_,blinding_,wide_window_,minos_,output_file_name_):
 
    print "\n#####################################################################"
    print " P R E P A R I N G   C U D A   F R A M E W O R K"
@@ -3196,9 +3193,24 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,minos_):
          if par_temp.std_dev > 1e-10:
             polarparamnames.append(par)
             upar[par] = par_temp
-         else: upar[par] = par_temp.nominal_value
 
    fitprint2LaTeX_CUDA(upar,wide_window_)
+
+   for par in params_:
+      if (("DCP" in par.GetName()) or ("phis" in par.GetName())) and blinding_: par.setVal(upar[par.GetName()].nominal_value-blinding_strings[par.GetName()])
+      else: par.setVal(upar[par.GetName()].nominal_value)
+
+   for par in params_:
+      if ((not "DCP" in par.GetName()) and (not "phis" in par.GetName())): print '\t\t'+par.GetName()+'.setVal('+str(par.getVal())+')'
+   print ''
+
+   if output_file_name_ != "":
+      par_result_dict = {}
+      for par in paramnames+polarparamnames: par_result_dict[par] = (upar[par].nominal_value,upar[par].std_dev,par_name_dict[par].replace('#','\\'))
+      fresult = open('_'+output_file_name_+'.py','w')
+      fresult.write("par_result_dict = "+str(par_result_dict))
+      fresult.close()
+      print 'Fit results saved in _'+output_file_name_+'.py'
 
    print '\nINFO:',int((timer() - start)/60),'min needed to do the fit.'
 
@@ -3497,7 +3509,7 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag):
       manager.set_gen_step(2)
       manager.createFit()
       manager.generate()
-      """s = ""
+      s = ""
       for ev in range(N_events):
          for v in range(12): s += str(1*manager.cats[0].data[ev][v]) + " "
          s += "\n"
@@ -3507,10 +3519,10 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag):
       gROOT.Reset()
       fout = ROOT.TFile("tmp.root","RECREATE")
       tout = ROOT.TTree("DecayTree","DecayTree")
-      tout.ReadFile("tmp.dat",dec_SSK_name+":"+dec_OS_name+":"+eta_SSK_name+":"+eta_OS_name+":"+m1_name+":"+m2_name+":"+cos1_name+":"+cos2_name+":"+phi_name+":"+t_name+":"+terror_name+":weight")
+      tout.ReadFile("tmp.dat",dec_SSK_name+":"+dec_OS_name+":"+eta_SSK_name+":"+eta_OS_name+":"+m1_name+":"+m2_name+":"+cos1_name+":"+cos2_name+":"+phi_name+":"+t_name+":"+terror_name+":sweight")
       tout.Write()
       fout.Close()
-      os.system("rm tmp.dat")"""
+      os.system("rm tmp.dat")
 
       print 'MCS INFO ---> Fitting sample #'+str(iexp)
       manager.set_gen_step(3)
@@ -3543,7 +3555,6 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag):
                if par_temp.std_dev > 1e-10:
                   polarparamnames.append(par)
                   upar[par] = par_temp
-               else: upar[par] = par_temp.nominal_value
 
          allparamnames = []
          for par in toyparamnames: allparamnames.append(par)

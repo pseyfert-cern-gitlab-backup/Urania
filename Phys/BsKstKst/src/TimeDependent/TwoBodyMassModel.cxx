@@ -217,7 +217,7 @@ TComplex TwoBodyMassModel::Lass(Double_t m, Double_t m0, Double_t g0) const
    Double_t q = get_q(m,MPion,MKaon);
    Double_t q0 = get_q(m0,MPion,MKaon);
 
-   Double_t cotg_deltaB = 1./(c1*q)+0.5*c2*q;
+   Double_t cotg_deltaB = c1/q+0.5*c2*q;
    Double_t deltaB = atan(1./cotg_deltaB);
    TComplex expo(1.,2.*deltaB,1);
 
@@ -558,7 +558,7 @@ TComplex TwoBodyMassModel::Prop_S_Palano(Double_t m) const
    TComplex T11_hat = s_Kpi_palano/(svar_GeV-s_A_palano)*(K11-rho_2*detK)/Delta;
    TComplex T12_hat = s_Kpi_palano/(svar_GeV-s_A_palano)*K12/Delta;
 
-   Double_t xm = (m-1175.)/425.;
+   Double_t xm = X;//(m-1175.)/425.;
    Double_t alpha_1_s = 1.+c1*xm+c2*(2.*xm*xm-1.)+c3*(4.*xm*xm*xm-3.*xm)+c4*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
    Double_t alpha_2_s = c5+c6*xm+c7*(2.*xm*xm-1.)+c8*(4.*xm*xm*xm-3.*xm)+c9*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
 
@@ -578,7 +578,7 @@ TComplex TwoBodyMassModel::Mji(Double_t m, Int_t ji) const
 
    if (ji == 0)
 	{
-	T = Prop_S_Palano(m)/5.001755254370297;
+	T = Lass(m,c3,c4)/10.;
 	}
 
    else if (ji == 1)

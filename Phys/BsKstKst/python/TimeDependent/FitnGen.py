@@ -72,13 +72,13 @@ activ_minos = 0
 fit_strategy = 1
 
 # Plotting options.
-m_binning = 50
-cos_binning = 50
-phi_binning = 50
+m_binning = 30
+cos_binning = 30
+phi_binning = 30
 t_binning = 12
 
 # Generation options.
-nexperiments = 1000
+nexperiments = 1
 nevents = 6220
 njobs = 1
 use_GRID = 0
@@ -109,9 +109,9 @@ inf_t_res,wide_window,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fi
 	setParamVals(wide_window)
 
 	# Uncomment below for VV only fit, when in narrow window.
-	for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
-		par.setVal(0.)
-		par.setConstant(1)
+	#for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
+	#	par.setVal(0.)
+	#	par.setConstant(1)
 
 	model, params = createSimPDF(TD_fit,Blinding,No_CP_Switch,No_dirCP_Switch,Same_CP_Switch,acc_type,\
 inf_t_res,wide_window,data_file,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params,\
@@ -130,7 +130,7 @@ pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_r
 
 	return result
 
-def CUDAfit():
+def CUDAfit(output_file_name):
 
 	# Compile and load the C++ libraries.
 	ForceCompileLibs()
@@ -146,16 +146,16 @@ inf_t_res,wide_window,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fi
 	setParamVals(wide_window)
 
 	# Uncomment below for VV only fit, when in narrow window.
-	#for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
-	#	par.setVal(0.)
-	#	par.setConstant(1)
+	for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
+		par.setVal(0.)
+		par.setConstant(1)
 
 	model, params = createSimPDF(TD_fit,Blinding,No_CP_Switch,No_dirCP_Switch,Same_CP_Switch,acc_type,\
 inf_t_res,wide_window,data_file,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params,\
 pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_rel2_Kst892,delta_Kst1680_rel2_Kst892)
 
 	# Performance of the fit.
-	DoCUDAFit(data,params,Blinding,wide_window,activ_minos)
+	DoCUDAFit(data,params,Blinding,wide_window,activ_minos,output_file_name)
 
 def fitnplot():
 
@@ -214,6 +214,55 @@ pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_r
 	c1.Print("plot61D.root") # Printing the canvas in a root file.
 
 	return result
+
+def CUDAfitnplot(output_file_name):
+
+	# Compile and load the C++ libraries.
+	ForceCompileLibs()
+
+	# Summary of the model options.
+	information(TD_fit,data_type,Blinding,No_CP_Switch,No_dirCP_Switch,Same_CP_Switch,acc_type,\
+inf_t_res,wide_window,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params,pw_alternative_model)
+
+	# Data importation.
+	data, hist_mistag_SSK, hist_mistag_OS, hist_deltat = loadData(NTUPLE_PATH,data_type,data_file,data_tree,MC_file,MC_tree,MC_type,TD_fit,sweighted,wide_window,extra_cuts,evnum_limit,use_GRID)
+
+	# Construction of the model.
+	setParamVals(wide_window)
+
+	# Uncomment below for VV only fit, when in narrow window.
+	#for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
+	#	par.setVal(0.)
+	#	par.setConstant(1)
+
+	model, params = createSimPDF(TD_fit,Blinding,No_CP_Switch,No_dirCP_Switch,Same_CP_Switch,acc_type,\
+inf_t_res,wide_window,data_file,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params,\
+pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_rel2_Kst892,delta_Kst1680_rel2_Kst892)
+
+	# Performance of the fit.
+	DoCUDAFit(data,params,Blinding,wide_window,activ_minos,output_file_name)
+
+	# Plot of the the 6 1D proyections corresponding to the 2 masses, 3 angles and decay time.
+	blindCat.setIndex(0)
+	map(lambda x:x.setDenPlotVarVal(),model[1:5])
+	plot61Ddata(data[0], 0, wide_window, m_binning, cos_binning, phi_binning, t_binning) # Plotting the dataset.
+	plot61Dmodel(model[0], data[0], wide_window) # Plotting the full model.
+	plot61Dcomponent(model[0], data[0], wide_window, 'SS', kOrange, 1)
+	plot61Dcomponent(model[0], data[0], wide_window, 'SV', kOrange+2, 1)
+	plot61Dcomponent(model[0], data[0], wide_window, 'VS', kOrange+2, 2)
+	plot61Dcomponent(model[0], data[0], wide_window, 'VV', kRed, 1)
+	if wide_window:
+		plot61Dcomponent(model[0], data[0], wide_window, 'ST', kGreen+3, 1)
+		plot61Dcomponent(model[0], data[0], wide_window, 'TS', kGreen+3, 2)
+		plot61Dcomponent(model[0], data[0], wide_window, 'VT', kMagenta+1, 1)
+		plot61Dcomponent(model[0], data[0], wide_window, 'TV', kMagenta+1, 2)
+		plot61Dcomponent(model[0], data[0], wide_window, 'TT', kBlue, 1)
+	plot61Ddata(data[0], 1, wide_window, m_binning, cos_binning, phi_binning, t_binning) # Overlaying the data points.
+	leg61D = ROOT.TLegend(0.5,0.3,0.9,0.9)
+	c1 = create61Dcanvas(wide_window,leg61D) # Drawing the plots in a canvas.
+	c1.Print("plot61D.pdf") # Printing the canvas in a pdf file.
+	c1.Print("plot61D.root") # Printing the canvas in a root file.
+	blindCat.setIndex(1)
 
 def plot():
 
@@ -426,8 +475,13 @@ pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_r
 
 if (len(sys.argv) > 1):
 	if (sys.argv[1] == "fit"): fit()
-	elif (sys.argv[1] == "cudafit"): CUDAfit()
+	elif (sys.argv[1] == "cudafit"):
+		if (len(sys.argv) > 2): CUDAfit(sys.argv[2])
+		else: CUDAfit("")
 	elif (sys.argv[1] == "fitnplot"): fitnplot()
+	elif (sys.argv[1] == "cudafitnplot"):
+		if (len(sys.argv) > 2): CUDAfitnplot(sys.argv[2])
+		else: CUDAfitnplot("")
 	elif (sys.argv[1] == "plot"): plot()
 	elif (sys.argv[1] == "gen"): gen(str(sys.argv[2]))
 	elif (sys.argv[1] == "mcsjob"): MCSJob(sys.argv[2],int(sys.argv[3]),int(sys.argv[4]),sys.argv[5],int(sys.argv[6]))

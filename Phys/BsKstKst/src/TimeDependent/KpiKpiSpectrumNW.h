@@ -89,10 +89,10 @@ Double_t cm_lass = 1.027; //MeV
 Double_t C_lass = -0.001; // (dimensionless)
 
 // Parameters of the elastic+inelastic phenomenological parameterisation of the Kpi mass amplitudes
-Double_t c1_pol_Stheo = -5.05015e-01;
-Double_t c2_pol_Stheo = -2.59249e-01;
-Double_t c3_pol_Stheo = -2.77261e-02;
-Double_t c4_pol_Stheo = 0.;
+Double_t c1_pol_Stheo = -0.434195680041;
+Double_t c2_pol_Stheo = -0.295297590317;
+Double_t c3_pol_Stheo = -0.0434834197181;
+Double_t c4_pol_Stheo = -0.0423685127109;
 Double_t MEta = 547.; // MeV/c2
 Double_t MEtaprime = 957.78; // MeV/c2
 Double_t sAdler_Stheo = 0.236;
@@ -158,15 +158,15 @@ Double_t C_22_1_palano = 0.2590;
 Double_t C_22_2_palano = 1.6950;
 Double_t C_22_3_palano = 2.2300;
 Double_t A_1_0_palano = 1.;
-Double_t A_1_1_palano = -7.07172467436;
-Double_t A_1_2_palano = 4.34784254354;
-Double_t A_1_3_palano = -3.4044610049;
-Double_t A_1_4_palano = -0.0935031564737;
-Double_t A_2_0_palano = -7.01196566782;
-Double_t A_2_1_palano = -1.37175534595;
-Double_t A_2_2_palano = -7.97420327456;
-Double_t A_2_3_palano = 1.89304254061;
-Double_t A_2_4_palano = -5.18470699036;
+Double_t A_1_1_palano = 0.00491636810678;
+Double_t A_1_2_palano = 2.12489529189;
+Double_t A_1_3_palano = 0.56004179484;
+Double_t A_1_4_palano = 0.;
+Double_t A_2_0_palano = -4.20943829183;
+Double_t A_2_1_palano = -1.2110147687;
+Double_t A_2_2_palano = 2.28474898994;
+Double_t A_2_3_palano = 5.93332582489;
+Double_t A_2_4_palano = 0.;
 
 // Auxiliar variables
 Double_t spl_coef_array_1[2][2][5][4][4][4];
