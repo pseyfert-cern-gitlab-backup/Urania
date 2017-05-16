@@ -2916,22 +2916,27 @@ TComplex KpiKpiSpectrumNW::Lass(Double_t m, Double_t m0, Double_t g0) const
  { 
 
    TComplex i(0,1);
-   
-   Double_t q = get_q(m,MPion,MKaon);
-   Double_t q0 = get_q(m0,MPion,MKaon);
 
-   Double_t cotg_deltaB = 1./(a_lass*q)+0.5*r_lass*q;
+   Double_t a_lass_ = 1./1.90008028533e-05;
+   Double_t r_lass_ = 0.00226389513951;
+   Double_t m0_ = 1381.85448767;
+   Double_t g0_ = 186.040053232;
+
+   Double_t q = get_q(m,MPion,MKaon);
+   Double_t q0 = get_q(m0_,MPion,MKaon);
+
+   Double_t cotg_deltaB = 1./(a_lass_*q)+0.5*r_lass_*q;
    Double_t deltaB = atan(1./cotg_deltaB);
    TComplex expo(1.,2.*deltaB,1);
 
-   Double_t gamma = g0*(q/q0)*(m0/m);
-   Double_t cotg_deltaR = (m0*m0-m*m)/(m0*gamma);
+   Double_t gamma = g0_*(q/q0)*(m0_/m);
+   Double_t cotg_deltaR = (m0_*m0_-m*m)/(m0_*gamma);
 
    TComplex T = 1./(cotg_deltaB-i)+expo/(cotg_deltaR-i);
 
-   return T*TComplex(1.,-0.9141811350146497,1);
+   return T*TComplex(1.,-1.42642,1);
 
- } 
+ }
 
 // ---------------------------------------------------
 // Alternative Lass parametrization for the S wave based on chiral perturbation theory.
@@ -3256,13 +3261,13 @@ TComplex KpiKpiSpectrumNW::Prop_S_Palano(Double_t m) const
    TComplex T11_hat = s_Kpi_palano/(svar_GeV-s_A_palano)*(K11-rho_2*detK)/Delta;
    TComplex T12_hat = s_Kpi_palano/(svar_GeV-s_A_palano)*K12/Delta;
 
-   Double_t xm = (m-1175.)/425.;
+   Double_t xm = X;//(m-1175.)/425.;
    Double_t alpha_1_s = A_1_0_palano+A_1_1_palano*xm+A_1_2_palano*(2.*xm*xm-1.)+A_1_3_palano*(4.*xm*xm*xm-3.*xm)+A_1_4_palano*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
    Double_t alpha_2_s = A_2_0_palano+A_2_1_palano*xm+A_2_2_palano*(2.*xm*xm-1.)+A_2_3_palano*(4.*xm*xm*xm-3.*xm)+A_2_4_palano*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
 
    TComplex T = alpha_1_s*T11_hat+alpha_2_s*T12_hat;
 
-   return T*TComplex(1.,-0.0758670,1);
+   return T*TComplex(1.,3.06573,1);
 
  }
 
@@ -3276,7 +3281,7 @@ TComplex KpiKpiSpectrumNW::Mji(Double_t m, Int_t ji) const
 
    if (ji == 0)
 	{
-	T = Prop_Stheo(m);
+	T = Lass(m,ms,gs);
 	}
 
    else if (ji == 1)

@@ -752,20 +752,25 @@ TComplex ComputeIntegrals::Lass(Double_t m, Double_t m0, Double_t g0) const
  { 
 
    TComplex i(0,1);
-   
-   Double_t q = get_q(m,MPion,MKaon);
-   Double_t q0 = get_q(m0,MPion,MKaon);
 
-   Double_t cotg_deltaB = 1./(a_lass*q)+0.5*r_lass*q;
+   Double_t a_lass_ = 1./1.90008028533e-05;
+   Double_t r_lass_ = 0.00226389513951;
+   Double_t m0_ = 1381.85448767;
+   Double_t g0_ = 186.040053232;
+
+   Double_t q = get_q(m,MPion,MKaon);
+   Double_t q0 = get_q(m0_,MPion,MKaon);
+
+   Double_t cotg_deltaB = 1./(a_lass_*q)+0.5*r_lass_*q;
    Double_t deltaB = atan(1./cotg_deltaB);
    TComplex expo(1.,2.*deltaB,1);
 
-   Double_t gamma = g0*(q/q0)*(m0/m);
-   Double_t cotg_deltaR = (m0*m0-m*m)/(m0*gamma);
+   Double_t gamma = g0_*(q/q0)*(m0_/m);
+   Double_t cotg_deltaR = (m0_*m0_-m*m)/(m0_*gamma);
 
    TComplex T = 1./(cotg_deltaB-i)+expo/(cotg_deltaR-i);
 
-   return T*TComplex(1.,-0.9141811350146497,1);
+   return T*TComplex(1.,-1.42642,1);
 
  } 
 
@@ -1092,13 +1097,13 @@ TComplex ComputeIntegrals::Prop_S_Palano(Double_t m) const
    TComplex T11_hat = s_Kpi_palano/(svar_GeV-s_A_palano)*(K11-rho_2*detK)/Delta;
    TComplex T12_hat = s_Kpi_palano/(svar_GeV-s_A_palano)*K12/Delta;
 
-   Double_t xm = (m-1175.)/425.;
+   Double_t xm = X;//(m-1175.)/425.;
    Double_t alpha_1_s = A_1_0_palano+A_1_1_palano*xm+A_1_2_palano*(2.*xm*xm-1.)+A_1_3_palano*(4.*xm*xm*xm-3.*xm)+A_1_4_palano*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
    Double_t alpha_2_s = A_2_0_palano+A_2_1_palano*xm+A_2_2_palano*(2.*xm*xm-1.)+A_2_3_palano*(4.*xm*xm*xm-3.*xm)+A_2_4_palano*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
 
    TComplex T = alpha_1_s*T11_hat+alpha_2_s*T12_hat;
 
-   return T*TComplex(1.,-0.0758670,1);
+   return T*TComplex(1.,3.06573,1);
 
  }
 
@@ -1112,7 +1117,7 @@ TComplex ComputeIntegrals::Mji(Double_t m, Int_t ji) const
 
    if (ji == 0)
 	{
-	T = Prop_Stheo(m);
+	T = Lass(m,ms,gs);
 	}
 
    else if (ji == 1)
@@ -1178,34 +1183,7 @@ TComplex ComputeIntegrals::hj1j2j1pj2p(Double_t ma, Double_t mb, Int_t j1, Int_t
 Double_t ComputeIntegrals::accTime(Double_t tau) const 
  { 
 
-   if (acctype == 0) {return 1.;}
-   else if (acctype == 1 or acctype == 2) {
-
-      Int_t tau_bin;
-      if (tau < spl.knot(wide_window,1)) {tau_bin = 0;}
-      else if ((tau >= spl.knot(wide_window,1)) and (tau < spl.knot(wide_window,2))) {tau_bin = 1;}
-      else if ((tau >= spl.knot(wide_window,2)) and (tau < spl.knot(wide_window,3))) {tau_bin = 2;}
-      else if ((tau >= spl.knot(wide_window,3)) and (tau < spl.knot(wide_window,4))) {tau_bin = 3;}
-      else {tau_bin = 4;}
-
-      return spl.coef(year_opt,trig_opt,wide_window,tau_bin,0)+tau*spl.coef(year_opt,trig_opt,wide_window,tau_bin,1)+tau*tau*spl.coef(year_opt,trig_opt,wide_window,tau_bin,2)+tau*tau*tau*spl.coef(year_opt,trig_opt,wide_window,tau_bin,3);
-
-   }
-
-   else if (acctype == 3) {
-
-      Int_t tau_bin;
-      if (tau < genaccpar.knot_gen(wide_window,1)) {tau_bin = 0;}
-      else if ((tau >= genaccpar.knot_gen(wide_window,1)) and (tau < genaccpar.knot_gen(wide_window,2))) {tau_bin = 1;}
-      else if ((tau >= genaccpar.knot_gen(wide_window,2)) and (tau < genaccpar.knot_gen(wide_window,3))) {tau_bin = 2;}
-      else if ((tau >= genaccpar.knot_gen(wide_window,3)) and (tau < genaccpar.knot_gen(wide_window,4))) {tau_bin = 3;}
-      else {tau_bin = 4;}
-
-      return genaccpar.coef_gen(wide_window,tau_bin,0)+tau*genaccpar.coef_gen(wide_window,tau_bin,1)+tau*tau*genaccpar.coef_gen(wide_window,tau_bin,2)+tau*tau*tau*genaccpar.coef_gen(wide_window,tau_bin,3);
-
-   }
-
-   return 0.;
+   return 1.;
 
  }
 
@@ -1236,11 +1214,7 @@ Double_t ComputeIntegrals::accTimeHisto(Double_t tau) const
 Double_t ComputeIntegrals::accAng(Double_t x) const
  { 
 
-   if (acctype == 0) {return 1.;}
-   else if (acctype == 1 or acctype == 2) {return 1.+accpar.k1(year_opt,trig_opt,wide_window)*x+accpar.k2(year_opt,trig_opt,wide_window)*(2.*x*x-1.)+accpar.k3(year_opt,trig_opt,wide_window)*(4.*x*x*x-3.*x)+accpar.k4(year_opt,trig_opt,wide_window)*(8.*x*x*x*x-8.*x*x+1.)+accpar.k5(year_opt,trig_opt,wide_window)*(16.*x*x*x*x*x-20.*x*x*x+5.*x);}
-   else if (acctype == 3) {return 1.+genaccpar.k1_gen(wide_window)*x+genaccpar.k2_gen(wide_window)*(2.*x*x-1.)+genaccpar.k3_gen(wide_window)*(4.*x*x*x-3.*x)+genaccpar.k4_gen(wide_window)*(8.*x*x*x*x-8.*x*x+1.)+genaccpar.k5_gen(wide_window)*(16.*x*x*x*x*x-20.*x*x*x+5.*x);}
-
-   return 0.;
+   return 1.;
 
  }
 
@@ -1249,11 +1223,7 @@ Double_t ComputeIntegrals::accAng(Double_t x) const
 Double_t ComputeIntegrals::accMass(Double_t m) const 
  { 
    
-   if (acctype == 0) {return 1.;}
-   else if (acctype == 1 or acctype == 2) {return 1. + accpar.p1(year_opt,trig_opt,wide_window)*m;}
-   else if (acctype == 3) {return 1. + genaccpar.p1_gen(wide_window)*m;}
-
-   return 0.;
+   return 1.;
 
  }
 
