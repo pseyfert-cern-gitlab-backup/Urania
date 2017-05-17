@@ -47,9 +47,9 @@ if 'limits' in configs[config] :
   limits = configs[config]['limits']
 
 if config in ["gamma_CL"] : 
-  scr = "bsub -q 2nw lb-run Urania/v6r0 %s/PIDPdf.sh %s/PIDPdf3D.py" % (cwd, cwd)
+  scr = "bsub -q 2nw lb-run --nightly-cvmfs --nightly lhcb-prerelease Urania/master python %s/PIDPdf3D.py" % (cwd)
 else : 
-  scr = "bsub -q 2nw lb-run Urania/v6r0 %s/PIDPdf.sh %s/PIDPdf.py" % (cwd, cwd)
+  scr = "bsub -q 2nw lb-run --nightly-cvmfs --nightly lhcb-prerelease Urania/master python %s/PIDPdf.py" % (cwd)
 
 # Electron sample needs additional option
 if sample == "e" : 

@@ -68,13 +68,26 @@ samples = {
     'eta'     : "Mu_Eta", 
     'ntracks' : "nTracks", 
   }, 
-  "e" : {
+  "e20" : {
     'reco' : 'Reco14_DATA', 
     'datasets' : {
       'MagUp_2012'   : ("Jpsi_e_MagUp_Strip20_%d.root", 1), 
       'MagDown_2012' : ("Jpsi_e_MagDown_Strip20_%d.root", 1), 
       'MagUp_2011'   : ("Jpsi_e_MagUp_Strip20r1_%d.root", 1), 
       'MagDown_2011' : ("Jpsi_e_MagDown_Strip20r1_%d.root", 1),
+    }, 
+    'tree'    : "JpsieeCalib", 
+    'pt'      : "e_PT", 
+    'eta'     : "e_Eta", 
+    'ntracks' : "nTracks", 
+  }, 
+  "e21" : {
+    'reco' : 'Reco14_DATA', 
+    'datasets' : {
+      'MagUp_2012'   : ("Jpsi_e_MagUp_Strip21_%d.root", 1), 
+      'MagDown_2012' : ("Jpsi_e_MagDown_Strip21_%d.root", 1), 
+      'MagUp_2011'   : ("Jpsi_e_MagUp_Strip21r1_%d.root", 1), 
+      'MagDown_2011' : ("Jpsi_e_MagDown_Strip21r1_%d.root", 1),
     }, 
     'tree'    : "JpsieeCalib", 
     'pt'      : "e_PT", 
@@ -175,19 +188,6 @@ configs = {
     'controlstat' : 5000000, 
     'nbootstrap' : 10
   }, 
-  "e_V3ProbNNe" : {
-    "sample" : "e", 
-    "var" : "e_V3ProbNNe", 
-    "bins" : 30, 
-    "transform_forward"  : "1.-(1.-x)**0.25", 
-    "transform_backward" : "(1.-(1.-x)**(1./0.25))", 
-    'scale_default' : 1.5, 
-    'scale_syst' : 2.0, 
-    'scale_pid' : 2.0, 
-    'toystat' : 300000, 
-    'controlstat' : 300000, 
-    'nbootstrap' : 0
-  }, 
   "K_CombDLLK" : {
     "sample" : "K", 
     "var" : "K_CombDLLK", 
@@ -214,20 +214,6 @@ configs = {
     'limits' : (-100., 20), 
     'toystat' : 10000000, 
     'controlstat' : 5000000, 
-    'nbootstrap' : 10
-  }, 
-  "e_CombDLLe" : {
-    "sample" : "e", 
-    "var" : "e_CombDLLe", 
-    "transform_forward"  : "x", 
-    "transform_backward" : "x", 
-    "bins" : 30, 
-    "limits" : (-20., 20.), 
-    'scale_default' : 2.0, 
-    'scale_syst' : 2.5, 
-    'scale_pid' : 2.0, 
-    'toystat' : 300000, 
-    'controlstat' : 300000, 
     'nbootstrap' : 10
   }, 
   "mu_CombDLLmu" : {
@@ -485,6 +471,60 @@ configs = {
     'toystat' : 10000000, 
     'controlstat' : 5000000, 
     'nbootstrap' : 10
+  }, 
+  "e_S20V3ProbNNe" : {
+    "sample" : "e20", 
+    "var" : "e_V3ProbNNe", 
+    "bins" : 30, 
+    "transform_forward"  : "1.-(1.-x)**0.25", 
+    "transform_backward" : "(1.-(1.-x)**(1./0.25))", 
+    'scale_default' : 1.5, 
+    'scale_syst' : 2.0, 
+    'scale_pid' : 2.0, 
+    'toystat' : 300000, 
+    'controlstat' : 300000, 
+    'nbootstrap' : 0
+  }, 
+  "e_S20CombDLLe" : {
+    "sample" : "e20", 
+    "var" : "e_CombDLLe", 
+    "transform_forward"  : "x", 
+    "transform_backward" : "x", 
+    "bins" : 30, 
+    "limits" : (-20., 20.), 
+    'scale_default' : 2.0, 
+    'scale_syst' : 2.5, 
+    'scale_pid' : 2.0, 
+    'toystat' : 300000, 
+    'controlstat' : 300000, 
+    'nbootstrap' : 10
+  }, 
+  "e_V3ProbNNe" : {
+    "sample" : "e21", 
+    "var" : "e_V3ProbNNe", 
+    "bins" : 30, 
+    "transform_forward"  : "1.-(1.-x)**0.25", 
+    "transform_backward" : "(1.-(1.-x)**(1./0.25))", 
+    'scale_default' : 1.5, 
+    'scale_syst' : 2.0, 
+    'scale_pid' : 1.5, 
+    'toystat' : 300000, 
+    'controlstat' : 300000, 
+    'nbootstrap' : 5
+  }, 
+  "e_CombDLLe" : {
+    "sample" : "e21", 
+    "var" : "e_CombDLLe", 
+    "transform_forward"  : "x", 
+    "transform_backward" : "x", 
+    "bins" : 30, 
+    "limits" : (-20., 20.), 
+    'scale_default' : 2.0, 
+    'scale_syst' : 2.5, 
+    'scale_pid' : 1.5, 
+    'toystat' : 300000, 
+    'controlstat' : 300000, 
+    'nbootstrap' : 5
   }, 
   "gamma_CL" : {
     "sample" : "gammaKst", 
