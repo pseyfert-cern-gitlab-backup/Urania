@@ -1590,8 +1590,8 @@ def runMDFitter_Bd( debug,
 		corrMat.Print("v")
 
 		#Plot correlation and covariance matrices
-		PlotResultMatrix(fitResult, "covariance", outputplotdir+"MDFit_CovarianceMatrix.pdf", False)
-		PlotResultMatrix(fitResult, "correlation", outputplotdir+"MDFit_CorrelationMatrix.pdf", False)
+		PlotResultMatrix(fitResult, "covariance", outputplotdir+"MDFit_CovarianceMatrix.pdf")
+		PlotResultMatrix(fitResult, "correlation", outputplotdir+"MDFit_CorrelationMatrix.pdf")
 
 		#Update what is contained in workspace
 		fitResult = WS(workspaceOut, fitResult)

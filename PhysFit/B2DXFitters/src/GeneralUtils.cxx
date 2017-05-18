@@ -403,7 +403,14 @@ namespace GeneralUtils {
         if(line == sig.Data() ){
           while( line != "###" ){
             getline (myfile,line);
-            if( line != "###"){ FileName.push_back(line.c_str());}
+            if( line != "###")
+            { 
+              FileName.push_back(line.c_str());
+              if(debug)
+              {
+                std::cout<<"[DEBUG] ==> GeneralUtils::ReadOneName(...). " << line.c_str() << " added to FileName"<<std::endl;
+              } 
+            }
           }
         }
       }
@@ -464,7 +471,13 @@ namespace GeneralUtils {
     TFile* file = NULL;
     TTree* tree = NULL;
 
-   
+    if(debug)
+    {
+      std::cout<<"[DEBUG] i+1 "<<i+1<<std::endl;
+      std::cout<<"[DEBUG] FileName[0] "<<FileName[0]<<std::endl;
+      std::cout<<"[DEBUG] FileName[i+1] "<<FileName[i+1]<<std::endl;
+    }
+
     name[0] = FileName[0]+FileName[i+1];
     if ( debug == true) std::cout<<"[INFO] file to open "<<name[0]<<std::endl; 
 
@@ -1329,13 +1342,17 @@ namespace GeneralUtils {
                          TString &dat, TString & sample, TString& mode, TString& year, TString& hypo,
                          TString merge, bool debug )
   {
-
-    if ( debug == true ) {
-      std::cout<<"[INFO] GetDataSet(...)"<<std::endl; 
-      if (debug == true ){ std::cout<<"[INFO] Sample: "<<sample<<", Mode: "<<mode<<", Year: "<<year<<", Hypo: "<<hypo<<", Merge: "<<merge<<std::endl; }
-      if ( (merge == "pol" || merge == "both") && sample != "both") { std::cout<<"[ERROR] Option --merge pol only possible for --pol both"<<std::endl; return NULL; }
-      if ( (merge == "year" || merge == "both") && year != "run1") { std::cout<<"[ERROR] Option --merge year only possible for --year run1"<<std::endl; return NULL; }
-    }
+    
+    if ( debug == true ) { std::cout<<"[INFO] GetDataSet(...)"<<std::endl; }
+    if (debug == true ){ std::cout<<"[INFO] Sample: "<<sample<<", Mode: "<<mode<<", Year: "<<year<<", Hypo: "<<hypo<<", Merge: "<<merge<<std::endl; }
+    if ( (merge == "pol" || merge == "both" || merge == "bothrun1" || merge == "bothrun2" || merge == "bothall") && sample != "both") 
+    { std::cout<<"[ERROR] Option --merge pol only possible for --pol both"<<std::endl; return NULL; }
+    if ( ( (merge == "year" || merge == "yearrun1" || merge == "both" || merge == "bothrun1" ) && year != "run1") ||
+         ( (merge == "yearrun2" || merge == "bothrun2") && year != "run2") ||
+         ( (merge == "yearall" || merge == "bothall") && year != "all") )
+    { std::cout<<"[ERROR] Option --merge year(yearrun1,both,bothrun1,yearrun2,bothrun2,yearall,bothall) only possible for --year run1(run2,all)"<<std::endl;
+      return NULL; }
+    
     std::vector <RooDataSet*> data;
     std::vector <TString> sm;
     std::vector <Int_t> nEntries;
@@ -1574,9 +1591,18 @@ namespace GeneralUtils {
     if (debug) std::cout<<"[INFO] ==> GeneralUtils::GetSampleModeYearHypo(...)" << std::endl;
 
     if (debug == true ){ std::cout<<"[INFO] Sample "<<sample<<". Mode "<<mode<<". Year "<<year<<". Hypo "<<hypo<<": Merge: "<<merge<<std::endl; }
-    if ( (merge == "pol" || merge == "both") && sample != "both") { std::cout<<"[ERROR] Option --merge pol only possible for --pol both"<<std::endl; return smyh; }
-    if ( (merge == "year" || merge == "both") && year != "run1") { std::cout<<"[ERROR] Option --merge year only possible for --year run1"<<std::endl; return smyh; }
-
+    if ( (merge == "pol" || merge == "both" || merge == "bothrun1" || merge == "bothrun2" || merge == "bothall") && sample != "both")
+    { std::cout<<"[ERROR] Option --merge pol only possible for --pol both"<<std::endl;
+      exit(-1);
+    }    
+    if ( ( (merge == "year" || merge == "yearrun1" || merge == "both" || merge == "bothrun1" ) && year != "run1") ||
+         ( (merge == "yearrun2" || merge == "bothrun2") && year != "run2") ||
+         ( (merge == "yearall" || merge == "bothall") && year != "all") )
+    { 
+      std::cout<<"[ERROR] Option --merge year(yearrun1,both,bothrun1,yearrun2,bothrun2,yearall,bothall) only possible for --year run1(run2,all)"<<std::endl; 
+      exit(-1);
+    }
+    
     TString newmerge;
 
     if (!merge.Contains("already")) //usual case
@@ -1658,9 +1684,13 @@ namespace GeneralUtils {
         }
       }
     }
-    else if ( newmerge == "year" )
+    else if ( newmerge.Contains("year") )
 	  {
-	    TString y1 = "run1"; 
+      TString y1;
+	    if(newmerge == "year" || newmerge == "yearrun1" ) y1 = "run1";
+      else if (newmerge == "yearrun2" ) y1 = "run2";
+      else if (newmerge == "yearall" ) y1 = "all";
+
 	    for (unsigned int i=0; i<m.size(); i++ )
       {
         for(unsigned int j = 0; j<s.size(); j++ )
@@ -1681,10 +1711,14 @@ namespace GeneralUtils {
       }
 
 	  }
-    else if ( newmerge == "both" )
+    else if ( newmerge.Contains("both") )
 	  {
 	    TString s1 = "both";
-	    TString y1 = "run1";
+	    TString y1;
+      if(newmerge == "both" || newmerge == "bothrun1" ) y1 = "run1";
+      else if (newmerge == "bothrun2" ) y1 = "run2";
+      else if (newmerge == "bothall" ) y1 = "all";
+
 	    for (unsigned int i=0; i<m.size(); i++ )
       {
         for(unsigned int l=0; l<h.size(); l++ )
@@ -1710,6 +1744,8 @@ namespace GeneralUtils {
   {
     std::vector <TString> y;
     if ( year == "run1")  { y.push_back("2011"); y.push_back("2012"); }
+    else if ( year == "run2") { y.push_back("2015"); y.push_back("2016");}
+    else if ( year == "all") { y.push_back("2011"); y.push_back("2012"); y.push_back("2015"); y.push_back("2016"); }    
     else { y.push_back(year); }
 
     return y;
@@ -1718,10 +1754,22 @@ namespace GeneralUtils {
   std::vector<TString> GetDataYear(TString check, TString merge, bool debug)
   {
     std::vector<TString> year;
-    if ( merge == "year" || merge == "both")
+    if ( merge == "year" || merge == "yearrun1" || merge == "both" || merge == "bothrun1") //backward compatible
     {
       year.push_back("2011");
       year.push_back("2012");
+    }
+    else if(merge == "yearrun2" || merge == "bothrun2")
+    {
+      year.push_back("2015");
+      year.push_back("2016");
+    }
+    else if(merge == "yearall" || merge == "bothall")
+    {
+      year.push_back("2011");
+      year.push_back("2012");
+      year.push_back("2015");
+      year.push_back("2016");
     }
     else
     {
@@ -2490,8 +2538,16 @@ namespace GeneralUtils {
     { year ="2011"; }
     else if (check.Contains("2012") == true )
     { year = "2012";}
+    else if (check.Contains("2015") == true )
+    { year = "2015"; }
+    else if (check.Contains("2016") == true )
+    { year = "2016"; }
     else if (check.Contains("run1") == true || check.Contains("Run1") == true )
-    { year = "run1"; } 
+    { year = "run1"; }
+    else if (check.Contains("run2") == true || check.Contains("Run2") == true )
+    { year = "run2"; }    
+    else if (check.Contains("all") == true || check.Contains("All") == true )
+    { year = "all"; }
     if (debug == true ){ std::cout<<"[INFO] Check data year: "<<year<<std::endl; }
     return year;    
   }

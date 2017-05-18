@@ -4,6 +4,14 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
+! 2017-05-12 - Vincenzo Battista
+ - Add updates for Bd->Dpi. Include more taggers in "CheckTagger" of MDFitterSettings.
+   Include AdditionalVariables in ObtainSignal (MassFitUtils).
+   Fix bug in timepdfutils_Bd.py affecting C coefficients in HFAG convention.
+
+! 2017-04-28 - Vincenzo Battista
+ - First implementation for run2 data handling in B2DXFitters
+
 ! 2017-03-24 - Carlos Vazquez Sierra
  - Make version v3r4p1 for release.
 

@@ -264,7 +264,7 @@ def BootstrapMC(configName,
     print "========================================="
     print ""
 
-    OutputData_temp = WS(ws, RooDataSet(dataName+"_temp",
+    OutputData_temp = WS(ws, RooDataSet(dataName,
                                         InputData.GetTitle(),
                                         InputData.get()) )
 
@@ -301,12 +301,12 @@ def BootstrapMC(configName,
 
     if modifyAsymmAfter:
         from B2DXFitters.utils import ModifyAsymmetry as ModifyAsymmetry
+        OutputData_temp.SetName(OutputData_temp.GetName()+"_temp")
         OutputData = ModifyAsymmetry(ws, OutputData_temp, myconfigfile, dataName)
     else:
         OutputData = OutputData_temp
 
     OutputData.SetName(dataName)
-    OutputData = WS(ws, OutputData)
 
     print ""
     print "========================================="
@@ -322,8 +322,8 @@ def BootstrapMC(configName,
     OutputWorkspace.Print("v")
     OutputWorkspace.writeToFile(outputFile)
 
-    tree = OutputData.tree()
-    tree.SaveAs("TheTestTree.root")
+    #tree = OutputData.tree()
+    #tree.SaveAs("TheTestTree.root")
     
 #-----------------------------------------------------------------------------
 
