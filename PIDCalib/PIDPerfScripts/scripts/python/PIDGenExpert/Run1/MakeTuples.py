@@ -1,6 +1,5 @@
-import os, sys
+import os, sys, math
 from ROOT import TFile, TNtuple
-from math import sqrt, log
 
 from Config import *
 
@@ -13,10 +12,10 @@ def convert_single_file(infile, f2, nt2, treename, pidvar, ptvar, etavar, ntrack
   n = 0
   x_code = compile("i.%s" % pidvar, '<string>', 'eval')
   pid_code = compile(transform, '<string>', 'eval')
-  pt_code = compile("log(i.%s)" % ptvar, '<string>', 'eval')
+  pt_code = compile("math.log(i.%s)" % ptvar, '<string>', 'eval')
   eta_code = compile("i.%s" % etavar, '<string>', 'eval')
   if ntracksvar : 
-    ntracks_code = compile("log(i.%s)" % ntracksvar, '<string>', 'eval')
+    ntracks_code = compile("math.log(i.%s)" % ntracksvar, '<string>', 'eval')
   for i in nt1 :
       n += 1
       if (n % 10000 == 0) : 
@@ -38,7 +37,7 @@ def convert_calo_file(infile, f2, nt2, treename, pidvar, ptvar, etavar, transfor
   n = 0
   x_code = compile("i.%s" % pidvar, '<string>', 'eval')
   pid_code = compile(transform, '<string>', 'eval')
-  pt_code = compile("log(i.%s)" % ptvar, '<string>', 'eval')
+  pt_code = compile("math.log(i.%s)" % ptvar, '<string>', 'eval')
   eta_code = compile("i.%s" % etavar, '<string>', 'eval')
   for i in nt1 :
       n += 1

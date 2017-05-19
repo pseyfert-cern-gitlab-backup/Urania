@@ -1,6 +1,5 @@
-import os, sys
+import os, sys, math
 from ROOT import TFile, TNtuple, gDirectory, gROOT
-from math import sqrt, log
 
 import ConfigMC as ConfigMCSim08
 import ConfigMCSim09 as ConfigMCSim09
@@ -16,9 +15,9 @@ def convert_single_file(infile, indir, f2, nt2, treename, pidvar, ptvar, etavar,
   n = 0
   x_code = compile("i.%s" % pidvar, '<string>', 'eval')
   pid_code = compile(transform, '<string>', 'eval')
-  pt_code = compile("log(i.%s)" % ptvar, '<string>', 'eval')
+  pt_code = compile("math.log(i.%s)" % ptvar, '<string>', 'eval')
   eta_code = compile("i.%s" % etavar, '<string>', 'eval')
-  ntracks_code = compile("log(i.%s)" % ntracksvar, '<string>', 'eval')
+  ntracks_code = compile("math.log(i.%s)" % ntracksvar, '<string>', 'eval')
   if 'match' in [ b.GetName() for b in nt1.GetListOfBranches() ] : 
     match_code = compile("i.match", '<string>', 'eval')
   for i in nt1 :
