@@ -526,6 +526,33 @@ configs = {
     'controlstat' : 300000, 
     'nbootstrap' : 5
   }, 
+  "e_V3ProbNNpi" : {
+    "sample" : "e21", 
+    "var" : "e_V3ProbNNpi", 
+    "bins" : 30, 
+    "transform_forward"  : "math.tan((x-0.5)*2.9)", 
+    "transform_backward" : "math.atan(x)/2.9+0.5", 
+    "limits" : (-8.2381, 8.2381), 
+    'scale_default' : 1.5, 
+    'scale_syst' : 2.0, 
+    'scale_pid' : 1.5, 
+    'toystat' : 300000, 
+    'controlstat' : 300000, 
+    'nbootstrap' : 5
+  }, 
+  "e_V3ProbNNK" : {
+    "sample" : "e21", 
+    "var" : "e_V3ProbNNK", 
+    "bins" : 30, 
+    "transform_forward"  : "x**0.15", 
+    "transform_backward" : "x**(1./0.15)", 
+    'scale_default' : 1.5, 
+    'scale_syst' : 2.0, 
+    'scale_pid' : 1.5, 
+    'toystat' : 300000, 
+    'controlstat' : 300000, 
+    'nbootstrap' : 5
+  }, 
   "gamma_CL" : {
     "sample" : "gammaKst", 
     "var" : "gamma_CL", 
