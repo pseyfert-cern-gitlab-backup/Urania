@@ -3,6 +3,8 @@
 ! Responsible : Donal Hill
 ! Purpose     : Classes for performing PID based studies
 !-----------------------------------------------------------------------------
+! 2017-05-31 - Donal Hill
+ - Add functionality to print out bin number and low bin edges for bins with eff > 1 or < 0.
 
 ! 2017-03-22 - Carlos Vazquez Sierra
  - Make version v8r2 for release.
