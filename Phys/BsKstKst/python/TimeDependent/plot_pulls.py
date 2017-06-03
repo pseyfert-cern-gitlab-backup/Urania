@@ -12,7 +12,7 @@ fout = TFile("pulls.root","RECREATE")
 tout = TTree("Pulls","Pulls")
 s = paramnames[0]+'_pull'
 for i in range(1,len(paramnames)): s += ':'+paramnames[i]+'_pull'
-tout.ReadFile("pulls_tmp.dat",s)
+tout.ReadFile("pulls_varcmass.dat",s)
 tout.Write()
 
 max_exps = 500

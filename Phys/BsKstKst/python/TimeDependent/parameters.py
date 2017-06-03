@@ -128,7 +128,6 @@ DCP_SV = ROOT.RooRealVar("DCP_SV","#Delta^{CP}_{SV}",0.,-1.,1.)
 DCP_VS = ROOT.RooRealVar("DCP_VS","#Delta^{CP}_{VS}",0.,-1.,1.)
 DCP_ST = ROOT.RooRealVar("DCP_ST","#Delta^{CP}_{ST}",0.,-1.,1.)
 DCP_TS = ROOT.RooRealVar("DCP_TS","#Delta^{CP}_{TS}",0.,-1.,1.)
-DCP_VV = ROOT.RooRealVar("DCP_VV","#Delta^{CP}_{VV}",0.,-1.,1.)
 DCP_VT = ROOT.RooRealVar("DCP_VT","#Delta^{CP}_{VT}",0.,-1.,1.)
 DCP_TV = ROOT.RooRealVar("DCP_TV","#Delta^{CP}_{TV}",0.,-1.,1.)
 DCP_TT = ROOT.RooRealVar("DCP_TT","#Delta^{CP}_{TT}",0.,-1.,1.)
@@ -138,7 +137,6 @@ DCP_SV_withBlinding = ROOT.RooUnblindPrecision("DCP_SV_withBlinding","#Delta^{CP
 DCP_VS_withBlinding = ROOT.RooUnblindPrecision("DCP_VS_withBlinding","#Delta^{CP}_{VS}","DCP_VS_Blind",0.,blinding_scale,DCP_VS,blindCat)
 DCP_ST_withBlinding = ROOT.RooUnblindPrecision("DCP_ST_withBlinding","#Delta^{CP}_{ST}","DCP_ST_Blind",0.,blinding_scale,DCP_ST,blindCat)
 DCP_TS_withBlinding = ROOT.RooUnblindPrecision("DCP_TS_withBlinding","#Delta^{CP}_{TS}","DCP_TS_Blind",0.,blinding_scale,DCP_TS,blindCat)
-DCP_VV_withBlinding = ROOT.RooUnblindPrecision("DCP_VV_withBlinding","#Delta^{CP}_{VV}","DCP_VV_Blind",0.,blinding_scale,DCP_VV,blindCat)
 DCP_VT_withBlinding = ROOT.RooUnblindPrecision("DCP_VT_withBlinding","#Delta^{CP}_{VT}","DCP_VT_Blind",0.,blinding_scale,DCP_VT,blindCat)
 DCP_TV_withBlinding = ROOT.RooUnblindPrecision("DCP_TV_withBlinding","#Delta^{CP}_{TV}","DCP_TV_Blind",0.,blinding_scale,DCP_TV,blindCat)
 DCP_TT_withBlinding = ROOT.RooUnblindPrecision("DCP_TT_withBlinding","#Delta^{CP}_{TT}","DCP_TT_Blind",0.,blinding_scale,DCP_TT,blindCat)
@@ -166,14 +164,14 @@ imA22perp2 = ROOT.RooRealVar("imA22perp2","Im(A^{TT}_{#perp2})",0.,-10.,10.)
 
 # Weak phases.
 phis = ROOT.RooRealVar("phis","#phi_{s}",0.,-pi,pi)
-dphi_SS = ROOT.RooRealVar("dphi_SS","#Delta#phi_{SS}",0.,-2.*pi,2*pi)
-dphi_SV = ROOT.RooRealVar("dphi_SV","#Delta#phi_{SV}",0.,-2.*pi,2*pi)
-dphi_VS = ROOT.RooRealVar("dphi_VS","#Delta#phi_{VS}",0.,-2.*pi,2*pi)
-dphi_ST = ROOT.RooRealVar("dphi_ST","#Delta#phi_{ST}",0.,-2.*pi,2*pi)
-dphi_TS = ROOT.RooRealVar("dphi_TS","#Delta#phi_{TS}",0.,-2.*pi,2*pi)
-dphi_VT = ROOT.RooRealVar("dphi_VT","#Delta#phi_{VT}",0.,-2.*pi,2*pi)
-dphi_TV = ROOT.RooRealVar("dphi_TV","#Delta#phi_{TV}",0.,-2.*pi,2*pi)
-dphi_TT = ROOT.RooRealVar("dphi_TT","#Delta#phi_{TT}",0.,-2.*pi,2*pi)
+dphi_SS = ROOT.RooRealVar("dphi_SS","#Delta#phi_{SS}",0.,-pi,pi)
+dphi_SV = ROOT.RooRealVar("dphi_SV","#Delta#phi_{SV}",0.,-pi,pi)
+dphi_VS = ROOT.RooRealVar("dphi_VS","#Delta#phi_{VS}",0.,-pi,pi)
+dphi_ST = ROOT.RooRealVar("dphi_ST","#Delta#phi_{ST}",0.,-pi,pi)
+dphi_TS = ROOT.RooRealVar("dphi_TS","#Delta#phi_{TS}",0.,-pi,pi)
+dphi_VT = ROOT.RooRealVar("dphi_VT","#Delta#phi_{VT}",0.,-pi,pi)
+dphi_TV = ROOT.RooRealVar("dphi_TV","#Delta#phi_{TV}",0.,-pi,pi)
+dphi_TT = ROOT.RooRealVar("dphi_TT","#Delta#phi_{TT}",0.,-pi,pi)
 phis_withBlinding = ROOT.RooUnblindPrecision("phis_withBlinding","#phi_{s}","phis_Blind",0.,blinding_scale,phis,blindCat)
 dphi_SS_withBlinding = ROOT.RooUnblindPrecision("dphi_SS_withBlinding","#Delta#phi_{SS}","dphi_SS_Blind",0.,blinding_scale,dphi_SS,blindCat)
 dphi_SV_withBlinding = ROOT.RooUnblindPrecision("dphi_SV_withBlinding","#Delta#phi_{SV}","dphi_SV_Blind",0.,blinding_scale,dphi_SV,blindCat)
@@ -306,11 +304,27 @@ tres_p0_2012 = ROOT.RooRealVar("tres_p0_2012","p_{0}^{#sigma_{t}}",0.036,0.03,0.
 tres_p1_2012 = ROOT.RooRealVar("tres_p1_2012","p_{1}^{#sigma_{t}}",1.2,0.8,1.6)
 mS = ROOT.RooRealVar("mS","mS",1.46297e+03)
 gammaS = ROOT.RooRealVar("gammaS","gammaS",3.48114e+02)
-mV = ROOT.RooRealVar("mV","mV",895.81)
-gammaV = ROOT.RooRealVar("gammaV","gammaV",47.4)
-mT = ROOT.RooRealVar("mT","mT",1432.4)
-gammaT = ROOT.RooRealVar("gammaT","gammaT",109.)
+mV = ROOT.RooRealVar("mV","mV",895.81,890,902)
+gammaV = ROOT.RooRealVar("gammaV","gammaV",47.4,42,54)
+mT = ROOT.RooRealVar("mT","mT",1432.4,1410,1450)
+gammaT = ROOT.RooRealVar("gammaT","gammaT",109.,80,140)
+c1_mass_swave = ROOT.RooRealVar("c1_mass_swave","c1_mass_swave",0.,-10.,10.)
+c2_mass_swave = ROOT.RooRealVar("c2_mass_swave","c2_mass_swave",0.,-10.,10.)
+c3_mass_swave = ROOT.RooRealVar("c3_mass_swave","c3_mass_swave",0.,-10.,10.)
+c4_mass_swave = ROOT.RooRealVar("c4_mass_swave","c4_mass_swave",0.,-10.,10.)
+#c1_mass_swave = ROOT.RooRealVar("c1_mass_swave","c1_mass_swave",0.001,0.,1000.)
+#c2_mass_swave = ROOT.RooRealVar("c2_mass_swave","c2_mass_swave",0.001,0.,1.)
+#c3_mass_swave = ROOT.RooRealVar("c3_mass_swave","c3_mass_swave",1430.,1100.,1600.)
+#c4_mass_swave = ROOT.RooRealVar("c4_mass_swave","c4_mass_swave",300.,100.,600.)
+#c5_mass_swave = ROOT.RooRealVar("c5_mass_swave","c5_mass_swave",0.,-10.,10.)
+c5_mass_swave = ROOT.RooRealVar("c5_mass_swave","c5_mass_swave",0.0016,0.00001,0.01)
+c6_mass_swave = ROOT.RooRealVar("c6_mass_swave","c6_mass_swave",0.,-10.,10.)
+c7_mass_swave = ROOT.RooRealVar("c7_mass_swave","c7_mass_swave",0.,-10.,10.)
+c8_mass_swave = ROOT.RooRealVar("c8_mass_swave","c8_mass_swave",0.,-10.,10.)
+c9_mass_swave = ROOT.RooRealVar("c9_mass_swave","c9_mass_swave",0.,-10.,10.)
 res_mass = ROOT.RooRealVar("res_mass","res_mass",0.)
+
+for par in [mV,gammaV,mT,gammaT,c5_mass_swave,c6_mass_swave,c7_mass_swave,c8_mass_swave,c9_mass_swave]: par.setConstant(1)
 
 # Gaussian constraints of the calibration parameters.
 parvector_p0metac_SSK_p1_SSK = ROOT.RooArgList(p0metac_SSK,p1_SSK)
@@ -919,16 +933,15 @@ re_amps = [reA00,reA01,reA10,reA02,reA20,reA110,reA11par,reA11perp,reA120,reA12p
 reA210,reA21par,reA21perp,reA220,reA22par,reA22perp,reA22par2,reA22perp2]
 
 dirCP_asyms = [DCP_SS_withBlinding,DCP_SV_withBlinding,DCP_VS_withBlinding,DCP_ST_withBlinding,DCP_TS_withBlinding,\
-DCP_VV_withBlinding,DCP_VT_withBlinding,DCP_TV_withBlinding,DCP_TT_withBlinding]
-dirCP_asyms_unblinded = [DCP_SS,DCP_SV,DCP_VS,DCP_ST,DCP_TS,DCP_VV,DCP_VT,DCP_TV,DCP_TT]
-dirCP_asyms_narrowwin = [DCP_SS_withBlinding,DCP_SV_withBlinding,DCP_VS_withBlinding,zero,zero,DCP_VV_withBlinding,zero,zero,zero]
-dirCP_asyms_narrowwin_unblinded = [DCP_SS,DCP_SV,DCP_VS,zero,zero,DCP_VV,zero,zero,zero]
+DCP_withBlinding,DCP_VT_withBlinding,DCP_TV_withBlinding,DCP_TT_withBlinding]
+dirCP_asyms_unblinded = [DCP_SS,DCP_SV,DCP_VS,DCP_ST,DCP_TS,DCP,DCP_VT,DCP_TV,DCP_TT]
+dirCP_asyms_narrowwin = [DCP_SS_withBlinding,DCP_SV_withBlinding,DCP_VS_withBlinding,zero,zero,DCP_withBlinding,zero,zero,zero]
+dirCP_asyms_narrowwin_unblinded = [DCP_SS,DCP_SV,DCP_VS,zero,zero,DCP,zero,zero,zero]
 dirCP_asyms_noCP = [zero,zero,zero,zero,zero,zero,zero,zero,zero]
-dirCP_asyms_sameCP = [DCP_withBlinding,DCP_withBlinding,DCP_withBlinding,DCP_withBlinding,DCP_withBlinding,DCP_withBlinding,\
-DCP_withBlinding,DCP_withBlinding,DCP_withBlinding]
-dirCP_asyms_sameCP_unblinded = [DCP,DCP,DCP,DCP,DCP,DCP,DCP,DCP,DCP]
-dirCP_asyms_sameCP_narrowwin = [DCP_withBlinding,DCP_withBlinding,DCP_withBlinding,zero,zero,DCP_withBlinding,zero,zero,zero]
-dirCP_asyms_sameCP_narrowwin_unblinded = [DCP,DCP,DCP,zero,zero,DCP,zero,zero,zero]
+dirCP_asyms_sameCP = [zero,zero,zero,zero,zero,DCP_withBlinding,zero,zero,zero]
+dirCP_asyms_sameCP_unblinded = [zero,zero,zero,zero,zero,DCP,zero,zero,zero]
+dirCP_asyms_sameCP_narrowwin = [zero,zero,zero,zero,zero,DCP_withBlinding,zero,zero,zero]
+dirCP_asyms_sameCP_narrowwin_unblinded = [zero,zero,zero,zero,zero,DCP,zero,zero,zero]
 
 im_amps = [imA00,imA01,imA10,imA02,imA20,imA110,imA11par,imA11perp,imA120,imA12par,imA12perp,\
 imA210,imA21par,imA21perp,imA220,imA22par,imA22perp,imA22par2,imA22perp2]
@@ -945,9 +958,9 @@ weak_phases_sameCP_unblinded = [phis,zero,zero,zero,zero,zero,zero,zero,zero]
 mixing_params = [delta_m_Bs,gamma_Bs,delta_gamma_Bs]
 
 calib_params = [p0metac_SSK,p0metac_OS,Dp0half_SSK,Dp0half_OS,p1_SSK,p1_OS,Dp1half_SSK,Dp1half_OS,etac_SSK,etac_OS,tres_deltatmean_2011,tres_p0_2011,tres_p1_2011,tres_deltatmean_2012,tres_p0_2012,tres_p1_2012,mV,mS,mT,\
-gammaV,gammaS,gammaT,res_mass]
+gammaV,gammaS,gammaT,c1_mass_swave,c2_mass_swave,c3_mass_swave,c4_mass_swave,c5_mass_swave,c6_mass_swave,c7_mass_swave,c8_mass_swave,c9_mass_swave,res_mass]
 calib_params_aux = [p0metac_SSK,p0metac_OS,Dp0half_SSK,Dp0half_OS,p1_SSK,p1_OS,Dp1half_SSK,Dp1half_OS,etac_SSK,etac_OS,tres_deltatmean_2011,tres_p0_2011,tres_p1_2011,tres_deltatmean_2012,tres_p0_2012,tres_p1_2012,mV,mS,mT,\
-gammaV,gammaS,gammaT,res_mass]
+gammaV,gammaS,gammaT,c1_mass_swave,c2_mass_swave,c3_mass_swave,c4_mass_swave,c5_mass_swave,c6_mass_swave,c7_mass_swave,c8_mass_swave,c9_mass_swave,res_mass]
 
 cond_distr_params = [tag_eff_SSK,mu1_SSK,sigma1_SSK,c_SSK,mu2_SSK,sigma2_SSK,tag_eff_OS,mu1_OS,sigma1_OS,c_OS,mu2_OS,sigma2_OS,gamma1_dt,beta1_dt,c_dt,gamma2_dt,beta2_dt]
 

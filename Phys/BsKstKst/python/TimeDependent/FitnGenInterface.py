@@ -1,6 +1,8 @@
 from parameters import *
-import numpy as np
 from math import exp
+import numpy as np
+np.random.seed(1)
+
 
 gROOT.ProcessLine( "struct MyStructF{ Float_t afloat; };" )
 
@@ -14,6 +16,7 @@ def ForceCompileLibs():
 
 	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'KpiKpiSpectrumNW.cxx++')
 	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'ComputeIntegrals.cxx++')
+	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'MCGenComb.cxx++')
 	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'lhcbStyle.C')
 	gROOT.Reset()
 
@@ -22,6 +25,7 @@ def CompileLibs():
 
 	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'KpiKpiSpectrumNW.cxx+')
 	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'ComputeIntegrals.cxx+')
+	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'MCGenComb.cxx++')
 	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'lhcbStyle.C')
 	gROOT.Reset()
 
@@ -30,6 +34,7 @@ def CompileLibsGRID():
 
 	gROOT.ProcessLine('.x KpiKpiSpectrumNW.cxx++')
 	gROOT.ProcessLine('.x ComputeIntegrals.cxx++')
+	gROOT.ProcessLine('.x MCGenComb.cxx++')
 	gROOT.ProcessLine('.x lhcbStyle.C')
 	gROOT.Reset()
 
@@ -91,84 +96,92 @@ def component(j1,j2,h,j1p,j2p,hp):
 def setParamVals(wide_window):
 
 	if wide_window==0:
-		reA00.setVal(0.97163994981)
-		reA01.setVal(-0.307779453311)
-		reA10.setVal(-0.825779978734)
-		reA11par.setVal(-0.806142954203)
-		reA11perp.setVal(0.13028597937)
-		imA00.setVal(0.78498772682)
-		imA01.setVal(-2.63286888731)
-		imA10.setVal(2.07320622707)
-		imA11par.setVal(1.03541700344)
-		imA11perp.setVal(1.850718779)
-		delta_m_Bs.setVal(17.5551050692)
-		gamma_Bs.setVal(0.664714683125)
-		delta_gamma_Bs.setVal(0.0849436415988)
-		p0metac_SSK.setVal(0.00635590157063)
-		p0metac_OS.setVal(0.00623255021164)
-		Dp0half_SSK.setVal(-0.00804081446555)
-		Dp0half_OS.setVal(0.00699331466117)
-		p1_SSK.setVal(0.931921848337)
-		p1_OS.setVal(0.985639376943)
-		Dp1half_SSK.setVal(-0.0173054641083)
-		Dp1half_OS.setVal(0.032943401124)
-		tres_p0_2011.setVal(0.0352456006781)
-		tres_p1_2011.setVal(1.19984781615)
-		tres_p0_2012.setVal(0.0365982765612)
-		tres_p1_2012.setVal(1.21774637388)
+		reA00.setVal(0.968365623649)
+		reA01.setVal(-0.167043935494)
+		reA10.setVal(-0.966710240268)
+		reA11par.setVal(-0.890415518954)
+		reA11perp.setVal(0.0312168627535)
+		imA00.setVal(0.912627474634)
+		imA01.setVal(-2.59486531439)
+		imA10.setVal(2.04993496693)
+		imA11par.setVal(0.966836260964)
+		imA11perp.setVal(1.81253096951)
+		delta_m_Bs.setVal(17.5507040858)
+		gamma_Bs.setVal(0.664716424507)
+		delta_gamma_Bs.setVal(0.0849079528621)
+		p0metac_SSK.setVal(0.00637523421071)
+		p0metac_OS.setVal(0.00625437405326)
+		Dp0half_SSK.setVal(-0.0080411256014)
+		Dp0half_OS.setVal(0.00699301159399)
+		p1_SSK.setVal(0.93250559122)
+		p1_OS.setVal(0.985460013798)
+		Dp1half_SSK.setVal(-0.0172717126031)
+		Dp1half_OS.setVal(0.0329466032992)
+		tres_p0_2011.setVal(0.0352455098926)
+		tres_p1_2011.setVal(1.19983704763)
+		tres_p0_2012.setVal(0.0366000812578)
+		tres_p1_2012.setVal(1.21796290904)
+		c1_mass_swave.setVal(-1.96228966361)
+		c2_mass_swave.setVal(0.795790057951)
+		c3_mass_swave.setVal(1.50856106636)
+		c4_mass_swave.setVal(0.830889359762)
 
 	else:
-		reA00.setVal(0.263213091699)
-		reA01.setVal(1.07653830679)
-		reA10.setVal(-1.49625609054)
-		reA02.setVal(1.26904336768)
-		reA20.setVal(-0.974895358627)
-		reA11par.setVal(-0.601174018752)
-		reA11perp.setVal(-0.465295943202)
-		reA120.setVal(0.602027386833)
-		reA12par.setVal(-0.271829808593)
-		reA12perp.setVal(0.0989766761271)
-		reA210.setVal(2.10776223128)
-		reA21par.setVal(0.539024552709)
-		reA21perp.setVal(0.236222658219)
-		reA220.setVal(0.00981334657903)
-		reA22par.setVal(-0.381578372735)
-		reA22perp.setVal(-0.146879290127)
-		reA22par2.setVal(-0.234269594676)
-		reA22perp2.setVal(-0.49213232522)
-		imA00.setVal(2.05661861783)
-		imA01.setVal(-2.54827686531)
-		imA10.setVal(1.74387412348)
-		imA02.setVal(0.167910477061)
-		imA20.setVal(0.356617983551)
-		imA11par.setVal(0.647365397275)
-		imA11perp.setVal(1.15908031842)
-		imA120.setVal(0.818587824167)
-		imA12par.setVal(-0.568102894404)
-		imA12perp.setVal(-0.981310365381)
-		imA210.setVal(-0.196363957019)
-		imA21par.setVal(0.0565340027071)
-		imA21perp.setVal(0.101936877575)
-		imA220.setVal(0.363806432797)
-		imA22par.setVal(0.145121203089)
-		imA22perp.setVal(-0.376583167345)
-		imA22par2.setVal(-0.506870743142)
-		imA22perp2.setVal(0.00272493632338)
-		delta_m_Bs.setVal(17.564750247)
-		gamma_Bs.setVal(0.666081049602)
-		delta_gamma_Bs.setVal(0.0835709599753)
-		p0metac_SSK.setVal(0.00819184747504)
-		p0metac_OS.setVal(0.00873392093879)
-		Dp0half_SSK.setVal(-0.00803923202808)
-		Dp0half_OS.setVal(0.00699395305975)
-		p1_SSK.setVal(0.924624591241)
-		p1_OS.setVal(0.98702060421)
-		Dp1half_SSK.setVal(-0.0152298955895)
-		Dp1half_OS.setVal(0.0328165865918)
-		tres_p0_2011.setVal(0.0347684184156)
-		tres_p1_2011.setVal(1.1538488585)
-		tres_p0_2012.setVal(0.0364542070585)
-		tres_p1_2012.setVal(1.25984512077)
+		reA00.setVal(4.03704561152)
+		reA01.setVal(-1.37349820909)
+		reA10.setVal(-0.483028649506)
+		reA02.setVal(-0.707884480736)
+		reA20.setVal(1.05069922861)
+		reA11par.setVal(-0.711130432043)
+		reA11perp.setVal(-0.689989599396)
+		reA120.setVal(-2.17843579827)
+		reA12par.setVal(-0.318685925826)
+		reA12perp.setVal(-0.931425146016)
+		reA210.setVal(-0.0167394568756)
+		reA21par.setVal(0.599531917281)
+		reA21perp.setVal(0.609166803777)
+		reA220.setVal(0.0989428187961)
+		reA22par.setVal(-0.344527229873)
+		reA22perp.setVal(-0.0735597446873)
+		reA22par2.setVal(-0.11027482205)
+		reA22perp2.setVal(0.505071664841)
+		imA00.setVal(2.95070029829)
+		imA01.setVal(-5.26899838177)
+		imA10.setVal(3.36115974768)
+		imA02.setVal(-0.204865500918)
+		imA20.setVal(-1.35090116155)
+		imA11par.setVal(1.25026029189)
+		imA11perp.setVal(1.78709857993)
+		imA120.setVal(-1.23447971298)
+		imA12par.setVal(-0.303655015558)
+		imA12perp.setVal(0.646514008446)
+		imA210.setVal(1.51061010948)
+		imA21par.setVal(0.424495006601)
+		imA21perp.setVal(-0.574615009196)
+		imA220.setVal(0.139805940397)
+		imA22par.setVal(0.341353948048)
+		imA22perp.setVal(0.486595390889)
+		imA22par2.setVal(0.112139473047)
+		imA22perp2.setVal(-0.161167966518)
+		delta_m_Bs.setVal(17.6181125786)
+		gamma_Bs.setVal(0.665288627037)
+		delta_gamma_Bs.setVal(0.0861831190265)
+		p0metac_SSK.setVal(0.00726704398218)
+		p0metac_OS.setVal(0.00784707299053)
+		Dp0half_SSK.setVal(-0.00804652895371)
+		Dp0half_OS.setVal(0.00699126866302)
+		p1_SSK.setVal(0.928462109676)
+		p1_OS.setVal(0.992187447845)
+		Dp1half_SSK.setVal(-0.0152549266773)
+		Dp1half_OS.setVal(0.0328106719053)
+		tres_p0_2011.setVal(0.0347684351553)
+		tres_p1_2011.setVal(1.15382952428)
+		tres_p0_2012.setVal(0.0364512988556)
+		tres_p1_2012.setVal(1.26162812367)
+		c1_mass_swave.setVal(-0.299914513137)
+		c2_mass_swave.setVal(-0.158588997743)
+		c3_mass_swave.setVal(-0.121631369471)
+		c4_mass_swave.setVal(-0.0659022290645)
 
 
 def aux_PDF():
@@ -2465,6 +2478,180 @@ ROOT.RooFit.Import("2012_L0TIS",data_12L0TIS_),ROOT.RooFit.Import("2012_L0noTIS"
 
 	return [data_full_fit,data_full_plot,data_11L0TIS_,data_11L0noTIS_,data_12L0TIS_,data_12L0noTIS_], hist_mistag_SSK, hist_mistag_OS, hist_deltat
 
+def MCtruth(ev):
+	if abs(ev.B_s0_TRUEID) == 531:
+		if ev.Kplus_TRUEID == 321:
+			if ev.Kminus_TRUEID == -321:
+				if ev.Piplus_TRUEID == 211:
+					if ev.Piminus_TRUEID == -211: return 1
+	return 0
+
+def MCsetcut(year_aux,trig_aux,set_aux):
+	if trig_aux == 0: cut_aux = "B_s0_L0Global_TIS==1 && "
+	else: cut_aux = "B_s0_L0Global_TIS==0 && B_s0_L0HadronDecision_TOS==1 && "
+	if year_aux == 0:
+		if set_aux == 0: cut_aux += "itype==-73"
+		elif set_aux == 1: cut_aux += "itype==-70"
+		else: cut_aux += "(itype==-73 || itype==-70)"
+	else:
+		if set_aux == 0: cut_aux += "itype==-83"
+		elif set_aux == 1: cut_aux += "itype==-80"
+		else: cut_aux += "(itype==-83 || itype==-80)"
+	return cut_aux
+
+def dataMCcorrweight(entry):
+
+	#wPIDkaon1 = h2DPIDkaon.GetBinContent(h2DPIDkaon.FindBin(entry.Kplus_P,entry.Kplus_ETA))
+	#wPIDkaon2 = h2DPIDkaon.GetBinContent(h2DPIDkaon.FindBin(entry.Kminus_P,entry.Kminus_ETA))
+	#wPIDpion1 = h2DPIDpion.GetBinContent(h2DPIDpion.FindBin(entry.Piplus_P,entry.Piplus_ETA))
+	#wPIDpion2 = h2DPIDpion.GetBinContent(h2DPIDpion.FindBin(entry.Piminus_P,entry.Piminus_ETA))
+
+	#return wPIDkaon1*wPIDkaon2*wPIDpion1*wPIDpion2
+	return 1.;
+
+m1_name_MC = "B_s0_DTF_KST1_M"
+m2_name_MC = "B_s0_DTF_KST2_M"
+cos1_name_MC = "B_s0_DTF_KST1_COSTHETA"
+cos2_name_MC = "B_s0_DTF_KST2_COSTHETA"
+phi_name_MC = "B_s0_DTF_B_s0_PHI_TRY4"
+t_name_MC = "B_s0_DTF_TAU"
+
+mKp1_MC = ROOT.RooRealVar(m1_name_MC,"M(K^{+}#pi^{-}) ", 750., mHlimit,"MeV/c^{2}")
+mKp2_MC = ROOT.RooRealVar(m2_name_MC,"M(K^{-}#pi^{+}) ", 750., mHlimit,"MeV/c^{2}")
+mKp1_narrow_MC = ROOT.RooRealVar(m1_name_MC,"M(K^{+}#pi^{-}) ",900.-150.,900.+150.,"MeV/c^{2}")
+mKp2_narrow_MC = ROOT.RooRealVar(m2_name_MC,"M(K^{-}#pi^{+}) ",900.-150.,900.+150.,"MeV/c^{2}")
+cos1_MC = ROOT.RooRealVar(cos1_name_MC,"cos(#theta_{1})", -1., 1.,"")
+cos2_MC = ROOT.RooRealVar(cos2_name_MC,"cos(#theta_{2})", -1., 1.,"")
+phi_MC = ROOT.RooRealVar(phi_name_MC,"#varphi",0,2.*pi,"rad")
+t_MC = ROOT.RooRealVar(t_name_MC,"t_{true}",0.,12.,"ps")
+MCweight0 = ROOT.RooRealVar("MCweight0","MCweight0",1.)
+
+MCdata_2011_L0TIS_wide = ROOT.RooDataSet("MCdata_2011_L0TIS_wide","MCdata_2011_L0TIS_wide",ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2012_L0TIS_wide = ROOT.RooDataSet("MCdata_2012_L0TIS_wide","MCdata_2012_L0TIS_wide",ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2011_L0noTIS_wide = ROOT.RooDataSet("MCdata_2011_L0noTIS_wide","MCdata_2011_L0noTIS_wide",ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2012_L0noTIS_wide = ROOT.RooDataSet("MCdata_2012_L0noTIS_wide","MCdata_2012_L0noTIS_wide",ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2011_L0TIS_narrow = ROOT.RooDataSet("MCdata_2011_L0TIS_narrow","MCdata_2011_L0TIS_narrow",ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2012_L0TIS_narrow = ROOT.RooDataSet("MCdata_2012_L0TIS_narrow","MCdata_2012_L0TIS_narrow",ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2011_L0noTIS_narrow = ROOT.RooDataSet("MCdata_2011_L0noTIS_narrow","MCdata_2011_L0noTIS_narrow",ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2012_L0noTIS_narrow = ROOT.RooDataSet("MCdata_2012_L0noTIS_narrow","MCdata_2012_L0noTIS_narrow",ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+
+def LoadDataNW(NTUPLE_PATH, data_file, data_tree, datatype, wide_window):
+
+	# Information.
+	print '\nLoading MC data file ' + data_file + ', used to compute the NWs.'
+	if datatype == 0: print 'MC sample: PhSp.'
+	elif datatype == 1: print 'MC sample: VV.'
+	else: print 'MC sample: PhSp + VV.'
+
+	br_list = ["itype","B_s0_L0Global_TIS","B_s0_L0HadronDecision_TOS",m1_name_MC,m2_name_MC,cos1_name_MC,cos2_name_MC,phi_name_MC,t_name_MC,"B_s0_TRUEID","Kplus_TRUEID","Piminus_TRUEID","Kminus_TRUEID","Piplus_TRUEID"]
+
+	opt_genmodel = ROOT.RooRealVar("opt_genmodel","opt_genmodel",0)
+	opt_genvars = ROOT.RooRealVar("opt_genvars","opt_genvars",1)
+	year_MC = ROOT.RooRealVar("year_MC","year_MC",1)
+	wide_window_MC = ROOT.RooRealVar("wide_window_MC","wide_window_MC",1)
+	wide_window_MC.setVal(wide_window)
+
+	# Input data.
+	file_in = ROOT.TFile(NTUPLE_PATH + data_file)
+	tree_full = file_in.Get(data_tree)
+	tree_full.SetBranchStatus("*",0)
+	for br in br_list: tree_full.SetBranchStatus(br,1)
+	file_out = ROOT.TFile(NTUPLE_PATH + "trash.root","RECREATE")
+
+	if wide_window:
+		tree_2011_L0TIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,0,datatype))
+		tree_2012_L0TIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,0,datatype))
+		tree_2011_L0noTIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,1,datatype))
+		tree_2012_L0noTIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,1,datatype))
+		invN_2011_L0TIS_wide = 1.#/tree_2011_L0TIS_wide.GetEntries()
+		invN_2012_L0TIS_wide = 1.#/tree_2012_L0TIS_wide.GetEntries()
+		invN_2011_L0noTIS_wide = 1.#/tree_2011_L0noTIS_wide.GetEntries()
+		invN_2012_L0noTIS_wide = 1.#/tree_2012_L0noTIS_wide.GetEntries()
+
+	else:
+		tree_2011_L0TIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,0,datatype))
+		tree_2012_L0TIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,0,datatype))
+		tree_2011_L0noTIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,1,datatype))
+		tree_2012_L0noTIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,1,datatype))
+		invN_2011_L0TIS_narrow = 1.#/tree_2011_L0TIS_narrow.GetEntries()
+		invN_2012_L0TIS_narrow = 1.#/tree_2012_L0TIS_narrow.GetEntries()
+		invN_2011_L0noTIS_narrow = 1.#/tree_2011_L0noTIS_narrow.GetEntries()
+		invN_2012_L0noTIS_narrow = 1.#/tree_2012_L0noTIS_narrow.GetEntries()
+
+	PDF_gen = ROOT.MCGenComb("PDF_gen","PDF_gen",opt_genmodel,year_MC,wide_window_MC,mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,t_MC,opt_genvars)
+
+	def setvarvals(entry):
+		mKp1_MC.setVal(eval("entry."+m1_name_MC))
+		mKp2_MC.setVal(eval("entry."+m2_name_MC))
+		cos1_MC.setVal(eval("entry."+cos1_name_MC))
+		cos2_MC.setVal(eval("entry."+cos2_name_MC))
+		phi_MC.setVal(eval("entry."+phi_name_MC))
+
+	opt_genmodel.setVal(datatype)
+
+	if wide_window:
+		year_MC.setVal(0)
+		for i in tree_2011_L0TIS_wide:
+			if MCtruth(i):
+				setvarvals(i)
+				MCweight0.setVal(invN_2011_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2011_L0TIS_wide.add(ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+		year_MC.setVal(1)
+		for i in tree_2012_L0TIS_wide:
+			if MCtruth(i):
+				setvarvals(i)
+				MCweight0.setVal(invN_2012_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2012_L0TIS_wide.add(ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+		year_MC.setVal(0)
+		for i in tree_2011_L0noTIS_wide:
+			if MCtruth(i):
+				setvarvals(i)
+				MCweight0.setVal(invN_2011_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2011_L0noTIS_wide.add(ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+		year_MC.setVal(1)
+		for i in tree_2012_L0noTIS_wide:
+			if MCtruth(i):
+				setvarvals(i)
+				MCweight0.setVal(invN_2012_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2012_L0noTIS_wide.add(ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+
+	else:
+		year_MC.setVal(0)
+		for i in tree_2011_L0TIS_narrow:
+			if MCtruth(i):
+				mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
+				mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
+				setvarvals(i)
+				MCweight0.setVal(invN_2011_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2011_L0TIS_narrow.add(ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+		year_MC.setVal(1)
+		for i in tree_2012_L0TIS_narrow:
+			if MCtruth(i):
+				mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
+				mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
+				setvarvals(i)
+				MCweight0.setVal(invN_2012_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2012_L0TIS_narrow.add(ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+		year_MC.setVal(0)
+		for i in tree_2011_L0noTIS_narrow:
+			if MCtruth(i):
+				mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
+				mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
+				setvarvals(i)
+				MCweight0.setVal(invN_2011_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2011_L0noTIS_narrow.add(ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+		year_MC.setVal(1)
+		for i in tree_2012_L0noTIS_narrow:
+			if MCtruth(i):
+				mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
+				mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
+				setvarvals(i)
+				MCweight0.setVal(invN_2012_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2012_L0noTIS_narrow.add(ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+
+	print 'Data loaded.'
+	file_out.Close()
+
 def createPDF(Blinding, NOCP, NODIRCP, SAMECP, acc_type, inf_t_res, wide_window, data_file,\
 fix_re_amps = 0, fix_dirCP_asyms = 0, fix_im_amps = 0, fix_weak_phases = 0, fix_mixing_params = 0, fix_calib_params = 0,\
 pw_alternative_model = 0,f_Kst1410_rel2_Kst892 = 0,delta_Kst1410_rel2_Kst892 = 0,f_Kst1680_rel2_Kst892 = 0,delta_Kst1680_rel2_Kst892 = 0):
@@ -2787,15 +2974,66 @@ def DoFit(model_,data_,wide_window,TD_fit,num_CPU,minos_opt,strategy_option,fix_
    return res
 
 
-def converted_parameter(param,blinding,scale):
+def boolj1j2h(j1,j2,h):
+
+	if ((j1 == 0) and (j2 == 0) and (h == 0)): return 1
+	if ((j1 == 0) and (j2 == 1) and (h == 0)): return 1
+	if ((j1 == 0) and (j2 == 2) and (h == 0)): return 1
+	if ((j1 == 1) and (j2 == 0) and (h == 0)): return 1
+	if ((j1 == 1) and (j2 == 1) and (h == 0)): return 1
+	if ((j1 == 1) and (j2 == 1) and (h == 1)): return 1
+	if ((j1 == 1) and (j2 == 1) and (h == 2)): return 1
+	if ((j1 == 1) and (j2 == 2) and (h == 0)): return 1
+	if ((j1 == 1) and (j2 == 2) and (h == 1)): return 1
+	if ((j1 == 1) and (j2 == 2) and (h == 2)): return 1
+	if ((j1 == 2) and (j2 == 0) and (h == 0)): return 1
+	if ((j1 == 2) and (j2 == 1) and (h == 0)): return 1
+	if ((j1 == 2) and (j2 == 1) and (h == 1)): return 1
+	if ((j1 == 2) and (j2 == 1) and (h == 2)): return 1
+	if ((j1 == 2) and (j2 == 2) and (h == 0)): return 1
+	if ((j1 == 2) and (j2 == 2) and (h == 1)): return 1
+	if ((j1 == 2) and (j2 == 2) and (h == 2)): return 1
+	if ((j1 == 2) and (j2 == 2) and (h == 3)): return 1
+	if ((j1 == 2) and (j2 == 2) and (h == 4)): return 1
+	return 0
+
+
+def boolj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp): 
+	 return boolj1j2h(j1,j2,h)*boolj1j2h(j1p,j2p,hp)
+
+
+indexdictextred = {}
+indexdictredext = {}
+index = 0
+for j1 in range(3):
+	for j2 in range(3):
+		for h in range(5):
+			for j1p in range(3):
+				for j2p in range(3):
+					for hp in range(5):
+						for part in range(2):
+							if ((boolj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp) == 1) and ((j1p+3*j2p+9*hp) <= (j1+3*j2+9*h))):
+								indexdictextred[str(j1)+str(j2)+str(h)+str(j1p)+str(j2p)+str(hp)+str(part)] = index
+								indexdictredext[index] = str(j1)+str(j2)+str(h)+str(j1p)+str(j2p)+str(hp)+str(part)
+								index += 1
+def redindex(j1,j2,h,j1p,j2p,hp,part):
+	return indexdictextred[str(j1)+str(j2)+str(h)+str(j1p)+str(j2p)+str(hp)+str(part)]
+
+def extindex(i):
+	stringlist = list(indexdictredext[i])
+	intlist = []
+	for s in stringlist: intlist.append(eval(s))
+	return intlist
+
+for blindpar in ['DCP','phis','DCP_SS','DCP_SV','DCP_VS','DCP_ST','DCP_TS','DCP_VT','DCP_TV','DCP_TT','dphi_SS','dphi_SV','dphi_VS','dphi_ST','dphi_TS','dphi_VT','dphi_TV','dphi_TT']: blinding_strings[blindpar] = np.random.uniform(-blinding_scale,blinding_scale)
+
+def converted_parameter(param,blinding):
    from ModelBricks import Parameter, Free
    paramname = param.GetName()
    if ('phi' in paramname or 'DCP' in paramname) and blinding:
-      blstring = np.random.uniform(-scale,scale)
-      blinding_strings[paramname] = blstring
+      blstring = blinding_strings[paramname]
       return eval(('Parameter("'+paramname+'_cu",'+str(param.getVal())+'+'+str(blstring)+', limits = ('+str(param.getMin())+'+'+str(blstring)+','+str(param.getMax())+'+'+str(blstring)+'), constant = False, dtype = np.float64)').replace('+-','-'))
    return eval('Parameter("'+paramname+'_cu",'+str(param.getVal())+', limits = ('+str(param.getMin())+','+str(param.getMax())+'), constant = False, dtype = np.float64)')
-
 
 def create_param_list(arglistname,numparams = 0):
    arglist = eval(arglistname)
@@ -2848,6 +3086,16 @@ def create_data_arrays(data_list):
          for ivar in range(10): listofarrays[i][ev][2+ivar] = eval(str(data_sample.get(ev).getRealValue(eval(double_var_name_list[ivar]+'.GetName()'))))
    return listofarrays
 
+def create_MCdata_arrays(data_list):
+   double_var_name_list = ["B_s0_DTF_KST1_M","B_s0_DTF_KST2_M","B_s0_DTF_KST1_COSTHETA","B_s0_DTF_KST2_COSTHETA","B_s0_DTF_B_s0_PHI_TRY4","MCweight0"]
+   listofarrays = []
+   for i in range(4):
+      data_sample = data_list[i]
+      sample_size = data_sample.numEntries()
+      listofarrays.append(eval('np.ones('+str(sample_size)+'*6).astype(np.float64)'))
+      for ev in range(sample_size):
+         for ivar in range(6): listofarrays[i][6*ev+ivar] = data_sample.get(ev).getRealValue(double_var_name_list[ivar])
+   return listofarrays
 
 polar_fractions_dict = {'f_10': '(upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"])/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_par2_22': '(upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"])/(upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_12': '(upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"])/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_L_12': '(upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"])/(upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"])', 'f_L_11': '(upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"])/(upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"])', 'f_11': '(upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"])/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_perp_12': '(upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"])/(upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"])', 'f_perp_11': '(upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"])/(upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"])', 'f_par_12': '(upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"])/(upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"])', 'f_par_11': '(upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"])/(upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"])', 'f_perp2_22': '(upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])/(upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_01': '(upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"])/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_00': '(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"])/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_02': '(upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"])/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_perp_22': '(upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"])/(upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_perp_21': '(upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"])/(upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"])', 'f_22': '(upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_21': '(upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"])/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_20': '(upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"])/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_L_22': '(upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"])/(upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_par_22': '(upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"])/(upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_par_21': '(upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"])/(upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"])', 'f_L_21': '(upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"])/(upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"])'}
 
@@ -2867,7 +3115,11 @@ polar_namepairs_dict = {'f_L_11': 'reA11par', 'delta_22perp': 'reA220', 'delta_2
 
 max_strong_params = ['reA00', 'reA01', 'reA10', 'reA02', 'reA20', 'reA11par', 'reA11perp', 'reA120', 'reA12par', 'reA12perp', 'reA210', 'reA21par', 'reA21perp', 'reA220', 'reA22par', 'reA22perp', 'reA22par2', 'reA22perp2', 'imA00', 'imA01', 'imA10', 'imA02', 'imA20', 'imA11par', 'imA11perp', 'imA120', 'imA12par', 'imA12perp', 'imA210', 'imA21par', 'imA21perp', 'imA220', 'imA22par', 'imA22perp', 'imA22par2', 'imA22perp2']
 
-par_name_dict = {'reA22perp': 'Re(A^{TT}_{#perp1})', 'reA22par2': 'Re(A^{TT}_{#parallel2})', 'delta_210': '#delta^{TV}_{0}', 'tres_p1_2012': 'p_{1}^{#sigma_{t}}(2012)', 'tres_p1_2011': 'p_{1}^{#sigma_{t}}(2011)', 'delta_00': '#delta^{SS}', 'reA10': 'Re(A^{VS})', 'p0metac_OS': 'p_{0}^{OS}-<#eta^{OS}>', 'reA220': 'Re(A^{TT}_{L})', 'reA20': 'Re(A^{TS})', 'delta_10': '#delta^{VS}', 'imA21par': 'Im(A^{TV}_{#parallel})', 'reA11par': 'Re(A^{VV}_{#parallel})', 'delta_11par': '#delta^{VV}_{#parallel}', 'DCP': '#Delta^{CP}', 'imA22perp2': 'Im(A^{TT}_{#perp2})', 'delta_12par': '#delta^{VT}_{#parallel}', 'delta_01': '#delta^{SV}', 'imA22par': 'Im(A^{TT}_{#parallel1})', 'delta_02': '#delta^{ST}', 'reA22par': 'Re(A^{TT}_{#parallel1})', 'p1_SSK': 'p_{1}^{SSK}', 'delta_22perp': '#delta^{TT}_{#perp1}', 'reA21par': 'Re(A^{TV}_{#parallel})', 'delta_21par': '#delta^{TV}_{#parallel}', 'Dp1half_SSK': '1/2 #Delta p_{1}^{SSK}', 'delta_11perp': '#delta^{VV}_{#perp}', 'f_perp2_22': 'f_{#perp2}^{TT}', 'imA210': 'Im(A^{TV}_{L})', 'tres_p0_2011': 'p_{0}^{#sigma_{t}}(2011)', 'reA120': 'Re(A^{VT}_{L})', 'imA21perp': 'Im(A^{TV}_{#perp})', 'tres_p0_2012': 'p_{0}^{#sigma_{t}}(2012)', 'delta_22perp2': '#delta^{TT}_{#perp2}', 'reA22perp2': 'Re(A^{TT}_{#perp2})', 'imA10': 'Im(A^{VS})', 'delta_21perp': '#delta^{TV}_{#perp}', 'p1_OS': 'p_{1}^{OS}', 'delta_22par2': '#delta^{TT}_{#parallel2}', 'f_22': 'f_{TT}', 'f_21': 'f_{TV}', 'f_20': 'f_{TS}', 'f_L_22': 'f_L^{TT}', 'f_par_22': 'f_{#parallel1}^{TT}', 'f_par_21': 'f_{#parallel}^{TV}', 'f_L_21': 'f_L^{TV}', 'imA12perp': 'Im(A^{VT}_{#perp})', 'delta_12perp': '#delta^{VT}_{#perp}', 'imA220': 'Im(A^{TT}_{L})', 'delta_m_Bs': '#Delta m_{B_{s}^{0}}', 'reA12par': 'Re(A^{VT}_{#parallel})', 'f_par2_22': 'f_{#parallel2}^{TT}', 'Dp1half_OS': '1/2 #Delta p_{1}^{OS}', 'f_12': 'f_{VT}', 'f_10': 'f_{VS}', 'f_11': 'f_{VV}', 'imA02': 'Im(A^{ST})', 'imA00': 'Im(A^{SS})', 'imA01': 'Im(A^{SV})', 'f_par_12': 'f_{#parallel}^{VT}', 'f_par_11': 'f_{#parallel}^{VV}', 'reA01': 'Re(A^{SV})', 'Dp0half_OS': '1/2 #Delta p_{0}^{OS}', 'reA11perp': 'Re(A^{VV}_{#perp})', 'imA120': 'Im(A^{VT}_{L})', 'f_01': 'f_{SV}', 'f_00': 'f_{SS}', 'f_02': 'f_{ST}', 'gamma_Bs': '#Gamma_{B_{s}^{0}}', 'f_perp_22': 'f_{#perp1}^{TT}', 'f_perp_21': 'f_{#perp}^{TV}', 'p0metac_SSK': 'p_{0}^{SSK}-<#eta^{SSK}>', 'imA22perp': 'Im(A^{TT}_{#perp1})', 'delta_22par': '#delta^{TT}_{#parallel1}', 'imA22par2': 'Im(A^{TT}_{#parallel2})', 'reA210': 'Re(A^{TV}_{L})', 'imA20': 'Im(A^{TS})', 'imA11perp': 'Im(A^{VV}_{#perp})', 'f_L_12': 'f_L^{VT}', 'f_L_11': 'f_L^{VV}', 'f_perp_12': 'f_{#perp}^{VT}', 'f_perp_11': 'f_{#perp}^{VV}', 'delta_120': '#delta^{VT}_{0}', 'delta_220': '#delta^{TT}_{0}', 'reA21perp': 'Re(A^{TV}_{#perp})', 'imA11par': 'Im(A^{VV}_{#parallel})', 'reA12perp': 'Re(A^{VT}_{#perp})', 'Dp0half_SSK': '1/2 #Delta p_{0}^{SSK}', 'reA00': 'Re(A^{SS})', 'reA02': 'Re(A^{ST})', 'delta_gamma_Bs': '#Delta #Gamma_{B_{s}^{0}}', 'delta_20': '#delta^{TS}', 'imA12par': 'Im(A^{VT}_{#parallel})', 'phis': '#phi_{s}'}
+par_name_dict = {'mV': 'mV', 'gammaV': 'gammaV', 'mT': 'mT', 'gammaT': 'gammaT', 'c1_mass_swave': 'c_{1}^{mass}','c2_mass_swave': 'c_{2}^{mass}','c3_mass_swave': 'c_{3}^{mass}','c4_mass_swave': 'c_{4}^{mass}','c5_mass_swave': 'c_{5}^{mass}','c6_mass_swave': 'c_{6}^{mass}','c7_mass_swave': 'c_{7}^{mass}','c8_mass_swave': 'c_{8}^{mass}','c9_mass_swave': 'c_{9}^{mass}', 'reA22perp': 'Re(A^{TT}_{#perp1})', 'reA22par2': 'Re(A^{TT}_{#parallel2})', 'delta_210': '#delta^{TV}_{0}', 'tres_p1_2012': 'p_{1}^{#sigma_{t}}(2012)', 'tres_p1_2011': 'p_{1}^{#sigma_{t}}(2011)', 'delta_00': '#delta^{SS}', 'reA10': 'Re(A^{VS})', 'p0metac_OS': 'p_{0}^{OS}-<#eta^{OS}>', 'reA220': 'Re(A^{TT}_{L})', 'reA20': 'Re(A^{TS})', 'delta_10': '#delta^{VS}', 'imA21par': 'Im(A^{TV}_{#parallel})', 'reA11par': 'Re(A^{VV}_{#parallel})', 'delta_11par': '#delta^{VV}_{#parallel}', 'DCP': '#Delta^{CP}', 'DCP_SS': 'd#Delta^{CP}_{SS}', 'DCP_SV': 'd#Delta^{CP}_{SV}', 'DCP_VS': 'd#Delta^{CP}_{VS}', 'DCP_ST': 'd#Delta^{CP}_{ST}', 'DCP_TS': 'd#Delta^{CP}_{TS}', 'DCP_VT': 'd#Delta^{CP}_{VT}', 'DCP_TV': 'd#Delta^{CP}_{TV}', 'DCP_TT': 'd#Delta^{CP}_{TT}', 'imA22perp2': 'Im(A^{TT}_{#perp2})', 'delta_12par': '#delta^{VT}_{#parallel}', 'delta_01': '#delta^{SV}', 'imA22par': 'Im(A^{TT}_{#parallel1})', 'delta_02': '#delta^{ST}', 'reA22par': 'Re(A^{TT}_{#parallel1})', 'p1_SSK': 'p_{1}^{SSK}', 'delta_22perp': '#delta^{TT}_{#perp1}', 'reA21par': 'Re(A^{TV}_{#parallel})', 'delta_21par': '#delta^{TV}_{#parallel}', 'Dp1half_SSK': '1/2 #Delta p_{1}^{SSK}', 'delta_11perp': '#delta^{VV}_{#perp}', 'f_perp2_22': 'f_{#perp2}^{TT}', 'imA210': 'Im(A^{TV}_{L})', 'tres_p0_2011': 'p_{0}^{#sigma_{t}}(2011)', 'reA120': 'Re(A^{VT}_{L})', 'imA21perp': 'Im(A^{TV}_{#perp})', 'tres_p0_2012': 'p_{0}^{#sigma_{t}}(2012)', 'delta_22perp2': '#delta^{TT}_{#perp2}', 'reA22perp2': 'Re(A^{TT}_{#perp2})', 'imA10': 'Im(A^{VS})', 'delta_21perp': '#delta^{TV}_{#perp}', 'p1_OS': 'p_{1}^{OS}', 'delta_22par2': '#delta^{TT}_{#parallel2}', 'f_22': 'f_{TT}', 'f_21': 'f_{TV}', 'f_20': 'f_{TS}', 'f_L_22': 'f_L^{TT}', 'f_par_22': 'f_{#parallel1}^{TT}', 'f_par_21': 'f_{#parallel}^{TV}', 'f_L_21': 'f_L^{TV}', 'imA12perp': 'Im(A^{VT}_{#perp})', 'delta_12perp': '#delta^{VT}_{#perp}', 'imA220': 'Im(A^{TT}_{L})', 'delta_m_Bs': '#Delta m_{B_{s}^{0}}', 'reA12par': 'Re(A^{VT}_{#parallel})', 'f_par2_22': 'f_{#parallel2}^{TT}', 'Dp1half_OS': '1/2 #Delta p_{1}^{OS}', 'f_12': 'f_{VT}', 'f_10': 'f_{VS}', 'f_11': 'f_{VV}', 'imA02': 'Im(A^{ST})', 'imA00': 'Im(A^{SS})', 'imA01': 'Im(A^{SV})', 'f_par_12': 'f_{#parallel}^{VT}', 'f_par_11': 'f_{#parallel}^{VV}', 'reA01': 'Re(A^{SV})', 'Dp0half_OS': '1/2 #Delta p_{0}^{OS}', 'reA11perp': 'Re(A^{VV}_{#perp})', 'imA120': 'Im(A^{VT}_{L})', 'f_01': 'f_{SV}', 'f_00': 'f_{SS}', 'f_02': 'f_{ST}', 'gamma_Bs': '#Gamma_{B_{s}^{0}}', 'f_perp_22': 'f_{#perp1}^{TT}', 'f_perp_21': 'f_{#perp}^{TV}', 'p0metac_SSK': 'p_{0}^{SSK}-<#eta^{SSK}>', 'imA22perp': 'Im(A^{TT}_{#perp1})', 'delta_22par': '#delta^{TT}_{#parallel1}', 'imA22par2': 'Im(A^{TT}_{#parallel2})', 'reA210': 'Re(A^{TV}_{L})', 'imA20': 'Im(A^{TS})', 'imA11perp': 'Im(A^{VV}_{#perp})', 'f_L_12': 'f_L^{VT}', 'f_L_11': 'f_L^{VV}', 'f_perp_12': 'f_{#perp}^{VT}', 'f_perp_11': 'f_{#perp}^{VV}', 'delta_120': '#delta^{VT}_{0}', 'delta_220': '#delta^{TT}_{0}', 'reA21perp': 'Re(A^{TV}_{#perp})', 'imA11par': 'Im(A^{VV}_{#parallel})', 'reA12perp': 'Re(A^{VT}_{#perp})', 'Dp0half_SSK': '1/2 #Delta p_{0}^{SSK}', 'reA00': 'Re(A^{SS})', 'reA02': 'Re(A^{ST})', 'delta_gamma_Bs': '#Delta #Gamma_{B_{s}^{0}}', 'delta_20': '#delta^{TS}', 'imA12par': 'Im(A^{VT}_{#parallel})', 'phis': '#phi_{s}', 'dphi_SS': 'd#phi_{sSS}', 'dphi_SV': 'd#phi_{sSV}', 'dphi_VS': 'd#phi_{sVS}', 'dphi_ST': 'd#phi_{sST}', 'dphi_TS': 'd#phi_{sTS}', 'dphi_VT': 'd#phi_{sVT}', 'dphi_TV': 'd#phi_{sTV}', 'dphi_TT': 'd#phi_{sTT}'}
+
+par_result_varnw_dict = {'reA22perp': (-0.0735597446872891, 0.30306422294354984, 'Re(A^{TT}_{\\perp1})'), 'reA22par2': (-0.11027482204968209, 0.1972660406076309, 'Re(A^{TT}_{\\parallel2})'), 'delta_210': (1.5818771289499283, 0.1996357045583519, '\\delta^{TV}_{0}'), 'tres_p1_2012': (1.2616281236695952, 0.05274779635421897, 'p_{1}^{\\sigma_{t}}(2012)'), 'tres_p1_2011': (1.1538295242847139, 0.04960299287000747, 'p_{1}^{\\sigma_{t}}(2011)'), 'delta_00': (0.631168448200234, 0.11360173260090543, '\\delta^{SS}'), 'reA10': (-0.48302864950598234, 0.4763598870652409, 'Re(A^{VS})'), 'p0metac_OS': (0.007847072990527244, 0.004354351076796169, 'p_{0}^{OS}-<\\eta^{OS}>'), 'reA220': (0.09894281879607014, 0.15932942348995033, 'Re(A^{TT}_{L})'), 'reA20': (1.050699228614123, 0.31398789866659826, 'Re(A^{TS})'), 'delta_10': (1.7135280268369553, 0.13459951553288768, '\\delta^{VS}'), 'imA21par': (0.4244950066013349, 0.17314585466911223, 'Im(A^{TV}_{\\parallel})'), 'reA11par': (-0.7111304320426761, 0.1707175215323854, 'Re(A^{VV}_{\\parallel})'), 'delta_11par': (2.0879480096016994, 0.12338043142235076, '\\delta^{VV}_{\\parallel}'), 'DCP': (-3.3367627658250862, 0.032947673811672316, '\\Delta^{CP}'), 'imA22perp2': (-0.16116796651845533, 0.28192381916693593, 'Im(A^{TT}_{\\perp2})'), 'delta_12par': (-2.380342007468954, 0.4875078541657935, '\\delta^{VT}_{\\parallel}'), 'delta_01': (-1.8257969059834425, 0.1265241923734855, '\\delta^{SV}'), 'imA22par': (0.341353948048404, 0.13913848147616975, 'Im(A^{TT}_{\\parallel1})'), 'delta_02': (-2.8598839100075946, 0.4801574976201071, '\\delta^{ST}'), 'reA22par': (-0.3445272298732682, 0.12515622178853059, 'Re(A^{TT}_{\\parallel1})'), 'tres_p0_2012': (0.03645129885555397, 0.0002505952651479666, 'p_{0}^{\\sigma_{t}}(2012)'), 'delta_22perp': (1.7208325809900469, 0.609483181030259, '\\delta^{TT}_{\\perp1}'), 'reA21par': (0.5995319172808244, 0.20361029898967656, 'Re(A^{TV}_{\\parallel})'), 'delta_21par': (0.6161042782711134, 0.29462562756538346, '\\delta^{TV}_{\\parallel}'), 'Dp1half_SSK': (-0.015254926677277458, 0.022672452211574556, '1/2 \\Delta p_{1}^{SSK}'), 'delta_11perp': (1.939258354068904, 0.28906842605122646, '\\delta^{VV}_{\\perp}'), 'f_perp2_22': (0.3459135354425529, 0.16551808739606666, 'f_{\\perp2}^{TT}'), 'imA210': (1.510610109476234, 0.4920780258126781, 'Im(A^{TV}_{L})'), 'tres_p0_2011': (0.034768435155261665, 0.00024408794786592213, 'p_{0}^{\\sigma_{t}}(2011)'), 'reA120': (-2.1784357982662, 0.36055834688344035, 'Re(A^{VT}_{L})'), 'imA21perp': (-0.5746150091963251, 0.3317724599697678, 'Im(A^{TV}_{\\perp})'), 'p1_SSK': (0.9284621096763134, 0.08203189533067752, 'p_{1}^{SSK}'), 'delta_22perp2': (-0.3088856089140464, 0.5483218394248964, '\\delta^{TT}_{\\perp2}'), 'reA22perp2': (0.5050716648410116, 0.18681474451094834, 'Re(A^{TT}_{\\perp2})'), 'imA10': (3.3611597476834234, 0.5685389043191992, 'Im(A^{VS})'), 'delta_21perp': (-0.7562188100342472, 0.45664851255489214, '\\delta^{TV}_{\\perp}'), 'p1_OS': (0.9921874478452092, 0.034777221443417, 'p_{1}^{OS}'), 'delta_22par2': (2.347811003368292, 0.5558901241050392, '\\delta^{TT}_{\\parallel2}'), 'f_22': (0.009183543958251066, 0.002710016746295089, 'f_{TT}'), 'f_21': (0.03981873583149521, 0.015123580018046921, 'f_{TV}'), 'f_20': (0.03310278020366144, 0.008536957807655132, 'f_{TS}'), 'f_L_22': (0.036102805589920135, 0.06586150916120274, 'f_L^{TT}'), 'f_par_22': (0.2894851364984548, 0.14091024973977384, 'f_{\\parallel1}^{TT}'), 'f_par_21': (0.1531693158498012, 0.0767161393034345, 'f_{\\parallel}^{TV}'), 'f_L_21': (0.6477838851780799, 0.1379919834577876, 'f_L^{TV}'), 'imA12perp': (0.6465140084462302, 0.3426703743019514, 'Im(A^{VT}_{\\perp})'), 'delta_12perp': (2.53482884577029, 0.3457365178678489, '\\delta^{VT}_{\\perp}'), 'imA220': (0.13980594039667693, 0.17676002217462136, 'Im(A^{TT}_{L})'), 'delta_m_Bs': (17.618112578577502, 0.08167342453732405, '\\Delta m_{B_{s}^{0}}'), 'reA12par': (-0.3186859258260526, 0.17613552448981823, 'Re(A^{VT}_{\\parallel})'), 'c3_mass_swave': (-0.12163136947109421, 0.015311277312228132, 'c_{3}^{mass}'), 'f_par2_22': (0.03044213597889084, 0.09062559060729963, 'f_{\\parallel2}^{TT}'), 'Dp1half_OS': (0.03281067190533479, 0.005993065192385953, '1/2 \\Delta p_{1}^{OS}'), 'f_12': (0.08757804498973039, 0.016427834106826203, 'f_{VT}'), 'f_10': (0.1303213636776544, 0.026296301333162454, 'f_{VS}'), 'f_11': (0.07616112111945339, 0.004601382942301318, 'f_{VV}'), 'imA02': (-0.2048655009177569, 0.4007347003486179, 'Im(A^{ST})'), 'imA00': (2.9507002982943504, 0.5371212442342594, 'Im(A^{SS})'), 'imA01': (-5.2689983817717, 0.6839567507571603, 'Im(A^{SV})'), 'f_par_12': (0.02500600274793292, 0.016866740062547975, 'f_{\\parallel}^{VT}'), 'f_par_11': (0.3070129636679346, 0.03108602287567394, 'f_{\\parallel}^{VV}'), 'Dp0half_SSK': (-0.008046528953707959, 0.0013825312086699188, '1/2 \\Delta p_{0}^{SSK}'), 'Dp0half_OS': (0.006991268663015419, 0.0005991390332970243, '1/2 \\Delta p_{0}^{OS}'), 'reA11perp': (-0.6899895993962257, 0.5062901825849236, 'Re(A^{VV}_{\\perp})'), 'imA120': (-1.2344797129847294, 0.5482780643632025, 'Im(A^{VT}_{L})'), 'f_01': (0.3350944491270055, 0.026523196352403106, 'f_{SV}'), 'f_00': (0.28260212099378823, 0.011846024723397712, 'f_{SS}'), 'f_02': (0.006137840098960122, 0.006346585560303772, 'f_{ST}'), 'c2_mass_swave': (-0.1585889977425825, 0.019406249576048952, 'c_{2}^{mass}'), 'gamma_Bs': (0.6652886270365236, 0.0019676362639323717, '\\Gamma_{B_{s}^{0}}'), 'f_perp_22': (0.29805638649018135, 0.175797243473789, 'f_{\\perp1}^{TT}'), 'f_perp_21': (0.1990467989721187, 0.08647930477048982, 'f_{\\perp}^{TV}'), 'p0metac_SSK': (0.007267043982177306, 0.0050547756388464845, 'p_{0}^{SSK}-<\\eta^{SSK}>'), 'imA22perp': (0.48659539088895976, 0.17633566825012784, 'Im(A^{TT}_{\\perp1})'), 'delta_22par': (2.3608210338061837, 0.2476696658388352, '\\delta^{TT}_{\\parallel1}'), 'imA22par2': (0.1121394730466374, 0.15228187961329426, 'Im(A^{TT}_{\\parallel2})'), 'reA210': (-0.016739456875580316, 0.30160556974705827, 'Re(A^{TV}_{L})'), 'imA20': (-1.3509011615458704, 0.4597895405179997, 'Im(A^{TS})'), 'imA11perp': (1.7870985799327919, 0.3351760719874725, 'Im(A^{VV}_{\\perp})'), 'f_L_12': (0.8090935533665471, 0.04438116437559516, 'f_L^{VT}'), 'f_L_11': (0.148397361829253, 0.03217543911569287, 'f_L^{VV}'), 'f_perp_12': (0.16590044388551997, 0.04088094574994784, 'f_{\\perp}^{VT}'), 'f_perp_11': (0.5445896745028123, 0.035406105850297326, 'f_{\\perp}^{VV}'), 'c1_mass_swave': (-0.2999145131367409, 0.019871084784432978, 'c_{1}^{mass}'), 'c4_mass_swave': (-0.06590222906448306, 0.01627658856871813, 'c_{4}^{mass}'), 'delta_120': (-2.6260322629041277, 0.2118507085715715, '\\delta^{VT}_{0}'), 'delta_220': (0.9549109802328231, 1.0338830362523146, '\\delta^{TT}_{0}'), 'reA21perp': (0.6091668037771996, 0.2557623291630649, 'Re(A^{TV}_{\\perp})'), 'imA11par': (1.250260291892074, 0.2011418584802664, 'Im(A^{VV}_{\\parallel})'), 'reA12perp': (-0.9314251460156928, 0.26684696226308574, 'Re(A^{VT}_{\\perp})'), 'reA01': (-1.3734982090884902, 0.6999374641380647, 'Re(A^{SV})'), 'reA00': (4.037045611521224, 0.6638886334615056, 'Re(A^{SS})'), 'reA02': (-0.7078844807364177, 0.3375555170255883, 'Re(A^{ST})'), 'delta_gamma_Bs': (0.08618311902645703, 0.005877584711519312, '\\Delta \\Gamma_{B_{s}^{0}}'), 'delta_20': (-0.9097539304184619, 0.26934040460890546, '\\delta^{TS}'), 'imA12par': (-0.3036550155575686, 0.1943687862124656, 'Im(A^{VT}_{\\parallel})'), 'phis': (8.596993560492631, 0.11451831052010514, '\\phi_{s}')}
+
+par_result_constnw_dict = {'reA22perp': (-0.07422561735003441, 0.30196831409329866, 'Re(A^{TT}_{\\perp1})'), 'reA22par2': (-0.10977919188605512, 0.1969467132682363, 'Re(A^{TT}_{\\parallel2})'), 'delta_210': (1.5821781346585668, 0.1981172086800449, '\\delta^{TV}_{0}'), 'tres_p1_2012': (1.2616172078197445, 0.05274733982469428, 'p_{1}^{\\sigma_{t}}(2012)'), 'tres_p1_2011': (1.1539493276078308, 0.04959945287409409, 'p_{1}^{\\sigma_{t}}(2011)'), 'delta_00': (0.6310210893525537, 0.11351159667910327, '\\delta^{SS}'), 'reA10': (-0.4818825157334441, 0.47365236797142235, 'Re(A^{VS})'), 'p0metac_OS': (0.007850008602655344, 0.004354135912606459, 'p_{0}^{OS}-<\\eta^{OS}>'), 'reA220': (0.0985546512663742, 0.15815104912571393, 'Re(A^{TT}_{L})'), 'reA20': (1.0516015547119792, 0.31317561659821613, 'Re(A^{TS})'), 'delta_10': (1.7132189785482739, 0.13416062005435211, '\\delta^{VS}'), 'imA21par': (0.4251439690837895, 0.1723387698462173, 'Im(A^{TV}_{\\parallel})'), 'reA11par': (-0.7109611904442712, 0.1694735475125885, 'Re(A^{VV}_{\\parallel})'), 'delta_11par': (2.087802732833163, 0.12308318381645929, '\\delta^{VV}_{\\parallel}'), 'DCP': (-3.336834100942994, 0.03287398843756592, '\\Delta^{CP}'), 'imA22perp2': (-0.16017658850499394, 0.2803961640688439, 'Im(A^{TT}_{\\perp2})'), 'delta_12par': (-2.3814153498007187, 0.4858169819583023, '\\delta^{VT}_{\\parallel}'), 'delta_01': (-1.8257092884062862, 0.1263191445923095, '\\delta^{SV}'), 'imA22par': (0.3419378753751161, 0.13752878188335022, 'Im(A^{TT}_{\\parallel1})'), 'delta_02': (-2.857160118115828, 0.47274460719310313, '\\delta^{ST}'), 'reA22par': (-0.3443091927769686, 0.12473477815416364, 'Re(A^{TT}_{\\parallel1})'), 'tres_p0_2012': (0.03645114009699407, 0.0002505979594572659, 'p_{0}^{\\sigma_{t}}(2012)'), 'delta_22perp': (1.7220630481453068, 0.6068097981807193, '\\delta^{TT}_{\\perp1}'), 'reA21par': (0.5991810972844451, 0.20048019097624487, 'Re(A^{TV}_{\\parallel})'), 'delta_21par': (0.6171011194695819, 0.2931333941312186, '\\delta^{TV}_{\\parallel}'), 'Dp1half_SSK': (-0.015252433759744, 0.02267245458974212, '1/2 \\Delta p_{1}^{SSK}'), 'delta_11perp': (1.9394703452298034, 0.2881908887576033, '\\delta^{VV}_{\\perp}'), 'f_perp2_22': (0.3460059775570623, 0.16484572975915102, 'f_{\\perp2}^{TT}'), 'imA210': (1.5102268561062537, 0.4778143327322305, 'Im(A^{TV}_{L})'), 'tres_p0_2011': (0.03476863646795697, 0.0002440777049750134, 'p_{0}^{\\sigma_{t}}(2011)'), 'reA120': (-2.1785122175811287, 0.34825829429934446, 'Re(A^{VT}_{L})'), 'imA21perp': (-0.574353831446091, 0.32886184423286374, 'Im(A^{TV}_{\\perp})'), 'p1_SSK': (0.9284973212063521, 0.08203250815863705, 'p_{1}^{SSK}'), 'delta_22perp2': (-0.3067485685969915, 0.5462375613821242, '\\delta^{TT}_{\\perp2}'), 'reA22perp2': (0.5056938564147693, 0.1840698448164958, 'Re(A^{TT}_{\\perp2})'), 'imA10': (3.360560226771071, 0.5514299069545597, 'Im(A^{VS})'), 'delta_21perp': (-0.7558653134786215, 0.4553535164687906, '\\delta^{TV}_{\\perp}'), 'p1_OS': (0.99219232383791, 0.03477676955135745, 'p_{1}^{OS}'), 'delta_22par2': (2.3483756053393314, 0.5569098125220759, '\\delta^{TT}_{\\parallel2}'), 'f_22': (0.009190427376370798, 0.0025771240213735783, 'f_{TT}'), 'f_21': (0.03980257668484872, 0.014938927020175068, 'f_{TV}'), 'f_20': (0.03306503436487386, 0.008311810262891958, 'f_{TS}'), 'f_L_22': (0.035988475857040986, 0.06528084079672292, 'f_L^{TT}'), 'f_par_22': (0.289549103216287, 0.13893711665914796, 'f_{\\parallel1}^{TT}'), 'f_par_21': (0.15325532638545658, 0.07631665134068205, 'f_{\\parallel}^{TV}'), 'f_L_21': (0.6476661360893627, 0.13665318787409053, 'f_L^{TV}'), 'imA12perp': (0.6464527993749307, 0.3380842423951303, 'Im(A^{VT}_{\\perp})'), 'delta_12perp': (2.5349053337112566, 0.3443488486550821, '\\delta^{VT}_{\\perp}'), 'imA220': (0.1398353600400437, 0.17567075415228617, 'Im(A^{TT}_{L})'), 'delta_m_Bs': (17.618187151401123, 0.08154198312412247, '\\Delta m_{B_{s}^{0}}'), 'reA12par': (-0.31930626006862717, 0.17557387952245063, 'Re(A^{VT}_{\\parallel})'), 'f_par2_22': (0.030109314086630416, 0.08987353354164121, 'f_{\\parallel2}^{TT}'), 'Dp1half_OS': (0.032810295120572514, 0.0059930725915674265, '1/2 \\Delta p_{1}^{OS}'), 'f_12': (0.08759040112806357, 0.016047487186664218, 'f_{VT}'), 'f_10': (0.13025199050985692, 0.026200440477220206, 'f_{VS}'), 'f_11': (0.07617187057781845, 0.004356888035288296, 'f_{VV}'), 'imA02': (-0.2071742359647235, 0.39858323017051434, 'Im(A^{ST})'), 'imA00': (2.950222600890669, 0.5278798586734365, 'Im(A^{SS})'), 'imA01': (-5.2699240019240055, 0.6658921641900798, 'Im(A^{SV})'), 'f_par_12': (0.025046495327613896, 0.016845628196663742, 'f_{\\parallel}^{VT}'), 'f_par_11': (0.30695364835891303, 0.030981855730300642, 'f_{\\parallel}^{VV}'), 'Dp0half_SSK': (-0.008046602303667357, 0.001382531168358857, '1/2 \\Delta p_{0}^{SSK}'), 'Dp0half_OS': (0.006991298101529059, 0.0005991385174119489, '1/2 \\Delta p_{0}^{OS}'), 'reA11perp': (-0.6905062283293439, 0.5065293296489629, 'Re(A^{VV}_{\\perp})'), 'imA120': (-1.2348994137129825, 0.5495577193175852, 'Im(A^{VT}_{L})'), 'f_01': (0.3351677332276821, 0.02634701841450725, 'f_{SV}'), 'f_00': (0.2826000021084217, 0.011196741961466809, 'f_{SS}'), 'f_02': (0.0061599640220634235, 0.00627054588714095, 'f_{ST}'), 'gamma_Bs': (0.6652948018876358, 0.0019676001535852616, '\\Gamma_{B_{s}^{0}}'), 'f_perp_22': (0.29834712928297924, 0.17467227158578624, 'f_{\\perp1}^{TT}'), 'f_perp_21': (0.19907853752518076, 0.08567343618799604, 'f_{\\perp}^{TV}'), 'p0metac_SSK': (0.0072683156443861426, 0.005054463205793598, 'p_{0}^{SSK}-<\\eta^{SSK}>'), 'imA22perp': (0.4869452914280803, 0.17006688302646072, 'Im(A^{TT}_{\\perp1})'), 'delta_22par': (2.3596499628257757, 0.24557581181269467, '\\delta^{TT}_{\\parallel1}'), 'imA22par2': (0.11150945761584197, 0.15193267680161224, 'Im(A^{TT}_{\\parallel2})'), 'reA210': (-0.01718985420287389, 0.29924764555120864, 'Re(A^{TV}_{L})'), 'imA20': (-1.3490558625999487, 0.44744884891439557, 'Im(A^{TS})'), 'imA11perp': (1.787308938055146, 0.32626556405752466, 'Im(A^{VV}_{\\perp})'), 'f_L_12': (0.8090857398581417, 0.044326949627353104, 'f_L^{VT}'), 'f_L_11': (0.14836351599278935, 0.031125824121668144, 'f_L^{VV}'), 'f_perp_12': (0.1658677648142444, 0.04083604561846762, 'f_{\\perp}^{VT}'), 'f_perp_11': (0.5446828356482976, 0.03490751511367655, 'f_{\\perp}^{VV}'), 'delta_120': (-2.625901493225181, 0.21144117432938692, '\\delta^{VT}_{0}'), 'delta_220': (0.956862406555501, 1.035629568782537, '\\delta^{TT}_{0}'), 'reA21perp': (0.6093212980725085, 0.25604379415708045, 'Re(A^{TV}_{\\perp})'), 'imA11par': (1.2503853970601604, 0.19677954156957847, 'Im(A^{VV}_{\\parallel})'), 'reA12perp': (-0.9314890543650254, 0.2669399783880778, 'Re(A^{VT}_{\\perp})'), 'reA01': (-1.37324639290979, 0.6946509686112958, 'Re(A^{SV})'), 'reA00': (4.0376408177766105, 0.6447494620532553, 'Re(A^{SS})'), 'reA02': (-0.7086282910442794, 0.3299463684258643, 'Re(A^{ST})'), 'delta_gamma_Bs': (0.08615678124351381, 0.005877617862059901, '\\Delta \\Gamma_{B_{s}^{0}}'), 'delta_20': (-0.9086752081549326, 0.26783250625243554, '\\delta^{TS}'), 'imA12par': (-0.3035928765349514, 0.1938745686541677, 'Im(A^{VT}_{\\parallel})'), 'phis': (8.597144924350035, 0.11442558567490102, '\\phi_{s}')}
 
 def stringline_CUDA(parname,upardict):
    if parname not in upardict.keys(): return ''
@@ -3023,7 +3275,35 @@ def fitprint2LaTeX_CUDA(upardict,wide_window):
 	texfile.write(partext)
 	texfile.close()
 
-def DoCUDAFit(data_,params_,blinding_,wide_window_,minos_,output_file_name_):
+def diagonalise(cov_array):
+
+   (eig_vals, eig_vecs) = np.linalg.eig(cov_array)
+   matrix_U = np.matrix(eig_vecs)
+   matrix_IU = matrix_U.I
+   return np.array(matrix_IU), eig_vals
+
+def randomvary(vec_init_array,vec_final_array,diag_tools):
+
+   matrix_IU_array, diag_cov_array = diag_tools
+   delta_list = []
+   for sigma2 in list(diag_cov_array.real): delta_list.append(np.random.normal()*sqrt(max(sigma2,0.)))
+   for i in range(len(vec_final_array)):
+      vi = vec_init_array[i]
+      for j in range(len(vec_init_array)): vi += matrix_IU_array[i][j].real*delta_list[j]
+      vec_final_array[i] = vi
+
+def myset(l):
+
+   ln = [0.]
+   for i in l:
+      if (not i in ln) and i != 0.: ln.append(i)
+   return ln
+
+dict_nw_find_value = [1, 0, 2, 3, 4, 0, 5, 6, 7, 8, 9, 10, 11, 12, 13, 0, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 0, 25, 26, 27, 28, 29, 30, 31, 0, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 0, 43, 0, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 0, 60, 0, 61, 62, 0, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 0, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 0, 105, 0, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 66, 125, 126, 0, 127, 0, 128, 129, 0, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 0, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 0, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 0, 175, 0, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 72, 189, 190, 191, 192, 193, 135, 194, 195, 0, 196, 0, 197, 198, 0, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 0, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 0, 243, 0, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 76, 255, 256, 257, 258, 259, 141, 260, 261, 262, 263, 264, 265, 266, 202, 267, 268, 0, 269, 0, 270, 271, 0, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 0, 301, 0, 0, 302, 303, 0, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 0, 332, 0, 333, 334, 0, 0, 335, 336, 0]
+
+dict_nw_find_example = [0, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 29, 30, 31, 32, 33, 34, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 48, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 67, 69, 70, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 116, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 138, 139, 141, 143, 144, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 194, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 210, 211, 212, 213, 214, 216, 217, 219, 221, 222, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 270, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 284, 285, 286, 287, 288, 290, 291, 292, 293, 294, 295, 296, 298, 299, 301, 303, 304, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 336, 339, 340, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 371, 373, 374, 377, 378]
+
+def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_name_,randomize_c_mass_,randomize_nw_,repeat_fit_for_nw_syst_,nw_syst_N_iterations_):
 
    print "\n#####################################################################"
    print " P R E P A R I N G   C U D A   F R A M E W O R K"
@@ -3040,34 +3320,95 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,minos_,output_file_name_):
    import uncertainties
    import uncertainties.umath as umath
 
-   BLOCK_SIZE = 252
+   mintnpoints = 500
+   mintnpoints2 = mintnpoints*mintnpoints
+   if wide_window_: minthlimit = mHlimit
+   else: minthlimit = 1050.
+   mintarray = np.ones(mintnpoints2).astype(np.float64)
+
+   nindnws = 336
+   nindnws2 = nindnws*nindnws
+
+   block_size_maxmpdf = 500
+   block_size_mint = 510
+   block_size_nw = 6*85
+   block_size_nwcov = 500
+   block_size_fit = 12*21
    THR = 1e06
+
    paramnames = []
    for par in params_: paramnames.append(par.GetName())
 
-   def getGrid(thiscat, BLOCK_SIZE):
-      Nbunch = thiscat.Nevts *1. / BLOCK_SIZE
+   def getGrid_maxmpdf():
+      Nbunch = mintnpoints2 * 1. / block_size_maxmpdf
+      if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
+      else : Nbunch = int(Nbunch)
+      return  (Nbunch,1,1)
+
+   def getGrid_mint():
+      Nbunch = mintnpoints2 * 1. / block_size_mint
+      if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
+      else : Nbunch = int(Nbunch)
+      return  (Nbunch,1,1)
+
+   def getGrid_nw(thiscat):
+      Nbunch = thiscat.NMCevts *1. / block_size_nw
+      if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
+      else : Nbunch = int(Nbunch)
+      return  (Nbunch,1,1)
+
+   def getGrid_nwcov():
+      Nbunch = nindnws2 * 1. / block_size_nwcov
+      if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
+      else : Nbunch = int(Nbunch)
+      return  (Nbunch,1,1)
+
+   def getGrid_fit(thiscat):
+      Nbunch = thiscat.Nevts *1. / block_size_fit
       print "thiscat.Nevts, Nbunch = ", thiscat.Nevts, Nbunch
       if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
       else : Nbunch = int(Nbunch)
       return  (Nbunch,1,1)
 
+   block_maxmpdf = (block_size_maxmpdf,1,1)
+   grid_maxmpdf = getGrid_maxmpdf()
+   block_mint = (block_size_mint,1,1)
+   grid_mint = getGrid_mint()
+   block_nwcov = (block_size_nwcov,1,1)
+   grid_nwcov = getGrid_nwcov()
+
+   c_mass_centers = np.array([-0.29994255, -0.15854387, -0.12167263, -0.06586275]).astype(np.float64)
+   c_mass_cov_array = np.array([[0.0003947516243460034, -7.661577933574582e-05, 0.00011979980192447234, -5.0500702593427645e-05], [-7.661577933574582e-05, 0.0003759673751610742, -7.33894853808996e-05, 0.00016748362866758049], [0.00011979980192447234, -7.33894853808996e-05, 0.00023399128961875884, -4.587884618593318e-05], [-5.0500702593427645e-05, 0.00016748362866758049, -4.587884618593318e-05, 0.000264629682495723]])
+   c_mass_diag_tools = diagonalise(c_mass_cov_array)
+   c_mass_centers_mod = np.ones(4).astype(np.float64)
+
    print '\nTranslating parameters ...'
    Params = []
-   np.random.seed(1)
    for par in params_:
-      Params.append(converted_parameter(par,blinding_,blinding_scale))
+      Params.append(converted_parameter(par,blinding_))
 
    print '\nCompiling CUDA PDF ...'
    mod = cuRead("../../src/TimeDependent/Bs2KpiKpiTDPDF.cu", no_extern_c = True)
    CUDA_pdf_initializer = mod.get_function("initialize")
    CUDA_pdf = mod.get_function("evaluate")
+   CUDA_max_mpdf = mod.get_function("find_max_mass_pdf")
+   CUDA_int_mpdf = mod.get_function("compute_mass_integral")
+   CUDA_compute_mint_array = mod.get_function("compute_mint_array")
+   CUDA_set_mass_params = mod.get_function("set_mass_params")
+   CUDA_set_mass_integrals = mod.get_function("set_mass_integrals")
+   CUDA_compute_nw = mod.get_function("compute_nw")
+   CUDA_set_nw_val = mod.get_function("set_nw_val")
+   CUDA_compute_nwcov = mod.get_function("compute_nwcov")
 
    print '\nConverting datasets ...'
    data_arraylist = create_data_arrays(data_)
+   if wide_window_: MCdatalist = [MCdata_2011_L0TIS_wide,MCdata_2011_L0noTIS_wide,MCdata_2012_L0TIS_wide,MCdata_2012_L0noTIS_wide]
+   else: MCdatalist = [MCdata_2011_L0TIS_narrow,MCdata_2011_L0noTIS_narrow,MCdata_2012_L0TIS_narrow,MCdata_2012_L0noTIS_narrow]
+   MCdata_arraylist = create_MCdata_arrays(MCdatalist)
 
    print '\nCreating categories ...'
    cat_name_list = ['11L0TIS','11L0noTIS','12L0TIS','12L0noTIS']
+   cat_opt_list = [(0,0),(0,1),(1,0),(1,1)]
    options_arraylist = []
    options_arraylist.append(create_param_list('options_11L0TIS_list'))
    options_arraylist.append(create_param_list('options_11L0noTIS_list'))
@@ -3076,9 +3417,21 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,minos_,output_file_name_):
    cats = []
    for i in range(4):
       thiscat = Cat(cat_name_list[i], data_arraylist[i], getN = True)
+      thiscat.year = cat_opt_list[i][0]
+      thiscat.trig = cat_opt_list[i][1]
       thiscat.model_options = gpuarray.to_gpu(options_arraylist[i])
-      thiscat.block = (BLOCK_SIZE,1,1)
-      thiscat.grid = getGrid(thiscat, BLOCK_SIZE)
+      thiscat.MCdata = MCdata_arraylist[i]
+      thiscat.NMCevts = int(thiscat.MCdata.size/6.)
+      thiscat.nwevout = np.ones(thiscat.NMCevts).astype(np.float64)
+      thiscat.nwset = np.ones(380).astype(np.float64)
+      thiscat.nwsetred = np.ones(nindnws).astype(np.float64)
+      thiscat.nwcov = np.ones([nindnws,nindnws]).astype(np.float64)
+      thiscat.nwsetmodred = np.ones(nindnws).astype(np.float64)
+      thiscat.nwsetmod = np.ones(380).astype(np.float64)
+      thiscat.block_nw = (block_size_nw,1,1)
+      thiscat.grid_nw = getGrid_nw(thiscat)
+      thiscat.block_fit = (block_size_fit,1,1)
+      thiscat.grid_fit = getGrid_fit(thiscat)
       cats.append(thiscat)
 
    def my_getSumLL_large(cat): return gpuarray.sum(getattr(cat,"Probs"))
@@ -3106,7 +3459,16 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,minos_,output_file_name_):
          else:
             self.getSumLL = my_getSumLL_short
             self.mySum = mySum1
+         self.nw_computed = 0
          self.pdf = CUDA_pdf
+         self.set_mass_params = CUDA_set_mass_params
+         self.set_mass_integrals = CUDA_set_mass_integrals
+         self.max_mpdf = CUDA_max_mpdf
+         self.int_mpdf = CUDA_int_mpdf
+         self.compute_mint_array = CUDA_compute_mint_array
+         self.compute_nw = CUDA_compute_nw
+         self.compute_nwcov = CUDA_compute_nwcov
+         self.set_nw_val = CUDA_set_nw_val
          self.re_amps_list_cu = create_param_list("re_amps_list")
          self.dirCP_asyms_list_cu = create_param_list("dirCP_asyms_list")
          self.im_amps_list_cu = create_param_list("im_amps_list")
@@ -3116,34 +3478,70 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,minos_,output_file_name_):
          self.mass_integrals_list_cu = create_param_list('mass_integrals_11L0TIS_list',numparams = 9)
          CUDA_pdf_initializer(block = (1,1,1))
 
-      def check_PDF(self):
-         for [idx,ival] in param_list_updates_check("re_amps_list",paramnames,blinding = blinding_): self.re_amps_list_cu[idx] = ival
-         for [idx,ival] in param_list_updates_check("dirCP_asyms_list",paramnames,blinding = blinding_): self.dirCP_asyms_list_cu[idx] = ival
-         for [idx,ival] in param_list_updates_check("im_amps_list",paramnames,blinding = blinding_): self.im_amps_list_cu[idx] = ival
-         for [idx,ival] in param_list_updates_check("weak_phases_list",paramnames,blinding = blinding_): self.weak_phases_list_cu[idx] = ival
-         for [idx,ival] in param_list_updates_check("mixing_params_list",paramnames,blinding = blinding_): self.mixing_params_list_cu[idx] = ival
-         for [idx,ival] in param_list_updates_check("calib_params_list",paramnames,blinding = blinding_): self.calib_params_list_cu[idx] = ival
-         cat = self.cats[1]
-         print cat.data[0]
-         print ''
-         self.pdf(cat.data,cat.Probs,cudriver.Out(check),cat.model_options,gpuarray.to_gpu(self.re_amps_list_cu),gpuarray.to_gpu(self.dirCP_asyms_list_cu),gpuarray.to_gpu(self.im_amps_list_cu),gpuarray.to_gpu(self.weak_phases_list_cu),gpuarray.to_gpu(self.mixing_params_list_cu),gpuarray.to_gpu(self.calib_params_list_cu),gpuarray.to_gpu(self.mass_integrals_list_cu),cat.Nevts,block = cat.block,grid = cat.grid)
-         print check[0],check[1],check[2]
-         print ''
+      def createFit(self):
+         config = {}
+         for par in self.params: config.update(par.getSettings())
+         self.fit = Minuit(self, errordef=1, **config)
 
       def __call__(self,*args):
+
          chi2 = np.float64(0.)
          N = self.dc
+
          for [idx,ival] in param_list_updates("re_amps_list",paramnames,args_ = args,N_ = N,blinding = blinding_): self.re_amps_list_cu[idx] = ival
          for [idx,ival] in param_list_updates("dirCP_asyms_list",paramnames,args_ = args,N_ = N,blinding = blinding_): self.dirCP_asyms_list_cu[idx] = ival
          for [idx,ival] in param_list_updates("im_amps_list",paramnames,args_ = args,N_ = N,blinding = blinding_): self.im_amps_list_cu[idx] = ival
          for [idx,ival] in param_list_updates("weak_phases_list",paramnames,args_ = args,N_ = N,blinding = blinding_): self.weak_phases_list_cu[idx] = ival
          for [idx,ival] in param_list_updates("mixing_params_list",paramnames,args_ = args,N_ = N,blinding = blinding_): self.mixing_params_list_cu[idx] = ival
          for [idx,ival] in param_list_updates("calib_params_list",paramnames,args_ = args,N_ = N,blinding = blinding_): self.calib_params_list_cu[idx] = ival
-         for cat in self.cats:
-            self.pdf(cat.data,cat.Probs,cudriver.Out(check),cat.model_options,gpuarray.to_gpu(self.re_amps_list_cu),gpuarray.to_gpu(self.dirCP_asyms_list_cu),gpuarray.to_gpu(self.im_amps_list_cu),gpuarray.to_gpu(self.weak_phases_list_cu),gpuarray.to_gpu(self.mixing_params_list_cu),gpuarray.to_gpu(self.calib_params_list_cu),gpuarray.to_gpu(self.mass_integrals_list_cu),cat.Nevts,block = cat.block,grid = cat.grid)
-            #nan = np.nan
-            #for pr in getattr(cat,"Probs"):
-               #if eval(str(pr)) == nan: print check[0],check[1],check[2]
+
+         if var_nw_ or (not self.nw_computed):
+
+            # Randomize c_mass_swave parameters (if needed).
+            if var_nw_ == 0 and self.nw_computed == 0 and randomize_c_mass_ == 1:
+               randomvary(c_mass_centers,c_mass_centers_mod,c_mass_diag_tools)
+               self.calib_params_list_cu[22] = c_mass_centers_mod[0]
+               self.calib_params_list_cu[23] = c_mass_centers_mod[1]
+               self.calib_params_list_cu[24] = c_mass_centers_mod[2]
+               self.calib_params_list_cu[25] = c_mass_centers_mod[3]
+            self.set_mass_params(gpuarray.to_gpu(self.calib_params_list_cu),block = (1,1,1))
+
+            # Compute normalisation mass integrals.
+            for mpdfid in range(9):
+               self.compute_mint_array(np.int32(mpdfid),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu[mpdfid] = sum(mintarray)
+            self.set_mass_integrals(gpuarray.to_gpu(self.mass_integrals_list_cu),block = (1,1,1))
+
+            # Compute normalisation weights.
+            for cat in self.cats:
+               for inw in range(380):
+                  j1_aux,j2_aux,h_aux,j1p_aux,j2p_aux,hp_aux,part_aux = extindex(inw)
+                  self.compute_nw(gpuarray.to_gpu(cat.MCdata),np.int32(j1_aux),np.int32(j2_aux),np.int32(h_aux),np.int32(j1p_aux),np.int32(j2p_aux),np.int32(hp_aux),np.int32(part_aux),np.int32(cat.NMCevts),cudriver.Out(cat.nwevout),block = cat.block_nw,grid = cat.grid_nw)
+                  cat.nwset[inw] = sum(cat.nwevout)
+                  self.set_nw_val(np.float64(cat.nwset[inw]),np.int32(cat.year),np.int32(cat.trig),np.int32(inw),block = (1,1,1))
+
+               # Randomise normalisation weights (if needed).
+               if var_nw_ == 0 and self.nw_computed == 0 and randomize_nw_ == 1:
+                  nwevoutlist = []
+                  for inw in range(nindnws):
+                     inw_instance = dict_nw_find_example[inw]
+                     cat.nwsetred[inw] = cat.nwset[inw_instance]
+                     j1_aux,j2_aux,h_aux,j1p_aux,j2p_aux,hp_aux,part_aux = extindex(inw_instance)
+                     self.compute_nw(gpuarray.to_gpu(cat.MCdata),np.int32(j1_aux),np.int32(j2_aux),np.int32(h_aux),np.int32(j1p_aux),np.int32(j2p_aux),np.int32(hp_aux),np.int32(part_aux),np.int32(cat.NMCevts),cudriver.Out(cat.nwevout),block = cat.block_nw,grid = cat.grid_nw)
+                     nwevoutlist += list(cat.nwevout)
+                  nwevoutlist_array = np.array(nwevoutlist).astype(np.float64)
+                  self.compute_nwcov(gpuarray.to_gpu(nwevoutlist_array),np.int32(cat.NMCevts),cudriver.Out(cat.nwcov),block = block_nwcov,grid = grid_nwcov)
+                  nw_diag_tools = diagonalise(cat.nwcov)
+                  randomvary(cat.nwsetred,cat.nwsetmodred,nw_diag_tools)
+                  nwsetmodred_expanded = [0.]+list(cat.nwsetmodred)
+                  for inw in range(380):
+                     cat.nwsetmod[inw] = nwsetmodred_expanded[dict_nw_find_value[inw]]
+                     self.set_nw_val(np.float64(cat.nwsetmod[inw]),np.int32(cat.year),np.int32(cat.trig),np.int32(inw),block = (1,1,1))
+
+            self.nw_computed = 1
+
+         for cat in self.cats: self.pdf(cat.data,cat.Probs,cudriver.Out(check),cat.model_options,gpuarray.to_gpu(self.re_amps_list_cu),gpuarray.to_gpu(self.dirCP_asyms_list_cu),gpuarray.to_gpu(self.im_amps_list_cu),gpuarray.to_gpu(self.weak_phases_list_cu),gpuarray.to_gpu(self.mixing_params_list_cu),gpuarray.to_gpu(self.calib_params_list_cu),gpuarray.to_gpu(self.mass_integrals_list_cu),cat.Nevts,block = cat.block_fit,grid = cat.grid_fit)
+
          LL = map(self.getSumLL, self.cats)
          LLsum = self.mySum(LL)
          LLsum += ctrt_fun_1(np.float64(args[N["Dp0half_SSK_cu"]]),-0.0079,0.0014)
@@ -3166,56 +3564,128 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,minos_,output_file_name_):
 
    print '\nConstructing fitting framework ...'
    manager = CUDAModel(Params, cats)
-   manager.createFit()
-   #manager.check_PDF()
 
-   manager.fit.migrad()
-   manager.fit.hesse()
-   if minos_: manager.fit.minos()
+   if repeat_fit_for_nw_syst_:
 
-   num_params = len(paramnames)
-   cov_matrix = np.ones((num_params,num_params))
-   central_vals = []
-   for i in range(num_params):
-      central_vals.append(manager.fit.values[paramnames[i]+'_cu'])
-      for j in range(num_params): cov_matrix[i][j] = manager.fit.covariance[(paramnames[i]+'_cu',paramnames[j]+'_cu')]
-   par_tuple = uncertainties.correlated_values(central_vals,cov_matrix)
-   upar = {}
-   for i in range(num_params): upar[paramnames[i]] = par_tuple[i]
-   upar['reA110'] = 1.
-   upar['imA110'] = 0.
-   for par in max_strong_params:
-      if par not in paramnames: upar[par] = 0.
-   polarparamnames = []
-   for par in polar_namepairs_dict.keys():
-      if polar_namepairs_dict[par] in paramnames:
-         par_temp = eval(polar_params_dict[par])
-         if par_temp.std_dev > 1e-10:
-            polarparamnames.append(par)
-            upar[par] = par_temp
+      fnwsyst = open('nwsystfits.dat','w')
+      fnwsyst.close()
 
-   fitprint2LaTeX_CUDA(upar,wide_window_)
+      for iexp in range(nw_syst_N_iterations_):
 
-   for par in params_:
-      if (("DCP" in par.GetName()) or ("phis" in par.GetName())) and blinding_: par.setVal(upar[par.GetName()].nominal_value-blinding_strings[par.GetName()])
-      else: par.setVal(upar[par.GetName()].nominal_value)
+         print 'Experiment #' + str(iexp)
 
-   for par in params_:
-      if ((not "DCP" in par.GetName()) and (not "phis" in par.GetName())): print '\t\t'+par.GetName()+'.setVal('+str(par.getVal())+')'
-   print ''
+         manager.createFit()
+         manager.nw_computed = 0
+         manager.fit.print_level = 0
+         manager.fit.migrad()
+         manager.fit.hesse()
+      
+         num_params = len(paramnames)
+         cov_matrix = np.ones((num_params,num_params))
+         central_vals = []
+         for i in range(num_params):
+            central_vals.append(manager.fit.values[paramnames[i]+'_cu'])
+            for j in range(num_params): cov_matrix[i][j] = manager.fit.covariance[(paramnames[i]+'_cu',paramnames[j]+'_cu')]
+         par_tuple = uncertainties.correlated_values(central_vals,cov_matrix)
+         upar = {}
+         for i in range(num_params): upar[paramnames[i]] = par_tuple[i]
+         upar['reA110'] = 1.
+         upar['imA110'] = 0.
+         for par in max_strong_params:
+            if par not in paramnames: upar[par] = 0.
+         polarparamnames = []
+         for par in polar_namepairs_dict.keys():
+            if polar_namepairs_dict[par] in paramnames:
+               par_temp = eval(polar_params_dict[par])
+               if par_temp.std_dev > 1e-10:
+                  polarparamnames.append(par)
+                  upar[par] = par_temp
 
-   if output_file_name_ != "":
-      par_result_dict = {}
-      for par in paramnames+polarparamnames: par_result_dict[par] = (upar[par].nominal_value,upar[par].std_dev,par_name_dict[par].replace('#','\\'))
-      fresult = open('_'+output_file_name_+'.py','w')
-      fresult.write("par_result_dict = "+str(par_result_dict))
-      fresult.close()
-      print 'Fit results saved in _'+output_file_name_+'.py'
+         output_string = ''
+         for par in paramnames+polarparamnames: output_string += str(upar[par].nominal_value-par_result_varnw_dict[par][0]) + ' '
+         output_string += '\n'
+         fnwsyst = open('nwsystfits.dat','a')
+         fnwsyst.write(output_string)
+         fnwsyst.close()
 
-   print '\nINFO:',int((timer() - start)/60),'min needed to do the fit.'
+      print '\nINFO:',int((timer() - start)/60),'min needed to do the study.'
+
+   else:
+
+      manager.createFit()
+      manager.fit.migrad()
+      manager.fit.hesse()
+      if minos_: manager.fit.minos()
+   
+      num_params = len(paramnames)
+      cov_matrix = np.ones((num_params,num_params))
+      central_vals = []
+      for i in range(num_params):
+         central_vals.append(manager.fit.values[paramnames[i]+'_cu'])
+         for j in range(num_params): cov_matrix[i][j] = manager.fit.covariance[(paramnames[i]+'_cu',paramnames[j]+'_cu')]
+      par_tuple = uncertainties.correlated_values(central_vals,cov_matrix)
+      upar = {}
+      for i in range(num_params): upar[paramnames[i]] = par_tuple[i]
+      upar['reA110'] = 1.
+      upar['imA110'] = 0.
+      for par in max_strong_params:
+         if par not in paramnames: upar[par] = 0.
+      polarparamnames = []
+      for par in polar_namepairs_dict.keys():
+         if polar_namepairs_dict[par] in paramnames:
+            par_temp = eval(polar_params_dict[par])
+            if par_temp.std_dev > 1e-10:
+               polarparamnames.append(par)
+               upar[par] = par_temp
+   
+      fitprint2LaTeX_CUDA(upar,wide_window_)
+   
+      for par in params_:
+         if (("DCP" in par.GetName()) or ("phi" in par.GetName())) and blinding_: par.setVal(upar[par.GetName()].nominal_value-blinding_strings[par.GetName()])
+         else: par.setVal(upar[par.GetName()].nominal_value)
+   
+      for par in params_:
+         if ((not "DCP" in par.GetName()) and (not "phi" in par.GetName())): print '\t\t'+par.GetName()+'.setVal('+str(par.getVal())+')'
+      print ''
+   
+      if output_file_name_ != "":
+         par_result_dict = {}
+         for par in paramnames+polarparamnames: par_result_dict[par] = (upar[par].nominal_value,upar[par].std_dev,par_name_dict[par].replace('#','\\'))
+         fresult = open('_'+output_file_name_+'.py','w')
+         fresult.write("par_result_dict = "+str(par_result_dict))
+         fresult.close()
+         print 'Fit results saved in _'+output_file_name_+'.py'
+   
+      print '\nINFO:',int((timer() - start)/60),'min needed to do the fit.'
+   
+      """c_mass_pars = ['c1_mass_swave','c2_mass_swave','c3_mass_swave','c4_mass_swave']
+      c_mass_centers = np.ones(4).astype(np.float64)
+      for i in range(4): c_mass_centers[i] = manager.fit.values[c_mass_pars[i]+'_cu']
+      print c_mass_centers
+      c_mass_cov = []
+      for ipar in range(4):
+         c_mass_cov.append([])
+         for jpar in range(4): c_mass_cov[ipar].append(manager.fit.covariance[(c_mass_pars[ipar]+'_cu',c_mass_pars[jpar]+'_cu')])
+      print c_mass_cov
+      c_mass_cov_array = np.array(c_mass_cov)
+      diag_tools = diagonalise(c_mass_cov_array)
+      c_mass_centers_mod = np.ones(4).astype(np.float64)
+      for i in range(6):
+         randomvary(c_mass_centers,c_mass_centers_mod,diag_tools)
+         print c_mass_centers_mod"""
+   
+      """h_phis = ROOT.TH1F("h_phis","h_phis",100,-5,5)
+      for par in ['dphi_SS','dphi_SV','dphi_VS','dphi_ST','dphi_TS','dphi_VT','dphi_TV','dphi_TT']:
+         d_phis = (upar[par].nominal_value-blinding_strings[par])/upar[par].std_dev
+         print d_phis
+         h_phis.Fill(d_phis)
+   
+      c_dCPV = ROOT.TCanvas("c_dCPV","c_dCPV")
+      h_phis.Draw()
+      c_dCPV.Print("dCPV.pdf")"""
 
 
-def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag):
+def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_):
 
    print "\n#####################################################################"
    print " P R E P A R I N G   C U D A   F R A M E W O R K"
@@ -3234,33 +3704,55 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag):
 
    ROOT.RooRandom.randomGenerator().SetSeed(0)
 
+   mintnpoints = 500
+   mintnpoints2 = mintnpoints*mintnpoints
+   if wide_window_: minthlimit = mHlimit
+   else: minthlimit = 1050.
+   mintarray = np.ones(mintnpoints2).astype(np.float64)
+
    for par in params_:
       if "DCP" in par.GetName(): par.setVal(0.)
-      elif "phis" in par.GetName(): par.setVal(0.)
+      elif "phi" in par.GetName(): par.setVal(0.)
 
-   BLOCK_SIZE = 252
+   block_size_mint = 510
+   block_size_fit = 12*21
    THR = 1e06
+
    paramnames = []
    for par in params_: paramnames.append(par.GetName())
 
-   def getGrid(thiscat, BLOCK_SIZE):
-      Nbunch = thiscat.Nevts *1. / BLOCK_SIZE
+   def getGrid_mint():
+      Nbunch = mintnpoints2 * 1. / block_size_mint
+      if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
+      else : Nbunch = int(Nbunch)
+      return  (Nbunch,1,1)
+
+   def getGrid_fit(thiscat):
+      Nbunch = thiscat.Nevts *1. / block_size_fit
       print "thiscat.Nevts, Nbunch = ", thiscat.Nevts, Nbunch
       if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
       else : Nbunch = int(Nbunch)
       return  (Nbunch,1,1)
 
+   block_mint = (block_size_mint,1,1)
+   grid_mint = getGrid_mint()
+
+   c_mass_centers = np.array([-0.29994255, -0.15854387, -0.12167263, -0.06586275]).astype(np.float64)
+   c_mass_cov_array = np.array([[0.0003947516243460034, -7.661577933574582e-05, 0.00011979980192447234, -5.0500702593427645e-05], [-7.661577933574582e-05, 0.0003759673751610742, -7.33894853808996e-05, 0.00016748362866758049], [0.00011979980192447234, -7.33894853808996e-05, 0.00023399128961875884, -4.587884618593318e-05], [-5.0500702593427645e-05, 0.00016748362866758049, -4.587884618593318e-05, 0.000264629682495723]])
+   c_mass_diag_tools = diagonalise(c_mass_cov_array)
+   c_mass_centers_mod = np.ones(4).astype(np.float64)
+
    cats = []
    gen_data = np.ones((N_events,12)).astype(np.float64)
    thiscat = Cat("gen_cat", gen_data, getN = True)
-   thiscat.block = (BLOCK_SIZE,1,1)
-   thiscat.grid = getGrid(thiscat, BLOCK_SIZE)
+   thiscat.block = (block_size_fit,1,1)
+   thiscat.grid = getGrid_fit(thiscat)
    cats.append(thiscat)
 
    print '\nTranslating parameters ...'
    Params = []
    for par in params_:
-      Params.append(converted_parameter(par,0,blinding_scale))
+      Params.append(converted_parameter(par,0))
    if wide_window_:
       Params.append(Parameter("m1_cu",1500, limits=(750,1600), constant = False, dtype = np.float64))
       Params.append(Parameter("m2_cu",896, limits=(750,1600), constant = False, dtype = np.float64))
@@ -3297,6 +3789,11 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag):
    CUDA_max_P_eta_SSK = mod.get_function("get_max_P_eta_SSK")
    CUDA_max_P_eta_OS = mod.get_function("get_max_P_eta_OS")
    CUDA_evaluate_cond = mod.get_function("evaluate_CondPDF")
+   CUDA_set_mass_params = mod.get_function("set_mass_params")
+   CUDA_compute_mint_array = mod.get_function("compute_mint_array")
+   CUDA_compute_acc_mint_array = mod.get_function("compute_acc_mint_array")
+   CUDA_set_mass_integrals = mod.get_function("set_mass_integrals")
+   CUDA_set_all_mass_integrals = mod.get_function("set_all_mass_integrals")
    CUDA_generate = mod.get_function("generateEvent")
    CUDA_evaluate_toy = mod.get_function("evaluate_toy")
 
@@ -3324,6 +3821,7 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag):
          else:
             self.getSumLL = my_getSumLL_short
             self.mySum = mySum1
+
          self.gen_step = 0
 
          self.max_eta_SSK_pdf = np.ones(1).astype(np.float64)
@@ -3333,9 +3831,16 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag):
 
          self.max_cond_ll = gpuarray.to_gpu(np.ones(1).astype(np.float64))
          self.max_cond_pdf = 0
-
          self.pdf_cond = CUDA_evaluate_cond
+
+         self.set_mass_params = CUDA_set_mass_params
+         self.compute_mint_array = CUDA_compute_mint_array
+         self.compute_acc_mint_array = CUDA_compute_acc_mint_array
+         self.set_mass_integrals = CUDA_set_mass_integrals
+         self.set_all_mass_integrals = CUDA_set_all_mass_integrals
+
          self.ev_gen = CUDA_generate
+
          self.pdf_toy = CUDA_evaluate_toy
 
          self.options_list_cu = create_param_list("options_list")
@@ -3355,11 +3860,12 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag):
          self.weak_phases_list_cu_gen = create_param_list("weak_phases_list")
          self.mixing_params_list_cu_gen = create_param_list("mixing_params_list")
          self.calib_params_list_cu_gen = create_param_list("calib_params_list")
+         self.mass_integrals_list_cu_gen = create_param_list("mass_integrals_list")
 
          self.lock_to_init(["tres_p0_2011_cu","tres_p1_2011_cu"])
 
          CUDA_initialize(block = (1,1,1))
-         CUDA_set_generator(gpuarray.to_gpu(self.options_list_cu),gpuarray.to_gpu(self.re_amps_list_cu_gen),gpuarray.to_gpu(self.dirCP_asyms_list_cu_gen),gpuarray.to_gpu(self.im_amps_list_cu_gen),gpuarray.to_gpu(self.weak_phases_list_cu_gen),gpuarray.to_gpu(self.mixing_params_list_cu_gen),gpuarray.to_gpu(self.calib_params_list_cu_gen),gpuarray.to_gpu(self.cond_distr_params_list_cu),gpuarray.to_gpu(self.mass_integrals_list_cu),gpuarray.to_gpu(self.ang_integrals_list_cu),block = (1,1,1))
+         CUDA_set_generator(gpuarray.to_gpu(self.options_list_cu),gpuarray.to_gpu(self.re_amps_list_cu_gen),gpuarray.to_gpu(self.dirCP_asyms_list_cu_gen),gpuarray.to_gpu(self.im_amps_list_cu_gen),gpuarray.to_gpu(self.weak_phases_list_cu_gen),gpuarray.to_gpu(self.mixing_params_list_cu_gen),gpuarray.to_gpu(self.calib_params_list_cu_gen),gpuarray.to_gpu(self.cond_distr_params_list_cu),gpuarray.to_gpu(self.mass_integrals_list_cu_gen),gpuarray.to_gpu(self.ang_integrals_list_cu),block = (1,1,1))
 
       def createFit(self):
          config = {}
@@ -3372,6 +3878,26 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag):
          self.gen_step = num
 
          if self.gen_step == 0:
+
+            self.calib_params_list_cu[22] = c_mass_centers[0]
+            self.calib_params_list_cu[23] = c_mass_centers[1]
+            self.calib_params_list_cu[24] = c_mass_centers[2]
+            self.calib_params_list_cu[25] = c_mass_centers[3]
+            self.set_mass_params(gpuarray.to_gpu(self.calib_params_list_cu),block = (1,1,1))
+
+            for imint in range(9):
+               self.compute_mint_array(np.int32(imint),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu_gen[imint] = sum(mintarray)
+            self.set_mass_integrals(gpuarray.to_gpu(self.mass_integrals_list_cu_gen),block = (1,1,1))
+            for imint in range(30):
+               self.compute_acc_mint_array(np.int32(imint),np.int32(0),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu_gen[9+imint] = sum(mintarray)
+            for imint in range(21):
+               self.compute_acc_mint_array(np.int32(imint),np.int32(1),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu_gen[9+30+imint] = sum(mintarray)
+            self.set_all_mass_integrals(gpuarray.to_gpu(self.mass_integrals_list_cu_gen),block = (1,1,1))
+
+         if self.gen_step == 1:
             self.Params["q_SSK_cu"].setVal(q1_)
             self.Params["q_OS_cu"].setVal(q2_)
             self.freeThese(par_var_names)
@@ -3425,6 +3951,31 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag):
             self.lock_to_init(par_var_names)
             self.lock_to_init(["tres_p0_2011_cu","tres_p1_2011_cu"])
 
+            if randomize_c_mass_ == 1:
+               randomvary(c_mass_centers,c_mass_centers_mod,c_mass_diag_tools)
+               self.calib_params_list_cu[22] = c_mass_centers_mod[0]
+               self.calib_params_list_cu[23] = c_mass_centers_mod[1]
+               self.calib_params_list_cu[24] = c_mass_centers_mod[2]
+               self.calib_params_list_cu[25] = c_mass_centers_mod[3]
+            else:
+               self.calib_params_list_cu[22] = c_mass_centers[0]
+               self.calib_params_list_cu[23] = c_mass_centers[1]
+               self.calib_params_list_cu[24] = c_mass_centers[2]
+               self.calib_params_list_cu[25] = c_mass_centers[3]
+            self.set_mass_params(gpuarray.to_gpu(self.calib_params_list_cu),block = (1,1,1))
+
+            for imint in range(9):
+               self.compute_mint_array(np.int32(imint),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu[imint] = sum(mintarray)
+            self.set_mass_integrals(gpuarray.to_gpu(self.mass_integrals_list_cu),block = (1,1,1))
+            for imint in range(30):
+               self.compute_acc_mint_array(np.int32(imint),np.int32(0),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu[9+imint] = sum(mintarray)
+            for imint in range(21):
+               self.compute_acc_mint_array(np.int32(imint),np.int32(1),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu[9+30+imint] = sum(mintarray)
+            self.set_all_mass_integrals(gpuarray.to_gpu(self.mass_integrals_list_cu),block = (1,1,1))
+
       def generate(self):
          cat = self.cats[0]
          self.ev_gen(cat.data,np.float64(self.max_eta_SSK_pdf[0]),np.float64(self.max_eta_OS_pdf[0]),np.float64(self.max_cond_pdf),np.int32(cat.Nevts),block = cat.block,grid = cat.grid)
@@ -3434,7 +3985,7 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag):
          chi2 = np.float64(0.)
          N = self.dc
 
-         if self.gen_step == 0:
+         if self.gen_step == 1:
             m1_ran = np.float64(args[N["m1_cu"]])
             m2_ran = np.float64(args[N["m2_cu"]])
             cos1_ran = np.float64(args[N["cos1_cu"]])
@@ -3478,11 +4029,14 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag):
 
    manager = CUDAModel(Params, cats)
 
+   print '\nComputing generation mass integrals ...'
+   manager.set_gen_step(0)
+
    print '\nComputing conditional pdf maximum ...'
    pdf_maxima = []
    for q1_ in [-1,0,1]:
       for q2_ in [-1,0,1]:
-         manager.set_gen_step(0,q1_,q2_)
+         manager.set_gen_step(1,q1_,q2_)
          manager.createFit()
          manager.fit.print_level = 0
          manager.fit.migrad()
@@ -3566,7 +4120,7 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag):
             x_par = upar[par_name].nominal_value
             if par_name+'_cu' in par_ctrt_init_vals.keys(): x0_par = par_ctrt_init_vals[par_name+'_cu']
             else: x0_par = par_phys_init_vals[par_name+'_cu']
-            sigma_par = upar[par_name].std_dev
+            sigma_par = upar[par_name].std_dev*par_result_varnw_dict[par_name][1]/par_result_constnw_dict[par_name][1]
             pull_par = (x_par-x0_par)/sigma_par
             pull_string += str(pull_par)+' '
          fpulls_dat = open('pulls_'+output_tag+'.dat','a')
@@ -3716,7 +4270,7 @@ def fitprint2LaTeX(filename,parameters,wide_window,noCP,blinded,mixing_params_fi
 	partext += stringline("xpar_VV",parameters,blinded)
 	partext += stringline("delta11par",parameters,blinded)
 	partext += stringline("delta11perp",parameters,blinded)
-	partext += stringline("DCP_VV",parameters,blinded)
+	partext += stringline("DCP",parameters,blinded)
 	partext += '\\hline\n\\hline\n'
 	partext += '\\multicolumn{3}{|c|}{Single $S-wave$ (SV and VS)}\\\\\n\\hline\n\\hline\n'
 	partext += stringline("f_Swave",parameters,blinded)

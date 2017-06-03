@@ -307,7 +307,7 @@ public:
   RooRealProxy DCP_VS ;
   RooRealProxy DCP_ST ;
   RooRealProxy DCP_TS ;
-  RooRealProxy DCP_VV ;
+  RooRealProxy DCP ;
   RooRealProxy DCP_VT ;
   RooRealProxy DCP_TV ;
   RooRealProxy DCP_TT ;
@@ -364,6 +364,15 @@ public:
   RooRealProxy gv ;
   RooRealProxy gs ;
   RooRealProxy gt ;
+  RooRealProxy c1_mass_swave ;
+  RooRealProxy c2_mass_swave ;
+  RooRealProxy c3_mass_swave ;
+  RooRealProxy c4_mass_swave ;
+  RooRealProxy c5_mass_swave ;
+  RooRealProxy c6_mass_swave ;
+  RooRealProxy c7_mass_swave ;
+  RooRealProxy c8_mass_swave ;
+  RooRealProxy c9_mass_swave ;
   RooRealProxy res_mass ;
   RooRealProxy tag_eff_SSK ;
   RooRealProxy mu1_SSK ;
@@ -598,6 +607,7 @@ public:
   TComplex Prop_Ptheo(Double_t m) const;
   TComplex Prop_Dtheo(Double_t m) const;
   TComplex Prop_S_Palano(Double_t m) const;
+  TComplex Prop_ModInd(Double_t m) const;
   TComplex Mji(Double_t m, Int_t ji) const;
   TComplex Mj1j2(Double_t ma, Double_t mb, Int_t j1, Int_t j2) const; 
   Double_t phasespace(Double_t ma, Double_t mb) const;

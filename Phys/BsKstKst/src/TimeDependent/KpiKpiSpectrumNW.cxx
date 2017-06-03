@@ -218,7 +218,7 @@ ClassImp(KpiKpiSpectrumNW)
    coef_dirCP_asyms=(RooAbsReal*)dirCP_asyms_iter->Next();
    DCP_TS = RooRealProxy("DCP_TS","DCP_TS",this,*coef_dirCP_asyms);
    coef_dirCP_asyms=(RooAbsReal*)dirCP_asyms_iter->Next();
-   DCP_VV = RooRealProxy("DCP_VV","DCP_VV",this,*coef_dirCP_asyms);
+   DCP = RooRealProxy("DCP","DCP",this,*coef_dirCP_asyms);
    coef_dirCP_asyms=(RooAbsReal*)dirCP_asyms_iter->Next();
    DCP_VT = RooRealProxy("DCP_VT","DCP_VT",this,*coef_dirCP_asyms);
    coef_dirCP_asyms=(RooAbsReal*)dirCP_asyms_iter->Next();
@@ -339,6 +339,24 @@ ClassImp(KpiKpiSpectrumNW)
    gs = RooRealProxy("gs","gs",this,*coef_calib_params);
    coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
    gt = RooRealProxy("gt","gt",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   c1_mass_swave = RooRealProxy("c1_mass_swave","c1_mass_swave",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   c2_mass_swave = RooRealProxy("c2_mass_swave","c2_mass_swave",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   c3_mass_swave = RooRealProxy("c3_mass_swave","c3_mass_swave",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   c4_mass_swave = RooRealProxy("c4_mass_swave","c4_mass_swave",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   c5_mass_swave = RooRealProxy("c5_mass_swave","c5_mass_swave",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   c6_mass_swave = RooRealProxy("c6_mass_swave","c6_mass_swave",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   c7_mass_swave = RooRealProxy("c7_mass_swave","c7_mass_swave",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   c8_mass_swave = RooRealProxy("c8_mass_swave","c8_mass_swave",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   c9_mass_swave = RooRealProxy("c9_mass_swave","c9_mass_swave",this,*coef_calib_params);
    coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
    res_mass = RooRealProxy("res_mass","res_mass",this,*coef_calib_params);
 
@@ -890,7 +908,7 @@ ClassImp(KpiKpiSpectrumNW)
    DCP_VS("DCP_VS",this,other.DCP_VS),
    DCP_ST("DCP_ST",this,other.DCP_ST),
    DCP_TS("DCP_TS",this,other.DCP_TS),
-   DCP_VV("DCP_VV",this,other.DCP_VV),
+   DCP("DCP",this,other.DCP),
    DCP_VT("DCP_VT",this,other.DCP_VT),
    DCP_TV("DCP_TV",this,other.DCP_TV),
    DCP_TT("DCP_TT",this,other.DCP_TT),
@@ -947,6 +965,15 @@ ClassImp(KpiKpiSpectrumNW)
    gv("gv",this,other.gv),
    gs("gs",this,other.gs),
    gt("gt",this,other.gt),
+   c1_mass_swave("c1_mass_swave",this,other.c1_mass_swave),
+   c2_mass_swave("c2_mass_swave",this,other.c2_mass_swave),
+   c3_mass_swave("c3_mass_swave",this,other.c3_mass_swave),
+   c4_mass_swave("c4_mass_swave",this,other.c4_mass_swave),
+   c5_mass_swave("c5_mass_swave",this,other.c5_mass_swave),
+   c6_mass_swave("c6_mass_swave",this,other.c6_mass_swave),
+   c7_mass_swave("c7_mass_swave",this,other.c7_mass_swave),
+   c8_mass_swave("c8_mass_swave",this,other.c8_mass_swave),
+   c9_mass_swave("c9_mass_swave",this,other.c9_mass_swave),
    res_mass("res_mass",this,other.res_mass),
    tag_eff_SSK("tag_eff_SSK",this,other.tag_eff_SSK),
    mu1_SSK("mu1_SSK",this,other.mu1_SSK),
@@ -1446,21 +1473,21 @@ Double_t KpiKpiSpectrumNW::DCPj1j2(Int_t j1, Int_t j2) const
    switch(j1) {
    case 0 :
       switch(j2) {
-      case 0 : return DCP_SS;
-      case 1 : return DCP_SV;
-      case 2 : return DCP_ST;
+      case 0 : return DCP+DCP_SS;
+      case 1 : return DCP+DCP_SV;
+      case 2 : return DCP+DCP_ST;
       }
    case 1 :
       switch(j2) {
-      case 0 : return DCP_VS;
-      case 1 : return DCP_VV;
-      case 2 : return DCP_VT;
+      case 0 : return DCP+DCP_VS;
+      case 1 : return DCP;
+      case 2 : return DCP+DCP_VT;
       }
    case 2 :
       switch(j2) {
-      case 0 : return DCP_TS;
-      case 1 : return DCP_TV;
-      case 2 : return DCP_TT;
+      case 0 : return DCP+DCP_TS;
+      case 1 : return DCP+DCP_TV;
+      case 2 : return DCP+DCP_TT;
       }
    }
    return 0;
@@ -1473,7 +1500,7 @@ Double_t KpiKpiSpectrumNW::DCPj1j2(Int_t j1, Int_t j2) const
 Double_t KpiKpiSpectrumNW::dphij1j2(Int_t j1, Int_t j2) const
  {
 
-   /*switch(j1) {
+   switch(j1) {
    case 0 :
       switch(j2) {
       case 0 : return dphi_SS;
@@ -1483,9 +1510,7 @@ Double_t KpiKpiSpectrumNW::dphij1j2(Int_t j1, Int_t j2) const
    case 1 :
       switch(j2) {
       case 0 : return dphi_VS;
-      case 1 :
-         if (f_VV != 0) {return -1./f_VV*(wfj1j2(0,0)*dphi_SS+wfj1j2(0,1)*dphi_SV+wfj1j2(0,2)*dphi_ST+wfj1j2(1,0)*dphi_VS+wfj1j2(1,2)*dphi_VT+wfj1j2(2,0)*dphi_TS+wfj1j2(2,1)*dphi_TV+wfj1j2(2,2)*dphi_TT);}
-         else {return 0.;}
+      case 1 : return 0.;
       case 2 : return dphi_VT;
       }
    case 2 :
@@ -1494,7 +1519,7 @@ Double_t KpiKpiSpectrumNW::dphij1j2(Int_t j1, Int_t j2) const
       case 1 : return dphi_TV;
       case 2 : return dphi_TT;
       }
-   }*/
+   }
    return 0;
 
  }
@@ -2845,7 +2870,7 @@ Double_t KpiKpiSpectrumNW::Blatt_Weisskopf2(Double_t q, Double_t q0, Int_t L) co
  {
 
    if (L<1.) {return 1.;}  
-   Double_t d = 1.6e-03;
+   Double_t d = c5_mass_swave;//1.6e-03;
    Double_t z = q*d*q*d;
    Double_t z0 = q0*d*q0*d;
    if (L==1) {return (1+z0)/(1+z);}
@@ -2872,6 +2897,9 @@ Double_t KpiKpiSpectrumNW::FL_j1j2(Int_t j1, Int_t j2, Double_t ma, Double_t mb)
    Double_t q0 = get_q(m0,MPion,MKaon);
 
    // Decay of the Bs.
+   //Int_t L;
+   //if (j1*j2>0) {L = abs(j1-j2)+1;}
+   //else {L = abs(j1-j2);}
    Int_t L = abs(j1-j2);
    Double_t FL_Bs = pow(p/p0,L)*sqrt(Blatt_Weisskopf2(p,p0,L));
 
@@ -2917,10 +2945,10 @@ TComplex KpiKpiSpectrumNW::Lass(Double_t m, Double_t m0, Double_t g0) const
 
    TComplex i(0,1);
 
-   Double_t a_lass_ = 1./1.90008028533e-05;
-   Double_t r_lass_ = 0.00226389513951;
-   Double_t m0_ = 1381.85448767;
-   Double_t g0_ = 186.040053232;
+   double a_lass_ = 1./c1_mass_swave;
+   double r_lass_ = c2_mass_swave;
+   double m0_ = c3_mass_swave;
+   double g0_ = c4_mass_swave;
 
    Double_t q = get_q(m,MPion,MKaon);
    Double_t q0 = get_q(m0_,MPion,MKaon);
@@ -2934,7 +2962,7 @@ TComplex KpiKpiSpectrumNW::Lass(Double_t m, Double_t m0, Double_t g0) const
 
    TComplex T = 1./(cotg_deltaB-i)+expo/(cotg_deltaR-i);
 
-   return T*TComplex(1.,-1.42642,1);
+   return T;
 
  }
 
@@ -3149,7 +3177,7 @@ TComplex KpiKpiSpectrumNW::Prop_Stheo(Double_t m) const
 
    // Polynomical correction to convert from scattering to decay mass amplitudes.
    Double_t xm = (m-1175.)/425.;
-   Double_t modulus = sqrt(1.+c1_pol_Stheo*xm+c2_pol_Stheo*(2.*xm*xm-1.)+c3_pol_Stheo*(4.*xm*xm*xm-3.*xm)+c4_pol_Stheo*(8.*xm*xm*xm*xm-8.*xm*xm+1.));
+   Double_t modulus = 1.+c1_mass_swave*xm+c2_mass_swave*(2.*xm*xm-1.)+c3_mass_swave*(4.*xm*xm*xm-3.*xm)+c4_mass_swave*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
 
    return TComplex(modulus,T.Theta()-0.7095863518296103,1);
 
@@ -3262,12 +3290,26 @@ TComplex KpiKpiSpectrumNW::Prop_S_Palano(Double_t m) const
    TComplex T12_hat = s_Kpi_palano/(svar_GeV-s_A_palano)*K12/Delta;
 
    Double_t xm = X;//(m-1175.)/425.;
-   Double_t alpha_1_s = A_1_0_palano+A_1_1_palano*xm+A_1_2_palano*(2.*xm*xm-1.)+A_1_3_palano*(4.*xm*xm*xm-3.*xm)+A_1_4_palano*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
-   Double_t alpha_2_s = A_2_0_palano+A_2_1_palano*xm+A_2_2_palano*(2.*xm*xm-1.)+A_2_3_palano*(4.*xm*xm*xm-3.*xm)+A_2_4_palano*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
+   Double_t alpha_1_s = 1.+c1_mass_swave*xm+c2_mass_swave*(2.*xm*xm-1.)+c3_mass_swave*(4.*xm*xm*xm-3.*xm)+c4_mass_swave*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
+   Double_t alpha_2_s = c5_mass_swave+c6_mass_swave*xm+c7_mass_swave*(2.*xm*xm-1.)+c8_mass_swave*(4.*xm*xm*xm-3.*xm)+c9_mass_swave*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
 
    TComplex T = alpha_1_s*T11_hat+alpha_2_s*T12_hat;
 
    return T*TComplex(1.,3.06573,1);
+
+ }
+
+// ---------------------------------------------------
+// Model independent scalar Kpi mass amplitude.
+
+TComplex KpiKpiSpectrumNW::Prop_ModInd(Double_t m) const 
+ { 
+
+   Double_t xm = (m-1175.)/425.;
+   Double_t re_T = 1.+c1_mass_swave*xm+c2_mass_swave*(2.*xm*xm-1.)+c3_mass_swave*(4.*xm*xm*xm-3.*xm)+c4_mass_swave*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
+   Double_t im_T = c5_mass_swave+c6_mass_swave*xm+c7_mass_swave*(2.*xm*xm-1.)+c8_mass_swave*(4.*xm*xm*xm-3.*xm)+c9_mass_swave*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
+
+   return TComplex(re_T,im_T);
 
  }
 
@@ -3281,19 +3323,20 @@ TComplex KpiKpiSpectrumNW::Mji(Double_t m, Int_t ji) const
 
    if (ji == 0)
 	{
-	T = Lass(m,ms,gs);
+	T = Prop_Stheo(m)*TComplex(1.,-Prop_Stheo(mv).Theta(),1);
 	}
 
    else if (ji == 1)
 	{
-	if (pw_mass_altmodel == 0) {T = Resonance(m,mv,gv,1);}
+	//T = (Resonance(m,mv,gv,1)+TComplex(c5_mass_swave,c6_mass_swave)*Resonance(m,MKst_1_1410,GKst_1_1410,1)+TComplex(c7_mass_swave,c8_mass_swave)*Resonance(m,MKst_1_1680,GKst_1_1680,1))*TComplex(1.,-(Resonance(mv,mv,gv,1)+TComplex(c5_mass_swave,c6_mass_swave)*Resonance(mv,MKst_1_1410,GKst_1_1410,1)+TComplex(c7_mass_swave,c8_mass_swave)*Resonance(mv,MKst_1_1680,GKst_1_1680,1)).Theta(),1);
+	if (pw_mass_altmodel == 0) {T = Resonance(m,mv,gv,1)*TComplex(1.,-Resonance(mv,mv,gv,1).Theta(),1);}
 	else if (pw_mass_altmodel == 1) {T = Resonance(m,mv,gv,1) + TComplex(sqrt(f_1410_rel2_892),delta_1410_rel2_892,1)*Resonance(m,MKst_1_1410,GKst_1_1410,1) + TComplex(sqrt(f_1680_rel2_892),delta_1680_rel2_892,1)*Resonance(m,MKst_1_1680,GKst_1_1680,1);}
 	else {throw std::invalid_argument( "Invalid argument #4" );}
 	}
 
    else if (ji == 2)
 	{
-	T = Resonance(m,mt,gt,2);
+	T = Resonance(m,mt,gt,2)*TComplex(1.,-Resonance(mv,mt,gt,2).Theta(),1);
 	}
    
    return T;
@@ -3306,7 +3349,7 @@ TComplex KpiKpiSpectrumNW::Mji(Double_t m, Int_t ji) const
 TComplex KpiKpiSpectrumNW::Mj1j2(Double_t ma, Double_t mb, Int_t j1, Int_t j2) const 
  { 
 
- Double_t scale_factor = sqrt(Im00);
+ Double_t scale_factor = 1.;
 
  if ((j1 == 0) and (j2 == 0)) {return Mji(ma,0)*Mji(mb,0)*FL_j1j2(0,0,ma,mb)*(scale_factor/sqrt(Im00));}
  else if ((j1 == 0) and (j2 == 1)) {return Mji(ma,0)*Mji(mb,1)*FL_j1j2(0,1,ma,mb)*(scale_factor/sqrt(Im01));}
