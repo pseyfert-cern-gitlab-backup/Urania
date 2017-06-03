@@ -34,7 +34,7 @@ acc_type = 2
 inf_t_res = 0 # 1 for ideal model / 0 for gaussian like resolution
 
 # CP violation in the model.
-Blinding = 0
+Blinding = 1
 No_CP_Switch = 0
 No_dirCP_Switch = 0
 Same_CP_Switch = 1
@@ -46,6 +46,16 @@ fix_im_amps = 0
 fix_weak_phases = 0
 fix_mixing_params = 0
 fix_calib_params = 0
+
+# Computation of NWs.
+variable_nw = 0
+MC_data_file = 'AnalysisOutWSWeightsSelectedAllBranchesUpdated.root'
+MC_data_tree = 'AnalysisTree'
+MC_data_type = 2 # 0 for PhSp only, 1 for VV only, 2 for both
+randomize_c_mass = 1
+randomize_nw = 1
+repeat_fit_for_nw_syst = 1
+nw_syst_N_iterations = 100
 
 # Systematic studies.
 pw_alternative_model = 0
@@ -78,7 +88,7 @@ phi_binning = 30
 t_binning = 12
 
 # Generation options.
-nexperiments = 1
+nexperiments = 100
 nevents = 6220
 njobs = 1
 use_GRID = 0
@@ -141,21 +151,26 @@ inf_t_res,wide_window,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fi
 
 	# Data importation.
 	data, hist_mistag_SSK, hist_mistag_OS, hist_deltat = loadData(NTUPLE_PATH,data_type,data_file,data_tree,MC_file,MC_tree,MC_type,TD_fit,sweighted,wide_window,extra_cuts,evnum_limit,use_GRID)
+	LoadDataNW(NTUPLE_PATH,MC_data_file,MC_data_tree,MC_data_type,wide_window)
+
+	for par in [DCP_ST,DCP_TS,DCP_VT,DCP_TV,DCP_SS,DCP_SV,DCP_VS,DCP_TT]: par.setConstant(1)
 
 	# Construction of the model.
 	setParamVals(wide_window)
+	if not variable_nw:
+		for par in [c1_mass_swave,c2_mass_swave,c3_mass_swave,c4_mass_swave,c5_mass_swave,c6_mass_swave,c7_mass_swave,c8_mass_swave,c9_mass_swave]: par.setConstant(1)
 
 	# Uncomment below for VV only fit, when in narrow window.
-	for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
-		par.setVal(0.)
-		par.setConstant(1)
+	#for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
+	#	par.setVal(0.)
+	#	par.setConstant(1)
 
 	model, params = createSimPDF(TD_fit,Blinding,No_CP_Switch,No_dirCP_Switch,Same_CP_Switch,acc_type,\
 inf_t_res,wide_window,data_file,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params,\
 pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_rel2_Kst892,delta_Kst1680_rel2_Kst892)
 
 	# Performance of the fit.
-	DoCUDAFit(data,params,Blinding,wide_window,activ_minos,output_file_name)
+	DoCUDAFit(data,params,Blinding,wide_window,variable_nw,activ_minos,output_file_name,randomize_c_mass,randomize_nw,repeat_fit_for_nw_syst,nw_syst_N_iterations)
 
 def fitnplot():
 
@@ -226,6 +241,7 @@ inf_t_res,wide_window,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fi
 
 	# Data importation.
 	data, hist_mistag_SSK, hist_mistag_OS, hist_deltat = loadData(NTUPLE_PATH,data_type,data_file,data_tree,MC_file,MC_tree,MC_type,TD_fit,sweighted,wide_window,extra_cuts,evnum_limit,use_GRID)
+	LoadDataNW(NTUPLE_PATH,MC_data_file,MC_data_tree,MC_data_type,wide_window)
 
 	# Construction of the model.
 	setParamVals(wide_window)
@@ -240,7 +256,7 @@ inf_t_res,wide_window,data_file,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak
 pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_rel2_Kst892,delta_Kst1680_rel2_Kst892)
 
 	# Performance of the fit.
-	DoCUDAFit(data,params,Blinding,wide_window,activ_minos,output_file_name)
+	DoCUDAFit(data,params,Blinding,wide_window,0,activ_minos,output_file_name,randomize_c_mass,randomize_nw,repeat_fit_for_nw_syst,nw_syst_N_iterations)
 
 	# Plot of the the 6 1D proyections corresponding to the 2 masses, 3 angles and decay time.
 	blindCat.setIndex(0)
@@ -377,28 +393,7 @@ def CUDAMCS(output_tag):
 
 	# Construction of the model.
 	setParamVals(wide_window)
-
-	"""reA11par.setVal(-0.621524863748)
-	reA11perp.setVal(-0.424808013097)
-	DCP.setVal(-0.0675981117764)
-	imA11par.setVal(0.0467700758986)
-	imA11perp.setVal(0.0344245287434)
-	phis.setVal(-0.767318216566)
-	delta_m_Bs.setVal(17.7805446306)
-	gamma_Bs.setVal(0.669814702625)
-	delta_gamma_Bs.setVal(0.0871116924828)
-	p0metac_SSK.setVal(0.00160837062225)
-	p0metac_OS.setVal(0.00565978676724)
-	Dp0half_SSK.setVal(-0.00789203047486)
-	Dp0half_OS.setVal(0.00694464169539)
-	p1_SSK.setVal(1.03913365443)
-	p1_OS.setVal(0.986666213431)
-	Dp1half_SSK.setVal(-0.0342745897277)
-	Dp1half_OS.setVal(0.0325448615578)
-	tres_p0_2011.setVal(0.0352214753202)
-	tres_p1_2011.setVal(1.19831598402)
-	tres_p0_2012.setVal(0.0366210029664)
-	tres_p1_2012.setVal(1.22045492979)"""
+	for par in [c1_mass_swave,c2_mass_swave,c3_mass_swave,c4_mass_swave,c5_mass_swave,c6_mass_swave,c7_mass_swave,c8_mass_swave,c9_mass_swave]: par.setConstant(1)
 
 	# Uncomment below for VV only fit, when in narrow window.
 	#for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
@@ -412,7 +407,7 @@ pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_r
 	# Fit of the conditional variable profiles.
 	CondVarStudy(fit_CondVarDistr,model,params,data,hist_mistag_SSK,hist_mistag_OS,hist_deltat)
 
-	DoCUDAToy(nexperiments,nevents,params,wide_window,output_tag)
+	DoCUDAToy(nexperiments,nevents,params,wide_window,output_tag,randomize_c_mass)
 
 
 # ################################################################
