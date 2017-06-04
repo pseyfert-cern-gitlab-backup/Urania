@@ -3879,11 +3879,15 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_)
 
          if self.gen_step == 0:
 
+            self.calib_params_list_cu_gen[22] = c_mass_centers[0]
+            self.calib_params_list_cu_gen[23] = c_mass_centers[1]
+            self.calib_params_list_cu_gen[24] = c_mass_centers[2]
+            self.calib_params_list_cu_gen[25] = c_mass_centers[3]
             self.calib_params_list_cu[22] = c_mass_centers[0]
             self.calib_params_list_cu[23] = c_mass_centers[1]
             self.calib_params_list_cu[24] = c_mass_centers[2]
             self.calib_params_list_cu[25] = c_mass_centers[3]
-            self.set_mass_params(gpuarray.to_gpu(self.calib_params_list_cu),block = (1,1,1))
+            self.set_mass_params(gpuarray.to_gpu(self.calib_params_list_cu_gen),block = (1,1,1))
 
             for imint in range(9):
                self.compute_mint_array(np.int32(imint),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
@@ -3943,7 +3947,7 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_)
             par_ctrt_init_vals["tres_p0_2012_cu"] = self.calib_params_list_cu_gen[14]
             par_ctrt_init_vals["tres_p1_2012_cu"] = self.calib_params_list_cu_gen[15]
 
-            CUDA_set_generator(gpuarray.to_gpu(self.options_list_cu),gpuarray.to_gpu(self.re_amps_list_cu_gen),gpuarray.to_gpu(self.dirCP_asyms_list_cu_gen),gpuarray.to_gpu(self.im_amps_list_cu_gen),gpuarray.to_gpu(self.weak_phases_list_cu_gen),gpuarray.to_gpu(self.mixing_params_list_cu_gen),gpuarray.to_gpu(self.calib_params_list_cu_gen),gpuarray.to_gpu(self.cond_distr_params_list_cu),gpuarray.to_gpu(self.mass_integrals_list_cu),gpuarray.to_gpu(self.ang_integrals_list_cu),block = (1,1,1))
+            CUDA_set_generator(gpuarray.to_gpu(self.options_list_cu),gpuarray.to_gpu(self.re_amps_list_cu_gen),gpuarray.to_gpu(self.dirCP_asyms_list_cu_gen),gpuarray.to_gpu(self.im_amps_list_cu_gen),gpuarray.to_gpu(self.weak_phases_list_cu_gen),gpuarray.to_gpu(self.mixing_params_list_cu_gen),gpuarray.to_gpu(self.calib_params_list_cu_gen),gpuarray.to_gpu(self.cond_distr_params_list_cu),gpuarray.to_gpu(self.mass_integrals_list_cu_gen),gpuarray.to_gpu(self.ang_integrals_list_cu),block = (1,1,1))
 
          if self.gen_step == 3:
             for par in ["gamma_Bs_cu","delta_gamma_Bs_cu","Dp0half_SSK_cu","Dp0half_OS_cu","Dp1half_SSK_cu","Dp1half_OS_cu","p0metac_SSK_cu","p1_SSK_cu","p0metac_OS_cu","p1_OS_cu","tres_p0_2012_cu","tres_p1_2012_cu"]: self.Params[par].setVal(par_ctrt_init_vals[par])
@@ -4061,6 +4065,8 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_)
 
       print 'MCS INFO ---> Generating sample #'+str(iexp)
       manager.set_gen_step(2)
+      print manager.calib_params_list_cu_gen
+      print manager.mass_integrals_list_cu_gen
       manager.createFit()
       manager.generate()
       s = ""
@@ -4080,6 +4086,8 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_)
 
       print 'MCS INFO ---> Fitting sample #'+str(iexp)
       manager.set_gen_step(3)
+      print manager.calib_params_list_cu
+      print manager.mass_integrals_list_cu
       manager.createFit()
       manager.fit.print_level = 0
       manager.fit.migrad()
