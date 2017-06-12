@@ -2453,6 +2453,7 @@ function(gaudi_install_headers)
               PATTERN "*.icpp"
               PATTERN "*.hpp"
               PATTERN "*.hxx"
+              PATTERN "*.hh"
               PATTERN "*.icc"
               PATTERN "*.inl"
               PATTERN "CVS" EXCLUDE
