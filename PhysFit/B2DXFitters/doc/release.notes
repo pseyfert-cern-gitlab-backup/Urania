@@ -4,6 +4,9 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
+! 2017-06-12 - Carlos Vazquez Sierra
+ + Tagging v4r0 for Urania v7r0.
+
 ! 2017-05-12 - Vincenzo Battista
  - Add updates for Bd->Dpi. Include more taggers in "CheckTagger" of MDFitterSettings.
    Include AdditionalVariables in ObtainSignal (MassFitUtils).

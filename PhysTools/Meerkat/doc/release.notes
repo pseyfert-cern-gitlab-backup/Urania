@@ -4,6 +4,9 @@
 ! Purpose     : Multidimensional kernel density estimation package.
 !-----------------------------------------------------------------------------
 
+! 2017-06-12 - Carlos Vazquez Sierra
+ + Tagging version v1r4 for Urania v7r0.
+
 ! 2017-03-22 - Carlos Vazquez Sierra
  - Make version v1r3 for release:
    + https://gitlab.cern.ch/poluekt/Meerkat/tree/master

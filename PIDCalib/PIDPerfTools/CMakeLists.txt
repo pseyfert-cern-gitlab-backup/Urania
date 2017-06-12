@@ -1,7 +1,7 @@
 ################################################################################
 # Package: PIDPerfTools
 ################################################################################
-gaudi_subdir(PIDPerfTools v8r2)
+gaudi_subdir(PIDPerfTools v9r0)
 
 find_package(Boost COMPONENTS regex)
 find_package(ROOT COMPONENTS Core RIO RooFitCore RooFit RooStats Hist Gpad Graf Tree)
