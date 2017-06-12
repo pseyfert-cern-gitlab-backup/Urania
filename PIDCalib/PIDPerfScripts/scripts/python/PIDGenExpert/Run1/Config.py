@@ -230,7 +230,7 @@ configs = {
     'controlstat' : 5000000, 
     'nbootstrap' : 10
   },
-  "pi_CombDLLmu" : {
+  "K_CombDLLmu" : {
     "sample" : "K", 
     "var" : "K_CombDLLmu", 
     "transform_forward"  : "x", 
@@ -239,6 +239,20 @@ configs = {
     "limits" : (-15., 15.), 
     'scale_default' : 0.6, 
     'scale_syst' : 0.9, 
+    'scale_pid' : 1.0, 
+    'toystat' : 10000000, 
+    'controlstat' : 5000000, 
+    'nbootstrap' : 5
+  },
+  "pi_CombDLLmu" : {
+    "sample" : "pi", 
+    "var" : "Pi_CombDLLmu", 
+    "transform_forward"  : "x", 
+    "transform_backward" : "x", 
+    "bins" : 100, 
+    "limits" : (-15., 15.), 
+    'scale_default' : 0.1, 
+    'scale_syst' : 0.15, 
     'scale_pid' : 1.0, 
     'toystat' : 10000000, 
     'controlstat' : 5000000, 
@@ -461,16 +475,16 @@ configs = {
     "sample" : "pi", 
     "var" : "Pi_V3ProbNNmu", 
     "bins" : 100, 
-#    "transform_forward"  : "x**0.25", 
-#    "transform_backward" : "x**(1./0.25)", 
-    "transform_forward"  : "x", 
-    "transform_backward" : "x", 
+#    "transform_forward"  : "math.tan((x-0.5)*2.9)", 
+#    "transform_backward" : "math.atan(x)/2.9+0.5", 
+    "transform_forward"  : "1.-(1.-x**0.15)**0.2", 
+    "transform_backward" : "1.-(1.-x**(1./0.2))**(1./0.15)", 
     'scale_default' : 0.6, 
     'scale_syst' : 0.9, 
     'scale_pid' : 1.0, 
     'toystat' : 10000000, 
     'controlstat' : 5000000, 
-    'nbootstrap' : 10
+    'nbootstrap' : 5
   }, 
   "e_S20V3ProbNNe" : {
     "sample" : "e20", 
@@ -565,5 +579,31 @@ configs = {
     'toystat'       : 1000000, 
     'controlstat'   : 500000, 
     'nbootstrap'    : 0
+  }, 
+  "mu_V3ProbNNpi" : {
+    "sample" : "mu", 
+    "var" : "Mu_V3ProbNNpi", 
+    "bins" : 100, 
+    "transform_forward"  : "x**0.25", 
+    "transform_backward" : "x**(1./0.25)", 
+    'scale_default' : 0.1, 
+    'scale_syst' : 0.15, 
+    'scale_pid' : 1.0, 
+    'toystat' : 10000000, 
+    'controlstat' : 5000000, 
+    'nbootstrap' : 5
+  }, 
+  "mu_V3ProbNNK" : {
+    "sample" : "mu", 
+    "var" : "Mu_V3ProbNNK", 
+    "bins" : 100, 
+    "transform_forward"  : "x**0.15", 
+    "transform_backward" : "x**(1./0.15)", 
+    'scale_default' : 0.1, 
+    'scale_syst' : 0.15, 
+    'scale_pid' : 1.0, 
+    'toystat' : 10000000, 
+    'controlstat' : 5000000, 
+    'nbootstrap' : 5
   }, 
 }
