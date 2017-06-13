@@ -103,7 +103,7 @@ for filename in file_list :
 
   if controlfile not in ready_list and scale_syst : 
     command = "%s -s %f -i %f -v %s -o %s -t %d -p %d -b %s -c %s -f %s %s/%s" % \
-          (scr, scale_syst, scale_default, var, outdir, toystat, controlstat, systfile, controlfile, figfile, eosrootdir, infile)
+          (scr, scale_syst, scale_pid, var, outdir, toystat, controlstat, systfile, controlfile, figfile, eosrootdir, infile)
     if limits : 
       command += " -l %f -u %f" % (limits[0], limits[1])
     print command
