@@ -1,0 +1,10 @@
+image: p2vv
+
+stages:
+  - build
+
+prepare_data:
+  stage: build
+  script:
+    - bash -lc "source ._build.sh"
+    

@@ -45,6 +45,7 @@
 #include "P2VV/RooIpatia2.h"
 #include "P2VV/RooEffConstraint.h"
 #include "P2VV/RooCombEffConstraint.h"
+#include "P2VV/RooStudentT.h"
 
 #include <map>
 #include <string>
