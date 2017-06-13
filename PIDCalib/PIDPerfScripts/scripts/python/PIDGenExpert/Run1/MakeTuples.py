@@ -3,7 +3,7 @@ from ROOT import TFile, TNtuple
 
 from Config import *
 
-def convert_single_file(infile, f2, nt2, treename, pidvar, ptvar, etavar, ntracksvar, transform) :
+def convert_single_file(infile, f2, nt2, treename, pidvar, ptvar, etavar, ntracksvar, transform, limits) :
   f1 = TFile(infile)
   nt1 = f1.Get(treename)
   f2.cd()
@@ -21,6 +21,7 @@ def convert_single_file(infile, f2, nt2, treename, pidvar, ptvar, etavar, ntrack
       if (n % 10000 == 0) : 
         print "  event %d/%d" % (n, nentries)
       x = eval(x_code)
+      if x < limits[0] or x > limits[1] : continue
       pid = eval(pid_code)
       pt  = eval(pt_code)
       eta = eval(eta_code)
@@ -87,6 +88,10 @@ ntracksvar = sample['ntracks']
 treename = sample['tree']
 transform = config['transform_forward']
 
+limits = (0., 1.)
+if 'limits' in config : 
+  limits = config['limits']
+
 # Create dictionary with the lists of PIDCalib datasets for each year and magnet polarity
 dsdict = {}
 for ds in dslist : 
@@ -99,7 +104,7 @@ for ds in dslist :
     for i in range(0, n) : 
       dsdict[ds] += [ datasets[ds][0] % i ]
     if "test" in options : break
-  
+
 os.system("/afs/cern.ch/project/eos/installation/0.3.15/bin/eos.select mkdir -p %s/%s" % (eosdir, configname))
 
 # Loop over PIDCalib datasets
@@ -124,7 +129,7 @@ for pol,dss in dsdict.iteritems() :
       print "  File " + out
       print "  " + cmd
       os.system(cmd)
-      convert_single_file(out, f2, nt2, treename, pidvar, ptvar, etavar, ntracksvar, transform)
+      convert_single_file(out, f2, nt2, treename, pidvar, ptvar, etavar, ntracksvar, transform, limits)
       os.remove(out)
     else : 
       # Calo samples are already trees

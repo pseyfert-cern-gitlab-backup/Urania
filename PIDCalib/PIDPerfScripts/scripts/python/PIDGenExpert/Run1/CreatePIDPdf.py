@@ -49,7 +49,10 @@ if 'limits' in configs[config] :
 if config in ["gamma_CL"] : 
   scr = "bsub -q 2nw lb-run --nightly-cvmfs --nightly lhcb-prerelease Urania/master python %s/PIDPdf3D.py" % (cwd)
 else : 
-  scr = "bsub -q 2nw lb-run --nightly-cvmfs --nightly lhcb-prerelease Urania/master python %s/PIDPdf.py" % (cwd)
+  if scale_default < 0.5 : 
+    scr = "bsub -q 2nw lb-run --nightly-cvmfs --nightly lhcb-prerelease Urania/master python %s/PIDPdf_narrow.py" % (cwd)
+  else : 
+    scr = "bsub -q 2nw lb-run --nightly-cvmfs --nightly lhcb-prerelease Urania/master python %s/PIDPdf.py" % (cwd)
 
 # Electron sample needs additional option
 if sample == "e" : 
@@ -88,7 +91,7 @@ for filename in file_list :
 
   if controlfile not in ready_list and scale_syst : 
     command = "%s -s %f -i %f -v %s -o %s -t %d -p %d -b %s -c %s -f %s %s/%s" % \
-          (scr, scale_syst, scale_default, var, outdir, toystat, controlstat, systfile, controlfile, figfile, eosrootdir, infile)
+          (scr, scale_syst, scale_pid, var, outdir, toystat, controlstat, systfile, controlfile, figfile, eosrootdir, infile)
     if limits : 
       command += " -l %f -u %f" % (limits[0], limits[1])
     print command
