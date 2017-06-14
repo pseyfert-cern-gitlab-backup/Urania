@@ -1,7 +1,7 @@
 ################################################################################
 # Package: UraniaSys
 ################################################################################
-gaudi_subdir(UraniaSys v6r2p1)
+gaudi_subdir(UraniaSys v7r0)
 
 gaudi_depends_on_subdirs(Math/MCLimit
 Math/SomeUtils 

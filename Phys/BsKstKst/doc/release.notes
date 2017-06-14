@@ -4,6 +4,9 @@
 ! Purpose     : Mathematical tools and algorithms for BsKstKst analysis.
 !-----------------------------------------------------------------------------
 
+! 2017-06-12 - Carlos Vazquez Sierra
+  + Tag version v5r4 for Urania v7r0.
+
 ! 2017-04-20 - Julian Garcia Pardinas
   + Migration of the fitting and toy MC study framework to CUDA.
 

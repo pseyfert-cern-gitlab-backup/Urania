@@ -1,7 +1,7 @@
 ################################################################################
 # Package: Meerkat
 ################################################################################
-gaudi_subdir(Meerkat v1r3)
+gaudi_subdir(Meerkat v1r4)
 
 find_package(ROOT COMPONENTS Core EG Tree RIO Hist Matrix MathCore RooFitCore RooFit RooStats)
 

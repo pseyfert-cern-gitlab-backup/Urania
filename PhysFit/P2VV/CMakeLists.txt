@@ -1,7 +1,7 @@
 ################################################################################
 # Package: P2VV
 ################################################################################
-gaudi_subdir(P2VV v4r3)
+gaudi_subdir(P2VV v4r4)
 
 find_package(ROOT COMPONENTS Core
                              Tree RooFitCore RooFit
@@ -14,8 +14,6 @@ include_directories(${ROOT_INCLUDE_DIRS})
 reflex_generate_dictionary(P2VV
                            dict/P2VVDict.h dict/P2VVDict.xml
                            SPLIT_CLASSDEF)
-
-include_directories(SYSTEM ${ROOT_INCLUDE_DIRS})
 
 gaudi_add_library(P2VVLib
                   src/*.cxx

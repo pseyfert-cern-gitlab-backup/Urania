@@ -3,8 +3,19 @@
 ! Responsible : Donal Hill
 ! Purpose     : Scripts using PIDPerfTools to perform PID studies
 !-----------------------------------------------------------------------------
+
+! 2017-06-14 - Carlos Vazquez Sierra
+ + Tagging v12r0 for Urania v7r0.
+
 ! 2017-06-14 - Donal Hill
  - Updated PlotCalibEfficiency.py to work with updated functions in PerfResults.py, which were edited to enable Run 2 use.
+
+! 2017-06-02 - Donal Hill
+ - Added PID table printout to MakePerfHistsRunRange.py
+
+! 2017-04-21 - Donal Hill
+	- Changed RooDataSet name of nSPDhits to nSPDHits in TupleDataSet.py
+	- Fixes issue with MCResampling package, which did not recognise nSPDhits
 
 ! 2017-04-16 - Donal Hill
 	- Fixed issue with MakePIDdistributionsRunRange.py where cuts were not correctly applied to datasets.
