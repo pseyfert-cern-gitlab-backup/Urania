@@ -4,8 +4,11 @@
 ! Purpose     : Scripts using PIDPerfTools to perform PID studies
 !-----------------------------------------------------------------------------
 
-! 2017-06-12 - Carlos Vazquez Sierra
+! 2017-06-14 - Carlos Vazquez Sierra
  + Tagging v12r0 for Urania v7r0.
+
+! 2017-06-14 - Donal Hill
+ - Updated PlotCalibEfficiency.py to work with updated functions in PerfResults.py, which were edited to enable Run 2 use.
 
 ! 2017-06-02 - Donal Hill
  - Added PID table printout to MakePerfHistsRunRange.py

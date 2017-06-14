@@ -147,14 +147,14 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
 
     # set the plot variable
     PlotVar=opts.varName
-    if not CheckCuts(opts.varName,TriggerList,StripVersion):
+    if not CheckCuts(opts.varName,StripVersion):
         parser.error("Invalid variable %s" %str(opts.varName))
     if (len(opts.cuts)>0):
         if isinstance(opts.cuts,str):
-            if not CheckCuts(opts.cuts,TriggerList,StripVersion):
+            if not CheckCuts(opts.cuts,StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cuts))
         elif isinstance(opts.cuts,list,TriggerList):
-            if not CheckCuts(opts.cuts.join(" "),TriggerList,StripVersion):
+            if not CheckCuts(opts.cuts.join(" "),StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cuts))
 
     #CheckBinVarName(PlotVar)
@@ -210,7 +210,7 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
 
 
     for icut, cut in enumerate(PIDCuts):
-        if not CheckCuts(cut, TriggerList,StripVersion):
+        if not CheckCuts(cut,StripVersion):
             raise ValueError("Invalid PID cut %i: \"%s\""%(icut,cut))
 
     if opts.verbose:
@@ -249,6 +249,7 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
             IDPart=PartName)
     else:
         schemeName=opts.schemeName
+    print schemeName
 
     BinScheme = GetBinScheme(PartName, PlotVar, schemeName)
     v_BinScheme = ROOT.vector('RooBinning*')()
@@ -272,13 +273,16 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
     CalcAveragePerfPlotsAndWriteToFile(trackDict,
                                        StripVersion,
                                        MagPolarity,
+                                       opts.pidCut,
+                                       opts.varName,
+                                       opts.varName,
+                                       opts.varName,
                                        RunMin,
                                        RunMax,
+                                       schemeName,
                                        opts.outputDir,
                                        opts.verbose,
                                        opts.allowMissing,
-                                       schemeName,
-                                       MaxFiles,
-                                       TriggerList
+                                       MaxFiles
                                        )
 

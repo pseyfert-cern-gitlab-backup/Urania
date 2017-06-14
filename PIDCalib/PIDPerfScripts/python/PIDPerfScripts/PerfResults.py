@@ -11,12 +11,16 @@ from ROOT import RooFit
 def CalcAveragePerfPlotsAndWriteToFile(TrackDict,
                                        StripVer,
                                        MagPolarity,
+                                       PIDCutString,
+                                       xBin,
+                                       yBin,
+                                       zBin,
                                        runMin,
                                        runMax,
+                                       schemeName=None,
                                        outputDir=None,
                                        verbose=True,
                                        allowMissingDataSets=False,
-                                       schemeName=None,
                                        maxFiles=-1
                                        ):
 
@@ -28,6 +32,10 @@ def CalcAveragePerfPlotsAndWriteToFile(TrackDict,
                                 d['TrackType'],
                                 d['DLLCuts'],
                                 d['TrackCuts'],
+                                PIDCutString,
+                                xBin,
+                                yBin,
+                                zBin,
                                 d['Binning'],
                                 runMin,
                                 runMax,
@@ -35,7 +43,6 @@ def CalcAveragePerfPlotsAndWriteToFile(TrackDict,
                                 allowMissingDataSets,
                                 maxFiles
                                 )
-
         #======================================================================
         # Make Weighted Average
         #======================================================================
