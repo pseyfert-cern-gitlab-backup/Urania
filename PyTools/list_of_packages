@@ -1,0 +1,3 @@
+hep_ml git clone https://github.com/arogozhnikov/hep_ml.git -> needs integration
+tabulate https://pypi.python.org/pypi/tabulate
+uncertainties https://pypi.python.org/pypi/uncertainties
