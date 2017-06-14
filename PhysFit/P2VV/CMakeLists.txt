@@ -10,7 +10,7 @@ find_package(ROOT COMPONENTS Core
 # override the genreflex call to wrap it in the right environment
 set(ROOT_genreflex_CMD ${env_cmd} --xml ${env_xml} ${ROOT_genreflex_CMD})
 
-include_directories(${ROOT_INCLUDE_DIRS})
+include_directories(SYSTEM ${ROOT_INCLUDE_DIRS})
 reflex_generate_dictionary(P2VV
                            dict/P2VVDict.h dict/P2VVDict.xml
                            SPLIT_CLASSDEF)
