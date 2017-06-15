@@ -316,14 +316,15 @@ c4_mass_swave = ROOT.RooRealVar("c4_mass_swave","c4_mass_swave",0.,-10.,10.)
 #c2_mass_swave = ROOT.RooRealVar("c2_mass_swave","c2_mass_swave",0.001,0.,1.)
 #c3_mass_swave = ROOT.RooRealVar("c3_mass_swave","c3_mass_swave",1430.,1100.,1600.)
 #c4_mass_swave = ROOT.RooRealVar("c4_mass_swave","c4_mass_swave",300.,100.,600.)
-#c5_mass_swave = ROOT.RooRealVar("c5_mass_swave","c5_mass_swave",0.,-10.,10.)
-c5_mass_swave = ROOT.RooRealVar("c5_mass_swave","c5_mass_swave",0.0016,0.00001,0.01)
+c5_mass_swave = ROOT.RooRealVar("c5_mass_swave","c5_mass_swave",0.,-10.,10.)
+#c5_mass_swave = ROOT.RooRealVar("c5_mass_swave","c5_mass_swave",0.0016,0.00001,0.01)
 c6_mass_swave = ROOT.RooRealVar("c6_mass_swave","c6_mass_swave",0.,-10.,10.)
 c7_mass_swave = ROOT.RooRealVar("c7_mass_swave","c7_mass_swave",0.,-10.,10.)
 c8_mass_swave = ROOT.RooRealVar("c8_mass_swave","c8_mass_swave",0.,-10.,10.)
 c9_mass_swave = ROOT.RooRealVar("c9_mass_swave","c9_mass_swave",0.,-10.,10.)
 res_mass = ROOT.RooRealVar("res_mass","res_mass",0.)
 
+#for par in [mV,gammaV,mT,gammaT,c9_mass_swave]: par.setConstant(1)
 for par in [mV,gammaV,mT,gammaT,c5_mass_swave,c6_mass_swave,c7_mass_swave,c8_mass_swave,c9_mass_swave]: par.setConstant(1)
 
 # Gaussian constraints of the calibration parameters.

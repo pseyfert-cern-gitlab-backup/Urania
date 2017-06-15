@@ -1260,7 +1260,7 @@ __device__ double get_q(double M, double ma, double mb) {
 __device__ double Blatt_Weisskopf2(double q, double q0, int L) {
 
    if (L<1.) {return 1.;}  
-   double d = c5_mass_swave;//1.6e-03;
+   double d = 1.6e-03;
    double z = q*d*q*d;
    double z0 = q0*d*q0*d;
    if (L==1) {return (1+z0)/(1+z);}
@@ -1474,8 +1474,8 @@ __device__ pycuda::complex<double> Mji(double m, int ji) {
 
    else if (ji == 1)
 	{
-	T = Resonance(m,mv,gv,1)*exp(-i*pycuda::arg(Resonance(mv,mv,gv,1)));
-	//T = (Resonance(m,mv,gv,1)+pycuda::complex<double>(c5_mass_swave,c6_mass_swave)*Resonance(m,MKst_1_1410,GKst_1_1410,1)+pycuda::complex<double>(c7_mass_swave,c8_mass_swave)*Resonance(m,MKst_1_1680,GKst_1_1680,1))*exp(-i*pycuda::arg(Resonance(mv,mv,gv,1)+pycuda::complex<double>(c5_mass_swave,c6_mass_swave)*Resonance(mv,MKst_1_1410,GKst_1_1410,1)+pycuda::complex<double>(c7_mass_swave,c8_mass_swave)*Resonance(mv,MKst_1_1680,GKst_1_1680,1)));
+	//T = Resonance(m,mv,gv,1)*exp(-i*pycuda::arg(Resonance(mv,mv,gv,1)));
+	T = (Resonance(m,mv,gv,1)+pycuda::complex<double>(c5_mass_swave,c6_mass_swave)*Resonance(m,MKst_1_1410,GKst_1_1410,1)+pycuda::complex<double>(c7_mass_swave,c8_mass_swave)*Resonance(m,MKst_1_1680,GKst_1_1680,1))*exp(-i*pycuda::arg(Resonance(mv,mv,gv,1)+pycuda::complex<double>(c5_mass_swave,c6_mass_swave)*Resonance(mv,MKst_1_1410,GKst_1_1410,1)+pycuda::complex<double>(c7_mass_swave,c8_mass_swave)*Resonance(mv,MKst_1_1680,GKst_1_1680,1)));
 	}
 
    else if (ji == 2)

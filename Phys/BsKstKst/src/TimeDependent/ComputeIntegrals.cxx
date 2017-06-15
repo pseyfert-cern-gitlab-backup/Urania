@@ -708,7 +708,7 @@ Double_t ComputeIntegrals::Blatt_Weisskopf2(Double_t q, Double_t q0, Int_t L) co
  {
 
    if (L<1.) {return 1.;}  
-   Double_t d = c5_mass_swave;//1.6e-03;
+   Double_t d = 1.6e-03;
    Double_t z = q*d*q*d;
    Double_t z0 = q0*d*q0*d;
    if (L==1) {return (1+z0)/(1+z);}
@@ -1163,8 +1163,8 @@ TComplex ComputeIntegrals::Mji(Double_t m, Int_t ji) const
 
    else if (ji == 1)
 	{
-	//T = (Resonance(m,mv,gv,1)+TComplex(c5_mass_swave,c6_mass_swave)*Resonance(m,MKst_1_1410,GKst_1_1410,1)+TComplex(c7_mass_swave,c8_mass_swave)*Resonance(m,MKst_1_1680,GKst_1_1680,1))*TComplex(1.,-(Resonance(mv,mv,gv,1)+TComplex(c5_mass_swave,c6_mass_swave)*Resonance(mv,MKst_1_1410,GKst_1_1410,1)+TComplex(c7_mass_swave,c8_mass_swave)*Resonance(mv,MKst_1_1680,GKst_1_1680,1)).Theta(),1);
-	T = Resonance(m,mv,gv,1)*TComplex(1.,-Resonance(mv,mv,gv,1).Theta(),1);
+	T = (Resonance(m,mv,gv,1)+TComplex(c5_mass_swave,c6_mass_swave)*Resonance(m,MKst_1_1410,GKst_1_1410,1)+TComplex(c7_mass_swave,c8_mass_swave)*Resonance(m,MKst_1_1680,GKst_1_1680,1))*TComplex(1.,-(Resonance(mv,mv,gv,1)+TComplex(c5_mass_swave,c6_mass_swave)*Resonance(mv,MKst_1_1410,GKst_1_1410,1)+TComplex(c7_mass_swave,c8_mass_swave)*Resonance(mv,MKst_1_1680,GKst_1_1680,1)).Theta(),1);
+	//T = Resonance(m,mv,gv,1)*TComplex(1.,-Resonance(mv,mv,gv,1).Theta(),1);
 	}
 
    else if (ji == 2)

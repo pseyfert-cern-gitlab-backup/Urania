@@ -96,92 +96,96 @@ def component(j1,j2,h,j1p,j2p,hp):
 def setParamVals(wide_window):
 
 	if wide_window==0:
-		reA00.setVal(0.968365623649)
-		reA01.setVal(-0.167043935494)
-		reA10.setVal(-0.966710240268)
-		reA11par.setVal(-0.890415518954)
-		reA11perp.setVal(0.0312168627535)
-		imA00.setVal(0.912627474634)
-		imA01.setVal(-2.59486531439)
-		imA10.setVal(2.04993496693)
-		imA11par.setVal(0.966836260964)
-		imA11perp.setVal(1.81253096951)
-		delta_m_Bs.setVal(17.5507040858)
-		gamma_Bs.setVal(0.664716424507)
-		delta_gamma_Bs.setVal(0.0849079528621)
-		p0metac_SSK.setVal(0.00637523421071)
-		p0metac_OS.setVal(0.00625437405326)
-		Dp0half_SSK.setVal(-0.0080411256014)
-		Dp0half_OS.setVal(0.00699301159399)
-		p1_SSK.setVal(0.93250559122)
-		p1_OS.setVal(0.985460013798)
-		Dp1half_SSK.setVal(-0.0172717126031)
-		Dp1half_OS.setVal(0.0329466032992)
-		tres_p0_2011.setVal(0.0352455098926)
-		tres_p1_2011.setVal(1.19983704763)
-		tres_p0_2012.setVal(0.0366000812578)
-		tres_p1_2012.setVal(1.21796290904)
-		c1_mass_swave.setVal(-1.96228966361)
-		c2_mass_swave.setVal(0.795790057951)
-		c3_mass_swave.setVal(1.50856106636)
-		c4_mass_swave.setVal(0.830889359762)
+		reA00.setVal(0.967804481564)
+		reA01.setVal(-0.166857984169)
+		reA10.setVal(-0.966372622452)
+		reA11par.setVal(-0.890411920217)
+		reA11perp.setVal(0.0292330744352)
+		imA00.setVal(0.912943149529)
+		imA01.setVal(-2.59547208044)
+		imA10.setVal(2.04931257962)
+		imA11par.setVal(0.966863338833)
+		imA11perp.setVal(1.81245296754)
+		delta_m_Bs.setVal(17.5510337469)
+		gamma_Bs.setVal(0.664717625908)
+		delta_gamma_Bs.setVal(0.0849098527226)
+		p0metac_SSK.setVal(0.00638001442556)
+		p0metac_OS.setVal(0.00625604083002)
+		Dp0half_SSK.setVal(-0.0080411239812)
+		Dp0half_OS.setVal(0.0069930767228)
+		p1_SSK.setVal(0.932542380663)
+		p1_OS.setVal(0.985455625025)
+		Dp1half_SSK.setVal(-0.0172690842318)
+		Dp1half_OS.setVal(0.0329454099762)
+		tres_p0_2011.setVal(0.0352455025768)
+		tres_p1_2011.setVal(1.19983475719)
+		tres_p0_2012.setVal(0.0365996177809)
+		tres_p1_2012.setVal(1.21804260529)
+		c1_mass_swave.setVal(-1.96022549489)
+		c2_mass_swave.setVal(0.797719708258)
+		c3_mass_swave.setVal(1.50932252923)
+		c4_mass_swave.setVal(0.830596406777)
 
 	else:
-		reA00.setVal(4.03704561152)
-		reA01.setVal(-1.37349820909)
-		reA10.setVal(-0.483028649506)
-		reA02.setVal(-0.707884480736)
-		reA20.setVal(1.05069922861)
-		reA11par.setVal(-0.711130432043)
-		reA11perp.setVal(-0.689989599396)
-		reA120.setVal(-2.17843579827)
-		reA12par.setVal(-0.318685925826)
-		reA12perp.setVal(-0.931425146016)
-		reA210.setVal(-0.0167394568756)
-		reA21par.setVal(0.599531917281)
-		reA21perp.setVal(0.609166803777)
-		reA220.setVal(0.0989428187961)
-		reA22par.setVal(-0.344527229873)
-		reA22perp.setVal(-0.0735597446873)
-		reA22par2.setVal(-0.11027482205)
-		reA22perp2.setVal(0.505071664841)
-		imA00.setVal(2.95070029829)
-		imA01.setVal(-5.26899838177)
-		imA10.setVal(3.36115974768)
-		imA02.setVal(-0.204865500918)
-		imA20.setVal(-1.35090116155)
-		imA11par.setVal(1.25026029189)
-		imA11perp.setVal(1.78709857993)
-		imA120.setVal(-1.23447971298)
-		imA12par.setVal(-0.303655015558)
-		imA12perp.setVal(0.646514008446)
-		imA210.setVal(1.51061010948)
-		imA21par.setVal(0.424495006601)
-		imA21perp.setVal(-0.574615009196)
-		imA220.setVal(0.139805940397)
-		imA22par.setVal(0.341353948048)
-		imA22perp.setVal(0.486595390889)
-		imA22par2.setVal(0.112139473047)
-		imA22perp2.setVal(-0.161167966518)
-		delta_m_Bs.setVal(17.6181125786)
-		gamma_Bs.setVal(0.665288627037)
-		delta_gamma_Bs.setVal(0.0861831190265)
-		p0metac_SSK.setVal(0.00726704398218)
-		p0metac_OS.setVal(0.00784707299053)
-		Dp0half_SSK.setVal(-0.00804652895371)
-		Dp0half_OS.setVal(0.00699126866302)
-		p1_SSK.setVal(0.928462109676)
-		p1_OS.setVal(0.992187447845)
-		Dp1half_SSK.setVal(-0.0152549266773)
-		Dp1half_OS.setVal(0.0328106719053)
-		tres_p0_2011.setVal(0.0347684351553)
-		tres_p1_2011.setVal(1.15382952428)
-		tres_p0_2012.setVal(0.0364512988556)
-		tres_p1_2012.setVal(1.26162812367)
-		c1_mass_swave.setVal(-0.299914513137)
-		c2_mass_swave.setVal(-0.158588997743)
-		c3_mass_swave.setVal(-0.121631369471)
-		c4_mass_swave.setVal(-0.0659022290645)
+		reA00.setVal(2.68406709856)
+		reA01.setVal(-1.10266316158)
+		reA10.setVal(-0.746783492657)
+		reA02.setVal(-0.449060573294)
+		reA20.setVal(0.306832742906)
+		reA11par.setVal(-0.718142433301)
+		reA11perp.setVal(-0.546679928565)
+		reA120.setVal(-1.82703591867)
+		reA12par.setVal(-0.333612324526)
+		reA12perp.setVal(-0.644449522918)
+		reA210.setVal(-0.164995429038)
+		reA21par.setVal(0.414304569084)
+		reA21perp.setVal(0.554578503304)
+		reA220.setVal(0.172373544451)
+		reA22par.setVal(-0.344083736953)
+		reA22perp.setVal(-0.239892786025)
+		reA22par2.setVal(-0.101169766114)
+		reA22perp2.setVal(0.373534366827)
+		imA00.setVal(2.50682099828)
+		imA01.setVal(-4.62172927451)
+		imA10.setVal(3.12821899815)
+		imA02.setVal(-0.24779458742)
+		imA20.setVal(-1.13666340195)
+		imA11par.setVal(1.11686855956)
+		imA11perp.setVal(1.81118695143)
+		imA120.setVal(-1.25361083466)
+		imA12par.setVal(-0.0553137715805)
+		imA12perp.setVal(0.264213324392)
+		imA210.setVal(1.39689402549)
+		imA21par.setVal(0.45904705929)
+		imA21perp.setVal(-0.242446513864)
+		imA220.setVal(0.174515554754)
+		imA22par.setVal(0.242875689395)
+		imA22perp.setVal(0.294480407328)
+		imA22par2.setVal(0.115975696031)
+		imA22perp2.setVal(-0.0094762583689)
+		delta_m_Bs.setVal(17.6314255336)
+		gamma_Bs.setVal(0.665260418629)
+		delta_gamma_Bs.setVal(0.0866256204779)
+		p0metac_SSK.setVal(0.00684730772223)
+		p0metac_OS.setVal(0.00723612502265)
+		Dp0half_SSK.setVal(-0.00804853459934)
+		Dp0half_OS.setVal(0.00699340700603)
+		p1_SSK.setVal(0.938455599115)
+		p1_OS.setVal(0.994195803124)
+		Dp1half_SSK.setVal(-0.0151596354801)
+		Dp1half_OS.setVal(0.0327784041679)
+		tres_p0_2011.setVal(0.034768345259)
+		tres_p1_2011.setVal(1.15383499328)
+		tres_p0_2012.setVal(0.0364462223416)
+		tres_p1_2012.setVal(1.26172833973)
+		c1_mass_swave.setVal(-0.382444847799)
+		c2_mass_swave.setVal(-0.17485949676)
+		c3_mass_swave.setVal(-0.145082596529)
+		c4_mass_swave.setVal(-0.0660458139749)
+		c5_mass_swave.setVal(-0.00200846504615)
+		c6_mass_swave.setVal(0.0216555686064)
+		c7_mass_swave.setVal(-0.0531407295227)
+		c8_mass_swave.setVal(0.00353385129257)
 
 
 def aux_PDF():
@@ -3116,10 +3120,18 @@ polar_namepairs_dict = {'f_L_11': 'reA11par', 'delta_22perp': 'reA220', 'delta_2
 max_strong_params = ['reA00', 'reA01', 'reA10', 'reA02', 'reA20', 'reA11par', 'reA11perp', 'reA120', 'reA12par', 'reA12perp', 'reA210', 'reA21par', 'reA21perp', 'reA220', 'reA22par', 'reA22perp', 'reA22par2', 'reA22perp2', 'imA00', 'imA01', 'imA10', 'imA02', 'imA20', 'imA11par', 'imA11perp', 'imA120', 'imA12par', 'imA12perp', 'imA210', 'imA21par', 'imA21perp', 'imA220', 'imA22par', 'imA22perp', 'imA22par2', 'imA22perp2']
 
 par_name_dict = {'mV': 'mV', 'gammaV': 'gammaV', 'mT': 'mT', 'gammaT': 'gammaT', 'c1_mass_swave': 'c_{1}^{mass}','c2_mass_swave': 'c_{2}^{mass}','c3_mass_swave': 'c_{3}^{mass}','c4_mass_swave': 'c_{4}^{mass}','c5_mass_swave': 'c_{5}^{mass}','c6_mass_swave': 'c_{6}^{mass}','c7_mass_swave': 'c_{7}^{mass}','c8_mass_swave': 'c_{8}^{mass}','c9_mass_swave': 'c_{9}^{mass}', 'reA22perp': 'Re(A^{TT}_{#perp1})', 'reA22par2': 'Re(A^{TT}_{#parallel2})', 'delta_210': '#delta^{TV}_{0}', 'tres_p1_2012': 'p_{1}^{#sigma_{t}}(2012)', 'tres_p1_2011': 'p_{1}^{#sigma_{t}}(2011)', 'delta_00': '#delta^{SS}', 'reA10': 'Re(A^{VS})', 'p0metac_OS': 'p_{0}^{OS}-<#eta^{OS}>', 'reA220': 'Re(A^{TT}_{L})', 'reA20': 'Re(A^{TS})', 'delta_10': '#delta^{VS}', 'imA21par': 'Im(A^{TV}_{#parallel})', 'reA11par': 'Re(A^{VV}_{#parallel})', 'delta_11par': '#delta^{VV}_{#parallel}', 'DCP': '#Delta^{CP}', 'DCP_SS': 'd#Delta^{CP}_{SS}', 'DCP_SV': 'd#Delta^{CP}_{SV}', 'DCP_VS': 'd#Delta^{CP}_{VS}', 'DCP_ST': 'd#Delta^{CP}_{ST}', 'DCP_TS': 'd#Delta^{CP}_{TS}', 'DCP_VT': 'd#Delta^{CP}_{VT}', 'DCP_TV': 'd#Delta^{CP}_{TV}', 'DCP_TT': 'd#Delta^{CP}_{TT}', 'imA22perp2': 'Im(A^{TT}_{#perp2})', 'delta_12par': '#delta^{VT}_{#parallel}', 'delta_01': '#delta^{SV}', 'imA22par': 'Im(A^{TT}_{#parallel1})', 'delta_02': '#delta^{ST}', 'reA22par': 'Re(A^{TT}_{#parallel1})', 'p1_SSK': 'p_{1}^{SSK}', 'delta_22perp': '#delta^{TT}_{#perp1}', 'reA21par': 'Re(A^{TV}_{#parallel})', 'delta_21par': '#delta^{TV}_{#parallel}', 'Dp1half_SSK': '1/2 #Delta p_{1}^{SSK}', 'delta_11perp': '#delta^{VV}_{#perp}', 'f_perp2_22': 'f_{#perp2}^{TT}', 'imA210': 'Im(A^{TV}_{L})', 'tres_p0_2011': 'p_{0}^{#sigma_{t}}(2011)', 'reA120': 'Re(A^{VT}_{L})', 'imA21perp': 'Im(A^{TV}_{#perp})', 'tres_p0_2012': 'p_{0}^{#sigma_{t}}(2012)', 'delta_22perp2': '#delta^{TT}_{#perp2}', 'reA22perp2': 'Re(A^{TT}_{#perp2})', 'imA10': 'Im(A^{VS})', 'delta_21perp': '#delta^{TV}_{#perp}', 'p1_OS': 'p_{1}^{OS}', 'delta_22par2': '#delta^{TT}_{#parallel2}', 'f_22': 'f_{TT}', 'f_21': 'f_{TV}', 'f_20': 'f_{TS}', 'f_L_22': 'f_L^{TT}', 'f_par_22': 'f_{#parallel1}^{TT}', 'f_par_21': 'f_{#parallel}^{TV}', 'f_L_21': 'f_L^{TV}', 'imA12perp': 'Im(A^{VT}_{#perp})', 'delta_12perp': '#delta^{VT}_{#perp}', 'imA220': 'Im(A^{TT}_{L})', 'delta_m_Bs': '#Delta m_{B_{s}^{0}}', 'reA12par': 'Re(A^{VT}_{#parallel})', 'f_par2_22': 'f_{#parallel2}^{TT}', 'Dp1half_OS': '1/2 #Delta p_{1}^{OS}', 'f_12': 'f_{VT}', 'f_10': 'f_{VS}', 'f_11': 'f_{VV}', 'imA02': 'Im(A^{ST})', 'imA00': 'Im(A^{SS})', 'imA01': 'Im(A^{SV})', 'f_par_12': 'f_{#parallel}^{VT}', 'f_par_11': 'f_{#parallel}^{VV}', 'reA01': 'Re(A^{SV})', 'Dp0half_OS': '1/2 #Delta p_{0}^{OS}', 'reA11perp': 'Re(A^{VV}_{#perp})', 'imA120': 'Im(A^{VT}_{L})', 'f_01': 'f_{SV}', 'f_00': 'f_{SS}', 'f_02': 'f_{ST}', 'gamma_Bs': '#Gamma_{B_{s}^{0}}', 'f_perp_22': 'f_{#perp1}^{TT}', 'f_perp_21': 'f_{#perp}^{TV}', 'p0metac_SSK': 'p_{0}^{SSK}-<#eta^{SSK}>', 'imA22perp': 'Im(A^{TT}_{#perp1})', 'delta_22par': '#delta^{TT}_{#parallel1}', 'imA22par2': 'Im(A^{TT}_{#parallel2})', 'reA210': 'Re(A^{TV}_{L})', 'imA20': 'Im(A^{TS})', 'imA11perp': 'Im(A^{VV}_{#perp})', 'f_L_12': 'f_L^{VT}', 'f_L_11': 'f_L^{VV}', 'f_perp_12': 'f_{#perp}^{VT}', 'f_perp_11': 'f_{#perp}^{VV}', 'delta_120': '#delta^{VT}_{0}', 'delta_220': '#delta^{TT}_{0}', 'reA21perp': 'Re(A^{TV}_{#perp})', 'imA11par': 'Im(A^{VV}_{#parallel})', 'reA12perp': 'Re(A^{VT}_{#perp})', 'Dp0half_SSK': '1/2 #Delta p_{0}^{SSK}', 'reA00': 'Re(A^{SS})', 'reA02': 'Re(A^{ST})', 'delta_gamma_Bs': '#Delta #Gamma_{B_{s}^{0}}', 'delta_20': '#delta^{TS}', 'imA12par': 'Im(A^{VT}_{#parallel})', 'phis': '#phi_{s}', 'dphi_SS': 'd#phi_{sSS}', 'dphi_SV': 'd#phi_{sSV}', 'dphi_VS': 'd#phi_{sVS}', 'dphi_ST': 'd#phi_{sST}', 'dphi_TS': 'd#phi_{sTS}', 'dphi_VT': 'd#phi_{sVT}', 'dphi_TV': 'd#phi_{sTV}', 'dphi_TT': 'd#phi_{sTT}'}
+par_name_dict['f_sminus'] = 'f_{S-}'
+par_name_dict['f_splus'] = 'f_{S+}'
+par_name_dict['deltaA11perpAsplus'] = '#delta^{VV}_{#perp}-#delta^{S+}'
+par_name_dict['deltaAsminus'] = '\delta^{S-}'
 
 par_result_varnw_dict = {'reA22perp': (-0.0735597446872891, 0.30306422294354984, 'Re(A^{TT}_{\\perp1})'), 'reA22par2': (-0.11027482204968209, 0.1972660406076309, 'Re(A^{TT}_{\\parallel2})'), 'delta_210': (1.5818771289499283, 0.1996357045583519, '\\delta^{TV}_{0}'), 'tres_p1_2012': (1.2616281236695952, 0.05274779635421897, 'p_{1}^{\\sigma_{t}}(2012)'), 'tres_p1_2011': (1.1538295242847139, 0.04960299287000747, 'p_{1}^{\\sigma_{t}}(2011)'), 'delta_00': (0.631168448200234, 0.11360173260090543, '\\delta^{SS}'), 'reA10': (-0.48302864950598234, 0.4763598870652409, 'Re(A^{VS})'), 'p0metac_OS': (0.007847072990527244, 0.004354351076796169, 'p_{0}^{OS}-<\\eta^{OS}>'), 'reA220': (0.09894281879607014, 0.15932942348995033, 'Re(A^{TT}_{L})'), 'reA20': (1.050699228614123, 0.31398789866659826, 'Re(A^{TS})'), 'delta_10': (1.7135280268369553, 0.13459951553288768, '\\delta^{VS}'), 'imA21par': (0.4244950066013349, 0.17314585466911223, 'Im(A^{TV}_{\\parallel})'), 'reA11par': (-0.7111304320426761, 0.1707175215323854, 'Re(A^{VV}_{\\parallel})'), 'delta_11par': (2.0879480096016994, 0.12338043142235076, '\\delta^{VV}_{\\parallel}'), 'DCP': (-3.3367627658250862, 0.032947673811672316, '\\Delta^{CP}'), 'imA22perp2': (-0.16116796651845533, 0.28192381916693593, 'Im(A^{TT}_{\\perp2})'), 'delta_12par': (-2.380342007468954, 0.4875078541657935, '\\delta^{VT}_{\\parallel}'), 'delta_01': (-1.8257969059834425, 0.1265241923734855, '\\delta^{SV}'), 'imA22par': (0.341353948048404, 0.13913848147616975, 'Im(A^{TT}_{\\parallel1})'), 'delta_02': (-2.8598839100075946, 0.4801574976201071, '\\delta^{ST}'), 'reA22par': (-0.3445272298732682, 0.12515622178853059, 'Re(A^{TT}_{\\parallel1})'), 'tres_p0_2012': (0.03645129885555397, 0.0002505952651479666, 'p_{0}^{\\sigma_{t}}(2012)'), 'delta_22perp': (1.7208325809900469, 0.609483181030259, '\\delta^{TT}_{\\perp1}'), 'reA21par': (0.5995319172808244, 0.20361029898967656, 'Re(A^{TV}_{\\parallel})'), 'delta_21par': (0.6161042782711134, 0.29462562756538346, '\\delta^{TV}_{\\parallel}'), 'Dp1half_SSK': (-0.015254926677277458, 0.022672452211574556, '1/2 \\Delta p_{1}^{SSK}'), 'delta_11perp': (1.939258354068904, 0.28906842605122646, '\\delta^{VV}_{\\perp}'), 'f_perp2_22': (0.3459135354425529, 0.16551808739606666, 'f_{\\perp2}^{TT}'), 'imA210': (1.510610109476234, 0.4920780258126781, 'Im(A^{TV}_{L})'), 'tres_p0_2011': (0.034768435155261665, 0.00024408794786592213, 'p_{0}^{\\sigma_{t}}(2011)'), 'reA120': (-2.1784357982662, 0.36055834688344035, 'Re(A^{VT}_{L})'), 'imA21perp': (-0.5746150091963251, 0.3317724599697678, 'Im(A^{TV}_{\\perp})'), 'p1_SSK': (0.9284621096763134, 0.08203189533067752, 'p_{1}^{SSK}'), 'delta_22perp2': (-0.3088856089140464, 0.5483218394248964, '\\delta^{TT}_{\\perp2}'), 'reA22perp2': (0.5050716648410116, 0.18681474451094834, 'Re(A^{TT}_{\\perp2})'), 'imA10': (3.3611597476834234, 0.5685389043191992, 'Im(A^{VS})'), 'delta_21perp': (-0.7562188100342472, 0.45664851255489214, '\\delta^{TV}_{\\perp}'), 'p1_OS': (0.9921874478452092, 0.034777221443417, 'p_{1}^{OS}'), 'delta_22par2': (2.347811003368292, 0.5558901241050392, '\\delta^{TT}_{\\parallel2}'), 'f_22': (0.009183543958251066, 0.002710016746295089, 'f_{TT}'), 'f_21': (0.03981873583149521, 0.015123580018046921, 'f_{TV}'), 'f_20': (0.03310278020366144, 0.008536957807655132, 'f_{TS}'), 'f_L_22': (0.036102805589920135, 0.06586150916120274, 'f_L^{TT}'), 'f_par_22': (0.2894851364984548, 0.14091024973977384, 'f_{\\parallel1}^{TT}'), 'f_par_21': (0.1531693158498012, 0.0767161393034345, 'f_{\\parallel}^{TV}'), 'f_L_21': (0.6477838851780799, 0.1379919834577876, 'f_L^{TV}'), 'imA12perp': (0.6465140084462302, 0.3426703743019514, 'Im(A^{VT}_{\\perp})'), 'delta_12perp': (2.53482884577029, 0.3457365178678489, '\\delta^{VT}_{\\perp}'), 'imA220': (0.13980594039667693, 0.17676002217462136, 'Im(A^{TT}_{L})'), 'delta_m_Bs': (17.618112578577502, 0.08167342453732405, '\\Delta m_{B_{s}^{0}}'), 'reA12par': (-0.3186859258260526, 0.17613552448981823, 'Re(A^{VT}_{\\parallel})'), 'c3_mass_swave': (-0.12163136947109421, 0.015311277312228132, 'c_{3}^{mass}'), 'f_par2_22': (0.03044213597889084, 0.09062559060729963, 'f_{\\parallel2}^{TT}'), 'Dp1half_OS': (0.03281067190533479, 0.005993065192385953, '1/2 \\Delta p_{1}^{OS}'), 'f_12': (0.08757804498973039, 0.016427834106826203, 'f_{VT}'), 'f_10': (0.1303213636776544, 0.026296301333162454, 'f_{VS}'), 'f_11': (0.07616112111945339, 0.004601382942301318, 'f_{VV}'), 'imA02': (-0.2048655009177569, 0.4007347003486179, 'Im(A^{ST})'), 'imA00': (2.9507002982943504, 0.5371212442342594, 'Im(A^{SS})'), 'imA01': (-5.2689983817717, 0.6839567507571603, 'Im(A^{SV})'), 'f_par_12': (0.02500600274793292, 0.016866740062547975, 'f_{\\parallel}^{VT}'), 'f_par_11': (0.3070129636679346, 0.03108602287567394, 'f_{\\parallel}^{VV}'), 'Dp0half_SSK': (-0.008046528953707959, 0.0013825312086699188, '1/2 \\Delta p_{0}^{SSK}'), 'Dp0half_OS': (0.006991268663015419, 0.0005991390332970243, '1/2 \\Delta p_{0}^{OS}'), 'reA11perp': (-0.6899895993962257, 0.5062901825849236, 'Re(A^{VV}_{\\perp})'), 'imA120': (-1.2344797129847294, 0.5482780643632025, 'Im(A^{VT}_{L})'), 'f_01': (0.3350944491270055, 0.026523196352403106, 'f_{SV}'), 'f_00': (0.28260212099378823, 0.011846024723397712, 'f_{SS}'), 'f_02': (0.006137840098960122, 0.006346585560303772, 'f_{ST}'), 'c2_mass_swave': (-0.1585889977425825, 0.019406249576048952, 'c_{2}^{mass}'), 'gamma_Bs': (0.6652886270365236, 0.0019676362639323717, '\\Gamma_{B_{s}^{0}}'), 'f_perp_22': (0.29805638649018135, 0.175797243473789, 'f_{\\perp1}^{TT}'), 'f_perp_21': (0.1990467989721187, 0.08647930477048982, 'f_{\\perp}^{TV}'), 'p0metac_SSK': (0.007267043982177306, 0.0050547756388464845, 'p_{0}^{SSK}-<\\eta^{SSK}>'), 'imA22perp': (0.48659539088895976, 0.17633566825012784, 'Im(A^{TT}_{\\perp1})'), 'delta_22par': (2.3608210338061837, 0.2476696658388352, '\\delta^{TT}_{\\parallel1}'), 'imA22par2': (0.1121394730466374, 0.15228187961329426, 'Im(A^{TT}_{\\parallel2})'), 'reA210': (-0.016739456875580316, 0.30160556974705827, 'Re(A^{TV}_{L})'), 'imA20': (-1.3509011615458704, 0.4597895405179997, 'Im(A^{TS})'), 'imA11perp': (1.7870985799327919, 0.3351760719874725, 'Im(A^{VV}_{\\perp})'), 'f_L_12': (0.8090935533665471, 0.04438116437559516, 'f_L^{VT}'), 'f_L_11': (0.148397361829253, 0.03217543911569287, 'f_L^{VV}'), 'f_perp_12': (0.16590044388551997, 0.04088094574994784, 'f_{\\perp}^{VT}'), 'f_perp_11': (0.5445896745028123, 0.035406105850297326, 'f_{\\perp}^{VV}'), 'c1_mass_swave': (-0.2999145131367409, 0.019871084784432978, 'c_{1}^{mass}'), 'c4_mass_swave': (-0.06590222906448306, 0.01627658856871813, 'c_{4}^{mass}'), 'delta_120': (-2.6260322629041277, 0.2118507085715715, '\\delta^{VT}_{0}'), 'delta_220': (0.9549109802328231, 1.0338830362523146, '\\delta^{TT}_{0}'), 'reA21perp': (0.6091668037771996, 0.2557623291630649, 'Re(A^{TV}_{\\perp})'), 'imA11par': (1.250260291892074, 0.2011418584802664, 'Im(A^{VV}_{\\parallel})'), 'reA12perp': (-0.9314251460156928, 0.26684696226308574, 'Re(A^{VT}_{\\perp})'), 'reA01': (-1.3734982090884902, 0.6999374641380647, 'Re(A^{SV})'), 'reA00': (4.037045611521224, 0.6638886334615056, 'Re(A^{SS})'), 'reA02': (-0.7078844807364177, 0.3375555170255883, 'Re(A^{ST})'), 'delta_gamma_Bs': (0.08618311902645703, 0.005877584711519312, '\\Delta \\Gamma_{B_{s}^{0}}'), 'delta_20': (-0.9097539304184619, 0.26934040460890546, '\\delta^{TS}'), 'imA12par': (-0.3036550155575686, 0.1943687862124656, 'Im(A^{VT}_{\\parallel})'), 'phis': (8.596993560492631, 0.11451831052010514, '\\phi_{s}')}
 
 par_result_constnw_dict = {'reA22perp': (-0.07422561735003441, 0.30196831409329866, 'Re(A^{TT}_{\\perp1})'), 'reA22par2': (-0.10977919188605512, 0.1969467132682363, 'Re(A^{TT}_{\\parallel2})'), 'delta_210': (1.5821781346585668, 0.1981172086800449, '\\delta^{TV}_{0}'), 'tres_p1_2012': (1.2616172078197445, 0.05274733982469428, 'p_{1}^{\\sigma_{t}}(2012)'), 'tres_p1_2011': (1.1539493276078308, 0.04959945287409409, 'p_{1}^{\\sigma_{t}}(2011)'), 'delta_00': (0.6310210893525537, 0.11351159667910327, '\\delta^{SS}'), 'reA10': (-0.4818825157334441, 0.47365236797142235, 'Re(A^{VS})'), 'p0metac_OS': (0.007850008602655344, 0.004354135912606459, 'p_{0}^{OS}-<\\eta^{OS}>'), 'reA220': (0.0985546512663742, 0.15815104912571393, 'Re(A^{TT}_{L})'), 'reA20': (1.0516015547119792, 0.31317561659821613, 'Re(A^{TS})'), 'delta_10': (1.7132189785482739, 0.13416062005435211, '\\delta^{VS}'), 'imA21par': (0.4251439690837895, 0.1723387698462173, 'Im(A^{TV}_{\\parallel})'), 'reA11par': (-0.7109611904442712, 0.1694735475125885, 'Re(A^{VV}_{\\parallel})'), 'delta_11par': (2.087802732833163, 0.12308318381645929, '\\delta^{VV}_{\\parallel}'), 'DCP': (-3.336834100942994, 0.03287398843756592, '\\Delta^{CP}'), 'imA22perp2': (-0.16017658850499394, 0.2803961640688439, 'Im(A^{TT}_{\\perp2})'), 'delta_12par': (-2.3814153498007187, 0.4858169819583023, '\\delta^{VT}_{\\parallel}'), 'delta_01': (-1.8257092884062862, 0.1263191445923095, '\\delta^{SV}'), 'imA22par': (0.3419378753751161, 0.13752878188335022, 'Im(A^{TT}_{\\parallel1})'), 'delta_02': (-2.857160118115828, 0.47274460719310313, '\\delta^{ST}'), 'reA22par': (-0.3443091927769686, 0.12473477815416364, 'Re(A^{TT}_{\\parallel1})'), 'tres_p0_2012': (0.03645114009699407, 0.0002505979594572659, 'p_{0}^{\\sigma_{t}}(2012)'), 'delta_22perp': (1.7220630481453068, 0.6068097981807193, '\\delta^{TT}_{\\perp1}'), 'reA21par': (0.5991810972844451, 0.20048019097624487, 'Re(A^{TV}_{\\parallel})'), 'delta_21par': (0.6171011194695819, 0.2931333941312186, '\\delta^{TV}_{\\parallel}'), 'Dp1half_SSK': (-0.015252433759744, 0.02267245458974212, '1/2 \\Delta p_{1}^{SSK}'), 'delta_11perp': (1.9394703452298034, 0.2881908887576033, '\\delta^{VV}_{\\perp}'), 'f_perp2_22': (0.3460059775570623, 0.16484572975915102, 'f_{\\perp2}^{TT}'), 'imA210': (1.5102268561062537, 0.4778143327322305, 'Im(A^{TV}_{L})'), 'tres_p0_2011': (0.03476863646795697, 0.0002440777049750134, 'p_{0}^{\\sigma_{t}}(2011)'), 'reA120': (-2.1785122175811287, 0.34825829429934446, 'Re(A^{VT}_{L})'), 'imA21perp': (-0.574353831446091, 0.32886184423286374, 'Im(A^{TV}_{\\perp})'), 'p1_SSK': (0.9284973212063521, 0.08203250815863705, 'p_{1}^{SSK}'), 'delta_22perp2': (-0.3067485685969915, 0.5462375613821242, '\\delta^{TT}_{\\perp2}'), 'reA22perp2': (0.5056938564147693, 0.1840698448164958, 'Re(A^{TT}_{\\perp2})'), 'imA10': (3.360560226771071, 0.5514299069545597, 'Im(A^{VS})'), 'delta_21perp': (-0.7558653134786215, 0.4553535164687906, '\\delta^{TV}_{\\perp}'), 'p1_OS': (0.99219232383791, 0.03477676955135745, 'p_{1}^{OS}'), 'delta_22par2': (2.3483756053393314, 0.5569098125220759, '\\delta^{TT}_{\\parallel2}'), 'f_22': (0.009190427376370798, 0.0025771240213735783, 'f_{TT}'), 'f_21': (0.03980257668484872, 0.014938927020175068, 'f_{TV}'), 'f_20': (0.03306503436487386, 0.008311810262891958, 'f_{TS}'), 'f_L_22': (0.035988475857040986, 0.06528084079672292, 'f_L^{TT}'), 'f_par_22': (0.289549103216287, 0.13893711665914796, 'f_{\\parallel1}^{TT}'), 'f_par_21': (0.15325532638545658, 0.07631665134068205, 'f_{\\parallel}^{TV}'), 'f_L_21': (0.6476661360893627, 0.13665318787409053, 'f_L^{TV}'), 'imA12perp': (0.6464527993749307, 0.3380842423951303, 'Im(A^{VT}_{\\perp})'), 'delta_12perp': (2.5349053337112566, 0.3443488486550821, '\\delta^{VT}_{\\perp}'), 'imA220': (0.1398353600400437, 0.17567075415228617, 'Im(A^{TT}_{L})'), 'delta_m_Bs': (17.618187151401123, 0.08154198312412247, '\\Delta m_{B_{s}^{0}}'), 'reA12par': (-0.31930626006862717, 0.17557387952245063, 'Re(A^{VT}_{\\parallel})'), 'f_par2_22': (0.030109314086630416, 0.08987353354164121, 'f_{\\parallel2}^{TT}'), 'Dp1half_OS': (0.032810295120572514, 0.0059930725915674265, '1/2 \\Delta p_{1}^{OS}'), 'f_12': (0.08759040112806357, 0.016047487186664218, 'f_{VT}'), 'f_10': (0.13025199050985692, 0.026200440477220206, 'f_{VS}'), 'f_11': (0.07617187057781845, 0.004356888035288296, 'f_{VV}'), 'imA02': (-0.2071742359647235, 0.39858323017051434, 'Im(A^{ST})'), 'imA00': (2.950222600890669, 0.5278798586734365, 'Im(A^{SS})'), 'imA01': (-5.2699240019240055, 0.6658921641900798, 'Im(A^{SV})'), 'f_par_12': (0.025046495327613896, 0.016845628196663742, 'f_{\\parallel}^{VT}'), 'f_par_11': (0.30695364835891303, 0.030981855730300642, 'f_{\\parallel}^{VV}'), 'Dp0half_SSK': (-0.008046602303667357, 0.001382531168358857, '1/2 \\Delta p_{0}^{SSK}'), 'Dp0half_OS': (0.006991298101529059, 0.0005991385174119489, '1/2 \\Delta p_{0}^{OS}'), 'reA11perp': (-0.6905062283293439, 0.5065293296489629, 'Re(A^{VV}_{\\perp})'), 'imA120': (-1.2348994137129825, 0.5495577193175852, 'Im(A^{VT}_{L})'), 'f_01': (0.3351677332276821, 0.02634701841450725, 'f_{SV}'), 'f_00': (0.2826000021084217, 0.011196741961466809, 'f_{SS}'), 'f_02': (0.0061599640220634235, 0.00627054588714095, 'f_{ST}'), 'gamma_Bs': (0.6652948018876358, 0.0019676001535852616, '\\Gamma_{B_{s}^{0}}'), 'f_perp_22': (0.29834712928297924, 0.17467227158578624, 'f_{\\perp1}^{TT}'), 'f_perp_21': (0.19907853752518076, 0.08567343618799604, 'f_{\\perp}^{TV}'), 'p0metac_SSK': (0.0072683156443861426, 0.005054463205793598, 'p_{0}^{SSK}-<\\eta^{SSK}>'), 'imA22perp': (0.4869452914280803, 0.17006688302646072, 'Im(A^{TT}_{\\perp1})'), 'delta_22par': (2.3596499628257757, 0.24557581181269467, '\\delta^{TT}_{\\parallel1}'), 'imA22par2': (0.11150945761584197, 0.15193267680161224, 'Im(A^{TT}_{\\parallel2})'), 'reA210': (-0.01718985420287389, 0.29924764555120864, 'Re(A^{TV}_{L})'), 'imA20': (-1.3490558625999487, 0.44744884891439557, 'Im(A^{TS})'), 'imA11perp': (1.787308938055146, 0.32626556405752466, 'Im(A^{VV}_{\\perp})'), 'f_L_12': (0.8090857398581417, 0.044326949627353104, 'f_L^{VT}'), 'f_L_11': (0.14836351599278935, 0.031125824121668144, 'f_L^{VV}'), 'f_perp_12': (0.1658677648142444, 0.04083604561846762, 'f_{\\perp}^{VT}'), 'f_perp_11': (0.5446828356482976, 0.03490751511367655, 'f_{\\perp}^{VV}'), 'delta_120': (-2.625901493225181, 0.21144117432938692, '\\delta^{VT}_{0}'), 'delta_220': (0.956862406555501, 1.035629568782537, '\\delta^{TT}_{0}'), 'reA21perp': (0.6093212980725085, 0.25604379415708045, 'Re(A^{TV}_{\\perp})'), 'imA11par': (1.2503853970601604, 0.19677954156957847, 'Im(A^{VV}_{\\parallel})'), 'reA12perp': (-0.9314890543650254, 0.2669399783880778, 'Re(A^{VT}_{\\perp})'), 'reA01': (-1.37324639290979, 0.6946509686112958, 'Re(A^{SV})'), 'reA00': (4.0376408177766105, 0.6447494620532553, 'Re(A^{SS})'), 'reA02': (-0.7086282910442794, 0.3299463684258643, 'Re(A^{ST})'), 'delta_gamma_Bs': (0.08615678124351381, 0.005877617862059901, '\\Delta \\Gamma_{B_{s}^{0}}'), 'delta_20': (-0.9086752081549326, 0.26783250625243554, '\\delta^{TS}'), 'imA12par': (-0.3035928765349514, 0.1938745686541677, 'Im(A^{VT}_{\\parallel})'), 'phis': (8.597144924350035, 0.11442558567490102, '\\phi_{s}')}
+
+toy_sigma_varonlycmass_dict = {'reA22perp': 0.016364588352605146, 'reA22par2': 0.006150543141764644, 'delta_210': 0.030547733006737195, 'tres_p1_2012': 0.0006229484825863375, 'delta_00': 0.009797076586267509, 'reA10': 0.022256261871151494, 'p0metac_OS': 2.0911417427645526e-05, 'reA220': 0.01147783023860441, 'reA20': 0.023324537997170113, 'delta_10': 0.007099061319086167, 'imA21par': 0.011925817784956959, 'reA11par': 0.009319662149199156, 'delta_11par': 0.00935042944812797, 'DCP': 0.0006654927872915747, 'imA22perp2': 0.011179450165140223, 'delta_12par': 0.015428584427026364, 'delta_01': 0.008322691264320739, 'imA22par': 0.026955727424969395, 'delta_02': 0.08276015354108403, 'reA22par': 0.010480383748050829, 'tres_p0_2012': 1.669363005590167e-06, 'delta_22perp': 0.023636079994699126, 'reA21par': 0.03102862471030979, 'delta_21par': 0.02478364378930571, 'Dp1half_SSK': 3.162188114457837e-05, 'delta_11perp': 0.009564645219510092, 'f_perp2_22': 0.003273644496254317, 'imA210': 0.05139409048234201, 'reA120': 0.07317444659284773, 'imA21perp': 0.018721973702509193, 'p1_SSK': 0.0006775285385621966, 'delta_22perp2': 0.02376245016886898, 'reA22perp2': 0.013149288532487435, 'imA10': 0.041739106235007456, 'delta_21perp': 0.019899051105082312, 'p1_OS': 0.00017187945914870286, 'delta_22par2': 0.015999453093365177, 'f_22': 0.0009283444556851235, 'f_21': 0.0013079008473020934, 'f_20': 0.002500154586045764, 'f_L_22': 0.0045455828357060055, 'f_par_22': 0.014227900105961883, 'f_par_21': 0.003594164113989396, 'f_L_21': 0.009118303916240661, 'imA12perp': 0.015544899163001752, 'delta_12perp': 0.019520520021759646, 'imA220': 0.018129620298338346, 'delta_m_Bs': 0.002190480670847606, 'reA12par': 0.010247099875979831, 'f_par2_22': 0.006103953837468289, 'Dp1half_OS': 9.01119679043244e-06, 'f_12': 0.0043321600672395506, 'f_10': 0.002201718977999, 'f_11': 0.0018009053704409505, 'imA02': 0.03117348537965533, 'imA00': 0.07358540974598407, 'imA01': 0.10701349430050786, 'f_par_12': 0.0012701260129731927, 'f_par_11': 0.0011302769152692978, 'Dp0half_SSK': 1.7702422837613924e-06, 'Dp0half_OS': 2.588944035380989e-07, 'reA11perp': 0.017435187928801815, 'imA120': 0.06075351655542332, 'f_01': 0.003227926143323237, 'f_00': 0.005122529183098221, 'f_02': 0.0005801836366573429, 'gamma_Bs': 2.1413649541289986e-05, 'f_perp_22': 0.018862159750093407, 'f_perp_21': 0.006401883135972939, 'p0metac_SSK': 3.3906146265216156e-05, 'imA22perp': 0.04994948953536946, 'delta_22par': 0.03262974501133778, 'imA22par2': 0.008580479979611127, 'reA210': 0.034885888417615335, 'imA20': 0.0991451141005797, 'imA11perp': 0.02027191453086481, 'f_L_12': 0.00358091764671985, 'f_L_11': 0.002944472773490273, 'f_perp_12': 0.002470338466828945, 'f_perp_11': 0.0021790023774646682, 'delta_120': 0.009099443930113938, 'delta_220': 0.0855876865053875, 'reA21perp': 0.020921564872094876, 'imA11par': 0.017140799374846073, 'reA12perp': 0.04022802725132345, 'reA01': 0.04843945567509335, 'reA00': 0.09836595557432273, 'reA02': 0.07342083471328006, 'delta_gamma_Bs': 6.845315360341547e-05, 'delta_20': 0.027452279130761512, 'imA12par': 0.006956592552579865, 'phis': 0.0037258125726455592}
+
+old_swave_amps_dict = {'reAsminus': '1./sqrt(2.)*(upar["reA10"]-upar["reA01"])', 'f_sminus': '(1./sqrt(2.)*(upar["reA10"]-upar["reA01"])*1./sqrt(2.)*(upar["reA10"]-upar["reA01"])+1./sqrt(2.)*(upar["imA10"]-upar["imA01"])*1./sqrt(2.)*(upar["imA10"]-upar["imA01"]))/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'deltaAsminus': 'umath.atan2(1./sqrt(2.)*(upar["imA10"]-upar["imA01"]),1./sqrt(2.)*(upar["reA10"]-upar["reA01"]))', 'imAsminus': '1./sqrt(2.)*(upar["imA10"]-upar["imA01"])', 'deltaAsplus': 'umath.atan2(1./sqrt(2.)*(upar["imA10"]+upar["imA01"]),1./sqrt(2.)*(upar["reA10"]+upar["reA01"]))', 'sqmodAsplus': '(1./sqrt(2.)*(upar["reA10"]+upar["reA01"])*1./sqrt(2.)*(upar["reA10"]+upar["reA01"])+1./sqrt(2.)*(upar["imA10"]+upar["imA01"])*1./sqrt(2.)*(upar["imA10"]+upar["imA01"]))', 'sqmodAsminus': '(1./sqrt(2.)*(upar["reA10"]-upar["reA01"])*1./sqrt(2.)*(upar["reA10"]-upar["reA01"])+1./sqrt(2.)*(upar["imA10"]-upar["imA01"])*1./sqrt(2.)*(upar["imA10"]-upar["imA01"]))', 'f_splus': '(1./sqrt(2.)*(upar["reA10"]+upar["reA01"])*1./sqrt(2.)*(upar["reA10"]+upar["reA01"])+1./sqrt(2.)*(upar["imA10"]+upar["imA01"])*1./sqrt(2.)*(upar["imA10"]+upar["imA01"]))/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'reAsplus': '1./sqrt(2.)*(upar["reA10"]+upar["reA01"])', 'deltaA11perpAsplus': 'umath.atan2(upar["imA11perp"],upar["reA11perp"])-umath.atan2(1./sqrt(2.)*(upar["imA10"]+upar["imA01"]),1./sqrt(2.)*(upar["reA10"]+upar["reA01"]))', 'imAsplus': '1./sqrt(2.)*(upar["imA10"]+upar["imA01"])'}
 
 def stringline_CUDA(parname,upardict):
    if parname not in upardict.keys(): return ''
@@ -3249,6 +3261,12 @@ def fitprint2LaTeX_CUDA(upardict,wide_window):
 		partext += '\\hline\n\\hline\n'
 	partext += '\\end{tabular}\n\\end{table}\n\n'
 	partext += '\\begin{table}[h]\n\\centering\n\\begin{tabular}{|c|c|}\n\hline\nParameter & Value \\\\\n\\hline\n\\hline\n'
+	partext += '\\multicolumn{2}{|c|}{Scalar $K\\pi$ mass amplitude}\\\\\n\\hline\n\\hline\n'
+	partext += stringline_CUDA("c1_mass_swave",upardict)
+	partext += stringline_CUDA("c2_mass_swave",upardict)
+	partext += stringline_CUDA("c3_mass_swave",upardict)
+	partext += stringline_CUDA("c4_mass_swave",upardict)
+	partext += '\\hline\n\\hline\n'
 	partext += '\\multicolumn{2}{|c|}{SSK tagger}\\\\\n\\hline\n\\hline\n'
 	partext += stringline_CUDA("p0metac_SSK",upardict)
 	partext += stringline_CUDA("Dp0half_SSK",upardict)
@@ -3504,9 +3522,9 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_na
                self.calib_params_list_cu[23] = c_mass_centers_mod[1]
                self.calib_params_list_cu[24] = c_mass_centers_mod[2]
                self.calib_params_list_cu[25] = c_mass_centers_mod[3]
-            self.set_mass_params(gpuarray.to_gpu(self.calib_params_list_cu),block = (1,1,1))
 
             # Compute normalisation mass integrals.
+            self.set_mass_params(gpuarray.to_gpu(self.calib_params_list_cu),block = (1,1,1))
             for mpdfid in range(9):
                self.compute_mint_array(np.int32(mpdfid),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
                self.mass_integrals_list_cu[mpdfid] = sum(mintarray)
@@ -3567,7 +3585,8 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_na
 
    if repeat_fit_for_nw_syst_:
 
-      fnwsyst = open('nwsystfits.dat','w')
+      #fnwsyst = open('nwsystfits.dat','w')
+      fnwsyst = open('cmasssystfits.dat','w')
       fnwsyst.close()
 
       for iexp in range(nw_syst_N_iterations_):
@@ -3604,7 +3623,8 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_na
          output_string = ''
          for par in paramnames+polarparamnames: output_string += str(upar[par].nominal_value-par_result_varnw_dict[par][0]) + ' '
          output_string += '\n'
-         fnwsyst = open('nwsystfits.dat','a')
+         #fnwsyst = open('nwsystfits.dat','a')
+         fnwsyst = open('cmasssystfits.dat','a')
          fnwsyst.write(output_string)
          fnwsyst.close()
 
@@ -3637,8 +3657,20 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_na
             if par_temp.std_dev > 1e-10:
                polarparamnames.append(par)
                upar[par] = par_temp
-   
+
       fitprint2LaTeX_CUDA(upar,wide_window_)
+
+      print '\nOld format swave parameters:\n'
+      upar_oldformat = {}
+      upar_oldformat['f_sminus'] = eval(old_swave_amps_dict['f_sminus'])
+      upar_oldformat['f_splus'] = eval(old_swave_amps_dict['f_splus'])
+      upar_oldformat['deltaA11perpAsplus'] = eval(old_swave_amps_dict['deltaA11perpAsplus'])
+      upar_oldformat['deltaAsminus'] = eval(old_swave_amps_dict['deltaAsminus'])
+      print stringline_CUDA('f_sminus',upar_oldformat)
+      print stringline_CUDA('f_splus',upar_oldformat)
+      print stringline_CUDA('deltaA11perpAsplus',upar_oldformat)
+      print stringline_CUDA('deltaAsminus',upar_oldformat)
+      print '\n'
    
       for par in params_:
          if (("DCP" in par.GetName()) or ("phi" in par.GetName())) and blinding_: par.setVal(upar[par.GetName()].nominal_value-blinding_strings[par.GetName()])
@@ -4065,8 +4097,6 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_)
 
       print 'MCS INFO ---> Generating sample #'+str(iexp)
       manager.set_gen_step(2)
-      print manager.calib_params_list_cu_gen
-      print manager.mass_integrals_list_cu_gen
       manager.createFit()
       manager.generate()
       s = ""
@@ -4086,8 +4116,6 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_)
 
       print 'MCS INFO ---> Fitting sample #'+str(iexp)
       manager.set_gen_step(3)
-      print manager.calib_params_list_cu
-      print manager.mass_integrals_list_cu
       manager.createFit()
       manager.fit.print_level = 0
       manager.fit.migrad()
@@ -4128,7 +4156,7 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_)
             x_par = upar[par_name].nominal_value
             if par_name+'_cu' in par_ctrt_init_vals.keys(): x0_par = par_ctrt_init_vals[par_name+'_cu']
             else: x0_par = par_phys_init_vals[par_name+'_cu']
-            sigma_par = upar[par_name].std_dev*par_result_varnw_dict[par_name][1]/par_result_constnw_dict[par_name][1]
+            sigma_par = sqrt(upar[par_name].std_dev**2+toy_sigma_varonlycmass_dict[par_name]**2)
             pull_par = (x_par-x0_par)/sigma_par
             pull_string += str(pull_par)+' '
          fpulls_dat = open('pulls_'+output_tag+'.dat','a')
