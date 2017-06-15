@@ -7,14 +7,14 @@ gStyle.SetOptFit(0111)
 paramnames = ['reA00', 'reA01', 'reA10', 'reA02', 'reA20', 'reA11par', 'reA11perp', 'reA120', 'reA12par', 'reA12perp', 'reA210', 'reA21par', 'reA21perp', 'reA220', 'reA22par', 'reA22perp', 'reA22par2', 'reA22perp2', 'DCP', 'imA00', 'imA01', 'imA10', 'imA02', 'imA20', 'imA11par', 'imA11perp', 'imA120', 'imA12par', 'imA12perp', 'imA210', 'imA21par', 'imA21perp', 'imA220', 'imA22par', 'imA22perp', 'imA22par2', 'imA22perp2', 'phis', 'delta_m_Bs', 'gamma_Bs', 'delta_gamma_Bs', 'p0metac_SSK', 'p0metac_OS', 'Dp0half_SSK', 'Dp0half_OS', 'p1_SSK', 'p1_OS', 'Dp1half_SSK', 'Dp1half_OS', 'tres_p0_2011', 'tres_p1_2011', 'tres_p0_2012', 'tres_p1_2012', 'delta_220', 'f_10', 'delta_22perp', 'delta_210', 'delta_21perp', 'f_par2_22', 'f_01', 'f_00', 'f_02', 'f_12', 'f_L_12', 'f_L_11', 'f_11', 'delta_21par', 'f_perp_12', 'f_perp_11', 'delta_02', 'delta_20', 'f_par_12', 'delta_22perp2', 'f_par_11', 'f_perp_22', 'delta_10', 'f_perp_21', 'delta_22par2', 'f_22', 'f_21', 'f_20', 'f_L_22', 'f_par_22', 'f_par_21', 'f_L_21', 'delta_11perp', 'delta_12par', 'f_perp2_22', 'delta_00', 'delta_12perp', 'delta_01', 'delta_22par', 'delta_11par', 'delta_120']
 
 gROOT.Reset()
-fout = TFile("nwsyst.root","RECREATE")
+fout = TFile("cmasssyst.root","RECREATE")
 tout = TTree("Deviations","Deviations")
 s = paramnames[0]+'_sigma'
 for i in range(1,len(paramnames)): s += ':'+paramnames[i]+'_sigma'
-tout.ReadFile("nwsystfits.dat",s)
+tout.ReadFile("cmasssystfits.dat",s)
 tout.Write()
 
-max_exps = 500
+max_exps = 100
 tred = tout.CloneTree(0)
 for iexp in range(max_exps):
    tout.GetEntry(iexp)
@@ -33,20 +33,18 @@ syst_error_dict = {}
 hlist = []
 for ipar in range(len(paramnames)):
    par = paramnames[ipar]
-   hlist.append(TH1F('h_'+par,'h_'+par,1000,-20,20))
+   hlist.append(TH1F('h_'+par,'h_'+par,1000,-1,1))
    tred.Draw(par+'_sigma>>h_'+par)
-   central_value = par_result_varnw_dict[par][0]
    sigma_varnw = par_result_varnw_dict[par][1]
    sigma_constnw = par_result_constnw_dict[par][1]
-   sigma_varcmass = sqrt(max(sigma_varnw*sigma_varnw-sigma_constnw*sigma_constnw,0.))
-   sigma_randomcmassrandomnw = hlist[ipar].GetRMS()
-   sigma_randomnw = sqrt(max(sigma_randomcmassrandomnw*sigma_randomcmassrandomnw-sigma_varcmass*sigma_varcmass,0.))
+   sigma_varcmass = hlist[ipar].GetRMS()
+   sigma_combined = sqrt(sigma_constnw**2+sigma_varcmass**2)
    title = par_name_dict[par]
-   syst_error_dict[par] = (central_value,sigma_varnw,sigma_randomcmassrandomnw,title)
+   syst_error_dict[par] = (sigma_varnw,sigma_combined,title)
 
 h = TH1F("h","h",100,-20,20)
 for par in paramnames:
-   h.Fill(syst_error_dict[par][2])
-   print syst_error_dict[par][3]+' = '+'{:.3f}'.format(syst_error_dict[par][0])+' +- '+'{:.3f}'.format(syst_error_dict[par][1])+' +- '+'{:.3f}'.format(syst_error_dict[par][2])
+   h.Fill((syst_error_dict[par][1]-syst_error_dict[par][0])/syst_error_dict[par][0])
+   print syst_error_dict[par][2]+' =  +- '+'{:.3f}'.format(syst_error_dict[par][0])+' +- '+'{:.3f}'.format(syst_error_dict[par][1])
 
 h.Draw()

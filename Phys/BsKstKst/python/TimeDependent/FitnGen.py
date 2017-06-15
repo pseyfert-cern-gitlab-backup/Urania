@@ -34,7 +34,7 @@ acc_type = 2
 inf_t_res = 0 # 1 for ideal model / 0 for gaussian like resolution
 
 # CP violation in the model.
-Blinding = 0
+Blinding = 1
 No_CP_Switch = 0
 No_dirCP_Switch = 0
 Same_CP_Switch = 1
@@ -48,11 +48,11 @@ fix_mixing_params = 0
 fix_calib_params = 0
 
 # Computation of NWs.
-variable_nw = 0
+variable_nw = 1
 MC_data_file = 'AnalysisOutWSWeightsSelectedAllBranchesUpdated.root'
 MC_data_tree = 'AnalysisTree'
 MC_data_type = 2 # 0 for PhSp only, 1 for VV only, 2 for both
-randomize_c_mass = 1
+randomize_c_mass = 0
 randomize_nw = 0
 repeat_fit_for_nw_syst = 0
 nw_syst_N_iterations = 100
@@ -88,7 +88,7 @@ phi_binning = 30
 t_binning = 12
 
 # Generation options.
-nexperiments = 1000
+nexperiments = 1
 nevents = 6220
 njobs = 1
 use_GRID = 0
