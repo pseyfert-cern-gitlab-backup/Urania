@@ -32,6 +32,13 @@ samples = {
     'ntracks' : "nTracks", 
     'weight'  : "probe_sWeight"
   }, 
+  'mu_Jpsi_Brunel' : {
+    'trees'   : ('Jpsi_MuPTuple/DecayTree', 'Jpsi_MuMTuple/DecayTree'), 
+    'pt'      : "probe_Brunel_PT", 
+    'eta'     : "probe_Brunel_ETA", 
+    'ntracks' : "nTracks", 
+    'weight'  : "probe_sWeight"
+  }
 }
 
 configs = {
@@ -220,5 +227,17 @@ configs = {
     'toystat'       : 10000000, 
     'controlstat'   : 5000000, 
     'nbootstrap'    : 5
+  }, 
+  "mu_MC15TuneV1_ProbNNmu_Brunel" : {
+    "sample"        :  "mu_Jpsi_Brunel", 
+    "var"           :  "probe_Brunel_MC15TuneV1_ProbNNmu", 
+    "bins"          :  100, 
+    "gamma"         : -0.2, 
+    'scale_default' :  0.1, 
+    'scale_syst'    :  0.15, 
+    'scale_pid'     :  1.0, 
+    'toystat'       : 20000000, 
+    'controlstat'   :  1000000, 
+    'nbootstrap'    :  5
   }, 
 }
