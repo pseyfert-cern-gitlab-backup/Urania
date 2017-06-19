@@ -606,4 +606,19 @@ configs = {
     'controlstat' : 5000000, 
     'nbootstrap' : 5
   }, 
+  "K_V3ProbNNmu" : {
+    "sample" : "K", 
+    "var" : "K_V3ProbNNmu", 
+    "bins" : 100, 
+#    "transform_forward"  : "x", 
+#    "transform_backward" : "x", 
+    "transform_forward"  : "1.-(1.-x**0.15)**0.2", 
+    "transform_backward" : "1.-(1.-x**(1./0.2))**(1./0.15)", 
+    'scale_default' : 0.6, 
+    'scale_syst' : 0.9, 
+    'scale_pid' : 1.0, 
+    'toystat' : 10000000, 
+    'controlstat' : 5000000, 
+    'nbootstrap' : 5
+  }, 
 }
