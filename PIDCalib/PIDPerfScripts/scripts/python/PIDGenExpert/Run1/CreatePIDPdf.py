@@ -66,10 +66,13 @@ if "continue" in opt.split(":") :
   f.close()
   print ready_list
 
+outdir = eosrootdir + "/" + config + "/"
+os.system("mkdir -p %s/control/" % outdir)
+os.system("mkdir -p %s/plots/" % outdir)
+
 for filename in file_list : 
 
   infile = config + "/" + filename + ".root"
-  outdir = eosrootdir + "/" + config + "/"
 
   nominalfile = filename + "_distrib.root"
   controlfile = "control/" + filename + "_control.root"
