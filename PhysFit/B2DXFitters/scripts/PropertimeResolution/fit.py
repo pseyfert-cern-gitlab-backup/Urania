@@ -16,6 +16,8 @@ else:
     dataset = ROOT.TFile.Open("{}/dataset_M_fakeBs_{}.root".format(ws_dir, desc)).Get("dataset_M_fakeBs_{}".format(desc))
     assert(isinstance(dataset, ROOT.RooAbsData))
 
+total_dataset_weight = dataset.sumEntries()
+
 x = w.var(xVarName)
 assert(isinstance(x, ROOT.RooAbsReal))
 
@@ -81,9 +83,11 @@ for (bIndex, b) in enumerate(bins):
         result.Print()
 
     bin_mean = redData.mean(w.var("lab0_LifetimeFit_TAUERR"))
+    count = redData.sumEntries() / total_dataset_weight
 
     with open("{}/{:03d}.txt".format(fit_dir, bIndex), "w") as output:
         output.write(str(bin_mean) + "\n")
+        output.write(str(count) + "\n")
         output.write(str(mean.getVal()) + " \\pm " + str(mean.getError()) + "\n")
         output.write(str(sigma.getVal()) + " \\pm " + str(sigma.getError()) + "\n")
         output.write(str(sigma2.getVal()) + " \\pm " + str(sigma2.getError()) + "\n")
