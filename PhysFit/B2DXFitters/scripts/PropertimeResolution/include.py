@@ -1,3 +1,4 @@
+import os
 from optparse import OptionParser
 import itertools
 import ROOT
@@ -5,6 +6,7 @@ from ROOT import RooFit, RooAddPdf, RooArgList, RooArgSet, RooCBShape, RooFormul
 
 ROOT.gROOT.SetBatch()
 ROOT.Math.MinimizerOptions.SetDefaultPrecision(1e-10)
+ROOT.gROOT.ProcessLine(".x lhcbStyle.C")
 
 def i(w, *args): getattr(w, "import")(*args)
 
@@ -28,7 +30,7 @@ parser.add_option("-n", "--nBins", dest="nBins", type="int", default=20, help="n
 parser.add_option("-d", "--desc", dest="desc", type="choice", choices=desc_list, default="ALL", help="description of data to use")
 parser.add_option("-f", "--fitModel", dest="fitModel", type="choice", choices=["gauss", "2gauss"], default="2gauss", help="how to fit the lifetime distributions")
 parser.add_option("-c", "--combVar", dest="combVar", type="choice", choices=["sigma", "weighted_sum", "eff_sigma"], default="eff_sigma", help="what variable to use for combining the results")
-parser.add_option("--centerBin", "--centreBin", dest="centerBin", action="store_true", default=False, help="whether to use the mean of the data as the bin center rather than the middle of the bin")
+parser.add_option("--centerBin", "--centreBin", dest="centerBin", action="store_true", default=False, help="whether to use the arithmetic bin centre instead of the mean of the data")
 
 (options, args) = parser.parse_args()
 nBins = options.nBins
@@ -80,25 +82,30 @@ comb_desc = fit_desc + "_" + options.combVar
 if options.centerBin:
     comb_desc += "_CenterBin"
 
+dp_dir = "DataPlots/{}".format(desc)
 ws_dir = "Workspaces/{}".format(desc)
+sWeight_plots_dir = os.path.join("SWeightPlots", desc)
 fit_dir_no_bins = "FitResults/{}".format(fit_desc)
 fit_dir = "{}/{}Bins".format(fit_dir_no_bins, nBins)
 import os
-for d in [ws_dir, fit_dir]:
+for d in [dp_dir, ws_dir, sWeight_plots_dir, fit_dir]:
     if not os.path.isdir(d):
         os.makedirs(d)
 
+base_dir = "/dcache/bfys/DsK/3fb"
+#base_dir = "root://eoslhcb.cern.ch//eos/lhcb/user/l/lbel"
+
 if desc == desc_ALL:
-    in_file_name = "root://eoslhcb.cern.ch//eos/lhcb/user/l/lbel/TD_DsK3fb_LTUB/MERGED/Bs_DsK_ALL.root"
+    in_file_name = "{}/TD_DsK3fb_LTUB/MERGED/Bs_DsK_ALL.root".format(base_dir)
 elif desc == desc_Prompt_MC:
-    in_file_name = "root://eoslhcb.cern.ch//eos/lhcb/user/l/lbel/TD_DsK3fb_MC_LTUB/PromptDsH2/PromptDsH2_PTR.root"
+    in_file_name = "{}/TD_DsK3fb_MC_LTUB/PromptDsH2/PromptDsH2_PTR.root".format(base_dir)
 elif desc == desc_DsPi_MC:
-    in_file_name = "root://eoslhcb.cern.ch//eos/lhcb/user/l/lbel/TD_DsK3fb_MC/B2DX_MC_Bs_Dspi_KKpi_PTR.root"
+    in_file_name = "{}/TD_DsK3fb_MC/B2DX_MC_Bs_Dspi_KKpi_PTR.root".format(base_dir)
 elif desc == desc_DsK_MC_LTUB:
-    in_file_name = "root://eoslhcb.cern.ch//eos/lhcb/user/l/lbel/TD_DsK3fb_MC_LTUB/Bs_DsK/Bs_DsK_LTUB_Up.root"
+    in_file_name = "{}/TD_DsK3fb_MC_LTUB/Bs_DsK/Bs_DsK_LTUB_Up.root".format(base_dir)
 else:
     year = desc.split("_")[0]
     fs = desc.split("_")[-1]
     mag = "Up" if "Up" in desc else "Dw"
-    in_file_name = "root://eoslhcb.cern.ch//eos/lhcb/user/l/lbel/TD_DsK3fb_LTUB/MERGED/Bs_DsK_{0}_{1}_{2}.root".format(fs, year, mag)
+    in_file_name = "{}/TD_DsK3fb_LTUB/MERGED/Bs_DsK_{0}_{1}_{2}.root".format(base_dir, fs, year, mag)
 
