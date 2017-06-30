@@ -5,21 +5,22 @@ def format_results(var): return "{} \\pm {}".format(var.getVal(), var.getError()
 ROOT.Math.MinimizerOptions.SetDefaultPrecision(1e-9)
 
 print("Opening the workspace...")
-f = ROOT.TFile.Open("{}/w_data_{}.root".format(ws_dir, desc))
+f = ROOT.TFile.Open(os.path.join(ws_dir, "w_data_{}.root".format(desc)))
 if not f and desc is desc_DsPi_MC:
-    f = ROOT.TFile.Open("{}/w_SWeighted_{}.root".format(ws_dir, desc_ALL))
+    f = ROOT.TFile.Open(os.path.join(ws_dir, "w_SWeighted_{}.root".format(desc_ALL)))
 w = f.Get("w")
 
 if desc is desc_DsPi_MC:
     dataset = w.data("mc")
 else:
-    dataset = ROOT.TFile.Open("{}/dataset_M_fakeBs_{}.root".format(ws_dir, desc)).Get("dataset_M_fakeBs_{}".format(desc))
+    dataset_file = ROOT.TFile.Open(os.path.join(ws_dir, "dataset_M_fakeBs_{}.root".format(desc)))
+    dataset = dataset_file.Get("dataset_M_fakeBs_{}".format(desc))
     assert(isinstance(dataset, ROOT.RooAbsData))
 
 total_dataset_weight = dataset.sumEntries()
 
 x = w.var(xVarName)
-assert(isinstance(x, ROOT.RooAbsReal))
+assert(x and isinstance(x, ROOT.RooAbsReal))
 
 print("Preparing the fit shape...")
 mean   = RooRealVar('mean',   'mean',  -20.0,  20.)
@@ -85,7 +86,7 @@ for (bIndex, b) in enumerate(bins):
     bin_mean = redData.mean(w.var("lab0_LifetimeFit_TAUERR"))
     count = redData.sumEntries() / total_dataset_weight
 
-    with open("{}/{:03d}.txt".format(fit_dir, bIndex), "w") as output:
+    with open(os.path.join(fit_dir, "{:03d}.txt".format(bIndex)), "w") as output:
         output.write(str(bin_mean) + "\n")
         output.write(str(count) + "\n")
         output.write(str(mean.getVal()) + " \\pm " + str(mean.getError()) + "\n")
@@ -99,5 +100,8 @@ for (bIndex, b) in enumerate(bins):
     w = RooWorkspace("w")
     i(w, redData)
     i(w, model)
-    w.writeToFile("{}/w_Fit_bin{:03d}.root".format(fit_dir, bIndex))
+    w.writeToFile(os.path.join(fit_dir, "w_Fit_bin{:03d}.root".format(bIndex)))
+
+f.Close()
+dataset_file.Close()
 
