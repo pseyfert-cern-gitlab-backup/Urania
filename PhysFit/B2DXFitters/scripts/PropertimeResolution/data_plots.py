@@ -43,7 +43,7 @@ del x
 
 if is_MC:
     x = w.var("lab0_TRUETAU")
-    frame = x.frame(-500., 50000.)
+    frame = x.frame(0., 0.02)
     dataset.plotOn(frame)
     c = ROOT.TCanvas('c', 'c')
     frame.Draw()
