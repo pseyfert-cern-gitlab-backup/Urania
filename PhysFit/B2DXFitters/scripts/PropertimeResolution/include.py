@@ -91,7 +91,7 @@ for d in [dp_dir, ws_dir, sWeight_plots_dir, fit_dir]:
     if not os.path.isdir(d):
         os.makedirs(d)
 
-base_dir = os.path.join("root://eoslhcb.cern.ch/", "eos", "lhcb", "user", "l", "lbel")
+base_dir = os.path.join("root://eoslhcb.cern.ch//", "eos", "lhcb", "user", "l", "lbel")
 
 if desc == desc_ALL:
     in_file_name = os.path.join(base_dir, "TD_DsK3fb_LTUB", "MERGED", "Bs_DsK_ALL.root")
