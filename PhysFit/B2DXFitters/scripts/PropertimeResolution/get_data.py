@@ -50,17 +50,14 @@ lab0_LifetimeFit_TAUERR.setMin(  0.)
 lab0_LifetimeFit_TAUERR.setMax(150.)
 
 # Add difference between measured and true lifetime as a variable
-#taudiff = dataset.addColumn(RooFormulaVar("lab0_LifetimeFit_TAU_DIFF", "lab0_LifetimeFit_TAU_DIFF",\
-        #"lab0_LifetimeFit_ctau0/{}-lab0_TRUETAU/{}".format(speedOfLight_mm_fs, ns_to_fs), RooArgList(lab0_LifetimeFit_ctau0, lab0_TRUETAU)))
-#taudiff.setUnit("fs")
-#taudiff.setMin(-500.)
-#taudiff.setMax( 1500.)
+if is_MC:
+    taudiff = dataset.addColumn(RooFormulaVar("lab0_LifetimeFit_TAU_DIFF", "lab0_LifetimeFit_TAU_DIFF",\
+           "lab0_LifetimeFit_ctau0/{}-lab0_TRUETAU/{}".format(speedOfLight_mm_fs, ns_to_fs), RooArgList(lab0_LifetimeFit_ctau0, lab0_TRUETAU)))
+    taudiff.setUnit("fs")
+    taudiff.setMin(-500.)
+    taudiff.setMax( 1500.)
 
-# Add log(IP) and the lifetime pull as variables
-#lab2_logIP = dataset.addColumn(RooFormulaVar("log(lab2_IP_OWNPV)", "log(lab2_IP_OWNPV)", RooArgList(lab2_IP_OWNPV)))
-#lab2_logIP.setMin(-10.)
-#lab2_logIP.setMax(  5.)
-
+# Add the lifetime pull as variables
 if is_MC and not desc == desc_Prompt_MC:
     pull_formula = "(lab0_LifetimeFit_ctau0/{}-lab0_TRUETAU/{})/(lab0_LifetimeFit_ctauErr0/{})".format(speedOfLight_mm_fs, ns_to_fs, speedOfLight_mm_fs)
     args = [lab0_LifetimeFit_ctau0, lab0_TRUETAU, lab0_LifetimeFit_ctauErr0]
@@ -96,7 +93,7 @@ i(w, dataset)
 
 # Save the workspace
 print("Saving workspace...")
-w.writeToFile('{}/w_data_{}.root'.format(ws_dir, desc))
+w.writeToFile(os.path.join(ws_dir, "w_data_{}.root".format(desc)))
 print("Done")
 
 f.Close()
