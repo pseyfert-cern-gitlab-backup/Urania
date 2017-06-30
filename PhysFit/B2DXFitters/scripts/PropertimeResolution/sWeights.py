@@ -5,20 +5,18 @@ from include import *
 
 # Load the RooWorkspace
 print("Opening the workspace...")
-w_file = ROOT.TFile.Open('{}/w_data_{}.root'.format(ws_dir, desc))
+w_file = ROOT.TFile.Open(os.path.join(ws_dir, "w_data_{}.root".format(desc)))
 w = w_file.Get('w')
 assert(isinstance(w, RooWorkspace))
 
 # Load the data from the RooWorkspace
 print("Getting the data...")
 dataset = w.data('data')
-#mc_data = w.data('mc')
 print("Done!")
 
 nentries = dataset.numEntries()
 
 import sys
-#sys.exit(0)
 
 # create fit model
 ##### Ds mass #############
@@ -88,12 +86,12 @@ cM.cd(1)
 Mframe.Draw()
 cM.cd(2)
 frame_pull.Draw()
-cM.SaveAs('SWeightPlots/Mfit_{}.pdf'.format(desc))
+cM.SaveAs(os.path.join(sWeight_plots_dir, "Mfit.pdf"))
 
 cMlog=ROOT.TCanvas('cMlog','cMlog')
 cMlog.SetLogy(1)
 Mframe.Draw()
-cMlog.SaveAs('SWeightPlots/Mfit_log_{}.pdf'.format(desc))
+cMlog.SaveAs(os.path.join(sWeight_plots_dir, "Mfit_log.pdf"))
 
 # Create the sWeights
 mean = w.var('mean')
@@ -109,24 +107,14 @@ dataset_Comb = RooDataSet('dataset_M_Comb_{}'.format(desc), 'dataset_M_Comb_{}'.
 #prompt_weights = RooRealVar('prompt_weights_{}'.format(desc), 'prompt_weights_{}'.format(desc), 0., 1.)
 dataset_Prompt_weighted = RooDataSet('dataset_fakeBs_weighted_{}'.format(desc), 'dataset_M_fakeBs_weighted_{}'.format(desc), dataset_PromptSecScat, dataset.get(), '', 'Nprompt_sw')
 
-# Plot sWeighted logIP and bachelor momentum distribtions
-"""
-cIP = ROOT.TCanvas('cIP', 'cIP')
-frameIP = w.var('log(lab2_IP_OWNPV)').frame()
-dataset_PromptSecScat.plotOn(frameIP,RooFit.MarkerColor(ROOT.kMagenta))
-dataset_Comb.plotOn(frameIP,RooFit.MarkerColor(ROOT.kOrange))
-frameIP.Draw()
-cIP.SaveAs('SWeightPlots/logIP_{}.pdf'.format(desc))
-del frameIP
-del cIP
-"""
+# Plot sWeighted momentum distribtions
 
 clab1_P = ROOT.TCanvas('clab1_P', 'clab1_P')
 frame_lab1_P = w.var('lab1_P').frame()
 dataset_PromptSecScat.plotOn(frame_lab1_P, RooFit.MarkerColor(ROOT.kMagenta))
 #mc_data.plotOn(frame_lab1_P, RooFit.MarkerColor(ROOT.kOrange))
 frame_lab1_P.Draw()
-clab1_P.SaveAs('SWeightPlots/lab1_P_{}.pdf'.format(desc))
+clab1_P.SaveAs(os.path.join(sWeight_plots_dir, "lab1_P.pdf"))
 del frame_lab1_P
 del clab1_P
 
@@ -135,7 +123,7 @@ frame_lab0_MM = w.var('lab0_MM').frame()
 dataset_PromptSecScat.plotOn(frame_lab0_MM, RooFit.MarkerColor(ROOT.kMagenta))
 #mc_data.plotOn(frame_lab0_MM, RooFit.MarkerColor(ROOT.kOrange))
 frame_lab0_MM.Draw()
-clab0_MM.SaveAs('SWeightPlots/lab0_MM_{}.pdf'.format(desc))
+clab0_MM.SaveAs(os.path.join(sWeight_plots_dir, "lab0_MM.pdf"))
 del frame_lab0_MM
 del clab0_MM
 
@@ -144,21 +132,23 @@ frame_lab2_MM = w.var('lab2_MM').frame()
 dataset_PromptSecScat.plotOn(frame_lab2_MM, RooFit.MarkerColor(ROOT.kMagenta))
 dataset.plotOn(frame_lab2_MM, RooFit.MarkerColor(ROOT.kOrange))
 frame_lab2_MM.Draw()
-clab2_MM.SaveAs('SWeightPlots/lab2_MM_{}.pdf'.format(desc))
+clab2_MM.SaveAs(os.path.join(sWeight_plots_dir, "lab2_MM.pdf"))
 del frame_lab2_MM
 del clab2_MM
 
 # Save the sWeighted datasets into the Workspace
 print("Saving datasets...")
-dataset_file = ROOT.TFile.Open('{}/dataset_M_fakeBs_{}.root'.format(ws_dir, desc), 'RECREATE')
-dataset_PromptSecScat.Write('dataset_M_fakeBs_{}'.format(desc))
+dataset_file = ROOT.TFile.Open(os.path.join(ws_dir, "dataset_M_fakeBs_{}.root".format(desc)), 'RECREATE')
+dataset_PromptSecScat.Write("dataset_M_fakeBs_{}".format(desc))
 dataset_file.Close()
 
-dataset_file = ROOT.TFile.Open('{}/dataset_M_Comb_{}.root'.format(ws_dir, desc), 'RECREATE')
-dataset_Comb.Write('dataset_M_Comb_{}'.format(desc))
+dataset_file = ROOT.TFile.Open(os.path.join(ws_dir, "dataset_M_Comb_{}.root".format(desc)), 'RECREATE')
+dataset_Comb.Write("dataset_M_Comb_{}".format(desc))
 dataset_file.Close()
 
-dataset_file = ROOT.TFile.Open('{}/dataset_fakeBs_weighted_{}.root'.format(ws_dir, desc), 'RECREATE')
-dataset_Prompt_weighted.Write('dataset_fakeBs_weighted_{}'.format(desc))
+dataset_file = ROOT.TFile.Open(os.path.join(ws_dir, "dataset_fakeBs_weighted_{}.root".format(desc)), 'RECREATE')
+dataset_Prompt_weighted.Write("dataset_fakeBs_weighted_{}".format(desc))
 dataset_file.Close()
+
+w_file.Close()
 

@@ -4,11 +4,12 @@ from ROOT import TFile, TTree
 from ROOT import RooFit, RooAddPdf, RooArgList, RooArgSet, RooCBShape, RooFormulaVar, RooGaussian, RooRealVar, RooWorkspace
 
 print("Opening the workspace...")
-f = TFile.Open("{}/w_data_{}.root".format(ws_dir, desc))
+f = TFile.Open(os.path.join(ws_dir, "w_data_{}.root".format(desc)))
 w = f.Get("w")
 
 data_name = "dataset_M_fakeBs_{}".format(desc)
-dataset = TFile.Open("{}/{}.root".format(ws_dir, data_name)).Get(data_name)
+dataset_file = TFile.Open(os.path.join(ws_dir, "{}.root".format(data_name)))
+dataset = dataset_file.Get(data_name)
 assert(isinstance(dataset, ROOT.RooAbsData))
 
 x = w.var("lab2_MM")
@@ -16,7 +17,7 @@ frame = x.frame(1890., 2070.)
 dataset.plotOn(frame)
 c = ROOT.TCanvas('c', 'c')
 frame.Draw()
-c.SaveAs("SWeightPlots/lab2_MM_{}.pdf".format(desc))
+c.SaveAs(os.path.join(sWeight_plots_dir, "lab2_MM.pdf"))
 del c
 del frame
 del x
@@ -26,17 +27,7 @@ frame = x.frame(-500., 1000.)
 dataset.plotOn(frame)
 c = ROOT.TCanvas('c', 'c')
 frame.Draw()
-c.SaveAs("SWeightPlots/lab0_LifetimeFit_TAU_{}.pdf".format(desc))
-del c
-del frame
-del x
-
-x = w.var("lab0_LifetimeFit_TAU_DIFF")
-frame = x.frame(-500., 1000.)
-dataset.plotOn(frame)
-c = ROOT.TCanvas('c', 'c')
-frame.Draw()
-c.SaveAs("SWeightPlots/lab0_LifetimeFit_TAU_DIFF_{}.pdf".format(desc))
+c.SaveAs(os.path.join(sWeight_plots_dir, "lab0_LifetimeFit_TAU.pdf"))
 del c
 del frame
 del x
@@ -46,7 +37,7 @@ frame = x.frame(0., 150.)
 dataset.plotOn(frame)
 c = ROOT.TCanvas('c', 'c')
 frame.Draw()
-c.SaveAs("SWeightPlots/lab0_LifetimeFit_TAUERR_{}.pdf".format(desc))
+c.SaveAs(os.path.join(sWeight_plots_dir, "lab0_LifetimeFit_TAUERR.pdf"))
 del c
 del frame
 del x
@@ -57,9 +48,11 @@ frame = x.frame(-100., 300.)
 dataset.reduce(cuts_bin).plotOn(frame)
 c = ROOT.TCanvas('c', 'c')
 frame.Draw()
-c.SaveAs("SWeightPlots/lab0_LifetimeFit_TAU_bin_{}.pdf".format(desc))
+c.SaveAs(os.path.join(sWeight_plots_dir, "lab0_LifetimeFit_TAU_bin.pdf"))
 del c
 del frame
 del x
 
+f.Close()
+dataset_file.Close()
 
