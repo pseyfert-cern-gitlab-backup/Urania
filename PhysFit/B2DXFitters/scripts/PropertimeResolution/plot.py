@@ -4,7 +4,7 @@ import sys
 plot_precision = RooFit.Precision(1e-5)
 
 for (bIndex, b) in enumerate(bins):
-    f = ROOT.TFile.Open("{}/w_Fit_bin{:03d}.root".format(fit_dir, bIndex))
+    f = ROOT.TFile.Open(os.path.join(fit_dir, "w_Fit_bin{:03d}.root".format(bIndex)))
     w = f.Get("w")
 
     dataset = w.data("dataset_M_fakeBs_{}".format(desc))
@@ -66,7 +66,7 @@ for (bIndex, b) in enumerate(bins):
     frame.Draw()
     c.cd(2)
     frame_pull.Draw()
-    c.SaveAs("{}/bin{:03d}.pdf".format(fit_dir, bIndex))
+    c.SaveAs(os.path.join(fit_dir, "bin{:03d}.pdf".format(bIndex)))
 
     del c
     del dataset
