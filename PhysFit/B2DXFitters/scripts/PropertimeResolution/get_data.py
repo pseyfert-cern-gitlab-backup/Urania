@@ -3,7 +3,9 @@ from ROOT import RooArgList, RooArgSet, RooDataSet, RooFit, RooFormulaVar, RooRe
 from include import *
 
 # Get the TTree with the data from EOS
-t = ROOT.TFile.Open(in_file_name, "READ").Get("DecayTree")
+f = ROOT.TFile.Open(in_file_name, "READ")
+t = f.Get("DecayTree")
+assert(isinstance(t, ROOT.TTree))
 
 if desc == desc_Prompt_MC:
     lab0_TRUETAU_range = (-1000., -0.5)
@@ -96,4 +98,6 @@ i(w, dataset)
 print("Saving workspace...")
 w.writeToFile('{}/w_data_{}.root'.format(ws_dir, desc))
 print("Done")
+
+f.Close()
 
