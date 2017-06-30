@@ -80,6 +80,7 @@ The options are as follows:
  * `-p` The index of the bachelor momentum bin to use. Can be any integer for which a momentum bin is present in `include.py`.
  * `-b` The index of the bachelor transverse momentum bin to use. Can be any integer for which a transverse momentum bin is present in `include.py`.
  * `-t` The index of the decay-time bin to use. Can be any integer for which a decay-time bin is present in `include.py`.
+ * `--centreBin` Use the arithmetic bin centre in the combination, rather than the per-bin data mean.
 
 The bin index options `-p`, `-b`, and `-t` can be conveniently run inside a `bash` loop, as follows:
 ```bash
