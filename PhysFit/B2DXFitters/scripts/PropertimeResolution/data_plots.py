@@ -67,7 +67,7 @@ frame = x.frame(-10., 10.)
 dataset.plotOn(frame)
 c = ROOT.TCanvas('c', 'c')
 frame.Draw()
-c.SaveAs(os.path.join("lab0_LifetimeFit_TAU_PULL.pdf"))
+c.SaveAs(os.path.join(dp_dir, "lab0_LifetimeFit_TAU_PULL.pdf"))
 del c
 del frame
 del x
@@ -77,7 +77,7 @@ frame = x.frame(0., 150.)
 dataset.plotOn(frame)
 c = ROOT.TCanvas('c', 'c')
 frame.Draw()
-c.SaveAs(os.path.join("lab0_LifetimeFit_TAUERR.pdf"))
+c.SaveAs(os.path.join(dp_dir, "lab0_LifetimeFit_TAUERR.pdf"))
 del c
 del frame
 del x
@@ -88,7 +88,7 @@ frame = x.frame(-100., 300.)
 dataset.reduce(cuts_bin).plotOn(frame)
 c = ROOT.TCanvas('c', 'c')
 frame.Draw()
-c.SaveAs(os.path.join("lab0_LifetimeFit_TAU_bin.pdf"))
+c.SaveAs(os.path.join(dp_dir, "lab0_LifetimeFit_TAU_bin.pdf"))
 del c
 del frame
 del x
