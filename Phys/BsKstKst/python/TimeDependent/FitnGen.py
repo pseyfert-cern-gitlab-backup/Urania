@@ -48,16 +48,19 @@ fix_mixing_params = 0
 fix_calib_params = 0
 
 # Computation of NWs.
-variable_nw = 1
-MC_data_file = 'AnalysisOutWSWeightsSelectedAllBranchesUpdated.root'
+variable_nw = 0
+MC_data_file = 'AnalysisOutWSWeightsSelectedAllBranchesMinimal.root'#'AnalysisOutWSWeightsSelectedAllBranchesUpdated.root'
 MC_data_tree = 'AnalysisTree'
 MC_data_type = 2 # 0 for PhSp only, 1 for VV only, 2 for both
+
+# Systematic studies.
 randomize_c_mass = 0
 randomize_nw = 0
 repeat_fit_for_nw_syst = 0
 nw_syst_N_iterations = 100
-
-# Systematic studies.
+repeat_fit_for_spline_syst = 0
+spline_syst_N_iterations = 100
+apply_dataMC_corr = 0
 pw_alternative_model = 0
 f_Kst1410_rel2_Kst892 = 0.2
 delta_Kst1410_rel2_Kst892 = 0.
@@ -65,9 +68,9 @@ f_Kst1680_rel2_Kst892 = 0.2
 delta_Kst1680_rel2_Kst892 = 0.
 
 # Data used in the fit.
-data_file = 'AnalysisOutWSWeightsSelectedAllBranchesUpdated.root'#'AnalysisOutWSWeightsSelected_PHIstudy.root'
+data_file = 'AnalysisOutWSWeightsSelectedAllBranchesMinimal.root'#'AnalysisOutWSWeightsSelectedAllBranchesUpdated.root'
 data_tree = 'AnalysisTree'
-MC_file = 'AnalysisOutWSWeightsSelectedAllBranchesCP.root'#'AnalysisOutWithCuts_AllBranches_PHIstudy.root'
+MC_file = 'AnalysisOutWSWeightsSelectedAllBranchesCP.root'
 MC_tree = 'AnalysisTree'
 MC_type = 1 # 0 for Toy MC / 1 for VV.
 data_type = "real" # "real" for real data from 2011 and 2012 / "MC" for Monte Carlo simulation.
@@ -88,8 +91,12 @@ phi_binning = 30
 t_binning = 12
 
 # Generation options.
-nexperiments = 1
+nexperiments = 100
 nevents = 6220
+change_dataset = 1
+mod_and_refit = 1
+massang_reso_smear = 0
+add_extra_vector = 1
 njobs = 1
 use_GRID = 0
 exp_output_tag = "WideWindow"
@@ -170,7 +177,7 @@ inf_t_res,wide_window,data_file,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak
 pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_rel2_Kst892,delta_Kst1680_rel2_Kst892)
 
 	# Performance of the fit.
-	DoCUDAFit(data,params,Blinding,wide_window,variable_nw,activ_minos,output_file_name,randomize_c_mass,randomize_nw,repeat_fit_for_nw_syst,nw_syst_N_iterations)
+	DoCUDAFit(data,params,Blinding,wide_window,variable_nw,activ_minos,output_file_name,randomize_c_mass,randomize_nw,repeat_fit_for_nw_syst,nw_syst_N_iterations,repeat_fit_for_spline_syst,spline_syst_N_iterations,apply_dataMC_corr)
 
 def fitnplot():
 
@@ -256,7 +263,7 @@ inf_t_res,wide_window,data_file,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak
 pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_rel2_Kst892,delta_Kst1680_rel2_Kst892)
 
 	# Performance of the fit.
-	DoCUDAFit(data,params,Blinding,wide_window,0,activ_minos,output_file_name,randomize_c_mass,randomize_nw,repeat_fit_for_nw_syst,nw_syst_N_iterations)
+	DoCUDAFit(data,params,Blinding,wide_window,0,activ_minos,output_file_name,randomize_c_mass,randomize_nw,repeat_fit_for_nw_syst,nw_syst_N_iterations,repeat_fit_for_spline_syst,spline_syst_N_iterations,apply_dataMC_corr)
 
 	# Plot of the the 6 1D proyections corresponding to the 2 masses, 3 angles and decay time.
 	blindCat.setIndex(0)
@@ -407,7 +414,7 @@ pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_r
 	# Fit of the conditional variable profiles.
 	CondVarStudy(fit_CondVarDistr,model,params,data,hist_mistag_SSK,hist_mistag_OS,hist_deltat)
 
-	DoCUDAToy(nexperiments,nevents,params,wide_window,output_tag,randomize_c_mass)
+	DoCUDAToy(nexperiments,nevents,params,wide_window,output_tag,randomize_c_mass,change_dataset,massang_reso_smear,mod_and_refit,add_extra_vector)
 
 
 # ################################################################

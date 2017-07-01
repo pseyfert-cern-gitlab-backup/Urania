@@ -1,5 +1,6 @@
 from parameters import *
 from math import exp
+from hep_ml import reweight
 import numpy as np
 np.random.seed(1)
 
@@ -127,65 +128,61 @@ def setParamVals(wide_window):
 		c4_mass_swave.setVal(0.830596406777)
 
 	else:
-		reA00.setVal(2.68406709856)
-		reA01.setVal(-1.10266316158)
-		reA10.setVal(-0.746783492657)
-		reA02.setVal(-0.449060573294)
-		reA20.setVal(0.306832742906)
-		reA11par.setVal(-0.718142433301)
-		reA11perp.setVal(-0.546679928565)
-		reA120.setVal(-1.82703591867)
-		reA12par.setVal(-0.333612324526)
-		reA12perp.setVal(-0.644449522918)
-		reA210.setVal(-0.164995429038)
-		reA21par.setVal(0.414304569084)
-		reA21perp.setVal(0.554578503304)
-		reA220.setVal(0.172373544451)
-		reA22par.setVal(-0.344083736953)
-		reA22perp.setVal(-0.239892786025)
-		reA22par2.setVal(-0.101169766114)
-		reA22perp2.setVal(0.373534366827)
-		imA00.setVal(2.50682099828)
-		imA01.setVal(-4.62172927451)
-		imA10.setVal(3.12821899815)
-		imA02.setVal(-0.24779458742)
-		imA20.setVal(-1.13666340195)
-		imA11par.setVal(1.11686855956)
-		imA11perp.setVal(1.81118695143)
-		imA120.setVal(-1.25361083466)
-		imA12par.setVal(-0.0553137715805)
-		imA12perp.setVal(0.264213324392)
-		imA210.setVal(1.39689402549)
-		imA21par.setVal(0.45904705929)
-		imA21perp.setVal(-0.242446513864)
-		imA220.setVal(0.174515554754)
-		imA22par.setVal(0.242875689395)
-		imA22perp.setVal(0.294480407328)
-		imA22par2.setVal(0.115975696031)
-		imA22perp2.setVal(-0.0094762583689)
-		delta_m_Bs.setVal(17.6314255336)
-		gamma_Bs.setVal(0.665260418629)
-		delta_gamma_Bs.setVal(0.0866256204779)
-		p0metac_SSK.setVal(0.00684730772223)
-		p0metac_OS.setVal(0.00723612502265)
-		Dp0half_SSK.setVal(-0.00804853459934)
-		Dp0half_OS.setVal(0.00699340700603)
-		p1_SSK.setVal(0.938455599115)
-		p1_OS.setVal(0.994195803124)
-		Dp1half_SSK.setVal(-0.0151596354801)
-		Dp1half_OS.setVal(0.0327784041679)
-		tres_p0_2011.setVal(0.034768345259)
-		tres_p1_2011.setVal(1.15383499328)
-		tres_p0_2012.setVal(0.0364462223416)
-		tres_p1_2012.setVal(1.26172833973)
-		c1_mass_swave.setVal(-0.382444847799)
-		c2_mass_swave.setVal(-0.17485949676)
-		c3_mass_swave.setVal(-0.145082596529)
-		c4_mass_swave.setVal(-0.0660458139749)
-		c5_mass_swave.setVal(-0.00200846504615)
-		c6_mass_swave.setVal(0.0216555686064)
-		c7_mass_swave.setVal(-0.0531407295227)
-		c8_mass_swave.setVal(0.00353385129257)
+		reA00.setVal(4.03772098708)
+		reA01.setVal(-1.37302507639)
+		reA10.setVal(-0.482048429272)
+		reA02.setVal(-0.708645464898)
+		reA20.setVal(1.05166318672)
+		reA11par.setVal(-0.710887611466)
+		reA11perp.setVal(-0.69016978888)
+		reA120.setVal(-2.17861689316)
+		reA12par.setVal(-0.319341952101)
+		reA12perp.setVal(-0.931431462692)
+		reA210.setVal(-0.0171506227002)
+		reA21par.setVal(0.599180823886)
+		reA21perp.setVal(0.609264050093)
+		reA220.setVal(0.098573885688)
+		reA22par.setVal(-0.344316647252)
+		reA22perp.setVal(-0.0740846448456)
+		reA22par2.setVal(-0.109874606417)
+		reA22perp2.setVal(0.505551550692)
+		imA00.setVal(2.95017648133)
+		imA01.setVal(-5.2698131459)
+		imA10.setVal(3.36056309295)
+		imA02.setVal(-0.207084464367)
+		imA20.setVal(-1.34894999345)
+		imA11par.setVal(1.25037975711)
+		imA11perp.setVal(1.78735344309)
+		imA120.setVal(-1.23478273646)
+		imA12par.setVal(-0.303502495479)
+		imA12perp.setVal(0.646437325469)
+		imA210.setVal(1.50992558386)
+		imA21par.setVal(0.425120218595)
+		imA21perp.setVal(-0.574392803099)
+		imA220.setVal(0.139899223406)
+		imA22par.setVal(0.341957372405)
+		imA22perp.setVal(0.486927873027)
+		imA22par2.setVal(0.111562002004)
+		imA22perp2.setVal(-0.160066201924)
+		delta_m_Bs.setVal(17.6181668523)
+		gamma_Bs.setVal(0.665294880397)
+		delta_gamma_Bs.setVal(0.0861565709605)
+		p0metac_SSK.setVal(0.00726828367124)
+		p0metac_OS.setVal(0.00784943927414)
+		Dp0half_SSK.setVal(-0.00804662556826)
+		Dp0half_OS.setVal(0.00699117563109)
+		p1_SSK.setVal(0.928499458534)
+		p1_OS.setVal(0.992190867481)
+		Dp1half_SSK.setVal(-0.0152506504889)
+		Dp1half_OS.setVal(0.0328086811472)
+		tres_p0_2011.setVal(0.0347683030558)
+		tres_p1_2011.setVal(1.15382898688)
+		tres_p0_2012.setVal(0.0364511250067)
+		tres_p1_2012.setVal(1.26161995566)
+		c1_mass_swave.setVal(-0.299938309664)
+		c2_mass_swave.setVal(-0.158543354229)
+		c3_mass_swave.setVal(-0.121672500045)
+		c4_mass_swave.setVal(-0.0658670383143)
 
 
 def aux_PDF():
@@ -2116,6 +2113,225 @@ def etacomb(q1var,eta1var,q2var,eta2var):
    p_Bsbar = (1.-0.5*q1var*(1.+q1var-2.*eta1var))*(1.-0.5*q2var*(1.+q2var-2.*eta2var))
    return min(p_Bs,p_Bsbar)/(p_Bs+p_Bsbar)
 
+
+def MCtruth(ev):
+	if abs(ev.B_s0_TRUEID) == 531:
+		if ev.Kplus_TRUEID == 321:
+			if ev.Kminus_TRUEID == -321:
+				if ev.Piplus_TRUEID == 211:
+					if ev.Piminus_TRUEID == -211: return 1
+	return 0
+
+def MCsetcut(year_aux,trig_aux,set_aux):
+	if trig_aux == 0: cut_aux = "B_s0_L0Global_TIS==1 && "
+	else: cut_aux = "B_s0_L0Global_TIS==0 && B_s0_L0HadronDecision_TOS==1 && "
+	if year_aux == 0:
+		if set_aux == 0: cut_aux += "itype==-73"
+		elif set_aux == 1: cut_aux += "itype==-70"
+		else: cut_aux += "(itype==-73 || itype==-70)"
+	else:
+		if set_aux == 0: cut_aux += "itype==-83"
+		elif set_aux == 1: cut_aux += "itype==-80"
+		else: cut_aux += "(itype==-83 || itype==-80)"
+	return cut_aux
+
+def dataMCcorrweight(entry):
+
+	#wPIDkaon1 = h2DPIDkaon.GetBinContent(h2DPIDkaon.FindBin(entry.Kplus_P,entry.Kplus_ETA))
+	#wPIDkaon2 = h2DPIDkaon.GetBinContent(h2DPIDkaon.FindBin(entry.Kminus_P,entry.Kminus_ETA))
+	#wPIDpion1 = h2DPIDpion.GetBinContent(h2DPIDpion.FindBin(entry.Piplus_P,entry.Piplus_ETA))
+	#wPIDpion2 = h2DPIDpion.GetBinContent(h2DPIDpion.FindBin(entry.Piminus_P,entry.Piminus_ETA))
+
+	#return wPIDkaon1*wPIDkaon2*wPIDpion1*wPIDpion2
+	return 1.;
+
+m1_name_MC = "B_s0_DTF_KST1_M"
+m2_name_MC = "B_s0_DTF_KST2_M"
+cos1_name_MC = "B_s0_DTF_KST1_COSTHETA"
+cos2_name_MC = "B_s0_DTF_KST2_COSTHETA"
+phi_name_MC = "B_s0_DTF_B_s0_PHI_TRY4"
+t_name_MC = "B_s0_DTF_TAU"
+
+mKp1_MC = ROOT.RooRealVar(m1_name_MC,"M(K^{+}#pi^{-}) ", 750., mHlimit,"MeV/c^{2}")
+mKp2_MC = ROOT.RooRealVar(m2_name_MC,"M(K^{-}#pi^{+}) ", 750., mHlimit,"MeV/c^{2}")
+mKp1_narrow_MC = ROOT.RooRealVar(m1_name_MC,"M(K^{+}#pi^{-}) ",900.-150.,900.+150.,"MeV/c^{2}")
+mKp2_narrow_MC = ROOT.RooRealVar(m2_name_MC,"M(K^{-}#pi^{+}) ",900.-150.,900.+150.,"MeV/c^{2}")
+cos1_MC = ROOT.RooRealVar(cos1_name_MC,"cos(#theta_{1})", -1., 1.,"")
+cos2_MC = ROOT.RooRealVar(cos2_name_MC,"cos(#theta_{2})", -1., 1.,"")
+phi_MC = ROOT.RooRealVar(phi_name_MC,"#varphi",0,2.*pi,"rad")
+t_MC = ROOT.RooRealVar(t_name_MC,"t_{true}",0.,12.,"ps")
+MCweight0 = ROOT.RooRealVar("MCweight0","MCweight0",1.)
+
+MCdata_2011_L0TIS_wide = ROOT.RooDataSet("MCdata_2011_L0TIS_wide","MCdata_2011_L0TIS_wide",ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2012_L0TIS_wide = ROOT.RooDataSet("MCdata_2012_L0TIS_wide","MCdata_2012_L0TIS_wide",ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2011_L0noTIS_wide = ROOT.RooDataSet("MCdata_2011_L0noTIS_wide","MCdata_2011_L0noTIS_wide",ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2012_L0noTIS_wide = ROOT.RooDataSet("MCdata_2012_L0noTIS_wide","MCdata_2012_L0noTIS_wide",ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2011_L0TIS_narrow = ROOT.RooDataSet("MCdata_2011_L0TIS_narrow","MCdata_2011_L0TIS_narrow",ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2012_L0TIS_narrow = ROOT.RooDataSet("MCdata_2012_L0TIS_narrow","MCdata_2012_L0TIS_narrow",ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2011_L0noTIS_narrow = ROOT.RooDataSet("MCdata_2011_L0noTIS_narrow","MCdata_2011_L0noTIS_narrow",ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2012_L0noTIS_narrow = ROOT.RooDataSet("MCdata_2012_L0noTIS_narrow","MCdata_2012_L0noTIS_narrow",ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+
+
+br_rew = ["Kplus_ETA","Piminus_ETA","Kminus_ETA","Piplus_ETA","Kplus_P","Piminus_P","Kminus_P","Piplus_P","nTracks","B_s0_PT"]
+rew_signal_data_list = []
+rew_signal_wi_list = []
+rew_MC_data_list = []
+rew_MC_wi_list = []
+rew_MC_predicted_wi_list = []
+for year in range(2):
+   rew_signal_data_list.append([])
+   rew_signal_wi_list.append([])
+   rew_MC_data_list.append([])
+   rew_MC_wi_list.append([])
+   rew_MC_predicted_wi_list.append([])
+   for trig in range(2):
+      rew_signal_data_list[year].append([])
+      rew_signal_wi_list[year].append([])
+      rew_MC_data_list[year].append([])
+      rew_MC_wi_list[year].append([])
+      rew_MC_predicted_wi_list[year].append([])
+rew_elements = []
+for l in [rew_signal_data_list,rew_signal_wi_list,rew_MC_data_list,rew_MC_wi_list,rew_MC_predicted_wi_list]: rew_elements.append(l)
+
+
+def LoadDataNW(NTUPLE_PATH, data_file, data_tree, datatype, wide_window):
+
+	# Information.
+	print '\nLoading MC data file ' + data_file + ', used to compute the NWs.'
+	if datatype == 0: print 'MC sample: PhSp.'
+	elif datatype == 1: print 'MC sample: VV.'
+	else: print 'MC sample: PhSp + VV.'
+
+	br_list = ["itype","B_s0_L0Global_TIS","B_s0_L0HadronDecision_TOS",m1_name_MC,m2_name_MC,cos1_name_MC,cos2_name_MC,phi_name_MC,t_name_MC,"B_s0_TRUEID","Kplus_TRUEID","Piminus_TRUEID","Kminus_TRUEID","Piplus_TRUEID"]
+
+	opt_genmodel = ROOT.RooRealVar("opt_genmodel","opt_genmodel",0)
+	opt_genvars = ROOT.RooRealVar("opt_genvars","opt_genvars",1)
+	year_MC = ROOT.RooRealVar("year_MC","year_MC",1)
+	wide_window_MC = ROOT.RooRealVar("wide_window_MC","wide_window_MC",1)
+	wide_window_MC.setVal(wide_window)
+
+	# Input data.
+	file_in = ROOT.TFile(NTUPLE_PATH + data_file)
+	tree_full = file_in.Get(data_tree)
+	tree_full.SetBranchStatus("*",0)
+	for br in br_list+br_rew: tree_full.SetBranchStatus(br,1)
+	file_out = ROOT.TFile(NTUPLE_PATH + "trash.root","RECREATE")
+
+	if wide_window:
+		tree_2011_L0TIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,0,datatype))
+		tree_2012_L0TIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,0,datatype))
+		tree_2011_L0noTIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,1,datatype))
+		tree_2012_L0noTIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,1,datatype))
+		invN_2011_L0TIS_wide = 1.#/tree_2011_L0TIS_wide.GetEntries()
+		invN_2012_L0TIS_wide = 1.#/tree_2012_L0TIS_wide.GetEntries()
+		invN_2011_L0noTIS_wide = 1.#/tree_2011_L0noTIS_wide.GetEntries()
+		invN_2012_L0noTIS_wide = 1.#/tree_2012_L0noTIS_wide.GetEntries()
+
+	else:
+		tree_2011_L0TIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,0,datatype))
+		tree_2012_L0TIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,0,datatype))
+		tree_2011_L0noTIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,1,datatype))
+		tree_2012_L0noTIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,1,datatype))
+		invN_2011_L0TIS_narrow = 1.#/tree_2011_L0TIS_narrow.GetEntries()
+		invN_2012_L0TIS_narrow = 1.#/tree_2012_L0TIS_narrow.GetEntries()
+		invN_2011_L0noTIS_narrow = 1.#/tree_2011_L0noTIS_narrow.GetEntries()
+		invN_2012_L0noTIS_narrow = 1.#/tree_2012_L0noTIS_narrow.GetEntries()
+
+	PDF_gen = ROOT.MCGenComb("PDF_gen","PDF_gen",opt_genmodel,year_MC,wide_window_MC,mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,t_MC,opt_genvars)
+
+	def setvarvals(entry):
+		mKp1_MC.setVal(eval("entry."+m1_name_MC))
+		mKp2_MC.setVal(eval("entry."+m2_name_MC))
+		cos1_MC.setVal(eval("entry."+cos1_name_MC))
+		cos2_MC.setVal(eval("entry."+cos2_name_MC))
+		phi_MC.setVal(eval("entry."+phi_name_MC))
+
+	opt_genmodel.setVal(datatype)
+
+	if wide_window:
+		year_MC.setVal(0)
+		for i in tree_2011_L0TIS_wide:
+			if MCtruth(i):
+				setvarvals(i)
+				MCweight0.setVal(invN_2011_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2011_L0TIS_wide.add(ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+				br_values = []
+				for br in br_rew: br_values.append(eval("i."+br))
+				rew_MC_data_list[0][0].append(br_values)
+				rew_MC_wi_list[0][0].append(1.)
+				rew_MC_predicted_wi_list[0][0].append(1.)
+		year_MC.setVal(1)
+		for i in tree_2012_L0TIS_wide:
+			if MCtruth(i):
+				setvarvals(i)
+				MCweight0.setVal(invN_2012_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2012_L0TIS_wide.add(ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+				br_values = []
+				for br in br_rew: br_values.append(eval("i."+br))
+				rew_MC_data_list[1][0].append(br_values)
+				rew_MC_wi_list[1][0].append(1.)
+				rew_MC_predicted_wi_list[1][0].append(1.)
+		year_MC.setVal(0)
+		for i in tree_2011_L0noTIS_wide:
+			if MCtruth(i):
+				setvarvals(i)
+				MCweight0.setVal(invN_2011_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2011_L0noTIS_wide.add(ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+				br_values = []
+				for br in br_rew: br_values.append(eval("i."+br))
+				rew_MC_data_list[0][1].append(br_values)
+				rew_MC_wi_list[0][1].append(1.)
+				rew_MC_predicted_wi_list[0][1].append(1.)
+		year_MC.setVal(1)
+		for i in tree_2012_L0noTIS_wide:
+			if MCtruth(i):
+				setvarvals(i)
+				MCweight0.setVal(invN_2012_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2012_L0noTIS_wide.add(ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+				br_values = []
+				for br in br_rew: br_values.append(eval("i."+br))
+				rew_MC_data_list[1][1].append(br_values)
+				rew_MC_wi_list[1][1].append(1.)
+				rew_MC_predicted_wi_list[1][1].append(1.)
+
+	else:
+		year_MC.setVal(0)
+		for i in tree_2011_L0TIS_narrow:
+			if MCtruth(i):
+				mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
+				mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
+				setvarvals(i)
+				MCweight0.setVal(invN_2011_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2011_L0TIS_narrow.add(ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+		year_MC.setVal(1)
+		for i in tree_2012_L0TIS_narrow:
+			if MCtruth(i):
+				mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
+				mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
+				setvarvals(i)
+				MCweight0.setVal(invN_2012_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2012_L0TIS_narrow.add(ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+		year_MC.setVal(0)
+		for i in tree_2011_L0noTIS_narrow:
+			if MCtruth(i):
+				mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
+				mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
+				setvarvals(i)
+				MCweight0.setVal(invN_2011_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2011_L0noTIS_narrow.add(ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+		year_MC.setVal(1)
+		for i in tree_2012_L0noTIS_narrow:
+			if MCtruth(i):
+				mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
+				mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
+				setvarvals(i)
+				MCweight0.setVal(invN_2012_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2012_L0noTIS_narrow.add(ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+
+	print 'Data loaded.'
+	file_out.Close()
+
+
 def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, MC_type, TD_fit, weighted, wide_window = 1, extra_cuts = "", evnum_limit = 0, GRID = 0):
 
 	# Information.
@@ -2151,7 +2367,7 @@ def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, MC_typ
 			file_in = ROOT.TFile(file_path + data_file)
 			tree = file_in.Get(data_tree)
 			tree.SetBranchStatus("*",0)
-			for br in br_list: tree.SetBranchStatus(br,1)
+			for br in br_list+br_rew: tree.SetBranchStatus(br,1)
 			print 'Loading data from ' + data_file + ':' + data_tree
 		elif (datatype == "MC"):
 			file_in = ROOT.TFile(file_path + MC_file)
@@ -2306,6 +2522,10 @@ def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, MC_typ
 						else: data_11L0TIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
 						TD_extravars_float_11L0TIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
 						TD_extravars_int_11L0TIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
+						br_values = []
+						for br in br_rew: br_values.append(eval("i."+br))
+						rew_signal_data_list[0][0].append(br_values)
+						rew_signal_wi_list[0][0].append(weight_plot.getVal())
 						ev_counter_11L0TIS += 1
 					elif (eval("i."+L0TISline_name) == 0 and eval("i."+L0TOSline_name) == 1):
 						if weighted:
@@ -2315,6 +2535,10 @@ def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, MC_typ
 						else: data_11L0noTIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
 						TD_extravars_float_11L0noTIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
 						TD_extravars_int_11L0noTIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
+						br_values = []
+						for br in br_rew: br_values.append(eval("i."+br))
+						rew_signal_data_list[0][1].append(br_values)
+						rew_signal_wi_list[0][1].append(weight_plot.getVal())
 						ev_counter_11L0noTIS += 1
 				elif i.itype == 81:
 					mean_deltat_2012 += weighttag * eval("i."+terror_name)
@@ -2327,6 +2551,10 @@ def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, MC_typ
 						else: data_12L0TIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
 						TD_extravars_float_12L0TIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
 						TD_extravars_int_12L0TIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
+						br_values = []
+						for br in br_rew: br_values.append(eval("i."+br))
+						rew_signal_data_list[1][0].append(br_values)
+						rew_signal_wi_list[1][0].append(weight_plot.getVal())
 						ev_counter_12L0TIS += 1
 					elif (eval("i."+L0TISline_name) == 0 and eval("i."+L0TOSline_name) == 1):
 						if weighted:
@@ -2336,6 +2564,10 @@ def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, MC_typ
 						else: data_12L0noTIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
 						TD_extravars_float_12L0noTIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
 						TD_extravars_int_12L0noTIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
+						br_values = []
+						for br in br_rew: br_values.append(eval("i."+br))
+						rew_signal_data_list[1][1].append(br_values)
+						rew_signal_wi_list[1][1].append(weight_plot.getVal())
 						ev_counter_12L0noTIS += 1
 				if i.itype>0:
 					if (etamistag_SSK.getVal() < 0.5): hist_mistag_SSK.add(ROOT.RooArgSet(etamistag_SSK),weight_fit.getVal())
@@ -2482,179 +2714,189 @@ ROOT.RooFit.Import("2012_L0TIS",data_12L0TIS_),ROOT.RooFit.Import("2012_L0noTIS"
 
 	return [data_full_fit,data_full_plot,data_11L0TIS_,data_11L0noTIS_,data_12L0TIS_,data_12L0noTIS_], hist_mistag_SSK, hist_mistag_OS, hist_deltat
 
-def MCtruth(ev):
-	if abs(ev.B_s0_TRUEID) == 531:
-		if ev.Kplus_TRUEID == 321:
-			if ev.Kminus_TRUEID == -321:
-				if ev.Piplus_TRUEID == 211:
-					if ev.Piminus_TRUEID == -211: return 1
-	return 0
 
-def MCsetcut(year_aux,trig_aux,set_aux):
-	if trig_aux == 0: cut_aux = "B_s0_L0Global_TIS==1 && "
-	else: cut_aux = "B_s0_L0Global_TIS==0 && B_s0_L0HadronDecision_TOS==1 && "
-	if year_aux == 0:
-		if set_aux == 0: cut_aux += "itype==-73"
-		elif set_aux == 1: cut_aux += "itype==-70"
-		else: cut_aux += "(itype==-73 || itype==-70)"
-	else:
-		if set_aux == 0: cut_aux += "itype==-83"
-		elif set_aux == 1: cut_aux += "itype==-80"
-		else: cut_aux += "(itype==-83 || itype==-80)"
-	return cut_aux
+MC_reweighter = reweight.GBReweighter()
 
-def dataMCcorrweight(entry):
 
-	#wPIDkaon1 = h2DPIDkaon.GetBinContent(h2DPIDkaon.FindBin(entry.Kplus_P,entry.Kplus_ETA))
-	#wPIDkaon2 = h2DPIDkaon.GetBinContent(h2DPIDkaon.FindBin(entry.Kminus_P,entry.Kminus_ETA))
-	#wPIDpion1 = h2DPIDpion.GetBinContent(h2DPIDpion.FindBin(entry.Piplus_P,entry.Piplus_ETA))
-	#wPIDpion2 = h2DPIDpion.GetBinContent(h2DPIDpion.FindBin(entry.Piminus_P,entry.Piminus_ETA))
+def reweight_MC_samples():
 
-	#return wPIDkaon1*wPIDkaon2*wPIDpion1*wPIDpion2
-	return 1.;
+   for year in range(2):
+      for trig in range(2):
+         data_sig_ = np.array(rew_elements[0][year][trig]).astype(np.float64)
+         wi_sig_ = np.array(rew_elements[1][year][trig]).astype(np.float64)
+         data_MC_ = np.array(rew_elements[2][year][trig]).astype(np.float64)
+         wi_MC_ = np.array(rew_elements[3][year][trig]).astype(np.float64)
+         MC_reweighter.fit(original = data_MC_, target = data_sig_, original_weight = wi_MC_, target_weight = wi_sig_)
+         predicted_wi_MC_ = MC_reweighter.predict_weights(data_MC_)
+         for iwi in range(len(predicted_wi_MC_)): rew_elements[4][year][trig][iwi] = predicted_wi_MC_[iwi]
 
-m1_name_MC = "B_s0_DTF_KST1_M"
-m2_name_MC = "B_s0_DTF_KST2_M"
-cos1_name_MC = "B_s0_DTF_KST1_COSTHETA"
-cos2_name_MC = "B_s0_DTF_KST2_COSTHETA"
-phi_name_MC = "B_s0_DTF_B_s0_PHI_TRY4"
-t_name_MC = "B_s0_DTF_TAU"
 
-mKp1_MC = ROOT.RooRealVar(m1_name_MC,"M(K^{+}#pi^{-}) ", 750., mHlimit,"MeV/c^{2}")
-mKp2_MC = ROOT.RooRealVar(m2_name_MC,"M(K^{-}#pi^{+}) ", 750., mHlimit,"MeV/c^{2}")
-mKp1_narrow_MC = ROOT.RooRealVar(m1_name_MC,"M(K^{+}#pi^{-}) ",900.-150.,900.+150.,"MeV/c^{2}")
-mKp2_narrow_MC = ROOT.RooRealVar(m2_name_MC,"M(K^{-}#pi^{+}) ",900.-150.,900.+150.,"MeV/c^{2}")
-cos1_MC = ROOT.RooRealVar(cos1_name_MC,"cos(#theta_{1})", -1., 1.,"")
-cos2_MC = ROOT.RooRealVar(cos2_name_MC,"cos(#theta_{2})", -1., 1.,"")
-phi_MC = ROOT.RooRealVar(phi_name_MC,"#varphi",0,2.*pi,"rad")
-t_MC = ROOT.RooRealVar(t_name_MC,"t_{true}",0.,12.,"ps")
-MCweight0 = ROOT.RooRealVar("MCweight0","MCweight0",1.)
+h_plot_reweight_list = []
 
-MCdata_2011_L0TIS_wide = ROOT.RooDataSet("MCdata_2011_L0TIS_wide","MCdata_2011_L0TIS_wide",ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
-MCdata_2012_L0TIS_wide = ROOT.RooDataSet("MCdata_2012_L0TIS_wide","MCdata_2012_L0TIS_wide",ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
-MCdata_2011_L0noTIS_wide = ROOT.RooDataSet("MCdata_2011_L0noTIS_wide","MCdata_2011_L0noTIS_wide",ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
-MCdata_2012_L0noTIS_wide = ROOT.RooDataSet("MCdata_2012_L0noTIS_wide","MCdata_2012_L0noTIS_wide",ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
-MCdata_2011_L0TIS_narrow = ROOT.RooDataSet("MCdata_2011_L0TIS_narrow","MCdata_2011_L0TIS_narrow",ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
-MCdata_2012_L0TIS_narrow = ROOT.RooDataSet("MCdata_2012_L0TIS_narrow","MCdata_2012_L0TIS_narrow",ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
-MCdata_2011_L0noTIS_narrow = ROOT.RooDataSet("MCdata_2011_L0noTIS_narrow","MCdata_2011_L0noTIS_narrow",ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
-MCdata_2012_L0noTIS_narrow = ROOT.RooDataSet("MCdata_2012_L0noTIS_narrow","MCdata_2012_L0noTIS_narrow",ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
 
-def LoadDataNW(NTUPLE_PATH, data_file, data_tree, datatype, wide_window):
+def plot_reweight():
 
-	# Information.
-	print '\nLoading MC data file ' + data_file + ', used to compute the NWs.'
-	if datatype == 0: print 'MC sample: PhSp.'
-	elif datatype == 1: print 'MC sample: VV.'
-	else: print 'MC sample: PhSp + VV.'
+   particle_dict_ETA = {'Kplus':0,'Piminus':1,'Kminus':2,'Piplus':3}
+   particle_dict_P = {'Kplus':4,'Piminus':5,'Kminus':6,'Piplus':7}
 
-	br_list = ["itype","B_s0_L0Global_TIS","B_s0_L0HadronDecision_TOS",m1_name_MC,m2_name_MC,cos1_name_MC,cos2_name_MC,phi_name_MC,t_name_MC,"B_s0_TRUEID","Kplus_TRUEID","Piminus_TRUEID","Kminus_TRUEID","Piplus_TRUEID"]
+   def hist_P_cat(particle,year,trig):
+      h_signal = ROOT.TH1F('h_signal_'+particle+'_P','h_signal_'+particle+'_P',25,0,100000)
+      h_MC_init = ROOT.TH1F('h_MC_init_'+particle+'_P','h_MC_init_'+particle+'_P',25,0,100000)
+      h_MC_rew = ROOT.TH1F('h_MC_rew_'+particle+'_P','h_MC_rew_'+particle+'_P',25,0,100000)
+      for h in [h_signal,h_MC_init,h_MC_rew]:
+         h.GetXaxis().SetTitle(particle+'_P [MeV/c]')
+         h.GetYaxis().SetTitle('Number of events')
+      h_signal.SetLineColor(kBlue)
+      h_MC_init.SetLineColor(kGreen+3)
+      h_MC_rew.SetLineColor(kRed)
+      for iev in range(len(rew_elements[0][year][trig])): h_signal.Fill(rew_elements[0][year][trig][iev][particle_dict_P[particle]],rew_elements[1][year][trig][iev])
+      for iev in range(len(rew_elements[2][year][trig])):
+         h_MC_init.Fill(rew_elements[2][year][trig][iev][particle_dict_P[particle]])
+         h_MC_rew.Fill(rew_elements[2][year][trig][iev][particle_dict_P[particle]],rew_elements[3][year][trig][iev]*rew_elements[4][year][trig][iev])
+      return h_signal, h_MC_init, h_MC_rew
 
-	opt_genmodel = ROOT.RooRealVar("opt_genmodel","opt_genmodel",0)
-	opt_genvars = ROOT.RooRealVar("opt_genvars","opt_genvars",1)
-	year_MC = ROOT.RooRealVar("year_MC","year_MC",1)
-	wide_window_MC = ROOT.RooRealVar("wide_window_MC","wide_window_MC",1)
-	wide_window_MC.setVal(wide_window)
+   def hist_ETA_cat(particle,year,trig):
+      h_signal = ROOT.TH1F('h_signal_'+particle+'_ETA','h_signal_'+particle+'_ETA',25,1.5,5)
+      h_MC_init = ROOT.TH1F('h_MC_init_'+particle+'_ETA','h_MC_init_'+particle+'_ETA',25,1.5,5)
+      h_MC_rew = ROOT.TH1F('h_MC_rew_'+particle+'_ETA','h_MC_rew_'+particle+'_ETA',25,1.5,5)
+      for h in [h_signal,h_MC_init,h_MC_rew]:
+         h.GetXaxis().SetTitle(particle+'_ETA')
+         h.GetYaxis().SetTitle('Number of events')
+      h_signal.SetLineColor(kBlue)
+      h_MC_init.SetLineColor(kGreen+3)
+      h_MC_rew.SetLineColor(kRed)
+      for iev in range(len(rew_elements[0][year][trig])): h_signal.Fill(rew_elements[0][year][trig][iev][particle_dict_ETA[particle]],rew_elements[1][year][trig][iev])
+      for iev in range(len(rew_elements[2][year][trig])):
+         h_MC_init.Fill(rew_elements[2][year][trig][iev][particle_dict_ETA[particle]])
+         h_MC_rew.Fill(rew_elements[2][year][trig][iev][particle_dict_ETA[particle]],rew_elements[3][year][trig][iev]*rew_elements[4][year][trig][iev])
+      return h_signal, h_MC_init, h_MC_rew
 
-	# Input data.
-	file_in = ROOT.TFile(NTUPLE_PATH + data_file)
-	tree_full = file_in.Get(data_tree)
-	tree_full.SetBranchStatus("*",0)
-	for br in br_list: tree_full.SetBranchStatus(br,1)
-	file_out = ROOT.TFile(NTUPLE_PATH + "trash.root","RECREATE")
+   def hist_nTracks_cat(year,trig):
+      h_signal = ROOT.TH1F('h_signal_nTracks','h_signal_nTracks',25,0,500)
+      h_MC_init = ROOT.TH1F('h_MC_init_nTracks','h_MC_init_nTracks',25,0,500)
+      h_MC_rew = ROOT.TH1F('h_MC_rew_nTracks','h_MC_rew_nTracks',25,0,500)
+      for h in [h_signal,h_MC_init,h_MC_rew]:
+         h.GetXaxis().SetTitle('nTracks')
+         h.GetYaxis().SetTitle('Number of events')
+      h_signal.SetLineColor(kBlue)
+      h_MC_init.SetLineColor(kGreen+3)
+      h_MC_rew.SetLineColor(kRed)
+      for iev in range(len(rew_elements[0][year][trig])): h_signal.Fill(rew_elements[0][year][trig][iev][8],rew_elements[1][year][trig][iev])
+      for iev in range(len(rew_elements[2][year][trig])):
+         h_MC_init.Fill(rew_elements[2][year][trig][iev][8])
+         h_MC_rew.Fill(rew_elements[2][year][trig][iev][8],rew_elements[3][year][trig][iev]*rew_elements[4][year][trig][iev])
+      return h_signal, h_MC_init, h_MC_rew
 
-	if wide_window:
-		tree_2011_L0TIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,0,datatype))
-		tree_2012_L0TIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,0,datatype))
-		tree_2011_L0noTIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,1,datatype))
-		tree_2012_L0noTIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,1,datatype))
-		invN_2011_L0TIS_wide = 1.#/tree_2011_L0TIS_wide.GetEntries()
-		invN_2012_L0TIS_wide = 1.#/tree_2012_L0TIS_wide.GetEntries()
-		invN_2011_L0noTIS_wide = 1.#/tree_2011_L0noTIS_wide.GetEntries()
-		invN_2012_L0noTIS_wide = 1.#/tree_2012_L0noTIS_wide.GetEntries()
+   def hist_BPT_cat(year,trig):
+      h_signal = ROOT.TH1F('h_signal_BPT','h_signal_BPT',25,0,25000)
+      h_MC_init = ROOT.TH1F('h_MC_init_BPT','h_MC_init_BPT',25,0,25000)
+      h_MC_rew = ROOT.TH1F('h_MC_rew_BPT','h_MC_rew_BPT',25,0,25000)
+      for h in [h_signal,h_MC_init,h_MC_rew]:
+         h.GetXaxis().SetTitle('B_s0_PT [MeV/c]')
+         h.GetYaxis().SetTitle('Number of events')
+      h_signal.SetLineColor(kBlue)
+      h_MC_init.SetLineColor(kGreen+3)
+      h_MC_rew.SetLineColor(kRed)
+      for iev in range(len(rew_elements[0][year][trig])): h_signal.Fill(rew_elements[0][year][trig][iev][9],rew_elements[1][year][trig][iev])
+      for iev in range(len(rew_elements[2][year][trig])):
+         h_MC_init.Fill(rew_elements[2][year][trig][iev][9])
+         h_MC_rew.Fill(rew_elements[2][year][trig][iev][9],rew_elements[3][year][trig][iev]*rew_elements[4][year][trig][iev])
+      return h_signal, h_MC_init, h_MC_rew
 
-	else:
-		tree_2011_L0TIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,0,datatype))
-		tree_2012_L0TIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,0,datatype))
-		tree_2011_L0noTIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,1,datatype))
-		tree_2012_L0noTIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,1,datatype))
-		invN_2011_L0TIS_narrow = 1.#/tree_2011_L0TIS_narrow.GetEntries()
-		invN_2012_L0TIS_narrow = 1.#/tree_2012_L0TIS_narrow.GetEntries()
-		invN_2011_L0noTIS_narrow = 1.#/tree_2011_L0noTIS_narrow.GetEntries()
-		invN_2012_L0noTIS_narrow = 1.#/tree_2012_L0noTIS_narrow.GetEntries()
+   def hist_P(particle):
+      h_signal = ROOT.TH1F('h_signal_'+particle+'_P','h_signal_'+particle+'_P',25,0,100000)
+      h_MC_init = ROOT.TH1F('h_MC_init_'+particle+'_P','h_MC_init_'+particle+'_P',25,0,100000)
+      h_MC_rew = ROOT.TH1F('h_MC_rew_'+particle+'_P','h_MC_rew_'+particle+'_P',25,0,100000)
+      for h in [h_signal,h_MC_init,h_MC_rew]:
+         h.GetXaxis().SetTitle(particle+'_P [MeV/c]')
+         h.GetYaxis().SetTitle('Number of events')
+      h_signal.SetLineColor(kBlue)
+      h_MC_init.SetLineColor(kGreen+3)
+      h_MC_rew.SetLineColor(kRed)
+      for year in range(2):
+         for trig in range(2):
+            for iev in range(len(rew_elements[0][year][trig])): h_signal.Fill(rew_elements[0][year][trig][iev][particle_dict_P[particle]],rew_elements[1][year][trig][iev])
+            for iev in range(len(rew_elements[2][year][trig])):
+               h_MC_init.Fill(rew_elements[2][year][trig][iev][particle_dict_P[particle]])
+               h_MC_rew.Fill(rew_elements[2][year][trig][iev][particle_dict_P[particle]],rew_elements[3][year][trig][iev]*rew_elements[4][year][trig][iev])
+      return h_signal, h_MC_init, h_MC_rew
 
-	PDF_gen = ROOT.MCGenComb("PDF_gen","PDF_gen",opt_genmodel,year_MC,wide_window_MC,mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,t_MC,opt_genvars)
+   def hist_ETA(particle):
+      h_signal = ROOT.TH1F('h_signal_'+particle+'_ETA','h_signal_'+particle+'_ETA',25,1.5,5)
+      h_MC_init = ROOT.TH1F('h_MC_init_'+particle+'_ETA','h_MC_init_'+particle+'_ETA',25,1.5,5)
+      h_MC_rew = ROOT.TH1F('h_MC_rew_'+particle+'_ETA','h_MC_rew_'+particle+'_ETA',25,1.5,5)
+      for h in [h_signal,h_MC_init,h_MC_rew]:
+         h.GetXaxis().SetTitle(particle+'_ETA')
+         h.GetYaxis().SetTitle('Number of events')
+      h_signal.SetLineColor(kBlue)
+      h_MC_init.SetLineColor(kGreen+3)
+      h_MC_rew.SetLineColor(kRed)
+      for year in range(2):
+         for trig in range(2):
+            for iev in range(len(rew_elements[0][year][trig])): h_signal.Fill(rew_elements[0][year][trig][iev][particle_dict_ETA[particle]],rew_elements[1][year][trig][iev])
+            for iev in range(len(rew_elements[2][year][trig])):
+               h_MC_init.Fill(rew_elements[2][year][trig][iev][particle_dict_ETA[particle]])
+               h_MC_rew.Fill(rew_elements[2][year][trig][iev][particle_dict_ETA[particle]],rew_elements[3][year][trig][iev]*rew_elements[4][year][trig][iev])
+      return h_signal, h_MC_init, h_MC_rew
 
-	def setvarvals(entry):
-		mKp1_MC.setVal(eval("entry."+m1_name_MC))
-		mKp2_MC.setVal(eval("entry."+m2_name_MC))
-		cos1_MC.setVal(eval("entry."+cos1_name_MC))
-		cos2_MC.setVal(eval("entry."+cos2_name_MC))
-		phi_MC.setVal(eval("entry."+phi_name_MC))
+   def hist_nTracks():
+      h_signal = ROOT.TH1F('h_signal_nTracks','h_signal_nTracks',25,0,500)
+      h_MC_init = ROOT.TH1F('h_MC_init_nTracks','h_MC_init_nTracks',25,0,500)
+      h_MC_rew = ROOT.TH1F('h_MC_rew_nTracks','h_MC_rew_nTracks',25,0,500)
+      for h in [h_signal,h_MC_init,h_MC_rew]:
+         h.GetXaxis().SetTitle('nTracks')
+         h.GetYaxis().SetTitle('Number of events')
+      h_signal.SetLineColor(kBlue)
+      h_MC_init.SetLineColor(kGreen+3)
+      h_MC_rew.SetLineColor(kRed)
+      for year in range(2):
+         for trig in range(2):
+            for iev in range(len(rew_elements[0][year][trig])): h_signal.Fill(rew_elements[0][year][trig][iev][8],rew_elements[1][year][trig][iev])
+            for iev in range(len(rew_elements[2][year][trig])):
+               h_MC_init.Fill(rew_elements[2][year][trig][iev][8])
+               h_MC_rew.Fill(rew_elements[2][year][trig][iev][8],rew_elements[3][year][trig][iev]*rew_elements[4][year][trig][iev])
+      return h_signal, h_MC_init, h_MC_rew
 
-	opt_genmodel.setVal(datatype)
+   def hist_BPT():
+      h_signal = ROOT.TH1F('h_signal_BPT','h_signal_BPT',25,0,25000)
+      h_MC_init = ROOT.TH1F('h_MC_init_BPT','h_MC_init_BPT',25,0,25000)
+      h_MC_rew = ROOT.TH1F('h_MC_rew_BPT','h_MC_rew_BPT',25,0,25000)
+      for h in [h_signal,h_MC_init,h_MC_rew]:
+         h.GetXaxis().SetTitle('B_s0_PT [MeV/c]')
+         h.GetYaxis().SetTitle('Number of events')
+      h_signal.SetLineColor(kBlue)
+      h_MC_init.SetLineColor(kGreen+3)
+      h_MC_rew.SetLineColor(kRed)
+      for year in range(2):
+         for trig in range(2):
+            for iev in range(len(rew_elements[0][year][trig])): h_signal.Fill(rew_elements[0][year][trig][iev][9],rew_elements[1][year][trig][iev])
+            for iev in range(len(rew_elements[2][year][trig])):
+               h_MC_init.Fill(rew_elements[2][year][trig][iev][9])
+               h_MC_rew.Fill(rew_elements[2][year][trig][iev][9],rew_elements[3][year][trig][iev]*rew_elements[4][year][trig][iev])
+      return h_signal, h_MC_init, h_MC_rew
 
-	if wide_window:
-		year_MC.setVal(0)
-		for i in tree_2011_L0TIS_wide:
-			if MCtruth(i):
-				setvarvals(i)
-				MCweight0.setVal(invN_2011_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
-				MCdata_2011_L0TIS_wide.add(ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
-		year_MC.setVal(1)
-		for i in tree_2012_L0TIS_wide:
-			if MCtruth(i):
-				setvarvals(i)
-				MCweight0.setVal(invN_2012_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
-				MCdata_2012_L0TIS_wide.add(ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
-		year_MC.setVal(0)
-		for i in tree_2011_L0noTIS_wide:
-			if MCtruth(i):
-				setvarvals(i)
-				MCweight0.setVal(invN_2011_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
-				MCdata_2011_L0noTIS_wide.add(ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
-		year_MC.setVal(1)
-		for i in tree_2012_L0noTIS_wide:
-			if MCtruth(i):
-				setvarvals(i)
-				MCweight0.setVal(invN_2012_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
-				MCdata_2012_L0noTIS_wide.add(ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+   for part in ['Kplus','Kminus','Piplus','Piminus']: h_plot_reweight_list.append(hist_P(part))
+   for part in ['Kplus','Kminus','Piplus','Piminus']: h_plot_reweight_list.append(hist_ETA(part))
+   h_plot_reweight_list.append(hist_nTracks())
+   h_plot_reweight_list.append(hist_BPT())
 
-	else:
-		year_MC.setVal(0)
-		for i in tree_2011_L0TIS_narrow:
-			if MCtruth(i):
-				mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
-				mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
-				setvarvals(i)
-				MCweight0.setVal(invN_2011_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
-				MCdata_2011_L0TIS_narrow.add(ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
-		year_MC.setVal(1)
-		for i in tree_2012_L0TIS_narrow:
-			if MCtruth(i):
-				mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
-				mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
-				setvarvals(i)
-				MCweight0.setVal(invN_2012_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
-				MCdata_2012_L0TIS_narrow.add(ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
-		year_MC.setVal(0)
-		for i in tree_2011_L0noTIS_narrow:
-			if MCtruth(i):
-				mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
-				mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
-				setvarvals(i)
-				MCweight0.setVal(invN_2011_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
-				MCdata_2011_L0noTIS_narrow.add(ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
-		year_MC.setVal(1)
-		for i in tree_2012_L0noTIS_narrow:
-			if MCtruth(i):
-				mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
-				mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
-				setvarvals(i)
-				MCweight0.setVal(invN_2012_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
-				MCdata_2012_L0noTIS_narrow.add(ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+   def draw_plots(h_list):
+      for h in h_list:
+         h.Sumw2()
+         h.Scale(1./h.Integral())
+         h.SetMarkerSize(0)
+      h_list[0].Draw('e1')
+      h_list[1].Draw('e1same')
+      h_list[2].Draw('e1same')
 
-	print 'Data loaded.'
-	file_out.Close()
+   c = ROOT.TCanvas('c','c',800,1800)
+   c.Divide(2,5)
+   for i in range(10):
+      c.cd(i+1)
+      draw_plots(h_plot_reweight_list[i])
+   c.Print('PlotMCReweight.root')
+   c.Print('PlotMCReweight.pdf')
+
 
 def createPDF(Blinding, NOCP, NODIRCP, SAMECP, acc_type, inf_t_res, wide_window, data_file,\
 fix_re_amps = 0, fix_dirCP_asyms = 0, fix_im_amps = 0, fix_weak_phases = 0, fix_mixing_params = 0, fix_calib_params = 0,\
@@ -3321,7 +3563,132 @@ dict_nw_find_value = [1, 0, 2, 3, 4, 0, 5, 6, 7, 8, 9, 10, 11, 12, 13, 0, 14, 15
 
 dict_nw_find_example = [0, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 29, 30, 31, 32, 33, 34, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 48, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 67, 69, 70, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 116, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 138, 139, 141, 143, 144, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 194, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 210, 211, 212, 213, 214, 216, 217, 219, 221, 222, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 270, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 284, 285, 286, 287, 288, 290, 291, 292, 293, 294, 295, 296, 298, 299, 301, 303, 304, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 336, 339, 340, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 371, 373, 374, 377, 378]
 
-def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_name_,randomize_c_mass_,randomize_nw_,repeat_fit_for_nw_syst_,nw_syst_N_iterations_):
+massang_reso_mean_vector = [0.1583809994604209, 0.1473718004095508, 9.864723271358185e-05, 0.00011661529380049167, 4.780062446007323e-05]
+massang_reso_cov_list = [[9.060416526598136, 0.5383777549609944, 0.000861553402644569, 0.00020634405964781435, 0.00019158982449001124], [0.5383777549609944, 9.073160647673891, 0.0001728261139829807, 0.0009622887981352382, -1.2850244254051667e-05], [0.000861553402644569, 0.0001728261139829807, 1.2278860847909478e-05, 2.0977589878838506e-07, -6.45124311998607e-08], [0.00020634405964781435, 0.0009622887981352382, 2.0977589878838506e-07, 1.251298035270826e-05, -1.597986891432909e-07], [0.00019158982449001124, -1.2850244254051667e-05, -6.45124311998607e-08, -1.597986891432909e-07, 8.859475807054461e-05]]
+
+spl_11L0TIS_centers = np.array([-0.2886978336931787, 1.3204329260677394, 1.1464521047197573, 1.3959087924128006, 1.7132136223516263, 0.7889159176528626]).astype(np.float64)
+spl_11L0noTIS_centers = np.array([-0.9826875421641477, 5.169480573591622, 4.345189674666879, 5.730713405695031, 2.5669582193198295, 9.999994211811188]).astype(np.float64)
+spl_12L0TIS_centers = np.array([-0.31251754206973015, 1.6289499404518821, 1.4301485601024262, 1.7038418985030834, 1.6869830718978829, 1.6548705755552873]).astype(np.float64)
+spl_12L0noTIS_centers = np.array([-0.8776389186055598, 4.222451550313187, 3.119376977079469, 4.075957832584004, 2.47655444126237, 4.457360795010887]).astype(np.float64)
+spl_11L0TIS_centers_mod = np.ones(6).astype(np.float64)
+spl_11L0noTIS_centers_mod = np.ones(6).astype(np.float64)
+spl_12L0TIS_centers_mod = np.ones(6).astype(np.float64)
+spl_12L0noTIS_centers_mod = np.ones(6).astype(np.float64)
+spl_11L0TIS_cov = np.array([[0.0005272196127864837, -0.0006921608070249998, 0.00015902918089605566, -0.00015407933615435153, 8.86692445963645e-06, -0.0001576690472163947], [-0.0006921608070249998, 0.007833945365482521, -0.000313233112492807, 0.004095364681449508, 0.0009690508074324052, 0.004827060068169757], [0.00015902918089605566, -0.000313233112492807, 0.00783011644434279, 0.002213220381836268, 0.00326407059258665, 0.0040432017031596925], [-0.00015407933615435156, 0.004095364681449508, 0.0022132203818362676, 0.007870854619111143, -0.000220369089650804, 0.008319161310229233], [8.86692445963645e-06, 0.0009690508074324052, 0.0032640705925866503, -0.000220369089650804, 0.007705866309320663, -0.00034218504190784693], [-0.0001576690472163947, 0.004827060068169757, 0.0040432017031596925, 0.008319161310229233, -0.00034218504190784693, 0.012850590165846046]]).astype(np.float64)
+spl_11L0noTIS_cov = np.array([[0.01015506314259907, -0.011511786401792793, 0.0040857908717903575, -0.0007330681169719819, 0.0006271504896032774, 6.681141371819758e-06], [-0.011511786401792793, 0.12558104786416396, -0.04141379583551661, 0.014613224948103042, 0.016266299746298833, -0.00046970569031150127], [0.0040857908717903575, -0.04141379583551661, 0.1351722297561832, -0.01349540683221152, 0.0678915149743854, -0.0005322922373040467], [-0.0007330681169719819, 0.014613224948103043, -0.013495406832211518, 0.04533879001978951, -0.017319805461119653, -0.0007097792208476175], [0.0006271504896032774, 0.01626629974629883, 0.06789151497438542, -0.01731980546111965, 0.15691252401645517, -0.00014635009057831298], [6.681141371819758e-06, -0.00046970569031150127, -0.0005322922373040467, -0.0007097792208476175, -0.00014635009057831298, 0.12093854153756144]]).astype(np.float64)
+spl_12L0TIS_cov = np.array([[0.0008310323846907505, -0.0010481251853174966, 0.000247843717760075, -0.00020507789741178067, 3.4046294753711583e-05, -0.0002365999321796163], [-0.0010481251853174966, 0.013183472421497222, 0.0006955487722811152, 0.0074620732308546215, 0.0016135516048329658, 0.010509719516490188], [0.000247843717760075, 0.0006955487722811153, 0.012892512073049325, 0.004786122490529874, 0.005075060560976853, 0.009413185146763158], [-0.00020507789741178067, 0.007462073230854622, 0.004786122490529873, 0.013136952957335055, -0.0004007296446430109, 0.01657368774213791], [3.404629475371159e-05, 0.0016135516048329658, 0.005075060560976854, -0.00040072964464301085, 0.0114619605323481, 0.00016848113154375427], [-0.0002365999321796163, 0.010509719516490186, 0.00941318514676316, 0.01657368774213791, 0.00016848113154375424, 0.02818052549333394]]).astype(np.float64)
+spl_12L0noTIS_cov = np.array([[0.008920467614952361, -0.004251043758015294, 0.004000857412846854, 0.002760945796935084, 0.0014123897092005707, 0.004084337482961627], [-0.004251043758015294, 0.07784618848426593, 0.0437399918287817, 0.0710244586081619, 0.021261874443699185, 0.0955695636527059], [0.004000857412846854, 0.0437399918287817, 0.14576321371169237, 0.09805511882415667, 0.05405321953846886, 0.14736723125441056], [0.002760945796935084, 0.0710244586081619, 0.0980551188241567, 0.14677069465526563, 0.01958632098960364, 0.18346302869700765], [0.0014123897092005707, 0.021261874443699185, 0.05405321953846886, 0.01958632098960364, 0.07520663830038721, 0.03175500009048364], [0.004084337482961627, 0.09556956365270591, 0.14736723125441054, 0.18346302869700765, 0.03175500009048364, 0.2713109719011079]]).astype(np.float64)
+a_spl_11L0TIS_dict = np.ones((5,4)).astype(np.float64)
+a_spl_11L0noTIS_dict = np.ones((5,4)).astype(np.float64)
+a_spl_12L0TIS_dict = np.ones((5,4)).astype(np.float64)
+a_spl_12L0noTIS_dict = np.ones((5,4)).astype(np.float64)
+
+spl_11L0TIS_diag_tools = diagonalise(spl_11L0TIS_cov)
+spl_11L0noTIS_diag_tools = diagonalise(spl_11L0noTIS_cov)
+spl_12L0TIS_diag_tools = diagonalise(spl_12L0TIS_cov)
+spl_12L0noTIS_diag_tools = diagonalise(spl_12L0noTIS_cov)
+
+def spl_centers_cat(year,trig):
+
+   if year==0:
+      if trig==0: return spl_11L0TIS_centers
+      elif trig==1: return spl_11L0noTIS_centers
+   elif year==1:
+      if trig==0: return spl_12L0TIS_centers
+      elif trig==1: return spl_12L0noTIS_centers
+
+def spl_centers_mod_cat(year,trig):
+
+   if year==0:
+      if trig==0: return spl_11L0TIS_centers_mod
+      elif trig==1: return spl_11L0noTIS_centers_mod
+   elif year==1:
+      if trig==0: return spl_12L0TIS_centers_mod
+      elif trig==1: return spl_12L0noTIS_centers_mod
+
+def spl_diag_tools_cat(year,trig):
+
+   if year==0:
+      if trig==0: return spl_11L0TIS_diag_tools
+      elif trig==1: return spl_11L0noTIS_diag_tools
+   elif year==1:
+      if trig==0: return spl_12L0TIS_diag_tools
+      elif trig==1: return spl_12L0noTIS_diag_tools
+
+def a_spl_dict_cat(year,trig):
+
+   if year==0:
+      if trig==0: return a_spl_11L0TIS_dict
+      elif trig==1: return a_spl_11L0noTIS_dict
+   elif year==1:
+      if trig==0: return a_spl_12L0TIS_dict
+      elif trig==1: return a_spl_12L0noTIS_dict
+
+def spl_coef_bin_deg(ibin,deg,splinelist):
+
+   x0, x1, x2, x3, x4, x5 = [0.0,0.9,1.4,2.1,3.1,12.0]
+   c0, c7 = [0.,1.]
+   c1, c2, c3, c4, c5, c6 = splinelist
+
+   if (ibin == 0):
+
+      if (deg == 0): return -c0*pow(x1,3)/(pow(x0,3) - 3*pow(x0,2)*x1 + 3*x0*pow(x1,2) - pow(x1,3)) + c1*x0*pow(x1,2)/(pow(x0,3) - 3*pow(x0,2)*x1 + 3*x0*pow(x1,2) - pow(x1,3)) + c1*x0*x1*x2/(pow(x0,3) - 2*pow(x0,2)*x1 - pow(x0,2)*x2 + x0*pow(x1,2) + 2*x0*x1*x2 - pow(x1,2)*x2) + c1*x0*pow(x2,2)/(pow(x0,3) - pow(x0,2)*x1 - 2*pow(x0,2)*x2 + 2*x0*x1*x2 + x0*pow(x2,2) - x1*pow(x2,2)) - c2*pow(x0,2)*x1/(pow(x0,3) - 2*pow(x0,2)*x1 - pow(x0,2)*x2 + x0*pow(x1,2) + 2*x0*x1*x2 - pow(x1,2)*x2) - c2*pow(x0,2)*x2/(pow(x0,3) - pow(x0,2)*x1 - 2*pow(x0,2)*x2 + 2*x0*x1*x2 + x0*pow(x2,2) - x1*pow(x2,2)) - c2*pow(x0,2)*x3/(pow(x0,3) - pow(x0,2)*x1 - pow(x0,2)*x2 - pow(x0,2)*x3 + x0*x1*x2 + x0*x1*x3 + x0*x2*x3 - x1*x2*x3) + c3*pow(x0,3)/(pow(x0,3) - pow(x0,2)*x1 - pow(x0,2)*x2 - pow(x0,2)*x3 + x0*x1*x2 + x0*x1*x3 + x0*x2*x3 - x1*x2*x3)
+
+      elif (deg == 1): return 3*(c0*pow(x0,3)*pow(x1,2) - 2*c0*pow(x0,2)*pow(x1,2)*x2 - c0*pow(x0,2)*pow(x1,2)*x3 + c0*x0*pow(x1,2)*pow(x2,2) + 2*c0*x0*pow(x1,2)*x2*x3 - c0*pow(x1,2)*pow(x2,2)*x3 - c1*pow(x0,4)*x1 - c1*pow(x0,4)*x2 + 3*c1*pow(x0,3)*x1*x2 + c1*pow(x0,3)*x1*x3 + c1*pow(x0,3)*x2*x3 - 3*c1*pow(x0,2)*x1*x2*x3 - c1*x0*pow(x1,2)*pow(x2,2) + c1*pow(x1,2)*pow(x2,2)*x3 + c2*pow(x0,5) - c2*pow(x0,4)*x1 - c2*pow(x0,3)*x1*x2 - c2*pow(x0,3)*x1*x3 - c2*pow(x0,3)*x2*x3 + c2*pow(x0,2)*pow(x1,2)*x2 + c2*pow(x0,2)*pow(x1,2)*x3 + 3*c2*pow(x0,2)*x1*x2*x3 - 2*c2*x0*pow(x1,2)*x2*x3 - c3*pow(x0,5) + 2*c3*pow(x0,4)*x1 + c3*pow(x0,4)*x2 - c3*pow(x0,3)*pow(x1,2) - 2*c3*pow(x0,3)*x1*x2 + c3*pow(x0,2)*pow(x1,2)*x2)/(pow(x0,6) - 3*pow(x0,5)*x1 - 2*pow(x0,5)*x2 - pow(x0,5)*x3 + 3*pow(x0,4)*pow(x1,2) + 6*pow(x0,4)*x1*x2 + 3*pow(x0,4)*x1*x3 + pow(x0,4)*pow(x2,2) + 2*pow(x0,4)*x2*x3 - pow(x0,3)*pow(x1,3) - 6*pow(x0,3)*pow(x1,2)*x2 - 3*pow(x0,3)*pow(x1,2)*x3 - 3*pow(x0,3)*x1*pow(x2,2) - 6*pow(x0,3)*x1*x2*x3 - pow(x0,3)*pow(x2,2)*x3 + 2*pow(x0,2)*pow(x1,3)*x2 + pow(x0,2)*pow(x1,3)*x3 + 3*pow(x0,2)*pow(x1,2)*pow(x2,2) + 6*pow(x0,2)*pow(x1,2)*x2*x3 + 3*pow(x0,2)*x1*pow(x2,2)*x3 - x0*pow(x1,3)*pow(x2,2) - 2*x0*pow(x1,3)*x2*x3 - 3*x0*pow(x1,2)*pow(x2,2)*x3 + pow(x1,3)*pow(x2,2)*x3)
+
+      elif (deg == 2): return 3*(-c0*pow(x0,3)*x1 + 2*c0*pow(x0,2)*x1*x2 + c0*pow(x0,2)*x1*x3 - c0*x0*x1*pow(x2,2) - 2*c0*x0*x1*x2*x3 + c0*x1*pow(x2,2)*x3 + c1*pow(x0,4) - c1*pow(x0,3)*x3 - 3*c1*pow(x0,2)*x1*x2 + c1*x0*pow(x1,2)*x2 + c1*x0*x1*pow(x2,2) + 3*c1*x0*x1*x2*x3 - c1*pow(x1,2)*x2*x3 - c1*x1*pow(x2,2)*x3 - 2*c2*pow(x0,4) + 3*c2*pow(x0,3)*x1 + c2*pow(x0,3)*x2 + c2*pow(x0,3)*x3 - c2*pow(x0,2)*pow(x1,2) - c2*pow(x0,2)*x1*x2 - c2*pow(x0,2)*x1*x3 - c2*x0*x1*x2*x3 + c2*pow(x1,2)*x2*x3 + c3*pow(x0,4) - 2*c3*pow(x0,3)*x1 - c3*pow(x0,3)*x2 + c3*pow(x0,2)*pow(x1,2) + 2*c3*pow(x0,2)*x1*x2 - c3*x0*pow(x1,2)*x2)/(pow(x0,6) - 3*pow(x0,5)*x1 - 2*pow(x0,5)*x2 - pow(x0,5)*x3 + 3*pow(x0,4)*pow(x1,2) + 6*pow(x0,4)*x1*x2 + 3*pow(x0,4)*x1*x3 + pow(x0,4)*pow(x2,2) + 2*pow(x0,4)*x2*x3 - pow(x0,3)*pow(x1,3) - 6*pow(x0,3)*pow(x1,2)*x2 - 3*pow(x0,3)*pow(x1,2)*x3 - 3*pow(x0,3)*x1*pow(x2,2) - 6*pow(x0,3)*x1*x2*x3 - pow(x0,3)*pow(x2,2)*x3 + 2*pow(x0,2)*pow(x1,3)*x2 + pow(x0,2)*pow(x1,3)*x3 + 3*pow(x0,2)*pow(x1,2)*pow(x2,2) + 6*pow(x0,2)*pow(x1,2)*x2*x3 + 3*pow(x0,2)*x1*pow(x2,2)*x3 - x0*pow(x1,3)*pow(x2,2) - 2*x0*pow(x1,3)*x2*x3 - 3*x0*pow(x1,2)*pow(x2,2)*x3 + pow(x1,3)*pow(x2,2)*x3)
+
+      elif (deg == 3): return c0/(pow(x0,3) - 3*pow(x0,2)*x1 + 3*x0*pow(x1,2) - pow(x1,3)) - c1/(pow(x0,3) - pow(x0,2)*x1 - 2*pow(x0,2)*x2 + 2*x0*x1*x2 + x0*pow(x2,2) - x1*pow(x2,2)) - c1/(pow(x0,3) - 2*pow(x0,2)*x1 - pow(x0,2)*x2 + x0*pow(x1,2) + 2*x0*x1*x2 - pow(x1,2)*x2) - c1/(pow(x0,3) - 3*pow(x0,2)*x1 + 3*x0*pow(x1,2) - pow(x1,3)) + c2/(pow(x0,3) - pow(x0,2)*x1 - pow(x0,2)*x2 - pow(x0,2)*x3 + x0*x1*x2 + x0*x1*x3 + x0*x2*x3 - x1*x2*x3) + c2/(pow(x0,3) - pow(x0,2)*x1 - 2*pow(x0,2)*x2 + 2*x0*x1*x2 + x0*pow(x2,2) - x1*pow(x2,2)) + c2/(pow(x0,3) - 2*pow(x0,2)*x1 - pow(x0,2)*x2 + x0*pow(x1,2) + 2*x0*x1*x2 - pow(x1,2)*x2) - c3/(pow(x0,3) - pow(x0,2)*x1 - pow(x0,2)*x2 - pow(x0,2)*x3 + x0*x1*x2 + x0*x1*x3 + x0*x2*x3 - x1*x2*x3)
+
+   elif (ibin == 1):
+
+      if (deg == 0): return -c1*pow(x2,3)/(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3)) + c2*x0*pow(x2,2)/(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3)) + c2*x0*x2*x3/(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3) + c2*x1*pow(x3,2)/(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2)) - c3*pow(x0,2)*x2/(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3) - c3*x0*x1*x3/(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2)) - c3*pow(x1,2)*x4/(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4) + c4*pow(x1,3)/(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)
+
+      elif (deg == 1): return (x1*(c3*x1 + 2*c3*x4 - 3*c4*x1)*(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3))*(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2))*(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3) + x2*(3*c1*x2 - 2*c2*x0 - c2*x2)*(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)*(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2))*(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3) + (-c2*x0*x2 - c2*x0*x3 - c2*x2*x3 + c3*pow(x0,2) + 2*c3*x0*x2)*(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3))*(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)*(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2)) + (-2*c2*x1*x3 - c2*pow(x3,2) + c3*x0*x1 + c3*x0*x3 + c3*x1*x3)*(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3))*(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)*(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3))/((pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3))*(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)*(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2))*(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3))
+
+      elif (deg == 2): return ((-3*c1*x2 + c2*x0 + 2*c2*x2)*(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)*(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2))*(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3) + (-2*c3*x1 - c3*x4 + 3*c4*x1)*(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3))*(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2))*(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3) + (c2*x0 + c2*x2 + c2*x3 - 2*c3*x0 - c3*x2)*(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3))*(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)*(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2)) + (c2*x1 + 2*c2*x3 - c3*x0 - c3*x1 - c3*x3)*(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3))*(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)*(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3))/((pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3))*(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)*(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2))*(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3))
+
+      elif (deg == 3): return c1/(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3)) - c2/(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3) - c2/(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2)) - c2/(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3)) + c3/(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3) + c3/(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2)) + c3/(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4) - c4/(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)
+
+   elif (ibin == 2):
+
+      if (deg == 0): return -c2*pow(x3,3)/(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)) + c3*x0*pow(x3,2)/(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)) + c3*x1*x3*x4/(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4) + c3*x2*pow(x4,2)/(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2)) - c4*pow(x1,2)*x3/(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4) - c4*x1*x2*x4/(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2)) - c4*pow(x2,2)*x5/(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5) + c5*pow(x2,3)/(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)
+
+      elif (deg == 1): return (x2*(c4*x2 + 2*c4*x5 - 3*c5*x2)*(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2))*(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4)*(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)) + x3*(3*c2*x3 - 2*c3*x0 - c3*x3)*(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)*(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2))*(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4) + (-c3*x1*x3 - c3*x1*x4 - c3*x3*x4 + c4*pow(x1,2) + 2*c4*x1*x3)*(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)*(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2))*(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)) + (-2*c3*x2*x4 - c3*pow(x4,2) + c4*x1*x2 + c4*x1*x4 + c4*x2*x4)*(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)*(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4)*(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)))/((pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)*(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2))*(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4)*(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)))
+
+      elif (deg == 2): return ((-3*c2*x3 + c3*x0 + 2*c3*x3)*(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)*(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2))*(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4) + (-2*c4*x2 - c4*x5 + 3*c5*x2)*(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2))*(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4)*(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)) + (c3*x1 + c3*x3 + c3*x4 - 2*c4*x1 - c4*x3)*(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)*(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2))*(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)) + (c3*x2 + 2*c3*x4 - c4*x1 - c4*x2 - c4*x4)*(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)*(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4)*(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)))/((pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)*(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2))*(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4)*(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)))
+
+      elif (deg == 3): return c2/(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)) - c3/(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)) - c3/(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4) - c3/(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2)) + c4/(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4) + c4/(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2)) + c4/(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5) - c5/(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)
+
+   elif (ibin == 3):
+
+      if (deg == 0): return -c3*pow(x4,3)/(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)) + c4*x1*pow(x4,2)/(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)) + c4*x2*x4*x5/(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5) + c4*x3*pow(x5,2)/(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2)) - c5*pow(x2,2)*x4/(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5) - c5*x2*x3*x5/(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2)) - c5*pow(x3,2)*x5/(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2)) + c6*pow(x3,3)/(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))
+
+      elif (deg == 1): return (x3*(c5*x3 + 2*c5*x5 - 3*c6*x3)*(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5)*(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)) + x4*(3*c3*x4 - 2*c4*x1 - c4*x4)*(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5) + (-c4*x2*x4 - c4*x2*x5 - c4*x4*x5 + c5*pow(x2,2) + 2*c5*x2*x4)*(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)) + (-2*c4*x3*x5 - c4*pow(x5,2) + c5*x2*x3 + c5*x2*x5 + c5*x3*x5)*(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5)*(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)))/((pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5)*(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)))
+
+      elif (deg == 2): return ((-3*c3*x4 + c4*x1 + 2*c4*x4)*(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5) + (-2*c5*x3 - c5*x5 + 3*c6*x3)*(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5)*(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)) + (c4*x2 + c4*x4 + c4*x5 - 2*c5*x2 - c5*x4)*(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)) + (c4*x3 + 2*c4*x5 - c5*x2 - c5*x3 - c5*x5)*(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5)*(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)))/((pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5)*(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)))
+
+      elif (deg == 3): return c3/(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)) - c4/(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)) - c4/(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5) - c4/(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2)) + c5/(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5) + c5/(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2)) + c5/(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2)) - c6/(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))
+
+   elif (ibin == 4):
+
+      if (deg == 0): return -c4*pow(x5,3)/(x2*x3*x4 - x2*x3*x5 - x2*x4*x5 + x2*pow(x5,2) - x3*x4*x5 + x3*pow(x5,2) + x4*pow(x5,2) - pow(x5,3)) + c5*x2*pow(x5,2)/(x2*x3*x4 - x2*x3*x5 - x2*x4*x5 + x2*pow(x5,2) - x3*x4*x5 + x3*pow(x5,2) + x4*pow(x5,2) - pow(x5,3)) + c5*x3*pow(x5,2)/(pow(x3,2)*x4 - pow(x3,2)*x5 - 2*x3*x4*x5 + 2*x3*pow(x5,2) + x4*pow(x5,2) - pow(x5,3)) + c5*x4*pow(x5,2)/(x3*pow(x4,2) - 2*x3*x4*x5 + x3*pow(x5,2) - pow(x4,2)*x5 + 2*x4*pow(x5,2) - pow(x5,3)) - c6*pow(x3,2)*x5/(pow(x3,2)*x4 - pow(x3,2)*x5 - 2*x3*x4*x5 + 2*x3*pow(x5,2) + x4*pow(x5,2) - pow(x5,3)) - c6*x3*x4*x5/(x3*pow(x4,2) - 2*x3*x4*x5 + x3*pow(x5,2) - pow(x4,2)*x5 + 2*x4*pow(x5,2) - pow(x5,3)) - c6*pow(x4,2)*x5/(pow(x4,3) - 3*pow(x4,2)*x5 + 3*x4*pow(x5,2) - pow(x5,3)) + c7*pow(x4,3)/(pow(x4,3) - 3*pow(x4,2)*x5 + 3*x4*pow(x5,2) - pow(x5,3))
+
+      elif (deg == 1): return 3*(c4*x3*pow(x4,2)*pow(x5,2) - 2*c4*x3*x4*pow(x5,3) + c4*x3*pow(x5,4) - c4*pow(x4,2)*pow(x5,3) + 2*c4*x4*pow(x5,4) - c4*pow(x5,5) - 2*c5*x2*x3*pow(x4,2)*x5 + 3*c5*x2*x3*x4*pow(x5,2) - c5*x2*x3*pow(x5,3) + c5*x2*pow(x4,2)*pow(x5,2) - c5*x2*x4*pow(x5,3) + c5*x3*pow(x4,2)*pow(x5,2) - c5*x3*x4*pow(x5,3) - c5*x4*pow(x5,4) + c5*pow(x5,5) + c6*x2*pow(x3,2)*pow(x4,2) - 3*c6*x2*x3*x4*pow(x5,2) + c6*x2*x3*pow(x5,3) + c6*x2*x4*pow(x5,3) - c6*pow(x3,2)*pow(x4,2)*x5 + 3*c6*x3*x4*pow(x5,3) - c6*x3*pow(x5,4) - c6*x4*pow(x5,4) - c7*x2*pow(x3,2)*pow(x4,2) + 2*c7*x2*x3*pow(x4,2)*x5 - c7*x2*pow(x4,2)*pow(x5,2) + c7*pow(x3,2)*pow(x4,2)*x5 - 2*c7*x3*pow(x4,2)*pow(x5,2) + c7*pow(x4,2)*pow(x5,3))/(x2*pow(x3,2)*pow(x4,3) - 3*x2*pow(x3,2)*pow(x4,2)*x5 + 3*x2*pow(x3,2)*x4*pow(x5,2) - x2*pow(x3,2)*pow(x5,3) - 2*x2*x3*pow(x4,3)*x5 + 6*x2*x3*pow(x4,2)*pow(x5,2) - 6*x2*x3*x4*pow(x5,3) + 2*x2*x3*pow(x5,4) + x2*pow(x4,3)*pow(x5,2) - 3*x2*pow(x4,2)*pow(x5,3) + 3*x2*x4*pow(x5,4) - x2*pow(x5,5) - pow(x3,2)*pow(x4,3)*x5 + 3*pow(x3,2)*pow(x4,2)*pow(x5,2) - 3*pow(x3,2)*x4*pow(x5,3) + pow(x3,2)*pow(x5,4) + 2*x3*pow(x4,3)*pow(x5,2) - 6*x3*pow(x4,2)*pow(x5,3) + 6*x3*x4*pow(x5,4) - 2*x3*pow(x5,5) - pow(x4,3)*pow(x5,3) + 3*pow(x4,2)*pow(x5,4) - 3*x4*pow(x5,5) + pow(x5,6))
+
+      elif (deg == 2): return (-3*c4*x3*pow(x4,2)*x5 + 6*c4*x3*x4*pow(x5,2) - 3*c4*x3*pow(x5,3) + 3*c4*pow(x4,2)*pow(x5,2) - 6*c4*x4*pow(x5,3) + 3*c4*pow(x5,4) + 3*c5*x2*x3*pow(x4,2) - 3*c5*x2*x3*x4*x5 - 3*c5*x2*x4*pow(x5,2) + 3*c5*x2*pow(x5,3) - 3*c5*x3*x4*pow(x5,2) + 3*c5*x3*pow(x5,3) - 3*c5*pow(x4,2)*pow(x5,2) + 9*c5*x4*pow(x5,3) - 6*c5*pow(x5,4) - 3*c6*x2*pow(x3,2)*x4 - 3*c6*x2*x3*pow(x4,2) + 9*c6*x2*x3*x4*x5 - 3*c6*x2*pow(x5,3) + 3*c6*pow(x3,2)*x4*x5 + 3*c6*x3*pow(x4,2)*x5 - 9*c6*x3*x4*pow(x5,2) + 3*c6*pow(x5,4) + 3*c7*x2*pow(x3,2)*x4 - 6*c7*x2*x3*x4*x5 + 3*c7*x2*x4*pow(x5,2) - 3*c7*pow(x3,2)*x4*x5 + 6*c7*x3*x4*pow(x5,2) - 3*c7*x4*pow(x5,3))/(x2*pow(x3,2)*pow(x4,3) - 3*x2*pow(x3,2)*pow(x4,2)*x5 + 3*x2*pow(x3,2)*x4*pow(x5,2) - x2*pow(x3,2)*pow(x5,3) - 2*x2*x3*pow(x4,3)*x5 + 6*x2*x3*pow(x4,2)*pow(x5,2) - 6*x2*x3*x4*pow(x5,3) + 2*x2*x3*pow(x5,4) + x2*pow(x4,3)*pow(x5,2) - 3*x2*pow(x4,2)*pow(x5,3) + 3*x2*x4*pow(x5,4) - x2*pow(x5,5) - pow(x3,2)*pow(x4,3)*x5 + 3*pow(x3,2)*pow(x4,2)*pow(x5,2) - 3*pow(x3,2)*x4*pow(x5,3) + pow(x3,2)*pow(x5,4) + 2*x3*pow(x4,3)*pow(x5,2) - 6*x3*pow(x4,2)*pow(x5,3) + 6*x3*x4*pow(x5,4) - 2*x3*pow(x5,5) - pow(x4,3)*pow(x5,3) + 3*pow(x4,2)*pow(x5,4) - 3*x4*pow(x5,5) + pow(x5,6))
+
+      elif (deg == 3): return c4/(x2*x3*x4 - x2*x3*x5 - x2*x4*x5 + x2*pow(x5,2) - x3*x4*x5 + x3*pow(x5,2) + x4*pow(x5,2) - pow(x5,3)) - c5/(x2*x3*x4 - x2*x3*x5 - x2*x4*x5 + x2*pow(x5,2) - x3*x4*x5 + x3*pow(x5,2) + x4*pow(x5,2) - pow(x5,3)) - c5/(pow(x3,2)*x4 - pow(x3,2)*x5 - 2*x3*x4*x5 + 2*x3*pow(x5,2) + x4*pow(x5,2) - pow(x5,3)) - c5/(x3*pow(x4,2) - 2*x3*x4*x5 + x3*pow(x5,2) - pow(x4,2)*x5 + 2*x4*pow(x5,2) - pow(x5,3)) + c6/(pow(x3,2)*x4 - pow(x3,2)*x5 - 2*x3*x4*x5 + 2*x3*pow(x5,2) + x4*pow(x5,2) - pow(x5,3)) + c6/(x3*pow(x4,2) - 2*x3*x4*x5 + x3*pow(x5,2) - pow(x4,2)*x5 + 2*x4*pow(x5,2) - pow(x5,3)) + c6/(pow(x4,3) - 3*pow(x4,2)*x5 + 3*x4*pow(x5,2) - pow(x5,3)) - c7/(pow(x4,3) - 3*pow(x4,2)*x5 + 3*x4*pow(x5,2) - pow(x5,3))
+
+def randomise_splines():
+
+   for year in range(2):
+      for trig in range(2):
+         randomvary(spl_centers_cat(year,trig),spl_centers_mod_cat(year,trig),spl_diag_tools_cat(year,trig))
+         for ibin in range(5):
+            for deg in range(4): a_spl_dict_cat(year,trig)[ibin][deg] = spl_coef_bin_deg(ibin,deg,spl_centers_mod_cat(year,trig))
+
+def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_name_,randomize_c_mass_,randomize_nw_,repeat_fit_for_nw_syst_,nw_syst_N_iterations_,repeat_fit_for_spline_syst_,spline_syst_N_iterations_,apply_dataMC_corr_):
 
    print "\n#####################################################################"
    print " P R E P A R I N G   C U D A   F R A M E W O R K"
@@ -3351,6 +3718,7 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_na
    block_size_mint = 510
    block_size_nw = 6*85
    block_size_nwcov = 500
+   block_size_physweights = 6*40
    block_size_fit = 12*21
    THR = 1e06
 
@@ -3377,6 +3745,12 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_na
 
    def getGrid_nwcov():
       Nbunch = nindnws2 * 1. / block_size_nwcov
+      if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
+      else : Nbunch = int(Nbunch)
+      return  (Nbunch,1,1)
+
+   def getGrid_physweights(thiscat):
+      Nbunch = thiscat.NMCevts *1. / block_size_physweights
       if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
       else : Nbunch = int(Nbunch)
       return  (Nbunch,1,1)
@@ -3416,7 +3790,9 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_na
    CUDA_set_mass_integrals = mod.get_function("set_mass_integrals")
    CUDA_compute_nw = mod.get_function("compute_nw")
    CUDA_set_nw_val = mod.get_function("set_nw_val")
+   CUDA_set_spline_coefs = mod.get_function("set_spline_coefs")
    CUDA_compute_nwcov = mod.get_function("compute_nwcov")
+   CUDA_compute_phys_weight = mod.get_function("compute_phys_weight")
 
    print '\nConverting datasets ...'
    data_arraylist = create_data_arrays(data_)
@@ -3439,6 +3815,7 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_na
       thiscat.trig = cat_opt_list[i][1]
       thiscat.model_options = gpuarray.to_gpu(options_arraylist[i])
       thiscat.MCdata = MCdata_arraylist[i]
+      thiscat.corrMCdata = (thiscat.MCdata).copy()
       thiscat.NMCevts = int(thiscat.MCdata.size/6.)
       thiscat.nwevout = np.ones(thiscat.NMCevts).astype(np.float64)
       thiscat.nwset = np.ones(380).astype(np.float64)
@@ -3446,8 +3823,11 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_na
       thiscat.nwcov = np.ones([nindnws,nindnws]).astype(np.float64)
       thiscat.nwsetmodred = np.ones(nindnws).astype(np.float64)
       thiscat.nwsetmod = np.ones(380).astype(np.float64)
+      thiscat.MCphysweights = np.ones(thiscat.NMCevts).astype(np.float64)
       thiscat.block_nw = (block_size_nw,1,1)
       thiscat.grid_nw = getGrid_nw(thiscat)
+      thiscat.block_physweights = (block_size_physweights,1,1)
+      thiscat.grid_physweights = getGrid_physweights(thiscat)
       thiscat.block_fit = (block_size_fit,1,1)
       thiscat.grid_fit = getGrid_fit(thiscat)
       cats.append(thiscat)
@@ -3464,6 +3844,18 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_na
       return -1./(2.*(1-rho*rho))*((x_a-mu_a)*(x_a-mu_a)/sigma_a/sigma_a-2.*rho*(x_a-mu_a)*(x_b-mu_b)/sigma_a/sigma_b+(x_b-mu_b)*(x_b-mu_b)/sigma_b/sigma_b)
 
    check = np.ones(3).astype(np.float64)
+
+   def print_llprof(mngr,par_name):
+      print 'Obtaining likelihood profile for parameter '+par_name+' ...'
+      num_bins = 30
+      xaxis, yaxis, migrstat = mngr.fit.draw_mnprofile(par_name+'_cu',subtract_min=True,bins=num_bins)
+      gr = ROOT.TGraph(num_bins,xaxis,yaxis)
+      gr.SetLineColor(kRed)
+      gr.GetXaxis().SetTitle(par_name_dict[par_name])
+      gr.GetYaxis().SetTitle('-2 #Delta lnL')
+      c = ROOT.TCanvas('c','c')
+      gr.Draw('ac')
+      c.Print('profile_'+par_name+'.root')
 
    class CUDAModel(ParamBox):
 
@@ -3486,7 +3878,9 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_na
          self.compute_mint_array = CUDA_compute_mint_array
          self.compute_nw = CUDA_compute_nw
          self.compute_nwcov = CUDA_compute_nwcov
+         self.compute_phys_weight = CUDA_compute_phys_weight
          self.set_nw_val = CUDA_set_nw_val
+         self.set_spline_coefs = CUDA_set_spline_coefs
          self.re_amps_list_cu = create_param_list("re_amps_list")
          self.dirCP_asyms_list_cu = create_param_list("dirCP_asyms_list")
          self.im_amps_list_cu = create_param_list("im_amps_list")
@@ -3495,6 +3889,7 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_na
          self.calib_params_list_cu = create_param_list("calib_params_list")
          self.mass_integrals_list_cu = create_param_list('mass_integrals_11L0TIS_list',numparams = 9)
          CUDA_pdf_initializer(block = (1,1,1))
+         if apply_dataMC_corr_: self.step_counter = 0
 
       def createFit(self):
          config = {}
@@ -3502,6 +3897,10 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_na
          self.fit = Minuit(self, errordef=1, **config)
 
       def __call__(self,*args):
+
+         if apply_dataMC_corr_:
+            self.step_counter += 1
+            print 'Minimisation iteration #'+str(self.step_counter)
 
          chi2 = np.float64(0.)
          N = self.dc
@@ -3530,11 +3929,24 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_na
                self.mass_integrals_list_cu[mpdfid] = sum(mintarray)
             self.set_mass_integrals(gpuarray.to_gpu(self.mass_integrals_list_cu),block = (1,1,1))
 
+            # Perform data/MC reweighting to compute the normalisation weights (if needed).
+            if apply_dataMC_corr_:
+               for cat in self.cats:
+                  self.compute_phys_weight(gpuarray.to_gpu(cat.MCdata),cudriver.Out(cat.MCphysweights),gpuarray.to_gpu(self.re_amps_list_cu),gpuarray.to_gpu(self.dirCP_asyms_list_cu),gpuarray.to_gpu(self.im_amps_list_cu),gpuarray.to_gpu(self.weak_phases_list_cu),gpuarray.to_gpu(self.mixing_params_list_cu),gpuarray.to_gpu(self.calib_params_list_cu),gpuarray.to_gpu(self.mass_integrals_list_cu),np.int32(cat.NMCevts),block = cat.block_physweights,grid = cat.grid_physweights)
+                  for iev in range(cat.NMCevts): rew_MC_wi_list[cat.year][cat.trig][iev] = cat.MCphysweights[iev]
+               reweight_MC_samples()
+               for cat in self.cats:
+                  weights_ = rew_elements[4][cat.year][cat.trig]
+                  norm_ = float(cat.NMCevts)/sum(weights_)
+                  for iev in range(cat.NMCevts): cat.corrMCdata[iev*6+5] = cat.MCdata[iev*6+5]*norm_*weights_[iev]
+
             # Compute normalisation weights.
             for cat in self.cats:
                for inw in range(380):
                   j1_aux,j2_aux,h_aux,j1p_aux,j2p_aux,hp_aux,part_aux = extindex(inw)
-                  self.compute_nw(gpuarray.to_gpu(cat.MCdata),np.int32(j1_aux),np.int32(j2_aux),np.int32(h_aux),np.int32(j1p_aux),np.int32(j2p_aux),np.int32(hp_aux),np.int32(part_aux),np.int32(cat.NMCevts),cudriver.Out(cat.nwevout),block = cat.block_nw,grid = cat.grid_nw)
+                  if (not apply_dataMC_corr_): MCdata_ = gpuarray.to_gpu(cat.MCdata)
+                  else: MCdata_ = gpuarray.to_gpu(cat.corrMCdata)
+                  self.compute_nw(MCdata_,np.int32(j1_aux),np.int32(j2_aux),np.int32(h_aux),np.int32(j1p_aux),np.int32(j2p_aux),np.int32(hp_aux),np.int32(part_aux),np.int32(cat.NMCevts),cudriver.Out(cat.nwevout),block = cat.block_nw,grid = cat.grid_nw)
                   cat.nwset[inw] = sum(cat.nwevout)
                   self.set_nw_val(np.float64(cat.nwset[inw]),np.int32(cat.year),np.int32(cat.trig),np.int32(inw),block = (1,1,1))
 
@@ -3572,6 +3984,8 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_na
          if wide_window_:
             LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2011_cu"]]),np.float64(args[N["tres_p1_2011_cu"]]),0.0347684584237,1.15385576866,0.000243952773379,0.0495706722963,0.37497)
             LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2012_cu"]]),np.float64(args[N["tres_p1_2012_cu"]]),0.0365026605725,1.26918356746,0.000250855432766,0.0528387031703,0.38357)
+            #LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2011_cu"]]),np.float64(args[N["tres_p1_2011_cu"]]),1.23684922984,-3.38991636679,0.00887561899844,1.85675974262,0.0075169)
+            #LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2012_cu"]]),np.float64(args[N["tres_p1_2012_cu"]]),1.29571069485,-0.532072189129,0.00958670172751,2.05293164567,0.074048)
          else:
             LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2011_cu"]]),np.float64(args[N["tres_p1_2011_cu"]]),0.0352455552308,1.19983857817,0.000337800233389,0.0618110188611,0.39061)
             LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2012_cu"]]),np.float64(args[N["tres_p1_2012_cu"]]),0.0366294040913,1.22214099483,0.000296200532078,0.059802993325,0.39251)
@@ -3591,7 +4005,7 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_na
 
       for iexp in range(nw_syst_N_iterations_):
 
-         print 'Experiment #' + str(iexp)
+         print 'Experiment #' + str(iexp+1)
 
          manager.createFit()
          manager.nw_computed = 0
@@ -3627,6 +4041,53 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_na
          fnwsyst = open('cmasssystfits.dat','a')
          fnwsyst.write(output_string)
          fnwsyst.close()
+
+      print '\nINFO:',int((timer() - start)/60),'min needed to do the study.'
+
+   elif repeat_fit_for_spline_syst_:
+
+      fsplinesyst = open('splinesystfits.dat','w')
+      fsplinesyst.close()
+
+      for iexp in range(spline_syst_N_iterations_):
+
+         print 'Experiment #' + str(iexp+1)
+
+         randomise_splines()
+         manager.set_spline_coefs(gpuarray.to_gpu(a_spl_11L0TIS_dict),gpuarray.to_gpu(a_spl_11L0noTIS_dict),gpuarray.to_gpu(a_spl_12L0TIS_dict),gpuarray.to_gpu(a_spl_12L0noTIS_dict),block = (1,1,1))
+         manager.createFit()
+         manager.nw_computed = 0
+         manager.fit.print_level = 0
+         manager.fit.migrad()
+         manager.fit.hesse()
+      
+         num_params = len(paramnames)
+         cov_matrix = np.ones((num_params,num_params))
+         central_vals = []
+         for i in range(num_params):
+            central_vals.append(manager.fit.values[paramnames[i]+'_cu'])
+            for j in range(num_params): cov_matrix[i][j] = manager.fit.covariance[(paramnames[i]+'_cu',paramnames[j]+'_cu')]
+         par_tuple = uncertainties.correlated_values(central_vals,cov_matrix)
+         upar = {}
+         for i in range(num_params): upar[paramnames[i]] = par_tuple[i]
+         upar['reA110'] = 1.
+         upar['imA110'] = 0.
+         for par in max_strong_params:
+            if par not in paramnames: upar[par] = 0.
+         polarparamnames = []
+         for par in polar_namepairs_dict.keys():
+            if polar_namepairs_dict[par] in paramnames:
+               par_temp = eval(polar_params_dict[par])
+               if par_temp.std_dev > 1e-10:
+                  polarparamnames.append(par)
+                  upar[par] = par_temp
+
+         output_string = ''
+         for par in paramnames+polarparamnames: output_string += str(upar[par].nominal_value-par_result_varnw_dict[par][0]) + ' '
+         output_string += '\n'
+         fsplinesyst = open('splinesystfits.dat','a')
+         fsplinesyst.write(output_string)
+         fsplinesyst.close()
 
       print '\nINFO:',int((timer() - start)/60),'min needed to do the study.'
 
@@ -3689,6 +4150,18 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_na
          print 'Fit results saved in _'+output_file_name_+'.py'
    
       print '\nINFO:',int((timer() - start)/60),'min needed to do the fit.'
+
+      #for par in ['phis','DCP','delta_m_Bs','reA11par','reA11perp','imA11par','imA11perp']: print_llprof(manager,par)
+
+      """extravector_pars = ['c5_mass_swave','c6_mass_swave','c7_mass_swave','c8_mass_swave']
+      extravector_centers = np.ones(4).astype(np.float64)
+      for i in range(4): extravector_centers[i] = manager.fit.values[extravector_pars[i]+'_cu']
+      print extravector_centers
+      extravector_cov = []
+      for ipar in range(4):
+         extravector_cov.append([])
+         for jpar in range(4): extravector_cov[ipar].append(manager.fit.covariance[(extravector_pars[ipar]+'_cu',extravector_pars[jpar]+'_cu')])
+      print extravector_cov"""
    
       """c_mass_pars = ['c1_mass_swave','c2_mass_swave','c3_mass_swave','c4_mass_swave']
       c_mass_centers = np.ones(4).astype(np.float64)
@@ -3717,7 +4190,7 @@ def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_na
       c_dCPV.Print("dCPV.pdf")"""
 
 
-def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_):
+def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_,change_dataset_,massang_reso_smear_,mod_and_refit_,add_extra_vector_):
 
    print "\n#####################################################################"
    print " P R E P A R I N G   C U D A   F R A M E W O R K"
@@ -3746,7 +4219,7 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_)
       if "DCP" in par.GetName(): par.setVal(0.)
       elif "phi" in par.GetName(): par.setVal(0.)
 
-   block_size_mint = 510
+   block_size_mint = 300
    block_size_fit = 12*21
    THR = 1e06
 
@@ -3773,6 +4246,11 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_)
    c_mass_cov_array = np.array([[0.0003947516243460034, -7.661577933574582e-05, 0.00011979980192447234, -5.0500702593427645e-05], [-7.661577933574582e-05, 0.0003759673751610742, -7.33894853808996e-05, 0.00016748362866758049], [0.00011979980192447234, -7.33894853808996e-05, 0.00023399128961875884, -4.587884618593318e-05], [-5.0500702593427645e-05, 0.00016748362866758049, -4.587884618593318e-05, 0.000264629682495723]])
    c_mass_diag_tools = diagonalise(c_mass_cov_array)
    c_mass_centers_mod = np.ones(4).astype(np.float64)
+   if add_extra_vector_:
+      extravector_centers = np.array([-0.00201371,0.02165349,-0.05314262,0.00353231]).astype(np.float64)
+      extravector_cov_array = np.array([[4.3073642712275855e-05, 1.1547950491856877e-06, -1.4484977706626897e-05, -4.664961072975667e-05], [1.1547950491856877e-06, 4.641643659496365e-05, 3.1235334609607785e-05, -1.901960812982249e-05], [-1.4484977706626897e-05, 3.1235334609607785e-05, 5.970416321133994e-05, 1.861935511446271e-05], [-4.664961072975667e-05, -1.901960812982249e-05, 1.861935511446271e-05, 0.0001257364192569655]])
+      extravector_diag_tools = diagonalise(extravector_cov_array)
+      extravector_centers_mod = np.ones(4).astype(np.float64)
 
    cats = []
    gen_data = np.ones((N_events,12)).astype(np.float64)
@@ -3780,6 +4258,34 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_)
    thiscat.block = (block_size_fit,1,1)
    thiscat.grid = getGrid_fit(thiscat)
    cats.append(thiscat)
+
+   def smeardata(dataset):
+
+      def close_in_range(x,ivar):
+         if ivar in [0,1]:
+            if x<750.: return 750.
+            elif x>minthlimit: return minthlimit
+         elif ivar in [2,3]:
+            if x<-1.: return -1.
+            elif x>1.: return 1.
+         elif ivar==4:
+            if x<0.: return 0.
+            elif x>2.*pi: return 2.*pi
+         return x
+
+      massang_reso_cov_array = np.array(massang_reso_cov_list)
+      matrix_IU_array, diag_cov_array = diagonalise(massang_reso_cov_array)
+      gen_data_mod = np.ones((N_events,12)).astype(np.float64)
+      for ev in range(N_events):
+         for i in [0,1,2,3,9,10,11]: gen_data_mod[ev][i] = eval(str(dataset[ev][i]))
+         sigmadelta_list = []
+         for sigma2 in list(diag_cov_array.real): sigmadelta_list.append(np.random.normal()*sqrt(max(sigma2,0.)))
+         for i in range(5):
+            delta = massang_reso_mean_vector[i]
+            for j in range(5): delta += matrix_IU_array[i][j].real*sigmadelta_list[j]
+            gen_data_mod[ev][4+i] = close_in_range(eval(str(dataset[ev][4+i]))+delta,i)
+
+      return gpuarray.to_gpu(gen_data_mod)
 
    print '\nTranslating parameters ...'
    Params = []
@@ -3865,6 +4371,8 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_)
          self.max_cond_pdf = 0
          self.pdf_cond = CUDA_evaluate_cond
 
+         self.first_fit = 1
+
          self.set_mass_params = CUDA_set_mass_params
          self.compute_mint_array = CUDA_compute_mint_array
          self.compute_acc_mint_array = CUDA_compute_acc_mint_array
@@ -3919,6 +4427,14 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_)
             self.calib_params_list_cu[23] = c_mass_centers[1]
             self.calib_params_list_cu[24] = c_mass_centers[2]
             self.calib_params_list_cu[25] = c_mass_centers[3]
+            self.calib_params_list_cu_gen[26] = 0.
+            self.calib_params_list_cu_gen[27] = 0.
+            self.calib_params_list_cu_gen[28] = 0.
+            self.calib_params_list_cu_gen[29] = 0.
+            self.calib_params_list_cu[26] = 0.
+            self.calib_params_list_cu[27] = 0.
+            self.calib_params_list_cu[28] = 0.
+            self.calib_params_list_cu[29] = 0.
             self.set_mass_params(gpuarray.to_gpu(self.calib_params_list_cu_gen),block = (1,1,1))
 
             for imint in range(9):
@@ -3988,7 +4504,7 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_)
             self.lock_to_init(["tres_p0_2011_cu","tres_p1_2011_cu"])
 
             if randomize_c_mass_ == 1:
-               randomvary(c_mass_centers,c_mass_centers_mod,c_mass_diag_tools)
+               if self.first_fit: randomvary(c_mass_centers,c_mass_centers_mod,c_mass_diag_tools)
                self.calib_params_list_cu[22] = c_mass_centers_mod[0]
                self.calib_params_list_cu[23] = c_mass_centers_mod[1]
                self.calib_params_list_cu[24] = c_mass_centers_mod[2]
@@ -3998,6 +4514,19 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_)
                self.calib_params_list_cu[23] = c_mass_centers[1]
                self.calib_params_list_cu[24] = c_mass_centers[2]
                self.calib_params_list_cu[25] = c_mass_centers[3]
+
+            if add_extra_vector_:
+               if self.first_fit:
+                  self.calib_params_list_cu[26] = extravector_centers_mod[0]
+                  self.calib_params_list_cu[27] = extravector_centers_mod[1]
+                  self.calib_params_list_cu[28] = extravector_centers_mod[2]
+                  self.calib_params_list_cu[29] = extravector_centers_mod[3]
+               else:
+                  self.calib_params_list_cu[26] = 0.
+                  self.calib_params_list_cu[27] = 0.
+                  self.calib_params_list_cu[28] = 0.
+                  self.calib_params_list_cu[29] = 0.
+
             self.set_mass_params(gpuarray.to_gpu(self.calib_params_list_cu),block = (1,1,1))
 
             for imint in range(9):
@@ -4011,6 +4540,39 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_)
                self.compute_acc_mint_array(np.int32(imint),np.int32(1),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
                self.mass_integrals_list_cu[9+30+imint] = sum(mintarray)
             self.set_all_mass_integrals(gpuarray.to_gpu(self.mass_integrals_list_cu),block = (1,1,1))
+
+         if self.gen_step == 4:
+
+            self.calib_params_list_cu_gen[22] = c_mass_centers[0]
+            self.calib_params_list_cu_gen[23] = c_mass_centers[1]
+            self.calib_params_list_cu_gen[24] = c_mass_centers[2]
+            self.calib_params_list_cu_gen[25] = c_mass_centers[3]
+            self.calib_params_list_cu[22] = c_mass_centers[0]
+            self.calib_params_list_cu[23] = c_mass_centers[1]
+            self.calib_params_list_cu[24] = c_mass_centers[2]
+            self.calib_params_list_cu[25] = c_mass_centers[3]
+            randomvary(extravector_centers,extravector_centers_mod,extravector_diag_tools)
+            self.calib_params_list_cu_gen[26] = extravector_centers_mod[0]
+            self.calib_params_list_cu_gen[27] = extravector_centers_mod[1]
+            self.calib_params_list_cu_gen[28] = extravector_centers_mod[2]
+            self.calib_params_list_cu_gen[29] = extravector_centers_mod[3]
+            self.calib_params_list_cu[26] = extravector_centers_mod[0]
+            self.calib_params_list_cu[27] = extravector_centers_mod[1]
+            self.calib_params_list_cu[28] = extravector_centers_mod[2]
+            self.calib_params_list_cu[29] = extravector_centers_mod[3]
+            self.set_mass_params(gpuarray.to_gpu(self.calib_params_list_cu_gen),block = (1,1,1))
+
+            for imint in range(9):
+               self.compute_mint_array(np.int32(imint),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu_gen[imint] = sum(mintarray)
+            self.set_mass_integrals(gpuarray.to_gpu(self.mass_integrals_list_cu_gen),block = (1,1,1))
+            for imint in range(30):
+               self.compute_acc_mint_array(np.int32(imint),np.int32(0),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu_gen[9+imint] = sum(mintarray)
+            for imint in range(21):
+               self.compute_acc_mint_array(np.int32(imint),np.int32(1),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu_gen[9+30+imint] = sum(mintarray)
+            self.set_all_mass_integrals(gpuarray.to_gpu(self.mass_integrals_list_cu_gen),block = (1,1,1))
 
       def generate(self):
          cat = self.cats[0]
@@ -4077,15 +4639,21 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_)
          manager.fit.print_level = 0
          manager.fit.migrad()
          pdf_maxima.append(exp(manager.max_cond_ll[0].get()))
-   manager.max_cond_pdf = 1.2*max(pdf_maxima)
+   if add_extra_vector_: manager.max_cond_pdf = 1.4*max(pdf_maxima)
+   else: manager.max_cond_pdf = 1.2*max(pdf_maxima)
    manager.get_max_SSK_eta_distr(cudriver.Out(manager.max_eta_SSK_pdf),block = (1,1,1))
    manager.get_max_OS_eta_distr(cudriver.Out(manager.max_eta_OS_pdf),block = (1,1,1))
 
    print '\nPerforming the studies ...\n'
 
-   fpulls_dat = open('pulls_'+output_tag+'.dat','w')
-   fpulls_dat.close()
+   if not mod_and_refit_:
+      fpulls_dat = open('pulls_'+output_tag+'.dat','w')
+      fpulls_dat.close()
+   else:
+      fbias_dat = open('bias_'+output_tag+'.dat','w')
+      fbias_dat.close()
 
+   sample_generated = 0
    N_submitted = 0
    N_successful = 0
 
@@ -4095,26 +4663,35 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_)
 
       iexp = N_successful+1
 
-      print 'MCS INFO ---> Generating sample #'+str(iexp)
-      manager.set_gen_step(2)
-      manager.createFit()
-      manager.generate()
-      s = ""
-      for ev in range(N_events):
-         for v in range(12): s += str(1*manager.cats[0].data[ev][v]) + " "
-         s += "\n"
-      fdata = open('tmp.dat','w')
-      fdata.write(s)
-      fdata.close()
-      gROOT.Reset()
-      fout = ROOT.TFile("tmp.root","RECREATE")
-      tout = ROOT.TTree("DecayTree","DecayTree")
-      tout.ReadFile("tmp.dat",dec_SSK_name+":"+dec_OS_name+":"+eta_SSK_name+":"+eta_OS_name+":"+m1_name+":"+m2_name+":"+cos1_name+":"+cos2_name+":"+phi_name+":"+t_name+":"+terror_name+":sweight")
-      tout.Write()
-      fout.Close()
-      os.system("rm tmp.dat")
+      if change_dataset_ or (not sample_generated):
+
+         print 'MCS INFO ---> Generating sample #'+str(iexp)
+
+         if add_extra_vector_: manager.set_gen_step(4)
+         manager.set_gen_step(2)
+         manager.createFit()
+         manager.generate()
+
+         s = ""
+         for ev in range(N_events):
+            for v in range(12): s += str(1*manager.cats[0].data[ev][v]) + " "
+            s += "\n"
+         fdata = open('tmp.dat','w')
+         fdata.write(s)
+         fdata.close()
+         gROOT.Reset()
+         fout = ROOT.TFile("tmp.root","RECREATE")
+         tout = ROOT.TTree("DecayTree","DecayTree")
+         tout.ReadFile("tmp.dat",dec_SSK_name+":"+dec_OS_name+":"+eta_SSK_name+":"+eta_OS_name+":"+m1_name+":"+m2_name+":"+cos1_name+":"+cos2_name+":"+phi_name+":"+t_name+":"+terror_name+":sweight")
+         tout.Write()
+         fout.Close()
+         os.system("rm tmp.dat")
+
+         sample_generated = 1
 
       print 'MCS INFO ---> Fitting sample #'+str(iexp)
+
+      manager.first_fit = 1
       manager.set_gen_step(3)
       manager.createFit()
       manager.fit.print_level = 0
@@ -4150,29 +4727,89 @@ def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_)
          for par in toyparamnames: allparamnames.append(par)
          for par in polarparamnames: allparamnames.append(par)
 
-         pull_string = ''
-         for ipar in range(len(allparamnames)):
-            par_name = allparamnames[ipar]
-            x_par = upar[par_name].nominal_value
-            if par_name+'_cu' in par_ctrt_init_vals.keys(): x0_par = par_ctrt_init_vals[par_name+'_cu']
-            else: x0_par = par_phys_init_vals[par_name+'_cu']
-            sigma_par = sqrt(upar[par_name].std_dev**2+toy_sigma_varonlycmass_dict[par_name]**2)
-            pull_par = (x_par-x0_par)/sigma_par
-            pull_string += str(pull_par)+' '
-         fpulls_dat = open('pulls_'+output_tag+'.dat','a')
-         fpulls_dat.write(pull_string+'\n')
-         fpulls_dat.close()
+         if not mod_and_refit_:
+
+            pull_string = ''
+            for ipar in range(len(allparamnames)):
+               par_name = allparamnames[ipar]
+               x_par = upar[par_name].nominal_value
+               if par_name+'_cu' in par_ctrt_init_vals.keys(): x0_par = par_ctrt_init_vals[par_name+'_cu']
+               else: x0_par = par_phys_init_vals[par_name+'_cu']
+               sigma_par = sqrt(upar[par_name].std_dev**2+toy_sigma_varonlycmass_dict[par_name]**2)
+               pull_par = (x_par-x0_par)/sigma_par
+               pull_string += str(pull_par)+' '
+            fpulls_dat = open('pulls_'+output_tag+'.dat','a')
+            fpulls_dat.write(pull_string+'\n')
+            fpulls_dat.close()
+
+         else:
+
+            # Save the previous results.
+            upar_nom = upar.copy()
+
+            # Apply the modifications.
+            if massang_reso_smear_: manager.cats[0].data = smeardata(manager.cats[0].data)
+
+            # Redo the fit.
+            print '|___> Refitting with modification'
+            manager.first_fit = 0
+            manager.set_gen_step(3)
+            manager.createFit()
+            manager.fit.print_level = 0
+            manager.fit.migrad()
+            manager.fit.hesse()
+
+            # Create a new dictionary with the fit results.
+            num_params = len(toyparamnames)
+            cov_matrix = np.ones((num_params,num_params))
+            central_vals = []
+            for i in range(num_params):
+               central_vals.append(manager.fit.values[toyparamnames[i]+'_cu'])
+               for j in range(num_params): cov_matrix[i][j] = manager.fit.covariance[(toyparamnames[i]+'_cu',toyparamnames[j]+'_cu')]
+            par_tuple = uncertainties.correlated_values(central_vals,cov_matrix)
+            upar = {}
+            for i in range(num_params): upar[toyparamnames[i]] = par_tuple[i]
+            upar['reA110'] = 1.
+            upar['imA110'] = 0.
+            for par in max_strong_params:
+               if par not in toyparamnames: upar[par] = 0.
+            polarparamnames = []
+            for par in polar_namepairs_dict.keys():
+               if polar_namepairs_dict[par] in toyparamnames:
+                  par_temp = eval(polar_params_dict[par])
+                  if par_temp.std_dev > 1e-10:
+                     polarparamnames.append(par)
+                     upar[par] = par_temp
+
+            bias_string = ''
+            for ipar in range(len(allparamnames)):
+               par_name = allparamnames[ipar]
+               x_par_mod = upar[par_name].nominal_value
+               x_par_nom = upar_nom[par_name].nominal_value
+               bias = x_par_mod-x_par_nom
+               bias_string += str(bias)+' '
+            fbias_dat = open('bias_'+output_tag+'.dat','a')
+            fbias_dat.write(bias_string+'\n')
+            fbias_dat.close()
+
       else: print 'WARNING: Fit failed. Repeating the experiment.'
 
    print 'INFO:',int((timer() - start)/60),'min needed to do the experiments.'
    print 'Fraction of valid fits:',float(N_successful)/float(N_submitted)
 
    gROOT.Reset()
-   fout = ROOT.TFile("pulls_"+output_tag+".root","RECREATE")
-   tout = ROOT.TTree("Pulls","Pulls")
-   s = allparamnames[0]+'_pull'
-   for i in range(1,len(allparamnames)): s += ':'+allparamnames[i]+'_pull'
-   tout.ReadFile("pulls_"+output_tag+".dat",s)
+   if not mod_and_refit_:
+      fout = ROOT.TFile("pulls_"+output_tag+".root","RECREATE")
+      tout = ROOT.TTree("Pulls","Pulls")
+      s = allparamnames[0]+'_pull'
+      for i in range(1,len(allparamnames)): s += ':'+allparamnames[i]+'_pull'
+      tout.ReadFile("pulls_"+output_tag+".dat",s)
+   else:
+      fout = ROOT.TFile("bias_"+output_tag+".root","RECREATE")
+      tout = ROOT.TTree("Bias","Bias")
+      s = allparamnames[0]+'_bias'
+      for i in range(1,len(allparamnames)): s += ':'+allparamnames[i]+'_bias'
+      tout.ReadFile("bias_"+output_tag+".dat",s)
    tout.Write()
    fout.Close()
 
