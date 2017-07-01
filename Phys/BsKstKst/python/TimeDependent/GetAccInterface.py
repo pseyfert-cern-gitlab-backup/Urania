@@ -125,43 +125,43 @@ t4_narrow = ROOT.RooRealVar("t4_narrow","t4_narrow",0.)
 t5_narrow = ROOT.RooRealVar("t5_narrow","t5_narrow",0.)
 spl_c0_2011_L0TIS_wide = ROOT.RooRealVar("spl_c0_2011_L0TIS_wide","spl_c0_2011_L0TIS_wide",0.)
 spl_c1_2011_L0TIS_wide = ROOT.RooRealVar("spl_c1_2011_L0TIS_wide","spl_c1_2011_L0TIS_wide",-3.49380e-04,-1.,1.)
-spl_c2_2011_L0TIS_wide = ROOT.RooRealVar("spl_c2_2011_L0TIS_wide","spl_c2_2011_L0TIS_wide",6.67553e-01,0.,2.5)
-spl_c3_2011_L0TIS_wide = ROOT.RooRealVar("spl_c3_2011_L0TIS_wide","spl_c3_2011_L0TIS_wide",8.03584e-01,0.,2.5)
-spl_c4_2011_L0TIS_wide = ROOT.RooRealVar("spl_c4_2011_L0TIS_wide","spl_c4_2011_L0TIS_wide",9.21575e-01,0.,2.5)
-spl_c5_2011_L0TIS_wide = ROOT.RooRealVar("spl_c5_2011_L0TIS_wide","spl_c5_2011_L0TIS_wide",1.07080e+00,0.,2.5)
-spl_c6_2011_L0TIS_wide = ROOT.RooRealVar("spl_c6_2011_L0TIS_wide","spl_c6_2011_L0TIS_wide",1.03064e+00,0.,2.5)
+spl_c2_2011_L0TIS_wide = ROOT.RooRealVar("spl_c2_2011_L0TIS_wide","spl_c2_2011_L0TIS_wide",6.67553e-01,0.,10.)
+spl_c3_2011_L0TIS_wide = ROOT.RooRealVar("spl_c3_2011_L0TIS_wide","spl_c3_2011_L0TIS_wide",8.03584e-01,0.,10.)
+spl_c4_2011_L0TIS_wide = ROOT.RooRealVar("spl_c4_2011_L0TIS_wide","spl_c4_2011_L0TIS_wide",9.21575e-01,0.,10.)
+spl_c5_2011_L0TIS_wide = ROOT.RooRealVar("spl_c5_2011_L0TIS_wide","spl_c5_2011_L0TIS_wide",1.07080e+00,0.,10.)
+spl_c6_2011_L0TIS_wide = ROOT.RooRealVar("spl_c6_2011_L0TIS_wide","spl_c6_2011_L0TIS_wide",1.03064e+00,0.,10.)
 spl_c7_2011_L0TIS_wide = ROOT.RooRealVar("spl_c7_2011_L0TIS_wide","spl_c7_2011_L0TIS_wide",1.)
 spl_c0_2012_L0TIS_wide = ROOT.RooRealVar("spl_c0_2012_L0TIS_wide","spl_c0_2012_L0TIS_wide",0.)
 spl_c1_2012_L0TIS_wide = ROOT.RooRealVar("spl_c1_2012_L0TIS_wide","spl_c1_2012_L0TIS_wide",-3.49380e-04,-1.,1.)
-spl_c2_2012_L0TIS_wide = ROOT.RooRealVar("spl_c2_2012_L0TIS_wide","spl_c2_2012_L0TIS_wide",6.67553e-01,0.,2.5)
-spl_c3_2012_L0TIS_wide = ROOT.RooRealVar("spl_c3_2012_L0TIS_wide","spl_c3_2012_L0TIS_wide",8.03584e-01,0.,2.5)
-spl_c4_2012_L0TIS_wide = ROOT.RooRealVar("spl_c4_2012_L0TIS_wide","spl_c4_2012_L0TIS_wide",9.21575e-01,0.,2.5)
-spl_c5_2012_L0TIS_wide = ROOT.RooRealVar("spl_c5_2012_L0TIS_wide","spl_c5_2012_L0TIS_wide",1.07080e+00,0.,2.5)
-spl_c6_2012_L0TIS_wide = ROOT.RooRealVar("spl_c6_2012_L0TIS_wide","spl_c6_2012_L0TIS_wide",1.03064e+00,0.,2.5)
+spl_c2_2012_L0TIS_wide = ROOT.RooRealVar("spl_c2_2012_L0TIS_wide","spl_c2_2012_L0TIS_wide",6.67553e-01,0.,10.)
+spl_c3_2012_L0TIS_wide = ROOT.RooRealVar("spl_c3_2012_L0TIS_wide","spl_c3_2012_L0TIS_wide",8.03584e-01,0.,10.)
+spl_c4_2012_L0TIS_wide = ROOT.RooRealVar("spl_c4_2012_L0TIS_wide","spl_c4_2012_L0TIS_wide",9.21575e-01,0.,10.)
+spl_c5_2012_L0TIS_wide = ROOT.RooRealVar("spl_c5_2012_L0TIS_wide","spl_c5_2012_L0TIS_wide",1.07080e+00,0.,10.)
+spl_c6_2012_L0TIS_wide = ROOT.RooRealVar("spl_c6_2012_L0TIS_wide","spl_c6_2012_L0TIS_wide",1.03064e+00,0.,10.)
 spl_c7_2012_L0TIS_wide = ROOT.RooRealVar("spl_c7_2012_L0TIS_wide","spl_c7_2012_L0TIS_wide",1.)
 spl_c0_2011_L0noTIS_wide = ROOT.RooRealVar("spl_c0_2011_L0noTIS_wide","spl_c0_2011_L0noTIS_wide",0.)
-spl_c1_2011_L0noTIS_wide = ROOT.RooRealVar("spl_c1_2011_L0noTIS_wide","spl_c1_2011_L0noTIS_wide",-3.49380e-04,-1.,1.)
-spl_c2_2011_L0noTIS_wide = ROOT.RooRealVar("spl_c2_2011_L0noTIS_wide","spl_c2_2011_L0noTIS_wide",6.67553e-01,0.,2.5)
-spl_c3_2011_L0noTIS_wide = ROOT.RooRealVar("spl_c3_2011_L0noTIS_wide","spl_c3_2011_L0noTIS_wide",8.03584e-01,0.,2.5)
-spl_c4_2011_L0noTIS_wide = ROOT.RooRealVar("spl_c4_2011_L0noTIS_wide","spl_c4_2011_L0noTIS_wide",9.21575e-01,0.,2.5)
-spl_c5_2011_L0noTIS_wide = ROOT.RooRealVar("spl_c5_2011_L0noTIS_wide","spl_c5_2011_L0noTIS_wide",1.07080e+00,0.,2.5)
-spl_c6_2011_L0noTIS_wide = ROOT.RooRealVar("spl_c6_2011_L0noTIS_wide","spl_c6_2011_L0noTIS_wide",1.03064e+00,0.,2.5)
+spl_c1_2011_L0noTIS_wide = ROOT.RooRealVar("spl_c1_2011_L0noTIS_wide","spl_c1_2011_L0noTIS_wide",-3.49380e-04,-3.,1.)
+spl_c2_2011_L0noTIS_wide = ROOT.RooRealVar("spl_c2_2011_L0noTIS_wide","spl_c2_2011_L0noTIS_wide",6.67553e-01,0.,10.)
+spl_c3_2011_L0noTIS_wide = ROOT.RooRealVar("spl_c3_2011_L0noTIS_wide","spl_c3_2011_L0noTIS_wide",8.03584e-01,0.,10.)
+spl_c4_2011_L0noTIS_wide = ROOT.RooRealVar("spl_c4_2011_L0noTIS_wide","spl_c4_2011_L0noTIS_wide",9.21575e-01,0.,10.)
+spl_c5_2011_L0noTIS_wide = ROOT.RooRealVar("spl_c5_2011_L0noTIS_wide","spl_c5_2011_L0noTIS_wide",1.07080e+00,0.,10.)
+spl_c6_2011_L0noTIS_wide = ROOT.RooRealVar("spl_c6_2011_L0noTIS_wide","spl_c6_2011_L0noTIS_wide",1.03064e+00,0.,10.)
 spl_c7_2011_L0noTIS_wide = ROOT.RooRealVar("spl_c7_2011_L0noTIS_wide","spl_c7_2011_L0noTIS_wide",1.)
 spl_c0_2012_L0noTIS_wide = ROOT.RooRealVar("spl_c0_2012_L0noTIS_wide","spl_c0_2012_L0noTIS_wide",0.)
-spl_c1_2012_L0noTIS_wide = ROOT.RooRealVar("spl_c1_2012_L0noTIS_wide","spl_c1_2012_L0noTIS_wide",-3.49380e-04,-1.,1.)
-spl_c2_2012_L0noTIS_wide = ROOT.RooRealVar("spl_c2_2012_L0noTIS_wide","spl_c2_2012_L0noTIS_wide",6.67553e-01,0.,2.5)
-spl_c3_2012_L0noTIS_wide = ROOT.RooRealVar("spl_c3_2012_L0noTIS_wide","spl_c3_2012_L0noTIS_wide",8.03584e-01,0.,2.5)
-spl_c4_2012_L0noTIS_wide = ROOT.RooRealVar("spl_c4_2012_L0noTIS_wide","spl_c4_2012_L0noTIS_wide",9.21575e-01,0.,2.5)
-spl_c5_2012_L0noTIS_wide = ROOT.RooRealVar("spl_c5_2012_L0noTIS_wide","spl_c5_2012_L0noTIS_wide",1.07080e+00,0.,2.5)
-spl_c6_2012_L0noTIS_wide = ROOT.RooRealVar("spl_c6_2012_L0noTIS_wide","spl_c6_2012_L0noTIS_wide",1.03064e+00,0.,2.5)
+spl_c1_2012_L0noTIS_wide = ROOT.RooRealVar("spl_c1_2012_L0noTIS_wide","spl_c1_2012_L0noTIS_wide",-3.49380e-04,-3.,1.)
+spl_c2_2012_L0noTIS_wide = ROOT.RooRealVar("spl_c2_2012_L0noTIS_wide","spl_c2_2012_L0noTIS_wide",6.67553e-01,0.,10.)
+spl_c3_2012_L0noTIS_wide = ROOT.RooRealVar("spl_c3_2012_L0noTIS_wide","spl_c3_2012_L0noTIS_wide",8.03584e-01,0.,10.)
+spl_c4_2012_L0noTIS_wide = ROOT.RooRealVar("spl_c4_2012_L0noTIS_wide","spl_c4_2012_L0noTIS_wide",9.21575e-01,0.,10.)
+spl_c5_2012_L0noTIS_wide = ROOT.RooRealVar("spl_c5_2012_L0noTIS_wide","spl_c5_2012_L0noTIS_wide",1.07080e+00,0.,10.)
+spl_c6_2012_L0noTIS_wide = ROOT.RooRealVar("spl_c6_2012_L0noTIS_wide","spl_c6_2012_L0noTIS_wide",1.03064e+00,0.,10.)
 spl_c7_2012_L0noTIS_wide = ROOT.RooRealVar("spl_c7_2012_L0noTIS_wide","spl_c7_2012_L0noTIS_wide",1.)
 spl_c0_2011_L0TIS_narrow = ROOT.RooRealVar("spl_c0_2011_L0TIS_narrow","spl_c0_2011_L0TIS_narrow",0.)
 spl_c1_2011_L0TIS_narrow = ROOT.RooRealVar("spl_c1_2011_L0TIS_narrow","spl_c1_2011_L0TIS_narrow",-3.49380e-04,-1.,1.)
-spl_c2_2011_L0TIS_narrow = ROOT.RooRealVar("spl_c2_2011_L0TIS_narrow","spl_c2_2011_L0TIS_narrow",6.67553e-01,0.,2.5)
-spl_c3_2011_L0TIS_narrow = ROOT.RooRealVar("spl_c3_2011_L0TIS_narrow","spl_c3_2011_L0TIS_narrow",8.03584e-01,0.,2.5)
-spl_c4_2011_L0TIS_narrow = ROOT.RooRealVar("spl_c4_2011_L0TIS_narrow","spl_c4_2011_L0TIS_narrow",9.21575e-01,0.,2.5)
-spl_c5_2011_L0TIS_narrow = ROOT.RooRealVar("spl_c5_2011_L0TIS_narrow","spl_c5_2011_L0TIS_narrow",1.07080e+00,0.,2.5)
-spl_c6_2011_L0TIS_narrow = ROOT.RooRealVar("spl_c6_2011_L0TIS_narrow","spl_c6_2011_L0TIS_narrow",1.03064e+00,0.,2.5)
+spl_c2_2011_L0TIS_narrow = ROOT.RooRealVar("spl_c2_2011_L0TIS_narrow","spl_c2_2011_L0TIS_narrow",6.67553e-01,0.,10.)
+spl_c3_2011_L0TIS_narrow = ROOT.RooRealVar("spl_c3_2011_L0TIS_narrow","spl_c3_2011_L0TIS_narrow",8.03584e-01,0.,10.)
+spl_c4_2011_L0TIS_narrow = ROOT.RooRealVar("spl_c4_2011_L0TIS_narrow","spl_c4_2011_L0TIS_narrow",9.21575e-01,0.,10.)
+spl_c5_2011_L0TIS_narrow = ROOT.RooRealVar("spl_c5_2011_L0TIS_narrow","spl_c5_2011_L0TIS_narrow",1.07080e+00,0.,10.)
+spl_c6_2011_L0TIS_narrow = ROOT.RooRealVar("spl_c6_2011_L0TIS_narrow","spl_c6_2011_L0TIS_narrow",1.03064e+00,0.,10.)
 spl_c7_2011_L0TIS_narrow = ROOT.RooRealVar("spl_c7_2011_L0TIS_narrow","spl_c7_2011_L0TIS_narrow",1.)
 spl_c0_2012_L0TIS_narrow = ROOT.RooRealVar("spl_c0_2012_L0TIS_narrow","spl_c0_2012_L0TIS_narrow",0.)
 spl_c1_2012_L0TIS_narrow = ROOT.RooRealVar("spl_c1_2012_L0TIS_narrow","spl_c1_2012_L0TIS_narrow",-3.49380e-04,-0.03,0.)
@@ -173,68 +173,116 @@ spl_c6_2012_L0TIS_narrow = ROOT.RooRealVar("spl_c6_2012_L0TIS_narrow","spl_c6_20
 spl_c7_2012_L0TIS_narrow = ROOT.RooRealVar("spl_c7_2012_L0TIS_narrow","spl_c7_2012_L0TIS_narrow",1.)
 spl_c0_2011_L0noTIS_narrow = ROOT.RooRealVar("spl_c0_2011_L0noTIS_narrow","spl_c0_2011_L0noTIS_narrow",0.)
 spl_c1_2011_L0noTIS_narrow = ROOT.RooRealVar("spl_c1_2011_L0noTIS_narrow","spl_c1_2011_L0noTIS_narrow",-3.49380e-04,-1.,1.)
-spl_c2_2011_L0noTIS_narrow = ROOT.RooRealVar("spl_c2_2011_L0noTIS_narrow","spl_c2_2011_L0noTIS_narrow",6.67553e-01,0.,2.5)
-spl_c3_2011_L0noTIS_narrow = ROOT.RooRealVar("spl_c3_2011_L0noTIS_narrow","spl_c3_2011_L0noTIS_narrow",8.03584e-01,0.,2.5)
-spl_c4_2011_L0noTIS_narrow = ROOT.RooRealVar("spl_c4_2011_L0noTIS_narrow","spl_c4_2011_L0noTIS_narrow",9.21575e-01,0.,2.5)
-spl_c5_2011_L0noTIS_narrow = ROOT.RooRealVar("spl_c5_2011_L0noTIS_narrow","spl_c5_2011_L0noTIS_narrow",1.07080e+00,0.,2.5)
-spl_c6_2011_L0noTIS_narrow = ROOT.RooRealVar("spl_c6_2011_L0noTIS_narrow","spl_c6_2011_L0noTIS_narrow",1.03064e+00,0.,2.5)
+spl_c2_2011_L0noTIS_narrow = ROOT.RooRealVar("spl_c2_2011_L0noTIS_narrow","spl_c2_2011_L0noTIS_narrow",6.67553e-01,0.,10.)
+spl_c3_2011_L0noTIS_narrow = ROOT.RooRealVar("spl_c3_2011_L0noTIS_narrow","spl_c3_2011_L0noTIS_narrow",8.03584e-01,0.,10.)
+spl_c4_2011_L0noTIS_narrow = ROOT.RooRealVar("spl_c4_2011_L0noTIS_narrow","spl_c4_2011_L0noTIS_narrow",9.21575e-01,0.,10.)
+spl_c5_2011_L0noTIS_narrow = ROOT.RooRealVar("spl_c5_2011_L0noTIS_narrow","spl_c5_2011_L0noTIS_narrow",1.07080e+00,0.,10.)
+spl_c6_2011_L0noTIS_narrow = ROOT.RooRealVar("spl_c6_2011_L0noTIS_narrow","spl_c6_2011_L0noTIS_narrow",1.03064e+00,0.,10.)
 spl_c7_2011_L0noTIS_narrow = ROOT.RooRealVar("spl_c7_2011_L0noTIS_narrow","spl_c7_2011_L0noTIS_narrow",1.)
 spl_c0_2012_L0noTIS_narrow = ROOT.RooRealVar("spl_c0_2012_L0noTIS_narrow","spl_c0_2012_L0noTIS_narrow",0.)
 spl_c1_2012_L0noTIS_narrow = ROOT.RooRealVar("spl_c1_2012_L0noTIS_narrow","spl_c1_2012_L0noTIS_narrow",-3.49380e-04,-1.,1.)
-spl_c2_2012_L0noTIS_narrow = ROOT.RooRealVar("spl_c2_2012_L0noTIS_narrow","spl_c2_2012_L0noTIS_narrow",6.67553e-01,0.,2.5)
-spl_c3_2012_L0noTIS_narrow = ROOT.RooRealVar("spl_c3_2012_L0noTIS_narrow","spl_c3_2012_L0noTIS_narrow",8.03584e-01,0.,2.5)
-spl_c4_2012_L0noTIS_narrow = ROOT.RooRealVar("spl_c4_2012_L0noTIS_narrow","spl_c4_2012_L0noTIS_narrow",9.21575e-01,0.,2.5)
-spl_c5_2012_L0noTIS_narrow = ROOT.RooRealVar("spl_c5_2012_L0noTIS_narrow","spl_c5_2012_L0noTIS_narrow",1.07080e+00,0.,2.5)
-spl_c6_2012_L0noTIS_narrow = ROOT.RooRealVar("spl_c6_2012_L0noTIS_narrow","spl_c6_2012_L0noTIS_narrow",1.03064e+00,0.,2.5)
+spl_c2_2012_L0noTIS_narrow = ROOT.RooRealVar("spl_c2_2012_L0noTIS_narrow","spl_c2_2012_L0noTIS_narrow",6.67553e-01,0.,10.)
+spl_c3_2012_L0noTIS_narrow = ROOT.RooRealVar("spl_c3_2012_L0noTIS_narrow","spl_c3_2012_L0noTIS_narrow",8.03584e-01,0.,10.)
+spl_c4_2012_L0noTIS_narrow = ROOT.RooRealVar("spl_c4_2012_L0noTIS_narrow","spl_c4_2012_L0noTIS_narrow",9.21575e-01,0.,10.)
+spl_c5_2012_L0noTIS_narrow = ROOT.RooRealVar("spl_c5_2012_L0noTIS_narrow","spl_c5_2012_L0noTIS_narrow",1.07080e+00,0.,10.)
+spl_c6_2012_L0noTIS_narrow = ROOT.RooRealVar("spl_c6_2012_L0noTIS_narrow","spl_c6_2012_L0noTIS_narrow",1.03064e+00,0.,10.)
 spl_c7_2012_L0noTIS_narrow = ROOT.RooRealVar("spl_c7_2012_L0noTIS_narrow","spl_c7_2012_L0noTIS_narrow",1.)
-spl_c1_2011_L0TIS_wide.setVal(0.00537246298686)
-spl_c2_2011_L0TIS_wide.setVal(0.826602433021)
-spl_c3_2011_L0TIS_wide.setVal(1.26742328111)
-spl_c4_2011_L0TIS_wide.setVal(1.36654803123)
-spl_c5_2011_L0TIS_wide.setVal(1.71411704823)
-spl_c6_2011_L0TIS_wide.setVal(1.51041127428)
-spl_c1_2012_L0TIS_wide.setVal(-0.000317277386338)
-spl_c2_2012_L0TIS_wide.setVal(0.854542878396)
-spl_c3_2012_L0TIS_wide.setVal(1.01787299546)
-spl_c4_2012_L0TIS_wide.setVal(1.26683917345)
-spl_c5_2012_L0TIS_wide.setVal(1.05080033352)
-spl_c6_2012_L0TIS_wide.setVal(1.99990122709)
-spl_c1_2011_L0noTIS_wide.setVal(0.000191191628582)
-spl_c2_2011_L0noTIS_wide.setVal(0.690447672415)
-spl_c3_2011_L0noTIS_wide.setVal(0.932321522851)
-spl_c4_2011_L0noTIS_wide.setVal(0.87739205909)
-spl_c5_2011_L0noTIS_wide.setVal(1.24461747806)
-spl_c6_2011_L0noTIS_wide.setVal(1.24933200442)
-spl_c1_2012_L0noTIS_wide.setVal(-0.000615153123768)
-spl_c2_2012_L0noTIS_wide.setVal(1.36838609081)
-spl_c3_2012_L0noTIS_wide.setVal(1.51828531291)
-spl_c4_2012_L0noTIS_wide.setVal(1.71538853424)
-spl_c5_2012_L0noTIS_wide.setVal(1.71925892844)
-spl_c6_2012_L0noTIS_wide.setVal(1.99998286148)
-spl_c1_2011_L0TIS_narrow.setVal(-0.000313950770825)
-spl_c2_2011_L0TIS_narrow.setVal(0.881186486588)
-spl_c3_2011_L0TIS_narrow.setVal(1.05001023466)
-spl_c4_2011_L0TIS_narrow.setVal(1.18982677144)
-spl_c5_2011_L0TIS_narrow.setVal(1.36986242395)
-spl_c6_2011_L0TIS_narrow.setVal(1.40515763786)
-spl_c1_2012_L0TIS_narrow.setVal(-0.00653031830584)
-spl_c2_2012_L0TIS_narrow.setVal(0.793626292296)
-spl_c3_2012_L0TIS_narrow.setVal(1.15385177366)
-spl_c4_2012_L0TIS_narrow.setVal(1.16699535282)
-spl_c5_2012_L0TIS_narrow.setVal(1.48437496922)
-spl_c6_2012_L0TIS_narrow.setVal(1.32438945756)
-spl_c1_2011_L0noTIS_narrow.setVal(-0.000595087786361)
-spl_c2_2011_L0noTIS_narrow.setVal(1.43810264752)
-spl_c3_2011_L0noTIS_narrow.setVal(1.5319310339)
-spl_c4_2011_L0noTIS_narrow.setVal(1.85233496259)
-spl_c5_2011_L0noTIS_narrow.setVal(1.99999956985)
-spl_c6_2011_L0noTIS_narrow.setVal(1.99999983601)
-spl_c1_2012_L0noTIS_narrow.setVal(-0.000595087786361)
-spl_c2_2012_L0noTIS_narrow.setVal(1.43810264752)
-spl_c3_2012_L0noTIS_narrow.setVal(1.5319310339)
-spl_c4_2012_L0noTIS_narrow.setVal(1.85233496259)
-spl_c5_2012_L0noTIS_narrow.setVal(1.99999956985)
-spl_c6_2012_L0noTIS_narrow.setVal(1.99999983601)
+spl_c1_2011_L0TIS_wide.setVal(-0.312525558485)
+spl_c2_2011_L0TIS_wide.setVal(1.62894705643)
+spl_c3_2011_L0TIS_wide.setVal(1.43012463933)
+spl_c4_2011_L0TIS_wide.setVal(1.70385019809)
+spl_c5_2011_L0TIS_wide.setVal(1.68698578257)
+spl_c6_2011_L0TIS_wide.setVal(1.65487164846)
+spl_c1_2012_L0TIS_wide.setVal(-0.312525558485)
+spl_c2_2012_L0TIS_wide.setVal(1.62894705643)
+spl_c3_2012_L0TIS_wide.setVal(1.43012463933)
+spl_c4_2012_L0TIS_wide.setVal(1.70385019809)
+spl_c5_2012_L0TIS_wide.setVal(1.68698578257)
+spl_c6_2012_L0TIS_wide.setVal(1.65487164846)
+spl_c1_2011_L0noTIS_wide.setVal(-0.312525558485)
+spl_c2_2011_L0noTIS_wide.setVal(1.62894705643)
+spl_c3_2011_L0noTIS_wide.setVal(1.43012463933)
+spl_c4_2011_L0noTIS_wide.setVal(1.70385019809)
+spl_c5_2011_L0noTIS_wide.setVal(1.68698578257)
+spl_c6_2011_L0noTIS_wide.setVal(1.65487164846)
+spl_c1_2012_L0noTIS_wide.setVal(-0.312525558485)
+spl_c2_2012_L0noTIS_wide.setVal(1.62894705643)
+spl_c3_2012_L0noTIS_wide.setVal(1.43012463933)
+spl_c4_2012_L0noTIS_wide.setVal(1.70385019809)
+spl_c5_2012_L0noTIS_wide.setVal(1.68698578257)
+spl_c6_2012_L0noTIS_wide.setVal(1.65487164846)
+spl_c1_2011_L0TIS_narrow.setVal(-0.305352950983)
+spl_c2_2011_L0TIS_narrow.setVal(1.33962725902)
+spl_c3_2011_L0TIS_narrow.setVal(0.94787257792)
+spl_c4_2011_L0TIS_narrow.setVal(1.31562828714)
+spl_c5_2011_L0TIS_narrow.setVal(1.22460829672)
+spl_c6_2011_L0TIS_narrow.setVal(0.826901862629)
+spl_c1_2012_L0TIS_narrow.setVal(-0.0299999997224)
+spl_c2_2012_L0TIS_narrow.setVal(0.999999993682)
+spl_c3_2012_L0TIS_narrow.setVal(1.19999995643)
+spl_c4_2012_L0TIS_narrow.setVal(1.19999984225)
+spl_c5_2012_L0TIS_narrow.setVal(1.59999990263)
+spl_c6_2012_L0TIS_narrow.setVal(1.0010221848)
+spl_c1_2011_L0noTIS_narrow.setVal(-0.33842052286)
+spl_c2_2011_L0noTIS_narrow.setVal(1.81206418056)
+spl_c3_2011_L0noTIS_narrow.setVal(1.82991661587)
+spl_c4_2011_L0noTIS_narrow.setVal(1.76992385846)
+spl_c5_2011_L0noTIS_narrow.setVal(1.95525272274)
+spl_c6_2011_L0noTIS_narrow.setVal(1.92517045442)
+spl_c1_2012_L0noTIS_narrow.setVal(-0.371720781638)
+spl_c2_2012_L0noTIS_narrow.setVal(1.80510117484)
+spl_c3_2012_L0noTIS_narrow.setVal(1.22925062084)
+spl_c4_2012_L0noTIS_narrow.setVal(1.73310661312)
+spl_c5_2012_L0noTIS_narrow.setVal(0.857133685264)
+spl_c6_2012_L0noTIS_narrow.setVal(1.52979171084)
+"""spl_c1_2011_L0TIS_wide.setVal(0.)
+spl_c1_2011_L0noTIS_wide.setVal(0.)
+spl_c1_2012_L0TIS_wide.setVal(0.)
+spl_c1_2012_L0noTIS_wide.setVal(0.)
+spl_c2_2011_L0TIS_wide.setVal(1.)
+spl_c2_2011_L0noTIS_wide.setVal(1.)
+spl_c2_2012_L0TIS_wide.setVal(1.)
+spl_c2_2012_L0noTIS_wide.setVal(1.)
+spl_c3_2011_L0TIS_wide.setVal(1.)
+spl_c3_2011_L0noTIS_wide.setVal(1.)
+spl_c3_2012_L0TIS_wide.setVal(1.)
+spl_c3_2012_L0noTIS_wide.setVal(1.)
+spl_c4_2011_L0TIS_wide.setVal(1.)
+spl_c4_2011_L0noTIS_wide.setVal(1.)
+spl_c4_2012_L0TIS_wide.setVal(1.)
+spl_c4_2012_L0noTIS_wide.setVal(1.)
+spl_c5_2011_L0TIS_wide.setVal(1.)
+spl_c5_2011_L0noTIS_wide.setVal(1.)
+spl_c5_2012_L0TIS_wide.setVal(1.)
+spl_c5_2012_L0noTIS_wide.setVal(1.)
+spl_c6_2011_L0TIS_wide.setVal(1.)
+spl_c6_2011_L0noTIS_wide.setVal(1.)
+spl_c6_2012_L0TIS_wide.setVal(1.)
+spl_c6_2012_L0noTIS_wide.setVal(1.)
+spl_c1_2011_L0TIS_narrow.setVal(0.)
+spl_c1_2011_L0noTIS_narrow.setVal(0.)
+spl_c1_2012_L0TIS_narrow.setVal(0.)
+spl_c1_2012_L0noTIS_narrow.setVal(0.)
+spl_c2_2011_L0TIS_narrow.setVal(1.)
+spl_c2_2011_L0noTIS_narrow.setVal(1.)
+spl_c2_2012_L0TIS_narrow.setVal(1.)
+spl_c2_2012_L0noTIS_narrow.setVal(1.)
+spl_c3_2011_L0TIS_narrow.setVal(1.)
+spl_c3_2011_L0noTIS_narrow.setVal(1.)
+spl_c3_2012_L0TIS_narrow.setVal(1.)
+spl_c3_2012_L0noTIS_narrow.setVal(1.)
+spl_c4_2011_L0TIS_narrow.setVal(1.)
+spl_c4_2011_L0noTIS_narrow.setVal(1.)
+spl_c4_2012_L0TIS_narrow.setVal(1.)
+spl_c4_2012_L0noTIS_narrow.setVal(1.)
+spl_c5_2011_L0TIS_narrow.setVal(1.)
+spl_c5_2011_L0noTIS_narrow.setVal(1.)
+spl_c5_2012_L0TIS_narrow.setVal(1.)
+spl_c5_2012_L0noTIS_narrow.setVal(1.)
+spl_c6_2011_L0TIS_narrow.setVal(1.)
+spl_c6_2011_L0noTIS_narrow.setVal(1.)
+spl_c6_2012_L0TIS_narrow.setVal(1.)
+spl_c6_2012_L0noTIS_narrow.setVal(1.)"""
 
 # Parameters of the effective acceptance used in toy MC generation.
 k1_gen_wide = ROOT.RooRealVar("k1_gen_wide","k1_gen_wide",-0.407189518759,-1.,1.)
@@ -251,19 +299,19 @@ k5_gen_narrow = ROOT.RooRealVar("k5_gen_narrow","k5_gen_narrow",0.0309083133084,
 p1_gen_narrow = ROOT.RooRealVar("p1_gen_narrow","p1_gen_narrow",-0.000136056558122,-1.,1.)
 spl_c0_gen_wide = ROOT.RooRealVar("spl_c0_gen_wide","spl_c0_gen_wide",0.)
 spl_c1_gen_wide = ROOT.RooRealVar("spl_c1_gen_wide","spl_c1_gen_wide",-3.82452e-04,-1.,1.)
-spl_c2_gen_wide = ROOT.RooRealVar("spl_c2_gen_wide","spl_c2_gen_wide",9.88543e-01,0.,2.5)
-spl_c3_gen_wide = ROOT.RooRealVar("spl_c3_gen_wide","spl_c3_gen_wide",1.28150e+00,0.,2.5)
-spl_c4_gen_wide = ROOT.RooRealVar("spl_c4_gen_wide","spl_c4_gen_wide",1.38465e+00,0.,2.5)
-spl_c5_gen_wide = ROOT.RooRealVar("spl_c5_gen_wide","spl_c5_gen_wide",1.38230e+00,0.,2.5)
-spl_c6_gen_wide = ROOT.RooRealVar("spl_c6_gen_wide","spl_c6_gen_wide",1.36101e+00,0.,2.5)
+spl_c2_gen_wide = ROOT.RooRealVar("spl_c2_gen_wide","spl_c2_gen_wide",9.88543e-01,0.,10.)
+spl_c3_gen_wide = ROOT.RooRealVar("spl_c3_gen_wide","spl_c3_gen_wide",1.28150e+00,0.,10.)
+spl_c4_gen_wide = ROOT.RooRealVar("spl_c4_gen_wide","spl_c4_gen_wide",1.38465e+00,0.,10.)
+spl_c5_gen_wide = ROOT.RooRealVar("spl_c5_gen_wide","spl_c5_gen_wide",1.38230e+00,0.,10.)
+spl_c6_gen_wide = ROOT.RooRealVar("spl_c6_gen_wide","spl_c6_gen_wide",1.36101e+00,0.,10.)
 spl_c7_gen_wide = ROOT.RooRealVar("spl_c7_gen_wide","spl_c7_gen_wide",1.)
 spl_c0_gen_narrow = ROOT.RooRealVar("spl_c0_gen_narrow","spl_c0_gen_narrow",0.)
 spl_c1_gen_narrow = ROOT.RooRealVar("spl_c1_gen_narrow","spl_c1_gen_narrow",-5.22921e-04,-1.,1.)
-spl_c2_gen_narrow = ROOT.RooRealVar("spl_c2_gen_narrow","spl_c2_gen_narrow",1.38881e+00,0.,2.5)
-spl_c3_gen_narrow = ROOT.RooRealVar("spl_c3_gen_narrow","spl_c3_gen_narrow",1.67103e+00,0.,2.5)
-spl_c4_gen_narrow = ROOT.RooRealVar("spl_c4_gen_narrow","spl_c4_gen_narrow",1.91227e+00,0.,2.5)
-spl_c5_gen_narrow = ROOT.RooRealVar("spl_c5_gen_narrow","spl_c5_gen_narrow",1.53550e+00,0.,2.5)
-spl_c6_gen_narrow = ROOT.RooRealVar("spl_c6_gen_narrow","spl_c6_gen_narrow",2.13463e+00,0.,2.5)
+spl_c2_gen_narrow = ROOT.RooRealVar("spl_c2_gen_narrow","spl_c2_gen_narrow",1.38881e+00,0.,10.)
+spl_c3_gen_narrow = ROOT.RooRealVar("spl_c3_gen_narrow","spl_c3_gen_narrow",1.67103e+00,0.,10.)
+spl_c4_gen_narrow = ROOT.RooRealVar("spl_c4_gen_narrow","spl_c4_gen_narrow",1.91227e+00,0.,10.)
+spl_c5_gen_narrow = ROOT.RooRealVar("spl_c5_gen_narrow","spl_c5_gen_narrow",1.53550e+00,0.,10.)
+spl_c6_gen_narrow = ROOT.RooRealVar("spl_c6_gen_narrow","spl_c6_gen_narrow",2.13463e+00,0.,10.)
 spl_c7_gen_narrow = ROOT.RooRealVar("spl_c7_gen_narrow","spl_c7_gen_narrow",1.)
 
 # Accurate time integrals.
@@ -2255,17 +2303,24 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 	tree_2011_L0noTIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,1,datatype))
 	tree_2012_L0noTIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,1,datatype))
 
-	invN_2011_L0TIS_wide = 1./tree_2011_L0TIS_wide.GetEntries()
-	invN_2012_L0TIS_wide = 1./tree_2012_L0TIS_wide.GetEntries()
-	invN_2011_L0TIS_narrow = 1./tree_2011_L0TIS_narrow.GetEntries()
-	invN_2012_L0TIS_narrow = 1./tree_2012_L0TIS_narrow.GetEntries()
-	invN_2011_L0noTIS_wide = 1./tree_2011_L0noTIS_wide.GetEntries()
-	invN_2012_L0noTIS_wide = 1./tree_2012_L0noTIS_wide.GetEntries()
-	invN_2011_L0noTIS_narrow = 1./tree_2011_L0noTIS_narrow.GetEntries()
-	invN_2012_L0noTIS_narrow = 1./tree_2012_L0noTIS_narrow.GetEntries()
+	norm_2011_L0TIS_wide = tree_2011_L0TIS_wide.GetEntries()
+	norm_2012_L0TIS_wide = tree_2012_L0TIS_wide.GetEntries()
+	norm_2011_L0TIS_narrow = tree_2011_L0TIS_narrow.GetEntries()
+	norm_2012_L0TIS_narrow = tree_2012_L0TIS_narrow.GetEntries()
+	norm_2011_L0noTIS_wide = tree_2011_L0noTIS_wide.GetEntries()
+	norm_2012_L0noTIS_wide = tree_2012_L0noTIS_wide.GetEntries()
+	norm_2011_L0noTIS_narrow = tree_2011_L0noTIS_narrow.GetEntries()
+	norm_2012_L0noTIS_narrow = tree_2012_L0noTIS_narrow.GetEntries()
+	sumw_2011_L0TIS_wide = 0.
+	sumw_2012_L0TIS_wide = 0.
+	sumw_2011_L0TIS_narrow = 0.
+	sumw_2012_L0TIS_narrow = 0.
+	sumw_2011_L0noTIS_wide = 0.
+	sumw_2012_L0noTIS_wide = 0.
+	sumw_2011_L0noTIS_narrow = 0.
+	sumw_2012_L0noTIS_narrow = 0.
 
 	PDF_gen = CreateGenPDF()
-
 	opt_genmodel.setVal(datatype)
 
 	wide_window_MC.setVal(1)
@@ -2273,8 +2328,69 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 	ev_counter = 0
 	for i in tree_2011_L0TIS_wide:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
+			sumw_2011_L0TIS_wide += dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC))
+			ev_counter += 1
+	year_MC.setVal(1)
+	ev_counter = 0
+	for i in tree_2012_L0TIS_wide:
+		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
+			sumw_2012_L0TIS_wide += dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC))
+			ev_counter += 1
+	wide_window_MC.setVal(0)
+	year_MC.setVal(0)
+	ev_counter = 0
+	for i in tree_2011_L0TIS_narrow:
+		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
+			sumw_2011_L0TIS_narrow += dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC))
+			ev_counter += 1
+	year_MC.setVal(1)
+	ev_counter = 0
+	for i in tree_2012_L0TIS_narrow:
+		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
+			sumw_2012_L0TIS_narrow += dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC))
+			ev_counter += 1
+	wide_window_MC.setVal(1)
+	year_MC.setVal(0)
+	ev_counter = 0
+	for i in tree_2011_L0noTIS_wide:
+		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
+			sumw_2011_L0noTIS_wide += dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC))
+			ev_counter += 1
+	year_MC.setVal(1)
+	ev_counter = 0
+	for i in tree_2012_L0noTIS_wide:
+		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
+			sumw_2012_L0noTIS_wide += dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC))
+			ev_counter += 1
+	wide_window_MC.setVal(0)
+	year_MC.setVal(0)
+	ev_counter = 0
+	for i in tree_2011_L0noTIS_narrow:
+		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
+			sumw_2011_L0noTIS_narrow += dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC))
+			ev_counter += 1
+	year_MC.setVal(1)
+	ev_counter = 0
+	for i in tree_2012_L0noTIS_narrow:
+		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
+			sumw_2012_L0noTIS_narrow += dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC))
+			ev_counter += 1
+	norm_2011_L0TIS_wide /= sumw_2011_L0TIS_wide
+	norm_2012_L0TIS_wide /= sumw_2012_L0TIS_wide
+	norm_2011_L0TIS_narrow /= sumw_2011_L0TIS_narrow
+	norm_2012_L0TIS_narrow /= sumw_2012_L0TIS_narrow
+	norm_2011_L0noTIS_wide /= sumw_2011_L0noTIS_wide
+	norm_2012_L0noTIS_wide /= sumw_2012_L0noTIS_wide
+	norm_2011_L0noTIS_narrow /= sumw_2011_L0noTIS_narrow
+	norm_2012_L0noTIS_narrow /= sumw_2012_L0noTIS_narrow
+
+	wide_window_MC.setVal(1)
+	year_MC.setVal(0)
+	ev_counter = 0
+	for i in tree_2011_L0TIS_wide:
+		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			t_MC.setVal(eval("i."+t_name_MC))
-			MCweight4.setVal(invN_2011_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight4.setVal(norm_2011_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data4_2011_L0TIS_wide_.add(ROOT.RooArgSet(t_MC,MCweight4))
 			ev_counter += 1
 	year_MC.setVal(1)
@@ -2282,7 +2398,7 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2012_L0TIS_wide:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			t_MC.setVal(eval("i."+t_name_MC))
-			MCweight4.setVal(invN_2012_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight4.setVal(norm_2012_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data4_2012_L0TIS_wide_.add(ROOT.RooArgSet(t_MC,MCweight4))
 			ev_counter += 1
 	wide_window_MC.setVal(0)
@@ -2291,7 +2407,7 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2011_L0TIS_narrow:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			t_MC.setVal(eval("i."+t_name_MC))
-			MCweight4.setVal(invN_2011_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight4.setVal(norm_2011_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data4_2011_L0TIS_narrow_.add(ROOT.RooArgSet(t_MC,MCweight4))
 			ev_counter += 1
 	year_MC.setVal(1)
@@ -2299,7 +2415,7 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2012_L0TIS_narrow:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			t_MC.setVal(eval("i."+t_name_MC))
-			MCweight4.setVal(invN_2012_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight4.setVal(norm_2012_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data4_2012_L0TIS_narrow_.add(ROOT.RooArgSet(t_MC,MCweight4))
 			ev_counter += 1
 	wide_window_MC.setVal(1)
@@ -2308,7 +2424,7 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2011_L0noTIS_wide:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			t_MC.setVal(eval("i."+t_name_MC))
-			MCweight4.setVal(invN_2011_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight4.setVal(norm_2011_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data4_2011_L0noTIS_wide_.add(ROOT.RooArgSet(t_MC,MCweight4))
 			ev_counter += 1
 	year_MC.setVal(1)
@@ -2316,7 +2432,7 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2012_L0noTIS_wide:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			t_MC.setVal(eval("i."+t_name_MC))
-			MCweight4.setVal(invN_2012_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight4.setVal(norm_2012_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data4_2012_L0noTIS_wide_.add(ROOT.RooArgSet(t_MC,MCweight4))
 			ev_counter += 1
 	wide_window_MC.setVal(0)
@@ -2325,7 +2441,7 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2011_L0noTIS_narrow:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			t_MC.setVal(eval("i."+t_name_MC))
-			MCweight4.setVal(invN_2011_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight4.setVal(norm_2011_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data4_2011_L0noTIS_narrow_.add(ROOT.RooArgSet(t_MC,MCweight4))
 			ev_counter += 1
 	year_MC.setVal(1)
@@ -2333,7 +2449,7 @@ def LoadDataTime(data_file, data_tree, datatype, evnum_limit = 0):
 	for i in tree_2012_L0noTIS_narrow:
 		if ((evnum_limit == 0) or ((evnum_limit != 0) and (ev_counter < evnum_limit))) and MCtruth(i):
 			t_MC.setVal(eval("i."+t_name_MC))
-			MCweight4.setVal(invN_2012_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
+			MCweight4.setVal(norm_2012_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.timemodel(eval("i."+t_name_MC)))
 			data4_2012_L0noTIS_narrow_.add(ROOT.RooArgSet(t_MC,MCweight4))
 			ev_counter += 1
 
@@ -2450,14 +2566,43 @@ spl_c0_2011_L0noTIS_narrow,spl_c1_2011_L0noTIS_narrow,spl_c2_2011_L0noTIS_narrow
 	spl_pdf_2012_L0noTIS_narrow = ROOT.SplineTAcc("spl_pdf_2012_L0noTIS_narrow","spl_pdf_2012_L0noTIS_narrow",t_MC,t0_narrow,t1_narrow,t2_narrow,t3_narrow,t4_narrow,t5_narrow,\
 spl_c0_2012_L0noTIS_narrow,spl_c1_2012_L0noTIS_narrow,spl_c2_2012_L0noTIS_narrow,spl_c3_2012_L0noTIS_narrow,spl_c4_2012_L0noTIS_narrow,spl_c5_2012_L0noTIS_narrow,spl_c6_2012_L0noTIS_narrow,spl_c7_2012_L0noTIS_narrow)
 
-	spl_pdf_2011_L0TIS_wide.fitTo(data_2011_L0TIS_wide_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(1))
-	spl_pdf_2012_L0TIS_wide.fitTo(data_2012_L0TIS_wide_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(1))
-	spl_pdf_2011_L0noTIS_wide.fitTo(data_2011_L0noTIS_wide_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(1))
-	spl_pdf_2012_L0noTIS_wide.fitTo(data_2012_L0noTIS_wide_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(1))
-	spl_pdf_2011_L0TIS_narrow.fitTo(data_2011_L0TIS_narrow_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(1))
-	spl_pdf_2012_L0TIS_narrow.fitTo(data_2012_L0TIS_narrow_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(1))
-	spl_pdf_2011_L0noTIS_narrow.fitTo(data_2011_L0noTIS_narrow_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(1))
-	spl_pdf_2012_L0noTIS_narrow.fitTo(data_2012_L0noTIS_narrow_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.Minos(1))
+	r1 = spl_pdf_2011_L0TIS_wide.fitTo(data_2011_L0TIS_wide_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.SumW2Error(0),ROOT.RooFit.Minos(0),ROOT.RooFit.Save(kTRUE))
+	r2 = spl_pdf_2012_L0TIS_wide.fitTo(data_2012_L0TIS_wide_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.SumW2Error(0),ROOT.RooFit.Minos(0),ROOT.RooFit.Save(kTRUE))
+	r3 = spl_pdf_2011_L0noTIS_wide.fitTo(data_2011_L0noTIS_wide_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.SumW2Error(0),ROOT.RooFit.Minos(0),ROOT.RooFit.Save(kTRUE))
+	r4 = spl_pdf_2012_L0noTIS_wide.fitTo(data_2012_L0noTIS_wide_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.SumW2Error(0),ROOT.RooFit.Minos(0),ROOT.RooFit.Save(kTRUE))
+	#spl_pdf_2011_L0TIS_narrow.fitTo(data_2011_L0TIS_narrow_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.SumW2Error(0),ROOT.RooFit.Minos(1),ROOT.RooFit.Save(kTRUE))
+	#spl_pdf_2012_L0TIS_narrow.fitTo(data_2012_L0TIS_narrow_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.SumW2Error(0),ROOT.RooFit.Minos(1),ROOT.RooFit.Save(kTRUE))
+	#spl_pdf_2011_L0noTIS_narrow.fitTo(data_2011_L0noTIS_narrow_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.SumW2Error(0),ROOT.RooFit.Minos(1),ROOT.RooFit.Save(kTRUE))
+	#spl_pdf_2012_L0noTIS_narrow.fitTo(data_2012_L0noTIS_narrow_weighted,ROOT.RooFit.NumCPU(12),ROOT.RooFit.Strategy(1),ROOT.RooFit.SumW2Error(0),ROOT.RooFit.Minos(1),ROOT.RooFit.Save(kTRUE))
+
+	pars_spl_1 = [spl_c1_2011_L0TIS_wide,spl_c2_2011_L0TIS_wide,spl_c3_2011_L0TIS_wide,spl_c4_2011_L0TIS_wide,spl_c5_2011_L0TIS_wide,spl_c6_2011_L0TIS_wide]
+	pars_spl_2 = [spl_c1_2012_L0TIS_wide,spl_c2_2012_L0TIS_wide,spl_c3_2012_L0TIS_wide,spl_c4_2012_L0TIS_wide,spl_c5_2012_L0TIS_wide,spl_c6_2012_L0TIS_wide]
+	pars_spl_3 = [spl_c1_2011_L0noTIS_wide,spl_c2_2011_L0noTIS_wide,spl_c3_2011_L0noTIS_wide,spl_c4_2011_L0noTIS_wide,spl_c5_2011_L0noTIS_wide,spl_c6_2011_L0noTIS_wide]
+	pars_spl_4 = [spl_c1_2012_L0noTIS_wide,spl_c2_2012_L0noTIS_wide,spl_c3_2012_L0noTIS_wide,spl_c4_2012_L0noTIS_wide,spl_c5_2012_L0noTIS_wide,spl_c6_2012_L0noTIS_wide]
+
+	result_list = [r1,r2,r3,r4]
+	par_spl_list = [pars_spl_1,pars_spl_2,pars_spl_3,pars_spl_4]
+	centers_spl_list = [[],[],[],[]]
+	cov_spl_list = [[],[],[],[]]
+
+	for icat in range(4):
+		pars_ = par_spl_list[icat]
+		cov_ = result_list[icat].covarianceMatrix()
+		for ipar in range(6):
+			centers_spl_list[icat].append(pars_[ipar].getVal())
+			cov_spl_list[icat].append([])
+			for jpar in range(6): cov_spl_list[icat][ipar].append(cov_[ipar][jpar])
+
+	print '!!!!!!'
+	print 'spl_11L0TIS_centers =',centers_spl_list[0]
+	print 'spl_12L0TIS_centers =',centers_spl_list[1]
+	print 'spl_11L0noTIS_centers =',centers_spl_list[2]
+	print 'spl_12L0noTIS_centers =',centers_spl_list[3]
+	print 'spl_11L0TIS_cov =',cov_spl_list[0]
+	print 'spl_12L0TIS_cov =',cov_spl_list[1]
+	print 'spl_11L0noTIS_cov =',cov_spl_list[2]
+	print 'spl_12L0noTIS_cov =',cov_spl_list[3]
+	print '!!!!!!'
 
 	spl_frame_t_2011_L0TIS_wide = t_MC.frame()
 	data_2011_L0TIS_wide_weighted.plotOn(spl_frame_t_2011_L0TIS_wide,ROOT.RooFit.Binning(20),ROOT.RooFit.MarkerSize(0.5))

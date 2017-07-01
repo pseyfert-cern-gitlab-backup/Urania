@@ -209,6 +209,6 @@ Double_t SplineTAcc::a_bin_deg(Int_t ibin, Int_t deg) const
 Double_t SplineTAcc::evaluate() const 
  { 
 
-	return polynomial(t);
+	return max(polynomial(t),1.e-12);
 
 }

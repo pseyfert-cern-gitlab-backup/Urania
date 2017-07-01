@@ -446,6 +446,24 @@ __device__ double t_err[4][max_N_events];
 __device__ double max_fun[max_N_events];
 __device__ double fun_ran[max_N_events];
 __device__ double dec_accepted[max_N_events];
+__device__ double m1_MCrew[max_N_events];
+__device__ double m2_MCrew[max_N_events];
+__device__ double cos1_MCrew[max_N_events];
+__device__ double cos2_MCrew[max_N_events];
+__device__ double phi_MCrew[max_N_events];
+__device__ double IT_cosh_MCrew[max_N_events];
+__device__ double IT_sinh_MCrew[max_N_events];
+__device__ double IT_cos_MCrew[max_N_events];
+__device__ double IT_sin_MCrew[max_N_events];
+__device__ double fi_cos1_MCrew[18][max_N_events];
+__device__ double fi_cos2_MCrew[18][max_N_events];
+__device__ double gi_MCrew[15][max_N_events];
+__device__ double reMj1j2_MCrew[3][3][max_N_events];
+__device__ double imMj1j2_MCrew[3][3][max_N_events];
+__device__ pycuda::complex<double> Mj1j2_MCrew(int j1, int j2, int iev) {
+   return pycuda::complex<double>(reMj1j2_MCrew[j1][j2][iev],imMj1j2_MCrew[j1][j2][iev]);
+ }
+__device__ double phasespace_MCrew[max_N_events];
 __device__ double reA00;
 __device__ double reA01;
 __device__ double reA10;
@@ -1474,8 +1492,8 @@ __device__ pycuda::complex<double> Mji(double m, int ji) {
 
    else if (ji == 1)
 	{
-	//T = Resonance(m,mv,gv,1)*exp(-i*pycuda::arg(Resonance(mv,mv,gv,1)));
-	T = (Resonance(m,mv,gv,1)+pycuda::complex<double>(c5_mass_swave,c6_mass_swave)*Resonance(m,MKst_1_1410,GKst_1_1410,1)+pycuda::complex<double>(c7_mass_swave,c8_mass_swave)*Resonance(m,MKst_1_1680,GKst_1_1680,1))*exp(-i*pycuda::arg(Resonance(mv,mv,gv,1)+pycuda::complex<double>(c5_mass_swave,c6_mass_swave)*Resonance(mv,MKst_1_1410,GKst_1_1410,1)+pycuda::complex<double>(c7_mass_swave,c8_mass_swave)*Resonance(mv,MKst_1_1680,GKst_1_1680,1)));
+	T = Resonance(m,mv,gv,1)*exp(-i*pycuda::arg(Resonance(mv,mv,gv,1)));
+	//T = (Resonance(m,mv,gv,1)+pycuda::complex<double>(c5_mass_swave,c6_mass_swave)*Resonance(m,MKst_1_1410,GKst_1_1410,1)+pycuda::complex<double>(c7_mass_swave,c8_mass_swave)*Resonance(m,MKst_1_1680,GKst_1_1680,1))*exp(-i*pycuda::arg(Resonance(mv,mv,gv,1)+pycuda::complex<double>(c5_mass_swave,c6_mass_swave)*Resonance(mv,MKst_1_1410,GKst_1_1410,1)+pycuda::complex<double>(c7_mass_swave,c8_mass_swave)*Resonance(mv,MKst_1_1680,GKst_1_1680,1)));
 	}
 
    else if (ji == 2)
@@ -1846,6 +1864,8 @@ __device__ void set_buffer_differential_terms(double *mass_integrals, int icat, 
       f1 = 1.;
       f2 = 0.;
       s1 = p0_tres_12+p1_tres_12*(t_err[icat][iev]-deltatmean_tres_12);
+      //s1 = (p0_tres_12+p1_tres_12*(t_err[icat][iev]-deltatmean_tres_12))*1.1779041429731925;
+      //s1 = (p0_tres_12+p1_tres_12*(t_err[icat][iev]-deltatmean_tres_12))*t_err[icat][iev];
       s2 = 1.;
       x1 = t[icat][iev]/(sqrt(2.)*s1);
       x2 = t[icat][iev]/(sqrt(2.)*s2);
@@ -1855,6 +1875,10 @@ __device__ void set_buffer_differential_terms(double *mass_integrals, int icat, 
       f2 = 0.;
       if (year_opt == 0) {s1 = p0_tres_11+p1_tres_11*(t_err[icat][iev]-deltatmean_tres_11);}
       else {s1 = p0_tres_12+p1_tres_12*(t_err[icat][iev]-deltatmean_tres_12);}
+      //if (year_opt == 0) {s1 = (p0_tres_11+p1_tres_11*(t_err[icat][iev]-deltatmean_tres_11))*1.1779041429731925;}
+      //else {s1 = (p0_tres_12+p1_tres_12*(t_err[icat][iev]-deltatmean_tres_12))*1.1779041429731925;}
+      //if (year_opt == 0) {s1 = (p0_tres_11+p1_tres_11*(t_err[icat][iev]-deltatmean_tres_11))*t_err[icat][iev];}
+      //else {s1 = (p0_tres_12+p1_tres_12*(t_err[icat][iev]-deltatmean_tres_12))*t_err[icat][iev];}
       s2 = 1.;
       x1 = t[icat][iev]/(sqrt(2.)*s1);
       x2 = t[icat][iev]/(sqrt(2.)*s2);
@@ -1914,12 +1938,18 @@ __device__ void set_buffer_integral_terms(int icat, int iev) {
 
    if (acctype == 3) {
       s1_deltat = p0_tres_12+p1_tres_12*(t_err[icat][iev]-deltatmean_tres_12);
+      //s1_deltat = (p0_tres_12+p1_tres_12*(t_err[icat][iev]-deltatmean_tres_12))*1.1779041429731925;
+      //s1_deltat = (p0_tres_12+p1_tres_12*(t_err[icat][iev]-deltatmean_tres_12))*t_err[icat][iev];
       for (int i=0; i<6; ++i) {spl_knot_vector[year_opt[icat]][trig_opt[icat]][i] = knot_gen(wide_window,i);}
    }
 
    else {
       if (year_opt == 0) {s1_deltat = p0_tres_11+p1_tres_11*(t_err[icat][iev]-deltatmean_tres_11);}
       else {s1_deltat = p0_tres_12+p1_tres_12*(t_err[icat][iev]-deltatmean_tres_12);}
+      //if (year_opt == 0) {s1_deltat = (p0_tres_11+p1_tres_11*(t_err[icat][iev]-deltatmean_tres_11))*1.1779041429731925;}
+      //else {s1_deltat = (p0_tres_12+p1_tres_12*(t_err[icat][iev]-deltatmean_tres_12))*1.1779041429731925;}
+      //if (year_opt == 0) {s1_deltat = (p0_tres_11+p1_tres_11*(t_err[icat][iev]-deltatmean_tres_11))*t_err[icat][iev];}
+      //else {s1_deltat = (p0_tres_12+p1_tres_12*(t_err[icat][iev]-deltatmean_tres_12))*t_err[icat][iev];}
       for (int i=0; i<6; ++i) {spl_knot_vector[year_opt[icat]][trig_opt[icat]][i] = spline_knot(wide_window,i);}
    }
 
@@ -2490,6 +2520,8 @@ __device__ void set_buffer_differential_terms_gen(int iev) {
       f1 = 1.;
       f2 = 0.;
       s1 = p0_tres_12+p1_tres_12*(t_err[0][iev]-deltatmean_tres_12);
+      //s1 = (p0_tres_12+p1_tres_12*(t_err[0][iev]-deltatmean_tres_12))*1.1779041429731925;
+      //s1 = (p0_tres_12+p1_tres_12*(t_err[0][iev]-deltatmean_tres_12))*t_err[0][iev];
       s2 = 1.;
       x1 = t[0][iev]/(sqrt(2.)*s1);
       x2 = t[0][iev]/(sqrt(2.)*s2);
@@ -2499,6 +2531,10 @@ __device__ void set_buffer_differential_terms_gen(int iev) {
       f2 = 0.;
       if (year_opt == 0) {s1 = p0_tres_11+p1_tres_11*(t_err[0][iev]-deltatmean_tres_11);}
       else {s1 = p0_tres_12+p1_tres_12*(t_err[0][iev]-deltatmean_tres_12);}
+      //if (year_opt == 0) {s1 = (p0_tres_11+p1_tres_11*(t_err[0][iev]-deltatmean_tres_11))*1.1779041429731925;}
+      //else {s1 = (p0_tres_12+p1_tres_12*(t_err[0][iev]-deltatmean_tres_12))*1.1779041429731925;}
+      //if (year_opt == 0) {s1 = (p0_tres_11+p1_tres_11*(t_err[0][iev]-deltatmean_tres_11))*t_err[0][iev];}
+      //else {s1 = (p0_tres_12+p1_tres_12*(t_err[0][iev]-deltatmean_tres_12))*t_err[0][iev];}
       s2 = 1.;
       x1 = t[0][iev]/(sqrt(2.)*s1);
       x2 = t[0][iev]/(sqrt(2.)*s2);
@@ -2588,6 +2624,11 @@ __global__ void evaluate_CondPDF(double m1_ran, double m2_ran, double cos1_ran, 
    Dp1half_tag_OS = calib_params[7];
    p0_tres_12 = calib_params[14];
    p1_tres_12 = calib_params[15];
+
+   c5_mass_swave = calib_params[26];
+   c6_mass_swave = calib_params[27];
+   c7_mass_swave = calib_params[28];
+   c8_mass_swave = calib_params[29];
 
    set_buffer_differential_terms_gen(0);
    set_buffer_integral_terms(0,0);
@@ -2901,6 +2942,19 @@ __global__ void compute_nw(double *MCdata, int j1, int j2, int h, int j1p, int j
 __global__ void set_nw_val(double nwval, int year_opt, int trig_opt, int inw) {
 
    nw_comp_matrix[year_opt][trig_opt][inw] = nwval;
+
+ }
+
+__global__ void set_spline_coefs(double a_2011_L0TIS_mod[][4], double a_2011_L0noTIS_mod[][4], double a_2012_L0TIS_mod[][4], double a_2012_L0noTIS_mod[][4]) {
+
+   for (int ibin=0; ibin<5; ++ibin) {
+      for (int deg=0; deg<4; ++deg) {
+         a_2011_L0TIS_wide[ibin][deg] = a_2011_L0TIS_mod[ibin][deg];
+         a_2011_L0noTIS_wide[ibin][deg] = a_2011_L0noTIS_mod[ibin][deg];
+         a_2012_L0TIS_wide[ibin][deg] = a_2012_L0TIS_mod[ibin][deg];
+         a_2012_L0noTIS_wide[ibin][deg] = a_2012_L0noTIS_mod[ibin][deg];
+      }
+   }
 
  }
 
@@ -3252,6 +3306,127 @@ __global__ void set_all_mass_integrals(double *mass_integrals) {
    imIhj1j2j1pj2pdict[2][2][2][0] = pycuda::imag(pycuda::complex<double>(Ih17Re,-Ih17Im));
    imIhj1j2j1pj2pdict[2][2][2][1] = pycuda::imag(pycuda::complex<double>(Ih21Re,-Ih21Im));
    imIhj1j2j1pj2pdict[2][2][2][2] = pycuda::imag(pycuda::complex<double>(Ih30Re,0.));
+
+ }
+
+__device__ void set_buffer_rew_terms(double *mass_integrals, int iev) {
+
+   Im00 = mass_integrals[0];
+   Im01 = mass_integrals[1];
+   Im10 = mass_integrals[2];
+   Im02 = mass_integrals[3];
+   Im20 = mass_integrals[4];
+   Im11 = mass_integrals[5];
+   Im12 = mass_integrals[6];
+   Im21 = mass_integrals[7];
+   Im22 = mass_integrals[8];
+
+   IT_cosh_MCrew[iev] = 4.*gamma_Bs_freq/(-pow(delta_gamma_freq,2) + 4.*pow(gamma_Bs_freq,2));
+   IT_sinh_MCrew[iev] = 2.*delta_gamma_freq/(-pow(delta_gamma_freq,2) + 4.*pow(gamma_Bs_freq,2));
+   IT_cos_MCrew[iev] = gamma_Bs_freq/(pow(delta_m_freq,2) + pow(gamma_Bs_freq,2));
+   IT_sin_MCrew[iev] = delta_m_freq/(pow(delta_m_freq,2) + pow(gamma_Bs_freq,2));
+
+   for (int i=0; i<18; ++i) {fi_cos1_MCrew[i][iev] = fi(cos1_MCrew[iev],i+1);}
+   for (int i=0; i<18; ++i) {fi_cos2_MCrew[i][iev] = fi(cos2_MCrew[iev],i+1);}
+   for (int i=0; i<15; ++i) {gi_MCrew[i][iev] = gi(phi_MCrew[iev],i+1);}
+
+   for (int j1=0; j1<3; ++j1) {
+      for (int j2=0; j2<3; ++j2) {
+         pycuda::complex<double> M_temp = Mj1j2(m1_MCrew[iev],m2_MCrew[iev],j1,j2);
+         reMj1j2_MCrew[j1][j2][iev] = pycuda::real(M_temp);
+         imMj1j2_MCrew[j1][j2][iev] = pycuda::imag(M_temp);
+      }
+   }
+
+   phasespace_MCrew[iev] = phasespace(m1_MCrew[iev],m2_MCrew[iev]);
+
+ }
+
+__device__ pycuda::complex<double> hj1j2j1pj2p_MCrew(int j1, int j2, int j1p, int j2p, int iev) { 
+
+   return Mj1j2_MCrew(j1,j2,iev)*pycuda::conj(Mj1j2_MCrew(j1p,j2p,iev))*phasespace_MCrew[iev];
+
+ }
+
+__device__ double fjjphhp_cos1_MCrew(int j, int jp, int h, int hp, int iev) { 
+
+   return fi_cos1_MCrew[(int) fjjphhpindexdict[j][jp][h][hp]-1][iev];
+
+ }
+
+__device__ double fjjphhp_cos2_MCrew(int j, int jp, int h, int hp, int iev) { 
+
+   return fi_cos2_MCrew[(int) fjjphhpindexdict[j][jp][h][hp]-1][iev];
+
+ }
+
+__device__ double ghhp_phi_MCrew(int h, int hp, int iev) { 
+
+   return gi_MCrew[(int) ghhpindexdict[h][hp]-1][iev];
+
+ }
+
+__device__ double comp_rew_phys_model(int j1, int j2, int h, int j1p, int j2p, int hp, int iev) {
+
+   return pycuda::real(((IT_cosh_MCrew[iev]*M_Average(j1,j2,h,j1p,j2p,hp)-IT_sinh_MCrew[iev]*M_DeltaGamma(j1,j2,h,j1p,j2p,hp))+DCP_prod*(IT_cos_MCrew[iev]*M_DirCP(j1,j2,h,j1p,j2p,hp)+IT_sin_MCrew[iev]*M_MixCP(j1,j2,h,j1p,j2p,hp)))*Nj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp)*hj1j2j1pj2p_MCrew(j1,j2,j1p,j2p,iev))*ghhp_phi_MCrew(h,hp,iev)*fjjphhp_cos1_MCrew(j1,j1p,h,hp,iev)*fjjphhp_cos2_MCrew(j2,j2p,h,hp,iev);
+
+ }
+
+__device__ double rew_phys_model(int iev) {
+
+   return comp_rew_phys_model(0,0,0,0,0,0,iev)+comp_rew_phys_model(0,1,0,0,1,0,iev)+comp_rew_phys_model(0,2,0,0,2,0,iev)+comp_rew_phys_model(1,0,0,1,0,0,iev)+comp_rew_phys_model(1,1,0,1,1,0,iev)+comp_rew_phys_model(1,1,1,1,1,1,iev)
++comp_rew_phys_model(1,1,2,1,1,2,iev)+comp_rew_phys_model(1,2,0,1,2,0,iev)+comp_rew_phys_model(1,2,1,1,2,1,iev)+comp_rew_phys_model(1,2,2,1,2,2,iev)+comp_rew_phys_model(2,0,0,2,0,0,iev)+comp_rew_phys_model(2,1,0,2,1,0,iev)+comp_rew_phys_model(2,1,1,2,1,1,iev)
++comp_rew_phys_model(2,1,2,2,1,2,iev)+comp_rew_phys_model(2,2,0,2,2,0,iev)+comp_rew_phys_model(2,2,1,2,2,1,iev)+comp_rew_phys_model(2,2,2,2,2,2,iev)+comp_rew_phys_model(2,2,3,2,2,3,iev)+comp_rew_phys_model(2,2,4,2,2,4,iev)+2.*comp_rew_phys_model(0,1,0,0,0,0,iev)
++2.*comp_rew_phys_model(0,1,0,1,0,0,iev)+2.*comp_rew_phys_model(0,1,0,2,0,0,iev)+2.*comp_rew_phys_model(0,2,0,0,0,0,iev)+2.*comp_rew_phys_model(0,2,0,0,1,0,iev)+2.*comp_rew_phys_model(0,2,0,1,0,0,iev)+2.*comp_rew_phys_model(0,2,0,1,1,0,iev)
++2.*comp_rew_phys_model(0,2,0,2,0,0,iev)+2.*comp_rew_phys_model(0,2,0,2,1,0,iev)+2.*comp_rew_phys_model(1,0,0,0,0,0,iev)+2.*comp_rew_phys_model(1,1,0,0,0,0,iev)+2.*comp_rew_phys_model(1,1,0,0,1,0,iev)+2.*comp_rew_phys_model(1,1,0,1,0,0,iev)
++2.*comp_rew_phys_model(1,1,0,2,0,0,iev)+2.*comp_rew_phys_model(1,1,1,0,0,0,iev)+2.*comp_rew_phys_model(1,1,1,0,1,0,iev)+2.*comp_rew_phys_model(1,1,1,0,2,0,iev)+2.*comp_rew_phys_model(1,1,1,1,0,0,iev)+2.*comp_rew_phys_model(1,1,1,1,1,0,iev)
++2.*comp_rew_phys_model(1,1,1,1,2,0,iev)+2.*comp_rew_phys_model(1,1,1,2,0,0,iev)+2.*comp_rew_phys_model(1,1,1,2,1,0,iev)+2.*comp_rew_phys_model(1,1,1,2,2,0,iev)+2.*comp_rew_phys_model(1,1,2,0,0,0,iev)+2.*comp_rew_phys_model(1,1,2,0,1,0,iev)
++2.*comp_rew_phys_model(1,1,2,0,2,0,iev)+2.*comp_rew_phys_model(1,1,2,1,0,0,iev)+2.*comp_rew_phys_model(1,1,2,1,1,0,iev)+2.*comp_rew_phys_model(1,1,2,1,1,1,iev)+2.*comp_rew_phys_model(1,1,2,1,2,0,iev)+2.*comp_rew_phys_model(1,1,2,1,2,1,iev)
++2.*comp_rew_phys_model(1,1,2,2,0,0,iev)+2.*comp_rew_phys_model(1,1,2,2,1,0,iev)+2.*comp_rew_phys_model(1,1,2,2,1,1,iev)+2.*comp_rew_phys_model(1,1,2,2,2,0,iev)+2.*comp_rew_phys_model(1,1,2,2,2,1,iev)+2.*comp_rew_phys_model(1,2,0,0,0,0,iev)
++2.*comp_rew_phys_model(1,2,0,0,1,0,iev)+2.*comp_rew_phys_model(1,2,0,0,2,0,iev)+2.*comp_rew_phys_model(1,2,0,1,0,0,iev)+2.*comp_rew_phys_model(1,2,0,1,1,0,iev)+2.*comp_rew_phys_model(1,2,0,2,0,0,iev)+2.*comp_rew_phys_model(1,2,0,2,1,0,iev)
++2.*comp_rew_phys_model(1,2,1,0,0,0,iev)+2.*comp_rew_phys_model(1,2,1,0,1,0,iev)+2.*comp_rew_phys_model(1,2,1,0,2,0,iev)+2.*comp_rew_phys_model(1,2,1,1,0,0,iev)+2.*comp_rew_phys_model(1,2,1,1,1,0,iev)+2.*comp_rew_phys_model(1,2,1,1,1,1,iev)
++2.*comp_rew_phys_model(1,2,1,1,2,0,iev)+2.*comp_rew_phys_model(1,2,1,2,0,0,iev)+2.*comp_rew_phys_model(1,2,1,2,1,0,iev)+2.*comp_rew_phys_model(1,2,1,2,1,1,iev)+2.*comp_rew_phys_model(1,2,1,2,2,0,iev)+2.*comp_rew_phys_model(1,2,2,0,0,0,iev)
++2.*comp_rew_phys_model(1,2,2,0,1,0,iev)+2.*comp_rew_phys_model(1,2,2,0,2,0,iev)+2.*comp_rew_phys_model(1,2,2,1,0,0,iev)+2.*comp_rew_phys_model(1,2,2,1,1,0,iev)+2.*comp_rew_phys_model(1,2,2,1,1,1,iev)+2.*comp_rew_phys_model(1,2,2,1,1,2,iev)
++2.*comp_rew_phys_model(1,2,2,1,2,0,iev)+2.*comp_rew_phys_model(1,2,2,1,2,1,iev)+2.*comp_rew_phys_model(1,2,2,2,0,0,iev)+2.*comp_rew_phys_model(1,2,2,2,1,0,iev)+2.*comp_rew_phys_model(1,2,2,2,1,1,iev)+2.*comp_rew_phys_model(1,2,2,2,1,2,iev)
++2.*comp_rew_phys_model(1,2,2,2,2,0,iev)+2.*comp_rew_phys_model(1,2,2,2,2,1,iev)+2.*comp_rew_phys_model(2,0,0,0,0,0,iev)+2.*comp_rew_phys_model(2,0,0,1,0,0,iev)+2.*comp_rew_phys_model(2,1,0,0,0,0,iev)+2.*comp_rew_phys_model(2,1,0,0,1,0,iev)
++2.*comp_rew_phys_model(2,1,0,1,0,0,iev)+2.*comp_rew_phys_model(2,1,0,1,1,0,iev)+2.*comp_rew_phys_model(2,1,0,2,0,0,iev)+2.*comp_rew_phys_model(2,1,1,0,0,0,iev)+2.*comp_rew_phys_model(2,1,1,0,1,0,iev)+2.*comp_rew_phys_model(2,1,1,0,2,0,iev)
++2.*comp_rew_phys_model(2,1,1,1,0,0,iev)+2.*comp_rew_phys_model(2,1,1,1,1,0,iev)+2.*comp_rew_phys_model(2,1,1,1,1,1,iev)+2.*comp_rew_phys_model(2,1,1,1,2,0,iev)+2.*comp_rew_phys_model(2,1,1,2,0,0,iev)+2.*comp_rew_phys_model(2,1,1,2,1,0,iev)
++2.*comp_rew_phys_model(2,1,1,2,2,0,iev)+2.*comp_rew_phys_model(2,1,2,0,0,0,iev)+2.*comp_rew_phys_model(2,1,2,0,1,0,iev)+2.*comp_rew_phys_model(2,1,2,0,2,0,iev)+2.*comp_rew_phys_model(2,1,2,1,0,0,iev)+2.*comp_rew_phys_model(2,1,2,1,1,0,iev)
++2.*comp_rew_phys_model(2,1,2,1,1,1,iev)+2.*comp_rew_phys_model(2,1,2,1,1,2,iev)+2.*comp_rew_phys_model(2,1,2,1,2,0,iev)+2.*comp_rew_phys_model(2,1,2,1,2,1,iev)+2.*comp_rew_phys_model(2,1,2,2,0,0,iev)+2.*comp_rew_phys_model(2,1,2,2,1,0,iev)
++2.*comp_rew_phys_model(2,1,2,2,1,1,iev)+2.*comp_rew_phys_model(2,1,2,2,2,0,iev)+2.*comp_rew_phys_model(2,1,2,2,2,1,iev)+2.*comp_rew_phys_model(2,2,0,0,0,0,iev)+2.*comp_rew_phys_model(2,2,0,0,1,0,iev)+2.*comp_rew_phys_model(2,2,0,0,2,0,iev)
++2.*comp_rew_phys_model(2,2,0,1,0,0,iev)+2.*comp_rew_phys_model(2,2,0,1,1,0,iev)+2.*comp_rew_phys_model(2,2,0,1,2,0,iev)+2.*comp_rew_phys_model(2,2,0,2,0,0,iev)+2.*comp_rew_phys_model(2,2,0,2,1,0,iev)+2.*comp_rew_phys_model(2,2,1,0,0,0,iev)
++2.*comp_rew_phys_model(2,2,1,0,1,0,iev)+2.*comp_rew_phys_model(2,2,1,0,2,0,iev)+2.*comp_rew_phys_model(2,2,1,1,0,0,iev)+2.*comp_rew_phys_model(2,2,1,1,1,0,iev)+2.*comp_rew_phys_model(2,2,1,1,1,1,iev)+2.*comp_rew_phys_model(2,2,1,1,2,0,iev)
++2.*comp_rew_phys_model(2,2,1,1,2,1,iev)+2.*comp_rew_phys_model(2,2,1,2,0,0,iev)+2.*comp_rew_phys_model(2,2,1,2,1,0,iev)+2.*comp_rew_phys_model(2,2,1,2,1,1,iev)+2.*comp_rew_phys_model(2,2,1,2,2,0,iev)+2.*comp_rew_phys_model(2,2,2,0,0,0,iev)
++2.*comp_rew_phys_model(2,2,2,0,1,0,iev)+2.*comp_rew_phys_model(2,2,2,0,2,0,iev)+2.*comp_rew_phys_model(2,2,2,1,0,0,iev)+2.*comp_rew_phys_model(2,2,2,1,1,0,iev)+2.*comp_rew_phys_model(2,2,2,1,1,1,iev)+2.*comp_rew_phys_model(2,2,2,1,1,2,iev)
++2.*comp_rew_phys_model(2,2,2,1,2,0,iev)+2.*comp_rew_phys_model(2,2,2,1,2,1,iev)+2.*comp_rew_phys_model(2,2,2,1,2,2,iev)+2.*comp_rew_phys_model(2,2,2,2,0,0,iev)+2.*comp_rew_phys_model(2,2,2,2,1,0,iev)+2.*comp_rew_phys_model(2,2,2,2,1,1,iev)
++2.*comp_rew_phys_model(2,2,2,2,1,2,iev)+2.*comp_rew_phys_model(2,2,2,2,2,0,iev)+2.*comp_rew_phys_model(2,2,2,2,2,1,iev)+2.*comp_rew_phys_model(2,2,3,0,0,0,iev)+2.*comp_rew_phys_model(2,2,3,0,1,0,iev)+2.*comp_rew_phys_model(2,2,3,0,2,0,iev)
++2.*comp_rew_phys_model(2,2,3,1,0,0,iev)+2.*comp_rew_phys_model(2,2,3,1,1,0,iev)+2.*comp_rew_phys_model(2,2,3,1,1,1,iev)+2.*comp_rew_phys_model(2,2,3,1,1,2,iev)+2.*comp_rew_phys_model(2,2,3,1,2,0,iev)+2.*comp_rew_phys_model(2,2,3,1,2,1,iev)
++2.*comp_rew_phys_model(2,2,3,1,2,2,iev)+2.*comp_rew_phys_model(2,2,3,2,0,0,iev)+2.*comp_rew_phys_model(2,2,3,2,1,0,iev)+2.*comp_rew_phys_model(2,2,3,2,1,1,iev)+2.*comp_rew_phys_model(2,2,3,2,1,2,iev)+2.*comp_rew_phys_model(2,2,3,2,2,0,iev)
++2.*comp_rew_phys_model(2,2,3,2,2,1,iev)+2.*comp_rew_phys_model(2,2,3,2,2,2,iev)+2.*comp_rew_phys_model(2,2,4,0,0,0,iev)+2.*comp_rew_phys_model(2,2,4,0,1,0,iev)+2.*comp_rew_phys_model(2,2,4,0,2,0,iev)+2.*comp_rew_phys_model(2,2,4,1,0,0,iev)
++2.*comp_rew_phys_model(2,2,4,1,1,0,iev)+2.*comp_rew_phys_model(2,2,4,1,1,1,iev)+2.*comp_rew_phys_model(2,2,4,1,1,2,iev)+2.*comp_rew_phys_model(2,2,4,1,2,0,iev)+2.*comp_rew_phys_model(2,2,4,1,2,1,iev)+2.*comp_rew_phys_model(2,2,4,1,2,2,iev)
++2.*comp_rew_phys_model(2,2,4,2,0,0,iev)+2.*comp_rew_phys_model(2,2,4,2,1,0,iev)+2.*comp_rew_phys_model(2,2,4,2,1,1,iev)+2.*comp_rew_phys_model(2,2,4,2,1,2,iev)+2.*comp_rew_phys_model(2,2,4,2,2,0,iev)+2.*comp_rew_phys_model(2,2,4,2,2,1,iev)
++2.*comp_rew_phys_model(2,2,4,2,2,2,iev)+2.*comp_rew_phys_model(2,2,4,2,2,3,iev);
+
+ }
+
+__global__ void compute_phys_weight(double *MCdata, double *out, double *re_amps, double *dirCP_asyms, double *im_amps, double *weak_phases, double *mixing_params, double *calib_params, double *mass_integrals, int NMCevts) {
+
+   int row = threadIdx.x + blockDim.x * blockIdx.x;
+   if (row >= NMCevts) { return;}
+
+   int i0 = row*6;
+   m1_MCrew[row] = MCdata[0 + i0];
+   m2_MCrew[row] = MCdata[1 + i0];
+   cos1_MCrew[row] = MCdata[2 + i0];
+   cos2_MCrew[row] = MCdata[3 + i0];
+   phi_MCrew[row] = MCdata[4 + i0];
+   double weight_invgen = MCdata[5 + i0];
+
+   set_buffer_amplitudes(re_amps,dirCP_asyms,im_amps,weak_phases,mixing_params,calib_params);
+   set_buffer_rew_terms(mass_integrals,row);
+   double weight_phys = rew_phys_model(row);
+
+   out[row] = 1.e4*weight_invgen*weight_phys;
 
  }
 

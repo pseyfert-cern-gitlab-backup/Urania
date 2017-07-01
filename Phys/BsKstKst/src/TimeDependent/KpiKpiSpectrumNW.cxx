@@ -3328,10 +3328,10 @@ TComplex KpiKpiSpectrumNW::Mji(Double_t m, Int_t ji) const
 
    else if (ji == 1)
 	{
-	T = (Resonance(m,mv,gv,1)+TComplex(c5_mass_swave,c6_mass_swave)*Resonance(m,MKst_1_1410,GKst_1_1410,1)+TComplex(c7_mass_swave,c8_mass_swave)*Resonance(m,MKst_1_1680,GKst_1_1680,1))*TComplex(1.,-(Resonance(mv,mv,gv,1)+TComplex(c5_mass_swave,c6_mass_swave)*Resonance(mv,MKst_1_1410,GKst_1_1410,1)+TComplex(c7_mass_swave,c8_mass_swave)*Resonance(mv,MKst_1_1680,GKst_1_1680,1)).Theta(),1);
-	/*if (pw_mass_altmodel == 0) {T = Resonance(m,mv,gv,1)*TComplex(1.,-Resonance(mv,mv,gv,1).Theta(),1);}
+	//T = (Resonance(m,mv,gv,1)+TComplex(c5_mass_swave,c6_mass_swave)*Resonance(m,MKst_1_1410,GKst_1_1410,1)+TComplex(c7_mass_swave,c8_mass_swave)*Resonance(m,MKst_1_1680,GKst_1_1680,1))*TComplex(1.,-(Resonance(mv,mv,gv,1)+TComplex(c5_mass_swave,c6_mass_swave)*Resonance(mv,MKst_1_1410,GKst_1_1410,1)+TComplex(c7_mass_swave,c8_mass_swave)*Resonance(mv,MKst_1_1680,GKst_1_1680,1)).Theta(),1);
+	if (pw_mass_altmodel == 0) {T = Resonance(m,mv,gv,1)*TComplex(1.,-Resonance(mv,mv,gv,1).Theta(),1);}
 	else if (pw_mass_altmodel == 1) {T = Resonance(m,mv,gv,1) + TComplex(sqrt(f_1410_rel2_892),delta_1410_rel2_892,1)*Resonance(m,MKst_1_1410,GKst_1_1410,1) + TComplex(sqrt(f_1680_rel2_892),delta_1680_rel2_892,1)*Resonance(m,MKst_1_1680,GKst_1_1680,1);}
-	else {throw std::invalid_argument( "Invalid argument #4" );}*/
+	else {throw std::invalid_argument( "Invalid argument #4" );}
 	}
 
    else if (ji == 2)
