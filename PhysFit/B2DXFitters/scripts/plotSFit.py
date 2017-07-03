@@ -195,7 +195,7 @@ def plotFitModel(model, frame, wksp, myconfigfile, log, debug) :
         rel = 200
     else:
         #rel = 1000
-        rel = 2000
+        rel = 100
         
     fr = spl.plotOn(frame, RooFit.LineColor(kRed),  RooFit.Normalization(rel, RooAbsReal.Relative),RooFit.Name("sPline"))
     fr = model.plotOn(frame,

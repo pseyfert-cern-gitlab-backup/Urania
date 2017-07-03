@@ -108,12 +108,14 @@ def getconfig() :
     configdict["Calibrations"]["2011"]["Kaon"]   = {}
     configdict["Calibrations"]["2011"]["Kaon"]["Up"]   = { "FileName":"root://eoslhcb.cern.ch//eos/lhcb/user/a/adudziak/Bs2DsK_3fbCPV/CalibrationSamples2/Calib_Dst_Up_K_PID5_Str21r1.root"}
     configdict["Calibrations"]["2011"]["Kaon"]["Down"] = { "FileName":"root://eoslhcb.cern.ch//eos/lhcb/user/a/adudziak/Bs2DsK_3fbCPV/CalibrationSamples2/Calib_Dst_Down_K_PID5_Str21r1.root"}
+
     configdict["Calibrations"]["2011"]["Combinatorial"]   = {}
-    configdict["Calibrations"]["2011"]["Combinatorial"]["Up"] = { "FileName":"/afs/cern.ch/work/g/gtellari/public/Bs2DsK_3fb/PIDK_combo_shapes/work_Comb_DsK_2011.root",
-                                                                  "WorkName":"workspace", "DataName":"dataCombBkg_up", "Type":"Special",
+    configdict["Calibrations"]["2011"]["Combinatorial"]   = {}
+    configdict["Calibrations"]["2011"]["Combinatorial"]["Up"] = { "FileName":"/afs/cern.ch/user/g/gtellari/public/Bs2DsK_3fb/BDTG3/Comb_PID/work_Comb_DsK_Run1_BDTG3.root",
+                                                                  "WorkName":"workspace", "DataName":"dataCombBkg_up_2011", "Type":"Special",
                                                                   "WeightName":"sWeights", "PIDVarName":"lab1_PIDK", "Variables":["lab1_PT","nTracks"]}
-    configdict["Calibrations"]["2011"]["Combinatorial"]["Down"] = { "FileName":"/afs/cern.ch/work/g/gtellari/public/Bs2DsK_3fb/PIDK_combo_shapes/work_Comb_DsK_2011.root",
-                                                                    "WorkName":"workspace", "DataName":"dataCombBkg_down", "Type":"Special",
+    configdict["Calibrations"]["2011"]["Combinatorial"]["Down"] = { "FileName":"/afs/cern.ch/user/g/gtellari/public/Bs2DsK_3fb/BDTG3/Comb_PID/work_Comb_DsK_Run1_BDTG3.root",
+                                                                    "WorkName":"workspace", "DataName":"dataCombBkg_down_2011", "Type":"Special",
                                                                     "WeightName":"sWeights", "PIDVarName":"lab1_PIDK", "Variables":["lab1_PT","nTracks"]}
 
     configdict["Calibrations"]["2012"] = {}
@@ -124,11 +126,11 @@ def getconfig() :
     configdict["Calibrations"]["2012"]["Kaon"]["Up"]   = { "FileName":"root://eoslhcb.cern.ch//eos/lhcb/user/a/adudziak/Bs2DsK_3fbCPV/CalibrationSamples2/Calib_Dst_Up_K_PID5_Str21.root"}
     configdict["Calibrations"]["2012"]["Kaon"]["Down"] = { "FileName":"root://eoslhcb.cern.ch//eos/lhcb/user/a/adudziak/Bs2DsK_3fbCPV/CalibrationSamples2/Calib_Dst_Down_K_PID5_Str21.root"}
     configdict["Calibrations"]["2012"]["Combinatorial"]   = {}
-    configdict["Calibrations"]["2012"]["Combinatorial"]["Up"] = { "FileName":"/afs/cern.ch/work/g/gtellari/public/Bs2DsK_3fb/PIDK_combo_shapes/work_Comb_DsK_2012.root",
-                                                                  "WorkName":"workspace", "DataName":"dataCombBkg_up", "Type":"Special",
+    configdict["Calibrations"]["2012"]["Combinatorial"]["Up"] = { "FileName":"/afs/cern.ch/user/g/gtellari/public/Bs2DsK_3fb/BDTG3/Comb_PID/work_Comb_DsK_Run1_BDTG3.root",
+                                                                  "WorkName":"workspace", "DataName":"dataCombBkg_up_2012", "Type":"Special",
                                                                   "WeightName":"sWeights", "PIDVarName":"lab1_PIDK", "Variables":["lab1_PT","nTracks"]}
-    configdict["Calibrations"]["2012"]["Combinatorial"]["Down"] = { "FileName":"/afs/cern.ch/work/g/gtellari/public/Bs2DsK_3fb/PIDK_combo_shapes/work_Comb_DsK_2012.root",
-                                                                    "WorkName":"workspace", "DataName":"dataCombBkg_down", "Type":"Special",
+    configdict["Calibrations"]["2012"]["Combinatorial"]["Down"] = { "FileName":"/afs/cern.ch/user/g/gtellari/public/Bs2DsK_3fb/BDTG3/Comb_PID/work_Comb_DsK_Run1_BDTG3.root",
+                                                                    "WorkName":"workspace", "DataName":"dataCombBkg_down_2012", "Type":"Special",
                                                                     "WeightName":"sWeights", "PIDVarName":"lab1_PIDK", "Variables":["lab1_PT","nTracks"]}
 
     #----------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -240,9 +242,9 @@ def getconfig() :
     #configdict["PlotSettings"]["colors"] = [kRed-7, kBlue-6, kBlue-10, kGreen+3]
 
     configdict["LegendSettings"] = {}
-    configdict["LegendSettings"]["BeautyMass"] = {"Position":[0.53, 0.45, 0.90, 0.91], "TextSize": 0.05, "LHCbText":[0.7,0.9]}
-    configdict["LegendSettings"]["CharmMass"]  = {"Position":[0.20, 0.69, 0.93, 0.93], "TextSize": 0.05, "LHCbText":[0.7,0.9],
-                                                  "ScaleYSize":1.5, "SetLegendColumns":2, "LHCbTextSize":0.075 }
+    configdict["LegendSettings"]["BeautyMass"] = {"Position":[0.53, 0.45, 0.90, 0.91], "TextSize": 0.05, "LHCbText":[0.35,0.9]}
+    configdict["LegendSettings"]["CharmMass"]  = {"Position":[0.20, 0.69, 0.93, 0.93], "TextSize": 0.05, "LHCbText":[0.8,0.66],
+                                                  "ScaleYSize":1.75, "SetLegendColumns":2, "LHCbTextSize":0.075 }
     configdict["LegendSettings"]["BacPIDK"]    = {"Position":[0.20, 0.69, 0.93, 0.93], "TextSize": 0.05, "LHCbText":[0.7,0.9], 
                                                   "ScaleYSize":1.5, "SetLegendColumns":2, "LHCbTextSize":0.075}
 

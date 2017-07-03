@@ -1,7 +1,17 @@
 from B2DXFitters import *
 from ROOT import *
 
+
+class TranslatorFake: 
+    def _init_ ( self ):
+        name = "MDFitFakeSettings"
+        md = MDFitterSettings(name,name)
+        md.SetDataCuts("All","")        
+        self.mdfit = md
+        return self.mdfit 
+
 class Translator:
+
     def __init__( self, myconfigfile, name , full) :
         md = MDFitterSettings(name,name)
         if myconfigfile.has_key("dataName"):
