@@ -4,6 +4,18 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
+! 2017-07-03 - Agnieszka Dziurda
+  - add dump fix for setting B2DXFitters. In python script you can do now: 
+    	from B2DXFitters.settings import setEnv
+    	setEnv()
+    and all classes/namespaces should be visible in the python 
+  - update config files for DsstPi
+  - small changes in MDFit plotting 
+  - fixing fitSplines.py, calculateAcceptance.py, comparePDF.py with new 
+    enviroment settings. 
+  - allowing global weights in prepareWorkspace.py 
+
+
 ! 2017-06-12 - Carlos Vazquez Sierra
  + Tagging v4r0 for Urania v7r0.
 

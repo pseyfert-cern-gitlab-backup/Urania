@@ -135,10 +135,61 @@ def getSignalNames(myconfig):
 
     return signalNames
 
+def checkWeights(workspace, datasetTS, smyhs, debug):
+    dataCheck = []
+    i = 0
+    nEn = []
+
+    sum2011 = 0
+    sum2012 = 0
+    sumRun1 = 0
+    for smyh in smyhs:
+        name = datasetTS +smyh
+        dataCheck.append(GeneralUtils.GetDataSet(workspace,name,debug))
+        if i != 0:
+            nEn.append(dataCheck[i].sumEntries())
+            if ( smyh.Contains("2011") ):
+                sum2011 = sum2011 + dataCheck[i].sumEntries()
+            if ( smyh.Contains("2012") ):
+                sum2012= sum2012 + dataCheck[i].sumEntries()
+            sumRun1= sumRun1 + dataCheck[i].sumEntries()
+        else:
+            nEn.append(dataCheck[0].sumEntries())
+            sumRun1= sumRun1 + dataCheck[0].sumEntries()
+            if ( smyh.Contains("2011") ):
+                sum2011= sum2011 + dataCheck[0].sumEntries()
+            if ( smyh.Contains("2012") ):
+                sum2012= sum2012 + dataCheck[0].sumEntries()
+        i = i+1
+
+    if debug: 
+        print nEn
+        print "Sum of 2011: ",sum2011
+        print "Sum of 2012: ",sum2012
+        print "Sum of Run1: ",sumRun1
+        j = 0
+        print "--------------------------------------------"
+        print "[INFO] Percentage with respect to year"
+        print "--------------------------------------------"
+        for smyh in smyhs:
+            if ( smyh.Contains("2011") ):
+                print "Sample: ", smyh, " percent: ", nEn[j]/sum2011*100, " [%]"
+            if ( smyh.Contains("2012") ):
+                print "Sample: ", smyh, " percent: ", nEn[j]/sum2012*100, " [%]"
+            j = j + 1
+
+    print "--------------------------------------------"
+    print "[INFO] Percentage with respect to all data"
+    print "--------------------------------------------"
+
+    j = 0
+    for smyh in smyhs:
+        print "Sample: ", smyh, " percent: ", nEn[j]/sumRun1*100, " [%]"
+        j = j +1
 
 #------------------------------------------------------------------------------
 def runFitSplineAcc( debug, configName, read, fileNameIn, wsname, workName,
-		     sample, mode, merge, year, binned, rel, log, plot, sufix) :
+		     sample, mode, merge, year, binned, rel, log, plot, sufix, checkW) :
    
     RooAbsData.setDefaultStorageType(RooAbsData.Tree)
     
@@ -201,6 +252,10 @@ def runFitSplineAcc( debug, configName, read, fileNameIn, wsname, workName,
     sampleTS = TString(sample)
     yearTS = TString(year)
     datasetTS = TString("dataSetMC_")+decayTS+t
+
+    if merge != "":
+        print "[ERROR] Merge option not supported. The data sets are appended by definition. No simultaneous fit possible"
+        exit(0) 
     if merge == "pol" or merge == "both":
         sampleTS = TString("both")
     if merge == "year" or merge == "both":
@@ -215,22 +270,29 @@ def runFitSplineAcc( debug, configName, read, fileNameIn, wsname, workName,
     m = GeneralUtils.GetMode(modeTS,debug)
     y = GeneralUtils.GetYear(yearTS,debug)
 
-    data = []
-    i = 0
+
     for smyh in smyhs:
         name = datasetTS +smyh
         data.append(GeneralUtils.GetDataSet(workspace,name,debug))
-        if i != 0:
-            data[0].append(data[i])
-        i = i+1
-    
 
-    obs = data[0].get()
+
+    i = 0
+    dataMerged = data[0].Clone() 
+    for smyh in smyhs:
+        if i!=0:
+            dataMerged.append(data[i]) 
+        i = i + 1
+
+    checkWeights(workspace, datasetTS, smyhs, debug)
+    if checkW:
+        exit(0)
+
+    obs = dataMerged.get()
     time = obs.find(MDSettings.GetTimeVarOutName().Data())
     terr = obs.find(MDSettings.GetTerrVarOutName().Data())
 
     time.setBins(int(myconfigfile["Bins"]))
-    dataF = RooDataSet("dataSet_time", "dataSet_time", data[0].get(), RooFit.Import(data[0]))
+    dataF = RooDataSet("dataSet_time", "dataSet_time", dataMerged.get(), RooFit.Import(dataMerged))
     dataF_binned = RooDataHist("data_fit_binned","data_fit_binned",RooArgSet(time,terr),dataF)
 
 
@@ -567,6 +629,12 @@ parser.add_option( '--merge',
                    help = 'for merging magnet polarities use: --merge pol, for merging years of data taking use: --merge year, for merging both use: --merge both'
                    )
 
+parser.add_option( '--checkWeights',
+                   dest = 'checkWeights',
+                   default = False,
+                   action = 'store_true',
+                   help = 'check weights for subsamples') 
+                              
 parser.add_option( '--year',
 		              dest = 'year',
                    default = "",
@@ -647,6 +715,6 @@ if __name__ == '__main__' :
 
     runFitSplineAcc( options.debug, configName, options.read, options.fileIn, options.save, options.work,
 		     options.pol, options.mode, options.merge, options.year, options.binned, options.rel, 
-                     options.log, options.plot, options.sufix)
+                     options.log, options.plot, options.sufix, options.checkWeights)
 # -----------------------------------------------------------------------------
                                 

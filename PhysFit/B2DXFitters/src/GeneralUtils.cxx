@@ -2592,19 +2592,48 @@ namespace GeneralUtils {
     {
       if ( mode == "all") 
       {
-        label = "#font[132]{m(K^{+}K^{-}#pi^{#pm}, #pi^{+}#pi^{-}#pi^{#pm}, K^{#pm}#pi^{-}#pi^{+}) [MeV/#font[12]{c}^{2}]}";
+	if ( decay.Contains("Dsst") )
+	  { 
+	    label = "#font[132]{m((K^{+}K^{-}#pi^{#pm}, #pi^{+}#pi^{-}#pi^{#pm}, K^{#pm}#pi^{-}#pi^{+})#gamma) [MeV/#font[12]{c}^{2}]}";
+	  }
+	else
+	  {
+	    label = "#font[132]{m(K^{+}K^{-}#pi^{#pm}, #pi^{+}#pi^{-}#pi^{#pm}, K^{#pm}#pi^{-}#pi^{+}) [MeV/#font[12]{c}^{2}]}";
+	  }
       }
       else if (  mode == "nonres" || mode == "kstk" || mode== "phipi" || mode == "kkpi")
       {
-        label = "#font[132]{m(K^{+}K^{-}#pi^{#pm}) [MeV/#font[12]{c}^{2}]}";
+	if ( decay.Contains("Dsst") )
+          {
+	    label = "#font[132]{m((K^{+}K^{-}#pi^{#pm})#gamma) [MeV/#font[12]{c}^{2}]}";
+	  }
+	else
+	  {
+	    label = "#font[132]{m(K^{+}K^{-}#pi^{#pm}) [MeV/#font[12]{c}^{2}]}";
+	  }
       }
       else if (mode == "kpipi") 
       {
-        label = "#font[132]{m(K^{#pm}#pi^{-}#pi^{+}) [MeV/#font[12]{c}^{2}]}";
+	if ( decay.Contains("Dsst") )
+          {
+	    label = "#font[132]{m((K^{#pm}#pi^{-}#pi^{+})#gamma) [MeV/#font[12]{c}^{2}]}";
+	  }
+	else
+	  {
+	    label = "#font[132]{m(K^{#pm}#pi^{-}#pi^{+}) [MeV/#font[12]{c}^{2}]}";
+	  }
+
       }
       else if (  mode == "pipipi") 
       {
-        label = "#font[132]{m(#pi^{+}#pi^{-}#pi^{#pm}) [MeV/#font[12]{c}^{2}]}";
+	if ( decay.Contains("Dsst") )
+          {
+	    label = "#font[132]{m((#pi^{+}#pi^{-}#pi^{#pm})#gamma) [MeV/#font[12]{c}^{2}]}";
+	  }
+	else
+	  {
+	    label = "#font[132]{m(#pi^{+}#pi^{-}#pi^{#pm}) [MeV/#font[12]{c}^{2}]}";
+	  }
       }
       else if (  mode == "hhhpi0" )
       {

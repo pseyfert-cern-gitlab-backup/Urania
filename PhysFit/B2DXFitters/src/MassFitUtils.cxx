@@ -2828,6 +2828,11 @@ namespace MassFitUtils {
           //  }
         }
       }
+
+      
+      std::cout<<"[INFO] Create signal MC dataSet: "<<dataSetMC[i]->GetName()
+	       <<" with entries: "<<dataSetMC[i]->numEntries()
+	       <<" and sum of entries: "<<dataSetMC[i]->sumEntries()<<std::endl;
       
       /*
         const TTree* treeConst = dataSetMC[i]->tree();
