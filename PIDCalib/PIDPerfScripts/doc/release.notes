@@ -3,6 +3,8 @@
 ! Responsible : Donal Hill
 ! Purpose     : Scripts using PIDPerfTools to perform PID studies
 !-----------------------------------------------------------------------------
+! 2017-07-13 - Donal Hill
+	- Removed PID printing at end of MakePerfHistsRunRange.py
 
 ! 2017-06-14 - Carlos Vazquez Sierra
  + Tagging v12r0 for Urania v7r0.
