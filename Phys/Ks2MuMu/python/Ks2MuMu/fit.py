@@ -1,3 +1,5 @@
+#!/usr/bin/env lb-run
+# args: -p PYTHONPATH=/afs/cern.ch/user/m/mramospe/UraniaDev_v5r0/Phys/Ks2MuMu/python/Ks2MuMu/ Urania/v5r0 python
 from Urania import *
 AccessPackage("Bs2MuMu")
 import ROOT as rt
@@ -12,6 +14,9 @@ from collections import OrderedDict
 import sys
 sys.path.append('./FIT_2012')
 rt.RooWorkspace.Import = getattr(rt.RooWorkspace, 'import') ### RooFit method < import > is not allowed in python
+
+# Path
+path = '/afs/cern.ch/user/m/mramospe/UraniaDev_v5r0/Phys/Ks2MuMu/python/Ks2MuMu/'
 
 # Loads the lhcb style for the plots 
 rt.gROOT.ProcessLine( '.x lhcbStyle.C' )
@@ -40,6 +45,7 @@ FIXEXPOVALS  = 0 ### 0 - Fix exponential values to study the bkg syst
 BR_MINOS     = 1 ### 1 - Get the asymmetric errors using minos
 MAKEPLOTS    = 0 ### 1 - Create and save the mass fit plots
 NULL_PVAL    = 0 ### 0 - Re-run the fit setting the BR to zero and removing the prior
+NTOYS        = 4 ### 0 - Number of toys to generate
 ### ProfileType.NLL - Get the profile
 #PROFILE = ProfileType.NLL
 PROFILE = ProfileType.NoProfile
@@ -114,12 +120,12 @@ for key, kbin in BINNING.iteritems():
         ix = key + str(i)
         if CREATE_FILES:
             print '--- CREATING FILE FOR %s' %ix
-            fmm[ix] = rt.TFile('./prof_mm' + ix + '.root', 'recreate')
+            fmm[ix] = rt.TFile(path + 'prof_mm' + ix + '.root', 'recreate')
             tmm[ix] = temptree.CopyTree(BDTplusMuID[key][i][3:])
             tmm[ix].Write()
             fmm[ix].Close()
         
-        fmm[ix] = rt.TFile('./prof_mm' + ix + '.root')
+        fmm[ix] = rt.TFile(path + 'prof_mm' + ix + '.root')
         tmm[ix] = fmm[ix].Get('DecayTree')
         datamm[ix] = rt.RooDataSet('datamm' + ix, 'datamm' + ix, tmm[ix], rt.RooArgSet(Mass))
         catdatamm[ix] = rt.RooDataSet('catdatamm' + ix, 'catdatamm' + ix, rt.RooArgSet(Mass), rf.Index(category), rf.Import(ix, datamm[ix]))
@@ -444,15 +450,15 @@ if PROFILE != ProfileType.NoProfile:
     rt.gROOT.SetBatch()
     print '*** CREATING PROFILE ***'
     if FIXEXPOVALS:
-        f = rt.TFile('BRprofile_BkgSyst_FixExpo_' + ''.join(BINNING.keys())[:-1] + '.root', 'RECREATE')
+        f = rt.TFile(path + 'BRprofile_BkgSyst_FixExpo_' + ''.join(BINNING.keys())[:-1] + '.root', 'RECREATE')
     elif EXPO:
         if COMBINE_2011:
-            name = 'BRprofile_' + ''.join(BINNING.keys())[:-1] + '.root'
+            name = path + 'BRprofile_' + ''.join(BINNING.keys())[:-1] + '.root'
         else:
-            name = 'BRprofile_No2011_' + ''.join(BINNING.keys())[:-1] + '.root'
+            name = path + 'BRprofile_No2011_' + ''.join(BINNING.keys())[:-1] + '.root'
         f = rt.TFile(name, 'RECREATE')
     else:
-        f = rt.TFile('BRprofile_BkgSyst_' + ''.join(BINNING.keys())[:-1] + '.root', 'RECREATE')
+        f = rt.TFile(path + 'BRprofile_BkgSyst_' + ''.join(BINNING.keys())[:-1] + '.root', 'RECREATE')
 
     import getlimit
     if PROFILE == ProfileType.BayesCalc:
@@ -512,16 +518,8 @@ print '***********************'
 #-----------------------------------------------------------------------------
 # Do toys
 
-'''
-print '******* FIX BKG PARS *******'
-
-for key, kbin in BINNING.iteritems():
-    for i in kbin:
-        mm[key + str(i)].k.setConstant(True)
-'''
-
-NTOYS = 0
 if NTOYS:
+    
     brvalues = []
     brerrors = []
     brerrlo  = []
@@ -534,76 +532,79 @@ if NTOYS:
     final_pars = fitResults.floatParsFinal()
     varlst     = rt.RooArgList(mainModel.getVariables())
 
-    brtoys_file = rt.TFile('ToysBR_{}.root'.format(NTOYS), 'RECREATE')
+    seed = int(rt.TRandom3(0).Uniform(0, 1000000))
+    rt.RooRandom.randomGenerator().SetSeed(seed)
+    
+    brtoys_file   = rt.TFile(path + 'ToysBR_{}_{}.root'.format(NTOYS, seed), 'RECREATE')
     brtoys_folder = brtoys_file.mkdir('plots')
 
     toy_id = 0
-for i in xrange(NTOYS):
+    
+    for i in xrange(NTOYS):
 
-    brtoys_folder.cd()
+        brtoys_folder.cd()
     
-    outof = '{}/{}'.format(i + 1, NTOYS)
+        outof = '{}/{}'.format(i + 1, NTOYS)
 
-    # The values for the toys are taken from the final
-    varlst.assignValueOnly(final_pars)
+        # The values for the toys are taken from the final
+        varlst.assignValueOnly(final_pars)
     
-    # Set BR to 0 (no signal)
-    varlst.find('BR').setVal(0)
+        # Set BR to 0 (no signal)
+        varlst.find('BR').setVal(0)
 
-    print '******* DO TOY: {}*******'.format(outof)
-    toy = mainModel.generate(rt.RooArgSet(Mass, category), DATA['ALL'].sumEntries())
+        print '******* DO TOY: {}*******'.format(outof)
+        toy = mainModel.generate(rt.RooArgSet(Mass, category), DATA['ALL'].sumEntries())
     
-    # The fit is performed using the same initial values as in the main fit
-    varlst.assignValueOnly(init_pars)
+        # The fit is performed using the same initial values as in the main fit
+        varlst.assignValueOnly(init_pars)
     
-    print '******* FIT TO TOY: {} *******'.format(outof)
+        print '******* FIT TO TOY: {} *******'.format(outof)
     
-    toy_nll = mainModel.createNLL(
-        toy,
-        rf.Offset(True),
-        rf.ExternalConstraints(summaryConstraints),
-        rf.Verbose(False),
-        rf.NumCPU(12)
-        )
-    myminuit = rt.RooMinuit(toy_nll)
-    myminuit.setVerbose(False)
-    myminuit.setPrintLevel(-1)
+        toy_nll = mainModel.createNLL(
+            toy,
+            rf.Offset(True),
+            rf.ExternalConstraints(summaryConstraints),
+            rf.Verbose(False),
+            rf.NumCPU(12)
+            )
+        myminuit = rt.RooMinuit(toy_nll)
+        myminuit.setVerbose(False)
+        myminuit.setPrintLevel(-1)
     
-    status = True
-    while status:
+        status = True
+        while status:
 
-        myminuit.minos(rt.RooArgSet(BR_))
-        minosres = myminuit.save()
+            myminuit.minos(rt.RooArgSet(BR_))
+            minosres = myminuit.save()
         
-        status = minosres.status()
+            status = minosres.status()
 
-        brvalues.append(BR_.getVal())
-        brerrors.append(BR_.getError())
-        brerrlo.append(BR_.getErrorLo())
-        brerrhi.append(BR_.getErrorHi())
-        brstatus.append(status)
-
-        # By default the values of the limits are negative
-        br90lim.append(-1e6)
-        br95lim.append(-1e6)
-
-        toy_id += 1
-
-        if status:
-            print '******* REDO TOY FIT *******'
+            brvalues.append(BR_.getVal())
+            brerrors.append(BR_.getError())
+            brerrlo.append(BR_.getErrorLo())
+            brerrhi.append(BR_.getErrorHi())
+            brstatus.append(status)
             
-    print '******* CALCULATE LIMIT FOR TOY *******'
-    import getlimit
-    limit_plot, x90, x95 = getlimit.limitNLL(toy_nll, parOfInt)
-    
-    br90lim[-1] = x90
-    br95lim[-1] = x95
+            # By default the values of the limits are negative
+            br90lim.append(-1e6)
+            br95lim.append(-1e6)
 
-    limit_plot[0].Write('toy_{}'.format(toy_id))
-    
-print '******* END FIT TO TOYS *******'
+            toy_id += 1
 
-if NTOYS:
+            if status:
+                print '******* REDO TOY FIT *******'
+            
+        print '******* CALCULATE LIMIT FOR TOY *******'
+        import getlimit
+        limit_plot, x90, x95 = getlimit.limitNLL(toy_nll, parOfInt)
+    
+        br90lim[-1] = x90
+        br95lim[-1] = x95
+
+        limit_plot[0].Write('toy_{}_{}'.format(seed, toy_id))
+    
+    print '******* END FIT TO TOYS *******'
+
     brtoys_file.cd()
     t = rt.TTree('T', 'T', 0)
 
@@ -615,7 +616,6 @@ if NTOYS:
     BR90  = np.array([0], dtype=float)
     BR95  = np.array([0], dtype=float)
     BRsta = np.array([0], dtype=bool)
-    BRid  = np.array([0], dtype=int)
 
     t.Branch('BR', BRadd, 'BR/D')
     t.Branch('error', BRerr, 'error/D')
@@ -624,12 +624,11 @@ if NTOYS:
     t.Branch('lim90', BR90, 'lim90/D')
     t.Branch('lim95', BR95, 'lim95/D')
     t.Branch('status', BRsta, 'status/O')
-    t.Branch('id', BRid, 'id/I')
 
-    for i, (v, e, l, h, l90, l95, s) in enumerate(zip(brvalues, brerrors,
-                                                      brerrlo, brerrhi,
-                                                      br90lim, br95lim,
-                                                      brstatus)):
+    for v, e, l, h, l90, l95, s in zip(brvalues, brerrors,
+                                       brerrlo, brerrhi,
+                                       br90lim, br95lim,
+                                       brstatus):
         BRadd[0] = v
         BRerr[0] = e
         BRerl[0] = l
@@ -637,7 +636,6 @@ if NTOYS:
         BR90[0]  = l90
         BR95[0]  = l95
         BRsta[0] = s
-        BRid[0]  = i
         t.Fill()
         if i % 10000 == 0:
             t.AutoSave()
@@ -772,11 +770,11 @@ if MAKEPLOTS:
     rt.gROOT.SetBatch()
     strkws = [ str( kw ) for kw in BINNING ]
     if FIXEXPOVALS:
-        oplots = rt.TFile.Open( 'FitPlots_BkgSyst_FixExpo_' + ''.join( strkws )[:-1] + '.root', 'RECREATE' )
+        oplots = rt.TFile.Open(path + 'FitPlots_BkgSyst_FixExpo_' + ''.join( strkws )[:-1] + '.root', 'RECREATE' )
     elif EXPO:
-        oplots = rt.TFile.Open( 'FitPlots_' + ''.join( strkws )[:-1] + '.root', 'RECREATE' )
+        oplots = rt.TFile.Open(path + 'FitPlots_' + ''.join( strkws )[:-1] + '.root', 'RECREATE' )
     else:
-        oplots = rt.TFile.Open( 'FitPlots_BkgSyst_' + ''.join( strkws )[:-1] + '.root', 'RECREATE' )
+        oplots = rt.TFile.Open(path + 'FitPlots_BkgSyst_' + ''.join( strkws )[:-1] + '.root', 'RECREATE' )
     for kw, bins in BINNING.iteritems():
         for i in bins:
             c = plot( kw + str( i ) )
