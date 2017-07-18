@@ -1,3 +1,8 @@
+# ----------------------------------------------------------------
+# Standard model prediction for the BR
+SMBR   = 5e-12
+S_SMBR = 1.5e-12
+
 from ipa_params import *
 Blinding = "GRAPPA"
 alpha, s_alpha_corr, s_alpha_uncorr = {}, {}, {}
@@ -11,6 +16,7 @@ TriggerSyst   = { 'TOS1_': 8.0/100, 'TOS2_': 11./100}
 MuIDSyst      = { 'TOS1_': 0.2/100, 'TOS2_': 0.3/100}
 KspectrumSyst = 4.3/100
 SigShapeSyst  = 0.8/100
+BkgSyst       = 0.9/100
 
 #------ NORMALIZATION FACTOR WITHOUT MUONID -------
 TOS1_N=[7.368078409770543e-10, 7.598363016500101e-10, 7.752715245584159e-10, 7.800820262188811e-10, 7.420562324051509e-10, 7.652433938178411e-10, 7.464889117358329e-10, 7.792816477068047e-10, 7.696239724215666e-10, 7.650884816179239e-10]
@@ -76,4 +82,18 @@ for i in range(10):
     alpha["TOS2_" + ix] = TOS2[i]
     s_alpha_corr["TOS2_" + ix] = s_TOS2_corr[i]
     s_alpha_uncorr["TOS2_" + ix] = s_TOS2_uncorr[i]   
+
+
+def printExpYields():
+    for cat in ('TOS1_', 'TOS2_'):
+        for i in xrange(10):
+            
+            key = cat + str(i)
+            a   = alpha[key]
+            s_a = sqrt(s_alpha_corr[key]**2 + s_alpha_uncorr[key]**2)
+
+            f   = SMBR/a
+            s_f = sqrt((S_SMBR/a)**2 + (s_a*SMBR/a**2)**2)
+
+            print 'Exp. Signal {} => {} +- {}'.format(key, f, s_f)
 

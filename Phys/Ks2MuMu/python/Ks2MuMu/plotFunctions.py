@@ -1,7 +1,7 @@
 import ROOT as rt
 import ROOT.RooFit as rf
 
-def makePullPlot( roovar, dataSet, nbins, pdf, limits = False ):
+def makePullPlot( roovar, dataSet, nbins, pdf, limits = False, rm_nulls = True ):
     
     ranges = {}
     if limits:
@@ -36,7 +36,11 @@ def makePullPlot( roovar, dataSet, nbins, pdf, limits = False ):
             graphPdf   = curves[ kw ]
             vmin, vmax = el
             if vmin <= xbin and xbin < vmax:
-                accept = True
+                if rm_nulls:
+                    if vbin != 0:
+                        accept = True
+                else:
+                    accept = True
                 break
     
         if accept:

@@ -82,31 +82,43 @@ def getXfromY( hist, *args ):
     res = np.interp(args, yvals, xvals)
     return res
 
-def removePointsBefore( val, graph ):
+def removePointsBefore( val, graph, axis = 'x' ):
     '''
     Remove points before a certain value (to be used when drawing areas)
     '''
     x  = Double( 0 )
     y  = Double( 0 )
+
+    if axis == 'x':
+        link_val = x
+    else:
+        link_val = y
+
     ip = []
     for i in xrange( graph.GetN() ):
         graph.GetPoint( i, x, y )
-        if x < val:
+        if link_val < val:
             ip.append( i )
     ip.reverse()
     for i in ip[1:]:
         graph.RemovePoint( 0 )
 
-def removePointsAfter( val, graph ):
+def removePointsAfter( val, graph, axis = 'x' ):
     '''
     Remove points after a certain value (to be used when drawing areas)
     '''
     x  = Double( 0 )
     y  = Double( 0 )
+
+    if axis == 'x':
+        link_val = x
+    else:
+        link_val = y
+
     ip = []
     for i in xrange( graph.GetN() ):
         graph.GetPoint( i, x, y )
-        if x > val:
+        if link_val > val:
             ip.append( i )
     ip.reverse()
     for i in ip:
@@ -267,31 +279,30 @@ def limitNLL( nll, poi, nbins = 200, cname = 'Profile' ):
     c_cum = whole[0]
     c_cum.SetName( cname + '_Cum' )
     c_cum.SetTitle( cname + '_Cum' )
-    hcum.Draw()
+    #hcum.Draw()
     c_cum.Write()
 
     print '\n*** Limits ***'
     print '--- 95 % CL limit:', x95
     print '--- 90 % CL limit:', x90
 
-    return whole
+    return whole, x90, x95
 
 def cosmetics( hcum, cat ):
     '''
     Format the limit plot
     '''
     
+    c = TCanvas( 'Lim_' + cat, 'Lim' + cat )
     hcum.GetYaxis().SetRangeUser( MINPROB, MAXPROB )
     hcum.GetXaxis().SetRangeUser( MINBR, MAXBR )
-
-    c = TCanvas( 'Lim_' + cat, 'Lim' + cat )
     hcum.GetYaxis().SetNdivisions( 505 )
     hcum.GetXaxis().SetNdivisions( 504 )
     hcum.GetYaxis().SetTitle( 'CL' )
     hcum.GetXaxis().SetTitle( 'B(K_{S}^{0}#rightarrow#mu^{+}#mu^{-}) #times10^{9}' )
     hcum.GetXaxis().SetTitleOffset( 1. )
-    hcum.Draw('C')
-
+    hcum.Draw('L')
+    
     x95, x90 = getXfromY( hcum, 0.95, 0.9 )
 
     hcumfill90 = graphFromHist(hcum)
@@ -299,8 +310,10 @@ def cosmetics( hcum, cat ):
     addPoint( hcumfill90, x90, 0.9 )
     addPoint( hcumfill90, x90, 0 )
     hcumfill90.SetPoint( hcumfill90.GetN(), x90, 0 )
-    hcumfill90.SetFillColor(kViolet)
-    hcumfill90.SetFillStyle(3001)
+    #hcumfill90.SetFillColor(kViolet)
+    #hcumfill90.SetFillStyle(3001)
+    hcumfill90.SetFillColor(kGreen)
+    hcumfill90.SetFillStyle(1001)
     hcumfill90.Draw('][FSAME')
 
     hcumfill95 = graphFromHist(hcum)
@@ -310,8 +323,10 @@ def cosmetics( hcum, cat ):
     addPoint( hcumfill95, x90, 0.90, at_start = True )
     addPoint( hcumfill95, x90, 0, at_start = True )
     hcumfill95.SetPoint( hcumfill95.GetN(), x95, 0 )
-    hcumfill95.SetFillStyle(3001)
-    hcumfill95.SetFillColor(kAzure)
+    #hcumfill95.SetFillStyle(3001)
+    #hcumfill95.SetFillColor(kAzure)
+    hcumfill95.SetFillStyle(1001)
+    hcumfill95.SetFillColor(kYellow)
     hcumfill95.Draw('][FSAME')
 
     line95_h = TLine( MINBR, 0.95, x95, 0.95 )
@@ -321,7 +336,7 @@ def cosmetics( hcum, cat ):
     for line in ( line95_h, line90_h, line95_v, line90_v ):
         line.SetLineColor(kRed)
         line.SetLineStyle(kDotted)
-        line.SetLineWidth( 2 )
+        line.SetLineWidth( 4 )
         line.Draw('SAME')
     lines = line95_h, line90_h, line95_v, line90_v
 
@@ -329,22 +344,28 @@ def cosmetics( hcum, cat ):
         text = TPaveText( 0.2, 0.8, 0.5, 0.9, 'NDC' )
     else:
         text = TPaveText( 0.6, 0.7, 0.9, 0.8, 'NDC' )
-    #text.SetFillColor( kWhite )
-    #text.SetBorderSize( 0 )
+    text.SetFillColor( kWhite )
+    text.SetBorderSize( 0 )
     #text.AddText( 'LHCb Preliminary' )
-    #text.Draw()
+    #text.AddText( 'LHCb unofficial' )
+    text.AddText( 'LHCb' )
+    text.Draw()
+
+    ''' Re-draw x-axis '''
+    gPad.RedrawAxis('SAME')
+
+    hcum.Draw('SAMEL')
 
     c.Update()
 
     print '-- Limit at 95 % CL:', x95
     print '-- Limit at 90 % CL:', x90
     
-    
     c.Print( c.GetName() + '.pdf' )
     c.Print( c.GetName() + '.png' )
+    c.Print( c.GetName() + '.eps' )
     c.Print( c.GetName() + '.C' )
     
-
     return c, hcumfill95, hcumfill90, hcum, lines, text
 
 def makePlots( cat ):

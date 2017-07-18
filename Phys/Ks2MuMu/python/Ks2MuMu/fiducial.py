@@ -1,4 +1,3 @@
-
 # ----------------------------------------------------------------
 # Definition of the cuts used in the analysis
 aa = "&&"

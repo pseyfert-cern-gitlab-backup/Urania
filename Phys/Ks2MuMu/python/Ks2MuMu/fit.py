@@ -15,6 +15,7 @@ rt.RooWorkspace.Import = getattr(rt.RooWorkspace, 'import') ### RooFit method < 
 
 # Loads the lhcb style for the plots 
 rt.gROOT.ProcessLine( '.x lhcbStyle.C' )
+rt.gROOT.SetBatch(True)
 
 # Loads the functions used in the fit
 rt.gROOT.ProcessLine('.L $URANIAROOT/src/RooIpatia2.cxx++')
@@ -38,9 +39,10 @@ EXPO         = 1 ### 1 - if set to zero it will use a polynomial for the comb bk
 FIXEXPOVALS  = 0 ### 0 - Fix exponential values to study the bkg syst
 BR_MINOS     = 1 ### 1 - Get the asymmetric errors using minos
 MAKEPLOTS    = 1 ### 1 - Create and save the mass fit plots
+NULL_PVAL    = 0 ### 0 - Re-run the fit setting the BR to zero and removing the prior
 ### ProfileType.NLL - Get the profile
-PROFILE = ProfileType.NLL
-#PROFILE = ProfileType.NoProfile
+#PROFILE = ProfileType.NLL
+PROFILE = ProfileType.NoProfile
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
@@ -79,7 +81,7 @@ BINNING = OrderedDict(
     )
 
 # Fitting variable and ranges
-Mass = rt.RooRealVar('KS0_MM', 'm_{#mu^{+}#mu^{-}}', MASS_MIN, MASS_MAX, 'MeV/c^{2}')
+Mass = rt.RooRealVar('KS0_MM', 'm_{#mu^{+}#mu^{-}}', MASS_MIN, MASS_MAX, 'MeV/#it{c}^{2}')
 category =  rt.RooCategory('sample',  'sample')
 Mass.setRange('all', Mass.getMin(), Mass.getMax() )
 Mass.setRange('lsb', Mass.getMin(), BLIND_MIN     )
@@ -203,7 +205,7 @@ for key, kbin in BINNING.iteritems():
         summaryConstraints.add(Alpha_const[ix][-1])
         #Alpha_const[ix] = const
         
-        Alpha[ix] = rt.RooFormulaVar( 'alpha' + ix, 'alpha' + ix, 'ComFctr' + key + '*alphaconst' + ix, rt.RooArgList( ComFctrSig[key][0], Alpha_const[ix][0] ) )
+        Alpha[ix] = rt.RooFormulaVar('alpha' + ix, 'alpha' + ix, 'ComFctr' + key + '*alphaconst' + ix, rt.RooArgList(ComFctrSig[key][0], Alpha_const[ix][0]))
 
         # Ipa_m_const[key + str(i)] = createBifurConst(TheTable.sigmaKMuNu1, TheTable.sigmaKMuNu1ErrMinus, TheTable.sigmaKMuNu1ErrPlus, 'sigmaKMuNu1')
 
@@ -344,6 +346,12 @@ class KsMuMuModel:
         for el in ipa_pars:
             constant_parameters.add(el)
 
+        '''
+        if i == 'TOS1_9':
+            self.k.setVal(0)
+            self.k.setConstant(True)
+            '''
+
         # MODEL FOR THE BIN < i >
         self.model = rt.RooAddPdf('mumu_model_' + i, 'mumu_model_' + i,
                                   rt.RooArgList(self.bkg, self.Ks),
@@ -384,9 +392,30 @@ DATA['ALL'] = alldata
 # Fits to the whole sample
 print '*** MAIN FIT STARTS HERE ***'
 fitOpts = [rf.Minos(rt.kFALSE), rf.ExternalConstraints(summaryConstraints),
-           rf.Offset(True), rf.Save(True) , rf.NumCPU(12)]
+           rf.Offset(True), rf.Save(True), rf.NumCPU(12), rf.Verbose(False)]
 fitResults = mainModel.fitTo(DATA['ALL'], *fitOpts)
 fitResults.Print()
+# NULL hypothesis model
+if NULL_PVAL:
+    BR_.setVal(0)
+    BR_.setConstant(True)
+    summaryConstraints.remove(prior)
+    null_fr = mainModel.fitTo(DATA['ALL'], *fitOpts)
+    if fitResults.status():
+        print 'ERROR: Problems with the signal-model fit'
+    if null_fr.status():
+        print 'ERROR: Problems with the null-model fit'
+    sig_nll = fitResults.minNll()
+    nos_nll = null_fr.minNll()
+
+    delta_nll = nos_nll - sig_nll
+
+    if delta_nll < 0:
+        print 'ERROR: Tests statistics is negative'
+
+    print '*** NULL HYPOTHESIS P-VALUE: %.6e ***' %rt.Math.chisquared_cdf_c(2*delta_nll, 1)
+    summaryConstraints.add(prior)
+
 print '*** MAIN FIT ENDS HERE ***'
 nll = mainModel.createNLL(DATA['ALL'],
                           rf.Offset(True), rf.ExternalConstraints(summaryConstraints), rf.NumCPU(12))
@@ -443,6 +472,175 @@ if PROFILE != ProfileType.NoProfile:
     f.Close()
 #-----------------------------------------------------------------------------
 
+# Print yields
+print '********* YIELDS *********'
+for key, kbin in BINNING.iteritems():
+
+    comfctr = ComFctrSig[key][0]
+    cfname  = 'ComFctr' + key
+    
+    f   = comfctr.getVal()
+    s_f = comfctr.getError()
+
+    for i in kbin:
+        
+        name = key + str(i)
+        mod  = mm[name]
+
+        calpha = Alpha_const[name][0]
+        
+        rw      = calpha.getVal()
+        s_rw    = calpha.getError()
+        alpha   = f*rw
+        s_alpha = sqrt((s_f*rw)**2 + (s_rw*f)**2)
+
+        br   = BR_.getVal()
+        s_br = BR_.getError()
+        
+        n   = mod.nbs.getVal()
+        s_n = sqrt((s_br/alpha)**2 + (s_alpha*br/alpha**2)**2)
+        
+        aname = 'alphaconst' + name
+
+        corr1 = fitResults.correlation(cfname, aname)
+        corr2 = fitResults.correlation('BR', aname)
+        
+        print 'signal: {} => {} ({}) +- {} (corr1 = {} | corr2 = {})'.format(name, n, br/alpha, s_n, corr1, corr2)
+
+print '***********************'
+
+#-----------------------------------------------------------------------------
+# Do toys
+
+'''
+print '******* FIX BKG PARS *******'
+
+for key, kbin in BINNING.iteritems():
+    for i in kbin:
+        mm[key + str(i)].k.setConstant(True)
+'''
+brvalues = []
+brerrors = []
+brerrlo  = []
+brerrhi  = []
+brstatus = []
+br90lim  = []
+br95lim  = []
+
+NTOYS = 10000
+
+init_pars  = fitResults.floatParsInit()
+final_pars = fitResults.floatParsFinal()
+varlst     = rt.RooArgList(mainModel.getVariables())
+
+brtoys_file = rt.TFile('ToysBR_{}.root'.format(NTOYS), 'RECREATE')
+brtoys_folder = brtoys_file.mkdir('plots')
+
+toy_id = 0
+for i in xrange(NTOYS):
+
+    brtoys_folder.cd()
+    
+    outof = '{}/{}'.format(i + 1, NTOYS)
+
+    # The values for the toys are taken from the final
+    varlst.assignValueOnly(final_pars)
+    
+    # Set BR to 0 (no signal)
+    varlst.find('BR').setVal(0)
+
+    print '******* DO TOY: {}*******'.format(outof)
+    toy = mainModel.generate(rt.RooArgSet(Mass, category), DATA['ALL'].sumEntries())
+    
+    # The fit is performed using the same initial values as in the main fit
+    varlst.assignValueOnly(init_pars)
+    
+    print '******* FIT TO TOY: {} *******'.format(outof)
+    
+    toy_nll = mainModel.createNLL(
+        toy,
+        rf.Offset(True),
+        rf.ExternalConstraints(summaryConstraints),
+        rf.Verbose(False),
+        rf.NumCPU(12)
+        )
+    myminuit = rt.RooMinuit(toy_nll)
+    myminuit.setVerbose(False)
+    myminuit.setPrintLevel(-1)
+    
+    status = True
+    while status:
+
+        myminuit.minos(rt.RooArgSet(BR_))
+        minosres = myminuit.save()
+        
+        status = minosres.status()
+
+        brvalues.append(BR_.getVal())
+        brerrors.append(BR_.getError())
+        brerrlo.append(BR_.getErrorLo())
+        brerrhi.append(BR_.getErrorHi())
+        brstatus.append(status)
+
+        # By default the values of the limits are negative
+        br90lim.append(-1e6)
+        br95lim.append(-1e6)
+
+        toy_id += 1
+
+        if status:
+            print '******* REDO TOY FIT *******'
+            
+    print '******* CALCULATE LIMIT FOR TOY *******'
+    import getlimit
+    limit_plot, x90, x95 = getlimit.limitNLL(toy_nll, parOfInt)
+    
+    br90lim[-1] = x90
+    br95lim[-1] = x95
+
+    limit_plot[0].Write('toy_{}'.format(toy_id))
+    
+print '******* END FIT TO TOYS *******'
+
+brtoys_file.cd()
+t = rt.TTree('T', 'T', 0)
+
+import numpy as np
+BRadd = np.array([0], dtype=float)
+BRerr = np.array([0], dtype=float)
+BRerl = np.array([0], dtype=float)
+BRerh = np.array([0], dtype=float)
+BR90  = np.array([0], dtype=float)
+BR95  = np.array([0], dtype=float)
+BRsta = np.array([0], dtype=bool)
+BRid  = np.array([0], dtype=int)
+
+t.Branch('BR', BRadd, 'BR/D')
+t.Branch('error', BRerr, 'error/D')
+t.Branch('errlo', BRerl, 'errlo/D')
+t.Branch('errhi', BRerh, 'errhi/D')
+t.Branch('lim90', BR90, 'lim90/D')
+t.Branch('lim95', BR95, 'lim95/D')
+t.Branch('status', BRsta, 'status/O')
+t.Branch('id', BRid, 'id/I')
+
+for i, (v, e, l, h, l90, l95, s) in enumerate(zip(brvalues, brerrors,
+                                                  brerrlo, brerrhi,
+                                                  br90lim, br95lim,
+                                                  brstatus)):
+    BRadd[0] = v
+    BRerr[0] = e
+    BRerl[0] = l
+    BRerh[0] = h
+    BR90[0]  = l90
+    BR95[0]  = l95
+    BRsta[0] = s
+    BRid[0]  = i
+    t.Fill()
+    if i % 10000 == 0:
+        t.AutoSave()
+t.AutoSave()
+brtoys_file.Close()
 
 #-----------------------------------------------------------------------------
 # Function to remove the points inside the specified range (just for the data,
@@ -463,6 +661,27 @@ def removeDataOutOf( curve, roovar, ranges ):
     for ip in points2Del:
         curve.RemovePoint( ip )
 
+def removeNullValues( curve, roovar ):
+    xval, yval = rt.Double(0.), rt.Double(0.)
+    points2Del = []
+    for ip in xrange(curve.GetN()):
+        curve.GetPoint(ip, xval, yval)
+        if yval == 0:
+            points2Del.append(ip)
+    points2Del.reverse()
+    for ip in points2Del:
+        curve.RemovePoint(ip)
+
+def resetLabelFormat(obj, pad):
+    ''' Must work with pixels '''
+    obj.GetXaxis().SetLabelFont(133) # lhcb style with precision = 3
+    obj.GetYaxis().SetLabelFont(133) # lhcb style with precision = 3
+
+    chsize = 20
+
+    obj.GetXaxis().SetLabelSize(chsize)
+    obj.GetYaxis().SetLabelSize(chsize)
+
 #-----------------------------------------------------------------------------
 # Function to make the plot for a given bin (example: 'TIS_0')
 fr = {}
@@ -474,9 +693,14 @@ def plot(ix, binning = 100):
         rng = 'all'
 
     c = rt.TCanvas( ix, ix )
-    c.Divide(1, 2)
-    fr[ix] = Mass.frame( rf.Title( '' ) )
-    datamm[ix].plotOn(fr[ix], rf.Binning(binning), rf.Name( 'DATA' ) )
+    c.cd()
+    myPad1 = rt.TPad("pad1", 'top pad', 0, 0.2, 1, 1)
+    myPad1.Draw()
+    myPad2 = rt.TPad("pad2", 'bot pad', 0, 0, 1, 0.2)
+    myPad2.Draw()
+    
+    fr[ix] = Mass.frame( rf.Name(ix), rf.Title( '' ) )
+    datamm[ix].plotOn(fr[ix], rf.Binning(binning), rf.Name( 'NORMDATA' ) )
     
     for r in rng.split(','):
         plotOpts = [rf.Range( r ), rf.NormRange( rng ), rf.LineWidth(2)]
@@ -486,22 +710,30 @@ def plot(ix, binning = 100):
         mainPdf.plotOn(fr[ix], rf.Components('Ipatia' +  ix), rf.LineColor(rt.TColor.GetColor('#ff99cc')), *plotOpts)
         mainPdf.plotOn(fr[ix], rf.Name( 'MainModel' ), rf.LineColor(rt.kBlue), *plotOpts)
 
+    # Draw data over the fit model
+    fr[ix].remove('NORMDATA')
+    datamm[ix].plotOn(fr[ix], rf.Binning(binning), rf.Name( 'DATA' ) )
+
     # One must do it after drawing all the PDFs
     removeDataOutOf( fr[ix].getHist( 'DATA' ), Mass, rng )
-
-    myPad1 = c.cd(1)
-    c.SetLogy();
-    myPad1.SetPad( 0, 0.2, 1, 1 )
-    fr[ix].Draw()
+    removeNullValues(fr[ix].getHist('DATA'), Mass)
+    
+    fr[ix].GetYaxis().SetRangeUser(1e-2, 5e2)
+    ytit = fr[ix].GetYaxis().GetTitle()
+    ytit.replace('Events', 'Candidates')
+    fr[ix].GetYaxis().SetTitle(ytit)
+    xtit = fr[ix].GetXaxis().GetTitle()
+    xtit.replace('(', '[')
+    xtit.replace(')', ']')
+    fr[ix].GetXaxis().SetTitle(xtit)
     
     # Gets the pull plots
     from plotFunctions import makePullPlot
-    pull   = makePullPlot(Mass, datamm[ix], binning, mainPdf, rng.split(',') )
-    myPad2 = c.cd(2)
-    myPad2.SetPad( 0, 0, 1, 0.2 )
+    pull = makePullPlot(Mass, datamm[ix], binning, mainPdf, rng.split(','), rm_nulls = True )
+    #pull = makePullPlot(Mass, datamm[ix], binning, mainPdf, rng.split(','), rm_nulls = False )
 
-    pull.GetXaxis().SetLabelSize(0.15)
-    pull.GetYaxis().SetLabelSize(0.15)
+    #pull.GetXaxis().SetLabelSize(0.15)
+    #pull.GetYaxis().SetLabelSize(0.15)
     pull.GetYaxis().SetNdivisions(504)
     pull.SetMinimum( -5 )
     pull.SetMaximum( +5 )
@@ -509,15 +741,26 @@ def plot(ix, binning = 100):
     botline = rt.TLine( MASS_MIN, -3., MASS_MAX, -3. )
     midline = rt.TLine( MASS_MIN,  0., MASS_MAX,  0. )
     topline = rt.TLine( MASS_MIN, +3., MASS_MAX, +3. )
-    pull.Draw()
+    
+    # Draw everything
+    
+    myPad1.cd()
+    myPad1.SetLogy();
+    resetLabelFormat(fr[ix], myPad1)
+    fr[ix].Draw()
+
+    myPad2.cd()
+    resetLabelFormat(pull, myPad2)
+    pull.Draw('AP')
     for i, line in enumerate([ botline, midline, topline ]):
         line.SetLineColor( rt.kRed )
         if i != 1:
             line.SetLineStyle( rt.kDotted )
         line.Draw('SAME')
-    
+    pull.Draw('SAMEP')
     c.Update()
 
+    fr[ix + '_pads']   = [myPad1, myPad2]
     fr[ix + '_pull']   = pull
     fr[ix + '_lines' ] = [botline, midline, topline]
 
