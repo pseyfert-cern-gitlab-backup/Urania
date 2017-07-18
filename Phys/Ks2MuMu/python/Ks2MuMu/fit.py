@@ -38,7 +38,7 @@ POWER_LAW    = 1 ### 1 - if set to zero it will use an exponential for the misid
 EXPO         = 1 ### 1 - if set to zero it will use a polynomial for the comb bkg
 FIXEXPOVALS  = 0 ### 0 - Fix exponential values to study the bkg syst
 BR_MINOS     = 1 ### 1 - Get the asymmetric errors using minos
-MAKEPLOTS    = 1 ### 1 - Create and save the mass fit plots
+MAKEPLOTS    = 0 ### 1 - Create and save the mass fit plots
 NULL_PVAL    = 0 ### 0 - Re-run the fit setting the BR to zero and removing the prior
 ### ProfileType.NLL - Get the profile
 #PROFILE = ProfileType.NLL
@@ -519,24 +519,25 @@ for key, kbin in BINNING.iteritems():
     for i in kbin:
         mm[key + str(i)].k.setConstant(True)
 '''
-brvalues = []
-brerrors = []
-brerrlo  = []
-brerrhi  = []
-brstatus = []
-br90lim  = []
-br95lim  = []
 
-NTOYS = 10000
+NTOYS = 0
+if NTOYS:
+    brvalues = []
+    brerrors = []
+    brerrlo  = []
+    brerrhi  = []
+    brstatus = []
+    br90lim  = []
+    br95lim  = []
 
-init_pars  = fitResults.floatParsInit()
-final_pars = fitResults.floatParsFinal()
-varlst     = rt.RooArgList(mainModel.getVariables())
+    init_pars  = fitResults.floatParsInit()
+    final_pars = fitResults.floatParsFinal()
+    varlst     = rt.RooArgList(mainModel.getVariables())
 
-brtoys_file = rt.TFile('ToysBR_{}.root'.format(NTOYS), 'RECREATE')
-brtoys_folder = brtoys_file.mkdir('plots')
+    brtoys_file = rt.TFile('ToysBR_{}.root'.format(NTOYS), 'RECREATE')
+    brtoys_folder = brtoys_file.mkdir('plots')
 
-toy_id = 0
+    toy_id = 0
 for i in xrange(NTOYS):
 
     brtoys_folder.cd()
@@ -602,45 +603,46 @@ for i in xrange(NTOYS):
     
 print '******* END FIT TO TOYS *******'
 
-brtoys_file.cd()
-t = rt.TTree('T', 'T', 0)
+if NTOYS:
+    brtoys_file.cd()
+    t = rt.TTree('T', 'T', 0)
 
-import numpy as np
-BRadd = np.array([0], dtype=float)
-BRerr = np.array([0], dtype=float)
-BRerl = np.array([0], dtype=float)
-BRerh = np.array([0], dtype=float)
-BR90  = np.array([0], dtype=float)
-BR95  = np.array([0], dtype=float)
-BRsta = np.array([0], dtype=bool)
-BRid  = np.array([0], dtype=int)
+    import numpy as np
+    BRadd = np.array([0], dtype=float)
+    BRerr = np.array([0], dtype=float)
+    BRerl = np.array([0], dtype=float)
+    BRerh = np.array([0], dtype=float)
+    BR90  = np.array([0], dtype=float)
+    BR95  = np.array([0], dtype=float)
+    BRsta = np.array([0], dtype=bool)
+    BRid  = np.array([0], dtype=int)
 
-t.Branch('BR', BRadd, 'BR/D')
-t.Branch('error', BRerr, 'error/D')
-t.Branch('errlo', BRerl, 'errlo/D')
-t.Branch('errhi', BRerh, 'errhi/D')
-t.Branch('lim90', BR90, 'lim90/D')
-t.Branch('lim95', BR95, 'lim95/D')
-t.Branch('status', BRsta, 'status/O')
-t.Branch('id', BRid, 'id/I')
+    t.Branch('BR', BRadd, 'BR/D')
+    t.Branch('error', BRerr, 'error/D')
+    t.Branch('errlo', BRerl, 'errlo/D')
+    t.Branch('errhi', BRerh, 'errhi/D')
+    t.Branch('lim90', BR90, 'lim90/D')
+    t.Branch('lim95', BR95, 'lim95/D')
+    t.Branch('status', BRsta, 'status/O')
+    t.Branch('id', BRid, 'id/I')
 
-for i, (v, e, l, h, l90, l95, s) in enumerate(zip(brvalues, brerrors,
-                                                  brerrlo, brerrhi,
-                                                  br90lim, br95lim,
-                                                  brstatus)):
-    BRadd[0] = v
-    BRerr[0] = e
-    BRerl[0] = l
-    BRerh[0] = h
-    BR90[0]  = l90
-    BR95[0]  = l95
-    BRsta[0] = s
-    BRid[0]  = i
-    t.Fill()
-    if i % 10000 == 0:
-        t.AutoSave()
-t.AutoSave()
-brtoys_file.Close()
+    for i, (v, e, l, h, l90, l95, s) in enumerate(zip(brvalues, brerrors,
+                                                      brerrlo, brerrhi,
+                                                      br90lim, br95lim,
+                                                      brstatus)):
+        BRadd[0] = v
+        BRerr[0] = e
+        BRerl[0] = l
+        BRerh[0] = h
+        BR90[0]  = l90
+        BR95[0]  = l95
+        BRsta[0] = s
+        BRid[0]  = i
+        t.Fill()
+        if i % 10000 == 0:
+            t.AutoSave()
+    t.AutoSave()
+    brtoys_file.Close()
 
 #-----------------------------------------------------------------------------
 # Function to remove the points inside the specified range (just for the data,
