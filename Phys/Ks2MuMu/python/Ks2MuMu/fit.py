@@ -11,22 +11,28 @@ from bisect import *
 import priormcmc1 as PRIOR
 from Urania import PDG
 from collections import OrderedDict
-import sys
-sys.path.append('./FIT_2012')
 rt.RooWorkspace.Import = getattr(rt.RooWorkspace, 'import') ### RooFit method < import > is not allowed in python
 
-# Path
-path = '/afs/cern.ch/user/m/mramospe/UraniaDev_v5r0/Phys/Ks2MuMu/python/Ks2MuMu/'
+# Path to the data files
+datapath = '~/eos/K0S2mu2'
+
+# Current absolute path
+import os
+path = os.path.dirname(os.path.realpath(__file__))
+
+# Extend current path
+import sys
+sys.path.append('{}/FIT_2012'.format(path))
 
 # Loads the lhcb style for the plots 
-rt.gROOT.ProcessLine( '.x lhcbStyle.C' )
+rt.gROOT.ProcessLine('.x {}/lhcbStyle.C'.format(path))
 rt.gROOT.SetBatch(True)
 
 # Loads the functions used in the fit
 rt.gROOT.ProcessLine('.L $URANIAROOT/src/RooIpatia2.cxx++')
-rt.gROOT.ProcessLine('.L $URANIAROOT/src/RooAmorosoPdf.cxx++')
+#rt.gROOT.ProcessLine('.L $URANIAROOT/src/RooAmorosoPdf.cxx++')
 rt.gROOT.ProcessLine('.L $SOMEMASSMODELSROOT/src/RooPowerLaw.cxx++')
-rt.gROOT.ProcessLine('.L ./RooPrior.cxx++')
+rt.gROOT.ProcessLine('.L {}/prior/RooPrior.cxx++'.format(path))
 
 # Enum for the profile
 class ProfileType:
@@ -37,15 +43,17 @@ class ProfileType:
     NLLcalc   = 4 ### Use the -logL calculator of ROOT
 
 #-----------------------------------------------------------------------------
-COMBINE_2011 = 1 ### 1 - Combine with the result from 2011
-BLIND        = 0 ### 0 - Global status of the fit
-POWER_LAW    = 1 ### 1 - if set to zero it will use an exponential for the misid bkg
-EXPO         = 1 ### 1 - if set to zero it will use a polynomial for the comb bkg
-FIXEXPOVALS  = 0 ### 0 - Fix exponential values to study the bkg syst
-BR_MINOS     = 1 ### 1 - Get the asymmetric errors using minos
-MAKEPLOTS    = 0 ### 1 - Create and save the mass fit plots
-NULL_PVAL    = 0 ### 0 - Re-run the fit setting the BR to zero and removing the prior
-NTOYS        = 4 ### 0 - Number of toys to generate
+NCPUS          = 4 ### 12 - Number of CPUs to be used
+COMBINE_2011   = 1 ### 1 - Combine with the result from 2011
+BLIND          = 0 ### 0 - Global status of the fit
+POWER_LAW      = 1 ### 1 - if set to zero it will use an exponential for the misid bkg
+EXPO           = 1 ### 1 - if set to zero it will use a polynomial for the comb bkg
+FIXEXPOVALS    = 0 ### 0 - Fix exponential values to study the bkg syst
+BR_MINOS       = 1 ### 1 - Get the asymmetric errors using minos
+MAKEPLOTS      = 0 ### 1 - Create and save the mass fit plots
+NULL_PVAL      = 0 ### 0 - Re-run the fit setting the BR to zero and removing the prior
+TOYS_FOR_LIMIT = 1 ### 1 - Uses the prior to make the toys (to get the BR p-value must be set to 0)
+NTOYS          = 2 ### 0 - Number of toys to generate
 ### ProfileType.NLL - Get the profile
 #PROFILE = ProfileType.NLL
 PROFILE = ProfileType.NoProfile
@@ -120,12 +128,12 @@ for key, kbin in BINNING.iteritems():
         ix = key + str(i)
         if CREATE_FILES:
             print '--- CREATING FILE FOR %s' %ix
-            fmm[ix] = rt.TFile(path + 'prof_mm' + ix + '.root', 'recreate')
+            fmm[ix] = rt.TFile(datapath + '/prof_mm' + ix + '.root', 'recreate')
             tmm[ix] = temptree.CopyTree(BDTplusMuID[key][i][3:])
             tmm[ix].Write()
             fmm[ix].Close()
         
-        fmm[ix] = rt.TFile(path + 'prof_mm' + ix + '.root')
+        fmm[ix] = rt.TFile(datapath + '/prof_mm' + ix + '.root')
         tmm[ix] = fmm[ix].Get('DecayTree')
         datamm[ix] = rt.RooDataSet('datamm' + ix, 'datamm' + ix, tmm[ix], rt.RooArgSet(Mass))
         catdatamm[ix] = rt.RooDataSet('catdatamm' + ix, 'catdatamm' + ix, rt.RooArgSet(Mass), rf.Index(category), rf.Import(ix, datamm[ix]))
@@ -398,7 +406,7 @@ DATA['ALL'] = alldata
 # Fits to the whole sample
 print '*** MAIN FIT STARTS HERE ***'
 fitOpts = [rf.Minos(rt.kFALSE), rf.ExternalConstraints(summaryConstraints),
-           rf.Offset(True), rf.Save(True), rf.NumCPU(12), rf.Verbose(False)]
+           rf.Offset(True), rf.Save(True), rf.NumCPU(NCPUS), rf.Verbose(False)]
 fitResults = mainModel.fitTo(DATA['ALL'], *fitOpts)
 fitResults.Print()
 # NULL hypothesis model
@@ -424,7 +432,7 @@ if NULL_PVAL:
 
 print '*** MAIN FIT ENDS HERE ***'
 nll = mainModel.createNLL(DATA['ALL'],
-                          rf.Offset(True), rf.ExternalConstraints(summaryConstraints), rf.NumCPU(12))
+                          rf.Offset(True), rf.ExternalConstraints(summaryConstraints), rf.NumCPU(NCPUS))
 
 # Build the workspace
 workspace = rt.RooWorkspace('Workspace')
@@ -450,15 +458,15 @@ if PROFILE != ProfileType.NoProfile:
     rt.gROOT.SetBatch()
     print '*** CREATING PROFILE ***'
     if FIXEXPOVALS:
-        f = rt.TFile(path + 'BRprofile_BkgSyst_FixExpo_' + ''.join(BINNING.keys())[:-1] + '.root', 'RECREATE')
+        f = rt.TFile('BRprofile_BkgSyst_FixExpo_' + ''.join(BINNING.keys())[:-1] + '.root', 'RECREATE')
     elif EXPO:
         if COMBINE_2011:
-            name = path + 'BRprofile_' + ''.join(BINNING.keys())[:-1] + '.root'
+            name = 'BRprofile_' + ''.join(BINNING.keys())[:-1] + '.root'
         else:
-            name = path + 'BRprofile_No2011_' + ''.join(BINNING.keys())[:-1] + '.root'
+            name = 'BRprofile_No2011_' + ''.join(BINNING.keys())[:-1] + '.root'
         f = rt.TFile(name, 'RECREATE')
     else:
-        f = rt.TFile(path + 'BRprofile_BkgSyst_' + ''.join(BINNING.keys())[:-1] + '.root', 'RECREATE')
+        f = rt.TFile('BRprofile_BkgSyst_' + ''.join(BINNING.keys())[:-1] + '.root', 'RECREATE')
 
     import getlimit
     if PROFILE == ProfileType.BayesCalc:
@@ -520,6 +528,12 @@ print '***********************'
 
 if NTOYS:
     
+    if TOYS_FOR_LIMIT:
+        prior_status = 'ON'
+    else:
+        prior_status = 'OFF'
+        summaryConstraints.remove(prior)
+
     brvalues = []
     brerrors = []
     brerrlo  = []
@@ -532,10 +546,18 @@ if NTOYS:
     final_pars = fitResults.floatParsFinal()
     varlst     = rt.RooArgList(mainModel.getVariables())
 
-    seed = int(rt.TRandom3(0).Uniform(0, 1000000))
-    rt.RooRandom.randomGenerator().SetSeed(seed)
-    
-    brtoys_file   = rt.TFile(path + 'ToysBR_{}_{}.root'.format(NTOYS, seed), 'RECREATE')
+    dec = True
+    while dec:
+        
+        seed = int(rt.TRandom3(0).Uniform(0, 1000000))
+        rt.RooRandom.randomGenerator().SetSeed(seed)
+        
+        fname = '{}/ToysBR_cpu{}_{}_Prior{}_{}.root'.format(path, NCPUS, NTOYS,
+                                                            prior_status, seed)
+        
+        dec = os.path.exists(fname)
+
+    brtoys_file   = rt.TFile(fname, 'RECREATE')
     brtoys_folder = brtoys_file.mkdir('plots')
 
     toy_id = 0
@@ -559,13 +581,13 @@ if NTOYS:
         varlst.assignValueOnly(init_pars)
     
         print '******* FIT TO TOY: {} *******'.format(outof)
-    
+
         toy_nll = mainModel.createNLL(
             toy,
             rf.Offset(True),
             rf.ExternalConstraints(summaryConstraints),
             rf.Verbose(False),
-            rf.NumCPU(12)
+            rf.NumCPU(NCPUS)
             )
         myminuit = rt.RooMinuit(toy_nll)
         myminuit.setVerbose(False)
@@ -594,14 +616,15 @@ if NTOYS:
             if status:
                 print '******* REDO TOY FIT *******'
             
-        print '******* CALCULATE LIMIT FOR TOY *******'
-        import getlimit
-        limit_plot, x90, x95 = getlimit.limitNLL(toy_nll, parOfInt)
-    
-        br90lim[-1] = x90
-        br95lim[-1] = x95
+        if TOYS_FOR_LIMIT:
+            print '******* CALCULATE LIMIT FOR TOY *******'
+            import getlimit
+            limit_plot, x90, x95 = getlimit.limitNLL(toy_nll, parOfInt)
+        
+            br90lim[-1] = x90
+            br95lim[-1] = x95
 
-        limit_plot[0].Write('toy_{}_{}'.format(seed, toy_id))
+            limit_plot[0].Write('toy_{}_{}'.format(seed, toy_id))
     
     print '******* END FIT TO TOYS *******'
 
@@ -641,6 +664,8 @@ if NTOYS:
             t.AutoSave()
     t.AutoSave()
     brtoys_file.Close()
+
+    summaryConstraints.add(prior)
 
 #-----------------------------------------------------------------------------
 # Function to remove the points inside the specified range (just for the data,
@@ -770,11 +795,11 @@ if MAKEPLOTS:
     rt.gROOT.SetBatch()
     strkws = [ str( kw ) for kw in BINNING ]
     if FIXEXPOVALS:
-        oplots = rt.TFile.Open(path + 'FitPlots_BkgSyst_FixExpo_' + ''.join( strkws )[:-1] + '.root', 'RECREATE' )
+        oplots = rt.TFile.Open('FitPlots_BkgSyst_FixExpo_' + ''.join( strkws )[:-1] + '.root', 'RECREATE' )
     elif EXPO:
-        oplots = rt.TFile.Open(path + 'FitPlots_' + ''.join( strkws )[:-1] + '.root', 'RECREATE' )
+        oplots = rt.TFile.Open('FitPlots_' + ''.join( strkws )[:-1] + '.root', 'RECREATE' )
     else:
-        oplots = rt.TFile.Open(path + 'FitPlots_BkgSyst_' + ''.join( strkws )[:-1] + '.root', 'RECREATE' )
+        oplots = rt.TFile.Open('FitPlots_BkgSyst_' + ''.join( strkws )[:-1] + '.root', 'RECREATE' )
     for kw, bins in BINNING.iteritems():
         for i in bins:
             c = plot( kw + str( i ) )
