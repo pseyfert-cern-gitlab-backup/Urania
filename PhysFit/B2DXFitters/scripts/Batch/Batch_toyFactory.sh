@@ -23,22 +23,22 @@ export stop=$2
 #Final toy seed
 export fullstop=$3
 #Batch queue
-export queue="1nh"
+export queue="1nd"
 #Memory limit (kB)
 export mlimit="75000"
 #Nickname for the current configuration
 #Choose a meaningful name (e.g. SgnAndBkgMeanResSplineAcc2TaggersNoAsymm etc...)
-export nickname="FromMCFitSgnOnlyTrueTagProdDetAsymmAccMeanResTime04to12"
+export nickname="GLMtest2Taggers"
 #Configuration file
-export config="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/Bd2DPiConfigForToysGeneration.py"
+export config="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/Bd2DPiConfigForToysGeneration.py"
 #Temporary pathname to dump results
 export output="/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Toys/${nickname}/Generator/"
 #Pathname to dump outputfiles (eos recommendend)
 export eosoutput="/eos/lhcb/wg/b2oc/TD_DPi_3fb/Toys/${nickname}/Generator/"
 #Path where scripts are located
-export bashscriptpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/scripts/Bash/"
-export pyscriptpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/scripts/"
-export runpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/"
+export bashscriptpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/scripts/Bash/"
+export pyscriptpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/scripts/"
+export runpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/"
 
 #Clear directories
 rm -rf $output

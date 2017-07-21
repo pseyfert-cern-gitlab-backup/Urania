@@ -4,11 +4,11 @@
 ulimit -c 0
 
 #Bd2DPi
-export nickname="MCSSbarAccAsymmFloatingDMGammaConstrTrueTaggingOnlyTaggedShortTime"
-export config="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/Bd2DPiConfigForSFitOnMC.py"
-export pyscriptpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/scripts/"
-export runpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/"
-export preselection="TagDecOS!=0||TagDecSS!=0"
+export nickname="MCSSbarAccAsymmFloatingDMGammaConstrOSGLMTaggingLOGIT"
+export config="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/Bd2DPiConfigForSFitOnMC.py"
+export pyscriptpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/scripts/"
+export runpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/"
+export preselection="TagDecOS!=0"
 
 #All, true tagging
 export inputfile="/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Workspace/Nominal/work_dpi_mc_large_shorttime.root"
@@ -19,10 +19,10 @@ export mode="kpipi"
 export year="run1"
 export hypo="Bd2DPi"
 #rm -rf $outputdir
-#mkdir -p $outputdir
+mkdir -p $outputdir
 export Start=`date`
 echo "==> Start fitting at ${Start}"
-${runpath}run python ${pyscriptpath}runSFit_Bd.py --debug --outputdir $outputdir --fileName $inputfile --save $outputfile --configName $config --pol $pol --mode $mode --year $year --hypo $hypo --merge both --truetag --HFAG --MC --workMC "workspace" --noweight --preselection $preselection | tee ${outputdir}logfile.txt
+${runpath}run python ${pyscriptpath}runSFit_Bd.py --debug --outputdir $outputdir --fileName $inputfile --save $outputfile --configName $config --pol $pol --mode $mode --year $year --hypo $hypo --merge both --pereventmistag --fixtagging --HFAG --MC --workMC "workspace" --noweight --preselection $preselection | tee ${outputdir}logfile.txt
 export Stop=`date`
 echo "==> Stop fitting at ${Stop}"
 exit

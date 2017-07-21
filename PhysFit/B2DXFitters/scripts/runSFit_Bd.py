@@ -214,7 +214,7 @@ def runSFit(debug, wsname,
             configName, scan,
             binned, plotsWeights, noweight,
             sample, mode, year, hypo, merge, unblind, randomise, superimpose,
-            seed, preselection, UniformBlinding, HFAG, extended, fitresultFileName, NumCPU, GLM):
+            seed, preselection, UniformBlinding, HFAG, extended, fitresultFileName, NumCPU, UseGLM, fixtagging):
 
     if MC and not noweight:
         print "ERROR: cannot use sWeighted MC sample (for now)"
@@ -397,10 +397,7 @@ def runSFit(debug, wsname,
         print "Dataset entries:"
         print data.sumEntries()
 
-    if not truetime:
-        timename = MDSettings.GetTimeVarOutName().Data()
-    else:
-        timename = "True" + MDSettings.GetTimeVarOutName().Data()
+    timename = MDSettings.GetTimeVarOutName().Data()
 
     data.get().find(timename).setRange(MDSettings.GetTimeRangeDown(), MDSettings.GetTimeRangeUp())
 
@@ -489,6 +486,8 @@ def runSFit(debug, wsname,
                                              myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["KnotPositions"],
                                              myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["KnotCoefficients"],
                                              False if myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["Float"] is False else True,
+                                             False if myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["Extrapolate"] is False else True,
+                                             myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["ToFix"],
                                              debug)
         if debug:
             print "Acceptance function:"
@@ -816,6 +815,56 @@ def runSFit(debug, wsname,
     if "DetectionAsymmetry" in myconfigfile:
         aDet = WS(ws, RooRealVar('DetAsymm', 'a_{det}', *myconfigfile["DetectionAsymmetry"]["Signal"]), opts)
 
+    if "changeFTbasis" in myconfigfile.iterkeys():
+
+        print ""
+        print "=========================================================="
+        print "Apply transformation on FT calibration parameters"
+        print "=========================================================="
+        print ""
+
+        for parname in myconfigfile["changeFTbasis"].iterkeys():
+
+            #Update value in workspace
+            par = ws.var(parname)
+            oldval = par.getVal()
+            par.setVal( oldval + myconfigfile["changeFTbasis"][parname][0] )
+            par.setConstant(True)
+            if debug:
+                print "Changing basis for "+parname
+                print "Old value: "+str(oldval)
+                print "New value: "+str(par.getVal())
+            par = WS(ws, par)
+
+    print ""
+    print "=========================================================="
+    print "Build total time PDF"
+    print "=========================================================="
+    print ""
+
+    totPDF_temp = buildBDecayTimePdf(
+        myconfigfile, 'time_signal', ws,
+        time, terr, tag, id, mistag, mistagcalib,
+        gamma, deltaGamma, deltaM,
+        C, D, Dbar, S, Sbar,
+        resmodel, acc,
+        terrpdf, mistagpdf,
+        aProd, aDet, HFAG, GLM, fixtagging)
+
+    if extended:
+        print "[INFO] Performing extended maximum likelihood fit"
+        Nsgn = WS(ws, RooRealVar("Nsgn", "N_{sgn}", 500000, 0, 1e+09))
+        totPDF = WS(ws, RooExtendPdf(totPDF_temp.GetName() + "_ext", totPDF_temp.GetTitle() + " extended", totPDF_temp, Nsgn))
+    else:
+        totPDF = totPDF_temp
+
+    # Fix "internal" time pdf parameters (if required)
+    from B2DXFitters.utils import setConstantIfSoConfigured as fixParams
+    fixParams(myconfigfile, totPDF)
+
+    # Temporary workaround
+    #ws.obj('Sfbar').setConstant(False)
+
     genValDict = {}
 
     if "gaussCons" in myconfigfile.keys():
@@ -825,8 +874,8 @@ def runSFit(debug, wsname,
         print "Build Gaussian constraints"
         print "=========================================================="
         print ""
-
-        if toys:
+        
+        if toys or sampleConstr:
             # Sample mean of gaussian constraint
             for parname in myconfigfile["gaussCons"].iterkeys():
                 if type(myconfigfile["gaussCons"][parname]) != list:
@@ -870,44 +919,12 @@ def runSFit(debug, wsname,
                         par = WS(ws, par)
                         genValDict[parname] = {}
                         genValDict[parname] = oldval
-
+                
         # Build actual constraints
         from B2DXFitters.GaussianConstraintBuilder import GaussianConstraintBuilder
         constraintbuilder = GaussianConstraintBuilder(ws, myconfigfile["gaussCons"])
         constList = constraintbuilder.getSetOfConstraints()
         constList.Print("v")
-
-    print ""
-    print "=========================================================="
-    print "Build total time PDF"
-    print "=========================================================="
-    print ""
-
-    print mistag
-    print mistagcalib
-
-    totPDF_temp = buildBDecayTimePdf(
-        myconfigfile, 'time_signal', ws,
-        time, terr, tag, id, mistag, mistagcalib,
-        gamma, deltaGamma, deltaM,
-        C, D, Dbar, S, Sbar,
-        resmodel, acc,
-        terrpdf, mistagpdf,
-        aProd, aDet, HFAG, GLM)
-
-    if extended:
-        print "[INFO] Performing extended maximum likelihood fit"
-        Nsgn = WS(ws, RooRealVar("Nsgn", "N_{sgn}", 500000, 0, 1e+09))
-        totPDF = WS(ws, RooExtendPdf(totPDF_temp.GetName() + "_ext", totPDF_temp.GetTitle() + " extended", totPDF_temp, Nsgn))
-    else:
-        totPDF = totPDF_temp
-
-    # Fix "internal" time pdf parameters (if required)
-    from B2DXFitters.utils import setConstantIfSoConfigured as fixParams
-    fixParams(myconfigfile, totPDF)
-
-    # Temporary workaround
-    ws.obj('Sfbar').setConstant(False)
 
     if randomise:
 
@@ -974,14 +991,14 @@ def runSFit(debug, wsname,
     if not superimpose:
 
         if toys or MC or unblind:  # Unblind yourself
-            MinosArgset = RooArgSet(S, Sbar)
+            #MinosArgset = RooArgSet(S, Sbar)
             fitOpts_temp = [RooFit.Save(1),
                             RooFit.NumCPU(NumCPU),
                             RooFit.Offset(True),
                             RooFit.Strategy(2),
                             RooFit.Minimizer("Minuit2", "migrad"),
                             RooFit.SumW2Error(False),
-                            RooFit.Minos(MinosArgset),
+                            # RooFit.Minos(MinosArgset),
                             # RooFit.Minos(True),
                             RooFit.Optimize(True),
                             RooFit.Hesse(True),
@@ -1018,7 +1035,7 @@ def runSFit(debug, wsname,
             myfitresult.correlationMatrix().Print()
             myfitresult.covarianceMatrix().Print()
         else:  # Don't
-            fitOpts_temp = [RooFit.NumCPU(8),
+            fitOpts_temp = [RooFit.NumCPU(NumCPU),
                             RooFit.Offset(True),
                             RooFit.Extended(False),
                             RooFit.Minimizer("Minuit2", "migrad"),
@@ -1113,24 +1130,24 @@ def runSFit(debug, wsname,
     dataWA.Print("v")
     totPDF.Print("v")
 
-    import os.path
-    file_exists = os.path.isfile(fitresultFileName)
-    fitresultFile = TFile(fitresultFileName, "update")
+    #import os.path
+    #file_exists = os.path.isfile(fitresultFileName)
+    #fitresultFile = TFile(fitresultFileName, "update")
 
-    tree_results = None
-    if file_exists:
-        tree_results = fitresultFile.Get("result")
+    #tree_results = None
+    #if file_exists:
+    #    tree_results = fitresultFile.Get("result")
 
-    if tree_results is None:
-        tree_results = TTree("result", "Tree for toy study fit results")
-        tree_results.Branch("fit_results", "RooFitResult", myfitresult, 64000, 0)
-    else:
-        tree_results.SetBranchAddress("fit_results", myfitresult)
+    #if tree_results is None:
+    #    tree_results = TTree("result", "Tree for toy study fit results")
+    #    tree_results.Branch("fit_results", "RooFitResult", myfitresult, 64000, 0)
+    #else:
+    #    tree_results.SetBranchAddress("fit_results", myfitresult)
 
-    tree_results.Fill()
-    tree_results.Write("", TObject.kOverwrite)
+    #tree_results.Fill()
+    #tree_results.Write("", TObject.kOverwrite)
     # myfitresult.Write()
-    fitresultFile.Close()
+    #fitresultFile.Close()
 
     print ""
     print "========================================="
@@ -1375,11 +1392,17 @@ parser.add_option('--NCPU',
                   type ="int",
                   help = 'Number of CPU cores used in the fit'
                   )
-parser.add_option('--GLM',
-                  dest = 'GLM',
+parser.add_option('--UseGLM',
+                  dest = 'UseGLM',
                   default = False,
                   action='store_true',
                   help = 'Use a GLM model defined in the config file'
+                  )
+parser.add_option('--fixtagging',
+                  dest = 'fixtagging',
+                  default = False,
+                  action='store_true',
+                  help = 'Fix tagging parameters (valid if GLM is used)'
                   )
 
 # -----------------------------------------------------------------------------
@@ -1450,6 +1473,7 @@ if __name__ == '__main__':
             options.extended,
             options.fileNameFitresult,
             options.NumCPU,
-            options.GLM)
+            options.UseGLM,
+            options.fixtagging)
 
 # -----------------------------------------------------------------------------

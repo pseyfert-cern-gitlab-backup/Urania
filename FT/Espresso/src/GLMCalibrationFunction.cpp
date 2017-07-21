@@ -94,6 +94,12 @@ void GLMCalibrationFunction::print(std::ostream& os) const {
     os << " -- PROBIT BASIS --" << std::endl;
   } else if (L == Regression::LinkType::Cauchit) {
     os << " -- CAUCHIT BASIS --" << std::endl;
+  } else if (L == Regression::LinkType::RLogit) {
+    os << " -- RLOGIT BASIS --" << std::endl; 
+  } else if (L == Regression::LinkType::RProbit) {
+    os << " -- RPROBIT BASIS --" << std::endl; 
+  } else if (L == Regression::LinkType::RCauchit) {
+    os << " -- RCAUCHIT BASIS --" << std::endl; 
   }
   os << std::endl;
   os << *glm;

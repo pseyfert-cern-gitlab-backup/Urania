@@ -25,9 +25,10 @@ std::tuple<RooArgList,RooArgList,RooMultiVarGaussian,
                                                                             RooAbsReal& _eta,
                                                                             std::string _calName,
                                                                             std::string _calFileName) {
-  RooArgList m_coeffList;
-  RooArgList m_deltacoeffList;
-  RooArgList m_allcoeffList;
+
+  RooArgList m_coeffList(("plist_"+boost::lexical_cast<std::string>(name)).c_str());
+  RooArgList m_deltacoeffList(("dplist_"+boost::lexical_cast<std::string>(name)).c_str());
+  RooArgList m_allcoeffList(("allplist_"+boost::lexical_cast<std::string>(name)).c_str());
   std::size_t m_numCoeffs;
   
   // LOAD CALIBRATION
@@ -61,9 +62,9 @@ std::tuple<RooArgList,RooArgList,RooMultiVarGaussian,
     m_allcoeffList.add( *dcoeff );
   }
 
-  // CREATE CONSTRAINT MATRIX
-  std::string constraint_name = ("constraint_"+boost::lexical_cast<std::string>(name));
-  std::string constraint_title = ("constraint_"+boost::lexical_cast<std::string>(title));
+  // CREATE COVARIANCE MATRIX
+  std::string covariance_name = ("covariance_"+boost::lexical_cast<std::string>(name));
+  std::string covariance_title = ("covariance_"+boost::lexical_cast<std::string>(title));
   TVectorD mu(2*m_numCoeffs);
   TMatrixDSym sigma(2*m_numCoeffs);
   for (std::size_t row = 0; row < m_numCoeffs; ++row) {
@@ -82,10 +83,10 @@ std::tuple<RooArgList,RooArgList,RooMultiVarGaussian,
       sigma[row][col] = sigma[col][row];
     }
   }
-  RooMultiVarGaussian m_constraint(constraint_name.c_str(),
-				   constraint_title.c_str(),
+  RooMultiVarGaussian m_covariance(covariance_name.c_str(),
+				   covariance_title.c_str(),
 				   m_allcoeffList, mu, sigma); // or maybe this should be a std::unique_ptr, etc
-  
+
   // CREATE TWO ROOGLMFUNCTION OBJECTS
   std::string pos_name = ("b_"+boost::lexical_cast<std::string>(name));
   std::string pos_title = ("b_"+boost::lexical_cast<std::string>(title));
@@ -96,7 +97,7 @@ std::tuple<RooArgList,RooArgList,RooMultiVarGaussian,
   RooGLMFunction omega_bbar(neg_name.c_str(),neg_title.c_str(),_eta,-1,m_calfun->clone(),m_coeffList,m_deltacoeffList);
 
   // RETURN LIST OF OBJECTS
-  auto list = std::make_tuple(m_coeffList,m_deltacoeffList,m_constraint,omega_b,omega_bbar);
+  auto list = std::make_tuple(m_coeffList,m_deltacoeffList,m_covariance,omega_b,omega_bbar);
   return list;
 }
 

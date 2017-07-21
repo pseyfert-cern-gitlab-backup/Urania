@@ -190,20 +190,38 @@ def BuildTagging(workspaceIn, myconfigfile, obsDict, debug):
         tagDict[comp] = {}
         tagDict[comp]["Calibration"] = []
         tagDict[comp]["MistagPDF"] = []
+        tagDict[comp]["GLM"] = []
         #Loop over taggers (OS, SS)
         for tagger in myconfigfile["Taggers"][comp].iterkeys():
 
             #if "Mistag"+tagger in obsDict.keys() and "TagDec"+tagger in obsDict.keys():
             if "TagDec"+tagger in obsDict.keys():
 
-                #Create calibration parameters (p0, p1, dp0, dp1, <eta>, tageff, atageff)
-                caliblist = []
-                for p in ["p0", "p1", "deltap0", "deltap1", "avgeta", "tageff", "tagasymm"]:
+                if "Type" in myconfigfile["Taggers"][comp][tagger]["Calibration"].keys() and myconfigfile["Taggers"][comp][tagger]["Calibration"]["Type"] == "GLM":
+                     #Create calibration from XML given by EPM
+                     if debug:
+                         print "Creating calibration function from XML produced by EPM"
+                     tagDict[comp]["GLM"].append( *myconfigfile["Taggers"][comp][tagger]["Calibration"]["XML"] )
+                     caliblist = []
+                     for p in ["tageff", "tagasymm"]:
+                         if debug:
+                             print "Create "+p+" parameter for "+tagger+" tagger, "+comp+" component"
+                             caliblist.append( WS(workspaceIn, RooRealVar(p+"_"+tagger+"_"+comp,
+                                                                          p+"_"+tagger+"_"+comp,
+                                                                          *myconfigfile["Taggers"][comp][tagger]["Calibration"][p]) ) )
+                else:
+                    #Create calibration parameters (p0, p1, dp0, dp1, <eta>, tageff, atageff)
                     if debug:
-                        print "Create "+p+" parameter for "+tagger+" tagger, "+comp+" component"
-                    caliblist.append( WS(workspaceIn, RooRealVar(p+"_"+tagger+"_"+comp,
-                                                                  p+"_"+tagger+"_"+comp,
-                                                                  *myconfigfile["Taggers"][comp][tagger]["Calibration"][p]) ) )
+                        print "Creating linear calibration parameters"
+                    tagDict[comp]["GLM"].append( None )
+                    caliblist = []
+                    for p in ["p0", "p1", "deltap0", "deltap1", "avgeta", "tageff", "tagasymm"]:
+                        if debug:
+                            print "Create "+p+" parameter for "+tagger+" tagger, "+comp+" component"
+                        caliblist.append( WS(workspaceIn, RooRealVar(p+"_"+tagger+"_"+comp,
+                                                                 p+"_"+tagger+"_"+comp,
+                                                                 *myconfigfile["Taggers"][comp][tagger]["Calibration"][p]) ) )
+                        
                 tagDict[comp]["Calibration"].append( caliblist )
 
                 #Create mistag pdf (can be "None" for average mistag)
@@ -603,6 +621,8 @@ def BuildTimePDF(workspaceIn, myconfigfile, hypo, year, comp, mode, obsDict, ACP
         mistagcalib = tagDict[comp]["Calibration"]
         mistagpdf = tagDict[comp]["MistagPDF"]
 
+        GLM = tagDict[comp]["GLM"]
+
         qt = []
         mistagobs = []
         for tagger in myconfigfile["Taggers"][comp].iterkeys():
@@ -628,7 +648,7 @@ def BuildTimePDF(workspaceIn, myconfigfile, hypo, year, comp, mode, obsDict, ACP
 
         #Build a config dict that buildBDecayTimePdf can understand
         config = {}
-        config["Context"] = "FIT"#"GEN"
+        config["Context"] = "GEN"
         config["Debug"] = True if debug else False
         config["ParameteriseIntegral"] = myconfigfile["ACP"][comp]["ParameteriseIntegral"]
         config["UseProtoData"] = True #this is really recommended to speed-up generation
@@ -646,7 +666,7 @@ def BuildTimePDF(workspaceIn, myconfigfile, hypo, year, comp, mode, obsDict, ACP
             C, D, Dbar, S, Sbar,
             resmodel, acc,
             terrpdf, mistagpdf,
-            aprod, adet, HFAG)
+            aprod, adet, HFAG, GLM)
 
     return WS(workspaceIn, pdf)
 
@@ -1043,10 +1063,11 @@ def GenerateToys(workspaceIn, myconfigfile, observables, pdfDict, protoData, see
                             #If we have proto data use it, otherwise only draw number of events to generate from Poisson distribution
                             if None != protoData:
                                 if debug:
-                                    print "Generate "+str(poissonNum)+" decay time data from "+pdf[hypo][year][mode][comp][obs].GetName()
+                                    print "Generate decay time data from "+pdf[hypo][year][mode][comp][obs].GetName()
+                                    #print "Generate "+str(poissonNum)+" decay time data from "+pdf[hypo][year][mode][comp][obs].GetName()
                                 toyDict[hypo][year][mode][comp][obs] = WS(workspaceIn, pdf[hypo][year][mode][comp][obs].generate(genset,
-                                                                                                                                 RooFit.ProtoData(protoData[hypo][year][mode][comp]),
-                                                                                                                                 RooFit.NumEvents(poissonNum)) )
+                                                                                                                                 RooFit.ProtoData(protoData[hypo][year][mode][comp])) )#,
+                                                                                                                                 #RooFit.NumEvents(poissonNum)) )
                             else:
                                 if debug:
                                     print "Generate "+str(poissonNum)+" decay time data from "+pdf[hypo][year][mode][comp][obs].GetName()

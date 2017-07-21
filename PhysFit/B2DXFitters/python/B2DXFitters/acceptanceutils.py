@@ -7,7 +7,7 @@
 @brief utilities to build acceptance functions
 """
 import ROOT
-from B2DXFitters.WS import WS as WS
+from B2DXFitters.WS import WS as WS 
 
 def buildSplineAcceptance(
         ws,     # workspace into which to import
@@ -16,6 +16,8 @@ def buildSplineAcceptance(
         knots,  # knots
         coeffs, # acceptance coefficients
         floatParams = False, # float acceptance parameters
+        extrapolate = True, # do linear extrapolation for the last knot. The next to last coefficient is fixed to one
+        toFix = [], # knot positions to be fixed
         debug = False # debug printout
         ): 
     """
@@ -27,6 +29,8 @@ def buildSplineAcceptance(
     knots       -- list of knot positions
     coeffs      -- spline coefficients
     floatParams -- if True, spline acceptance parameters will be floated
+    extrapolate -- if True, do linear extrapolation for the last knot. The next to last coefficient is fixed to one
+    toFix       -- knot positions to be fixed 
     debug       -- if True, print some debugging output
 
     returns a pair of acceptance functions, first the unnormalised one for
@@ -48,15 +52,22 @@ def buildSplineAcceptance(
     mycoeffs = deepcopy(coeffs)
     from ROOT import (RooBinning, RooArgList, RooPolyVar, RooCubicSplineFun,
             RooConstVar, RooProduct, RooRealVar)
-    if (len(myknots) != len(mycoeffs) or 0 >= min(len(myknots), len(mycoeffs))):
+    if ( ((len(myknots) != len(mycoeffs)) and extrapolate) or 0 >= min(len(myknots), len(mycoeffs))):
         raise ValueError('ERROR: Spline knot position list and/or coefficient'
-                'list mismatch')
+                'list mismatch. Same lenght is required for linear extrapolation')
+    if ( ((len(myknots)+1 != len(mycoeffs)) and not extrapolate) or 0 >= min(len(myknots), len(mycoeffs))):
+        raise ValueError('ERROR: Spline knot position list and/or coefficient'
+                         'list mismatch. Number of coefficients = number of knots+1 is required without linear extrapolation')
     one = WS(ws, RooConstVar('one', '1', 1.0))
     # create the knot binning
     knotbinning = WS(ws, RooBinning(time.getMin(), time.getMax(),
         '%s_knotbinning' % pfx))
     for v in myknots:
         knotbinning.addBoundary(v)
+    if debug:
+        print 'DEBUG: Spline knots: %s' % str([
+            knotbinning.array()[i] for i in xrange(0, knotbinning.numBoundaries())
+            ])
     knotbinning.removeBoundary(time.getMin())
     knotbinning.removeBoundary(time.getMax())
     knotbinning.removeBoundary(time.getMin())
@@ -65,24 +76,25 @@ def buildSplineAcceptance(
     time.setBinning(knotbinning, '%s_knotbinning' % pfx)
     time.setBinning(oldbinning)
     time.setRange(lo, hi)
-    del knotbinning
     del oldbinning
+    del knotbinning
     del lo
     del hi
     # create the knot coefficients
     coefflist = RooArgList()
     i = 0
     for v in mycoeffs:
-        if floatParams:
+        if floatParams and i not in toFix:
             coefflist.add(WS(ws, RooRealVar('%s_SplineAccCoeff%u' % (pfx, i),
-                'v_{%u}' % (i+1), v, 0., 3.)))
+                                            'v_{%u}' % (i+1), v, 0., 3.)))
         else:
             coefflist.add(WS(ws, RooConstVar('%s_SplineAccCoeff%u' % (pfx, i),
-                'v_{%u}' % (i+1), v)))
+                                             'v_{%u}' % (i+1), v)))
         i = i + 1
-    del mycoeffs
-    coefflist.add(one)
+    if extrapolate:
+        coefflist.add(one)
     i = i + 1
+    del mycoeffs
     myknots.append(time.getMax())
     myknots.reverse()
     fudge = (myknots[0] - myknots[1]) / (myknots[2] - myknots[1])
@@ -91,11 +103,22 @@ def buildSplineAcceptance(
                 '%s_SplineAccCoeff%u_coeff0' % (pfx, i), 1. - fudge)),
             WS(ws, RooConstVar('%s_SplineAccCoeff%u_coeff1' % (pfx, i),
                 '%s_SplineAccCoeff%u_coeff1' % (pfx, i), fudge)))
-    del myknots
-    coefflist.add(WS(ws, RooPolyVar(
-        '%s_SplineAccCoeff%u' % (pfx, i), 'v_{%u}' % (i+1),
-        coefflist.at(coefflist.getSize() - 2), lastmycoeffs)))
+    polyCoeff = RooPolyVar(
+                '%s_SplineAccCoeff%u' % (pfx, i), 'v_{%u}' % (i+1),
+                        coefflist.at(coefflist.getSize() - 2), lastmycoeffs)
+
+    if extrapolate:
+        coefflist.add(WS(ws, polyCoeff))
+    else:
+        if floatParams:
+            coefflist.add(WS(ws, RooRealVar('%s_SplineAccCoeff%u' % (pfx, i),
+                                            'v_{%u}' % (i+1), polyCoeff.getVal(), 0., 3.)))
+        else:
+            coefflist.add(WS(ws, RooConstVar('%s_SplineAccCoeff%u' % (pfx, i),
+                                             'v_{%u}' % (i+1), polyCoeff.getVal() )))
+        
     del i
+    del myknots
     if debug:
         print 'DEBUG: Spline Coeffs: %s' % str([
             coefflist.at(i).getVal() for i in xrange(0, coefflist.getSize())

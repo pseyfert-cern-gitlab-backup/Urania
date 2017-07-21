@@ -217,6 +217,7 @@ def buildBDecayTimePdf(
     adet = None,                        # detection asymmetry
     HFAG = False,                       # use HFAG convention (Cf = -Cfbar)
     GLM = None,                         # dictionary with xml files
+    fixtagging = False                  # fix GLM coefficients
     ):
     """
     build a B decay time pdf
@@ -247,7 +248,8 @@ def buildBDecayTimePdf(
     aprod           -- production asymmetry (None for zero asymmetry)
     adet            -- detection asymmetry (None for zero asymmetry)
     HFAG            -- using HFAG convention. Cfbar = -Cf coefficient is built
-    GLM             -- using alternative GLM models, i.e. giving calibrated mistags to the DecRateCoeffs - dictionary with xml files
+    GLM             -- using alternative GLM models, i.e. giving calibrated mistags to the DecRateCoeffs - list of xml files
+    fixtagging      -- fix the coefficients provided by the GLM model in the fit
 
     returns:
     --------
@@ -306,6 +308,7 @@ def buildBDecayTimePdf(
                 'adet': adet,
                 'HFAG': HFAG,
                 'GLM': GLM,
+                'fixtagging' : fixtagging
                 }
         print 'buildBDecayTimePdf('
         for kw in kwargs:
@@ -347,19 +350,33 @@ def buildBDecayTimePdf(
     for mitem in range(0,mistagobs.__len__()):
         otherargs += [ qt[mitem] ]
         if GLM[mitem] is not None:
-            glm = ROOT.Espresso.GLMBuilder(GLM[mitem].rsplit('.')[0].rsplit('/')[-1],
-                                           GLM[mitem].rsplit('.')[0].rsplit('/')[-1],
+            if config['Debug']:
+                print "timepdfutils_Bd.buildBDecayTimePdf(..)=> Taking EPM calibration"
+            glm = ROOT.Espresso.GLMBuilder(GLM[mitem].rsplit('.')[-2].rsplit('/')[-1],
+                                           GLM[mitem].rsplit('.')[-2].rsplit('/')[-1],
                                            mistagobs[mitem],
-                                           GLM[mitem].rsplit('.')[0].rsplit('/')[-1],
+                                           GLM[mitem].rsplit('.')[-2].rsplit('/')[-1],
                                            GLM[mitem])
+
+            if fixtagging:
+                if config['Debug']:
+                    print "timepdfutils_Bd.buildBDecayTimePdf(..)=> Fixing calibration coefficients..."
+                for c in range(0, glm.coefficients().getSize()):
+                    glm.coefficients().at(c).setConstant(True)
+                    glm.delta_coefficients().at(c).setConstant(True)
+            
             omega_b = glm.b_mistag()
             otherargs += [omega_b]
             omega_bbar = glm.bbar_mistag()
             otherargs += [omega_bbar]
+            
             for citem in mistagcalib[mitem]:
                 if citem.GetName()[:7] == "tageff_" or citem.GetName()[:7] == "tagasym":
                     otherargs += [citem]
+                
         else:
+            if config['Debug']:
+                print "timepdfutils_Bd.buildBDecayTimePdf(..)=> Building linear calibration"
             otherargs += [ mistagobs[mitem] ]
             for citem in mistagcalib[mitem]:
                 otherargs += [ citem ]

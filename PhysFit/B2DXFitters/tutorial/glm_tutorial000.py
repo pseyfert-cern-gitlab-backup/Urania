@@ -264,7 +264,7 @@ config['Context'] = 'GEN'
 genpdf = buildTimePdf(config)
 
 # generate 150K events
-ds = genpdf['pdf'].generate(RooArgSet(*genpdf['obs']), 150000, RooFit.Verbose())
+ds = genpdf['pdf'].generate(RooArgSet(*genpdf['obs']), 400000, RooFit.Verbose())
 # HACK (2/2): restore correct eta range after generation
 ds.get().find('eta').setRange(0.0, 0.5)
 

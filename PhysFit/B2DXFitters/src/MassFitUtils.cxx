@@ -123,9 +123,14 @@ namespace MassFitUtils {
 
     if ( tN != "" )
     {
-      if ( tN == mdSet->GetTimeVarOutName() || tN == mdSet->GetTerrVarOutName() )
+      if ( (tN == mdSet->GetTimeVarOutName() || tN == mdSet->GetTerrVarOutName()) &&
+           (mdSet->GetTimeVar().Contains("ctau")==true || mdSet->GetTimeVar().Contains("CTAU")==true) )
       {
         val = val/corr; 
+      }
+      else if (mdSet->GetTimeVar().Contains("truetau")==true || mdSet->GetTimeVar().Contains("TRUETAU")==true)
+      {
+        val = 1000.0*val; 
       }
       else if ( tN == mdSet->GetPIDKVarOutName() )
       {

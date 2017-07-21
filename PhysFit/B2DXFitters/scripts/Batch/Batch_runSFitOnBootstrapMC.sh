@@ -23,15 +23,15 @@ export stop=$2
 #Final toy seed
 export fullstop=$3
 #Batch candidate queues
-export queue="1nd"
+export queue="2nd"
 #Memory limit (kB)
 export mlimit="100000"
 #Nickname for the current configuration
 #Choose a meaningful name (e.g. SgnAndBkgMeanResSplineAcc2TaggersNoAsymm etc...)
-export nickname="Bd2DPiMCFilteredS21RunIBothTaggedOnlyShortTime"
+export nickname="Bd2DPiMCFilteredS21RunIBothLargeTime"
 #Tag to describe time fit configuration
 #Choose a meaningful name (e.g. SSbarFloating etc...) 
-export timefitdescr="SSbarAccAsymmFloatDMGammaConstrTrueTagNominalC"
+export timefitdescr="SSbarAccAsymmFloatDMGammaConstrSSTaggedOnlyDooAcc"
 #Name of workspace
 export workspace="workspace"
 #Name of dataset
@@ -45,23 +45,23 @@ export year="run1"
 #Magnet polarity
 export pol="both"
 #Configuration file
-export config="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/Bd2DPiConfigForSFitOnBootstrapMC.py"
+export config="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/Bd2DPiConfigForSFitOnBootstrapMC.py"
 #Pathname of fitted toys
 export input="root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/MCBootstrap/${nickname}/Generator/" 
 #Pathname to dump results
 export output="/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/MCBootstrap/${nickname}/TimeFit/${timefitdescr}/"
 export eosoutput="/eos/lhcb/wg/b2oc/TD_DPi_3fb/MCBootstrap/${nickname}/TimeFit/${timefitdescr}/"
 #Path where scripts are located
-export bashscriptpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/scripts/Bash/"
-export pyscriptpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/scripts/"
-export runpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/"
+export bashscriptpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/scripts/Bash/"
+export pyscriptpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/scripts/"
+export runpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/"
 
 #Clear directories
 rm -rf $output
 mkdir -p $output
 
-/afs/cern.ch/project/eos/installation/lhcb/bin/eos.select rm -r ${eosoutput}
-/afs/cern.ch/project/eos/installation/lhcb/bin/eos.select mkdir -p ${eosoutput}
+/usr/bin/eos rm -r ${eosoutput}
+/usr/bin/eos mkdir -p ${eosoutput}
 
 cd $pyscriptpath
 
@@ -81,7 +81,7 @@ while (( $stop <= $fullstop )); do
     echo "...submitting job ${job} with starting seed ${seed}"
 
     #Submit job
-    bsub -q $queue -M $mlimit -e ${output}ERROR -o ${output}OUTPUT -n 1,8 -R "span[hosts=-1]" -J ${jobname}_${job} source ${bashscriptpath}runSFitOnBootstrapMC.sh $seed $stop $input $output $eosoutput $nickname $timefitdescr $config $pol $mode $year $hypo $workspace $dataset $pyscriptpath $runpath
+    bsub -q $queue -M $mlimit -e ${output}ERROR -o ${output}OUTPUT -n 1,4 -R "span[hosts=-1]" -J ${jobname}_${job} source ${bashscriptpath}runSFitOnBootstrapMC.sh $seed $stop $input $output $eosoutput $nickname $timefitdescr $config $pol $mode $year $hypo $workspace $dataset $pyscriptpath $runpath
 
     #source ${bashscriptpath}runSFitOnBootstrapMC.sh $seed $stop $input $output $eosoutput $nickname $timefitdescr $config $pol $mode $year $hypo $workspace $dataset $pyscriptpath $runpath
 

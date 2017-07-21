@@ -32,8 +32,9 @@ while (( $seed < $stop )); do
     #GenToyTree_${nickname}_${seed}.root
 
     #preselection="TMath::Abs(TrueID-100)<50"
+    #preselection="TagDecOS!=0"
 
-    ${runpath}run python ${pyscriptpath}runSFit_Bd.py --HFAG --truetag --toys --debug --fileName ${input}GenToyTree_${nickname}_${seed}.root --save ${output}TimeFitToysResult_${nickname}_${timefitdescr}_${massfitdescr}_${seed}.root --fileNamePull root://eoslhcb.cern.ch/${eosoutput}PullTreeTimeFit_${nickname}_${timefitdescr}_${massfitdescr}_${seed}.root --outputdir $output --configName $config --pol $pol --mode $mode --year $year --hypo $hypo --merge both --seed $seed >& ${output}log_${nickname}_${timefitdescr}_${massfitdescr}_${seed}.txt
+    ${runpath}run python ${pyscriptpath}runSFit_Bd.py --pereventmistag --UseGLM --NCPU 8 --HFAG --toys --debug --fileName ${input}GenToyTree_${nickname}_${seed}.root --save ${output}TimeFitToysResult_${nickname}_${timefitdescr}_${massfitdescr}_${seed}.root --fileNamePull root://eoslhcb.cern.ch/${eosoutput}PullTreeTimeFit_${nickname}_${timefitdescr}_${massfitdescr}_${seed}.root --outputdir $output --configName $config --pol $pol --mode $mode --year $year --hypo $hypo --merge both --seed $seed | tee ${output}log_${nickname}_${timefitdescr}_${massfitdescr}_${seed}.txt
 
     xrdcp -f ${output}TimeFitToysResult_${nickname}_${timefitdescr}_${massfitdescr}_${seed}.root root://eoslhcb.cern.ch/${eosoutput}TimeFitToysResult_${nickname}_${timefitdescr}_${massfitdescr}_${seed}.root
     rm -f ${output}TimeFitToysResult_${nickname}_${timefitdescr}_${massfitdescr}_${seed}.root
