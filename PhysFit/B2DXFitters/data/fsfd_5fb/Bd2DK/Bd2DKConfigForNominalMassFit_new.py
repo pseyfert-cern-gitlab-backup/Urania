@@ -68,7 +68,7 @@ def getconfig() :
                                                                "Var":["lab1_P","nTracks"], "HistName":"Pi_DLLmu<2 && DLLK>10_All"},
                                             "RatioDataMC":   { "FileLabel": {"2011":"#RatioDataMC 2011 PNTr", "2012": "#RatioDataMC 2011 PNTr"},
                                                                "Var":["lab1_P","nTracks"], "HistName":"histRatio"},
-                                            "Shift":{ "BeautyMass": -2.0, "CharmMass": 0.0} }
+                                            "Shift":{ "BeautyMass": 2.5, "CharmMass": 0.0} }
 
 
     #----------------------------------------------------------------------------------------------------------------------------------------------------------------#

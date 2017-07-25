@@ -22,7 +22,7 @@ def getconfig() :
 
     # basic variables                                                                                        
     configdict["BasicVariables"] = {}
-    configdict["BasicVariables"]["BeautyMass"]    = { "Range" : [5000,    5800    ], "InputName" : "lab0_MassFitConsD_M"} #data 5000-5800, then you can change to whatever you want 
+    configdict["BasicVariables"]["BeautyMass"]    = { "Range" : [5200,    5800    ], "InputName" : "lab0_MassFitConsD_M"} #data 5000-5800, then you can change to whatever you want 
     configdict["BasicVariables"]["CharmMass"]     = { "Range" : [1830,    1920    ], "InputName" : "lab2_MM"}  # data 1830 - 1920, 
     configdict["BasicVariables"]["BacPIDK"]       = { "Range" : [-7.0,    6.0     ], "InputName" : "lab1_PIDK"}
     configdict["BasicVariables"]["BDTG"]          = { "Range" : [0.1,     1.0     ], "InputName" : "BDTGResponse_3"} 
@@ -62,49 +62,24 @@ def getconfig() :
                                             "RatioDataMC":   { "FileLabel": {"2011":"#RatioDataMC 2011 PNTr", 
                                                                              "2012":"#RatioDataMC 2012 PNTr"}, #filtered for signal!, not filtered for bkg
                                                                "Var":["lab1_P","nTracks"], "HistName":"histRatio"},
-                                            "Shift":{ "BeautyMass": 2.5, "CharmMass": 0.0} }
+                                            "Shift":{ "BeautyMass": -2.0, "CharmMass": 0.0} }
 
 
     #----------------------------------------------------------------------------------------------------------------------------------------------------------------#
     ###                                                               MDfit fitting settings
     #----------------------------------------------------------------------------------------------------------------------------------------------------------------#
     # Bs signal shapes 
-    #configdict["BsSignalShape"] = {} 
-    #configdict["BsSignalShape"]["type"]    = "DoubleCrystalBallWithWidthRatio"
-    #configdict["BsSignalShape"]["mean"]    = {"Run1": {"All":5280.0},    "Fixed": False}
-    #configdict["BsSignalShape"]["sigma1"]  = {"Run1": {"KPiPi":17.918},  "Fixed": True} 
-    #configdict["BsSignalShape"]["sigma2"]  = {"Run1": {"KPiPi":11.882},  "Fixed": True} 
-    #configdict["BsSignalShape"]["alpha1"]  = {"Run1": {"KPiPi":-2.0221},  "Fixed": True}
-    #configdict["BsSignalShape"]["alpha2"]  = {"Run1": {"KPiPi":1.6922}, "Fixed": True}
-    #configdict["BsSignalShape"]["n1"]      = {"Run1": {"KPiPi":3.2641},  "Fixed": True}
-    #configdict["BsSignalShape"]["n2"]      = {"Run1": {"KPiPi":1.2653},  "Fixed": True}
-    #configdict["BsSignalShape"]["frac"]    = {"Run1": {"KPiPi":0.5}, "Fixed": True}
-    #configdict["BsSignalShape"]["R"]       = {"Run1": {"KPiPi":1.0},     "Fixed": False}
-
-    # Bd signal shape Ipatia+JohnsonSU
     configdict["BsSignalShape"] = {} 
-    configdict["BsSignalShape"]["type"]         = "IpatiaPlusJohnsonSU"
-    configdict["BsSignalShape"]["mean"]         = {"Run1": {"All":5280.0},     "Fixed": False}
-    configdict["BsSignalShape"]["l"]            = {"Run1": {"KPiPi":-0.9997},  "Fixed": True} 
-    configdict["BsSignalShape"]["zeta"]         = {"Run1": {"KPiPi":0.0},      "Fixed": True} 
-    configdict["BsSignalShape"]["fb"]           = {"Run1": {"KPiPi":0.0},      "Fixed": True}
-    configdict["BsSignalShape"]["nu"]           = {"Run1": {"KPiPi":-0.12999}, "Fixed": True}
-    configdict["BsSignalShape"]["tau"]          = {"Run1": {"KPiPi":0.4273},   "Fixed": True}
-   # configdict["BsSignalShape"]["shift"]        = {"Run1": {"KPiPi":1.2653},  "Fixed": True}
-   # configdict["BsSignalShape"]["meanShift"]    = {"Run1": {"KPiPi":0.5},     "Fixed": False}
-    configdict["BsSignalShape"]["sigmaI"]       = {"Run1": {"KPiPi":22.355},    "Fixed": True}
-    configdict["BsSignalShape"]["sigmaJ"]       = {"Run1": {"KPiPi":15.695},    "Fixed": True}
-    configdict["BsSignalShape"]["a1"]           = {"Run1": {"KPiPi":0.5586},    "Fixed": True}    
-    configdict["BsSignalShape"]["a2"]           = {"Run1": {"KPiPi":5.6699},    "Fixed": True}
-    configdict["BsSignalShape"]["n1"]           = {"Run1": {"KPiPi":1.5866},    "Fixed": True}
-    configdict["BsSignalShape"]["n2"]           = {"Run1": {"KPiPi":1.7686},    "Fixed": True}
-   # configdict["BsSignalShape"]["scalea"]       = {"Run1": {"KPiPi":1.0},      "Fixed": True}    
-   # configdict["BsSignalShape"]["scalen"]       = {"Run1": {"KPiPi":1.0},      "Fixed": True}
-    configdict["BsSignalShape"]["frac"]         = {"Run1": {"KPiPi":0.16119},   "Fixed": True}
-
-
-
-
+    configdict["BsSignalShape"]["type"]    = "DoubleCrystalBallWithWidthRatio"
+    configdict["BsSignalShape"]["mean"]    = {"Run1": {"All":5280.0},    "Fixed": False}
+    configdict["BsSignalShape"]["sigma1"]  = {"Run1": {"KPiPi":17.918},  "Fixed": True} 
+    configdict["BsSignalShape"]["sigma2"]  = {"Run1": {"KPiPi":11.882},  "Fixed": True} 
+    configdict["BsSignalShape"]["alpha1"]  = {"Run1": {"KPiPi":-2.0221},  "Fixed": True}
+    configdict["BsSignalShape"]["alpha2"]  = {"Run1": {"KPiPi":1.6922}, "Fixed": True}
+    configdict["BsSignalShape"]["n1"]      = {"Run1": {"KPiPi":3.2641},  "Fixed": True}
+    configdict["BsSignalShape"]["n2"]      = {"Run1": {"KPiPi":1.2653},  "Fixed": True}
+    configdict["BsSignalShape"]["frac"]    = {"Run1": {"KPiPi":0.5}, "Fixed": True}
+    configdict["BsSignalShape"]["R"]       = {"Run1": {"KPiPi":1.0},     "Fixed": False}
 
     # Ds signal shapes  
     configdict["DsSignalShape"] = {}
@@ -140,14 +115,6 @@ def getconfig() :
     configdict["DsCombinatorialShape"]["cB"]      = {"Run1": {"KPiPi":-1.9193e-03},     "Fixed":False}
     configdict["DsCombinatorialShape"]["fracD"]   = {"Run1": {"KPiPi":0.5},             "Fixed":False}
 
-    #modelling two-horned shape 
-    #configdict["BeautyMassBd2DstPiShape"] = {}
-    #configdict["BeautyMassBd2DstPiShape"]["type"]  = "DoubleGaussianSeparatedMean"
-    #configdict["BeautyMassBd2DstPiShape"]["sigma1"]  = {"Run1": {"KPiPi":15.0},          "Fixed":False}
-    #configdict["BeautyMassBd2DstPiShape"]["sigma2"]  = {"Run1": {"KPiPi":15.0},          "Fixed":False}
-    #configdict["BeautyMassBd2DstPiShape"]["mean"]    = {"Run1": {"KPiPi":5030.0},        "Fixed":False}
-    #configdict["BeautyMassBd2DstPiShape"]["mean2"]   = {"Run1": {"KPiPi":5110.0},        "Fixed":False}
-    #configdict["BeautyMassBd2DstPiShape"]["frac"]   = {"Run1": {"KPiPi":0.5},        "Fixed":False} 
 
     configdict["AdditionalParameters"] = {}
     configdict["AdditionalParameters"]["g1_f1_frac"] = {"Run1":{"All":{"Both":{"CentralValue":0.5, "Range":[0.0,1.0]}}}, "Fixed": False} 
@@ -158,8 +125,8 @@ def getconfig() :
     configdict["Yields"]["Bd2DK"]     = {"2011": {"KPiPi":15000.0},  "2012": {"KPiPi":30000.0},  "Fixed": False}
     configdict["Yields"]["Bd2DRho"]   = {"2011": {"KPiPi":80000.0},  "2012": {"KPiPi":160000.0}, "Fixed": False}
     configdict["Yields"]["Bd2DstPi"]  = {"2011": {"KPiPi":60000.0},  "2012": {"KPiPi":120000.0}, "Fixed": False}
-    configdict["Yields"]["Bs2DsPi"]   = {"2011": {"KPiPi":1000.0},   "2012": {"KPiPi":2000.0},   "Fixed": True}
-    configdict["Yields"]["Lb2LcPi"]   = {"2011": {"KPiPi":250.0},    "2012": {"KPiPi":500.0},    "Fixed": True}
+    configdict["Yields"]["Bs2DsPi"]   = {"2011": {"KPiPi":1000.0},   "2012": {"KPiPi":2000.0},   "Fixed": False}
+    configdict["Yields"]["Lb2LcPi"]   = {"2011": {"KPiPi":250.0},    "2012": {"KPiPi":500.0},    "Fixed": False}
     configdict["Yields"]["CombBkg"]   = {"2011": {"KPiPi":30000.0},  "2012": {"KPiPi":60000.0},  "Fixed": False}
     configdict["Yields"]["Signal"]    = {"2011": {"KPiPi":150000.0}, "2012": {"KPiPi":300000.0}, "Fixed": False}
 

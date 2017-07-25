@@ -24,6 +24,7 @@
 
 
 #include "B2DXFitters/Bs2Dsh2011TDAnaModels.h"
+#include "B2DXFitters/Bd2DhModels.h" 
 #include "B2DXFitters/GeneralUtils.h"
 #include "B2DXFitters/RooBinned1DQuinticBase.h"
 #include "B2DXFitters/RooIpatia2.h" 
@@ -202,7 +203,7 @@ namespace Bs2Dsh2011TDAnaModels {
   }
 
 
-  //===============================================================================                                                                                                      
+  //===============================================================================                                                                                     
   // Double Gaussian 
   //=============================================================================== 
   RooAbsPdf* buildDoubleGaussPDF( RooAbsReal& obs,
@@ -211,6 +212,7 @@ namespace Bs2Dsh2011TDAnaModels {
                                   TString typemode,
                                   bool widthRatio, 
                                   bool sharedMean,
+				  bool separeteMean,
                                   bool shiftMean,
                                   bool debug)
   {
@@ -218,6 +220,7 @@ namespace Bs2Dsh2011TDAnaModels {
     if ( debug == true ) { std::cout<<"[INFO] --------- build double Gaussian -------- "<<std::endl; } 
 
     RooRealVar* mean = NULL;
+    RooRealVar* mean2 = NULL; 
     RooRealVar* shiftVar = NULL;
     RooFormulaVar *meanShiftVar = NULL;
     RooRealVar* sigma1Var =NULL;
@@ -231,13 +234,21 @@ namespace Bs2Dsh2011TDAnaModels {
     TString meanName = typemode+"_"+varName+"_mean_"+samplemode;
     if ( sharedMean ) { meanName = "Signal_"+varName+"_mean_"+samplemode; }
     mean = tryVar(meanName, workInt, debug);
-    if (shiftMean)
+
+    if ( separeteMean )
+      {
+	TString meanName2 = typemode+"_"+varName+"_mean2_"+samplemode;
+        mean2 = tryVar(meanName2, workInt, debug);
+      }
+ 
+   if (shiftMean)
     {      
       TString shiftVarName = typemode+"_"+varName+"_shift_"+samplemode; 
       shiftVar = tryVar(shiftVarName, workInt, debug);
       TString meanShiftVarName = typemode+"_"+varName+"_meanShift_"+samplemode;
       meanShiftVar = new RooFormulaVar(meanShiftVarName.Data(), meanShiftVarName.Data(), "@0+@1", RooArgList(*mean,*shiftVar));
     }
+
     TString sigma1Name = typemode+"_"+varName+"_sigma1_"+samplemode;
     sigma1Var = tryVar(sigma1Name, workInt, debug);
     TString sigma2Name = typemode+"_"+varName+"_sigma2_"+samplemode;
@@ -275,6 +286,19 @@ namespace Bs2Dsh2011TDAnaModels {
         pdf2 = new RooGaussian( pdf2Name.Data(), pdf2Name.Data(), obs, *meanShiftVar, *sigma2Var);
       }
     }
+    else if ( separeteMean )
+      {
+        if (widthRatio)
+          {
+            pdf1 = new RooGaussian( pdf1Name.Data(), pdf1Name.Data(), obs, *mean,  *sigma1For);
+            pdf2 = new RooGaussian( pdf2Name.Data(), pdf2Name.Data(), obs, *mean2, *sigma2For);
+          }
+        else
+          {
+            pdf1 = new RooGaussian( pdf1Name.Data(), pdf1Name.Data(), obs, *mean, *sigma1Var);
+            pdf2 = new RooGaussian( pdf2Name.Data(), pdf2Name.Data(), obs, *mean2, *sigma2Var);
+          }
+      }
     else
     {  
       if (widthRatio) 
@@ -615,6 +639,7 @@ namespace Bs2Dsh2011TDAnaModels {
     return pdf;
 
   }
+
 
   RooAbsPdf* buildApolloniosPDF(RooAbsReal& mass,
 				RooWorkspace* workInt,
@@ -1942,6 +1967,12 @@ namespace Bs2Dsh2011TDAnaModels {
     if ( type.Contains("SharedMean") == true ) { sharedMean = true; }
     Bool_t widthRatio = false;
     if ( type.Contains("WithWidthRatio") == true ) { widthRatio = true; }
+    Bool_t separatedMean = false;
+    if ( type.Contains("SeparatedMean") == true ) { separatedMean = true; }
+    Bool_t shiftMean = false;
+    if ( type.Contains("ShiftMean") == true ) { shiftMean = true; }
+    Bool_t scaleWidths = false;
+    if ( type.Contains("scaleWidths") == true ) { scaleWidths = true; }
 
     if ( extended == true )
     {
@@ -1965,8 +1996,38 @@ namespace Bs2Dsh2011TDAnaModels {
     }
     else if ( type.Contains("Ipatia") or type.Contains("Hypatia") )
     {
-      pdf =  buildIpatiaPDF( mass, workInt, samplemode, typemode, false, debug); //don't consider rescaled tails, for now
+      if ( type.Contains("Johnson") == true ) 
+	{
+	  pdf = Bd2DhModels::buildIpatiaPlusJohnsonSUPDF(mass, workInt, samplemode, typemode, shiftMean, false, debug);
+	}
+      else
+	{
+	  pdf =  buildIpatiaPDF( mass, workInt, samplemode, typemode, false, debug); //don't consider rescaled tails, for now
+	}
     }
+    else if ( type.Contains("Johnson") == true )
+      {
+	if ( type.Contains("PlusGaussianPlusExponential") == true  )
+	  {
+	    pdf = Bd2DhModels::buildJohnsonSUPlusGaussianPlusExponentialPDF(mass, workInt, samplemode, typemode, sharedMean, debug);
+	  }
+	else if ( type.Contains("PlusGaussian") == true )
+	  {
+	    pdf = Bd2DhModels::buildJohnsonSUPlusGaussianPDF(mass, workInt, samplemode, typemode, sharedMean, shiftMean, debug);
+	  }
+	else if( type.Contains("Plus2Gaussian") == true )
+          {
+            pdf = Bd2DhModels::buildJohnsonSUPlus2GaussianPDF(mass, workInt, samplemode, typemode, sharedMean, debug);
+          }
+	else if ( type == "Johnson" || type == "JohnsonSU" )
+	  {
+	    pdf = Bd2DhModels::buildJohnsonSUPDF(mass, workInt, samplemode, typemode, shiftMean, debug);
+	  }
+	else
+	  {
+	    std::cout<<"[ERROR] function: "<<type<<" not defined"<<std::endl;
+	  }
+      }
     else if ( type.Contains("Apollonios") == true )
     {
       pdf =  buildApolloniosPDF( mass, workInt, samplemode, typemode, debug);
@@ -1981,10 +2042,14 @@ namespace Bs2Dsh2011TDAnaModels {
       {
         pdf =  buildDoubleCrystalBallPDF( mass, workInt, samplemode, typemode, widthRatio, sharedMean, debug);
       }
+      else if ( type.Contains("PlusGaussian") ) 
+	{
+	  pdf = Bd2DhModels::buildCrystalBallPlusGaussianPDF(mass, workInt, samplemode, typemode, shiftMean, scaleWidths, debug);
+	}
       else if ( type == "CrystalBall" )
-      {
-        pdf =  buildCrystalBallPDF( mass, workInt, samplemode, typemode, debug);
-      }
+	{
+	  pdf =  buildCrystalBallPDF( mass, workInt, samplemode, typemode, debug);
+	}
       else
       {
         std::cout<<"[ERROR] function: "<<type<<" not defined"<<std::endl; 
@@ -1994,7 +2059,7 @@ namespace Bs2Dsh2011TDAnaModels {
     {
       if ( type.Contains("DoubleGaussian")) 
       {
-        pdf = buildDoubleGaussPDF( mass, workInt, samplemode, typemode, widthRatio, sharedMean, debug);
+        pdf = buildDoubleGaussPDF( mass, workInt, samplemode, typemode, widthRatio, sharedMean, false, separatedMean, debug);
       }
       else if ( type == "Gaussian" )
       {
