@@ -35,6 +35,16 @@ namespace Bd2DhModels {
 					bool debug = true
 					);
 
+  RooAbsPdf* build_Bd2DK_BKG_MDFitter( RooAbsReal& mass,
+                                       RooAbsReal& massDs,
+                                       RooWorkspace* work,
+                                       RooWorkspace* workInt,
+                                       TString &samplemode,
+                                       TString merge,
+                                       Int_t dim,
+                                       bool debug = true
+                                       );
+
   RooAbsPdf* buildExponentialPlusConstantPDF( RooAbsReal& obs,
                                               RooWorkspace* workInt,
                                               TString samplemode,
@@ -83,6 +93,7 @@ namespace Bd2DhModels {
                                                            RooWorkspace* workInt,
                                                            TString samplemode,
                                                            TString typemode,
+							   bool sameMean,
                                                            bool debug = true);
   
   

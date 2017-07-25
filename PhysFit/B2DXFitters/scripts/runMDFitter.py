@@ -150,6 +150,10 @@ def getTotalBkgPDF(myconfigfile, beautyMass, charmMass, workspace, workInt, merg
             if ( mm in cdm ):
                 #bkgPDF.append(WS(workInt,Bd2DhModels.build_Bd2DPi_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
                 bkgPDF.append(Bd2DhModels.build_Bd2DPi_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug ))
+        elif ( myconfigfile["Decay"] == "Bd2DK"):
+            if ( mm in cdm ):
+                #bkgPDF.append(WS(workInt,Bd2DhModels.build_Bd2DK_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                bkgPDF.append(Bd2DhModels.build_Bd2DK_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug ))
     return bkgPDF
     
 #------------------------------------------------------------------------------
@@ -343,6 +347,19 @@ def runMDFitter( debug, sample, mode, sweight,
             nYields.append(RooRealVar(nameBkg.Data() , nameBkg.Data(), expectedYield, 0.0, expectedYield*2.0))
             setConstantIfSoConfigured(nYields[nYields.__len__()-1], "Yields", bkg, mm, pol, myconfigfile)
             getattr(workInt,'import')(nYields[nYields.__len__()-1])
+
+            if myconfigfile.has_key("BeautyMass"+bkg+"Shape"):
+                key = "BeautyMass"+bkg+"Shape"
+                prefix1 = bkg+"_"+obs[0].GetName()
+                workInt = readVariables(myconfigfile, key, prefix1, workInt, sm[i], merge, bound, debug)
+            if myconfigfile.has_key("CharmMass"+bkg+"Shape"):
+                key = "CharmMass"+bkg+"Shape"
+                prefix1 = bkg+"_"+obs[1].GetName()
+                workInt = readVariables(myconfigfile, key, prefix1, workInt, sm[i], merge, bound, debug)
+            if myconfigfile.has_key("PIDK"+bkg+"Shape"):
+                key = "CharmMass"+bkg+"Shape"
+                prefix1 = bkg+"_"+obs[2].GetName()
+                workInt = readVariables(myconfigfile, key, prefix1, workInt, sm[i], merge, bound, debug)
 
     ###------------------------------------------------------------------------------------------------------------------------------------###                                
         ###-------------------------------   Create the combo and signal PDF in Bs mass, Ds mass, PIDK --------------------------------------###                   

@@ -102,6 +102,77 @@ namespace Bd2DhModels {
 
   }
 
+  RooAbsPdf* build_Bd2DK_BKG_MDFitter( RooAbsReal& mass,
+				       RooAbsReal& massDs,
+				       RooWorkspace* work,
+				       RooWorkspace* workInt,
+				       TString &samplemode,
+				       TString merge,
+				       Int_t dim,
+                                        bool debug
+				       ){
+
+    if (debug == true)
+      {
+        cout<<"[INFO] =====> Build background model Bd->DK --------------"<<endl;
+      }
+
+
+    std::cout<<"DEBUG: "<<debug<<std::endl;
+    RooArgList* list = new RooArgList();
+    TString charmVarName = massDs.GetName();
+
+    RooExtendPdf* epdf_Bd2DPi = NULL;
+    epdf_Bd2DPi = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DPi", "", merge, dim, charmVarName, debug);
+    Double_t valBd2DPi = CheckEvts(workInt, samplemode, "Bd2DPi",debug);
+    list = AddEPDF(list, epdf_Bd2DPi, valBd2DPi, debug);
+
+    RooExtendPdf* epdf_Bd2DRho = NULL;
+    epdf_Bd2DRho = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DRho", "", merge, dim, charmVarName, debug);
+    Double_t valBd2DRho = CheckEvts(workInt, samplemode, "Bd2DRho",debug);
+    list = AddEPDF(list, epdf_Bd2DRho, valBd2DRho, debug);
+
+    RooExtendPdf* epdf_Bd2DstPi = NULL;
+    epdf_Bd2DstPi = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DstPi", "", merge, dim, charmVarName, debug);
+    Double_t valBd2DstPi = CheckEvts(workInt, samplemode, "Bd2DstPi",debug);
+    list = AddEPDF(list, epdf_Bd2DstPi, valBd2DstPi, debug);
+
+    RooExtendPdf* epdf_Bd2DKst = NULL;
+    epdf_Bd2DKst = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DKst", "", merge, dim, charmVarName, debug);
+    Double_t valBd2DKst = CheckEvts(workInt, samplemode, "Bd2DKst",debug);
+    list = AddEPDF(list, epdf_Bd2DKst, valBd2DKst, debug);
+
+    RooExtendPdf* epdf_Bd2DstK = NULL;
+    RooAbsPdf* pdf_Bd2DstK = ObtainSignalMassShape(mass, work, workInt, samplemode, "Bd2DstK", "DoubleGaussianSeparatedMean", "", false, debug);
+    TString nBd2DstKName = "nBd2DstK_"+samplemode+"_Evts";
+    RooRealVar* nBd2DstKEvts = tryVar(nBd2DstKName, workInt, debug);
+    Double_t valBd2DstK = nBd2DstKEvts->getValV();
+
+    RooAbsPdf* pdf_Bd2DstK_Ds = trySignal(samplemode, charmVarName, workInt, false);
+    TString t = "Bd2DstK";
+    RooProdPdf* pdf_Bd2DstK_Tot = GetRooProdPdfDim(t, samplemode, pdf_Bd2DstK, pdf_Bd2DstK_Ds, NULL, dim, debug  );
+    CheckPDF( pdf_Bd2DstK_Tot, debug );
+
+    TString epdfName = "Bd2DstKEPDF_m_"+samplemode;
+    epdf_Bd2DstK = new RooExtendPdf(epdfName.Data() , pdf_Bd2DstK_Tot->GetTitle(), *pdf_Bd2DstK_Tot, *nBd2DstKEvts );
+    CheckPDF(epdf_Bd2DstK, debug);
+    list = AddEPDF(list, epdf_Bd2DstK, valBd2DstK, debug);
+
+    RooAbsPdf* pdf_totBkg = NULL;
+    TString name = "BkgEPDF_m_"+samplemode;
+    pdf_totBkg = new RooAddPdf( name.Data(), name.Data(), *list);
+    if (debug == true)
+      {
+        cout<<endl;
+        if( pdf_totBkg != NULL ){ cout<<" ------------- CREATED TOTAL BACKGROUND PDF: SUCCESFULL------------"<<endl; }
+        else { cout<<" ---------- CREATED TOTAL BACKGROUND PDF: FAILED ----------------"<<endl;}
+      }
+    return pdf_totBkg;
+  
+  }
+
+
+
   //===============================================================================
   // Build Exponential + constant
   //===============================================================================

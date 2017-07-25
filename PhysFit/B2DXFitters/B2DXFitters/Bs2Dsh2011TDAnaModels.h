@@ -30,7 +30,7 @@ namespace Bs2Dsh2011TDAnaModels {
   RooAbsPdf* buildGaussPDF( RooAbsReal& mass, RooWorkspace* workInt, TString samplemode, TString typemode, bool shiftMean = false, bool debug = false);
   
   RooAbsPdf* buildDoubleGaussPDF( RooAbsReal& mass, RooWorkspace* workInt, TString samplemode,
-                                  TString typemode, bool widthRatio, bool sharedMean, bool shiftMean, bool debug = false);
+                                  TString typemode, bool widthRatio, bool sharedMean, bool separeteMean, bool shiftMean, bool debug = false);
 
   RooAbsPdf* buildExponentialPlusGaussPDF(RooAbsReal& mass, RooWorkspace* workInt, TString samplemode, TString typemode, bool sharedMean, bool debug = false);
 

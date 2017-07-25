@@ -6,7 +6,7 @@ DecayTree
 DecayTree
 ###
 
-#B2DPi KPiPi 2012
+#B2DPi KPiPi 2012 blabla
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_SCALED/MERGED_WITH_BDTG3/
 Bd_Dpi_2012_Dw.root
 Bd_Dpi_2012_Up.root
@@ -54,7 +54,7 @@ DecayTree
 DecayTree
 ###
 
-#Bs2DsPi NonRes 2012
+#Bs2DsPi NonRes 2012 blabla
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_SCALED/MERGED_WITH_BDTG3/
 Bs_Dspi_nonres_2012_Dw.root
 Bs_Dspi_nonres_2012_Up.root
@@ -62,7 +62,7 @@ DecayTree
 DecayTree
 ###
 
-#Bs2DsPi PhiPi 2012
+#Bs2DsPi PhiPi 2012 blabla
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_SCALED/MERGED_WITH_BDTG3/
 Bs_Dspi_phipi_2012_Dw.root
 Bs_Dspi_phipi_2012_Up.root
@@ -70,7 +70,7 @@ DecayTree
 DecayTree
 ###
 
-#Bs2DsPi KstK 2012
+#Bs2DsPi KstK 2012 blabla
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_SCALED/MERGED_WITH_BDTG3/
 Bs_Dspi_KstK_2012_Dw.root
 Bs_Dspi_KstK_2012_Up.root
@@ -78,7 +78,7 @@ DecayTree
 DecayTree
 ###
 
-#Bs2DsPi KPiPi 2012
+#Bs2DsPi KPiPi 2012 blabla
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_SCALED/MERGED_WITH_BDTG3/
 Bs_Dspi_Kpipi_2012_Dw.root
 Bs_Dspi_Kpipi_2012_Up.root
@@ -86,10 +86,18 @@ DecayTree
 DecayTree
 ###
 
-#Bs2DsPi PiPiPi 2012
+#Bs2DsPi PiPiPi 2012 blabla
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_SCALED/MERGED_WITH_BDTG3/
 Bs_Dspi_pipipi_2012_Dw.root
 Bs_Dspi_pipipi_2012_Up.root
+DecayTree
+DecayTree
+###
+
+#Bs2DsPi KKPi 2012
+root://eoslhcb.cern.ch//eos/lhcb/user/m/mvitti/B2DK_rootFiles/Data/
+Data_2012_dw_MINI_BDTG3_OFFLINE_Bs_Dspi_KKpi.root
+Data_2012_up_MINI_BDTG3_OFFLINE_Bs_Dspi_KKpi.root
 DecayTree
 DecayTree
 ###
@@ -386,7 +394,7 @@ PtVsnTrVsP_Comp_DPi_Up_hist.root
 ###
 
 
-#Signal Bs2DsPi KstK 2011
+#Signal Bs2DsPi KstK 2011 blabla
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_MC/FINAL_WITH_BDTG3/
 B2DX_MC_Bs_Dspi_KKpi_Dn_OFFLINE_Bs_Dspi_KstK.root
 B2DX_MC_Bs_Dspi_KKpi_Up_OFFLINE_Bs_Dspi_KstK.root
@@ -394,7 +402,7 @@ DecayTree
 DecayTree
 ###
 
-#Signal Bs2DsPi PhiPi 2011
+#Signal Bs2DsPi PhiPi 2011 blabla
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_MC/FINAL_WITH_BDTG3/
 B2DX_MC_Bs_Dspi_KKpi_Dn_OFFLINE_Bs_Dspi_phipi.root
 B2DX_MC_Bs_Dspi_KKpi_Up_OFFLINE_Bs_Dspi_phipi.root
@@ -402,7 +410,7 @@ DecayTree
 DecayTree
 ###
 
-#Signal Bs2DsPi NonRes 2011
+#Signal Bs2DsPi NonRes 2011 blabla
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_MC/FINAL_WITH_BDTG3/
 B2DX_MC_Bs_Dspi_KKpi_Dn_OFFLINE_Bs_Dspi_nonres.root
 B2DX_MC_Bs_Dspi_KKpi_Up_OFFLINE_Bs_Dspi_nonres.root
@@ -411,7 +419,7 @@ DecayTree
 ###
 
 
-#Signal Bs2DsPi KPiPi 2011
+#Signal Bs2DsPi KPiPi 2011 blabla
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_MC/FINAL_WITH_BDTG3/
 B2DX_MC_Bs_Dspi_Kpipi_Dn_OFFLINE_Bs_Dspi_Kpipi.root
 B2DX_MC_Bs_Dspi_Kpipi_Up_OFFLINE_Bs_Dspi_Kpipi.root
@@ -428,7 +436,7 @@ DecayTree
 ###
 
 
-#Signal Bs2DsPi PiPiPi 2011
+#Signal Bs2DsPi PiPiPi 2011 blabla
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_MC/FINAL_WITH_BDTG3/
 B2DX_MC_Bs_Dspi_pipipi_Dn_OFFLINE_Bs_Dspi_pipipi.root
 B2DX_MC_Bs_Dspi_pipipi_Up_OFFLINE_Bs_Dspi_pipipi.root
@@ -436,7 +444,7 @@ DecayTree
 DecayTree
 ###
 
-#Signal Bs2DsPi KstK 2012
+#Signal Bs2DsPi KstK 2012 blabla
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_MC/FINAL_WITH_BDTG3/
 B2DX_MC_Bs_Dspi_KKpi_Dn_OFFLINE_Bs_Dspi_KstK.root
 B2DX_MC_Bs_Dspi_KKpi_Up_OFFLINE_Bs_Dspi_KstK.root
@@ -444,7 +452,7 @@ DecayTree
 DecayTree
 ###
 
-#Signal Bs2DsPi PhiPi 2012
+#Signal Bs2DsPi PhiPi 2012 blabla
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_MC/FINAL_WITH_BDTG3/
 B2DX_MC_Bs_Dspi_KKpi_Dn_OFFLINE_Bs_Dspi_phipi.root
 B2DX_MC_Bs_Dspi_KKpi_Up_OFFLINE_Bs_Dspi_phipi.root
@@ -452,7 +460,7 @@ DecayTree
 DecayTree
 ###
 
-#Signal Bs2DsPi NonRes 2012
+#Signal Bs2DsPi NonRes 2012 blabla
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_MC/FINAL_WITH_BDTG3/
 B2DX_MC_Bs_Dspi_KKpi_Dn_OFFLINE_Bs_Dspi_nonres.root
 B2DX_MC_Bs_Dspi_KKpi_Up_OFFLINE_Bs_Dspi_nonres.root
@@ -461,7 +469,7 @@ DecayTree
 ###
 
 
-#Signal Bs2DsPi KPiPi 2012
+#Signal Bs2DsPi KPiPi 2012 blabla
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_MC/FINAL_WITH_BDTG3/
 B2DX_MC_Bs_Dspi_Kpipi_Dn_OFFLINE_Bs_Dspi_Kpipi.root
 B2DX_MC_Bs_Dspi_Kpipi_Up_OFFLINE_Bs_Dspi_Kpipi.root
@@ -469,7 +477,7 @@ DecayTree
 DecayTree
 ###
 
-#Signal Bs2DsPi PiPiPi 2012
+#Signal Bs2DsPi PiPiPi 2012 blabla
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_MC/FINAL_WITH_BDTG3/
 B2DX_MC_Bs_Dspi_pipipi_Dn_OFFLINE_Bs_Dspi_pipipi.root
 B2DX_MC_Bs_Dspi_pipipi_Up_OFFLINE_Bs_Dspi_pipipi.root
@@ -477,8 +485,21 @@ DecayTree
 DecayTree
 ###
 
+#Signal Bs2DsPi KKPi 2012 blabla
+root://eoslhcb.cern.ch//eos/lhcb/user/m/mvitti/ETA_ntuples/
+MC_Bs_DsPi_BDTG3_Up_kkpi.root
+MC_Bs_DsPi_BDTG3_Dn_kkpi.root
+DecayTree
+DecayTree
+###
 
-
+#Signal Bs2DsPi KKPi 2012
+root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_MC/FINAL_WITH_BDTG3
+B2DX_MC_Bs_Dspi_KKpi_Dn_BDTG3_Bs.root
+B2DX_MC_Bs_Dspi_KKpi_Up_BDTG3_Bs.root
+DecayTree
+DecayTree
+###
 
 #PID2m2
 /afs/cern.ch/work/a/adudziak/public/hist/

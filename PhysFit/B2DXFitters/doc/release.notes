@@ -4,6 +4,10 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
+! 2017-07-25 - Agnieszka Dziurda
+  - merge fs/fd updates 
+  - fix plotSFit.py 
+
 ! 2017-07-03 - Agnieszka Dziurda
   - add dump fix for setting B2DXFitters. In python script you can do now: 
     	from B2DXFitters.settings import setEnv

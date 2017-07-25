@@ -438,6 +438,8 @@ def getDescription(comp,decay,low):
             desc.append("B_{s}#kern[-0.7]{"+happy0+"} #rightarrow D_{s}#kern[-0.3]{"+happymin+happystar+"}#kern[0.1]{(#pi"+happyplus+",#kern[0.1]{#rho"+happyplus+"})}")
         elif c == "BsBd2DsstKst":
             desc.append("B_{(d,s)}#kern[-3.7]{"+happy0+"} #rightarrow D_{s}#kern[-0.3]{"+happymp+happystar+"}#kern[0.1]{K"+happypm+happystar+"}")
+        elif c == "Bd2DKst":
+            desc.append("B_{d}#kern[-0.7]{"+happy0+"}#rightarrow D#kern[+0.2]{"+happymin+"}#kern[0.2]{K"+happystar2+happyplus+"}")
         else:
             desc.append(str(TLatexUtils.DecDescrToTLatex(c)))
     return desc
