@@ -7,7 +7,7 @@ def getconfig() :
 
     # PHYSICAL PARAMETERS
     configdict["Gammas"]        =  0.6643   # in ps^{-1}
-    configdict["DeltaGammas"]   =  -0.083
+    configdict["DeltaGammas"]   =  0.083
     configdict["DeltaMs"]       = 17.757   # in ps^{-1}
     configdict["TagEffSig"]     = 0.403
     configdict["TagOmegaSig"]   = 0.391
@@ -20,7 +20,7 @@ def getconfig() :
     configdict["Asymmetries"] = {"Detection":1.0/100.0,
                                  "Production":1.1/100.0}
 #    configdict["Asymmetries"] = {"Detection":0.0,
-#                                 "Production":0.0}
+#                             "Production":0.0}
 
     configdict["TaggingCalibration"] = {}
 
@@ -43,7 +43,7 @@ def getconfig() :
                                                            [0.0001613, 0.0, 0.006101, 0.0],
                                                            [0.0, 0.0, 0.0, 1.0]],
                                                   "average": 0.43744, "tagEff":0.636, "aTagEff":0.0, "use":False}
-        configdict["TaggingCalibration"]["OS"] = {"p0": 0.37718, "dp0": 0.0, "p1": 1.1244, "dp1": 0.0,
+        configdict["TaggingCalibration"]["OS"] = {"p0": 0.389800, "dp0": 0.0, "p1": 0.99070, "dp1": 0.0,
                                                   "cov": [ [5.212e-05, 0.0, 0.0002286, 0.0],
                                                            [0.0, 1.0, 0.0, 0.0],
                                                            [0.0002286, 0.0, 0.006685, 0.0],
@@ -109,7 +109,7 @@ def getconfig() :
 
 
     configdict["Acceptance"] = { "knots": [0.50, 1.0,  1.5, 2.0, 3.0, 12.0],
-                                 "values": [3.774e-01,5.793e-01,7.752e-01,1.0043e+00,1.0937e+00,1.1872e+00] }
+                                 "values": [0.390195,0.595695,0.789784,1.014400,1.099279,1.188763] }
 
 
     configdict["constParams"] = []
@@ -124,16 +124,16 @@ def getconfig() :
     configdict["constParams"].append('Dbar_Bs2DsPi')
 #    configdict["constParams"].append('tagEff_OS')
 #    configdict["constParams"].append('tagEff_SS')
-    configdict["constParams"].append('aTagEff_OS')
-    configdict["constParams"].append('aTagEff_SS')
+#    configdict["constParams"].append('aTagEff_OS')
+#    configdict["constParams"].append('aTagEff_SS')
 #    configdict["constParams"].append('p0_OS')
 #    configdict["constParams"].append('p0_SS')
 #    configdict["constParams"].append('p1_OS')
 #    configdict["constParams"].append('p1_SS')
-    configdict["constParams"].append('dp0_OS')
-    configdict["constParams"].append('dp0_SS')
-    configdict["constParams"].append('dp1_OS')
-    configdict["constParams"].append('dp1_SS')
+#    configdict["constParams"].append('dp0_OS')
+#    configdict["constParams"].append('dp0_SS')
+#    configdict["constParams"].append('dp1_OS')
+#    configdict["constParams"].append('dp1_SS')
     configdict["constParams"].append('p0_mean_OS')
     configdict["constParams"].append('p0_mean_SS')
     configdict["constParams"].append('p1_mean_OS')

@@ -103,14 +103,20 @@ __doc__ = """ real docstring """
 # -----------------------------------------------------------------------------
 # Load necessary libraries
 # -----------------------------------------------------------------------------
-from optparse import OptionParser
-from math     import pi, log, sqrt, fmod
-import os, sys, gc
-
-import B2DXFitters
 import ROOT
-from ROOT import RooFit
+from ROOT import *
+import B2DXFitters
+from B2DXFitters import *
+
+from optparse import OptionParser
+from math     import pi, log
+from  os.path import exists
+import os, sys, gc
+from array import array
 from B2DXFitters.FitResultGrabberUtils import grabResult
+
+gROOT.SetBatch()
+
 
 parser = OptionParser(usage = '%prog [options] [fit result ROOT files]')
 parser.add_option('-d', '--data', action='store_true', dest='isData',
