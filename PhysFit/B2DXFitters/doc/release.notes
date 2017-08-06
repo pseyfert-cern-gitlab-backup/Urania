@@ -4,6 +4,18 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
+! 2017-08-07 - Agnieszka Dziurda
+  - a huge cleaning up 
+  - deal with warning due to ClassDef 
+  - add RooHILLdini and RooHORNdini
+  - change logic in MDFit: 
+      - delete special fucntions for signal and combo (no needed anymore)
+      - able to use analytical function for all components 
+        (work in progress, code there, only B2DK bkg contribution is changed) 
+      - unify code for all components
+      - code should be backward compatible 
+  - Work In Progess 
+
 ! 2017-07-25 - Agnieszka Dziurda
   - merge fs/fd updates 
   - fix plotSFit.py 
