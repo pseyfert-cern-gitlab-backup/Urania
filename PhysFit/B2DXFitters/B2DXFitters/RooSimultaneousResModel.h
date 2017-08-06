@@ -232,7 +232,7 @@ class RooSimultaneousResModel : public RooResolutionModel
 
 	static RooArgSet s_emptyset; ///< empty RooArgSet
 
-	ClassDef(RooSimultaneousResModel, 1) // Resolution model with k-factor
+	ClassDefOverride(RooSimultaneousResModel, 1) // Resolution model with k-factor
 };
 
 #endif	// ROOSIMULTANEOUSMODEL_H

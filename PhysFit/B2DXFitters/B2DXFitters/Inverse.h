@@ -26,7 +26,7 @@ protected:
   Double_t evaluate() const override;
 
 private:
-  ClassDef(Inverse, 1);
+  ClassDefOverride(Inverse, 1);
 };
 
 #endif

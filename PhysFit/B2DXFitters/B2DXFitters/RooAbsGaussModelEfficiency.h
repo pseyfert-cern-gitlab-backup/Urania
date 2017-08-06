@@ -19,7 +19,7 @@ public:
                                                            Double_t scale, Double_t offset,
                                                            const std::complex<double>& z) const = 0;
 private:
-    ClassDef(RooAbsGaussModelEfficiency,1)
+    ClassDefOverride(RooAbsGaussModelEfficiency,1)
 };
 
 

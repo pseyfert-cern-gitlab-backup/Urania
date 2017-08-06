@@ -55,7 +55,7 @@ class SharedArrayImp : public TObject
 	/// array
 	std::vector<TYPE> arr;
 
-	ClassDef(SharedArrayImp, 1);
+	ClassDefOverride(SharedArrayImp, 1);
 };
 
 /** @brief copy on write TYPE array class to make cloning cheap
@@ -246,7 +246,7 @@ class SharedArray : public TObject
 
 
     private:
-	ClassDef(SharedArray, 1);
+	ClassDefOverride(SharedArray, 1);
 };
 
 #if defined(__GCCXML__) || defined(__CINT__) || defined(__ROOTCLING__)

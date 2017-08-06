@@ -759,7 +759,7 @@ class DecRateCoeff : public RooAbsReal
 		} m_flags;
 	};
 
-	ClassDef(DecRateCoeff, 3);
+	ClassDefOverride(DecRateCoeff, 3);
 };
 
 #endif // DECRATECOEFF

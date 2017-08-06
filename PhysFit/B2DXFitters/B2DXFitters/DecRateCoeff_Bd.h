@@ -154,7 +154,7 @@ private:
 
   int  getIndex(const RooCategoryProxy& tag) const;
 
-  ClassDef(DecRateCoeff_Bd,1) // CP coefficient for RooBDecay PDF
+  ClassDefOverride(DecRateCoeff_Bd,1) // CP coefficient for RooBDecay PDF
 };
 
 #endif

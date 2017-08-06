@@ -55,21 +55,22 @@ namespace Bs2DssthModels {
     RooArgList* list = new RooArgList();
     TString charmVarName = massDs.GetName(); 
     TString beautyVarName = mass.GetName();
+    std::vector <TString> types;
     if(beautyVarName) { } 
 
     // --------------------------------- Read PDFs from Workspace -------------------------------------------------//
     RooExtendPdf* epdf_Bs2DsRho = NULL;
-    epdf_Bs2DsRho = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bs2DsRho", "", merge, dim, "", debug);
+    epdf_Bs2DsRho = buildExtendPdfSpecBkgMDFit( workInt, work, types, samplemode, "Bs2DsRho", "", merge, dim, "", debug);
     Double_t valBs2DsRho = CheckEvts(workInt, samplemode, "Bs2DsRho",debug);
     list = AddEPDF(list, epdf_Bs2DsRho, valBs2DsRho, debug);
       
     RooExtendPdf* epdf_Bs2DsstRho = NULL;
-    epdf_Bs2DsstRho = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bs2DsstRho", "", merge, dim, charmVarName, debug);
+    epdf_Bs2DsstRho = buildExtendPdfSpecBkgMDFit( workInt, work, types, samplemode, "Bs2DsstRho", "", merge, dim, charmVarName, debug);
     Double_t valBs2DsstRho = CheckEvts(workInt, samplemode, "Bs2DsstRho",debug);
     list = AddEPDF(list, epdf_Bs2DsstRho, valBs2DsstRho, debug);
 
     RooExtendPdf* epdf_Bd2DsstPi = NULL;
-    epdf_Bd2DsstPi = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DsstPi", "", merge, dim, charmVarName, debug);
+    epdf_Bd2DsstPi = buildExtendPdfSpecBkgMDFit( workInt, work, types, samplemode, "Bd2DsstPi", "", merge, dim, charmVarName, debug);
     Double_t valBd2DsstPi = CheckEvts(workInt, samplemode, "Bd2DsstPi",debug);
     list = AddEPDF(list, epdf_Bd2DsstPi, valBd2DsstPi, debug);
 
@@ -108,6 +109,7 @@ namespace Bs2DssthModels {
     TString name = ""; 
     TString mode = CheckDMode(samplemode,debug);
     if ( mode == "" ) { mode = CheckKKPiMode(samplemode, debug); }
+    std::vector <TString> types;
 
 
     TString nBsBd2DsKstName = "nBsBd2DsKst_"+samplemode+"_Evts";
@@ -184,9 +186,9 @@ namespace Bs2DssthModels {
     if ( valnBs2DsDsstRho != 0.0 )
       {
 
-        pdf_Bs2DsRho_Tot  = buildProdPdfSpecBkgMDFit(workInt, work, samplemode, "Bs2DsRho",  "", merge, dim, "", debug);
-        pdf_Bs2DsstRho_Tot = buildProdPdfSpecBkgMDFit(workInt, work, samplemode, "Bs2DsstRho", "", merge, dim, charmVarName, debug);
-	pdf_Bs2DsstPi_Tot = buildProdPdfSpecBkgMDFit(workInt, work, samplemode, "Bs2DsstPi", "", merge, dim, charmVarName, debug);
+        pdf_Bs2DsRho_Tot  = buildProdPdfSpecBkgMDFit(workInt, work, types, samplemode, "Bs2DsRho",  "", merge, dim, "", debug);
+        pdf_Bs2DsstRho_Tot = buildProdPdfSpecBkgMDFit(workInt, work, types, samplemode, "Bs2DsstRho", "", merge, dim, charmVarName, debug);
+	pdf_Bs2DsstPi_Tot = buildProdPdfSpecBkgMDFit(workInt, work, types, samplemode, "Bs2DsstPi", "", merge, dim, charmVarName, debug);
 
 	/*
         name ="PhysBkgBs2DsDsstRhoPdf_m_"+samplemode+"_Tot";
@@ -232,8 +234,8 @@ namespace Bs2DssthModels {
     if ( valnBsBd2DsKst != 0.0 )
       {
 
-        pdf_Bs2DsKst_Tot = buildProdPdfSpecBkgMDFit(workInt, work, samplemode, "Bs2DsKst", "", merge, dim, "", debug);
-        pdf_Bd2DsKst_Tot = buildProdPdfSpecBkgMDFit(workInt, work, samplemode, "Bd2DsKst", "", merge, dim, "", debug);
+        pdf_Bs2DsKst_Tot = buildProdPdfSpecBkgMDFit(workInt, work, types, samplemode, "Bs2DsKst", "", merge, dim, "", debug);
+        pdf_Bd2DsKst_Tot = buildProdPdfSpecBkgMDFit(workInt, work, types, samplemode, "Bd2DsKst", "", merge, dim, "", debug);
 	/*
         name ="PhysBkgBsBd2DsKstPdf_m_"+samplemode+"_Tot";
         pdf_BsBd2DsKst_Tot = new RooAddPdf(name.Data(), name.Data(),
@@ -271,8 +273,8 @@ namespace Bs2DssthModels {
     if ( valnBsBd2DsstKst != 0.0 )
       {
 
-        pdf_Bs2DsstKst_Tot = buildProdPdfSpecBkgMDFit(workInt, work, samplemode, "Bs2DsstKst", "", merge, dim, charmVarName, debug);
-	pdf_Bd2DsstKst_Tot = buildProdPdfSpecBkgMDFit(workInt, work, samplemode, "Bd2DsstKst", "", merge, dim, charmVarName, debug);
+        pdf_Bs2DsstKst_Tot = buildProdPdfSpecBkgMDFit(workInt, work, types, samplemode, "Bs2DsstKst", "", merge, dim, charmVarName, debug);
+	pdf_Bd2DsstKst_Tot = buildProdPdfSpecBkgMDFit(workInt, work, types, samplemode, "Bd2DsstKst", "", merge, dim, charmVarName, debug);
 	//pdf_Bd2DsstK_Tot = buildProdPdfSpecBkgMDFit(workInt, work, samplemode, "Bd2DsstK", "", merge, dim, charmVarName, debug);
 	/*
 	pdf_Bd2DsstK_Bs = buildShiftedDoubleCrystalBallPDF(mass, workInt, samplemode, "Bd2DsstK", debug);

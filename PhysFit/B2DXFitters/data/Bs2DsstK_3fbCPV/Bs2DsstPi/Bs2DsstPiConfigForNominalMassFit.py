@@ -79,7 +79,7 @@ def getconfig() :
  
     configdict["CreateCombinatorial"] = {}
     configdict["CreateCombinatorial"]["BeautyMass"] = {} 
-    configdict["CreateCombinatorial"]["BeautyMass"]["All"]    = {"Cut":"FBs_DeltaM_M>5100.&&FBs_DeltaM_M<6000.&&FDs_M>1950.&&FDs_M<1990.&&FDs_FDCHI2_ORIVX>2.&&FDelta_M>195.&&FDelta_M<205.&&FBs_Veto==0.&&FBDT_Var>0.01&&FBac_P>1000.&&FBac_P<650000.&&FBac_Ptr>500.&&FBac_Ptr<45000.",
+    configdict["CreateCombinatorial"]["BeautyMass"]["All"]    = {"Cut":"FBs_DeltaM_M>5000.&&FBs_DeltaM_M<6000.&&FDs_M>1950.&&FDs_M<1990.&&FDs_FDCHI2_ORIVX>2.&&FDelta_M>195.&&FDelta_M<205.&&FBs_Veto==0.&&FBDT_Var>0.01&&FBac_P>1000.&&FBac_P<650000.&&FBac_Ptr>500.&&FBac_Ptr<45000.",
                                                                  "Rho":3.5, "Mirror":"Left"}
     configdict["CreateCombinatorial"]["BeautyMass"]["NonRes"] = {"Cut":"FDs_Dec==3."}
     configdict["CreateCombinatorial"]["BeautyMass"]["PhiPi"]  = {"Cut":"FDs_Dec==1."}
@@ -177,18 +177,30 @@ def getconfig() :
     configdict["DsSignalShape"]["R"]    =    {"Run1": {"All": 1.},         "Fixed":False}
 
     # combinatorial background              
+    #configdict["BsCombinatorialShape"] = {}
+    #configdict["BsCombinatorialShape"]["type"] = "RooKeysPdf"
+    #configdict["BsCombinatorialShape"]["name"] = {"2012": {"NonRes": "PhysBkgCombPi_BeautyMassPdf_m_both_nonres_2012",
+    #                                                       "PhiPi":  "PhysBkgCombPi_BeautyMassPdf_m_both_phipi_2012",
+    #                                                       "KstK":   "PhysBkgCombPi_BeautyMassPdf_m_both_kstk_2012",
+    #                                                       "KPiPi":  "PhysBkgCombPi_BeautyMassPdf_m_both_kpipi_2012",
+    #                                                       "PiPiPi": "PhysBkgCombPi_BeautyMassPdf_m_both_pipipi_2012"},
+    #                                              "2011": {"NonRes": "PhysBkgCombPi_BeautyMassPdf_m_both_nonres_2011",
+    ##                                                       "PhiPi":  "PhysBkgCombPi_BeautyMassPdf_m_both_phipi_2011",
+    #                                                       "KstK":   "PhysBkgCombPi_BeautyMassPdf_m_both_kstk_2011",
+    #                                                       "KPiPi":  "PhysBkgCombPi_BeautyMassPdf_m_both_kpipi_2011",
+    #                                                       "PiPiPi": "PhysBkgCombPi_BeautyMassPdf_m_both_pipipi_2011"}}
+
     configdict["BsCombinatorialShape"] = {}
-    configdict["BsCombinatorialShape"]["type"] = "RooKeysPdf"
-    configdict["BsCombinatorialShape"]["name"] = {"2012": {"NonRes": "PhysBkgCombPi_BeautyMassPdf_m_both_nonres_2012",
-                                                           "PhiPi":  "PhysBkgCombPi_BeautyMassPdf_m_both_phipi_2012",
-                                                           "KstK":   "PhysBkgCombPi_BeautyMassPdf_m_both_kstk_2012",
-                                                           "KPiPi":  "PhysBkgCombPi_BeautyMassPdf_m_both_kpipi_2012",
-                                                           "PiPiPi": "PhysBkgCombPi_BeautyMassPdf_m_both_pipipi_2012"},
-                                                  "2011": {"NonRes": "PhysBkgCombPi_BeautyMassPdf_m_both_nonres_2011",
-                                                           "PhiPi":  "PhysBkgCombPi_BeautyMassPdf_m_both_phipi_2011",
-                                                           "KstK":   "PhysBkgCombPi_BeautyMassPdf_m_both_kstk_2011",
-                                                           "KPiPi":  "PhysBkgCombPi_BeautyMassPdf_m_both_kpipi_2011",
-                                                           "PiPiPi": "PhysBkgCombPi_BeautyMassPdf_m_both_pipipi_2011"}}
+    configdict["BsCombinatorialShape"]["type"]    = "RooHILLidni"
+    configdict["BsCombinatorialShape"]["a"]       = {"Run1": {"NonRes": 4.9443e+03,  "PhiPi": 4.9443e+03, "KstK":4.9443e+03, "KPiPi": 4.9443e+03, "PiPiPi": 4.9443e+03}, "Fixed":False}
+    configdict["BsCombinatorialShape"]["b"]       = {"Run1": {"NonRes": 5.5815e+03,  "PhiPi": 5.5815e+03, "KstK":5.5815e+03, "KPiPi": 5.5815e+03, "PiPiPi": 5.5815e+03}, "Fixed":False}
+    configdict["BsCombinatorialShape"]["csi"]     = {"Run1": {"NonRes": 1.7093e+00,  "PhiPi": 1.7093e+00, "KstK":1.7093e+00, "KPiPi": 1.7093e+00, "PiPiPi": 1.7093e+00}, "Fixed":False}
+    configdict["BsCombinatorialShape"]["shift"]   = {"Run1": {"All": 0.0},         "Fixed":True}
+    configdict["BsCombinatorialShape"]["sigma"]   = {"Run1": {"NonRes": 4.0000e+01,  "PhiPi": 4.0000e+01, "KstK": 4.0000e+01, "KPiPi":3.13119e+01, "PiPiPi":3.13119e+01}, "Fixed":False}
+    configdict["BsCombinatorialShape"]["R"]       = {"Run1": {"NonRes": 6.0821e+00,  "PhiPi": 6.0821e+00, "KstK": 6.0821e+00, "KPiPi":6.84048e+00, "PiPiPi":6.84048e+00},"Fixed":False}
+    configdict["BsCombinatorialShape"]["frac"]    = {"Run1": {"NonRes": 3.9837e-01,  "PhiPi": 3.9837e-01, "KstK": 3.9837e-01, "KPiPi": 3.9837e-01, "PiPiPi": 3.9837e-01}, "Fixed":False}
+
+
 
     configdict["DsCombinatorialShape"] = {}
     configdict["DsCombinatorialShape"]["type"]  = "ExponentialPlusSignal" 

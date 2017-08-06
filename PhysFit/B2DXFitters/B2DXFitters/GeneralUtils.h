@@ -400,6 +400,9 @@ namespace GeneralUtils {
   void printList(std::vector <TString>  list);
   void printList2D(std::vector < std::vector <TString> > matrix);
   
+  std::vector <RooAbsReal*> GetList(RooAbsReal* name,RooAbsReal* name2=NULL,RooAbsReal* name3=NULL); 
+  std::vector <RooAbsReal*> AddToList(std::vector <RooAbsReal*> list, RooAbsReal* name); 
+
 
   std::pair <TString, TString> GetNameExpectedYields(TString mode, bool debug=false);
   double pe_from_pid(int pid, double px, double py, double pz);

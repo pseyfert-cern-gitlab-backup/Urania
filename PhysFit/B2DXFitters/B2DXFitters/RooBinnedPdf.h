@@ -176,7 +176,7 @@ private:
 	  std::map<RooAbsRealLValue*, RooAbsRealLValue*> _baseVarsMapping;
   };
 
-  ClassDef(RooBinnedPdf, 2) // binned PDF
+  ClassDefOverride(RooBinnedPdf, 2) // binned PDF
 };
 
 #endif

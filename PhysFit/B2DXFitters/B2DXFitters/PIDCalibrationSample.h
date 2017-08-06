@@ -194,7 +194,7 @@ protected:
   TString _var2Name;
 
  private:
-  ClassDef(PIDCalibrationSample, 1);
+  ClassDefOverride(PIDCalibrationSample, 1);
 };
 
 #endif

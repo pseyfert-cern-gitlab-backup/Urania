@@ -35,7 +35,7 @@ class DLLTagCombiner : public RooAbsReal
 	Double_t evaluate() const override;
 
     private:
-	ClassDef(DLLTagCombiner, 1);
+	ClassDefOverride(DLLTagCombiner, 1);
 };
 
 #endif

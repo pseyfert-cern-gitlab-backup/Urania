@@ -167,7 +167,7 @@ class RooBinned1DQuinticBase : public BASE
 	/// evaluate parametrisation integral over x from x1 to x2
 	double evalX(double x1, double x2) const;
 
-	ClassDef(RooBinned1DQuinticBase, 2);
+	ClassDefOverride(RooBinned1DQuinticBase, 2);
 };
 
 // help genreflex

@@ -652,7 +652,7 @@ protected:
   TString _data;
 
 private:
-  ClassDef(MDFitterSettings, 1);
+  ClassDefOverride(MDFitterSettings, 1);
 };
 
 #endif

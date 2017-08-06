@@ -47,6 +47,8 @@
         <class name = "HistPID2D" />
 	<class name = "RooIpatia2" />
 	<class name = "RooApollonios" />
+	<class name = "RooHILLdini" />
+	<class name = "RooHORNSdini" />
 
 	<class pattern="SharedArrayImp<*>"/>
 	<class pattern="SharedArray<*>"/>

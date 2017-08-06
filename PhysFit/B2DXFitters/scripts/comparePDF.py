@@ -141,7 +141,7 @@ def runComparePDF( debug, name1, file1, work1, text1, name2, file2, work2, text2
     canv = TCanvas("canv","canv", 1200,1000)
     frame = obs.frame() #5300,5450) #5220,5340) #5300,5450)
     frame.SetTitle("")
-    frame.GetYAxis().SetTitle("") 
+    #frame.GetYAxis().SetTitle("") 
 
     #legend = TLegend( 0.70, 0.75, 0.88, 0.88 )
     legend = TLegend( 0.15, 0.75, 0.38, 0.88 )

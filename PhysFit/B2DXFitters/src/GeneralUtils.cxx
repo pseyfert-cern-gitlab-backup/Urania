@@ -2784,6 +2784,7 @@ namespace GeneralUtils {
     return list; 
   }
 
+  
 
   std::vector <TString> AddToList(std::vector <TString> list, TString name)
   {
@@ -2858,6 +2859,23 @@ namespace GeneralUtils {
     }
   }
   
+
+  std::vector <RooAbsReal*> GetList(RooAbsReal* name, RooAbsReal* name2, RooAbsReal* name3)
+  {
+    std::vector <RooAbsReal*> list;
+    list.push_back(name);
+    if ( name2 !=  NULL ) list.push_back(name2);
+    if ( name3 !=  NULL ) list.push_back(name3);
+    return list;
+  }
+
+  std::vector <RooAbsReal*> AddToList(std::vector <RooAbsReal*> &list, RooAbsReal* &name)
+  {
+    list.push_back(name);
+    return list;
+  }  
+
+
   std::pair <TString, TString> GetNameExpectedYields(TString mode,  bool debug)
   {
     TString Mode ="";

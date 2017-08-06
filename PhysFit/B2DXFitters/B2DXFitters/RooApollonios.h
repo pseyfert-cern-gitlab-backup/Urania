@@ -40,7 +40,7 @@ protected:
 
 private:
 
-  ClassDef(RooApollonios,1) // Your description goes here...
+  ClassDefOverride(RooApollonios,1) // Your description goes here...
 };
 
 #endif

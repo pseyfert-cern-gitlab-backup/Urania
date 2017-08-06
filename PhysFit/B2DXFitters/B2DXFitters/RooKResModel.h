@@ -306,7 +306,7 @@ class RooKResModel : public RooResolutionModel
 
 	static RooArgSet s_emptyset; ///< empty RooArgSet
 
-	ClassDef(RooKResModel, 1) // Resolution model with k-factor
+	ClassDefOverride(RooKResModel, 1) // Resolution model with k-factor
 };
 
 #endif	// ROO_KRES_MODEL

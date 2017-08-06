@@ -21,6 +21,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include "RooAbsReal.h"
 
 
 #include "B2DXFitters/Bs2Dsh2011TDAnaModels.h"
@@ -1124,20 +1125,52 @@ namespace Bs2Dsh2011TDAnaModels {
   }
 
 
+  RooExtendPdf* buildExtendPdfMDFit( RooWorkspace* workInt, RooWorkspace* work,
+				     std::vector <RooAbsReal*> obs,
+				     std::vector <TString> types,
+				     TString samplemode, TString typemode, TString typemodeDs,
+				     TString merge, bool debug)
+  {
+    RooExtendPdf* epdf = NULL;
+    RooProdPdf* pdf_Tot = NULL;
+
+    TString nName = "n"+typemode+"_"+samplemode+"_Evts";
+    if ( typemode == "Signal" ) { nName = "nSig_"+samplemode+"_Evts"; }
+    if ( typemode == "Combinatorial" ) { nName = "nCombBkg_"+samplemode+"_Evts"; }
+    RooRealVar* nEvts = tryVar(nName, workInt, debug);
+    Double_t val = nEvts->getValV();
+
+    if ( val != 0.0 )
+      {
+	pdf_Tot = buildProdPdfMDFit(workInt, work, obs, types,  
+				    samplemode, typemode, typemodeDs, merge, debug);
+
+	TString epdfName = typemode+"EPDF_m_"+samplemode;
+	epdf = new RooExtendPdf(epdfName.Data() , pdf_Tot->GetTitle(), *pdf_Tot, *nEvts );
+	CheckPDF(epdf, debug);
+      }
+    return epdf;
+
+  }
+
   RooExtendPdf* buildExtendPdfSpecBkgMDFit( RooWorkspace* workInt, RooWorkspace* work,
+					    std::vector <TString> types,
                                             TString samplemode, TString typemode, TString typemodeDs, 
-                                            TString merge, int dim, TString signalDs, bool debug)
+					    TString merge, int dim, TString signalDs, bool debug)
   {
     RooExtendPdf* epdf = NULL; 
     RooProdPdf* pdf_Tot = NULL;
 
     TString nName = "n"+typemode+"_"+samplemode+"_Evts";
+    if ( typemode == "Signal" ) { nName = "nSig_"+samplemode+"_Evts"; }
+    if ( typemode == "Combinatorial" ) { nName = "nCombBkg_"+samplemode+"_Evts"; }
+    std::cout<<" nName: "<<nName<<" typemode: "<<typemode<<std::endl; 
     RooRealVar* nEvts = tryVar(nName, workInt, debug);
     Double_t val = nEvts->getValV();
-
+    
     if ( val != 0.0 )
     {
-      pdf_Tot = buildProdPdfSpecBkgMDFit(workInt, work, samplemode, typemode, typemodeDs, merge, dim, signalDs, debug);
+      pdf_Tot = buildProdPdfSpecBkgMDFit(workInt, work, types, samplemode, typemode, typemodeDs, merge, dim, signalDs, debug);
 
       TString epdfName = typemode+"EPDF_m_"+samplemode;
       epdf = new RooExtendPdf(epdfName.Data() , pdf_Tot->GetTitle(), *pdf_Tot, *nEvts );
@@ -1146,11 +1179,131 @@ namespace Bs2Dsh2011TDAnaModels {
     return epdf;    
   }
 
- 
+  RooProdPdf* buildProdPdfMDFit( RooWorkspace* workInt, RooWorkspace* work,
+				 std::vector <RooAbsReal*> obs,
+				 std::vector <TString> types,
+				 TString samplemode, TString typemode, TString typemodeDs,
+				 TString merge, bool debug)
+  {
+
+    RooProdPdf* pdf_Tot = NULL;
+
+    std::vector <TString> modeTypes =  getShapesType(types, obs, typemode, debug);
+    std::vector <RooAbsPdf*> pdfs;
+
+    for (unsigned int i = 0; i < obs.size(); i++ )
+      {
+	std::pair <RooAbsReal*,TString> obs_shape = getObservableAndShape(modeTypes,obs,i);  
+	pdfs.push_back(buildMergedPdfMDFit(workInt, work, obs_shape, samplemode, typemode, typemodeDs, merge, debug));	
+      }
+
+    RooArgList* list = new RooArgList();
+    for ( const RooAbsPdf* pdf: pdfs ) { list->add(*pdf); }
+    
+    TString name="PhysBkg"+typemode+"Pdf_m_"+samplemode+"_Tot";
+    pdf_Tot = new RooProdPdf(name.Data(), name.Data(), *list);
+    CheckPDF( pdf_Tot, debug );
+   
+    return pdf_Tot; 
+  }
+
+  RooAbsPdf* buildMergedPdfMDFit(RooWorkspace* workInt, RooWorkspace* work,
+				 std::pair <RooAbsReal*,TString> obs_shape,
+				 TString samplemode, TString typemode, TString typemodeDs, TString merge, bool debug)
+  {
+    if (debug == true)
+      {
+	cout<<"[INFO] build merged RooAbsPdf for: "<<typemode<<" "<<typemodeDs<<endl;
+	cout<<"[INFO]       build as: "<<obs_shape.second<<" for variable: "<<obs_shape.first->GetName()<<std::endl; 
+      }
+
+    std::vector<RooAbsPdf*> pdf_part;
+    RooAbsPdf* pdf = NULL;
+
+    TString t = "_";
+    TString mode, Mode;
+    std::vector<TString> y, sam;
+    mode = CheckDMode(samplemode,debug);
+    if ( mode == "" ) { mode = CheckKKPiMode(samplemode, debug); }
+    Mode = GetModeCapital(mode,debug);
+
+    y = GetDataYear(samplemode, merge, debug);
+    sam = GetPolarity(samplemode, merge, debug);
+
+    for(unsigned int i = 0; i < sam.size(); i++ )
+      {
+	for (unsigned int j =0; j < y.size(); j++ )
+	  {
+	    TString smp = sam[i]+"_"+mode+"_"+y[j];
+	    TString name = obs_shape.first->GetName(); 
+
+	    if ( obs_shape.second  == "RooKeysPdf" ) 
+              {
+		if ( name == "BeautyMass" )
+		  {
+		    pdf_part.push_back(buildMassPdfSpecBkgMDFit(work, smp, typemode, typemodeDs, false, debug));
+		  }
+		else if ( name == "CharmMass")
+		  {
+		    pdf_part.push_back(buildMassPdfSpecBkgMDFit(work, smp, typemode, typemodeDs, true, debug));
+		  }
+	      }
+	    else if ( obs_shape.second  == "Signal" )
+	      {
+		RooAbsPdf* pdfTmp = NULL;
+		pdfTmp = trySignal(samplemode,obs_shape.first->GetName(),workInt, debug);
+		if ( pdfTmp == NULL ) { pdfTmp = trySignal(smp,obs_shape.first->GetName(),workInt, debug); }
+		CheckPDF( pdfTmp, debug);
+		pdf_part.push_back(pdfTmp);
+	      }
+	    else if ( name == "BacPIDK" || obs_shape.second.Contains("PIDK") )
+	      {
+		RooAbsPdf* pdfTmp = NULL;
+                pdfTmp = buildPIDKShapeMDFit(work, smp, typemode, typemodeDs, false);
+		if( pdfTmp == NULL ) { pdfTmp =  buildPIDKShapeMDFit(work, smp, typemode, mode, false); }
+		if( pdfTmp == NULL ) { pdfTmp =  buildPIDKShapeMDFit(work, smp, typemode, "", false);}
+		CheckPDF( pdfTmp, debug);
+		pdf_part.push_back(pdfTmp);
+	      }
+	    else 
+	      {
+		pdf_part.push_back(buildAnalyticalShape(*obs_shape.first, work, workInt, samplemode, typemode, obs_shape.second, debug));
+	      }
+	  }
+      }
+    
+    if ( pdf_part[0] != NULL && pdf_part[1] != NULL )
+      {
+	if  ( merge == "pol" )
+	  {
+	    pdf  = mergePdf(pdf_part[1], pdf_part[0], merge, y[0], workInt, debug);
+	  }
+	else if ( merge == "year" )
+	  {
+	    pdf  = mergePdf(pdf_part[1], pdf_part[0], merge, sam[0], workInt, debug);
+	  }
+	else if ( merge == "both" )
+	  {
+	    pdf_part.push_back(mergePdf(pdf_part[2], pdf_part[0], "pol", y[0], workInt, debug));
+	    pdf_part.push_back(mergePdf(pdf_part[3], pdf_part[1], "pol", y[1], workInt, debug));
+	    pdf = mergePdf(pdf_part[5], pdf_part[4], "year", "run1", workInt, debug);
+	  }
+	else
+	  {
+	    pdf = pdf_part[0];
+	  }
+      }
+    CheckPDF( pdf, debug );
+    return pdf;
+    
+  }
+
+
 
   RooProdPdf* buildProdPdfSpecBkgMDFit( RooWorkspace* workInt, RooWorkspace* work,
-                                        TString samplemode, TString typemode, TString typemodeDs, 
-                                        TString merge, int dim, 
+					std::vector <TString> types,
+                                        TString samplemode, TString typemode, TString typemodeDs,
+					TString merge, int dim, 
                                         TString signalDs, bool debug)
   {
     if (debug == true)
@@ -1184,7 +1337,7 @@ namespace Bs2Dsh2011TDAnaModels {
       {
 
         TString smp = sam[i]+"_"+mode+"_"+y[j];
-        pdf_pBs.push_back(buildMassPdfSpecBkgMDFit(work, smp, typemode, typemodeDs, false, debug));
+	pdf_pBs.push_back(buildMassPdfSpecBkgMDFit(work, smp, typemode, typemodeDs, false, debug));
         if ( dim > 1)
 	      {
           if ( signalDs == "" )
@@ -1260,7 +1413,7 @@ namespace Bs2Dsh2011TDAnaModels {
 
     
   }
-
+  
   
   RooAbsPdf* buildMergedSpecBkgMDFit(RooWorkspace* workInt, RooWorkspace* work,
                                      TString samplemode, TString typemode, TString typemodeDs, TString merge,
@@ -1352,7 +1505,8 @@ namespace Bs2Dsh2011TDAnaModels {
 
   RooAbsPdf* buildMassPdfSpecBkgMDFit(RooWorkspace* work,
                                       TString samplemode, TString typemode, TString typemodeDs,
-                                      bool charmShape, bool debug)
+                                      //std::vector <TString> types,
+				      bool charmShape, bool debug)
   {
 
     
@@ -1423,6 +1577,7 @@ namespace Bs2Dsh2011TDAnaModels {
     {
       cout<<"[INFO] =====> Build background model Bs->DsPi --------------"<<endl;
     }
+    std::vector <TString> types;
 
     RooArgList* list = new RooArgList();
     TString beautyVarName = mass.GetName(); 
@@ -1498,21 +1653,21 @@ namespace Bs2Dsh2011TDAnaModels {
     if (debug == true) cout<<"---------------  Read PDF's from the workspace -----------------"<<endl;
     
     RooExtendPdf* epdf_Bd2DPi = NULL;
-    epdf_Bd2DPi = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DPi", "", merge, dim, "", debug);
+    epdf_Bd2DPi = buildExtendPdfSpecBkgMDFit( workInt, work, types, samplemode, "Bd2DPi", "", merge, dim, "", debug);
     Double_t valBd2DPi = CheckEvts(workInt, samplemode, "Bd2DPi",debug);
     list = AddEPDF(list, epdf_Bd2DPi, valBd2DPi, debug);
 
     //-----------------------------------------//
     
     RooExtendPdf* epdf_Lb2LcPi = NULL;
-    epdf_Lb2LcPi = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Lb2LcPi", "", merge, dim, "", debug);
+    epdf_Lb2LcPi = buildExtendPdfSpecBkgMDFit( workInt, work, types, samplemode, "Lb2LcPi", "", merge, dim, "", debug);
     Double_t valLb2LcPi = CheckEvts(workInt, samplemode, "Lb2LcPi",debug);
     list = AddEPDF(list, epdf_Lb2LcPi, valLb2LcPi, debug);
 
     //-----------------------------------------//
 
     RooExtendPdf* epdf_Bs2DsK = NULL;
-    epdf_Bs2DsK = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bs2DsK", "", merge, dim, charmVarName, debug);
+    epdf_Bs2DsK = buildExtendPdfSpecBkgMDFit( workInt, work, types, samplemode, "Bs2DsK", "", merge, dim, charmVarName, debug);
     Double_t valBs2DsK = CheckEvts(workInt, samplemode, "Bs2DsK",debug);
     list = AddEPDF(list, epdf_Bs2DsK, valBs2DsK, debug);
 
@@ -1560,8 +1715,8 @@ namespace Bs2Dsh2011TDAnaModels {
       else
 	{
 	  
-	  pdf_Bs2DsRho_Tot  = buildProdPdfSpecBkgMDFit(workInt, work, samplemode, "Bs2DsRho",  "", merge, dim, charmVarName, debug);
-	  pdf_Bs2DsstPi_Tot = buildProdPdfSpecBkgMDFit(workInt, work, samplemode, "Bs2DsstPi", "", merge, dim, charmVarName, debug);
+	  pdf_Bs2DsRho_Tot  = buildProdPdfSpecBkgMDFit(workInt, work, types, samplemode, "Bs2DsRho",  "", merge, dim, charmVarName, debug);
+	  pdf_Bs2DsstPi_Tot = buildProdPdfSpecBkgMDFit(workInt, work, types, samplemode, "Bs2DsstPi", "", merge, dim, charmVarName, debug);
 
 	  name="PhysBkgBs2DsDsstPiPdf_m_"+samplemode+"_Tot";
 	  if ( lowMass > 5150.0 )
@@ -1581,7 +1736,7 @@ namespace Bs2Dsh2011TDAnaModels {
                 {
 		  std::cout<<"[INFO] The Bs2DsstPiRho background is composed of Bs2DsstPi, Bs2DsRho and Bs2DsstRho"<<std::endl;
                 }
-	      pdf_Bs2DsstRho_Tot = buildProdPdfSpecBkgMDFit(workInt, work, samplemode, "Bs2DsstRho", "", merge, dim, charmVarName, debug);
+	      pdf_Bs2DsstRho_Tot = buildProdPdfSpecBkgMDFit(workInt, work, types, samplemode, "Bs2DsstRho", "", merge, dim, charmVarName, debug);
 	      pdf_Bs2DsDsstPiRho_Tot = new RooAddPdf( name.Data(), name.Data(),
                                                       RooArgList(*pdf_Bs2DsstPi_Tot, *pdf_Bs2DsRho_Tot, *pdf_Bs2DsstRho_Tot),                                                 
                                                       RooArgList(*g1_f1,*g1_f2), true                                                                                                            
@@ -1643,7 +1798,8 @@ namespace Bs2Dsh2011TDAnaModels {
     TString charmVarName = massDs.GetName();
     TString mode = CheckDMode(samplemode,debug);
     if ( mode == "" ) { mode = CheckKKPiMode(samplemode, debug); }
-    
+    std::vector <TString> types;
+
     TString nBsLb2DsDsstPPiRhoName = "nBsLb2DsDsstPPiRho_"+samplemode+"_Evts"; 
     RooRealVar* nBsLb2DsDsstPPiRhoEvts = tryVar(nBsLb2DsDsstPPiRhoName, workInt,debug); //GetObservable(workInt, nBsLb2DsDsstPPiRhoName, debug); 
     Double_t valBsLb2DsDsstPPiRho = nBsLb2DsDsstPPiRhoEvts->getValV(); 
@@ -1698,22 +1854,22 @@ namespace Bs2Dsh2011TDAnaModels {
     // --------------------------------- Read PDFs from Workspace -------------------------------------------------//                      
     
     RooExtendPdf* epdf_Bd2DK = NULL;
-    epdf_Bd2DK = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DK", "", merge, dim, "", debug);
+    epdf_Bd2DK = buildExtendPdfSpecBkgMDFit( workInt, work, types, samplemode, "Bd2DK", "", merge, dim, "", debug);
     Double_t valBd2DK = CheckEvts(workInt, samplemode, "Bd2DK",debug);
     list = AddEPDF(list, epdf_Bd2DK, valBd2DK, debug);
 
     RooExtendPdf* epdf_Bd2DPi = NULL;
-    epdf_Bd2DPi = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DPi", "", merge, dim, "", debug);
+    epdf_Bd2DPi = buildExtendPdfSpecBkgMDFit( workInt, work, types, samplemode, "Bd2DPi", "", merge, dim, "", debug);
     Double_t valBd2DPi = CheckEvts(workInt, samplemode, "Bd2DPi",debug);
     list = AddEPDF(list, epdf_Bd2DPi, valBd2DPi, debug);
 
     RooExtendPdf* epdf_Lb2LcK = NULL;
-    epdf_Lb2LcK = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Lb2LcK", "", merge, dim, "", debug);
+    epdf_Lb2LcK = buildExtendPdfSpecBkgMDFit( workInt, work, types, samplemode, "Lb2LcK", "", merge, dim, "", debug);
     Double_t valLb2LcK = CheckEvts(workInt, samplemode, "Lb2LcK",debug);
     list = AddEPDF(list, epdf_Lb2LcK, valLb2LcK, debug);
 
     RooExtendPdf* epdf_Lb2LcPi = NULL;
-    epdf_Lb2LcPi = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Lb2LcPi", "", merge, dim, "", debug);
+    epdf_Lb2LcPi = buildExtendPdfSpecBkgMDFit( workInt, work, types, samplemode, "Lb2LcPi", "", merge, dim, "", debug);
     Double_t valLb2LcPi = CheckEvts(workInt, samplemode, "Lb2LcPi",debug);
     list = AddEPDF(list, epdf_Lb2LcPi, valLb2LcPi, debug);
 
@@ -1732,9 +1888,9 @@ namespace Bs2Dsh2011TDAnaModels {
     
     if ( valBsLb2DsDsstPPiRho != 0.0 )
     {
-      pdf_Bs2DsRho_Tot  = buildProdPdfSpecBkgMDFit(workInt, work, samplemode, "Bs2DsRho",  "", merge, dim, charmVarName, debug);
-      pdf_Bs2DsstPi_Tot = buildProdPdfSpecBkgMDFit(workInt, work, samplemode, "Bs2DsstPi", "", merge, dim, charmVarName, debug); 
-      pdf_Bs2DsPi_Tot   = buildProdPdfSpecBkgMDFit(workInt, work, samplemode, "Bs2DsPi",   "", merge, dim, charmVarName, debug);
+      pdf_Bs2DsRho_Tot  = buildProdPdfSpecBkgMDFit(workInt, work, types, samplemode, "Bs2DsRho",  "", merge, dim, charmVarName, debug);
+      pdf_Bs2DsstPi_Tot = buildProdPdfSpecBkgMDFit(workInt, work, types, samplemode, "Bs2DsstPi", "", merge, dim, charmVarName, debug); 
+      pdf_Bs2DsPi_Tot   = buildProdPdfSpecBkgMDFit(workInt, work, types, samplemode, "Bs2DsPi",   "", merge, dim, charmVarName, debug);
 
 	//pdf_Bs2DsPi_Tot   = buildProdPdfSpecBkgMDFit(workInt, work, samplemode, "Bs2DsPi", mode, merge, dim, charmVarName, debug);
       
@@ -1754,8 +1910,8 @@ namespace Bs2Dsh2011TDAnaModels {
     if ( valBsLb2DsDsstPPiRho != 0.0 )
     {
 
-      pdf_Lb2Dsp_Tot = buildProdPdfSpecBkgMDFit(workInt, work, samplemode, "Lb2Dsp",  "", merge, dim, charmVarName, debug);
-      pdf_Lb2Dsstp_Tot = buildProdPdfSpecBkgMDFit(workInt, work, samplemode, "Lb2Dsstp",  "", merge, dim, charmVarName, debug);	
+      pdf_Lb2Dsp_Tot = buildProdPdfSpecBkgMDFit(workInt, work, types, samplemode, "Lb2Dsp",  "", merge, dim, charmVarName, debug);
+      pdf_Lb2Dsstp_Tot = buildProdPdfSpecBkgMDFit(workInt, work, types, samplemode, "Lb2Dsstp",  "", merge, dim, charmVarName, debug);	
 
       name="PhysBkgLb2DsDsstPPdf_m_"+samplemode+"_Tot";
       pdf_Lb2DsDsstP_Tot = new RooAddPdf(name.Data(), name.Data(), *pdf_Lb2Dsp_Tot, *pdf_Lb2Dsstp_Tot, *g3_f1);
@@ -1945,23 +2101,17 @@ namespace Bs2Dsh2011TDAnaModels {
     return list;
   }
 
-
-  RooAbsPdf* ObtainSignalMassShape(RooAbsReal& mass,
-                                   RooWorkspace* work,
-                                   RooWorkspace* workInt,
-                                   TString samplemode,
-                                   TString typemode, 
-                                   TString type,
-                                   TString pdfName, 
-                                   bool extended, 
-                                   bool debug)
+  RooAbsPdf* buildAnalyticalShape(RooAbsReal& mass,
+				  RooWorkspace* work,
+				  RooWorkspace* workInt,
+				  TString samplemode,
+				  TString typemode,
+				  TString type,
+				  bool debug)
   {
 
     RooAbsPdf* pdf = NULL;
-    RooAbsPdf* epdf = NULL;
-    RooRealVar* nEvts = NULL; 
-    Double_t val = 10.0; 
-    TString varName = mass.GetName(); 
+    TString varName = mass.GetName();
 
     Bool_t sharedMean = false;
     if ( type.Contains("SharedMean") == true ) { sharedMean = true; }
@@ -1974,326 +2124,126 @@ namespace Bs2Dsh2011TDAnaModels {
     Bool_t scaleWidths = false;
     if ( type.Contains("scaleWidths") == true ) { scaleWidths = true; }
 
-    if ( extended == true )
-    {
-      TString nName = "nSig_"+samplemode+"_Evts";
-      nEvts = GetObservable(workInt, nName, debug);
-      val = nEvts->getValV();
-    }
-    else
-    {
-      nEvts = new RooRealVar("fake","fake",val); 
-    }
-    
-    if ( type == "RooKeysPdf" )
-    {
-      pdf = (RooKeysPdf*)work->pdf(pdfName.Data());
-      if ( debug == true ) 
+    if ( type.Contains("HILL") )
       {
-        if ( pdf != NULL ) { std::cout<<"[INFO] PDF taken as RooKeyPdf: "<<pdfName<<std::endl;}
-        else { std::cout<<"[ERROR] Cannot read pdf: "<<pdfName<<std::endl;} 
+        pdf = Bd2DhModels::buildHILLdini(mass, workInt, samplemode, typemode, debug);
       }
-    }
+    else if ( type.Contains("HORNS") )
+      {
+        pdf = Bd2DhModels::buildHORNSdini(mass, workInt, samplemode, typemode, debug);
+      }
     else if ( type.Contains("Ipatia") or type.Contains("Hypatia") )
-    {
-      if ( type.Contains("Johnson") == true ) 
-	{
-	  pdf = Bd2DhModels::buildIpatiaPlusJohnsonSUPDF(mass, workInt, samplemode, typemode, shiftMean, false, debug);
-	}
-      else
-	{
-	  pdf =  buildIpatiaPDF( mass, workInt, samplemode, typemode, false, debug); //don't consider rescaled tails, for now
-	}
-    }
+      {
+	if ( type.Contains("Johnson") == true )
+	  {
+	    pdf = Bd2DhModels::buildIpatiaPlusJohnsonSUPDF(mass, workInt, samplemode, typemode, shiftMean, false, debug);
+	  }
+	else
+	  {
+	    pdf =  buildIpatiaPDF( mass, workInt, samplemode, typemode, false, debug); //don't consider rescaled tails, for now                                                       
+	  }
+      }
     else if ( type.Contains("Johnson") == true )
       {
-	if ( type.Contains("PlusGaussianPlusExponential") == true  )
-	  {
-	    pdf = Bd2DhModels::buildJohnsonSUPlusGaussianPlusExponentialPDF(mass, workInt, samplemode, typemode, sharedMean, debug);
-	  }
-	else if ( type.Contains("PlusGaussian") == true )
-	  {
-	    pdf = Bd2DhModels::buildJohnsonSUPlusGaussianPDF(mass, workInt, samplemode, typemode, sharedMean, shiftMean, debug);
-	  }
-	else if( type.Contains("Plus2Gaussian") == true )
+        if ( type.Contains("PlusGaussianPlusExponential") == true  )
+          {
+            pdf = Bd2DhModels::buildJohnsonSUPlusGaussianPlusExponentialPDF(mass, workInt, samplemode, typemode, sharedMean, debug);
+          }
+        else if ( type.Contains("PlusGaussian") == true )
+          {
+            pdf = Bd2DhModels::buildJohnsonSUPlusGaussianPDF(mass, workInt, samplemode, typemode, sharedMean, shiftMean, debug);
+          }
+        else if( type.Contains("Plus2Gaussian") == true )
           {
             pdf = Bd2DhModels::buildJohnsonSUPlus2GaussianPDF(mass, workInt, samplemode, typemode, sharedMean, debug);
           }
-	else if ( type == "Johnson" || type == "JohnsonSU" )
+        else if ( type == "Johnson" || type == "JohnsonSU" )
+          {
+            pdf = Bd2DhModels::buildJohnsonSUPDF(mass, workInt, samplemode, typemode, shiftMean, debug);
+          }
+        else
+          {
+	    std::cout<<"[ERROR] function: "<<type<<" not defined"<<std::endl;
+          }
+      }
+    else if ( type.Contains("Apollonios") == true )
+      {
+	pdf =  buildApolloniosPDF( mass, workInt, samplemode, typemode, debug);
+      }
+    else if ( type.Contains("CrystalBall" ) )
+      {
+	if ( type.Contains("Exponential") )
 	  {
-	    pdf = Bd2DhModels::buildJohnsonSUPDF(mass, workInt, samplemode, typemode, shiftMean, debug);
+	    pdf= buildExponentialPlusDoubleCrystalBallPDF(mass, workInt, samplemode, typemode, widthRatio, sharedMean, debug);
+	  }
+	else if ( type.Contains("DoubleCrystalBall") )
+	  {
+	    pdf =  buildDoubleCrystalBallPDF( mass, workInt, samplemode, typemode, widthRatio, sharedMean, debug);
+	  }
+	else if ( type.Contains("PlusGaussian") )
+	  {
+	    pdf = Bd2DhModels::buildCrystalBallPlusGaussianPDF(mass, workInt, samplemode, typemode, shiftMean, scaleWidths, debug);
+	  }
+	else if ( type == "CrystalBall" )
+	  {
+	    pdf =  buildCrystalBallPDF( mass, workInt, samplemode, typemode, debug);
 	  }
 	else
 	  {
 	    std::cout<<"[ERROR] function: "<<type<<" not defined"<<std::endl;
 	  }
       }
-    else if ( type.Contains("Apollonios") == true )
-    {
-      pdf =  buildApolloniosPDF( mass, workInt, samplemode, typemode, debug);
-    }
-    else if ( type.Contains("CrystalBall" ) )
-    {
-      if ( type.Contains("Exponential") )
-      {
-        pdf= buildExponentialPlusDoubleCrystalBallPDF(mass, workInt, samplemode, typemode, widthRatio, sharedMean, debug);
-      }
-      else if ( type.Contains("DoubleCrystalBall") )
-      {
-        pdf =  buildDoubleCrystalBallPDF( mass, workInt, samplemode, typemode, widthRatio, sharedMean, debug);
-      }
-      else if ( type.Contains("PlusGaussian") ) 
-	{
-	  pdf = Bd2DhModels::buildCrystalBallPlusGaussianPDF(mass, workInt, samplemode, typemode, shiftMean, scaleWidths, debug);
-	}
-      else if ( type == "CrystalBall" )
-	{
-	  pdf =  buildCrystalBallPDF( mass, workInt, samplemode, typemode, debug);
-	}
-      else
-      {
-        std::cout<<"[ERROR] function: "<<type<<" not defined"<<std::endl; 
-      }
-    }
     else if ( type.Contains("Gaussian") )
-    {
-      if ( type.Contains("DoubleGaussian")) 
       {
-        pdf = buildDoubleGaussPDF( mass, workInt, samplemode, typemode, widthRatio, sharedMean, false, separatedMean, debug);
+	if ( type.Contains("DoubleGaussian"))
+	  {
+	    pdf = buildDoubleGaussPDF( mass, workInt, samplemode, typemode, widthRatio, sharedMean, separatedMean, false, debug);
+	  }
+	else if ( type == "Gaussian" )
+	  {
+	    pdf = buildGaussPDF( mass, workInt, samplemode, typemode, debug);
+	  }
+	else
+	  {
+	    std::cout<<"[ERROR] function: "<<type<<" not defined"<<std::endl;
+	  }
       }
-      else if ( type == "Gaussian" )
+    else if ( type.Contains("Exponential") )
       {
-        pdf = buildGaussPDF( mass, workInt, samplemode, typemode, debug);
+	if ( type == "ExponentialPlusGaussian" )
+	  {
+	    pdf = buildExponentialPlusGaussPDF(mass, workInt, samplemode, typemode, debug);
+	  }
+	else if ( type == "Exponential" )
+	  {
+	    pdf = buildExponentialPDF(mass, workInt, samplemode, typemode, debug);
+	  }
+	else if ( type == "DoubleExponential" )
+	  {
+	    pdf = buildDoubleExponentialPDF(mass, workInt, samplemode, typemode, debug);
+	  }
+	else if ( type == "ExponentialTimesLinear" )
+	  {
+	    pdf = buildExponentialTimesLinearPDF(mass, workInt, samplemode, typemode, debug);
+	  }
+	else if ( type == "ExponentialPlusSignal")
+	  {
+	    pdf = buildExponentialPlusSignalPDF(mass, workInt, samplemode, typemode, debug);
+	  }
+	else
+	  {
+	    std::cout<<"[ERROR] function: "<<type<<" not defined"<<std::endl;
+	  }
       }
-      else
-      {
-        std::cout<<"[ERROR] function: "<<type<<" not defined"<<std::endl;
-      }
-    }
-    else if ( type.Contains("Exponential") ) 
-    {
-      if ( type == "ExponentialPlusGaussian" )
-      {
-        pdf = buildExponentialPlusGaussPDF(mass, workInt, samplemode, typemode, debug);
-      }
-      else if ( type == "Exponential" ) 
-      {
-        pdf = buildExponentialPDF(mass, workInt, samplemode, typemode, debug);
-      }
-      else if ( type == "DoubleExponential" )
-      {
-        pdf = buildDoubleExponentialPDF(mass, workInt, samplemode, typemode, debug);
-      }
-      else if ( type == "ExponentialTimesLinear" )
-      {
-        pdf = buildExponentialTimesLinearPDF(mass, workInt, samplemode, typemode, debug);
-      }
-      else if ( type == "ExponentialPlusSignal")
-      {
-        pdf = buildExponentialPlusSignalPDF(mass, workInt, samplemode, typemode, debug);
-      }
-      else
-      {
-        std::cout<<"[ERROR] function: "<<type<<" not defined"<<std::endl;
-      }
-    }
     else
-    {
-      std::cout<<"[ERROR] Type of PDF: "<<type<<" is not specified. Please add to 'build_Signal_MDFitter' function."<<std::endl;  
-      return NULL;
-    }
-    
-    TString name = ""; 
-    if ( extended == true )
-    {
-      name = "SigEPDF_"+samplemode;
-      epdf = new RooExtendPdf( name.Data() , pdf->GetTitle(), *pdf  , *nEvts   );
-      CheckPDF( epdf, debug );
-    }
-    else
-    {
-      epdf  = pdf;
-    }
-    
-    return epdf; 
-  }
-  
-  RooAbsPdf* build_SigOrCombo(RooAbsReal& mass,
-                              RooAbsReal& massDs,
-                              RooAbsReal& pidVar,
-                              RooWorkspace* work,
-                              RooWorkspace* workInt,
-                              TString samplemode,
-                              TString typemode,
-                              TString merge,
-                              TString decay,
-                              std::vector <TString> types,
-                              std::vector <TString> pdfN,
-                              std::vector <TString> pdfK,
-                              std::vector <TString> pidk,
-                              Int_t dim,
-                              bool debug)
-  {
+      {
+	std::cout<<"[ERROR] Type of PDF: "<<type<<" is not specified. Please add to 'build_Signal_MDFitter' function."<<std::endl;
+	return NULL;
+      }
 
-    std::vector <std::vector <TString> > pdfNames = ConvertLists(pdfN,pdfK); 
-    if (debug ){ printList2D(pdfNames); }
-
-    RooAbsPdf* pdf = build_SigOrCombo(mass, massDs, pidVar, work, workInt, samplemode, typemode, merge, decay, types, pdfNames, pidk, dim, debug);
-    return pdf; 
-    
+    return pdf;  
   }
 
-  
-  RooAbsPdf* build_SigOrCombo(RooAbsReal& mass,
-                              RooAbsReal& massDs,
-                              RooAbsReal& pidkVar, 
-                              RooWorkspace* work,
-                              RooWorkspace* workInt,
-                              TString samplemode,
-                              TString typemode, 
-                              TString merge, 
-                              TString decay, 
-                              std::vector <TString> types,
-                              std::vector <std::vector <TString> > pdfNames,
-                              std::vector <TString> pidk,
-                              Int_t dim,
-                              bool debug)
-  {
-
-
-    if (debug == true)
-    {
-      cout<<"[INFO] =====> Build "<<typemode<<" model with merge: "<<merge<<endl;
-      cout<<"[INFO] Types of shapes: "<<std::endl;
-      cout<<"[INFO] BeautyMass: "<<types[0]<<std::endl;
-      cout<<"[INFO] CharmMass: "<<types[1]<<std::endl;
-      cout<<"[INFO] BacPIDK: "<<types[2]<<" with components: Kaon = "<<pidk[0]<<" Pion = "<<pidk[1]<<" Proton = "<<pidk[2]<<std::endl;
-    }
-
-    RooExtendPdf* epdf   = NULL;
-    TString nName = ""; 
-    RooRealVar* nEvts = NULL;
-
-    std::vector<RooAbsPdf*> pdf_pBs;
-    std::vector<RooAbsPdf*> pdf_pDs;
-    std::vector<RooAbsPdf*> pdf_pPIDK;
-    RooAbsPdf* pdf_Bs = NULL;
-    RooAbsPdf* pdf_Ds = NULL;
-    RooAbsPdf* pdf_PIDK = NULL;
-
-    RooProdPdf* pdf_Tot = NULL;
-
-    if ( typemode == "Signal" )
-    {
-      nName = "nSig_"+samplemode+"_Evts";
-    }
-    else
-    {
-      nName = "n"+typemode+"_"+samplemode+"_Evts";
-    }
-     
-    nEvts = tryVar(nName, workInt, debug);
-    Double_t val = nEvts->getValV();
-
-    TString t = "_"; 
-    TString mode, Mode;
-    std::vector<TString> y, sam; 
-    mode = CheckDMode(samplemode,debug);
-    if ( mode == "" ) { mode = CheckKKPiMode(samplemode, debug); }
-    Mode = GetModeCapital(mode,debug);
-    
-    y = GetDataYear(samplemode, merge, debug);
-    sam = GetPolarity(samplemode, merge, debug);
-    std::cout<<"mode: "<<mode<<std::endl; 
-    if ( val != 0.0 )
-    {
-      for(unsigned int i = 0; i < sam.size(); i++ )
-      {
-        for (unsigned int j =0; j < y.size(); j++ )
-	      {
-		
-          TString smp = sam[i]+"_"+mode+"_"+y[j];
-          TString pdfNameBs = findRooKeysPdf(pdfNames, TString(mass.GetName()), smp, debug); 
-          pdf_pBs.push_back(ObtainSignalMassShape(mass, work, workInt, smp, typemode, types[0], pdfNameBs, false, debug));
-          if ( dim > 1)
-          {
-            TString pdfNameDs = findRooKeysPdf(pdfNames, TString(massDs.GetName()), smp, debug);
-            pdf_pDs.push_back(ObtainSignalMassShape(massDs, work, workInt, smp, typemode, types[1], pdfNameDs, false, debug));
-          }
-		
-          if ( dim > 2 )
-          {
-            if ( typemode == "CombBkg" || typemode == "Combinatorial" ) 
-            {
-              pdf_pPIDK.push_back(buildComboPIDKPDF(pidkVar, work, workInt, smp, "CombBkg", pidk, merge,debug));
-            }
-            else
-            {
-              pdf_pPIDK.push_back(buildPIDKShapeMDFit(work,smp,decay, mode, debug));
-            }
-          }	
-	      }
-      }
-    }
- 
-
-    if  ( merge == "pol" ) 
-    {
-	
-      pdf_Bs = mergePdf(pdf_pBs[1], pdf_pBs[0], merge, y[0], workInt, debug);
-      if ( dim > 1 ) { pdf_Ds = mergePdf(pdf_pDs[1], pdf_pDs[0], merge, y[0], workInt, debug); }
-      if ( dim > 2 ) { pdf_PIDK = mergePdf(pdf_pPIDK[1], pdf_pPIDK[0], merge, y[0], workInt, debug); }
-    }
-    else if ( merge == "year" )
-    {
-      pdf_Bs = mergePdf(pdf_pBs[1], pdf_pBs[0], merge, sam[0], workInt, debug);
-      if ( dim > 1 ) { pdf_Ds = mergePdf(pdf_pDs[1], pdf_pDs[0], merge, sam[0], workInt, debug); }
-      if ( dim > 2 ) { pdf_PIDK = mergePdf(pdf_pPIDK[1], pdf_pPIDK[0], merge, sam[0], workInt, debug);}
-    }
-    else if ( merge == "both" )
-    {
-      pdf_pBs.push_back(mergePdf(pdf_pBs[2], pdf_pBs[0], "pol", y[0], workInt, debug));
-      if ( dim > 1 ) { pdf_pDs.push_back(mergePdf(pdf_pDs[2], pdf_pDs[0], "pol", y[0], workInt, debug)); }
-      if ( dim > 2 ) { pdf_pPIDK.push_back(mergePdf(pdf_pPIDK[2], pdf_pPIDK[0], "pol", y[0], workInt, debug));}
-	
-      pdf_pBs.push_back(mergePdf(pdf_pBs[3], pdf_pBs[1], "pol", y[1], workInt, debug));
-      if ( dim > 1 ) { pdf_pDs.push_back(mergePdf(pdf_pDs[3], pdf_pDs[1], "pol", y[1], workInt, debug));}
-      if ( dim > 2 ) { pdf_pPIDK.push_back(mergePdf(pdf_pPIDK[3], pdf_pPIDK[1], "pol", y[1], workInt, debug));}
-
-      pdf_Bs = mergePdf(pdf_pBs[5], pdf_pBs[4], "year", "run1", workInt, debug);
-      if ( dim > 1 ) { pdf_Ds = mergePdf(pdf_pDs[5], pdf_pDs[4], "year", "run1", workInt, debug);}
-      if ( dim > 2 ) { pdf_PIDK = mergePdf(pdf_pPIDK[5], pdf_pPIDK[4], "year", "run1", workInt, debug);}
-	
-    }
-    else 
-    {
-      pdf_Bs = pdf_pBs[0];
-      if ( dim > 1 ) { pdf_Ds = pdf_pDs[0];}
-      if ( dim > 2 ) { pdf_PIDK = pdf_pPIDK[0];}
-    }
-
-     
-    pdf_Tot = GetRooProdPdfDim(typemode, samplemode, pdf_Bs, pdf_Ds, pdf_PIDK, dim, debug  );
-    if ( typemode == "Signal" )
-    {
-      TString name = typemode+"ProdPDF_"+samplemode;  
-      pdf_Tot->SetName(name); 
-    }
-    TString epdfName=""; 
-    if ( typemode == "Signal") 
-    {
-      epdfName = "SigEPDF_"+samplemode;
-    }
-    else
-    {
-      epdfName = typemode+"EPDF_"+samplemode;
-    }
-
-    epdf = new RooExtendPdf( epdfName.Data() , pdf_Tot->GetTitle(), *pdf_Tot  , *nEvts   );
-    CheckPDF( epdf, debug );
-    
-    return epdf; 
-  }
 
   RooAbsPdf* mergePdf(RooAbsPdf* pdf1, RooAbsPdf* pdf2, TString merge, TString lum,RooWorkspace* workInt, bool debug)
   {
@@ -2441,7 +2391,7 @@ namespace Bs2Dsh2011TDAnaModels {
     }
 
     if( nEvts != NULL ){ if ( debug == true) {std::cout<<"[INFO] Read observable: "<<nEvts->GetName()<<std::endl;} return nEvts; }
-    else{ std::cout<<"[ERROR] Cannot read observable."<<std::endl; return NULL;}    
+    else{ std::cout<<"[ERROR] Cannot read observable with name:"<<name<<std::endl; return NULL;}    
   
   }
 
@@ -2470,6 +2420,7 @@ namespace Bs2Dsh2011TDAnaModels {
       for ( unsigned j = 0; j <suffix2.size(); j++ )
       {
         TString pdfName = "Signal_"+varName+suffix[i]+samplemode+suffix2[j];
+	std::cout<<"pdfName: "<<pdfName<<std::endl; 
         pdf = (RooAbsPdf*) workInt -> pdf(pdfName.Data()); 
         if ( pdf != NULL ){ break; }
       }
@@ -2576,5 +2527,85 @@ namespace Bs2Dsh2011TDAnaModels {
     return pdfName; 
   }
   
+  //---------------------------------------
+  // Get Shape type, default is RooKeysPdf
+  //---------------------------------------
+  TString getShapeType(std::vector <TString> types, const TString var, const TString typemode)
+  {
+    TString type = "RooKeysPdf"; 
+    TString find = typemode+"_"+var; 
+
+    for (const TString& name : types)
+      {
+	if ( name.Contains(typemode) )
+	  {
+	    if ( name.Contains(var))
+	      {
+		type = name; 
+		break;
+	      }
+	    else if ( var.Contains("PIDK") ) 
+	      {
+		type = "PIDKShape"; 
+	      }
+	    else
+	      {
+		type = "RooKeysPdf"; 
+	      }
+	  }
+      }
+	  
+    find = find+"_";
+    type.ReplaceAll(find,""); 
+    
+    return type; 
+  }
+  //---------------------------------------
+  // Get list of shapes for all dimensions
+  //---------------------------------------
+  std::vector<TString> getShapesType(std::vector <TString> types, std::vector <TString> vars, const TString typemode, bool debug )
+  {
+    std::vector<TString> outTypes;
+
+    for ( const TString& var: vars )
+      {
+	outTypes.push_back( getShapeType(types, var, typemode) ); 
+      }
+
+    if (debug)
+      {
+	std::cout<<"[INFO] For the mode: "<<typemode<<" following PDFs are chosen: "<<std::endl; 
+	for ( unsigned int i = 0; i < vars.size(); i++) 
+	  {
+	    std::cout<<"[INFO]      "<<vars[i]<<" PDF model: "<<outTypes[i]<<std::endl; 
+	  }
+      }
+    return outTypes; 
+  }
   
+  //---------------------------------------                                                                                                                      
+  // Get list of shapes for all dimensions                                                                                                                       
+  //---------------------------------------                                                                                                                             
+  std::vector<TString> getShapesType(std::vector <TString> types, std::vector <RooAbsReal*> vars, const TString typemode, bool debug )
+  {
+    std::vector<TString> obsName; 
+    for ( const  RooAbsReal* var: vars )
+      {
+	obsName.push_back(var->GetName());
+      }
+    
+    std::vector <TString> outNames = getShapesType(types, obsName, typemode, debug );
+    
+    return outNames; 
+  }
+
+  std::pair <RooAbsReal*, TString> getObservableAndShape(std::vector <TString> types, std::vector <RooAbsReal*> vars,Int_t i)
+  {
+    std::pair <RooAbsReal*, TString> pair; 
+    
+    pair.first = vars[i];
+    pair.second = types[i]; 
+
+    return pair; 
+  }
 }

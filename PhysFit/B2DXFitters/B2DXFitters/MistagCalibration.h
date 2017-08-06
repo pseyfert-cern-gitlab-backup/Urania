@@ -78,7 +78,7 @@ class MistagCalibration : public RooAbsReal
 	Double_t evalIntEta(
 		const double etalo, const double etahi) const;
 
-	ClassDef(MistagCalibration, 2);
+	ClassDefOverride(MistagCalibration, 2);
 };
 
 #endif

@@ -71,7 +71,7 @@ class RooKConvGenContext : public RooAbsGenContext
         RooRealVar* _cvPdf;           // Convolution variable in PDFxTruth event
         RooRealVar* _cvOut;           // Convolution variable in output event
 
-        ClassDef(RooKConvGenContext,0) // Context for generating a dataset from a PDF
+        ClassDefOverride(RooKConvGenContext,0) // Context for generating a dataset from a PDF
 };
 
 #endif

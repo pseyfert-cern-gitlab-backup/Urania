@@ -26,7 +26,7 @@ protected:
   Double_t evaluate() const override;
 
 private:
-  ClassDef(TagDLLToTagEta, 1);
+  ClassDefOverride(TagDLLToTagEta, 1);
 };
 
 #endif

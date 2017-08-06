@@ -34,7 +34,7 @@ protected:
   Double_t evaluate() const override;
 
 private:
-  ClassDef(CPObservable, 1);
+  ClassDefOverride(CPObservable, 1);
 };
 
 #endif

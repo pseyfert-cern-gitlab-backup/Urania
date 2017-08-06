@@ -483,15 +483,17 @@ if __name__ == '__main__' :
     
     frame_t.GetXaxis().SetTitleOffset( 1.00 )
     frame_t.GetYaxis().SetTitleOffset( 1.00 )
+    
+    
     unit = "ps"
     #frame_t.GetXaxis().SetTitle('#font[132]{#tau (B_{s} #rightarrow D_{s} #pi) [ps]}')
     frame_t.GetYaxis().SetTitle((TString.Format("#font[132]{Candidates / ( " +
                                                     "{0:0.2f}".format(time.getBinWidth(1))+" "+
                                                     unit+")}") ).Data())
     
-    if not log and dataset.numEntries() > 30000:
+    if not log and dataset.numEntries() > 10000:
         frame_t.GetYaxis().SetNdivisions(508)
-        frame_t.GetYaxis().SetTitleOffset( 1.20 )
+        frame_t.GetYaxis().SetTitleOffset( 1.35 )
         frame_t.GetYaxis().SetRangeUser(1.5,frame_t.GetMaximum()*1.1)
 
     if plotData:
@@ -510,7 +512,7 @@ if __name__ == '__main__' :
         frame_t.GetYaxis().SetRangeUser(1.5,frame_t.GetMaximum()*1.5)
 
     #legend = TLegend( 0.57, 0.68, 0.80, 0.90 )
-    legend = TLegend( 0.52, 0.65, 0.75, 0.93 )
+    legend = TLegend( 0.60, 0.65, 0.80, 0.93 )
     legend.SetTextSize(0.06)
     legend.SetTextFont(12)
     legend.SetFillColor(0)

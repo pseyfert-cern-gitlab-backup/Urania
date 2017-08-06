@@ -72,7 +72,7 @@ class MistagDistribution : public RooAbsPdf {
 
 	double getWc() const;
 
-	ClassDef(MistagDistribution,1) // Your description goes here...
+	ClassDefOverride(MistagDistribution,1) // Your description goes here...
 };
 
 #endif

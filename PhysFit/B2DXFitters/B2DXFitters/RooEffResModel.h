@@ -101,7 +101,7 @@ class RooEffResModel : public RooResolutionModel, public RooAbsEffResModel {
 
 	mutable RooObjCacheManager _cacheMgr; //!
 
-	ClassDef(RooEffResModel, 2) // EffResian Resolution Model
+        ClassDefOverride(RooEffResModel, 2) // EffResian Resolution Model
 };
 
 #endif

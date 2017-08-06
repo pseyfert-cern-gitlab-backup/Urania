@@ -124,11 +124,17 @@ dName = 'Ds'
 bdName = 'Bd'
 #-----------------------------------------------------------------------------
 
-def getTotalBkgPDF(myconfigfile, beautyMass, charmMass, workspace, workInt, merge, bound, sm, dim, debug ):
+def getTotalBkgPDF(myconfigfile, obs, types, workspace, workInt, merge, bound, sm, dim, debug ):
     
     bkgPDF = [] 
     cdm = ["NonRes","PhiPi","KstK","KPiPi","PiPiPi","KKPi"]
     ot = [True] 
+    beautyMass = obs[0]
+    charmMass = NULL
+    size = len(obs) 
+    if size>1: 
+        charmMass = obs[1] 
+
     for i in range(0,bound):
         mm = GeneralUtils.GetModeCapital(sm[i],debug)
         if ( myconfigfile["Decay"] == "Bs2DsPi"):
@@ -153,7 +159,7 @@ def getTotalBkgPDF(myconfigfile, beautyMass, charmMass, workspace, workInt, merg
         elif ( myconfigfile["Decay"] == "Bd2DK"):
             if ( mm in cdm ):
                 #bkgPDF.append(WS(workInt,Bd2DhModels.build_Bd2DK_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
-                bkgPDF.append(Bd2DhModels.build_Bd2DK_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug ))
+                bkgPDF.append(Bd2DhModels.build_Bd2DK_BKG_MDFitter(workspace, workInt, obs, types, sm[i], merge, debug ))
     return bkgPDF
     
 #------------------------------------------------------------------------------
@@ -192,7 +198,8 @@ def runMDFitter( debug, sample, mode, sweight,
     from B2DXFitters.mdfitutils import getPDFNameFromConfig as getPDFNameFromConfig
     from B2DXFitters.mdfitutils import getPIDKComponents as getPIDKComponents
     from B2DXFitters.mdfitutils import setBs2DsXParameters as setBs2DsXParameters
-    
+    from B2DXFitters.mdfitutils import getShapeTypes as getShapeTypes
+    from B2DXFitters.mdfitutils import readVariablesForShapes as readVariablesForShapes 
 
     mdt = Translator(myconfigfile,"MDSettings",False)
 
@@ -221,7 +228,13 @@ def runMDFitter( debug, sample, mode, sweight,
     charmMass = observables.find(MDSettings.GetMassDVarOutName().Data())
     bacPIDK = observables.find(MDSettings.GetPIDKVarOutName().Data())
     obs = [beautyMass, charmMass, bacPIDK]
-
+    obsList = GeneralUtils.GetList(beautyMass)
+    if dim > 1:
+        obsList.AddToList(charmMass)
+    if dim > 2: 
+        obsList.AddToList(bacPIDK)
+ 
+    obsName = [beautyMass.GetName(), charmMass.GetName(), bacPIDK.GetName()] 
     
  ###------------------------------------------------------------------------------------------------------------------------------------###
     ###------------------------------------------------------------------------------------------------------------------------------###
@@ -312,7 +325,7 @@ def runMDFitter( debug, sample, mode, sweight,
     workInt.Print("v")
 
     ###------------------------------------------------------------------------------------------------------------------------------------###         
-        ###-------------------------------   Create yields of backgrounds     --------------------------------------###       
+        ###-------------------------------   Create yields of all components     --------------------------------------###       
     ###------------------------------------------------------------------------------------------------------------------------------------### 
     evts = TString("Evts")
     
@@ -330,7 +343,6 @@ def runMDFitter( debug, sample, mode, sweight,
         dmode = GeneralUtils.GetModeCapital(sm[i],debug)
         backgrounds = myconfigfile["Yields"]
         pol = GeneralUtils.CheckPolarityCapital(sm[i],debug)
-        #print backgrounds
         
         for bkg in backgrounds:
             if bkg != "Signal":
@@ -348,35 +360,40 @@ def runMDFitter( debug, sample, mode, sweight,
             setConstantIfSoConfigured(nYields[nYields.__len__()-1], "Yields", bkg, mm, pol, myconfigfile)
             getattr(workInt,'import')(nYields[nYields.__len__()-1])
 
-            if myconfigfile.has_key("BeautyMass"+bkg+"Shape"):
-                key = "BeautyMass"+bkg+"Shape"
-                prefix1 = bkg+"_"+obs[0].GetName()
-                workInt = readVariables(myconfigfile, key, prefix1, workInt, sm[i], merge, bound, debug)
-            if myconfigfile.has_key("CharmMass"+bkg+"Shape"):
-                key = "CharmMass"+bkg+"Shape"
-                prefix1 = bkg+"_"+obs[1].GetName()
-                workInt = readVariables(myconfigfile, key, prefix1, workInt, sm[i], merge, bound, debug)
-            if myconfigfile.has_key("PIDK"+bkg+"Shape"):
-                key = "CharmMass"+bkg+"Shape"
-                prefix1 = bkg+"_"+obs[2].GetName()
-                workInt = readVariables(myconfigfile, key, prefix1, workInt, sm[i], merge, bound, debug)
 
+    ###------------------------------------------------------------------------------------------------------------------------------------###              
+            ###------------------   Create variables for all analytical shapes and get their types     -------------------------###                                  
+    ###------------------------------------------------------------------------------------------------------------------------------------###  
+
+    workInt = readVariablesForShapes(myconfigfile, workInt, obsName, merge, bound, sm, debug)
+    types = getShapeTypes(myconfigfile, obsName, debug)
+    
     ###------------------------------------------------------------------------------------------------------------------------------------###                                
         ###-------------------------------   Create the combo and signal PDF in Bs mass, Ds mass, PIDK --------------------------------------###                   
     ###------------------------------------------------------------------------------------------------------------------------------------###
 
-    keysSig = ["BsSignalShape","DsSignalShape","PIDKSignalShape"]
+    sigEPDF = []
     if signal:
-        sigEPDF, workInt = getSigOrCombPDF(myconfigfile,keysSig,TString("Signal"),
-                                           workspace[0],workInt,sm,merge,bound,dim,obs, debug)
+        for i in range(0,bound):
+            mode = GeneralUtils.CheckDMode(sm[i],debug)
+            if mode == "":
+                mode = GeneralUtils.CheckKKPiMode(sm[i], debug)
+            sigEPDF.append(Bs2Dsh2011TDAnaModels.buildExtendPdfMDFit( workInt, workspace[0], obsList, types, sm[i], "Signal", mode, merge, debug))
 
-    keysComb = ["BsCombinatorialShape","DsCombinatorialShape","PIDKCombinatorialShape"]
+
+    combEPDF = [] 
     if combo:
-        combEPDF, workInt = getSigOrCombPDF(myconfigfile,keysComb,TString("CombBkg"),
-                                            workspace[0],workInt,sm,merge,bound,dim,obs, debug)
+        for i in range(0,bound):
+            mode = GeneralUtils.CheckDMode(sm[i],debug)
+            if mode == "":
+                mode = GeneralUtils.CheckKKPiMode(sm[i], debug)
+            combEPDF.append(Bs2Dsh2011TDAnaModels.buildExtendPdfMDFit( workInt, workspace[0], obsList, types, sm[i], "CombBkg", mode, merge, debug))
+        #combEPDF, workInt = getSigOrCombPDF(myconfigfile,keysComb,TString("CombBkg"),
+        #                                    workspace[0],workInt,sm,merge,bound,dim,obs, debug)
 
     workInt = setBs2DsXParameters(myconfigfile, workInt, sm, merge,bound, beautyMass,debug)
-    
+#    exit(0) 
+
     ###------------------------------------------------------------------------------------------------------------------------------------###     
         ###-------------------------------   Create the total background PDF in Bs mass, Ds mass, PIDK ------------------------------###     
     ###------------------------------------------------------------------------------------------------------------------------------------###              
@@ -417,7 +434,7 @@ def runMDFitter( debug, sample, mode, sweight,
 
     
     if other == True:
-        bkgPDF = getTotalBkgPDF(myconfigfile, beautyMass, charmMass, workspace[0], workInt, merge, bound, sm, dim, debug )
+        bkgPDF = getTotalBkgPDF(myconfigfile, obsList, types, workspace[0], workInt, merge, bound, sm, dim, debug )
     ###------------------------------------------------------------------------------------------------------------------------------------### 
           ###---------------------------------   Create the total PDF in Bs mass, Ds mass, PIDK --------------------------------------###  
     ###------------------------------------------------------------------------------------------------------------------------------------###  

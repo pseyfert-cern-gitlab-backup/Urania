@@ -83,7 +83,7 @@ private:
                            const RooGaussModelAcceptance::K_n& K,
                            double offset, double* sc) const ;
 
-  ClassDef(RooCubicSplineFun,1) // CubicSpline polynomial PDF
+  ClassDefOverride(RooCubicSplineFun,1) // CubicSpline polynomial PDF
 };
 
 #endif

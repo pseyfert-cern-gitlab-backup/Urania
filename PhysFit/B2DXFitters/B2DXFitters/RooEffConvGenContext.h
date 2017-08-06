@@ -39,7 +39,7 @@ private:
 
    double _maxEff;
 
-   ClassDef(RooEffConvGenContext,0) // Context for generating a dataset from a PDF
+   ClassDefOverride(RooEffConvGenContext,0) // Context for generating a dataset from a PDF
 };
 
 #endif

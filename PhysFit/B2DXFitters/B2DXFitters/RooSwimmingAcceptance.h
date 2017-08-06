@@ -87,7 +87,7 @@ private:
     // update list of turning points between min and max, return initial state
     bool updateTPs(double min = -std::numeric_limits<double>::max(),
                    double max = +std::numeric_limits<double>::max()) const;
-    ClassDef(RooSwimmingAcceptance, 1) // swimming acceptance function
+    ClassDefOverride(RooSwimmingAcceptance, 1) // swimming acceptance function
 };
 
 #endif

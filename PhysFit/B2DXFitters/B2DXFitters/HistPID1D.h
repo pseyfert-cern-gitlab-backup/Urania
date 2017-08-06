@@ -74,7 +74,7 @@ protected:
   std::vector <TH1F*> _hist;
 
 private:
-  ClassDef(HistPID1D, 1);
+  ClassDefOverride(HistPID1D, 1);
 };
 
 #endif

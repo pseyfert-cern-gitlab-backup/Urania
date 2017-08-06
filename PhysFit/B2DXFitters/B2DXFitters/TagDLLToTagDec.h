@@ -32,7 +32,7 @@ protected:
   RooCatType evaluate() const override;
 
 private:
-  ClassDef(TagDLLToTagDec, 1);
+  ClassDefOverride(TagDLLToTagDec, 1);
 };
 
 #endif

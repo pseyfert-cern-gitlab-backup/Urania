@@ -57,7 +57,7 @@ protected:
   Double_t evaluate() const override;
 
 private:
-  ClassDef(TaggingCat, 2);
+  ClassDefOverride(TaggingCat, 2);
 };
 
 #endif

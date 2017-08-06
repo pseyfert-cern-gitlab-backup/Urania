@@ -48,7 +48,7 @@ protected:
   Double_t evaluate() const override;
 
 private:
-  ClassDef(RooComplementCoef, 1)
+   ClassDefOverride(RooComplementCoef, 1)
 };
 
 #endif

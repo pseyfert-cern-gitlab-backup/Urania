@@ -81,7 +81,7 @@ protected:
   std::vector <Style_t> _stylePdf;
 
 private:
-  ClassDef(PlotSettings, 1);
+  ClassDefOverride(PlotSettings, 1);
 };
 
 #endif

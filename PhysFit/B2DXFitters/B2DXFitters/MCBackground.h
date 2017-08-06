@@ -95,7 +95,7 @@ protected:
   TString _hypo;
 
 private:
-  ClassDef(MCBackground, 1);
+  ClassDefOverride(MCBackground, 1);
 };
 
 #endif

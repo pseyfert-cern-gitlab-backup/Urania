@@ -168,7 +168,7 @@ def getObservables (MDSettings, workData, toys, debug):
 
     return observables
 
-def readVariables(myconfigfile,label, prefix, workInt, sm, merge, bound, debug):
+def readVariables(myconfigfile, label, prefix, workInt, sm, merge, bound, debug):
 
     t = TString("_")
     variables = []
@@ -181,6 +181,7 @@ def readVariables(myconfigfile,label, prefix, workInt, sm, merge, bound, debug):
         print labelTS
         if myconfigfile.has_key(label):
             if myconfigfile[label]["type"] != "RooKeysPdf":
+
                 var = myconfigfile[label]
                 for v in var:
                     if v != "type" and v != "scaleSigma" and v != "components" and v!= "name" and v!= "decay":
@@ -393,3 +394,131 @@ def setBs2DsXParameters(myconfigfile,workInt,sm, merge, bound, beautyMass,debug)
             workInt = readVariables(myconfigfile, "Bd2Ds(st)XShape", prefix1, workInt, sm, merge, bound, debug)
             
     return workInt
+
+#------------------------------------------------------------------------------   
+def getShapeTypes(myconfigfile, obsName, debug):
+    
+    t = "_"
+    
+    modes = myconfigfile["Yields"]
+    types = GeneralUtils.GetList(TString("pdf_types"))
+
+    check = [] 
+    for mode in modes:
+        if mode == "Combinatorial":
+            mode = "CombBkg"
+        if myconfigfile.has_key(mode+"Shape"):
+            for name in obsName:
+                if myconfigfile[mode+"Shape"].has_key(name):
+                    if myconfigfile[mode+"Shape"][name].has_key("type"):
+                        namepdf = mode 
+                        namepdf = namepdf + t + name + t 
+                        namepdf = namepdf + myconfigfile[mode+"Shape"][name]["type"]
+                        types = GeneralUtils.AddToList(types, namepdf)
+                        check.append(namepdf) 
+
+    ### Backwards compatibiliy, old fashion config file
+    keysSig  = ["BsSignalShape","DsSignalShape","PIDKSignalShape"]
+    keysComb = ["BsCombinatorialShape","DsCombinatorialShape","PIDKCombinatorialShape"]
+    if myconfigfile.has_key("BsSignalShape") or myconfigfile.has_key("DsSignalShape") or myconfigfile.has_key("PIDKSignalShape") :
+        print "-----------------------------------------------------------------------------------------------"
+        print "[WARNING] You are using old fashion shape declaration. It is not as flexible as the new."
+        print "[WARNING] Please consider using configdict[\"SignalShape\"][\"BeautyMass\"][\"type\"] instead"
+        print "-----------------------------------------------------------------------------------------------"
+        j = 0 
+        for name in obsName:
+            namepdf = "Signal_"+name
+            if myconfigfile.has_key(keysSig[j]):
+                if myconfigfile[keysSig[j]].has_key("type"):
+                    namepdf = namepdf + "_"+myconfigfile[keysSig[j]]["type"] 
+                    if namepdf not in check:
+                        types = GeneralUtils.AddToList(types, namepdf)
+                        check.append(namepdf)
+                    else:
+                        print "[ERROR] type of PDF already added. Unify your config file!"
+                        exit(0)
+            j = j + 1 
+    if myconfigfile.has_key("BsCombinatorialShape") or myconfigfile.has_key("DsCombinatorialShape") or myconfigfile.has_key("PIDKCombinatorialShape") :
+        print "-----------------------------------------------------------------------------------------------"
+        print "[WARNING] You are using old fashion shape declaration. It is not as flexible as the new."
+        print "[WARNING] Please consider using configdict[\"CombinatorialShape\"][\"BeautyMass\"][\"type\"] instead"
+        print "-----------------------------------------------------------------------------------------------"
+        j = 0
+        for name in obsName:
+            namepdf = "CombBkg_"+name
+            if myconfigfile.has_key(keysComb[j]):
+                if myconfigfile[keysComb[j]].has_key("type"):
+                    namepdf = namepdf + "_"+myconfigfile[keysComb[j]]["type"]
+                    if namepdf not in check:
+                        print namepdf 
+                        types = GeneralUtils.AddToList(types, namepdf)
+                        check.append(namepdf)
+                    else:
+                        print "[ERROR] type of PDF already added. Unify your config file!"
+                        exit(0)
+            j = j + 1
+    if debug:
+        print "-------------------------------------"
+        print "Analytical PDFs"
+        print "-------------------------------------"
+        GeneralUtils.printList(types)
+
+
+
+    return types
+
+#------------------------------------------------------------------------------ 
+def readVariablesForShapes(myconfigfile, workInt, obsName, merge, bound, sm, debug):
+    newSignal = True
+    newCombo = True
+    keysSig  = ["BsSignalShape","DsSignalShape","PIDKSignalShape"]
+    keysComb = ["BsCombinatorialShape","DsCombinatorialShape","PIDKCombinatorialShape"]
+    for i in range(0,bound):
+        print i
+        print bound
+        yr = GeneralUtils.CheckDataYear(sm[i])
+        mm = GeneralUtils.GetModeCapital(sm[i],debug)
+        print yr
+        dmode = GeneralUtils.GetModeCapital(sm[i],debug)
+        backgrounds = myconfigfile["Yields"]
+        pol = GeneralUtils.CheckPolarityCapital(sm[i],debug)
+        for bkg in backgrounds:
+            if bkg == "Signal":
+                ### Backwards compatibiliy, old fashion config file 
+                if myconfigfile.has_key("BsSignalShape") or myconfigfile.has_key("DsSignalShape") or myconfigfile.has_key("PIDKSignalShape") :
+                    newSignal = False
+                    print "-----------------------------------------------------------------------------------------------"
+                    print "[WARNING] You are using old fashion shape declaration. It is not as flexible as the new."
+                    print "[WARNING] Please consider using configdict[\"SignalShape\"][\"BeautyMass\"][\"type\"] instead"
+                    print "-----------------------------------------------------------------------------------------------"
+            if bkg == "CombBkg" or bkg == "Combinatorial":
+                ### Backwards compatibiliy, old fashion config file 
+                if myconfigfile.has_key("BsCombinatorialShape") or myconfigfile.has_key("DsCombinatorialShape") or myconfigfile.has_key("PIDKCombinatorialShape") :
+                    newCombo = False
+                    print "----------------------------------------------------------------------------------------------------"
+                    print "[WARNING] You are using old fashion shape declaration. It is not as flexible as the new."
+                    print "[WARNING] Please consider using configdict[\"CombinatorialShape\"][\"BeautyMass\"][\"type\"] instead"
+                    print "-----------------------------------------------------------------------------------------------------"
+
+            ### Backwards compatibiliy, old fashion config file 
+            if bkg == "Signal" and newSignal == False:
+                j = 0
+                for name in obsName:
+                    prefix = "Signal_"+name
+                    workInt = readVariables(myconfigfile, keysSig[j], prefix, workInt, sm[i], merge, bound, debug)
+                    j = j + 1
+            ### Backwards compatibiliy, old fashion config file 
+            if (bkg == "CombBkg" or bkg == "Combinatorial") and newCombo == False:
+                j = 0
+                for name in obsName:
+                    prefix = "CombBkg_"+name
+                    workInt = readVariables(myconfigfile, keysComb[j], prefix, workInt, sm[i], merge, bound, debug)
+                    j = j + 1
+            if myconfigfile.has_key(bkg+"Shape"):
+                key = bkg+"Shape"
+                for name in obsName:
+                    if myconfigfile[bkg+"Shape"].has_key(name):
+                        prefix = bkg+"_"+name
+                        workInt = readVariables(myconfigfile[bkg+"Shape"], name, prefix, workInt, sm[i], merge, bound, debug)
+
+    return workInt 

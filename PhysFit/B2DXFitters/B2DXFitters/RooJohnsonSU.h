@@ -56,7 +56,7 @@ protected:
 
 private:
 
-  ClassDef(RooJohnsonSU,1) // Your description goes here...
+  ClassDefOverride(RooJohnsonSU,1) // Your description goes here...
 };
 
 #endif

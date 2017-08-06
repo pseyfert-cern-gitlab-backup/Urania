@@ -51,7 +51,7 @@ protected:
 
 private:
 
-  ClassDef(RooIpatia2,1) // Your description goes here...
+  ClassDefOverride(RooIpatia2,1) // Your description goes here...
 };
 
 #endif

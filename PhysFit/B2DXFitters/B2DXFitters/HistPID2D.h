@@ -84,7 +84,7 @@ protected:
   std::vector <TH2F*> _hist;
 
 private:
-  ClassDef(HistPID2D, 1);
+  ClassDefOverride(HistPID2D, 1);
 };
 
 #endif

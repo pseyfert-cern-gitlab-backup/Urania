@@ -28,7 +28,7 @@ protected:
   Double_t evaluate() const override;
 
 private:
-  ClassDef(SquaredSum, 1);
+  ClassDefOverride(SquaredSum, 1);
 };
 
 #endif

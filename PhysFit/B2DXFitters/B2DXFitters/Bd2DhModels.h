@@ -35,14 +35,13 @@ namespace Bd2DhModels {
 					bool debug = true
 					);
 
-  RooAbsPdf* build_Bd2DK_BKG_MDFitter( RooAbsReal& mass,
-                                       RooAbsReal& massDs,
-                                       RooWorkspace* work,
+  RooAbsPdf* build_Bd2DK_BKG_MDFitter( RooWorkspace* work,
                                        RooWorkspace* workInt,
+				       std::vector <RooAbsReal*> obs,
+				       std::vector <TString> types,
                                        TString &samplemode,
-                                       TString merge,
-                                       Int_t dim,
-                                       bool debug = true
+				       TString merge = "",
+				       bool debug = true
                                        );
 
   RooAbsPdf* buildExponentialPlusConstantPDF( RooAbsReal& obs,
@@ -134,7 +133,19 @@ namespace Bd2DhModels {
                                      bool scaleTails = false,
                                      bool fft = true,
                                      bool debug = true);
-  
+
+  RooAbsPdf* buildHILLdini(RooAbsReal& obs,
+                           RooWorkspace* workInt,
+                           TString samplemode,
+                           TString typemode,
+                           bool debug); 
+
+  RooAbsPdf* buildHORNSdini(RooAbsReal& obs,
+			    RooWorkspace* workInt,
+			    TString samplemode,
+			    TString typemode,
+			    bool debug); 
+
 } // end of namespace
 
 //=============================================================================

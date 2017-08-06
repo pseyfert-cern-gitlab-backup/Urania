@@ -10,6 +10,9 @@
 #include "RooHistPdf.h"
 #include "RooProdPdf.h"
 #include "RooArgList.h"
+#include "RooAbsReal.h"
+
+#include <vector> 
 
 namespace Bs2Dsh2011TDAnaModels {
   
@@ -55,21 +58,40 @@ namespace Bs2Dsh2011TDAnaModels {
   RooAbsPdf* buildShiftedDoubleCrystalBallPDF(RooAbsReal& mass, RooWorkspace* workInt,
 					      TString samplemode, TString typemode, bool debug = false);
   		      
-  RooExtendPdf* buildExtendPdfSpecBkgMDFit( RooWorkspace* workInt, RooWorkspace* work,
-					    TString samplemode, TString typemode, TString typemodeDs = "", TString merge = "", 
+  RooExtendPdf* buildExtendPdfSpecBkgMDFit( RooWorkspace* workInt, RooWorkspace* work, std::vector <TString> types,
+					    TString samplemode, TString typemode, TString typemodeDs = "", 
+					    TString merge = "", 
 					    int dim = 1, TString signalDs = "", bool debug = false);
 
-  RooProdPdf* buildProdPdfSpecBkgMDFit( RooWorkspace* workInt, RooWorkspace* work,
-					TString samplemode, TString typemode, TString typemodeDs = "", TString merge = "",  
+  RooExtendPdf* buildExtendPdfMDFit( RooWorkspace* workInt, RooWorkspace* work,
+				     std::vector <RooAbsReal*> obs,
+                                     std::vector <TString> types,
+				     TString samplemode, TString typemode, TString typemodeDs = "",
+                                     TString merge = "" , bool debug =false);
+
+  RooProdPdf* buildProdPdfSpecBkgMDFit( RooWorkspace* workInt, RooWorkspace* work, std::vector <TString> types,
+					TString samplemode, TString typemode, TString typemodeDs = "", 
+					TString merge = "",  
 					int dim = 1, TString signalDs = "", bool debug = false);
+
+  RooProdPdf* buildProdPdfMDFit( RooWorkspace* workInt, RooWorkspace* work,
+				 std::vector <RooAbsReal*> obs,
+				 std::vector <TString> types,
+				 TString samplemode, TString typemode, TString typemodeDs = "",
+                                 TString merge= "", bool debug=false);
+
+  RooAbsPdf* buildMergedPdfMDFit(RooWorkspace* workInt, RooWorkspace* work,
+                                 std::pair <RooAbsReal*,TString> obs_shape,
+                                 TString samplemode, TString typemode, TString typemodeDs, TString merge, bool debug);
+
 
   RooAbsPdf* buildMergedSpecBkgMDFit(RooWorkspace* workInt, RooWorkspace* work,
                                      TString samplemode, TString typemode, TString typemodeDs, TString merge,
                                      int dim, TString signalDs, bool debug = false);
 
   RooAbsPdf* buildMassPdfSpecBkgMDFit(RooWorkspace* work,
-				     TString samplemode, TString typemode, TString typemodeDs = "",
-				     bool charmShape = false, bool debug = false);
+				      TString samplemode, TString typemode, TString typemodeDs = "",
+				      bool charmShape = false, bool debug = false);
 
   RooAbsPdf* buildPIDKShapeMDFit(RooWorkspace* work,
 				 TString samplemode, TString typemode, TString typemodeDs = "",
@@ -187,47 +209,14 @@ namespace Bs2Dsh2011TDAnaModels {
   RooArgList* AddEPDF(RooArgList* list, RooExtendPdf* pdf, RooRealVar *numEvts, bool debug = false); 
   RooArgList* AddEPDF(RooArgList* list, RooExtendPdf* pdf, Double_t ev, bool debug = false);
 
-  RooAbsPdf* ObtainSignalMassShape(RooAbsReal& mass,
-                                   RooWorkspace* work,
-                                   RooWorkspace* workInt,
-                                   TString samplemode,
-				   TString typemode, 
-                                   TString type,
-				   TString pdfName, 
-				   bool extended, 
-                                   bool debug);
-
-
-  RooAbsPdf* build_SigOrCombo(RooAbsReal& mass,
-			      RooAbsReal& massDs,
-			      RooAbsReal& pidVar,
-			      RooWorkspace* work,
-			      RooWorkspace* workInt,
-			      TString samplemode,
-			      TString typemode, 
-			      TString merge, 
-			      TString decay, 
-			      std::vector <TString> types,
-			      std::vector <std::vector <TString> > pdfNames,
-			      std::vector <TString> pidk,
-			      Int_t dim,
-			      bool debug);
-
-  RooAbsPdf* build_SigOrCombo(RooAbsReal& mass,
-                              RooAbsReal& massDs,
-                              RooAbsReal& pidVar,
-                              RooWorkspace* work,
-                              RooWorkspace* workInt,
-                              TString samplemode,
-                              TString typemode,
-                              TString merge,
-                              TString decay,
-                              std::vector <TString> types,
-                              std::vector <TString> pdfN, 
-			      std::vector <TString> pdfK,
-                              std::vector <TString> pidk,
-                              Int_t dim,
-                              bool debug);
+  
+  RooAbsPdf* buildAnalyticalShape(RooAbsReal& mass,
+				 RooWorkspace* work,
+				 RooWorkspace* workInt,
+				 TString samplemode,
+				 TString typemode,
+				 TString type,
+				 bool debug);
 
   RooAbsPdf* mergePdf(RooAbsPdf* pdf1, RooAbsPdf* pdf2, TString merge, TString lum,RooWorkspace* workInt, bool debug = false);
   RooRealVar* tryVar(TString name, RooWorkspace* workInt, bool debug);
@@ -235,7 +224,10 @@ namespace Bs2Dsh2011TDAnaModels {
   RooAbsPdf* trySignal(TString samplemode, TString varName, RooWorkspace* workInt, bool debug); 
 
   TString findRooKeysPdf(std::vector <std::vector <TString> > pdfNames, TString var, TString smp, bool debug);
-
+  TString getShapeType(std::vector <TString> types, const TString var, const TString typemode); 
+  std::vector<TString> getShapesType(std::vector <TString> types, std::vector <TString> vars, const TString typemode, bool debug = false);
+  std::vector<TString> getShapesType(std::vector <TString> types, std::vector <RooAbsReal*> vars, const TString typemode, bool debug );
+  std::pair <RooAbsReal*, TString> getObservableAndShape(std::vector <TString> types, std::vector <RooAbsReal*> vars,Int_t i);
 
 }
 

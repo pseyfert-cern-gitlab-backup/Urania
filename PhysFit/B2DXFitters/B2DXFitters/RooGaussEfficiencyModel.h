@@ -71,7 +71,7 @@ private:
   RooRealProxy msf ;
   RooRealProxy ssf ;
 
-  ClassDef(RooGaussEfficiencyModel,1)
+  ClassDefOverride(RooGaussEfficiencyModel,1)
 };
 
 #endif

@@ -662,7 +662,7 @@ if __name__ == '__main__' :
             print "[ERROR] You need to specify position of legend in configfile using 'LegendSettings'"
             exit(0) 
     else:
-        frame_m.GetYaxis().SetRangeUser(5.0,frame_m.GetMaximum()*1.1)
+        frame_m.GetYaxis().SetRangeUser(0.2,frame_m.GetMaximum()*1.1)
         legend = TLegend( 0.05, 0.05, 0.95, 0.95 )
         legend.SetTextSize(0.09)
 

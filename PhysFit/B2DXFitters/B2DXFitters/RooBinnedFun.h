@@ -60,7 +60,7 @@ private:
   std::vector<double> _u;
 
   Double_t evaluate() const override;
-  ClassDef(RooBinnedFun,1) // piecewise constant function
+  ClassDefOverride(RooBinnedFun,1) // piecewise constant function
 };
 
 #endif

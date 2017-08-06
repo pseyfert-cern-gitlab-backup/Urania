@@ -138,7 +138,7 @@ class RooBinned2DBicubicBase : public BASE
 	/// evaluate integral over x and y from (x1, y1) to (x2, y2)
 	double evalXY(double x1, double x2, double y1, double y2) const;
 
-	ClassDef(RooBinned2DBicubicBase, 1);
+	ClassDefOverride(RooBinned2DBicubicBase, 1);
 };
 
 // help genreflex

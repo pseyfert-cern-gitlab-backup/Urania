@@ -183,7 +183,7 @@ private:
 
    mutable RooObjCacheManager _cacheMgr;
 
-   ClassDef(RooEffHistProd, 1) // Product operator p.d.f of (PDF x efficiency) implementing optimized generator context
+   ClassDefOverride(RooEffHistProd, 1) // Product operator p.d.f of (PDF x efficiency) implementing optimized generator context
 };
 
 #endif

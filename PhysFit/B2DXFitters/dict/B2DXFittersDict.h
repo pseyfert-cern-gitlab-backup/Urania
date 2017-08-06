@@ -35,6 +35,8 @@
 #include "B2DXFitters/RooApollonios.h"
 #include "B2DXFitters/RooIpatia2.h"
 #include "B2DXFitters/RooJohnsonSU.h"
+#include "B2DXFitters/RooHORNSdini.h"
+#include "B2DXFitters/RooHILLdini.h"
 
 #include "B2DXFitters/RooBinnedPdf.h"
 #include "B2DXFitters/RooSwimmingAcceptance.h"

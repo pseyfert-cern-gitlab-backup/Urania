@@ -28,7 +28,7 @@ protected:
   Double_t evaluate() const override;
 
 private:
-  ClassDef(RangeAcceptance, 1);
+  ClassDefOverride(RangeAcceptance, 1);
 };
 
 #endif

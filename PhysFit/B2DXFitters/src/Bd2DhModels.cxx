@@ -35,6 +35,8 @@
 #include "B2DXFitters/Bs2Dsh2011TDAnaModels.h"
 #include "B2DXFitters/RooJohnsonSU.h"
 #include "B2DXFitters/RooIpatia2.h"
+#include "B2DXFitters/RooHILLdini.h"
+#include "B2DXFitters/RooHORNSdini.h"
 
 using namespace std;
 using namespace GeneralUtils;
@@ -63,29 +65,30 @@ namespace Bd2DhModels {
 
     RooArgList* list = new RooArgList();
     TString charmVarName = massDs.GetName();
+    std::vector <TString> types;
 
     RooExtendPdf* epdf_Bd2DK = NULL;
-    epdf_Bd2DK = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DK", "", merge, dim, charmVarName, debug);
+    epdf_Bd2DK = buildExtendPdfSpecBkgMDFit( workInt, work, types, samplemode, "Bd2DK", "", merge, dim, charmVarName, debug);
     Double_t valBd2DK = CheckEvts(workInt, samplemode, "Bd2DK",debug);
     list = AddEPDF(list, epdf_Bd2DK, valBd2DK, debug);
 
     RooExtendPdf* epdf_Bd2DRho = NULL;
-    epdf_Bd2DRho = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DRho", "", merge, dim, charmVarName, debug);
+    epdf_Bd2DRho = buildExtendPdfSpecBkgMDFit( workInt, work, types, samplemode, "Bd2DRho", "", merge, dim, charmVarName, debug);
     Double_t valBd2DRho = CheckEvts(workInt, samplemode, "Bd2DRho",debug);
     list = AddEPDF(list, epdf_Bd2DRho, valBd2DRho, debug);
 
     RooExtendPdf* epdf_Bd2DstPi = NULL;
-    epdf_Bd2DstPi = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DstPi", "", merge, dim, charmVarName, debug);
+    epdf_Bd2DstPi = buildExtendPdfSpecBkgMDFit( workInt, work, types, samplemode, "Bd2DstPi", "", merge, dim, charmVarName, debug);
     Double_t valBd2DstPi = CheckEvts(workInt, samplemode, "Bd2DstPi",debug);
     list = AddEPDF(list, epdf_Bd2DstPi, valBd2DstPi, debug);
 
     RooExtendPdf* epdf_Lb2LcPi = NULL;
-    epdf_Lb2LcPi = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Lb2LcPi", "", merge, dim, "", debug);
+    epdf_Lb2LcPi = buildExtendPdfSpecBkgMDFit( workInt, work, types, samplemode, "Lb2LcPi", "", merge, dim, "", debug);
     Double_t valLb2LcPi = CheckEvts(workInt, samplemode, "Lb2LcPi",debug);
     list = AddEPDF(list, epdf_Lb2LcPi, valLb2LcPi, debug);
 
     RooExtendPdf* epdf_Bs2DsPi = NULL;
-    epdf_Bs2DsPi = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bs2DsPi", "", merge, dim, "", debug);
+    epdf_Bs2DsPi = buildExtendPdfSpecBkgMDFit( workInt, work, types, samplemode, "Bs2DsPi", "", merge, dim, "", debug);
     Double_t valBs2DsPi = CheckEvts(workInt, samplemode, "Bs2DsPi",debug);
     list = AddEPDF(list, epdf_Bs2DsPi, valBs2DsPi, debug);
 
@@ -102,60 +105,47 @@ namespace Bd2DhModels {
 
   }
 
-  RooAbsPdf* build_Bd2DK_BKG_MDFitter( RooAbsReal& mass,
-				       RooAbsReal& massDs,
-				       RooWorkspace* work,
+  RooAbsPdf* build_Bd2DK_BKG_MDFitter( RooWorkspace* work,
 				       RooWorkspace* workInt,
+				       std::vector <RooAbsReal*> obs, 
+				       std::vector <TString> types,
 				       TString &samplemode,
 				       TString merge,
-				       Int_t dim,
-                                        bool debug
+				       bool debug
 				       ){
 
     if (debug == true)
       {
-        cout<<"[INFO] =====> Build background model Bd->DK --------------"<<endl;
+	std::cout<<"----------------------------------------------------------"<<std::endl;
+	std::cout<<"[INFO] =====> Build background model Bd->DK --------------"<<std::endl;
+	std::cout<<"----------------------------------------------------------"<<std::endl;
       }
 
-
-    std::cout<<"DEBUG: "<<debug<<std::endl;
     RooArgList* list = new RooArgList();
-    TString charmVarName = massDs.GetName();
-
+    
     RooExtendPdf* epdf_Bd2DPi = NULL;
-    epdf_Bd2DPi = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DPi", "", merge, dim, charmVarName, debug);
+    epdf_Bd2DPi = buildExtendPdfMDFit( workInt, work, obs, types, samplemode, "Bd2DPi", "", merge, debug);
     Double_t valBd2DPi = CheckEvts(workInt, samplemode, "Bd2DPi",debug);
     list = AddEPDF(list, epdf_Bd2DPi, valBd2DPi, debug);
 
     RooExtendPdf* epdf_Bd2DRho = NULL;
-    epdf_Bd2DRho = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DRho", "", merge, dim, charmVarName, debug);
+    epdf_Bd2DRho = buildExtendPdfMDFit( workInt, work, obs, types, samplemode, "Bd2DRho", "", merge, debug); 
     Double_t valBd2DRho = CheckEvts(workInt, samplemode, "Bd2DRho",debug);
     list = AddEPDF(list, epdf_Bd2DRho, valBd2DRho, debug);
 
     RooExtendPdf* epdf_Bd2DstPi = NULL;
-    epdf_Bd2DstPi = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DstPi", "", merge, dim, charmVarName, debug);
+    epdf_Bd2DstPi = buildExtendPdfMDFit( workInt, work, obs, types, samplemode, "Bd2DstPi", "", merge, debug);
     Double_t valBd2DstPi = CheckEvts(workInt, samplemode, "Bd2DstPi",debug);
     list = AddEPDF(list, epdf_Bd2DstPi, valBd2DstPi, debug);
 
     RooExtendPdf* epdf_Bd2DKst = NULL;
-    epdf_Bd2DKst = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DKst", "", merge, dim, charmVarName, debug);
+    epdf_Bd2DKst = buildExtendPdfMDFit( workInt, work, obs, types, samplemode, "Bd2DKst", "", merge, debug);
     Double_t valBd2DKst = CheckEvts(workInt, samplemode, "Bd2DKst",debug);
     list = AddEPDF(list, epdf_Bd2DKst, valBd2DKst, debug);
 
     RooExtendPdf* epdf_Bd2DstK = NULL;
-    RooAbsPdf* pdf_Bd2DstK = ObtainSignalMassShape(mass, work, workInt, samplemode, "Bd2DstK", "DoubleGaussianSeparatedMean", "", false, debug);
-    TString nBd2DstKName = "nBd2DstK_"+samplemode+"_Evts";
-    RooRealVar* nBd2DstKEvts = tryVar(nBd2DstKName, workInt, debug);
-    Double_t valBd2DstK = nBd2DstKEvts->getValV();
-
-    RooAbsPdf* pdf_Bd2DstK_Ds = trySignal(samplemode, charmVarName, workInt, false);
-    TString t = "Bd2DstK";
-    RooProdPdf* pdf_Bd2DstK_Tot = GetRooProdPdfDim(t, samplemode, pdf_Bd2DstK, pdf_Bd2DstK_Ds, NULL, dim, debug  );
-    CheckPDF( pdf_Bd2DstK_Tot, debug );
-
-    TString epdfName = "Bd2DstKEPDF_m_"+samplemode;
-    epdf_Bd2DstK = new RooExtendPdf(epdfName.Data() , pdf_Bd2DstK_Tot->GetTitle(), *pdf_Bd2DstK_Tot, *nBd2DstKEvts );
-    CheckPDF(epdf_Bd2DstK, debug);
+    epdf_Bd2DstK = buildExtendPdfMDFit( workInt, work, obs, types, samplemode, "Bd2DstK", "", merge, debug);
+    Double_t valBd2DstK = CheckEvts(workInt, samplemode, "Bd2DstK",debug);
     list = AddEPDF(list, epdf_Bd2DstK, valBd2DstK, debug);
 
     RooAbsPdf* pdf_totBkg = NULL;
@@ -1216,6 +1206,95 @@ namespace Bd2DhModels {
 
   }
   
+  RooAbsPdf* buildHILLdini(RooAbsReal& obs,
+			   RooWorkspace* workInt,
+			   TString samplemode,
+			   TString typemode,
+			   bool debug)
+  {
+    if ( debug == true )
+      {
+	std::cout<<"Bd2DhModels::buildHILLdini(..)==> building RooHILLdini PDF ..."<<std::endl;
+      }
+
+    RooRealVar* aVar = NULL;
+    RooRealVar* bVar = NULL;
+    RooRealVar* csiVar = NULL;
+    RooRealVar* shiftVar = NULL;
+    RooRealVar* sigmaVar = NULL;
+    RooRealVar* rVar = NULL;
+    RooRealVar* fVar = NULL;
+
+    TString varName = obs.GetName();
+
+    TString aVarName = typemode+"_"+varName+"_a_"+samplemode;
+    aVar = tryVar(aVarName, workInt, debug);
+    TString bVarName = typemode+"_"+varName+"_b_"+samplemode;
+    bVar = tryVar(bVarName, workInt, debug);
+    TString csiVarName = typemode+"_"+varName+"_csi_"+samplemode;
+    csiVar = tryVar(csiVarName, workInt, debug);
+    TString shiftVarName = typemode+"_"+varName+"_shift_"+samplemode;
+    shiftVar = tryVar(shiftVarName, workInt, debug);
+    TString sigmaVarName = typemode+"_"+varName+"_sigma_"+samplemode;
+    sigmaVar = tryVar(sigmaVarName, workInt, debug);
+    TString rVarName = typemode+"_"+varName+"_R_"+samplemode;
+    rVar = tryVar(rVarName, workInt, debug);
+    TString fVarName = typemode+"_"+varName+"_frac_"+samplemode;
+    fVar = tryVar(fVarName, workInt, debug);
+
+    RooAbsPdf* pdf = NULL; 
+    TString pdfName = typemode+"_"+varName+"_hill_"+samplemode;
+    pdf = new RooHILLdini(pdfName.Data(), pdfName.Data(),obs, *aVar, *bVar, *csiVar, *shiftVar, *sigmaVar, *rVar, *fVar);
+    CheckPDF( pdf, debug );
+
+    return pdf; 
+
+  }
+  
+  RooAbsPdf* buildHORNSdini(RooAbsReal& obs,
+                           RooWorkspace* workInt,
+                           TString samplemode,
+                           TString typemode,
+                           bool debug)
+  {
+    if ( debug == true )
+      {
+	std::cout<<"Bd2DhModels::buildHORNSdini(..)==> building RooHORNSdini PDF ..."<<std::endl;
+      }
+
+    RooRealVar* aVar = NULL;
+    RooRealVar* bVar = NULL;
+    RooRealVar* csiVar = NULL;
+    RooRealVar* shiftVar = NULL;
+    RooRealVar* sigmaVar = NULL;
+    RooRealVar* rVar = NULL;
+    RooRealVar* fVar = NULL;
+
+    TString varName = obs.GetName();
+
+    TString aVarName = typemode+"_"+varName+"_a_"+samplemode;
+    aVar = tryVar(aVarName, workInt, debug);
+    TString bVarName = typemode+"_"+varName+"_b_"+samplemode;
+    bVar = tryVar(bVarName, workInt, debug);
+    TString csiVarName = typemode+"_"+varName+"_csi_"+samplemode;
+    csiVar = tryVar(csiVarName, workInt, debug);
+    TString shiftVarName = typemode+"_"+varName+"_shift_"+samplemode;
+    shiftVar = tryVar(shiftVarName, workInt, debug);
+    TString sigmaVarName = typemode+"_"+varName+"_sigma_"+samplemode;
+    sigmaVar = tryVar(sigmaVarName, workInt, debug);
+    TString rVarName = typemode+"_"+varName+"_R_"+samplemode;
+    rVar = tryVar(rVarName, workInt, debug);
+    TString fVarName = typemode+"_"+varName+"_frac_"+samplemode;
+    fVar = tryVar(fVarName, workInt, debug);
+
+    RooAbsPdf* pdf = NULL;
+    TString pdfName = typemode+"_"+varName+"_horns_"+samplemode;
+    pdf = new RooHORNSdini(pdfName.Data(), pdfName.Data(),obs, *aVar, *bVar, *csiVar, *shiftVar, *sigmaVar, *rVar, *fVar);
+    CheckPDF( pdf, debug );
+
+    return pdf;
+    
+  }
 
 } // end of namespace
 
