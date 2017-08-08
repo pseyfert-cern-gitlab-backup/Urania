@@ -285,11 +285,11 @@ def BuildExponentialPDF(workOut, obs, nickname, pdfDict, debug):
                                     *pdfDict["cB"]))
 
         #Build PDF
-        pdf = Bs2Dsh2011TDAnaModels.buildExponentialPDF(obs,
-                                                        workOut,
-                                                        samplemode,
-                                                        typemode,
-                                                        debug)
+        pdf = BasicMDFitPdf.buildExponentialPDF(obs,
+						workOut,
+						samplemode,
+						typemode,
+						debug)
         
         return WS(workOut, pdf)
 
@@ -336,12 +336,12 @@ def BuildGaussPDF(workOut, obs, nickname, pdfDict, debug):
                                        *pdfDict["sigma"]))
 
         #Build PDF
-        pdf = Bs2Dsh2011TDAnaModels.buildGaussPDF(obs,
-                                                  workOut,
-                                                  samplemode,
-                                                  typemode,
-						  shiftMean,
-                                                  debug)
+        pdf = BasicMDFitPdf.buildGaussPDF(obs,
+					  workOut,
+					  samplemode,
+					  typemode,
+					  shiftMean,
+					  debug)
         
         return WS(workOut, pdf)
 
@@ -371,14 +371,14 @@ def BuildDoubleGaussPDF(workOut, obs, nickname, pdfDict, debug):
                                       *pdfDict["frac"]))
 
         #Build PDF
-        pdf = Bs2Dsh2011TDAnaModels.buildDoubleGaussPDF(obs,
-                                                        workOut,
-                                                        samplemode,
-                                                        typemode,
-                                                        False,
-                                                        sameMean,
-							False,
-                                                        debug)
+        pdf = BasicMDFitPdf.buildDoubleGaussPDF(obs,
+						workOut,
+						samplemode,
+						typemode,
+						False,
+						sameMean,
+						False,
+						debug)
         
         return WS(workOut, pdf)
         
@@ -404,11 +404,11 @@ def BuildCrystalBallPDF(workOut, obs, nickname, pdfDict, debug):
                                        *pdfDict["sigma"]))
 
         #Build PDF
-        pdf = Bs2Dsh2011TDAnaModels.buildCrystalBallPDF(obs,
-                                                        workOut,
-                                                        samplemode,
-                                                        typemode,
-                                                        debug)
+        pdf = BasicMDFitPdf.buildCrystalBallPDF(obs,
+						workOut,
+						samplemode,
+						typemode,
+						debug)
         
         return WS(workOut, pdf)
 
@@ -534,13 +534,13 @@ def BuildDoubleCrystalBallPDF(workOut, obs, nickname, pdfDict, debug):
                                       *pdfDict["frac"]))
         
         #Build PDF
-        pdf = Bs2Dsh2011TDAnaModels.buildDoubleCrystalBallPDF(obs,
-                                                              workOut,
-                                                              samplemode,
-                                                              typemode,
-                                                              False,
-                                                              sameMean,
-                                                              debug)
+        pdf = BasicMDFitPdf.buildDoubleCrystalBallPDF(obs,
+						      workOut,
+						      samplemode,
+						      typemode,
+						      False,
+						      sameMean,
+						      debug)
         
         return WS(workOut, pdf)
 
@@ -751,13 +751,13 @@ def BuildIpatiaPDF(workOut, obs, nickname, pdfDict, debug):
 				       *pdfDict["n2"]))
 
 	#Build PDF
-	pdf = Bs2Dsh2011TDAnaModels.buildIpatiaPDF(obs,
-						   workOut,
-						   samplemode,
-						   typemode,
-						   False,
-						   False,
-						   debug)
+	pdf = BasicMDFitPdf.buildIpatiaPDF(obs,
+					   workOut,
+					   samplemode,
+					   typemode,
+					   False,
+					   False,
+					   debug)
 
 	return WS(workOut, pdf)
 

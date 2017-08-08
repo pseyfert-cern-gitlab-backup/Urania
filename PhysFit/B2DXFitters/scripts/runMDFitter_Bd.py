@@ -568,11 +568,11 @@ def BuildExponentialPDF(workOut, obs, nickname, samplemode, pdfDict, debug):
 	cB = BuildParForPDF(workOut, typemode, varName, "cB", samplemode, pdfDict)
 
         #Build PDF
-	pdf = Bs2Dsh2011TDAnaModels.buildExponentialPDF(obs,
-                                                        workOut,
-                                                        samplemode,
-                                                        typemode,
-                                                        debug)
+	pdf = BasicMDFitPdf.buildExponentialPDF(obs,
+						workOut,
+						samplemode,
+						typemode,
+						debug)
 
 	return WS(workOut, pdf)
 
@@ -588,11 +588,11 @@ def BuildDoubleExponentialPDF(workOut, obs, nickname, samplemode, pdfDict, debug
 		parList.append(BuildParForPDF(workOut, typemode, varName, par, samplemode, pdfDict))
 
         #Build PDF
-	pdf = Bs2Dsh2011TDAnaModels.buildDoubleExponentialPDF(obs,
-							      workOut,
-							      samplemode,
-							      typemode,
-							      debug)
+	pdf = BasicMDFitPdf.buildDoubleExponentialPDF(obs,
+						      workOut,
+						      samplemode,
+						      typemode,
+						      debug)
 
 	return WS(workOut, pdf)
 
@@ -631,12 +631,12 @@ def BuildGaussPDF(workOut, obs, nickname, samplemode, pdfDict, debug):
 		parList.append(BuildParForPDF(workOut, typemode, varName, "shift", samplemode, pdfDict))
 
         #Build PDF
-	pdf = Bs2Dsh2011TDAnaModels.buildGaussPDF(obs,
-                                                  workOut,
-                                                  samplemode,
-                                                  typemode,
-						  shiftMean,
-                                                  debug)
+	pdf = BasicMDFitPdf.buildGaussPDF(obs,
+					  workOut,
+					  samplemode,
+					  typemode,
+					  shiftMean,
+					  debug)
 
 	return WS(workOut, pdf)
 
@@ -656,14 +656,14 @@ def BuildDoubleGaussPDF(workOut, obs, nickname, samplemode, pdfDict, debug):
 		parList.append(BuildParForPDF(workOut, typemode, varName, "shift", samplemode, pdfDict))
 
 	#Build PDF
-	pdf = Bs2Dsh2011TDAnaModels.buildDoubleGaussPDF(obs,
-							workOut,
-							samplemode,
-							typemode,
-							False,
-							sameMean,
-							shiftMean,
-							debug)
+	pdf = BasicMDFitPdf.buildDoubleGaussPDF(obs,
+						workOut,
+						samplemode,
+						typemode,
+						False,
+						sameMean,
+						shiftMean,
+						debug)
 
 	return WS(workOut, pdf)
 
@@ -679,11 +679,11 @@ def BuildCrystalBallPDF(workOut, obs, nickname, samplemode, pdfDict, debug):
 		parList.append(BuildParForPDF(workOut, typemode, varName, par, samplemode, pdfDict))
 
         #Build PDF
-	pdf = Bs2Dsh2011TDAnaModels.buildCrystalBallPDF(obs,
-                                                        workOut,
-                                                        samplemode,
-                                                        typemode,
-                                                        debug)
+	pdf = BasicMDFitPdf.buildCrystalBallPDF(obs,
+						workOut,
+						samplemode,
+						typemode,
+						debug)
 
 	return WS(workOut, pdf)
 
@@ -753,13 +753,13 @@ def BuildDoubleCrystalBallPDF(workOut, obs, nickname, samplemode, pdfDict, debug
 		parList.append(BuildParForPDF(workOut, typemode, varName, par, samplemode, pdfDict))
 
         #Build PDF
-	pdf = Bs2Dsh2011TDAnaModels.buildDoubleCrystalBallPDF(obs,
-                                                              workOut,
-                                                              samplemode,
-                                                              typemode,
-                                                              False,
-                                                              sameMean,
-                                                              debug)
+	pdf = BasicMDFitPdf.buildDoubleCrystalBallPDF(obs,
+						      workOut,
+						      samplemode,
+						      typemode,
+						      False,
+						      sameMean,
+						      debug)
 
 	return WS(workOut, pdf)
 
@@ -875,14 +875,14 @@ def BuildIpatiaPDF(workOut, obs, nickname, samplemode, pdfDict, debug):
 		parList.append(BuildParForPDF(workOut, typemode, varName, "shift", samplemode, pdfDict))
 
 	#Build PDF
-	pdf = Bs2Dsh2011TDAnaModels.buildIpatiaPDF(obs,
-						   workOut,
-						   samplemode,
-						   typemode,
-						   shiftMean,
-						   scaleTails,
-						   debug)
-
+	pdf = BasicMDFitPdf.buildIpatiaPDF(obs,
+					   workOut,
+					   samplemode,
+					   typemode,
+					   shiftMean,
+					   scaleTails,
+					   debug)
+	
 	return WS(workOut, pdf)
 
 #------------------------------------------------------------

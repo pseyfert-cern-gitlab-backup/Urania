@@ -4,6 +4,15 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
+! 2017-08-08 - Agnieszka Dziurda
+  - create new namespace BasicMDFitPdf:
+      - all basic function from Bs2Dsh2011TDAnaModels are moved there
+      - the namespaces changed in the fitShapes and runMDFitter_Bd 
+      - waiting for approval from Vincenzo for moving other functions from Bd2DhModels
+      - build interface buildAnalyticalShape which allows to pick up correct shape
+  - move tryPdf, checkPDF, checkVar to GeneralUtils
+
+
 ! 2017-08-07 - Agnieszka Dziurda
   - a huge cleaning up 
   - deal with warning due to ClassDef 

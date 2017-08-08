@@ -26,10 +26,12 @@
 #include "B2DXFitters/Bs2DssthModels.h"
 #include "B2DXFitters/GeneralUtils.h"
 #include "B2DXFitters/RooBinned1DQuinticBase.h"
+#include "B2DXFitters/BasicMDFitPdf.h"
 
 using namespace std;
 using namespace GeneralUtils;
 using namespace Bs2Dsh2011TDAnaModels;
+using namespace BasicMDFitPdf; 
 
 namespace Bs2DssthModels {
 

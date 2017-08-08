@@ -34,6 +34,7 @@
 	<function pattern = "Bs2Dsh2011TDAnaModels::*"  />
 	<function pattern = "Bs2DshDsHHHPi0Models::*"  />
 	<function pattern = "Bs2DssthModels::*"           />
+	<function pattern = "BasicMDFitPdf::*"           />
 
 	<function pattern = "GeneralUtils::*" />
 	<function pattern = "SFitUtils::*" />

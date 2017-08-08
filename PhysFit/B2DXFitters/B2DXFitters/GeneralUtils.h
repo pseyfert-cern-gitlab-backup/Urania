@@ -376,8 +376,8 @@ namespace GeneralUtils {
   TString CheckDataYear(TString& check, bool debug = false);
   
 
-  //==========================================================================                                                                                                                      
-  // Get X label for plotting                                                                                                                                                                      
+  //==========================================================================                                                                                                      
+  // Get X label for plotting                                                                                                                                                       
   //==========================================================================  
   TString GetXLabel(TString decay, TString var, TString mode, bool debug = false );
   TString GetXLabel(std::string decay, std::string var, std::string mode, bool debug = false );
@@ -403,6 +403,21 @@ namespace GeneralUtils {
   std::vector <RooAbsReal*> GetList(RooAbsReal* name,RooAbsReal* name2=NULL,RooAbsReal* name3=NULL); 
   std::vector <RooAbsReal*> AddToList(std::vector <RooAbsReal*> list, RooAbsReal* name); 
 
+
+  //===============================================================================                                          
+  // Check PDF (whether is null).                                                                                                                                  
+  //===============================================================================                                                                        
+  bool CheckPDF(RooAbsPdf* pdf, bool debug = false);
+
+  //===============================================================================                                                                        
+  // Check RooRealVar (whether is null).                                                                                                                                
+  //===============================================================================                                                                                      
+  bool CheckVar(RooRealVar* var, bool debug = false);
+
+  //===============================================================================                                                                                          
+  // Try to get variable from workspace                                                                                                                                    
+  //===============================================================================                                                                                 
+  RooRealVar* tryVar(TString name, RooWorkspace* workInt, bool debug);
 
   std::pair <TString, TString> GetNameExpectedYields(TString mode, bool debug=false);
   double pe_from_pid(int pid, double px, double py, double pz);

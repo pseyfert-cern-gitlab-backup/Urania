@@ -1487,7 +1487,7 @@ namespace GeneralUtils {
       combData = new RooDataSet(dataName.Data(),dataName.Data(),*obs, RooFit::Index(sam), RooFit::Import(sm[0].Data(),*dataOut[0]));
       if (combData->numEntries() == 0)
       {
-        combData == NULL;
+        combData = NULL;
         const RooArgSet* obs2 = dataOut[0]->get();
         combData = new RooDataSet(dataName.Data(),dataName.Data(),*obs2, RooFit::Index(sam), RooFit::Import(sm[0].Data(),*dataOut[0]));
       }
@@ -2874,6 +2874,97 @@ namespace GeneralUtils {
     list.push_back(name);
     return list;
   }  
+
+  //===============================================================================                                                                                      
+  // Check PDF (whether is null).                                                                                                                                    
+  //===============================================================================                                                                   
+  bool CheckPDF(RooAbsPdf* pdf, bool debug)
+  {
+    if( pdf != NULL )
+      {
+        if (debug == true) std::cout<<"[INFO] Create/Read "<<pdf->GetName()<<std::endl;
+        return true;
+      }
+    else
+      {
+        if (debug == true) std::cout<<"[ERROR] Cannot create/read PDF"<<std::endl;
+        return false;
+      }
+  }
+
+  //===============================================================================                                                                     
+  // Check RooRealVar (whether is null).                                                                                                                                
+  //===============================================================================                                                                                                
+  bool CheckVar(RooRealVar* var, bool debug)
+  {
+    if (var != NULL)
+      {
+        if (debug == true) std::cout<<"[INFO] Create RooRealVar: "<<var->GetName()<<std::endl;
+        return true;
+      }
+    else {
+      if (debug == true) std::cout<<"[ERROR] Cannot create RooRealVar"<<std::endl;
+      return false;
+    }
+  }
+
+  //===============================================================================                                                                                                 
+  // try to get variable from the workspace                                                                                                                                         
+  //===============================================================================                                                                                                 
+  RooRealVar* tryVar(TString name, RooWorkspace* workInt, bool debug)
+  {
+    TString p = CheckPolarity(name,false);
+    TString y = CheckDataYear(name,false);
+    TString m = CheckDMode(name,false);
+    if ( m == "") { m = CheckKKPiMode(name, false);}
+    TString h = CheckHypo(name,false);
+    TString t = "_";
+
+    TString name_prev = name;
+    TString name2 = name;
+
+    RooRealVar* nEvts = GetObservable(workInt, name_prev, false);
+
+    TString yy[] = {y,"run1"};
+    TString mm[] = {m,"all","kkpi"};
+    TString pp[] = {p,"both"};
+    TString hh[] = {h,"Bd2DPi","Bd2DK","Bs2DsK","Bs2DsPi"};
+    int s = 3;
+    if ( m == "pipipi" || m == "kpipi" )
+      {
+        s = 2;
+      }
+    if ( nEvts == NULL )
+      {
+        for( int i = 0; i<2; i++)
+          {
+            for (int j = 0; j<s; j++ )
+              {
+                for (int k =0; k<2; k++ )
+                  {
+                    for (int l=0; l<5; l++)
+                      {
+                        TString nName = name_prev;
+			nName = nName.ReplaceAll(y,yy[i]);
+                        nName = nName.ReplaceAll(m,mm[j]);
+                        nName = nName.ReplaceAll(p,pp[k]);
+                        if(h!=""){nName = nName.ReplaceAll(h,hh[l]);}
+                        nEvts = GetObservable(workInt, nName, false);
+                        if ( nEvts != NULL ) { break; }
+                      }
+                    if ( nEvts != NULL ) { break; }
+                  }
+                if ( nEvts != NULL ) { break; }
+              }
+            if ( nEvts != NULL ) { break; }
+          }
+      }
+
+    if( nEvts != NULL ){ if ( debug == true) {std::cout<<"[INFO] Read observable: "<<nEvts->GetName()<<std::endl;} return nEvts; }
+    else{ std::cout<<"[ERROR] Cannot read observable with name:"<<name<<std::endl; return NULL;}
+
+  }
+
 
 
   std::pair <TString, TString> GetNameExpectedYields(TString mode,  bool debug)

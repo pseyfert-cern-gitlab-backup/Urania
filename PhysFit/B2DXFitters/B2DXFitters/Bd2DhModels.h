@@ -134,17 +134,6 @@ namespace Bd2DhModels {
                                      bool fft = true,
                                      bool debug = true);
 
-  RooAbsPdf* buildHILLdini(RooAbsReal& obs,
-                           RooWorkspace* workInt,
-                           TString samplemode,
-                           TString typemode,
-                           bool debug); 
-
-  RooAbsPdf* buildHORNSdini(RooAbsReal& obs,
-			    RooWorkspace* workInt,
-			    TString samplemode,
-			    TString typemode,
-			    bool debug); 
 
 } // end of namespace
 

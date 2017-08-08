@@ -16,42 +16,7 @@
 
 namespace Bs2Dsh2011TDAnaModels {
   
-  //===============================================================================
-  // Double crystal ball function where:
-  // mean, sigma1, sigma2 are RooRealVar
-  // alpha1, alpha2, n1, n2 and fraction are double
-  //===============================================================================
-  RooAbsPdf* buildCrystalBallPDF( RooAbsReal& mass, RooWorkspace* workInt, TString samplemode, TString typemode, bool debug = false);
-
-  RooAbsPdf* buildDoubleCrystalBallPDF( RooAbsReal& mass, RooWorkspace* workInt, TString samplemode,
-					TString typemode, bool widthRatio, bool sharedMean, bool debug = false);
-  
-  //===============================================================================
-  // Double gaussian function where all parameters are RooRealVar
-  //===============================================================================
-
-  RooAbsPdf* buildGaussPDF( RooAbsReal& mass, RooWorkspace* workInt, TString samplemode, TString typemode, bool shiftMean = false, bool debug = false);
-  
-  RooAbsPdf* buildDoubleGaussPDF( RooAbsReal& mass, RooWorkspace* workInt, TString samplemode,
-                                  TString typemode, bool widthRatio, bool sharedMean, bool separeteMean, bool shiftMean, bool debug = false);
-
-  RooAbsPdf* buildExponentialPlusGaussPDF(RooAbsReal& mass, RooWorkspace* workInt, TString samplemode, TString typemode, bool sharedMean, bool debug = false);
-
-  RooAbsPdf* buildExponentialPDF(RooAbsReal& mass, RooWorkspace* workInt, TString samplemode, TString typemode, bool debug = false);
-
-  RooAbsPdf* buildDoubleExponentialPDF(RooAbsReal& mass, RooWorkspace* workInt, TString samplemode, TString typemode, bool debug = false);
-  
-  RooAbsPdf* buildExponentialTimesLinearPDF(RooAbsReal& mass, RooWorkspace* workInt, TString samplemode, TString typemode, bool debug = false);
-
-  RooAbsPdf* buildExponentialPlusSignalPDF(RooAbsReal& mass, RooWorkspace* workInt, TString samplemode, TString typemode, bool debug = false);
-
-  RooAbsPdf* buildIpatiaPDF(RooAbsReal& mass, RooWorkspace* workInt, TString samplemode, TString typemode, bool shiftMean, bool scaleTails, bool debug = false);
-
-  RooAbsPdf* buildApolloniosPDF(RooAbsReal& mass, RooWorkspace* workInt, TString samplemode, TString typemode, bool debug = false);
-
-  RooAbsPdf* buildExponentialPlusDoubleCrystalBallPDF(RooAbsReal& mass, RooWorkspace* workInt, 
-						      TString samplemode, TString typemode, bool widthRatio, bool sharedMean, bool debug = false);
-
+    
   RooAbsPdf* buildComboPIDKPDF(RooAbsReal& mass, RooWorkspace* workInt, RooWorkspace* work, 
 			       TString samplemode, TString typemode, TString merge, bool debug = false);
   
@@ -196,32 +161,14 @@ namespace Bs2Dsh2011TDAnaModels {
   RooAbsPdf* GetRooAbsPdfFromWorkspace(RooWorkspace* work, TString& name, bool debug  = false );
 
   Double_t  CheckEvts( RooWorkspace* workInt, TString samplemode, TString typemode, bool debug = false);
-  //===============================================================================
-  // Check PDF (whether is null).
-  //===============================================================================
-  bool CheckPDF(RooAbsPdf* pdf, bool debug = false);
-  
-  //===============================================================================
-  // Check RooRealVar (whether is null).
-  //===============================================================================
-  bool CheckVar(RooRealVar* var, bool debug = false); 
 
   RooArgList* AddEPDF(RooArgList* list, RooExtendPdf* pdf, RooRealVar *numEvts, bool debug = false); 
   RooArgList* AddEPDF(RooArgList* list, RooExtendPdf* pdf, Double_t ev, bool debug = false);
 
   
-  RooAbsPdf* buildAnalyticalShape(RooAbsReal& mass,
-				 RooWorkspace* work,
-				 RooWorkspace* workInt,
-				 TString samplemode,
-				 TString typemode,
-				 TString type,
-				 bool debug);
-
   RooAbsPdf* mergePdf(RooAbsPdf* pdf1, RooAbsPdf* pdf2, TString merge, TString lum,RooWorkspace* workInt, bool debug = false);
-  RooRealVar* tryVar(TString name, RooWorkspace* workInt, bool debug);
   RooAbsPdf* tryPdf(TString name, RooWorkspace* workInt, bool debug );
-  RooAbsPdf* trySignal(TString samplemode, TString varName, RooWorkspace* workInt, bool debug); 
+  //RooAbsPdf* trySignal(TString samplemode, TString varName, RooWorkspace* workInt, bool debug); 
 
   TString findRooKeysPdf(std::vector <std::vector <TString> > pdfNames, TString var, TString smp, bool debug);
   TString getShapeType(std::vector <TString> types, const TString var, const TString typemode); 

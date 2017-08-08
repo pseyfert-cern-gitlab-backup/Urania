@@ -37,6 +37,8 @@
 #include "B2DXFitters/RooJohnsonSU.h"
 #include "B2DXFitters/RooHORNSdini.h"
 #include "B2DXFitters/RooHILLdini.h"
+#include "B2DXFitters/BasicMDFitPdf.h"
+
 
 #include "B2DXFitters/RooBinnedPdf.h"
 #include "B2DXFitters/RooSwimmingAcceptance.h"
