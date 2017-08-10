@@ -29,12 +29,20 @@
 
 #include "RVersion.h"
 
-#include "B2DXFitters/RooGaussEfficiencyModel.h"
-#include "B2DXFitters/RooEffConvGenContext.h"
-#include "B2DXFitters/RooAbsGaussModelEfficiency.h"
 #include "RooMath.h"
 #include "RooRealConstant.h"
 #include "RooRandom.h"
+
+#include "B2DXFitters/RooGaussEfficiencyModel.h"
+#include "B2DXFitters/RooEffConvGenContext.h"
+#include "B2DXFitters/RooAbsGaussModelEfficiency.h"
+
+#if __cplusplus < 201102L
+#define myunique_ptr std::auto_ptr
+#else
+template <typename T>
+using myunique_ptr = std::unique_ptr<T>;
+#endif
 
 using namespace std;
 
@@ -86,9 +94,9 @@ namespace {
 
 //_____________________________________________________________________________
 RooGaussEfficiencyModel::RooGaussEfficiencyModel(const char *name, const char *title
-                , RooRealVar& xx, RooAbsGaussModelEfficiency& _eff
+                , RooRealVar& x, RooAbsGaussModelEfficiency& _eff
 			    , RooAbsReal& _mean, RooAbsReal& _sigma )
-   : RooResolutionModel(name, title, xx),
+   : RooResolutionModel(name, title, x),
      RooAbsEffResModel(),
      _flatSFInt(kFALSE),
      eff("eff","Spline describing efficiency",this,_eff),
@@ -98,16 +106,16 @@ RooGaussEfficiencyModel::RooGaussEfficiencyModel(const char *name, const char *t
      ssf("ssf","Sigma Scale Factor",this,RooRealConstant::value(1.0))
 {
    // make sure 'x' matches the eff argument!
-   std::auto_ptr<RooArgSet> svar( eff.arg().getVariables() );
+   myunique_ptr<RooArgSet> svar( eff.arg().getVariables() );
    assert( svar->contains( convVar() ) );
 }
 
 //_____________________________________________________________________________
 RooGaussEfficiencyModel::RooGaussEfficiencyModel(const char *name, const char *title
-                                                   , RooRealVar& xx, RooAbsGaussModelEfficiency& _eff
+                                                   , RooRealVar& x, RooAbsGaussModelEfficiency& _eff
                                                    , RooAbsReal& _mean, RooAbsReal& _sigma
                                                    , RooAbsReal& _meanSF, RooAbsReal& _sigmaSF)
-   : RooResolutionModel(name,title,xx),
+   : RooResolutionModel(name,title,x),
      RooAbsEffResModel(),
      _flatSFInt(kFALSE),
      eff("eff","Spline describing efficiency",this,_eff),
@@ -117,7 +125,7 @@ RooGaussEfficiencyModel::RooGaussEfficiencyModel(const char *name, const char *t
      ssf("ssf","Sigma Scale Factor",this,_sigmaSF)
 {
    // make sure 'x' matches the spline argument!
-   std::auto_ptr<RooArgSet> svar( eff.arg().getVariables() );
+   myunique_ptr<RooArgSet> svar( eff.arg().getVariables() );
    assert( svar->contains( convVar() ) );
 }
 
@@ -167,32 +175,32 @@ RooArgSet* RooGaussEfficiencyModel::observables() const {
 
 //_____________________________________________________________________________
 std::complex<double> RooGaussEfficiencyModel::evalInt(Double_t umin, Double_t umax,
-                                                       Double_t scale, Double_t _offset,
+                                                       Double_t scale, Double_t offset,
                                                        const std::complex<double>& z) const
 {
     const RooAbsGaussModelEfficiency &sp = dynamic_cast<const RooAbsGaussModelEfficiency&>( eff.arg() );
-    return sp.productAnalyticalIntegral( umin, umax, scale, _offset, z) ;
+    return sp.productAnalyticalIntegral( umin, umax, scale, offset, z) ;
 }
 
 //_____________________________________________________________________________
 Double_t RooGaussEfficiencyModel::evaluate() const
 {
-  basisType basiscode = (basisType) _basisCode ;
-  Double_t tau    = (basiscode!=noBasis)                           ? ((RooAbsReal*)basis().getParameter(1))->getVal() : 0 ;
-  Double_t omega  = (basiscode==sinBasis  || basiscode==cosBasis)  ? ((RooAbsReal*)basis().getParameter(2))->getVal() : 0 ;
-  Double_t dGamma = (basiscode==sinhBasis || basiscode==coshBasis) ? ((RooAbsReal*)basis().getParameter(2))->getVal() : 0 ;
-  if (basiscode  == coshBasis && basiscode!=noBasis && dGamma==0 ) basiscode = expBasis;
+  basisType basisCode = (basisType) _basisCode ;
+  Double_t tau    = (basisCode!=noBasis)                           ? ((RooAbsReal*)basis().getParameter(1))->getVal() : 0 ;
+  Double_t omega  = (basisCode==sinBasis  || basisCode==cosBasis)  ? ((RooAbsReal*)basis().getParameter(2))->getVal() : 0 ;
+  Double_t dGamma = (basisCode==sinhBasis || basisCode==coshBasis) ? ((RooAbsReal*)basis().getParameter(2))->getVal() : 0 ;
+  if (basisCode  == coshBasis && basisCode!=noBasis && dGamma==0 ) basisCode = expBasis;
 
   Double_t scale = sigma*ssf*TMath::Sqrt2();
   Double_t u = (x-mean*msf)/scale;
   // *** 1st form: Straight Gaussian, used for unconvoluted PDF or expBasis with 0 lifetime ***
-  if (basiscode==noBasis || ((basiscode==expBasis || basiscode==cosBasis) && tau==0)) {
+  if (basisCode==noBasis || ((basisCode==expBasis || basisCode==cosBasis) && tau==0)) {
     if (verboseEval()>2) cout << "RooGaussEfficiencyModel::evaluate(" << GetName() << ") 1st form" << endl ;
-    Double_t _eff=efficiency()->getVal();
-    if (TMath::IsNaN(_eff))
+    Double_t eff=efficiency()->getVal();
+    if (TMath::IsNaN(eff))
        cxcoutE(Tracing) << "RooGaussEfficiencyModel::evaluate(" << GetName()
                         << ") got nan during efficiency " << endl;
-    return _eff * exp(-u*u)/(scale*rootpi) ; // ???
+    return eff * exp(-u*u)/(scale*rootpi) ; // ???
   }
 
   // *** 2nd form: 0, used for sinBasis, linBasis, and quadBasis with tau=0 ***
@@ -203,9 +211,9 @@ Double_t RooGaussEfficiencyModel::evaluate() const
   std::complex<double> z( double(1)/tau, -omega ); z*=0.5*scale;
 
   Double_t val(0);
-  if (verboseEval()>2) cout << "RooGaussEfficiencyModel::evaluate(" << GetName() << ") basiscode = " <<  basiscode << " z = " << z << ", u = " << u << endl ;
+  if (verboseEval()>2) cout << "RooGaussEfficiencyModel::evaluate(" << GetName() << ") basisCode = " <<  basisCode << " z = " << z << ", u = " << u << endl ;
 
-  switch (basiscode) {
+  switch (basisCode) {
     case expBasis:
     case cosBasis:
         val +=             evalRe(u,z);
@@ -217,7 +225,7 @@ Double_t RooGaussEfficiencyModel::evaluate() const
     case sinhBasis: {
         std::complex<double> y( scale * dGamma / 4 , 0 );
         val += (                                      evalRe(u,z-y)
-               + ( basiscode == coshBasis ? +1 : -1 )*evalRe(u,z+y) )/2;
+               + ( basisCode == coshBasis ? +1 : -1 )*evalRe(u,z+y) )/2;
         break;
     }
     default:
@@ -225,7 +233,7 @@ Double_t RooGaussEfficiencyModel::evaluate() const
   }
   if (TMath::IsNaN(val))
      cxcoutE(Tracing) << "RooGaussEfficiencyModel::evaluate(" << GetName()
-                      << ") got nan during basiscode = " << basiscode << endl;
+                      << ") got nan during basisCode = " << basisCode << endl;
   Double_t _eff=eff;
   if (TMath::IsNaN(_eff))
      cxcoutE(Tracing) << "RooGaussEfficiencyModel::evaluate(" << GetName()
@@ -265,18 +273,18 @@ Double_t RooGaussEfficiencyModel::analyticalIntegral(Int_t code, const char* ran
   assert(code==1||code==2) ;
   Double_t ssfInt( code==2 ? (ssf.max(rangeName)-ssf.min(rangeName)) : 1.0 );
 
-  basisType basiscode = (basisType) _basisCode ;
-  Double_t tau    = (basiscode!=noBasis)                           ? ((RooAbsReal*)basis().getParameter(1))->getVal() : 0 ;
-  Double_t omega  = (basiscode==sinBasis  || basiscode==cosBasis)  ? ((RooAbsReal*)basis().getParameter(2))->getVal() : 0 ;
-  Double_t dGamma = (basiscode==sinhBasis || basiscode==coshBasis) ? ((RooAbsReal*)basis().getParameter(2))->getVal() : 0 ;
-  if (basiscode == coshBasis && basiscode!=noBasis && dGamma==0 ) basiscode = expBasis;
+  basisType basisCode = (basisType) _basisCode ;
+  Double_t tau    = (basisCode!=noBasis)                           ? ((RooAbsReal*)basis().getParameter(1))->getVal() : 0 ;
+  Double_t omega  = (basisCode==sinBasis  || basisCode==cosBasis)  ? ((RooAbsReal*)basis().getParameter(2))->getVal() : 0 ;
+  Double_t dGamma = (basisCode==sinhBasis || basisCode==coshBasis) ? ((RooAbsReal*)basis().getParameter(2))->getVal() : 0 ;
+  if (basisCode == coshBasis && basisCode!=noBasis && dGamma==0 ) basisCode = expBasis;
 
   Double_t scale  = sigma*ssf*TMath::Sqrt2();
-  Double_t _offset = mean*msf;
-  Double_t umin = (x.min(rangeName)-_offset)/scale;
-  Double_t umax = (x.max(rangeName)-_offset)/scale;
+  Double_t offset = mean*msf;
+  Double_t umin = (x.min(rangeName)-offset)/scale;
+  Double_t umax = (x.max(rangeName)-offset)/scale;
 
-  if (basiscode==noBasis || ((basiscode==expBasis || basiscode==cosBasis) && tau==0)) {
+  if (basisCode==noBasis || ((basisCode==expBasis || basisCode==cosBasis) && tau==0)) {
     if (verboseEval()>0) cout << "RooGaussEfficiencyModel::analyticalIntegral(" << GetName() << ") 1st form" << endl ;
     Double_t result =  0.5*(RooMath::erf( umax )-RooMath::erf( umin )) ;
     if (TMath::IsNaN(result)) { cxcoutE(Tracing) << "RooGaussEfficiencyModel::analyticalIntegral(" << GetName() << ") got nan during case 1 " << endl; }
@@ -289,30 +297,30 @@ Double_t RooGaussEfficiencyModel::analyticalIntegral(Int_t code, const char* ran
 
   std::complex<double> z( double(1)/tau, -omega ); z=0.5*z*scale;
 
-  if (verboseEval()>0) cout << "RooGaussEfficiencyModel::analyticalIntegral(" << GetName() << ") basiscode = " << basiscode << " z = " << z << endl ;
+  if (verboseEval()>0) cout << "RooGaussEfficiencyModel::analyticalIntegral(" << GetName() << ") basisCode = " << basisCode << " z = " << z << endl ;
 
   Double_t result(0);
-  switch (basiscode) {
+  switch (basisCode) {
     case expBasis:
     case cosBasis:
-        result +=               evalInt(umin,umax,scale,_offset,z).real();
+        result +=               evalInt(umin,umax,scale,offset,z).real();
         break;
     case sinBasis:
-        result += z.imag()!=0 ? evalInt(umin,umax,scale,_offset,z).imag() : 0 ;
+        result += z.imag()!=0 ? evalInt(umin,umax,scale,offset,z).imag() : 0 ;
         break;
     case coshBasis:
     case sinhBasis: {
         std::complex<double> y( scale * dGamma / 4 , 0 );
-        result += 0.5 * (                                      evalInt(umin,umax,scale,_offset,z-y).real()
-                        + ( basiscode == coshBasis ? +1 : -1 )*evalInt(umin,umax,scale,_offset,z+y).real() );
+        result += 0.5 * (                                      evalInt(umin,umax,scale,offset,z-y).real()
+                        + ( basisCode == coshBasis ? +1 : -1 )*evalInt(umin,umax,scale,offset,z+y).real() );
         break;
     }
     default:
         assert(0) ;
   }
   if (TMath::IsNaN(result)) { cxcoutE(Tracing) << "RooGaussEfficiencyModel::analyticalIntegral("
-                                               << GetName() << ") got nan for basiscode = "
-                                               << basiscode << endl;
+                                               << GetName() << ") got nan for basisCode = "
+                                               << basisCode << endl;
   }
   return scale*result*ssfInt;
 }
@@ -329,7 +337,7 @@ RooAbsGenContext* RooGaussEfficiencyModel::modelGenContext
 //_____________________________________________________________________________
 Bool_t RooGaussEfficiencyModel::isDirectGenSafe(const RooAbsArg& arg) const
 {
-   return (!TString(convVar().GetName()).CompareTo(arg.GetName())) 
+   return (!TString(convVar().GetName()).CompareTo(arg.GetName()))
        || RooResolutionModel::isDirectGenSafe(arg);
 }
 
@@ -362,4 +370,3 @@ void RooGaussEfficiencyModel::generateEvent(Int_t code)
     }
   }
 }
-

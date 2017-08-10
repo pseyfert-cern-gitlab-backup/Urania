@@ -79,14 +79,14 @@ RooCubicSplineFun::RooCubicSplineFun()
 
 //_____________________________________________________________________________
 RooCubicSplineFun::RooCubicSplineFun(const char* name, const char* title, RooRealVar& x,
-                                     const vector<double>& _knots,
+                                     const vector<double>& knots,
                                      const vector<double>& values,
                                      const vector<double>& errors,
                                      double smooth, bool constCoeffs) :
    RooAbsGaussModelEfficiency(name, title),
    _x("x", "Dependent", this, x),
    _coefList("coefficients","List of coefficients",this),
-   _aux(_knots.begin(),_knots.end())
+   _aux(knots.begin(),knots.end())
 {
    init(name, values, errors, smooth, constCoeffs);
 }
@@ -102,10 +102,10 @@ RooCubicSplineFun::RooCubicSplineFun(const char* name, const char* title,
     int nPoints = graph->GetN();
     vector<double> centres, values;
     for (int i=0;i<nPoints ;++i) {
-        double xx,yy;
-        graph->GetPoint(i,xx,yy);
-        centres.push_back(xx);
-        values.push_back(yy);
+        double x,y;
+        graph->GetPoint(i,x,y);
+        centres.push_back(x);
+        values.push_back(y);
     }
    _aux = RooCubicSplineKnot( centres.begin(), centres.end() );
     vector<double> errs;
@@ -147,10 +147,10 @@ RooCubicSplineFun::RooCubicSplineFun(const char* name, const char* title,
     int nPoints = graph->GetN();
     vector<double> centres, values;
     for (int i=0;i<nPoints ;++i) {
-        double xx,yy;
-        graph->GetPoint(i,xx,yy);
-        centres.push_back(xx);
-        values.push_back(yy);
+        double x,y;
+        graph->GetPoint(i,x,y);
+        centres.push_back(x);
+        values.push_back(y);
     }
    _aux = RooCubicSplineKnot( centres.begin(), centres.end() );
 
@@ -185,14 +185,14 @@ RooCubicSplineFun::RooCubicSplineFun(const char* name, const char* title,
 
 //_____________________________________________________________________________
 RooCubicSplineFun::RooCubicSplineFun(const char* name, const char* title,
-                                     RooRealVar& x, const vector<double>& _knots,
+                                     RooRealVar& x, const vector<double>& knots,
                                      const RooArgList& coefList):
   RooAbsGaussModelEfficiency(name, title),
   _x("x", "Dependent", this, x),
   _coefList("coefficients", "List of coefficients", this),
-   _aux(_knots.begin(), _knots.end())
+   _aux(knots.begin(), knots.end())
 {
-   assert(size_t(coefList.getSize()) == 2 + _knots.size());
+   assert(size_t(coefList.getSize()) == 2 + knots.size());
    _coefList.add(coefList);
 }
 
@@ -237,10 +237,10 @@ Double_t RooCubicSplineFun::analyticalIntegral(Int_t code, const char* /* rangeN
 
 //_____________________________________________________________________________
 complex<double>  RooCubicSplineFun::gaussIntegralE(bool left, const RooGaussModelAcceptance::M_n<4U>& dM,
-                                             const RooGaussModelAcceptance::K_n& K, double _offset,
+                                             const RooGaussModelAcceptance::K_n& K, double offset,
                                              double* sc) const
 {
-        RooCubicSplineKnot::S_edge s_jk( _aux.S_jk_edge( left, _coefList ), _offset );
+        RooCubicSplineKnot::S_edge s_jk( _aux.S_jk_edge( left, _coefList ), offset );
         return dM(0)*( s_jk(0,0) * K(0) * sc[0] + s_jk(0,1) * K(1) * sc[1] )
              + dM(1)*( s_jk(1,0) * K(0) * sc[1]                            );
 }
@@ -248,35 +248,31 @@ complex<double>  RooCubicSplineFun::gaussIntegralE(bool left, const RooGaussMode
 //_____________________________________________________________________________
 std::complex<double>
 RooCubicSplineFun::productAnalyticalIntegral(Double_t umin, Double_t umax,
-                                             Double_t scale, Double_t _offset,
+                                             Double_t scale, Double_t offset,
                                              const std::complex<double>& z) const
 {
     RooGaussModelAcceptance::K_n K(z);
     assert(knotSize()>1);
+    double lo = scale*umin+offset;
+    double hi = scale*umax+offset+1.e-7;
     typedef RooGaussModelAcceptance::M_n<4U> M_n;
     std::vector<M_n> M; M.reserve( knotSize() );
     for (unsigned int i=0;i<knotSize();++i) {
-        double x = (u(i)-_offset)/scale ;
+        double x = (u(i)-offset)/scale ;
+        // TODO: remove unnecessary calculation of integral (that gives 0) if lo>u(i) and/or u(i+1)<hi
+        if (lo>=u(i)) x = umin ; // take M[i] if lo<=u(i) else M_n(lo)
+        if (u(i)>=hi) x = umax ; // take M[i+1] if u(i+1)<=hi else M_n(hi)
         M.push_back( M_n( x, z ) );
     }
     double sc[4]; for (int i=0;i<4;++i) sc[i] = pow(scale,i);
-    double lo = scale*umin+_offset;
-    double hi = scale*umax+_offset;
     std::complex<double> sum(0,0);
-    //TODO: verify we remain within [lo,hi]
-    assert(hi>=u(0)); // front only if hi>u(0)!!!
-    if (lo<u(0)) sum += gaussIntegralE(true,  M.front()-M_n( umin,z), K, _offset, sc);
+    if (lo<u(0)) sum += gaussIntegralE(true,  M.front()-M_n( umin,z), K, offset, sc);
     for (unsigned i=0;i<knotSize()-1 && u(i)<hi ;++i) {
-        if (u(i+1)<lo) continue;
-        // FIXME:TODO: we currently assume that u(0),u(knotSize()-1)] fully contained in [lo,hi]
-        assert(lo<=u(i));
-        assert(u(i+1)<=hi);
-        M_n dM = M[i+1]-M[i]; // take M[i] if lo<=u(i) else M_n(lo) ; take M[i+1] if u(i+1)<=hi else M_n(hi)
-        RooCubicSplineKnot::S_jk s_jk( _aux.S_jk_sum( i, _coefList ), _offset );  // pass sc into S_jk, remove from loop
+        M_n dM = M[i+1]-M[i];
+        RooCubicSplineKnot::S_jk s_jk( _aux.S_jk_sum( i, _coefList ), offset );  // pass sc into S_jk, remove from loop
         for (int j=0;j<4;++j) for (int k=0;k<4-j;++k) sum += dM(j)*s_jk(j,k)*K(k)*sc[j+k];
     }
-    assert(lo<=u(knotSize()-1));// back only if lo<u(knotsiwze()-1)!!!
-    if (hi>u(knotSize()-1)) sum += gaussIntegralE(false, M_n(umax,z)-M.back(),   K, _offset, sc);
+    if (hi>u(knotSize()-1)) sum += gaussIntegralE(false, M_n(umax,z)-M.back(),   K, offset, sc);
     return sum;
 }
 

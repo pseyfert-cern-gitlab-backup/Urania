@@ -5,9 +5,9 @@
 //
 // *** this is an ugly hack but seems to work well enough for now, and is
 // *** better than hacking the header files that come with ROOT for now...
-#define RooEffGenContext RooEffGenContext; friend class RooEffConvGenContext;
-
+#define RooEffGenContext RooEffGenContext; friend class RooEffConvGenContext
 #include <RooConvGenContext.h>
+#undef RooEffGenContext
 
 class RooAbsAnaConvPdf;
 class RooDataSet;
@@ -24,11 +24,13 @@ public:
                         const RooArgSet* auxProto=0, Bool_t _verbose= kFALSE);
    virtual ~RooEffConvGenContext();
 
-   void attach(const RooArgSet& params) override;
+   virtual void attach(const RooArgSet& params);
 
 protected:
 
-   void generateEvent(RooArgSet &theEvent, Int_t remaining) override;
+   // attach and initGenerator do the same thing
+   virtual void initGenerator(const RooArgSet& theEvent);
+   virtual void generateEvent(RooArgSet &theEvent, Int_t remaining);
 
    RooEffConvGenContext(const RooEffConvGenContext& other) ;
 

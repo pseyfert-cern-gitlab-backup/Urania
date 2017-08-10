@@ -347,8 +347,38 @@ def runFitSplineAcc( debug, configName, read, fileNameIn, wsname, workName,
 
     trm_mean  = RooRealVar( 'trm_mean' , 'Gaussian resolution model mean', 0.0, 'ps' )
     trm_scale = RooRealVar( 'trm_scale', 'Gaussian resolution model scale factor', myconfigfile["Resolution"]["scaleFactor"])
-    trm = RooGaussEfficiencyModel("resmodel", "resmodel", time, spl, trm_mean, terr, trm_mean, trm_scale )
-    
+
+    if myconfigfile.has_key("AcceptanceProduct"):
+        if myconfigfile["AcceptanceProduct"]["use"] == True:
+            print "---------------------------------------------"
+            print "    You are using splines product            "
+            print "---------------------------------------------"
+            
+            tacc_fix_list = RooArgList()
+            tacc_fix_var = []
+
+            for i in range(0,numKnots):
+                tacc_fix_var.append(RooRealVar("varfix"+str(i+1), "varfix"+str(i+1), myconfigfile["AcceptanceProduct"]["values"][i]))
+                print "[INFO]  ",tacc_fix_var[i].GetName()
+                tacc_fix_list.add(tacc_fix_var[i])
+            tacc_fix_var.append(RooRealVar("varfix"+str(numKnots+1), "varfix"+str(numKnots+1), 1.0))
+            len = tacc_fix_var.__len__()
+            tacc_fix_list.add(tacc_var[len-1])
+            print "[INFO]   n-2: ",tacc_fix_var[len-2].GetName()
+            print "[INFO]   n-1: ",tacc_fix_var[len-1].GetName()
+
+            tacc_fix_var.append(RooAddition("varfix"+str(numKnots+2), "varfix"+str(numKnots+2),
+                                            RooArgList(tacc_fix_var[len-2],tacc_fix_var[len-1]), listCoeff))
+            tacc_fix_list.add(tacc_fix_var[len])
+            print "[INFO]   n: ",tacc_fix_var[len].GetName()
+
+            spl_fix = RooCubicSplineFun("splinePdfFixed", "splinePdfFixed", time, "splineBinning", tacc_fix_list)
+
+            splineProduct = RooSplineProduct("splineProduct","Product of 2 splines", time, spl, spl_fix)
+
+            trm = RooGaussEfficiencyModel("resmodel", "resmodel", time, splineProduct, trm_mean, terr, trm_mean, trm_scale )
+    else:
+        trm = RooGaussEfficiencyModel("resmodel", "resmodel", time, spl, trm_mean, terr, trm_mean, trm_scale )
     #terrWork = GeneralUtils.LoadWorkspace(TString(myconfigfile["Resolution"]["templates"]["fileName"]),
 #					  TString(myconfigfile["Resolution"]["templates"]["workName"]), debug)
     terrpdf = GeneralUtils.CreateHistPDF(data[0], terr, TString("terr_template"), 20, debug)
@@ -408,9 +438,9 @@ def runFitSplineAcc( debug, configName, read, fileNameIn, wsname, workName,
         lhcbtext.SetTextSize(0.07)
         lhcbtext.SetTextAlign(12)
         
-        legend = TLegend( 0.62, 0.70, 0.88, 0.88 )
+        legend = TLegend( 0.62, 0.60, 0.88, 0.88 )
         
-        legend.SetTextSize(0.05)
+        legend.SetTextSize(0.06)
         legend.SetTextFont(12)
         legend.SetFillColor(4000)
         legend.SetShadowColor(0)
@@ -454,7 +484,27 @@ def runFitSplineAcc( debug, configName, read, fileNameIn, wsname, workName,
         dataF.plotOn(frame_m,RooFit.Binning( bin ), RooFit.Name("dataSetCut"))
         totPDF.plotOn(frame_m, RooFit.LineColor(kBlue+3),  RooFit.Name("FullPdf"))
         
-        spl.plotOn(frame_m, RooFit.LineColor(kRed), RooFit.Normalization(float(rel), RooAbsReal.Relative))
+        if myconfigfile.has_key("AcceptanceProduct"):
+            if myconfigfile["AcceptanceProduct"]["use"] == True:
+                splineProduct.plotOn(frame_m, RooFit.LineColor(kRed), RooFit.Normalization(float(rel), RooAbsReal.Relative))
+                spl.plotOn(frame_m, RooFit.LineColor(kMagenta+3), RooFit.LineStyle(kDashed), RooFit.Normalization(float(rel), RooAbsReal.Relative))
+                spl_fix.plotOn(frame_m, RooFit.LineColor(kOrange), RooFit.LineStyle(kDashed), RooFit.Normalization(float(rel), RooAbsReal.Relative))
+
+                l3 = TLine()
+                l3.SetLineColor(kMagenta+3)
+                l3.SetLineWidth(4)
+                l3.SetLineStyle(kDashed)
+                legend.AddEntry(l3, "spline component 1", "L")
+                
+                l4 = TLine()
+                l4.SetLineColor(kOrange)
+                l4.SetLineWidth(4)
+                l4.SetLineStyle(kDashed)
+                legend.AddEntry(l4, "spline component 2", "L")
+
+        else:
+            spl.plotOn(frame_m, RooFit.LineColor(kRed), RooFit.Normalization(float(rel), RooAbsReal.Relative))
+        
         
         canvas = TCanvas("canvas", "canvas", 1200, 800)
         canvas.cd()

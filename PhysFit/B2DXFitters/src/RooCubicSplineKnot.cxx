@@ -5,6 +5,7 @@
 #include "TVectorD.h"
 #include "TH1.h"
 #include "RooAbsReal.h"
+
 #include "B2DXFitters/RooCubicSplineKnot.h"
 
 using namespace std;
@@ -13,7 +14,8 @@ namespace RooCubicSplineKnot_aux {
   Double_t get(const RooArgList& b,int i) { return ((RooAbsReal&)b[i]).getVal() ; }
   Double_t get(const RooArgList& b,int i,int k) { return RooCubicSplineKnot_aux::get(b,i+k); }
 
-  template <typename T> typename T::const_reference get(const T& t, int i, int j) { return t[4*i+j]; }
+  template <typename T> typename T::const_reference get(const T& t, int i, int j)  { return t[4*i+j]; }
+  template <typename T> typename T::const_reference get2(const T& t, int i, int j) { return t[10*i+j];}
   template <typename T> void push_back(T& t, const typename T::value_type& a,
                                              const typename T::value_type& b,
                                              const typename T::value_type& c,
@@ -170,10 +172,10 @@ double RooCubicSplineKnot::analyticalIntegral(const RooArgList& b) const {
 }
 
 // location in knot vector: index of last knot less than x... except when beyond interval+ last +1 if to right, -1 if to left
-int RooCubicSplineKnot::index(double uu) const
+int RooCubicSplineKnot::index(double u) const
 {
-    if (uu>_u.back()) return size();
-    std::vector<double>::const_iterator i = --std::upper_bound(_u.begin(),_u.end()-1,uu);
+    if (u>_u.back()) return size();
+    std::vector<double>::const_iterator i = --std::upper_bound(_u.begin(),_u.end()-1,u);
     return std::distance(_u.begin(),i);
 }
 
@@ -183,7 +185,7 @@ RooCubicSplineKnot::S_jk RooCubicSplineKnot::S_jk_sum(int i, const RooArgList& b
     if (_S_jk.empty()) {
         _S_jk.reserve(size()*4);
         for(int j=0;j<size();++j) {
-            // Thjs 'table' should be compatible wjth the definitions of A,B,C, and D...
+            // This 'table' should be compatible with the definitions of A,B,C, and D...
             _S_jk.push_back( -RooCubicSplineKnot::S_jk(u(j+1),u(j+1),u(j+1))/P(j) ); // A
             _S_jk.push_back(  RooCubicSplineKnot::S_jk(u(j-2),u(j+1),u(j+1))/P(j)
                              +RooCubicSplineKnot::S_jk(u(j-1),u(j+1),u(j+2))/Q(j)
@@ -201,14 +203,79 @@ RooCubicSplineKnot::S_jk RooCubicSplineKnot::S_jk_sum(int i, const RooArgList& b
          + get(_S_jk,i,3)*get(b,i,3);
 }
 
-RooCubicSplineKnot::S_edge::S_edge(const S_edge& other, double offset) :
-    alpha(other.alpha), beta(other.beta)
+// S matrix for product of 2 splines for i-th interval
+RooCubicSplineKnot::S2_jk RooCubicSplineKnot::S2_jk_sum(int i, const RooArgList& b1, const RooArgList& b2) const
 {
-    if (offset != 0) {
-        std::cout << "RooCubicSplitKnot::S_edge: argument \"offset\" is not equal to 0" << std::endl;
-        assert(offset==0);
+    if (_S2_jk.empty()) {
+        _S2_jk.reserve(size()*10);
+        for(int j=0;j<size();++j) {
+            // This 'table' should be compatible with the definitions of A,B,C, and D...
+            _S2_jk.push_back(  RooCubicSplineKnot::S2_jk(u(j+1),u(j+1),u(j+1),u(j+1),u(j+1),u(j+1)) / (P(j)*P(j)) ); // (A * A)
+
+            _S2_jk.push_back(  RooCubicSplineKnot::S2_jk(u(j-2),u(j+1),u(j+1),u(j-2),u(j+1),u(j+1)) / (P(j)*P(j))
+                              +RooCubicSplineKnot::S2_jk(u(j-1),u(j+1),u(j+2),u(j-1),u(j+1),u(j+2)) / (Q(j)*Q(j))
+                              +RooCubicSplineKnot::S2_jk(u(j  ),u(j+2),u(j+2),u(j  ),u(j+2),u(j+2)) / (R(j)*R(j))
+                              +RooCubicSplineKnot::S2_jk(u(j-2),u(j+1),u(j+1),u(j-1),u(j+1),u(j+2)) / (P(j)*Q(j)) * 2.
+                              +RooCubicSplineKnot::S2_jk(u(j-2),u(j+1),u(j+1),u(j  ),u(j+2),u(j+2)) / (P(j)*R(j)) * 2.
+                              +RooCubicSplineKnot::S2_jk(u(j-1),u(j+1),u(j+2),u(j  ),u(j+2),u(j+2)) / (Q(j)*R(j)) * 2. ); // (B * B)
+
+            _S2_jk.push_back(  RooCubicSplineKnot::S2_jk(u(j-1),u(j-1),u(j+1),u(j-1),u(j-1),u(j+1)) / (Q(j)*Q(j))
+                              +RooCubicSplineKnot::S2_jk(u(j-1),u(j  ),u(j+2),u(j-1),u(j  ),u(j+2)) / (R(j)*R(j))
+                              +RooCubicSplineKnot::S2_jk(u(j  ),u(j  ),u(j+3),u(j  ),u(j  ),u(j+3)) / (S(j)*S(j))
+                              +RooCubicSplineKnot::S2_jk(u(j-1),u(j-1),u(j+1),u(j-1),u(j  ),u(j+2)) / (Q(j)*R(j)) * 2.
+                              +RooCubicSplineKnot::S2_jk(u(j-1),u(j-1),u(j+1),u(j  ),u(j  ),u(j+3)) / (Q(j)*S(j)) * 2.
+                              +RooCubicSplineKnot::S2_jk(u(j-1),u(j  ),u(j+2),u(j  ),u(j  ),u(j+3)) / (R(j)*S(j)) * 2. ); // (C * C)
+
+            _S2_jk.push_back(  RooCubicSplineKnot::S2_jk(u(j  ),u(j  ),u(j  ),u(j  ),u(j  ),u(j  )) / (S(j)*S(j)) ); // (D * D)
+
+
+            _S2_jk.push_back( -RooCubicSplineKnot::S2_jk(u(j+1),u(j+1),u(j+1),u(j-2),u(j+1),u(j+1)) / (P(j)*P(j))
+                              -RooCubicSplineKnot::S2_jk(u(j+1),u(j+1),u(j+1),u(j-1),u(j+1),u(j+2)) / (P(j)*Q(j))
+                              -RooCubicSplineKnot::S2_jk(u(j+1),u(j+1),u(j+1),u(j  ),u(j+2),u(j+2)) / (P(j)*R(j)) ); // (A * B)
+
+            _S2_jk.push_back(  RooCubicSplineKnot::S2_jk(u(j+1),u(j+1),u(j+1),u(j-1),u(j-1),u(j+1)) / (P(j)*Q(j))
+                              +RooCubicSplineKnot::S2_jk(u(j+1),u(j+1),u(j+1),u(j-1),u(j  ),u(j+2)) / (P(j)*R(j))
+                              +RooCubicSplineKnot::S2_jk(u(j+1),u(j+1),u(j+1),u(j  ),u(j  ),u(j+3)) / (P(j)*S(j)) ); // (A * C)
+
+            _S2_jk.push_back( -RooCubicSplineKnot::S2_jk(u(j+1),u(j+1),u(j+1),u(j  ),u(j  ),u(j  )) / (P(j)*S(j)) ); // (A * D)
+
+
+            _S2_jk.push_back( -RooCubicSplineKnot::S2_jk(u(j-2),u(j+1),u(j+1),u(j-1),u(j-1),u(j+1)) / (P(j)*Q(j))
+                              -RooCubicSplineKnot::S2_jk(u(j-2),u(j+1),u(j+1),u(j-1),u(j  ),u(j+2)) / (P(j)*R(j))
+                              -RooCubicSplineKnot::S2_jk(u(j-2),u(j+1),u(j+1),u(j  ),u(j  ),u(j+3)) / (P(j)*S(j))
+                              -RooCubicSplineKnot::S2_jk(u(j-1),u(j+1),u(j+2),u(j-1),u(j-1),u(j+1)) / (Q(j)*Q(j))
+                              -RooCubicSplineKnot::S2_jk(u(j-1),u(j+1),u(j+2),u(j-1),u(j  ),u(j+2)) / (Q(j)*R(j))
+                              -RooCubicSplineKnot::S2_jk(u(j-1),u(j+1),u(j+2),u(j  ),u(j  ),u(j+3)) / (Q(j)*S(j))
+                              -RooCubicSplineKnot::S2_jk(u(j  ),u(j+2),u(j+2),u(j-1),u(j-1),u(j+1)) / (R(j)*Q(j))
+                              -RooCubicSplineKnot::S2_jk(u(j  ),u(j+2),u(j+2),u(j-1),u(j  ),u(j+2)) / (R(j)*R(j))
+                              -RooCubicSplineKnot::S2_jk(u(j  ),u(j+2),u(j+2),u(j  ),u(j  ),u(j+3)) / (R(j)*S(j)) ); // (B * C)
+
+            _S2_jk.push_back(  RooCubicSplineKnot::S2_jk(u(j-2),u(j+1),u(j+1),u(j  ),u(j  ),u(j  )) / (P(j)*S(j))
+                              +RooCubicSplineKnot::S2_jk(u(j-1),u(j+1),u(j+2),u(j  ),u(j  ),u(j  )) / (Q(j)*S(j))
+                              +RooCubicSplineKnot::S2_jk(u(j  ),u(j+2),u(j+2),u(j  ),u(j  ),u(j  )) / (R(j)*S(j)) ); // (B * D)
+
+            _S2_jk.push_back( -RooCubicSplineKnot::S2_jk(u(j-1),u(j-1),u(j+1),u(j  ),u(j  ),u(j  )) / (Q(j)*S(j))
+                              -RooCubicSplineKnot::S2_jk(u(j-1),u(j  ),u(j+2),u(j  ),u(j  ),u(j  )) / (R(j)*S(j))
+                              -RooCubicSplineKnot::S2_jk(u(j  ),u(j  ),u(j+3),u(j  ),u(j  ),u(j  )) / (S(j)*S(j)) ); // (C * D)
+        }
     }
+    using RooCubicSplineKnot_aux::get;
+    using RooCubicSplineKnot_aux::get2;
+    return get2(_S2_jk,i,0)*get(b1,i,0)*get(b2,i,0)
+         + get2(_S2_jk,i,1)*get(b1,i,1)*get(b2,i,1)
+         + get2(_S2_jk,i,2)*get(b1,i,2)*get(b2,i,2)
+         + get2(_S2_jk,i,3)*get(b1,i,3)*get(b2,i,3)
+         + get2(_S2_jk,i,4)*(get(b1,i,0)*get(b2,i,1)+get(b1,i,1)*get(b2,i,0))
+         + get2(_S2_jk,i,5)*(get(b1,i,0)*get(b2,i,2)+get(b1,i,2)*get(b2,i,0))
+         + get2(_S2_jk,i,6)*(get(b1,i,0)*get(b2,i,3)+get(b1,i,3)*get(b2,i,0))
+         + get2(_S2_jk,i,7)*(get(b1,i,1)*get(b2,i,2)+get(b1,i,2)*get(b2,i,1))
+         + get2(_S2_jk,i,8)*(get(b1,i,1)*get(b2,i,3)+get(b1,i,3)*get(b2,i,1))
+         + get2(_S2_jk,i,9)*(get(b1,i,2)*get(b2,i,3)+get(b1,i,3)*get(b2,i,2));
 }
+
+RooCubicSplineKnot::S_edge::S_edge(const S_edge& other, double offset) :
+    alpha(other.alpha), beta(other.beta + offset * other.alpha * 2)
+    {}
 
 // S matrix for natural extrapolation beyond the first/last knot...
 RooCubicSplineKnot::S_edge RooCubicSplineKnot::S_jk_edge(bool left, const RooArgList& b) const {
@@ -223,6 +290,25 @@ RooCubicSplineKnot::S_edge RooCubicSplineKnot::S_jk_edge(bool left, const RooArg
          double alpha = r(i-1)*(get(b,i,2)-get(b,i,1));
          double beta = evaluate(u(i),b)-alpha*u(i);
          return S_edge(alpha,beta);
+       }
+}
+
+// S matrix for natural extrapolation of spline product beyond the first/last knot...
+RooCubicSplineKnot::S2_edge RooCubicSplineKnot::S2_jk_edge(bool left, const RooArgList& b1, const RooArgList& b2) const {
+       using RooCubicSplineKnot_aux::get;
+       if (left) {
+         double alpha1 = -r(0)*(get(b1,0,0)-get(b1,0,1));
+         double beta1 = evaluate(u(0),b1)-alpha1*u(0);
+         double alpha2 = -r(0)*(get(b2,0,0)-get(b2,0,1));
+         double beta2 = evaluate(u(0),b2)-alpha2*u(0);
+         return S2_edge(alpha1,beta1,alpha2,beta2);
+       } else {
+         int i = size()-1;
+         double alpha1 = r(i-1)*(get(b1,i,2)-get(b1,i,1));
+         double beta1 = evaluate(u(i),b1)-alpha1*u(i);
+         double alpha2 = r(i-1)*(get(b2,i,2)-get(b2,i,1));
+         double beta2 = evaluate(u(i),b2)-alpha2*u(i);
+         return S2_edge(alpha1,beta1,alpha2,beta2);
        }
 }
 
@@ -324,28 +410,28 @@ double  RooCubicSplineKnot::expIntegral(const TH1* hist, double gamma, TVectorD&
         // this bit is by construction fully contained between the first and last knot
         for (int j=0;j<nknots-1;++j) {
             double l = std::max(lo,u(j));
-            double hh = std::min(hi,u(j+1));
-            if (l>=hh) continue;
-            // in thhe knot interval [ u(j),  u(j+1) ], thhe splines j..j+3 contribute...
-            matrix(j  ,i) += (-eI(l,hh, u(j+1),u(j+1),u(j+1), gamma)/P(j) ) / Norm;
-            matrix(j+1,i) += ( eI(l,hh, u(j-2),u(j+1),u(j+1), gamma)/P(j)
-                              +eI(l,hh, u(j-1),u(j+1),u(j+2), gamma)/Q(j)
-                              +eI(l,hh, u(j  ),u(j+2),u(j+2), gamma)/R(j) ) / Norm;
-            matrix(j+2,i) += (-eI(l,hh, u(j-1),u(j-1),u(j+1), gamma)/Q(j)
-                              -eI(l,hh, u(j-1),u(j  ),u(j+2), gamma)/R(j)
-                              -eI(l,hh, u(j  ),u(j  ),u(j+3), gamma)/S(j) ) / Norm;
-            matrix(j+3,i) += ( eI(l,hh, u(j  ),u(j  ),u(j  ), gamma)/S(j) ) / Norm;
+            double h = std::min(hi,u(j+1));
+            if (l>=h) continue;
+            // in the knot interval [ u(j),  u(j+1) ], the splines j..j+3 contribute...
+            matrix(j  ,i) += (-eI(l,h, u(j+1),u(j+1),u(j+1), gamma)/P(j) ) / Norm;
+            matrix(j+1,i) += ( eI(l,h, u(j-2),u(j+1),u(j+1), gamma)/P(j)
+                              +eI(l,h, u(j-1),u(j+1),u(j+2), gamma)/Q(j)
+                              +eI(l,h, u(j  ),u(j+2),u(j+2), gamma)/R(j) ) / Norm;
+            matrix(j+2,i) += (-eI(l,h, u(j-1),u(j-1),u(j+1), gamma)/Q(j)
+                              -eI(l,h, u(j-1),u(j  ),u(j+2), gamma)/R(j)
+                              -eI(l,h, u(j  ),u(j  ),u(j+3), gamma)/S(j) ) / Norm;
+            matrix(j+3,i) += ( eI(l,h, u(j  ),u(j  ),u(j  ), gamma)/S(j) ) / Norm;
         }
 
     }
 
-    TMatrixDSym DD(nsplines);
+    TMatrixDSym D(nsplines);
     for (int i=0;i<nsplines;++i) for (int j=0;j<=i;++j) {
-        DD(i,j) = 0;
-        for (int k=0;k<nbins;++k) DD(i,j) += matrix(i,k)*matrix(j,k)/(DY(k)*DY(k));
-        if (i!=j) DD(j,i) = DD(i,j);
+        D(i,j) = 0;
+        for (int k=0;k<nbins;++k) D(i,j) += matrix(i,k)*matrix(j,k)/(DY(k)*DY(k));
+        if (i!=j) D(j,i) = D(i,j);
     }
-    TDecompBK solver(DD);
+    TDecompBK solver(D);
 
     Y *= matrix;
     TVectorD YY = Y;
@@ -358,16 +444,16 @@ double  RooCubicSplineKnot::expIntegral(const TH1* hist, double gamma, TVectorD&
         return -1;
     }
 
-    DD.Invert();
-    covarianceMatrix.ResizeTo(DD);
-    covarianceMatrix = DD;
+    D.Invert();
+    covarianceMatrix.ResizeTo(D);
+    covarianceMatrix = D;
 
     double chisq = 0;
     for (int i=0;i<nbins;++i) {
         double y = hist->GetBinContent(1+i);
         double dy = hist->GetBinError(1+i);
-        double ff = 0; for (int j=0;j<nsplines;++j) ff+=matrix(j,i)*coefficients(j);
-        double c = sqr( (y-ff)/dy );
+        double f = 0; for (int j=0;j<nsplines;++j) f+=matrix(j,i)*coefficients(j);
+        double c = sqr( (y-f)/dy );
         // double lo = hist->GetBinLowEdge(1+i);
         // double hi = lo + hist->GetBinWidth(1+i);
         // std::cout << " bin " << i  << " [  " << lo << " , " << hi << " ]  y = " << y << " dy = " << dy << " f = " << f << " chi^2 = " << c << std::endl;
