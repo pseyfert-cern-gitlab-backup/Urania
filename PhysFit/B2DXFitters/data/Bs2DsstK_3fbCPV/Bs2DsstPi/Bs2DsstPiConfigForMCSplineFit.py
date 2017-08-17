@@ -28,11 +28,11 @@ def getconfig() :
     #                             "values": [4.5579e-01, 7.0310e-01, 8.7709e-01, 1.1351e+00, 1.0e+00, 1.0e+00] }
 
     configdict["Acceptance"] = { "knots":  [0.50, 1.0,   2.0,   3.0,  10.0],
-                                 "values": [0.41, 0.603, 0.803, 0.93, 0.98, 1.0] }
+                                 "values": [1.59, 2.21, 3.16, 3.87, 2.61] }
 
     configdict["AcceptanceProduct"] = {"use":True,
                                        "knots": [0.5, 1.0, 2.0, 3.0, 10.0],
-                                       "values": [1.4395e+00, 2.0832e+00, 3.0116e+00, 3.7170e+00, 2.7000e+00] }
+                                       "values": [1.3355, 2.0300, 2.5558, 3.6189, 2.5082] }
     
     configdict["Resolution"] = {"scaleFactor":1.201}
 

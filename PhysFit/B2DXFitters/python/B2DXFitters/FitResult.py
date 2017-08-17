@@ -643,25 +643,25 @@ def getDsHBlindFitResult(isData, isBlind, fitResult):
     """
     doBlind = isData and isBlind
     # common setup: rename list, blinding specification
-    renames = { 'C_Bs2DsK': 'Bs2DsK_C', 'D_Bs2DsK': 'Bs2DsK_D',
-            'Dbar_Bs2DsK': 'Bs2DsK_Dbar', 'S_Bs2DsK': 'Bs2DsK_S',
-            'Sbar_Bs2DsK': 'Bs2DsK_Sbar', 'DeltaMs_Bs2DsPi': 'deltaMs',
-            'p0_0': 'Bs2DsK_Mistag0CalibB_p0',
-            'p0_1': 'Bs2DsK_Mistag1CalibB_p0',
-            'p0_2': 'Bs2DsK_Mistag2CalibB_p0',
-            'p1_0': 'Bs2DsK_Mistag0CalibB_p1',
-            'p1_1': 'Bs2DsK_Mistag1CalibB_p1',
-            'p1_2': 'Bs2DsK_Mistag2CalibB_p1',
+    renames = { 'C_Bs2DsstK': 'Bs2DsstK_C', 'D_Bs2DsstK': 'Bs2DsstK_D',
+            'Dbar_Bs2DsstK': 'Bs2DsstK_Dbar', 'S_Bs2DsstK': 'Bs2DsstK_S',
+            'Sbar_Bs2DsstK': 'Bs2DsstK_Sbar', 'DeltaMs_Bs2DsPi': 'deltaMs',
+            'p0_0': 'Bs2DsstK_Mistag0CalibB_p0',
+            'p0_1': 'Bs2DsstK_Mistag1CalibB_p0',
+            'p0_2': 'Bs2DsstK_Mistag2CalibB_p0',
+            'p1_0': 'Bs2DsstK_Mistag0CalibB_p1',
+            'p1_1': 'Bs2DsstK_Mistag1CalibB_p1',
+            'p1_2': 'Bs2DsstK_Mistag2CalibB_p1',
             }
     blinds = {
             # CP parameters blinded with random offset from 13 ... 17
             '^deltaMs': [10.0, 20.0], 
-            '^Bs2DsK_(C|D|Dbar|S|Sbar)$': [ 13.0, 17.0 ],
+            '^Bs2DsstK_(C|D|Dbar|S|Sbar)$': [ 13.0, 17.0 ],
         # blind direct fits to gamma, strong and weak phase with offset 23 ... 27
-        '^Bs2DsK_(lambda|delta|phi_w)$': [ 23., 27. ],
-            # everything else connected with DsK is blinded with random offset
+        '^Bs2DsstK_(lambda|delta|phi_w)$': [ 23., 27. ],
+            # everything else connected with DsstK is blinded with random offset
             # from +3 ... +7 (efficiencies, calibrations, ...)
-            '^Bs2DsK': [ 3.0, 7.0 ],
+            '^Bs2DsstK': [ 3.0, 7.0 ],
             }
     return FitResult(fitResult, renames, blinds if doBlind else { })
 
