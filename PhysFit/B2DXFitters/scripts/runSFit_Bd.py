@@ -482,12 +482,15 @@ def runSFit(debug, wsname,
 
     if myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"] is not None:
         myconfigfile["AcceptanceFunction"] = myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["Type"]
+        ToFix = []
+        if "ToFix" in myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"].keys():
+            ToFix = myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["ToFix"]
         acc, accnorm = buildSplineAcceptance(ws, time, 'Acceptance',
                                              myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["KnotPositions"],
                                              myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["KnotCoefficients"],
                                              False if myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["Float"] is False else True,
                                              False if myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["Extrapolate"] is False else True,
-                                             myconfigfile["ResolutionAcceptance"]["Signal"]["Acceptance"]["ToFix"],
+                                             ToFix,
                                              debug)
         if debug:
             print "Acceptance function:"
@@ -867,6 +870,57 @@ def runSFit(debug, wsname,
 
     genValDict = {}
 
+    if "resampleParams" in myconfigfile.keys():
+
+        print ""
+        print "=========================================================="
+        print "Resample group of parameters from some gaussian(s)"
+        print "=========================================================="
+        print ""
+
+        #Sample mean of gaussian
+        for parname in myconfigfile["resampleParams"].iterkeys():
+            if type(myconfigfile["resampleParams"][parname]) != list:
+                #Build single gaussian
+                par = ws.var(parname)
+                gaussGen = TRandom3(int(seed))
+                mean = par.getVal()
+                par.setVal( gaussGen.Gaus( mean, myconfigfile["resampleParams"][parname] ) )
+                par.setConstant(True)
+                if debug:
+                    print "Sampling mean of "+parname+" (from univariate gaussian)"
+                    print "Config file value: "+str(mean)
+                    print "New sampled value: "+str(par.getVal())
+                    print "Seed: "+str(seed)
+                par = WS(ws, par)
+            else:
+                #Build multivariate gaussian
+                from B2DXFitters.utils import BuildMultivarGaussFromCorrMat
+                mvg, params = BuildMultivarGaussFromCorrMat(ws,
+                                                            parname+"_forResampling",
+                                                            myconfigfile["resampleParams"][parname][0],
+                                                            myconfigfile["resampleParams"][parname][1],
+                                                            myconfigfile["resampleParams"][parname][2],
+                                                            False)
+                #Generate new set of correlated parameters
+                gInterpreter.ProcessLine('gRandom->SetSeed('+str(int(seed))+')')
+                RooRandom.randomGenerator().SetSeed(int(seed))
+                randVals = mvg.generate(params,
+                                        RooFit.NumEvents(1))
+                #Update values in the workspace
+                for parn in myconfigfile["resampleParams"][parname][0]:
+                    par = ws.var(parn)
+                    oldval = par.getVal()
+                    par.setVal( randVals.get().find(parn).getVal() )
+                    par.setConstant(True)
+                    if debug:
+                        print "Sampling mean of "+parn+" (from multivariate gaussian)"
+                        print "Config file value: "+str(oldval)
+                        print "New sampled value: "+str(par.getVal())
+                        print "Seed: "+str(seed)
+                    par = WS(ws, par)
+
+
     if "gaussCons" in myconfigfile.keys():
 
         print ""
@@ -896,7 +950,7 @@ def runSFit(debug, wsname,
                     # Build multivariate gaussian for multivariate constraints
                     from B2DXFitters.utils import BuildMultivarGaussFromCorrMat
                     mvg, params = BuildMultivarGaussFromCorrMat(ws,
-                                                                parname + "_forResampling",
+                                                                parname + "_forGaussCons",
                                                                 myconfigfile["gaussCons"][parname][0],
                                                                 myconfigfile["gaussCons"][parname][1],
                                                                 myconfigfile["gaussCons"][parname][2],

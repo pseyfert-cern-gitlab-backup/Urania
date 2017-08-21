@@ -4,6 +4,10 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
+! 2017-08-21 - Vincenzo Battista
+ - Little updates to time fit script, time pdf and gaussian constrain
+   building utilities (mainly to better handle Espresso)
+
 ! 2017-07-22 - Vincenzo Battista
  - Small modifications in src and python to handle Espresso and more
    flexible acceptance

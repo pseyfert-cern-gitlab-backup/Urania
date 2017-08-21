@@ -7,6 +7,8 @@
 @brief build Gaussian constraints
 """
 
+import utils
+
 class GaussianConstraintBuilder:
     """ builds constraints from a simple dictionary """
 
@@ -142,7 +144,7 @@ class GaussianConstraintBuilder:
                 if errors[i] <= 0.:
                     raise ValueError('Errors must be positive')
                 cov[i][i] = errors[i] * errors[i]
-            correl = correlation
+            correl = utils.SymmetrizeTriangularMatrix(correlation)
             for i in xrange(0, n):
                 if abs(correl[i][i] - 1.) > 1e-15:
                     raise ValueError('Correlation matrix has invalid element on diagonal')

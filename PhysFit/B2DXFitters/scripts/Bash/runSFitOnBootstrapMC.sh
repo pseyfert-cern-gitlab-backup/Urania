@@ -24,7 +24,7 @@ export runpath=${16}
 export Start=`date`
 echo "==> Start fitting at ${Start}"
 
-export preselection="TagDecSS!=0"
+export preselection="TagDecOS!=0"
 
 while (( $seed < $stop )); do 
     

@@ -28,11 +28,11 @@ export queue="1nh"
 export mlimit="500000"
 #Nickname
 #Choose a meaningful name
-export nickname="Bd2DPiMCFilteredS21RunIBothLargeTime"
+export nickname="Bd2DPiMCFilteredS21RunIBothTaggedOnlyShortTime"
 #Configuration file
 export config="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/Bd2DPiConfigForBootstrapMC.py"
 #Input file
-export inputfile="/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Workspace/Nominal/work_dpi_mc_large_largetime.root"
+export inputfile="/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Workspace/Nominal/work_dpi_mc_large_shorttime.root"
 #Input workspace
 export inputworkspace="workspace"
 #Temporary pathname to dump results
@@ -50,8 +50,8 @@ export runpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/"
 rm -rf $output
 mkdir -p $output
 
-/afs/cern.ch/project/eos/installation/lhcb/bin/eos.select rm -r ${eosoutput}
-/afs/cern.ch/project/eos/installation/lhcb/bin/eos.select mkdir -p ${eosoutput}
+/usr/bin/eos rm -r ${eosoutput}
+/usr/bin/eos mkdir -p ${eosoutput}
 
 cd $pyscriptpath
 

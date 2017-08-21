@@ -14,7 +14,7 @@ def getconfig():
 
     configdict["BasicVariables"] = {}
 
-    configdict["BasicVariables"]["BeautyTime"]    = {"Range": [0.4, 15.4],#12.0],
+    configdict["BasicVariables"]["BeautyTime"]    = {"Range": [0.4, 12.0],
                                                      "Bins": 40,
                                                      "Name": "BeautyTime",  # the name is not used by the MDFitterSettings/Translator etc.
                                                      "InputName": "obsTime"}
@@ -25,24 +25,24 @@ def getconfig():
                                                      "Name": "BacCharge",
                                                      "InputName": "BacCharge"}
 
-    #configdict["BasicVariables"]["TagDecOS"]      = {"Range": [-1.0, 1.0],
-    #                                                 "Name": "TagDecOS",
-    #                                                 "InputName": "TagDecOS"}
+    configdict["BasicVariables"]["TagDecOS"]      = {"Range": [-1.0, 1.0],
+                                                     "Name": "TagDecOS",
+                                                     "InputName": "TagDecOS"}
 
-    configdict["BasicVariables"]["TagDecSS"]      = {"Range": [-1.0, 1.0],
-                                                     "Name": "TagDecSS",
-                                                     "InputName": "TagDecSS"}  # available via mdSet->GetTagVar(i)
+    #configdict["BasicVariables"]["TagDecSS"]      = {"Range": [-1.0, 1.0],
+    #                                                 "Name": "TagDecSS",
+    #                                                 "InputName": "TagDecSS"}  # available via mdSet->GetTagVar(i)
     # the original specifier is available via mdSet->GetTagVarOutName(i)
     # this name + "_idx" is used in the inputtree/dataset - so no flexibility in the beginning of the name as "TagDec" is used when checking for
     # tagging variables in general at the beginning
 
-    #configdict["BasicVariables"]["MistagOS"]      = {"Range": [0.0, 0.5],  # 0.4619
-    #                                                 "Name": "MistagOS",
-    #                                                 "InputName": "MistagOS"}
+    configdict["BasicVariables"]["MistagOS"]      = {"Range": [0.0, 0.5],  # 0.4619
+                                                     "Name": "MistagOS",
+                                                     "InputName": "MistagOS"}
 
-    configdict["BasicVariables"]["MistagSS"]      = {"Range": [0.0, 0.5],  # 0.492
-                                                     "Name": "MistagSS",
-                                                     "InputName": "MistagSS"}
+    #configdict["BasicVariables"]["MistagSS"]      = {"Range": [0.0, 0.5],  # 0.492
+    #                                                 "Name": "MistagSS",
+    #                                                 "InputName": "MistagSS"}
 
     configdict["AdditionalVariables"] = {}
     #configdict["AdditionalVariables"]["TrueID"]   = {"Range": [0.0, 1500.0],
@@ -95,12 +95,12 @@ def getconfig():
                                                     "Acceptance": # From ANA note v2
                                                     {"Type": "Spline",
                                                      "Float": True,
-                                                     "Extrapolate": False,
-                                                     "ToFix": [3],
-                                                     "KnotPositions" : [0.45, 1.0, 2.0, 2.5, 7.0, 12.0],
-                                                     "KnotCoefficients": [0.5, 0.7, 1.0, 0.9, 0.85, 0.7, 0.7]},
-                                                     #"KnotPositions": [0.5, 1.0, 1.5, 2.0, 2.3, 2.6, 3.0, 4.0, 10.0],
-                                                     #"KnotCoefficients": [1.9440e-01, 3.3275e-01, 6.1444e-01, 8.6628e-01, 9.9600e-01, 1.0745e+00, 1.1083e+00,  1.1565e+00, 1.1946e+00]},
+                                                     "Extrapolate": True,#False,
+                                                     #"ToFix": [3],
+                                                     #"KnotPositions" : [0.45, 1.0, 2.0, 2.5, 7.0, 12.0],
+                                                     #"KnotCoefficients": [0.5, 0.7, 1.0, 0.9, 0.85, 0.7, 0.7]},
+                                                     "KnotPositions": [0.5, 1.0, 1.5, 2.0, 2.3, 2.6, 3.0, 4.0, 10.0],
+                                                     "KnotCoefficients": [1.9440e-01, 3.3275e-01, 6.1444e-01, 8.6628e-01, 9.9600e-01, 1.0745e+00, 1.1083e+00,  1.1565e+00, 1.1946e+00]},
                                                     "Resolution":  # From ANA note v2
                                                     {"Type": "AverageModel",
                                                      "Parameters": {'sigmas': [0.05491], 'fractions': []},
@@ -125,16 +125,16 @@ def getconfig():
 
     configdict["Taggers"] = {}
     configdict["Taggers"]["Signal"] = {}
-    #configdict["Taggers"]["Signal"] = {"OS":  # From Bu MC, stat and syst combined
-                                       #{"Calibration":
-                                       # {"Type": "GLM",
-                                       #  "XML": ["/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/OS_Combination_Bu2D0Pi_MC_rlogitLink.xml"],
-                                       #  "tageff": [1.0],#[0.371, 0.01, 0.99],  # float in the fit
-                                       #  "tagasymm": [0.0]
-                                       #  },
-                                       # "MistagPDF":
-                                       # {"Type": "BuildTemplate"}
-                                       # }}#,
+    configdict["Taggers"]["Signal"] = {"OS":  # From Bu MC, stat and syst combined
+                                       {"Calibration":
+                                        {"Type": "GLM",
+                                         "XML": ["/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/OS_Combination_Bu2D0Pi_MC_rlogitLink.xml"],
+                                         "tageff": [1.0],#[0.371, 0.01, 0.99],  # float in the fit
+                                         "tagasymm": [0.0]
+                                         },
+                                        "MistagPDF":
+                                        {"Type": "BuildTemplate"}
+                                        }}#,
     #configdict["Taggers"]["Signal"] = {"OS":  # From Bu MC (EPM basis)
     #                                   {"Calibration":
     #                                    {"Type"     : "Linear",
@@ -150,21 +150,21 @@ def getconfig():
     #                                    {"Type": "BuildTemplate"}
     #                                    }
     #                                   }
-    configdict["Taggers"]["Signal"] = {"SS":  # From JpsiKst MC (EPM basis)
-                                       {"Calibration":
-                                        {"Type"     : "Linear",
-                                         "p0"       : [0.00032999],
-                                         "p1"       : [0.011431],
-                                         "deltap0"  : [0.0023665],
-                                         "deltap1"  : [-0.021455],
-                                         "avgeta"   : [0.4386],
-                                         "tageff"   : [1.0],
-                                         "tagasymm" : [0.0]
-                                         },
-                                        "MistagPDF":
-                                        {"Type": "BuildTemplate"}
-                                        }
-                                       }
+    #configdict["Taggers"]["Signal"] = {"SS":  # From JpsiKst MC (EPM basis)
+    #                                   {"Calibration":
+    #                                    {"Type"     : "Linear",
+    #                                     "p0"       : [0.00032999],
+    #                                     "p1"       : [0.011431],
+    #                                     "deltap0"  : [0.0023665],
+    #                                     "deltap1"  : [-0.021455],
+    #                                     "avgeta"   : [0.4386],
+    #                                     "tageff"   : [1.0],
+    #                                     "tagasymm" : [0.0]
+    #                                     },
+    #                                    "MistagPDF":
+    #                                    {"Type": "BuildTemplate"}
+    #                                    }
+    #                                   }
                                        
 
     ############################################
@@ -193,20 +193,20 @@ def getconfig():
     # Constraint on Gamma (error on gamma = rel. error on lifetime * gamma)
     configdict["gaussCons"]["Gamma"] = (0.004 / 1.519068) * (1.0 / 1.519068)  # 0.0017313
     # Multivariate constraint for OS combination
-    #ospedix='_OS_Combination_Calibration_NSpline_RLogitLink'
-    #configdict["gaussCons"]["multivarOSCalib"] = [['p_0'+ospedix, 'p_1'+ospedix, 'p_2'+ospedix, 'p_3'+ospedix, 'p_4'+ospedix,
-    #                                               'dp_0'+ospedix, 'dp_1'+ospedix, 'dp_2'+ospedix, 'dp_3'+ospedix, 'dp_4'+ospedix],  # parname
-    #                                              [0.019695,0.021343,0.0074792,0.1171,0.79469,0.03939,0.042687,0.014958,0.2342,1.5894],  # errors
-    #                                              [[1, -0.21732, -0.07802, 0.086702, 0.035155, 0.074186, -0.076022, 0.0067162, 0.032523, 0.0075709],  # correlation matrix from EPM
-    #                                               [-0.21732, 1, -0.18847, -0.25706, -0.012079, -0.076022, 0.089704, -0.067287, -0.027743, 0.027762],
-    #                                               [-0.07802, -0.18847, 1, -0.092168, -0.37105, 0.0067162, -0.067287, 0.10788, -0.018591, -0.061417],
-    #                                               [0.086702, -0.25706, -0.092168, 1, 0.15012, 0.032523, -0.027743, -0.018591, 0.081919, 0.053567],
-    #                                               [0.035155, -0.012079, -0.37105, 0.15012, 1, 0.0075709, 0.027762, -0.061417, 0.053567, 0.082966],
-    #                                               [0.074186, -0.076022, 0.0067162, 0.032523, 0.0075709, 1, -0.21732, -0.07802, 0.086702, 0.035155],
-    #                                               [-0.076022, 0.089704, -0.067287, -0.027743, 0.027762, -0.21732, 1, -0.18847, -0.25706, -0.012079],
-    #                                               [0.0067162, -0.067287, 0.10788, -0.018591, -0.061417, -0.07802, -0.18847, 1, -0.092168, -0.3710],
-    #                                               [0.032523, -0.027743, -0.018591, 0.081919, 0.053567, 0.086702, -0.25706, -0.092168, 1, 0.15012],
-    #                                               [0.0075709, 0.027762, -0.061417, 0.053567, 0.082966, 0.035155, -0.012079, -0.3710, 0.15012, 1]]]
+    ospedix='_OS_Combination_Bu2D0Pi_MC_rlogitLink'
+    configdict["gaussCons"]["multivarOSCalib"] = [['p_0'+ospedix, 'p_1'+ospedix, 'p_2'+ospedix, 'p_3'+ospedix, 'p_4'+ospedix,
+                                                   'dp_0'+ospedix, 'dp_1'+ospedix, 'dp_2'+ospedix, 'dp_3'+ospedix, 'dp_4'+ospedix],  # parname
+                                                  [0.0037878, 0.0043201, 0.0015278, 0.019089, 0.097153, 0.0075756, 0.0086402, 0.0030557, 0.038178, 0.19431],  # errors
+                                                  [ [1,        0.026364,         -0.1025,      -0.0062903,        0.022028,        0.016697,       -0.020273,       0.0096578,       0.0030769,      -0.0033872],  # correlation matrix from EPM (upper-right triangle)
+                                                    [1,         0.11049,         -0.1828,        -0.11513,       -0.020273,        0.034225,       -0.028609,       0.0028101,      0.00087712],
+                                                    [1,         0.26541,        -0.14282,       0.0096578,       -0.028609,        0.040899,       -0.023065,       0.0089189],
+                                                    [1,         0.68189,       0.0030769,       0.0028101,       -0.023065,        0.019771,        0.067058],
+                                                    [1,      -0.0033872,      0.00087712,       0.0089189,        0.067058,        -0.20354],
+                                                    [1,        0.026364,         -0.1025,      -0.0062903,        0.022028],
+                                                    [1,         0.11049,         -0.1828,        -0.11513],
+                                                    [1,         0.26541,        -0.14282],
+                                                    [1,         0.68189],
+                                                    [1] ] ]
     # Multivariate constraint for SS combination
     #sspedix='_SS_PionBDT_Calibration_Poly_LogitLink'
     #configdict["gaussCons"]["multivarSSCalib"] = [['p_0'+sspedix, 'p_1'+sspedix, 'dp_0'+sspedix, 'dp_1'+sspedix],  # parname
@@ -216,6 +216,25 @@ def getconfig():
     #                                               [-0.016192,        0.00080237,      1,       -0.037697],
     #                                               [0.00080237,       -0.011958,  -0.037697,    1]]]
 
+    ############################################
+    # Resample fixed parameters
+    ############################################
+
+    #configdict["resampleParams"] = {}
+    #ospedix='_OS_Combination_Bu2D0Pi_MC_rlogitLink'
+    #configdict["resampleParams"]["multivarOSCalib"] = [['p_0'+ospedix, 'p_1'+ospedix, 'p_2'+ospedix, 'p_3'+ospedix, 'p_4'+ospedix,
+    #                                                    'dp_0'+ospedix, 'dp_1'+ospedix, 'dp_2'+ospedix, 'dp_3'+ospedix, 'dp_4'+ospedix],  # parname
+    #                                                   [0.0037878, 0.0043201, 0.0015278, 0.019089, 0.097153, 0.0075756, 0.0086402, 0.0030557, 0.038178, 0.19431],  # errors
+    #                                                   [ [1,        0.026364,         -0.1025,      -0.0062903,        0.022028,        0.016697,       -0.020273,       0.0096578,       0.0030769,      -0.0033872],  # correlation matrix from EPM (upper-right triangle)
+    #                                                     [1,         0.11049,         -0.1828,        -0.11513,       -0.020273,        0.034225,       -0.028609,       0.0028101,      0.00087712],
+    #                                                     [1,         0.26541,        -0.14282,       0.0096578,       -0.028609,        0.040899,       -0.023065,       0.0089189],
+    #                                                     [1,         0.68189,       0.0030769,       0.0028101,       -0.023065,        0.019771,        0.067058],
+    #                                                     [1,      -0.0033872,      0.00087712,       0.0089189,        0.067058,        -0.20354],
+    #                                                     [1,        0.026364,         -0.1025,      -0.0062903,        0.022028],
+    #                                                     [1,         0.11049,         -0.1828,        -0.11513],
+    #                                                     [1,         0.26541,        -0.14282],
+    #                                                     [1,         0.68189],
+    #                                                     [1] ] ]
     ############################################
     # Choose parameters to perform the
     # likelihood scan for
@@ -237,10 +256,10 @@ def getconfig():
     ############################################
     # Change FT basis from "EPM" to "standard"
     ############################################
-    configdict["changeFTbasis"] = {}
+    #configdict["changeFTbasis"] = {}
     #configdict["changeFTbasis"] = {"p0_OS"       : configdict["Taggers"]["Signal"]["OS"]["Calibration"]["avgeta"], #p0 = p0EPM + <eta>
     #                               "p1_OS"       : [1.0] } #p1 = p1EPM + 1 
-    configdict["changeFTbasis"] = {"p0_SS"       : configdict["Taggers"]["Signal"]["SS"]["Calibration"]["avgeta"], #p0 = p0EPM + <eta>
-                                   "p1_SS"       : [1.0] } #p1 = p1EPM + 1 
+    #configdict["changeFTbasis"] = {"p0_SS"       : configdict["Taggers"]["Signal"]["SS"]["Calibration"]["avgeta"], #p0 = p0EPM + <eta>
+    #                               "p1_SS"       : [1.0] } #p1 = p1EPM + 1 
 
     return configdict

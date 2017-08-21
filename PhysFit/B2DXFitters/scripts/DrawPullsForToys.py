@@ -108,7 +108,7 @@ gStyle.SetOptFit(1011)
 # Common input stuff and options
 massfitdescr=''
 timefitdescr=''
-nickname='Bd2DPiMCFilteredS21RunIBothLargeTime'
+nickname='Bd2DPiMCFilteredS21RunIBothTaggedOnlyShortTime'
 corrplots = True
 
 #Uncomment this for mass fit
@@ -125,10 +125,10 @@ corrplots = True
 #selection = 'MINUITStatus == 0 && edm!=0'
 
 #Uncomment this for Bootstrap MC
-timefitdescr='SSbarAccAsymmFloatDMGammaConstrSSTaggedOnly'
+timefitdescr='SSbarAccAsymmFloatDMGammaConstrOSTaggedOnlyRLOGITResampleFixPars'
 inputfile = '/eos/lhcb/wg/b2oc/TD_DPi_3fb/MCBootstrap/'+nickname+'/TimeFit/'+timefitdescr+'/PullTreeTimeFit_'+nickname+'_'+timefitdescr+'.root'
 outputdir = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/MCBootstrap/'+nickname+'/TimePulls/'+timefitdescr+'/'
-selection = 'MINUITStatus == 0 && edm!=0 && CovQual==3 && Gamma_fit>0.62'
+selection = 'MINUITStatus == 0 && edm!=0 && CovQual==3'
 
 #Leave as it is
 inputFile = TFile.Open(inputfile,"READ")

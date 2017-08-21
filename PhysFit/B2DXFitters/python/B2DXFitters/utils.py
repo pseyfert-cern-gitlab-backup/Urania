@@ -301,6 +301,32 @@ def TreeLeavesToPy(type):
             
         return typecode
 
+def SymmetrizeTriangularMatrix(matrix):
+    """
+    Create a symmetric matrix out of a triangular matrix.
+    It is assumed that the upper-right part of the matrix is given as input.
+    If a full n X n matrix is given, the lower-left triangle is overwritten to force symmetry
+    """
+
+    import copy
+    
+    print "utils.SymmetrizeTriangularMatrix(...) ==> Start creating symmetric matrix"
+
+    newmatrix = copy.deepcopy( matrix )
+    
+    n = len(matrix)
+    if n != len(matrix[0]):
+        raise ValueError("utils.SymmetrizeTriangularMatrix(...) ==> Numbers of columns and rows mismatch")
+
+    for irow in xrange(1, n): #row 0 is already filled
+        for icol in xrange(irow-1, -1, -1):
+            newmatrix[irow] = [ newmatrix[icol][irow] ] + newmatrix[irow]
+
+    print "utils.SymmetrizeTriangularMatrix(...) ==> New symmetric matrix"
+    print newmatrix
+    
+    return newmatrix
+
 def BuildMultivarGaussFromCorrMat(ws, name, paramnamelist, errors, correlation, regularise = True):
     """
     Build multivariate gaussian starting from errors and correlation matrix.
@@ -319,6 +345,9 @@ def BuildMultivarGaussFromCorrMat(ws, name, paramnamelist, errors, correlation, 
     for arg in paramnamelist:
         print arg
         param = ws.obj(arg)
+        if param == None:
+            ws.Print("v")
+            raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Parameter %s does not exist in workspace. Please check its content above' % arg)
         params.add(param)
         mus.add(WS(ws, RooConstVar('%s_mean' % arg, '%s_mean' % arg,
                                    param.getVal())))
@@ -330,7 +359,7 @@ def BuildMultivarGaussFromCorrMat(ws, name, paramnamelist, errors, correlation, 
         if errors[i] <= 0.:
             raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Errors must be positive')
         cov[i][i] = errors[i] * errors[i]
-    correl = correlation
+    correl = SymmetrizeTriangularMatrix(correlation)
     for i in xrange(0, n):
         if abs(correl[i][i] - 1.) > 1e-15:
             raise ValueError('utils.BuildMultivarGaussFromCorrMat(...) ==> Correlation matrix has invalid element on diagonal')

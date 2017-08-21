@@ -364,6 +364,12 @@ def buildBDecayTimePdf(
                 for c in range(0, glm.coefficients().getSize()):
                     glm.coefficients().at(c).setConstant(True)
                     glm.delta_coefficients().at(c).setConstant(True)
+            else:
+                if config['Debug']:
+                    print "timepdfutils_Bd.buildBDecayTimePdf(..)=> Floating calibration coefficients..."
+                for c in range(0, glm.coefficients().getSize()):
+                    glm.coefficients().at(c).setConstant(False)
+                    glm.delta_coefficients().at(c).setConstant(False)
             
             omega_b = glm.b_mistag()
             otherargs += [omega_b]
