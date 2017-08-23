@@ -8,6 +8,7 @@
 	- Yandex ProbNN variables added.
 	- New J/psi -> mu mu sample added with no pT cut on the muons (load with Mu_nopt).
 	- New muonIDPlusBDT variable added.
+	- Access to 2015 TurCal electrons and 2016 S28 electrons added. Accessed on EOS via their own functions. 
 
 ! 2017-07-13 - Donal Hill
 	- Removed PID printing at end of MakePerfHistsRunRange.py

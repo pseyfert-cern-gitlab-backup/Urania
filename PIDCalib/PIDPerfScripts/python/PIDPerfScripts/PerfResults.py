@@ -162,10 +162,14 @@ def PlotVarsAndReturn( PartName, PlotVars, StripVer, MagPolarity,
     #======================================================================
     #files = GetFiles(StripVer,MagPolarity,PartName,runMin,runMax,maxFiles,verbose)
     
-    if "Turbo" not in StripVer:
+    #Run 1 file access
+    if "Turbo" not in StripVer and "Electron" not in StripVer:
     	files = GetFiles(StripVer,MagPolarity,PartName,runMin,runMax,maxFiles,verbose)
+    #Run 2 file access (not for 2015 and 2016 electrons)
     elif "Turbo" in StripVer:
     	files = GetWGPFiles(StripVer,MagPolarity,verbose)
+    elif "Electron" in StripVer:
+    	files = GetElectronFiles(StripVer,MagPolarity,verbose)
 
     index = 0;
     for file in files:
@@ -299,10 +303,13 @@ def GetPerfPlotList( PerfFunc,
     #======================================================================
     
     #Use GetFiles function for Run I data
-    if "Turbo" not in StripVer:
+    if "Turbo" not in StripVer and "Electron" not in StripVer:
     	files = GetFiles(StripVer,MagPolarity,PartName,runMin,runMax,maxFiles,verbose)
     elif "Turbo" in StripVer:
     	files = GetWGPFiles(StripVer,MagPolarity,verbose)
+    elif "Electron" in StripVer:
+    	files = GetElectronFiles(StripVer,MagPolarity,verbose)
+    	
     for file in files:
     	#Now pass in all of the variables used, in order to filter them from the WGP nTuple
         DataSet = GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, PIDCutString, xBin, yBin, zBin, file, verbose,

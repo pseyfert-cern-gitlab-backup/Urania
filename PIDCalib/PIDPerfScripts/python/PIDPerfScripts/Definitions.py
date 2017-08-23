@@ -283,12 +283,12 @@ def CheckMagPol(MagPol):
 
 def CheckStripVer(StripVer):
     ValidStripVers=("13b", "15", "17", "20", "20r1", "20_MCTuneV2","23_MCTuneV1","26",
-         "20r1_MCTuneV2","20_MCTunev3", "21r1","21","22", "23Val","23","5TeV","21_MCTuneV4","21r1_MCTuneV4","Turbo15","Turbo16","pATurbo15","ApTurbo15","pATurbo16","ApTurbo16")
+         "20r1_MCTuneV2","20_MCTunev3", "21r1","21","22", "23Val","23","5TeV","21_MCTuneV4","21r1_MCTuneV4","Turbo15","Turbo16","pATurbo15","ApTurbo15","pATurbo16","ApTurbo16","Electron15","Electron16")
     if StripVer=='23':
        msg=("""
             Attention: Stripping 23 is now replaced by Stripping 23_MCTuneV1. Please specify 23_MCTuneV1 as sample version.""")
        raise TypeError(msg)
-    if StripVer=='23_MCTuneV1' or StripVer=='26' or StripVer=='Turbo15' or StripVer=='Turbo16' or StripVer=='pATurbo15' or StripVer=='ApTurbo15' or StripVer=='pATurbo16' or StripVer=='ApTurbo16':
+    if StripVer=='23_MCTuneV1' or StripVer=='26' or StripVer=='Turbo15' or StripVer=='Turbo16' or StripVer=='pATurbo15' or StripVer=='ApTurbo15' or StripVer=='pATurbo16' or StripVer=='ApTurbo16' or StripVer=='Electron15' or StripVer=='Electron16':
        print "***************************************************************************************************************************"
        print "INFO : ProbNN versions MC12TuneV2 and MC12TuneV3 should not be used for Run 2 data - advise to use MC12TuneV4 or MC15TuneV1" 
        print "***************************************************************************************************************************"
@@ -299,6 +299,7 @@ def CheckStripVer(StripVer):
 
 def CheckStripVerPartNameMagPol(StripVer,PartName,MagPol):
     Valid_pA_Ap_PartNames = ["K","P","Pi","Mu"]
+    Valid_Electron_PartNames = ["e_B_Jpsi"]
     if 'pA' in StripVer or 'Ap' in StripVer:
     	if 'Up' in MagPol:
     		msg=("MagUp data does not exist in the pA/Ap dataset. Please select MagDown and run again.")
@@ -306,6 +307,10 @@ def CheckStripVerPartNameMagPol(StripVer,PartName,MagPol):
     	if PartName not in Valid_pA_Ap_PartNames:
             msg=("Invalid choice of sample for pA/Ap data. Please use one of the following: K, Pi, Mu, P")
             raise TypeError(msg)
+    if 'Electron' in StripVer:
+    	if PartName not in Valid_Electron_PartNames:
+    		msg=("Invalid choice of sample for 2015/2016 electron data. Please use the following: e_B_Jpsi")
+    		raise TypeError(msg)
 
 
 def CheckVarName(VarName):

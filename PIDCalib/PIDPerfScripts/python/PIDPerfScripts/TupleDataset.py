@@ -277,7 +277,7 @@ vars_dataset = {
 datasets = {
   'DSt_Pi' : ["DSt_PiMTuple", "DSt_PiPTuple"],
   'DSt_K'  : ["DSt_KPTuple", "DSt_KMTuple"],
-  'Lam0_P' : ["Lam0_PTuple", "Lam0_PbarTuple", "Lam0_HPT_PTuple", "Lam0_HPT_PbarTuple", "Lam0_VHPT_PTuple", "Lam0_VHPT_PbarTuple"],
+  'Lam0_P' : ["Lam0LL_PTuple", "Lam0LL_PbarTuple", "Lam0LL_HPT_PTuple", "Lam0LL_HPT_PbarTuple", "Lam0LL_VHPT_PTuple", "Lam0LL_VHPT_PbarTuple"],
   'Jpsi_Mu': ["Jpsi_MuPTuple", "Jpsi_MuMTuple"],
   #Jpsi with no pT cut
   'Jpsi_nopt_Mu' : ["Jpsinopt_MuPTuple", "Jpsinopt_MuMTuple"],
@@ -331,7 +331,13 @@ def getDataSetFromTuple ( file, mother, part, trackcuts, pidcuts, xvar, yvar, zv
     listOfVars = RooArgSet()
   	
     tree = ROOT.TChain()
-    tree.Add(file+"/"+dataset+"/DecayTree")
+    
+    #Check if the file path contains "electrons"
+    #if it does, this is the 2015/2016 electron sample and has only "DecayTree" in the nTuple name
+    if "electrons" not in file:
+    	tree.Add(file+"/"+dataset+"/DecayTree")
+    else:
+    	tree.Add(file+"/DecayTree")
     
     #Check if the tree has any entries in it
     if tree.GetEntries() == 0:

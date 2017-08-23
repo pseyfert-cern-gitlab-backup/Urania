@@ -62,10 +62,11 @@ def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,PIDCutString,xBin,yBin,z
                allowMissingDataSets=False, minEntries=1):
                
     #If Run I data has been requested and MC12TuneV4 or MC15TuneV1 ProbNN cut used, return error
-    if 'Turbo' not in StripVer:
+    if 'Turbo' not in StripVer and 'Electron' not in StripVer:
     	if 'MC12TuneV4' in PIDCutString or 'MC15TuneV1' in PIDCutString:
     		raise RooWorkspaceError("Cannot use MC12TuneV4 or MC15TuneV1 ProbNN for Run 1 data. Please use MC12TuneV2 or MC12TuneV3")
 
+	
     RecoVer = GetRecoVer(StripVer)
 
     if verbose:
@@ -89,6 +90,7 @@ def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,PIDCutString,xBin,yBin,z
 
     #In the case of Run II data, read the WGP nTuple and convert to RooDataSet
     CheckPartType(PartName)
+    CheckStripVerPartNameMagPol(StripVer,PartName,MagPolarity)
     PartType = GetRealPartType(PartName)
     DataSetNameDict = GetDataSetNameDictionary(PartName)
 
@@ -283,6 +285,29 @@ def GetWGPFiles(StripVer,MagPolarity,verbose=False):
 	
     return newFileList
 
+########################################################
+### 2015 and 2016 ELECTRON ACCESS WITH THIS FUNCTION ###
+########################################################
+def GetElectronFiles(StripVer,MagPolarity,verbose=False):
+
+	year = ''
+	mag = ''
+	
+	if StripVer=='Electron15':
+		year = '2015'
+	elif StripVer=='Electron16':
+		year = '2016'
+	
+	if MagPolarity=='MagUp':
+		mag = 'MU'
+	elif MagPolarity=='MagDown':
+		mag = 'MD'
+	
+	newFileList = []
+	
+	newFileList += ['/eos/lhcb/wg/PID/PIDCalib_'+year+'_electrons/pidcalib_BJpsiEE_'+mag+'.root']
+	
+	return newFileList
 
 #############################################
 ### RUN I FILE ACCESS WITH THIS FUNCTION ####
