@@ -311,6 +311,11 @@ def CheckStripVerPartNameMagPol(StripVer,PartName,MagPol):
     	if PartName not in Valid_Electron_PartNames:
     		msg=("Invalid choice of sample for 2015/2016 electron data. Please use the following: e_B_Jpsi")
     		raise TypeError(msg)
+    #Check if the user has selected Turbo15 and Turbo16 along with e_B_Jpsi. Warn them to use Electron15 or Electron16 instead.
+    if 'Turbo15' in StripVer or 'Turbo16' in StripVer:
+    	if PartName in Valid_Electron_PartNames:
+    		msg=("The electron samples in Turbo15/Turbo16 should NOT be used! Please switch to using Electron15/Electron16")
+    		raise TypeError(msg)
 
 
 def CheckVarName(VarName):
