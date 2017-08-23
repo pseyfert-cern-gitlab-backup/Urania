@@ -33,6 +33,44 @@ class var:
 # {particle} = "probe" in WGP nTuples
     
 vars_dataset = {
+  ### New Yandex ProbNN variables
+  'MC15TuneDNNV1_ProbNNe':          var('{particle}_DNNV1ProbNNe',     '{particle}_MC15TuneDNNV1_ProbNNe',      'var'),
+  'Brunel_MC15TuneDNNV1_ProbNNe':          var('{particle}_Brunel_DNNV1ProbNNe',     '{particle}_Brunel_MC15TuneDNNV1_ProbNNe',     'var'),
+  'MC15TuneDNNV1_ProbNNmu':          var('{particle}_DNNV1ProbNNmu',     '{particle}_MC15TuneDNNV1_ProbNNmu',      'var'),
+  'Brunel_MC15TuneDNNV1_ProbNNmu':          var('{particle}_Brunel_DNNV1ProbNNmu',     '{particle}_Brunel_MC15TuneDNNV1_ProbNNmu',      'var'),
+  'MC15TuneDNNV1_ProbNNpi':          var('{particle}_DNNV1ProbNNpi',     '{particle}_MC15TuneDNNV1_ProbNNpi',      'var'),
+  'Brunel_MC15TuneDNNV1_ProbNNpi':          var('{particle}_Brunel_DNNV1ProbNNpi',     '{particle}_Brunel_MC15TuneDNNV1_ProbNNpi',      'var'),
+  'MC15TuneDNNV1_ProbNNK':          var('{particle}_DNNV1ProbNNK',     '{particle}_MC15TuneDNNV1_ProbNNk',      'var'),
+  'Brunel_MC15TuneDNNV1_ProbNNK':          var('{particle}_Brunel_DNNV1ProbNNK',     '{particle}_Brunel_MC15TuneDNNV1_ProbNNk',      'var'),
+  'MC15TuneDNNV1_ProbNNp':          var('{particle}_DNNV1ProbNNp',     '{particle}_MC15TuneDNNV1_ProbNNp',      'var'),
+  'Brunel_MC15TuneDNNV1_ProbNNp':          var('{particle}_Brunel_DNNV1ProbNNp',     '{particle}_Brunel_MC15TuneDNNV1_ProbNNp',      'var'),
+  'MC15TuneDNNV1_ProbNNghost':          var('{particle}_DNNV1ProbNNghost',     '{particle}_MC15TuneDNNV1_ProbNNghost',      'var'),
+  'Brunel_MC15TuneDNNV1_ProbNNghost':          var('{particle}_Brunel_DNNV1ProbNNghost',     '{particle}_Brunel_MC15TuneDNNV1_ProbNNghost',      'var'),
+  'MC15TuneFLAT4dV1_ProbNNe':          var('{particle}_FLAT4dV1ProbNNe',     '{particle}_MC15TuneFLAT4dV1_ProbNNe',      'var'),
+  'Brunel_MC15TuneFLAT4dV1_ProbNNe':          var('{particle}_Brunel_FLAT4dV1ProbNNe',     '{particle}_Brunel_MC15TuneFLAT4dV1_ProbNNe',      'var'),
+  'MC15TuneFLAT4dV1_ProbNNmu':          var('{particle}_FLAT4dV1ProbNNmu',     '{particle}_MC15TuneFLAT4dV1_ProbNNmu',      'var'),
+  'Brunel_MC15TuneFLAT4dV1_ProbNNmu':          var('{particle}_Brunel_FLAT4dV1ProbNNmu',     '{particle}_Brunel_MC15TuneFLAT4dV1_ProbNNmu',      'var'),
+  'MC15TuneFLAT4dV1_ProbNNpi':          var('{particle}_FLAT4dV1ProbNNpi',     '{particle}_MC15TuneFLAT4dV1_ProbNNpi',      'var'),
+  'Brunel_MC15TuneFLAT4dV1_ProbNNpi':          var('{particle}_Brunel_FLAT4dV1ProbNNpi',     '{particle}_Brunel_MC15TuneFLAT4dV1_ProbNNpi',      'var'),
+  'MC15TuneFLAT4dV1_ProbNNK':          var('{particle}_FLAT4dV1ProbNNK',     '{particle}_MC15TuneFLAT4dV1_ProbNNk',      'var'),
+  'Brunel_MC15TuneFLAT4dV1_ProbNNK':          var('{particle}_Brunel_FLAT4dV1ProbNNK',     '{particle}_Brunel_MC15TuneFLAT4dV1_ProbNNk',      'var'),
+  'MC15TuneFLAT4dV1_ProbNNp':          var('{particle}_FLAT4dV1ProbNNp',     '{particle}_MC15TuneFLAT4dV1_ProbNNp',      'var'),
+  'Brunel_MC15TuneFLAT4dV1_ProbNNp':          var('{particle}_Brunel_FLAT4dV1ProbNNp',     '{particle}_Brunel_MC15TuneFLAT4dV1_ProbNNp',      'var'),
+  'MC15TuneFLAT4dV1_ProbNNghost':          var('{particle}_FLAT4dV1ProbNNghost',     '{particle}_MC15TuneFLAT4dV1_ProbNNghost',      'var'),
+  'Brunel_MC15TuneFLAT4dV1_ProbNNghost':          var('{particle}_Brunel_FLAT4dV1ProbNNghost',     '{particle}_Brunel_MC15TuneFLAT4dV1_ProbNNghost',      'var'),
+  'MC15TuneCatBoostV1_ProbNNe':          var('{particle}_CatBoostV1ProbNNe',     '{particle}_MC15TuneCatBoostV1_ProbNNe',      'var'),
+  'Brunel_MC15TuneCatBoostV1_ProbNNe':          var('{particle}_Brunel_CatBoostV1ProbNNe',     '{particle}_Brunel_MC15TuneCatBoostV1_ProbNNe',      'var'),
+  'MC15TuneCatBoostV1_ProbNNmu':          var('{particle}_CatBoostV1ProbNNmu',     '{particle}_MC15TuneCatBoostV1_ProbNNmu',      'var'),
+  'Brunel_MC15TuneCatBoostV1_ProbNNmu':          var('{particle}_Brunel_CatBoostV1ProbNNmu',     '{particle}_Brunel_MC15TuneCatBoostV1_ProbNNmu',      'var'),
+  'MC15TuneCatBoostV1_ProbNNpi':          var('{particle}_CatBoostV1ProbNNpi',     '{particle}_MC15TuneCatBoostV1_ProbNNpi',      'var'),
+  'Brunel_MC15TuneCatBoostV1_ProbNNpi':          var('{particle}_Brunel_CatBoostV1ProbNNpi',     '{particle}_Brunel_MC15TuneCatBoostV1_ProbNNpi',      'var'),
+  'MC15TuneCatBoostV1_ProbNNK':          var('{particle}_CatBoostV1ProbNNK',     '{particle}_MC15TuneCatBoostV1_ProbNNk',      'var'),
+  'Brunel_MC15TuneCatBoostV1_ProbNNK':          var('{particle}_Brunel_CatBoostV1ProbNNK',     '{particle}_Brunel_MC15TuneCatBoostV1_ProbNNk',      'var'),
+  'MC15TuneCatBoostV1_ProbNNp':          var('{particle}_CatBoostV1ProbNNp',     '{particle}_MC15TuneCatBoostV1_ProbNNp',      'var'),
+  'Brunel_MC15TuneCatBoostV1_ProbNNp':          var('{particle}_Brunel_CatBoostV1ProbNNp',     '{particle}_Brunel_MC15TuneCatBoostV1_ProbNNp',      'var'),
+  'MC15TuneCatBoostV1_ProbNNghost':          var('{particle}_CatBoostV1ProbNNghost',     '{particle}_MC15TuneCatBoostV1_ProbNNghost',      'var'),
+  'Brunel_MC15TuneCatBoostV1_ProbNNghost':          var('{particle}_Brunel_CatBoostV1ProbNNghost',     '{particle}_Brunel_MC15TuneCatBoostV1_ProbNNghost',      'var'),
+  ###
   'MC12TuneV2_ProbNNe':             var('{particle}_V2ProbNNe',        '{particle}_MC12TuneV2_ProbNNe',        'var'),
   'Brunel_MC12TuneV2_ProbNNe':                   var('{particle}_Brunel_MC12TuneV2_ProbNNe',        '{particle}_Brunel_MC12TuneV2_ProbNNe',        'var'),        
   'MC12TuneV2_ProbNNmu':            var('{particle}_V2ProbNNmu',        '{particle}_MC12TuneV2_ProbNNmu',        'var'),        
@@ -40,7 +78,7 @@ vars_dataset = {
   'MC12TuneV2_ProbNNpi':            var('{particle}_V2ProbNNpi',        '{particle}_MC12TuneV2_ProbNNpi',        'var'),
   'Brunel_MC12TuneV2_ProbNNpi':                  var('{particle}_Brunel_MC12TuneV2_ProbNNpi',        '{particle}_Brunel_MC12TuneV2_ProbNNpi',        'var'),        
   'MC12TuneV2_ProbNNK':             var('{particle}_V2ProbNNK',        '{particle}_MC12TuneV2_ProbNNk',        'var'), #Uppercase K in PIDCalib, lowercase in WGP nTuple 
-  'Brunel_MC12TuneV2_ProbNNK':                   var('{particle}_Brunel_MC12TuneV2_ProbNNk',        '{particle}_Brunel_MC12TuneV2_ProbNNk',        'var'),        
+  'Brunel_MC12TuneV2_ProbNNK':                   var('{particle}_Brunel_V2ProbNNK',        '{particle}_Brunel_MC12TuneV2_ProbNNk',        'var'),        
   'MC12TuneV2_ProbNNp':             var('{particle}_V2ProbNNp',        '{particle}_MC12TuneV2_ProbNNp',        'var'),
   'Brunel_MC12TuneV2_ProbNNp':                   var('{particle}_Brunel_MC12TuneV2_ProbNNp',        '{particle}_Brunel_MC12TuneV2_ProbNNp',        'var'),        
   'MC12TuneV2_ProbNNghost':         var('{particle}_V2ProbNNghost',        '{particle}_MC12TuneV2_ProbNNghost',        'var'),
@@ -105,8 +143,8 @@ vars_dataset = {
   'Brunel_ETA':                                  var('{particle}_Brunel_ETA',        '{particle}_Brunel_ETA',        'var'),        
   'ElectronUnbiased':               var('{particle}_ElectronUnbiased',        '{particle}_ElectronUnbiased',        'var'),
   'Brunel_ElectronUnbiased':                     var('{particle}_Brunel_ElectronUnbiased',        '{particle}_Brunel_ElectronUnbiased',        'var'),
-  'MINIPCHI2':                      var('{particle}_MINIPCHI2',        '{particle}_MINIPCHI2',        'var'),        
-  'Brunel_MINIPCHI2':                            var('{particle}_Brunel_MINIPCHI2',        '{particle}_Brunel_MINIPCHI2',        'var'),        
+  'IPCHI2':                      var('{particle}_IPCHI2',        '{particle}_IPCHI2',        'var'),        
+  'Brunel_IPCHI2':                            var('{particle}_Brunel_IPCHI2',        '{particle}_Brunel_IPCHI2',        'var'),        
   'MuonBgLL':                       var('{particle}_MuonBgLL',        '{particle}_MuonBgLL',        'var'),        
   'Brunel_MuonBgLL':                             var('{particle}_Brunel_MuonBgLL',        '{particle}_Brunel_MuonBgLL',        'var'),        
   'MuonMuLL':                       var('{particle}_MuonMuLL',        '{particle}_MuonMuLL',        'var'),        
@@ -205,7 +243,34 @@ vars_dataset = {
   'nTracks':            		  var('nTracks',        'nTracks',        'var'),         
   'nVeloClusters':                var('nVeloClusters',    'nVeloClusters',    'var'),
   'nVeloClusters_Brunel':         var('nVeloClusters_Brunel',    'nVeloClusters_Brunel',    'var'),
-  'sweight':            		  var('nsig_sw', '{particle}_sWeight',        'var')
+  'sweight':            		  var('nsig_sw', '{particle}_sWeight',        'var'),
+  'HasBremAdded':                   var('{particle}_HasBremAdded',        '{particle}_HasBremAdded',        'var'),
+  'Brunel_HasBremAdded':                         var('{particle}_Brunel_HasBremAdded',        '{particle}_Brunel_HasBremAdded',        'var'),        
+  'BremMultiplicity':               var('{particle}_BremMultiplicity',        '{particle}_BremMultiplicity',        'var'),        
+  'Brunel_BremMultiplicity':                     var('{particle}_Brunel_BremMultiplicity',        '{particle}_Brunel_BremMultiplicity',        'var'),        
+  'BremPE':                         var('{particle}_BremPE',        '{particle}_BremPE',        'var'),           
+  'Brunel_BremPE':                               var('{particle}_Brunel_BremPE',        '{particle}_Brunel_BremPE',        'var'),        
+  'BremPX':                         var('{particle}_BremPX',        '{particle}_BremPX',        'var'),         
+  'Brunel_BremPX':                               var('{particle}_Brunel_BremPX',        '{particle}_Brunel_BremPX',        'var'),        
+  'BremPY':                         var('{particle}_BremPY',        '{particle}_BremPY',        'var'),           
+  'Brunel_BremPY':                               var('{particle}_Brunel_BremPY',        '{particle}_Brunel_BremPY',        'var'),        
+  'BremPZ':                         var('{particle}_BremPZ',        '{particle}_BremPZ',        'var'),         
+  'Brunel_BremPZ':                               var('{particle}_Brunel_BremPZ',        '{particle}_Brunel_BremPZ',        'var'),        
+  'BremOriginX':                    var('{particle}_BremOriginX',        '{particle}_BremOriginX',        'var'),
+  'Brunel_BremOriginX':                          var('{particle}_Brunel_BremOriginX',        '{particle}_Brunel_BremOriginX',        'var'),        
+  'BremOriginY':                    var('{particle}_BremOriginY',        '{particle}_BremOriginY',        'var'),
+  'Brunel_BremOriginY':                          var('{particle}_Brunel_BremOriginY',        '{particle}_Brunel_BremOriginY',        'var'),        
+  'BremOriginZ':                    var('{particle}_BremOriginZ',        '{particle}_BremOriginZ',        'var'),
+  'Brunel_BremOriginZ':                          var('{particle}_Brunel_BremOriginZ',        '{particle}_Brunel_BremOriginZ',        'var'),  
+  'MuonProbe':                      var('{particle}_MuonProbe',        '{particle}_MuonProbe',        'var'),        
+  'Brunel_MuonProbe':                            var('{particle}_Brunel_MuonProbe',        '{particle}_Brunel_MuonProbe',        'var'),        
+  'MuonTOS':                        var('{particle}_MuonTOS',        '{particle}_MuonTOS',        'var'),        
+  'Brunel_MuonTOS':                              var('{particle}_Brunel_MuonTOS',        '{particle}_Brunel_MuonTOS',        'var'),        
+  'MuonTag':                        var('{particle}_MuonTag',        '{particle}_MuonTag',        'var'),          
+  'Brunel_MuonTag':                              var('{particle}_Brunel_MuonTag',        '{particle}_Brunel_MuonTag',        'var'),  
+  #New muonID BDT
+  'muonIDPlusBDT':                  var('{particle}_muonIDPlusBDT',  '{particle}_muonIDPlusBDT',   'var'),
+  'Brunel_muonIDPlusBDT':                  var('{particle}_Brunel_muonIDPlusBDT',  '{particle}_Brunel_muonIDPlusBDT',   'var')
   }
 
 
@@ -214,6 +279,8 @@ datasets = {
   'DSt_K'  : ["DSt_KPTuple", "DSt_KMTuple"],
   'Lam0_P' : ["Lam0_PTuple", "Lam0_PbarTuple", "Lam0_HPT_PTuple", "Lam0_HPT_PbarTuple", "Lam0_VHPT_PTuple", "Lam0_VHPT_PbarTuple"],
   'Jpsi_Mu': ["Jpsi_MuPTuple", "Jpsi_MuMTuple"],
+  #Jpsi with no pT cut
+  'Jpsi_nopt_Mu' : ["Jpsinopt_MuPTuple", "Jpsinopt_MuMTuple"],
   'LcfB_P' : ["LbLcMu_PTuple", "LbLcMu_PbarTuple"],
   'Sigmac0_P': ["Sigmac0_PbarTuple","Sigmac0_PTuple"],
   'DsPhi_K': ["DsPhi_KPTuple","DsPhi_KMTuple"],
@@ -230,89 +297,23 @@ datasets = {
   'B_Jpsi_e': ["B_Jpsi_EPTuple","B_Jpsi_EMTuple"]
 }
 
-#Add the Brem variables to everything apart from Lam0_P sample, and add certain muon variables only to the Jpsi_Mu
-additionalVariables = {
-  'DSt_K' :  {
-  	'HasBremAdded':                   var('{particle}_HasBremAdded',        '{particle}_HasBremAdded',        'var'),
-  	'Brunel_HasBremAdded':                         var('{particle}_Brunel_HasBremAdded',        '{particle}_Brunel_HasBremAdded',        'var'),        
-  	'BremMultiplicity':               var('{particle}_BremMultiplicity',        '{particle}_BremMultiplicity',        'var'),        
-  	'Brunel_BremMultiplicity':                     var('{particle}_Brunel_BremMultiplicity',        '{particle}_Brunel_BremMultiplicity',        'var'),        
-  	'BremPE':                         var('{particle}_BremPE',        '{particle}_BremPE',        'var'),           
-  	'Brunel_BremPE':                               var('{particle}_Brunel_BremPE',        '{particle}_Brunel_BremPE',        'var'),        
-  	'BremPX':                         var('{particle}_BremPX',        '{particle}_BremPX',        'var'),         
-  	'Brunel_BremPX':                               var('{particle}_Brunel_BremPX',        '{particle}_Brunel_BremPX',        'var'),        
-  	'BremPY':                         var('{particle}_BremPY',        '{particle}_BremPY',        'var'),           
-  	'Brunel_BremPY':                               var('{particle}_Brunel_BremPY',        '{particle}_Brunel_BremPY',        'var'),        
-  	'BremPZ':                         var('{particle}_BremPZ',        '{particle}_BremPZ',        'var'),         
-  	'Brunel_BremPZ':                               var('{particle}_Brunel_BremPZ',        '{particle}_Brunel_BremPZ',        'var'),        
-  	'BremOriginX':                    var('{particle}_BremOriginX',        '{particle}_BremOriginX',        'var'),
-  	'Brunel_BremOriginX':                          var('{particle}_Brunel_BremOriginX',        '{particle}_Brunel_BremOriginX',        'var'),        
-  	'BremOriginY':                    var('{particle}_BremOriginY',        '{particle}_BremOriginY',        'var'),
-  	'Brunel_BremOriginY':                          var('{particle}_Brunel_BremOriginY',        '{particle}_Brunel_BremOriginY',        'var'),        
-  	'BremOriginZ':                    var('{particle}_BremOriginZ',        '{particle}_BremOriginZ',        'var'),
-  	'Brunel_BremOriginZ':                          var('{particle}_Brunel_BremOriginZ',        '{particle}_Brunel_BremOriginZ',        'var'),      
-  },
-  'DSt_Pi' :  {
-  	'HasBremAdded':                   var('{particle}_HasBremAdded',        '{particle}_HasBremAdded',        'var'),
-  	'Brunel_HasBremAdded':                         var('{particle}_Brunel_HasBremAdded',        '{particle}_Brunel_HasBremAdded',        'var'),        
-  	'BremMultiplicity':               var('{particle}_BremMultiplicity',        '{particle}_BremMultiplicity',        'var'),        
-  	'Brunel_BremMultiplicity':                     var('{particle}_Brunel_BremMultiplicity',        '{particle}_Brunel_BremMultiplicity',        'var'),        
-  	'BremPE':                         var('{particle}_BremPE',        '{particle}_BremPE',        'var'),           
-  	'Brunel_BremPE':                               var('{particle}_Brunel_BremPE',        '{particle}_Brunel_BremPE',        'var'),        
-  	'BremPX':                         var('{particle}_BremPX',        '{particle}_BremPX',        'var'),         
-  	'Brunel_BremPX':                               var('{particle}_Brunel_BremPX',        '{particle}_Brunel_BremPX',        'var'),        
-  	'BremPY':                         var('{particle}_BremPY',        '{particle}_BremPY',        'var'),           
-  	'Brunel_BremPY':                               var('{particle}_Brunel_BremPY',        '{particle}_Brunel_BremPY',        'var'),        
-  	'BremPZ':                         var('{particle}_BremPZ',        '{particle}_BremPZ',        'var'),         
-  	'Brunel_BremPZ':                               var('{particle}_Brunel_BremPZ',        '{particle}_Brunel_BremPZ',        'var'),        
-  	'BremOriginX':                    var('{particle}_BremOriginX',        '{particle}_BremOriginX',        'var'),
-  	'Brunel_BremOriginX':                          var('{particle}_Brunel_BremOriginX',        '{particle}_Brunel_BremOriginX',        'var'),        
-  	'BremOriginY':                    var('{particle}_BremOriginY',        '{particle}_BremOriginY',        'var'),
-  	'Brunel_BremOriginY':                          var('{particle}_Brunel_BremOriginY',        '{particle}_Brunel_BremOriginY',        'var'),        
-  	'BremOriginZ':                    var('{particle}_BremOriginZ',        '{particle}_BremOriginZ',        'var'),
-  	'Brunel_BremOriginZ':                          var('{particle}_Brunel_BremOriginZ',        '{particle}_Brunel_BremOriginZ',        'var'),      
-  },
-  'Jpsi_Mu' :  {
-  	'HasBremAdded':                   var('{particle}_HasBremAdded',        '{particle}_HasBremAdded',        'var'),
-  	'Brunel_HasBremAdded':                         var('{particle}_Brunel_HasBremAdded',        '{particle}_Brunel_HasBremAdded',        'var'),        
-  	'BremMultiplicity':               var('{particle}_BremMultiplicity',        '{particle}_BremMultiplicity',        'var'),        
-  	'Brunel_BremMultiplicity':                     var('{particle}_Brunel_BremMultiplicity',        '{particle}_Brunel_BremMultiplicity',        'var'),        
-  	'BremPE':                         var('{particle}_BremPE',        '{particle}_BremPE',        'var'),           
-  	'Brunel_BremPE':                               var('{particle}_Brunel_BremPE',        '{particle}_Brunel_BremPE',        'var'),        
-  	'BremPX':                         var('{particle}_BremPX',        '{particle}_BremPX',        'var'),         
-  	'Brunel_BremPX':                               var('{particle}_Brunel_BremPX',        '{particle}_Brunel_BremPX',        'var'),        
-  	'BremPY':                         var('{particle}_BremPY',        '{particle}_BremPY',        'var'),           
-  	'Brunel_BremPY':                               var('{particle}_Brunel_BremPY',        '{particle}_Brunel_BremPY',        'var'),        
-  	'BremPZ':                         var('{particle}_BremPZ',        '{particle}_BremPZ',        'var'),         
-  	'Brunel_BremPZ':                               var('{particle}_Brunel_BremPZ',        '{particle}_Brunel_BremPZ',        'var'),        
-  	'BremOriginX':                    var('{particle}_BremOriginX',        '{particle}_BremOriginX',        'var'),
-  	'Brunel_BremOriginX':                          var('{particle}_Brunel_BremOriginX',        '{particle}_Brunel_BremOriginX',        'var'),        
-  	'BremOriginY':                    var('{particle}_BremOriginY',        '{particle}_BremOriginY',        'var'),
-  	'Brunel_BremOriginY':                          var('{particle}_Brunel_BremOriginY',        '{particle}_Brunel_BremOriginY',        'var'),        
-  	'BremOriginZ':                    var('{particle}_BremOriginZ',        '{particle}_BremOriginZ',        'var'),
-  	'Brunel_BremOriginZ':                          var('{particle}_Brunel_BremOriginZ',        '{particle}_Brunel_BremOriginZ',        'var'),  
-  	'MuonProbe':                      var('{particle}_MuonProbe',        '{particle}_MuonProbe',        'var'),        
-  	'Brunel_MuonProbe':                            var('{particle}_Brunel_MuonProbe',        '{particle}_Brunel_MuonProbe',        'var'),        
-  	'MuonTOS':                        var('{particle}_MuonTOS',        '{particle}_MuonTOS',        'var'),        
-  	'Brunel_MuonTOS':                              var('{particle}_Brunel_MuonTOS',        '{particle}_Brunel_MuonTOS',        'var'),        
-  	'MuonTag':                        var('{particle}_MuonTag',        '{particle}_MuonTag',        'var'),          
-  	'Brunel_MuonTag':                              var('{particle}_Brunel_MuonTag',        '{particle}_Brunel_MuonTag',        'var'),  
-  }
-}
-
 def getDataSetFromTuple ( file, mother, part, trackcuts, pidcuts, xvar, yvar, zvar):
 
   
   datasetname = mother + "_" + part
+  
 
   if datasetname not in datasets:
     print "Cannot configure dataset " + datasetname + ", not in Turbo stream"
     return RooDataSet()
 
-  vars = copy(vars_dataset)
-  if datasetname in additionalVariables:
-    vars.update ( additionalVariables[datasetname] )
-    
+  vars = {} 
+  vars.update(vars_dataset)
+
+  #if datasetname in additionalVariables:
+  #  add_vars = additionalVariables[datasetname]
+  #  vars.update(add_vars)
+  
   tempdir = tempfile.mkdtemp()
   print "Creating temporary directory: "+tempdir
   tmp = ROOT.TFile.Open(tempdir+"/tmpPidCalib_"+datasetname+".root","RECREATE")
@@ -373,7 +374,7 @@ def getDataSetFromTuple ( file, mother, part, trackcuts, pidcuts, xvar, yvar, zv
         roovars [ varRoo.GetName() ] = varRoo
         listOfVars.add ( varRoo )
       if not b:
-        print "Cannot load branch " + varname + " from TTree: " + datasetname
+        #print "Cannot load branch " + varname + " from TTree: " + datasetname
         continue
           
     data = RooDataSet("data","data",tree.CloneTree(),listOfVars)

@@ -229,6 +229,7 @@ def GetWGPFiles(StripVer,MagPolarity,verbose=False):
     reco = ''
     turbo = ''
     version = ''
+    merge = ''
     if StripVer=="Turbo15" or StripVer=="Turbo16":
     	############
     	### 2015 ###
@@ -236,14 +237,16 @@ def GetWGPFiles(StripVer,MagPolarity,verbose=False):
     	if year == '15':
     		reco = '15a'
     		turbo = '02'
-    		version = '4r1'
+    		version = '5r1'
+    		merge = '05'
     	############
     	### 2016 ###
     	############
     	elif year == '16':
     		reco = '16'
     		turbo = '02a'
-    		version = '4r1'
+    		version = '5r1'
+    		merge = '05'
     	
     elif StripVer=="pATurbo15" or StripVer=="pATurbo16" or StripVer=="ApTurbo15" or StripVer=="ApTurbo16":	
     	############
@@ -253,6 +256,7 @@ def GetWGPFiles(StripVer,MagPolarity,verbose=False):
     		reco = '15pLead'
     		turbo = '03pLead'
     		version = '5r0'
+    		merge = '01'
     	############
     	### 2016 ###
     	############
@@ -260,8 +264,9 @@ def GetWGPFiles(StripVer,MagPolarity,verbose=False):
     		reco = '16pLead'
     		turbo = '03pLead'
     		version = '5r0'
+    		merge = '01'
 
-    bkDict[ 'ProcessingPass' ] = '/Real Data/Reco'+reco+'/Turbo'+turbo+'/PIDCalibTuples'+version+'/PIDMerge01'
+    bkDict[ 'ProcessingPass' ] = '/Real Data/Reco'+reco+'/Turbo'+turbo+'/PIDCalibTuples'+version+'/PIDMerge'+merge
     
     file = bkClient.getFilesWithGivenDataSets(bkDict)
 	#file = bkClient.getVisibleFilesWithMetadata(bkDict)

@@ -54,7 +54,7 @@ def GetProtonPIDRealPartTypes():
 
 def GetMuonPIDPartTypes():
     return GetMuonPIDRealPartTypes()+tuple(['{0}_MuonUnBiased'.format(
-        p) for p in GetRICHPIDRealPartTypes()]) + ("Mu_B_Jpsi",)
+        p) for p in GetRICHPIDRealPartTypes()]) + ("Mu_B_Jpsi","Mu_nopt")
 
 def GetRealPartTypes():
     return GetRICHPIDRealPartTypes()+GetMuonPIDRealPartTypes()
@@ -111,6 +111,9 @@ def GetMotherName(PartName):
         return 'TotLc'
     elif PartName == 'P_IncLc':
         return 'IncLc'
+    #New Jpsi muon sample with no pT cut 
+    elif PartName == 'Mu_nopt':
+    	return 'Jpsi_nopt'
     else:
         return 'Jpsi'
 
