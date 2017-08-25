@@ -74,13 +74,15 @@ if not infilename :
   for i in sorted(Config.configs.keys()) : 
     if i in ConfigMCSim09.configs.keys() : 
       print "    ", i
-  quit()
+
+  # Exit politely
+  sys.exit(0)
 
 if simversion == "sim08" : ConfigMC = ConfigMCSim08
 elif simversion == "sim09" : ConfigMC = ConfigMCSim09
 else : 
   print "Simulation version %s unknown" % simversion
-  quit()
+  sys.exit(1)
 
 if variant == "default" : variant = "distrib"  # to do: change this name in CreatePIDPdf
 
@@ -123,7 +125,7 @@ infile = TFile.Open(infilename)
 tree = infile.Get(intree) 
 if not tree :  
   print "Ntuple not found!"
-  quit()
+  sys.exit(1)
 
 nentries = tree.GetEntries()
 
