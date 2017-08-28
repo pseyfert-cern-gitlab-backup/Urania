@@ -370,11 +370,12 @@ e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
         fnameSuffix+='_{0}'.format(SchemeName)
     for vname in BinVarNames:
       fnameSuffix+='_{0}'.format(vname)
-    if 'Turbo' not in StripVersion:
+    #Add Strip into Run 1 file names
+    if 'Turbo' not in StripVersion and 'Electron' not in StripVersion:
     	fname = "PerfHists_{part}_Strip{strp}_{pol}{suf}.root".format(
         	part=PartName, strp=StripVersion, pol=MagPolarity,
         	suf=fnameSuffix)
-    elif 'Turbo' in StripVersion:
+    else:
     	fname = "PerfHists_{part}_{strp}_{pol}{suf}.root".format(
         	part=PartName, strp=StripVersion, pol=MagPolarity,
         	suf=fnameSuffix)
