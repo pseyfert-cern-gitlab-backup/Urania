@@ -4,6 +4,10 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
+! 2017-08-30 - Vincenzo Battista
+ - Add script to compare two or more measurements by building
+   a chi^2 statistic (ad done by HFLAV).
+
 ! 2017-08-21 - Vincenzo Battista
  - Little updates to time fit script, time pdf and gaussian constrain
    building utilities (mainly to better handle Espresso)
