@@ -48,7 +48,7 @@ limits = None
 if 'limits' in configs[config] : 
   limits = configs[config]['limits']
 
-scr = "bsub -q 2nw lb-run --nightly-cvmfs --nightly lhcb-prerelease Urania/master python %s/PIDPdf.py" % (cwd)
+scr = "bsub -q 2nw lb-run Urania/v7r0 python %s/PIDPdf.py" % (cwd)
 
 ready_list = []
 if "continue" in opt.split(":") : 

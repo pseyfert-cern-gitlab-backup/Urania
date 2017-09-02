@@ -621,4 +621,18 @@ configs = {
     'controlstat' : 5000000, 
     'nbootstrap' : 5
   }, 
+  "mu_CombDLLK" : {
+    "sample" : "mu", 
+    "var" : "Mu_CombDLLK", 
+    "transform_forward"  : "x", 
+    "transform_backward" : "x", 
+    "bins" : 100, 
+    "limits" : (-110., 50.), 
+    'scale_default' : 0.1, 
+    'scale_syst' : 0.15, 
+    'scale_pid' : 1.0, 
+    'toystat' : 10000000, 
+    'controlstat' : 5000000, 
+    'nbootstrap' : 5
+  },
 }

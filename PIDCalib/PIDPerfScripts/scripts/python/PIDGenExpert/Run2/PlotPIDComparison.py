@@ -128,7 +128,8 @@ def plotComparison(calibfile, controlfile, outfilename, nbins = 100, pidmin = 0.
     c.cd(n)
     h1 = hists1[n-1]
     h2 = hists2[n-1]
-    h1.Scale(h2.GetSumOfWeights() / h1.GetSumOfWeights() )
+    if h1.GetSumOfWeights()>0. : 
+      h1.Scale(h2.GetSumOfWeights() / h1.GetSumOfWeights() )
     h1.SetLineColor(2)
     h1.GetXaxis().SetTitle(var + "'")
     h1.Draw("h")
