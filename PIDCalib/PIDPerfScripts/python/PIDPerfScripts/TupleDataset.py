@@ -270,7 +270,9 @@ vars_dataset = {
   'Brunel_MuonTag':                              var('{particle}_Brunel_MuonTag',        '{particle}_Brunel_MuonTag',        'var'),  
   #New muonID BDT
   'muonIDPlusBDT':                  var('{particle}_muonIDPlusBDT',  '{particle}_muonIDPlusBDT',   'var'),
-  'Brunel_muonIDPlusBDT':                  var('{particle}_Brunel_muonIDPlusBDT',  '{particle}_Brunel_muonIDPlusBDT',   'var')
+  'Brunel_muonIDPlusBDT':                  var('{particle}_Brunel_muonIDPlusBDT',  '{particle}_Brunel_muonIDPlusBDT',   'var'),
+  #New chi2Corr variable
+  'chi2Corr':                       var('{particle}_chi2Corr',   '{particle}_chi2Corr',   'var')
   }
 
 

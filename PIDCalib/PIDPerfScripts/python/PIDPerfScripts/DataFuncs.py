@@ -62,7 +62,7 @@ def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,PIDCutString,xBin,yBin,z
                allowMissingDataSets=False, minEntries=1):
                
     #If Run I data has been requested and MC12TuneV4 or MC15TuneV1 ProbNN cut used, return error
-    if 'Turbo' not in StripVer and 'Electron' not in StripVer:
+    if 'Turbo' not in StripVer and 'Electron' not in StripVer and 'Test17' not in StripVer:
     	if 'MC12TuneV4' in PIDCutString or 'MC15TuneV1' in PIDCutString:
     		raise RooWorkspaceError("Cannot use MC12TuneV4 or MC15TuneV1 ProbNN for Run 1 data. Please use MC12TuneV2 or MC12TuneV3")
 
@@ -308,6 +308,20 @@ def GetElectronFiles(StripVer,MagPolarity,verbose=False):
 	newFileList += ['/eos/lhcb/wg/PID/PIDCalib_'+year+'_electrons/pidcalib_BJpsiEE_'+mag+'.root']
 	
 	return newFileList
+
+
+##################################################
+### 2017 TEST SAMPLE ACCESS WITH THIS FUNCTION ###
+##################################################
+def GetTest17Files(StripVer,MagPolarity,verbose=False):
+
+	newFileList = []
+	
+	newFileList += ['/eos/lhcb/wg/PID/2017Preliminary/pidcalib.root']
+	
+	return newFileList
+
+
 
 #############################################
 ### RUN I FILE ACCESS WITH THIS FUNCTION ####

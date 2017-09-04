@@ -3,6 +3,10 @@
 ! Responsible : Donal Hill
 ! Purpose     : Scripts using PIDPerfTools to perform PID studies
 !-----------------------------------------------------------------------------
+! 2017-09-04 - Donal Hill
+	- Added option to run on 2017 validation files with "Test2017".
+	- Added chi2Corr variable. 
+
 ! 2017-08-23 - Donal Hill
 	- Updates to run on the 2015 and 2016 legacy productions.
 	- Yandex ProbNN variables added.
