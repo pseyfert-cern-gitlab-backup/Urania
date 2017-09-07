@@ -79,6 +79,8 @@ samples = {
     'datasets': {
                   "MagDown_2016" : "/eos/lhcb/wg/PID/PIDGen/Calibration/Run2/Proton/lcpi_splot_exp16_md.root", 
                   "MagUp_2016"   : "/eos/lhcb/wg/PID/PIDGen/Calibration/Run2/Proton/lcpi_splot_exp16_mu.root", 
+                  "MagDown_2015" : "/eos/lhcb/wg/PID/PIDGen/Calibration/Run2/Proton/lcpi_splot_exp15_md.root", 
+                  "MagUp_2015"   : "/eos/lhcb/wg/PID/PIDGen/Calibration/Run2/Proton/lcpi_splot_exp15_mu.root", 
                 }, 
     'trees'   : ( "wdata",  ), 
     'pt'      : "lp_pt", 
@@ -149,14 +151,27 @@ configs = {
     'controlstat'   :  1000000, 
     'nbootstrap'    :  5
   }, 
+  "p_LbLcPi_MC12TuneV2gt0.05_MC15TuneV1_ProbNNp_Brunel" : {
+    "sample"        :  "p_LbLcPi_Brunel", 
+    "var"           :  "lp_MC15TuneV1_ProbNNp", 
+    "cut"           : "i.lp_MC12TuneV2_ProbNNp>0.05", 
+    "bins"          :  50, 
+    "gamma"         : -0.25, 
+    'scale_default' :  0.75, 
+    'scale_syst'    :  1., 
+    'scale_pid'     :  1.2, 
+    'toystat'       :  2000000, 
+    'controlstat'   :  1000000, 
+    'nbootstrap'    :  5
+  }, 
   "p_LbLcPi_MC15TuneV1_ProbNNp_Brunel" : {
     "sample"        :  "p_LbLcPi_Brunel", 
-    "var"           :  "lp_ProbNNp", 
+    "var"           :  "lp_MC15TuneV1_ProbNNp", 
     "bins"          :  50, 
-    "gamma"         : -0.3, 
-    'scale_default' :  0.5, 
-    'scale_syst'    :  0.75, 
-    'scale_pid'     :  1.5, 
+    "gamma"         : -0.25, 
+    'scale_default' :  0.75, 
+    'scale_syst'    :  1., 
+    'scale_pid'     :  1.2, 
     'toystat'       :  2000000, 
     'controlstat'   :  1000000, 
     'nbootstrap'    :  5
