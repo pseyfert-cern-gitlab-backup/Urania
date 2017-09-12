@@ -53,6 +53,7 @@ nbootstrap = config['nbootstrap']
 sample = config['sample']
 eosrootdir = Config.eosrootdir
 eosdir = Config.eosdir
+tmpdir = Config.tmpdir
 
 file_list = Config.samples[sample]['datasets'].keys()
 
@@ -60,7 +61,8 @@ limits = None
 if 'limits' in config : 
   limits = config['limits']
 
-scr = "bsub -q 1nd lb-run --nightly-cvmfs --nightly lhcb-prerelease Urania/master python %s/PIDPdf.py" % (cwd)
+#scr = "bsub -q 1nd lb-run --nightly-cvmfs --nightly lhcb-prerelease Urania/master python %s/PIDPdf.py" % (cwd)
+scr = "bsub -q 1nd lb-run Urania/v7r0 python %s/PIDPdf.py" % (cwd)
 #scr = "python PIDPdf.py"
 
 # Electron sample needs additional option
