@@ -82,6 +82,19 @@ samples = {
     'eta'     : "eta", 
     'ntracks' : "ntr", 
   
+  }, 
+  "mu" : {
+    'datasets' : {
+      'MagDown_2012' : "tuple_jpsik_mc12_sim09_magdown.root", 
+      'MagUp_2012' : "tuple_jpsik_mc12_sim09_magup.root", 
+      'MagDown_2011' : "tuple_jpsik_mc11_sim09_magdown.root", 
+      'MagUp_2011' : "tuple_jpsik_mc11_sim09_magup.root", 
+    }, 
+    'dir'     : "jpsik", 
+    'tree'    : "jpsik", 
+    'pt'      : ( "mum_PT", "mup_PT" ), 
+    'eta'     : ( "mum_ETA", "mup_ETA" ), 
+    'ntracks' : "nTracks", 
   }
 }
 
@@ -434,4 +447,18 @@ configs = {
 #    'controlstat' : 300000,
 #    'nbootstrap' : 0
 #  },
+  "mu_V3ProbNNmu" : {
+    "sample" : "mu", 
+    "var" : ("mum_V3ProbNNmu", "mup_V3ProbNNmu"), 
+    "bins" : 100, 
+    "transform_forward"  : "1.-(1.-x)**0.25", 
+    "transform_backward" : "(1.-(1.-x)**(1./0.25))", 
+    'scale_default' :1.0, 
+    'scale_syst' : 1.5, 
+    'scale_pid' : 1.0, 
+    'toystat' : 1000000, 
+    'controlstat' : 500000, 
+    'nbootstrap' : 5
+  }, 
+
 }

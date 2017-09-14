@@ -4,12 +4,13 @@ from math import sqrt, log
 
 from Config import *
 
-def convert_single_file(infile, f2, nt2, treenames, pidvar, ptvar, etavar, ntracksvar, weightvar, gamma) :
+def convert_single_file(infile, f2, nt2, treenames, pidvar, ptvar, etavar, ntracksvar, weightvar, gamma, cut = None) :
   f1 = TFile.Open(infile)
   print "file ", infile
   if not f1 : return False
 
   for treename in treenames : 
+    print treename
     nt1 = f1.Get(treename)
     f2.cd()
     nentries = nt1.GetEntries()
@@ -24,11 +25,17 @@ def convert_single_file(infile, f2, nt2, treenames, pidvar, ptvar, etavar, ntrac
     if ntracksvar : 
       ntracks_code = compile("log(i.%s)" % ntracksvar, '<string>', 'eval')
     weight_code = compile("i.%s" % weightvar, '<string>', 'eval')
+    cut_code = None
+    if cut : 
+      cut_code = compile(cut, "<string>", 'eval')
     for i in nt1 :
       n += 1
       if (n % 10000 == 0) : 
         print "    event %d/%d" % (n, nentries)
       try : 
+#        if i.probe_MINIPCHI2 < 400 : continue
+        if cut : 
+          if not eval(cut_code) : continue
         pid = eval(pid_code)
         pt  = eval(pt_code)
         eta = eval(eta_code)
@@ -78,16 +85,24 @@ weightvar = sample['weight']
 treename = sample['trees']
 gamma = config['gamma']
 
+cut = None
+if "cut" in config.keys() : cut = config["cut"]
+
 # Create dictionary with the lists of PIDCalib datasets for each year and magnet polarity
 dsdict = {}
+
+if "datasets" in sample.keys() : 
+  dss = sample['datasets']
+else : 
+  dss = datasets
 for ds in dslist : 
-  if not isinstance(datasets[ds], tuple) : 
-    dsdict[ds] = [ datasets[ds] ] 
+  if not isinstance(dss[ds], tuple) : 
+    dsdict[ds] = [ dss[ds] ] 
   else : 
     dsdict[ds] = []
-    n = datasets[ds][1]
+    n = dss[ds][1]
     for i in range(0, n) : 
-      dsdict[ds] += [ datasets[ds][0] % i ]
+      dsdict[ds] += [ dss[ds][0] % i ]
 
 os.system("/afs/cern.ch/project/eos/installation/0.3.15/bin/eos.select mkdir -p %s/%s" % (eosdir, configname))
 
@@ -103,7 +118,7 @@ for pol,dss in dsdict.iteritems() :
 
   nds = 0
   for ds in dss : 
-    ok = convert_single_file(ds, f2, nt2, treename, pidvar, ptvar, etavar, ntracksvar, weightvar, gamma)
+    ok = convert_single_file(ds, f2, nt2, treename, pidvar, ptvar, etavar, ntracksvar, weightvar, gamma, cut)
     if ok : nds += 1
     if nds >= 2 and "test" in options : 
       break

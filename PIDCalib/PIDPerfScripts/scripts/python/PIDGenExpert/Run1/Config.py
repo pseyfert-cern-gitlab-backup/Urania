@@ -621,4 +621,31 @@ configs = {
     'controlstat' : 5000000, 
     'nbootstrap' : 5
   }, 
+  "mu_CombDLLK" : {
+    "sample" : "mu", 
+    "var" : "Mu_CombDLLK", 
+    "transform_forward"  : "x", 
+    "transform_backward" : "x", 
+    "bins" : 100, 
+    "limits" : (-110., 50.), 
+    'scale_default' : 0.1, 
+    'scale_syst' : 0.15, 
+    'scale_pid' : 1.0, 
+    'toystat' : 10000000, 
+    'controlstat' : 5000000, 
+    'nbootstrap' : 5
+  },
+#  "p_V3ProbNNmu" : {
+#    "sample" : "p", 
+#    "var" : "P_V3ProbNNmu", 
+#    "bins" : 50, 
+#    "transform_forward"  : "1.-(1.-x**0.15)**0.2", 
+#    "transform_backward" : "1.-(1.-x**(1./0.2))**(1./0.15)", 
+#    'scale_default' : 1.0, 
+#    'scale_syst' : 1.3, 
+#    'scale_pid' : 1.0, 
+#    'toystat' : 1000000, 
+#    'controlstat' : 500000, 
+#    'nbootstrap' : 5
+#  }, 
 }

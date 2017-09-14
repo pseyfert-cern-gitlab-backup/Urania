@@ -104,7 +104,11 @@ for pol,dss in dsdict.iteritems() :
 
   for ds in dss : 
     infile = eosrootdir + "/" + ds
-    convert_single_file(infile, indir, f2, nt2, treename, pidvar, ptvar, etavar, ntracksvar, transform)
+    if not isinstance(pidvar, tuple) : 
+      convert_single_file(infile, indir, f2, nt2, treename, pidvar, ptvar, etavar, ntracksvar, transform)
+    else : 
+      for i in range(len(pidvar)) : 
+        convert_single_file(infile, indir, f2, nt2, treename, pidvar[i], ptvar[i], etavar[i], ntracksvar, transform)
 
   nt2.Write()
   f2.Close()

@@ -56,7 +56,7 @@ samples = {
     'eta'     : "eta", 
     'ntracks' : "ntr", 
   
-  }
+  }, 
 }
 
 configs = {
