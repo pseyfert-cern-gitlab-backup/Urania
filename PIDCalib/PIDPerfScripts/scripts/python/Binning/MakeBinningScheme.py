@@ -247,11 +247,11 @@ This script provides an example binning. It is not optimised for your analysis -
                 opts.binSchemeFile)
             raise IOError(msg)
     ROOT.gSystem.Load('libRooStats.so')
-    ROOT.gSystem.Load('libCintex.so')
+    #ROOT.gSystem.Load('libCintex.so')
     ROOT.gROOT.SetBatch(True)
-    ROOT.gROOT.ProcessLine(".x lhcbstyle.C")
-    cintex=ROOT.Cintex
-    cintex.Enable()
+    #ROOT.gROOT.ProcessLine(".x lhcbstyle.C")
+    #cintex=ROOT.Cintex
+    #cintex.Enable()
 
     Dimensions = [XVarName]
 
