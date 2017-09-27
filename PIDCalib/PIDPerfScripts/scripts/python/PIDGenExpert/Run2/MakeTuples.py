@@ -13,6 +13,8 @@ def convert_single_file(infile, f2, nt2, treenames, pidvar, ptvar, etavar, ntrac
     print treename
     nt1 = f1.Get(treename)
     f2.cd()
+    if not nt1 : 
+      continue
     nentries = nt1.GetEntries()
     print "  tuple %s: %d entries" % (treename, nentries )
     n = 0
@@ -123,6 +125,7 @@ for pol,dss in dsdict.iteritems() :
     if nds >= 2 and "test" in options : 
       break
 
+  f2.cd()
   nt2.Write()
   f2.Close()
   os.system("/afs/cern.ch/project/eos/installation/0.3.15/bin/eos.select cp %s %s/%s/" % (calibfile, eosdir, configname))

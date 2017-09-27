@@ -60,6 +60,13 @@ samples = {
     'ntracks' : "nTracks", 
     'weight'  : "probe_sWeight"
   }, 
+  'e_BJpsi_Brunel' : {
+    'trees'   : ('B_Jpsi_EPTuple/DecayTree', 'B_Jpsi_EMTuple/DecayTree'), 
+    'pt'      : "probe_Brunel_PT", 
+    'eta'     : "probe_Brunel_ETA", 
+    'ntracks' : "nTracks", 
+    'weight'  : "probe_sWeight"
+  }, 
 
   "p_LbLcMu_Brunel" : {
     'datasets' : {
@@ -388,6 +395,18 @@ configs = {
     'scale_pid'     :  1.0, 
     'toystat'       : 20000000, 
     'controlstat'   :  1000000, 
+    'nbootstrap'    :  5
+  }, 
+  "e_MC15TuneV1_ProbNNe_Brunel" : {
+    "sample"        :  "e_BJpsi_Brunel", 
+    "var"           :  "probe_Brunel_MC15TuneV1_ProbNNe", 
+    "bins"          :  30, 
+    "gamma"         : -0.2, 
+    'scale_default' :  1.5, 
+    'scale_syst'    :  2.0, 
+    'scale_pid'     :  1.5, 
+    'toystat'       :  300000, 
+    'controlstat'   :  300000, 
     'nbootstrap'    :  5
   }, 
 #  "p_MC12TuneV2_ProbNNp_Brunel" : {
