@@ -4,8 +4,10 @@ Package Coordinator : Diego Martinez Santos, Carlos Vazquez Sierra
 Purpose             : LHCb physics repository
 
 ! 2017-10-03 - Carlos Vazquez Sierra
- - Add new package:
+ - Tag version v7r1 and add new package:
    + WGCommonTools/QEE v1r0
+
+!============================== v7r0 12-06-2017 ============================
 
 ! 2017-06-12 - Carlos Vazquez Sierra
  - Make version v7r0, based on LCGCMT_88:
