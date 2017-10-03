@@ -1,7 +1,7 @@
 ################################################################################
 # Package: UraniaSys
 ################################################################################
-gaudi_subdir(UraniaSys v7r0)
+gaudi_subdir(UraniaSys v7r1)
 
 gaudi_depends_on_subdirs(Math/MCLimit
 Math/SomeUtils 
@@ -28,6 +28,7 @@ PIDCalib/PIDPerfTools
 RootTools/LHCbStyle
 RootTools/SimpleTools
 FT/Espresso
-PhysTools/Meerkat)
+PhysTools/Meerkat
+WGCommonTools/QEE)
 
 gaudi_env(SET GAUDI_home .)
