@@ -3,6 +3,10 @@ Package             : Urania
 Package Coordinator : Diego Martinez Santos, Carlos Vazquez Sierra
 Purpose             : LHCb physics repository
 
+! 2017-10-03 - Carlos Vazquez Sierra
+ - Add new package:
+   + WGCommonTools/QEE v1r0
+
 ! 2017-06-12 - Carlos Vazquez Sierra
  - Make version v7r0, based on LCGCMT_88:
    + PIDCalib/PIDPerfScripts v12r0
