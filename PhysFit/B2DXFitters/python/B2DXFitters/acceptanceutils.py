@@ -50,6 +50,10 @@ def buildSplineAcceptance(
     from copy import deepcopy
     myknots = deepcopy(knots)
     mycoeffs = deepcopy(coeffs)
+    if debug:
+        print 'DEBUG: knots and coefficients lists:'
+        print myknots
+        print mycoeffs
     from ROOT import (RooBinning, RooArgList, RooPolyVar, RooCubicSplineFun,
             RooConstVar, RooProduct, RooRealVar)
     if ( ((len(myknots) != len(mycoeffs)) and extrapolate) or 0 >= min(len(myknots), len(mycoeffs))):
@@ -98,6 +102,8 @@ def buildSplineAcceptance(
     myknots.append(time.getMax())
     myknots.reverse()
     fudge = (myknots[0] - myknots[1]) / (myknots[2] - myknots[1])
+    if debug:
+        print 'DEBUG: slope for last coefficients %f' % (fudge)
     lastmycoeffs = RooArgList(
             WS(ws, RooConstVar('%s_SplineAccCoeff%u_coeff0' % (pfx, i),
                 '%s_SplineAccCoeff%u_coeff0' % (pfx, i), 1. - fudge)),

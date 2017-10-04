@@ -45,6 +45,7 @@ class P2VVFoam
 
     void FillFractions(RooDataSet);
     RooDataSet* GetDataSet();
+    void UpdateSeed(int);
 
   protected:
     void Init();

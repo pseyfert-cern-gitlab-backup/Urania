@@ -9,11 +9,11 @@
 #include "TROOT.h"
 #include "TRandom3.h"
 
-#include "AbsPhaseSpace.hh"
-#include "AbsDensity.hh"
-#include "BinnedDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
+#include "Meerkat/AbsDensity.hh"
+#include "Meerkat/BinnedDensity.hh"
 
-#include "Logger.hh"
+#include "Meerkat/Logger.hh"
 
 #define MAX_VECTOR_SIZE 20000000
 

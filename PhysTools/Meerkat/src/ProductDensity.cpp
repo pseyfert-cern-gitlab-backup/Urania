@@ -4,11 +4,11 @@
 
 #include "TMath.h"
 
-#include "AbsPhaseSpace.hh"
-#include "AbsDensity.hh"
-#include "ProductDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
+#include "Meerkat/AbsDensity.hh"
+#include "Meerkat/ProductDensity.hh"
 
-#include "Logger.hh"
+#include "Meerkat/Logger.hh"
 
 ProductDensity::ProductDensity(const char* pdfName, 
                                      AbsPhaseSpace* thePhaseSpace, 

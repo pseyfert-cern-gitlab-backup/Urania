@@ -4,11 +4,11 @@
 #  It also uses FormulaDensity to describe the true PDF in a parametrised way. 
 
 import os, sys
-os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + "../inc/"
+os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + os.environ["MEERKATROOT"]
 
 from ROOT import gSystem, gStyle, RooRealVar
 
-gSystem.Load("../lib/libMeerkat.so")
+gSystem.Load("libMeerkatLib.so")
 
 from ROOT import OneDimPhaseSpace, FormulaDensity
 from ROOT import Logger
@@ -82,10 +82,10 @@ true_hist.SetLineColor(1)
 true_hist.Draw()
 kernel_hist.Scale( true_hist.GetSumOfWeights() / kernel_hist.GetSumOfWeights() )
 kernel_hist.SetLineColor(2)
-kernel_hist.Draw("same")
+kernel_hist.Draw("hist same l")
 adaptive_hist.Scale( true_hist.GetSumOfWeights() / adaptive_hist.GetSumOfWeights() )
 adaptive_hist.SetLineColor(4)
-adaptive_hist.Draw("same")
+adaptive_hist.Draw("hist same l")
 
 t = TText()
 t.SetTextSize(0.04)
@@ -104,7 +104,7 @@ kernel_diff.SetMaximum( 1.)
 kernel_diff.SetLineColor(2)
 kernel_diff.Draw()
 adaptive_diff.SetLineColor(4)
-adaptive_diff.Draw("same")
+adaptive_diff.Draw("hist same l")
 
 t.SetTextColor(2)
 t.DrawText(0.2, 0.8, "Fixed kernel PDF")

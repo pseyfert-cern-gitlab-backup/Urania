@@ -3,6 +3,31 @@ Package             : Urania
 Package Coordinator : Diego Martinez Santos, Carlos Vazquez Sierra
 Purpose             : LHCb physics repository
 
+! 2017-10-03 - Carlos Vazquez Sierra
+ - Tag version v7r1 and add new package:
+   + WGCommonTools/QEE v1r0
+
+!============================== v7r0 12-06-2017 ============================
+
+! 2017-06-12 - Carlos Vazquez Sierra
+ - Make version v7r0, based on LCGCMT_88:
+   + PIDCalib/PIDPerfScripts v12r0
+   + PIDCalib/PIDPerfTools v9r0
+   + Phys/BsKstKst v5r4
+   + Phys/B2DXFitters v4r0
+   + PhysTools/Meerkat v1r4
+   + PhysFit/P2VV v4r4
+
+!============================== v6r2p1 24-03-2017 ============================
+
+! 2017-03-24 - Carlos Vazquez Sierra
+ - Make version v6r2p1, same dependencies as v6r2, but:
+   + cmake folder updated to Gaudi/cmake v28r2.
+   + Fixed problem with GaudiProjectConfig.cmake to allow to install .hh headers from FT/Espresso.
+   + Minor updates: PhysFit/B2DXFitters (v3r4p1).
+
+!============================== v6r2 22-03-2017 ==============================
+
 ! 2017-03-22 - Carlos Vazquez Sierra
  - Make version v6r2, same dependencies as v6r1 but including:
    + FT/Espresso (v0r6p2, new package)

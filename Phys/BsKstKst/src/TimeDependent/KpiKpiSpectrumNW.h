@@ -60,6 +60,15 @@
 #include "RooArgSet.h"
 #include "TRandom.h"
 
+#define pi TMath::Pi()
+#define MPion 139.57018
+#define MKaon 493.667
+#define MKst_1_1410 1414.
+#define GKst_1_1410 232.
+#define MKst_1_1680 1717.
+#define GKst_1_1680 322.
+#define MBs 5366.77
+
 NWclass NW; // Normalization weights
 Splineclass spl; // Time acceptance splines
 TAccclass TAcc; // Time acceptance histograms
@@ -80,10 +89,10 @@ Double_t cm_lass = 1.027; //MeV
 Double_t C_lass = -0.001; // (dimensionless)
 
 // Parameters of the elastic+inelastic phenomenological parameterisation of the Kpi mass amplitudes
-Double_t c1_pol_Stheo = -5.05015e-01;
-Double_t c2_pol_Stheo = -2.59249e-01;
-Double_t c3_pol_Stheo = -2.77261e-02;
-Double_t c4_pol_Stheo = 0.;
+Double_t c1_pol_Stheo = -0.434195680041;
+Double_t c2_pol_Stheo = -0.295297590317;
+Double_t c3_pol_Stheo = -0.0434834197181;
+Double_t c4_pol_Stheo = -0.0423685127109;
 Double_t MEta = 547.; // MeV/c2
 Double_t MEtaprime = 957.78; // MeV/c2
 Double_t sAdler_Stheo = 0.236;
@@ -127,6 +136,38 @@ Double_t e1_Dtheo = 0.465;
 Double_t G1_Dtheo = 0.222;
 Double_t a_Dtheo = -0.72;
 
+// Parameters of the Palano scalar Kpi mass amplitude
+Double_t s_Kpi_palano = (MPion*MPion+MKaon*MKaon)/1000./1000.;
+Double_t s_A_palano = 0.87753*s_Kpi_palano;
+Double_t s_a_palano = 1.7991;
+Double_t g_1_a_palano = 0.3139;
+Double_t g_2_a_palano = -0.00775;
+Double_t s_b_palano = 8.3627;
+Double_t g_1_b_palano = 1.1804;
+Double_t g_2_b_palano = -0.22335;
+Double_t C_11_0_palano = -0.1553;
+Double_t C_11_1_palano = 0.0909;
+Double_t C_11_2_palano = 0.8618;
+Double_t C_11_3_palano = 0.0629;
+Double_t C_12_0_palano = 0.0738;
+Double_t C_12_1_palano = 0.3866;
+Double_t C_12_2_palano = 1.2195;
+Double_t C_12_3_palano = 0.8390;
+Double_t C_22_0_palano = -0.0036;
+Double_t C_22_1_palano = 0.2590;
+Double_t C_22_2_palano = 1.6950;
+Double_t C_22_3_palano = 2.2300;
+Double_t A_1_0_palano = 1.;
+Double_t A_1_1_palano = 0.00491636810678;
+Double_t A_1_2_palano = 2.12489529189;
+Double_t A_1_3_palano = 0.56004179484;
+Double_t A_1_4_palano = 0.;
+Double_t A_2_0_palano = -4.20943829183;
+Double_t A_2_1_palano = -1.2110147687;
+Double_t A_2_2_palano = 2.28474898994;
+Double_t A_2_3_palano = 5.93332582489;
+Double_t A_2_4_palano = 0.;
+
 // Auxiliar variables
 Double_t spl_coef_array_1[2][2][5][4][4][4];
 Double_t spl_coef_array_2[2][2][5][4][4][4];
@@ -145,16 +186,16 @@ TComplex Ihj1j2j1pj2pdict[2][2][3][3][3][3];
 Double_t den_plot_var[2][2];
 
 // Variables used in event generation
-Double_t P_trueBs_const = 0.5; // Probability of generating a true Bs vs generating a true Bsbar
 Double_t prob_right_tagged; // Probability of correctly tagging an event
 Int_t true_ID; // True Bs vs true Bsbar identifier
 Int_t event_accepted; // Accepted vs rejected event.
 Int_t N_accepted; // Number of accepted events
 Int_t Wide_Window_Gen; // mKpi window size option
+Double_t max_fun_deltat; // Maximum of the deltat PDF
 Double_t max_fun_etaSSK; // Maximum of the etamistag_SSK PDF
 Double_t max_fun_etaOS; // Maximum of the etamistag_OS PDF
-Double_t max_fun_7DBs; // Maximum of the 7-D PDF for a true Bs
-Double_t max_fun_7DBsbar; // Maximum of the 7-D PDF for a true Bsbar
+Double_t max_fun_6DBs; // Maximum of the 6-D PDF for a true Bs
+Double_t max_fun_6DBsbar; // Maximum of the 6-D PDF for a true Bsbar
 Double_t max_fun; // Maximum of the PDF
 TRandom ran; // Generic random number
 Double_t etamistag_SSK_ran; // Randomized etamistag_SSK
@@ -167,7 +208,7 @@ Double_t phi_ran; // Randomized phi
 Double_t t_ran; // Randomized t
 Double_t t_err_ran; // Randomized t_err
 Double_t fun_ran; // PDF for the randomized observables
-Double_t dec_Bs; // True Bs vs true Bsbar random decision
+Double_t dec_flavour; // True Bs vs true Bsbar random decision
 Double_t dec_SSK_tagged; // SSK tagged vs SSK untagged random decision
 Double_t dec_OS_tagged; // OS tagged vs OS untagged random decision
 Double_t dec_right_tagged; // Right tagged vs wrong tagged random decision
@@ -266,7 +307,7 @@ public:
   RooRealProxy DCP_VS ;
   RooRealProxy DCP_ST ;
   RooRealProxy DCP_TS ;
-  RooRealProxy DCP_VV ;
+  RooRealProxy DCP ;
   RooRealProxy DCP_VT ;
   RooRealProxy DCP_TV ;
   RooRealProxy DCP_TT ;
@@ -323,6 +364,15 @@ public:
   RooRealProxy gv ;
   RooRealProxy gs ;
   RooRealProxy gt ;
+  RooRealProxy c1_mass_swave ;
+  RooRealProxy c2_mass_swave ;
+  RooRealProxy c3_mass_swave ;
+  RooRealProxy c4_mass_swave ;
+  RooRealProxy c5_mass_swave ;
+  RooRealProxy c6_mass_swave ;
+  RooRealProxy c7_mass_swave ;
+  RooRealProxy c8_mass_swave ;
+  RooRealProxy c9_mass_swave ;
   RooRealProxy res_mass ;
   RooRealProxy tag_eff_SSK ;
   RooRealProxy mu1_SSK ;
@@ -513,7 +563,7 @@ public:
   std::complex<Double_t> Mn_x(Double_t x, std::complex<Double_t> z, Int_t n) const;
   std::complex<Double_t> Mn(Double_t x_1, Double_t x_2, std::complex<Double_t> z, Int_t n) const;
   void set_buffer_differential_vars(Double_t m1var, Double_t m2var, Double_t cos1var, Double_t cos2var, Double_t phivar, Double_t tvar, Double_t terrvar, Int_t decisionSSKvar, Int_t decisionOSvar, Double_t etamistagSSKvar, Double_t etamistagOSvar) const;
-  void set_buffer_integral_vars() const;
+  void set_buffer_integral_vars(Double_t terrvar) const;
   Double_t T_cosh_spl(Double_t tau, Double_t tau_err) const;
   Double_t T_sinh_spl(Double_t tau, Double_t tau_err) const;
   Double_t T_cos_spl(Double_t tau, Double_t tau_err) const;
@@ -556,6 +606,8 @@ public:
   TComplex Prop_Stheo(Double_t m) const;
   TComplex Prop_Ptheo(Double_t m) const;
   TComplex Prop_Dtheo(Double_t m) const;
+  TComplex Prop_S_Palano(Double_t m) const;
+  TComplex Prop_ModInd(Double_t m) const;
   TComplex Mji(Double_t m, Int_t ji) const;
   TComplex Mj1j2(Double_t ma, Double_t mb, Int_t j1, Int_t j2) const; 
   Double_t phasespace(Double_t ma, Double_t mb) const;
@@ -610,9 +662,9 @@ public:
 
   // Event generation.
   Double_t accGen(Double_t tau, Double_t ma, Double_t mb, Double_t cos1var, Double_t cos2var, Double_t phivar) const;
+  Double_t P_deltat(Double_t tau_err) const;
   Double_t P_eta_SSK(Double_t eta) const;
   Double_t P_eta_OS(Double_t eta) const;
-  Double_t P_deltat(Double_t tau_err) const;
   TComplex TBsj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   TComplex TBsbarj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t comp_fun_Bs(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
@@ -622,8 +674,11 @@ public:
   TComplex ITBsj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t comp_int_Bs(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
   Double_t int_Bs() const;
+  TComplex ITBsbarj1j2hj1pj2php(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
+  Double_t comp_int_Bsbar(Int_t j1, Int_t j2, Int_t h, Int_t j1p, Int_t j2p, Int_t hp) const;
+  Double_t int_Bsbar() const;
   Double_t P_trueBs() const;
-  void Randomize7D(Int_t wide_window_gen) const;
+  void Randomize6D(Int_t wide_window_gen) const;
   void Randomize7D_fun_max() const;
   void SetGenerator(Int_t wide_window_gen, Int_t compute_max_fun=0, Int_t sample_size_7D=1000000) const;
   Int_t getGenerator(const RooArgSet& directVars, RooArgSet &generateVars, Bool_t staticInitOK=kTRUE) const;

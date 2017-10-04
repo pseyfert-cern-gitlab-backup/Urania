@@ -16,18 +16,53 @@
  - Little updates to time fit script, time pdf and gaussian constrain
    building utilities (mainly to better handle Espresso)
 
+! 2017-07-25 - Agnieszka Dziurda
+  - merge fs/fd updates 
+  - fix plotSFit.py 
+
 ! 2017-07-22 - Vincenzo Battista
  - Small modifications in src and python to handle Espresso and more
    flexible acceptance
 
+! 2017-07-03 - Agnieszka Dziurda
+  - add dump fix for setting B2DXFitters. In python script you can do now: 
+    	from B2DXFitters.settings import setEnv
+    	setEnv()
+    and all classes/namespaces should be visible in the python 
+  - update config files for DsstPi
+  - small changes in MDFit plotting 
+  - fixing fitSplines.py, calculateAcceptance.py, comparePDF.py with new 
+    enviroment settings. 
+  - allowing global weights in prepareWorkspace.py 
+
+
+! 2017-06-12 - Carlos Vazquez Sierra
+ + Tagging v4r0 for Urania v7r0.
+
+! 2017-05-12 - Vincenzo Battista
+ - Add updates for Bd->Dpi. Include more taggers in "CheckTagger" of MDFitterSettings.
+   Include AdditionalVariables in ObtainSignal (MassFitUtils).
+   Fix bug in timepdfutils_Bd.py affecting C coefficients in HFAG convention.
+
+! 2017-04-28 - Vincenzo Battista
+ - First implementation for run2 data handling in B2DXFitters
+
 ! 2017-04-04 - Vincenzo Battista
  - Add possibility to define calibrated mistag omega in range [0,0.5]
-   instead of [0,1]. FT/Espresso and PhysFit/B2DXFitters updated 
+   instead of [0,1]. FT/Espresso and PhysFit/B2DXFitters updated
    at the same time.
  - First attempt to use GLM models inside DecRateCoeff_Bd
 
 ! 2017-03-28 - Vincenzo Battista
  - First trivial tutorials for the usage of Espresso in B2DXFitters
+
+! 2017-03-24 - Carlos Vazquez Sierra
+ - Make version v3r4p1 for release.
+
+! 2017-03-23 - Alessandro Bertolin
+ - Minor update of Bs2DsstPi/Bs2DsstPiConfigForNominalMassFit.py (a few comments added)
+ - Update of Bs2DsstK/Bs2DsstKConfigForNominalMassFit.py (among which a few files paths and 
+   one variable name change previously corrected for Bs2DsstPi/Bs2DsstPiConfigForNominalMassFit.py)
 
 ! 2017-03-22 - Carlos Vazquez Sierra
  - Make version v3r4 for release.

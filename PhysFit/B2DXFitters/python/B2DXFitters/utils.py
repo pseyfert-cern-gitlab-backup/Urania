@@ -44,6 +44,7 @@ def setConstantIfSoConfigured(config, obj, recache = None):
         # set desired RooRealVar-derived objects to const
         for rexp in recache:
             if recache[rexp].match(obj.GetName()):
+                #print "[INFO] fixing "+str( obj.GetName() )
                 obj.setConstant(True)
                 break
     elif obj.InheritsFrom(RooConstVar.Class()):
@@ -300,7 +301,7 @@ def TreeLeavesToPy(type):
             exit(0)
             
         return typecode
-
+    
 def SymmetrizeTriangularMatrix(matrix):
     """
     Create a symmetric matrix out of a triangular matrix.

@@ -59,13 +59,14 @@ def GetDataSets(StripVer, MagPolarity, PartName, TrackCuts, runMin=None, runMax=
     return DataSets
 
 def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,PIDCutString,xBin,yBin,zBin,file, verbose=False,
-               allowMissingDataSets=False, minEntries=0):
+               allowMissingDataSets=False, minEntries=1):
                
     #If Run I data has been requested and MC12TuneV4 or MC15TuneV1 ProbNN cut used, return error
-    if 'Turbo' not in StripVer:
+    if 'Turbo' not in StripVer and 'Electron' not in StripVer:
     	if 'MC12TuneV4' in PIDCutString or 'MC15TuneV1' in PIDCutString:
     		raise RooWorkspaceError("Cannot use MC12TuneV4 or MC15TuneV1 ProbNN for Run 1 data. Please use MC12TuneV2 or MC12TuneV3")
 
+	
     RecoVer = GetRecoVer(StripVer)
 
     if verbose:
@@ -89,6 +90,7 @@ def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,PIDCutString,xBin,yBin,z
 
     #In the case of Run II data, read the WGP nTuple and convert to RooDataSet
     CheckPartType(PartName)
+    CheckStripVerPartNameMagPol(StripVer,PartName,MagPolarity)
     PartType = GetRealPartType(PartName)
     DataSetNameDict = GetDataSetNameDictionary(PartName)
 
@@ -106,15 +108,17 @@ def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,PIDCutString,xBin,yBin,z
                                   , zvar      = zBin
             )
       print "Automatic conversion from TTree to RooDataSet"
-      
+    if Data is None:
+		print "No entires in RooDataSet - skipping this input file"
+		return None
+		
 #        raise TFileError("Failed to retrieve workspace {wsname} from file {fname}".format(
 #            wsname=DataSetNameDict['WorkspaceName'], fname=fname))
-
     if not Data:
         raise RooWorkspaceError("RooDataSet not found in workspace %s" %wsname)
     if verbose:
       print "Retrieved data: ({0},{1})".format(time.time(),time.clock())
-
+	
     Data.Print("v")
 
     if verbose:
@@ -227,6 +231,7 @@ def GetWGPFiles(StripVer,MagPolarity,verbose=False):
     reco = ''
     turbo = ''
     version = ''
+    merge = ''
     if StripVer=="Turbo15" or StripVer=="Turbo16":
     	############
     	### 2015 ###
@@ -234,14 +239,16 @@ def GetWGPFiles(StripVer,MagPolarity,verbose=False):
     	if year == '15':
     		reco = '15a'
     		turbo = '02'
-    		version = '4r1'
+    		version = '5r1'
+    		merge = '05'
     	############
     	### 2016 ###
     	############
     	elif year == '16':
     		reco = '16'
     		turbo = '02a'
-    		version = '4r1'
+    		version = '5r1'
+    		merge = '05'
     	
     elif StripVer=="pATurbo15" or StripVer=="pATurbo16" or StripVer=="ApTurbo15" or StripVer=="ApTurbo16":	
     	############
@@ -251,6 +258,7 @@ def GetWGPFiles(StripVer,MagPolarity,verbose=False):
     		reco = '15pLead'
     		turbo = '03pLead'
     		version = '5r0'
+    		merge = '01'
     	############
     	### 2016 ###
     	############
@@ -258,8 +266,9 @@ def GetWGPFiles(StripVer,MagPolarity,verbose=False):
     		reco = '16pLead'
     		turbo = '03pLead'
     		version = '5r0'
+    		merge = '01'
 
-    bkDict[ 'ProcessingPass' ] = '/Real Data/Reco'+reco+'/Turbo'+turbo+'/PIDCalibTuples'+version+'/PIDMerge01'
+    bkDict[ 'ProcessingPass' ] = '/Real Data/Reco'+reco+'/Turbo'+turbo+'/PIDCalibTuples'+version+'/PIDMerge'+merge
     
     file = bkClient.getFilesWithGivenDataSets(bkDict)
 	#file = bkClient.getVisibleFilesWithMetadata(bkDict)
@@ -276,6 +285,29 @@ def GetWGPFiles(StripVer,MagPolarity,verbose=False):
 	
     return newFileList
 
+########################################################
+### 2015 and 2016 ELECTRON ACCESS WITH THIS FUNCTION ###
+########################################################
+def GetElectronFiles(StripVer,MagPolarity,verbose=False):
+
+	year = ''
+	mag = ''
+	
+	if StripVer=='Electron15':
+		year = '2015'
+	elif StripVer=='Electron16':
+		year = '2016'
+	
+	if MagPolarity=='MagUp':
+		mag = 'MU'
+	elif MagPolarity=='MagDown':
+		mag = 'MD'
+	
+	newFileList = []
+	
+	newFileList += ['/eos/lhcb/wg/PID/PIDCalib_'+year+'_electrons/pidcalib_BJpsiEE_'+mag+'.root']
+	
+	return newFileList
 
 #############################################
 ### RUN I FILE ACCESS WITH THIS FUNCTION ####

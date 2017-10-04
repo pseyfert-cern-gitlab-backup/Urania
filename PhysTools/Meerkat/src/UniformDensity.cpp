@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <vector>
 
-#include "AbsPhaseSpace.hh"
-#include "AbsDensity.hh"
-#include "UniformDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
+#include "Meerkat/AbsDensity.hh"
+#include "Meerkat/UniformDensity.hh"
 
 UniformDensity::UniformDensity(const char* pdfName, AbsPhaseSpace* thePhaseSpace) : AbsDensity(pdfName) {
 

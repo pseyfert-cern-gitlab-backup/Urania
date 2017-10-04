@@ -7,11 +7,11 @@
 #  true and estimated distributions. 
 
 import os, sys
-os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + "../inc/"
+os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + os.environ["MEERKATROOT"]
 
 from ROOT import gSystem, gStyle, RooRealVar
 
-gSystem.Load("../lib/libMeerkat.so")
+gSystem.Load("libMeerkatLib.so")
 
 from ROOT import OneDimPhaseSpace, UniformDensity, BinnedKernelDensity
 from ROOT import TFile, TNtuple, TCanvas, TH1F
@@ -42,7 +42,7 @@ kde = BinnedKernelDensity("KernelPDF",
 # Write binned PDF into a file
 kde.writeToFile("OneDimPdfBins.root")
 
-uniform_hist = TH1F("unform", "PDF", 200, -1.5, 1.5)
+uniform_hist = TH1F("uniform", "PDF", 200, -1.5, 1.5)
 kernel_hist = TH1F("kernel", "Kernel PDF", 200, -1.5, 1.5)
 
 uniform.project(uniform_hist) 
@@ -55,7 +55,7 @@ canvas = TCanvas("canvas", "OneDimPdf", 400, 400)
 uniform_hist.Draw()
 kernel_hist.Scale( uniform_hist.GetSumOfWeights() / kernel_hist.GetSumOfWeights() )
 kernel_hist.SetLineColor(2)
-kernel_hist.Draw("same")
+kernel_hist.Draw("hist same l")
 uniform_hist.GetXaxis().SetTitle("x")
 
 canvas.Update()

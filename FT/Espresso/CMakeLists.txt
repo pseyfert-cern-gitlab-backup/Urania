@@ -17,7 +17,7 @@ gaudi_add_dictionary(Espresso
                      INCLUDE_DIRS Boost ROOT GSL
                      LINK_LIBRARIES Boost ROOT GSL
                      OPTIONS "-U__MINGW32__"
-                     SPLIT_CLASSDEF)	
+                     SPLIT_CLASSDEF)
 
 gaudi_add_library(EspressoLib
                   src/*.cpp
@@ -28,6 +28,7 @@ gaudi_add_library(EspressoLib
 set_property(TARGET EspressoLib PROPERTY COMPILE_FLAGS -g)
 
 add_dependencies(EspressoLib EspressoGen)
+
 install(DIRECTORY Espresso DESTINATION include)
 
 target_link_libraries(EspressoDict -Wl,--no-as-needed EspressoLib -Wl,--as-needed)

@@ -7,6 +7,22 @@ DecayTree
 ###
 
 #Bd2DPi KPiPi 2012
+root://eoslhcb.cern.ch//eos/lhcb/user/a/adudziak/fsfd/2016/BDTG/MERGED/
+Data_2016_up_MINI_BDTG_Bd.root
+Data_2016_up_MINI_BDTG_Bd.root
+DecayTree
+DecayTree
+###
+
+#Bd2DPi KPiPi 2012  usarEsse2012
+root://eoslhcb.cern.ch//eos/lhcb/user/m/mvitti/B2DK_rootFiles/Data/
+Data_2012_dw_MINI_BDTG3_Bd.root
+Data_2012_up_MINI_BDTG3_Bd.root
+DecayTree
+DecayTree
+###
+
+#Bd2DPi KPiPi 2012 blablabla
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_SCALED/MERGED_WITH_BDTG3/
 Bd_Dpi_2012_Dw.root
 Bd_Dpi_2012_Up.root
@@ -14,7 +30,7 @@ DecayTree
 DecayTree
 ###
 
-#Signal Bd2DPi KPiPi 2011
+#Signal Bd2DPi KPiPi 2011 blabla
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_MC/FINAL_WITH_BDTG3/
 B2DX_MC_Bd_D-pi+_Kpipi_CPV_Dn_BDTG3_Bd.root
 B2DX_MC_Bd_D-pi+_Kpipi_CPV_Up_BDTG3_Bd.root
@@ -23,9 +39,9 @@ DecayTree
 ###
 
 #Signal Bd2DPi KPiPi 2012
-root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_MC/FINAL_WITH_BDTG3/
-B2DX_MC_Bd_D-pi+_Kpipi_CPV_Dn_BDTG3_Bd.root
-B2DX_MC_Bd_D-pi+_Kpipi_CPV_Up_BDTG3_Bd.root
+root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DsK_3fb/TD_DsK3fb_MC_Filtered/FINAL/
+B2DX_MC_Bd_D-pi+_Kpipi_CPV_2012_Dn_BDTG3_Bd.root
+B2DX_MC_Bd_D-pi+_Kpipi_CPV_2012_Up_BDTG3_Bd.root
 DecayTree
 DecayTree
 ###
@@ -139,3 +155,8 @@ weights_DPi_2012_dw.root
 weights_DPi_2012_up.root
 ###
 
+#RatioDataMC 2012 PNTr Filtered
+/afs/cern.ch/work/s/sgallori/public/forAgnieszka/dataMC_weights/p_nTracks/filtered/
+weights_DPi_2012_dw.root
+weights_DPi_2012_up.root
+###

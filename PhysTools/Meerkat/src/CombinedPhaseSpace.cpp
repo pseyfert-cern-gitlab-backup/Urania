@@ -3,9 +3,9 @@
 
 #include "TMath.h"
 
-#include "CombinedPhaseSpace.hh"
+#include "Meerkat/CombinedPhaseSpace.hh"
 
-#include "Logger.hh"
+#include "Meerkat/Logger.hh"
 
 CombinedPhaseSpace::CombinedPhaseSpace(const char* phspName, 
                                        std::vector<AbsPhaseSpace*> &phspList) : AbsPhaseSpace(phspName) {

@@ -8,14 +8,14 @@
 
 #include "Riostream.h" 
 
-#include "RooMeerkatPdf.hh" 
 #include "RooAbsReal.h" 
 #include "RooAbsCategory.h" 
 #include "RooListProxy.h" 
 #include <math.h> 
 #include "TMath.h" 
 
-#include "AbsDensity.hh"
+#include "Meerkat/RooMeerkatPdf.hh" 
+#include "Meerkat/AbsDensity.hh"
 
 ClassImp(RooMeerkatPdf) 
 

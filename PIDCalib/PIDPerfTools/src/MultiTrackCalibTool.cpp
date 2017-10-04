@@ -1145,21 +1145,69 @@ void MultiTrackCalibTool::CheckSanityOfPerfHists()
   {
     cout << itr_m->second << endl;
     double val = itr_m->second->GetBinContent(itr_m->second->GetMaximumBin());
+    double bin_num = itr_m->second->GetMaximumBin();
+    double low_edge_x = itr_m->second->GetXaxis()->GetBinLowEdge(bin_num);
+    double low_edge_y = 0;
+    double low_edge_z = 0;
+    
+    if(m_BinningDimensions > 1){
+      low_edge_y = itr_m->second->GetYaxis()->GetBinLowEdge(bin_num);
+    }
+    if(m_BinningDimensions > 2){
+      low_edge_z = itr_m->second->GetZaxis()->GetBinLowEdge(bin_num);
+    }
+
     if(val>1)
     {
-      cout<<"WARNING: Bin in histogram "<<itr_m->second->GetName()
+      if(m_BinningDimensions == 1){
+         cout<<"WARNING: Bin "<<bin_num<<" with low edge ("<<low_edge_x<<") in histogram "<<itr_m->second->GetName()
           <<" with value > 1 : "<<val<<endl;
+      }
+      else if(m_BinningDimensions == 2){
+        cout<<"WARNING: Bin "<<bin_num<<" with low edge ("<<low_edge_x<<","<<low_edge_y<<") in histogram "<<itr_m->second->GetName()
+          <<" with value > 1 : "<<val<<endl;
+      }
+      else if(m_BinningDimensions == 3){
+        cout<<"WARNING: Bin "<<bin_num<<" with low edge ("<<low_edge_x<<","<<low_edge_y<<","<<low_edge_z<<") in histogram "<<itr_m->second->GetName()
+          <<" with value > 1 : "<<val<<endl;
+      }
+      
       //exit(EXIT_FAILURE);
     }
+    
     val = itr_m->second->GetBinContent(itr_m->second->GetMinimumBin());
+    bin_num = itr_m->second->GetMinimumBin();
+    low_edge_x = itr_m->second->GetXaxis()->GetBinLowEdge(bin_num);
+    low_edge_y = 0;
+    low_edge_z = 0;
+
+    if(m_BinningDimensions > 1){
+      low_edge_y = itr_m->second->GetYaxis()->GetBinLowEdge(bin_num);
+    }
+    if(m_BinningDimensions > 2){
+      low_edge_z = itr_m->second->GetZaxis()->GetBinLowEdge(bin_num);
+    }
+
     if(val<0)
     {
-      cout<<"WARNING: Bin in histogram "<<itr_m->second->GetName()
-          <<" with value < 0 : "<<val<<endl;
+      if(m_BinningDimensions == 1){
+         cout<<"WARNING: Bin "<<bin_num<<" with low edge ("<<low_edge_x<<") in histogram "<<itr_m->second->GetName()
+          <<" with value < 1 : "<<val<<endl;
+      }
+      else if(m_BinningDimensions == 2){
+        cout<<"WARNING: Bin "<<bin_num<<" with low edge ("<<low_edge_x<<","<<low_edge_y<<") in histogram "<<itr_m->second->GetName()
+          <<" with value < 1 : "<<val<<endl;
+      }
+      else if(m_BinningDimensions == 3){
+        cout<<"WARNING: Bin "<<bin_num<<" with low edge ("<<low_edge_x<<","<<low_edge_y<<","<<low_edge_z<<") in histogram "<<itr_m->second->GetName()
+          <<" with value < 1 : "<<val<<endl;
+      }
+      
       //exit(EXIT_FAILURE);
     }
   }// Loop over all perf histograms
 }
+  
 
 //=============================================================================
 // Determine the per event fractional error (i.e. \frac{\sigma}{\eff} )

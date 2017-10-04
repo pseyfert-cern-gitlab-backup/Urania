@@ -5,11 +5,11 @@
 #  true and estimated distributions. 
 
 import os, sys
-os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + "../inc/"
+os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + os.environ["MEERKATROOT"]
 
 from ROOT import gSystem, gStyle, RooRealVar
 
-gSystem.Load("../lib/libMeerkat.so")
+gSystem.Load("libMeerkatLib.so")
 
 from ROOT import OneDimPhaseSpace, UniformDensity, BinnedKernelDensity, HistogramDensity
 from ROOT import TFile, TNtuple, TCanvas, TH1F
@@ -37,8 +37,6 @@ kde = BinnedKernelDensity("KernelPDF",
                           100000  # Sample size for MC convolution (0 for binned convolution)
                          )
 
-# Write binned PDF into a file
-kde.writeToFile("OneDimPdfBins.root")
 
 uniform_hist = TH1F("unform", "PDF", 200, -1.5, 1.5)
 kernel_hist = TH1F("kernel", "Kernel PDF", 200, -1.5, 1.5)
@@ -55,15 +53,18 @@ hist_density.project(hist_hist)
 
 gStyle.SetOptStat(0)
 
+# Write binned PDF into a file
+kde.writeToFile("OneDimPdfBins.root")
+
 canvas = TCanvas("canvas", "OneDimPdf", 400, 400)
 
 uniform_hist.Draw()
 kernel_hist.Scale( uniform_hist.GetSumOfWeights() / kernel_hist.GetSumOfWeights() )
 kernel_hist.SetLineColor(2)
-kernel_hist.Draw("same")
+kernel_hist.Draw("hist same l")
 hist_hist.Scale( uniform_hist.GetSumOfWeights() / hist_hist.GetSumOfWeights() )
 hist_hist.SetLineColor(4)
-hist_hist.Draw("same")
+hist_hist.Draw("hist same l")
 
 uniform_hist.GetXaxis().SetTitle("x")
 

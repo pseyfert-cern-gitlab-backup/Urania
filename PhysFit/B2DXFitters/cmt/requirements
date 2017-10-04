@@ -3,7 +3,7 @@
 # Maintainer : Agnieszka Dziurda, Manuel Schiller
 #============================================================================
 package  B2DXFitters
-version           v3r4
+version           v4r0
 
 #============================================================================
 # Structure, i.e. directories to process.

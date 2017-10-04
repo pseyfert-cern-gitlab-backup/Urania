@@ -3,9 +3,9 @@
 
 #include "TMath.h"
 
-#include "IntersectionPhaseSpace.hh"
+#include "Meerkat/IntersectionPhaseSpace.hh"
 
-#include "Logger.hh"
+#include "Meerkat/Logger.hh"
 
 IntersectionPhaseSpace::IntersectionPhaseSpace(const char* phspName, 
                                        std::vector<AbsPhaseSpace*> &phspList) : AbsPhaseSpace(phspName) {

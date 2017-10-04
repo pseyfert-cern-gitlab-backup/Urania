@@ -6,6 +6,8 @@ Urania is, together with [Erasmus](https://gitlab.cern.ch/lhcb/Erasmus), the hig
 
 For development purposes of any of the packages hosted under Urania, please follow the [instructions](https://twiki.cern.ch/twiki/bin/view/LHCb/Git4LHCb#Satellite_projects) at the Git4LHCb twiki.
 
+<b>IMPORTANT:</b> if you plan to add a new package, please send an e-mail first to [<b>lhcb-urania-developers@cern.ch</b>](mailto:lhcb-urania-developers@cern.ch) to let the maintainer know.
+
 In any case, there are two important rules you must remember:
 
 1. <b>Never clone the whole project for development purposes.</b> Please follow the instructions above.

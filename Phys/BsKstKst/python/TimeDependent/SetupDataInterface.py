@@ -494,7 +494,7 @@ def AddAngles(inputfilename,inputfileextradir,inputfileextradirname,outputfilena
 		km_TRUE.SetXYZM(eval('i.'+KmPx_TRUE_name),eval('i.'+KmPy_TRUE_name),eval('i.'+KmPz_TRUE_name),493.667)
 		pip_TRUE.SetXYZM(eval('i.'+PipPx_TRUE_name),eval('i.'+PipPy_TRUE_name),eval('i.'+PipPz_TRUE_name),139.570)
 
-		if 1:#i.itype<0:
+		if i.itype<0:
 			angles_TRUE = get_Angles(kp_TRUE,pim_TRUE,km_TRUE,pip_TRUE)
 			cos1_TRUE.afloat = angles_TRUE[0]
 			cos2_TRUE.afloat = angles_TRUE[1]

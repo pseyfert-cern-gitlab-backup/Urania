@@ -8,9 +8,15 @@
   true and estimated distributions. 
 */ 
 
-{
 
-  gSystem.Load("../lib/libMeerkat.so"); 
+#include "../Meerkat/OneDimPhaseSpace.hh"
+#include "../Meerkat/UniformDensity.hh"
+#include "../Meerkat/BinnedKernelDensity.hh"
+
+void OneDimPdf() {
+
+  gSystem->Load("libMeerkatLib.so");
+//  gSystem->AddIncludePath(" -I../inc/");
 
   // Define 1D phase space for a variable in range (-1, 1)
   OneDimPhaseSpace phsp("Phsp1D", -1., 1.);
@@ -35,7 +41,7 @@
                           100000   // Sample size for MC convolution (0 for binned convolution)
                          ); 
 
-  outfile.Close()
+  outfile.Close(); 
 
   // Write binned PDF into a file
   kde.writeToFile("OneDimPdf.bins"); 
@@ -46,14 +52,14 @@
   uniform.project(&uniform_hist); 
   kde.project(&kernel_hist); 
 
-  gStyle.SetOptStat(0);
-  
+  gStyle->SetOptStat(0);
+
   TCanvas canvas("canvas", "OneDimPdf", 400, 400); 
   uniform_hist.Draw(); 
   kernel_hist.Scale( uniform_hist.GetSumOfWeights() / kernel_hist.GetSumOfWeights() ); 
   kernel_hist.SetLineColor(2); 
   kernel_hist.Draw("same"); 
 
-  canvas.Print("OneDimPdf.png"); 
+  canvas.Print("OneDimPdf.png");
 
 }
