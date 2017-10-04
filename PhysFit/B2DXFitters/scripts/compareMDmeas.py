@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # --------------------------------------------------------------------------- 
-# @file prolog.py
+# @file compareMDmeas.py
 #
 # @brief Compare two or more sets of parameters (e.g. fit results).
 #        After a minimisation of the chi2, it returns the discrepancy
