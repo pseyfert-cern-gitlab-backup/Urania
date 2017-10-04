@@ -1814,7 +1814,6 @@ void MDFitterSettings::CorrectTagging()
 
 TString MDFitterSettings::CheckTagger(TString name)
 {
-<<<<<<< HEAD
   if (name.Contains("OSComb") ) {return "OSComb";}
   else if (name.Contains("OSCharm")) {return "OSCharm";}
   else if (name.Contains("OSElectron")) {return "OSElectron";}
