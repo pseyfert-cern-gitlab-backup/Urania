@@ -108,7 +108,7 @@ gStyle.SetOptFit(1011)
 # Common input stuff and options
 massfitdescr=''
 timefitdescr=''
-nickname='Bd2DPiMCFilteredS21RunIBothTaggedOnlyShortTime'
+nickname='Bd2DPiMCFilteredS21RunIBothOSTaggedOnlyShortTime'
 corrplots = True
 
 #Uncomment this for mass fit
@@ -125,7 +125,7 @@ corrplots = True
 #selection = 'MINUITStatus == 0 && edm!=0'
 
 #Uncomment this for Bootstrap MC
-timefitdescr='SSbarAccAsymmFloatDMGammaConstrOSTaggedOnlyRLOGITResampleFixPars'
+timefitdescr='SSbarAccAsymmFloatDMGammaConstrOSTaggedOnlyRLOGITResampleFixParsCheatFTcalib'
 inputfile = '/eos/lhcb/wg/b2oc/TD_DPi_3fb/MCBootstrap/'+nickname+'/TimeFit/'+timefitdescr+'/PullTreeTimeFit_'+nickname+'_'+timefitdescr+'.root'
 outputdir = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/MCBootstrap/'+nickname+'/TimePulls/'+timefitdescr+'/'
 selection = 'MINUITStatus == 0 && edm!=0 && CovQual==3'
@@ -215,13 +215,20 @@ for obs in range(0, int(nObs)):
     pull = gDirectory.Get("pull"+str(obs))
     pull.SetTitle("")
     pull.GetXaxis().SetTitle("Fitted Pull")
+
+    print "Plotting:"
+    print "("+FitList[obs]+"-"+GenList[obs]+")"
+    PullTree.Draw("("+FitList[obs]+"-"+GenList[obs]+")"+">>residual"+str(obs),selection_string,"goff")
+    residual = gDirectory.Get("residual"+str(obs))
+    residual.SetTitle("")
+    residual.GetXaxis().SetTitle("Fitted Residual")
         
     gStyle.SetStatX(0.95)
     gStyle.SetStatY(0.95)
     gStyle.SetStatW(0.15)
     gStyle.SetStatH(0.15)
-    pullcanvas = TCanvas("pullcanvas"+str(obs),"pullcanvas",1500,500)
-    pullcanvas.Divide(3,1)
+    pullcanvas = TCanvas("pullcanvas"+str(obs),"pullcanvas",1000,1000)
+    pullcanvas.Divide(2,2)
     pullcanvas.cd(1)
     fitted.Fit("gaus","LM")
     fitted.Draw("PE")
@@ -231,6 +238,9 @@ for obs in range(0, int(nObs)):
     pullcanvas.cd(3)
     pull.Fit("gaus","LM")
     pull.Draw("PE")
+    pullcanvas.cd(4)
+    residual.Fit("gaus","LM")
+    residual.Draw("PE")
     makeprintout(pullcanvas,outputdir+"1DPullPlot_"+NameList[obs]+"_"+plotlabel)
 
 if corrplots:

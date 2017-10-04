@@ -106,9 +106,9 @@ std::tuple<RooArgList,RooArgList,RooMultiVarGaussian,
 //=============================================================================
 
 GLMBuilder::GLMBuilder(const char *name, const char *title,
-                     RooAbsReal& _eta,
-                     std::string _calName,
-                     std::string _calFileName)
+                       RooAbsReal& _eta,
+                       std::string _calName,
+                       std::string _calFileName)
   : components(createRooGLMCalibration(name,title,_eta,_calName,_calFileName))
 {
 }

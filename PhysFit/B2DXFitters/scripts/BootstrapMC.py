@@ -143,6 +143,7 @@ def BootstrapMC(configName,
                 preselection,
                 maxcand,
                 randIndex,
+                cheatTagging,
                 modifyAsymmBefore,
                 modifyAsymmAfter,
                 debug):
@@ -272,8 +273,36 @@ def BootstrapMC(configName,
 
     if randIndex:
         randIdx = WS(ws, RooRealVar("randIdx", "Random index", -1e+12, 1e+12 ) )
-        randIdxSet = WS(ws, RooArgSet(randIdx) )
+        randIdxSet = WS(ws, RooArgSet(randIdx, "randIdxSet") )
         randIdxData = WS(ws, RooDataSet("randIdxData", "randIdxData", randIdxSet) ) 
+
+    if cheatTagging:
+        
+        #Defined required observable
+        MistagCheat = WS(ws, RooRealVar("MistagCheat", "MistagCheat", 0.0, 0.5 ) )
+        TagDecCheat = RooCategory("TagDecCheat", "TagDecCheat")
+        TagDecCheat.defineType("B",+1)
+        TagDecCheat.defineType("Bbar",-1)
+        TagDecCheat.defineType("Utagged",0)
+        TagDecCheat = WS(ws, TagDecCheat)
+        TagSetCheat = WS(ws, RooArgSet(TagDecCheat, MistagCheat, "TagSetCheat") )
+        TagDataCheat = WS(ws, RooDataSet("TagDataCheat", "TagDataCheat", TagSetCheat) )
+        floatGen = TRandom3(int(seed))
+
+        #Retrieve mistag PDF
+        #WARNING: only PDFs strictly defined in [0, 0.5] should be used...
+        mistagFile = TFile.Open( myconfigfile["cheatTagging"]["File"], "READ" )
+        mistagWS = mistagFile.Get( myconfigfile["cheatTagging"]["Workspace"] )
+        mistagPDF = mistagWS.pdf( myconfigfile["cheatTagging"]["Name"] )
+        mistagObs = mistagWS.var( myconfigfile["cheatTagging"]["Obs"] )
+        mistagSet = RooArgSet( mistagObs, "mistagSet" )
+
+        print "Generating 'cheated' mistag dataset..."
+        randEtaData = mistagPDF.generate( mistagSet,
+                                          max,
+                                          RooFit.Name("randEtaData"),
+                                          RooFit.AutoBinned(False))
+        randEtaData.Print("v")
         
     print "Looping over "+str(max)+" candidates..."
     for cand in range(0, max):
@@ -281,16 +310,43 @@ def BootstrapMC(configName,
         if cand % 50000 == 0:
             print "Filling row "+str(cand)+"..."
 
+        #Take candidates randomly (drawn from an uniform distribution)
         randCand = int( indexGen.Integer( int(nCand) ) )
         theCand = InputData.get( randCand )
         OutputData_temp.add( theCand )
 
+        #Store the (random) index chosen for this candidate
         if randIndex:
             randIdxSet.find("randIdx").setVal( randCand )
             randIdxData.add( randIdxSet )
 
+        #Draw random eta and decision for "cheated" tagger
+        #tagging efficiency asymmetries are NEGLECTED in this implementation
+        if cheatTagging:
+
+            if floatGen.Uniform(1.0) < myconfigfile["cheatTagging"]["Efficiency"]:
+                #Tagged candidate
+                randEta = randEtaData.get( int(cand) ).find( myconfigfile["cheatTagging"]["Obs"] ).getVal()
+                TagSetCheat.find("MistagCheat").setVal( randEta )
+                if floatGen.Uniform(1.0) < randEta:
+                    #Flip tag decision
+                    TagSetCheat.find("TagDecCheat").setIndex( -1 * theCand.find("TagDecTrue").getIndex() )
+                else:
+                    #Don't
+                    TagSetCheat.find("TagDecCheat").setIndex( theCand.find("TagDecTrue").getIndex() )
+            else:
+                #Untagged candidate
+                TagSetCheat.find("MistagCheat").setVal( 0.5 )
+                TagSetCheat.find("TagDecCheat").setIndex( 0 )
+
+            TagDataCheat.add( TagSetCheat )
+
     if randIndex:
         OutputData_temp.merge( randIdxData )
+        OutputData_temp.SetTitle(dataName)
+
+    if cheatTagging:
+        OutputData_temp.merge( TagDataCheat )
         OutputData_temp.SetTitle(dataName)
         
     print "Bootstrapping done!"
@@ -407,6 +463,12 @@ parser.add_option( '--randIndex',
                    default = False,
                    help = 'store all random cand numbers used in bootstrapping'
                    )
+parser.add_option( '--cheatTagging',
+                   action = 'store_true',
+                   dest = 'cheatTagging',
+                   default = False,
+                   help = 'add toy mistag and tagging decision drawn from some distribution'
+                   )
 parser.add_option( '--modifyAsymmBefore',
                    action = 'store_true',
                    dest = 'modifyAsymmBefore',
@@ -460,6 +522,7 @@ if __name__ == '__main__' :
                 options.preselection,
                 options.maxcand,
                 options.randIndex,
+                options.cheatTagging,
                 options.modifyAsymmBefore,
                 options.modifyAsymmAfter,
                 options.debug)

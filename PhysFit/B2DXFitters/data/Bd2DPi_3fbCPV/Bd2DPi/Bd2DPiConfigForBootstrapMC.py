@@ -84,6 +84,15 @@ def getconfig() :
                                                                                 "InputName"              : "lab0_Hlt2Topo4BodyBBDTDecision_TOS"}
 
 
+
+    #"Cheated" tagging
+    configdict["cheatTagging"] = {}
+    configdict["cheatTagging"] = { "Efficiency" : 1.0,
+                                   "File"       : "/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/data/workspace/TemplateOS.root", #<eta>=0.370029
+                                   "Workspace"  : "workspace",
+                                   "Name"       : "TemplateOS",
+                                   "Obs"        : "MistagOS"
+                                   }
     
     return configdict
                         

@@ -23,15 +23,15 @@ export stop=$2
 #Final toy seed
 export fullstop=$3
 #Batch candidate queues
-export queue="2nw"
+export queue="2nw4cores"
 #Memory limit (kB)
-export mlimit="100000"
+export mlimit="80000"
 #Nickname for the current configuration
 #Choose a meaningful name (e.g. SgnAndBkgMeanResSplineAcc2TaggersNoAsymm etc...)
-export nickname="Bd2DPiMCFilteredS21RunIBothTaggedOnlyShortTime"
+export nickname="Bd2DPiMCFilteredS21RunIBothOSTaggedOnlyShortTime"
 #Tag to describe time fit configuration
 #Choose a meaningful name (e.g. SSbarFloating etc...) 
-export timefitdescr="SSbarAccAsymmFloatDMGammaFTConstrOSTaggedOnlyRLOGITResampleFixPars"
+export timefitdescr="SSbarAccAsymmFloatDMGammaFTConstrOSTaggedOnlyRLOGITResampleFixParsbroadTrigBDTAUWeight"
 #Name of workspace
 export workspace="workspace"
 #Name of dataset
@@ -81,7 +81,7 @@ while (( $stop <= $fullstop )); do
     echo "...submitting job ${job} with starting seed ${seed}"
 
     #Submit job
-    bsub -q $queue -M $mlimit -e ${output}ERROR -o ${output}OUTPUT -n 1,8 -R "span[hosts=-1]" -J ${jobname}_${job} source ${bashscriptpath}runSFitOnBootstrapMC.sh $seed $stop $input $output $eosoutput $nickname $timefitdescr $config $pol $mode $year $hypo $workspace $dataset $pyscriptpath $runpath
+    bsub -q $queue -M $mlimit -e ${output}ERROR -o ${output}OUTPUT -n 1,16 -R "span[hosts=-1]" -J ${jobname}_${job} source ${bashscriptpath}runSFitOnBootstrapMC.sh $seed $stop $input $output $eosoutput $nickname $timefitdescr $config $pol $mode $year $hypo $workspace $dataset $pyscriptpath $runpath
 
     #source ${bashscriptpath}runSFitOnBootstrapMC.sh $seed $stop $input $output $eosoutput $nickname $timefitdescr $config $pol $mode $year $hypo $workspace $dataset $pyscriptpath $runpath
 

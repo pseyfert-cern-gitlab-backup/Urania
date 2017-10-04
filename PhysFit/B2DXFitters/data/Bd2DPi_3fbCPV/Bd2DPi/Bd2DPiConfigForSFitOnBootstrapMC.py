@@ -25,9 +25,17 @@ def getconfig():
                                                      "Name": "BacCharge",
                                                      "InputName": "BacCharge"}
 
+    #configdict["BasicVariables"]["TagDecTrue"]      = {"Range": [-1.0, 1.0],
+    #                                                   "Name": "TagDecOS",
+    #                                                   "InputName": "TagDecTrue"}
+
     configdict["BasicVariables"]["TagDecOS"]      = {"Range": [-1.0, 1.0],
                                                      "Name": "TagDecOS",
                                                      "InputName": "TagDecOS"}
+
+    #configdict["BasicVariables"]["TagDecCheat"]      = {"Range": [-1.0, 1.0],
+    #                                                    "Name": "TagDecCheat",
+    #                                                    "InputName": "TagDecCheat"}
 
     #configdict["BasicVariables"]["TagDecSS"]      = {"Range": [-1.0, 1.0],
     #                                                 "Name": "TagDecSS",
@@ -39,6 +47,10 @@ def getconfig():
     configdict["BasicVariables"]["MistagOS"]      = {"Range": [0.0, 0.5],  # 0.4619
                                                      "Name": "MistagOS",
                                                      "InputName": "MistagOS"}
+
+    #configdict["BasicVariables"]["MistagCheat"]      = {"Range": [0.0, 0.5],
+    #                                                    "Name": "MistagCheat",
+    #                                                    "InputName": "MistagCheat"}
 
     #configdict["BasicVariables"]["MistagSS"]      = {"Range": [0.0, 0.5],  # 0.492
     #                                                 "Name": "MistagSS",
@@ -95,7 +107,7 @@ def getconfig():
                                                     "Acceptance": # From ANA note v2
                                                     {"Type": "Spline",
                                                      "Float": True,
-                                                     "Extrapolate": True,#False,
+                                                     "Extrapolate": True,
                                                      #"ToFix": [3],
                                                      #"KnotPositions" : [0.45, 1.0, 2.0, 2.5, 7.0, 12.0],
                                                      #"KnotCoefficients": [0.5, 0.7, 1.0, 0.9, 0.85, 0.7, 0.7]},
@@ -128,21 +140,22 @@ def getconfig():
     configdict["Taggers"]["Signal"] = {"OS":  # From Bu MC, stat and syst combined
                                        {"Calibration":
                                         {"Type": "GLM",
-                                         "XML": ["/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/OS_Combination_Bu2D0Pi_MC_rlogitLink.xml"],
+                                         #"XML": ["/afs/cern.ch/user/v/vibattis/gitdev/Bd2Dpi_selection/flavourtagging/EspressoCalibration/OSCalibMC/Bd2DPi_rlogitLink_NoProdAsymm_useBubasis_broadTrigBDTAUWeight/OS_Combination_Calibration.xml"],
+                                         "XML": ["/afs/cern.ch/user/v/vibattis/gitdev/Bd2Dpi_selection/flavourtagging/EspressoCalibration/OSCalibMC/Bu2D0Pi_rlogitLink_NoProdAsymm_broadTrigBDTAUWeight/OS_Combination_Calibration.xml"],
                                          "tageff": [1.0],#[0.371, 0.01, 0.99],  # float in the fit
                                          "tagasymm": [0.0]
                                          },
                                         "MistagPDF":
                                         {"Type": "BuildTemplate"}
                                         }}#,
-    #configdict["Taggers"]["Signal"] = {"OS":  # From Bu MC (EPM basis)
+    #configdict["Taggers"]["Signal"] = {"OS":  #Cheated tagger
     #                                   {"Calibration":
     #                                    {"Type"     : "Linear",
-    #                                     "p0"       : [-0.00078293],
-    #                                     "p1"       : [-0.0059721],
-    #                                     "deltap0"  : [0.0066571],
-    #                                     "deltap1"  : [0.0093756],
-    #                                     "avgeta"   : [0.3585],
+    #                                     "p0"       : [0.370029],
+    #                                     "p1"       : [1.0],
+    #                                     "deltap0"  : [0.0],
+    #                                     "deltap1"  : [0.0],
+    #                                     "avgeta"   : [0.370029],
     #                                     "tageff"   : [1.0],
     #                                     "tagasymm" : [0.0]
     #                                     },
@@ -193,19 +206,21 @@ def getconfig():
     # Constraint on Gamma (error on gamma = rel. error on lifetime * gamma)
     configdict["gaussCons"]["Gamma"] = (0.004 / 1.519068) * (1.0 / 1.519068)  # 0.0017313
     # Multivariate constraint for OS combination
-    ospedix='_OS_Combination_Bu2D0Pi_MC_rlogitLink'
+    ospedix='_OS_Combination_Calibration'
+    #From /afs/cern.ch/user/v/vibattis/gitdev/Bd2Dpi_selection/flavourtagging/EspressoCalibration/OSCalibMC/Bu2D0Pi_rlogitLink_NoProdAsymm_broadTrigBDTAUWeight/
     configdict["gaussCons"]["multivarOSCalib"] = [['p_0'+ospedix, 'p_1'+ospedix, 'p_2'+ospedix, 'p_3'+ospedix, 'p_4'+ospedix,
                                                    'dp_0'+ospedix, 'dp_1'+ospedix, 'dp_2'+ospedix, 'dp_3'+ospedix, 'dp_4'+ospedix],  # parname
-                                                  [0.0037878, 0.0043201, 0.0015278, 0.019089, 0.097153, 0.0075756, 0.0086402, 0.0030557, 0.038178, 0.19431],  # errors
-                                                  [ [1,        0.026364,         -0.1025,      -0.0062903,        0.022028,        0.016697,       -0.020273,       0.0096578,       0.0030769,      -0.0033872],  # correlation matrix from EPM (upper-right triangle)
-                                                    [1,         0.11049,         -0.1828,        -0.11513,       -0.020273,        0.034225,       -0.028609,       0.0028101,      0.00087712],
-                                                    [1,         0.26541,        -0.14282,       0.0096578,       -0.028609,        0.040899,       -0.023065,       0.0089189],
-                                                    [1,         0.68189,       0.0030769,       0.0028101,       -0.023065,        0.019771,        0.067058],
-                                                    [1,      -0.0033872,      0.00087712,       0.0089189,        0.067058,        -0.20354],
-                                                    [1,        0.026364,         -0.1025,      -0.0062903,        0.022028],
-                                                    [1,         0.11049,         -0.1828,        -0.11513],
-                                                    [1,         0.26541,        -0.14282],
-                                                    [1,         0.68189],
+                                                  [0.012765, 0.014155, 0.0049352, 0.063306, 0.34322, 0.025531, 0.02831, 0.0098703, 0.12661, 0.68643],  # errors
+                                                  [ [1,       0.0093893,        -0.16252,       -0.018463,        0.023935,        0.015107,       -0.041721,        0.031072,
+                                                     0.03324,        0.005107],  # correlation matrix from EPM (upper-right triangle)
+                                                    [1,        0.072851,        -0.30607,        -0.20523,       -0.041721,         0.07414,       -0.028533,      -0.022481,  0.0063663],
+                                                    [1,         0.14817,        -0.20439,        0.031072,       -0.028533,        0.081493,        0.028518,      -0.0044623],
+                                                    [1,         0.52983,         0.03324,       -0.022481,        0.028518,         0.17986,       -0.042929],
+                                                    [1,        0.005107,       0.0063663,      -0.0044623,       -0.042929,         0.34316],
+                                                    [1,       0.0093893,        -0.16252,       -0.018463,        0.023935],
+                                                    [1,        0.072851,        -0.30607,        -0.20523],
+                                                    [1,         0.14817,        -0.20439],
+                                                    [1,         0.52983],
                                                     [1] ] ]
     # Multivariate constraint for SS combination
     #sspedix='_SS_PionBDT_Calibration_Poly_LogitLink'
@@ -221,20 +236,21 @@ def getconfig():
     ############################################
 
     #configdict["resampleParams"] = {}
-    #ospedix='_OS_Combination_Bu2D0Pi_MC_rlogitLink'
+    #ospedix='_OS_Combination_Calibration'
+    #From /afs/cern.ch/user/v/vibattis/gitdev/Bd2Dpi_selection/flavourtagging/EspressoCalibration/OSCalibMC/Bu2D0Pi_rlogitLink_NoProdAsymm_broadTrigBDTAUWeight/
     #configdict["resampleParams"]["multivarOSCalib"] = [['p_0'+ospedix, 'p_1'+ospedix, 'p_2'+ospedix, 'p_3'+ospedix, 'p_4'+ospedix,
     #                                                    'dp_0'+ospedix, 'dp_1'+ospedix, 'dp_2'+ospedix, 'dp_3'+ospedix, 'dp_4'+ospedix],  # parname
-    #                                                   [0.0037878, 0.0043201, 0.0015278, 0.019089, 0.097153, 0.0075756, 0.0086402, 0.0030557, 0.038178, 0.19431],  # errors
-    #                                                   [ [1,        0.026364,         -0.1025,      -0.0062903,        0.022028,        0.016697,       -0.020273,       0.0096578,       0.0030769,      -0.0033872],  # correlation matrix from EPM (upper-right triangle)
-    #                                                     [1,         0.11049,         -0.1828,        -0.11513,       -0.020273,        0.034225,       -0.028609,       0.0028101,      0.00087712],
-    #                                                     [1,         0.26541,        -0.14282,       0.0096578,       -0.028609,        0.040899,       -0.023065,       0.0089189],
-    #                                                     [1,         0.68189,       0.0030769,       0.0028101,       -0.023065,        0.019771,        0.067058],
-    #                                                     [1,      -0.0033872,      0.00087712,       0.0089189,        0.067058,        -0.20354],
-    #                                                     [1,        0.026364,         -0.1025,      -0.0062903,        0.022028],
-    #                                                     [1,         0.11049,         -0.1828,        -0.11513],
-    #                                                     [1,         0.26541,        -0.14282],
-    #                                                     [1,         0.68189],
-    #                                                     [1] ] ]
+    #                                                   [0.012765, 0.014155, 0.0049352, 0.063306, 0.34322, 0.025531, 0.02831, 0.0098703, 0.12661, 0.68643],  # errors
+     #                                                  [ [1,       0.0093893,        -0.16252,       -0.018463,        0.023935,        0.015107,       -0.041721,        0.031072,         0.03324,        0.005107],  # correlation matrix from EPM (upper-right triangle)
+      #                                                   [1,        0.072851,        -0.30607,        -0.20523,       -0.041721,         0.07414,       -0.028533,       -0.022481,       0.0063663],
+       #                                                  [1,         0.14817,        -0.20439,        0.031072,       -0.028533,        0.081493,        0.028518,      -0.0044623],
+        #                                                 [1,         0.52983,         0.03324,       -0.022481,        0.028518,         0.17986,       -0.042929],
+         #                                                [1,        0.005107,       0.0063663,      -0.0044623,       -0.042929,         0.34316],
+          #                                               [1,       0.0093893,        -0.16252,       -0.018463,        0.023935],
+           #                                              [1,        0.072851,        -0.30607,        -0.20523],
+            #                                             [1,         0.14817,        -0.20439],
+             #                                            [1,         0.52983],
+              #                                           [1] ] ]
     ############################################
     # Choose parameters to perform the
     # likelihood scan for

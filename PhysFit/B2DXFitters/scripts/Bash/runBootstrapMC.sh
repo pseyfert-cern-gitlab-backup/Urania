@@ -16,14 +16,14 @@ export config=$9
 export pyscriptpath=${10}
 export maxcand=${11}
 
-export preselection="TagDecOS!=0||TagDecSS!=0"
+export preselection="TagDecOS!=0"
 
 while (( $seed < $stop )); do
 
     cd $pyscriptpath
 
     #Run script
-    ${runpath}run python ${pyscriptpath}BootstrapMC.py -d --seed $seed --preselection $preselection --configName $config --inputFile $inputfile --inputWorkspace $inputworkspace --outputFile ${output}BootstrapMC_${nickname}_${seed}.root --outputWorkspace workspace --merge both --decay Bd2DPi --mode kpipi --year run1 --hypo Bd2DPi --maxcand $maxcand >& ${output}log_${nickname}_${seed}.txt  
+    ${runpath}run python ${pyscriptpath}BootstrapMC.py -d --cheatTagging --seed $seed --preselection $preselection --configName $config --inputFile $inputfile --inputWorkspace $inputworkspace --outputFile ${output}BootstrapMC_${nickname}_${seed}.root --outputWorkspace workspace --merge both --decay Bd2DPi --mode kpipi --year run1 --hypo Bd2DPi --maxcand $maxcand >& ${output}log_${nickname}_${seed}.txt  
 
     #Dump to EOS
     xrdcp -f ${output}BootstrapMC_${nickname}_${seed}.root root://eoslhcb.cern.ch/${eosoutput}BootstrapMC_${nickname}_${seed}.root

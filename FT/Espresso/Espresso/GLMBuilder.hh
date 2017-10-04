@@ -27,11 +27,11 @@ namespace Espresso {
     virtual ~GLMBuilder( ); ///< Destructor
 
     RooArgList coefficients() {
-      return std::get<0>(components);
+      return std::get<0>(components); 
     }
 
     RooArgList delta_coefficients() {
-      return std::get<1>(components);
+        return std::get<1>(components);
     }
 
     RooMultiVarGaussian covariance_matrix() {

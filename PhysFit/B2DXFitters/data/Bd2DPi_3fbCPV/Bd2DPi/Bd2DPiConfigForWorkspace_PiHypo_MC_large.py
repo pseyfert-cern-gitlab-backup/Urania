@@ -16,14 +16,13 @@ def getconfig() :
     configdict["YearOfDataTaking"] = {"2011","2012"} 
     # file name with paths to MC/data samples
     configdict["dataName"]   = "/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/config_Bd2DPi_MC_large.txt"
-    #configdict["dataName"]   = "/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/config_Bd2DPi_MC_splinePreCalib.txt"
     # basic variables
     configdict["BasicVariables"] = {}
-    configdict["BasicVariables"]["BeautyMass"]    = { "Range"                  : [5090,    6000    ],
+    configdict["BasicVariables"]["BeautyMass"]    = { "Range"                  : [5220,    5600    ],
                                                       "Name"                   : "BeautyMass",
                                                       "InputName"              : "lab0_FitDaughtersConst_M_flat"}
 
-    configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.4,     15.4], #12.0    ],
+    configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.4,     12.0    ],
                                                       "Bins"                   : 40,
                                                       "Name"                   : "BeautyTime",
                                                       "InputName"              : "obsTime"}
@@ -97,7 +96,6 @@ def getconfig() :
 
     # PIDK bin
     configdict["AdditionalCuts"] = {}
-    #configdict["AdditionalCuts"]["All"] = {"MC": "lab1_PIDKcorr<5.0&&lab0_BKGCAT==0"}
-    configdict["AdditionalCuts"]["All"] = {"MC": "lab0_BKGCAT==0"}
+    configdict["AdditionalCuts"]["All"] = {"MC": "lab0_BKGCAT==0 && (obsTagOS!=0 || obsTagOSCharm!=0) && BDT_classifier>0.0 && obsTime>0.4 && obsTime<12.0 && lab1_PIDKcorr<5.0 && lab0_BKGCAT==0 && lab0_FitDaughtersConst_M_flat>5220.0 && lab0_FitDaughtersConst_M_flat<5600.0 && nTracks>15 && nTracks<1000"}
     
     return configdict
