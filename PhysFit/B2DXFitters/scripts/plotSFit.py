@@ -131,9 +131,10 @@ plotModel =  True
 def plotDataSet(dataset, frame, bin) :
     dataset.plotOn(frame,RooFit.Binning(bin),RooFit.DataError(RooAbsData.SumW2),
                    RooFit.Name("dataSetCut"))
-
+    
+    
 #------------------------------------------------------------------------------
-def plotFitModel(model, frame, wksp, myconfigfile, log, debug) :
+def plotFitModel(model, frame, wksp, myconfigfile, logscale, debug) :
     if debug :
         model.Print('t')
         frame.Print('v')
@@ -190,13 +191,15 @@ def plotFitModel(model, frame, wksp, myconfigfile, log, debug) :
         time.setBinning(oldBinning)
         time.setRange(lo, hi)
 
+
     spl = RooCubicSplineFun("splinePdf", "splinePdf", time, "splineBinning", tacc_list)
-    if log:
-        rel = 200
+
+    if logscale:
+        from math import log 
+        rel = log(frame.GetMaximum())*4.0 
     else:
-        #rel = 1000
-        rel = 2000
-        
+        rel = frame.GetMaximum()/4.0
+
     fr = spl.plotOn(frame, RooFit.LineColor(kRed),  RooFit.Normalization(rel, RooAbsReal.Relative),RooFit.Name("sPline"))
     fr = model.plotOn(frame,
                           RooFit.LineColor(kBlue+3), RooFit.Name("FullPdf"))
@@ -353,7 +356,6 @@ parser.add_option( '--pdfToPlot',
 
 parser.add_option( '--debug',
                    dest = 'debug',
-                   action = 'store_true',
                    default = False,
                    help = 'verbose output'
                    )
@@ -442,6 +444,7 @@ if __name__ == '__main__' :
     #time.setRange(0.4,15)
     timeDown = time.getMin()
     timeUp = time.getMax()
+
     #time.setRange(timeDown,timeUp)   
  
     modelPDF = w.obj(options.pdfToPlot) 
@@ -456,6 +459,8 @@ if __name__ == '__main__' :
         exit(1)
 
     
+    
+
     canvas = TCanvas("canvas", "canvas", 1200, 1000)
     canvas.cd()
 
@@ -477,7 +482,7 @@ if __name__ == '__main__' :
     frame_t.GetYaxis().SetNdivisions(512)
     
     frame_t.GetXaxis().SetTitleOffset( 1.00 )
-    frame_t.GetYaxis().SetTitleOffset( 0.85 )
+    frame_t.GetYaxis().SetTitleOffset( 1.00 )
     unit = "ps"
     #frame_t.GetXaxis().SetTitle('#font[132]{#tau (B_{s} #rightarrow D_{s} #pi) [ps]}')
     frame_t.GetYaxis().SetTitle((TString.Format("#font[132]{Candidates / ( " +
@@ -491,7 +496,7 @@ if __name__ == '__main__' :
 
     if plotData:
         plotDataSet(dataset, frame_t, bin)
-    
+
     print '##### modelPDF is'
     print modelPDF
     if plotModel :
@@ -505,7 +510,7 @@ if __name__ == '__main__' :
         frame_t.GetYaxis().SetRangeUser(1.5,frame_t.GetMaximum()*1.5)
 
     #legend = TLegend( 0.57, 0.68, 0.80, 0.90 )
-    legend = TLegend( 0.52, 0.70, 0.75, 0.90 )
+    legend = TLegend( 0.52, 0.65, 0.75, 0.93 )
     legend.SetTextSize(0.06)
     legend.SetTextFont(12)
     legend.SetFillColor(0)
@@ -589,19 +594,21 @@ if __name__ == '__main__' :
     frame_p.GetYaxis().SetTitleOffset(0.26)
     frame_p.GetYaxis().SetTitleFont(132)
     frame_p.GetYaxis().SetNdivisions(106)
-    frame_p.GetYaxis().SetLabelSize(0.20)
+    frame_p.GetYaxis().SetLabelSize(0.18)
     frame_p.GetYaxis().SetLabelOffset(0.006)
     frame_p.GetXaxis().SetTitleSize(0.20)
     frame_p.GetXaxis().SetTitleFont(132)
     frame_p.GetXaxis().SetTitleOffset(0.85)
     frame_p.GetXaxis().SetNdivisions(5)
     frame_p.GetYaxis().SetNdivisions(5)
-    frame_p.GetXaxis().SetLabelSize(0.20)
+    frame_p.GetXaxis().SetLabelSize(0.18)
     frame_p.GetXaxis().SetLabelFont( 132 )
     frame_p.GetYaxis().SetLabelFont( 132 )
     frame_p.GetYaxis().SetRangeUser(-5.0, 5.0)
     frame_p.GetXaxis().SetTitle('#font[132]{#tau('+descTS.Data()+') [ps]}')
 
+    frame_p.Draw()
+    
     if doPulls:
     
         pullHist = frame_t.pullHist()
@@ -638,6 +645,7 @@ if __name__ == '__main__' :
         zero = max/range
         print "max: %s, min: %s, range: %s, zero:%s"%(max,min,range,zero)
         print "maxX: %s, minX: %s"%(maxX,minX)
+        print "time range: (%lf, %lf)"%(timeDown,timeUp) 
         
         graph = TGraph(2)
         graph.SetMaximum(max)
@@ -668,11 +676,13 @@ if __name__ == '__main__' :
         pullHist.SetTitle("");
         pullHist.Draw("AP")
         pullHist.GetYaxis().SetRangeUser(min, max)
-        graph.Draw("L SAME")
-        graph2.Draw("L SAME")
-        graph3.Draw("L SAME")
+        graph.Draw("SAME")
+        graph2.Draw("SAME")
+        graph3.Draw("SAME")
 
-    frame_p.Draw()
+    
+
+    
 
     pad2.Update()
     canvas.Update()

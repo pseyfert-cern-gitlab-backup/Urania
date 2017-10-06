@@ -14,6 +14,15 @@
 #include "RooArgSet.h"
 #include "TRandom.h"
 
+#define pi TMath::Pi()
+#define MPion 139.57018
+#define MKaon 493.667
+#define MKst_1_1410 1414.
+#define GKst_1_1410 232.
+#define MKst_1_1680 1717.
+#define GKst_1_1680 322.
+#define MBs 5366.77
+
 // Parameters of the LASS parametrisation of the Kpi scalar propagator
 Double_t MR_lass = 1330.; // MeV/c2
 Double_t F_lass = 102.722; // MeV
@@ -65,6 +74,34 @@ Double_t e1_Dtheo = 0.465;
 Double_t G1_Dtheo = 0.222;
 Double_t a_Dtheo = -0.72;
 
+// Parameters of the Palano scalar Kpi mass amplitude
+Double_t s_Kpi_palano = (MPion*MPion+MKaon*MKaon)/1000./1000.;
+Double_t s_A_palano = 0.87753*s_Kpi_palano;
+Double_t s_a_palano = 1.7991;
+Double_t g_1_a_palano = 0.3139;
+Double_t g_2_a_palano = -0.00775;
+Double_t s_b_palano = 8.3627;
+Double_t g_1_b_palano = 1.1804;
+Double_t g_2_b_palano = -0.22335;
+Double_t C_11_0_palano = -0.1553;
+Double_t C_11_1_palano = 0.0909;
+Double_t C_11_2_palano = 0.8618;
+Double_t C_11_3_palano = 0.0629;
+Double_t C_12_0_palano = 0.0738;
+Double_t C_12_1_palano = 0.3866;
+Double_t C_12_2_palano = 1.2195;
+Double_t C_12_3_palano = 0.8390;
+Double_t C_22_0_palano = -0.0036;
+Double_t C_22_1_palano = 0.2590;
+Double_t C_22_2_palano = 1.6950;
+Double_t C_22_3_palano = 2.2300;
+Double_t A_1_0_palano = 1.;
+Double_t A_1_1_palano = 0.;
+Double_t A_1_2_palano = 0.;
+Double_t A_2_0_palano = 0.;
+Double_t A_2_1_palano = 0.;
+Double_t A_2_2_palano = 0.;
+
 class TwoBodyMassModel : public RooAbsPdf {
 public:
   TwoBodyMassModel() {} ; 
@@ -84,6 +121,11 @@ public:
 	   RooAbsReal& _c2,
 	   RooAbsReal& _c3,
 	   RooAbsReal& _c4,
+	   RooAbsReal& _c5,
+	   RooAbsReal& _c6,
+	   RooAbsReal& _c7,
+	   RooAbsReal& _c8,
+	   RooAbsReal& _c9,
 	   RooAbsReal& _ms,
 	   RooAbsReal& _mv,
 	   RooAbsReal& _gv,
@@ -108,6 +150,11 @@ public:
   RooRealProxy c2 ;
   RooRealProxy c3 ;
   RooRealProxy c4 ;
+  RooRealProxy c5 ;
+  RooRealProxy c6 ;
+  RooRealProxy c7 ;
+  RooRealProxy c8 ;
+  RooRealProxy c9 ;
   RooRealProxy ms ;
   RooRealProxy mv ;
   RooRealProxy gv ;
@@ -136,6 +183,7 @@ public:
   TComplex Prop_Stheo(Double_t m) const;
   TComplex Prop_Ptheo(Double_t m) const;
   TComplex Prop_Dtheo(Double_t m) const;
+  TComplex Prop_S_Palano(Double_t m) const;
   TComplex Mji(Double_t m, Int_t ji) const;
   TComplex Mj1j2(Double_t ma, Double_t mb, Int_t j1, Int_t j2) const; 
   Double_t phasespace(Double_t ma, Double_t mb) const;

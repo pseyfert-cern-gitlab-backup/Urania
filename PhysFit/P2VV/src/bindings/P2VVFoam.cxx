@@ -174,6 +174,16 @@ void P2VVFoam::ApplySettings(TFoam* foamGenerator, TRandom3* rand){
   foamGenerator->SetMaxWtRej( 1.1 );	//	1.1	Unknown what effect this has, something to do with weights
 }
 
+
+void P2VVFoam::UpdateSeed(int newseed){
+  int n=0;
+  for(auto gen : m_foamGens){
+    TRandom3* rand = new TRandom3(newseed+n);
+    gen->ResetPseRan(rand);
+    n++;
+  }
+}
+
 //Use accept/reject method to create data
 void P2VVFoam::GenerateData( int DataAmount ){
   cout << "Requested P2VVFoam to generate: " << DataAmount << " events" << endl;

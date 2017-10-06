@@ -9,11 +9,11 @@
 #   The latter gives better results at the edges of the phase space. 
 
 import os, sys
-os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + "../inc/"
+os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + os.environ["MEERKATROOT"]
 
 from ROOT import gSystem, gStyle, RooRealVar
 
-gSystem.Load("../lib/libMeerkat.so")
+gSystem.Load("libMeerkatLib.so")
 
 from ROOT import OneDimPhaseSpace, CombinedPhaseSpace, BinnedKernelDensity, FactorisedDensity, FormulaDensity
 from ROOT import TFile, TNtuple, TCanvas, TH2F, TText

@@ -115,6 +115,9 @@ import os, sys, gc
 
 gROOT.SetBatch()                                                                                                  
 
+from B2DXFitters.settings import setEnv
+setEnv()
+    
 
 def printVar( var, label ):
     
@@ -223,9 +226,9 @@ def calculateAcceptance( debug,
     pars_fin_dsk_mc  = rfr_dsk_mc.floatParsFinal()
     pars_fin_dspi_mc = rfr_dspi_mc.floatParsFinal()
     # Now prepare for the ratio
-    resvect_dsk      = ROOT.TVectorT('double')(num-1)
-    resvect_dspi     = ROOT.TVectorT('double')(num-1)
-    resvect_ratio    = ROOT.TVectorT('double')(num-1)
+    resvect_dsk      = TVectorT('double')(num-1)
+    resvect_dspi     = TVectorT('double')(num-1)
+    resvect_ratio    = TVectorT('double')(num-1)
     for i in range(0,num-1) : 
         resvect_dsk[i]    = pow(pars_fin_dsk_mc[i].getVal(),2)
         resvect_dspi[i]   = pow(pars_fin_dspi_mc[i].getVal(),2)
@@ -263,11 +266,11 @@ def calculateAcceptance( debug,
 
         pars_fit_data = rfr_data.floatParsFinal()
         totcov_mc = rfr_data.covarianceMatrix()
-        totcov_mc_red = ROOT.TMatrixTSym('double')(num,num)
+        totcov_mc_red = TMatrixTSym('double')(num,num)
         totcov_mc.GetSub(1,num,1,num,totcov_mc_red)
 
-        resvect_data = ROOT.TVectorT('double')(num-1) 
-        resvect_final = ROOT.TVectorT('double')(num-1)
+        resvect_data = TVectorT('double')(num-1) 
+        resvect_final = TVectorT('double')(num-1)
         for i in range(0,num-1) :
             resvect_data[i] = pow(pars_fit_data[i+1].getVal(),2)
             resvect_final[i] = resvect_data[i]*resvect_ratio[i]
@@ -379,10 +382,6 @@ if __name__ == '__main__' :
     if len( args ) > 0 :
         parser.print_help()
         exit( -1 )
-
-
-    import sys
-    sys.path.append("../data/")
 
     calculateAcceptance( options.debug,
                          options.fileMCDsK, options.fileMCDsPi, options.fileDataDsPi, 

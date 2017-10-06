@@ -1,13 +1,13 @@
-#include "PolynomialDensity.hh"
-#include "AbsPhaseSpace.hh"
-#include "OneDimPhaseSpace.hh"
-#include "UniformDensity.hh"
-
 #include "TMath.h"
 #include "TVirtualFitter.h"
 #include "TTree.h"
 
-#include "Logger.hh"
+#include "Meerkat/PolynomialDensity.hh"
+#include "Meerkat/AbsPhaseSpace.hh"
+#include "Meerkat/OneDimPhaseSpace.hh"
+#include "Meerkat/UniformDensity.hh"
+
+#include "Meerkat/Logger.hh"
 
 static std::vector<std::vector<Double_t> > gData; 
 static Int_t gPower; 

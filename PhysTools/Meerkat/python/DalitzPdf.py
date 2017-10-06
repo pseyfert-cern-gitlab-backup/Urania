@@ -5,11 +5,11 @@
 #  Demonstrates the use of 2D projection and 1D slices. 
 
 import os, sys
-os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + "../inc/"
+os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + os.environ["MEERKATROOT"]
 
 from ROOT import gSystem, gStyle, RooRealVar
 
-gSystem.Load("../lib/libMeerkat.so")
+gSystem.Load("libMeerkatLib.so")
 
 from ROOT import DalitzPhaseSpace, BinnedKernelDensity, FactorisedDensity, FormulaDensity
 from ROOT import BinnedDensity, AdaptiveKernelDensity, PolynomialDensity
@@ -135,9 +135,9 @@ kernel_kpi.Scale( true_kpi.GetSumOfWeights() / kernel_kpi.GetSumOfWeights() )
 poly_kpi.Scale( true_kpi.GetSumOfWeights() / poly_kpi.GetSumOfWeights() )
 true_kpi.Draw()
 kernel_kpi.SetLineColor(2)
-kernel_kpi.Draw("same")
+kernel_kpi.Draw("hist same l")
 poly_kpi.SetLineColor(3)
-poly_kpi.Draw("same")
+poly_kpi.Draw("hist same l")
 
 #canvas.cd(5)
 #kernel_pipi.Scale( true_pipi.GetSumOfWeights() / kernel_pipi.GetSumOfWeights() )

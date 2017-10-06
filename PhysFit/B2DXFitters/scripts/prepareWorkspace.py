@@ -286,8 +286,21 @@ def getSignalNames(myconfig):
             else:
                 name = "#Signal "+decay+" "+dmode+" "+y
             signalNames.append(TString(name))
-        
-    return signalNames
+
+
+    globalWeightsMD = []
+    globalWeightsMU = []
+
+    for y in year:
+        for dmode in Dmodes:
+            if myconfig.has_key("GlobalWeight"):
+                globalWeightsMD.append(myconfig["GlobalWeight"][y][dmode]["Down"])
+                globalWeightsMU.append(myconfig["GlobalWeight"][y][dmode]["Up"])
+            else:
+                globalWeightsMD.append(1.0)
+                globalWeightsMU.append(1.0)
+
+    return signalNames, globalWeightsMD, globalWeightsMU
 
 
 # -----------------------------------------------------------------------------                                                                                                         
@@ -589,14 +602,14 @@ def prepareWorkspace( debug,
 #        Signal = True
 
     if Signal:
-        signalNames = getSignalNames(myconfigfile)
-        
+        signalNames, globalWeightMD, globalWeightMU = getSignalNames(myconfigfile)
+
         for i in range(0,signalNames.__len__()):
             print signalNames[i]
             year = GeneralUtils.CheckDataYear(signalNames[i])
             workspace = MassFitUtils.ObtainSignal(TString(myconfigfile["dataName"]), signalNames[i],
                                                   MDSettings, decay, False, False, workspace, False,
-                                                  1.0, 1.0, plotSettings, debug)
+                                                  globalWeightMD[i], globalWeightMU[i], plotSettings, debug)
 
         workspace.Print()
         GeneralUtils.SaveWorkspace(workspace,saveNameTS, debug)

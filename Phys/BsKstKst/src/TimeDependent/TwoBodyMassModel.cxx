@@ -25,15 +25,6 @@
 #include "RooNumGenConfig.h"
 #include <assert.h>
 
-#define pi TMath::Pi()
-#define MPion 139.57018
-#define MKaon 493.667
-#define MKst_1_1410 1414.
-#define GKst_1_1410 232.
-#define MKst_1_1680 1717.
-#define GKst_1_1680 322.
-#define MBs 5366.77
-
 ClassImp(TwoBodyMassModel) 
 
 // ---------------------------------------------------
@@ -54,6 +45,11 @@ ClassImp(TwoBodyMassModel)
                         RooAbsReal& _c2,
                         RooAbsReal& _c3,
                         RooAbsReal& _c4,
+                        RooAbsReal& _c5,
+                        RooAbsReal& _c6,
+                        RooAbsReal& _c7,
+                        RooAbsReal& _c8,
+                        RooAbsReal& _c9,
                         RooAbsReal& _ms,
                         RooAbsReal& _mv,
                         RooAbsReal& _gv,
@@ -75,6 +71,11 @@ ClassImp(TwoBodyMassModel)
    c2("c2","c2",this,_c2),
    c3("c3","c3",this,_c3),
    c4("c4","c4",this,_c4),
+   c5("c5","c5",this,_c5),
+   c6("c6","c6",this,_c6),
+   c7("c7","c7",this,_c7),
+   c8("c8","c8",this,_c8),
+   c9("c9","c9",this,_c9),
    ms("ms","ms",this,_ms),
    mv("mv","mv",this,_mv),
    gv("gv","gv",this,_gv),
@@ -102,6 +103,11 @@ ClassImp(TwoBodyMassModel)
    c2("c2",this,other.c2),
    c3("c3",this,other.c3),
    c4("c4",this,other.c4),
+   c5("c5",this,other.c5),
+   c6("c6",this,other.c6),
+   c7("c7",this,other.c7),
+   c8("c8",this,other.c8),
+   c9("c9",this,other.c9),
    ms("ms",this,other.ms),
    mv("mv",this,other.mv),
    gv("gv",this,other.gv),
@@ -211,7 +217,7 @@ TComplex TwoBodyMassModel::Lass(Double_t m, Double_t m0, Double_t g0) const
    Double_t q = get_q(m,MPion,MKaon);
    Double_t q0 = get_q(m0,MPion,MKaon);
 
-   Double_t cotg_deltaB = 1./(c1*q)+0.5*c2*q;
+   Double_t cotg_deltaB = c1/q+0.5*c2*q;
    Double_t deltaB = atan(1./cotg_deltaB);
    TComplex expo(1.,2.*deltaB,1);
 
@@ -524,6 +530,45 @@ TComplex TwoBodyMassModel::Prop_Dtheo(Double_t m) const
  }
 
 // ---------------------------------------------------
+// Palano scalar Kpi mass amplitude.
+
+TComplex TwoBodyMassModel::Prop_S_Palano(Double_t m) const 
+ { 
+
+   TComplex i(0,1);
+   Double_t m_GeV = m/1000.;
+   Double_t svar_GeV = m_GeV*m_GeV;
+   Double_t q_Kpi_GeV = get_q(m,MKaon,MPion)/1000.;
+   Double_t q_Keta_GeV = get_q(m,MKaon,MEta)/1000.;
+
+   Double_t rho_1 = 2.*q_Kpi_GeV/m_GeV;
+   Double_t rho_2 = 2.*q_Keta_GeV/m_GeV;
+
+   Double_t sbot_GeV = 0.36;
+   Double_t stop_GeV = 5.832;
+   Double_t X = (2.*svar_GeV-(stop_GeV+sbot_GeV))/(stop_GeV-sbot_GeV);
+
+   Double_t K11 = (svar_GeV-s_A_palano)/s_Kpi_palano*(g_1_a_palano*g_1_a_palano/(svar_GeV-s_a_palano)+g_1_b_palano*g_1_b_palano/(svar_GeV-s_b_palano)+C_11_0_palano+C_11_1_palano*X+C_11_2_palano*X*X+C_11_3_palano*X*X*X);
+   Double_t K12 = (svar_GeV-s_A_palano)/s_Kpi_palano*(g_1_a_palano*g_2_a_palano/(svar_GeV-s_a_palano)+g_1_b_palano*g_2_b_palano/(svar_GeV-s_b_palano)+C_12_0_palano+C_12_1_palano*X+C_12_2_palano*X*X+C_12_3_palano*X*X*X);
+   Double_t K22 = (svar_GeV-s_A_palano)/s_Kpi_palano*(g_2_a_palano*g_2_a_palano/(svar_GeV-s_a_palano)+g_2_b_palano*g_2_b_palano/(svar_GeV-s_b_palano)+C_22_0_palano+C_22_1_palano*X+C_22_2_palano*X*X+C_22_3_palano*X*X*X);
+
+   Double_t detK = K11*K22-K12*K12;
+   TComplex Delta(1.-rho_1*rho_2*detK,-rho_1*K11-rho_2*K22);
+
+   TComplex T11_hat = s_Kpi_palano/(svar_GeV-s_A_palano)*(K11-rho_2*detK)/Delta;
+   TComplex T12_hat = s_Kpi_palano/(svar_GeV-s_A_palano)*K12/Delta;
+
+   Double_t xm = X;//(m-1175.)/425.;
+   Double_t alpha_1_s = 1.+c1*xm+c2*(2.*xm*xm-1.)+c3*(4.*xm*xm*xm-3.*xm)+c4*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
+   Double_t alpha_2_s = c5+c6*xm+c7*(2.*xm*xm-1.)+c8*(4.*xm*xm*xm-3.*xm)+c9*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
+
+   TComplex T = alpha_1_s*T11_hat+alpha_2_s*T12_hat;
+
+   return T*TComplex(1.,0.0533209,1);
+
+ }
+
+// ---------------------------------------------------
 // Kpi mass amplitude.
 
 TComplex TwoBodyMassModel::Mji(Double_t m, Int_t ji) const 
@@ -533,7 +578,7 @@ TComplex TwoBodyMassModel::Mji(Double_t m, Int_t ji) const
 
    if (ji == 0)
 	{
-	T = Prop_Stheo(m)/36.278192511041325;
+	T = Lass(m,c3,c4)/10.;
 	}
 
    else if (ji == 1)

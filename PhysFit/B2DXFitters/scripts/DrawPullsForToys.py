@@ -124,6 +124,7 @@ corrplots = True
 #outputdir = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Toys/'+nickname+'/TimePulls/'
 #selection = 'MINUITStatus == 0 && edm!=0'
 
+
 #Uncomment this for Bootstrap MC
 timefitdescr='SSbarAccAsymmFloatDMGammaConstrOSTaggedOnlyRLOGITResampleFixParsCheatFTcalib'
 inputfile = '/eos/lhcb/wg/b2oc/TD_DPi_3fb/MCBootstrap/'+nickname+'/TimeFit/'+timefitdescr+'/PullTreeTimeFit_'+nickname+'_'+timefitdescr+'.root'
@@ -221,8 +222,7 @@ for obs in range(0, int(nObs)):
     PullTree.Draw("("+FitList[obs]+"-"+GenList[obs]+")"+">>residual"+str(obs),selection_string,"goff")
     residual = gDirectory.Get("residual"+str(obs))
     residual.SetTitle("")
-    residual.GetXaxis().SetTitle("Fitted Residual")
-        
+    residual.GetXaxis().SetTitle("Fitted Residual")  
     gStyle.SetStatX(0.95)
     gStyle.SetStatY(0.95)
     gStyle.SetStatW(0.15)

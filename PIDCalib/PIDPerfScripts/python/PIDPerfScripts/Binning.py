@@ -308,6 +308,15 @@ for trType in GetPartTypes():
         
         AddBinScheme(trType, 'MC15TuneV1_ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 0, 1)
         AddUniformBins(trType, 'MC15TuneV1_ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 20, 0, 1)
+        
+        AddBinScheme(trType, 'MC15TuneDNNV1_ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 0, 1)
+        AddUniformBins(trType, 'MC15TuneDNNV1_ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 20, 0, 1)
+        
+        AddBinScheme(trType, 'MC15TuneFLAT4dV1_ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType),0,1)
+        AddUniformBins(trType, 'MC15TuneFLAT4dV1_ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 20, 0, 1)
+        
+        AddBinScheme(trType, 'MC15TuneCatBoostV1_ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType),0,1)
+        AddUniformBins(trType, 'MC15TuneCatBoostV1_ProbNN%s'%(realPart), 'PerfPlots_%s'%(trType), 20, 0, 1)
 
         if realPart != "mu":
             AddBinScheme(trType, 'RICHThreshold_%s'%(realPart), 'PerfPlots_%s'%(trType), -2, 2)

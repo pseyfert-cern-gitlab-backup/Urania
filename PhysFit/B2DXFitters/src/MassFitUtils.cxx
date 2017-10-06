@@ -2596,8 +2596,7 @@ namespace MassFitUtils {
     obs->add(*Eta);
     obs->Print("v");
 
-    //std::vector <TString> tN = mdSet->GetVarNames(true,false,false,true,true);
-    std::vector <TString> tN = mdSet->GetVarNames(true,true,false,true,true);
+    std::vector <TString> tN = mdSet->GetVarNames(true,true,true,true,true);
     for(unsigned int i = 0; i<tN.size(); i++ )
     {
       std::cout<<"tN: "<<tN[i]<<std::endl;
@@ -2833,6 +2832,11 @@ namespace MassFitUtils {
           //  }
         }
       }
+
+      
+      std::cout<<"[INFO] Create signal MC dataSet: "<<dataSetMC[i]->GetName()
+	       <<" with entries: "<<dataSetMC[i]->numEntries()
+	       <<" and sum of entries: "<<dataSetMC[i]->sumEntries()<<std::endl;
       
       /*
         const TTree* treeConst = dataSetMC[i]->tree();

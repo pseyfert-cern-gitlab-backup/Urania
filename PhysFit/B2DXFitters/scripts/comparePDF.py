@@ -112,15 +112,20 @@ from optparse import OptionParser
 from math     import pi, log
 import os, sys, gc
 
+from B2DXFitters.settings import setEnv
+setEnv()
+
 gROOT.SetBatch()
 
 #------------------------------------------------------------------------------
 def runComparePDF( debug, name1, file1, work1, text1, name2, file2, work2, text2, obs, data ) :
-
+    
     workspace1 = GeneralUtils.LoadWorkspace(TString(file1),TString(work1),debug)
     workspace2 = GeneralUtils.LoadWorkspace(TString(file2),TString(work2),debug)
 
     obs   = GeneralUtils.GetObservable(workspace1,TString(obs), debug)
+    gROOT.SetBatch() 
+
     #if not data:
         #obs.setRange(0,150)
 
@@ -134,10 +139,12 @@ def runComparePDF( debug, name1, file1, work1, text1, name2, file2, work2, text2
         data2 = GeneralUtils.GetDataSet(workspace2,TString(name2),  debug)
     
     canv = TCanvas("canv","canv", 1200,1000)
-    frame = obs.frame()
+    frame = obs.frame() #5300,5450) #5220,5340) #5300,5450)
     frame.SetTitle("")
+    frame.GetYAxis().SetTitle("") 
 
-    legend = TLegend( 0.70, 0.75, 0.88, 0.88 )
+    #legend = TLegend( 0.70, 0.75, 0.88, 0.88 )
+    legend = TLegend( 0.15, 0.75, 0.38, 0.88 )
 
     legend.SetTextSize(0.03)
     legend.SetTextFont(12)
@@ -156,8 +163,9 @@ def runComparePDF( debug, name1, file1, work1, text1, name2, file2, work2, text2
         print file1
         print file2
         
-        data1.plotOn(frame,RooFit.MarkerColor(kBlue+2), RooFit.Binning(74))
-        data2.plotOn(frame,RooFit.MarkerColor(kRed),RooFit.Rescale(scaleA), RooFit.Binning(74))
+        
+        data1.plotOn(frame,RooFit.MarkerColor(kBlue+2), RooFit.Binning(200))
+        data2.plotOn(frame,RooFit.MarkerColor(kRed),RooFit.Rescale(scaleA), RooFit.Binning(200))
 
         gr = TGraphErrors(10);
         gr.SetName("gr");
@@ -199,8 +207,8 @@ def runComparePDF( debug, name1, file1, work1, text1, name2, file2, work2, text2
 
     frame.Draw()
     legend.Draw("same")
-    #frame.GetYaxis().SetRangeUser(0.1,250.)
-    #canv.GetPad(0).SetLogy()
+#    frame.GetYaxis().SetRangeUser(0.1,3000.)
+#    canv.GetPad(0).SetLogy()
     canv.Print("comparison.pdf")
                                                                                     
 

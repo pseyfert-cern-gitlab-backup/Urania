@@ -47,7 +47,20 @@ fix_weak_phases = 0
 fix_mixing_params = 0
 fix_calib_params = 0
 
+# Computation of NWs.
+variable_nw = 0
+MC_data_file = 'AnalysisOutWSWeightsSelectedAllBranchesMinimal.root'#'AnalysisOutWSWeightsSelectedAllBranchesUpdated.root'
+MC_data_tree = 'AnalysisTree'
+MC_data_type = 2 # 0 for PhSp only, 1 for VV only, 2 for both
+
 # Systematic studies.
+randomize_c_mass = 0
+randomize_nw = 0
+repeat_fit_for_nw_syst = 0
+nw_syst_N_iterations = 100
+repeat_fit_for_spline_syst = 0
+spline_syst_N_iterations = 100
+apply_dataMC_corr = 0
 pw_alternative_model = 0
 f_Kst1410_rel2_Kst892 = 0.2
 delta_Kst1410_rel2_Kst892 = 0.
@@ -55,9 +68,9 @@ f_Kst1680_rel2_Kst892 = 0.2
 delta_Kst1680_rel2_Kst892 = 0.
 
 # Data used in the fit.
-data_file = 'AnalysisOutWSWeightsSelectedAllBranchesNew.root'#'AnalysisOutWSWeightsSelected_PHIstudy.root'
+data_file = 'AnalysisOutWSWeightsSelectedAllBranchesMinimal.root'#'AnalysisOutWSWeightsSelectedAllBranchesUpdated.root'
 data_tree = 'AnalysisTree'
-MC_file = 'AnalysisOutWSWeightsSelectedAllBranchesCP.root'#'AnalysisOutWithCuts_AllBranches_PHIstudy.root'
+MC_file = 'AnalysisOutWSWeightsSelectedAllBranchesCP.root'
 MC_tree = 'AnalysisTree'
 MC_type = 1 # 0 for Toy MC / 1 for VV.
 data_type = "real" # "real" for real data from 2011 and 2012 / "MC" for Monte Carlo simulation.
@@ -67,25 +80,29 @@ extra_cuts = ""#"((B_s0_MM>5325.) && (B_s0_MM<5425.))"#"((B_s0_MM<5325.) || (B_s
 evnum_limit = 0
 
 # Fit options.
-num_CPU = 30
-activ_minos = 1
+num_CPU = 20
+activ_minos = 0
 fit_strategy = 1
 
 # Plotting options.
-m_binning = 50
-cos_binning = 50
-phi_binning = 50
+m_binning = 30
+cos_binning = 30
+phi_binning = 30
 t_binning = 12
 
 # Generation options.
-nexperiments = 5
-nevents = 1700
+nexperiments = 100
+nevents = 6220
+change_dataset = 1
+mod_and_refit = 1
+massang_reso_smear = 0
+add_extra_vector = 1
 njobs = 1
 use_GRID = 0
-exp_output_tag = "NarrowWindow"
+exp_output_tag = "WideWindow"
 fit_CondVarDistr = 0
-recompute_maxima = 0
-maxima_computation_num_points = 1E7
+recompute_maxima = 1
+maxima_computation_num_points = 1E5
 
 
 # ################################################################
@@ -129,6 +146,38 @@ pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_r
 	printCorrMatrix(result)
 
 	return result
+
+def CUDAfit(output_file_name):
+
+	# Compile and load the C++ libraries.
+	ForceCompileLibs()
+
+	# Summary of the model options.
+	information(TD_fit,data_type,Blinding,No_CP_Switch,No_dirCP_Switch,Same_CP_Switch,acc_type,\
+inf_t_res,wide_window,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params,pw_alternative_model)
+
+	# Data importation.
+	data, hist_mistag_SSK, hist_mistag_OS, hist_deltat = loadData(NTUPLE_PATH,data_type,data_file,data_tree,MC_file,MC_tree,MC_type,TD_fit,sweighted,wide_window,extra_cuts,evnum_limit,use_GRID)
+	LoadDataNW(NTUPLE_PATH,MC_data_file,MC_data_tree,MC_data_type,wide_window)
+
+	for par in [DCP_ST,DCP_TS,DCP_VT,DCP_TV,DCP_SS,DCP_SV,DCP_VS,DCP_TT]: par.setConstant(1)
+
+	# Construction of the model.
+	setParamVals(wide_window)
+	if not variable_nw:
+		for par in [c1_mass_swave,c2_mass_swave,c3_mass_swave,c4_mass_swave,c5_mass_swave,c6_mass_swave,c7_mass_swave,c8_mass_swave,c9_mass_swave]: par.setConstant(1)
+
+	# Uncomment below for VV only fit, when in narrow window.
+	#for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
+	#	par.setVal(0.)
+	#	par.setConstant(1)
+
+	model, params = createSimPDF(TD_fit,Blinding,No_CP_Switch,No_dirCP_Switch,Same_CP_Switch,acc_type,\
+inf_t_res,wide_window,data_file,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params,\
+pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_rel2_Kst892,delta_Kst1680_rel2_Kst892)
+
+	# Performance of the fit.
+	DoCUDAFit(data,params,Blinding,wide_window,variable_nw,activ_minos,output_file_name,randomize_c_mass,randomize_nw,repeat_fit_for_nw_syst,nw_syst_N_iterations,repeat_fit_for_spline_syst,spline_syst_N_iterations,apply_dataMC_corr)
 
 def fitnplot():
 
@@ -187,6 +236,56 @@ pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_r
 	c1.Print("plot61D.root") # Printing the canvas in a root file.
 
 	return result
+
+def CUDAfitnplot(output_file_name):
+
+	# Compile and load the C++ libraries.
+	ForceCompileLibs()
+
+	# Summary of the model options.
+	information(TD_fit,data_type,Blinding,No_CP_Switch,No_dirCP_Switch,Same_CP_Switch,acc_type,\
+inf_t_res,wide_window,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params,pw_alternative_model)
+
+	# Data importation.
+	data, hist_mistag_SSK, hist_mistag_OS, hist_deltat = loadData(NTUPLE_PATH,data_type,data_file,data_tree,MC_file,MC_tree,MC_type,TD_fit,sweighted,wide_window,extra_cuts,evnum_limit,use_GRID)
+	LoadDataNW(NTUPLE_PATH,MC_data_file,MC_data_tree,MC_data_type,wide_window)
+
+	# Construction of the model.
+	setParamVals(wide_window)
+
+	# Uncomment below for VV only fit, when in narrow window.
+	#for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
+	#	par.setVal(0.)
+	#	par.setConstant(1)
+
+	model, params = createSimPDF(TD_fit,Blinding,No_CP_Switch,No_dirCP_Switch,Same_CP_Switch,acc_type,\
+inf_t_res,wide_window,data_file,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params,\
+pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_rel2_Kst892,delta_Kst1680_rel2_Kst892)
+
+	# Performance of the fit.
+	DoCUDAFit(data,params,Blinding,wide_window,0,activ_minos,output_file_name,randomize_c_mass,randomize_nw,repeat_fit_for_nw_syst,nw_syst_N_iterations,repeat_fit_for_spline_syst,spline_syst_N_iterations,apply_dataMC_corr)
+
+	# Plot of the the 6 1D proyections corresponding to the 2 masses, 3 angles and decay time.
+	blindCat.setIndex(0)
+	map(lambda x:x.setDenPlotVarVal(),model[1:5])
+	plot61Ddata(data[0], 0, wide_window, m_binning, cos_binning, phi_binning, t_binning) # Plotting the dataset.
+	plot61Dmodel(model[0], data[0], wide_window) # Plotting the full model.
+	plot61Dcomponent(model[0], data[0], wide_window, 'SS', kOrange, 1)
+	plot61Dcomponent(model[0], data[0], wide_window, 'SV', kOrange+2, 1)
+	plot61Dcomponent(model[0], data[0], wide_window, 'VS', kOrange+2, 2)
+	plot61Dcomponent(model[0], data[0], wide_window, 'VV', kRed, 1)
+	if wide_window:
+		plot61Dcomponent(model[0], data[0], wide_window, 'ST', kGreen+3, 1)
+		plot61Dcomponent(model[0], data[0], wide_window, 'TS', kGreen+3, 2)
+		plot61Dcomponent(model[0], data[0], wide_window, 'VT', kMagenta+1, 1)
+		plot61Dcomponent(model[0], data[0], wide_window, 'TV', kMagenta+1, 2)
+		plot61Dcomponent(model[0], data[0], wide_window, 'TT', kBlue, 1)
+	plot61Ddata(data[0], 1, wide_window, m_binning, cos_binning, phi_binning, t_binning) # Overlaying the data points.
+	leg61D = ROOT.TLegend(0.5,0.3,0.9,0.9)
+	c1 = create61Dcanvas(wide_window,leg61D) # Drawing the plots in a canvas.
+	c1.Print("plot61D.pdf") # Printing the canvas in a pdf file.
+	c1.Print("plot61D.root") # Printing the canvas in a root file.
+	blindCat.setIndex(1)
 
 def plot():
 
@@ -291,6 +390,32 @@ def MCSManyExp():
 	# Configure and submit the jobs to Ganga.
 	MCSGrid(nexperiments,nevents,njobs,exp_output_tag,use_GRID)
 
+def CUDAMCS(output_tag):
+
+	# Compile and load the C++ libraries.
+	ForceCompileLibs()
+
+	# Data importation.
+	data, hist_mistag_SSK, hist_mistag_OS, hist_deltat = loadData(NTUPLE_PATH,data_type,data_file,data_tree,MC_file,MC_tree,MC_type,TD_fit,sweighted,wide_window,extra_cuts,evnum_limit,use_GRID)
+
+	# Construction of the model.
+	setParamVals(wide_window)
+	for par in [c1_mass_swave,c2_mass_swave,c3_mass_swave,c4_mass_swave,c5_mass_swave,c6_mass_swave,c7_mass_swave,c8_mass_swave,c9_mass_swave]: par.setConstant(1)
+
+	# Uncomment below for VV only fit, when in narrow window.
+	#for par in [reA00,reA01,reA10,imA00,imA01,imA10]:
+	#	par.setVal(0.)
+	#	par.setConstant(1)
+
+	model, params = createPDF(Blinding,No_CP_Switch,No_dirCP_Switch,Same_CP_Switch,3,\
+inf_t_res,wide_window,data_file,fix_re_amps,fix_dirCP_asyms,fix_im_amps,fix_weak_phases,fix_mixing_params,fix_calib_params,\
+pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_rel2_Kst892,delta_Kst1680_rel2_Kst892)
+
+	# Fit of the conditional variable profiles.
+	CondVarStudy(fit_CondVarDistr,model,params,data,hist_mistag_SSK,hist_mistag_OS,hist_deltat)
+
+	DoCUDAToy(nexperiments,nevents,params,wide_window,output_tag,randomize_c_mass,change_dataset,massang_reso_smear,mod_and_refit,add_extra_vector)
+
 
 # ################################################################
 # L O G   L I K E L I H O O D   S C A N
@@ -352,9 +477,16 @@ pw_alternative_model,f_Kst1410_rel2_Kst892,delta_Kst1410_rel2_Kst892,f_Kst1680_r
 
 if (len(sys.argv) > 1):
 	if (sys.argv[1] == "fit"): fit()
+	elif (sys.argv[1] == "cudafit"):
+		if (len(sys.argv) > 2): CUDAfit(sys.argv[2])
+		else: CUDAfit("")
 	elif (sys.argv[1] == "fitnplot"): fitnplot()
+	elif (sys.argv[1] == "cudafitnplot"):
+		if (len(sys.argv) > 2): CUDAfitnplot(sys.argv[2])
+		else: CUDAfitnplot("")
 	elif (sys.argv[1] == "plot"): plot()
 	elif (sys.argv[1] == "gen"): gen(str(sys.argv[2]))
 	elif (sys.argv[1] == "mcsjob"): MCSJob(sys.argv[2],int(sys.argv[3]),int(sys.argv[4]),sys.argv[5],int(sys.argv[6]))
 	elif (sys.argv[1] == "mcs"): MCSManyExp()
+	elif (sys.argv[1] == "cudamcs"): CUDAMCS(str(sys.argv[2]))
 	elif (sys.argv[1] == "profiles"): profiles()

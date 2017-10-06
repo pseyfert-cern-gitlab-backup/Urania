@@ -1830,7 +1830,6 @@ TString MDFitterSettings::CheckTagger(TString name)
   else if (name.Contains("Cheat")) {return "Cheat";}
   else if (name.Contains("True")) {return "True";}
   else {return "Unknown";}
-  
 }
 
 

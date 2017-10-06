@@ -1,11 +1,11 @@
 #  An example of using 2D parametric phase space class. 
 
 import os, sys
-os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + "../inc/"
+os.environ["ROOT_INCLUDE_PATH"] = os.pathsep + os.environ["MEERKATROOT"]
 
 from ROOT import gSystem, gStyle, RooRealVar
 
-gSystem.Load("../lib/libMeerkat.so")
+gSystem.Load("libMeerkatLib.so")
 
 from ROOT import OneDimPhaseSpace, ParametricPhaseSpace, BinnedKernelDensity, FormulaDensity
 from ROOT import TFile, TNtuple, TCanvas, TH1F, TH2F, TText
@@ -100,12 +100,12 @@ canvas.cd(3)
 kernel_kpi.Scale( true_kpi.GetSumOfWeights() / kernel_kpi.GetSumOfWeights() ) 
 true_kpi.Draw() 
 kernel_kpi.SetLineColor(2) 
-kernel_kpi.Draw("same") 
+kernel_kpi.Draw("hist same l") 
 canvas.cd(4) 
 kernel_pipi.Scale( true_pipi.GetSumOfWeights() / kernel_pipi.GetSumOfWeights() ) 
 true_pipi.Draw() 
 kernel_pipi.SetLineColor(2) 
-kernel_pipi.Draw("same") 
+kernel_pipi.Draw("hist same l") 
 
 canvas.Print("ParamPhsp.png") 
 

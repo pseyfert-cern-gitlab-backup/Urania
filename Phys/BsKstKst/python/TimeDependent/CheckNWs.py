@@ -66,7 +66,7 @@ for iyear in range(2):
          if (j1==2 or j2==2 or j1p==2 or j2p==2): pull_lists_D[iyear][itrigger].append(pull)
          else: pull_lists_noD[iyear][itrigger].append(pull)
 
-find_max(year,trigger):
+def find_max(year,trigger):
    l1 = pull_lists_noD[year][trigger]
    l2 = pull_lists_D[year][trigger]
    return max([max(l1),-min(l1),max(l2),-min(l2)])

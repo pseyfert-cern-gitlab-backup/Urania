@@ -207,96 +207,88 @@ MomVsnTr_Comp_DPi_Up_hist.root
 
 #Signal Bs2DsstK KKPi 2012
 /afs/cern.ch/work/a/abertoli/public/DsstrK/bdt-s21/
-Filter-s21_Bs2DsstK_Signal_dw.root
-Filter-s21_Bs2DsstK_Signal_up.root
+Filter-s21filtered_Bs2DsstK_Signal_dw.root
+Filter-s21filtered_Bs2DsstK_Signal_up.root
 tuple
 tuple
 ###
 
 #Signal Bs2DsstK NonRes 2012
 /afs/cern.ch/work/a/abertoli/public/DsstrK/bdt-s21/
-Filter-s21_Bs2DsstK_Signal_dw.root
-Filter-s21_Bs2DsstK_Signal_up.root
+Filter-s21filtered_Bs2DsstK_Signal_dw.root
+Filter-s21filtered_Bs2DsstK_Signal_up.root
 tuple
 tuple
 ###
 
 #Signal Bs2DsstK PhiPi 2012
 /afs/cern.ch/work/a/abertoli/public/DsstrK/bdt-s21/
-Filter-s21_Bs2DsstK_Signal_dw.root
-Filter-s21_Bs2DsstK_Signal_up.root
+Filter-s21filtered_Bs2DsstK_Signal_dw.root
+Filter-s21filtered_Bs2DsstK_Signal_up.root
 tuple
 tuple
 ###
 
 #Signal Bs2DsstK KstK 2012
 /afs/cern.ch/work/a/abertoli/public/DsstrK/bdt-s21/
-Filter-s21_Bs2DsstK_Signal_dw.root
-Filter-s21_Bs2DsstK_Signal_up.root
+Filter-s21filtered_Bs2DsstK_Signal_dw.root
+Filter-s21filtered_Bs2DsstK_Signal_up.root
 tuple
 tuple
 ###
 
 #Signal Bs2DsstK KPiPi 2012
 /afs/cern.ch/work/a/abertoli/public/DsstrK/bdt-s21/
-Filter-s21_Bs2DsstK_Signal_dw.root
-Filter-s21_Bs2DsstK_Signal_up.root
+Filter-s21filtered_Bs2DsstK-K2Pi_Signal_dw.root
+Filter-s21filtered_Bs2DsstK-K2Pi_Signal_up.root
 tuple
 tuple
 ###
 
 #Signal Bs2DsstK PiPiPi 2012
 /afs/cern.ch/work/a/abertoli/public/DsstrK/bdt-s21/
-Filter-s21_Bs2DsstK_Signal_dw.root
-Filter-s21_Bs2DsstK_Signal_up.root
-tuple
-tuple
-###
-
-#Signal Bs2DsstK KKPi 2011
-/afs/cern.ch/work/a/abertoli/public/DsstrK/bdt-s21/
-Filter-s21_Bs2DsstK_Signal_dw.root
-Filter-s21_Bs2DsstK_Signal_up.root
+Filter-s21filtered_Bs2DsstK-3Pi_Signal_dw.root
+Filter-s21filtered_Bs2DsstK-3Pi_Signal_up.root
 tuple
 tuple
 ###
 
 #Signal Bs2DsstK NonRes 2011
 /afs/cern.ch/work/a/abertoli/public/DsstrK/bdt-s21/
-Filter-s21_Bs2DsstK_Signal_dw.root
-Filter-s21_Bs2DsstK_Signal_up.root
+Filter11-s21filtered_Bs2DsstK_Signal_dw.root
+Filter11-s21filtered_Bs2DsstK_Signal_up.root
 tuple
 tuple
 ###
 
 #Signal Bs2DsstK PhiPi 2011
 /afs/cern.ch/work/a/abertoli/public/DsstrK/bdt-s21/
-Filter-s21_Bs2DsstK_Signal_dw.root
-Filter-s21_Bs2DsstK_Signal_up.root
+Filter11-s21filtered_Bs2DsstK_Signal_dw.root
+Filter11-s21filtered_Bs2DsstK_Signal_up.root
 tuple
 tuple
 ###
 
 #Signal Bs2DsstK KstK 2011
 /afs/cern.ch/work/a/abertoli/public/DsstrK/bdt-s21/
-Filter-s21_Bs2DsstK_Signal_dw.root
-Filter-s21_Bs2DsstK_Signal_up.root
+Filter11-s21filtered_Bs2DsstK_Signal_dw.root
+Filter11-s21filtered_Bs2DsstK_Signal_up.root
 tuple
 tuple
 ###
 
 #Signal Bs2DsstK KPiPi 2011
 /afs/cern.ch/work/a/abertoli/public/DsstrK/bdt-s21/
-Filter-s21_Bs2DsstK_Signal_dw.root
-Filter-s21_Bs2DsstK_Signal_up.root
+Filter11-s21filtered_Bs2DsstK-K2Pi_Signal_dw.root
+Filter11-s21filtered_Bs2DsstK-K2Pi_Signal_up.root
 tuple
 tuple
 ###
 
 #Signal Bs2DsstK PiPiPi 2011
 /afs/cern.ch/work/a/abertoli/public/DsstrK/bdt-s21/
-Filter-s21_Bs2DsstK_Signal_dw.root
-Filter-s21_Bs2DsstK_Signal_up.root
+Filter11-s21filtered_Bs2DsstK-3Pi_Signal_dw.root
+Filter11-s21filtered_Bs2DsstK-3Pi_Signal_up.root
 tuple
 tuple
 ###
