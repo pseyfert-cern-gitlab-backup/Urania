@@ -23,7 +23,7 @@ export stop=$2
 #Final toy seed
 export fullstop=$3
 #Batch candidate queues
-export queue="2nw4cores"
+export queue="2nd"
 #Memory limit (kB)
 export mlimit="80000"
 #Nickname for the current configuration
@@ -81,7 +81,7 @@ while (( $stop <= $fullstop )); do
     echo "...submitting job ${job} with starting seed ${seed}"
 
     #Submit job
-    bsub -q $queue -M $mlimit -e ${output}ERROR -o ${output}OUTPUT -n 1,16 -R "span[hosts=-1]" -J ${jobname}_${job} source ${bashscriptpath}runSFitOnBootstrapMC.sh $seed $stop $input $output $eosoutput $nickname $timefitdescr $config $pol $mode $year $hypo $workspace $dataset $pyscriptpath $runpath
+    bsub -q $queue -M $mlimit -e ${output}ERROR -o ${output}OUTPUT -n 8,32 -R "span[hosts=-1]" -J ${jobname}_${job} source ${bashscriptpath}runSFitOnBootstrapMC.sh $seed $stop $input $output $eosoutput $nickname $timefitdescr $config $pol $mode $year $hypo $workspace $dataset $pyscriptpath $runpath
 
     #source ${bashscriptpath}runSFitOnBootstrapMC.sh $seed $stop $input $output $eosoutput $nickname $timefitdescr $config $pol $mode $year $hypo $workspace $dataset $pyscriptpath $runpath
 

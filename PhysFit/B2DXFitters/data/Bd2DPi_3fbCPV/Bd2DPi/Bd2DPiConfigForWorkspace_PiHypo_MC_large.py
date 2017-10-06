@@ -22,10 +22,22 @@ def getconfig() :
                                                       "Name"                   : "BeautyMass",
                                                       "InputName"              : "lab0_FitDaughtersConst_M_flat"}
 
+    configdict["BasicVariables"]["CharmMass"]     = { "Range"                  : [1830,    1904    ],
+                                                      "Name"                   : "CharmMass",
+                                                      "InputName"              : "lab0_FitwithoutConst_Dplus_M_flat"}
+
     configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.4,     12.0    ],
                                                       "Bins"                   : 40,
                                                       "Name"                   : "BeautyTime",
                                                       "InputName"              : "obsTime"}
+
+    configdict["BasicVariables"]["BacP"]          = { "Range"                  : [2000.0,  650000.0],
+                                                      "Name"                   : "BacP",
+                                                      "InputName"              : "lab0_FitDaughtersConst_P0_P_flat"}
+
+    configdict["BasicVariables"]["BacPT"]         = { "Range"                  : [400.0,   45000.0 ],
+                                                      "Name"                   : "BacPT",
+                                                      "InputName"              : "lab0_FitDaughtersConst_P0_PT_flat"}
 
     configdict["BasicVariables"]["BacPIDK"]       = { "Range"                  : [-999.0,    999.0     ],
                                                       "Name"                   : "BacPIDK",
@@ -65,6 +77,10 @@ def getconfig() :
 
     #Additional variables not foreseen before
     configdict["AdditionalVariables"] = {}
+
+    configdict["AdditionalVariables"]["BeautyPhi"]      = { "Range"                  : [ -10.,    10.     ],
+                                                            "Name"                   : "BeautyPhi",
+                                                            "InputName"              : "lab0_LOKI_PHI"}
     
     configdict["AdditionalVariables"]["BeautyEta"]      = { "Range"                  : [ 1.5,    10.0     ],
                                                             "Name"                   : "BeautyEta",
@@ -96,6 +112,6 @@ def getconfig() :
 
     # PIDK bin
     configdict["AdditionalCuts"] = {}
-    configdict["AdditionalCuts"]["All"] = {"MC": "lab0_BKGCAT==0 && (obsTagOS!=0 || obsTagOSCharm!=0) && BDT_classifier>0.0 && obsTime>0.4 && obsTime<12.0 && lab1_PIDKcorr<5.0 && lab0_BKGCAT==0 && lab0_FitDaughtersConst_M_flat>5220.0 && lab0_FitDaughtersConst_M_flat<5600.0 && nTracks>15 && nTracks<1000"}
+    configdict["AdditionalCuts"]["All"] = {"MC": "lab1_PIDKcorr<5.0 && lab0_BKGCAT==0 && (obsTagOS!=0 || obsTagOSCharm!=0 || obsTagSS!=0) && BDT_classifier>0.0 && obsTime>0.4 && obsTime<12.0 && lab1_PIDKcorr<5.0 && lab0_FitDaughtersConst_M_flat>5220.0 && lab0_FitDaughtersConst_M_flat<5600.0 && nTracks>15 && nTracks<1000 && lab0_FitwithoutConst_Dplus_M_flat>1830 && lab0_FitwithoutConst_Dplus_M_flat<1904 && lab0_FitDaughtersConst_P0_P_flat>2000 && lab0_FitDaughtersConst_P0_P_flat<650000 && lab0_FitDaughtersConst_P0_PT_flat>400 && lab0_FitDaughtersConst_P0_PT_flat<45000 && lab0_LOKI_PHI>-10 && lab0_LOKI_PHI<10 && lab0_LOKI_ETA>1.5 && lab0_LOKI_ETA<10 && lab0_P>0 && lab0_P<3000000 && lab0_PT>0 && lab0_PT<100000"}
     
     return configdict
