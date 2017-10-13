@@ -38,6 +38,7 @@ MultiTrackCalibTool::MultiTrackCalibTool(std::string Name,
     m_verbose(verbose),
     m_printFreq(printFreq),
     m_indexNTracks(0),
+    m_indexNTracksBrunel(0),
     m_indexNSPDHits(0),
     m_indexNVeloClusters(0),
     m_BinningDimensions(0),
@@ -192,6 +193,16 @@ void MultiTrackCalibTool::SetTrackMomVarName(const std::string& NameInTree)
 }
 
 //=============================================================================
+// Declare offline momentum variable name in reference tree
+//=============================================================================
+void MultiTrackCalibTool::SetTrackMomBrunelVarName(const std::string& NameInTree)
+{
+  m_BinningParam.push_back( make_pair("Brunel_P", NameInTree) );
+
+  m_BinningVectorSorted = false;
+}
+
+//=============================================================================
 // Declare transverse momentum variable name in reference tree
 //=============================================================================
 void MultiTrackCalibTool::SetTrackPtVarName(const std::string& NameInTree)
@@ -212,11 +223,31 @@ void MultiTrackCalibTool::SetTrackEtaVarName(const std::string& NameInTree)
 }
 
 //=============================================================================
+// Declare offline pseudo-rapdity variable name in reference tree
+//=============================================================================
+void MultiTrackCalibTool::SetTrackEtaBrunelVarName(const std::string& NameInTree)
+{
+  m_BinningParam.push_back( make_pair("Brunel_ETA",NameInTree) );
+
+  m_BinningVectorSorted = false;
+}
+
+//=============================================================================
 // Declare nTracks variable name in reference tree
 //=============================================================================
 void MultiTrackCalibTool::SetNTracksVarName(const std::string& NameInTree)
 {
   m_BinningParam.push_back( make_pair("nTRACKS",NameInTree) );
+
+  m_BinningVectorSorted = false;
+}
+
+//=============================================================================
+// Declare nTracks_Brunel variable name in reference tree
+//=============================================================================
+void MultiTrackCalibTool::SetNTracksBrunelVarName(const std::string& NameInTree)
+{
+  m_BinningParam.push_back( make_pair("nTRACKS_BRUNEL",NameInTree) );
 
   m_BinningVectorSorted = false;
 }
@@ -396,6 +427,9 @@ void MultiTrackCalibTool::ReOrderBinningVector()
       if (itr->first == "nTRACKS") {
         m_indexNTracks = index_;
       }
+      if (itr->first == "nTRACKS_BRUNEL") {
+        m_indexNTracksBrunel = index_;
+      }
       if (itr->first == "nSPDHITS") {
         m_indexNSPDHits = index_;
       }
@@ -406,6 +440,7 @@ void MultiTrackCalibTool::ReOrderBinningVector()
       index_++;
     }
     cout<<" Index nTracks = "<< m_indexNTracks <<endl;
+    cout<<" Index nTracks_Brunel = "<< m_indexNTracksBrunel <<endl;
     cout<<" Index nSPDHits = "<< m_indexNSPDHits <<endl;
     cout<<" Index nVeloClusters = "<< m_indexNVeloClusters <<endl;
   }
@@ -456,11 +491,14 @@ void MultiTrackCalibTool::SetTrackKinVarBranchAddressInInputTree()
     for(itr_binVar=m_BinningParam.begin(); itr_binVar!=m_BinningParam.end(); ++itr_binVar)
     {
       // Construct variable name
-      std::string var_string = (itr_binVar->first=="nTRACKS" || itr_binVar->first=="nSPDHITS" || itr_binVar->first=="nVeloClusters") ?
+      std::string var_string = (itr_binVar->first=="nTRACKS" || itr_binVar->first=="nTRACKS_BRUNEL" || itr_binVar->first=="nSPDHITS" || itr_binVar->first=="nVeloClusters") ?
         itr_binVar->second : itr_trk->first+"_"+itr_binVar->second;
 
       if ((itr_trk!=m_TrackEffMap.begin())&&(itr_binVar->first=="nTRACKS")){
          itr_trkVar->second.push_back(m_TrackVars.begin()->second.at(m_indexNTracks));
+      }
+      else if ((itr_trk!=m_TrackEffMap.begin())&&(itr_binVar->first=="nTRACKS_BRUNEL")){
+         itr_trkVar->second.push_back(m_TrackVars.begin()->second.at(m_indexNTracksBrunel));
       }
       else if ((itr_trk!=m_TrackEffMap.begin())&&(itr_binVar->first=="nSPDHITS")){
          itr_trkVar->second.push_back(m_TrackVars.begin()->second.at(m_indexNSPDHits));
@@ -764,7 +802,8 @@ void MultiTrackCalibTool::DeleteHeapMemVars()
     {
 
       if ( (itr_trk!=m_TrackVars.begin())&&
-          (m_BinningParam.at(distance(itr_trk->second.begin(),itr_v)).first=="nTRACKS" || 
+          (m_BinningParam.at(distance(itr_trk->second.begin(),itr_v)).first=="nTRACKS" ||
+           m_BinningParam.at(distance(itr_trk->second.begin(),itr_v)).first=="nTRACKS_BRUNEL" ||
            m_BinningParam.at(distance(itr_trk->second.begin(),itr_v)).first=="nSPDHITS" ||
            m_BinningParam.at(distance(itr_trk->second.begin(),itr_v)).first=="nVeloClusters") )
       {
@@ -1292,7 +1331,7 @@ std::string MultiTrackCalibTool::GetKinVarBranchName(std::string trkName,
                                                      std::string binVarName)
 {
   std::string ret = "";
-  if(binVarIntName!="nTRACKS" && binVarIntName!="nSPDHITS" && binVarIntName!="nVeloClusters") ret = trkName+"_"+binVarName; 
+  if(binVarIntName!="nTRACKS" && binVarIntName!="nTRACKS_BRUNEL" && binVarIntName!="nSPDHITS" && binVarIntName!="nVeloClusters") ret = trkName+"_"+binVarName; 
   else ret = binVarName;
 
   return ret;
