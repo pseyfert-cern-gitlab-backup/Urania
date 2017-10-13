@@ -105,14 +105,28 @@ for trType in GetRICHPIDPartTypes()+GetMuonPIDPartTypes():
     AddUniformBins(trType, 'P', 'highres', 500, 3000, 200000)
     AddBinBoundary(trType, 'P', 'highres', 9300) # R1 Kaon threshold
     AddBinBoundary(trType, 'P', 'highres', 15600) # R2 Kaon threshold
+    
+    # momentum
+    AddBinScheme(trType, 'Brunel_P', 'highres', 3000, 200000)
+    AddUniformBins(trType, 'Brunel_P', 'highres', 500, 3000, 200000)
+    AddBinBoundary(trType, 'Brunel_P', 'highres', 9300) # R1 Kaon threshold
+    AddBinBoundary(trType, 'Brunel_P', 'highres', 15600) # R2 Kaon threshold
 
     # eta
     AddBinScheme(trType, 'ETA', 'highres', 1.5, 5)
     AddUniformBins(trType, 'ETA', 'highres', 500, 1.5, 5.0)
+    
+    # eta
+    AddBinScheme(trType, 'Brunel_ETA', 'highres', 1.5, 5)
+    AddUniformBins(trType, 'Brunel_ETA', 'highres', 500, 1.5, 5.0)
 
     # nTracks
     AddBinScheme(trType, 'nTracks', 'highres', 0, 500)
     AddUniformBins(trType, 'nTracks', 'highres', 500, 0, 500)
+    
+    # nTracks_Brunel (offline version)
+    AddBinScheme(trType, 'nTracks_Brunel', 'highres', 0, 500)
+    AddUniformBins(trType, 'nTracks_Brunel', 'highres', 500, 0, 500)
 
     AddBinScheme(trType, 'nSPDHits', 'highres', 0, 500)
     AddUniformBins(trType, 'nSPDHits', 'highres', 500, 0, 500)
@@ -130,16 +144,32 @@ for trType in GetRICHPIDPartTypes() :
     AddBinBoundary(trType, 'P', 'DLLKpi', 9300) # R1 Kaon threshold
     AddBinBoundary(trType, 'P', 'DLLKpi', 15600) # R2 Kaon threshold
     AddUniformBins(trType, 'P', 'DLLKpi', 15, 19000, 100000)
+    
+    # momentum
+    AddBinScheme(trType, 'Brunel_P', 'DLLKpi', 3000, 100000)
+    AddBinBoundary(trType, 'Brunel_P', 'DLLKpi', 9300) # R1 Kaon threshold
+    AddBinBoundary(trType, 'Brunel_P', 'DLLKpi', 15600) # R2 Kaon threshold
+    AddUniformBins(trType, 'Brunel_P', 'DLLKpi', 15, 19000, 100000)
 
     # eta
     AddBinScheme(trType, 'ETA', 'DLLKpi', 1.5, 5)
     AddUniformBins(trType, 'ETA', 'DLLKpi', 4, 1.5, 5)
+    
+    # eta
+    AddBinScheme(trType, 'Brunel_ETA', 'DLLKpi', 1.5, 5)
+    AddUniformBins(trType, 'Brunel_ETA', 'DLLKpi', 4, 1.5, 5)
 
     # nTracks
     AddBinScheme(trType, 'nTracks', 'DLLKpi', 0, 500)
     AddBinBoundary(trType, 'nTracks', 'DLLKpi', 50)
     AddBinBoundary(trType, 'nTracks', 'DLLKpi', 200)
     AddBinBoundary(trType, 'nTracks', 'DLLKpi', 300)
+    
+    # nTracks_Brunel (offline version)
+    AddBinScheme(trType, 'nTracks_Brunel', 'DLLKpi', 0, 500)
+    AddBinBoundary(trType, 'nTracks_Brunel', 'DLLKpi', 50)
+    AddBinBoundary(trType, 'nTracks_Brunel', 'DLLKpi', 200)
+    AddBinBoundary(trType, 'nTracks_Brunel', 'DLLKpi', 300)
 
 	# nSPDHits
 
@@ -160,16 +190,33 @@ for trType in GetMuonPIDPartTypes():
                      32000, 40000, 60000, 70000)
     for boundary in momBoundaries:
         AddBinBoundary(trType, 'P', 'DLLKpi_MuonUnBiased', boundary) 
+        
+    # momentum
+    AddBinScheme(trType, 'Brunel_P', 'DLLKpi_MuonUnBiased', 3000, 100000)
+    momBoundaries = (6000, 8000, 10000, 12000, 14500, 17500, 21500, 27000,
+                     32000, 40000, 60000, 70000)
+    for boundary in momBoundaries:
+        AddBinBoundary(trType, 'Brunel_P', 'DLLKpi_MuonUnBiased', boundary) 
 
     # eta
     AddBinScheme(trType, 'ETA', 'DLLKpi_MuonUnBiased', 1.5, 5)
     AddUniformBins(trType, 'ETA', 'DLLKpi_MuonUnBiased', 4, 1.5, 5)
+    
+    # eta
+    AddBinScheme(trType, 'Brunel_ETA', 'DLLKpi_MuonUnBiased', 1.5, 5)
+    AddUniformBins(trType, 'Brunel_ETA', 'DLLKpi_MuonUnBiased', 4, 1.5, 5)
 
     # nTracks
     AddBinScheme(trType, 'nTracks', 'DLLKpi_MuonUnBiased', 0, 500)
     AddBinBoundary(trType, 'nTracks', 'DLLKpi_MuonUnBiased', 50)
     AddBinBoundary(trType, 'nTracks', 'DLLKpi_MuonUnBiased', 200)
     AddBinBoundary(trType, 'nTracks', 'DLLKpi_MuonUnBiased', 300)
+    
+    # nTracks_Brunel (offline version)
+    AddBinScheme(trType, 'nTracks_Brunel', 'DLLKpi_MuonUnBiased', 0, 500)
+    AddBinBoundary(trType, 'nTracks_Brunel', 'DLLKpi_MuonUnBiased', 50)
+    AddBinBoundary(trType, 'nTracks_Brunel', 'DLLKpi_MuonUnBiased', 200)
+    AddBinBoundary(trType, 'nTracks_Brunel', 'DLLKpi_MuonUnBiased', 300)
 
 ### RICH performance plots
 
@@ -179,14 +226,26 @@ for trType in ('K', 'Pi'):
     # momentum
     AddBinScheme(trType, 'P', 'PerfPlots_KPi', 2000, 100000)
     AddUniformBins(trType, 'P', 'PerfPlots_KPi', 40, 2000, 100000)
+    
+     # momentum
+    AddBinScheme(trType, 'Brunel_P', 'PerfPlots_KPi', 2000, 100000)
+    AddUniformBins(trType, 'Brunel_P', 'PerfPlots_KPi', 40, 2000, 100000)
 
     # eta
     AddBinScheme(trType, 'ETA', 'PerfPlots_KPi', 1.5, 5)
     AddUniformBins(trType, 'ETA', 'PerfPlots_KPi', 35, 1.5, 5)
+    
+    # eta
+    AddBinScheme(trType, 'Brunel_ETA', 'PerfPlots_KPi', 1.5, 5)
+    AddUniformBins(trType, 'Brunel_ETA', 'PerfPlots_KPi', 35, 1.5, 5)
 
     # nTracks
     AddBinScheme(trType, 'nTracks', 'PerfPlots_KPi', 0, 500)
     AddUniformBins(trType, 'nTracks', 'PerfPlots_KPi', 50, 0, 500)
+    
+    # nTracks_Brunel
+    AddBinScheme(trType, 'nTracks_Brunel', 'PerfPlots_KPi', 0, 500)
+    AddUniformBins(trType, 'nTracks_Brunel', 'PerfPlots_KPi', 50, 0, 500)
 
 for trType in ('P', 'Pi'):
     ### for P/pi ID/misID performance plots
@@ -194,14 +253,26 @@ for trType in ('P', 'Pi'):
     # momentum
     AddBinScheme(trType, 'P', 'PerfPlots_PPi', 5000, 100000)
     AddUniformBins(trType, 'P', 'PerfPlots_PPi', 38, 5000, 100000)
+    
+    # momentum
+    AddBinScheme(trType, 'Brunel_P', 'PerfPlots_PPi', 5000, 100000)
+    AddUniformBins(trType, 'Brunel_P', 'PerfPlots_PPi', 38, 5000, 100000)
 
     # eta
     AddBinScheme(trType, 'ETA', 'PerfPlots_PPi', 1.5, 5)
     AddUniformBins(trType, 'ETA', 'PerfPlots_PPi', 35, 1.5, 5)
+    
+    # eta
+    AddBinScheme(trType, 'Brunel_ETA', 'PerfPlots_PPi', 1.5, 5)
+    AddUniformBins(trType, 'Brunel_ETA', 'PerfPlots_PPi', 35, 1.5, 5)
 
     # nTracks
     AddBinScheme(trType, 'nTracks', 'PerfPlots_PPi', 0, 500)
     AddUniformBins(trType, 'nTracks', 'PerfPlots_PPi', 50, 0, 500)
+    
+    # nTracks_Brunel
+    AddBinScheme(trType, 'nTracks_Brunel', 'PerfPlots_PPi', 0, 500)
+    AddUniformBins(trType, 'nTracks_Brunel', 'PerfPlots_PPi', 50, 0, 500)
 
 for trType in ('Mu', 'K_MuonUnBiased'):
     ### for Mu/K ID/misID performance plots
@@ -209,14 +280,26 @@ for trType in ('Mu', 'K_MuonUnBiased'):
     # momentum
     AddBinScheme(trType, 'P', 'PerfPlots_MuK_MuonUnBiased', 2000, 100000)
     AddUniformBins(trType, 'P', 'PerfPlots_MuK_MuonUnBiased', 40, 2000, 100000)
+    
+    # momentum
+    AddBinScheme(trType, 'Brunel_P', 'PerfPlots_MuK_MuonUnBiased', 2000, 100000)
+    AddUniformBins(trType, 'Brunel_P', 'PerfPlots_MuK_MuonUnBiased', 40, 2000, 100000)
 
     # eta
     AddBinScheme(trType, 'ETA', 'PerfPlots_MuK_MuonUnBiased', 1.5, 5)
     AddUniformBins(trType, 'ETA', 'PerfPlots_MuK_MuonUnBiased', 35, 1.5, 5)
+    
+    # eta
+    AddBinScheme(trType, 'Brunel_ETA', 'PerfPlots_MuK_MuonUnBiased', 1.5, 5)
+    AddUniformBins(trType, 'Brunel_ETA', 'PerfPlots_MuK_MuonUnBiased', 35, 1.5, 5)
 
     # nTracks
     AddBinScheme(trType, 'nTracks', 'PerfPlots_MuK_MuonUnBiased', 0, 500)
     AddUniformBins(trType, 'nTracks', 'PerfPlots_MuK_MuonUnBiased', 50, 0, 500)
+    
+    # nTracks_Brunel
+    AddBinScheme(trType, 'nTracks_Brunel', 'PerfPlots_MuK_MuonUnBiased', 0, 500)
+    AddUniformBins(trType, 'nTracks_Brunel', 'PerfPlots_MuK_MuonUnBiased', 50, 0, 500)
 
 for trType in ('Mu', 'Pi_MuonUnBiased'):
     ### for Mu/pi ID/misID performance plots
@@ -224,14 +307,26 @@ for trType in ('Mu', 'Pi_MuonUnBiased'):
     # momentum
     AddBinScheme(trType, 'P', 'PerfPlots_MuPi_MuonUnBiased', 2000, 100000)
     AddUniformBins(trType, 'P', 'PerfPlots_MuPi_MuonUnBiased', 40, 2000, 100000)
+    
+    # momentum
+    AddBinScheme(trType, 'Brunel_P', 'PerfPlots_MuPi_MuonUnBiased', 2000, 100000)
+    AddUniformBins(trType, 'Brunel_P', 'PerfPlots_MuPi_MuonUnBiased', 40, 2000, 100000)
 
     # eta
     AddBinScheme(trType, 'ETA', 'PerfPlots_MuPi_MuonUnBiased', 1.5, 5)
     AddUniformBins(trType, 'ETA', 'PerfPlots_MuPi_MuonUnBiased', 35, 1.5, 5)
+    
+    # eta
+    AddBinScheme(trType, 'Brunel_ETA', 'PerfPlots_MuPi_MuonUnBiased', 1.5, 5)
+    AddUniformBins(trType, 'Brunel_ETA', 'PerfPlots_MuPi_MuonUnBiased', 35, 1.5, 5)
 
     # nTracks
     AddBinScheme(trType, 'nTracks', 'PerfPlots_MuPi_MuonUnBiased', 0, 500)
     AddUniformBins(trType, 'nTracks', 'PerfPlots_MuPi_MuonUnBiased', 50, 0, 500)
+    
+    # nTracks_Brunel
+    AddBinScheme(trType, 'nTracks_Brunel', 'PerfPlots_MuPi_MuonUnBiased', 0, 500)
+    AddUniformBins(trType, 'nTracks_Brunel', 'PerfPlots_MuPi_MuonUnBiased', 50, 0, 500)
 
 for trType in ('Mu', 'P_MuonUnBiased'):
     ### for Mu/pi ID/misID performance plots
@@ -239,14 +334,26 @@ for trType in ('Mu', 'P_MuonUnBiased'):
     # momentum
     AddBinScheme(trType, 'P', 'PerfPlots_MuP_MuonUnBiased', 2000, 100000)
     AddUniformBins(trType, 'P', 'PerfPlots_MuP_MuonUnBiased', 40, 2000, 100000)
+    
+    # momentum
+    AddBinScheme(trType, 'Brunel_P', 'PerfPlots_MuP_MuonUnBiased', 2000, 100000)
+    AddUniformBins(trType, 'Brunel_P', 'PerfPlots_MuP_MuonUnBiased', 40, 2000, 100000)
 
     # eta
     AddBinScheme(trType, 'ETA', 'PerfPlots_MuP_MuonUnBiased', 1.5, 5)
     AddUniformBins(trType, 'ETA', 'PerfPlots_MuP_MuonUnBiased', 35, 1.5, 5)
+    
+    # eta
+    AddBinScheme(trType, 'Brunel_ETA', 'PerfPlots_MuP_MuonUnBiased', 1.5, 5)
+    AddUniformBins(trType, 'Brunel_ETA', 'PerfPlots_MuP_MuonUnBiased', 35, 1.5, 5)
 
     # nTracks
     AddBinScheme(trType, 'nTracks', 'PerfPlots_MuP_MuonUnBiased', 0, 500)
     AddUniformBins(trType, 'nTracks', 'PerfPlots_MuP_MuonUnBiased', 50, 0, 500)
+    
+    # nTracks_Brunel
+    AddBinScheme(trType, 'nTracks_Brunel', 'PerfPlots_MuP_MuonUnBiased', 0, 500)
+    AddUniformBins(trType, 'nTracks_Brunel', 'PerfPlots_MuP_MuonUnBiased', 50, 0, 500)
 
 for trType in ('e', 'Pi'):
     ### for e/pi ID/misID performance plots
@@ -254,14 +361,26 @@ for trType in ('e', 'Pi'):
     # momentum
     AddBinScheme(trType, 'P', 'PerfPlots_ePi', 5000, 100000)
     AddUniformBins(trType, 'P', 'PerfPlots_ePi', 38, 5000, 100000)
+    
+    # momentum
+    AddBinScheme(trType, 'Brunel_P', 'PerfPlots_ePi', 5000, 100000)
+    AddUniformBins(trType, 'Brunel_P', 'PerfPlots_ePi', 38, 5000, 100000)
 
     # eta
     AddBinScheme(trType, 'ETA', 'PerfPlots_ePi', 1.5, 5)
     AddUniformBins(trType, 'ETA', 'PerfPlots_ePi', 35, 1.5, 5)
+    
+    # eta
+    AddBinScheme(trType, 'Brunel_ETA', 'PerfPlots_ePi', 1.5, 5)
+    AddUniformBins(trType, 'Brunel_ETA', 'PerfPlots_ePi', 35, 1.5, 5)
 
     # nTracks
     AddBinScheme(trType, 'nTracks', 'PerfPlots_ePi', 0, 500)
     AddUniformBins(trType, 'nTracks', 'PerfPlots_ePi', 50, 0, 500)
+    
+    # nTracks_Brunel
+    AddBinScheme(trType, 'nTracks_Brunel', 'PerfPlots_ePi', 0, 500)
+    AddUniformBins(trType, 'nTracks_Brunel', 'PerfPlots_ePi', 50, 0, 500)
 
 for trType in GetPartTypes():
     AddBinScheme(trType, 'P', 'PerfPlots_%s'%(trType), 0, 100000)
@@ -360,6 +479,9 @@ for trType in GetPartTypes():
 
     AddBinScheme(trType, 'nTracks', 'PerfPlots_%s'%(trType), 0, 500)
     AddUniformBins(trType, 'nTracks', 'PerfPlots_%s'%(trType), 20, 0, 500)
+    
+    AddBinScheme(trType, 'nTracks_Brunel', 'PerfPlots_%s'%(trType), 0, 500)
+    AddUniformBins(trType, 'nTracks_Brunel', 'PerfPlots_%s'%(trType), 20, 0, 500)
 
     AddBinScheme(trType, 'nSPDHits', 'PerfPlots_%s'%(trType), 0, 1000)
     AddUniformBins(trType, 'nSPDHits', 'PerfPlots_%s'%(trType), 20, 0, 1000)
@@ -376,15 +498,22 @@ for trType in GetPartTypes():
 ### set the default binning schemes
 for trType in GetRICHPIDPartTypes():
     SetDefaultBinScheme(trType, 'P', 'DLLKpi')
+    SetDefaultBinScheme(trType, 'Brunel_P', 'DLLKpi')
     SetDefaultBinScheme(trType, 'ETA', 'DLLKpi')
+    SetDefaultBinScheme(trType, 'Brunel_ETA', 'DLLKpi')
     SetDefaultBinScheme(trType, 'nTracks', 'DLLKpi')
+    SetDefaultBinScheme(trType, 'nTracks_Brunel', 'DLLKpi')
     SetDefaultBinScheme(trType, 'nSPDHits', 'DLLKpi')
     SetDefaultBinScheme(trType, 'nVeloClusters', 'DLLKpi')
 
 for trType in GetMuonPIDPartTypes():
     SetDefaultBinScheme(trType, 'P', 'DLLKpi_MuonUnBiased')
+    SetDefaultBinScheme(trType, 'Brunel_P', 'DLLKpi_MuonUnBiased')
     SetDefaultBinScheme(trType, 'ETA', 'DLLKpi_MuonUnBiased')
+    SetDefaultBinScheme(trType, 'Brunel_ETA', 'DLLKpi_MuonUnBiased')
     SetDefaultBinScheme(trType, 'nTracks', 'DLLKpi_MuonUnBiased')
+    SetDefaultBinScheme(trType, 'nTracks_Brunel', 'DLLKpi_MuonUnBiased')
+    
 
 #for trType in GetProtonPIDPartTypes():
 #    SetDefaultBinScheme(trType, 'P', 'DLLKpi')

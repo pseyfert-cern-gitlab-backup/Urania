@@ -30,6 +30,9 @@ if '__main__' == __name__:
         b) magnet polarity  <magPol> (\"MagUp\" or \"MagDown\")
         c) particle type <partName> (\"K\", \"P\", \"Pi\", \"e\" or \"Mu\")
         d) PID cut, <pidCut>
+        e) X binning variable <xVarName> (\"P\" for Run 1, \"Brunel_P\" for Run 2 Stripping, \"P\" for Run 2 Turbo)
+        f) Y binning variable <yVarName> (\"ETA\" for Run 1, \"Brunel_ETA\" for Run 2 Stripping, \"ETA\" for Run 2 Turbo)
+        g) Z binning variable <zVarName> (\"nTracks\" for Run 1, \"nTracks_Brunel\" for Run 2 Stripping, \"nTracks_Brunel\" or \"nSPDHits\"  for Run 2 Turbo)
 Multiple PID cuts can be specified if necessary, e.g. \"[DLLK > 0.0, DLLK > 4.0]\".
 In this case, a performance histogram will be produced for each PID cut.
 
@@ -52,7 +55,27 @@ e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
                         help="Sets the particle type")
     parser.add_argument('pidCut', metavar='<pidCut>',
                         help="Sets the PID cut(s)")
-    
+    parser.add_argument('xVarName', metavar='<xVarName>',
+                          help="Sets the name of the 1st (x) bin variable "
+                          "For Run 1 Stripping, select P"
+                          "For Run 2 Stripping, select Brunel_P"
+                          "For Run 2 Turbo, select P" 
+                          )
+    parser.add_argument('yVarName', metavar='<yVarName>',
+                          help="Sets the name of the 2nd (y) bin variable "
+                          "For Run 1 Stripping, select ETA"
+                          "For Run 2 Stripping, select Brunel_ETA"
+                          "For Run 2 Turbo, select ETA"
+                          "If 1D binning is required, set this to an empty string"
+                          )
+    parser.add_argument('zVarName', metavar='<zVarName>',
+                          help="Sets the name of the 3rd (x) bin variable "
+                          "For Run 1 Stripping, select nTracks"
+                          "For Run 2 Stripping, select nTracks_Brunel"
+                          "For Run 2 Turbo, select nTracks_Brunel or nSPDHits"
+                          "If 2D binning is required, set this to an empty string"
+                          )
+       
     ## add the optional arguments
     parser.add_argument('-x', '--minRun', dest="minRun", metavar="NUM",
                         help="Sets the minimum run number to process (if applicable, Run 1 only)")
@@ -74,24 +97,7 @@ e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
                         )
     
     binGroup = parser.add_argument_group("binning options")
-    binGroup.add_argument('-X', '--xVarName', dest='xVarName', metavar='NAME', default='P',
-                          help="Sets the NAME of the 1st (x) bin variable "
-                          "(default: %(default)s)"
-                          )
-    binGroup.add_argument('-Y', '--yVarName', dest='yVarName', metavar='NAME',
-                          default='ETA',
-                          help="Sets the NAME of the 2nd (y) bin variable "
-                          "(default: %(default)s). "
-                          "If 1D binning is required, then this option should "
-                          "be set to an empty string"
-                          )
-    binGroup.add_argument('-Z', '--zVarName', dest='zVarName', metavar='NAME',
-                          default='nTracks',
-                          help="Sets the NAME of the 3rd (z) bin variable "
-                          "(default: %(default)s). "
-                          "If 2D binning is required, then this option should "
-                          "be set to an empty string"
-                          )
+    
     binGroup.add_argument("-s", "--schemeName", dest="schemeName", metavar="NAME",
                           default=None,
                           help="Sets the NAME of the binning scheme, "

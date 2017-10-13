@@ -240,7 +240,8 @@ vars_dataset = {
   'nRich1Hits':            		  var('nRich1Hits',        'nRich1Hits',        'var'),             
   'nRich2Hits':            		  var('nRich2Hits',        'nRich2Hits',        'var'),             
   'nSPDHits':            		  var('nSPDHits',        'nSPDhits',        'var'),  #### PIDCalib is nSPDHits, WGP nTuple is nSPDhits          
-  'nTracks':            		  var('nTracks',        'nTracks',        'var'),         
+  'nTracks':            		  var('nTracks',        'nTracks',        'var'),  
+  'nTracks_Brunel':            		  var('nTracks_Brunel',        'nTracks_Brunel',        'var'), 
   'nVeloClusters':                var('nVeloClusters',    'nVeloClusters',    'var'),
   'nVeloClusters_Brunel':         var('nVeloClusters_Brunel',    'nVeloClusters_Brunel',    'var'),
   'sweight':            		  var('nsig_sw', '{particle}_sWeight',        'var'),
@@ -280,7 +281,7 @@ datasets = {
   'Lam0_P' : ["Lam0LL_PTuple", "Lam0LL_PbarTuple", "Lam0LL_HPT_PTuple", "Lam0LL_HPT_PbarTuple", "Lam0LL_VHPT_PTuple", "Lam0LL_VHPT_PbarTuple"],
   'Jpsi_Mu': ["Jpsi_MuPTuple", "Jpsi_MuMTuple"],
   #Jpsi with no pT cut
-  'Jpsi_nopt_Mu' : ["Jpsinopt_MuPTuple", "Jpsinopt_MuMTuple"],
+  #'Jpsi_nopt_Mu' : ["Jpsinopt_MuPTuple", "Jpsinopt_MuMTuple"],
   'LcfB_P' : ["LbLcMu_PTuple", "LbLcMu_PbarTuple"],
   'Sigmac0_P': ["Sigmac0_PbarTuple","Sigmac0_PTuple"],
   'DsPhi_K': ["DsPhi_KPTuple","DsPhi_KMTuple"],

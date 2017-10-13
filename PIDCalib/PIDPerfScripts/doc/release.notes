@@ -3,6 +3,10 @@
 ! Responsible : Donal Hill
 ! Purpose     : Scripts using PIDPerfTools to perform PID studies
 !-----------------------------------------------------------------------------
+! 2017-10-13 - Donal Hill
+	- Updates to allow the use of nTracks_Brunel in binning, as well as Brunel_P and Brunel_ETA
+	- MakePerfHistsRunRange.py now requires the user to specify their X,Y,Z binning choice
+
 ! 2017-08-23 - Donal Hill
 	- Updates to run on the 2015 and 2016 legacy productions.
 	- Yandex ProbNN variables added.
