@@ -409,6 +409,19 @@ configs = {
     'controlstat'   :  300000, 
     'nbootstrap'    :  5
   }, 
+  "e_CombDLLe_Brunel" : {
+    "sample"        :  "e_BJpsi_Brunel", 
+    "var"           :  "probe_Brunel_PIDe", 
+    "bins"          :  30, 
+    "gamma"         :  1., 
+    'scale_default' :  1.5, 
+    'scale_syst'    :  2.0, 
+    'scale_pid'     :  1.5, 
+    'limits'        : (-20., 20), 
+    'toystat'       : 300000, 
+    'controlstat'   : 300000, 
+    'nbootstrap'    : 5
+  }, 
 #  "p_MC12TuneV2_ProbNNp_Brunel" : {
 #    "sample"        :  "p_Lam0_Brunel", 
 #    "var"           :  "probe_Brunel_MC12TuneV2_ProbNNp", 
