@@ -293,8 +293,12 @@ namespace SFitUtils {
         for(int k = 0; k<mdSet->CheckNumUsedTag(); k++)
         {
           TString pre = lab0_TAG[k]->GetName();
-          TString nameTag = pre +"_idx";
-          treeSW->SetBranchAddress(nameTag, &tag[k]);
+          if (treeSW->SetBranchAddress(pre, &tag[k]) < 0)
+          {
+            cout << "[INFO] adding _idx to tag decision name..." << endl;
+            TString nameTag = pre +"_idx";
+            treeSW->SetBranchAddress(nameTag, &tag[k]);
+          } 
         }
       }
       if( mdSet->CheckTagOmegaVar() == true )
@@ -653,16 +657,35 @@ namespace SFitUtils {
     RooArgList* obsMistagList = new RooArgList();
     RooArgList* obsTagList = new RooArgList();
 
+    std::vector<TString> obsMistagPrefix = {"", ""};
+    std::vector<TString> obsTagPrefix = {"", ""};
+
     Int_t tagNum = mdSet->CheckNumUsedTag();
 
     if (debug == true) { std::cout<<"[INFO] Number of taggers "<<tagNum<<std::endl;}
 
-
     for (int i=0; i<2; ++i)
     {
       if (mdSet->CheckUseTag(i) == true){
-        obsTagList->add(*(RooRealVar*)obs->find(TString("TagDec")+mdSet->GetTagMatch(i)));
-        obsMistagList->add(*(RooRealVar*)obs->find(TString("Mistag")+mdSet->GetTagMatch(i)));
+
+        TString tagname = mdSet->GetTagVarOutName(i);
+        if(tagname.Contains("TagDec"))
+          obsTagPrefix[i] = "TagDec";
+        else if (tagname.Contains("obsTag"))
+          obsTagPrefix[i] = "obsTag";
+
+        TString etaname = mdSet->GetTagOmegaVarOutName(i);
+        if(etaname.Contains("Mistag"))
+          obsMistagPrefix[i] = "Mistag";
+        else if (etaname.Contains("obsEta"))
+          obsMistagPrefix[i] = "obsEta";
+
+        obsTagList->add(*(RooRealVar*)obs->find(obsTagPrefix[i]+mdSet->GetTagMatch(i)));
+        obsMistagList->add(*(RooRealVar*)obs->find(obsMistagPrefix[i]+mdSet->GetTagMatch(i)));
+        std::cout << "List of tag decisions: " << std::endl;
+        obsTagList->Print();
+        std::cout << "List of mistag: " << std::endl;
+        obsMistagList->Print();
         //((RooRealVar*)obs->find(TString("Mistag")+mdSet->GetTagMatch(i)))->setRange(0,0.5);
       }
     }
@@ -682,18 +705,18 @@ namespace SFitUtils {
           j++;
       }
       std::cout<<"Cut on tagger: "<<i<<" and "<<-i<<std::endl;
-      TString tagName(TString("TagDec")+mdSet->GetTagMatch(j-1));
+      TString tagName(obsTagPrefix[j-1]+mdSet->GetTagMatch(j-1));
       sliceData[i-1] = (RooDataSet*)data->reduce(*obs,Form("(("+tagName+" == %d) || ("+tagName+" == %d))",1,-1));
       std::cout<<"[INFO] sliceData "<<i<<" with entries: "<<sliceData[i-1]->numEntries()<<std::endl;
       TString namePDF = Form("sigMistagPdf_%d",i);
       mistagPDF[i-1] = NULL;
-      mistagPDF[i-1] = CreateHistPDF(sliceData[i-1], ((RooRealVar*)obs->find(TString("Mistag")+mdSet->GetTagMatch(j-1))), namePDF, bins, debug);
+      mistagPDF[i-1] = CreateHistPDF(sliceData[i-1], ((RooRealVar*)obs->find(obsMistagPrefix[j-1]+mdSet->GetTagMatch(j-1))), namePDF, bins, debug);
       if( debug == true && mistagPDF[i-1] != NULL) {std::cout<<"[INFO] Create RooHistPDF done"<<std::endl;}
       pdfList->add(*mistagPDF[i-1]);
       TString t ="";
       PlotSettings* plotSet = new PlotSettings("plotSet","plotSet");
       plotSet->SetBin(bins);
-      SaveTemplate(sliceData[i-1], mistagPDF[i-1], ((RooRealVar*)obs->find(TString("Mistag")+mdSet->GetTagMatch(j-1))), namePDF, t, plotSet, debug );
+      SaveTemplate(sliceData[i-1], mistagPDF[i-1], ((RooRealVar*)obs->find(obsMistagPrefix[j-1]+mdSet->GetTagMatch(j-1))), namePDF, t, plotSet, debug );
     }
     if( save == true)
     {

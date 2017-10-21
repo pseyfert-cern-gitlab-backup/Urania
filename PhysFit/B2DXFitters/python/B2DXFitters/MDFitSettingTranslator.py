@@ -40,10 +40,10 @@ class Translator:
                 elif name == "BDTG":
                     md.SetBDTG(myconfigfile["BasicVariables"][name]["InputName"], name,
                                myconfigfile["BasicVariables"][name]["Range"][0], myconfigfile["BasicVariables"][name]["Range"][1])
-                elif "TagDec" in name :
+                elif "TagDec" in name or "obsTag" in name:
                     md.AddTagVar(myconfigfile["BasicVariables"][name]["InputName"], name,
                                  myconfigfile["BasicVariables"][name]["Range"][0], myconfigfile["BasicVariables"][name]["Range"][1])
-                elif "Mistag" in name :
+                elif "Mistag" in name or "obsEta" in name:
                     md.AddTagOmegaVar(myconfigfile["BasicVariables"][name]["InputName"], name,
                                       myconfigfile["BasicVariables"][name]["Range"][0], myconfigfile["BasicVariables"][name]["Range"][1])
 

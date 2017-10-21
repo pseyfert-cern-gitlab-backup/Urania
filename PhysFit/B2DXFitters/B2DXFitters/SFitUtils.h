@@ -72,8 +72,9 @@ namespace SFitUtils {
   // Create Mistag templates for different taggers
   //===========================================================================
   RooArgList* CreateDifferentMistagTemplates(RooDataSet* data, MDFitterSettings* mdSet,
-				    Int_t bins,
-				    bool save = false, bool debug=false);
+                                             Int_t bins,
+                                             bool save = false,
+                                             bool debug = false);
   
 
   //===========================================================================
