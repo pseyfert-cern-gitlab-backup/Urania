@@ -14,7 +14,7 @@ def WS(ws, obj, opts = [RooFit.RecycleConflictNodes(), RooFit.Silence()]):
     """ "swallow" object into a workspace, returns swallowed object """
     name = obj.GetName()
     wsobj = ws.obj(name)
-    if obj.InheritsFrom('RooAbsArg') or obj.InheritsFrom('RooAbsData'):
+    if obj.InheritsFrom('RooAbsArg') or obj.InheritsFrom('RooAbsData') or obj.InheritsFrom('RooAbsReal'):
         if None == wsobj:
             if len(opts) > 0:
                 ws.__getattribute__('import')(obj, *opts)

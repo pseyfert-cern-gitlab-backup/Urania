@@ -161,11 +161,11 @@ def buildConditionalPdf(config, name, ws, time, timeerr, qt, qf, mistagobs,
             print "timepdfutils_Bd.buildConditionalPdf(..)=> No time error/mistag pdf applied."
         return timepdf
 
-    comp_conditional_observables = RooArgSet(time, qf)
+    comp_conditional_observables = RooArgSet(time, qf, "ConditionalObservables")
     for tag in qt:
         comp_conditional_observables.add(tag)
 
-    comp_conditional_dimensions = RooArgSet()
+    comp_conditional_dimensions = RooArgSet("ConditionalDimensions")
 
     if None != timeerrpdf:
         if config['Debug']:
@@ -371,9 +371,9 @@ def buildBDecayTimePdf(
                     glm.coefficients().at(c).setConstant(False)
                     glm.delta_coefficients().at(c).setConstant(False)
             
-            omega_b = glm.b_mistag()
+            omega_b = WS(ws, glm.b_mistag())
             otherargs += [omega_b]
-            omega_bbar = glm.bbar_mistag()
+            omega_bbar = WS(ws, glm.bbar_mistag())
             otherargs += [omega_bbar]
             
             for citem in mistagcalib[mitem]:
