@@ -24,5 +24,7 @@ mkdir -p $outputdir
 
 export Start=`date`
 echo "==> Start fitting at ${Start}"
-${rundir}run python ${pyscriptpath}runSFit_Bd.py --debug --pereventmistag --fileName $inputfile --save $outputfile --configName $config --pol $pol --mode $mode --year $year --hypo $hypo --merge both --UniformBlinding --NCPU 8 --HFAG --fiexport Stop=`date`
-echo "==> Stop fitting at ${Stop}"xtagging --preselection "TagDecOS!=0||TagDecSS!=0" | tee ${outputdir}logfile.txt
+${rundir}run python ${pyscriptpath}runSFit_Bd.py --debug --pereventmistag --fileName $inputfile --save $outputfile --configName $config --pol $pol --mode $mode --year $year --hypo $hypo --merge both --UniformBlinding --NCPU 8 --HFAG --fi
+xtagging --preselection "TagDecOS!=0||TagDecSS!=0" | tee ${outputdir}logfile.txt
+export Stop=`date`
+echo "==> Stop fitting at ${Stop}"
