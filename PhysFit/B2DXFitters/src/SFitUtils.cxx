@@ -293,12 +293,8 @@ namespace SFitUtils {
         for(int k = 0; k<mdSet->CheckNumUsedTag(); k++)
         {
           TString pre = lab0_TAG[k]->GetName();
-          if (treeSW->SetBranchAddress(pre, &tag[k]) < 0)
-          {
-            cout << "[INFO] adding _idx to tag decision name..." << endl;
-            TString nameTag = pre +"_idx";
-            treeSW->SetBranchAddress(nameTag, &tag[k]);
-          } 
+          TString nameTag = pre +"_idx";
+          treeSW->SetBranchAddress(nameTag, &tag[k]);
         }
       }
       if( mdSet->CheckTagOmegaVar() == true )
