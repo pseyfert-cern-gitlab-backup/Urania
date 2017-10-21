@@ -20,10 +20,10 @@ def getconfig() :
                                                       "Name"                   : "CharmMass",
                                                       "InputName"              : "obsMassDminus"}
 
-    configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.4,     12.0    ],
+    configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.4,     15.0    ],
                                                       "Bins"                   : 40,
                                                       "Name"                   : "BeautyTime",
-                                                      "InputName"              : "obsTime"}
+                                                      "InputName"              : "lab0_FitDaughtersPCConst_ctau_flat"}
 
     configdict["BasicVariables"]["BacP"]          = { "Range"                  : [2000.0,  650000.0],
                                                       "Name"                   : "BacP",
@@ -53,7 +53,7 @@ def getconfig() :
                                                       "Name"                   : "TagDecSS",
                                                       "InputName"              : "TagDecSS"}
 
-    configdict["BasicVariables"]["MistagOS"]      = { "Range"                  : [ 0.0,    0.5     ],
+    configdict["BasicVariables"]["MistagOS"]      = { "Range"                  : [ 0.0,    0.48     ],
                                                       "Name"                   : "MistagOS",
                                                       "InputName"              : "MistagOS"}
 
@@ -84,25 +84,9 @@ def getconfig() :
                                                           "Name"                   : "BeautyP",
                                                           "InputName"              : "lab0_P"}
 
-    configdict["AdditionalVariables"]["CharmTime"]    = { "Range"                  : [-10,     10    ],
-                                                          "Name"                   : "CharmTime",
-                                                          "InputName"              : "lab2_TAU"}
-
     configdict["AdditionalVariables"]["nPV"]      = { "Range"                  : [ 0.0,    10     ],
                                                       "Name"                   : "nPV",
                                                       "InputName"              : "nPV"}
-
-    configdict["AdditionalVariables"]["Hlt2Topo2BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
-                                                                                "Name"                   : "Hlt2Topo2BodyBBDTDecision_TOS",
-                                                                                "InputName"              : "lab0_Hlt2Topo2BodyBBDTDecision_TOS"}
-
-    configdict["AdditionalVariables"]["Hlt2Topo3BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
-                                                                                "Name"                   : "Hlt2Topo3BodyBBDTDecision_TOS",
-                                                                                "InputName"              : "lab0_Hlt2Topo3BodyBBDTDecision_TOS"}
-
-    configdict["AdditionalVariables"]["Hlt2Topo4BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
-                                                                                "Name"                   : "Hlt2Topo4BodyBBDTDecision_TOS",
-                                                                                "InputName"              : "lab0_Hlt2Topo4BodyBBDTDecision_TOS"}
 
 
     ############################################
@@ -154,8 +138,8 @@ def getconfig() :
                                                     {"Type": "Spline",
                                                      "Float": True,
                                                      "Extrapolate": True,
-                                                     "KnotPositions": [0.5, 1.0, 1.5, 2.0, 2.3, 2.6, 3.0, 4.0, 10.0],
-                                                     "KnotCoefficients": [1.9440e-01, 3.3275e-01, 6.1444e-01, 8.6628e-01, 9.9600e-01, 1.0745e+00, 1.1083e+00,1.1565e+00, 1.1946e+00]},
+                                                     "KnotPositions": [0.5, 1.0, 1.5, 2.0, 3.0, 12.0],
+                                                     "KnotCoefficients": [1.9440e-01, 3.3275e-01, 6.1444e-01, 8.6628e-01, 9.9600e-01, 1.0745e+00]},
                                                     "Resolution":
                                                     {"Type": "AverageModel",
                                                      "Parameters": { 'sigmas': [ 0.05491 ], 'fractions': [] }, #0.05491 +- 0.00038
@@ -180,22 +164,30 @@ def getconfig() :
 
     configdict["Taggers"] = {}
     configdict["Taggers"]["Signal"] = {}
-    configdict["Taggers"]["Signal"] = {"OS" :
-                                       {"Calibration":  #from EPM on Bu->D0Pi data
-                                        { "Type"    : "GLM",
-                                          "XML"     : ["/eos/lhcb/wg/b2oc/TD_DPi_3fb/calibrations/RLogisticCalibration_Bu2D0Pi_OS_20171021.xml"],
-                                          "tageff"  : [1.0],#[0.37, 0.0, 1.0],
-                                          "tagasymm": [0.0]
+    configdict["Taggers"]["Signal"] = {"OS" : #From https://twiki.cern.ch/twiki/pub/LHCbPhysics/B2OCTD_B2Dpi_3fb/LHCb-ANA-2016-064_v5.pdf
+                                       {"Calibration":
+                                        { "Type"   : "Linear",
+                                          "p0"       : [0.3775],# 0.0, 1.0],
+                                          "p1"       : [1.028],# 0.5, 1.5],
+                                          "deltap0"  : [0.0111],# -1.0, 1.0],
+                                          "deltap1"  : [0.022],# -1.0, 1.0],
+                                          "avgeta"   : [0.349980],#<eta> on Bu->D0Pi
+                                          "tageff"   : [0.35, 0.0, 1.0],
+                                          "tagasymm" : [0.0]
                                           },
                                         "MistagPDF" :
                                         {"Type"     : "BuildTemplate"}
                                         },
-                                       "SS": #from EPM on Bd->J/psiK* datax
+                                       "SS": #From https://twiki.cern.ch/twiki/pub/LHCbPhysics/B2OCTD_B2Dpi_3fb/LHCb-ANA-2016-064_v5.pdf
                                        {"Calibration":
-                                        { "Type"   : "GLM",
-                                          "XML"    : ["/eos/lhcb/wg/b2oc/TD_DPi_3fb/calibrations/LinearCalibration_Bd2JpsiKst_SS_20171021.xml"],
-                                          "tageff"  : [1.0],#[0.8, 0.0, 1.0],
-                                          "tagasymm": [0.0]
+                                        { "Type"   : "Linear",
+                                          "p0"       : [0.4424],# 0.0, 1.0],
+                                          "p1"       : [0.813],# 0.5, 1.5],
+                                          "deltap0"  : [0.0006],# -1.0, 1.0],
+                                          "deltap1"  : [0.007],# -1.0, 1.0],
+                                          "avgeta"   : [0.435], #<eta> on Bd->J/psiK*
+                                          "tageff"   : [0.816, 0.0, 1.0],
+                                          "tagasymm" : [0.0]
                                           },
                                         "MistagPDF" :
                                         {"Type"     : "BuildTemplate"}
@@ -229,23 +221,6 @@ def getconfig() :
     configdict["gaussCons"]["deltaM"] = 0.0019
     # Constraint on Gamma (error on gamma = rel. error on lifetime * gamma)
     configdict["gaussCons"]["Gamma"] = (0.004/1.518) * (1.0/1.518)
-    # Multivariate constraint for OS combination
-    # from /afs/cern.ch/user/v/vibattis/gitdev/Bd2Dpi_selection/flavourtagging/EspressoCalibration/OSCalib/Bu2D0Pi_rlogitLink_NoProdAsymm_broadTrigBDTAUWeight/OS_Combination_Calibration.xml
-    #ospedix='_OS_Combination_Calibration'
-    #configdict["gaussCons"]["multivarOSCalib"] = [['p_0'+ospedix, 'p_1'+ospedix, 'p_2'+ospedix, 'p_3'+ospedix, 'p_4'+ospedix,
-    #                                               'dp_0'+ospedix, 'dp_1'+ospedix, 'dp_2'+ospedix, 'dp_3'+ospedix, 'dp_4'+ospedix], #parname
-    #                                              [0.018861, 0.022383, 0.0083157, 0.10294, 0.46094, 0.037722, 0.044767, 0.016631, 0.20589, 0.92188], #errors
-    #                                              [1        -0.11138       -0.060731       0.0093798        0.015918        0.048798       -0.047036        0.039879       -0.029968        -0.04636],
-    #                                              [1       -0.089066        -0.18677       -0.090617       -0.047036         0.10886         -0.1467        0.084428         0.13518],
-    #                                              [1        0.072716        -0.26512        0.039879         -0.1467          0.2937        -0.14008        -0.22835],
-    #                                              [1         0.82552       -0.029968        0.084428        -0.14008         0.17805         0.14321],
-    #                                              [1        -0.04636         0.13518        -0.22835         0.14321         0.34926],
-    #                                              [1        -0.11138       -0.060731       0.0093798        0.015918],
-    #                                              [1       -0.089066        -0.18677       -0.090617],
-    #                                              [1        0.072716        -0.26512],
-    #                                              [1         0.82552],
-    #                                              [1]
-    #                                              ]
     
     ############################################
     # Choose parameters to blind

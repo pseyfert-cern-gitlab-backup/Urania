@@ -107,6 +107,14 @@ namespace Bd2DhModels {
                                         bool scaleTails = false,
                                         bool debug = true);
 
+  RooAbsPdf* buildDoubleIpatiaPDF(RooAbsReal& obs,
+                                  RooWorkspace* workInt,
+                                  TString samplemode,
+                                  TString typemode,
+                                  bool shiftMean = false,
+                                  bool scaleTails = false,
+                                  bool debug = true);
+
   RooAbsPdf* buildIpatiaPlusJohnsonSUPDF(RooAbsReal& obs,
                                          RooWorkspace* workInt,
                                          TString samplemode,

@@ -125,7 +125,7 @@ corrplots = True
 #selection = 'MINUITStatus == 0 && edm!=0'
 
 #Uncomment this for Bootstrap MC
-timefitdescr='SSbarAccAsymmFloatDMGammaConstrOSTaggedOnlyRLOGITResampleFixParsCheatFTcalib'
+timefitdescr='SSbarAccAsymmFloatDMGammaFTConstrOSTaggedOnlyRLOGITResampleFixParsbroadTrigBDTAUWeight'
 inputfile = '/eos/lhcb/wg/b2oc/TD_DPi_3fb/MCBootstrap/'+nickname+'/TimeFit/'+timefitdescr+'/PullTreeTimeFit_'+nickname+'_'+timefitdescr+'.root'
 outputdir = '/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/MCBootstrap/'+nickname+'/TimePulls/'+timefitdescr+'/'
 selection = 'MINUITStatus == 0 && edm!=0 && CovQual==3'

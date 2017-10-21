@@ -6,7 +6,7 @@ def getconfig() :
     
     # basic variables
     configdict["BasicVariables"] = {}
-    configdict["BasicVariables"]["BeautyMass"]    = { "Range"                  : [5090,    6000    ],
+    configdict["BasicVariables"]["BeautyMass"]    = { "Range"                  : [5220,    5600    ],
                                                       "Name"                   : "BeautyMass",
                                                       "InputName"              : "lab0_FitDaughtersConst_M_flat"}
     
@@ -67,6 +67,10 @@ def getconfig() :
                                                           "Name"                   : "BeautyP",
                                                           "InputName"              : "lab0_P"}
 
+    configdict["AdditionalVariables"]["CharmTime"]    = { "Range"                  : [-10,     10    ],
+                                                          "Name"                   : "CharmTime",
+                                                          "InputName"              : "lab2_TAU"}
+
     configdict["AdditionalVariables"]["nPV"]      = { "Range"                  : [ 0.0,    10     ],
                                                       "Name"                   : "nPV",
                                                       "InputName"              : "nPV"}
@@ -83,7 +87,10 @@ def getconfig() :
                                                                                 "Name"                   : "Hlt2Topo4BodyBBDTDecision_TOS",
                                                                                 "InputName"              : "lab0_Hlt2Topo4BodyBBDTDecision_TOS"}
 
-
+    configdict["AdditionalVariables"]["TriggerCategoryBroad"]      = { "Range"                  : [ 0.0,    10     ],
+                                                                       "Name"                   : "TriggerCategoryBroad",
+                                                                       "InputName"              : "TriggerCategoryBroad"}
+    
 
     #"Cheated" tagging
     configdict["cheatTagging"] = {}

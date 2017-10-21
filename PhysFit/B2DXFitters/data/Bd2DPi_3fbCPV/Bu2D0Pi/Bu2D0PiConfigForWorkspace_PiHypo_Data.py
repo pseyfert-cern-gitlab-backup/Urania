@@ -15,11 +15,11 @@ def getconfig() :
     # year of data taking
     configdict["YearOfDataTaking"] = {"2011","2012"} 
     # file name with paths to MC/data samples
-    configdict["dataName"]   = "/afs/cern.ch/user/v/vibattis/cmtuser/Urania_v5r0/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bu2D0Pi/config_Bu2D0Pi.txt"
+    configdict["dataName"]   = "/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bu2D0Pi/config_Bu2D0Pi.txt"
         
     # basic variables
     configdict["BasicVariables"] = {}
-    configdict["BasicVariables"]["BeautyMass"]    = { "Range"                  : [5090,    6000    ],
+    configdict["BasicVariables"]["BeautyMass"]    = { "Range"                  : [5130,    6000    ],
                                                       "Name"                   : "BeautyMass",
                                                       "InputName"              : "lab0_MM"}
 
@@ -27,10 +27,10 @@ def getconfig() :
                                                       "Name"                   : "CharmMass",
                                                       "InputName"              : "lab2_MM"}
 
-    configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.0002,     0.015    ],
-                                                      "Bins"                   : 40,
-                                                      "Name"                   : "BeautyTime",
-                                                      "InputName"              : "lab0_TAU"}
+    #configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.0004,     0.012    ],
+    #                                                  "Bins"                   : 40,
+    #                                                  "Name"                   : "BeautyTime",
+    #                                                  "InputName"              : "lab0_TAU"}
     
     configdict["BasicVariables"]["BacP"]          = { "Range"                  : [2000.0,  650000.0],
                                                       "Name"                   : "BacP",
@@ -48,10 +48,6 @@ def getconfig() :
                                                       "Name"                   : "nTracks",
                                                       "InputName"              : "nTracks"}
 
-    configdict["BasicVariables"]["BeautyTimeErr"] = { "Range"                  : [0.00001,    0.0001    ],
-                                                      "Name"                   : "BeautyTimeErr",
-                                                      "InputName"              : "lab0_TAUERR"}
-
     configdict["BasicVariables"]["BacCharge"]     = { "Range"                  : [-1000.0, 1000.0  ],
                                                       "Name"                   : "BacCharge",
                                                       "InputName"              : "lab1_ID"}
@@ -64,14 +60,6 @@ def getconfig() :
                                                            "Name"                   : "TagDecOSCharm",
                                                            "InputName"              : "lab0_OS_Charm_DEC"}
     
-    configdict["BasicVariables"]["TagDecSSPionBDT"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                             "Name"                   : "TagDecSSPionBDT",
-                                                             "InputName"              : "lab0_SS_PionBDT_DEC"}
-
-    configdict["BasicVariables"]["TagDecSSProton"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                            "Name"                   : "TagDecSSProton",
-                                                            "InputName"              : "lab0_SS_Proton_DEC"}
-    
     configdict["BasicVariables"]["MistagOSComb"]      = { "Range"                  : [ 0.0,    0.5     ],
                                                           "Name"                   : "MistagOSComb",
                                                           "InputName"              : "lab0_TAGOMEGA_OS"}
@@ -79,14 +67,6 @@ def getconfig() :
     configdict["BasicVariables"]["MistagOSCharm"]      = { "Range"                  : [ 0.0,    0.5     ],
                                                            "Name"                   : "MistagOSCharm",
                                                            "InputName"              : "lab0_OS_Charm_PROB"}
-    
-    configdict["BasicVariables"]["MistagSSPionBDT"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                             "Name"                   : "MistagSSPionBDT",
-                                                             "InputName"              : "lab0_SS_PionBDT_PROB"}
-    
-    configdict["BasicVariables"]["MistagSSProton"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                            "Name"                   : "MistagSSProton",
-                                                            "InputName"              : "lab0_SS_Proton_PROB"}
 
     #Additional variables not foreseen before
     configdict["AdditionalVariables"] = {}
@@ -110,20 +90,37 @@ def getconfig() :
     configdict["AdditionalVariables"]["BeautyP"]      = { "Range"                  : [ 0.0,    3000000     ],
                                                           "Name"                   : "BeautyP",
                                                           "InputName"              : "lab0_P"}
+
+    configdict["AdditionalVariables"]["CharmTime"]    = { "Range"                  : [-10,     10    ],
+                                                          "Name"                   : "CharmTime",
+                                                          "InputName"              : "lab2_TAU"}
+
+    configdict["AdditionalVariables"]["BeautyTimeScaled"]    = { "Range"                  : [0.0004,     0.012    ],
+                                                                 "Bins"                   : 40,
+                                                                 "Name"                   : "BeautyTimeScaled",
+                                                                 "InputName"              : "lab0_TAU"}
+    
     
     configdict["AdditionalVariables"]["nPV"]      = { "Range"                  : [ 0.0,    10     ],
                                                       "Name"                   : "nPV",
                                                       "InputName"              : "nPV"}
-    
-    # Combinatorial
-    configdict["CreateCombinatorial"] = {}
-    configdict["CreateCombinatorial"]["BeautyMass"] = { "All"   : { "Cut": "lab0_MM>5600.0" },
-                                                        "KPi"   : { "Cut": "lab0_MM>5600.0" }
-                                                        }
+
+    configdict["AdditionalVariables"]["Hlt2Topo2BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
+                                                                                "Name"                   : "Hlt2Topo2BodyBBDTDecision_TOS",
+                                                                                "InputName"              : "lab0_Hlt2Topo2BodyBBDTDecision_TOS"}
+
+    configdict["AdditionalVariables"]["Hlt2Topo3BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
+                                                                                "Name"                   : "Hlt2Topo3BodyBBDTDecision_TOS",
+                                                                                "InputName"              : "lab0_Hlt2Topo3BodyBBDTDecision_TOS"}
+
+    configdict["AdditionalVariables"]["Hlt2Topo4BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0    ],
+                                                                                "Name"                   : "Hlt2Topo4BodyBBDTDecision_TOS",
+                                                                                "InputName"              : "lab0_Hlt2Topo4BodyBBDTDecision_TOS"}
+
 
     # PIDK bin
     configdict["AdditionalCuts"] = {}
-    configdict["AdditionalCuts"]["All"] = {"Data": "lab1_PIDK<5.0", "MC": "lab1_PIDKcorr<5.0&&lab0_BKGCAT<60"}
+    configdict["AdditionalCuts"]["All"] = {"Data": "lab1_PIDK<5.0 && (lab0_TAGDECISION_OS!=0 || lab0_OS_Charm_DEC!=0) && lab0_TAU>=0.0004 && lab0_TAU<=0.012 && lab0_MM>5130 && lab0_MM<6000 && nTracks>15 && nTracks<1000 && lab2_MM>1830 && lab2_MM<1904 && lab1_P>2000 && lab1_P<650000 && lab1_PT>400 && lab1_PT<45000 && lab0_LOKI_PHI>-10 && lab0_LOKI_PHI<10 && lab0_LOKI_ETA>1.5 && lab0_LOKI_ETA<10 && lab0_P>0 && lab0_P<3000000 && lab0_PT>0 && lab0_PT<100000 && (lab0_Hlt2Topo2BodyBBDTDecision_TOS!=0 || lab0_Hlt2Topo3BodyBBDTDecision_TOS!=0 || lab0_Hlt2Topo4BodyBBDTDecision_TOS!=0)"}
 
     
     return configdict

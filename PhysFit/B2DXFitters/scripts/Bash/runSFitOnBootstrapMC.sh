@@ -23,14 +23,11 @@ export runpath=${16}
 
 export preselection="TagDecOS!=0"
 
-export Start=`date`
-echo "==> Start fitting at ${Start}"
-
 while (( $seed < $stop )); do 
     
     cd $pyscriptpath
 
-    ${runpath}run python ${pyscriptpath}runSFit_Bd.py --pereventmistag --HFAG --sampleConstr --MC --preselection $preselection --inputdata $dataset --workMC $workspace --debug --fileName ${input}BootstrapMC_${nickname}_${seed}.root --save ${output}TimeFitBootstrapResult_${nickname}_${timefitdescr}_${seed}.root --fileNamePull ${output}PullTreeTimeFit_${nickname}_${timefitdescr}_${seed}.root --outputdir $output --configName $config --pol $pol --mode $mode --year $year --hypo $hypo --merge both --noweight --seed $seed >& ${output}log_${nickname}_${timefitdescr}_${seed}.txt
+    ${runpath}run python ${pyscriptpath}runSFit_Bd.py --NCPU 8 --pereventmistag --HFAG --sampleConstr --MC --preselection $preselection --inputdata $dataset --workMC $workspace --debug --fileName ${input}BootstrapMC_${nickname}_${seed}.root --save ${output}TimeFitBootstrapResult_${nickname}_${timefitdescr}_${seed}.root --fileNamePull ${output}PullTreeTimeFit_${nickname}_${timefitdescr}_${seed}.root --outputdir $output --configName $config --pol $pol --mode $mode --year $year --hypo $hypo --merge both --noweight --seed $seed >& ${output}log_${nickname}_${timefitdescr}_${seed}.txt
 
     xrdcp -f ${output}TimeFitBootstrapResult_${nickname}_${timefitdescr}_${seed}.root root://eoslhcb.cern.ch/${eosoutput}TimeFitBootstrapResult_${nickname}_${timefitdescr}_${seed}.root
     rm -f ${output}TimeFitBootstrapResult_${nickname}_${timefitdescr}_${seed}.root
@@ -43,6 +40,3 @@ while (( $seed < $stop )); do
     seed=$(($seed + 1))
 
 done
-
-export Stop=`date`
-echo "==> Stop fitting at ${Stop}"

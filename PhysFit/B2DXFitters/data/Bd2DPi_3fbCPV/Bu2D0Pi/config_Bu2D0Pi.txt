@@ -26,48 +26,20 @@ Data2012_Bu2D0Pi_Bu2D0KHypo_magUp_S21_afterSelection.root
 Bu2DK
 Bu2DK
 
-#Bu2D0Pi Combinatorial KPi 2011 Bu2D0PiHypo
-root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/flavourtaggingData/
-Data2011_Bu2D0Pi_Bu2D0PiHypo_magDown_S21_afterSelection.root
-Data2011_Bu2D0Pi_Bu2D0PiHypo_magUp_S21_afterSelection.root
-Bu2Dpi
-Bu2Dpi
-
-#Bu2D0Pi Combinatorial KPi 2011 Bu2D0KHypo
-root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/flavourtaggingData/
-Data2011_Bu2D0Pi_Bu2D0KHypo_magDown_S21_afterSelection.root
-Data2011_Bu2D0Pi_Bu2D0KHypo_magUp_S21_afterSelection.root
-Bu2DK
-Bu2DK
-
-#Bu2D0Pi Combinatorial KPi 2012 Bu2D0PiHypo
-root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/flavourtaggingData/
-Data2012_Bu2D0Pi_Bu2D0PiHypo_magDown_S21_afterSelection.root
-Data2012_Bu2D0Pi_Bu2D0PiHypo_magUp_S21_afterSelection.root
-Bu2Dpi
-Bu2Dpi
-
-#Bu2D0Pi Combinatorial KPi 2012 Bu2D0KHypo
-root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/flavourtaggingData/
-Data2012_Bu2D0Pi_Bu2D0KHypo_magDown_S21_afterSelection.root
-Data2012_Bu2D0Pi_Bu2D0KHypo_magUp_S21_afterSelection.root
-Bu2DK
-Bu2DK
-
 #Signal Bu2D0Pi KPi 2011 Bu2D0PiHypo
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/flavourtaggingMC/
-MC_Bu2D0Pi_Bu2D0PiHypo_magDown_S21_afterSelection_PID-corrected_new.root
-MC_Bu2D0Pi_Bu2D0PiHypo_magUp_S21_afterSelection_PID-corrected_new.root
-Bu2Dpi
-Bu2Dpi
+MC_Bu2D0PiFiltered_2011_PiandKHypo_magDown_S21_afterSelection_OSCombined_PID-corrected_new.root
+MC_Bu2D0PiFiltered_2011_PiandKHypo_magUp_S21_afterSelection_OSCombined_PID-corrected_new.root
+DecayTree
+DecayTree
 ###
 
 #Signal Bu2D0Pi KPi 2012 Bu2D0PiHypo
 root://eoslhcb.cern.ch//eos/lhcb/wg/b2oc/TD_DPi_3fb/flavourtaggingMC/
-MC_Bu2D0Pi_Bu2D0PiHypo_magDown_S21_afterSelection_PID-corrected_new.root
-MC_Bu2D0Pi_Bu2D0PiHypo_magUp_S21_afterSelection_PID-corrected_new.root
-Bu2Dpi
-Bu2Dpi
+MC_Bu2D0PiFiltered_2012_PiandKHypo_magDown_S21_afterSelection_OSCombined_PID-corrected_new.root
+MC_Bu2D0PiFiltered_2011_PiandKHypo_magUp_S21_afterSelection_OSCombined_PID-corrected_new.root
+DecayTree
+DecayTree
 ###
 
 #Signal Bu2D0Pi KPi 2011 Bu2D0KHypo

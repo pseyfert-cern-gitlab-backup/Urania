@@ -136,7 +136,7 @@ def setConstantIfSoConfigured(var, myconfigfile):
         print "[INFO]   ", var.Print()
 
 # ------------------------------------------------------------------------------
-def getCPparameters(ws, myconfigfile, UniformBlinding, HFAG):
+def getCPparameters(ws, myconfigfile, UniformBlinding, blindingString, HFAG):
     if "ModLf" in myconfigfile["ACP"]["Signal"].keys():
 
         print "[INFO] Building CP parameters using amplitude values"
@@ -181,10 +181,10 @@ def getCPparameters(ws, myconfigfile, UniformBlinding, HFAG):
 
     sigC = RooRealVar('Cf', 'C_{f}', Cf, limit[0], limit[1])
     sigS = RooRealVar('Sf', 'S_{f}', Sf, limit[0], limit[1])
-    sigS_blind = RooUnblindUniform('Sf_blind', 'S_{f} (blind)', 'CPV_3invfb_Bd2DPi_S', 1.0, sigS)
+    sigS_blind = RooUnblindUniform('Sf_blind', 'S_{f} (blind)', str(blindingString)+'_Sf', 1.0, sigS)
     sigD = RooRealVar('Df', 'D_{f}', Df, limit[0], limit[1])
     sigSbar = RooRealVar('Sfbar', 'S_{#bar f}', Sfbar, limit[0], limit[1])
-    sigSbar_blind = RooUnblindUniform('Sfbar_blind', 'S_{#bar f} (blind)', 'CPV_3invfb_Bd2DPi_Sbar', 1.0, sigSbar)
+    sigSbar_blind = RooUnblindUniform('Sfbar_blind', 'S_{#bar f} (blind)', str(blindingString)+'_Sfbar', 1.0, sigSbar)
     sigDbar = RooRealVar('Dfbar', 'D_{#bar f}', Dfbar, limit[0], limit[1])
     setConstantIfSoConfigured(sigC, myconfigfile)
     setConstantIfSoConfigured(sigS, myconfigfile)
@@ -214,7 +214,8 @@ def runSFit(debug, wsname,
             configName, scan,
             binned, plotsWeights, noweight,
             sample, mode, year, hypo, merge, unblind, randomise, superimpose,
-            seed, preselection, UniformBlinding, HFAG, extended, fitresultFileName, NumCPU, UseGLM, fixtagging):
+            seed, preselection, UniformBlinding, blindingString,
+            HFAG, extended, fitresultFileName, NumCPU, fixtagging, singletagger):
 
     if MC and not noweight:
         print "ERROR: cannot use sWeighted MC sample (for now)"
@@ -441,6 +442,8 @@ def runSFit(debug, wsname,
     mistag = []
     if not truetag:
         for t in range(0, MDSettings.GetNumTagVar()):
+            if singletagger!='' and MDSettings.GetTagVarOutName(t).Data() != singletagger:
+                continue
             tag.append(WS(ws, obs.find(MDSettings.GetTagVarOutName(t).Data())))
             mistag.append(WS(ws, obs.find(MDSettings.GetTagOmegaVarOutName(t).Data())))
             # mistag[t].setRange(0.0,0.5)
@@ -579,6 +582,8 @@ def runSFit(debug, wsname,
     # Build mistag pdfs on the fly if required (at least one tagger wants it)
     if pereventmistag:
         for t in range(0, MDSettings.GetNumTagVar()):
+            if singletagger!='' and MDSettings.GetTagVarOutName(t).Data() != singletagger:
+                continue
             nametag = "OS"
             if "SS" in MDSettings.GetTagVarOutName(t).Data():
                 nametag = "SS"
@@ -621,6 +626,8 @@ def runSFit(debug, wsname,
     else:
 
         for t in range(0, MDSettings.GetNumTagVar()):
+            if singletagger!='' and MDSettings.GetTagVarOutName(t).Data() != singletagger:
+                continue
             nametag = "OS"
             if "SS" in MDSettings.GetTagVarOutName(t).Data():
                 nametag = "SS"
@@ -734,8 +741,12 @@ def runSFit(debug, wsname,
 
                 print "[INFO] Using per-event mistag for " + nametag + " tagger"
 
-                observables.add(tag[t])
-                observables.add(mistag[t])
+                if len(tag)==1 and len(mistag)==1:
+                    observables.add(tag[0])
+                    observables.add(mistag[0])
+                else:
+                    observables.add(tag[t])
+                    observables.add(mistag[t])
 
                 if "Type" in myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"].keys():
                     if myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["Type"] == "Mock":
@@ -802,7 +813,7 @@ def runSFit(debug, wsname,
     print "=========================================================="
     print ""
 
-    C, S, D, Sbar, Dbar = getCPparameters(ws, myconfigfile, UniformBlinding, HFAG)
+    C, S, D, Sbar, Dbar = getCPparameters(ws, myconfigfile, UniformBlinding, blindingString, HFAG)
 
     print ""
     print "=========================================================="
@@ -1044,7 +1055,7 @@ def runSFit(debug, wsname,
 
     if not superimpose:
 
-        if toys or MC or unblind:  # Unblind yourself
+        if toys or MC:  # Unblind yourself
             #MinosArgset = RooArgSet(S, Sbar)
             fitOpts_temp = [RooFit.Save(1),
                             RooFit.NumCPU(NumCPU),
@@ -1056,11 +1067,7 @@ def runSFit(debug, wsname,
                             # RooFit.Minos(True),
                             RooFit.Optimize(True),
                             RooFit.Hesse(True),
-                            RooFit.Extended(False),
-                            # RooFit.PrintLevel(3),
-                            # RooFit.Warnings(True),
-                            # RooFit.Verbose(True),
-                            # RooFit.PrintEvalErrors(1)]
+                            RooFit.Timer(True),
                             RooFit.PrintLevel(1),
                             RooFit.Warnings(False),
                             RooFit.PrintEvalErrors(-1)]
@@ -1069,6 +1076,10 @@ def runSFit(debug, wsname,
             fitOpts = RooLinkedList()
             for cmd in fitOpts_temp:
                 fitOpts.Add(cmd)
+
+            #RooMsgService.instance().getStream(0).removeTopic(RooFit.MsgTopic.Eval)
+            #RooMsgService.instance().getStream(1).removeTopic(RooFit.MsgTopic.Eval)
+                
             if binned:
                 print "[INFO] Fitting binned dataset"
                 if not noweight:
@@ -1085,6 +1096,10 @@ def runSFit(debug, wsname,
                 else:
                     print "[INFO] Fitting unweighted dataset"
                     myfitresult = totPDF.fitTo(data, fitOpts)
+
+            #RooMsgService.instance().getStream(0).addTopic(RooFit.MsgTopic.Eval)
+            #RooMsgService.instance().getStream(1).addTopic(RooFit.MsgTopic.Eval)
+                    
             myfitresult.Print("v")
             myfitresult.correlationMatrix().Print()
             myfitresult.covarianceMatrix().Print()
@@ -1101,6 +1116,7 @@ def runSFit(debug, wsname,
                             RooFit.SumW2Error(False),
                             # RooFit.Extended(False),
                             RooFit.PrintLevel(1),
+                            RooFit.Timer(True),
                             RooFit.Warnings(False),
                             RooFit.PrintEvalErrors(-1)]
             # at this stage we have to take car that either mistag pdf's are set or the
@@ -1115,6 +1131,10 @@ def runSFit(debug, wsname,
             fitOpts = RooLinkedList()
             for cmd in fitOpts_temp:
                 fitOpts.Add(cmd)
+
+            #RooMsgService.instance().getStream(0).removeTopic(RooFit.MsgTopic.Eval)
+            #RooMsgService.instance().getStream(1).removeTopic(RooFit.MsgTopic.Eval)
+                
             if binned:
                 print "[INFO] Fitting binned dataset"
                 if not noweight:
@@ -1131,6 +1151,9 @@ def runSFit(debug, wsname,
                 else:
                     print "[INFO] Fitting unweighted dataset"
                     myfitresult = totPDF.fitTo(data, fitOpts)
+
+            #RooMsgService.instance().getStream(0).addTopic(RooFit.MsgTopic.Eval)
+            #RooMsgService.instance().getStream(1).addTopic(RooFit.MsgTopic.Eval)
 
             print '[INFO Result] Matrix quality is', myfitresult.covQual()
             par = myfitresult.floatParsFinal()
@@ -1434,6 +1457,11 @@ parser.add_option('--UniformBlinding',
                   action='store_true',
                   help = 'the RooUnblindUniform is used for S and Sbar'
                   )
+parser.add_option('--blindingString',
+                  dest = 'blindingString',
+                  default = "TD_Dpi_3fb",
+                  help = 'prefix of the blinding string to be applied on CP coefficients'
+                  )
 parser.add_option('--HFAG',
                   dest = 'HFAG',
                   default = False,
@@ -1446,17 +1474,16 @@ parser.add_option('--NCPU',
                   type ="int",
                   help = 'Number of CPU cores used in the fit'
                   )
-parser.add_option('--UseGLM',
-                  dest = 'UseGLM',
-                  default = False,
-                  action='store_true',
-                  help = 'Use a GLM model defined in the config file'
-                  )
 parser.add_option('--fixtagging',
                   dest = 'fixtagging',
                   default = False,
                   action='store_true',
                   help = 'Fix tagging parameters (valid if GLM is used)'
+                  )
+parser.add_option('--singletagger',
+                  dest = 'singletagger',
+                  default = '',
+                  help = 'Choose a single tagger to use (OS or SS)'
                   )
 
 # -----------------------------------------------------------------------------
@@ -1523,11 +1550,12 @@ if __name__ == '__main__':
             options.seed,
             options.preselection,
             options.UniformBlinding,
+            options.blindingString,
             options.HFAG,
             options.extended,
             options.fileNameFitresult,
             options.NumCPU,
-            options.UseGLM,
-            options.fixtagging)
+            options.fixtagging,
+            options.singletagger)
 
 # -----------------------------------------------------------------------------

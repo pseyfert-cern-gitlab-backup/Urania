@@ -866,6 +866,79 @@ def BuildIpatiaPlusGaussianPDF(workOut, obs, nickname, pdfDict, debug):
 	return WS(workOut, pdf)
 
 #------------------------------------------------------------
+def BuildDoubleIpatiaPDF(workOut, obs, nickname, pdfDict, debug):
+
+	#Build parameters
+	varName = obs.GetName()
+	typemode = "DoubleIpatia"
+	samplemode = nickname
+
+	l1Var = WS(workOut, RooRealVar(typemode+"_"+varName+"_l1_"+samplemode,
+				       typemode+"_"+varName+"_l1_"+samplemode,
+				       *pdfDict["l1"]))
+	zeta1Var = WS(workOut, RooRealVar(typemode+"_"+varName+"_zeta1_"+samplemode,
+					  typemode+"_"+varName+"_zeta1_"+samplemode,
+					  *pdfDict["zeta1"]))
+	fb1Var = WS(workOut, RooRealVar(typemode+"_"+varName+"_fb1_"+samplemode,
+					typemode+"_"+varName+"_fb1_"+samplemode,
+					*pdfDict["fb1"]))
+	l2Var = WS(workOut, RooRealVar(typemode+"_"+varName+"_l2_"+samplemode,
+				       typemode+"_"+varName+"_l2_"+samplemode,
+				       *pdfDict["l2"]))
+	zeta2Var = WS(workOut, RooRealVar(typemode+"_"+varName+"_zeta2_"+samplemode,
+					  typemode+"_"+varName+"_zeta2_"+samplemode,
+					  *pdfDict["zeta2"]))
+	fb2Var = WS(workOut, RooRealVar(typemode+"_"+varName+"_fb2_"+samplemode,
+					typemode+"_"+varName+"_fb2_"+samplemode,
+					*pdfDict["fb2"]))
+	meanVar = WS(workOut, RooRealVar(typemode+"_"+varName+"_mean_"+samplemode,
+					 typemode+"_"+varName+"_mean_"+samplemode,
+					 *pdfDict["mean"]))
+	sigma1Var = WS(workOut, RooRealVar(typemode+"_"+varName+"_sigma1_"+samplemode,
+					   typemode+"_"+varName+"_sigma1_"+samplemode,
+					   *pdfDict["sigma1"]))
+	sigma2Var = WS(workOut, RooRealVar(typemode+"_"+varName+"_sigma2_"+samplemode,
+					   typemode+"_"+varName+"_sigma2_"+samplemode,
+					   *pdfDict["sigma2"]))
+	a11Var = WS(workOut, RooRealVar(typemode+"_"+varName+"_a11_"+samplemode,
+				       typemode+"_"+varName+"_a11_"+samplemode,
+				       *pdfDict["a11"]))
+	n11Var = WS(workOut, RooRealVar(typemode+"_"+varName+"_n11_"+samplemode,
+				       typemode+"_"+varName+"_n11_"+samplemode,
+				       *pdfDict["n11"]))
+	a21Var = WS(workOut, RooRealVar(typemode+"_"+varName+"_a21_"+samplemode,
+				       typemode+"_"+varName+"_a21_"+samplemode,
+				       *pdfDict["a21"]))
+	n21Var = WS(workOut, RooRealVar(typemode+"_"+varName+"_n21_"+samplemode,
+				       typemode+"_"+varName+"_n21_"+samplemode,
+				       *pdfDict["n21"]))
+	a12Var = WS(workOut, RooRealVar(typemode+"_"+varName+"_a12_"+samplemode,
+					typemode+"_"+varName+"_a12_"+samplemode,
+					*pdfDict["a12"]))
+	n12Var = WS(workOut, RooRealVar(typemode+"_"+varName+"_n12_"+samplemode,
+					typemode+"_"+varName+"_n12_"+samplemode,
+					*pdfDict["n12"]))
+	a22Var = WS(workOut, RooRealVar(typemode+"_"+varName+"_a22_"+samplemode,
+					typemode+"_"+varName+"_a22_"+samplemode,
+					*pdfDict["a22"]))
+	n22Var = WS(workOut, RooRealVar(typemode+"_"+varName+"_n22_"+samplemode,
+					typemode+"_"+varName+"_n22_"+samplemode,
+					*pdfDict["n22"]))
+	fracVar = WS(workOut, RooRealVar(typemode+"_"+varName+"_frac_"+samplemode,
+					 typemode+"_"+varName+"_frac_"+samplemode,
+					 *pdfDict["frac"]))
+	#Build PDF
+	pdf = Bd2DhModels.buildDoubleIpatiaPDF(obs,
+					       workOut,
+					       samplemode,
+					       typemode,
+					       False,
+					       False,
+					       debug)
+	
+	return WS(workOut, pdf)
+
+#------------------------------------------------------------
 def BuildIpatiaPlusJohnsonSUPDF(workOut, obs, nickname, pdfDict, debug):
 
 	#Build parameters
@@ -1190,6 +1263,8 @@ def fitShapes( debug,
                 pdf = BuildJohnsonSUPlusGaussianPlusExponentialPDF(workspaceOut, obs, nickname, pdfDict, debug)
 	elif "JohnsonSUPlusGaussian" in pdfType:
 		pdf = BuildJohnsonSUPlusGaussianPDF(workspaceOut, obs, nickname, pdfDict, debug)
+	elif "DoubleIpatia" in pdfType:
+		 pdf = BuildDoubleIpatiaPDF(workspaceOut, obs, nickname, pdfDict, debug)
 	elif "IpatiaGaussConv" in pdfType:
 		pdf = BuildIpatiaGaussConvPDF(workspaceOut, obs, nickname, pdfDict, debug)
 	elif "IpatiaPlusExponential" in pdfType:

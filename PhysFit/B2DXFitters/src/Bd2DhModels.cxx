@@ -655,6 +655,209 @@ namespace Bd2DhModels {
   }  
 
   //===============================================================================
+  // Build Double Ipatia pdf
+  //===============================================================================
+
+  RooAbsPdf* buildDoubleIpatiaPDF(RooAbsReal& obs,
+                                  RooWorkspace* workInt,
+                                  TString samplemode,
+                                  TString typemode,
+                                  bool shiftMean,
+                                  bool scaleTails,
+                                  bool debug)
+  {
+    if ( debug == true )
+    {
+      std::cout<<"Bd2DhModels::buildDoubleIpatiaPDF(..)==> building double Ipatia pdf..."<<std::endl; 
+    }
+    
+    RooRealVar* l1Var = NULL;
+    RooRealVar* zeta1Var = NULL;
+    RooRealVar* fb1Var = NULL;
+
+    RooRealVar* l2Var = NULL;
+    RooRealVar* zeta2Var = NULL;
+    RooRealVar* fb2Var = NULL;
+
+    RooRealVar* meanVar = NULL;
+    RooRealVar* shiftVar = NULL;
+    RooFormulaVar *meanShiftVar = NULL;
+
+    RooRealVar* sigma1Var = NULL;
+    RooRealVar* sigma2Var = NULL;
+
+    RooRealVar* a11Var = NULL;
+    RooRealVar* n11Var = NULL;
+    RooRealVar* a21Var = NULL;
+    RooRealVar* n21Var = NULL;
+
+    RooRealVar* a12Var = NULL;
+    RooRealVar* n12Var = NULL;
+    RooRealVar* a22Var = NULL;
+    RooRealVar* n22Var = NULL;
+
+    RooRealVar* scalea1Var = NULL;
+    RooRealVar* scalen1Var = NULL;
+
+    RooRealVar* scalea2Var = NULL;
+    RooRealVar* scalen2Var = NULL;
+
+    RooFormulaVar* a11VarScaled = NULL;
+    RooFormulaVar* n11VarScaled = NULL;
+    RooFormulaVar* a21VarScaled = NULL;
+    RooFormulaVar* n21VarScaled = NULL;
+  
+    RooFormulaVar* a12VarScaled = NULL;
+    RooFormulaVar* n12VarScaled = NULL;
+    RooFormulaVar* a22VarScaled = NULL;
+    RooFormulaVar* n22VarScaled = NULL;
+
+    RooRealVar* fracVar = NULL;
+
+    TString varName = obs.GetName();
+    
+    TString l1VarName = typemode+"_"+varName+"_l1_"+samplemode;
+    l1Var = tryVar(l1VarName, workInt, debug);
+    TString zeta1VarName = typemode+"_"+varName+"_zeta1_"+samplemode;
+    zeta1Var = tryVar(zeta1VarName, workInt, debug);
+    TString fb1VarName = typemode+"_"+varName+"_fb1_"+samplemode;
+    fb1Var = tryVar(fb1VarName, workInt, debug);
+
+    TString l2VarName = typemode+"_"+varName+"_l2_"+samplemode;
+    l2Var = tryVar(l2VarName, workInt, debug);
+    TString zeta2VarName = typemode+"_"+varName+"_zeta2_"+samplemode;
+    zeta2Var = tryVar(zeta2VarName, workInt, debug);
+    TString fb2VarName = typemode+"_"+varName+"_fb2_"+samplemode;
+    fb2Var = tryVar(fb2VarName, workInt, debug);
+    
+    TString meanVarName = typemode+"_"+varName+"_mean_"+samplemode;
+    
+    meanVar = tryVar(meanVarName, workInt, debug);
+    
+    if(meanVar == NULL) meanVar = tryVar("Signal_"+varName+"_mean_"+samplemode, workInt, debug);
+    
+    if (shiftMean)
+    {
+      TString shiftVarName = typemode+"_"+varName+"_shift_"+samplemode;
+      shiftVar = tryVar(shiftVarName, workInt, debug);
+      TString meanShiftVarName = typemode+"_"+varName+"_meanShift_"+samplemode;      
+      meanShiftVar = new RooFormulaVar(meanShiftVarName.Data(), meanShiftVarName.Data(), "@0+@1", RooArgList(*meanVar,*shiftVar));         
+    }
+
+    TString sigma1VarName = typemode+"_"+varName+"_sigma1_"+samplemode;
+    sigma1Var = tryVar(sigma1VarName, workInt, debug);
+    if(sigma1Var == NULL) sigma1Var = tryVar("Signal_"+varName+"_sigma1_"+samplemode, workInt, debug);
+    TString sigma2VarName = typemode+"_"+varName+"_sigma2_"+samplemode;
+    sigma2Var = tryVar(sigma2VarName, workInt, debug);
+    if(sigma2Var == NULL) sigma2Var = tryVar("Signal_"+varName+"_sigma2_"+samplemode, workInt, debug);
+  
+    TString a11VarName = typemode+"_"+varName+"_a11_"+samplemode;
+    a11Var = tryVar(a11VarName, workInt, debug);
+    if (a11Var == NULL) a11Var = tryVar("Signal_"+varName+"_a11_"+samplemode, workInt, debug);
+    TString n11VarName = typemode+"_"+varName+"_n11_"+samplemode;
+    n11Var = tryVar(n11VarName, workInt, debug);
+    if (n11Var == NULL) a11Var = tryVar("Signal_"+varName+"_n11_"+samplemode, workInt, debug);
+    TString a21VarName = typemode+"_"+varName+"_a21_"+samplemode;
+    a21Var = tryVar(a21VarName, workInt, debug);
+    if (a21Var == NULL) a21Var = tryVar("Signal_"+varName+"_a21_"+samplemode, workInt, debug);
+    TString n21VarName = typemode+"_"+varName+"_n21_"+samplemode;
+    n21Var = tryVar(n21VarName, workInt, debug);
+    if (n21Var == NULL) n21Var = tryVar("Signal_"+varName+"_n21_"+samplemode, workInt, debug);
+    
+    TString a12VarName = typemode+"_"+varName+"_a12_"+samplemode;
+    a12Var = tryVar(a12VarName, workInt, debug);
+    if (a12Var == NULL) a12Var = tryVar("Signal_"+varName+"_a12_"+samplemode, workInt, debug);
+    TString n12VarName = typemode+"_"+varName+"_n12_"+samplemode;
+    n12Var = tryVar(n12VarName, workInt, debug);
+    if (n12Var == NULL) a12Var = tryVar("Signal_"+varName+"_n12_"+samplemode, workInt, debug);
+    TString a22VarName = typemode+"_"+varName+"_a22_"+samplemode;
+    a22Var = tryVar(a22VarName, workInt, debug);
+    if (a22Var == NULL) a22Var = tryVar("Signal_"+varName+"_a22_"+samplemode, workInt, debug);
+    TString n22VarName = typemode+"_"+varName+"_n22_"+samplemode;
+    n22Var = tryVar(n22VarName, workInt, debug);
+    if (n22Var == NULL) n22Var = tryVar("Signal_"+varName+"_n22_"+samplemode, workInt, debug);
+
+    if(scaleTails)
+    {
+      TString scalea1VarName = typemode+"_"+varName+"_a1scale_"+samplemode;
+      scalea1Var = tryVar(scalea1VarName, workInt, debug);
+      if(scalea1Var == NULL) scalea1Var = tryVar("Signal_"+varName+"_a1scale_"+samplemode, workInt, debug);
+      TString scalen1VarName = typemode+"_"+varName+"_n1scale_"+samplemode;
+      scalen1Var = tryVar(scalen1VarName, workInt, debug);
+      if(scalen1Var == NULL) scalen1Var = tryVar("Signal_"+varName+"_n1scale_"+samplemode, workInt, debug);
+      TString a11VarScaledName = typemode+"_"+varName+"_a11scaled_"+samplemode;     
+      a11VarScaled = new RooFormulaVar(a11VarScaledName.Data(), a11VarScaledName.Data(), "@0*@1", RooArgList(*a11Var,*scalea1Var));
+      TString a21VarScaledName = typemode+"_"+varName+"_a21scaled_"+samplemode;      
+      a21VarScaled = new RooFormulaVar(a21VarScaledName.Data(), a21VarScaledName.Data(), "@0*@1", RooArgList(*a21Var,*scalea1Var));
+      TString n11VarScaledName = typemode+"_"+varName+"_n11scaled_"+samplemode;     
+      n11VarScaled = new RooFormulaVar(n11VarScaledName.Data(), n11VarScaledName.Data(), "@0*@1", RooArgList(*n11Var,*scalen1Var));
+      TString n21VarScaledName = typemode+"_"+varName+"_n21scaled_"+samplemode;      
+      n21VarScaled = new RooFormulaVar(n21VarScaledName.Data(), n21VarScaledName.Data(), "@0*@1", RooArgList(*n21Var,*scalen1Var));
+      
+      TString scalea2VarName = typemode+"_"+varName+"_a2scale_"+samplemode;
+      scalea2Var = tryVar(scalea2VarName, workInt, debug);
+      if(scalea2Var == NULL) scalea2Var = tryVar("Signal_"+varName+"_a2scale_"+samplemode, workInt, debug);
+      TString scalen2VarName = typemode+"_"+varName+"_n2scale_"+samplemode;
+      scalen2Var = tryVar(scalen2VarName, workInt, debug);
+      if(scalen2Var == NULL) scalen2Var = tryVar("Signal_"+varName+"_n2scale_"+samplemode, workInt, debug);
+      TString a12VarScaledName = typemode+"_"+varName+"_a12scaled_"+samplemode;      
+      a12VarScaled = new RooFormulaVar(a12VarScaledName.Data(), a12VarScaledName.Data(), "@0*@1", RooArgList(*a12Var,*scalea2Var));
+      TString a22VarScaledName = typemode+"_"+varName+"_a22scaled_"+samplemode;      
+      a22VarScaled = new RooFormulaVar(a22VarScaledName.Data(), a22VarScaledName.Data(), "@0*@1", RooArgList(*a22Var,*scalea2Var));
+      TString n12VarScaledName = typemode+"_"+varName+"_n12scaled_"+samplemode;      
+      n12VarScaled = new RooFormulaVar(n12VarScaledName.Data(), n12VarScaledName.Data(), "@0*@1", RooArgList(*n12Var,*scalen2Var));
+      TString n22VarScaledName = typemode+"_"+varName+"_n22scaled_"+samplemode;      
+      n22VarScaled = new RooFormulaVar(n22VarScaledName.Data(), n22VarScaledName.Data(), "@0*@1", RooArgList(*n22Var,*scalen2Var));
+
+    }
+   
+    TString fracVarName = typemode+"_"+varName+"_frac_"+samplemode;
+    fracVar = tryVar(fracVarName, workInt, debug);
+
+    RooIpatia2* pdf1 = NULL;
+    TString pdf1Name = typemode+"_"+varName+"_ipatia1_"+samplemode;
+    RooIpatia2* pdf2 = NULL;
+    TString pdf2Name = typemode+"_"+varName+"_ipatia2_"+samplemode;
+
+    if(shiftMean)
+    {
+      if(scaleTails)
+      {  
+        pdf1 = new RooIpatia2( pdf1Name.Data(), pdf1Name.Data(), obs, *l1Var, *zeta1Var, *fb1Var, *sigma1Var, *meanShiftVar, *a11VarScaled, *n11VarScaled, *a21VarScaled, *n21VarScaled);
+        pdf2 = new RooIpatia2( pdf2Name.Data(), pdf2Name.Data(), obs, *l2Var, *zeta2Var, *fb2Var, *sigma2Var, *meanShiftVar, *a12VarScaled, *n12VarScaled, *a22VarScaled, *n22VarScaled);
+        
+      }
+      else
+      {
+        pdf1 = new RooIpatia2( pdf1Name.Data(), pdf1Name.Data(), obs, *l1Var, *zeta1Var, *fb1Var, *sigma1Var, *meanShiftVar, *a11Var, *n11Var, *a21Var, *n21Var);
+        pdf2 = new RooIpatia2( pdf2Name.Data(), pdf2Name.Data(), obs, *l2Var, *zeta2Var, *fb2Var, *sigma2Var, *meanShiftVar, *a12Var, *n12Var, *a22Var, *n22Var);
+      }
+    }
+    else
+    {
+      if(scaleTails)
+      {
+        pdf1 = new RooIpatia2( pdf1Name.Data(), pdf1Name.Data(), obs, *l1Var, *zeta1Var, *fb1Var, *sigma1Var, *meanVar,*a11VarScaled, *n11VarScaled, *a21VarScaled, *n21VarScaled);
+        pdf2 = new RooIpatia2( pdf2Name.Data(), pdf2Name.Data(), obs, *l2Var, *zeta2Var, *fb2Var, *sigma2Var, *meanVar,*a12VarScaled, *n12VarScaled, *a22VarScaled, *n22VarScaled);
+        
+      }
+      else
+      {
+        pdf1 = new RooIpatia2( pdf1Name.Data(), pdf1Name.Data(), obs, *l1Var, *zeta1Var, *fb1Var, *sigma1Var, *meanVar,*a11Var, *n11Var, *a21Var, *n21Var);
+        pdf2 = new RooIpatia2( pdf2Name.Data(), pdf2Name.Data(), obs, *l2Var, *zeta2Var, *fb2Var, *sigma2Var, *meanVar,*a12Var, *n12Var, *a22Var, *n22Var);
+      }
+    }
+
+    TString pdfName = typemode+"_"+varName+"_DoubleIpatia_"+samplemode;
+    RooAddPdf* pdf = NULL;
+    pdf = new RooAddPdf( pdfName.Data(), pdfName.Data(), RooArgList(*pdf1, *pdf2), *fracVar);
+    CheckPDF( pdf, debug );
+    return pdf;
+
+  }
+  
+  
+  //===============================================================================
   // Build Ipatia + JohnsonSU pdf
   //===============================================================================
 
@@ -668,7 +871,7 @@ namespace Bd2DhModels {
   {
     if ( debug == true )
     {
-      std::cout<<"Bd2DhModels::buildIpatiaGaussConvPDF(..)==> building Ipatia + JohnsonSU pdf..."<<std::endl;  
+      std::cout<<"Bd2DhModels::buildIpatiaPlusJohnsonSUPDF(..)==> building Ipatia + JohnsonSU pdf..."<<std::endl;  
     }
     
     RooRealVar* lVar = NULL;
@@ -738,7 +941,7 @@ namespace Bd2DhModels {
     if (n1Var == NULL) a1Var = tryVar("Signal_"+varName+"_n1_"+samplemode, workInt, debug);
     TString a2VarName = typemode+"_"+varName+"_a2_"+samplemode;    
     a2Var = tryVar(a2VarName, workInt, debug);
-    if (a2Var == NULL) a1Var = tryVar("Signal_"+varName+"_a2_"+samplemode, workInt, debug);
+    if (a2Var == NULL) a2Var = tryVar("Signal_"+varName+"_a2_"+samplemode, workInt, debug);
     TString n2VarName = typemode+"_"+varName+"_n2_"+samplemode;
     n2Var = tryVar(n2VarName, workInt, debug);
     if (n2Var == NULL) n2Var = tryVar("Signal_"+varName+"_n2_"+samplemode, workInt, debug);
@@ -869,7 +1072,7 @@ namespace Bd2DhModels {
     if (n1Var == NULL) a1Var = tryVar("Signal_"+varName+"_n1_"+samplemode, workInt, debug);
     TString a2VarName = typemode+"_"+varName+"_a2_"+samplemode;
     a2Var = tryVar(a2VarName, workInt, debug);
-    if (a2Var == NULL) a1Var = tryVar("Signal_"+varName+"_a2_"+samplemode, workInt, debug);
+    if (a2Var == NULL) a2Var = tryVar("Signal_"+varName+"_a2_"+samplemode, workInt, debug);
     TString n2VarName = typemode+"_"+varName+"_n2_"+samplemode;
     n2Var = tryVar(n2VarName, workInt, debug);
     if (n2Var == NULL) n2Var = tryVar("Signal_"+varName+"_n2_"+samplemode, workInt, debug);

@@ -15,7 +15,7 @@ def getconfig() :
     # year of data taking
     configdict["YearOfDataTaking"] = {"2012"} 
     # file name with paths to MC/data samples
-    configdict["dataName"]   = "/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/config_Bd2DPi.txt"
+    configdict["dataName"]   = "/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/config_Bd2DPi.txt"
         
     # basic variables
     configdict["BasicVariables"] = {}
@@ -27,10 +27,10 @@ def getconfig() :
                                                       "Name"                   : "CharmMass",
                                                       "InputName"              : "lab0_FitwithoutConst_Dplus_M_flat"}
 
-    configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.2,     15.0    ],
+    configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.4,     12.0    ],
                                                       "Bins"                   : 40,
                                                       "Name"                   : "BeautyTime",
-                                                      "InputName"              : "lab0_FitDaughtersPVConst_ctau_flat"}
+                                                      "InputName"              : "obsTime"}
     
     configdict["BasicVariables"]["BacP"]          = { "Range"                  : [2000.0,  650000.0],
                                                       "Name"                   : "BacP",
@@ -48,13 +48,9 @@ def getconfig() :
                                                       "Name"                   : "nTracks",
                                                       "InputName"              : "nTracks"}
 
-    configdict["BasicVariables"]["BeautyTimeErr"] = { "Range"                  : [0.01,    0.1     ],
-                                                      "Name"                   : "BeautyTimeErr",
-                                                      "InputName"              : "lab0_FitDaughtersPVConst_ctauErr_flat"}
-
     configdict["BasicVariables"]["BacCharge"]     = { "Range"                  : [-1000.0, 1000.0  ],
                                                       "Name"                   : "BacCharge",
-                                                      "InputName"              : "lab1_ID"}
+                                                      "InputName"              : "lab1_TRUEID"}
 
     configdict["BasicVariables"]["TagDecOSComb"]      = { "Range"                  : [-1.0,    1.0     ],
                                                           "Name"                   : "TagDecOSComb",
@@ -63,22 +59,6 @@ def getconfig() :
     configdict["BasicVariables"]["TagDecOSCharm"]      = { "Range"                  : [-1.0,    1.0     ],
                                                            "Name"                   : "TagDecOSCharm",
                                                            "InputName"              : "obsTagOSCharm"}
-
-    configdict["BasicVariables"]["TagDecOSKaon"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                          "Name"                   : "TagDecOSKaon",
-                                                          "InputName"              : "obsTagOSKaon"}
-
-    configdict["BasicVariables"]["TagDecOSElectron"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                              "Name"                   : "TagDecOSElectron",
-                                                              "InputName"              : "obsTagOSElectron"}
-
-    configdict["BasicVariables"]["TagDecOSMuon"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                          "Name"                   : "TagDecOSMuon",
-                                                          "InputName"              : "obsTagOSMuon"}
-
-    configdict["BasicVariables"]["TagDecVtxCharge"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                             "Name"                   : "TagDecVtxCharge",
-                                                             "InputName"              : "obsTagVtxQ"}
 
     configdict["BasicVariables"]["TagDecSSPionBDT"]      = { "Range"                  : [-1.0,    1.0     ],
                                                              "Name"                   : "TagDecSSPionBDT",
@@ -95,22 +75,6 @@ def getconfig() :
     configdict["BasicVariables"]["MistagOSCharm"]      = { "Range"                  : [ 0.0,    0.5     ],
                                                            "Name"                   : "MistagOSCharm",
                                                            "InputName"              : "obsEtaOSCharm"}
-
-    configdict["BasicVariables"]["MistagOSKaon"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                          "Name"                   : "MistagOSKaon",
-                                                          "InputName"              : "obsEtaOSKaon"}
-
-    configdict["BasicVariables"]["MistagOSElectron"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                              "Name"                   : "MistagOSElectron",
-                                                              "InputName"              : "obsEtaOSElectron"}
-
-    configdict["BasicVariables"]["MistagOSMuon"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                          "Name"                   : "MistagOSMuon",
-                                                          "InputName"              : "obsEtaOSMuon"}
-
-    configdict["BasicVariables"]["MistagVtxCharge"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                             "Name"                   : "MistagVtxCharge",
-                                                             "InputName"              : "obsEtaVtxQ"}
     
     configdict["BasicVariables"]["MistagSSPionBDT"]      = { "Range"                  : [ 0.0,    0.5     ],
                                                              "Name"                   : "MistagSSPionBDT",
@@ -142,6 +106,10 @@ def getconfig() :
     configdict["AdditionalVariables"]["BeautyP"]      = { "Range"                  : [ 0.0,    3000000     ],
                                                           "Name"                   : "BeautyP",
                                                           "InputName"              : "lab0_P"}
+
+    configdict["AdditionalVariables"]["CharmTime"]    = { "Range"                  : [-10,     10    ],
+                                                          "Name"                   : "CharmTime",
+                                                          "InputName"              : "lab2_TAU"}
     
     configdict["AdditionalVariables"]["nPV"]      = { "Range"                  : [ 0.0,    10     ],
                                                       "Name"                   : "nPV",
@@ -161,7 +129,7 @@ def getconfig() :
 
     # PIDK bin
     configdict["AdditionalCuts"] = {}
-    configdict["AdditionalCuts"]["All"] = {"Data": "lab1_PIDK<5.0", "MC": "lab1_PIDKcorr<5.0&&lab0_BKGCAT<60"}
+    configdict["AdditionalCuts"]["All"] = {"MC": "lab0_BKGCAT<60 && (obsTagOS!=0 || obsTagOSCharm!=0 || obsTagSSPionBDT!=0 || obsTagSSProton!=0) && BDT_classifier>0.0 && obsTime>0.4 && obsTime<12.0 && lab1_PIDKcorr<5.0 && lab0_FitDaughtersConst_M_flat>5090.0 && lab0_FitDaughtersConst_M_flat<6000.0 && nTracks>15 && nTracks<1000 && lab0_FitwithoutConst_Dplus_M_flat>1830 && lab0_FitwithoutConst_Dplus_M_flat<1904 && lab0_FitDaughtersConst_P0_P_flat>2000 && lab0_FitDaughtersConst_P0_P_flat<650000 && lab0_FitDaughtersConst_P0_PT_flat>400 && lab0_FitDaughtersConst_P0_PT_flat<45000 && lab0_LOKI_PHI>-10 && lab0_LOKI_PHI<10 && lab0_LOKI_ETA>1.5 && lab0_LOKI_ETA<10 && lab0_P>0 && lab0_P<3000000 && lab0_PT>0 && lab0_PT<100000"}
 
     
     return configdict

@@ -16,7 +16,7 @@ def getconfig() :
         
     # basic variables
     configdict["BasicVariables"] = {}
-    configdict["BasicVariables"]["BeautyMass"]    = { "Range"                  : [5000,    6000    ],
+    configdict["BasicVariables"]["BeautyMass"]    = { "Range"                  : [5090,    6000    ],
                                                       "Name"                   : "BeautyMass",
                                                       "InputName"              : "lab0_FitDaughtersConst_M_flat"}
 
@@ -24,7 +24,7 @@ def getconfig() :
                                                       "Name"                   : "CharmMass",
                                                       "InputName"              : "lab0_FitwithoutConst_Dplus_M_flat"}
 
-    configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.4,     15.0    ],
+    configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.2,     12.0    ],
                                                       "Bins"                   : 40,
                                                       "Name"                   : "BeautyTime",
                                                       "InputName"              : "lab0_FitDaughtersPVConst_ctau_flat"}
@@ -44,10 +44,6 @@ def getconfig() :
     configdict["BasicVariables"]["nTracks"]       = { "Range"                  : [15.0,    1000.0  ],
                                                       "Name"                   : "nTracks",
                                                       "InputName"              : "nTracks"}
-
-    configdict["BasicVariables"]["BeautyTimeErr"] = { "Range"                  : [0.01,    0.1     ],
-                                                      "Name"                   : "BeautyTimeErr",
-                                                      "InputName"              : "lab0_FitDaughtersPVConst_ctauErr_flat"}
 
     configdict["BasicVariables"]["BacCharge"]     = { "Range"                  : [-1000.0, 1000.0  ],
                                                       "Name"                   : "BacCharge",
@@ -96,31 +92,31 @@ def getconfig() :
                                                                 "sigmaJ"     : [25.0, 1.0, 100.0],
                                                                 "zeta"       : [0.0],
                                                                 "fb"         : [0.0],
-                                                                "l"          : [-2.0,-5.0,-0.0],
+                                                                "l"          : [-2.0,-5.0,0.0],
                                                                 "a1"         : [3.0,0.01,6.0],
                                                                 "a2"         : [3.0,0.01,6.0],
                                                                 "n1"         : [3.0,0.01,6.0],
                                                                 "n2"         : [3.0,0.01,6.0],
                                                                 "nu"         : [1.0,-30.0,30.0],
                                                                 "tau"        : [1.0,-30.0,30.0],
-                                                                "fracI"      : [0.7, 0.1, 0.9]}
+                                                                "fracI"      : [0.7, 0.001, 0.999]}
     
     configdict["pdfList"]["Signal"]["Bd2DK"] = {}
     configdict["pdfList"]["Signal"]["Bd2DK"]["BeautyMass"] = { "PDF"        : "Ipatia",
                                                                "Title"      : "B_{d}#rightarrowD#pi",
                                                                "Bins"       : 100,
                                                                "Min"        : 5200.0,
-                                                               "Max"        : 5600.0,
+                                                               "Max"        : 5800.0,
                                                                "Unit"       : "MeV/c^{2}",
-                                                               "mean"       : [5388.7,5300.0,5400.0],
-                                                               "sigma"      : [100.0,10.0,500.0],
+                                                               "mean"       : [5400,5200.0,5600.0],
+                                                               "sigma"      : [80.0,10.0,150.0],
                                                                "zeta"       : [0.0],
                                                                "fb"         : [0.0],
-                                                               "l"          : [-2.0,-7.0,-0.01],
-                                                               "a1"         : [3.0,0.01,6.0],
-                                                               "a2"         : [3.0,0.01,6.0],
-                                                               "n1"         : [3.0,0.01,6.0],
-                                                               "n2"         : [3.0,0.01,6.0]}
+                                                               "l"          : [-3.0,-10.0,-0.01],
+                                                               "a1"         : [3.0,0.01,10.0],
+                                                               "a2"         : [3.0,0.01,10.0],
+                                                               "n1"         : [3.0,0.01,10.0],
+                                                               "n2"         : [3.0,0.01,10.0]}
     #
     configdict["pdfList"]["Bd2DK"] = {}
     configdict["pdfList"]["Bd2DK"]["Bd2DPi"] = {}
@@ -131,14 +127,14 @@ def getconfig() :
                                                                "Max"        : 5500.0,
                                                                "Unit"       : "MeV/c^{2}",
                                                                "mean"       : [5239.0,5200.0,5250.0],
-                                                               "sigma"      : [26.3,10.0,50.0],
+                                                               "sigma"      : [26.3,1.0,50.0],
                                                                "zeta"       : [0.0],
                                                                "fb"         : [0.0],
-                                                               "l"          : [-28.0,-35.0,-25.0],
-                                                               "a1"         : [0.96,0.01,5.0],
-                                                               "a2"         : [1.23,0.01,5.0],
-                                                               "n1"         : [3.5,0.01,15.0],
-                                                               "n2"         : [10.0,0.01,15.0]}
+                                                               "l"          : [-28.0,-55.0,-15.0],
+                                                               "a1"         : [0.96,0.01,30.0],
+                                                               "a2"         : [1.23,0.01,30.0],
+                                                               "n1"         : [3.5,0.01,30.0],
+                                                               "n2"         : [10.0,0.01,30.0]}
     configdict["pdfList"]["Bd2DK"]["Bd2DK"] = {}
     configdict["pdfList"]["Bd2DK"]["Bd2DK"]["BeautyMass"] = { "PDF"        : "Ipatia",
                                                               "Title"      : "B_{d}#rightarrowDK",
@@ -146,14 +142,14 @@ def getconfig() :
                                                               "Min"        : 5100.0,#5200.0,
                                                               "Max"        : 5500.0,#5380.0,
                                                               "Unit"       : "MeV/c^{2}",
-                                                              "mean"       : [5280.0,5200.0,5350.0],
+                                                              "mean"       : [5280.0,5100.0,5500.0],
                                                               "sigma"      : [17.0,5.0,50.0],
                                                               "zeta"       : [0.0],
                                                               "fb"         : [0.0],
                                                               "l"          : [-3.6,-15.0,-0.01],
-                                                              "a1"         : [2.6,1.0,10.0],
+                                                              "a1"         : [2.6,0.1,100.0],
                                                               "a2"         : [1e+09],
-                                                              "n1"         : [0.95,0.001,15.0],
+                                                              "n1"         : [0.95,0.001,55.0],
                                                               "n2"         : [0.0]}
     #
     configdict["pdfList"]["Bd2DRho"] = {}
@@ -172,12 +168,12 @@ def getconfig() :
     configdict["pdfList"]["Bd2DRho"]["Bd2DK"]["BeautyMass"] = {"PDF"        : "DoubleGaussian",
                                                                "Title"      : "B_{d}#rightarrowD#rho",
                                                                "Bins"       : 30,
-                                                               "Min"        : 5080.0,
+                                                               "Min"        : 5090.0,
                                                                "Max"        : 5450.0,
                                                                "Unit"       : "MeV/c^{2}",
                                                                "sameMean"   : False,
                                                                "mean"       : [5100.0,5000.0,5500.0],
-                                                               "sigma1"     : [1.1754e+02, 90.0, 140.0],
+                                                               "sigma1"     : [1.1754e+02, 50.0, 200.0],
                                                                "sigma2"     : [2.73259e+02, 10.0, 400.0],
                                                                "frac"       : [0.690345, 0.1, 0.99]}
     #
@@ -190,11 +186,11 @@ def getconfig() :
                                                                  "Max"        : 6000.0,
                                                                  "Unit"       : "MeV/c^{2}",
                                                                  "shiftMean"  : False,
-                                                                 "mean"       : [5100.92,5000.0,5200.0],
-                                                                 "alpha"      : [-2.181,-10.0,10.0],
-                                                                 "n"          : [1.08,0.0,10.0],
-                                                                 "sigmaCB"    : [26.59,1.0,100.0],
-                                                                 "sigmaG"     : [25.0,1.0,100.0],
+                                                                 "mean"       : [5100,5000.0,5200.0],
+                                                                 "alpha"      : [-2,-10.0,10.0],
+                                                                 "n"          : [1,0.0,10.0],
+                                                                 "sigmaCB"    : [25,1.0,100.0],
+                                                                 "sigmaG"     : [25,1.0,100.0],
                                                                  "fracG"      : [0.5,0.1,0.9]}
     configdict["pdfList"]["Bd2DstPi"]["Bd2DK"] = {}
     configdict["pdfList"]["Bd2DstPi"]["Bd2DK"]["BeautyMass"] = {"PDF"        : "DoubleGaussian",
@@ -214,23 +210,32 @@ def getconfig() :
     configdict["pdfList"]["Bd2DKst"]["Bd2DPi"]["BeautyMass"] = {"PDF"        : "Gaussian",
                                                                 "Title"      : "B_{d}#rightarrowDK"+happystar,
                                                                 "Bins"       : 50,#20,
-                                                                "Min"        : 5000.0,
+                                                                "Min"        : 5090.0,
                                                                 "Max"        : 5600.0,#5200.0,
                                                                 "Unit"       : "MeV/c^{2}",
                                                                 "shiftMean"  : False,
                                                                 "mean"       : [5100.92,4000.0,5200.0],
                                                                 "sigma"      : [26.59,1.0,100.0]}
     configdict["pdfList"]["Bd2DKst"]["Bd2DK"] = {}
+    #configdict["pdfList"]["Bd2DKst"]["Bd2DK"]["BeautyMass"] = {"PDF"        : "Gaussian",
+    #                                                           "Title"      : "B_{d}#rightarrowDK"+happystar,
+    #                                                           "Bins"       : 25,
+    #                                                           "Min"        : 5090.0,
+    #                                                           "Max"        : 5350.0,
+    #                                                           "Unit"       : "MeV/c^{2}",
+    #                                                           "shiftMean"  : False,
+    #                                                           "mean"       : [5150,4900.0,5500.0],
+    #                                                           "sigma"      : [26.59,1.0,100.0]}
+    
     configdict["pdfList"]["Bd2DKst"]["Bd2DK"]["BeautyMass"] = {"PDF"        : "Gaussian",
                                                                "Title"      : "B_{d}#rightarrowDK"+happystar,
-                                                               "Bins"       : 20,
-                                                               "Min"        : 5090.0,
-                                                               "Max"        : 5250.0,
+                                                               "Bins"       : 25,#50,
+                                                               "Min"        : 5090.0,#5100.0,
+                                                               "Max"        : 5350.0,
                                                                "Unit"       : "MeV/c^{2}",
-                                                               "shiftMean"  : False,
-                                                               "mean"       : [5150,4900.0,5500.0],
-                                                               "sigma"      : [26.59,1.0,100.0]}
-    #
+                                                               "shiftMean"   : False,
+                                                               "mean"       : [5090,4900.0,5500.0],
+                                                               "sigma"     : [26.59,1.0,100.0]}
     configdict["pdfList"]["Bs2DsPi"] = {}
     configdict["pdfList"]["Bs2DsPi"]["Bd2DPi"] = {}
     configdict["pdfList"]["Bs2DsPi"]["Bd2DPi"]["BeautyMass"] = { "PDF"        : "Ipatia",

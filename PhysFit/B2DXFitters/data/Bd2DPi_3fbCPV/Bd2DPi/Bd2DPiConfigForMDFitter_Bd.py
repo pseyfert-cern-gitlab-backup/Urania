@@ -19,7 +19,7 @@ def getconfig( samplemodeyear ) :
                                                       "Name"                   : "CharmMass",
                                                       "InputName"              : "lab0_FitwithoutConst_Dplus_M_flat"}
 
-    configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.4,     15.0    ],
+    configdict["BasicVariables"]["BeautyTime"]    = { "Range"                  : [0.4,     12.0    ],
                                                       "Bins"                   : 40,
                                                       "Name"                   : "BeautyTime",
                                                       "InputName"              : "lab0_FitDaughtersPVConst_ctau_flat"}
@@ -39,10 +39,6 @@ def getconfig( samplemodeyear ) :
     configdict["BasicVariables"]["nTracks"]       = { "Range"                  : [15.0,    1000.0  ],
                                                       "Name"                   : "nTracks",
                                                       "InputName"              : "nTracks"}
-
-    configdict["BasicVariables"]["BeautyTimeErr"] = { "Range"                  : [0.01,    0.1     ],
-                                                      "Name"                   : "BeautyTimeErr",
-                                                      "InputName"              : "lab0_FitDaughtersPVConst_ctauErr_flat"}
     
     configdict["BasicVariables"]["BacCharge"]     = { "Range"                  : [-1000.0, 1000.0  ],
                                                       "Name"                   : "BacCharge",
@@ -56,33 +52,13 @@ def getconfig( samplemodeyear ) :
                                                            "Name"                   : "TagDecOSCharm",
                                                            "InputName"              : "obsTagOSCharm"}
 
-    configdict["BasicVariables"]["TagDecOSKaon"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                          "Name"                   : "TagDecOSKaon",
-                                                          "InputName"              : "obsTagOSKaon"}
+    configdict["BasicVariables"]["TagDecSSPionBDTRaw"]      = { "Range"                  : [-1.0,    1.0     ],
+                                                                "Name"                   : "TagDecSSPionBDT",
+                                                                "InputName"              : "lab0_SS_nnetKaon_DEC"}
 
-    configdict["BasicVariables"]["TagDecOSElectron"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                              "Name"                   : "TagDecOSElectron",
-                                                              "InputName"              : "obsTagOSElectron"}
-
-    configdict["BasicVariables"]["TagDecOSMuon"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                          "Name"                   : "TagDecOSMuon",
-                                                          "InputName"              : "obsTagOSMuon"}
-
-    configdict["BasicVariables"]["TagDecVtxCharge"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                             "Name"                   : "TagDecVtxCharge",
-                                                             "InputName"              : "obsTagVtxQ"}
-
-    configdict["BasicVariables"]["TagDecSS"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                      "Name"                   : "TagDecSS",
-                                                      "InputName"              : "obsTagSS_PionInvBoost_ProtonInvBoost"}
-
-    configdict["BasicVariables"]["TagDecSSPionBDT"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                             "Name"                   : "TagDecSSPionBDT",
-                                                             "InputName"              : "obsTagSSPionBDT_InvBoost"}
-
-    configdict["BasicVariables"]["TagDecSSProton"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                            "Name"                   : "TagDecSSProton",
-                                                            "InputName"              : "obsTagSSProton_InvBoost"}
+    configdict["BasicVariables"]["TagDecSSProtonRaw"]      = { "Range"                  : [-1.0,    1.0     ],
+                                                               "Name"                   : "TagDecSSProton",
+                                                               "InputName"              : "lab0_OS_nnetKaon_DEC"}
 
     configdict["BasicVariables"]["MistagOSComb"]      = { "Range"                  : [ 0.0,    0.5     ],
                                                           "Name"                   : "MistagOSComb",
@@ -92,33 +68,13 @@ def getconfig( samplemodeyear ) :
                                                            "Name"                   : "MistagOSCharm",
                                                            "InputName"              : "obsEtaOSCharm"}
 
-    configdict["BasicVariables"]["MistagOSKaon"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                          "Name"                   : "MistagOSKaon",
-                                                          "InputName"              : "obsEtaOSKaon"}
+    configdict["BasicVariables"]["MistagSSPionBDTRaw"]      = { "Range"                  : [ -1.0,    1.0     ],
+                                                                "Name"                   : "MistagSSPionBDTRaw",
+                                                                "InputName"              : "lab0_SS_nnetKaon_PROB"}
 
-    configdict["BasicVariables"]["MistagOSElectron"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                              "Name"                   : "MistagOSElectron",
-                                                              "InputName"              : "obsEtaOSElectron"}
-
-    configdict["BasicVariables"]["MistagOSMuon"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                          "Name"                   : "MistagOSMuon",
-                                                          "InputName"              : "obsEtaOSMuon"}
-
-    configdict["BasicVariables"]["MistagVtxCharge"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                             "Name"                   : "MistagVtxCharge",
-                                                             "InputName"              : "obsEtaVtxQ"}
-
-    configdict["BasicVariables"]["MistagSS"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                      "Name"                   : "MistagSS",
-                                                      "InputName"              : "obsEtaSS_PionInvBoost_ProtonInvBoost"}
-
-    configdict["BasicVariables"]["MistagSSPionBDT"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                             "Name"                   : "MistagSSPionBDT",
-                                                             "InputName"              : "obsEtaSSPionBDT_InvBoost"}
-
-    configdict["BasicVariables"]["MistagSSProton"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                            "Name"                   : "MistagSSProton",
-                                                            "InputName"              : "obsEtaSSProton_InvBoost"}
+    configdict["BasicVariables"]["MistagSSProtonRaw"]      = { "Range"                  : [ -1.0,    1.0     ],
+                                                               "Name"                   : "MistagSSProtonRaw",
+                                                               "InputName"              : "lab0_OS_nnetKaon_PROB"}
 
     configdict["BasicVariables"]["BDTG"]           = { "Range"                  : [0.0, 1],
                                                        "Name"                   : "BDTG",
@@ -138,28 +94,48 @@ def getconfig( samplemodeyear ) :
     configdict["AdditionalVariables"]["BeautyPT"]      = { "Range"                  : [ 0.0,    100000     ],
                                                            "Name"                   : "BeautyPT",
                                                            "InputName"              : "lab0_PT"}
+
+    configdict["AdditionalVariables"]["BeautyP"]      = { "Range"                  : [ 0.0,    3000000     ],
+                                                          "Name"                   : "BeautyP",
+                                                          "InputName"              : "lab0_P"}
+
+    configdict["AdditionalVariables"]["CharmTime"]    = { "Range"                  : [-10,     10    ],
+                                                          "Name"                   : "CharmTime",
+                                                          "InputName"              : "lab2_TAU"}
     
     configdict["AdditionalVariables"]["nPV"]      = { "Range"                  : [ 0.0,    10     ],
                                                       "Name"                   : "nPV",
                                                       "InputName"              : "nPV"}
 
+    configdict["AdditionalVariables"]["Hlt2Topo2BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
+                                                                                "Name"                   : "Hlt2Topo2BodyBBDTDecision_TOS",
+                                                                                "InputName"              : "lab0_Hlt2Topo2BodyBBDTDecision_TOS"}
+
+    configdict["AdditionalVariables"]["Hlt2Topo3BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
+                                                                                "Name"                   : "Hlt2Topo3BodyBBDTDecision_TOS",
+                                                                                "InputName"              : "lab0_Hlt2Topo3BodyBBDTDecision_TOS"}
+
+    configdict["AdditionalVariables"]["Hlt2Topo4BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
+                                                                                "Name"                   : "Hlt2Topo4BodyBBDTDecision_TOS",
+                                                                                "InputName"              : "lab0_Hlt2Topo4BodyBBDTDecision_TOS"}
+
     #Useful constants
-    Pipeak = 5.2797e+03
-    Kpeak = 5.28008e+03
+    Pipeak = 5.2803e+03
+    Kpeak = 5.2798e+03
 
     #Global variables (shared by different PDFs)
     configdict["GlobalVariables"] = {}
     configdict["GlobalVariables"]["eff_Bd2DPi_DPi"] = {}
     configdict["GlobalVariables"]["eff_Bd2DPi_DPi"] = {"Type": "RooRealVar",
                                                        "Title": r"\epsilon_{\rm PID}(\Bz\to D\pi)_{\pi}",
-                                                       "Range": [0.979017227005, 0.8, 1.0],
-                                                       "Error": 0.00399911250625
+                                                       "Range": [0.979, 0.8, 1.0],
+                                                       "Error": 0.004
                                                        }
     configdict["GlobalVariables"]["eff_Bd2DK_DK"] = {}
     configdict["GlobalVariables"]["eff_Bd2DK_DK"] = {"Type": "RooRealVar",
                                                      "Title": r"\epsilon_{\rm PID}(\Bz\to DK)_{K}",
-                                                     "Range": [0.63099930914, 0.5, 0.8],
-                                                     "Error": 0.00646713602668
+                                                     "Range": [0.637, 0.5, 0.8],
+                                                     "Error": 0.007
                                                      }
     configdict["GlobalVariables"]["Signal_BeautyMass_mean_"+samplemodeyear+"_Bd2DPiHypo"] = {}
     configdict["GlobalVariables"]["Signal_BeautyMass_mean_"+samplemodeyear+"_Bd2DPiHypo"] = {"Type": "RooRealVar",
@@ -173,7 +149,7 @@ def getconfig( samplemodeyear ) :
                                                                                             }
     configdict["GlobalVariables"]["nSig_"+samplemodeyear+"_Bd2DPiHypo_Evts"] = {"Type": "RooRealVar",
                                                                                 "Title": r"N^{\pi}_{\Bz\to D\pi}",
-                                                                                "Range": [500000,100000,900000]
+                                                                                "Range": [500000,0,900000]
                                                                                 }
     configdict["GlobalVariables"]["nSig_"+samplemodeyear+"_Bd2DKHypo_Evts"] = {"Type": "RooFormulaVar",
                                                                                "Title": r"N^{K}_{\Bz\to D\pi}",
@@ -182,7 +158,7 @@ def getconfig( samplemodeyear ) :
                                                                                }
     configdict["GlobalVariables"]["nBd2DK_"+samplemodeyear+"_Bd2DKHypo_Evts"] = {"Type": "RooRealVar",
                                                                                  "Title": r"N^{K}_{\Bz\to DK}",
-                                                                                 "Range": [30000,1000,50000]
+                                                                                 "Range": [30000,0,500000]
                                                                                  }
     configdict["GlobalVariables"]["nBd2DK_"+samplemodeyear+"_Bd2DPiHypo_Evts"] = {"Type": "RooFormulaVar",
                                                                                   "Title": r"N^{\pi}_{\Bz\to DK}",
@@ -191,15 +167,23 @@ def getconfig( samplemodeyear ) :
                                                                                   }
     configdict["GlobalVariables"]["nBd2DKst_"+samplemodeyear+"_Bd2DKHypo_Evts"] = {"Type": "RooRealVar",
                                                                                    "Title": r"N^{K}_{\Bz\to D\Kst}",
-                                                                                   "Range": [5000, 100, 10000],
+                                                                                   "Range": [5000, 0, 100000],
                                                                                    }
+    #configdict["GlobalVariables"]["DRho_to_DK_KHypo"] = {"Type": "RooRealVar",
+    #                                                     "Title": "DRho_to_DK_KHypo",
+    #                                                     "Range": [0.20],
+    #                                                     "Error": 0.4
+    #                                                     }
+
     configdict["GlobalVariables"]["DRho_to_DKst_KHypo"] = {"Type": "RooRealVar",
                                                            "Title": "DRho_to_DKst_KHypo",
-                                                           "Range": [0.92],
-                                                           "Error": 0.21
-                                                           }
+                                                           "Range": [0.93],
+                                                           "Error": 0.23
+                                                         }
+    
     configdict["GlobalVariables"]["nBd2DRho_"+samplemodeyear+"_Bd2DKHypo_Evts"] = {"Type": "RooFormulaVar",
                                                                                    "Title": r"N^{K}_{\Bz\to D\rho}",
+                                                                                   #"Range": [5000, 0, 100000],
                                                                                    "Formula": "@0*@1",
                                                                                    "Dependents": ["nBd2DKst_"+samplemodeyear+"_Bd2DKHypo_Evts","DRho_to_DKst_KHypo"] 
                                                                                    }
@@ -217,28 +201,52 @@ def getconfig( samplemodeyear ) :
     
     configdict["GlobalVariables"]["Signal_IpatiaPlusJohnsonSU_BeautyMass_a1_"+samplemodeyear+"_Bd2DPiHypo"] = {"Type": "RooRealVar",
                                                                                                            "Title": r"a1^{\pi}_{\Bz\to D\pi}",
-                                                                                                           "Range": [1.3927e+00],
+                                                                                                           "Range": [7.2205e-01],
                                                                                                            }
     configdict["GlobalVariables"]["Signal_IpatiaPlusJohnsonSU_BeautyMass_a2_"+samplemodeyear+"_Bd2DPiHypo"] = {"Type": "RooRealVar",
                                                                                                            "Title": r"a2^{\pi}_{\Bz\to D\pi}",
-                                                                                                           "Range": [1.4374e+00],
+                                                                                                           "Range": [9.6101e-01],
                                                                                                            }
     configdict["GlobalVariables"]["Signal_IpatiaPlusJohnsonSU_BeautyMass_n1_"+samplemodeyear+"_Bd2DPiHypo"] = {"Type": "RooRealVar",
                                                                                                            "Title": r"n1^{\pi}_{\Bz\to D\pi}",
-                                                                                                           "Range": [1.9948e+00],
+                                                                                                           "Range": [5.9199e+00],
                                                                                                            }
     configdict["GlobalVariables"]["Signal_IpatiaPlusJohnsonSU_BeautyMass_n2_"+samplemodeyear+"_Bd2DPiHypo"] = {"Type": "RooRealVar",
                                                                                                            "Title": r"n2^{\pi}_{\Bz\to D\pi}",
-                                                                                                           "Range": [4.4764e+00],
+                                                                                                           "Range": [5.8254e+00],
                                                                                                            }
     configdict["GlobalVariables"]["Signal_IpatiaPlusJohnsonSU_BeautyMass_ascale_"+samplemodeyear+"_Bd2DPiHypo"] = {"Type": "RooRealVar",
                                                                                                                "Title": r"sa^{\pi}_{\Bz\to D\pi}",
-                                                                                                               "Range": [1.0, 0.1, 1.9],
+                                                                                                               "Range": [1.0, 0.1, 10.0],
                                                                                                                }
     configdict["GlobalVariables"]["Signal_IpatiaPlusJohnsonSU_BeautyMass_nscale_"+samplemodeyear+"_Bd2DPiHypo"] = {"Type": "RooRealVar",
                                                                                                                "Title": r"sn^{\pi}_{\Bz\to D\pi}",
-                                                                                                               "Range": [1.0, 0.1, 1.9],
+                                                                                                               "Range": [1.0, 0.1, 10.0],
                                                                                                                }
+    configdict["GlobalVariables"]["Bd2DK_Ipatia_BeautyMass_a1_"+samplemodeyear+"_Bd2DKHypo"] = {"Type": "RooRealVar",
+                                                                                                "Title": r"a1^{K}_{\Bz\to DK}",
+                                                                                                "Range": [2.3381e+00],
+                                                                                                }
+    configdict["GlobalVariables"]["Bd2DK_Ipatia_BeautyMass_a2_"+samplemodeyear+"_Bd2DKHypo"] = {"Type": "RooRealVar",
+                                                                                                "Title": r"a2^{K}_{\Bz\to DK}",
+                                                                                                "Range": [1.0e+09],
+                                                                                                 }
+    configdict["GlobalVariables"]["Bd2DK_Ipatia_BeautyMass_n1_"+samplemodeyear+"_Bd2DKHypo"] = {"Type": "RooRealVar",
+                                                                                                "Title": r"n1^{K}_{\Bz\to DK}",
+                                                                                                "Range": [1.5601e+00],
+                                                                                                }
+    configdict["GlobalVariables"]["Bd2DK_Ipatia_BeautyMass_n2_"+samplemodeyear+"_Bd2DKHypo"] = {"Type": "RooRealVar",
+                                                                                                "Title": r"n2^{K}_{\Bz\to DK}",
+                                                                                                "Range": [0.0],
+                                                                                                }
+    #configdict["GlobalVariables"]["Bd2DK_Ipatia_BeautyMass_ascale_"+samplemodeyear+"_Bd2DKHypo"] = {"Type": "RooRealVar",
+    #                                                                                                "Title": r"sa^{K}_{\Bz\to DK}",
+    #                                                                                                "Range": [1.0, 0.1, 1.9],
+    #                                                                                                }
+    #configdict["GlobalVariables"]["Bd2DK_Ipatia_BeautyMass_nscale_"+samplemodeyear+"_Bd2DKHypo"] = {"Type": "RooRealVar",
+    #                                                                                                "Title": r"sn^{K}_{\Bz\to DK}",
+    #                                                                                                "Range": [1.0, 0.1, 1.9],
+    #                                                                                                }
     
     #PDF for each fitted component
     #Structure: decay->hypo->observable
@@ -258,49 +266,49 @@ def getconfig( samplemodeyear ) :
                                                                 "shiftMean"  : False,
                                                                 "scaleTails" : True,
                                                                 "mean"       : "Signal_BeautyMass_mean_"+samplemodeyear+"_Bd2DPiHypo",
-                                                                "sigmaI"     : {"par": [2.4114e+01, 1.5e+01, 3.5e+01],
+                                                                "sigmaI"     : {"par": [4.3925e+01, 1.5e+01, 8.5e+01],
                                                                                 "title": r"\sigmaI^{\pi}_{\Bz\to D\pi}"},
-                                                                "sigmaJ"     : {"par": [1.8326e+01, 1.2e+01, 3.4e+01],
+                                                                "sigmaJ"     : {"par": [1.6824e+01, 1.0e+01, 3.4e+01],
                                                                                 "title": r"\sigmaJ^{\pi}_{\Bz\to D\pi}"},
                                                                 "zeta"       : {"par": [0.0],
                                                                                 "title": r"\zeta^{\pi}_{\Bz\to D\pi}"},
                                                                 "fb"         : {"par": [0.0],
                                                                                 "title": r"\beta^{\pi}_{\Bz\to D\pi}"},
-                                                                "l"          : {"par": [-2.0282e+00],
+                                                                "l"          : {"par": [-1.2397e+00],
                                                                                 "title" : "\lambda^{\pi}_{\Bz\to D\pi}"},
                                                                 "a1"         : "Signal_IpatiaPlusJohnsonSU_BeautyMass_a1_"+samplemodeyear+"_Bd2DPiHypo", #left
                                                                 "a2"         : "Signal_IpatiaPlusJohnsonSU_BeautyMass_a2_"+samplemodeyear+"_Bd2DPiHypo", #right
                                                                 "n1"         : "Signal_IpatiaPlusJohnsonSU_BeautyMass_n1_"+samplemodeyear+"_Bd2DPiHypo", #left
                                                                 "n2"         : "Signal_IpatiaPlusJohnsonSU_BeautyMass_n2_"+samplemodeyear+"_Bd2DPiHypo",#right,
-                                                                "nu"         : {"par": [-7.9229e-01],
+                                                                "nu"         : {"par": [-1.0506e-01],
                                                                                 "title": r"\nu^{\pi}_{\Bz\to D\pi}"},
-                                                                "tau"        : {"par": [3.7118e-01],
+                                                                "tau"        : {"par": [3.2598e-01],
                                                                                 "title": r"\tau^{\pi}_{\Bz\to D\pi}"},
-                                                                "fracI"      : {"par": [7.5688e-01],
+                                                                "fracI"      : {"par": [4.3622e-01],
                                                                                 "title": r"f^{\pi}_{\Bz\to D\pi}"}}
     
     configdict["pdfList"]["Signal"]["Bd2DK"] = {}
     configdict["pdfList"]["Signal"]["Bd2DK"]["BeautyMass"] = { "PDF"        : "Ipatia",
                                                                "shiftMean"  : False,
                                                                "scaleTails" : False,
-                                                               "mean"       : {"par": [5.32545e+03,5.25e+03,5.45e+03],
+                                                               "mean"       : {"par": [5.3365e+03,5.25e+03,5.45e+03],
                                                                                "title" : r"\mu^{K}_{\Bz\to D\pi}"},
-                                                               "sigma"      : {"par": [2.40558e+01],
-                                                                               "title" : r"\sigma^{K}_{\Bz\to D\pi}"},
+                                                               "sigma"      : {"par": [2.3972e+01],
+                                                                                "title" : r"\sigma^{K}_{\Bz\to D\pi}"},
                                                                "zeta"       : {"par": [0.0],
-                                                                               "title" : r"\zeta^{K}_{\Bz\to D\pi}"},
+                                                                                "title" : r"\zeta^{K}_{\Bz\to D\pi}"},
                                                                "fb"         : {"par": [0.0],
-                                                                               "title" : r"\beta^{K}_{\Bz\to D\pi}"},
-                                                               "l"          : {"par": [-4.83138e+00],
-                                                                               "title" : r"\lambda^{K}_{\Bz\to D\pi}"},
-                                                               "a1"         : {"par": [3.17596e+00],
-                                                                               "title" : r"a1^{K}_{\Bz\to D\pi}"},
-                                                               "a2"         : {"par": [7.34724e-01],
-                                                                               "title" : r"a2^{K}_{\Bz\to D\pi}"},
-                                                               "n1"         : {"par": [1.77019e-02],
-                                                                               "title" : r"n1^{K}_{\Bz\to D\pi}"},
-                                                               "n2"         : {"par": [2.12031e+00],
-                                                                               "title": r"n2^{K}_{\Bz\to D\pi}"}}
+                                                                                "title" : r"\beta^{K}_{\Bz\to D\pi}"},
+                                                               "l"          : {"par": [-3.7704e+00],
+                                                                                "title" : r"\lambda^{K}_{\Bz\to D\pi}"},
+                                                               "a1"         : {"par": [3.1436e+00],
+                                                                                "title" : r"a11^{K}_{\Bz\to D\pi}"},
+                                                               "a2"         : {"par": [5.6856e-01],
+                                                                                "title" : r"a21^{K}_{\Bz\to D\pi}"},
+                                                               "n1"         : {"par": [4.7325e-02],
+                                                                                "title" : r"n11^{K}_{\Bz\to D\pi}"},
+                                                               "n2"         : {"par": [2.8096e+00],
+                                                                               "title": r"n21^{K}_{\Bz\to D\pi}"}}
     #
     configdict["pdfList"]["Bd2DK"] = {}
     configdict["pdfList"]["Bd2DK"]["Title"] = "B_{d}#rightarrowDK"
@@ -310,45 +318,42 @@ def getconfig( samplemodeyear ) :
     configdict["pdfList"]["Bd2DK"]["Bd2DPi"]["BeautyMass"] = { "PDF"        : "Ipatia",
                                                                "shiftMean"  : False,
                                                                "scaleTails" : False,
-                                                               "mean"       : {"par": [5.24015e+03,5.15e+03,5.35e+03],
+                                                               "mean"       : {"par": [5.2400e+03,5.15e+03,5.35e+03],
                                                                                "title" : r"\mu^{\pi}_{\Bz\to DK}"},
-                                                               "sigma"      : {"par": [2.33280e+01],
+                                                               "sigma"      : {"par": [2.3434e+01],
                                                                                "title" : r"\sigma^{\pi}_{\Bz\to DK}"},
                                                                "zeta"       : {"par": [0.0],
                                                                                "title" : r"\zeta^{\pi}_{\Bz\to DK}"},
                                                                "fb"         : {"par": [0.0],
                                                                                "title" : r"\beta^{\pi}_{\Bz\to DK}"},
-                                                               "l"          : {"par": [-2.56353e+01],
+                                                               "l"          : {"par": [-2.3916e+01],
                                                                                "title" : r"\lambda^{\pi}_{\Bz\to DK}"},
-                                                               "a1"         : {"par": [8.72252e-01],
+                                                               "a1"         : {"par": [8.9842e-01],
                                                                                "title" : r"a1^{\pi}_{\Bz\to DK}"},
-                                                               "a2"         : {"par": [1.12019e+00],
+                                                               "a2"         : {"par": [1.0920e+00],
                                                                                "title" : r"a2^{\pi}_{\Bz\to DK}"},
-                                                               "n1"         : {"par": [6.26499e+00],
+                                                               "n1"         : {"par": [3.8290e+00],
                                                                                "title" : r"n1^{\pi}_{\Bz\to DK}"},
-                                                               "n2"         : {"par": [1.33240e+01],
+                                                               "n2"         : {"par": [2.1980e+01],
                                                                                "title" : r"n2^{\pi}_{\Bz\to DK}"}}
     configdict["pdfList"]["Bd2DK"]["Bd2DK"] = {}
     configdict["pdfList"]["Bd2DK"]["Bd2DK"]["BeautyMass"] = {"PDF"        : "Ipatia",
                                                              "shiftMean"  : False,
                                                              "scaleTails" : False,
                                                              "mean"       : "Signal_BeautyMass_mean_"+samplemodeyear+"_Bd2DKHypo",
-                                                             "sigma"      : {"par": [1.69154e+01, 1.5e+01, 1.9e+01],
+                                                             "sigma"      : {"par": [1.7320e+01, 0.5e+01, 6e+01],
                                                                              "title": r"\sigma^{K}_{\Bz\to DK}"},
                                                              "zeta"       : {"par": [0.0],
                                                                              "title" : r"\zeta^{K}_{\Bz\to DK}"},
                                                              "fb"         : {"par": [0.0],
                                                                              "title" : r"\beta^{K}_{\Bz\to DK}"},
-                                                             "l"          : {"par": [-4.30775e+00],
+                                                             "l"          : {"par": [-3.4455e+00],
                                                                              "title" : r"\lambda^{K}_{\Bz\to DK}"},
-                                                             "a1"         : {"par": [2.79678e+00],
-                                                                             "title" : r"a1^{K}_{\Bz\to DK}"},
-                                                             "a2"         : {"par": [1.0e+09],
-                                                                             "title" : r"a2^{K}_{\Bz\to DK}"},
-                                                             "n1"         : {"par": [8.36542e-01],
-                                                                             "title" : r"n1^{K}_{\Bz\to DK}"},
-                                                             "n2"         : {"par": [0.0],
-                                                                             "title" : r"n2^{K}_{\Bz\to DK}"}}
+                                                             "a1"         : "Bd2DK_Ipatia_BeautyMass_a1_"+samplemodeyear+"_Bd2DKHypo",
+                                                             "a2"         : "Bd2DK_Ipatia_BeautyMass_a2_"+samplemodeyear+"_Bd2DKHypo",
+                                                             "n1"         : "Bd2DK_Ipatia_BeautyMass_n1_"+samplemodeyear+"_Bd2DKHypo",
+                                                             "n2"         : "Bd2DK_Ipatia_BeautyMass_n2_"+samplemodeyear+"_Bd2DKHypo"
+                                                             }
     #
     configdict["pdfList"]["Bd2DRho"] = {}
     configdict["pdfList"]["Bd2DRho"]["Title"] = "B_{d}#rightarrowD#rho"
@@ -358,26 +363,28 @@ def getconfig( samplemodeyear ) :
     configdict["pdfList"]["Bd2DRho"]["Bd2DPi"]["BeautyMass"] = {"PDF"        : "JohnsonSU",
                                                                 "shiftMean" : True,
                                                                 "mean"      : "Signal_BeautyMass_mean_"+samplemodeyear+"_Bd2DPiHypo",
-                                                                "shift"     : {"par": [4.70048e+03-Pipeak],
+                                                                "shift"     : {"par": [4.8278e+03-Pipeak],
                                                                                "title" : r"\Delta\mu^{\pi}_{\Bz\to D\rho}"},
-                                                                "sigma"     : {"par": [8.80692e+02],
+                                                                "sigma"     : {"par": [5.4939e+02],
                                                                                "title" : r"\sigma^{\pi}_{\Bz\to D\rho}"},
-                                                                "nu"        : {"par": [-2.10246e+00],
+                                                                "nu"        : {"par": [-2.0121e+00],
                                                                                "title" : r"\nu^{\pi}_{\Bz\to D\rho}"},
-                                                                "tau"       : {"par": [1.25143e+00],
+                                                                "tau"       : {"par": [1.1632e+00],
                                                                                "title" : r"\tau^{\pi}_{\Bz\to D\rho}"}}
     configdict["pdfList"]["Bd2DRho"]["Bd2DK"] = {}
     configdict["pdfList"]["Bd2DRho"]["Bd2DK"]["BeautyMass"] = {"PDF"        : "DoubleGaussian",
                                                                "shiftMean"  : True,
                                                                "sameMean"   : True,
                                                                "mean"       : "Signal_BeautyMass_mean_"+samplemodeyear+"_Bd2DKHypo",
-                                                               "shift"      : {"par": [5.12543e+03-Kpeak],
+                                                               "shift"      : {"par": [5.1094e+03-Kpeak],
                                                                                "title" : r"\Delta\mu^{K}_{\Bz\to D\rho}"},
-                                                               "sigma1"     : {"par": [1.06979e+02],
+                                                               #"mean"      : {"par": [5.1316e+03, 5000, 6000],
+                                                               #               "title" : r"\mu^{K}_{\Bz\to D\rho}"},
+                                                               "sigma1"     : {"par": [1.1656e+02],
                                                                                "title" : r"\sigma 1\mu^{K}_{\Bz\to D\rho}"},
-                                                               "sigma2"     : {"par": [3.16122e+01],
+                                                               "sigma2"     : {"par": [4.4513e+01],
                                                                                "title" : r"\sigma 2^{K}_{\Bz\to D\rho}"},
-                                                               "frac"       : {"par": [5.53831e-01],
+                                                               "frac"       : {"par": [2.1017e-01],
                                                                                "title" : r"f^{K}_{\Bz\to D\rho}"}}
     #
     configdict["pdfList"]["Bd2DstPi"] = {}
@@ -389,17 +396,17 @@ def getconfig( samplemodeyear ) :
                                                                  "shiftMean"   : True,
                                                                  "scaleWidths" : False,
                                                                  "mean"        : "Signal_BeautyMass_mean_"+samplemodeyear+"_Bd2DPiHypo",
-                                                                 "shift"       : {"par": [5.10109e+03-Pipeak],
+                                                                 "shift"       : {"par": [5.1009e+03-Pipeak],
                                                                                   "title" : r"\Delta\mu^{\pi}_{\Bz\to \Dst\pi}"},
-                                                                 "alpha"       : {"par": [-1.50868e+00],
+                                                                 "alpha"       : {"par": [-1.4432e+00],
                                                                                   "title" : r"\alpha^{\pi}_{\Bz\to \Dst\pi}"},
-                                                                 "n"           : {"par": [5.11308e+00],
+                                                                 "n"           : {"par": [4.6477e+00],
                                                                                   "title" : r"n^{\pi}_{\Bz\to \Dst\pi}"},
-                                                                 "sigmaCB"     : {"par": [2.93177e+01],
+                                                                 "sigmaCB"     : {"par": [2.5844e+01],
                                                                                   "title" : r"\sigma CB^{\pi}_{\Bz\to \Dst\pi}"},
-                                                                 "sigmaG"      : {"par": [1.64921e+01],
+                                                                 "sigmaG"      : {"par": [1.6520e+01],
                                                                                   "title" : r"\sigma G^{\pi}_{\Bz\to \Dst\pi}"},
-                                                                 "fracG"       : {"par": [2.58197e-01],
+                                                                 "fracG"       : {"par": [3.0218e-01],
                                                                                   "title" : r"f^{\pi}_{\Bz\to \Dst\pi}"}}
     configdict["pdfList"]["Bd2DstPi"]["Bd2DK"] = {}
     configdict["pdfList"]["Bd2DstPi"]["Bd2DK"]["BeautyMass"] = {"PDF"        : "None"}
@@ -436,18 +443,21 @@ def getconfig( samplemodeyear ) :
     configdict["pdfList"]["Bs2DsPi"]["Bd2DK"]["BeautyMass"] = {"PDF"        : "None"}
     #
     configdict["pdfList"]["Bd2DKst"] = {}
-    configdict["pdfList"]["Bd2DKst"]["Title"] = "B_{d}#rightarrowDK^{*}"
+    configdict["pdfList"]["Bd2DKst"]["Title"] = "B_{d}#rightarrowD^{(*)}K^{(*)}/#pi"
     configdict["pdfList"]["Bd2DKst"]["Color"] = kGreen
     configdict["pdfList"]["Bd2DKst"]["Style"] = kDotted
     configdict["pdfList"]["Bd2DKst"]["Bd2DPi"] = {}
     configdict["pdfList"]["Bd2DKst"]["Bd2DPi"]["BeautyMass"] = {"PDF"       : "None"} 
     configdict["pdfList"]["Bd2DKst"]["Bd2DK"] = {}
     configdict["pdfList"]["Bd2DKst"]["Bd2DK"]["BeautyMass"] = {"PDF"        : "Gaussian",
-                                                               "shiftMean"  : False,
-                                                               "mean"       : {"par": [5.11244e+03, 4.9e+03, 5.2e+03],
+                                                               "shiftMean"  : False,#True,
+                                                               #"mean"       : "Signal_BeautyMass_mean_"+samplemodeyear+"_Bd2DKHypo",
+                                                               #"shift"       : {"par": [5.1077e+03-Kpeak],
+                                                               #                 "title" : r"\Delta\mu^{K}_{\Bz\to D\Kst}"},
+                                                               "mean"       : {"par": [5.1077e+03, 4.8e+03, 5.5e+03],
                                                                                "title" : r"\mu^{K}_{\Bz\to D\Kst}"},
-                                                               "sigma"      : {"par": [2.50193e+01, 1e+01, 6e+01],
-                                                                               "title" : r"\sigma^{K}_{\Bz\to D\Kst}"}}
+                                                               "sigma"      : {"par": [2.8878e+01, 1e+01, 6e+01],
+                                                                                "title" : r"\sigma^{K}_{\Bz\to D\Kst}"}}
     #
     configdict["pdfList"]["Comb"] = {}
     configdict["pdfList"]["Comb"]["Title"] = "Combinatorial"
@@ -470,20 +480,24 @@ def getconfig( samplemodeyear ) :
                                                                                 "title" : r"f^{\pi}_{\rm comb}"}}
     
     configdict["pdfList"]["Comb"]["Bd2DK"] = {}
+    configdict["pdfList"]["Comb"]["Bd2DK"]["BeautyMass"] = { "PDF"          : "Exponential",
+                                                             "Title"        : "Combinatorial",
+                                                             "cB"           : {"par": [-6.56407e-03, -15.0e-03, -2.0e-03],
+                                                                               "title" : r"c^{K}_{\rm comb}"}}
     #configdict["pdfList"]["Comb"]["Bd2DK"]["BeautyMass"] = { "PDF"          : "ExponentialPlusConstant",
     #                                                         "Title"        : "Combinatorial",
     #                                                         "cB"           : {"par": [-6.56407e-03, -8.0e-03, -2.0e-03],
     #                                                                           "title" : r"c^{K}_{\rm comb}"},
-    #                                                         "fracExpo"     : {"par": [5.42995e-01,0.3,1.0],
+    #                                                         "fracExpo"     : {"par": [5.42995e-01,0.0,1.0],
     #                                                                           "title" : r"f^{K}_{\rm comb}"}}
-    configdict["pdfList"]["Comb"]["Bd2DK"]["BeautyMass"] = { "PDF"          : "DoubleExponential",
-                                                             "Title"        : "Combinatorial",
-                                                             "cB1"          : {"par": [-1.72409e-03, -15.0e-03, -1.0e-03],
-                                                                               "title" : r"c1^{K}_{\rm comb}"},
-                                                             "cB2"          : {"par": [-1.72409e-03, -15.0e-03, -1.0e-03],
-                                                                               "title" : r"c2^{K}_{\rm comb}"},
-                                                             "frac"         : {"par": [7.0e-01 ,0.01,1.0],
-                                                                               "title" : r"f^{\pi}_{\rm comb}"}}
+    #configdict["pdfList"]["Comb"]["Bd2DK"]["BeautyMass"] = { "PDF"          : "DoubleExponential",
+    #                                                         "Title"        : "Combinatorial",
+    #                                                         "cB1"          : {"par": [-1.72409e-03, -15.0e-03, -1.0e-03],
+    #                                                                           "title" : r"c1^{K}_{\rm comb}"},
+    #                                                         "cB2"          : {"par": [-1.72409e-03, -15.0e-03, -1.0e-03],
+    #                                                                           "title" : r"c2^{K}_{\rm comb}"},
+    #                                                         "frac"         : {"par": [7.0e-01 ,0.01,1.0],
+    #                                                                           "title" : r"f^{\pi}_{\rm comb}"}}
 
     #Axes titles
     configdict["AxisTitle"] = {"BeautyMass": {"Bd2DPi":"D#pi mass [MeV/c^{2}]",
@@ -550,9 +564,9 @@ def getconfig( samplemodeyear ) :
                                                          "Mean"       : [configdict["GlobalVariables"]["eff_Bd2DK_DK"]["Range"][0]],
                                                          "Covariance" : [configdict["GlobalVariables"]["eff_Bd2DK_DK"]["Error"]]}
     #configdict["GaussianConstraints"]["nDRho_to_DKst_KHypo"] = {"Parameters" : ["DRho_to_DKst_KHypo"],
-    #                                                            "Mean"       : [configdict["GlobalVariables"]["DRho_to_DKst_KHypo"]["Range"][0]],
-    #                                                            "Covariance" : [configdict["GlobalVariables"]["DRho_to_DKst_KHypo"]["Error"]]}
-
+    #                                                          "Mean"       : [configdict["GlobalVariables"]["DRho_to_DKst_KHypo"]["Range"][0]],
+    #                                                          "Covariance" : [configdict["GlobalVariables"]["DRho_to_DKst_KHypo"]["Error"]]}
+    
     #Plot of the fit to compute sWeights
     configdict["sWeightsFitPlot"] = {}
     configdict["sWeightsFitPlot"]["Total"] = {"Color" : kBlue,

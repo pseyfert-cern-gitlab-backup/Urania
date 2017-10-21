@@ -1360,11 +1360,13 @@ namespace MassFitUtils {
     
     if ( plotSet == NULL ) { plotSet = new PlotSettings("plotSet","plotSet"); }
     RooArgSet* obs = mdSet->GetObsSet(false, true, false, false, true, true);
+    //RooArgSet* obs = mdSet->GetObsSet(true, true, true, true, true, true);
     obs->Print("v");
     RooRealVar* Eta = new RooRealVar("BacEta","BacEta",1.5,5.0);
     obs->add(*Eta);
 
     std::vector <TString> tN = mdSet->GetVarNames(true,false,false,true,true);
+    //std::vector <TString> tN = mdSet->GetVarNames(true,true,true,true,true);
 
     // Read MC File // 
     TString yy =""; 
@@ -2597,7 +2599,7 @@ namespace MassFitUtils {
     obs->Print("v");
 
     //std::vector <TString> tN = mdSet->GetVarNames(true,false,false,true,true);
-    std::vector <TString> tN = mdSet->GetVarNames(true,true,false,true,true);
+    std::vector <TString> tN = mdSet->GetVarNames(true,true,true,true,true);
     for(unsigned int i = 0; i<tN.size(); i++ )
     {
       std::cout<<"tN: "<<tN[i]<<std::endl;
@@ -2670,22 +2672,30 @@ namespace MassFitUtils {
     { 
       TCut MCCut = GetCutMCSig(mdSet,mode,md[i],debug);
 
+      cout << "MassFitUtils.ObtainSignal(...)=> About to cut tree" << endl;
       treetmp = TreeCut(tree[i], MCCut, smp[i], mode, debug);  //obtain new tree with applied all cuts//
+      cout << "MassFitUtils.ObtainSignal(...)=> Done" << endl;
       Int_t nentriesMC = treetmp->GetEntries();
+      cout << "MassFitUtils.ObtainSignal(...)=> Entries after cut: " << nentriesMC << endl;
       
       std::vector <TString> tB;
       std::vector <Double_t> varD; std::vector <Int_t> varI; std::vector <Float_t> varF; std::vector <Short_t> varS; std::vector <SmartBool> varB;
       for(unsigned int k = 0; k<tN.size(); k++ )
       {
-        if ( tN[k] != "" ){ tB.push_back(treetmp->GetLeaf(tN[k].Data())->GetTypeName()); }
+        if ( tN[k] != "" ){ 
+          tB.push_back(treetmp->GetLeaf(tN[k].Data())->GetTypeName()); 
+          std::cout<<" tN: "<<tN[k]<<std::endl;
+        }
         else { tB.push_back(""); }
         InitializeRealObs(tB[k], varD, varI, varF, varS, varB, debug);
       }
 
       for(unsigned int k =0; k<tN.size(); k++ )
       {
+        cout << "MassFitUtils.ObtainSignal(...)=> Setting branch address for " << tN[k] << ", type " << tB[k] << endl;
         SetBranchAddress(treetmp, tB[k], tN[k], varD[k], varI[k], varF[k], varS[k], varB[k], debug);
       }
+      cout << "MassFitUtils.ObtainSignal(...)=> Done" << endl;
 
       std::vector <TString> tBW;
       std::vector <TString> tNW;

@@ -125,8 +125,51 @@ import array
 from array import array
 
 # -----------------------------------------------------------------------------
-def TakeXMLCalibration(xml):
+def TakeRooFitResult(fileName, fitResultName, workspaceName=None):
+    """
+    Parse the content of a RooFitResult object
+    """
+    from ROOT import TFile
 
+    #Retrieve RooFitResult object
+    file = TFile.Open(fileName,"READ")
+    if workspaceName is not None:
+        workspace = file.Get(workspaceName)
+        if workspace:
+            fitResult = workspace.obj(fitResultName)
+            if not fitResult:
+                raise ValueError("TakeRooFitResult(...) => ERROR: fit result object '%s' not found" % fitResultName)
+        else:
+            raise ValueError("TakeRooFitResult(...) => ERROR: workspace '%s' not found" % workspaceName)
+    else:
+        fitResult = file.Get(fitResultName)
+        if not fitResult:
+            raise ValueError("TakeRooFitResult(...) => ERROR: fit result object '%s' not found" % fitResultName)
+
+    #Get covariance matrix
+    cov = fitResult.covarianceMatrix()
+
+    #Get array of fitted parameters
+    fitList = fitResult.floatParsFinal()
+    n = fitList.getSize()
+    meas = TVector(n)
+    for p in range(0, n):
+        meas[p] = fitList[p].getVal()
+
+    #Get list of parameter titles
+    parNames = []
+    for p in range(0, n):
+        parNames.append( fitList[p].GetTitle() )
+
+    file.Close()
+
+    return meas, cov, parNames
+                   
+# -----------------------------------------------------------------------------
+def TakeXMLCalibration(xml):
+    """
+    Parse XML calibration file from EspressoPerformanceMonitor
+    """
     import Espresso
     from ROOT import RooRealVar, RooArgSet
     
@@ -266,6 +309,8 @@ def compareMDmeas(configName, debug):
     covMatricesInv = []
     titles = []
 
+    parNames = None
+
     for input in myconfigfile["Inputs"].iterkeys():
 
         print "Taking " + input + " input..."
@@ -308,6 +353,18 @@ def compareMDmeas(configName, debug):
                 covMatricesInv.append( cov )
                 covMatrices.append( cov )
 
+        elif "File" and "FitResult" in myconfigfile["Inputs"][input].keys():
+            #Take measurements and covariance matrix from RooFitResult object
+            print "...retrieving from RooFitResult"
+
+            meas, cov, parNames = TakeRooFitResult(myconfigfile["Inputs"][input]["FileName"],
+                                                   myconfigfile["Inputs"][input]["FitResult"],
+                                                   None if "Workspace" not in myconfigfile["Inputs"][input].keys() else myconfigfile["Inputs"][input]["Workspace"])
+
+            measurements.append( meas )
+            covMatrices.append( cov )
+            covMatricesInv.append( InvertMatrix(cov) )
+
         else:
             raise ValueError("compareMDmeas(...) => ERROR: Need to specify either 'XML' key or 'Values', 'Errors', 'Correlation' keys in the config file dictionary")
 
@@ -343,7 +400,7 @@ def compareMDmeas(configName, debug):
     mn.SetFCN( fcn )
 
     #---Initialisation
-    #We take the simple, arithmetic average as starting point
+    #We take the simple, arithmetic average as starting point (sloppy but reasonable)
     startList = [0.0]*nparams
     for p in range(0, nparams):
         for m in range(0,nmeas):
@@ -379,11 +436,22 @@ def compareMDmeas(configName, debug):
             
     ierflg = array('i', [0])
     if "Parameters" in myconfigfile.keys():
-        for p in range(0, nparams):
-            mn.mnparm(p, myconfigfile["Parameters"][p], start[p], step[p], min[p], max[p], ierflg)
+        if type(myconfigfile["Parameters"]) is list: #I don't care about duck-typing at all
+            #Names are given by hand in the config file
+            #This choice "overwrites" parameter names from RooFitResult object, if any
+            for p in range(0, nparams):
+                mn.mnparm(p, myconfigfile["Parameters"][p], start[p], step[p], min[p], max[p], ierflg)
+        else:
+            raise ValueError("compareMDmeas(...) => ERROR: 'Parameters' in configuration file has to be a list")
     else:
-        for p in range(0, nparams):
-            mn.mnparm(p, "par"+str(p), start[p], step[p], min[p], max[p], ierflg)
+        if parNames is not None:
+            #Take names from RooFitResult object directly
+            for p in range(0, nparams):
+                mn.mnparm(p, parNames[p], start[p], step[p], min[p], max[p], ierflg)
+        else:
+            #Just assign "par{i}" names
+            for p in range(0, nparams):
+                mn.mnparm(p, "par"+str(p), start[p], step[p], min[p], max[p], ierflg)
 
     #---MINUIT settings
     arglist = array( 'd', 10*[0.] )
