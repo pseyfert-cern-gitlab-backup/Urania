@@ -111,7 +111,7 @@ def getconfig() :
     configdict["ACP"]["Signal"] = { "Gamma"                : [1.0 / 1.518, 0.1, 2.0], #From HFLAV (http://www.slac.stanford.edu/xorg/hflav/osc/summer_2017/#TAU)
                                     "DeltaGamma"           : [0.0], # nominal
                                     #"DeltaGamma"           : [0.007], #for systematics. HFLAV: DG/G=-0.002+/-0.010 -> DG=-0.001+/-0.007
-                                    "DeltaM"               : [0.5065, 0.01, 2.0],  #From HFLAV: (http://www.slac.stanford.edu/xorg/hflav/osc/summer_2017/#DMD)
+                                    "DeltaM"               : [0.505, 0.01, 2.0],  #From HFLAV (LHCb semileptonic): (http://www.slac.stanford.edu/xorg/hflav/osc/summer_2017/#DMD)
                                     #"ArgLf"                : [ArgqOverp_d + ArgAbarf_d - ArgAf_d],
                                     #"ArgLbarfbar"          : [ArgpOverq_d + ArgAfbar_d - ArgAbarfbar_d],
                                     #"ModLf"                : [ModAbarf_d/ModAf_d],
@@ -218,7 +218,7 @@ def getconfig() :
     # Constraint on resolution
     #configdict["gaussCons"]["resmodel00_sigma"] = 0.00038
     # Constraint on DeltaM
-    configdict["gaussCons"]["deltaM"] = 0.0019
+    configdict["gaussCons"]["deltaM"] = math.sqrt( 0.0021*0.0021 + 0.001*0.001 )
     # Constraint on Gamma (error on gamma = rel. error on lifetime * gamma)
     configdict["gaussCons"]["Gamma"] = (0.004/1.518) * (1.0/1.518)
     

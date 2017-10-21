@@ -52,11 +52,11 @@ def getconfig() :
     configdict["BasicVariables"]["TagDecSS"]      = { "Range"                  : [-1.0,    1.0     ],
                                                       "Name"                   : "TagDecSS",
                                                       "InputName"              : "TagDecSS"}
-
+    
     configdict["BasicVariables"]["MistagOS"]      = { "Range"                  : [ 0.0,    0.5     ],
                                                       "Name"                   : "MistagOS",
                                                       "InputName"              : "MistagOS"}
-
+    
     configdict["BasicVariables"]["MistagSS"]      = { "Range"                  : [ 0.0,    0.5     ],
                                                       "Name"                   : "MistagSS",
                                                       "InputName"              : "MistagSS"}
@@ -127,7 +127,7 @@ def getconfig() :
     configdict["ACP"]["Signal"] = { "Gamma"                : [1.0 / 1.518, 0.1, 2.0], #From HFLAV (http://www.slac.stanford.edu/xorg/hflav/osc/summer_2017/#TAU)
                                     "DeltaGamma"           : [0.0], # nominal
                                     #"DeltaGamma"           : [0.007], #for systematics. HFLAV: DG/G=-0.002+/-0.010 -> DG=-0.001+/-0.007
-                                    "DeltaM"               : [0.5065, 0.01, 2.0],  #From HFLAV: (http://www.slac.stanford.edu/xorg/hflav/osc/summer_2017/#DMD)
+                                    "DeltaM"               : [0.505, 0.01, 2.0],  #From HFLAV (LHCb semileptonic): (http://www.slac.stanford.edu/xorg/hflav/osc/summer_2017/#DMD)
                                     #"ArgLf"                : [ArgqOverp_d + ArgAbarf_d - ArgAf_d],
                                     #"ArgLbarfbar"          : [ArgpOverq_d + ArgAfbar_d - ArgAbarfbar_d],
                                     #"ModLf"                : [ModAbarf_d/ModAf_d],
@@ -184,7 +184,7 @@ def getconfig() :
                                        {"Calibration":  #from EPM on Bu->D0Pi data
                                         { "Type"    : "GLM",
                                           "XML"     : ["/eos/lhcb/wg/b2oc/TD_DPi_3fb/calibrations/RLogisticCalibration_Bu2D0Pi_OS_20171021.xml"],
-                                          "tageff"  : [1.0],#[0.37, 0.0, 1.0],
+                                          "tageff"  : [0.37, 0.0, 1.0],
                                           "tagasymm": [0.0]
                                           },
                                         "MistagPDF" :
@@ -194,7 +194,7 @@ def getconfig() :
                                        {"Calibration":
                                         { "Type"   : "GLM",
                                           "XML"    : ["/eos/lhcb/wg/b2oc/TD_DPi_3fb/calibrations/LinearCalibration_Bd2JpsiKst_SS_20171021.xml"],
-                                          "tageff"  : [1.0],#[0.8, 0.0, 1.0],
+                                          "tageff"  : [0.8, 0.0, 1.0],
                                           "tagasymm": [0.0]
                                           },
                                         "MistagPDF" :
@@ -226,7 +226,7 @@ def getconfig() :
     # Constraint on resolution
     #configdict["gaussCons"]["resmodel00_sigma"] = 0.00038
     # Constraint on DeltaM
-    configdict["gaussCons"]["deltaM"] = 0.0019
+    configdict["gaussCons"]["deltaM"] = math.sqrt( 0.0021*0.0021 + 0.001*0.001 )
     # Constraint on Gamma (error on gamma = rel. error on lifetime * gamma)
     configdict["gaussCons"]["Gamma"] = (0.004/1.518) * (1.0/1.518)
     # Multivariate constraint for OS combination
