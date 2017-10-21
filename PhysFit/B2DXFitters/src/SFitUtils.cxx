@@ -442,10 +442,19 @@ namespace SFitUtils {
         {
           for(int k = 0; k<mdSet->CheckNumUsedTag(); k++)
           {
-            if( tag[k] > 0.1 ) {   tag[k] = 1; tagEff[k] += sum_sw; }
-            else if ( tag[k] < -0.1 ) { tag[k] = -1; tagEff[k] += sum_sw; }
-            else{ tag[k]=0; }
-
+            if (weighted == true )
+            {
+              if( tag[k] > 0.1 ) {   tag[k] = 1; tagEff[k] += sum_sw * swCorr; }
+              else if ( tag[k] < -0.1 ) { tag[k] = -1; tagEff[k] += sum_sw * swCorr; }
+              else{ tag[k]=0; }
+            }
+            else
+            {
+              if( tag[k] > 0.1 ){ tag[k] = 1; tagEff[k] += sum_sw; }
+              else if ( tag[k] < -0.1 ) { tag[k] = -1; tagEff[k] += sum_sw; }
+              else { tag[k]=0; }
+            }
+            
             lab0_TAG[k]->setIndex(tag[k]);
           }
         }
