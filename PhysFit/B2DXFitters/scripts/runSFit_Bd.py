@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# ---------------------------------------------------------------------------
+#1;95;0c ---------------------------------------------------------------------------
 # @file runSFit_Bd.py
 #
 # @brief run time fit for CP observables (B->DX modes) using
@@ -418,17 +418,17 @@ def runSFit(debug, wsname,
     id = WS(ws, obs.find(MDSettings.GetIDVarOutName().Data()))
     observables = RooArgSet(time, id)
 
-    # canvw = TCanvas("canvw")
-    # framew = time.frame()
-    # dataWA.plotOn(framew)
-    # framew.Draw()
-    # canvw.SaveAs("TESTWDATASET.pdf")
+    #canvw = TCanvas("canvw")
+    #framew = time.frame()
+    #dataWA.plotOn(framew)
+    #framew.Draw()
+    #canvw.SaveAs("TESTWDATASET.pdf")
 
-    # canv = TCanvas("canv")
-    # frame = time.frame()
-    # data.plotOn(frame)
-    # frame.Draw()
-    # canv.SaveAs("TESTDATASET.pdf")
+    #canv = TCanvas("canv")
+    #frame = time.frame()
+    #data.plotOn(frame)
+    #frame.Draw()
+    #canv.SaveAs("TESTDATASET.pdf")
 
     # testfile = TFile("TESTFILE.root","RECREATE")
     # testtree = data.tree()
@@ -436,14 +436,19 @@ def runSFit(debug, wsname,
     # testfile.ls()
     # testfile.Close()
 
-    # exit(0)
+    #exit(0)
 
     tag = []
     mistag = []
     if not truetag:
         for t in range(0, MDSettings.GetNumTagVar()):
+            print "Tagger number "+str(t)
+            print "...tagging decision "+str(MDSettings.GetTagVarOutName(t).Data())
+            print "...mistag "+str(MDSettings.GetTagOmegaVarOutName(t).Data())
             if singletagger!='' and MDSettings.GetTagVarOutName(t).Data() != singletagger:
+                print "Skipped..."
                 continue
+            print "Selected"
             tag.append(WS(ws, obs.find(MDSettings.GetTagVarOutName(t).Data())))
             mistag.append(WS(ws, obs.find(MDSettings.GetTagOmegaVarOutName(t).Data())))
             # mistag[t].setRange(0.0,0.5)
@@ -455,6 +460,11 @@ def runSFit(debug, wsname,
             for t in range(0, MDSettings.GetNumTagVar()):
                 tag.append(WS(ws, obs.find(MDSettings.GetTagVarOutName(t).Data())))
                 mistag.append(WS(ws, zero))
+
+    print "Tag decision(s):"
+    print tag
+    print "Mistag(s):"
+    print mistag
 
     if plotsWeights:
         name = TString("sfit")
@@ -583,13 +593,14 @@ def runSFit(debug, wsname,
     if pereventmistag:
         for t in range(0, MDSettings.GetNumTagVar()):
             if singletagger!='' and MDSettings.GetTagVarOutName(t).Data() != singletagger:
+                print "Tagger "+str(MDSettings.GetTagVarOutName(t).Data())+" skipped..."
                 continue
             nametag = "OS"
             if "SS" in MDSettings.GetTagVarOutName(t).Data():
                 nametag = "SS"
             if "Type" in myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"].keys():
                 if myconfigfile["Taggers"]["Signal"][nametag]["MistagPDF"]["Type"] == "BuildTemplate":
-                    print "[INFO] Building mistag templates directly from data"
+                    print "[INFO] Building mistag templates directly from data for "+str(nametag)
                     mistagpdflist = WS(ws, SFitUtils.CreateDifferentMistagTemplates(dataWA, MDSettings, 50, True, debug), opts)
                     break
     else:
@@ -627,6 +638,7 @@ def runSFit(debug, wsname,
 
         for t in range(0, MDSettings.GetNumTagVar()):
             if singletagger!='' and MDSettings.GetTagVarOutName(t).Data() != singletagger:
+                print "Tagger "+str(MDSettings.GetTagVarOutName(t).Data())+" skipped..."
                 continue
             nametag = "OS"
             if "SS" in MDSettings.GetTagVarOutName(t).Data():
@@ -1246,15 +1258,17 @@ def runSFit(debug, wsname,
         print ""
     workout.writeToFile(wsname)
 
-    # import numpy
-    # from numpy import arange
-    # id.setIndex(-1)
-    # tag[0].setIndex(-1)
-    # observables.setCatIndex("BacCharge",-1)
-    # observables.setRealValue("TagDecTrue",-1)
-    # for t in numpy.arange(0.4, 12.0, 0.001):
-    #    time.setVal(t)
-    #    print "PDF("+str(t)+") = "+str(totPDF.getVal())
+    #import numpy
+    #from numpy import arange
+    #id.setIndex(-1)
+    #tag[0].setIndex(-1)
+    #tag[1].setIndex(-1)
+    #observables.setCatIndex("BacCharge",-1)
+    #observables.setRealValue("TagDecSS",-1)
+    #observables.setRealValue("TagDecOS",-1)
+    #for t in numpy.arange(0.4, 12.0, 0.001):
+    #   time.setVal(t)
+    #   print "PDF("+str(t)+") = "+str(totPDF.getVal())
 
 # ------------------------------------------------------------------------------
 _usage = '%prog [options]'

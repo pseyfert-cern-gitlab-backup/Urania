@@ -9,7 +9,7 @@ class Translator:
 
         if myconfigfile.has_key("BasicVariables"):
             names = myconfigfile["BasicVariables"]
-            for name in names:
+            for name in sorted(names):
                 if  name == "BeautyMass":
                     md.SetMassB(myconfigfile["BasicVariables"][name]["InputName"], name,
                                 myconfigfile["BasicVariables"][name]["Range"][0], myconfigfile["BasicVariables"][name]["Range"][1])

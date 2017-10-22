@@ -1821,11 +1821,15 @@ TString MDFitterSettings::CheckTagger(TString name)
   else if (name.Contains("OSKaon")) {return "OSKaon";}
   else if (name.Contains("VtxCharge")) {return "VtxCharge";}
   else if (name.Contains("OSCalib")) {return "OSCalib";}
+  else if (name.Contains("OSExclusive")){ return "OSExclusive"; }
+  else if (name.Contains("OSOverlap")) {return "OSOverlap";}
   else if (name.Contains("OS")) {return "OS";}
   else if (name.Contains("SSPionBDT")) {return "SSPionBDT";}
   else if (name.Contains("SSProton")) {return "SSProton";}
   else if (name.Contains("SSK")) {return "SSK";}
   else if (name.Contains("SSp")) {return "SSp";}
+  else if (name.Contains("SSExclusive")) {return "SSExclusive";}
+  else if (name.Contains("SSOverlap")) {return "SSOverlap";} 
   else if (name.Contains("SS")) {return "SS";}
   else if (name.Contains("Cheat")) {return "Cheat";}
   else if (name.Contains("True")) {return "True";}
