@@ -7,12 +7,19 @@
 
 double Espresso::Regression::InvLink(double eta, LinkType link) {
   double val = 0.0;
-  if (link == LinkType::Mistag) 
-    val = eta; 
-  else if (link == LinkType::Logit) 
-    val = log(1-eta)-log(eta);
+  if (link == LinkType::Mistag)
+    val = eta;
+  else if (link == LinkType::Logit)
+    val = (eta > 0) ? log(1-eta)-log(eta) : 0.0;
   else if (link == LinkType::RLogit)
-    val = (eta < 0.5) ? log(1-2*eta)-log(2*eta) : 0.5;
+  {
+    if(eta > 0 && eta < 0.5)
+      val = log(1-2*eta)-log(2*eta);
+    else if(eta==0)
+      val = 0.0;
+    else
+      val = 0.5;
+  }
   else if (link == LinkType::Probit) 
     val = sqrt(2.0)*Espresso::erfinv(1-2*eta);
   else if (link == LinkType::RProbit)
@@ -22,19 +29,25 @@ double Espresso::Regression::InvLink(double eta, LinkType link) {
   else if (link == LinkType::RCauchit)
     val = (eta < 0.5) ? -tan(M_PI*2*eta-M_PI_2) : 0.5;
   else
-    val = 0;
+    val = 0.0;
+
   if (std::isnan(val)) std::cout << __LINE__ << ": " << eta << " => " << val << std::endl;
   return val;
 }
 
 double Espresso::Regression::DInvLink(double eta, LinkType link) {
   double val = 0.0;
-  if (link == LinkType::Mistag) 
-    val = 1; 
+  if (link == LinkType::Mistag)
+    val = 1;
   else if (link == LinkType::Logit) 
-    val = -1.0/(eta*(1-eta));
+    val = (eta > 0) ? -1.0/(eta*(1-eta)) : -1e+09; //arbitrary large value
   else if (link == LinkType::RLogit)
-    val = (eta < 0.5) ? -1.0/(eta*(1-2*eta)) : 0.0;
+  {
+    if(eta > 0 && eta < 0.5)
+      val = -1.0/(eta*(1-2*eta));
+    else
+      val = -1e+09; //arbitrary large value
+  }
   else if (link == LinkType::Probit) 
     val = -exp(Espresso::erfinv(1-2*eta)*Espresso::erfinv(1-2*eta))*sqrt(2.0*M_PI);
   else if (link == LinkType::RProbit)
@@ -51,8 +64,8 @@ double Espresso::Regression::DInvLink(double eta, LinkType link) {
 
 double Espresso::Regression::Link(double g, LinkType link) {
   double val = 0.0;
-  if (link == LinkType::Mistag) 
-    val = g; 
+  if (link == LinkType::Mistag)
+    val = g;
   else if (link == LinkType::Logit) 
     val = 1.0/(1+exp(g));
   else if (link == LinkType::RLogit)

@@ -181,10 +181,10 @@ def getCPparameters(ws, myconfigfile, UniformBlinding, blindingString, HFAG):
 
     sigC = RooRealVar('Cf', 'C_{f}', Cf, limit[0], limit[1])
     sigS = RooRealVar('Sf', 'S_{f}', Sf, limit[0], limit[1])
-    sigS_blind = RooUnblindUniform('Sf_blind', 'S_{f} (blind)', str(blindingString)+'_Sf', 1.0, sigS)
+    sigS_blind = RooUnblindUniform('Sf_blind', 'S_{f} (blind)', str(blindingString)+'_Sf', 0.5, sigS)
     sigD = RooRealVar('Df', 'D_{f}', Df, limit[0], limit[1])
     sigSbar = RooRealVar('Sfbar', 'S_{#bar f}', Sfbar, limit[0], limit[1])
-    sigSbar_blind = RooUnblindUniform('Sfbar_blind', 'S_{#bar f} (blind)', str(blindingString)+'_Sfbar', 1.0, sigSbar)
+    sigSbar_blind = RooUnblindUniform('Sfbar_blind', 'S_{#bar f} (blind)', str(blindingString)+'_Sfbar', 0.5, sigSbar)
     sigDbar = RooRealVar('Dfbar', 'D_{#bar f}', Dfbar, limit[0], limit[1])
     setConstantIfSoConfigured(sigC, myconfigfile)
     setConstantIfSoConfigured(sigS, myconfigfile)
