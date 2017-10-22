@@ -10,15 +10,15 @@ double Espresso::Regression::InvLink(double eta, LinkType link) {
   if (link == LinkType::Mistag)
     val = eta;
   else if (link == LinkType::Logit)
-    val = (eta > 0) ? log(1-eta)-log(eta) : 0.0;
+    val = (eta > 0) ? log(1-eta)-log(eta) : 1e+09;
   else if (link == LinkType::RLogit)
   {
     if(eta > 0 && eta < 0.5)
       val = log(1-2*eta)-log(2*eta);
-    else if(eta==0)
-      val = 0.0;
+    else if(eta == 0)
+      val = 1e+09;
     else
-      val = 0.5;
+      val = -1e+09;
   }
   else if (link == LinkType::Probit) 
     val = sqrt(2.0)*Espresso::erfinv(1-2*eta);
