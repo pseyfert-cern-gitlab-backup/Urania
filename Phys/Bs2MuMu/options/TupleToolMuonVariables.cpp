@@ -137,7 +137,7 @@ StatusCode TupleToolMuonVariables::initialize() {
 
   m_pvReFitter = tool<IPVReFitter>("AdaptivePVReFitter", this );
   if(! m_pvReFitter) {
-    fatal() << "Unable to retrieve AdaptivePVReFitter" << endreq;
+    fatal() << "Unable to retrieve AdaptivePVReFitter" << endmsg;
     return StatusCode::FAILURE;
   }
   
@@ -254,7 +254,7 @@ StatusCode TupleToolMuonVariables::fill( const LHCb::Particle *, const LHCb::Par
   for( SmartRefVector< LHCb::Particle >::const_iterator idau = Bdaughters.begin(); idau != Bdaughters.end() ; ++idau){
     if (NULL == (*idau)->proto() ){
 	    checkDau =false;
-	    debug()<<"daughter no "<<countDaughters<<"  is NULL!! "<<endreq;
+	    debug()<<"daughter no "<<countDaughters<<"  is NULL!! "<<endmsg;
 	    if( abs ((*idau)->particleID().pid() ) == 443) { 
 	      JpsiInDau = true; 
 	      myJpsi = (*idau);
@@ -674,12 +674,12 @@ StatusCode TupleToolMuonVariables::fillTrackInfo(Tuples::Tuple& tuple ){
       	//Ancestor info
       	ancestor = originof(MCp) ;
       	MC_origin_id.push_back(ancestor->particleID().pid());
-      	debug()<<" Filled ancestor PID "<<endreq;      
+      	debug()<<" Filled ancestor PID "<<endmsg;      
 	
       	//Number of end vertices: not tupled for now
       	SmartRefVector< LHCb::MCVertex >::const_iterator iVtx;
       	if(0==MCp->endVertices().size()) {
-	        debug() << " vertex failed " << endreq;
+	        debug() << " vertex failed " << endmsg;
 	        m_endVertices  = -100;
 	      }
 	      else {
@@ -1008,7 +1008,7 @@ StatusCode TupleToolMuonVariables::fillBDTS(const LHCb::Particle *part,
   const LHCb::VertexBase* bpv = m_dva->bestVertex(part);
 
   if(JpsiInDau) debug()<<" From fillBDTS: I have found the Jpsi  "
-                       << myJpsi->endVertex()->position() <<endreq;
+                       << myJpsi->endVertex()->position() <<endmsg;
   
   // 0 -> SQRT of IPCHI2 of the B
   const LoKi::Cuts::BPVIPCHI2 m_BPVIPCHI2; ///< BPVIPCHI2()
@@ -1037,9 +1037,9 @@ StatusCode TupleToolMuonVariables::fillBDTS(const LHCb::Particle *part,
   if (JpsiInDau)  m_values[5] = ipMin(myJpsi->daughtersVector())/Gaudi::Units::mm;
   else            m_values[5] = ipMin(part->daughtersVector())/Gaudi::Units::mm;
   
-  debug() << "Fatima the values input into BDTD were "<< endreq;
+  debug() << "Fatima the values input into BDTD were "<< endmsg;
   for (int i=0;i < m_nvariables; i++) debug() <<"  i "<<i<<" var: "<<m_values[i];
-  debug() <<"\n"<<endreq;
+  debug() <<"\n"<<endmsg;
   
   test &= tuple->column (prefix+"_BDTS_BIPS", m_values[0] );
   test &= tuple->column (prefix+"_BDTS_DOCA", m_values[1] );
@@ -1052,19 +1052,19 @@ StatusCode TupleToolMuonVariables::fillBDTS(const LHCb::Particle *part,
   double BDTout_BDTS = m_reader_BDTS->EvaluateMVA(m_methodName);
   
   if (!m_h_cumul_BDTS){
-    error() << "BDTS: Cumulative histogram not present! " << endreq;
+    error() << "BDTS: Cumulative histogram not present! " << endmsg;
     return StatusCode::FAILURE;
   }
   
   int bin = m_h_cumul_BDTS->FindBin(BDTout_BDTS);   
-  debug () << " BDTS: Evaluating the BDTS flat " << endreq;
+  debug () << " BDTS: Evaluating the BDTS flat " << endmsg;
   double BDTout_BDTS_flat = m_h_cumul_BDTS->GetBinContent(bin);
   
-  debug()<<"The BDTS is "<<BDTout_BDTS_flat<<endreq;
-  debug () << " BDTS: filling ntuple " << endreq;
+  debug()<<"The BDTS is "<<BDTout_BDTS_flat<<endmsg;
+  debug () << " BDTS: filling ntuple " << endmsg;
 
   test &= tuple ->column (prefix+"_BDTS", BDTout_BDTS_flat); 
-  debug() <<" BDTS was "<<  BDTout_BDTS_flat << endreq;
+  debug() <<" BDTS was "<<  BDTout_BDTS_flat << endmsg;
   if(test) return StatusCode::SUCCESS;
   else return StatusCode::FAILURE;
   
@@ -1192,7 +1192,7 @@ StatusCode TupleToolMuonVariables::fillFakeVtx(const LHCb::Particle *part,
 //  Bdaughters.begin(); ipart!=Bdaughters.end();++ipart) 
 //     {
 //       if( fabs ((*ipart)->particleID().pid() ) == 443) myJpsi = *ipart;
-//       debug()<<"Filling the fake vtx, found the Jpsi in the B daughters! "<<endreq;
+//       debug()<<"Filling the fake vtx, found the Jpsi in the B daughters! "<<endmsg;
       
 //     }
   
@@ -1379,7 +1379,7 @@ StatusCode TupleToolMuonVariables::fillIsolation(const LHCb::Particle *part,
   //-------------------  Giampi's isolation: -------------------//
   
   int isotype = 5;
-  debug()<<" GIAMPI just before calling getIso "<<endreq;
+  debug()<<" GIAMPI just before calling getIso "<<endmsg;
   
   //calling Giampi's tool. setting isotype=5 will output the new isolation variable 
   std::vector<int> iso5 = getIso( part, isotype, false);  
@@ -1394,7 +1394,7 @@ StatusCode TupleToolMuonVariables::fillIsolation(const LHCb::Particle *part,
 
   std::vector<int> isoD0_new = getIso( part, 66133, true);  //stops here with no DTF begins for get Iso but stops after O before ratio
   double m_count_mum_isoD0, m_count_mup_isoD0;
-  debug()<<" GIAMPI just after calling getIso "<<"GIAMPI  iso "<<iso5[0]<<"  "<<iso5[1]<<endreq;
+  debug()<<" GIAMPI just after calling getIso "<<"GIAMPI  iso "<<iso5[0]<<"  "<<iso5[1]<<endmsg;
   
   if (iso5[0]==-999) return StatusCode::FAILURE;
   
@@ -1548,7 +1548,7 @@ std::vector<int>  TupleToolMuonVariables::getIso(const LHCb::Particle* B, int is
       
       if (track->type()== m_tracktype) {
         iso0[i2] += hltgood;
-        debug()<<"isisold "<< i2 << iso0[i2]<< endreq;
+        debug()<<"isisold "<< i2 << iso0[i2]<< endmsg;
       }
       
       // find doca and angle between input and other tracks
@@ -1822,15 +1822,15 @@ StatusCode TupleToolMuonVariables::fillCosNK(const LHCb::Particle *part,
   py_part = part->momentum().py();
   mmass_B = part->measuredMass();
  
-  debug() <<"Inside cosnk, obtained B quantities" <<endreq;
+  debug() <<"Inside cosnk, obtained B quantities" <<endmsg;
   
   //  if ( vdaugh.at(0)->momentum().pt() < vdaugh.at(1)->momentum().pt() ) {
   if ( vdaugh.at(0)->charge()> 0 ) {
-    debug() <<"obtaining daughter quantities" <<endreq;
+    debug() <<"obtaining daughter quantities" <<endmsg;
     px_mu_minp = vdaugh.at(0)->momentum().px();
     py_mu_minp = vdaugh.at(0)->momentum().py();
   } else {
-    debug() << "obtaining daughter quantities" <<endreq;
+    debug() << "obtaining daughter quantities" <<endmsg;
     px_mu_minp = vdaugh.at(1)->momentum().px();
     py_mu_minp = vdaugh.at(1)->momentum().py();
   }
@@ -1838,7 +1838,7 @@ StatusCode TupleToolMuonVariables::fillCosNK(const LHCb::Particle *part,
   m_cosnk = 2*(py_mu_minp*px_part - px_mu_minp*py_part) / 
     sqrt(px_part*px_part + py_part*py_part) / sqrt(mmass_B*mmass_B - 4*mass_mu*mass_mu);
   
-  debug() <<"filling cosnk =   "<<m_cosnk << endreq;
+  debug() <<"filling cosnk =   "<<m_cosnk << endmsg;
   test &= tuple->column( prefix+"_cosnk",  m_cosnk );
  
   if(test)   return StatusCode::SUCCESS;  
@@ -2088,7 +2088,7 @@ StatusCode TupleToolMuonVariables::CDFIsolation(const LHCb::Particle* B,
   double isoCDF;
   double isoCDF_tc;
   
-  debug()<<" pts:: "<<ptmu1<<" "<<ptmu2<<" "<<ptbs<<endreq;
+  debug()<<" pts:: "<<ptmu1<<" "<<ptmu2<<" "<<ptbs<<endmsg;
 
   LHCb::Particles*  parts = getIfExists<LHCb::Particles>(m_ParticlePath);
   if (!parts) {
@@ -2151,7 +2151,7 @@ StatusCode TupleToolMuonVariables::CDFIsolation_Yuri(const LHCb::Particle* B,
 						      Tuples::Tuple& tuple ){
   
   bool test =true; 
-  debug()<<" Computation of Yuri's CDF iso variable "<<endreq;
+  debug()<<" Computation of Yuri's CDF iso variable "<<endmsg;
 
   if ( (NULL == vdau1 ) || NULL == vdau2) {
     debug() <<"Inside CDFisloation_Yuri, one or both  daughters are NULL"<<endmsg;
@@ -2181,7 +2181,7 @@ StatusCode TupleToolMuonVariables::CDFIsolation_Yuri(const LHCb::Particle* B,
 
   double isoCDFyuri;
   
-  debug()<<" pts:: "<<ptmu1<<" "<<ptmu2<<" "<<ptbs<<endreq;
+  debug()<<" pts:: "<<ptmu1<<" "<<ptmu2<<" "<<ptbs<<endmsg;
   
   double ethabs = 0.5*log((pbs+plbs)/(pbs-plbs ));
   if (pybs<0) ethabs = -ethabs;
@@ -2227,7 +2227,7 @@ StatusCode TupleToolMuonVariables::CDFIsolation_Yuri(const LHCb::Particle* B,
 	
 	bool flag =( mindeltapt>0.01 && radcone<1.);
 	debug() <<"radcone:: "<< radcone << " and mindeltapt:: "
-          << mindeltapt <<"  so the flag is  "<< flag << endreq; 
+          << mindeltapt <<"  so the flag is  "<< flag << endmsg; 
 	
 	if (flag && trIP<0.1 && atrack->pt()> 200.) iso_bs += trpt;
 	
@@ -2237,7 +2237,7 @@ StatusCode TupleToolMuonVariables::CDFIsolation_Yuri(const LHCb::Particle* B,
   
   
   isoCDFyuri = ptbs/iso_bs;
-  debug()<<" iso_bs & ptbs for iso:: "<<iso_bs<<" "<<ptbs<<endreq;
+  debug()<<" iso_bs & ptbs for iso:: "<<iso_bs<<" "<<ptbs<<endmsg;
   m_isoCDFyuri = isoCDFyuri;
   //std::cout<<" CDFisolation, directly from diego (Flavio)"<<std::endl;
 
@@ -2356,12 +2356,12 @@ StatusCode TupleToolMuonVariables::fillMCTruth(const LHCb::Particle *part,
   else {
     ancestor = originof(MCp) ;
     m_mcancestorpid =  ancestor->particleID().pid();
-    debug()<<" Filled ancestor PID "<<endreq;      
+    debug()<<" Filled ancestor PID "<<endmsg;      
     
     SmartRefVector< LHCb::MCVertex >::const_iterator iVtx;
     if (0==MCp->endVertices().size())
       {
-	debug() << " vertex failed " << endreq;
+	debug() << " vertex failed " << endmsg;
 	m_endVertices  = -100;
       }
     else 
@@ -2738,7 +2738,7 @@ StatusCode TupleToolMuonVariables::fillMCDecayTree(Tuples::Tuple& tuple){
   LHCb::MCParticles* mcpart_list = get<LHCb::MCParticles>(LHCb::MCParticleLocation::Default );
   if( !mcpart_list ) {
     fatal() << "Unable to find MC particles at '" 
-            << LHCb::MCParticleLocation::Default << "'" << endreq;
+            << LHCb::MCParticleLocation::Default << "'" << endmsg;
     return StatusCode::FAILURE;
   }
   std::vector<LHCb::MCParticle*> mcpart_vec(mcpart_list->begin(), mcpart_list->end());

@@ -39,6 +39,7 @@ class TupleJob:
     self._davinciVersion = davinciVersion
     self._year           = year
     self._stripVersion   = stripVersion
+    self._recoVersion    = None # SET LATER
     self._suffix         = suffix
     self._magPol         = magPol
     self.backend         = backend
@@ -125,17 +126,23 @@ class TupleJob:
             coll=self._collVersion, rec=self._recoVersion,
             strp=self._stripVersion, suf=self._suffix, pol=self._magPol)
 
+
+    myApp = GaudiExec()
+    myApp.directory = "/afs/cern.ch/user/m/mmulder/work/DaVinciDev_v42r6p1"
+
+
     self._gangaJob = Job(
       name = jobName
-      , application = DaVinci(version = self._davinciVersion)
+      , application = myApp
     )
 
     j = self._gangaJob
-    j.application.optsfile = self.optsfile
+    j.parallel_submit = True
+    j.application.options = self.optsfile
     if self.simulation:
-      j.application.optsfile += ["Bs2MuMu_ntuples_MC.py"]
+      j.application.options += ["Bs2MuMu_ntuples_MC.py"]
     else:
-      j.application.optsfile += ["Bs2MuMu_ntuples_data.py"]
+      j.application.options += ["Bs2MuMu_ntuples_data.py"]
 
     j.inputdata = self._getDatasetFromBK(bkkQuery)
     if self.backend == Local():
@@ -143,13 +150,13 @@ class TupleJob:
     else:
       j.outputfiles = [DiracFile(self._outputfilename)]
 
-    j.inputfiles = [LocalFile("/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r1p1/Phys/Bs2MuMu/options/600_2500_4_30_0.75_1_1_BDT.weights.xml"),
-                    LocalFile("/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r1p1/Phys/Bs2MuMu/options/600_2500_4_30_0.75_1_4_BDT.weights.xml"),
-                    LocalFile("/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r1p1/Phys/Bs2MuMu/options/600_2500_4_30_0.75_1_8_BDT.weights.xml"),
-                    LocalFile("/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r1p1/Phys/Bs2MuMu/options/600_2500_4_30_0.75_1_9_BDT.weights.xml"),
-                    LocalFile("/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r1p1/Phys/Bs2MuMu/options/TMVA_7Dec.weights.xml"),
-                    LocalFile("/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r1p1/Phys/Bs2MuMu/operators/weights/HflatBDTS_7Dec.root"),
-                    LocalFile("/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r1p1/Phys/Bs2MuMu/options/ZVisoBDTG_BsMuMu.weights.xml") 
+    j.inputfiles = [LocalFile("/afs/cern.ch/user/m/mmulder/work/UraniaDev_v7r0/Phys/Bs2MuMu/options/600_2500_4_30_0.75_1_1_BDT.weights.xml"),
+                    LocalFile("/afs/cern.ch/user/m/mmulder/work/UraniaDev_v7r0/Phys/Bs2MuMu/options/600_2500_4_30_0.75_1_4_BDT.weights.xml"),
+                    LocalFile("/afs/cern.ch/user/m/mmulder/work/UraniaDev_v7r0/Phys/Bs2MuMu/options/600_2500_4_30_0.75_1_8_BDT.weights.xml"),
+                    LocalFile("/afs/cern.ch/user/m/mmulder/work/UraniaDev_v7r0/Phys/Bs2MuMu/options/600_2500_4_30_0.75_1_9_BDT.weights.xml"),
+                    LocalFile("/afs/cern.ch/user/m/mmulder/work/UraniaDev_v7r0/Phys/Bs2MuMu/options/TMVA_7Dec.weights.xml"),
+                    LocalFile("/afs/cern.ch/user/m/mmulder/work/UraniaDev_v7r0/Phys/Bs2MuMu/options/HflatBDTS_7Dec.root"),
+                    LocalFile("/afs/cern.ch/user/m/mmulder/work/UraniaDev_v7r0/Phys/Bs2MuMu/options/ZVisoBDTG_BsMuMu.weights.xml") 
                    ] 
    
     j.backend = self.backend
@@ -166,7 +173,7 @@ class TupleJob:
     if self._gangaJob == None:
       self._gangaJob = self.instanceJob(jobName = jobName, bkkQuery = bkkQuery)
 
-    self._gangaJob . submit()
+    queues.add(self._gangaJob.submit)
 
 
   def unprepare ( self ):
@@ -499,12 +506,12 @@ class TupleMaker:
 
   down16Dimuon = TupleJob(
                     year           = "2016"
-                 ,  stripVersion   = "26"
+                 ,  stripVersion   = "28"
                  ,  magPol         = "MagDown"
                  ,  suffix         = "DataDimuon"
                  ,  filesPerJob    = 20
                  ,  simulation     = False
-                 ,  bkkQuery       = '/LHCb/Collision16/Beam6500GeV-VeloClosed-MagDown/Real Data/Reco16/Stripping26/90000000/DIMUON.DST'
+                 ,  bkkQuery       = '/LHCb/Collision16/Beam6500GeV-VeloClosed-MagDown/Real Data/Reco16/Stripping28/90000000/DIMUON.DST'
                  ,  bkkFlag        = "All"
                  ,  stream         = "DIMUON"
                  ,  backend        = Dirac()
@@ -512,12 +519,12 @@ class TupleMaker:
 
   up16Dimuon = TupleJob(
                     year           = "2016"
-                 ,  stripVersion   = "26"
+                 ,  stripVersion   = "28"
                  ,  magPol         = "MagUp"
                  ,  suffix         = "DataDimuon"
                  ,  filesPerJob    = 20
                  ,  simulation     = False
-                 ,  bkkQuery       = '/LHCb/Collision16/Beam6500GeV-VeloClosed-MagUp/Real Data/Reco16/Stripping26/90000000/DIMUON.DST'
+                 ,  bkkQuery       = '/LHCb/Collision16/Beam6500GeV-VeloClosed-MagUp/Real Data/Reco16/Stripping28/90000000/DIMUON.DST'
                  ,  bkkFlag        = "All"
                  ,  stream         = "DIMUON"
                  ,  backend        = Dirac()

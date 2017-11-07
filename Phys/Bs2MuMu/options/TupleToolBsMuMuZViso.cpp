@@ -167,7 +167,7 @@ StatusCode  TupleToolBsMuMuZViso::initialize() {
 
   m_Geom = tool<IDistanceCalculator>("LoKi::DistanceCalculator", this);
   if ( ! m_Geom ) {
-    fatal() << "DistanceCalculator could not be found" << endreq;
+    fatal() << "DistanceCalculator could not be found" << endmsg;
     return StatusCode::FAILURE;
   }
   
@@ -186,37 +186,37 @@ StatusCode  TupleToolBsMuMuZViso::initialize() {
   
   m_pvReFitter = tool<IPVReFitter>("AdaptivePVReFitter", this );
   if(! m_pvReFitter) {
-    fatal() << "Unable to retrieve AdaptivePVReFitter" << endreq;
+    fatal() << "Unable to retrieve AdaptivePVReFitter" << endmsg;
     return StatusCode::FAILURE;
   }
 
   m_vertextool = tool<IVertexFunctionTool>("VertexFunctionTool", this );
   if(! m_vertextool) {
-    fatal() << "Unable to retrieve ZVtop" << endreq;
+    fatal() << "Unable to retrieve ZVtop" << endmsg;
     return StatusCode::FAILURE;
   }
 
   m_topotool = tool<ITopoVertexTool>("TopoVertexTool", this );
   if(! m_topotool) {
-    fatal() << "Unable to retrieve ZVtop" << endreq;
+    fatal() << "Unable to retrieve ZVtop" << endmsg;
     return StatusCode::FAILURE;
   }
 
   m_Geom = tool<IDistanceCalculator>("LoKi::DistanceCalculator", this);
   if ( ! m_Geom ) {
-    fatal() << "DistanceCalculator could not be found" << endreq;
+    fatal() << "DistanceCalculator could not be found" << endmsg;
     return StatusCode::FAILURE;
   }
   
   m_transporter = tool<IParticleTransporter>("ParticleTransporter:PUBLIC", this);
   if ( ! m_transporter ) {
-    fatal() << "ParticleTransporter could not be found" << endreq;
+    fatal() << "ParticleTransporter could not be found" << endmsg;
     return StatusCode::FAILURE;
   }
  
   m_descend = tool<IParticleDescendants> ( "ParticleDescendants", this );
   if( ! m_descend ) {
-    fatal() << "Unable to retrieve ParticleDescendants tool "<< endreq;
+    fatal() << "Unable to retrieve ParticleDescendants tool "<< endmsg;
     return StatusCode::FAILURE;
   }
   //pFinder = tool<IRelatedPVFinder>("GenericParticle2PVRelator__p2PVWithIPChi2_OfflineDistanceCalculatorName_",this);
@@ -306,14 +306,14 @@ StatusCode  TupleToolBsMuMuZViso::Initialize_tracksVF_ZVtop()
       verts = get<LHCb::RecVertex::Container>(m_PVInputLocation);
     }
     else {
-      warning()<<"No primary vertex at location"<<endreq; 
+      warning()<<"No primary vertex at location"<<endmsg; 
     }
     RecVertex::Container::const_iterator iv;   
     for ( iv = verts->begin(); iv != verts->end(); iv++) {//Here he's looking at the minimum value of the actual track in the loop wrt all the reconstructed PV
       StatusCode sc2 = m_Geom->distance((it_ptrk),(*iv),imp,impchi2); 
       if (sc2.isFailure() ) 
         {    
-          warning()<<"m_Geom problems"<<endreq;    
+          warning()<<"m_Geom problems"<<endmsg;    
           continue;
         }
       if (impchi2<ipsall) { 
