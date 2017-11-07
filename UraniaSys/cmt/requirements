@@ -47,6 +47,7 @@ use  SimpleTools	  	v2r0	RootTools           	# Conor Fitzpatrick
 use  Espresso                   v0r6p2  FT                      # [Jack Wimberley]
 
 use  QEE                        v1r0    WGCommonTools           # Carlos Vazquez Sierra (temporary) 
+#use  TrackCalib                 v1r0                            # Renata Kopecna, Michel de Cian, Michael Kolpin - TrackCalib does not have CMT support.
 #use  Meerkat                    v1r4    PhysTools               # [Anton Poluektov] - Meerkat does not have CMT support.
 
 apply_pattern container_package
