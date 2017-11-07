@@ -4,6 +4,10 @@
 ! Purpose     : Mathematical tools and algorithms for Bs2MuMu analysis.
 !-----------------------------------------------------------------------------
 
+! 2017-10-25 - Mick Mulder
+  - Updated ntuple options and custom TupleTools to work with DV v42r6p1
+    This was used for the reproduction of ntuples given the TISTOS bug in 2016 data.
+
 ! 2016-12-19 - Carlos Vazquez Sierra
   - First release after migration to gitlab. Information about commits on SVN are lost.
     To be sure, just make version v3r2.
