@@ -29,6 +29,7 @@ RootTools/LHCbStyle
 RootTools/SimpleTools
 FT/Espresso
 PhysTools/Meerkat
+TrackCalib
 WGCommonTools/QEE)
 
 gaudi_env(SET GAUDI_home .)
