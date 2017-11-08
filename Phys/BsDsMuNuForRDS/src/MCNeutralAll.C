@@ -6,6 +6,11 @@
 
 void MCNeutralAll::Loop()
 {
+// #################
+// ##### INFO ######  
+// This code makes the mass distribution of the Ds+gamma,pi0 or pi0+gamma for MC 
+// ################# 
+ 
 //   In a ROOT session, you can do:
 //      Root > .L MCNeutralAll.C
 //      Root > MCNeutralAll t
@@ -34,10 +39,11 @@ void MCNeutralAll::Loop()
    Long64_t nentries = fChain->GetEntries();
    std::cout << "total number of entries = " << nentries << std::endl; 
 
-   TFile *f = new TFile("histosNeutralReco_MC_All_Veto.root","new");
+   TFile *f = new TFile("histosNeutralReco_MC09_MuNu_All_Veto.root","new");
    int nbinsMu = 80;
-   float minGamma = 1950.0;
-   float maxGamma = 2400.0;
+   float resFraction = 2.0;
+   float minGamma = 2050.0;
+   float maxGamma = 2300.0;
    float minPi0 = 1950.0;
    float maxPi0 = 2600.0;
    float minPi0G = 2000.0;
@@ -49,11 +55,15 @@ void MCNeutralAll::Loop()
    TH1F *hDsMuMassFirstG04 = new TH1F("DsMuMassFirstG04", "DsMuNu Ds Mass with first photon 0.4", nbinsMu, minGamma, maxGamma);
    TH1F *hDsMuMassSecondG04 = new TH1F("DsMuMassSecondG04", "DsMuNu Ds Mass with second photon 0.4", nbinsMu, minGamma, maxGamma);
    TH1F *hDsMuMassThirdG04 = new TH1F("DsMuMassThirdG04", "DsMuNu Ds Mass with third photon 0.4", nbinsMu, minGamma, maxGamma);
-
+   TH1F *hDsTauMassFirstG04 = new TH1F("DsTauMassFirstG04", "DsTauNu Ds Mass with first photon 0.4", nbinsMu, minGamma, maxGamma);
+   
+   // No Tau Veto
+   TH1F *hDsMuMassFirstG04_NoTauVeto = new TH1F("DsMuMassFirstG04NoTauVeto", "DsMuNu Ds Mass with first photon 0.4 without tau veto", nbinsMu, minGamma, maxGamma);
+   
    // pi0 mass histograms
-   TH1F *hDsMuMassFirstPi004 = new TH1F("DsMuMassFirstPi004", "DsMuNu Ds Mass with first pi0 0.4", nbinsMu/1.5, minPi0, maxPi0);
-   TH1F *hDsMuMassSecondPi004 = new TH1F("DsMuMassSecondPi004", "DsMuNu Ds Mass with second pi0 0.4", nbinsMu/1.5, minPi0, maxPi0);
-   TH1F *hDsMuMassThirdPi004 = new TH1F("DsMuMassThirdPi004", "DsMuNu Ds Mass with third pi0 0.4", nbinsMu/1.5, minPi0, maxPi0);  
+   TH1F *hDsMuMassFirstPi004 = new TH1F("DsMuMassFirstPi004", "DsMuNu Ds Mass with first pi0 0.4", nbinsMu/resFraction, minPi0, maxPi0);
+   TH1F *hDsMuMassSecondPi004 = new TH1F("DsMuMassSecondPi004", "DsMuNu Ds Mass with second pi0 0.4", nbinsMu/resFraction, minPi0, maxPi0);
+   TH1F *hDsMuMassThirdPi004 = new TH1F("DsMuMassThirdPi004", "DsMuNu Ds Mass with third pi0 0.4", nbinsMu/resFraction, minPi0, maxPi0);  
    TH1F *hCLFirstPi004 = new TH1F("CLFirstPi004", "Pi0 CL", nbinsMu, 0.0, 1.0);
    TH1F *hG1CLFirstPi004 = new TH1F("G1CLFirstPi004", "g1 CL", nbinsMu, 0.0, 1.0);
    TH1F *hG2CLFirstPi004 = new TH1F("G2CLFirstPi004", "g2 CL", nbinsMu, 0.0, 1.0);
@@ -68,13 +78,15 @@ void MCNeutralAll::Loop()
    TH1F *hPi0MassAntiCL = new TH1F("Pi0MassAntiCL", "Pi0 mass anti CL", nbinsMu, 50., 200.);
 
    // pi0 gamma mass histograms
-   TH1F *hDsMuMassFirstPi0G04 = new TH1F("DsMuMassFirstPi0G04", "DsMuNu Ds Mass with first pi0gamma 0.4", nbinsMu/2.0, minPi0G, maxPi0G);
-   TH1F *hDsMuMassSecondPi0G04 = new TH1F("DsMuMassSecondPi0G04", "DsMuNu Ds Mass with second pi0gamma 0.4", nbinsMu/2.0, minPi0G, maxPi0G);
-   TH1F *hDsMuMassThirdPi0G04 = new TH1F("DsMuMassThirdPi0G04", "DsMuNu Ds Mass with third pi0gamma 0.4", nbinsMu/2.0, minPi0G, maxPi0G);
+   TH1F *hDsMuMassFirstPi0G04 = new TH1F("DsMuMassFirstPi0G04", "DsMuNu Ds Mass with first pi0gamma 0.4", nbinsMu/resFraction, minPi0G, maxPi0G);
+   TH1F *hDsMuMassSecondPi0G04 = new TH1F("DsMuMassSecondPi0G04", "DsMuNu Ds Mass with second pi0gamma 0.4", nbinsMu/resFraction, minPi0G, maxPi0G);
+   TH1F *hDsMuMassThirdPi0G04 = new TH1F("DsMuMassThirdPi0G04", "DsMuNu Ds Mass with third pi0gamma 0.4", nbinsMu/resFraction, minPi0G, maxPi0G);
 
    int nMCMatchG = 0;
    int nMCMatchPi0 = 0;
    int nMCMatchPi0G = 0;
+   int nMCMatchGNoTauVeto = 0;
+   
    int nCuts = 0;
    int nPhysTrigger = 0;
    int nTrigger = 0;
@@ -87,6 +99,7 @@ void MCNeutralAll::Loop()
    int nPhotonFirst040 = 0;
    int nPhotonSecond040 = 0;
    int nPhotonThird040 = 0;
+   int nPhotonFirst040Tau = 0;
    int nPi0First040 = 0;
    int nPi0Second040 = 0;
    int nPi0Third040 = 0;
@@ -102,12 +115,14 @@ void MCNeutralAll::Loop()
       if (ientry%100000==0) std::cout << "Analysing event " << ientry << std::endl; 
       if(Bs_0_L0Global_Dec==1 && Bs_0_Hlt1Phys_Dec==1 && Bs_0_Hlt2Phys_Dec==1){
         nPhysTrigger += 1;  
+        if(Bs_0_Hlt2XcMuXForTauB2XcMuDecision_TOS == 1){
         // Emulate the trigger decision
-        if(Kpl_P>5000 && Kmi_P>5000 && pi_P>5000 && (Kpl_PT>800 || Kmi_PT>800 || pi_PT>800) && Ds_PT>2000 && Bs_0_BDTS_DOCA<0.50 && Bs_0_FDCHI2_TOPPV>50 && Ds_MM>1920 && Ds_MM<2010){
+        // for the MC09 ntuples the trigger emulation is not needed
+        //if(Kpl_P>5000 && Kmi_P>5000 && pi_P>5000 && (Kpl_PT>800 || Kmi_PT>800 || pi_PT>800) && Ds_PT>2000 && Bs_0_BDTS_DOCA<0.50 && Bs_0_FDCHI2_TOPPV>50 && Ds_MM>1920 && Ds_MM<2010){
           nTrigger += 1;
           // Tau decays 
           if(abs(mu_MC_GD_MOTHER_ID) == 531 && abs(mu_TRUEID) == 13 && abs(mu_MC_MOTHER_ID) == 15){
-            if(Bs_0_MCORR<8000 && Bs_0_MCORR>3000 && Ds_MM>1950 && Ds_MM<1990 && mu_PT>1000 && mu_ProbNNmu>0.3 && sqrt( pow((Ds_PE+mu_PE),2) - ( pow(Ds_PX+mu_PX,2) + pow(Ds_PY+mu_PY,2) + pow(Ds_PZ+mu_PZ,2)) )>3000 ) {
+            //if(Bs_0_MCORR<8000 && Bs_0_MCORR>3000 && mu_PT>1000 && mu_ProbNNmu>0.3 && sqrt( pow((Ds_PE+mu_PE),2) - ( pow(Ds_PX+mu_PX,2) + pow(Ds_PY+mu_PY,2) + pow(Ds_PZ+mu_PZ,2)) )>3000 ) {
               if(abs(Ds_MC_MOTHER_ID) == 531 && abs(Ds_TRUEID) == 431){
                 nCutsTau += 1;  
               }
@@ -116,13 +131,32 @@ void MCNeutralAll::Loop()
               }
               if(abs(Ds_MC_MOTHER_ID) == 10431 && abs(Ds_TRUEID) == 431 && abs(Ds_MC_GD_MOTHER_ID) == 531){
                 nCutsDs0Tau += 1;
-              } 
-            }
+              }
+              // Ds*TauNu decays
+              if(abs(Ds_MC_MOTHER_ID) == 433 && abs(Ds_TRUEID) == 431 && abs(Ds_MC_GD_MOTHER_ID) == 531){
+                if(Bs_0_MCORR<8000 && Bs_0_MCORR>3000 && Ds_MM>1940 && Ds_MM<2000){
+                  if(Ds_0_40_nc_mult>0 && sqrt(pow(Ds_0_40_nc_maxPt_PX,2)+pow(Ds_0_40_nc_maxPt_PY,2))>0 && Ds_0_40_nc_CL > 0.6){
+                    nPhotonFirst040Tau += 1;
+                    float MassTauDsG1_0_40 = sqrt( pow((Ds_0_40_nc_maxPt_PE+Ds_PE),2) - ( pow(Ds_0_40_nc_maxPt_PX+Ds_PX,2)+pow(Ds_0_40_nc_maxPt_PY+Ds_PY,2)+pow(Ds_0_40_nc_maxPt_PZ+Ds_PZ,2) ) );
+                    hDsTauMassFirstG04->Fill(MassTauDsG1_0_40-Ds_MM+MassDsPDG);
+                  }   
+                }  
+              }
+            //}
           }
           // Mu decays
           if(abs(mu_MC_MOTHER_ID) == 531 && abs(mu_TRUEID) == 13){
-            // Remove the tau component and add trigger selection
-            if(Bs_0_MCORR<8000 && Bs_0_MCORR>3000 && Ds_MM>1950 && Ds_MM<1990 && mu_PT>1000 && mu_ProbNNmu>0.3 && sqrt( pow((Ds_PE+mu_PE),2) - ( pow(Ds_PX+mu_PX,2) + pow(Ds_PY+mu_PY,2) + pow(Ds_PZ+mu_PZ,2)) )>3000 ) {
+            // Without removing the tau component. Only for the 1st and 2nd photon and pi0.
+            // Ds*MuNu decays
+            if(abs(Ds_MC_MOTHER_ID) == 433 && abs(Ds_TRUEID) == 431 && abs(Ds_MC_GD_MOTHER_ID) == 531){
+              nMCMatchGNoTauVeto += 1;
+              if(Ds_0_40_nc_mult>0 && sqrt(pow(Ds_0_40_nc_maxPt_PX,2)+pow(Ds_0_40_nc_maxPt_PY,2))>0 && Ds_0_40_nc_CL > 0.6){
+                float MassDsG1_0_40_NoTauVeto = sqrt( pow((Ds_0_40_nc_maxPt_PE+Ds_PE),2) - ( pow(Ds_0_40_nc_maxPt_PX+Ds_PX,2)+pow(Ds_0_40_nc_maxPt_PY+Ds_PY,2)+pow(Ds_0_40_nc_maxPt_PZ+Ds_PZ,2) ) );
+                hDsMuMassFirstG04_NoTauVeto->Fill(MassDsG1_0_40_NoTauVeto-Ds_MM+MassDsPDG); 
+              }  
+            } 
+            // Remove the tau component and add trigger selection. Get rid of visible mass > 3000 that distorts the corrected mass.
+            if(Bs_0_MCORR<8000 && Bs_0_MCORR>3000 && mu_PT>1000 && mu_ProbNNmu>0.3 && Ds_MM>1940 && Ds_MM<2000) {
               nCuts += 1;
               // DsMuNu decays
               if(abs(Ds_MC_MOTHER_ID) == 531 && abs(Ds_TRUEID) == 431){
@@ -137,17 +171,17 @@ void MCNeutralAll::Loop()
               // Ds*MuNu decays
               if(abs(Ds_MC_MOTHER_ID) == 433 && abs(Ds_TRUEID) == 431 && abs(Ds_MC_GD_MOTHER_ID) == 531){
                 nMCMatchG += 1;
-                if(Ds_0_40_nc_mult>0 and sqrt(pow(Ds_0_40_nc_maxPt_PX,2)+pow(Ds_0_40_nc_maxPt_PY,2))>0 and Ds_0_40_nc_CL > 0.6){
+                if(Ds_0_40_nc_mult>0 && sqrt(pow(Ds_0_40_nc_maxPt_PX,2)+pow(Ds_0_40_nc_maxPt_PY,2))>0 && Ds_0_40_nc_CL > 0.6){
                   nPhotonFirst040 += 1;
                   float MassDsG1_0_40 = sqrt( pow((Ds_0_40_nc_maxPt_PE+Ds_PE),2) - ( pow(Ds_0_40_nc_maxPt_PX+Ds_PX,2)+pow(Ds_0_40_nc_maxPt_PY+Ds_PY,2)+pow(Ds_0_40_nc_maxPt_PZ+Ds_PZ,2) ) );
                   hDsMuMassFirstG04->Fill(MassDsG1_0_40-Ds_MM+MassDsPDG);
                 }
-                if(Ds_0_40_nc_mult>1 and sqrt(pow(Ds_0_40_nc_secPt_PX,2)+pow(Ds_0_40_nc_secPt_PY,2))>0 and Ds_0_40_nc_CL > 0.6){
+                if(Ds_0_40_nc_mult>1 && sqrt(pow(Ds_0_40_nc_secPt_PX,2)+pow(Ds_0_40_nc_secPt_PY,2))>0 && Ds_0_40_nc_CL > 0.6){
                   nPhotonSecond040 += 1; 
                   float MassDsG2_0_40 = sqrt( pow((Ds_0_40_nc_secPt_PE+Ds_PE),2) - ( pow(Ds_0_40_nc_secPt_PX+Ds_PX,2)+pow(Ds_0_40_nc_secPt_PY+Ds_PY,2)+pow(Ds_0_40_nc_secPt_PZ+Ds_PZ,2) ) );
                   hDsMuMassSecondG04->Fill(MassDsG2_0_40-Ds_MM+MassDsPDG);
                 }
-                if(Ds_0_40_nc_mult>2 and sqrt(pow(Ds_0_40_nc_thiPt_PX,2)+pow(Ds_0_40_nc_thiPt_PY,2))>0 and Ds_0_40_nc_CL > 0.6){
+                if(Ds_0_40_nc_mult>2 && sqrt(pow(Ds_0_40_nc_thiPt_PX,2)+pow(Ds_0_40_nc_thiPt_PY,2))>0 && Ds_0_40_nc_CL > 0.6){
                   nPhotonThird040 += 1;
                   float MassDsG3_0_40 = sqrt( pow((Ds_0_40_nc_thiPt_PE+Ds_PE),2) - ( pow(Ds_0_40_nc_thiPt_PX+Ds_PX,2)+pow(Ds_0_40_nc_thiPt_PY+Ds_PY,2)+pow(Ds_0_40_nc_thiPt_PZ+Ds_PZ,2) ) );
                   hDsMuMassThirdG04->Fill(MassDsG3_0_40-Ds_MM+MassDsPDG);
@@ -156,7 +190,7 @@ void MCNeutralAll::Loop()
               // Ds0(2317)MuNu decays  
               if(abs(Ds_MC_MOTHER_ID) == 10431 && abs(Ds_TRUEID) == 431 && abs(Ds_MC_GD_MOTHER_ID) == 531){
                 nMCMatchPi0 += 1;
-                if(Ds_0_40_pi0_mult>0 and sqrt(pow(Ds_0_40_pi0_maxPt_PX,2)+pow(Ds_0_40_pi0_maxPt_PY,2))>0 and Ds_0_40_pi0_maxPt_MM>0.){
+                if(Ds_0_40_pi0_mult>0 && sqrt(pow(Ds_0_40_pi0_maxPt_PX,2)+pow(Ds_0_40_pi0_maxPt_PY,2))>0 && Ds_0_40_pi0_maxPt_MM>0.){
                   hCLFirstPi004->Fill(Ds_0_40_pi0_CL);
                   hG1CLFirstPi004->Fill(Ds_0_40_g1_CL);
                   hG2CLFirstPi004->Fill(Ds_0_40_g2_CL);  
@@ -178,36 +212,36 @@ void MCNeutralAll::Loop()
                   }
                   hPi0MassNoCL->Fill(Ds_0_40_pi0_maxPt_MM);
                 }
-                if(Ds_0_40_pi0_mult>0 and sqrt(pow(Ds_0_40_pi0_maxPt_PX,2)+pow(Ds_0_40_pi0_maxPt_PY,2))>0 and abs(Ds_0_40_pi0_maxPt_MM-MassPi0PDG)<20 and Ds_0_40_g1_CL > 0.6 and Ds_0_40_g2_CL > 0.6){
+                if(Ds_0_40_pi0_mult>0 && sqrt(pow(Ds_0_40_pi0_maxPt_PX,2)+pow(Ds_0_40_pi0_maxPt_PY,2))>0 && abs(Ds_0_40_pi0_maxPt_MM-MassPi0PDG)<20 && Ds_0_40_g1_CL > 0.6 && Ds_0_40_g2_CL > 0.6){
                   nPi0First040 += 1;
                   float MassDsPi01_0_40 = sqrt( pow((Ds_0_40_pi0_maxPt_PE+Ds_PE),2) - ( pow(Ds_0_40_pi0_maxPt_PX+Ds_PX,2)+pow(Ds_0_40_pi0_maxPt_PY+Ds_PY,2)+pow(Ds_0_40_pi0_maxPt_PZ+Ds_PZ,2) ) );
                   hDsMuMassFirstPi004->Fill(MassDsPi01_0_40-Ds_MM+MassDsPDG);
                 }
-                if(Ds_0_40_pi0_mult>1 and sqrt(pow(Ds_0_40_pi0_secPt_PX,2)+pow(Ds_0_40_pi0_secPt_PY,2))>0 and abs(Ds_0_40_pi0_secPt_MM-MassPi0PDG)<20 and Ds_0_40_g1_CL > 0.6 and Ds_0_40_g2_CL > 0.6){
+                if(Ds_0_40_pi0_mult>1 && sqrt(pow(Ds_0_40_pi0_secPt_PX,2)+pow(Ds_0_40_pi0_secPt_PY,2))>0 && abs(Ds_0_40_pi0_secPt_MM-MassPi0PDG)<20 && Ds_0_40_g1_CL > 0.6 && Ds_0_40_g2_CL > 0.6){
                   nPi0Second040 += 1;
                   float MassDsPi02_0_40 = sqrt( pow((Ds_0_40_pi0_secPt_PE+Ds_PE),2) - ( pow(Ds_0_40_pi0_secPt_PX+Ds_PX,2)+pow(Ds_0_40_pi0_secPt_PY+Ds_PY,2)+pow(Ds_0_40_pi0_secPt_PZ+Ds_PZ,2) ) );
                   hDsMuMassSecondPi004->Fill(MassDsPi02_0_40-Ds_MM+MassDsPDG);
                 }
-                if(Ds_0_40_pi0_mult>2 and sqrt(pow(Ds_0_40_pi0_thiPt_PX,2)+pow(Ds_0_40_pi0_thiPt_PY,2))>0 and abs(Ds_0_40_pi0_thiPt_MM-MassPi0PDG)<20 and Ds_0_40_g1_CL > 0.6 and Ds_0_40_g2_CL > 0.6){
+                if(Ds_0_40_pi0_mult>2 && sqrt(pow(Ds_0_40_pi0_thiPt_PX,2)+pow(Ds_0_40_pi0_thiPt_PY,2))>0 && abs(Ds_0_40_pi0_thiPt_MM-MassPi0PDG)<20 && Ds_0_40_g1_CL > 0.6 && Ds_0_40_g2_CL > 0.6){
                   nPi0Third040 += 1;
                   float MassDsPi03_0_40 = sqrt( pow((Ds_0_40_pi0_thiPt_PE+Ds_PE),2) - ( pow(Ds_0_40_pi0_thiPt_PX+Ds_PX,2)+pow(Ds_0_40_pi0_thiPt_PY+Ds_PY,2)+pow(Ds_0_40_pi0_thiPt_PZ+Ds_PZ,2) ) );
                   hDsMuMassThirdPi004->Fill(MassDsPi03_0_40-Ds_MM+MassDsPDG);
                 }
               }
-              // Ds1(2536)MuNu decays
-              if(abs(Ds_MC_MOTHER_ID) == 10433 && abs(Ds_TRUEID) == 431 && abs(Ds_MC_GD_MOTHER_ID) == 531){
+              // Ds1(2460)MuNu decays
+              if(abs(Ds_MC_MOTHER_ID) == 20433 && abs(Ds_TRUEID) == 431 && abs(Ds_MC_GD_MOTHER_ID) == 531){
                 nMCMatchPi0G += 1;
-                if(Ds_0_40_trig_mult>0 and sqrt(pow(Ds_0_40_trig_maxPt_PX,2)+pow(Ds_0_40_trig_maxPt_PY,2))>0 and abs(Ds_0_40_trig_maxPt_MM-MassPi0PDG)<20 and Ds_0_40_sCL > 0.6 and Ds_0_40_sCL > 0.6 and Ds_0_40_tCL > 0.6){
+                if(Ds_0_40_trig_mult>0 && sqrt(pow(Ds_0_40_trig_maxPt_PX,2)+pow(Ds_0_40_trig_maxPt_PY,2))>0 && abs(Ds_0_40_trig_maxPt_MM-MassPi0PDG)<20 && Ds_0_40_sCL > 0.6 && Ds_0_40_sCL > 0.6 && Ds_0_40_tCL > 0.6){
                   nPi0GFirst040 += 1;
                   float MassDsPi0G1_0_40 = sqrt( pow(((sqrt(pow(Ds_0_40_trig_maxPt_MM,2)+pow(Ds_0_40_trig_maxPt_PX,2)+pow(Ds_0_40_trig_maxPt_PY,2)+pow(Ds_0_40_trig_maxPt_PZ,2)))+Ds_PE),2) - ( pow(Ds_0_40_trig_maxPt_PX+Ds_PX,2)+pow(Ds_0_40_trig_maxPt_PY+Ds_PY,2)+pow(Ds_0_40_trig_maxPt_PZ+Ds_PZ,2) ) );
                   hDsMuMassFirstPi0G04->Fill(MassDsPi0G1_0_40-Ds_MM+MassDsPDG);
                 }
-                if(Ds_0_40_trig_mult>1 and sqrt(pow(Ds_0_40_trig_secPt_PX,2)+pow(Ds_0_40_trig_secPt_PY,2))>0 and abs(Ds_0_40_trig_secPt_MM-MassPi0PDG)<20 and Ds_0_40_sCL > 0.6 and Ds_0_40_sCL > 0.6 and Ds_0_40_tCL > 0.6){
+                if(Ds_0_40_trig_mult>1 && sqrt(pow(Ds_0_40_trig_secPt_PX,2)+pow(Ds_0_40_trig_secPt_PY,2))>0 && abs(Ds_0_40_trig_secPt_MM-MassPi0PDG)<20 && Ds_0_40_sCL > 0.6 && Ds_0_40_sCL > 0.6 && Ds_0_40_tCL > 0.6){
                   nPi0GSecond040 += 1;
                   float MassDsPi0G2_0_40 = sqrt( pow(((sqrt(pow(Ds_0_40_trig_secPt_MM,2)+pow(Ds_0_40_trig_secPt_PX,2)+pow(Ds_0_40_trig_secPt_PY,2)+pow(Ds_0_40_trig_secPt_PZ,2)))+Ds_PE),2) - ( pow(Ds_0_40_trig_secPt_PX+Ds_PX,2)+pow(Ds_0_40_trig_secPt_PY+Ds_PY,2)+pow(Ds_0_40_trig_secPt_PZ+Ds_PZ,2) ) );
                    hDsMuMassSecondPi0G04->Fill(MassDsPi0G2_0_40-Ds_MM+MassDsPDG);
                 }
-                if(Ds_0_40_trig_mult>2 and sqrt(pow(Ds_0_40_trig_thiPt_PX,2)+pow(Ds_0_40_trig_thiPt_PY,2))>0 and abs(Ds_0_40_trig_thiPt_MM-MassPi0PDG)<20 and Ds_0_40_sCL > 0.6 and Ds_0_40_sCL > 0.6 and Ds_0_40_tCL > 0.6){
+                if(Ds_0_40_trig_mult>2 && sqrt(pow(Ds_0_40_trig_thiPt_PX,2)+pow(Ds_0_40_trig_thiPt_PY,2))>0 && abs(Ds_0_40_trig_thiPt_MM-MassPi0PDG)<20 && Ds_0_40_sCL > 0.6 && Ds_0_40_sCL > 0.6 && Ds_0_40_tCL > 0.6){
                   nPi0GThird040 += 1;
                   float MassDsPi0G3_0_40 = sqrt( pow(((sqrt(pow(Ds_0_40_trig_thiPt_MM,2)+pow(Ds_0_40_trig_thiPt_PX,2)+pow(Ds_0_40_trig_thiPt_PY,2)+pow(Ds_0_40_trig_thiPt_PZ,2)))+Ds_PE),2) - ( pow(Ds_0_40_trig_thiPt_PX+Ds_PX,2)+pow(Ds_0_40_trig_thiPt_PY+Ds_PY,2)+pow(Ds_0_40_trig_thiPt_PZ+Ds_PZ,2) ) );
                   hDsMuMassThirdPi0G04->Fill(MassDsPi0G3_0_40-Ds_MM+MassDsPDG);
@@ -225,6 +259,12 @@ void MCNeutralAll::Loop()
    std::cout << "Number of events after MCmatch G = " << nMCMatchG << std::endl;
    std::cout << "Number of events after MCmatch Pi0 = " << nMCMatchPi0 << std::endl;
    std::cout << "Number of events after MCmatch Pi0 G = " << nMCMatchPi0G << std::endl;
+   std::cout << "Number of events after MCmatch G NoTauVeto = " << nMCMatchGNoTauVeto << std::endl;
+   
+   std::cout << "#########################################################" << std::endl;
+   std::cout << "#########################################################" << std::endl;
+   std::cout << "#########################################################" << std::endl;
+   std::cout << "Number of events after first Photon Tau pT and CL = " << nPhotonFirst040Tau << std::endl;
    std::cout << "Number of events after first Photon pT and CL = " << nPhotonFirst040 << std::endl;
    std::cout << "Number of events after second Photon pT and CL = " << nPhotonSecond040 << std::endl;
    std::cout << "Number of events after third Photon pT and CL = " << nPhotonThird040 << std::endl;
@@ -246,6 +286,9 @@ void MCNeutralAll::Loop()
    hDsMuMassFirstG04->Write();
    hDsMuMassSecondG04->Write();
    hDsMuMassThirdG04->Write();
+   hDsTauMassFirstG04->Write();
+
+   hDsMuMassFirstG04_NoTauVeto->Write();
 
    hDsMuMassFirstPi004->Write();
    hDsMuMassSecondPi004->Write();

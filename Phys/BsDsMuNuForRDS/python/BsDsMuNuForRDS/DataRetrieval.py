@@ -10,26 +10,106 @@ import BsDsMuNuForRDS.Configuration as Configuration
 ################################################################################
 ## DATA
 ################################################################################
-# Some EOS locations first.
-# This is the directory where the package will read the unprocessed trees.
-preSelectionDirectoryEOS  = '/eos/lhcb/wg/semileptonic/Bs2DsX/UnprocessedTrees/'
-# And the corresponding location where they'll be stored when processed.
-postSelectionDirectoryEOS = '/eos/lhcb/wg/semileptonic/Bs2DsX/ProcessedTrees/'
-# Directory for the trees containing the Dalitz variables.
-dalitzDirectoryEOS        = '/eos/lhcb/wg/semileptonic/Bs2DsX/DalitzTrees/'
-
-# Now some locations for where ROOT files are created.
-# They must be local, so these depend on if we're running on lxplus
-# or at the LNF cluster.
-# First the temporary location for the Dalitz trees.
-localDalitzDirectoryDict = {
-    'lxplus' : '/tmp/RDs/'
-    ,'lnf'   : '/tmp/RDs'
+# Master file directory locations.
+masterDirDict = {
+    'lxplus' : '/eos/lhcb/user/r/rvazquez/RDS/'
+    ,'lnf'   : '/data/Shared/TupleProd_Dec15/'
     }
-# Now the temporary location for the processed trees.
-localPostSelectionDirectoryDict = {
-    'lxplus' : '/tmp/RDs/'
-    ,'lnf'   : '/tmp/RDs'
+
+# Home directory for the processed ntuples on eos.
+finalDirDict = {
+    'lxplus' : '/eos/lhcb/user/r/rvazquez/RDS/WithVetoes/'
+    ,'lnf'   : ''
+    }
+
+# Directory for the Dalitz variables processed from Ricci's
+# master files.
+dalitzDirDict = {
+    'lxplus' : '/afs/cern.ch/work/r/rvazquez/RDS/'
+    ,'lnf'   : ''
+    }
+
+# Temporary post Ds veto locations, for local processing
+# and immediately before being copied to the final dir
+# on eos.
+temporaryDirDict = {
+    'lxplus' : '/afs/cern.ch/work/r/rvazquez/RDS/WithDsVetoes/'
+    ,'lnf'   : ''
+    }
+
+# Data protocol. Use eos for lxplus.
+protocolDict = {
+    'lxplus' : 'root://eoslhcb.cern.ch//'
+    ,'lnf'   : ''
+    }
+
+# A dict containing lists of all files to be added for each type of data and polarity.
+# Also contains the tuple names for each file type to be cycled over.
+dataDict = {
+
+    'MC_Signal'   : { 'tNames'       : [ 'B2DsMuNuTuple/DecayTree' ]
+                       ,'MagUp'      : [ 'TupleRDS_Sim09b_DsMuNu_Up.root' ]
+                       ,'MagDown'    : [ 'TupleRDS_Sim09b_DsMuNu_Down.root' ]
+                       ,'MagUpOut'   : 'TupleRDS_Sim09b_DsMuNu_Up.root'
+                       ,'MagDownOut' : 'TupleRDS_Sim09b_DsMuNu_Down.root'
+                       }
+
+    ,'MC_Tau'      : { 'tNames'      : [ 'B2DsMuNuTuple/DecayTree' ]
+                       ,'MagUp'      : [ 'TupleRDS_Sim09b_DsTauNu_Up.root' ]
+                       ,'MagDown'    : [ 'TupleRDS_Sim09b_DsTauNu_Down.root']
+                       ,'MagUpOut'   : 'TupleRDS_Sim09b_DsTauNu_Up.root'
+                       ,'MagDownOut' : 'TupleRDS_Sim09b_DsTauNu_Down.root'
+                     }
+
+    ,'MC_InclDs'   : { 'tNames'      : [ 'MB2DsMuNuTuple/DecayTree'
+                                         ,'B2DsMuNuTuple/DecayTree'
+                                         ,'B2DsMuNuSSTuple/DecayTree' ]
+                       ,'MagUp'      : [ 'TupleRDS_InclDsUp_allNeutrals_iso.root' ]
+                       ,'MagDown'    : [ 'TupleRDS_InclDsDown_allNeutrals_iso.root' ]
+                       ,'MagUpOut'   :  'TupleRDS_InclDsUp_allNeutrals_iso.root' 
+                       ,'MagDownOut' :  'TupleRDS_InclDsDown_allNeutrals_iso.root'
+                       }
+
+    ,'MC_LbLcDs'   : { 'tNames'      : [ 'B2DsMuNuTuple/DecayTree' ]
+                       ,'MagUp'      : [ 'TupleRDS_Sim09b_LbLcDs_Up.root' ]
+                       ,'MagDown'    : [ 'TupleRDS_Sim09b_LbLcDs_Down.root' ]
+                       ,'MagUpOut'   :  'TupleRDS_Sim09b_LbLcDs_Up.root'
+                       ,'MagDownOut' :  'TupleRDS_Sim09b_LbLcDs_Down.root'
+                       }
+
+    ,'MC_BdDstDs'  : { 'tNames'      : [ 'B2DsMuNuTuple/DecayTree' ]
+                       ,'MagUp'      : [ 'TupleRDS_Sim09b_BdDstDs_Up.root' ]
+                       ,'MagDown'    : [ 'TupleRDS_Sim09b_BdDstDs_Down.root' ]
+                       ,'MagUpOut'   :  'TupleRDS_Sim09b_BdDstDs_Up.root'
+                       ,'MagDownOut' :  'TupleRDS_Sim09b_BdDstDs_Down.root'
+                       }
+
+    ,'MC_BsDsDs'   : { 'tNames'      : [ 'B2DsMuNuTuple/DecayTree' ]
+                       ,'MagUp'      : [ 'TupleRDS_Sim09b_BsDsDs_Up.root' ]
+                       ,'MagDown'    : [ 'TupleRDS_Sim09b_BsDsDs_Down.root' ]
+                       ,'MagUpOut'   :  'TupleRDS_Sim09b_BsDsDs_Up.root'
+                       ,'MagDownOut' :  'TupleRDS_Sim09b_BsDsDs_Down.root'
+                       }
+
+    ,'MC_BuD0Ds'   : { 'tNames'      : [ 'B2DsMuNuTuple/DecayTree' ]
+                       ,'MagUp'      : [ 'TupleRDS_Sim09b_BuD0Ds_Up.root' ]
+                       ,'MagDown'    : [ 'TupleRDS_Sim09b_BuD0Ds_Down.root' ]
+                       ,'MagUpOut'   :  'TupleRDS_Sim09b_BuD0Ds_Up.root'
+                       ,'MagDownOut' :  'TupleRDS_Sim09b_BuD0Ds_Down.root'
+                       }
+    
+    ,'Data'        : { 'tNames'      : ['B2DsMuNuTuple/DecayTree'
+                                        ,'B2DsMuNuTupleFake/DecayTree'
+                                        ,'B2DsMuNuSSTuple/DecayTree'
+                                        ,'B2DsMuNuSSTupleFake/DecayTree']
+                       ,'MagUp'      : ['TupleRDS_DataUp_1_allNeutrals_iso.root'
+                                        ,'TupleRDS_DataUp_2_allNeutrals_iso.root']
+                       ,'MagDown'    : ['TupleRDS_DataDown_1_allNeutrals_iso.root'
+                                        ,'TupleRDS_DataDown_2_allNeutrals_iso.root']
+                       ,'MagUpOut'   : 'TupleRDS_DataUp_allNeutrals_iso.root'
+                       ,'MagDownOut' : 'TupleRDS_DataDown_allNeutrals_iso.root'
+                       }
+    
     }
 
 # The EOS protocol to use.

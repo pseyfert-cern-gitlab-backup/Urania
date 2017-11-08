@@ -6,6 +6,11 @@
 
 void KinVarsReco::Loop()
 {
+// #################
+// ##### INFO ######  
+// This code checks the kinematic distribution for MC matched variables 
+// ################# 
+  
 //   In a ROOT session, you can do:
 //      root> .L KinVarsReco.C
 //      root> KinVarsReco t
@@ -33,12 +38,14 @@ void KinVarsReco::Loop()
 
    Long64_t nentries = fChain->GetEntriesFast();
 
-   TFile *f = new TFile("histosKinReco.root","new");
+   TFile *f = new TFile("histosKinReco_MC09_TauNu.root","new");
  
    TH1F *hDsMuCorrMass = new TH1F("DsMuCorrMass", "DsMuNu corrected mass", 100, 2000, 5500);
    TH1F *hDsTauCorrMass = new TH1F("DsTauCorrMass", "DsTauNu corrected mass", 100, 2000, 5500);
    TH1F *hDsMuCorrMassErr = new TH1F("DsMuCorrMassErr", "DsMuNu corrected mass error", 100, 0, 500);
    TH1F *hDsTauCorrMassErr = new TH1F("DsTauCorrMassErr", "DsTauNu corrected mass error", 100, 0, 500);
+   TH1F *hDsMuBvis = new TH1F("DsMuBvis", "DsMuNu visible B mass", 100, 2000, 5400);
+   TH1F *hDsTauBvis = new TH1F("DsTauBvis", "DsTauNu visible B mass", 100, 2000, 5400);
    TH1F *hDsMuBP = new TH1F("DsMuBP", "DsMuNu B momentum", 100, 0, 250000);
    TH1F *hDsTauBP = new TH1F("DsTauBP", "DsTauNu B momentum", 100, 0, 250000);
    TH1F *hDsMuBPT = new TH1F("DsMuBPT", "DsMuNu B pT", 100, 0, 30000);
@@ -70,6 +77,8 @@ void KinVarsReco::Loop()
    TH1F *hDsstTauCorrMass = new TH1F("DsstTauCorrMass", "Ds*TauNu corrected mass", 100, 2000, 5500);
    TH1F *hDsstMuCorrMassErr = new TH1F("DsstMuCorrMassErr", "Ds*MuNu corrected mass error", 100, 0, 500);
    TH1F *hDsstTauCorrMassErr = new TH1F("DsstTauCorrMassErr", "Ds*TauNu corrected mass error", 100, 0, 500);
+   TH1F *hDsstMuBvis = new TH1F("DsstMuBvis", "Ds*MuNu visible B mass", 100, 2000, 5400);
+   TH1F *hDsstTauBvis = new TH1F("DsstTauBvis", "Ds*TauNu visible B mass", 100, 2000, 5400); 
    TH1F *hDsstMuBP = new TH1F("DsstMuBP", "Ds*MuNu B momentum", 100, 0, 250000);
    TH1F *hDsstTauBP = new TH1F("DsstTauBP", "Ds*TauNu B momentum", 100, 0, 250000);
    TH1F *hDsstMuBPT = new TH1F("DsstMuBPT", "Ds*MuNu B pT", 100, 0, 30000);
@@ -101,6 +110,8 @@ void KinVarsReco::Loop()
    TH1F *hDs0TauCorrMass = new TH1F("Ds0TauCorrMass", "Ds0TauNu corrected mass", 100, 2000, 5500);
    TH1F *hDs0MuCorrMassErr = new TH1F("Ds0MuCorrMassErr", "Ds0MuNu corrected mass error", 100, 0, 500);
    TH1F *hDs0TauCorrMassErr = new TH1F("Ds0TauCorrMassErr", "Ds0TauNu corrected mass error", 100, 0, 500);
+   TH1F *hDs0MuBvis = new TH1F("Ds0MuBvis", "Ds0MuNu visible B mass", 100, 2000, 5400);
+   TH1F *hDs0TauBvis = new TH1F("Ds0TauBvis", "Ds0TauNu visible B mass", 100, 2000, 5400);
    TH1F *hDs0MuBP = new TH1F("Ds0MuBP", "Ds0MuNu B momentum", 100, 0, 250000);
    TH1F *hDs0TauBP = new TH1F("Ds0TauBP", "Ds0TauNu B momentum", 100, 0, 250000);
    TH1F *hDs0MuBPT = new TH1F("Ds0MuBPT", "Ds0MuNu B pT", 100, 0, 30000);
@@ -132,6 +143,8 @@ void KinVarsReco::Loop()
    TH1F *hDs1TauCorrMass = new TH1F("Ds1TauCorrMass", "Ds1TauNu corrected mass", 100, 2000, 5500);
    TH1F *hDs1MuCorrMassErr = new TH1F("Ds1MuCorrMassErr", "Ds1MuNu corrected mass error", 100, 0, 500);
    TH1F *hDs1TauCorrMassErr = new TH1F("Ds1TauCorrMassErr", "Ds1TauNu corrected mass error", 100, 0, 500);
+   TH1F *hDs1MuBvis = new TH1F("Ds1MuBvis", "Ds1MuNu visible B mass", 100, 2000, 5400);
+   TH1F *hDs1TauBvis = new TH1F("Ds1TauBvis", "Ds1TauNu visible B mass", 100, 2000, 5400);   
    TH1F *hDs1MuBP = new TH1F("Ds1MuBP", "Ds1MuNu B momentum", 100, 0, 250000);
    TH1F *hDs1TauBP = new TH1F("Ds1TauBP", "Ds1TauNu B momentum", 100, 0, 250000);
    TH1F *hDs1MuBPT = new TH1F("Ds1MuBPT", "Ds1MuNu B pT", 100, 0, 30000);
@@ -163,6 +176,8 @@ void KinVarsReco::Loop()
    TH1F *hDsprTauCorrMass = new TH1F("DsprTauCorrMass", "DsprTauNu corrected mass", 100, 2000, 5500);
    TH1F *hDsprMuCorrMassErr = new TH1F("DsprMuCorrMassErr", "DsprMuNu corrected mass error", 100, 0, 500);
    TH1F *hDsprTauCorrMassErr = new TH1F("DsprTauCorrMassErr", "DsprTauNu corrected mass error", 100, 0, 500);
+   TH1F *hDsprMuBvis = new TH1F("DsprMuBvis", "DsprMuNu visible B mass", 100, 2000, 5400);
+   TH1F *hDsprTauBvis = new TH1F("DsprTauBvis", "DsprTauNu visible B mass", 100, 2000, 5400);
    TH1F *hDsprMuBP = new TH1F("DsprMuBP", "DsprMuNu B momentum", 100, 0, 250000);
    TH1F *hDsprTauBP = new TH1F("DsprTauBP", "DsprTauNu B momentum", 100, 0, 250000);
    TH1F *hDsprMuBPT = new TH1F("DsprMuBPT", "DsprMuNu B pT", 100, 0, 30000);
@@ -201,6 +216,7 @@ void KinVarsReco::Loop()
         if(abs(Ds_MC_MOTHER_ID)==531 && abs(Ds_TRUEID) == 431){
           hDsTauCorrMass->Fill(Bs_0_MCORR);
           hDsTauCorrMassErr->Fill(Bs_0_MCORRERR);
+          hDsTauBvis->Fill(Bs_0_MM);
           hDsTauBP->Fill(Bs_0_P);
           hDsTauBPT->Fill(Bs_0_PT);
           hDsTauVChi2->Fill(Bs_0_ENDVERTEX_CHI2);
@@ -219,6 +235,7 @@ void KinVarsReco::Loop()
         if(abs(Ds_MC_MOTHER_ID)==433 && abs(Ds_TRUEID) == 431){
           hDsstTauCorrMass->Fill(Bs_0_MCORR);
           hDsstTauCorrMassErr->Fill(Bs_0_MCORRERR);
+          hDsstTauBvis->Fill(Bs_0_MM);
           hDsstTauBP->Fill(Bs_0_P);
           hDsstTauBPT->Fill(Bs_0_PT);
           hDsstTauVChi2->Fill(Bs_0_ENDVERTEX_CHI2);
@@ -237,6 +254,7 @@ void KinVarsReco::Loop()
         if(abs(Ds_MC_MOTHER_ID)==10431 && abs(Ds_TRUEID) == 431){
           hDs0TauCorrMass->Fill(Bs_0_MCORR);
           hDs0TauCorrMassErr->Fill(Bs_0_MCORRERR);
+          hDs0TauBvis->Fill(Bs_0_MM);
           hDs0TauBP->Fill(Bs_0_P);
           hDs0TauBPT->Fill(Bs_0_PT);
           hDs0TauVChi2->Fill(Bs_0_ENDVERTEX_CHI2);
@@ -255,6 +273,7 @@ void KinVarsReco::Loop()
         if(abs(Ds_MC_MOTHER_ID)==20433 && abs(Ds_TRUEID) == 431){
           hDs1TauCorrMass->Fill(Bs_0_MCORR);
           hDs1TauCorrMassErr->Fill(Bs_0_MCORRERR);
+          hDs1TauBvis->Fill(Bs_0_MM);
           hDs1TauBP->Fill(Bs_0_P);
           hDs1TauBPT->Fill(Bs_0_PT);
           hDs1TauVChi2->Fill(Bs_0_ENDVERTEX_CHI2);
@@ -273,6 +292,7 @@ void KinVarsReco::Loop()
         if(abs(Ds_MC_MOTHER_ID)==10433 && abs(Ds_TRUEID) == 431){
           hDsprTauCorrMass->Fill(Bs_0_MCORR);
           hDsprTauCorrMassErr->Fill(Bs_0_MCORRERR);
+          hDsprTauBvis->Fill(Bs_0_MM);
           hDsprTauBP->Fill(Bs_0_P);
           hDsprTauBPT->Fill(Bs_0_PT);
           hDsprTauVChi2->Fill(Bs_0_ENDVERTEX_CHI2);
@@ -294,6 +314,7 @@ void KinVarsReco::Loop()
         if(abs(Ds_MC_MOTHER_ID) == 531 && abs(Ds_TRUEID) == 431){
           hDsMuCorrMass->Fill(Bs_0_MCORR);
           hDsMuCorrMassErr->Fill(Bs_0_MCORRERR);
+          hDsMuBvis->Fill(Bs_0_MM);
           hDsMuBP->Fill(Bs_0_P);
           hDsMuBPT->Fill(Bs_0_PT);
           hDsMuVChi2->Fill(Bs_0_ENDVERTEX_CHI2);
@@ -312,6 +333,7 @@ void KinVarsReco::Loop()
         if(abs(Ds_MC_MOTHER_ID) == 433 && abs(Ds_TRUEID) == 431){
           hDsstMuCorrMass->Fill(Bs_0_MCORR);
           hDsstMuCorrMassErr->Fill(Bs_0_MCORRERR);
+          hDsstMuBvis->Fill(Bs_0_MM);
           hDsstMuBP->Fill(Bs_0_P);
           hDsstMuBPT->Fill(Bs_0_PT);
           hDsstMuVChi2->Fill(Bs_0_ENDVERTEX_CHI2);
@@ -330,6 +352,7 @@ void KinVarsReco::Loop()
         if(abs(Ds_MC_MOTHER_ID) == 10431 && abs(Ds_TRUEID) == 431){
           hDs0MuCorrMass->Fill(Bs_0_MCORR);
           hDs0MuCorrMassErr->Fill(Bs_0_MCORRERR);
+          hDs0MuBvis->Fill(Bs_0_MM);
           hDs0MuBP->Fill(Bs_0_P);
           hDs0MuBPT->Fill(Bs_0_PT);
           hDs0MuVChi2->Fill(Bs_0_ENDVERTEX_CHI2);
@@ -348,6 +371,7 @@ void KinVarsReco::Loop()
         if(abs(Ds_MC_MOTHER_ID) == 20433 && abs(Ds_TRUEID) == 431){
           hDs1MuCorrMass->Fill(Bs_0_MCORR);
           hDs1MuCorrMassErr->Fill(Bs_0_MCORRERR);
+          hDs1MuBvis->Fill(Bs_0_MM);
           hDs1MuBP->Fill(Bs_0_P);
           hDs1MuBPT->Fill(Bs_0_PT);
           hDs1MuVChi2->Fill(Bs_0_ENDVERTEX_CHI2);
@@ -366,6 +390,7 @@ void KinVarsReco::Loop()
         if(abs(Ds_MC_MOTHER_ID) == 10433 && abs(Ds_TRUEID) == 431){
           hDsprMuCorrMass->Fill(Bs_0_MCORR);
           hDsprMuCorrMassErr->Fill(Bs_0_MCORRERR);
+          hDsprMuBvis->Fill(Bs_0_MM);
           hDsprMuBP->Fill(Bs_0_P);
           hDsprMuBPT->Fill(Bs_0_PT);
           hDsprMuVChi2->Fill(Bs_0_ENDVERTEX_CHI2);
@@ -389,6 +414,8 @@ void KinVarsReco::Loop()
    hDsMuCorrMass->Write();
    hDsTauCorrMassErr->Write();
    hDsMuCorrMassErr->Write();
+   hDsTauBvis->Write();
+   hDsMuBvis->Write(); 
    hDsTauBP->Write();
    hDsMuBP->Write();
    hDsTauBPT->Write();
@@ -420,6 +447,8 @@ void KinVarsReco::Loop()
    hDsstMuCorrMass->Write();
    hDsstTauCorrMassErr->Write();
    hDsstMuCorrMassErr->Write();
+   hDsstTauBvis->Write();
+   hDsstMuBvis->Write();
    hDsstTauBP->Write();
    hDsstMuBP->Write();
    hDsstTauBPT->Write();
@@ -451,6 +480,8 @@ void KinVarsReco::Loop()
    hDs0MuCorrMass->Write();
    hDs0TauCorrMassErr->Write();
    hDs0MuCorrMassErr->Write();
+   hDs0TauBvis->Write();
+   hDs0MuBvis->Write();
    hDs0TauBP->Write();
    hDs0MuBP->Write();
    hDs0TauBPT->Write();
@@ -486,6 +517,8 @@ void KinVarsReco::Loop()
    hDs1MuCorrMass->Write();
    hDs1TauCorrMassErr->Write();
    hDs1MuCorrMassErr->Write();
+   hDs1TauBvis->Write();
+   hDs1MuBvis->Write();
    hDs1TauBP->Write();
    hDs1MuBP->Write();
    hDs1TauBPT->Write();
@@ -521,6 +554,8 @@ void KinVarsReco::Loop()
    hDsprMuCorrMass->Write();
    hDsprTauCorrMassErr->Write();
    hDsprMuCorrMassErr->Write();
+   hDsprTauBvis->Write();
+   hDsprMuBvis->Write();
    hDsprTauBP->Write();
    hDsprMuBP->Write();
    hDsprTauBPT->Write();

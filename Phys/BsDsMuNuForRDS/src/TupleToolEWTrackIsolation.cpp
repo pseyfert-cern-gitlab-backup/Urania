@@ -1,10 +1,12 @@
  // Include files
 #include "GaudiKernel/ToolFactory.h"
 #include "Event/Particle.h"
+#include "Event/MCParticle.h"
 // kernel
 #include "GaudiAlg/Tuple.h"
 #include "GaudiAlg/TupleObj.h"
 #include "GaudiKernel/PhysicalConstants.h"
+#include "Kernel/IParticle2MCAssociator.h"
 // local
 #include "TupleToolEWTrackIsolation.h"
 //-----------------------------------------------------------------------------
@@ -39,7 +41,13 @@ TupleToolEWTrackIsolation::TupleToolEWTrackIsolation( const std::string &type,
                       "Set the type of Pi0s which are considered in the neutral cone" );
     declareProperty( "FillComponents", m_fillComponents = true,
                       "Flag to fill all the 3-momentum components" );
-}
+    declareProperty( "isMC", m_isMC = false, 
+                      "Flag to fill MC truth information" );
+    // do as in TupleToolMCTruth
+    m_p2mcAssocTypes.push_back( "DaVinciSmartAssociator" );
+    m_p2mcAssocTypes.push_back( "MCMatchObjP2MCRelator"  );
+    declareProperty( "IP2MCPAssociatorTypes", m_p2mcAssocTypes );
+   }
 //=============================================================================
 // Destructor
 //=============================================================================
@@ -57,6 +65,15 @@ StatusCode TupleToolEWTrackIsolation::initialize()
     if ( msgLevel(MSG::FATAL) ) fatal() << "Max conesize smaller than min conesize." << endmsg; 
     return StatusCode::FAILURE;
   }
+  
+  // the MC associators
+  m_p2mcAssocs.clear();
+  for ( std::vector<std::string>::const_iterator iMCAss = m_p2mcAssocTypes.begin();
+        iMCAss != m_p2mcAssocTypes.end(); ++iMCAss ) {
+    m_p2mcAssocs.push_back( tool<IParticle2MCAssociator>(*iMCAss,this) );
+  }
+  if ( m_p2mcAssocs.empty() ) { return Error("No MC associators configured"); }
+  
   if ( msgLevel(MSG::DEBUG) ) debug() << "==> Initialize" << endmsg;
   return StatusCode::SUCCESS;
 }
@@ -180,11 +197,27 @@ StatusCode TupleToolEWTrackIsolation::fill( const LHCb::Particle *top,
       double gpid = 0.;
       double gcnv = 0.;
       double gprs = 0.;
-      
+      double gmaximumPt_TRUEPX = 0.;
+      double gmaximumPt_TRUEPY = 0.;
+      double gmaximumPt_TRUEPZ = 0.;
+      double gmaximumPt_TRUEPE = 0.;
+      double gsecondPt_TRUEPX = 0.;
+      double gsecondPt_TRUEPY = 0.;
+      double gsecondPt_TRUEPZ = 0.;
+      double gsecondPt_TRUEPE = 0.;
+      double gthirdPt_TRUEPX = 0.;
+      double gthirdPt_TRUEPY = 0.;
+      double gthirdPt_TRUEPZ = 0.;
+      double gthirdPt_TRUEPE = 0.; 
+
       // neutral cone with photons
-      StatusCode nscgamma = PhotonCone( seed, photons, coneSize, gmultiplicity, gvectorP, gscalarPt, gmaximumPt_PX, gmaximumPt_PY, gmaximumPt_PZ, gmaximumPt_PE, gsecondPt_PX, gsecondPt_PY, gsecondPt_PZ, gsecondPt_PE, gthirdPt_PX, gthirdPt_PY, gthirdPt_PZ, gthirdPt_PE, gCL, gshape, gmatch, gpid, gcnv, gprs); 
+      StatusCode nscgamma = PhotonCone( seed, photons, coneSize, gmultiplicity, gvectorP, gscalarPt, gmaximumPt_PX, gmaximumPt_PY, gmaximumPt_PZ, gmaximumPt_PE, gsecondPt_PX, gsecondPt_PY, gsecondPt_PZ, gsecondPt_PE, gthirdPt_PX, gthirdPt_PY, gthirdPt_PZ, gthirdPt_PE, gCL, gshape, gmatch, gpid, gcnv, gprs ); 
       if ( nscgamma.isFailure() ) gmultiplicity = -1;
-   
+      StatusCode nscgammaMC = false;
+      if ( m_isMC ) {
+        StatusCode nscgammaMC = PhotonConeMC( seed, photons, coneSize, gmaximumPt_TRUEPX, gmaximumPt_TRUEPY, gmaximumPt_TRUEPZ, gmaximumPt_TRUEPE, gsecondPt_TRUEPX, gsecondPt_TRUEPY, gsecondPt_TRUEPZ, gsecondPt_TRUEPE, gthirdPt_TRUEPX, gthirdPt_TRUEPY, gthirdPt_TRUEPZ, gthirdPt_TRUEPE );  
+      }
+      
       // -- Create a vector with the summed momentum of all photons in the cone
       Gaudi::XYZVector gConeMomentum;
       gConeMomentum.SetX( gvectorP[0] );
@@ -218,6 +251,20 @@ StatusCode TupleToolEWTrackIsolation::fill( const LHCb::Particle *top,
         test &= tuple->column( prefix + "_" + conesize + "_nc_PID", gpid );
         test &= tuple->column( prefix + "_" + conesize + "_nc_CNV", gcnv );
         test &= tuple->column( prefix + "_" + conesize + "_nc_PRS", gprs );
+        if (m_isMC){
+          test &= tuple->column( prefix + "_" + conesize + "_nc_MCmaxPt_PX", gmaximumPt_TRUEPX );
+          test &= tuple->column( prefix + "_" + conesize + "_nc_MCmaxPt_PY", gmaximumPt_TRUEPY );
+          test &= tuple->column( prefix + "_" + conesize + "_nc_MCmaxPt_PZ", gmaximumPt_TRUEPZ );
+          test &= tuple->column( prefix + "_" + conesize + "_nc_MCmaxPt_PE", gmaximumPt_TRUEPE );
+          test &= tuple->column( prefix + "_" + conesize + "_nc_MCsecPt_PX", gsecondPt_TRUEPX );
+          test &= tuple->column( prefix + "_" + conesize + "_nc_MCsecPt_PY", gsecondPt_TRUEPY );
+          test &= tuple->column( prefix + "_" + conesize + "_nc_MCsecPt_PZ", gsecondPt_TRUEPZ );
+          test &= tuple->column( prefix + "_" + conesize + "_nc_MCsecPt_PE", gsecondPt_TRUEPE );
+          test &= tuple->column( prefix + "_" + conesize + "_nc_MCthiPt_PX", gthirdPt_TRUEPX );
+          test &= tuple->column( prefix + "_" + conesize + "_nc_MCthiPt_PY", gthirdPt_TRUEPY );
+          test &= tuple->column( prefix + "_" + conesize + "_nc_MCthiPt_PZ", gthirdPt_TRUEPZ );
+          test &= tuple->column( prefix + "_" + conesize + "_nc_MCthiPt_PE", gthirdPt_TRUEPE ); 
+        }
       }
 
       // retrieve information in the pi0 cone
@@ -589,6 +636,86 @@ StatusCode TupleToolEWTrackIsolation::PhotonCone( const LHCb::Particle *seed,
   vP.push_back( sPx );
   vP.push_back( sPy );
   vP.push_back( sPz );
+  return StatusCode::SUCCESS;
+}
+
+//=============================================================================
+// Loop over all the photons in the cone to get MC info
+//=============================================================================
+StatusCode TupleToolEWTrackIsolation::PhotonConeMC( const LHCb::Particle *seed,
+                                                    const LHCb::Particles *photons,
+                                                    const double rcut,
+                                                    double &maxPt_PX, double &maxPt_PY, double &maxPt_PZ, double &maxPt_PE,
+                                                    double &secPt_PX, double &secPt_PY, double &secPt_PZ, double &secPt_PE,
+                                                    double &thiPt_PX, double &thiPt_PY, double &thiPt_PZ, double &thiPt_PE
+    )
+{
+  // -- Initialize values
+  maxPt_PX = 0.;
+  maxPt_PY = 0.;
+  maxPt_PZ = 0.;
+  maxPt_PE = 0.;
+  secPt_PX = 0.;
+  secPt_PY = 0.;
+  secPt_PZ = 0.;
+  secPt_PE = 0.;
+  thiPt_PX = 0.;
+  thiPt_PY = 0.;
+  thiPt_PZ = 0.;
+  thiPt_PE = 0.;
+  // -- Get the 4-momentum of the seed particle
+  Gaudi::LorentzVector seedMomentum = seed->momentum();
+
+  // Initialize MC photon
+  const LHCb::MCParticle *mcphoton = NULL;
+
+  for ( LHCb::Particles::const_iterator ip = photons->begin(); ip != photons->end(); ++ip ) {
+    const LHCb::Particle *photon = (*ip);
+    if(msgLevel(MSG::DEBUG)) debug() << "Iterating Photon" << endmsg;
+    // -- Get the 3-momentum of the photon
+    Gaudi::XYZVector photonMomentum = photon->momentum().Vect();
+    // -- Calculate the difference in Eta and Phi between the seed particle and a photons
+    double deltaPhi = fabs( seedMomentum.Phi() - photonMomentum.Phi() );
+    if ( deltaPhi > M_PI ) deltaPhi = 2 * M_PI - deltaPhi;
+    double deltaEta = seedMomentum.Eta() - photonMomentum.Eta();
+    double deltaR = sqrt( deltaPhi * deltaPhi + deltaEta * deltaEta );
+
+    const LHCb::ProtoParticle* proto = photon->proto();
+    if(NULL == proto) return StatusCode::SUCCESS;
+
+    // Associate to MC photon
+    for ( std::vector<IParticle2MCAssociator*>::const_iterator iMCAss = m_p2mcAssocs.begin();
+          iMCAss != m_p2mcAssocs.end(); ++iMCAss ) {
+      mcphoton = (*iMCAss)->relatedMCP(photon);
+      if ( !mcphoton ) return StatusCode::SUCCESS;
+    }
+    if (msgLevel(MSG::VERBOSE)) verbose() << "Got mcphoton " << mcphoton << endmsg ;
+ 
+    Gaudi::XYZVector mcphotonMomentum = mcphoton->momentum().Vect();
+
+    if ( ( rcut == 0. ) || ( deltaR <= rcut ) ) {
+      // Extra Photon
+      if ( sqrt( photonMomentum.Perp2() ) > sqrt(pow(maxPt_PX, 2.) + pow(maxPt_PY, 2.)) ) {
+        maxPt_PX = mcphotonMomentum.X();
+        maxPt_PY = mcphotonMomentum.Y();
+        maxPt_PZ = mcphotonMomentum.Z();
+        maxPt_PE = mcphoton->momentum().E();
+      }
+      else if ( sqrt( photonMomentum.Perp2() ) > sqrt(pow(secPt_PX, 2.) + pow(secPt_PY, 2.)) ) {
+        secPt_PX = mcphotonMomentum.X();
+        secPt_PY = mcphotonMomentum.Y();
+        secPt_PZ = mcphotonMomentum.Z();
+        secPt_PE = mcphoton->momentum().E();
+      }
+      else if ( sqrt( photonMomentum.Perp2() ) > sqrt(pow(thiPt_PX, 2.) + pow(thiPt_PY, 2.)) ) {
+        thiPt_PX = mcphotonMomentum.X();
+        thiPt_PY = mcphotonMomentum.Y();
+        thiPt_PZ = mcphotonMomentum.Z();
+        thiPt_PE = mcphoton->momentum().E();
+      }
+    }
+  }
+
   return StatusCode::SUCCESS;
 }
  

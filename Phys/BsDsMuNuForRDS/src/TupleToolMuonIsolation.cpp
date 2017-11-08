@@ -768,51 +768,55 @@ StatusCode TupleToolMuonIsolation::fillIsolation(const LHCb::Particle *part,
   //calling Giampi's tool. setting isotype=5 will output the new isolation variable 
   std::vector<int> iso5 = getIso( part, isotype, false);  
   std::vector<int> iso5_cut = getIso( part, isotype, true);  
-  double m_count_mum_Giampi_cut, m_count_mup_Giampi_cut;
+  //double m_count_mum_Giampi_cut;
+  double m_count_mup_Giampi_cut;
 
   std::vector<int> iso1_new = getIso( part, 66131, true);   // //  6 june 2013
-  double m_count_mum_iso1, m_count_mup_iso1;
+  //double m_count_mum_iso1;
+  double m_count_mup_iso1;
 
   std::vector<int> iso2_new = getIso( part, 66132, true);  
-  double m_count_mum_iso2, m_count_mup_iso2;
+  //double m_count_mum_iso2;
+  double m_count_mup_iso2;
 
   std::vector<int> isoD0_new = getIso( part, 66133, true);  
-  double m_count_mum_isoD0, m_count_mup_isoD0;
+  //double m_count_mum_isoD0
+  double m_count_mup_isoD0;
   debug()<<" GIAMPI just after calling getIso "<<"GIAMPI  iso "<<iso5[0]<<"  "<<iso5[1]<<endmsg;
   
   if (iso5[0]==-999) return StatusCode::FAILURE;
   
   if (pv.at(0)->charge() < 0) {
-    m_count_mum_Giampi = static_cast<float>( iso5[0] );
+    //m_count_mum_Giampi = static_cast<float>( iso5[0] );
     m_count_mup_Giampi = static_cast<float>( iso5[1] );
     
-    m_count_mum_Giampi_cut = static_cast<float>( iso5_cut[0] );
+    //m_count_mum_Giampi_cut = static_cast<float>( iso5_cut[0] );
     m_count_mup_Giampi_cut = static_cast<float>( iso5_cut[1] );
     
-    m_count_mum_iso1 = static_cast<float>( iso1_new[0] );
+    //m_count_mum_iso1 = static_cast<float>( iso1_new[0] );
     m_count_mup_iso1 = static_cast<float>( iso1_new[1] );
-    m_count_mum_iso2 = static_cast<float>( iso2_new[0] );
+    //m_count_mum_iso2 = static_cast<float>( iso2_new[0] );
     m_count_mup_iso2 = static_cast<float>( iso2_new[1] );
-    m_count_mum_isoD0 = static_cast<float>( isoD0_new[0] );
+    //m_count_mum_isoD0 = static_cast<float>( isoD0_new[0] );
     m_count_mup_isoD0 = static_cast<float>( isoD0_new[1] );
   }
   else{
-    m_count_mum_Giampi = static_cast<float>( iso5[1] );
+    //m_count_mum_Giampi = static_cast<float>( iso5[1] );
     m_count_mup_Giampi = static_cast<float>( iso5[0] );
 
-    m_count_mum_Giampi_cut = static_cast<float>( iso5_cut[1] );
+    //m_count_mum_Giampi_cut = static_cast<float>( iso5_cut[1] );
     m_count_mup_Giampi_cut = static_cast<float>( iso5_cut[0] );
 
-    m_count_mum_iso1 = static_cast<float>( iso1_new[1] );
+    //m_count_mum_iso1 = static_cast<float>( iso1_new[1] );
     m_count_mup_iso1 = static_cast<float>( iso1_new[0] );
-    m_count_mum_iso2 = static_cast<float>( iso2_new[1] );
+    //m_count_mum_iso2 = static_cast<float>( iso2_new[1] );
     m_count_mup_iso2 = static_cast<float>( iso2_new[0] );
-    m_count_mum_isoD0 = static_cast<float>( isoD0_new[1] );
+    //m_count_mum_isoD0 = static_cast<float>( isoD0_new[1] );
     m_count_mup_isoD0 = static_cast<float>( isoD0_new[0] );
   }
 
   debug()<<"filling tuple with Giampi's isolation vars "
-         << m_count_mup_Giampi<<" "<< m_count_mum_Giampi << endmsg;
+         << m_count_mup_Giampi<<" "<< endmsg;
   
   test &= tuple->column( prefix1+"_isolation_Giampi", m_count_mup_Giampi);
   //test &= tuple->column( prefix2+"_isolation_Giampi", m_count_mum_Giampi);
@@ -1123,7 +1127,7 @@ StatusCode TupleToolMuonIsolation::fillTrackIsoBDT(const LHCb::Particle *B,
   // Loop over the B cand daughters
   // Define the muon and get the vector of Ds daughters
   //
-  const LHCb::Track* mu_trk;
+  const LHCb::Track* mu_trk = NULL;
   LHCb::Particle::ConstVector DsDaug;
   if ( NULL!=(parts[0]->proto()) ) {
     mu_trk=parts[0]->proto()->track();
@@ -1485,7 +1489,8 @@ StatusCode TupleToolMuonIsolation::fillDoca(const LHCb::Particle *part,
 
   const LHCb::Particle::ConstVector pv = part->daughtersVector();
 
-  const LHCb::Particle *imp, *imm;
+  const LHCb::Particle *imp=NULL;
+  const LHCb::Particle *imm=NULL;
   int idx = 0;
   for (LHCb::Particle::ConstVector::const_iterator ipart=pv.begin();ipart!=pv.end();++ipart) {
     if(idx == 0) {imp = (*ipart);}
@@ -2933,7 +2938,7 @@ StatusCode TupleToolMuonIsolation::fillMCDecayTree(Tuples::Tuple& tuple){
   // Fill the ntuple
   //
   bool test =true;
-  int MCGEN_maxnum=500;
+  int MCGEN_maxnum=1500;
   test &= tuple->farray("MCGEN_partindex", mc_partindex_vec.begin(),mc_partindex_vec.end(), "MCGEN_num", MCGEN_maxnum );
   test &= tuple->farray("MCGEN_motindex", mc_motindex_vec.begin(),mc_motindex_vec.end(), "MCGEN_num", MCGEN_maxnum );
   test &= tuple->farray("MCGEN_lundid", mc_lundid_vec.begin(),mc_lundid_vec.end(), "MCGEN_num", MCGEN_maxnum );

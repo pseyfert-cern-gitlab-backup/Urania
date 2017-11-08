@@ -302,7 +302,7 @@ void HistFactDsstarFF() {
   RooRealVar *x = (RooRealVar*) obs->find("obs_x_Dstmu_kinematic");
   RooRealVar *y = (RooRealVar*) obs->find("obs_y_Dstmu_kinematic");
   x->SetTitle("m_{corr}");
-  x->setUnit("GeV^{2}");
+  x->setUnit("MeV");
   y->SetTitle("q^{2}");
   y->setUnit("MeV^{2}");
 
@@ -553,8 +553,33 @@ void HistFactDsstarFF() {
 
   if(result != NULL) {
     printf("Fit ran with status %d\n",result->status());
-    printf("Stat error on R(D*) is %f\n",poi->getError());
+    printf("Value of Nmu is %f\n", poi->getVal());
+    printf("Stat error on Nmu is %f\n",poi->getError());
     printf("EDM at end was %f\n",result->edm());
+
+    // Get per bin yields
+    RooProduct *test=(RooProduct*)w->obj("L_x_histoMassQsq_mu_Dstmu_kinematic_overallSyst_x_Exp"); //getting one object
+    float value[11] = {};
+    float error[11] = {};
+    for (int i=0;i<11;i++){
+      cout << "init value " << value[i] << "+/-" << error[i] << endl;
+    }
+    int bin;
+    for(int i=0;i<220;i++){
+      bin = i%11;
+      RooArgSet *obsafter = (RooArgSet*) mc->GetObservables();     //here are the model observables
+      RooArgSet *coords = (RooArgSet*) data->get(i); //coordinates of the bin. note that these are a *copy* of our observables, not the objects the PDF uses
+      *obsafter=(*coords);           //In Roofit the = on sets is item-by-item assignment with names as keys
+      float v = test->getVal(obsafter);  //returns value at current observables 
+      value[bin] += v;  //returns value at current observables
+    } 
+    float tot = 0;
+    for (int i=0;i<11;i++){
+      cout << "final value " << value[i] << "+/-" << sqrt(error[i]) <<endl;
+      tot += value[i];
+    }
+    cout << "Total = " << tot << endl;    
+
     result->floatParsInit().Print();
     cout << "CURRENT NUISANCE PARAMETERS:" << endl;
     //TIterator *paramiter = mc->GetNuisanceParameters()->createIterator();
@@ -602,9 +627,9 @@ void HistFactDsstarFF() {
     data->plotOn(drawframes[i],DataError(RooAbsData::Poisson),Cut("channelCat==0"),MarkerSize(0.4),DrawOption("ZP"));
     model->plotOn(drawframes[i], Slice(*idx),ProjWData(*idx,*data),DrawOption("F"),FillColor(kRed));
     model->plotOn(drawframes[i], Slice(*idx),ProjWData(*idx,*data),DrawOption("F"),FillColor(kViolet),Components("*tau*,*misID*,*bddd*,*lbdd*,*bsdd*,*budd*"));
-    model->plotOn(drawframes[i], Slice(*idx),ProjWData(*idx,*data),DrawOption("F"),FillColor(kViolet+2),Components("*tau*,*misID*,*bddd*,*lbdd*,*bsdd*"));
-    model->plotOn(drawframes[i], Slice(*idx),ProjWData(*idx,*data),DrawOption("F"),FillColor(kViolet+3),Components("*tau*,*misID*,*bddd*,*lbdd*"));
-    model->plotOn(drawframes[i], Slice(*idx),ProjWData(*idx,*data),DrawOption("F"),FillColor(kViolet+4),Components("*tau*,*misID*,*bddd*"));
+//    model->plotOn(drawframes[i], Slice(*idx),ProjWData(*idx,*data),DrawOption("F"),FillColor(kViolet+2),Components("*tau*,*misID*,*bddd*,*lbdd*,*bsdd*"));
+//    model->plotOn(drawframes[i], Slice(*idx),ProjWData(*idx,*data),DrawOption("F"),FillColor(kViolet+3),Components("*tau*,*misID*,*bddd*,*lbdd*"));
+//    model->plotOn(drawframes[i], Slice(*idx),ProjWData(*idx,*data),DrawOption("F"),FillColor(kViolet+4),Components("*tau*,*misID*,*bddd*"));
     model->plotOn(drawframes[i], Slice(*idx),ProjWData(*idx,*data),DrawOption("F"),FillColor(kBlue),Components("*tau*,*misID*"));
     model->plotOn(drawframes[i], Slice(*idx),ProjWData(*idx,*data),DrawOption("F"),FillColor(kOrange),Components("*tau*"));
     resids[i]=drawframes[i]->pullHist();
@@ -619,8 +644,8 @@ void HistFactDsstarFF() {
   char rangelabels[q2_bins][128];
   RooHist *mm2q2_pulls[q2_bins];
 
-  Double_t binlow[6] = {0., 2000000., 4000000., 6000000., 8000000., 10000000.};
-  Double_t binhigh[6] = {2000000., 4000000., 6000000., 8000000., 10000000., 12000000.};
+  Double_t binlow[11] = {0., 1000000., 2000000., 3000000., 4000000., 5000000., 6000000., 7000000., 8000000., 9000000., 10000000.};
+  Double_t binhigh[11] = {1000000., 2000000., 3000000., 4000000., 5000000., 6000000., 7000000., 8000000., 9000000., 10000000., 11000000.};
   for (int i=0; i < q2_bins; i++) {
     //double binlow = q2_low+i*(q2_high-q2_low)/q2_bins;
     //double binhigh = q2_low+(i+1)*(q2_high-q2_low)/q2_bins;
@@ -640,14 +665,15 @@ void HistFactDsstarFF() {
       mm2q2_pulls[i]=mm2q2_frame[i]->pullHist();
       
       model->plotOn(mm2q2_frame[i], Slice(*idx), ProjWData(*idx,*data), ProjectionRange(rangenames[i]), DrawOption("F"), FillColor(kViolet), Components("*tau*,*misID*,*bddd*,*lbdd*,*bsdd*,*budd*"));
-      model->plotOn(mm2q2_frame[i], Slice(*idx), ProjWData(*idx,*data), ProjectionRange(rangenames[i]), DrawOption("F"), FillColor(kViolet+2), Components("*tau*,*misID*,*bddd*,*lbdd*,*bsdd*"));
-      model->plotOn(mm2q2_frame[i], Slice(*idx), ProjWData(*idx,*data), ProjectionRange(rangenames[i]), DrawOption("F"), FillColor(kViolet+3), Components("*tau*,*misID*,*bddd*,*lbdd*"));
-      model->plotOn(mm2q2_frame[i], Slice(*idx), ProjWData(*idx,*data), ProjectionRange(rangenames[i]), DrawOption("F"), FillColor(kViolet+4), Components("*tau*,*misID*,*bddd*"));
+//      model->plotOn(mm2q2_frame[i], Slice(*idx), ProjWData(*idx,*data), ProjectionRange(rangenames[i]), DrawOption("F"), FillColor(kViolet+2), Components("*tau*,*misID*,*bddd*,*lbdd*,*bsdd*"));
+//      model->plotOn(mm2q2_frame[i], Slice(*idx), ProjWData(*idx,*data), ProjectionRange(rangenames[i]), DrawOption("F"), FillColor(kViolet+3), Components("*tau*,*misID*,*bddd*,*lbdd*"));
+//      model->plotOn(mm2q2_frame[i], Slice(*idx), ProjWData(*idx,*data), ProjectionRange(rangenames[i]), DrawOption("F"), FillColor(kViolet+4), Components("*tau*,*misID*,*bddd*"));
       model->plotOn(mm2q2_frame[i], Slice(*idx), ProjWData(*idx,*data), ProjectionRange(rangenames[i]), DrawOption("F"), FillColor(kBlue), Components("*tau*,*misID*"));
       model->plotOn(mm2q2_frame[i], Slice(*idx), ProjWData(*idx,*data), ProjectionRange(rangenames[i]), DrawOption("F"), FillColor(kOrange), Components("*tau*"));
       data->plotOn(mm2q2_frame[i],Cut(cutstrings[i]),DataError(RooAbsData::Poisson),MarkerSize(0.4),DrawOption("ZP"));
     }
   }
+  
   TCanvas *c1 = new TCanvas("c1","c1",1000,300);
   c1->SetTickx();
   c1->SetTicky();
@@ -665,8 +691,9 @@ void HistFactDsstarFF() {
   mm2_frame->GetXaxis()->SetTitleSize(0.06);
   mm2_frame->GetYaxis()->SetLabelSize(0.06);
   mm2_frame->GetYaxis()->SetTitleSize(0.06);
-  mm2_frame->GetYaxis()->SetTitleOffset(1.75);
+  mm2_frame->GetYaxis()->SetTitleOffset(1.2);
   mm2_frame->GetXaxis()->SetTitleOffset(0.9);
+  mm2_frame->GetXaxis()->SetNdivisions(405);
   TString thetitle=mm2_frame->GetYaxis()->GetTitle();
   thetitle.Replace(0,6,"Candidates");
   mm2_frame->GetYaxis()->SetTitle(thetitle);
@@ -683,8 +710,9 @@ void HistFactDsstarFF() {
   q2_frame->GetXaxis()->SetTitleSize(0.06);
   q2_frame->GetYaxis()->SetLabelSize(0.06);
   q2_frame->GetYaxis()->SetTitleSize(0.06);
-  q2_frame->GetYaxis()->SetTitleOffset(1.75);
+  q2_frame->GetYaxis()->SetTitleOffset(1.2);
   q2_frame->GetXaxis()->SetTitleOffset(0.9);
+  q2_frame->GetXaxis()->SetNdivisions(510);
   thetitle=q2_frame->GetYaxis()->GetTitle();
   thetitle.Replace(0,6,"Candidates");
   q2_frame->GetYaxis()->SetTitle(thetitle);
@@ -693,11 +721,12 @@ void HistFactDsstarFF() {
   RooPlot *mm2_resid_frame=x->frame(Title("mm2"));
   RooPlot *q2_resid_frame=y->frame(Title("q2"));
   RooPlot *DOCA_resid_frame;
-      
+  c1->SaveAs("Integrated_Sim09b.pdf");   
+
   TCanvas *c2;
   if(slowplots == true) {
-    c2 = new TCanvas("c2","c2",1200,600);
-    c2->Divide(q2_bins/2,2);
+    c2 = new TCanvas("c2","c2",1200,800);
+    c2->Divide(ceil(q2_bins/3.),3);
     double max_scale=1.05;
     double max_scale2=1.05;
     char thename[32];
@@ -706,7 +735,6 @@ void HistFactDsstarFF() {
       sprintf(thename,"bottompad_%d",k);
       TPad *padbottom = new TPad(thename,thename,0.,0.,1.,0.3);
       padbottom->SetFillColor(0);
-      padbottom->SetGridy();
       padbottom->SetTickx();
       padbottom->SetTicky();
       padbottom->SetFillStyle(0);
@@ -726,7 +754,7 @@ void HistFactDsstarFF() {
       q2bframes[k]->GetXaxis()->SetLabelSize(0.33*0.22/0.3);
       q2bframes[k]->GetXaxis()->SetTitleSize(0.36*0.22/0.3);
       q2bframes[k]->GetXaxis()->SetTickLength(0.10);
-      q2bframes[k]->GetXaxis()->SetNdivisions(205);
+      q2bframes[k]->GetXaxis()->SetNdivisions(203);
       q2bframes[k]->GetYaxis()->SetTickLength(0.05);
       q2bframes[k]->SetTitle("");
       q2bframes[k]->GetYaxis()->SetTitleSize(0.33*0.22/0.3);
@@ -736,11 +764,21 @@ void HistFactDsstarFF() {
       q2bframes[k]->GetYaxis()->SetLabelSize(0.33*0.22/0.3);
       q2bframes[k]->GetYaxis()->SetLabelOffset(99);
       q2bframes[k]->GetYaxis()->SetNdivisions(205);
+      q2bframes[k]->SetMaximum(5);
+      q2bframes[k]->SetMinimum(-5);
       q2bframes[k]->Draw();
+      TLine *ltop = new TLine(3000,3,5369,3);
+      TLine *lbottom = new TLine(3000,-3,5369,-3);
+      ltop->SetLineColor(kRed);
+      lbottom->SetLineColor(kRed);
+      ltop->SetLineStyle(2);
+      lbottom->SetLineStyle(2);
+      ltop->Draw();
+      lbottom->Draw();
       double xloc=-2.25;
-      //t->SetTextSize(0.33*0.22/0.3);
-      //t->DrawLatex(xloc,-2,"-2");
-      //t->DrawLatex(xloc*0.99,2," 2");
+      t->SetTextSize(0.33*0.22/0.3);
+      t->DrawLatex(xloc,-2,"-2");
+      t->DrawLatex(xloc*0.99,2," 2");
       c2->cd(k+1);
       sprintf(thename,"toppad_%d",k);
       TPad *padtop = new TPad(thename,thename,0.,0.3,1.,1.);
@@ -760,13 +798,13 @@ void HistFactDsstarFF() {
       q2frames[k]->SetTitleFont(132,"t");
       q2frames[k]->GetXaxis()->SetLabelSize(0.09*0.78/0.7);
       q2frames[k]->GetXaxis()->SetTitleSize(0.09*0.78/0.7);
-      q2frames[k]->GetXaxis()->SetNdivisions(205);
+      q2frames[k]->GetXaxis()->SetNdivisions(203);
       q2frames[k]->GetYaxis()->SetTitleSize(0.09*0.78/0.7);
       TString thetitle=q2frames[k]->GetYaxis()->GetTitle();
       q2frames[k]->GetYaxis()->SetLabelSize(0.09*0.78/0.7);
       q2frames[k]->GetXaxis()->SetTitleOffset(0.95);
       q2frames[k]->GetYaxis()->SetTitleOffset(0.95);
-      q2frames[k]->GetYaxis()->SetNdivisions(506);
+      q2frames[k]->GetYaxis()->SetNdivisions(205);
       q2frames[k]->Draw();
       //t->SetTextSize(0.07);
       //t->SetTextAlign(33);
@@ -778,5 +816,6 @@ void HistFactDsstarFF() {
       padtop->cd();
       //t->SetTextSize(0.09*0.78/0.7);
     }
+    c2->SaveAs("Binned_Sim09b.pdf");
   }
 }
