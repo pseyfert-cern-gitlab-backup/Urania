@@ -1,0 +1,6 @@
+nBinsMass = 20
+nBinsQsq = 20
+nBinsEmu = 20
+nBinsMMsq = 20
+doPhiPi = 0
+
