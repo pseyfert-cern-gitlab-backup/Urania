@@ -602,3 +602,65 @@ class JpsiVPolarSWaveFracFloatAcpAssym_AmplitudeSet( AmplitudeSet ) :
 
         self._check_extraneous_kw( kwargs )
         AmplitudeSet.__init__( self, A0Amp, AparAmp, AperpAmp, ASAmp, A0BarAmp, AparBarAmp, AperpBarAmp, ASBarAmp )
+
+class PhiPhi_AmplitudeSet( AmplitudeSet ) :
+    def __init__( self, **kwargs ) :
+        namePF        = self.getNamePrefix(kwargs)
+        startingValues = kwargs.pop( 'startingValues',  {} )
+        cartesian = kwargs.pop( 'Cartesian',  False )
+        Az = startingValues['AzMag2']
+        Aperp = startingValues['AperpMag2']
+        Fs = startingValues['Fs']
+        Fss = startingValues['Fss']
+        dz = startingValues['dz']
+        dperp = startingValues['dperp']
+        dpara = startingValues['dpara']
+        ds = startingValues['ds']
+        dss = startingValues['dss']
+
+        from math import sqrt, sin, cos, pi
+
+        # A_0
+        self._AzMag2 = self._parseArg( 'AzMag2',  kwargs, Title = '|A_0|^2', Value = Az, MinMax = ( 0., 1. )            )
+        self._AzPhase = self._parseArg( 'AzPhase', kwargs, Title = 'delta_z', Value = dz,    MinMax = ( -2. * pi, 2. * pi ) )
+        AzAmp = Polar2_Amplitude( namePF+'A0', self._AzMag2, self._AzPhase, +1, ParNamePrefix = namePF )
+
+        # A_perp
+        self._AperpMag2 = self._parseArg( 'AperpMag2',  kwargs, Title = '|A_perp|^2', Value = Aperp, MinMax = ( 0., 1. )            )
+        self._AperpPhase = self._parseArg( 'AperpPhase', kwargs, Title = 'delta_perp', Value = dperp,    MinMax = ( -2. * pi, 2. * pi ) )
+        AperpAmp = Polar2_Amplitude( namePF+'Aperp', self._AperpMag2, self._AperpPhase, -1, ParNamePrefix = namePF )
+
+        # A_par
+        self._AparaMag2 = self._parseArg( 'AparaMag2', kwargs, ObjectType = 'FormulaVar', Formula = '1.0-@0-@1'
+                                              , Arguments = [ self._AzMag2, self._AperpMag2 ], Title = 'AparaMag2' )
+        self._AparaPhase = self._parseArg( 'AparaPhase', kwargs, Title = 'delta_para', Value = dpara,    MinMax = ( -2. * pi, 2. * pi ) )
+        AparaAmp = Polar2_Amplitude( namePF+'Apara', self._AparaMag2, self._AparaPhase, 1, ParNamePrefix = namePF )
+        
+        # F_S & F_SS
+        self._Fs = self._parseArg( 'Fs',  kwargs, Title = 'F_S', Value = Fs, MinMax = ( 0., 1. )            )
+        self._Fss = self._parseArg( 'Fss', kwargs, Title = 'F_SS', Value = Fss,    MinMax = ( 0., 1. ) )
+
+        # A_S
+        if not cartesian:
+            self._AsMag2 = self._parseArg( 'AsMag2', kwargs, ObjectType = 'FormulaVar', Formula = '@0/(1.0-@0-@1)'
+                    , Arguments = [ self._Fs, self._Fss ], Title = 'AsMag2' )
+            self._AsPhase = self._parseArg( 'AsPhase', kwargs, Title = 'delta_s', Value = ds,    MinMax = ( -2. * pi, 2. * pi ) )
+            AsAmp = Polar2_Amplitude( namePF+'As', self._AsMag2, self._AsPhase, -1, ParNamePrefix = namePF )
+        else:
+            self._ReAs = self._parseArg( 'ReAs',  kwargs, Title = 'Real As', Value = Fs, MinMax = ( -1., 1. )            )
+            self._ImAs = self._parseArg( 'ImAs',  kwargs, Title = 'Imaginary As', Value = Fs, MinMax = ( -1., 1. )            )
+            AsAmp = Carthesian_Amplitude( namePF+'As', self._ReAs, self._ImAs, -1, ParNamePrefix = namePF )
+        
+        # A_SS
+        if not cartesian:
+            self._AssMag2 = self._parseArg( 'AssMag2', kwargs, ObjectType = 'FormulaVar', Formula = '@1/(1.0-@0-@1)'
+                    , Arguments = [ self._Fs, self._Fss ], Title = 'AssMag2' )
+            self._AssPhase = self._parseArg( 'AssPhase', kwargs, Title = 'delta_ss', Value = dss,    MinMax = ( -2. * pi, 2. * pi ) )
+            AssAmp = Polar2_Amplitude( namePF+'Ass', self._AssMag2, self._AssPhase, 1, ParNamePrefix = namePF )
+        else:
+            self._ReAss = self._parseArg( 'ReAss',  kwargs, Title = 'Real Ass', Value = Fss, MinMax = ( -1., 1. )            )
+            self._ImAss = self._parseArg( 'ImAss',  kwargs, Title = 'Imaginary Ass', Value = Fss, MinMax = ( -1., 1. )            )
+            AssAmp = Carthesian_Amplitude( namePF+'Ass', self._ReAss, self._ImAss, -1, ParNamePrefix = namePF )
+        
+        self._check_extraneous_kw( kwargs )
+        AmplitudeSet.__init__( self, AzAmp, AparaAmp, AperpAmp, AsAmp, AssAmp, Conditionals = [ ] )

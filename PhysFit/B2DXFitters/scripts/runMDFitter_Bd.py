@@ -122,8 +122,21 @@ import os, sys, gc
 
 import array
 from array import array
+import math
 
 gROOT.SetBatch()
+
+TGaxis.SetMaxDigits(4)
+
+#------------------------------------------------------------
+def makeText(size):
+	text = TLatex()
+	text.SetTextFont(132)
+	text.SetTextColor(1)
+	text.SetTextSize(size)
+	text.SetTextAlign(132)
+	
+	return text
 
 #------------------------------------------------------------
 def makeFitCanvasForSWeights(dataset,
@@ -146,7 +159,7 @@ def makeFitCanvasForSWeights(dataset,
 	var.SetTitle(Xaxis)
 
 	#Create canvas
-	canv = TCanvas("canv_"+dataset.GetName(),"Canvas of "+dataset.GetTitle(), 1200, 1000)
+	canv = TCanvas("canv_"+dataset.GetName(),"Canvas of "+dataset.GetTitle(), 2000, 1200)
 	canv.Divide(1,2)
 
 	#Setup upper pad
@@ -161,7 +174,7 @@ def makeFitCanvasForSWeights(dataset,
 	if logScale:
 		pad1.SetLogy()
 
-	frame_top = makeTopFrame(var,title,min,max,bins)
+	frame_top = makeTopFrame(var,title,min,max,bins,True)
 	dataset.plotOn(frame_top)
 
 
@@ -239,12 +252,20 @@ def makeFitCanvasForSWeights(dataset,
 	legend.Draw("SAME")
 
 	#Add some text
-	lhcbtext = makeText(0.07)
+	lhcbtext = TLatex()
+	lhcbtext.SetTextFont(132)
+	lhcbtext.SetTextColor(1)
+	lhcbtext.SetTextSize(0.07)
+	lhcbtext.SetTextAlign(132)
 	lhcbtext.DrawTextNDC(configfile["LHCbText"]["X"],
 			     configfile["LHCbText"]["Y"],
 			     configfile["LHCbText"]["Text"])
 
-	chi2text = makeText(0.05)
+	chi2text = TLatex()
+	chi2text.SetTextFont(132)
+	chi2text.SetTextColor(1)
+	chi2text.SetTextSize(0.05)
+	chi2text.SetTextAlign(132)
 	chi2text.DrawLatexNDC(configfile["Chi2"]["X"],configfile["Chi2"]["Y"],"#chi^{2}/ndof="+str(chi2ndof))
 
 	pad1.Update()
@@ -289,6 +310,7 @@ def makeFitCanvas(dataset,
 		  configfile,
 		  logScale,
 		  title,
+		  pulls,
 		  save):
 
 	#Get some options
@@ -300,14 +322,22 @@ def makeFitCanvas(dataset,
 	var.SetTitle(Xaxis)
 
         #Create canvas
-	canv = TCanvas("canv_"+dataset.GetName(),"Canvas of "+dataset.GetTitle(), 1200, 1000)
-	canv.Divide(1,2)
+	canv = TCanvas("canv_"+dataset.GetName(),"Canvas of "+dataset.GetTitle(), 2000, 1200)
+	if pulls:
+		canv.Divide(1,2)
 
         #Setup upper pad
-	canv.cd(1)
-	pad1 = canv.GetPad(1)
+	if pulls:
+		canv.cd(1)
+		pad1 = canv.GetPad(1)
+	else:
+		pad1 = canv.GetPad(0)
 	pad1.cd()
-	pad1.SetPad(.0, .22, 1.0, 1.0)
+	if pulls:
+		pad1.SetPad(.0, .22, 1.0, 1.0)
+	else:
+		#pad1.SetPad(.0, .005, 1.0, 1.0)
+		pad1.SetPad(.04, .04, 1.0, 1.0)
 	pad1.SetBorderMode(0)
 	pad1.SetBorderSize(-1)
 	pad1.SetFillStyle(0)
@@ -315,7 +345,7 @@ def makeFitCanvas(dataset,
 	if logScale:
 		pad1.SetLogy()
 
-	frame_top = makeTopFrame(var,title,min,max,bins)
+	frame_top = makeTopFrame(var,title,min,max,bins,pulls)
 	dataset.plotOn(frame_top,
 		       RooFit.Cut("sample==sample::"+label))
 
@@ -415,51 +445,67 @@ def makeFitCanvas(dataset,
 	pad1.Draw()
 
         #Setup lower pad
-	canv.cd(2)
-	pad2 = canv.GetPad(2)
-	pad2.cd()
-	pad2.SetPad(.0, .005, 1.0, .3275)
-	pad2.cd()
-	pad2.SetBorderMode(0)
-	pad2.SetBorderSize(-1)
-	pad2.SetFillStyle(0)
-	pad2.SetBottomMargin(0.35)
-	pad2.SetTickx(0)
-	pad2.SetGridx()
-	pad2.SetGridy()
-	pad2.SetLogy(0)
+	if pulls:
+		canv.cd(2)
+		pad2 = canv.GetPad(2)
+		pad2.cd()
+		pad2.SetPad(.0, .005, 1.0, .3275)
+		pad2.cd()
+		pad2.SetBorderMode(0)
+		pad2.SetBorderSize(-1)
+		pad2.SetFillStyle(0)
+		pad2.SetBottomMargin(0.35)
+		pad2.SetTickx(0)
+		pad2.SetGridx()
+		pad2.SetGridy()
+		pad2.SetLogy(0)
 
-	gStyle.SetOptLogy(0)
+		gStyle.SetOptLogy(0)
 
-	frame_bot = makeBottomFrame(var,min,max,bins,Xaxis)
-	frame_bot.addPlotable(pullHist,"P")
-	frame_bot.Draw()
+		frame_bot = makeBottomFrame(var,min,max,bins,Xaxis)
+		frame_bot.addPlotable(pullHist,"P")
+		frame_bot.Draw()
 
-	pad2.Update()
-	pad2.Draw()
-	canv.Update()
+		pad2.Update()
+		pad2.Draw()
+		canv.Update()
 
 	canv.SaveAs(save+".pdf")
 
 #------------------------------------------------------------
-def makeTopFrame(var,title,min,max,bins):
+def makeTopFrame(var,title,min,max,bins,pulls):
 	if None != bins and None != min and None != max:
 		frame_top = var.frame(min,max,bins)
 	else:
 		frame_top = var.frame()
 	frame_top.SetTitle(title)
+	numEvts = (max-min) / float(bins)
+	import math
+	numEvts = math.floor(numEvts*10)/10
+	frame_top.GetYaxis().SetTitle("#font[132]{Candidates/("+str(numEvts)+" MeV/c^{2})}")
 	frame_top.GetXaxis().SetLabelSize( 0.05 )
-	frame_top.GetYaxis().SetLabelSize( 0.038 )#0.05 )
+	frame_top.GetYaxis().SetLabelSize( 0.038 )
 	frame_top.GetXaxis().SetLabelFont( 132 )
 	frame_top.GetYaxis().SetLabelFont( 132 )
 	frame_top.GetXaxis().SetLabelOffset( 0.006 )
-	frame_top.GetYaxis().SetLabelOffset( 0.006 )
-	frame_top.GetXaxis().SetLabelColor( kWhite)
+	frame_top.GetYaxis().SetLabelOffset( 0.005 )
 	frame_top.GetXaxis().SetTitleSize( 0.05 )
-	frame_top.GetYaxis().SetTitleSize( 0.045 )#0.06 )
+	frame_top.GetYaxis().SetTitleSize( 0.043 )#0.06 )
 	frame_top.GetYaxis().SetNdivisions(512)
 	frame_top.GetXaxis().SetTitleOffset( 1.00 )
-	frame_top.GetYaxis().SetTitleOffset( 1.15 )
+	frame_top.GetYaxis().SetTitleOffset( 1.13 )
+
+	if not pulls:
+		frame_top.GetXaxis().SetTitleOffset( 0.95 )
+		frame_top.GetYaxis().SetTitleOffset( 1.13 )
+		frame_top.GetXaxis().SetLabelOffset( 0.011 )
+		frame_top.GetYaxis().SetTitleSize( 0.048 )
+		frame_top.GetYaxis().SetLabelSize( 0.045 )
+		frame_top.GetXaxis().SetTitleSize(0.05)#0.15)
+		frame_top.GetXaxis().SetTitleFont(132)
+		frame_top.GetXaxis().SetLabelSize(0.05)
+	else:
+		frame_top.GetXaxis().SetLabelColor( kWhite)
 
 	return frame_top
 
@@ -489,16 +535,6 @@ def makeBottomFrame(var,min,max,bins,Xaxis):
 	frame_bot.GetYaxis().SetLabelFont( 132 )
 
 	return frame_bot
-
-#------------------------------------------------------------
-def makeText(size):
-	text = TLatex()
-	text.SetTextFont(132)
-	text.SetTextColor(1)
-	text.SetTextSize(size)
-	text.SetTextAlign(132)
-
-	return text
 
 #------------------------------------------------------------
 def BuildParForPDF(workOut, typemode, varName, parName, samplemode, pdfDict):
@@ -870,12 +906,39 @@ def BuildIpatiaPlusExponentialPDF(workOut, obs, nickname, samplemode, pdfDict, d
 	return WS(workOut, pdf)
 
 #------------------------------------------------------------
+def BuildIpatiaPlusJohnsonSUPDF(workOut, obs, nickname, samplemode, pdfDict, debug):
+
+	#Build parameters
+	varName = obs.GetName()
+	typemode = nickname+"_IpatiaPlusJohnsonSU"
+	shiftMean = pdfDict["shiftMean"]
+	scaleTails = pdfDict["scaleTails"]
+
+	parList = []
+	for par in ["l", "zeta", "fb", "nu", "tau", "mean", "sigmaI", "sigmaJ", "a1", "n1", "a2", "n2", "fracI"]:
+		parList.append(BuildParForPDF(workOut, typemode, varName, par, samplemode, pdfDict))
+	if shiftMean:
+		parList.append(BuildParForPDF(workOut, typemode, varName, "shift", samplemode, pdfDict))
+
+	#Build PDF
+	pdf = Bd2DhModels.buildIpatiaPlusJohnsonSUPDF(obs,
+						      workOut,
+						      samplemode,
+						      typemode,
+						      shiftMean,
+						      scaleTails,
+						      debug)
+	
+	return WS(workOut, pdf)
+
+#------------------------------------------------------------
 def BuildIpatiaGaussConvPDF(workOut, obs, nickname, samplemode, pdfDict, debug):
 
 	#Build parameters
 	varName = obs.GetName()
 	typemode = nickname+"_IpatiaGaussConv"
 	shiftMean = pdfDict["shiftMean"]
+	scaleTails = pdfDict["scaleTails"]
 
 	parList = []
 	for par in ["l", "zeta", "fb", "mean", "sigmaI", "sigmaG", "a1", "n1", "a2", "n2"]:
@@ -889,6 +952,8 @@ def BuildIpatiaGaussConvPDF(workOut, obs, nickname, samplemode, pdfDict, debug):
 						  samplemode,
 						  typemode,
 						  shiftMean,
+						  scaleTails,
+						  False, #Use RooNumConvPdf
 						  debug)
 
 	return WS(workOut, pdf)
@@ -945,12 +1010,12 @@ def BuildCompPdf(workOut, workTemplates, configfile, component, hypothesys, samp
 			pdfList.append(BuildJohnsonSUPlusGaussianPlusExponentialPDF(workOut, obs, nickname, samplemodeyearhyp, pdfDict, debug))
 		elif "JohnsonSUPlusGaussian" in pdfType:
 			pdfList.append(BuildJohnsonSUPlusGaussianPDF(workOut, obs, nickname, samplemodeyearhyp, pdfDict, debug))
-		elif "JohnsonSU" in pdfType:
-			pdfList.append(BuildJohnsonSUPDF(workOut, obs, nickname, samplemodeyearhyp, pdfDict, debug))
 		elif "IpatiaGaussConv" in pdfType:
 			pdfList.append(BuildIpatiaGaussConvPDF(workOut, obs, nickname, samplemodeyearhyp, pdfDict, debug))
 		elif "IpatiaPlusExponential" in pdfType:
 			pdfList.append(BuildIpatiaPlusExponentialPDF(workOut, obs, nickname, samplemodeyearhyp, pdfDict, debug))
+		elif "IpatiaPlusJohnsonSU" in pdfType:
+			pdfList.append(BuildIpatiaPlusJohnsonSUPDF(workOut, obs, nickname, samplemodeyearhyp, pdfDict, debug))
 		elif "Ipatia" in pdfType:
 			pdfList.append(BuildIpatiaPDF(workOut, obs, nickname, samplemodeyearhyp, pdfDict, debug))
 		elif "CrystalBallPlusGaussian" in pdfType:
@@ -971,6 +1036,8 @@ def BuildCompPdf(workOut, workTemplates, configfile, component, hypothesys, samp
 			pdfList.append(BuildDoubleExponentialPDF(workOut, obs, nickname, samplemodeyearhyp, pdfDict, debug))
 		elif "Exponential" in pdfType:
 			pdfList.append(BuildExponentialPDF(workOut, obs, nickname, samplemodeyearhyp, pdfDict, debug))
+		elif "JohnsonSU" in pdfType:
+			pdfList.append(BuildJohnsonSUPDF(workOut, obs, nickname, samplemodeyearhyp, pdfDict, debug))
 		elif "TakeInputPdf" in pdfType:
 			pdfList.append(TakeInputPdf(workOut, workTemplates, pdfDict))
 		elif "None" in pdfType:
@@ -1164,6 +1231,10 @@ def runMDFitter_Bd( debug,
 	from B2DXFitters.mdfitutils import getPIDKComponents as getPIDKComponents
 	from B2DXFitters.mdfitutils import setBs2DsXParameters as setBs2DsXParameters
 
+	from B2DXFitters.FitResultGrabberUtils import PlotResultMatrix as PlotResultMatrix
+	from B2DXFitters.FitResultGrabberUtils import CreatePullTree as CreatePullTree
+	from B2DXFitters.FitResultGrabberUtils import PrintLatexTable as PrintLatexTable
+
 	#Handle some input options
 	hypoList = hypo.split("_")
 
@@ -1243,7 +1314,7 @@ def runMDFitter_Bd( debug,
 	rangeList = []
 
 	bMass = observables.find(MDSettings.GetMassBVarOutName().Data())
-	bMass.setUnit("MeV/c^{2}")
+	#bMass.setUnit("MeV/c^{2}")
 	#bMass.setRange(MDSettings.GetMassBVarOutName().Data()+"_range",
 	#	       *myconfigfile["Range"][MDSettings.GetMassBVarOutName().Data()]["Range"])
 	bMass =  WS(workspaceOut, bMass)
@@ -1254,7 +1325,7 @@ def runMDFitter_Bd( debug,
 		#dMass.setRange(MDSettings.GetMassDVarOutName().Data()+"_range",
 		#	       *myconfigfile["Range"][MDSettings.GetMassDVarOutName().Data()]["Range"])
 		dMass = WS(workspaceOut, dMass)
-		dMass.setUnit("MeV/c^{2}")
+		#dMass.setUnit("MeV/c^{2}")
 		obsList.append(dMass)
 		#rangeList.append(MDSettings.GetMassDVarOutName().Data()+"_range")
 	elif dim>2:
@@ -1519,7 +1590,6 @@ def runMDFitter_Bd( debug,
 		corrMat.Print("v")
 
 		#Plot correlation and covariance matrices
-		from B2DXFitters.FitResultGrabberUtils import PlotResultMatrix
 		PlotResultMatrix(fitResult, "covariance", outputplotdir+"MDFit_CovarianceMatrix.pdf")
 		PlotResultMatrix(fitResult, "correlation", outputplotdir+"MDFit_CorrelationMatrix.pdf")
 
@@ -1540,8 +1610,7 @@ def runMDFitter_Bd( debug,
 				print "========================================="
 				print ""
 
-				from B2DXFitters import FitResultGrabberUtils
-				FitResultGrabberUtils.CreatePullTree(pullFile, fitResult)
+				CreatePullTree(pullFile, fitResult)
 
 	else:
 		fitResult = None
@@ -1555,30 +1624,35 @@ def runMDFitter_Bd( debug,
 		print ""
 
 		logScale = [False, True]
+		Pulls = [False, True]
 		for obs in obsList:
 			for pidbin in pidBins.iterkeys():
 				for log in logScale:
-					namefile = outputplotdir+"MDFit_"+str(obs.GetName())+"_"+pidbin
-					if superimpose:
-						namefile += "_noFit"
-					if log:
-						namefile += "_logScale"
-					print ""
-					print "Plotting PDF in "+str(obs.GetName())
-					print "for "+pidbin+" hypothesys"
-					print ""
-					makeFitCanvas(dataSet if not binned else dataSetBinned,
-						      pdf,
-						      pdfList,
-						      obs,
-						      sam,
-						      pidBins[pidbin],
-						      pidbin,
-						      fitResult,
-						      myconfigfile,
-						      log,
-						      title,
-						      namefile)
+					for pulls in Pulls:
+						namefile = outputplotdir+"MDFit_"+str(obs.GetName())+"_"+pidbin
+						if superimpose:
+							namefile += "_noFit"
+						if log:
+							namefile += "_logScale"
+						if pulls:
+							namefile += "_withPulls"
+						print ""
+						print "Plotting PDF in "+str(obs.GetName())
+						print "for "+pidbin+" hypothesys"
+						print ""
+						makeFitCanvas(dataSet if not binned else dataSetBinned,
+							      pdf,
+							      pdfList,
+							      obs,
+							      sam,
+							      pidBins[pidbin],
+							      pidbin,
+							      fitResult,
+							      myconfigfile,
+							      log,
+							      title,
+							      pulls,
+							      namefile)
 
 
 	if sWeights and not superimpose:
@@ -1796,8 +1870,7 @@ def runMDFitter_Bd( debug,
 					print "========================================="
 					print ""
 
-					from B2DXFitters import FitResultGrabberUtils
-					FitResultGrabberUtils.CreatePullTree(pullFilesWeights, sWeightsFitResult, corrYieldDictsWeights)
+					CreatePullTree(pullFilesWeights, sWeightsFitResult, corrYieldDictsWeights)
 
 			if plotsWeights:
 				print ""
@@ -1822,14 +1895,14 @@ def runMDFitter_Bd( debug,
 
 					tWeights.Draw(o+">>hist_"+o,"","goff")
 					hist = gDirectory.Get("hist_"+o)
-					hist.SetLineColor(kRed)
+					hist.SetLineColor(2)
 					hist.SetLineWidth(2)
 					hist.GetXaxis().SetTitle(myconfigfile["plotsWeights"][o])
 					hist.SetTitle("")
 
 					tWeights.Draw(o+">>hist_sw_"+o,sWeights.Data(),"goff")
 					hist_sw = gDirectory.Get("hist_sw_"+o)
-					hist_sw.SetLineColor(kBlue)
+					hist_sw.SetLineColor(4)
 					hist_sw.SetLineWidth(2)
 					hist_sw.GetXaxis().SetTitle(myconfigfile["plotsWeights"][o])
 					hist_sw.SetTitle("")
@@ -1846,7 +1919,11 @@ def runMDFitter_Bd( debug,
 					hist_sw.Draw("E1SAME")
 					legend.Draw("SAME")
 
-					lhcbtext = makeText(0.07)
+					lhcbtext = TLatex()
+					lhcbtext.SetTextFont(132)
+					lhcbtext.SetTextColor(1)
+					lhcbtext.SetTextSize(0.07)
+					lhcbtext.SetTextAlign(132)
 					lhcbtext.DrawTextNDC(0.89,
 							     0.8,
 							     myconfigfile["LHCbText"]["Text"])
@@ -1886,12 +1963,11 @@ def runMDFitter_Bd( debug,
 	print "Pretty-printing fit results"
 	print "========================================="
 	print ""
-	# from B2DXFitters import FitResultGrabberUtils
-	# if None != fitResult:
-	# 	FitResultGrabberUtils.PrintLatexTable(fitResult)
-	# if None != sWeightsFitResult:
-	# 	FitResultGrabberUtils.PrintLatexTable(sWeightsFitResult)
-
+	if None != fitResult:
+	 	PrintLatexTable(fitResult)
+	if None != sWeightsFitResult:
+		PrintLatexTable(sWeightsFitResult)
+			
 	print ""
 	print "========================================="
 	print "Saving output workspace"

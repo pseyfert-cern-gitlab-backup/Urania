@@ -36,31 +36,23 @@ else
         LD_LIBRARY_PATH=`echo $LD_LIBRARY_PATH | tr ':' '\n' | \
             egrep -v "^($User_release_area|$MYSITEROOT/lhcb)" | \
             tr '\n' ':' | sed -e 's/:$//'`
-        export LD_LIBRARY_PATH
+	export LD_LIBRARY_PATH
         exec env -u CMTCONFIG -u B2DXFITTERSROOT "$0" "$@"
     fi
     # automatic set up in standalone build mode
     if test -z "$B2DXFITTERSROOT"; then
         cwd="$(pwd)"
-        # try to find from where script is executed, use current directory as
-        # fallback
-        tmp="$(dirname $0)"
-        tmp=${tmp:-"$cwd"}
-        # convert to absolute path
-        tmp=`readlink -f "$tmp"`
-        # move up until standalone/setup.sh found, or root reached
-        while test \( \! -d "$tmp"/standalone \) -a -n "$tmp" -a "$tmp"\!="/"; do
-            tmp=`dirname "$tmp"`
-        done
-        if test -d "$tmp"/standalone; then
-            cd "$tmp"/standalone
+        if test -z "$(dirname $0)"; then
+            # have to guess location of setup.sh
+            cd ../standalone
             . ./setup.sh
-        else
-            echo `basename $0`: Unable to locate standalone/setup.sh
-            exit 1
-        fi
             cd "$cwd"
-        unset tmp
+        else
+            # know where to look for setup.sh
+            cd "$(dirname $0)"/../standalone
+            . ./setup.sh
+            cd "$cwd"
+        fi
         unset cwd
     fi
 fi
@@ -106,9 +98,10 @@ __doc__ = """ real docstring """
 # Load necessary libraries
 # -----------------------------------------------------------------------------
 from B2DXFitters import *
+from B2DXFitters.WS import WS as WS
 from ROOT import *
-
 from ROOT import RooFit
+
 from optparse import OptionParser
 from math     import pi, log
 from  os.path import exists
@@ -116,6 +109,11 @@ import os, sys, gc
 gROOT.SetBatch()
 gROOT.ProcessLine(".x ../root/.rootlogon.C")
 
+#from B2DXFitters import GeneralUtils 
+#from B2DXFitters.MDFitSettingTranslator import Translator 
+#from B2DXFitters.mdfitutils import getExpectedValue as getExpectedValue
+
+#exit(0) 
 # -----------------------------------------------------------------------------
 # Configuration settings
 # -----------------------------------------------------------------------------
@@ -226,7 +224,7 @@ def getTotPDF(w, sam, mod, year, merge, comp, debug):
     n = []
 
     hypo = TString("") 
-    smy = sm = GeneralUtils.GetSampleModeYearHypo(TString(sam), TString(mod), TString(year), hypo, merge, debug )
+    smy = GeneralUtils.GetSampleModeYearHypo(TString(sam), TString(mod), TString(year), hypo, merge, debug )
     for p in comp:
         for s in smy:
             var = w.var("n%s_%s_Evts"%(p,s))
@@ -293,8 +291,9 @@ def getTotPDF(w, sam, mod, year, merge, comp, debug):
 
 #------------------------------------------------------------------------------ 
 def getDataCut(sam, mod, year, merge, debug):
+
     
-    smy = sm = GeneralUtils.GetSampleModeYearHypo(TString(sam), TString(mod), TString(year), TString(""), merge, debug )
+    smy = GeneralUtils.GetSampleModeYearHypo(TString(sam), TString(mod), TString(year), TString(""), merge, debug )
 
     c = [ ]
     for s in smy:
@@ -325,7 +324,7 @@ def plotFitModel( model, frame, var, sam, mode, year, merge, decay, comp, color)
     #if debug :
 
     hypo = TString("")
-    smy = sm = GeneralUtils.GetSampleModeYearHypo(TString(sam), TString(mod), TString(year), TString(hypo), merge, debug )
+    smy = GeneralUtils.GetSampleModeYearHypo(TString(sam), TString(mod), TString(year), TString(hypo), merge, debug )
     
     c = []
     for p in comp:
@@ -389,7 +388,7 @@ def plotFitModel( model, frame, var, sam, mode, year, merge, decay, comp, color)
                   RooFit.Name("PDFSig"))
 
 #------------------------------------------------------------------------------
-def getDescription(comp,decay):
+def getDescription(comp,decay,low):
 
     happystar = "#lower[-0.95]{#scale[0.5]{(}}#lower[-0.8]{#scale[0.5]{*}}#lower[-0.95]{#scale[0.5]{)}}"
     happystar2 = "#lower[-0.65]{#scale[0.6]{*}}"
@@ -415,13 +414,32 @@ def getDescription(comp,decay):
             else:
                 desc.append("Signal") 
         elif c == "Bs2DsDsstPiRho" and decay == "Bs2DsPi":
-            desc.append("B_{(d,s)}#kern[-3.7]{"+happy0+"} #rightarrow D_{s}#kern[-0.3]{"+happymin+happystar+"}#kern[0.1]{#pi"+happyplus+"}")
+            if low > 5250.0:
+                desc.append("B_{(d,s)}#kern[-3.7]{"+happy0+"} #rightarrow D_{s}#kern[-0.3]{"+happymin+happystar+"}#kern[0.1]{#pi"+happyplus+"}")
+            else:
+                desc.append("B_{s}#kern[-0.7]{"+happy0+"} #rightarrow D_{s}#kern[-0.3]{"+happymin+happystar+"}#kern[0.1]{(#pi"+happyplus+",#kern[0.1]{#rho"+happyplus+"})}")
         elif c == "Bs2DsDsstPiRho" and decay == "Bs2DsK":
             desc.append("B_{s}#kern[-0.7]{"+happy0+"} #rightarrow D_{s}#kern[-0.3]{"+happymin+happystar+"}#kern[0.1]{(#pi"+happyplus+",#kern[0.1]{#rho"+happyplus+"})}") 
         elif c == "Lb2DsDsstP" and decay == "Bs2DsK":
             desc.append("#Lambda_{b}#kern[-1.2]{"+happy0+"} #rightarrow D_{s}#kern[-0.3]{"+happymin+happystar+"}#kern[0.1]{p}")
         elif c == "Bs2DsDsstKKst" and decay == "Bs2DsK":
             desc.append("B_{(d,s)}#kern[-3.7]{"+happy0+"} #kern[+0.3]{#rightarrow}D_{s}#kern[-0.3]{"+happymp+happystar+"}#kern[0.1]{K"+happypm+happystar+"}")
+        elif c == "Bd2DsPi" and decay == "Bs2DsPi":
+            desc.append("B_{d}#kern[-0.7]{"+happy0+"}#rightarrow D_{s}#kern[-0.3]{"+happymin+"}#kern[0.1]{#pi"+happyplus+"}")
+        elif c == "Bd2DRho":
+            desc.append("B_{d}#kern[-0.7]{"+happy0+"}#rightarrow D#kern[+0.2]{"+happymin+"}#kern[0.2]{#rho"+happyplus+"}")
+        elif c == "Bd2DstPi":
+            desc.append("B_{d}#kern[-0.7]{"+happy0+"}#rightarrow D#kern[+0.2]{"+happymin+happystar2+"}#kern[0.2]{#pi"+happyplus+"}")
+        elif c == "Bd2DsstPi":
+            desc.append("B_{d}#kern[-0.7]{"+happy0+"}#rightarrow D_{s}#kern[-0.3]{"+happymin+happystar2+"}#kern[0.2]{#pi"+happyplus+"}")
+        elif c == "Bd2DsstK":
+            desc.append("B_{d}#kern[-0.7]{"+happy0+"}#rightarrow D_{s}#kern[-0.3]{"+happymin+happystar2+"}#kern[0.2]{K"+happyplus+"}")
+        elif c == "Bs2DsDsstRho" and decay == "Bs2DsstK":
+            desc.append("B_{s}#kern[-0.7]{"+happy0+"} #rightarrow D_{s}#kern[-0.3]{"+happymin+happystar+"}#kern[0.1]{(#pi"+happyplus+",#kern[0.1]{#rho"+happyplus+"})}")
+        elif c == "BsBd2DsstKst":
+            desc.append("B_{(d,s)}#kern[-3.7]{"+happy0+"} #rightarrow D_{s}#kern[-0.3]{"+happymp+happystar+"}#kern[0.1]{K"+happypm+happystar+"}")
+        elif c == "Bd2DKst":
+            desc.append("B_{d}#kern[-0.7]{"+happy0+"}#rightarrow D#kern[+0.2]{"+happymin+"}#kern[0.2]{K"+happystar2+happyplus+"}")
         else:
             desc.append(str(TLatexUtils.DecDescrToTLatex(c)))
     return desc
@@ -442,8 +460,8 @@ if __name__ == '__main__' :
     
     from ROOT import *
     gROOT.SetStyle( 'Plain' )    
+
     #gROOT.SetBatch( False )
-    
     
     f = TFile( FILENAME )
 
@@ -453,6 +471,8 @@ if __name__ == '__main__' :
                       ( options.wsname, FILENAME ) )    
 
     f.Close()
+
+    
     dim = int(options.dim)
     bin = int(options.bin)
     mVarTS = TString(options.var)    
@@ -463,6 +483,10 @@ if __name__ == '__main__' :
     leg = options.legend
     yr = TString(options.year) 
     debug = options.debug 
+
+    sufixTS = TString(options.sufix)
+    if sufixTS != "":
+        sufixTS = TString("_")+sufixTS
     
     config = options.configName
     last = config.rfind("/")
@@ -487,6 +511,27 @@ if __name__ == '__main__' :
             print option, " = ", myconfigfile[option]
     print "=========================================================="
 
+    from B2DXFitters.MDFitSettingTranslator import Translator
+
+
+    mdt = Translator(myconfigfile,"MDSettings",False)
+
+    MDSettings = mdt.getConfig()
+    MDSettings.Print("v")
+
+    from B2DXFitters.mdfitutils import getExpectedValue as getExpectedValue
+    from B2DXFitters.mdfitutils import getExpectedValue as getExpectedValue
+    from B2DXFitters.mdfitutils import getExpectedYield as getExpectedYield
+    from B2DXFitters.mdfitutils import setConstantIfSoConfigured as setConstantIfSoConfigured
+    from B2DXFitters.mdfitutils import getObservables  as getObservables
+    from B2DXFitters.mdfitutils import readVariables as readVariables
+    from B2DXFitters.mdfitutils import getSigOrCombPDF as getSigOrCombPDF
+    from B2DXFitters.mdfitutils import getType as getType
+    from B2DXFitters.mdfitutils import getPDFNameFromConfig as getPDFNameFromConfig
+    from B2DXFitters.mdfitutils import getPIDKComponents as getPIDKComponents
+    from B2DXFitters.mdfitutils import setBs2DsXParameters as setBs2DsXParameters
+
+    
     ch =  TString(myconfigfile["Decay"])
 
     range_dw = mass.getMin()
@@ -525,7 +570,7 @@ if __name__ == '__main__' :
         print "[ERROR] PlotSettings missed in the config file."
         exit(0)
 
-    desc = getDescription(compLEG,ch) 
+    desc = getDescription(compLEG,ch,range_dw) 
 
     datacut = getDataCut(sam,mod,yr,merge,debug)    
 
@@ -808,13 +853,11 @@ if __name__ == '__main__' :
     canvas.Modified()
     canvas.Update()
 
-    sufixTS = TString(options.sufix)
-    if sufixTS != "":
-        sufixTS = TString("_")+sufixTS
         
     if yr != "":
         yr = TString("_")+yr 
 
+    sufixTS = "" 
     saveName = TString("mass_")+ch+TString("_")+mVarTS+TString("_")+TString(sam)+TString("_")+mod+yr+sufixTS
     canName = saveName+TString(".pdf")
     canNamePng = saveName+TString(".png")

@@ -52,20 +52,20 @@ class MistagCalibration : public RooAbsReal
 	/// copy constructor
 	MistagCalibration(const MistagCalibration& other, const char* name = 0);
 	/// cloning operation
-	virtual TObject* clone(const char* newname) const;
+	TObject* clone(const char* newname) const override;
 	/// destructor
-	virtual ~MistagCalibration();
+	~MistagCalibration();
 
 	/// announce capability to calculate analytical integrals
 	Int_t getAnalyticalIntegral(
 		RooArgSet& allVars, RooArgSet& anaIntVars,
-		const char* rangeName) const;
+		const char* rangeName) const override;
 	/// calculate analytical integrals
-	Double_t analyticalIntegral(Int_t code, const char* rangeName) const;
+	Double_t analyticalIntegral(Int_t code, const char* rangeName) const override;
 
     protected:
 	/// return calibrated mistag
-	Double_t evaluate() const;
+	Double_t evaluate() const override;
 
     private:
 	RooRealProxy m_eta;		///< predicted mistag

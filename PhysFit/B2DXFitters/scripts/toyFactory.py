@@ -137,6 +137,8 @@ import copy
 
 gROOT.SetBatch()
 
+zero = RooConstVar('zero', 'zero', 0.0 )
+
 #------------------------------------------------------------
 def BuildObservables(workspaceIn, myconfigfile, debug):
 
@@ -191,7 +193,8 @@ def BuildTagging(workspaceIn, myconfigfile, obsDict, debug):
         #Loop over taggers (OS, SS)
         for tagger in myconfigfile["Taggers"][comp].iterkeys():
 
-            if "Mistag"+tagger in obsDict.keys() and "TagDec"+tagger in obsDict.keys():
+            #if "Mistag"+tagger in obsDict.keys() and "TagDec"+tagger in obsDict.keys():
+            if "TagDec"+tagger in obsDict.keys():
 
                 #Create calibration parameters (p0, p1, dp0, dp1, <eta>, tageff, atageff)
                 caliblist = []
@@ -443,7 +446,7 @@ def BuildAsymmetries(workspaceIn, myconfigfile, debug):
     return asymmDict
 
 #-----------------------------------------------------------------------------
-def BuildTotalPDF(workspaceIn, myconfigfile, obsDict, ACPDict, tagDict, resAccDict, asymmDict, workTemplate, debug):
+def BuildTotalPDF(workspaceIn, myconfigfile, obsDict, ACPDict, tagDict, resAccDict, asymmDict, workTemplate, HFAG, debug):
 
     pdf = None
     pdfDict = {}
@@ -491,6 +494,7 @@ def BuildTotalPDF(workspaceIn, myconfigfile, obsDict, ACPDict, tagDict, resAccDi
                                                                                                 tagDict,
                                                                                                 resAccDict,
                                                                                                 asymmDict,
+                                                                                                HFAG,
                                                                                                 debug))
                         elif obs in ["BeautyMass", "CharmMass", "BacPIDK", "TrueID"]:
 
@@ -521,7 +525,7 @@ def BuildTotalPDF(workspaceIn, myconfigfile, obsDict, ACPDict, tagDict, resAccDi
             "Events"   : yieldCount}
 
 #-----------------------------------------------------------------------------
-def BuildACPDict(workspaceIn, myconfigfile, debug):
+def BuildACPDict(workspaceIn, myconfigfile, HFAG, debug):
 
     ACPDict = {}
 
@@ -536,7 +540,8 @@ def BuildACPDict(workspaceIn, myconfigfile, debug):
 
             ACPobs = cpobservables.AsymmetryObservables(myconfigfile["ACP"][comp]["ArgLf"][0],
                                                         myconfigfile["ACP"][comp]["ArgLbarfbar"][0],
-                                                        myconfigfile["ACP"][comp]["ModLf"][0])
+                                                        myconfigfile["ACP"][comp]["ModLf"][0],
+                                                        HFAG)
             ACPobs.printtable()
 
             ACPDict[comp]["C"] = WS(workspaceIn, RooRealVar("C_"+comp, "C_"+comp, ACPobs.Cf()))
@@ -574,7 +579,7 @@ def BuildACPDict(workspaceIn, myconfigfile, debug):
     return ACPDict
 
 #-----------------------------------------------------------------------------
-def BuildTimePDF(workspaceIn, myconfigfile, hypo, year, comp, mode, obsDict, ACPDict, tagDict, resAccDict, asymmDict, debug):
+def BuildTimePDF(workspaceIn, myconfigfile, hypo, year, comp, mode, obsDict, ACPDict, tagDict, resAccDict, asymmDict, HFAG, debug):
 
     pdf = workspaceIn.pdf("TimePDF_"+comp)
 
@@ -601,9 +606,13 @@ def BuildTimePDF(workspaceIn, myconfigfile, hypo, year, comp, mode, obsDict, ACP
         qt = []
         mistagobs = []
         for tagger in myconfigfile["Taggers"][comp].iterkeys():
-            if "Mistag"+tagger in obsDict.keys() and "TagDec"+tagger in obsDict.keys():
-                mistagobs.append( obsDict["Mistag"+tagger] )
+            #if "Mistag"+tagger in obsDict.keys() and "TagDec"+tagger in obsDict.keys():
+            if "TagDec"+tagger in obsDict.keys():
                 qt.append( obsDict["TagDec"+tagger] )
+            if "Mistag"+tagger in obsDict.keys():
+                mistagobs.append( obsDict["Mistag"+tagger] )
+            else:
+                mistagobs.append( zero )
 
         #Retrieve time error PDF, resolution and acceptance
         terrpdf = resAccDict[comp]["TimeErrorPDF"]
@@ -619,7 +628,7 @@ def BuildTimePDF(workspaceIn, myconfigfile, hypo, year, comp, mode, obsDict, ACP
 
         #Build a config dict that buildBDecayTimePdf can understand
         config = {}
-        config["Context"] = "GEN"
+        config["Context"] = "FIT"#"GEN"
         config["Debug"] = True if debug else False
         config["ParameteriseIntegral"] = myconfigfile["ACP"][comp]["ParameteriseIntegral"]
         config["UseProtoData"] = True #this is really recommended to speed-up generation
@@ -637,7 +646,7 @@ def BuildTimePDF(workspaceIn, myconfigfile, hypo, year, comp, mode, obsDict, ACP
             C, D, Dbar, S, Sbar,
             resmodel, acc,
             terrpdf, mistagpdf,
-            aprod, adet)
+            aprod, adet, HFAG)
 
     return WS(workspaceIn, pdf)
 
@@ -1022,6 +1031,15 @@ def GenerateToys(workspaceIn, myconfigfile, observables, pdfDict, protoData, see
                                 genset.add( observables.find("TagDecOS") )
                             if "TagDecSS" in myconfigfile["Observables"].keys():
                                 genset.add( observables.find("TagDecSS") )
+
+                            #import numpy
+                            #from numpy import arange
+                            #observables.find("BacCharge").setIndex(-1)
+                            #observables.find("TagDecOS").setIndex(-1)
+                            #for t in numpy.arange(observables.find("BeautyTime").getMin(), observables.find("BeautyTime").getMax(), 0.001):
+                            #    observables.find("BeautyTime").setVal(t)
+                            #    print "PDF("+str(t)+") = "+str(pdf[hypo][year][mode][comp][obs].getVal())
+
                             #If we have proto data use it, otherwise only draw number of events to generate from Poisson distribution
                             if None != protoData:
                                 if debug:
@@ -1246,6 +1264,7 @@ def toyFactory(configName,
                treeOut,
                treefileOut,
                saveTree,
+               HFAG,
                debug):
 
     # Safe settings for numerical integration (if needed)
@@ -1336,7 +1355,7 @@ def toyFactory(configName,
         print "=========================================================="
         print ""
 
-        ACPDict = BuildACPDict(workspaceIn, myconfigfile, debug)
+        ACPDict = BuildACPDict(workspaceIn, myconfigfile, HFAG, debug)
 
     print ""
     print "=========================================================="
@@ -1351,7 +1370,7 @@ def toyFactory(configName,
         workTemplate = filePDF.Get(myconfigfile["WorkspaceToRead"]["Workspace"])
         if debug:
             workTemplate.Print("v")
-    pdfDict = BuildTotalPDF(workspaceIn, myconfigfile, obsDict, ACPDict, tagDict, resAccDict, asymmDict, workTemplate, debug)
+    pdfDict = BuildTotalPDF(workspaceIn, myconfigfile, obsDict, ACPDict, tagDict, resAccDict, asymmDict, workTemplate, HFAG, debug)
     if "WorkspaceToRead" in myconfigfile.keys():
         filePDF.Close()
 
@@ -1507,6 +1526,13 @@ parser.add_option( '--treefileOut',
                    help = 'output tree file name'
                    )
 
+parser.add_option( '--HFAG',
+                   action = 'store_true',
+                   dest = 'HFAG',
+                   default = False,
+                   help = 'use HFAG convention for CP coefficients'
+                   )
+
 parser.add_option( '-d', '--debug',
                    action = 'store_true',
                    dest = 'debug',
@@ -1543,4 +1569,5 @@ if __name__ == '__main__' :
                options.treeOut,
                options.treefileOut,
                options.saveTree,
+               options.HFAG,
                options.debug)

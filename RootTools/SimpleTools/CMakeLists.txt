@@ -7,6 +7,8 @@ find_package(Boost)
 find_package(ROOT COMPONENTS Core RIO Tree TreePlayer Gui Hist Gpad Graf
                              MathCore)
 
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS})
+
 gaudi_add_executable(SimpleToolsColumnMaker
                      src/columnmaker.cc
                      INCLUDE_DIRS Boost ROOT

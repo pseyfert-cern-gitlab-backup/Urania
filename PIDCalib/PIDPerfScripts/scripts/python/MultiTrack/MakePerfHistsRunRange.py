@@ -21,84 +21,97 @@ class ShowArgumentsParser(argparse.ArgumentParser):
 if '__main__' == __name__:
     start()
     print ""
-
+    
     parser = ShowArgumentsParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         prog=os.path.basename(sys.argv[0]),
         description=("""Make performance histograms for a given:
-        a) stripping version <stripVersion> (e.g. \"20\")
+        a) Sample version <sampleVersion> (e.g. \"20\" for Run 1 Stripping 20, \"Turbo16\" for Run 2 WGP)
         b) magnet polarity  <magPol> (\"MagUp\" or \"MagDown\")
-        c) particle type <partName> (\"K\", \"P\", \"Pi\", \"e\" or \"Mu"\ or \"P_IncLc\")
+        c) particle type <partName> (\"K\", \"P\", \"Pi\", \"e\" or \"Mu\")
         d) PID cut, <pidCut>
+        e) X binning variable <xVarName> (\"P\" for Run 1, \"Brunel_P\" for Run 2 Stripping, \"P\" for Run 2 Turbo)
+        f) Y binning variable <yVarName> (\"ETA\" for Run 1, \"Brunel_ETA\" for Run 2 Stripping, \"ETA\" for Run 2 Turbo)
+        g) Z binning variable <zVarName> (\"nTracks\" for Run 1, \"nTracks_Brunel\" for Run 2 Stripping, \"nTracks_Brunel\" or \"nSPDHits\"  for Run 2 Turbo)
 Multiple PID cuts can be specified if necessary, e.g. \"[DLLK > 0.0, DLLK > 4.0]\".
 In this case, a performance histogram will be produced for each PID cut.
 
 For a full list of arguments, do: 'python {0} -h'
 
-e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
-    \"[DLLK > 0.0, DLLK > 4.0 && DLLp < 0.0]\"
+e.g. Run 1: python {0} \"20\" \"MagUp\" \"K\" \\
+    \"[DLLK > 0.0, DLLK > 4.0 && DLLp < 0.0]\" -c \"runNumber>=114205 && runNumber<=114287\"
+    
+e.g Run 2: python {0}  \"Turbo16\" \"MagUp\" \"K\" \\
+    \"[DLLK > 0.0, DLLK > 4.0 && DLLp < 0.0]\" -c \"runNumber>=114205 && runNumber<=114287\"
 
  """).format(os.path.basename(sys.argv[0])),)
 
     ## add the positional arguments
-    parser.add_argument('stripVersion', metavar='<stripVersion>',
-                        help="Sets the stripping version")
+    parser.add_argument('sampleVersion', metavar='<sampleVersion>',
+                        help="Sets the stripping version for Run I data, or the Turbo WGP production version for Run II")
     parser.add_argument('magPol', metavar='<magPol>',
                         help="Sets the magnet polarity")
     parser.add_argument('partName', metavar='<partName>',
                         help="Sets the particle type")
     parser.add_argument('pidCut', metavar='<pidCut>',
                         help="Sets the PID cut(s)")
-
+    parser.add_argument('xVarName', metavar='<xVarName>',
+                          help="Sets the name of the 1st (x) bin variable "
+                          "For Run 1 Stripping, select P"
+                          "For Run 2 Stripping, select Brunel_P"
+                          "For Run 2 Turbo, select P" 
+                          )
+    parser.add_argument('yVarName', metavar='<yVarName>',
+                          help="Sets the name of the 2nd (y) bin variable "
+                          "For Run 1 Stripping, select ETA"
+                          "For Run 2 Stripping, select Brunel_ETA"
+                          "For Run 2 Turbo, select ETA"
+                          "If 1D binning is required, set this to an empty string"
+                          )
+    parser.add_argument('zVarName', metavar='<zVarName>',
+                          help="Sets the name of the 3rd (x) bin variable "
+                          "For Run 1 Stripping, select nTracks"
+                          "For Run 2 Stripping, select nTracks_Brunel"
+                          "For Run 2 Turbo, select nTracks_Brunel or nSPDHits"
+                          "If 2D binning is required, set this to an empty string"
+                          )
+       
     ## add the optional arguments
-    parser.add_argument('-x', '--minRun', dest="runMin", metavar="NUM",
-                        help="Sets the minimum run number to process (if applicable)")
-    parser.add_argument('-y', '--maxRun', dest="runMax", metavar="NUM",
-                        help="Sets the maximum run number to process (if applicable)")
+    parser.add_argument('-x', '--minRun', dest="minRun", metavar="NUM",
+                        help="Sets the minimum run number to process (if applicable, Run 1 only)")
+    parser.add_argument('-y', '--maxRun', dest="maxRun", metavar="NUM",
+                        help="Sets the maximum run number to process (if applicable, Run 1 only)")
     parser.add_argument('-f', '--maxFiles', dest="maxFiles", metavar="NUM",
                         help="Sets the maximum number of calibration files to run over")
     parser.add_argument('-c', '--cuts', dest='cuts', metavar='CUTS', default='',
-                        help=("Sets the list of cuts to apply to the calibration "
-                             "sample(s) prior to determine the PID efficiencies "
-                             "(default: (default)s). "
-                             "NB. It is up to the user to ensure that their reference "
-                             "sample has the same cuts applied."
-                             ))
-    parser.add_argument("-o", "--outputDir", dest="outputDir", metavar="DIR",
+                        help="Sets the list of cuts to apply to the calibration "
+                        "sample(s) prior to determine the PID efficiencies "
+                        "(default: %(default)s). "
+                        "NB. It is up to the user to ensure that their reference "
+                        "sample has the same cuts applied."
+                        )
+    
+    parser.add_argument('-o', '--outputDir', dest='outputDir', metavar='DIR',
                         help="Save the performance histograms to directory DIR "
-                        "(default: current directory)")
-
+                        "(default: current directory)"
+                        )
+    
     binGroup = parser.add_argument_group("binning options")
-    binGroup.add_argument("-X", "--xVarName", dest="xVarName", metavar="NAME",
-                          default="P",
-                          help="Sets the NAME of the 1st (x) bin variable "
-                          "(default: %(default)s)")
-    binGroup.add_argument("-Y", "--yVarName", dest="yVarName", metavar="NAME",
-                          default="ETA",
-                          help="Sets the NAME of the 2nd (y) bin variable "
-                          "(default: %(default)s). "
-                          "If 1D binning is required, then this option should "
-                          "be set to an empty string")
-    binGroup.add_argument("-Z", "--zVarName", dest="zVarName", metavar="NAME",
-                          default="nTracks",
-                          help="Sets the NAME of the 3rd (z) bin variable "
-                          "(default: %(default)s). "
-                          "If 2D binning is required, then this option should "
-                          "be set to an empty string")
+    
     binGroup.add_argument("-s", "--schemeName", dest="schemeName", metavar="NAME",
                           default=None,
                           help="Sets the NAME of the binning scheme, "
                           "as defined in the module 'PIDPerfScripts.binning'. "
                           "If this option is not set, the default "
                           "binning scheme is used.")
-
+    
     binGroup.add_argument("-b", "--binSchemeFile", dest="binSchemeFile",
                           metavar="NAME", default=None,
                           help="Sets the NAME of the python file containing "
                           "user-defined binning schema. Without this option, "
                           "the script will only look for binning schema in "
                           "the 'PIDPerfScripts.binning' module")
-
+    
     addGroup = parser.add_argument_group("further options")
     addGroup.add_argument("-q", "--quiet", dest="verbose", action="store_false",
                           default=True,
@@ -107,8 +120,8 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
                           action="store_false", default=True,
                           help="Disables the printing of performance tables "
                           "(they will still be written to a TFile)")
-
-
+    
+    
     addGroup.add_argument("-l", "--latexTables", dest="latexTables",
                           action="store_true", default=False,
                           help="print LaTeX-format tables (rather than ASCII)")
@@ -126,13 +139,12 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
                           help="Allow missing calibration subsamples. "
                           "N.B. You should only use this option if requested to "
                           "do so by the PIDCalib authors")
-
+   
     opts = parser.parse_args()
 
+
     from PIDPerfScripts.Definitions import *
-    from PIDPerfScripts.DataFuncs import *
-    from PIDPerfScripts.PerfResults import *
-    from PIDPerfScripts.PerfCalcFuncs import *
+
 
     StripVersion = None
     MagPolarity = None
@@ -141,10 +153,10 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
     RunMin = None
     RunMax = None
 
-    # set the stripping version
-    StripVersion=opts.stripVersion
+    # set the sample version (stripping version in Run I, and Turbo version in Run II. Internally called StripVersion)
+    StripVersion=opts.sampleVersion
     CheckStripVer(StripVersion)
-
+    
     # set the magnet polarity
     MagPolarity=opts.magPol
     CheckMagPol(MagPolarity)
@@ -152,10 +164,16 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
     # set the particle name
     PartName=opts.partName
     CheckPartType(PartName)
+    
+    #Additional sample check for pA/Ap samples
+    if 'pA' in StripVersion or 'Ap' in StripVersion:
+    	CheckStripVerPartNameMagPol(StripVersion,PartName,MagPolarity)
+    
 
     # set the PID cuts
     DLLCuts = opts.pidCut
 
+    
     if DLLCuts.startswith("["):
         if not DLLCuts.endswith("]"):
             parser.error("Invalid DLL cut string %s" %DLLCuts)
@@ -167,19 +185,25 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
     else:
         DLLCuts = (DLLCuts,)
 
-    TriggerList = []
-
     if (len(opts.cuts)>0):
         if isinstance(opts.cuts,str):
-            if not CheckCuts(opts.cuts,TriggerList,StripVersion):
+            if not CheckCuts(opts.cuts,StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cuts))
         elif isinstance(opts.cuts,list):
-            if not CheckCuts(opts.cuts.join(" "),TriggerList,StripVersion):
+            if not CheckCuts(opts.cuts.join(" "),StripVersion):
                 parser.error("Invalid cut string %s" %str(opts.cuts))
 
-    RunMin = opts.runMin
-    RunMax = opts.runMax
+    RunMin = opts.minRun
+    RunMax = opts.maxRun
     MaxFiles = opts.maxFiles
+    
+    #If running on Run 2 data, do not allow run range to be set
+    #if 'Turbo' in StripVersion and RunMin is not None:
+    #	parser.error("Cannot set run range for Run 2 data. Please set the run range within a cut using -c option.")
+    
+    #if 'Turbo' in StripVersion and RunMax is not None:
+    #	parser.error("Cannot set run range for Run 2 data. Please set the run range within a cut using -c option.")
+    
 
     if RunMin is not None:
         try:
@@ -211,7 +235,7 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
         if MaxFiles is None:
             parser.error(
                 "Max files was specified as %s, but no min run was given." %MaxFiles)
-
+   
     XVarName = opts.xVarName
     if XVarName=='':
         parser.error("Argument to --xBinVarName is an empty string.")
@@ -264,7 +288,7 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
         BinSchema.push_back(Z_Bin)
 
     for icut, cut in enumerate(DLLCuts):
-        if not CheckCuts(cut, TriggerList,StripVersion):
+        if not CheckCuts(cut,StripVersion):
             raise ValueError("Invalid PID cut %i: \"%s\""%(icut,cut))
 
     #======================================================================
@@ -314,20 +338,28 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
 
     #======================================================================
     # Final list of plots
-    #======================================================================
+    #=====================================================================
+
+    from PIDPerfScripts.DataFuncs import *
+    from PIDPerfScripts.PerfResults import *
+    from PIDPerfScripts.PerfCalcFuncs import *
+        
     Plots = GetPerfPlotList(MakePerfPlotsList if opts.oldAveraging else MakePerfPlotsListPyth,
                             StripVersion,
                             MagPolarity,
                             PartName,
                             DLLCuts,
                             opts.cuts,
+                            opts.pidCut,    #Added by Donal, use to filter the variables loaded 
+                            opts.xVarName,
+                            opts.yVarName,
+                            opts.zVarName,
                             BinSchema,
                             RunMin,
                             RunMax,
                             opts.verbose,
-                            opts.allowMissing,
-                            MaxFiles,
-                            TriggerList)
+                            opts.allowMissing)
+                            
 
     #======================================================================
     # Make Weighted Average
@@ -344,9 +376,16 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
         fnameSuffix+='_{0}'.format(SchemeName)
     for vname in BinVarNames:
       fnameSuffix+='_{0}'.format(vname)
-    fname = "PerfHists_{part}_Strip{strp}_{pol}{suf}.root".format(
-        part=PartName, strp=StripVersion, pol=MagPolarity,
-        suf=fnameSuffix)
+    #Add Strip into Run 1 file names
+    if 'Turbo' not in StripVersion and 'Electron' not in StripVersion:
+    	fname = "PerfHists_{part}_Strip{strp}_{pol}{suf}.root".format(
+        	part=PartName, strp=StripVersion, pol=MagPolarity,
+        	suf=fnameSuffix)
+    else:
+    	fname = "PerfHists_{part}_{strp}_{pol}{suf}.root".format(
+        	part=PartName, strp=StripVersion, pol=MagPolarity,
+        	suf=fnameSuffix)
+    
     if opts.outputDir is not None:
         fname = "%s/%s" %(opts.outputDir, fname)
 
@@ -364,34 +403,38 @@ e.g. python {0}  --minRun=114205 --maxRun=114287 \"20\" \"MagUp\" \"K\" \\
     # Create PIDTable for each PID cut and print to screen
     #======================================================================
  
+    #   if opts.printTables:
+    #print "-----------------"
+    #print "Printing PIDTable"
+    #print "-----------------"
+    #for i in range(len(Plots)):
+    #    plot = Plots[i][-1] if opts.oldAveraging else Plots[i][-1][0]
+    #    print plot
 
-#   if opts.printTables:
-#        for i in range(len(Plots)):
-#            plot = Plots[i][-1] if opts.oldAveraging else Plots[i][-1][0]
-#            print plot
-#            nDim = BinSchema.size()
-#            pidTable = None
-#            if nDim==3:
-#                print plot, X_Bin, Y_Bin, Z_Bin
-#                pidTable = ROOT.PIDTable(plot, X_Bin, Y_Bin, Z_Bin)
-#            elif nDim==2:
-#                pidTable = ROOT.PIDTable(plot, X_Bin, Y_Bin)
-#            else:
-#                pidTable = ROOT.PIDTable(plot, X_Bin)
-#            tabName=plot.GetName()
-#            tabHeader = "PID Table for histogram %s" %tabName
-#            if opts.tabFile is None:
-#                print tabHeader
-#                pidTable.PrintTable(ROOT.std.cout, opts.latexTables)
-#            else:
-#                appMode = "w" if i==0 else "a"
-#                os = open(opts.tabFile, appMode)
-#                os.write(tabHeader+'\n')
-#                os.close()
-#                os = ROOT.std.fstream(opts.tabFile,
-#                        ROOT.std.fstream.out|ROOT.std.fstream.app)
-#                pidTable.PrintTable(os, opts.latexTables)
+    #    nDim = BinSchema.size()
+    #    pidTable = None
 
+    #    if nDim==3:
+    #        print plot, X_Bin, Y_Bin, Z_Bin
+    #        pidTable = ROOT.PIDTable(plot, X_Bin, Y_Bin, Z_Bin)
+    #    elif nDim==2:
+    #        pidTable = ROOT.PIDTable(plot, X_Bin, Y_Bin)
+    #    else:
+    #        pidTable = ROOT.PIDTable(plot, X_Bin)
+
+    #    tabName=plot.GetName()
+    #    tabHeader = "PID Table for histogram %s" %tabName
+    #    if opts.tabFile is None:
+    #        print tabHeader
+    #        pidTable.PrintTable(ROOT.std.cout, opts.latexTables)
+            #else:
+            #   appMode = "w" if i==0 else "a"
+            #    os = open(opts.tabFile, appMode)
+            #    os.write(tabHeader+'\n')
+            #    os.close()
+            #    os = ROOT.std.fstream(opts.tabFile,
+            #            ROOT.std.fstream.out|ROOT.std.fstream.app)
+            #    pidTable.PrintTable(os, opts.latexTables)
     #======================================================================
     # Close file
     #======================================================================

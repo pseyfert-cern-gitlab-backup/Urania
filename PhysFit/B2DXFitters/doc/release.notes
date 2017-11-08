@@ -4,6 +4,100 @@
 ! Purpose     : RooFit-based fitters for B -> D X
 !-----------------------------------------------------------------------------
 
+! 2017-07-25 - Agnieszka Dziurda
+  - merge fs/fd updates 
+  - fix plotSFit.py 
+
+! 2017-07-03 - Agnieszka Dziurda
+  - add dump fix for setting B2DXFitters. In python script you can do now: 
+    	from B2DXFitters.settings import setEnv
+    	setEnv()
+    and all classes/namespaces should be visible in the python 
+  - update config files for DsstPi
+  - small changes in MDFit plotting 
+  - fixing fitSplines.py, calculateAcceptance.py, comparePDF.py with new 
+    enviroment settings. 
+  - allowing global weights in prepareWorkspace.py 
+
+
+! 2017-06-12 - Carlos Vazquez Sierra
+ + Tagging v4r0 for Urania v7r0.
+
+! 2017-05-12 - Vincenzo Battista
+ - Add updates for Bd->Dpi. Include more taggers in "CheckTagger" of MDFitterSettings.
+   Include AdditionalVariables in ObtainSignal (MassFitUtils).
+   Fix bug in timepdfutils_Bd.py affecting C coefficients in HFAG convention.
+
+! 2017-04-28 - Vincenzo Battista
+ - First implementation for run2 data handling in B2DXFitters
+
+! 2017-03-24 - Carlos Vazquez Sierra
+ - Make version v3r4p1 for release.
+
+! 2017-03-23 - Alessandro Bertolin
+ - Minor update of Bs2DsstPi/Bs2DsstPiConfigForNominalMassFit.py (a few comments added)
+ - Update of Bs2DsstK/Bs2DsstKConfigForNominalMassFit.py (among which a few files paths and 
+   one variable name change previously corrected for Bs2DsstPi/Bs2DsstPiConfigForNominalMassFit.py)
+
+! 2017-03-22 - Carlos Vazquez Sierra
+ - Make version v3r4 for release.
+
+!============================================== v3r3 2017-03-22 ==============================
+
+! 2017-03-22 - Vincenzo Battista
+ - Replace boost::container::vector<Bool_t> with std::vector<SmartBool>, where
+   SmartBool is a wrapper around bool. This fixes some bad compilation warnings.
+ - Improve MC bootstrapping and add configurable asymmetry plotter
+ - Many updates of config files for Bd->DPi
+
+! 2017-03-08 - Agnieszka Dziurda
+ - further fixes in MDFit:
+   - RooWorkspace is not anymore our friend, some bypass done, more clever solution
+     will come later
+   - fix bug in 2 lists -> matrix conversion 
+
+! 2017-03-02 - Vincenzo Battista
+ - Various config file updates
+ - Add handling for Bool_t variables in MassFitUtils (e.g. trigger decisions). 
+   This requires some boost libraries (added in CMakeLists.txt) since
+   std::vector<Bool_t> is deprecated.
+
+! 2017-02-27 - Alessandro Bertolin
+ - update of Bs2DsstK/PiConfigForMCSplineFit.py for latest version of fitSplineAcc.py
+
+! 2017-02-22 - Agnieszka Dziurda
+ - Fixing MDFit after cmt -> cmake, svn -> git transition. MDFit should work well now. 
+ - adding new configuration files for fs/fd measurement 
+
+! 2017-02-21 - Vincenzo Battista
+ - Introduce "BootstrapMC.py", "Batch/Batch_runBootstrapMC.sh" and
+   "Bash/runBootstrapMC.sh" to create toy samples by bootstrapping the
+   MC. The required input is a dataset created by the prepareWorkspace.py
+   script. 
+
+! 2017-02-14 - Ulrich Eitschberger
+ - DecayRateCoeff_Bd in HFAG convention + corresponding DsK scripts
+
+! 2017-02-08 - Vincenzo Battista
+ - Update runSFit_Bd.py, toyFactory.py and timepdfutils_Bd.py with the
+   new HFAG convention used in DecRateCoeff_Bd
+ - Include new RooCubicSplinePdf (derived from RooCubicSplineFun) which inherits
+   from RooAbsPdf and thus allows to perform "standalone" fits to the acceptance
+   (with RooCubicSplineFun is only possible to bake the acceptance into a time
+    PDF model)
+ - Include "BacCharge" by default in the list of observables when the MC workspace
+   is built (MassFitUtils.cxx)
+ - New Bd->DPi config files, plus updates of older config files.
+
+! 2017-02-01 - Carlos Vazquez Sierra
+ - Make version v3r3 for release.
+ 
+!============================================== v3r2 2017-02-01 ==============================
+
+! 2016-12-19 - Carlos Vazquez Sierra
+  - First release after migration to gitlab. Information about commits on SVN are lost.
+    To be sure, just make version v3r2.
+
 ! 2016-11-05 - Vincenzo Battista
  - Update configfiles for B2DPi toys
  - Make resolution width floating (if required) in getResolutionModel (resmodelutils.py)

@@ -16,7 +16,7 @@ def getconfig() :
         
     # basic variables
     configdict["BasicVariables"] = {}
-    configdict["BasicVariables"]["BeautyMass"]    = { "Range"                  : [5000,    6000    ],
+    configdict["BasicVariables"]["BeautyMass"]    = { "Range"                  : [5130,    6000    ],
                                                       "Name"                   : "BeautyMass",
                                                       "InputName"              : "lab0_MM"}
 
@@ -59,21 +59,25 @@ def getconfig() :
     #
     configdict["pdfList"]["Signal"] = {}
     configdict["pdfList"]["Signal"]["Bu2D0Pi"] = {}
-    configdict["pdfList"]["Signal"]["Bu2D0Pi"]["BeautyMass"] = { "PDF"        : "Ipatia",
+    configdict["pdfList"]["Signal"]["Bu2D0Pi"]["BeautyMass"] = { "PDF"        : "Ipatia",#"PDF"        : "IpatiaPlusJohnsonSU",
                                                                  "Title"      : "B_{u}#rightarrowD^{0}#pi",
                                                                  "Bins"       : 130,
                                                                  "Min"        : 5190.0,
                                                                  "Max"        : 5450.0,
                                                                  "Unit"       : "MeV/c^{2}",
                                                                  "mean"       : [5280,5200,5350],
-                                                                 "sigma"      : [25.0,1.0,100.0],
+                                                                 "sigma"     : [25.0,1.0,100.0],#"sigmaI"     : [25.0,1.0,100.0],
+                                                                 #"sigmaJ"     : [25.0,1.0,100.0],
                                                                  "zeta"       : [0.0],
                                                                  "fb"         : [0.0],
                                                                  "l"          : [-2.0,-5.0,-0.01],
                                                                  "a1"         : [3.0,0.01,6.0],
                                                                  "a2"         : [3.0,0.01,6.0],
                                                                  "n1"         : [3.0,0.01,6.0],
-                                                                 "n2"         : [3.0,0.01,6.0]}
+                                                                 "n2"         : [3.0,0.01,6.0]}#,
+                                                                 #"nu"         : [-0.1, -10.0, 0.0],
+                                                                 #"tau"        : [0.1, 0.0, 10.0],
+                                                                 #"fracI"      : [0.7, 0.1, 0.9]}
     configdict["pdfList"]["Signal"]["Bu2D0K"] = {}
     configdict["pdfList"]["Signal"]["Bu2D0K"]["BeautyMass"] = { "PDF"        : "Ipatia",
                                                                 "Title"      : "B_{u}#rightarrowD^{0}#pi",
@@ -96,7 +100,7 @@ def getconfig() :
     configdict["pdfList"]["Bu2D0K"]["Bu2D0Pi"]["BeautyMass"] = { "PDF"        : "Ipatia",
                                                                  "Title"      : "B_{u}#rightarrowD^{0}K",
                                                                  "Bins"       : 82,
-                                                                 "Min"        : 5090.0,
+                                                                 "Min"        : 5130.0,
                                                                  "Max"        : 5500.0,
                                                                  "Unit"       : "MeV/c^{2}",
                                                                  "mean"       : [5239.0,5200.0,5250.0],
@@ -106,13 +110,13 @@ def getconfig() :
                                                                  "l"          : [-28.0,-35.0,-25.0],
                                                                  "a1"         : [0.96,0.01,5.0],
                                                                  "a2"         : [1.23,0.01,5.0],
-                                                                 "n1"         : [3.5,0.01,5.0],
+                                                                 "n1"         : [3.5,0.01,10.0],
                                                                  "n2"         : [10.0,0.01,15.0]}
     configdict["pdfList"]["Bu2D0K"]["Bu2D0K"] = {}
     configdict["pdfList"]["Bu2D0K"]["Bu2D0K"]["BeautyMass"] = { "PDF"        : "Ipatia",
                                                                 "Title"      : "B_{u}#rightarrowD^{0}K",
                                                                 "Bins"       : 80,
-                                                                "Min"        : 5100.0,#5200.0,
+                                                                "Min"        : 5130.0,#5200.0,
                                                                 "Max"        : 5500.0,#5380.0,
                                                                 "Unit"       : "MeV/c^{2}",
                                                                 "mean"       : [5280.0,5200.0,5350.0],
@@ -130,8 +134,8 @@ def getconfig() :
     configdict["pdfList"]["Bd2D0PiPi"]["Bu2D0Pi"]["BeautyMass"] = {"PDF"        : "CrystalBallPlusGaussian",
                                                                    "Title"      : "B_{d}#rightarrowD^{0}#pi#pi",
                                                                    "Bins"       : 100,
-                                                                   "Min"        : 5090.0,
-                                                                   "Max"        : 5500.0,
+                                                                   "Min"        : 5130.0,
+                                                                   "Max"        : 5900.0,
                                                                    "Unit"       : "MeV/c^{2}",
                                                                    "shiftMean"  : False,
                                                                    "mean"       : [5100.92,5000.0,5200.0],
@@ -141,55 +145,60 @@ def getconfig() :
                                                                    "sigmaG"     : [25.0,1.0,100.0],
                                                                    "fracG"      : [0.5,0.1,0.9]}
     configdict["pdfList"]["Bd2D0PiPi"]["Bu2D0K"] = {}
-    configdict["pdfList"]["Bd2D0PiPi"]["Bu2D0K"]["BeautyMass"] = {"PDF"        : "CrystalBallPlusGaussian",
+    configdict["pdfList"]["Bd2D0PiPi"]["Bu2D0K"]["BeautyMass"] = {"PDF"        : "CrystalBallPlusExponential",
                                                                   "Title"      : "B_{d}#rightarrowD^{0}#pi#pi",
-                                                                  "Bins"       : 100,
-                                                                  "Min"        : 5090.0,
-                                                                  "Max"        : 5500.0,
+                                                                  "Bins"       : 50,
+                                                                  "Min"        : 5130.0,
+                                                                  "Max"        : 5700.0,
                                                                   "Unit"       : "MeV/c^{2}",
                                                                   "shiftMean"  : False,
-                                                                  "mean"       : [5100.92,5000.0,5200.0],
-                                                                  "alpha"      : [-2.181,-10.0,10.0],
-                                                                  "n"          : [1.08,0.0,10.0],
-                                                                  "sigmaCB"    : [26.59,1.0,100.0],
-                                                                  "sigmaG"     : [25.0,1.0,100.0],
-                                                                  "fracG"      : [0.5,0.1,0.9]}
+                                                                  "mean"       : [5.14823e+03,5100.0,5250.0],
+                                                                  "alpha"      : [1.00834e+00,0.5,2.0],
+                                                                  "n"          : [7.52737e-01,0.3,1.5],
+                                                                  "sigmaCB"    : [4.97869e+01,10.0,60.0],
+                                                                  "cB"         : [-3.83778e-03,-1.0,-0.00001],
+                                                                  "fracExpo"   : [3.00000e-01,0.2,0.4]}
     #
     configdict["pdfList"]["Bu2Dst0Pi"] = {}
     configdict["pdfList"]["Bu2Dst0Pi"]["Bu2D0Pi"] = {}
-    configdict["pdfList"]["Bu2Dst0Pi"]["Bu2D0Pi"]["BeautyMass"] = {"PDF"        : "CrystalBallPlusGaussian",
+    configdict["pdfList"]["Bu2Dst0Pi"]["Bu2D0Pi"]["BeautyMass"] = {"PDF"        : "JohnsonSUPlusGaussian",
                                                                    "Title"      : "B_{u}#rightarrowD"+happystar+"^{0}#pi",
                                                                    "Bins"       : 100,
-                                                                   "Min"        : 5090.0,
-                                                                   "Max"        : 5500.0,
+                                                                   "Min"        : 5130.0,
+                                                                   "Max"        : 5350.0,
                                                                    "Unit"       : "MeV/c^{2}",
-                                                                   "shiftMean"  : False,
-                                                                   "mean"       : [5100.92,5000.0,5200.0],
-                                                                   "alpha"      : [-2.181,-10.0,10.0],
-                                                                   "n"          : [1.08,0.0,10.0],
-                                                                   "sigmaCB"    : [26.59,1.0,100.0],
-                                                                   "sigmaG"     : [25.0,1.0,100.0],
-                                                                   "fracG"      : [0.5,0.1,0.9]}
+                                                                   "sameMean"   : False,
+                                                                   "meanJ"      : [5.02862e+03,4950.0,5050.0],
+                                                                   "sigmaJ"     : [2.76206e+02, 200.0, 350.0],
+                                                                   "nuJ"        : [-1.81599e+00, -2.5, -1.0],
+                                                                   "tauJ"       : [1.04801e+00, 0.1, 2.0],
+                                                                   "meanGshift" : [9.40469e+01, 70.0, 110.0],
+                                                                   "sigmaG"     : [4.01146e+01, 35.0, 50.0],
+                                                                   "frac"       : [4.91253e-01, 0.3, 0.6]
+                                                                   }
+    
     configdict["pdfList"]["Bu2Dst0Pi"]["Bu2D0K"] = {}
-    configdict["pdfList"]["Bu2Dst0Pi"]["Bu2D0K"]["BeautyMass"] = {"PDF"        : "CrystalBall",
+    configdict["pdfList"]["Bu2Dst0Pi"]["Bu2D0K"]["BeautyMass"] = {"PDF"        : "CrystalBallPlusExponential",
                                                                   "Title"      : "B_{u}#rightarrowD"+happystar+"^{0}#pi",
                                                                   "Bins"       : 50,
-                                                                  "Min"        : 5090.0,
-                                                                  "Max"        : 5500.0,
+                                                                  "Min"        : 5130.0,
+                                                                  "Max"        : 5700.0,
                                                                   "Unit"       : "MeV/c^{2}",
                                                                   "shiftMean"  : False,
-                                                                  "mean"       : [5100.92,5000.0,5200.0],
-                                                                  "alpha"      : [-2.181,-10.0,10.0],
-                                                                  "n"          : [1.08,0.0,10.0],
-                                                                  "sigma"      : [26.59,1.0,100]}
+                                                                  "mean"       : [5.17562e+03,5000.0,5250.0],
+                                                                  "alpha"      : [-4.97466e+00,-5.5,-3.0],
+                                                                  "n"          : [3.49986e-01,0.1,0.5],
+                                                                  "sigmaCB"    : [6.74593e+01,50.0,100.0],
+                                                                  "cB"         : [-6.53729e-03,-1.0,-0.00001],
+                                                                  "fracExpo"   : [2.99572e-01,0.1,0.35]}
     #
     configdict["pdfList"]["Bs2D0KPi"] = {}
     configdict["pdfList"]["Bs2D0KPi"]["Bu2D0Pi"] = {}
     configdict["pdfList"]["Bs2D0KPi"]["Bu2D0Pi"]["BeautyMass"] = {"PDF"        : "JohnsonSU",
                                                                   "Title"      : "B_{s}#rightarrowD^{0}K#pi",
                                                                   "Bins"       : 100,
-                                                                  "Min"        : 5090.0,
-                                                                  "Max"        : 5500.0,
+                                                                  "Min"        : 5130.0,
+                                                                  "Max"        : 5300.0,
                                                                   "Unit"       : "MeV/c^{2}",
                                                                   "mean"       : [5100.92,5000.0,5200.0],
                                                                   "sigma"      : [600, 40.0, 1000.0],
@@ -199,13 +208,13 @@ def getconfig() :
     configdict["pdfList"]["Bs2D0KPi"]["Bu2D0K"]["BeautyMass"] = {"PDF"        : "JohnsonSU",
                                                                  "Title"      : "B_{s}#rightarrowD^{0}K#pi",
                                                                  "Bins"       : 100,
-                                                                 "Min"        : 5090.0,
-                                                                 "Max"        : 5500.0,
+                                                                 "Min"        : 5130.0,
+                                                                 "Max"        : 5300.0,
                                                                  "Unit"       : "MeV/c^{2}",
-                                                                 "mean"       : [5100.92,5000.0,5200.0],
-                                                                 "sigma"      : [600, 40.0, 1000.0],
-                                                                 "nu"         : [-1.9084e+00, -10.8, -1.3],
-                                                                 "tau"        : [1.3406e+00, 0.7, 1.8]}
+                                                                 "mean"       : [5080,5000.0,5150.0],
+                                                                 "sigma"      : [260, 100.0, 350.0],
+                                                                 "nu"         : [-1.86e+00, -3.0, -0.1],
+                                                                 "tau"        : [1.15e+00, 0.5, 1.5]}
 
     #Dataset prefix
     configdict["dataSetPrefix"] = {"Signal"   : "dataSetMC_Bu2D0Pi_",

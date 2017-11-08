@@ -3,7 +3,7 @@
 # Maintainer : Diego Martinez Santos, Carlos Vazquez Sierra
 #============================================================================
 package           UraniaSys
-version           v6r0
+version           v7r1
 #============================================================================
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -11,42 +11,44 @@ branches          cmt doc
 #============================================================================
 # Used packages. Specify the version, * at the end specifies 'any revision'
 #    Put as many lines as needed, with all packages, without the '#'
+#    Maintainers marked with [] have permissions to accept merge requests.
 #============================================================================
-#set GAUDI_home .
 
-use  GaudiPolicy		v15r8
-use  MCLimit			v2r1	Math			# Diego Martinez Santos
-use  SomeUtils			v5r1	Math			# Diego Martinez Santos
+#use  GaudiPolicy		v28r2
+use  MCLimit			v2r2	Math			# [Diego Martinez Santos]
+use  SomeUtils			v5r2	Math			# [Diego Martinez Santos]
 
-use  Urania			v5r0	Phys			# Diego Martinez Santos
-use  A2MuMu			v1r3	Phys			# Carlos Vazquez Sierra, Diego Martinez Santos, Martino Borsato
-use  B2CCtuples			v2r1	Phys			# Olivier Leroy
-use  Bs2JpsiKs                  v5r5    Phys                    # Patrick Koppenburg
+use  Urania			v6r0	Phys			# [Diego Martinez Santos]
+use  A2MuMu			v1r5	Phys			# [Carlos Vazquez Sierra], [Diego Martinez Santos], Martino Borsato
+use  B2CCtuples			v3r1	Phys			# [Carlos Vazquez Sierra], Olivier Leroy
+use  Bs2JpsiKs                  v5r6    Phys                    # [Patrick Koppenburg]
+use  Bs2JpsiPhiParams		v2r2	Phys			# [Diego Martinez Santos]
+use  Bs2MuMu			v3r2	Phys			# [Flavio Archilli]
+use  Bs2MuMuParams		v3r2	Phys			# [Flavio Archilli]
+use  BsJPsiKst                  v3r7   	Phys                    # [Carlos Vazquez Sierra], [Diego Martinez Santos]
+use  BsKstKst                  	v5r4    Phys                    # [Julian Garcia Pardinas], Juan Saborido Silva
+use  Ks2MuMu			v1r2	Phys			# [Miguel Ramos Pernas], [Jessica Prisciandaro]
+use  Ks2Pi0MuMu			v1r2	Phys			# [Diego Martinez Santos], [Veronika Chobanova]
+use  Lambdab2Jpsippi            v3r8    Phys                    # [Patrick Koppenburg]
+use  BsDsMuNuForRDS             v1r2    Phys                    # [Ricardo Vazquez Gomez]
 
-use  Bs2JpsiPhiParams		v2r1	Phys			# Greig Cowan
-use  Bs2MuMu			v3r1	Phys			# Diego Martinez Santos
-use  Bs2MuMuParams		v3r1	Phys			# Diego Martinez Santos, Marc-Olivier Bettler, Matheiu Perrin-Terrin
-use  BsJPsiKst                  v3r6   	Phys                    # Paula Alvarez, Diego Martinez Santos
-use  BsKstKst                  	v5r1    Phys                    # Paula Alvarez, Juan Saborido
-use  Ks2MuMu			v1r1	Phys			# Xabier Cid Vidal, Diego Martinez Santos
-use  Ks2Pi0MuMu			v1r1	Phys			# Veronika Chobanova, Diego Martinez Santos
-use  Lambdab2Jpsippi            v3r7    Phys                    # Patrick Koppenburg
+use  B2DXFitters		v4r0	PhysFit			# [Agnieszka Dziurda], [Manuel Schiller]
+use  P2VV			v4r4	PhysFit			# [Sean Benson], [Katya Govorkova]
+use  SomeMassModels		v2r6	PhysFit			# [Diego Martinez Santos]
+use  RooPhysFitter              v3r2    PhysFit                 # [Donal Hill]
 
-use  B2DXFitters		v3r1	PhysFit			# Manuel Schiller, Eduardo Rodrigues
-use  P2VV			v4r1	PhysFit			# Jeroen Van Leerdam, Roel Aaij
-use  SomeMassModels		v2r5	PhysFit			# Diego Martinez Santos
-use  RooPhysFitter              v3r1    PhysFit                 # Philip Hunt
-use  V0hhFitter                 v1r0    PhysFit                 # Rafael Silva Coutinho
+use  CalibDataScripts           v5r4    PIDCalib                # [Donal Hill]
+use  PIDPerfScripts             v12r0   PIDCalib                # [Donal Hill]
+use  PIDPerfTools               v9r0    PIDCalib                # [Donal Hill]
 
-use CalibDataScripts            v5r3    PIDCalib                # Philip Hunt
-use PIDPerfScripts              v10r3   PIDCalib                # Philip Hunt
-use PIDPerfTools                v7r1    PIDCalib                # Philip Hunt
-
-use  LHCbStyle			v2r7	RootTools		# Rolf Oldeman, Niels Tuning
+use  LHCbStyle			v2r8	RootTools		# Michael Schmelling, David Ward (EB chair)
 use  SimpleTools	  	v2r0	RootTools           	# Conor Fitzpatrick
 
-#use  MoreSimpleTools	  	v2r0	RootTools           	# Rob Lambert
-#use GammaPi0SeparationCalib v1r0 Phys        # Albert Puig
+use  Espresso                   v0r6p2  FT                      # [Jack Wimberley]
+
+use  QEE                        v1r0    WGCommonTools           # Carlos Vazquez Sierra (temporary) 
+#use  TrackCalib                 v1r0                            # Renata Kopecna, Michel de Cian, Michael Kolpin - TrackCalib does not have CMT support.
+#use  Meerkat                    v1r4    PhysTools               # [Anton Poluektov] - Meerkat does not have CMT support.
 
 apply_pattern container_package
 

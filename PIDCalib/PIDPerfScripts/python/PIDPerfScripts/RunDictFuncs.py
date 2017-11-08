@@ -34,7 +34,6 @@ def GetPklFileSuffix(PartName):
 
 def GetRunDictionary(StripVer, PartName="K" , verbose = True ):#, IsMuonUnBiased=False):
 
-    #fileSuffix=GetFileSuffix(PartName)
     pklfileSuffix=GetPklFileSuffix(PartName)
     #MUONPreFix = ''
     ##   if PartName in ("Mu", "K_MuonUnBiased", "Pi_MuonUnBiased", "P_MuonUnBiased"):

@@ -1,7 +1,7 @@
 ################################################################################
 # Package: CalibDataScripts
 ################################################################################
-gaudi_subdir(CalibDataScripts v5r3)
+gaudi_subdir(CalibDataScripts v5r4)
 
 gaudi_depends_on_subdirs(PhysFit/RooPhysFitter)
 
@@ -16,6 +16,8 @@ if(NOT heptools_version STRLESS 68)
 endif()
 
 if(GAUDI_BUILD_TESTS)
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS})
+
   gaudi_add_executable(TestCheckFitResults
                        src/CheckFitResults.cpp
                        src/TestCheckFitResults.cpp

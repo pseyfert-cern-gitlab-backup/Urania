@@ -24,7 +24,7 @@ def getconfig() :
     configdict["BasicVariables"] = {}
     configdict["BasicVariables"]["BeautyMass"]    = { "Range" : [5100,    6000    ], "InputName" : "FBs_DeltaM_M"}
     configdict["BasicVariables"]["CharmMass"]     = { "Range" : [2080,    2150    ], "InputName" : "FDsst_DeltaM_M"}
-    configdict["BasicVariables"]["BeautyTime"]    = { "Range" : [0.4,     15.0    ], "InputName" : "FBs_LF_ctau"}
+    configdict["BasicVariables"]["BeautyTime"]    = { "Range" : [0.4,     12.0    ], "InputName" : "FBs_LF_ctau"}
     configdict["BasicVariables"]["BacP"]          = { "Range" : [1000.,   650000.0], "InputName" : "FBac_P"}
     configdict["BasicVariables"]["BacPT"]         = { "Range" : [500.,    45000.0 ], "InputName" : "FBac_Ptr"}
     configdict["BasicVariables"]["BacPIDK"]       = { "Range" : [-7.0,    5.0     ], "InputName" : "FBac_PIDK"}
@@ -91,10 +91,10 @@ def getconfig() :
     configdict["CreateCombinatorial"]["BacPIDK"]["All"]       = {"Cut":"FBs_DeltaM_M>5100.&&FBs_DeltaM_M<6000.&&FDs_M>1950.&&FDs_M<1990.&&FDs_FDCHI2_ORIVX>2.&&FDelta_M>195.&&FDelta_M<205.&&FBs_Veto==0.&&FBDT_Var>0.01&&FBac_P>1000.&&FBac_P<650000.&&FBac_Ptr>500.&&FBac_Ptr<45000.",
                                                               "Rho":1.25, "Mirror":"Left"}
 
-    configdict["WeightingMassTemplates"] = { "RatioDataMC":{"FileLabel":{"2011":"#RatioDataMC 2011 PNTr","2012":"#RatioDataMC 2012 PNTr"},
-                                                            "Var":["FBac_P","FnTracks"],"HistName":"histRatio"},
-                                             "Shift":{ "BeautyMass": 3.3, "CharmMass": 2.8} }
-    # configdict["WeightingMassTemplates"] = { "Shift":{ "BeautyMass": 3.3, "CharmMass": 2.8} }
+    # configdict["WeightingMassTemplates"] = { "RatioDataMC":{"FileLabel":{"2011":"#RatioDataMC 2011 PNTr","2012":"#RatioDataMC 2012 PNTr"},
+    #                                                         "Var":["FBac_P","FnTracks"],"HistName":"histRatio"},
+    #                                          "Shift":{ "BeautyMass": 3.3, "CharmMass": 2.8} }
+    configdict["WeightingMassTemplates"] = { "Shift":{ "BeautyMass": 3.3, "CharmMass": 2.8} }
     #configdict["WeightingMassTemplates"]={"PIDBachEff":      {"FileLabel":{"2011":"#PIDK Pion 2011","2012":"#PIDK Pion 2012"},
     #                                                          "Var":["nTracks","lab1_P"],"HistName":"MyPionEff_0_mu2"},
     #                                      "PIDBachMisID":    {"FileLabel":{"2011":"#PIDK Kaon 2011","2012":"#PIDK Kaon 2012"},
@@ -109,8 +109,10 @@ def getconfig() :
     # configdict["WeightingMassTemplates"] = { }
 
     #weighting for PID templates
-    # configdict["ObtainPIDTemplates"] = { "Variables":["BacPT","nTracks"], "Bins":[20,20] }
-    configdict["ObtainPIDTemplates"] = { "Variables":["BacPT","nTracks"], "Bins":[30,30] }
+    # --MCPID, --MC, --SignalPID, --Signal
+    configdict["ObtainPIDTemplates"] = { "Variables":["BacP","nTracks"], "Bins":[30,30] }
+    # --CombPID
+    # configdict["ObtainPIDTemplates"] = { "Variables":["BacPT","nTracks"], "Bins":[30,30] }
 
     #PID Calibration samples for PID shapes
     configdict["Calibrations"] = {}
@@ -234,7 +236,7 @@ def getconfig() :
     configdict["LegendSettings"] = {}
     configdict["LegendSettings"]["BeautyMass"] = {"Position":[0.53, 0.45, 0.90, 0.91], "TextSize": 0.05, "LHCbText":[0.35,0.9]}
     configdict["LegendSettings"]["CharmMass"]  = {"Position":[0.20, 0.69, 0.93, 0.93], "TextSize": 0.05, "LHCbText":[0.8,0.66],
-                                                  "ScaleYSize":1.5, "SetLegendColumns":2, "LHCbTextSize":0.075 }
+                                                  "ScaleYSize":1.75, "SetLegendColumns":2, "LHCbTextSize":0.075 }
     configdict["LegendSettings"]["BacPIDK"]    = {"Position":[0.20, 0.69, 0.93, 0.93], "TextSize": 0.05, "LHCbText":[0.2,0.9], 
                                                   "ScaleYSize":1.5, "SetLegendColumns":2, "LHCbTextSize":0.075}
 

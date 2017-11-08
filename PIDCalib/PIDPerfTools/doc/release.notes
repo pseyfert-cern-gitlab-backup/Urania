@@ -1,13 +1,44 @@
 !-----------------------------------------------------------------------------
 ! Package     : PIDCalib/PIDPerfTools
-! Responsible : Sneha Malde
+! Responsible : Donal Hill
 ! Purpose     : Classes for performing PID based studies
 !-----------------------------------------------------------------------------
 
-!============================================== v7r1 2016-6-14 ==============================
-! 2016-06-14 Carlos Vazquez Sierra
-  - Creating v7r1: identical to v7r0 but including some missing RooErrorHandler headers in some of the scripts.
+! 2017-06-12 - Carlos Vazquez Sierra
+ + Tagging version v9r0 for Urania v7r0.
 
+! 2017-05-31 - Donal Hill
+ - Add functionality to print out bin number and low bin edges for bins with eff > 1 or < 0.
+
+! 2017-03-22 - Carlos Vazquez Sierra
+ - Make version v8r2 for release.
+
+!============================================= v8r1 2017-02-02 ==============================
+
+! 2017-02-02 - Carlos Vazquez Sierra
+ - Make version v8r1 for release.
+ 
+!============================================= v8r0 2017-02-02 ==============================
+ 
+! 2017-2-2 - Donal Hill
+	- Fixed bug in MultiTrackCalibTool that segfaulted when running on > 1 track.
+
+! 2017-1-31 - Donal Hill
+	- Updated MultiTrackCalibTool to enable nVeloClusters to be used
+
+! 2017-1-11 - Donal Hill
+	- Updated MultiTrackCalibTool to allow Run 2 histograms to be analysed
+	- Added functionality for nSPDHits as a binning variable
+
+! 2016-12-20 - Donal Hill
+  - Updated CMakeLists.txt in PIDPerfTools in order to compile under CMake.
+  
+! 2016-12-18 - Carlos Vazquez Sierra
+  - Make version v8r0 for Urania v6r0.
+
+!============================================== v7r1 2016-6-14 ==============================
+! 2016-06-14 - Carlos Vazquez Sierra
+  - Creating v7r1: identical to v7r0 but including some missing RooErrorHandler headers in some of the scripts.
 
 !============================================== v7r0 2015-6-18 ==============================
 ! 2015-06-18 Sneha Malde

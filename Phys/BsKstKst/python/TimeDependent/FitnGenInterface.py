@@ -1,4 +1,10 @@
 from parameters import *
+from math import exp
+from hep_ml import reweight
+import numpy as np
+np.random.seed(1)
+
+
 gROOT.ProcessLine( "struct MyStructF{ Float_t afloat; };" )
 
 
@@ -11,6 +17,7 @@ def ForceCompileLibs():
 
 	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'KpiKpiSpectrumNW.cxx++')
 	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'ComputeIntegrals.cxx++')
+	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'MCGenComb.cxx++')
 	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'lhcbStyle.C')
 	gROOT.Reset()
 
@@ -19,6 +26,7 @@ def CompileLibs():
 
 	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'KpiKpiSpectrumNW.cxx+')
 	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'ComputeIntegrals.cxx+')
+	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'MCGenComb.cxx++')
 	gROOT.ProcessLine('.x ' + SOURCE_PATH + 'lhcbStyle.C')
 	gROOT.Reset()
 
@@ -27,6 +35,7 @@ def CompileLibsGRID():
 
 	gROOT.ProcessLine('.x KpiKpiSpectrumNW.cxx++')
 	gROOT.ProcessLine('.x ComputeIntegrals.cxx++')
+	gROOT.ProcessLine('.x MCGenComb.cxx++')
 	gROOT.ProcessLine('.x lhcbStyle.C')
 	gROOT.Reset()
 
@@ -88,62 +97,92 @@ def component(j1,j2,h,j1p,j2p,hp):
 def setParamVals(wide_window):
 
 	if wide_window==0:
-		reA00.setVal(0.864674811121)
-		reA01.setVal(-0.223462767608)
-		reA10.setVal(-0.717737051305)
-		reA11par.setVal(-0.681030958515)
-		reA11perp.setVal(0.118736813139)
-		DCP.setVal(0.)
-		imA00.setVal(0.5953417076)
-		imA01.setVal(-2.19568852242)
-		imA10.setVal(1.82174641362)
-		imA11par.setVal(0.942718157642)
-		imA11perp.setVal(1.77008774265)
-		phis.setVal(0.)
-		delta_m_Bs.setVal(17.5824862363)
-		gamma_Bs.setVal(0.664587141878)
-		delta_gamma_Bs.setVal(0.0843278936088)
-		p0metac_SSK.setVal(0.00649304977482)
-		p0metac_OS.setVal(0.0059105228442)
-		Dp0half_SSK.setVal(-0.00805904401912)
-		Dp0half_OS.setVal(0.00699398098874)
-		p1_SSK.setVal(0.927396156152)
-		p1_OS.setVal(0.984279782357)
-		Dp1half_SSK.setVal(-0.0175844482147)
-		Dp1half_OS.setVal(0.0329602803493)
-		tres_p0_2011.setVal(0.0351068006287)
-		tres_p1_2011.setVal(1.21353353629)
-		tres_p0_2012.setVal(0.0366300759613)
-		tres_p1_2012.setVal(1.21173513877)
+		reA00.setVal(0.967804481564)
+		reA01.setVal(-0.166857984169)
+		reA10.setVal(-0.966372622452)
+		reA11par.setVal(-0.890411920217)
+		reA11perp.setVal(0.0292330744352)
+		imA00.setVal(0.912943149529)
+		imA01.setVal(-2.59547208044)
+		imA10.setVal(2.04931257962)
+		imA11par.setVal(0.966863338833)
+		imA11perp.setVal(1.81245296754)
+		delta_m_Bs.setVal(17.5510337469)
+		gamma_Bs.setVal(0.664717625908)
+		delta_gamma_Bs.setVal(0.0849098527226)
+		p0metac_SSK.setVal(0.00638001442556)
+		p0metac_OS.setVal(0.00625604083002)
+		Dp0half_SSK.setVal(-0.0080411239812)
+		Dp0half_OS.setVal(0.0069930767228)
+		p1_SSK.setVal(0.932542380663)
+		p1_OS.setVal(0.985455625025)
+		Dp1half_SSK.setVal(-0.0172690842318)
+		Dp1half_OS.setVal(0.0329454099762)
+		tres_p0_2011.setVal(0.0352455025768)
+		tres_p1_2011.setVal(1.19983475719)
+		tres_p0_2012.setVal(0.0365996177809)
+		tres_p1_2012.setVal(1.21804260529)
+		c1_mass_swave.setVal(-1.96022549489)
+		c2_mass_swave.setVal(0.797719708258)
+		c3_mass_swave.setVal(1.50932252923)
+		c4_mass_swave.setVal(0.830596406777)
 
 	else:
-		reA00.setVal(0.864674811121)
-		reA01.setVal(-0.223462767608)
-		reA10.setVal(-0.717737051305)
-		reA11par.setVal(-0.681030958515)
-		reA11perp.setVal(0.118736813139)
-		DCP.setVal(0.)
-		imA00.setVal(0.5953417076)
-		imA01.setVal(-2.19568852242)
-		imA10.setVal(1.82174641362)
-		imA11par.setVal(0.942718157642)
-		imA11perp.setVal(1.77008774265)
-		phis.setVal(0.)
-		delta_m_Bs.setVal(17.5824862363)
-		gamma_Bs.setVal(0.664587141878)
-		delta_gamma_Bs.setVal(0.0843278936088)
-		p0metac_SSK.setVal(0.00649304977482)
-		p0metac_OS.setVal(0.0059105228442)
-		Dp0half_SSK.setVal(-0.00805904401912)
-		Dp0half_OS.setVal(0.00699398098874)
-		p1_SSK.setVal(0.927396156152)
-		p1_OS.setVal(0.984279782357)
-		Dp1half_SSK.setVal(-0.0175844482147)
-		Dp1half_OS.setVal(0.0329602803493)
-		tres_p0_2011.setVal(0.0351068006287)
-		tres_p1_2011.setVal(1.21353353629)
-		tres_p0_2012.setVal(0.0366300759613)
-		tres_p1_2012.setVal(1.21173513877)
+		reA00.setVal(4.03772098708)
+		reA01.setVal(-1.37302507639)
+		reA10.setVal(-0.482048429272)
+		reA02.setVal(-0.708645464898)
+		reA20.setVal(1.05166318672)
+		reA11par.setVal(-0.710887611466)
+		reA11perp.setVal(-0.69016978888)
+		reA120.setVal(-2.17861689316)
+		reA12par.setVal(-0.319341952101)
+		reA12perp.setVal(-0.931431462692)
+		reA210.setVal(-0.0171506227002)
+		reA21par.setVal(0.599180823886)
+		reA21perp.setVal(0.609264050093)
+		reA220.setVal(0.098573885688)
+		reA22par.setVal(-0.344316647252)
+		reA22perp.setVal(-0.0740846448456)
+		reA22par2.setVal(-0.109874606417)
+		reA22perp2.setVal(0.505551550692)
+		imA00.setVal(2.95017648133)
+		imA01.setVal(-5.2698131459)
+		imA10.setVal(3.36056309295)
+		imA02.setVal(-0.207084464367)
+		imA20.setVal(-1.34894999345)
+		imA11par.setVal(1.25037975711)
+		imA11perp.setVal(1.78735344309)
+		imA120.setVal(-1.23478273646)
+		imA12par.setVal(-0.303502495479)
+		imA12perp.setVal(0.646437325469)
+		imA210.setVal(1.50992558386)
+		imA21par.setVal(0.425120218595)
+		imA21perp.setVal(-0.574392803099)
+		imA220.setVal(0.139899223406)
+		imA22par.setVal(0.341957372405)
+		imA22perp.setVal(0.486927873027)
+		imA22par2.setVal(0.111562002004)
+		imA22perp2.setVal(-0.160066201924)
+		delta_m_Bs.setVal(17.6181668523)
+		gamma_Bs.setVal(0.665294880397)
+		delta_gamma_Bs.setVal(0.0861565709605)
+		p0metac_SSK.setVal(0.00726828367124)
+		p0metac_OS.setVal(0.00784943927414)
+		Dp0half_SSK.setVal(-0.00804662556826)
+		Dp0half_OS.setVal(0.00699117563109)
+		p1_SSK.setVal(0.928499458534)
+		p1_OS.setVal(0.992190867481)
+		Dp1half_SSK.setVal(-0.0152506504889)
+		Dp1half_OS.setVal(0.0328086811472)
+		tres_p0_2011.setVal(0.0347683030558)
+		tres_p1_2011.setVal(1.15382898688)
+		tres_p0_2012.setVal(0.0364511250067)
+		tres_p1_2012.setVal(1.26161995566)
+		c1_mass_swave.setVal(-0.299938309664)
+		c2_mass_swave.setVal(-0.158543354229)
+		c3_mass_swave.setVal(-0.121672500045)
+		c4_mass_swave.setVal(-0.0658670383143)
 
 
 def aux_PDF():
@@ -2074,6 +2113,225 @@ def etacomb(q1var,eta1var,q2var,eta2var):
    p_Bsbar = (1.-0.5*q1var*(1.+q1var-2.*eta1var))*(1.-0.5*q2var*(1.+q2var-2.*eta2var))
    return min(p_Bs,p_Bsbar)/(p_Bs+p_Bsbar)
 
+
+def MCtruth(ev):
+	if abs(ev.B_s0_TRUEID) == 531:
+		if ev.Kplus_TRUEID == 321:
+			if ev.Kminus_TRUEID == -321:
+				if ev.Piplus_TRUEID == 211:
+					if ev.Piminus_TRUEID == -211: return 1
+	return 0
+
+def MCsetcut(year_aux,trig_aux,set_aux):
+	if trig_aux == 0: cut_aux = "B_s0_L0Global_TIS==1 && "
+	else: cut_aux = "B_s0_L0Global_TIS==0 && B_s0_L0HadronDecision_TOS==1 && "
+	if year_aux == 0:
+		if set_aux == 0: cut_aux += "itype==-73"
+		elif set_aux == 1: cut_aux += "itype==-70"
+		else: cut_aux += "(itype==-73 || itype==-70)"
+	else:
+		if set_aux == 0: cut_aux += "itype==-83"
+		elif set_aux == 1: cut_aux += "itype==-80"
+		else: cut_aux += "(itype==-83 || itype==-80)"
+	return cut_aux
+
+def dataMCcorrweight(entry):
+
+	#wPIDkaon1 = h2DPIDkaon.GetBinContent(h2DPIDkaon.FindBin(entry.Kplus_P,entry.Kplus_ETA))
+	#wPIDkaon2 = h2DPIDkaon.GetBinContent(h2DPIDkaon.FindBin(entry.Kminus_P,entry.Kminus_ETA))
+	#wPIDpion1 = h2DPIDpion.GetBinContent(h2DPIDpion.FindBin(entry.Piplus_P,entry.Piplus_ETA))
+	#wPIDpion2 = h2DPIDpion.GetBinContent(h2DPIDpion.FindBin(entry.Piminus_P,entry.Piminus_ETA))
+
+	#return wPIDkaon1*wPIDkaon2*wPIDpion1*wPIDpion2
+	return 1.;
+
+m1_name_MC = "B_s0_DTF_KST1_M"
+m2_name_MC = "B_s0_DTF_KST2_M"
+cos1_name_MC = "B_s0_DTF_KST1_COSTHETA"
+cos2_name_MC = "B_s0_DTF_KST2_COSTHETA"
+phi_name_MC = "B_s0_DTF_B_s0_PHI_TRY4"
+t_name_MC = "B_s0_DTF_TAU"
+
+mKp1_MC = ROOT.RooRealVar(m1_name_MC,"M(K^{+}#pi^{-}) ", 750., mHlimit,"MeV/c^{2}")
+mKp2_MC = ROOT.RooRealVar(m2_name_MC,"M(K^{-}#pi^{+}) ", 750., mHlimit,"MeV/c^{2}")
+mKp1_narrow_MC = ROOT.RooRealVar(m1_name_MC,"M(K^{+}#pi^{-}) ",900.-150.,900.+150.,"MeV/c^{2}")
+mKp2_narrow_MC = ROOT.RooRealVar(m2_name_MC,"M(K^{-}#pi^{+}) ",900.-150.,900.+150.,"MeV/c^{2}")
+cos1_MC = ROOT.RooRealVar(cos1_name_MC,"cos(#theta_{1})", -1., 1.,"")
+cos2_MC = ROOT.RooRealVar(cos2_name_MC,"cos(#theta_{2})", -1., 1.,"")
+phi_MC = ROOT.RooRealVar(phi_name_MC,"#varphi",0,2.*pi,"rad")
+t_MC = ROOT.RooRealVar(t_name_MC,"t_{true}",0.,12.,"ps")
+MCweight0 = ROOT.RooRealVar("MCweight0","MCweight0",1.)
+
+MCdata_2011_L0TIS_wide = ROOT.RooDataSet("MCdata_2011_L0TIS_wide","MCdata_2011_L0TIS_wide",ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2012_L0TIS_wide = ROOT.RooDataSet("MCdata_2012_L0TIS_wide","MCdata_2012_L0TIS_wide",ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2011_L0noTIS_wide = ROOT.RooDataSet("MCdata_2011_L0noTIS_wide","MCdata_2011_L0noTIS_wide",ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2012_L0noTIS_wide = ROOT.RooDataSet("MCdata_2012_L0noTIS_wide","MCdata_2012_L0noTIS_wide",ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2011_L0TIS_narrow = ROOT.RooDataSet("MCdata_2011_L0TIS_narrow","MCdata_2011_L0TIS_narrow",ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2012_L0TIS_narrow = ROOT.RooDataSet("MCdata_2012_L0TIS_narrow","MCdata_2012_L0TIS_narrow",ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2011_L0noTIS_narrow = ROOT.RooDataSet("MCdata_2011_L0noTIS_narrow","MCdata_2011_L0noTIS_narrow",ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+MCdata_2012_L0noTIS_narrow = ROOT.RooDataSet("MCdata_2012_L0noTIS_narrow","MCdata_2012_L0noTIS_narrow",ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+
+
+br_rew = ["Kplus_ETA","Piminus_ETA","Kminus_ETA","Piplus_ETA","Kplus_P","Piminus_P","Kminus_P","Piplus_P","nTracks","B_s0_PT"]
+rew_signal_data_list = []
+rew_signal_wi_list = []
+rew_MC_data_list = []
+rew_MC_wi_list = []
+rew_MC_predicted_wi_list = []
+for year in range(2):
+   rew_signal_data_list.append([])
+   rew_signal_wi_list.append([])
+   rew_MC_data_list.append([])
+   rew_MC_wi_list.append([])
+   rew_MC_predicted_wi_list.append([])
+   for trig in range(2):
+      rew_signal_data_list[year].append([])
+      rew_signal_wi_list[year].append([])
+      rew_MC_data_list[year].append([])
+      rew_MC_wi_list[year].append([])
+      rew_MC_predicted_wi_list[year].append([])
+rew_elements = []
+for l in [rew_signal_data_list,rew_signal_wi_list,rew_MC_data_list,rew_MC_wi_list,rew_MC_predicted_wi_list]: rew_elements.append(l)
+
+
+def LoadDataNW(NTUPLE_PATH, data_file, data_tree, datatype, wide_window):
+
+	# Information.
+	print '\nLoading MC data file ' + data_file + ', used to compute the NWs.'
+	if datatype == 0: print 'MC sample: PhSp.'
+	elif datatype == 1: print 'MC sample: VV.'
+	else: print 'MC sample: PhSp + VV.'
+
+	br_list = ["itype","B_s0_L0Global_TIS","B_s0_L0HadronDecision_TOS",m1_name_MC,m2_name_MC,cos1_name_MC,cos2_name_MC,phi_name_MC,t_name_MC,"B_s0_TRUEID","Kplus_TRUEID","Piminus_TRUEID","Kminus_TRUEID","Piplus_TRUEID"]
+
+	opt_genmodel = ROOT.RooRealVar("opt_genmodel","opt_genmodel",0)
+	opt_genvars = ROOT.RooRealVar("opt_genvars","opt_genvars",1)
+	year_MC = ROOT.RooRealVar("year_MC","year_MC",1)
+	wide_window_MC = ROOT.RooRealVar("wide_window_MC","wide_window_MC",1)
+	wide_window_MC.setVal(wide_window)
+
+	# Input data.
+	file_in = ROOT.TFile(NTUPLE_PATH + data_file)
+	tree_full = file_in.Get(data_tree)
+	tree_full.SetBranchStatus("*",0)
+	for br in br_list+br_rew: tree_full.SetBranchStatus(br,1)
+	file_out = ROOT.TFile(NTUPLE_PATH + "trash.root","RECREATE")
+
+	if wide_window:
+		tree_2011_L0TIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,0,datatype))
+		tree_2012_L0TIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,0,datatype))
+		tree_2011_L0noTIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,1,datatype))
+		tree_2012_L0noTIS_wide = tree_full.CopyTree(m1_name_MC+"<="+str(mHlimit)+" && "+m2_name_MC+"<="+str(mHlimit)+" && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,1,datatype))
+		invN_2011_L0TIS_wide = 1.#/tree_2011_L0TIS_wide.GetEntries()
+		invN_2012_L0TIS_wide = 1.#/tree_2012_L0TIS_wide.GetEntries()
+		invN_2011_L0noTIS_wide = 1.#/tree_2011_L0noTIS_wide.GetEntries()
+		invN_2012_L0noTIS_wide = 1.#/tree_2012_L0noTIS_wide.GetEntries()
+
+	else:
+		tree_2011_L0TIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,0,datatype))
+		tree_2012_L0TIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,0,datatype))
+		tree_2011_L0noTIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(0,1,datatype))
+		tree_2012_L0noTIS_narrow = tree_full.CopyTree("abs("+m1_name_MC+"-900.)<150. && abs("+m2_name_MC+"-900.)<150. && "+t_name_MC+">=0. && "+t_name_MC+"<=12. && "+MCsetcut(1,1,datatype))
+		invN_2011_L0TIS_narrow = 1.#/tree_2011_L0TIS_narrow.GetEntries()
+		invN_2012_L0TIS_narrow = 1.#/tree_2012_L0TIS_narrow.GetEntries()
+		invN_2011_L0noTIS_narrow = 1.#/tree_2011_L0noTIS_narrow.GetEntries()
+		invN_2012_L0noTIS_narrow = 1.#/tree_2012_L0noTIS_narrow.GetEntries()
+
+	PDF_gen = ROOT.MCGenComb("PDF_gen","PDF_gen",opt_genmodel,year_MC,wide_window_MC,mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,t_MC,opt_genvars)
+
+	def setvarvals(entry):
+		mKp1_MC.setVal(eval("entry."+m1_name_MC))
+		mKp2_MC.setVal(eval("entry."+m2_name_MC))
+		cos1_MC.setVal(eval("entry."+cos1_name_MC))
+		cos2_MC.setVal(eval("entry."+cos2_name_MC))
+		phi_MC.setVal(eval("entry."+phi_name_MC))
+
+	opt_genmodel.setVal(datatype)
+
+	if wide_window:
+		year_MC.setVal(0)
+		for i in tree_2011_L0TIS_wide:
+			if MCtruth(i):
+				setvarvals(i)
+				MCweight0.setVal(invN_2011_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2011_L0TIS_wide.add(ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+				br_values = []
+				for br in br_rew: br_values.append(eval("i."+br))
+				rew_MC_data_list[0][0].append(br_values)
+				rew_MC_wi_list[0][0].append(1.)
+				rew_MC_predicted_wi_list[0][0].append(1.)
+		year_MC.setVal(1)
+		for i in tree_2012_L0TIS_wide:
+			if MCtruth(i):
+				setvarvals(i)
+				MCweight0.setVal(invN_2012_L0TIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2012_L0TIS_wide.add(ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+				br_values = []
+				for br in br_rew: br_values.append(eval("i."+br))
+				rew_MC_data_list[1][0].append(br_values)
+				rew_MC_wi_list[1][0].append(1.)
+				rew_MC_predicted_wi_list[1][0].append(1.)
+		year_MC.setVal(0)
+		for i in tree_2011_L0noTIS_wide:
+			if MCtruth(i):
+				setvarvals(i)
+				MCweight0.setVal(invN_2011_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2011_L0noTIS_wide.add(ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+				br_values = []
+				for br in br_rew: br_values.append(eval("i."+br))
+				rew_MC_data_list[0][1].append(br_values)
+				rew_MC_wi_list[0][1].append(1.)
+				rew_MC_predicted_wi_list[0][1].append(1.)
+		year_MC.setVal(1)
+		for i in tree_2012_L0noTIS_wide:
+			if MCtruth(i):
+				setvarvals(i)
+				MCweight0.setVal(invN_2012_L0noTIS_wide*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2012_L0noTIS_wide.add(ROOT.RooArgSet(mKp1_MC,mKp2_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+				br_values = []
+				for br in br_rew: br_values.append(eval("i."+br))
+				rew_MC_data_list[1][1].append(br_values)
+				rew_MC_wi_list[1][1].append(1.)
+				rew_MC_predicted_wi_list[1][1].append(1.)
+
+	else:
+		year_MC.setVal(0)
+		for i in tree_2011_L0TIS_narrow:
+			if MCtruth(i):
+				mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
+				mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
+				setvarvals(i)
+				MCweight0.setVal(invN_2011_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2011_L0TIS_narrow.add(ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+		year_MC.setVal(1)
+		for i in tree_2012_L0TIS_narrow:
+			if MCtruth(i):
+				mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
+				mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
+				setvarvals(i)
+				MCweight0.setVal(invN_2012_L0TIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2012_L0TIS_narrow.add(ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+		year_MC.setVal(0)
+		for i in tree_2011_L0noTIS_narrow:
+			if MCtruth(i):
+				mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
+				mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
+				setvarvals(i)
+				MCweight0.setVal(invN_2011_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2011_L0noTIS_narrow.add(ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+		year_MC.setVal(1)
+		for i in tree_2012_L0noTIS_narrow:
+			if MCtruth(i):
+				mKp1_narrow_MC.setVal(eval("i."+m1_name_MC))
+				mKp2_narrow_MC.setVal(eval("i."+m2_name_MC))
+				setvarvals(i)
+				MCweight0.setVal(invN_2012_L0noTIS_narrow*dataMCcorrweight(i)/PDF_gen.evaluate())
+				MCdata_2012_L0noTIS_narrow.add(ROOT.RooArgSet(mKp1_narrow_MC,mKp2_narrow_MC,cos1_MC,cos2_MC,phi_MC,MCweight0))
+
+	print 'Data loaded.'
+	file_out.Close()
+
+
 def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, MC_type, TD_fit, weighted, wide_window = 1, extra_cuts = "", evnum_limit = 0, GRID = 0):
 
 	# Information.
@@ -2103,25 +2361,31 @@ def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, MC_typ
 		#tree = ROOT.TTree("DecayTree","DecayTree")
 		#tree.ReadFile("InvariantMassFitOut.dat",m1_name+":"+m2_name+":"+cos1_name+":"+cos2_name+":"+phi_name+":"+t_name+":"+terror_name+":"+dec_SSK_name+":"+dec_OS_name+":"+eta_SSK_name+":"+eta_OS_name+":itype:"+L0TISline_name+":"+L0TOSline_name+":"+mKpiKpi_name+":"+weight_name)
 	else:
+		br_list = [m1_name,m2_name,cos1_name,cos2_name,phi_name,t_name,terror_name,dec_SSK_name,dec_OS_name,eta_SSK_name,eta_OS_name,L0TISline_name,L0TOSline_name,"itype"]
 		if (datatype == "real"):
+			br_list.append("sweight")
 			file_in = ROOT.TFile(file_path + data_file)
 			tree = file_in.Get(data_tree)
+			tree.SetBranchStatus("*",0)
+			for br in br_list+br_rew: tree.SetBranchStatus(br,1)
 			print 'Loading data from ' + data_file + ':' + data_tree
 		elif (datatype == "MC"):
 			file_in = ROOT.TFile(file_path + MC_file)
 			tree = file_in.Get(MC_tree)
+			tree.SetBranchStatus("*",0)
+			for br in br_list: tree.SetBranchStatus(br,1)
 			print 'Loading data from ' + MC_file + ':' + MC_tree
 			if (MC_type == 0):
 				print 'Simulation type: Toy MC'
 			elif (MC_type == 1):
 				print 'Simulation type: VV'
-				m1_name = "B_s0_DTF_KST1_TRUE_M"
-				m2_name = "B_s0_DTF_KST2_TRUE_M"
-				cos1_name = "B_s0_DTF_KST1_TRUE_COSTHETA"
-				cos2_name = "B_s0_DTF_KST2_TRUE_COSTHETA"
-				phi_name = "B_s0_DTF_B_s0_PHI_TRUE_TRY4"
-				t_name = "B_s0_DTF_TAU"
-				terror_name = "B_s0_DTF_TAUERR"
+			#	m1_name = "B_s0_DTF_KST1_TRUE_M"
+			#	m2_name = "B_s0_DTF_KST2_TRUE_M"
+			#	cos1_name = "B_s0_DTF_KST1_TRUE_COSTHETA"
+			#	cos2_name = "B_s0_DTF_KST2_TRUE_COSTHETA"
+			#	phi_name = "B_s0_DTF_B_s0_PHI_TRY4_TRUE_TRY4"
+			#	t_name = "B_s0_DTF_TAU"
+			#	terror_name = "B_s0_DTF_TAUERR"
 
 	print 'M1 branch:',m1_name
 	print 'M2 branch:',m2_name
@@ -2258,6 +2522,10 @@ def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, MC_typ
 						else: data_11L0TIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
 						TD_extravars_float_11L0TIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
 						TD_extravars_int_11L0TIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
+						br_values = []
+						for br in br_rew: br_values.append(eval("i."+br))
+						rew_signal_data_list[0][0].append(br_values)
+						rew_signal_wi_list[0][0].append(weight_plot.getVal())
 						ev_counter_11L0TIS += 1
 					elif (eval("i."+L0TISline_name) == 0 and eval("i."+L0TOSline_name) == 1):
 						if weighted:
@@ -2267,6 +2535,10 @@ def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, MC_typ
 						else: data_11L0noTIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
 						TD_extravars_float_11L0noTIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
 						TD_extravars_int_11L0noTIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
+						br_values = []
+						for br in br_rew: br_values.append(eval("i."+br))
+						rew_signal_data_list[0][1].append(br_values)
+						rew_signal_wi_list[0][1].append(weight_plot.getVal())
 						ev_counter_11L0noTIS += 1
 				elif i.itype == 81:
 					mean_deltat_2012 += weighttag * eval("i."+terror_name)
@@ -2279,6 +2551,10 @@ def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, MC_typ
 						else: data_12L0TIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
 						TD_extravars_float_12L0TIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
 						TD_extravars_int_12L0TIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
+						br_values = []
+						for br in br_rew: br_values.append(eval("i."+br))
+						rew_signal_data_list[1][0].append(br_values)
+						rew_signal_wi_list[1][0].append(weight_plot.getVal())
 						ev_counter_12L0TIS += 1
 					elif (eval("i."+L0TISline_name) == 0 and eval("i."+L0TOSline_name) == 1):
 						if weighted:
@@ -2288,7 +2564,15 @@ def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, MC_typ
 						else: data_12L0noTIS_.add(ROOT.RooArgSet(mKp1_narrowwin,mKp2_narrowwin,cos1,cos2,phi,weight_fit,weight_plot))
 						TD_extravars_float_12L0noTIS.add(ROOT.RooArgSet(t,terror,etamistag_SSK,etamistag_OS))
 						TD_extravars_int_12L0noTIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
+						br_values = []
+						for br in br_rew: br_values.append(eval("i."+br))
+						rew_signal_data_list[1][1].append(br_values)
+						rew_signal_wi_list[1][1].append(weight_plot.getVal())
 						ev_counter_12L0noTIS += 1
+				if i.itype>0:
+					if (etamistag_SSK.getVal() < 0.5): hist_mistag_SSK.add(ROOT.RooArgSet(etamistag_SSK),weight_fit.getVal())
+					if (etamistag_OS.getVal() < 0.5): hist_mistag_OS.add(ROOT.RooArgSet(etamistag_OS),weight_fit.getVal())
+					hist_deltat.add(ROOT.RooArgSet(terror),weight_fit.getVal())
 
 			elif (datatype == "MC"):
 
@@ -2359,14 +2643,6 @@ def loadData(file_path, datatype, data_file, data_tree, MC_file, MC_tree, MC_typ
 							TD_extravars_int_12L0noTIS.add(ROOT.RooArgSet(decision_SSK,decision_OS))
 							ev_counter_12L0noTIS += 1
 
-			if (datatype == "real") and weighted:
-				if (etamistag_SSK.getVal() < 0.5): hist_mistag_SSK.add(ROOT.RooArgSet(etamistag_SSK),eval("i."+weight_name))
-				if (etamistag_OS.getVal() < 0.5): hist_mistag_OS.add(ROOT.RooArgSet(etamistag_OS),eval("i."+weight_name))
-				hist_deltat.add(ROOT.RooArgSet(terror),eval("i."+weight_name))
-			else:
-				if (etamistag_SSK.getVal() < 0.5): hist_mistag_SSK.add(ROOT.RooArgSet(etamistag_SSK),1)
-				if (etamistag_OS.getVal() < 0.5): hist_mistag_OS.add(ROOT.RooArgSet(etamistag_OS),1)
-				hist_deltat.add(ROOT.RooArgSet(terror),1)
 			ev_counter += 1
 
 	if TD_fit:
@@ -2437,6 +2713,190 @@ ROOT.RooFit.Import("2012_L0TIS",data_12L0TIS_),ROOT.RooFit.Import("2012_L0noTIS"
 	file_out.Close()
 
 	return [data_full_fit,data_full_plot,data_11L0TIS_,data_11L0noTIS_,data_12L0TIS_,data_12L0noTIS_], hist_mistag_SSK, hist_mistag_OS, hist_deltat
+
+
+MC_reweighter = reweight.GBReweighter()
+
+
+def reweight_MC_samples():
+
+   for year in range(2):
+      for trig in range(2):
+         data_sig_ = np.array(rew_elements[0][year][trig]).astype(np.float64)
+         wi_sig_ = np.array(rew_elements[1][year][trig]).astype(np.float64)
+         data_MC_ = np.array(rew_elements[2][year][trig]).astype(np.float64)
+         wi_MC_ = np.array(rew_elements[3][year][trig]).astype(np.float64)
+         MC_reweighter.fit(original = data_MC_, target = data_sig_, original_weight = wi_MC_, target_weight = wi_sig_)
+         predicted_wi_MC_ = MC_reweighter.predict_weights(data_MC_)
+         for iwi in range(len(predicted_wi_MC_)): rew_elements[4][year][trig][iwi] = predicted_wi_MC_[iwi]
+
+
+h_plot_reweight_list = []
+
+
+def plot_reweight():
+
+   particle_dict_ETA = {'Kplus':0,'Piminus':1,'Kminus':2,'Piplus':3}
+   particle_dict_P = {'Kplus':4,'Piminus':5,'Kminus':6,'Piplus':7}
+
+   def hist_P_cat(particle,year,trig):
+      h_signal = ROOT.TH1F('h_signal_'+particle+'_P','h_signal_'+particle+'_P',25,0,100000)
+      h_MC_init = ROOT.TH1F('h_MC_init_'+particle+'_P','h_MC_init_'+particle+'_P',25,0,100000)
+      h_MC_rew = ROOT.TH1F('h_MC_rew_'+particle+'_P','h_MC_rew_'+particle+'_P',25,0,100000)
+      for h in [h_signal,h_MC_init,h_MC_rew]:
+         h.GetXaxis().SetTitle(particle+'_P [MeV/c]')
+         h.GetYaxis().SetTitle('Number of events')
+      h_signal.SetLineColor(kBlue)
+      h_MC_init.SetLineColor(kGreen+3)
+      h_MC_rew.SetLineColor(kRed)
+      for iev in range(len(rew_elements[0][year][trig])): h_signal.Fill(rew_elements[0][year][trig][iev][particle_dict_P[particle]],rew_elements[1][year][trig][iev])
+      for iev in range(len(rew_elements[2][year][trig])):
+         h_MC_init.Fill(rew_elements[2][year][trig][iev][particle_dict_P[particle]])
+         h_MC_rew.Fill(rew_elements[2][year][trig][iev][particle_dict_P[particle]],rew_elements[3][year][trig][iev]*rew_elements[4][year][trig][iev])
+      return h_signal, h_MC_init, h_MC_rew
+
+   def hist_ETA_cat(particle,year,trig):
+      h_signal = ROOT.TH1F('h_signal_'+particle+'_ETA','h_signal_'+particle+'_ETA',25,1.5,5)
+      h_MC_init = ROOT.TH1F('h_MC_init_'+particle+'_ETA','h_MC_init_'+particle+'_ETA',25,1.5,5)
+      h_MC_rew = ROOT.TH1F('h_MC_rew_'+particle+'_ETA','h_MC_rew_'+particle+'_ETA',25,1.5,5)
+      for h in [h_signal,h_MC_init,h_MC_rew]:
+         h.GetXaxis().SetTitle(particle+'_ETA')
+         h.GetYaxis().SetTitle('Number of events')
+      h_signal.SetLineColor(kBlue)
+      h_MC_init.SetLineColor(kGreen+3)
+      h_MC_rew.SetLineColor(kRed)
+      for iev in range(len(rew_elements[0][year][trig])): h_signal.Fill(rew_elements[0][year][trig][iev][particle_dict_ETA[particle]],rew_elements[1][year][trig][iev])
+      for iev in range(len(rew_elements[2][year][trig])):
+         h_MC_init.Fill(rew_elements[2][year][trig][iev][particle_dict_ETA[particle]])
+         h_MC_rew.Fill(rew_elements[2][year][trig][iev][particle_dict_ETA[particle]],rew_elements[3][year][trig][iev]*rew_elements[4][year][trig][iev])
+      return h_signal, h_MC_init, h_MC_rew
+
+   def hist_nTracks_cat(year,trig):
+      h_signal = ROOT.TH1F('h_signal_nTracks','h_signal_nTracks',25,0,500)
+      h_MC_init = ROOT.TH1F('h_MC_init_nTracks','h_MC_init_nTracks',25,0,500)
+      h_MC_rew = ROOT.TH1F('h_MC_rew_nTracks','h_MC_rew_nTracks',25,0,500)
+      for h in [h_signal,h_MC_init,h_MC_rew]:
+         h.GetXaxis().SetTitle('nTracks')
+         h.GetYaxis().SetTitle('Number of events')
+      h_signal.SetLineColor(kBlue)
+      h_MC_init.SetLineColor(kGreen+3)
+      h_MC_rew.SetLineColor(kRed)
+      for iev in range(len(rew_elements[0][year][trig])): h_signal.Fill(rew_elements[0][year][trig][iev][8],rew_elements[1][year][trig][iev])
+      for iev in range(len(rew_elements[2][year][trig])):
+         h_MC_init.Fill(rew_elements[2][year][trig][iev][8])
+         h_MC_rew.Fill(rew_elements[2][year][trig][iev][8],rew_elements[3][year][trig][iev]*rew_elements[4][year][trig][iev])
+      return h_signal, h_MC_init, h_MC_rew
+
+   def hist_BPT_cat(year,trig):
+      h_signal = ROOT.TH1F('h_signal_BPT','h_signal_BPT',25,0,25000)
+      h_MC_init = ROOT.TH1F('h_MC_init_BPT','h_MC_init_BPT',25,0,25000)
+      h_MC_rew = ROOT.TH1F('h_MC_rew_BPT','h_MC_rew_BPT',25,0,25000)
+      for h in [h_signal,h_MC_init,h_MC_rew]:
+         h.GetXaxis().SetTitle('B_s0_PT [MeV/c]')
+         h.GetYaxis().SetTitle('Number of events')
+      h_signal.SetLineColor(kBlue)
+      h_MC_init.SetLineColor(kGreen+3)
+      h_MC_rew.SetLineColor(kRed)
+      for iev in range(len(rew_elements[0][year][trig])): h_signal.Fill(rew_elements[0][year][trig][iev][9],rew_elements[1][year][trig][iev])
+      for iev in range(len(rew_elements[2][year][trig])):
+         h_MC_init.Fill(rew_elements[2][year][trig][iev][9])
+         h_MC_rew.Fill(rew_elements[2][year][trig][iev][9],rew_elements[3][year][trig][iev]*rew_elements[4][year][trig][iev])
+      return h_signal, h_MC_init, h_MC_rew
+
+   def hist_P(particle):
+      h_signal = ROOT.TH1F('h_signal_'+particle+'_P','h_signal_'+particle+'_P',25,0,100000)
+      h_MC_init = ROOT.TH1F('h_MC_init_'+particle+'_P','h_MC_init_'+particle+'_P',25,0,100000)
+      h_MC_rew = ROOT.TH1F('h_MC_rew_'+particle+'_P','h_MC_rew_'+particle+'_P',25,0,100000)
+      for h in [h_signal,h_MC_init,h_MC_rew]:
+         h.GetXaxis().SetTitle(particle+'_P [MeV/c]')
+         h.GetYaxis().SetTitle('Number of events')
+      h_signal.SetLineColor(kBlue)
+      h_MC_init.SetLineColor(kGreen+3)
+      h_MC_rew.SetLineColor(kRed)
+      for year in range(2):
+         for trig in range(2):
+            for iev in range(len(rew_elements[0][year][trig])): h_signal.Fill(rew_elements[0][year][trig][iev][particle_dict_P[particle]],rew_elements[1][year][trig][iev])
+            for iev in range(len(rew_elements[2][year][trig])):
+               h_MC_init.Fill(rew_elements[2][year][trig][iev][particle_dict_P[particle]])
+               h_MC_rew.Fill(rew_elements[2][year][trig][iev][particle_dict_P[particle]],rew_elements[3][year][trig][iev]*rew_elements[4][year][trig][iev])
+      return h_signal, h_MC_init, h_MC_rew
+
+   def hist_ETA(particle):
+      h_signal = ROOT.TH1F('h_signal_'+particle+'_ETA','h_signal_'+particle+'_ETA',25,1.5,5)
+      h_MC_init = ROOT.TH1F('h_MC_init_'+particle+'_ETA','h_MC_init_'+particle+'_ETA',25,1.5,5)
+      h_MC_rew = ROOT.TH1F('h_MC_rew_'+particle+'_ETA','h_MC_rew_'+particle+'_ETA',25,1.5,5)
+      for h in [h_signal,h_MC_init,h_MC_rew]:
+         h.GetXaxis().SetTitle(particle+'_ETA')
+         h.GetYaxis().SetTitle('Number of events')
+      h_signal.SetLineColor(kBlue)
+      h_MC_init.SetLineColor(kGreen+3)
+      h_MC_rew.SetLineColor(kRed)
+      for year in range(2):
+         for trig in range(2):
+            for iev in range(len(rew_elements[0][year][trig])): h_signal.Fill(rew_elements[0][year][trig][iev][particle_dict_ETA[particle]],rew_elements[1][year][trig][iev])
+            for iev in range(len(rew_elements[2][year][trig])):
+               h_MC_init.Fill(rew_elements[2][year][trig][iev][particle_dict_ETA[particle]])
+               h_MC_rew.Fill(rew_elements[2][year][trig][iev][particle_dict_ETA[particle]],rew_elements[3][year][trig][iev]*rew_elements[4][year][trig][iev])
+      return h_signal, h_MC_init, h_MC_rew
+
+   def hist_nTracks():
+      h_signal = ROOT.TH1F('h_signal_nTracks','h_signal_nTracks',25,0,500)
+      h_MC_init = ROOT.TH1F('h_MC_init_nTracks','h_MC_init_nTracks',25,0,500)
+      h_MC_rew = ROOT.TH1F('h_MC_rew_nTracks','h_MC_rew_nTracks',25,0,500)
+      for h in [h_signal,h_MC_init,h_MC_rew]:
+         h.GetXaxis().SetTitle('nTracks')
+         h.GetYaxis().SetTitle('Number of events')
+      h_signal.SetLineColor(kBlue)
+      h_MC_init.SetLineColor(kGreen+3)
+      h_MC_rew.SetLineColor(kRed)
+      for year in range(2):
+         for trig in range(2):
+            for iev in range(len(rew_elements[0][year][trig])): h_signal.Fill(rew_elements[0][year][trig][iev][8],rew_elements[1][year][trig][iev])
+            for iev in range(len(rew_elements[2][year][trig])):
+               h_MC_init.Fill(rew_elements[2][year][trig][iev][8])
+               h_MC_rew.Fill(rew_elements[2][year][trig][iev][8],rew_elements[3][year][trig][iev]*rew_elements[4][year][trig][iev])
+      return h_signal, h_MC_init, h_MC_rew
+
+   def hist_BPT():
+      h_signal = ROOT.TH1F('h_signal_BPT','h_signal_BPT',25,0,25000)
+      h_MC_init = ROOT.TH1F('h_MC_init_BPT','h_MC_init_BPT',25,0,25000)
+      h_MC_rew = ROOT.TH1F('h_MC_rew_BPT','h_MC_rew_BPT',25,0,25000)
+      for h in [h_signal,h_MC_init,h_MC_rew]:
+         h.GetXaxis().SetTitle('B_s0_PT [MeV/c]')
+         h.GetYaxis().SetTitle('Number of events')
+      h_signal.SetLineColor(kBlue)
+      h_MC_init.SetLineColor(kGreen+3)
+      h_MC_rew.SetLineColor(kRed)
+      for year in range(2):
+         for trig in range(2):
+            for iev in range(len(rew_elements[0][year][trig])): h_signal.Fill(rew_elements[0][year][trig][iev][9],rew_elements[1][year][trig][iev])
+            for iev in range(len(rew_elements[2][year][trig])):
+               h_MC_init.Fill(rew_elements[2][year][trig][iev][9])
+               h_MC_rew.Fill(rew_elements[2][year][trig][iev][9],rew_elements[3][year][trig][iev]*rew_elements[4][year][trig][iev])
+      return h_signal, h_MC_init, h_MC_rew
+
+   for part in ['Kplus','Kminus','Piplus','Piminus']: h_plot_reweight_list.append(hist_P(part))
+   for part in ['Kplus','Kminus','Piplus','Piminus']: h_plot_reweight_list.append(hist_ETA(part))
+   h_plot_reweight_list.append(hist_nTracks())
+   h_plot_reweight_list.append(hist_BPT())
+
+   def draw_plots(h_list):
+      for h in h_list:
+         h.Sumw2()
+         h.Scale(1./h.Integral())
+         h.SetMarkerSize(0)
+      h_list[0].Draw('e1')
+      h_list[1].Draw('e1same')
+      h_list[2].Draw('e1same')
+
+   c = ROOT.TCanvas('c','c',800,1800)
+   c.Divide(2,5)
+   for i in range(10):
+      c.cd(i+1)
+      draw_plots(h_plot_reweight_list[i])
+   c.Print('PlotMCReweight.root')
+   c.Print('PlotMCReweight.pdf')
+
 
 def createPDF(Blinding, NOCP, NODIRCP, SAMECP, acc_type, inf_t_res, wide_window, data_file,\
 fix_re_amps = 0, fix_dirCP_asyms = 0, fix_im_amps = 0, fix_weak_phases = 0, fix_mixing_params = 0, fix_calib_params = 0,\
@@ -2732,7 +3192,7 @@ def DoFit(model_,data_,wide_window,TD_fit,num_CPU,minos_opt,strategy_option,fix_
    if TD_fit:
 
       if fix_mixing:
-         if fix_calib: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE))
+         if fix_calib: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kFALSE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.PrintLevel(0))
          else:
             ctrtargset = ROOT.RooArgSet(ctrt_p0metac_SSK_p1_SSK,ctrt_p0metac_OS_p1_OS,ctrt_Dp0half_SSK,ctrt_Dp1half_SSK,ctrt_Dp0half_OS,ctrt_Dp1half_OS)
             if wide_window:
@@ -2741,10 +3201,10 @@ def DoFit(model_,data_,wide_window,TD_fit,num_CPU,minos_opt,strategy_option,fix_
             else:
                ctrtargset.add(ctrt_tres_p0_tres_p1_2011_narrow)
                ctrtargset.add(ctrt_tres_p0_tres_p1_2012_narrow)
-            res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ctrtargset))
+            res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kFALSE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ctrtargset),ROOT.RooFit.PrintLevel(0))
 
       else:
-         if fix_calib: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ROOT.RooArgSet(ctrt_gamma_Bs_delta_gamma_Bs)))
+         if fix_calib: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kFALSE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ROOT.RooArgSet(ctrt_gamma_Bs_delta_gamma_Bs)),ROOT.RooFit.PrintLevel(0))
          else:
             ctrtargset = ROOT.RooArgSet(ctrt_gamma_Bs_delta_gamma_Bs,ctrt_p0metac_SSK_p1_SSK,ctrt_p0metac_OS_p1_OS,ctrt_Dp0half_SSK,ctrt_Dp1half_SSK,ctrt_Dp0half_OS,ctrt_Dp1half_OS)
             if wide_window:
@@ -2753,11 +3213,1606 @@ def DoFit(model_,data_,wide_window,TD_fit,num_CPU,minos_opt,strategy_option,fix_
             else:
                ctrtargset.add(ctrt_tres_p0_tres_p1_2011_narrow)
                ctrtargset.add(ctrt_tres_p0_tres_p1_2012_narrow)
-            res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ctrtargset))
+            res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kFALSE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.ExternalConstraints(ctrtargset),ROOT.RooFit.PrintLevel(0))
 
-   else: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kTRUE),ROOT.RooFit.Save(kTRUE))
+   else: res = model_.fitTo(data_,ROOT.RooFit.NumCPU(num_CPU),ROOT.RooFit.Minos(minos_opt),ROOT.RooFit.Strategy(strategy_option),ROOT.RooFit.Timer(kTRUE),ROOT.RooFit.SumW2Error(kFALSE),ROOT.RooFit.Save(kTRUE),ROOT.RooFit.PrintLevel(0))
 
    return res
+
+
+def boolj1j2h(j1,j2,h):
+
+	if ((j1 == 0) and (j2 == 0) and (h == 0)): return 1
+	if ((j1 == 0) and (j2 == 1) and (h == 0)): return 1
+	if ((j1 == 0) and (j2 == 2) and (h == 0)): return 1
+	if ((j1 == 1) and (j2 == 0) and (h == 0)): return 1
+	if ((j1 == 1) and (j2 == 1) and (h == 0)): return 1
+	if ((j1 == 1) and (j2 == 1) and (h == 1)): return 1
+	if ((j1 == 1) and (j2 == 1) and (h == 2)): return 1
+	if ((j1 == 1) and (j2 == 2) and (h == 0)): return 1
+	if ((j1 == 1) and (j2 == 2) and (h == 1)): return 1
+	if ((j1 == 1) and (j2 == 2) and (h == 2)): return 1
+	if ((j1 == 2) and (j2 == 0) and (h == 0)): return 1
+	if ((j1 == 2) and (j2 == 1) and (h == 0)): return 1
+	if ((j1 == 2) and (j2 == 1) and (h == 1)): return 1
+	if ((j1 == 2) and (j2 == 1) and (h == 2)): return 1
+	if ((j1 == 2) and (j2 == 2) and (h == 0)): return 1
+	if ((j1 == 2) and (j2 == 2) and (h == 1)): return 1
+	if ((j1 == 2) and (j2 == 2) and (h == 2)): return 1
+	if ((j1 == 2) and (j2 == 2) and (h == 3)): return 1
+	if ((j1 == 2) and (j2 == 2) and (h == 4)): return 1
+	return 0
+
+
+def boolj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp): 
+	 return boolj1j2h(j1,j2,h)*boolj1j2h(j1p,j2p,hp)
+
+
+indexdictextred = {}
+indexdictredext = {}
+index = 0
+for j1 in range(3):
+	for j2 in range(3):
+		for h in range(5):
+			for j1p in range(3):
+				for j2p in range(3):
+					for hp in range(5):
+						for part in range(2):
+							if ((boolj1j2hj1pj2php(j1,j2,h,j1p,j2p,hp) == 1) and ((j1p+3*j2p+9*hp) <= (j1+3*j2+9*h))):
+								indexdictextred[str(j1)+str(j2)+str(h)+str(j1p)+str(j2p)+str(hp)+str(part)] = index
+								indexdictredext[index] = str(j1)+str(j2)+str(h)+str(j1p)+str(j2p)+str(hp)+str(part)
+								index += 1
+def redindex(j1,j2,h,j1p,j2p,hp,part):
+	return indexdictextred[str(j1)+str(j2)+str(h)+str(j1p)+str(j2p)+str(hp)+str(part)]
+
+def extindex(i):
+	stringlist = list(indexdictredext[i])
+	intlist = []
+	for s in stringlist: intlist.append(eval(s))
+	return intlist
+
+for blindpar in ['DCP','phis','DCP_SS','DCP_SV','DCP_VS','DCP_ST','DCP_TS','DCP_VT','DCP_TV','DCP_TT','dphi_SS','dphi_SV','dphi_VS','dphi_ST','dphi_TS','dphi_VT','dphi_TV','dphi_TT']: blinding_strings[blindpar] = np.random.uniform(-blinding_scale,blinding_scale)
+
+def converted_parameter(param,blinding):
+   from ModelBricks import Parameter, Free
+   paramname = param.GetName()
+   if ('phi' in paramname or 'DCP' in paramname) and blinding:
+      blstring = blinding_strings[paramname]
+      return eval(('Parameter("'+paramname+'_cu",'+str(param.getVal())+'+'+str(blstring)+', limits = ('+str(param.getMin())+'+'+str(blstring)+','+str(param.getMax())+'+'+str(blstring)+'), constant = False, dtype = np.float64)').replace('+-','-'))
+   return eval('Parameter("'+paramname+'_cu",'+str(param.getVal())+', limits = ('+str(param.getMin())+','+str(param.getMax())+'), constant = False, dtype = np.float64)')
+
+def create_param_list(arglistname,numparams = 0):
+   arglist = eval(arglistname)
+   numparlimit = len(arglist)
+   if numparams != 0: numparlimit = numparams
+   exec('x = np.ones('+str(numparlimit)+').astype(np.float64)')
+   for iarg in range(numparlimit): exec('x['+str(iarg)+'] = '+str(arglist.at(iarg).getVal()))
+   return x
+
+def param_list_updates(arglistname,paramnames,args_ = 0,N_ = {},blinding = 0):
+   arglist = eval(arglistname)
+   updates = []
+   for iarg in range(len(arglist)):
+      if arglist.at(iarg).isConstant() == 0:
+         argname = arglist.at(iarg).GetName()
+         isCPV = 0
+         if '_withBlinding' in argname:
+            argname = argname.replace('_withBlinding','')
+            isCPV = 1
+         if argname in paramnames:
+            if blinding and isCPV: updates.append([iarg,eval(('np.float64(args_[N_["'+argname+'_cu"]])-'+str(blinding_strings[argname])).replace('--','+'))])
+            else: updates.append([iarg,eval('np.float64(args_[N_["'+argname+'_cu"]])')])
+   return updates
+
+def param_list_updates_check(arglistname,paramnames,blinding = 0):
+   arglist = eval(arglistname)
+   updates = []
+   for iarg in range(len(arglist)):
+      if arglist.at(iarg).isConstant() == 0:
+         argname = arglist.at(iarg).GetName()
+         isCPV = 0
+         if '_withBlinding' in argname:
+            argname = argname.replace('_withBlinding','')
+            isCPV = 1
+         if argname in paramnames:
+            if blinding and isCPV: updates.append([iarg,eval((argname+'.getVal()-'+str(blinding_strings[argname])).replace('--','+'))])
+            else: updates.append([iarg,eval(argname+'.getVal()')])
+   return updates
+
+def create_data_arrays(data_list):
+   int_var_name_list = ['decision_SSK','decision_OS']
+   double_var_name_list = ['etamistag_SSK','etamistag_OS','mKp1','mKp2','cos1','cos2','phi','t','terror','weight_fit']
+   listofarrays = []
+   for i in range(4):
+      data_sample = data_list[2+i]
+      sample_size = data_sample.numEntries()
+      listofarrays.append(eval('np.ones(('+str(sample_size)+',12)).astype(np.float64)'))
+      for ev in range(sample_size):
+         for ivar in range(2): listofarrays[i][ev][ivar] = eval(str(data_sample.get(ev).getCatIndex(eval(int_var_name_list[ivar]+'.GetName()'))))
+         for ivar in range(10): listofarrays[i][ev][2+ivar] = eval(str(data_sample.get(ev).getRealValue(eval(double_var_name_list[ivar]+'.GetName()'))))
+   return listofarrays
+
+def create_MCdata_arrays(data_list):
+   double_var_name_list = ["B_s0_DTF_KST1_M","B_s0_DTF_KST2_M","B_s0_DTF_KST1_COSTHETA","B_s0_DTF_KST2_COSTHETA","B_s0_DTF_B_s0_PHI_TRY4","MCweight0"]
+   listofarrays = []
+   for i in range(4):
+      data_sample = data_list[i]
+      sample_size = data_sample.numEntries()
+      listofarrays.append(eval('np.ones('+str(sample_size)+'*6).astype(np.float64)'))
+      for ev in range(sample_size):
+         for ivar in range(6): listofarrays[i][6*ev+ivar] = data_sample.get(ev).getRealValue(double_var_name_list[ivar])
+   return listofarrays
+
+polar_fractions_dict = {'f_10': '(upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"])/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_par2_22': '(upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"])/(upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_12': '(upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"])/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_L_12': '(upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"])/(upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"])', 'f_L_11': '(upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"])/(upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"])', 'f_11': '(upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"])/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_perp_12': '(upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"])/(upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"])', 'f_perp_11': '(upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"])/(upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"])', 'f_par_12': '(upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"])/(upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"])', 'f_par_11': '(upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"])/(upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"])', 'f_perp2_22': '(upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])/(upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_01': '(upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"])/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_00': '(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"])/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_02': '(upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"])/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_perp_22': '(upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"])/(upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_perp_21': '(upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"])/(upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"])', 'f_22': '(upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_21': '(upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"])/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_20': '(upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"])/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_L_22': '(upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"])/(upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_par_22': '(upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"])/(upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'f_par_21': '(upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"])/(upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"])', 'f_L_21': '(upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"])/(upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"])'}
+
+polar_phases_dict = {'delta_21perp': 'umath.atan2(upar["imA21perp"],upar["reA21perp"])', 'delta_220': 'umath.atan2(upar["imA220"],upar["reA220"])', 'delta_02': 'umath.atan2(upar["imA02"],upar["reA02"])', 'delta_22perp': 'umath.atan2(upar["imA22perp"],upar["reA22perp"])', 'delta_10': 'umath.atan2(upar["imA10"],upar["reA10"])', 'delta_210': 'umath.atan2(upar["imA210"],upar["reA210"])', 'delta_22par2': 'umath.atan2(upar["imA22par2"],upar["reA22par2"])', 'delta_12par': 'umath.atan2(upar["imA12par"],upar["reA12par"])', 'delta_11perp': 'umath.atan2(upar["imA11perp"],upar["reA11perp"])', 'delta_21par': 'umath.atan2(upar["imA21par"],upar["reA21par"])', 'delta_20': 'umath.atan2(upar["imA20"],upar["reA20"])', 'delta_22perp2': 'umath.atan2(upar["imA22perp2"],upar["reA22perp2"])', 'delta_12perp': 'umath.atan2(upar["imA12perp"],upar["reA12perp"])', 'delta_01': 'umath.atan2(upar["imA01"],upar["reA01"])', 'delta_00': 'umath.atan2(upar["imA00"],upar["reA00"])', 'delta_11par': 'umath.atan2(upar["imA11par"],upar["reA11par"])', 'delta_120': 'umath.atan2(upar["imA120"],upar["reA120"])', 'delta_22par': 'umath.atan2(upar["imA22par"],upar["reA22par"])'}
+
+init_polar_fractions_dict = {'f_10': '(reA10.getVal()*reA10.getVal() + imA10.getVal()*imA10.getVal())/(reA00.getVal()*reA00.getVal() + imA00.getVal()*imA00.getVal() + reA01.getVal()*reA01.getVal() + imA01.getVal()*imA01.getVal() + reA10.getVal()*reA10.getVal() + imA10.getVal()*imA10.getVal() + reA02.getVal()*reA02.getVal() + imA02.getVal()*imA02.getVal() + reA20.getVal()*reA20.getVal() + imA20.getVal()*imA20.getVal() + reA110.getVal()*reA110.getVal() + imA110.getVal()*imA110.getVal() + reA11par.getVal()*reA11par.getVal() + imA11par.getVal()*imA11par.getVal() + reA11perp.getVal()*reA11perp.getVal() + imA11perp.getVal()*imA11perp.getVal() + reA120.getVal()*reA120.getVal() + imA120.getVal()*imA120.getVal() + reA12par.getVal()*reA12par.getVal() + imA12par.getVal()*imA12par.getVal() + reA12perp.getVal()*reA12perp.getVal() + imA12perp.getVal()*imA12perp.getVal() + reA210.getVal()*reA210.getVal() + imA210.getVal()*imA210.getVal() + reA21par.getVal()*reA21par.getVal() + imA21par.getVal()*imA21par.getVal() + reA21perp.getVal()*reA21perp.getVal() + imA21perp.getVal()*imA21perp.getVal() + reA220.getVal()*reA220.getVal() + imA220.getVal()*imA220.getVal() + reA22par.getVal()*reA22par.getVal() + imA22par.getVal()*imA22par.getVal() + reA22perp.getVal()*reA22perp.getVal() + imA22perp.getVal()*imA22perp.getVal() + reA22par2.getVal()*reA22par2.getVal() + imA22par2.getVal()*imA22par2.getVal() + reA22perp2.getVal()*reA22perp2.getVal() + imA22perp2.getVal()*imA22perp2.getVal())', 'f_par2_22': '(reA22par2.getVal()*reA22par2.getVal() + imA22par2.getVal()*imA22par2.getVal())/(reA220.getVal()*reA220.getVal() + imA220.getVal()*imA220.getVal() + reA22par.getVal()*reA22par.getVal() + imA22par.getVal()*imA22par.getVal() + reA22perp.getVal()*reA22perp.getVal() + imA22perp.getVal()*imA22perp.getVal() + reA22par2.getVal()*reA22par2.getVal() + imA22par2.getVal()*imA22par2.getVal() + reA22perp2.getVal()*reA22perp2.getVal() + imA22perp2.getVal()*imA22perp2.getVal())', 'f_12': '(reA120.getVal()*reA120.getVal() + imA120.getVal()*imA120.getVal() + reA12par.getVal()*reA12par.getVal() + imA12par.getVal()*imA12par.getVal() + reA12perp.getVal()*reA12perp.getVal() + imA12perp.getVal()*imA12perp.getVal())/(reA00.getVal()*reA00.getVal() + imA00.getVal()*imA00.getVal() + reA01.getVal()*reA01.getVal() + imA01.getVal()*imA01.getVal() + reA10.getVal()*reA10.getVal() + imA10.getVal()*imA10.getVal() + reA02.getVal()*reA02.getVal() + imA02.getVal()*imA02.getVal() + reA20.getVal()*reA20.getVal() + imA20.getVal()*imA20.getVal() + reA110.getVal()*reA110.getVal() + imA110.getVal()*imA110.getVal() + reA11par.getVal()*reA11par.getVal() + imA11par.getVal()*imA11par.getVal() + reA11perp.getVal()*reA11perp.getVal() + imA11perp.getVal()*imA11perp.getVal() + reA120.getVal()*reA120.getVal() + imA120.getVal()*imA120.getVal() + reA12par.getVal()*reA12par.getVal() + imA12par.getVal()*imA12par.getVal() + reA12perp.getVal()*reA12perp.getVal() + imA12perp.getVal()*imA12perp.getVal() + reA210.getVal()*reA210.getVal() + imA210.getVal()*imA210.getVal() + reA21par.getVal()*reA21par.getVal() + imA21par.getVal()*imA21par.getVal() + reA21perp.getVal()*reA21perp.getVal() + imA21perp.getVal()*imA21perp.getVal() + reA220.getVal()*reA220.getVal() + imA220.getVal()*imA220.getVal() + reA22par.getVal()*reA22par.getVal() + imA22par.getVal()*imA22par.getVal() + reA22perp.getVal()*reA22perp.getVal() + imA22perp.getVal()*imA22perp.getVal() + reA22par2.getVal()*reA22par2.getVal() + imA22par2.getVal()*imA22par2.getVal() + reA22perp2.getVal()*reA22perp2.getVal() + imA22perp2.getVal()*imA22perp2.getVal())', 'f_L_12': '(reA120.getVal()*reA120.getVal() + imA120.getVal()*imA120.getVal())/(reA120.getVal()*reA120.getVal() + imA120.getVal()*imA120.getVal() + reA12par.getVal()*reA12par.getVal() + imA12par.getVal()*imA12par.getVal() + reA12perp.getVal()*reA12perp.getVal() + imA12perp.getVal()*imA12perp.getVal())', 'f_L_11': '(reA110.getVal()*reA110.getVal() + imA110.getVal()*imA110.getVal())/(reA110.getVal()*reA110.getVal() + imA110.getVal()*imA110.getVal() + reA11par.getVal()*reA11par.getVal() + imA11par.getVal()*imA11par.getVal() + reA11perp.getVal()*reA11perp.getVal() + imA11perp.getVal()*imA11perp.getVal())', 'f_11': '(reA110.getVal()*reA110.getVal() + imA110.getVal()*imA110.getVal() + reA11par.getVal()*reA11par.getVal() + imA11par.getVal()*imA11par.getVal() + reA11perp.getVal()*reA11perp.getVal() + imA11perp.getVal()*imA11perp.getVal())/(reA00.getVal()*reA00.getVal() + imA00.getVal()*imA00.getVal() + reA01.getVal()*reA01.getVal() + imA01.getVal()*imA01.getVal() + reA10.getVal()*reA10.getVal() + imA10.getVal()*imA10.getVal() + reA02.getVal()*reA02.getVal() + imA02.getVal()*imA02.getVal() + reA20.getVal()*reA20.getVal() + imA20.getVal()*imA20.getVal() + reA110.getVal()*reA110.getVal() + imA110.getVal()*imA110.getVal() + reA11par.getVal()*reA11par.getVal() + imA11par.getVal()*imA11par.getVal() + reA11perp.getVal()*reA11perp.getVal() + imA11perp.getVal()*imA11perp.getVal() + reA120.getVal()*reA120.getVal() + imA120.getVal()*imA120.getVal() + reA12par.getVal()*reA12par.getVal() + imA12par.getVal()*imA12par.getVal() + reA12perp.getVal()*reA12perp.getVal() + imA12perp.getVal()*imA12perp.getVal() + reA210.getVal()*reA210.getVal() + imA210.getVal()*imA210.getVal() + reA21par.getVal()*reA21par.getVal() + imA21par.getVal()*imA21par.getVal() + reA21perp.getVal()*reA21perp.getVal() + imA21perp.getVal()*imA21perp.getVal() + reA220.getVal()*reA220.getVal() + imA220.getVal()*imA220.getVal() + reA22par.getVal()*reA22par.getVal() + imA22par.getVal()*imA22par.getVal() + reA22perp.getVal()*reA22perp.getVal() + imA22perp.getVal()*imA22perp.getVal() + reA22par2.getVal()*reA22par2.getVal() + imA22par2.getVal()*imA22par2.getVal() + reA22perp2.getVal()*reA22perp2.getVal() + imA22perp2.getVal()*imA22perp2.getVal())', 'f_perp_12': '(reA12perp.getVal()*reA12perp.getVal() + imA12perp.getVal()*imA12perp.getVal())/(reA120.getVal()*reA120.getVal() + imA120.getVal()*imA120.getVal() + reA12par.getVal()*reA12par.getVal() + imA12par.getVal()*imA12par.getVal() + reA12perp.getVal()*reA12perp.getVal() + imA12perp.getVal()*imA12perp.getVal())', 'f_perp_11': '(reA11perp.getVal()*reA11perp.getVal() + imA11perp.getVal()*imA11perp.getVal())/(reA110.getVal()*reA110.getVal() + imA110.getVal()*imA110.getVal() + reA11par.getVal()*reA11par.getVal() + imA11par.getVal()*imA11par.getVal() + reA11perp.getVal()*reA11perp.getVal() + imA11perp.getVal()*imA11perp.getVal())', 'f_par_12': '(reA12par.getVal()*reA12par.getVal() + imA12par.getVal()*imA12par.getVal())/(reA120.getVal()*reA120.getVal() + imA120.getVal()*imA120.getVal() + reA12par.getVal()*reA12par.getVal() + imA12par.getVal()*imA12par.getVal() + reA12perp.getVal()*reA12perp.getVal() + imA12perp.getVal()*imA12perp.getVal())', 'f_par_11': '(reA11par.getVal()*reA11par.getVal() + imA11par.getVal()*imA11par.getVal())/(reA110.getVal()*reA110.getVal() + imA110.getVal()*imA110.getVal() + reA11par.getVal()*reA11par.getVal() + imA11par.getVal()*imA11par.getVal() + reA11perp.getVal()*reA11perp.getVal() + imA11perp.getVal()*imA11perp.getVal())', 'f_perp2_22': '(reA22perp2.getVal()*reA22perp2.getVal() + imA22perp2.getVal()*imA22perp2.getVal())/(reA220.getVal()*reA220.getVal() + imA220.getVal()*imA220.getVal() + reA22par.getVal()*reA22par.getVal() + imA22par.getVal()*imA22par.getVal() + reA22perp.getVal()*reA22perp.getVal() + imA22perp.getVal()*imA22perp.getVal() + reA22par2.getVal()*reA22par2.getVal() + imA22par2.getVal()*imA22par2.getVal() + reA22perp2.getVal()*reA22perp2.getVal() + imA22perp2.getVal()*imA22perp2.getVal())', 'f_01': '(reA01.getVal()*reA01.getVal() + imA01.getVal()*imA01.getVal())/(reA00.getVal()*reA00.getVal() + imA00.getVal()*imA00.getVal() + reA01.getVal()*reA01.getVal() + imA01.getVal()*imA01.getVal() + reA10.getVal()*reA10.getVal() + imA10.getVal()*imA10.getVal() + reA02.getVal()*reA02.getVal() + imA02.getVal()*imA02.getVal() + reA20.getVal()*reA20.getVal() + imA20.getVal()*imA20.getVal() + reA110.getVal()*reA110.getVal() + imA110.getVal()*imA110.getVal() + reA11par.getVal()*reA11par.getVal() + imA11par.getVal()*imA11par.getVal() + reA11perp.getVal()*reA11perp.getVal() + imA11perp.getVal()*imA11perp.getVal() + reA120.getVal()*reA120.getVal() + imA120.getVal()*imA120.getVal() + reA12par.getVal()*reA12par.getVal() + imA12par.getVal()*imA12par.getVal() + reA12perp.getVal()*reA12perp.getVal() + imA12perp.getVal()*imA12perp.getVal() + reA210.getVal()*reA210.getVal() + imA210.getVal()*imA210.getVal() + reA21par.getVal()*reA21par.getVal() + imA21par.getVal()*imA21par.getVal() + reA21perp.getVal()*reA21perp.getVal() + imA21perp.getVal()*imA21perp.getVal() + reA220.getVal()*reA220.getVal() + imA220.getVal()*imA220.getVal() + reA22par.getVal()*reA22par.getVal() + imA22par.getVal()*imA22par.getVal() + reA22perp.getVal()*reA22perp.getVal() + imA22perp.getVal()*imA22perp.getVal() + reA22par2.getVal()*reA22par2.getVal() + imA22par2.getVal()*imA22par2.getVal() + reA22perp2.getVal()*reA22perp2.getVal() + imA22perp2.getVal()*imA22perp2.getVal())', 'f_00': '(reA00.getVal()*reA00.getVal() + imA00.getVal()*imA00.getVal())/(reA00.getVal()*reA00.getVal() + imA00.getVal()*imA00.getVal() + reA01.getVal()*reA01.getVal() + imA01.getVal()*imA01.getVal() + reA10.getVal()*reA10.getVal() + imA10.getVal()*imA10.getVal() + reA02.getVal()*reA02.getVal() + imA02.getVal()*imA02.getVal() + reA20.getVal()*reA20.getVal() + imA20.getVal()*imA20.getVal() + reA110.getVal()*reA110.getVal() + imA110.getVal()*imA110.getVal() + reA11par.getVal()*reA11par.getVal() + imA11par.getVal()*imA11par.getVal() + reA11perp.getVal()*reA11perp.getVal() + imA11perp.getVal()*imA11perp.getVal() + reA120.getVal()*reA120.getVal() + imA120.getVal()*imA120.getVal() + reA12par.getVal()*reA12par.getVal() + imA12par.getVal()*imA12par.getVal() + reA12perp.getVal()*reA12perp.getVal() + imA12perp.getVal()*imA12perp.getVal() + reA210.getVal()*reA210.getVal() + imA210.getVal()*imA210.getVal() + reA21par.getVal()*reA21par.getVal() + imA21par.getVal()*imA21par.getVal() + reA21perp.getVal()*reA21perp.getVal() + imA21perp.getVal()*imA21perp.getVal() + reA220.getVal()*reA220.getVal() + imA220.getVal()*imA220.getVal() + reA22par.getVal()*reA22par.getVal() + imA22par.getVal()*imA22par.getVal() + reA22perp.getVal()*reA22perp.getVal() + imA22perp.getVal()*imA22perp.getVal() + reA22par2.getVal()*reA22par2.getVal() + imA22par2.getVal()*imA22par2.getVal() + reA22perp2.getVal()*reA22perp2.getVal() + imA22perp2.getVal()*imA22perp2.getVal())', 'f_02': '(reA02.getVal()*reA02.getVal() + imA02.getVal()*imA02.getVal())/(reA00.getVal()*reA00.getVal() + imA00.getVal()*imA00.getVal() + reA01.getVal()*reA01.getVal() + imA01.getVal()*imA01.getVal() + reA10.getVal()*reA10.getVal() + imA10.getVal()*imA10.getVal() + reA02.getVal()*reA02.getVal() + imA02.getVal()*imA02.getVal() + reA20.getVal()*reA20.getVal() + imA20.getVal()*imA20.getVal() + reA110.getVal()*reA110.getVal() + imA110.getVal()*imA110.getVal() + reA11par.getVal()*reA11par.getVal() + imA11par.getVal()*imA11par.getVal() + reA11perp.getVal()*reA11perp.getVal() + imA11perp.getVal()*imA11perp.getVal() + reA120.getVal()*reA120.getVal() + imA120.getVal()*imA120.getVal() + reA12par.getVal()*reA12par.getVal() + imA12par.getVal()*imA12par.getVal() + reA12perp.getVal()*reA12perp.getVal() + imA12perp.getVal()*imA12perp.getVal() + reA210.getVal()*reA210.getVal() + imA210.getVal()*imA210.getVal() + reA21par.getVal()*reA21par.getVal() + imA21par.getVal()*imA21par.getVal() + reA21perp.getVal()*reA21perp.getVal() + imA21perp.getVal()*imA21perp.getVal() + reA220.getVal()*reA220.getVal() + imA220.getVal()*imA220.getVal() + reA22par.getVal()*reA22par.getVal() + imA22par.getVal()*imA22par.getVal() + reA22perp.getVal()*reA22perp.getVal() + imA22perp.getVal()*imA22perp.getVal() + reA22par2.getVal()*reA22par2.getVal() + imA22par2.getVal()*imA22par2.getVal() + reA22perp2.getVal()*reA22perp2.getVal() + imA22perp2.getVal()*imA22perp2.getVal())', 'f_perp_22': '(reA22perp.getVal()*reA22perp.getVal() + imA22perp.getVal()*imA22perp.getVal())/(reA220.getVal()*reA220.getVal() + imA220.getVal()*imA220.getVal() + reA22par.getVal()*reA22par.getVal() + imA22par.getVal()*imA22par.getVal() + reA22perp.getVal()*reA22perp.getVal() + imA22perp.getVal()*imA22perp.getVal() + reA22par2.getVal()*reA22par2.getVal() + imA22par2.getVal()*imA22par2.getVal() + reA22perp2.getVal()*reA22perp2.getVal() + imA22perp2.getVal()*imA22perp2.getVal())', 'f_perp_21': '(reA21perp.getVal()*reA21perp.getVal() + imA21perp.getVal()*imA21perp.getVal())/(reA210.getVal()*reA210.getVal() + imA210.getVal()*imA210.getVal() + reA21par.getVal()*reA21par.getVal() + imA21par.getVal()*imA21par.getVal() + reA21perp.getVal()*reA21perp.getVal() + imA21perp.getVal()*imA21perp.getVal())', 'f_22': '(reA220.getVal()*reA220.getVal() + imA220.getVal()*imA220.getVal() + reA22par.getVal()*reA22par.getVal() + imA22par.getVal()*imA22par.getVal() + reA22perp.getVal()*reA22perp.getVal() + imA22perp.getVal()*imA22perp.getVal() + reA22par2.getVal()*reA22par2.getVal() + imA22par2.getVal()*imA22par2.getVal() + reA22perp2.getVal()*reA22perp2.getVal() + imA22perp2.getVal()*imA22perp2.getVal())/(reA00.getVal()*reA00.getVal() + imA00.getVal()*imA00.getVal() + reA01.getVal()*reA01.getVal() + imA01.getVal()*imA01.getVal() + reA10.getVal()*reA10.getVal() + imA10.getVal()*imA10.getVal() + reA02.getVal()*reA02.getVal() + imA02.getVal()*imA02.getVal() + reA20.getVal()*reA20.getVal() + imA20.getVal()*imA20.getVal() + reA110.getVal()*reA110.getVal() + imA110.getVal()*imA110.getVal() + reA11par.getVal()*reA11par.getVal() + imA11par.getVal()*imA11par.getVal() + reA11perp.getVal()*reA11perp.getVal() + imA11perp.getVal()*imA11perp.getVal() + reA120.getVal()*reA120.getVal() + imA120.getVal()*imA120.getVal() + reA12par.getVal()*reA12par.getVal() + imA12par.getVal()*imA12par.getVal() + reA12perp.getVal()*reA12perp.getVal() + imA12perp.getVal()*imA12perp.getVal() + reA210.getVal()*reA210.getVal() + imA210.getVal()*imA210.getVal() + reA21par.getVal()*reA21par.getVal() + imA21par.getVal()*imA21par.getVal() + reA21perp.getVal()*reA21perp.getVal() + imA21perp.getVal()*imA21perp.getVal() + reA220.getVal()*reA220.getVal() + imA220.getVal()*imA220.getVal() + reA22par.getVal()*reA22par.getVal() + imA22par.getVal()*imA22par.getVal() + reA22perp.getVal()*reA22perp.getVal() + imA22perp.getVal()*imA22perp.getVal() + reA22par2.getVal()*reA22par2.getVal() + imA22par2.getVal()*imA22par2.getVal() + reA22perp2.getVal()*reA22perp2.getVal() + imA22perp2.getVal()*imA22perp2.getVal())', 'f_21': '(reA210.getVal()*reA210.getVal() + imA210.getVal()*imA210.getVal() + reA21par.getVal()*reA21par.getVal() + imA21par.getVal()*imA21par.getVal() + reA21perp.getVal()*reA21perp.getVal() + imA21perp.getVal()*imA21perp.getVal())/(reA00.getVal()*reA00.getVal() + imA00.getVal()*imA00.getVal() + reA01.getVal()*reA01.getVal() + imA01.getVal()*imA01.getVal() + reA10.getVal()*reA10.getVal() + imA10.getVal()*imA10.getVal() + reA02.getVal()*reA02.getVal() + imA02.getVal()*imA02.getVal() + reA20.getVal()*reA20.getVal() + imA20.getVal()*imA20.getVal() + reA110.getVal()*reA110.getVal() + imA110.getVal()*imA110.getVal() + reA11par.getVal()*reA11par.getVal() + imA11par.getVal()*imA11par.getVal() + reA11perp.getVal()*reA11perp.getVal() + imA11perp.getVal()*imA11perp.getVal() + reA120.getVal()*reA120.getVal() + imA120.getVal()*imA120.getVal() + reA12par.getVal()*reA12par.getVal() + imA12par.getVal()*imA12par.getVal() + reA12perp.getVal()*reA12perp.getVal() + imA12perp.getVal()*imA12perp.getVal() + reA210.getVal()*reA210.getVal() + imA210.getVal()*imA210.getVal() + reA21par.getVal()*reA21par.getVal() + imA21par.getVal()*imA21par.getVal() + reA21perp.getVal()*reA21perp.getVal() + imA21perp.getVal()*imA21perp.getVal() + reA220.getVal()*reA220.getVal() + imA220.getVal()*imA220.getVal() + reA22par.getVal()*reA22par.getVal() + imA22par.getVal()*imA22par.getVal() + reA22perp.getVal()*reA22perp.getVal() + imA22perp.getVal()*imA22perp.getVal() + reA22par2.getVal()*reA22par2.getVal() + imA22par2.getVal()*imA22par2.getVal() + reA22perp2.getVal()*reA22perp2.getVal() + imA22perp2.getVal()*imA22perp2.getVal())', 'f_20': '(reA20.getVal()*reA20.getVal() + imA20.getVal()*imA20.getVal())/(reA00.getVal()*reA00.getVal() + imA00.getVal()*imA00.getVal() + reA01.getVal()*reA01.getVal() + imA01.getVal()*imA01.getVal() + reA10.getVal()*reA10.getVal() + imA10.getVal()*imA10.getVal() + reA02.getVal()*reA02.getVal() + imA02.getVal()*imA02.getVal() + reA20.getVal()*reA20.getVal() + imA20.getVal()*imA20.getVal() + reA110.getVal()*reA110.getVal() + imA110.getVal()*imA110.getVal() + reA11par.getVal()*reA11par.getVal() + imA11par.getVal()*imA11par.getVal() + reA11perp.getVal()*reA11perp.getVal() + imA11perp.getVal()*imA11perp.getVal() + reA120.getVal()*reA120.getVal() + imA120.getVal()*imA120.getVal() + reA12par.getVal()*reA12par.getVal() + imA12par.getVal()*imA12par.getVal() + reA12perp.getVal()*reA12perp.getVal() + imA12perp.getVal()*imA12perp.getVal() + reA210.getVal()*reA210.getVal() + imA210.getVal()*imA210.getVal() + reA21par.getVal()*reA21par.getVal() + imA21par.getVal()*imA21par.getVal() + reA21perp.getVal()*reA21perp.getVal() + imA21perp.getVal()*imA21perp.getVal() + reA220.getVal()*reA220.getVal() + imA220.getVal()*imA220.getVal() + reA22par.getVal()*reA22par.getVal() + imA22par.getVal()*imA22par.getVal() + reA22perp.getVal()*reA22perp.getVal() + imA22perp.getVal()*imA22perp.getVal() + reA22par2.getVal()*reA22par2.getVal() + imA22par2.getVal()*imA22par2.getVal() + reA22perp2.getVal()*reA22perp2.getVal() + imA22perp2.getVal()*imA22perp2.getVal())', 'f_L_22': '(reA220.getVal()*reA220.getVal() + imA220.getVal()*imA220.getVal())/(reA220.getVal()*reA220.getVal() + imA220.getVal()*imA220.getVal() + reA22par.getVal()*reA22par.getVal() + imA22par.getVal()*imA22par.getVal() + reA22perp.getVal()*reA22perp.getVal() + imA22perp.getVal()*imA22perp.getVal() + reA22par2.getVal()*reA22par2.getVal() + imA22par2.getVal()*imA22par2.getVal() + reA22perp2.getVal()*reA22perp2.getVal() + imA22perp2.getVal()*imA22perp2.getVal())', 'f_par_22': '(reA22par.getVal()*reA22par.getVal() + imA22par.getVal()*imA22par.getVal())/(reA220.getVal()*reA220.getVal() + imA220.getVal()*imA220.getVal() + reA22par.getVal()*reA22par.getVal() + imA22par.getVal()*imA22par.getVal() + reA22perp.getVal()*reA22perp.getVal() + imA22perp.getVal()*imA22perp.getVal() + reA22par2.getVal()*reA22par2.getVal() + imA22par2.getVal()*imA22par2.getVal() + reA22perp2.getVal()*reA22perp2.getVal() + imA22perp2.getVal()*imA22perp2.getVal())', 'f_par_21': '(reA21par.getVal()*reA21par.getVal() + imA21par.getVal()*imA21par.getVal())/(reA210.getVal()*reA210.getVal() + imA210.getVal()*imA210.getVal() + reA21par.getVal()*reA21par.getVal() + imA21par.getVal()*imA21par.getVal() + reA21perp.getVal()*reA21perp.getVal() + imA21perp.getVal()*imA21perp.getVal())', 'f_L_21': '(reA210.getVal()*reA210.getVal() + imA210.getVal()*imA210.getVal())/(reA210.getVal()*reA210.getVal() + imA210.getVal()*imA210.getVal() + reA21par.getVal()*reA21par.getVal() + imA21par.getVal()*imA21par.getVal() + reA21perp.getVal()*reA21perp.getVal() + imA21perp.getVal()*imA21perp.getVal())'}
+
+init_polar_phases_dict = {'delta_21perp': 'np.arctan2(imA21perp.getVal(),reA21perp.getVal())', 'delta_220': 'np.arctan2(imA220.getVal(),reA220.getVal())', 'delta_02': 'np.arctan2(imA02.getVal(),reA02.getVal())', 'delta_22perp': 'np.arctan2(imA22perp.getVal(),reA22perp.getVal())', 'delta_10': 'np.arctan2(imA10.getVal(),reA10.getVal())', 'delta_210': 'np.arctan2(imA210.getVal(),reA210.getVal())', 'delta_22par2': 'np.arctan2(imA22par2.getVal(),reA22par2.getVal())', 'delta_12par': 'np.arctan2(imA12par.getVal(),reA12par.getVal())', 'delta_11perp': 'np.arctan2(imA11perp.getVal(),reA11perp.getVal())', 'delta_21par': 'np.arctan2(imA21par.getVal(),reA21par.getVal())', 'delta_20': 'np.arctan2(imA20.getVal(),reA20.getVal())', 'delta_22perp2': 'np.arctan2(imA22perp2.getVal(),reA22perp2.getVal())', 'delta_12perp': 'np.arctan2(imA12perp.getVal(),reA12perp.getVal())', 'delta_01': 'np.arctan2(imA01.getVal(),reA01.getVal())', 'delta_00': 'np.arctan2(imA00.getVal(),reA00.getVal())', 'delta_11par': 'np.arctan2(imA11par.getVal(),reA11par.getVal())', 'delta_120': 'np.arctan2(imA120.getVal(),reA120.getVal())', 'delta_22par': 'np.arctan2(imA22par.getVal(),reA22par.getVal())'}
+
+polar_params_dict = polar_fractions_dict.copy()
+polar_params_dict.update(polar_phases_dict)
+
+init_polar_params_dict = init_polar_fractions_dict.copy()
+init_polar_params_dict.update(init_polar_phases_dict)
+
+polar_namepairs_dict = {'f_L_11': 'reA11par', 'delta_22perp': 'reA220', 'delta_210': 'reA210', 'f_par2_22': 'reA220', 'f_12': 'reA120', 'f_L_12': 'reA120', 'f_10': 'reA10', 'f_11': 'reA11par', 'delta_21par': 'reA210', 'f_perp_12': 'reA120', 'f_perp_11': 'reA11par', 'f_par_12': 'reA120', 'delta_22perp2': 'reA220', 'f_par_11': 'reA11par', 'delta_10': 'reA10', 'delta_11perp': 'reA11par', 'f_perp2_22': 'reA220', 'delta_11par': 'reA11par', 'delta_120': 'reA120', 'delta_220': 'reA220', 'f_01': 'reA01', 'f_00': 'reA00', 'f_02': 'reA02', 'delta_12par': 'reA120', 'delta_01': 'reA01', 'delta_00': 'reA00', 'delta_02': 'reA02', 'delta_21perp': 'reA210', 'delta_20': 'reA20', 'f_perp_22': 'reA220', 'f_perp_21': 'reA210', 'delta_22par2': 'reA220', 'f_22': 'reA220', 'f_21': 'reA210', 'f_20': 'reA20', 'f_L_22': 'reA220', 'f_par_22': 'reA220', 'f_par_21': 'reA210', 'f_L_21': 'reA210', 'delta_12perp': 'reA120', 'delta_22par': 'reA220'}
+
+max_strong_params = ['reA00', 'reA01', 'reA10', 'reA02', 'reA20', 'reA11par', 'reA11perp', 'reA120', 'reA12par', 'reA12perp', 'reA210', 'reA21par', 'reA21perp', 'reA220', 'reA22par', 'reA22perp', 'reA22par2', 'reA22perp2', 'imA00', 'imA01', 'imA10', 'imA02', 'imA20', 'imA11par', 'imA11perp', 'imA120', 'imA12par', 'imA12perp', 'imA210', 'imA21par', 'imA21perp', 'imA220', 'imA22par', 'imA22perp', 'imA22par2', 'imA22perp2']
+
+par_name_dict = {'mV': 'mV', 'gammaV': 'gammaV', 'mT': 'mT', 'gammaT': 'gammaT', 'c1_mass_swave': 'c_{1}^{mass}','c2_mass_swave': 'c_{2}^{mass}','c3_mass_swave': 'c_{3}^{mass}','c4_mass_swave': 'c_{4}^{mass}','c5_mass_swave': 'c_{5}^{mass}','c6_mass_swave': 'c_{6}^{mass}','c7_mass_swave': 'c_{7}^{mass}','c8_mass_swave': 'c_{8}^{mass}','c9_mass_swave': 'c_{9}^{mass}', 'reA22perp': 'Re(A^{TT}_{#perp1})', 'reA22par2': 'Re(A^{TT}_{#parallel2})', 'delta_210': '#delta^{TV}_{0}', 'tres_p1_2012': 'p_{1}^{#sigma_{t}}(2012)', 'tres_p1_2011': 'p_{1}^{#sigma_{t}}(2011)', 'delta_00': '#delta^{SS}', 'reA10': 'Re(A^{VS})', 'p0metac_OS': 'p_{0}^{OS}-<#eta^{OS}>', 'reA220': 'Re(A^{TT}_{L})', 'reA20': 'Re(A^{TS})', 'delta_10': '#delta^{VS}', 'imA21par': 'Im(A^{TV}_{#parallel})', 'reA11par': 'Re(A^{VV}_{#parallel})', 'delta_11par': '#delta^{VV}_{#parallel}', 'DCP': '#Delta^{CP}', 'DCP_SS': 'd#Delta^{CP}_{SS}', 'DCP_SV': 'd#Delta^{CP}_{SV}', 'DCP_VS': 'd#Delta^{CP}_{VS}', 'DCP_ST': 'd#Delta^{CP}_{ST}', 'DCP_TS': 'd#Delta^{CP}_{TS}', 'DCP_VT': 'd#Delta^{CP}_{VT}', 'DCP_TV': 'd#Delta^{CP}_{TV}', 'DCP_TT': 'd#Delta^{CP}_{TT}', 'imA22perp2': 'Im(A^{TT}_{#perp2})', 'delta_12par': '#delta^{VT}_{#parallel}', 'delta_01': '#delta^{SV}', 'imA22par': 'Im(A^{TT}_{#parallel1})', 'delta_02': '#delta^{ST}', 'reA22par': 'Re(A^{TT}_{#parallel1})', 'p1_SSK': 'p_{1}^{SSK}', 'delta_22perp': '#delta^{TT}_{#perp1}', 'reA21par': 'Re(A^{TV}_{#parallel})', 'delta_21par': '#delta^{TV}_{#parallel}', 'Dp1half_SSK': '1/2 #Delta p_{1}^{SSK}', 'delta_11perp': '#delta^{VV}_{#perp}', 'f_perp2_22': 'f_{#perp2}^{TT}', 'imA210': 'Im(A^{TV}_{L})', 'tres_p0_2011': 'p_{0}^{#sigma_{t}}(2011)', 'reA120': 'Re(A^{VT}_{L})', 'imA21perp': 'Im(A^{TV}_{#perp})', 'tres_p0_2012': 'p_{0}^{#sigma_{t}}(2012)', 'delta_22perp2': '#delta^{TT}_{#perp2}', 'reA22perp2': 'Re(A^{TT}_{#perp2})', 'imA10': 'Im(A^{VS})', 'delta_21perp': '#delta^{TV}_{#perp}', 'p1_OS': 'p_{1}^{OS}', 'delta_22par2': '#delta^{TT}_{#parallel2}', 'f_22': 'f_{TT}', 'f_21': 'f_{TV}', 'f_20': 'f_{TS}', 'f_L_22': 'f_L^{TT}', 'f_par_22': 'f_{#parallel1}^{TT}', 'f_par_21': 'f_{#parallel}^{TV}', 'f_L_21': 'f_L^{TV}', 'imA12perp': 'Im(A^{VT}_{#perp})', 'delta_12perp': '#delta^{VT}_{#perp}', 'imA220': 'Im(A^{TT}_{L})', 'delta_m_Bs': '#Delta m_{B_{s}^{0}}', 'reA12par': 'Re(A^{VT}_{#parallel})', 'f_par2_22': 'f_{#parallel2}^{TT}', 'Dp1half_OS': '1/2 #Delta p_{1}^{OS}', 'f_12': 'f_{VT}', 'f_10': 'f_{VS}', 'f_11': 'f_{VV}', 'imA02': 'Im(A^{ST})', 'imA00': 'Im(A^{SS})', 'imA01': 'Im(A^{SV})', 'f_par_12': 'f_{#parallel}^{VT}', 'f_par_11': 'f_{#parallel}^{VV}', 'reA01': 'Re(A^{SV})', 'Dp0half_OS': '1/2 #Delta p_{0}^{OS}', 'reA11perp': 'Re(A^{VV}_{#perp})', 'imA120': 'Im(A^{VT}_{L})', 'f_01': 'f_{SV}', 'f_00': 'f_{SS}', 'f_02': 'f_{ST}', 'gamma_Bs': '#Gamma_{B_{s}^{0}}', 'f_perp_22': 'f_{#perp1}^{TT}', 'f_perp_21': 'f_{#perp}^{TV}', 'p0metac_SSK': 'p_{0}^{SSK}-<#eta^{SSK}>', 'imA22perp': 'Im(A^{TT}_{#perp1})', 'delta_22par': '#delta^{TT}_{#parallel1}', 'imA22par2': 'Im(A^{TT}_{#parallel2})', 'reA210': 'Re(A^{TV}_{L})', 'imA20': 'Im(A^{TS})', 'imA11perp': 'Im(A^{VV}_{#perp})', 'f_L_12': 'f_L^{VT}', 'f_L_11': 'f_L^{VV}', 'f_perp_12': 'f_{#perp}^{VT}', 'f_perp_11': 'f_{#perp}^{VV}', 'delta_120': '#delta^{VT}_{0}', 'delta_220': '#delta^{TT}_{0}', 'reA21perp': 'Re(A^{TV}_{#perp})', 'imA11par': 'Im(A^{VV}_{#parallel})', 'reA12perp': 'Re(A^{VT}_{#perp})', 'Dp0half_SSK': '1/2 #Delta p_{0}^{SSK}', 'reA00': 'Re(A^{SS})', 'reA02': 'Re(A^{ST})', 'delta_gamma_Bs': '#Delta #Gamma_{B_{s}^{0}}', 'delta_20': '#delta^{TS}', 'imA12par': 'Im(A^{VT}_{#parallel})', 'phis': '#phi_{s}', 'dphi_SS': 'd#phi_{sSS}', 'dphi_SV': 'd#phi_{sSV}', 'dphi_VS': 'd#phi_{sVS}', 'dphi_ST': 'd#phi_{sST}', 'dphi_TS': 'd#phi_{sTS}', 'dphi_VT': 'd#phi_{sVT}', 'dphi_TV': 'd#phi_{sTV}', 'dphi_TT': 'd#phi_{sTT}'}
+par_name_dict['f_sminus'] = 'f_{S-}'
+par_name_dict['f_splus'] = 'f_{S+}'
+par_name_dict['deltaA11perpAsplus'] = '#delta^{VV}_{#perp}-#delta^{S+}'
+par_name_dict['deltaAsminus'] = '\delta^{S-}'
+
+par_result_varnw_dict = {'reA22perp': (-0.0735597446872891, 0.30306422294354984, 'Re(A^{TT}_{\\perp1})'), 'reA22par2': (-0.11027482204968209, 0.1972660406076309, 'Re(A^{TT}_{\\parallel2})'), 'delta_210': (1.5818771289499283, 0.1996357045583519, '\\delta^{TV}_{0}'), 'tres_p1_2012': (1.2616281236695952, 0.05274779635421897, 'p_{1}^{\\sigma_{t}}(2012)'), 'tres_p1_2011': (1.1538295242847139, 0.04960299287000747, 'p_{1}^{\\sigma_{t}}(2011)'), 'delta_00': (0.631168448200234, 0.11360173260090543, '\\delta^{SS}'), 'reA10': (-0.48302864950598234, 0.4763598870652409, 'Re(A^{VS})'), 'p0metac_OS': (0.007847072990527244, 0.004354351076796169, 'p_{0}^{OS}-<\\eta^{OS}>'), 'reA220': (0.09894281879607014, 0.15932942348995033, 'Re(A^{TT}_{L})'), 'reA20': (1.050699228614123, 0.31398789866659826, 'Re(A^{TS})'), 'delta_10': (1.7135280268369553, 0.13459951553288768, '\\delta^{VS}'), 'imA21par': (0.4244950066013349, 0.17314585466911223, 'Im(A^{TV}_{\\parallel})'), 'reA11par': (-0.7111304320426761, 0.1707175215323854, 'Re(A^{VV}_{\\parallel})'), 'delta_11par': (2.0879480096016994, 0.12338043142235076, '\\delta^{VV}_{\\parallel}'), 'DCP': (-3.3367627658250862, 0.032947673811672316, '\\Delta^{CP}'), 'imA22perp2': (-0.16116796651845533, 0.28192381916693593, 'Im(A^{TT}_{\\perp2})'), 'delta_12par': (-2.380342007468954, 0.4875078541657935, '\\delta^{VT}_{\\parallel}'), 'delta_01': (-1.8257969059834425, 0.1265241923734855, '\\delta^{SV}'), 'imA22par': (0.341353948048404, 0.13913848147616975, 'Im(A^{TT}_{\\parallel1})'), 'delta_02': (-2.8598839100075946, 0.4801574976201071, '\\delta^{ST}'), 'reA22par': (-0.3445272298732682, 0.12515622178853059, 'Re(A^{TT}_{\\parallel1})'), 'tres_p0_2012': (0.03645129885555397, 0.0002505952651479666, 'p_{0}^{\\sigma_{t}}(2012)'), 'delta_22perp': (1.7208325809900469, 0.609483181030259, '\\delta^{TT}_{\\perp1}'), 'reA21par': (0.5995319172808244, 0.20361029898967656, 'Re(A^{TV}_{\\parallel})'), 'delta_21par': (0.6161042782711134, 0.29462562756538346, '\\delta^{TV}_{\\parallel}'), 'Dp1half_SSK': (-0.015254926677277458, 0.022672452211574556, '1/2 \\Delta p_{1}^{SSK}'), 'delta_11perp': (1.939258354068904, 0.28906842605122646, '\\delta^{VV}_{\\perp}'), 'f_perp2_22': (0.3459135354425529, 0.16551808739606666, 'f_{\\perp2}^{TT}'), 'imA210': (1.510610109476234, 0.4920780258126781, 'Im(A^{TV}_{L})'), 'tres_p0_2011': (0.034768435155261665, 0.00024408794786592213, 'p_{0}^{\\sigma_{t}}(2011)'), 'reA120': (-2.1784357982662, 0.36055834688344035, 'Re(A^{VT}_{L})'), 'imA21perp': (-0.5746150091963251, 0.3317724599697678, 'Im(A^{TV}_{\\perp})'), 'p1_SSK': (0.9284621096763134, 0.08203189533067752, 'p_{1}^{SSK}'), 'delta_22perp2': (-0.3088856089140464, 0.5483218394248964, '\\delta^{TT}_{\\perp2}'), 'reA22perp2': (0.5050716648410116, 0.18681474451094834, 'Re(A^{TT}_{\\perp2})'), 'imA10': (3.3611597476834234, 0.5685389043191992, 'Im(A^{VS})'), 'delta_21perp': (-0.7562188100342472, 0.45664851255489214, '\\delta^{TV}_{\\perp}'), 'p1_OS': (0.9921874478452092, 0.034777221443417, 'p_{1}^{OS}'), 'delta_22par2': (2.347811003368292, 0.5558901241050392, '\\delta^{TT}_{\\parallel2}'), 'f_22': (0.009183543958251066, 0.002710016746295089, 'f_{TT}'), 'f_21': (0.03981873583149521, 0.015123580018046921, 'f_{TV}'), 'f_20': (0.03310278020366144, 0.008536957807655132, 'f_{TS}'), 'f_L_22': (0.036102805589920135, 0.06586150916120274, 'f_L^{TT}'), 'f_par_22': (0.2894851364984548, 0.14091024973977384, 'f_{\\parallel1}^{TT}'), 'f_par_21': (0.1531693158498012, 0.0767161393034345, 'f_{\\parallel}^{TV}'), 'f_L_21': (0.6477838851780799, 0.1379919834577876, 'f_L^{TV}'), 'imA12perp': (0.6465140084462302, 0.3426703743019514, 'Im(A^{VT}_{\\perp})'), 'delta_12perp': (2.53482884577029, 0.3457365178678489, '\\delta^{VT}_{\\perp}'), 'imA220': (0.13980594039667693, 0.17676002217462136, 'Im(A^{TT}_{L})'), 'delta_m_Bs': (17.618112578577502, 0.08167342453732405, '\\Delta m_{B_{s}^{0}}'), 'reA12par': (-0.3186859258260526, 0.17613552448981823, 'Re(A^{VT}_{\\parallel})'), 'c3_mass_swave': (-0.12163136947109421, 0.015311277312228132, 'c_{3}^{mass}'), 'f_par2_22': (0.03044213597889084, 0.09062559060729963, 'f_{\\parallel2}^{TT}'), 'Dp1half_OS': (0.03281067190533479, 0.005993065192385953, '1/2 \\Delta p_{1}^{OS}'), 'f_12': (0.08757804498973039, 0.016427834106826203, 'f_{VT}'), 'f_10': (0.1303213636776544, 0.026296301333162454, 'f_{VS}'), 'f_11': (0.07616112111945339, 0.004601382942301318, 'f_{VV}'), 'imA02': (-0.2048655009177569, 0.4007347003486179, 'Im(A^{ST})'), 'imA00': (2.9507002982943504, 0.5371212442342594, 'Im(A^{SS})'), 'imA01': (-5.2689983817717, 0.6839567507571603, 'Im(A^{SV})'), 'f_par_12': (0.02500600274793292, 0.016866740062547975, 'f_{\\parallel}^{VT}'), 'f_par_11': (0.3070129636679346, 0.03108602287567394, 'f_{\\parallel}^{VV}'), 'Dp0half_SSK': (-0.008046528953707959, 0.0013825312086699188, '1/2 \\Delta p_{0}^{SSK}'), 'Dp0half_OS': (0.006991268663015419, 0.0005991390332970243, '1/2 \\Delta p_{0}^{OS}'), 'reA11perp': (-0.6899895993962257, 0.5062901825849236, 'Re(A^{VV}_{\\perp})'), 'imA120': (-1.2344797129847294, 0.5482780643632025, 'Im(A^{VT}_{L})'), 'f_01': (0.3350944491270055, 0.026523196352403106, 'f_{SV}'), 'f_00': (0.28260212099378823, 0.011846024723397712, 'f_{SS}'), 'f_02': (0.006137840098960122, 0.006346585560303772, 'f_{ST}'), 'c2_mass_swave': (-0.1585889977425825, 0.019406249576048952, 'c_{2}^{mass}'), 'gamma_Bs': (0.6652886270365236, 0.0019676362639323717, '\\Gamma_{B_{s}^{0}}'), 'f_perp_22': (0.29805638649018135, 0.175797243473789, 'f_{\\perp1}^{TT}'), 'f_perp_21': (0.1990467989721187, 0.08647930477048982, 'f_{\\perp}^{TV}'), 'p0metac_SSK': (0.007267043982177306, 0.0050547756388464845, 'p_{0}^{SSK}-<\\eta^{SSK}>'), 'imA22perp': (0.48659539088895976, 0.17633566825012784, 'Im(A^{TT}_{\\perp1})'), 'delta_22par': (2.3608210338061837, 0.2476696658388352, '\\delta^{TT}_{\\parallel1}'), 'imA22par2': (0.1121394730466374, 0.15228187961329426, 'Im(A^{TT}_{\\parallel2})'), 'reA210': (-0.016739456875580316, 0.30160556974705827, 'Re(A^{TV}_{L})'), 'imA20': (-1.3509011615458704, 0.4597895405179997, 'Im(A^{TS})'), 'imA11perp': (1.7870985799327919, 0.3351760719874725, 'Im(A^{VV}_{\\perp})'), 'f_L_12': (0.8090935533665471, 0.04438116437559516, 'f_L^{VT}'), 'f_L_11': (0.148397361829253, 0.03217543911569287, 'f_L^{VV}'), 'f_perp_12': (0.16590044388551997, 0.04088094574994784, 'f_{\\perp}^{VT}'), 'f_perp_11': (0.5445896745028123, 0.035406105850297326, 'f_{\\perp}^{VV}'), 'c1_mass_swave': (-0.2999145131367409, 0.019871084784432978, 'c_{1}^{mass}'), 'c4_mass_swave': (-0.06590222906448306, 0.01627658856871813, 'c_{4}^{mass}'), 'delta_120': (-2.6260322629041277, 0.2118507085715715, '\\delta^{VT}_{0}'), 'delta_220': (0.9549109802328231, 1.0338830362523146, '\\delta^{TT}_{0}'), 'reA21perp': (0.6091668037771996, 0.2557623291630649, 'Re(A^{TV}_{\\perp})'), 'imA11par': (1.250260291892074, 0.2011418584802664, 'Im(A^{VV}_{\\parallel})'), 'reA12perp': (-0.9314251460156928, 0.26684696226308574, 'Re(A^{VT}_{\\perp})'), 'reA01': (-1.3734982090884902, 0.6999374641380647, 'Re(A^{SV})'), 'reA00': (4.037045611521224, 0.6638886334615056, 'Re(A^{SS})'), 'reA02': (-0.7078844807364177, 0.3375555170255883, 'Re(A^{ST})'), 'delta_gamma_Bs': (0.08618311902645703, 0.005877584711519312, '\\Delta \\Gamma_{B_{s}^{0}}'), 'delta_20': (-0.9097539304184619, 0.26934040460890546, '\\delta^{TS}'), 'imA12par': (-0.3036550155575686, 0.1943687862124656, 'Im(A^{VT}_{\\parallel})'), 'phis': (8.596993560492631, 0.11451831052010514, '\\phi_{s}')}
+
+par_result_constnw_dict = {'reA22perp': (-0.07422561735003441, 0.30196831409329866, 'Re(A^{TT}_{\\perp1})'), 'reA22par2': (-0.10977919188605512, 0.1969467132682363, 'Re(A^{TT}_{\\parallel2})'), 'delta_210': (1.5821781346585668, 0.1981172086800449, '\\delta^{TV}_{0}'), 'tres_p1_2012': (1.2616172078197445, 0.05274733982469428, 'p_{1}^{\\sigma_{t}}(2012)'), 'tres_p1_2011': (1.1539493276078308, 0.04959945287409409, 'p_{1}^{\\sigma_{t}}(2011)'), 'delta_00': (0.6310210893525537, 0.11351159667910327, '\\delta^{SS}'), 'reA10': (-0.4818825157334441, 0.47365236797142235, 'Re(A^{VS})'), 'p0metac_OS': (0.007850008602655344, 0.004354135912606459, 'p_{0}^{OS}-<\\eta^{OS}>'), 'reA220': (0.0985546512663742, 0.15815104912571393, 'Re(A^{TT}_{L})'), 'reA20': (1.0516015547119792, 0.31317561659821613, 'Re(A^{TS})'), 'delta_10': (1.7132189785482739, 0.13416062005435211, '\\delta^{VS}'), 'imA21par': (0.4251439690837895, 0.1723387698462173, 'Im(A^{TV}_{\\parallel})'), 'reA11par': (-0.7109611904442712, 0.1694735475125885, 'Re(A^{VV}_{\\parallel})'), 'delta_11par': (2.087802732833163, 0.12308318381645929, '\\delta^{VV}_{\\parallel}'), 'DCP': (-3.336834100942994, 0.03287398843756592, '\\Delta^{CP}'), 'imA22perp2': (-0.16017658850499394, 0.2803961640688439, 'Im(A^{TT}_{\\perp2})'), 'delta_12par': (-2.3814153498007187, 0.4858169819583023, '\\delta^{VT}_{\\parallel}'), 'delta_01': (-1.8257092884062862, 0.1263191445923095, '\\delta^{SV}'), 'imA22par': (0.3419378753751161, 0.13752878188335022, 'Im(A^{TT}_{\\parallel1})'), 'delta_02': (-2.857160118115828, 0.47274460719310313, '\\delta^{ST}'), 'reA22par': (-0.3443091927769686, 0.12473477815416364, 'Re(A^{TT}_{\\parallel1})'), 'tres_p0_2012': (0.03645114009699407, 0.0002505979594572659, 'p_{0}^{\\sigma_{t}}(2012)'), 'delta_22perp': (1.7220630481453068, 0.6068097981807193, '\\delta^{TT}_{\\perp1}'), 'reA21par': (0.5991810972844451, 0.20048019097624487, 'Re(A^{TV}_{\\parallel})'), 'delta_21par': (0.6171011194695819, 0.2931333941312186, '\\delta^{TV}_{\\parallel}'), 'Dp1half_SSK': (-0.015252433759744, 0.02267245458974212, '1/2 \\Delta p_{1}^{SSK}'), 'delta_11perp': (1.9394703452298034, 0.2881908887576033, '\\delta^{VV}_{\\perp}'), 'f_perp2_22': (0.3460059775570623, 0.16484572975915102, 'f_{\\perp2}^{TT}'), 'imA210': (1.5102268561062537, 0.4778143327322305, 'Im(A^{TV}_{L})'), 'tres_p0_2011': (0.03476863646795697, 0.0002440777049750134, 'p_{0}^{\\sigma_{t}}(2011)'), 'reA120': (-2.1785122175811287, 0.34825829429934446, 'Re(A^{VT}_{L})'), 'imA21perp': (-0.574353831446091, 0.32886184423286374, 'Im(A^{TV}_{\\perp})'), 'p1_SSK': (0.9284973212063521, 0.08203250815863705, 'p_{1}^{SSK}'), 'delta_22perp2': (-0.3067485685969915, 0.5462375613821242, '\\delta^{TT}_{\\perp2}'), 'reA22perp2': (0.5056938564147693, 0.1840698448164958, 'Re(A^{TT}_{\\perp2})'), 'imA10': (3.360560226771071, 0.5514299069545597, 'Im(A^{VS})'), 'delta_21perp': (-0.7558653134786215, 0.4553535164687906, '\\delta^{TV}_{\\perp}'), 'p1_OS': (0.99219232383791, 0.03477676955135745, 'p_{1}^{OS}'), 'delta_22par2': (2.3483756053393314, 0.5569098125220759, '\\delta^{TT}_{\\parallel2}'), 'f_22': (0.009190427376370798, 0.0025771240213735783, 'f_{TT}'), 'f_21': (0.03980257668484872, 0.014938927020175068, 'f_{TV}'), 'f_20': (0.03306503436487386, 0.008311810262891958, 'f_{TS}'), 'f_L_22': (0.035988475857040986, 0.06528084079672292, 'f_L^{TT}'), 'f_par_22': (0.289549103216287, 0.13893711665914796, 'f_{\\parallel1}^{TT}'), 'f_par_21': (0.15325532638545658, 0.07631665134068205, 'f_{\\parallel}^{TV}'), 'f_L_21': (0.6476661360893627, 0.13665318787409053, 'f_L^{TV}'), 'imA12perp': (0.6464527993749307, 0.3380842423951303, 'Im(A^{VT}_{\\perp})'), 'delta_12perp': (2.5349053337112566, 0.3443488486550821, '\\delta^{VT}_{\\perp}'), 'imA220': (0.1398353600400437, 0.17567075415228617, 'Im(A^{TT}_{L})'), 'delta_m_Bs': (17.618187151401123, 0.08154198312412247, '\\Delta m_{B_{s}^{0}}'), 'reA12par': (-0.31930626006862717, 0.17557387952245063, 'Re(A^{VT}_{\\parallel})'), 'f_par2_22': (0.030109314086630416, 0.08987353354164121, 'f_{\\parallel2}^{TT}'), 'Dp1half_OS': (0.032810295120572514, 0.0059930725915674265, '1/2 \\Delta p_{1}^{OS}'), 'f_12': (0.08759040112806357, 0.016047487186664218, 'f_{VT}'), 'f_10': (0.13025199050985692, 0.026200440477220206, 'f_{VS}'), 'f_11': (0.07617187057781845, 0.004356888035288296, 'f_{VV}'), 'imA02': (-0.2071742359647235, 0.39858323017051434, 'Im(A^{ST})'), 'imA00': (2.950222600890669, 0.5278798586734365, 'Im(A^{SS})'), 'imA01': (-5.2699240019240055, 0.6658921641900798, 'Im(A^{SV})'), 'f_par_12': (0.025046495327613896, 0.016845628196663742, 'f_{\\parallel}^{VT}'), 'f_par_11': (0.30695364835891303, 0.030981855730300642, 'f_{\\parallel}^{VV}'), 'Dp0half_SSK': (-0.008046602303667357, 0.001382531168358857, '1/2 \\Delta p_{0}^{SSK}'), 'Dp0half_OS': (0.006991298101529059, 0.0005991385174119489, '1/2 \\Delta p_{0}^{OS}'), 'reA11perp': (-0.6905062283293439, 0.5065293296489629, 'Re(A^{VV}_{\\perp})'), 'imA120': (-1.2348994137129825, 0.5495577193175852, 'Im(A^{VT}_{L})'), 'f_01': (0.3351677332276821, 0.02634701841450725, 'f_{SV}'), 'f_00': (0.2826000021084217, 0.011196741961466809, 'f_{SS}'), 'f_02': (0.0061599640220634235, 0.00627054588714095, 'f_{ST}'), 'gamma_Bs': (0.6652948018876358, 0.0019676001535852616, '\\Gamma_{B_{s}^{0}}'), 'f_perp_22': (0.29834712928297924, 0.17467227158578624, 'f_{\\perp1}^{TT}'), 'f_perp_21': (0.19907853752518076, 0.08567343618799604, 'f_{\\perp}^{TV}'), 'p0metac_SSK': (0.0072683156443861426, 0.005054463205793598, 'p_{0}^{SSK}-<\\eta^{SSK}>'), 'imA22perp': (0.4869452914280803, 0.17006688302646072, 'Im(A^{TT}_{\\perp1})'), 'delta_22par': (2.3596499628257757, 0.24557581181269467, '\\delta^{TT}_{\\parallel1}'), 'imA22par2': (0.11150945761584197, 0.15193267680161224, 'Im(A^{TT}_{\\parallel2})'), 'reA210': (-0.01718985420287389, 0.29924764555120864, 'Re(A^{TV}_{L})'), 'imA20': (-1.3490558625999487, 0.44744884891439557, 'Im(A^{TS})'), 'imA11perp': (1.787308938055146, 0.32626556405752466, 'Im(A^{VV}_{\\perp})'), 'f_L_12': (0.8090857398581417, 0.044326949627353104, 'f_L^{VT}'), 'f_L_11': (0.14836351599278935, 0.031125824121668144, 'f_L^{VV}'), 'f_perp_12': (0.1658677648142444, 0.04083604561846762, 'f_{\\perp}^{VT}'), 'f_perp_11': (0.5446828356482976, 0.03490751511367655, 'f_{\\perp}^{VV}'), 'delta_120': (-2.625901493225181, 0.21144117432938692, '\\delta^{VT}_{0}'), 'delta_220': (0.956862406555501, 1.035629568782537, '\\delta^{TT}_{0}'), 'reA21perp': (0.6093212980725085, 0.25604379415708045, 'Re(A^{TV}_{\\perp})'), 'imA11par': (1.2503853970601604, 0.19677954156957847, 'Im(A^{VV}_{\\parallel})'), 'reA12perp': (-0.9314890543650254, 0.2669399783880778, 'Re(A^{VT}_{\\perp})'), 'reA01': (-1.37324639290979, 0.6946509686112958, 'Re(A^{SV})'), 'reA00': (4.0376408177766105, 0.6447494620532553, 'Re(A^{SS})'), 'reA02': (-0.7086282910442794, 0.3299463684258643, 'Re(A^{ST})'), 'delta_gamma_Bs': (0.08615678124351381, 0.005877617862059901, '\\Delta \\Gamma_{B_{s}^{0}}'), 'delta_20': (-0.9086752081549326, 0.26783250625243554, '\\delta^{TS}'), 'imA12par': (-0.3035928765349514, 0.1938745686541677, 'Im(A^{VT}_{\\parallel})'), 'phis': (8.597144924350035, 0.11442558567490102, '\\phi_{s}')}
+
+toy_sigma_varonlycmass_dict = {'reA22perp': 0.016364588352605146, 'reA22par2': 0.006150543141764644, 'delta_210': 0.030547733006737195, 'tres_p1_2012': 0.0006229484825863375, 'delta_00': 0.009797076586267509, 'reA10': 0.022256261871151494, 'p0metac_OS': 2.0911417427645526e-05, 'reA220': 0.01147783023860441, 'reA20': 0.023324537997170113, 'delta_10': 0.007099061319086167, 'imA21par': 0.011925817784956959, 'reA11par': 0.009319662149199156, 'delta_11par': 0.00935042944812797, 'DCP': 0.0006654927872915747, 'imA22perp2': 0.011179450165140223, 'delta_12par': 0.015428584427026364, 'delta_01': 0.008322691264320739, 'imA22par': 0.026955727424969395, 'delta_02': 0.08276015354108403, 'reA22par': 0.010480383748050829, 'tres_p0_2012': 1.669363005590167e-06, 'delta_22perp': 0.023636079994699126, 'reA21par': 0.03102862471030979, 'delta_21par': 0.02478364378930571, 'Dp1half_SSK': 3.162188114457837e-05, 'delta_11perp': 0.009564645219510092, 'f_perp2_22': 0.003273644496254317, 'imA210': 0.05139409048234201, 'reA120': 0.07317444659284773, 'imA21perp': 0.018721973702509193, 'p1_SSK': 0.0006775285385621966, 'delta_22perp2': 0.02376245016886898, 'reA22perp2': 0.013149288532487435, 'imA10': 0.041739106235007456, 'delta_21perp': 0.019899051105082312, 'p1_OS': 0.00017187945914870286, 'delta_22par2': 0.015999453093365177, 'f_22': 0.0009283444556851235, 'f_21': 0.0013079008473020934, 'f_20': 0.002500154586045764, 'f_L_22': 0.0045455828357060055, 'f_par_22': 0.014227900105961883, 'f_par_21': 0.003594164113989396, 'f_L_21': 0.009118303916240661, 'imA12perp': 0.015544899163001752, 'delta_12perp': 0.019520520021759646, 'imA220': 0.018129620298338346, 'delta_m_Bs': 0.002190480670847606, 'reA12par': 0.010247099875979831, 'f_par2_22': 0.006103953837468289, 'Dp1half_OS': 9.01119679043244e-06, 'f_12': 0.0043321600672395506, 'f_10': 0.002201718977999, 'f_11': 0.0018009053704409505, 'imA02': 0.03117348537965533, 'imA00': 0.07358540974598407, 'imA01': 0.10701349430050786, 'f_par_12': 0.0012701260129731927, 'f_par_11': 0.0011302769152692978, 'Dp0half_SSK': 1.7702422837613924e-06, 'Dp0half_OS': 2.588944035380989e-07, 'reA11perp': 0.017435187928801815, 'imA120': 0.06075351655542332, 'f_01': 0.003227926143323237, 'f_00': 0.005122529183098221, 'f_02': 0.0005801836366573429, 'gamma_Bs': 2.1413649541289986e-05, 'f_perp_22': 0.018862159750093407, 'f_perp_21': 0.006401883135972939, 'p0metac_SSK': 3.3906146265216156e-05, 'imA22perp': 0.04994948953536946, 'delta_22par': 0.03262974501133778, 'imA22par2': 0.008580479979611127, 'reA210': 0.034885888417615335, 'imA20': 0.0991451141005797, 'imA11perp': 0.02027191453086481, 'f_L_12': 0.00358091764671985, 'f_L_11': 0.002944472773490273, 'f_perp_12': 0.002470338466828945, 'f_perp_11': 0.0021790023774646682, 'delta_120': 0.009099443930113938, 'delta_220': 0.0855876865053875, 'reA21perp': 0.020921564872094876, 'imA11par': 0.017140799374846073, 'reA12perp': 0.04022802725132345, 'reA01': 0.04843945567509335, 'reA00': 0.09836595557432273, 'reA02': 0.07342083471328006, 'delta_gamma_Bs': 6.845315360341547e-05, 'delta_20': 0.027452279130761512, 'imA12par': 0.006956592552579865, 'phis': 0.0037258125726455592}
+
+old_swave_amps_dict = {'reAsminus': '1./sqrt(2.)*(upar["reA10"]-upar["reA01"])', 'f_sminus': '(1./sqrt(2.)*(upar["reA10"]-upar["reA01"])*1./sqrt(2.)*(upar["reA10"]-upar["reA01"])+1./sqrt(2.)*(upar["imA10"]-upar["imA01"])*1./sqrt(2.)*(upar["imA10"]-upar["imA01"]))/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'deltaAsminus': 'umath.atan2(1./sqrt(2.)*(upar["imA10"]-upar["imA01"]),1./sqrt(2.)*(upar["reA10"]-upar["reA01"]))', 'imAsminus': '1./sqrt(2.)*(upar["imA10"]-upar["imA01"])', 'deltaAsplus': 'umath.atan2(1./sqrt(2.)*(upar["imA10"]+upar["imA01"]),1./sqrt(2.)*(upar["reA10"]+upar["reA01"]))', 'sqmodAsplus': '(1./sqrt(2.)*(upar["reA10"]+upar["reA01"])*1./sqrt(2.)*(upar["reA10"]+upar["reA01"])+1./sqrt(2.)*(upar["imA10"]+upar["imA01"])*1./sqrt(2.)*(upar["imA10"]+upar["imA01"]))', 'sqmodAsminus': '(1./sqrt(2.)*(upar["reA10"]-upar["reA01"])*1./sqrt(2.)*(upar["reA10"]-upar["reA01"])+1./sqrt(2.)*(upar["imA10"]-upar["imA01"])*1./sqrt(2.)*(upar["imA10"]-upar["imA01"]))', 'f_splus': '(1./sqrt(2.)*(upar["reA10"]+upar["reA01"])*1./sqrt(2.)*(upar["reA10"]+upar["reA01"])+1./sqrt(2.)*(upar["imA10"]+upar["imA01"])*1./sqrt(2.)*(upar["imA10"]+upar["imA01"]))/(upar["reA00"]*upar["reA00"] + upar["imA00"]*upar["imA00"] + upar["reA01"]*upar["reA01"] + upar["imA01"]*upar["imA01"] + upar["reA10"]*upar["reA10"] + upar["imA10"]*upar["imA10"] + upar["reA02"]*upar["reA02"] + upar["imA02"]*upar["imA02"] + upar["reA20"]*upar["reA20"] + upar["imA20"]*upar["imA20"] + upar["reA110"]*upar["reA110"] + upar["imA110"]*upar["imA110"] + upar["reA11par"]*upar["reA11par"] + upar["imA11par"]*upar["imA11par"] + upar["reA11perp"]*upar["reA11perp"] + upar["imA11perp"]*upar["imA11perp"] + upar["reA120"]*upar["reA120"] + upar["imA120"]*upar["imA120"] + upar["reA12par"]*upar["reA12par"] + upar["imA12par"]*upar["imA12par"] + upar["reA12perp"]*upar["reA12perp"] + upar["imA12perp"]*upar["imA12perp"] + upar["reA210"]*upar["reA210"] + upar["imA210"]*upar["imA210"] + upar["reA21par"]*upar["reA21par"] + upar["imA21par"]*upar["imA21par"] + upar["reA21perp"]*upar["reA21perp"] + upar["imA21perp"]*upar["imA21perp"] + upar["reA220"]*upar["reA220"] + upar["imA220"]*upar["imA220"] + upar["reA22par"]*upar["reA22par"] + upar["imA22par"]*upar["imA22par"] + upar["reA22perp"]*upar["reA22perp"] + upar["imA22perp"]*upar["imA22perp"] + upar["reA22par2"]*upar["reA22par2"] + upar["imA22par2"]*upar["imA22par2"] + upar["reA22perp2"]*upar["reA22perp2"] + upar["imA22perp2"]*upar["imA22perp2"])', 'reAsplus': '1./sqrt(2.)*(upar["reA10"]+upar["reA01"])', 'deltaA11perpAsplus': 'umath.atan2(upar["imA11perp"],upar["reA11perp"])-umath.atan2(1./sqrt(2.)*(upar["imA10"]+upar["imA01"]),1./sqrt(2.)*(upar["reA10"]+upar["reA01"]))', 'imAsplus': '1./sqrt(2.)*(upar["imA10"]+upar["imA01"])'}
+
+def stringline_CUDA(parname,upardict):
+   if parname not in upardict.keys(): return ''
+   elif type(upardict[parname]) == type(0.): return ''
+   else: return '$'+par_name_dict[parname]+'$ & $'+'{:L}'.format(upardict[parname])+'$ \\\\\n'
+
+def fitprint2LaTeX_CUDA(upardict,wide_window):
+	partext = '\\documentclass[11pt,a4paper]{article}\n\\usepackage[left=2.5cm,top=2.5cm,right=2.5cm,bottom=2.5cm]{geometry}\n\n\\begin{document}\n\n\\begin{table}[h]\n\\centering\n\\begin{tabular}{|c|c|}\n\hline\nParameter & Value \\\\\n\\hline\n\\hline\n'
+	partext += '\\multicolumn{2}{|c|}{Common parameters}\\\\\n\\hline\n\\hline\n'
+	partext += stringline_CUDA("phis",upardict)
+	partext += stringline_CUDA("DCP",upardict)
+	partext += stringline_CUDA("delta_m_Bs",upardict)
+	partext += stringline_CUDA("gamma_Bs",upardict)
+	partext += stringline_CUDA("delta_gamma_Bs",upardict)
+	partext += '\\hline\n\\hline\n'
+	partext += '\\multicolumn{2}{|c|}{$B_{s}^{0}\\to K^{*}(892)^{0}\\bar{K}^{*}(892)^{0}$ (VV)}\\\\\n\\hline\n\\hline\n'
+	partext += stringline_CUDA("reA11par",upardict)
+	partext += stringline_CUDA("imA11par",upardict)
+	partext += stringline_CUDA("reA11perp",upardict)
+	partext += stringline_CUDA("imA11perp",upardict)
+	partext += '\\hline\n\\hline\n'
+	partext += '\\multicolumn{2}{|c|}{Single $S-wave$ (SV and VS)}\\\\\n\\hline\n\\hline\n'
+	partext += stringline_CUDA("reA01",upardict)
+	partext += stringline_CUDA("imA01",upardict)
+	partext += stringline_CUDA("reA10",upardict)
+	partext += stringline_CUDA("imA10",upardict)
+	partext += '\\hline\n\\hline\n'
+	partext += '\\multicolumn{2}{|c|}{Double $S-wave$ (SS)}\\\\\n\\hline\n\\hline\n'
+	partext += stringline_CUDA("reA00",upardict)
+	partext += stringline_CUDA("imA00",upardict)
+	partext += '\\hline\n\\hline\n'
+	if wide_window:
+		partext += '\\multicolumn{2}{|c|}{$Scalar-Tensor$ decays (ST and TS)}\\\\\n\\hline\n\\hline\n'
+		partext += stringline_CUDA("reA02",upardict)
+		partext += stringline_CUDA("imA02",upardict)
+		partext += stringline_CUDA("reA20",upardict)
+		partext += stringline_CUDA("imA20",upardict)
+		partext += '\\hline\n\\hline\n'
+		partext += '\\end{tabular}\n\\end{table}\n\n'
+		partext += '\\begin{table}[h]\n\\centering\n\\begin{tabular}{|c|c|}\n\hline\nParameter & Value \\\\\n\\hline\n\\hline\n'
+		partext += '\\multicolumn{2}{|c|}{Single $D-wave$ (VT and TV)}\\\\\n\\hline\n\\hline\n'
+		partext += stringline_CUDA("reA120",upardict)
+		partext += stringline_CUDA("imA120",upardict)
+		partext += stringline_CUDA("reA12par",upardict)
+		partext += stringline_CUDA("imA12par",upardict)
+		partext += stringline_CUDA("reA12perp",upardict)
+		partext += stringline_CUDA("imA12perp",upardict)
+		partext += stringline_CUDA("reA210",upardict)
+		partext += stringline_CUDA("imA210",upardict)
+		partext += stringline_CUDA("reA21par",upardict)
+		partext += stringline_CUDA("imA21par",upardict)
+		partext += stringline_CUDA("reA21perp",upardict)
+		partext += stringline_CUDA("imA21perp",upardict)
+		partext += '\\hline\n\\hline\n'
+		partext += '\\multicolumn{2}{|c|}{Double $D-wave$ (TT)}\\\\\n\\hline\n\\hline\n'
+		partext += stringline_CUDA("reA220",upardict)
+		partext += stringline_CUDA("imA220",upardict)
+		partext += stringline_CUDA("reA22par",upardict)
+		partext += stringline_CUDA("imA22par",upardict)
+		partext += stringline_CUDA("reA22perp",upardict)
+		partext += stringline_CUDA("imA22perp",upardict)
+		partext += stringline_CUDA("reA22par2",upardict)
+		partext += stringline_CUDA("imA22par2",upardict)
+		partext += stringline_CUDA("reA22perp2",upardict)
+		partext += stringline_CUDA("imA22perp2",upardict)
+		partext += '\\hline\n\\hline\n'
+	partext += '\\end{tabular}\n\\end{table}\n\n'
+	partext += '\\begin{table}[h]\n\\centering\n\\begin{tabular}{|c|c|}\n\hline\nParameter & Value \\\\\n\\hline\n\\hline\n'
+	partext += '\\multicolumn{2}{|c|}{Common parameters}\\\\\n\\hline\n\\hline\n'
+	partext += stringline_CUDA("phis",upardict)
+	partext += stringline_CUDA("DCP",upardict)
+	partext += stringline_CUDA("delta_m_Bs",upardict)
+	partext += stringline_CUDA("gamma_Bs",upardict)
+	partext += stringline_CUDA("delta_gamma_Bs",upardict)
+	partext += '\\hline\n\\hline\n'
+	partext += '\\multicolumn{2}{|c|}{$B_{s}^{0}\\to K^{*}(892)^{0}\\bar{K}^{*}(892)^{0}$ (VV)}\\\\\n\\hline\n\\hline\n'
+	partext += stringline_CUDA("f_11",upardict)
+	partext += stringline_CUDA("f_L_11",upardict)
+	partext += stringline_CUDA("f_par_11",upardict)
+	partext += stringline_CUDA("delta_11par",upardict)
+	partext += stringline_CUDA("delta_11perp",upardict)
+	partext += '\\hline\n\\hline\n'
+	partext += '\\multicolumn{2}{|c|}{Single $S-wave$ (SV and VS)}\\\\\n\\hline\n\\hline\n'
+	partext += stringline_CUDA("f_01",upardict)
+	partext += stringline_CUDA("f_10",upardict)
+	partext += stringline_CUDA("delta_01",upardict)
+	partext += stringline_CUDA("delta_10",upardict)
+	partext += '\\hline\n\\hline\n'
+	partext += '\\multicolumn{2}{|c|}{Double $S-wave$ (SS)}\\\\\n\\hline\n\\hline\n'
+	partext += stringline_CUDA("f_00",upardict)
+	partext += stringline_CUDA("delta_00",upardict)
+	partext += '\\hline\n\\hline\n'
+	if wide_window:
+		partext += '\\multicolumn{2}{|c|}{$Scalar-Tensor$ decays (ST and TS)}\\\\\n\\hline\n\\hline\n'
+		partext += stringline_CUDA("f_02",upardict)
+		partext += stringline_CUDA("f_20",upardict)
+		partext += stringline_CUDA("delta_02",upardict)
+		partext += stringline_CUDA("delta_20",upardict)
+		partext += '\\hline\n\\hline\n'
+		partext += '\\end{tabular}\n\\end{table}\n\n'
+		partext += '\\begin{table}[h]\n\\centering\n\\begin{tabular}{|c|c|}\n\hline\nParameter & Value \\\\\n\\hline\n\\hline\n'
+		partext += '\\multicolumn{2}{|c|}{Single $D-wave$ (VT and TV)}\\\\\n\\hline\n\\hline\n'
+		partext += stringline_CUDA("f_12",upardict)
+		partext += stringline_CUDA("f_L_12",upardict)
+		partext += stringline_CUDA("f_par_12",upardict)
+		partext += stringline_CUDA("f_21",upardict)
+		partext += stringline_CUDA("f_L_21",upardict)
+		partext += stringline_CUDA("f_par_21",upardict)
+		partext += stringline_CUDA("delta_120",upardict)
+		partext += stringline_CUDA("delta_12par",upardict)
+		partext += stringline_CUDA("delta_12perp",upardict)
+		partext += stringline_CUDA("delta_210",upardict)
+		partext += stringline_CUDA("delta_21par",upardict)
+		partext += stringline_CUDA("delta_21perp",upardict)
+		partext += '\\hline\n\\hline\n'
+		partext += '\\multicolumn{2}{|c|}{Double $D-wave$ (TT)}\\\\\n\\hline\n\\hline\n'
+		partext += stringline_CUDA("f_22",upardict)
+		partext += stringline_CUDA("f_L_22",upardict)
+		partext += stringline_CUDA("f_par_22",upardict)
+		partext += stringline_CUDA("f_perp_22",upardict)
+		partext += stringline_CUDA("f_par2_22",upardict)
+		partext += stringline_CUDA("delta_220",upardict)
+		partext += stringline_CUDA("delta_22par",upardict)
+		partext += stringline_CUDA("delta_22perp",upardict)
+		partext += stringline_CUDA("delta_22par2",upardict)
+		partext += stringline_CUDA("delta_22perp2",upardict)
+		partext += '\\hline\n\\hline\n'
+	partext += '\\end{tabular}\n\\end{table}\n\n'
+	partext += '\\begin{table}[h]\n\\centering\n\\begin{tabular}{|c|c|}\n\hline\nParameter & Value \\\\\n\\hline\n\\hline\n'
+	partext += '\\multicolumn{2}{|c|}{Scalar $K\\pi$ mass amplitude}\\\\\n\\hline\n\\hline\n'
+	partext += stringline_CUDA("c1_mass_swave",upardict)
+	partext += stringline_CUDA("c2_mass_swave",upardict)
+	partext += stringline_CUDA("c3_mass_swave",upardict)
+	partext += stringline_CUDA("c4_mass_swave",upardict)
+	partext += '\\hline\n\\hline\n'
+	partext += '\\multicolumn{2}{|c|}{SSK tagger}\\\\\n\\hline\n\\hline\n'
+	partext += stringline_CUDA("p0metac_SSK",upardict)
+	partext += stringline_CUDA("Dp0half_SSK",upardict)
+	partext += stringline_CUDA("p1_SSK",upardict)
+	partext += stringline_CUDA("Dp1half_SSK",upardict)
+	partext += '\\hline\n\\hline\n'
+	partext += '\\multicolumn{2}{|c|}{OS tagger}\\\\\n\\hline\n\\hline\n'
+	partext += stringline_CUDA("p0metac_OS",upardict)
+	partext += stringline_CUDA("Dp0half_OS",upardict)
+	partext += stringline_CUDA("p1_OS",upardict)
+	partext += stringline_CUDA("Dp1half_OS",upardict)
+	partext += '\\hline\n\\hline\n'
+	partext += '\\multicolumn{2}{|c|}{Time resolution}\\\\\n\\hline\n\\hline\n'
+	partext += stringline_CUDA("tres_p0_2011",upardict)
+	partext += stringline_CUDA("tres_p1_2011",upardict)
+	partext += stringline_CUDA("tres_p0_2012",upardict)
+	partext += stringline_CUDA("tres_p1_2012",upardict)
+	partext += '\\hline\n\\hline\n\\end{tabular}\n\\end{table}\n\n'
+	partext += '\\end{document}'
+	partext = partext.replace('#','\\')
+	partext = partext.replace('\\hline\n\\end{tabular}','\\end{tabular}')
+
+	texfile = open('FitParams_CUDA.tex','w')
+	texfile.write(partext)
+	texfile.close()
+
+def diagonalise(cov_array):
+
+   (eig_vals, eig_vecs) = np.linalg.eig(cov_array)
+   matrix_U = np.matrix(eig_vecs)
+   matrix_IU = matrix_U.I
+   return np.array(matrix_IU), eig_vals
+
+def randomvary(vec_init_array,vec_final_array,diag_tools):
+
+   matrix_IU_array, diag_cov_array = diag_tools
+   delta_list = []
+   for sigma2 in list(diag_cov_array.real): delta_list.append(np.random.normal()*sqrt(max(sigma2,0.)))
+   for i in range(len(vec_final_array)):
+      vi = vec_init_array[i]
+      for j in range(len(vec_init_array)): vi += matrix_IU_array[i][j].real*delta_list[j]
+      vec_final_array[i] = vi
+
+def myset(l):
+
+   ln = [0.]
+   for i in l:
+      if (not i in ln) and i != 0.: ln.append(i)
+   return ln
+
+dict_nw_find_value = [1, 0, 2, 3, 4, 0, 5, 6, 7, 8, 9, 10, 11, 12, 13, 0, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 0, 25, 26, 27, 28, 29, 30, 31, 0, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 0, 43, 0, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 0, 60, 0, 61, 62, 0, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 0, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 0, 105, 0, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 66, 125, 126, 0, 127, 0, 128, 129, 0, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 0, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 0, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 0, 175, 0, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 72, 189, 190, 191, 192, 193, 135, 194, 195, 0, 196, 0, 197, 198, 0, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 0, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 0, 243, 0, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 76, 255, 256, 257, 258, 259, 141, 260, 261, 262, 263, 264, 265, 266, 202, 267, 268, 0, 269, 0, 270, 271, 0, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 0, 301, 0, 0, 302, 303, 0, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 0, 332, 0, 333, 334, 0, 0, 335, 336, 0]
+
+dict_nw_find_example = [0, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 29, 30, 31, 32, 33, 34, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 48, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 67, 69, 70, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 116, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 138, 139, 141, 143, 144, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 194, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 210, 211, 212, 213, 214, 216, 217, 219, 221, 222, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 270, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 284, 285, 286, 287, 288, 290, 291, 292, 293, 294, 295, 296, 298, 299, 301, 303, 304, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 336, 339, 340, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 371, 373, 374, 377, 378]
+
+massang_reso_mean_vector = [0.1583809994604209, 0.1473718004095508, 9.864723271358185e-05, 0.00011661529380049167, 4.780062446007323e-05]
+massang_reso_cov_list = [[9.060416526598136, 0.5383777549609944, 0.000861553402644569, 0.00020634405964781435, 0.00019158982449001124], [0.5383777549609944, 9.073160647673891, 0.0001728261139829807, 0.0009622887981352382, -1.2850244254051667e-05], [0.000861553402644569, 0.0001728261139829807, 1.2278860847909478e-05, 2.0977589878838506e-07, -6.45124311998607e-08], [0.00020634405964781435, 0.0009622887981352382, 2.0977589878838506e-07, 1.251298035270826e-05, -1.597986891432909e-07], [0.00019158982449001124, -1.2850244254051667e-05, -6.45124311998607e-08, -1.597986891432909e-07, 8.859475807054461e-05]]
+
+spl_11L0TIS_centers = np.array([-0.2886978336931787, 1.3204329260677394, 1.1464521047197573, 1.3959087924128006, 1.7132136223516263, 0.7889159176528626]).astype(np.float64)
+spl_11L0noTIS_centers = np.array([-0.9826875421641477, 5.169480573591622, 4.345189674666879, 5.730713405695031, 2.5669582193198295, 9.999994211811188]).astype(np.float64)
+spl_12L0TIS_centers = np.array([-0.31251754206973015, 1.6289499404518821, 1.4301485601024262, 1.7038418985030834, 1.6869830718978829, 1.6548705755552873]).astype(np.float64)
+spl_12L0noTIS_centers = np.array([-0.8776389186055598, 4.222451550313187, 3.119376977079469, 4.075957832584004, 2.47655444126237, 4.457360795010887]).astype(np.float64)
+spl_11L0TIS_centers_mod = np.ones(6).astype(np.float64)
+spl_11L0noTIS_centers_mod = np.ones(6).astype(np.float64)
+spl_12L0TIS_centers_mod = np.ones(6).astype(np.float64)
+spl_12L0noTIS_centers_mod = np.ones(6).astype(np.float64)
+spl_11L0TIS_cov = np.array([[0.0005272196127864837, -0.0006921608070249998, 0.00015902918089605566, -0.00015407933615435153, 8.86692445963645e-06, -0.0001576690472163947], [-0.0006921608070249998, 0.007833945365482521, -0.000313233112492807, 0.004095364681449508, 0.0009690508074324052, 0.004827060068169757], [0.00015902918089605566, -0.000313233112492807, 0.00783011644434279, 0.002213220381836268, 0.00326407059258665, 0.0040432017031596925], [-0.00015407933615435156, 0.004095364681449508, 0.0022132203818362676, 0.007870854619111143, -0.000220369089650804, 0.008319161310229233], [8.86692445963645e-06, 0.0009690508074324052, 0.0032640705925866503, -0.000220369089650804, 0.007705866309320663, -0.00034218504190784693], [-0.0001576690472163947, 0.004827060068169757, 0.0040432017031596925, 0.008319161310229233, -0.00034218504190784693, 0.012850590165846046]]).astype(np.float64)
+spl_11L0noTIS_cov = np.array([[0.01015506314259907, -0.011511786401792793, 0.0040857908717903575, -0.0007330681169719819, 0.0006271504896032774, 6.681141371819758e-06], [-0.011511786401792793, 0.12558104786416396, -0.04141379583551661, 0.014613224948103042, 0.016266299746298833, -0.00046970569031150127], [0.0040857908717903575, -0.04141379583551661, 0.1351722297561832, -0.01349540683221152, 0.0678915149743854, -0.0005322922373040467], [-0.0007330681169719819, 0.014613224948103043, -0.013495406832211518, 0.04533879001978951, -0.017319805461119653, -0.0007097792208476175], [0.0006271504896032774, 0.01626629974629883, 0.06789151497438542, -0.01731980546111965, 0.15691252401645517, -0.00014635009057831298], [6.681141371819758e-06, -0.00046970569031150127, -0.0005322922373040467, -0.0007097792208476175, -0.00014635009057831298, 0.12093854153756144]]).astype(np.float64)
+spl_12L0TIS_cov = np.array([[0.0008310323846907505, -0.0010481251853174966, 0.000247843717760075, -0.00020507789741178067, 3.4046294753711583e-05, -0.0002365999321796163], [-0.0010481251853174966, 0.013183472421497222, 0.0006955487722811152, 0.0074620732308546215, 0.0016135516048329658, 0.010509719516490188], [0.000247843717760075, 0.0006955487722811153, 0.012892512073049325, 0.004786122490529874, 0.005075060560976853, 0.009413185146763158], [-0.00020507789741178067, 0.007462073230854622, 0.004786122490529873, 0.013136952957335055, -0.0004007296446430109, 0.01657368774213791], [3.404629475371159e-05, 0.0016135516048329658, 0.005075060560976854, -0.00040072964464301085, 0.0114619605323481, 0.00016848113154375427], [-0.0002365999321796163, 0.010509719516490186, 0.00941318514676316, 0.01657368774213791, 0.00016848113154375424, 0.02818052549333394]]).astype(np.float64)
+spl_12L0noTIS_cov = np.array([[0.008920467614952361, -0.004251043758015294, 0.004000857412846854, 0.002760945796935084, 0.0014123897092005707, 0.004084337482961627], [-0.004251043758015294, 0.07784618848426593, 0.0437399918287817, 0.0710244586081619, 0.021261874443699185, 0.0955695636527059], [0.004000857412846854, 0.0437399918287817, 0.14576321371169237, 0.09805511882415667, 0.05405321953846886, 0.14736723125441056], [0.002760945796935084, 0.0710244586081619, 0.0980551188241567, 0.14677069465526563, 0.01958632098960364, 0.18346302869700765], [0.0014123897092005707, 0.021261874443699185, 0.05405321953846886, 0.01958632098960364, 0.07520663830038721, 0.03175500009048364], [0.004084337482961627, 0.09556956365270591, 0.14736723125441054, 0.18346302869700765, 0.03175500009048364, 0.2713109719011079]]).astype(np.float64)
+a_spl_11L0TIS_dict = np.ones((5,4)).astype(np.float64)
+a_spl_11L0noTIS_dict = np.ones((5,4)).astype(np.float64)
+a_spl_12L0TIS_dict = np.ones((5,4)).astype(np.float64)
+a_spl_12L0noTIS_dict = np.ones((5,4)).astype(np.float64)
+
+spl_11L0TIS_diag_tools = diagonalise(spl_11L0TIS_cov)
+spl_11L0noTIS_diag_tools = diagonalise(spl_11L0noTIS_cov)
+spl_12L0TIS_diag_tools = diagonalise(spl_12L0TIS_cov)
+spl_12L0noTIS_diag_tools = diagonalise(spl_12L0noTIS_cov)
+
+def spl_centers_cat(year,trig):
+
+   if year==0:
+      if trig==0: return spl_11L0TIS_centers
+      elif trig==1: return spl_11L0noTIS_centers
+   elif year==1:
+      if trig==0: return spl_12L0TIS_centers
+      elif trig==1: return spl_12L0noTIS_centers
+
+def spl_centers_mod_cat(year,trig):
+
+   if year==0:
+      if trig==0: return spl_11L0TIS_centers_mod
+      elif trig==1: return spl_11L0noTIS_centers_mod
+   elif year==1:
+      if trig==0: return spl_12L0TIS_centers_mod
+      elif trig==1: return spl_12L0noTIS_centers_mod
+
+def spl_diag_tools_cat(year,trig):
+
+   if year==0:
+      if trig==0: return spl_11L0TIS_diag_tools
+      elif trig==1: return spl_11L0noTIS_diag_tools
+   elif year==1:
+      if trig==0: return spl_12L0TIS_diag_tools
+      elif trig==1: return spl_12L0noTIS_diag_tools
+
+def a_spl_dict_cat(year,trig):
+
+   if year==0:
+      if trig==0: return a_spl_11L0TIS_dict
+      elif trig==1: return a_spl_11L0noTIS_dict
+   elif year==1:
+      if trig==0: return a_spl_12L0TIS_dict
+      elif trig==1: return a_spl_12L0noTIS_dict
+
+def spl_coef_bin_deg(ibin,deg,splinelist):
+
+   x0, x1, x2, x3, x4, x5 = [0.0,0.9,1.4,2.1,3.1,12.0]
+   c0, c7 = [0.,1.]
+   c1, c2, c3, c4, c5, c6 = splinelist
+
+   if (ibin == 0):
+
+      if (deg == 0): return -c0*pow(x1,3)/(pow(x0,3) - 3*pow(x0,2)*x1 + 3*x0*pow(x1,2) - pow(x1,3)) + c1*x0*pow(x1,2)/(pow(x0,3) - 3*pow(x0,2)*x1 + 3*x0*pow(x1,2) - pow(x1,3)) + c1*x0*x1*x2/(pow(x0,3) - 2*pow(x0,2)*x1 - pow(x0,2)*x2 + x0*pow(x1,2) + 2*x0*x1*x2 - pow(x1,2)*x2) + c1*x0*pow(x2,2)/(pow(x0,3) - pow(x0,2)*x1 - 2*pow(x0,2)*x2 + 2*x0*x1*x2 + x0*pow(x2,2) - x1*pow(x2,2)) - c2*pow(x0,2)*x1/(pow(x0,3) - 2*pow(x0,2)*x1 - pow(x0,2)*x2 + x0*pow(x1,2) + 2*x0*x1*x2 - pow(x1,2)*x2) - c2*pow(x0,2)*x2/(pow(x0,3) - pow(x0,2)*x1 - 2*pow(x0,2)*x2 + 2*x0*x1*x2 + x0*pow(x2,2) - x1*pow(x2,2)) - c2*pow(x0,2)*x3/(pow(x0,3) - pow(x0,2)*x1 - pow(x0,2)*x2 - pow(x0,2)*x3 + x0*x1*x2 + x0*x1*x3 + x0*x2*x3 - x1*x2*x3) + c3*pow(x0,3)/(pow(x0,3) - pow(x0,2)*x1 - pow(x0,2)*x2 - pow(x0,2)*x3 + x0*x1*x2 + x0*x1*x3 + x0*x2*x3 - x1*x2*x3)
+
+      elif (deg == 1): return 3*(c0*pow(x0,3)*pow(x1,2) - 2*c0*pow(x0,2)*pow(x1,2)*x2 - c0*pow(x0,2)*pow(x1,2)*x3 + c0*x0*pow(x1,2)*pow(x2,2) + 2*c0*x0*pow(x1,2)*x2*x3 - c0*pow(x1,2)*pow(x2,2)*x3 - c1*pow(x0,4)*x1 - c1*pow(x0,4)*x2 + 3*c1*pow(x0,3)*x1*x2 + c1*pow(x0,3)*x1*x3 + c1*pow(x0,3)*x2*x3 - 3*c1*pow(x0,2)*x1*x2*x3 - c1*x0*pow(x1,2)*pow(x2,2) + c1*pow(x1,2)*pow(x2,2)*x3 + c2*pow(x0,5) - c2*pow(x0,4)*x1 - c2*pow(x0,3)*x1*x2 - c2*pow(x0,3)*x1*x3 - c2*pow(x0,3)*x2*x3 + c2*pow(x0,2)*pow(x1,2)*x2 + c2*pow(x0,2)*pow(x1,2)*x3 + 3*c2*pow(x0,2)*x1*x2*x3 - 2*c2*x0*pow(x1,2)*x2*x3 - c3*pow(x0,5) + 2*c3*pow(x0,4)*x1 + c3*pow(x0,4)*x2 - c3*pow(x0,3)*pow(x1,2) - 2*c3*pow(x0,3)*x1*x2 + c3*pow(x0,2)*pow(x1,2)*x2)/(pow(x0,6) - 3*pow(x0,5)*x1 - 2*pow(x0,5)*x2 - pow(x0,5)*x3 + 3*pow(x0,4)*pow(x1,2) + 6*pow(x0,4)*x1*x2 + 3*pow(x0,4)*x1*x3 + pow(x0,4)*pow(x2,2) + 2*pow(x0,4)*x2*x3 - pow(x0,3)*pow(x1,3) - 6*pow(x0,3)*pow(x1,2)*x2 - 3*pow(x0,3)*pow(x1,2)*x3 - 3*pow(x0,3)*x1*pow(x2,2) - 6*pow(x0,3)*x1*x2*x3 - pow(x0,3)*pow(x2,2)*x3 + 2*pow(x0,2)*pow(x1,3)*x2 + pow(x0,2)*pow(x1,3)*x3 + 3*pow(x0,2)*pow(x1,2)*pow(x2,2) + 6*pow(x0,2)*pow(x1,2)*x2*x3 + 3*pow(x0,2)*x1*pow(x2,2)*x3 - x0*pow(x1,3)*pow(x2,2) - 2*x0*pow(x1,3)*x2*x3 - 3*x0*pow(x1,2)*pow(x2,2)*x3 + pow(x1,3)*pow(x2,2)*x3)
+
+      elif (deg == 2): return 3*(-c0*pow(x0,3)*x1 + 2*c0*pow(x0,2)*x1*x2 + c0*pow(x0,2)*x1*x3 - c0*x0*x1*pow(x2,2) - 2*c0*x0*x1*x2*x3 + c0*x1*pow(x2,2)*x3 + c1*pow(x0,4) - c1*pow(x0,3)*x3 - 3*c1*pow(x0,2)*x1*x2 + c1*x0*pow(x1,2)*x2 + c1*x0*x1*pow(x2,2) + 3*c1*x0*x1*x2*x3 - c1*pow(x1,2)*x2*x3 - c1*x1*pow(x2,2)*x3 - 2*c2*pow(x0,4) + 3*c2*pow(x0,3)*x1 + c2*pow(x0,3)*x2 + c2*pow(x0,3)*x3 - c2*pow(x0,2)*pow(x1,2) - c2*pow(x0,2)*x1*x2 - c2*pow(x0,2)*x1*x3 - c2*x0*x1*x2*x3 + c2*pow(x1,2)*x2*x3 + c3*pow(x0,4) - 2*c3*pow(x0,3)*x1 - c3*pow(x0,3)*x2 + c3*pow(x0,2)*pow(x1,2) + 2*c3*pow(x0,2)*x1*x2 - c3*x0*pow(x1,2)*x2)/(pow(x0,6) - 3*pow(x0,5)*x1 - 2*pow(x0,5)*x2 - pow(x0,5)*x3 + 3*pow(x0,4)*pow(x1,2) + 6*pow(x0,4)*x1*x2 + 3*pow(x0,4)*x1*x3 + pow(x0,4)*pow(x2,2) + 2*pow(x0,4)*x2*x3 - pow(x0,3)*pow(x1,3) - 6*pow(x0,3)*pow(x1,2)*x2 - 3*pow(x0,3)*pow(x1,2)*x3 - 3*pow(x0,3)*x1*pow(x2,2) - 6*pow(x0,3)*x1*x2*x3 - pow(x0,3)*pow(x2,2)*x3 + 2*pow(x0,2)*pow(x1,3)*x2 + pow(x0,2)*pow(x1,3)*x3 + 3*pow(x0,2)*pow(x1,2)*pow(x2,2) + 6*pow(x0,2)*pow(x1,2)*x2*x3 + 3*pow(x0,2)*x1*pow(x2,2)*x3 - x0*pow(x1,3)*pow(x2,2) - 2*x0*pow(x1,3)*x2*x3 - 3*x0*pow(x1,2)*pow(x2,2)*x3 + pow(x1,3)*pow(x2,2)*x3)
+
+      elif (deg == 3): return c0/(pow(x0,3) - 3*pow(x0,2)*x1 + 3*x0*pow(x1,2) - pow(x1,3)) - c1/(pow(x0,3) - pow(x0,2)*x1 - 2*pow(x0,2)*x2 + 2*x0*x1*x2 + x0*pow(x2,2) - x1*pow(x2,2)) - c1/(pow(x0,3) - 2*pow(x0,2)*x1 - pow(x0,2)*x2 + x0*pow(x1,2) + 2*x0*x1*x2 - pow(x1,2)*x2) - c1/(pow(x0,3) - 3*pow(x0,2)*x1 + 3*x0*pow(x1,2) - pow(x1,3)) + c2/(pow(x0,3) - pow(x0,2)*x1 - pow(x0,2)*x2 - pow(x0,2)*x3 + x0*x1*x2 + x0*x1*x3 + x0*x2*x3 - x1*x2*x3) + c2/(pow(x0,3) - pow(x0,2)*x1 - 2*pow(x0,2)*x2 + 2*x0*x1*x2 + x0*pow(x2,2) - x1*pow(x2,2)) + c2/(pow(x0,3) - 2*pow(x0,2)*x1 - pow(x0,2)*x2 + x0*pow(x1,2) + 2*x0*x1*x2 - pow(x1,2)*x2) - c3/(pow(x0,3) - pow(x0,2)*x1 - pow(x0,2)*x2 - pow(x0,2)*x3 + x0*x1*x2 + x0*x1*x3 + x0*x2*x3 - x1*x2*x3)
+
+   elif (ibin == 1):
+
+      if (deg == 0): return -c1*pow(x2,3)/(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3)) + c2*x0*pow(x2,2)/(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3)) + c2*x0*x2*x3/(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3) + c2*x1*pow(x3,2)/(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2)) - c3*pow(x0,2)*x2/(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3) - c3*x0*x1*x3/(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2)) - c3*pow(x1,2)*x4/(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4) + c4*pow(x1,3)/(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)
+
+      elif (deg == 1): return (x1*(c3*x1 + 2*c3*x4 - 3*c4*x1)*(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3))*(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2))*(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3) + x2*(3*c1*x2 - 2*c2*x0 - c2*x2)*(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)*(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2))*(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3) + (-c2*x0*x2 - c2*x0*x3 - c2*x2*x3 + c3*pow(x0,2) + 2*c3*x0*x2)*(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3))*(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)*(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2)) + (-2*c2*x1*x3 - c2*pow(x3,2) + c3*x0*x1 + c3*x0*x3 + c3*x1*x3)*(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3))*(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)*(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3))/((pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3))*(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)*(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2))*(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3))
+
+      elif (deg == 2): return ((-3*c1*x2 + c2*x0 + 2*c2*x2)*(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)*(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2))*(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3) + (-2*c3*x1 - c3*x4 + 3*c4*x1)*(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3))*(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2))*(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3) + (c2*x0 + c2*x2 + c2*x3 - 2*c3*x0 - c3*x2)*(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3))*(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)*(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2)) + (c2*x1 + 2*c2*x3 - c3*x0 - c3*x1 - c3*x3)*(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3))*(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)*(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3))/((pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3))*(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)*(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2))*(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3))
+
+      elif (deg == 3): return c1/(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3)) - c2/(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3) - c2/(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2)) - c2/(pow(x0,2)*x1 - pow(x0,2)*x2 - 2*x0*x1*x2 + 2*x0*pow(x2,2) + x1*pow(x2,2) - pow(x2,3)) + c3/(pow(x0,2)*x1 - pow(x0,2)*x2 - x0*x1*x2 - x0*x1*x3 + x0*pow(x2,2) + x0*x2*x3 + x1*x2*x3 - pow(x2,2)*x3) + c3/(x0*pow(x1,2) - x0*x1*x2 - x0*x1*x3 + x0*x2*x3 - pow(x1,2)*x3 + x1*x2*x3 + x1*pow(x3,2) - x2*pow(x3,2)) + c3/(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4) - c4/(pow(x1,3) - pow(x1,2)*x2 - pow(x1,2)*x3 - pow(x1,2)*x4 + x1*x2*x3 + x1*x2*x4 + x1*x3*x4 - x2*x3*x4)
+
+   elif (ibin == 2):
+
+      if (deg == 0): return -c2*pow(x3,3)/(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)) + c3*x0*pow(x3,2)/(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)) + c3*x1*x3*x4/(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4) + c3*x2*pow(x4,2)/(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2)) - c4*pow(x1,2)*x3/(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4) - c4*x1*x2*x4/(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2)) - c4*pow(x2,2)*x5/(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5) + c5*pow(x2,3)/(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)
+
+      elif (deg == 1): return (x2*(c4*x2 + 2*c4*x5 - 3*c5*x2)*(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2))*(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4)*(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)) + x3*(3*c2*x3 - 2*c3*x0 - c3*x3)*(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)*(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2))*(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4) + (-c3*x1*x3 - c3*x1*x4 - c3*x3*x4 + c4*pow(x1,2) + 2*c4*x1*x3)*(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)*(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2))*(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)) + (-2*c3*x2*x4 - c3*pow(x4,2) + c4*x1*x2 + c4*x1*x4 + c4*x2*x4)*(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)*(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4)*(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)))/((pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)*(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2))*(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4)*(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)))
+
+      elif (deg == 2): return ((-3*c2*x3 + c3*x0 + 2*c3*x3)*(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)*(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2))*(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4) + (-2*c4*x2 - c4*x5 + 3*c5*x2)*(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2))*(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4)*(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)) + (c3*x1 + c3*x3 + c3*x4 - 2*c4*x1 - c4*x3)*(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)*(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2))*(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)) + (c3*x2 + 2*c3*x4 - c4*x1 - c4*x2 - c4*x4)*(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)*(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4)*(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)))/((pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)*(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2))*(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4)*(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)))
+
+      elif (deg == 3): return c2/(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)) - c3/(x0*x1*x2 - x0*x1*x3 - x0*x2*x3 + x0*pow(x3,2) - x1*x2*x3 + x1*pow(x3,2) + x2*pow(x3,2) - pow(x3,3)) - c3/(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4) - c3/(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2)) + c4/(pow(x1,2)*x2 - pow(x1,2)*x3 - x1*x2*x3 - x1*x2*x4 + x1*pow(x3,2) + x1*x3*x4 + x2*x3*x4 - pow(x3,2)*x4) + c4/(x1*pow(x2,2) - x1*x2*x3 - x1*x2*x4 + x1*x3*x4 - pow(x2,2)*x4 + x2*x3*x4 + x2*pow(x4,2) - x3*pow(x4,2)) + c4/(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5) - c5/(pow(x2,3) - pow(x2,2)*x3 - pow(x2,2)*x4 - pow(x2,2)*x5 + x2*x3*x4 + x2*x3*x5 + x2*x4*x5 - x3*x4*x5)
+
+   elif (ibin == 3):
+
+      if (deg == 0): return -c3*pow(x4,3)/(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)) + c4*x1*pow(x4,2)/(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)) + c4*x2*x4*x5/(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5) + c4*x3*pow(x5,2)/(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2)) - c5*pow(x2,2)*x4/(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5) - c5*x2*x3*x5/(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2)) - c5*pow(x3,2)*x5/(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2)) + c6*pow(x3,3)/(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))
+
+      elif (deg == 1): return (x3*(c5*x3 + 2*c5*x5 - 3*c6*x3)*(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5)*(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)) + x4*(3*c3*x4 - 2*c4*x1 - c4*x4)*(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5) + (-c4*x2*x4 - c4*x2*x5 - c4*x4*x5 + c5*pow(x2,2) + 2*c5*x2*x4)*(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)) + (-2*c4*x3*x5 - c4*pow(x5,2) + c5*x2*x3 + c5*x2*x5 + c5*x3*x5)*(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5)*(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)))/((pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5)*(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)))
+
+      elif (deg == 2): return ((-3*c3*x4 + c4*x1 + 2*c4*x4)*(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5) + (-2*c5*x3 - c5*x5 + 3*c6*x3)*(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5)*(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)) + (c4*x2 + c4*x4 + c4*x5 - 2*c5*x2 - c5*x4)*(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)) + (c4*x3 + 2*c4*x5 - c5*x2 - c5*x3 - c5*x5)*(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5)*(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)))/((pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))*(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5)*(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)))
+
+      elif (deg == 3): return c3/(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)) - c4/(x1*x2*x3 - x1*x2*x4 - x1*x3*x4 + x1*pow(x4,2) - x2*x3*x4 + x2*pow(x4,2) + x3*pow(x4,2) - pow(x4,3)) - c4/(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5) - c4/(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2)) + c5/(pow(x2,2)*x3 - pow(x2,2)*x4 - x2*x3*x4 - x2*x3*x5 + x2*pow(x4,2) + x2*x4*x5 + x3*x4*x5 - pow(x4,2)*x5) + c5/(x2*pow(x3,2) - x2*x3*x4 - x2*x3*x5 + x2*x4*x5 - pow(x3,2)*x5 + x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2)) + c5/(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2)) - c6/(pow(x3,3) - pow(x3,2)*x4 - 2*pow(x3,2)*x5 + 2*x3*x4*x5 + x3*pow(x5,2) - x4*pow(x5,2))
+
+   elif (ibin == 4):
+
+      if (deg == 0): return -c4*pow(x5,3)/(x2*x3*x4 - x2*x3*x5 - x2*x4*x5 + x2*pow(x5,2) - x3*x4*x5 + x3*pow(x5,2) + x4*pow(x5,2) - pow(x5,3)) + c5*x2*pow(x5,2)/(x2*x3*x4 - x2*x3*x5 - x2*x4*x5 + x2*pow(x5,2) - x3*x4*x5 + x3*pow(x5,2) + x4*pow(x5,2) - pow(x5,3)) + c5*x3*pow(x5,2)/(pow(x3,2)*x4 - pow(x3,2)*x5 - 2*x3*x4*x5 + 2*x3*pow(x5,2) + x4*pow(x5,2) - pow(x5,3)) + c5*x4*pow(x5,2)/(x3*pow(x4,2) - 2*x3*x4*x5 + x3*pow(x5,2) - pow(x4,2)*x5 + 2*x4*pow(x5,2) - pow(x5,3)) - c6*pow(x3,2)*x5/(pow(x3,2)*x4 - pow(x3,2)*x5 - 2*x3*x4*x5 + 2*x3*pow(x5,2) + x4*pow(x5,2) - pow(x5,3)) - c6*x3*x4*x5/(x3*pow(x4,2) - 2*x3*x4*x5 + x3*pow(x5,2) - pow(x4,2)*x5 + 2*x4*pow(x5,2) - pow(x5,3)) - c6*pow(x4,2)*x5/(pow(x4,3) - 3*pow(x4,2)*x5 + 3*x4*pow(x5,2) - pow(x5,3)) + c7*pow(x4,3)/(pow(x4,3) - 3*pow(x4,2)*x5 + 3*x4*pow(x5,2) - pow(x5,3))
+
+      elif (deg == 1): return 3*(c4*x3*pow(x4,2)*pow(x5,2) - 2*c4*x3*x4*pow(x5,3) + c4*x3*pow(x5,4) - c4*pow(x4,2)*pow(x5,3) + 2*c4*x4*pow(x5,4) - c4*pow(x5,5) - 2*c5*x2*x3*pow(x4,2)*x5 + 3*c5*x2*x3*x4*pow(x5,2) - c5*x2*x3*pow(x5,3) + c5*x2*pow(x4,2)*pow(x5,2) - c5*x2*x4*pow(x5,3) + c5*x3*pow(x4,2)*pow(x5,2) - c5*x3*x4*pow(x5,3) - c5*x4*pow(x5,4) + c5*pow(x5,5) + c6*x2*pow(x3,2)*pow(x4,2) - 3*c6*x2*x3*x4*pow(x5,2) + c6*x2*x3*pow(x5,3) + c6*x2*x4*pow(x5,3) - c6*pow(x3,2)*pow(x4,2)*x5 + 3*c6*x3*x4*pow(x5,3) - c6*x3*pow(x5,4) - c6*x4*pow(x5,4) - c7*x2*pow(x3,2)*pow(x4,2) + 2*c7*x2*x3*pow(x4,2)*x5 - c7*x2*pow(x4,2)*pow(x5,2) + c7*pow(x3,2)*pow(x4,2)*x5 - 2*c7*x3*pow(x4,2)*pow(x5,2) + c7*pow(x4,2)*pow(x5,3))/(x2*pow(x3,2)*pow(x4,3) - 3*x2*pow(x3,2)*pow(x4,2)*x5 + 3*x2*pow(x3,2)*x4*pow(x5,2) - x2*pow(x3,2)*pow(x5,3) - 2*x2*x3*pow(x4,3)*x5 + 6*x2*x3*pow(x4,2)*pow(x5,2) - 6*x2*x3*x4*pow(x5,3) + 2*x2*x3*pow(x5,4) + x2*pow(x4,3)*pow(x5,2) - 3*x2*pow(x4,2)*pow(x5,3) + 3*x2*x4*pow(x5,4) - x2*pow(x5,5) - pow(x3,2)*pow(x4,3)*x5 + 3*pow(x3,2)*pow(x4,2)*pow(x5,2) - 3*pow(x3,2)*x4*pow(x5,3) + pow(x3,2)*pow(x5,4) + 2*x3*pow(x4,3)*pow(x5,2) - 6*x3*pow(x4,2)*pow(x5,3) + 6*x3*x4*pow(x5,4) - 2*x3*pow(x5,5) - pow(x4,3)*pow(x5,3) + 3*pow(x4,2)*pow(x5,4) - 3*x4*pow(x5,5) + pow(x5,6))
+
+      elif (deg == 2): return (-3*c4*x3*pow(x4,2)*x5 + 6*c4*x3*x4*pow(x5,2) - 3*c4*x3*pow(x5,3) + 3*c4*pow(x4,2)*pow(x5,2) - 6*c4*x4*pow(x5,3) + 3*c4*pow(x5,4) + 3*c5*x2*x3*pow(x4,2) - 3*c5*x2*x3*x4*x5 - 3*c5*x2*x4*pow(x5,2) + 3*c5*x2*pow(x5,3) - 3*c5*x3*x4*pow(x5,2) + 3*c5*x3*pow(x5,3) - 3*c5*pow(x4,2)*pow(x5,2) + 9*c5*x4*pow(x5,3) - 6*c5*pow(x5,4) - 3*c6*x2*pow(x3,2)*x4 - 3*c6*x2*x3*pow(x4,2) + 9*c6*x2*x3*x4*x5 - 3*c6*x2*pow(x5,3) + 3*c6*pow(x3,2)*x4*x5 + 3*c6*x3*pow(x4,2)*x5 - 9*c6*x3*x4*pow(x5,2) + 3*c6*pow(x5,4) + 3*c7*x2*pow(x3,2)*x4 - 6*c7*x2*x3*x4*x5 + 3*c7*x2*x4*pow(x5,2) - 3*c7*pow(x3,2)*x4*x5 + 6*c7*x3*x4*pow(x5,2) - 3*c7*x4*pow(x5,3))/(x2*pow(x3,2)*pow(x4,3) - 3*x2*pow(x3,2)*pow(x4,2)*x5 + 3*x2*pow(x3,2)*x4*pow(x5,2) - x2*pow(x3,2)*pow(x5,3) - 2*x2*x3*pow(x4,3)*x5 + 6*x2*x3*pow(x4,2)*pow(x5,2) - 6*x2*x3*x4*pow(x5,3) + 2*x2*x3*pow(x5,4) + x2*pow(x4,3)*pow(x5,2) - 3*x2*pow(x4,2)*pow(x5,3) + 3*x2*x4*pow(x5,4) - x2*pow(x5,5) - pow(x3,2)*pow(x4,3)*x5 + 3*pow(x3,2)*pow(x4,2)*pow(x5,2) - 3*pow(x3,2)*x4*pow(x5,3) + pow(x3,2)*pow(x5,4) + 2*x3*pow(x4,3)*pow(x5,2) - 6*x3*pow(x4,2)*pow(x5,3) + 6*x3*x4*pow(x5,4) - 2*x3*pow(x5,5) - pow(x4,3)*pow(x5,3) + 3*pow(x4,2)*pow(x5,4) - 3*x4*pow(x5,5) + pow(x5,6))
+
+      elif (deg == 3): return c4/(x2*x3*x4 - x2*x3*x5 - x2*x4*x5 + x2*pow(x5,2) - x3*x4*x5 + x3*pow(x5,2) + x4*pow(x5,2) - pow(x5,3)) - c5/(x2*x3*x4 - x2*x3*x5 - x2*x4*x5 + x2*pow(x5,2) - x3*x4*x5 + x3*pow(x5,2) + x4*pow(x5,2) - pow(x5,3)) - c5/(pow(x3,2)*x4 - pow(x3,2)*x5 - 2*x3*x4*x5 + 2*x3*pow(x5,2) + x4*pow(x5,2) - pow(x5,3)) - c5/(x3*pow(x4,2) - 2*x3*x4*x5 + x3*pow(x5,2) - pow(x4,2)*x5 + 2*x4*pow(x5,2) - pow(x5,3)) + c6/(pow(x3,2)*x4 - pow(x3,2)*x5 - 2*x3*x4*x5 + 2*x3*pow(x5,2) + x4*pow(x5,2) - pow(x5,3)) + c6/(x3*pow(x4,2) - 2*x3*x4*x5 + x3*pow(x5,2) - pow(x4,2)*x5 + 2*x4*pow(x5,2) - pow(x5,3)) + c6/(pow(x4,3) - 3*pow(x4,2)*x5 + 3*x4*pow(x5,2) - pow(x5,3)) - c7/(pow(x4,3) - 3*pow(x4,2)*x5 + 3*x4*pow(x5,2) - pow(x5,3))
+
+def randomise_splines():
+
+   for year in range(2):
+      for trig in range(2):
+         randomvary(spl_centers_cat(year,trig),spl_centers_mod_cat(year,trig),spl_diag_tools_cat(year,trig))
+         for ibin in range(5):
+            for deg in range(4): a_spl_dict_cat(year,trig)[ibin][deg] = spl_coef_bin_deg(ibin,deg,spl_centers_mod_cat(year,trig))
+
+def DoCUDAFit(data_,params_,blinding_,wide_window_,var_nw_,minos_,output_file_name_,randomize_c_mass_,randomize_nw_,repeat_fit_for_nw_syst_,nw_syst_N_iterations_,repeat_fit_for_spline_syst_,spline_syst_N_iterations_,apply_dataMC_corr_):
+
+   print "\n#####################################################################"
+   print " P R E P A R I N G   C U D A   F R A M E W O R K"
+   print "#####################################################################\n"
+
+   import pycuda.autoinit
+   import pycuda.cumath
+   import pycuda.driver as cudriver
+   import pycuda.gpuarray as gpuarray
+   from iminuit import Minuit
+   from ModelBricks import Parameter, Free, Cat, ParamBox, cuRead
+   from tools import plt
+   from timeit import default_timer as timer
+   import uncertainties
+   import uncertainties.umath as umath
+
+   mintnpoints = 500
+   mintnpoints2 = mintnpoints*mintnpoints
+   if wide_window_: minthlimit = mHlimit
+   else: minthlimit = 1050.
+   mintarray = np.ones(mintnpoints2).astype(np.float64)
+
+   nindnws = 336
+   nindnws2 = nindnws*nindnws
+
+   block_size_maxmpdf = 500
+   block_size_mint = 510
+   block_size_nw = 6*85
+   block_size_nwcov = 500
+   block_size_physweights = 6*40
+   block_size_fit = 12*21
+   THR = 1e06
+
+   paramnames = []
+   for par in params_: paramnames.append(par.GetName())
+
+   def getGrid_maxmpdf():
+      Nbunch = mintnpoints2 * 1. / block_size_maxmpdf
+      if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
+      else : Nbunch = int(Nbunch)
+      return  (Nbunch,1,1)
+
+   def getGrid_mint():
+      Nbunch = mintnpoints2 * 1. / block_size_mint
+      if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
+      else : Nbunch = int(Nbunch)
+      return  (Nbunch,1,1)
+
+   def getGrid_nw(thiscat):
+      Nbunch = thiscat.NMCevts *1. / block_size_nw
+      if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
+      else : Nbunch = int(Nbunch)
+      return  (Nbunch,1,1)
+
+   def getGrid_nwcov():
+      Nbunch = nindnws2 * 1. / block_size_nwcov
+      if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
+      else : Nbunch = int(Nbunch)
+      return  (Nbunch,1,1)
+
+   def getGrid_physweights(thiscat):
+      Nbunch = thiscat.NMCevts *1. / block_size_physweights
+      if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
+      else : Nbunch = int(Nbunch)
+      return  (Nbunch,1,1)
+
+   def getGrid_fit(thiscat):
+      Nbunch = thiscat.Nevts *1. / block_size_fit
+      print "thiscat.Nevts, Nbunch = ", thiscat.Nevts, Nbunch
+      if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
+      else : Nbunch = int(Nbunch)
+      return  (Nbunch,1,1)
+
+   block_maxmpdf = (block_size_maxmpdf,1,1)
+   grid_maxmpdf = getGrid_maxmpdf()
+   block_mint = (block_size_mint,1,1)
+   grid_mint = getGrid_mint()
+   block_nwcov = (block_size_nwcov,1,1)
+   grid_nwcov = getGrid_nwcov()
+
+   c_mass_centers = np.array([-0.29994255, -0.15854387, -0.12167263, -0.06586275]).astype(np.float64)
+   c_mass_cov_array = np.array([[0.0003947516243460034, -7.661577933574582e-05, 0.00011979980192447234, -5.0500702593427645e-05], [-7.661577933574582e-05, 0.0003759673751610742, -7.33894853808996e-05, 0.00016748362866758049], [0.00011979980192447234, -7.33894853808996e-05, 0.00023399128961875884, -4.587884618593318e-05], [-5.0500702593427645e-05, 0.00016748362866758049, -4.587884618593318e-05, 0.000264629682495723]])
+   c_mass_diag_tools = diagonalise(c_mass_cov_array)
+   c_mass_centers_mod = np.ones(4).astype(np.float64)
+
+   print '\nTranslating parameters ...'
+   Params = []
+   for par in params_:
+      Params.append(converted_parameter(par,blinding_))
+
+   print '\nCompiling CUDA PDF ...'
+   mod = cuRead("../../src/TimeDependent/Bs2KpiKpiTDPDF.cu", no_extern_c = True)
+   CUDA_pdf_initializer = mod.get_function("initialize")
+   CUDA_pdf = mod.get_function("evaluate")
+   CUDA_max_mpdf = mod.get_function("find_max_mass_pdf")
+   CUDA_int_mpdf = mod.get_function("compute_mass_integral")
+   CUDA_compute_mint_array = mod.get_function("compute_mint_array")
+   CUDA_set_mass_params = mod.get_function("set_mass_params")
+   CUDA_set_mass_integrals = mod.get_function("set_mass_integrals")
+   CUDA_compute_nw = mod.get_function("compute_nw")
+   CUDA_set_nw_val = mod.get_function("set_nw_val")
+   CUDA_set_spline_coefs = mod.get_function("set_spline_coefs")
+   CUDA_compute_nwcov = mod.get_function("compute_nwcov")
+   CUDA_compute_phys_weight = mod.get_function("compute_phys_weight")
+
+   print '\nConverting datasets ...'
+   data_arraylist = create_data_arrays(data_)
+   if wide_window_: MCdatalist = [MCdata_2011_L0TIS_wide,MCdata_2011_L0noTIS_wide,MCdata_2012_L0TIS_wide,MCdata_2012_L0noTIS_wide]
+   else: MCdatalist = [MCdata_2011_L0TIS_narrow,MCdata_2011_L0noTIS_narrow,MCdata_2012_L0TIS_narrow,MCdata_2012_L0noTIS_narrow]
+   MCdata_arraylist = create_MCdata_arrays(MCdatalist)
+
+   print '\nCreating categories ...'
+   cat_name_list = ['11L0TIS','11L0noTIS','12L0TIS','12L0noTIS']
+   cat_opt_list = [(0,0),(0,1),(1,0),(1,1)]
+   options_arraylist = []
+   options_arraylist.append(create_param_list('options_11L0TIS_list'))
+   options_arraylist.append(create_param_list('options_11L0noTIS_list'))
+   options_arraylist.append(create_param_list('options_12L0TIS_list'))
+   options_arraylist.append(create_param_list('options_12L0noTIS_list'))
+   cats = []
+   for i in range(4):
+      thiscat = Cat(cat_name_list[i], data_arraylist[i], getN = True)
+      thiscat.year = cat_opt_list[i][0]
+      thiscat.trig = cat_opt_list[i][1]
+      thiscat.model_options = gpuarray.to_gpu(options_arraylist[i])
+      thiscat.MCdata = MCdata_arraylist[i]
+      thiscat.corrMCdata = (thiscat.MCdata).copy()
+      thiscat.NMCevts = int(thiscat.MCdata.size/6.)
+      thiscat.nwevout = np.ones(thiscat.NMCevts).astype(np.float64)
+      thiscat.nwset = np.ones(380).astype(np.float64)
+      thiscat.nwsetred = np.ones(nindnws).astype(np.float64)
+      thiscat.nwcov = np.ones([nindnws,nindnws]).astype(np.float64)
+      thiscat.nwsetmodred = np.ones(nindnws).astype(np.float64)
+      thiscat.nwsetmod = np.ones(380).astype(np.float64)
+      thiscat.MCphysweights = np.ones(thiscat.NMCevts).astype(np.float64)
+      thiscat.block_nw = (block_size_nw,1,1)
+      thiscat.grid_nw = getGrid_nw(thiscat)
+      thiscat.block_physweights = (block_size_physweights,1,1)
+      thiscat.grid_physweights = getGrid_physweights(thiscat)
+      thiscat.block_fit = (block_size_fit,1,1)
+      thiscat.grid_fit = getGrid_fit(thiscat)
+      cats.append(thiscat)
+
+   def my_getSumLL_large(cat): return gpuarray.sum(getattr(cat,"Probs"))
+   def my_getSumLL_short(cat): return np.sum(getattr(cat,"Probs").get())
+   def mySum1(thing): return np.float64(sum(thing))
+   def mySum2(thing): return np.float64(sum(thing).get())
+
+   def ctrt_fun_1(x,mu,sigma):
+      return -(x-mu)*(x-mu)/(2.*sigma*sigma)
+
+   def ctrt_fun_2(x_a,x_b,mu_a,mu_b,sigma_a,sigma_b,rho):
+      return -1./(2.*(1-rho*rho))*((x_a-mu_a)*(x_a-mu_a)/sigma_a/sigma_a-2.*rho*(x_a-mu_a)*(x_b-mu_b)/sigma_a/sigma_b+(x_b-mu_b)*(x_b-mu_b)/sigma_b/sigma_b)
+
+   check = np.ones(3).astype(np.float64)
+
+   def print_llprof(mngr,par_name):
+      print 'Obtaining likelihood profile for parameter '+par_name+' ...'
+      num_bins = 30
+      xaxis, yaxis, migrstat = mngr.fit.draw_mnprofile(par_name+'_cu',subtract_min=True,bins=num_bins)
+      gr = ROOT.TGraph(num_bins,xaxis,yaxis)
+      gr.SetLineColor(kRed)
+      gr.GetXaxis().SetTitle(par_name_dict[par_name])
+      gr.GetYaxis().SetTitle('-2 #Delta lnL')
+      c = ROOT.TCanvas('c','c')
+      gr.Draw('ac')
+      c.Print('profile_'+par_name+'.root')
+
+   class CUDAModel(ParamBox):
+
+      def __init__(self, pars, cats):
+         ParamBox.__init__(self, pars, cats)
+         sizes = []
+         for k in cats: sizes.append(k.Nevts)
+         if max(sizes) > THR:
+            self.getSumLL = my_getSumLL_large
+            self.mySum = mySum2
+         else:
+            self.getSumLL = my_getSumLL_short
+            self.mySum = mySum1
+         self.nw_computed = 0
+         self.pdf = CUDA_pdf
+         self.set_mass_params = CUDA_set_mass_params
+         self.set_mass_integrals = CUDA_set_mass_integrals
+         self.max_mpdf = CUDA_max_mpdf
+         self.int_mpdf = CUDA_int_mpdf
+         self.compute_mint_array = CUDA_compute_mint_array
+         self.compute_nw = CUDA_compute_nw
+         self.compute_nwcov = CUDA_compute_nwcov
+         self.compute_phys_weight = CUDA_compute_phys_weight
+         self.set_nw_val = CUDA_set_nw_val
+         self.set_spline_coefs = CUDA_set_spline_coefs
+         self.re_amps_list_cu = create_param_list("re_amps_list")
+         self.dirCP_asyms_list_cu = create_param_list("dirCP_asyms_list")
+         self.im_amps_list_cu = create_param_list("im_amps_list")
+         self.weak_phases_list_cu = create_param_list("weak_phases_list")
+         self.mixing_params_list_cu = create_param_list("mixing_params_list")
+         self.calib_params_list_cu = create_param_list("calib_params_list")
+         self.mass_integrals_list_cu = create_param_list('mass_integrals_11L0TIS_list',numparams = 9)
+         CUDA_pdf_initializer(block = (1,1,1))
+         if apply_dataMC_corr_: self.step_counter = 0
+
+      def createFit(self):
+         config = {}
+         for par in self.params: config.update(par.getSettings())
+         self.fit = Minuit(self, errordef=1, **config)
+
+      def __call__(self,*args):
+
+         if apply_dataMC_corr_:
+            self.step_counter += 1
+            print 'Minimisation iteration #'+str(self.step_counter)
+
+         chi2 = np.float64(0.)
+         N = self.dc
+
+         for [idx,ival] in param_list_updates("re_amps_list",paramnames,args_ = args,N_ = N,blinding = blinding_): self.re_amps_list_cu[idx] = ival
+         for [idx,ival] in param_list_updates("dirCP_asyms_list",paramnames,args_ = args,N_ = N,blinding = blinding_): self.dirCP_asyms_list_cu[idx] = ival
+         for [idx,ival] in param_list_updates("im_amps_list",paramnames,args_ = args,N_ = N,blinding = blinding_): self.im_amps_list_cu[idx] = ival
+         for [idx,ival] in param_list_updates("weak_phases_list",paramnames,args_ = args,N_ = N,blinding = blinding_): self.weak_phases_list_cu[idx] = ival
+         for [idx,ival] in param_list_updates("mixing_params_list",paramnames,args_ = args,N_ = N,blinding = blinding_): self.mixing_params_list_cu[idx] = ival
+         for [idx,ival] in param_list_updates("calib_params_list",paramnames,args_ = args,N_ = N,blinding = blinding_): self.calib_params_list_cu[idx] = ival
+
+         if var_nw_ or (not self.nw_computed):
+
+            # Randomize c_mass_swave parameters (if needed).
+            if var_nw_ == 0 and self.nw_computed == 0 and randomize_c_mass_ == 1:
+               randomvary(c_mass_centers,c_mass_centers_mod,c_mass_diag_tools)
+               self.calib_params_list_cu[22] = c_mass_centers_mod[0]
+               self.calib_params_list_cu[23] = c_mass_centers_mod[1]
+               self.calib_params_list_cu[24] = c_mass_centers_mod[2]
+               self.calib_params_list_cu[25] = c_mass_centers_mod[3]
+
+            # Compute normalisation mass integrals.
+            self.set_mass_params(gpuarray.to_gpu(self.calib_params_list_cu),block = (1,1,1))
+            for mpdfid in range(9):
+               self.compute_mint_array(np.int32(mpdfid),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu[mpdfid] = sum(mintarray)
+            self.set_mass_integrals(gpuarray.to_gpu(self.mass_integrals_list_cu),block = (1,1,1))
+
+            # Perform data/MC reweighting to compute the normalisation weights (if needed).
+            if apply_dataMC_corr_:
+               for cat in self.cats:
+                  self.compute_phys_weight(gpuarray.to_gpu(cat.MCdata),cudriver.Out(cat.MCphysweights),gpuarray.to_gpu(self.re_amps_list_cu),gpuarray.to_gpu(self.dirCP_asyms_list_cu),gpuarray.to_gpu(self.im_amps_list_cu),gpuarray.to_gpu(self.weak_phases_list_cu),gpuarray.to_gpu(self.mixing_params_list_cu),gpuarray.to_gpu(self.calib_params_list_cu),gpuarray.to_gpu(self.mass_integrals_list_cu),np.int32(cat.NMCevts),block = cat.block_physweights,grid = cat.grid_physweights)
+                  for iev in range(cat.NMCevts): rew_MC_wi_list[cat.year][cat.trig][iev] = cat.MCphysweights[iev]
+               reweight_MC_samples()
+               for cat in self.cats:
+                  weights_ = rew_elements[4][cat.year][cat.trig]
+                  norm_ = float(cat.NMCevts)/sum(weights_)
+                  for iev in range(cat.NMCevts): cat.corrMCdata[iev*6+5] = cat.MCdata[iev*6+5]*norm_*weights_[iev]
+
+            # Compute normalisation weights.
+            for cat in self.cats:
+               for inw in range(380):
+                  j1_aux,j2_aux,h_aux,j1p_aux,j2p_aux,hp_aux,part_aux = extindex(inw)
+                  if (not apply_dataMC_corr_): MCdata_ = gpuarray.to_gpu(cat.MCdata)
+                  else: MCdata_ = gpuarray.to_gpu(cat.corrMCdata)
+                  self.compute_nw(MCdata_,np.int32(j1_aux),np.int32(j2_aux),np.int32(h_aux),np.int32(j1p_aux),np.int32(j2p_aux),np.int32(hp_aux),np.int32(part_aux),np.int32(cat.NMCevts),cudriver.Out(cat.nwevout),block = cat.block_nw,grid = cat.grid_nw)
+                  cat.nwset[inw] = sum(cat.nwevout)
+                  self.set_nw_val(np.float64(cat.nwset[inw]),np.int32(cat.year),np.int32(cat.trig),np.int32(inw),block = (1,1,1))
+
+               # Randomise normalisation weights (if needed).
+               if var_nw_ == 0 and self.nw_computed == 0 and randomize_nw_ == 1:
+                  nwevoutlist = []
+                  for inw in range(nindnws):
+                     inw_instance = dict_nw_find_example[inw]
+                     cat.nwsetred[inw] = cat.nwset[inw_instance]
+                     j1_aux,j2_aux,h_aux,j1p_aux,j2p_aux,hp_aux,part_aux = extindex(inw_instance)
+                     self.compute_nw(gpuarray.to_gpu(cat.MCdata),np.int32(j1_aux),np.int32(j2_aux),np.int32(h_aux),np.int32(j1p_aux),np.int32(j2p_aux),np.int32(hp_aux),np.int32(part_aux),np.int32(cat.NMCevts),cudriver.Out(cat.nwevout),block = cat.block_nw,grid = cat.grid_nw)
+                     nwevoutlist += list(cat.nwevout)
+                  nwevoutlist_array = np.array(nwevoutlist).astype(np.float64)
+                  self.compute_nwcov(gpuarray.to_gpu(nwevoutlist_array),np.int32(cat.NMCevts),cudriver.Out(cat.nwcov),block = block_nwcov,grid = grid_nwcov)
+                  nw_diag_tools = diagonalise(cat.nwcov)
+                  randomvary(cat.nwsetred,cat.nwsetmodred,nw_diag_tools)
+                  nwsetmodred_expanded = [0.]+list(cat.nwsetmodred)
+                  for inw in range(380):
+                     cat.nwsetmod[inw] = nwsetmodred_expanded[dict_nw_find_value[inw]]
+                     self.set_nw_val(np.float64(cat.nwsetmod[inw]),np.int32(cat.year),np.int32(cat.trig),np.int32(inw),block = (1,1,1))
+
+            self.nw_computed = 1
+
+         for cat in self.cats: self.pdf(cat.data,cat.Probs,cudriver.Out(check),cat.model_options,gpuarray.to_gpu(self.re_amps_list_cu),gpuarray.to_gpu(self.dirCP_asyms_list_cu),gpuarray.to_gpu(self.im_amps_list_cu),gpuarray.to_gpu(self.weak_phases_list_cu),gpuarray.to_gpu(self.mixing_params_list_cu),gpuarray.to_gpu(self.calib_params_list_cu),gpuarray.to_gpu(self.mass_integrals_list_cu),cat.Nevts,block = cat.block_fit,grid = cat.grid_fit)
+
+         LL = map(self.getSumLL, self.cats)
+         LLsum = self.mySum(LL)
+         LLsum += ctrt_fun_1(np.float64(args[N["Dp0half_SSK_cu"]]),-0.0079,0.0014)
+         LLsum += ctrt_fun_1(np.float64(args[N["Dp1half_SSK_cu"]]),-0.022,0.023)
+         LLsum += ctrt_fun_1(np.float64(args[N["Dp0half_OS_cu"]]),0.007,0.0006)
+         LLsum += ctrt_fun_1(np.float64(args[N["Dp1half_OS_cu"]]),0.033,0.006)
+         LLsum += ctrt_fun_2(np.float64(args[N["gamma_Bs_cu"]]),np.float64(args[N["delta_gamma_Bs_cu"]]),0.6643,0.083,0.0020,0.006,-0.217)
+         LLsum += ctrt_fun_2(np.float64(args[N["p0metac_SSK_cu"]]),np.float64(args[N["p1_SSK_cu"]]),0.0067,0.925,0.0052,0.085,0.)
+         LLsum += ctrt_fun_2(np.float64(args[N["p0metac_OS_cu"]]),np.float64(args[N["p1_OS_cu"]]),0.0062,0.982,0.0044,0.035,0.14)
+         if wide_window_:
+            LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2011_cu"]]),np.float64(args[N["tres_p1_2011_cu"]]),0.0347684584237,1.15385576866,0.000243952773379,0.0495706722963,0.37497)
+            LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2012_cu"]]),np.float64(args[N["tres_p1_2012_cu"]]),0.0365026605725,1.26918356746,0.000250855432766,0.0528387031703,0.38357)
+            #LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2011_cu"]]),np.float64(args[N["tres_p1_2011_cu"]]),1.23684922984,-3.38991636679,0.00887561899844,1.85675974262,0.0075169)
+            #LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2012_cu"]]),np.float64(args[N["tres_p1_2012_cu"]]),1.29571069485,-0.532072189129,0.00958670172751,2.05293164567,0.074048)
+         else:
+            LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2011_cu"]]),np.float64(args[N["tres_p1_2011_cu"]]),0.0352455552308,1.19983857817,0.000337800233389,0.0618110188611,0.39061)
+            LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2012_cu"]]),np.float64(args[N["tres_p1_2012_cu"]]),0.0366294040913,1.22214099483,0.000296200532078,0.059802993325,0.39251)
+
+         return -2*LLsum
+
+   start = timer()
+
+   print '\nConstructing fitting framework ...'
+   manager = CUDAModel(Params, cats)
+
+   if repeat_fit_for_nw_syst_:
+
+      #fnwsyst = open('nwsystfits.dat','w')
+      fnwsyst = open('cmasssystfits.dat','w')
+      fnwsyst.close()
+
+      for iexp in range(nw_syst_N_iterations_):
+
+         print 'Experiment #' + str(iexp+1)
+
+         manager.createFit()
+         manager.nw_computed = 0
+         manager.fit.print_level = 0
+         manager.fit.migrad()
+         manager.fit.hesse()
+      
+         num_params = len(paramnames)
+         cov_matrix = np.ones((num_params,num_params))
+         central_vals = []
+         for i in range(num_params):
+            central_vals.append(manager.fit.values[paramnames[i]+'_cu'])
+            for j in range(num_params): cov_matrix[i][j] = manager.fit.covariance[(paramnames[i]+'_cu',paramnames[j]+'_cu')]
+         par_tuple = uncertainties.correlated_values(central_vals,cov_matrix)
+         upar = {}
+         for i in range(num_params): upar[paramnames[i]] = par_tuple[i]
+         upar['reA110'] = 1.
+         upar['imA110'] = 0.
+         for par in max_strong_params:
+            if par not in paramnames: upar[par] = 0.
+         polarparamnames = []
+         for par in polar_namepairs_dict.keys():
+            if polar_namepairs_dict[par] in paramnames:
+               par_temp = eval(polar_params_dict[par])
+               if par_temp.std_dev > 1e-10:
+                  polarparamnames.append(par)
+                  upar[par] = par_temp
+
+         output_string = ''
+         for par in paramnames+polarparamnames: output_string += str(upar[par].nominal_value-par_result_varnw_dict[par][0]) + ' '
+         output_string += '\n'
+         #fnwsyst = open('nwsystfits.dat','a')
+         fnwsyst = open('cmasssystfits.dat','a')
+         fnwsyst.write(output_string)
+         fnwsyst.close()
+
+      print '\nINFO:',int((timer() - start)/60),'min needed to do the study.'
+
+   elif repeat_fit_for_spline_syst_:
+
+      fsplinesyst = open('splinesystfits.dat','w')
+      fsplinesyst.close()
+
+      for iexp in range(spline_syst_N_iterations_):
+
+         print 'Experiment #' + str(iexp+1)
+
+         randomise_splines()
+         manager.set_spline_coefs(gpuarray.to_gpu(a_spl_11L0TIS_dict),gpuarray.to_gpu(a_spl_11L0noTIS_dict),gpuarray.to_gpu(a_spl_12L0TIS_dict),gpuarray.to_gpu(a_spl_12L0noTIS_dict),block = (1,1,1))
+         manager.createFit()
+         manager.nw_computed = 0
+         manager.fit.print_level = 0
+         manager.fit.migrad()
+         manager.fit.hesse()
+      
+         num_params = len(paramnames)
+         cov_matrix = np.ones((num_params,num_params))
+         central_vals = []
+         for i in range(num_params):
+            central_vals.append(manager.fit.values[paramnames[i]+'_cu'])
+            for j in range(num_params): cov_matrix[i][j] = manager.fit.covariance[(paramnames[i]+'_cu',paramnames[j]+'_cu')]
+         par_tuple = uncertainties.correlated_values(central_vals,cov_matrix)
+         upar = {}
+         for i in range(num_params): upar[paramnames[i]] = par_tuple[i]
+         upar['reA110'] = 1.
+         upar['imA110'] = 0.
+         for par in max_strong_params:
+            if par not in paramnames: upar[par] = 0.
+         polarparamnames = []
+         for par in polar_namepairs_dict.keys():
+            if polar_namepairs_dict[par] in paramnames:
+               par_temp = eval(polar_params_dict[par])
+               if par_temp.std_dev > 1e-10:
+                  polarparamnames.append(par)
+                  upar[par] = par_temp
+
+         output_string = ''
+         for par in paramnames+polarparamnames: output_string += str(upar[par].nominal_value-par_result_varnw_dict[par][0]) + ' '
+         output_string += '\n'
+         fsplinesyst = open('splinesystfits.dat','a')
+         fsplinesyst.write(output_string)
+         fsplinesyst.close()
+
+      print '\nINFO:',int((timer() - start)/60),'min needed to do the study.'
+
+   else:
+
+      manager.createFit()
+      manager.fit.migrad()
+      manager.fit.hesse()
+      if minos_: manager.fit.minos()
+   
+      num_params = len(paramnames)
+      cov_matrix = np.ones((num_params,num_params))
+      central_vals = []
+      for i in range(num_params):
+         central_vals.append(manager.fit.values[paramnames[i]+'_cu'])
+         for j in range(num_params): cov_matrix[i][j] = manager.fit.covariance[(paramnames[i]+'_cu',paramnames[j]+'_cu')]
+      par_tuple = uncertainties.correlated_values(central_vals,cov_matrix)
+      upar = {}
+      for i in range(num_params): upar[paramnames[i]] = par_tuple[i]
+      upar['reA110'] = 1.
+      upar['imA110'] = 0.
+      for par in max_strong_params:
+         if par not in paramnames: upar[par] = 0.
+      polarparamnames = []
+      for par in polar_namepairs_dict.keys():
+         if polar_namepairs_dict[par] in paramnames:
+            par_temp = eval(polar_params_dict[par])
+            if par_temp.std_dev > 1e-10:
+               polarparamnames.append(par)
+               upar[par] = par_temp
+
+      fitprint2LaTeX_CUDA(upar,wide_window_)
+
+      print '\nOld format swave parameters:\n'
+      upar_oldformat = {}
+      upar_oldformat['f_sminus'] = eval(old_swave_amps_dict['f_sminus'])
+      upar_oldformat['f_splus'] = eval(old_swave_amps_dict['f_splus'])
+      upar_oldformat['deltaA11perpAsplus'] = eval(old_swave_amps_dict['deltaA11perpAsplus'])
+      upar_oldformat['deltaAsminus'] = eval(old_swave_amps_dict['deltaAsminus'])
+      print stringline_CUDA('f_sminus',upar_oldformat)
+      print stringline_CUDA('f_splus',upar_oldformat)
+      print stringline_CUDA('deltaA11perpAsplus',upar_oldformat)
+      print stringline_CUDA('deltaAsminus',upar_oldformat)
+      print '\n'
+   
+      for par in params_:
+         if (("DCP" in par.GetName()) or ("phi" in par.GetName())) and blinding_: par.setVal(upar[par.GetName()].nominal_value-blinding_strings[par.GetName()])
+         else: par.setVal(upar[par.GetName()].nominal_value)
+   
+      for par in params_:
+         if ((not "DCP" in par.GetName()) and (not "phi" in par.GetName())): print '\t\t'+par.GetName()+'.setVal('+str(par.getVal())+')'
+      print ''
+   
+      if output_file_name_ != "":
+         par_result_dict = {}
+         for par in paramnames+polarparamnames: par_result_dict[par] = (upar[par].nominal_value,upar[par].std_dev,par_name_dict[par].replace('#','\\'))
+         fresult = open('_'+output_file_name_+'.py','w')
+         fresult.write("par_result_dict = "+str(par_result_dict))
+         fresult.close()
+         print 'Fit results saved in _'+output_file_name_+'.py'
+   
+      print '\nINFO:',int((timer() - start)/60),'min needed to do the fit.'
+
+      #for par in ['phis','DCP','delta_m_Bs','reA11par','reA11perp','imA11par','imA11perp']: print_llprof(manager,par)
+
+      """extravector_pars = ['c5_mass_swave','c6_mass_swave','c7_mass_swave','c8_mass_swave']
+      extravector_centers = np.ones(4).astype(np.float64)
+      for i in range(4): extravector_centers[i] = manager.fit.values[extravector_pars[i]+'_cu']
+      print extravector_centers
+      extravector_cov = []
+      for ipar in range(4):
+         extravector_cov.append([])
+         for jpar in range(4): extravector_cov[ipar].append(manager.fit.covariance[(extravector_pars[ipar]+'_cu',extravector_pars[jpar]+'_cu')])
+      print extravector_cov"""
+   
+      """c_mass_pars = ['c1_mass_swave','c2_mass_swave','c3_mass_swave','c4_mass_swave']
+      c_mass_centers = np.ones(4).astype(np.float64)
+      for i in range(4): c_mass_centers[i] = manager.fit.values[c_mass_pars[i]+'_cu']
+      print c_mass_centers
+      c_mass_cov = []
+      for ipar in range(4):
+         c_mass_cov.append([])
+         for jpar in range(4): c_mass_cov[ipar].append(manager.fit.covariance[(c_mass_pars[ipar]+'_cu',c_mass_pars[jpar]+'_cu')])
+      print c_mass_cov
+      c_mass_cov_array = np.array(c_mass_cov)
+      diag_tools = diagonalise(c_mass_cov_array)
+      c_mass_centers_mod = np.ones(4).astype(np.float64)
+      for i in range(6):
+         randomvary(c_mass_centers,c_mass_centers_mod,diag_tools)
+         print c_mass_centers_mod"""
+   
+      """h_phis = ROOT.TH1F("h_phis","h_phis",100,-5,5)
+      for par in ['dphi_SS','dphi_SV','dphi_VS','dphi_ST','dphi_TS','dphi_VT','dphi_TV','dphi_TT']:
+         d_phis = (upar[par].nominal_value-blinding_strings[par])/upar[par].std_dev
+         print d_phis
+         h_phis.Fill(d_phis)
+   
+      c_dCPV = ROOT.TCanvas("c_dCPV","c_dCPV")
+      h_phis.Draw()
+      c_dCPV.Print("dCPV.pdf")"""
+
+
+def DoCUDAToy(N_exps,N_events,params_,wide_window_,output_tag,randomize_c_mass_,change_dataset_,massang_reso_smear_,mod_and_refit_,add_extra_vector_):
+
+   print "\n#####################################################################"
+   print " P R E P A R I N G   C U D A   F R A M E W O R K"
+   print "#####################################################################\n"
+
+   import pycuda.autoinit
+   import pycuda.cumath
+   import pycuda.driver as cudriver
+   import pycuda.gpuarray as gpuarray
+   from iminuit import Minuit
+   from ModelBricks import Parameter, Free, Cat, ParamBox, cuRead
+   from tools import plt
+   from timeit import default_timer as timer
+   import uncertainties
+   import uncertainties.umath as umath
+
+   ROOT.RooRandom.randomGenerator().SetSeed(0)
+
+   mintnpoints = 500
+   mintnpoints2 = mintnpoints*mintnpoints
+   if wide_window_: minthlimit = mHlimit
+   else: minthlimit = 1050.
+   mintarray = np.ones(mintnpoints2).astype(np.float64)
+
+   for par in params_:
+      if "DCP" in par.GetName(): par.setVal(0.)
+      elif "phi" in par.GetName(): par.setVal(0.)
+
+   block_size_mint = 300
+   block_size_fit = 12*21
+   THR = 1e06
+
+   paramnames = []
+   for par in params_: paramnames.append(par.GetName())
+
+   def getGrid_mint():
+      Nbunch = mintnpoints2 * 1. / block_size_mint
+      if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
+      else : Nbunch = int(Nbunch)
+      return  (Nbunch,1,1)
+
+   def getGrid_fit(thiscat):
+      Nbunch = thiscat.Nevts *1. / block_size_fit
+      print "thiscat.Nevts, Nbunch = ", thiscat.Nevts, Nbunch
+      if Nbunch > int(Nbunch): Nbunch = int(Nbunch) +1
+      else : Nbunch = int(Nbunch)
+      return  (Nbunch,1,1)
+
+   block_mint = (block_size_mint,1,1)
+   grid_mint = getGrid_mint()
+
+   c_mass_centers = np.array([-0.29994255, -0.15854387, -0.12167263, -0.06586275]).astype(np.float64)
+   c_mass_cov_array = np.array([[0.0003947516243460034, -7.661577933574582e-05, 0.00011979980192447234, -5.0500702593427645e-05], [-7.661577933574582e-05, 0.0003759673751610742, -7.33894853808996e-05, 0.00016748362866758049], [0.00011979980192447234, -7.33894853808996e-05, 0.00023399128961875884, -4.587884618593318e-05], [-5.0500702593427645e-05, 0.00016748362866758049, -4.587884618593318e-05, 0.000264629682495723]])
+   c_mass_diag_tools = diagonalise(c_mass_cov_array)
+   c_mass_centers_mod = np.ones(4).astype(np.float64)
+   if add_extra_vector_:
+      extravector_centers = np.array([-0.00201371,0.02165349,-0.05314262,0.00353231]).astype(np.float64)
+      extravector_cov_array = np.array([[4.3073642712275855e-05, 1.1547950491856877e-06, -1.4484977706626897e-05, -4.664961072975667e-05], [1.1547950491856877e-06, 4.641643659496365e-05, 3.1235334609607785e-05, -1.901960812982249e-05], [-1.4484977706626897e-05, 3.1235334609607785e-05, 5.970416321133994e-05, 1.861935511446271e-05], [-4.664961072975667e-05, -1.901960812982249e-05, 1.861935511446271e-05, 0.0001257364192569655]])
+      extravector_diag_tools = diagonalise(extravector_cov_array)
+      extravector_centers_mod = np.ones(4).astype(np.float64)
+
+   cats = []
+   gen_data = np.ones((N_events,12)).astype(np.float64)
+   thiscat = Cat("gen_cat", gen_data, getN = True)
+   thiscat.block = (block_size_fit,1,1)
+   thiscat.grid = getGrid_fit(thiscat)
+   cats.append(thiscat)
+
+   def smeardata(dataset):
+
+      def close_in_range(x,ivar):
+         if ivar in [0,1]:
+            if x<750.: return 750.
+            elif x>minthlimit: return minthlimit
+         elif ivar in [2,3]:
+            if x<-1.: return -1.
+            elif x>1.: return 1.
+         elif ivar==4:
+            if x<0.: return 0.
+            elif x>2.*pi: return 2.*pi
+         return x
+
+      massang_reso_cov_array = np.array(massang_reso_cov_list)
+      matrix_IU_array, diag_cov_array = diagonalise(massang_reso_cov_array)
+      gen_data_mod = np.ones((N_events,12)).astype(np.float64)
+      for ev in range(N_events):
+         for i in [0,1,2,3,9,10,11]: gen_data_mod[ev][i] = eval(str(dataset[ev][i]))
+         sigmadelta_list = []
+         for sigma2 in list(diag_cov_array.real): sigmadelta_list.append(np.random.normal()*sqrt(max(sigma2,0.)))
+         for i in range(5):
+            delta = massang_reso_mean_vector[i]
+            for j in range(5): delta += matrix_IU_array[i][j].real*sigmadelta_list[j]
+            gen_data_mod[ev][4+i] = close_in_range(eval(str(dataset[ev][4+i]))+delta,i)
+
+      return gpuarray.to_gpu(gen_data_mod)
+
+   print '\nTranslating parameters ...'
+   Params = []
+   for par in params_:
+      Params.append(converted_parameter(par,0))
+   if wide_window_:
+      Params.append(Parameter("m1_cu",1500, limits=(750,1600), constant = False, dtype = np.float64))
+      Params.append(Parameter("m2_cu",896, limits=(750,1600), constant = False, dtype = np.float64))
+   else:
+      Params.append(Parameter("m1_cu",896, limits=(750,1050), constant = False, dtype = np.float64))
+      Params.append(Parameter("m2_cu",896, limits=(750,1050), constant = False, dtype = np.float64))
+   Params.append(Parameter("cos1_cu",0, limits=(-1,1), constant = False, dtype = np.float64))
+   Params.append(Parameter("cos2_cu",0, limits=(-1,1), constant = False, dtype = np.float64))
+   Params.append(Parameter("phi_cu",0, limits=(0,2*pi), constant = False, dtype = np.float64))
+   Params.append(Parameter("t_cu",1, limits=(0,12), constant = False, dtype = np.float64))
+   Params.append(Parameter("terror_cu",0.04, limits=(0,0.1), constant = False, dtype = np.float64))
+   Params.append(Parameter("q_SSK_cu",0, limits=(-1,1), constant = True, dtype = np.int32))
+   Params.append(Parameter("q_OS_cu",0, limits=(-1,1), constant = True, dtype = np.int32))
+   Params.append(Parameter("eta_SSK_cu",0.3, limits=(0,0.5), constant = False, dtype = np.float64))
+   Params.append(Parameter("eta_OS_cu",0.3, limits=(0,0.5), constant = False, dtype = np.float64))
+
+   par_phys_names = []
+   for par in paramnames: par_phys_names.append(par + "_cu")
+   par_var_names = ["m1_cu","m2_cu","cos1_cu","cos2_cu","phi_cu","t_cu","terror_cu","eta_SSK_cu","eta_OS_cu"]
+   par_phys_init_vals = {}
+   for par in paramnames: par_phys_init_vals[par + "_cu"] = eval(par+'.getVal()')
+   for par in polar_namepairs_dict.keys():
+      if polar_namepairs_dict[par] in paramnames: par_phys_init_vals[par+'_cu'] = eval(init_polar_params_dict[par])
+   par_ctrt_names = ["gamma_Bs_cu","delta_gamma_Bs_cu","p0metac_SSK_cu","p0metac_OS_cu","Dp0half_SSK_cu","Dp0half_OS_cu","p1_SSK_cu","p1_OS_cu","Dp1half_SSK_cu","Dp1half_OS_cu","tres_p0_2012_cu","tres_p1_2012_cu"]
+   par_ctrt_init_vals = {}
+   toyparamnames = []
+   for par in paramnames:
+      if par not in ["tres_p0_2011","tres_p1_2011"]: toyparamnames.append(par)
+
+   print '\nCompiling CUDA PDF ...'
+   mod = cuRead("../../src/TimeDependent/Bs2KpiKpiTDPDF.cu", no_extern_c = True)
+   CUDA_initialize = mod.get_function("initialize")
+   CUDA_set_generator = mod.get_function("set_generator")
+   CUDA_max_P_eta_SSK = mod.get_function("get_max_P_eta_SSK")
+   CUDA_max_P_eta_OS = mod.get_function("get_max_P_eta_OS")
+   CUDA_evaluate_cond = mod.get_function("evaluate_CondPDF")
+   CUDA_set_mass_params = mod.get_function("set_mass_params")
+   CUDA_compute_mint_array = mod.get_function("compute_mint_array")
+   CUDA_compute_acc_mint_array = mod.get_function("compute_acc_mint_array")
+   CUDA_set_mass_integrals = mod.get_function("set_mass_integrals")
+   CUDA_set_all_mass_integrals = mod.get_function("set_all_mass_integrals")
+   CUDA_generate = mod.get_function("generateEvent")
+   CUDA_evaluate_toy = mod.get_function("evaluate_toy")
+
+   def my_getSumLL_large(cat): return gpuarray.sum(getattr(cat,"Probs"))
+   def my_getSumLL_short(cat): return np.sum(getattr(cat,"Probs").get())
+   def mySum1(thing): return np.float64(sum(thing))
+   def mySum2(thing): return np.float64(sum(thing).get())
+
+   def ctrt_fun_1(x,mu,sigma):
+      return -(x-mu)*(x-mu)/(2.*sigma*sigma)
+
+   def ctrt_fun_2(x_a,x_b,mu_a,mu_b,sigma_a,sigma_b,rho):
+      return -1./(2.*(1-rho*rho))*((x_a-mu_a)*(x_a-mu_a)/sigma_a/sigma_a-2.*rho*(x_a-mu_a)*(x_b-mu_b)/sigma_a/sigma_b+(x_b-mu_b)*(x_b-mu_b)/sigma_b/sigma_b)
+
+   class CUDAModel(ParamBox):
+
+      def __init__(self, pars, cats):
+
+         ParamBox.__init__(self, pars, cats)
+         sizes = []
+         for k in cats: sizes.append(k.Nevts)
+         if max(sizes) > THR:
+            self.getSumLL = my_getSumLL_large
+            self.mySum = mySum2
+         else:
+            self.getSumLL = my_getSumLL_short
+            self.mySum = mySum1
+
+         self.gen_step = 0
+
+         self.max_eta_SSK_pdf = np.ones(1).astype(np.float64)
+         self.max_eta_OS_pdf = np.ones(1).astype(np.float64)
+         self.get_max_SSK_eta_distr = CUDA_max_P_eta_SSK
+         self.get_max_OS_eta_distr = CUDA_max_P_eta_OS
+
+         self.max_cond_ll = gpuarray.to_gpu(np.ones(1).astype(np.float64))
+         self.max_cond_pdf = 0
+         self.pdf_cond = CUDA_evaluate_cond
+
+         self.first_fit = 1
+
+         self.set_mass_params = CUDA_set_mass_params
+         self.compute_mint_array = CUDA_compute_mint_array
+         self.compute_acc_mint_array = CUDA_compute_acc_mint_array
+         self.set_mass_integrals = CUDA_set_mass_integrals
+         self.set_all_mass_integrals = CUDA_set_all_mass_integrals
+
+         self.ev_gen = CUDA_generate
+
+         self.pdf_toy = CUDA_evaluate_toy
+
+         self.options_list_cu = create_param_list("options_list")
+         self.re_amps_list_cu = create_param_list("re_amps_list")
+         self.dirCP_asyms_list_cu = create_param_list("dirCP_asyms_list")
+         self.im_amps_list_cu = create_param_list("im_amps_list")
+         self.weak_phases_list_cu = create_param_list("weak_phases_list")
+         self.mixing_params_list_cu = create_param_list("mixing_params_list")
+         self.calib_params_list_cu = create_param_list("calib_params_list")
+         self.cond_distr_params_list_cu = create_param_list("cond_distr_params_list")
+         self.mass_integrals_list_cu = create_param_list("mass_integrals_list")
+         self.ang_integrals_list_cu = create_param_list("ang_integrals_list")
+
+         self.re_amps_list_cu_gen = create_param_list("re_amps_list")
+         self.dirCP_asyms_list_cu_gen = create_param_list("dirCP_asyms_list")
+         self.im_amps_list_cu_gen = create_param_list("im_amps_list")
+         self.weak_phases_list_cu_gen = create_param_list("weak_phases_list")
+         self.mixing_params_list_cu_gen = create_param_list("mixing_params_list")
+         self.calib_params_list_cu_gen = create_param_list("calib_params_list")
+         self.mass_integrals_list_cu_gen = create_param_list("mass_integrals_list")
+
+         self.lock_to_init(["tres_p0_2011_cu","tres_p1_2011_cu"])
+
+         CUDA_initialize(block = (1,1,1))
+         CUDA_set_generator(gpuarray.to_gpu(self.options_list_cu),gpuarray.to_gpu(self.re_amps_list_cu_gen),gpuarray.to_gpu(self.dirCP_asyms_list_cu_gen),gpuarray.to_gpu(self.im_amps_list_cu_gen),gpuarray.to_gpu(self.weak_phases_list_cu_gen),gpuarray.to_gpu(self.mixing_params_list_cu_gen),gpuarray.to_gpu(self.calib_params_list_cu_gen),gpuarray.to_gpu(self.cond_distr_params_list_cu),gpuarray.to_gpu(self.mass_integrals_list_cu_gen),gpuarray.to_gpu(self.ang_integrals_list_cu),block = (1,1,1))
+
+      def createFit(self):
+         config = {}
+         for par in self.params: config.update(par.getSettings())
+         self.fit = Minuit(self, errordef=1, **config)
+
+      def set_gen_step(self,num,q1_=0,q2_=0):
+
+         for par in par_phys_names: self.Params[par].setVal(par_phys_init_vals[par])
+         self.gen_step = num
+
+         if self.gen_step == 0:
+
+            self.calib_params_list_cu_gen[22] = c_mass_centers[0]
+            self.calib_params_list_cu_gen[23] = c_mass_centers[1]
+            self.calib_params_list_cu_gen[24] = c_mass_centers[2]
+            self.calib_params_list_cu_gen[25] = c_mass_centers[3]
+            self.calib_params_list_cu[22] = c_mass_centers[0]
+            self.calib_params_list_cu[23] = c_mass_centers[1]
+            self.calib_params_list_cu[24] = c_mass_centers[2]
+            self.calib_params_list_cu[25] = c_mass_centers[3]
+            self.calib_params_list_cu_gen[26] = 0.
+            self.calib_params_list_cu_gen[27] = 0.
+            self.calib_params_list_cu_gen[28] = 0.
+            self.calib_params_list_cu_gen[29] = 0.
+            self.calib_params_list_cu[26] = 0.
+            self.calib_params_list_cu[27] = 0.
+            self.calib_params_list_cu[28] = 0.
+            self.calib_params_list_cu[29] = 0.
+            self.set_mass_params(gpuarray.to_gpu(self.calib_params_list_cu_gen),block = (1,1,1))
+
+            for imint in range(9):
+               self.compute_mint_array(np.int32(imint),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu_gen[imint] = sum(mintarray)
+            self.set_mass_integrals(gpuarray.to_gpu(self.mass_integrals_list_cu_gen),block = (1,1,1))
+            for imint in range(30):
+               self.compute_acc_mint_array(np.int32(imint),np.int32(0),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu_gen[9+imint] = sum(mintarray)
+            for imint in range(21):
+               self.compute_acc_mint_array(np.int32(imint),np.int32(1),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu_gen[9+30+imint] = sum(mintarray)
+            self.set_all_mass_integrals(gpuarray.to_gpu(self.mass_integrals_list_cu_gen),block = (1,1,1))
+
+         if self.gen_step == 1:
+            self.Params["q_SSK_cu"].setVal(q1_)
+            self.Params["q_OS_cu"].setVal(q2_)
+            self.freeThese(par_var_names)
+            self.lock_to_init(par_phys_names)
+            self.freeThese(par_ctrt_names)
+            if q1_ == 0:
+               self.Params["eta_SSK_cu"].setVal(0.5)
+               self.lock_to_init(["eta_SSK_cu"])
+            if q2_ == 0:
+               self.Params["eta_OS_cu"].setVal(0.5)
+               self.lock_to_init(["eta_OS_cu"])
+
+         if self.gen_step == 2:
+
+            d_temp = ctrt_gamma_Bs_delta_gamma_Bs.generate(ROOT.RooArgSet(gamma_Bs,delta_gamma_Bs),1).get(0)
+            self.mixing_params_list_cu_gen[1] = d_temp.getRealValue("gamma_Bs")
+            self.mixing_params_list_cu_gen[2] = d_temp.getRealValue("delta_gamma_Bs")
+            self.calib_params_list_cu_gen[2] = ctrt_Dp0half_SSK.generate(ROOT.RooArgSet(Dp0half_SSK),1).get(0).getRealValue("Dp0half_SSK")
+            self.calib_params_list_cu_gen[3] = ctrt_Dp0half_OS.generate(ROOT.RooArgSet(Dp0half_OS),1).get(0).getRealValue("Dp0half_OS")
+            self.calib_params_list_cu_gen[6] = ctrt_Dp1half_SSK.generate(ROOT.RooArgSet(Dp1half_SSK),1).get(0).getRealValue("Dp1half_SSK")
+            self.calib_params_list_cu_gen[7] = ctrt_Dp1half_OS.generate(ROOT.RooArgSet(Dp1half_OS),1).get(0).getRealValue("Dp1half_OS")
+            d_temp = ctrt_p0metac_SSK_p1_SSK.generate(ROOT.RooArgSet(p0metac_SSK,p1_SSK),1).get(0)
+            self.calib_params_list_cu_gen[0] = d_temp.getRealValue("p0metac_SSK")
+            self.calib_params_list_cu_gen[4] = d_temp.getRealValue("p1_SSK")
+            d_temp = ctrt_p0metac_OS_p1_OS.generate(ROOT.RooArgSet(p0metac_OS,p1_OS),1).get(0)
+            self.calib_params_list_cu_gen[1] = d_temp.getRealValue("p0metac_OS")
+            self.calib_params_list_cu_gen[5] = d_temp.getRealValue("p1_OS")
+            if wide_window_: d_temp = ctrt_tres_p0_tres_p1_2012_wide.generate(ROOT.RooArgSet(tres_p0_2012,tres_p1_2012),1).get(0)
+            else: d_temp = ctrt_tres_p0_tres_p1_2012_narrow.generate(ROOT.RooArgSet(tres_p0_2012,tres_p1_2012),1).get(0)
+            self.calib_params_list_cu_gen[14] = d_temp.getRealValue("tres_p0_2012")
+            self.calib_params_list_cu_gen[15] = d_temp.getRealValue("tres_p1_2012")
+
+            par_ctrt_init_vals["gamma_Bs_cu"] = self.mixing_params_list_cu_gen[1]
+            par_ctrt_init_vals["delta_gamma_Bs_cu"] = self.mixing_params_list_cu_gen[2]
+            par_ctrt_init_vals["Dp0half_SSK_cu"] = self.calib_params_list_cu_gen[2]
+            par_ctrt_init_vals["Dp0half_OS_cu"] = self.calib_params_list_cu_gen[3]
+            par_ctrt_init_vals["Dp1half_SSK_cu"] = self.calib_params_list_cu_gen[6]
+            par_ctrt_init_vals["Dp1half_OS_cu"] = self.calib_params_list_cu_gen[7]
+            par_ctrt_init_vals["p0metac_SSK_cu"] = self.calib_params_list_cu_gen[0]
+            par_ctrt_init_vals["p1_SSK_cu"] = self.calib_params_list_cu_gen[4]
+            par_ctrt_init_vals["p0metac_OS_cu"] = self.calib_params_list_cu_gen[1]
+            par_ctrt_init_vals["p1_OS_cu"] = self.calib_params_list_cu_gen[5]
+            par_ctrt_init_vals["tres_p0_2012_cu"] = self.calib_params_list_cu_gen[14]
+            par_ctrt_init_vals["tres_p1_2012_cu"] = self.calib_params_list_cu_gen[15]
+
+            CUDA_set_generator(gpuarray.to_gpu(self.options_list_cu),gpuarray.to_gpu(self.re_amps_list_cu_gen),gpuarray.to_gpu(self.dirCP_asyms_list_cu_gen),gpuarray.to_gpu(self.im_amps_list_cu_gen),gpuarray.to_gpu(self.weak_phases_list_cu_gen),gpuarray.to_gpu(self.mixing_params_list_cu_gen),gpuarray.to_gpu(self.calib_params_list_cu_gen),gpuarray.to_gpu(self.cond_distr_params_list_cu),gpuarray.to_gpu(self.mass_integrals_list_cu_gen),gpuarray.to_gpu(self.ang_integrals_list_cu),block = (1,1,1))
+
+         if self.gen_step == 3:
+            for par in ["gamma_Bs_cu","delta_gamma_Bs_cu","Dp0half_SSK_cu","Dp0half_OS_cu","Dp1half_SSK_cu","Dp1half_OS_cu","p0metac_SSK_cu","p1_SSK_cu","p0metac_OS_cu","p1_OS_cu","tres_p0_2012_cu","tres_p1_2012_cu"]: self.Params[par].setVal(par_ctrt_init_vals[par])
+            self.freeThese(par_phys_names)
+            self.lock_to_init(par_var_names)
+            self.lock_to_init(["tres_p0_2011_cu","tres_p1_2011_cu"])
+
+            if randomize_c_mass_ == 1:
+               if self.first_fit: randomvary(c_mass_centers,c_mass_centers_mod,c_mass_diag_tools)
+               self.calib_params_list_cu[22] = c_mass_centers_mod[0]
+               self.calib_params_list_cu[23] = c_mass_centers_mod[1]
+               self.calib_params_list_cu[24] = c_mass_centers_mod[2]
+               self.calib_params_list_cu[25] = c_mass_centers_mod[3]
+            else:
+               self.calib_params_list_cu[22] = c_mass_centers[0]
+               self.calib_params_list_cu[23] = c_mass_centers[1]
+               self.calib_params_list_cu[24] = c_mass_centers[2]
+               self.calib_params_list_cu[25] = c_mass_centers[3]
+
+            if add_extra_vector_:
+               if self.first_fit:
+                  self.calib_params_list_cu[26] = extravector_centers_mod[0]
+                  self.calib_params_list_cu[27] = extravector_centers_mod[1]
+                  self.calib_params_list_cu[28] = extravector_centers_mod[2]
+                  self.calib_params_list_cu[29] = extravector_centers_mod[3]
+               else:
+                  self.calib_params_list_cu[26] = 0.
+                  self.calib_params_list_cu[27] = 0.
+                  self.calib_params_list_cu[28] = 0.
+                  self.calib_params_list_cu[29] = 0.
+
+            self.set_mass_params(gpuarray.to_gpu(self.calib_params_list_cu),block = (1,1,1))
+
+            for imint in range(9):
+               self.compute_mint_array(np.int32(imint),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu[imint] = sum(mintarray)
+            self.set_mass_integrals(gpuarray.to_gpu(self.mass_integrals_list_cu),block = (1,1,1))
+            for imint in range(30):
+               self.compute_acc_mint_array(np.int32(imint),np.int32(0),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu[9+imint] = sum(mintarray)
+            for imint in range(21):
+               self.compute_acc_mint_array(np.int32(imint),np.int32(1),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu[9+30+imint] = sum(mintarray)
+            self.set_all_mass_integrals(gpuarray.to_gpu(self.mass_integrals_list_cu),block = (1,1,1))
+
+         if self.gen_step == 4:
+
+            self.calib_params_list_cu_gen[22] = c_mass_centers[0]
+            self.calib_params_list_cu_gen[23] = c_mass_centers[1]
+            self.calib_params_list_cu_gen[24] = c_mass_centers[2]
+            self.calib_params_list_cu_gen[25] = c_mass_centers[3]
+            self.calib_params_list_cu[22] = c_mass_centers[0]
+            self.calib_params_list_cu[23] = c_mass_centers[1]
+            self.calib_params_list_cu[24] = c_mass_centers[2]
+            self.calib_params_list_cu[25] = c_mass_centers[3]
+            randomvary(extravector_centers,extravector_centers_mod,extravector_diag_tools)
+            self.calib_params_list_cu_gen[26] = extravector_centers_mod[0]
+            self.calib_params_list_cu_gen[27] = extravector_centers_mod[1]
+            self.calib_params_list_cu_gen[28] = extravector_centers_mod[2]
+            self.calib_params_list_cu_gen[29] = extravector_centers_mod[3]
+            self.calib_params_list_cu[26] = extravector_centers_mod[0]
+            self.calib_params_list_cu[27] = extravector_centers_mod[1]
+            self.calib_params_list_cu[28] = extravector_centers_mod[2]
+            self.calib_params_list_cu[29] = extravector_centers_mod[3]
+            self.set_mass_params(gpuarray.to_gpu(self.calib_params_list_cu_gen),block = (1,1,1))
+
+            for imint in range(9):
+               self.compute_mint_array(np.int32(imint),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu_gen[imint] = sum(mintarray)
+            self.set_mass_integrals(gpuarray.to_gpu(self.mass_integrals_list_cu_gen),block = (1,1,1))
+            for imint in range(30):
+               self.compute_acc_mint_array(np.int32(imint),np.int32(0),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu_gen[9+imint] = sum(mintarray)
+            for imint in range(21):
+               self.compute_acc_mint_array(np.int32(imint),np.int32(1),np.int32(mintnpoints),np.float64(minthlimit),cudriver.Out(mintarray),block = block_mint,grid = grid_mint)
+               self.mass_integrals_list_cu_gen[9+30+imint] = sum(mintarray)
+            self.set_all_mass_integrals(gpuarray.to_gpu(self.mass_integrals_list_cu_gen),block = (1,1,1))
+
+      def generate(self):
+         cat = self.cats[0]
+         self.ev_gen(cat.data,np.float64(self.max_eta_SSK_pdf[0]),np.float64(self.max_eta_OS_pdf[0]),np.float64(self.max_cond_pdf),np.int32(cat.Nevts),block = cat.block,grid = cat.grid)
+
+      def __call__(self,*args):
+
+         chi2 = np.float64(0.)
+         N = self.dc
+
+         if self.gen_step == 1:
+            m1_ran = np.float64(args[N["m1_cu"]])
+            m2_ran = np.float64(args[N["m2_cu"]])
+            cos1_ran = np.float64(args[N["cos1_cu"]])
+            cos2_ran = np.float64(args[N["cos2_cu"]])
+            phi_ran = np.float64(args[N["phi_cu"]])
+            t_ran = np.float64(args[N["t_cu"]])
+            terror_ran = np.float64(args[N["terror_cu"]])
+            q_SSK_ran = np.int32(args[N["q_SSK_cu"]])
+            q_OS_ran = np.int32(args[N["q_OS_cu"]])
+            eta_SSK_ran = np.float64(args[N["eta_SSK_cu"]])
+            eta_OS_ran = np.float64(args[N["eta_OS_cu"]])
+
+            for [idx,ival] in param_list_updates("mixing_params_list",paramnames,args_ = args,N_ = N,blinding = 0): self.mixing_params_list_cu[idx] = ival
+            for [idx,ival] in param_list_updates("calib_params_list",paramnames,args_ = args,N_ = N,blinding = 0): self.calib_params_list_cu[idx] = ival
+            self.pdf_cond(m1_ran,m2_ran,cos1_ran,cos2_ran,phi_ran,t_ran,terror_ran,q_SSK_ran,q_OS_ran,eta_SSK_ran,eta_OS_ran,gpuarray.to_gpu(self.mixing_params_list_cu),gpuarray.to_gpu(self.calib_params_list_cu),self.max_cond_ll,block = (1,1,1))
+            return -2*self.max_cond_ll[0].get()
+
+         elif self.gen_step == 3:
+            for [idx,ival] in param_list_updates("re_amps_list",paramnames,args_ = args,N_ = N,blinding = 0): self.re_amps_list_cu[idx] = ival
+            for [idx,ival] in param_list_updates("dirCP_asyms_list",paramnames,args_ = args,N_ = N,blinding = 0): self.dirCP_asyms_list_cu[idx] = ival
+            for [idx,ival] in param_list_updates("im_amps_list",paramnames,args_ = args,N_ = N,blinding = 0): self.im_amps_list_cu[idx] = ival
+            for [idx,ival] in param_list_updates("weak_phases_list",paramnames,args_ = args,N_ = N,blinding = 0): self.weak_phases_list_cu[idx] = ival
+            for [idx,ival] in param_list_updates("mixing_params_list",paramnames,args_ = args,N_ = N,blinding = 0): self.mixing_params_list_cu[idx] = ival
+            for [idx,ival] in param_list_updates("calib_params_list",paramnames,args_ = args,N_ = N,blinding = 0): self.calib_params_list_cu[idx] = ival
+            for cat in self.cats:
+               self.pdf_toy(cat.data,cat.Probs,gpuarray.to_gpu(self.re_amps_list_cu),gpuarray.to_gpu(self.dirCP_asyms_list_cu),gpuarray.to_gpu(self.im_amps_list_cu),gpuarray.to_gpu(self.weak_phases_list_cu),gpuarray.to_gpu(self.mixing_params_list_cu),gpuarray.to_gpu(self.calib_params_list_cu),cat.Nevts,block = cat.block,grid = cat.grid)
+            LL = map(self.getSumLL, self.cats)
+            LLsum = self.mySum(LL)
+            LLsum += ctrt_fun_1(np.float64(args[N["Dp0half_SSK_cu"]]),-0.0079,0.0014)
+            LLsum += ctrt_fun_1(np.float64(args[N["Dp1half_SSK_cu"]]),-0.022,0.023)
+            LLsum += ctrt_fun_1(np.float64(args[N["Dp0half_OS_cu"]]),0.007,0.0006)
+            LLsum += ctrt_fun_1(np.float64(args[N["Dp1half_OS_cu"]]),0.033,0.006)
+            LLsum += ctrt_fun_2(np.float64(args[N["gamma_Bs_cu"]]),np.float64(args[N["delta_gamma_Bs_cu"]]),0.6643,0.083,0.0020,0.006,-0.217)
+            LLsum += ctrt_fun_2(np.float64(args[N["p0metac_SSK_cu"]]),np.float64(args[N["p1_SSK_cu"]]),0.0067,0.925,0.0052,0.085,0.)
+            LLsum += ctrt_fun_2(np.float64(args[N["p0metac_OS_cu"]]),np.float64(args[N["p1_OS_cu"]]),0.0062,0.982,0.0044,0.035,0.14)
+            if wide_window_:
+               LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2012_cu"]]),np.float64(args[N["tres_p1_2012_cu"]]),0.0365026605725,1.26918356746,0.000250855432766,0.0528387031703,0.38357)
+            else:
+               LLsum += ctrt_fun_2(np.float64(args[N["tres_p0_2012_cu"]]),np.float64(args[N["tres_p1_2012_cu"]]),0.0366294040913,1.22214099483,0.000296200532078,0.059802993325,0.39251)
+            return -2*LLsum
+
+   manager = CUDAModel(Params, cats)
+
+   print '\nComputing generation mass integrals ...'
+   manager.set_gen_step(0)
+
+   print '\nComputing conditional pdf maximum ...'
+   pdf_maxima = []
+   for q1_ in [-1,0,1]:
+      for q2_ in [-1,0,1]:
+         manager.set_gen_step(1,q1_,q2_)
+         manager.createFit()
+         manager.fit.print_level = 0
+         manager.fit.migrad()
+         pdf_maxima.append(exp(manager.max_cond_ll[0].get()))
+   if add_extra_vector_: manager.max_cond_pdf = 1.4*max(pdf_maxima)
+   else: manager.max_cond_pdf = 1.2*max(pdf_maxima)
+   manager.get_max_SSK_eta_distr(cudriver.Out(manager.max_eta_SSK_pdf),block = (1,1,1))
+   manager.get_max_OS_eta_distr(cudriver.Out(manager.max_eta_OS_pdf),block = (1,1,1))
+
+   print '\nPerforming the studies ...\n'
+
+   if not mod_and_refit_:
+      fpulls_dat = open('pulls_'+output_tag+'.dat','w')
+      fpulls_dat.close()
+   else:
+      fbias_dat = open('bias_'+output_tag+'.dat','w')
+      fbias_dat.close()
+
+   sample_generated = 0
+   N_submitted = 0
+   N_successful = 0
+
+   start = timer()
+
+   while N_successful < N_exps:
+
+      iexp = N_successful+1
+
+      if change_dataset_ or (not sample_generated):
+
+         print 'MCS INFO ---> Generating sample #'+str(iexp)
+
+         if add_extra_vector_: manager.set_gen_step(4)
+         manager.set_gen_step(2)
+         manager.createFit()
+         manager.generate()
+
+         s = ""
+         for ev in range(N_events):
+            for v in range(12): s += str(1*manager.cats[0].data[ev][v]) + " "
+            s += "\n"
+         fdata = open('tmp.dat','w')
+         fdata.write(s)
+         fdata.close()
+         gROOT.Reset()
+         fout = ROOT.TFile("tmp.root","RECREATE")
+         tout = ROOT.TTree("DecayTree","DecayTree")
+         tout.ReadFile("tmp.dat",dec_SSK_name+":"+dec_OS_name+":"+eta_SSK_name+":"+eta_OS_name+":"+m1_name+":"+m2_name+":"+cos1_name+":"+cos2_name+":"+phi_name+":"+t_name+":"+terror_name+":sweight")
+         tout.Write()
+         fout.Close()
+         os.system("rm tmp.dat")
+
+         sample_generated = 1
+
+      print 'MCS INFO ---> Fitting sample #'+str(iexp)
+
+      manager.first_fit = 1
+      manager.set_gen_step(3)
+      manager.createFit()
+      manager.fit.print_level = 0
+      manager.fit.migrad()
+
+      N_submitted += 1
+      if manager.fit.get_fmin().is_valid:
+         manager.fit.hesse()
+         N_successful += 1
+
+         num_params = len(toyparamnames)
+         cov_matrix = np.ones((num_params,num_params))
+         central_vals = []
+         for i in range(num_params):
+            central_vals.append(manager.fit.values[toyparamnames[i]+'_cu'])
+            for j in range(num_params): cov_matrix[i][j] = manager.fit.covariance[(toyparamnames[i]+'_cu',toyparamnames[j]+'_cu')]
+         par_tuple = uncertainties.correlated_values(central_vals,cov_matrix)
+         upar = {}
+         for i in range(num_params): upar[toyparamnames[i]] = par_tuple[i]
+         upar['reA110'] = 1.
+         upar['imA110'] = 0.
+         for par in max_strong_params:
+            if par not in toyparamnames: upar[par] = 0.
+         polarparamnames = []
+         for par in polar_namepairs_dict.keys():
+            if polar_namepairs_dict[par] in toyparamnames:
+               par_temp = eval(polar_params_dict[par])
+               if par_temp.std_dev > 1e-10:
+                  polarparamnames.append(par)
+                  upar[par] = par_temp
+
+         allparamnames = []
+         for par in toyparamnames: allparamnames.append(par)
+         for par in polarparamnames: allparamnames.append(par)
+
+         if not mod_and_refit_:
+
+            pull_string = ''
+            for ipar in range(len(allparamnames)):
+               par_name = allparamnames[ipar]
+               x_par = upar[par_name].nominal_value
+               if par_name+'_cu' in par_ctrt_init_vals.keys(): x0_par = par_ctrt_init_vals[par_name+'_cu']
+               else: x0_par = par_phys_init_vals[par_name+'_cu']
+               sigma_par = sqrt(upar[par_name].std_dev**2+toy_sigma_varonlycmass_dict[par_name]**2)
+               pull_par = (x_par-x0_par)/sigma_par
+               pull_string += str(pull_par)+' '
+            fpulls_dat = open('pulls_'+output_tag+'.dat','a')
+            fpulls_dat.write(pull_string+'\n')
+            fpulls_dat.close()
+
+         else:
+
+            # Save the previous results.
+            upar_nom = upar.copy()
+
+            # Apply the modifications.
+            if massang_reso_smear_: manager.cats[0].data = smeardata(manager.cats[0].data)
+
+            # Redo the fit.
+            print '|___> Refitting with modification'
+            manager.first_fit = 0
+            manager.set_gen_step(3)
+            manager.createFit()
+            manager.fit.print_level = 0
+            manager.fit.migrad()
+            manager.fit.hesse()
+
+            # Create a new dictionary with the fit results.
+            num_params = len(toyparamnames)
+            cov_matrix = np.ones((num_params,num_params))
+            central_vals = []
+            for i in range(num_params):
+               central_vals.append(manager.fit.values[toyparamnames[i]+'_cu'])
+               for j in range(num_params): cov_matrix[i][j] = manager.fit.covariance[(toyparamnames[i]+'_cu',toyparamnames[j]+'_cu')]
+            par_tuple = uncertainties.correlated_values(central_vals,cov_matrix)
+            upar = {}
+            for i in range(num_params): upar[toyparamnames[i]] = par_tuple[i]
+            upar['reA110'] = 1.
+            upar['imA110'] = 0.
+            for par in max_strong_params:
+               if par not in toyparamnames: upar[par] = 0.
+            polarparamnames = []
+            for par in polar_namepairs_dict.keys():
+               if polar_namepairs_dict[par] in toyparamnames:
+                  par_temp = eval(polar_params_dict[par])
+                  if par_temp.std_dev > 1e-10:
+                     polarparamnames.append(par)
+                     upar[par] = par_temp
+
+            bias_string = ''
+            for ipar in range(len(allparamnames)):
+               par_name = allparamnames[ipar]
+               x_par_mod = upar[par_name].nominal_value
+               x_par_nom = upar_nom[par_name].nominal_value
+               bias = x_par_mod-x_par_nom
+               bias_string += str(bias)+' '
+            fbias_dat = open('bias_'+output_tag+'.dat','a')
+            fbias_dat.write(bias_string+'\n')
+            fbias_dat.close()
+
+      else: print 'WARNING: Fit failed. Repeating the experiment.'
+
+   print 'INFO:',int((timer() - start)/60),'min needed to do the experiments.'
+   print 'Fraction of valid fits:',float(N_successful)/float(N_submitted)
+
+   gROOT.Reset()
+   if not mod_and_refit_:
+      fout = ROOT.TFile("pulls_"+output_tag+".root","RECREATE")
+      tout = ROOT.TTree("Pulls","Pulls")
+      s = allparamnames[0]+'_pull'
+      for i in range(1,len(allparamnames)): s += ':'+allparamnames[i]+'_pull'
+      tout.ReadFile("pulls_"+output_tag+".dat",s)
+   else:
+      fout = ROOT.TFile("bias_"+output_tag+".root","RECREATE")
+      tout = ROOT.TTree("Bias","Bias")
+      s = allparamnames[0]+'_bias'
+      for i in range(1,len(allparamnames)): s += ':'+allparamnames[i]+'_bias'
+      tout.ReadFile("bias_"+output_tag+".dat",s)
+   tout.Write()
+   fout.Close()
+
 
 def PDFfun(PDF_,method_,m1_,m2_,cos1_,cos2_,phi_,t_,dt_,q1_,q2_,eta1_,eta2_):
 
@@ -2809,7 +4864,11 @@ def PDFfun(PDF_,method_,m1_,m2_,cos1_,cos2_,phi_,t_,dt_,q1_,q2_,eta1_,eta2_):
 
    return res
 
-def errorscan(PDF_,method_,n,nt,t0,tlimit):
+def errorscan(PDF_,method_):
+   n = 5
+   nt = 5
+   t0 = 0
+   tlimit = 12
    errors_nan = 0
    errors_neg = 0
    error_list = []
@@ -2826,7 +4885,7 @@ def errorscan(PDF_,method_,n,nt,t0,tlimit):
                            for i_q2 in range(-1,2):
                               for i_eta1 in range(n+1):
                                  for i_eta2 in range(n+1):
-                                    if isnan(PDFfun(PDF_,method_,750.+float(i_m1)/n*(1050.-750.),750.+float(i_m2)/n*(1050.-750.),-1.+float(i_cos1)/n*2.,-1.+float(i_cos2)/n*2.,-3.141593+float(i_phi)/n*2.*3.141593,t0+float(i_t)/nt*(tlimit-t0),float(i_dt)/n*0.08,i_q1,i_q2,float(i_eta1)/n*0.5,float(i_eta2)/n*0.5)):
+                                    if np.isnan(PDFfun(PDF_,method_,750.+float(i_m1)/n*(1050.-750.),750.+float(i_m2)/n*(1050.-750.),-1.+float(i_cos1)/n*2.,-1.+float(i_cos2)/n*2.,float(i_phi)/n*2.*3.141593,t0+float(i_t)/nt*(tlimit-t0),float(i_dt)/n*0.08,i_q1,i_q2,float(i_eta1)/n*0.5,float(i_eta2)/n*0.5)):
                                        errors_nan += 1
                                        error_list.append([750.+float(i_m1)/n*(1050.-750.),750.+float(i_m2)/n*(1050.-750.),-1.+float(i_cos1)/n*2.,-1.+float(i_cos2)/n*2.,-3.141593+float(i_phi)/n*2.*3.141593,t0+float(i_t)/nt*(tlimit-t0),float(i_dt)/n*0.08,i_q1,i_q2,float(i_eta1)/n*0.5,float(i_eta2)/n*0.5])
                                     elif (PDFfun(PDF_,method_,750.+float(i_m1)/n*(1050.-750.),750.+float(i_m2)/n*(1050.-750.),-1.+float(i_cos1)/n*2.,-1.+float(i_cos2)/n*2.,-3.141593+float(i_phi)/n*2.*3.141593,t0+float(i_t)/nt*(tlimit-t0),float(i_dt)/n*0.08,i_q1,i_q2,float(i_eta1)/n*0.5,float(i_eta2)/n*0.5) < 0.):
@@ -2884,7 +4943,7 @@ def fitprint2LaTeX(filename,parameters,wide_window,noCP,blinded,mixing_params_fi
 	partext += stringline("xpar_VV",parameters,blinded)
 	partext += stringline("delta11par",parameters,blinded)
 	partext += stringline("delta11perp",parameters,blinded)
-	partext += stringline("DCP_VV",parameters,blinded)
+	partext += stringline("DCP",parameters,blinded)
 	partext += '\\hline\n\\hline\n'
 	partext += '\\multicolumn{3}{|c|}{Single $S-wave$ (SV and VS)}\\\\\n\\hline\n\\hline\n'
 	partext += stringline("f_Swave",parameters,blinded)
@@ -2984,23 +5043,23 @@ def CondVarStudy(fit_bool,model_,parameters_,data_,hist_mistag_SSK_,hist_mistag_
 		for i in parameters_: i.setConstant(1)
 
 		# Fit of the t_err distribution.
-		for i in [gamma1_dt,beta1_dt,c_dt,gamma2_dt,beta2_dt]: i.setConstant(0)
+		for i in [gamma1_dt,beta1_dt]: i.setConstant(0)
 		alt_fit.setVal(1)
-		model_.fitTo(hist_deltat_,ROOT.RooFit.SumW2Error(kTRUE))
+		model_.fitTo(hist_deltat_,ROOT.RooFit.Minos(1))
 		model_.plotOn(frame_terr)
-		for i in [gamma1_dt,beta1_dt,c_dt,gamma2_dt,beta2_dt]: i.setConstant(1)
+		for i in [gamma1_dt,beta1_dt]: i.setConstant(1)
 
 		# Fit of the eta_SSK distribution.
 		for i in [mu1_SSK,sigma1_SSK,c_SSK,mu2_SSK,sigma2_SSK]: i.setConstant(0)
 		alt_fit.setVal(2)
-		model_.fitTo(hist_mistag_SSK_,ROOT.RooFit.SumW2Error(kTRUE))
+		model_.fitTo(hist_mistag_SSK_,ROOT.RooFit.Minos(1))
 		model_.plotOn(frame_eta_SSK)
 		for i in [mu1_SSK,sigma1_SSK,c_SSK,mu2_SSK,sigma2_SSK]: i.setConstant(1)
 
 		# Fit of the eta_OS distribution.
 		for i in [mu1_OS,sigma1_OS,c_OS,mu2_OS,sigma2_OS]: i.setConstant(0)
 		alt_fit.setVal(3)
-		model_.fitTo(hist_mistag_OS_,ROOT.RooFit.SumW2Error(kTRUE))
+		model_.fitTo(hist_mistag_OS_,ROOT.RooFit.Minos(1))
 		model_.plotOn(frame_eta_OS)
 		for i in [mu1_OS,sigma1_OS,c_OS,mu2_OS,sigma2_OS]: i.setConstant(1)
 
@@ -3018,6 +5077,7 @@ def CondVarStudy(fit_bool,model_,parameters_,data_,hist_mistag_SSK_,hist_mistag_
 		frame_eta_OS.Draw()
 		c_cond.cd(3)
 		frame_terr.Draw()
+		c_cond.Print("plotCondVar.root")
 		c_cond.Print("plotCondVar.pdf")
 
 def genTree(nevents,model,output_tag):
@@ -3135,7 +5195,7 @@ def printllprofile(parameter,nll):
 	nll.plotOn(frame,ROOT.RooFit.PrintEvalErrors(0),ROOT.RooFit.ShiftToZero(),ROOT.RooFit.LineColor(kRed))
 	c = ROOT.TCanvas("c_"+parameter.GetName(),"c_"+parameter.GetName())
 	frame.Draw()
-	c.Print("plotllprofile_" + parameter.GetName() + ".pdf")
+	c.Print("plotllprofile_" + parameter.GetName() + ".root")
 
 def plot61Ddata(data, step, wide_window = 1, mbinning = 40, cosbinning = 40, phibinning = 40, tbinning = 40):
 
@@ -3150,18 +5210,18 @@ def plot61Ddata(data, step, wide_window = 1, mbinning = 40, cosbinning = 40, phi
 	data.plotOn(frame_phi,ROOT.RooFit.Name("data_"+str(step)),ROOT.RooFit.Binning(phibinning))
 	data.plotOn(frame_t,ROOT.RooFit.Name("data_"+str(step)),ROOT.RooFit.Binning(tbinning))
 
-def plot61Dmodel(model, normdata, wide_window = 1, color = kBlue):
+def plot61Dmodel(model, normdata, wide_window = 1, color = kGray+2):
 
 	if wide_window:
-		model.plotOn(frame_m1,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
-		model.plotOn(frame_m2,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
+		model.plotOn(frame_m1,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color),ROOT.RooFit.LineWidth(4))
+		model.plotOn(frame_m2,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color),ROOT.RooFit.LineWidth(4))
 	else:
-		model.plotOn(frame_m1_narrowwin,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
-		model.plotOn(frame_m2_narrowwin,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
-	model.plotOn(frame_cos1,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
-	model.plotOn(frame_cos2,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
-	model.plotOn(frame_phi,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
-	model.plotOn(frame_t,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color))
+		model.plotOn(frame_m1_narrowwin,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color),ROOT.RooFit.LineWidth(4))
+		model.plotOn(frame_m2_narrowwin,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color),ROOT.RooFit.LineWidth(4))
+	model.plotOn(frame_cos1,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color),ROOT.RooFit.LineWidth(4))
+	model.plotOn(frame_cos2,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color),ROOT.RooFit.LineWidth(4))
+	model.plotOn(frame_phi,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color),ROOT.RooFit.LineWidth(4))
+	model.plotOn(frame_t,ROOT.RooFit.Name("model"),ROOT.RooFit.ProjWData(ROOT.RooArgSet(yeartrigcat),normdata),ROOT.RooFit.DrawOption("c"),ROOT.RooFit.LineColor(color),ROOT.RooFit.LineWidth(4))
 
 def plot61Dcomponent(model, normdata, wide_window, compname, linecolor, linestyle):
 

@@ -1,0 +1,7 @@
+# Instructions for maintainers
+# Carlos Vazquez Sierra (Mar, 2017)
+
+1. Fetch PhysFit/P2VV from lhcb-b2cc/P2VV:
+   + Replace CMakeLists.txt, cmt/requirements and doc/release.notes,
+   + Update versions.
+

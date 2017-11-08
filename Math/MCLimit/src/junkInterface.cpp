@@ -23,7 +23,7 @@ csm_template::csm_template(Int_t np)
 
 }
 
-//destructor 
+//destructor
 csm_template::~csm_template()
 {
   for(k=0;k<=nnp;k++){
@@ -40,7 +40,7 @@ csm_template::~csm_template()
   delete npnames;
   delete template_hist;
   delete chaname;
-};
+}
 // Addition of one nuisance parameter and its properties...
 void csm_template::set_np(char *npname, Double_t low, Double_t high, TH1 *h_high, Double_t sigma_high, TH1 *h_low, Double_t sigma_low)
 {
@@ -53,7 +53,7 @@ void csm_template::set_np(char *npname, Double_t low, Double_t high, TH1 *h_high
   nps_high[current_np] = high;
   s = new char[strlen(npname)+1];
   strcpy(s,npname);
-  
+
   npnames[current_np] = s;
 
   current_np++;

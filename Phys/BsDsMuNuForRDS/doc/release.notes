@@ -4,6 +4,15 @@
 ! Purpose     : Code, scripts etc for the Bs->DsMuNu R(Ds) analysis
 ! -----------------------------------------------------------------------------
 
+! 2017-03-22 - Carlos Vazquez Sierra
+ - Make version v1r2.
+
+!============================================== v1r1 2016-12-19 ==============================
+
+! 2016-12-19 - Carlos Vazquez Sierra
+  - First release after migration to gitlab. Information about commits on SVN are lost.
+    To be sure, just make version v1r1.
+
 2016-07-25 - Ricardo Vazquez Gomez
  - Added missing files
 

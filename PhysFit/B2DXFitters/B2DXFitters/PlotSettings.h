@@ -1,7 +1,7 @@
 /*****************************************************************************
  * Project: RooFit                                                           *
  * Description: class contains plot settings for MDFitter                    *
- *                                                                           * 
+ *                                                                           *
  * author: Agnieszka Dziurda  * agnieszka.dziurda@cern.ch                    *
  *                                                                           *
  *****************************************************************************/
@@ -12,7 +12,7 @@
 #include "Riostream.h"
 #include "TString.h"
 #include "TNamed.h"
- 
+
 #include <vector>
 
 class PlotSettings : public TNamed {
@@ -21,11 +21,11 @@ public:
   PlotSettings(){};
   PlotSettings(const TString& name, const TString& title);
   PlotSettings(const TString& name, const TString& title, TString dir, TString ext, Int_t bin, Bool_t save, Bool_t log, Bool_t titlestatus);
-  
-  PlotSettings(const TString& name, const TString& title, 
+
+  PlotSettings(const TString& name, const TString& title,
 	       TString dir, TString ext, Int_t bin, Bool_t save, Bool_t log, Bool_t titlestatus,
 	       std::vector <Color_t> colorData, std::vector <Color_t> colorPdf, std::vector <Style_t> stylePdf);
-  
+
   PlotSettings(const PlotSettings& other);
   virtual TObject* clone() const { return new PlotSettings(*this); }
 
@@ -54,7 +54,7 @@ public:
   Int_t GetSizeColorData() { return _colorData.size(); }
   Int_t GetSizeColorPdf() { return _colorPdf.size(); }
   Int_t GetSizeStylePdf() { return _stylePdf.size(); }
-  
+
   Color_t GetColorData(Int_t i) { return _colorData[i]; }
   Color_t GetColorPdf(Int_t i) { return _colorPdf[i];}
   Color_t GetStylePdf(Int_t i) { return _stylePdf[i];}
@@ -66,7 +66,7 @@ public:
   Bool_t  GetLogStatus() { return _log; }
   Bool_t  GetTitleStatus() { return _title; }
 
-  virtual void Print(Option_t * /*option*/ = "") const { std::cout<<*this<<std::endl;}
+  void Print(Option_t * /*option*/ = "") const override { std::cout<<*this<<std::endl;}
 
 protected:
 
@@ -79,9 +79,9 @@ protected:
   std::vector <Color_t> _colorData;
   std::vector <Color_t> _colorPdf;
   std::vector <Style_t> _stylePdf;
-    
+
 private:
   ClassDef(PlotSettings, 1);
 };
- 
+
 #endif

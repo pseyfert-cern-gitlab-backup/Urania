@@ -1,0 +1,28 @@
+!-----------------------------------------------------------------------------
+! Package     : Phys/BsKstKst
+! Responsible : Julian Garcia Pardinas, Juan Saborido Silva
+! Purpose     : Mathematical tools and algorithms for BsKstKst analysis.
+!-----------------------------------------------------------------------------
+
+! 2017-06-12 - Carlos Vazquez Sierra
+  + Tag version v5r4 for Urania v7r0.
+
+! 2017-04-20 - Julian Garcia Pardinas
+  + Migration of the fitting and toy MC study framework to CUDA.
+
+! 2017-03-24 - Carlos Vazquez Sierra
+  + Solve a bug in Phys/BsKstKst/python/TimeDependent/CheckNWs.py
+  + Keep same release tag for Urania v6r2p1.
+
+! 2017-03-22 - Carlos Vazquez Sierra
+  + Make version v5r3.
+
+!============================================== v5r2 2017-03-08 ==============================
+
+! 2017-03-08 - Julian Garcia Pardinas
+  - General update of scripts.
+
+! 2016-12-19 - Carlos Vazquez Sierra
+  - First release after migration to gitlab. Information about commits on SVN are lost.
+    To be sure, just make version v5r2.
+

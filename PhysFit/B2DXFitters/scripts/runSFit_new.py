@@ -109,13 +109,11 @@ __doc__ = """ real docstring """
 # -----------------------------------------------------------------------------
 # Load necessary libraries
 # -----------------------------------------------------------------------------
-import B2DXFitters
 import ROOT
-from B2DXFitters import *
 from ROOT import *
+import B2DXFitters
+from B2DXFitters import *
 
-from ROOT import RooFit
-from ROOT import DecRateCoeff_Bd
 from optparse import OptionParser
 from math     import pi, log
 from  os.path import exists
@@ -148,7 +146,7 @@ def getCPparameters(decay,myconfigfile):
         argLf = myconfigfile["StrongPhase"]-myconfigfile["WeakPhase"]
         argLbarfbar = myconfigfile["StrongPhase"]+myconfigfile["WeakPhase"]
         modLf = myconfigfile["ModLf"]
-        ACPobs = cpobservables.AsymmetryObservables(argLf,argLbarfbar,modLf)
+        ACPobs = cpobservables.AsymmetryObservables(argLf,argLbarfbar,modLf,True)
         ACPobs.printtable()
         Cf    = ACPobs.Cf()
         Sf    = ACPobs.Sf()
@@ -171,13 +169,14 @@ def getCPparameters(decay,myconfigfile):
     sigC = RooRealVar('C_%s'%(decay.Data()), 'C coeff.', Cf, limit[0], limit[1])
     sigS = RooRealVar('S_%s'%(decay.Data()), 'S coeff.', Sf, limit[0], limit[1])
     sigD = RooRealVar('D_%s'%(decay.Data()), 'D coeff.', Df, limit[0], limit[1])
-    sigCbar = RooRealVar('Cbar_%s'%(decay.Data()), 'Cbar coeff.', Cf, limit[0], limit[1])
+    sigCbar = RooFormulaVar('Cbar_%s'%(decay.Data()),'Cbar coeff.', "-1*@0",RooArgList(sigC))
+#    sigCbar = RooRealVar('Cbar_%s'%(decay.Data()), 'Cbar coeff.', Cf, limit[0], limit[1])
     sigSbar = RooRealVar('Sbar_%s'%(decay.Data()), 'Sbar coeff.', Sfbar, limit[0], limit[1])
     sigDbar = RooRealVar('Dbar_%s'%(decay.Data()), 'Dbar coeff.', Dfbar, limit[0], limit[1])
     setConstantIfSoConfigured(sigC,myconfigfile)
     setConstantIfSoConfigured(sigS,myconfigfile)
     setConstantIfSoConfigured(sigD,myconfigfile)
-    setConstantIfSoConfigured(sigCbar,myconfigfile)
+#    setConstantIfSoConfigured(sigCbar,myconfigfile)
     setConstantIfSoConfigured(sigSbar,myconfigfile)
     setConstantIfSoConfigured(sigDbar,myconfigfile)
     
@@ -713,7 +712,6 @@ def runSFit(debug, wsname,
     otherargs.append(aProd)
     otherargs.append(aDet)
 
-
     for i in range(0, numTag):
         print mistagPDFList[i]
         #getattr(wT,'import')(mistagPDFList[i])
@@ -722,8 +720,19 @@ def runSFit(debug, wsname,
 
     cosh = DecRateCoeff_Bd('signal_cosh', 'signal_cosh', DecRateCoeff_Bd.kCosh, id, one1, one2, *otherargs)
     sinh = DecRateCoeff_Bd('signal_sinh', 'signal_sinh', DecRateCoeff_Bd.kSinh, id, D, Dbar, *otherargs)
-    cos =  DecRateCoeff_Bd('signal_cos' , 'signal_cos' , DecRateCoeff_Bd.kCos,  id, C, C, *otherargs)
+    cos =  DecRateCoeff_Bd('signal_cos' , 'signal_cos' , DecRateCoeff_Bd.kCos,  id, C, Cbar, *otherargs)
     sin =  DecRateCoeff_Bd('signal_sin' , 'signal_sin' , DecRateCoeff_Bd.kSin,  id, S, Sbar, *otherargs)
+
+
+    #Dec Rates to check significance!
+#    Sbar_minus = RooFormulaVar( 'Sbar_minus',"Sbar_minus", "-1*@0",RooArgList(Sbar))
+#
+#    cosh = DecRateCoeff_Bd('signal_cosh', 'signal_cosh', DecRateCoeff_Bd.kCosh, id, one1, one2, *otherargs)
+#    sinh = DecRateCoeff_Bd('signal_sinh', 'signal_sinh', DecRateCoeff_Bd.kSinh, id, D, D, *otherargs)
+#    cos =  DecRateCoeff_Bd('signal_cos' , 'signal_cos' , DecRateCoeff_Bd.kCos,  id, C, C, *otherargs)
+#    sin =  DecRateCoeff_Bd('signal_sin' , 'signal_sin' , DecRateCoeff_Bd.kSin,  id, Sbar_minus, Sbar, *otherargs)
+
+
 
 
     #if debug:
@@ -820,18 +829,20 @@ def runSFit(debug, wsname,
         if binned:
             if constraints_for_tagging_calib:
                 myfitresult = totPDF.fitTo(dataWA_binned, RooFit.Save(1), RooFit.Optimize(2), RooFit.Strategy(2),
-                                       RooFit.Verbose(True), RooFit.SumW2Error(True), RooFit.Extended(False), RooFit.ExternalConstraints(taggingMultiVarGaussSet), RooFit.NumCPU(8))
+                                       RooFit.Verbose(True), RooFit.SumW2Error(True), RooFit.Extended(False), RooFit.ExternalConstraints(taggingMultiVarGaussSet), RooFit.NumCPU(1))
             else:
                 myfitresult = totPDF.fitTo(dataWA_binned, RooFit.Save(1), RooFit.Optimize(2), RooFit.Strategy(2),
-                                       RooFit.Verbose(True), RooFit.SumW2Error(True), RooFit.Extended(False), RooFit.NumCPU(8))
+                                       RooFit.Verbose(True), RooFit.SumW2Error(True), RooFit.Extended(False), RooFit.NumCPU(1))
 
         else:
             if constraints_for_tagging_calib:
                 myfitresult = totPDF.fitTo(dataWA, RooFit.Save(1), RooFit.Optimize(2), RooFit.Strategy(2),
-                                       RooFit.Verbose(True), RooFit.SumW2Error(True), RooFit.Extended(False), RooFit.ExternalConstraints(taggingMultiVarGaussSet), RooFit.NumCPU(8))
+                                       RooFit.Verbose(True), RooFit.SumW2Error(True), RooFit.Extended(False), RooFit.ExternalConstraints(taggingMultiVarGaussSet), RooFit.NumCPU(1))
             else:
+#                myfitresult = totPDF.fitTo(dataWA, RooFit.Save(1), RooFit.Optimize(2), RooFit.Strategy(2),
+#                                           RooFit.Verbose(True), RooFit.SumW2Error(True), RooFit.Extended(False), RooFit.NumCPU(1),RooFit.Minimizer("Minuit2", "migrad"))
                 myfitresult = totPDF.fitTo(dataWA, RooFit.Save(1), RooFit.Optimize(2), RooFit.Strategy(2),
-                                       RooFit.Verbose(True), RooFit.SumW2Error(True), RooFit.Extended(False), RooFit.NumCPU(8))
+                                           RooFit.Verbose(True), RooFit.SumW2Error(True), RooFit.Extended(False), RooFit.NumCPU(1))
         myfitresult.Print("v")
         myfitresult.correlationMatrix().Print()
         myfitresult.covarianceMatrix().Print()
@@ -843,14 +854,14 @@ def runSFit(debug, wsname,
                 # old way
                 taggingMultiVarGaussSet.Print("v")
                 myfitresult = totPDF.fitTo(dataWA_binned, RooFit.Save(1), RooFit.Optimize(2), RooFit.Strategy(2), RooFit.Extended(False),
-                                           RooFit.ExternalConstraints(taggingMultiVarGaussSet),RooFit.SumW2Error(True), RooFit.PrintLevel(-1), RooFit.NumCPU(8))
+                                           RooFit.ExternalConstraints(taggingMultiVarGaussSet),RooFit.SumW2Error(True), RooFit.PrintLevel(-1), RooFit.NumCPU(1))
                 # new way, activate also the lower totPDF above!
     #            myfitresult = totPDF.fitTo(dataWA_binned, RooFit.Save(1), RooFit.Optimize(2), RooFit.Strategy(2), RooFit.Extended(False),
     #                                       RooFit.ExternalConstraints(taggingMultiVarGaussSet),RooFit.ConditionalObservables(RooArgSet(mistag[0], mistag[1])),RooFit.SumW2Error(True), RooFit.PrintLevel(-1))
             else:
                 # old way
                 myfitresult = totPDF.fitTo(dataWA_binned, RooFit.Save(1), RooFit.Optimize(2), RooFit.Strategy(2), RooFit.Extended(False),
-                                       RooFit.SumW2Error(True), RooFit.PrintLevel(-1), RooFit.NumCPU(8))
+                                       RooFit.SumW2Error(True), RooFit.PrintLevel(-1), RooFit.NumCPU(1))
                 # new way, activate also the lower totPDF above!
     #            myfitresult = totPDF.fitTo(dataWA_binned, RooFit.Save(1), RooFit.Optimize(2), RooFit.Strategy(2), RooFit.Extended(False),
     #                                       RooFit.ConditionalObservables(RooArgSet(mistag[0], mistag[1])),RooFit.SumW2Error(True), RooFit.PrintLevel(-1))
@@ -859,11 +870,11 @@ def runSFit(debug, wsname,
         else:
             if not constraints_for_tagging_calib:
                 myfitresult = totPDF.fitTo(dataWA, RooFit.Save(1), RooFit.Optimize(2), RooFit.Strategy(2), RooFit.Extended(False),
-                                           RooFit.SumW2Error(True), RooFit.PrintLevel(-1), RooFit.NumCPU(8))
+                                           RooFit.SumW2Error(True), RooFit.PrintLevel(-1), RooFit.NumCPU(1))
             else:
                 taggingMultiVarGaussSet.Print("v")
                 myfitresult = totPDF.fitTo(dataWA, RooFit.Save(1), RooFit.Optimize(2), RooFit.Strategy(2), RooFit.Extended(False),
-                                           RooFit.ExternalConstraints(taggingMultiVarGaussSet),RooFit.SumW2Error(True), RooFit.PrintLevel(-1), RooFit.NumCPU(8))
+                                           RooFit.ExternalConstraints(taggingMultiVarGaussSet),RooFit.SumW2Error(True), RooFit.PrintLevel(-1), RooFit.NumCPU(1))
 
         print '[INFO Result] Matrix quality is',myfitresult.covQual()
         par = myfitresult.floatParsFinal() 

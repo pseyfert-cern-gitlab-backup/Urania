@@ -199,13 +199,8 @@ RooCubicSplineKnot::S_jk RooCubicSplineKnot::S_jk_sum(int i, const RooArgList& b
 }
 
 RooCubicSplineKnot::S_edge::S_edge(const S_edge& other, double offset) :
-    alpha(other.alpha), beta(other.beta)
-{
-    if (offset != 0) {
-        std::cout << "RooCubicSplitKnot::S_edge: argument \"offset\" is not equal to 0" << std::endl;
-        assert(offset==0);
-    }
-}
+    alpha(other.alpha), beta(other.beta + offset * other.alpha * 2)
+    {}
 
 // S matrix for natural extrapolation beyond the first/last knot...
 RooCubicSplineKnot::S_edge RooCubicSplineKnot::S_jk_edge(bool left, const RooArgList& b) const {

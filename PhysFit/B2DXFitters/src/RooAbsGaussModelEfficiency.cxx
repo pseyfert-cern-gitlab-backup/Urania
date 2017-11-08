@@ -6,7 +6,7 @@
 #include "TMath.h"
 
 //ClassImp(RooAbsGaussModelEfficiency);
-RooAbsGaussModelEfficiency::~RooAbsGaussModelEfficiency()  {};
+RooAbsGaussModelEfficiency::~RooAbsGaussModelEfficiency()  {}
 
 namespace {
     using std::exp;

@@ -108,23 +108,46 @@ def mcreweight_dslisttothsparse(StripVersion, MagPolarity, RunMin, RunMax, verbo
     for i in range(0,len(kinbinning)):
         kinvarnames.append((kinbinning[i])[0])
     
-    DataDict = GetRunDictionary(StripVersion, Part)
-    IndexDict = GetMinMaxFileDictionary(DataDict, MagPolarity, RunMin, RunMax, -1)
+    #DataDict = GetRunDictionary(StripVersion, Part)
+    #IndexDict = GetMinMaxFileDictionary(DataDict, MagPolarity, RunMin, RunMax, -1)
     
     print "Filling Histogram"
     
-    for i in xrange(IndexDict['minIndex'], IndexDict['maxIndex']+1):
+    #for i in xrange(IndexDict['minIndex'], IndexDict['maxIndex']+1):
         
-        ds = GetDataSet(StripVersion, MagPolarity, Part, 'runNumber>='+str(RunMin)+' && runNumber<='+str(RunMax), i, verbose, allowMissing)
+    #    #ds = GetDataSet(StripVersion, MagPolarity, Part, 'runNumber>='+str(RunMin)+' && runNumber<='+str(RunMax), i, verbose, allowMissing)
+    #    ds = GetDataSet(StripVersion, MagPolarity, Part, 'runNumber>='+str(RunMin)+' && runNumber<='+str(RunMax), opts.pidVars, opts.xVarName, opts.yVarName, opts.zVarName, i, verbose, allowMissing)
+    #    if ds is not None:
+    #        if cuts!="":
+    #            cutds=ds.reduce(cuts)
+    #            mcreweight_datasettothsparse(cutds,Part,hs,varnames,weight,h1d_list)
+    #            cutds.IsA().Destructor(cutds) #free memory from cut dataset
+    #        else:
+    #            mcreweight_datasettothsparse(ds,Part,hs,varnames,weight,h1d_list)
+    #    ds.Delete() #needed to free memory
+    
+    if "Turbo" not in StripVersion:
+    	files = GetFiles(StripVersion,MagPolarity,Part,RunMin,RunMax,100000,opts.verbose)
+    elif "Turbo" in StripVersion:
+    	files = GetWGPFiles(StripVersion,MagPolarity,opts.verbose)
+    
+    for file in files:
+    	
+    	#ds = GetDataSet(StripVersion, MagPolarity, Part, 'runNumber>='+str(RunMin)+' && runNumber<='+str(RunMax), i, verbose, allowMissing)
+        #ds = GetDataSet(StripVersion, MagPolarity, Part, 'runNumber>='+str(RunMin)+' && runNumber<='+str(RunMax), opts.pidVars, opts.xVarName, opts.yVarName, opts.zVarName, file, verbose, allowMissing)
+        ds = GetDataSet(StripVersion, MagPolarity, Part, cuts, opts.pidVars, opts.xVarName, opts.yVarName, opts.zVarName, file, verbose, allowMissing)
+    
         if ds is not None:
             if cuts!="":
+            	print "Cuts are the following : " + cuts
                 cutds=ds.reduce(cuts)
                 mcreweight_datasettothsparse(cutds,Part,hs,varnames,weight,h1d_list)
                 cutds.IsA().Destructor(cutds) #free memory from cut dataset
             else:
                 mcreweight_datasettothsparse(ds,Part,hs,varnames,weight,h1d_list)
-        ds.Delete() #needed to free memory
+        	ds.Delete() #needed to free memory
     
+
     #making projections
     print "Filling projections for kinematic variables"
     #print kinvarnames
@@ -151,8 +174,8 @@ if '__main__' == __name__:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         prog=os.path.basename(sys.argv[0]),
         description=("""Make pid distributions for a given:
-        a) stripping version <stripVersion> (e.g. \"20\")
-        b) magnet polarity  <magPol> (\"MagUp\" or \"MagDown\")
+        a) Sample version <sampleVersion> (e.g. \"20\" for Run 1 Stripping 20, \"Turbo16\" for Run 2 WGP)
+        b) magnet polarity <magPol> (\"MagUp\" or \"MagDown\")
         c) particle type <partName> (\"K\", \"P\", \"Pi\", \"e\" or \"Mu\")
         d) PID variable, <pidVar>
 Multiple PID variables can be specified if necessary, e.g. \"[DLLK,DLLp]\".
@@ -165,7 +188,7 @@ following tracks types should be used instead: \"K_MuonUnBiased\", \"Pi_MuonUnBi
 or \"P_MuonUnBiased\"."""
         )
     ## add the positional arguments
-    parser.add_argument('stripVersion', metavar='<stripVersion>',  help="Sets the stripping version")
+    parser.add_argument('sampleVersion', metavar='<sampleVersion>',  help="Sets the stripping version for Run I data, or the Turbo WGP production version for Run II")
     parser.add_argument('magPol', metavar='<magPol>',  help="Sets the magnet polarity")
     parser.add_argument('partName', metavar='<partName>', help="Sets the particle type")
     parser.add_argument('pidVars', metavar='<pidVars>', help="Sets the PID variables to store")
@@ -237,7 +260,7 @@ or \"P_MuonUnBiased\"."""
     RunMax = 9999999
 
     # set the stripping version
-    StripVersion=opts.stripVersion
+    StripVersion=opts.sampleVersion
     CheckStripVer(StripVersion)
     
     # set the magnet polarity
@@ -376,9 +399,14 @@ or \"P_MuonUnBiased\"."""
     fnameSuffix=''
     if SchemeName is not None:
         fnameSuffix+='_{0}'.format(SchemeName)
-    fname = "PIDHists_Strip{strp}_{pol}{suf}.root".format(
-        strp=StripVersion, pol=MagPolarity,
-        suf=fnameSuffix)
+    if "Turbo" not in StripVersion:
+    	fname = "PIDHists_Strip{strp}_{pol}{suf}.root".format(
+        	strp=StripVersion, pol=MagPolarity,
+        	suf=fnameSuffix)
+    elif "Turbo" in StripVersion:
+    	fname = "PIDHists_{strp}_{pol}{suf}.root".format(
+        	strp=StripVersion, pol=MagPolarity,
+        	suf=fnameSuffix)
     if opts.outputDir is not None:
         fname = "%s/%s" %(opts.outputDir, fname)
         
@@ -407,8 +435,14 @@ or \"P_MuonUnBiased\"."""
     for Part in PartName:
         f_Out.cd()
         _tmpcuts=opts.cuts
-        _tmpDataSet = GetDataSet(StripVersion, MagPolarity, Part, "", 0, opts.verbose, opts.allowMissing)
-        
+    
+    	if "Turbo" not in StripVersion:
+    		files = GetFiles(StripVersion,MagPolarity,Part,RunMin,RunMax,100000,opts.verbose)
+    	elif "Turbo" in StripVersion:
+    		files = GetWGPFiles(StripVersion,MagPolarity,opts.verbose)
+    
+        _tmpDataSet = GetDataSet(StripVersion, MagPolarity, Part,"", opts.pidVars, opts.xVarName, opts.yVarName, opts.zVarName, files[0], opts.verbose, opts.allowMissing)
+         
         #dsl=GetDataSets(StripVersion, MagPolarity, Part, "", RunMin, RunMax,opts.verbose,opts.allowMissing)
 
 

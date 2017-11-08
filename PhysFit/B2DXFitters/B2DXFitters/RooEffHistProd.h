@@ -37,17 +37,17 @@ public:
 
    virtual ~Exception() throw()
    {
-      
+
    }
 
-   virtual const char* what() const throw()
+   const char* what() const throw() override
    {
       return m_message.c_str();
    }
 
 private:
    const std::string m_message;
-   
+
 };
 }
 
@@ -58,50 +58,50 @@ public:
    // Constructors, assignment etc
    inline RooEffHistProd()   { };
    virtual ~RooEffHistProd();
-   RooEffHistProd(const char *name, const char *title, 
+   RooEffHistProd(const char *name, const char *title,
                   RooAbsPdf& pdf, RooAbsReal& efficiency);
    RooEffHistProd(const RooEffHistProd& other, const char* name = 0);
 
-   virtual Bool_t forceAnalyticalInt(const RooAbsArg& /*dep*/) const { 
+   Bool_t forceAnalyticalInt(const RooAbsArg& /*dep*/) const override {
       // Return kTRUE to force RooRealIntegral to offer all observables for internal integration
-      return kTRUE ; 
+      return kTRUE ;
    }
 
-   virtual TObject* clone(const char* name) const {
+   TObject* clone(const char* name) const override {
       return new RooEffHistProd(*this, name);
    }
 
-   virtual RooAbsGenContext* genContext(const RooArgSet &vars, const RooDataSet *prototype,
-                                        const RooArgSet* auxProto, Bool_t verbose) const;
+   RooAbsGenContext* genContext(const RooArgSet &vars, const RooDataSet *prototype,
+                                const RooArgSet* auxProto, Bool_t verbose) const override;
 
-   virtual Int_t getGenerator(const RooArgSet& dv, RooArgSet &gv, Bool_t si) const;
-   virtual void initGenerator(Int_t code);
-   virtual void generateEvent(Int_t code);
+   Int_t getGenerator(const RooArgSet& dv, RooArgSet &gv, Bool_t si) const override;
+   void initGenerator(Int_t code) override;
+   void generateEvent(Int_t code) override;
 
-   // virtual Int_t getAnalyticalIntegralWN(RooArgSet& allDeps, RooArgSet& analDeps, 
+   // virtual Int_t getAnalyticalIntegralWN(RooArgSet& allDeps, RooArgSet& analDeps,
    //                                       const RooArgSet* normSet, const char* rangeName) const;
-   virtual Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* rangeName=0) const;
-   virtual Double_t analyticalIntegral(Int_t code,const char* rangeName=0) const ;
+   Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* rangeName=0) const override;
+   Double_t analyticalIntegral(Int_t code,const char* rangeName=0) const override;
 
-   virtual void selectNormalization(const RooArgSet*,Bool_t);
-   virtual ExtendMode extendMode() const;
+   void selectNormalization(const RooArgSet*,Bool_t) override;
+   ExtendMode extendMode() const override;
 
-   virtual Double_t expectedEvents(const RooArgSet* nset) const;
+   Double_t expectedEvents(const RooArgSet* nset) const override;
 
    // Function evaluation
-   virtual Double_t getValV(const RooArgSet* set = 0) const;
+   Double_t getValV(const RooArgSet* set = 0) const override;
 
-   RooAbsPdf* pdf() const { 
+   RooAbsPdf* pdf() const {
       // Return pointer to pdf in product
       return static_cast<RooAbsPdf*>(_pdf.absArg());
    }
 
-   RooAbsReal* efficiency() const { 
+   RooAbsReal* efficiency() const {
       // Return pointer to pdf in product
       return static_cast<RooAbsReal*>(_eff.absArg());
    }
 
-   const RooArgSet* observables() const { 
+   const RooArgSet* observables() const {
       // Return pointer to pdf in product
       return static_cast<const RooArgSet*>(&_observables);
    }
@@ -110,7 +110,7 @@ public:
 
 protected:
 
-   virtual Double_t evaluate() const;
+   Double_t evaluate() const override;
 
 
    typedef std::vector<double> BinBoundaries;
@@ -134,7 +134,7 @@ private:
    Double_t _maxEff;
 
    typedef std::vector<std::pair<double, TString> > Levels;
-   Levels _levels; // 
+   Levels _levels; //
 
    // Data for integration
    typedef std::map<std::string, RooArgSet*> argMap_t;
@@ -149,11 +149,11 @@ private:
       CacheElem() : _clone(0), _I(0) {}
       virtual ~CacheElem();
 
-      virtual RooArgList containedArgs(Action) ;
-      Double_t getVal() { 
+      RooArgList containedArgs(Action) override;
+      Double_t getVal() {
           return _I->getVal(_intObs);
       }
-      
+
       bool trivial() const { return _trivial; }
 
       void setClone(RooEffHistProd* cl) { _clone = cl; }
@@ -172,9 +172,9 @@ private:
       RooAbsReal* _I;
       bool _trivial;
    };
-   
+
    friend class CacheElem;
-   CacheElem *getCache(const RooArgSet* nset, const RooArgSet* iset, 
+   CacheElem *getCache(const RooArgSet* nset, const RooArgSet* iset,
                        const char* rangeName = 0, const bool makeClone = false) const;
 
    std::string setName(const RooArgSet* set) const;
@@ -182,7 +182,7 @@ private:
    bool allFalse() const;
 
    mutable RooObjCacheManager _cacheMgr;
-   
+
    ClassDef(RooEffHistProd, 1) // Product operator p.d.f of (PDF x efficiency) implementing optimized generator context
 };
 

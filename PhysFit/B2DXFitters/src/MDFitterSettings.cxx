@@ -1714,6 +1714,13 @@ std::pair <TString, TString> MDFitterSettings::GetPIDHistVar(TString key)
   return n;
 }
 
+Bool_t MDFitterSettings::CheckHistPID(TString key, TString year)
+{
+  TString fileName = GetPIDFileName(key,year);
+  if ( fileName == "") { return false; }
+  return true; 
+}
+
 
 HistPID1D MDFitterSettings::GetHistPID1D(TString key, TString year)
 {
@@ -1807,10 +1814,18 @@ void MDFitterSettings::CorrectTagging()
 
 TString MDFitterSettings::CheckTagger(TString name)
 {
-  if (name.Contains("OS") ) { return "OS"; }
+  if (name.Contains("OSComb") ) { return "OSComb"; }
+  else if (name.Contains("OSCharm")) { return "OSCharm"; }
+  else if (name.Contains("OSElectron")) { return "OSElectron"; }
+  else if (name.Contains("OSMuon")) { return "OSMuon"; }
+  else if (name.Contains("OSKaon")) { return "OSKaon"; }
+  else if (name.Contains("OSCalib")) { return "OSCalib"; }
+  else if (name.Contains("OS")) { return "OS"; }
+  else if (name.Contains("SSPionBDT")){ return "SSPionBDT"; }
+  else if (name.Contains("SSProton")){ return "SSProton"; }
   else if (name.Contains("SSK")) { return "SSK";}
   else if (name.Contains("SSp")) { return "SSp";}
-  else if (name.Contains("SS")) { return "SS";} 
+  else if (name.Contains("SS")) { return "SS";}
   else { return "Unknown";} 
 }
 

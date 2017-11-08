@@ -11,14 +11,17 @@ from ROOT import RooFit
 def CalcAveragePerfPlotsAndWriteToFile(TrackDict,
                                        StripVer,
                                        MagPolarity,
+                                       PIDCutString,
+                                       xBin,
+                                       yBin,
+                                       zBin,
                                        runMin,
                                        runMax,
+                                       schemeName=None,
                                        outputDir=None,
                                        verbose=True,
                                        allowMissingDataSets=False,
-                                       schemeName=None,
-                                       maxFiles=-1,
-                                       triggerList=[]
+                                       maxFiles=-1
                                        ):
 
     for k, d in TrackDict.items():
@@ -29,15 +32,17 @@ def CalcAveragePerfPlotsAndWriteToFile(TrackDict,
                                 d['TrackType'],
                                 d['DLLCuts'],
                                 d['TrackCuts'],
+                                PIDCutString,
+                                xBin,
+                                yBin,
+                                zBin,
                                 d['Binning'],
                                 runMin,
                                 runMax,
                                 verbose,
                                 allowMissingDataSets,
-                                maxFiles,
-                                triggerList
+                                maxFiles
                                 )
-
         #======================================================================
         # Make Weighted Average
         #======================================================================
@@ -93,8 +98,7 @@ def CalcAveragePerfPlotsAndReturn(TrackDict,
                                   runMax,
                                   verbose=True,
                                   allowMissingDataSets=False,
-                                  maxFiles=-1,
-                                  triggerList=[]
+                                  maxFiles=-1
                                   ):
 
     AveragedPlots = {}
@@ -112,8 +116,7 @@ def CalcAveragePerfPlotsAndReturn(TrackDict,
                                 runMax,
                                 verbose,
                                 allowMissingDataSets,
-                                maxFiles,
-                                triggerList
+                                maxFiles
                                 )
 
         #======================================================================
@@ -128,9 +131,10 @@ def CalcAveragePerfPlotsAndReturn(TrackDict,
 
 
 def PlotVarsAndReturn( PartName, PlotVars, StripVer, MagPolarity,
-                      runMin, runMax, TrackCuts="", verbose=True,
+                      runMin, runMax, PIDCutString,
+                      xBin, yBin, zBin, TrackCuts="", verbose=True,
                       allowMissingDataSets=False, schemeName=None,
-                      maxFiles=-1, triggerList=[]
+                      maxFiles=-1
                       ):
 
     CheckStripVer(StripVer)
@@ -156,13 +160,24 @@ def PlotVarsAndReturn( PartName, PlotVars, StripVer, MagPolarity,
     #======================================================================
     # Loop over all calibration files
     #======================================================================
-    files = GetFiles(StripVer,MagPolarity,PartName,runMin,runMax,maxFiles,verbose)
+    #files = GetFiles(StripVer,MagPolarity,PartName,runMin,runMax,maxFiles,verbose)
+    
+    #Run 1 file access
+    if "Turbo" not in StripVer and "Electron" not in StripVer:
+    	files = GetFiles(StripVer,MagPolarity,PartName,runMin,runMax,maxFiles,verbose)
+    #Run 2 file access (not for 2015 and 2016 electrons)
+    elif "Turbo" in StripVer:
+    	files = GetWGPFiles(StripVer,MagPolarity,verbose)
+    elif "Electron" in StripVer:
+    	files = GetElectronFiles(StripVer,MagPolarity,verbose)
 
     index = 0;
     for file in files:
         index+=1
-        DataSet = GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, file, verbose,
-                            allowMissingDataSets, minEntries, triggerList)
+        #DataSet = GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, file, verbose,
+        #                    allowMissingDataSets, minEntries)
+        DataSet = GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, PIDCutString, xBin, yBin, zBin, file, verbose,
+                             allowMissingDataSets, minEntries)
         for PlotVar in PlotVars:
             BinSchema = GetBinScheme(PartName, PlotVar, schemeName)
             if DataSet is not None:
@@ -196,21 +211,23 @@ def PlotVarAndWriteToFile(
                             PlotVar,
                             StripVer,
                             MagPolarity,
-                            runMin,
-                            runMax,
+                            PIDCutString,
+                            runMin=None,
+                            runMax=None,
                             TrackCuts="",
                             outputDir=None,
                             verbose=True,
                             allowMissingDataSets=False,
                             schemeName=None,
-                            maxFiles=-1,
-                            triggerList=[]
+                            maxFiles=-1
                           ):
-
+    xBin=""
+    yBin=""
+    zBin=""
     Plots = PlotVarsAndReturn( PartName, [PlotVar], StripVer, MagPolarity,
-                                runMin, runMax, TrackCuts, verbose,
-                                allowMissingDataSets,schemeName, maxFiles,
-                                triggerList
+                               runMin, runMax, PIDCutString,
+                               xBin, yBin, zBin, TrackCuts, verbose,
+                               allowMissingDataSets,schemeName, maxFiles
                               )
 
     #======================================================================
@@ -246,13 +263,16 @@ def GetPerfPlotList( PerfFunc,
                      PartName,
                      DLLCutList,
                      TrackCuts,
+                     PIDCutString,
+                     xBin,
+                     yBin,
+                     zBin,
                      BinningScheme=None,
                      runMin=None,
                      runMax=None,
                      verbose=True,
                      allowMissingDataSets=False,
-                     maxFiles=-1,
-                     triggerList=[]):
+                     maxFiles=-1):
 
 
     #print " IN getperfplotlist"
@@ -265,12 +285,12 @@ def GetPerfPlotList( PerfFunc,
     #======================================================================
     # Append runNumber limits to TrackCuts
     #======================================================================
-    if None not in (runMin, runMax):
-        if TrackCuts!='':
-            TrackCuts+=' && '
-        TrackCuts+='runNumber>='+runMin+' && runNumber<='+runMax
-    if verbose:
-        print 'Track Cuts: ', TrackCuts
+    #if None not in (runMin, runMax):
+    #    if TrackCuts!='':
+    #        TrackCuts+=' && '
+    #    TrackCuts+='runNumber>='+runMin+' && runNumber<='+runMax
+    #if verbose:
+    #    print 'Track Cuts: ', TrackCuts
 
     #======================================================================
     # Declare default list of PID plots
@@ -281,18 +301,26 @@ def GetPerfPlotList( PerfFunc,
     #======================================================================
     # Loop over all calibration subsamples
     #======================================================================
-
-    files = GetFiles(StripVer,MagPolarity,PartName,runMin,runMax,maxFiles,verbose)
+    
+    #Use GetFiles function for Run I data
+    if "Turbo" not in StripVer and "Electron" not in StripVer:
+    	files = GetFiles(StripVer,MagPolarity,PartName,runMin,runMax,maxFiles,verbose)
+    elif "Turbo" in StripVer:
+    	files = GetWGPFiles(StripVer,MagPolarity,verbose)
+    elif "Electron" in StripVer:
+    	files = GetElectronFiles(StripVer,MagPolarity,verbose)
+    	
     for file in files:
-        DataSet = GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, file, verbose,
-                             allowMissingDataSets, minEntries, triggerList)
+    	#Now pass in all of the variables used, in order to filter them from the WGP nTuple
+        DataSet = GetDataSet(StripVer, MagPolarity, PartName, TrackCuts, PIDCutString, xBin, yBin, zBin, file, verbose,
+                             allowMissingDataSets, minEntries)
         if DataSet is not None:
             #======================================================================
             # Run Specific implementation of PerfCalculator
             #======================================================================
     
-            print "printing the size again"
-            print BinningScheme.size()
+            #print "printing the size again"
+            #print BinningScheme.size()
             Plots = PerfFunc(PartName, DataSet, DLLCutList, BinningScheme, Plots,
                                 verbose=verbose)
             #======================================================================
@@ -315,8 +343,7 @@ def GetPerfResultList(PerfFunc,
                       runMax=None,
                       verbose=True,
                       allowMissingDataSets=False,
-                      maxFiles=-1,
-                      triggerList=[] ):
+                      maxFiles=-1):
  #**********************************************************************
     CheckStripVer(StripVer)
     CheckMagPol(MagPolarity)
@@ -325,12 +352,12 @@ def GetPerfResultList(PerfFunc,
     #======================================================================
     # Append runNumber limits to TrackCuts
     #======================================================================
-    if None not in (runMin, runMax):
-        if TrackCuts!='':
-            TrackCuts+=' && '
-        TrackCuts+='runNumber>='+runMin+' && runNumber<='+runMax
-    if verbose:
-        print 'Track Cuts: ', TrackCuts
+    #if None not in (runMin, runMax):
+    #    if TrackCuts!='':
+    #        TrackCuts+=' && '
+    #    TrackCuts+='runNumber>='+runMin+' && runNumber<='+runMax
+    #if verbose:
+    #    print 'Track Cuts: ', TrackCuts
 
 
     #======================================================================
@@ -346,7 +373,7 @@ def GetPerfResultList(PerfFunc,
   #                             runMin, runMax, verbose, allowMissingDataSets):
     files = GetFiles(StripVer,MagPolarity,PartName,runMin,runMax,maxFiles,verbose)
     for file in files:
-        DataSet = GetDataSet(StripVer,MagPolarity,PartName,TrackCuts,file,verbose,allowMissingDataSets, 1000, triggerList)
+        DataSet = GetDataSet(StripVer,MagPolarity,PartName,TrackCuts,file,verbose,allowMissingDataSets, 1000)
         if DataSet is not None:
 
         #======================================================================

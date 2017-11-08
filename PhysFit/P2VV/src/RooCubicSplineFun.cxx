@@ -256,32 +256,29 @@ RooCubicSplineFun::productAnalyticalIntegral(Double_t umin, Double_t umax,
 {
     RooGaussModelAcceptance::K_n K(z);
     assert(knotSize()>1);
+    double lo = scale*umin+offset;
+    double hi = scale*umax+offset+1.e-7;
     typedef RooGaussModelAcceptance::M_n<4U> M_n;
     std::vector<M_n> M; M.reserve( knotSize() );
     for (unsigned int i=0;i<knotSize();++i) {
         double x = (u(i)-offset)/scale ;
-        M.push_back( M_n( x, z ) );
+        // TODO: remove unnecessary calculation of integral (that gives 0) if lo>u(i) and/or u(i+1)<hi
+        if (lo>=u(i)) x = umin ; // take M[i] if lo<=u(i) else M_n(lo) 
+        if (u(i)>=hi) x = umax ; // take M[i+1] if u(i+1)<=hi else M_n(hi)
+        M.push_back( M_n( x, z ) ) ;
     }
     double sc[4]; for (int i=0;i<4;++i) sc[i] = pow(scale,i);
-    double lo = scale*umin+offset;
-    double hi = scale*umax+offset+1.e-7;
     std::complex<double> sum(0,0);
-    //TODO: verify we remain within [lo,hi]
-    assert(hi>=u(0)); // front only if hi>u(0)!!!
     if (lo<u(0)) sum += gaussIntegralE(true,  M.front()-M_n( umin,z), K, offset, sc);
     for (unsigned i=0;i<knotSize()-1 && u(i)<hi ;++i) {
-        if (u(i+1)<lo) continue;
-        // FIXME:TODO: we currently assume that u(0),u(knotSize()-1)] fully contained in [lo,hi]
-        assert(lo<=u(i));
-        assert(u(i+1)<=hi);
-        M_n dM = M[i+1]-M[i]; // take M[i] if lo<=u(i) else M_n(lo) ; take M[i+1] if u(i+1)<=hi else M_n(hi)
+        M_n dM = M[i+1]-M[i];
         RooCubicSplineKnot::S_jk s_jk( _aux.S_jk_sum( i, _coefList ), offset );  // pass sc into S_jk, remove from loop
         for (int j=0;j<4;++j) for (int k=0;k<4-j;++k) sum += dM(j)*s_jk(j,k)*K(k)*sc[j+k];
     }
-    assert(lo<=u(knotSize()-1));// back only if lo<u(knotsiwze()-1)!!!
     if (hi>u(knotSize()-1)) sum += gaussIntegralE(false, M_n(umax,z)-M.back(),   K, offset, sc);
     return sum;
 }
+
 
 //_____________________________________________________________________________
 Int_t RooCubicSplineFun::getMaxVal(const RooArgSet& vars) const

@@ -14,14 +14,8 @@ def getconfig() :
     configdict["CharmModes"] = {"KPiPi"} 
     # year of data taking
     configdict["YearOfDataTaking"] = {"2011","2012"} 
-    # stripping (necessary in case of PIDK shapes)
-    #configdict["Stripping"] = {"2011":"21r1","2012":"21"}
-    # integrated luminosity in each year of data taking (necessary in case of PIDK shapes) 
-    #configdict["IntegratedLuminosity"] = {"2012": {"Down": 0.59, "Up": 0.44}}
-    #configdict["LumRatio"] = {"2012" :
-                              #configdict["IntegratedLuminosity"]["2012"]["Up"] / ( configdict["IntegratedLuminosity"]["2012"]["Up"] + configdict["IntegratedLuminosity"]["2012"]["Down"] ) }
     # file name with paths to MC/data samples
-    configdict["dataName"]   = "/afs/cern.ch/user/v/vibattis/cmtuser/Urania_v5r0/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/config_Bd2DPi.txt"
+    configdict["dataName"]   = "/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/config_Bd2DPi.txt"
         
     # basic variables
     configdict["BasicVariables"] = {}
@@ -62,23 +56,7 @@ def getconfig() :
                                                       "Name"                   : "BacCharge",
                                                       "InputName"              : "lab1_ID"}
 
-    configdict["BasicVariables"]["TagDecOS"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                      "Name"                   : "TagDecOS",
-                                                      "InputName"              : "lab0_TAGDECISION_OS"}
-
-    configdict["BasicVariables"]["TagDecSS"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                      "Name"                   : "TagDecSS",
-                                                      "InputName"              : "lab0_SS_PionBDT_DEC"} 
-
-    configdict["BasicVariables"]["MistagOS"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                      "Name"                   : "MistagOS",
-                                                      "InputName"              : "lab0_TAGOMEGA_OS"}
-
-    configdict["BasicVariables"]["MistagSS"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                      "Name"                   : "MistagSS",
-                                                      "InputName"              : "lab0_SS_PionBDT_PROB"}
-
-    configdict["BasicVariables"]["BDTG"]           = { "Range"                  : [-1, 1],
+    configdict["BasicVariables"]["BDTG"]           = { "Range"                  : [0.0, 1],
                                                        "Name"                   : "BDTG",
                                                        "InputName"              : "BDT_classifier"}
 
@@ -104,33 +82,27 @@ def getconfig() :
     configdict["AdditionalVariables"]["nPV"]      = { "Range"                  : [ 0.0,    10     ],
                                                       "Name"                   : "nPV",
                                                       "InputName"              : "nPV"}
+
+    #configdict["AdditionalVariables"]["Hlt2Topo2BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
+    #                                                                            "Name"                   : "Hlt2Topo2BodyBBDTDecision_TOS",
+    #                                                                            "InputName"              : "lab0_Hlt2Topo2BodyBBDTDecision_TOS"}
+
+    #configdict["AdditionalVariables"]["Hlt2Topo3BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
+    #                                                                            "Name"                   : "Hlt2Topo3BodyBBDTDecision_TOS",
+    #                                                                            "InputName"              : "lab0_Hlt2Topo3BodyBBDTDecision_TOS"}
+
+    #configdict["AdditionalVariables"]["Hlt2Topo4BodyBBDTDecision_TOS"]      = { "Range"                  : [ 0.0,    1.0     ],
+    #                                                                            "Name"                   : "Hlt2Topo4BodyBBDTDecision_TOS",
+    #                                                                            "InputName"              : "lab0_Hlt2Topo4BodyBBDTDecision_TOS"}
     
     # Combinatorial
     configdict["CreateCombinatorial"] = {}
     configdict["CreateCombinatorial"]["BeautyMass"] = { "All"   : { "Cut": "lab0_FitDaughtersConst_M_flat>5500.0" },
                                                         "KPiPi" : { "Cut": "lab0_FitDaughtersConst_M_flat>5500.0" }
                                                         }
-    configdict["CreateCombinatorial"]["CharmMass"] = { "All"   : { "Cut": "lab0_FitDaughtersConst_M_flat>5500.0" },
-                                                       "KPiPi" : { "Cut": "lab0_FitDaughtersConst_M_flat>5500.0" }
-                                                       }
 
     # PIDK bin
     configdict["AdditionalCuts"] = {}
     configdict["AdditionalCuts"]["All"] = {"Data": "lab1_PIDK>5.0", "MC": "lab1_PIDKcorr>5.0&&lab0_BKGCAT<60"}
-
-    # tagging calibration
-    #configdict["TaggingCalibration"] = {}
-    #configdict["TaggingCalibration"]["OS"]    = {"p0"   : 0.365517, "p1"   : 0.950216, "average"   : 0.371147,
-    #                                             "p0Bar": 0.376730, "p1Bar": 1.048155, "averageBar": 0.371147}
-    #configdict["TaggingCalibration"]["SS"]    = {"p0"   : 0.424801, "p1"   : 1.004340, "average"   : 0.414892,
-    #                                             "p0Bar": 0.404896, "p1Bar": 0.995879, "averageBar": 0.414892}
-    #configdict["TaggingCalibration"]["OS+SS"] = {"p0"   : 0.338781, "p1"   : 0.971845, "average"   : 0.338493,
-    #                                             "p0Bar": 0.338363, "p1Bar": 1.027861, "averageBar": 0.338493}
-    
-
-    # PrefixID
-    configdict["DsChildrenPrefix"] = { "Child1"   : "lab3",
-                                       "Child2"   : "lab4",
-                                       "Child3"   : "lab5"}
     
     return configdict

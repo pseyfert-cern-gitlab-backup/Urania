@@ -32,12 +32,22 @@ public:
   virtual ~MultiTrackCalibTool(); ///< Destructor
 
   void SetTrackMomVarName(const std::string& NameInTree);
+  
+  void SetTrackMomBrunelVarName(const std::string& NameInTree);
 
   void SetTrackPtVarName(const std::string& NameInTree);
 
   void SetTrackEtaVarName(const std::string& NameInTree);
+  
+  void SetTrackEtaBrunelVarName(const std::string& NameInTree);
 
   void SetNTracksVarName(const std::string& NameInTree);
+  
+  void SetNTracksBrunelVarName(const std::string& NameInTree);
+  
+  void SetNSPDHitsVarName(const std::string& NameInTree);
+  
+  void SetNVeloClustersVarName(const std::string& NameInTree);
 
   void SetSWeightVarName(const std::string& NameInTree);
 
@@ -121,6 +131,9 @@ private:
   std::vector<std::pair<std::string, std::string> > m_BinningParam;
 
   unsigned int m_indexNTracks;
+  unsigned int m_indexNTracksBrunel;
+  unsigned int m_indexNSPDHits;
+  unsigned int m_indexNVeloClusters;
   unsigned int m_BinningDimensions;
 
   Bool_t m_BinningVectorSorted;

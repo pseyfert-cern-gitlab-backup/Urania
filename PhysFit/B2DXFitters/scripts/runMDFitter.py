@@ -103,7 +103,8 @@ __doc__ = """ real docstring """
 # -----------------------------------------------------------------------------
 # Load necessary libraries
 # -----------------------------------------------------------------------------
-from B2DXFitters import *
+#from B2DXFitters import *
+#from B2DXFitters import GeneralUtils 
 from B2DXFitters.WS import WS as WS
 from ROOT import * 
 from ROOT import RooFit
@@ -127,23 +128,32 @@ def getTotalBkgPDF(myconfigfile, beautyMass, charmMass, workspace, workInt, merg
     
     bkgPDF = [] 
     cdm = ["NonRes","PhiPi","KstK","KPiPi","PiPiPi","KKPi"]
+    ot = [True] 
     for i in range(0,bound):
         mm = GeneralUtils.GetModeCapital(sm[i],debug)
         if ( myconfigfile["Decay"] == "Bs2DsPi"):
             if ( mm in cdm ):
-                bkgPDF.append(WS(workInt,Bs2Dsh2011TDAnaModels.build_Bs2DsPi_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                bkgPDF.append(Bs2Dsh2011TDAnaModels.build_Bs2DsPi_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug ))
         elif ( myconfigfile["Decay"] == "Bs2DsK"):
             if ( mm in cdm ):
-                bkgPDF.append(WS(workInt,Bs2Dsh2011TDAnaModels.build_Bs2DsK_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                #bkgPDF.append(WS(workInt,Bs2Dsh2011TDAnaModels.build_Bs2DsK_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                bkgPDF.append(Bs2Dsh2011TDAnaModels.build_Bs2DsK_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug ))
         elif ( myconfigfile["Decay"] == "Bs2DsstPi"):
             if ( mm in cdm ):
-                bkgPDF.append(WS(workInt,Bs2DssthModels.build_Bs2DsstPi_BKG(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                #bkgPDF.append(WS(workInt,Bs2DssthModels.build_Bs2DsstPi_BKG(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                bkgPDF.append(Bs2DssthModels.build_Bs2DsstPi_BKG(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug ))
         elif ( myconfigfile["Decay"] == "Bs2DsstK"):
             if ( mm in cdm ):
-                bkgPDF.append(WS(workInt,Bs2DssthModels.build_Bs2DsstK_BKG(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                #bkgPDF.append(WS(workInt,Bs2DssthModels.build_Bs2DsstK_BKG(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                bkgPDF.append(Bs2DssthModels.build_Bs2DsstK_BKG(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug ))
         elif ( myconfigfile["Decay"] == "Bd2DPi"):
             if ( mm in cdm ):
-                bkgPDF.append(WS(workInt,Bd2DhModels.build_Bd2DPi_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                #bkgPDF.append(WS(workInt,Bd2DhModels.build_Bd2DPi_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                bkgPDF.append(Bd2DhModels.build_Bd2DPi_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug ))
+        elif ( myconfigfile["Decay"] == "Bd2DK"):
+            if ( mm in cdm ):
+                #bkgPDF.append(WS(workInt,Bd2DhModels.build_Bd2DK_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug )))
+                bkgPDF.append(Bd2DhModels.build_Bd2DK_BKG_MDFitter(beautyMass,charmMass, workspace, workInt, sm[i], merge, dim, debug ))
     return bkgPDF
     
 #------------------------------------------------------------------------------
@@ -223,6 +233,7 @@ def runMDFitter( debug, sample, mode, sweight,
     modeTS = TString(mode)
     sampleTS = TString(sample)
     yearTS = TString(year)
+    
     datasetTS = TString("dataSet")+decayTS+t 
     if merge == "pol" or merge == "both":
         sampleTS = TString("both") 
@@ -337,6 +348,19 @@ def runMDFitter( debug, sample, mode, sweight,
             setConstantIfSoConfigured(nYields[nYields.__len__()-1], "Yields", bkg, mm, pol, myconfigfile)
             getattr(workInt,'import')(nYields[nYields.__len__()-1])
 
+            if myconfigfile.has_key("BeautyMass"+bkg+"Shape"):
+                key = "BeautyMass"+bkg+"Shape"
+                prefix1 = bkg+"_"+obs[0].GetName()
+                workInt = readVariables(myconfigfile, key, prefix1, workInt, sm[i], merge, bound, debug)
+            if myconfigfile.has_key("CharmMass"+bkg+"Shape"):
+                key = "CharmMass"+bkg+"Shape"
+                prefix1 = bkg+"_"+obs[1].GetName()
+                workInt = readVariables(myconfigfile, key, prefix1, workInt, sm[i], merge, bound, debug)
+            if myconfigfile.has_key("PIDK"+bkg+"Shape"):
+                key = "CharmMass"+bkg+"Shape"
+                prefix1 = bkg+"_"+obs[2].GetName()
+                workInt = readVariables(myconfigfile, key, prefix1, workInt, sm[i], merge, bound, debug)
+
     ###------------------------------------------------------------------------------------------------------------------------------------###                                
         ###-------------------------------   Create the combo and signal PDF in Bs mass, Ds mass, PIDK --------------------------------------###                   
     ###------------------------------------------------------------------------------------------------------------------------------------###
@@ -350,7 +374,7 @@ def runMDFitter( debug, sample, mode, sweight,
     if combo:
         combEPDF, workInt = getSigOrCombPDF(myconfigfile,keysComb,TString("CombBkg"),
                                             workspace[0],workInt,sm,merge,bound,dim,obs, debug)
-    
+
     workInt = setBs2DsXParameters(myconfigfile, workInt, sm, merge,bound, beautyMass,debug)
     
     ###------------------------------------------------------------------------------------------------------------------------------------###     
@@ -397,8 +421,7 @@ def runMDFitter( debug, sample, mode, sweight,
     ###------------------------------------------------------------------------------------------------------------------------------------### 
           ###---------------------------------   Create the total PDF in Bs mass, Ds mass, PIDK --------------------------------------###  
     ###------------------------------------------------------------------------------------------------------------------------------------###  
-    #exit(0)    
-    
+        
     N_Bkg_Tot = []
     listPDF = [] 
     totPDFp = []

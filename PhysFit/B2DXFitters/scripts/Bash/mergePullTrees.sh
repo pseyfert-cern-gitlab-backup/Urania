@@ -1,12 +1,12 @@
 #!/bin/bash
 
 #Input options
-export inputdir="/eos/lhcb/user/v/vibattis/B2DX/Bd2DPi/Toys/SgnAndBkgTwoTaggersProdAsymm001AccMeanResTimeFrom02ps/MDFit/"
-export inputprefix="PullTreeFitB_FullMDFit_SgnAndBkgTwoTaggersProdAsymm001AccMeanResTimeFrom02ps"
-export outputfile="PullTreeFitB_FullMDFit_SgnAndBkgTwoTaggersProdAsymm001AccMeanResTimeFrom02ps.root"
-export workpath="/afs/cern.ch/user/v/vibattis/cmtuser/Urania_v5r0/PhysFit/B2DXFitters/scripts/Bash/"
+export inputdir="/eos/lhcb/wg/b2oc/TD_DPi_3fb/MCBootstrap/Bd2DPiMCFilteredS21RunIBothTaggedOnlyShortTime/TimeFit/SSbarAccAsymmFloatDMGammaConstrTrueTag/"
+export inputprefix="PullTreeTimeFit_Bd2DPiMCFilteredS21RunIBothTaggedOnlyShortTime_SSbarAccAsymmFloatDMGammaConstrTrueTag"
+export outputfile="PullTreeTimeFit_Bd2DPiMCFilteredS21RunIBothTaggedOnlyShortTime_SSbarAccAsymmFloatDMGammaConstrTrueTag.root"
+export workpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r1/PhysFit/B2DXFitters/scripts/Bash/"
 export start=0
-export stop=5000
+export stop=1000
 
 #Do merging
 rm -f ${workpath}listOfPullTrees.txt

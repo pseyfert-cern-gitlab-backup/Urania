@@ -3,10 +3,72 @@ Package             : Urania
 Package Coordinator : Diego Martinez Santos, Carlos Vazquez Sierra
 Purpose             : LHCb physics repository
 
-! 2016-11-07 - Carlos Vazquez Sierra
- - Make version v6r0, based on LCGCMT_86:
-   + Added one new package:
-      PhysFit/V0hhFitter
+! 2017-11-07 - Carlos Vazquez Sierra
+ - Add new package TrackCalib v1r0.
+
+! 2017-10-03 - Carlos Vazquez Sierra
+ - Tag version v7r1 and add new package:
+   + WGCommonTools/QEE v1r0
+
+!============================== v7r0 12-06-2017 ============================
+
+! 2017-06-12 - Carlos Vazquez Sierra
+ - Make version v7r0, based on LCGCMT_88:
+   + PIDCalib/PIDPerfScripts v12r0
+   + PIDCalib/PIDPerfTools v9r0
+   + Phys/BsKstKst v5r4
+   + Phys/B2DXFitters v4r0
+   + PhysTools/Meerkat v1r4
+   + PhysFit/P2VV v4r4
+
+!============================== v6r2p1 24-03-2017 ============================
+
+! 2017-03-24 - Carlos Vazquez Sierra
+ - Make version v6r2p1, same dependencies as v6r2, but:
+   + cmake folder updated to Gaudi/cmake v28r2.
+   + Fixed problem with GaudiProjectConfig.cmake to allow to install .hh headers from FT/Espresso.
+   + Minor updates: PhysFit/B2DXFitters (v3r4p1).
+
+!============================== v6r2 22-03-2017 ==============================
+
+! 2017-03-22 - Carlos Vazquez Sierra
+ - Make version v6r2, same dependencies as v6r1 but including:
+   + FT/Espresso (v0r6p2, new package)
+   + PhysTools/Meerkat (v1r3, new package)
+   + PIDCalib/PIDPerfScripts (v11r2)
+   + PIDCalib/PIDPerfTools (v8r2)
+   + PhysFit/B2DXFitters (v3r4)
+   + Phys/BsDsMuNuForRDS (v1r2)
+   + Phys/BsKstKst (v5r3)
+   + Phys/B2CCtuples (v3r1)
+   + Phys/A2MuMu (v1r5)
+   + PhysFit/P2VV (v4r3, fetched from lhcb-b2cc/P2VV)
+
+!============================== v6r1 01-02-2017 ==============================
+
+! 2017-02-01 - Carlos Vazquez Sierra
+ - Make version v6r1, same dependencies as v6r0 but including functional updates on:
+   + PIDCalib/PIDPerfScripts (v11r1)
+   + PIDCalib/PIDPerfTools (v8r1)
+   + PhysFit/B2DXFitters (v3r3)
+
+!============================== v6r0 19-01-2017 ==============================
+
+! 2017-01-19 - Carlos Vazquez Sierra
+ - Version prepared for release (v6r0):
+   + Fixes on warnings and updates on PIDCalib packages.
+
+! 2016-12-20 - Carlos Vazquez Sierra
+ - Make version v6r0 (v5r1), based on LCGCMT_87 (LCGCMT_84):
+   + Added two new packages:
+      PhysFit/V0hhFitter v1r0 (not included in the release)
+      Phys/BsDsMuNuForRDS v1r1
+   + Major updates on the following packages:
+      PIDCalib/PIDPerfScripts v11r0
+      PIDCalib/PIDPerfTools   v8r0
+      Phys/B2CCtuples         v3r0
+   + Rest of packages have been re-tagged (+r1)
+   + Removing GaudiPolicy (not needed for CMake)
 
 !============================== v1r0-v5r0 14-06-2016 ==============================
 

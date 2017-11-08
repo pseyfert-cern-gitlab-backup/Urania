@@ -13,11 +13,11 @@
 // author: Maurizio Martinelli (Nikhef)
 // email: maurizio.martinelli@cern.ch
 //
-// description: this distribution can have highly asymmetric tails and is 
+// description: this distribution can have highly asymmetric tails and is
 //   therefore helpful in fitting the mass difference between D* and D0 mass.
 //
 // reference: Johnson, N. L. (1954). Systems of frequency curves derived from the first law of Laplace., Trabajos de Estadistica, 5, 283-291.
-// 
+//
 
 #ifndef ROOJOHNSONSU
 #define ROOJOHNSONSU
@@ -27,10 +27,10 @@
 #include "RooCategoryProxy.h"
 #include "RooAbsReal.h"
 #include "RooAbsCategory.h"
- 
+
 class RooJohnsonSU : public RooAbsPdf {
 public:
-  RooJohnsonSU() {} ; 
+  RooJohnsonSU() {} ;
   RooJohnsonSU(const char *name, const char *title,
 	      RooAbsReal& _x,
 	      RooAbsReal& _mean,
@@ -38,7 +38,7 @@ public:
 	      RooAbsReal& _nu,
 	       RooAbsReal& _tau);
   RooJohnsonSU(const RooJohnsonSU& other, const char* name=0) ;
-  virtual TObject* clone(const char* newname) const { return new RooJohnsonSU(*this,newname); }
+  TObject* clone(const char* newname) const override { return new RooJohnsonSU(*this,newname); }
   inline virtual ~RooJohnsonSU() { }
 
 protected:
@@ -48,15 +48,15 @@ protected:
   RooRealProxy width ;
   RooRealProxy nu ;
   RooRealProxy tau ;
-  
-  Double_t evaluate() const ;
+
+  Double_t evaluate() const override;
   // Integrals
-  Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* rangeName=0) const ;
-  Double_t analyticalIntegral(Int_t code, const char* rangeName=0) const ;
+  Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* rangeName=0) const override;
+  Double_t analyticalIntegral(Int_t code, const char* rangeName=0) const override;
 
 private:
 
   ClassDef(RooJohnsonSU,1) // Your description goes here...
 };
- 
+
 #endif

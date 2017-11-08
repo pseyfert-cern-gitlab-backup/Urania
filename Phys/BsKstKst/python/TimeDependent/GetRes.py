@@ -16,7 +16,7 @@ from GetResInterface import *
 # ################################################################
 
 # MC data used to obtain the decay time error distributions.
-data_file = 'AnalysisOutWSWeightsSelectedAllBranches.root'#'AnalysisOutWithCuts_AllBranches_PHIstudy.root'
+data_file = 'AnalysisOutWSWeightsSelectedAllBranchesUpdated.root'#'AnalysisOutWithCuts_AllBranches_PHIstudy.root'
 data_tree = 'AnalysisTree'
 MC_datatype = 2 # 0 for PhSp only, 1 for VV only, 2 for both
 evnum_limit = 0

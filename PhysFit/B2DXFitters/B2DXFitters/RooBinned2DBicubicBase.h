@@ -58,7 +58,7 @@ class RooBinned2DBicubicBase : public BASE
 		/// destructor
 		virtual ~BinSizeException() throw ();
 		/// description
-		virtual const char* what() const throw ();
+		const char* what() const throw () override;
 	};
 
     public:
@@ -76,21 +76,21 @@ class RooBinned2DBicubicBase : public BASE
 	RooBinned2DBicubicBase<BASE>& operator=(
 		const RooBinned2DBicubicBase<BASE>& other);
 	/// clone method
-	virtual RooBinned2DBicubicBase<BASE>* clone(
-		const char* newname = 0) const;
+	RooBinned2DBicubicBase<BASE>* clone(
+		const char* newname = 0) const override;
 
 	/// destructor
 	virtual ~RooBinned2DBicubicBase();
 
 	/// evaluation of function
-	virtual Double_t evaluate() const;
+	Double_t evaluate() const override;
 	/// advertise analytical integrals
-	virtual Int_t getAnalyticalIntegral(
+	Int_t getAnalyticalIntegral(
 		RooArgSet& allVars, RooArgSet& integVars,
-		const char* rangeName = 0) const;
+		const char* rangeName = 0) const override;
 	/// evaluate advertised analytical integral
-        virtual Double_t analyticalIntegral(
-		Int_t code, const char* rangeName = 0) const;
+        Double_t analyticalIntegral(
+		Int_t code, const char* rangeName = 0) const override;
 
 
     private:

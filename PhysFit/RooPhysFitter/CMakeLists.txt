@@ -1,7 +1,7 @@
 ################################################################################
 # Package: RooPhysFitter
 ################################################################################
-gaudi_subdir(RooPhysFitter v3r1)
+gaudi_subdir(RooPhysFitter v3r2)
 
 find_package(Boost)
 find_package(ROOT COMPONENTS Core Tree RIO Hist TreePlayer Graf Graf3d
@@ -15,6 +15,8 @@ include_directories(${ROOT_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 reflex_generate_dictionary(RooPhysFitter
                            dict/RooPhysFitterDict.h dict/RooPhysFitterDict.xml
                            SPLIT_CLASSDEF)
+
+include_directories(SYSTEM ${ROOT_INCLUDE_DIRS})
 
 gaudi_add_library(RooPhysFitterLib
                   src/*.cpp

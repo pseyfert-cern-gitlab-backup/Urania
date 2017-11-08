@@ -1,13 +1,30 @@
-"""load the P2VV library
-
-Load the P2VV library, assuming that the library directory is in $LD_LIBRARYPATH
+"""
+Load the P2VV library
+Load the P2VV library, assuming that the library directory is in $LD_LIBRARY_PATH
 """
 
-print "P2VV - INFO: loading Cintex library"
-import ROOT
-ROOT.gSystem.Load("libCintex.so")
-ROOT.Cintex.Enable()
-ROOT.gSystem.Load("libP2VVDict.so")
+from ROOT import gSystem
+
+if not 'libRooFit' in gSystem.GetLibraries() :
+   print "P2VV - INFO: loading Cintex library"
+   gSystem.Load('libCintex')
+
+
+if not 'libRooFit' in gSystem.GetLibraries() :
+    print "P2VV - INFO: loading RooFit library"
+    gSystem.Load('libRooFit')
+
+
+if not 'libP2VV' in gSystem.GetLibraries() :
+    print "P2VV - INFO: loading P2VV library"
+    try:
+        from ROOT import gCling
+        gSystem.Load("libGui")
+        import os
+        gCling.AddIncludePath(os.path.join(os.environ['P2VVROOT'], 'include'))
+    except ImportError:
+        pass
+    gSystem.Load("libP2VVDict.so")
 
 __decorated = False
 if not __decorated:

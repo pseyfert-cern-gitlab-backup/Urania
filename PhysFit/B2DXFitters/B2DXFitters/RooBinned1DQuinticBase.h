@@ -68,7 +68,7 @@ class RooBinned1DQuinticBase : public BASE
 		/// destructor
 		virtual ~BinSizeException() throw ();
 		/// description
-		virtual const char* what() const throw ();
+		const char* what() const throw () override;
 	};
 
     public:
@@ -100,30 +100,30 @@ class RooBinned1DQuinticBase : public BASE
 	RooBinned1DQuinticBase<BASE>& operator=(
 		const RooBinned1DQuinticBase<BASE>& other);
 	/// clone method
-	virtual RooBinned1DQuinticBase<BASE>* clone(
-		const char* newname = 0) const;
+	RooBinned1DQuinticBase<BASE>* clone(
+		const char* newname = 0) const override;
 
 	/// destructor
 	virtual ~RooBinned1DQuinticBase();
 
 	/// evaluation of function
-	virtual Double_t evaluate() const;
+	Double_t evaluate() const override;
 	/// advertise analytical integrals
-	virtual Int_t getAnalyticalIntegral(
+	Int_t getAnalyticalIntegral(
 		RooArgSet& allVars, RooArgSet& integVars,
-		const char* rangeName = 0) const;
+		const char* rangeName = 0) const override;
 	/// evaluate advertised analytical integral
-        virtual Double_t analyticalIntegral(
-		Int_t code, const char* rangeName = 0) const;
+        Double_t analyticalIntegral(
+		Int_t code, const char* rangeName = 0) const override;
 
 	/// return true is vars contains the parametrisation variable
-	virtual Bool_t isBinnedDistribution(const RooArgSet& vars) const;
+	Bool_t isBinnedDistribution(const RooArgSet& vars) const override;
 	/// return list with bin boundaries
-	virtual std::list<Double_t>* binBoundaries(
-		RooAbsRealLValue& var, Double_t lo, Double_t hi) const;
+	std::list<Double_t>* binBoundaries(
+		RooAbsRealLValue& var, Double_t lo, Double_t hi) const override;
 	/// return list of pairs of lo, hi bin boundaries
-	virtual std::list<Double_t>* plotSamplingHint(
-		RooAbsRealLValue& var, Double_t lo, Double_t hi) const;
+	std::list<Double_t>* plotSamplingHint(
+		RooAbsRealLValue& var, Double_t lo, Double_t hi) const override;
 
     private:
 	/// proxy for RooAbsReals

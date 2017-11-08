@@ -23,6 +23,7 @@
 #include "RooGaussian.h"
 #include "RooCBShape.h"
 #include "RooFFTConvPdf.h"
+#include "RooNumConvPdf.h"
 #include "RooDecay.h"
 #include "RooEffProd.h"
 #include "RooWorkspace.h"
@@ -100,6 +101,77 @@ namespace Bd2DhModels {
     return pdf_totBkg;
 
   }
+
+  RooAbsPdf* build_Bd2DK_BKG_MDFitter( RooAbsReal& mass,
+				       RooAbsReal& massDs,
+				       RooWorkspace* work,
+				       RooWorkspace* workInt,
+				       TString &samplemode,
+				       TString merge,
+				       Int_t dim,
+                                        bool debug
+				       ){
+
+    if (debug == true)
+      {
+        cout<<"[INFO] =====> Build background model Bd->DK --------------"<<endl;
+      }
+
+
+    std::cout<<"DEBUG: "<<debug<<std::endl;
+    RooArgList* list = new RooArgList();
+    TString charmVarName = massDs.GetName();
+
+    RooExtendPdf* epdf_Bd2DPi = NULL;
+    epdf_Bd2DPi = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DPi", "", merge, dim, charmVarName, debug);
+    Double_t valBd2DPi = CheckEvts(workInt, samplemode, "Bd2DPi",debug);
+    list = AddEPDF(list, epdf_Bd2DPi, valBd2DPi, debug);
+
+    RooExtendPdf* epdf_Bd2DRho = NULL;
+    epdf_Bd2DRho = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DRho", "", merge, dim, charmVarName, debug);
+    Double_t valBd2DRho = CheckEvts(workInt, samplemode, "Bd2DRho",debug);
+    list = AddEPDF(list, epdf_Bd2DRho, valBd2DRho, debug);
+
+    RooExtendPdf* epdf_Bd2DstPi = NULL;
+    epdf_Bd2DstPi = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DstPi", "", merge, dim, charmVarName, debug);
+    Double_t valBd2DstPi = CheckEvts(workInt, samplemode, "Bd2DstPi",debug);
+    list = AddEPDF(list, epdf_Bd2DstPi, valBd2DstPi, debug);
+
+    RooExtendPdf* epdf_Bd2DKst = NULL;
+    epdf_Bd2DKst = buildExtendPdfSpecBkgMDFit( workInt, work, samplemode, "Bd2DKst", "", merge, dim, charmVarName, debug);
+    Double_t valBd2DKst = CheckEvts(workInt, samplemode, "Bd2DKst",debug);
+    list = AddEPDF(list, epdf_Bd2DKst, valBd2DKst, debug);
+
+    RooExtendPdf* epdf_Bd2DstK = NULL;
+    RooAbsPdf* pdf_Bd2DstK = ObtainSignalMassShape(mass, work, workInt, samplemode, "Bd2DstK", "DoubleGaussianSeparatedMean", "", false, debug);
+    TString nBd2DstKName = "nBd2DstK_"+samplemode+"_Evts";
+    RooRealVar* nBd2DstKEvts = tryVar(nBd2DstKName, workInt, debug);
+    Double_t valBd2DstK = nBd2DstKEvts->getValV();
+
+    RooAbsPdf* pdf_Bd2DstK_Ds = trySignal(samplemode, charmVarName, workInt, false);
+    TString t = "Bd2DstK";
+    RooProdPdf* pdf_Bd2DstK_Tot = GetRooProdPdfDim(t, samplemode, pdf_Bd2DstK, pdf_Bd2DstK_Ds, NULL, dim, debug  );
+    CheckPDF( pdf_Bd2DstK_Tot, debug );
+
+    TString epdfName = "Bd2DstKEPDF_m_"+samplemode;
+    epdf_Bd2DstK = new RooExtendPdf(epdfName.Data() , pdf_Bd2DstK_Tot->GetTitle(), *pdf_Bd2DstK_Tot, *nBd2DstKEvts );
+    CheckPDF(epdf_Bd2DstK, debug);
+    list = AddEPDF(list, epdf_Bd2DstK, valBd2DstK, debug);
+
+    RooAbsPdf* pdf_totBkg = NULL;
+    TString name = "BkgEPDF_m_"+samplemode;
+    pdf_totBkg = new RooAddPdf( name.Data(), name.Data(), *list);
+    if (debug == true)
+      {
+        cout<<endl;
+        if( pdf_totBkg != NULL ){ cout<<" ------------- CREATED TOTAL BACKGROUND PDF: SUCCESFULL------------"<<endl; }
+        else { cout<<" ---------- CREATED TOTAL BACKGROUND PDF: FAILED ----------------"<<endl;}
+      }
+    return pdf_totBkg;
+  
+  }
+
+
 
   //===============================================================================
   // Build Exponential + constant
@@ -653,7 +725,277 @@ namespace Bd2DhModels {
     return pdf;
   }  
 
-  //===============================================================================                                                                                                          
+  //===============================================================================
+  // Build Ipatia + JohnsonSU pdf
+  //===============================================================================
+
+  RooAbsPdf* buildIpatiaPlusJohnsonSUPDF(RooAbsReal& obs,
+                                         RooWorkspace* workInt,
+                                         TString samplemode,
+                                         TString typemode,
+                                         bool shiftMean,
+                                         bool scaleTails,
+                                         bool debug)
+  {
+    if ( debug == true )
+    {
+      std::cout<<"Bd2DhModels::buildIpatiaGaussConvPDF(..)==> building Ipatia + JohnsonSU pdf..."<<std::endl;  
+    }
+    
+    RooRealVar* lVar = NULL;
+    RooRealVar* zetaVar = NULL;
+    RooRealVar* fbVar = NULL;
+    RooRealVar* meanVar = NULL;
+    RooRealVar* nuVar =NULL;
+    RooRealVar* tauVar =NULL;
+    RooRealVar* shiftVar = NULL;
+    RooFormulaVar *meanShiftVar = NULL;
+
+    RooRealVar* sigmaIVar = NULL;
+    RooRealVar* sigmaJVar = NULL;   
+    
+    RooRealVar* a1Var = NULL;
+    RooRealVar* n1Var = NULL;
+    RooRealVar* a2Var = NULL;
+    RooRealVar* n2Var = NULL;
+
+    RooRealVar* scaleaVar = NULL;
+    RooRealVar* scalenVar = NULL;
+
+    RooFormulaVar* a1VarScaled = NULL;
+    RooFormulaVar* n1VarScaled = NULL;
+    RooFormulaVar* a2VarScaled = NULL;
+    RooFormulaVar* n2VarScaled = NULL;
+
+    RooRealVar* fracVar = NULL;
+
+    TString varName = obs.GetName();
+
+    TString lVarName = typemode+"_"+varName+"_l_"+samplemode;
+    lVar = tryVar(lVarName, workInt, debug);    
+    TString zetaVarName = typemode+"_"+varName+"_zeta_"+samplemode;
+    zetaVar = tryVar(zetaVarName, workInt, debug);
+    TString fbVarName = typemode+"_"+varName+"_fb_"+samplemode;
+    fbVar = tryVar(fbVarName, workInt, debug);
+
+    TString nuVarName = typemode+"_"+varName+"_nu_"+samplemode;
+    nuVar = tryVar(nuVarName, workInt, debug);
+    TString tauVarName = typemode+"_"+varName+"_tau_"+samplemode;
+    tauVar = tryVar(tauVarName, workInt, debug);
+
+    TString meanVarName = typemode+"_"+varName+"_mean_"+samplemode;
+    meanVar = tryVar(meanVarName, workInt, debug);
+    if(meanVar == NULL) meanVar = tryVar("Signal_"+varName+"_mean_"+samplemode, workInt, debug);
+    if (shiftMean)
+    {
+      TString shiftVarName = typemode+"_"+varName+"_shift_"+samplemode;
+      shiftVar = tryVar(shiftVarName, workInt, debug);
+      TString meanShiftVarName = typemode+"_"+varName+"_meanShift_"+samplemode;  
+      meanShiftVar = new RooFormulaVar(meanShiftVarName.Data(), meanShiftVarName.Data(), "@0+@1", RooArgList(*meanVar,*shiftVar));   
+    }
+    TString sigmaIVarName = typemode+"_"+varName+"_sigmaI_"+samplemode;
+    sigmaIVar = tryVar(sigmaIVarName, workInt, debug);
+    if(sigmaIVar == NULL) sigmaIVar = tryVar("Signal_"+varName+"_sigmaI_"+samplemode, workInt, debug);
+
+    TString sigmaJVarName = typemode+"_"+varName+"_sigmaJ_"+samplemode;
+    sigmaJVar = tryVar(sigmaJVarName, workInt, debug);
+    if(sigmaJVar == NULL) sigmaJVar = tryVar("Signal_"+varName+"_sigmaJ_"+samplemode, workInt, debug);
+
+    TString a1VarName = typemode+"_"+varName+"_a1_"+samplemode;
+    a1Var = tryVar(a1VarName, workInt, debug);
+    if (a1Var == NULL) a1Var = tryVar("Signal_"+varName+"_a1_"+samplemode, workInt, debug);
+    TString n1VarName = typemode+"_"+varName+"_n1_"+samplemode;
+    n1Var = tryVar(n1VarName, workInt, debug);
+    if (n1Var == NULL) a1Var = tryVar("Signal_"+varName+"_n1_"+samplemode, workInt, debug);
+    TString a2VarName = typemode+"_"+varName+"_a2_"+samplemode;    
+    a2Var = tryVar(a2VarName, workInt, debug);
+    if (a2Var == NULL) a1Var = tryVar("Signal_"+varName+"_a2_"+samplemode, workInt, debug);
+    TString n2VarName = typemode+"_"+varName+"_n2_"+samplemode;
+    n2Var = tryVar(n2VarName, workInt, debug);
+    if (n2Var == NULL) n2Var = tryVar("Signal_"+varName+"_n2_"+samplemode, workInt, debug);
+
+    if(scaleTails)
+    {
+      TString scaleaVarName = typemode+"_"+varName+"_ascale_"+samplemode;
+      scaleaVar = tryVar(scaleaVarName, workInt, debug);
+      if(scaleaVar == NULL) scaleaVar = tryVar("Signal_"+varName+"_ascale_"+samplemode, workInt, debug);
+      TString scalenVarName = typemode+"_"+varName+"_nscale_"+samplemode;
+      scalenVar = tryVar(scalenVarName, workInt, debug);
+      if(scalenVar == NULL) scalenVar = tryVar("Signal_"+varName+"_nscale_"+samplemode, workInt, debug);
+      TString a1VarScaledName = typemode+"_"+varName+"_a1scaled_"+samplemode;
+      a1VarScaled = new RooFormulaVar(a1VarScaledName.Data(), a1VarScaledName.Data(), "@0*@1", RooArgList(*a1Var,*scaleaVar));
+      TString a2VarScaledName = typemode+"_"+varName+"_a2scaled_"+samplemode;
+      a2VarScaled = new RooFormulaVar(a2VarScaledName.Data(), a2VarScaledName.Data(), "@0*@1", RooArgList(*a2Var,*scaleaVar));
+      TString n1VarScaledName = typemode+"_"+varName+"_n1scaled_"+samplemode;
+      n1VarScaled = new RooFormulaVar(n1VarScaledName.Data(), n1VarScaledName.Data(), "@0*@1", RooArgList(*n1Var,*scalenVar));
+      TString n2VarScaledName = typemode+"_"+varName+"_n2scaled_"+samplemode;
+      n2VarScaled = new RooFormulaVar(n2VarScaledName.Data(), n2VarScaledName.Data(), "@0*@1", RooArgList(*n2Var,*scalenVar)); 
+    }
+    TString fracVarName = typemode+"_"+varName+"_fracI_"+samplemode;
+    fracVar = tryVar(fracVarName, workInt, debug);
+
+    RooIpatia2* pdf1 = NULL;
+    TString pdf1Name = typemode+"_"+varName+"_ipatia_"+samplemode;
+    RooJohnsonSU* pdf2 = NULL;
+    TString pdf2Name = typemode+"_"+varName+"_johnsonSU_"+samplemode;
+
+    if(shiftMean)
+    {
+      pdf2 = new RooJohnsonSU( pdf2Name.Data(), pdf2Name.Data(), obs, *meanShiftVar, *sigmaJVar, *nuVar, *tauVar);      
+      if(scaleTails)
+        pdf1 = new RooIpatia2( pdf1Name.Data(), pdf1Name.Data(), obs, *lVar, *zetaVar, *fbVar, *sigmaIVar, *meanShiftVar, *a1VarScaled, *n1VarScaled, *a2VarScaled, *n2VarScaled);
+      else
+        pdf1 = new RooIpatia2( pdf1Name.Data(), pdf1Name.Data(), obs, *lVar, *zetaVar, *fbVar, *sigmaIVar, *meanShiftVar, *a1Var, *n1Var, *a2Var, *n2Var);
+    }
+    else
+    {
+      pdf2 = new RooJohnsonSU( pdf2Name.Data(), pdf2Name.Data(), obs, *meanVar, *sigmaJVar, *nuVar, *tauVar);      
+      if(scaleTails)
+        pdf1 = new RooIpatia2( pdf1Name.Data(), pdf1Name.Data(), obs, *lVar, *zetaVar, *fbVar, *sigmaIVar, *meanVar, *a1VarScaled, *n1VarScaled, *a2VarScaled, *n2VarScaled);
+      else
+        pdf1 = new RooIpatia2( pdf1Name.Data(), pdf1Name.Data(), obs, *lVar, *zetaVar, *fbVar, *sigmaIVar, *meanVar, *a1Var, *n1Var, *a2Var, *n2Var);
+    }
+  
+    TString pdfName = typemode+"_"+varName+"_IpatiaPlusJohnsonSU_"+samplemode;
+    RooAddPdf* pdf = NULL;
+    pdf = new RooAddPdf( pdfName.Data(), pdfName.Data(), RooArgList(*pdf1, *pdf2), *fracVar);
+    CheckPDF( pdf, debug );
+
+    return pdf;
+  
+  }
+  
+  //===============================================================================
+  // Build Ipatia + gaussian pdf
+  //===============================================================================
+
+  RooAbsPdf* buildIpatiaPlusGaussianPDF(RooAbsReal& obs,
+                                        RooWorkspace* workInt,
+                                        TString samplemode,
+                                        TString typemode,
+                                        bool shiftMean,
+                                        bool scaleTails,
+                                        bool debug)
+  {
+    if ( debug == true )
+    {
+      std::cout<<"Bd2DhModels::buildIpatiaGaussConvPDF(..)==> building Ipatia + Gaussian pdf..."<<std::endl; 
+    }
+
+    RooRealVar* lVar = NULL;
+    RooRealVar* zetaVar = NULL;
+    RooRealVar* fbVar = NULL;
+    RooRealVar* meanVar = NULL;
+    RooRealVar* shiftVar = NULL;
+    RooFormulaVar *meanShiftVar = NULL;
+
+    RooRealVar* sigmaIVar = NULL;
+    RooRealVar* sigmaGVar = NULL;
+
+    RooRealVar* a1Var = NULL;    
+    RooRealVar* n1Var = NULL;
+    RooRealVar* a2Var = NULL;    
+    RooRealVar* n2Var = NULL;
+
+    RooRealVar* scaleaVar = NULL;
+    RooRealVar* scalenVar = NULL;
+
+    RooFormulaVar* a1VarScaled = NULL;
+    RooFormulaVar* n1VarScaled = NULL;    
+    RooFormulaVar* a2VarScaled = NULL;
+    RooFormulaVar* n2VarScaled = NULL;    
+
+    RooRealVar* fracVar = NULL;
+
+    TString varName = obs.GetName();
+
+    TString lVarName = typemode+"_"+varName+"_l_"+samplemode;
+    lVar = tryVar(lVarName, workInt, debug);
+    TString zetaVarName = typemode+"_"+varName+"_zeta_"+samplemode;
+    zetaVar = tryVar(zetaVarName, workInt, debug);
+    TString fbVarName = typemode+"_"+varName+"_fb_"+samplemode;
+    fbVar = tryVar(fbVarName, workInt, debug);
+
+    TString meanVarName = typemode+"_"+varName+"_mean_"+samplemode;
+    meanVar = tryVar(meanVarName, workInt, debug);
+    if(meanVar == NULL) meanVar = tryVar("Signal_"+varName+"_mean_"+samplemode, workInt, debug);
+    if (shiftMean)
+    {
+      TString shiftVarName = typemode+"_"+varName+"_shift_"+samplemode;
+      shiftVar = tryVar(shiftVarName, workInt, debug);
+      TString meanShiftVarName = typemode+"_"+varName+"_meanShift_"+samplemode;  
+      meanShiftVar = new RooFormulaVar(meanShiftVarName.Data(), meanShiftVarName.Data(), "@0+@1", RooArgList(*meanVar,*shiftVar));  
+    }
+    TString sigmaIVarName = typemode+"_"+varName+"_sigmaI_"+samplemode;
+    sigmaIVar = tryVar(sigmaIVarName, workInt, debug);
+    if(sigmaIVar == NULL) sigmaIVar = tryVar("Signal_"+varName+"_sigmaI_"+samplemode, workInt, debug);
+
+    TString sigmaGVarName = typemode+"_"+varName+"_sigmaG_"+samplemode;
+    sigmaGVar = tryVar(sigmaGVarName, workInt, debug);
+    TString a1VarName = typemode+"_"+varName+"_a1_"+samplemode;
+    a1Var = tryVar(a1VarName, workInt, debug);
+    if (a1Var == NULL) a1Var = tryVar("Signal_"+varName+"_a1_"+samplemode, workInt, debug);
+    TString n1VarName = typemode+"_"+varName+"_n1_"+samplemode;
+    n1Var = tryVar(n1VarName, workInt, debug);
+    if (n1Var == NULL) a1Var = tryVar("Signal_"+varName+"_n1_"+samplemode, workInt, debug);
+    TString a2VarName = typemode+"_"+varName+"_a2_"+samplemode;
+    a2Var = tryVar(a2VarName, workInt, debug);
+    if (a2Var == NULL) a1Var = tryVar("Signal_"+varName+"_a2_"+samplemode, workInt, debug);
+    TString n2VarName = typemode+"_"+varName+"_n2_"+samplemode;
+    n2Var = tryVar(n2VarName, workInt, debug);
+    if (n2Var == NULL) n2Var = tryVar("Signal_"+varName+"_n2_"+samplemode, workInt, debug);
+
+    if(scaleTails)
+    {
+      TString scaleaVarName = typemode+"_"+varName+"_ascale_"+samplemode;
+      scaleaVar = tryVar(scaleaVarName, workInt, debug);
+      if(scaleaVar == NULL) scaleaVar = tryVar("Signal_"+varName+"_ascale_"+samplemode, workInt, debug);
+      TString scalenVarName = typemode+"_"+varName+"_nscale_"+samplemode;
+      scalenVar = tryVar(scalenVarName, workInt, debug);
+      if(scalenVar == NULL) scalenVar = tryVar("Signal_"+varName+"_nscale_"+samplemode, workInt, debug);
+      TString a1VarScaledName = typemode+"_"+varName+"_a1scaled_"+samplemode;
+      a1VarScaled = new RooFormulaVar(a1VarScaledName.Data(), a1VarScaledName.Data(), "@0*@1", RooArgList(*a1Var,*scaleaVar));
+      TString a2VarScaledName = typemode+"_"+varName+"_a2scaled_"+samplemode;
+      a2VarScaled = new RooFormulaVar(a2VarScaledName.Data(), a2VarScaledName.Data(), "@0*@1", RooArgList(*a2Var,*scaleaVar));
+      TString n1VarScaledName = typemode+"_"+varName+"_n1scaled_"+samplemode;
+      n1VarScaled = new RooFormulaVar(n1VarScaledName.Data(), n1VarScaledName.Data(), "@0*@1", RooArgList(*n1Var,*scalenVar));
+      TString n2VarScaledName = typemode+"_"+varName+"_n2scaled_"+samplemode;  
+      n2VarScaled = new RooFormulaVar(n2VarScaledName.Data(), n2VarScaledName.Data(), "@0*@1", RooArgList(*n2Var,*scalenVar));
+    }
+    TString fracVarName = typemode+"_"+varName+"_fracI_"+samplemode;
+    fracVar = tryVar(fracVarName, workInt, debug);
+
+    RooIpatia2* pdf1 = NULL;
+    TString pdf1Name = typemode+"_"+varName+"_ipatia_"+samplemode;
+    RooGaussian* pdf2 = NULL;
+    TString pdf2Name = typemode+"_"+varName+"_gauss_"+samplemode;
+    if(shiftMean)
+    {
+      pdf2 = new RooGaussian( pdf2Name.Data(), pdf2Name.Data(), obs, *meanShiftVar, *sigmaGVar);
+      if(scaleTails)
+        pdf1 = new RooIpatia2( pdf1Name.Data(), pdf1Name.Data(), obs, *lVar, *zetaVar, *fbVar, *sigmaIVar, *meanShiftVar, *a1VarScaled, *n1VarScaled, *a2VarScaled, *n2VarScaled);
+      else
+        pdf1 = new RooIpatia2( pdf1Name.Data(), pdf1Name.Data(), obs, *lVar, *zetaVar, *fbVar, *sigmaIVar, *meanShiftVar, *a1Var, *n1Var, *a2Var, *n2Var);
+    }
+    else
+    { 
+      pdf2 = new RooGaussian( pdf2Name.Data(), pdf2Name.Data(), obs, *meanVar, *sigmaGVar);
+      if(scaleTails)
+        pdf1 = new RooIpatia2( pdf1Name.Data(), pdf1Name.Data(), obs, *lVar, *zetaVar, *fbVar, *sigmaIVar, *meanVar, *a1VarScaled, *n1VarScaled, *a2VarScaled, *n2VarScaled);            
+      else
+        pdf1 = new RooIpatia2( pdf1Name.Data(), pdf1Name.Data(), obs, *lVar, *zetaVar, *fbVar, *sigmaIVar, *meanVar, *a1Var, *n1Var, *a2Var, *n2Var);
+    }
+    
+    TString pdfName = typemode+"_"+varName+"_IpatiaPlusGauss_"+samplemode;
+    RooAddPdf* pdf = NULL;
+    pdf = new RooAddPdf( pdfName.Data(), pdfName.Data(), RooArgList(*pdf1, *pdf2), *fracVar);
+    CheckPDF( pdf, debug );
+
+    return pdf;
+    
+  }  
+
+  //===============================================================================                                
   // Build Ipatia + exponential pdf                          
   //===============================================================================
 
@@ -733,6 +1075,8 @@ namespace Bd2DhModels {
                                      TString samplemode,
                                      TString typemode,
                                      bool shiftMean,
+                                     bool scaleTails,
+                                     bool fft,
                                      bool debug)
   {
     
@@ -745,14 +1089,24 @@ namespace Bd2DhModels {
     RooRealVar* zetaVar = NULL;
     RooRealVar* fbVar = NULL;
     RooRealVar* meanVar = NULL;
-    RooRealVar* sigmaIVar = NULL;
-    RooRealVar* sigmaGVar = NULL;
     RooRealVar* shiftVar = NULL;
     RooFormulaVar *meanShiftVar = NULL;
+
+    RooRealVar* sigmaIVar = NULL;
+    RooRealVar* sigmaGVar = NULL;
+
     RooRealVar* a1Var = NULL;
     RooRealVar* n1Var = NULL;
     RooRealVar* a2Var = NULL;
     RooRealVar* n2Var = NULL;
+
+    RooRealVar* scaleaVar = NULL;
+    RooRealVar* scalenVar = NULL;
+
+    RooFormulaVar* a1VarScaled = NULL;
+    RooFormulaVar* n1VarScaled = NULL;
+    RooFormulaVar* a2VarScaled = NULL;
+    RooFormulaVar* n2VarScaled = NULL;
 
     TString varName = obs.GetName();
 
@@ -762,6 +1116,7 @@ namespace Bd2DhModels {
     zetaVar = tryVar(zetaVarName, workInt, debug);
     TString fbVarName = typemode+"_"+varName+"_fb_"+samplemode;
     fbVar = tryVar(fbVarName, workInt, debug);
+    
     TString meanVarName = typemode+"_"+varName+"_mean_"+samplemode;
     meanVar = tryVar(meanVarName, workInt, debug);
     if(meanVar == NULL) meanVar = tryVar("Signal_"+varName+"_mean_"+samplemode, workInt, debug);
@@ -774,25 +1129,66 @@ namespace Bd2DhModels {
     }
     TString sigmaIVarName = typemode+"_"+varName+"_sigmaI_"+samplemode;
     sigmaIVar = tryVar(sigmaIVarName, workInt, debug);
-    if(sigmaIVar == NULL) meanVar = tryVar("Signal_"+varName+"_sigmaI_"+samplemode, workInt, debug);
+    if(sigmaIVar == NULL) sigmaIVar = tryVar("Signal_"+varName+"_sigmaI_"+samplemode, workInt, debug);
+
     TString sigmaGVarName = typemode+"_"+varName+"_sigmaG_"+samplemode;
     sigmaGVar = tryVar(sigmaGVarName, workInt, debug);
     TString a1VarName = typemode+"_"+varName+"_a1_"+samplemode;
     a1Var = tryVar(a1VarName, workInt, debug);
+    if (a1Var == NULL) a1Var = tryVar("Signal_"+varName+"_a1_"+samplemode, workInt, debug);
     TString n1VarName = typemode+"_"+varName+"_n1_"+samplemode;
     n1Var = tryVar(n1VarName, workInt, debug);
-    TString a2VarName = typemode+"_"+varName+"_a2_"+samplemode;
+    if (n1Var == NULL) a1Var = tryVar("Signal_"+varName+"_n1_"+samplemode, workInt, debug);
+    TString a2VarName = typemode+"_"+varName+"_a2_"+samplemode;    
     a2Var = tryVar(a2VarName, workInt, debug);
+    if (a2Var == NULL) a1Var = tryVar("Signal_"+varName+"_a2_"+samplemode, workInt, debug);
     TString n2VarName = typemode+"_"+varName+"_n2_"+samplemode;
     n2Var = tryVar(n2VarName, workInt, debug);
+    if (n2Var == NULL) n2Var = tryVar("Signal_"+varName+"_n2_"+samplemode, workInt, debug);
+
+    if(scaleTails)
+    {
+      TString scaleaVarName = typemode+"_"+varName+"_ascale_"+samplemode;
+      scaleaVar = tryVar(scaleaVarName, workInt, debug);      
+      if(scaleaVar == NULL) scaleaVar = tryVar("Signal_"+varName+"_ascale_"+samplemode, workInt, debug);
+     
+      TString scalenVarName = typemode+"_"+varName+"_nscale_"+samplemode;
+      scalenVar = tryVar(scalenVarName, workInt, debug);
+      if(scalenVar == NULL) scalenVar = tryVar("Signal_"+varName+"_nscale_"+samplemode, workInt, debug);
+
+      TString a1VarScaledName = typemode+"_"+varName+"_a1scaled_"+samplemode;
+      a1VarScaled = new RooFormulaVar(a1VarScaledName.Data(), a1VarScaledName.Data(), "@0*@1", RooArgList(*a1Var,*scaleaVar));
+      
+      TString a2VarScaledName = typemode+"_"+varName+"_a2scaled_"+samplemode;
+      a2VarScaled = new RooFormulaVar(a2VarScaledName.Data(), a2VarScaledName.Data(), "@0*@1", RooArgList(*a2Var,*scaleaVar));
+      
+      TString n1VarScaledName = typemode+"_"+varName+"_n1scaled_"+samplemode;
+      n1VarScaled = new RooFormulaVar(n1VarScaledName.Data(), n1VarScaledName.Data(), "@0*@1", RooArgList(*n1Var,*scalenVar));
+
+      TString n2VarScaledName = typemode+"_"+varName+"_n2scaled_"+samplemode;
+      n2VarScaled = new RooFormulaVar(n2VarScaledName.Data(), n2VarScaledName.Data(), "@0*@1", RooArgList(*n2Var,*scalenVar));  
+
+    }
+    
 
     RooIpatia2* pdf1 = NULL;
     TString pdf1Name = typemode+"_"+varName+"_ipatia_"+samplemode;
     if(shiftMean)
-      pdf1 = new RooIpatia2( pdf1Name.Data(), pdf1Name.Data(), obs, *lVar, *zetaVar, *fbVar, *sigmaIVar, *meanShiftVar, *a1Var, *n1Var, *a2Var, *n2Var);
+    {
+      if(scaleTails)
+        pdf1 = new RooIpatia2( pdf1Name.Data(), pdf1Name.Data(), obs, *lVar, *zetaVar, *fbVar, *sigmaIVar, *meanShiftVar, *a1VarScaled, *n1VarScaled, *a2VarScaled, *n2VarScaled);
+      else
+        pdf1 = new RooIpatia2( pdf1Name.Data(), pdf1Name.Data(), obs, *lVar, *zetaVar, *fbVar, *sigmaIVar, *meanShiftVar, *a1Var, *n1Var, *a2Var, *n2Var);
+    }
     else
-      pdf1 = new RooIpatia2( pdf1Name.Data(), pdf1Name.Data(), obs, *lVar, *zetaVar, *fbVar, *sigmaIVar, *meanVar, *a1Var, *n1Var, *a2Var, *n2Var);
+    {
+      if(scaleTails)
+        pdf1 = new RooIpatia2( pdf1Name.Data(), pdf1Name.Data(), obs, *lVar, *zetaVar, *fbVar, *sigmaIVar, *meanVar, *a1VarScaled, *n1VarScaled, *a2VarScaled, *n2VarScaled);      
+      else
+        pdf1 = new RooIpatia2( pdf1Name.Data(), pdf1Name.Data(), obs, *lVar, *zetaVar, *fbVar, *sigmaIVar, *meanVar, *a1Var, *n1Var, *a2Var, *n2Var);
+    }
     
+
     RooGaussian* pdf2 = NULL;
     TString pdf2Name = typemode+"_"+varName+"_gauss_"+samplemode;
     RooRealVar *mean0 = new RooRealVar(typemode+"_"+varName+"_mean0_"+samplemode,
@@ -800,14 +1196,23 @@ namespace Bd2DhModels {
                                        0.0);
     pdf2 = new RooGaussian( pdf2Name.Data(), pdf2Name.Data(), obs, *mean0, *sigmaGVar);
 
-    RooFFTConvPdf* pdf = NULL;
-    TString pdfName = typemode+"_"+varName+"_ipatiagauss_"+samplemode;
-    pdf = new RooFFTConvPdf( pdfName.Data(), pdfName.Data(), obs, *pdf1, *pdf2);
+    RooFFTConvPdf* pdf_fft = NULL;
+    RooNumConvPdf* pdf_num = NULL;
     
-    CheckPDF( pdf, debug );
-
-    return pdf;
-    
+    TString pdfName = typemode+"_"+varName+"_ipatiagaussconv_"+samplemode;
+    if(fft)
+    {
+      pdf_fft = new RooFFTConvPdf( pdfName.Data(), pdfName.Data(), obs, *pdf1, *pdf2);
+      CheckPDF( pdf_fft, debug );
+      return pdf_fft;
+    }
+    else
+    {
+      pdf_num = new RooNumConvPdf( pdfName.Data(), pdfName.Data(), obs, *pdf1, *pdf2 );
+      pdf_num->setConvolutionWindow(*mean0, *sigmaIVar, 5.0);
+      CheckPDF( pdf_num, debug );
+      return pdf_num;
+    }
 
   }
   

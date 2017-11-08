@@ -1,9 +1,11 @@
 ################################################################################
 # Package: MCLimit
 ################################################################################
-gaudi_subdir(MCLimit v2r1)
+gaudi_subdir(MCLimit v2r2)
 
 find_package(ROOT COMPONENTS Core RIO MathCore Minuit Hist Graf MathCore Minuit Hist Graf)
+
+include_directories(SYSTEM ${ROOT_INCLUDE_DIRS})
 
 gaudi_add_library(MCLimit
                   src/junkInterface.cpp

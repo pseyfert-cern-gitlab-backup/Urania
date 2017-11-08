@@ -1,12 +1,13 @@
 ################################################################################
 # Package: PIDPerfScripts
 ################################################################################
-gaudi_subdir(PIDPerfScripts v10r7)
+gaudi_subdir(PIDPerfScripts v12r0)
 
 gaudi_depends_on_subdirs(PIDCalib/PIDPerfTools)
 
 find_package(Boost)
 find_package(ROOT)
+find_package(Xrootd)
 
 gaudi_install_python_modules()
 

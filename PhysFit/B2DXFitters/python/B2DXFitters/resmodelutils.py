@@ -104,6 +104,7 @@ def getResolutionModel(
             sf = WS(ws, RooRealVar('timeerr_scalefactor',
                 'timeerr_scalefactor',
                 config['DecayTimeResolutionScaleFactor'], .5, 2.))
+            
             if 'Spline' != config['AcceptanceFunction'] or 'GEN' in config['Context']:
                 pdfs.add(WS(ws, RooGaussModel('resmodel%02d' % i, 'resmodel%02d' % i,
                     time, bias, sigma, sf)))

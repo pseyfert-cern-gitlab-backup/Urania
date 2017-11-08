@@ -1,6 +1,6 @@
 ################################################################################
 # Package: Bs2JpsiKs
 ################################################################################
-gaudi_subdir(BsDsMuNuForRDS v1r0)
+gaudi_subdir(BsDsMuNuForRDS v1r2)
 
 gaudi_install_python_modules()

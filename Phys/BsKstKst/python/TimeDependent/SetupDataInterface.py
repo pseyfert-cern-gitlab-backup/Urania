@@ -420,7 +420,7 @@ def AddAngles(inputfilename,inputfileextradir,inputfileextradirname,outputfilena
 	else: tcosin = fcosin.Get('AnalysisTree')
 	fcosout = TFile(NTUPLE_PATH + outputfilename + '.root','RECREATE')
 	print "Copying the original tree ..."
-	tcosout = tcosin.CopyTree("pass_bdt && pass_pid && pass_rhokst==0 && pass_multcand")
+	tcosout = tcosin.CopyTree("pass_all")#pass_bdt && pass_pid && pass_rhokst==0 && pass_multcand")
 	print "Tree copied."
 
 	#cos1 = MyStruct()

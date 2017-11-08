@@ -9,16 +9,7 @@
 #include "KpiKpiSpectrumNW.h"
 #include "RooMath.h"
 
-#define pi 3.14159265358979323846264
-#define MPion 139.57018
-#define MKaon 493.667
-#define MKst_1_1410 1414.
-#define GKst_1_1410 232.
-#define MKst_1_1680 1717.
-#define GKst_1_1680 322.
-#define MBs 5366.77
-
-ClassImp(ComputeIntegrals) 
+ClassImp(ComputeIntegrals)
 
 // ---------------------------------------------------
 
@@ -149,6 +140,24 @@ ClassImp(ComputeIntegrals)
    gs = RooRealProxy("gs","gs",this,*coef_calib_params);
    coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
    gt = RooRealProxy("gt","gt",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   c1_mass_swave = RooRealProxy("c1_mass_swave","c1_mass_swave",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   c2_mass_swave = RooRealProxy("c2_mass_swave","c2_mass_swave",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   c3_mass_swave = RooRealProxy("c3_mass_swave","c3_mass_swave",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   c4_mass_swave = RooRealProxy("c4_mass_swave","c4_mass_swave",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   c5_mass_swave = RooRealProxy("c5_mass_swave","c5_mass_swave",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   c6_mass_swave = RooRealProxy("c6_mass_swave","c6_mass_swave",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   c7_mass_swave = RooRealProxy("c7_mass_swave","c7_mass_swave",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   c8_mass_swave = RooRealProxy("c8_mass_swave","c8_mass_swave",this,*coef_calib_params);
+   coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
+   c9_mass_swave = RooRealProxy("c9_mass_swave","c9_mass_swave",this,*coef_calib_params);
    coef_calib_params=(RooAbsReal*)calib_params_iter->Next();
    res_mass = RooRealProxy("res_mass","res_mass",this,*coef_calib_params);
 
@@ -332,6 +341,15 @@ ClassImp(ComputeIntegrals)
    gv("gv",this,other.gv),
    gs("gs",this,other.gs),
    gt("gt",this,other.gt),
+   c1_mass_swave("c1_mass_swave",this,other.c1_mass_swave),
+   c2_mass_swave("c2_mass_swave",this,other.c2_mass_swave),
+   c3_mass_swave("c3_mass_swave",this,other.c3_mass_swave),
+   c4_mass_swave("c4_mass_swave",this,other.c4_mass_swave),
+   c5_mass_swave("c5_mass_swave",this,other.c5_mass_swave),
+   c6_mass_swave("c6_mass_swave",this,other.c6_mass_swave),
+   c7_mass_swave("c7_mass_swave",this,other.c7_mass_swave),
+   c8_mass_swave("c8_mass_swave",this,other.c8_mass_swave),
+   c9_mass_swave("c9_mass_swave",this,other.c9_mass_swave),
    res_mass("res_mass",this,other.res_mass),
    Im00("Im00",this,other.Im00),
    Im01("Im01",this,other.Im01),
@@ -690,10 +708,7 @@ Double_t ComputeIntegrals::Blatt_Weisskopf2(Double_t q, Double_t q0, Int_t L) co
  {
 
    if (L<1.) {return 1.;}  
-   Double_t d;
-   if (L == 1) {d = 3.4e-03;}
-   else if (L == 2) {d = 2.7e-03;}
-   else {d = 3.e-03/L;}
+   Double_t d = 1.6e-03;
    Double_t z = q*d*q*d;
    Double_t z0 = q0*d*q0*d;
    if (L==1) {return (1+z0)/(1+z);}
@@ -720,6 +735,9 @@ Double_t ComputeIntegrals::FL_j1j2(Int_t j1, Int_t j2, Double_t ma, Double_t mb)
    Double_t q0 = get_q(m0,MPion,MKaon);
 
    // Decay of the Bs.
+   //Int_t L;
+   //if (j1*j2>0) {L = abs(j1-j2)+1;}
+   //else {L = abs(j1-j2);}
    Int_t L = abs(j1-j2);
    Double_t FL_Bs = pow(p/p0,L)*sqrt(Blatt_Weisskopf2(p,p0,L));
 
@@ -752,7 +770,7 @@ TComplex ComputeIntegrals::Resonance(Double_t m, Double_t m0, Double_t g0, Int_t
    TComplex BW = num/denom;
 
    if (J == 1) {return BW*TComplex(1.,-1.5707963267948966,1);}
-   else if (J == 2) {return BW*TComplex(1.,-0.01011220614593752,1);}
+   else if (J == 2) {return BW*TComplex(1.,-0.006008360479292941,1);}
    return BW;
 
  }
@@ -764,16 +782,21 @@ TComplex ComputeIntegrals::Lass(Double_t m, Double_t m0, Double_t g0) const
  { 
 
    TComplex i(0,1);
-   
-   Double_t q = get_q(m,MPion,MKaon);
-   Double_t q0 = get_q(m0,MPion,MKaon);
 
-   Double_t cotg_deltaB = 1./(a_lass*q)+0.5*r_lass*q;
+   Double_t a_lass_ = 1./c1_mass_swave;
+   Double_t r_lass_ = c2_mass_swave;
+   Double_t m0_ = c3_mass_swave;
+   Double_t g0_ = c4_mass_swave;
+
+   Double_t q = get_q(m,MPion,MKaon);
+   Double_t q0 = get_q(m0_,MPion,MKaon);
+
+   Double_t cotg_deltaB = 1./(a_lass_*q)+0.5*r_lass_*q;
    Double_t deltaB = atan(1./cotg_deltaB);
    TComplex expo(1.,2.*deltaB,1);
 
-   Double_t gamma = g0*(q/q0)*(m0/m);
-   Double_t cotg_deltaR = (m0*m0-m*m)/(m0*gamma);
+   Double_t gamma = g0_*(q/q0)*(m0_/m);
+   Double_t cotg_deltaR = (m0_*m0_-m*m)/(m0_*gamma);
 
    TComplex T = 1./(cotg_deltaB-i)+expo/(cotg_deltaR-i);
 
@@ -990,7 +1013,11 @@ TComplex ComputeIntegrals::Prop_Stheo(Double_t m) const
       T = (S0b*S1r*S2r-1.)/(2.*i);
    }
 
-   return T*TComplex(1.,-0.7095863518296103,1);
+   // Polynomical correction to convert from scattering to decay mass amplitudes.
+   Double_t xm = (m-1175.)/425.;
+   Double_t modulus = 1.+c1_mass_swave*xm+c2_mass_swave*(2.*xm*xm-1.)+c3_mass_swave*(4.*xm*xm*xm-3.*xm)+c4_mass_swave*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
+
+   return TComplex(modulus,T.Theta()-0.7095863518296103,1);
 
  }
 
@@ -1072,6 +1099,56 @@ TComplex ComputeIntegrals::Prop_Dtheo(Double_t m) const
  }
 
 // ---------------------------------------------------
+// Palano scalar Kpi mass amplitude.
+
+TComplex ComputeIntegrals::Prop_S_Palano(Double_t m) const 
+ { 
+
+   TComplex i(0,1);
+   Double_t m_GeV = m/1000.;
+   Double_t svar_GeV = m_GeV*m_GeV;
+   Double_t q_Kpi_GeV = get_q(m,MKaon,MPion)/1000.;
+   Double_t q_Keta_GeV = get_q(m,MKaon,MEta)/1000.;
+
+   Double_t rho_1 = 2.*q_Kpi_GeV/m_GeV;
+   Double_t rho_2 = 2.*q_Keta_GeV/m_GeV;
+
+   Double_t sbot_GeV = 0.36;
+   Double_t stop_GeV = 5.832;
+   Double_t X = (2.*svar_GeV-(stop_GeV+sbot_GeV))/(stop_GeV-sbot_GeV);
+
+   Double_t K11 = (svar_GeV-s_A_palano)/s_Kpi_palano*(g_1_a_palano*g_1_a_palano/(svar_GeV-s_a_palano)+g_1_b_palano*g_1_b_palano/(svar_GeV-s_b_palano)+C_11_0_palano+C_11_1_palano*X+C_11_2_palano*X*X+C_11_3_palano*X*X*X);
+   Double_t K12 = (svar_GeV-s_A_palano)/s_Kpi_palano*(g_1_a_palano*g_2_a_palano/(svar_GeV-s_a_palano)+g_1_b_palano*g_2_b_palano/(svar_GeV-s_b_palano)+C_12_0_palano+C_12_1_palano*X+C_12_2_palano*X*X+C_12_3_palano*X*X*X);
+   Double_t K22 = (svar_GeV-s_A_palano)/s_Kpi_palano*(g_2_a_palano*g_2_a_palano/(svar_GeV-s_a_palano)+g_2_b_palano*g_2_b_palano/(svar_GeV-s_b_palano)+C_22_0_palano+C_22_1_palano*X+C_22_2_palano*X*X+C_22_3_palano*X*X*X);
+
+   Double_t detK = K11*K22-K12*K12;
+   TComplex Delta(1.-rho_1*rho_2*detK,-rho_1*K11-rho_2*K22);
+
+   TComplex T11_hat = s_Kpi_palano/(svar_GeV-s_A_palano)*(K11-rho_2*detK)/Delta;
+   TComplex T12_hat = s_Kpi_palano/(svar_GeV-s_A_palano)*K12/Delta;
+
+   Double_t xm = X;//(m-1175.)/425.;
+   Double_t alpha_1_s = 1.+c1_mass_swave*xm+c2_mass_swave*(2.*xm*xm-1.)+c3_mass_swave*(4.*xm*xm*xm-3.*xm)+c4_mass_swave*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
+   Double_t alpha_2_s = c5_mass_swave+c6_mass_swave*xm+c7_mass_swave*(2.*xm*xm-1.)+c8_mass_swave*(4.*xm*xm*xm-3.*xm)+c9_mass_swave*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
+
+   TComplex T = alpha_1_s*T11_hat+alpha_2_s*T12_hat;
+
+   return T*TComplex(1.,3.06573,1);
+
+ }
+
+TComplex ComputeIntegrals::Prop_ModInd(Double_t m) const 
+ { 
+
+   Double_t xm = (m-1175.)/425.;
+   Double_t re_T = 1.+c1_mass_swave*xm+c2_mass_swave*(2.*xm*xm-1.)+c3_mass_swave*(4.*xm*xm*xm-3.*xm)+c4_mass_swave*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
+   Double_t im_T = c5_mass_swave+c6_mass_swave*xm+c7_mass_swave*(2.*xm*xm-1.)+c8_mass_swave*(4.*xm*xm*xm-3.*xm)+c9_mass_swave*(8.*xm*xm*xm*xm-8.*xm*xm+1.);
+
+   return TComplex(re_T,im_T);
+
+ }
+
+// ---------------------------------------------------
 // Kpi mass amplitude.
 
 TComplex ComputeIntegrals::Mji(Double_t m, Int_t ji) const 
@@ -1081,17 +1158,18 @@ TComplex ComputeIntegrals::Mji(Double_t m, Int_t ji) const
 
    if (ji == 0)
 	{
-	T = Prop_Stheo(m);
+	T = Prop_Stheo(m)*TComplex(1.,-Prop_Stheo(mv).Theta(),1);
 	}
 
    else if (ji == 1)
 	{
-	T = Resonance(m,mv,gv,1);
+	//T = (Resonance(m,mv,gv,1)+TComplex(c5_mass_swave,c6_mass_swave)*Resonance(m,MKst_1_1410,GKst_1_1410,1)+TComplex(c7_mass_swave,c8_mass_swave)*Resonance(m,MKst_1_1680,GKst_1_1680,1))*TComplex(1.,-(Resonance(mv,mv,gv,1)+TComplex(c5_mass_swave,c6_mass_swave)*Resonance(mv,MKst_1_1410,GKst_1_1410,1)+TComplex(c7_mass_swave,c8_mass_swave)*Resonance(mv,MKst_1_1680,GKst_1_1680,1)).Theta(),1);
+	T = Resonance(m,mv,gv,1)*TComplex(1.,-Resonance(mv,mv,gv,1).Theta(),1);
 	}
 
    else if (ji == 2)
 	{
-	T = Resonance(m,mt,gt,2);
+	T = Resonance(m,mt,gt,2)*TComplex(1.,-Resonance(mv,mt,gt,2).Theta(),1);
 	}
    
    return T;
@@ -1263,57 +1341,57 @@ Double_t ComputeIntegrals::accMass(Double_t m) const
         else if (option == 218) {return fi(cos1,18)*accAng(cos1);}
 
         // Integrals of the invariant mass dependent terms for plotting.
-        else if (option == 31) {return hj1j2j1pj2p(m1,m2,0,0,0,1).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 32) {return hj1j2j1pj2p(m1,m2,0,0,0,2).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 33) {return hj1j2j1pj2p(m1,m2,0,0,1,1).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 34) {return hj1j2j1pj2p(m1,m2,0,0,1,2).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 35) {return hj1j2j1pj2p(m1,m2,0,0,2,2).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 36) {return hj1j2j1pj2p(m1,m2,0,1,0,2).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 37) {return hj1j2j1pj2p(m1,m2,0,1,1,0).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 38) {return hj1j2j1pj2p(m1,m2,0,1,1,1).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 39) {return hj1j2j1pj2p(m1,m2,0,1,1,2).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 310) {return hj1j2j1pj2p(m1,m2,1,0,0,2).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 311) {return hj1j2j1pj2p(m1,m2,1,0,1,2).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 312) {return hj1j2j1pj2p(m1,m2,0,1,2,2).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 313) {return hj1j2j1pj2p(m1,m2,0,2,1,1).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 314) {return hj1j2j1pj2p(m1,m2,0,2,1,2).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 315) {return hj1j2j1pj2p(m1,m2,0,2,2,0).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 316) {return hj1j2j1pj2p(m1,m2,2,0,1,2).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 317) {return hj1j2j1pj2p(m1,m2,0,2,2,2).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 318) {return hj1j2j1pj2p(m1,m2,1,1,1,2).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 319) {return hj1j2j1pj2p(m1,m2,1,1,2,2).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 320) {return hj1j2j1pj2p(m1,m2,1,2,2,1).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 321) {return hj1j2j1pj2p(m1,m2,1,2,2,2).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 322) {return hj1j2j1pj2p(m1,m2,0,0,0,0).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 323) {return hj1j2j1pj2p(m1,m2,0,1,0,1).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 324) {return hj1j2j1pj2p(m1,m2,1,0,1,0).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 325) {return hj1j2j1pj2p(m1,m2,0,2,0,2).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 326) {return hj1j2j1pj2p(m1,m2,2,0,2,0).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 327) {return hj1j2j1pj2p(m1,m2,1,1,1,1).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 328) {return hj1j2j1pj2p(m1,m2,1,2,1,2).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 329) {return hj1j2j1pj2p(m1,m2,2,1,2,1).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 330) {return hj1j2j1pj2p(m1,m2,2,2,2,2).Re()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 41) {return hj1j2j1pj2p(m1,m2,0,0,0,1).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 42) {return hj1j2j1pj2p(m1,m2,0,0,0,2).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 43) {return hj1j2j1pj2p(m1,m2,0,0,1,1).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 44) {return hj1j2j1pj2p(m1,m2,0,0,1,2).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 45) {return hj1j2j1pj2p(m1,m2,0,0,2,2).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 46) {return hj1j2j1pj2p(m1,m2,0,1,0,2).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 47) {return hj1j2j1pj2p(m1,m2,0,1,1,0).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 48) {return hj1j2j1pj2p(m1,m2,0,1,1,1).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 49) {return hj1j2j1pj2p(m1,m2,0,1,1,2).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 410) {return hj1j2j1pj2p(m1,m2,1,0,0,2).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 411) {return hj1j2j1pj2p(m1,m2,1,0,1,2).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 412) {return hj1j2j1pj2p(m1,m2,0,1,2,2).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 413) {return hj1j2j1pj2p(m1,m2,0,2,1,1).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 414) {return hj1j2j1pj2p(m1,m2,0,2,1,2).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 415) {return hj1j2j1pj2p(m1,m2,0,2,2,0).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 416) {return hj1j2j1pj2p(m1,m2,2,0,1,2).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 417) {return hj1j2j1pj2p(m1,m2,0,2,2,2).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 418) {return hj1j2j1pj2p(m1,m2,1,1,1,2).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 419) {return hj1j2j1pj2p(m1,m2,1,1,2,2).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 420) {return hj1j2j1pj2p(m1,m2,1,2,2,1).Im()*Im00*accMass(m1)*accMass(m2);}
-        else if (option == 421) {return hj1j2j1pj2p(m1,m2,1,2,2,2).Im()*Im00*accMass(m1)*accMass(m2);}
+        else if (option == 31) {return hj1j2j1pj2p(m1,m2,0,0,0,1).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 32) {return hj1j2j1pj2p(m1,m2,0,0,0,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 33) {return hj1j2j1pj2p(m1,m2,0,0,1,1).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 34) {return hj1j2j1pj2p(m1,m2,0,0,1,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 35) {return hj1j2j1pj2p(m1,m2,0,0,2,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 36) {return hj1j2j1pj2p(m1,m2,0,1,0,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 37) {return hj1j2j1pj2p(m1,m2,0,1,1,0).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 38) {return hj1j2j1pj2p(m1,m2,0,1,1,1).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 39) {return hj1j2j1pj2p(m1,m2,0,1,1,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 310) {return hj1j2j1pj2p(m1,m2,1,0,0,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 311) {return hj1j2j1pj2p(m1,m2,1,0,1,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 312) {return hj1j2j1pj2p(m1,m2,0,1,2,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 313) {return hj1j2j1pj2p(m1,m2,0,2,1,1).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 314) {return hj1j2j1pj2p(m1,m2,0,2,1,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 315) {return hj1j2j1pj2p(m1,m2,0,2,2,0).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 316) {return hj1j2j1pj2p(m1,m2,2,0,1,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 317) {return hj1j2j1pj2p(m1,m2,0,2,2,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 318) {return hj1j2j1pj2p(m1,m2,1,1,1,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 319) {return hj1j2j1pj2p(m1,m2,1,1,2,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 320) {return hj1j2j1pj2p(m1,m2,1,2,2,1).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 321) {return hj1j2j1pj2p(m1,m2,1,2,2,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 322) {return hj1j2j1pj2p(m1,m2,0,0,0,0).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 323) {return hj1j2j1pj2p(m1,m2,0,1,0,1).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 324) {return hj1j2j1pj2p(m1,m2,1,0,1,0).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 325) {return hj1j2j1pj2p(m1,m2,0,2,0,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 326) {return hj1j2j1pj2p(m1,m2,2,0,2,0).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 327) {return hj1j2j1pj2p(m1,m2,1,1,1,1).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 328) {return hj1j2j1pj2p(m1,m2,1,2,1,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 329) {return hj1j2j1pj2p(m1,m2,2,1,2,1).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 330) {return hj1j2j1pj2p(m1,m2,2,2,2,2).Re()*accMass(m1)*accMass(m2);}
+        else if (option == 41) {return hj1j2j1pj2p(m1,m2,0,0,0,1).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 42) {return hj1j2j1pj2p(m1,m2,0,0,0,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 43) {return hj1j2j1pj2p(m1,m2,0,0,1,1).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 44) {return hj1j2j1pj2p(m1,m2,0,0,1,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 45) {return hj1j2j1pj2p(m1,m2,0,0,2,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 46) {return hj1j2j1pj2p(m1,m2,0,1,0,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 47) {return hj1j2j1pj2p(m1,m2,0,1,1,0).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 48) {return hj1j2j1pj2p(m1,m2,0,1,1,1).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 49) {return hj1j2j1pj2p(m1,m2,0,1,1,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 410) {return hj1j2j1pj2p(m1,m2,1,0,0,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 411) {return hj1j2j1pj2p(m1,m2,1,0,1,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 412) {return hj1j2j1pj2p(m1,m2,0,1,2,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 413) {return hj1j2j1pj2p(m1,m2,0,2,1,1).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 414) {return hj1j2j1pj2p(m1,m2,0,2,1,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 415) {return hj1j2j1pj2p(m1,m2,0,2,2,0).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 416) {return hj1j2j1pj2p(m1,m2,2,0,1,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 417) {return hj1j2j1pj2p(m1,m2,0,2,2,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 418) {return hj1j2j1pj2p(m1,m2,1,1,1,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 419) {return hj1j2j1pj2p(m1,m2,1,1,2,2).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 420) {return hj1j2j1pj2p(m1,m2,1,2,2,1).Im()*accMass(m1)*accMass(m2);}
+        else if (option == 421) {return hj1j2j1pj2p(m1,m2,1,2,2,2).Im()*accMass(m1)*accMass(m2);}
 
 	// Integrals of the time dependent terms for plotting.
 	else if (option == 91) {return T_cosh_eff(t)*accTime(t);}

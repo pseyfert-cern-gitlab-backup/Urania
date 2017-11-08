@@ -16,19 +16,19 @@ from PhysSelPython.Wrappers import AutomaticData, DataOnDemand, Selection, Selec
 ########################################################################
 
 ##### Only needed if you run in local. These are used by tupletoolMuonVariables AND also the algo to make BDTS cut if you are making it
-weightFile     = "/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r1p1/Phys/Bs2MuMu/options/TMVA_7Dec.weights.xml"
+path_to_iso_BDT_weights = "/afs/cern.ch/user/m/mmulder/work/UraniaDev_v7r0/Phys/Bs2MuMu/options/"    
+weightFile     = path_to_iso_BDT_weights + "TMVA_7Dec.weights.xml"
 flatteningFile=  "/eos/lhcb/wg/RD/BsMuMu/operators/weights/HflatBDTS_7Dec.root"
-ZVisoWeightsFile = "/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r1p1/Phys/Bs2MuMu/options/ZVisoBDTG_BsMuMu.weights.xml"
-path_to_iso_BDT_weights = "/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r1p1/Phys/Bs2MuMu/options/"
+ZVisoWeightsFile = path_to_iso_BDT_weights + "ZVisoBDTG_BsMuMu.weights.xml"
 
 #Outputfile name
 rootfilename = "BsMuMu_ntuples.root" 
 
 #Set as 11, 12, 15 or 16. Selects the datatype = 2012 or 2011 or 2015 or 2016.
-Collision = 12
+Collision = 16
 
 #Set as 20 for stripping 20 or 20r1, set as 21 for stripping 21 or 21r1, set as 24 for stripping 24, set as 26 for stripping 26. If running on stripping 21(r1) on microDST, Leptonic stream you need to use the mDSTs from the MDST.DST reprosessing and need to set MDST_DST_reprocessing = True
-stripping = '21'
+stripping = '26'
 MDST_DST_reprocessing = False # This should be true if running on S21(r1) Leptonic stream, false for everything else
 
 #Get all isolations from RelatedInfos - this MIST be true if running on stripping 24 or on microDST. In stripping 24 the RelatedInfo variables are present in the Dimuon and Letponic streams. They are in stripping 21 as well but they are wrong in the stripping 21 Dimuon stream
@@ -180,7 +180,7 @@ myNTUPLE.TupleToolMuonVariables.BDTSXMLFile  = weightFile
 myNTUPLE.TupleToolMuonVariables.is_microDST = False
 
 #These are the paths to the weights files used in the BDT isolation computations
-myNTUPLE.TupleToolMuonVariables.isoBDT_xmlFilePath =  "/afs/cern.ch/user/r/rvazquez/cmtuser/DaVinci_v38r1p1/Phys/Bs2MuMu/options/"
+myNTUPLE.TupleToolMuonVariables.isoBDT_xmlFilePath =  path_to_iso_BDT_weights
 if Usegrid:
     myNTUPLE.TupleToolMuonVariables.isoBDT_xmlFilePath =  "" 
 
@@ -195,7 +195,7 @@ myNTUPLE.TupleToolMuonVariables.dumpUpstreamTracks =  False
 myNTUPLE.TupleToolMuonVariables.dumpFullInfo  =   False
 if include_track_block:
     myNTUPLE.TupleToolMuonVariables.dumpVeloTracks =  True
-    myNTUPLE.TupleToolMuonVariables.dumpUpstreamTracks =  True
+    myNTUPLE.TupleToolMuonVariables.dumpUpstreamTracks =  False
     myNTUPLE.TupleToolMuonVariables.dumpFullInfo  =   True
 myNTUPLE.TupleToolMuonVariables.isMC = True
 
@@ -2177,9 +2177,10 @@ DaVinci().InputType = "DST"
 if not Usegrid:
   from GaudiConf import IOHelper
   DaVinci().Input = [
-      "DATAFILE='PFN:/afs/cern.ch/user/r/rvazquez/work/00051902_00000097_3.AllStreams.dst ,TYP='POOL_ROOTTREE' OPT='READ'"
-  ]
-
+#      "DATAFILE='PFN:/afs/cern.ch/user/r/rvazquez/work/public/00049671_00000259_1.dimuon.dst, TYP='POOL_ROOTTREE' OPT='READ'" ## 2015 data
+#      "DATAFILE='PFN:/afs/cern.ch/user/r/rvazquez/work/public/00052191_00006089_1.dimuon.dst, TYP='POOL_ROOTTREE' OPT='READ'" ## 2016 data
+  "DATAFILE='PFN:/afs/cern.ch/work/m/mmulder/UraniaDev_v7r0/Phys/Bs2MuMu/options/00059558_00000011_1.dimuon.dst', TYPE = 'POOL_ROOTTREE', OPT = 'READ'"
+]
 ########################################################################
 # HLT
 #DaVinci().ReplaceL0BanksWithEmulated = True ## enable if you want to rerun L0

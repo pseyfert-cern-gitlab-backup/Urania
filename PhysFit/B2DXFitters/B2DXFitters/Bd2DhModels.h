@@ -35,6 +35,16 @@ namespace Bd2DhModels {
 					bool debug = true
 					);
 
+  RooAbsPdf* build_Bd2DK_BKG_MDFitter( RooAbsReal& mass,
+                                       RooAbsReal& massDs,
+                                       RooWorkspace* work,
+                                       RooWorkspace* workInt,
+                                       TString &samplemode,
+                                       TString merge,
+                                       Int_t dim,
+                                       bool debug = true
+                                       );
+
   RooAbsPdf* buildExponentialPlusConstantPDF( RooAbsReal& obs,
                                               RooWorkspace* workInt,
                                               TString samplemode,
@@ -62,6 +72,14 @@ namespace Bd2DhModels {
                                               bool shiftMean = false,
                                               bool scaleWidths = false,
                                               bool debug = true);
+
+  RooAbsPdf* buildCrystalBallPlusJohnsonSUPDF( RooAbsReal& obs,
+                                               RooWorkspace* workInt,
+                                               TString samplemode,
+                                               TString typemode,
+                                               bool shiftMean = false,
+                                               bool scaleWidths = false,
+                                               bool debug = true);
   
   RooAbsPdf* buildJohnsonSUPlusGaussianPDF( RooAbsReal& obs,
                                             RooWorkspace* workInt,
@@ -75,6 +93,7 @@ namespace Bd2DhModels {
                                                            RooWorkspace* workInt,
                                                            TString samplemode,
                                                            TString typemode,
+							   bool sameMean,
                                                            bool debug = true);
   
   
@@ -90,13 +109,30 @@ namespace Bd2DhModels {
                                            TString samplemode,
                                            TString typemode,
                                            bool debug = true);
-  
+
+  RooAbsPdf* buildIpatiaPlusGaussianPDF(RooAbsReal& obs,
+                                        RooWorkspace* workInt,
+                                        TString samplemode,
+                                        TString typemode,
+                                        bool shiftMean = false,
+                                        bool scaleTails = false,
+                                        bool debug = true);
+
+  RooAbsPdf* buildIpatiaPlusJohnsonSUPDF(RooAbsReal& obs,
+                                         RooWorkspace* workInt,
+                                         TString samplemode,
+                                         TString typemode,
+                                         bool shiftMean = false,
+                                         bool scaleTails = false,
+                                         bool debug = true);
 
   RooAbsPdf* buildIpatiaGaussConvPDF(RooRealVar& obs,
                                      RooWorkspace* workInt,
                                      TString samplemode,
                                      TString typemode,
                                      bool shiftMean = false,
+                                     bool scaleTails = false,
+                                     bool fft = true,
                                      bool debug = true);
   
 } // end of namespace

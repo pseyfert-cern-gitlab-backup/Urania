@@ -280,8 +280,7 @@ def makePlot(var, rate, rateCalib, diff, distr, distrCalib, save):
 
     #if var == "P":
     #    pad2.SetLogx()
-
-    #diff.GetYaxis().SetRangeUser(diff.GetMinimum(1e-03)*0.8,diff.GetMaximum()*1.2)
+    
     diff.Draw("E1")
 
     pad2.Update()
@@ -569,9 +568,10 @@ def plotPIDeffMisID(configName,
                        "goff")
         print "=>Total entries:"
         print histEffDen.GetEntries()
-        histEff.Divide(histEffDen)
+        #histEff.Divide(histEffDen)
+        histEff.Divide(histEff, histEffDen, 1.0, 1.0, "B")
         #
-        print "...building difference histogram"
+        print "...building ratio histogram"
         histDiff.Divide(histEff,histEffCalib,1.0,1.0)
         #
         print "...building variable distribution"
@@ -589,6 +589,8 @@ def plotPIDeffMisID(configName,
                                         myconfigfile["Variables"][var]["Max"])
         histVarCalib.GetXaxis().SetRangeUser(myconfigfile["Variables"][var]["Min"],
                                              myconfigfile["Variables"][var]["Max"])
+
+        #histDiff.GetYaxis().SetRangeUser(0.9,1.1)
         
         effHist += [ histEff ]
         effHistCalib += [ histEffCalib ]

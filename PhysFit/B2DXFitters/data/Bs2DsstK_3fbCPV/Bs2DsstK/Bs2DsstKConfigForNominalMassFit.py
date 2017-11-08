@@ -13,9 +13,9 @@ def getconfig() :
     # stripping (necessary in case of PIDK shapes)                               
     configdict["Stripping"] = {"2012":"21", "2011":"21r1"}
     # integrated luminosity in each year of data taking (necessary in case of PIDK shapes)
-    configdict["IntegratedLuminosity"] = {"2011":{"Down": 0.57, "Up": 0.43}, "2012":{"Down": 0.9894, "Up": 0.9985}} 
+    configdict["IntegratedLuminosity"] = {"2011":{"Down": 0.5584, "Up": 0.4167}, "2012":{"Down": 0.9894, "Up": 0.9985}} 
     # file name with paths to MC/data samples                                     
-    configdict["dataName"]   = "../data/Bs2DsstK_3fbCPV/Bs2DsstK/config_Bs2DsstK.txt"
+    configdict["dataName"] = "../data/Bs2DsstK_3fbCPV/Bs2DsstK/config_Bs2DsstK.txt"
 
     configdict["ControlPlots"] = {}
     configdict["ControlPlots"] = { "Directory": "PlotBs2DsstK", "Extension":"pdf"}
@@ -23,19 +23,42 @@ def getconfig() :
     # basic variables                                                                                        
     configdict["BasicVariables"] = {}
     configdict["BasicVariables"]["BeautyMass"]    = { "Range" : [5100,    6000    ], "InputName" : "FBs_DeltaM_M"}
-    configdict["BasicVariables"]["CharmMass"]     = { "Range" : [2080,    2150    ], "InputName" : "FDsstr_DeltaM_M"}
-    configdict["BasicVariables"]["BeautyTime"]    = { "Range" : [0.4,     12.0    ], "InputName" : "FBs_LF_ctau"}
+    configdict["BasicVariables"]["CharmMass"]     = { "Range" : [2080,    2150    ], "InputName" : "FDsst_DeltaM_M"}
+    configdict["BasicVariables"]["BeautyTime"]    = { "Range" : [0.4,     15.0    ], "InputName" : "FBs_LF_ctau"}
     configdict["BasicVariables"]["BacP"]          = { "Range" : [1000.,   650000.0], "InputName" : "FBac_P"}
-    configdict["BasicVariables"]["BacPT"]         = { "Range" : [1000.,   45000.0 ], "InputName" : "FBac_PT"}
+    configdict["BasicVariables"]["BacPT"]         = { "Range" : [500.,    45000.0 ], "InputName" : "FBac_Ptr"}
     configdict["BasicVariables"]["BacPIDK"]       = { "Range" : [1.61,    5.0     ], "InputName" : "FBac_PIDK"}
     configdict["BasicVariables"]["nTracks"]       = { "Range" : [15.,     1000.0  ], "InputName" : "FnTracks"}
     configdict["BasicVariables"]["BeautyTimeErr"] = { "Range" : [0.01,    0.1     ], "InputName" : "FBs_LF_ctauErr"}
     configdict["BasicVariables"]["BacCharge"]     = { "Range" : [-1000.0, 1000.0  ], "InputName" : "FBac_ID"}
-    configdict["BasicVariables"]["BDTG"]          = { "Range" : [0.025,   1.0     ], "InputName" : "FBDT_Var"}
+    configdict["BasicVariables"]["BDTG"]          = { "Range" : [-1.0,    1.0     ], "InputName" : "FBDT_Var"}
     configdict["BasicVariables"]["TagDecOS"]      = { "Range" : [-1.0,    1.0     ], "InputName" : "FBs_TAGDECISION_OS"}
     configdict["BasicVariables"]["TagDecSS"]      = { "Range" : [-1.0,    1.0     ], "InputName" : "FBs_SS_nnetKaon_DEC"}
     configdict["BasicVariables"]["MistagOS"]      = { "Range" : [0.0,     0.5     ], "InputName" : "FBs_TAGOMEGA_OS"}
     configdict["BasicVariables"]["MistagSS"]      = { "Range" : [0.0,     0.5     ], "InputName" : "FBs_SS_nnetKaon_PROB"}
+    '''
+    # additional variables in data sets
+    configdict["AdditionalVariables"] = {}
+    configdict["AdditionalVariables"]["BacEta"]   = { "Range" : [-9.0,    9.0     ], "InputName" : "FBac_Eta"}
+    configdict["AdditionalVariables"]["PhEta"]    = { "Range" : [-9.0,    9.0     ], "InputName" : "FPh_Eta"}
+    configdict["AdditionalVariables"]["PhPT"]     = { "Range" : [ 0.0,    1.e+9   ], "InputName" : "FPh_Ptr"}
+    configdict["AdditionalVariables"]["PhCL"]     = { "Range" : [ 0.0,    1.0     ], "InputName" : "FPh_CL"}
+    configdict["AdditionalVariables"]["PhisNotE"] = { "Range" : [ 0.0,    1.0     ], "InputName" : "FPh_isNotE"}
+    configdict["AdditionalVariables"]["BsEta"]    = { "Range" : [-9.0,    9.0     ], "InputName" : "FBs_Eta"}
+    configdict["AdditionalVariables"]["BsPhi"]    = { "Range" : [ 0.0,    9.0     ], "InputName" : "FBs_Phi"}
+    configdict["AdditionalVariables"]["BsPT"]     = { "Range" : [ 0.0,    1.e+9   ], "InputName" : "FBs_Ptr"}
+    configdict["AdditionalVariables"]["DsDec"]    = { "Range" : [ 0.0,    6.0     ], "InputName" : "FDs_Dec"}
+    configdict["AdditionalVariables"]["KpPT"]     = { "Range" : [100.,45000.0     ], "InputName" : "FKp_Ptr"}
+    configdict["AdditionalVariables"]["KmPT"]     = { "Range" : [100.,45000.0     ], "InputName" : "FKm_Ptr"}
+    configdict["AdditionalVariables"]["PiPT"]     = { "Range" : [100.,45000.0     ], "InputName" : "FPi_Ptr"}
+    configdict["AdditionalVariables"]["PtrRel"]   = { "Range" : [ 0.0,  200.      ], "InputName" : "FPtr_Rel"}
+    configdict["AdditionalVariables"]["CosTheS"]  = { "Range" : [-1.0,     1.0    ], "InputName" : "FCTS_Ds"}
+    configdict["AdditionalVariables"]["BsIpChi2Own"] = { "Range" : [ 0.0,  100.    ], "InputName" : "FBs_IpChi2Own"}
+    configdict["AdditionalVariables"]["BsDIRAOwn"]= { "Range" : [-1.0,     1.0    ], "InputName" : "FBs_DIRAOwn"}
+    configdict["AdditionalVariables"]["BsRFD"]    = { "Range" : [ 0.0,   100.0    ], "InputName" : "FBs_RFD"}
+    configdict["AdditionalVariables"]["DsDIRAOri"]= { "Range" : [-1.0,     1.0    ], "InputName" : "FDs_DIRAOri"}
+    configdict["AdditionalVariables"]["nSPDHits"] = { "Range" : [ 0.0,  1000.0    ], "InputName" : "FnSPDHits"}
+    '''
 
     # tagging calibration                                                                                               
     configdict["TaggingCalibration"] = {}
@@ -44,75 +67,71 @@ def getconfig() :
 
     # additional cuts applied to data sets
     configdict["AdditionalCuts"] = {}
-    configdict["AdditionalCuts"]["All"]    = {"Data": "FDs_M>1950.&&FDs_M<1990.&&FDs_FDCHI2_ORIVX>2.&&FDelta_M>111.5&&FDelta_M<181.5&&FBs_Veto==0.&&FBDT_Var>0.025",
-                                              "MC":   "FDs_M>1950.&&FDs_M<1990.&&FDs_FDCHI2_ORIVX>2.&&FDelta_M>111.5&&FDelta_M<181.5&&FBs_Veto==0.&&FBDT_Var>0.025"}
+    configdict["AdditionalCuts"]["All"]    = {"Data": "FDs_M>1950.&&FDs_M<1990.&&FDs_FDCHI2_ORIVX>2.&&FDelta_M>111.5&&FDelta_M<181.5&&FBs_Veto==0.&&FBDT_Var>0.01",
+                                              "MC":   "FDs_M>1950.&&FDs_M<1990.&&FDs_FDCHI2_ORIVX>2.&&FDelta_M>111.5&&FDelta_M<181.5&&FBs_Veto==0.&&FBDT_Var>0.01"}
     configdict["AdditionalCuts"]["NonRes"] = {"Data":"FDs_Dec==3", "MC":"FDs_Dec==3"}
     configdict["AdditionalCuts"]["PhiPi"]  = {"Data":"FDs_Dec==1", "MC":"FDs_Dec==1"}
     configdict["AdditionalCuts"]["KstK"]   = {"Data":"FDs_Dec==2", "MC":"FDs_Dec==2"}
     configdict["AdditionalCuts"]["KPiPi"]  = {"Data":"FDs_Dec==5&&FDs_FDCHI2_ORIVX>9.&&FPi_PIDK>10.&&FKp_PIDK<0.&&FKm_PIDK<0.&&FKst_M<1750.",
                                               "MC":  "FDs_Dec==5&&FDs_FDCHI2_ORIVX>9.&&FKst_M<1750."}
     configdict["AdditionalCuts"]["PiPiPi"] = {"Data":"FDs_Dec==4&&FDs_FDCHI2_ORIVX>9.&&FKp_PIDK<0.&&FKm_PIDK<0.&&FPi_PIDK<0.&&(FPhi_M<1700.&&FKst_M<1700.)", 
-                                              "MC":  "FDs_Dec==4&&FDs_FDCHI2_ORIVX>9.&&(FPhi_M<1700.&&FKst_M<1700.)"}
+                                              "MC":  "FDs_Dec==4&&FDs_FDCHI2_ORIVX>9.&&FPhi_M<1700.&&FKst_M<1700."}
  
     configdict["CreateCombinatorial"] = {}
     configdict["CreateCombinatorial"]["BeautyMass"] = {} 
-    configdict["CreateCombinatorial"]["BeautyMass"]["All"]    = {"Cut":"FBs_DeltaM_M>5100&&FBs_DeltaM_M<6000&&FDs_M>1950.&&FDs_M<1990.&&FDs_FDCHI2_ORIVX>2.&&FDelta_M>185.&&FDelta_M<205.&&FBs_Veto==0.&&FBDT_Var>0.025&&FBac_P>1000.0&&FBac_P<650000.0&&FBac_PT>1000.0&&FBac_PT<45000.0",
-                                                                 "Rho":2.5, "Mirror":"Both"}
+    configdict["CreateCombinatorial"]["BeautyMass"]["All"]    = {"Cut":"FBs_DeltaM_M>5100&&FBs_DeltaM_M<6000&&FDs_M>1950.&&FDs_M<1990.&&FDs_FDCHI2_ORIVX>2.&&FDelta_M>195.&&FDelta_M<205.&&FBs_Veto==0.&&FBDT_Var>0.01&&FBac_P>1000.0&&FBac_P<650000.0&&FBac_Ptr>500.0&&FBac_Ptr<45000.0",
+                                                                 "Rho":3.5, "Mirror":"Both"}
     configdict["CreateCombinatorial"]["BeautyMass"]["NonRes"] = {"Cut":"FDs_Dec==3"}
     configdict["CreateCombinatorial"]["BeautyMass"]["PhiPi"]  = {"Cut":"FDs_Dec==1"}
     configdict["CreateCombinatorial"]["BeautyMass"]["KstK"]   = {"Cut":"FDs_Dec==2"}
     configdict["CreateCombinatorial"]["BeautyMass"]["KPiPi"]  = {"Cut":"FDs_Dec==5&&FDs_FDCHI2_ORIVX>9.&&FPi_PIDK>10.&&FKp_PIDK<0.&&FKm_PIDK<0.&&FKst_M<1750."}
-    configdict["CreateCombinatorial"]["BeautyMass"]["PiPiPi"] = {"Cut":"FDs_Dec==4&&FDs_FDCHI2_ORIVX>9.&&FKp_PIDK<0.&&FKm_PIDK<0.&&FPi_PIDK<0.&&(FPhi_M<1700.&&FKst_M<1700.)"}
+    configdict["CreateCombinatorial"]["BeautyMass"]["PiPiPi"] = {"Cut":"FDs_Dec==4&&FDs_FDCHI2_ORIVX>9.&&FKp_PIDK<0.&&FKm_PIDK<0.&&FPi_PIDK<0.&&FPhi_M<1700.&&FKst_M<1700."}
+
+    # configdict["WeightingMassTemplates"] = { "RatioDataMC":{"FileLabel":{"2011":"#RatioDataMC 2011 PNTr","2012":"#RatioDataMC 2012 PNTr"},
+    #                                                         "Var":["FBac_P","FnTracks"],"HistName":"histRatio"},
+    #                                          "Shift":{ "BeautyMass": 0., "CharmMass": 0.} }
+    # configdict["WeightingMassTemplates"] = { "Shift":{ "BeautyMass": 0., "CharmMass": 0.} }
+    configdict["WeightingMassTemplates"] = { }
 
     #weighting for PID templates
-    configdict["ObtainPIDTemplates"] = { "Variables":["BacPT","nTracks"], "Bins":[20,20] }
-    #configdict["WeightingMassTemplates"]= { "RatioDataMC":True }
+    # --MCPID, --MC, --SignalPID, --Signal
+    configdict["ObtainPIDTemplates"] = { "Variables":["BacP","nTracks"], "Bins":[30,30] }
+    # --CombPID
+    # configdict["ObtainPIDTemplates"] = { "Variables":["BacPT","nTracks"], "Bins":[30,30] }
 
     #PID Calibration samples for PID shapes
     configdict["Calibrations"] = {}
     configdict["Calibrations"]["2011"] = {}
     configdict["Calibrations"]["2011"]["Pion"]   = {}
-    configdict["Calibrations"]["2011"]["Pion"]["Up"]   = {"FileName":"/afs/cern.ch/work/a/adudziak/public/workspace/CalibrationSamples/CalibDst_Up_Pi_PID5_Str20r1.root"}
-    configdict["Calibrations"]["2011"]["Pion"]["Down"] = {"FileName":"/afs/cern.ch/work/a/adudziak/public/workspace/CalibrationSamples/CalibDst_Down_Pi_PID5_Str20r1.root"}
+    configdict["Calibrations"]["2011"]["Pion"]["Up"]   = {"FileName":"root://eoslhcb.cern.ch//eos/lhcb/user/a/adudziak/Bs2DsK_3fbCPV/CalibrationSamples2/Calib_Dst_Up_Pi_PID5_Str21r1.root"}
+    configdict["Calibrations"]["2011"]["Pion"]["Down"] = {"FileName":"root://eoslhcb.cern.ch//eos/lhcb/user/a/adudziak/Bs2DsK_3fbCPV/CalibrationSamples2/Calib_Dst_Down_Pi_PID5_Str21r1.root"}
     configdict["Calibrations"]["2011"]["Kaon"]   = {}
-    configdict["Calibrations"]["2011"]["Kaon"]["Up"]   = { "FileName":"/afs/cern.ch/work/a/adudziak/public/workspace/CalibrationSamples/CalibDst_Up_K_PID5_Str20r1.root"}
-    configdict["Calibrations"]["2011"]["Kaon"]["Down"] = { "FileName":"/afs/cern.ch/work/a/adudziak/public/workspace/CalibrationSamples/CalibDst_Down_K_PID5_Str20r1.root"}
-    configdict["Calibrations"]["2011"]["Combinatorial"]   = {}
-    configdict["Calibrations"]["2011"]["Combinatorial"]["Up"] = { "FileName":"/afs/cern.ch/work/a/adudziak/public/workspace/work_Comb_Up_DsK_5358.root",
-                                                                  "WorkName":"workspace", "DataName":"dataCombBkg_up", "Type":"Special",
-                                                                  "WeightName":"sWeights", "PIDVarName":"lab1_PIDK", "Variables":["lab1_PT","nTracks"]}
-    configdict["Calibrations"]["2011"]["Combinatorial"]["Down"] = { "FileName":"/afs/cern.ch/work/a/adudziak/public/workspace/work_Comb_Down_DsK_5358.root",
-                                                                    "WorkName":"workspace", "DataName":"dataCombBkg_down", "Type":"Special",
-                                                                    "WeightName":"sWeights", "PIDVarName":"lab1_PIDK", "Variables":["lab1_PT","nTracks"]}
+    configdict["Calibrations"]["2011"]["Kaon"]["Up"]   = { "FileName":"root://eoslhcb.cern.ch//eos/lhcb/user/a/adudziak/Bs2DsK_3fbCPV/CalibrationSamples2/Calib_Dst_Up_K_PID5_Str21r1.root"}
+    configdict["Calibrations"]["2011"]["Kaon"]["Down"] = { "FileName":"root://eoslhcb.cern.ch//eos/lhcb/user/a/adudziak/Bs2DsK_3fbCPV/CalibrationSamples2/Calib_Dst_Down_K_PID5_Str21r1.root"}
 
-    #configdict["Calibrations"]["2011"]["Combinatorial"]["Up"] = { "FileName":"",
-    #                                                              "WorkName":"workspace", "DataName":"dataSetCombK_BeautyMass", "Type":"Workspace",
-    #                                                              "WeightName":"", "PIDVarName":"BacPIDK", "Variables":["BacPT","nTracks"]}
-    #configdict["Calibrations"]["2011"]["Combinatorial"]["Down"] = { "FileName":"",
-    #                                                              "WorkName":"workspace", "DataName":"dataSetCombK_BeautyMass", "Type":"Workspace",
-    #                                                              "WeightName":"", "PIDVarN
+    configdict["Calibrations"]["2011"]["Combinatorial"]   = {}
+    configdict["Calibrations"]["2011"]["Combinatorial"]   = {}
+    configdict["Calibrations"]["2011"]["Combinatorial"]["Up"] = { "FileName":"/afs/cern.ch/user/g/gtellari/public/Bs2DsK_3fb/BDTG3/Comb_PID/work_Comb_DsK_Run1_BDTG3.root",
+                                                                  "WorkName":"workspace", "DataName":"dataCombBkg_up_2011", "Type":"Special",
+                                                                  "WeightName":"sWeights", "PIDVarName":"lab1_PIDK", "Variables":["lab1_PT","nTracks"]}
+    configdict["Calibrations"]["2011"]["Combinatorial"]["Down"] = { "FileName":"/afs/cern.ch/user/g/gtellari/public/Bs2DsK_3fb/BDTG3/Comb_PID/work_Comb_DsK_Run1_BDTG3.root",
+                                                                    "WorkName":"workspace", "DataName":"dataCombBkg_down_2011", "Type":"Special",
+                                                                    "WeightName":"sWeights", "PIDVarName":"lab1_PIDK", "Variables":["lab1_PT","nTracks"]}
 
     configdict["Calibrations"]["2012"] = {}
     configdict["Calibrations"]["2012"]["Pion"]   = {}
-    configdict["Calibrations"]["2012"]["Pion"]["Up"]   = {"FileName":"/afs/cern.ch/work/a/adudziak/public/workspace/CalibrationSamples/CalibDst_Up_Pi_PID5_Str20.root"}
-    configdict["Calibrations"]["2012"]["Pion"]["Down"] = {"FileName":"/afs/cern.ch/work/a/adudziak/public/workspace/CalibrationSamples/CalibDst_Down_Pi_PID5_Str20.root"}
+    configdict["Calibrations"]["2012"]["Pion"]["Up"]   = {"FileName":"root://eoslhcb.cern.ch//eos/lhcb/user/a/adudziak/Bs2DsK_3fbCPV/CalibrationSamples2/Calib_Dst_Up_Pi_PID5_Str21.root"}
+    configdict["Calibrations"]["2012"]["Pion"]["Down"] = {"FileName":"root://eoslhcb.cern.ch//eos/lhcb/user/a/adudziak/Bs2DsK_3fbCPV/CalibrationSamples2/Calib_Dst_Down_Pi_PID5_Str21.root"}
     configdict["Calibrations"]["2012"]["Kaon"]   = {}
-    configdict["Calibrations"]["2012"]["Kaon"]["Up"]   = { "FileName":"/afs/cern.ch/work/a/adudziak/public/workspace/CalibrationSamples/CalibDst_Up_K_PID5_Str20.root"}
-    configdict["Calibrations"]["2012"]["Kaon"]["Down"] = { "FileName":"/afs/cern.ch/work/a/adudziak/public/workspace/CalibrationSamples/CalibDst_Down_K_PID5_Str20.root"}
+    configdict["Calibrations"]["2012"]["Kaon"]["Up"]   = { "FileName":"root://eoslhcb.cern.ch//eos/lhcb/user/a/adudziak/Bs2DsK_3fbCPV/CalibrationSamples2/Calib_Dst_Up_K_PID5_Str21.root"}
+    configdict["Calibrations"]["2012"]["Kaon"]["Down"] = { "FileName":"root://eoslhcb.cern.ch//eos/lhcb/user/a/adudziak/Bs2DsK_3fbCPV/CalibrationSamples2/Calib_Dst_Down_K_PID5_Str21.root"}
     configdict["Calibrations"]["2012"]["Combinatorial"]   = {}
-    configdict["Calibrations"]["2012"]["Combinatorial"]["Up"] = { "FileName":"/afs/cern.ch/work/a/adudziak/public/workspace/work_Comb_Up_DsK_5358.root",
-                                                                  "WorkName":"workspace", "DataName":"dataCombBkg_up", "Type":"Special",
+    configdict["Calibrations"]["2012"]["Combinatorial"]["Up"] = { "FileName":"/afs/cern.ch/user/g/gtellari/public/Bs2DsK_3fb/BDTG3/Comb_PID/work_Comb_DsK_Run1_BDTG3.root",
+                                                                  "WorkName":"workspace", "DataName":"dataCombBkg_up_2012", "Type":"Special",
                                                                   "WeightName":"sWeights", "PIDVarName":"lab1_PIDK", "Variables":["lab1_PT","nTracks"]}
-    configdict["Calibrations"]["2012"]["Combinatorial"]["Down"] = { "FileName":"/afs/cern.ch/work/a/adudziak/public/workspace/work_Comb_Down_DsK_5358.root",
-                                                                    "WorkName":"workspace", "DataName":"dataCombBkg_down", "Type":"Special",
+    configdict["Calibrations"]["2012"]["Combinatorial"]["Down"] = { "FileName":"/afs/cern.ch/user/g/gtellari/public/Bs2DsK_3fb/BDTG3/Comb_PID/work_Comb_DsK_Run1_BDTG3.root",
+                                                                    "WorkName":"workspace", "DataName":"dataCombBkg_down_2012", "Type":"Special",
                                                                     "WeightName":"sWeights", "PIDVarName":"lab1_PIDK", "Variables":["lab1_PT","nTracks"]}
-
-    #configdict["Calibrations"]["2012"]["Combinatorial"]["Up"] = { "FileName":"",
-    #                                                              "WorkName":"workspace", "DataName":"dataSetCombK_BeautyMass", "Type":"Workspace",
-    #                                                              "WeightName":"", "PIDVarName":"BacPIDK", "Variables":["BacPT","nTracks"]}
-    #configdict["Calibrations"]["2012"]["Combinatorial"]["Down"] = { "FileName":"",
-    #                                                              "WorkName":"workspace", "DataName":"dataSetCombK_BeautyMass", "Type":"Workspace",
-    #                                                              "WeightName":"", "PIDVarName":"BacPIDK", "Variables":["BacPT","nTracks"]}
 
     #----------------------------------------------------------------------------------------------------------------------------------------------------------------#
     ###                                                               MDfit fitting settings
@@ -121,26 +140,28 @@ def getconfig() :
     # Bs signal shapes
     configdict["BsSignalShape"] = {}
     configdict["BsSignalShape"]["type"]    = "DoubleCrystalBallWithWidthRatio"
-    configdict["BsSignalShape"]["mean"]    = {"Run1": {"All": 5.36878e+03}, "Fixed":False}
-    configdict["BsSignalShape"]["sigma1"]  = {"Run1": {"All": 2.88070e+01}, "Fixed":True}
-    configdict["BsSignalShape"]["sigma2"]  = {"Run1": {"All": 1.64247e+01}, "Fixed":True}
-    configdict["BsSignalShape"]["alpha1"]  = {"Run1": {"All": 1.64214e+00}, "Fixed":True}
-    configdict["BsSignalShape"]["alpha2"]  = {"Run1": {"All":-2.96373e+00}, "Fixed":True}
-    configdict["BsSignalShape"]["n1"]      = {"Run1": {"All": 1.26124e+00}, "Fixed":True}
-    configdict["BsSignalShape"]["n2"]      = {"Run1": {"All": 1.00558e+00}, "Fixed":True}
-    configdict["BsSignalShape"]["frac"]    = {"Run1": {"All": 3.37315e-01}, "Fixed":True}
+    configdict["BsSignalShape"]["mean"]    = {"Run1": {"All": 5.3691e+03}, "Fixed":False}
+    configdict["BsSignalShape"]["sigma1"]  = {"Run1": {"All": 1.2632e+01}, "Fixed":True}
+    configdict["BsSignalShape"]["sigma2"]  = {"Run1": {"All": 2.1873e+01}, "Fixed":True}
+    configdict["BsSignalShape"]["alpha1"]  = {"Run1": {"All":-1.3974e+00}, "Fixed":True}
+    configdict["BsSignalShape"]["alpha2"]  = {"Run1": {"All": 2.2234e+00}, "Fixed":True}
+    configdict["BsSignalShape"]["n1"]      = {"Run1": {"All": 3.1852e+00}, "Fixed":True}
+    configdict["BsSignalShape"]["n2"]      = {"Run1": {"All": 1.0395e+00}, "Fixed":True}
+    configdict["BsSignalShape"]["frac"]    = {"Run1": {"All": 3.5759e-01}, "Fixed":True}
+    configdict["BsSignalShape"]["R"]    =    {"Run1": {"All": 1.},         "Fixed":False}
     
     # Ds signal shapes
     configdict["DsSignalShape"] = {}
     configdict["DsSignalShape"]["type"]    = "DoubleCrystalBallWithWidthRatio"
-    configdict["DsSignalShape"]["mean"]    = {"Run1": {"All": 2.11000e+03}, "Fixed":False}
-    configdict["DsSignalShape"]["sigma1"]  = {"Run1": {"All": 1.20976e+01},  "Fixed":True} 
-    configdict["DsSignalShape"]["sigma2"]  = {"Run1": {"All": 5.94917e+00},  "Fixed":True}
-    configdict["DsSignalShape"]["alpha1"]  = {"Run1": {"All": 1.40152e+00},  "Fixed":True}
-    configdict["DsSignalShape"]["alpha2"]  = {"Run1": {"All":-2.98478e-01}, "Fixed":True}
-    configdict["DsSignalShape"]["n1"]      = {"Run1": {"All": 1.44311e+02},  "Fixed":True}
-    configdict["DsSignalShape"]["n2"]      = {"Run1": {"All": 2.83105e+00},  "Fixed":True}
-    configdict["DsSignalShape"]["frac"]    = {"Run1": {"All": 5.66652e-01},  "Fixed":True}
+    configdict["DsSignalShape"]["mean"]    = {"Run1": {"All": 2.1120e+03}, "Fixed":False}
+    configdict["DsSignalShape"]["sigma1"]  = {"Run1": {"All": 3.2968e+01},  "Fixed":True} 
+    configdict["DsSignalShape"]["sigma2"]  = {"Run1": {"All": 9.6862e+00},  "Fixed":True}
+    configdict["DsSignalShape"]["alpha1"]  = {"Run1": {"All": 1.5150e+00},  "Fixed":True}
+    configdict["DsSignalShape"]["alpha2"]  = {"Run1": {"All":-8.4821e-01}, "Fixed":True}
+    configdict["DsSignalShape"]["n1"]      = {"Run1": {"All": 7.4149e+01},  "Fixed":True}
+    configdict["DsSignalShape"]["n2"]      = {"Run1": {"All": 3.6237e+00},  "Fixed":True}
+    configdict["DsSignalShape"]["frac"]    = {"Run1": {"All": 9.2426e-02},  "Fixed":True}
+    configdict["DsSignalShape"]["R"]    =    {"Run1": {"All": 1.},         "Fixed":False}
 
     # combinatorial background              
     configdict["BsCombinatorialShape"] = {}
@@ -158,8 +179,8 @@ def getconfig() :
 
     configdict["DsCombinatorialShape"] = {}
     configdict["DsCombinatorialShape"]["type"]  = "ExponentialPlusSignal" 
-    configdict["DsCombinatorialShape"]["cD"]    = {"Run1": {"NonRes":-0.05, "PhiPi":-0.05, "KstK":-0.05, "KPiPi":-0.05, "PiPiPi":-0.05}, "Fixed":False}
-    configdict["DsCombinatorialShape"]["fracD"] = {"Run1": {"NonRes":0.5,   "PhiPi":0.5,   "KstK":0.5,   "KPiPi":1.0,   "PiPiPi":1.0},   "Fixed":{"KPiPi":True, "PiPiPi":True}}
+    configdict["DsCombinatorialShape"]["cD"]    = {"Run1": {"NonRes":0.01, "PhiPi":0.01, "KstK":0.01, "KPiPi":0.01, "PiPiPi":0.01}, "Fixed":False}
+    configdict["DsCombinatorialShape"]["fracD"] = {"Run1": {"NonRes":0.5,  "PhiPi":0.5,  "KstK":0.5,  "KPiPi":1.0,  "PiPiPi":1.0},  "Fixed":{"KPiPi":True, "PiPiPi":True}}
 
     configdict["PIDKCombinatorialShape"] = {}
     configdict["PIDKCombinatorialShape"]["type"] = "Fixed"
@@ -170,13 +191,14 @@ def getconfig() :
     configdict["Bd2Ds(st)XShape"]["type"]    = "ShiftedSignal"
     configdict["Bd2Ds(st)XShape"]["decay"]   = "Bd2DsstK"
     configdict["Bd2Ds(st)XShape"]["shift"]   = {"Run1": {"All": 86.8}, "Fixed":True}
-    configdict["Bd2Ds(st)XShape"]["scale1"]  = {"Run1": {"All": 0.998944636665}, "Fixed":True}
-    configdict["Bd2Ds(st)XShape"]["scale2"]  = {"Run1": {"All": 1.00022181515}, "Fixed":True}
+    configdict["Bd2Ds(st)XShape"]["scale1"]  = {"Run1": {"All": 1.}, "Fixed":True}
+    configdict["Bd2Ds(st)XShape"]["scale2"]  = {"Run1": {"All": 1.}, "Fixed":True}
 
     configdict["AdditionalParameters"] = {}
-    configdict["AdditionalParameters"]["g1_f1_frac"] = {"Run1":{"All":{"Both":{ "CentralValue":0.6, "Range":[0.0,1.0]}}}, "Fixed":False}
-    configdict["AdditionalParameters"]["g1_f2_frac"] = {"Run1":{"All":{"Both":{ "CentralValue":0.4,  "Range":[0.0,1.0]}}}, "Fixed":False}
-    configdict["AdditionalParameters"]["g2_f1_frac"] = {"Run1":{"All":{"Both":{ "CentralValue":0.7,  "Range":[0.0,1.0]}}}, "Fixed":False}
+    configdict["AdditionalParameters"]["g1_f1_frac"] = {"Run1":{"All":{"Both":{ "CentralValue":0.41, "Range":[0.0,1.0]}}}, "Fixed":True}
+    configdict["AdditionalParameters"]["g1_f2_frac"] = {"Run1":{"All":{"Both":{ "CentralValue":0.41, "Range":[0.0,1.0]}}}, "Fixed":True}
+    configdict["AdditionalParameters"]["g2_f1_frac"] = {"Run1":{"All":{"Both":{ "CentralValue":0.50, "Range":[0.0,1.0]}}}, "Fixed":False}
+    '''
     configdict["AdditionalParameters"]["g3_f1_frac"] = {"Run1":{"All":{"Both":{ "CentralValue":0.7,  "Range":[0.0,1.0]}}}, "Fixed":False}
     configdict["AdditionalParameters"]["g3_f2_frac"] = {"Run1":{"NonRes":{"Both":{ "CentralValue":0.6,  "Range":[0.0,1.0]}},
                                                                 "PhiPi":{"Both":{ "CentralValue":0.6,  "Range":[0.0,1.0]}},
@@ -188,17 +210,10 @@ def getconfig() :
                                                                 "KstK":{"Both":{ "CentralValue":0.8, "Range":[0.5,1.0]}},
                                                                 "KPiPi":{"Both":{ "CentralValue":0.8, "Range":[0.5,1.0]}},
                                                                 "PiPiPi":{"Both":{ "CentralValue":0.8, "Range":[0.5,1.0]}}}, "Fixed":False}
+    '''
 
     #expected yields                                                                                                                                                       
     configdict["Yields"] = {}
-    #configdict["Yields"]["Bs2DsDsstRho"]   = {"Run1": {"NonRes":1000.0, "PhiPi":1000.0, "KstK":1000.0, "KPiPi":1000.0, "PiPiPi":100.0},  "Fixed":False}
-    #configdict["Yields"]["Bd2DsstK"]       = {"Run1": {"NonRes":150.0,  "PhiPi":150.0,  "KstK":150.0,  "KPiPi":150.0,  "PiPiPi":150.0},  "Fixed":False}
-    #configdict["Yields"]["Bs2DsstPi"]      = {"Run1": {"NonRes":500.0,  "PhiPi":500.0,  "KstK":500.0,  "KPiPi":500.0,  "PiPiPi":500.0},  "Fixed":False}
-    #configdict["Yields"]["BsBd2DsKst"]     = {"Run1": {"NonRes":100.0,  "PhiPi":100.0,  "KstK":100.0,  "KPiPi":100.0,  "PiPiPi":100.0},  "Fixed":False}
-    #configdict["Yields"]["BsBd2DsstKst"]   = {"Run1": {"NonRes":700.0,  "PhiPi":700.0,  "KstK":700.0,  "KPiPi":700.0,  "PiPiPi":700.0},  "Fixed":False}
-    #configdict["Yields"]["CombBkg"]        = {"Run1": {"NonRes":2000.0, "PhiPi":1500.0, "KstK":1500.0, "KPiPi":1500.0, "PiPiPi":1500.0}, "Fixed":False}
-    #configdict["Yields"]["Signal"]         = {"Run1": {"NonRes":1000.0, "PhiPi":1000.0, "KstK":1000.0, "KPiPi":1000.0, "PiPiPi":1000.0}, "Fixed":False}
-
     configdict["Yields"]["Bs2DsDsstRho"]   = {"2012": {"NonRes":500.0,  "PhiPi":500.0,  "KstK":500.0,  "KPiPi":500.0,  "PiPiPi":500.0},  
                                               "2011": {"NonRes":500.0,  "PhiPi":500.0,  "KstK":500.0,  "KPiPi":500.0,  "PiPiPi":500.0}, "Fixed":False}
     configdict["Yields"]["Bd2DsstK"]       = {"2012": {"NonRes":150.0,  "PhiPi":150.0,  "KstK":100.0,  "KPiPi":50.0,   "PiPiPi":50.0},
@@ -214,7 +229,6 @@ def getconfig() :
     configdict["Yields"]["Signal"]         = {"2012": {"NonRes":1000.0, "PhiPi":1000.0, "KstK":1000.0, "KPiPi":1000.0, "PiPiPi":1000.0},
                                               "2011": {"NonRes":1000.0, "PhiPi":1000.0, "KstK":1000.0, "KPiPi":1000.0, "PiPiPi":1000.0}, "Fixed":False}
 
-
     #----------------------------------------------------------------------------------------------------------------------------------------------------------------#    
     ###                                                               MDfit plotting settings
     #----------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -228,9 +242,9 @@ def getconfig() :
     #configdict["PlotSettings"]["colors"] = [kRed-7, kBlue-6, kBlue-10, kGreen+3]
 
     configdict["LegendSettings"] = {}
-    configdict["LegendSettings"]["BeautyMass"] = {"Position":[0.53, 0.45, 0.90, 0.91], "TextSize": 0.05, "LHCbText":[0.7,0.9]}
-    configdict["LegendSettings"]["CharmMass"]  = {"Position":[0.20, 0.69, 0.93, 0.93], "TextSize": 0.05, "LHCbText":[0.7,0.9],
-                                                  "ScaleYSize":1.5, "SetLegendColumns":2, "LHCbTextSize":0.075 }
+    configdict["LegendSettings"]["BeautyMass"] = {"Position":[0.53, 0.45, 0.90, 0.91], "TextSize": 0.05, "LHCbText":[0.35,0.9]}
+    configdict["LegendSettings"]["CharmMass"]  = {"Position":[0.20, 0.69, 0.93, 0.93], "TextSize": 0.05, "LHCbText":[0.8,0.66],
+                                                  "ScaleYSize":1.75, "SetLegendColumns":2, "LHCbTextSize":0.075 }
     configdict["LegendSettings"]["BacPIDK"]    = {"Position":[0.20, 0.69, 0.93, 0.93], "TextSize": 0.05, "LHCbText":[0.7,0.9], 
                                                   "ScaleYSize":1.5, "SetLegendColumns":2, "LHCbTextSize":0.075}
 

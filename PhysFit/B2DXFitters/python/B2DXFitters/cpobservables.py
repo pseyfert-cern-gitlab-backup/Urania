@@ -21,13 +21,19 @@ from math import sin, cos
 # Note:
 #   1. | lambdaf | = | lambdabarfbar |
 #   2. Arguments in radians
+#   3. Give "True" as fith argument to get for HFAG convention,
+#      default is faulse for backward compatibility
 # =============================================================================
 class AsymmetryObservables :
-   def __init__( self, lambdaf_arg, lambdabarfbar_arg, lambda_mod ) :
+   def __init__( self, lambdaf_arg, lambdabarfbar_arg, lambda_mod, hfag = False ) :
       self.lambdaf_arg = lambdaf_arg
       self.lambdabarfbar_arg = lambdabarfbar_arg
       self.lambda_mod = lambda_mod
       self.denom = 1. + self.lambda_mod * self.lambda_mod
+      if hfag:
+         self.hfag = -1
+      else:
+         self.hfag = 1
    
    def Cf( self ) :
       return ( 1. - self.lambda_mod * self.lambda_mod ) / self.denom
@@ -36,13 +42,13 @@ class AsymmetryObservables :
       return 2. * self.lambda_mod * sin( self.lambdaf_arg ) / self.denom
    
    def Df( self ) :
-      return 2. * self.lambda_mod * cos( self.lambdaf_arg ) / self.denom
+      return self.hfag * 2. * self.lambda_mod * cos( self.lambdaf_arg ) / self.denom
    
    def Sfbar( self ) :
-      return 2. * self.lambda_mod * sin( self.lambdabarfbar_arg ) / self.denom
+      return self.hfag * 2. * self.lambda_mod * sin( self.lambdabarfbar_arg ) / self.denom
    
    def Dfbar( self ) :
-      return 2. * self.lambda_mod * cos( self.lambdabarfbar_arg ) / self.denom
+      return self.hfag * 2. * self.lambda_mod * cos( self.lambdabarfbar_arg ) / self.denom
    
    def Af_dir( self ) :
       """Af_dir = Cf"""

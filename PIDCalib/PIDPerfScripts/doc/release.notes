@@ -1,9 +1,84 @@
 !-----------------------------------------------------------------------------
 ! Package     : PIDCalib/PIDPerfScripts
-! Responsible : Sneha Malde && Wenbin Qian
+! Responsible : Donal Hill
 ! Purpose     : Scripts using PIDPerfTools to perform PID studies
 !-----------------------------------------------------------------------------
+! 2017-10-13 - Donal Hill
+	- Updates to allow the use of nTracks_Brunel in binning, as well as Brunel_P and Brunel_ETA
+	- MakePerfHistsRunRange.py now requires the user to specify their X,Y,Z binning choice
 
+! 2017-08-23 - Donal Hill
+	- Updates to run on the 2015 and 2016 legacy productions.
+	- Yandex ProbNN variables added.
+	- New J/psi -> mu mu sample added with no pT cut on the muons (load with Mu_nopt).
+	- New muonIDPlusBDT variable added.
+	- Access to 2015 TurCal electrons and 2016 S28 electrons added. Accessed on EOS via their own functions. 
+
+! 2017-07-13 - Donal Hill
+	- Removed PID printing at end of MakePerfHistsRunRange.py
+
+! 2017-06-14 - Carlos Vazquez Sierra
+ + Tagging v12r0 for Urania v7r0.
+
+! 2017-06-14 - Donal Hill
+ - Updated PlotCalibEfficiency.py to work with updated functions in PerfResults.py, which were edited to enable Run 2 use.
+
+! 2017-06-02 - Donal Hill
+ - Added PID table printout to MakePerfHistsRunRange.py
+
+! 2017-04-21 - Donal Hill
+	- Changed RooDataSet name of nSPDhits to nSPDHits in TupleDataSet.py
+	- Fixes issue with MCResampling package, which did not recognise nSPDhits
+
+! 2017-04-16 - Donal Hill
+	- Fixed issue with MakePIDdistributionsRunRange.py where cuts were not correctly applied to datasets.
+
+! 2017-03-22 - Carlos Vazquez Sierra
+  + Make version v11r2.
+
+!============================================== v11r1 2017-03-08 ==============================
+! 2017-03-28 - Donal Hill
+	- Added a catch in data loading functions to skip over a file if an nTuple with 0 entries is found.
+	- Bug spotted when loading electron calibration samples, which can be very low stats.
+
+! 2017-03-08 - Donal Hill
+	- Added tempdir to TupleDataset.py to create and delete temporary file correctly
+	- Should avoid issue reported by Thomas Ruf
+
+! 2017-02-20 - Donal Hill
+ - Removed "notag" tuple access for DsPhi samples.
+
+! 2017-02-03 - Elena Graverini
+ - Added find_package(Xrootd) to CMakeLists.txt, to have the xrootd libraries loaded from cvmfs at runtime.
+
+! 2017-02-01 - Carlos Vazquez Sierra
+ - Make version v11r1 for release.
+ 
+!============================================== v11r0 2017-02-01 ==============================
+
+! 2017-1-31 - Donal Hill
+	- Updated PIDCalib to use pA and Ap Run 2 calibration data.
+	- Added nVeloClusters variable.
+
+! 2017-1-26 - Donal Hill
+	- Updated PlotCalibDistributions.py in order to use Run 2 samples.
+	- Corresponding update to relevant functions in PerfResults.py
+
+! 2017-1-11 - Donal Hill
+	- Fixed bug in PerformMultiTrackCalib.py which prevented Run 2 performance histograms to be loaded.
+
+! 2017-1-10 - Donal Hill
+	- Fixed bug in TupleDataset.py which was causing e.g. only the DSt_KPTuple to be loaded and ignoring the DSt_KMTuple.
+
+! 2017-1-5 - Donal Hill
+	- Fixed bug with MakePerfHistsRunRange.py to enable running on Run 1 data
+	- Fixed bug with MakePIDdistributionsRunRange.py to enable running on Run 2 data
+
+! 2016-12-21 - Donal Hill
+	- Fixed bug with command line input parsing.
+
+! 2016-12-18 - Carlos Vazquez Sierra
+  - Make version v11r0 for Urania v6r0.
 
 !============================================== v10r7 2016-09-15 ==============================
 !============================================== v10r6 2016-09-15 ==============================

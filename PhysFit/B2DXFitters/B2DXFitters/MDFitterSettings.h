@@ -22,20 +22,20 @@
 
 #include <vector>
 #include <fstream>
- 
+
 class MDFitterSettings : public TNamed {
 
 public:
   MDFitterSettings(){};
   MDFitterSettings(const TString& name, const TString& title);
-    
+
   MDFitterSettings(const MDFitterSettings& other);
   virtual TObject* clone() const { return new MDFitterSettings(*this); }
 
   virtual ~MDFitterSettings();
 
   friend std::ostream & operator<< (std::ostream &out, const MDFitterSettings &s);
-  virtual void Print(Option_t * /*option*/ = "") const { std::cout<<*this<<std::endl;}
+  void Print(Option_t * /*option*/ = "") const override { std::cout<<*this<<std::endl;}
 
   std::vector <Double_t> GetMassBRange()    { return _massBRange;    }
   std::vector <Double_t> GetMassDRange()    { return _massDRange;    }
@@ -47,16 +47,16 @@ public:
   std::vector <Double_t> GetTimeRange()     { return _timeRange;     }
   std::vector <Double_t> GetTerrRange()     { return _terrRange;     }
   std::vector <Double_t> GetIDRange()       { return _idRange;       }
-  std::vector <Double_t> GetTagRange(int i) 
-    { std::vector <Double_t> range; 
-      range.push_back(_tagVarRD[i]); 
-      range.push_back(_tagVarRU[i]); 
+  std::vector <Double_t> GetTagRange(int i)
+    { std::vector <Double_t> range;
+      range.push_back(_tagVarRD[i]);
+      range.push_back(_tagVarRU[i]);
       return range;
     }
-  std::vector <Double_t> GetTagOmegaRange(int i) 
-    { std::vector <Double_t> range; 
-      range.push_back(_tagOmegaVarRD[i]); 
-      range.push_back(_tagOmegaVarRU[i]); 
+  std::vector <Double_t> GetTagOmegaRange(int i)
+    { std::vector <Double_t> range;
+      range.push_back(_tagOmegaVarRD[i]);
+      range.push_back(_tagOmegaVarRU[i]);
       return range;
     }
 
@@ -116,29 +116,29 @@ public:
   void SetTagRange( Double_t range_down, Double_t range_up, int i ) { _tagVarRD[i] = range_down;      _tagVarRU[i] = range_up;      }
   void SetTagOmegaRange( Double_t range_down, Double_t range_up, int i ) { _tagOmegaVarRD[i] = range_down; _tagOmegaVarRU[i] = range_up; }
 
-  void SetMassB( TString inName, TString outName, Double_t range_down, Double_t range_up  );   
-  void SetMassD( TString inName, TString outName, Double_t range_down, Double_t range_up  );   
-  void SetTime( TString inName, TString outName, Double_t range_down, Double_t range_up  );   
-  void SetMom( TString inName, TString outName, Double_t range_down, Double_t range_up  );    
-  void SetTrMom( TString inName, TString outName, Double_t range_down, Double_t range_up  );  
-  void SetTracks( TString inName, TString outName, Double_t range_down, Double_t range_up  );  
-  void SetBDTG( TString inName, TString outName, Double_t range_down, Double_t range_up  );    
-  void SetPIDK( TString inName, TString outName, Double_t range_down, Double_t range_up  );     
-  void SetTerr( TString inName, TString outName, Double_t range_down, Double_t range_up  );     
-  void SetID( TString inName, TString outName, Double_t range_down, Double_t range_up  );      
-  void SetTag( TString inName, TString outName, Double_t range_down, Double_t range_up, int i ); 
-  void SetTagOmega( TString inName, TString outName, Double_t range_down, Double_t range_up, int i ); 
+  void SetMassB( TString inName, TString outName, Double_t range_down, Double_t range_up  );
+  void SetMassD( TString inName, TString outName, Double_t range_down, Double_t range_up  );
+  void SetTime( TString inName, TString outName, Double_t range_down, Double_t range_up  );
+  void SetMom( TString inName, TString outName, Double_t range_down, Double_t range_up  );
+  void SetTrMom( TString inName, TString outName, Double_t range_down, Double_t range_up  );
+  void SetTracks( TString inName, TString outName, Double_t range_down, Double_t range_up  );
+  void SetBDTG( TString inName, TString outName, Double_t range_down, Double_t range_up  );
+  void SetPIDK( TString inName, TString outName, Double_t range_down, Double_t range_up  );
+  void SetTerr( TString inName, TString outName, Double_t range_down, Double_t range_up  );
+  void SetID( TString inName, TString outName, Double_t range_down, Double_t range_up  );
+  void SetTag( TString inName, TString outName, Double_t range_down, Double_t range_up, int i );
+  void SetTagOmega( TString inName, TString outName, Double_t range_down, Double_t range_up, int i );
 
 
-  TCut GetCut(TString var, bool sideband = false); 
+  TCut GetCut(TString var, bool sideband = false);
   TCut GetCut(bool sideband = false);
-  
+
   RooRealVar* GetObs(TString varName, bool inName = false, bool log = false);
-  RooArgSet* GetObsSet(bool inName = false, bool regular = true,  bool id = true , bool add = true, bool tag = true, bool tagomega =true); 
+  RooArgSet* GetObsSet(bool inName = false, bool regular = true,  bool id = true , bool add = true, bool tag = true, bool tagomega =true);
 
   std::vector <Int_t>   GetBin() { return _bin; }
   std::vector <TString> GetVar() { return _var; }
-  
+
   Int_t   GetBin(Int_t i) { return _bin[i]; }
   TString GetVar(Int_t i) { return _var[i]; }
 
@@ -156,21 +156,21 @@ public:
   // void SetPIDChild( Int_t value ) { _PIDChild = value; }
   //void SetPIDProton( Int_t value ) { _PIDProton = value; }
 
-  void SetLum(TString year, Double_t valmd, Double_t valmu); 
-  Double_t GetLum(TString year, TString pol); 
+  void SetLum(TString year, Double_t valmd, Double_t valmu);
+  Double_t GetLum(TString year, TString pol);
   std::vector <Double_t> GetLumRatio(TString year);
 
 
-  void SetCalibSample(TString fileName, TString workName, TString dataName, 
+  void SetCalibSample(TString fileName, TString workName, TString dataName,
 		      TString sample, TString year, TString pol, TString strip, TString type = "",
 		      TString var1Name = "", TString var2Name = "", TString pidName = "", TString weightName ="")
   {
-    TString name = "Calib_"+sample+"_"+strip+"_"+year+"_"+pol; 
-    PIDCalibrationSample calib(name.Data(),name.Data()); 
+    TString name = "Calib_"+sample+"_"+strip+"_"+year+"_"+pol;
+    PIDCalibrationSample calib(name.Data(),name.Data());
     calib.SetStripping(strip);
     calib.SetSampleType(sample);
     calib.SetYear(year);
-    calib.SetPolarity(pol); 
+    calib.SetPolarity(pol);
     if ( fileName != "" )
       {
 	calib.SetFile(fileName, false);
@@ -179,7 +179,7 @@ public:
     if ( calib.GetType() != "PIDCalib" )
       {
 	if ( workName != "" ) { calib.SetWorkName(workName); }
-	if ( dataName != "" ) { calib.SetDataName(dataName); } 
+	if ( dataName != "" ) { calib.SetDataName(dataName); }
 	if ( var1Name != "" ) { calib.SetVar1Name(var1Name); }
 	if ( var2Name != "" ) {calib.SetVar2Name(var2Name); }
 	if ( pidName != "" ) { calib.SetPIDName(pidName); }
@@ -187,7 +187,7 @@ public:
       }
     else
       {
-	calib.ObtainPIDVarName(false); 
+	calib.ObtainPIDVarName(false);
       }
     if ( fileName != "" )
       {
@@ -195,37 +195,37 @@ public:
 	calib.LoadData(false);
       }
 
-    _calib.push_back(calib); 
+    _calib.push_back(calib);
   }
-  
+
   PIDCalibrationSample GetCalibSample( TString sample, TString year, TString pol, TString strip, bool debug = false)
   {
     TString name = "Calib_"+sample+"_"+strip+"_"+year+"_"+pol;
     PIDCalibrationSample calib(name.Data(),name.Data());
 
-    if (debug == true ) { std::cout<<"[INFO] Match: "<<sample<<"  "<<year<<" "<<pol<<" "<<strip<<std::endl; } 
+    if (debug == true ) { std::cout<<"[INFO] Match: "<<sample<<"  "<<year<<" "<<pol<<" "<<strip<<std::endl; }
     for(unsigned int i = 0; i < _calib.size(); i++ )
       {
-	TString st = _calib[i].GetSampleType(); 
+	TString st = _calib[i].GetSampleType();
 	TString y = _calib[i].GetYear();
-	TString p = _calib[i].GetPolarity(); 
-	TString str = _calib[i].GetStripping(); 
-       
+	TString p = _calib[i].GetPolarity();
+	TString str = _calib[i].GetStripping();
+
 	if ( st == sample && y == year && p == pol && str == strip )
 	  {
-	    calib = _calib[i]; 
+	    calib = _calib[i];
 	    if ( debug == true ) { std::cout<<"[INFO] Calibration sample matched sucessfully."<<std::endl; std::cout<<calib<<std::endl;}
 	    break;
 	  }
       }
-    return calib; 
+    return calib;
   }
-  
+
 
   TString GetMassBVar()    { return  _mVar;       }
   TString GetMassDVar()    { return _mDVar;       }
   TString GetTimeVar()     { return _tVar;        }
-  TString GetTerrVar()     { return _terrVar;     } 
+  TString GetTerrVar()     { return _terrVar;     }
   TString GetIDVar()       { return _idVar;       }
   TString GetPIDKVar()     { return _PIDVar;      }
   TString GetBDTGVar()     { return _BDTGVar;     }
@@ -234,7 +234,7 @@ public:
   TString GetTrMomVar()    { return _ptVar;       }
   TString GetTagVar(int i)  { return _tagVarNames[i]; }
   TString GetTagOmegaVar(int i) { return _tagOmegaVarNames[i]; }
-  
+
   TString GetMassBVarOutName()    { return _mVarOut;       }
   TString GetMassDVarOutName()    { return _mDVarOut;       }
   TString GetTimeVarOutName()     { return _tVarOut;        }
@@ -250,7 +250,7 @@ public:
 
 
   std::vector <TString> GetTagVar() { return _tagVarNames; }
-  std::vector <TString> GetTagOmegaVar() { return _tagOmegaVarNames; }  
+  std::vector <TString> GetTagOmegaVar() { return _tagOmegaVarNames; }
   std::vector <TString> GetVarNames(Bool_t reg = true, Bool_t id = true, Bool_t add = true, Bool_t tag = true, Bool_t tagOmega = true);
   std::vector <TString> GetVarOutNames(Bool_t reg, Bool_t id, Bool_t add, Bool_t tag, Bool_t tagOmega);
 
@@ -285,7 +285,7 @@ public:
   void SetTagVarOutName(std::vector <TString> name) {_tagVarNamesOut = name; }
   void SetTagOmegaVarOutName(std::vector <TString> name) {_tagOmegaVarNamesOut = name;  }
 
-  void SetNames( TString massB, TString massD, TString pidk, 
+  void SetNames( TString massB, TString massD, TString pidk,
 		 TString time, TString terr, TString BDTG, TString ID, TString p, TString pt, TString nTr)
   {
     _mVar = massB;
@@ -298,8 +298,8 @@ public:
     _nTracksVar = nTr;
     _pVar = p;
     _ptVar = pt;
-  } 
-  
+  }
+
   Int_t GetWeightingDim() { return _weightDim; }
   void SetWeightingDim(Int_t dim) { _weightDim = dim; }
   void AddPIDWeightVar(TString name) { _var.push_back(name); }
@@ -314,14 +314,14 @@ public:
   TString GetAddVarName(int i ) { return _addVarNames[i]; }
   TString GetAddVarOutName(int i ) { return _addVarNamesOut[i]; }
   Bool_t CheckVarName( TString name );
-  Bool_t CheckVarOutName (TString name); 
+  Bool_t CheckVarOutName (TString name);
   TString GetVarOutName(TString name);
 
 
-  void AddVar(TString name, Double_t dw, Double_t up ) { 
+  void AddVar(TString name, Double_t dw, Double_t up ) {
     _addVarNames.push_back(name);
-    _addVarNamesOut.push_back(name); 
-    _addVarRU.push_back(up); 
+    _addVarNamesOut.push_back(name);
+    _addVarRU.push_back(up);
     _addVarRD.push_back(dw);
     if ( _addVar == false ) { _addVar = true; }
   }
@@ -384,24 +384,24 @@ public:
       }
   }
 
-  
+
   Bool_t CheckTagVar() { return _tagVar; }
   Int_t GetNumTagVar() { return _tagVarNames.size(); }
-  
+
   void AddTagVar(TString name, Double_t dw, Double_t up ) {
     _tagVarNames.push_back(name);
     _tagVarNamesOut.push_back(name);
     _tagVarRU.push_back(up);
     _tagVarRD.push_back(dw);
     if ( _tagVar == false ) { _tagVar = true; }
-    _p0.push_back(1.0); 
+    _p0.push_back(1.0);
     _p1.push_back(1.0);
-    _av.push_back(1.0); 
+    _av.push_back(1.0);
     _useTag.push_back(true);
     TString match = this->CheckTagger(name);
     _matchTag.push_back(match);
   }
- 
+
   void AddTagVar(TString inName, TString outName, Double_t dw, Double_t up ) {
     _tagVarNames.push_back(inName);
     _tagVarNamesOut.push_back(outName);
@@ -412,8 +412,8 @@ public:
     _av.push_back(1.0);
     _useTag.push_back(true);
     if ( _tagVar == false ) { _tagVar = true; }
-    TString match = this->CheckTagger(outName); 
-    _matchTag.push_back(match); 
+    TString match = this->CheckTagger(outName);
+    _matchTag.push_back(match);
   }
 
   Bool_t CheckTagOmegaVar() { return _tagOmegaVar; }
@@ -425,7 +425,7 @@ public:
     _tagOmegaVarRD.push_back(dw);
     if ( _tagOmegaVar == false ) { _tagOmegaVar = true; }
   }
-  
+
   void AddTagOmegaVar(TString inName, TString outName, Double_t dw, Double_t up ) {
     _tagOmegaVarNames.push_back(inName);
     _tagOmegaVarNamesOut.push_back(outName);
@@ -437,7 +437,7 @@ public:
   void SetCalibp0(Int_t i, Double_t val){ _p0[i] = val;}
   void SetCalibp1(Int_t i, Double_t val){ _p1[i] = val;}
   void SetCalibAv(Int_t i, Double_t val){ _av[i] = val;}
-  
+
   Double_t GetCalibp0(TString match);
   Double_t GetCalibp1(TString match);
   Double_t GetCalibAv(TString match);
@@ -451,13 +451,13 @@ public:
   void AddCalibration(Double_t p0, Double_t p1, Double_t av, Bool_t use) { _p0.push_back(p0); _p1.push_back(p1); _av.push_back(av); _useTag.push_back(use); }
 
   TString GetTagMatch(Int_t i) { return _matchTag[i]; }
-  Bool_t CheckUseTag(Int_t i) { return _useTag[i]; } 
-  void SetUseTag(Int_t i, Bool_t use){ _useTag[i] = use; }  
-  Int_t GetSizeUseTag(){ return _useTag.size(); } 
-  void CorrectTagging(); 
-  TString CheckTagger(TString name); 
-  std::vector <TString> CheckTaggerList(); 
-  Int_t CheckNumUsedTag(); 
+  Bool_t CheckUseTag(Int_t i) { return _useTag[i]; }
+  void SetUseTag(Int_t i, Bool_t use){ _useTag[i] = use; }
+  Int_t GetSizeUseTag(){ return _useTag.size(); }
+  void CorrectTagging();
+  TString CheckTagger(TString name);
+  std::vector <TString> CheckTaggerList();
+  Int_t CheckNumUsedTag();
 
 
   Double_t GetCalibp0(Int_t i) { return _p0[i]; }
@@ -468,17 +468,17 @@ public:
   std::vector <Double_t> GetCalibp1() {return _p1; }
   std::vector <Double_t> GetCalibAv() {return _av; }
 
-  std::vector <Double_t> GetCalibration(Int_t i) { 
+  std::vector <Double_t> GetCalibration(Int_t i) {
     std::vector <Double_t> vec;
     vec.push_back(_p0[i]);
     vec.push_back(_p1[i]);
     vec.push_back(_av[i]);
     return vec;
   }
-  
+
   TString GetDataCuts(TString& mode);
-  TString GetMCCuts(TString& mode); 
-  
+  TString GetMCCuts(TString& mode);
+
   void SetDataCuts(TString mode, TString cut);
   void SetMCCuts(TString mode, TString cut);
   void SetIDCut(TString mode, Bool_t var);
@@ -487,39 +487,40 @@ public:
   void SetDsHypoCut(TString mode, Bool_t var);
 
   TString GetPrefix(TString name);
-  TString GetChildPrefix(Int_t i) { return _prefixDsChild[i]; } 
-  void SetChildPrefix(Int_t i, TString name) { _prefixDsChild[i] = name; }  
-  Bool_t CheckPrefix() { if ( _prefixDsChild[0] != "" && _prefixDsChild[1] != "" && _prefixDsChild[2] != "" ) { return true; } else { return false; } } 
+  TString GetChildPrefix(Int_t i) { return _prefixDsChild[i]; }
+  void SetChildPrefix(Int_t i, TString name) { _prefixDsChild[i] = name; }
+  Bool_t CheckPrefix() { if ( _prefixDsChild[0] != "" && _prefixDsChild[1] != "" && _prefixDsChild[2] != "" ) { return true; } else { return false; } }
   Bool_t CheckIDCut(TString& mode);
   Bool_t CheckTRUEIDCut(TString& mode);
-  Bool_t CheckBKGCATCut(TString& mode); 
+  Bool_t CheckBKGCATCut(TString& mode);
   Bool_t CheckDsHypoCut(TString& mode);
-  
+
   Bool_t CheckDataMCWeighting() { return _weightRatioDataMC; }
-  Bool_t CheckMassWeighting() { return _weightMassTemp; } 
-  void SetRatioDataMC(Bool_t cut){ _weightRatioDataMC = cut; } 
+  Bool_t CheckMassWeighting() { return _weightMassTemp; }
+  void SetRatioDataMC(Bool_t cut){ _weightRatioDataMC = cut; }
   void SetMassWeighting(Bool_t cut) { _weightMassTemp = cut; }
 
   void SetPIDComboShapeFor5Modes(){ _calibCombo = true; }
   Bool_t CheckPIDComboShapeForDsModes(){ return _calibCombo; }
 
-  void SetPIDProperties(TString key, TString file1, TString file2, TString var1, TString var2, TString histName); 
-  TString GetPIDFileName(TString key, TString year); 
-  //TString GetPIDHist(TString key); 
-  TString GetPIDHistName(TString key); 
+  void SetPIDProperties(TString key, TString file1, TString file2, TString var1, TString var2, TString histName);
+  TString GetPIDFileName(TString key, TString year);
+  //TString GetPIDHist(TString key);
+  TString GetPIDHistName(TString key);
   TString GetPIDHistVar(TString key, int i);
   std::vector <TString> GetPIDHistVar(Bool_t weight, Bool_t dataMC, Bool_t debug);
   std::pair <TString, TString> GetPIDHistVar(TString key);
   HistPID1D GetHistPID1D(TString key,  TString year);
   HistPID2D GetHistPID2D(TString key, TString year);
+  Bool_t CheckHistPID(TString key, TString year);
 
-  void SetConfigFile(TString config) { _data = config; } 
+  void SetConfigFile(TString config) { _data = config; }
   TString GetConfigFile() { return _data; }
-  
-  void SetMassShift(TString var, Double_t shift) 
-  { 
+
+  void SetMassShift(TString var, Double_t shift)
+  {
     if ( var == _mVarOut ) { _massShift.first = shift; }
-    else if ( var == _mDVarOut ) { _massShift.second = shift; } 
+    else if ( var == _mDVarOut ) { _massShift.second = shift; }
   }
 
   Double_t GetMassShift(TString var)
@@ -529,8 +530,8 @@ public:
     else { return 0.0; }
   }
 
-  void SetLabelDataMC(TString label, TString year); 
-  TString GetLabelDataMC(TString year); 
+  void SetLabelDataMC(TString label, TString year);
+  TString GetLabelDataMC(TString year);
 
 protected:
 
@@ -576,13 +577,13 @@ protected:
   Int_t _weightDim;
   //std::vector <TString> _weightMassTempVar;
   Bool_t _weightMassTemp;
-  Bool_t _weightRatioDataMC; 
+  Bool_t _weightRatioDataMC;
 
   std::vector < std::vector <Double_t> > _lumRatio;
-  std::vector < bool > _lumFlag; 
+  std::vector < bool > _lumFlag;
 
-  std::vector <PIDCalibrationSample> _calib; 
-  Bool_t _calibCombo; 
+  std::vector <PIDCalibrationSample> _calib;
+  Bool_t _calibCombo;
 
   std::vector <TString> _addVarNames;
   std::vector <TString> _addVarNamesOut;
@@ -596,7 +597,7 @@ protected:
   std::vector <Double_t> _tagVarRD;
   Bool_t _tagVar;
 
-  
+
 
   std::vector <TString>  _tagOmegaVarNames;
   std::vector <TString>  _tagOmegaVarNamesOut;
@@ -607,12 +608,12 @@ protected:
   std::vector <Double_t> _p0;
   std::vector <Double_t> _p1;
   std::vector <Double_t> _av;
-  std::vector <Bool_t> _useTag; 
-  std::vector <TString> _matchTag; 
+  std::vector <Bool_t> _useTag;
+  std::vector <TString> _matchTag;
 
-  std::vector <TString> _addModeCuts; 
-  std::vector <TString> _addDataCuts; 
-  std::vector <TString> _addMCCuts; 
+  std::vector <TString> _addModeCuts;
+  std::vector <TString> _addDataCuts;
+  std::vector <TString> _addMCCuts;
   std::vector <Int_t> _addIDCuts;
   std::vector <Int_t> _addTRUEIDCuts;
   std::vector <Int_t> _addBKGCATCuts;
@@ -621,7 +622,7 @@ protected:
 
   std::vector <TString> _PIDHpion;
   std::vector <TString> _PIDHkaon;
-  std::vector <TString> _PIDHproton; 
+  std::vector <TString> _PIDHproton;
 
   std::pair <TString, TString> _filePIDBacEff;
   std::pair <TString, TString> _filePIDBacMisID;
@@ -637,21 +638,21 @@ protected:
 
   std::pair <TString, TString> _PIDBacEffVarName;
   std::pair <TString, TString> _PIDBacMisIDVarName;
-  std::pair <TString, TString> _PIDBacProtonMisIDVarName; 
+  std::pair <TString, TString> _PIDBacProtonMisIDVarName;
   std::pair <TString, TString> _PIDChildMisIDVarName;
-  std::pair <TString, TString> _PIDChildProtonMisIDVarName; 
+  std::pair <TString, TString> _PIDChildProtonMisIDVarName;
 
   std::pair <TString, TString> _ratioDMC;
-  TString _ratioDMCHistName; 
+  TString _ratioDMCHistName;
   std::pair <TString, TString> _ratioDMCVarName;
 
-  
-  std::pair <Double_t, Double_t> _massShift; 
-  
-  TString _data; 
+
+  std::pair <Double_t, Double_t> _massShift;
+
+  TString _data;
 
 private:
   ClassDef(MDFitterSettings, 1);
 };
- 
+
 #endif

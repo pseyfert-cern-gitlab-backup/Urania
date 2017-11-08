@@ -11,7 +11,7 @@
 #include "RooListProxy.h"
 #include "RooCategoryProxy.h"
 #include "RooRealProxy.h"
- 
+
 /** @brief "multiplex" the different per-category mistags into one variable according to tagging category
  *
  * @author Chiara Farinelli
@@ -24,7 +24,7 @@
  */
 class TaggingCat : public RooAbsReal {
 public:
-  TaggingCat() {} ; 
+  TaggingCat() {} ;
   /** @brief constructor
    *
    * @param name	name of variable
@@ -42,9 +42,9 @@ public:
              RooAbsCategory& _cat,
              RooArgList& _vars,
 	     bool _isTagEff = false);
-  
+
   TaggingCat(const TaggingCat& other, const char* name=0) ;
-  virtual TObject* clone(const char* newname) const { return new TaggingCat(*this,newname); }
+  TObject* clone(const char* newname) const override { return new TaggingCat(*this,newname); }
   virtual ~TaggingCat();
 
 protected:
@@ -54,10 +54,10 @@ protected:
   RooListProxy catlist;
   RooRealProxy untaggedVal;
 
-  Double_t evaluate() const;
+  Double_t evaluate() const override;
 
 private:
   ClassDef(TaggingCat, 2);
 };
- 
+
 #endif

@@ -1,0 +1,13 @@
+!-----------------------------------------------------------------------------
+! Package     : Phys/A2MuMu
+! Responsible : Carlos Vazquez Sierra, Diego Martinez Santos, Martino Borsato
+! Purpose     : Analysis tools for A2MuMu analysis.
+!-----------------------------------------------------------------------------
+
+! 2017-03-22 - Carlos Vazquez Sierra
+  + Make version v1r5.
+
+! 2016-12-19 - Carlos Vazquez Sierra
+  - First release after migration to gitlab. Information about commits on SVN are lost.
+    To be sure, just make version v1r4.
+

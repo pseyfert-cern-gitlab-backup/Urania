@@ -1,9 +1,9 @@
 #============================================================================
 # Created    : 2010-02-25
-# Maintainer : Julian Garcia Pardinas, Yuehong Xie, Paula Alvarez Cartelle, Diego Martinez Santos
+# Maintainer : Julian Garcia Pardinas, Juan Saborido Silva
 #============================================================================
 package           BsKstKst 
-version           v5r1
+version           v5r4
 
 #============================================================================
 # Structure, i.e. directories to process. 

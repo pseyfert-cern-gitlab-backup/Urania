@@ -37,6 +37,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Ensure that the include directories added are always taken first.
 set(CMAKE_INCLUDE_DIRECTORIES_BEFORE ON)
 #set(CMAKE_SKIP_BUILD_RPATH TRUE)
+set(CMAKE_MACOSX_RPATH OFF)
 
 # Regular expression used to parse version strings in LHCb and ATLAS.
 # It handles versions strings like "vXrY[pZ[aN]]" and "1.2.3.4"
@@ -140,6 +141,10 @@ else()
   set(GAUDI_DETACHED_DEBINFO OFF)
 endif()
 
+option(GAUDI_STRICT_VERSION_CHECK
+       "Require that the version of used projects is exactly the what specified"
+       OFF)
+
 # FIXME: workaroud to use LCG_releases_base also when we have an old toolchain
 #        that does not define it
 if(NOT LCG_releases_base AND LCG_TOOLCHAIN_INFO)
@@ -154,6 +159,8 @@ endif()
 # Programs and utilities needed for the build
 #---------------------------------------------------------------------------------------------------
 include(CMakeParseArguments)
+include(CMakeFunctionalUtils)
+include(BinaryTagUtils)
 
 find_package(PythonInterp)
 
@@ -217,7 +224,6 @@ macro(gaudi_project project version)
   option(GAUDI_BUILD_TESTS "Set to OFF to disable the build of the tests (libraries and executables)." ON)
   option(GAUDI_HIDE_WARNINGS "Turn on or off options that are used to hide warning messages." ON)
   option(GAUDI_USE_EXE_SUFFIX "Add the .exe suffix to executables on Unix systems (like CMT does)." ON)
-  option(GAUDI_CHECK_MISSING_CONFIGS "Check that all the packages have the CMakeLists.txt." ON)
   #-------------------------------------------------------------------------------------------------
   set(GAUDI_DATA_SUFFIXES DBASE;PARAM;EXTRAPACKAGES CACHE STRING
       "List of (suffix) directories where to look for data packages.")
@@ -264,6 +270,9 @@ macro(gaudi_project project version)
 
   #--- Find subdirectories
   message(STATUS "Looking for local directories...")
+  # First exclude the build directory from the search
+  file(WRITE ${CMAKE_BINARY_DIR}/.gaudi_project_ignore
+       "# do not look for packages in this directory")
   # Locate packages
   gaudi_get_packages(packages)
   message(STATUS "Found:")
@@ -291,9 +300,26 @@ macro(gaudi_project project version)
   set(inherited_data_packages)
   set(inherited_data_packages_decl)
 
+  parse_binary_tag()
+  # set LCG platform ids
+  set(LCG_SYSTEM ${BINARY_TAG_ARCH}-${BINARY_TAG_OS}-${BINARY_TAG_COMP}
+      CACHE STRING "Platform id of the target system or a compatible one.")
+  set(LCG_platform ${LCG_SYSTEM}-${BINARY_TAG_TYPE}
+      CACHE STRING "Platform ID for the AA project binaries.")
+  set(LCG_system   ${LCG_SYSTEM}-opt
+      CACHE STRING "Platform ID for the external libraries.")
+  mark_as_advanced(LCG_SYSTEM LCG_platform LCG_system)
+
   # Locate and import used projects.
   if(PROJECT_USE)
     _gaudi_use_other_projects(${PROJECT_USE})
+    # reset _proj_versions to the values we found
+    list_unzip(PROJECT_USE _proj_names _proj_versions)
+    set(_proj_versions)
+    foreach(_proj_name ${_proj_names})
+      set(_proj_versions ${_proj_versions} ${${_proj_name}_VERSION})
+    endforeach()
+    list_zip(PROJECT_USE _proj_names _proj_versions)
   endif()
   if(used_gaudi_projects)
     list(REMOVE_DUPLICATES used_gaudi_projects)
@@ -301,21 +327,24 @@ macro(gaudi_project project version)
   #message(STATUS "used_gaudi_projects -> ${used_gaudi_projects}")
   #message(STATUS "inherited_data_packages_decl -> ${inherited_data_packages_decl}")
 
-  # Ensure that we have the correct order of the modules search path.
-  # (the included <project>Config.cmake files are prepending their entries to
-  # the module path).
-  foreach(_p ${used_gaudi_projects})
-    if(IS_DIRECTORY ${${_p}_DIR}/cmake)
-      set(CMAKE_MODULE_PATH ${${_p}_DIR}/cmake ${CMAKE_MODULE_PATH})
+  # Allow ATLAS to override some CMake modules during the Gaudi build:
+  if( NOT GAUDI_ATLAS )
+    # Ensure that we have the correct order of the modules search path.
+    # (the included <project>Config.cmake files are prepending their entries to
+    # the module path).
+    foreach(_p ${used_gaudi_projects})
+      if(IS_DIRECTORY ${${_p}_DIR}/cmake)
+        set(CMAKE_MODULE_PATH ${${_p}_DIR}/cmake ${CMAKE_MODULE_PATH})
+      endif()
+    endforeach()
+    if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake)
+      set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
     endif()
-  endforeach()
-  if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake)
-    set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+    if(CMAKE_MODULE_PATH)
+      list(REMOVE_DUPLICATES CMAKE_MODULE_PATH)
+    endif()
+    #message(STATUS "CMAKE_MODULE_PATH -> ${CMAKE_MODULE_PATH}")
   endif()
-  if(CMAKE_MODULE_PATH)
-    list(REMOVE_DUPLICATES CMAKE_MODULE_PATH)
-  endif()
-  #message(STATUS "CMAKE_MODULE_PATH -> ${CMAKE_MODULE_PATH}")
 
   # Find the required data packages so that we can add them to the environment.
   _gaudi_handle_data_packages(${PROJECT_DATA})
@@ -328,8 +357,8 @@ macro(gaudi_project project version)
   find_program(env_cmd xenv HINTS ${binary_paths})
   set(env_cmd ${PYTHON_EXECUTABLE} ${env_cmd})
 
-  find_program(default_merge_cmd merge_files.py HINTS ${binary_paths})
-  set(default_merge_cmd ${PYTHON_EXECUTABLE} ${default_merge_cmd} --no-stamp)
+  find_program(default_merge_cmd quick-merge HINTS ${binary_paths})
+  set(default_merge_cmd ${PYTHON_EXECUTABLE} ${default_merge_cmd})
 
   find_program(versheader_cmd createProjVersHeader.py HINTS ${binary_paths})
   if(versheader_cmd)
@@ -382,15 +411,23 @@ macro(gaudi_project project version)
 
   #--- Project Installations------------------------------------------------------------------------
   install(DIRECTORY cmake/ DESTINATION cmake
-                           FILES_MATCHING PATTERN "*.cmake"
+                           FILES_MATCHING
+                           PATTERN "*.cmake"
+                           PATTERN "*.cmake.in"
+                           PATTERN "*.py"
                            PATTERN ".svn" EXCLUDE)
   install(PROGRAMS cmake/xenv DESTINATION scripts OPTIONAL)
   install(DIRECTORY cmake/EnvConfig DESTINATION scripts
           FILES_MATCHING PATTERN "*.py" PATTERN "*.conf")
 
+  if (CMAKE_EXPORT_COMPILE_COMMANDS)
+    install(FILES ${CMAKE_BINARY_DIR}/compile_commands.json DESTINATION . OPTIONAL)
+  endif()
+
   #--- Global actions for the project
   #message(STATUS "CMAKE_MODULE_PATH -> ${CMAKE_MODULE_PATH}")
   include(GaudiBuildFlags)
+
   # Generate the version header for the project.
   string(TOUPPER ${project} _proj)
   if(versheader_cmd)
@@ -486,6 +523,13 @@ macro(gaudi_project project version)
 
   # - collect environment from externals
   gaudi_external_project_environment()
+  if(PYTHONINTERP_FOUND)
+    # in some cases PYTHONHOME is need so it's better to set it
+    get_filename_component(_py_home "${PYTHON_EXECUTABLE}" PATH)
+    get_filename_component(_py_home "${_py_home}" PATH)
+    set(project_environment ${project_environment}
+        SET PYTHONHOME ${_py_home})
+  endif()
 
   # - include directories
   get_property(include_paths GLOBAL PROPERTY INCLUDE_PATHS)
@@ -514,19 +558,6 @@ macro(gaudi_project project version)
 
   # (so far, the build and the release envirnoments are identical)
   set(project_build_environment ${project_environment})
-
-  # FIXME: this should not be needed, but there is a bug in genreflex
-  if(BINARY_TAG MATCHES "i686-.*")
-    # special environment variables for GCCXML
-    if(GCCXML_CXX_COMPILER)
-      set(project_build_environment ${project_build_environment}
-          SET GCCXML_COMPILER "${GCCXML_CXX_COMPILER}")
-    endif()
-    if(GCCXML_CXX_FLAGS)
-      set(project_build_environment ${project_build_environment}
-          SET GCCXML_CXXFLAGS "${GCCXML_CXX_FLAGS}")
-    endif()
-  endif()
 
   # - collect internal environment
   message(STATUS "  environment for the project")
@@ -626,12 +657,9 @@ __path__ = [d for d in [os.path.join(d, '${pypack}') for d in sys.path if d]
             if (d.startswith('${CMAKE_BINARY_DIR}') or
                 d.startswith('${CMAKE_SOURCE_DIR}')) and
                (os.path.exists(d) or 'python.zip' in d)]
+if os.path.exists('${CMAKE_SOURCE_DIR}/${package}/python/${pypack}/__init__.py'):
+    execfile('${CMAKE_SOURCE_DIR}/${package}/python/${pypack}/__init__.py')
 ")
-        if(EXISTS ${CMAKE_SOURCE_DIR}/${package}/python/${pypack}/__init__.py)
-          file(READ ${CMAKE_SOURCE_DIR}/${package}/python/${pypack}/__init__.py _py_init_content)
-          file(APPEND ${CMAKE_BINARY_DIR}/python/${pypack}/__init__.py
-               "${_py_init_content}")
-        endif()
       endforeach()
     endif()
 
@@ -706,35 +734,15 @@ __path__ = [d for d in [os.path.join(d, '${pypack}') for d in sys.path if d]
   gaudi_generate_exports(${packages})
 
   #--- Generate the manifest.xml file.
-  gaudi_generate_project_manifest(${CMAKE_CONFIG_OUTPUT_DIRECTORY}/manifest.xml ${ARGV})
-  install(FILES ${CMAKE_CONFIG_OUTPUT_DIRECTORY}/manifest.xml DESTINATION .)
-
-  #--- CPack configuration
-  set(CPACK_PACKAGE_NAME ${project})
-  foreach(t MAJOR MINOR PATCH)
-    set(CPACK_PACKAGE_VERSION_${t} ${CMAKE_PROJECT_VERSION_${t}})
+  set(_manifest_args)
+  foreach(_arg USE DATA TOOLS)
+    if(PROJECT_${_arg})
+      set(_manifest_args ${_manifest_args} ${_arg} ${PROJECT_${_arg}})
+    endif()
   endforeach()
-  set(CPACK_SYSTEM_NAME ${BINARY_TAG})
-
-  set(CPACK_SOURCE_IGNORE_FILES "/InstallArea/;/build\\\\..*/;/\\\\.svn/;/\\\\.git/;/\\\\.settings/;\\\\..*project;\\\\.gitignore")
-
-  # for the binary
-  set(CPACK_INSTALL_PREFIX "usr/${project}/${version}/InstallArea/${BINARY_TAG}")
-  set(CPACK_INSTALL_SCRIPT "${GaudiProject_DIR}/cpack_install.cmake")
-
-  # for the source
-  set(CPACK_SOURCE_INSTALLED_DIRECTORIES "${CMAKE_SOURCE_DIR};/usr/${project}/${version}")
-
-  # for the RPMs
-  set(CPACK_PACKAGE_DEFAULT_LOCATION "/usr")
-  set(CPACK_GENERATOR "RPM")
-  set(CPACK_RPM_PACKAGE_VERSION "${version}")
-  set(CPACK_SOURCE_GENERATOR "RPM")
-  set(CPACK_SOURCE_RPM "ON")
-  set(CPACK_SOURCE_RPM_PACKAGE_ARCHITECTURE "noarch")
-  set(CPACK_SOURCE_RPM_PACKAGE_NAME "${project}-source")
-
-  include(CPack)
+  gaudi_generate_project_manifest(${CMAKE_CONFIG_OUTPUT_DIRECTORY}/manifest.xml
+                                  ${project} ${version} ${_manifest_args})
+  install(FILES ${CMAKE_CONFIG_OUTPUT_DIRECTORY}/manifest.xml DESTINATION .)
 
 endmacro()
 
@@ -762,32 +770,35 @@ macro(_gaudi_use_other_projects)
     if(len LESS 2)
       message(FATAL_ERROR "Wrong number of arguments to USE option")
     endif()
-    list(GET ARGN_ 0 other_project)
-    list(GET ARGN_ 1 other_project_version)
-    list(REMOVE_AT ARGN_ 0 1)
+    list_pop_front(ARGN_ other_project other_project_version)
 
-    message(STATUS "project -> ${other_project}, version -> ${other_project_version}")
-    if(other_project_version MATCHES "${GAUDI_VERSION_REGEX}")
-      set(other_project_cmake_version "${CMAKE_MATCH_1}.${CMAKE_MATCH_2}")
-      foreach(_i 4 7)
-        if(CMAKE_MATCH_${_i})
-          set(other_project_cmake_version "${other_project_cmake_version}.${CMAKE_MATCH_${_i}}")
-        endif()
-      endforeach()
+    if(GAUDI_STRICT_VERSION_CHECK)
+      message(STATUS "project -> ${other_project}, version -> ${other_project_version}")
+      if(other_project_version MATCHES "${GAUDI_VERSION_REGEX}")
+        set(other_project_cmake_version "${CMAKE_MATCH_1}.${CMAKE_MATCH_2}")
+        foreach(_i 4 7)
+          if(CMAKE_MATCH_${_i})
+            set(other_project_cmake_version "${other_project_cmake_version}.${CMAKE_MATCH_${_i}}")
+          endif()
+        endforeach()
+      else()
+        # Anything not recognised as a LHCb or ATLAS numbered version (mapped to 999.999).
+        set(other_project_cmake_version "999.999")
+      endif()
     else()
-      # Anything not recognised as a LHCb or ATLAS numbered version (mapped to 999.999).
-      set(other_project_cmake_version "999.999")
+      message(STATUS "project -> ${other_project}, version hint -> ${other_project_version}")
+      set(other_project_cmake_version)
     endif()
     #message(STATUS "other_project_cmake_version -> ${other_project_cmake_version}")
 
     if(NOT ${other_project}_FOUND)
       string(TOUPPER ${other_project} other_project_upcase)
       set(suffixes)
-      foreach(_s1 ${other_project}
-                  ${other_project}/${other_project_version}
-                  ${other_project_upcase}/${other_project_version}
+      foreach(_s1 ${other_project}/${other_project_version}
                   ${other_project_upcase}/${other_project_upcase}_${other_project_version}
-                  ${other_project_upcase})
+                  ${other_project_upcase}/${other_project_version}
+                  ${other_project}_${other_project_version}
+                  ${other_project})
         foreach(_s2 "" "/InstallArea")
           foreach(_s3 "" "/${BINARY_TAG}" "/${LCG_platform}" "/${LCG_system}")
             set(suffixes ${suffixes} ${_s1}${_s2}${_s3})
@@ -806,7 +817,7 @@ macro(_gaudi_use_other_projects)
         if(heptools_version)
           if(NOT heptools_version STREQUAL ${other_project}_heptools_version)
             if(${other_project}_heptools_version)
-              set(hint_message "with the option '-DCMAKE_TOOLCHAIN_FILE=.../heptools-${${other_project}_heptools_version}.cmake'")
+              set(hint_message "with the option '-DCMAKE_TOOLCHAIN_FILE=...'")
             else()
               set(hint_message "without the option '-DCMAKE_TOOLCHAIN_FILE=...'")
             endif()
@@ -873,8 +884,7 @@ endmacro()
 function(_gaudi_highest_version output)
   if(ARGN)
     # use the first version as initial result
-    list(GET ARGN 0 result)
-    list(REMOVE_AT ARGN 0)
+    list_pop_front(ARGN result)
     # convert the version to a list of numbers
     #message(STATUS "_gaudi_highest_version: initial -> ${result}")
     string(REGEX MATCHALL "[0-9]+" result_digits ${result})
@@ -1044,8 +1054,7 @@ macro(_gaudi_handle_data_packages)
   # loop over data package declarations
   while(ARGN_)
     # extract data package name and (optional) version from the list
-    list(GET ARGN_ 0 _data_package)
-    list(REMOVE_AT ARGN_ 0)
+    list_pop_front(ARGN_ _data_package)
     if(ARGN_) # we can look for the version only if we still have data)
       list(GET ARGN_ 0 _data_pkg_vers)
       if(_data_pkg_vers STREQUAL VERSION)
@@ -1082,17 +1091,22 @@ function(gaudi_resolve_include_dirs variable)
       get_target_property(to_incl ${package} SOURCE_DIR)
       if(to_incl)
         #message(STATUS "include_package_directories1 include_directories(${to_incl})")
-        set(collected ${collected} ${to_incl})
+        list(APPEND collected ${to_incl})
       endif()
+    elseif(${package} MATCHES "^${CMAKE_SOURCE_DIR}/")
+      # ignore pathes starting with ${CMAKE_SOURCE_DIR} but not caught
+      # by the first elseif. This means that the package targeted is
+      # in a different project, so we already have handled the inludes
+      # at that level
     elseif(IS_ABSOLUTE ${package} AND IS_DIRECTORY ${package})
       #message(STATUS "include_package_directories2 include_directories(${package})")
-      set(collected ${collected} ${package})
+      list(APPEND collected ${package})
     elseif(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${package})
       #message(STATUS "include_package_directories3 include_directories(${package})")
-      set(collected ${collected} ${CMAKE_CURRENT_SOURCE_DIR}/${package})
+      list(APPEND collected ${CMAKE_CURRENT_SOURCE_DIR}/${package})
     elseif(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/${package}) # package can be the name of a subdir
       #message(STATUS "include_package_directories4 include_directories(${package})")
-      set(collected ${collected} ${CMAKE_SOURCE_DIR}/${package})
+      list(APPEND collected ${CMAKE_SOURCE_DIR}/${package})
     else()
       # ensure that the current directory knows about the package
       find_package(${package} QUIET)
@@ -1113,7 +1127,7 @@ function(gaudi_resolve_include_dirs variable)
         endif()
         # Include the directories
         #message(STATUS "include_package_directories5 include_directories(${${to_incl}})")
-        set(collected ${collected} ${${to_incl}})
+        list(APPEND collected ${${to_incl}})
         set_property(GLOBAL APPEND PROPERTY INCLUDE_PATHS ${${to_incl}})
       endif()
     endif()
@@ -1251,6 +1265,17 @@ macro(gaudi_list_dependencies variable subdir)
   #message(STATUS " --> ${${variable}}")
 endmacro()
 
+# helper for gaudi_get_packages to check if a subdir should be ignored
+macro(_gaudi_ignored_listfile var filename)
+  set(${var} FALSE)
+  foreach(p ${ARGN})
+    if("${filename}" MATCHES "${p}/.*CMakeLists.txt")
+      #message(STATUS "ignoring ${filename}")
+      set(${var} TRUE)
+      break()
+    endif()
+  endforeach()
+endmacro()
 #-------------------------------------------------------------------------------
 # gaudi_get_packages
 #
@@ -1258,34 +1283,26 @@ endmacro()
 # directories to the variable.
 #-------------------------------------------------------------------------------
 function(gaudi_get_packages var)
-  # FIXME: trick to get the relative path to the build directory
-  file(GLOB rel_build_dir RELATIVE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
-  set(packages)
+  file(GLOB_RECURSE ignored_dir_stamps RELATIVE ${CMAKE_SOURCE_DIR} .gaudi_project_ignore)
   get_directory_property(_ignored_subdirs GAUDI_IGNORE_SUBDIRS)
+  foreach(stamp ${ignored_dir_stamps})
+    get_filename_component(stamp ${stamp} PATH)
+    set(_ignored_subdirs ${_ignored_subdirs} "${stamp}")
+  endforeach()
   file(GLOB_RECURSE cmakelist_files RELATIVE ${CMAKE_SOURCE_DIR} CMakeLists.txt)
+  set(packages)
   foreach(file ${cmakelist_files})
-    # ignore the source directory itself, files in the build directory and
-    # files in the cmake/tests directory
-    if(NOT file STREQUAL CMakeLists.txt AND
-       NOT file MATCHES "^(${rel_build_dir}|cmake/tests)")
-      get_filename_component(package ${file} PATH)
-      list(FIND _ignored_subdirs ${package} _ignored)
-      if(_ignored EQUAL -1) # not ignored
+    # ignore the source directory itself
+    if(NOT file STREQUAL CMakeLists.txt)
+      # ignore CMakeLists.txt files from specific paths
+      _gaudi_ignored_listfile(_ignored ${file} ${_ignored_subdirs})
+      if(NOT _ignored)
+        get_filename_component(package ${file} PATH)
         list(APPEND packages ${package})
       endif()
     endif()
   endforeach()
-  list(SORT var)
   set(${var} ${packages} PARENT_SCOPE)
-  if (GAUDI_CHECK_MISSING_CONFIGS)
-    file(GLOB_RECURSE requirements_files RELATIVE ${CMAKE_SOURCE_DIR} requirements)
-    foreach(r ${requirements_files})
-      string(REPLACE cmt/requirements CMakeLists.txt c ${r})
-      if(NOT EXISTS ${CMAKE_SOURCE_DIR}/${c})
-        message(WARNING "found ${r} but no ${c}")
-      endif()
-    endforeach()
-  endif()
 endfunction()
 
 
@@ -1308,7 +1325,7 @@ macro(gaudi_subdir name)
     file(READ ${CMAKE_CURRENT_SOURCE_DIR}/package_version.txt subdir_version)
     string(STRIP "${subdir_version}" subdir_version)
   else()
-    set(subdir_version unknown)
+    set(subdir_version ${CMAKE_PROJECT_VERSION})
   endif()
   set_directory_properties(PROPERTIES name ${subdir_name})
   set_directory_properties(PROPERTIES version ${subdir_version})
@@ -1346,12 +1363,10 @@ function(_gaudi_strip_build_type_libs variable)
   set(_coll)
   while(collected)
     # pop an element (library or qualifier)
-    list(GET collected 0 entry)
-    list(REMOVE_AT collected 0)
+    list_pop_front(collected entry)
     if(entry STREQUAL debug OR entry STREQUAL optimized OR entry STREQUAL general)
       # it's a qualifier: pop another one (the library name)
-      list(GET collected 0 lib)
-      list(REMOVE_AT collected 0)
+      list_pop_front(collected lib)
       # The possible values of CMAKE_BUILD_TYPE are Debug, Release,
       # RelWithDebInfo and MinSizeRel, plus the LCG/Gaudi special ones
       # Coverage and Profile. (treat an empty CMAKE_BUILD_TYPE as Release)
@@ -2075,8 +2090,12 @@ function(gaudi_add_dictionary dictionary header selection)
       -D_Instantiations=${dictionary}_Instantiations)
 
   # override the genreflex call to wrap it in the right environment
-  gaudi_env(PREPEND PATH ${lcg_system_compiler_path}/bin)
-  set(ROOT_genreflex_CMD ${env_cmd} --xml ${env_xml} ${ROOT_genreflex_CMD})
+  if(lcg_system_compiler_path)
+    gaudi_env(PREPEND PATH ${lcg_system_compiler_path}/bin)
+  endif()
+  if( NOT APPLE ) # On macOS the user has to provide a ROOT version that works on its own.
+     set(ROOT_genreflex_CMD ${env_cmd} --xml ${env_xml} ${ROOT_genreflex_CMD})
+  endif()
 
   # we need to forward the SPLIT_CLASSDEF option to reflex_dictionary()
   if(ARG_SPLIT_CLASSDEF)
@@ -2315,10 +2334,10 @@ function(gaudi_add_test name)
         set(test_cmd ${test_cmd} --skip-return-code 77)
       endif()
       set(test_cmd ${test_cmd}
-                       --workdir ${qmtest_root_dir}
-                       --common-tmpdir ${CMAKE_CURRENT_BINARY_DIR}/tests_tmp
                        --report ctest
-                       ${qmt_file})
+                       --common-tmpdir ${CMAKE_CURRENT_BINARY_DIR}/tests_tmp
+                       --workdir ${qmtest_root_dir}
+                       ${CMAKE_CURRENT_SOURCE_DIR}/tests/qmtest/${qmt_file})
       gaudi_add_test(${qmt_name}
                      COMMAND ${test_cmd}
                      WORKING_DIRECTORY ${qmtest_root_dir}
@@ -2434,6 +2453,7 @@ function(gaudi_install_headers)
               PATTERN "*.icpp"
               PATTERN "*.hpp"
               PATTERN "*.hxx"
+              PATTERN "*.hh"
               PATTERN "*.icc"
               PATTERN "*.inl"
               PATTERN "CVS" EXCLUDE
@@ -2571,6 +2591,7 @@ macro(gaudi_install_cmake_modules)
           DESTINATION cmake
           FILES_MATCHING
             PATTERN "*.cmake"
+            PATTERN "*.py"
             PATTERN "CVS" EXCLUDE
             PATTERN ".svn" EXCLUDE)
   set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
@@ -2788,9 +2809,7 @@ function(_make_relocatable var)
     set(map_keys)
     set(map_values)
     while(ARG_MAPPINGS)
-      list(GET 0 key)
-      list(GET 1 map_val)
-      list(REMOVE_AT 0 1)
+      list_pop_front(ARG_MAPPINGS key map_val)
       set(map_keys ${map_keys} ${key})
       set(map_values ${map_values} ${map_val})
     endwhile()
@@ -2971,8 +2990,6 @@ macro(gaudi_external_project_environment)
         endif()
       elseif(pack STREQUAL "Oracle")
         set(executable ${SQLPLUS_EXECUTABLE})
-      elseif(pack STREQUAL "GCCXML")
-        set(executable ${GCCXML})
       elseif(pack STREQUAL "tcmalloc")
         set(executable ${PPROF_EXECUTABLE})
       endif()
@@ -3048,7 +3065,9 @@ macro(gaudi_external_project_environment)
   endforeach()
 
   foreach(val ${binary_path})
-    set(project_environment ${project_environment} PREPEND PATH ${val})
+    if(NOT val MATCHES "^(/usr|/usr/local)?/bin" )
+      set(project_environment ${project_environment} PREPEND PATH ${val})
+    endif()
   endforeach()
 
   foreach(val ${library_path})
@@ -3192,12 +3211,14 @@ function(gaudi_generate_project_manifest filename project version)
     set(data "${data}    <version>${heptools_version}</version>\n")
     # platform specifications
     set(data "${data}    <binary_tag>${BINARY_TAG}</binary_tag>\n")
+    set(data "${data}    <lcg_platform>${LCG_platform}</lcg_platform>\n")
     set(data "${data}    <lcg_system>${LCG_SYSTEM}</lcg_system>\n")
     # look for packages provided by heptools
     # - compile a list of the paths required at runtime
     #message(STATUS "project_environment -> ${project_environment}")
     set(required_paths)
-    foreach(path ${project_environment})
+    get_property(extra_required_paths GLOBAL PROPERTY GAUDI_REQUIRED_PATHS)
+    foreach(path ${project_environment} ${extra_required_paths})
       #message(STATUS "maybe path -> ${path}")
       if(EXISTS "${path}")
         get_filename_component(path "${path}" REALPATH)
@@ -3247,9 +3268,7 @@ function(gaudi_generate_project_manifest filename project version)
   if(PROJECT_USE)
     set(data "${data}  <used_projects>\n")
     while(PROJECT_USE)
-      list(GET PROJECT_USE 0 n)
-      list(GET PROJECT_USE 1 v)
-      list(REMOVE_AT PROJECT_USE 0 1)
+      list_pop_front(PROJECT_USE n v)
       set(data "${data}    <project name=\"${n}\" version=\"${v}\" />\n")
     endwhile()
     set(data "${data}  </used_projects>\n")
@@ -3281,3 +3300,6 @@ function(gaudi_generate_project_manifest filename project version)
   message(STATUS "Generating ${fn}")
   file(WRITE ${filename} "${data}")
 endfunction()
+
+# uncomment for instrumentation of cmake
+#include("Instrument")

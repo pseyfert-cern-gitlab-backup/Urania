@@ -7,6 +7,8 @@
 #include "TBranch.h"
 #include "TLeaf.h"
 #include "TList.h"
+#include <stdio.h>
+#include <string.h>
 
 // Boost
 #include "boost/lexical_cast.hpp"
@@ -36,6 +38,9 @@ MultiTrackCalibTool::MultiTrackCalibTool(std::string Name,
     m_verbose(verbose),
     m_printFreq(printFreq),
     m_indexNTracks(0),
+    m_indexNTracksBrunel(0),
+    m_indexNSPDHits(0),
+    m_indexNVeloClusters(0),
     m_BinningDimensions(0),
     m_BinningVectorSorted(0),
     m_KinVarBranchesSet(0),
@@ -54,11 +59,11 @@ MultiTrackCalibTool::MultiTrackCalibTool(std::string Name,
     m_IDVar_suffix("")
 {
   // Set PIDPerfTools
-  m_PerfParamMap["Track Momentum [MeV/c]"] = "P";
-  m_PerfParamMap["Transverse Momentum [MeV/c]"] = "PT";
-  m_PerfParamMap["Psuedo Rapidity"] = "ETA";
-  m_PerfParamMap["No. Best Tracks in Event"] = "nTRACKS";
-
+  //m_PerfParamMap["Track Momentum [MeV/c]"] = "P";
+  //m_PerfParamMap["Transverse Momentum [MeV/c]"] = "PT";
+  //m_PerfParamMap["Psuedo Rapidity"] = "ETA";
+  //m_PerfParamMap["No. Best Tracks in Event"] = "nTRACKS";
+  
   this->SetOutputFile(OutputFileName, mode);
   m_OutputFile->cd();
 
@@ -166,6 +171,7 @@ std::string MultiTrackCalibTool::getBranchType(TTree* tt, const TString& brName)
     cout << "No TTree specified" << endl;
     exit(EXIT_FAILURE);
   }
+ 
   TBranch* br = tt->GetBranch(brName.Data());
   if (!br) {
     cout << "Failed to retrieve branch " << brName
@@ -182,6 +188,16 @@ std::string MultiTrackCalibTool::getBranchType(TTree* tt, const TString& brName)
 void MultiTrackCalibTool::SetTrackMomVarName(const std::string& NameInTree)
 {
   m_BinningParam.push_back( make_pair("P", NameInTree) );
+
+  m_BinningVectorSorted = false;
+}
+
+//=============================================================================
+// Declare offline momentum variable name in reference tree
+//=============================================================================
+void MultiTrackCalibTool::SetTrackMomBrunelVarName(const std::string& NameInTree)
+{
+  m_BinningParam.push_back( make_pair("Brunel_P", NameInTree) );
 
   m_BinningVectorSorted = false;
 }
@@ -207,6 +223,16 @@ void MultiTrackCalibTool::SetTrackEtaVarName(const std::string& NameInTree)
 }
 
 //=============================================================================
+// Declare offline pseudo-rapdity variable name in reference tree
+//=============================================================================
+void MultiTrackCalibTool::SetTrackEtaBrunelVarName(const std::string& NameInTree)
+{
+  m_BinningParam.push_back( make_pair("Brunel_ETA",NameInTree) );
+
+  m_BinningVectorSorted = false;
+}
+
+//=============================================================================
 // Declare nTracks variable name in reference tree
 //=============================================================================
 void MultiTrackCalibTool::SetNTracksVarName(const std::string& NameInTree)
@@ -215,6 +241,37 @@ void MultiTrackCalibTool::SetNTracksVarName(const std::string& NameInTree)
 
   m_BinningVectorSorted = false;
 }
+
+//=============================================================================
+// Declare nTracks_Brunel variable name in reference tree
+//=============================================================================
+void MultiTrackCalibTool::SetNTracksBrunelVarName(const std::string& NameInTree)
+{
+  m_BinningParam.push_back( make_pair("nTRACKS_BRUNEL",NameInTree) );
+
+  m_BinningVectorSorted = false;
+}
+
+//=============================================================================
+// Declare nSPDHits variable name in reference tree
+//=============================================================================
+void MultiTrackCalibTool::SetNSPDHitsVarName(const std::string& NameInTree)
+{
+  m_BinningParam.push_back( make_pair("nSPDHITS",NameInTree) );
+
+  m_BinningVectorSorted = false;
+}
+
+//=============================================================================
+// Declare nVeloClusters variable name in reference tree
+//=============================================================================
+void MultiTrackCalibTool::SetNVeloClustersVarName(const std::string& NameInTree)
+{
+  m_BinningParam.push_back( make_pair("nVeloClusters",NameInTree) );
+
+  m_BinningVectorSorted = false;
+}
+
 
 //=============================================================================
 // Declare sWeights variable name in reference tree
@@ -272,11 +329,15 @@ void MultiTrackCalibTool::ReOrderBinningVector()
 
   //Declare iterator for m_TrackEffMap
   std::map<std::string, TH1*>::iterator itr_begin = m_TrackEffMap.begin();
+  
+  std::vector<size_t> order;
+  std::vector<std::pair<std::string,std::string> >::iterator itr;
 
   // Simple case of a 1-dimensional binning (no ordering necessary)
   if(m_BinningDimensions == 1)
   {
-    if(m_PerfParamMap.find(itr_begin->second->GetXaxis()->GetTitle()) != m_PerfParamMap.end()) {
+  	m_BinningVectorSorted = true;
+    /*if(m_PerfParamMap.find(itr_begin->second->GetXaxis()->GetTitle()) != m_PerfParamMap.end()) {
       m_BinningVectorSorted = true;
       return;
     }
@@ -284,13 +345,13 @@ void MultiTrackCalibTool::ReOrderBinningVector()
     {
       cout << "**ERROR** : Got invalid X bin type." << endl;
       exit(EXIT_FAILURE);
-    }
+    }*/
   }
 
   // Complicated case of > 1-dimensional binning (ordering necessary)
   else if (m_BinningDimensions > 1)
   {
-    std::vector<size_t> order;
+    /*std::vector<size_t> order;
     std::vector<std::pair<std::string,std::string> >::iterator itr;
 
     // Test x-Dimension
@@ -309,10 +370,10 @@ void MultiTrackCalibTool::ReOrderBinningVector()
           continue;
         }
       }
-    }
+    }*/
 
     // Test y-Dimension
-    if (m_PerfParamMap.find(itr_begin->second->GetYaxis()->GetTitle()) == m_PerfParamMap.end()) {
+    /*if (m_PerfParamMap.find(itr_begin->second->GetYaxis()->GetTitle()) == m_PerfParamMap.end()) {
       cout << "**ERROR** : Got invalid Y bin type." << endl;
       exit(EXIT_FAILURE);
     }
@@ -327,9 +388,9 @@ void MultiTrackCalibTool::ReOrderBinningVector()
           continue;
         }
       }
-    }
+    }*/
 
-    if (m_BinningDimensions > 2)
+    /*if (m_BinningDimensions > 2)
     {
       // Test z-Dimension
       if (m_PerfParamMap.find(itr_begin->second->GetZaxis()->GetTitle()) == m_PerfParamMap.end()) {
@@ -348,7 +409,7 @@ void MultiTrackCalibTool::ReOrderBinningVector()
           }
         }
       }
-    }
+    }*/
 
     cout<<"Before ReOrdering..."<<endl;
     for(itr=m_BinningParam.begin(); itr!=m_BinningParam.end(); ++itr)
@@ -366,10 +427,22 @@ void MultiTrackCalibTool::ReOrderBinningVector()
       if (itr->first == "nTRACKS") {
         m_indexNTracks = index_;
       }
+      if (itr->first == "nTRACKS_BRUNEL") {
+        m_indexNTracksBrunel = index_;
+      }
+      if (itr->first == "nSPDHITS") {
+        m_indexNSPDHits = index_;
+      }
+      if (itr->first == "nVeloClusters") {
+        m_indexNVeloClusters = index_;
+      }
       cout<<itr->first<<'\t'<<itr->second<<endl;
       index_++;
     }
     cout<<" Index nTracks = "<< m_indexNTracks <<endl;
+    cout<<" Index nTracks_Brunel = "<< m_indexNTracksBrunel <<endl;
+    cout<<" Index nSPDHits = "<< m_indexNSPDHits <<endl;
+    cout<<" Index nVeloClusters = "<< m_indexNVeloClusters <<endl;
   }
 
   m_BinningVectorSorted = true;
@@ -418,11 +491,20 @@ void MultiTrackCalibTool::SetTrackKinVarBranchAddressInInputTree()
     for(itr_binVar=m_BinningParam.begin(); itr_binVar!=m_BinningParam.end(); ++itr_binVar)
     {
       // Construct variable name
-      std::string var_string = (itr_binVar->first=="nTRACKS") ?
+      std::string var_string = (itr_binVar->first=="nTRACKS" || itr_binVar->first=="nTRACKS_BRUNEL" || itr_binVar->first=="nSPDHITS" || itr_binVar->first=="nVeloClusters") ?
         itr_binVar->second : itr_trk->first+"_"+itr_binVar->second;
 
       if ((itr_trk!=m_TrackEffMap.begin())&&(itr_binVar->first=="nTRACKS")){
          itr_trkVar->second.push_back(m_TrackVars.begin()->second.at(m_indexNTracks));
+      }
+      else if ((itr_trk!=m_TrackEffMap.begin())&&(itr_binVar->first=="nTRACKS_BRUNEL")){
+         itr_trkVar->second.push_back(m_TrackVars.begin()->second.at(m_indexNTracksBrunel));
+      }
+      else if ((itr_trk!=m_TrackEffMap.begin())&&(itr_binVar->first=="nSPDHITS")){
+         itr_trkVar->second.push_back(m_TrackVars.begin()->second.at(m_indexNSPDHits));
+      }
+      else if ((itr_trk!=m_TrackEffMap.begin())&&(itr_binVar->first=="nVeloClusters")){
+         itr_trkVar->second.push_back(m_TrackVars.begin()->second.at(m_indexNVeloClusters));
       }
       else {
         // Dynamically assign appropriate type to void pointer
@@ -705,15 +787,14 @@ void MultiTrackCalibTool::DeleteHeapMemVars()
   std::map<std::string, std::vector<void*> >::iterator itr_trk;
   for(itr_trk=m_TrackVars.begin(); itr_trk!=m_TrackVars.end(); ++itr_trk)
   {
-    /*
-    std::vector<void*>::iterator itr_v;
+    
+    /*std::vector<void*>::iterator itr_v;
     for(itr_v=itr_trk->second.begin(); itr_v!=itr_trk->second.end(); ++itr_v)
     {
       // use global operate delete on a void pointer
        ::operator delete(*itr_v);
-    }
+    }*/
     itr_trk->second.clear();
-    */
 
     // Loop over all kinematic variables
     std::vector<void*>::iterator itr_v;
@@ -721,7 +802,10 @@ void MultiTrackCalibTool::DeleteHeapMemVars()
     {
 
       if ( (itr_trk!=m_TrackVars.begin())&&
-          (m_BinningParam.at(distance(itr_trk->second.begin(),itr_v)).first=="nTRACKS") )
+          (m_BinningParam.at(distance(itr_trk->second.begin(),itr_v)).first=="nTRACKS" ||
+           m_BinningParam.at(distance(itr_trk->second.begin(),itr_v)).first=="nTRACKS_BRUNEL" ||
+           m_BinningParam.at(distance(itr_trk->second.begin(),itr_v)).first=="nSPDHITS" ||
+           m_BinningParam.at(distance(itr_trk->second.begin(),itr_v)).first=="nVeloClusters") )
       {
          continue;
       }
@@ -823,6 +907,7 @@ void MultiTrackCalibTool::Loop()
           std::string zvarname = this->GetKinVarBranchName(trkname,
                                                            m_BinningParam.at(2).first,
                                                            m_BinningParam.at(2).second);
+    	  
           Double_t zvar = CastVoidPointerToDouble(itr_trk->second.at(2),
                                                   m_InputRefTree,
                                                   zvarname);
@@ -1042,18 +1127,22 @@ void MultiTrackCalibTool::SetRefDataInPerfHistLimits()
           exit(EXIT_FAILURE);
         }
 
-        if(cuts!="")
-          cuts += " && ";
-
-        cuts +=
-          boost::lexical_cast<std::string>(RangeMin)
-          + " <= "
-          + var_string
-          + " && "
-          + boost::lexical_cast<std::string>(RangeMax)
-          + " > "
-          + var_string;
-
+    
+		//Check if the variable cut has already been added (don't append if it has)
+		std::string::size_type pos = cuts.find(var_string);
+		if(pos == std::string::npos){
+		
+			if(cuts!="") cuts += " && ";
+        	cuts +=
+          	boost::lexical_cast<std::string>(RangeMin)
+          	+ " <= "
+          	+ var_string
+          	+ " && "
+          	+ boost::lexical_cast<std::string>(RangeMax)
+          	+ " > "
+          	+ var_string;
+		}
+		
       }// Loop over binning parameters
 
   }// Loop over all tracks
@@ -1095,21 +1184,69 @@ void MultiTrackCalibTool::CheckSanityOfPerfHists()
   {
     cout << itr_m->second << endl;
     double val = itr_m->second->GetBinContent(itr_m->second->GetMaximumBin());
+    double bin_num = itr_m->second->GetMaximumBin();
+    double low_edge_x = itr_m->second->GetXaxis()->GetBinLowEdge(bin_num);
+    double low_edge_y = 0;
+    double low_edge_z = 0;
+    
+    if(m_BinningDimensions > 1){
+      low_edge_y = itr_m->second->GetYaxis()->GetBinLowEdge(bin_num);
+    }
+    if(m_BinningDimensions > 2){
+      low_edge_z = itr_m->second->GetZaxis()->GetBinLowEdge(bin_num);
+    }
+
     if(val>1)
     {
-      cout<<"WARNING: Bin in histogram "<<itr_m->second->GetName()
+      if(m_BinningDimensions == 1){
+         cout<<"WARNING: Bin "<<bin_num<<" with low edge ("<<low_edge_x<<") in histogram "<<itr_m->second->GetName()
           <<" with value > 1 : "<<val<<endl;
+      }
+      else if(m_BinningDimensions == 2){
+        cout<<"WARNING: Bin "<<bin_num<<" with low edge ("<<low_edge_x<<","<<low_edge_y<<") in histogram "<<itr_m->second->GetName()
+          <<" with value > 1 : "<<val<<endl;
+      }
+      else if(m_BinningDimensions == 3){
+        cout<<"WARNING: Bin "<<bin_num<<" with low edge ("<<low_edge_x<<","<<low_edge_y<<","<<low_edge_z<<") in histogram "<<itr_m->second->GetName()
+          <<" with value > 1 : "<<val<<endl;
+      }
+      
       //exit(EXIT_FAILURE);
     }
+    
     val = itr_m->second->GetBinContent(itr_m->second->GetMinimumBin());
+    bin_num = itr_m->second->GetMinimumBin();
+    low_edge_x = itr_m->second->GetXaxis()->GetBinLowEdge(bin_num);
+    low_edge_y = 0;
+    low_edge_z = 0;
+
+    if(m_BinningDimensions > 1){
+      low_edge_y = itr_m->second->GetYaxis()->GetBinLowEdge(bin_num);
+    }
+    if(m_BinningDimensions > 2){
+      low_edge_z = itr_m->second->GetZaxis()->GetBinLowEdge(bin_num);
+    }
+
     if(val<0)
     {
-      cout<<"WARNING: Bin in histogram "<<itr_m->second->GetName()
-          <<" with value < 0 : "<<val<<endl;
+      if(m_BinningDimensions == 1){
+         cout<<"WARNING: Bin "<<bin_num<<" with low edge ("<<low_edge_x<<") in histogram "<<itr_m->second->GetName()
+          <<" with value < 1 : "<<val<<endl;
+      }
+      else if(m_BinningDimensions == 2){
+        cout<<"WARNING: Bin "<<bin_num<<" with low edge ("<<low_edge_x<<","<<low_edge_y<<") in histogram "<<itr_m->second->GetName()
+          <<" with value < 1 : "<<val<<endl;
+      }
+      else if(m_BinningDimensions == 3){
+        cout<<"WARNING: Bin "<<bin_num<<" with low edge ("<<low_edge_x<<","<<low_edge_y<<","<<low_edge_z<<") in histogram "<<itr_m->second->GetName()
+          <<" with value < 1 : "<<val<<endl;
+      }
+      
       //exit(EXIT_FAILURE);
     }
   }// Loop over all perf histograms
 }
+  
 
 //=============================================================================
 // Determine the per event fractional error (i.e. \frac{\sigma}{\eff} )
@@ -1193,9 +1330,12 @@ std::string MultiTrackCalibTool::GetKinVarBranchName(std::string trkName,
                                                      std::string binVarIntName,
                                                      std::string binVarName)
 {
-  std::string ret = (binVarIntName!="nTRACKS") ? trkName+"_"+binVarName : binVarName;
+  std::string ret = "";
+  if(binVarIntName!="nTRACKS" && binVarIntName!="nTRACKS_BRUNEL" && binVarIntName!="nSPDHITS" && binVarIntName!="nVeloClusters") ret = trkName+"_"+binVarName; 
+  else ret = binVarName;
 
   return ret;
+  
 }
 
 

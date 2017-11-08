@@ -48,8 +48,6 @@
 	<class name = "RooIpatia2" />
 	<class name = "RooApollonios" />
 
-	<class pattern = "Bdecaytree" />
-
 	<class pattern="SharedArrayImp<*>"/>
 	<class pattern="SharedArray<*>"/>
 	<class pattern="RooBinned1DQuinticBase<*>"/>
@@ -73,6 +71,7 @@
 	    <field name = "_S_jk" transient = "true" />
 	</class>
 	<class name="RooCubicSplineFun"/>
+        <class name="RooCubicSplinePdf"/>
 	<class name="RooBinnedFun"/>
 	<class name="RooSwimmingAcceptance">
 	    <field name = "m_tps" transient = "true" />
@@ -93,6 +92,6 @@
 	</class>
 	<class name="TagDLLToTagDec"/>
 	<class name="TagDLLToTagEta"/>
-	<class name="TaggingCat"/>
-</selection>
+        <class name="TaggingCat"/>
+  </selection>
 </lcgdict>
