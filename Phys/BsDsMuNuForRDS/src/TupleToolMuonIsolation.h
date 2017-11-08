@@ -116,7 +116,7 @@ private:
   double m_fc;
   double m_angle;
   double m_count_mup_Giampi; 
-  double m_count_mum_Giampi; 
+  //double m_count_mum_Giampi; 
   double m_count_mum;
   double m_count_mup;
   double m_count_mum_f;

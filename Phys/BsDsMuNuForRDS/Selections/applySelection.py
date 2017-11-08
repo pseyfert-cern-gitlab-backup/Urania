@@ -8,8 +8,8 @@ gROOT.SetBatch(True)
 ####################################################################
 #dataTags = ['MC_LbLcDs', 'MC_BdDstDs', 'MC_BsDsDs', 'MC_BuD0Ds']
 #dataTags = ['MC_Signal', 'MC_LbLcDs', 'MC_BdDstDs', 'MC_BsDsDs', 'MC_BuD0Ds', 'MC_InclDs', 'Data']
-dataTags = ['Data']
-polarities = ['MagUp', 'MagUp']
+dataTags = ['MC_Tau', 'MC_Signal', 'MC_LbLcDs', 'MC_BdDstDs', 'MC_BsDsDs', 'MC_BuD0Ds']
+polarities = ['MagUp', 'MagDown']
 # If command line arguments are specified overwrite these.
 if len(sys.argv) == 3:
     dataTags   = [sys.argv[1]]

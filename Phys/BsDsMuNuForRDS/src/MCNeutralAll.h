@@ -181,16 +181,16 @@ public :
    Double_t        Bs_0_D1_isobdt4_2nd;
    Double_t        Bs_0_D1_isobdt4_3rd;
    Int_t           MCGEN_num;
-   Float_t         MCGEN_partindex[500];   //[MCGEN_num]
-   Float_t         MCGEN_motindex[500];   //[MCGEN_num]
-   Float_t         MCGEN_lundid[500];   //[MCGEN_num]
-   Float_t         MCGEN_px[500];   //[MCGEN_num]
-   Float_t         MCGEN_py[500];   //[MCGEN_num]
-   Float_t         MCGEN_pz[500];   //[MCGEN_num]
-   Float_t         MCGEN_vtx_x[500];   //[MCGEN_num]
-   Float_t         MCGEN_vtx_y[500];   //[MCGEN_num]
-   Float_t         MCGEN_vtx_z[500];   //[MCGEN_num]
-   Float_t         MCGEN_origtype[500];   //[MCGEN_num]
+   Float_t         MCGEN_partindex[1000];   //[MCGEN_num]
+   Float_t         MCGEN_motindex[1000];   //[MCGEN_num]
+   Float_t         MCGEN_lundid[1000];   //[MCGEN_num]
+   Float_t         MCGEN_px[1000];   //[MCGEN_num]
+   Float_t         MCGEN_py[1000];   //[MCGEN_num]
+   Float_t         MCGEN_pz[1000];   //[MCGEN_num]
+   Float_t         MCGEN_vtx_x[1000];   //[MCGEN_num]
+   Float_t         MCGEN_vtx_y[1000];   //[MCGEN_num]
+   Float_t         MCGEN_vtx_z[1000];   //[MCGEN_num]
+   Float_t         MCGEN_origtype[1000];   //[MCGEN_num]
    Double_t        Bs_0_typeOriginVtx;
    Double_t        Bs_0_nEndVertices;
    Double_t        Bs_0_ancestorpid;
@@ -2211,8 +2211,11 @@ MCNeutralAll::MCNeutralAll(TTree *tree) : fChain(0)
       //chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/MCUp_RDS_AllNeutrals.root");
       //chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/MCDown_RDS_AllNeutrals.root");
       // with veto
-      chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/s/sogilvy/RDs/WithDsVetoes/MCDown_RDS_AllNeutrals.root");
-      chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/s/sogilvy/RDs/WithDsVetoes/MCUp_RDS_AllNeutrals.root");
+      //chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/s/sogilvy/RDs/WithDsVetoes/MCDown_RDS_AllNeutrals.root");
+      //chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/s/sogilvy/RDs/WithDsVetoes/MCUp_RDS_AllNeutrals.root");
+      // new MC09 signals
+      chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/s/sogilvy/RDs/WithVetoes/MC09_DsMuNu_MagDown.root");
+      chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/s/sogilvy/RDs/WithVetoes/MC09_DsMuNu_MagUp.root");
 
       tree = chain;
 

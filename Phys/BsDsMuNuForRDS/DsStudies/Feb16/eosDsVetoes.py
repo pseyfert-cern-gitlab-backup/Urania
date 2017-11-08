@@ -16,14 +16,16 @@ for dataTag in dataTags:
 
         # Get the filename with no vetoes.
         #fInName  = 'root://eoslhcb.cern.ch///eos/lhcb/user/r/rvazquez/RDS/' + fNameEnd
-        fOutName = '/afs/cern.ch/work/s/sogilvy/RDs/WithVetoes/' + fNameEnd
+        #fOutName = '/afs/cern.ch/work/s/sogilvy/RDs/WithVetoes/' + fNameEnd
+        fOutName = '/afs/cern.ch/work/r/rvazquez/RDS/WithVetoes/' + fNameEnd
 
         # Open the original file.
         #fIn = TFile.Open(fInName)
         #fIn.ls()
 
         # Add the Friend tree file.
-        fFriendName = '/afs/cern.ch/work/s/sogilvy/RDs/' + fNameEnd
+        #fFriendName = '/afs/cern.ch/work/s/sogilvy/RDs/' + fNameEnd
+        fFriendName = '/afs/cern.ch/work/r/rvazquez/RDS/' + fNameEnd
         fFriend = TFile.Open(fFriendName)
 
         # Make the new file.
@@ -76,7 +78,8 @@ for dataTag in dataTags:
         fOut.Close()
 
         # now copy to eos.
-        eosdir = '/eos/lhcb/user/s/sogilvy/RDs/WithDsVetoes/'
+        #eosdir = '/eos/lhcb/user/s/sogilvy/RDs/WithDsVetoes/'
+        eosdir = '/eos/lhcb/user/r/rvazquez/RDS/WithDsVetoes'
         eoscommand = '/afs/cern.ch/project/eos/installation/0.3.15/bin/eos.select cp'
         os.system('%s %s %s' %(eoscommand, fOutName, eosdir))
         # Now delete the original.

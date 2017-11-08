@@ -17,14 +17,14 @@ masterDirDict = {
 
 # Home directory for the processed ntuples on eos.
 finalDirDict = {
-    'lxplus' : '/eos/lhcb/user/s/sogilvy/RDs/WithVetoes/'
+    'lxplus' : '/eos/lhcb/user/r/rvazquez/RDS/WithVetoes/'
     ,'lnf'   : ''
     }
 
 # Directory for the Dalitz variables processed from Ricci's
 # master files.
 dalitzDirDict = {
-    'lxplus' : '/afs/cern.ch/work/s/sogilvy/RDs/'
+    'lxplus' : '/afs/cern.ch/work/r/rvazquez/RDS/'
     ,'lnf'   : ''
     }
 
@@ -32,7 +32,7 @@ dalitzDirDict = {
 # and immediately before being copied to the final dir
 # on eos.
 temporaryDirDict = {
-    'lxplus' : '/afs/cern.ch/work/s/sogilvy/RDs/WithVetoes/'
+    'lxplus' : '/afs/cern.ch/work/r/rvazquez/RDS/WithDsVetoes/'
     ,'lnf'   : ''
     }
 
@@ -46,15 +46,20 @@ protocolDict = {
 # Also contains the tuple names for each file type to be cycled over.
 dataDict = {
 
-    'MC_Signal'   : { 'tNames'      : [ 'MB2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuSSTuple/DecayTree' ]
-                       ,'MagUp'      : [ 'TupleRDS_MCSignalUp_allNeutrals_iso.root' ]
-                       ,'MagDown'    : [ 'TupleRDS_MCSignalDown_allNeutrals_iso.root']
-                       ,'MagUpOut'   : 'TupleRDS_MCSignalUp_allNeutrals_iso.root'
-                       ,'MagDownOut' : 'TupleRDS_MCSignalDown_allNeutrals_iso.root'
+    'MC_Signal'   : { 'tNames'       : [ 'B2DsMuNuTuple/DecayTree' ]
+                       ,'MagUp'      : [ 'TupleRDS_Sim09b_DsMuNu_Up.root' ]
+                       ,'MagDown'    : [ 'TupleRDS_Sim09b_DsMuNu_Down.root' ]
+                       ,'MagUpOut'   : 'TupleRDS_Sim09b_DsMuNu_Up.root'
+                       ,'MagDownOut' : 'TupleRDS_Sim09b_DsMuNu_Down.root'
                        }
-    
+
+    ,'MC_Tau'      : { 'tNames'      : [ 'B2DsMuNuTuple/DecayTree' ]
+                       ,'MagUp'      : [ 'TupleRDS_Sim09b_DsTauNu_Up.root' ]
+                       ,'MagDown'    : [ 'TupleRDS_Sim09b_DsTauNu_Down.root']
+                       ,'MagUpOut'   : 'TupleRDS_Sim09b_DsTauNu_Up.root'
+                       ,'MagDownOut' : 'TupleRDS_Sim09b_DsTauNu_Down.root'
+                     }
+
     ,'MC_InclDs'   : { 'tNames'      : [ 'MB2DsMuNuTuple/DecayTree'
                                          ,'B2DsMuNuTuple/DecayTree'
                                          ,'B2DsMuNuSSTuple/DecayTree' ]
@@ -64,40 +69,32 @@ dataDict = {
                        ,'MagDownOut' :  'TupleRDS_InclDsDown_allNeutrals_iso.root'
                        }
 
-    ,'MC_LbLcDs'   : { 'tNames'      : [ 'MB2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuSSTuple/DecayTree' ]
-                       ,'MagUp'      : [ 'TupleRDS_LbLcDs_Up_iso.root' ]
-                       ,'MagDown'    : [ 'TupleRDS_LbLcDs_Down_iso.root' ]
-                       ,'MagUpOut'   :  'TupleRDS_LbLcDs_Up_iso.root'
-                       ,'MagDownOut' :  'TupleRDS_LbLcDs_Down_iso.root'
+    ,'MC_LbLcDs'   : { 'tNames'      : [ 'B2DsMuNuTuple/DecayTree' ]
+                       ,'MagUp'      : [ 'TupleRDS_Sim09b_LbLcDs_Up.root' ]
+                       ,'MagDown'    : [ 'TupleRDS_Sim09b_LbLcDs_Down.root' ]
+                       ,'MagUpOut'   :  'TupleRDS_Sim09b_LbLcDs_Up.root'
+                       ,'MagDownOut' :  'TupleRDS_Sim09b_LbLcDs_Down.root'
                        }
 
-    ,'MC_BdDstDs'  : { 'tNames'      : [ 'MB2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuSSTuple/DecayTree' ]
-                       ,'MagUp'      : [ 'TupleRDS_BdDstDs_Up_iso.root' ]
-                       ,'MagDown'    : [ 'TupleRDS_BdDstDs_Down_iso.root' ]
-                       ,'MagUpOut'   :  'TupleRDS_BdDstDs_Up_iso.root'
-                       ,'MagDownOut' :  'TupleRDS_BdDstDs_Down_iso.root'
+    ,'MC_BdDstDs'  : { 'tNames'      : [ 'B2DsMuNuTuple/DecayTree' ]
+                       ,'MagUp'      : [ 'TupleRDS_Sim09b_BdDstDs_Up.root' ]
+                       ,'MagDown'    : [ 'TupleRDS_Sim09b_BdDstDs_Down.root' ]
+                       ,'MagUpOut'   :  'TupleRDS_Sim09b_BdDstDs_Up.root'
+                       ,'MagDownOut' :  'TupleRDS_Sim09b_BdDstDs_Down.root'
                        }
 
-    ,'MC_BsDsDs'   : { 'tNames'      : [ 'MB2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuSSTuple/DecayTree' ]
-                       ,'MagUp'      : [ 'TupleRDS_BsDsDs_Up_iso.root' ]
-                       ,'MagDown'    : [ 'TupleRDS_BsDsDs_Down_iso.root' ]
-                       ,'MagUpOut'   :  'TupleRDS_BsDsDs_Up_iso.root'
-                       ,'MagDownOut' :  'TupleRDS_BsDsDs_Down_iso.root'
+    ,'MC_BsDsDs'   : { 'tNames'      : [ 'B2DsMuNuTuple/DecayTree' ]
+                       ,'MagUp'      : [ 'TupleRDS_Sim09b_BsDsDs_Up.root' ]
+                       ,'MagDown'    : [ 'TupleRDS_Sim09b_BsDsDs_Down.root' ]
+                       ,'MagUpOut'   :  'TupleRDS_Sim09b_BsDsDs_Up.root'
+                       ,'MagDownOut' :  'TupleRDS_Sim09b_BsDsDs_Down.root'
                        }
 
-    ,'MC_BuD0Ds'   : { 'tNames'      : [ 'MB2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuTuple/DecayTree'
-                                         ,'B2DsMuNuSSTuple/DecayTree' ]
-                       ,'MagUp'      : [ 'TupleRDS_BuD0Ds_Up_iso.root' ]
-                       ,'MagDown'    : [ 'TupleRDS_BuD0Ds_Down_iso.root' ]
-                       ,'MagUpOut'   :  'TupleRDS_BuD0Ds_Up_iso.root'
-                       ,'MagDownOut' :  'TupleRDS_BuD0Ds_Down_iso.root'
+    ,'MC_BuD0Ds'   : { 'tNames'      : [ 'B2DsMuNuTuple/DecayTree' ]
+                       ,'MagUp'      : [ 'TupleRDS_Sim09b_BuD0Ds_Up.root' ]
+                       ,'MagDown'    : [ 'TupleRDS_Sim09b_BuD0Ds_Down.root' ]
+                       ,'MagUpOut'   :  'TupleRDS_Sim09b_BuD0Ds_Up.root'
+                       ,'MagDownOut' :  'TupleRDS_Sim09b_BuD0Ds_Down.root'
                        }
     
     ,'Data'        : { 'tNames'      : ['B2DsMuNuTuple/DecayTree'

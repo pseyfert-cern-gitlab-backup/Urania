@@ -1,119 +1,125 @@
-// Include files
-
-// from Gaudi
+// Include files 
+// from Gaudi 
 #include "GaudiKernel/ToolFactory.h"
-
-// local
+// local 
 #include "TupleToolSLTools.h"
-
 #include <Kernel/GetIDVAlgorithm.h>
 #include <Kernel/IDVAlgorithm.h>
 #include <Kernel/IDistanceCalculator.h>
 #include <Kernel/IVertexFit.h>
-#include <Kernel/ILifetimeFitter.h>
 #include "Kernel/IPVReFitter.h"
 #include "GaudiAlg/Tuple.h"
 #include "GaudiAlg/TupleObj.h"
-
 #include "TROOT.h"
 #include "Event/Particle.h"
 #include "TLorentzVector.h"
 #include "TVector3.h"
-
 using namespace LHCb;
+using namespace Gaudi::Units;
+using namespace ROOT::Math;
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : TupleToolSLTools
-//
 // @author Mitesh Patel, Patrick Koppenburg
-// @date   2008-04-15
-//-----------------------------------------------------------------------------
-
-// Declaration of the Tool Factory
-// actually acts as a using namespace TupleTool
+// @date   2008-04-15 
+//----------------------------------------------------------------------------- 
+// Declaration of the Tool Factory 
+// actually acts as a using namespace TupleTool 
 DECLARE_TOOL_FACTORY( TupleToolSLTools )
-
-//=============================================================================
+//============================================================================= 
 // Standard constructor, initializes variables
-//=============================================================================
+//============================================================================= 
   TupleToolSLTools::TupleToolSLTools( const std::string& type,
-                                        const std::string& name,
+                                      const std::string& name,
                                         const IInterface* parent )
     : TupleToolBase ( type, name , parent )
-    , m_dva(0)
-    , m_dist(0)
-    , m_pVertexFit(0)
+  , m_dva(0)
+  , m_dist(0)
+  , m_descend(0)
+  , m_util(0)
+  , m_pVertexFit(0)
 {
   declareInterface<IParticleTupleTool>(this);
   declareProperty("VertexFitter", m_typeVertexFit = "LoKi::VertexFitter" );
-  declareProperty("Bmass", m_Bmass = 5620.2 );
+  declareProperty("Bmass", m_Bmass = 5366.79 );
   declareProperty("VertexCov",m_vcov=false);
   declareProperty("MomCov",m_momcov=false);
 }
 
-//=============================================================================
+//============================================================================= 
 
 StatusCode TupleToolSLTools::initialize()
 {
   const StatusCode sc = TupleToolBase::initialize();
   if ( sc.isFailure() ) return sc;
 
-  m_dva = Gaudi::Utils::getIDVAlgorithm ( contextSvc(), this ) ;
-  if (!m_dva) return Error("Couldn't get parent DVAlgorithm",
-                           StatusCode::FAILURE);
-
-  m_dist = m_dva->distanceCalculator ();
-  if( !m_dist ){
-    Error("Unable to retrieve the IDistanceCalculator tool");
+  m_dva = Gaudi::Utils::getIDVAlgorithm ( contextSvc(), this ) ; 
+  if (!m_dva) return Error("Couldn't get parent DVAlgorithm", 
+                           StatusCode::FAILURE); 
+   
+  m_dist = m_dva->distanceCalculator (); 
+  if( !m_dist ){ 
+    Error("Unable to retrieve the IDistanceCalculator tool"); 
+    return StatusCode::FAILURE; 
+  } 
+  m_descend = tool<IParticleDescendants> ( "ParticleDescendants", this );
+  if( ! m_descend ) 
+  {
+    fatal() << "Unable to retrieve ParticleDescendants tool "<< endreq;
     return StatusCode::FAILURE;
   }
-
-  //m_pVertexFit= m_dva->vertexFitter();
-  m_pVertexFit  = tool<IVertexFit>(m_typeVertexFit,this);
-  //m_pVertexFit  = tool<IVertexFit>("OfflineVertexFitter",this);
-  if( !m_pVertexFit ){
-    Error("Unable to retrieve the IVertexFit tool");
+  
+  m_util = tool<ITaggingUtilsChecker> ( "TaggingUtilsChecker", this );
+  if( ! m_util ) 
+  {
+    fatal() << "Unable to retrieve TaggingUtilsChecker tool "<< endreq;
     return StatusCode::FAILURE;
   }
-  m_ltfit = tool<ILifetimeFitter>( "PropertimeFitter", this );
-  if( !m_ltfit ){
-    Error("Unable to retrieve the ILifetimeFitter tool");
-    return StatusCode::FAILURE;
-  }
+  
+  //m_pVertexFit= m_dva->vertexFitter(); 
+  m_pVertexFit  = tool<IVertexFit>(m_typeVertexFit,this); 
+  //m_pVertexFit  = tool<IVertexFit>("OfflineVertexFitter",this); 
+  if( !m_pVertexFit ){ 
+    Error("Unable to retrieve the IVertexFit tool"); 
+    return StatusCode::FAILURE; 
+  } 
   m_pvReFitter = tool<IPVReFitter>("LoKi::PVReFitter:PUBLIC", this );
-
-  return sc;
-}
-
-//=============================================================================
-
-StatusCode TupleToolSLTools::fill( const Particle* mother
-                                    , const Particle* P
-                                    , const std::string& head
-                                    , Tuples::Tuple& tuple )
-{
-
-  const std::string prefix=fullName(head);
-  Assert( P && mother && m_dist
-          , "This should not happen, you are inside TupleToolSLTools.cpp :(" );
-
-
-  bool test=true;
-  // --------------------------------------------------
-
-  // find the origin vertex. Either the primary or the origin in the
-  // decay
-  /*
-    const VertexBase* vtx = 0;
-    if( mother != P ) vtx = originVertex( mother, P );
-    if( !vtx ){
-    Error("Can't retrieve the origin vertex for " + prefix );
+  if ( !m_pvReFitter )
+  {
+    return Error( "Unable to retrieve IPVReFitter instance" );
     return StatusCode::FAILURE;
-    }
-  */
-  const LHCb::Particle* mu_part;
-  LHCb::Particle::ConstVector source;
-  LHCb::Particle::ConstVector target;
+  }
+  
+  return sc; 
+} 
+ 
+//============================================================================= 
+ 
+StatusCode TupleToolSLTools::fill( const Particle* mother 
+                                    , const Particle* P 
+                                    , const std::string& head 
+                                    , Tuples::Tuple& tuple ) 
+{ 
+ 
+  const std::string prefix=fullName(head); 
+  Assert( P && mother && m_dist 
+          , "This should not happen, you are inside TupleToolSLTools.cpp :(" ); 
+  if( !P ) return StatusCode::FAILURE;
+  if( !( P->particleID().hasBottom() )) return StatusCode::SUCCESS;
+  
+  bool test=true; 
+  // -------------------------------------------------- 
+ 
+  // find the origin vertex. Either the primary or the origin in the 
+  // decay 
+  /* 
+    const VertexBase* vtx = 0; 
+    if( mother != P ) vtx = originVertex( mother, P ); 
+    if( !vtx ){ 
+    Error("Can't retrieve the origin vertex for " + prefix ); 
+    return StatusCode::FAILURE; 
+    } 
+  */ 
 
   double mcorr, q2_one, q2_two, mcorrerr, mcorrfullerr;
   std::vector<double> mcorr_errors;
@@ -121,7 +127,11 @@ StatusCode TupleToolSLTools::fill( const Particle* mother
   const LHCb::Vertex* pmu_vert;
   const LHCb::VertexBase* PV;
 
-  debug() << "PRE FILL " << endreq;
+  Particle::ConstVector parts_cand = m_descend->descendants(mother);
+  const Particle* mu_part   = findID(13 , parts_cand);
+  if(!mu_part)   return StatusCode::SUCCESS;
+  
+  /*
   if (P->isBasicParticle()){
     source.push_back(mother);
   }
@@ -129,16 +139,13 @@ StatusCode TupleToolSLTools::fill( const Particle* mother
     source.push_back(P);
   }
 
-  debug() << "Filled Source :: " << source.size()<<endreq;
-
-  bool mu_found = kFALSE;
   do {
     target.clear();
     for(LHCb::Particle::ConstVector::const_iterator isource = source.begin(); 
         isource != source.end(); isource++){
-      debug() << "Daughters size :: " << (*isource)->daughtersVector().size()<<endreq;
-      if((*isource)->daughtersVector().size()){
-	//        !((*isource)->daughters().empty())
+      
+      if(!((*isource)->daughters().empty())){
+        
         LHCb::Particle::ConstVector tmp = (*isource)->daughtersVector();
         
         for( LHCb::Particle::ConstVector::const_iterator itmp = tmp.begin(); 
@@ -146,115 +153,91 @@ StatusCode TupleToolSLTools::fill( const Particle* mother
           target.push_back(*itmp);
           // Add the final states, i.e. particles with proto and ignoring gammas
           if((*itmp)->proto() && 22 != (*itmp)->particleID().pid()){
-	    if ((*itmp)->particleID().abspid() == 13)
-	      {
-		mu_found = kTRUE;
+		if ((*itmp)->particleID().abspid() == 13)
+		{
 		mu_part = (*itmp);
-	      }	
-	  }
+		}	
+           }
         }
       } // if endVertex
     } // isource
     source = target;
   } while(target.size() > 0);
-  
-  
+  */
   // vetex selected proton and muon 
-  debug() << "Filled Target " <<target.size()<< endreq;
-
-  if(!mu_found) return StatusCode(test);
-
   
+
   pmu_vert = P->endVertex();
   PV = m_dva->bestVertex ( P );
-  
-  Gaudi::LorentzVector LV_P,LV_mu;
-  LV_P = P->momentum();
-  TLorentzVector TLV_P(LV_P.px(),LV_P.py(),LV_P.pz(),LV_P.E());
-  // muon LV
-  LV_mu = mu_part->momentum();
-  TLorentzVector TLV_mu(LV_mu.px(),LV_mu.py(),LV_mu.pz(),LV_mu.E());
-  debug() << "PV vtx problem ?? "<< endreq;
 
-  TVector3 TV3_PV(0,0,0);
-  TVector3 TV3_SV(0,0,0);
-  if(PV){
-    TV3_PV.SetX(PV->position().X());
-    TV3_PV.SetY(PV->position().Y());
-    TV3_PV.SetZ(PV->position().Z());
-  }
-  
-  if(pmu_vert){
-    TV3_SV.SetX(pmu_vert->position().X());
-    TV3_SV.SetY(pmu_vert->position().Y());
-    TV3_SV.SetZ(pmu_vert->position().Z());
-  }
-  
-  TVector3 Mdirn = (TV3_SV - TV3_PV).Unit();
+    Gaudi::LorentzVector LV_P,LV_mu;
+    LV_P = P->momentum();
+    TLorentzVector TLV_P(LV_P.px(),LV_P.py(),LV_P.pz(),LV_P.E());
+    // muon LV
+    LV_mu = mu_part->momentum();
+    TLorentzVector TLV_mu(LV_mu.px(),LV_mu.py(),LV_mu.pz(),LV_mu.E());
 
-  debug() << "Mcorr problem ?? "<< endreq;
-  
-  mcorr = Mcorr(TLV_P, Mdirn);
-  mcorr_errors = Mcorr_errors(TV3_SV, TV3_PV, TLV_P, P->covMatrix(), PV->covMatrix());
 
-  debug() << "recoNu problem ?? "<< endreq;
-  
-  nu_slns = recoNu(TLV_P, Mdirn, m_Bmass); 
-  
-  fillVertex(pmu_vert, prefix +"_SV", tuple);
-  fillVertex(PV, prefix + "_PV", tuple);
+    TVector3 TV3_PV(PV->position().X(),PV->position().Y(), PV->position().Z());
+    TVector3 TV3_SV(pmu_vert->position().X(),pmu_vert->position().Y(), pmu_vert->position().Z());
+     
+    TVector3 Mdirn = (TV3_SV - TV3_PV).Unit();
 
-  debug() << "Filled Vertex " << endreq;
-  
-  if(m_momcov)
+    mcorr = Mcorr(TLV_P, Mdirn);
+    mcorr_errors = Mcorr_errors(TV3_SV, TV3_PV, TLV_P, P->covMatrix(), PV->covMatrix());
+    nu_slns = recoNu(TLV_P, Mdirn, m_Bmass); 
+    
+    fillVertex(pmu_vert, prefix +"_SV", tuple);
+    fillVertex(PV, prefix + "_PV", tuple);
+
+    if(m_momcov)
     {   
-      const Gaudi::SymMatrix4x4 & mom_cov = P->momCovMatrix ();
-      const Gaudi::Matrix4x3 & posmom_cov = P->posMomCovMatrix ();
-      test &= tuple->matrix( prefix +  "_MOM_COV_", mom_cov );
-      test &= tuple->matrix( prefix +  "_POSMOM_COV_", posmom_cov );
-    }
-  
-  test &= tuple->column(  prefix + "_MCORR", mcorr);
-  if(mcorr_errors.size() ==  2)
-    {
-      mcorrerr = mcorr_errors[0];
-      mcorrfullerr = mcorr_errors[1];
-      test &= tuple->column(  prefix + "_MCORRERR", mcorrerr);
-      test &= tuple->column(  prefix + "_MCORRFULLERR", mcorrfullerr);
-    }
-  else
-    {
-      test &= tuple->column(  prefix + "_MCORRERR", -1000.);
-      test &= tuple->column(  prefix + "_MCORRFULLERR", -1000.);
-    }
-  
-  if(nu_slns.size() ==  2)
-    {
-      q2_one = (nu_slns[0] + TLV_mu).M2();
-      q2_two = (nu_slns[1] + TLV_mu).M2();
-      
-      test &= tuple->column(  prefix + "_Q2SOL1", q2_one);
-      test &= tuple->column(  prefix + "_Q2SOL2", q2_two);
-    }
-  else
-    {
-      test &= tuple->column(  prefix + "_Q2SOL1", -1000.);
-      test &= tuple->column(  prefix + "_Q2SOL2", -1000.);
-    }
-  debug() << "PAST FILL " << endreq;
-
-  //
-  // replaced by V.B. 20.Aug.2k+9: (parts2Vertex,vtxWithExtraTrack);
-  // Remove the added track from parts2Vertex
-
-
-
-  return StatusCode(test);
+    const Gaudi::SymMatrix4x4 & mom_cov = P->momCovMatrix ();
+    const Gaudi::Matrix4x3 & posmom_cov = P->posMomCovMatrix ();
+    test &= tuple->matrix( prefix +  "_MOM_COV_", mom_cov );
+    test &= tuple->matrix( prefix +  "_POSMOM_COV_", posmom_cov );
 }
 
-//=========================================================================
-//
-//=========================================================================
+    test &= tuple->column(  prefix + "_MCORR", mcorr);
+    if(mcorr_errors.size() ==  2)
+    {
+    mcorrerr = mcorr_errors[0];
+    mcorrfullerr = mcorr_errors[1];
+    test &= tuple->column(  prefix + "_MCORRERR", mcorrerr);
+    test &= tuple->column(  prefix + "_MCORRFULLERR", mcorrfullerr);
+    }
+    else
+    {
+    test &= tuple->column(  prefix + "_MCORRERR", -1000.);
+    test &= tuple->column(  prefix + "_MCORRFULLERR", -1000.);
+    }
+
+    if(nu_slns.size() ==  2)
+    {
+    q2_one = (nu_slns[0] + TLV_mu).M2();
+    q2_two = (nu_slns[1] + TLV_mu).M2();
+
+    test &= tuple->column(  prefix + "_Q2SOL1", q2_one);
+    test &= tuple->column(  prefix + "_Q2SOL2", q2_two);
+    }
+    else
+    {
+    test &= tuple->column(  prefix + "_Q2SOL1", -1000.);
+    test &= tuple->column(  prefix + "_Q2SOL2", -1000.);
+    }
+    debug() << "PAST FILL " << endreq; 
+    //} 
+    // replaced by V.B. 20.Aug.2k+9: (parts2Vertex,vtxWithExtraTrack); 
+    // Remove the added track from parts2Vertex 
+ 
+     
+ 
+  return StatusCode(test); 
+} 
+ 
+//========================================================================= 
+// 
+//========================================================================= 
 StatusCode TupleToolSLTools::fillVertex( const LHCb::VertexBase* vtx,
                                           const std::string& vtx_name,
                                           Tuples::Tuple& tuple ) const
@@ -295,15 +278,13 @@ double TupleToolSLTools::Mcorr(TLorentzVector Y, TVector3 M_dirn)
      return  sqrt(Y.M2() + P_T * P_T) + P_T;
 }
 
-
-
 std::vector<TLorentzVector> TupleToolSLTools::recoNu(TLorentzVector Y, TVector3 M_dirn, double mass)
-    {
+{
 	std::vector<TLorentzVector> p_nu;
 	// Get 3 Vector from Y
 	TVector3 Y3  = (Y).Vect(); 
 	// Construct combined pmu/Kmu 4 vector in new rotated frame
-	TLorentzVector Ppmu(Y3.Dot(M_dirn),(Y).Perp(M_dirn),0.0,(Y).E() );
+	TLorentzVector Ppmu(Y3.Dot(M_dirn),(Y).Perp(M_dirn),0.0,(Y).E());
 	// Get component of Y3 perpendicular to *M_dirn
 	TVector3 Perp_dirn  = ( Y3  - (M_dirn) * Y3.Dot((M_dirn))).Unit();  
 	// Calculate neutrino energy in mother rest frame
@@ -311,7 +292,7 @@ std::vector<TLorentzVector> TupleToolSLTools::recoNu(TLorentzVector Y, TVector3 
 	// Calculate pmu " "
 	double E_pmurest = sqrt(E_nurest * E_nurest + (Y).M2());
 	double px_rest;
-
+  
 	// Find magnitude of momentum along mother dirn in rest frame
 
 	if( E_nurest * E_nurest  - Ppmu.Py() * Ppmu.Py() >= 0)
@@ -323,7 +304,7 @@ std::vector<TLorentzVector> TupleToolSLTools::recoNu(TLorentzVector Y, TVector3 
 	    return p_nu;
 	}
 
-	//px_rest = sqrt( E_nurest * E_nurest  - Ppmu.Py() * Ppmu.Py() ); 
+	// px_rest = sqrt( E_nurest * E_nurest  - Ppmu.Py() * Ppmu.Py() ); 
 	// quadratic coefficients
 	double A = (Y).E() * (Y).E()  - Ppmu.Px() * Ppmu.Px();
 	double B = - 2 * Ppmu.Px()  * (E_nurest * E_pmurest + px_rest * px_rest );
@@ -616,3 +597,55 @@ Mcorr_errors.push_back( sqrt(vertex_errsq + momentum_errsq) );
 
 return Mcorr_errors;
 }
+const Particle* TupleToolSLTools::findID(unsigned int id,
+                                          Particle::ConstVector& v,
+                                          std::string opts )
+{
+  
+  const Particle* p=0;
+  
+  for( Particle::ConstVector::const_iterator ip=v.begin(); ip!=v.end(); ip++)
+  {
+    
+    if((*ip)->particleID().abspid() == id)
+    {
+      
+      if(id==211 && opts=="slow")
+      {
+        
+        const Particle* mater = m_util->motherof(*ip, v);
+        
+        if(mater->particleID().abspid()!=413) continue;
+        
+      }
+      
+      if(id==211 && opts=="fast")
+      {
+        
+        const Particle* mater = m_util->motherof(*ip, v);
+        
+        if(mater->particleID().abspid()==413) continue;
+        
+      }
+      
+      p = (*ip);
+      
+      break;
+      
+    }
+    
+  }
+  
+  if(!p)
+  {
+    
+    return NULL;
+    
+  }
+  
+  return p;
+  
+}
+
+
+//=============================================================================  

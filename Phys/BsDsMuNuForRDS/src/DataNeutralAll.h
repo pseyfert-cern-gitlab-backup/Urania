@@ -930,6 +930,7 @@ public :
    Double_t        mu_0_40_smaxPt_PX;
    Double_t        mu_0_40_smaxPt_PY;
    Double_t        mu_0_40_smaxPt_PZ;
+   Double_t        mu_iso_MinBDT_Long;
    UInt_t          nCandidate;
    ULong64_t       totCandidates;
    ULong64_t       EventInSequence;
@@ -1838,6 +1839,7 @@ public :
    TBranch        *b_mu_0_40_smaxPt_PX;   //!
    TBranch        *b_mu_0_40_smaxPt_PY;   //!
    TBranch        *b_mu_0_40_smaxPt_PZ;   //!
+   TBranch        *b_mu_iso_MinBDT_Long;  //!
    TBranch        *b_nCandidate;   //!
    TBranch        *b_totCandidates;   //!
    TBranch        *b_EventInSequence;   //!
@@ -1904,8 +1906,8 @@ DataNeutralAll::DataNeutralAll(TTree *tree) : fChain(0)
       //chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/TupleRDS_DataDown_2_allNeutrals.root");
       //chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/TupleRDS_DataDown_3_allNeutrals.root");
       // with vetoes
-      chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/s/sogilvy/RDs/WithDsVetoes/TupleRDS_DataDown_allNeutrals.root");
-      chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/s/sogilvy/RDs/WithDsVetoes/TupleRDS_DataUp_allNeutrals.root");
+      chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/s/sogilvy/RDs/WithVetoes/TupleRDS_DataDown_allNeutrals_iso.root");
+      chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/s/sogilvy/RDs/WithVetoes/TupleRDS_DataUp_allNeutrals_iso.root");
 
       tree = chain;
 
@@ -2823,6 +2825,7 @@ void DataNeutralAll::Init(TTree *tree)
    fChain->SetBranchAddress("mu_0.40_smaxPt_PX", &mu_0_40_smaxPt_PX, &b_mu_0_40_smaxPt_PX);
    fChain->SetBranchAddress("mu_0.40_smaxPt_PY", &mu_0_40_smaxPt_PY, &b_mu_0_40_smaxPt_PY);
    fChain->SetBranchAddress("mu_0.40_smaxPt_PZ", &mu_0_40_smaxPt_PZ, &b_mu_0_40_smaxPt_PZ);
+   fChain->SetBranchAddress("mu_iso_MinBDT_Long", &mu_iso_MinBDT_Long, &b_mu_iso_MinBDT_Long); 
    fChain->SetBranchAddress("nCandidate", &nCandidate, &b_nCandidate);
    fChain->SetBranchAddress("totCandidates", &totCandidates, &b_totCandidates);
    fChain->SetBranchAddress("EventInSequence", &EventInSequence, &b_EventInSequence);

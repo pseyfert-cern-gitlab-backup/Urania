@@ -2272,8 +2272,13 @@ KinVarsReco::KinVarsReco(TTree *tree) : fChain(0)
       tree = (TTree*)f->Get("B2DsMuNuTuple/DecayTree");
 
       TChain *chain = new TChain("B2DsMuNuTuple/DecayTree");
-      chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/RDS_MCSignal_Sim08hDown.root");
-      chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/RDS_MCSignal_Sim08hUp.root");
+      //chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/RDS_MCSignal_Sim08hDown.root");
+      //chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/RDS_MCSignal_Sim08hUp.root");
+      // new MC09 ntuples
+      //chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/s/sogilvy/RDs/WithVetoes/MC09_DsMuNu_MagDown.root");
+      //chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/s/sogilvy/RDs/WithVetoes/MC09_DsMuNu_MagUp.root");
+      chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/s/sogilvy/RDs/WithVetoes/MC09_DsTauNu_MagDown.root");
+      chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/s/sogilvy/RDs/WithVetoes/MC09_DsTauNu_MagUp.root");
       tree = chain;
    }
    Init(tree);

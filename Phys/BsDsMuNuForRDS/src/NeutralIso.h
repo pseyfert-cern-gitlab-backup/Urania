@@ -61,88 +61,6 @@ public :
    const Int_t kMaxmu_POSMOM_COV = 1;
 
    // Declaration of leaf types
-   Int_t           Bs_0_0_00_cc_mult;
-   Double_t        Bs_0_0_00_cc_PX;
-   Double_t        Bs_0_0_00_cc_PY;
-   Double_t        Bs_0_0_00_cc_PZ;
-   Double_t        Bs_0_0_00_cc_vPT;
-   Double_t        Bs_0_0_00_cc_sPT;
-   Int_t           Bs_0_0_00_cc_maxPt_Q;
-   Double_t        Bs_0_0_00_cc_maxPt_PT;
-   Double_t        Bs_0_0_00_cc_maxPt_PX;
-   Double_t        Bs_0_0_00_cc_maxPt_PY;
-   Double_t        Bs_0_0_00_cc_maxPt_PZ;
-   Double_t        Bs_0_0_00_cc_maxPt_PE;
-   Int_t           Bs_0_0_00_nc_mult;
-   Double_t        Bs_0_0_00_nc_PX;
-   Double_t        Bs_0_0_00_nc_PY;
-   Double_t        Bs_0_0_00_nc_PZ;
-   Double_t        Bs_0_0_00_nc_vPT;
-   Double_t        Bs_0_0_00_nc_sPT;
-   Double_t        Bs_0_0_00_nc_maxPt_PT;
-   Double_t        Bs_0_0_00_nc_maxPt_PX;
-   Double_t        Bs_0_0_00_nc_maxPt_PY;
-   Double_t        Bs_0_0_00_nc_maxPt_PZ;
-   Int_t           Bs_0_0_10_cc_mult;
-   Double_t        Bs_0_0_10_cc_PX;
-   Double_t        Bs_0_0_10_cc_PY;
-   Double_t        Bs_0_0_10_cc_PZ;
-   Double_t        Bs_0_0_10_cc_vPT;
-   Double_t        Bs_0_0_10_cc_sPT;
-   Int_t           Bs_0_0_10_nc_mult;
-   Double_t        Bs_0_0_10_nc_PX;
-   Double_t        Bs_0_0_10_nc_PY;
-   Double_t        Bs_0_0_10_nc_PZ;
-   Double_t        Bs_0_0_10_nc_vPT;
-   Double_t        Bs_0_0_10_nc_sPT;
-   Int_t           Bs_0_0_20_cc_mult;
-   Double_t        Bs_0_0_20_cc_PX;
-   Double_t        Bs_0_0_20_cc_PY;
-   Double_t        Bs_0_0_20_cc_PZ;
-   Double_t        Bs_0_0_20_cc_vPT;
-   Double_t        Bs_0_0_20_cc_sPT;
-   Int_t           Bs_0_0_20_nc_mult;
-   Double_t        Bs_0_0_20_nc_PX;
-   Double_t        Bs_0_0_20_nc_PY;
-   Double_t        Bs_0_0_20_nc_PZ;
-   Double_t        Bs_0_0_20_nc_vPT;
-   Double_t        Bs_0_0_20_nc_sPT;
-   Int_t           Bs_0_0_30_cc_mult;
-   Double_t        Bs_0_0_30_cc_PX;
-   Double_t        Bs_0_0_30_cc_PY;
-   Double_t        Bs_0_0_30_cc_PZ;
-   Double_t        Bs_0_0_30_cc_vPT;
-   Double_t        Bs_0_0_30_cc_sPT;
-   Int_t           Bs_0_0_30_nc_mult;
-   Double_t        Bs_0_0_30_nc_PX;
-   Double_t        Bs_0_0_30_nc_PY;
-   Double_t        Bs_0_0_30_nc_PZ;
-   Double_t        Bs_0_0_30_nc_vPT;
-   Double_t        Bs_0_0_30_nc_sPT;
-   Int_t           Bs_0_0_40_cc_mult;
-   Double_t        Bs_0_0_40_cc_PX;
-   Double_t        Bs_0_0_40_cc_PY;
-   Double_t        Bs_0_0_40_cc_PZ;
-   Double_t        Bs_0_0_40_cc_vPT;
-   Double_t        Bs_0_0_40_cc_sPT;
-   Int_t           Bs_0_0_40_nc_mult;
-   Double_t        Bs_0_0_40_nc_PX;
-   Double_t        Bs_0_0_40_nc_PY;
-   Double_t        Bs_0_0_40_nc_PZ;
-   Double_t        Bs_0_0_40_nc_vPT;
-   Double_t        Bs_0_0_40_nc_sPT;
-   Int_t           Bs_0_0_50_cc_mult;
-   Double_t        Bs_0_0_50_cc_PX;
-   Double_t        Bs_0_0_50_cc_PY;
-   Double_t        Bs_0_0_50_cc_PZ;
-   Double_t        Bs_0_0_50_cc_vPT;
-   Double_t        Bs_0_0_50_cc_sPT;
-   Int_t           Bs_0_0_50_nc_mult;
-   Double_t        Bs_0_0_50_nc_PX;
-   Double_t        Bs_0_0_50_nc_PY;
-   Double_t        Bs_0_0_50_nc_PZ;
-   Double_t        Bs_0_0_50_nc_vPT;
-   Double_t        Bs_0_0_50_nc_sPT;
    Double_t        Bs_0_MINIP;
    Double_t        Bs_0_MINIPCHI2;
    Double_t        Bs_0_MINIPNEXTBEST;
@@ -442,30 +360,66 @@ public :
    Double_t        Ds_0_00_nc_maxPt_PX;
    Double_t        Ds_0_00_nc_maxPt_PY;
    Double_t        Ds_0_00_nc_maxPt_PZ;
-   Int_t           Ds_0_10_cc_mult;
-   Double_t        Ds_0_10_cc_PX;
-   Double_t        Ds_0_10_cc_PY;
-   Double_t        Ds_0_10_cc_PZ;
-   Double_t        Ds_0_10_cc_vPT;
-   Double_t        Ds_0_10_cc_sPT;
-   Int_t           Ds_0_10_nc_mult;
-   Double_t        Ds_0_10_nc_PX;
-   Double_t        Ds_0_10_nc_PY;
-   Double_t        Ds_0_10_nc_PZ;
-   Double_t        Ds_0_10_nc_vPT;
-   Double_t        Ds_0_10_nc_sPT;
-   Int_t           Ds_0_20_cc_mult;
-   Double_t        Ds_0_20_cc_PX;
-   Double_t        Ds_0_20_cc_PY;
-   Double_t        Ds_0_20_cc_PZ;
-   Double_t        Ds_0_20_cc_vPT;
-   Double_t        Ds_0_20_cc_sPT;
-   Int_t           Ds_0_20_nc_mult;
-   Double_t        Ds_0_20_nc_PX;
-   Double_t        Ds_0_20_nc_PY;
-   Double_t        Ds_0_20_nc_PZ;
-   Double_t        Ds_0_20_nc_vPT;
-   Double_t        Ds_0_20_nc_sPT;
+   Int_t           Ds_1_50_cc_mult;
+   Double_t        Ds_1_50_cc_PX;
+   Double_t        Ds_1_50_cc_PY;
+   Double_t        Ds_1_50_cc_PZ;
+   Double_t        Ds_1_50_cc_vPT;
+   Double_t        Ds_1_50_cc_sPT;
+   Int_t           Ds_1_50_nc_mult;
+   Double_t        Ds_1_50_nc_PX;
+   Double_t        Ds_1_50_nc_PY;
+   Double_t        Ds_1_50_nc_PZ;
+   Double_t        Ds_1_50_nc_vPT;
+   Double_t        Ds_1_50_nc_sPT;
+   Double_t        Ds_1_50_nc_maxPt_PX;
+   Double_t        Ds_1_50_nc_maxPt_PY;
+   Double_t        Ds_1_50_nc_maxPt_PZ;
+   Int_t           Ds_1_20_cc_mult;
+   Double_t        Ds_1_20_cc_PX;
+   Double_t        Ds_1_20_cc_PY;
+   Double_t        Ds_1_20_cc_PZ;
+   Double_t        Ds_1_20_cc_vPT;
+   Double_t        Ds_1_20_cc_sPT;
+   Int_t           Ds_1_20_nc_mult;
+   Double_t        Ds_1_20_nc_PX;
+   Double_t        Ds_1_20_nc_PY;
+   Double_t        Ds_1_20_nc_PZ;
+   Double_t        Ds_1_20_nc_vPT;
+   Double_t        Ds_1_20_nc_sPT;
+   Double_t        Ds_1_20_nc_maxPt_PX;
+   Double_t        Ds_1_20_nc_maxPt_PY;
+   Double_t        Ds_1_20_nc_maxPt_PZ;
+   Int_t           Ds_0_90_cc_mult;
+   Double_t        Ds_0_90_cc_PX;
+   Double_t        Ds_0_90_cc_PY;
+   Double_t        Ds_0_90_cc_PZ;
+   Double_t        Ds_0_90_cc_vPT;
+   Double_t        Ds_0_90_cc_sPT;
+   Int_t           Ds_0_90_nc_mult;
+   Double_t        Ds_0_90_nc_PX;
+   Double_t        Ds_0_90_nc_PY;
+   Double_t        Ds_0_90_nc_PZ;
+   Double_t        Ds_0_90_nc_vPT;
+   Double_t        Ds_0_90_nc_sPT;
+   Double_t        Ds_0_90_nc_maxPt_PX;
+   Double_t        Ds_0_90_nc_maxPt_PY;
+   Double_t        Ds_0_90_nc_maxPt_PZ;
+   Int_t           Ds_0_60_cc_mult;
+   Double_t        Ds_0_60_cc_PX;
+   Double_t        Ds_0_60_cc_PY;
+   Double_t        Ds_0_60_cc_PZ;
+   Double_t        Ds_0_60_cc_vPT;
+   Double_t        Ds_0_60_cc_sPT;
+   Int_t           Ds_0_60_nc_mult;
+   Double_t        Ds_0_60_nc_PX;
+   Double_t        Ds_0_60_nc_PY;
+   Double_t        Ds_0_60_nc_PZ;
+   Double_t        Ds_0_60_nc_vPT;
+   Double_t        Ds_0_60_nc_sPT;
+   Double_t        Ds_0_60_nc_maxPt_PX;
+   Double_t        Ds_0_60_nc_maxPt_PY;
+   Double_t        Ds_0_60_nc_maxPt_PZ;
    Int_t           Ds_0_30_cc_mult;
    Double_t        Ds_0_30_cc_PX;
    Double_t        Ds_0_30_cc_PY;
@@ -478,30 +432,9 @@ public :
    Double_t        Ds_0_30_nc_PZ;
    Double_t        Ds_0_30_nc_vPT;
    Double_t        Ds_0_30_nc_sPT;
-   Int_t           Ds_0_40_cc_mult;
-   Double_t        Ds_0_40_cc_PX;
-   Double_t        Ds_0_40_cc_PY;
-   Double_t        Ds_0_40_cc_PZ;
-   Double_t        Ds_0_40_cc_vPT;
-   Double_t        Ds_0_40_cc_sPT;
-   Int_t           Ds_0_40_nc_mult;
-   Double_t        Ds_0_40_nc_PX;
-   Double_t        Ds_0_40_nc_PY;
-   Double_t        Ds_0_40_nc_PZ;
-   Double_t        Ds_0_40_nc_vPT;
-   Double_t        Ds_0_40_nc_sPT;
-   Int_t           Ds_0_50_cc_mult;
-   Double_t        Ds_0_50_cc_PX;
-   Double_t        Ds_0_50_cc_PY;
-   Double_t        Ds_0_50_cc_PZ;
-   Double_t        Ds_0_50_cc_vPT;
-   Double_t        Ds_0_50_cc_sPT;
-   Int_t           Ds_0_50_nc_mult;
-   Double_t        Ds_0_50_nc_PX;
-   Double_t        Ds_0_50_nc_PY;
-   Double_t        Ds_0_50_nc_PZ;
-   Double_t        Ds_0_50_nc_vPT;
-   Double_t        Ds_0_50_nc_sPT;
+   Double_t        Ds_0_30_nc_maxPt_PX;
+   Double_t        Ds_0_30_nc_maxPt_PY;
+   Double_t        Ds_0_30_nc_maxPt_PZ;
    Double_t        Ds_MINIP;
    Double_t        Ds_MINIPCHI2;
    Double_t        Ds_MINIPNEXTBEST;
@@ -613,88 +546,6 @@ public :
    Double_t        Kmi_MC12TuneV3_ProbNNk;
    Double_t        Kmi_MC12TuneV3_ProbNNp;
    Double_t        Kmi_MC12TuneV3_ProbNNghost;
-   Int_t           Kmi_0_00_cc_mult;
-   Double_t        Kmi_0_00_cc_PX;
-   Double_t        Kmi_0_00_cc_PY;
-   Double_t        Kmi_0_00_cc_PZ;
-   Double_t        Kmi_0_00_cc_vPT;
-   Double_t        Kmi_0_00_cc_sPT;
-   Int_t           Kmi_0_00_cc_maxPt_Q;
-   Double_t        Kmi_0_00_cc_maxPt_PT;
-   Double_t        Kmi_0_00_cc_maxPt_PX;
-   Double_t        Kmi_0_00_cc_maxPt_PY;
-   Double_t        Kmi_0_00_cc_maxPt_PZ;
-   Double_t        Kmi_0_00_cc_maxPt_PE;
-   Int_t           Kmi_0_00_nc_mult;
-   Double_t        Kmi_0_00_nc_PX;
-   Double_t        Kmi_0_00_nc_PY;
-   Double_t        Kmi_0_00_nc_PZ;
-   Double_t        Kmi_0_00_nc_vPT;
-   Double_t        Kmi_0_00_nc_sPT;
-   Double_t        Kmi_0_00_nc_maxPt_PT;
-   Double_t        Kmi_0_00_nc_maxPt_PX;
-   Double_t        Kmi_0_00_nc_maxPt_PY;
-   Double_t        Kmi_0_00_nc_maxPt_PZ;
-   Int_t           Kmi_0_10_cc_mult;
-   Double_t        Kmi_0_10_cc_PX;
-   Double_t        Kmi_0_10_cc_PY;
-   Double_t        Kmi_0_10_cc_PZ;
-   Double_t        Kmi_0_10_cc_vPT;
-   Double_t        Kmi_0_10_cc_sPT;
-   Int_t           Kmi_0_10_nc_mult;
-   Double_t        Kmi_0_10_nc_PX;
-   Double_t        Kmi_0_10_nc_PY;
-   Double_t        Kmi_0_10_nc_PZ;
-   Double_t        Kmi_0_10_nc_vPT;
-   Double_t        Kmi_0_10_nc_sPT;
-   Int_t           Kmi_0_20_cc_mult;
-   Double_t        Kmi_0_20_cc_PX;
-   Double_t        Kmi_0_20_cc_PY;
-   Double_t        Kmi_0_20_cc_PZ;
-   Double_t        Kmi_0_20_cc_vPT;
-   Double_t        Kmi_0_20_cc_sPT;
-   Int_t           Kmi_0_20_nc_mult;
-   Double_t        Kmi_0_20_nc_PX;
-   Double_t        Kmi_0_20_nc_PY;
-   Double_t        Kmi_0_20_nc_PZ;
-   Double_t        Kmi_0_20_nc_vPT;
-   Double_t        Kmi_0_20_nc_sPT;
-   Int_t           Kmi_0_30_cc_mult;
-   Double_t        Kmi_0_30_cc_PX;
-   Double_t        Kmi_0_30_cc_PY;
-   Double_t        Kmi_0_30_cc_PZ;
-   Double_t        Kmi_0_30_cc_vPT;
-   Double_t        Kmi_0_30_cc_sPT;
-   Int_t           Kmi_0_30_nc_mult;
-   Double_t        Kmi_0_30_nc_PX;
-   Double_t        Kmi_0_30_nc_PY;
-   Double_t        Kmi_0_30_nc_PZ;
-   Double_t        Kmi_0_30_nc_vPT;
-   Double_t        Kmi_0_30_nc_sPT;
-   Int_t           Kmi_0_40_cc_mult;
-   Double_t        Kmi_0_40_cc_PX;
-   Double_t        Kmi_0_40_cc_PY;
-   Double_t        Kmi_0_40_cc_PZ;
-   Double_t        Kmi_0_40_cc_vPT;
-   Double_t        Kmi_0_40_cc_sPT;
-   Int_t           Kmi_0_40_nc_mult;
-   Double_t        Kmi_0_40_nc_PX;
-   Double_t        Kmi_0_40_nc_PY;
-   Double_t        Kmi_0_40_nc_PZ;
-   Double_t        Kmi_0_40_nc_vPT;
-   Double_t        Kmi_0_40_nc_sPT;
-   Int_t           Kmi_0_50_cc_mult;
-   Double_t        Kmi_0_50_cc_PX;
-   Double_t        Kmi_0_50_cc_PY;
-   Double_t        Kmi_0_50_cc_PZ;
-   Double_t        Kmi_0_50_cc_vPT;
-   Double_t        Kmi_0_50_cc_sPT;
-   Int_t           Kmi_0_50_nc_mult;
-   Double_t        Kmi_0_50_nc_PX;
-   Double_t        Kmi_0_50_nc_PY;
-   Double_t        Kmi_0_50_nc_PZ;
-   Double_t        Kmi_0_50_nc_vPT;
-   Double_t        Kmi_0_50_nc_sPT;
    Double_t        Kmi_MINIP;
    Double_t        Kmi_MINIPCHI2;
    Double_t        Kmi_MINIPNEXTBEST;
@@ -822,88 +673,6 @@ public :
    Double_t        Kpl_MC12TuneV3_ProbNNk;
    Double_t        Kpl_MC12TuneV3_ProbNNp;
    Double_t        Kpl_MC12TuneV3_ProbNNghost;
-   Int_t           Kpl_0_00_cc_mult;
-   Double_t        Kpl_0_00_cc_PX;
-   Double_t        Kpl_0_00_cc_PY;
-   Double_t        Kpl_0_00_cc_PZ;
-   Double_t        Kpl_0_00_cc_vPT;
-   Double_t        Kpl_0_00_cc_sPT;
-   Int_t           Kpl_0_00_cc_maxPt_Q;
-   Double_t        Kpl_0_00_cc_maxPt_PT;
-   Double_t        Kpl_0_00_cc_maxPt_PX;
-   Double_t        Kpl_0_00_cc_maxPt_PY;
-   Double_t        Kpl_0_00_cc_maxPt_PZ;
-   Double_t        Kpl_0_00_cc_maxPt_PE;
-   Int_t           Kpl_0_00_nc_mult;
-   Double_t        Kpl_0_00_nc_PX;
-   Double_t        Kpl_0_00_nc_PY;
-   Double_t        Kpl_0_00_nc_PZ;
-   Double_t        Kpl_0_00_nc_vPT;
-   Double_t        Kpl_0_00_nc_sPT;
-   Double_t        Kpl_0_00_nc_maxPt_PT;
-   Double_t        Kpl_0_00_nc_maxPt_PX;
-   Double_t        Kpl_0_00_nc_maxPt_PY;
-   Double_t        Kpl_0_00_nc_maxPt_PZ;
-   Int_t           Kpl_0_10_cc_mult;
-   Double_t        Kpl_0_10_cc_PX;
-   Double_t        Kpl_0_10_cc_PY;
-   Double_t        Kpl_0_10_cc_PZ;
-   Double_t        Kpl_0_10_cc_vPT;
-   Double_t        Kpl_0_10_cc_sPT;
-   Int_t           Kpl_0_10_nc_mult;
-   Double_t        Kpl_0_10_nc_PX;
-   Double_t        Kpl_0_10_nc_PY;
-   Double_t        Kpl_0_10_nc_PZ;
-   Double_t        Kpl_0_10_nc_vPT;
-   Double_t        Kpl_0_10_nc_sPT;
-   Int_t           Kpl_0_20_cc_mult;
-   Double_t        Kpl_0_20_cc_PX;
-   Double_t        Kpl_0_20_cc_PY;
-   Double_t        Kpl_0_20_cc_PZ;
-   Double_t        Kpl_0_20_cc_vPT;
-   Double_t        Kpl_0_20_cc_sPT;
-   Int_t           Kpl_0_20_nc_mult;
-   Double_t        Kpl_0_20_nc_PX;
-   Double_t        Kpl_0_20_nc_PY;
-   Double_t        Kpl_0_20_nc_PZ;
-   Double_t        Kpl_0_20_nc_vPT;
-   Double_t        Kpl_0_20_nc_sPT;
-   Int_t           Kpl_0_30_cc_mult;
-   Double_t        Kpl_0_30_cc_PX;
-   Double_t        Kpl_0_30_cc_PY;
-   Double_t        Kpl_0_30_cc_PZ;
-   Double_t        Kpl_0_30_cc_vPT;
-   Double_t        Kpl_0_30_cc_sPT;
-   Int_t           Kpl_0_30_nc_mult;
-   Double_t        Kpl_0_30_nc_PX;
-   Double_t        Kpl_0_30_nc_PY;
-   Double_t        Kpl_0_30_nc_PZ;
-   Double_t        Kpl_0_30_nc_vPT;
-   Double_t        Kpl_0_30_nc_sPT;
-   Int_t           Kpl_0_40_cc_mult;
-   Double_t        Kpl_0_40_cc_PX;
-   Double_t        Kpl_0_40_cc_PY;
-   Double_t        Kpl_0_40_cc_PZ;
-   Double_t        Kpl_0_40_cc_vPT;
-   Double_t        Kpl_0_40_cc_sPT;
-   Int_t           Kpl_0_40_nc_mult;
-   Double_t        Kpl_0_40_nc_PX;
-   Double_t        Kpl_0_40_nc_PY;
-   Double_t        Kpl_0_40_nc_PZ;
-   Double_t        Kpl_0_40_nc_vPT;
-   Double_t        Kpl_0_40_nc_sPT;
-   Int_t           Kpl_0_50_cc_mult;
-   Double_t        Kpl_0_50_cc_PX;
-   Double_t        Kpl_0_50_cc_PY;
-   Double_t        Kpl_0_50_cc_PZ;
-   Double_t        Kpl_0_50_cc_vPT;
-   Double_t        Kpl_0_50_cc_sPT;
-   Int_t           Kpl_0_50_nc_mult;
-   Double_t        Kpl_0_50_nc_PX;
-   Double_t        Kpl_0_50_nc_PY;
-   Double_t        Kpl_0_50_nc_PZ;
-   Double_t        Kpl_0_50_nc_vPT;
-   Double_t        Kpl_0_50_nc_sPT;
    Double_t        Kpl_MINIP;
    Double_t        Kpl_MINIPCHI2;
    Double_t        Kpl_MINIPNEXTBEST;
@@ -1031,88 +800,6 @@ public :
    Double_t        pi_MC12TuneV3_ProbNNk;
    Double_t        pi_MC12TuneV3_ProbNNp;
    Double_t        pi_MC12TuneV3_ProbNNghost;
-   Int_t           pi_0_00_cc_mult;
-   Double_t        pi_0_00_cc_PX;
-   Double_t        pi_0_00_cc_PY;
-   Double_t        pi_0_00_cc_PZ;
-   Double_t        pi_0_00_cc_vPT;
-   Double_t        pi_0_00_cc_sPT;
-   Int_t           pi_0_00_cc_maxPt_Q;
-   Double_t        pi_0_00_cc_maxPt_PT;
-   Double_t        pi_0_00_cc_maxPt_PX;
-   Double_t        pi_0_00_cc_maxPt_PY;
-   Double_t        pi_0_00_cc_maxPt_PZ;
-   Double_t        pi_0_00_cc_maxPt_PE;
-   Int_t           pi_0_00_nc_mult;
-   Double_t        pi_0_00_nc_PX;
-   Double_t        pi_0_00_nc_PY;
-   Double_t        pi_0_00_nc_PZ;
-   Double_t        pi_0_00_nc_vPT;
-   Double_t        pi_0_00_nc_sPT;
-   Double_t        pi_0_00_nc_maxPt_PT;
-   Double_t        pi_0_00_nc_maxPt_PX;
-   Double_t        pi_0_00_nc_maxPt_PY;
-   Double_t        pi_0_00_nc_maxPt_PZ;
-   Int_t           pi_0_10_cc_mult;
-   Double_t        pi_0_10_cc_PX;
-   Double_t        pi_0_10_cc_PY;
-   Double_t        pi_0_10_cc_PZ;
-   Double_t        pi_0_10_cc_vPT;
-   Double_t        pi_0_10_cc_sPT;
-   Int_t           pi_0_10_nc_mult;
-   Double_t        pi_0_10_nc_PX;
-   Double_t        pi_0_10_nc_PY;
-   Double_t        pi_0_10_nc_PZ;
-   Double_t        pi_0_10_nc_vPT;
-   Double_t        pi_0_10_nc_sPT;
-   Int_t           pi_0_20_cc_mult;
-   Double_t        pi_0_20_cc_PX;
-   Double_t        pi_0_20_cc_PY;
-   Double_t        pi_0_20_cc_PZ;
-   Double_t        pi_0_20_cc_vPT;
-   Double_t        pi_0_20_cc_sPT;
-   Int_t           pi_0_20_nc_mult;
-   Double_t        pi_0_20_nc_PX;
-   Double_t        pi_0_20_nc_PY;
-   Double_t        pi_0_20_nc_PZ;
-   Double_t        pi_0_20_nc_vPT;
-   Double_t        pi_0_20_nc_sPT;
-   Int_t           pi_0_30_cc_mult;
-   Double_t        pi_0_30_cc_PX;
-   Double_t        pi_0_30_cc_PY;
-   Double_t        pi_0_30_cc_PZ;
-   Double_t        pi_0_30_cc_vPT;
-   Double_t        pi_0_30_cc_sPT;
-   Int_t           pi_0_30_nc_mult;
-   Double_t        pi_0_30_nc_PX;
-   Double_t        pi_0_30_nc_PY;
-   Double_t        pi_0_30_nc_PZ;
-   Double_t        pi_0_30_nc_vPT;
-   Double_t        pi_0_30_nc_sPT;
-   Int_t           pi_0_40_cc_mult;
-   Double_t        pi_0_40_cc_PX;
-   Double_t        pi_0_40_cc_PY;
-   Double_t        pi_0_40_cc_PZ;
-   Double_t        pi_0_40_cc_vPT;
-   Double_t        pi_0_40_cc_sPT;
-   Int_t           pi_0_40_nc_mult;
-   Double_t        pi_0_40_nc_PX;
-   Double_t        pi_0_40_nc_PY;
-   Double_t        pi_0_40_nc_PZ;
-   Double_t        pi_0_40_nc_vPT;
-   Double_t        pi_0_40_nc_sPT;
-   Int_t           pi_0_50_cc_mult;
-   Double_t        pi_0_50_cc_PX;
-   Double_t        pi_0_50_cc_PY;
-   Double_t        pi_0_50_cc_PZ;
-   Double_t        pi_0_50_cc_vPT;
-   Double_t        pi_0_50_cc_sPT;
-   Int_t           pi_0_50_nc_mult;
-   Double_t        pi_0_50_nc_PX;
-   Double_t        pi_0_50_nc_PY;
-   Double_t        pi_0_50_nc_PZ;
-   Double_t        pi_0_50_nc_vPT;
-   Double_t        pi_0_50_nc_sPT;
    Double_t        pi_MINIP;
    Double_t        pi_MINIPCHI2;
    Double_t        pi_MINIPNEXTBEST;
@@ -1262,30 +949,54 @@ public :
    Double_t        mu_0_00_nc_maxPt_PX;
    Double_t        mu_0_00_nc_maxPt_PY;
    Double_t        mu_0_00_nc_maxPt_PZ;
-   Int_t           mu_0_10_cc_mult;
-   Double_t        mu_0_10_cc_PX;
-   Double_t        mu_0_10_cc_PY;
-   Double_t        mu_0_10_cc_PZ;
-   Double_t        mu_0_10_cc_vPT;
-   Double_t        mu_0_10_cc_sPT;
-   Int_t           mu_0_10_nc_mult;
-   Double_t        mu_0_10_nc_PX;
-   Double_t        mu_0_10_nc_PY;
-   Double_t        mu_0_10_nc_PZ;
-   Double_t        mu_0_10_nc_vPT;
-   Double_t        mu_0_10_nc_sPT;
-   Int_t           mu_0_20_cc_mult;
-   Double_t        mu_0_20_cc_PX;
-   Double_t        mu_0_20_cc_PY;
-   Double_t        mu_0_20_cc_PZ;
-   Double_t        mu_0_20_cc_vPT;
-   Double_t        mu_0_20_cc_sPT;
-   Int_t           mu_0_20_nc_mult;
-   Double_t        mu_0_20_nc_PX;
-   Double_t        mu_0_20_nc_PY;
-   Double_t        mu_0_20_nc_PZ;
-   Double_t        mu_0_20_nc_vPT;
-   Double_t        mu_0_20_nc_sPT;
+   Int_t           mu_1_50_cc_mult;
+   Double_t        mu_1_50_cc_PX;
+   Double_t        mu_1_50_cc_PY;
+   Double_t        mu_1_50_cc_PZ;
+   Double_t        mu_1_50_cc_vPT;
+   Double_t        mu_1_50_cc_sPT;
+   Int_t           mu_1_50_nc_mult;
+   Double_t        mu_1_50_nc_PX;
+   Double_t        mu_1_50_nc_PY;
+   Double_t        mu_1_50_nc_PZ;
+   Double_t        mu_1_50_nc_vPT;
+   Double_t        mu_1_50_nc_sPT;
+   Int_t           mu_1_20_cc_mult;
+   Double_t        mu_1_20_cc_PX;
+   Double_t        mu_1_20_cc_PY;
+   Double_t        mu_1_20_cc_PZ;
+   Double_t        mu_1_20_cc_vPT;
+   Double_t        mu_1_20_cc_sPT;
+   Int_t           mu_1_20_nc_mult;
+   Double_t        mu_1_20_nc_PX;
+   Double_t        mu_1_20_nc_PY;
+   Double_t        mu_1_20_nc_PZ;
+   Double_t        mu_1_20_nc_vPT;
+   Double_t        mu_1_20_nc_sPT;
+   Int_t           mu_0_90_cc_mult;
+   Double_t        mu_0_90_cc_PX;
+   Double_t        mu_0_90_cc_PY;
+   Double_t        mu_0_90_cc_PZ;
+   Double_t        mu_0_90_cc_vPT;
+   Double_t        mu_0_90_cc_sPT;
+   Int_t           mu_0_90_nc_mult;
+   Double_t        mu_0_90_nc_PX;
+   Double_t        mu_0_90_nc_PY;
+   Double_t        mu_0_90_nc_PZ;
+   Double_t        mu_0_90_nc_vPT;
+   Double_t        mu_0_90_nc_sPT;
+   Int_t           mu_0_60_cc_mult;
+   Double_t        mu_0_60_cc_PX;
+   Double_t        mu_0_60_cc_PY;
+   Double_t        mu_0_60_cc_PZ;
+   Double_t        mu_0_60_cc_vPT;
+   Double_t        mu_0_60_cc_sPT;
+   Int_t           mu_0_60_nc_mult;
+   Double_t        mu_0_60_nc_PX;
+   Double_t        mu_0_60_nc_PY;
+   Double_t        mu_0_60_nc_PZ;
+   Double_t        mu_0_60_nc_vPT;
+   Double_t        mu_0_60_nc_sPT;
    Int_t           mu_0_30_cc_mult;
    Double_t        mu_0_30_cc_PX;
    Double_t        mu_0_30_cc_PY;
@@ -1298,30 +1009,6 @@ public :
    Double_t        mu_0_30_nc_PZ;
    Double_t        mu_0_30_nc_vPT;
    Double_t        mu_0_30_nc_sPT;
-   Int_t           mu_0_40_cc_mult;
-   Double_t        mu_0_40_cc_PX;
-   Double_t        mu_0_40_cc_PY;
-   Double_t        mu_0_40_cc_PZ;
-   Double_t        mu_0_40_cc_vPT;
-   Double_t        mu_0_40_cc_sPT;
-   Int_t           mu_0_40_nc_mult;
-   Double_t        mu_0_40_nc_PX;
-   Double_t        mu_0_40_nc_PY;
-   Double_t        mu_0_40_nc_PZ;
-   Double_t        mu_0_40_nc_vPT;
-   Double_t        mu_0_40_nc_sPT;
-   Int_t           mu_0_50_cc_mult;
-   Double_t        mu_0_50_cc_PX;
-   Double_t        mu_0_50_cc_PY;
-   Double_t        mu_0_50_cc_PZ;
-   Double_t        mu_0_50_cc_vPT;
-   Double_t        mu_0_50_cc_sPT;
-   Int_t           mu_0_50_nc_mult;
-   Double_t        mu_0_50_nc_PX;
-   Double_t        mu_0_50_nc_PY;
-   Double_t        mu_0_50_nc_PZ;
-   Double_t        mu_0_50_nc_vPT;
-   Double_t        mu_0_50_nc_sPT;
    Double_t        mu_MINIP;
    Double_t        mu_MINIPCHI2;
    Double_t        mu_MINIPNEXTBEST;
@@ -1646,88 +1333,6 @@ public :
    UInt_t          Hlt2Global;
 
    // List of branches
-   TBranch        *b_Bs_0_0_00_cc_mult;   //!
-   TBranch        *b_Bs_0_0_00_cc_PX;   //!
-   TBranch        *b_Bs_0_0_00_cc_PY;   //!
-   TBranch        *b_Bs_0_0_00_cc_PZ;   //!
-   TBranch        *b_Bs_0_0_00_cc_vPT;   //!
-   TBranch        *b_Bs_0_0_00_cc_sPT;   //!
-   TBranch        *b_Bs_0_0_00_cc_maxPt_Q;   //!
-   TBranch        *b_Bs_0_0_00_cc_maxPt_PT;   //!
-   TBranch        *b_Bs_0_0_00_cc_maxPt_PX;   //!
-   TBranch        *b_Bs_0_0_00_cc_maxPt_PY;   //!
-   TBranch        *b_Bs_0_0_00_cc_maxPt_PZ;   //!
-   TBranch        *b_Bs_0_0_00_cc_maxPt_PE;   //!
-   TBranch        *b_Bs_0_0_00_nc_mult;   //!
-   TBranch        *b_Bs_0_0_00_nc_PX;   //!
-   TBranch        *b_Bs_0_0_00_nc_PY;   //!
-   TBranch        *b_Bs_0_0_00_nc_PZ;   //!
-   TBranch        *b_Bs_0_0_00_nc_vPT;   //!
-   TBranch        *b_Bs_0_0_00_nc_sPT;   //!
-   TBranch        *b_Bs_0_0_00_nc_maxPt_PT;   //!
-   TBranch        *b_Bs_0_0_00_nc_maxPt_PX;   //!
-   TBranch        *b_Bs_0_0_00_nc_maxPt_PY;   //!
-   TBranch        *b_Bs_0_0_00_nc_maxPt_PZ;   //!
-   TBranch        *b_Bs_0_0_10_cc_mult;   //!
-   TBranch        *b_Bs_0_0_10_cc_PX;   //!
-   TBranch        *b_Bs_0_0_10_cc_PY;   //!
-   TBranch        *b_Bs_0_0_10_cc_PZ;   //!
-   TBranch        *b_Bs_0_0_10_cc_vPT;   //!
-   TBranch        *b_Bs_0_0_10_cc_sPT;   //!
-   TBranch        *b_Bs_0_0_10_nc_mult;   //!
-   TBranch        *b_Bs_0_0_10_nc_PX;   //!
-   TBranch        *b_Bs_0_0_10_nc_PY;   //!
-   TBranch        *b_Bs_0_0_10_nc_PZ;   //!
-   TBranch        *b_Bs_0_0_10_nc_vPT;   //!
-   TBranch        *b_Bs_0_0_10_nc_sPT;   //!
-   TBranch        *b_Bs_0_0_20_cc_mult;   //!
-   TBranch        *b_Bs_0_0_20_cc_PX;   //!
-   TBranch        *b_Bs_0_0_20_cc_PY;   //!
-   TBranch        *b_Bs_0_0_20_cc_PZ;   //!
-   TBranch        *b_Bs_0_0_20_cc_vPT;   //!
-   TBranch        *b_Bs_0_0_20_cc_sPT;   //!
-   TBranch        *b_Bs_0_0_20_nc_mult;   //!
-   TBranch        *b_Bs_0_0_20_nc_PX;   //!
-   TBranch        *b_Bs_0_0_20_nc_PY;   //!
-   TBranch        *b_Bs_0_0_20_nc_PZ;   //!
-   TBranch        *b_Bs_0_0_20_nc_vPT;   //!
-   TBranch        *b_Bs_0_0_20_nc_sPT;   //!
-   TBranch        *b_Bs_0_0_30_cc_mult;   //!
-   TBranch        *b_Bs_0_0_30_cc_PX;   //!
-   TBranch        *b_Bs_0_0_30_cc_PY;   //!
-   TBranch        *b_Bs_0_0_30_cc_PZ;   //!
-   TBranch        *b_Bs_0_0_30_cc_vPT;   //!
-   TBranch        *b_Bs_0_0_30_cc_sPT;   //!
-   TBranch        *b_Bs_0_0_30_nc_mult;   //!
-   TBranch        *b_Bs_0_0_30_nc_PX;   //!
-   TBranch        *b_Bs_0_0_30_nc_PY;   //!
-   TBranch        *b_Bs_0_0_30_nc_PZ;   //!
-   TBranch        *b_Bs_0_0_30_nc_vPT;   //!
-   TBranch        *b_Bs_0_0_30_nc_sPT;   //!
-   TBranch        *b_Bs_0_0_40_cc_mult;   //!
-   TBranch        *b_Bs_0_0_40_cc_PX;   //!
-   TBranch        *b_Bs_0_0_40_cc_PY;   //!
-   TBranch        *b_Bs_0_0_40_cc_PZ;   //!
-   TBranch        *b_Bs_0_0_40_cc_vPT;   //!
-   TBranch        *b_Bs_0_0_40_cc_sPT;   //!
-   TBranch        *b_Bs_0_0_40_nc_mult;   //!
-   TBranch        *b_Bs_0_0_40_nc_PX;   //!
-   TBranch        *b_Bs_0_0_40_nc_PY;   //!
-   TBranch        *b_Bs_0_0_40_nc_PZ;   //!
-   TBranch        *b_Bs_0_0_40_nc_vPT;   //!
-   TBranch        *b_Bs_0_0_40_nc_sPT;   //!
-   TBranch        *b_Bs_0_0_50_cc_mult;   //!
-   TBranch        *b_Bs_0_0_50_cc_PX;   //!
-   TBranch        *b_Bs_0_0_50_cc_PY;   //!
-   TBranch        *b_Bs_0_0_50_cc_PZ;   //!
-   TBranch        *b_Bs_0_0_50_cc_vPT;   //!
-   TBranch        *b_Bs_0_0_50_cc_sPT;   //!
-   TBranch        *b_Bs_0_0_50_nc_mult;   //!
-   TBranch        *b_Bs_0_0_50_nc_PX;   //!
-   TBranch        *b_Bs_0_0_50_nc_PY;   //!
-   TBranch        *b_Bs_0_0_50_nc_PZ;   //!
-   TBranch        *b_Bs_0_0_50_nc_vPT;   //!
-   TBranch        *b_Bs_0_0_50_nc_sPT;   //!
    TBranch        *b_Bs_0_MINIP;   //!
    TBranch        *b_Bs_0_MINIPCHI2;   //!
    TBranch        *b_Bs_0_MINIPNEXTBEST;   //!
@@ -2027,30 +1632,66 @@ public :
    TBranch        *b_Ds_0_00_nc_maxPt_PX;   //!
    TBranch        *b_Ds_0_00_nc_maxPt_PY;   //!
    TBranch        *b_Ds_0_00_nc_maxPt_PZ;   //!
-   TBranch        *b_Ds_0_10_cc_mult;   //!
-   TBranch        *b_Ds_0_10_cc_PX;   //!
-   TBranch        *b_Ds_0_10_cc_PY;   //!
-   TBranch        *b_Ds_0_10_cc_PZ;   //!
-   TBranch        *b_Ds_0_10_cc_vPT;   //!
-   TBranch        *b_Ds_0_10_cc_sPT;   //!
-   TBranch        *b_Ds_0_10_nc_mult;   //!
-   TBranch        *b_Ds_0_10_nc_PX;   //!
-   TBranch        *b_Ds_0_10_nc_PY;   //!
-   TBranch        *b_Ds_0_10_nc_PZ;   //!
-   TBranch        *b_Ds_0_10_nc_vPT;   //!
-   TBranch        *b_Ds_0_10_nc_sPT;   //!
-   TBranch        *b_Ds_0_20_cc_mult;   //!
-   TBranch        *b_Ds_0_20_cc_PX;   //!
-   TBranch        *b_Ds_0_20_cc_PY;   //!
-   TBranch        *b_Ds_0_20_cc_PZ;   //!
-   TBranch        *b_Ds_0_20_cc_vPT;   //!
-   TBranch        *b_Ds_0_20_cc_sPT;   //!
-   TBranch        *b_Ds_0_20_nc_mult;   //!
-   TBranch        *b_Ds_0_20_nc_PX;   //!
-   TBranch        *b_Ds_0_20_nc_PY;   //!
-   TBranch        *b_Ds_0_20_nc_PZ;   //!
-   TBranch        *b_Ds_0_20_nc_vPT;   //!
-   TBranch        *b_Ds_0_20_nc_sPT;   //!
+   TBranch        *b_Ds_1_50_cc_mult;   //!
+   TBranch        *b_Ds_1_50_cc_PX;   //!
+   TBranch        *b_Ds_1_50_cc_PY;   //!
+   TBranch        *b_Ds_1_50_cc_PZ;   //!
+   TBranch        *b_Ds_1_50_cc_vPT;   //!
+   TBranch        *b_Ds_1_50_cc_sPT;   //!
+   TBranch        *b_Ds_1_50_nc_mult;   //!
+   TBranch        *b_Ds_1_50_nc_PX;   //!
+   TBranch        *b_Ds_1_50_nc_PY;   //!
+   TBranch        *b_Ds_1_50_nc_PZ;   //!
+   TBranch        *b_Ds_1_50_nc_vPT;   //!
+   TBranch        *b_Ds_1_50_nc_sPT;   //!
+   TBranch        *b_Ds_1_50_nc_maxPt_PX;   //!
+   TBranch        *b_Ds_1_50_nc_maxPt_PY;   //!
+   TBranch        *b_Ds_1_50_nc_maxPt_PZ;   //!
+   TBranch        *b_Ds_1_20_cc_mult;   //!
+   TBranch        *b_Ds_1_20_cc_PX;   //!
+   TBranch        *b_Ds_1_20_cc_PY;   //!
+   TBranch        *b_Ds_1_20_cc_PZ;   //!
+   TBranch        *b_Ds_1_20_cc_vPT;   //!
+   TBranch        *b_Ds_1_20_cc_sPT;   //!
+   TBranch        *b_Ds_1_20_nc_mult;   //!
+   TBranch        *b_Ds_1_20_nc_PX;   //!
+   TBranch        *b_Ds_1_20_nc_PY;   //!
+   TBranch        *b_Ds_1_20_nc_PZ;   //!
+   TBranch        *b_Ds_1_20_nc_vPT;   //!
+   TBranch        *b_Ds_1_20_nc_sPT;   //!
+   TBranch        *b_Ds_1_20_nc_maxPt_PX;   //!
+   TBranch        *b_Ds_1_20_nc_maxPt_PY;   //!
+   TBranch        *b_Ds_1_20_nc_maxPt_PZ;   //!
+   TBranch        *b_Ds_0_90_cc_mult;   //!
+   TBranch        *b_Ds_0_90_cc_PX;   //!
+   TBranch        *b_Ds_0_90_cc_PY;   //!
+   TBranch        *b_Ds_0_90_cc_PZ;   //!
+   TBranch        *b_Ds_0_90_cc_vPT;   //!
+   TBranch        *b_Ds_0_90_cc_sPT;   //!
+   TBranch        *b_Ds_0_90_nc_mult;   //!
+   TBranch        *b_Ds_0_90_nc_PX;   //!
+   TBranch        *b_Ds_0_90_nc_PY;   //!
+   TBranch        *b_Ds_0_90_nc_PZ;   //!
+   TBranch        *b_Ds_0_90_nc_vPT;   //!
+   TBranch        *b_Ds_0_90_nc_sPT;   //!
+   TBranch        *b_Ds_0_90_nc_maxPt_PX;   //!
+   TBranch        *b_Ds_0_90_nc_maxPt_PY;   //!
+   TBranch        *b_Ds_0_90_nc_maxPt_PZ;   //!
+   TBranch        *b_Ds_0_60_cc_mult;   //!
+   TBranch        *b_Ds_0_60_cc_PX;   //!
+   TBranch        *b_Ds_0_60_cc_PY;   //!
+   TBranch        *b_Ds_0_60_cc_PZ;   //!
+   TBranch        *b_Ds_0_60_cc_vPT;   //!
+   TBranch        *b_Ds_0_60_cc_sPT;   //!
+   TBranch        *b_Ds_0_60_nc_mult;   //!
+   TBranch        *b_Ds_0_60_nc_PX;   //!
+   TBranch        *b_Ds_0_60_nc_PY;   //!
+   TBranch        *b_Ds_0_60_nc_PZ;   //!
+   TBranch        *b_Ds_0_60_nc_vPT;   //!
+   TBranch        *b_Ds_0_60_nc_sPT;   //!
+   TBranch        *b_Ds_0_60_nc_maxPt_PX;   //!
+   TBranch        *b_Ds_0_60_nc_maxPt_PY;   //!
+   TBranch        *b_Ds_0_60_nc_maxPt_PZ;   //!
    TBranch        *b_Ds_0_30_cc_mult;   //!
    TBranch        *b_Ds_0_30_cc_PX;   //!
    TBranch        *b_Ds_0_30_cc_PY;   //!
@@ -2063,30 +1704,9 @@ public :
    TBranch        *b_Ds_0_30_nc_PZ;   //!
    TBranch        *b_Ds_0_30_nc_vPT;   //!
    TBranch        *b_Ds_0_30_nc_sPT;   //!
-   TBranch        *b_Ds_0_40_cc_mult;   //!
-   TBranch        *b_Ds_0_40_cc_PX;   //!
-   TBranch        *b_Ds_0_40_cc_PY;   //!
-   TBranch        *b_Ds_0_40_cc_PZ;   //!
-   TBranch        *b_Ds_0_40_cc_vPT;   //!
-   TBranch        *b_Ds_0_40_cc_sPT;   //!
-   TBranch        *b_Ds_0_40_nc_mult;   //!
-   TBranch        *b_Ds_0_40_nc_PX;   //!
-   TBranch        *b_Ds_0_40_nc_PY;   //!
-   TBranch        *b_Ds_0_40_nc_PZ;   //!
-   TBranch        *b_Ds_0_40_nc_vPT;   //!
-   TBranch        *b_Ds_0_40_nc_sPT;   //!
-   TBranch        *b_Ds_0_50_cc_mult;   //!
-   TBranch        *b_Ds_0_50_cc_PX;   //!
-   TBranch        *b_Ds_0_50_cc_PY;   //!
-   TBranch        *b_Ds_0_50_cc_PZ;   //!
-   TBranch        *b_Ds_0_50_cc_vPT;   //!
-   TBranch        *b_Ds_0_50_cc_sPT;   //!
-   TBranch        *b_Ds_0_50_nc_mult;   //!
-   TBranch        *b_Ds_0_50_nc_PX;   //!
-   TBranch        *b_Ds_0_50_nc_PY;   //!
-   TBranch        *b_Ds_0_50_nc_PZ;   //!
-   TBranch        *b_Ds_0_50_nc_vPT;   //!
-   TBranch        *b_Ds_0_50_nc_sPT;   //!
+   TBranch        *b_Ds_0_30_nc_maxPt_PX;   //!
+   TBranch        *b_Ds_0_30_nc_maxPt_PY;   //!
+   TBranch        *b_Ds_0_30_nc_maxPt_PZ;   //!
    TBranch        *b_Ds_MINIP;   //!
    TBranch        *b_Ds_MINIPCHI2;   //!
    TBranch        *b_Ds_MINIPNEXTBEST;   //!
@@ -2198,88 +1818,6 @@ public :
    TBranch        *b_Kmi_MC12TuneV3_ProbNNk;   //!
    TBranch        *b_Kmi_MC12TuneV3_ProbNNp;   //!
    TBranch        *b_Kmi_MC12TuneV3_ProbNNghost;   //!
-   TBranch        *b_Kmi_0_00_cc_mult;   //!
-   TBranch        *b_Kmi_0_00_cc_PX;   //!
-   TBranch        *b_Kmi_0_00_cc_PY;   //!
-   TBranch        *b_Kmi_0_00_cc_PZ;   //!
-   TBranch        *b_Kmi_0_00_cc_vPT;   //!
-   TBranch        *b_Kmi_0_00_cc_sPT;   //!
-   TBranch        *b_Kmi_0_00_cc_maxPt_Q;   //!
-   TBranch        *b_Kmi_0_00_cc_maxPt_PT;   //!
-   TBranch        *b_Kmi_0_00_cc_maxPt_PX;   //!
-   TBranch        *b_Kmi_0_00_cc_maxPt_PY;   //!
-   TBranch        *b_Kmi_0_00_cc_maxPt_PZ;   //!
-   TBranch        *b_Kmi_0_00_cc_maxPt_PE;   //!
-   TBranch        *b_Kmi_0_00_nc_mult;   //!
-   TBranch        *b_Kmi_0_00_nc_PX;   //!
-   TBranch        *b_Kmi_0_00_nc_PY;   //!
-   TBranch        *b_Kmi_0_00_nc_PZ;   //!
-   TBranch        *b_Kmi_0_00_nc_vPT;   //!
-   TBranch        *b_Kmi_0_00_nc_sPT;   //!
-   TBranch        *b_Kmi_0_00_nc_maxPt_PT;   //!
-   TBranch        *b_Kmi_0_00_nc_maxPt_PX;   //!
-   TBranch        *b_Kmi_0_00_nc_maxPt_PY;   //!
-   TBranch        *b_Kmi_0_00_nc_maxPt_PZ;   //!
-   TBranch        *b_Kmi_0_10_cc_mult;   //!
-   TBranch        *b_Kmi_0_10_cc_PX;   //!
-   TBranch        *b_Kmi_0_10_cc_PY;   //!
-   TBranch        *b_Kmi_0_10_cc_PZ;   //!
-   TBranch        *b_Kmi_0_10_cc_vPT;   //!
-   TBranch        *b_Kmi_0_10_cc_sPT;   //!
-   TBranch        *b_Kmi_0_10_nc_mult;   //!
-   TBranch        *b_Kmi_0_10_nc_PX;   //!
-   TBranch        *b_Kmi_0_10_nc_PY;   //!
-   TBranch        *b_Kmi_0_10_nc_PZ;   //!
-   TBranch        *b_Kmi_0_10_nc_vPT;   //!
-   TBranch        *b_Kmi_0_10_nc_sPT;   //!
-   TBranch        *b_Kmi_0_20_cc_mult;   //!
-   TBranch        *b_Kmi_0_20_cc_PX;   //!
-   TBranch        *b_Kmi_0_20_cc_PY;   //!
-   TBranch        *b_Kmi_0_20_cc_PZ;   //!
-   TBranch        *b_Kmi_0_20_cc_vPT;   //!
-   TBranch        *b_Kmi_0_20_cc_sPT;   //!
-   TBranch        *b_Kmi_0_20_nc_mult;   //!
-   TBranch        *b_Kmi_0_20_nc_PX;   //!
-   TBranch        *b_Kmi_0_20_nc_PY;   //!
-   TBranch        *b_Kmi_0_20_nc_PZ;   //!
-   TBranch        *b_Kmi_0_20_nc_vPT;   //!
-   TBranch        *b_Kmi_0_20_nc_sPT;   //!
-   TBranch        *b_Kmi_0_30_cc_mult;   //!
-   TBranch        *b_Kmi_0_30_cc_PX;   //!
-   TBranch        *b_Kmi_0_30_cc_PY;   //!
-   TBranch        *b_Kmi_0_30_cc_PZ;   //!
-   TBranch        *b_Kmi_0_30_cc_vPT;   //!
-   TBranch        *b_Kmi_0_30_cc_sPT;   //!
-   TBranch        *b_Kmi_0_30_nc_mult;   //!
-   TBranch        *b_Kmi_0_30_nc_PX;   //!
-   TBranch        *b_Kmi_0_30_nc_PY;   //!
-   TBranch        *b_Kmi_0_30_nc_PZ;   //!
-   TBranch        *b_Kmi_0_30_nc_vPT;   //!
-   TBranch        *b_Kmi_0_30_nc_sPT;   //!
-   TBranch        *b_Kmi_0_40_cc_mult;   //!
-   TBranch        *b_Kmi_0_40_cc_PX;   //!
-   TBranch        *b_Kmi_0_40_cc_PY;   //!
-   TBranch        *b_Kmi_0_40_cc_PZ;   //!
-   TBranch        *b_Kmi_0_40_cc_vPT;   //!
-   TBranch        *b_Kmi_0_40_cc_sPT;   //!
-   TBranch        *b_Kmi_0_40_nc_mult;   //!
-   TBranch        *b_Kmi_0_40_nc_PX;   //!
-   TBranch        *b_Kmi_0_40_nc_PY;   //!
-   TBranch        *b_Kmi_0_40_nc_PZ;   //!
-   TBranch        *b_Kmi_0_40_nc_vPT;   //!
-   TBranch        *b_Kmi_0_40_nc_sPT;   //!
-   TBranch        *b_Kmi_0_50_cc_mult;   //!
-   TBranch        *b_Kmi_0_50_cc_PX;   //!
-   TBranch        *b_Kmi_0_50_cc_PY;   //!
-   TBranch        *b_Kmi_0_50_cc_PZ;   //!
-   TBranch        *b_Kmi_0_50_cc_vPT;   //!
-   TBranch        *b_Kmi_0_50_cc_sPT;   //!
-   TBranch        *b_Kmi_0_50_nc_mult;   //!
-   TBranch        *b_Kmi_0_50_nc_PX;   //!
-   TBranch        *b_Kmi_0_50_nc_PY;   //!
-   TBranch        *b_Kmi_0_50_nc_PZ;   //!
-   TBranch        *b_Kmi_0_50_nc_vPT;   //!
-   TBranch        *b_Kmi_0_50_nc_sPT;   //!
    TBranch        *b_Kmi_MINIP;   //!
    TBranch        *b_Kmi_MINIPCHI2;   //!
    TBranch        *b_Kmi_MINIPNEXTBEST;   //!
@@ -2407,88 +1945,6 @@ public :
    TBranch        *b_Kpl_MC12TuneV3_ProbNNk;   //!
    TBranch        *b_Kpl_MC12TuneV3_ProbNNp;   //!
    TBranch        *b_Kpl_MC12TuneV3_ProbNNghost;   //!
-   TBranch        *b_Kpl_0_00_cc_mult;   //!
-   TBranch        *b_Kpl_0_00_cc_PX;   //!
-   TBranch        *b_Kpl_0_00_cc_PY;   //!
-   TBranch        *b_Kpl_0_00_cc_PZ;   //!
-   TBranch        *b_Kpl_0_00_cc_vPT;   //!
-   TBranch        *b_Kpl_0_00_cc_sPT;   //!
-   TBranch        *b_Kpl_0_00_cc_maxPt_Q;   //!
-   TBranch        *b_Kpl_0_00_cc_maxPt_PT;   //!
-   TBranch        *b_Kpl_0_00_cc_maxPt_PX;   //!
-   TBranch        *b_Kpl_0_00_cc_maxPt_PY;   //!
-   TBranch        *b_Kpl_0_00_cc_maxPt_PZ;   //!
-   TBranch        *b_Kpl_0_00_cc_maxPt_PE;   //!
-   TBranch        *b_Kpl_0_00_nc_mult;   //!
-   TBranch        *b_Kpl_0_00_nc_PX;   //!
-   TBranch        *b_Kpl_0_00_nc_PY;   //!
-   TBranch        *b_Kpl_0_00_nc_PZ;   //!
-   TBranch        *b_Kpl_0_00_nc_vPT;   //!
-   TBranch        *b_Kpl_0_00_nc_sPT;   //!
-   TBranch        *b_Kpl_0_00_nc_maxPt_PT;   //!
-   TBranch        *b_Kpl_0_00_nc_maxPt_PX;   //!
-   TBranch        *b_Kpl_0_00_nc_maxPt_PY;   //!
-   TBranch        *b_Kpl_0_00_nc_maxPt_PZ;   //!
-   TBranch        *b_Kpl_0_10_cc_mult;   //!
-   TBranch        *b_Kpl_0_10_cc_PX;   //!
-   TBranch        *b_Kpl_0_10_cc_PY;   //!
-   TBranch        *b_Kpl_0_10_cc_PZ;   //!
-   TBranch        *b_Kpl_0_10_cc_vPT;   //!
-   TBranch        *b_Kpl_0_10_cc_sPT;   //!
-   TBranch        *b_Kpl_0_10_nc_mult;   //!
-   TBranch        *b_Kpl_0_10_nc_PX;   //!
-   TBranch        *b_Kpl_0_10_nc_PY;   //!
-   TBranch        *b_Kpl_0_10_nc_PZ;   //!
-   TBranch        *b_Kpl_0_10_nc_vPT;   //!
-   TBranch        *b_Kpl_0_10_nc_sPT;   //!
-   TBranch        *b_Kpl_0_20_cc_mult;   //!
-   TBranch        *b_Kpl_0_20_cc_PX;   //!
-   TBranch        *b_Kpl_0_20_cc_PY;   //!
-   TBranch        *b_Kpl_0_20_cc_PZ;   //!
-   TBranch        *b_Kpl_0_20_cc_vPT;   //!
-   TBranch        *b_Kpl_0_20_cc_sPT;   //!
-   TBranch        *b_Kpl_0_20_nc_mult;   //!
-   TBranch        *b_Kpl_0_20_nc_PX;   //!
-   TBranch        *b_Kpl_0_20_nc_PY;   //!
-   TBranch        *b_Kpl_0_20_nc_PZ;   //!
-   TBranch        *b_Kpl_0_20_nc_vPT;   //!
-   TBranch        *b_Kpl_0_20_nc_sPT;   //!
-   TBranch        *b_Kpl_0_30_cc_mult;   //!
-   TBranch        *b_Kpl_0_30_cc_PX;   //!
-   TBranch        *b_Kpl_0_30_cc_PY;   //!
-   TBranch        *b_Kpl_0_30_cc_PZ;   //!
-   TBranch        *b_Kpl_0_30_cc_vPT;   //!
-   TBranch        *b_Kpl_0_30_cc_sPT;   //!
-   TBranch        *b_Kpl_0_30_nc_mult;   //!
-   TBranch        *b_Kpl_0_30_nc_PX;   //!
-   TBranch        *b_Kpl_0_30_nc_PY;   //!
-   TBranch        *b_Kpl_0_30_nc_PZ;   //!
-   TBranch        *b_Kpl_0_30_nc_vPT;   //!
-   TBranch        *b_Kpl_0_30_nc_sPT;   //!
-   TBranch        *b_Kpl_0_40_cc_mult;   //!
-   TBranch        *b_Kpl_0_40_cc_PX;   //!
-   TBranch        *b_Kpl_0_40_cc_PY;   //!
-   TBranch        *b_Kpl_0_40_cc_PZ;   //!
-   TBranch        *b_Kpl_0_40_cc_vPT;   //!
-   TBranch        *b_Kpl_0_40_cc_sPT;   //!
-   TBranch        *b_Kpl_0_40_nc_mult;   //!
-   TBranch        *b_Kpl_0_40_nc_PX;   //!
-   TBranch        *b_Kpl_0_40_nc_PY;   //!
-   TBranch        *b_Kpl_0_40_nc_PZ;   //!
-   TBranch        *b_Kpl_0_40_nc_vPT;   //!
-   TBranch        *b_Kpl_0_40_nc_sPT;   //!
-   TBranch        *b_Kpl_0_50_cc_mult;   //!
-   TBranch        *b_Kpl_0_50_cc_PX;   //!
-   TBranch        *b_Kpl_0_50_cc_PY;   //!
-   TBranch        *b_Kpl_0_50_cc_PZ;   //!
-   TBranch        *b_Kpl_0_50_cc_vPT;   //!
-   TBranch        *b_Kpl_0_50_cc_sPT;   //!
-   TBranch        *b_Kpl_0_50_nc_mult;   //!
-   TBranch        *b_Kpl_0_50_nc_PX;   //!
-   TBranch        *b_Kpl_0_50_nc_PY;   //!
-   TBranch        *b_Kpl_0_50_nc_PZ;   //!
-   TBranch        *b_Kpl_0_50_nc_vPT;   //!
-   TBranch        *b_Kpl_0_50_nc_sPT;   //!
    TBranch        *b_Kpl_MINIP;   //!
    TBranch        *b_Kpl_MINIPCHI2;   //!
    TBranch        *b_Kpl_MINIPNEXTBEST;   //!
@@ -2616,88 +2072,6 @@ public :
    TBranch        *b_pi_MC12TuneV3_ProbNNk;   //!
    TBranch        *b_pi_MC12TuneV3_ProbNNp;   //!
    TBranch        *b_pi_MC12TuneV3_ProbNNghost;   //!
-   TBranch        *b_pi_0_00_cc_mult;   //!
-   TBranch        *b_pi_0_00_cc_PX;   //!
-   TBranch        *b_pi_0_00_cc_PY;   //!
-   TBranch        *b_pi_0_00_cc_PZ;   //!
-   TBranch        *b_pi_0_00_cc_vPT;   //!
-   TBranch        *b_pi_0_00_cc_sPT;   //!
-   TBranch        *b_pi_0_00_cc_maxPt_Q;   //!
-   TBranch        *b_pi_0_00_cc_maxPt_PT;   //!
-   TBranch        *b_pi_0_00_cc_maxPt_PX;   //!
-   TBranch        *b_pi_0_00_cc_maxPt_PY;   //!
-   TBranch        *b_pi_0_00_cc_maxPt_PZ;   //!
-   TBranch        *b_pi_0_00_cc_maxPt_PE;   //!
-   TBranch        *b_pi_0_00_nc_mult;   //!
-   TBranch        *b_pi_0_00_nc_PX;   //!
-   TBranch        *b_pi_0_00_nc_PY;   //!
-   TBranch        *b_pi_0_00_nc_PZ;   //!
-   TBranch        *b_pi_0_00_nc_vPT;   //!
-   TBranch        *b_pi_0_00_nc_sPT;   //!
-   TBranch        *b_pi_0_00_nc_maxPt_PT;   //!
-   TBranch        *b_pi_0_00_nc_maxPt_PX;   //!
-   TBranch        *b_pi_0_00_nc_maxPt_PY;   //!
-   TBranch        *b_pi_0_00_nc_maxPt_PZ;   //!
-   TBranch        *b_pi_0_10_cc_mult;   //!
-   TBranch        *b_pi_0_10_cc_PX;   //!
-   TBranch        *b_pi_0_10_cc_PY;   //!
-   TBranch        *b_pi_0_10_cc_PZ;   //!
-   TBranch        *b_pi_0_10_cc_vPT;   //!
-   TBranch        *b_pi_0_10_cc_sPT;   //!
-   TBranch        *b_pi_0_10_nc_mult;   //!
-   TBranch        *b_pi_0_10_nc_PX;   //!
-   TBranch        *b_pi_0_10_nc_PY;   //!
-   TBranch        *b_pi_0_10_nc_PZ;   //!
-   TBranch        *b_pi_0_10_nc_vPT;   //!
-   TBranch        *b_pi_0_10_nc_sPT;   //!
-   TBranch        *b_pi_0_20_cc_mult;   //!
-   TBranch        *b_pi_0_20_cc_PX;   //!
-   TBranch        *b_pi_0_20_cc_PY;   //!
-   TBranch        *b_pi_0_20_cc_PZ;   //!
-   TBranch        *b_pi_0_20_cc_vPT;   //!
-   TBranch        *b_pi_0_20_cc_sPT;   //!
-   TBranch        *b_pi_0_20_nc_mult;   //!
-   TBranch        *b_pi_0_20_nc_PX;   //!
-   TBranch        *b_pi_0_20_nc_PY;   //!
-   TBranch        *b_pi_0_20_nc_PZ;   //!
-   TBranch        *b_pi_0_20_nc_vPT;   //!
-   TBranch        *b_pi_0_20_nc_sPT;   //!
-   TBranch        *b_pi_0_30_cc_mult;   //!
-   TBranch        *b_pi_0_30_cc_PX;   //!
-   TBranch        *b_pi_0_30_cc_PY;   //!
-   TBranch        *b_pi_0_30_cc_PZ;   //!
-   TBranch        *b_pi_0_30_cc_vPT;   //!
-   TBranch        *b_pi_0_30_cc_sPT;   //!
-   TBranch        *b_pi_0_30_nc_mult;   //!
-   TBranch        *b_pi_0_30_nc_PX;   //!
-   TBranch        *b_pi_0_30_nc_PY;   //!
-   TBranch        *b_pi_0_30_nc_PZ;   //!
-   TBranch        *b_pi_0_30_nc_vPT;   //!
-   TBranch        *b_pi_0_30_nc_sPT;   //!
-   TBranch        *b_pi_0_40_cc_mult;   //!
-   TBranch        *b_pi_0_40_cc_PX;   //!
-   TBranch        *b_pi_0_40_cc_PY;   //!
-   TBranch        *b_pi_0_40_cc_PZ;   //!
-   TBranch        *b_pi_0_40_cc_vPT;   //!
-   TBranch        *b_pi_0_40_cc_sPT;   //!
-   TBranch        *b_pi_0_40_nc_mult;   //!
-   TBranch        *b_pi_0_40_nc_PX;   //!
-   TBranch        *b_pi_0_40_nc_PY;   //!
-   TBranch        *b_pi_0_40_nc_PZ;   //!
-   TBranch        *b_pi_0_40_nc_vPT;   //!
-   TBranch        *b_pi_0_40_nc_sPT;   //!
-   TBranch        *b_pi_0_50_cc_mult;   //!
-   TBranch        *b_pi_0_50_cc_PX;   //!
-   TBranch        *b_pi_0_50_cc_PY;   //!
-   TBranch        *b_pi_0_50_cc_PZ;   //!
-   TBranch        *b_pi_0_50_cc_vPT;   //!
-   TBranch        *b_pi_0_50_cc_sPT;   //!
-   TBranch        *b_pi_0_50_nc_mult;   //!
-   TBranch        *b_pi_0_50_nc_PX;   //!
-   TBranch        *b_pi_0_50_nc_PY;   //!
-   TBranch        *b_pi_0_50_nc_PZ;   //!
-   TBranch        *b_pi_0_50_nc_vPT;   //!
-   TBranch        *b_pi_0_50_nc_sPT;   //!
    TBranch        *b_pi_MINIP;   //!
    TBranch        *b_pi_MINIPCHI2;   //!
    TBranch        *b_pi_MINIPNEXTBEST;   //!
@@ -2847,30 +2221,54 @@ public :
    TBranch        *b_mu_0_00_nc_maxPt_PX;   //!
    TBranch        *b_mu_0_00_nc_maxPt_PY;   //!
    TBranch        *b_mu_0_00_nc_maxPt_PZ;   //!
-   TBranch        *b_mu_0_10_cc_mult;   //!
-   TBranch        *b_mu_0_10_cc_PX;   //!
-   TBranch        *b_mu_0_10_cc_PY;   //!
-   TBranch        *b_mu_0_10_cc_PZ;   //!
-   TBranch        *b_mu_0_10_cc_vPT;   //!
-   TBranch        *b_mu_0_10_cc_sPT;   //!
-   TBranch        *b_mu_0_10_nc_mult;   //!
-   TBranch        *b_mu_0_10_nc_PX;   //!
-   TBranch        *b_mu_0_10_nc_PY;   //!
-   TBranch        *b_mu_0_10_nc_PZ;   //!
-   TBranch        *b_mu_0_10_nc_vPT;   //!
-   TBranch        *b_mu_0_10_nc_sPT;   //!
-   TBranch        *b_mu_0_20_cc_mult;   //!
-   TBranch        *b_mu_0_20_cc_PX;   //!
-   TBranch        *b_mu_0_20_cc_PY;   //!
-   TBranch        *b_mu_0_20_cc_PZ;   //!
-   TBranch        *b_mu_0_20_cc_vPT;   //!
-   TBranch        *b_mu_0_20_cc_sPT;   //!
-   TBranch        *b_mu_0_20_nc_mult;   //!
-   TBranch        *b_mu_0_20_nc_PX;   //!
-   TBranch        *b_mu_0_20_nc_PY;   //!
-   TBranch        *b_mu_0_20_nc_PZ;   //!
-   TBranch        *b_mu_0_20_nc_vPT;   //!
-   TBranch        *b_mu_0_20_nc_sPT;   //!
+   TBranch        *b_mu_1_50_cc_mult;   //!
+   TBranch        *b_mu_1_50_cc_PX;   //!
+   TBranch        *b_mu_1_50_cc_PY;   //!
+   TBranch        *b_mu_1_50_cc_PZ;   //!
+   TBranch        *b_mu_1_50_cc_vPT;   //!
+   TBranch        *b_mu_1_50_cc_sPT;   //!
+   TBranch        *b_mu_1_50_nc_mult;   //!
+   TBranch        *b_mu_1_50_nc_PX;   //!
+   TBranch        *b_mu_1_50_nc_PY;   //!
+   TBranch        *b_mu_1_50_nc_PZ;   //!
+   TBranch        *b_mu_1_50_nc_vPT;   //!
+   TBranch        *b_mu_1_50_nc_sPT;   //!
+   TBranch        *b_mu_1_20_cc_mult;   //!
+   TBranch        *b_mu_1_20_cc_PX;   //!
+   TBranch        *b_mu_1_20_cc_PY;   //!
+   TBranch        *b_mu_1_20_cc_PZ;   //!
+   TBranch        *b_mu_1_20_cc_vPT;   //!
+   TBranch        *b_mu_1_20_cc_sPT;   //!
+   TBranch        *b_mu_1_20_nc_mult;   //!
+   TBranch        *b_mu_1_20_nc_PX;   //!
+   TBranch        *b_mu_1_20_nc_PY;   //!
+   TBranch        *b_mu_1_20_nc_PZ;   //!
+   TBranch        *b_mu_1_20_nc_vPT;   //!
+   TBranch        *b_mu_1_20_nc_sPT;   //!
+   TBranch        *b_mu_0_90_cc_mult;   //!
+   TBranch        *b_mu_0_90_cc_PX;   //!
+   TBranch        *b_mu_0_90_cc_PY;   //!
+   TBranch        *b_mu_0_90_cc_PZ;   //!
+   TBranch        *b_mu_0_90_cc_vPT;   //!
+   TBranch        *b_mu_0_90_cc_sPT;   //!
+   TBranch        *b_mu_0_90_nc_mult;   //!
+   TBranch        *b_mu_0_90_nc_PX;   //!
+   TBranch        *b_mu_0_90_nc_PY;   //!
+   TBranch        *b_mu_0_90_nc_PZ;   //!
+   TBranch        *b_mu_0_90_nc_vPT;   //!
+   TBranch        *b_mu_0_90_nc_sPT;   //!
+   TBranch        *b_mu_0_60_cc_mult;   //!
+   TBranch        *b_mu_0_60_cc_PX;   //!
+   TBranch        *b_mu_0_60_cc_PY;   //!
+   TBranch        *b_mu_0_60_cc_PZ;   //!
+   TBranch        *b_mu_0_60_cc_vPT;   //!
+   TBranch        *b_mu_0_60_cc_sPT;   //!
+   TBranch        *b_mu_0_60_nc_mult;   //!
+   TBranch        *b_mu_0_60_nc_PX;   //!
+   TBranch        *b_mu_0_60_nc_PY;   //!
+   TBranch        *b_mu_0_60_nc_PZ;   //!
+   TBranch        *b_mu_0_60_nc_vPT;   //!
+   TBranch        *b_mu_0_60_nc_sPT;   //!
    TBranch        *b_mu_0_30_cc_mult;   //!
    TBranch        *b_mu_0_30_cc_PX;   //!
    TBranch        *b_mu_0_30_cc_PY;   //!
@@ -2883,30 +2281,6 @@ public :
    TBranch        *b_mu_0_30_nc_PZ;   //!
    TBranch        *b_mu_0_30_nc_vPT;   //!
    TBranch        *b_mu_0_30_nc_sPT;   //!
-   TBranch        *b_mu_0_40_cc_mult;   //!
-   TBranch        *b_mu_0_40_cc_PX;   //!
-   TBranch        *b_mu_0_40_cc_PY;   //!
-   TBranch        *b_mu_0_40_cc_PZ;   //!
-   TBranch        *b_mu_0_40_cc_vPT;   //!
-   TBranch        *b_mu_0_40_cc_sPT;   //!
-   TBranch        *b_mu_0_40_nc_mult;   //!
-   TBranch        *b_mu_0_40_nc_PX;   //!
-   TBranch        *b_mu_0_40_nc_PY;   //!
-   TBranch        *b_mu_0_40_nc_PZ;   //!
-   TBranch        *b_mu_0_40_nc_vPT;   //!
-   TBranch        *b_mu_0_40_nc_sPT;   //!
-   TBranch        *b_mu_0_50_cc_mult;   //!
-   TBranch        *b_mu_0_50_cc_PX;   //!
-   TBranch        *b_mu_0_50_cc_PY;   //!
-   TBranch        *b_mu_0_50_cc_PZ;   //!
-   TBranch        *b_mu_0_50_cc_vPT;   //!
-   TBranch        *b_mu_0_50_cc_sPT;   //!
-   TBranch        *b_mu_0_50_nc_mult;   //!
-   TBranch        *b_mu_0_50_nc_PX;   //!
-   TBranch        *b_mu_0_50_nc_PY;   //!
-   TBranch        *b_mu_0_50_nc_PZ;   //!
-   TBranch        *b_mu_0_50_nc_vPT;   //!
-   TBranch        *b_mu_0_50_nc_sPT;   //!
    TBranch        *b_mu_MINIP;   //!
    TBranch        *b_mu_MINIPCHI2;   //!
    TBranch        *b_mu_MINIPNEXTBEST;   //!
@@ -3249,15 +2623,21 @@ NeutralIso::NeutralIso(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = TFile::Open("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/RDS_MCSignal_Sim08hDown.root");
+      //TFile *f = TFile::Open("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/RDS_MCSignal_Sim08aDown.root");
+      TFile *f = TFile::Open("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/DataMagUp_S23r1_RDS_FromVubStripping_1.root");
       if (!f || !f->IsOpen()) {
-        f = new TFile("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/RDS_MCSignal_Sim08hDown.root");
+        //f = new TFile("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/RDS_MCSignal_Sim08aDown.root");
+        f = new TFile("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/DataMagUp_S23r1_RDS_FromVubStripping_1.root");
       }
       tree = (TTree*)f->Get("B2DsMuNuTuple/DecayTree");
 
       TChain *chain = new TChain("B2DsMuNuTuple/DecayTree");
-      chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/RDS_MCSignal_Sim08hDown.root");
-      chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/RDS_MCSignal_Sim08hUp.root");
+      //chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/RDS_MCSignal_Sim08aDown.root");
+      //chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/RDS_MCSignal_Sim08aUp.root");
+      chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/DataMagUp_S23r1_RDS_FromVubStripping_1.root");
+      chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/DataMagUp_S23r1_RDS_FromVubStripping_2.root");
+      chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/DataMagDown_S23r1_RDS_FromVubStripping_1.root");
+      chain->Add("root://eoslhcb.cern.ch//eos/lhcb/user/r/rvazquez/RDS/DataMagDown_S23r1_RDS_FromVubStripping_2.root");
       tree = chain;
    }
    Init(tree);
@@ -3304,88 +2684,6 @@ void NeutralIso::Init(TTree *tree)
    fCurrent = -1;
    fChain->SetMakeClass(1);
 
-   fChain->SetBranchAddress("Bs_0_0.00_cc_mult", &Bs_0_0_00_cc_mult, &b_Bs_0_0_00_cc_mult);
-   fChain->SetBranchAddress("Bs_0_0.00_cc_PX", &Bs_0_0_00_cc_PX, &b_Bs_0_0_00_cc_PX);
-   fChain->SetBranchAddress("Bs_0_0.00_cc_PY", &Bs_0_0_00_cc_PY, &b_Bs_0_0_00_cc_PY);
-   fChain->SetBranchAddress("Bs_0_0.00_cc_PZ", &Bs_0_0_00_cc_PZ, &b_Bs_0_0_00_cc_PZ);
-   fChain->SetBranchAddress("Bs_0_0.00_cc_vPT", &Bs_0_0_00_cc_vPT, &b_Bs_0_0_00_cc_vPT);
-   fChain->SetBranchAddress("Bs_0_0.00_cc_sPT", &Bs_0_0_00_cc_sPT, &b_Bs_0_0_00_cc_sPT);
-   fChain->SetBranchAddress("Bs_0_0.00_cc_maxPt_Q", &Bs_0_0_00_cc_maxPt_Q, &b_Bs_0_0_00_cc_maxPt_Q);
-   fChain->SetBranchAddress("Bs_0_0.00_cc_maxPt_PT", &Bs_0_0_00_cc_maxPt_PT, &b_Bs_0_0_00_cc_maxPt_PT);
-   fChain->SetBranchAddress("Bs_0_0.00_cc_maxPt_PX", &Bs_0_0_00_cc_maxPt_PX, &b_Bs_0_0_00_cc_maxPt_PX);
-   fChain->SetBranchAddress("Bs_0_0.00_cc_maxPt_PY", &Bs_0_0_00_cc_maxPt_PY, &b_Bs_0_0_00_cc_maxPt_PY);
-   fChain->SetBranchAddress("Bs_0_0.00_cc_maxPt_PZ", &Bs_0_0_00_cc_maxPt_PZ, &b_Bs_0_0_00_cc_maxPt_PZ);
-   fChain->SetBranchAddress("Bs_0_0.00_cc_maxPt_PE", &Bs_0_0_00_cc_maxPt_PE, &b_Bs_0_0_00_cc_maxPt_PE);
-   fChain->SetBranchAddress("Bs_0_0.00_nc_mult", &Bs_0_0_00_nc_mult, &b_Bs_0_0_00_nc_mult);
-   fChain->SetBranchAddress("Bs_0_0.00_nc_PX", &Bs_0_0_00_nc_PX, &b_Bs_0_0_00_nc_PX);
-   fChain->SetBranchAddress("Bs_0_0.00_nc_PY", &Bs_0_0_00_nc_PY, &b_Bs_0_0_00_nc_PY);
-   fChain->SetBranchAddress("Bs_0_0.00_nc_PZ", &Bs_0_0_00_nc_PZ, &b_Bs_0_0_00_nc_PZ);
-   fChain->SetBranchAddress("Bs_0_0.00_nc_vPT", &Bs_0_0_00_nc_vPT, &b_Bs_0_0_00_nc_vPT);
-   fChain->SetBranchAddress("Bs_0_0.00_nc_sPT", &Bs_0_0_00_nc_sPT, &b_Bs_0_0_00_nc_sPT);
-   fChain->SetBranchAddress("Bs_0_0.00_nc_maxPt_PT", &Bs_0_0_00_nc_maxPt_PT, &b_Bs_0_0_00_nc_maxPt_PT);
-   fChain->SetBranchAddress("Bs_0_0.00_nc_maxPt_PX", &Bs_0_0_00_nc_maxPt_PX, &b_Bs_0_0_00_nc_maxPt_PX);
-   fChain->SetBranchAddress("Bs_0_0.00_nc_maxPt_PY", &Bs_0_0_00_nc_maxPt_PY, &b_Bs_0_0_00_nc_maxPt_PY);
-   fChain->SetBranchAddress("Bs_0_0.00_nc_maxPt_PZ", &Bs_0_0_00_nc_maxPt_PZ, &b_Bs_0_0_00_nc_maxPt_PZ);
-   fChain->SetBranchAddress("Bs_0_0.10_cc_mult", &Bs_0_0_10_cc_mult, &b_Bs_0_0_10_cc_mult);
-   fChain->SetBranchAddress("Bs_0_0.10_cc_PX", &Bs_0_0_10_cc_PX, &b_Bs_0_0_10_cc_PX);
-   fChain->SetBranchAddress("Bs_0_0.10_cc_PY", &Bs_0_0_10_cc_PY, &b_Bs_0_0_10_cc_PY);
-   fChain->SetBranchAddress("Bs_0_0.10_cc_PZ", &Bs_0_0_10_cc_PZ, &b_Bs_0_0_10_cc_PZ);
-   fChain->SetBranchAddress("Bs_0_0.10_cc_vPT", &Bs_0_0_10_cc_vPT, &b_Bs_0_0_10_cc_vPT);
-   fChain->SetBranchAddress("Bs_0_0.10_cc_sPT", &Bs_0_0_10_cc_sPT, &b_Bs_0_0_10_cc_sPT);
-   fChain->SetBranchAddress("Bs_0_0.10_nc_mult", &Bs_0_0_10_nc_mult, &b_Bs_0_0_10_nc_mult);
-   fChain->SetBranchAddress("Bs_0_0.10_nc_PX", &Bs_0_0_10_nc_PX, &b_Bs_0_0_10_nc_PX);
-   fChain->SetBranchAddress("Bs_0_0.10_nc_PY", &Bs_0_0_10_nc_PY, &b_Bs_0_0_10_nc_PY);
-   fChain->SetBranchAddress("Bs_0_0.10_nc_PZ", &Bs_0_0_10_nc_PZ, &b_Bs_0_0_10_nc_PZ);
-   fChain->SetBranchAddress("Bs_0_0.10_nc_vPT", &Bs_0_0_10_nc_vPT, &b_Bs_0_0_10_nc_vPT);
-   fChain->SetBranchAddress("Bs_0_0.10_nc_sPT", &Bs_0_0_10_nc_sPT, &b_Bs_0_0_10_nc_sPT);
-   fChain->SetBranchAddress("Bs_0_0.20_cc_mult", &Bs_0_0_20_cc_mult, &b_Bs_0_0_20_cc_mult);
-   fChain->SetBranchAddress("Bs_0_0.20_cc_PX", &Bs_0_0_20_cc_PX, &b_Bs_0_0_20_cc_PX);
-   fChain->SetBranchAddress("Bs_0_0.20_cc_PY", &Bs_0_0_20_cc_PY, &b_Bs_0_0_20_cc_PY);
-   fChain->SetBranchAddress("Bs_0_0.20_cc_PZ", &Bs_0_0_20_cc_PZ, &b_Bs_0_0_20_cc_PZ);
-   fChain->SetBranchAddress("Bs_0_0.20_cc_vPT", &Bs_0_0_20_cc_vPT, &b_Bs_0_0_20_cc_vPT);
-   fChain->SetBranchAddress("Bs_0_0.20_cc_sPT", &Bs_0_0_20_cc_sPT, &b_Bs_0_0_20_cc_sPT);
-   fChain->SetBranchAddress("Bs_0_0.20_nc_mult", &Bs_0_0_20_nc_mult, &b_Bs_0_0_20_nc_mult);
-   fChain->SetBranchAddress("Bs_0_0.20_nc_PX", &Bs_0_0_20_nc_PX, &b_Bs_0_0_20_nc_PX);
-   fChain->SetBranchAddress("Bs_0_0.20_nc_PY", &Bs_0_0_20_nc_PY, &b_Bs_0_0_20_nc_PY);
-   fChain->SetBranchAddress("Bs_0_0.20_nc_PZ", &Bs_0_0_20_nc_PZ, &b_Bs_0_0_20_nc_PZ);
-   fChain->SetBranchAddress("Bs_0_0.20_nc_vPT", &Bs_0_0_20_nc_vPT, &b_Bs_0_0_20_nc_vPT);
-   fChain->SetBranchAddress("Bs_0_0.20_nc_sPT", &Bs_0_0_20_nc_sPT, &b_Bs_0_0_20_nc_sPT);
-   fChain->SetBranchAddress("Bs_0_0.30_cc_mult", &Bs_0_0_30_cc_mult, &b_Bs_0_0_30_cc_mult);
-   fChain->SetBranchAddress("Bs_0_0.30_cc_PX", &Bs_0_0_30_cc_PX, &b_Bs_0_0_30_cc_PX);
-   fChain->SetBranchAddress("Bs_0_0.30_cc_PY", &Bs_0_0_30_cc_PY, &b_Bs_0_0_30_cc_PY);
-   fChain->SetBranchAddress("Bs_0_0.30_cc_PZ", &Bs_0_0_30_cc_PZ, &b_Bs_0_0_30_cc_PZ);
-   fChain->SetBranchAddress("Bs_0_0.30_cc_vPT", &Bs_0_0_30_cc_vPT, &b_Bs_0_0_30_cc_vPT);
-   fChain->SetBranchAddress("Bs_0_0.30_cc_sPT", &Bs_0_0_30_cc_sPT, &b_Bs_0_0_30_cc_sPT);
-   fChain->SetBranchAddress("Bs_0_0.30_nc_mult", &Bs_0_0_30_nc_mult, &b_Bs_0_0_30_nc_mult);
-   fChain->SetBranchAddress("Bs_0_0.30_nc_PX", &Bs_0_0_30_nc_PX, &b_Bs_0_0_30_nc_PX);
-   fChain->SetBranchAddress("Bs_0_0.30_nc_PY", &Bs_0_0_30_nc_PY, &b_Bs_0_0_30_nc_PY);
-   fChain->SetBranchAddress("Bs_0_0.30_nc_PZ", &Bs_0_0_30_nc_PZ, &b_Bs_0_0_30_nc_PZ);
-   fChain->SetBranchAddress("Bs_0_0.30_nc_vPT", &Bs_0_0_30_nc_vPT, &b_Bs_0_0_30_nc_vPT);
-   fChain->SetBranchAddress("Bs_0_0.30_nc_sPT", &Bs_0_0_30_nc_sPT, &b_Bs_0_0_30_nc_sPT);
-   fChain->SetBranchAddress("Bs_0_0.40_cc_mult", &Bs_0_0_40_cc_mult, &b_Bs_0_0_40_cc_mult);
-   fChain->SetBranchAddress("Bs_0_0.40_cc_PX", &Bs_0_0_40_cc_PX, &b_Bs_0_0_40_cc_PX);
-   fChain->SetBranchAddress("Bs_0_0.40_cc_PY", &Bs_0_0_40_cc_PY, &b_Bs_0_0_40_cc_PY);
-   fChain->SetBranchAddress("Bs_0_0.40_cc_PZ", &Bs_0_0_40_cc_PZ, &b_Bs_0_0_40_cc_PZ);
-   fChain->SetBranchAddress("Bs_0_0.40_cc_vPT", &Bs_0_0_40_cc_vPT, &b_Bs_0_0_40_cc_vPT);
-   fChain->SetBranchAddress("Bs_0_0.40_cc_sPT", &Bs_0_0_40_cc_sPT, &b_Bs_0_0_40_cc_sPT);
-   fChain->SetBranchAddress("Bs_0_0.40_nc_mult", &Bs_0_0_40_nc_mult, &b_Bs_0_0_40_nc_mult);
-   fChain->SetBranchAddress("Bs_0_0.40_nc_PX", &Bs_0_0_40_nc_PX, &b_Bs_0_0_40_nc_PX);
-   fChain->SetBranchAddress("Bs_0_0.40_nc_PY", &Bs_0_0_40_nc_PY, &b_Bs_0_0_40_nc_PY);
-   fChain->SetBranchAddress("Bs_0_0.40_nc_PZ", &Bs_0_0_40_nc_PZ, &b_Bs_0_0_40_nc_PZ);
-   fChain->SetBranchAddress("Bs_0_0.40_nc_vPT", &Bs_0_0_40_nc_vPT, &b_Bs_0_0_40_nc_vPT);
-   fChain->SetBranchAddress("Bs_0_0.40_nc_sPT", &Bs_0_0_40_nc_sPT, &b_Bs_0_0_40_nc_sPT);
-   fChain->SetBranchAddress("Bs_0_0.50_cc_mult", &Bs_0_0_50_cc_mult, &b_Bs_0_0_50_cc_mult);
-   fChain->SetBranchAddress("Bs_0_0.50_cc_PX", &Bs_0_0_50_cc_PX, &b_Bs_0_0_50_cc_PX);
-   fChain->SetBranchAddress("Bs_0_0.50_cc_PY", &Bs_0_0_50_cc_PY, &b_Bs_0_0_50_cc_PY);
-   fChain->SetBranchAddress("Bs_0_0.50_cc_PZ", &Bs_0_0_50_cc_PZ, &b_Bs_0_0_50_cc_PZ);
-   fChain->SetBranchAddress("Bs_0_0.50_cc_vPT", &Bs_0_0_50_cc_vPT, &b_Bs_0_0_50_cc_vPT);
-   fChain->SetBranchAddress("Bs_0_0.50_cc_sPT", &Bs_0_0_50_cc_sPT, &b_Bs_0_0_50_cc_sPT);
-   fChain->SetBranchAddress("Bs_0_0.50_nc_mult", &Bs_0_0_50_nc_mult, &b_Bs_0_0_50_nc_mult);
-   fChain->SetBranchAddress("Bs_0_0.50_nc_PX", &Bs_0_0_50_nc_PX, &b_Bs_0_0_50_nc_PX);
-   fChain->SetBranchAddress("Bs_0_0.50_nc_PY", &Bs_0_0_50_nc_PY, &b_Bs_0_0_50_nc_PY);
-   fChain->SetBranchAddress("Bs_0_0.50_nc_PZ", &Bs_0_0_50_nc_PZ, &b_Bs_0_0_50_nc_PZ);
-   fChain->SetBranchAddress("Bs_0_0.50_nc_vPT", &Bs_0_0_50_nc_vPT, &b_Bs_0_0_50_nc_vPT);
-   fChain->SetBranchAddress("Bs_0_0.50_nc_sPT", &Bs_0_0_50_nc_sPT, &b_Bs_0_0_50_nc_sPT);
    fChain->SetBranchAddress("Bs_0_MINIP", &Bs_0_MINIP, &b_Bs_0_MINIP);
    fChain->SetBranchAddress("Bs_0_MINIPCHI2", &Bs_0_MINIPCHI2, &b_Bs_0_MINIPCHI2);
    fChain->SetBranchAddress("Bs_0_MINIPNEXTBEST", &Bs_0_MINIPNEXTBEST, &b_Bs_0_MINIPNEXTBEST);
@@ -3685,30 +2983,66 @@ void NeutralIso::Init(TTree *tree)
    fChain->SetBranchAddress("Ds_0.00_nc_maxPt_PX", &Ds_0_00_nc_maxPt_PX, &b_Ds_0_00_nc_maxPt_PX);
    fChain->SetBranchAddress("Ds_0.00_nc_maxPt_PY", &Ds_0_00_nc_maxPt_PY, &b_Ds_0_00_nc_maxPt_PY);
    fChain->SetBranchAddress("Ds_0.00_nc_maxPt_PZ", &Ds_0_00_nc_maxPt_PZ, &b_Ds_0_00_nc_maxPt_PZ);
-   fChain->SetBranchAddress("Ds_0.10_cc_mult", &Ds_0_10_cc_mult, &b_Ds_0_10_cc_mult);
-   fChain->SetBranchAddress("Ds_0.10_cc_PX", &Ds_0_10_cc_PX, &b_Ds_0_10_cc_PX);
-   fChain->SetBranchAddress("Ds_0.10_cc_PY", &Ds_0_10_cc_PY, &b_Ds_0_10_cc_PY);
-   fChain->SetBranchAddress("Ds_0.10_cc_PZ", &Ds_0_10_cc_PZ, &b_Ds_0_10_cc_PZ);
-   fChain->SetBranchAddress("Ds_0.10_cc_vPT", &Ds_0_10_cc_vPT, &b_Ds_0_10_cc_vPT);
-   fChain->SetBranchAddress("Ds_0.10_cc_sPT", &Ds_0_10_cc_sPT, &b_Ds_0_10_cc_sPT);
-   fChain->SetBranchAddress("Ds_0.10_nc_mult", &Ds_0_10_nc_mult, &b_Ds_0_10_nc_mult);
-   fChain->SetBranchAddress("Ds_0.10_nc_PX", &Ds_0_10_nc_PX, &b_Ds_0_10_nc_PX);
-   fChain->SetBranchAddress("Ds_0.10_nc_PY", &Ds_0_10_nc_PY, &b_Ds_0_10_nc_PY);
-   fChain->SetBranchAddress("Ds_0.10_nc_PZ", &Ds_0_10_nc_PZ, &b_Ds_0_10_nc_PZ);
-   fChain->SetBranchAddress("Ds_0.10_nc_vPT", &Ds_0_10_nc_vPT, &b_Ds_0_10_nc_vPT);
-   fChain->SetBranchAddress("Ds_0.10_nc_sPT", &Ds_0_10_nc_sPT, &b_Ds_0_10_nc_sPT);
-   fChain->SetBranchAddress("Ds_0.20_cc_mult", &Ds_0_20_cc_mult, &b_Ds_0_20_cc_mult);
-   fChain->SetBranchAddress("Ds_0.20_cc_PX", &Ds_0_20_cc_PX, &b_Ds_0_20_cc_PX);
-   fChain->SetBranchAddress("Ds_0.20_cc_PY", &Ds_0_20_cc_PY, &b_Ds_0_20_cc_PY);
-   fChain->SetBranchAddress("Ds_0.20_cc_PZ", &Ds_0_20_cc_PZ, &b_Ds_0_20_cc_PZ);
-   fChain->SetBranchAddress("Ds_0.20_cc_vPT", &Ds_0_20_cc_vPT, &b_Ds_0_20_cc_vPT);
-   fChain->SetBranchAddress("Ds_0.20_cc_sPT", &Ds_0_20_cc_sPT, &b_Ds_0_20_cc_sPT);
-   fChain->SetBranchAddress("Ds_0.20_nc_mult", &Ds_0_20_nc_mult, &b_Ds_0_20_nc_mult);
-   fChain->SetBranchAddress("Ds_0.20_nc_PX", &Ds_0_20_nc_PX, &b_Ds_0_20_nc_PX);
-   fChain->SetBranchAddress("Ds_0.20_nc_PY", &Ds_0_20_nc_PY, &b_Ds_0_20_nc_PY);
-   fChain->SetBranchAddress("Ds_0.20_nc_PZ", &Ds_0_20_nc_PZ, &b_Ds_0_20_nc_PZ);
-   fChain->SetBranchAddress("Ds_0.20_nc_vPT", &Ds_0_20_nc_vPT, &b_Ds_0_20_nc_vPT);
-   fChain->SetBranchAddress("Ds_0.20_nc_sPT", &Ds_0_20_nc_sPT, &b_Ds_0_20_nc_sPT);
+   fChain->SetBranchAddress("Ds_1.50_cc_mult", &Ds_1_50_cc_mult, &b_Ds_1_50_cc_mult);
+   fChain->SetBranchAddress("Ds_1.50_cc_PX", &Ds_1_50_cc_PX, &b_Ds_1_50_cc_PX);
+   fChain->SetBranchAddress("Ds_1.50_cc_PY", &Ds_1_50_cc_PY, &b_Ds_1_50_cc_PY);
+   fChain->SetBranchAddress("Ds_1.50_cc_PZ", &Ds_1_50_cc_PZ, &b_Ds_1_50_cc_PZ);
+   fChain->SetBranchAddress("Ds_1.50_cc_vPT", &Ds_1_50_cc_vPT, &b_Ds_1_50_cc_vPT);
+   fChain->SetBranchAddress("Ds_1.50_cc_sPT", &Ds_1_50_cc_sPT, &b_Ds_1_50_cc_sPT);
+   fChain->SetBranchAddress("Ds_1.50_nc_mult", &Ds_1_50_nc_mult, &b_Ds_1_50_nc_mult);
+   fChain->SetBranchAddress("Ds_1.50_nc_PX", &Ds_1_50_nc_PX, &b_Ds_1_50_nc_PX);
+   fChain->SetBranchAddress("Ds_1.50_nc_PY", &Ds_1_50_nc_PY, &b_Ds_1_50_nc_PY);
+   fChain->SetBranchAddress("Ds_1.50_nc_PZ", &Ds_1_50_nc_PZ, &b_Ds_1_50_nc_PZ);
+   fChain->SetBranchAddress("Ds_1.50_nc_vPT", &Ds_1_50_nc_vPT, &b_Ds_1_50_nc_vPT);
+   fChain->SetBranchAddress("Ds_1.50_nc_sPT", &Ds_1_50_nc_sPT, &b_Ds_1_50_nc_sPT);
+   fChain->SetBranchAddress("Ds_1.50_nc_maxPt_PX", &Ds_1_50_nc_maxPt_PX, &b_Ds_1_50_nc_maxPt_PX);
+   fChain->SetBranchAddress("Ds_1.50_nc_maxPt_PY", &Ds_1_50_nc_maxPt_PY, &b_Ds_1_50_nc_maxPt_PY);
+   fChain->SetBranchAddress("Ds_1.50_nc_maxPt_PZ", &Ds_1_50_nc_maxPt_PZ, &b_Ds_1_50_nc_maxPt_PZ);
+   fChain->SetBranchAddress("Ds_1.20_cc_mult", &Ds_1_20_cc_mult, &b_Ds_1_20_cc_mult);
+   fChain->SetBranchAddress("Ds_1.20_cc_PX", &Ds_1_20_cc_PX, &b_Ds_1_20_cc_PX);
+   fChain->SetBranchAddress("Ds_1.20_cc_PY", &Ds_1_20_cc_PY, &b_Ds_1_20_cc_PY);
+   fChain->SetBranchAddress("Ds_1.20_cc_PZ", &Ds_1_20_cc_PZ, &b_Ds_1_20_cc_PZ);
+   fChain->SetBranchAddress("Ds_1.20_cc_vPT", &Ds_1_20_cc_vPT, &b_Ds_1_20_cc_vPT);
+   fChain->SetBranchAddress("Ds_1.20_cc_sPT", &Ds_1_20_cc_sPT, &b_Ds_1_20_cc_sPT);
+   fChain->SetBranchAddress("Ds_1.20_nc_mult", &Ds_1_20_nc_mult, &b_Ds_1_20_nc_mult);
+   fChain->SetBranchAddress("Ds_1.20_nc_PX", &Ds_1_20_nc_PX, &b_Ds_1_20_nc_PX);
+   fChain->SetBranchAddress("Ds_1.20_nc_PY", &Ds_1_20_nc_PY, &b_Ds_1_20_nc_PY);
+   fChain->SetBranchAddress("Ds_1.20_nc_PZ", &Ds_1_20_nc_PZ, &b_Ds_1_20_nc_PZ);
+   fChain->SetBranchAddress("Ds_1.20_nc_vPT", &Ds_1_20_nc_vPT, &b_Ds_1_20_nc_vPT);
+   fChain->SetBranchAddress("Ds_1.20_nc_sPT", &Ds_1_20_nc_sPT, &b_Ds_1_20_nc_sPT);
+   fChain->SetBranchAddress("Ds_1.20_nc_maxPt_PX", &Ds_1_20_nc_maxPt_PX, &b_Ds_1_20_nc_maxPt_PX);
+   fChain->SetBranchAddress("Ds_1.20_nc_maxPt_PY", &Ds_1_20_nc_maxPt_PY, &b_Ds_1_20_nc_maxPt_PY);
+   fChain->SetBranchAddress("Ds_1.20_nc_maxPt_PZ", &Ds_1_20_nc_maxPt_PZ, &b_Ds_1_20_nc_maxPt_PZ);
+   fChain->SetBranchAddress("Ds_0.90_cc_mult", &Ds_0_90_cc_mult, &b_Ds_0_90_cc_mult);
+   fChain->SetBranchAddress("Ds_0.90_cc_PX", &Ds_0_90_cc_PX, &b_Ds_0_90_cc_PX);
+   fChain->SetBranchAddress("Ds_0.90_cc_PY", &Ds_0_90_cc_PY, &b_Ds_0_90_cc_PY);
+   fChain->SetBranchAddress("Ds_0.90_cc_PZ", &Ds_0_90_cc_PZ, &b_Ds_0_90_cc_PZ);
+   fChain->SetBranchAddress("Ds_0.90_cc_vPT", &Ds_0_90_cc_vPT, &b_Ds_0_90_cc_vPT);
+   fChain->SetBranchAddress("Ds_0.90_cc_sPT", &Ds_0_90_cc_sPT, &b_Ds_0_90_cc_sPT);
+   fChain->SetBranchAddress("Ds_0.90_nc_mult", &Ds_0_90_nc_mult, &b_Ds_0_90_nc_mult);
+   fChain->SetBranchAddress("Ds_0.90_nc_PX", &Ds_0_90_nc_PX, &b_Ds_0_90_nc_PX);
+   fChain->SetBranchAddress("Ds_0.90_nc_PY", &Ds_0_90_nc_PY, &b_Ds_0_90_nc_PY);
+   fChain->SetBranchAddress("Ds_0.90_nc_PZ", &Ds_0_90_nc_PZ, &b_Ds_0_90_nc_PZ);
+   fChain->SetBranchAddress("Ds_0.90_nc_vPT", &Ds_0_90_nc_vPT, &b_Ds_0_90_nc_vPT);
+   fChain->SetBranchAddress("Ds_0.90_nc_sPT", &Ds_0_90_nc_sPT, &b_Ds_0_90_nc_sPT);
+   fChain->SetBranchAddress("Ds_0.90_nc_maxPt_PX", &Ds_0_90_nc_maxPt_PX, &b_Ds_0_90_nc_maxPt_PX);
+   fChain->SetBranchAddress("Ds_0.90_nc_maxPt_PY", &Ds_0_90_nc_maxPt_PY, &b_Ds_0_90_nc_maxPt_PY);
+   fChain->SetBranchAddress("Ds_0.90_nc_maxPt_PZ", &Ds_0_90_nc_maxPt_PZ, &b_Ds_0_90_nc_maxPt_PZ);
+   fChain->SetBranchAddress("Ds_0.60_cc_mult", &Ds_0_60_cc_mult, &b_Ds_0_60_cc_mult);
+   fChain->SetBranchAddress("Ds_0.60_cc_PX", &Ds_0_60_cc_PX, &b_Ds_0_60_cc_PX);
+   fChain->SetBranchAddress("Ds_0.60_cc_PY", &Ds_0_60_cc_PY, &b_Ds_0_60_cc_PY);
+   fChain->SetBranchAddress("Ds_0.60_cc_PZ", &Ds_0_60_cc_PZ, &b_Ds_0_60_cc_PZ);
+   fChain->SetBranchAddress("Ds_0.60_cc_vPT", &Ds_0_60_cc_vPT, &b_Ds_0_60_cc_vPT);
+   fChain->SetBranchAddress("Ds_0.60_cc_sPT", &Ds_0_60_cc_sPT, &b_Ds_0_60_cc_sPT);
+   fChain->SetBranchAddress("Ds_0.60_nc_mult", &Ds_0_60_nc_mult, &b_Ds_0_60_nc_mult);
+   fChain->SetBranchAddress("Ds_0.60_nc_PX", &Ds_0_60_nc_PX, &b_Ds_0_60_nc_PX);
+   fChain->SetBranchAddress("Ds_0.60_nc_PY", &Ds_0_60_nc_PY, &b_Ds_0_60_nc_PY);
+   fChain->SetBranchAddress("Ds_0.60_nc_PZ", &Ds_0_60_nc_PZ, &b_Ds_0_60_nc_PZ);
+   fChain->SetBranchAddress("Ds_0.60_nc_vPT", &Ds_0_60_nc_vPT, &b_Ds_0_60_nc_vPT);
+   fChain->SetBranchAddress("Ds_0.60_nc_sPT", &Ds_0_60_nc_sPT, &b_Ds_0_60_nc_sPT);
+   fChain->SetBranchAddress("Ds_0.60_nc_maxPt_PX", &Ds_0_60_nc_maxPt_PX, &b_Ds_0_60_nc_maxPt_PX);
+   fChain->SetBranchAddress("Ds_0.60_nc_maxPt_PY", &Ds_0_60_nc_maxPt_PY, &b_Ds_0_60_nc_maxPt_PY);
+   fChain->SetBranchAddress("Ds_0.60_nc_maxPt_PZ", &Ds_0_60_nc_maxPt_PZ, &b_Ds_0_60_nc_maxPt_PZ);
    fChain->SetBranchAddress("Ds_0.30_cc_mult", &Ds_0_30_cc_mult, &b_Ds_0_30_cc_mult);
    fChain->SetBranchAddress("Ds_0.30_cc_PX", &Ds_0_30_cc_PX, &b_Ds_0_30_cc_PX);
    fChain->SetBranchAddress("Ds_0.30_cc_PY", &Ds_0_30_cc_PY, &b_Ds_0_30_cc_PY);
@@ -3721,30 +3055,9 @@ void NeutralIso::Init(TTree *tree)
    fChain->SetBranchAddress("Ds_0.30_nc_PZ", &Ds_0_30_nc_PZ, &b_Ds_0_30_nc_PZ);
    fChain->SetBranchAddress("Ds_0.30_nc_vPT", &Ds_0_30_nc_vPT, &b_Ds_0_30_nc_vPT);
    fChain->SetBranchAddress("Ds_0.30_nc_sPT", &Ds_0_30_nc_sPT, &b_Ds_0_30_nc_sPT);
-   fChain->SetBranchAddress("Ds_0.40_cc_mult", &Ds_0_40_cc_mult, &b_Ds_0_40_cc_mult);
-   fChain->SetBranchAddress("Ds_0.40_cc_PX", &Ds_0_40_cc_PX, &b_Ds_0_40_cc_PX);
-   fChain->SetBranchAddress("Ds_0.40_cc_PY", &Ds_0_40_cc_PY, &b_Ds_0_40_cc_PY);
-   fChain->SetBranchAddress("Ds_0.40_cc_PZ", &Ds_0_40_cc_PZ, &b_Ds_0_40_cc_PZ);
-   fChain->SetBranchAddress("Ds_0.40_cc_vPT", &Ds_0_40_cc_vPT, &b_Ds_0_40_cc_vPT);
-   fChain->SetBranchAddress("Ds_0.40_cc_sPT", &Ds_0_40_cc_sPT, &b_Ds_0_40_cc_sPT);
-   fChain->SetBranchAddress("Ds_0.40_nc_mult", &Ds_0_40_nc_mult, &b_Ds_0_40_nc_mult);
-   fChain->SetBranchAddress("Ds_0.40_nc_PX", &Ds_0_40_nc_PX, &b_Ds_0_40_nc_PX);
-   fChain->SetBranchAddress("Ds_0.40_nc_PY", &Ds_0_40_nc_PY, &b_Ds_0_40_nc_PY);
-   fChain->SetBranchAddress("Ds_0.40_nc_PZ", &Ds_0_40_nc_PZ, &b_Ds_0_40_nc_PZ);
-   fChain->SetBranchAddress("Ds_0.40_nc_vPT", &Ds_0_40_nc_vPT, &b_Ds_0_40_nc_vPT);
-   fChain->SetBranchAddress("Ds_0.40_nc_sPT", &Ds_0_40_nc_sPT, &b_Ds_0_40_nc_sPT);
-   fChain->SetBranchAddress("Ds_0.50_cc_mult", &Ds_0_50_cc_mult, &b_Ds_0_50_cc_mult);
-   fChain->SetBranchAddress("Ds_0.50_cc_PX", &Ds_0_50_cc_PX, &b_Ds_0_50_cc_PX);
-   fChain->SetBranchAddress("Ds_0.50_cc_PY", &Ds_0_50_cc_PY, &b_Ds_0_50_cc_PY);
-   fChain->SetBranchAddress("Ds_0.50_cc_PZ", &Ds_0_50_cc_PZ, &b_Ds_0_50_cc_PZ);
-   fChain->SetBranchAddress("Ds_0.50_cc_vPT", &Ds_0_50_cc_vPT, &b_Ds_0_50_cc_vPT);
-   fChain->SetBranchAddress("Ds_0.50_cc_sPT", &Ds_0_50_cc_sPT, &b_Ds_0_50_cc_sPT);
-   fChain->SetBranchAddress("Ds_0.50_nc_mult", &Ds_0_50_nc_mult, &b_Ds_0_50_nc_mult);
-   fChain->SetBranchAddress("Ds_0.50_nc_PX", &Ds_0_50_nc_PX, &b_Ds_0_50_nc_PX);
-   fChain->SetBranchAddress("Ds_0.50_nc_PY", &Ds_0_50_nc_PY, &b_Ds_0_50_nc_PY);
-   fChain->SetBranchAddress("Ds_0.50_nc_PZ", &Ds_0_50_nc_PZ, &b_Ds_0_50_nc_PZ);
-   fChain->SetBranchAddress("Ds_0.50_nc_vPT", &Ds_0_50_nc_vPT, &b_Ds_0_50_nc_vPT);
-   fChain->SetBranchAddress("Ds_0.50_nc_sPT", &Ds_0_50_nc_sPT, &b_Ds_0_50_nc_sPT);
+   fChain->SetBranchAddress("Ds_0.30_nc_maxPt_PX", &Ds_0_30_nc_maxPt_PX, &b_Ds_0_30_nc_maxPt_PX);
+   fChain->SetBranchAddress("Ds_0.30_nc_maxPt_PY", &Ds_0_30_nc_maxPt_PY, &b_Ds_0_30_nc_maxPt_PY);
+   fChain->SetBranchAddress("Ds_0.30_nc_maxPt_PZ", &Ds_0_30_nc_maxPt_PZ, &b_Ds_0_30_nc_maxPt_PZ);
    fChain->SetBranchAddress("Ds_MINIP", &Ds_MINIP, &b_Ds_MINIP);
    fChain->SetBranchAddress("Ds_MINIPCHI2", &Ds_MINIPCHI2, &b_Ds_MINIPCHI2);
    fChain->SetBranchAddress("Ds_MINIPNEXTBEST", &Ds_MINIPNEXTBEST, &b_Ds_MINIPNEXTBEST);
@@ -3856,88 +3169,6 @@ void NeutralIso::Init(TTree *tree)
    fChain->SetBranchAddress("Kmi_MC12TuneV3_ProbNNk", &Kmi_MC12TuneV3_ProbNNk, &b_Kmi_MC12TuneV3_ProbNNk);
    fChain->SetBranchAddress("Kmi_MC12TuneV3_ProbNNp", &Kmi_MC12TuneV3_ProbNNp, &b_Kmi_MC12TuneV3_ProbNNp);
    fChain->SetBranchAddress("Kmi_MC12TuneV3_ProbNNghost", &Kmi_MC12TuneV3_ProbNNghost, &b_Kmi_MC12TuneV3_ProbNNghost);
-   fChain->SetBranchAddress("Kmi_0.00_cc_mult", &Kmi_0_00_cc_mult, &b_Kmi_0_00_cc_mult);
-   fChain->SetBranchAddress("Kmi_0.00_cc_PX", &Kmi_0_00_cc_PX, &b_Kmi_0_00_cc_PX);
-   fChain->SetBranchAddress("Kmi_0.00_cc_PY", &Kmi_0_00_cc_PY, &b_Kmi_0_00_cc_PY);
-   fChain->SetBranchAddress("Kmi_0.00_cc_PZ", &Kmi_0_00_cc_PZ, &b_Kmi_0_00_cc_PZ);
-   fChain->SetBranchAddress("Kmi_0.00_cc_vPT", &Kmi_0_00_cc_vPT, &b_Kmi_0_00_cc_vPT);
-   fChain->SetBranchAddress("Kmi_0.00_cc_sPT", &Kmi_0_00_cc_sPT, &b_Kmi_0_00_cc_sPT);
-   fChain->SetBranchAddress("Kmi_0.00_cc_maxPt_Q", &Kmi_0_00_cc_maxPt_Q, &b_Kmi_0_00_cc_maxPt_Q);
-   fChain->SetBranchAddress("Kmi_0.00_cc_maxPt_PT", &Kmi_0_00_cc_maxPt_PT, &b_Kmi_0_00_cc_maxPt_PT);
-   fChain->SetBranchAddress("Kmi_0.00_cc_maxPt_PX", &Kmi_0_00_cc_maxPt_PX, &b_Kmi_0_00_cc_maxPt_PX);
-   fChain->SetBranchAddress("Kmi_0.00_cc_maxPt_PY", &Kmi_0_00_cc_maxPt_PY, &b_Kmi_0_00_cc_maxPt_PY);
-   fChain->SetBranchAddress("Kmi_0.00_cc_maxPt_PZ", &Kmi_0_00_cc_maxPt_PZ, &b_Kmi_0_00_cc_maxPt_PZ);
-   fChain->SetBranchAddress("Kmi_0.00_cc_maxPt_PE", &Kmi_0_00_cc_maxPt_PE, &b_Kmi_0_00_cc_maxPt_PE);
-   fChain->SetBranchAddress("Kmi_0.00_nc_mult", &Kmi_0_00_nc_mult, &b_Kmi_0_00_nc_mult);
-   fChain->SetBranchAddress("Kmi_0.00_nc_PX", &Kmi_0_00_nc_PX, &b_Kmi_0_00_nc_PX);
-   fChain->SetBranchAddress("Kmi_0.00_nc_PY", &Kmi_0_00_nc_PY, &b_Kmi_0_00_nc_PY);
-   fChain->SetBranchAddress("Kmi_0.00_nc_PZ", &Kmi_0_00_nc_PZ, &b_Kmi_0_00_nc_PZ);
-   fChain->SetBranchAddress("Kmi_0.00_nc_vPT", &Kmi_0_00_nc_vPT, &b_Kmi_0_00_nc_vPT);
-   fChain->SetBranchAddress("Kmi_0.00_nc_sPT", &Kmi_0_00_nc_sPT, &b_Kmi_0_00_nc_sPT);
-   fChain->SetBranchAddress("Kmi_0.00_nc_maxPt_PT", &Kmi_0_00_nc_maxPt_PT, &b_Kmi_0_00_nc_maxPt_PT);
-   fChain->SetBranchAddress("Kmi_0.00_nc_maxPt_PX", &Kmi_0_00_nc_maxPt_PX, &b_Kmi_0_00_nc_maxPt_PX);
-   fChain->SetBranchAddress("Kmi_0.00_nc_maxPt_PY", &Kmi_0_00_nc_maxPt_PY, &b_Kmi_0_00_nc_maxPt_PY);
-   fChain->SetBranchAddress("Kmi_0.00_nc_maxPt_PZ", &Kmi_0_00_nc_maxPt_PZ, &b_Kmi_0_00_nc_maxPt_PZ);
-   fChain->SetBranchAddress("Kmi_0.10_cc_mult", &Kmi_0_10_cc_mult, &b_Kmi_0_10_cc_mult);
-   fChain->SetBranchAddress("Kmi_0.10_cc_PX", &Kmi_0_10_cc_PX, &b_Kmi_0_10_cc_PX);
-   fChain->SetBranchAddress("Kmi_0.10_cc_PY", &Kmi_0_10_cc_PY, &b_Kmi_0_10_cc_PY);
-   fChain->SetBranchAddress("Kmi_0.10_cc_PZ", &Kmi_0_10_cc_PZ, &b_Kmi_0_10_cc_PZ);
-   fChain->SetBranchAddress("Kmi_0.10_cc_vPT", &Kmi_0_10_cc_vPT, &b_Kmi_0_10_cc_vPT);
-   fChain->SetBranchAddress("Kmi_0.10_cc_sPT", &Kmi_0_10_cc_sPT, &b_Kmi_0_10_cc_sPT);
-   fChain->SetBranchAddress("Kmi_0.10_nc_mult", &Kmi_0_10_nc_mult, &b_Kmi_0_10_nc_mult);
-   fChain->SetBranchAddress("Kmi_0.10_nc_PX", &Kmi_0_10_nc_PX, &b_Kmi_0_10_nc_PX);
-   fChain->SetBranchAddress("Kmi_0.10_nc_PY", &Kmi_0_10_nc_PY, &b_Kmi_0_10_nc_PY);
-   fChain->SetBranchAddress("Kmi_0.10_nc_PZ", &Kmi_0_10_nc_PZ, &b_Kmi_0_10_nc_PZ);
-   fChain->SetBranchAddress("Kmi_0.10_nc_vPT", &Kmi_0_10_nc_vPT, &b_Kmi_0_10_nc_vPT);
-   fChain->SetBranchAddress("Kmi_0.10_nc_sPT", &Kmi_0_10_nc_sPT, &b_Kmi_0_10_nc_sPT);
-   fChain->SetBranchAddress("Kmi_0.20_cc_mult", &Kmi_0_20_cc_mult, &b_Kmi_0_20_cc_mult);
-   fChain->SetBranchAddress("Kmi_0.20_cc_PX", &Kmi_0_20_cc_PX, &b_Kmi_0_20_cc_PX);
-   fChain->SetBranchAddress("Kmi_0.20_cc_PY", &Kmi_0_20_cc_PY, &b_Kmi_0_20_cc_PY);
-   fChain->SetBranchAddress("Kmi_0.20_cc_PZ", &Kmi_0_20_cc_PZ, &b_Kmi_0_20_cc_PZ);
-   fChain->SetBranchAddress("Kmi_0.20_cc_vPT", &Kmi_0_20_cc_vPT, &b_Kmi_0_20_cc_vPT);
-   fChain->SetBranchAddress("Kmi_0.20_cc_sPT", &Kmi_0_20_cc_sPT, &b_Kmi_0_20_cc_sPT);
-   fChain->SetBranchAddress("Kmi_0.20_nc_mult", &Kmi_0_20_nc_mult, &b_Kmi_0_20_nc_mult);
-   fChain->SetBranchAddress("Kmi_0.20_nc_PX", &Kmi_0_20_nc_PX, &b_Kmi_0_20_nc_PX);
-   fChain->SetBranchAddress("Kmi_0.20_nc_PY", &Kmi_0_20_nc_PY, &b_Kmi_0_20_nc_PY);
-   fChain->SetBranchAddress("Kmi_0.20_nc_PZ", &Kmi_0_20_nc_PZ, &b_Kmi_0_20_nc_PZ);
-   fChain->SetBranchAddress("Kmi_0.20_nc_vPT", &Kmi_0_20_nc_vPT, &b_Kmi_0_20_nc_vPT);
-   fChain->SetBranchAddress("Kmi_0.20_nc_sPT", &Kmi_0_20_nc_sPT, &b_Kmi_0_20_nc_sPT);
-   fChain->SetBranchAddress("Kmi_0.30_cc_mult", &Kmi_0_30_cc_mult, &b_Kmi_0_30_cc_mult);
-   fChain->SetBranchAddress("Kmi_0.30_cc_PX", &Kmi_0_30_cc_PX, &b_Kmi_0_30_cc_PX);
-   fChain->SetBranchAddress("Kmi_0.30_cc_PY", &Kmi_0_30_cc_PY, &b_Kmi_0_30_cc_PY);
-   fChain->SetBranchAddress("Kmi_0.30_cc_PZ", &Kmi_0_30_cc_PZ, &b_Kmi_0_30_cc_PZ);
-   fChain->SetBranchAddress("Kmi_0.30_cc_vPT", &Kmi_0_30_cc_vPT, &b_Kmi_0_30_cc_vPT);
-   fChain->SetBranchAddress("Kmi_0.30_cc_sPT", &Kmi_0_30_cc_sPT, &b_Kmi_0_30_cc_sPT);
-   fChain->SetBranchAddress("Kmi_0.30_nc_mult", &Kmi_0_30_nc_mult, &b_Kmi_0_30_nc_mult);
-   fChain->SetBranchAddress("Kmi_0.30_nc_PX", &Kmi_0_30_nc_PX, &b_Kmi_0_30_nc_PX);
-   fChain->SetBranchAddress("Kmi_0.30_nc_PY", &Kmi_0_30_nc_PY, &b_Kmi_0_30_nc_PY);
-   fChain->SetBranchAddress("Kmi_0.30_nc_PZ", &Kmi_0_30_nc_PZ, &b_Kmi_0_30_nc_PZ);
-   fChain->SetBranchAddress("Kmi_0.30_nc_vPT", &Kmi_0_30_nc_vPT, &b_Kmi_0_30_nc_vPT);
-   fChain->SetBranchAddress("Kmi_0.30_nc_sPT", &Kmi_0_30_nc_sPT, &b_Kmi_0_30_nc_sPT);
-   fChain->SetBranchAddress("Kmi_0.40_cc_mult", &Kmi_0_40_cc_mult, &b_Kmi_0_40_cc_mult);
-   fChain->SetBranchAddress("Kmi_0.40_cc_PX", &Kmi_0_40_cc_PX, &b_Kmi_0_40_cc_PX);
-   fChain->SetBranchAddress("Kmi_0.40_cc_PY", &Kmi_0_40_cc_PY, &b_Kmi_0_40_cc_PY);
-   fChain->SetBranchAddress("Kmi_0.40_cc_PZ", &Kmi_0_40_cc_PZ, &b_Kmi_0_40_cc_PZ);
-   fChain->SetBranchAddress("Kmi_0.40_cc_vPT", &Kmi_0_40_cc_vPT, &b_Kmi_0_40_cc_vPT);
-   fChain->SetBranchAddress("Kmi_0.40_cc_sPT", &Kmi_0_40_cc_sPT, &b_Kmi_0_40_cc_sPT);
-   fChain->SetBranchAddress("Kmi_0.40_nc_mult", &Kmi_0_40_nc_mult, &b_Kmi_0_40_nc_mult);
-   fChain->SetBranchAddress("Kmi_0.40_nc_PX", &Kmi_0_40_nc_PX, &b_Kmi_0_40_nc_PX);
-   fChain->SetBranchAddress("Kmi_0.40_nc_PY", &Kmi_0_40_nc_PY, &b_Kmi_0_40_nc_PY);
-   fChain->SetBranchAddress("Kmi_0.40_nc_PZ", &Kmi_0_40_nc_PZ, &b_Kmi_0_40_nc_PZ);
-   fChain->SetBranchAddress("Kmi_0.40_nc_vPT", &Kmi_0_40_nc_vPT, &b_Kmi_0_40_nc_vPT);
-   fChain->SetBranchAddress("Kmi_0.40_nc_sPT", &Kmi_0_40_nc_sPT, &b_Kmi_0_40_nc_sPT);
-   fChain->SetBranchAddress("Kmi_0.50_cc_mult", &Kmi_0_50_cc_mult, &b_Kmi_0_50_cc_mult);
-   fChain->SetBranchAddress("Kmi_0.50_cc_PX", &Kmi_0_50_cc_PX, &b_Kmi_0_50_cc_PX);
-   fChain->SetBranchAddress("Kmi_0.50_cc_PY", &Kmi_0_50_cc_PY, &b_Kmi_0_50_cc_PY);
-   fChain->SetBranchAddress("Kmi_0.50_cc_PZ", &Kmi_0_50_cc_PZ, &b_Kmi_0_50_cc_PZ);
-   fChain->SetBranchAddress("Kmi_0.50_cc_vPT", &Kmi_0_50_cc_vPT, &b_Kmi_0_50_cc_vPT);
-   fChain->SetBranchAddress("Kmi_0.50_cc_sPT", &Kmi_0_50_cc_sPT, &b_Kmi_0_50_cc_sPT);
-   fChain->SetBranchAddress("Kmi_0.50_nc_mult", &Kmi_0_50_nc_mult, &b_Kmi_0_50_nc_mult);
-   fChain->SetBranchAddress("Kmi_0.50_nc_PX", &Kmi_0_50_nc_PX, &b_Kmi_0_50_nc_PX);
-   fChain->SetBranchAddress("Kmi_0.50_nc_PY", &Kmi_0_50_nc_PY, &b_Kmi_0_50_nc_PY);
-   fChain->SetBranchAddress("Kmi_0.50_nc_PZ", &Kmi_0_50_nc_PZ, &b_Kmi_0_50_nc_PZ);
-   fChain->SetBranchAddress("Kmi_0.50_nc_vPT", &Kmi_0_50_nc_vPT, &b_Kmi_0_50_nc_vPT);
-   fChain->SetBranchAddress("Kmi_0.50_nc_sPT", &Kmi_0_50_nc_sPT, &b_Kmi_0_50_nc_sPT);
    fChain->SetBranchAddress("Kmi_MINIP", &Kmi_MINIP, &b_Kmi_MINIP);
    fChain->SetBranchAddress("Kmi_MINIPCHI2", &Kmi_MINIPCHI2, &b_Kmi_MINIPCHI2);
    fChain->SetBranchAddress("Kmi_MINIPNEXTBEST", &Kmi_MINIPNEXTBEST, &b_Kmi_MINIPNEXTBEST);
@@ -4065,88 +3296,6 @@ void NeutralIso::Init(TTree *tree)
    fChain->SetBranchAddress("Kpl_MC12TuneV3_ProbNNk", &Kpl_MC12TuneV3_ProbNNk, &b_Kpl_MC12TuneV3_ProbNNk);
    fChain->SetBranchAddress("Kpl_MC12TuneV3_ProbNNp", &Kpl_MC12TuneV3_ProbNNp, &b_Kpl_MC12TuneV3_ProbNNp);
    fChain->SetBranchAddress("Kpl_MC12TuneV3_ProbNNghost", &Kpl_MC12TuneV3_ProbNNghost, &b_Kpl_MC12TuneV3_ProbNNghost);
-   fChain->SetBranchAddress("Kpl_0.00_cc_mult", &Kpl_0_00_cc_mult, &b_Kpl_0_00_cc_mult);
-   fChain->SetBranchAddress("Kpl_0.00_cc_PX", &Kpl_0_00_cc_PX, &b_Kpl_0_00_cc_PX);
-   fChain->SetBranchAddress("Kpl_0.00_cc_PY", &Kpl_0_00_cc_PY, &b_Kpl_0_00_cc_PY);
-   fChain->SetBranchAddress("Kpl_0.00_cc_PZ", &Kpl_0_00_cc_PZ, &b_Kpl_0_00_cc_PZ);
-   fChain->SetBranchAddress("Kpl_0.00_cc_vPT", &Kpl_0_00_cc_vPT, &b_Kpl_0_00_cc_vPT);
-   fChain->SetBranchAddress("Kpl_0.00_cc_sPT", &Kpl_0_00_cc_sPT, &b_Kpl_0_00_cc_sPT);
-   fChain->SetBranchAddress("Kpl_0.00_cc_maxPt_Q", &Kpl_0_00_cc_maxPt_Q, &b_Kpl_0_00_cc_maxPt_Q);
-   fChain->SetBranchAddress("Kpl_0.00_cc_maxPt_PT", &Kpl_0_00_cc_maxPt_PT, &b_Kpl_0_00_cc_maxPt_PT);
-   fChain->SetBranchAddress("Kpl_0.00_cc_maxPt_PX", &Kpl_0_00_cc_maxPt_PX, &b_Kpl_0_00_cc_maxPt_PX);
-   fChain->SetBranchAddress("Kpl_0.00_cc_maxPt_PY", &Kpl_0_00_cc_maxPt_PY, &b_Kpl_0_00_cc_maxPt_PY);
-   fChain->SetBranchAddress("Kpl_0.00_cc_maxPt_PZ", &Kpl_0_00_cc_maxPt_PZ, &b_Kpl_0_00_cc_maxPt_PZ);
-   fChain->SetBranchAddress("Kpl_0.00_cc_maxPt_PE", &Kpl_0_00_cc_maxPt_PE, &b_Kpl_0_00_cc_maxPt_PE);
-   fChain->SetBranchAddress("Kpl_0.00_nc_mult", &Kpl_0_00_nc_mult, &b_Kpl_0_00_nc_mult);
-   fChain->SetBranchAddress("Kpl_0.00_nc_PX", &Kpl_0_00_nc_PX, &b_Kpl_0_00_nc_PX);
-   fChain->SetBranchAddress("Kpl_0.00_nc_PY", &Kpl_0_00_nc_PY, &b_Kpl_0_00_nc_PY);
-   fChain->SetBranchAddress("Kpl_0.00_nc_PZ", &Kpl_0_00_nc_PZ, &b_Kpl_0_00_nc_PZ);
-   fChain->SetBranchAddress("Kpl_0.00_nc_vPT", &Kpl_0_00_nc_vPT, &b_Kpl_0_00_nc_vPT);
-   fChain->SetBranchAddress("Kpl_0.00_nc_sPT", &Kpl_0_00_nc_sPT, &b_Kpl_0_00_nc_sPT);
-   fChain->SetBranchAddress("Kpl_0.00_nc_maxPt_PT", &Kpl_0_00_nc_maxPt_PT, &b_Kpl_0_00_nc_maxPt_PT);
-   fChain->SetBranchAddress("Kpl_0.00_nc_maxPt_PX", &Kpl_0_00_nc_maxPt_PX, &b_Kpl_0_00_nc_maxPt_PX);
-   fChain->SetBranchAddress("Kpl_0.00_nc_maxPt_PY", &Kpl_0_00_nc_maxPt_PY, &b_Kpl_0_00_nc_maxPt_PY);
-   fChain->SetBranchAddress("Kpl_0.00_nc_maxPt_PZ", &Kpl_0_00_nc_maxPt_PZ, &b_Kpl_0_00_nc_maxPt_PZ);
-   fChain->SetBranchAddress("Kpl_0.10_cc_mult", &Kpl_0_10_cc_mult, &b_Kpl_0_10_cc_mult);
-   fChain->SetBranchAddress("Kpl_0.10_cc_PX", &Kpl_0_10_cc_PX, &b_Kpl_0_10_cc_PX);
-   fChain->SetBranchAddress("Kpl_0.10_cc_PY", &Kpl_0_10_cc_PY, &b_Kpl_0_10_cc_PY);
-   fChain->SetBranchAddress("Kpl_0.10_cc_PZ", &Kpl_0_10_cc_PZ, &b_Kpl_0_10_cc_PZ);
-   fChain->SetBranchAddress("Kpl_0.10_cc_vPT", &Kpl_0_10_cc_vPT, &b_Kpl_0_10_cc_vPT);
-   fChain->SetBranchAddress("Kpl_0.10_cc_sPT", &Kpl_0_10_cc_sPT, &b_Kpl_0_10_cc_sPT);
-   fChain->SetBranchAddress("Kpl_0.10_nc_mult", &Kpl_0_10_nc_mult, &b_Kpl_0_10_nc_mult);
-   fChain->SetBranchAddress("Kpl_0.10_nc_PX", &Kpl_0_10_nc_PX, &b_Kpl_0_10_nc_PX);
-   fChain->SetBranchAddress("Kpl_0.10_nc_PY", &Kpl_0_10_nc_PY, &b_Kpl_0_10_nc_PY);
-   fChain->SetBranchAddress("Kpl_0.10_nc_PZ", &Kpl_0_10_nc_PZ, &b_Kpl_0_10_nc_PZ);
-   fChain->SetBranchAddress("Kpl_0.10_nc_vPT", &Kpl_0_10_nc_vPT, &b_Kpl_0_10_nc_vPT);
-   fChain->SetBranchAddress("Kpl_0.10_nc_sPT", &Kpl_0_10_nc_sPT, &b_Kpl_0_10_nc_sPT);
-   fChain->SetBranchAddress("Kpl_0.20_cc_mult", &Kpl_0_20_cc_mult, &b_Kpl_0_20_cc_mult);
-   fChain->SetBranchAddress("Kpl_0.20_cc_PX", &Kpl_0_20_cc_PX, &b_Kpl_0_20_cc_PX);
-   fChain->SetBranchAddress("Kpl_0.20_cc_PY", &Kpl_0_20_cc_PY, &b_Kpl_0_20_cc_PY);
-   fChain->SetBranchAddress("Kpl_0.20_cc_PZ", &Kpl_0_20_cc_PZ, &b_Kpl_0_20_cc_PZ);
-   fChain->SetBranchAddress("Kpl_0.20_cc_vPT", &Kpl_0_20_cc_vPT, &b_Kpl_0_20_cc_vPT);
-   fChain->SetBranchAddress("Kpl_0.20_cc_sPT", &Kpl_0_20_cc_sPT, &b_Kpl_0_20_cc_sPT);
-   fChain->SetBranchAddress("Kpl_0.20_nc_mult", &Kpl_0_20_nc_mult, &b_Kpl_0_20_nc_mult);
-   fChain->SetBranchAddress("Kpl_0.20_nc_PX", &Kpl_0_20_nc_PX, &b_Kpl_0_20_nc_PX);
-   fChain->SetBranchAddress("Kpl_0.20_nc_PY", &Kpl_0_20_nc_PY, &b_Kpl_0_20_nc_PY);
-   fChain->SetBranchAddress("Kpl_0.20_nc_PZ", &Kpl_0_20_nc_PZ, &b_Kpl_0_20_nc_PZ);
-   fChain->SetBranchAddress("Kpl_0.20_nc_vPT", &Kpl_0_20_nc_vPT, &b_Kpl_0_20_nc_vPT);
-   fChain->SetBranchAddress("Kpl_0.20_nc_sPT", &Kpl_0_20_nc_sPT, &b_Kpl_0_20_nc_sPT);
-   fChain->SetBranchAddress("Kpl_0.30_cc_mult", &Kpl_0_30_cc_mult, &b_Kpl_0_30_cc_mult);
-   fChain->SetBranchAddress("Kpl_0.30_cc_PX", &Kpl_0_30_cc_PX, &b_Kpl_0_30_cc_PX);
-   fChain->SetBranchAddress("Kpl_0.30_cc_PY", &Kpl_0_30_cc_PY, &b_Kpl_0_30_cc_PY);
-   fChain->SetBranchAddress("Kpl_0.30_cc_PZ", &Kpl_0_30_cc_PZ, &b_Kpl_0_30_cc_PZ);
-   fChain->SetBranchAddress("Kpl_0.30_cc_vPT", &Kpl_0_30_cc_vPT, &b_Kpl_0_30_cc_vPT);
-   fChain->SetBranchAddress("Kpl_0.30_cc_sPT", &Kpl_0_30_cc_sPT, &b_Kpl_0_30_cc_sPT);
-   fChain->SetBranchAddress("Kpl_0.30_nc_mult", &Kpl_0_30_nc_mult, &b_Kpl_0_30_nc_mult);
-   fChain->SetBranchAddress("Kpl_0.30_nc_PX", &Kpl_0_30_nc_PX, &b_Kpl_0_30_nc_PX);
-   fChain->SetBranchAddress("Kpl_0.30_nc_PY", &Kpl_0_30_nc_PY, &b_Kpl_0_30_nc_PY);
-   fChain->SetBranchAddress("Kpl_0.30_nc_PZ", &Kpl_0_30_nc_PZ, &b_Kpl_0_30_nc_PZ);
-   fChain->SetBranchAddress("Kpl_0.30_nc_vPT", &Kpl_0_30_nc_vPT, &b_Kpl_0_30_nc_vPT);
-   fChain->SetBranchAddress("Kpl_0.30_nc_sPT", &Kpl_0_30_nc_sPT, &b_Kpl_0_30_nc_sPT);
-   fChain->SetBranchAddress("Kpl_0.40_cc_mult", &Kpl_0_40_cc_mult, &b_Kpl_0_40_cc_mult);
-   fChain->SetBranchAddress("Kpl_0.40_cc_PX", &Kpl_0_40_cc_PX, &b_Kpl_0_40_cc_PX);
-   fChain->SetBranchAddress("Kpl_0.40_cc_PY", &Kpl_0_40_cc_PY, &b_Kpl_0_40_cc_PY);
-   fChain->SetBranchAddress("Kpl_0.40_cc_PZ", &Kpl_0_40_cc_PZ, &b_Kpl_0_40_cc_PZ);
-   fChain->SetBranchAddress("Kpl_0.40_cc_vPT", &Kpl_0_40_cc_vPT, &b_Kpl_0_40_cc_vPT);
-   fChain->SetBranchAddress("Kpl_0.40_cc_sPT", &Kpl_0_40_cc_sPT, &b_Kpl_0_40_cc_sPT);
-   fChain->SetBranchAddress("Kpl_0.40_nc_mult", &Kpl_0_40_nc_mult, &b_Kpl_0_40_nc_mult);
-   fChain->SetBranchAddress("Kpl_0.40_nc_PX", &Kpl_0_40_nc_PX, &b_Kpl_0_40_nc_PX);
-   fChain->SetBranchAddress("Kpl_0.40_nc_PY", &Kpl_0_40_nc_PY, &b_Kpl_0_40_nc_PY);
-   fChain->SetBranchAddress("Kpl_0.40_nc_PZ", &Kpl_0_40_nc_PZ, &b_Kpl_0_40_nc_PZ);
-   fChain->SetBranchAddress("Kpl_0.40_nc_vPT", &Kpl_0_40_nc_vPT, &b_Kpl_0_40_nc_vPT);
-   fChain->SetBranchAddress("Kpl_0.40_nc_sPT", &Kpl_0_40_nc_sPT, &b_Kpl_0_40_nc_sPT);
-   fChain->SetBranchAddress("Kpl_0.50_cc_mult", &Kpl_0_50_cc_mult, &b_Kpl_0_50_cc_mult);
-   fChain->SetBranchAddress("Kpl_0.50_cc_PX", &Kpl_0_50_cc_PX, &b_Kpl_0_50_cc_PX);
-   fChain->SetBranchAddress("Kpl_0.50_cc_PY", &Kpl_0_50_cc_PY, &b_Kpl_0_50_cc_PY);
-   fChain->SetBranchAddress("Kpl_0.50_cc_PZ", &Kpl_0_50_cc_PZ, &b_Kpl_0_50_cc_PZ);
-   fChain->SetBranchAddress("Kpl_0.50_cc_vPT", &Kpl_0_50_cc_vPT, &b_Kpl_0_50_cc_vPT);
-   fChain->SetBranchAddress("Kpl_0.50_cc_sPT", &Kpl_0_50_cc_sPT, &b_Kpl_0_50_cc_sPT);
-   fChain->SetBranchAddress("Kpl_0.50_nc_mult", &Kpl_0_50_nc_mult, &b_Kpl_0_50_nc_mult);
-   fChain->SetBranchAddress("Kpl_0.50_nc_PX", &Kpl_0_50_nc_PX, &b_Kpl_0_50_nc_PX);
-   fChain->SetBranchAddress("Kpl_0.50_nc_PY", &Kpl_0_50_nc_PY, &b_Kpl_0_50_nc_PY);
-   fChain->SetBranchAddress("Kpl_0.50_nc_PZ", &Kpl_0_50_nc_PZ, &b_Kpl_0_50_nc_PZ);
-   fChain->SetBranchAddress("Kpl_0.50_nc_vPT", &Kpl_0_50_nc_vPT, &b_Kpl_0_50_nc_vPT);
-   fChain->SetBranchAddress("Kpl_0.50_nc_sPT", &Kpl_0_50_nc_sPT, &b_Kpl_0_50_nc_sPT);
    fChain->SetBranchAddress("Kpl_MINIP", &Kpl_MINIP, &b_Kpl_MINIP);
    fChain->SetBranchAddress("Kpl_MINIPCHI2", &Kpl_MINIPCHI2, &b_Kpl_MINIPCHI2);
    fChain->SetBranchAddress("Kpl_MINIPNEXTBEST", &Kpl_MINIPNEXTBEST, &b_Kpl_MINIPNEXTBEST);
@@ -4274,88 +3423,6 @@ void NeutralIso::Init(TTree *tree)
    fChain->SetBranchAddress("pi_MC12TuneV3_ProbNNk", &pi_MC12TuneV3_ProbNNk, &b_pi_MC12TuneV3_ProbNNk);
    fChain->SetBranchAddress("pi_MC12TuneV3_ProbNNp", &pi_MC12TuneV3_ProbNNp, &b_pi_MC12TuneV3_ProbNNp);
    fChain->SetBranchAddress("pi_MC12TuneV3_ProbNNghost", &pi_MC12TuneV3_ProbNNghost, &b_pi_MC12TuneV3_ProbNNghost);
-   fChain->SetBranchAddress("pi_0.00_cc_mult", &pi_0_00_cc_mult, &b_pi_0_00_cc_mult);
-   fChain->SetBranchAddress("pi_0.00_cc_PX", &pi_0_00_cc_PX, &b_pi_0_00_cc_PX);
-   fChain->SetBranchAddress("pi_0.00_cc_PY", &pi_0_00_cc_PY, &b_pi_0_00_cc_PY);
-   fChain->SetBranchAddress("pi_0.00_cc_PZ", &pi_0_00_cc_PZ, &b_pi_0_00_cc_PZ);
-   fChain->SetBranchAddress("pi_0.00_cc_vPT", &pi_0_00_cc_vPT, &b_pi_0_00_cc_vPT);
-   fChain->SetBranchAddress("pi_0.00_cc_sPT", &pi_0_00_cc_sPT, &b_pi_0_00_cc_sPT);
-   fChain->SetBranchAddress("pi_0.00_cc_maxPt_Q", &pi_0_00_cc_maxPt_Q, &b_pi_0_00_cc_maxPt_Q);
-   fChain->SetBranchAddress("pi_0.00_cc_maxPt_PT", &pi_0_00_cc_maxPt_PT, &b_pi_0_00_cc_maxPt_PT);
-   fChain->SetBranchAddress("pi_0.00_cc_maxPt_PX", &pi_0_00_cc_maxPt_PX, &b_pi_0_00_cc_maxPt_PX);
-   fChain->SetBranchAddress("pi_0.00_cc_maxPt_PY", &pi_0_00_cc_maxPt_PY, &b_pi_0_00_cc_maxPt_PY);
-   fChain->SetBranchAddress("pi_0.00_cc_maxPt_PZ", &pi_0_00_cc_maxPt_PZ, &b_pi_0_00_cc_maxPt_PZ);
-   fChain->SetBranchAddress("pi_0.00_cc_maxPt_PE", &pi_0_00_cc_maxPt_PE, &b_pi_0_00_cc_maxPt_PE);
-   fChain->SetBranchAddress("pi_0.00_nc_mult", &pi_0_00_nc_mult, &b_pi_0_00_nc_mult);
-   fChain->SetBranchAddress("pi_0.00_nc_PX", &pi_0_00_nc_PX, &b_pi_0_00_nc_PX);
-   fChain->SetBranchAddress("pi_0.00_nc_PY", &pi_0_00_nc_PY, &b_pi_0_00_nc_PY);
-   fChain->SetBranchAddress("pi_0.00_nc_PZ", &pi_0_00_nc_PZ, &b_pi_0_00_nc_PZ);
-   fChain->SetBranchAddress("pi_0.00_nc_vPT", &pi_0_00_nc_vPT, &b_pi_0_00_nc_vPT);
-   fChain->SetBranchAddress("pi_0.00_nc_sPT", &pi_0_00_nc_sPT, &b_pi_0_00_nc_sPT);
-   fChain->SetBranchAddress("pi_0.00_nc_maxPt_PT", &pi_0_00_nc_maxPt_PT, &b_pi_0_00_nc_maxPt_PT);
-   fChain->SetBranchAddress("pi_0.00_nc_maxPt_PX", &pi_0_00_nc_maxPt_PX, &b_pi_0_00_nc_maxPt_PX);
-   fChain->SetBranchAddress("pi_0.00_nc_maxPt_PY", &pi_0_00_nc_maxPt_PY, &b_pi_0_00_nc_maxPt_PY);
-   fChain->SetBranchAddress("pi_0.00_nc_maxPt_PZ", &pi_0_00_nc_maxPt_PZ, &b_pi_0_00_nc_maxPt_PZ);
-   fChain->SetBranchAddress("pi_0.10_cc_mult", &pi_0_10_cc_mult, &b_pi_0_10_cc_mult);
-   fChain->SetBranchAddress("pi_0.10_cc_PX", &pi_0_10_cc_PX, &b_pi_0_10_cc_PX);
-   fChain->SetBranchAddress("pi_0.10_cc_PY", &pi_0_10_cc_PY, &b_pi_0_10_cc_PY);
-   fChain->SetBranchAddress("pi_0.10_cc_PZ", &pi_0_10_cc_PZ, &b_pi_0_10_cc_PZ);
-   fChain->SetBranchAddress("pi_0.10_cc_vPT", &pi_0_10_cc_vPT, &b_pi_0_10_cc_vPT);
-   fChain->SetBranchAddress("pi_0.10_cc_sPT", &pi_0_10_cc_sPT, &b_pi_0_10_cc_sPT);
-   fChain->SetBranchAddress("pi_0.10_nc_mult", &pi_0_10_nc_mult, &b_pi_0_10_nc_mult);
-   fChain->SetBranchAddress("pi_0.10_nc_PX", &pi_0_10_nc_PX, &b_pi_0_10_nc_PX);
-   fChain->SetBranchAddress("pi_0.10_nc_PY", &pi_0_10_nc_PY, &b_pi_0_10_nc_PY);
-   fChain->SetBranchAddress("pi_0.10_nc_PZ", &pi_0_10_nc_PZ, &b_pi_0_10_nc_PZ);
-   fChain->SetBranchAddress("pi_0.10_nc_vPT", &pi_0_10_nc_vPT, &b_pi_0_10_nc_vPT);
-   fChain->SetBranchAddress("pi_0.10_nc_sPT", &pi_0_10_nc_sPT, &b_pi_0_10_nc_sPT);
-   fChain->SetBranchAddress("pi_0.20_cc_mult", &pi_0_20_cc_mult, &b_pi_0_20_cc_mult);
-   fChain->SetBranchAddress("pi_0.20_cc_PX", &pi_0_20_cc_PX, &b_pi_0_20_cc_PX);
-   fChain->SetBranchAddress("pi_0.20_cc_PY", &pi_0_20_cc_PY, &b_pi_0_20_cc_PY);
-   fChain->SetBranchAddress("pi_0.20_cc_PZ", &pi_0_20_cc_PZ, &b_pi_0_20_cc_PZ);
-   fChain->SetBranchAddress("pi_0.20_cc_vPT", &pi_0_20_cc_vPT, &b_pi_0_20_cc_vPT);
-   fChain->SetBranchAddress("pi_0.20_cc_sPT", &pi_0_20_cc_sPT, &b_pi_0_20_cc_sPT);
-   fChain->SetBranchAddress("pi_0.20_nc_mult", &pi_0_20_nc_mult, &b_pi_0_20_nc_mult);
-   fChain->SetBranchAddress("pi_0.20_nc_PX", &pi_0_20_nc_PX, &b_pi_0_20_nc_PX);
-   fChain->SetBranchAddress("pi_0.20_nc_PY", &pi_0_20_nc_PY, &b_pi_0_20_nc_PY);
-   fChain->SetBranchAddress("pi_0.20_nc_PZ", &pi_0_20_nc_PZ, &b_pi_0_20_nc_PZ);
-   fChain->SetBranchAddress("pi_0.20_nc_vPT", &pi_0_20_nc_vPT, &b_pi_0_20_nc_vPT);
-   fChain->SetBranchAddress("pi_0.20_nc_sPT", &pi_0_20_nc_sPT, &b_pi_0_20_nc_sPT);
-   fChain->SetBranchAddress("pi_0.30_cc_mult", &pi_0_30_cc_mult, &b_pi_0_30_cc_mult);
-   fChain->SetBranchAddress("pi_0.30_cc_PX", &pi_0_30_cc_PX, &b_pi_0_30_cc_PX);
-   fChain->SetBranchAddress("pi_0.30_cc_PY", &pi_0_30_cc_PY, &b_pi_0_30_cc_PY);
-   fChain->SetBranchAddress("pi_0.30_cc_PZ", &pi_0_30_cc_PZ, &b_pi_0_30_cc_PZ);
-   fChain->SetBranchAddress("pi_0.30_cc_vPT", &pi_0_30_cc_vPT, &b_pi_0_30_cc_vPT);
-   fChain->SetBranchAddress("pi_0.30_cc_sPT", &pi_0_30_cc_sPT, &b_pi_0_30_cc_sPT);
-   fChain->SetBranchAddress("pi_0.30_nc_mult", &pi_0_30_nc_mult, &b_pi_0_30_nc_mult);
-   fChain->SetBranchAddress("pi_0.30_nc_PX", &pi_0_30_nc_PX, &b_pi_0_30_nc_PX);
-   fChain->SetBranchAddress("pi_0.30_nc_PY", &pi_0_30_nc_PY, &b_pi_0_30_nc_PY);
-   fChain->SetBranchAddress("pi_0.30_nc_PZ", &pi_0_30_nc_PZ, &b_pi_0_30_nc_PZ);
-   fChain->SetBranchAddress("pi_0.30_nc_vPT", &pi_0_30_nc_vPT, &b_pi_0_30_nc_vPT);
-   fChain->SetBranchAddress("pi_0.30_nc_sPT", &pi_0_30_nc_sPT, &b_pi_0_30_nc_sPT);
-   fChain->SetBranchAddress("pi_0.40_cc_mult", &pi_0_40_cc_mult, &b_pi_0_40_cc_mult);
-   fChain->SetBranchAddress("pi_0.40_cc_PX", &pi_0_40_cc_PX, &b_pi_0_40_cc_PX);
-   fChain->SetBranchAddress("pi_0.40_cc_PY", &pi_0_40_cc_PY, &b_pi_0_40_cc_PY);
-   fChain->SetBranchAddress("pi_0.40_cc_PZ", &pi_0_40_cc_PZ, &b_pi_0_40_cc_PZ);
-   fChain->SetBranchAddress("pi_0.40_cc_vPT", &pi_0_40_cc_vPT, &b_pi_0_40_cc_vPT);
-   fChain->SetBranchAddress("pi_0.40_cc_sPT", &pi_0_40_cc_sPT, &b_pi_0_40_cc_sPT);
-   fChain->SetBranchAddress("pi_0.40_nc_mult", &pi_0_40_nc_mult, &b_pi_0_40_nc_mult);
-   fChain->SetBranchAddress("pi_0.40_nc_PX", &pi_0_40_nc_PX, &b_pi_0_40_nc_PX);
-   fChain->SetBranchAddress("pi_0.40_nc_PY", &pi_0_40_nc_PY, &b_pi_0_40_nc_PY);
-   fChain->SetBranchAddress("pi_0.40_nc_PZ", &pi_0_40_nc_PZ, &b_pi_0_40_nc_PZ);
-   fChain->SetBranchAddress("pi_0.40_nc_vPT", &pi_0_40_nc_vPT, &b_pi_0_40_nc_vPT);
-   fChain->SetBranchAddress("pi_0.40_nc_sPT", &pi_0_40_nc_sPT, &b_pi_0_40_nc_sPT);
-   fChain->SetBranchAddress("pi_0.50_cc_mult", &pi_0_50_cc_mult, &b_pi_0_50_cc_mult);
-   fChain->SetBranchAddress("pi_0.50_cc_PX", &pi_0_50_cc_PX, &b_pi_0_50_cc_PX);
-   fChain->SetBranchAddress("pi_0.50_cc_PY", &pi_0_50_cc_PY, &b_pi_0_50_cc_PY);
-   fChain->SetBranchAddress("pi_0.50_cc_PZ", &pi_0_50_cc_PZ, &b_pi_0_50_cc_PZ);
-   fChain->SetBranchAddress("pi_0.50_cc_vPT", &pi_0_50_cc_vPT, &b_pi_0_50_cc_vPT);
-   fChain->SetBranchAddress("pi_0.50_cc_sPT", &pi_0_50_cc_sPT, &b_pi_0_50_cc_sPT);
-   fChain->SetBranchAddress("pi_0.50_nc_mult", &pi_0_50_nc_mult, &b_pi_0_50_nc_mult);
-   fChain->SetBranchAddress("pi_0.50_nc_PX", &pi_0_50_nc_PX, &b_pi_0_50_nc_PX);
-   fChain->SetBranchAddress("pi_0.50_nc_PY", &pi_0_50_nc_PY, &b_pi_0_50_nc_PY);
-   fChain->SetBranchAddress("pi_0.50_nc_PZ", &pi_0_50_nc_PZ, &b_pi_0_50_nc_PZ);
-   fChain->SetBranchAddress("pi_0.50_nc_vPT", &pi_0_50_nc_vPT, &b_pi_0_50_nc_vPT);
-   fChain->SetBranchAddress("pi_0.50_nc_sPT", &pi_0_50_nc_sPT, &b_pi_0_50_nc_sPT);
    fChain->SetBranchAddress("pi_MINIP", &pi_MINIP, &b_pi_MINIP);
    fChain->SetBranchAddress("pi_MINIPCHI2", &pi_MINIPCHI2, &b_pi_MINIPCHI2);
    fChain->SetBranchAddress("pi_MINIPNEXTBEST", &pi_MINIPNEXTBEST, &b_pi_MINIPNEXTBEST);
@@ -4505,30 +3572,54 @@ void NeutralIso::Init(TTree *tree)
    fChain->SetBranchAddress("mu_0.00_nc_maxPt_PX", &mu_0_00_nc_maxPt_PX, &b_mu_0_00_nc_maxPt_PX);
    fChain->SetBranchAddress("mu_0.00_nc_maxPt_PY", &mu_0_00_nc_maxPt_PY, &b_mu_0_00_nc_maxPt_PY);
    fChain->SetBranchAddress("mu_0.00_nc_maxPt_PZ", &mu_0_00_nc_maxPt_PZ, &b_mu_0_00_nc_maxPt_PZ);
-   fChain->SetBranchAddress("mu_0.10_cc_mult", &mu_0_10_cc_mult, &b_mu_0_10_cc_mult);
-   fChain->SetBranchAddress("mu_0.10_cc_PX", &mu_0_10_cc_PX, &b_mu_0_10_cc_PX);
-   fChain->SetBranchAddress("mu_0.10_cc_PY", &mu_0_10_cc_PY, &b_mu_0_10_cc_PY);
-   fChain->SetBranchAddress("mu_0.10_cc_PZ", &mu_0_10_cc_PZ, &b_mu_0_10_cc_PZ);
-   fChain->SetBranchAddress("mu_0.10_cc_vPT", &mu_0_10_cc_vPT, &b_mu_0_10_cc_vPT);
-   fChain->SetBranchAddress("mu_0.10_cc_sPT", &mu_0_10_cc_sPT, &b_mu_0_10_cc_sPT);
-   fChain->SetBranchAddress("mu_0.10_nc_mult", &mu_0_10_nc_mult, &b_mu_0_10_nc_mult);
-   fChain->SetBranchAddress("mu_0.10_nc_PX", &mu_0_10_nc_PX, &b_mu_0_10_nc_PX);
-   fChain->SetBranchAddress("mu_0.10_nc_PY", &mu_0_10_nc_PY, &b_mu_0_10_nc_PY);
-   fChain->SetBranchAddress("mu_0.10_nc_PZ", &mu_0_10_nc_PZ, &b_mu_0_10_nc_PZ);
-   fChain->SetBranchAddress("mu_0.10_nc_vPT", &mu_0_10_nc_vPT, &b_mu_0_10_nc_vPT);
-   fChain->SetBranchAddress("mu_0.10_nc_sPT", &mu_0_10_nc_sPT, &b_mu_0_10_nc_sPT);
-   fChain->SetBranchAddress("mu_0.20_cc_mult", &mu_0_20_cc_mult, &b_mu_0_20_cc_mult);
-   fChain->SetBranchAddress("mu_0.20_cc_PX", &mu_0_20_cc_PX, &b_mu_0_20_cc_PX);
-   fChain->SetBranchAddress("mu_0.20_cc_PY", &mu_0_20_cc_PY, &b_mu_0_20_cc_PY);
-   fChain->SetBranchAddress("mu_0.20_cc_PZ", &mu_0_20_cc_PZ, &b_mu_0_20_cc_PZ);
-   fChain->SetBranchAddress("mu_0.20_cc_vPT", &mu_0_20_cc_vPT, &b_mu_0_20_cc_vPT);
-   fChain->SetBranchAddress("mu_0.20_cc_sPT", &mu_0_20_cc_sPT, &b_mu_0_20_cc_sPT);
-   fChain->SetBranchAddress("mu_0.20_nc_mult", &mu_0_20_nc_mult, &b_mu_0_20_nc_mult);
-   fChain->SetBranchAddress("mu_0.20_nc_PX", &mu_0_20_nc_PX, &b_mu_0_20_nc_PX);
-   fChain->SetBranchAddress("mu_0.20_nc_PY", &mu_0_20_nc_PY, &b_mu_0_20_nc_PY);
-   fChain->SetBranchAddress("mu_0.20_nc_PZ", &mu_0_20_nc_PZ, &b_mu_0_20_nc_PZ);
-   fChain->SetBranchAddress("mu_0.20_nc_vPT", &mu_0_20_nc_vPT, &b_mu_0_20_nc_vPT);
-   fChain->SetBranchAddress("mu_0.20_nc_sPT", &mu_0_20_nc_sPT, &b_mu_0_20_nc_sPT);
+   fChain->SetBranchAddress("mu_1.50_cc_mult", &mu_1_50_cc_mult, &b_mu_1_50_cc_mult);
+   fChain->SetBranchAddress("mu_1.50_cc_PX", &mu_1_50_cc_PX, &b_mu_1_50_cc_PX);
+   fChain->SetBranchAddress("mu_1.50_cc_PY", &mu_1_50_cc_PY, &b_mu_1_50_cc_PY);
+   fChain->SetBranchAddress("mu_1.50_cc_PZ", &mu_1_50_cc_PZ, &b_mu_1_50_cc_PZ);
+   fChain->SetBranchAddress("mu_1.50_cc_vPT", &mu_1_50_cc_vPT, &b_mu_1_50_cc_vPT);
+   fChain->SetBranchAddress("mu_1.50_cc_sPT", &mu_1_50_cc_sPT, &b_mu_1_50_cc_sPT);
+   fChain->SetBranchAddress("mu_1.50_nc_mult", &mu_1_50_nc_mult, &b_mu_1_50_nc_mult);
+   fChain->SetBranchAddress("mu_1.50_nc_PX", &mu_1_50_nc_PX, &b_mu_1_50_nc_PX);
+   fChain->SetBranchAddress("mu_1.50_nc_PY", &mu_1_50_nc_PY, &b_mu_1_50_nc_PY);
+   fChain->SetBranchAddress("mu_1.50_nc_PZ", &mu_1_50_nc_PZ, &b_mu_1_50_nc_PZ);
+   fChain->SetBranchAddress("mu_1.50_nc_vPT", &mu_1_50_nc_vPT, &b_mu_1_50_nc_vPT);
+   fChain->SetBranchAddress("mu_1.50_nc_sPT", &mu_1_50_nc_sPT, &b_mu_1_50_nc_sPT);
+   fChain->SetBranchAddress("mu_1.20_cc_mult", &mu_1_20_cc_mult, &b_mu_1_20_cc_mult);
+   fChain->SetBranchAddress("mu_1.20_cc_PX", &mu_1_20_cc_PX, &b_mu_1_20_cc_PX);
+   fChain->SetBranchAddress("mu_1.20_cc_PY", &mu_1_20_cc_PY, &b_mu_1_20_cc_PY);
+   fChain->SetBranchAddress("mu_1.20_cc_PZ", &mu_1_20_cc_PZ, &b_mu_1_20_cc_PZ);
+   fChain->SetBranchAddress("mu_1.20_cc_vPT", &mu_1_20_cc_vPT, &b_mu_1_20_cc_vPT);
+   fChain->SetBranchAddress("mu_1.20_cc_sPT", &mu_1_20_cc_sPT, &b_mu_1_20_cc_sPT);
+   fChain->SetBranchAddress("mu_1.20_nc_mult", &mu_1_20_nc_mult, &b_mu_1_20_nc_mult);
+   fChain->SetBranchAddress("mu_1.20_nc_PX", &mu_1_20_nc_PX, &b_mu_1_20_nc_PX);
+   fChain->SetBranchAddress("mu_1.20_nc_PY", &mu_1_20_nc_PY, &b_mu_1_20_nc_PY);
+   fChain->SetBranchAddress("mu_1.20_nc_PZ", &mu_1_20_nc_PZ, &b_mu_1_20_nc_PZ);
+   fChain->SetBranchAddress("mu_1.20_nc_vPT", &mu_1_20_nc_vPT, &b_mu_1_20_nc_vPT);
+   fChain->SetBranchAddress("mu_1.20_nc_sPT", &mu_1_20_nc_sPT, &b_mu_1_20_nc_sPT);
+   fChain->SetBranchAddress("mu_0.90_cc_mult", &mu_0_90_cc_mult, &b_mu_0_90_cc_mult);
+   fChain->SetBranchAddress("mu_0.90_cc_PX", &mu_0_90_cc_PX, &b_mu_0_90_cc_PX);
+   fChain->SetBranchAddress("mu_0.90_cc_PY", &mu_0_90_cc_PY, &b_mu_0_90_cc_PY);
+   fChain->SetBranchAddress("mu_0.90_cc_PZ", &mu_0_90_cc_PZ, &b_mu_0_90_cc_PZ);
+   fChain->SetBranchAddress("mu_0.90_cc_vPT", &mu_0_90_cc_vPT, &b_mu_0_90_cc_vPT);
+   fChain->SetBranchAddress("mu_0.90_cc_sPT", &mu_0_90_cc_sPT, &b_mu_0_90_cc_sPT);
+   fChain->SetBranchAddress("mu_0.90_nc_mult", &mu_0_90_nc_mult, &b_mu_0_90_nc_mult);
+   fChain->SetBranchAddress("mu_0.90_nc_PX", &mu_0_90_nc_PX, &b_mu_0_90_nc_PX);
+   fChain->SetBranchAddress("mu_0.90_nc_PY", &mu_0_90_nc_PY, &b_mu_0_90_nc_PY);
+   fChain->SetBranchAddress("mu_0.90_nc_PZ", &mu_0_90_nc_PZ, &b_mu_0_90_nc_PZ);
+   fChain->SetBranchAddress("mu_0.90_nc_vPT", &mu_0_90_nc_vPT, &b_mu_0_90_nc_vPT);
+   fChain->SetBranchAddress("mu_0.90_nc_sPT", &mu_0_90_nc_sPT, &b_mu_0_90_nc_sPT);
+   fChain->SetBranchAddress("mu_0.60_cc_mult", &mu_0_60_cc_mult, &b_mu_0_60_cc_mult);
+   fChain->SetBranchAddress("mu_0.60_cc_PX", &mu_0_60_cc_PX, &b_mu_0_60_cc_PX);
+   fChain->SetBranchAddress("mu_0.60_cc_PY", &mu_0_60_cc_PY, &b_mu_0_60_cc_PY);
+   fChain->SetBranchAddress("mu_0.60_cc_PZ", &mu_0_60_cc_PZ, &b_mu_0_60_cc_PZ);
+   fChain->SetBranchAddress("mu_0.60_cc_vPT", &mu_0_60_cc_vPT, &b_mu_0_60_cc_vPT);
+   fChain->SetBranchAddress("mu_0.60_cc_sPT", &mu_0_60_cc_sPT, &b_mu_0_60_cc_sPT);
+   fChain->SetBranchAddress("mu_0.60_nc_mult", &mu_0_60_nc_mult, &b_mu_0_60_nc_mult);
+   fChain->SetBranchAddress("mu_0.60_nc_PX", &mu_0_60_nc_PX, &b_mu_0_60_nc_PX);
+   fChain->SetBranchAddress("mu_0.60_nc_PY", &mu_0_60_nc_PY, &b_mu_0_60_nc_PY);
+   fChain->SetBranchAddress("mu_0.60_nc_PZ", &mu_0_60_nc_PZ, &b_mu_0_60_nc_PZ);
+   fChain->SetBranchAddress("mu_0.60_nc_vPT", &mu_0_60_nc_vPT, &b_mu_0_60_nc_vPT);
+   fChain->SetBranchAddress("mu_0.60_nc_sPT", &mu_0_60_nc_sPT, &b_mu_0_60_nc_sPT);
    fChain->SetBranchAddress("mu_0.30_cc_mult", &mu_0_30_cc_mult, &b_mu_0_30_cc_mult);
    fChain->SetBranchAddress("mu_0.30_cc_PX", &mu_0_30_cc_PX, &b_mu_0_30_cc_PX);
    fChain->SetBranchAddress("mu_0.30_cc_PY", &mu_0_30_cc_PY, &b_mu_0_30_cc_PY);
@@ -4541,30 +3632,6 @@ void NeutralIso::Init(TTree *tree)
    fChain->SetBranchAddress("mu_0.30_nc_PZ", &mu_0_30_nc_PZ, &b_mu_0_30_nc_PZ);
    fChain->SetBranchAddress("mu_0.30_nc_vPT", &mu_0_30_nc_vPT, &b_mu_0_30_nc_vPT);
    fChain->SetBranchAddress("mu_0.30_nc_sPT", &mu_0_30_nc_sPT, &b_mu_0_30_nc_sPT);
-   fChain->SetBranchAddress("mu_0.40_cc_mult", &mu_0_40_cc_mult, &b_mu_0_40_cc_mult);
-   fChain->SetBranchAddress("mu_0.40_cc_PX", &mu_0_40_cc_PX, &b_mu_0_40_cc_PX);
-   fChain->SetBranchAddress("mu_0.40_cc_PY", &mu_0_40_cc_PY, &b_mu_0_40_cc_PY);
-   fChain->SetBranchAddress("mu_0.40_cc_PZ", &mu_0_40_cc_PZ, &b_mu_0_40_cc_PZ);
-   fChain->SetBranchAddress("mu_0.40_cc_vPT", &mu_0_40_cc_vPT, &b_mu_0_40_cc_vPT);
-   fChain->SetBranchAddress("mu_0.40_cc_sPT", &mu_0_40_cc_sPT, &b_mu_0_40_cc_sPT);
-   fChain->SetBranchAddress("mu_0.40_nc_mult", &mu_0_40_nc_mult, &b_mu_0_40_nc_mult);
-   fChain->SetBranchAddress("mu_0.40_nc_PX", &mu_0_40_nc_PX, &b_mu_0_40_nc_PX);
-   fChain->SetBranchAddress("mu_0.40_nc_PY", &mu_0_40_nc_PY, &b_mu_0_40_nc_PY);
-   fChain->SetBranchAddress("mu_0.40_nc_PZ", &mu_0_40_nc_PZ, &b_mu_0_40_nc_PZ);
-   fChain->SetBranchAddress("mu_0.40_nc_vPT", &mu_0_40_nc_vPT, &b_mu_0_40_nc_vPT);
-   fChain->SetBranchAddress("mu_0.40_nc_sPT", &mu_0_40_nc_sPT, &b_mu_0_40_nc_sPT);
-   fChain->SetBranchAddress("mu_0.50_cc_mult", &mu_0_50_cc_mult, &b_mu_0_50_cc_mult);
-   fChain->SetBranchAddress("mu_0.50_cc_PX", &mu_0_50_cc_PX, &b_mu_0_50_cc_PX);
-   fChain->SetBranchAddress("mu_0.50_cc_PY", &mu_0_50_cc_PY, &b_mu_0_50_cc_PY);
-   fChain->SetBranchAddress("mu_0.50_cc_PZ", &mu_0_50_cc_PZ, &b_mu_0_50_cc_PZ);
-   fChain->SetBranchAddress("mu_0.50_cc_vPT", &mu_0_50_cc_vPT, &b_mu_0_50_cc_vPT);
-   fChain->SetBranchAddress("mu_0.50_cc_sPT", &mu_0_50_cc_sPT, &b_mu_0_50_cc_sPT);
-   fChain->SetBranchAddress("mu_0.50_nc_mult", &mu_0_50_nc_mult, &b_mu_0_50_nc_mult);
-   fChain->SetBranchAddress("mu_0.50_nc_PX", &mu_0_50_nc_PX, &b_mu_0_50_nc_PX);
-   fChain->SetBranchAddress("mu_0.50_nc_PY", &mu_0_50_nc_PY, &b_mu_0_50_nc_PY);
-   fChain->SetBranchAddress("mu_0.50_nc_PZ", &mu_0_50_nc_PZ, &b_mu_0_50_nc_PZ);
-   fChain->SetBranchAddress("mu_0.50_nc_vPT", &mu_0_50_nc_vPT, &b_mu_0_50_nc_vPT);
-   fChain->SetBranchAddress("mu_0.50_nc_sPT", &mu_0_50_nc_sPT, &b_mu_0_50_nc_sPT);
    fChain->SetBranchAddress("mu_MINIP", &mu_MINIP, &b_mu_MINIP);
    fChain->SetBranchAddress("mu_MINIPCHI2", &mu_MINIPCHI2, &b_mu_MINIPCHI2);
    fChain->SetBranchAddress("mu_MINIPNEXTBEST", &mu_MINIPNEXTBEST, &b_mu_MINIPNEXTBEST);

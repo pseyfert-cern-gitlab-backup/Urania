@@ -1,0 +1,100 @@
+*
+* How to use the code
+*
+> tar -xvf prodBDT_code.tar.gz
+> cd prodBDT_code/
+> root -l
+root [0] .L make_redprod_EOS.cc+ 
+root [1] make_redprod_EOS() 
+
+*
+* Brief description of the code  
+*
+The master file is make_redprod_EOS.cc. 
+In make_redprod_EOS() uncomment the set of root files you want to process. For each set <xxx> (<xxx>=mchipt, mclopt, mcsig, stripping21, ...) a file <xxx>_list.txt with the list of root files in EOS must be present in the same directory where the job is launched. For example the file mchipt_list.txt contains:
+ bbbar2MuMuX_highpt_MC12_MagUp.root
+ bbbar2MuMuX_highpt_MC12_MagDown.root
+which are the 'high-pt' MC bbbar->mumuX root files in the EOS directory /eos/lhcb/wg/RD/BsMuMu/ntuple_reproduction/mc/bbbar2MuMuX/
+The files <xxx>_list.txt for <xxx>=mchipt, mclopt, mcsig are already available, the others must be created. For instance, the content of stripping21_list.txt can be obtained with the following command on a lxplus machine:
+> eos ls /eos/lhcb/wg/RD/BsMuMu/ntuple_reproduction/data/stripping21 |grep Dimuon  
+
+make_redprod_EOS() calls reduceProd(TString opt). reduceProd(...) loop over the files in <xxx>_list.txt and for each file:
+a) Download it locally from EOS
+b) Make a reduced file with a loose selection applied
+   //Create reduced file (preselection)
+   CreateReducedFile(filename,opt);
+c) Add the isolation variables
+   //Add the isolations
+    AddIsoBDT(filename,"600_0.5_4_30_0.75_0_8_BDT.weights.xml","","set8_lt","",3,opt,"jpsiveto");
+    AddIsoBDT(filename,"600_0.5_4_30_0.75_3_1_BDT.weights.xml","","set1_velnb","noback",1,opt,"");
+  [The first line adds the long track isoBDT and also the variables for the J/psi veto. The second line adds the velo track isoBDT]
+d) Add a number of other variables. Some of them are used in the global BDT
+    //Add other BDT input vars and remove the track and primary vertex blocks (EVB,VEL,US,PV*)
+    AddBDTVars(filename);
+  [In this step the blocks of variables EVB, VEL, US, IsoST, PV* are removed]
+e) Add the global BDT
+    //Add the global BDT
+    AddBDT(filename,"signalMC_forBDTflattening_BDT0.root","1000_1.00_3_30_0.50_c5_BDT.weights.xml","BDT0");
+    AddBDT(filename,"signalMC_forBDTflattening_BDT1.root","1000_1.00_3_30_0.50_c22_BDT.weights.xml","BDT1");
+  [BDT0 is the 2013 BDT, BDT1 is the new BDT. The variables BDT0flat and BDT1flat are added as well, see also the Notes below]
+f) Blind the B_MM mass region of B2MuMu/DecayTree (if <xxx> is not MC)
+    //Blind the mass region if data
+    if (opt.Contains("stripping")) Blind(filename);
+
+The functions CreateReducedFile(...), AddIsoBDT(...), AddBDTVars(...), AddBDT(...) and Blind(...) are defined in make_redprod_EOS(). Except for CreateReducedFile(...), they call code defined in addIso.h/C, addBDTvars.cc, addBDT.cc and BlindNtuple.cc, respectively.
+
+At each step the intermediate input .root file is saved with a suffix. For example, the file bbbar2MuMuX_highpt_MC12_MagUp.root in mchipt_list.txt is processed giving as output:
+bbbar2MuMuX_highpt_MC12_MagUp.root_preaddiso
+bbbar2MuMuX_highpt_MC12_MagUp.root_preaddbdtvars
+bbbar2MuMuX_highpt_MC12_MagUp.root_preaddbdt
+bbbar2MuMuX_highpt_MC12_MagUp.root
+where the last one is the file to use in the analysis. The intermediate files can in principle be deleted, unless one wants to keep them for some reason. For example, one could decide to keep *_preaddbdt so that, if a new global BDT must be added in the future, one can skip the first, most time-consuming steps.
+
+*
+* Notes
+*
+-) When make_redprod_EOS.cc is launched in batch mode with something like:
+>root -b -q make_redprod_EOS.cc>&logfile.txt&
+root often crahses at the very end, for a reason currently unknown. However, it crashes after all root files have been processed and saved therefore the output is not affected.
+
+-) The directory ./weights contains:
+ a) 1000_1.00_3_30_0.50_c22_BDT.weights.xml
+ b) 1000_1.00_3_30_0.50_c5_BDT.weights.xml
+ c) 600_0.5_4_30_0.75_0_8_BDT.weights.xml
+ d) 600_0.5_4_30_0.75_3_1_BDT.weights.xml
+ e) signalMC_forBDTflattening_BDT0.root
+ f) signalMC_forBDTflattening_BDT1.root
+ g) 1000_1.00_3_30_0.50_BDTtrain_c22.root
+ h) 1000_1.00_3_30_0.50_BDTtrain_c5.root
+
+ a) is the weight file of the new global BDT
+ b) is the weight file of the global BDT used in 2013
+ c) is the weight file of the isoBDT (long track)
+ d) is the weight file of the isoBDT (velo track)
+ e) contains a Tree with the global BDT used in 2013 of the Bs->mumu signalMC events in
+  MC12_Bs2MuMu_MagDown_1.root
+  MC12_Bs2MuMu_MagUp_1.root
+  (see mcsig_list.txt) passing the selection:
+          B_MM>4900 && B_MM<6000 &&
+          B_BDTS>0.05 &&
+          B_PT>500 &&
+          B_TAU*1000<13.248 &&
+          muplus_P<5e05 && muminus_P<5e05 &&
+          muplus_PT<4e04 && muminus_PT<4e04 &&
+          muplus_isMuon==1 && muminus_isMuon==1 &&
+          muplus_TRACK_GhostProb<0.3 && muminus_TRACK_GhostProb<0.3 &&
+	  muplus_ProbNNmu*(1-muplus_ProbNNk)*(1-muplus_ProbNNp)>0.4 &&
+	  muminus_ProbNNmu*(1-muminus_ProbNNk)*(1-muminus_ProbNNp)>0.4 &&
+          B_L0Global_Dec==1 && B_Hlt1Phys_Dec==1 && B_Hlt2Phys_Dec==1 &&
+  This tree is used by AddBDT(...) to produce the flat version of BDT0. Therefore, by construction the BDT0flat
+  distribution of the Bs->mumu signal events of the above .root files passing the above selection must be 
+  almost exactly flat (i.e., no stat fluctuations). On the other hand, the distributions of the files:
+  MC12_Bs2MuMu_MagDown_2.root
+  MC12_Bs2MuMu_MagUp_2.root
+  MC12_Bs2MuMu_MagDown_3.root
+  MC12_Bs2MuMu_MagUp_3.root
+  (see mcsig_list.txt) passing the above selection must be flat within the stat fluctuations.
+ f) is defined as e), but with the new global BDT instead of the 2013 global BDT.
+ g) and h) are old versions of e) and g)
+ 
+
