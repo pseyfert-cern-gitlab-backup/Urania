@@ -3,6 +3,11 @@ Package             : Urania
 Package Coordinator : Diego Martinez Santos, Carlos Vazquez Sierra
 Purpose             : LHCb physics repository
 
+! 2017-11-08 - Carlos Vazquez Sierra
+ - Prepare version v8r0 based on LCG 91.
+
+!============================== v7r1 (not released) 03-10-2017 ============================
+
 ! 2017-11-07 - Carlos Vazquez Sierra
  - Add new package TrackCalib v1r0.
 

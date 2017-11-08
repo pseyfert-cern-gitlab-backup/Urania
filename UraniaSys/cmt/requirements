@@ -3,7 +3,7 @@
 # Maintainer : Diego Martinez Santos, Carlos Vazquez Sierra
 #============================================================================
 package           UraniaSys
-version           v7r1
+version           v8r0
 #============================================================================
 # Structure, i.e. directories to process. 
 #============================================================================

@@ -8,6 +8,7 @@ gaudi_depends_on_subdirs(PhysFit/RooPhysFitter)
 find_package(Boost COMPONENTS program_options)
 find_package(ROOT COMPONENTS Hist TreePlayer Graf Graf3d Gpad Matrix MathCore
                              MathMore RooFitCore RooFit RooStats)
+find_package(TBB)
 
 if(NOT heptools_version STRLESS 68)
   # FIXME: for some reason, starting from LCG 68, libMathMore.so requires libgsl.so
@@ -22,7 +23,7 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS})
                        src/CheckFitResults.cpp
                        src/TestCheckFitResults.cpp
                        INCLUDE_DIRS Boost ROOT
-                       LINK_LIBRARIES Boost ROOT RooPhysFitterLib)
+                       LINK_LIBRARIES Boost ROOT RooPhysFitterLib TBB)
 endif()
 
 gaudi_add_executable(DStFit
@@ -31,7 +32,7 @@ gaudi_add_executable(DStFit
                      src/CheckFitResults.cpp
                      src_S21/DStFit.cpp
                      INCLUDE_DIRS Boost ROOT
-                     LINK_LIBRARIES Boost ROOT RooPhysFitterLib)
+                     LINK_LIBRARIES Boost ROOT RooPhysFitterLib TBB)
 
 gaudi_add_executable(Lam0Fit
                      src/GetData.cpp
@@ -39,7 +40,7 @@ gaudi_add_executable(Lam0Fit
                      src/CheckFitResults.cpp
                      src_S21/Lam0Fit.cpp
                      INCLUDE_DIRS Boost ROOT
-                     LINK_LIBRARIES Boost ROOT RooPhysFitterLib)
+                     LINK_LIBRARIES Boost ROOT RooPhysFitterLib TBB)
 
 gaudi_add_executable(IncLcFit
                      src/GetData.cpp
@@ -47,7 +48,7 @@ gaudi_add_executable(IncLcFit
                      src/CheckFitResults.cpp
                      src_S21/IncLcFit.cpp
                      INCLUDE_DIRS Boost ROOT
-                     LINK_LIBRARIES Boost ROOT RooPhysFitterLib)
+                     LINK_LIBRARIES Boost ROOT RooPhysFitterLib TBB)
 
 gaudi_add_executable(LcfBFit
                      src/GetData.cpp
@@ -55,22 +56,22 @@ gaudi_add_executable(LcfBFit
                      src/CheckFitResults.cpp
                      src_S21/LcfBFit.cpp
                      INCLUDE_DIRS Boost ROOT
-                     LINK_LIBRARIES Boost ROOT RooPhysFitterLib)
+                     LINK_LIBRARIES Boost ROOT RooPhysFitterLib TBB)
 
 gaudi_add_executable(MergeCharges
                      src_S21/MergeCharges.cpp
                      INCLUDE_DIRS Boost ROOT
-                     LINK_LIBRARIES Boost ROOT RooPhysFitterLib)
+                     LINK_LIBRARIES Boost ROOT RooPhysFitterLib TBB)
 
 gaudi_add_executable(MergeProtonLines
                      src_S21/MergeProtonLines.cpp
                      INCLUDE_DIRS Boost ROOT
-                     LINK_LIBRARIES Boost ROOT RooPhysFitterLib)
+                     LINK_LIBRARIES Boost ROOT RooPhysFitterLib TBB)
 
 gaudi_add_executable(MergeProtIncLc
                      src_S21/MergeProtIncLc.cpp
                      INCLUDE_DIRS Boost ROOT
-                     LINK_LIBRARIES Boost ROOT RooPhysFitterLib)
+                     LINK_LIBRARIES Boost ROOT RooPhysFitterLib TBB)
 
 gaudi_add_executable(JpsiFit
                      src/GetData.cpp
@@ -78,7 +79,7 @@ gaudi_add_executable(JpsiFit
                      src/CheckFitResults.cpp
                      src_S21/JpsiFit.cpp
                      INCLUDE_DIRS Boost ROOT
-                     LINK_LIBRARIES Boost ROOT RooPhysFitterLib)
+                     LINK_LIBRARIES Boost ROOT RooPhysFitterLib TBB)
 
 gaudi_add_executable(JpsieeFit
                      src/GetData.cpp
@@ -86,7 +87,7 @@ gaudi_add_executable(JpsieeFit
                      src/CheckFitResults.cpp
                      src_S21/JpsieeFit.cpp
                      INCLUDE_DIRS Boost ROOT
-                     LINK_LIBRARIES Boost ROOT RooPhysFitterLib)
+                     LINK_LIBRARIES Boost ROOT RooPhysFitterLib TBB)
 
 #gaudi_add_executable(DStFit_MuonUnBiased
 #                     src/GetData.cpp

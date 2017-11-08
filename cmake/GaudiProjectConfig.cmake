@@ -5,14 +5,10 @@
 #
 # Commit Id: $Format:%H$
 
-cmake_minimum_required(VERSION 2.8.5)
+cmake_minimum_required(VERSION 2.8.12)
 
-# FIXME: use of LOCATION property is deprecated and should be replaced with the
-#        generator expression $<TARGET_FILE>, but the way we use it requires
-#        CMake >= 2.8.12, so we must keep the old behavior until we bump the
-#        cmake_minimum_required version. (policy added in CMake 3.0)
 if(NOT CMAKE_VERSION VERSION_LESS 3.0) # i.e CMAKE_VERSION >= 3.0
-  cmake_policy(SET CMP0026 OLD)
+  cmake_policy(SET CMP0026 NEW)
 endif()
 
 # Preset the CMAKE_MODULE_PATH from the environment, if not already defined.
@@ -39,6 +35,8 @@ set(CMAKE_INCLUDE_DIRECTORIES_BEFORE ON)
 #set(CMAKE_SKIP_BUILD_RPATH TRUE)
 set(CMAKE_MACOSX_RPATH OFF)
 
+option(CMAKE_EXPORT_COMPILE_COMMANDS "Generate compile_commands.json file" ON)
+
 # Regular expression used to parse version strings in LHCb and ATLAS.
 # It handles versions strings like "vXrY[pZ[aN]]" and "1.2.3.4"
 set(GAUDI_VERSION_REGEX "v?([0-9]+)[r.]([0-9]+)([p.]([0-9]+)(([a-z.])([0-9]+))?)?")
@@ -49,7 +47,13 @@ endif()
 
 find_program(ccache_cmd NAMES ccache ccache-swig)
 find_program(distcc_cmd distcc)
-mark_as_advanced(ccache_cmd distcc_cmd)
+set(_clang_format_names)
+foreach(_clang_version 5.0 4.0 3.9 3.8 3.7)
+  list(APPEND _clang_format_names lcg-clang-format-${_clang_version} clang-format-${_clang_version})
+endforeach()
+list(APPEND _clang_format_names clang-format)
+find_program(clang_format_cmd NAMES ${_clang_format_names})
+mark_as_advanced(ccache_cmd distcc_cmd clang_format_cmd)
 
 if(ccache_cmd)
   option(CMAKE_USE_CCACHE "Use ccache to speed up compilation." OFF)
@@ -69,6 +73,14 @@ if(distcc_cmd)
       set(GAUDI_RULE_LAUNCH_COMPILE "${GAUDI_RULE_LAUNCH_COMPILE} ${distcc_cmd}")
       message(STATUS "Using distcc for building")
     endif()
+  endif()
+endif()
+
+if(clang_format_cmd AND NOT GAUDI_CLANG_STYLE)
+  if(EXISTS ${CMAKE_SOURCE_DIR}/.clang-format)
+    set(GAUDI_CLANG_STYLE file CACHE STRING "style to use for clang-format (apply-formatting command and target)")
+  else()
+    set(GAUDI_CLANG_STYLE google CACHE STRING "style to use for clang-format (apply-formatting command and target)")
   endif()
 endif()
 
@@ -302,13 +314,20 @@ macro(gaudi_project project version)
 
   parse_binary_tag()
   # set LCG platform ids
-  set(LCG_SYSTEM ${BINARY_TAG_ARCH}-${BINARY_TAG_OS}-${BINARY_TAG_COMP}
-      CACHE STRING "Platform id of the target system or a compatible one.")
-  set(LCG_platform ${LCG_SYSTEM}-${BINARY_TAG_TYPE}
-      CACHE STRING "Platform ID for the AA project binaries.")
-  set(LCG_system   ${LCG_SYSTEM}-opt
-      CACHE STRING "Platform ID for the external libraries.")
-  mark_as_advanced(LCG_SYSTEM LCG_platform LCG_system)
+  if(LCG_TOOLCHAIN_INFO)
+    string(REGEX MATCH ".*/LCG_externals_(.+)\\.txt" out "${LCG_TOOLCHAIN_INFO}")
+    set(LCG_platform ${CMAKE_MATCH_1})
+    # set LCG_ARCH, LCG_OS and LCG_COMP
+    parse_binary_tag(LCG "${LCG_platform}")
+    set(LCG_SYSTEM ${LCG_ARCH}-${LCG_OS}-${LCG_COMP})
+  else()
+    # no LCG toolchain
+    set(LCG_SYSTEM ${BINARY_TAG_ARCH}-${BINARY_TAG_OS}-${BINARY_TAG_COMP})
+    set(LCG_platform ${LCG_SYSTEM}-${BINARY_TAG_TYPE})
+  endif()
+  set(LCG_system   ${LCG_SYSTEM}-opt)
+  set(LCG_HOST_ARCH "${HOST_BINARY_TAG_ARCH}")
+  string(REPLACE "." "" LCG_COMPVERS "${BINARY_TAG_COMP_VERSION}")
 
   # Locate and import used projects.
   if(PROJECT_USE)
@@ -376,6 +395,8 @@ macro(gaudi_project project version)
 
   find_program(gaudirun_cmd gaudirun.py HINTS ${binary_paths})
   set(gaudirun_cmd ${PYTHON_EXECUTABLE} ${gaudirun_cmd})
+
+  find_program(autopep8_cmd autopep8 HINTS ${binary_paths})
 
   # genconf is special because it must be known before we actually declare the
   # target in GaudiKernel/src/Util (because we need to be dynamic and agnostic).
@@ -744,6 +765,41 @@ if os.path.exists('${CMAKE_SOURCE_DIR}/${package}/python/${pypack}/__init__.py')
                                   ${project} ${version} ${_manifest_args})
   install(FILES ${CMAKE_CONFIG_OUTPUT_DIRECTORY}/manifest.xml DESTINATION .)
 
+  #--- Settings to allow re-formatting of files (C++ and Python)
+  add_custom_target(apply-formatting)
+  file(WRITE ${CMAKE_BINARY_DIR}/apply-formatting "#!/bin/sh
+for f in \"$@\" ; do
+  case \"$f\" in
+    (*.h|*.cpp|*.icpp)\n")
+  if(clang_format_cmd)
+    file(GLOB_RECURSE _all_sources RELATIVE ${CMAKE_SOURCE_DIR} *.h *.cpp *.icpp)
+    add_custom_target(apply-formatting-c++
+      COMMAND ${clang_format_cmd}
+                  -style=${GAUDI_CLANG_STYLE}
+                  -i ${_all_sources}
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      COMMENT "Applying coding conventions to C++ sources"
+    )
+    add_dependencies(apply-formatting apply-formatting-c++)
+    file(APPEND ${CMAKE_BINARY_DIR}/apply-formatting "      ${clang_format_cmd} -style=${GAUDI_CLANG_STYLE} -i \"$f\" ;;\n")
+  else()
+    file(APPEND ${CMAKE_BINARY_DIR}/apply-formatting "      echo 'formatting of c++ code not supported (install clang-format first)' ; exit 1 ;;\n")
+  endif()
+
+  file(APPEND ${CMAKE_BINARY_DIR}/apply-formatting "    (*.py)\n")
+  if(autopep8_cmd)
+    add_custom_target(apply-formatting-python
+      COMMAND ${autopep8_cmd}
+                  --recursive --in-place --exclude ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}
+      COMMENT "Applying coding conventions to Python sources"
+    )
+    add_dependencies(apply-formatting apply-formatting-python)
+    file(APPEND ${CMAKE_BINARY_DIR}/apply-formatting "      ${autopep8_cmd} --in-place \"$f\" ;;\n")
+  else()
+    file(APPEND ${CMAKE_BINARY_DIR}/apply-formatting "      echo 'formatting of Python code not supported (install autopep8 first)' ; exit 1 ;;\n")
+  endif()
+  file(APPEND ${CMAKE_BINARY_DIR}/apply-formatting "    (*) echo \"unknown file type $f\" ;;\n  esac\ndone\n")
+  execute_process(COMMAND chmod a+x ${CMAKE_BINARY_DIR}/apply-formatting)
 endmacro()
 
 #-------------------------------------------------------------------------------
@@ -889,12 +945,22 @@ function(_gaudi_highest_version output)
     #message(STATUS "_gaudi_highest_version: initial -> ${result}")
     string(REGEX MATCHALL "[0-9]+" result_digits ${result})
     list(LENGTH result_digits result_length)
+    # handle special case of version without digits (e.g. 'head')
+    if(result_length EQUAL 0)
+      set(result v0r0)
+      set(result_length 2)
+      set(result_digits 0 0)
+    endif()
 
     foreach(candidate ${ARGN})
       # convert the version to a list of numbers
       #message(STATUS "_gaudi_highest_version: candidate -> ${candidate}")
       string(REGEX MATCHALL "[0-9]+" candidate_digits ${candidate})
       list(LENGTH candidate_digits candidate_length)
+      # handle special case of version without digits (e.g. 'head')
+      if(candidate_length EQUAL 0)
+        continue()
+      endif()
 
       # get the upper limit of the loop over the elements
       # (note: in case of equality after the loop, the one with more elements
@@ -982,7 +1048,7 @@ function(gaudi_find_data_package name)
 
     set(candidate_version)
     set(candidate_path)
-    foreach(prefix ${projects_search_path} ${CMAKE_PREFIX_PATH} ${env_prefix_path})
+    foreach(prefix ${CMAKE_PREFIX_PATH} ${env_prefix_path} ${projects_search_path})
       foreach(suffix "" ${ARGN})
         #message(STATUS "gaudi_find_data_package: check ${prefix}/${suffix}/${name}")
         if(IS_DIRECTORY ${prefix}/${suffix}/${name})
@@ -1269,6 +1335,7 @@ endmacro()
 macro(_gaudi_ignored_listfile var filename)
   set(${var} FALSE)
   foreach(p ${ARGN})
+    string(REPLACE "+" "\\+" p "${p}")
     if("${filename}" MATCHES "${p}/.*CMakeLists.txt")
       #message(STATUS "ignoring ${filename}")
       set(${var} TRUE)
@@ -2338,6 +2405,9 @@ function(gaudi_add_test name)
                        --common-tmpdir ${CMAKE_CURRENT_BINARY_DIR}/tests_tmp
                        --workdir ${qmtest_root_dir}
                        ${CMAKE_CURRENT_SOURCE_DIR}/tests/qmtest/${qmt_file})
+      if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/tests_tmp)
+        file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests_tmp)
+      endif()
       gaudi_add_test(${qmt_name}
                      COMMAND ${test_cmd}
                      WORKING_DIRECTORY ${qmtest_root_dir}
@@ -2453,7 +2523,6 @@ function(gaudi_install_headers)
               PATTERN "*.icpp"
               PATTERN "*.hpp"
               PATTERN "*.hxx"
-              PATTERN "*.hh"
               PATTERN "*.icc"
               PATTERN "*.inl"
               PATTERN "CVS" EXCLUDE
@@ -2938,8 +3007,10 @@ function(_gaudi_find_standard_lib libname var)
   execute_process(COMMAND ${_cmd} OUTPUT_VARIABLE cpplib)
   get_filename_component(cpplib ${cpplib} REALPATH)
   get_filename_component(cpplib ${cpplib} PATH)
-  # Special hack for the way gcc is installed onf AFS at CERN.
-  string(REPLACE "contrib/gcc" "external/gcc" cpplib ${cpplib})
+  if(cpplib MATCHES "^/afs")
+    # Special hack for the way gcc is installed on AFS at CERN.
+    string(REPLACE "contrib/gcc" "external/gcc" cpplib ${cpplib})
+  endif()
   #message(STATUS "${libname} lib dir -> ${cpplib}")
   set(${var} ${cpplib} PARENT_SCOPE)
 endfunction()
@@ -3049,7 +3120,7 @@ macro(gaudi_external_project_environment)
   set(old_library_path ${library_path})
   set(library_path)
   foreach(d ${old_library_path})
-    if(NOT d MATCHES "^(/usr|/usr/local)?/lib(32/64)?")
+    if(NOT d MATCHES "^(/usr|/usr/local)?(/X11|/X11R.)?/lib(32|64)?")
       set(library_path ${library_path} ${d})
     endif()
   endforeach()
@@ -3117,7 +3188,7 @@ macro(gaudi_generate_exports)
       #message(STATUS "Generating ${pkg_exp_file}")
       set(pkg_exp_file ${CMAKE_CONFIG_OUTPUT_DIRECTORY}/${pkg_exp_file})
 
-      file(WRITE ${pkg_exp_file}
+      set(file_content
 "# Generated by GaudiProjectConfig.cmake (with CMake ${CMAKE_VERSION})
 
 if(\"\${CMAKE_MAJOR_VERSION}.\${CMAKE_MINOR_VERSION}\" LESS 2.5)
@@ -3133,8 +3204,8 @@ get_filename_component(_IMPORT_PREFIX \"\${_IMPORT_PREFIX}\" PATH)
 ")
 
       foreach(library ${exported_libs})
-        file(APPEND ${pkg_exp_file} "add_library(${library} SHARED IMPORTED)\n")
-        file(APPEND ${pkg_exp_file} "set_target_properties(${library} PROPERTIES\n")
+        set(file_content "${file_content}add_library(${library} SHARED IMPORTED)
+set_target_properties(${library} PROPERTIES\n")
 
         foreach(pn REQUIRED_INCLUDE_DIRS REQUIRED_LIBRARIES)
           get_property(prop TARGET ${library} PROPERTY ${pn})
@@ -3143,44 +3214,35 @@ get_filename_component(_IMPORT_PREFIX \"\${_IMPORT_PREFIX}\" PATH)
             #       to correctly relocate the include path to the current project
             #       if there is a local copy of the subdir
             _make_relocatable(prop VARS ${_relocation_bases})
-            file(APPEND ${pkg_exp_file} "  ${pn} \"${prop}\"\n")
+            set(file_content "${file_content}  ${pn} \"${prop}\"\n")
           endif()
         endforeach()
 
-        get_property(prop TARGET ${library} PROPERTY LOCATION)
-        get_filename_component(prop ${prop} NAME)
-        file(APPEND ${pkg_exp_file} "  IMPORTED_SONAME \"${prop}\"\n")
-        file(APPEND ${pkg_exp_file} "  IMPORTED_LOCATION \"\${_IMPORT_PREFIX}/lib/${prop}\"\n")
-
-        file(APPEND ${pkg_exp_file} "  )\n")
+        set(file_content "${file_content}  IMPORTED_SONAME \"\$<TARGET_FILE_NAME:${library}>\"
+  IMPORTED_LOCATION \"\${_IMPORT_PREFIX}/lib/\$<TARGET_FILE_NAME:${library}>\"\n  )\n")
       endforeach()
 
       foreach(executable ${exported_execs})
-
-        file(APPEND ${pkg_exp_file} "add_executable(${executable} IMPORTED)\n")
-        file(APPEND ${pkg_exp_file} "set_target_properties(${executable} PROPERTIES\n")
-
-        get_property(prop TARGET ${executable} PROPERTY LOCATION)
-        get_filename_component(prop ${prop} NAME)
-        file(APPEND ${pkg_exp_file} "  IMPORTED_LOCATION \"\${_IMPORT_PREFIX}/bin/${prop}\"\n")
-
-        file(APPEND ${pkg_exp_file} "  )\n")
+        set(file_content "${file_content}add_executable(${executable} IMPORTED)\n")
+        set(file_content "${file_content}set_target_properties(${executable} PROPERTIES\n")
+        set(file_content "${file_content}  IMPORTED_LOCATION \"\${_IMPORT_PREFIX}/bin/\$<TARGET_FILE_NAME:${executable}>\"\n  )\n")
       endforeach()
 
       foreach(module ${exported_mods})
-        file(APPEND ${pkg_exp_file} "add_library(${module} MODULE IMPORTED)\n")
+        set(file_content "${file_content}add_library(${module} MODULE IMPORTED)\n")
       endforeach()
 
       if(${package}_DEPENDENCIES)
-        file(APPEND ${pkg_exp_file} "\nset(${package}_DEPENDENCIES ${${package}_DEPENDENCIES})\n")
+        set(file_content "${file_content}\nset(${package}_DEPENDENCIES ${${package}_DEPENDENCIES})\n")
       endif()
 
       if(subdir_version)
-        file(APPEND ${pkg_exp_file} "\nset(${package}_VERSION ${subdir_version})\n")
+        set(file_content "${file_content}\nset(${package}_VERSION ${subdir_version})\n")
       endif()
-      file(APPEND ${pkg_exp_file} "\n# Commands beyond this point should not need to know the version.
+      set(file_content "${file_content}\n# Commands beyond this point should not need to know the version.
 set(CMAKE_IMPORT_FILE_VERSION)
 cmake_policy(POP)\n")
+      file(GENERATE OUTPUT ${pkg_exp_file} CONTENT "${file_content}")
       install(FILES ${pkg_exp_file} DESTINATION cmake)
     endif()
   endforeach()
