@@ -1,0 +1,12 @@
+nBinsMass = 20
+nBinsQsq = 11
+nBinsEmu = 10
+nBinsMMsq = 20
+doPhiPi = 0
+includeDs1p = 0
+applyIsoCut = 1
+applyBMCut = 0
+applyTauCut = 0
+useTauPdfs = 0
+useQsquare = 1
+useEmu = 0

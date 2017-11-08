@@ -1,0 +1,8 @@
+nBinsMass = 125
+nBinsQsq = 150
+nBinsEmu = 100
+nBinsMMsq = 100
+doPhiPi = 0
+includeDs1p = 0
+applyIsoCut = 0
+applyTauCut = 1

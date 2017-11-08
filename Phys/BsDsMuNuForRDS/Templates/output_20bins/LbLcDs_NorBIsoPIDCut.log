@@ -1,0 +1,51 @@
+
+[1mRooFit v3.60 -- Developed by Wouter Verkerke and David Kirkby[0m 
+                Copyright (C) 2000-2013 NIKHEF, University of California & Stanford University
+                All rights reserved, please read http://roofit.sourceforge.net/license.txt
+
+ 8 ./Templater
+ 8 -in
+ 8 -conf
+ 8 -flag
+ 8 -mc
+ ::: Setting Fit Parameters from config/config_NorBin_IsoPIDCut_Q2.txt file ::: 
+Read value :: 0 :: for param :: applyTauCut
+ ::: Setting Fit Parameters from config/config_NorBin_IsoPIDCut_Q2.txt file ::: 
+Read value :: 0 :: for param :: applyBMCut
+ ::: Setting Fit Parameters from config/config_NorBin_IsoPIDCut_Q2.txt file ::: 
+Read value :: 1 :: for param :: applyIsoCut
+ ::: Setting Fit Parameters from config/config_NorBin_IsoPIDCut_Q2.txt file ::: 
+Read value :: 125 :: for param :: nBinsMass
+ ::: Setting Fit Parameters from config/config_NorBin_IsoPIDCut_Q2.txt file ::: 
+Read value :: 20 :: for param :: nBinsQsq
+ ::: Setting Fit Parameters from config/config_NorBin_IsoPIDCut_Q2.txt file ::: 
+Read value :: 20 :: for param :: nBinsEmu
+ ::: Setting Fit Parameters from config/config_NorBin_IsoPIDCut_Q2.txt file ::: 
+Read value :: 20 :: for param :: nBinsMMsq
+ ::: Setting Fit Parameters from config/config_NorBin_IsoPIDCut_Q2.txt file ::: 
+Read value :: 0 :: for param :: doPhiPi
+Setting output 
+ Entering Do Template 
+-------------------------
+Set LHCb Style - Feb 2012
+-------------------------
+Going to write output file :: output/RootOutp_MCAll_NorBIsoPIDCutLbLcDs.root
+ /eos/lhcb/user/r/rvazquez/RDS/WithDsVetoes/TupleRDS_LbLcDs_iso.root
+TFile**		/eos/lhcb/user/r/rvazquez/RDS/WithDsVetoes/TupleRDS_LbLcDs_iso.root	
+ TFile*		/eos/lhcb/user/r/rvazquez/RDS/WithDsVetoes/TupleRDS_LbLcDs_iso.root	
+  KEY: TDirectoryFile	MB2DsMuNuTuple;1	MB2DsMuNuTuple
+  KEY: TDirectoryFile	B2DsMuNuTuple;1	B2DsMuNuTuple
+  KEY: TDirectoryFile	B2DsMuNuSSTuple;1	B2DsMuNuSSTuple
+73288
+--- ... Processing event: 0
+--- ... Processing event: 10000
+--- ... Processing event: 20000
+--- ... Processing event: 30000
+--- ... Processing event: 40000
+--- ... Processing event: 50000
+--- ... Processing event: 60000
+--- ... Processing event: 70000
+RooDataSet::dataset[m_{D_{s}#mu}] = 35215 entries
+RooDataSet::datasetQ[m_{D_{s}#mu},q^{2}] = 35215 entries
+RooDataSet::datasetE[m_{D_{s}#mu},E_{#mu}] = 35215 entries
+RooDataSet::datasetM[m_{D_{s}#mu},mm^2] = 35215 entries
