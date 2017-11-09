@@ -28,11 +28,9 @@ export queue="1nd"
 export mlimit="75000"
 #Nickname for the current configuration
 #Choose a meaningful name (e.g. SgnAndBkgMeanResSplineAcc2TaggersNoAsymm etc...)
-export nickname="GLMtest2Taggers"
+export nickname="GLM2Taggers"
 #Configuration file
 export config="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/Bd2DPiConfigForToysGeneration.py"
-#Temporary pathname to dump results
-export output="/afs/cern.ch/work/v/vibattis/public/B2DX/Bd2DPi/Toys/${nickname}/Generator/"
 #Pathname to dump outputfiles (eos recommendend)
 export eosoutput="/eos/lhcb/wg/b2oc/TD_DPi_3fb/Toys/${nickname}/Generator/"
 #Path where scripts are located
@@ -41,11 +39,8 @@ export pyscriptpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysF
 export runpath="/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/"
 
 #Clear directories
-rm -rf $output
-mkdir -p $output
-
-/afs/cern.ch/project/eos/installation/lhcb/bin/eos.select rm -r ${eosoutput}
-/afs/cern.ch/project/eos/installation/lhcb/bin/eos.select mkdir -p ${eosoutput}
+/usr/bin/eos rm -r ${eosoutput}
+/usr/bin/eos mkdir -p ${eosoutput}
 
 cd $pyscriptpath
 
@@ -65,9 +60,9 @@ while (( $stop <= $fullstop )); do
     echo "...submitting job ${job} with starting seed ${seed}"
 
     #Submit jobs
-    bsub -q $queue -M $mlimit -e ${output}ERROR -o ${output}OUTPUT -n 1,4 -R "span[hosts=-1]" -J ${jobname}_${seed} source ${bashscriptpath}toyFactory.sh $seed $stop $output $eosoutput $nickname $config $pyscriptpath $runpath
+    #bsub -q $queue -M $mlimit -e ${output}ERROR -o ${output}OUTPUT -n 1,4 -R "span[hosts=-1]" -J ${jobname}_${seed} source ${bashscriptpath}toyFactory.sh $seed $stop $eosoutput $nickname $config $pyscriptpath $runpath
    
-    #source ${bashscriptpath}toyFactory.sh $seed $stop $output $eosoutput $nickname $config $pyscriptpath $runpath
+    source ${bashscriptpath}toyFactory.sh $seed $stop $eosoutput $nickname $config $pyscriptpath $runpath
 
     #Sleep to avoid afs overload and buffer space consumption (not sure this is the best trick)
     if [[ "$(($job % 100))" -eq 0 ]]; then

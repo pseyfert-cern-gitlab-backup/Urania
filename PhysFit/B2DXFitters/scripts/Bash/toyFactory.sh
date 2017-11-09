@@ -6,26 +6,17 @@ ulimit -c 0
 #Get options
 export seed=$1
 export stop=$2
-export output=$3
-export eosoutput=$4
-export nickname=$5
-export config=$6
-export pyscriptpath=$7
-export runpath=$8
+export eosoutput=$3
+export nickname=$4
+export config=$5
+export pyscriptpath=$6
+export runpath=$7
 
 while (( $seed < $stop )); do
     
     cd $pyscriptpath
 
-    ${runpath}run python ${pyscriptpath}toyFactory.py --HFAG --configName $config --seed $seed --workfileOut GenToyWorkspace_${nickname}_${seed}.root --treefileOut GenToyTree_${nickname}_${seed}.root  --debug --outputdir $output >& ${output}log_${nickname}_${seed}.txt
-
-    xrdcp -f ${output}GenToyWorkspace_${nickname}_${seed}.root root://eoslhcb.cern.ch/${eosoutput}GenToyWorkspace_${nickname}_${seed}.root
-    rm -f ${output}GenToyWorkspace_${nickname}_${seed}.root
-
-    xrdcp -f ${output}GenToyTree_${nickname}_${seed}.root root://eoslhcb.cern.ch/${eosoutput}GenToyTree_${nickname}_${seed}.root
-    rm -f ${output}GenToyTree_${nickname}_${seed}.root
-
-    xrdcp -f ${output}log_${nickname}_${seed}.txt root://eoslhcb.cern.ch/${eosoutput}log_${nickname}_${seed}.txt
+    ${runpath}run python ${pyscriptpath}toyFactory.py --HFAG --configName $config --seed $seed --workfileOut GenToyWorkspace_${nickname}_${seed}.root --treefileOut GenToyTree_${nickname}_${seed}.root  --debug --outputdir $eosoutput #>& ${eosoutput}log_${nickname}_${seed}.txt
 
     seed=$(($seed + 1))
 
