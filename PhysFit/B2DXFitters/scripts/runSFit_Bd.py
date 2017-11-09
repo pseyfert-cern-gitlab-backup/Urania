@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#1;95;0c ---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 # @file runSFit_Bd.py
 #
 # @brief run time fit for CP observables (B->DX modes) using
@@ -1026,7 +1026,7 @@ def runSFit(debug, wsname,
         RooMsgService.instance().Print('v')
         RooMsgService.instance().deleteStream(1002)
 
-        nll = RooNLLVar("nll", "-log(sig)", totPDF, dataWA, RooFit.NumCPU(4), RooFit.Silence(True))
+        nll = RooNLLVar("nll", "-log(sig)", totPDF, dataWA, RooFit.NumCPU(8), RooFit.Silence(True))
 
         for par in myconfigfile["LikelihoodScan"]:
 
@@ -1034,8 +1034,12 @@ def runSFit(debug, wsname,
                 print "[INFO] Producing profile likelihood plot for " + par
 
             param = ws.obj(par)
-            pll = RooProfileLL("pll_" + par, "pll_" + par, nll, RooArgSet(param))
-            h = pll.createHistogram("h_" + par, param, RooFit.Binning(200))
+            paramset = WS(ws, RooArgSet(param, "paramset_"+str(par)) )
+            pll = WS(ws, RooProfileLL("pll_" + par, "pll_" + par, nll, paramset))
+            profile = pll.createProfile(paramset)
+            profile.SetName("profile_"+par)
+            profile = WS(ws, profile)
+            h = profile.createHistogram("h_" + par, param, RooFit.Binning(50))
             h.SetLineColor(kRed)
             h.SetLineWidth(2)
             h.SetTitle("Likelihood Function - " + par)
@@ -1043,8 +1047,9 @@ def runSFit(debug, wsname,
             like.cd()
             h.Draw()
             like.Update()
-            n = TString(outputdir + "likelihood_" + par + "_scan.pdf")
-            like.SaveAs(n.Data())
+            n = TString(outputdir + "likelihood_" + par + "_scan")
+            like.SaveAs(n.Data()+".pdf")
+            like.SaveAs(n.Data()+".C")
 
         exit(0)
 

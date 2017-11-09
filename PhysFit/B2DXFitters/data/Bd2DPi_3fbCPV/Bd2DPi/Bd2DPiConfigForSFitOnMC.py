@@ -25,9 +25,13 @@ def getconfig():
                                                      "Name": "BacCharge",
                                                      "InputName": "BacCharge"}
 
-    configdict["BasicVariables"]["TagDecOS"]      = {"Range": [-1.0, 1.0],
-                                                     "Name": "TagDecOS",
-                                                     "InputName": "TagDecOS"}
+    configdict["BasicVariables"]["TagDecTrue"]      = {"Range": [-1.0, 1.0],
+                                                       "Name": "TagDecTrue",
+                                                       "InputName": "TagDecTrue"}
+
+    #configdict["BasicVariables"]["TagDecOS"]      = {"Range": [-1.0, 1.0],
+    #                                                 "Name": "TagDecOS",
+    #                                                 "InputName": "TagDecOS"}
 
     #configdict["BasicVariables"]["TagDecSS"]      = {"Range": [-1.0, 1.0],
     #                                                 "Name": "TagDecSS",
@@ -36,9 +40,13 @@ def getconfig():
     # this name + "_idx" is used in the inputtree/dataset - so no flexibility in the beginning of the name as "TagDec" is used when checking for
     # tagging variables in general at the beginning
 
-    configdict["BasicVariables"]["MistagOS"]      = {"Range": [0.0, 0.5],  # 0.4619
-                                                     "Name": "MistagOS",
-                                                     "InputName": "MistagOS"}
+    #configdict["BasicVariables"]["MistagCheat"]      = {"Range": [0.0, 0.5],
+    #                                                    "Name": "MistagCheat",
+    #                                                    "InputName": "MistagCheat"}
+
+    #configdict["BasicVariables"]["MistagOS"]      = {"Range": [0.0, 0.5],  # 0.4619
+    #                                                 "Name": "MistagOS",
+    #                                                 "InputName": "MistagOS"}
 
     #configdict["BasicVariables"]["MistagSS"]      = {"Range": [0.0, 0.5],  # 0.492
     #                                                 "Name": "MistagSS",
@@ -95,6 +103,7 @@ def getconfig():
                                                     "Acceptance":  # From ANA note v2
                                                     {"Type": "Spline",
                                                      "Float": True,
+                                                     "Extrapolate": True,
                                                      "KnotPositions": [0.5, 1.0, 1.5, 2.0, 2.3, 2.6, 3.0, 4.0, 10.0],
                                                      "KnotCoefficients": [1.9440e-01, 3.3275e-01, 6.1444e-01, 8.6628e-01, 9.9600e-01, 1.0745e+00, 1.1083e+00,  1.1565e+00, 1.1946e+00]},
                                                     "Resolution":  # From ANA note v2
@@ -122,16 +131,31 @@ def getconfig():
 
     configdict["Taggers"] = {}
     configdict["Taggers"]["Signal"] = {}
-    configdict["Taggers"]["Signal"] = {"OS":  # From Bu, stat and syst combined
+    #configdict["Taggers"]["Signal"] = {"OS":  # From Bu, stat and syst combined
+    #                                   {"Calibration":
+    #                                    {"Type": "GLM",
+    #                                     "XML": ["/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/OS_Combination_Bu2D0Pi_MC_logitLink.xml"],
+    #                                     "tageff": [1.0],#[0.371, 0.01, 0.99],  # float in the fit
+    #                                     "tagasymm": [0.0]
+    #                                     },
+    #                                    "MistagPDF":
+    #                                    {"Type": "BuildTemplate"}
+    #                                    }}#,
+    configdict["Taggers"]["Signal"] = {"OS":  #Cheated tagger
                                        {"Calibration":
-                                        {"Type": "GLM",
-                                         "XML": ["/afs/cern.ch/user/v/vibattis/cmtuser/UraniaDev_v6r2p1/PhysFit/B2DXFitters/data/Bd2DPi_3fbCPV/Bd2DPi/OS_Combination_Bu2D0Pi_MC_logitLink.xml"],
-                                         "tageff": [1.0],#[0.371, 0.01, 0.99],  # float in the fit
-                                         "tagasymm": [0.0]
+                                        {"Type"     : "Linear",
+                                         "p0"       : [0.370029],
+                                         "p1"       : [1.0],
+                                         "deltap0"  : [0.0],
+                                         "deltap1"  : [0.0],
+                                         "avgeta"   : [0.370029],
+                                         "tageff"   : [1.0],
+                                         "tagasymm" : [0.0]
                                          },
                                         "MistagPDF":
                                         {"Type": "BuildTemplate"}
-                                        }}#,
+                                        }
+                                       }
                                        #"SS":  # From JpsiKst, stat and syst combined
                                        #{"Calibration":
                                        # {"Type": "GLM",

@@ -51,38 +51,6 @@ def getconfig() :
     configdict["BasicVariables"]["BacCharge"]     = { "Range"                  : [-1000.0, 1000.0  ],
                                                       "Name"                   : "BacCharge",
                                                       "InputName"              : "lab1_TRUEID"}
-
-    configdict["BasicVariables"]["TagDecOSComb"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                          "Name"                   : "TagDecOSComb",
-                                                          "InputName"              : "obsTagOS"}
-
-    configdict["BasicVariables"]["TagDecOSCharm"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                           "Name"                   : "TagDecOSCharm",
-                                                           "InputName"              : "obsTagOSCharm"}
-
-    configdict["BasicVariables"]["TagDecSSPionBDT"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                             "Name"                   : "TagDecSSPionBDT",
-                                                             "InputName"              : "obsTagSSPionBDT"}
-    
-    configdict["BasicVariables"]["TagDecSSProton"]      = { "Range"                  : [-1.0,    1.0     ],
-                                                            "Name"                   : "TagDecSSProton",
-                                                            "InputName"              : "obsTagSSProton"}
-
-    configdict["BasicVariables"]["MistagOSComb"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                          "Name"                   : "MistagOSComb",
-                                                          "InputName"              : "obsEtaOS"}
-
-    configdict["BasicVariables"]["MistagOSCharm"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                           "Name"                   : "MistagOSCharm",
-                                                           "InputName"              : "obsEtaOSCharm"}
-    
-    configdict["BasicVariables"]["MistagSSPionBDT"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                             "Name"                   : "MistagSSPionBDT",
-                                                             "InputName"              : "obsEtaSSPionBDT"}
-
-    configdict["BasicVariables"]["MistagSSProton"]      = { "Range"                  : [ 0.0,    0.5     ],
-                                                            "Name"                   : "MistagSSProton",
-                                                            "InputName"              : "obsEtaSSProton"}
     
     configdict["BasicVariables"]["BDTG"]           = { "Range"                  : [0.0, 1],
                                                        "Name"                   : "BDTG",

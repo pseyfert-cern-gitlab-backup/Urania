@@ -172,7 +172,7 @@ def getconfig() :
                                           "deltap0"  : [0.0111],# -1.0, 1.0],
                                           "deltap1"  : [0.022],# -1.0, 1.0],
                                           "avgeta"   : [0.349980],#<eta> on Bu->D0Pi
-                                          "tageff"   : [0.35, 0.0, 1.0],
+                                          "tageff"   : [1.0],#[0.35, 0.0, 1.0],
                                           "tagasymm" : [0.0]
                                           },
                                         "MistagPDF" :
@@ -186,7 +186,7 @@ def getconfig() :
                                           "deltap0"  : [0.0006],# -1.0, 1.0],
                                           "deltap1"  : [0.007],# -1.0, 1.0],
                                           "avgeta"   : [0.435], #<eta> on Bd->J/psiK*
-                                          "tageff"   : [0.816, 0.0, 1.0],
+                                          "tageff"   : [1.0],#[0.816, 0.0, 1.0],
                                           "tagasymm" : [0.0]
                                           },
                                         "MistagPDF" :

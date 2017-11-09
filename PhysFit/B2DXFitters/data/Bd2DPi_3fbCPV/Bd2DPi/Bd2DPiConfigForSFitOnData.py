@@ -44,23 +44,39 @@ def getconfig() :
     configdict["BasicVariables"]["BacCharge"]     = { "Range"                  : [-1000.0, 1000.0  ],
                                                       "Name"                   : "BacCharge",
                                                       "InputName"              : "lab1_ID"}
-
+    
     configdict["BasicVariables"]["TagDecOS"]      = { "Range"                  : [-1.0,    1.0     ],
                                                       "Name"                   : "TagDecOS",
                                                       "InputName"              : "TagDecOS"}
-
+    
     configdict["BasicVariables"]["TagDecSS"]      = { "Range"                  : [-1.0,    1.0     ],
                                                       "Name"                   : "TagDecSS",
                                                       "InputName"              : "TagDecSS"}
-    
+
     configdict["BasicVariables"]["MistagOS"]      = { "Range"                  : [ 0.0,    0.5     ],
                                                       "Name"                   : "MistagOS",
                                                       "InputName"              : "MistagOS"}
-    
+
     configdict["BasicVariables"]["MistagSS"]      = { "Range"                  : [ 0.0,    0.5     ],
                                                       "Name"                   : "MistagSS",
                                                       "InputName"              : "MistagSS"}
-
+    '''
+    configdict["BasicVariables"]["TagDecOSExclusive"]      = { "Range"                  : [-1.0,    1.0     ],
+                                                               "Name"                   : "TagDecOSExclusive",
+                                                               "InputName"              : "TagDecOSExclusive"}
+    
+    configdict["BasicVariables"]["TagDecSSExclusive"]      = { "Range"                  : [-1.0,    1.0     ],
+                                                               "Name"                   : "TagDecSSExclusive",
+                                                               "InputName"              : "TagDecSSExclusive"}
+    
+    configdict["BasicVariables"]["MistagOSExclusive"]      = { "Range"                  : [ 0.0,    0.5     ],
+                                                               "Name"                   : "MistagOSExclusive",
+                                                               "InputName"              : "MistagOSExclusive"}
+    
+    configdict["BasicVariables"]["MistagSSExclusive"]      = { "Range"                  : [ 0.0,    0.5     ],
+                                                               "Name"                   : "MistagSSExclusive",
+                                                               "InputName"              : "MistagSSExclusive"}
+    '''
     configdict["BasicVariables"]["BDTG"]           = { "Range"                  : [0.0, 1],
                                                        "Name"                   : "BDTG",
                                                        "InputName"              : "BDT_classifier"}
@@ -156,6 +172,7 @@ def getconfig() :
                                                      "Extrapolate": True,
                                                      "KnotPositions": [0.5, 1.0, 1.5, 2.0, 2.3, 2.6, 3.0, 4.0, 10.0],
                                                      "KnotCoefficients": [1.9440e-01, 3.3275e-01, 6.1444e-01, 8.6628e-01, 9.9600e-01, 1.0745e+00, 1.1083e+00,1.1565e+00, 1.1946e+00]},
+                                                    #"KnotCoefficients": [0.319338, 0.494221, 0.793542, 0.994526, 1.09258, 1.11702, 1.14026, 1.17504, 1.1541]}, #from full fit
                                                     "Resolution":
                                                     {"Type": "AverageModel",
                                                      "Parameters": { 'sigmas': [ 0.05491 ], 'fractions': [] }, #0.05491 +- 0.00038
@@ -184,17 +201,18 @@ def getconfig() :
                                        {"Calibration":  #from EPM on Bu->D0Pi data
                                         { "Type"    : "GLM",
                                           "XML"     : ["/eos/lhcb/wg/b2oc/TD_DPi_3fb/calibrations/RLogisticCalibration_Bu2D0Pi_OS_20171021.xml"],
-                                          "tageff"  : [0.37, 0.0, 1.0],
+                                          "tageff"  : [1.0],#[0.43, 0.0, 1.0],
                                           "tagasymm": [0.0]
                                           },
                                         "MistagPDF" :
                                         {"Type"     : "BuildTemplate"}
                                         },
-                                       "SS": #from EPM on Bd->J/psiK* datax
+                                       "SS": #from EPM on Bd->J/psiK* data
                                        {"Calibration":
                                         { "Type"   : "GLM",
-                                          "XML"    : ["/eos/lhcb/wg/b2oc/TD_DPi_3fb/calibrations/LinearCalibration_Bd2JpsiKst_SS_20171021.xml"],
-                                          "tageff"  : [0.8, 0.0, 1.0],
+                                          #"XML"    : ["/eos/lhcb/wg/b2oc/TD_DPi_3fb/calibrations/LinearCalibration_Bd2JpsiKst_SS_20171021.xml"],
+                                          "XML"    : ["/eos/lhcb/wg/b2oc/TD_DPi_3fb/calibrations/RLogisticCalibration_Bd2JpsiKst_SS_20171101.xml"],
+                                          "tageff"  : [1.0],#[0.93, 0.0, 1.0],
                                           "tagasymm": [0.0]
                                           },
                                         "MistagPDF" :
@@ -223,29 +241,42 @@ def getconfig() :
     ############################################
     
     configdict["gaussCons"] = {}
-    # Constraint on resolution
-    #configdict["gaussCons"]["resmodel00_sigma"] = 0.00038
     # Constraint on DeltaM
     configdict["gaussCons"]["deltaM"] = math.sqrt( 0.0021*0.0021 + 0.001*0.001 )
     # Constraint on Gamma (error on gamma = rel. error on lifetime * gamma)
     configdict["gaussCons"]["Gamma"] = (0.004/1.518) * (1.0/1.518)
     # Multivariate constraint for OS combination
-    # from /afs/cern.ch/user/v/vibattis/gitdev/Bd2Dpi_selection/flavourtagging/EspressoCalibration/OSCalib/Bu2D0Pi_rlogitLink_NoProdAsymm_broadTrigBDTAUWeight/OS_Combination_Calibration.xml
-    #ospedix='_OS_Combination_Calibration'
-    #configdict["gaussCons"]["multivarOSCalib"] = [['p_0'+ospedix, 'p_1'+ospedix, 'p_2'+ospedix, 'p_3'+ospedix, 'p_4'+ospedix,
-    #                                               'dp_0'+ospedix, 'dp_1'+ospedix, 'dp_2'+ospedix, 'dp_3'+ospedix, 'dp_4'+ospedix], #parname
-    #                                              [0.018861, 0.022383, 0.0083157, 0.10294, 0.46094, 0.037722, 0.044767, 0.016631, 0.20589, 0.92188], #errors
-    #                                              [1        -0.11138       -0.060731       0.0093798        0.015918        0.048798       -0.047036        0.039879       -0.029968        -0.04636],
-    #                                              [1       -0.089066        -0.18677       -0.090617       -0.047036         0.10886         -0.1467        0.084428         0.13518],
-    #                                              [1        0.072716        -0.26512        0.039879         -0.1467          0.2937        -0.14008        -0.22835],
-    #                                              [1         0.82552       -0.029968        0.084428        -0.14008         0.17805         0.14321],
-    #                                              [1        -0.04636         0.13518        -0.22835         0.14321         0.34926],
-    #                                              [1        -0.11138       -0.060731       0.0093798        0.015918],
-    #                                              [1       -0.089066        -0.18677       -0.090617],
-    #                                              [1        0.072716        -0.26512],
-    #                                              [1         0.82552],
-    #                                              [1]
-    #                                              ]
+    # from /eos/lhcb/wg/b2oc/TD_DPi_3fb/calibrations/RLogisticCalibration_Bu2D0Pi_OS_20171021.xml
+    ospedix='_RLogisticCalibration_Bu2D0Pi_OS_20171021'
+    configdict["gaussCons"]["multivarOSCalib"] = [['p_0'+ospedix, 'p_1'+ospedix, 'p_2'+ospedix, 'p_3'+ospedix, 'p_4'+ospedix,
+                                                   'dp_0'+ospedix, 'dp_1'+ospedix, 'dp_2'+ospedix, 'dp_3'+ospedix, 'dp_4'+ospedix], #parname
+                                                  [0.018861, 0.022383, 0.0083157, 0.10294, 0.46094, 0.037722, 0.044767, 0.016631, 0.20589, 0.92188], #errors
+                                                  [[1,        -0.11138,       -0.060731,       0.0093798,        0.015918,        0.048798,       -0.047036,        0.039879,       -0.029968,        -0.04636],
+                                                  [1,       -0.089066,        -0.18677,       -0.090617,       -0.047036,         0.10886,         -0.1467,        0.084428,         0.13518],
+                                                  [1,        0.072716,        -0.26512,        0.039879,         -0.1467,          0.2937,        -0.14008,        -0.22835],
+                                                  [1,         0.82552,       -0.029968,        0.084428,        -0.14008,         0.17805,         0.14321],
+                                                  [1,        -0.04636,         0.13518,        -0.22835,         0.14321,         0.34926],
+                                                  [1,        -0.11138,       -0.060731,       0.0093798,        0.015918],
+                                                  [1,       -0.089066,        -0.18677,       -0.090617],
+                                                  [1,        0.072716,        -0.26512],
+                                                  [1,         0.82552],
+                                                  [1]]]
+    # Multivariate constraint for SS combination
+    # from /eos/lhcb/wg/b2oc/TD_DPi_3fb/calibrations/LinearCalibration_Bd2JpsiKst_SS_20171021.xml
+    #sspedix = '_LinearCalibration_Bd2JpsiKst_SS_20171021'
+    #configdict["gaussCons"]["multivarSSCalib"] = [['p_0'+sspedix, 'p_1'+sspedix, 'dp_0'+sspedix, 'dp_1'+sspedix], #parname
+    #                                              [0.0031913, 0.053317, 0.0044657, 0.077375], #errors
+    #                                              [[1,      -0.0068779,       -0.005469,        0.011888],
+    #                                              [1,        0.012911,       -0.069687],
+    #                                              [1,       -0.031925],
+    #                                              [1]]]
+    #sspedix = '_RLogisticCalibration_Bd2JpsiKst_SS_20171101'
+    #configdict["gaussCons"]["multivarSSCalib"] = [['p_0'+sspedix, 'p_1'+sspedix, 'dp_0'+sspedix, 'dp_1'+sspedix], #parname
+    #                                              [0.059185, 0.065243, 0.084341, 0.093665], #errors
+    #                                              [[1,        0.062456,       -0.028549,       -0.038885],
+    #                                               [1,       -0.039147,       -0.044807],
+    #                                               [1,         0.10574],
+    #                                               [1]]]
     
     ############################################
     # Choose parameters to blind
@@ -261,7 +292,7 @@ def getconfig() :
     ############################################
 
     configdict["LikelihoodScan"] = []
-    #configdict["LikelihoodScan"].append("Sf")
-    #configdict["LikelihoodScan"].append("Sfbar")
+    configdict["LikelihoodScan"].append("Sf")
+    configdict["LikelihoodScan"].append("DetAsymm")
 
     return configdict
