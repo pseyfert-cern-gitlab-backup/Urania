@@ -435,6 +435,69 @@ configs = {
     'controlstat'   :  300000, 
     'nbootstrap'    :  5
   }, 
+  "e_MC15TuneV1_ProbNNK_Brunel" : {
+    "sample"        :  "e_BJpsi_Brunel", 
+    "var"           :  "probe_Brunel_MC15TuneV1_ProbNNk", 
+    "bins"          :  30, 
+    "gamma"         :  0.15, 
+    'scale_default' :  1.5, 
+    'scale_syst'    :  2.0, 
+    'scale_pid'     :  1.5, 
+    'toystat'       :  300000, 
+    'controlstat'   :  300000, 
+    'nbootstrap'    :  5
+  }, 
+  "e_MC15TuneV1_ProbNNp_Brunel" : {
+    "sample"        :  "e_BJpsi_Brunel", 
+    "var"           :  "probe_Brunel_MC15TuneV1_ProbNNp", 
+    "bins"          :  30, 
+    "gamma"         :  0.2, 
+    'scale_default' :  1.5, 
+    'scale_syst'    :  2.0, 
+    'scale_pid'     :  1.5, 
+    'toystat'       :  300000, 
+    'controlstat'   :  300000, 
+    'nbootstrap'    :  5
+  }, 
+  "e_CombDLLK_Brunel" : {
+    "sample"        :  "e_BJpsi_Brunel", 
+    "var"           :  "probe_Brunel_PIDK", 
+    "bins"          :  30, 
+    "gamma"         :  1., 
+    'scale_default' :  1.5, 
+    'scale_syst'    :  2.0, 
+    'scale_pid'     :  1.5, 
+    'limits'        : (-100., 50), 
+    'toystat'       : 300000, 
+    'controlstat'   : 300000, 
+    'nbootstrap'    : 5
+  }, 
+  "e_CombDLLp_Brunel" : {
+    "sample"        :  "e_BJpsi_Brunel", 
+    "var"           :  "probe_Brunel_PIDp", 
+    "bins"          :  30, 
+    "gamma"         :  1., 
+    'scale_default' :  1.5, 
+    'scale_syst'    :  2.0, 
+    'scale_pid'     :  1.5, 
+    'limits'        : (-100., 50), 
+    'toystat'       : 300000, 
+    'controlstat'   : 300000, 
+    'nbootstrap'    : 5
+  }, 
+  "e_CombDLLmu_Brunel" : {
+    "sample"        :  "e_BJpsi_Brunel", 
+    "var"           :  "probe_Brunel_PIDmu", 
+    "bins"          :  30, 
+    "gamma"         :  1., 
+    'scale_default' :  1.5, 
+    'scale_syst'    :  2.0, 
+    'scale_pid'     :  1.5, 
+    'limits'        : (-20., 20), 
+    'toystat'       : 300000, 
+    'controlstat'   : 300000, 
+    'nbootstrap'    : 5
+  }, 
 
 #  "p_MC12TuneV2_ProbNNp_Brunel" : {
 #    "sample"        :  "p_Lam0_Brunel", 
