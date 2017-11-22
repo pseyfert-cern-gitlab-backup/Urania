@@ -24,7 +24,7 @@ pvar   = None
 # etavar = None
 # pvar   = "p"
 
-ntrvar = "nTracks" # This should correspond to the number of "Best tracks", not "Long tracks"!
+ntrvar = "nTracks"  # This should correspond to the number of "Best tracks", not "Long tracks"!
 
 seed = None   # No initial seed
 # seed = 1    # Alternatively, could set initial random seed
@@ -137,4 +137,4 @@ for input_file, output_file, dataset in files :
     os.system("xrdcp %s %s" % (tmpinfile, output_file))
   else:
     print("mv %s %s" % (tmpinfile, output_file))
-  os.system("mv %s %s" % (tmpinfile, output_file))
+    os.system("mv %s %s" % (tmpinfile, output_file))

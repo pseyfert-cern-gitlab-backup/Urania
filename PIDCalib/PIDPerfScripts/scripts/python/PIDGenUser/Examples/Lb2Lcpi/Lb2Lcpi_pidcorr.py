@@ -136,4 +136,4 @@ for input_file, output_file, dataset in files :
     os.system("xrdcp %s %s" % (tmpinfile, output_file))
   else:
     print("mv %s %s" % (tmpinfile, output_file))
-  os.system("mv %s %s" % (tmpinfile, output_file))
+    os.system("mv %s %s" % (tmpinfile, output_file))
