@@ -422,6 +422,83 @@ configs = {
     'controlstat'   : 300000, 
     'nbootstrap'    : 5
   }, 
+  "e_MC15TuneV1_ProbNNpi_Brunel" : {
+    "sample"        :  "e_BJpsi_Brunel", 
+    "var"           :  "probe_Brunel_MC15TuneV1_ProbNNpi", 
+    "bins"          :  30, 
+    "transform_forward"  : "1.-(1.-x**0.15)**0.2", 
+    "transform_backward" : "1.-(1.-x**(1./0.2))**(1./0.15)", 
+    'scale_default' :  1.5, 
+    'scale_syst'    :  2.0, 
+    'scale_pid'     :  1.5, 
+    'toystat'       :  300000, 
+    'controlstat'   :  300000, 
+    'nbootstrap'    :  5
+  }, 
+  "e_MC15TuneV1_ProbNNK_Brunel" : {
+    "sample"        :  "e_BJpsi_Brunel", 
+    "var"           :  "probe_Brunel_MC15TuneV1_ProbNNk", 
+    "bins"          :  30, 
+    "gamma"         :  0.15, 
+    'scale_default' :  1.5, 
+    'scale_syst'    :  2.0, 
+    'scale_pid'     :  1.5, 
+    'toystat'       :  300000, 
+    'controlstat'   :  300000, 
+    'nbootstrap'    :  5
+  }, 
+  "e_MC15TuneV1_ProbNNp_Brunel" : {
+    "sample"        :  "e_BJpsi_Brunel", 
+    "var"           :  "probe_Brunel_MC15TuneV1_ProbNNp", 
+    "bins"          :  30, 
+    "gamma"         :  0.2, 
+    'scale_default' :  1.5, 
+    'scale_syst'    :  2.0, 
+    'scale_pid'     :  1.5, 
+    'toystat'       :  300000, 
+    'controlstat'   :  300000, 
+    'nbootstrap'    :  5
+  }, 
+  "e_CombDLLK_Brunel" : {
+    "sample"        :  "e_BJpsi_Brunel", 
+    "var"           :  "probe_Brunel_PIDK", 
+    "bins"          :  30, 
+    "gamma"         :  1., 
+    'scale_default' :  1.5, 
+    'scale_syst'    :  2.0, 
+    'scale_pid'     :  1.5, 
+    'limits'        : (-100., 50), 
+    'toystat'       : 300000, 
+    'controlstat'   : 300000, 
+    'nbootstrap'    : 5
+  }, 
+  "e_CombDLLp_Brunel" : {
+    "sample"        :  "e_BJpsi_Brunel", 
+    "var"           :  "probe_Brunel_PIDp", 
+    "bins"          :  30, 
+    "gamma"         :  1., 
+    'scale_default' :  1.5, 
+    'scale_syst'    :  2.0, 
+    'scale_pid'     :  1.5, 
+    'limits'        : (-100., 50), 
+    'toystat'       : 300000, 
+    'controlstat'   : 300000, 
+    'nbootstrap'    : 5
+  }, 
+  "e_CombDLLmu_Brunel" : {
+    "sample"        :  "e_BJpsi_Brunel", 
+    "var"           :  "probe_Brunel_PIDmu", 
+    "bins"          :  30, 
+    "gamma"         :  1., 
+    'scale_default' :  1.5, 
+    'scale_syst'    :  2.0, 
+    'scale_pid'     :  1.5, 
+    'limits'        : (-20., 20), 
+    'toystat'       : 300000, 
+    'controlstat'   : 300000, 
+    'nbootstrap'    : 5
+  }, 
+
 #  "p_MC12TuneV2_ProbNNp_Brunel" : {
 #    "sample"        :  "p_Lam0_Brunel", 
 #    "var"           :  "probe_Brunel_MC12TuneV2_ProbNNp", 

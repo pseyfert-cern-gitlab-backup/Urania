@@ -97,14 +97,18 @@ if run == 1 :
   configs = ConfigRun1.configs
 else : 
   calibfilename = ConfigRun2.eosrootdir + "/" + config + "/" + "%s_%s.root" % (dataset, variant)
-  gamma = ConfigRun2.configs[config]['gamma']
-  if gamma<0 : 
-    transform_forward = "(1.-(1.-x)**%f)" % abs(gamma)
-    transform_backward = "(1.-(1.-x)**%f)" % (1./abs(gamma))
-  else : 
-    transform_forward = "((x)**%f)" % abs(gamma)
-    transform_backward = "((x)**%f)" % (1./abs(gamma))
   configs = ConfigRun2.configs
+  if 'gamma' in ConfigRun2.configs[config].keys() : 
+    gamma = ConfigRun2.configs[config]['gamma']
+    if gamma<0 : 
+      transform_forward = "(1.-(1.-x)**%f)" % abs(gamma)
+      transform_backward = "(1.-(1.-x)**%f)" % (1./abs(gamma))
+    else : 
+      transform_forward = "((x)**%f)" % abs(gamma)
+      transform_backward = "((x)**%f)" % (1./abs(gamma))
+  else : 
+    transform_forward  = ConfigRun1.configs[config]['transform_forward']
+    transform_backward = ConfigRun1.configs[config]['transform_backward']
 
 from math import sqrt
 
