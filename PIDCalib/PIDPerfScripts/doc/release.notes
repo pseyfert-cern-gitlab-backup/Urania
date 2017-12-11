@@ -3,6 +3,9 @@
 ! Responsible : Donal Hill
 ! Purpose     : Scripts using PIDPerfTools to perform PID studies
 !-----------------------------------------------------------------------------
+! 2017-12-11 - Donal Hill
+  	- Fixed bug for Ap and pA samples which used the wrong nTuple name (including LL) for proton samples
+
 ! 2017-10-13 - Donal Hill
 	- Updates to allow the use of nTracks_Brunel in binning, as well as Brunel_P and Brunel_ETA
 	- MakePerfHistsRunRange.py now requires the user to specify their X,Y,Z binning choice
