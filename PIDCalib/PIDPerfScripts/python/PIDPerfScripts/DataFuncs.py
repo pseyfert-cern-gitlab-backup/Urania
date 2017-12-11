@@ -106,6 +106,7 @@ def GetDataSet(StripVer, MagPolarity,PartName,TrackCuts,PIDCutString,xBin,yBin,z
                                   , xvar      = xBin
                                   , yvar      = yBin
                                   , zvar      = zBin
+                                  , strip     = StripVer #Added to check the nTuple names for a corresponding WGP sample
             )
       print "Automatic conversion from TTree to RooDataSet"
     if Data is None:

@@ -279,6 +279,8 @@ datasets = {
   'DSt_Pi' : ["DSt_PiMTuple", "DSt_PiPTuple"],
   'DSt_K'  : ["DSt_KPTuple", "DSt_KMTuple"],
   'Lam0_P' : ["Lam0LL_PTuple", "Lam0LL_PbarTuple", "Lam0LL_HPT_PTuple", "Lam0LL_HPT_PbarTuple", "Lam0LL_VHPT_PTuple", "Lam0LL_VHPT_PbarTuple"],
+  #Ap and pA proton nTuple names (no LL in the WGP files)
+  'Lam0_P_Ap_pA' : ["Lam0_PTuple", "Lam0_PbarTuple", "Lam0_HPT_PTuple", "Lam0_HPT_PbarTuple", "Lam0_VHPT_PTuple", "Lam0_VHPT_PbarTuple"],
   'Jpsi_Mu': ["Jpsi_MuPTuple", "Jpsi_MuMTuple"],
   #Jpsi with no pT cut
   #'Jpsi_nopt_Mu' : ["Jpsinopt_MuPTuple", "Jpsinopt_MuMTuple"],
@@ -298,12 +300,22 @@ datasets = {
   'B_Jpsi_e': ["B_Jpsi_EPTuple","B_Jpsi_EMTuple"]
 }
 
-def getDataSetFromTuple ( file, mother, part, trackcuts, pidcuts, xvar, yvar, zvar):
+def getDataSetFromTuple ( file, mother, part, trackcuts, pidcuts, xvar, yvar, zvar, strip):
 
+  datasetname = ""
   
-  datasetname = mother + "_" + part
+  #Regular non Ap and pA
+  if "Ap" not in strip and "pA" not in strip:
+  	datasetname = mother + "_" + part
+  #pA or Ap
+  else:
+  	#No problem if not using protons
+  	if part != "P":
+  		datasetname = mother + "_" + part
+  	#If using protons, nTuple name is different
+  	else:
+  		datasetname = mother + "_" + part + "_Ap_pA"
   
-
   if datasetname not in datasets:
     print "Cannot configure dataset " + datasetname + ", not in Turbo stream"
     return RooDataSet()
@@ -339,6 +351,7 @@ def getDataSetFromTuple ( file, mother, part, trackcuts, pidcuts, xvar, yvar, zv
     	tree.Add(file+"/"+dataset+"/DecayTree")
     else:
     	tree.Add(file+"/DecayTree")
+
     
     #Check if the tree has any entries in it
     if tree.GetEntries() == 0:
