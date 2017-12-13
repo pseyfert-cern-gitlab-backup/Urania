@@ -15,8 +15,10 @@ def getconfig():
         "Generated":
         {
         "Values":      [0.3, 0.4, 0.5],
-        "Errors":      None,
-        "Correlation": None
+        "Errors":      [0.01, 0.01, 0.01],
+        "Correlation": [ [1, 0.001, -0.001],
+                         [1, 0.01],
+                         [1] ]
         }
         }
     
