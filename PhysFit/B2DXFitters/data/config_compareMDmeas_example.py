@@ -4,7 +4,7 @@ def getconfig():
 
     configdict["Inputs"] = {}
     configdict["Inputs"] = {
-        "Fitted":
+        "First":
         {
         "Values":      [0.32, 0.34, 0.57],
         "Errors":      [0.03, 0.04, 0.05],
@@ -12,7 +12,7 @@ def getconfig():
                          [1, 0.04],
                          [1] ]
         },
-        "Generated":
+        "Second":
         {
         "Values":      [0.3, 0.4, 0.5],
         "Errors":      [0.01, 0.01, 0.01],
