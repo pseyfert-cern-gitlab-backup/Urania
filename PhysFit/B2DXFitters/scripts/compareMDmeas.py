@@ -125,7 +125,7 @@ import array
 from array import array
 
 # -----------------------------------------------------------------------------
-def TakeRooFitResult(fileName, fitResultName, workspaceName=None):
+def TakeRooFitResult(fileName, fitResultName, workspaceName=None, paramList=None, positionList=None):
     """
     Parse the content of a RooFitResult object
     """
@@ -149,6 +149,17 @@ def TakeRooFitResult(fileName, fitResultName, workspaceName=None):
     #Get covariance matrix
     cov = fitResult.covarianceMatrix()
 
+    if paramList and positionList:
+        #Take a subset of the matrix (to match parameters given in paramDict)
+        n_eff = len(paramList)
+        if n_eff != len(positionList):
+            raise ValueError("TakeRooFitResult(...) => ERROR: lenght of paramList and positionList have to be equal!")
+        cov_eff = TMatrixDSym(n_eff)
+        for row in range(0,n_eff):
+            for col in range(0,n_eff):
+                cov_eff[row][col] = cov[positionList[row]][positionList[col]]
+        cov = cov_eff
+
     #Get array of fitted parameters
     fitList = fitResult.floatParsFinal()
     n = fitList.getSize()
@@ -156,10 +167,20 @@ def TakeRooFitResult(fileName, fitResultName, workspaceName=None):
     for p in range(0, n):
         meas[p] = fitList[p].getVal()
 
+    if paramList and positionList:
+        meas_eff = TVector(n_eff)
+        for p in range(0, n_eff):
+            meas_eff[p] = meas[positionList[p]]
+        meas = meas_eff
+
     #Get list of parameter titles
     parNames = []
-    for p in range(0, n):
-        parNames.append( fitList[p].GetTitle() )
+    if paramList and positionList:
+        for p in range(0, n_eff):
+            parNames.append( fitList[positionList[p]].GetTitle() )
+    else:
+        for p in range(0, n):
+            parNames.append( fitList[p].GetTitle() )
 
     file.Close()
 
@@ -278,7 +299,7 @@ def chi2( par, npar, measurements, covMatrices ):
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
-def compareMDmeas(configName, debug):
+def compareMDmeas(configName, correlated, debug):
     
     # Get the configuration file
     myconfigfilegrabber = __import__(configName, fromlist=['getconfig']).getconfig
@@ -359,7 +380,9 @@ def compareMDmeas(configName, debug):
 
             meas, cov, parNames = TakeRooFitResult(myconfigfile["Inputs"][input]["FileName"],
                                                    myconfigfile["Inputs"][input]["FitResult"],
-                                                   None if "Workspace" not in myconfigfile["Inputs"][input].keys() else myconfigfile["Inputs"][input]["Workspace"])
+                                                   None if "Workspace" not in myconfigfile["Inputs"][input].keys() else myconfigfile["Inputs"][input]["Workspace"],
+                                                   None if "Parameters" not in myconfigfile["Inputs"][input].keys() else myconfigfile["Inputs"][input]["Parameters"],
+                                                   None if "Positions" not in myconfigfile["Inputs"][input].keys() else myconfigfile["Inputs"][input]["Positions"])
 
             measurements.append( meas )
             covMatrices.append( cov )
@@ -505,10 +528,8 @@ def compareMDmeas(configName, debug):
     if nmeas == 2:
 
         #Return the 1D discrepancy parameter-by-parameter as well,
-        #defined as sigma = (par1-par2) / sqrt(sigma1^2 + sigma2^2)
-        #The following assumptions are thus made:
-        #1) Correlations between parameters are neglected
-        #2) The two measurements are assumed to be fully uncorrelated
+        #defined as sigma = (par1-par2) / sqrt(sigma1^2 +/- sigma2^2)
+        #(depending on the correlation)
 
         import uncertainties
         from uncertainties import ufloat
@@ -520,7 +541,10 @@ def compareMDmeas(configName, debug):
         for p in range(0, nparams):
             meas1.append( ufloat( measurements[0][p], sqrt( covMatrices[0][p][p] ) ) )
             meas2.append( ufloat( measurements[1][p], sqrt( covMatrices[1][p][p] ) ) )
-            sigmas.append( (meas1[p].n - meas2[p].n) / sqrt( meas1[p].s*meas1[p].s + meas2[p].s*meas2[p].s ) )
+            if correlated:
+                sigmas.append( (meas1[p].n - meas2[p].n) / sqrt( meas1[p].s*meas1[p].s - meas2[p].s*meas2[p].s ) )
+            else:
+                sigmas.append( (meas1[p].n - meas2[p].n) / sqrt( meas1[p].s*meas1[p].s + meas2[p].s*meas2[p].s ) )
 
         print ""
         print 60*"#"
@@ -560,6 +584,13 @@ parser.add_option('--configName',
                   default = 'MyConfigFile',
                   help = 'configuration file name')
 
+parser.add_option('--correlated',
+                  dest    = 'correlated',
+                  default = False,
+                  action  = 'store_true',
+                  help    = 'assume to have fully correlated measurements'
+                  )
+
 parser.add_option('-d', '--debug',
                   dest    = 'debug',
                   default = False,
@@ -581,5 +612,5 @@ if __name__ == '__main__':
 
         sys.path.append(directory)
 
-        compareMDmeas(configName, options.debug)
+        compareMDmeas(configName, options.correlated, options.debug)
         

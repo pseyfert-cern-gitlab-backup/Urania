@@ -343,7 +343,7 @@ def BuildCovMatFromCorrMat(n, errors, correlation, regularise = True):
     if len(errors) != n:
         raise ValueError('utils.BuildCovMatFromCorrMat(...) ==> Error list length does not match that of parameter name list')
     for i in xrange(0, n):
-        if errors[i] <= 0.:
+        if errors[i] < 0.:
             raise ValueError('utils.BuildCovMatFromCorrMat(...) ==> Errors must be positive')
         cov[i][i] = errors[i] * errors[i]
     correl = SymmetrizeTriangularMatrix(correlation)
