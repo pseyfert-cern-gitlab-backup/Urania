@@ -1,24 +1,20 @@
 ################################################################################
 # Package: MCLimit
 ################################################################################
-gaudi_subdir(MCLimit v2r2)
+project(MCLimit)
+cmake_minimum_required(VERSION 3.9)
+
+list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 
 find_package(ROOT COMPONENTS Core RIO MathCore Minuit Hist Graf MathCore Minuit Hist Graf)
 
-include_directories(SYSTEM ${ROOT_INCLUDE_DIRS})
+include(${ROOT_USE_FILE})
+REFLEX_GENERATE_DICTIONARY(MCLimitDict dict/MCLimitDict.h SELECTION dict/MCLimit.xml)
 
-gaudi_add_library(MCLimit
-                  src/junkInterface.cpp
-                  NO_PUBLIC_HEADERS
-                  INCLUDE_DIRS ROOT
-                  LINK_LIBRARIES ROOT)
+include_directories(${CMAKE_CURRENT_LIST_DIR})
 
-gaudi_add_dictionary(MCLimit
-                     dict/MCLimitDict.h
-                     dict/MCLimit.xml
-                     INCLUDE_DIRS ROOT
-                     LINK_LIBRARIES ROOT MCLimit
-                     OPTIONS " -U__MINGW32__ ")
+add_library(MCLimit SHARED
+            src/junkInterface.cpp
+            MCLimitDict.cxx)
 
-gaudi_install_python_modules()
-
+target_link_libraries(MCLimit ${ROOT_LIBRARIES})
