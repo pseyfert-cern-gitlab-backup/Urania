@@ -107,8 +107,8 @@ else :
       transform_forward = "((x)**%f)" % abs(gamma)
       transform_backward = "((x)**%f)" % (1./abs(gamma))
   else : 
-    transform_forward  = ConfigRun1.configs[config]['transform_forward']
-    transform_backward = ConfigRun1.configs[config]['transform_backward']
+    transform_forward  = ConfigRun2.configs[config]['transform_forward']
+    transform_backward = ConfigRun2.configs[config]['transform_backward']
 
 from math import sqrt
 
