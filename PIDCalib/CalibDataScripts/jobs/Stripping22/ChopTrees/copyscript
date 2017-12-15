@@ -1,4 +1,0 @@
-cp up_runLimits_dst_k_and_pi.pkl up_runLimits_lam0_p.pkl
-cp up_runLimits_dst_k_and_pi.pkl up_runLimits_jpsi_mu.pkl
-cp down_runLimits_dst_k_and_pi.pkl down_runLimits_lam0_p.pkl
-cp down_runLimits_dst_k_and_pi.pkl down_runLimits_jpsi_mu.pkl

@@ -1,6 +1,0 @@
-nBinsMass = 50
-nBinsQsq = 20
-nBinsEmu = 20
-nBinsMMsq = 20
-doPhiPi = 0
-includeDs1p = 1

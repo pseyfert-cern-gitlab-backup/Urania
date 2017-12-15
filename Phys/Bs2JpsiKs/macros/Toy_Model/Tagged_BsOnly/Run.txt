@@ -1,5 +1,0 @@
-.L LHCbAcceptance.cxx+
-.L ToyModel.cxx+
-.L Simulation.C+
-// Simulation(tracktype,seed,lumi,setup [for systematics])
-Simulation(3,125,3.06,"Default")

@@ -1,9 +1,0 @@
-!------------------------------------------------------------------------------
-! Package     : WGCommonTools/QEE
-! Responsible : Carlos Vazquez Sierra (temporary)
-! Purpose     : Repository of common tools used by the QCD, Exotica and EWK WG.
-!------------------------------------------------------------------------------
-
-! 2017-10-03 - Carlos Vazquez Sierra
- + Creating the package (v1r0).
-

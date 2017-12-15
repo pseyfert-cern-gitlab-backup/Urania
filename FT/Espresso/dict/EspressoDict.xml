@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<!--- $Id: -->
-<!--- Author  : Jack Wimberley -->
-<!--- Created : 2017-03-22 -->
-
-<lcgdict>
-  <class name="Espresso::RooGLMFunction" />
-</lcgdict>

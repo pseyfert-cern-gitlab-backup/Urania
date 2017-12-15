@@ -1,13 +1,24 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
+################################################################################
+# Package: MCLimit
+################################################################################
+gaudi_subdir(MCLimit v2r2)
 
-#---------------------------------------------------------------
-# Load macros and functions for Gaudi-based projects
-find_package(GaudiProject)
-#---------------------------------------------------------------
+find_package(ROOT COMPONENTS Core RIO MathCore Minuit Hist Graf MathCore Minuit Hist Graf)
 
-# GaudiPolicy is needed only for CMT.
-#set_property(DIRECTORY PROPERTY GAUDI_IGNORE_SUBDIRS GaudiPolicy)
+include_directories(SYSTEM ${ROOT_INCLUDE_DIRS})
 
-# Declare project name and version
-gaudi_project(Urania v8r0)
+gaudi_add_library(MCLimit
+                  src/junkInterface.cpp
+                  NO_PUBLIC_HEADERS
+                  INCLUDE_DIRS ROOT
+                  LINK_LIBRARIES ROOT)
+
+gaudi_add_dictionary(MCLimit
+                     dict/MCLimitDict.h
+                     dict/MCLimit.xml
+                     INCLUDE_DIRS ROOT
+                     LINK_LIBRARIES ROOT MCLimit
+                     OPTIONS " -U__MINGW32__ ")
+
+gaudi_install_python_modules()
 

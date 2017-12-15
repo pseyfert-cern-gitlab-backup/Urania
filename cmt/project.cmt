@@ -1,6 +1,0 @@
-project URANIA
-
-use LCGCMT LCGCMT_91
-build_strategy with_installarea
-setup_strategy root
-container UraniaSys

@@ -1,6 +1,0 @@
-<lcgdict>
-  <class name="RooExpAndGauss" />
-  <class name="RooExpAndGaussInv" />
-  <class name="RooPhysBkg" />
-  <class name="RooRadiativeTail" />
-</lcgdict>
