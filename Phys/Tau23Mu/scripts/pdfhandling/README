@@ -1,0 +1,57 @@
+STEP 1 : make 2d pdf from full pdf:
+
+//////// for central values
+root -l
+TFile *_file0 = TFile::Open(Form("../ETA_geo.root"))
+.L 2dplot.C
+TH2F* cent = central
+TH2F* color = strip(cent)
+color->Draw("textcolz")
+TFile* ff = new TFile(Form("data.root"),"recreate")
+ff->WriteTObject(color)
+ff->Close() 
+.q
+
+//////// for systematics
+root -l
+int i = 5;
+TFile *_file0 = TFile::Open(Form("../ETA_systematics_sig%d.root",i))
+.L 2dplot.C 
+TH2F* cent = plus
+TH2F* color = strip(cent)
+color->Draw("textcolz")
+TFile* ff = new TFile(Form("data%d.root",i),"recreate")
+ff->WriteTObject(color)
+ff->Close()
+.q 
+
+////////// add the systematics to the central value
+root -l
+.L 2dplot.C+O
+update()
+.q
+
+
+
+
+
+STEP 2: make 2d pdf from TTree:
+
+root -l
+TChain* ds = new TChain("Tau23Mu")
+ds->Add("/afs/cern.ch/work/p/pseyfert/public/triggeremulation/mcselected_ds2etamunu_md_TCKEMU_flat_2468994evts.root");
+ds->Add("/afs/cern.ch/work/p/pseyfert/public/triggeremulation/mcselected_ds2etamunu_mu_TCKEMU_flat_2473490evts.root");
+.L 2dfrommc.C   
+TH2F* simulation = mchist(ds)
+TFile* ff = new TFile("data.root","update")
+ff->WriteTObject(simulation)
+TH2F* data            
+ff->GetObject("etapdf_data",data)
+TH2F* ratio = data->Clone("etapdf_ratio")
+ratio->Divide(simulation)
+ff->WriteTObject(ratio)
+ff->Close()
+.q
+
+
+

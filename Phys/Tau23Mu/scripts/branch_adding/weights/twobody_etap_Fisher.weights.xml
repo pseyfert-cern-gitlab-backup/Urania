@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<MethodSetup Method="Fisher::Fisher">
+  <GeneralInfo>
+    <Info name="TMVA Release" value="4.1.2 [262402]"/>
+    <Info name="ROOT Release" value="5.32/04 [335876]"/>
+    <Info name="Creator" value="mchrzasz"/>
+    <Info name="Date" value="Mon Oct  8 22:27:06 2012"/>
+    <Info name="Host" value="Linux mchrzasz-ThinkPad-R500 2.6.35-32-generic #67-Ubuntu SMP Mon Mar 5 19:35:26 UTC 2012 i686 GNU/Linux"/>
+    <Info name="Dir" value="/home/mchrzasz/tau23mu_analysis/tau23mu_eta_treatment/MVA"/>
+    <Info name="Training events" value="10807"/>
+    <Info name="TrainingTime" value="4.73284721e-03"/>
+    <Info name="AnalysisType" value="Classification"/>
+  </GeneralInfo>
+  <Options>
+    <Option name="V" modified="Yes">False</Option>
+    <Option name="VerbosityLevel" modified="No">Default</Option>
+    <Option name="VarTransform" modified="Yes">None</Option>
+    <Option name="H" modified="Yes">False</Option>
+    <Option name="CreateMVAPdfs" modified="Yes">True</Option>
+    <Option name="IgnoreNegWeightsInTraining" modified="No">False</Option>
+    <Option name="Method" modified="Yes">Fisher</Option>
+  </Options>
+  <Variables NVar="2">
+    <Variable VarIndex="0" Expression="mass_p0p2*mass_p0p2" Label="mass_p0p2*mass_p0p2" Title="mass_p0p2*mass_p0p2" Unit="" Internal="mass_p0p2_T_mass_p0p2" Type="F" Min="4.60912656e+04" Max="2.59231275e+06"/>
+    <Variable VarIndex="1" Expression="mass_p1p2*mass_p1p2" Label="mass_p1p2*mass_p1p2" Title="mass_p1p2*mass_p1p2" Unit="" Internal="mass_p1p2_T_mass_p1p2" Type="F" Min="4.80880547e+04" Max="3.68071250e+06"/>
+  </Variables>
+  <Spectators NSpec="0"/>
+  <Classes NClass="2">
+    <Class Name="Signal" Index="0"/>
+    <Class Name="Background" Index="1"/>
+  </Classes>
+  <Transformations NTransformations="0"/>
+  <MVAPdfs>
+    <PDF Name="Fisher_PDFSig" MinNSmooth="10" MaxNSmooth="10" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
+      <Histogram Name="Fisher_tr_S_original" NBins="50" XMin="-9.3465435504913330e-01" XMax="2.0174620151519775e+00" HasEquidistantBins="1">
+        0.00000000e+00 7.78344460e-03 4.51057069e-02 6.57126978e-02 1.31574199e-01 1.60304904e-01 2.70995885e-01 2.23763466e-01 3.17122459e-01 3.61483872e-01 3.47809672e-01 3.98869962e-01 4.14734602e-01 5.35994947e-01 5.82802057e-01 6.37817919e-01 6.03919387e-01 7.17991352e-01 6.94428444e-01 7.14822769e-01 6.73034728e-01 7.87319422e-01 8.13923419e-01 8.90290678e-01 8.09478819e-01 7.53612339e-01 7.59290457e-01 7.15737104e-01 7.33005345e-01 7.14248538e-01 6.72524333e-01 4.75598723e-01 4.34427261e-01 2.87604839e-01 1.41505525e-01 3.86833027e-02 3.67906014e-03 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+      </Histogram>
+    </PDF>
+    <PDF Name="Fisher_PDFBkg" MinNSmooth="10" MaxNSmooth="10" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
+      <Histogram Name="Fisher_tr_B_original" NBins="50" XMin="-9.3465435504913330e-01" XMax="2.0174620151519775e+00" HasEquidistantBins="1">
+        1.11268505e-01 2.70914614e-01 4.01534170e-01 8.75634789e-01 8.80472541e-01 1.10300958e+00 1.26265562e+00 7.98230588e-01 1.13203609e+00 1.39327526e+00 1.43197727e+00 1.04979420e+00 1.04011869e+00 1.01592982e+00 9.62714493e-01 7.54690707e-01 5.46666980e-01 4.30560738e-01 4.25722986e-01 2.56401330e-01 1.83834925e-01 1.40295073e-01 1.11268505e-01 8.22419375e-02 5.32153733e-02 3.38643268e-02 1.93510447e-02 2.90265661e-02 3.38643268e-02 9.67552233e-03 1.45132830e-02 9.67552233e-03 1.93510447e-02 4.83776117e-03 4.83776117e-03 4.83776117e-03 9.67552233e-03 4.83776117e-03 9.67552233e-03 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 9.67552233e-03 0.00000000e+00 4.83776117e-03 0.00000000e+00 0.00000000e+00 
+      </Histogram>
+    </PDF>
+  </MVAPdfs>
+  <Weights NCoeff="3">
+    <Coefficient Index="0" Value="-1.1654865605808058e+00"/>
+    <Coefficient Index="1" Value="8.4715378437192833e-07"/>
+    <Coefficient Index="2" Value="5.8138724236318247e-07"/>
+  </Weights>
+</MethodSetup>

@@ -1,0 +1,2 @@
+application MultiTrack_Ds2PhiPi ../src/MultiTrack/MultiTrack_Ds2PhiPi.cpp
+application PerfHist_Muons ../src/MultiTrack/PerfHist_Muons.cpp

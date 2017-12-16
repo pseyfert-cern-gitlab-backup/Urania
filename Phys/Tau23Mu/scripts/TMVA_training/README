@@ -1,0 +1,10 @@
+GeoMVA2013 is the developement for the 3 fb analysis.
+
+approaches:
+  v1: MC2012 signal vs. MC2012 incl backgrounds
+      no weights in first iteration
+      just three top scoring Hlt2 lines, Hlt1Dec, L0Dec
+      on stripping output
+
+      #bkg entries =   3,473
+      #sig entries = 117,758

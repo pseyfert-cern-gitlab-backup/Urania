@@ -1,0 +1,24 @@
+Put these files in PIDCalib/PIDPerfScripts/src/MultiTrack
+
+A) generate histograms
+for i in {0..2} ; do for j in {0..5} ; do ./PerfHist_Muons.exe Down $i $j & ./PerfHist_Muons.exe Up $i $j ; done ; done
+for i in {0..2} ; do ; do ./PerfHist_ChargedMuons.exe Up $i Minus & ./PerfHist_ChargedMuons.exe Down $i Plus & ./PerfHist_ChargedMuons.exe Down $i Minus & ./PerfHist_ChargedMuons.exe Up $i Plus ; done 
+
+B) merge histograms
+
+C) execute the magic line
+
+c1) check
+for i in `ls PerfHist*[0-9]_merged.root | sed "s/PerfHist_//" | sed "s/_merged.root//"` ; do for v in `ls /auto/data/pseyfert/tmpbuffer/*[0-9]to*[0-9]*.root`; do echo ./MultiTrack_Ds2PhiPi.exe $v Tau23Mu `echo $v | sed "s/.*buffer\/\(.*\)\.root/geo_\1_PID_$i.root/"` $i  PIPETO `echo $v | sed "s/.*buffer\/\(.*\)\.root/geo_\1_PID_$i.log/"` ; done; done
+
+c2) for real
+for i in `ls PerfHist*[0-9]_merged.root | sed "s/PerfHist_//" | sed "s/_merged.root//"` ; do for v in `ls /auto/data/pseyfert/tmpbuffer/*[0-9]to*[0-9]*.root`; do ./MultiTrack_Ds2PhiPi.exe $v Tau23Mu `echo $v | sed "s/.*buffer\/\(.*\)\.root/geo_\1_PID_$i.root/"` $i  > `echo $v | sed "s/.*buffer\/\(.*\)\.root/geo_\1_PID_$i.log/"` ; done; done
+
+D) the same for the eta background
+(mkdir geo_ds2etamunu)
+for i in `ls PerfHist*[0-9]_merged.root | sed "s/PerfHist_//" | sed "s/_merged.root//"` ; do for v in `ls /auto/data/pseyfert/tmpbuffer/ds2etamunu/*[0-9]to*[0-9]*.root`; do ./MultiTrack_Ds2PhiPi.exe $v Tau23Mu `echo $v | sed "s/.*buffer\/\(.*\)\.root/geo_\1_PID_$i.root/"` $i  > `echo $v | sed "s/.*buffer\/\(.*\)\.root/geo_\1_PID_$i.log/"` ; done; done
+
+correct pathnames
+cd geo_ds2etamunu
+for v in `ls *` ; do mv $v geo_$v ; done ; for v in `ls geo_geo_* ; do mv $v `echo $v | sed "s/geo_geo/geo/"` ; done
+

@@ -1,0 +1,354 @@
+how to run the calibration for Tau23Mu
+======================================
+
+root -l
+gSystem->Load("../params/libLimitROOT.so")     //// A
+.L calibrateGEO.C+
+.L calibrateGEO_and_PID_forpaper.C+
+limit_interface* li = new limit_interface()
+
+/// add additional cuts if necessary here
+li->setGeoRefString(li->getGeoRefString()+"&&(min(mass_p0p2,mass_p1p2)>450)");
+
+TChain* taumc = new TChain("Tau23Mu")
+//// here a standard flat tau23mu signal mc ntuple (after selection)
+taumc->Add("/afs/cern.ch/work/p/pseyfert/public/triggeremulation/weightsv3/mcselected_MC11tau23mu_md_TCKEMU_flat_593995evts.root");
+taumc->Add("/afs/cern.ch/work/p/pseyfert/public/triggeremulation/weightsv3/mcselected_MC11tau23mu_mu_TCKEMU_flat_510499evts.root");
+TChain* dsmc = new TChain("rds_data")
+//// here a splot ntuple for Ds2PhiPi signal MC (after selection)
+dsmc->Add("/afs/cern.ch/work/p/pseyfert/public/triggeremulation/weightsv3/MC11_splot.root");
+TChain* dsdata = new TChain("rds_data")
+//// here splot ntuple from real data
+dsdata->Add("/tmp/d0bar/d0bar/stp17unblinded_mud_BDTv4_1016pb_splot.root");
+TH1F* corr = correctionFactors(dsmc,taumc)
+corr->Draw()
+TH1* cal = geocalibration(dsdata,corr)      ////// B
+
+//// for error sources: myp ranges from 1 to 4 (but I always run from 0 to 4)
+//// call the code from A to C once for each of these values (PID degrees of freedom)
+//// afterwards A to B and D to E for GeoMVA
+
+int myp = 5
+combine(cal,cal,myp)
+//combine(cal,cal)
+//// here the filename where the calibrated pdf shall be stored
+//TFile* ff = new TFile("v4_with450Veto_geo.root","recreate")
+TFile* ff = new TFile(Form("v4_with450Veto_pid%d.root",myp),"recreate")
+ff->WriteTObject(li->GetFilledHistogram("central"))
+ff->WriteTObject(li->GetFilledHistogram_PLUS("central_plus"))
+ff->WriteTObject(li->GetFilledHistogram_MINUS("central_minus"))
+ff->Close()
+.q                                        ///// C
+
+///// here errors for GeoMVA
+combine(cal,cal)                         ///////  D
+//// here the filename where the calibrated pdf shall be stored
+TFile* ff = new TFile("v4_with450Veto_geo.root","recreate")
+ff->WriteTObject(li->GetFilledHistogram("central"))
+ff->WriteTObject(li->GetFilledHistogram_PLUS("central_plus"))
+ff->WriteTObject(li->GetFilledHistogram_MINUS("central_minus"))
+ff->Close()
+.q                                         //////// E
+
+///// now to get the input for mclimit a bit of pushing data around is needed
+///// observe that above all files start with "CONF". this is what the next script needs:
+
+root -l
+.L simplesys.C
+sim("v4_with450Veto")
+.q
+
+
+
+
+int myp = -4;                           /////// F
+combine(cal,cal,myp)
+TFile* ff = new TFile("v4_with450Veto_mass1.root","recreate")
+ff->WriteTObject(li->GetFilledHistogram("central"))
+ff->WriteTObject(li->GetFilledHistogram_PLUS("plus"))
+ff->WriteTObject(li->GetFilledHistogram_MINUS("minus"))
+ff->Close()
+.q                                        ///// G
+
+int myp = -3;                           /////// F
+combine(cal,cal,myp)
+TFile* ff = new TFile("v4_with450Veto_mass2.root","recreate")
+ff->WriteTObject(li->GetFilledHistogram("central"))
+ff->WriteTObject(li->GetFilledHistogram_PLUS("plus"))
+ff->WriteTObject(li->GetFilledHistogram_MINUS("minus"))
+ff->Close()
+.q                                        ///// G
+
+int myp = -2;                           /////// F
+combine(cal,cal,myp)
+TFile* ff = new TFile("v4_with450Veto_mass3.root","recreate")
+ff->WriteTObject(li->GetFilledHistogram("central"))
+ff->WriteTObject(li->GetFilledHistogram_PLUS("plus"))
+ff->WriteTObject(li->GetFilledHistogram_MINUS("minus"))
+ff->Close()
+.q                                        ///// G
+
+
+
+how to run the calibration for Tau2PMuMu  (not updated for paper yet)
+========================================
+
+
+gSystem->Load("../params/libLimitROOT.so")
+.L calibrateGEOP.C
+limit_interface* li = new limit_interface();
+////////////////////////////////////////////// SS / OS here
+bool SS = false;
+TChain* taumc;
+if (SS) {
+ taumc = new TChain("Tau2PMuMuSS");
+ taumc->Add("/afs/cern.ch/work/p/pseyfert/public/Tau2PMuMu/mcselected_tau2pmumuSS_offlinePID.root");
+} else {
+ taumc = new TChain("Tau2PMuMuOS");
+ taumc->Add("/afs/cern.ch/work/p/pseyfert/public/Tau2PMuMu/mcselected_tau2pmumuOS_offlinePID.root");
+}
+TChain* dsmc = new TChain("rds_data");
+dsmc->Add("/afs/cern.ch/work/p/pseyfert/public/triggeremulation/weightsv3/MC11_splot_forpmumu.root");
+TChain* dsdata = new TChain("rds_data");
+dsdata->Add("/afs/cern.ch/work/p/pseyfert/public/triggeremulation/weightsv3/data_splot_forpmumu.root");
+TH1F* corr = correctionFactors(dsmc,taumc,SS);
+corr->Draw();
+TH1* calmc = geocalibration(dsmc,corr)->Clone("the_mc");
+TH1* caldata = geocalibration(dsdata,corr)->Clone("the_data");
+calmc->SetTitle("simulation");
+caldata->SetTitle("data");
+calmc->SetLineColor(kRed);
+gStyle->SetOptStat(0);
+TCanvas* c = new TCanvas();
+calmc->Draw()
+calmc->GetXaxis()->SetTitle("M_{3 body}")
+calmc->GetYaxis()->SetTitle("fraction of #tau^{#pm}#rightarrow p^{#mp}#mu^{#pm} #mu^{#pm}")
+caldata->Draw("same")
+calmc->SetMarkerStyle(4)
+calmc->SetMarkerColor(kRed)
+TLegend* legend = c->BuildLegend()
+legend->SetFillColor(kWhite)
+
+
+  for (int p = 0 ; p < li->the_pidbins() ; ++p) {
+    for (int g = 0 ; g < li->the_geobins() ; ++g) {
+      for (int mm = 0 ; mm < (int)(li->GetNMassbins()+0.1) ; ++mm) {
+///////// for systematics, change these parameters
+        float tauwidth1;
+        float tauwidth2;
+        if (!SS) {
+          tauwidth1 = 4.5;
+          tauwidth2 = 7.7;
+        }
+        if (SS) {
+          tauwidth1 = 4.6;
+          tauwidth2 = 8.0;
+        }
+////////////////////////////////////////////// SS / OS here
+        float taumass = 1778.0;
+
+        float gaussint1 = 0.5 * (1+ TMath::Erf(1./tauwidth1/sqrt(2) * (li->GetMasshigh(mm) - taumass)));
+        float calvalerr;
+        gaussint1 -= 0.5 * (1+ TMath::Erf(1./tauwidth1/sqrt(2) * (li->GetMasslow(mm) - taumass)));
+        float gaussint2 = 0.5 * (1+ TMath::Erf(1./tauwidth2/sqrt(2) * (li->GetMasshigh(mm) - taumass)));
+        gaussint2 -= 0.5 * (1+ TMath::Erf(1./tauwidth2/sqrt(2) * (li->GetMasslow(mm) - taumass)));
+        float gaussint = .7*gaussint1 + .3*gaussint2;
+
+        std::cout << " integral = " << gaussint << std::endl;
+        float calval = gaussint * caldata->GetBinContent(g+1);
+        float calvalerr = 3 * gaussint * caldata->GetBinError(g+1);
+        std::cout << " calval   = " << calval << std::endl;
+        std::cout << " mass range " << li->GetMasslow(mm) << "\t" << li->GetMasshigh(mm) << std::endl;
+        li->SetPrivate(g,p,0.5*li->GetMasslow(mm)+0.5*li->GetMasshigh(mm) , calval, calval+calvalerr , calval-calvalerr);
+      }
+    }
+  }
+
+////////////////////////////////////////////// SS / OS here
+TFile* ff;
+if (SS) {
+  ff = new TFile("../params/tau2pmumuSS_sigPDF.root","recreate");
+}
+if (!SS) {
+  ff = new TFile("../params/tau2pmumuOS_sigPDF.root","recreate");
+}
+ff->WriteTObject(li->GetFilledHistogram("central"))
+ff->WriteTObject(li->GetFilledHistogram_PLUS("central_plus"))
+ff->WriteTObject(li->GetFilledHistogram_MINUS("central_minus"))
+ff->Close()
+
+/////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+
+
+
+
+
+  for (int p = 0 ; p < li->the_pidbins() ; ++p) {
+    for (int g = 0 ; g < li->the_geobins() ; ++g) {
+      for (int mm = 0 ; mm < (int)(li->GetNMassbins()+0.1) ; ++mm) {
+///////// for systematics, change these parameters
+        float tauwidth1;
+        float tauwidth2;
+        if (!SS) {
+          tauwidth1 = 4.5;
+          tauwidth2 = 7.7;
+        }
+        if (SS) {
+          tauwidth1 = 4.6;
+          tauwidth2 = 8.0;
+        }
+////////////////////////////////////////////// SS / OS here
+        float taumassM = 1778.0 - 3.*0.1;
+        float taumassP = 1778.0 + 3.*0.1;
+        float taumass = 1778.0;
+
+        float gaussint1M = 0.5 * (1+ TMath::Erf(1./tauwidth1/sqrt(2) * (li->GetMasshigh(mm) - taumassM))) - 0.5 * (1+ TMath::Erf(1./tauwidth1/sqrt(2) * (li->GetMasslow(mm) - taumassM)));
+        float gaussint2M = 0.5 * (1+ TMath::Erf(1./tauwidth2/sqrt(2) * (li->GetMasshigh(mm) - taumassM))) - 0.5 * (1+ TMath::Erf(1./tauwidth2/sqrt(2) * (li->GetMasslow(mm) - taumassM)));
+
+        float gaussint1P = 0.5 * (1+ TMath::Erf(1./tauwidth1/sqrt(2) * (li->GetMasshigh(mm) - taumassP))) - 0.5 * (1+ TMath::Erf(1./tauwidth1/sqrt(2) * (li->GetMasslow(mm) - taumassP)));
+        float gaussint2P = 0.5 * (1+ TMath::Erf(1./tauwidth2/sqrt(2) * (li->GetMasshigh(mm) - taumassP))) - 0.5 * (1+ TMath::Erf(1./tauwidth2/sqrt(2) * (li->GetMasslow(mm) - taumassP)));
+
+        float gaussint1 = 0.5 * (1+ TMath::Erf(1./tauwidth1/sqrt(2) * (li->GetMasshigh(mm) - taumass))) - 0.5 * (1+ TMath::Erf(1./tauwidth1/sqrt(2) * (li->GetMasslow(mm) - taumass)));
+        float gaussint2 = 0.5 * (1+ TMath::Erf(1./tauwidth2/sqrt(2) * (li->GetMasshigh(mm) - taumass))) -  0.5 * (1+ TMath::Erf(1./tauwidth2/sqrt(2) * (li->GetMasslow(mm) - taumass)));
+
+        float calvalP = (.7*gaussint1P + .3*gaussint2P) * caldata->GetBinContent(g+1);
+        float calvalM = (.7*gaussint1M + .3*gaussint2M) * caldata->GetBinContent(g+1);
+        float calval =  (.7*gaussint1 + .3*gaussint2  ) * caldata->GetBinContent(g+1);
+        li->SetPrivate(g,p,0.5*li->GetMasslow(mm)+0.5*li->GetMasshigh(mm) , calval, calvalP , calvalM);
+      }
+    }
+  }
+
+////////////////////////////////////////////// SS / OS here
+TFile* ff;
+if (SS) {
+  ff = new TFile("tau2pmumuSS_mean.root","recreate");
+}
+if (!SS) {
+  ff = new TFile("tau2pmumuOS_mean.root","recreate");
+}
+ff->WriteTObject(li->GetFilledHistogram("central"))
+ff->WriteTObject(li->GetFilledHistogram_PLUS("plus"))
+ff->WriteTObject(li->GetFilledHistogram_MINUS("minus"))
+ff->Close()
+
+
+
+
+
+
+
+  for (int p = 0 ; p < li->the_pidbins() ; ++p) {
+    for (int g = 0 ; g < li->the_geobins() ; ++g) {
+      for (int mm = 0 ; mm < (int)(li->GetNMassbins()+0.1) ; ++mm) {
+///////// for systematics, change these parameters
+        float tauwidth1M;
+        float tauwidth1;
+        float tauwidth1P;
+        float tauwidth2;
+        if (!SS) {
+          tauwidth1 = 4.5;
+          tauwidth1P = 4.5+3.*0.2;
+          tauwidth1M = 4.5-3.*0.2;
+          tauwidth2 = 7.7;
+        }
+        if (SS) {
+          tauwidth1 = 4.6;
+          tauwidth1P = 4.6+3.*0.2;
+          tauwidth1M = 4.6-3.*0.2;
+          tauwidth2 = 8.0;
+        }
+////////////////////////////////////////////// SS / OS here
+        float taumass = 1778.0;
+
+        float gaussint1M = 0.5 * (1+ TMath::Erf(1./tauwidth1M/sqrt(2) * (li->GetMasshigh(mm) - taumass))) - 0.5 * (1+ TMath::Erf(1./tauwidth1M/sqrt(2) * (li->GetMasslow(mm) - taumass)));
+        float gaussint2 = 0.5 * (1+ TMath::Erf(1./tauwidth2/sqrt(2) * (li->GetMasshigh(mm) - taumass))) - 0.5 * (1+ TMath::Erf(1./tauwidth2/sqrt(2) * (li->GetMasslow(mm) - taumass)));
+
+        float gaussint1P = 0.5 * (1+ TMath::Erf(1./tauwidth1P/sqrt(2) * (li->GetMasshigh(mm) - taumass))) - 0.5 * (1+ TMath::Erf(1./tauwidth1P/sqrt(2) * (li->GetMasslow(mm) - taumass)));
+
+        float gaussint1 = 0.5 * (1+ TMath::Erf(1./tauwidth1/sqrt(2) * (li->GetMasshigh(mm) - taumass))) - 0.5 * (1+ TMath::Erf(1./tauwidth1/sqrt(2) * (li->GetMasslow(mm) - taumass)));
+
+
+
+        float calvalP = (.7*gaussint1P + .3*gaussint2 )* caldata->GetBinContent(g+1);
+        float calvalM = (.7*gaussint1M + .3*gaussint2 )* caldata->GetBinContent(g+1);
+        float calval =  (.7*gaussint1 + .3*gaussint2  )* caldata->GetBinContent(g+1);
+        li->SetPrivate(g,p,0.5*li->GetMasslow(mm)+0.5*li->GetMasshigh(mm) , calval, calvalP , calvalM);
+      }
+    }
+  }
+
+////////////////////////////////////////////// SS / OS here
+TFile* ff;
+if (SS) {
+  ff = new TFile("tau2pmumuSS_sigma1.root","recreate");
+}
+if (!SS) {
+  ff = new TFile("tau2pmumuOS_sigma1.root","recreate");
+}
+ff->WriteTObject(li->GetFilledHistogram("central"))
+ff->WriteTObject(li->GetFilledHistogram_PLUS("plus"))
+ff->WriteTObject(li->GetFilledHistogram_MINUS("minus"))
+ff->Close()
+
+
+
+
+
+///////// for systematics, change these parameters
+  float tauwidth1;
+  float tauwidth2M;
+  float tauwidth2P;
+  float tauwidth2;
+  if (!SS) {
+    tauwidth2 = 7.7;
+    tauwidth1 = 4.5;
+    tauwidth2P = 7.7 + 3.*0.7;
+    tauwidth2M = 7.7 - 3.*0.7;
+  }
+  if (SS) {
+    tauwidth1 = 4.6;
+    tauwidth2P = 8.0 + 3.*0.7;
+    tauwidth2M = 8.0 - 3.*0.7;
+    tauwidth2 = 8.0;
+  }
+
+
+  for (int mm = 0 ; mm < (int)(li->GetNMassbins()+0.1) ; ++mm) {
+    float taumass = 1778.0;
+
+    float gaussint1 = 0.5 * (1+ TMath::Erf(1./tauwidth1/sqrt(2) * (li->GetMasshigh(mm) - taumass))) - 0.5 * (1+ TMath::Erf(1./tauwidth1/sqrt(2) * (li->GetMasslow(mm) - taumass)));
+    float gaussint2M = 0.5 * (1+ TMath::Erf(1./tauwidth2M/sqrt(2) * (li->GetMasshigh(mm) - taumass))) - 0.5 * (1+ TMath::Erf(1./tauwidth2M/sqrt(2) * (li->GetMasslow(mm) - taumass)));
+    float gaussint2P = 0.5 * (1+ TMath::Erf(1./tauwidth2P/sqrt(2) * (li->GetMasshigh(mm) - taumass))) - 0.5 * (1+ TMath::Erf(1./tauwidth2P/sqrt(2) * (li->GetMasslow(mm) - taumass)));
+    float gaussint2 = 0.5 * (1+ TMath::Erf(1./tauwidth2/sqrt(2) * (li->GetMasshigh(mm) - taumass))) - 0.5 * (1+ TMath::Erf(1./tauwidth2/sqrt(2) * (li->GetMasslow(mm) - taumass)));
+
+
+    for (int p = 0 ; p < li->the_pidbins() ; ++p) {
+      for (int g = 0 ; g < li->the_geobins() ; ++g) {
+
+////////////////////////////////////////////// SS / OS here
+
+
+        float calvalP = (.7*gaussint1 + .3*gaussint2P) * caldata->GetBinContent(g+1);
+        float calvalM = (.7*gaussint1 + .3*gaussint2M) * caldata->GetBinContent(g+1);
+        float calval =  (.7*gaussint1 + .3*gaussint2 ) * caldata->GetBinContent(g+1);
+        li->SetPrivate(g,p,0.5*li->GetMasslow(mm)+0.5*li->GetMasshigh(mm) , calval, calvalP , calvalM);
+      }
+    }
+  }
+
+////////////////////////////////////////////// SS / OS here
+TFile* ff;
+if (SS) {
+  ff = new TFile("tau2pmumuSS_sigma2.root","recreate");
+}
+if (!SS) {
+  ff = new TFile("tau2pmumuOS_sigma2.root","recreate");
+}
+ff->WriteTObject(li->GetFilledHistogram("central"))
+ff->WriteTObject(li->GetFilledHistogram_PLUS("plus"))
+ff->WriteTObject(li->GetFilledHistogram_MINUS("minus"))
+ff->Close()
+
+
